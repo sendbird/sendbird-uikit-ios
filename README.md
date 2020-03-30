@@ -37,7 +37,7 @@ pod update SendBirdUIKit
 
 Now you can see installed SendBird UIKit framework by inspecting YOUR_PROJECT.xcworkspace.
 
-> Note: `SendBirdSyncUIKit` is dependent with `SendBird SDK`. If you install `SendBirdUIKit`, Cocoapods automatically install `SendBird SDK` as well. And the minimum version of `SendBird SDK` is **3.0.175**.
+> Note: `SendBirdUIKit` is dependent with `SendBird SDK`. If you install `SendBirdUIKit`, Cocoapods automatically install `SendBird SDK` as well. And the minimum version of `SendBird SDK` is **3.0.175**.
 
 ## Install SendBird Framework from Carthage
 
