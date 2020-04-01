@@ -1,0 +1,987 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.1.3 (swiftlang-1100.0.282.1 clang-1100.0.33.15)
+// swift-module-flags: -target i386-apple-ios10.3-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name SendBirdUIKit
+import AVFoundation
+import AVKit
+import AssetsLibrary
+import Foundation
+import MobileCoreServices
+import Photos
+import QuartzCore
+import SafariServices
+import SendBirdSDK
+@_exported import SendBirdUIKit
+import Swift
+import UIKit
+@objc @objcMembers open class SBUInviteUserViewController : UIKit.UIViewController, UIKit.UITableViewDelegate, UIKit.UITableViewDataSource {
+  @available(*, unavailable, renamed: "SBUInviteUserViewController.init(channelUrl:)")
+  @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc public init(channel: SendBirdSDK.SBDGroupChannel)
+  @objc public init(channelUrl: Swift.String)
+  @objc public init(channel: SendBirdSDK.SBDGroupChannel, users: [SendBirdUIKit.SBUUser])
+  @objc public init(channelUrl: Swift.String, users: [SendBirdUIKit.SBUUser])
+  @objc override dynamic open func loadView()
+  @objc open func setupAutolayout()
+  @objc open func setupStyles()
+  @objc override dynamic open func viewDidLoad()
+  @objc override dynamic open func viewDidLayoutSubviews()
+  @objc override dynamic open func viewWillAppear(_ animated: Swift.Bool)
+  @objc public func loadChannel(channelUrl: Swift.String?)
+  @objc open func loadNextUserList(reset: Swift.Bool, users: [SendBirdUIKit.SBUUser]? = nil)
+  @objc open func inviteUsers()
+  @objc public func popToChannel()
+  @objc public func tableView(_ tableView: UIKit.UITableView, numberOfRowsInSection section: Swift.Int) -> Swift.Int
+  @objc public func tableView(_ tableView: UIKit.UITableView, cellForRowAt indexPath: Foundation.IndexPath) -> UIKit.UITableViewCell
+  @objc public func tableView(_ tableView: UIKit.UITableView, didSelectRowAt indexPath: Foundation.IndexPath)
+  @objc public func tableView(_ tableView: UIKit.UITableView, willDisplay cell: UIKit.UITableViewCell, forRowAt indexPath: Foundation.IndexPath)
+  @objc open func didReceiveError(_ message: Swift.String?)
+  @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
+  @objc deinit
+}
+@objc @objcMembers @IBDesignable public class SBUAdminMessageCell : SendBirdUIKit.SBUMessageBaseCell {
+  @objc public var messageLabel: UIKit.UILabel
+  @objc override open func setupViews()
+  @objc override open func setupAutolayout()
+  @objc override dynamic open func layoutSubviews()
+  @objc public func configure(_ message: SendBirdSDK.SBDAdminMessage, hideDateView: Swift.Bool)
+  @objc override dynamic open func setSelected(_ selected: Swift.Bool, animated: Swift.Bool)
+  @objc override dynamic public init(style: UIKit.UITableViewCell.CellStyle, reuseIdentifier: Swift.String?)
+  @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc deinit
+}
+@objc @objcMembers open class SBUChannelListViewController : UIKit.UIViewController, UIKit.UITableViewDelegate, UIKit.UITableViewDataSource, SendBirdSDK.SBDChannelDelegate, SendBirdSDK.SBDConnectionDelegate {
+  @objc override dynamic open func loadView()
+  @objc public func setupAutolayout()
+  @objc public func setupStyles()
+  @objc override dynamic open func viewDidLayoutSubviews()
+  @objc override dynamic open func viewDidLoad()
+  @objc override dynamic open func viewWillAppear(_ animated: Swift.Bool)
+  @objc deinit
+  @objc open func showChannel(channelUrl: Swift.String)
+  @objc open func showCreateChannel()
+  @objc public func setLoading(_ loadingState: Swift.Bool, _ showIndicator: Swift.Bool)
+  @objc public func register(channelCell: SendBirdUIKit.SBUBaseChannelCell, nib: UIKit.UINib? = nil)
+  @objc public func register(customCell: SendBirdUIKit.SBUBaseChannelCell?, nib: UIKit.UINib? = nil)
+  @objc public func tableView(_ tableView: UIKit.UITableView, didSelectRowAt indexPath: Foundation.IndexPath)
+  @objc open func tableView(_ tableView: UIKit.UITableView, cellForRowAt indexPath: Foundation.IndexPath) -> UIKit.UITableViewCell
+  @objc public func tableView(_ tableView: UIKit.UITableView, willDisplay cell: UIKit.UITableViewCell, forRowAt indexPath: Foundation.IndexPath)
+  @objc public func tableView(_ tableView: UIKit.UITableView, numberOfRowsInSection section: Swift.Int) -> Swift.Int
+  @available(iOS 11.0, *)
+  @objc public func tableView(_ tableView: UIKit.UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: Foundation.IndexPath) -> UIKit.UISwipeActionsConfiguration?
+  @available(iOS, deprecated: 13.0)
+  @objc public func tableView(_ tableView: UIKit.UITableView, editActionsForRowAt indexPath: Foundation.IndexPath) -> [UIKit.UITableViewRowAction]?
+  @objc open func channel(_ sender: SendBirdSDK.SBDGroupChannel, userDidJoin user: SendBirdSDK.SBDUser)
+  @objc open func channel(_ sender: SendBirdSDK.SBDGroupChannel, userDidLeave user: SendBirdSDK.SBDUser)
+  @objc open func channelWasChanged(_ sender: SendBirdSDK.SBDBaseChannel)
+  @objc open func channel(_ sender: SendBirdSDK.SBDBaseChannel, messageWasDeleted messageId: Swift.Int64)
+  @objc open func didReceiveError(_ message: Swift.String?)
+  @objc open func didSucceedReconnection()
+  @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
+  @objc required dynamic public init?(coder: Foundation.NSCoder)
+}
+@objc @objcMembers public class SBUFontSet : ObjectiveC.NSObject {
+  @objc public static var h1: UIKit.UIFont
+  @objc public static var h2: UIKit.UIFont
+  @objc public static var body1: UIKit.UIFont
+  @objc public static var body2: UIKit.UIFont
+  @objc public static var button1: UIKit.UIFont
+  @objc public static var button2: UIKit.UIFont
+  @objc public static var button3: UIKit.UIFont
+  @objc public static var caption1: UIKit.UIFont
+  @objc public static var caption2: UIKit.UIFont
+  @objc public static var caption3: UIKit.UIFont
+  @objc public static var subtitle1: UIKit.UIFont
+  @objc public static var subtitle2: UIKit.UIFont
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc @objcMembers public class SBUColorSet : ObjectiveC.NSObject {
+  @objc public static var primary100: UIKit.UIColor
+  @objc public static var primary200: UIKit.UIColor
+  @objc public static var primary300: UIKit.UIColor
+  @objc public static var primary400: UIKit.UIColor
+  @objc public static var primary500: UIKit.UIColor
+  @objc public static var secondary100: UIKit.UIColor
+  @objc public static var secondary200: UIKit.UIColor
+  @objc public static var secondary300: UIKit.UIColor
+  @objc public static var secondary400: UIKit.UIColor
+  @objc public static var secondary500: UIKit.UIColor
+  @objc public static var background100: UIKit.UIColor
+  @objc public static var background200: UIKit.UIColor
+  @objc public static var background300: UIKit.UIColor
+  @objc public static var background400: UIKit.UIColor
+  @objc public static var background500: UIKit.UIColor
+  @objc public static var background600: UIKit.UIColor
+  @objc public static var background700: UIKit.UIColor
+  @objc public static var overlay01: UIKit.UIColor
+  @objc public static var overlay02: UIKit.UIColor
+  @objc public static var onlight01: UIKit.UIColor
+  @objc public static var onlight02: UIKit.UIColor
+  @objc public static var onlight03: UIKit.UIColor
+  @objc public static var onlight04: UIKit.UIColor
+  @objc public static var ondark01: UIKit.UIColor
+  @objc public static var ondark02: UIKit.UIColor
+  @objc public static var ondark03: UIKit.UIColor
+  @objc public static var ondark04: UIKit.UIColor
+  @objc public static var error: UIKit.UIColor
+  @objc override dynamic public init()
+  @objc deinit
+}
+public typealias SBUNewMessageInfoHandler = () -> Swift.Void
+@objc open class SBUNewMessageInfo : UIKit.UIView {
+  @available(*, unavailable, renamed: "SBUChannelTitleView.init(frame:)")
+  @objc required dynamic public init?(coder: Foundation.NSCoder)
+  open func setupViews()
+  open func setupAutolayout()
+  open func setupStyles()
+  @objc override dynamic public func draw(_ rect: CoreGraphics.CGRect)
+  @objc override dynamic public func layoutSubviews()
+  public func updateTitle(count: Swift.Int, completionHandler: SendBirdUIKit.SBUNewMessageInfoHandler?)
+  @objc deinit
+}
+@objc @objcMembers open class SBUChannelViewController : UIKit.UIViewController, UIKit.UITableViewDelegate, UIKit.UITableViewDataSource, SendBirdSDK.SBDChannelDelegate, SendBirdSDK.SBDConnectionDelegate, SendBirdUIKit.SBUMessageInputViewDelegate, UIKit.UIImagePickerControllerDelegate, UIKit.UINavigationControllerDelegate, UIKit.UIDocumentPickerDelegate {
+  @objc public var channelName: Swift.String?
+  @objc public var messageInputView: SendBirdUIKit.SBUMessageInputView {
+    @objc get
+    @objc set
+  }
+  @objc public var newMessageInfoView: SendBirdUIKit.SBUNewMessageInfo {
+    @objc get
+    @objc set
+  }
+  @available(*, unavailable, renamed: "SBUChannelViewController.init(channelUrl:)")
+  @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc public init(channel: SendBirdSDK.SBDGroupChannel)
+  @objc public init(channelUrl: Swift.String)
+  @objc override dynamic open func loadView()
+  @objc open func setupAutolayout()
+  @objc open func setupStyles()
+  @objc override dynamic open func viewDidLayoutSubviews()
+  @objc override dynamic open func viewDidLoad()
+  @objc override dynamic open func viewWillAppear(_ animated: Swift.Bool)
+  @objc override dynamic open func viewWillDisappear(_ animated: Swift.Bool)
+  @objc deinit
+  @objc open func showChannelSettings()
+  @objc public func loadChannel(channelUrl: Swift.String?)
+  @objc public func checkSameDayAsNextMessage(currentIndex: Swift.Int) -> Swift.Bool
+  @objc public func configureOffset()
+  @objc public func setLoading(_ loadingState: Swift.Bool, _ showIndicator: Swift.Bool)
+  @objc public func sendImageFileMessage(info: [UIKit.UIImagePickerController.InfoKey : Any])
+  @objc public func sendVideoFileMessage(info: [UIKit.UIImagePickerController.InfoKey : Any])
+  @objc public func sendDocumentFileMessage(documentUrls: [Foundation.URL])
+  @objc public func onClickBack()
+  @objc public func onClickSetting()
+  @objc public func scrollToTop()
+  @objc public func register(adminMessageCell: SendBirdUIKit.SBUMessageBaseCell, nib: UIKit.UINib? = nil)
+  @objc public func register(userMessageCell: SendBirdUIKit.SBUMessageBaseCell, nib: UIKit.UINib? = nil)
+  @objc public func register(fileMessageCell: SendBirdUIKit.SBUMessageBaseCell, nib: UIKit.UINib? = nil)
+  @objc public func register(customMessageCell: SendBirdUIKit.SBUMessageBaseCell?, nib: UIKit.UINib? = nil)
+  @objc open func getCellIdentifier(by message: SendBirdSDK.SBDBaseMessage) -> Swift.String
+  @objc public func tableView(_ tableView: UIKit.UITableView, didSelectRowAt indexPath: Foundation.IndexPath)
+  @objc public func tableView(_ tableView: UIKit.UITableView, cellForRowAt indexPath: Foundation.IndexPath) -> UIKit.UITableViewCell
+  @objc public func tableView(_ tableView: UIKit.UITableView, willDisplay cell: UIKit.UITableViewCell, forRowAt indexPath: Foundation.IndexPath)
+  @objc public func tableView(_ tableView: UIKit.UITableView, numberOfRowsInSection section: Swift.Int) -> Swift.Int
+  @objc public func scrollViewDidScroll(_ scrollView: UIKit.UIScrollView)
+  @objc open func channel(_ sender: SendBirdSDK.SBDBaseChannel, didReceive message: SendBirdSDK.SBDBaseMessage)
+  @objc open func channel(_ sender: SendBirdSDK.SBDBaseChannel, didUpdate message: SendBirdSDK.SBDBaseMessage)
+  @objc open func channel(_ sender: SendBirdSDK.SBDBaseChannel, messageWasDeleted messageId: Swift.Int64)
+  @objc open func channelDidUpdateReadReceipt(_ sender: SendBirdSDK.SBDGroupChannel)
+  @objc open func channelDidUpdateDeliveryReceipt(_ sender: SendBirdSDK.SBDGroupChannel)
+  @objc open func channelDidUpdateTypingStatus(_ sender: SendBirdSDK.SBDGroupChannel)
+  @objc open func channelWasChanged(_ sender: SendBirdSDK.SBDBaseChannel)
+  @objc open func didSucceedReconnection()
+  @objc open func messageInputView(_ messageInputView: SendBirdUIKit.SBUMessageInputView, didSelectSend text: Swift.String)
+  @objc open func messageInputView(_ messageInputView: SendBirdUIKit.SBUMessageInputView, didSelectResource type: SendBirdUIKit.MediaResourceType)
+  @objc open func messageInputView(_ messageInputView: SendBirdUIKit.SBUMessageInputView, didSelectEdit text: Swift.String)
+  @objc open func messageInputViewDidStartTyping()
+  @objc open func messageInputViewDidEndTyping()
+  @objc public func imagePickerController(_ picker: UIKit.UIImagePickerController, didFinishPickingMediaWithInfo info: [UIKit.UIImagePickerController.InfoKey : Any])
+  @objc public func imagePickerControllerDidCancel(_ picker: UIKit.UIImagePickerController)
+  @available(iOS 11.0, *)
+  @objc public func documentPicker(_ controller: UIKit.UIDocumentPickerViewController, didPickDocumentsAt urls: [Foundation.URL])
+  @objc public func documentPicker(_ controller: UIKit.UIDocumentPickerViewController, didPickDocumentAt url: Foundation.URL)
+  @objc public func didSelectRetry()
+  @objc open func didSelectDeleteImage(message: SendBirdSDK.SBDFileMessage)
+  @objc open func didReceiveError(_ message: Swift.String?)
+  @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
+}
+@objc public protocol SBUMessageInputViewDelegate : ObjectiveC.NSObjectProtocol {
+  @objc optional func messageInputView(_ messageInputView: SendBirdUIKit.SBUMessageInputView, didSelectSend text: Swift.String)
+  @objc optional func messageInputView(_ messageInputView: SendBirdUIKit.SBUMessageInputView, didSelectResource type: SendBirdUIKit.MediaResourceType)
+  @objc optional func messageInputView(_ messageInputView: SendBirdUIKit.SBUMessageInputView, didSelectEdit text: Swift.String)
+  @objc optional func messageInputViewDidStartTyping()
+  @objc optional func messageInputViewDidEndTyping()
+}
+@objc @IBDesignable @objcMembers open class SBUMessageInputView : UIKit.UIView, UIKit.UITextViewDelegate {
+  @objc @IBOutlet weak public var addButton: UIKit.UIButton!
+  @objc @IBOutlet weak public var placeholderLabel: UIKit.UILabel!
+  @objc @IBOutlet weak public var textView: UIKit.UITextView!
+  @objc @IBOutlet weak public var sendButton: UIKit.UIButton!
+  @objc @IBOutlet weak public var editView: UIKit.UIView!
+  @objc @IBOutlet weak public var cancelButton: UIKit.UIButton!
+  @objc @IBOutlet weak public var saveButton: UIKit.UIButton!
+  @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
+  @available(*, unavailable, renamed: "SBUMessageInputView.loadViewFromNib()")
+  @objc override dynamic public init(frame: CoreGraphics.CGRect)
+  @objc override dynamic open func awakeFromNib()
+  @objc open func setupViews()
+  @objc open func setupStyles()
+  @objc override dynamic open func layoutSubviews()
+  @objc public func startEditMode(text: Swift.String)
+  @objc public func endEditMode()
+  @objc public func endTypingMode()
+  @objc public func updateTextViewHeight()
+  @objc @IBAction open func onClickAddButton(_ sender: Any)
+  @objc @IBAction open func onClickSendButton(_ sender: Any)
+  @objc @IBAction open func onClickCancelButton(_ sender: Any)
+  @objc @IBAction open func onClickSaveButton(_ sender: Any)
+  @objc public func textViewDidChange(_ textView: UIKit.UITextView)
+  @objc public func textViewDidEndEditing(_ textView: UIKit.UITextView)
+  @objc public func textView(_ textView: UIKit.UITextView, shouldChangeTextIn range: Foundation.NSRange, replacementText text: Swift.String) -> Swift.Bool
+  @objc deinit
+}
+@objc @objcMembers public class SBUIconSet : ObjectiveC.NSObject {
+  @objc public static var iconActionLeave: UIKit.UIImage
+  @objc public static var iconActionNotificationOn: UIKit.UIImage
+  @objc public static var iconActionNotificationOff: UIKit.UIImage
+  @objc public static var iconAdd: UIKit.UIImage
+  @objc public static var iconBack: UIKit.UIImage
+  @objc public static var iconCamera: UIKit.UIImage
+  @objc public static var iconPlus: UIKit.UIImage
+  @objc public static var iconChat: UIKit.UIImage
+  @objc public static var iconCheckbox: UIKit.UIImage
+  @objc public static var iconCheckboxOff: UIKit.UIImage
+  @objc public static var iconClose: UIKit.UIImage
+  @objc public static var iconCopy: UIKit.UIImage
+  @objc public static var iconCreate: UIKit.UIImage
+  @objc public static var iconDelete: UIKit.UIImage
+  @objc public static var iconDelivered: UIKit.UIImage
+  @objc public static var iconDocument: UIKit.UIImage
+  @objc public static var iconDownload: UIKit.UIImage
+  @objc public static var iconDummy: UIKit.UIImage
+  @objc public static var iconEdit: UIKit.UIImage
+  @objc public static var iconError: UIKit.UIImage
+  @objc public static var iconErrorFilled: UIKit.UIImage
+  @objc public static var iconGif: UIKit.UIImage
+  @objc public static var iconInfo: UIKit.UIImage
+  @objc public static var iconLeave: UIKit.UIImage
+  @objc public static var iconMembers: UIKit.UIImage
+  @objc public static var iconMute: UIKit.UIImage
+  @objc public static var iconNotifications: UIKit.UIImage
+  @objc public static var iconThumbnailLight: UIKit.UIImage
+  @objc public static var iconNoThumbnailLight: UIKit.UIImage
+  @objc public static var iconPhoto: UIKit.UIImage
+  @objc public static var iconPlay: UIKit.UIImage
+  @objc public static var iconRead: UIKit.UIImage
+  @objc public static var iconRefresh: UIKit.UIImage
+  @objc public static var iconAvatarLight: UIKit.UIImage
+  @objc public static var iconSend: UIKit.UIImage
+  @objc public static var iconSent: UIKit.UIImage
+  @objc public static var iconFailed: UIKit.UIImage
+  @objc public static var iconShevronRight: UIKit.UIImage
+  @objc public static var iconUser: UIKit.UIImage
+  @objc public static var iconSpinnerSmall: UIKit.UIImage
+  @objc public static var iconSpinnerLarge: UIKit.UIImage
+  @objc public static var iconFileDocument: UIKit.UIImage
+  @objc public static var iconFileAudio: UIKit.UIImage
+  @objc public static var iconChevronDown: UIKit.UIImage
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc open class SBUBaseChannelCell : UIKit.UITableViewCell {
+  @objc override dynamic public init(style: UIKit.UITableViewCell.CellStyle, reuseIdentifier: Swift.String?)
+  @objc required dynamic public init?(coder: Foundation.NSCoder)
+  open func setupViews()
+  open func setupActions()
+  open func setupAutolayout()
+  open func setupStyles()
+  open func configure(channel: SendBirdSDK.SBDGroupChannel)
+  @objc deinit
+}
+@objc @objcMembers open class SBUCreateChannelViewController : UIKit.UIViewController, UIKit.UITableViewDelegate, UIKit.UITableViewDataSource, UIKit.UINavigationControllerDelegate {
+  @available(*, unavailable, renamed: "SBUCreateChannelViewController.init()")
+  @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc convenience dynamic public init()
+  @objc public init(users: [SendBirdUIKit.SBUUser]?)
+  @objc override dynamic open func loadView()
+  @objc open func setupAutolayout()
+  @objc open func setupStyles()
+  @objc override dynamic open func viewDidLoad()
+  @objc override dynamic open func viewWillAppear(_ animated: Swift.Bool)
+  @objc override dynamic open func viewDidLayoutSubviews()
+  @objc open func loadNextUserList(reset: Swift.Bool, users: [SendBirdUIKit.SBUUser]? = nil)
+  @objc open func createChannel()
+  @objc public func tableView(_ tableView: UIKit.UITableView, numberOfRowsInSection section: Swift.Int) -> Swift.Int
+  @objc public func tableView(_ tableView: UIKit.UITableView, cellForRowAt indexPath: Foundation.IndexPath) -> UIKit.UITableViewCell
+  @objc public func tableView(_ tableView: UIKit.UITableView, didSelectRowAt indexPath: Foundation.IndexPath)
+  @objc public func tableView(_ tableView: UIKit.UITableView, willDisplay cell: UIKit.UITableViewCell, forRowAt indexPath: Foundation.IndexPath)
+  @objc open func didReceiveError(_ message: Swift.String?)
+  @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
+  @objc deinit
+}
+@objc @objcMembers public class SBUUser : ObjectiveC.NSObject {
+  @objc public init(userId: Swift.String, nickname: Swift.String? = nil, profileUrl: Swift.String? = nil)
+  @objc public init(user: SendBirdSDK.SBDUser)
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc @objcMembers public class SBUGlobals : ObjectiveC.NSObject {
+  @objc public static var ApplicationId: Swift.String?
+  @objc public static var AccessToken: Swift.String?
+  @objc public static var CurrentUser: SendBirdUIKit.SBUUser? {
+    @objc get
+    @objc set(newCurrentUser)
+  }
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc @objcMembers public class SBUStringSet : ObjectiveC.NSObject {
+  @objc public static var Cancel: Swift.String
+  @objc public static var OK: Swift.String
+  @objc public static var Retry: Swift.String
+  @objc public static var Save: Swift.String
+  @objc public static var Copy: Swift.String
+  @objc public static var Delete: Swift.String
+  @objc public static var Edit: Swift.String
+  @objc public static var Remove: Swift.String
+  @objc public static var Camera: Swift.String
+  @objc public static var PhotoVideoLibrary: Swift.String
+  @objc public static var Document: Swift.String
+  @objc public static var Loading: Swift.String
+  @objc public static var Invite: Swift.String
+  @objc public static var Alert_Delete: Swift.String
+  @objc public static var Date_Yesterday: Swift.String
+  @objc public static var Date_Year: (Swift.Int) -> Swift.String
+  @objc public static var Date_Day: (Swift.Int) -> Swift.String
+  @objc public static var Date_Month: (Swift.Int) -> Swift.String
+  @objc public static var Date_Hour: (Swift.Int) -> Swift.String
+  @objc public static var Date_Min: (Swift.Int) -> Swift.String
+  @objc public static var Date_Ago: Swift.String
+  @objc public static var Date_On: Swift.String
+  @objc public static var ChannelList_Header_Title: Swift.String
+  @objc public static var ChannelList_Last_File_Message: Swift.String
+  @objc public static var Channel_Name_Default: Swift.String
+  @objc public static var Channel_Name_No_Members: Swift.String
+  @objc public static var Channel_Header_LastSeen: Swift.String
+  @objc public static var Channel_Header_Typing: ([SendBirdSDK.SBDMember]) -> Swift.String
+  @objc public static var Channel_Success_Download_file: Swift.String
+  @objc public static var Channel_New_Message_File: Swift.String
+  @objc public static var Channel_New_Message: (Swift.Int) -> Swift.String
+  @objc public static var ChannelSettings_Header_Title: Swift.String
+  @objc public static var ChannelSettings_Change_Name: Swift.String
+  @objc public static var ChannelSettings_Change_Image: Swift.String
+  @objc public static var ChannelSettings_Enter_New_Name: Swift.String
+  @objc public static var ChannelSettings_Notifications: Swift.String
+  @objc public static var ChannelSettings_Members: (Swift.UInt) -> Swift.String
+  @objc public static var ChannelSettings_Leave: Swift.String
+  @objc public static var MessageInput_Text_Placeholder: Swift.String
+  @objc public static var Message_Edited: Swift.String
+  @objc public static var Message_System: Swift.String
+  @objc public static var Empty_No_Channels: Swift.String
+  @objc public static var Empty_No_Messages: Swift.String
+  @objc public static var Empty_No_Users: Swift.String
+  @objc public static var Empty_Wrong: Swift.String
+  @objc public static var CreateChannel_Create: (Swift.Int) -> Swift.String
+  @objc public static var CreateChannel_Header_Title: Swift.String
+  @objc public static var InviteChannel_Header_Title: Swift.String
+  @objc public static var InviteChannel_Invite: (Swift.Int) -> Swift.String
+  @objc public static var MemberList_Header_Title: Swift.String
+  @objc public static var MemberList_Me: Swift.String
+  @objc override dynamic public init()
+  @objc deinit
+}
+public enum MemberListType : Swift.Int {
+  case none
+  case createChannel
+  case channelMembers
+  case inviteUser
+  public typealias RawValue = Swift.Int
+  public init?(rawValue: Swift.Int)
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@objc public enum EmptyViewType : Swift.Int {
+  case none
+  case noChannels
+  case noMessages
+  case error
+  public typealias RawValue = Swift.Int
+  public init?(rawValue: Swift.Int)
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@objc public enum MediaResourceType : Swift.Int {
+  case camera
+  case library
+  case document
+  case unknown
+  public typealias RawValue = Swift.Int
+  public init?(rawValue: Swift.Int)
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+public enum ChannelEditType : Swift.Int {
+  case name
+  case image
+  public typealias RawValue = Swift.Int
+  public init?(rawValue: Swift.Int)
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@objc public enum MessagePosition : Swift.Int {
+  case left
+  case right
+  case center
+  public typealias RawValue = Swift.Int
+  public init?(rawValue: Swift.Int)
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@objc public enum MessageFileType : Swift.Int {
+  case image
+  case video
+  case audio
+  case pdf
+  case etc
+  public typealias RawValue = Swift.Int
+  public init?(rawValue: Swift.Int)
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@objc public enum SBUMessageReceiptState : Swift.Int {
+  case none
+  case readReceipt
+  case deliveryReceipt
+  public typealias RawValue = Swift.Int
+  public init?(rawValue: Swift.Int)
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@objc public enum MessageEditItem : Swift.Int {
+  case copy
+  case edit
+  case delete
+  public typealias RawValue = Swift.Int
+  public init?(rawValue: Swift.Int)
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@objc public enum FailedMessageOption : Swift.Int {
+  case retry
+  case remove
+  public typealias RawValue = Swift.Int
+  public init?(rawValue: Swift.Int)
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@objc @IBDesignable open class SBUMessageBaseCell : UIKit.UITableViewCell {
+  public var message: SendBirdSDK.SBDBaseMessage!
+  public var position: SendBirdUIKit.MessagePosition
+  public var receiptState: SendBirdUIKit.SBUMessageReceiptState
+  public var messageContentView: UIKit.UIView {
+    get
+    set
+  }
+  public var dateView: UIKit.UIView {
+    get
+    set
+  }
+  @objc override dynamic public init(style: UIKit.UITableViewCell.CellStyle, reuseIdentifier: Swift.String?)
+  @objc required dynamic public init?(coder: Foundation.NSCoder)
+  open func setupViews()
+  open func setupActions()
+  open func setupAutolayout()
+  open func setupStyles()
+  @objc override dynamic open func layoutSubviews()
+  open func configure(message: SendBirdSDK.SBDBaseMessage, position: SendBirdUIKit.MessagePosition, hideDateView: Swift.Bool, receiptState: SendBirdUIKit.SBUMessageReceiptState)
+  @objc override dynamic open func setSelected(_ selected: Swift.Bool, animated: Swift.Bool)
+  @objc override dynamic open func prepareForReuse()
+  @objc deinit
+}
+@objc public class MessageProfileView : UIKit.UIView {
+  @objc override dynamic public func layoutSubviews()
+  @objc deinit
+}
+@objc public class UserNameView : UIKit.UIView {
+  @objc override dynamic public func layoutSubviews()
+  @objc deinit
+}
+@objc public class MessageStateView : UIKit.UIView {
+  @objc override dynamic public func layoutSubviews()
+  @objc deinit
+}
+@objc @objcMembers public class SBUMain : ObjectiveC.NSObject {
+  @objc public static func initialize(applicationId: Swift.String)
+  @objc public static func connect(completionHandler: @escaping (SendBirdSDK.SBDUser?, SendBirdSDK.SBDError?) -> Swift.Void)
+  @objc public static func connectionCheck(completionHandler: @escaping (SendBirdSDK.SBDUser?, SendBirdSDK.SBDError?) -> Swift.Void)
+  @objc public static func disconnect(completionHandler: (() -> Swift.Void)?)
+  @objc public static func updateUserInfo(nickname: Swift.String?, profileUrl: Swift.String?, completionHandler: ((SendBirdSDK.SBDError?) -> Swift.Void)?)
+  @objc public static func getUIKitVersion() -> Swift.String
+  @objc public static func registerPush(deviceToken: Foundation.Data, completionHandler: @escaping (Swift.Bool) -> Swift.Void)
+  @objc public static func unregisterPushToken(completionHandler: @escaping (Swift.Bool) -> Swift.Void)
+  @objc public static func unregisterAllPushToken(completionHandler: @escaping (Swift.Bool) -> Swift.Void)
+  @objc public static func openChannel(channelUrl: Swift.String, basedOnChannelList: Swift.Bool = true)
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc @objcMembers open class SBUChannelSettingsViewController : UIKit.UIViewController, UIKit.UITableViewDelegate, UIKit.UITableViewDataSource, UIKit.UIImagePickerControllerDelegate, UIKit.UINavigationControllerDelegate {
+  @objc public var channelName: Swift.String?
+  @available(*, unavailable, renamed: "SBUChannelSettingsViewController.init(channelUrl:)")
+  @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc public init(channel: SendBirdSDK.SBDGroupChannel?)
+  @objc public init(channelUrl: Swift.String?)
+  @objc override dynamic open func loadView()
+  @objc open func setupAutolayout()
+  @objc open func setupStyles()
+  @objc override dynamic open func viewDidLayoutSubviews()
+  @objc override dynamic open func viewDidLoad()
+  @objc override dynamic open func viewWillAppear(_ animated: Swift.Bool)
+  @objc public func updateChannelInfo(channelName: Swift.String? = nil)
+  @objc public func loadChannel(channelUrl: Swift.String?)
+  @objc open func showMemberList()
+  @objc public func selectChannelImage()
+  @objc public func changeChannelName()
+  @objc public func changeNotification(isOn: Swift.Bool)
+  @objc public func leaveChannel()
+  @objc public func tableView(_ tableView: UIKit.UITableView, didSelectRowAt indexPath: Foundation.IndexPath)
+  @objc public func tableView(_ tableView: UIKit.UITableView, cellForRowAt indexPath: Foundation.IndexPath) -> UIKit.UITableViewCell
+  @objc public func tableView(_ tableView: UIKit.UITableView, numberOfRowsInSection section: Swift.Int) -> Swift.Int
+  @objc public func imagePickerController(_ picker: UIKit.UIImagePickerController, didFinishPickingMediaWithInfo info: [UIKit.UIImagePickerController.InfoKey : Any])
+  @objc open func didReceiveError(_ message: Swift.String?)
+  @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
+  @objc deinit
+}
+@propertyWrapper public struct SBUAutoLayout<T> where T : UIKit.UIView {
+  public var wrappedValue: T {
+    get
+    set
+  }
+  public init(wrappedValue: T)
+}
+@objc @objcMembers @IBDesignable public class SBUUserMessageCell : SendBirdUIKit.SBUMessageBaseCell {
+  @objc public var messageTextView: UIKit.UIView {
+    @objc get
+    @objc set
+  }
+  @objc public var userNameStackView: UIKit.UIStackView {
+    @objc get
+    @objc set
+  }
+  @objc public var contentsStackView: UIKit.UIStackView {
+    @objc get
+    @objc set
+  }
+  @objc public var userNameView: UIKit.UIView {
+    @objc get
+    @objc set
+  }
+  @objc public var profileView: UIKit.UIView {
+    @objc get
+    @objc set
+  }
+  @objc public var stateView: UIKit.UIView {
+    @objc get
+    @objc set
+  }
+  @objc override open func setupViews()
+  @objc override open func setupAutolayout()
+  @objc override open func setupActions()
+  @objc public func configure(_ message: SendBirdSDK.SBDUserMessage, hideDateView: Swift.Bool, receiptState: SendBirdUIKit.SBUMessageReceiptState)
+  @objc override dynamic open func setSelected(_ selected: Swift.Bool, animated: Swift.Bool)
+  @objc open func onLongPressContentView(sender: UIKit.UILongPressGestureRecognizer)
+  @objc open func onTapProfileImageView(sender: UIKit.UITapGestureRecognizer)
+  @objc open func onTapContentView(sender: UIKit.UITapGestureRecognizer)
+  @objc override dynamic public init(style: UIKit.UITableViewCell.CellStyle, reuseIdentifier: Swift.String?)
+  @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc deinit
+}
+@objc @objcMembers public class SBUTheme : ObjectiveC.NSObject {
+  @objc public init(channelListTheme: SendBirdUIKit.SBUChannelListTheme = .light, channelCellTheme: SendBirdUIKit.SBUChannelCellTheme = .light, channelTheme: SendBirdUIKit.SBUChannelTheme = .light, messageInputTheme: SendBirdUIKit.SBUMessageInputTheme = .light, messageCellTheme: SendBirdUIKit.SBUMessageCellTheme = .light, userListTheme: SendBirdUIKit.SBUUserListTheme = .light, userCellTheme: SendBirdUIKit.SBUUserCellTheme = .light, channelSettingsTheme: SendBirdUIKit.SBUChannelSettingsTheme = .light, componentTheme: SendBirdUIKit.SBUComponentTheme = .light)
+  @objc public static func set(theme: SendBirdUIKit.SBUTheme)
+  @objc public static func setChannelList(channelListTheme: SendBirdUIKit.SBUChannelListTheme, channelCellTheme: SendBirdUIKit.SBUChannelCellTheme)
+  @objc public static func setChannel(channelTheme: SendBirdUIKit.SBUChannelTheme, messageCellTheme: SendBirdUIKit.SBUMessageCellTheme, messageInputTheme: SendBirdUIKit.SBUMessageInputTheme, componentTheme: SendBirdUIKit.SBUComponentTheme)
+  @objc public static func setUserList(userListTheme: SendBirdUIKit.SBUUserListTheme, userCellTheme: SendBirdUIKit.SBUUserCellTheme)
+  @objc public static func setChannelSettings(channelSettingsTheme: SendBirdUIKit.SBUChannelSettingsTheme)
+  @objc public static var dark: SendBirdUIKit.SBUTheme {
+    @objc get
+  }
+  @objc public static var light: SendBirdUIKit.SBUTheme {
+    @objc get
+  }
+  @objc public static var channelListTheme: SendBirdUIKit.SBUChannelListTheme {
+    @objc get
+    @objc set
+  }
+  @objc public static var channelCellTheme: SendBirdUIKit.SBUChannelCellTheme {
+    @objc get
+    @objc set
+  }
+  @objc public static var channelTheme: SendBirdUIKit.SBUChannelTheme {
+    @objc get
+    @objc set
+  }
+  @objc public static var messageInputTheme: SendBirdUIKit.SBUMessageInputTheme {
+    @objc get
+    @objc set
+  }
+  @objc public static var messageCellTheme: SendBirdUIKit.SBUMessageCellTheme {
+    @objc get
+    @objc set
+  }
+  @objc public static var userListTheme: SendBirdUIKit.SBUUserListTheme {
+    @objc get
+    @objc set
+  }
+  @objc public static var userCellTheme: SendBirdUIKit.SBUUserCellTheme {
+    @objc get
+    @objc set
+  }
+  @objc public static var channelSettingsTheme: SendBirdUIKit.SBUChannelSettingsTheme {
+    @objc get
+    @objc set
+  }
+  @objc public static var componentTheme: SendBirdUIKit.SBUComponentTheme {
+    @objc get
+    @objc set
+  }
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc @objcMembers public class SBUChannelListTheme : ObjectiveC.NSObject {
+  @objc public static var light: SendBirdUIKit.SBUChannelListTheme {
+    @objc get
+  }
+  @objc public static var dark: SendBirdUIKit.SBUChannelListTheme {
+    @objc get
+  }
+  @objc public init(leftBarButtonTintColor: UIKit.UIColor = SBUColorSet.primary200, rightBarButtonTintColor: UIKit.UIColor = SBUColorSet.primary200, navigationBarTintColor: UIKit.UIColor = SBUColorSet.background500, navigationBarShadowColor: UIKit.UIColor = SBUColorSet.background600, backgroundColor: UIKit.UIColor = SBUColorSet.background600, notificationOnBackgroundColor: UIKit.UIColor = SBUColorSet.primary300, notificationOnTintColor: UIKit.UIColor = SBUColorSet.background100, notificationOffBackgroundColor: UIKit.UIColor = SBUColorSet.background200, notificationOffTintColor: UIKit.UIColor = SBUColorSet.onlight01, leaveBackgroundColor: UIKit.UIColor = SBUColorSet.error, leaveTintColor: UIKit.UIColor = SBUColorSet.background100, alertBackgroundColor: UIKit.UIColor = SBUColorSet.background600)
+  @objc public var leftBarButtonTintColor: UIKit.UIColor
+  @objc public var rightBarButtonTintColor: UIKit.UIColor
+  @objc public var navigationBarTintColor: UIKit.UIColor
+  @objc public var navigationBarShadowColor: UIKit.UIColor
+  @objc public var backgroundColor: UIKit.UIColor
+  @objc public var notificationOnBackgroundColor: UIKit.UIColor
+  @objc public var notificationOnTintColor: UIKit.UIColor
+  @objc public var notificationOffBackgroundColor: UIKit.UIColor
+  @objc public var notificationOffTintColor: UIKit.UIColor
+  @objc public var leaveBackgroundColor: UIKit.UIColor
+  @objc public var leaveTintColor: UIKit.UIColor
+  @objc public var alertBackgroundColor: UIKit.UIColor
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc @objcMembers public class SBUChannelCellTheme : ObjectiveC.NSObject {
+  @objc public static var light: SendBirdUIKit.SBUChannelCellTheme {
+    @objc get
+  }
+  @objc public static var dark: SendBirdUIKit.SBUChannelCellTheme {
+    @objc get
+  }
+  @objc public init(backgroundColor: UIKit.UIColor = SBUColorSet.background100, titleFont: UIKit.UIFont = SBUFontSet.subtitle1, titleTextColor: UIKit.UIColor = SBUColorSet.onlight01, memberCountFont: UIKit.UIFont = SBUFontSet.caption1, memberCountTextColor: UIKit.UIColor = SBUColorSet.onlight02, lastUpdatedTimeFont: UIKit.UIFont = SBUFontSet.caption2, lastUpdatedTimeTextColor: UIKit.UIColor = SBUColorSet.onlight02, messageFont: UIKit.UIFont = SBUFontSet.body1, messageTextColor: UIKit.UIColor = SBUColorSet.onlight03, unreadCountBackgroundColor: UIKit.UIColor = SBUColorSet.primary300, unreadCountTextColor: UIKit.UIColor = SBUColorSet.ondark01, unreadCountFont: UIKit.UIFont = SBUFontSet.caption1, separatorLineColor: UIKit.UIColor = SBUColorSet.onlight04)
+  @objc public var backgroundColor: UIKit.UIColor
+  @objc public var titleFont: UIKit.UIFont
+  @objc public var titleTextColor: UIKit.UIColor
+  @objc public var memberCountFont: UIKit.UIFont
+  @objc public var memberCountTextColor: UIKit.UIColor
+  @objc public var lastUpdatedTimeFont: UIKit.UIFont
+  @objc public var lastUpdatedTimeTextColor: UIKit.UIColor
+  @objc public var messageFont: UIKit.UIFont
+  @objc public var messageTextColor: UIKit.UIColor
+  @objc public var unreadCountBackgroundColor: UIKit.UIColor
+  @objc public var unreadCountTextColor: UIKit.UIColor
+  @objc public var unreadCountFont: UIKit.UIFont
+  @objc public var separatorLineColor: UIKit.UIColor
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc @objcMembers public class SBUChannelTheme : ObjectiveC.NSObject {
+  @objc public static var light: SendBirdUIKit.SBUChannelTheme {
+    @objc get
+  }
+  @objc public static var dark: SendBirdUIKit.SBUChannelTheme {
+    @objc get
+  }
+  @objc public init(navigationBarTintColor: UIKit.UIColor = SBUColorSet.background100, navigationBarShadowColor: UIKit.UIColor = SBUColorSet.onlight04, leftBarButtonTintColor: UIKit.UIColor = SBUColorSet.primary300, rightBarButtonTintColor: UIKit.UIColor = SBUColorSet.primary300, backgroundColor: UIKit.UIColor = SBUColorSet.background100, removeItemColor: UIKit.UIColor = SBUColorSet.error, cancelItemColor: UIKit.UIColor = SBUColorSet.primary300, alertRemoveColor: UIKit.UIColor = SBUColorSet.error, alertCancelColor: UIKit.UIColor = SBUColorSet.primary300, menuTextColor: UIKit.UIColor = SBUColorSet.onlight01)
+  @objc public var navigationBarTintColor: UIKit.UIColor
+  @objc public var navigationBarShadowColor: UIKit.UIColor
+  @objc public var leftBarButtonTintColor: UIKit.UIColor
+  @objc public var rightBarButtonTintColor: UIKit.UIColor
+  @objc public var backgroundColor: UIKit.UIColor
+  @objc public var removeItemColor: UIKit.UIColor
+  @objc public var cancelItemColor: UIKit.UIColor
+  @objc public var alertRemoveColor: UIKit.UIColor
+  @objc public var alertCancelColor: UIKit.UIColor
+  @objc public var menuTextColor: UIKit.UIColor
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc @objcMembers public class SBUMessageInputTheme : ObjectiveC.NSObject {
+  @objc public static var light: SendBirdUIKit.SBUMessageInputTheme {
+    @objc get
+  }
+  @objc public static var dark: SendBirdUIKit.SBUMessageInputTheme {
+    @objc get
+  }
+  @objc public init(backgroundColor: UIKit.UIColor = SBUColorSet.background100, textFieldBackgroundColor: UIKit.UIColor = SBUColorSet.background200, textFieldPlaceholderColor: UIKit.UIColor = SBUColorSet.onlight03, textFieldTintColor: UIKit.UIColor = SBUColorSet.primary300, textFieldTextColor: UIKit.UIColor = SBUColorSet.onlight01, textFieldBorderColor: UIKit.UIColor = SBUColorSet.background200, buttonTintColor: UIKit.UIColor = SBUColorSet.primary300, cancelButtonFont: UIKit.UIFont = SBUFontSet.button2, saveButtonFont: UIKit.UIFont = SBUFontSet.button2, saveButtonTextColor: UIKit.UIColor = SBUColorSet.ondark01)
+  @objc public var backgroundColor: UIKit.UIColor
+  @objc public var textFieldBackgroundColor: UIKit.UIColor
+  @objc public var textFieldPlaceholderColor: UIKit.UIColor
+  @objc public var textFieldTintColor: UIKit.UIColor
+  @objc public var textFieldTextColor: UIKit.UIColor
+  @objc public var textFieldBorderColor: UIKit.UIColor
+  @objc public var buttonTintColor: UIKit.UIColor
+  @objc public var cancelButtonFont: UIKit.UIFont
+  @objc public var saveButtonFont: UIKit.UIFont
+  @objc public var saveButtonTextColor: UIKit.UIColor
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc @objcMembers public class SBUMessageCellTheme : ObjectiveC.NSObject {
+  @objc public static var light: SendBirdUIKit.SBUMessageCellTheme {
+    @objc get
+  }
+  @objc public static var dark: SendBirdUIKit.SBUMessageCellTheme {
+    @objc get
+  }
+  @objc public init(backgroundColor: UIKit.UIColor = SBUColorSet.background100, leftBackgroundColor: UIKit.UIColor = SBUColorSet.background200, rightBackgroundColor: UIKit.UIColor = SBUColorSet.primary300, dateFont: UIKit.UIFont = SBUFontSet.caption1, dateTextColor: UIKit.UIColor = SBUColorSet.ondark01, dateBackgroundColor: UIKit.UIColor = SBUColorSet.overlay02, userPlaceholderBackgroundColor: UIKit.UIColor = SBUColorSet.background300, userPlaceholderTintColor: UIKit.UIColor = SBUColorSet.ondark01, userNameFont: UIKit.UIFont = SBUFontSet.caption1, userNameTextColor: UIKit.UIColor = SBUColorSet.onlight02, timeFont: UIKit.UIFont = SBUFontSet.caption3, timeTextColor: UIKit.UIColor = SBUColorSet.onlight03, pendingStateColor: UIKit.UIColor = SBUColorSet.primary300, failedStateColor: UIKit.UIColor = SBUColorSet.error, succeededStateColor: UIKit.UIColor = SBUColorSet.onlight03, readReceiptStateColor: UIKit.UIColor = SBUColorSet.secondary300, deliveryReceiptStateColor: UIKit.UIColor = SBUColorSet.onlight03, userMessageFont: UIKit.UIFont = SBUFontSet.body1, userMessageLeftTextColor: UIKit.UIColor = SBUColorSet.onlight01, userMessageLeftEditTextColor: UIKit.UIColor = SBUColorSet.onlight02, userMessageRightTextColor: UIKit.UIColor = SBUColorSet.ondark01, userMessageRightEditTextColor: UIKit.UIColor = SBUColorSet.ondark02, fileIconBackgroundColor: UIKit.UIColor = SBUColorSet.background100, fileIconColor: UIKit.UIColor = SBUColorSet.primary300, fileMessageNameFont: UIKit.UIFont = SBUFontSet.body1, fileMessageLeftTextColor: UIKit.UIColor = SBUColorSet.onlight01, fileMessageRightTextColor: UIKit.UIColor = SBUColorSet.ondark01, fileMessagePlaceholderColor: UIKit.UIColor = SBUColorSet.onlight02, adminMessageFont: UIKit.UIFont = SBUFontSet.caption2, adminMessageTextColor: UIKit.UIColor = SBUColorSet.onlight02)
+  @objc public var backgroundColor: UIKit.UIColor
+  @objc public var leftBackgroundColor: UIKit.UIColor
+  @objc public var rightBackgroundColor: UIKit.UIColor
+  @objc public var dateFont: UIKit.UIFont
+  @objc public var dateTextColor: UIKit.UIColor
+  @objc public var dateBackgroundColor: UIKit.UIColor
+  @objc public var userPlaceholderBackgroundColor: UIKit.UIColor
+  @objc public var userPlaceholderTintColor: UIKit.UIColor
+  @objc public var userNameFont: UIKit.UIFont
+  @objc public var userNameTextColor: UIKit.UIColor
+  @objc public var timeFont: UIKit.UIFont
+  @objc public var timeTextColor: UIKit.UIColor
+  @objc public var pendingStateColor: UIKit.UIColor
+  @objc public var failedStateColor: UIKit.UIColor
+  @objc public var succeededStateColor: UIKit.UIColor
+  @objc public var readReceiptStateColor: UIKit.UIColor
+  @objc public var deliveryReceiptStateColor: UIKit.UIColor
+  @objc public var userMessageFont: UIKit.UIFont
+  @objc public var userMessageLeftTextColor: UIKit.UIColor
+  @objc public var userMessageLeftEditTextColor: UIKit.UIColor
+  @objc public var userMessageRightTextColor: UIKit.UIColor
+  @objc public var userMessageRightEditTextColor: UIKit.UIColor
+  @objc public var fileIconBackgroundColor: UIKit.UIColor
+  @objc public var fileIconColor: UIKit.UIColor
+  @objc public var fileMessageNameFont: UIKit.UIFont
+  @objc public var fileMessageLeftTextColor: UIKit.UIColor
+  @objc public var fileMessageRightTextColor: UIKit.UIColor
+  @objc public var fileMessagePlaceholderColor: UIKit.UIColor
+  @objc public var adminMessageFont: UIKit.UIFont
+  @objc public var adminMessageTextColor: UIKit.UIColor
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc @objcMembers public class SBUUserListTheme : ObjectiveC.NSObject {
+  @objc public static var light: SendBirdUIKit.SBUUserListTheme {
+    @objc get
+  }
+  @objc public static var dark: SendBirdUIKit.SBUUserListTheme {
+    @objc get
+  }
+  @objc public init(navigationBarTintColor: UIKit.UIColor = SBUColorSet.background100, navigationShadowColor: UIKit.UIColor = SBUColorSet.onlight04, leftBarButtonTintColor: UIKit.UIColor = SBUColorSet.primary300, rightBarButtonTintColor: UIKit.UIColor = SBUColorSet.onlight04, rightBarButtonSelectedTintColor: UIKit.UIColor = SBUColorSet.primary300, backgroundColor: UIKit.UIColor = SBUColorSet.background100)
+  @objc public var navigationBarTintColor: UIKit.UIColor
+  @objc public var navigationShadowColor: UIKit.UIColor
+  @objc public var leftBarButtonTintColor: UIKit.UIColor
+  @objc public var rightBarButtonTintColor: UIKit.UIColor
+  @objc public var rightBarButtonSelectedTintColor: UIKit.UIColor
+  @objc public var backgroundColor: UIKit.UIColor
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc @objcMembers public class SBUUserCellTheme : ObjectiveC.NSObject {
+  @objc public static var light: SendBirdUIKit.SBUUserCellTheme {
+    @objc get
+  }
+  @objc public static var dark: SendBirdUIKit.SBUUserCellTheme {
+    @objc get
+  }
+  @objc public init(backgroundColor: UIKit.UIColor = SBUColorSet.background100, checkboxOnColor: UIKit.UIColor = SBUColorSet.primary300, checkboxOffColor: UIKit.UIColor = SBUColorSet.background300, userNameTextColor: UIKit.UIColor = SBUColorSet.onlight01, userNameFont: UIKit.UIFont = SBUFontSet.subtitle2, userPlaceholderBackgroundColor: UIKit.UIColor = SBUColorSet.background300, userPlaceholderTintColor: UIKit.UIColor = SBUColorSet.ondark01, separateColor: UIKit.UIColor = SBUColorSet.onlight04)
+  @objc public var backgroundColor: UIKit.UIColor
+  @objc public var checkboxOnColor: UIKit.UIColor
+  @objc public var checkboxOffColor: UIKit.UIColor
+  @objc public var userNameTextColor: UIKit.UIColor
+  @objc public var userNameFont: UIKit.UIFont
+  @objc public var userPlaceholderBackgroundColor: UIKit.UIColor
+  @objc public var userPlaceholderTintColor: UIKit.UIColor
+  @objc public var separateColor: UIKit.UIColor
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc @objcMembers public class SBUChannelSettingsTheme : ObjectiveC.NSObject {
+  @objc public static var light: SendBirdUIKit.SBUChannelSettingsTheme {
+    @objc get
+  }
+  @objc public static var dark: SendBirdUIKit.SBUChannelSettingsTheme {
+    @objc get
+  }
+  @objc public init(navigationBarTintColor: UIKit.UIColor = SBUColorSet.background100, navigationShadowColor: UIKit.UIColor = SBUColorSet.onlight04, leftBarButtonTintColor: UIKit.UIColor = SBUColorSet.primary300, rightBarButtonTintColor: UIKit.UIColor = SBUColorSet.primary300, backgroundColor: UIKit.UIColor = SBUColorSet.background100, cellTextFont: UIKit.UIFont = SBUFontSet.subtitle2, cellTextColor: UIKit.UIColor = SBUColorSet.onlight01, cellSwitchColor: UIKit.UIColor = SBUColorSet.primary300, cellSeparateColor: UIKit.UIColor = SBUColorSet.onlight04, cellNotificationIconColor: UIKit.UIColor = SBUColorSet.primary300, cellMemberIconColor: UIKit.UIColor = SBUColorSet.primary300, cellMemberButtonColor: UIKit.UIColor = SBUColorSet.onlight01, cellLeaveIconColor: UIKit.UIColor = SBUColorSet.error, userNameFont: UIKit.UIFont = SBUFontSet.subtitle1, userNameTextColor: UIKit.UIColor = SBUColorSet.onlight01, itemTextColor: UIKit.UIColor = SBUColorSet.onlight01, itemColor: UIKit.UIColor = SBUColorSet.primary300)
+  @objc public var navigationBarTintColor: UIKit.UIColor
+  @objc public var navigationShadowColor: UIKit.UIColor
+  @objc public var leftBarButtonTintColor: UIKit.UIColor
+  @objc public var rightBarButtonTintColor: UIKit.UIColor
+  @objc public var backgroundColor: UIKit.UIColor
+  @objc public var cellTextFont: UIKit.UIFont
+  @objc public var cellTextColor: UIKit.UIColor
+  @objc public var cellSwitchColor: UIKit.UIColor
+  @objc public var cellSeparateColor: UIKit.UIColor
+  @objc public var cellNotificationIconColor: UIKit.UIColor
+  @objc public var cellMemberIconColor: UIKit.UIColor
+  @objc public var cellMemberButtonColor: UIKit.UIColor
+  @objc public var cellLeaveIconColor: UIKit.UIColor
+  @objc public var userNameFont: UIKit.UIFont
+  @objc public var userNameTextColor: UIKit.UIColor
+  @objc public var itemTextColor: UIKit.UIColor
+  @objc public var itemColor: UIKit.UIColor
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc @objcMembers public class SBUComponentTheme : ObjectiveC.NSObject {
+  @objc public static var light: SendBirdUIKit.SBUComponentTheme {
+    @objc get
+  }
+  @objc public static var dark: SendBirdUIKit.SBUComponentTheme {
+    @objc get
+  }
+  @objc public init(emptyViewBackgroundColor: UIKit.UIColor = SBUColorSet.background100, emptyViewStatusFont: UIKit.UIFont = SBUFontSet.body2, emptyViewStatusTintColor: UIKit.UIColor = SBUColorSet.onlight03, emptyViewRetryButtonTintColor: UIKit.UIColor = SBUColorSet.primary300, emptyViewRetryButtonFont: UIKit.UIFont = SBUFontSet.button2, overlayColor: UIKit.UIColor = SBUColorSet.overlay02, backgroundColor: UIKit.UIColor = SBUColorSet.background100, highlightedColor: UIKit.UIColor = SBUColorSet.background200, buttonTextColor: UIKit.UIColor = SBUColorSet.primary300, separatorColor: UIKit.UIColor = SBUColorSet.onlight04, shadowColor: UIKit.UIColor = SBUColorSet.background700, alertTitleColor: UIKit.UIColor = SBUColorSet.onlight01, alertTitleFont: UIKit.UIFont = SBUFontSet.h2, alertDetailColor: UIKit.UIColor = SBUColorSet.onlight02, alertDetailFont: UIKit.UIFont = SBUFontSet.body2, alertPlaceholderColor: UIKit.UIColor = SBUColorSet.onlight03, alertButtonColor: UIKit.UIColor = SBUColorSet.primary300, alertErrorColor: UIKit.UIColor = SBUColorSet.error, alertButtonFont: UIKit.UIFont = SBUFontSet.button2, alertTextFieldBackgroundColor: UIKit.UIColor = SBUColorSet.background200, alertTextFieldTintColor: UIKit.UIColor = SBUColorSet.primary300, alertTextFieldFont: UIKit.UIFont = SBUFontSet.body2, actionSheetTextFont: UIKit.UIFont = SBUFontSet.subtitle1, actionSheetTextColor: UIKit.UIColor = SBUColorSet.onlight01, actionSheetItemColor: UIKit.UIColor = SBUColorSet.primary300, actionSheetErrorColor: UIKit.UIColor = SBUColorSet.error, actionSheetButtonFont: UIKit.UIFont = SBUFontSet.button1, newMessageFont: UIKit.UIFont = SBUFontSet.caption1, newMessageTintColor: UIKit.UIColor = SBUColorSet.primary300, newMessageBackground: UIKit.UIColor = SBUColorSet.background100, newMessageHighlighted: UIKit.UIColor = SBUColorSet.background200, titleOnlineStateColor: UIKit.UIColor = SBUColorSet.secondary300, titleColor: UIKit.UIColor = SBUColorSet.onlight01, titleFont: UIKit.UIFont = SBUFontSet.h2, titleStatusColor: UIKit.UIColor = SBUColorSet.onlight03, titleStatusFont: UIKit.UIFont = SBUFontSet.caption2, menuTitleFont: UIKit.UIFont = SBUFontSet.subtitle2, userPlaceholderBackgroundColor: UIKit.UIColor = SBUColorSet.background300, userPlaceholderTintColor: UIKit.UIColor = SBUColorSet.ondark01)
+  @objc public var emptyViewBackgroundColor: UIKit.UIColor
+  @objc public var emptyViewStatusFont: UIKit.UIFont
+  @objc public var emptyViewStatusTintColor: UIKit.UIColor
+  @objc public var emptyViewRetryButtonTintColor: UIKit.UIColor
+  @objc public var emptyViewRetryButtonFont: UIKit.UIFont
+  @objc public var alertTitleColor: UIKit.UIColor
+  @objc public var alertTitleFont: UIKit.UIFont
+  @objc public var alertDetailColor: UIKit.UIColor
+  @objc public var alertDetailFont: UIKit.UIFont
+  @objc public var alertPlaceholderColor: UIKit.UIColor
+  @objc public var alertButtonColor: UIKit.UIColor
+  @objc public var alertErrorColor: UIKit.UIColor
+  @objc public var alertButtonFont: UIKit.UIFont
+  @objc public var alertTextFieldBackgroundColor: UIKit.UIColor
+  @objc public var alertTextFieldTintColor: UIKit.UIColor
+  @objc public var alertTextFieldFont: UIKit.UIFont
+  @objc public var actionSheetTextFont: UIKit.UIFont
+  @objc public var actionSheetTextColor: UIKit.UIColor
+  @objc public var actionSheetItemColor: UIKit.UIColor
+  @objc public var actionSheetErrorColor: UIKit.UIColor
+  @objc public var actionSheetButtonFont: UIKit.UIFont
+  @objc public var newMessageFont: UIKit.UIFont
+  @objc public var newMessageTintColor: UIKit.UIColor
+  @objc public var newMessageBackground: UIKit.UIColor
+  @objc public var newMessageHighlighted: UIKit.UIColor
+  @objc public var titleOnlineStateColor: UIKit.UIColor
+  @objc public var titleColor: UIKit.UIColor
+  @objc public var titleFont: UIKit.UIFont
+  @objc public var titleStatusColor: UIKit.UIColor
+  @objc public var titleStatusFont: UIKit.UIFont
+  @objc public var menuTitleFont: UIKit.UIFont
+  @objc public var overlayColor: UIKit.UIColor
+  @objc public var backgroundColor: UIKit.UIColor
+  @objc public var highlightedColor: UIKit.UIColor
+  @objc public var buttonTextColor: UIKit.UIColor
+  @objc public var separatorColor: UIKit.UIColor
+  @objc public var shadowColor: UIKit.UIColor
+  @objc public var userPlaceholderBackgroundColor: UIKit.UIColor
+  @objc public var userPlaceholderTintColor: UIKit.UIColor
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc @objcMembers @IBDesignable public class SBUFileMessageCell : SendBirdUIKit.SBUMessageBaseCell {
+  @objc public var userNameStackView: UIKit.UIStackView {
+    @objc get
+    @objc set
+  }
+  @objc public var contentsStackView: UIKit.UIStackView {
+    @objc get
+    @objc set
+  }
+  @objc public var userNameView: UIKit.UIView {
+    @objc get
+    @objc set
+  }
+  @objc public var profileView: UIKit.UIView {
+    @objc get
+    @objc set
+  }
+  @objc public var stateView: UIKit.UIView {
+    @objc get
+    @objc set
+  }
+  @objc override open func setupViews()
+  @objc override open func setupAutolayout()
+  @objc override open func setupActions()
+  @objc public func configure(_ message: SendBirdSDK.SBDFileMessage, hideDateView: Swift.Bool, receiptState: SendBirdUIKit.SBUMessageReceiptState)
+  public func setImage(_ image: UIKit.UIImage?, size: CoreGraphics.CGSize? = nil)
+  @objc override dynamic open func setSelected(_ selected: Swift.Bool, animated: Swift.Bool)
+  @objc open func onLongPressContentView(sender: UIKit.UILongPressGestureRecognizer)
+  @objc open func onTapContentView(sender: UIKit.UITapGestureRecognizer)
+  @objc open func onTapProfileImageView(sender: UIKit.UITapGestureRecognizer)
+  @objc override dynamic public init(style: UIKit.UITableViewCell.CellStyle, reuseIdentifier: Swift.String?)
+  @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc deinit
+}
+@objc @objcMembers open class SBUMemberListViewController : UIKit.UIViewController, UIKit.UITableViewDelegate, UIKit.UITableViewDataSource {
+  @available(*, unavailable, renamed: "SBUMemberListViewController.init(channelUrl:)")
+  @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc public init(channel: SendBirdSDK.SBDGroupChannel)
+  @objc public init(channelUrl: Swift.String)
+  @objc override dynamic open func loadView()
+  @objc open func setupAutolayout()
+  @objc open func setupStyles()
+  @objc override dynamic open func viewDidLoad()
+  @objc override dynamic open func viewDidLayoutSubviews()
+  @objc override dynamic open func viewWillAppear(_ animated: Swift.Bool)
+  @objc open func showInviteUser()
+  @objc public func loadChannel(channelUrl: Swift.String?)
+  @objc open func onClickInviteUser()
+  @objc public func tableView(_ tableView: UIKit.UITableView, numberOfRowsInSection section: Swift.Int) -> Swift.Int
+  @objc public func tableView(_ tableView: UIKit.UITableView, cellForRowAt indexPath: Foundation.IndexPath) -> UIKit.UITableViewCell
+  @objc open func didReceiveError(_ message: Swift.String?)
+  @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
+  @objc deinit
+}
+public struct DiskCache {
+  public init()
+  public func get(key: Swift.String) -> Foundation.NSData?
+  public func set(key: Swift.String, data: Foundation.NSData)
+  public func remove(key: Swift.String)
+  public func removeAll()
+}
+extension SendBirdUIKit.MemberListType : Swift.Equatable {}
+extension SendBirdUIKit.MemberListType : Swift.Hashable {}
+extension SendBirdUIKit.MemberListType : Swift.RawRepresentable {}
+extension SendBirdUIKit.EmptyViewType : Swift.Equatable {}
+extension SendBirdUIKit.EmptyViewType : Swift.Hashable {}
+extension SendBirdUIKit.EmptyViewType : Swift.RawRepresentable {}
+extension SendBirdUIKit.MediaResourceType : Swift.Hashable {}
+extension SendBirdUIKit.MediaResourceType : Swift.RawRepresentable {}
+extension SendBirdUIKit.ChannelEditType : Swift.Equatable {}
+extension SendBirdUIKit.ChannelEditType : Swift.Hashable {}
+extension SendBirdUIKit.ChannelEditType : Swift.RawRepresentable {}
+extension SendBirdUIKit.MessagePosition : Swift.Hashable {}
+extension SendBirdUIKit.MessagePosition : Swift.RawRepresentable {}
+extension SendBirdUIKit.MessageFileType : Swift.Hashable {}
+extension SendBirdUIKit.MessageFileType : Swift.RawRepresentable {}
+extension SendBirdUIKit.SBUMessageReceiptState : Swift.Equatable {}
+extension SendBirdUIKit.SBUMessageReceiptState : Swift.Hashable {}
+extension SendBirdUIKit.SBUMessageReceiptState : Swift.RawRepresentable {}
+extension SendBirdUIKit.MessageEditItem : Swift.Equatable {}
+extension SendBirdUIKit.MessageEditItem : Swift.Hashable {}
+extension SendBirdUIKit.MessageEditItem : Swift.RawRepresentable {}
+extension SendBirdUIKit.FailedMessageOption : Swift.Equatable {}
+extension SendBirdUIKit.FailedMessageOption : Swift.Hashable {}
+extension SendBirdUIKit.FailedMessageOption : Swift.RawRepresentable {}
