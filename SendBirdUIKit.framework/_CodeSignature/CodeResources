@@ -6,7 +6,7 @@
 	<dict>
 		<key>Assets.car</key>
 		<data>
-		sHx0UrvRpwudDnJXQiAKpGp7WAA=
+		W8zjgDgFG3GhbjjA6dp5hmP//lk=
 		</data>
 		<key>Headers/SBUBaseChannelCell.swift</key>
 		<data>
@@ -174,35 +174,35 @@
 		</data>
 		<key>SBUChannelSettingCell.nib/objects-11.0+.nib</key>
 		<data>
-		O5JoZpA9NaaLUiu5XoFEF51l2Rk=
+		+56xwY848zNe9CoSKwWMDOFLEE8=
 		</data>
 		<key>SBUChannelSettingCell.nib/objects-13.0+.nib</key>
 		<data>
-		9pPrVibBMMAGB1uzHA+CohiIZNA=
+		hRJKoF4tcfctP4B/9qFoiHyIIMg=
 		</data>
 		<key>SBUChannelSettingCell.nib/runtime.nib</key>
 		<data>
-		YdYVhgKB7TjGF0YHDxdwBfSivbY=
+		cDtB9Y4zxZ9MWFPMJt3yaQ8ytfo=
 		</data>
 		<key>SBUMessageInputView.nib/objects-11.0+.nib</key>
 		<data>
-		qxQfpMOcGyFONBEnfFZKbrD5g8c=
+		EqkTifdhPc8I9wHILWFa9A2YcGk=
 		</data>
 		<key>SBUMessageInputView.nib/objects-13.0+.nib</key>
 		<data>
-		CQJndsBUgjBMXMmdxuhSgwsb3q8=
+		hcgvVhpHs8SLQXIsOGx9ajG/G88=
 		</data>
 		<key>SBUMessageInputView.nib/runtime.nib</key>
 		<data>
-		fM3b3TE9w5aSUlD/wInNf6tA4LY=
+		UFAwSB2A3zFjskX4nMxwoIjcRL8=
 		</data>
 		<key>SBUUserCell.nib/objects-13.0+.nib</key>
 		<data>
-		XyZDztd2TnezmZ3Kc6tGSt3yWL4=
+		/SDGPMO7KAXjv27ilyEvu4+34j4=
 		</data>
 		<key>SBUUserCell.nib/runtime.nib</key>
 		<data>
-		q9eX0Eca7axOyguvxDe16f7dnzg=
+		5LVZM8DnjeZqwC83vnW9kyGpFL8=
 		</data>
 	</dict>
 	<key>files2</key>
@@ -211,11 +211,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			sHx0UrvRpwudDnJXQiAKpGp7WAA=
+			W8zjgDgFG3GhbjjA6dp5hmP//lk=
 			</data>
 			<key>hash2</key>
 			<data>
-			lJXFAm7Rut2eExEv42Brrn+qV8jPi/ZmOskFF9Uiukk=
+			xLO7INA6LFV2vJ09Ca7x6hQqkAi10ldwlHoVFRCae04=
 			</data>
 		</dict>
 		<key>Headers/SBUBaseChannelCell.swift</key>
@@ -662,88 +662,88 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			O5JoZpA9NaaLUiu5XoFEF51l2Rk=
+			+56xwY848zNe9CoSKwWMDOFLEE8=
 			</data>
 			<key>hash2</key>
 			<data>
-			KCa+13tE6o9J8UTQaoQbNWbQAv3Fyd2SI/kNuw2fpbU=
+			ExBA19L8a9Jr/bKgFzcEaneRQJ179dHDqivLqt6W8ys=
 			</data>
 		</dict>
 		<key>SBUChannelSettingCell.nib/objects-13.0+.nib</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			9pPrVibBMMAGB1uzHA+CohiIZNA=
+			hRJKoF4tcfctP4B/9qFoiHyIIMg=
 			</data>
 			<key>hash2</key>
 			<data>
-			V9YfBopk6kxNcUlL6k7HMtMJwrjanOfNXB4Ovsq5N8E=
+			/8YTV0GeOR0hREOzKYtPRIlFzArB4yCVS32B8gWYfCo=
 			</data>
 		</dict>
 		<key>SBUChannelSettingCell.nib/runtime.nib</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			YdYVhgKB7TjGF0YHDxdwBfSivbY=
+			cDtB9Y4zxZ9MWFPMJt3yaQ8ytfo=
 			</data>
 			<key>hash2</key>
 			<data>
-			huTitEXc3jpX9ZSedKuze070qXrSScINJ/FH3nRFNmg=
+			GFM9IRnjN6SGXSxNPRedz+nhsETTGZPtUd3Wp0VEKNU=
 			</data>
 		</dict>
 		<key>SBUMessageInputView.nib/objects-11.0+.nib</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			qxQfpMOcGyFONBEnfFZKbrD5g8c=
+			EqkTifdhPc8I9wHILWFa9A2YcGk=
 			</data>
 			<key>hash2</key>
 			<data>
-			0ChxCWegSf5iCyisCtrKkXBnV98i/eff/zDBogzMCmI=
+			pPyTaZFLtgfYgBpSEyjXkrEWNOdPcOBH5cWBIRXFg6Q=
 			</data>
 		</dict>
 		<key>SBUMessageInputView.nib/objects-13.0+.nib</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			CQJndsBUgjBMXMmdxuhSgwsb3q8=
+			hcgvVhpHs8SLQXIsOGx9ajG/G88=
 			</data>
 			<key>hash2</key>
 			<data>
-			/HX/teyEsO+/vFxoZ4d1e2uO9L5CgO12h1wqjD5jPgM=
+			glAA71eqvn47/FA16FoIIVnZ8ZwhmExCGMOB0oCUxFo=
 			</data>
 		</dict>
 		<key>SBUMessageInputView.nib/runtime.nib</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			fM3b3TE9w5aSUlD/wInNf6tA4LY=
+			UFAwSB2A3zFjskX4nMxwoIjcRL8=
 			</data>
 			<key>hash2</key>
 			<data>
-			w0YA4M7kO+ZNlu8sGtn5ouqMAEBusPcBBI164roRCxQ=
+			nShUQCZ9JKg/PbCxRnqWl6Lp8YpHUOEKP0HUupC2dbY=
 			</data>
 		</dict>
 		<key>SBUUserCell.nib/objects-13.0+.nib</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			XyZDztd2TnezmZ3Kc6tGSt3yWL4=
+			/SDGPMO7KAXjv27ilyEvu4+34j4=
 			</data>
 			<key>hash2</key>
 			<data>
-			eh5JbktD+au5kxH7vhGBsriNo1nOdnBBzuTc6nBzOiY=
+			EXmO5IinK9zmPsvxWz/hn82Fs5l/rsGuM5HiocLE1FY=
 			</data>
 		</dict>
 		<key>SBUUserCell.nib/runtime.nib</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			q9eX0Eca7axOyguvxDe16f7dnzg=
+			5LVZM8DnjeZqwC83vnW9kyGpFL8=
 			</data>
 			<key>hash2</key>
 			<data>
-			MGRiD6YoxbDp9i5+0OSpI7QpVAg9SCRZ67XAcAfL9aw=
+			MT7gJxXrS/Vdp6jttYiTV84OJ2rj8FQ7F4D2X4PMWPQ=
 			</data>
 		</dict>
 	</dict>
