@@ -44,3 +44,8 @@ Now you can see installed SendBird UIKit framework by inspecting YOUR_PROJECT.xc
 1. Add `github "sendbird/sendbird-uikit-ios"` to your `Cartfile`.
 2. Run `carthage update`.
 3. Go to your Xcode project's "General" settings. Open `<YOUR_XCODE_PROJECT_DIRECTORY>/Carthage/Build/iOS` in Finder and drag `SendBirdUIKit.framework` to the "Embedded Binaries" section in Xcode. Make sure `Copy items if needed` is selected and click `Finish`.
+
+## Sample
+For a sample of uikit, please check the repository below.
+
+[SendBird-iOS Sample](https://github.com/sendbird/SendBird-iOS)
