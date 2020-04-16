@@ -3,7 +3,7 @@
 //  SendBirdUIKit
 //
 //  Created by Tez Park on 03/02/2020.
-//  Copyright © 2020 Tez Park. All rights reserved.
+//  Copyright © 2020 SendBird, Inc. All rights reserved.
 //
 
 import UIKit
@@ -13,16 +13,16 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
     
     // MARK: - Public property
     // for UI
-    var theme: SBUChannelListTheme = SBUTheme.channelListTheme
+    public lazy var leftBarButton: UIBarButtonItem? = _leftBarButton
+    public lazy var rightBarButton: UIBarButtonItem? = _rightBarButton
 
     
     // MARK: - Private property
     // for UI
+    var theme: SBUChannelListTheme = SBUTheme.channelListTheme
+
     private lazy var titleView: SBUNavigationTitleView = _titleView
-    private lazy var leftBarButton: UIBarButtonItem = _leftBarButton
-    private lazy var rightBarButton: UIBarButtonItem = _rightBarButton
     private var tableView = UITableView()
-    
     private lazy var _titleView: SBUNavigationTitleView = {
         let titleView = SBUNavigationTitleView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 50))
         titleView.text = SBUStringSet.ChannelList_Header_Title
@@ -112,11 +112,11 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
         self.navigationController?.navigationBar.shadowImage = UIImage.from(color: theme.navigationBarShadowColor)
 
         self.view.backgroundColor = theme.backgroundColor
-        self.leftBarButton.image = SBUIconSet.iconBack
-        self.leftBarButton.tintColor = theme.leftBarButtonTintColor
+        self.leftBarButton?.image = SBUIconSet.iconBack
+        self.leftBarButton?.tintColor = theme.leftBarButtonTintColor
        
-        self.rightBarButton.image = SBUIconSet.iconCreate
-        self.rightBarButton.tintColor = theme.rightBarButtonTintColor
+        self.rightBarButton?.image = SBUIconSet.iconCreate
+        self.rightBarButton?.tintColor = theme.rightBarButtonTintColor
         
         self.view.backgroundColor = theme.backgroundColor
         self.tableView.backgroundColor = theme.backgroundColor
@@ -127,10 +127,14 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
         
         self.setupStyles()
     }
-    
+
+    open override var preferredStatusBarStyle: UIStatusBarStyle {
+        return theme.statusBarStyle
+    }
+
     open override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
         
         SBUMain.connectionCheck { [weak self] user, error in
@@ -147,12 +151,13 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
     
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.setNeedsStatusBarAppearanceUpdate()
         self.setupStyles()
-        
+
         if self.isLoading { return }
         self.loadChannelChangeLogs(hasMore: true, token: self.lastUpdatedToken)
     }
-    
+
     deinit {
         SBDMain.removeChannelDelegate(forIdentifier: self.description)
         SBDMain.removeConnectionDelegate(forIdentifier: self.description)

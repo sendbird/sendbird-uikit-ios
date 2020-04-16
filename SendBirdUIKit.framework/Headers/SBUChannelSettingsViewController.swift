@@ -3,7 +3,7 @@
 //  SendBirdUIKit
 //
 //  Created by Tez Park on 05/02/2020.
-//  Copyright © 2020 Tez Park. All rights reserved.
+//  Copyright © 2020 SendBird, Inc. All rights reserved.
 //
 
 import UIKit
@@ -15,14 +15,14 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
     
     // MARK: - Public property
     public var channelName: String? = nil
+    public lazy var leftBarButton: UIBarButtonItem? = _leftBarButton
+    public lazy var rightBarButton: UIBarButtonItem? = _rightBarButton
     
     
     // MARK: - Private property
     var theme: SBUChannelSettingsTheme = SBUTheme.channelSettingsTheme
 
     private lazy var titleView: SBUNavigationTitleView = _titleView
-    private lazy var leftBarButton: UIBarButtonItem = _leftBarButton
-    private lazy var rightBarButton: UIBarButtonItem = _rightBarButton
     private lazy var userInfoView: UIView = _userInfoView
     private lazy var tableView = UITableView()
     
@@ -136,8 +136,8 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
         self.navigationController?.navigationBar.barTintColor = theme.navigationBarTintColor
         self.navigationController?.navigationBar.shadowImage = .from(color: theme.navigationShadowColor)
 
-        self.leftBarButton.tintColor = theme.leftBarButtonTintColor
-        self.rightBarButton.tintColor = theme.rightBarButtonTintColor
+        self.leftBarButton?.tintColor = theme.leftBarButtonTintColor
+        self.rightBarButton?.tintColor = theme.rightBarButtonTintColor
         
         self.view.backgroundColor = theme.backgroundColor
         self.tableView.backgroundColor = theme.backgroundColor
@@ -147,6 +147,10 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
         super.viewDidLayoutSubviews()
         
         self.setupStyles()
+    }
+
+    open override var preferredStatusBarStyle: UIStatusBarStyle {
+        return theme.statusBarStyle
     }
 
     open override func viewDidLoad() {
@@ -161,6 +165,7 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
 
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.setNeedsStatusBarAppearanceUpdate()
         self.setupStyles()
     }
     

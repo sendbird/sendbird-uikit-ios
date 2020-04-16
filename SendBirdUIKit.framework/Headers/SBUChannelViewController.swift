@@ -3,7 +3,7 @@
 //  SendBirdUIKit
 //
 //  Created by Tez Park on 03/02/2020.
-//  Copyright © 2020 Tez Park. All rights reserved.
+//  Copyright © 2020 SendBird, Inc. All rights reserved.
 //
 
 import UIKit
@@ -22,14 +22,15 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
     public lazy var messageInputView: SBUMessageInputView = _messageInputView
     public lazy var newMessageInfoView: SBUNewMessageInfo = _newMessageInfoView
 
+    public lazy var leftBarButton: UIBarButtonItem? = _leftBarButton
+    public lazy var rightBarButton: UIBarButtonItem? = _rightBarButton
+    
   
     // MARK: - Private property
     // for UI
     var theme: SBUChannelTheme = SBUTheme.channelTheme
 
     private lazy var titleView: SBUChannelTitleView = _titleView
-    private lazy var leftBarButton: UIBarButtonItem = _leftBarButton
-    private lazy var rightBarButton: UIBarButtonItem = _rightBarButton
     private lazy var tableView = UITableView()
 
     private lazy var _titleView: SBUChannelTitleView = {
@@ -100,10 +101,10 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
 
 
     // for cell
-    var adminMessageCell: SBUMessageBaseCell?
-    var userMessageCell: SBUMessageBaseCell?
-    var fileMessageCell: SBUMessageBaseCell?
-    var customMessageCell: SBUMessageBaseCell?
+    var adminMessageCell: SBUBaseMessageCell?
+    var userMessageCell: SBUBaseMessageCell?
+    var fileMessageCell: SBUBaseMessageCell?
+    var customMessageCell: SBUBaseMessageCell?
   
   
     // MARK: - Lifecycle
@@ -161,6 +162,7 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         self.tableView.bounces = false
         self.tableView.alwaysBounceVertical = false
         self.tableView.separatorStyle = .none
+        self.tableView.allowsSelection = false
 
         if self.adminMessageCell == nil {
             self.register(adminMessageCell: SBUAdminMessageCell())
@@ -224,11 +226,11 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         self.navigationController?.navigationBar.barTintColor = theme.navigationBarTintColor
         self.navigationController?.navigationBar.shadowImage = .from(color: theme.navigationBarShadowColor)
         
-        self.leftBarButton.image = SBUIconSet.iconBack
-        self.leftBarButton.tintColor = theme.leftBarButtonTintColor
+        self.leftBarButton?.image = SBUIconSet.iconBack
+        self.leftBarButton?.tintColor = theme.leftBarButtonTintColor
         
-        self.rightBarButton.image = SBUIconSet.iconInfo
-        self.rightBarButton.tintColor = theme.rightBarButtonTintColor
+        self.rightBarButton?.image = SBUIconSet.iconInfo
+        self.rightBarButton?.tintColor = theme.rightBarButtonTintColor
         
         self.view.backgroundColor = theme.backgroundColor
         self.tableView.backgroundColor = theme.backgroundColor
@@ -241,9 +243,12 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         self.setupStyles()
     }
 
+    open override var preferredStatusBarStyle: UIStatusBarStyle {
+        return theme.statusBarStyle
+    }
+
     open override func viewDidLoad() {
         super.viewDidLoad()
-
         self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
         
         SBDMain.add(self as SBDChannelDelegate, identifier: self.description)
@@ -258,6 +263,7 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
     
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.setNeedsStatusBarAppearanceUpdate()
         self.setupStyles()
 
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -900,7 +906,7 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
     
     
     // MARK: - UITableView relations
-    public func register(adminMessageCell: SBUMessageBaseCell, nib: UINib? = nil) {
+    public func register(adminMessageCell: SBUBaseMessageCell, nib: UINib? = nil) {
         self.adminMessageCell = adminMessageCell
         if let nib = nib {
             self.tableView.register(nib, forCellReuseIdentifier: adminMessageCell.className)
@@ -909,7 +915,7 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         }
     }
 
-    public func register(userMessageCell: SBUMessageBaseCell, nib: UINib? = nil) {
+    public func register(userMessageCell: SBUBaseMessageCell, nib: UINib? = nil) {
         self.userMessageCell = userMessageCell
         if let nib = nib {
             self.tableView.register(nib, forCellReuseIdentifier: userMessageCell.className)
@@ -918,7 +924,7 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         }
     }
 
-    public func register(fileMessageCell: SBUMessageBaseCell, nib: UINib? = nil) {
+    public func register(fileMessageCell: SBUBaseMessageCell, nib: UINib? = nil) {
         self.fileMessageCell = fileMessageCell
         if let nib = nib {
             self.tableView.register(nib, forCellReuseIdentifier: fileMessageCell.className)
@@ -927,7 +933,7 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         }
     }
 
-    public func register(customMessageCell: SBUMessageBaseCell?, nib: UINib? = nil) {
+    public func register(customMessageCell: SBUBaseMessageCell?, nib: UINib? = nil) {
         self.customMessageCell = customMessageCell
         guard let customMessageCell = customMessageCell else { return }
         if let nib = nib {
@@ -964,7 +970,7 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         cell.contentView.transform = CGAffineTransform(scaleX: 1, y: -1)
         cell.selectionStyle = .none
         
-        guard let messageCell = cell as? SBUMessageBaseCell else {
+        guard let messageCell = cell as? SBUBaseMessageCell else {
             self.didReceiveError("There are no message cells!")
             return cell
         }
@@ -989,12 +995,6 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
                                       receiptState: SBUUtils.getReceiptState(channel: channel, message: message))
             
             self.setFileMessageCell(fileMessageCell, fileMessage: fileMessage, indexPath: indexPath)
-            
-            //// If you want to use transfer progress, check this out.
-            // var progress: CGFloat = 0.0
-            // if let requestId = fileMessage.requestId {
-            //     progress = self.fileTransferProgress[requestId] ?? 100.0
-            // }
             
         default:
             messageCell.configure(message: message,
@@ -1039,147 +1039,15 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
     
     // MARK: - Cell generator
     func setUserMessageCell(_ cell: SBUUserMessageCell, userMessage: SBDUserMessage, indexPath: IndexPath) {
+        self.setTapGestureHandler(cell, message: userMessage)
         
-        weak var weakCell = cell
-        guard let cell = weakCell else { return }
-        
-        weak var weakUserMessage = userMessage
-        guard let userMessage = weakUserMessage else { return }
-
-        // Tap action
-        cell.tapHandlerToContent = { [weak self] in
-            self?.dismissKeyboard()
-            
-            if userMessage.sendingStatus == .failed, userMessage.sender?.userId == SBUGlobals.CurrentUser?.userId {
-                let retryItem = SBUActionSheetItem(title: SBUStringSet.Retry) {
-                    self?.resendMessage(failedMessage: userMessage)
-                }
-                let removeItem = SBUActionSheetItem(title: SBUStringSet.Remove, color: self?.theme.removeItemColor) {
-                    self?.deleteResendableMessages(requestIds: [userMessage.requestId ?? ""], needReload: true)
-                }
-                let cancelItem = SBUActionSheetItem(title: SBUStringSet.Cancel, color: self?.theme.cancelItemColor)
-                SBUActionSheet.show(items: [retryItem, removeItem], cancelItem: cancelItem)
-            }
-        }
-        // Long Press Action
-        cell.longPressHandlerToContent = { [weak self] in
-            guard let self = self else { return }
-            self.dismissKeyboard()
-            
-            let copyItem = SBUMenuItem(title: SBUStringSet.Copy, color: self.theme.menuTextColor, image: SBUIconSet.iconCopy) {
-                let pasteboard = UIPasteboard.general
-                pasteboard.string = userMessage.message
-                SBUMenuView.dismiss()
-            }
-            
-            let editItem = SBUMenuItem(title: SBUStringSet.Edit, color: self.theme.menuTextColor, image: SBUIconSet.iconEdit) {
-                self.inEditingMessage = userMessage
-                self.messageInputView.startEditMode(text: userMessage.message ?? "")
-                SBUMenuView.dismiss()
-            }
-            
-            let deleteItem = SBUMenuItem(title: SBUStringSet.Delete, color: self.theme.menuTextColor, image: SBUIconSet.iconDelete) {
-                self.removeMessage(message: userMessage)
-                SBUMenuView.dismiss()
-            }
-            
-            let menuPoint = self.calculatorMenuPoint(indexPath: indexPath, position: cell.position)
-            let isCurrentUser = userMessage.sender?.userId == SBUGlobals.CurrentUser?.userId
-
-            if isCurrentUser {
-                SBUMenuView.show(items: [copyItem, editItem, deleteItem], point: menuPoint)
-            } else {
-                SBUMenuView.show(items: [copyItem], point: menuPoint)
-            }
-        }
+        self.setLongTabGestureHandler(cell, message: userMessage, indexPath: indexPath)
     }
     
     func setFileMessageCell(_ cell: SBUFileMessageCell, fileMessage: SBDFileMessage, indexPath: IndexPath) {
-        weak var weakCell = cell
-        guard let cell = weakCell else { return }
+        self.setTapGestureHandler(cell, message: fileMessage)
 
-        weak var weakFileMessage = fileMessage
-        guard let fileMessage = weakFileMessage else { return }
-        
-        // Tap action
-        cell.tapHandlerToContent = { [weak self] in
-            self?.dismissKeyboard()
-            
-            switch SBUUtils.getFileType(by: fileMessage) {
-                
-            case _ where fileMessage.sendingStatus == .pending:
-                break
-
-            case _ where fileMessage.sendingStatus == .failed:
-                if fileMessage.sender?.userId == SBUGlobals.CurrentUser?.userId {
-                    let retryItem = SBUActionSheetItem(title: SBUStringSet.Retry) {
-                        self?.resendMessage(failedMessage: fileMessage)
-                    }
-                    let removeItem = SBUActionSheetItem(title: SBUStringSet.Remove, color: self?.theme.alertRemoveColor) {
-                        self?.deleteResendableMessages(requestIds: [fileMessage.requestId ?? ""], needReload: true)
-                    }
-                    let cancelItem = SBUActionSheetItem(title: SBUStringSet.Cancel, color: self?.theme.alertCancelColor)
-                    SBUActionSheet.show(items: [retryItem, removeItem], cancelItem: cancelItem)
-                }
-                
-            case .image:
-                let viewer = SBUFileViewer(fileMessage: fileMessage, delegate: self)
-                let naviVC = UINavigationController(rootViewController: viewer)
-                self?.present(naviVC, animated: true)
-                
-            case .etc, .pdf:
-                guard let url = URL(string: fileMessage.url) else { return }
-                let safariVC = SFSafariViewController(url: url)
-                self?.present(safariVC, animated: true, completion: nil)
-                
-            case .video, .audio:
-                guard let url = URL(string: fileMessage.url) else { return }
-                let vc = AVPlayerViewController()
-                vc.player = AVPlayer(url: url)
-                self?.present(vc, animated: true) { vc.player?.play() }
-                
-            }
-        }
-        
-        // Long Press Action
-        cell.longPressHandlerToContent = { [weak self] in
-            guard let self = self else { return }
-            self.dismissKeyboard()
-            
-            let saveItem = SBUMenuItem(title: SBUStringSet.Save, color: self.theme.menuTextColor, image: SBUIconSet.iconDownload) {
-                SBUDownloadManager.saveFile(with: fileMessage, parent: self)
-                SBUMenuView.dismiss()
-                
-            }
-            let deleteItem = SBUMenuItem(title: SBUStringSet.Delete, color: self.theme.menuTextColor, image: SBUIconSet.iconDelete) {
-                self.removeMessage(message: fileMessage)
-                SBUMenuView.dismiss()
-            }
-            
-            let menuPoint = self.calculatorMenuPoint(indexPath: indexPath, position: cell.position)
-            
-            switch fileMessage.sendingStatus {
-            case .succeeded:
-                let isCurrentUser = fileMessage.sender?.userId == SBUGlobals.CurrentUser?.userId
-                if isCurrentUser {
-                    SBUMenuView.show(items: [saveItem, deleteItem], point: menuPoint)
-                } else {
-                    SBUMenuView.show(items: [saveItem], point: menuPoint)
-                }
-                
-            case .none:
-                break
-            case .pending:
-                break
-            case .failed:
-                break
-            case .canceled:
-                break
-                
-            @unknown default:
-                break
-            }
-        }
+        self.setLongTabGestureHandler(cell, message: fileMessage, indexPath: indexPath)
         
         switch fileMessage.sendingStatus {
         case .canceled, .pending, .failed, .none:
@@ -1216,6 +1084,158 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         let menuPoint = CGPoint(x: originX, y: (rowRectInSuperview.origin.y))
         
         return menuPoint
+    }
+    
+    
+    // MARK: - Cell TapHandler
+    
+    /// This function sets the cell's tap gesture handling.
+    /// - Parameters:
+    ///   - cell: Message cell object
+    ///   - message: Message object
+    open func setTapGestureHandler(_ cell: SBUBaseMessageCell, message: SBDBaseMessage) {
+        cell.tapHandlerToContent = { [weak self] in
+            guard let self = self else { return }
+
+            self.dismissKeyboard()
+            
+            switch message {
+            case let userMessage as SBDUserMessage:
+                // User message type
+                if userMessage.sendingStatus == .failed, userMessage.sender?.userId == SBUGlobals.CurrentUser?.userId {
+                    let retryItem = SBUActionSheetItem(title: SBUStringSet.Retry) {
+                        self.resendMessage(failedMessage: userMessage)
+                    }
+                    let removeItem = SBUActionSheetItem(title: SBUStringSet.Remove, color: self.theme.removeItemColor) {
+                        self.deleteResendableMessages(requestIds: [userMessage.requestId ?? ""], needReload: true)
+                    }
+                    let cancelItem = SBUActionSheetItem(title: SBUStringSet.Cancel, color: self.theme.cancelItemColor)
+                    SBUActionSheet.show(items: [retryItem, removeItem], cancelItem: cancelItem)
+                }
+            case let fileMessage as SBDFileMessage:
+                // File message type
+                switch fileMessage.sendingStatus {
+                case .pending:
+                    break
+                case .failed:
+                    if fileMessage.sender?.userId == SBUGlobals.CurrentUser?.userId {
+                        let retryItem = SBUActionSheetItem(title: SBUStringSet.Retry) {
+                            self.resendMessage(failedMessage: fileMessage)
+                        }
+                        let removeItem = SBUActionSheetItem(title: SBUStringSet.Remove, color: self.theme.alertRemoveColor) {
+                            self.deleteResendableMessages(requestIds: [fileMessage.requestId ?? ""], needReload: true)
+                        }
+                        let cancelItem = SBUActionSheetItem(title: SBUStringSet.Cancel, color: self.theme.alertCancelColor)
+                        SBUActionSheet.show(items: [retryItem, removeItem], cancelItem: cancelItem)
+                    }
+                case .succeeded:
+                    switch SBUUtils.getFileType(by: fileMessage) {
+                    case .image:
+                        let viewer = SBUFileViewer(fileMessage: fileMessage, delegate: self)
+                        let naviVC = UINavigationController(rootViewController: viewer)
+                        self.present(naviVC, animated: true)
+                    case .etc, .pdf:
+                        guard let url = URL(string: fileMessage.url) else { return }
+                        let safariVC = SFSafariViewController(url: url)
+                        self.present(safariVC, animated: true, completion: nil)
+                    case .video, .audio:
+                        guard let url = URL(string: fileMessage.url) else { return }
+                        let vc = AVPlayerViewController()
+                        vc.player = AVPlayer(url: url)
+                        self.present(vc, animated: true) { vc.player?.play() }
+                    default:
+                        break
+                    }
+                default:
+                    break
+                }
+//            case let adinMessage as SBDAdminMessage:
+//                // Admin message type
+//                break
+            default:
+                break
+            }
+        }
+    }
+    /// This function sets the cell's long tap gesture handling.
+    /// - Parameters:
+    ///   - cell: Message cell object
+    ///   - message: Message object
+    ///   - indexPath: indexpath of cell
+    open func setLongTabGestureHandler(_ cell: SBUBaseMessageCell, message: SBDBaseMessage, indexPath: IndexPath) {
+        cell.longPressHandlerToContent = { [weak self, weak cell] in
+            guard let self = self, let cell = cell else { return }
+            self.dismissKeyboard()
+
+
+            switch message {
+            case let userMessage as SBDUserMessage:
+                // User message type
+
+                let copyItem = SBUMenuItem(title: SBUStringSet.Copy, color: self.theme.menuTextColor, image: SBUIconSet.iconCopy) {
+                    let pasteboard = UIPasteboard.general
+                    pasteboard.string = userMessage.message
+                }
+                
+                let editItem = SBUMenuItem(title: SBUStringSet.Edit, color: self.theme.menuTextColor, image: SBUIconSet.iconEdit) {
+                    self.inEditingMessage = userMessage
+                    self.messageInputView.startEditMode(text: userMessage.message ?? "")
+                }
+                
+                let deleteItem = SBUMenuItem(title: SBUStringSet.Delete, color: self.theme.menuTextColor, image: SBUIconSet.iconDelete) {
+                    self.removeMessage(message: userMessage)
+                }
+                
+                let menuPoint = self.calculatorMenuPoint(indexPath: indexPath, position: cell.position)
+                let isCurrentUser = userMessage.sender?.userId == SBUGlobals.CurrentUser?.userId
+
+                let items = isCurrentUser ? [copyItem, editItem, deleteItem] : [copyItem]
+
+                cell.isSelected = true
+                SBUMenuView.show(items: items, point: menuPoint) {
+                    cell.isSelected = false
+                }
+
+
+            case let fileMessage as SBDFileMessage:
+                // File message type
+                let saveItem = SBUMenuItem(title: SBUStringSet.Save, color: self.theme.menuTextColor, image: SBUIconSet.iconDownload) {
+                    SBUDownloadManager.saveFile(with: fileMessage, parent: self)
+                }
+                let deleteItem = SBUMenuItem(title: SBUStringSet.Delete, color: self.theme.menuTextColor, image: SBUIconSet.iconDelete) {
+                    self.removeMessage(message: fileMessage)
+                }
+                
+                let menuPoint = self.calculatorMenuPoint(indexPath: indexPath, position: cell.position)
+                
+                switch fileMessage.sendingStatus {
+                case .succeeded:
+                    let isCurrentUser = fileMessage.sender?.userId == SBUGlobals.CurrentUser?.userId
+                    let items = isCurrentUser ? [saveItem, deleteItem] : [saveItem]
+
+                    cell.isSelected = true
+                    SBUMenuView.show(items: items, point: menuPoint) {
+                        cell.isSelected = false
+                    }
+
+                case .none:
+                    break
+                case .pending:
+                    break
+                case .failed:
+                    break
+                case .canceled:
+                    break
+                @unknown default:
+                    break
+                }
+//            case let adinMessage as SBDAdminMessage:
+//                // Admin message type
+//                break
+            default:
+                break
+            }
+        }
     }
     
     

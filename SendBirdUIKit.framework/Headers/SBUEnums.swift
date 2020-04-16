@@ -3,7 +3,7 @@
 //  SendBirdUIKit
 //
 //  Created by Tez Park on 05/02/2020.
-//  Copyright © 2020 Tez Park. All rights reserved.
+//  Copyright © 2020 SendBird, Inc. All rights reserved.
 //
 
 public enum MemberListType: Int {
@@ -63,3 +63,4 @@ public enum ChannelEditType: Int {
     case remove
 }
 
+ 

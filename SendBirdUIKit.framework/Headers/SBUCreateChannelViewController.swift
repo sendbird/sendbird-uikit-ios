@@ -3,7 +3,7 @@
 //  SendBirdUIKit
 //
 //  Created by Tez Park on 03/02/2020.
-//  Copyright © 2020 Tez Park. All rights reserved.
+//  Copyright © 2020 SendBird, Inc. All rights reserved.
 //
 
 import UIKit
@@ -12,15 +12,18 @@ import SendBirdSDK
 @objcMembers
 open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UINavigationControllerDelegate {
     
-    // MARK: - Private property
+    // MARK: - Public property
+    // for UI
     
+    public lazy var leftBarButton: UIBarButtonItem? = _leftBarButton
+    public lazy var rightBarButton: UIBarButtonItem? = _rightBarButton
+    
+    
+    // MARK: - Private property
     // for UI
     var theme: SBUUserListTheme = SBUTheme.userListTheme
     
     private lazy var titleView: SBUNavigationTitleView = _titleView
-    private lazy var leftBarButton: UIBarButtonItem = _leftBarButton
-    private lazy var rightBarButton: UIBarButtonItem = _rightBarButton
-    
     private var tableView = UITableView()
     
     private lazy var _titleView: SBUNavigationTitleView = {
@@ -112,14 +115,18 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
         self.navigationController?.navigationBar.barTintColor = theme.navigationBarTintColor
         self.navigationController?.navigationBar.shadowImage = .from(color: theme.navigationShadowColor)
 
-        self.leftBarButton.image = SBUIconSet.iconBack
-        self.leftBarButton.tintColor = theme.leftBarButtonTintColor
-        self.rightBarButton.tintColor = self.selectedUserList.isEmpty ? theme.rightBarButtonTintColor : theme.rightBarButtonSelectedTintColor
+        self.leftBarButton?.image = SBUIconSet.iconBack
+        self.leftBarButton?.tintColor = theme.leftBarButtonTintColor
+        self.rightBarButton?.tintColor = self.selectedUserList.isEmpty ? theme.rightBarButtonTintColor : theme.rightBarButtonSelectedTintColor
 
         self.view.backgroundColor = theme.backgroundColor
         self.tableView.backgroundColor = theme.backgroundColor
     }
-    
+
+    open override var preferredStatusBarStyle: UIStatusBarStyle {
+        return theme.statusBarStyle
+    }
+
     open override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -133,6 +140,7 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
 
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.setNeedsStatusBarAppearanceUpdate()
         self.setupStyles()
     }
     
@@ -247,7 +255,7 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
             self.selectedUserList.insert(user)
         }
         
-        self.rightBarButton.title = SBUStringSet.CreateChannel_Create(selectedUserList.count)
+        self.rightBarButton?.title = SBUStringSet.CreateChannel_Create(selectedUserList.count)
         self.view.setNeedsLayout()
     }
     

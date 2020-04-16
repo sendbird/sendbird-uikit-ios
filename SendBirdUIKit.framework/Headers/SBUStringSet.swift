@@ -3,7 +3,7 @@
 //  SendBirdUIKit
 //
 //  Created by Tez Park on 05/03/2020.
-//  Copyright © 2020 Tez Park. All rights reserved.
+//  Copyright © 2020 SendBird, Inc. All rights reserved.
 //
 
 import UIKit
@@ -63,9 +63,9 @@ public class SBUStringSet: NSObject {
 
         switch members.count {
         case 1:
-            return String(format: "%@ is typing...", members[0].nickname!)
+            return String(format: "%@ is typing...", members[0].nickname ?? "Member")
         case 2:
-            return String(format: "%@ and %@ are typing...", members[0].nickname!, members[1].nickname!)
+            return String(format: "%@ and %@ are typing...", members[0].nickname ?? "Member", members[1].nickname ?? "Member")
         default:
             return "Several people are typing..."
         }
@@ -142,4 +142,8 @@ public class SBUStringSet: NSObject {
     // MARK: - Member List
     public static var MemberList_Header_Title = "Members"
     public static var MemberList_Me = "(You)"
+    
+    
+    // MARK: - User
+    public static var User_No_Name = "(No name)"
 }

@@ -1,5 +1,15 @@
 # Change Log
 
+### v1.0.2 (Apr 16, 2020)
+* Added - `setTapGestureHandler()`, `setLongTapGestureHandler()` methods for Cell on `SBUChannelViewController`
+* Modified - Empty user name display policy
+* Modified - Display long pressed color
+* Changed - NavigationBarButton to public type
+* Renamed - `SBUMessageBaseCell` to `SBUBaseMessageCell` 
+* Fixed - UIStatusBarStyle issue (light/dark)
+* Improved - Stability
+
+
 ### v1.0.1 (Apr 7, 2020)
 * Supported - Bitcode
 

@@ -3,7 +3,7 @@
 //  SendBirdUIKit
 //
 //  Created by Tez Park on 05/02/2020.
-//  Copyright © 2020 Tez Park. All rights reserved.
+//  Copyright © 2020 SendBird, Inc. All rights reserved.
 //
 
 import UIKit
@@ -13,17 +13,15 @@ import SendBirdSDK
 open class SBUMemberListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     // MARK: - Public property
-    var theme: SBUUserListTheme = SBUTheme.userListTheme
+    public lazy var leftBarButton: UIBarButtonItem? = _leftBarButton
+    public lazy var rightBarButton: UIBarButtonItem? = _rightBarButton
     
     
     // MARK: - Private property
     // for UI
-    private lazy var titleView: SBUNavigationTitleView = _titleView
-    private lazy var leftBarButton: UIBarButtonItem = _leftBarButton
-    private lazy var rightBarButton: UIBarButtonItem = _rightBarButton
+    var theme: SBUUserListTheme = SBUTheme.userListTheme
     
-    private var tableView = UITableView()
-        
+    private lazy var titleView: SBUNavigationTitleView = _titleView
     private lazy var _titleView: SBUNavigationTitleView = {
         let titleView = SBUNavigationTitleView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 50))
         titleView.text = SBUStringSet.MemberList_Header_Title
@@ -31,6 +29,8 @@ open class SBUMemberListViewController: UIViewController, UITableViewDelegate, U
         return titleView
     }()
 
+    private var tableView = UITableView()
+    
     private lazy var _leftBarButton: UIBarButtonItem = {
         return UIBarButtonItem(image: SBUIconSet.iconBack,
                                style: .plain,
@@ -118,13 +118,17 @@ open class SBUMemberListViewController: UIViewController, UITableViewDelegate, U
         self.navigationController?.navigationBar.barTintColor = theme.navigationBarTintColor
         self.navigationController?.navigationBar.shadowImage = .from(color: theme.navigationShadowColor)
 
-        self.leftBarButton.tintColor = theme.leftBarButtonTintColor
-        self.rightBarButton.tintColor = theme.rightBarButtonSelectedTintColor
+        self.leftBarButton?.tintColor = theme.leftBarButtonTintColor
+        self.rightBarButton?.tintColor = theme.rightBarButtonSelectedTintColor
 
         self.view.backgroundColor = theme.backgroundColor
         self.tableView.backgroundColor = theme.backgroundColor
     }
-    
+
+    open override var preferredStatusBarStyle: UIStatusBarStyle {
+        return theme.statusBarStyle
+    }
+
     open override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -145,6 +149,7 @@ open class SBUMemberListViewController: UIViewController, UITableViewDelegate, U
 
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.setNeedsStatusBarAppearanceUpdate()
         self.setupStyles()
     }
 
