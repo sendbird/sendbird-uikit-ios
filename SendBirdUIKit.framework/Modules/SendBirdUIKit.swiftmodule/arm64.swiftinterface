@@ -204,7 +204,7 @@ public typealias SBUNewMessageInfoHandler = () -> Swift.Void
   @objc public func sendDocumentFileMessage(documentUrls: [Foundation.URL])
   @objc public func onClickBack()
   @objc public func onClickSetting()
-  @objc public func scrollToTop()
+  @objc public func scrollToBottom()
   @objc public func register(adminMessageCell: SendBirdUIKit.SBUBaseMessageCell, nib: UIKit.UINib? = nil)
   @objc public func register(userMessageCell: SendBirdUIKit.SBUBaseMessageCell, nib: UIKit.UINib? = nil)
   @objc public func register(fileMessageCell: SendBirdUIKit.SBUBaseMessageCell, nib: UIKit.UINib? = nil)
@@ -581,7 +581,10 @@ extension UINavigationController {
   @objc public static func connectionCheck(completionHandler: @escaping (SendBirdSDK.SBDUser?, SendBirdSDK.SBDError?) -> Swift.Void)
   @objc public static func disconnect(completionHandler: (() -> Swift.Void)?)
   @objc public static func updateUserInfo(nickname: Swift.String?, profileUrl: Swift.String?, completionHandler: ((SendBirdSDK.SBDError?) -> Swift.Void)?)
-  @objc public static func getUIKitVersion() -> Swift.String
+  @objc @available(*, deprecated, renamed: "shortVersionString()")
+  public static func getUIKitVersion() -> Swift.String
+  @objc public static func versionString() -> Swift.String?
+  @objc public static func shortVersionString() -> Swift.String?
   @objc public static func registerPush(deviceToken: Foundation.Data, completionHandler: @escaping (Swift.Bool) -> Swift.Void)
   @objc public static func unregisterPushToken(completionHandler: @escaping (Swift.Bool) -> Swift.Void)
   @objc public static func unregisterAllPushToken(completionHandler: @escaping (Swift.Bool) -> Swift.Void)

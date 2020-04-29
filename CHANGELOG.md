@@ -1,5 +1,9 @@
 # Change Log
 
+### v1.0.4 (Apr 29, 2020)
+* Added - UIKit version information to User-Agent
+* Fixed - Crash issue while scrolling TableView
+
 ### v1.0.3 (Apr 23, 2020)
 * Fixed - Framework error issue in macOS Mojave
 

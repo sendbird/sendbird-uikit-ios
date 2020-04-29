@@ -405,8 +405,6 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         var preSendMessage: SBDUserMessage?
         guard let messageParam = SBDUserMessageParams(message: text) else { return }
         
-        self.scrollToTop()
-        
         preSendMessage = self.channel?.sendUserMessage(with: messageParam) { [weak self] userMessage, error in
             guard let self = self else { return }
             guard error == nil else {
@@ -417,7 +415,7 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
                 self.didReceiveError(error?.localizedDescription)
                 return
             }
-            
+
             guard let message = userMessage else { return }
             guard let requestId = userMessage?.requestId else { return }
 
@@ -433,6 +431,7 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         self.sortAllMessageList(needReload: true)
         self.messageInputView.endTypingMode()
         self.channel?.endTyping()
+        self.scrollToBottom()
     }
     
     private func sendFileMessage(fileData: Data, fileName: String, mimeType: String) {
@@ -735,7 +734,7 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         self.newMessageInfoView.isHidden = false
         self.newMessagesCount += 1
         self.newMessageInfoView.updateTitle(count: self.newMessagesCount) { [weak self] in
-            self?.scrollToTop()
+            self?.scrollToBottom()
         }
         if let indexPath = self.tableView.indexPathsForVisibleRows?[0] {
             self.lastSeenIndexPath = IndexPath(row: indexPath.row + 1, section: 0)
@@ -891,7 +890,9 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         self.showChannelSettings()
     }
     
-    public func scrollToTop() {
+    public func scrollToBottom() {
+        guard self.fullMessageList.count != 0 else { return }
+        
         DispatchQueue.main.async {
             UIView.animate(withDuration: 0.1, animations: {
                 let indexPath = IndexPath(row: 0, section: 0)

@@ -572,7 +572,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)sendDocumentFileMessageWithDocumentUrls:(NSArray<NSURL *> * _Nonnull)documentUrls;
 - (void)onClickBack;
 - (void)onClickSetting;
-- (void)scrollToTop;
+- (void)scrollToBottom;
 - (void)registerWithAdminMessageCell:(SBUBaseMessageCell * _Nonnull)adminMessageCell nib:(UINib * _Nullable)nib;
 - (void)registerWithUserMessageCell:(SBUBaseMessageCell * _Nonnull)userMessageCell nib:(UINib * _Nullable)nib;
 - (void)registerWithFileMessageCell:(SBUBaseMessageCell * _Nonnull)fileMessageCell nib:(UINib * _Nullable)nib;
@@ -1099,7 +1099,9 @@ SWIFT_CLASS("_TtC13SendBirdUIKit7SBUMain")
 + (void)connectionCheckWithCompletionHandler:(void (^ _Nonnull)(SBDUser * _Nullable, SBDError * _Nullable))completionHandler;
 + (void)disconnectWithCompletionHandler:(void (^ _Nullable)(void))completionHandler;
 + (void)updateUserInfoWithNickname:(NSString * _Nullable)nickname profileUrl:(NSString * _Nullable)profileUrl completionHandler:(void (^ _Nullable)(SBDError * _Nullable))completionHandler;
-+ (NSString * _Nonnull)getUIKitVersion SWIFT_WARN_UNUSED_RESULT;
++ (NSString * _Nonnull)getUIKitVersion SWIFT_WARN_UNUSED_RESULT SWIFT_DEPRECATED_MSG("", "shortVersionString");
++ (NSString * _Nullable)versionString SWIFT_WARN_UNUSED_RESULT;
++ (NSString * _Nullable)shortVersionString SWIFT_WARN_UNUSED_RESULT;
 + (void)registerPushWithDeviceToken:(NSData * _Nonnull)deviceToken completionHandler:(void (^ _Nonnull)(BOOL))completionHandler;
 + (void)unregisterPushTokenWithCompletionHandler:(void (^ _Nonnull)(BOOL))completionHandler;
 + (void)unregisterAllPushTokenWithCompletionHandler:(void (^ _Nonnull)(BOOL))completionHandler;
@@ -2150,7 +2152,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)sendDocumentFileMessageWithDocumentUrls:(NSArray<NSURL *> * _Nonnull)documentUrls;
 - (void)onClickBack;
 - (void)onClickSetting;
-- (void)scrollToTop;
+- (void)scrollToBottom;
 - (void)registerWithAdminMessageCell:(SBUBaseMessageCell * _Nonnull)adminMessageCell nib:(UINib * _Nullable)nib;
 - (void)registerWithUserMessageCell:(SBUBaseMessageCell * _Nonnull)userMessageCell nib:(UINib * _Nullable)nib;
 - (void)registerWithFileMessageCell:(SBUBaseMessageCell * _Nonnull)fileMessageCell nib:(UINib * _Nullable)nib;
@@ -2677,7 +2679,9 @@ SWIFT_CLASS("_TtC13SendBirdUIKit7SBUMain")
 + (void)connectionCheckWithCompletionHandler:(void (^ _Nonnull)(SBDUser * _Nullable, SBDError * _Nullable))completionHandler;
 + (void)disconnectWithCompletionHandler:(void (^ _Nullable)(void))completionHandler;
 + (void)updateUserInfoWithNickname:(NSString * _Nullable)nickname profileUrl:(NSString * _Nullable)profileUrl completionHandler:(void (^ _Nullable)(SBDError * _Nullable))completionHandler;
-+ (NSString * _Nonnull)getUIKitVersion SWIFT_WARN_UNUSED_RESULT;
++ (NSString * _Nonnull)getUIKitVersion SWIFT_WARN_UNUSED_RESULT SWIFT_DEPRECATED_MSG("", "shortVersionString");
++ (NSString * _Nullable)versionString SWIFT_WARN_UNUSED_RESULT;
++ (NSString * _Nullable)shortVersionString SWIFT_WARN_UNUSED_RESULT;
 + (void)registerPushWithDeviceToken:(NSData * _Nonnull)deviceToken completionHandler:(void (^ _Nonnull)(BOOL))completionHandler;
 + (void)unregisterPushTokenWithCompletionHandler:(void (^ _Nonnull)(BOOL))completionHandler;
 + (void)unregisterAllPushTokenWithCompletionHandler:(void (^ _Nonnull)(BOOL))completionHandler;
@@ -3730,7 +3734,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)sendDocumentFileMessageWithDocumentUrls:(NSArray<NSURL *> * _Nonnull)documentUrls;
 - (void)onClickBack;
 - (void)onClickSetting;
-- (void)scrollToTop;
+- (void)scrollToBottom;
 - (void)registerWithAdminMessageCell:(SBUBaseMessageCell * _Nonnull)adminMessageCell nib:(UINib * _Nullable)nib;
 - (void)registerWithUserMessageCell:(SBUBaseMessageCell * _Nonnull)userMessageCell nib:(UINib * _Nullable)nib;
 - (void)registerWithFileMessageCell:(SBUBaseMessageCell * _Nonnull)fileMessageCell nib:(UINib * _Nullable)nib;
@@ -4257,7 +4261,9 @@ SWIFT_CLASS("_TtC13SendBirdUIKit7SBUMain")
 + (void)connectionCheckWithCompletionHandler:(void (^ _Nonnull)(SBDUser * _Nullable, SBDError * _Nullable))completionHandler;
 + (void)disconnectWithCompletionHandler:(void (^ _Nullable)(void))completionHandler;
 + (void)updateUserInfoWithNickname:(NSString * _Nullable)nickname profileUrl:(NSString * _Nullable)profileUrl completionHandler:(void (^ _Nullable)(SBDError * _Nullable))completionHandler;
-+ (NSString * _Nonnull)getUIKitVersion SWIFT_WARN_UNUSED_RESULT;
++ (NSString * _Nonnull)getUIKitVersion SWIFT_WARN_UNUSED_RESULT SWIFT_DEPRECATED_MSG("", "shortVersionString");
++ (NSString * _Nullable)versionString SWIFT_WARN_UNUSED_RESULT;
++ (NSString * _Nullable)shortVersionString SWIFT_WARN_UNUSED_RESULT;
 + (void)registerPushWithDeviceToken:(NSData * _Nonnull)deviceToken completionHandler:(void (^ _Nonnull)(BOOL))completionHandler;
 + (void)unregisterPushTokenWithCompletionHandler:(void (^ _Nonnull)(BOOL))completionHandler;
 + (void)unregisterAllPushTokenWithCompletionHandler:(void (^ _Nonnull)(BOOL))completionHandler;
@@ -5308,7 +5314,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)sendDocumentFileMessageWithDocumentUrls:(NSArray<NSURL *> * _Nonnull)documentUrls;
 - (void)onClickBack;
 - (void)onClickSetting;
-- (void)scrollToTop;
+- (void)scrollToBottom;
 - (void)registerWithAdminMessageCell:(SBUBaseMessageCell * _Nonnull)adminMessageCell nib:(UINib * _Nullable)nib;
 - (void)registerWithUserMessageCell:(SBUBaseMessageCell * _Nonnull)userMessageCell nib:(UINib * _Nullable)nib;
 - (void)registerWithFileMessageCell:(SBUBaseMessageCell * _Nonnull)fileMessageCell nib:(UINib * _Nullable)nib;
@@ -5835,7 +5841,9 @@ SWIFT_CLASS("_TtC13SendBirdUIKit7SBUMain")
 + (void)connectionCheckWithCompletionHandler:(void (^ _Nonnull)(SBDUser * _Nullable, SBDError * _Nullable))completionHandler;
 + (void)disconnectWithCompletionHandler:(void (^ _Nullable)(void))completionHandler;
 + (void)updateUserInfoWithNickname:(NSString * _Nullable)nickname profileUrl:(NSString * _Nullable)profileUrl completionHandler:(void (^ _Nullable)(SBDError * _Nullable))completionHandler;
-+ (NSString * _Nonnull)getUIKitVersion SWIFT_WARN_UNUSED_RESULT;
++ (NSString * _Nonnull)getUIKitVersion SWIFT_WARN_UNUSED_RESULT SWIFT_DEPRECATED_MSG("", "shortVersionString");
++ (NSString * _Nullable)versionString SWIFT_WARN_UNUSED_RESULT;
++ (NSString * _Nullable)shortVersionString SWIFT_WARN_UNUSED_RESULT;
 + (void)registerPushWithDeviceToken:(NSData * _Nonnull)deviceToken completionHandler:(void (^ _Nonnull)(BOOL))completionHandler;
 + (void)unregisterPushTokenWithCompletionHandler:(void (^ _Nonnull)(BOOL))completionHandler;
 + (void)unregisterAllPushTokenWithCompletionHandler:(void (^ _Nonnull)(BOOL))completionHandler;

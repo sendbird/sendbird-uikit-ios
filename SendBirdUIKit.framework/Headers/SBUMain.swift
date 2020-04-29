@@ -15,6 +15,11 @@ public class SBUMain: NSObject {
     // MARK: - Initialize
     public static func initialize(applicationId: String) {
         SBUGlobals.ApplicationId = applicationId
+        
+        if let version = SBUMain.shortVersionString() {
+            SBDMain.addExtension(SBUConstant.sbdExtensionKeyUIKit, version: version)
+        }
+        
         SBDMain.initWithApplicationId(applicationId)
     }
     
@@ -78,10 +83,29 @@ public class SBUMain: NSObject {
     
     
     // MARK: - Common
+    @available(*, deprecated, renamed: "shortVersionString()")
     public static func getUIKitVersion() -> String {
-        return Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+        return SBUMain.shortVersionString() ?? ""
     }
     
+    public static func versionString() -> String? {
+        let bundle = Bundle(identifier: "com.sendbird.uikit")
+        if let build = bundle?.infoDictionary?[kCFBundleVersionKey as String] {
+            return "\(build)"
+        }
+
+        return nil
+    }
+    
+    public static func shortVersionString() -> String? {
+        let bundle = Bundle(identifier: "com.sendbird.uikit")
+        if let shortVersion = bundle?.infoDictionary?["CFBundleShortVersionString"] {
+            return "\(shortVersion)"
+        }
+
+        return nil
+    }
+
     
     // MARK: - Push Notification
     public static func registerPush(deviceToken: Data, completionHandler: @escaping (_ success: Bool) -> Void) {
