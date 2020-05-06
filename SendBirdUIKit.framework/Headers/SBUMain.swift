@@ -173,25 +173,39 @@ public class SBUMain: NSObject {
     public static func openChannel(channelUrl: String, basedOnChannelList: Bool = true) {
         guard SBUGlobals.CurrentUser != nil else { return }
         
-        let rootViewController = UIApplication.shared.keyWindow?.rootViewController
+        var rootViewController = UIApplication.shared.keyWindow?.rootViewController
         var viewController: UIViewController? = nil
+        
+        if let tabbarController: UITabBarController = rootViewController as? UITabBarController {
+            rootViewController = tabbarController.selectedViewController
+        }
         
         if let navigationController: UINavigationController = rootViewController?.presentedViewController as? UINavigationController {
             for subViewController in navigationController.viewControllers {
-                if subViewController is SBUChannelListViewController {
+                if let subViewController = subViewController as? SBUChannelListViewController {
                     navigationController.popToViewController(subViewController, animated: false)
-                    viewController = subViewController as! SBUChannelListViewController
+                    viewController = subViewController
                     break
-                } else if subViewController is SBUChannelViewController {
-                    viewController = subViewController as! SBUChannelViewController
+                } else if let subViewController = subViewController as? SBUChannelViewController {
+                    viewController = subViewController
+                }
+            }
+        } else if let navigationController: UINavigationController = rootViewController as? UINavigationController {
+            for subViewController in navigationController.viewControllers {
+                if let subViewController = subViewController as? SBUChannelListViewController {
+                    navigationController.popToViewController(subViewController, animated: false)
+                    viewController = subViewController
+                    break
+                } else if let subViewController = subViewController as? SBUChannelViewController {
+                    viewController = subViewController
                 }
             }
         }
         
-        if viewController is SBUChannelListViewController {
-            (viewController as! SBUChannelListViewController).showChannel(channelUrl: channelUrl)
-        } else if viewController is SBUChannelViewController {
-            (viewController as! SBUChannelViewController).loadChannel(channelUrl: channelUrl)
+        if let viewController = viewController as? SBUChannelListViewController {
+            viewController.showChannel(channelUrl: channelUrl)
+        } else if let viewController = viewController as? SBUChannelViewController {
+            viewController.loadChannel(channelUrl: channelUrl)
         } else {
             if basedOnChannelList == true {
                 // If based on channelList

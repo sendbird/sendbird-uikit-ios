@@ -1,5 +1,9 @@
 # Change Log
 
+### v1.0.5 (May 6, 2020)
+* Fixed - Weird creation channel navigation flow
+* Modified - Empty messages string in channel
+
 ### v1.0.4 (Apr 29, 2020)
 * Added - UIKit version information to User-Agent
 * Fixed - Crash issue while scrolling TableView

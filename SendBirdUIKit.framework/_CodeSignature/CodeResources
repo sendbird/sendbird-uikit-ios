@@ -6,7 +6,7 @@
 	<dict>
 		<key>Assets.car</key>
 		<data>
-		2jGI/aLnZIcqvM978bWSkW9Y/bg=
+		QR3AD0JlD+ffy8P6QrCzfnR+aFU=
 		</data>
 		<key>Headers/SBUBaseChannelCell.swift</key>
 		<data>
@@ -26,7 +26,7 @@
 		</data>
 		<key>Headers/SBUChannelViewController.swift</key>
 		<data>
-		vh8wcp93vbpxkPY84VQ5mgtMk4I=
+		+DwfiJPbh3fMo5+nWBHU1iRLA1A=
 		</data>
 		<key>Headers/SBUColorSet.swift</key>
 		<data>
@@ -62,7 +62,7 @@
 		</data>
 		<key>Headers/SBUMain.swift</key>
 		<data>
-		GfzYr91csjP8d965Q5rJCGZJBMc=
+		Qod4EHlzC3YgwJKXTOxOI8jK/6Q=
 		</data>
 		<key>Headers/SBUMemberListViewController.swift</key>
 		<data>
@@ -106,7 +106,7 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		DgFkZ466l0jR5NQGQFPlD+E7M+s=
+		Y5cavGY0EeRa/Cz8opmO6kuolf8=
 		</data>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm.swiftdoc</key>
 		<data>
@@ -174,35 +174,35 @@
 		</data>
 		<key>SBUChannelSettingCell.nib/objects-11.0+.nib</key>
 		<data>
-		IyNdq4ea4+O5Rr18NYAbXXuLPns=
+		u2aoEH7n5e8y+V2SQjuHdjgtIf0=
 		</data>
 		<key>SBUChannelSettingCell.nib/objects-13.0+.nib</key>
 		<data>
-		Q+0MpmvSo6UE/AzQI2taC5JpOpY=
+		ZR0WJSuSijxqDvRYxxTftGzHXHM=
 		</data>
 		<key>SBUChannelSettingCell.nib/runtime.nib</key>
 		<data>
-		TQqzHwjYnJAjBJr3JR8MUGHvBlg=
+		Pi5PYHoUzoPRXjzTTUXJDOlclYQ=
 		</data>
 		<key>SBUMessageInputView.nib/objects-11.0+.nib</key>
 		<data>
-		Nrvegd94ugvAzuhd5A6a20mggXU=
+		3q1ZFJuFfg7IFd1xi0Ee12ehYtc=
 		</data>
 		<key>SBUMessageInputView.nib/objects-13.0+.nib</key>
 		<data>
-		bXXNFzDhbVC0JJXzIgNDn/i5oxk=
+		QLH14BOfMBX8sU82BPqVK0K7CAM=
 		</data>
 		<key>SBUMessageInputView.nib/runtime.nib</key>
 		<data>
-		DqOIa+YXQc0N/qhSEGjiseGAe74=
+		taCBj/DZ7q5kW77PevJT4aT7i1U=
 		</data>
 		<key>SBUUserCell.nib/objects-13.0+.nib</key>
 		<data>
-		VT89Zp2yLWlsVUmOV7qR23MePQU=
+		gVIp2QJExY8uAvF4FXqrc4r1WCQ=
 		</data>
 		<key>SBUUserCell.nib/runtime.nib</key>
 		<data>
-		cgzRnXjet7RxQVAaoyiEgWey3WE=
+		YqDkUI654RkMYDAQI5MEuEmrf40=
 		</data>
 	</dict>
 	<key>files2</key>
@@ -211,11 +211,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			2jGI/aLnZIcqvM978bWSkW9Y/bg=
+			QR3AD0JlD+ffy8P6QrCzfnR+aFU=
 			</data>
 			<key>hash2</key>
 			<data>
-			G4ubfdfPCOeLRBWeW8pmPapSRJSNf9CvAFMxfPzsXIE=
+			7leCVTZJvPC4SPAad5PD5mOXqlSC/bhhfMPyviVezHY=
 			</data>
 		</dict>
 		<key>Headers/SBUBaseChannelCell.swift</key>
@@ -266,11 +266,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			vh8wcp93vbpxkPY84VQ5mgtMk4I=
+			+DwfiJPbh3fMo5+nWBHU1iRLA1A=
 			</data>
 			<key>hash2</key>
 			<data>
-			Nkioc3Hb90uj8OiWcgEeK9AY/LHznkuDc8vtURVWp1I=
+			8JNTOhGyJ0HJDL6gyUvLbEukLrMRuZfBF7NuoEYzFAw=
 			</data>
 		</dict>
 		<key>Headers/SBUColorSet.swift</key>
@@ -365,11 +365,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			GfzYr91csjP8d965Q5rJCGZJBMc=
+			Qod4EHlzC3YgwJKXTOxOI8jK/6Q=
 			</data>
 			<key>hash2</key>
 			<data>
-			JfpQPLofGjFcdI/2el2gypP6N7pAjXRZwAR12NmRrfA=
+			Ptlqaab5f3cQsRKHjgoEcLbtHjMDueICGxYGjHYf8mU=
 			</data>
 		</dict>
 		<key>Headers/SBUMemberListViewController.swift</key>
@@ -662,88 +662,88 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			IyNdq4ea4+O5Rr18NYAbXXuLPns=
+			u2aoEH7n5e8y+V2SQjuHdjgtIf0=
 			</data>
 			<key>hash2</key>
 			<data>
-			1YUHKoDJQFPaWQkWV8F0zJ+TJHhErd5HjMYd/xKI1uY=
+			lNi9ef89HnAxgJtHzztJG7KRnL/X/Ih2ZN5ky7erGeM=
 			</data>
 		</dict>
 		<key>SBUChannelSettingCell.nib/objects-13.0+.nib</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			Q+0MpmvSo6UE/AzQI2taC5JpOpY=
+			ZR0WJSuSijxqDvRYxxTftGzHXHM=
 			</data>
 			<key>hash2</key>
 			<data>
-			dVB9rNO9JBiN/T8SKX0nDYFpoOyZcdtOUsR5SAlOC4A=
+			v5QWYda/zo28sxL7Oz5CyCwpwVBTLY2SfzomUzr0+kU=
 			</data>
 		</dict>
 		<key>SBUChannelSettingCell.nib/runtime.nib</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			TQqzHwjYnJAjBJr3JR8MUGHvBlg=
+			Pi5PYHoUzoPRXjzTTUXJDOlclYQ=
 			</data>
 			<key>hash2</key>
 			<data>
-			UlK9zk2Vhpwli1T2tiOww9ZNOGt9X90mBOszLAouUsQ=
+			dHtDC6NsR5b6b7vE1/gohO18wv8XsRbPsTlmqepv+fQ=
 			</data>
 		</dict>
 		<key>SBUMessageInputView.nib/objects-11.0+.nib</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			Nrvegd94ugvAzuhd5A6a20mggXU=
+			3q1ZFJuFfg7IFd1xi0Ee12ehYtc=
 			</data>
 			<key>hash2</key>
 			<data>
-			FQsFzyF/0KJxV7earCPPKO1epy/PxItnEikrW2ZnjKc=
+			ly63aY0IKKuP7JeLsAuXPvSanryY8W85y1jlPa7wIYs=
 			</data>
 		</dict>
 		<key>SBUMessageInputView.nib/objects-13.0+.nib</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			bXXNFzDhbVC0JJXzIgNDn/i5oxk=
+			QLH14BOfMBX8sU82BPqVK0K7CAM=
 			</data>
 			<key>hash2</key>
 			<data>
-			/F+Tl0eSXq1sMo1JDiKsg0e5AFM/uJFTovUpBks8jfs=
+			9QTqXKmaHBe/NU8gdX4jn/tUDiYz/doU9aEscf4OYa0=
 			</data>
 		</dict>
 		<key>SBUMessageInputView.nib/runtime.nib</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			DqOIa+YXQc0N/qhSEGjiseGAe74=
+			taCBj/DZ7q5kW77PevJT4aT7i1U=
 			</data>
 			<key>hash2</key>
 			<data>
-			4L5BssQJ6SZm4bv1LIiPKy6UbqRIDFvmp8TPtAvVmAk=
+			4FqOBiXx6zpk27c5xTUgOIbpiawHJVljL8itooINRvk=
 			</data>
 		</dict>
 		<key>SBUUserCell.nib/objects-13.0+.nib</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			VT89Zp2yLWlsVUmOV7qR23MePQU=
+			gVIp2QJExY8uAvF4FXqrc4r1WCQ=
 			</data>
 			<key>hash2</key>
 			<data>
-			9ma+kpEsCX+kN2jT0QFuJW9dvybTOYDHGMr4rTO8hyc=
+			ILAYRyCMYoPx1+Lv+PCnv/CwO0AYJzyCzPPyiQEL7fQ=
 			</data>
 		</dict>
 		<key>SBUUserCell.nib/runtime.nib</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			cgzRnXjet7RxQVAaoyiEgWey3WE=
+			YqDkUI654RkMYDAQI5MEuEmrf40=
 			</data>
 			<key>hash2</key>
 			<data>
-			61UME11bByLgdp2CCbWoUNJhEJcM65D/KOrIelRWu/w=
+			Dj1G3xllvSCP7o6d7pniF9VYT2a7CVLq7Jg9CTUfIPg=
 			</data>
 		</dict>
 	</dict>

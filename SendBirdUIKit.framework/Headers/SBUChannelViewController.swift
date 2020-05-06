@@ -335,7 +335,7 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
             guard let messages = messages else { self?.isRequestingLoad = false; return }
             
             guard messages.count != 0 else {
-                self?.emptyView.updateType(.noChannels)
+                self?.emptyView.updateType(.noMessages)
                 self?.hasPrevious = false
                 self?.isRequestingLoad = false
                 return
@@ -603,7 +603,7 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         self.fullMessageList = self.sortedFullMessageList()
         
         DispatchQueue.main.async {
-            self.emptyView.updateType(self.fullMessageList.isEmpty ? .noChannels : .none)
+            self.emptyView.updateType(self.fullMessageList.isEmpty ? .noMessages : .none)
             
             guard needReload == true else { return }
             
@@ -1439,7 +1439,7 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
     
     // MARK: - SBUEmptyViewDelegate
     public func didSelectRetry() {
-        self.emptyView.updateType(.noChannels)
+        self.emptyView.updateType(.noMessages)
         
         self.loadChannel(channelUrl: self.channel?.channelUrl)
     }
