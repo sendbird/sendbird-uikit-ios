@@ -64,12 +64,14 @@ open class SBUInviteUserViewController: UIViewController, UITableViewDelegate, U
     @available(*, unavailable, renamed: "SBUInviteUserViewController.init(channelUrl:)")
     required public init?(coder: NSCoder) {
         super.init(coder: coder)
+        SBULog.info("")
     }
     
     /// If you have channel object, use this initialize function.
     /// - Parameter channel: Channel object
     public init(channel: SBDGroupChannel) {
         super.init(nibName: nil, bundle: nil)
+        SBULog.info("")
 
         self.channel = channel
         self.customizedUsers = nil
@@ -79,6 +81,7 @@ open class SBUInviteUserViewController: UIViewController, UITableViewDelegate, U
     /// - Parameter channelUrl: Channel url string
     public init(channelUrl: String) {
         super.init(nibName: nil, bundle: nil)
+        SBULog.info("")
 
         self.channelUrl = channelUrl
 
@@ -90,6 +93,7 @@ open class SBUInviteUserViewController: UIViewController, UITableViewDelegate, U
     /// - Parameter users: User object
     public init(channel: SBDGroupChannel, users: [SBUUser]) {
         super.init(nibName: nil, bundle: nil)
+        SBULog.info("")
         
         self.channel = channel
         self.customizedUsers = users
@@ -100,6 +104,7 @@ open class SBUInviteUserViewController: UIViewController, UITableViewDelegate, U
     /// - Parameter users: User object
     public init(channelUrl: String, users: [SBUUser]) {
         super.init(nibName: nil, bundle: nil)
+        SBULog.info("")
         
         self.channelUrl = channelUrl
         self.customizedUsers = users
@@ -109,6 +114,8 @@ open class SBUInviteUserViewController: UIViewController, UITableViewDelegate, U
 
     open override func loadView() {
         super.loadView()
+        SBULog.info("")
+        
         // navigation bar
         self.navigationItem.leftBarButtonItem = self.leftBarButton
         self.navigationItem.rightBarButtonItem = self.rightBarButton
@@ -143,9 +150,8 @@ open class SBUInviteUserViewController: UIViewController, UITableViewDelegate, U
     
     /// This function handles the initialization of styles.
     open func setupStyles() {
-        self.navigationController?.navigationBar.backgroundColor = .clear
-        self.navigationController?.navigationBar.barTintColor = theme.navigationBarTintColor
-        self.navigationController?.navigationBar.shadowImage = .from(color: theme.navigationShadowColor)
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage.from(color: theme.navigationBarTintColor), for: .default)
+        self.navigationController?.navigationBar.shadowImage = UIImage.from(color: theme.navigationShadowColor)
 
         self.leftBarButton?.tintColor = theme.leftBarButtonTintColor
         self.rightBarButton?.tintColor = self.selectedUserList.isEmpty ? theme.rightBarButtonTintColor : theme.rightBarButtonSelectedTintColor
@@ -181,6 +187,10 @@ open class SBUInviteUserViewController: UIViewController, UITableViewDelegate, U
         self.setupStyles()
     }
     
+    deinit {
+        SBULog.info("")
+    }
+    
     
     // MARK: - SDK relations
     
@@ -192,13 +202,17 @@ open class SBUInviteUserViewController: UIViewController, UITableViewDelegate, U
         SBUMain.connectionCheck { [weak self] user, error in
             if let error = error { self?.didReceiveError(error.localizedDescription) }
             
+            SBULog.info("[Request] Load channel: \(String(channelUrl))")
             SBDGroupChannel.getWithUrl(channelUrl) { [weak self] channel, error in
-                guard error == nil else {
-                    self?.didReceiveError(error?.localizedDescription)
+                if let error = error {
+                    SBULog.error("[Failed] Load channel request: \(error.localizedDescription)")
+                    self?.didReceiveError(error.localizedDescription)
                     return
                 }
                 
                 self?.channel = channel
+                
+                SBULog.info("[Succeed] Load channel request: \(String(format: "%@", self?.channel ?? ""))")
             }
         }
     }
@@ -217,6 +231,10 @@ open class SBUInviteUserViewController: UIViewController, UITableViewDelegate, U
         if reset {
             self.userListQuery = nil
             self.userList = []
+            
+            SBULog.info("[Request] User List")
+        } else {
+            SBULog.info("[Request] Next user List")
         }
 
         if let users = users {
@@ -224,6 +242,9 @@ open class SBUInviteUserViewController: UIViewController, UITableViewDelegate, U
             if let customizedUsers = self.customizedUsers {
                 self.customizedUsers! += users
             }
+            
+            SBULog.info("\(users.count) customized users have been added.")
+            
             self.appendUsersWithFiltering(users: users)
             self.reloadUserList()
             self.isLoading = false
@@ -236,6 +257,7 @@ open class SBUInviteUserViewController: UIViewController, UITableViewDelegate, U
             
             guard self.userListQuery?.hasNext == true else {
                 self.isLoading = false
+                SBULog.info("All users have been loaded.")
                 self.reloadUserList()
                 return
             }
@@ -243,11 +265,14 @@ open class SBUInviteUserViewController: UIViewController, UITableViewDelegate, U
             self.userListQuery?.loadNextPage(completionHandler: { [weak self] users, error in
                 defer { self?.isLoading = false }
                 
-                guard error == nil else {
-                    self?.didReceiveError(error?.localizedDescription)
+                if let error = error {
+                    SBULog.error("[Failed] User list request: \(error.localizedDescription)")
+                    self?.didReceiveError(error.localizedDescription)
                     return
                 }
                 guard let users = SBUUserManager.convertUserList(users: users) else { return }
+                
+                SBULog.info("[Response] \(users.count) users")
                 
                 self?.appendUsersWithFiltering(users: users)
                 self?.reloadUserList()
@@ -272,9 +297,15 @@ open class SBUInviteUserViewController: UIViewController, UITableViewDelegate, U
     
     open func inviteUsers() {
         let userIds = SBUUserManager.getUserIds(users: Array(self.selectedUserList))
+        
+        SBULog.info("[Request] Invite users, Users: \(Array(self.selectedUserList))")
         self.channel?.inviteUserIds(userIds, completionHandler: { [weak self] error in
-            if let error = error { self?.didReceiveError(error.localizedDescription) }
+            if let error = error {
+                SBULog.error("[Failed] Invite users request: \(String(error.localizedDescription))")
+                self?.didReceiveError(error.localizedDescription)
+            }
             
+            SBULog.info("[Succeed] Invite users")
             self?.popToChannel()
         })
     }
@@ -318,6 +349,8 @@ open class SBUInviteUserViewController: UIViewController, UITableViewDelegate, U
         } else {
             self.selectedUserList.insert(user)
         }
+        
+        SBULog.info("Selected user: \(user)")
         
         self.rightBarButton?.title = SBUStringSet.InviteChannel_Invite(selectedUserList.count)
         self.view.setNeedsLayout()
@@ -376,6 +409,6 @@ open class SBUInviteUserViewController: UIViewController, UITableViewDelegate, U
     
     // MARK: - Error handling
     open func didReceiveError(_ message: String?) {
-        
+        SBULog.error("Did receive error: \(message ?? "")")
     }
 }

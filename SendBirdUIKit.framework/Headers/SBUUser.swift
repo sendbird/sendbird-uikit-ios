@@ -36,4 +36,10 @@ public class SBUUser: NSObject {
             return SBUStringSet.User_No_Name
         }
     }
+    
+    public override var description: String {
+        let desc = String(format: "UserId:%@, Nickname:%@, ProfileUrl:%@", self.userId, self.nickname ?? "", self.profileUrl ?? "")
+        
+        return desc
+    }
 }

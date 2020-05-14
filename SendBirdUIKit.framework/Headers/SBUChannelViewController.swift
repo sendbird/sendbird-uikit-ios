@@ -111,12 +111,14 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
     @available(*, unavailable, renamed: "SBUChannelViewController.init(channelUrl:)")
     required public init?(coder: NSCoder) {
         super.init(coder: coder)
+        SBULog.info("")
     }
 
     /// If you have channel object, use this initialize function.
     /// - Parameter channel: Channel object
     public init(channel: SBDGroupChannel) {
         super.init(nibName: nil, bundle: nil)
+        SBULog.info("")
         
         self.channel = channel
         
@@ -127,6 +129,7 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
     /// - Parameter channelUrl: Channel url string
     public init(channelUrl: String) {
         super.init(nibName: nil, bundle: nil)
+        SBULog.info("")
         
         self.channelUrl = channelUrl
         
@@ -135,6 +138,7 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
     
     open override func loadView() {
         super.loadView()
+        SBULog.info("")
         
         // navigation bar
         self.navigationItem.leftBarButtonItem = self.leftBarButton
@@ -222,9 +226,8 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
     }
     
     open func setupStyles() {
-        self.navigationController?.navigationBar.backgroundColor = .clear
-        self.navigationController?.navigationBar.barTintColor = theme.navigationBarTintColor
-        self.navigationController?.navigationBar.shadowImage = .from(color: theme.navigationBarShadowColor)
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage.from(color: theme.navigationBarTintColor), for: .default)
+        self.navigationController?.navigationBar.shadowImage = UIImage.from(color: theme.navigationBarShadowColor)
         
         self.leftBarButton?.image = SBUIconSet.iconBack
         self.leftBarButton?.tintColor = theme.leftBarButtonTintColor
@@ -281,6 +284,7 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
     }
     
     deinit {
+        SBULog.info("")
         SBDMain.removeChannelDelegate(forIdentifier: self.description)
         SBDMain.removeConnectionDelegate(forIdentifier: self.description)
 
@@ -313,7 +317,13 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
             self.hasPrevious = true
             self.inEditingMessage = nil
             self.lastUpdatedTimestamp = Int64(Date().timeIntervalSince1970*1000)
+            
+            SBULog.info("[Request] markAsRead")
             self.channel?.markAsRead()
+            
+            SBULog.info("[Request] Message List")
+        } else {
+            SBULog.info("[Request] Next message List")
         }
         
         if self.messageListQuery == nil {
@@ -327,17 +337,22 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         self.messageListQuery?.load(completionHandler: { [weak self] messages, error in
             defer { self?.setLoading(false, false) }
             
-            guard error == nil else {
+            if let error = error {
+                SBULog.error("[Failed] Message list request: \(error.localizedDescription)")
                 self?.isRequestingLoad = false;
-                self?.didReceiveError(error?.localizedDescription)
+                self?.didReceiveError(error.localizedDescription)
                 return
             }
             guard let messages = messages else { self?.isRequestingLoad = false; return }
+            
+            SBULog.info("[Response] \(messages.count) messages")
             
             guard messages.count != 0 else {
                 self?.emptyView.updateType(.noMessages)
                 self?.hasPrevious = false
                 self?.isRequestingLoad = false
+                
+                SBULog.info("All previous messages have been loaded.")
                 return
             }
             
@@ -348,21 +363,29 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
     
     private func loadNextMessages(hasNext: Bool) {
         guard hasNext == true else {
+            SBULog.info("All messages have been loaded.")
+            
             self.sortAllMessageList(needReload: true)
             self.lastUpdatedTimestamp = self.channel?.lastMessage?.createdAt ?? Int64(Date().timeIntervalSince1970*1000)
             
             return
         }
         
+        SBULog.info("[Request] Next message List")
+        
         let limit = 20
         self.channel?.getNextMessages(byTimestamp: self.lastUpdatedTimestamp, limit: limit, reverse: true, messageType: .all, customType: nil, completionHandler: { [weak self] messages, error in
-            guard error == nil else {
+            if let error = error {
+                SBULog.error("[Failed] Message list request: \(error.localizedDescription)")
                 self?.sortAllMessageList(needReload: true)
-                self?.didReceiveError(error?.localizedDescription)
+                self?.didReceiveError(error.localizedDescription)
                 return
             }
 
             guard let messages = messages else { return }
+            
+            SBULog.info("[Response] \(messages.count) messages")
+            
             if messages.count > 0 {
                 self?.lastUpdatedTimestamp = messages[0].createdAt
                 self?.upsertMessages(messages: messages, needReload: false)
@@ -374,13 +397,20 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
     
     private func loadMessageChangeLogs(hasMore: Bool, token: String?) {
         guard hasMore == true else {
+            SBULog.info("All next message changes have been loaded.")
             self.loadNextMessages(hasNext: true)
             return
         }
         
         if let token = token {
+            SBULog.info("[Request] Message change logs with token")
             self.channel?.getMessageChangeLogs(withToken: token) { [weak self] updatedMessages, deletedMessageIds, hasMore, token, error in
-                if let error = error { self?.didReceiveError(error.localizedDescription) }
+                if let error = error {
+                    SBULog.error("[Failed] Message change logs request: \(error.localizedDescription)")
+                    self?.didReceiveError(error.localizedDescription)
+                }
+                
+                SBULog.info("[Response] \(String(format: "%d updated messages", updatedMessages?.count ?? 0)), \(String(format: "%d deleted messages", deletedMessageIds?.count ?? 0))")
                 
                 self?.upsertMessages(messages: updatedMessages, needReload: false)
                 self?.deleteMessages(messageIds: deletedMessageIds as! [Int64], needReload: false)
@@ -389,8 +419,14 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
             }
         }
         else {
+            SBULog.info("[Request] Message change logs with last updated timestamp")
             self.channel?.getMessageChangeLogs(byTimestamp: self.lastUpdatedTimestamp) { [weak self] updatedMessages, deletedMessageIds, hasMore, token, error in
-                if let error = error { self?.didReceiveError(error.localizedDescription) }
+                if let error = error {
+                    SBULog.error("[Failed] Message change logs request: \(error.localizedDescription)")
+                    self?.didReceiveError(error.localizedDescription)
+                }
+                
+                SBULog.info("[Response] \(String(format: "%d updated messages", updatedMessages?.count ?? 0)), \(String(format: "%d deleted messages", deletedMessageIds?.count ?? 0))")
                 
                 self?.upsertMessages(messages: updatedMessages, needReload: false)
                 self?.deleteMessages(messageIds: deletedMessageIds as! [Int64], needReload: false)
@@ -405,19 +441,24 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         var preSendMessage: SBDUserMessage?
         guard let messageParam = SBDUserMessageParams(message: text) else { return }
         
+        SBULog.info("[Request] Send user message")
+        
         preSendMessage = self.channel?.sendUserMessage(with: messageParam) { [weak self] userMessage, error in
             guard let self = self else { return }
-            guard error == nil else {
+            if let error = error {
                 guard let requestId = userMessage?.requestId else { return }
                 self.preSendMessages.removeValue(forKey: requestId)
                 self.resendableMessages[requestId] = userMessage
                 self.sortAllMessageList(needReload: true)
-                self.didReceiveError(error?.localizedDescription)
+                self.didReceiveError(error.localizedDescription)
+                SBULog.error("[Failed] Send user message request: \(error.localizedDescription)")
                 return
             }
 
             guard let message = userMessage else { return }
             guard let requestId = userMessage?.requestId else { return }
+            
+            SBULog.info("[Succeed] Send user message: \(message.description)")
 
             self.preSendMessages.removeValue(forKey: requestId)
             self.resendableMessages.removeValue(forKey: requestId)
@@ -427,6 +468,7 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         }
         
         guard let unwrappedPreSendMessage = preSendMessage, let requestId = unwrappedPreSendMessage.requestId else { return }
+        SBULog.info("Presend user message: \(unwrappedPreSendMessage.description)")
         self.preSendMessages[requestId] = unwrappedPreSendMessage
         self.sortAllMessageList(needReload: true)
         self.messageInputView.endTypingMode()
@@ -447,14 +489,17 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         fileMessageParams.fileSize = UInt(fileData.count)
         guard let channel = self.channel else { return }
         
+        SBULog.info("[Request] Send file message")
         preSendMessage = channel.sendFileMessage(with: fileMessageParams,
                                                  progressHandler: {
                                                     // [weak self]
                                                     bytesSent, totalBytesSent, totalBytesExpectedToSend in
                                                     
                                                     //// If need reload cell for progress, call reload action in here.
-                                                    // guard let self = self else { return }
-                                                    // guard let requestId = preSendMessage?.requestId else { return }
+                                                     guard let requestId = preSendMessage?.requestId else { return }
+                                                    let fileTransferProgress = CGFloat(totalBytesSent) / CGFloat(totalBytesExpectedToSend)
+                                                    SBULog.info("File message transfer progress: \(requestId) - \(fileTransferProgress)")
+                                                    
                                                     
                                                     // self.fileTransferProgress[requestId] = CGFloat(totalBytesSent) / CGFloat(totalBytesExpectedToSend)
                                                     // DispatchQueue.main.async {
@@ -468,7 +513,7 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
                                                     //     self.tableView.reloadRows(at: [indexPath], with: .automatic)
                                                     // }
             }, completionHandler: { [weak self] fileMessage, error in
-                guard error == nil else {
+                if let error = error {
                     guard let requestId = fileMessage?.requestId else { return }
                     self?.resendableMessages[requestId] = fileMessage
                     self?.resendableFileData[requestId] = ["data": fileData, "type": mimeType, "filename": fileName] as [String : AnyObject]
@@ -476,12 +521,15 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
                     self?.preSendFileData.removeValue(forKey: requestId)
                     self?.sortAllMessageList(needReload: true)
                     
-                    self?.didReceiveError(error?.localizedDescription)
+                    self?.didReceiveError(error.localizedDescription)
+                    SBULog.error("[Failed] Send file message request: \(error.localizedDescription)")
                     return
                 }
                 
                 guard let message = fileMessage else { return }
                 guard let requestId = fileMessage?.requestId else { return }
+                
+                SBULog.info("[Succeed] Send file message: \(message.description)")
                 
                 self?.preSendMessages.removeValue(forKey: requestId)
                 self?.preSendFileData.removeValue(forKey: requestId)
@@ -494,6 +542,7 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         })
         
         guard let unwrappedPreSendMessage = preSendMessage, let requestId = unwrappedPreSendMessage.requestId else { return }
+        SBULog.info("Presend file message: \(unwrappedPreSendMessage.description)")
         self.preSendMessages[requestId] = unwrappedPreSendMessage
         self.preSendFileData[requestId] = ["data": fileData, "type": mimeType, "filename": fileName] as [String : AnyObject]
         self.fileTransferProgress[requestId] = 0
@@ -502,15 +551,20 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
     
     private func resendMessage(failedMessage: SBDBaseMessage) {
         if let failedMessage = failedMessage as? SBDUserMessage {
+            SBULog.info("[Request] Resend failed user message")
+            
             self.channel?.resendUserMessage(with: failedMessage, completionHandler: { [weak self] userMessage, error in
-                guard error == nil else {
+                if let error = error {
                     self?.sortAllMessageList(needReload: true)
-                    self?.didReceiveError(error?.localizedDescription)
+                    self?.didReceiveError(error.localizedDescription)
+                    SBULog.error("[Failed] Resend failed user message request: \(error.localizedDescription)\n\(failedMessage)")
                     return
                 }
                 
                 guard let message = userMessage else { return }
                 guard let requestId = userMessage?.requestId else { return }
+                
+                SBULog.info("[Succeed] Resend failed user message: \(message.description)")
 
                 self?.preSendMessages.removeValue(forKey: requestId)
                 self?.resendableMessages.removeValue(forKey: requestId)
@@ -524,20 +578,25 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
                 data = fileData["data"] as? Data
             }
             
+            SBULog.info("[Request] Resend failed file message")
+            
             self.channel?.resendFileMessage(with: failedMessage, binaryData: data,
                                             progressHandler: { [weak self] (bytesSent, totalBytesSent, totalBytesExpectedToSend) in
                                                 self?.fileTransferProgress[requestId] = CGFloat(totalBytesSent) / CGFloat(totalBytesExpectedToSend)
                                                 //// If need reload cell for progress, call reload action in here.
                                                 // self?.tableView.reloadData()
                 }, completionHandler: { [weak self] (fileMessage, error) in
-                    guard error == nil else {
+                    if let error = error {
                         self?.sortAllMessageList(needReload: true)
-                        self?.didReceiveError(error?.localizedDescription)
+                        self?.didReceiveError(error.localizedDescription)
+                        SBULog.error("[Failed] Resend failed file message request: \(error.localizedDescription)\n\(failedMessage)")
                         return
                     }
                     
                     guard let message = fileMessage else { return }
                     guard let requestId = fileMessage?.requestId else { return }
+                    
+                    SBULog.info("[Succeed] Resend failed file message: \(message.description)")
                     
                     self?.preSendMessages.removeValue(forKey: requestId)
                     self?.preSendFileData.removeValue(forKey: requestId)
@@ -553,11 +612,16 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
     
     private func removeMessage(message: SBDBaseMessage) {
         let deleteButton = SBUAlertButtonItem(title: SBUStringSet.Delete, color: theme.alertRemoveColor) { [weak self] info in
+            SBULog.info("[Request] Delete message: \(message.description)")
+            
             self?.channel?.delete(message, completionHandler: { [weak self] error in
-                guard error == nil else {
-                    self?.didReceiveError(error?.localizedDescription)
+                if let error = error {
+                    self?.didReceiveError(error.localizedDescription)
+                    SBULog.error("[Failed] Delete message request: \(error.localizedDescription)")
                     return
                 }
+                
+                SBULog.info("[Succeed] Delete message: \(message.description)")
                 
                 self?.deleteMessages(messageIds: [message.messageId], needReload: true)
             })
@@ -575,13 +639,18 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         SBUMain.connectionCheck { [weak self] user, error in
             if let error = error { self?.didReceiveError(error.localizedDescription) }
 
+            SBULog.info("[Request] Load channel: \(String(channelUrl))")
             SBDGroupChannel.getWithUrl(channelUrl) { [weak self] channel, error in
-                guard error == nil else {
-                    self?.didReceiveError(error?.localizedDescription)
+                if let error = error {
+                    self?.didReceiveError(error.localizedDescription)
+                    SBULog.error("[Failed] Load channel request: \(error.localizedDescription)")
                     return
                 }
-                
+            
                 self?.channel = channel
+                
+                SBULog.info("[Succeed] Load channel request: \(String(format: "%@", self?.channel ?? ""))")
+                
                 self?.loadPrevMessageList(reset: true)
                 
                 self?.titleView.configure(channel: self?.channel, title: self?.channelName)
@@ -653,13 +722,21 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         guard let message = self.inEditingMessage else { return }
         guard let messageParam = SBDUserMessageParams(message: messageString) else { return }
         
+        SBULog.info("[Request] Update user message")
+        
         self.channel?.updateUserMessage(
             withMessageId: message.messageId,
             userMessageParams: messageParam)
         { [weak self] updatedMessage, error in
-            if let error = error { self?.didReceiveError(error.localizedDescription) }
+            if let error = error {
+                self?.didReceiveError(error.localizedDescription)
+                SBULog.error("[Failed] Send user message request: \(String(error.localizedDescription))")
+            }
             
             guard let updatedMessage = updatedMessage else { return }
+            
+            SBULog.info("[Succeed] Update user message: \(updatedMessage.description)")
+            
             self?.deleteMessages(messageIds: [message.messageId], needReload: false)
             self?.upsertMessages(messages: [updatedMessage], needReload: true)
             
@@ -840,11 +917,9 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
             { imageData, dataUTI, orientation, info in
                 guard let imageData = imageData else { return }
                 self.sendFileMessage(fileData: imageData, fileName: imageName, mimeType: mimeType)
-                
             }
             
         default:
-            
             guard let originalImage = info[.originalImage] as? UIImage else { return }
             guard let imageData = originalImage.fixedOrientation().jpegData(compressionQuality: 1.0) else { return }
             self.sendFileMessage(fileData: imageData, fileName: "image.jpg", mimeType: "image/jpeg")
@@ -1006,7 +1081,6 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         
         // Tap profile action
         messageCell.tapHandlerToProfileImage = {
-            print("tapHandlerToProfileImage")
         }
 
 
@@ -1239,7 +1313,7 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         }
     }
     
-    
+
     // MARK: - SBDChannelDelegate
     // Received message
     open func channel(_ sender: SBDBaseChannel, didReceive message: SBDBaseMessage) {
@@ -1248,20 +1322,24 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         switch message {
         case is SBDUserMessage:
             //// If need specific logic for user message, implement here
+            SBULog.info("Did receive user message: \(message)")
             break
             
         case is SBDFileMessage:
             //// If need specific logic for file message, implement here
+            SBULog.info("Did receive file message: \(message)")
             break
             
         case is SBDAdminMessage:
             //// If need specific logic for admin message, implement here
+            SBULog.info("Did receive admin message: \(message)")
             break
             
         default:
             break
         }
         
+        SBULog.info("[Request] markAsRead")
         self.channel?.markAsRead()
         self.upsertMessages(messages: [message], needReload: true)
     }
@@ -1270,12 +1348,16 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
     open func channel(_ sender: SBDBaseChannel, didUpdate message: SBDBaseMessage) {
         guard self.channel?.channelUrl == sender.channelUrl else { return }
         
+        SBULog.info("Did update message: \(message)")
+        
         self.editMessages(messages: [message], needReload: true)
     }
     
     // Deleted message
     open func channel(_ sender: SBDBaseChannel, messageWasDeleted messageId: Int64) {
         guard self.channel?.channelUrl == sender.channelUrl else { return }
+        
+        SBULog.info("Message was deleted: \(messageId)")
         
         self.deleteMessages(messageIds: [messageId], needReload: true)
     }
@@ -1284,6 +1366,8 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
     open func channelDidUpdateReadReceipt(_ sender: SBDGroupChannel) {
         guard self.channel?.channelUrl == sender.channelUrl else { return }
         titleView.updateChannelStatus(channel: sender)
+        
+        SBULog.info("Did update readReceipt, ChannelUrl:\(sender.channelUrl)")
         
         DispatchQueue.main.async {
             self.tableView.reloadData()
@@ -1294,6 +1378,8 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
     open func channelDidUpdateDeliveryReceipt(_ sender: SBDGroupChannel) {
         guard self.channel?.channelUrl == sender.channelUrl else { return }
         
+        SBULog.info("Did update deliveryReceipt, ChannelUrl:\(sender.channelUrl)")
+        
         DispatchQueue.main.async {
             self.tableView.reloadData()
         }
@@ -1302,25 +1388,35 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
     open func channelDidUpdateTypingStatus(_ sender: SBDGroupChannel) {
         guard self.channel?.channelUrl == sender.channelUrl else { return }
         
+        SBULog.info("Did update typing status")
+        
         titleView.updateChannelStatus(channel: sender)
     }
     
     open func channelWasChanged(_ sender: SBDBaseChannel) {
         guard self.channel?.channelUrl == sender.channelUrl else { return }
         guard let channel = sender as? SBDGroupChannel else { return }
-        
+        SBULog.info("Channel was changed, ChannelUrl:\(channel.channelUrl)")
+
         titleView.configure(channel: channel, title: self.channelName)
     }
     
     
     // MARK: - SBDConnectionDelegate
     open func didSucceedReconnection() {
+        SBULog.info("Did succeed reconnection")
+        
         guard let channel = self.channel else { return }
+        
+        SBULog.info("[Request] Refresh channel")
         channel.refresh { error in
-            guard error == nil else {
-                self.didReceiveError(error?.localizedDescription)
+            if let error = error {
+                self.didReceiveError(error.localizedDescription)
+                SBULog.error("[Failed] Refresh channel request : \(error.localizedDescription)")
                 return
             }
+            
+            SBULog.info("[Succeed] Refresh channel request")
             self.loadMessageChangeLogs(hasMore: true, token: nil)
         }
     }
@@ -1395,10 +1491,12 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
     }
     
     open func messageInputViewDidStartTyping() {
+        SBULog.info("[Request] Start typing")
         self.channel?.startTyping()
     }
     
     open func messageInputViewDidEndTyping() {
+        SBULog.info("[Request] End typing")
         self.channel?.endTyping()
     }
     
@@ -1447,18 +1545,22 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
     
     // MARK: - SBUFileViewerDelegate
     open func didSelectDeleteImage(message: SBDFileMessage) {
+        SBULog.info("[Request] Delete message: \(message.description)")
+        
         self.channel?.delete(message) { [weak self] error in
-            guard error == nil else {
-                self?.didReceiveError(error?.localizedDescription)
+            if let error = error {
+                self?.didReceiveError(error.localizedDescription)
+                SBULog.error("[Failed] Delete message request: \(error.localizedDescription)")
                 return
             }
 
+            SBULog.info("[Succeed] Delete message: \(message.description)")
             self?.deleteMessages(messageIds: [message.messageId], needReload: true)
         }
     }
     
     // MARK: - Error handling
     open func didReceiveError(_ message: String?) {
-
+        SBULog.error("Did receive error: \(message ?? "")")
     }
 }

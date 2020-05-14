@@ -57,13 +57,14 @@ open class SBUMemberListViewController: UIViewController, UITableViewDelegate, U
     @available(*, unavailable, renamed: "SBUMemberListViewController.init(channelUrl:)")
     required public init?(coder: NSCoder) {
         super.init(coder: coder)
+        SBULog.info("")
     }
     
     /// If you have channel object, use this initialize function.
     /// - Parameter channel: Channel object
     public init(channel: SBDGroupChannel) {
         super.init(nibName: nil, bundle: nil)
-
+        SBULog.info("")
         self.channel = channel
     }
 
@@ -71,7 +72,8 @@ open class SBUMemberListViewController: UIViewController, UITableViewDelegate, U
     /// - Parameter channelUrl: Channel url string
     public init(channelUrl: String) {
         super.init(nibName: nil, bundle: nil)
-
+        SBULog.info("")
+        
         self.channelUrl = channelUrl
         
         self.loadChannel(channelUrl: channelUrl)
@@ -79,6 +81,7 @@ open class SBUMemberListViewController: UIViewController, UITableViewDelegate, U
     
     open override func loadView() {
         super.loadView()
+        SBULog.info("")
 
         // navigation bar
         self.navigationItem.leftBarButtonItem = self.leftBarButton
@@ -114,9 +117,8 @@ open class SBUMemberListViewController: UIViewController, UITableViewDelegate, U
     
     /// This function handles the initialization of styles
     open func setupStyles() {
-        self.navigationController?.navigationBar.backgroundColor = .clear
-        self.navigationController?.navigationBar.barTintColor = theme.navigationBarTintColor
-        self.navigationController?.navigationBar.shadowImage = .from(color: theme.navigationShadowColor)
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage.from(color: theme.navigationBarTintColor), for: .default)
+        self.navigationController?.navigationBar.shadowImage = UIImage.from(color: theme.navigationShadowColor)
 
         self.leftBarButton?.tintColor = theme.leftBarButtonTintColor
         self.rightBarButton?.tintColor = theme.rightBarButtonSelectedTintColor
@@ -134,9 +136,7 @@ open class SBUMemberListViewController: UIViewController, UITableViewDelegate, U
 
         self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
         
-        if let members = self.channel?.members as? [SBDMember] {
-            self.memberList = members
-        }
+        self.loadMembers()
         
         self.tableView.reloadData()
     }
@@ -151,6 +151,10 @@ open class SBUMemberListViewController: UIViewController, UITableViewDelegate, U
         super.viewWillAppear(animated)
         self.setNeedsStatusBarAppearanceUpdate()
         self.setupStyles()
+    }
+    
+    deinit {
+        SBULog.info("")
     }
 
     
@@ -173,15 +177,26 @@ open class SBUMemberListViewController: UIViewController, UITableViewDelegate, U
         
         SBUMain.connectionCheck { [weak self] user, error in
             if let error = error { self?.didReceiveError(error.localizedDescription) }
-
+            
+            SBULog.info("[Request] Load channel: \(String(channelUrl))")
             SBDGroupChannel.getWithUrl(channelUrl) { [weak self] channel, error in
-                guard error == nil else {
-                    self?.didReceiveError(error?.localizedDescription)
+                if let error = error {
+                    SBULog.error("[Failed] Load channel request: \(error.localizedDescription))")
+                    self?.didReceiveError(error.localizedDescription)
                     return
                 }
                 
                 self?.channel = channel
+                
+                SBULog.info("[Succeed] Load channel request: \(String(format: "%@", self?.channel ?? ""))")
             }
+        }
+    }
+    
+    private func loadMembers() {
+        if let members = self.channel?.members as? [SBDMember] {
+            self.memberList = members
+            SBULog.info("Load with \(self.memberList.count) members")
         }
     }
     

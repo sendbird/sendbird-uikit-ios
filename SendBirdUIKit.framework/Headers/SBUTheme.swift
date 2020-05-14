@@ -204,7 +204,7 @@ public class SBUChannelListTheme: NSObject {
         theme.leftBarButtonTintColor = SBUColorSet.primary200
         theme.rightBarButtonTintColor = SBUColorSet.primary200
         theme.navigationBarTintColor = SBUColorSet.background500
-        theme.navigationBarShadowColor = SBUColorSet.background600
+        theme.navigationBarShadowColor = SBUColorSet.background500
 
         theme.backgroundColor = SBUColorSet.background600
         theme.notificationOnBackgroundColor = SBUColorSet.primary200
@@ -221,18 +221,18 @@ public class SBUChannelListTheme: NSObject {
     }
     
     public init(statusBarStyle: UIStatusBarStyle = .default,
-                leftBarButtonTintColor: UIColor = SBUColorSet.primary200,
-                rightBarButtonTintColor: UIColor = SBUColorSet.primary200,
-                navigationBarTintColor: UIColor = SBUColorSet.background500,
-                navigationBarShadowColor: UIColor = SBUColorSet.background600,
-                backgroundColor: UIColor = SBUColorSet.background600,
+                leftBarButtonTintColor: UIColor = SBUColorSet.primary300,
+                rightBarButtonTintColor: UIColor = SBUColorSet.primary300,
+                navigationBarTintColor: UIColor = SBUColorSet.background100,
+                navigationBarShadowColor: UIColor = SBUColorSet.onlight04,
+                backgroundColor: UIColor = SBUColorSet.background100,
                 notificationOnBackgroundColor: UIColor = SBUColorSet.primary300,
                 notificationOnTintColor: UIColor = SBUColorSet.background100,
                 notificationOffBackgroundColor: UIColor = SBUColorSet.background200,
                 notificationOffTintColor: UIColor = SBUColorSet.onlight01,
                 leaveBackgroundColor: UIColor = SBUColorSet.error,
                 leaveTintColor: UIColor = SBUColorSet.background100,
-                alertBackgroundColor: UIColor = SBUColorSet.background600)
+                alertBackgroundColor: UIColor = SBUColorSet.background100)
     {
 
         self.statusBarStyle = statusBarStyle

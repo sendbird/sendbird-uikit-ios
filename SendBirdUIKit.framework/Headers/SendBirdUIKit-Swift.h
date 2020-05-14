@@ -217,6 +217,14 @@ typedef SWIFT_ENUM(NSInteger, FailedMessageOption, open) {
   FailedMessageOptionRemove = 1,
 };
 
+typedef SWIFT_ENUM(uint8_t, LogType, open) {
+  LogTypeNone = 0b00000000,
+  LogTypeError = 0b00000001,
+  LogTypeWarning = 0b00000010,
+  LogTypeInfo = 0b00000100,
+  LogTypeAll = 0b00000111,
+};
+
 typedef SWIFT_ENUM(NSInteger, MediaResourceType, open) {
   MediaResourceTypeCamera = 0,
   MediaResourceTypeLibrary = 1,
@@ -1106,6 +1114,21 @@ SWIFT_CLASS("_TtC13SendBirdUIKit7SBUMain")
 + (void)unregisterPushTokenWithCompletionHandler:(void (^ _Nonnull)(BOOL))completionHandler;
 + (void)unregisterAllPushTokenWithCompletionHandler:(void (^ _Nonnull)(BOOL))completionHandler;
 + (void)openChannelWithChannelUrl:(NSString * _Nonnull)channelUrl basedOnChannelList:(BOOL)basedOnChannelList;
+/// You can activate log information for debugging.
+/// <ul>
+///   <li>
+///     <code>Objective-C</code> uses bit masking. (e,g, <code>.error|.info</code>)
+///   </li>
+///   <li>
+///     <code>Swift</code> uses a single type in this function.
+///   </li>
+///   <li>
+///     default type: .none
+///   </li>
+/// </ul>
+/// \param type LogType
+///
++ (void)setLogLevel:(enum LogType)type;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
@@ -1480,6 +1503,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit7SBUUser")
 /// since:
 /// 1.0.1
 - (NSString * _Nonnull)refinedNickname SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -1797,6 +1821,14 @@ typedef SWIFT_ENUM(NSInteger, FailedMessageOption, open) {
   FailedMessageOptionRemove = 1,
 };
 
+typedef SWIFT_ENUM(uint8_t, LogType, open) {
+  LogTypeNone = 0b00000000,
+  LogTypeError = 0b00000001,
+  LogTypeWarning = 0b00000010,
+  LogTypeInfo = 0b00000100,
+  LogTypeAll = 0b00000111,
+};
+
 typedef SWIFT_ENUM(NSInteger, MediaResourceType, open) {
   MediaResourceTypeCamera = 0,
   MediaResourceTypeLibrary = 1,
@@ -2686,6 +2718,21 @@ SWIFT_CLASS("_TtC13SendBirdUIKit7SBUMain")
 + (void)unregisterPushTokenWithCompletionHandler:(void (^ _Nonnull)(BOOL))completionHandler;
 + (void)unregisterAllPushTokenWithCompletionHandler:(void (^ _Nonnull)(BOOL))completionHandler;
 + (void)openChannelWithChannelUrl:(NSString * _Nonnull)channelUrl basedOnChannelList:(BOOL)basedOnChannelList;
+/// You can activate log information for debugging.
+/// <ul>
+///   <li>
+///     <code>Objective-C</code> uses bit masking. (e,g, <code>.error|.info</code>)
+///   </li>
+///   <li>
+///     <code>Swift</code> uses a single type in this function.
+///   </li>
+///   <li>
+///     default type: .none
+///   </li>
+/// </ul>
+/// \param type LogType
+///
++ (void)setLogLevel:(enum LogType)type;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
@@ -3060,6 +3107,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit7SBUUser")
 /// since:
 /// 1.0.1
 - (NSString * _Nonnull)refinedNickname SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -3379,6 +3427,14 @@ typedef SWIFT_ENUM(NSInteger, FailedMessageOption, open) {
   FailedMessageOptionRemove = 1,
 };
 
+typedef SWIFT_ENUM(uint8_t, LogType, open) {
+  LogTypeNone = 0b00000000,
+  LogTypeError = 0b00000001,
+  LogTypeWarning = 0b00000010,
+  LogTypeInfo = 0b00000100,
+  LogTypeAll = 0b00000111,
+};
+
 typedef SWIFT_ENUM(NSInteger, MediaResourceType, open) {
   MediaResourceTypeCamera = 0,
   MediaResourceTypeLibrary = 1,
@@ -4268,6 +4324,21 @@ SWIFT_CLASS("_TtC13SendBirdUIKit7SBUMain")
 + (void)unregisterPushTokenWithCompletionHandler:(void (^ _Nonnull)(BOOL))completionHandler;
 + (void)unregisterAllPushTokenWithCompletionHandler:(void (^ _Nonnull)(BOOL))completionHandler;
 + (void)openChannelWithChannelUrl:(NSString * _Nonnull)channelUrl basedOnChannelList:(BOOL)basedOnChannelList;
+/// You can activate log information for debugging.
+/// <ul>
+///   <li>
+///     <code>Objective-C</code> uses bit masking. (e,g, <code>.error|.info</code>)
+///   </li>
+///   <li>
+///     <code>Swift</code> uses a single type in this function.
+///   </li>
+///   <li>
+///     default type: .none
+///   </li>
+/// </ul>
+/// \param type LogType
+///
++ (void)setLogLevel:(enum LogType)type;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
@@ -4642,6 +4713,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit7SBUUser")
 /// since:
 /// 1.0.1
 - (NSString * _Nonnull)refinedNickname SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -4959,6 +5031,14 @@ typedef SWIFT_ENUM(NSInteger, FailedMessageOption, open) {
   FailedMessageOptionRemove = 1,
 };
 
+typedef SWIFT_ENUM(uint8_t, LogType, open) {
+  LogTypeNone = 0b00000000,
+  LogTypeError = 0b00000001,
+  LogTypeWarning = 0b00000010,
+  LogTypeInfo = 0b00000100,
+  LogTypeAll = 0b00000111,
+};
+
 typedef SWIFT_ENUM(NSInteger, MediaResourceType, open) {
   MediaResourceTypeCamera = 0,
   MediaResourceTypeLibrary = 1,
@@ -5848,6 +5928,21 @@ SWIFT_CLASS("_TtC13SendBirdUIKit7SBUMain")
 + (void)unregisterPushTokenWithCompletionHandler:(void (^ _Nonnull)(BOOL))completionHandler;
 + (void)unregisterAllPushTokenWithCompletionHandler:(void (^ _Nonnull)(BOOL))completionHandler;
 + (void)openChannelWithChannelUrl:(NSString * _Nonnull)channelUrl basedOnChannelList:(BOOL)basedOnChannelList;
+/// You can activate log information for debugging.
+/// <ul>
+///   <li>
+///     <code>Objective-C</code> uses bit masking. (e,g, <code>.error|.info</code>)
+///   </li>
+///   <li>
+///     <code>Swift</code> uses a single type in this function.
+///   </li>
+///   <li>
+///     default type: .none
+///   </li>
+/// </ul>
+/// \param type LogType
+///
++ (void)setLogLevel:(enum LogType)type;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
@@ -6222,6 +6317,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit7SBUUser")
 /// since:
 /// 1.0.1
 - (NSString * _Nonnull)refinedNickname SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end

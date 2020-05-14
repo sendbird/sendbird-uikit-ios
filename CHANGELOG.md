@@ -1,5 +1,9 @@
 # Change Log
 
+### v1.0.6 (May 14, 2020)
+* Added - `setLogLevel()` for debugging from the console
+* Improved - navigationBar UI
+
 ### v1.0.5 (May 6, 2020)
 * Fixed - Weird creation channel navigation flow
 * Modified - Empty messages string in channel

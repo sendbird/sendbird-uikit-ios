@@ -62,12 +62,14 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
     @available(*, unavailable, renamed: "SBUChannelSettingsViewController.init(channelUrl:)")
     required public init?(coder: NSCoder) {
         super.init(coder: coder)
+        SBULog.info("")
     }
 
     /// If you have channel object, use this initialize function.
     /// - Parameter channel: Channel object
     public init(channel: SBDGroupChannel?) {
         super.init(nibName: nil, bundle: nil)
+        SBULog.info("")
         
         self.channel = channel
         
@@ -78,6 +80,7 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
     /// - Parameter channelUrl: Channel url string
     public init(channelUrl: String?) {
         super.init(nibName: nil, bundle: nil)
+        SBULog.info("")
         
         self.channelUrl = channelUrl
         
@@ -86,7 +89,8 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
     
     open override func loadView() {
         super.loadView()
-
+        SBULog.info("")
+        
         // navigation bar
         self.navigationItem.leftBarButtonItem = self.leftBarButton
         self.navigationItem.rightBarButtonItem = self.rightBarButton
@@ -132,9 +136,8 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
     
     /// This function handles the initialization of styles.
     open func setupStyles() {
-        self.navigationController?.navigationBar.backgroundColor = .clear
-        self.navigationController?.navigationBar.barTintColor = theme.navigationBarTintColor
-        self.navigationController?.navigationBar.shadowImage = .from(color: theme.navigationShadowColor)
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage.from(color: theme.navigationBarTintColor), for: .default)
+        self.navigationController?.navigationBar.shadowImage = UIImage.from(color: theme.navigationShadowColor)
 
         self.leftBarButton?.tintColor = theme.leftBarButtonTintColor
         self.rightBarButton?.tintColor = theme.rightBarButtonTintColor
@@ -185,10 +188,17 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
             params.coverUrl = self.channel?.coverUrl
         }
         
+        SBULog.info("[Request] Channel update")
         channel.update(with: params) { [weak self] channel, error in
+            if let error = error {
+                SBULog.error("[Failed] Channel update request: \(String(error.localizedDescription))")
+            }
+            
             if let userInfoView = self?.userInfoView as? UserInfoView {
                 userInfoView.configure(channel: self?.channel)
             }
+            
+            SBULog.info("[Succeed] Channel update")
         }
     }
     
@@ -199,10 +209,15 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
         
         SBUMain.connectionCheck { [weak self] user, error in
 
+            SBULog.info("[Request] Load channel: \(String(channelUrl))")
             SBDGroupChannel.getWithUrl(channelUrl) { [weak self] channel, error in
-                guard error == nil else { return }
+                if let error = error {
+                    SBULog.error("[Failed] Load channel request: \(error.localizedDescription)")
+                    return
+                }
                 
                 self?.channel = channel
+                SBULog.info("[Succeed] Load channel request: \(String(format: "%@", self?.channel ?? ""))")
                 
                 if let userInfoView = self?.userInfoView as? UserInfoView {
                     userInfoView.configure(channel: self?.channel)
@@ -263,13 +278,30 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
     // MARK: - Actions
     public func changeNotification(isOn: Bool) {
         let triggerOption: SBDGroupChannelPushTriggerOption = isOn ? .all : .off
-        self.channel?.setMyPushTriggerOption(triggerOption, completionHandler: { error in
+        
+        SBULog.info("[Request] Channel push status : \(triggerOption == .off ? "on" : "off"), ChannelUrl:\(self.channel?.channelUrl ?? "")")
+        self.channel?.setMyPushTriggerOption(triggerOption, completionHandler: { [weak self] error in
+            guard let self = self else { return }
+            
+            if let error = error {
+                SBULog.error("[Failed] Channel push status request: \(String(error.localizedDescription))")
+            }
+            
+            SBULog.info("[Succeed] Channel push status, ChannelUrl:\(self.channel?.channelUrl ?? "")")
         })
     }
     
     public func leaveChannel() {
+        SBULog.info("[Request] Leave channel, ChannelUrl:\(self.channel?.channelUrl ?? "")")
         self.channel?.leave(completionHandler: { [weak self] error in
             guard let self = self else { return }
+
+            if let error = error {
+                SBULog.error("[Failed] Leave channel request: \(String(error.localizedDescription))")
+            }
+            
+            SBULog.info("[Succeed] Leave channel request, ChannelUrl:\(self.channel?.channelUrl ?? "")")
+            
             guard let navigationController = self.navigationController, navigationController.viewControllers.count > 1 else {
                 self.dismiss(animated: true, completion: nil)
                 return

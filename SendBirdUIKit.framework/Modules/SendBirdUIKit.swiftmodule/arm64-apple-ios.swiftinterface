@@ -37,6 +37,7 @@ import UIKit
   @objc override dynamic open func viewDidLoad()
   @objc override dynamic open func viewDidLayoutSubviews()
   @objc override dynamic open func viewWillAppear(_ animated: Swift.Bool)
+  @objc deinit
   @objc public func loadChannel(channelUrl: Swift.String?)
   @objc open func loadNextUserList(reset: Swift.Bool, users: [SendBirdUIKit.SBUUser]? = nil)
   @objc open func inviteUsers()
@@ -47,7 +48,6 @@ import UIKit
   @objc public func tableView(_ tableView: UIKit.UITableView, willDisplay cell: UIKit.UITableViewCell, forRowAt indexPath: Foundation.IndexPath)
   @objc open func didReceiveError(_ message: Swift.String?)
   @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
-  @objc deinit
 }
 @objc @objcMembers @IBDesignable public class SBUAdminMessageCell : SendBirdUIKit.SBUBaseMessageCell {
   @objc public var messageLabel: UIKit.UILabel
@@ -355,6 +355,7 @@ public typealias SBUNewMessageInfoHandler = () -> Swift.Void
   @objc override dynamic open func viewDidLoad()
   @objc override dynamic open func viewWillAppear(_ animated: Swift.Bool)
   @objc override dynamic open func viewDidLayoutSubviews()
+  @objc deinit
   @objc open func loadNextUserList(reset: Swift.Bool, users: [SendBirdUIKit.SBUUser]? = nil)
   @objc open func createChannel()
   @objc public func tableView(_ tableView: UIKit.UITableView, numberOfRowsInSection section: Swift.Int) -> Swift.Int
@@ -363,12 +364,14 @@ public typealias SBUNewMessageInfoHandler = () -> Swift.Void
   @objc public func tableView(_ tableView: UIKit.UITableView, willDisplay cell: UIKit.UITableViewCell, forRowAt indexPath: Foundation.IndexPath)
   @objc open func didReceiveError(_ message: Swift.String?)
   @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
-  @objc deinit
 }
 @objc @objcMembers public class SBUUser : ObjectiveC.NSObject {
   @objc public init(userId: Swift.String, nickname: Swift.String? = nil, profileUrl: Swift.String? = nil)
   @objc public init(user: SendBirdSDK.SBDUser)
   @objc public func refinedNickname() -> Swift.String
+  @objc override dynamic public var description: Swift.String {
+    @objc get
+  }
   @objc override dynamic public init()
   @objc deinit
 }
@@ -531,6 +534,18 @@ public enum ChannelEditType : Swift.Int {
     get
   }
 }
+@objc public enum LogType : Swift.UInt8 {
+  case none = 0b00000000
+  case error = 0b00000001
+  case warning = 0b00000010
+  case info = 0b00000100
+  case all = 0b00000111
+  public typealias RawValue = Swift.UInt8
+  public var rawValue: Swift.UInt8 {
+    get
+  }
+  public init?(rawValue: Swift.UInt8)
+}
 extension UINavigationController {
   @objc override dynamic open var preferredStatusBarStyle: UIKit.UIStatusBarStyle {
     @objc get
@@ -589,6 +604,8 @@ extension UINavigationController {
   @objc public static func unregisterPushToken(completionHandler: @escaping (Swift.Bool) -> Swift.Void)
   @objc public static func unregisterAllPushToken(completionHandler: @escaping (Swift.Bool) -> Swift.Void)
   @objc public static func openChannel(channelUrl: Swift.String, basedOnChannelList: Swift.Bool = true)
+  @objc public static func setLogLevel(_ type: SendBirdUIKit.LogType)
+  public static func setLogLevel(_ types: [SendBirdUIKit.LogType])
   @objc override dynamic public init()
   @objc deinit
 }
@@ -733,7 +750,7 @@ extension UINavigationController {
   @objc public static var dark: SendBirdUIKit.SBUChannelListTheme {
     @objc get
   }
-  @objc public init(statusBarStyle: UIKit.UIStatusBarStyle = .default, leftBarButtonTintColor: UIKit.UIColor = SBUColorSet.primary200, rightBarButtonTintColor: UIKit.UIColor = SBUColorSet.primary200, navigationBarTintColor: UIKit.UIColor = SBUColorSet.background500, navigationBarShadowColor: UIKit.UIColor = SBUColorSet.background600, backgroundColor: UIKit.UIColor = SBUColorSet.background600, notificationOnBackgroundColor: UIKit.UIColor = SBUColorSet.primary300, notificationOnTintColor: UIKit.UIColor = SBUColorSet.background100, notificationOffBackgroundColor: UIKit.UIColor = SBUColorSet.background200, notificationOffTintColor: UIKit.UIColor = SBUColorSet.onlight01, leaveBackgroundColor: UIKit.UIColor = SBUColorSet.error, leaveTintColor: UIKit.UIColor = SBUColorSet.background100, alertBackgroundColor: UIKit.UIColor = SBUColorSet.background600)
+  @objc public init(statusBarStyle: UIKit.UIStatusBarStyle = .default, leftBarButtonTintColor: UIKit.UIColor = SBUColorSet.primary300, rightBarButtonTintColor: UIKit.UIColor = SBUColorSet.primary300, navigationBarTintColor: UIKit.UIColor = SBUColorSet.background100, navigationBarShadowColor: UIKit.UIColor = SBUColorSet.onlight04, backgroundColor: UIKit.UIColor = SBUColorSet.background100, notificationOnBackgroundColor: UIKit.UIColor = SBUColorSet.primary300, notificationOnTintColor: UIKit.UIColor = SBUColorSet.background100, notificationOffBackgroundColor: UIKit.UIColor = SBUColorSet.background200, notificationOffTintColor: UIKit.UIColor = SBUColorSet.onlight01, leaveBackgroundColor: UIKit.UIColor = SBUColorSet.error, leaveTintColor: UIKit.UIColor = SBUColorSet.background100, alertBackgroundColor: UIKit.UIColor = SBUColorSet.background100)
   @objc public var statusBarStyle: UIKit.UIStatusBarStyle
   @objc public var leftBarButtonTintColor: UIKit.UIColor
   @objc public var rightBarButtonTintColor: UIKit.UIColor
@@ -1032,6 +1049,7 @@ extension UINavigationController {
   @objc override dynamic open func viewDidLoad()
   @objc override dynamic open func viewDidLayoutSubviews()
   @objc override dynamic open func viewWillAppear(_ animated: Swift.Bool)
+  @objc deinit
   @objc open func showInviteUser()
   @objc public func loadChannel(channelUrl: Swift.String?)
   @objc open func onClickInviteUser()
@@ -1039,7 +1057,6 @@ extension UINavigationController {
   @objc public func tableView(_ tableView: UIKit.UITableView, cellForRowAt indexPath: Foundation.IndexPath) -> UIKit.UITableViewCell
   @objc open func didReceiveError(_ message: Swift.String?)
   @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
-  @objc deinit
 }
 public struct DiskCache {
   public init()
@@ -1073,3 +1090,6 @@ extension SendBirdUIKit.MessageEditItem : Swift.RawRepresentable {}
 extension SendBirdUIKit.FailedMessageOption : Swift.Equatable {}
 extension SendBirdUIKit.FailedMessageOption : Swift.Hashable {}
 extension SendBirdUIKit.FailedMessageOption : Swift.RawRepresentable {}
+extension SendBirdUIKit.LogType : Swift.Equatable {}
+extension SendBirdUIKit.LogType : Swift.Hashable {}
+extension SendBirdUIKit.LogType : Swift.RawRepresentable {}

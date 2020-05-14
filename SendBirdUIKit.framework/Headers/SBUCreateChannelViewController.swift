@@ -60,6 +60,7 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
     @available(*, unavailable, renamed: "SBUCreateChannelViewController.init()")
     required public init?(coder: NSCoder) {
         super.init(coder: coder)
+        SBULog.info("")
     }
     
     convenience public init() {
@@ -70,12 +71,13 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
     /// - Parameter users: User object
     public init(users: [SBUUser]?) {
         super.init(nibName: nil, bundle: nil)
-        
+        SBULog.info("")
         self.customizedUsers = users
     }
     
     open override func loadView() {
         super.loadView()
+        SBULog.info("")
         
         // navigation bar
         self.navigationItem.leftBarButtonItem = self.leftBarButton
@@ -111,9 +113,8 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
     
     /// This function handles the initialization of styles.
     open func setupStyles() {
-        self.navigationController?.navigationBar.backgroundColor = .clear
-        self.navigationController?.navigationBar.barTintColor = theme.navigationBarTintColor
-        self.navigationController?.navigationBar.shadowImage = .from(color: theme.navigationShadowColor)
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage.from(color: theme.navigationBarTintColor), for: .default)
+        self.navigationController?.navigationBar.shadowImage = UIImage.from(color: theme.navigationShadowColor)
 
         self.leftBarButton?.image = SBUIconSet.iconBack
         self.leftBarButton?.tintColor = theme.leftBarButtonTintColor
@@ -149,7 +150,11 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
         
         self.setupStyles()
     }
- 
+    
+    deinit {
+        SBULog.info("")
+    }
+
     
     // MARK: - SDK relations
     
@@ -167,6 +172,10 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
         if reset {
             self.userListQuery = nil
             self.userList = []
+            
+            SBULog.info("[Request] User List")
+        } else {
+            SBULog.info("[Request] Next user List")
         }
 
         if let users = users {
@@ -174,6 +183,9 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
             if let customizedUsers = self.customizedUsers {
                 self.customizedUsers! += users
             }
+            
+            SBULog.info("\(users.count) customized users have been added.")
+            
             self.userList += users
             self.reloadUserList()
             self.isLoading = false
@@ -186,19 +198,23 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
             
             guard self.userListQuery?.hasNext == true else {
                 self.isLoading = false
+                SBULog.info("All users have been loaded.")
                 return
             }
             
             self.userListQuery?.loadNextPage(completionHandler: { [weak self] users, error in
                 defer { self?.isLoading = false }
                 
-                guard error == nil else {
-                    self?.didReceiveError(error?.localizedDescription)
+                if let error = error {
+                    SBULog.error("[Failed] User list request: \(error.localizedDescription)")
+                    self?.didReceiveError(error.localizedDescription)
                     return
                 }
                 let filteredUsers = users?.filter { $0.userId != SBUGlobals.CurrentUser?.userId }
 
                 guard let users = SBUUserManager.convertUserList(users: filteredUsers) else { return }
+                
+                SBULog.info("[Response] \(users.count) users")
                 
                 self?.userList += users
                 self?.reloadUserList()
@@ -217,10 +233,18 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
         params.addUserIds(userIds)
         params.isDistinct = false
         
+        SBULog.info("[Request] Create channel with users, Users: \(Array(self.selectedUserList))")
         SBDGroupChannel.createChannel(with: params) { [weak self] channel, error in
-            if let error = error { self?.didReceiveError(error.localizedDescription) }
+            if let error = error {
+                SBULog.error("[Failed] Create channel request: \(String(error.localizedDescription))")
+                self?.didReceiveError(error.localizedDescription)
+            }
             
-            guard let channelUrl = channel?.channelUrl else { return }
+            guard let channelUrl = channel?.channelUrl else {
+                SBULog.error("[Failed] Create channel request: There is no channel url.")
+                return
+            }
+            SBULog.info("[Succeed] Create channel: \(channel?.description ?? "")")
             SBUMain.openChannel(channelUrl: channelUrl)
         }
     }
@@ -254,6 +278,8 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
         } else {
             self.selectedUserList.insert(user)
         }
+        
+        SBULog.info("Selected user: \(user)")
         
         self.rightBarButton?.title = SBUStringSet.CreateChannel_Create(selectedUserList.count)
         self.view.setNeedsLayout()
@@ -298,6 +324,6 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
     
     // MARK: - Error handling
     open func didReceiveError(_ message: String?) {
-        
+        SBULog.error("Did receive error: \(message ?? "")")
     }
 }

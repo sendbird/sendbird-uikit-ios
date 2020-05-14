@@ -67,6 +67,7 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
     // MARK: - Lifecycle
     open override func loadView() {
         super.loadView()
+        SBULog.info("")
 
         // tableview
         self.tableView.delegate = self
@@ -106,9 +107,8 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
     }
     
     public func setupStyles() {
-        
-        self.navigationController?.navigationBar.backgroundColor = .clear
-        self.navigationController?.navigationBar.barTintColor = theme.navigationBarTintColor
+
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage.from(color: theme.navigationBarTintColor), for: .default)
         self.navigationController?.navigationBar.shadowImage = UIImage.from(color: theme.navigationBarShadowColor)
 
         self.view.backgroundColor = theme.backgroundColor
@@ -155,10 +155,14 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
         self.setupStyles()
 
         if self.isLoading { return }
-        self.loadChannelChangeLogs(hasMore: true, token: self.lastUpdatedToken)
+        
+        if self.lastUpdatedToken != nil {
+            self.loadChannelChangeLogs(hasMore: true, token: self.lastUpdatedToken)
+        }
     }
 
     deinit {
+        SBULog.info("")
         SBDMain.removeChannelDelegate(forIdentifier: self.description)
         SBDMain.removeConnectionDelegate(forIdentifier: self.description)
     }
@@ -190,6 +194,9 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
             self.channelList = []
             self.lastUpdatedTimestamp = Int64(Date().timeIntervalSince1970*1000)
             self.lastUpdatedToken = nil
+            SBULog.info("[Request] Channel List")
+        } else {
+            SBULog.info("[Request] Next channel List")
         }
         
         if self.channelListQuery == nil {
@@ -200,19 +207,24 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
         }
         
         guard self.channelListQuery?.hasNext == true else {
+            SBULog.info("All channels have been loaded.")
             self.setLoading(false, false)
             return
         }
-        
+
         self.channelListQuery?.loadNextPage(completionHandler: { [weak self] channels, error in
             defer { self?.setLoading(false, false) }
             
-            guard error == nil else {
-                self?.didReceiveError(error?.localizedDescription)
+            if let error = error {
+                SBULog.error("[Failed] Channel list request : \(String(describing: error.localizedDescription))")
+                self?.didReceiveError(error.localizedDescription)
                 self?.showNetworkError()
                 return
             }
             guard let channels = channels else { return }
+
+            SBULog.info("[Response] \(channels.count) channels")
+            
             
             self?.channelList += channels
             self?.sortChannelList(needReload: true)
@@ -222,15 +234,22 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
     
     func loadChannelChangeLogs(hasMore: Bool, token: String?) {
         guard hasMore == true else {
+            SBULog.info("All channel changes have been loaded.")
             self.sortChannelList(needReload: true)
             return
         }
         
         if let token = token {
+            SBULog.info("[Request] Channel change logs with token")
             SBDMain.getMyGroupChannelChangeLogs(byToken: token, customTypes: nil) { [weak self] updatedChannels, deletedChannelUrls, hasMore, token, error in
-                if let error = error { self?.didReceiveError(error.localizedDescription) }
+                if let error = error {
+                    SBULog.error("[Failed] Channel change logs request : \(error.localizedDescription)")
+                    self?.didReceiveError(error.localizedDescription)
+                }
                 
                 self?.lastUpdatedToken = token
+                
+                SBULog.info("[Response] \(String(format: "%d updated channels", updatedChannels?.count ?? 0)), \(String(format: "%d deleted channels", deletedChannelUrls?.count ?? 0))")
                 
                 self?.upsertChannels(channels: updatedChannels, needReload: false)
                 self?.deleteChannels(channelUrls: deletedChannelUrls, needReload: false)
@@ -239,10 +258,16 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
             }
         }
         else {
+            SBULog.info("[Request] Channel change logs with last updated timestamp")
             SBDMain.getMyGroupChannelChangeLogs(byTimestamp: self.lastUpdatedTimestamp, customTypes: nil) { [weak self] updatedChannels, deletedChannelUrls, hasMore, token, error in
-                if let error = error { self?.didReceiveError(error.localizedDescription) }
+                if let error = error {
+                    SBULog.error("[Failed] Channel change logs request : \(error.localizedDescription)")
+                    self?.didReceiveError(error.localizedDescription)
+                }
 
                 self?.lastUpdatedToken = token
+                
+                SBULog.info("[Response] \(String(format: "%d updated channels", updatedChannels?.count ?? 0)), \(String(format: "%d deleted channels", deletedChannelUrls?.count ?? 0))")
                 
                 self?.upsertChannels(channels: updatedChannels, needReload: false)
                 self?.deleteChannels(channelUrls: deletedChannelUrls, needReload: false)
@@ -450,10 +475,16 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
         let iconSize: CGFloat = 40.0
         
         let leaveAction = UIContextualAction(style: .normal, title: "") { action, view, success in
+            SBULog.info("[Request] Leave channel, ChannelUrl:\(channel.channelUrl)")
             channel.leave { [weak self] error in
-                if let error = error { self?.didReceiveError(error.localizedDescription) }
+                if let error = error {
+                    SBULog.error("[Failed] Leave channel request: \(String(error.localizedDescription))")
+                    self?.didReceiveError(error.localizedDescription)
+                }
+                
+                SBULog.info("[Succeed] Leave channel request, ChannelUrl:\(channel.channelUrl)")
+                success(true)
             }
-            success(true)
         }
         
         let leaveTypeView = UIImageView(frame: CGRect(x: (size-iconSize)/2, y: (size-iconSize)/2, width: iconSize, height: iconSize))
@@ -468,13 +499,20 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
         let pushOption = channel.myPushTriggerOption
         
         let alarmAction = UIContextualAction(style: .normal, title: "") { action, view, success in
+            SBULog.info("[Request] Channel push status : \(pushOption == .off ? "on" : "off"), ChannelUrl:\(channel.channelUrl)")
             channel.setMyPushTriggerOption(pushOption == .off ? .all : .off) { [weak self] error in
-                if let error = error { self?.didReceiveError(error.localizedDescription) }
+                if let error = error {
+                    SBULog.error("[Failed] Channel push status request: \(String(error.localizedDescription))")
+                    self?.didReceiveError(error.localizedDescription)
+                }
+                
+                SBULog.info("[Succeed] Channel push status, ChannelUrl:\(channel.channelUrl)")
+                success(true)
+                
                 DispatchQueue.main.async {
                     tableView.reloadRows(at: [indexPath], with: .automatic)
                 }
             }
-            success(true)
         }
         
         let alarmTypeView = UIImageView(frame: CGRect(x: (size-iconSize)/2, y: (size-iconSize)/2, width: iconSize, height: iconSize))
@@ -503,8 +541,14 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
         let iconSize: CGFloat = 40.0
         
         let leave = UITableViewRowAction(style: .normal, title: "") { action, indexPath in
+            SBULog.info("[Request] Leave channel, ChannelUrl:\(channel.channelUrl)")
             channel.leave { [weak self] error in
-                if let error = error { self?.didReceiveError(error.localizedDescription) }
+                if let error = error {
+                    SBULog.error("[Failed] Leave channel request: \(String(error.localizedDescription))")
+                    self?.didReceiveError(error.localizedDescription)
+                }
+                
+                SBULog.info("[Succeed] Leave channel request, ChannelUrl:\(channel.channelUrl)")
             }
         }
         
@@ -520,8 +564,14 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
         
         let pushOption = channel.myPushTriggerOption
         let alarm = UITableViewRowAction(style: .normal, title: "") { action, indexPath in
+            SBULog.info("[Request] Channel push status : \(pushOption == .off ? "on" : "off"), ChannelUrl:\(channel.channelUrl)")
             channel.setMyPushTriggerOption(pushOption == .off ? .all : .off) { [weak self] error in
-                if let error = error { self?.didReceiveError(error.localizedDescription) }
+                if let error = error {
+                    SBULog.error("[Failed] Channel push status request: \(String(error.localizedDescription))")
+                    self?.didReceiveError(error.localizedDescription)
+                }
+                
+                SBULog.info("[Succeed] Channel push status, ChannelUrl:\(channel.channelUrl)")
 
                 DispatchQueue.main.async {
                     tableView.reloadRows(at: [indexPath], with: .automatic)
@@ -550,6 +600,8 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
     
     // MARK: - SBDChannelDelegate
     open func channel(_ sender: SBDGroupChannel, userDidJoin user: SBDUser) {
+        SBULog.info("User did join the channel, Nickname:\(String(user.nickname ?? "")) - ChannelUrl:\(sender.channelUrl)")
+        
         if self.channelListQuery?.includeEmptyChannel == false {
             self.updateChannels(channels: [sender], needReload: true)
         } else {
@@ -559,17 +611,22 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
         
     open func channel(_ sender: SBDGroupChannel, userDidLeave user: SBDUser) {
         guard user.userId == SBUGlobals.CurrentUser?.userId else { return }
-
+        SBULog.info("User did leave the channel, Nickname:\(String(user.nickname ?? "")) - ChannelUrl:\(sender.channelUrl)")
+        
         self.deleteChannels(channelUrls: [sender.channelUrl], needReload: true)
     }
     
     open func channelWasChanged(_ sender: SBDBaseChannel) {
         guard let channel = sender as? SBDGroupChannel else { return }
+        SBULog.info("Channel was changed, ChannelUrl:\(sender.channelUrl)") // markAsRead, didReceiveMsg
+        
         self.upsertChannels(channels: [channel], needReload: true)
     }
     
     open func channel(_ sender: SBDBaseChannel, messageWasDeleted messageId: Int64) {
         guard let channel = sender as? SBDGroupChannel else { return }
+        SBULog.info("Message was deleted in the channel, MessageID:\(String(messageId)) - channelUrl:\(channel.channelUrl)")
+        
         self.upsertChannels(channels: [channel], needReload: false)
     }
     
@@ -579,12 +636,13 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
     /// If necessary, override to handle errors.
     /// - Parameter message: error message
     open func didReceiveError(_ message: String?) {
-        
+        SBULog.error("Did receive error: \(message ?? "")")
     }
     
     
     // MARK: - SBDConnectionDelegate
     open func didSucceedReconnection() {
+        SBULog.info("Did succeed reconnection")
         self.loadChannelChangeLogs(hasMore: true, token: self.lastUpdatedToken)
     }
     
@@ -593,10 +651,14 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
     func didSelectRetry() {
         self.emptyView.updateType(.noChannels)
         
+        SBULog.info("[Request] Retry load channel list")
         SBUMain.connectionCheck { [weak self] user, error in
             guard let self = self else { return }
             
-            if let error = error { self.didReceiveError(error.localizedDescription) }
+            if let error = error {
+                SBULog.error("[Failed] Retry request: \(String(error.localizedDescription))")
+                self.didReceiveError(error.localizedDescription)
+            }
         
             SBDMain.removeChannelDelegate(forIdentifier: self.description)
             SBDMain.removeConnectionDelegate(forIdentifier: self.description)
