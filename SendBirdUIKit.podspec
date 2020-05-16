@@ -12,6 +12,6 @@ Pod::Spec.new do |s|
 	s.ios.vendored_frameworks = 'SendBirdUIKit.framework'
 	s.ios.frameworks = ["UIKit", "Foundation", "CoreData", "SendBirdSDK"]
 	s.requires_arc = true
-	s.dependency "SendBirdSDK", "~>3.0.175"
+	s.dependency "SendBirdSDK", "~>3.0.179"
 	s.ios.library = "icucore"
 end
