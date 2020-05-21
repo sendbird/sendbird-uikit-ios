@@ -1,5 +1,8 @@
 # Change Log
 
+### v1.0.7 (May 21, 2020)
+* Fixed - placeholder not appearing normally when loading image.
+
 ### v1.0.6 (May 14, 2020)
 * Added - `setLogLevel()` for debugging from the console
 * Improved - navigationBar UI
