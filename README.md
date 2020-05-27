@@ -9,7 +9,10 @@ SendBird UIKit is a development kit with an user interface that enables an easy 
 [![Commercial License](https://img.shields.io/badge/license-Commercial-brightgreen.svg)](https://github.com/sendbird/sendbird-uikit-ios/blob/master/LICENSE.md)
 
 ## Documentation
-[SendBird UIKit for iOS](https://docs.sendbird.com/ios)
+[SendBird UIKit for iOS](https://docs.sendbird.com/ios/ui_kit_getting_started)
+
+## For bugs and feature requests
+[SendBird community](https://community.sendbird.com/)
 
 ## UIKit for iOS 
 
