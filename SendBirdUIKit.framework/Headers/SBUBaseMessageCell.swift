@@ -188,7 +188,7 @@ public class MessageProfileView: UIView {
     private let leftSpace: CGFloat = 12
     private let rightSpace: CGFloat = 12
      
-    init(urlString: String) {
+    public init(urlString: String) {
         self.urlString = urlString
         super.init(frame: .init(x: 0, y: 0, width: 26, height: 26))
         self.setupViews()
@@ -196,7 +196,7 @@ public class MessageProfileView: UIView {
         self.configure(urlString: urlString)
     }
     
-    override init(frame: CGRect) {
+    override public init(frame: CGRect) {
         super.init(frame: frame)
         self.setupViews()
         self.setupAutolayout()
@@ -254,7 +254,7 @@ public class UserNameView: UIView {
     
     var username: String = ""
     
-    init(username: String) {
+    public init(username: String) {
         self.username = username
         super.init(frame: .zero)
         self.setupViews()
@@ -262,7 +262,7 @@ public class UserNameView: UIView {
         self.configure(username: self.username)
     }
     
-    override init(frame: CGRect) {
+    override public init(frame: CGRect) {
         super.init(frame: frame)
         self.setupViews()
         self.setupAutolayout()
@@ -330,7 +330,7 @@ public class MessageStateView: UIView {
     var receiptState: SBUMessageReceiptState = .none
     var position: MessagePosition = .center
      
-    init(sendingState: SBDMessageSendingStatus, receiptState: SBUMessageReceiptState) {
+    public init(sendingState: SBDMessageSendingStatus, receiptState: SBUMessageReceiptState) {
         self.receiptState = receiptState
         super.init(frame: .zero)
         self.setupViews()
@@ -339,7 +339,7 @@ public class MessageStateView: UIView {
                        receiptState: self.receiptState, position: .center)
     }
     
-    override init(frame: CGRect) {
+    override public init(frame: CGRect) {
         super.init(frame: frame)
         self.setupViews()
         self.setupAutolayout()

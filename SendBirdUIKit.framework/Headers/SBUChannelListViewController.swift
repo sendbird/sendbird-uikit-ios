@@ -65,6 +65,20 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
     var customCell: SBUBaseChannelCell? = nil
 
     // MARK: - Lifecycle
+    @available(*, unavailable, renamed: "SBUChannelListViewController()")
+    required public init?(coder: NSCoder) {
+        super.init(coder: coder)
+        SBULog.info("")
+    }
+
+    /// If you have channel object, use this initialize function.
+    /// - Parameter channel: Channel object
+    public init() {
+        super.init(nibName: nil, bundle: nil)
+        SBULog.info("")
+    }
+    
+    
     open override func loadView() {
         super.loadView()
         SBULog.info("")

@@ -47,7 +47,7 @@ open class SBUMemberListViewController: UIViewController, UITableViewDelegate, U
     }()
     
     // for logic
-    private var channel: SBDGroupChannel?
+    public private(set) var channel: SBDGroupChannel?
     private var channelUrl: String?
     
     private var memberList: [SBDMember] = []
@@ -92,7 +92,7 @@ open class SBUMemberListViewController: UIViewController, UITableViewDelegate, U
         self.tableView.delegate = self
         self.tableView.dataSource = self
         self.tableView.separatorStyle = .none
-        self.tableView.register(SBUUserCell.loadNib(), forCellReuseIdentifier: SBUUserCell.className) // for xib
+        self.tableView.register(SBUUserCell.loadNibForSB(), forCellReuseIdentifier: SBUUserCell.className) // for xib
         self.tableView.rowHeight = UITableView.automaticDimension
         self.tableView.estimatedRowHeight = 44.0
         self.view.addSubview(self.tableView)

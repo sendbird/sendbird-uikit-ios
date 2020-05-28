@@ -54,7 +54,7 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
     private let actionSheetIdPicker = 2
     
     /// One of two must be set.
-    private var channel: SBDGroupChannel?
+    public private(set) var channel: SBDGroupChannel?
     private var channelUrl: String?
 
     
@@ -102,7 +102,7 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
         self.tableView.bounces = false
         self.tableView.alwaysBounceVertical = false
         self.tableView.separatorStyle = .none
-        self.tableView.register(SBUChannelSettingCell.loadNib(), forCellReuseIdentifier: SBUChannelSettingCell.className)
+        self.tableView.register(SBUChannelSettingCell.loadNibForSB(), forCellReuseIdentifier: SBUChannelSettingCell.className)
         self.tableView.tableHeaderView = self.userInfoView
         self.tableView.rowHeight = UITableView.automaticDimension
         self.tableView.estimatedRowHeight = 44.0

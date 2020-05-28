@@ -53,7 +53,7 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
     }()
     
     private lazy var _messageInputView: SBUMessageInputView = {
-        return SBUMessageInputView.loadViewFromNib() as! SBUMessageInputView
+        return SBUMessageInputView.loadViewFromNibForSB() as! SBUMessageInputView
     }()
     
     private lazy var _newMessageInfoView: SBUNewMessageInfo = {
@@ -76,7 +76,7 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
     // for Logic
 
     /// One of two must be set.
-    private var channel: SBDGroupChannel?
+    public private(set) var channel: SBDGroupChannel?
     private var channelUrl: String?
 
     @SBUAtomic var fullMessageList: [SBDBaseMessage] = []
@@ -436,14 +436,16 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         }
     }
     
-    private func sendUserMessage(text: String) {
+    public func sendUserMessage(text: String) {
         let text = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        var preSendMessage: SBDUserMessage?
         guard let messageParam = SBDUserMessageParams(message: text) else { return }
-        
+        self.sendUserMessage(messageParams: messageParam)
+    }
+    
+    public func sendUserMessage(messageParams: SBDUserMessageParams) {
         SBULog.info("[Request] Send user message")
         
-        preSendMessage = self.channel?.sendUserMessage(with: messageParam) { [weak self] userMessage, error in
+        let preSendMessage = self.channel?.sendUserMessage(with: messageParams) { [weak self] userMessage, error in
             guard let self = self else { return }
             if let error = error {
                 guard let requestId = userMessage?.requestId else { return }
@@ -454,12 +456,12 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
                 SBULog.error("[Failed] Send user message request: \(error.localizedDescription)")
                 return
             }
-
+            
             guard let message = userMessage else { return }
             guard let requestId = userMessage?.requestId else { return }
             
             SBULog.info("[Succeed] Send user message: \(message.description)")
-
+            
             self.preSendMessages.removeValue(forKey: requestId)
             self.resendableMessages.removeValue(forKey: requestId)
             self.upsertMessages(messages: [message], needReload: true)
@@ -476,27 +478,31 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         self.scrollToBottom()
     }
     
-    private func sendFileMessage(fileData: Data, fileName: String, mimeType: String) {
+    public func sendFileMessage(fileData: Data, fileName: String, mimeType: String) {
+        let messageParams = SBDFileMessageParams(file: fileData)!
+        messageParams.fileName = fileName
+        messageParams.mimeType = mimeType
+        messageParams.fileSize = UInt(fileData.count)
+        
+        self.sendFileMessage(messageParams: messageParams)
+    }
+
+    public func sendFileMessage(messageParams: SBDFileMessageParams) {
         /*********************************
           Thumbnail is a premium feature.
         ***********************************/
         
-        var preSendMessage: SBDFileMessage?
-        
-        let fileMessageParams = SBDFileMessageParams(file: fileData)!
-        fileMessageParams.fileName = fileName
-        fileMessageParams.mimeType = mimeType
-        fileMessageParams.fileSize = UInt(fileData.count)
         guard let channel = self.channel else { return }
         
         SBULog.info("[Request] Send file message")
-        preSendMessage = channel.sendFileMessage(with: fileMessageParams,
+        var preSendMessage: SBDFileMessage?
+        preSendMessage = channel.sendFileMessage(with: messageParams,
                                                  progressHandler: {
                                                     // [weak self]
                                                     bytesSent, totalBytesSent, totalBytesExpectedToSend in
                                                     
                                                     //// If need reload cell for progress, call reload action in here.
-                                                     guard let requestId = preSendMessage?.requestId else { return }
+                                                    guard let requestId = preSendMessage?.requestId else { return }
                                                     let fileTransferProgress = CGFloat(totalBytesSent) / CGFloat(totalBytesExpectedToSend)
                                                     SBULog.info("File message transfer progress: \(requestId) - \(fileTransferProgress)")
                                                     
@@ -516,7 +522,9 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
                 if let error = error {
                     guard let requestId = fileMessage?.requestId else { return }
                     self?.resendableMessages[requestId] = fileMessage
-                    self?.resendableFileData[requestId] = ["data": fileData, "type": mimeType, "filename": fileName] as [String : AnyObject]
+                    if let fileData = messageParams.file, let mimeType = messageParams.mimeType, let fileName = messageParams.fileName {
+                        self?.resendableFileData[requestId] = ["data": fileData, "type": mimeType, "filename": fileName] as [String : AnyObject]
+                    }
                     self?.preSendMessages.removeValue(forKey: requestId)
                     self?.preSendFileData.removeValue(forKey: requestId)
                     self?.sortAllMessageList(needReload: true)
@@ -544,7 +552,9 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         guard let unwrappedPreSendMessage = preSendMessage, let requestId = unwrappedPreSendMessage.requestId else { return }
         SBULog.info("Presend file message: \(unwrappedPreSendMessage.description)")
         self.preSendMessages[requestId] = unwrappedPreSendMessage
-        self.preSendFileData[requestId] = ["data": fileData, "type": mimeType, "filename": fileName] as [String : AnyObject]
+        if let fileData = messageParams.file, let mimeType = messageParams.mimeType, let fileName = messageParams.fileName {
+            self.preSendFileData[requestId] = ["data": fileData, "type": mimeType, "filename": fileName] as [String : AnyObject]
+        }
         self.fileTransferProgress[requestId] = 0
         self.sortAllMessageList(needReload: true)
     }

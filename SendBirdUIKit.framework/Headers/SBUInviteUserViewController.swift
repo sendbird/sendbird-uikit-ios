@@ -47,7 +47,7 @@ open class SBUInviteUserViewController: UIViewController, UITableViewDelegate, U
     }()
     
     // for logic
-    private var channel: SBDGroupChannel?
+    public private(set) var channel: SBDGroupChannel?
     private var channelUrl: String?
     
     @SBUAtomic private var customizedUsers: [SBUUser]?
@@ -125,7 +125,7 @@ open class SBUInviteUserViewController: UIViewController, UITableViewDelegate, U
         self.tableView.delegate = self
         self.tableView.dataSource = self
         self.tableView.separatorStyle = .none
-        self.tableView.register(SBUUserCell.loadNib(), forCellReuseIdentifier: SBUUserCell.className) // for xib
+        self.tableView.register(SBUUserCell.loadNibForSB(), forCellReuseIdentifier: SBUUserCell.className) // for xib
         self.tableView.rowHeight = UITableView.automaticDimension
         self.tableView.estimatedRowHeight = 44.0
         self.view.addSubview(self.tableView)
@@ -239,7 +239,7 @@ open class SBUInviteUserViewController: UIViewController, UITableViewDelegate, U
 
         if let users = users {
             // Customized user list
-            if let customizedUsers = self.customizedUsers {
+            if self.customizedUsers != nil {
                 self.customizedUsers! += users
             }
             

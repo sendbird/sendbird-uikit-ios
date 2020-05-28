@@ -25,7 +25,11 @@ open class SBUNewMessageInfo: UIView {
         self.setupAutolayout()
     }
     
-    @available(*, unavailable, renamed: "SBUChannelTitleView.init(frame:)")
+    public init() {
+        super.init(frame: .zero)
+    }
+    
+    @available(*, unavailable, renamed: "SBUNewMessageInfo.init(frame:)")
     required public init?(coder: NSCoder) {
         super.init(coder: coder)
     }

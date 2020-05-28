@@ -1,5 +1,10 @@
 # Change Log
 
+### v1.0.8 (May 28, 2020)
+* Modified - File message information in channel preview
+* Modified - Access control for channel objects
+* Added - Required initializers
+
 ### v1.0.7 (May 21, 2020)
 * Fixed - placeholder not appearing normally when loading image.
 
