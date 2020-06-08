@@ -87,16 +87,16 @@ $ pod install
 $ pod update 
 ```
 
-> __Note__: Sendbird UIKit for iOS is Sendbird Chat SDK-dependent. If you install the UIKit, `CocoaPods` will automatically install the Chat SDK for iOS as well. The minimum requirement of the Chat SDK for iOS is 3.0.179 or higher.
+> __Note__: Sendbird UIKit for iOS is Sendbird Chat SDK-dependent. If you install the UIKit, `CocoaPods` will automatically install the Chat SDK for iOS as well. The minimum requirement of the Chat SDK for iOS is 3.0.182 or higher.
 
 #### Carthage
 
 1. Add `SendBirdUIKit` and `SendBirdSDK` into your `Cartfile` as below:
-> __Note__: Sendbird UIKit for iOS is Sendbird Chat SDK-dependent. The minimum requirement of the Chat SDK for iOS is 3.0.179 or higher.
+> __Note__: Sendbird UIKit for iOS is Sendbird Chat SDK-dependent. The minimum requirement of the Chat SDK for iOS is 3.0.182 or higher.
 
 ```bash
 github "sendbird/sendbird-uikit-ios"
-github "sendbird/sendbird-ios-framework" == 3.0.179
+github "sendbird/sendbird-ios-framework" == 3.0.182
 ```
 
 2. Install the `SendBirdUIKit` framework through `Carthage`.
