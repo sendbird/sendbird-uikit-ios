@@ -488,11 +488,13 @@ public class SBUMessageInputTheme: NSObject {
         theme.backgroundColor = SBUColorSet.background100
         theme.textFieldBackgroundColor = SBUColorSet.background200
         theme.textFieldPlaceholderColor = SBUColorSet.onlight03
+        theme.textFieldDisabledColor = SBUColorSet.onlight04
         theme.textFieldTintColor = SBUColorSet.primary300
         theme.textFieldTextColor = SBUColorSet.onlight01
         theme.textFieldBorderColor = SBUColorSet.background200
         
         theme.buttonTintColor = SBUColorSet.primary300
+        theme.buttonDisabledTintColor = SBUColorSet.onlight04
         
         theme.cancelButtonFont = SBUFontSet.button2
         theme.saveButtonFont = SBUFontSet.button2
@@ -505,11 +507,13 @@ public class SBUMessageInputTheme: NSObject {
         theme.backgroundColor = SBUColorSet.background600
         theme.textFieldBackgroundColor = SBUColorSet.background400
         theme.textFieldPlaceholderColor = SBUColorSet.ondark03
+        theme.textFieldDisabledColor = SBUColorSet.ondark04
         theme.textFieldTintColor = SBUColorSet.primary200
         theme.textFieldTextColor = SBUColorSet.ondark01
         theme.textFieldBorderColor = SBUColorSet.background400
         
         theme.buttonTintColor = SBUColorSet.primary200
+        theme.buttonDisabledTintColor = SBUColorSet.ondark04
         
         theme.cancelButtonFont = SBUFontSet.button2
         theme.saveButtonFont = SBUFontSet.button2
@@ -522,10 +526,12 @@ public class SBUMessageInputTheme: NSObject {
         backgroundColor: UIColor = SBUColorSet.background100,
         textFieldBackgroundColor: UIColor = SBUColorSet.background200,
         textFieldPlaceholderColor: UIColor = SBUColorSet.onlight03,
+        textFieldDisabledColor: UIColor = SBUColorSet.onlight04,
         textFieldTintColor: UIColor = SBUColorSet.primary300,
         textFieldTextColor: UIColor = SBUColorSet.onlight01,
         textFieldBorderColor: UIColor = SBUColorSet.background200,
         buttonTintColor: UIColor = SBUColorSet.primary300,
+        buttonDisabledTintColor: UIColor = SBUColorSet.onlight04,
         cancelButtonFont: UIFont = SBUFontSet.button2,
         saveButtonFont: UIFont = SBUFontSet.button2,
         saveButtonTextColor: UIColor = SBUColorSet.ondark01
@@ -534,10 +540,12 @@ public class SBUMessageInputTheme: NSObject {
         self.backgroundColor = backgroundColor
         self.textFieldBackgroundColor = textFieldBackgroundColor
         self.textFieldPlaceholderColor = textFieldPlaceholderColor
+        self.textFieldDisabledColor = textFieldDisabledColor
         self.textFieldTintColor = textFieldTintColor
         self.textFieldTextColor = textFieldTextColor
         self.textFieldBorderColor = textFieldBorderColor
         self.buttonTintColor = buttonTintColor
+        self.buttonDisabledTintColor = buttonDisabledTintColor
         self.cancelButtonFont = cancelButtonFont
         self.saveButtonFont = saveButtonFont
         self.saveButtonTextColor = saveButtonTextColor
@@ -546,11 +554,13 @@ public class SBUMessageInputTheme: NSObject {
     public var backgroundColor: UIColor
     public var textFieldBackgroundColor: UIColor
     public var textFieldPlaceholderColor: UIColor
+    public var textFieldDisabledColor: UIColor
     public var textFieldTintColor: UIColor
     public var textFieldTextColor: UIColor
     public var textFieldBorderColor: UIColor
     
     public var buttonTintColor: UIColor
+    public var buttonDisabledTintColor: UIColor
     
     public var cancelButtonFont: UIFont
     public var saveButtonFont: UIFont

@@ -43,7 +43,9 @@ import UIKit
   @objc deinit
   @objc public func loadChannel(channelUrl: Swift.String?)
   @objc open func loadNextUserList(reset: Swift.Bool, users: [SendBirdUIKit.SBUUser]? = nil)
-  @objc open func inviteUsers()
+  @objc public func appendUsersWithFiltering(users: [SendBirdUIKit.SBUUser])
+  @objc public func inviteUsers()
+  @objc public func inviteUsers(userIds: [Swift.String])
   @objc public func popToChannel()
   @objc public func tableView(_ tableView: UIKit.UITableView, numberOfRowsInSection section: Swift.Int) -> Swift.Int
   @objc public func tableView(_ tableView: UIKit.UITableView, cellForRowAt indexPath: Foundation.IndexPath) -> UIKit.UITableViewCell
@@ -76,6 +78,9 @@ extension UIView {
     @objc get
     @objc set
   }
+  @objc @SendBirdUIKit.SBUAtomic public var channelList: [SendBirdSDK.SBDGroupChannel] {
+    @objc get
+  }
   @available(*, unavailable, renamed: "SBUChannelListViewController()")
   @objc required dynamic public init?(coder: Foundation.NSCoder)
   @objc dynamic public init()
@@ -89,6 +94,8 @@ extension UIView {
   @objc override dynamic open func viewDidLoad()
   @objc override dynamic open func viewWillAppear(_ animated: Swift.Bool)
   @objc deinit
+  @objc public func changePushTriggerOption(option: SendBirdSDK.SBDGroupChannelPushTriggerOption, channel: SendBirdSDK.SBDGroupChannel, completionHandler: ((Swift.Bool) -> Swift.Void)? = nil)
+  @objc public func leaveChannel(_ channel: SendBirdSDK.SBDGroupChannel, completionHandler: ((Swift.Bool) -> Swift.Void)? = nil)
   @objc open func showChannel(channelUrl: Swift.String)
   @objc open func showCreateChannel()
   @objc public func setLoading(_ loadingState: Swift.Bool, _ showIndicator: Swift.Bool)
@@ -192,6 +199,12 @@ public typealias SBUNewMessageInfoHandler = () -> Swift.Void
   @objc public var channel: SendBirdSDK.SBDGroupChannel? {
     get
   }
+  @objc @SendBirdUIKit.SBUAtomic public var messageList: [SendBirdSDK.SBDBaseMessage] {
+    @objc get
+  }
+  @objc public var resendableMessages: [Swift.String : SendBirdSDK.SBDBaseMessage] {
+    get
+  }
   @available(*, unavailable, renamed: "SBUChannelViewController.init(channelUrl:)")
   @objc required dynamic public init?(coder: Foundation.NSCoder)
   @objc public init(channel: SendBirdSDK.SBDGroupChannel)
@@ -207,12 +220,16 @@ public typealias SBUNewMessageInfoHandler = () -> Swift.Void
   @objc override dynamic open func viewWillAppear(_ animated: Swift.Bool)
   @objc override dynamic open func viewWillDisappear(_ animated: Swift.Bool)
   @objc deinit
-  @objc open func showChannelSettings()
   @objc public func sendUserMessage(text: Swift.String)
   @objc public func sendUserMessage(messageParams: SendBirdSDK.SBDUserMessageParams)
   @objc public func sendFileMessage(fileData: Foundation.Data, fileName: Swift.String, mimeType: Swift.String)
   @objc public func sendFileMessage(messageParams: SendBirdSDK.SBDFileMessageParams)
+  @objc public func resendMessage(failedMessage: SendBirdSDK.SBDBaseMessage)
+  @objc public func updateUserMessage(message: SendBirdSDK.SBDUserMessage, text: Swift.String)
+  @objc public func updateUserMessage(message: SendBirdSDK.SBDUserMessage, messageParams: SendBirdSDK.SBDUserMessageParams)
+  @objc public func deleteMessage(message: SendBirdSDK.SBDBaseMessage)
   @objc public func loadChannel(channelUrl: Swift.String?)
+  @objc open func showChannelSettings()
   @objc public func checkSameDayAsNextMessage(currentIndex: Swift.Int) -> Swift.Bool
   @objc public func configureOffset()
   @objc public func setLoading(_ loadingState: Swift.Bool, _ showIndicator: Swift.Bool)
@@ -241,6 +258,8 @@ public typealias SBUNewMessageInfoHandler = () -> Swift.Void
   @objc open func channelDidUpdateDeliveryReceipt(_ sender: SendBirdSDK.SBDGroupChannel)
   @objc open func channelDidUpdateTypingStatus(_ sender: SendBirdSDK.SBDGroupChannel)
   @objc open func channelWasChanged(_ sender: SendBirdSDK.SBDBaseChannel)
+  @objc public func channelWasFrozen(_ sender: SendBirdSDK.SBDBaseChannel)
+  @objc public func channelWasUnfrozen(_ sender: SendBirdSDK.SBDBaseChannel)
   @objc open func didSucceedReconnection()
   @objc open func messageInputView(_ messageInputView: SendBirdUIKit.SBUMessageInputView, didSelectSend text: Swift.String)
   @objc open func messageInputView(_ messageInputView: SendBirdUIKit.SBUMessageInputView, didSelectResource type: SendBirdUIKit.MediaResourceType)
@@ -283,6 +302,7 @@ public typealias SBUNewMessageInfoHandler = () -> Swift.Void
   @objc override dynamic open func layoutSubviews()
   @objc public func startEditMode(text: Swift.String)
   @objc public func endEditMode()
+  @objc public func setFrozenModeState(_ isFrozen: Swift.Bool)
   @objc public func endTypingMode()
   @objc public func updateTextViewHeight()
   @objc @IBAction open func onClickAddButton(_ sender: Any)
@@ -376,7 +396,8 @@ public typealias SBUNewMessageInfoHandler = () -> Swift.Void
   @objc override dynamic open func viewDidLayoutSubviews()
   @objc deinit
   @objc open func loadNextUserList(reset: Swift.Bool, users: [SendBirdUIKit.SBUUser]? = nil)
-  @objc open func createChannel()
+  @objc public func createChannel(userIds: [Swift.String])
+  @objc public func createChannel(params: SendBirdSDK.SBDGroupChannelParams)
   @objc public func tableView(_ tableView: UIKit.UITableView, numberOfRowsInSection section: Swift.Int) -> Swift.Int
   @objc public func tableView(_ tableView: UIKit.UITableView, cellForRowAt indexPath: Foundation.IndexPath) -> UIKit.UITableViewCell
   @objc public func tableView(_ tableView: UIKit.UITableView, didSelectRowAt indexPath: Foundation.IndexPath)
@@ -444,6 +465,7 @@ public typealias SBUNewMessageInfoHandler = () -> Swift.Void
   @objc public static var ChannelSettings_Members: (Swift.UInt) -> Swift.String
   @objc public static var ChannelSettings_Leave: Swift.String
   @objc public static var MessageInput_Text_Placeholder: Swift.String
+  @objc public static var MessageInput_Text_Unavailable: Swift.String
   @objc public static var Message_Edited: Swift.String
   @objc public static var Message_System: Swift.String
   @objc public static var Empty_No_Channels: Swift.String
@@ -663,19 +685,30 @@ extension UINavigationController {
   }
   @objc override dynamic open func viewDidLoad()
   @objc override dynamic open func viewWillAppear(_ animated: Swift.Bool)
-  @objc public func updateChannelInfo(channelName: Swift.String? = nil)
   @objc public func loadChannel(channelUrl: Swift.String?)
+  @objc @available(*, deprecated, renamed: "updateChannel(channelName:coverImage:)", message: "deprecated in 1.0.9")
+  public func updateChannelInfo(channelName: Swift.String? = nil)
+  @objc public func updateChannel(channelName: Swift.String? = nil, coverImage: UIKit.UIImage? = nil)
+  @objc public func updateChannel(params: SendBirdSDK.SBDGroupChannelParams)
+  @objc public func changeNotification(isOn: Swift.Bool)
+  @objc public func leaveChannel()
   @objc open func showMemberList()
   @objc public func selectChannelImage()
   @objc public func changeChannelName()
-  @objc public func changeNotification(isOn: Swift.Bool)
-  @objc public func leaveChannel()
   @objc public func tableView(_ tableView: UIKit.UITableView, didSelectRowAt indexPath: Foundation.IndexPath)
   @objc public func tableView(_ tableView: UIKit.UITableView, cellForRowAt indexPath: Foundation.IndexPath) -> UIKit.UITableViewCell
   @objc public func tableView(_ tableView: UIKit.UITableView, numberOfRowsInSection section: Swift.Int) -> Swift.Int
   @objc public func imagePickerController(_ picker: UIKit.UIImagePickerController, didFinishPickingMediaWithInfo info: [UIKit.UIImagePickerController.InfoKey : Any])
   @objc open func didReceiveError(_ message: Swift.String?)
   @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
+  @objc deinit
+}
+@propertyWrapper public class SBUAtomic<Value> {
+  public init(wrappedValue value: Value)
+  public var wrappedValue: Value {
+    get
+    set
+  }
   @objc deinit
 }
 @propertyWrapper public struct SBUAutoLayout<T> where T : UIKit.UIView {
@@ -851,14 +884,16 @@ extension UINavigationController {
   @objc public static var dark: SendBirdUIKit.SBUMessageInputTheme {
     @objc get
   }
-  @objc public init(backgroundColor: UIKit.UIColor = SBUColorSet.background100, textFieldBackgroundColor: UIKit.UIColor = SBUColorSet.background200, textFieldPlaceholderColor: UIKit.UIColor = SBUColorSet.onlight03, textFieldTintColor: UIKit.UIColor = SBUColorSet.primary300, textFieldTextColor: UIKit.UIColor = SBUColorSet.onlight01, textFieldBorderColor: UIKit.UIColor = SBUColorSet.background200, buttonTintColor: UIKit.UIColor = SBUColorSet.primary300, cancelButtonFont: UIKit.UIFont = SBUFontSet.button2, saveButtonFont: UIKit.UIFont = SBUFontSet.button2, saveButtonTextColor: UIKit.UIColor = SBUColorSet.ondark01)
+  @objc public init(backgroundColor: UIKit.UIColor = SBUColorSet.background100, textFieldBackgroundColor: UIKit.UIColor = SBUColorSet.background200, textFieldPlaceholderColor: UIKit.UIColor = SBUColorSet.onlight03, textFieldDisabledColor: UIKit.UIColor = SBUColorSet.onlight04, textFieldTintColor: UIKit.UIColor = SBUColorSet.primary300, textFieldTextColor: UIKit.UIColor = SBUColorSet.onlight01, textFieldBorderColor: UIKit.UIColor = SBUColorSet.background200, buttonTintColor: UIKit.UIColor = SBUColorSet.primary300, buttonDisabledTintColor: UIKit.UIColor = SBUColorSet.onlight04, cancelButtonFont: UIKit.UIFont = SBUFontSet.button2, saveButtonFont: UIKit.UIFont = SBUFontSet.button2, saveButtonTextColor: UIKit.UIColor = SBUColorSet.ondark01)
   @objc public var backgroundColor: UIKit.UIColor
   @objc public var textFieldBackgroundColor: UIKit.UIColor
   @objc public var textFieldPlaceholderColor: UIKit.UIColor
+  @objc public var textFieldDisabledColor: UIKit.UIColor
   @objc public var textFieldTintColor: UIKit.UIColor
   @objc public var textFieldTextColor: UIKit.UIColor
   @objc public var textFieldBorderColor: UIKit.UIColor
   @objc public var buttonTintColor: UIKit.UIColor
+  @objc public var buttonDisabledTintColor: UIKit.UIColor
   @objc public var cancelButtonFont: UIKit.UIFont
   @objc public var saveButtonFont: UIKit.UIFont
   @objc public var saveButtonTextColor: UIKit.UIColor

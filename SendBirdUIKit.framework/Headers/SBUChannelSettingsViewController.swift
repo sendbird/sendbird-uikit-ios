@@ -48,8 +48,6 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
         return UserInfoView()
     }()
     
-    private var updatedCoverImage: UIImage?
-    
     private let actionSheetIdEdit = 1
     private let actionSheetIdPicker = 2
     
@@ -173,34 +171,6 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
     }
     
     // MARK: - SDK relations
-    public func updateChannelInfo(channelName: String? = nil) {
-        guard let channel = self.channel else { return }
-        
-        let params = SBDGroupChannelParams()
-        
-        if channelName != nil {
-            params.name = channelName
-        }
-        
-        if let coverImage = self.updatedCoverImage {
-            params.coverImage = coverImage.jpegData(compressionQuality: 0.5)
-        } else {
-            params.coverUrl = self.channel?.coverUrl
-        }
-        
-        SBULog.info("[Request] Channel update")
-        channel.update(with: params) { [weak self] channel, error in
-            if let error = error {
-                SBULog.error("[Failed] Channel update request: \(String(error.localizedDescription))")
-            }
-            
-            if let userInfoView = self?.userInfoView as? UserInfoView {
-                userInfoView.configure(channel: self?.channel)
-            }
-            
-            SBULog.info("[Succeed] Channel update")
-        }
-    }
     
     /// This function is used to load channel information.
     /// - Parameter channelUrl: channel url
@@ -229,53 +199,55 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
             }
         }
     }
-    
-    
-    // MARK: - Custom viewController relations
-    
-    /// If you want to use a custom memberListViewController, override it and implement it.
-    open func showMemberList() {
-        guard let channel = self.channel else { return }
-        let memberListVC = SBUMemberListViewController(channel: channel)
-        self.navigationController?.pushViewController(memberListVC, animated: true)
+
+    @available(*, deprecated, message: "deprecated in 1.0.9", renamed: "updateChannel(channelName:coverImage:)")
+    public func updateChannelInfo(channelName: String? = nil) {
+        self.updateChannel(channelName: channelName)
     }
     
-    
-    // MARK: - Actions
-    func onClickBack() {
-        if let navigationController = self.navigationController, navigationController.viewControllers.count > 1 {
-            navigationController.popViewController(animated: true)
+    /// Used to update the channel name or cover image. `channelName` and` coverImage` are used for updating only the set values.
+    /// - Parameters:
+    ///   - channelName: Channel name to update
+    ///   - coverImage: Cover image to update
+    /// - Since: 1.0.9
+    public func updateChannel(channelName: String? = nil, coverImage: UIImage? = nil) {
+        let channelParams = SBDGroupChannelParams()
+        
+        channelParams.name = channelName
+        
+        if let coverImage = coverImage {
+            channelParams.coverImage = coverImage.jpegData(compressionQuality: 0.5)
         } else {
-            self.dismiss(animated: true, completion: nil)
+            channelParams.coverUrl = self.channel?.coverUrl
+        }
+        
+        self.updateChannel(params: channelParams)
+    }
+    
+    /// Updates the channel with channelParams.
+    ///
+    /// You can update a channel by setting various properties of ChannelParams.
+    /// - Parameters:
+    ///   - params: `SBDGroupChannelParams` class object
+    /// - Since: 1.0.9
+    public func updateChannel(params: SBDGroupChannelParams) {
+        guard let channel = self.channel else { return }
+        
+        SBULog.info("[Request] Channel update")
+        channel.update(with: params) { [weak self] channel, error in
+            if let error = error {
+                SBULog.error("[Failed] Channel update request: \(String(error.localizedDescription))")
+            }
+            
+            if let userInfoView = self?.userInfoView as? UserInfoView {
+                userInfoView.configure(channel: self?.channel)
+                SBULog.info("[Succeed] Channel update")
+            }
         }
     }
     
-    func onClickEdit() {
-        let changeNameItem = SBUActionSheetItem(title: SBUStringSet.ChannelSettings_Change_Name, color: theme.itemTextColor, image: nil)
-        let changeImageItem = SBUActionSheetItem(title: SBUStringSet.ChannelSettings_Change_Image, color: theme.itemTextColor, image: nil)
-        let cancelItem = SBUActionSheetItem(title: SBUStringSet.Cancel, color: theme.itemColor)
-        SBUActionSheet.show(items: [changeNameItem, changeImageItem], cancelItem: cancelItem, identifier: actionSheetIdEdit, delegate: self)
-    }
-    
-    public func selectChannelImage() {
-        let cameraItem = SBUActionSheetItem(title: SBUStringSet.Camera, image: SBUIconSet.iconCamera.with(tintColor: theme.itemColor))
-        let libraryItem = SBUActionSheetItem(title: SBUStringSet.PhotoVideoLibrary, image: SBUIconSet.iconPhoto.with(tintColor: theme.itemColor))
-        let cancelItem = SBUActionSheetItem(title: SBUStringSet.Cancel, color: theme.itemColor)
-        SBUActionSheet.show(items: [cameraItem, libraryItem], cancelItem: cancelItem, identifier: actionSheetIdPicker, delegate: self)
-    }
-    
-    public func changeChannelName() {
-        let okButton = SBUAlertButtonItem(title: SBUStringSet.OK) { [weak self] newChannelName in
-            guard let newChannel = newChannelName as? String,
-                newChannel.trimmingCharacters(in: .whitespacesAndNewlines).count > 0 else { return }
-            self?.updateChannelInfo(channelName: newChannel.trimmingCharacters(in: .whitespacesAndNewlines))
-        }
-        let cancelButton = SBUAlertButtonItem(title: SBUStringSet.Cancel) {_ in }
-        SBUAlertView.show(title: SBUStringSet.ChannelSettings_Change_Name, needInputField: true, placeHolder: SBUStringSet.ChannelSettings_Enter_New_Name, centerYRatio: 0.75, confirmButtonItem: okButton, cancelButtonItem: cancelButton)
-    }
-    
-    
-    // MARK: - Actions
+    /// Changes push trigger option on channel.
+    /// - Parameter isOn: notification status
     public func changeNotification(isOn: Bool) {
         let triggerOption: SBDGroupChannelPushTriggerOption = isOn ? .all : .off
         
@@ -291,9 +263,10 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
         })
     }
     
+    /// Leaves the channel.
     public func leaveChannel() {
         SBULog.info("[Request] Leave channel, ChannelUrl:\(self.channel?.channelUrl ?? "")")
-        self.channel?.leave(completionHandler: { [weak self] error in
+        self.channel?.leave { [weak self] error in
             guard let self = self else { return }
 
             if let error = error {
@@ -315,8 +288,58 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
             }
             
             navigationController.popToRootViewController(animated: true)
-        })
+        }
     }
+    
+    
+    // MARK: - Custom viewController relations
+    
+    /// If you want to use a custom memberListViewController, override it and implement it.
+    open func showMemberList() {
+        guard let channel = self.channel else {
+            SBULog.error("[Failed] Channel object is nil")
+            return
+        }
+        let memberListVC = SBUMemberListViewController(channel: channel)
+        self.navigationController?.pushViewController(memberListVC, animated: true)
+    }
+    
+    
+    // MARK: - Actions
+    func onClickBack() {
+        if let navigationController = self.navigationController, navigationController.viewControllers.count > 1 {
+            navigationController.popViewController(animated: true)
+        } else {
+            self.dismiss(animated: true, completion: nil)
+        }
+    }
+    
+    func onClickEdit() {
+        let changeNameItem = SBUActionSheetItem(title: SBUStringSet.ChannelSettings_Change_Name, color: theme.itemTextColor, image: nil)
+        let changeImageItem = SBUActionSheetItem(title: SBUStringSet.ChannelSettings_Change_Image, color: theme.itemTextColor, image: nil)
+        let cancelItem = SBUActionSheetItem(title: SBUStringSet.Cancel, color: theme.itemColor)
+        SBUActionSheet.show(items: [changeNameItem, changeImageItem], cancelItem: cancelItem, identifier: actionSheetIdEdit, delegate: self)
+    }
+    
+    /// Open the channel image selection menu.
+    public func selectChannelImage() {
+        let cameraItem = SBUActionSheetItem(title: SBUStringSet.Camera, image: SBUIconSet.iconCamera.with(tintColor: theme.itemColor))
+        let libraryItem = SBUActionSheetItem(title: SBUStringSet.PhotoVideoLibrary, image: SBUIconSet.iconPhoto.with(tintColor: theme.itemColor))
+        let cancelItem = SBUActionSheetItem(title: SBUStringSet.Cancel, color: theme.itemColor)
+        SBUActionSheet.show(items: [cameraItem, libraryItem], cancelItem: cancelItem, identifier: actionSheetIdPicker, delegate: self)
+    }
+    
+    /// Open the channel name change popup.
+    public func changeChannelName() {
+        let okButton = SBUAlertButtonItem(title: SBUStringSet.OK) { [weak self] newChannelName in
+            guard let newChannel = newChannelName as? String,
+                newChannel.trimmingCharacters(in: .whitespacesAndNewlines).count > 0 else { return }
+            self?.updateChannel(channelName: newChannel.trimmingCharacters(in: .whitespacesAndNewlines))
+        }
+        let cancelButton = SBUAlertButtonItem(title: SBUStringSet.Cancel) {_ in }
+        SBUAlertView.show(title: SBUStringSet.ChannelSettings_Change_Name, needInputField: true, placeHolder: SBUStringSet.ChannelSettings_Enter_New_Name, centerYRatio: 0.75, confirmButtonItem: okButton, cancelButtonItem: cancelButton)
+    }
+    
     
     // MARK: - UITableView relations
     // CUSTOM:
@@ -413,10 +436,9 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
     public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         picker.dismiss(animated: true) { [weak self] in
             guard let originalImage = info[.originalImage] as? UIImage, let userInfoView = self?.userInfoView as? UserInfoView else { return }
-            self?.updatedCoverImage = originalImage
             userInfoView.coverImage.setImage(withImage: originalImage)
             
-            self?.updateChannelInfo()
+            self?.updateChannel(coverImage: originalImage)
         }
     }
     
@@ -536,17 +558,5 @@ fileprivate class UserInfoView: UIView {
         } else {
             self.channelNameField.text = SBUUtils.generateChannelName(channel: channel)
         }
-    }
-    
-    
-    // MARK: - Event
-    var selectChannelImageAction: (() -> Void)? = nil
-    func onClickChannelImageSelect(_ sender: Any) {
-        self.endEditing(true)
-        self.selectChannelImageAction?()
-    }
-    
-    func updateChannelImage(image: UIImage) {
-        self.coverImage.setImage(withImage: image)
     }
 }

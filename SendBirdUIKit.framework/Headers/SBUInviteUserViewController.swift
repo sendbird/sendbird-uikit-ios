@@ -280,7 +280,7 @@ open class SBUInviteUserViewController: UIViewController, UITableViewDelegate, U
         }
     }
     
-    private func appendUsersWithFiltering(users: [SBUUser]) {
+    public func appendUsersWithFiltering(users: [SBUUser]) {
         guard self.joinedUserIds.count != 0 else {
             self.userList += users
             return
@@ -295,9 +295,18 @@ open class SBUInviteUserViewController: UIViewController, UITableViewDelegate, U
         }
     }
     
-    open func inviteUsers() {
+    /// Invites users in the channel with selected userIds.
+    /// - Since: 1.0.9
+    public func inviteUsers() {
         let userIds = SBUUserManager.getUserIds(users: Array(self.selectedUserList))
         
+        self.inviteUsers(userIds: userIds)
+    }
+    
+    /// Invites users in the channel with directly generated userIds.
+    /// - Parameter userIds: User IDs to invite
+    /// - Since: 1.0.9
+    public func inviteUsers(userIds: [String]) {
         SBULog.info("[Request] Invite users, Users: \(Array(self.selectedUserList))")
         self.channel?.inviteUserIds(userIds, completionHandler: { [weak self] error in
             if let error = error {

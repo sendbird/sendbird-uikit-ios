@@ -365,11 +365,11 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUChannelLi
 @end
 
 @class UIBarButtonItem;
+@class SBDGroupChannel;
 @class UINib;
 @class UITableView;
 @class UISwipeActionsConfiguration;
 @class UITableViewRowAction;
-@class SBDGroupChannel;
 @class SBDUser;
 @class SBDBaseChannel;
 @class NSBundle;
@@ -378,6 +378,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 @interface SBUChannelListViewController : UIViewController <SBDChannelDelegate, SBDConnectionDelegate, UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
+@property (nonatomic, readonly, copy) NSArray<SBDGroupChannel *> * _Nonnull channelList;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUChannelListViewController()'");
 /// If you have channel object, use this initialize function.
 /// \param channel Channel object
@@ -390,6 +391,24 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 - (void)viewDidLoad;
 - (void)viewWillAppear:(BOOL)animated;
+/// Changes push trigger option on a channel.
+/// since:
+/// 1.0.9
+/// \param option Push trigger option to change
+///
+/// \param channel Channel to change option
+///
+/// \param completionHandler Completion handler
+///
+- (void)changePushTriggerOptionWithOption:(SBDGroupChannelPushTriggerOption)option channel:(SBDGroupChannel * _Nonnull)channel completionHandler:(void (^ _Nullable)(BOOL))completionHandler;
+/// Leaves the channel.
+/// since:
+/// 1.0.9
+/// \param channel Channel to leave
+///
+/// \param completionHandler Completion handler
+///
+- (void)leaveChannel:(SBDGroupChannel * _Nonnull)channel completionHandler:(void (^ _Nullable)(BOOL))completionHandler;
 /// If you want to use a custom channelViewController, override it and implement it.
 /// \param channelUrl channel url for use in channelViewController.
 ///
@@ -463,6 +482,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUChannelSe
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
+@class UIImage;
+@class SBDGroupChannelParams;
 @class UIImagePickerController;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
@@ -490,17 +511,38 @@ SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 - (void)viewDidLoad;
 - (void)viewWillAppear:(BOOL)animated;
-- (void)updateChannelInfoWithChannelName:(NSString * _Nullable)channelName;
 /// This function is used to load channel information.
 /// \param channelUrl channel url
 ///
 - (void)loadChannelWithChannelUrl:(NSString * _Nullable)channelUrl;
+- (void)updateChannelInfoWithChannelName:(NSString * _Nullable)channelName SWIFT_DEPRECATED_MSG("deprecated in 1.0.9", "updateChannelWithChannelName:coverImage:");
+/// Used to update the channel name or cover image. <code>channelName</code> and<code> coverImage</code> are used for updating only the set values.
+/// since:
+/// 1.0.9
+/// \param channelName Channel name to update
+///
+/// \param coverImage Cover image to update
+///
+- (void)updateChannelWithChannelName:(NSString * _Nullable)channelName coverImage:(UIImage * _Nullable)coverImage;
+/// Updates the channel with channelParams.
+/// You can update a channel by setting various properties of ChannelParams.
+/// since:
+/// 1.0.9
+/// \param params <code>SBDGroupChannelParams</code> class object
+///
+- (void)updateChannelWithParams:(SBDGroupChannelParams * _Nonnull)params;
+/// Changes push trigger option on channel.
+/// \param isOn notification status
+///
+- (void)changeNotificationWithIsOn:(BOOL)isOn;
+/// Leaves the channel.
+- (void)leaveChannel;
 /// If you want to use a custom memberListViewController, override it and implement it.
 - (void)showMemberList;
+/// Open the channel image selection menu.
 - (void)selectChannelImage;
+/// Open the channel name change popup.
 - (void)changeChannelName;
-- (void)changeNotificationWithIsOn:(BOOL)isOn;
-- (void)leaveChannel;
 - (void)tableView:(UITableView * _Nonnull)tableView didSelectRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
 - (UITableViewCell * _Nonnull)tableView:(UITableView * _Nonnull)tableView cellForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
 - (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
@@ -545,9 +587,10 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit27SBUMessageInputViewDelegate_")
 @end
 
 @class SBUNewMessageInfo;
+@class SBDBaseMessage;
 @class SBDUserMessageParams;
 @class SBDFileMessageParams;
-@class SBDBaseMessage;
+@class SBDUserMessage;
 @class UIScrollView;
 @class UIDocumentPickerViewController;
 @class SBDFileMessage;
@@ -559,8 +602,11 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 @property (nonatomic, strong) SBUNewMessageInfo * _Nonnull newMessageInfoView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
-/// One of two must be set.
 @property (nonatomic, readonly, strong) SBDGroupChannel * _Nullable channel;
+/// This object has a list of all success messages synchronized with the server.
+@property (nonatomic, readonly, copy) NSArray<SBDBaseMessage *> * _Nonnull messageList;
+/// This object that has resendable messages, including <code>pending messages</code> and <code>failed messages</code>.
+@property (nonatomic, readonly, copy) NSDictionary<NSString *, SBDBaseMessage *> * _Nonnull resendableMessages;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithChannelUrl:'");
 /// If you have channel object, use this initialize function.
 /// \param channel Channel object
@@ -578,16 +624,71 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)viewDidLoad;
 - (void)viewWillAppear:(BOOL)animated;
 - (void)viewWillDisappear:(BOOL)animated;
-/// If you want to use a custom channelSettingsViewController, override it and implement it.
-- (void)showChannelSettings;
+/// Sends a user message with only text.
+/// since:
+/// 1.0.9
+/// \param text String value
+///
 - (void)sendUserMessageWithText:(NSString * _Nonnull)text;
+/// Sends a user messag with messageParams.
+/// You can send a message by setting various properties of MessageParams.
+/// since:
+/// 1.0.9
+/// \param messageParams <code>SBDUserMessageParams</code> class object
+///
 - (void)sendUserMessageWithMessageParams:(SBDUserMessageParams * _Nonnull)messageParams;
+/// Sends a file message with file data, file name, mime type.
+/// since:
+/// 1.0.9
+/// \param fileData <code>Data</code> class object
+///
+/// \param fileName file name. Used when displayed in channel list.
+///
+/// \param mimeType file’s mime type.
+///
 - (void)sendFileMessageWithFileData:(NSData * _Nonnull)fileData fileName:(NSString * _Nonnull)fileName mimeType:(NSString * _Nonnull)mimeType;
+/// Sends a file message with messageParams.
+/// You can send a file message by setting various properties of MessageParams.
+/// since:
+/// 1.0.9
+/// \param messageParams <code>SBDFileMessageParams</code> class object
+///
 - (void)sendFileMessageWithMessageParams:(SBDFileMessageParams * _Nonnull)messageParams;
+/// Resends a message with failedMessage object.
+/// since:
+/// 1.0.9
+/// \param failedMessage <code>SBDBaseMessage</code> class based failed object
+///
+- (void)resendMessageWithFailedMessage:(SBDBaseMessage * _Nonnull)failedMessage;
+/// Updates a user message with message object.
+/// since:
+/// 1.0.9
+/// \param message <code>SBDUserMessage</code> object to update
+///
+/// \param text String to be updated
+///
+- (void)updateUserMessageWithMessage:(SBDUserMessage * _Nonnull)message text:(NSString * _Nonnull)text;
+/// Updates a user message with message object and messageParams.
+/// You can update messages by setting various properties of MessageParams.
+/// since:
+/// 1.0.9
+/// \param message <code>SBDUserMessage</code> object to update
+///
+/// \param messageParams <code>SBDUserMessageParams</code> class object
+///
+- (void)updateUserMessageWithMessage:(SBDUserMessage * _Nonnull)message messageParams:(SBDUserMessageParams * _Nonnull)messageParams;
+/// Deletes a message with message object.
+/// since:
+/// 1.0.9
+/// \param message <code>SBDBaseMessage</code> based class object
+///
+- (void)deleteMessageWithMessage:(SBDBaseMessage * _Nonnull)message;
 /// This function is used to load channel information.
 /// \param channelUrl channel url
 ///
 - (void)loadChannelWithChannelUrl:(NSString * _Nullable)channelUrl;
+/// If you want to use a custom channelSettingsViewController, override it and implement it.
+- (void)showChannelSettings;
 - (BOOL)checkSameDayAsNextMessageWithCurrentIndex:(NSInteger)currentIndex SWIFT_WARN_UNUSED_RESULT;
 - (void)configureOffset;
 /// This is used to check the loading status and control loading indicator.
@@ -633,6 +734,8 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)channelDidUpdateDeliveryReceipt:(SBDGroupChannel * _Nonnull)sender;
 - (void)channelDidUpdateTypingStatus:(SBDGroupChannel * _Nonnull)sender;
 - (void)channelWasChanged:(SBDBaseChannel * _Nonnull)sender;
+- (void)channelWasFrozen:(SBDBaseChannel * _Nonnull)sender;
+- (void)channelWasUnfrozen:(SBDBaseChannel * _Nonnull)sender;
 - (void)didSucceedReconnection;
 - (void)messageInputView:(SBUMessageInputView * _Nonnull)messageInputView didSelectSend:(NSString * _Nonnull)text;
 - (void)messageInputView:(SBUMessageInputView * _Nonnull)messageInputView didSelectResource:(enum MediaResourceType)type;
@@ -818,9 +921,19 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 /// \param users customized <code>SBUUser</code> array for add to user list
 ///
 - (void)loadNextUserListWithReset:(BOOL)reset users:(NSArray<SBUUser *> * _Nullable)users;
-/// This function creates a channel with SBDGroupChannelParams.
-/// If parameter modification is needed, override this function to implement it.
-- (void)createChannel;
+/// Creates the channel with userIds.
+/// since:
+/// 1.0.9
+/// \param params <code>SBDGroupChannelParams</code> class object
+///
+- (void)createChannelWithUserIds:(NSArray<NSString *> * _Nonnull)userIds;
+/// Creates the channel with channelParams.
+/// You can create a channel by setting various properties of ChannelParams.
+/// since:
+/// 1.0.9
+/// \param params <code>SBDGroupChannelParams</code> class object
+///
+- (void)createChannelWithParams:(SBDGroupChannelParams * _Nonnull)params;
 - (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
 - (UITableViewCell * _Nonnull)tableView:(UITableView * _Nonnull)tableView cellForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
 - (void)tableView:(UITableView * _Nonnull)tableView didSelectRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
@@ -923,7 +1036,6 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) SBUUser * _Nullable Cu
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
-@class UIImage;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit10SBUIconSet")
 @interface SBUIconSet : NSObject
@@ -1111,7 +1223,17 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 /// \param users customized <code>SBUUser</code> array for add to user list
 ///
 - (void)loadNextUserListWithReset:(BOOL)reset users:(NSArray<SBUUser *> * _Nullable)users;
+- (void)appendUsersWithFilteringWithUsers:(NSArray<SBUUser *> * _Nonnull)users;
+/// Invites users in the channel with selected userIds.
+/// since:
+/// 1.0.9
 - (void)inviteUsers;
+/// Invites users in the channel with directly generated userIds.
+/// since:
+/// 1.0.9
+/// \param userIds User IDs to invite
+///
+- (void)inviteUsersWithUserIds:(NSArray<NSString *> * _Nonnull)userIds;
 - (void)popToChannel;
 - (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
 - (UITableViewCell * _Nonnull)tableView:(UITableView * _Nonnull)tableView cellForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
@@ -1243,14 +1365,16 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageIn
 + (SBUMessageInputTheme * _Nonnull)light SWIFT_WARN_UNUSED_RESULT;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageInputTheme * _Nonnull dark;)
 + (SBUMessageInputTheme * _Nonnull)dark SWIFT_WARN_UNUSED_RESULT;
-- (nonnull instancetype)initWithBackgroundColor:(UIColor * _Nonnull)backgroundColor textFieldBackgroundColor:(UIColor * _Nonnull)textFieldBackgroundColor textFieldPlaceholderColor:(UIColor * _Nonnull)textFieldPlaceholderColor textFieldTintColor:(UIColor * _Nonnull)textFieldTintColor textFieldTextColor:(UIColor * _Nonnull)textFieldTextColor textFieldBorderColor:(UIColor * _Nonnull)textFieldBorderColor buttonTintColor:(UIColor * _Nonnull)buttonTintColor cancelButtonFont:(UIFont * _Nonnull)cancelButtonFont saveButtonFont:(UIFont * _Nonnull)saveButtonFont saveButtonTextColor:(UIColor * _Nonnull)saveButtonTextColor OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithBackgroundColor:(UIColor * _Nonnull)backgroundColor textFieldBackgroundColor:(UIColor * _Nonnull)textFieldBackgroundColor textFieldPlaceholderColor:(UIColor * _Nonnull)textFieldPlaceholderColor textFieldDisabledColor:(UIColor * _Nonnull)textFieldDisabledColor textFieldTintColor:(UIColor * _Nonnull)textFieldTintColor textFieldTextColor:(UIColor * _Nonnull)textFieldTextColor textFieldBorderColor:(UIColor * _Nonnull)textFieldBorderColor buttonTintColor:(UIColor * _Nonnull)buttonTintColor buttonDisabledTintColor:(UIColor * _Nonnull)buttonDisabledTintColor cancelButtonFont:(UIFont * _Nonnull)cancelButtonFont saveButtonFont:(UIFont * _Nonnull)saveButtonFont saveButtonTextColor:(UIColor * _Nonnull)saveButtonTextColor OBJC_DESIGNATED_INITIALIZER;
 @property (nonatomic, strong) UIColor * _Nonnull backgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull textFieldBackgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull textFieldPlaceholderColor;
+@property (nonatomic, strong) UIColor * _Nonnull textFieldDisabledColor;
 @property (nonatomic, strong) UIColor * _Nonnull textFieldTintColor;
 @property (nonatomic, strong) UIColor * _Nonnull textFieldTextColor;
 @property (nonatomic, strong) UIColor * _Nonnull textFieldBorderColor;
 @property (nonatomic, strong) UIColor * _Nonnull buttonTintColor;
+@property (nonatomic, strong) UIColor * _Nonnull buttonDisabledTintColor;
 @property (nonatomic, strong) UIFont * _Nonnull cancelButtonFont;
 @property (nonatomic, strong) UIFont * _Nonnull saveButtonFont;
 @property (nonatomic, strong) UIColor * _Nonnull saveButtonTextColor;
@@ -1282,6 +1406,10 @@ SWIFT_CLASS("_TtC13SendBirdUIKit19SBUMessageInputView")
 - (void)layoutSubviews;
 - (void)startEditModeWithText:(NSString * _Nonnull)text;
 - (void)endEditMode;
+/// Sets frozen mode state.
+/// \param isFrozen <code>true</code> is frozen mode, <code>false</code> is unfrozen mode
+///
+- (void)setFrozenModeState:(BOOL)isFrozen;
 - (void)endTypingMode;
 - (void)updateTextViewHeight;
 - (IBAction)onClickAddButton:(id _Nonnull)sender;
@@ -1431,6 +1559,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Chan
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull MessageInput_Text_Placeholder;)
 + (NSString * _Nonnull)MessageInput_Text_Placeholder SWIFT_WARN_UNUSED_RESULT;
 + (void)setMessageInput_Text_Placeholder:(NSString * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull MessageInput_Text_Unavailable;)
++ (NSString * _Nonnull)MessageInput_Text_Unavailable SWIFT_WARN_UNUSED_RESULT;
++ (void)setMessageInput_Text_Unavailable:(NSString * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Message_Edited;)
 + (NSString * _Nonnull)Message_Edited SWIFT_WARN_UNUSED_RESULT;
 + (void)setMessage_Edited:(NSString * _Nonnull)value;
@@ -1572,7 +1703,6 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUUserListT
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
-@class SBDUserMessage;
 
 IB_DESIGNABLE
 SWIFT_CLASS("_TtC13SendBirdUIKit18SBUUserMessageCell")
@@ -1995,11 +2125,11 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUChannelLi
 @end
 
 @class UIBarButtonItem;
+@class SBDGroupChannel;
 @class UINib;
 @class UITableView;
 @class UISwipeActionsConfiguration;
 @class UITableViewRowAction;
-@class SBDGroupChannel;
 @class SBDUser;
 @class SBDBaseChannel;
 @class NSBundle;
@@ -2008,6 +2138,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 @interface SBUChannelListViewController : UIViewController <SBDChannelDelegate, SBDConnectionDelegate, UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
+@property (nonatomic, readonly, copy) NSArray<SBDGroupChannel *> * _Nonnull channelList;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUChannelListViewController()'");
 /// If you have channel object, use this initialize function.
 /// \param channel Channel object
@@ -2020,6 +2151,24 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 - (void)viewDidLoad;
 - (void)viewWillAppear:(BOOL)animated;
+/// Changes push trigger option on a channel.
+/// since:
+/// 1.0.9
+/// \param option Push trigger option to change
+///
+/// \param channel Channel to change option
+///
+/// \param completionHandler Completion handler
+///
+- (void)changePushTriggerOptionWithOption:(SBDGroupChannelPushTriggerOption)option channel:(SBDGroupChannel * _Nonnull)channel completionHandler:(void (^ _Nullable)(BOOL))completionHandler;
+/// Leaves the channel.
+/// since:
+/// 1.0.9
+/// \param channel Channel to leave
+///
+/// \param completionHandler Completion handler
+///
+- (void)leaveChannel:(SBDGroupChannel * _Nonnull)channel completionHandler:(void (^ _Nullable)(BOOL))completionHandler;
 /// If you want to use a custom channelViewController, override it and implement it.
 /// \param channelUrl channel url for use in channelViewController.
 ///
@@ -2093,6 +2242,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUChannelSe
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
+@class UIImage;
+@class SBDGroupChannelParams;
 @class UIImagePickerController;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
@@ -2120,17 +2271,38 @@ SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 - (void)viewDidLoad;
 - (void)viewWillAppear:(BOOL)animated;
-- (void)updateChannelInfoWithChannelName:(NSString * _Nullable)channelName;
 /// This function is used to load channel information.
 /// \param channelUrl channel url
 ///
 - (void)loadChannelWithChannelUrl:(NSString * _Nullable)channelUrl;
+- (void)updateChannelInfoWithChannelName:(NSString * _Nullable)channelName SWIFT_DEPRECATED_MSG("deprecated in 1.0.9", "updateChannelWithChannelName:coverImage:");
+/// Used to update the channel name or cover image. <code>channelName</code> and<code> coverImage</code> are used for updating only the set values.
+/// since:
+/// 1.0.9
+/// \param channelName Channel name to update
+///
+/// \param coverImage Cover image to update
+///
+- (void)updateChannelWithChannelName:(NSString * _Nullable)channelName coverImage:(UIImage * _Nullable)coverImage;
+/// Updates the channel with channelParams.
+/// You can update a channel by setting various properties of ChannelParams.
+/// since:
+/// 1.0.9
+/// \param params <code>SBDGroupChannelParams</code> class object
+///
+- (void)updateChannelWithParams:(SBDGroupChannelParams * _Nonnull)params;
+/// Changes push trigger option on channel.
+/// \param isOn notification status
+///
+- (void)changeNotificationWithIsOn:(BOOL)isOn;
+/// Leaves the channel.
+- (void)leaveChannel;
 /// If you want to use a custom memberListViewController, override it and implement it.
 - (void)showMemberList;
+/// Open the channel image selection menu.
 - (void)selectChannelImage;
+/// Open the channel name change popup.
 - (void)changeChannelName;
-- (void)changeNotificationWithIsOn:(BOOL)isOn;
-- (void)leaveChannel;
 - (void)tableView:(UITableView * _Nonnull)tableView didSelectRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
 - (UITableViewCell * _Nonnull)tableView:(UITableView * _Nonnull)tableView cellForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
 - (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
@@ -2175,9 +2347,10 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit27SBUMessageInputViewDelegate_")
 @end
 
 @class SBUNewMessageInfo;
+@class SBDBaseMessage;
 @class SBDUserMessageParams;
 @class SBDFileMessageParams;
-@class SBDBaseMessage;
+@class SBDUserMessage;
 @class UIScrollView;
 @class UIDocumentPickerViewController;
 @class SBDFileMessage;
@@ -2189,8 +2362,11 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 @property (nonatomic, strong) SBUNewMessageInfo * _Nonnull newMessageInfoView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
-/// One of two must be set.
 @property (nonatomic, readonly, strong) SBDGroupChannel * _Nullable channel;
+/// This object has a list of all success messages synchronized with the server.
+@property (nonatomic, readonly, copy) NSArray<SBDBaseMessage *> * _Nonnull messageList;
+/// This object that has resendable messages, including <code>pending messages</code> and <code>failed messages</code>.
+@property (nonatomic, readonly, copy) NSDictionary<NSString *, SBDBaseMessage *> * _Nonnull resendableMessages;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithChannelUrl:'");
 /// If you have channel object, use this initialize function.
 /// \param channel Channel object
@@ -2208,16 +2384,71 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)viewDidLoad;
 - (void)viewWillAppear:(BOOL)animated;
 - (void)viewWillDisappear:(BOOL)animated;
-/// If you want to use a custom channelSettingsViewController, override it and implement it.
-- (void)showChannelSettings;
+/// Sends a user message with only text.
+/// since:
+/// 1.0.9
+/// \param text String value
+///
 - (void)sendUserMessageWithText:(NSString * _Nonnull)text;
+/// Sends a user messag with messageParams.
+/// You can send a message by setting various properties of MessageParams.
+/// since:
+/// 1.0.9
+/// \param messageParams <code>SBDUserMessageParams</code> class object
+///
 - (void)sendUserMessageWithMessageParams:(SBDUserMessageParams * _Nonnull)messageParams;
+/// Sends a file message with file data, file name, mime type.
+/// since:
+/// 1.0.9
+/// \param fileData <code>Data</code> class object
+///
+/// \param fileName file name. Used when displayed in channel list.
+///
+/// \param mimeType file’s mime type.
+///
 - (void)sendFileMessageWithFileData:(NSData * _Nonnull)fileData fileName:(NSString * _Nonnull)fileName mimeType:(NSString * _Nonnull)mimeType;
+/// Sends a file message with messageParams.
+/// You can send a file message by setting various properties of MessageParams.
+/// since:
+/// 1.0.9
+/// \param messageParams <code>SBDFileMessageParams</code> class object
+///
 - (void)sendFileMessageWithMessageParams:(SBDFileMessageParams * _Nonnull)messageParams;
+/// Resends a message with failedMessage object.
+/// since:
+/// 1.0.9
+/// \param failedMessage <code>SBDBaseMessage</code> class based failed object
+///
+- (void)resendMessageWithFailedMessage:(SBDBaseMessage * _Nonnull)failedMessage;
+/// Updates a user message with message object.
+/// since:
+/// 1.0.9
+/// \param message <code>SBDUserMessage</code> object to update
+///
+/// \param text String to be updated
+///
+- (void)updateUserMessageWithMessage:(SBDUserMessage * _Nonnull)message text:(NSString * _Nonnull)text;
+/// Updates a user message with message object and messageParams.
+/// You can update messages by setting various properties of MessageParams.
+/// since:
+/// 1.0.9
+/// \param message <code>SBDUserMessage</code> object to update
+///
+/// \param messageParams <code>SBDUserMessageParams</code> class object
+///
+- (void)updateUserMessageWithMessage:(SBDUserMessage * _Nonnull)message messageParams:(SBDUserMessageParams * _Nonnull)messageParams;
+/// Deletes a message with message object.
+/// since:
+/// 1.0.9
+/// \param message <code>SBDBaseMessage</code> based class object
+///
+- (void)deleteMessageWithMessage:(SBDBaseMessage * _Nonnull)message;
 /// This function is used to load channel information.
 /// \param channelUrl channel url
 ///
 - (void)loadChannelWithChannelUrl:(NSString * _Nullable)channelUrl;
+/// If you want to use a custom channelSettingsViewController, override it and implement it.
+- (void)showChannelSettings;
 - (BOOL)checkSameDayAsNextMessageWithCurrentIndex:(NSInteger)currentIndex SWIFT_WARN_UNUSED_RESULT;
 - (void)configureOffset;
 /// This is used to check the loading status and control loading indicator.
@@ -2263,6 +2494,8 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)channelDidUpdateDeliveryReceipt:(SBDGroupChannel * _Nonnull)sender;
 - (void)channelDidUpdateTypingStatus:(SBDGroupChannel * _Nonnull)sender;
 - (void)channelWasChanged:(SBDBaseChannel * _Nonnull)sender;
+- (void)channelWasFrozen:(SBDBaseChannel * _Nonnull)sender;
+- (void)channelWasUnfrozen:(SBDBaseChannel * _Nonnull)sender;
 - (void)didSucceedReconnection;
 - (void)messageInputView:(SBUMessageInputView * _Nonnull)messageInputView didSelectSend:(NSString * _Nonnull)text;
 - (void)messageInputView:(SBUMessageInputView * _Nonnull)messageInputView didSelectResource:(enum MediaResourceType)type;
@@ -2448,9 +2681,19 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 /// \param users customized <code>SBUUser</code> array for add to user list
 ///
 - (void)loadNextUserListWithReset:(BOOL)reset users:(NSArray<SBUUser *> * _Nullable)users;
-/// This function creates a channel with SBDGroupChannelParams.
-/// If parameter modification is needed, override this function to implement it.
-- (void)createChannel;
+/// Creates the channel with userIds.
+/// since:
+/// 1.0.9
+/// \param params <code>SBDGroupChannelParams</code> class object
+///
+- (void)createChannelWithUserIds:(NSArray<NSString *> * _Nonnull)userIds;
+/// Creates the channel with channelParams.
+/// You can create a channel by setting various properties of ChannelParams.
+/// since:
+/// 1.0.9
+/// \param params <code>SBDGroupChannelParams</code> class object
+///
+- (void)createChannelWithParams:(SBDGroupChannelParams * _Nonnull)params;
 - (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
 - (UITableViewCell * _Nonnull)tableView:(UITableView * _Nonnull)tableView cellForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
 - (void)tableView:(UITableView * _Nonnull)tableView didSelectRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
@@ -2553,7 +2796,6 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) SBUUser * _Nullable Cu
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
-@class UIImage;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit10SBUIconSet")
 @interface SBUIconSet : NSObject
@@ -2741,7 +2983,17 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 /// \param users customized <code>SBUUser</code> array for add to user list
 ///
 - (void)loadNextUserListWithReset:(BOOL)reset users:(NSArray<SBUUser *> * _Nullable)users;
+- (void)appendUsersWithFilteringWithUsers:(NSArray<SBUUser *> * _Nonnull)users;
+/// Invites users in the channel with selected userIds.
+/// since:
+/// 1.0.9
 - (void)inviteUsers;
+/// Invites users in the channel with directly generated userIds.
+/// since:
+/// 1.0.9
+/// \param userIds User IDs to invite
+///
+- (void)inviteUsersWithUserIds:(NSArray<NSString *> * _Nonnull)userIds;
 - (void)popToChannel;
 - (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
 - (UITableViewCell * _Nonnull)tableView:(UITableView * _Nonnull)tableView cellForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
@@ -2873,14 +3125,16 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageIn
 + (SBUMessageInputTheme * _Nonnull)light SWIFT_WARN_UNUSED_RESULT;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageInputTheme * _Nonnull dark;)
 + (SBUMessageInputTheme * _Nonnull)dark SWIFT_WARN_UNUSED_RESULT;
-- (nonnull instancetype)initWithBackgroundColor:(UIColor * _Nonnull)backgroundColor textFieldBackgroundColor:(UIColor * _Nonnull)textFieldBackgroundColor textFieldPlaceholderColor:(UIColor * _Nonnull)textFieldPlaceholderColor textFieldTintColor:(UIColor * _Nonnull)textFieldTintColor textFieldTextColor:(UIColor * _Nonnull)textFieldTextColor textFieldBorderColor:(UIColor * _Nonnull)textFieldBorderColor buttonTintColor:(UIColor * _Nonnull)buttonTintColor cancelButtonFont:(UIFont * _Nonnull)cancelButtonFont saveButtonFont:(UIFont * _Nonnull)saveButtonFont saveButtonTextColor:(UIColor * _Nonnull)saveButtonTextColor OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithBackgroundColor:(UIColor * _Nonnull)backgroundColor textFieldBackgroundColor:(UIColor * _Nonnull)textFieldBackgroundColor textFieldPlaceholderColor:(UIColor * _Nonnull)textFieldPlaceholderColor textFieldDisabledColor:(UIColor * _Nonnull)textFieldDisabledColor textFieldTintColor:(UIColor * _Nonnull)textFieldTintColor textFieldTextColor:(UIColor * _Nonnull)textFieldTextColor textFieldBorderColor:(UIColor * _Nonnull)textFieldBorderColor buttonTintColor:(UIColor * _Nonnull)buttonTintColor buttonDisabledTintColor:(UIColor * _Nonnull)buttonDisabledTintColor cancelButtonFont:(UIFont * _Nonnull)cancelButtonFont saveButtonFont:(UIFont * _Nonnull)saveButtonFont saveButtonTextColor:(UIColor * _Nonnull)saveButtonTextColor OBJC_DESIGNATED_INITIALIZER;
 @property (nonatomic, strong) UIColor * _Nonnull backgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull textFieldBackgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull textFieldPlaceholderColor;
+@property (nonatomic, strong) UIColor * _Nonnull textFieldDisabledColor;
 @property (nonatomic, strong) UIColor * _Nonnull textFieldTintColor;
 @property (nonatomic, strong) UIColor * _Nonnull textFieldTextColor;
 @property (nonatomic, strong) UIColor * _Nonnull textFieldBorderColor;
 @property (nonatomic, strong) UIColor * _Nonnull buttonTintColor;
+@property (nonatomic, strong) UIColor * _Nonnull buttonDisabledTintColor;
 @property (nonatomic, strong) UIFont * _Nonnull cancelButtonFont;
 @property (nonatomic, strong) UIFont * _Nonnull saveButtonFont;
 @property (nonatomic, strong) UIColor * _Nonnull saveButtonTextColor;
@@ -2912,6 +3166,10 @@ SWIFT_CLASS("_TtC13SendBirdUIKit19SBUMessageInputView")
 - (void)layoutSubviews;
 - (void)startEditModeWithText:(NSString * _Nonnull)text;
 - (void)endEditMode;
+/// Sets frozen mode state.
+/// \param isFrozen <code>true</code> is frozen mode, <code>false</code> is unfrozen mode
+///
+- (void)setFrozenModeState:(BOOL)isFrozen;
 - (void)endTypingMode;
 - (void)updateTextViewHeight;
 - (IBAction)onClickAddButton:(id _Nonnull)sender;
@@ -3061,6 +3319,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Chan
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull MessageInput_Text_Placeholder;)
 + (NSString * _Nonnull)MessageInput_Text_Placeholder SWIFT_WARN_UNUSED_RESULT;
 + (void)setMessageInput_Text_Placeholder:(NSString * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull MessageInput_Text_Unavailable;)
++ (NSString * _Nonnull)MessageInput_Text_Unavailable SWIFT_WARN_UNUSED_RESULT;
++ (void)setMessageInput_Text_Unavailable:(NSString * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Message_Edited;)
 + (NSString * _Nonnull)Message_Edited SWIFT_WARN_UNUSED_RESULT;
 + (void)setMessage_Edited:(NSString * _Nonnull)value;
@@ -3202,7 +3463,6 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUUserListT
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
-@class SBDUserMessage;
 
 IB_DESIGNABLE
 SWIFT_CLASS("_TtC13SendBirdUIKit18SBUUserMessageCell")
@@ -3627,11 +3887,11 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUChannelLi
 @end
 
 @class UIBarButtonItem;
+@class SBDGroupChannel;
 @class UINib;
 @class UITableView;
 @class UISwipeActionsConfiguration;
 @class UITableViewRowAction;
-@class SBDGroupChannel;
 @class SBDUser;
 @class SBDBaseChannel;
 @class NSBundle;
@@ -3640,6 +3900,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 @interface SBUChannelListViewController : UIViewController <SBDChannelDelegate, SBDConnectionDelegate, UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
+@property (nonatomic, readonly, copy) NSArray<SBDGroupChannel *> * _Nonnull channelList;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUChannelListViewController()'");
 /// If you have channel object, use this initialize function.
 /// \param channel Channel object
@@ -3652,6 +3913,24 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 - (void)viewDidLoad;
 - (void)viewWillAppear:(BOOL)animated;
+/// Changes push trigger option on a channel.
+/// since:
+/// 1.0.9
+/// \param option Push trigger option to change
+///
+/// \param channel Channel to change option
+///
+/// \param completionHandler Completion handler
+///
+- (void)changePushTriggerOptionWithOption:(SBDGroupChannelPushTriggerOption)option channel:(SBDGroupChannel * _Nonnull)channel completionHandler:(void (^ _Nullable)(BOOL))completionHandler;
+/// Leaves the channel.
+/// since:
+/// 1.0.9
+/// \param channel Channel to leave
+///
+/// \param completionHandler Completion handler
+///
+- (void)leaveChannel:(SBDGroupChannel * _Nonnull)channel completionHandler:(void (^ _Nullable)(BOOL))completionHandler;
 /// If you want to use a custom channelViewController, override it and implement it.
 /// \param channelUrl channel url for use in channelViewController.
 ///
@@ -3725,6 +4004,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUChannelSe
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
+@class UIImage;
+@class SBDGroupChannelParams;
 @class UIImagePickerController;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
@@ -3752,17 +4033,38 @@ SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 - (void)viewDidLoad;
 - (void)viewWillAppear:(BOOL)animated;
-- (void)updateChannelInfoWithChannelName:(NSString * _Nullable)channelName;
 /// This function is used to load channel information.
 /// \param channelUrl channel url
 ///
 - (void)loadChannelWithChannelUrl:(NSString * _Nullable)channelUrl;
+- (void)updateChannelInfoWithChannelName:(NSString * _Nullable)channelName SWIFT_DEPRECATED_MSG("deprecated in 1.0.9", "updateChannelWithChannelName:coverImage:");
+/// Used to update the channel name or cover image. <code>channelName</code> and<code> coverImage</code> are used for updating only the set values.
+/// since:
+/// 1.0.9
+/// \param channelName Channel name to update
+///
+/// \param coverImage Cover image to update
+///
+- (void)updateChannelWithChannelName:(NSString * _Nullable)channelName coverImage:(UIImage * _Nullable)coverImage;
+/// Updates the channel with channelParams.
+/// You can update a channel by setting various properties of ChannelParams.
+/// since:
+/// 1.0.9
+/// \param params <code>SBDGroupChannelParams</code> class object
+///
+- (void)updateChannelWithParams:(SBDGroupChannelParams * _Nonnull)params;
+/// Changes push trigger option on channel.
+/// \param isOn notification status
+///
+- (void)changeNotificationWithIsOn:(BOOL)isOn;
+/// Leaves the channel.
+- (void)leaveChannel;
 /// If you want to use a custom memberListViewController, override it and implement it.
 - (void)showMemberList;
+/// Open the channel image selection menu.
 - (void)selectChannelImage;
+/// Open the channel name change popup.
 - (void)changeChannelName;
-- (void)changeNotificationWithIsOn:(BOOL)isOn;
-- (void)leaveChannel;
 - (void)tableView:(UITableView * _Nonnull)tableView didSelectRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
 - (UITableViewCell * _Nonnull)tableView:(UITableView * _Nonnull)tableView cellForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
 - (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
@@ -3807,9 +4109,10 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit27SBUMessageInputViewDelegate_")
 @end
 
 @class SBUNewMessageInfo;
+@class SBDBaseMessage;
 @class SBDUserMessageParams;
 @class SBDFileMessageParams;
-@class SBDBaseMessage;
+@class SBDUserMessage;
 @class UIScrollView;
 @class UIDocumentPickerViewController;
 @class SBDFileMessage;
@@ -3821,8 +4124,11 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 @property (nonatomic, strong) SBUNewMessageInfo * _Nonnull newMessageInfoView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
-/// One of two must be set.
 @property (nonatomic, readonly, strong) SBDGroupChannel * _Nullable channel;
+/// This object has a list of all success messages synchronized with the server.
+@property (nonatomic, readonly, copy) NSArray<SBDBaseMessage *> * _Nonnull messageList;
+/// This object that has resendable messages, including <code>pending messages</code> and <code>failed messages</code>.
+@property (nonatomic, readonly, copy) NSDictionary<NSString *, SBDBaseMessage *> * _Nonnull resendableMessages;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithChannelUrl:'");
 /// If you have channel object, use this initialize function.
 /// \param channel Channel object
@@ -3840,16 +4146,71 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)viewDidLoad;
 - (void)viewWillAppear:(BOOL)animated;
 - (void)viewWillDisappear:(BOOL)animated;
-/// If you want to use a custom channelSettingsViewController, override it and implement it.
-- (void)showChannelSettings;
+/// Sends a user message with only text.
+/// since:
+/// 1.0.9
+/// \param text String value
+///
 - (void)sendUserMessageWithText:(NSString * _Nonnull)text;
+/// Sends a user messag with messageParams.
+/// You can send a message by setting various properties of MessageParams.
+/// since:
+/// 1.0.9
+/// \param messageParams <code>SBDUserMessageParams</code> class object
+///
 - (void)sendUserMessageWithMessageParams:(SBDUserMessageParams * _Nonnull)messageParams;
+/// Sends a file message with file data, file name, mime type.
+/// since:
+/// 1.0.9
+/// \param fileData <code>Data</code> class object
+///
+/// \param fileName file name. Used when displayed in channel list.
+///
+/// \param mimeType file’s mime type.
+///
 - (void)sendFileMessageWithFileData:(NSData * _Nonnull)fileData fileName:(NSString * _Nonnull)fileName mimeType:(NSString * _Nonnull)mimeType;
+/// Sends a file message with messageParams.
+/// You can send a file message by setting various properties of MessageParams.
+/// since:
+/// 1.0.9
+/// \param messageParams <code>SBDFileMessageParams</code> class object
+///
 - (void)sendFileMessageWithMessageParams:(SBDFileMessageParams * _Nonnull)messageParams;
+/// Resends a message with failedMessage object.
+/// since:
+/// 1.0.9
+/// \param failedMessage <code>SBDBaseMessage</code> class based failed object
+///
+- (void)resendMessageWithFailedMessage:(SBDBaseMessage * _Nonnull)failedMessage;
+/// Updates a user message with message object.
+/// since:
+/// 1.0.9
+/// \param message <code>SBDUserMessage</code> object to update
+///
+/// \param text String to be updated
+///
+- (void)updateUserMessageWithMessage:(SBDUserMessage * _Nonnull)message text:(NSString * _Nonnull)text;
+/// Updates a user message with message object and messageParams.
+/// You can update messages by setting various properties of MessageParams.
+/// since:
+/// 1.0.9
+/// \param message <code>SBDUserMessage</code> object to update
+///
+/// \param messageParams <code>SBDUserMessageParams</code> class object
+///
+- (void)updateUserMessageWithMessage:(SBDUserMessage * _Nonnull)message messageParams:(SBDUserMessageParams * _Nonnull)messageParams;
+/// Deletes a message with message object.
+/// since:
+/// 1.0.9
+/// \param message <code>SBDBaseMessage</code> based class object
+///
+- (void)deleteMessageWithMessage:(SBDBaseMessage * _Nonnull)message;
 /// This function is used to load channel information.
 /// \param channelUrl channel url
 ///
 - (void)loadChannelWithChannelUrl:(NSString * _Nullable)channelUrl;
+/// If you want to use a custom channelSettingsViewController, override it and implement it.
+- (void)showChannelSettings;
 - (BOOL)checkSameDayAsNextMessageWithCurrentIndex:(NSInteger)currentIndex SWIFT_WARN_UNUSED_RESULT;
 - (void)configureOffset;
 /// This is used to check the loading status and control loading indicator.
@@ -3895,6 +4256,8 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)channelDidUpdateDeliveryReceipt:(SBDGroupChannel * _Nonnull)sender;
 - (void)channelDidUpdateTypingStatus:(SBDGroupChannel * _Nonnull)sender;
 - (void)channelWasChanged:(SBDBaseChannel * _Nonnull)sender;
+- (void)channelWasFrozen:(SBDBaseChannel * _Nonnull)sender;
+- (void)channelWasUnfrozen:(SBDBaseChannel * _Nonnull)sender;
 - (void)didSucceedReconnection;
 - (void)messageInputView:(SBUMessageInputView * _Nonnull)messageInputView didSelectSend:(NSString * _Nonnull)text;
 - (void)messageInputView:(SBUMessageInputView * _Nonnull)messageInputView didSelectResource:(enum MediaResourceType)type;
@@ -4080,9 +4443,19 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 /// \param users customized <code>SBUUser</code> array for add to user list
 ///
 - (void)loadNextUserListWithReset:(BOOL)reset users:(NSArray<SBUUser *> * _Nullable)users;
-/// This function creates a channel with SBDGroupChannelParams.
-/// If parameter modification is needed, override this function to implement it.
-- (void)createChannel;
+/// Creates the channel with userIds.
+/// since:
+/// 1.0.9
+/// \param params <code>SBDGroupChannelParams</code> class object
+///
+- (void)createChannelWithUserIds:(NSArray<NSString *> * _Nonnull)userIds;
+/// Creates the channel with channelParams.
+/// You can create a channel by setting various properties of ChannelParams.
+/// since:
+/// 1.0.9
+/// \param params <code>SBDGroupChannelParams</code> class object
+///
+- (void)createChannelWithParams:(SBDGroupChannelParams * _Nonnull)params;
 - (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
 - (UITableViewCell * _Nonnull)tableView:(UITableView * _Nonnull)tableView cellForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
 - (void)tableView:(UITableView * _Nonnull)tableView didSelectRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
@@ -4185,7 +4558,6 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) SBUUser * _Nullable Cu
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
-@class UIImage;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit10SBUIconSet")
 @interface SBUIconSet : NSObject
@@ -4373,7 +4745,17 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 /// \param users customized <code>SBUUser</code> array for add to user list
 ///
 - (void)loadNextUserListWithReset:(BOOL)reset users:(NSArray<SBUUser *> * _Nullable)users;
+- (void)appendUsersWithFilteringWithUsers:(NSArray<SBUUser *> * _Nonnull)users;
+/// Invites users in the channel with selected userIds.
+/// since:
+/// 1.0.9
 - (void)inviteUsers;
+/// Invites users in the channel with directly generated userIds.
+/// since:
+/// 1.0.9
+/// \param userIds User IDs to invite
+///
+- (void)inviteUsersWithUserIds:(NSArray<NSString *> * _Nonnull)userIds;
 - (void)popToChannel;
 - (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
 - (UITableViewCell * _Nonnull)tableView:(UITableView * _Nonnull)tableView cellForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
@@ -4505,14 +4887,16 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageIn
 + (SBUMessageInputTheme * _Nonnull)light SWIFT_WARN_UNUSED_RESULT;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageInputTheme * _Nonnull dark;)
 + (SBUMessageInputTheme * _Nonnull)dark SWIFT_WARN_UNUSED_RESULT;
-- (nonnull instancetype)initWithBackgroundColor:(UIColor * _Nonnull)backgroundColor textFieldBackgroundColor:(UIColor * _Nonnull)textFieldBackgroundColor textFieldPlaceholderColor:(UIColor * _Nonnull)textFieldPlaceholderColor textFieldTintColor:(UIColor * _Nonnull)textFieldTintColor textFieldTextColor:(UIColor * _Nonnull)textFieldTextColor textFieldBorderColor:(UIColor * _Nonnull)textFieldBorderColor buttonTintColor:(UIColor * _Nonnull)buttonTintColor cancelButtonFont:(UIFont * _Nonnull)cancelButtonFont saveButtonFont:(UIFont * _Nonnull)saveButtonFont saveButtonTextColor:(UIColor * _Nonnull)saveButtonTextColor OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithBackgroundColor:(UIColor * _Nonnull)backgroundColor textFieldBackgroundColor:(UIColor * _Nonnull)textFieldBackgroundColor textFieldPlaceholderColor:(UIColor * _Nonnull)textFieldPlaceholderColor textFieldDisabledColor:(UIColor * _Nonnull)textFieldDisabledColor textFieldTintColor:(UIColor * _Nonnull)textFieldTintColor textFieldTextColor:(UIColor * _Nonnull)textFieldTextColor textFieldBorderColor:(UIColor * _Nonnull)textFieldBorderColor buttonTintColor:(UIColor * _Nonnull)buttonTintColor buttonDisabledTintColor:(UIColor * _Nonnull)buttonDisabledTintColor cancelButtonFont:(UIFont * _Nonnull)cancelButtonFont saveButtonFont:(UIFont * _Nonnull)saveButtonFont saveButtonTextColor:(UIColor * _Nonnull)saveButtonTextColor OBJC_DESIGNATED_INITIALIZER;
 @property (nonatomic, strong) UIColor * _Nonnull backgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull textFieldBackgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull textFieldPlaceholderColor;
+@property (nonatomic, strong) UIColor * _Nonnull textFieldDisabledColor;
 @property (nonatomic, strong) UIColor * _Nonnull textFieldTintColor;
 @property (nonatomic, strong) UIColor * _Nonnull textFieldTextColor;
 @property (nonatomic, strong) UIColor * _Nonnull textFieldBorderColor;
 @property (nonatomic, strong) UIColor * _Nonnull buttonTintColor;
+@property (nonatomic, strong) UIColor * _Nonnull buttonDisabledTintColor;
 @property (nonatomic, strong) UIFont * _Nonnull cancelButtonFont;
 @property (nonatomic, strong) UIFont * _Nonnull saveButtonFont;
 @property (nonatomic, strong) UIColor * _Nonnull saveButtonTextColor;
@@ -4544,6 +4928,10 @@ SWIFT_CLASS("_TtC13SendBirdUIKit19SBUMessageInputView")
 - (void)layoutSubviews;
 - (void)startEditModeWithText:(NSString * _Nonnull)text;
 - (void)endEditMode;
+/// Sets frozen mode state.
+/// \param isFrozen <code>true</code> is frozen mode, <code>false</code> is unfrozen mode
+///
+- (void)setFrozenModeState:(BOOL)isFrozen;
 - (void)endTypingMode;
 - (void)updateTextViewHeight;
 - (IBAction)onClickAddButton:(id _Nonnull)sender;
@@ -4693,6 +5081,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Chan
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull MessageInput_Text_Placeholder;)
 + (NSString * _Nonnull)MessageInput_Text_Placeholder SWIFT_WARN_UNUSED_RESULT;
 + (void)setMessageInput_Text_Placeholder:(NSString * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull MessageInput_Text_Unavailable;)
++ (NSString * _Nonnull)MessageInput_Text_Unavailable SWIFT_WARN_UNUSED_RESULT;
++ (void)setMessageInput_Text_Unavailable:(NSString * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Message_Edited;)
 + (NSString * _Nonnull)Message_Edited SWIFT_WARN_UNUSED_RESULT;
 + (void)setMessage_Edited:(NSString * _Nonnull)value;
@@ -4834,7 +5225,6 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUUserListT
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
-@class SBDUserMessage;
 
 IB_DESIGNABLE
 SWIFT_CLASS("_TtC13SendBirdUIKit18SBUUserMessageCell")
@@ -5257,11 +5647,11 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUChannelLi
 @end
 
 @class UIBarButtonItem;
+@class SBDGroupChannel;
 @class UINib;
 @class UITableView;
 @class UISwipeActionsConfiguration;
 @class UITableViewRowAction;
-@class SBDGroupChannel;
 @class SBDUser;
 @class SBDBaseChannel;
 @class NSBundle;
@@ -5270,6 +5660,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 @interface SBUChannelListViewController : UIViewController <SBDChannelDelegate, SBDConnectionDelegate, UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
+@property (nonatomic, readonly, copy) NSArray<SBDGroupChannel *> * _Nonnull channelList;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUChannelListViewController()'");
 /// If you have channel object, use this initialize function.
 /// \param channel Channel object
@@ -5282,6 +5673,24 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 - (void)viewDidLoad;
 - (void)viewWillAppear:(BOOL)animated;
+/// Changes push trigger option on a channel.
+/// since:
+/// 1.0.9
+/// \param option Push trigger option to change
+///
+/// \param channel Channel to change option
+///
+/// \param completionHandler Completion handler
+///
+- (void)changePushTriggerOptionWithOption:(SBDGroupChannelPushTriggerOption)option channel:(SBDGroupChannel * _Nonnull)channel completionHandler:(void (^ _Nullable)(BOOL))completionHandler;
+/// Leaves the channel.
+/// since:
+/// 1.0.9
+/// \param channel Channel to leave
+///
+/// \param completionHandler Completion handler
+///
+- (void)leaveChannel:(SBDGroupChannel * _Nonnull)channel completionHandler:(void (^ _Nullable)(BOOL))completionHandler;
 /// If you want to use a custom channelViewController, override it and implement it.
 /// \param channelUrl channel url for use in channelViewController.
 ///
@@ -5355,6 +5764,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUChannelSe
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
+@class UIImage;
+@class SBDGroupChannelParams;
 @class UIImagePickerController;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
@@ -5382,17 +5793,38 @@ SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 - (void)viewDidLoad;
 - (void)viewWillAppear:(BOOL)animated;
-- (void)updateChannelInfoWithChannelName:(NSString * _Nullable)channelName;
 /// This function is used to load channel information.
 /// \param channelUrl channel url
 ///
 - (void)loadChannelWithChannelUrl:(NSString * _Nullable)channelUrl;
+- (void)updateChannelInfoWithChannelName:(NSString * _Nullable)channelName SWIFT_DEPRECATED_MSG("deprecated in 1.0.9", "updateChannelWithChannelName:coverImage:");
+/// Used to update the channel name or cover image. <code>channelName</code> and<code> coverImage</code> are used for updating only the set values.
+/// since:
+/// 1.0.9
+/// \param channelName Channel name to update
+///
+/// \param coverImage Cover image to update
+///
+- (void)updateChannelWithChannelName:(NSString * _Nullable)channelName coverImage:(UIImage * _Nullable)coverImage;
+/// Updates the channel with channelParams.
+/// You can update a channel by setting various properties of ChannelParams.
+/// since:
+/// 1.0.9
+/// \param params <code>SBDGroupChannelParams</code> class object
+///
+- (void)updateChannelWithParams:(SBDGroupChannelParams * _Nonnull)params;
+/// Changes push trigger option on channel.
+/// \param isOn notification status
+///
+- (void)changeNotificationWithIsOn:(BOOL)isOn;
+/// Leaves the channel.
+- (void)leaveChannel;
 /// If you want to use a custom memberListViewController, override it and implement it.
 - (void)showMemberList;
+/// Open the channel image selection menu.
 - (void)selectChannelImage;
+/// Open the channel name change popup.
 - (void)changeChannelName;
-- (void)changeNotificationWithIsOn:(BOOL)isOn;
-- (void)leaveChannel;
 - (void)tableView:(UITableView * _Nonnull)tableView didSelectRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
 - (UITableViewCell * _Nonnull)tableView:(UITableView * _Nonnull)tableView cellForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
 - (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
@@ -5437,9 +5869,10 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit27SBUMessageInputViewDelegate_")
 @end
 
 @class SBUNewMessageInfo;
+@class SBDBaseMessage;
 @class SBDUserMessageParams;
 @class SBDFileMessageParams;
-@class SBDBaseMessage;
+@class SBDUserMessage;
 @class UIScrollView;
 @class UIDocumentPickerViewController;
 @class SBDFileMessage;
@@ -5451,8 +5884,11 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 @property (nonatomic, strong) SBUNewMessageInfo * _Nonnull newMessageInfoView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
-/// One of two must be set.
 @property (nonatomic, readonly, strong) SBDGroupChannel * _Nullable channel;
+/// This object has a list of all success messages synchronized with the server.
+@property (nonatomic, readonly, copy) NSArray<SBDBaseMessage *> * _Nonnull messageList;
+/// This object that has resendable messages, including <code>pending messages</code> and <code>failed messages</code>.
+@property (nonatomic, readonly, copy) NSDictionary<NSString *, SBDBaseMessage *> * _Nonnull resendableMessages;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithChannelUrl:'");
 /// If you have channel object, use this initialize function.
 /// \param channel Channel object
@@ -5470,16 +5906,71 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)viewDidLoad;
 - (void)viewWillAppear:(BOOL)animated;
 - (void)viewWillDisappear:(BOOL)animated;
-/// If you want to use a custom channelSettingsViewController, override it and implement it.
-- (void)showChannelSettings;
+/// Sends a user message with only text.
+/// since:
+/// 1.0.9
+/// \param text String value
+///
 - (void)sendUserMessageWithText:(NSString * _Nonnull)text;
+/// Sends a user messag with messageParams.
+/// You can send a message by setting various properties of MessageParams.
+/// since:
+/// 1.0.9
+/// \param messageParams <code>SBDUserMessageParams</code> class object
+///
 - (void)sendUserMessageWithMessageParams:(SBDUserMessageParams * _Nonnull)messageParams;
+/// Sends a file message with file data, file name, mime type.
+/// since:
+/// 1.0.9
+/// \param fileData <code>Data</code> class object
+///
+/// \param fileName file name. Used when displayed in channel list.
+///
+/// \param mimeType file’s mime type.
+///
 - (void)sendFileMessageWithFileData:(NSData * _Nonnull)fileData fileName:(NSString * _Nonnull)fileName mimeType:(NSString * _Nonnull)mimeType;
+/// Sends a file message with messageParams.
+/// You can send a file message by setting various properties of MessageParams.
+/// since:
+/// 1.0.9
+/// \param messageParams <code>SBDFileMessageParams</code> class object
+///
 - (void)sendFileMessageWithMessageParams:(SBDFileMessageParams * _Nonnull)messageParams;
+/// Resends a message with failedMessage object.
+/// since:
+/// 1.0.9
+/// \param failedMessage <code>SBDBaseMessage</code> class based failed object
+///
+- (void)resendMessageWithFailedMessage:(SBDBaseMessage * _Nonnull)failedMessage;
+/// Updates a user message with message object.
+/// since:
+/// 1.0.9
+/// \param message <code>SBDUserMessage</code> object to update
+///
+/// \param text String to be updated
+///
+- (void)updateUserMessageWithMessage:(SBDUserMessage * _Nonnull)message text:(NSString * _Nonnull)text;
+/// Updates a user message with message object and messageParams.
+/// You can update messages by setting various properties of MessageParams.
+/// since:
+/// 1.0.9
+/// \param message <code>SBDUserMessage</code> object to update
+///
+/// \param messageParams <code>SBDUserMessageParams</code> class object
+///
+- (void)updateUserMessageWithMessage:(SBDUserMessage * _Nonnull)message messageParams:(SBDUserMessageParams * _Nonnull)messageParams;
+/// Deletes a message with message object.
+/// since:
+/// 1.0.9
+/// \param message <code>SBDBaseMessage</code> based class object
+///
+- (void)deleteMessageWithMessage:(SBDBaseMessage * _Nonnull)message;
 /// This function is used to load channel information.
 /// \param channelUrl channel url
 ///
 - (void)loadChannelWithChannelUrl:(NSString * _Nullable)channelUrl;
+/// If you want to use a custom channelSettingsViewController, override it and implement it.
+- (void)showChannelSettings;
 - (BOOL)checkSameDayAsNextMessageWithCurrentIndex:(NSInteger)currentIndex SWIFT_WARN_UNUSED_RESULT;
 - (void)configureOffset;
 /// This is used to check the loading status and control loading indicator.
@@ -5525,6 +6016,8 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)channelDidUpdateDeliveryReceipt:(SBDGroupChannel * _Nonnull)sender;
 - (void)channelDidUpdateTypingStatus:(SBDGroupChannel * _Nonnull)sender;
 - (void)channelWasChanged:(SBDBaseChannel * _Nonnull)sender;
+- (void)channelWasFrozen:(SBDBaseChannel * _Nonnull)sender;
+- (void)channelWasUnfrozen:(SBDBaseChannel * _Nonnull)sender;
 - (void)didSucceedReconnection;
 - (void)messageInputView:(SBUMessageInputView * _Nonnull)messageInputView didSelectSend:(NSString * _Nonnull)text;
 - (void)messageInputView:(SBUMessageInputView * _Nonnull)messageInputView didSelectResource:(enum MediaResourceType)type;
@@ -5710,9 +6203,19 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 /// \param users customized <code>SBUUser</code> array for add to user list
 ///
 - (void)loadNextUserListWithReset:(BOOL)reset users:(NSArray<SBUUser *> * _Nullable)users;
-/// This function creates a channel with SBDGroupChannelParams.
-/// If parameter modification is needed, override this function to implement it.
-- (void)createChannel;
+/// Creates the channel with userIds.
+/// since:
+/// 1.0.9
+/// \param params <code>SBDGroupChannelParams</code> class object
+///
+- (void)createChannelWithUserIds:(NSArray<NSString *> * _Nonnull)userIds;
+/// Creates the channel with channelParams.
+/// You can create a channel by setting various properties of ChannelParams.
+/// since:
+/// 1.0.9
+/// \param params <code>SBDGroupChannelParams</code> class object
+///
+- (void)createChannelWithParams:(SBDGroupChannelParams * _Nonnull)params;
 - (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
 - (UITableViewCell * _Nonnull)tableView:(UITableView * _Nonnull)tableView cellForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
 - (void)tableView:(UITableView * _Nonnull)tableView didSelectRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
@@ -5815,7 +6318,6 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) SBUUser * _Nullable Cu
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
-@class UIImage;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit10SBUIconSet")
 @interface SBUIconSet : NSObject
@@ -6003,7 +6505,17 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 /// \param users customized <code>SBUUser</code> array for add to user list
 ///
 - (void)loadNextUserListWithReset:(BOOL)reset users:(NSArray<SBUUser *> * _Nullable)users;
+- (void)appendUsersWithFilteringWithUsers:(NSArray<SBUUser *> * _Nonnull)users;
+/// Invites users in the channel with selected userIds.
+/// since:
+/// 1.0.9
 - (void)inviteUsers;
+/// Invites users in the channel with directly generated userIds.
+/// since:
+/// 1.0.9
+/// \param userIds User IDs to invite
+///
+- (void)inviteUsersWithUserIds:(NSArray<NSString *> * _Nonnull)userIds;
 - (void)popToChannel;
 - (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
 - (UITableViewCell * _Nonnull)tableView:(UITableView * _Nonnull)tableView cellForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
@@ -6135,14 +6647,16 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageIn
 + (SBUMessageInputTheme * _Nonnull)light SWIFT_WARN_UNUSED_RESULT;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageInputTheme * _Nonnull dark;)
 + (SBUMessageInputTheme * _Nonnull)dark SWIFT_WARN_UNUSED_RESULT;
-- (nonnull instancetype)initWithBackgroundColor:(UIColor * _Nonnull)backgroundColor textFieldBackgroundColor:(UIColor * _Nonnull)textFieldBackgroundColor textFieldPlaceholderColor:(UIColor * _Nonnull)textFieldPlaceholderColor textFieldTintColor:(UIColor * _Nonnull)textFieldTintColor textFieldTextColor:(UIColor * _Nonnull)textFieldTextColor textFieldBorderColor:(UIColor * _Nonnull)textFieldBorderColor buttonTintColor:(UIColor * _Nonnull)buttonTintColor cancelButtonFont:(UIFont * _Nonnull)cancelButtonFont saveButtonFont:(UIFont * _Nonnull)saveButtonFont saveButtonTextColor:(UIColor * _Nonnull)saveButtonTextColor OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithBackgroundColor:(UIColor * _Nonnull)backgroundColor textFieldBackgroundColor:(UIColor * _Nonnull)textFieldBackgroundColor textFieldPlaceholderColor:(UIColor * _Nonnull)textFieldPlaceholderColor textFieldDisabledColor:(UIColor * _Nonnull)textFieldDisabledColor textFieldTintColor:(UIColor * _Nonnull)textFieldTintColor textFieldTextColor:(UIColor * _Nonnull)textFieldTextColor textFieldBorderColor:(UIColor * _Nonnull)textFieldBorderColor buttonTintColor:(UIColor * _Nonnull)buttonTintColor buttonDisabledTintColor:(UIColor * _Nonnull)buttonDisabledTintColor cancelButtonFont:(UIFont * _Nonnull)cancelButtonFont saveButtonFont:(UIFont * _Nonnull)saveButtonFont saveButtonTextColor:(UIColor * _Nonnull)saveButtonTextColor OBJC_DESIGNATED_INITIALIZER;
 @property (nonatomic, strong) UIColor * _Nonnull backgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull textFieldBackgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull textFieldPlaceholderColor;
+@property (nonatomic, strong) UIColor * _Nonnull textFieldDisabledColor;
 @property (nonatomic, strong) UIColor * _Nonnull textFieldTintColor;
 @property (nonatomic, strong) UIColor * _Nonnull textFieldTextColor;
 @property (nonatomic, strong) UIColor * _Nonnull textFieldBorderColor;
 @property (nonatomic, strong) UIColor * _Nonnull buttonTintColor;
+@property (nonatomic, strong) UIColor * _Nonnull buttonDisabledTintColor;
 @property (nonatomic, strong) UIFont * _Nonnull cancelButtonFont;
 @property (nonatomic, strong) UIFont * _Nonnull saveButtonFont;
 @property (nonatomic, strong) UIColor * _Nonnull saveButtonTextColor;
@@ -6174,6 +6688,10 @@ SWIFT_CLASS("_TtC13SendBirdUIKit19SBUMessageInputView")
 - (void)layoutSubviews;
 - (void)startEditModeWithText:(NSString * _Nonnull)text;
 - (void)endEditMode;
+/// Sets frozen mode state.
+/// \param isFrozen <code>true</code> is frozen mode, <code>false</code> is unfrozen mode
+///
+- (void)setFrozenModeState:(BOOL)isFrozen;
 - (void)endTypingMode;
 - (void)updateTextViewHeight;
 - (IBAction)onClickAddButton:(id _Nonnull)sender;
@@ -6323,6 +6841,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Chan
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull MessageInput_Text_Placeholder;)
 + (NSString * _Nonnull)MessageInput_Text_Placeholder SWIFT_WARN_UNUSED_RESULT;
 + (void)setMessageInput_Text_Placeholder:(NSString * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull MessageInput_Text_Unavailable;)
++ (NSString * _Nonnull)MessageInput_Text_Unavailable SWIFT_WARN_UNUSED_RESULT;
++ (void)setMessageInput_Text_Unavailable:(NSString * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Message_Edited;)
 + (NSString * _Nonnull)Message_Edited SWIFT_WARN_UNUSED_RESULT;
 + (void)setMessage_Edited:(NSString * _Nonnull)value;
@@ -6464,7 +6985,6 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUUserListT
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
-@class SBDUserMessage;
 
 IB_DESIGNABLE
 SWIFT_CLASS("_TtC13SendBirdUIKit18SBUUserMessageCell")

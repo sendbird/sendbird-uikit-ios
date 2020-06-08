@@ -34,6 +34,8 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
 
     weak var delegate: SBUMessageInputViewDelegate?
     
+    var isFrozen: Bool = false
+
     // MARK: - Theme
     var theme: SBUMessageInputTheme = SBUTheme.messageInputTheme
 
@@ -82,8 +84,13 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
 
         // placeholderLabel
         self.placeholderLabel.font = SBUFontSet.body2
-        self.placeholderLabel.text = SBUStringSet.MessageInput_Text_Placeholder
-        self.placeholderLabel.textColor = theme.textFieldPlaceholderColor
+        if self.isFrozen {
+            self.placeholderLabel.text = SBUStringSet.MessageInput_Text_Unavailable
+            self.placeholderLabel.textColor = theme.textFieldDisabledColor
+        } else {
+            self.placeholderLabel.text = SBUStringSet.MessageInput_Text_Placeholder
+            self.placeholderLabel.textColor = theme.textFieldPlaceholderColor
+        }
 
         // textView
         self.textView.backgroundColor = theme.textFieldBackgroundColor
@@ -92,7 +99,8 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         self.textView.layer.borderColor = theme.textFieldBorderColor.cgColor
         
         // addButton
-        self.addButton.setImage(SBUIconSet.iconAdd.with(tintColor: theme.buttonTintColor), for: .normal)
+        let iconAdd = SBUIconSet.iconAdd.with(tintColor: self.isFrozen ? theme.buttonDisabledTintColor : theme.buttonTintColor)
+        self.addButton.setImage(iconAdd, for: .normal)
         
         // IconSend
         self.sendButton.setImage(SBUIconSet.iconSend.with(tintColor: theme.buttonTintColor), for: .normal)
@@ -151,6 +159,21 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         self.updateTextViewHeight()
         
         self.layoutIfNeeded()
+    }
+    
+    // MARK: Frozen
+    
+    /// Sets frozen mode state.
+    /// - Parameter isFrozen `true` is frozen mode, `false` is unfrozen mode
+    public func setFrozenModeState(_ isFrozen: Bool) {
+        self.isFrozen = isFrozen
+        
+        self.textView.isEditable = !self.isFrozen
+        self.addButton.isEnabled = !self.isFrozen
+        
+        self.endEditMode()
+        self.endTypingMode()
+        self.setupStyles()
     }
     
     // MARK: Common

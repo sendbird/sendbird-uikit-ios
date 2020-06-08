@@ -1,5 +1,33 @@
 # Change Log
 
+### v1.0.9 (Jun 8, 2020)
+
+* Supported customized params, Changed access control
+	* **`SBUChannelViewController`**
+		* `channel`, `messageList`, `resendableMessages` properties
+		* `sendUserMessage(messageParams:)`
+		* `sendFileMessage(messageParams:)`
+		* `resendMessage(failedMessage:)`
+		* `updateUserMessage(message:, text:)`
+		* `updateUserMessage(message:, messageParams:)`
+		* `deleteMessage(message:)`
+	* **`SBUChannelViewController`**
+		* `channelList` property
+		* `changePushTriggerOption(option:, channel:, completionHandler:)`
+		* `leaveChannel(channel:, completionHandler:)`
+	* **`SBUChannelSettingsViewController`**
+		* `updateChannel(channelName:, coverImage:)`
+		* `selectChannelImage()`
+		* `changeChannelName()`
+	* **`SBUCreateChannelViewController`**
+		* `createChannel(userIds:)`
+		* `createChannel(params:)`
+	* **`SBUInviteUserViewController`**
+		* `inviteUsers()`
+		* `inviteUsers(userIds:)`
+* Added - `setFrozenModeState()` method for changing frozen channel UI in `MessageInputView`
+* Fixed - Update empty view UI after receiving message
+
 ### v1.0.8 (May 28, 2020)
 * Modified - File message information in channel preview
 * Modified - Access control for channel objects

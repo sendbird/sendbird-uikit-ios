@@ -223,16 +223,25 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
         }
     }
     
-    /// This function creates a channel with SBDGroupChannelParams.
-    /// If parameter modification is needed, override this function to implement it.
-    open func createChannel() {
-        let userIds = SBUUserManager.getUserIds(users: Array(self.selectedUserList))
+    /// Creates the channel with userIds.
+    /// - Parameter params: `SBDGroupChannelParams` class object
+    /// - Since: 1.0.9
+    public func createChannel(userIds: [String]) {
         let params = SBDGroupChannelParams()
         params.name = ""
         params.coverUrl = ""
         params.addUserIds(userIds)
         params.isDistinct = false
-        
+
+        self.createChannel(params: params)
+    }
+    
+    /// Creates the channel with channelParams.
+    ///
+    /// You can create a channel by setting various properties of ChannelParams.
+    /// - Parameter params: `SBDGroupChannelParams` class object
+    /// - Since: 1.0.9
+    public func createChannel(params: SBDGroupChannelParams) {
         SBULog.info("[Request] Create channel with users, Users: \(Array(self.selectedUserList))")
         SBDGroupChannel.createChannel(with: params) { [weak self] channel, error in
             if let error = error {
@@ -269,7 +278,8 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
     @objc private func onClickCreate() {
         guard selectedUserList.isEmpty == false else { return }
         
-        self.createChannel()
+        let userIds = SBUUserManager.getUserIds(users: Array(self.selectedUserList))
+        self.createChannel(userIds: userIds)
     }
     
     private func selectUser(user: SBUUser) {
