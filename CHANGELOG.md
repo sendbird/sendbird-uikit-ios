@@ -1,7 +1,9 @@
 # Change Log
 
-### v1.0.9 (Jun 8, 2020)
+### v1.0.10 (Jun 18, 2020)
+* Fixed - Incorrect operator check logic in frozen group channel
 
+### v1.0.9 (Jun 8, 2020)
 * Supported customized params, Changed access control
 	* **`SBUChannelViewController`**
 		* `channel`, `messageList`, `resendableMessages` properties

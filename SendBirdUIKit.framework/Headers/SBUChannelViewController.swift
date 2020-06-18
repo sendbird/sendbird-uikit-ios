@@ -727,7 +727,9 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
                 
                 self?.titleView.configure(channel: self?.channel, title: self?.channelName)
                 
-                self?.messageInputView.setFrozenModeState(self?.channel?.isFrozen ?? false)
+                let isOperator = SBUChannelManager.isOperator(channel: self?.channel, userId: SBUGlobals.CurrentUser?.userId)
+                let isFrozen = self?.channel?.isFrozen ?? false
+                self?.messageInputView.setFrozenModeState(!isOperator && isFrozen)
             }
         }
     }
@@ -1462,7 +1464,8 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         guard let channel = sender as? SBDGroupChannel else { return }
         SBULog.info("Channel was frozen, ChannelUrl:\(channel.channelUrl)")
         
-        self.messageInputView.setFrozenModeState(true)
+        let isOperator = SBUChannelManager.isOperator(channel: channel, userId: SBUGlobals.CurrentUser?.userId)
+        self.messageInputView.setFrozenModeState(isOperator == false)
     }
     
     public func channelWasUnfrozen(_ sender: SBDBaseChannel) {
@@ -1490,7 +1493,9 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
             SBULog.info("[Succeed] Refresh channel request")
             self?.loadMessageChangeLogs(hasMore: true, token: nil)
             
-            self?.messageInputView.setFrozenModeState(self?.channel?.isFrozen ?? false)
+            let isOperator = SBUChannelManager.isOperator(channel: self?.channel, userId: SBUGlobals.CurrentUser?.userId)
+            let isFrozen = self?.channel?.isFrozen ?? false
+            self?.messageInputView.setFrozenModeState(!isOperator && isFrozen)
         }
     }
 
