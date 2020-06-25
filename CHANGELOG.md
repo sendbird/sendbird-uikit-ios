@@ -1,10 +1,15 @@
 # Change Log
 
+### v1.0.11 (Jun 25, 2020)
+* Supported - Custom `SBDChanngeListQuery` in the initialization function of `SBUChannelListViewController`
+* Supported - Custom `SBDMessageListParams` in the initialization function of `SBUChannelViewController`
+* Added - Unknown type message
+
 ### v1.0.10 (Jun 18, 2020)
 * Fixed - Incorrect operator check logic in frozen group channel
 
 ### v1.0.9 (Jun 8, 2020)
-* Supported customized params, Changed access control
+* Supported - customized params, Changed access control
 	* **`SBUChannelViewController`**
 		* `channel`, `messageList`, `resendableMessages` properties
 		* `sendUserMessage(messageParams:)`

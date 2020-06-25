@@ -7,18 +7,17 @@
 //
 
 import UIKit
+import SendBirdSDK
 
 @objcMembers
 open class SBUChannelListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SBDChannelDelegate, SBDConnectionDelegate, SBUEmptyViewDelegate {
     
-    // MARK: - Public property
-    // for UI
+    // MARK: - UI properties (Public)
     public lazy var leftBarButton: UIBarButtonItem? = _leftBarButton
     public lazy var rightBarButton: UIBarButtonItem? = _rightBarButton
 
     
-    // MARK: - Private property
-    // for UI
+    // MARK: - UI properties (Private)
     var theme: SBUChannelListTheme = SBUTheme.channelListTheme
 
     private lazy var titleView: SBUNavigationTitleView = _titleView
@@ -52,9 +51,21 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
         return emptyView
     }()
 
-    // for Logic
+    
+    // MARK: - Logic properties (Public)
+    
+    /// This object has a list of all channels.
     @SBUAtomic public private(set) var channelList: [SBDGroupChannel] = []
-    var channelListQuery: SBDGroupChannelListQuery?
+    
+    /// This is a query used to get a list of channels. Only getter is provided, please use initialization function to set query directly.
+    /// - note: For query properties, see `SBDGroupChannelListQuery` class.
+    /// - Since: 1.0.11
+    public private(set) var channelListQuery: SBDGroupChannelListQuery?
+    
+    
+    // MARK: - Logic properties (Private)
+    var customizedChannelListQuery: SBDGroupChannelListQuery? = nil
+    
     var lastUpdatedTimestamp: Int64 = 0
     var lastUpdatedToken: String? = nil
     var isLoading = false
@@ -65,6 +76,7 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
     var channelCell: SBUBaseChannelCell? = nil
     var customCell: SBUBaseChannelCell? = nil
 
+    
     // MARK: - Lifecycle
     @available(*, unavailable, renamed: "SBUChannelListViewController()")
     required public init?(coder: NSCoder) {
@@ -72,11 +84,23 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
         SBULog.info("")
     }
 
-    /// If you have channel object, use this initialize function.
-    /// - Parameter channel: Channel object
-    public init() {
+    /// You can initialize the class through this function.
+    /// If you have `channelListQuery`, please set it. If not set, it is used as default value.
+    ///
+    /// See the example below for query generation.
+    /// ````
+    ///     let query = SBDGroupChannel.createMyGroupChannelListQuery()
+    ///     query.includeEmptyChannel = false
+    ///     query.includeFrozenChannel = true
+    ///     ...
+    /// ````
+    /// - Parameter channelListQuery: Your own `SBDGroupChannelListQuery` object
+    /// - Since: 1.0.11
+    public init(channelListQuery: SBDGroupChannelListQuery? = nil) {
         super.init(nibName: nil, bundle: nil)
         SBULog.info("")
+        
+        self.customizedChannelListQuery = channelListQuery
     }
     
     open override func loadView() {
@@ -242,10 +266,14 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
         }
         
         if self.channelListQuery == nil {
-            self.channelListQuery = SBDGroupChannel.createMyGroupChannelListQuery()
-            self.channelListQuery?.order = .latestLastMessage
-            self.channelListQuery?.limit = self.limit
-            self.channelListQuery?.includeEmptyChannel = self.includeEmptyChannel
+            if let query = self.customizedChannelListQuery?.copy() as? SBDGroupChannelListQuery {
+                self.channelListQuery = query
+            } else {
+                self.channelListQuery = SBDGroupChannel.createMyGroupChannelListQuery()
+                self.channelListQuery?.order = .latestLastMessage
+                self.channelListQuery?.limit = self.limit
+                self.channelListQuery?.includeEmptyChannel = self.includeEmptyChannel
+            }
         }
         
         guard self.channelListQuery?.hasNext == true else {
@@ -281,9 +309,10 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
             return
         }
         
-        let channelLogsParams = SBDGroupChannelChangeLogsParams()
-        channelLogsParams.includeEmptyChannel = self.includeEmptyChannel
-        channelLogsParams.includeFrozenChannel = true
+        var channelLogsParams = SBDGroupChannelChangeLogsParams()
+        if let channelListQuery = self.channelListQuery {
+            channelLogsParams = SBDGroupChannelChangeLogsParams.create(with: channelListQuery)
+        }
         
         if let token = token {
             SBULog.info("[Request] Channel change logs with token")
@@ -407,7 +436,11 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
     /// If you want to use a custom channelViewController, override it and implement it.
     /// - Parameter channelUrl: channel url for use in channelViewController.
     open func showChannel(channelUrl: String) {
-        let channelVC = SBUChannelViewController(channelUrl: channelUrl)
+        let params = SBDMessageListParams()
+        params.includeMetaArray = true
+        params.includeReactions = true
+        params.includeReplies = true
+        let channelVC = SBUChannelViewController(channelUrl: channelUrl, messageListParams: params)
         self.navigationController?.pushViewController(channelVC, animated: true)
     }
     

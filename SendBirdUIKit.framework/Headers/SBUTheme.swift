@@ -622,6 +622,11 @@ public class SBUMessageCellTheme: NSObject {
         // Admin message
         theme.adminMessageFont = SBUFontSet.caption2
         theme.adminMessageTextColor = SBUColorSet.onlight02
+        
+        // Unknown message
+        theme.unknownMessageDescFont = SBUFontSet.body1
+        theme.unknownMessageDescTextColor = SBUColorSet.ondark02
+        
         return theme
     }
     public static var dark: SBUMessageCellTheme {
@@ -655,7 +660,6 @@ public class SBUMessageCellTheme: NSObject {
         theme.readReceiptStateColor = SBUColorSet.secondary300
         theme.deliveryReceiptStateColor = SBUColorSet.ondark03
         
-        
         // User messgae
         theme.userMessageFont = SBUFontSet.body1
         theme.userMessageLeftTextColor = SBUColorSet.ondark01
@@ -675,6 +679,11 @@ public class SBUMessageCellTheme: NSObject {
         // Admin message
         theme.adminMessageFont = SBUFontSet.caption2
         theme.adminMessageTextColor = SBUColorSet.ondark02
+        
+        // Unknown message
+        theme.unknownMessageDescFont = SBUFontSet.body1
+        theme.unknownMessageDescTextColor = SBUColorSet.onlight02
+        
         return theme
     }
     
@@ -709,7 +718,9 @@ public class SBUMessageCellTheme: NSObject {
                 fileMessageRightTextColor: UIColor = SBUColorSet.ondark01,
                 fileMessagePlaceholderColor: UIColor = SBUColorSet.onlight02,
                 adminMessageFont: UIFont = SBUFontSet.caption2,
-                adminMessageTextColor: UIColor = SBUColorSet.onlight02
+                adminMessageTextColor: UIColor = SBUColorSet.onlight02,
+                unknownMessageDescFont: UIFont  = SBUFontSet.body1,
+                unknownMessageDescTextColor: UIColor = SBUColorSet.onlight03
     )
     {
         self.backgroundColor = backgroundColor
@@ -744,6 +755,8 @@ public class SBUMessageCellTheme: NSObject {
         self.fileMessagePlaceholderColor = fileMessagePlaceholderColor
         self.adminMessageFont = adminMessageFont
         self.adminMessageTextColor = adminMessageTextColor
+        self.unknownMessageDescFont = unknownMessageDescFont
+        self.unknownMessageDescTextColor = unknownMessageDescTextColor
     }
     
     public var backgroundColor: UIColor
@@ -794,6 +807,10 @@ public class SBUMessageCellTheme: NSObject {
     // Admin message
     public var adminMessageFont: UIFont
     public var adminMessageTextColor: UIColor
+    
+    // Unknown message
+    public var unknownMessageDescFont: UIFont
+    public var unknownMessageDescTextColor: UIColor
      
 }
 

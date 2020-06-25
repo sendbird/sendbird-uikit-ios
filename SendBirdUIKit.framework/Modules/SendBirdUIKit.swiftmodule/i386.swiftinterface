@@ -81,9 +81,12 @@ extension UIView {
   @objc @SendBirdUIKit.SBUAtomic public var channelList: [SendBirdSDK.SBDGroupChannel] {
     @objc get
   }
+  @objc public var channelListQuery: SendBirdSDK.SBDGroupChannelListQuery? {
+    get
+  }
   @available(*, unavailable, renamed: "SBUChannelListViewController()")
   @objc required dynamic public init?(coder: Foundation.NSCoder)
-  @objc dynamic public init()
+  @objc public init(channelListQuery: SendBirdSDK.SBDGroupChannelListQuery? = nil)
   @objc override dynamic open func loadView()
   @objc public func setupAutolayout()
   @objc public func setupStyles()
@@ -205,10 +208,13 @@ public typealias SBUNewMessageInfoHandler = () -> Swift.Void
   @objc public var resendableMessages: [Swift.String : SendBirdSDK.SBDBaseMessage] {
     get
   }
+  @objc public var messageListParams: SendBirdSDK.SBDMessageListParams {
+    get
+  }
   @available(*, unavailable, renamed: "SBUChannelViewController.init(channelUrl:)")
   @objc required dynamic public init?(coder: Foundation.NSCoder)
-  @objc public init(channel: SendBirdSDK.SBDGroupChannel)
-  @objc public init(channelUrl: Swift.String)
+  @objc public init(channel: SendBirdSDK.SBDGroupChannel, messageListParams: SendBirdSDK.SBDMessageListParams? = nil)
+  @objc public init(channelUrl: Swift.String, messageListParams: SendBirdSDK.SBDMessageListParams? = nil)
   @objc override dynamic open func loadView()
   @objc open func setupAutolayout()
   @objc open func setupStyles()
@@ -468,6 +474,8 @@ public typealias SBUNewMessageInfoHandler = () -> Swift.Void
   @objc public static var MessageInput_Text_Unavailable: Swift.String
   @objc public static var Message_Edited: Swift.String
   @objc public static var Message_System: Swift.String
+  @objc public static var Message_Unknown_Title: Swift.String
+  @objc public static var Message_Unknown_Desctiption: Swift.String
   @objc public static var Empty_No_Channels: Swift.String
   @objc public static var Empty_No_Messages: Swift.String
   @objc public static var Empty_No_Users: Swift.String
@@ -747,6 +755,7 @@ extension UINavigationController {
   @objc override open func setupAutolayout()
   @objc override open func setupActions()
   @objc public func configure(_ message: SendBirdSDK.SBDUserMessage, hideDateView: Swift.Bool, receiptState: SendBirdUIKit.SBUMessageReceiptState)
+  @objc public func configure(_ message: SendBirdSDK.SBDBaseMessage, hideDateView: Swift.Bool, receiptState: SendBirdUIKit.SBUMessageReceiptState, withTextView: Swift.Bool)
   @objc override dynamic public func setSelected(_ selected: Swift.Bool, animated: Swift.Bool)
   @objc open func onLongPressContentView(sender: UIKit.UILongPressGestureRecognizer)
   @objc open func onTapProfileImageView(sender: UIKit.UITapGestureRecognizer)
@@ -907,7 +916,7 @@ extension UINavigationController {
   @objc public static var dark: SendBirdUIKit.SBUMessageCellTheme {
     @objc get
   }
-  @objc public init(backgroundColor: UIKit.UIColor = SBUColorSet.background100, leftBackgroundColor: UIKit.UIColor = SBUColorSet.background200, leftPressedBackgroundColor: UIKit.UIColor = SBUColorSet.primary100, rightBackgroundColor: UIKit.UIColor = SBUColorSet.primary300, rightPressedBackgroundColor: UIKit.UIColor = SBUColorSet.primary400, dateFont: UIKit.UIFont = SBUFontSet.caption1, dateTextColor: UIKit.UIColor = SBUColorSet.ondark01, dateBackgroundColor: UIKit.UIColor = SBUColorSet.overlay02, userPlaceholderBackgroundColor: UIKit.UIColor = SBUColorSet.background300, userPlaceholderTintColor: UIKit.UIColor = SBUColorSet.ondark01, userNameFont: UIKit.UIFont = SBUFontSet.caption1, userNameTextColor: UIKit.UIColor = SBUColorSet.onlight02, timeFont: UIKit.UIFont = SBUFontSet.caption3, timeTextColor: UIKit.UIColor = SBUColorSet.onlight03, pendingStateColor: UIKit.UIColor = SBUColorSet.primary300, failedStateColor: UIKit.UIColor = SBUColorSet.error, succeededStateColor: UIKit.UIColor = SBUColorSet.onlight03, readReceiptStateColor: UIKit.UIColor = SBUColorSet.secondary300, deliveryReceiptStateColor: UIKit.UIColor = SBUColorSet.onlight03, userMessageFont: UIKit.UIFont = SBUFontSet.body1, userMessageLeftTextColor: UIKit.UIColor = SBUColorSet.onlight01, userMessageLeftEditTextColor: UIKit.UIColor = SBUColorSet.onlight02, userMessageRightTextColor: UIKit.UIColor = SBUColorSet.ondark01, userMessageRightEditTextColor: UIKit.UIColor = SBUColorSet.ondark02, fileIconBackgroundColor: UIKit.UIColor = SBUColorSet.background100, fileIconColor: UIKit.UIColor = SBUColorSet.primary300, fileMessageNameFont: UIKit.UIFont = SBUFontSet.body1, fileMessageLeftTextColor: UIKit.UIColor = SBUColorSet.onlight01, fileMessageRightTextColor: UIKit.UIColor = SBUColorSet.ondark01, fileMessagePlaceholderColor: UIKit.UIColor = SBUColorSet.onlight02, adminMessageFont: UIKit.UIFont = SBUFontSet.caption2, adminMessageTextColor: UIKit.UIColor = SBUColorSet.onlight02)
+  @objc public init(backgroundColor: UIKit.UIColor = SBUColorSet.background100, leftBackgroundColor: UIKit.UIColor = SBUColorSet.background200, leftPressedBackgroundColor: UIKit.UIColor = SBUColorSet.primary100, rightBackgroundColor: UIKit.UIColor = SBUColorSet.primary300, rightPressedBackgroundColor: UIKit.UIColor = SBUColorSet.primary400, dateFont: UIKit.UIFont = SBUFontSet.caption1, dateTextColor: UIKit.UIColor = SBUColorSet.ondark01, dateBackgroundColor: UIKit.UIColor = SBUColorSet.overlay02, userPlaceholderBackgroundColor: UIKit.UIColor = SBUColorSet.background300, userPlaceholderTintColor: UIKit.UIColor = SBUColorSet.ondark01, userNameFont: UIKit.UIFont = SBUFontSet.caption1, userNameTextColor: UIKit.UIColor = SBUColorSet.onlight02, timeFont: UIKit.UIFont = SBUFontSet.caption3, timeTextColor: UIKit.UIColor = SBUColorSet.onlight03, pendingStateColor: UIKit.UIColor = SBUColorSet.primary300, failedStateColor: UIKit.UIColor = SBUColorSet.error, succeededStateColor: UIKit.UIColor = SBUColorSet.onlight03, readReceiptStateColor: UIKit.UIColor = SBUColorSet.secondary300, deliveryReceiptStateColor: UIKit.UIColor = SBUColorSet.onlight03, userMessageFont: UIKit.UIFont = SBUFontSet.body1, userMessageLeftTextColor: UIKit.UIColor = SBUColorSet.onlight01, userMessageLeftEditTextColor: UIKit.UIColor = SBUColorSet.onlight02, userMessageRightTextColor: UIKit.UIColor = SBUColorSet.ondark01, userMessageRightEditTextColor: UIKit.UIColor = SBUColorSet.ondark02, fileIconBackgroundColor: UIKit.UIColor = SBUColorSet.background100, fileIconColor: UIKit.UIColor = SBUColorSet.primary300, fileMessageNameFont: UIKit.UIFont = SBUFontSet.body1, fileMessageLeftTextColor: UIKit.UIColor = SBUColorSet.onlight01, fileMessageRightTextColor: UIKit.UIColor = SBUColorSet.ondark01, fileMessagePlaceholderColor: UIKit.UIColor = SBUColorSet.onlight02, adminMessageFont: UIKit.UIFont = SBUFontSet.caption2, adminMessageTextColor: UIKit.UIColor = SBUColorSet.onlight02, unknownMessageDescFont: UIKit.UIFont = SBUFontSet.body1, unknownMessageDescTextColor: UIKit.UIColor = SBUColorSet.onlight03)
   @objc public var backgroundColor: UIKit.UIColor
   @objc public var leftBackgroundColor: UIKit.UIColor
   @objc public var leftPressedBackgroundColor: UIKit.UIColor
@@ -940,6 +949,8 @@ extension UINavigationController {
   @objc public var fileMessagePlaceholderColor: UIKit.UIColor
   @objc public var adminMessageFont: UIKit.UIFont
   @objc public var adminMessageTextColor: UIKit.UIColor
+  @objc public var unknownMessageDescFont: UIKit.UIFont
+  @objc public var unknownMessageDescTextColor: UIKit.UIColor
   @objc deinit
   @objc override dynamic public init()
 }

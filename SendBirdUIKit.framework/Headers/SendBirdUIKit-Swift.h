@@ -366,6 +366,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUChannelLi
 
 @class UIBarButtonItem;
 @class SBDGroupChannel;
+@class SBDGroupChannelListQuery;
 @class UINib;
 @class UITableView;
 @class UISwipeActionsConfiguration;
@@ -378,12 +379,29 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 @interface SBUChannelListViewController : UIViewController <SBDChannelDelegate, SBDConnectionDelegate, UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
+/// This object has a list of all channels.
 @property (nonatomic, readonly, copy) NSArray<SBDGroupChannel *> * _Nonnull channelList;
+/// This is a query used to get a list of channels. Only getter is provided, please use initialization function to set query directly.
+/// note:
+/// For query properties, see <code>SBDGroupChannelListQuery</code> class.
+/// since:
+/// 1.0.11
+@property (nonatomic, readonly, strong) SBDGroupChannelListQuery * _Nullable channelListQuery;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUChannelListViewController()'");
-/// If you have channel object, use this initialize function.
-/// \param channel Channel object
+/// You can initialize the class through this function.
+/// If you have <code>channelListQuery</code>, please set it. If not set, it is used as default value.
+/// See the example below for query generation.
+/// \code
+///     let query = SBDGroupChannel.createMyGroupChannelListQuery()
+///     query.includeEmptyChannel = false
+///     query.includeFrozenChannel = true
+///     ...
 ///
-- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+/// \endcodesince:
+/// 1.0.11
+/// \param channelListQuery Your own <code>SBDGroupChannelListQuery</code> object
+///
+- (nonnull instancetype)initWithChannelListQuery:(SBDGroupChannelListQuery * _Nullable)channelListQuery OBJC_DESIGNATED_INITIALIZER;
 - (void)loadView;
 - (void)setupAutolayout;
 - (void)setupStyles;
@@ -588,6 +606,7 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit27SBUMessageInputViewDelegate_")
 
 @class SBUNewMessageInfo;
 @class SBDBaseMessage;
+@class SBDMessageListParams;
 @class SBDUserMessageParams;
 @class SBDFileMessageParams;
 @class SBDUserMessage;
@@ -602,20 +621,51 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 @property (nonatomic, strong) SBUNewMessageInfo * _Nonnull newMessageInfoView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
+/// This object is used to import a list of messages, send messages, modify messages, and so on, and is created during initialization.
 @property (nonatomic, readonly, strong) SBDGroupChannel * _Nullable channel;
 /// This object has a list of all success messages synchronized with the server.
 @property (nonatomic, readonly, copy) NSArray<SBDBaseMessage *> * _Nonnull messageList;
 /// This object that has resendable messages, including <code>pending messages</code> and <code>failed messages</code>.
 @property (nonatomic, readonly, copy) NSDictionary<NSString *, SBDBaseMessage *> * _Nonnull resendableMessages;
-- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithChannelUrl:'");
-/// If you have channel object, use this initialize function.
+/// This is a params used to get a list of messages. Only getter is provided, please use initialization function to set params directly.
+/// note:
+/// For params properties, see <code>SBDMessageListParams</code> class.
+/// since:
+/// 1.0.11
+@property (nonatomic, readonly, strong) SBDMessageListParams * _Nonnull messageListParams;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUChannelViewController.init(channelUrl:)'");
+/// If you have channel object, use this initialize function. And, if you have own message list params, please set it. If not set, it is used as the default value.
+/// See the example below for params generation.
+/// \code
+///     let params = SBDMessageListParams()
+///     params.includeMetaArray = true
+///     params.includeReactions = true
+///     params.includeReplies = true
+///     ...
+///
+/// \endcodenote:
+/// The <code>reverse</code> and the <code>nextResultSize</code> properties in the <code>SBDMessageListParams</code> are set in the UIKit. Even though you set that property it will be ignored.
+/// since:
+/// 1.0.11
 /// \param channel Channel object
 ///
-- (nonnull instancetype)initWithChannel:(SBDGroupChannel * _Nonnull)channel OBJC_DESIGNATED_INITIALIZER;
-/// If you don’t have channel object and have channelUrl, use this initialize function.
+- (nonnull instancetype)initWithChannel:(SBDGroupChannel * _Nonnull)channel messageListParams:(SBDMessageListParams * _Nullable)messageListParams OBJC_DESIGNATED_INITIALIZER;
+/// If you don’t have channel object and have channelUrl, use this initialize function. And, if you have own message list params, please set it. If not set, it is used as the default value.
+/// See the example below for params generation.
+/// \code
+///     let params = SBDMessageListParams()
+///     params.includeMetaArray = true
+///     params.includeReactions = true
+///     params.includeReplies = true
+///     ...
+///
+/// \endcodenote:
+/// The <code>reverse</code> and the <code>nextResultSize</code> properties in the <code>SBDMessageListParams</code> are set in the UIKit. Even though you set that property it will be ignored.
+/// since:
+/// 1.0.11
 /// \param channelUrl Channel url string
 ///
-- (nonnull instancetype)initWithChannelUrl:(NSString * _Nonnull)channelUrl OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithChannelUrl:(NSString * _Nonnull)channelUrl messageListParams:(SBDMessageListParams * _Nullable)messageListParams OBJC_DESIGNATED_INITIALIZER;
 - (void)loadView;
 - (void)setupAutolayout;
 - (void)setupStyles;
@@ -1321,7 +1371,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageCe
 + (SBUMessageCellTheme * _Nonnull)light SWIFT_WARN_UNUSED_RESULT;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageCellTheme * _Nonnull dark;)
 + (SBUMessageCellTheme * _Nonnull)dark SWIFT_WARN_UNUSED_RESULT;
-- (nonnull instancetype)initWithBackgroundColor:(UIColor * _Nonnull)backgroundColor leftBackgroundColor:(UIColor * _Nonnull)leftBackgroundColor leftPressedBackgroundColor:(UIColor * _Nonnull)leftPressedBackgroundColor rightBackgroundColor:(UIColor * _Nonnull)rightBackgroundColor rightPressedBackgroundColor:(UIColor * _Nonnull)rightPressedBackgroundColor dateFont:(UIFont * _Nonnull)dateFont dateTextColor:(UIColor * _Nonnull)dateTextColor dateBackgroundColor:(UIColor * _Nonnull)dateBackgroundColor userPlaceholderBackgroundColor:(UIColor * _Nonnull)userPlaceholderBackgroundColor userPlaceholderTintColor:(UIColor * _Nonnull)userPlaceholderTintColor userNameFont:(UIFont * _Nonnull)userNameFont userNameTextColor:(UIColor * _Nonnull)userNameTextColor timeFont:(UIFont * _Nonnull)timeFont timeTextColor:(UIColor * _Nonnull)timeTextColor pendingStateColor:(UIColor * _Nonnull)pendingStateColor failedStateColor:(UIColor * _Nonnull)failedStateColor succeededStateColor:(UIColor * _Nonnull)succeededStateColor readReceiptStateColor:(UIColor * _Nonnull)readReceiptStateColor deliveryReceiptStateColor:(UIColor * _Nonnull)deliveryReceiptStateColor userMessageFont:(UIFont * _Nonnull)userMessageFont userMessageLeftTextColor:(UIColor * _Nonnull)userMessageLeftTextColor userMessageLeftEditTextColor:(UIColor * _Nonnull)userMessageLeftEditTextColor userMessageRightTextColor:(UIColor * _Nonnull)userMessageRightTextColor userMessageRightEditTextColor:(UIColor * _Nonnull)userMessageRightEditTextColor fileIconBackgroundColor:(UIColor * _Nonnull)fileIconBackgroundColor fileIconColor:(UIColor * _Nonnull)fileIconColor fileMessageNameFont:(UIFont * _Nonnull)fileMessageNameFont fileMessageLeftTextColor:(UIColor * _Nonnull)fileMessageLeftTextColor fileMessageRightTextColor:(UIColor * _Nonnull)fileMessageRightTextColor fileMessagePlaceholderColor:(UIColor * _Nonnull)fileMessagePlaceholderColor adminMessageFont:(UIFont * _Nonnull)adminMessageFont adminMessageTextColor:(UIColor * _Nonnull)adminMessageTextColor OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithBackgroundColor:(UIColor * _Nonnull)backgroundColor leftBackgroundColor:(UIColor * _Nonnull)leftBackgroundColor leftPressedBackgroundColor:(UIColor * _Nonnull)leftPressedBackgroundColor rightBackgroundColor:(UIColor * _Nonnull)rightBackgroundColor rightPressedBackgroundColor:(UIColor * _Nonnull)rightPressedBackgroundColor dateFont:(UIFont * _Nonnull)dateFont dateTextColor:(UIColor * _Nonnull)dateTextColor dateBackgroundColor:(UIColor * _Nonnull)dateBackgroundColor userPlaceholderBackgroundColor:(UIColor * _Nonnull)userPlaceholderBackgroundColor userPlaceholderTintColor:(UIColor * _Nonnull)userPlaceholderTintColor userNameFont:(UIFont * _Nonnull)userNameFont userNameTextColor:(UIColor * _Nonnull)userNameTextColor timeFont:(UIFont * _Nonnull)timeFont timeTextColor:(UIColor * _Nonnull)timeTextColor pendingStateColor:(UIColor * _Nonnull)pendingStateColor failedStateColor:(UIColor * _Nonnull)failedStateColor succeededStateColor:(UIColor * _Nonnull)succeededStateColor readReceiptStateColor:(UIColor * _Nonnull)readReceiptStateColor deliveryReceiptStateColor:(UIColor * _Nonnull)deliveryReceiptStateColor userMessageFont:(UIFont * _Nonnull)userMessageFont userMessageLeftTextColor:(UIColor * _Nonnull)userMessageLeftTextColor userMessageLeftEditTextColor:(UIColor * _Nonnull)userMessageLeftEditTextColor userMessageRightTextColor:(UIColor * _Nonnull)userMessageRightTextColor userMessageRightEditTextColor:(UIColor * _Nonnull)userMessageRightEditTextColor fileIconBackgroundColor:(UIColor * _Nonnull)fileIconBackgroundColor fileIconColor:(UIColor * _Nonnull)fileIconColor fileMessageNameFont:(UIFont * _Nonnull)fileMessageNameFont fileMessageLeftTextColor:(UIColor * _Nonnull)fileMessageLeftTextColor fileMessageRightTextColor:(UIColor * _Nonnull)fileMessageRightTextColor fileMessagePlaceholderColor:(UIColor * _Nonnull)fileMessagePlaceholderColor adminMessageFont:(UIFont * _Nonnull)adminMessageFont adminMessageTextColor:(UIColor * _Nonnull)adminMessageTextColor unknownMessageDescFont:(UIFont * _Nonnull)unknownMessageDescFont unknownMessageDescTextColor:(UIColor * _Nonnull)unknownMessageDescTextColor OBJC_DESIGNATED_INITIALIZER;
 @property (nonatomic, strong) UIColor * _Nonnull backgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull leftBackgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull leftPressedBackgroundColor;
@@ -1354,6 +1404,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageCe
 @property (nonatomic, strong) UIColor * _Nonnull fileMessagePlaceholderColor;
 @property (nonatomic, strong) UIFont * _Nonnull adminMessageFont;
 @property (nonatomic, strong) UIColor * _Nonnull adminMessageTextColor;
+@property (nonatomic, strong) UIFont * _Nonnull unknownMessageDescFont;
+@property (nonatomic, strong) UIColor * _Nonnull unknownMessageDescTextColor;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -1568,6 +1620,12 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Mess
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Message_System;)
 + (NSString * _Nonnull)Message_System SWIFT_WARN_UNUSED_RESULT;
 + (void)setMessage_System:(NSString * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Message_Unknown_Title;)
++ (NSString * _Nonnull)Message_Unknown_Title SWIFT_WARN_UNUSED_RESULT;
++ (void)setMessage_Unknown_Title:(NSString * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Message_Unknown_Desctiption;)
++ (NSString * _Nonnull)Message_Unknown_Desctiption SWIFT_WARN_UNUSED_RESULT;
++ (void)setMessage_Unknown_Desctiption:(NSString * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Empty_No_Channels;)
 + (NSString * _Nonnull)Empty_No_Channels SWIFT_WARN_UNUSED_RESULT;
 + (void)setEmpty_No_Channels:(NSString * _Nonnull)value;
@@ -1717,6 +1775,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUUserMessageCell")
 - (void)setupAutolayout;
 - (void)setupActions;
 - (void)configure:(SBDUserMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState;
+- (void)configure:(SBDBaseMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState withTextView:(BOOL)withTextView;
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated;
 - (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nonnull)sender;
 - (void)onTapProfileImageViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
@@ -2126,6 +2185,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUChannelLi
 
 @class UIBarButtonItem;
 @class SBDGroupChannel;
+@class SBDGroupChannelListQuery;
 @class UINib;
 @class UITableView;
 @class UISwipeActionsConfiguration;
@@ -2138,12 +2198,29 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 @interface SBUChannelListViewController : UIViewController <SBDChannelDelegate, SBDConnectionDelegate, UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
+/// This object has a list of all channels.
 @property (nonatomic, readonly, copy) NSArray<SBDGroupChannel *> * _Nonnull channelList;
+/// This is a query used to get a list of channels. Only getter is provided, please use initialization function to set query directly.
+/// note:
+/// For query properties, see <code>SBDGroupChannelListQuery</code> class.
+/// since:
+/// 1.0.11
+@property (nonatomic, readonly, strong) SBDGroupChannelListQuery * _Nullable channelListQuery;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUChannelListViewController()'");
-/// If you have channel object, use this initialize function.
-/// \param channel Channel object
+/// You can initialize the class through this function.
+/// If you have <code>channelListQuery</code>, please set it. If not set, it is used as default value.
+/// See the example below for query generation.
+/// \code
+///     let query = SBDGroupChannel.createMyGroupChannelListQuery()
+///     query.includeEmptyChannel = false
+///     query.includeFrozenChannel = true
+///     ...
 ///
-- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+/// \endcodesince:
+/// 1.0.11
+/// \param channelListQuery Your own <code>SBDGroupChannelListQuery</code> object
+///
+- (nonnull instancetype)initWithChannelListQuery:(SBDGroupChannelListQuery * _Nullable)channelListQuery OBJC_DESIGNATED_INITIALIZER;
 - (void)loadView;
 - (void)setupAutolayout;
 - (void)setupStyles;
@@ -2348,6 +2425,7 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit27SBUMessageInputViewDelegate_")
 
 @class SBUNewMessageInfo;
 @class SBDBaseMessage;
+@class SBDMessageListParams;
 @class SBDUserMessageParams;
 @class SBDFileMessageParams;
 @class SBDUserMessage;
@@ -2362,20 +2440,51 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 @property (nonatomic, strong) SBUNewMessageInfo * _Nonnull newMessageInfoView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
+/// This object is used to import a list of messages, send messages, modify messages, and so on, and is created during initialization.
 @property (nonatomic, readonly, strong) SBDGroupChannel * _Nullable channel;
 /// This object has a list of all success messages synchronized with the server.
 @property (nonatomic, readonly, copy) NSArray<SBDBaseMessage *> * _Nonnull messageList;
 /// This object that has resendable messages, including <code>pending messages</code> and <code>failed messages</code>.
 @property (nonatomic, readonly, copy) NSDictionary<NSString *, SBDBaseMessage *> * _Nonnull resendableMessages;
-- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithChannelUrl:'");
-/// If you have channel object, use this initialize function.
+/// This is a params used to get a list of messages. Only getter is provided, please use initialization function to set params directly.
+/// note:
+/// For params properties, see <code>SBDMessageListParams</code> class.
+/// since:
+/// 1.0.11
+@property (nonatomic, readonly, strong) SBDMessageListParams * _Nonnull messageListParams;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUChannelViewController.init(channelUrl:)'");
+/// If you have channel object, use this initialize function. And, if you have own message list params, please set it. If not set, it is used as the default value.
+/// See the example below for params generation.
+/// \code
+///     let params = SBDMessageListParams()
+///     params.includeMetaArray = true
+///     params.includeReactions = true
+///     params.includeReplies = true
+///     ...
+///
+/// \endcodenote:
+/// The <code>reverse</code> and the <code>nextResultSize</code> properties in the <code>SBDMessageListParams</code> are set in the UIKit. Even though you set that property it will be ignored.
+/// since:
+/// 1.0.11
 /// \param channel Channel object
 ///
-- (nonnull instancetype)initWithChannel:(SBDGroupChannel * _Nonnull)channel OBJC_DESIGNATED_INITIALIZER;
-/// If you don’t have channel object and have channelUrl, use this initialize function.
+- (nonnull instancetype)initWithChannel:(SBDGroupChannel * _Nonnull)channel messageListParams:(SBDMessageListParams * _Nullable)messageListParams OBJC_DESIGNATED_INITIALIZER;
+/// If you don’t have channel object and have channelUrl, use this initialize function. And, if you have own message list params, please set it. If not set, it is used as the default value.
+/// See the example below for params generation.
+/// \code
+///     let params = SBDMessageListParams()
+///     params.includeMetaArray = true
+///     params.includeReactions = true
+///     params.includeReplies = true
+///     ...
+///
+/// \endcodenote:
+/// The <code>reverse</code> and the <code>nextResultSize</code> properties in the <code>SBDMessageListParams</code> are set in the UIKit. Even though you set that property it will be ignored.
+/// since:
+/// 1.0.11
 /// \param channelUrl Channel url string
 ///
-- (nonnull instancetype)initWithChannelUrl:(NSString * _Nonnull)channelUrl OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithChannelUrl:(NSString * _Nonnull)channelUrl messageListParams:(SBDMessageListParams * _Nullable)messageListParams OBJC_DESIGNATED_INITIALIZER;
 - (void)loadView;
 - (void)setupAutolayout;
 - (void)setupStyles;
@@ -3081,7 +3190,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageCe
 + (SBUMessageCellTheme * _Nonnull)light SWIFT_WARN_UNUSED_RESULT;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageCellTheme * _Nonnull dark;)
 + (SBUMessageCellTheme * _Nonnull)dark SWIFT_WARN_UNUSED_RESULT;
-- (nonnull instancetype)initWithBackgroundColor:(UIColor * _Nonnull)backgroundColor leftBackgroundColor:(UIColor * _Nonnull)leftBackgroundColor leftPressedBackgroundColor:(UIColor * _Nonnull)leftPressedBackgroundColor rightBackgroundColor:(UIColor * _Nonnull)rightBackgroundColor rightPressedBackgroundColor:(UIColor * _Nonnull)rightPressedBackgroundColor dateFont:(UIFont * _Nonnull)dateFont dateTextColor:(UIColor * _Nonnull)dateTextColor dateBackgroundColor:(UIColor * _Nonnull)dateBackgroundColor userPlaceholderBackgroundColor:(UIColor * _Nonnull)userPlaceholderBackgroundColor userPlaceholderTintColor:(UIColor * _Nonnull)userPlaceholderTintColor userNameFont:(UIFont * _Nonnull)userNameFont userNameTextColor:(UIColor * _Nonnull)userNameTextColor timeFont:(UIFont * _Nonnull)timeFont timeTextColor:(UIColor * _Nonnull)timeTextColor pendingStateColor:(UIColor * _Nonnull)pendingStateColor failedStateColor:(UIColor * _Nonnull)failedStateColor succeededStateColor:(UIColor * _Nonnull)succeededStateColor readReceiptStateColor:(UIColor * _Nonnull)readReceiptStateColor deliveryReceiptStateColor:(UIColor * _Nonnull)deliveryReceiptStateColor userMessageFont:(UIFont * _Nonnull)userMessageFont userMessageLeftTextColor:(UIColor * _Nonnull)userMessageLeftTextColor userMessageLeftEditTextColor:(UIColor * _Nonnull)userMessageLeftEditTextColor userMessageRightTextColor:(UIColor * _Nonnull)userMessageRightTextColor userMessageRightEditTextColor:(UIColor * _Nonnull)userMessageRightEditTextColor fileIconBackgroundColor:(UIColor * _Nonnull)fileIconBackgroundColor fileIconColor:(UIColor * _Nonnull)fileIconColor fileMessageNameFont:(UIFont * _Nonnull)fileMessageNameFont fileMessageLeftTextColor:(UIColor * _Nonnull)fileMessageLeftTextColor fileMessageRightTextColor:(UIColor * _Nonnull)fileMessageRightTextColor fileMessagePlaceholderColor:(UIColor * _Nonnull)fileMessagePlaceholderColor adminMessageFont:(UIFont * _Nonnull)adminMessageFont adminMessageTextColor:(UIColor * _Nonnull)adminMessageTextColor OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithBackgroundColor:(UIColor * _Nonnull)backgroundColor leftBackgroundColor:(UIColor * _Nonnull)leftBackgroundColor leftPressedBackgroundColor:(UIColor * _Nonnull)leftPressedBackgroundColor rightBackgroundColor:(UIColor * _Nonnull)rightBackgroundColor rightPressedBackgroundColor:(UIColor * _Nonnull)rightPressedBackgroundColor dateFont:(UIFont * _Nonnull)dateFont dateTextColor:(UIColor * _Nonnull)dateTextColor dateBackgroundColor:(UIColor * _Nonnull)dateBackgroundColor userPlaceholderBackgroundColor:(UIColor * _Nonnull)userPlaceholderBackgroundColor userPlaceholderTintColor:(UIColor * _Nonnull)userPlaceholderTintColor userNameFont:(UIFont * _Nonnull)userNameFont userNameTextColor:(UIColor * _Nonnull)userNameTextColor timeFont:(UIFont * _Nonnull)timeFont timeTextColor:(UIColor * _Nonnull)timeTextColor pendingStateColor:(UIColor * _Nonnull)pendingStateColor failedStateColor:(UIColor * _Nonnull)failedStateColor succeededStateColor:(UIColor * _Nonnull)succeededStateColor readReceiptStateColor:(UIColor * _Nonnull)readReceiptStateColor deliveryReceiptStateColor:(UIColor * _Nonnull)deliveryReceiptStateColor userMessageFont:(UIFont * _Nonnull)userMessageFont userMessageLeftTextColor:(UIColor * _Nonnull)userMessageLeftTextColor userMessageLeftEditTextColor:(UIColor * _Nonnull)userMessageLeftEditTextColor userMessageRightTextColor:(UIColor * _Nonnull)userMessageRightTextColor userMessageRightEditTextColor:(UIColor * _Nonnull)userMessageRightEditTextColor fileIconBackgroundColor:(UIColor * _Nonnull)fileIconBackgroundColor fileIconColor:(UIColor * _Nonnull)fileIconColor fileMessageNameFont:(UIFont * _Nonnull)fileMessageNameFont fileMessageLeftTextColor:(UIColor * _Nonnull)fileMessageLeftTextColor fileMessageRightTextColor:(UIColor * _Nonnull)fileMessageRightTextColor fileMessagePlaceholderColor:(UIColor * _Nonnull)fileMessagePlaceholderColor adminMessageFont:(UIFont * _Nonnull)adminMessageFont adminMessageTextColor:(UIColor * _Nonnull)adminMessageTextColor unknownMessageDescFont:(UIFont * _Nonnull)unknownMessageDescFont unknownMessageDescTextColor:(UIColor * _Nonnull)unknownMessageDescTextColor OBJC_DESIGNATED_INITIALIZER;
 @property (nonatomic, strong) UIColor * _Nonnull backgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull leftBackgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull leftPressedBackgroundColor;
@@ -3114,6 +3223,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageCe
 @property (nonatomic, strong) UIColor * _Nonnull fileMessagePlaceholderColor;
 @property (nonatomic, strong) UIFont * _Nonnull adminMessageFont;
 @property (nonatomic, strong) UIColor * _Nonnull adminMessageTextColor;
+@property (nonatomic, strong) UIFont * _Nonnull unknownMessageDescFont;
+@property (nonatomic, strong) UIColor * _Nonnull unknownMessageDescTextColor;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -3328,6 +3439,12 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Mess
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Message_System;)
 + (NSString * _Nonnull)Message_System SWIFT_WARN_UNUSED_RESULT;
 + (void)setMessage_System:(NSString * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Message_Unknown_Title;)
++ (NSString * _Nonnull)Message_Unknown_Title SWIFT_WARN_UNUSED_RESULT;
++ (void)setMessage_Unknown_Title:(NSString * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Message_Unknown_Desctiption;)
++ (NSString * _Nonnull)Message_Unknown_Desctiption SWIFT_WARN_UNUSED_RESULT;
++ (void)setMessage_Unknown_Desctiption:(NSString * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Empty_No_Channels;)
 + (NSString * _Nonnull)Empty_No_Channels SWIFT_WARN_UNUSED_RESULT;
 + (void)setEmpty_No_Channels:(NSString * _Nonnull)value;
@@ -3477,6 +3594,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUUserMessageCell")
 - (void)setupAutolayout;
 - (void)setupActions;
 - (void)configure:(SBDUserMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState;
+- (void)configure:(SBDBaseMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState withTextView:(BOOL)withTextView;
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated;
 - (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nonnull)sender;
 - (void)onTapProfileImageViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
@@ -3888,6 +4006,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUChannelLi
 
 @class UIBarButtonItem;
 @class SBDGroupChannel;
+@class SBDGroupChannelListQuery;
 @class UINib;
 @class UITableView;
 @class UISwipeActionsConfiguration;
@@ -3900,12 +4019,29 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 @interface SBUChannelListViewController : UIViewController <SBDChannelDelegate, SBDConnectionDelegate, UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
+/// This object has a list of all channels.
 @property (nonatomic, readonly, copy) NSArray<SBDGroupChannel *> * _Nonnull channelList;
+/// This is a query used to get a list of channels. Only getter is provided, please use initialization function to set query directly.
+/// note:
+/// For query properties, see <code>SBDGroupChannelListQuery</code> class.
+/// since:
+/// 1.0.11
+@property (nonatomic, readonly, strong) SBDGroupChannelListQuery * _Nullable channelListQuery;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUChannelListViewController()'");
-/// If you have channel object, use this initialize function.
-/// \param channel Channel object
+/// You can initialize the class through this function.
+/// If you have <code>channelListQuery</code>, please set it. If not set, it is used as default value.
+/// See the example below for query generation.
+/// \code
+///     let query = SBDGroupChannel.createMyGroupChannelListQuery()
+///     query.includeEmptyChannel = false
+///     query.includeFrozenChannel = true
+///     ...
 ///
-- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+/// \endcodesince:
+/// 1.0.11
+/// \param channelListQuery Your own <code>SBDGroupChannelListQuery</code> object
+///
+- (nonnull instancetype)initWithChannelListQuery:(SBDGroupChannelListQuery * _Nullable)channelListQuery OBJC_DESIGNATED_INITIALIZER;
 - (void)loadView;
 - (void)setupAutolayout;
 - (void)setupStyles;
@@ -4110,6 +4246,7 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit27SBUMessageInputViewDelegate_")
 
 @class SBUNewMessageInfo;
 @class SBDBaseMessage;
+@class SBDMessageListParams;
 @class SBDUserMessageParams;
 @class SBDFileMessageParams;
 @class SBDUserMessage;
@@ -4124,20 +4261,51 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 @property (nonatomic, strong) SBUNewMessageInfo * _Nonnull newMessageInfoView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
+/// This object is used to import a list of messages, send messages, modify messages, and so on, and is created during initialization.
 @property (nonatomic, readonly, strong) SBDGroupChannel * _Nullable channel;
 /// This object has a list of all success messages synchronized with the server.
 @property (nonatomic, readonly, copy) NSArray<SBDBaseMessage *> * _Nonnull messageList;
 /// This object that has resendable messages, including <code>pending messages</code> and <code>failed messages</code>.
 @property (nonatomic, readonly, copy) NSDictionary<NSString *, SBDBaseMessage *> * _Nonnull resendableMessages;
-- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithChannelUrl:'");
-/// If you have channel object, use this initialize function.
+/// This is a params used to get a list of messages. Only getter is provided, please use initialization function to set params directly.
+/// note:
+/// For params properties, see <code>SBDMessageListParams</code> class.
+/// since:
+/// 1.0.11
+@property (nonatomic, readonly, strong) SBDMessageListParams * _Nonnull messageListParams;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUChannelViewController.init(channelUrl:)'");
+/// If you have channel object, use this initialize function. And, if you have own message list params, please set it. If not set, it is used as the default value.
+/// See the example below for params generation.
+/// \code
+///     let params = SBDMessageListParams()
+///     params.includeMetaArray = true
+///     params.includeReactions = true
+///     params.includeReplies = true
+///     ...
+///
+/// \endcodenote:
+/// The <code>reverse</code> and the <code>nextResultSize</code> properties in the <code>SBDMessageListParams</code> are set in the UIKit. Even though you set that property it will be ignored.
+/// since:
+/// 1.0.11
 /// \param channel Channel object
 ///
-- (nonnull instancetype)initWithChannel:(SBDGroupChannel * _Nonnull)channel OBJC_DESIGNATED_INITIALIZER;
-/// If you don’t have channel object and have channelUrl, use this initialize function.
+- (nonnull instancetype)initWithChannel:(SBDGroupChannel * _Nonnull)channel messageListParams:(SBDMessageListParams * _Nullable)messageListParams OBJC_DESIGNATED_INITIALIZER;
+/// If you don’t have channel object and have channelUrl, use this initialize function. And, if you have own message list params, please set it. If not set, it is used as the default value.
+/// See the example below for params generation.
+/// \code
+///     let params = SBDMessageListParams()
+///     params.includeMetaArray = true
+///     params.includeReactions = true
+///     params.includeReplies = true
+///     ...
+///
+/// \endcodenote:
+/// The <code>reverse</code> and the <code>nextResultSize</code> properties in the <code>SBDMessageListParams</code> are set in the UIKit. Even though you set that property it will be ignored.
+/// since:
+/// 1.0.11
 /// \param channelUrl Channel url string
 ///
-- (nonnull instancetype)initWithChannelUrl:(NSString * _Nonnull)channelUrl OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithChannelUrl:(NSString * _Nonnull)channelUrl messageListParams:(SBDMessageListParams * _Nullable)messageListParams OBJC_DESIGNATED_INITIALIZER;
 - (void)loadView;
 - (void)setupAutolayout;
 - (void)setupStyles;
@@ -4843,7 +5011,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageCe
 + (SBUMessageCellTheme * _Nonnull)light SWIFT_WARN_UNUSED_RESULT;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageCellTheme * _Nonnull dark;)
 + (SBUMessageCellTheme * _Nonnull)dark SWIFT_WARN_UNUSED_RESULT;
-- (nonnull instancetype)initWithBackgroundColor:(UIColor * _Nonnull)backgroundColor leftBackgroundColor:(UIColor * _Nonnull)leftBackgroundColor leftPressedBackgroundColor:(UIColor * _Nonnull)leftPressedBackgroundColor rightBackgroundColor:(UIColor * _Nonnull)rightBackgroundColor rightPressedBackgroundColor:(UIColor * _Nonnull)rightPressedBackgroundColor dateFont:(UIFont * _Nonnull)dateFont dateTextColor:(UIColor * _Nonnull)dateTextColor dateBackgroundColor:(UIColor * _Nonnull)dateBackgroundColor userPlaceholderBackgroundColor:(UIColor * _Nonnull)userPlaceholderBackgroundColor userPlaceholderTintColor:(UIColor * _Nonnull)userPlaceholderTintColor userNameFont:(UIFont * _Nonnull)userNameFont userNameTextColor:(UIColor * _Nonnull)userNameTextColor timeFont:(UIFont * _Nonnull)timeFont timeTextColor:(UIColor * _Nonnull)timeTextColor pendingStateColor:(UIColor * _Nonnull)pendingStateColor failedStateColor:(UIColor * _Nonnull)failedStateColor succeededStateColor:(UIColor * _Nonnull)succeededStateColor readReceiptStateColor:(UIColor * _Nonnull)readReceiptStateColor deliveryReceiptStateColor:(UIColor * _Nonnull)deliveryReceiptStateColor userMessageFont:(UIFont * _Nonnull)userMessageFont userMessageLeftTextColor:(UIColor * _Nonnull)userMessageLeftTextColor userMessageLeftEditTextColor:(UIColor * _Nonnull)userMessageLeftEditTextColor userMessageRightTextColor:(UIColor * _Nonnull)userMessageRightTextColor userMessageRightEditTextColor:(UIColor * _Nonnull)userMessageRightEditTextColor fileIconBackgroundColor:(UIColor * _Nonnull)fileIconBackgroundColor fileIconColor:(UIColor * _Nonnull)fileIconColor fileMessageNameFont:(UIFont * _Nonnull)fileMessageNameFont fileMessageLeftTextColor:(UIColor * _Nonnull)fileMessageLeftTextColor fileMessageRightTextColor:(UIColor * _Nonnull)fileMessageRightTextColor fileMessagePlaceholderColor:(UIColor * _Nonnull)fileMessagePlaceholderColor adminMessageFont:(UIFont * _Nonnull)adminMessageFont adminMessageTextColor:(UIColor * _Nonnull)adminMessageTextColor OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithBackgroundColor:(UIColor * _Nonnull)backgroundColor leftBackgroundColor:(UIColor * _Nonnull)leftBackgroundColor leftPressedBackgroundColor:(UIColor * _Nonnull)leftPressedBackgroundColor rightBackgroundColor:(UIColor * _Nonnull)rightBackgroundColor rightPressedBackgroundColor:(UIColor * _Nonnull)rightPressedBackgroundColor dateFont:(UIFont * _Nonnull)dateFont dateTextColor:(UIColor * _Nonnull)dateTextColor dateBackgroundColor:(UIColor * _Nonnull)dateBackgroundColor userPlaceholderBackgroundColor:(UIColor * _Nonnull)userPlaceholderBackgroundColor userPlaceholderTintColor:(UIColor * _Nonnull)userPlaceholderTintColor userNameFont:(UIFont * _Nonnull)userNameFont userNameTextColor:(UIColor * _Nonnull)userNameTextColor timeFont:(UIFont * _Nonnull)timeFont timeTextColor:(UIColor * _Nonnull)timeTextColor pendingStateColor:(UIColor * _Nonnull)pendingStateColor failedStateColor:(UIColor * _Nonnull)failedStateColor succeededStateColor:(UIColor * _Nonnull)succeededStateColor readReceiptStateColor:(UIColor * _Nonnull)readReceiptStateColor deliveryReceiptStateColor:(UIColor * _Nonnull)deliveryReceiptStateColor userMessageFont:(UIFont * _Nonnull)userMessageFont userMessageLeftTextColor:(UIColor * _Nonnull)userMessageLeftTextColor userMessageLeftEditTextColor:(UIColor * _Nonnull)userMessageLeftEditTextColor userMessageRightTextColor:(UIColor * _Nonnull)userMessageRightTextColor userMessageRightEditTextColor:(UIColor * _Nonnull)userMessageRightEditTextColor fileIconBackgroundColor:(UIColor * _Nonnull)fileIconBackgroundColor fileIconColor:(UIColor * _Nonnull)fileIconColor fileMessageNameFont:(UIFont * _Nonnull)fileMessageNameFont fileMessageLeftTextColor:(UIColor * _Nonnull)fileMessageLeftTextColor fileMessageRightTextColor:(UIColor * _Nonnull)fileMessageRightTextColor fileMessagePlaceholderColor:(UIColor * _Nonnull)fileMessagePlaceholderColor adminMessageFont:(UIFont * _Nonnull)adminMessageFont adminMessageTextColor:(UIColor * _Nonnull)adminMessageTextColor unknownMessageDescFont:(UIFont * _Nonnull)unknownMessageDescFont unknownMessageDescTextColor:(UIColor * _Nonnull)unknownMessageDescTextColor OBJC_DESIGNATED_INITIALIZER;
 @property (nonatomic, strong) UIColor * _Nonnull backgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull leftBackgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull leftPressedBackgroundColor;
@@ -4876,6 +5044,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageCe
 @property (nonatomic, strong) UIColor * _Nonnull fileMessagePlaceholderColor;
 @property (nonatomic, strong) UIFont * _Nonnull adminMessageFont;
 @property (nonatomic, strong) UIColor * _Nonnull adminMessageTextColor;
+@property (nonatomic, strong) UIFont * _Nonnull unknownMessageDescFont;
+@property (nonatomic, strong) UIColor * _Nonnull unknownMessageDescTextColor;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -5090,6 +5260,12 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Mess
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Message_System;)
 + (NSString * _Nonnull)Message_System SWIFT_WARN_UNUSED_RESULT;
 + (void)setMessage_System:(NSString * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Message_Unknown_Title;)
++ (NSString * _Nonnull)Message_Unknown_Title SWIFT_WARN_UNUSED_RESULT;
++ (void)setMessage_Unknown_Title:(NSString * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Message_Unknown_Desctiption;)
++ (NSString * _Nonnull)Message_Unknown_Desctiption SWIFT_WARN_UNUSED_RESULT;
++ (void)setMessage_Unknown_Desctiption:(NSString * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Empty_No_Channels;)
 + (NSString * _Nonnull)Empty_No_Channels SWIFT_WARN_UNUSED_RESULT;
 + (void)setEmpty_No_Channels:(NSString * _Nonnull)value;
@@ -5239,6 +5415,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUUserMessageCell")
 - (void)setupAutolayout;
 - (void)setupActions;
 - (void)configure:(SBDUserMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState;
+- (void)configure:(SBDBaseMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState withTextView:(BOOL)withTextView;
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated;
 - (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nonnull)sender;
 - (void)onTapProfileImageViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
@@ -5648,6 +5825,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUChannelLi
 
 @class UIBarButtonItem;
 @class SBDGroupChannel;
+@class SBDGroupChannelListQuery;
 @class UINib;
 @class UITableView;
 @class UISwipeActionsConfiguration;
@@ -5660,12 +5838,29 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 @interface SBUChannelListViewController : UIViewController <SBDChannelDelegate, SBDConnectionDelegate, UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
+/// This object has a list of all channels.
 @property (nonatomic, readonly, copy) NSArray<SBDGroupChannel *> * _Nonnull channelList;
+/// This is a query used to get a list of channels. Only getter is provided, please use initialization function to set query directly.
+/// note:
+/// For query properties, see <code>SBDGroupChannelListQuery</code> class.
+/// since:
+/// 1.0.11
+@property (nonatomic, readonly, strong) SBDGroupChannelListQuery * _Nullable channelListQuery;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUChannelListViewController()'");
-/// If you have channel object, use this initialize function.
-/// \param channel Channel object
+/// You can initialize the class through this function.
+/// If you have <code>channelListQuery</code>, please set it. If not set, it is used as default value.
+/// See the example below for query generation.
+/// \code
+///     let query = SBDGroupChannel.createMyGroupChannelListQuery()
+///     query.includeEmptyChannel = false
+///     query.includeFrozenChannel = true
+///     ...
 ///
-- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+/// \endcodesince:
+/// 1.0.11
+/// \param channelListQuery Your own <code>SBDGroupChannelListQuery</code> object
+///
+- (nonnull instancetype)initWithChannelListQuery:(SBDGroupChannelListQuery * _Nullable)channelListQuery OBJC_DESIGNATED_INITIALIZER;
 - (void)loadView;
 - (void)setupAutolayout;
 - (void)setupStyles;
@@ -5870,6 +6065,7 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit27SBUMessageInputViewDelegate_")
 
 @class SBUNewMessageInfo;
 @class SBDBaseMessage;
+@class SBDMessageListParams;
 @class SBDUserMessageParams;
 @class SBDFileMessageParams;
 @class SBDUserMessage;
@@ -5884,20 +6080,51 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 @property (nonatomic, strong) SBUNewMessageInfo * _Nonnull newMessageInfoView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
+/// This object is used to import a list of messages, send messages, modify messages, and so on, and is created during initialization.
 @property (nonatomic, readonly, strong) SBDGroupChannel * _Nullable channel;
 /// This object has a list of all success messages synchronized with the server.
 @property (nonatomic, readonly, copy) NSArray<SBDBaseMessage *> * _Nonnull messageList;
 /// This object that has resendable messages, including <code>pending messages</code> and <code>failed messages</code>.
 @property (nonatomic, readonly, copy) NSDictionary<NSString *, SBDBaseMessage *> * _Nonnull resendableMessages;
-- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithChannelUrl:'");
-/// If you have channel object, use this initialize function.
+/// This is a params used to get a list of messages. Only getter is provided, please use initialization function to set params directly.
+/// note:
+/// For params properties, see <code>SBDMessageListParams</code> class.
+/// since:
+/// 1.0.11
+@property (nonatomic, readonly, strong) SBDMessageListParams * _Nonnull messageListParams;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUChannelViewController.init(channelUrl:)'");
+/// If you have channel object, use this initialize function. And, if you have own message list params, please set it. If not set, it is used as the default value.
+/// See the example below for params generation.
+/// \code
+///     let params = SBDMessageListParams()
+///     params.includeMetaArray = true
+///     params.includeReactions = true
+///     params.includeReplies = true
+///     ...
+///
+/// \endcodenote:
+/// The <code>reverse</code> and the <code>nextResultSize</code> properties in the <code>SBDMessageListParams</code> are set in the UIKit. Even though you set that property it will be ignored.
+/// since:
+/// 1.0.11
 /// \param channel Channel object
 ///
-- (nonnull instancetype)initWithChannel:(SBDGroupChannel * _Nonnull)channel OBJC_DESIGNATED_INITIALIZER;
-/// If you don’t have channel object and have channelUrl, use this initialize function.
+- (nonnull instancetype)initWithChannel:(SBDGroupChannel * _Nonnull)channel messageListParams:(SBDMessageListParams * _Nullable)messageListParams OBJC_DESIGNATED_INITIALIZER;
+/// If you don’t have channel object and have channelUrl, use this initialize function. And, if you have own message list params, please set it. If not set, it is used as the default value.
+/// See the example below for params generation.
+/// \code
+///     let params = SBDMessageListParams()
+///     params.includeMetaArray = true
+///     params.includeReactions = true
+///     params.includeReplies = true
+///     ...
+///
+/// \endcodenote:
+/// The <code>reverse</code> and the <code>nextResultSize</code> properties in the <code>SBDMessageListParams</code> are set in the UIKit. Even though you set that property it will be ignored.
+/// since:
+/// 1.0.11
 /// \param channelUrl Channel url string
 ///
-- (nonnull instancetype)initWithChannelUrl:(NSString * _Nonnull)channelUrl OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithChannelUrl:(NSString * _Nonnull)channelUrl messageListParams:(SBDMessageListParams * _Nullable)messageListParams OBJC_DESIGNATED_INITIALIZER;
 - (void)loadView;
 - (void)setupAutolayout;
 - (void)setupStyles;
@@ -6603,7 +6830,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageCe
 + (SBUMessageCellTheme * _Nonnull)light SWIFT_WARN_UNUSED_RESULT;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageCellTheme * _Nonnull dark;)
 + (SBUMessageCellTheme * _Nonnull)dark SWIFT_WARN_UNUSED_RESULT;
-- (nonnull instancetype)initWithBackgroundColor:(UIColor * _Nonnull)backgroundColor leftBackgroundColor:(UIColor * _Nonnull)leftBackgroundColor leftPressedBackgroundColor:(UIColor * _Nonnull)leftPressedBackgroundColor rightBackgroundColor:(UIColor * _Nonnull)rightBackgroundColor rightPressedBackgroundColor:(UIColor * _Nonnull)rightPressedBackgroundColor dateFont:(UIFont * _Nonnull)dateFont dateTextColor:(UIColor * _Nonnull)dateTextColor dateBackgroundColor:(UIColor * _Nonnull)dateBackgroundColor userPlaceholderBackgroundColor:(UIColor * _Nonnull)userPlaceholderBackgroundColor userPlaceholderTintColor:(UIColor * _Nonnull)userPlaceholderTintColor userNameFont:(UIFont * _Nonnull)userNameFont userNameTextColor:(UIColor * _Nonnull)userNameTextColor timeFont:(UIFont * _Nonnull)timeFont timeTextColor:(UIColor * _Nonnull)timeTextColor pendingStateColor:(UIColor * _Nonnull)pendingStateColor failedStateColor:(UIColor * _Nonnull)failedStateColor succeededStateColor:(UIColor * _Nonnull)succeededStateColor readReceiptStateColor:(UIColor * _Nonnull)readReceiptStateColor deliveryReceiptStateColor:(UIColor * _Nonnull)deliveryReceiptStateColor userMessageFont:(UIFont * _Nonnull)userMessageFont userMessageLeftTextColor:(UIColor * _Nonnull)userMessageLeftTextColor userMessageLeftEditTextColor:(UIColor * _Nonnull)userMessageLeftEditTextColor userMessageRightTextColor:(UIColor * _Nonnull)userMessageRightTextColor userMessageRightEditTextColor:(UIColor * _Nonnull)userMessageRightEditTextColor fileIconBackgroundColor:(UIColor * _Nonnull)fileIconBackgroundColor fileIconColor:(UIColor * _Nonnull)fileIconColor fileMessageNameFont:(UIFont * _Nonnull)fileMessageNameFont fileMessageLeftTextColor:(UIColor * _Nonnull)fileMessageLeftTextColor fileMessageRightTextColor:(UIColor * _Nonnull)fileMessageRightTextColor fileMessagePlaceholderColor:(UIColor * _Nonnull)fileMessagePlaceholderColor adminMessageFont:(UIFont * _Nonnull)adminMessageFont adminMessageTextColor:(UIColor * _Nonnull)adminMessageTextColor OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithBackgroundColor:(UIColor * _Nonnull)backgroundColor leftBackgroundColor:(UIColor * _Nonnull)leftBackgroundColor leftPressedBackgroundColor:(UIColor * _Nonnull)leftPressedBackgroundColor rightBackgroundColor:(UIColor * _Nonnull)rightBackgroundColor rightPressedBackgroundColor:(UIColor * _Nonnull)rightPressedBackgroundColor dateFont:(UIFont * _Nonnull)dateFont dateTextColor:(UIColor * _Nonnull)dateTextColor dateBackgroundColor:(UIColor * _Nonnull)dateBackgroundColor userPlaceholderBackgroundColor:(UIColor * _Nonnull)userPlaceholderBackgroundColor userPlaceholderTintColor:(UIColor * _Nonnull)userPlaceholderTintColor userNameFont:(UIFont * _Nonnull)userNameFont userNameTextColor:(UIColor * _Nonnull)userNameTextColor timeFont:(UIFont * _Nonnull)timeFont timeTextColor:(UIColor * _Nonnull)timeTextColor pendingStateColor:(UIColor * _Nonnull)pendingStateColor failedStateColor:(UIColor * _Nonnull)failedStateColor succeededStateColor:(UIColor * _Nonnull)succeededStateColor readReceiptStateColor:(UIColor * _Nonnull)readReceiptStateColor deliveryReceiptStateColor:(UIColor * _Nonnull)deliveryReceiptStateColor userMessageFont:(UIFont * _Nonnull)userMessageFont userMessageLeftTextColor:(UIColor * _Nonnull)userMessageLeftTextColor userMessageLeftEditTextColor:(UIColor * _Nonnull)userMessageLeftEditTextColor userMessageRightTextColor:(UIColor * _Nonnull)userMessageRightTextColor userMessageRightEditTextColor:(UIColor * _Nonnull)userMessageRightEditTextColor fileIconBackgroundColor:(UIColor * _Nonnull)fileIconBackgroundColor fileIconColor:(UIColor * _Nonnull)fileIconColor fileMessageNameFont:(UIFont * _Nonnull)fileMessageNameFont fileMessageLeftTextColor:(UIColor * _Nonnull)fileMessageLeftTextColor fileMessageRightTextColor:(UIColor * _Nonnull)fileMessageRightTextColor fileMessagePlaceholderColor:(UIColor * _Nonnull)fileMessagePlaceholderColor adminMessageFont:(UIFont * _Nonnull)adminMessageFont adminMessageTextColor:(UIColor * _Nonnull)adminMessageTextColor unknownMessageDescFont:(UIFont * _Nonnull)unknownMessageDescFont unknownMessageDescTextColor:(UIColor * _Nonnull)unknownMessageDescTextColor OBJC_DESIGNATED_INITIALIZER;
 @property (nonatomic, strong) UIColor * _Nonnull backgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull leftBackgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull leftPressedBackgroundColor;
@@ -6636,6 +6863,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageCe
 @property (nonatomic, strong) UIColor * _Nonnull fileMessagePlaceholderColor;
 @property (nonatomic, strong) UIFont * _Nonnull adminMessageFont;
 @property (nonatomic, strong) UIColor * _Nonnull adminMessageTextColor;
+@property (nonatomic, strong) UIFont * _Nonnull unknownMessageDescFont;
+@property (nonatomic, strong) UIColor * _Nonnull unknownMessageDescTextColor;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -6850,6 +7079,12 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Mess
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Message_System;)
 + (NSString * _Nonnull)Message_System SWIFT_WARN_UNUSED_RESULT;
 + (void)setMessage_System:(NSString * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Message_Unknown_Title;)
++ (NSString * _Nonnull)Message_Unknown_Title SWIFT_WARN_UNUSED_RESULT;
++ (void)setMessage_Unknown_Title:(NSString * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Message_Unknown_Desctiption;)
++ (NSString * _Nonnull)Message_Unknown_Desctiption SWIFT_WARN_UNUSED_RESULT;
++ (void)setMessage_Unknown_Desctiption:(NSString * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Empty_No_Channels;)
 + (NSString * _Nonnull)Empty_No_Channels SWIFT_WARN_UNUSED_RESULT;
 + (void)setEmpty_No_Channels:(NSString * _Nonnull)value;
@@ -6999,6 +7234,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUUserMessageCell")
 - (void)setupAutolayout;
 - (void)setupActions;
 - (void)configure:(SBDUserMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState;
+- (void)configure:(SBDBaseMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState withTextView:(BOOL)withTextView;
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated;
 - (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nonnull)sender;
 - (void)onTapProfileImageViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;

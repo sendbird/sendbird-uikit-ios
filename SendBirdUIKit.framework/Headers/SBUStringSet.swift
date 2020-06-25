@@ -107,6 +107,8 @@ public class SBUStringSet: NSObject {
     // MARK: - Message
     public static var Message_Edited = "(Edited)"
     public static var Message_System = "System message"
+    public static var Message_Unknown_Title = "(Unknown message type)"
+    public static var Message_Unknown_Desctiption = "Cannot read this message."
 
 
     // MARK: - Empty
