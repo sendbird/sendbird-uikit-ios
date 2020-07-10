@@ -741,7 +741,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)loadChannelWithChannelUrl:(NSString * _Nullable)channelUrl;
 /// This function is used to add or delete reactions.
 /// since:
-/// 1.0.12
+/// 1.1.0
 /// \param message <code>SBDBaseMessage</code> object to update
 ///
 /// \param emojiKey set emoji key
@@ -791,7 +791,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)setLongTapGestureHandler:(SBUBaseMessageCell * _Nonnull)cell message:(SBDBaseMessage * _Nonnull)message indexPath:(NSIndexPath * _Nonnull)indexPath;
 /// This function sets the cell’s tap emoji gesture handling.
 /// since:
-/// 1.0.12
+/// 1.1.0
 /// \param cell Message cell object
 ///
 /// \param emojiKey emoji key
@@ -799,7 +799,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)setTapEmojiGestureHandler:(SBUBaseMessageCell * _Nonnull)cell emojiKey:(NSString * _Nonnull)emojiKey;
 /// This function sets the cell’s long tap emoji gesture handling.
 /// since:
-/// 1.0.12
+/// 1.1.0
 /// \param cell Message cell object
 ///
 /// \param emojiKey emoji key
@@ -807,7 +807,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)setLongTapEmojiGestureHandler:(SBUBaseMessageCell * _Nonnull)cell emojiKey:(NSString * _Nonnull)emojiKey;
 /// This function presents <code>SBUEmojiListViewController</code>
 /// since:
-/// 1.0.12
+/// 1.1.0
 /// \param message <code>SBDBaseMessage</code> object
 ///
 - (void)showEmojiListModalWithMessage:(SBDBaseMessage * _Nonnull)message;
@@ -2636,7 +2636,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)loadChannelWithChannelUrl:(NSString * _Nullable)channelUrl;
 /// This function is used to add or delete reactions.
 /// since:
-/// 1.0.12
+/// 1.1.0
 /// \param message <code>SBDBaseMessage</code> object to update
 ///
 /// \param emojiKey set emoji key
@@ -2686,7 +2686,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)setLongTapGestureHandler:(SBUBaseMessageCell * _Nonnull)cell message:(SBDBaseMessage * _Nonnull)message indexPath:(NSIndexPath * _Nonnull)indexPath;
 /// This function sets the cell’s tap emoji gesture handling.
 /// since:
-/// 1.0.12
+/// 1.1.0
 /// \param cell Message cell object
 ///
 /// \param emojiKey emoji key
@@ -2694,7 +2694,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)setTapEmojiGestureHandler:(SBUBaseMessageCell * _Nonnull)cell emojiKey:(NSString * _Nonnull)emojiKey;
 /// This function sets the cell’s long tap emoji gesture handling.
 /// since:
-/// 1.0.12
+/// 1.1.0
 /// \param cell Message cell object
 ///
 /// \param emojiKey emoji key
@@ -2702,7 +2702,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)setLongTapEmojiGestureHandler:(SBUBaseMessageCell * _Nonnull)cell emojiKey:(NSString * _Nonnull)emojiKey;
 /// This function presents <code>SBUEmojiListViewController</code>
 /// since:
-/// 1.0.12
+/// 1.1.0
 /// \param message <code>SBDBaseMessage</code> object
 ///
 - (void)showEmojiListModalWithMessage:(SBDBaseMessage * _Nonnull)message;
@@ -4533,7 +4533,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)loadChannelWithChannelUrl:(NSString * _Nullable)channelUrl;
 /// This function is used to add or delete reactions.
 /// since:
-/// 1.0.12
+/// 1.1.0
 /// \param message <code>SBDBaseMessage</code> object to update
 ///
 /// \param emojiKey set emoji key
@@ -4583,7 +4583,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)setLongTapGestureHandler:(SBUBaseMessageCell * _Nonnull)cell message:(SBDBaseMessage * _Nonnull)message indexPath:(NSIndexPath * _Nonnull)indexPath;
 /// This function sets the cell’s tap emoji gesture handling.
 /// since:
-/// 1.0.12
+/// 1.1.0
 /// \param cell Message cell object
 ///
 /// \param emojiKey emoji key
@@ -4591,7 +4591,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)setTapEmojiGestureHandler:(SBUBaseMessageCell * _Nonnull)cell emojiKey:(NSString * _Nonnull)emojiKey;
 /// This function sets the cell’s long tap emoji gesture handling.
 /// since:
-/// 1.0.12
+/// 1.1.0
 /// \param cell Message cell object
 ///
 /// \param emojiKey emoji key
@@ -4599,7 +4599,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)setLongTapEmojiGestureHandler:(SBUBaseMessageCell * _Nonnull)cell emojiKey:(NSString * _Nonnull)emojiKey;
 /// This function presents <code>SBUEmojiListViewController</code>
 /// since:
-/// 1.0.12
+/// 1.1.0
 /// \param message <code>SBDBaseMessage</code> object
 ///
 - (void)showEmojiListModalWithMessage:(SBDBaseMessage * _Nonnull)message;
@@ -6428,7 +6428,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)loadChannelWithChannelUrl:(NSString * _Nullable)channelUrl;
 /// This function is used to add or delete reactions.
 /// since:
-/// 1.0.12
+/// 1.1.0
 /// \param message <code>SBDBaseMessage</code> object to update
 ///
 /// \param emojiKey set emoji key
@@ -6478,7 +6478,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)setLongTapGestureHandler:(SBUBaseMessageCell * _Nonnull)cell message:(SBDBaseMessage * _Nonnull)message indexPath:(NSIndexPath * _Nonnull)indexPath;
 /// This function sets the cell’s tap emoji gesture handling.
 /// since:
-/// 1.0.12
+/// 1.1.0
 /// \param cell Message cell object
 ///
 /// \param emojiKey emoji key
@@ -6486,7 +6486,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)setTapEmojiGestureHandler:(SBUBaseMessageCell * _Nonnull)cell emojiKey:(NSString * _Nonnull)emojiKey;
 /// This function sets the cell’s long tap emoji gesture handling.
 /// since:
-/// 1.0.12
+/// 1.1.0
 /// \param cell Message cell object
 ///
 /// \param emojiKey emoji key
@@ -6494,7 +6494,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)setLongTapEmojiGestureHandler:(SBUBaseMessageCell * _Nonnull)cell emojiKey:(NSString * _Nonnull)emojiKey;
 /// This function presents <code>SBUEmojiListViewController</code>
 /// since:
-/// 1.0.12
+/// 1.1.0
 /// \param message <code>SBDBaseMessage</code> object
 ///
 - (void)showEmojiListModalWithMessage:(SBDBaseMessage * _Nonnull)message;

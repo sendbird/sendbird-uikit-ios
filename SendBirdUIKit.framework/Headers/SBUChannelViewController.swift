@@ -793,7 +793,7 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
     ///   - message: `SBDBaseMessage` object to update
     ///   - emojiKey: set emoji key
     ///   - didSelect: set reaction state
-    /// - Since: 1.0.12
+    /// - Since: 1.1.0
     public func setReaction(message: SBDBaseMessage, emojiKey: String, didSelect: Bool) {
 
         switch didSelect {
@@ -1560,7 +1560,7 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
     /// - Parameters:
     ///   - cell: Message cell object
     ///   - emojiKey: emoji key
-    /// - Since: 1.0.12
+    /// - Since: 1.1.0
     open func setTapEmojiGestureHandler(_ cell: SBUBaseMessageCell, emojiKey: String) {
         guard let currentUser = SBUGlobals.CurrentUser else { return }
         let message = cell.message
@@ -1574,7 +1574,7 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
     /// - Parameters:
     ///   - cell: Message cell object
     ///   - emojiKey: emoji key
-    /// - Since: 1.0.12
+    /// - Since: 1.1.0
     open func setLongTapEmojiGestureHandler(_ cell: SBUBaseMessageCell, emojiKey: String) {
         guard let channel = self.channel else { return }
         let message = cell.message
@@ -1588,7 +1588,7 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
     // MARK: - Reaction relations
     /// This function presents `SBUEmojiListViewController`
     /// - Parameter message: `SBDBaseMessage` object
-    /// - Since: 1.0.12
+    /// - Since: 1.1.0
     open func showEmojiListModal(message: SBDBaseMessage) {
         let emojiListVC = SBUEmojiListViewController(message: message)
         emojiListVC.modalPresentationStyle = .custom

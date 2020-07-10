@@ -1,6 +1,6 @@
 # Change Log
 
-### v1.0.12 (July 10, 2020)
+### v1.1.0 (July 10, 2020)
 * Supported - Reaction feature
   * Added classes 
   	* `SBUReactionsViewController`
