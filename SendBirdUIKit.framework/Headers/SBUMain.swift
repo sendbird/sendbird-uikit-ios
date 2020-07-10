@@ -65,8 +65,11 @@ public class SBUMain: NSObject {
                     }
                 }
                 #endif
-                
-                completionHandler(user, nil)
+
+                SBUEmojiManager.loadAllEmojis { _, error in
+                    completionHandler(user, error)
+                }
+
             }
         }
     }

@@ -611,11 +611,13 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit27SBUMessageInputViewDelegate_")
 @class SBDFileMessageParams;
 @class SBDUserMessage;
 @class UIScrollView;
+@class SBDReactionEvent;
+@class UIPresentationController;
 @class UIDocumentPickerViewController;
 @class SBDFileMessage;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
-@interface SBUChannelViewController : UIViewController <SBDChannelDelegate, SBDConnectionDelegate, SBUMessageInputViewDelegate, UIDocumentPickerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface SBUChannelViewController : UIViewController <SBDChannelDelegate, SBDConnectionDelegate, SBUMessageInputViewDelegate, UIDocumentPickerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate>
 @property (nonatomic, copy) NSString * _Nullable channelName;
 @property (nonatomic, strong) SBUMessageInputView * _Nonnull messageInputView;
 @property (nonatomic, strong) SBUNewMessageInfo * _Nonnull newMessageInfoView;
@@ -737,6 +739,16 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 /// \param channelUrl channel url
 ///
 - (void)loadChannelWithChannelUrl:(NSString * _Nullable)channelUrl;
+/// This function is used to add or delete reactions.
+/// since:
+/// 1.0.12
+/// \param message <code>SBDBaseMessage</code> object to update
+///
+/// \param emojiKey set emoji key
+///
+/// \param didSelect set reaction state
+///
+- (void)setReactionWithMessage:(SBDBaseMessage * _Nonnull)message emojiKey:(NSString * _Nonnull)emojiKey didSelect:(BOOL)didSelect;
 /// If you want to use a custom channelSettingsViewController, override it and implement it.
 - (void)showChannelSettings;
 - (BOOL)checkSameDayAsNextMessageWithCurrentIndex:(NSInteger)currentIndex SWIFT_WARN_UNUSED_RESULT;
@@ -776,10 +788,33 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 ///
 /// \param indexPath indexpath of cell
 ///
-- (void)setLongTabGestureHandler:(SBUBaseMessageCell * _Nonnull)cell message:(SBDBaseMessage * _Nonnull)message indexPath:(NSIndexPath * _Nonnull)indexPath;
+- (void)setLongTapGestureHandler:(SBUBaseMessageCell * _Nonnull)cell message:(SBDBaseMessage * _Nonnull)message indexPath:(NSIndexPath * _Nonnull)indexPath;
+/// This function sets the cell’s tap emoji gesture handling.
+/// since:
+/// 1.0.12
+/// \param cell Message cell object
+///
+/// \param emojiKey emoji key
+///
+- (void)setTapEmojiGestureHandler:(SBUBaseMessageCell * _Nonnull)cell emojiKey:(NSString * _Nonnull)emojiKey;
+/// This function sets the cell’s long tap emoji gesture handling.
+/// since:
+/// 1.0.12
+/// \param cell Message cell object
+///
+/// \param emojiKey emoji key
+///
+- (void)setLongTapEmojiGestureHandler:(SBUBaseMessageCell * _Nonnull)cell emojiKey:(NSString * _Nonnull)emojiKey;
+/// This function presents <code>SBUEmojiListViewController</code>
+/// since:
+/// 1.0.12
+/// \param message <code>SBDBaseMessage</code> object
+///
+- (void)showEmojiListModalWithMessage:(SBDBaseMessage * _Nonnull)message;
 - (void)channel:(SBDBaseChannel * _Nonnull)sender didReceiveMessage:(SBDBaseMessage * _Nonnull)message;
 - (void)channel:(SBDBaseChannel * _Nonnull)sender didUpdateMessage:(SBDBaseMessage * _Nonnull)message;
 - (void)channel:(SBDBaseChannel * _Nonnull)sender messageWasDeleted:(int64_t)messageId;
+- (void)channel:(SBDBaseChannel * _Nonnull)sender updatedReaction:(SBDReactionEvent * _Nonnull)reactionEvent;
 - (void)channelDidUpdateReadReceipt:(SBDGroupChannel * _Nonnull)sender;
 - (void)channelDidUpdateDeliveryReceipt:(SBDGroupChannel * _Nonnull)sender;
 - (void)channelDidUpdateTypingStatus:(SBDGroupChannel * _Nonnull)sender;
@@ -792,6 +827,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)messageInputView:(SBUMessageInputView * _Nonnull)messageInputView didSelectEdit:(NSString * _Nonnull)text;
 - (void)messageInputViewDidStartTyping;
 - (void)messageInputViewDidEndTyping;
+- (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
 - (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
 - (void)imagePickerControllerDidCancel:(UIImagePickerController * _Nonnull)picker;
 - (void)documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentsAtURLs:(NSArray<NSURL *> * _Nonnull)urls SWIFT_AVAILABILITY(ios,introduced=11.0);
@@ -899,7 +935,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUComponent
 + (SBUComponentTheme * _Nonnull)light SWIFT_WARN_UNUSED_RESULT;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUComponentTheme * _Nonnull dark;)
 + (SBUComponentTheme * _Nonnull)dark SWIFT_WARN_UNUSED_RESULT;
-- (nonnull instancetype)initWithEmptyViewBackgroundColor:(UIColor * _Nonnull)emptyViewBackgroundColor emptyViewStatusFont:(UIFont * _Nonnull)emptyViewStatusFont emptyViewStatusTintColor:(UIColor * _Nonnull)emptyViewStatusTintColor emptyViewRetryButtonTintColor:(UIColor * _Nonnull)emptyViewRetryButtonTintColor emptyViewRetryButtonFont:(UIFont * _Nonnull)emptyViewRetryButtonFont overlayColor:(UIColor * _Nonnull)overlayColor backgroundColor:(UIColor * _Nonnull)backgroundColor highlightedColor:(UIColor * _Nonnull)highlightedColor buttonTextColor:(UIColor * _Nonnull)buttonTextColor separatorColor:(UIColor * _Nonnull)separatorColor shadowColor:(UIColor * _Nonnull)shadowColor alertTitleColor:(UIColor * _Nonnull)alertTitleColor alertTitleFont:(UIFont * _Nonnull)alertTitleFont alertDetailColor:(UIColor * _Nonnull)alertDetailColor alertDetailFont:(UIFont * _Nonnull)alertDetailFont alertPlaceholderColor:(UIColor * _Nonnull)alertPlaceholderColor alertButtonColor:(UIColor * _Nonnull)alertButtonColor alertErrorColor:(UIColor * _Nonnull)alertErrorColor alertButtonFont:(UIFont * _Nonnull)alertButtonFont alertTextFieldBackgroundColor:(UIColor * _Nonnull)alertTextFieldBackgroundColor alertTextFieldTintColor:(UIColor * _Nonnull)alertTextFieldTintColor alertTextFieldFont:(UIFont * _Nonnull)alertTextFieldFont actionSheetTextFont:(UIFont * _Nonnull)actionSheetTextFont actionSheetTextColor:(UIColor * _Nonnull)actionSheetTextColor actionSheetItemColor:(UIColor * _Nonnull)actionSheetItemColor actionSheetErrorColor:(UIColor * _Nonnull)actionSheetErrorColor actionSheetButtonFont:(UIFont * _Nonnull)actionSheetButtonFont newMessageFont:(UIFont * _Nonnull)newMessageFont newMessageTintColor:(UIColor * _Nonnull)newMessageTintColor newMessageBackground:(UIColor * _Nonnull)newMessageBackground newMessageHighlighted:(UIColor * _Nonnull)newMessageHighlighted titleOnlineStateColor:(UIColor * _Nonnull)titleOnlineStateColor titleColor:(UIColor * _Nonnull)titleColor titleFont:(UIFont * _Nonnull)titleFont titleStatusColor:(UIColor * _Nonnull)titleStatusColor titleStatusFont:(UIFont * _Nonnull)titleStatusFont menuTitleFont:(UIFont * _Nonnull)menuTitleFont userPlaceholderBackgroundColor:(UIColor * _Nonnull)userPlaceholderBackgroundColor userPlaceholderTintColor:(UIColor * _Nonnull)userPlaceholderTintColor OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithEmptyViewBackgroundColor:(UIColor * _Nonnull)emptyViewBackgroundColor emptyViewStatusFont:(UIFont * _Nonnull)emptyViewStatusFont emptyViewStatusTintColor:(UIColor * _Nonnull)emptyViewStatusTintColor emptyViewRetryButtonTintColor:(UIColor * _Nonnull)emptyViewRetryButtonTintColor emptyViewRetryButtonFont:(UIFont * _Nonnull)emptyViewRetryButtonFont overlayColor:(UIColor * _Nonnull)overlayColor backgroundColor:(UIColor * _Nonnull)backgroundColor highlightedColor:(UIColor * _Nonnull)highlightedColor buttonTextColor:(UIColor * _Nonnull)buttonTextColor separatorColor:(UIColor * _Nonnull)separatorColor shadowColor:(UIColor * _Nonnull)shadowColor alertTitleColor:(UIColor * _Nonnull)alertTitleColor alertTitleFont:(UIFont * _Nonnull)alertTitleFont alertDetailColor:(UIColor * _Nonnull)alertDetailColor alertDetailFont:(UIFont * _Nonnull)alertDetailFont alertPlaceholderColor:(UIColor * _Nonnull)alertPlaceholderColor alertButtonColor:(UIColor * _Nonnull)alertButtonColor alertErrorColor:(UIColor * _Nonnull)alertErrorColor alertButtonFont:(UIFont * _Nonnull)alertButtonFont alertTextFieldBackgroundColor:(UIColor * _Nonnull)alertTextFieldBackgroundColor alertTextFieldTintColor:(UIColor * _Nonnull)alertTextFieldTintColor alertTextFieldFont:(UIFont * _Nonnull)alertTextFieldFont actionSheetTextFont:(UIFont * _Nonnull)actionSheetTextFont actionSheetTextColor:(UIColor * _Nonnull)actionSheetTextColor actionSheetItemColor:(UIColor * _Nonnull)actionSheetItemColor actionSheetErrorColor:(UIColor * _Nonnull)actionSheetErrorColor actionSheetButtonFont:(UIFont * _Nonnull)actionSheetButtonFont newMessageFont:(UIFont * _Nonnull)newMessageFont newMessageTintColor:(UIColor * _Nonnull)newMessageTintColor newMessageBackground:(UIColor * _Nonnull)newMessageBackground newMessageHighlighted:(UIColor * _Nonnull)newMessageHighlighted titleOnlineStateColor:(UIColor * _Nonnull)titleOnlineStateColor titleColor:(UIColor * _Nonnull)titleColor titleFont:(UIFont * _Nonnull)titleFont titleStatusColor:(UIColor * _Nonnull)titleStatusColor titleStatusFont:(UIFont * _Nonnull)titleStatusFont menuTitleFont:(UIFont * _Nonnull)menuTitleFont userPlaceholderBackgroundColor:(UIColor * _Nonnull)userPlaceholderBackgroundColor userPlaceholderTintColor:(UIColor * _Nonnull)userPlaceholderTintColor reactionBoxBackgroundColor:(UIColor * _Nonnull)reactionBoxBackgroundColor reactionBoxBorderLineColor:(UIColor * _Nonnull)reactionBoxBorderLineColor reactionBoxEmojiCountColor:(UIColor * _Nonnull)reactionBoxEmojiCountColor reactionBoxEmojiBackgroundColor:(UIColor * _Nonnull)reactionBoxEmojiBackgroundColor reactionBoxSelectedEmojiBackgroundColor:(UIColor * _Nonnull)reactionBoxSelectedEmojiBackgroundColor reactionBoxEmojiCountFont:(UIFont * _Nonnull)reactionBoxEmojiCountFont emojiCountColor:(UIColor * _Nonnull)emojiCountColor emojiSelectedCountColor:(UIColor * _Nonnull)emojiSelectedCountColor emojiSelectedUnderlineColor:(UIColor * _Nonnull)emojiSelectedUnderlineColor emojiCountFont:(UIFont * _Nonnull)emojiCountFont reactionMenuLineColor:(UIColor * _Nonnull)reactionMenuLineColor emojiListSelectedBackgroundColor:(UIColor * _Nonnull)emojiListSelectedBackgroundColor addReactionTintColor:(UIColor * _Nonnull)addReactionTintColor OBJC_DESIGNATED_INITIALIZER;
 @property (nonatomic, strong) UIColor * _Nonnull emptyViewBackgroundColor;
 @property (nonatomic, strong) UIFont * _Nonnull emptyViewStatusFont;
 @property (nonatomic, strong) UIColor * _Nonnull emptyViewStatusTintColor;
@@ -939,6 +975,19 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUComponent
 @property (nonatomic, strong) UIColor * _Nonnull shadowColor;
 @property (nonatomic, strong) UIColor * _Nonnull userPlaceholderBackgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull userPlaceholderTintColor;
+@property (nonatomic, strong) UIColor * _Nonnull reactionBoxBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull reactionBoxBorderLineColor;
+@property (nonatomic, strong) UIColor * _Nonnull reactionBoxEmojiCountColor;
+@property (nonatomic, strong) UIColor * _Nonnull reactionBoxEmojiBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull reactionBoxSelectedEmojiBackgroundColor;
+@property (nonatomic, strong) UIFont * _Nonnull reactionBoxEmojiCountFont;
+@property (nonatomic, strong) UIColor * _Nonnull emojiCountColor;
+@property (nonatomic, strong) UIColor * _Nonnull emojiSelectedCountColor;
+@property (nonatomic, strong) UIColor * _Nonnull emojiSelectedUnderlineColor;
+@property (nonatomic, strong) UIFont * _Nonnull emojiCountFont;
+@property (nonatomic, strong) UIColor * _Nonnull reactionMenuLineColor;
+@property (nonatomic, strong) UIColor * _Nonnull emojiListSelectedBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull addReactionTintColor;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -963,7 +1012,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 - (void)viewDidLoad;
 - (void)viewWillAppear:(BOOL)animated;
-- (void)viewDidLayoutSubviews;
 /// Load user list.
 /// If want using your custom user list, filled users with your custom user list.
 /// \param reset <code>true</code> is reset user list and load new list
@@ -1221,6 +1269,33 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull ico
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconChevronDown;)
 + (UIImage * _Nonnull)iconChevronDown SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconChevronDown:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiHeartEyes;)
++ (UIImage * _Nonnull)emojiHeartEyes SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmojiHeartEyes:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiLaughing;)
++ (UIImage * _Nonnull)emojiLaughing SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmojiLaughing:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiSweatSmile;)
++ (UIImage * _Nonnull)emojiSweatSmile SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmojiSweatSmile:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiSob;)
++ (UIImage * _Nonnull)emojiSob SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmojiSob:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiRage;)
++ (UIImage * _Nonnull)emojiRage SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmojiRage:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiMoreLarge;)
++ (UIImage * _Nonnull)emojiMoreLarge SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmojiMoreLarge:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiThumbsup;)
++ (UIImage * _Nonnull)emojiThumbsup SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmojiThumbsup:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiThubsdown;)
++ (UIImage * _Nonnull)emojiThubsdown SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmojiThubsdown:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiFail;)
++ (UIImage * _Nonnull)emojiFail SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmojiFail:(UIImage * _Nonnull)value;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
@@ -1806,11 +1881,12 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUUserMessageCell")
 
 
 
+
+
 SWIFT_CLASS("_TtC13SendBirdUIKit12UserNameView")
 @interface UserNameView : UIView
 - (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder SWIFT_UNAVAILABLE;
-- (void)layoutSubviews;
 @end
 
 #if __has_attribute(external_source_symbol)
@@ -2430,11 +2506,13 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit27SBUMessageInputViewDelegate_")
 @class SBDFileMessageParams;
 @class SBDUserMessage;
 @class UIScrollView;
+@class SBDReactionEvent;
+@class UIPresentationController;
 @class UIDocumentPickerViewController;
 @class SBDFileMessage;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
-@interface SBUChannelViewController : UIViewController <SBDChannelDelegate, SBDConnectionDelegate, SBUMessageInputViewDelegate, UIDocumentPickerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface SBUChannelViewController : UIViewController <SBDChannelDelegate, SBDConnectionDelegate, SBUMessageInputViewDelegate, UIDocumentPickerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate>
 @property (nonatomic, copy) NSString * _Nullable channelName;
 @property (nonatomic, strong) SBUMessageInputView * _Nonnull messageInputView;
 @property (nonatomic, strong) SBUNewMessageInfo * _Nonnull newMessageInfoView;
@@ -2556,6 +2634,16 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 /// \param channelUrl channel url
 ///
 - (void)loadChannelWithChannelUrl:(NSString * _Nullable)channelUrl;
+/// This function is used to add or delete reactions.
+/// since:
+/// 1.0.12
+/// \param message <code>SBDBaseMessage</code> object to update
+///
+/// \param emojiKey set emoji key
+///
+/// \param didSelect set reaction state
+///
+- (void)setReactionWithMessage:(SBDBaseMessage * _Nonnull)message emojiKey:(NSString * _Nonnull)emojiKey didSelect:(BOOL)didSelect;
 /// If you want to use a custom channelSettingsViewController, override it and implement it.
 - (void)showChannelSettings;
 - (BOOL)checkSameDayAsNextMessageWithCurrentIndex:(NSInteger)currentIndex SWIFT_WARN_UNUSED_RESULT;
@@ -2595,10 +2683,33 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 ///
 /// \param indexPath indexpath of cell
 ///
-- (void)setLongTabGestureHandler:(SBUBaseMessageCell * _Nonnull)cell message:(SBDBaseMessage * _Nonnull)message indexPath:(NSIndexPath * _Nonnull)indexPath;
+- (void)setLongTapGestureHandler:(SBUBaseMessageCell * _Nonnull)cell message:(SBDBaseMessage * _Nonnull)message indexPath:(NSIndexPath * _Nonnull)indexPath;
+/// This function sets the cell’s tap emoji gesture handling.
+/// since:
+/// 1.0.12
+/// \param cell Message cell object
+///
+/// \param emojiKey emoji key
+///
+- (void)setTapEmojiGestureHandler:(SBUBaseMessageCell * _Nonnull)cell emojiKey:(NSString * _Nonnull)emojiKey;
+/// This function sets the cell’s long tap emoji gesture handling.
+/// since:
+/// 1.0.12
+/// \param cell Message cell object
+///
+/// \param emojiKey emoji key
+///
+- (void)setLongTapEmojiGestureHandler:(SBUBaseMessageCell * _Nonnull)cell emojiKey:(NSString * _Nonnull)emojiKey;
+/// This function presents <code>SBUEmojiListViewController</code>
+/// since:
+/// 1.0.12
+/// \param message <code>SBDBaseMessage</code> object
+///
+- (void)showEmojiListModalWithMessage:(SBDBaseMessage * _Nonnull)message;
 - (void)channel:(SBDBaseChannel * _Nonnull)sender didReceiveMessage:(SBDBaseMessage * _Nonnull)message;
 - (void)channel:(SBDBaseChannel * _Nonnull)sender didUpdateMessage:(SBDBaseMessage * _Nonnull)message;
 - (void)channel:(SBDBaseChannel * _Nonnull)sender messageWasDeleted:(int64_t)messageId;
+- (void)channel:(SBDBaseChannel * _Nonnull)sender updatedReaction:(SBDReactionEvent * _Nonnull)reactionEvent;
 - (void)channelDidUpdateReadReceipt:(SBDGroupChannel * _Nonnull)sender;
 - (void)channelDidUpdateDeliveryReceipt:(SBDGroupChannel * _Nonnull)sender;
 - (void)channelDidUpdateTypingStatus:(SBDGroupChannel * _Nonnull)sender;
@@ -2611,6 +2722,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)messageInputView:(SBUMessageInputView * _Nonnull)messageInputView didSelectEdit:(NSString * _Nonnull)text;
 - (void)messageInputViewDidStartTyping;
 - (void)messageInputViewDidEndTyping;
+- (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
 - (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
 - (void)imagePickerControllerDidCancel:(UIImagePickerController * _Nonnull)picker;
 - (void)documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentsAtURLs:(NSArray<NSURL *> * _Nonnull)urls SWIFT_AVAILABILITY(ios,introduced=11.0);
@@ -2718,7 +2830,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUComponent
 + (SBUComponentTheme * _Nonnull)light SWIFT_WARN_UNUSED_RESULT;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUComponentTheme * _Nonnull dark;)
 + (SBUComponentTheme * _Nonnull)dark SWIFT_WARN_UNUSED_RESULT;
-- (nonnull instancetype)initWithEmptyViewBackgroundColor:(UIColor * _Nonnull)emptyViewBackgroundColor emptyViewStatusFont:(UIFont * _Nonnull)emptyViewStatusFont emptyViewStatusTintColor:(UIColor * _Nonnull)emptyViewStatusTintColor emptyViewRetryButtonTintColor:(UIColor * _Nonnull)emptyViewRetryButtonTintColor emptyViewRetryButtonFont:(UIFont * _Nonnull)emptyViewRetryButtonFont overlayColor:(UIColor * _Nonnull)overlayColor backgroundColor:(UIColor * _Nonnull)backgroundColor highlightedColor:(UIColor * _Nonnull)highlightedColor buttonTextColor:(UIColor * _Nonnull)buttonTextColor separatorColor:(UIColor * _Nonnull)separatorColor shadowColor:(UIColor * _Nonnull)shadowColor alertTitleColor:(UIColor * _Nonnull)alertTitleColor alertTitleFont:(UIFont * _Nonnull)alertTitleFont alertDetailColor:(UIColor * _Nonnull)alertDetailColor alertDetailFont:(UIFont * _Nonnull)alertDetailFont alertPlaceholderColor:(UIColor * _Nonnull)alertPlaceholderColor alertButtonColor:(UIColor * _Nonnull)alertButtonColor alertErrorColor:(UIColor * _Nonnull)alertErrorColor alertButtonFont:(UIFont * _Nonnull)alertButtonFont alertTextFieldBackgroundColor:(UIColor * _Nonnull)alertTextFieldBackgroundColor alertTextFieldTintColor:(UIColor * _Nonnull)alertTextFieldTintColor alertTextFieldFont:(UIFont * _Nonnull)alertTextFieldFont actionSheetTextFont:(UIFont * _Nonnull)actionSheetTextFont actionSheetTextColor:(UIColor * _Nonnull)actionSheetTextColor actionSheetItemColor:(UIColor * _Nonnull)actionSheetItemColor actionSheetErrorColor:(UIColor * _Nonnull)actionSheetErrorColor actionSheetButtonFont:(UIFont * _Nonnull)actionSheetButtonFont newMessageFont:(UIFont * _Nonnull)newMessageFont newMessageTintColor:(UIColor * _Nonnull)newMessageTintColor newMessageBackground:(UIColor * _Nonnull)newMessageBackground newMessageHighlighted:(UIColor * _Nonnull)newMessageHighlighted titleOnlineStateColor:(UIColor * _Nonnull)titleOnlineStateColor titleColor:(UIColor * _Nonnull)titleColor titleFont:(UIFont * _Nonnull)titleFont titleStatusColor:(UIColor * _Nonnull)titleStatusColor titleStatusFont:(UIFont * _Nonnull)titleStatusFont menuTitleFont:(UIFont * _Nonnull)menuTitleFont userPlaceholderBackgroundColor:(UIColor * _Nonnull)userPlaceholderBackgroundColor userPlaceholderTintColor:(UIColor * _Nonnull)userPlaceholderTintColor OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithEmptyViewBackgroundColor:(UIColor * _Nonnull)emptyViewBackgroundColor emptyViewStatusFont:(UIFont * _Nonnull)emptyViewStatusFont emptyViewStatusTintColor:(UIColor * _Nonnull)emptyViewStatusTintColor emptyViewRetryButtonTintColor:(UIColor * _Nonnull)emptyViewRetryButtonTintColor emptyViewRetryButtonFont:(UIFont * _Nonnull)emptyViewRetryButtonFont overlayColor:(UIColor * _Nonnull)overlayColor backgroundColor:(UIColor * _Nonnull)backgroundColor highlightedColor:(UIColor * _Nonnull)highlightedColor buttonTextColor:(UIColor * _Nonnull)buttonTextColor separatorColor:(UIColor * _Nonnull)separatorColor shadowColor:(UIColor * _Nonnull)shadowColor alertTitleColor:(UIColor * _Nonnull)alertTitleColor alertTitleFont:(UIFont * _Nonnull)alertTitleFont alertDetailColor:(UIColor * _Nonnull)alertDetailColor alertDetailFont:(UIFont * _Nonnull)alertDetailFont alertPlaceholderColor:(UIColor * _Nonnull)alertPlaceholderColor alertButtonColor:(UIColor * _Nonnull)alertButtonColor alertErrorColor:(UIColor * _Nonnull)alertErrorColor alertButtonFont:(UIFont * _Nonnull)alertButtonFont alertTextFieldBackgroundColor:(UIColor * _Nonnull)alertTextFieldBackgroundColor alertTextFieldTintColor:(UIColor * _Nonnull)alertTextFieldTintColor alertTextFieldFont:(UIFont * _Nonnull)alertTextFieldFont actionSheetTextFont:(UIFont * _Nonnull)actionSheetTextFont actionSheetTextColor:(UIColor * _Nonnull)actionSheetTextColor actionSheetItemColor:(UIColor * _Nonnull)actionSheetItemColor actionSheetErrorColor:(UIColor * _Nonnull)actionSheetErrorColor actionSheetButtonFont:(UIFont * _Nonnull)actionSheetButtonFont newMessageFont:(UIFont * _Nonnull)newMessageFont newMessageTintColor:(UIColor * _Nonnull)newMessageTintColor newMessageBackground:(UIColor * _Nonnull)newMessageBackground newMessageHighlighted:(UIColor * _Nonnull)newMessageHighlighted titleOnlineStateColor:(UIColor * _Nonnull)titleOnlineStateColor titleColor:(UIColor * _Nonnull)titleColor titleFont:(UIFont * _Nonnull)titleFont titleStatusColor:(UIColor * _Nonnull)titleStatusColor titleStatusFont:(UIFont * _Nonnull)titleStatusFont menuTitleFont:(UIFont * _Nonnull)menuTitleFont userPlaceholderBackgroundColor:(UIColor * _Nonnull)userPlaceholderBackgroundColor userPlaceholderTintColor:(UIColor * _Nonnull)userPlaceholderTintColor reactionBoxBackgroundColor:(UIColor * _Nonnull)reactionBoxBackgroundColor reactionBoxBorderLineColor:(UIColor * _Nonnull)reactionBoxBorderLineColor reactionBoxEmojiCountColor:(UIColor * _Nonnull)reactionBoxEmojiCountColor reactionBoxEmojiBackgroundColor:(UIColor * _Nonnull)reactionBoxEmojiBackgroundColor reactionBoxSelectedEmojiBackgroundColor:(UIColor * _Nonnull)reactionBoxSelectedEmojiBackgroundColor reactionBoxEmojiCountFont:(UIFont * _Nonnull)reactionBoxEmojiCountFont emojiCountColor:(UIColor * _Nonnull)emojiCountColor emojiSelectedCountColor:(UIColor * _Nonnull)emojiSelectedCountColor emojiSelectedUnderlineColor:(UIColor * _Nonnull)emojiSelectedUnderlineColor emojiCountFont:(UIFont * _Nonnull)emojiCountFont reactionMenuLineColor:(UIColor * _Nonnull)reactionMenuLineColor emojiListSelectedBackgroundColor:(UIColor * _Nonnull)emojiListSelectedBackgroundColor addReactionTintColor:(UIColor * _Nonnull)addReactionTintColor OBJC_DESIGNATED_INITIALIZER;
 @property (nonatomic, strong) UIColor * _Nonnull emptyViewBackgroundColor;
 @property (nonatomic, strong) UIFont * _Nonnull emptyViewStatusFont;
 @property (nonatomic, strong) UIColor * _Nonnull emptyViewStatusTintColor;
@@ -2758,6 +2870,19 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUComponent
 @property (nonatomic, strong) UIColor * _Nonnull shadowColor;
 @property (nonatomic, strong) UIColor * _Nonnull userPlaceholderBackgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull userPlaceholderTintColor;
+@property (nonatomic, strong) UIColor * _Nonnull reactionBoxBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull reactionBoxBorderLineColor;
+@property (nonatomic, strong) UIColor * _Nonnull reactionBoxEmojiCountColor;
+@property (nonatomic, strong) UIColor * _Nonnull reactionBoxEmojiBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull reactionBoxSelectedEmojiBackgroundColor;
+@property (nonatomic, strong) UIFont * _Nonnull reactionBoxEmojiCountFont;
+@property (nonatomic, strong) UIColor * _Nonnull emojiCountColor;
+@property (nonatomic, strong) UIColor * _Nonnull emojiSelectedCountColor;
+@property (nonatomic, strong) UIColor * _Nonnull emojiSelectedUnderlineColor;
+@property (nonatomic, strong) UIFont * _Nonnull emojiCountFont;
+@property (nonatomic, strong) UIColor * _Nonnull reactionMenuLineColor;
+@property (nonatomic, strong) UIColor * _Nonnull emojiListSelectedBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull addReactionTintColor;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -2782,7 +2907,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 - (void)viewDidLoad;
 - (void)viewWillAppear:(BOOL)animated;
-- (void)viewDidLayoutSubviews;
 /// Load user list.
 /// If want using your custom user list, filled users with your custom user list.
 /// \param reset <code>true</code> is reset user list and load new list
@@ -3040,6 +3164,33 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull ico
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconChevronDown;)
 + (UIImage * _Nonnull)iconChevronDown SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconChevronDown:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiHeartEyes;)
++ (UIImage * _Nonnull)emojiHeartEyes SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmojiHeartEyes:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiLaughing;)
++ (UIImage * _Nonnull)emojiLaughing SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmojiLaughing:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiSweatSmile;)
++ (UIImage * _Nonnull)emojiSweatSmile SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmojiSweatSmile:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiSob;)
++ (UIImage * _Nonnull)emojiSob SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmojiSob:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiRage;)
++ (UIImage * _Nonnull)emojiRage SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmojiRage:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiMoreLarge;)
++ (UIImage * _Nonnull)emojiMoreLarge SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmojiMoreLarge:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiThumbsup;)
++ (UIImage * _Nonnull)emojiThumbsup SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmojiThumbsup:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiThubsdown;)
++ (UIImage * _Nonnull)emojiThubsdown SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmojiThubsdown:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiFail;)
++ (UIImage * _Nonnull)emojiFail SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmojiFail:(UIImage * _Nonnull)value;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
@@ -3625,11 +3776,12 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUUserMessageCell")
 
 
 
+
+
 SWIFT_CLASS("_TtC13SendBirdUIKit12UserNameView")
 @interface UserNameView : UIView
 - (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder SWIFT_UNAVAILABLE;
-- (void)layoutSubviews;
 @end
 
 #if __has_attribute(external_source_symbol)
@@ -4251,11 +4403,13 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit27SBUMessageInputViewDelegate_")
 @class SBDFileMessageParams;
 @class SBDUserMessage;
 @class UIScrollView;
+@class SBDReactionEvent;
+@class UIPresentationController;
 @class UIDocumentPickerViewController;
 @class SBDFileMessage;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
-@interface SBUChannelViewController : UIViewController <SBDChannelDelegate, SBDConnectionDelegate, SBUMessageInputViewDelegate, UIDocumentPickerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface SBUChannelViewController : UIViewController <SBDChannelDelegate, SBDConnectionDelegate, SBUMessageInputViewDelegate, UIDocumentPickerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate>
 @property (nonatomic, copy) NSString * _Nullable channelName;
 @property (nonatomic, strong) SBUMessageInputView * _Nonnull messageInputView;
 @property (nonatomic, strong) SBUNewMessageInfo * _Nonnull newMessageInfoView;
@@ -4377,6 +4531,16 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 /// \param channelUrl channel url
 ///
 - (void)loadChannelWithChannelUrl:(NSString * _Nullable)channelUrl;
+/// This function is used to add or delete reactions.
+/// since:
+/// 1.0.12
+/// \param message <code>SBDBaseMessage</code> object to update
+///
+/// \param emojiKey set emoji key
+///
+/// \param didSelect set reaction state
+///
+- (void)setReactionWithMessage:(SBDBaseMessage * _Nonnull)message emojiKey:(NSString * _Nonnull)emojiKey didSelect:(BOOL)didSelect;
 /// If you want to use a custom channelSettingsViewController, override it and implement it.
 - (void)showChannelSettings;
 - (BOOL)checkSameDayAsNextMessageWithCurrentIndex:(NSInteger)currentIndex SWIFT_WARN_UNUSED_RESULT;
@@ -4416,10 +4580,33 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 ///
 /// \param indexPath indexpath of cell
 ///
-- (void)setLongTabGestureHandler:(SBUBaseMessageCell * _Nonnull)cell message:(SBDBaseMessage * _Nonnull)message indexPath:(NSIndexPath * _Nonnull)indexPath;
+- (void)setLongTapGestureHandler:(SBUBaseMessageCell * _Nonnull)cell message:(SBDBaseMessage * _Nonnull)message indexPath:(NSIndexPath * _Nonnull)indexPath;
+/// This function sets the cell’s tap emoji gesture handling.
+/// since:
+/// 1.0.12
+/// \param cell Message cell object
+///
+/// \param emojiKey emoji key
+///
+- (void)setTapEmojiGestureHandler:(SBUBaseMessageCell * _Nonnull)cell emojiKey:(NSString * _Nonnull)emojiKey;
+/// This function sets the cell’s long tap emoji gesture handling.
+/// since:
+/// 1.0.12
+/// \param cell Message cell object
+///
+/// \param emojiKey emoji key
+///
+- (void)setLongTapEmojiGestureHandler:(SBUBaseMessageCell * _Nonnull)cell emojiKey:(NSString * _Nonnull)emojiKey;
+/// This function presents <code>SBUEmojiListViewController</code>
+/// since:
+/// 1.0.12
+/// \param message <code>SBDBaseMessage</code> object
+///
+- (void)showEmojiListModalWithMessage:(SBDBaseMessage * _Nonnull)message;
 - (void)channel:(SBDBaseChannel * _Nonnull)sender didReceiveMessage:(SBDBaseMessage * _Nonnull)message;
 - (void)channel:(SBDBaseChannel * _Nonnull)sender didUpdateMessage:(SBDBaseMessage * _Nonnull)message;
 - (void)channel:(SBDBaseChannel * _Nonnull)sender messageWasDeleted:(int64_t)messageId;
+- (void)channel:(SBDBaseChannel * _Nonnull)sender updatedReaction:(SBDReactionEvent * _Nonnull)reactionEvent;
 - (void)channelDidUpdateReadReceipt:(SBDGroupChannel * _Nonnull)sender;
 - (void)channelDidUpdateDeliveryReceipt:(SBDGroupChannel * _Nonnull)sender;
 - (void)channelDidUpdateTypingStatus:(SBDGroupChannel * _Nonnull)sender;
@@ -4432,6 +4619,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)messageInputView:(SBUMessageInputView * _Nonnull)messageInputView didSelectEdit:(NSString * _Nonnull)text;
 - (void)messageInputViewDidStartTyping;
 - (void)messageInputViewDidEndTyping;
+- (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
 - (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
 - (void)imagePickerControllerDidCancel:(UIImagePickerController * _Nonnull)picker;
 - (void)documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentsAtURLs:(NSArray<NSURL *> * _Nonnull)urls SWIFT_AVAILABILITY(ios,introduced=11.0);
@@ -4539,7 +4727,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUComponent
 + (SBUComponentTheme * _Nonnull)light SWIFT_WARN_UNUSED_RESULT;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUComponentTheme * _Nonnull dark;)
 + (SBUComponentTheme * _Nonnull)dark SWIFT_WARN_UNUSED_RESULT;
-- (nonnull instancetype)initWithEmptyViewBackgroundColor:(UIColor * _Nonnull)emptyViewBackgroundColor emptyViewStatusFont:(UIFont * _Nonnull)emptyViewStatusFont emptyViewStatusTintColor:(UIColor * _Nonnull)emptyViewStatusTintColor emptyViewRetryButtonTintColor:(UIColor * _Nonnull)emptyViewRetryButtonTintColor emptyViewRetryButtonFont:(UIFont * _Nonnull)emptyViewRetryButtonFont overlayColor:(UIColor * _Nonnull)overlayColor backgroundColor:(UIColor * _Nonnull)backgroundColor highlightedColor:(UIColor * _Nonnull)highlightedColor buttonTextColor:(UIColor * _Nonnull)buttonTextColor separatorColor:(UIColor * _Nonnull)separatorColor shadowColor:(UIColor * _Nonnull)shadowColor alertTitleColor:(UIColor * _Nonnull)alertTitleColor alertTitleFont:(UIFont * _Nonnull)alertTitleFont alertDetailColor:(UIColor * _Nonnull)alertDetailColor alertDetailFont:(UIFont * _Nonnull)alertDetailFont alertPlaceholderColor:(UIColor * _Nonnull)alertPlaceholderColor alertButtonColor:(UIColor * _Nonnull)alertButtonColor alertErrorColor:(UIColor * _Nonnull)alertErrorColor alertButtonFont:(UIFont * _Nonnull)alertButtonFont alertTextFieldBackgroundColor:(UIColor * _Nonnull)alertTextFieldBackgroundColor alertTextFieldTintColor:(UIColor * _Nonnull)alertTextFieldTintColor alertTextFieldFont:(UIFont * _Nonnull)alertTextFieldFont actionSheetTextFont:(UIFont * _Nonnull)actionSheetTextFont actionSheetTextColor:(UIColor * _Nonnull)actionSheetTextColor actionSheetItemColor:(UIColor * _Nonnull)actionSheetItemColor actionSheetErrorColor:(UIColor * _Nonnull)actionSheetErrorColor actionSheetButtonFont:(UIFont * _Nonnull)actionSheetButtonFont newMessageFont:(UIFont * _Nonnull)newMessageFont newMessageTintColor:(UIColor * _Nonnull)newMessageTintColor newMessageBackground:(UIColor * _Nonnull)newMessageBackground newMessageHighlighted:(UIColor * _Nonnull)newMessageHighlighted titleOnlineStateColor:(UIColor * _Nonnull)titleOnlineStateColor titleColor:(UIColor * _Nonnull)titleColor titleFont:(UIFont * _Nonnull)titleFont titleStatusColor:(UIColor * _Nonnull)titleStatusColor titleStatusFont:(UIFont * _Nonnull)titleStatusFont menuTitleFont:(UIFont * _Nonnull)menuTitleFont userPlaceholderBackgroundColor:(UIColor * _Nonnull)userPlaceholderBackgroundColor userPlaceholderTintColor:(UIColor * _Nonnull)userPlaceholderTintColor OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithEmptyViewBackgroundColor:(UIColor * _Nonnull)emptyViewBackgroundColor emptyViewStatusFont:(UIFont * _Nonnull)emptyViewStatusFont emptyViewStatusTintColor:(UIColor * _Nonnull)emptyViewStatusTintColor emptyViewRetryButtonTintColor:(UIColor * _Nonnull)emptyViewRetryButtonTintColor emptyViewRetryButtonFont:(UIFont * _Nonnull)emptyViewRetryButtonFont overlayColor:(UIColor * _Nonnull)overlayColor backgroundColor:(UIColor * _Nonnull)backgroundColor highlightedColor:(UIColor * _Nonnull)highlightedColor buttonTextColor:(UIColor * _Nonnull)buttonTextColor separatorColor:(UIColor * _Nonnull)separatorColor shadowColor:(UIColor * _Nonnull)shadowColor alertTitleColor:(UIColor * _Nonnull)alertTitleColor alertTitleFont:(UIFont * _Nonnull)alertTitleFont alertDetailColor:(UIColor * _Nonnull)alertDetailColor alertDetailFont:(UIFont * _Nonnull)alertDetailFont alertPlaceholderColor:(UIColor * _Nonnull)alertPlaceholderColor alertButtonColor:(UIColor * _Nonnull)alertButtonColor alertErrorColor:(UIColor * _Nonnull)alertErrorColor alertButtonFont:(UIFont * _Nonnull)alertButtonFont alertTextFieldBackgroundColor:(UIColor * _Nonnull)alertTextFieldBackgroundColor alertTextFieldTintColor:(UIColor * _Nonnull)alertTextFieldTintColor alertTextFieldFont:(UIFont * _Nonnull)alertTextFieldFont actionSheetTextFont:(UIFont * _Nonnull)actionSheetTextFont actionSheetTextColor:(UIColor * _Nonnull)actionSheetTextColor actionSheetItemColor:(UIColor * _Nonnull)actionSheetItemColor actionSheetErrorColor:(UIColor * _Nonnull)actionSheetErrorColor actionSheetButtonFont:(UIFont * _Nonnull)actionSheetButtonFont newMessageFont:(UIFont * _Nonnull)newMessageFont newMessageTintColor:(UIColor * _Nonnull)newMessageTintColor newMessageBackground:(UIColor * _Nonnull)newMessageBackground newMessageHighlighted:(UIColor * _Nonnull)newMessageHighlighted titleOnlineStateColor:(UIColor * _Nonnull)titleOnlineStateColor titleColor:(UIColor * _Nonnull)titleColor titleFont:(UIFont * _Nonnull)titleFont titleStatusColor:(UIColor * _Nonnull)titleStatusColor titleStatusFont:(UIFont * _Nonnull)titleStatusFont menuTitleFont:(UIFont * _Nonnull)menuTitleFont userPlaceholderBackgroundColor:(UIColor * _Nonnull)userPlaceholderBackgroundColor userPlaceholderTintColor:(UIColor * _Nonnull)userPlaceholderTintColor reactionBoxBackgroundColor:(UIColor * _Nonnull)reactionBoxBackgroundColor reactionBoxBorderLineColor:(UIColor * _Nonnull)reactionBoxBorderLineColor reactionBoxEmojiCountColor:(UIColor * _Nonnull)reactionBoxEmojiCountColor reactionBoxEmojiBackgroundColor:(UIColor * _Nonnull)reactionBoxEmojiBackgroundColor reactionBoxSelectedEmojiBackgroundColor:(UIColor * _Nonnull)reactionBoxSelectedEmojiBackgroundColor reactionBoxEmojiCountFont:(UIFont * _Nonnull)reactionBoxEmojiCountFont emojiCountColor:(UIColor * _Nonnull)emojiCountColor emojiSelectedCountColor:(UIColor * _Nonnull)emojiSelectedCountColor emojiSelectedUnderlineColor:(UIColor * _Nonnull)emojiSelectedUnderlineColor emojiCountFont:(UIFont * _Nonnull)emojiCountFont reactionMenuLineColor:(UIColor * _Nonnull)reactionMenuLineColor emojiListSelectedBackgroundColor:(UIColor * _Nonnull)emojiListSelectedBackgroundColor addReactionTintColor:(UIColor * _Nonnull)addReactionTintColor OBJC_DESIGNATED_INITIALIZER;
 @property (nonatomic, strong) UIColor * _Nonnull emptyViewBackgroundColor;
 @property (nonatomic, strong) UIFont * _Nonnull emptyViewStatusFont;
 @property (nonatomic, strong) UIColor * _Nonnull emptyViewStatusTintColor;
@@ -4579,6 +4767,19 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUComponent
 @property (nonatomic, strong) UIColor * _Nonnull shadowColor;
 @property (nonatomic, strong) UIColor * _Nonnull userPlaceholderBackgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull userPlaceholderTintColor;
+@property (nonatomic, strong) UIColor * _Nonnull reactionBoxBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull reactionBoxBorderLineColor;
+@property (nonatomic, strong) UIColor * _Nonnull reactionBoxEmojiCountColor;
+@property (nonatomic, strong) UIColor * _Nonnull reactionBoxEmojiBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull reactionBoxSelectedEmojiBackgroundColor;
+@property (nonatomic, strong) UIFont * _Nonnull reactionBoxEmojiCountFont;
+@property (nonatomic, strong) UIColor * _Nonnull emojiCountColor;
+@property (nonatomic, strong) UIColor * _Nonnull emojiSelectedCountColor;
+@property (nonatomic, strong) UIColor * _Nonnull emojiSelectedUnderlineColor;
+@property (nonatomic, strong) UIFont * _Nonnull emojiCountFont;
+@property (nonatomic, strong) UIColor * _Nonnull reactionMenuLineColor;
+@property (nonatomic, strong) UIColor * _Nonnull emojiListSelectedBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull addReactionTintColor;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -4603,7 +4804,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 - (void)viewDidLoad;
 - (void)viewWillAppear:(BOOL)animated;
-- (void)viewDidLayoutSubviews;
 /// Load user list.
 /// If want using your custom user list, filled users with your custom user list.
 /// \param reset <code>true</code> is reset user list and load new list
@@ -4861,6 +5061,33 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull ico
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconChevronDown;)
 + (UIImage * _Nonnull)iconChevronDown SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconChevronDown:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiHeartEyes;)
++ (UIImage * _Nonnull)emojiHeartEyes SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmojiHeartEyes:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiLaughing;)
++ (UIImage * _Nonnull)emojiLaughing SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmojiLaughing:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiSweatSmile;)
++ (UIImage * _Nonnull)emojiSweatSmile SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmojiSweatSmile:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiSob;)
++ (UIImage * _Nonnull)emojiSob SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmojiSob:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiRage;)
++ (UIImage * _Nonnull)emojiRage SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmojiRage:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiMoreLarge;)
++ (UIImage * _Nonnull)emojiMoreLarge SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmojiMoreLarge:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiThumbsup;)
++ (UIImage * _Nonnull)emojiThumbsup SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmojiThumbsup:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiThubsdown;)
++ (UIImage * _Nonnull)emojiThubsdown SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmojiThubsdown:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiFail;)
++ (UIImage * _Nonnull)emojiFail SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmojiFail:(UIImage * _Nonnull)value;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
@@ -5446,11 +5673,12 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUUserMessageCell")
 
 
 
+
+
 SWIFT_CLASS("_TtC13SendBirdUIKit12UserNameView")
 @interface UserNameView : UIView
 - (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder SWIFT_UNAVAILABLE;
-- (void)layoutSubviews;
 @end
 
 #if __has_attribute(external_source_symbol)
@@ -6070,11 +6298,13 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit27SBUMessageInputViewDelegate_")
 @class SBDFileMessageParams;
 @class SBDUserMessage;
 @class UIScrollView;
+@class SBDReactionEvent;
+@class UIPresentationController;
 @class UIDocumentPickerViewController;
 @class SBDFileMessage;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
-@interface SBUChannelViewController : UIViewController <SBDChannelDelegate, SBDConnectionDelegate, SBUMessageInputViewDelegate, UIDocumentPickerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface SBUChannelViewController : UIViewController <SBDChannelDelegate, SBDConnectionDelegate, SBUMessageInputViewDelegate, UIDocumentPickerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate>
 @property (nonatomic, copy) NSString * _Nullable channelName;
 @property (nonatomic, strong) SBUMessageInputView * _Nonnull messageInputView;
 @property (nonatomic, strong) SBUNewMessageInfo * _Nonnull newMessageInfoView;
@@ -6196,6 +6426,16 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 /// \param channelUrl channel url
 ///
 - (void)loadChannelWithChannelUrl:(NSString * _Nullable)channelUrl;
+/// This function is used to add or delete reactions.
+/// since:
+/// 1.0.12
+/// \param message <code>SBDBaseMessage</code> object to update
+///
+/// \param emojiKey set emoji key
+///
+/// \param didSelect set reaction state
+///
+- (void)setReactionWithMessage:(SBDBaseMessage * _Nonnull)message emojiKey:(NSString * _Nonnull)emojiKey didSelect:(BOOL)didSelect;
 /// If you want to use a custom channelSettingsViewController, override it and implement it.
 - (void)showChannelSettings;
 - (BOOL)checkSameDayAsNextMessageWithCurrentIndex:(NSInteger)currentIndex SWIFT_WARN_UNUSED_RESULT;
@@ -6235,10 +6475,33 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 ///
 /// \param indexPath indexpath of cell
 ///
-- (void)setLongTabGestureHandler:(SBUBaseMessageCell * _Nonnull)cell message:(SBDBaseMessage * _Nonnull)message indexPath:(NSIndexPath * _Nonnull)indexPath;
+- (void)setLongTapGestureHandler:(SBUBaseMessageCell * _Nonnull)cell message:(SBDBaseMessage * _Nonnull)message indexPath:(NSIndexPath * _Nonnull)indexPath;
+/// This function sets the cell’s tap emoji gesture handling.
+/// since:
+/// 1.0.12
+/// \param cell Message cell object
+///
+/// \param emojiKey emoji key
+///
+- (void)setTapEmojiGestureHandler:(SBUBaseMessageCell * _Nonnull)cell emojiKey:(NSString * _Nonnull)emojiKey;
+/// This function sets the cell’s long tap emoji gesture handling.
+/// since:
+/// 1.0.12
+/// \param cell Message cell object
+///
+/// \param emojiKey emoji key
+///
+- (void)setLongTapEmojiGestureHandler:(SBUBaseMessageCell * _Nonnull)cell emojiKey:(NSString * _Nonnull)emojiKey;
+/// This function presents <code>SBUEmojiListViewController</code>
+/// since:
+/// 1.0.12
+/// \param message <code>SBDBaseMessage</code> object
+///
+- (void)showEmojiListModalWithMessage:(SBDBaseMessage * _Nonnull)message;
 - (void)channel:(SBDBaseChannel * _Nonnull)sender didReceiveMessage:(SBDBaseMessage * _Nonnull)message;
 - (void)channel:(SBDBaseChannel * _Nonnull)sender didUpdateMessage:(SBDBaseMessage * _Nonnull)message;
 - (void)channel:(SBDBaseChannel * _Nonnull)sender messageWasDeleted:(int64_t)messageId;
+- (void)channel:(SBDBaseChannel * _Nonnull)sender updatedReaction:(SBDReactionEvent * _Nonnull)reactionEvent;
 - (void)channelDidUpdateReadReceipt:(SBDGroupChannel * _Nonnull)sender;
 - (void)channelDidUpdateDeliveryReceipt:(SBDGroupChannel * _Nonnull)sender;
 - (void)channelDidUpdateTypingStatus:(SBDGroupChannel * _Nonnull)sender;
@@ -6251,6 +6514,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)messageInputView:(SBUMessageInputView * _Nonnull)messageInputView didSelectEdit:(NSString * _Nonnull)text;
 - (void)messageInputViewDidStartTyping;
 - (void)messageInputViewDidEndTyping;
+- (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
 - (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
 - (void)imagePickerControllerDidCancel:(UIImagePickerController * _Nonnull)picker;
 - (void)documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentsAtURLs:(NSArray<NSURL *> * _Nonnull)urls SWIFT_AVAILABILITY(ios,introduced=11.0);
@@ -6358,7 +6622,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUComponent
 + (SBUComponentTheme * _Nonnull)light SWIFT_WARN_UNUSED_RESULT;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUComponentTheme * _Nonnull dark;)
 + (SBUComponentTheme * _Nonnull)dark SWIFT_WARN_UNUSED_RESULT;
-- (nonnull instancetype)initWithEmptyViewBackgroundColor:(UIColor * _Nonnull)emptyViewBackgroundColor emptyViewStatusFont:(UIFont * _Nonnull)emptyViewStatusFont emptyViewStatusTintColor:(UIColor * _Nonnull)emptyViewStatusTintColor emptyViewRetryButtonTintColor:(UIColor * _Nonnull)emptyViewRetryButtonTintColor emptyViewRetryButtonFont:(UIFont * _Nonnull)emptyViewRetryButtonFont overlayColor:(UIColor * _Nonnull)overlayColor backgroundColor:(UIColor * _Nonnull)backgroundColor highlightedColor:(UIColor * _Nonnull)highlightedColor buttonTextColor:(UIColor * _Nonnull)buttonTextColor separatorColor:(UIColor * _Nonnull)separatorColor shadowColor:(UIColor * _Nonnull)shadowColor alertTitleColor:(UIColor * _Nonnull)alertTitleColor alertTitleFont:(UIFont * _Nonnull)alertTitleFont alertDetailColor:(UIColor * _Nonnull)alertDetailColor alertDetailFont:(UIFont * _Nonnull)alertDetailFont alertPlaceholderColor:(UIColor * _Nonnull)alertPlaceholderColor alertButtonColor:(UIColor * _Nonnull)alertButtonColor alertErrorColor:(UIColor * _Nonnull)alertErrorColor alertButtonFont:(UIFont * _Nonnull)alertButtonFont alertTextFieldBackgroundColor:(UIColor * _Nonnull)alertTextFieldBackgroundColor alertTextFieldTintColor:(UIColor * _Nonnull)alertTextFieldTintColor alertTextFieldFont:(UIFont * _Nonnull)alertTextFieldFont actionSheetTextFont:(UIFont * _Nonnull)actionSheetTextFont actionSheetTextColor:(UIColor * _Nonnull)actionSheetTextColor actionSheetItemColor:(UIColor * _Nonnull)actionSheetItemColor actionSheetErrorColor:(UIColor * _Nonnull)actionSheetErrorColor actionSheetButtonFont:(UIFont * _Nonnull)actionSheetButtonFont newMessageFont:(UIFont * _Nonnull)newMessageFont newMessageTintColor:(UIColor * _Nonnull)newMessageTintColor newMessageBackground:(UIColor * _Nonnull)newMessageBackground newMessageHighlighted:(UIColor * _Nonnull)newMessageHighlighted titleOnlineStateColor:(UIColor * _Nonnull)titleOnlineStateColor titleColor:(UIColor * _Nonnull)titleColor titleFont:(UIFont * _Nonnull)titleFont titleStatusColor:(UIColor * _Nonnull)titleStatusColor titleStatusFont:(UIFont * _Nonnull)titleStatusFont menuTitleFont:(UIFont * _Nonnull)menuTitleFont userPlaceholderBackgroundColor:(UIColor * _Nonnull)userPlaceholderBackgroundColor userPlaceholderTintColor:(UIColor * _Nonnull)userPlaceholderTintColor OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithEmptyViewBackgroundColor:(UIColor * _Nonnull)emptyViewBackgroundColor emptyViewStatusFont:(UIFont * _Nonnull)emptyViewStatusFont emptyViewStatusTintColor:(UIColor * _Nonnull)emptyViewStatusTintColor emptyViewRetryButtonTintColor:(UIColor * _Nonnull)emptyViewRetryButtonTintColor emptyViewRetryButtonFont:(UIFont * _Nonnull)emptyViewRetryButtonFont overlayColor:(UIColor * _Nonnull)overlayColor backgroundColor:(UIColor * _Nonnull)backgroundColor highlightedColor:(UIColor * _Nonnull)highlightedColor buttonTextColor:(UIColor * _Nonnull)buttonTextColor separatorColor:(UIColor * _Nonnull)separatorColor shadowColor:(UIColor * _Nonnull)shadowColor alertTitleColor:(UIColor * _Nonnull)alertTitleColor alertTitleFont:(UIFont * _Nonnull)alertTitleFont alertDetailColor:(UIColor * _Nonnull)alertDetailColor alertDetailFont:(UIFont * _Nonnull)alertDetailFont alertPlaceholderColor:(UIColor * _Nonnull)alertPlaceholderColor alertButtonColor:(UIColor * _Nonnull)alertButtonColor alertErrorColor:(UIColor * _Nonnull)alertErrorColor alertButtonFont:(UIFont * _Nonnull)alertButtonFont alertTextFieldBackgroundColor:(UIColor * _Nonnull)alertTextFieldBackgroundColor alertTextFieldTintColor:(UIColor * _Nonnull)alertTextFieldTintColor alertTextFieldFont:(UIFont * _Nonnull)alertTextFieldFont actionSheetTextFont:(UIFont * _Nonnull)actionSheetTextFont actionSheetTextColor:(UIColor * _Nonnull)actionSheetTextColor actionSheetItemColor:(UIColor * _Nonnull)actionSheetItemColor actionSheetErrorColor:(UIColor * _Nonnull)actionSheetErrorColor actionSheetButtonFont:(UIFont * _Nonnull)actionSheetButtonFont newMessageFont:(UIFont * _Nonnull)newMessageFont newMessageTintColor:(UIColor * _Nonnull)newMessageTintColor newMessageBackground:(UIColor * _Nonnull)newMessageBackground newMessageHighlighted:(UIColor * _Nonnull)newMessageHighlighted titleOnlineStateColor:(UIColor * _Nonnull)titleOnlineStateColor titleColor:(UIColor * _Nonnull)titleColor titleFont:(UIFont * _Nonnull)titleFont titleStatusColor:(UIColor * _Nonnull)titleStatusColor titleStatusFont:(UIFont * _Nonnull)titleStatusFont menuTitleFont:(UIFont * _Nonnull)menuTitleFont userPlaceholderBackgroundColor:(UIColor * _Nonnull)userPlaceholderBackgroundColor userPlaceholderTintColor:(UIColor * _Nonnull)userPlaceholderTintColor reactionBoxBackgroundColor:(UIColor * _Nonnull)reactionBoxBackgroundColor reactionBoxBorderLineColor:(UIColor * _Nonnull)reactionBoxBorderLineColor reactionBoxEmojiCountColor:(UIColor * _Nonnull)reactionBoxEmojiCountColor reactionBoxEmojiBackgroundColor:(UIColor * _Nonnull)reactionBoxEmojiBackgroundColor reactionBoxSelectedEmojiBackgroundColor:(UIColor * _Nonnull)reactionBoxSelectedEmojiBackgroundColor reactionBoxEmojiCountFont:(UIFont * _Nonnull)reactionBoxEmojiCountFont emojiCountColor:(UIColor * _Nonnull)emojiCountColor emojiSelectedCountColor:(UIColor * _Nonnull)emojiSelectedCountColor emojiSelectedUnderlineColor:(UIColor * _Nonnull)emojiSelectedUnderlineColor emojiCountFont:(UIFont * _Nonnull)emojiCountFont reactionMenuLineColor:(UIColor * _Nonnull)reactionMenuLineColor emojiListSelectedBackgroundColor:(UIColor * _Nonnull)emojiListSelectedBackgroundColor addReactionTintColor:(UIColor * _Nonnull)addReactionTintColor OBJC_DESIGNATED_INITIALIZER;
 @property (nonatomic, strong) UIColor * _Nonnull emptyViewBackgroundColor;
 @property (nonatomic, strong) UIFont * _Nonnull emptyViewStatusFont;
 @property (nonatomic, strong) UIColor * _Nonnull emptyViewStatusTintColor;
@@ -6398,6 +6662,19 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUComponent
 @property (nonatomic, strong) UIColor * _Nonnull shadowColor;
 @property (nonatomic, strong) UIColor * _Nonnull userPlaceholderBackgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull userPlaceholderTintColor;
+@property (nonatomic, strong) UIColor * _Nonnull reactionBoxBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull reactionBoxBorderLineColor;
+@property (nonatomic, strong) UIColor * _Nonnull reactionBoxEmojiCountColor;
+@property (nonatomic, strong) UIColor * _Nonnull reactionBoxEmojiBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull reactionBoxSelectedEmojiBackgroundColor;
+@property (nonatomic, strong) UIFont * _Nonnull reactionBoxEmojiCountFont;
+@property (nonatomic, strong) UIColor * _Nonnull emojiCountColor;
+@property (nonatomic, strong) UIColor * _Nonnull emojiSelectedCountColor;
+@property (nonatomic, strong) UIColor * _Nonnull emojiSelectedUnderlineColor;
+@property (nonatomic, strong) UIFont * _Nonnull emojiCountFont;
+@property (nonatomic, strong) UIColor * _Nonnull reactionMenuLineColor;
+@property (nonatomic, strong) UIColor * _Nonnull emojiListSelectedBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull addReactionTintColor;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -6422,7 +6699,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 - (void)viewDidLoad;
 - (void)viewWillAppear:(BOOL)animated;
-- (void)viewDidLayoutSubviews;
 /// Load user list.
 /// If want using your custom user list, filled users with your custom user list.
 /// \param reset <code>true</code> is reset user list and load new list
@@ -6680,6 +6956,33 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull ico
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconChevronDown;)
 + (UIImage * _Nonnull)iconChevronDown SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconChevronDown:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiHeartEyes;)
++ (UIImage * _Nonnull)emojiHeartEyes SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmojiHeartEyes:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiLaughing;)
++ (UIImage * _Nonnull)emojiLaughing SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmojiLaughing:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiSweatSmile;)
++ (UIImage * _Nonnull)emojiSweatSmile SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmojiSweatSmile:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiSob;)
++ (UIImage * _Nonnull)emojiSob SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmojiSob:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiRage;)
++ (UIImage * _Nonnull)emojiRage SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmojiRage:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiMoreLarge;)
++ (UIImage * _Nonnull)emojiMoreLarge SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmojiMoreLarge:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiThumbsup;)
++ (UIImage * _Nonnull)emojiThumbsup SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmojiThumbsup:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiThubsdown;)
++ (UIImage * _Nonnull)emojiThubsdown SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmojiThubsdown:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiFail;)
++ (UIImage * _Nonnull)emojiFail SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmojiFail:(UIImage * _Nonnull)value;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
@@ -7265,11 +7568,12 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUUserMessageCell")
 
 
 
+
+
 SWIFT_CLASS("_TtC13SendBirdUIKit12UserNameView")
 @interface UserNameView : UIView
 - (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder SWIFT_UNAVAILABLE;
-- (void)layoutSubviews;
 @end
 
 #if __has_attribute(external_source_symbol)

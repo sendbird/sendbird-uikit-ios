@@ -6,7 +6,7 @@
 	<dict>
 		<key>Assets.car</key>
 		<data>
-		ydQXZ0+oteoQhtJspy5moTnd1d8=
+		8EXlHyYmHADVW6sfmmwvVk7QR8s=
 		</data>
 		<key>Headers/SBUBaseChannelCell.swift</key>
 		<data>
@@ -14,7 +14,7 @@
 		</data>
 		<key>Headers/SBUBaseMessageCell.swift</key>
 		<data>
-		huEBZkvcVQ0W7suZI5ms2KoulyA=
+		E6yKxYvzOIb1NxpN+DVvbZVedFk=
 		</data>
 		<key>Headers/SBUChannelListViewController.swift</key>
 		<data>
@@ -30,7 +30,7 @@
 		</data>
 		<key>Headers/SBUChannelViewController.swift</key>
 		<data>
-		+nIOn7wSOKkA0n8hPMfnLaW3IeQ=
+		eULty+gi4weuVYUppG/VSmoK2d0=
 		</data>
 		<key>Headers/SBUColorSet.swift</key>
 		<data>
@@ -38,15 +38,19 @@
 		</data>
 		<key>Headers/SBUConstant.swift</key>
 		<data>
-		/kUcLVoQ44O3fiX71zw6/rl+KcI=
+		Tm3HCO5EP3w4Z8zTV1eNq2Axweg=
 		</data>
 		<key>Headers/SBUCreateChannelViewController.swift</key>
 		<data>
-		REUvkXM0bU/Inu7sXMabc7KA64w=
+		EwKk+CstsuPq7P6B7IAZUhsH+WU=
+		</data>
+		<key>Headers/SBUEmojiManager.swift</key>
+		<data>
+		qWBId0aFqZs1AXA99WT8FmFKFgY=
 		</data>
 		<key>Headers/SBUEnums.swift</key>
 		<data>
-		GmQjWnHJpWLCARivaclxhjp/9Bc=
+		DBJyys3PUmFiKgG5qu3X/sgjtWQ=
 		</data>
 		<key>Headers/SBUFontSet.swift</key>
 		<data>
@@ -58,15 +62,15 @@
 		</data>
 		<key>Headers/SBUIconSet.swift</key>
 		<data>
-		dXPjGrEh0Ls8F4ztBg7p9Gr0vBw=
+		gGrrJPQyum5Oh7NBd6V00bldcss=
 		</data>
 		<key>Headers/SBUInviteUserViewController.swift</key>
 		<data>
-		vh5IB5JbVE1nK0K6kch1sjiR4JY=
+		wtkW/DixjmFy2meeyQGWtoYyPVo=
 		</data>
 		<key>Headers/SBUMain.swift</key>
 		<data>
-		zGvu8xIho84+ulzL2E95IelkE6Y=
+		TLkO6KVFXc+ZzWUiwSumLg+FHWY=
 		</data>
 		<key>Headers/SBUMemberListViewController.swift</key>
 		<data>
@@ -90,7 +94,7 @@
 		</data>
 		<key>Headers/SBUTheme.swift</key>
 		<data>
-		zoAOrvi5UxpiVa9G1+U5UUxJqNY=
+		hnHhGGMbMmUuRyyV+CieIvE7iYw=
 		</data>
 		<key>Headers/SBUUser.swift</key>
 		<data>
@@ -102,7 +106,7 @@
 		</data>
 		<key>Headers/SendBirdUIKit-Swift.h</key>
 		<data>
-		HFPkKeEVHYF2kZ20EX8E9TlH9Qo=
+		WofXNHat0xtPmTKRrYTVzNAxVn8=
 		</data>
 		<key>Headers/SendBirdUIKit.h</key>
 		<data>
@@ -110,87 +114,87 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		+esOzynTP0NaP82SiLRt60MV5GQ=
+		vYP3gkElZy0xAqv1EVOUSRKPNMg=
 		</data>
 		<key>Modules/SendBirdUIKit.swiftmodule/Project/arm.swiftsourceinfo</key>
 		<data>
-		LiVC2xbH7sFRQl3riQSAtTjPqpo=
+		4hldVZPtL8SNlHOI0vWrEG35cCQ=
 		</data>
 		<key>Modules/SendBirdUIKit.swiftmodule/Project/arm64-apple-ios.swiftsourceinfo</key>
 		<data>
-		sOisx2ntaJdheIHfpmG8H0Xqwt0=
+		iRSBksnEaH6rnsfsX4HrKgSOSF4=
 		</data>
 		<key>Modules/SendBirdUIKit.swiftmodule/Project/arm64.swiftsourceinfo</key>
 		<data>
-		sOisx2ntaJdheIHfpmG8H0Xqwt0=
+		iRSBksnEaH6rnsfsX4HrKgSOSF4=
 		</data>
 		<key>Modules/SendBirdUIKit.swiftmodule/Project/armv7-apple-ios.swiftsourceinfo</key>
 		<data>
-		LiVC2xbH7sFRQl3riQSAtTjPqpo=
+		4hldVZPtL8SNlHOI0vWrEG35cCQ=
 		</data>
 		<key>Modules/SendBirdUIKit.swiftmodule/Project/armv7.swiftsourceinfo</key>
 		<data>
-		LiVC2xbH7sFRQl3riQSAtTjPqpo=
+		4hldVZPtL8SNlHOI0vWrEG35cCQ=
 		</data>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm.swiftdoc</key>
 		<data>
-		oee2HvAQ2ccPz7GC7CzZeOzu3oQ=
+		EqVYpffQcQacFzbGKZyWnv7zo1g=
 		</data>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm.swiftinterface</key>
 		<data>
-		hrvGSdiqzRTWIKaWiU7ijL+Fo60=
+		2ZlR8dkHN6HckMi+XGNlo5HXNxE=
 		</data>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm.swiftmodule</key>
 		<data>
-		vvA6TfpAVvSUsH4e6rLglPaQSwY=
+		WSfvusqEpwa++KzW7J0SBNa0mcY=
 		</data>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm64-apple-ios.swiftdoc</key>
 		<data>
-		ATmNYzfSf6C+TG5LoLmnYiMuZ2E=
+		svC3kWIdfIn2s/qLg0g0LBv6mJU=
 		</data>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm64-apple-ios.swiftinterface</key>
 		<data>
-		PUapUnvhT1h43EGaLmkm02MvLMA=
+		hD/tyWnPrcv6czrme6w7U1eL6cU=
 		</data>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm64-apple-ios.swiftmodule</key>
 		<data>
-		QXXib6XcgBkMWdDU6/7DN0u9taw=
+		GD8byy67mgVQYUXE/vYRqC9VdWg=
 		</data>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm64.swiftdoc</key>
 		<data>
-		ATmNYzfSf6C+TG5LoLmnYiMuZ2E=
+		svC3kWIdfIn2s/qLg0g0LBv6mJU=
 		</data>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm64.swiftinterface</key>
 		<data>
-		PUapUnvhT1h43EGaLmkm02MvLMA=
+		hD/tyWnPrcv6czrme6w7U1eL6cU=
 		</data>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm64.swiftmodule</key>
 		<data>
-		QXXib6XcgBkMWdDU6/7DN0u9taw=
+		GD8byy67mgVQYUXE/vYRqC9VdWg=
 		</data>
 		<key>Modules/SendBirdUIKit.swiftmodule/armv7-apple-ios.swiftdoc</key>
 		<data>
-		oee2HvAQ2ccPz7GC7CzZeOzu3oQ=
+		EqVYpffQcQacFzbGKZyWnv7zo1g=
 		</data>
 		<key>Modules/SendBirdUIKit.swiftmodule/armv7-apple-ios.swiftinterface</key>
 		<data>
-		hrvGSdiqzRTWIKaWiU7ijL+Fo60=
+		2ZlR8dkHN6HckMi+XGNlo5HXNxE=
 		</data>
 		<key>Modules/SendBirdUIKit.swiftmodule/armv7-apple-ios.swiftmodule</key>
 		<data>
-		vvA6TfpAVvSUsH4e6rLglPaQSwY=
+		WSfvusqEpwa++KzW7J0SBNa0mcY=
 		</data>
 		<key>Modules/SendBirdUIKit.swiftmodule/armv7.swiftdoc</key>
 		<data>
-		oee2HvAQ2ccPz7GC7CzZeOzu3oQ=
+		EqVYpffQcQacFzbGKZyWnv7zo1g=
 		</data>
 		<key>Modules/SendBirdUIKit.swiftmodule/armv7.swiftinterface</key>
 		<data>
-		hrvGSdiqzRTWIKaWiU7ijL+Fo60=
+		2ZlR8dkHN6HckMi+XGNlo5HXNxE=
 		</data>
 		<key>Modules/SendBirdUIKit.swiftmodule/armv7.swiftmodule</key>
 		<data>
-		vvA6TfpAVvSUsH4e6rLglPaQSwY=
+		WSfvusqEpwa++KzW7J0SBNa0mcY=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -198,23 +202,35 @@
 		</data>
 		<key>SBUChannelSettingCell.nib/objects-11.0+.nib</key>
 		<data>
-		0AbeoH6RrgkngEiB2cdKaMOcg78=
+		C4ZdP9DHyB8mPJd95e55wN/wldU=
 		</data>
 		<key>SBUChannelSettingCell.nib/runtime.nib</key>
 		<data>
-		MPwMruziPV/dSOgjDMTnyhdDnMk=
+		rZQAYNbceq0260uI0EV4We0a2ew=
+		</data>
+		<key>SBUMenuCell.nib</key>
+		<data>
+		idNmx9UXOXD9eBSCXw/KMTMq2zs=
 		</data>
 		<key>SBUMessageInputView.nib/objects-11.0+.nib</key>
 		<data>
-		pSlELsPtLCI5BHxdNCw7CbGP0Xg=
+		InrcyTjF6HXHoL+4ypdAzix6U4M=
 		</data>
 		<key>SBUMessageInputView.nib/runtime.nib</key>
 		<data>
-		mDYaoaFajRcQ/IhpL7kOW6QRVTg=
+		hlPQWKeeIKm9CpefPKe7geCjyFI=
+		</data>
+		<key>SBUReactionCollectionViewCell.nib/objects-12.3+.nib</key>
+		<data>
+		rv4cG5aMvDRSbo0wvTAmTJ/ydKI=
+		</data>
+		<key>SBUReactionCollectionViewCell.nib/runtime.nib</key>
+		<data>
+		h3Z39eE5+SuFvopq87HY8Rh3cN0=
 		</data>
 		<key>SBUUserCell.nib</key>
 		<data>
-		33hiBZFJr+UcunTat1KBhFDJZtU=
+		y5j8MrrY1dx58Q2DC+4ZxJKP5Cg=
 		</data>
 	</dict>
 	<key>files2</key>
@@ -223,11 +239,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			ydQXZ0+oteoQhtJspy5moTnd1d8=
+			8EXlHyYmHADVW6sfmmwvVk7QR8s=
 			</data>
 			<key>hash2</key>
 			<data>
-			RByYAYk4KI9bECzFE84/GOlMsERR5SwWrGC010VbmXA=
+			WOnBRF39+RqHrcmigXp2saaK+DQp1obhIoGfKkXMROo=
 			</data>
 		</dict>
 		<key>Headers/SBUBaseChannelCell.swift</key>
@@ -245,11 +261,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			huEBZkvcVQ0W7suZI5ms2KoulyA=
+			E6yKxYvzOIb1NxpN+DVvbZVedFk=
 			</data>
 			<key>hash2</key>
 			<data>
-			vS2ph4u+tUo4Io1IMyhnrp8dbonvsvwfiUdAWuR0uGs=
+			A1PFLTR68gA1to7RtWeTdp4KozfjXtQ1kDPyCmKrO/Q=
 			</data>
 		</dict>
 		<key>Headers/SBUChannelListViewController.swift</key>
@@ -289,11 +305,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			+nIOn7wSOKkA0n8hPMfnLaW3IeQ=
+			eULty+gi4weuVYUppG/VSmoK2d0=
 			</data>
 			<key>hash2</key>
 			<data>
-			8GYH6S5h+Ks0Zx4eFsDw9wk+rbzZSxMwcbPTkCcel5g=
+			CTuHaDepoeRlShmjOtAAAf9z5zwJ09u0aL51HiFjak4=
 			</data>
 		</dict>
 		<key>Headers/SBUColorSet.swift</key>
@@ -311,33 +327,44 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			/kUcLVoQ44O3fiX71zw6/rl+KcI=
+			Tm3HCO5EP3w4Z8zTV1eNq2Axweg=
 			</data>
 			<key>hash2</key>
 			<data>
-			9F5TQfmf4mm1Jt2bDxqpZH/erlHeyi0ZhkspdzXHI24=
+			gSShhdfTaqnvw0DSi4vSafigLAi1UsTsr4SVO4z+ECM=
 			</data>
 		</dict>
 		<key>Headers/SBUCreateChannelViewController.swift</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			REUvkXM0bU/Inu7sXMabc7KA64w=
+			EwKk+CstsuPq7P6B7IAZUhsH+WU=
 			</data>
 			<key>hash2</key>
 			<data>
-			3gUhrlf+u/heoO3ONLr17ftWLDZtMMzCLMtFnf4klFM=
+			kCUv9P69VThLxZ6hNSBU0cCRIsJ3TBYE7s8M5ccWY5c=
+			</data>
+		</dict>
+		<key>Headers/SBUEmojiManager.swift</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			qWBId0aFqZs1AXA99WT8FmFKFgY=
+			</data>
+			<key>hash2</key>
+			<data>
+			LuEh6c3pPuXbpsnZC51z6CVAVMTCVOtB4Bs/JDUPZS0=
 			</data>
 		</dict>
 		<key>Headers/SBUEnums.swift</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			GmQjWnHJpWLCARivaclxhjp/9Bc=
+			DBJyys3PUmFiKgG5qu3X/sgjtWQ=
 			</data>
 			<key>hash2</key>
 			<data>
-			RUnHeAbmBpMg56Lve2ao6NZRAFVRFBWYVEYl9g7Xzmo=
+			j3jN1c9Q2h2asQNOpg8KlddcuyV9h+bpHlklgCin1EM=
 			</data>
 		</dict>
 		<key>Headers/SBUFontSet.swift</key>
@@ -366,33 +393,33 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			dXPjGrEh0Ls8F4ztBg7p9Gr0vBw=
+			gGrrJPQyum5Oh7NBd6V00bldcss=
 			</data>
 			<key>hash2</key>
 			<data>
-			7YLr3DuHv1MAh3hz4gCU0luub846Bz8A+DG8y++YaLU=
+			DEdv6O3tbkjKmI4Uu1vsQjG3Yf2NSYdcMrjdHoeFg7I=
 			</data>
 		</dict>
 		<key>Headers/SBUInviteUserViewController.swift</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			vh5IB5JbVE1nK0K6kch1sjiR4JY=
+			wtkW/DixjmFy2meeyQGWtoYyPVo=
 			</data>
 			<key>hash2</key>
 			<data>
-			Yvl+4SPdIXS3/2uRaGksGq6Ws+QS0NnRcv+17KxIKVg=
+			LZbxe7HLhujokNQRWTFBluriDa8/1BLgFL/fdSt09kk=
 			</data>
 		</dict>
 		<key>Headers/SBUMain.swift</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			zGvu8xIho84+ulzL2E95IelkE6Y=
+			TLkO6KVFXc+ZzWUiwSumLg+FHWY=
 			</data>
 			<key>hash2</key>
 			<data>
-			UU6wbUddO/65opN4AaYbZkh9f/gJVVVTrn2BPpie2Hg=
+			VkwxIfPYbLbh7kGG/Zst/uM8rUCipkXD+Ci96XpbSCg=
 			</data>
 		</dict>
 		<key>Headers/SBUMemberListViewController.swift</key>
@@ -454,11 +481,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			zoAOrvi5UxpiVa9G1+U5UUxJqNY=
+			hnHhGGMbMmUuRyyV+CieIvE7iYw=
 			</data>
 			<key>hash2</key>
 			<data>
-			IXaPl2nQWJCs9+UgFTZ+PF5qmZB3tjrkmLB0IKlY5tU=
+			vgTLOBqIHtbB5nWpFTmtUBXjxsD0T2d9NdK0mkjcmVs=
 			</data>
 		</dict>
 		<key>Headers/SBUUser.swift</key>
@@ -487,11 +514,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			HFPkKeEVHYF2kZ20EX8E9TlH9Qo=
+			WofXNHat0xtPmTKRrYTVzNAxVn8=
 			</data>
 			<key>hash2</key>
 			<data>
-			5OzapkLb7ZdW1x/wP0H9dTV681z6ZUgCrjrvhc4d1EQ=
+			cVfuffrjXXk5zd2pSkIes65z7UOJKIYE7YcoJOe3i2k=
 			</data>
 		</dict>
 		<key>Headers/SendBirdUIKit.h</key>
@@ -509,220 +536,220 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			LiVC2xbH7sFRQl3riQSAtTjPqpo=
+			4hldVZPtL8SNlHOI0vWrEG35cCQ=
 			</data>
 			<key>hash2</key>
 			<data>
-			piOQCxb34o9oCzirv17N43lP0gSCxaNtznpKw461xww=
+			DvNTAW4h9m1isfRoa5GKc/EfV6FXx27l2uh/5Tw24RU=
 			</data>
 		</dict>
 		<key>Modules/SendBirdUIKit.swiftmodule/Project/arm64-apple-ios.swiftsourceinfo</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			sOisx2ntaJdheIHfpmG8H0Xqwt0=
+			iRSBksnEaH6rnsfsX4HrKgSOSF4=
 			</data>
 			<key>hash2</key>
 			<data>
-			22sjlXLGbxznO9R1ARme/1cMgEL5RSaAYg/lfbcRGpI=
+			J+7/G8j8HIQH5AEd00pgB8XfyxlhNEB4LjZ8u2VIOuM=
 			</data>
 		</dict>
 		<key>Modules/SendBirdUIKit.swiftmodule/Project/arm64.swiftsourceinfo</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			sOisx2ntaJdheIHfpmG8H0Xqwt0=
+			iRSBksnEaH6rnsfsX4HrKgSOSF4=
 			</data>
 			<key>hash2</key>
 			<data>
-			22sjlXLGbxznO9R1ARme/1cMgEL5RSaAYg/lfbcRGpI=
+			J+7/G8j8HIQH5AEd00pgB8XfyxlhNEB4LjZ8u2VIOuM=
 			</data>
 		</dict>
 		<key>Modules/SendBirdUIKit.swiftmodule/Project/armv7-apple-ios.swiftsourceinfo</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			LiVC2xbH7sFRQl3riQSAtTjPqpo=
+			4hldVZPtL8SNlHOI0vWrEG35cCQ=
 			</data>
 			<key>hash2</key>
 			<data>
-			piOQCxb34o9oCzirv17N43lP0gSCxaNtznpKw461xww=
+			DvNTAW4h9m1isfRoa5GKc/EfV6FXx27l2uh/5Tw24RU=
 			</data>
 		</dict>
 		<key>Modules/SendBirdUIKit.swiftmodule/Project/armv7.swiftsourceinfo</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			LiVC2xbH7sFRQl3riQSAtTjPqpo=
+			4hldVZPtL8SNlHOI0vWrEG35cCQ=
 			</data>
 			<key>hash2</key>
 			<data>
-			piOQCxb34o9oCzirv17N43lP0gSCxaNtznpKw461xww=
+			DvNTAW4h9m1isfRoa5GKc/EfV6FXx27l2uh/5Tw24RU=
 			</data>
 		</dict>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm.swiftdoc</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			oee2HvAQ2ccPz7GC7CzZeOzu3oQ=
+			EqVYpffQcQacFzbGKZyWnv7zo1g=
 			</data>
 			<key>hash2</key>
 			<data>
-			aAkSih2pCNTdwwpaoHyprnISGc8kcHLXvZkDvvHtiTg=
+			6HMbf+ICEa8UzoTI1VnP4sd1j4fglvnFF7QdUso5gFQ=
 			</data>
 		</dict>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm.swiftinterface</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			hrvGSdiqzRTWIKaWiU7ijL+Fo60=
+			2ZlR8dkHN6HckMi+XGNlo5HXNxE=
 			</data>
 			<key>hash2</key>
 			<data>
-			XHO1AsnPbPMykzvPhPlRkSDigGgI3qbJfTFj7leedfE=
+			HpzXJ72EmaoKOuqlnCGezbwgkE20Dm37uMB+OvUF3no=
 			</data>
 		</dict>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm.swiftmodule</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			vvA6TfpAVvSUsH4e6rLglPaQSwY=
+			WSfvusqEpwa++KzW7J0SBNa0mcY=
 			</data>
 			<key>hash2</key>
 			<data>
-			DeKtafEPdAeUq/83E4LImSeNzvbxSIWFKkYFH7LW4dQ=
+			gNo0C2q0Jwok/zXBrGIUbouFf2PFngHjA+FqgIzAEf8=
 			</data>
 		</dict>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm64-apple-ios.swiftdoc</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			ATmNYzfSf6C+TG5LoLmnYiMuZ2E=
+			svC3kWIdfIn2s/qLg0g0LBv6mJU=
 			</data>
 			<key>hash2</key>
 			<data>
-			A7YfKDF8DUF4qAOvB0+loVWryYe4BiRyaKLrHrmkSiA=
+			lzxeExtX07Bj656yf4opxfnukTf97W+GuYmdnj3t9FI=
 			</data>
 		</dict>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm64-apple-ios.swiftinterface</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			PUapUnvhT1h43EGaLmkm02MvLMA=
+			hD/tyWnPrcv6czrme6w7U1eL6cU=
 			</data>
 			<key>hash2</key>
 			<data>
-			4w0GhXBrdjzfxC18c5guPFl6bfG190jU+upl+BsL7ZM=
+			fYO3gmVaLZ6DW4q9RyEzaFbBI4am9/Ng3W9pgzEKgW0=
 			</data>
 		</dict>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm64-apple-ios.swiftmodule</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			QXXib6XcgBkMWdDU6/7DN0u9taw=
+			GD8byy67mgVQYUXE/vYRqC9VdWg=
 			</data>
 			<key>hash2</key>
 			<data>
-			Z+sbzHZy3QVUIFTjnmAEixxJYxNDUSsRSNq+9CK+snY=
+			P3CbZRXdd6PbDB8nIuNgULaY9fHwyVomumCic7hpBOk=
 			</data>
 		</dict>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm64.swiftdoc</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			ATmNYzfSf6C+TG5LoLmnYiMuZ2E=
+			svC3kWIdfIn2s/qLg0g0LBv6mJU=
 			</data>
 			<key>hash2</key>
 			<data>
-			A7YfKDF8DUF4qAOvB0+loVWryYe4BiRyaKLrHrmkSiA=
+			lzxeExtX07Bj656yf4opxfnukTf97W+GuYmdnj3t9FI=
 			</data>
 		</dict>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm64.swiftinterface</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			PUapUnvhT1h43EGaLmkm02MvLMA=
+			hD/tyWnPrcv6czrme6w7U1eL6cU=
 			</data>
 			<key>hash2</key>
 			<data>
-			4w0GhXBrdjzfxC18c5guPFl6bfG190jU+upl+BsL7ZM=
+			fYO3gmVaLZ6DW4q9RyEzaFbBI4am9/Ng3W9pgzEKgW0=
 			</data>
 		</dict>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm64.swiftmodule</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			QXXib6XcgBkMWdDU6/7DN0u9taw=
+			GD8byy67mgVQYUXE/vYRqC9VdWg=
 			</data>
 			<key>hash2</key>
 			<data>
-			Z+sbzHZy3QVUIFTjnmAEixxJYxNDUSsRSNq+9CK+snY=
+			P3CbZRXdd6PbDB8nIuNgULaY9fHwyVomumCic7hpBOk=
 			</data>
 		</dict>
 		<key>Modules/SendBirdUIKit.swiftmodule/armv7-apple-ios.swiftdoc</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			oee2HvAQ2ccPz7GC7CzZeOzu3oQ=
+			EqVYpffQcQacFzbGKZyWnv7zo1g=
 			</data>
 			<key>hash2</key>
 			<data>
-			aAkSih2pCNTdwwpaoHyprnISGc8kcHLXvZkDvvHtiTg=
+			6HMbf+ICEa8UzoTI1VnP4sd1j4fglvnFF7QdUso5gFQ=
 			</data>
 		</dict>
 		<key>Modules/SendBirdUIKit.swiftmodule/armv7-apple-ios.swiftinterface</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			hrvGSdiqzRTWIKaWiU7ijL+Fo60=
+			2ZlR8dkHN6HckMi+XGNlo5HXNxE=
 			</data>
 			<key>hash2</key>
 			<data>
-			XHO1AsnPbPMykzvPhPlRkSDigGgI3qbJfTFj7leedfE=
+			HpzXJ72EmaoKOuqlnCGezbwgkE20Dm37uMB+OvUF3no=
 			</data>
 		</dict>
 		<key>Modules/SendBirdUIKit.swiftmodule/armv7-apple-ios.swiftmodule</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			vvA6TfpAVvSUsH4e6rLglPaQSwY=
+			WSfvusqEpwa++KzW7J0SBNa0mcY=
 			</data>
 			<key>hash2</key>
 			<data>
-			DeKtafEPdAeUq/83E4LImSeNzvbxSIWFKkYFH7LW4dQ=
+			gNo0C2q0Jwok/zXBrGIUbouFf2PFngHjA+FqgIzAEf8=
 			</data>
 		</dict>
 		<key>Modules/SendBirdUIKit.swiftmodule/armv7.swiftdoc</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			oee2HvAQ2ccPz7GC7CzZeOzu3oQ=
+			EqVYpffQcQacFzbGKZyWnv7zo1g=
 			</data>
 			<key>hash2</key>
 			<data>
-			aAkSih2pCNTdwwpaoHyprnISGc8kcHLXvZkDvvHtiTg=
+			6HMbf+ICEa8UzoTI1VnP4sd1j4fglvnFF7QdUso5gFQ=
 			</data>
 		</dict>
 		<key>Modules/SendBirdUIKit.swiftmodule/armv7.swiftinterface</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			hrvGSdiqzRTWIKaWiU7ijL+Fo60=
+			2ZlR8dkHN6HckMi+XGNlo5HXNxE=
 			</data>
 			<key>hash2</key>
 			<data>
-			XHO1AsnPbPMykzvPhPlRkSDigGgI3qbJfTFj7leedfE=
+			HpzXJ72EmaoKOuqlnCGezbwgkE20Dm37uMB+OvUF3no=
 			</data>
 		</dict>
 		<key>Modules/SendBirdUIKit.swiftmodule/armv7.swiftmodule</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			vvA6TfpAVvSUsH4e6rLglPaQSwY=
+			WSfvusqEpwa++KzW7J0SBNa0mcY=
 			</data>
 			<key>hash2</key>
 			<data>
-			DeKtafEPdAeUq/83E4LImSeNzvbxSIWFKkYFH7LW4dQ=
+			gNo0C2q0Jwok/zXBrGIUbouFf2PFngHjA+FqgIzAEf8=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
@@ -740,55 +767,88 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			0AbeoH6RrgkngEiB2cdKaMOcg78=
+			C4ZdP9DHyB8mPJd95e55wN/wldU=
 			</data>
 			<key>hash2</key>
 			<data>
-			hwPxmVaR0kmzMef2rKyz6vdvn9B/6V8tiehb1YCPd48=
+			SMIrjA5bl9AeV3XGBGOUTJZvGEoMoqrCmpNN6qayGdQ=
 			</data>
 		</dict>
 		<key>SBUChannelSettingCell.nib/runtime.nib</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			MPwMruziPV/dSOgjDMTnyhdDnMk=
+			rZQAYNbceq0260uI0EV4We0a2ew=
 			</data>
 			<key>hash2</key>
 			<data>
-			0LPPP+JWENXpjtlA0lnGdurmWVhQCmMfN7LNVKngoQQ=
+			tIQv2LkRSNTZaMV+pgOyofcGFDSK9U3fswgsIEsOzBM=
+			</data>
+		</dict>
+		<key>SBUMenuCell.nib</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			idNmx9UXOXD9eBSCXw/KMTMq2zs=
+			</data>
+			<key>hash2</key>
+			<data>
+			Ck2cG2P2ksTZDBf+K8WSFQNA59+/n3ckYyisqk/OGgE=
 			</data>
 		</dict>
 		<key>SBUMessageInputView.nib/objects-11.0+.nib</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			pSlELsPtLCI5BHxdNCw7CbGP0Xg=
+			InrcyTjF6HXHoL+4ypdAzix6U4M=
 			</data>
 			<key>hash2</key>
 			<data>
-			V97H284T7IxwSrR1a6oeMTYhCvx9q3GvjGDGd4yxa3U=
+			f0W1Qn2dgOsNpA1jth5MHiCh1gyrUI3IEuIo2l2bP5I=
 			</data>
 		</dict>
 		<key>SBUMessageInputView.nib/runtime.nib</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			mDYaoaFajRcQ/IhpL7kOW6QRVTg=
+			hlPQWKeeIKm9CpefPKe7geCjyFI=
 			</data>
 			<key>hash2</key>
 			<data>
-			euGWb4rv9B6G2zOOX9lxJVr/7xstrfiS1jz1cSJPnsA=
+			R1eq0ioOeCx6QcFtxogfeogURlQ9ljWkbWVCr0BFXyU=
+			</data>
+		</dict>
+		<key>SBUReactionCollectionViewCell.nib/objects-12.3+.nib</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			rv4cG5aMvDRSbo0wvTAmTJ/ydKI=
+			</data>
+			<key>hash2</key>
+			<data>
+			Ekt0z5uUwGTame6q4Th+46yYy4sLRodFdFBRcvgc0M4=
+			</data>
+		</dict>
+		<key>SBUReactionCollectionViewCell.nib/runtime.nib</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			h3Z39eE5+SuFvopq87HY8Rh3cN0=
+			</data>
+			<key>hash2</key>
+			<data>
+			ORpfNnZVhbkqOi3fAP3jTj8JFx/rJH5/XcI5hDLd5HM=
 			</data>
 		</dict>
 		<key>SBUUserCell.nib</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			33hiBZFJr+UcunTat1KBhFDJZtU=
+			y5j8MrrY1dx58Q2DC+4ZxJKP5Cg=
 			</data>
 			<key>hash2</key>
 			<data>
-			Pv/G/t1Vdci2o4rRie2nFFvNZ8R2ae93cT/rJZKhiJk=
+			lUEU1jhR1L2nAqgp4iKqRCWo2TklYkcuJNdD01psNRk=
 			</data>
 		</dict>
 	</dict>

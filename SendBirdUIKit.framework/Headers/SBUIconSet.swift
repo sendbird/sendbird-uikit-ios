@@ -57,6 +57,16 @@ public class SBUIconSet: NSObject {
     public static var iconFileDocument = getImage(name: "iconFileDocument")
     public static var iconFileAudio = getImage(name: "iconFileAudio")
     public static var iconChevronDown = getImage(name: "iconChevronDown")
+
+    public static var emojiHeartEyes = getImage(name: "emojiHeartEyes")
+    public static var emojiLaughing = getImage(name: "emojiLaughing")
+    public static var emojiSweatSmile = getImage(name: "emojiSweatSmile")
+    public static var emojiSob = getImage(name: "emojiSob")
+    public static var emojiRage = getImage(name: "emojiRage")
+    public static var emojiMoreLarge = getImage(name: "emojiMoreLarge")
+    public static var emojiThumbsup = getImage(name: "emojiThumbsup")
+    public static var emojiThubsdown = getImage(name: "emojiThubsdown")
+    public static var emojiFail = getImage(name: "emojiFail")
 }
 
 private extension SBUIconSet {

@@ -14,7 +14,7 @@ import SafariServices
 import SendBirdSDK
 
 @objcMembers
-open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SBDChannelDelegate, SBDConnectionDelegate, SBUMessageInputViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIDocumentPickerDelegate, SBUEmptyViewDelegate, SBUFileViewerDelegate {
+open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SBDChannelDelegate, SBDConnectionDelegate, SBUMessageInputViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIDocumentPickerDelegate, SBUEmptyViewDelegate, SBUFileViewerDelegate, UIViewControllerTransitioningDelegate {
 
     // MARK: - UI properties (Public)
     public var channelName: String? = nil
@@ -410,7 +410,6 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
             
             self.sortAllMessageList(needReload: true)
             self.lastUpdatedTimestamp = self.channel?.lastMessage?.createdAt ?? Int64(Date().timeIntervalSince1970*1000)
-            
             return
         }
         
@@ -774,7 +773,8 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
                 }
             
                 self?.channel = channel
-                
+
+                SBUEmojiManager.shared.useReactionCurrnetChannel = channel?.isSuper == false && channel?.isBroadcast == false
                 SBULog.info("[Succeed] Load channel request: \(String(format: "%@", self?.channel ?? ""))")
                 
                 self?.loadPrevMessageList(reset: true)
@@ -788,7 +788,36 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         }
     }
 
-    
+    /// This function is used to add or delete reactions.
+    /// - Parameters:
+    ///   - message: `SBDBaseMessage` object to update
+    ///   - emojiKey: set emoji key
+    ///   - didSelect: set reaction state
+    /// - Since: 1.0.12
+    public func setReaction(message: SBDBaseMessage, emojiKey: String, didSelect: Bool) {
+
+        switch didSelect {
+        case true:
+            SBULog.info("[Request] Add Reaction")
+            self.channel?.addReaction(with: message, key: emojiKey) { reactionEvent, error in
+                if let error = error {
+                    SBULog.error("[Failed] Add reaction : \(error.localizedDescription)")
+                }
+                SBULog.info("[Response] \(reactionEvent?.key ?? "") reaction")
+            }
+        case false:
+            SBULog.info("[Request] Delete Reaction")
+            self.channel?.deleteReaction(with: message, key: emojiKey) { reactionEvent, error in
+                if let error = error {
+                    SBULog.error("[Failed] Delete reaction : \(error.localizedDescription)")
+                }
+
+                SBULog.info("[Response] \(reactionEvent?.key ?? "") reaction")
+            }
+        }
+    }
+
+
     // MARK: - Custom viewController relations
     
     /// If you want to use a custom channelSettingsViewController, override it and implement it.
@@ -832,25 +861,25 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         
         self.sortAllMessageList(needReload: needReload)
     }
-    
-    private func upsertMessagesForSync(messages: [SBDBaseMessage]?, needReload: Bool) {
+
+    private func upsertMessagesForSync(messages: [SBDBaseMessage]?, needUpdateNewMessage: Bool = true, needReload: Bool) {
         messages?.forEach { message in
             if let index = self.messageList.firstIndex(where: { $0.messageId == message.messageId }) {
-                self.messageList.append(self.messageList.remove(at: index))
-            } else {
-                self.messageList.append(message)
+                self.messageList.remove(at: index)
             }
+            self.messageList.append(message)
             
             switch message {
             case let userMessage as SBDUserMessage:
-                let requestId = userMessage.requestId
-                if requestId.count > 0 { break }
-                self.countUpNewMessageInfo()
+                if userMessage.requestId.count > 0 { break }
+                if needUpdateNewMessage {
+                    self.countUpNewMessageInfo()
+                }
             case let fileMessage as SBDFileMessage:
-                let requestId = fileMessage.requestId
-                if requestId.count > 0 { break }
-                self.countUpNewMessageInfo()
-                
+                if fileMessage.requestId.count > 0 { break }
+                if needUpdateNewMessage {
+                    self.countUpNewMessageInfo()
+                }
             default:
                 break
             }
@@ -1217,6 +1246,21 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         messageCell.tapHandlerToProfileImage = {
         }
 
+        // Reaction action
+        messageCell.emojiTapHandler = { [weak messageCell, weak self] emojiKey in
+            guard let cell = messageCell else { return }
+            self?.setTapEmojiGestureHandler(cell, emojiKey: emojiKey)
+        }
+
+        messageCell.emojiLongPressHandler = { [weak messageCell, weak self] emojiKey in
+            guard let cell = messageCell else { return }
+            self?.setLongTapEmojiGestureHandler(cell, emojiKey: emojiKey)
+        }
+
+        messageCell.moreEmojiTapHandler = { [weak self] in
+            self?.dismissKeyboard()
+            self?.showEmojiListModal(message: message)
+        }
 
         return cell
     }
@@ -1250,13 +1294,13 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
     func setUserMessageCell(_ cell: SBUUserMessageCell, userMessage: SBDUserMessage, indexPath: IndexPath) {
         self.setTapGestureHandler(cell, message: userMessage)
         
-        self.setLongTabGestureHandler(cell, message: userMessage, indexPath: indexPath)
+        self.setLongTapGestureHandler(cell, message: userMessage, indexPath: indexPath)
     }
     
     func setFileMessageCell(_ cell: SBUFileMessageCell, fileMessage: SBDFileMessage, indexPath: IndexPath) {
         self.setTapGestureHandler(cell, message: fileMessage)
 
-        self.setLongTabGestureHandler(cell, message: fileMessage, indexPath: indexPath)
+        self.setLongTapGestureHandler(cell, message: fileMessage, indexPath: indexPath)
         
         switch fileMessage.sendingStatus {
         case .canceled, .pending, .failed, .none:
@@ -1289,7 +1333,7 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
     func setUnkownMessageCell(_ cell: SBUUnknownMessageCell, unknownMessage: SBDBaseMessage, indexPath: IndexPath) {
         self.setTapGestureHandler(cell, message: unknownMessage)
         
-        self.setLongTabGestureHandler(cell, message: unknownMessage, indexPath: indexPath)
+        self.setLongTapGestureHandler(cell, message: unknownMessage, indexPath: indexPath)
     }
     
     private func calculatorMenuPoint(indexPath: IndexPath, position: MessagePosition) -> CGPoint {
@@ -1377,75 +1421,38 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
     ///   - cell: Message cell object
     ///   - message: Message object
     ///   - indexPath: indexpath of cell
-    open func setLongTabGestureHandler(_ cell: SBUBaseMessageCell, message: SBDBaseMessage, indexPath: IndexPath) {
+    open func setLongTapGestureHandler(_ cell: SBUBaseMessageCell, message: SBDBaseMessage, indexPath: IndexPath) {
         cell.longPressHandlerToContent = { [weak self, weak cell] in
             guard let self = self, let cell = cell else { return }
             self.dismissKeyboard()
 
             switch message {
             case let userMessage as SBDUserMessage:
-                // User message type
-                let copyItem = SBUMenuItem(title: SBUStringSet.Copy, color: self.theme.menuTextColor, image: SBUIconSet.iconCopy) {
-                    let pasteboard = UIPasteboard.general
-                    pasteboard.string = userMessage.message
-                }
-                
-                let editItem = SBUMenuItem(title: SBUStringSet.Edit, color: self.theme.menuTextColor, image: SBUIconSet.iconEdit) { [weak self] in
-                    if self?.channel?.isFrozen == false {
-                        self?.inEditingMessage = userMessage
-                        self?.messageInputView.startEditMode(text: userMessage.message)
-                    } else {
-                        SBULog.info("This channel is frozen")
-                    }
-                }
-                
-                let deleteItem = SBUMenuItem(title: SBUStringSet.Delete, color: self.theme.menuTextColor, image: SBUIconSet.iconDelete) { [weak self] in
-                    self?.deleteMessage(message: userMessage)
-                }
-                
-                let menuPoint = self.calculatorMenuPoint(indexPath: indexPath, position: cell.position)
                 let isCurrentUser = userMessage.sender?.userId == SBUGlobals.CurrentUser?.userId
-
-                let items = isCurrentUser ? [copyItem, editItem, deleteItem] : [copyItem]
-
+                let types: [SBUMenuItemType] = isCurrentUser ? [.copy, .edit, .delete] : [.copy]
                 cell.isSelected = true
-                SBUMenuView.show(items: items, point: menuPoint) {
-                    cell.isSelected = false
+
+                if SBUEmojiManager.useReaction {
+                    self.showMenuViewController(cell, message: message, types: types)
+                } else {
+                    self.showMenuModal(cell, indexPath: indexPath,  message: message, types: types)
                 }
 
             case let fileMessage as SBDFileMessage:
-                // File message type
-                let saveItem = SBUMenuItem(title: SBUStringSet.Save, color: self.theme.menuTextColor, image: SBUIconSet.iconDownload) {
-                    SBUDownloadManager.saveFile(with: fileMessage, parent: self)
-                }
-                let deleteItem = SBUMenuItem(title: SBUStringSet.Delete, color: self.theme.menuTextColor, image: SBUIconSet.iconDelete) { [weak self] in
-                    self?.deleteMessage(message: fileMessage)
-                }
-                
-                let menuPoint = self.calculatorMenuPoint(indexPath: indexPath, position: cell.position)
-                
-                switch fileMessage.sendingStatus {
-                case .succeeded:
-                    let isCurrentUser = fileMessage.sender?.userId == SBUGlobals.CurrentUser?.userId
-                    let items = isCurrentUser ? [saveItem, deleteItem] : [saveItem]
+                guard fileMessage.sendingStatus == .succeeded else { return }
+                let isCurrentUser = fileMessage.sender?.userId == SBUGlobals.CurrentUser?.userId
+                let types: [SBUMenuItemType] = isCurrentUser ? [.save, .delete] : [.save]
+                cell.isSelected = true
 
-                    cell.isSelected = true
-                    SBUMenuView.show(items: items, point: menuPoint) {
-                        cell.isSelected = false
-                    }
-                case .none:
-                    break
-                case .pending:
-                    break
-                case .failed:
-                    break
-                case .canceled:
-                    break
-                @unknown default:
-                    break
+                if SBUEmojiManager.useReaction {
+                    self.showMenuViewController(cell, message: message, types: types)
+                } else {
+                    self.showMenuModal(cell, indexPath: indexPath, message: message, types: types)
                 }
+
             case _ as SBDAdminMessage:
                 break
+                
             default:
                 // Unknown Message
                 guard message.sender?.userId == SBUGlobals.CurrentUser?.userId else { return }
@@ -1463,7 +1470,136 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
             }
         }
     }
-    
+
+    func showMenuViewController(_ cell: SBUBaseMessageCell, message: SBDBaseMessage, types: [SBUMenuItemType]) {
+        let menuVC = SBUMenuViewController(message: message, itemTypes: types)
+        menuVC.modalPresentationStyle = .custom
+        menuVC.transitioningDelegate = self
+        self.present(menuVC, animated: true)
+
+        menuVC.tapHandlerToMenu = { [weak self] item in
+            guard let self = self else { return }
+            switch item {
+            case .copy:
+                guard let userMessage = message as? SBDUserMessage else { return }
+                let pasteboard = UIPasteboard.general
+                pasteboard.string = userMessage.message
+
+            case .delete:
+                self.deleteMessage(message: message)
+
+            case .edit:
+                guard let userMessage = message as? SBDUserMessage else { return }
+                if self.channel?.isFrozen == false {
+                    self.inEditingMessage = userMessage
+                    self.messageInputView.startEditMode(text: userMessage.message)
+                } else {
+                    SBULog.info("This channel is frozen")
+                }
+
+            case .save:
+                guard let fileMessage = message as? SBDFileMessage else { return }
+                SBUDownloadManager.saveFile(with: fileMessage, parent: self)
+            }
+        }
+
+        menuVC.dismissHandler = {
+            cell.isSelected = false
+        }
+
+        menuVC.emojiTapHandler = { [weak self] emojiKey, setSelect in
+            self?.setReaction(message: message, emojiKey: emojiKey, didSelect: setSelect)
+        }
+
+        menuVC.moreEmojiTapHandler = { [weak self] in
+            DispatchQueue.main.async {
+                self?.showEmojiListModal(message: message)
+            }
+        }
+    }
+
+    func showMenuModal(_ cell: SBUBaseMessageCell, indexPath: IndexPath, message: SBDBaseMessage, types: [SBUMenuItemType]) {
+        let items: [SBUMenuItem] = types.map {
+            switch $0 {
+            case .copy:
+                return SBUMenuItem(title: SBUStringSet.Copy, color: self.theme.menuTextColor, image: SBUIconSet.iconCopy) {
+                    guard let userMessage = message as? SBDUserMessage else { return }
+
+                    let pasteboard = UIPasteboard.general
+                    pasteboard.string = userMessage.message
+                }
+            case .edit:
+                return SBUMenuItem(title: SBUStringSet.Edit, color: self.theme.menuTextColor, image: SBUIconSet.iconEdit) { [weak self] in
+                    guard let userMessage = message as? SBDUserMessage else { return }
+                    if self?.channel?.isFrozen == false {
+                        self?.inEditingMessage = userMessage
+                        self?.messageInputView.startEditMode(text: userMessage.message)
+                    } else {
+                        SBULog.info("This channel is frozen")
+                    }
+                }
+            case .delete:
+                return SBUMenuItem(title: SBUStringSet.Delete, color: self.theme.menuTextColor, image: SBUIconSet.iconDelete) { [weak self] in
+                    self?.deleteMessage(message: message)
+                }
+            case .save:
+                return SBUMenuItem(title: SBUStringSet.Save, color: self.theme.menuTextColor, image: SBUIconSet.iconDownload) { [weak self] in
+                    guard let self = self, let fileMessage = message as? SBDFileMessage else { return }
+                    SBUDownloadManager.saveFile(with: fileMessage, parent: self)
+                }
+            }
+        }
+
+        let menuPoint = self.calculatorMenuPoint(indexPath: indexPath, position: cell.position)
+        SBUMenuView.show(items: items, point: menuPoint) {
+            cell.isSelected = false
+        }
+    }
+
+    /// This function sets the cell's tap emoji gesture handling.
+    /// - Parameters:
+    ///   - cell: Message cell object
+    ///   - emojiKey: emoji key
+    /// - Since: 1.0.12
+    open func setTapEmojiGestureHandler(_ cell: SBUBaseMessageCell, emojiKey: String) {
+        guard let currentUser = SBUGlobals.CurrentUser else { return }
+        let message = cell.message
+        let shouldSelect = message.reactions.first { $0.key == emojiKey }?
+            .userIds.contains(currentUser.userId) == false
+        self.setReaction(message: message, emojiKey: emojiKey, didSelect: shouldSelect)
+    }
+
+
+    /// This function sets the cell's long tap emoji gesture handling.
+    /// - Parameters:
+    ///   - cell: Message cell object
+    ///   - emojiKey: emoji key
+    /// - Since: 1.0.12
+    open func setLongTapEmojiGestureHandler(_ cell: SBUBaseMessageCell, emojiKey: String) {
+        guard let channel = self.channel else { return }
+        let message = cell.message
+        let reaction = message.reactions.first { $0.key == emojiKey } ?? SBDReaction()
+        let reactionsVC = SBUReactionsViewController(channel: channel, message: message, selectedReaction: reaction)
+        reactionsVC.modalPresentationStyle = .custom
+        reactionsVC.transitioningDelegate = self
+        self.present(reactionsVC, animated: true)
+    }
+
+    // MARK: - Reaction relations
+    /// This function presents `SBUEmojiListViewController`
+    /// - Parameter message: `SBDBaseMessage` object
+    /// - Since: 1.0.12
+    open func showEmojiListModal(message: SBDBaseMessage) {
+        let emojiListVC = SBUEmojiListViewController(message: message)
+        emojiListVC.modalPresentationStyle = .custom
+        emojiListVC.transitioningDelegate = self
+
+        emojiListVC.emojiTapHandler = { [weak self] emojiKey, setSelect in
+            self?.setReaction(message: message, emojiKey: emojiKey, didSelect: setSelect)
+        }
+        self.present(emojiListVC, animated: true)
+    }
+
 
     // MARK: - SBDChannelDelegate
     // Received message
@@ -1512,6 +1648,15 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         
         self.deleteMessagesForSync(messageIds: [messageId], needReload: true)
     }
+
+    // Updated Reaction
+    open func channel(_ sender: SBDBaseChannel, updatedReaction reactionEvent: SBDReactionEvent) {
+        guard let message = messageList.first(where: { $0.messageId == reactionEvent.messageId }) else { return }
+        message.apply(reactionEvent)
+
+        SBULog.info("Updated reaction, message:\(message.messageId), key: \(reactionEvent.key)")
+        self.upsertMessagesForSync(messages: [message], needUpdateNewMessage: false, needReload: true)
+    }
     
     // Mark as read
     open func channelDidUpdateReadReceipt(_ sender: SBDGroupChannel) {
@@ -1551,7 +1696,7 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
 
         titleView.configure(channel: channel, title: self.channelName)
     }
-    
+
     public func channelWasFrozen(_ sender: SBDBaseChannel) {
         guard self.channel?.channelUrl == sender.channelUrl else { return }
         guard let channel = sender as? SBDGroupChannel else { return }
@@ -1568,7 +1713,8 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         
         self.messageInputView.setFrozenModeState(false)
     }
-    
+
+
     // MARK: - SBDConnectionDelegate
     open func didSucceedReconnection() {
         SBULog.info("Did succeed reconnection")
@@ -1671,8 +1817,12 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         SBULog.info("[Request] End typing")
         self.channel?.endTyping()
     }
-    
-    
+
+    // MARK: - UIViewControllerTransitioningDelegate
+    public func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
+        return SBUBottomSheetController(presentedViewController: presented, presenting: presenting)
+    }
+
     // MARK: - UIImagePickerViewControllerDelegate
     public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         picker.dismiss(animated: true) { [weak self] in
@@ -1735,4 +1885,5 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
     open func didReceiveError(_ message: String?) {
         SBULog.error("Did receive error: \(message ?? "")")
     }
+
 }

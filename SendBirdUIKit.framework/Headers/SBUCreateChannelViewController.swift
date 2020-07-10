@@ -145,12 +145,6 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
         self.setupStyles()
     }
     
-    open override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        
-        self.setupStyles()
-    }
-    
     deinit {
         SBULog.info("")
     }
@@ -293,6 +287,7 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
         
         self.rightBarButton?.title = SBUStringSet.CreateChannel_Create(selectedUserList.count)
         self.view.setNeedsLayout()
+        self.setupStyles()
     }
     
     

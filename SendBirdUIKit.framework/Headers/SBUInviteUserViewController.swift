@@ -362,7 +362,7 @@ open class SBUInviteUserViewController: UIViewController, UITableViewDelegate, U
         SBULog.info("Selected user: \(user)")
         
         self.rightBarButton?.title = SBUStringSet.InviteChannel_Invite(selectedUserList.count)
-        self.view.setNeedsLayout()
+        self.setupStyles()
     }
     
     public func popToChannel() {

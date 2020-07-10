@@ -24,7 +24,6 @@ open class SBUBaseMessageCell: UITableViewCell {
     }()
     
     public lazy var dateView: UIView = MessageDateView()
-    
 
     // MARK: - Private
     var theme: SBUMessageCellTheme = SBUTheme.messageCellTheme
@@ -69,7 +68,8 @@ open class SBUBaseMessageCell: UITableViewCell {
     /// This function handles the initialization of autolayouts.
     open func setupAutolayout() {
         self.stackView
-            .setConstraint(from: self.contentView, left: 0, right: 0, top: 16, bottom: 0)
+            .setConstraint(from: self.contentView, left: 0, top: 16, bottom: 0)
+            .setConstraint(from: self.contentView, right: 0, priority: .defaultHigh)
     }
 
     /// This function handles the initialization of styles.
@@ -112,6 +112,9 @@ open class SBUBaseMessageCell: UITableViewCell {
     var tapHandlerToProfileImage: (() -> Void)? = nil
     var tapHandlerToContent: (() -> Void)? = nil
     var longPressHandlerToContent: (() -> Void)? = nil
+    var emojiTapHandler: ((_ emojiKey: String) -> Void)? = nil
+    var moreEmojiTapHandler: (() -> Void)? = nil
+    var emojiLongPressHandler: ((_ emojiKey: String) -> Void)? = nil
 }
 
 
@@ -213,12 +216,9 @@ public class MessageProfileView: UIView {
     }
      
     func setupAutolayout() {
-        let width = leftSpace + imageSize + rightSpace
-        self.setConstraint(width: width, height: imageSize)
-        
         self.imageView
             .setConstraint(width: imageSize, height: imageSize)
-            .setConstraint(from: self, centerX: true, centerY: true)
+            .setConstraint(from: self, left: leftSpace, right: rightSpace, top: 0, bottom: 0)
     }
     
     func setupStyles() {
@@ -288,19 +288,15 @@ public class UserNameView: UIView {
         self.backgroundColor = .clear
 
         self.button.titleLabel?.font = theme.userNameFont
+        self.button.contentHorizontalAlignment = .left
         self.button.setTitleColor(theme.userNameTextColor, for: .normal)
     }
-    
-    public override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        self.setupStyles()
-    }
-    
+
     func configure(username: String) {
         self.username = username
         self.button.setTitle(username, for: .normal)
         self.button.sizeToFit()
+        self.setupStyles()
         self.setNeedsLayout()
     }
 }
@@ -442,5 +438,68 @@ public class MessageStateView: UIView {
         
         self.layoutIfNeeded()
         self.updateConstraints()
+    }
+}
+
+class MessageDetailContainerView: UIView {
+
+    var isSelected: Bool = false
+    var position: MessagePosition = .left
+
+    let stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        return stackView
+    }()
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        self.setupViews()
+        self.setupAutolayout()
+        self.setupStyles()
+    }
+
+    @available(*, unavailable, renamed: "MessageContentDetailView()")
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
+
+    func setupViews() {
+        self.addSubview(self.stackView)
+    }
+
+    func setupAutolayout() {
+        self.stackView.setConstraint(from: self, left: 0, right: 0, top: 0, bottom: 0)
+    }
+
+    func setupStyles() {
+        self.layer.cornerRadius = 16
+        self.layer.borderColor = UIColor.clear.cgColor
+        self.layer.borderWidth = 1
+        self.clipsToBounds = true
+        self.setBackgroundColor()
+    }
+
+    func setBackgroundColor() {
+
+        let theme = SBUTheme.messageCellTheme
+
+        switch self.position {
+        case .left:
+            self.backgroundColor = self.isSelected ? theme.leftPressedBackgroundColor : theme.leftBackgroundColor
+        case .right:
+            self.backgroundColor = self.isSelected ? theme.rightPressedBackgroundColor : theme.rightBackgroundColor
+        case .center:
+            break
+        }
+
+    }
+
+    func configure(position: MessagePosition, isSelected: Bool) {
+        self.position = position
+        self.isSelected = isSelected
+
+        self.setBackgroundColor()
+        self.setNeedsLayout()
     }
 }

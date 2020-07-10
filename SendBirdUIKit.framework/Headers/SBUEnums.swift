@@ -11,6 +11,7 @@ public enum MemberListType: Int {
     case createChannel
     case channelMembers
     case inviteUser
+    case reaction
 }
 
 @objc public enum EmptyViewType: Int {

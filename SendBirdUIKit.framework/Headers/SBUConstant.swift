@@ -9,14 +9,15 @@
 import Swift
 
 class SBUConstant {
-    static var thumbnailSize: CGSize {
-        return .init(width: 240, height: 160)
-    }
     
-    static var imageSize: CGSize {
-        return .init(width: 240, height: 160)
-    }
-    
+    static let messageCellMaxWidth: CGFloat = 244
+    static let thumbnailSize: CGSize = .init(width: 240, height: 160)
+    static let imageSize: CGSize = .init(width: 240, height: 160)
+
+    static let bottomSheetMaxMiddleHeight: CGFloat = 244
+
+    static let emojiListCollectionViewCellSize = CGSize(width: 44, height: 44)
+
     static let coverImagePrefix = "https://static.sendbird.com/sample/cover"
     
     static let sbdExtensionKeyUIKit = "sb_uikit"

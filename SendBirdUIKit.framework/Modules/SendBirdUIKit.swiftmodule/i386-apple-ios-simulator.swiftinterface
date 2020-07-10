@@ -181,7 +181,7 @@ public typealias SBUNewMessageInfoHandler = () -> Swift.Void
   public func updateTitle(count: Swift.Int, completionHandler: SendBirdUIKit.SBUNewMessageInfoHandler?)
   @objc deinit
 }
-@objc @objcMembers open class SBUChannelViewController : UIKit.UIViewController, UIKit.UITableViewDelegate, UIKit.UITableViewDataSource, SendBirdSDK.SBDChannelDelegate, SendBirdSDK.SBDConnectionDelegate, SendBirdUIKit.SBUMessageInputViewDelegate, UIKit.UIImagePickerControllerDelegate, UIKit.UINavigationControllerDelegate, UIKit.UIDocumentPickerDelegate {
+@objc @objcMembers open class SBUChannelViewController : UIKit.UIViewController, UIKit.UITableViewDelegate, UIKit.UITableViewDataSource, SendBirdSDK.SBDChannelDelegate, SendBirdSDK.SBDConnectionDelegate, SendBirdUIKit.SBUMessageInputViewDelegate, UIKit.UIImagePickerControllerDelegate, UIKit.UINavigationControllerDelegate, UIKit.UIDocumentPickerDelegate, UIKit.UIViewControllerTransitioningDelegate {
   @objc public var channelName: Swift.String?
   @objc public var messageInputView: SendBirdUIKit.SBUMessageInputView {
     @objc get
@@ -235,6 +235,7 @@ public typealias SBUNewMessageInfoHandler = () -> Swift.Void
   @objc public func updateUserMessage(message: SendBirdSDK.SBDUserMessage, messageParams: SendBirdSDK.SBDUserMessageParams)
   @objc public func deleteMessage(message: SendBirdSDK.SBDBaseMessage)
   @objc public func loadChannel(channelUrl: Swift.String?)
+  @objc public func setReaction(message: SendBirdSDK.SBDBaseMessage, emojiKey: Swift.String, didSelect: Swift.Bool)
   @objc open func showChannelSettings()
   @objc public func checkSameDayAsNextMessage(currentIndex: Swift.Int) -> Swift.Bool
   @objc public func configureOffset()
@@ -256,10 +257,14 @@ public typealias SBUNewMessageInfoHandler = () -> Swift.Void
   @objc public func tableView(_ tableView: UIKit.UITableView, numberOfRowsInSection section: Swift.Int) -> Swift.Int
   @objc public func scrollViewDidScroll(_ scrollView: UIKit.UIScrollView)
   @objc open func setTapGestureHandler(_ cell: SendBirdUIKit.SBUBaseMessageCell, message: SendBirdSDK.SBDBaseMessage)
-  @objc open func setLongTabGestureHandler(_ cell: SendBirdUIKit.SBUBaseMessageCell, message: SendBirdSDK.SBDBaseMessage, indexPath: Foundation.IndexPath)
+  @objc open func setLongTapGestureHandler(_ cell: SendBirdUIKit.SBUBaseMessageCell, message: SendBirdSDK.SBDBaseMessage, indexPath: Foundation.IndexPath)
+  @objc open func setTapEmojiGestureHandler(_ cell: SendBirdUIKit.SBUBaseMessageCell, emojiKey: Swift.String)
+  @objc open func setLongTapEmojiGestureHandler(_ cell: SendBirdUIKit.SBUBaseMessageCell, emojiKey: Swift.String)
+  @objc open func showEmojiListModal(message: SendBirdSDK.SBDBaseMessage)
   @objc open func channel(_ sender: SendBirdSDK.SBDBaseChannel, didReceive message: SendBirdSDK.SBDBaseMessage)
   @objc open func channel(_ sender: SendBirdSDK.SBDBaseChannel, didUpdate message: SendBirdSDK.SBDBaseMessage)
   @objc open func channel(_ sender: SendBirdSDK.SBDBaseChannel, messageWasDeleted messageId: Swift.Int64)
+  @objc open func channel(_ sender: SendBirdSDK.SBDBaseChannel, updatedReaction reactionEvent: SendBirdSDK.SBDReactionEvent)
   @objc open func channelDidUpdateReadReceipt(_ sender: SendBirdSDK.SBDGroupChannel)
   @objc open func channelDidUpdateDeliveryReceipt(_ sender: SendBirdSDK.SBDGroupChannel)
   @objc open func channelDidUpdateTypingStatus(_ sender: SendBirdSDK.SBDGroupChannel)
@@ -272,6 +277,7 @@ public typealias SBUNewMessageInfoHandler = () -> Swift.Void
   @objc open func messageInputView(_ messageInputView: SendBirdUIKit.SBUMessageInputView, didSelectEdit text: Swift.String)
   @objc open func messageInputViewDidStartTyping()
   @objc open func messageInputViewDidEndTyping()
+  @objc public func presentationController(forPresented presented: UIKit.UIViewController, presenting: UIKit.UIViewController?, source: UIKit.UIViewController) -> UIKit.UIPresentationController?
   @objc public func imagePickerController(_ picker: UIKit.UIImagePickerController, didFinishPickingMediaWithInfo info: [UIKit.UIImagePickerController.InfoKey : Any])
   @objc public func imagePickerControllerDidCancel(_ picker: UIKit.UIImagePickerController)
   @available(iOS 11.0, *)
@@ -320,6 +326,12 @@ public typealias SBUNewMessageInfoHandler = () -> Swift.Void
   @objc public func textView(_ textView: UIKit.UITextView, shouldChangeTextIn range: Foundation.NSRange, replacementText text: Swift.String) -> Swift.Bool
   @objc deinit
 }
+@_hasMissingDesignatedInitializers @objcMembers public class SBUEmojiManager {
+  @objc public static func getEmojiCategories() -> [SendBirdSDK.SBDEmojiCategory]
+  @objc public static func getAllEmojis() -> [SendBirdSDK.SBDEmoji]
+  @objc public static func getEmojis(emojiCategoryId: Swift.Int64) -> [SendBirdSDK.SBDEmoji]
+  @objc deinit
+}
 @objc @_inheritsConvenienceInitializers @objcMembers public class SBUIconSet : ObjectiveC.NSObject {
   @objc public static var iconActionLeave: UIKit.UIImage
   @objc public static var iconActionNotificationOn: UIKit.UIImage
@@ -365,6 +377,15 @@ public typealias SBUNewMessageInfoHandler = () -> Swift.Void
   @objc public static var iconFileDocument: UIKit.UIImage
   @objc public static var iconFileAudio: UIKit.UIImage
   @objc public static var iconChevronDown: UIKit.UIImage
+  @objc public static var emojiHeartEyes: UIKit.UIImage
+  @objc public static var emojiLaughing: UIKit.UIImage
+  @objc public static var emojiSweatSmile: UIKit.UIImage
+  @objc public static var emojiSob: UIKit.UIImage
+  @objc public static var emojiRage: UIKit.UIImage
+  @objc public static var emojiMoreLarge: UIKit.UIImage
+  @objc public static var emojiThumbsup: UIKit.UIImage
+  @objc public static var emojiThubsdown: UIKit.UIImage
+  @objc public static var emojiFail: UIKit.UIImage
   @objc deinit
   @objc override dynamic public init()
 }
@@ -399,7 +420,6 @@ public typealias SBUNewMessageInfoHandler = () -> Swift.Void
   }
   @objc override dynamic open func viewDidLoad()
   @objc override dynamic open func viewWillAppear(_ animated: Swift.Bool)
-  @objc override dynamic open func viewDidLayoutSubviews()
   @objc deinit
   @objc open func loadNextUserList(reset: Swift.Bool, users: [SendBirdUIKit.SBUUser]? = nil)
   @objc public func createChannel(userIds: [Swift.String])
@@ -498,6 +518,7 @@ public enum MemberListType : Swift.Int {
   case createChannel
   case channelMembers
   case inviteUser
+  case reaction
   public typealias RawValue = Swift.Int
   public init?(rawValue: Swift.Int)
   public var rawValue: Swift.Int {
@@ -639,7 +660,6 @@ extension UINavigationController {
 @objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class UserNameView : UIKit.UIView {
   public init(username: Swift.String)
   @objc override dynamic public init(frame: CoreGraphics.CGRect)
-  @objc override dynamic public func layoutSubviews()
   @objc deinit
 }
 @objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class MessageStateView : UIKit.UIView {
@@ -1027,7 +1047,7 @@ extension UINavigationController {
   @objc public static var dark: SendBirdUIKit.SBUComponentTheme {
     @objc get
   }
-  @objc public init(emptyViewBackgroundColor: UIKit.UIColor = SBUColorSet.background100, emptyViewStatusFont: UIKit.UIFont = SBUFontSet.body2, emptyViewStatusTintColor: UIKit.UIColor = SBUColorSet.onlight03, emptyViewRetryButtonTintColor: UIKit.UIColor = SBUColorSet.primary300, emptyViewRetryButtonFont: UIKit.UIFont = SBUFontSet.button2, overlayColor: UIKit.UIColor = SBUColorSet.overlay02, backgroundColor: UIKit.UIColor = SBUColorSet.background100, highlightedColor: UIKit.UIColor = SBUColorSet.background200, buttonTextColor: UIKit.UIColor = SBUColorSet.primary300, separatorColor: UIKit.UIColor = SBUColorSet.onlight04, shadowColor: UIKit.UIColor = SBUColorSet.background700, alertTitleColor: UIKit.UIColor = SBUColorSet.onlight01, alertTitleFont: UIKit.UIFont = SBUFontSet.h2, alertDetailColor: UIKit.UIColor = SBUColorSet.onlight02, alertDetailFont: UIKit.UIFont = SBUFontSet.body2, alertPlaceholderColor: UIKit.UIColor = SBUColorSet.onlight03, alertButtonColor: UIKit.UIColor = SBUColorSet.primary300, alertErrorColor: UIKit.UIColor = SBUColorSet.error, alertButtonFont: UIKit.UIFont = SBUFontSet.button2, alertTextFieldBackgroundColor: UIKit.UIColor = SBUColorSet.background200, alertTextFieldTintColor: UIKit.UIColor = SBUColorSet.primary300, alertTextFieldFont: UIKit.UIFont = SBUFontSet.body2, actionSheetTextFont: UIKit.UIFont = SBUFontSet.subtitle1, actionSheetTextColor: UIKit.UIColor = SBUColorSet.onlight01, actionSheetItemColor: UIKit.UIColor = SBUColorSet.primary300, actionSheetErrorColor: UIKit.UIColor = SBUColorSet.error, actionSheetButtonFont: UIKit.UIFont = SBUFontSet.button1, newMessageFont: UIKit.UIFont = SBUFontSet.caption1, newMessageTintColor: UIKit.UIColor = SBUColorSet.primary300, newMessageBackground: UIKit.UIColor = SBUColorSet.background100, newMessageHighlighted: UIKit.UIColor = SBUColorSet.background200, titleOnlineStateColor: UIKit.UIColor = SBUColorSet.secondary300, titleColor: UIKit.UIColor = SBUColorSet.onlight01, titleFont: UIKit.UIFont = SBUFontSet.h2, titleStatusColor: UIKit.UIColor = SBUColorSet.onlight03, titleStatusFont: UIKit.UIFont = SBUFontSet.caption2, menuTitleFont: UIKit.UIFont = SBUFontSet.subtitle2, userPlaceholderBackgroundColor: UIKit.UIColor = SBUColorSet.background300, userPlaceholderTintColor: UIKit.UIColor = SBUColorSet.ondark01)
+  @objc public init(emptyViewBackgroundColor: UIKit.UIColor = SBUColorSet.background100, emptyViewStatusFont: UIKit.UIFont = SBUFontSet.body2, emptyViewStatusTintColor: UIKit.UIColor = SBUColorSet.onlight03, emptyViewRetryButtonTintColor: UIKit.UIColor = SBUColorSet.primary300, emptyViewRetryButtonFont: UIKit.UIFont = SBUFontSet.button2, overlayColor: UIKit.UIColor = SBUColorSet.overlay02, backgroundColor: UIKit.UIColor = SBUColorSet.background100, highlightedColor: UIKit.UIColor = SBUColorSet.background200, buttonTextColor: UIKit.UIColor = SBUColorSet.primary300, separatorColor: UIKit.UIColor = SBUColorSet.onlight04, shadowColor: UIKit.UIColor = SBUColorSet.background700, alertTitleColor: UIKit.UIColor = SBUColorSet.onlight01, alertTitleFont: UIKit.UIFont = SBUFontSet.h2, alertDetailColor: UIKit.UIColor = SBUColorSet.onlight02, alertDetailFont: UIKit.UIFont = SBUFontSet.body2, alertPlaceholderColor: UIKit.UIColor = SBUColorSet.onlight03, alertButtonColor: UIKit.UIColor = SBUColorSet.primary300, alertErrorColor: UIKit.UIColor = SBUColorSet.error, alertButtonFont: UIKit.UIFont = SBUFontSet.button2, alertTextFieldBackgroundColor: UIKit.UIColor = SBUColorSet.background200, alertTextFieldTintColor: UIKit.UIColor = SBUColorSet.primary300, alertTextFieldFont: UIKit.UIFont = SBUFontSet.body2, actionSheetTextFont: UIKit.UIFont = SBUFontSet.subtitle1, actionSheetTextColor: UIKit.UIColor = SBUColorSet.onlight01, actionSheetItemColor: UIKit.UIColor = SBUColorSet.primary300, actionSheetErrorColor: UIKit.UIColor = SBUColorSet.error, actionSheetButtonFont: UIKit.UIFont = SBUFontSet.button1, newMessageFont: UIKit.UIFont = SBUFontSet.caption1, newMessageTintColor: UIKit.UIColor = SBUColorSet.primary300, newMessageBackground: UIKit.UIColor = SBUColorSet.background100, newMessageHighlighted: UIKit.UIColor = SBUColorSet.background200, titleOnlineStateColor: UIKit.UIColor = SBUColorSet.secondary300, titleColor: UIKit.UIColor = SBUColorSet.onlight01, titleFont: UIKit.UIFont = SBUFontSet.h2, titleStatusColor: UIKit.UIColor = SBUColorSet.onlight03, titleStatusFont: UIKit.UIFont = SBUFontSet.caption2, menuTitleFont: UIKit.UIFont = SBUFontSet.subtitle2, userPlaceholderBackgroundColor: UIKit.UIColor = SBUColorSet.background300, userPlaceholderTintColor: UIKit.UIColor = SBUColorSet.ondark01, reactionBoxBackgroundColor: UIKit.UIColor = SBUColorSet.background100, reactionBoxBorderLineColor: UIKit.UIColor = SBUColorSet.background200, reactionBoxEmojiCountColor: UIKit.UIColor = SBUColorSet.onlight01, reactionBoxEmojiBackgroundColor: UIKit.UIColor = SBUColorSet.background200, reactionBoxSelectedEmojiBackgroundColor: UIKit.UIColor = SBUColorSet.primary100, reactionBoxEmojiCountFont: UIKit.UIFont = SBUFontSet.caption3, emojiCountColor: UIKit.UIColor = SBUColorSet.onlight02, emojiSelectedCountColor: UIKit.UIColor = SBUColorSet.primary300, emojiSelectedUnderlineColor: UIKit.UIColor = SBUColorSet.primary300, emojiCountFont: UIKit.UIFont = SBUFontSet.button3, reactionMenuLineColor: UIKit.UIColor = SBUColorSet.ondark04, emojiListSelectedBackgroundColor: UIKit.UIColor = SBUColorSet.primary100, addReactionTintColor: UIKit.UIColor = SBUColorSet.onlight03)
   @objc public var emptyViewBackgroundColor: UIKit.UIColor
   @objc public var emptyViewStatusFont: UIKit.UIFont
   @objc public var emptyViewStatusTintColor: UIKit.UIColor
@@ -1067,6 +1087,19 @@ extension UINavigationController {
   @objc public var shadowColor: UIKit.UIColor
   @objc public var userPlaceholderBackgroundColor: UIKit.UIColor
   @objc public var userPlaceholderTintColor: UIKit.UIColor
+  @objc public var reactionBoxBackgroundColor: UIKit.UIColor
+  @objc public var reactionBoxBorderLineColor: UIKit.UIColor
+  @objc public var reactionBoxEmojiCountColor: UIKit.UIColor
+  @objc public var reactionBoxEmojiBackgroundColor: UIKit.UIColor
+  @objc public var reactionBoxSelectedEmojiBackgroundColor: UIKit.UIColor
+  @objc public var reactionBoxEmojiCountFont: UIKit.UIFont
+  @objc public var emojiCountColor: UIKit.UIColor
+  @objc public var emojiSelectedCountColor: UIKit.UIColor
+  @objc public var emojiSelectedUnderlineColor: UIKit.UIColor
+  @objc public var emojiCountFont: UIKit.UIFont
+  @objc public var reactionMenuLineColor: UIKit.UIColor
+  @objc public var emojiListSelectedBackgroundColor: UIKit.UIColor
+  @objc public var addReactionTintColor: UIKit.UIColor
   @objc deinit
   @objc override dynamic public init()
 }

@@ -1137,7 +1137,25 @@ public class SBUComponentTheme: NSObject {
 
         theme.userPlaceholderBackgroundColor = SBUColorSet.background300
         theme.userPlaceholderTintColor = SBUColorSet.ondark01
+
+        // Reaction
+        theme.reactionBoxBackgroundColor = SBUColorSet.background100
+        theme.reactionBoxBorderLineColor = SBUColorSet.background200
+        theme.reactionBoxEmojiCountColor = SBUColorSet.onlight01
+        theme.reactionBoxEmojiBackgroundColor = SBUColorSet.background200
+        theme.reactionBoxSelectedEmojiBackgroundColor = SBUColorSet.primary100
+        theme.reactionBoxEmojiCountFont = SBUFontSet.caption3
         
+        theme.emojiCountColor = SBUColorSet.onlight02
+        theme.emojiSelectedCountColor = SBUColorSet.primary300
+        theme.emojiSelectedUnderlineColor = SBUColorSet.primary300
+        theme.emojiCountFont = SBUFontSet.button3
+        theme.reactionMenuLineColor = SBUColorSet.onlight04
+
+        theme.emojiListSelectedBackgroundColor = SBUColorSet.primary100
+
+        theme.addReactionTintColor = SBUColorSet.onlight03
+
         return theme
     }
     
@@ -1197,6 +1215,24 @@ public class SBUComponentTheme: NSObject {
         theme.userPlaceholderBackgroundColor = SBUColorSet.background400
         theme.userPlaceholderTintColor = SBUColorSet.onlight01
 
+        // Reaction
+        theme.reactionBoxBackgroundColor = SBUColorSet.background600
+        theme.reactionBoxBorderLineColor = SBUColorSet.background400
+        theme.reactionBoxEmojiCountColor = SBUColorSet.ondark01
+        theme.reactionBoxEmojiBackgroundColor = SBUColorSet.background400
+        theme.reactionBoxSelectedEmojiBackgroundColor = SBUColorSet.primary500
+        theme.reactionBoxEmojiCountFont = SBUFontSet.caption3
+
+        theme.emojiCountColor = SBUColorSet.ondark02
+        theme.emojiSelectedCountColor = SBUColorSet.primary200
+        theme.emojiSelectedUnderlineColor = SBUColorSet.primary200
+        theme.emojiCountFont = SBUFontSet.button3
+        theme.reactionMenuLineColor = SBUColorSet.ondark04
+
+        theme.emojiListSelectedBackgroundColor = SBUColorSet.primary400
+        
+        theme.addReactionTintColor = SBUColorSet.ondark03
+
         return theme
     }
     
@@ -1239,7 +1275,23 @@ public class SBUComponentTheme: NSObject {
                 titleStatusFont: UIFont = SBUFontSet.caption2,
                 menuTitleFont: UIFont = SBUFontSet.subtitle2,
                 userPlaceholderBackgroundColor: UIColor = SBUColorSet.background300,
-                userPlaceholderTintColor: UIColor = SBUColorSet.ondark01
+                userPlaceholderTintColor: UIColor = SBUColorSet.ondark01,
+
+                reactionBoxBackgroundColor: UIColor = SBUColorSet.background100,
+                reactionBoxBorderLineColor: UIColor = SBUColorSet.background200,
+                reactionBoxEmojiCountColor: UIColor = SBUColorSet.onlight01,
+                reactionBoxEmojiBackgroundColor: UIColor = SBUColorSet.background200,
+                reactionBoxSelectedEmojiBackgroundColor: UIColor = SBUColorSet.primary100,
+                reactionBoxEmojiCountFont: UIFont = SBUFontSet.caption3,
+                emojiCountColor: UIColor = SBUColorSet.onlight02,
+                emojiSelectedCountColor: UIColor = SBUColorSet.primary300,
+                emojiSelectedUnderlineColor: UIColor = SBUColorSet.primary300,
+                emojiCountFont: UIFont = SBUFontSet.button3,
+                reactionMenuLineColor: UIColor = SBUColorSet.ondark04,
+                emojiListSelectedBackgroundColor: UIColor = SBUColorSet.primary100,
+                addReactionTintColor: UIColor = SBUColorSet.onlight03
+
+
     )
     {
         self.emptyViewBackgroundColor = emptyViewBackgroundColor
@@ -1281,6 +1333,21 @@ public class SBUComponentTheme: NSObject {
         self.menuTitleFont = menuTitleFont
         self.userPlaceholderTintColor = userPlaceholderTintColor
         self.userPlaceholderBackgroundColor = userPlaceholderBackgroundColor
+
+        // Reaction
+        self.reactionBoxBackgroundColor = reactionBoxBackgroundColor
+        self.reactionBoxBorderLineColor = reactionBoxBorderLineColor
+        self.reactionBoxEmojiCountColor = reactionBoxEmojiCountColor
+        self.reactionBoxEmojiBackgroundColor = reactionBoxEmojiBackgroundColor
+        self.reactionBoxSelectedEmojiBackgroundColor = reactionBoxSelectedEmojiBackgroundColor
+        self.reactionBoxEmojiCountFont = reactionBoxEmojiCountFont
+        self.emojiCountColor = emojiCountColor
+        self.emojiSelectedCountColor = emojiSelectedCountColor
+        self.emojiSelectedUnderlineColor = emojiSelectedUnderlineColor
+        self.emojiCountFont = emojiCountFont
+        self.reactionMenuLineColor = reactionMenuLineColor
+        self.emojiListSelectedBackgroundColor = emojiListSelectedBackgroundColor
+        self.addReactionTintColor = addReactionTintColor
         
     }
     
@@ -1340,4 +1407,25 @@ public class SBUComponentTheme: NSObject {
     // placeholder
     public var userPlaceholderBackgroundColor: UIColor
     public var userPlaceholderTintColor: UIColor
+
+    // Reaction - Emoji reaction box
+    public var reactionBoxBackgroundColor: UIColor
+    public var reactionBoxBorderLineColor: UIColor
+    public var reactionBoxEmojiCountColor: UIColor
+    public var reactionBoxEmojiBackgroundColor: UIColor
+    public var reactionBoxSelectedEmojiBackgroundColor: UIColor
+    public var reactionBoxEmojiCountFont: UIFont
+    
+    // Reaction - Reacted user list
+    public var emojiCountColor: UIColor
+    public var emojiSelectedCountColor: UIColor
+    public var emojiSelectedUnderlineColor: UIColor
+    public var emojiCountFont: UIFont
+    public var reactionMenuLineColor: UIColor
+    
+    // Reaction - Emoji list
+    public var emojiListSelectedBackgroundColor: UIColor
+    
+    // Reaction - Add reaction
+    public var addReactionTintColor: UIColor
 }
