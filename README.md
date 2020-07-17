@@ -39,7 +39,7 @@ The minimum requirements for UIKit for iOS are:
 
 * `iOS 10.3+`
 * `Swift 4.2+` / `Objective-C`
-* `Sendbird Chat SDK for iOS 3.0.186+`
+* `Sendbird Chat SDK for iOS 3.0.190+`
 
 ---
 
