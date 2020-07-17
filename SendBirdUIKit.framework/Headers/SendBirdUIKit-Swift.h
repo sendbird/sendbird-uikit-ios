@@ -274,9 +274,22 @@ SWIFT_CLASS("_TtC13SendBirdUIKit16MessageStateView")
 - (void)layoutSubviews;
 @end
 
+@class SBUUser;
+
+@interface NSArray<ObjectType> (SWIFT_EXTENSION(SendBirdUIKit))
+- (NSArray<NSString *> * _Nonnull)sbu_getUserIds SWIFT_WARN_UNUSED_RESULT;
+- (NSArray<NSString *> * _Nonnull)sbu_getUserNicknames SWIFT_WARN_UNUSED_RESULT;
+- (NSArray<SBUUser *> * _Nonnull)sbu_convertUserList SWIFT_WARN_UNUSED_RESULT;
+@end
 
 
 
+
+@interface NSObject (SWIFT_EXTENSION(SendBirdUIKit))
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nonnull sbu_className;)
++ (NSString * _Nonnull)sbu_className SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, readonly, copy) NSString * _Nonnull sbu_className;
+@end
 
 
 IB_DESIGNABLE
@@ -364,6 +377,12 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUChannelLi
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
+
+SWIFT_PROTOCOL("_TtP13SendBirdUIKit20SBUEmptyViewDelegate_")
+@protocol SBUEmptyViewDelegate <NSObject>
+- (void)didSelectRetry;
+@end
+
 @class UIBarButtonItem;
 @class SBDGroupChannel;
 @class SBDGroupChannelListQuery;
@@ -376,9 +395,11 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUChannelLi
 @class NSBundle;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
-@interface SBUChannelListViewController : UIViewController <SBDChannelDelegate, SBDConnectionDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface SBUChannelListViewController : UIViewController <SBDChannelDelegate, SBDConnectionDelegate, SBUEmptyViewDelegate, UITableViewDataSource, UITableViewDelegate>
+@property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
+@property (nonatomic, strong) UIView * _Nullable emptyView;
 /// This object has a list of all channels.
 @property (nonatomic, readonly, copy) NSArray<SBDGroupChannel *> * _Nonnull channelList;
 /// This is a query used to get a list of channels. Only getter is provided, please use initialization function to set query directly.
@@ -393,8 +414,8 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 /// See the example below for query generation.
 /// \code
 ///     let query = SBDGroupChannel.createMyGroupChannelListQuery()
-///     query.includeEmptyChannel = false
-///     query.includeFrozenChannel = true
+///     query?.includeEmptyChannel = false
+///     query?.includeFrozenChannel = true
 ///     ...
 ///
 /// \endcodesince:
@@ -467,6 +488,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 ///
 - (void)didReceiveError:(NSString * _Nullable)message;
 - (void)didSucceedReconnection;
+- (void)didSelectRetry;
 - (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
 @end
 
@@ -507,6 +529,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUChannelSe
 SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
 @interface SBUChannelSettingsViewController : UIViewController <UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic, copy) NSString * _Nullable channelName;
+@property (nonatomic, strong) UIView * _Nullable userInfoView;
+@property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
 /// One of two must be set.
@@ -604,7 +628,6 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit27SBUMessageInputViewDelegate_")
 - (void)messageInputViewDidEndTyping;
 @end
 
-@class SBUNewMessageInfo;
 @class SBDBaseMessage;
 @class SBDMessageListParams;
 @class SBDUserMessageParams;
@@ -617,12 +640,14 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit27SBUMessageInputViewDelegate_")
 @class SBDFileMessage;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
-@interface SBUChannelViewController : UIViewController <SBDChannelDelegate, SBDConnectionDelegate, SBUMessageInputViewDelegate, UIDocumentPickerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate>
+@interface SBUChannelViewController : UIViewController <SBDChannelDelegate, SBDConnectionDelegate, SBUEmptyViewDelegate, SBUMessageInputViewDelegate, UIDocumentPickerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate>
 @property (nonatomic, copy) NSString * _Nullable channelName;
+@property (nonatomic, strong) UIView * _Nullable newMessageInfoView;
 @property (nonatomic, strong) SBUMessageInputView * _Nonnull messageInputView;
-@property (nonatomic, strong) SBUNewMessageInfo * _Nonnull newMessageInfoView;
+@property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
+@property (nonatomic, strong) UIView * _Nullable emptyView;
 /// This object is used to import a list of messages, send messages, modify messages, and so on, and is created during initialization.
 @property (nonatomic, readonly, strong) SBDGroupChannel * _Nullable channel;
 /// This object has a list of all success messages synchronized with the server.
@@ -751,6 +776,8 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)setReactionWithMessage:(SBDBaseMessage * _Nonnull)message emojiKey:(NSString * _Nonnull)emojiKey didSelect:(BOOL)didSelect;
 /// If you want to use a custom channelSettingsViewController, override it and implement it.
 - (void)showChannelSettings;
+/// This function increases the new message count.
+- (void)increaseNewMessageCount;
 - (BOOL)checkSameDayAsNextMessageWithCurrentIndex:(NSInteger)currentIndex SWIFT_WARN_UNUSED_RESULT;
 - (void)configureOffset;
 /// This is used to check the loading status and control loading indicator.
@@ -992,12 +1019,14 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUComponent
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
-@class SBUUser;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 @interface SBUCreateChannelViewController : UIViewController <UINavigationControllerDelegate, UITableViewDataSource, UITableViewDelegate>
+@property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
+@property (nonatomic, readonly, copy) NSArray<SBUUser *> * _Nonnull userList;
+@property (nonatomic, readonly, copy) NSSet<SBUUser *> * _Nonnull selectedUserList;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'init'");
 - (nonnull instancetype)init;
 /// If you have user objects, use this initialize function.
@@ -1019,6 +1048,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 /// \param users customized <code>SBUUser</code> array for add to user list
 ///
 - (void)loadNextUserListWithReset:(BOOL)reset users:(NSArray<SBUUser *> * _Nullable)users;
+/// When creating and using a user list directly, overriding this function and return the next user list.
+/// since:
+/// 1.1.1
+///
+/// returns:
+/// next user list
+- (NSArray<SBUUser *> * _Nullable)nextUserList SWIFT_WARN_UNUSED_RESULT;
 /// Creates the channel with userIds.
 /// since:
 /// 1.0.9
@@ -1032,6 +1068,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 /// \param params <code>SBDGroupChannelParams</code> class object
 ///
 - (void)createChannelWithParams:(SBDGroupChannelParams * _Nonnull)params;
+- (void)registerWithUserCell:(UITableViewCell * _Nonnull)userCell nib:(UINib * _Nullable)nib;
 - (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
 - (UITableViewCell * _Nonnull)tableView:(UITableView * _Nonnull)tableView cellForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
 - (void)tableView:(UITableView * _Nonnull)tableView didSelectRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
@@ -1039,6 +1076,27 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 - (void)didReceiveError:(NSString * _Nullable)message;
 - (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
 @end
+
+@class UIImageView;
+
+SWIFT_CLASS("_TtC13SendBirdUIKit12SBUEmptyView")
+@interface SBUEmptyView : UIView
+@property (nonatomic) enum EmptyViewType type;
+@property (nonatomic, weak) id <SBUEmptyViewDelegate> _Nullable delegate;
+@property (nonatomic, strong) UIImageView * _Nonnull statusImageView;
+@property (nonatomic, strong) UILabel * _Nonnull statusLabel;
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithFrame:'");
+- (void)setupViews;
+- (void)setupAutolayout;
+- (void)setupStyles;
+- (void)layoutSubviews;
+- (void)reloadData:(enum EmptyViewType)type;
+/// Override this function to apply a custom type.
+- (void)updateViews;
+- (void)onClickRetry:(id _Nonnull)sender;
+@end
+
 
 @class UIStackView;
 enum SBUMessageReceiptState : NSInteger;
@@ -1057,6 +1115,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUFileMessageCell")
 - (void)setupAutolayout;
 - (void)setupActions;
 - (void)configure:(SBDFileMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState;
+- (void)setBackgroundColorWithColor:(UIColor * _Nonnull)color;
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated;
 - (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nonnull)sender;
 - (void)onTapContentViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
@@ -1304,9 +1363,13 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emo
 
 SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 @interface SBUInviteUserViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
+@property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
 @property (nonatomic, readonly, strong) SBDGroupChannel * _Nullable channel;
+@property (nonatomic, readonly, copy) NSString * _Nullable channelUrl;
+@property (nonatomic, readonly, copy) NSArray<SBUUser *> * _Nonnull userList;
+@property (nonatomic, readonly, copy) NSSet<SBUUser *> * _Nonnull selectedUserList;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithChannelUrl:'");
 /// If you have channel object, use this initialize function.
 /// \param channel Channel object
@@ -1348,7 +1411,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 /// \param users customized <code>SBUUser</code> array for add to user list
 ///
 - (void)loadNextUserListWithReset:(BOOL)reset users:(NSArray<SBUUser *> * _Nullable)users;
-- (void)appendUsersWithFilteringWithUsers:(NSArray<SBUUser *> * _Nonnull)users;
+/// When creating and using a user list directly, overriding this function and return the next user list.
+/// since:
+/// 1.1.1
+///
+/// returns:
+/// next user list
+- (NSArray<SBUUser *> * _Nullable)nextUserList SWIFT_WARN_UNUSED_RESULT;
 /// Invites users in the channel with selected userIds.
 /// since:
 /// 1.0.9
@@ -1359,7 +1428,9 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 /// \param userIds User IDs to invite
 ///
 - (void)inviteUsersWithUserIds:(NSArray<NSString *> * _Nonnull)userIds;
+- (void)selectUserWithUser:(SBUUser * _Nonnull)user;
 - (void)popToChannel;
+- (void)registerWithUserCell:(UITableViewCell * _Nonnull)userCell nib:(UINib * _Nullable)nib;
 - (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
 - (UITableViewCell * _Nonnull)tableView:(UITableView * _Nonnull)tableView cellForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
 - (void)tableView:(UITableView * _Nonnull)tableView didSelectRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
@@ -1402,12 +1473,16 @@ SWIFT_CLASS("_TtC13SendBirdUIKit7SBUMain")
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
+@class SBDMember;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 @interface SBUMemberListViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
+@property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
 @property (nonatomic, readonly, strong) SBDGroupChannel * _Nullable channel;
+@property (nonatomic, readonly, copy) NSString * _Nullable channelUrl;
+@property (nonatomic, readonly, copy) NSArray<SBDMember *> * _Nonnull memberList;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithChannelUrl:'");
 /// If you have channel object, use this initialize function.
 /// \param channel Channel object
@@ -1433,6 +1508,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 ///
 - (void)loadChannelWithChannelUrl:(NSString * _Nullable)channelUrl;
 - (void)onClickInviteUser;
+- (void)registerWithUserCell:(UITableViewCell * _Nonnull)userCell nib:(UINib * _Nullable)nib;
 - (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
 - (UITableViewCell * _Nonnull)tableView:(UITableView * _Nonnull)tableView cellForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
 - (void)didReceiveError:(NSString * _Nullable)message;
@@ -1558,14 +1634,13 @@ typedef SWIFT_ENUM(NSInteger, SBUMessageReceiptState, open) {
 
 SWIFT_CLASS("_TtC13SendBirdUIKit17SBUNewMessageInfo")
 @interface SBUNewMessageInfo : UIView
-- (nonnull instancetype)initWithFrame:(CGRect)frame SWIFT_UNAVAILABLE;
-- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithFrame:'");
 - (void)drawRect:(CGRect)rect;
 - (void)layoutSubviews;
+- (void)onClickNewMessageInfo;
 @end
 
-@class SBDMember;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit12SBUStringSet")
 @interface SBUStringSet : NSObject
@@ -1786,6 +1861,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) SBUComponentTheme * _N
 
 SWIFT_CLASS("_TtC13SendBirdUIKit7SBUUser")
 @interface SBUUser : NSObject
+@property (nonatomic, readonly, copy) NSString * _Nonnull userId;
+@property (nonatomic, readonly, copy) NSString * _Nullable nickname;
+@property (nonatomic, readonly, copy) NSString * _Nullable profileUrl;
 - (nonnull instancetype)initWithUserId:(NSString * _Nonnull)userId nickname:(NSString * _Nullable)nickname profileUrl:(NSString * _Nullable)profileUrl OBJC_DESIGNATED_INITIALIZER;
 - (nonnull instancetype)initWithUser:(SBDUser * _Nonnull)user OBJC_DESIGNATED_INITIALIZER;
 /// This method returns the default value if there is no alias value.
@@ -1846,11 +1924,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUUserMessageCell")
 @property (nonatomic, strong) UIView * _Nonnull userNameView;
 @property (nonatomic, strong) UIView * _Nonnull profileView;
 @property (nonatomic, strong) UIView * _Nonnull stateView;
+@property (nonatomic, readonly, strong) SBDUserMessage * _Nullable userMessage;
 - (void)setupViews;
 - (void)setupAutolayout;
 - (void)setupActions;
 - (void)configure:(SBDUserMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState;
 - (void)configure:(SBDBaseMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState withTextView:(BOOL)withTextView;
+- (void)setBackgroundColorWithColor:(UIColor * _Nonnull)color;
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated;
 - (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nonnull)sender;
 - (void)onTapProfileImageViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
@@ -1860,6 +1940,11 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUUserMessageCell")
 @end
 
 
+
+
+@interface UIImage (SWIFT_EXTENSION(SendBirdUIKit))
+- (UIImage * _Nonnull)sbu_withTintColor:(UIColor * _Nullable)tintColor SWIFT_WARN_UNUSED_RESULT;
+@end
 
 
 
@@ -1877,6 +1962,10 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUUserMessageCell")
 
 
 
+@interface UIView (SWIFT_EXTENSION(SendBirdUIKit))
++ (UINib * _Nonnull)sbu_loadNib SWIFT_WARN_UNUSED_RESULT;
++ (UIView * _Nonnull)sbu_loadViewFromNib SWIFT_WARN_UNUSED_RESULT;
+@end
 
 
 
@@ -2169,9 +2258,22 @@ SWIFT_CLASS("_TtC13SendBirdUIKit16MessageStateView")
 - (void)layoutSubviews;
 @end
 
+@class SBUUser;
+
+@interface NSArray<ObjectType> (SWIFT_EXTENSION(SendBirdUIKit))
+- (NSArray<NSString *> * _Nonnull)sbu_getUserIds SWIFT_WARN_UNUSED_RESULT;
+- (NSArray<NSString *> * _Nonnull)sbu_getUserNicknames SWIFT_WARN_UNUSED_RESULT;
+- (NSArray<SBUUser *> * _Nonnull)sbu_convertUserList SWIFT_WARN_UNUSED_RESULT;
+@end
 
 
 
+
+@interface NSObject (SWIFT_EXTENSION(SendBirdUIKit))
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nonnull sbu_className;)
++ (NSString * _Nonnull)sbu_className SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, readonly, copy) NSString * _Nonnull sbu_className;
+@end
 
 
 IB_DESIGNABLE
@@ -2259,6 +2361,12 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUChannelLi
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
+
+SWIFT_PROTOCOL("_TtP13SendBirdUIKit20SBUEmptyViewDelegate_")
+@protocol SBUEmptyViewDelegate <NSObject>
+- (void)didSelectRetry;
+@end
+
 @class UIBarButtonItem;
 @class SBDGroupChannel;
 @class SBDGroupChannelListQuery;
@@ -2271,9 +2379,11 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUChannelLi
 @class NSBundle;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
-@interface SBUChannelListViewController : UIViewController <SBDChannelDelegate, SBDConnectionDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface SBUChannelListViewController : UIViewController <SBDChannelDelegate, SBDConnectionDelegate, SBUEmptyViewDelegate, UITableViewDataSource, UITableViewDelegate>
+@property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
+@property (nonatomic, strong) UIView * _Nullable emptyView;
 /// This object has a list of all channels.
 @property (nonatomic, readonly, copy) NSArray<SBDGroupChannel *> * _Nonnull channelList;
 /// This is a query used to get a list of channels. Only getter is provided, please use initialization function to set query directly.
@@ -2288,8 +2398,8 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 /// See the example below for query generation.
 /// \code
 ///     let query = SBDGroupChannel.createMyGroupChannelListQuery()
-///     query.includeEmptyChannel = false
-///     query.includeFrozenChannel = true
+///     query?.includeEmptyChannel = false
+///     query?.includeFrozenChannel = true
 ///     ...
 ///
 /// \endcodesince:
@@ -2362,6 +2472,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 ///
 - (void)didReceiveError:(NSString * _Nullable)message;
 - (void)didSucceedReconnection;
+- (void)didSelectRetry;
 - (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
 @end
 
@@ -2402,6 +2513,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUChannelSe
 SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
 @interface SBUChannelSettingsViewController : UIViewController <UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic, copy) NSString * _Nullable channelName;
+@property (nonatomic, strong) UIView * _Nullable userInfoView;
+@property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
 /// One of two must be set.
@@ -2499,7 +2612,6 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit27SBUMessageInputViewDelegate_")
 - (void)messageInputViewDidEndTyping;
 @end
 
-@class SBUNewMessageInfo;
 @class SBDBaseMessage;
 @class SBDMessageListParams;
 @class SBDUserMessageParams;
@@ -2512,12 +2624,14 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit27SBUMessageInputViewDelegate_")
 @class SBDFileMessage;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
-@interface SBUChannelViewController : UIViewController <SBDChannelDelegate, SBDConnectionDelegate, SBUMessageInputViewDelegate, UIDocumentPickerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate>
+@interface SBUChannelViewController : UIViewController <SBDChannelDelegate, SBDConnectionDelegate, SBUEmptyViewDelegate, SBUMessageInputViewDelegate, UIDocumentPickerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate>
 @property (nonatomic, copy) NSString * _Nullable channelName;
+@property (nonatomic, strong) UIView * _Nullable newMessageInfoView;
 @property (nonatomic, strong) SBUMessageInputView * _Nonnull messageInputView;
-@property (nonatomic, strong) SBUNewMessageInfo * _Nonnull newMessageInfoView;
+@property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
+@property (nonatomic, strong) UIView * _Nullable emptyView;
 /// This object is used to import a list of messages, send messages, modify messages, and so on, and is created during initialization.
 @property (nonatomic, readonly, strong) SBDGroupChannel * _Nullable channel;
 /// This object has a list of all success messages synchronized with the server.
@@ -2646,6 +2760,8 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)setReactionWithMessage:(SBDBaseMessage * _Nonnull)message emojiKey:(NSString * _Nonnull)emojiKey didSelect:(BOOL)didSelect;
 /// If you want to use a custom channelSettingsViewController, override it and implement it.
 - (void)showChannelSettings;
+/// This function increases the new message count.
+- (void)increaseNewMessageCount;
 - (BOOL)checkSameDayAsNextMessageWithCurrentIndex:(NSInteger)currentIndex SWIFT_WARN_UNUSED_RESULT;
 - (void)configureOffset;
 /// This is used to check the loading status and control loading indicator.
@@ -2887,12 +3003,14 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUComponent
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
-@class SBUUser;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 @interface SBUCreateChannelViewController : UIViewController <UINavigationControllerDelegate, UITableViewDataSource, UITableViewDelegate>
+@property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
+@property (nonatomic, readonly, copy) NSArray<SBUUser *> * _Nonnull userList;
+@property (nonatomic, readonly, copy) NSSet<SBUUser *> * _Nonnull selectedUserList;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'init'");
 - (nonnull instancetype)init;
 /// If you have user objects, use this initialize function.
@@ -2914,6 +3032,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 /// \param users customized <code>SBUUser</code> array for add to user list
 ///
 - (void)loadNextUserListWithReset:(BOOL)reset users:(NSArray<SBUUser *> * _Nullable)users;
+/// When creating and using a user list directly, overriding this function and return the next user list.
+/// since:
+/// 1.1.1
+///
+/// returns:
+/// next user list
+- (NSArray<SBUUser *> * _Nullable)nextUserList SWIFT_WARN_UNUSED_RESULT;
 /// Creates the channel with userIds.
 /// since:
 /// 1.0.9
@@ -2927,6 +3052,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 /// \param params <code>SBDGroupChannelParams</code> class object
 ///
 - (void)createChannelWithParams:(SBDGroupChannelParams * _Nonnull)params;
+- (void)registerWithUserCell:(UITableViewCell * _Nonnull)userCell nib:(UINib * _Nullable)nib;
 - (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
 - (UITableViewCell * _Nonnull)tableView:(UITableView * _Nonnull)tableView cellForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
 - (void)tableView:(UITableView * _Nonnull)tableView didSelectRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
@@ -2934,6 +3060,27 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 - (void)didReceiveError:(NSString * _Nullable)message;
 - (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
 @end
+
+@class UIImageView;
+
+SWIFT_CLASS("_TtC13SendBirdUIKit12SBUEmptyView")
+@interface SBUEmptyView : UIView
+@property (nonatomic) enum EmptyViewType type;
+@property (nonatomic, weak) id <SBUEmptyViewDelegate> _Nullable delegate;
+@property (nonatomic, strong) UIImageView * _Nonnull statusImageView;
+@property (nonatomic, strong) UILabel * _Nonnull statusLabel;
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithFrame:'");
+- (void)setupViews;
+- (void)setupAutolayout;
+- (void)setupStyles;
+- (void)layoutSubviews;
+- (void)reloadData:(enum EmptyViewType)type;
+/// Override this function to apply a custom type.
+- (void)updateViews;
+- (void)onClickRetry:(id _Nonnull)sender;
+@end
+
 
 @class UIStackView;
 enum SBUMessageReceiptState : NSInteger;
@@ -2952,6 +3099,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUFileMessageCell")
 - (void)setupAutolayout;
 - (void)setupActions;
 - (void)configure:(SBDFileMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState;
+- (void)setBackgroundColorWithColor:(UIColor * _Nonnull)color;
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated;
 - (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nonnull)sender;
 - (void)onTapContentViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
@@ -3199,9 +3347,13 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emo
 
 SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 @interface SBUInviteUserViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
+@property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
 @property (nonatomic, readonly, strong) SBDGroupChannel * _Nullable channel;
+@property (nonatomic, readonly, copy) NSString * _Nullable channelUrl;
+@property (nonatomic, readonly, copy) NSArray<SBUUser *> * _Nonnull userList;
+@property (nonatomic, readonly, copy) NSSet<SBUUser *> * _Nonnull selectedUserList;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithChannelUrl:'");
 /// If you have channel object, use this initialize function.
 /// \param channel Channel object
@@ -3243,7 +3395,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 /// \param users customized <code>SBUUser</code> array for add to user list
 ///
 - (void)loadNextUserListWithReset:(BOOL)reset users:(NSArray<SBUUser *> * _Nullable)users;
-- (void)appendUsersWithFilteringWithUsers:(NSArray<SBUUser *> * _Nonnull)users;
+/// When creating and using a user list directly, overriding this function and return the next user list.
+/// since:
+/// 1.1.1
+///
+/// returns:
+/// next user list
+- (NSArray<SBUUser *> * _Nullable)nextUserList SWIFT_WARN_UNUSED_RESULT;
 /// Invites users in the channel with selected userIds.
 /// since:
 /// 1.0.9
@@ -3254,7 +3412,9 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 /// \param userIds User IDs to invite
 ///
 - (void)inviteUsersWithUserIds:(NSArray<NSString *> * _Nonnull)userIds;
+- (void)selectUserWithUser:(SBUUser * _Nonnull)user;
 - (void)popToChannel;
+- (void)registerWithUserCell:(UITableViewCell * _Nonnull)userCell nib:(UINib * _Nullable)nib;
 - (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
 - (UITableViewCell * _Nonnull)tableView:(UITableView * _Nonnull)tableView cellForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
 - (void)tableView:(UITableView * _Nonnull)tableView didSelectRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
@@ -3297,12 +3457,16 @@ SWIFT_CLASS("_TtC13SendBirdUIKit7SBUMain")
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
+@class SBDMember;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 @interface SBUMemberListViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
+@property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
 @property (nonatomic, readonly, strong) SBDGroupChannel * _Nullable channel;
+@property (nonatomic, readonly, copy) NSString * _Nullable channelUrl;
+@property (nonatomic, readonly, copy) NSArray<SBDMember *> * _Nonnull memberList;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithChannelUrl:'");
 /// If you have channel object, use this initialize function.
 /// \param channel Channel object
@@ -3328,6 +3492,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 ///
 - (void)loadChannelWithChannelUrl:(NSString * _Nullable)channelUrl;
 - (void)onClickInviteUser;
+- (void)registerWithUserCell:(UITableViewCell * _Nonnull)userCell nib:(UINib * _Nullable)nib;
 - (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
 - (UITableViewCell * _Nonnull)tableView:(UITableView * _Nonnull)tableView cellForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
 - (void)didReceiveError:(NSString * _Nullable)message;
@@ -3453,14 +3618,13 @@ typedef SWIFT_ENUM(NSInteger, SBUMessageReceiptState, open) {
 
 SWIFT_CLASS("_TtC13SendBirdUIKit17SBUNewMessageInfo")
 @interface SBUNewMessageInfo : UIView
-- (nonnull instancetype)initWithFrame:(CGRect)frame SWIFT_UNAVAILABLE;
-- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithFrame:'");
 - (void)drawRect:(CGRect)rect;
 - (void)layoutSubviews;
+- (void)onClickNewMessageInfo;
 @end
 
-@class SBDMember;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit12SBUStringSet")
 @interface SBUStringSet : NSObject
@@ -3681,6 +3845,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) SBUComponentTheme * _N
 
 SWIFT_CLASS("_TtC13SendBirdUIKit7SBUUser")
 @interface SBUUser : NSObject
+@property (nonatomic, readonly, copy) NSString * _Nonnull userId;
+@property (nonatomic, readonly, copy) NSString * _Nullable nickname;
+@property (nonatomic, readonly, copy) NSString * _Nullable profileUrl;
 - (nonnull instancetype)initWithUserId:(NSString * _Nonnull)userId nickname:(NSString * _Nullable)nickname profileUrl:(NSString * _Nullable)profileUrl OBJC_DESIGNATED_INITIALIZER;
 - (nonnull instancetype)initWithUser:(SBDUser * _Nonnull)user OBJC_DESIGNATED_INITIALIZER;
 /// This method returns the default value if there is no alias value.
@@ -3741,11 +3908,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUUserMessageCell")
 @property (nonatomic, strong) UIView * _Nonnull userNameView;
 @property (nonatomic, strong) UIView * _Nonnull profileView;
 @property (nonatomic, strong) UIView * _Nonnull stateView;
+@property (nonatomic, readonly, strong) SBDUserMessage * _Nullable userMessage;
 - (void)setupViews;
 - (void)setupAutolayout;
 - (void)setupActions;
 - (void)configure:(SBDUserMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState;
 - (void)configure:(SBDBaseMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState withTextView:(BOOL)withTextView;
+- (void)setBackgroundColorWithColor:(UIColor * _Nonnull)color;
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated;
 - (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nonnull)sender;
 - (void)onTapProfileImageViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
@@ -3755,6 +3924,11 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUUserMessageCell")
 @end
 
 
+
+
+@interface UIImage (SWIFT_EXTENSION(SendBirdUIKit))
+- (UIImage * _Nonnull)sbu_withTintColor:(UIColor * _Nullable)tintColor SWIFT_WARN_UNUSED_RESULT;
+@end
 
 
 
@@ -3772,6 +3946,10 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUUserMessageCell")
 
 
 
+@interface UIView (SWIFT_EXTENSION(SendBirdUIKit))
++ (UINib * _Nonnull)sbu_loadNib SWIFT_WARN_UNUSED_RESULT;
++ (UIView * _Nonnull)sbu_loadViewFromNib SWIFT_WARN_UNUSED_RESULT;
+@end
 
 
 
@@ -4066,9 +4244,22 @@ SWIFT_CLASS("_TtC13SendBirdUIKit16MessageStateView")
 - (void)layoutSubviews;
 @end
 
+@class SBUUser;
+
+@interface NSArray<ObjectType> (SWIFT_EXTENSION(SendBirdUIKit))
+- (NSArray<NSString *> * _Nonnull)sbu_getUserIds SWIFT_WARN_UNUSED_RESULT;
+- (NSArray<NSString *> * _Nonnull)sbu_getUserNicknames SWIFT_WARN_UNUSED_RESULT;
+- (NSArray<SBUUser *> * _Nonnull)sbu_convertUserList SWIFT_WARN_UNUSED_RESULT;
+@end
 
 
 
+
+@interface NSObject (SWIFT_EXTENSION(SendBirdUIKit))
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nonnull sbu_className;)
++ (NSString * _Nonnull)sbu_className SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, readonly, copy) NSString * _Nonnull sbu_className;
+@end
 
 
 IB_DESIGNABLE
@@ -4156,6 +4347,12 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUChannelLi
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
+
+SWIFT_PROTOCOL("_TtP13SendBirdUIKit20SBUEmptyViewDelegate_")
+@protocol SBUEmptyViewDelegate <NSObject>
+- (void)didSelectRetry;
+@end
+
 @class UIBarButtonItem;
 @class SBDGroupChannel;
 @class SBDGroupChannelListQuery;
@@ -4168,9 +4365,11 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUChannelLi
 @class NSBundle;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
-@interface SBUChannelListViewController : UIViewController <SBDChannelDelegate, SBDConnectionDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface SBUChannelListViewController : UIViewController <SBDChannelDelegate, SBDConnectionDelegate, SBUEmptyViewDelegate, UITableViewDataSource, UITableViewDelegate>
+@property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
+@property (nonatomic, strong) UIView * _Nullable emptyView;
 /// This object has a list of all channels.
 @property (nonatomic, readonly, copy) NSArray<SBDGroupChannel *> * _Nonnull channelList;
 /// This is a query used to get a list of channels. Only getter is provided, please use initialization function to set query directly.
@@ -4185,8 +4384,8 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 /// See the example below for query generation.
 /// \code
 ///     let query = SBDGroupChannel.createMyGroupChannelListQuery()
-///     query.includeEmptyChannel = false
-///     query.includeFrozenChannel = true
+///     query?.includeEmptyChannel = false
+///     query?.includeFrozenChannel = true
 ///     ...
 ///
 /// \endcodesince:
@@ -4259,6 +4458,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 ///
 - (void)didReceiveError:(NSString * _Nullable)message;
 - (void)didSucceedReconnection;
+- (void)didSelectRetry;
 - (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
 @end
 
@@ -4299,6 +4499,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUChannelSe
 SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
 @interface SBUChannelSettingsViewController : UIViewController <UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic, copy) NSString * _Nullable channelName;
+@property (nonatomic, strong) UIView * _Nullable userInfoView;
+@property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
 /// One of two must be set.
@@ -4396,7 +4598,6 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit27SBUMessageInputViewDelegate_")
 - (void)messageInputViewDidEndTyping;
 @end
 
-@class SBUNewMessageInfo;
 @class SBDBaseMessage;
 @class SBDMessageListParams;
 @class SBDUserMessageParams;
@@ -4409,12 +4610,14 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit27SBUMessageInputViewDelegate_")
 @class SBDFileMessage;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
-@interface SBUChannelViewController : UIViewController <SBDChannelDelegate, SBDConnectionDelegate, SBUMessageInputViewDelegate, UIDocumentPickerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate>
+@interface SBUChannelViewController : UIViewController <SBDChannelDelegate, SBDConnectionDelegate, SBUEmptyViewDelegate, SBUMessageInputViewDelegate, UIDocumentPickerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate>
 @property (nonatomic, copy) NSString * _Nullable channelName;
+@property (nonatomic, strong) UIView * _Nullable newMessageInfoView;
 @property (nonatomic, strong) SBUMessageInputView * _Nonnull messageInputView;
-@property (nonatomic, strong) SBUNewMessageInfo * _Nonnull newMessageInfoView;
+@property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
+@property (nonatomic, strong) UIView * _Nullable emptyView;
 /// This object is used to import a list of messages, send messages, modify messages, and so on, and is created during initialization.
 @property (nonatomic, readonly, strong) SBDGroupChannel * _Nullable channel;
 /// This object has a list of all success messages synchronized with the server.
@@ -4543,6 +4746,8 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)setReactionWithMessage:(SBDBaseMessage * _Nonnull)message emojiKey:(NSString * _Nonnull)emojiKey didSelect:(BOOL)didSelect;
 /// If you want to use a custom channelSettingsViewController, override it and implement it.
 - (void)showChannelSettings;
+/// This function increases the new message count.
+- (void)increaseNewMessageCount;
 - (BOOL)checkSameDayAsNextMessageWithCurrentIndex:(NSInteger)currentIndex SWIFT_WARN_UNUSED_RESULT;
 - (void)configureOffset;
 /// This is used to check the loading status and control loading indicator.
@@ -4784,12 +4989,14 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUComponent
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
-@class SBUUser;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 @interface SBUCreateChannelViewController : UIViewController <UINavigationControllerDelegate, UITableViewDataSource, UITableViewDelegate>
+@property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
+@property (nonatomic, readonly, copy) NSArray<SBUUser *> * _Nonnull userList;
+@property (nonatomic, readonly, copy) NSSet<SBUUser *> * _Nonnull selectedUserList;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'init'");
 - (nonnull instancetype)init;
 /// If you have user objects, use this initialize function.
@@ -4811,6 +5018,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 /// \param users customized <code>SBUUser</code> array for add to user list
 ///
 - (void)loadNextUserListWithReset:(BOOL)reset users:(NSArray<SBUUser *> * _Nullable)users;
+/// When creating and using a user list directly, overriding this function and return the next user list.
+/// since:
+/// 1.1.1
+///
+/// returns:
+/// next user list
+- (NSArray<SBUUser *> * _Nullable)nextUserList SWIFT_WARN_UNUSED_RESULT;
 /// Creates the channel with userIds.
 /// since:
 /// 1.0.9
@@ -4824,6 +5038,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 /// \param params <code>SBDGroupChannelParams</code> class object
 ///
 - (void)createChannelWithParams:(SBDGroupChannelParams * _Nonnull)params;
+- (void)registerWithUserCell:(UITableViewCell * _Nonnull)userCell nib:(UINib * _Nullable)nib;
 - (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
 - (UITableViewCell * _Nonnull)tableView:(UITableView * _Nonnull)tableView cellForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
 - (void)tableView:(UITableView * _Nonnull)tableView didSelectRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
@@ -4831,6 +5046,27 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 - (void)didReceiveError:(NSString * _Nullable)message;
 - (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
 @end
+
+@class UIImageView;
+
+SWIFT_CLASS("_TtC13SendBirdUIKit12SBUEmptyView")
+@interface SBUEmptyView : UIView
+@property (nonatomic) enum EmptyViewType type;
+@property (nonatomic, weak) id <SBUEmptyViewDelegate> _Nullable delegate;
+@property (nonatomic, strong) UIImageView * _Nonnull statusImageView;
+@property (nonatomic, strong) UILabel * _Nonnull statusLabel;
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithFrame:'");
+- (void)setupViews;
+- (void)setupAutolayout;
+- (void)setupStyles;
+- (void)layoutSubviews;
+- (void)reloadData:(enum EmptyViewType)type;
+/// Override this function to apply a custom type.
+- (void)updateViews;
+- (void)onClickRetry:(id _Nonnull)sender;
+@end
+
 
 @class UIStackView;
 enum SBUMessageReceiptState : NSInteger;
@@ -4849,6 +5085,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUFileMessageCell")
 - (void)setupAutolayout;
 - (void)setupActions;
 - (void)configure:(SBDFileMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState;
+- (void)setBackgroundColorWithColor:(UIColor * _Nonnull)color;
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated;
 - (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nonnull)sender;
 - (void)onTapContentViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
@@ -5096,9 +5333,13 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emo
 
 SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 @interface SBUInviteUserViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
+@property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
 @property (nonatomic, readonly, strong) SBDGroupChannel * _Nullable channel;
+@property (nonatomic, readonly, copy) NSString * _Nullable channelUrl;
+@property (nonatomic, readonly, copy) NSArray<SBUUser *> * _Nonnull userList;
+@property (nonatomic, readonly, copy) NSSet<SBUUser *> * _Nonnull selectedUserList;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithChannelUrl:'");
 /// If you have channel object, use this initialize function.
 /// \param channel Channel object
@@ -5140,7 +5381,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 /// \param users customized <code>SBUUser</code> array for add to user list
 ///
 - (void)loadNextUserListWithReset:(BOOL)reset users:(NSArray<SBUUser *> * _Nullable)users;
-- (void)appendUsersWithFilteringWithUsers:(NSArray<SBUUser *> * _Nonnull)users;
+/// When creating and using a user list directly, overriding this function and return the next user list.
+/// since:
+/// 1.1.1
+///
+/// returns:
+/// next user list
+- (NSArray<SBUUser *> * _Nullable)nextUserList SWIFT_WARN_UNUSED_RESULT;
 /// Invites users in the channel with selected userIds.
 /// since:
 /// 1.0.9
@@ -5151,7 +5398,9 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 /// \param userIds User IDs to invite
 ///
 - (void)inviteUsersWithUserIds:(NSArray<NSString *> * _Nonnull)userIds;
+- (void)selectUserWithUser:(SBUUser * _Nonnull)user;
 - (void)popToChannel;
+- (void)registerWithUserCell:(UITableViewCell * _Nonnull)userCell nib:(UINib * _Nullable)nib;
 - (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
 - (UITableViewCell * _Nonnull)tableView:(UITableView * _Nonnull)tableView cellForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
 - (void)tableView:(UITableView * _Nonnull)tableView didSelectRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
@@ -5194,12 +5443,16 @@ SWIFT_CLASS("_TtC13SendBirdUIKit7SBUMain")
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
+@class SBDMember;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 @interface SBUMemberListViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
+@property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
 @property (nonatomic, readonly, strong) SBDGroupChannel * _Nullable channel;
+@property (nonatomic, readonly, copy) NSString * _Nullable channelUrl;
+@property (nonatomic, readonly, copy) NSArray<SBDMember *> * _Nonnull memberList;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithChannelUrl:'");
 /// If you have channel object, use this initialize function.
 /// \param channel Channel object
@@ -5225,6 +5478,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 ///
 - (void)loadChannelWithChannelUrl:(NSString * _Nullable)channelUrl;
 - (void)onClickInviteUser;
+- (void)registerWithUserCell:(UITableViewCell * _Nonnull)userCell nib:(UINib * _Nullable)nib;
 - (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
 - (UITableViewCell * _Nonnull)tableView:(UITableView * _Nonnull)tableView cellForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
 - (void)didReceiveError:(NSString * _Nullable)message;
@@ -5350,14 +5604,13 @@ typedef SWIFT_ENUM(NSInteger, SBUMessageReceiptState, open) {
 
 SWIFT_CLASS("_TtC13SendBirdUIKit17SBUNewMessageInfo")
 @interface SBUNewMessageInfo : UIView
-- (nonnull instancetype)initWithFrame:(CGRect)frame SWIFT_UNAVAILABLE;
-- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithFrame:'");
 - (void)drawRect:(CGRect)rect;
 - (void)layoutSubviews;
+- (void)onClickNewMessageInfo;
 @end
 
-@class SBDMember;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit12SBUStringSet")
 @interface SBUStringSet : NSObject
@@ -5578,6 +5831,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) SBUComponentTheme * _N
 
 SWIFT_CLASS("_TtC13SendBirdUIKit7SBUUser")
 @interface SBUUser : NSObject
+@property (nonatomic, readonly, copy) NSString * _Nonnull userId;
+@property (nonatomic, readonly, copy) NSString * _Nullable nickname;
+@property (nonatomic, readonly, copy) NSString * _Nullable profileUrl;
 - (nonnull instancetype)initWithUserId:(NSString * _Nonnull)userId nickname:(NSString * _Nullable)nickname profileUrl:(NSString * _Nullable)profileUrl OBJC_DESIGNATED_INITIALIZER;
 - (nonnull instancetype)initWithUser:(SBDUser * _Nonnull)user OBJC_DESIGNATED_INITIALIZER;
 /// This method returns the default value if there is no alias value.
@@ -5638,11 +5894,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUUserMessageCell")
 @property (nonatomic, strong) UIView * _Nonnull userNameView;
 @property (nonatomic, strong) UIView * _Nonnull profileView;
 @property (nonatomic, strong) UIView * _Nonnull stateView;
+@property (nonatomic, readonly, strong) SBDUserMessage * _Nullable userMessage;
 - (void)setupViews;
 - (void)setupAutolayout;
 - (void)setupActions;
 - (void)configure:(SBDUserMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState;
 - (void)configure:(SBDBaseMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState withTextView:(BOOL)withTextView;
+- (void)setBackgroundColorWithColor:(UIColor * _Nonnull)color;
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated;
 - (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nonnull)sender;
 - (void)onTapProfileImageViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
@@ -5652,6 +5910,11 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUUserMessageCell")
 @end
 
 
+
+
+@interface UIImage (SWIFT_EXTENSION(SendBirdUIKit))
+- (UIImage * _Nonnull)sbu_withTintColor:(UIColor * _Nullable)tintColor SWIFT_WARN_UNUSED_RESULT;
+@end
 
 
 
@@ -5669,6 +5932,10 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUUserMessageCell")
 
 
 
+@interface UIView (SWIFT_EXTENSION(SendBirdUIKit))
++ (UINib * _Nonnull)sbu_loadNib SWIFT_WARN_UNUSED_RESULT;
++ (UIView * _Nonnull)sbu_loadViewFromNib SWIFT_WARN_UNUSED_RESULT;
+@end
 
 
 
@@ -5961,9 +6228,22 @@ SWIFT_CLASS("_TtC13SendBirdUIKit16MessageStateView")
 - (void)layoutSubviews;
 @end
 
+@class SBUUser;
+
+@interface NSArray<ObjectType> (SWIFT_EXTENSION(SendBirdUIKit))
+- (NSArray<NSString *> * _Nonnull)sbu_getUserIds SWIFT_WARN_UNUSED_RESULT;
+- (NSArray<NSString *> * _Nonnull)sbu_getUserNicknames SWIFT_WARN_UNUSED_RESULT;
+- (NSArray<SBUUser *> * _Nonnull)sbu_convertUserList SWIFT_WARN_UNUSED_RESULT;
+@end
 
 
 
+
+@interface NSObject (SWIFT_EXTENSION(SendBirdUIKit))
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nonnull sbu_className;)
++ (NSString * _Nonnull)sbu_className SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, readonly, copy) NSString * _Nonnull sbu_className;
+@end
 
 
 IB_DESIGNABLE
@@ -6051,6 +6331,12 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUChannelLi
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
+
+SWIFT_PROTOCOL("_TtP13SendBirdUIKit20SBUEmptyViewDelegate_")
+@protocol SBUEmptyViewDelegate <NSObject>
+- (void)didSelectRetry;
+@end
+
 @class UIBarButtonItem;
 @class SBDGroupChannel;
 @class SBDGroupChannelListQuery;
@@ -6063,9 +6349,11 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUChannelLi
 @class NSBundle;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
-@interface SBUChannelListViewController : UIViewController <SBDChannelDelegate, SBDConnectionDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface SBUChannelListViewController : UIViewController <SBDChannelDelegate, SBDConnectionDelegate, SBUEmptyViewDelegate, UITableViewDataSource, UITableViewDelegate>
+@property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
+@property (nonatomic, strong) UIView * _Nullable emptyView;
 /// This object has a list of all channels.
 @property (nonatomic, readonly, copy) NSArray<SBDGroupChannel *> * _Nonnull channelList;
 /// This is a query used to get a list of channels. Only getter is provided, please use initialization function to set query directly.
@@ -6080,8 +6368,8 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 /// See the example below for query generation.
 /// \code
 ///     let query = SBDGroupChannel.createMyGroupChannelListQuery()
-///     query.includeEmptyChannel = false
-///     query.includeFrozenChannel = true
+///     query?.includeEmptyChannel = false
+///     query?.includeFrozenChannel = true
 ///     ...
 ///
 /// \endcodesince:
@@ -6154,6 +6442,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 ///
 - (void)didReceiveError:(NSString * _Nullable)message;
 - (void)didSucceedReconnection;
+- (void)didSelectRetry;
 - (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
 @end
 
@@ -6194,6 +6483,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUChannelSe
 SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
 @interface SBUChannelSettingsViewController : UIViewController <UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic, copy) NSString * _Nullable channelName;
+@property (nonatomic, strong) UIView * _Nullable userInfoView;
+@property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
 /// One of two must be set.
@@ -6291,7 +6582,6 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit27SBUMessageInputViewDelegate_")
 - (void)messageInputViewDidEndTyping;
 @end
 
-@class SBUNewMessageInfo;
 @class SBDBaseMessage;
 @class SBDMessageListParams;
 @class SBDUserMessageParams;
@@ -6304,12 +6594,14 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit27SBUMessageInputViewDelegate_")
 @class SBDFileMessage;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
-@interface SBUChannelViewController : UIViewController <SBDChannelDelegate, SBDConnectionDelegate, SBUMessageInputViewDelegate, UIDocumentPickerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate>
+@interface SBUChannelViewController : UIViewController <SBDChannelDelegate, SBDConnectionDelegate, SBUEmptyViewDelegate, SBUMessageInputViewDelegate, UIDocumentPickerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate>
 @property (nonatomic, copy) NSString * _Nullable channelName;
+@property (nonatomic, strong) UIView * _Nullable newMessageInfoView;
 @property (nonatomic, strong) SBUMessageInputView * _Nonnull messageInputView;
-@property (nonatomic, strong) SBUNewMessageInfo * _Nonnull newMessageInfoView;
+@property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
+@property (nonatomic, strong) UIView * _Nullable emptyView;
 /// This object is used to import a list of messages, send messages, modify messages, and so on, and is created during initialization.
 @property (nonatomic, readonly, strong) SBDGroupChannel * _Nullable channel;
 /// This object has a list of all success messages synchronized with the server.
@@ -6438,6 +6730,8 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)setReactionWithMessage:(SBDBaseMessage * _Nonnull)message emojiKey:(NSString * _Nonnull)emojiKey didSelect:(BOOL)didSelect;
 /// If you want to use a custom channelSettingsViewController, override it and implement it.
 - (void)showChannelSettings;
+/// This function increases the new message count.
+- (void)increaseNewMessageCount;
 - (BOOL)checkSameDayAsNextMessageWithCurrentIndex:(NSInteger)currentIndex SWIFT_WARN_UNUSED_RESULT;
 - (void)configureOffset;
 /// This is used to check the loading status and control loading indicator.
@@ -6679,12 +6973,14 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUComponent
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
-@class SBUUser;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 @interface SBUCreateChannelViewController : UIViewController <UINavigationControllerDelegate, UITableViewDataSource, UITableViewDelegate>
+@property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
+@property (nonatomic, readonly, copy) NSArray<SBUUser *> * _Nonnull userList;
+@property (nonatomic, readonly, copy) NSSet<SBUUser *> * _Nonnull selectedUserList;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'init'");
 - (nonnull instancetype)init;
 /// If you have user objects, use this initialize function.
@@ -6706,6 +7002,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 /// \param users customized <code>SBUUser</code> array for add to user list
 ///
 - (void)loadNextUserListWithReset:(BOOL)reset users:(NSArray<SBUUser *> * _Nullable)users;
+/// When creating and using a user list directly, overriding this function and return the next user list.
+/// since:
+/// 1.1.1
+///
+/// returns:
+/// next user list
+- (NSArray<SBUUser *> * _Nullable)nextUserList SWIFT_WARN_UNUSED_RESULT;
 /// Creates the channel with userIds.
 /// since:
 /// 1.0.9
@@ -6719,6 +7022,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 /// \param params <code>SBDGroupChannelParams</code> class object
 ///
 - (void)createChannelWithParams:(SBDGroupChannelParams * _Nonnull)params;
+- (void)registerWithUserCell:(UITableViewCell * _Nonnull)userCell nib:(UINib * _Nullable)nib;
 - (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
 - (UITableViewCell * _Nonnull)tableView:(UITableView * _Nonnull)tableView cellForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
 - (void)tableView:(UITableView * _Nonnull)tableView didSelectRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
@@ -6726,6 +7030,27 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 - (void)didReceiveError:(NSString * _Nullable)message;
 - (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
 @end
+
+@class UIImageView;
+
+SWIFT_CLASS("_TtC13SendBirdUIKit12SBUEmptyView")
+@interface SBUEmptyView : UIView
+@property (nonatomic) enum EmptyViewType type;
+@property (nonatomic, weak) id <SBUEmptyViewDelegate> _Nullable delegate;
+@property (nonatomic, strong) UIImageView * _Nonnull statusImageView;
+@property (nonatomic, strong) UILabel * _Nonnull statusLabel;
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithFrame:'");
+- (void)setupViews;
+- (void)setupAutolayout;
+- (void)setupStyles;
+- (void)layoutSubviews;
+- (void)reloadData:(enum EmptyViewType)type;
+/// Override this function to apply a custom type.
+- (void)updateViews;
+- (void)onClickRetry:(id _Nonnull)sender;
+@end
+
 
 @class UIStackView;
 enum SBUMessageReceiptState : NSInteger;
@@ -6744,6 +7069,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUFileMessageCell")
 - (void)setupAutolayout;
 - (void)setupActions;
 - (void)configure:(SBDFileMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState;
+- (void)setBackgroundColorWithColor:(UIColor * _Nonnull)color;
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated;
 - (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nonnull)sender;
 - (void)onTapContentViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
@@ -6991,9 +7317,13 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emo
 
 SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 @interface SBUInviteUserViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
+@property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
 @property (nonatomic, readonly, strong) SBDGroupChannel * _Nullable channel;
+@property (nonatomic, readonly, copy) NSString * _Nullable channelUrl;
+@property (nonatomic, readonly, copy) NSArray<SBUUser *> * _Nonnull userList;
+@property (nonatomic, readonly, copy) NSSet<SBUUser *> * _Nonnull selectedUserList;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithChannelUrl:'");
 /// If you have channel object, use this initialize function.
 /// \param channel Channel object
@@ -7035,7 +7365,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 /// \param users customized <code>SBUUser</code> array for add to user list
 ///
 - (void)loadNextUserListWithReset:(BOOL)reset users:(NSArray<SBUUser *> * _Nullable)users;
-- (void)appendUsersWithFilteringWithUsers:(NSArray<SBUUser *> * _Nonnull)users;
+/// When creating and using a user list directly, overriding this function and return the next user list.
+/// since:
+/// 1.1.1
+///
+/// returns:
+/// next user list
+- (NSArray<SBUUser *> * _Nullable)nextUserList SWIFT_WARN_UNUSED_RESULT;
 /// Invites users in the channel with selected userIds.
 /// since:
 /// 1.0.9
@@ -7046,7 +7382,9 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 /// \param userIds User IDs to invite
 ///
 - (void)inviteUsersWithUserIds:(NSArray<NSString *> * _Nonnull)userIds;
+- (void)selectUserWithUser:(SBUUser * _Nonnull)user;
 - (void)popToChannel;
+- (void)registerWithUserCell:(UITableViewCell * _Nonnull)userCell nib:(UINib * _Nullable)nib;
 - (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
 - (UITableViewCell * _Nonnull)tableView:(UITableView * _Nonnull)tableView cellForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
 - (void)tableView:(UITableView * _Nonnull)tableView didSelectRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
@@ -7089,12 +7427,16 @@ SWIFT_CLASS("_TtC13SendBirdUIKit7SBUMain")
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
+@class SBDMember;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 @interface SBUMemberListViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
+@property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
 @property (nonatomic, readonly, strong) SBDGroupChannel * _Nullable channel;
+@property (nonatomic, readonly, copy) NSString * _Nullable channelUrl;
+@property (nonatomic, readonly, copy) NSArray<SBDMember *> * _Nonnull memberList;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithChannelUrl:'");
 /// If you have channel object, use this initialize function.
 /// \param channel Channel object
@@ -7120,6 +7462,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 ///
 - (void)loadChannelWithChannelUrl:(NSString * _Nullable)channelUrl;
 - (void)onClickInviteUser;
+- (void)registerWithUserCell:(UITableViewCell * _Nonnull)userCell nib:(UINib * _Nullable)nib;
 - (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
 - (UITableViewCell * _Nonnull)tableView:(UITableView * _Nonnull)tableView cellForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
 - (void)didReceiveError:(NSString * _Nullable)message;
@@ -7245,14 +7588,13 @@ typedef SWIFT_ENUM(NSInteger, SBUMessageReceiptState, open) {
 
 SWIFT_CLASS("_TtC13SendBirdUIKit17SBUNewMessageInfo")
 @interface SBUNewMessageInfo : UIView
-- (nonnull instancetype)initWithFrame:(CGRect)frame SWIFT_UNAVAILABLE;
-- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithFrame:'");
 - (void)drawRect:(CGRect)rect;
 - (void)layoutSubviews;
+- (void)onClickNewMessageInfo;
 @end
 
-@class SBDMember;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit12SBUStringSet")
 @interface SBUStringSet : NSObject
@@ -7473,6 +7815,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) SBUComponentTheme * _N
 
 SWIFT_CLASS("_TtC13SendBirdUIKit7SBUUser")
 @interface SBUUser : NSObject
+@property (nonatomic, readonly, copy) NSString * _Nonnull userId;
+@property (nonatomic, readonly, copy) NSString * _Nullable nickname;
+@property (nonatomic, readonly, copy) NSString * _Nullable profileUrl;
 - (nonnull instancetype)initWithUserId:(NSString * _Nonnull)userId nickname:(NSString * _Nullable)nickname profileUrl:(NSString * _Nullable)profileUrl OBJC_DESIGNATED_INITIALIZER;
 - (nonnull instancetype)initWithUser:(SBDUser * _Nonnull)user OBJC_DESIGNATED_INITIALIZER;
 /// This method returns the default value if there is no alias value.
@@ -7533,11 +7878,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUUserMessageCell")
 @property (nonatomic, strong) UIView * _Nonnull userNameView;
 @property (nonatomic, strong) UIView * _Nonnull profileView;
 @property (nonatomic, strong) UIView * _Nonnull stateView;
+@property (nonatomic, readonly, strong) SBDUserMessage * _Nullable userMessage;
 - (void)setupViews;
 - (void)setupAutolayout;
 - (void)setupActions;
 - (void)configure:(SBDUserMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState;
 - (void)configure:(SBDBaseMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState withTextView:(BOOL)withTextView;
+- (void)setBackgroundColorWithColor:(UIColor * _Nonnull)color;
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated;
 - (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nonnull)sender;
 - (void)onTapProfileImageViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
@@ -7547,6 +7894,11 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUUserMessageCell")
 @end
 
 
+
+
+@interface UIImage (SWIFT_EXTENSION(SendBirdUIKit))
+- (UIImage * _Nonnull)sbu_withTintColor:(UIColor * _Nullable)tintColor SWIFT_WARN_UNUSED_RESULT;
+@end
 
 
 
@@ -7564,6 +7916,10 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUUserMessageCell")
 
 
 
+@interface UIView (SWIFT_EXTENSION(SendBirdUIKit))
++ (UINib * _Nonnull)sbu_loadNib SWIFT_WARN_UNUSED_RESULT;
++ (UIView * _Nonnull)sbu_loadViewFromNib SWIFT_WARN_UNUSED_RESULT;
+@end
 
 
 

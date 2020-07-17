@@ -238,7 +238,7 @@ public class MessageProfileView: UIView {
     
     func configure(urlString: String) {
         self.urlString = urlString
-        self.imageView.loadImage(urlString: urlString, placeholder: SBUIconSet.iconUser.with(tintColor: theme.userPlaceholderTintColor))
+        self.imageView.loadImage(urlString: urlString, placeholder: SBUIconSet.iconUser.sbu_with(tintColor: theme.userPlaceholderTintColor))
         self.imageView.backgroundColor = theme.userPlaceholderBackgroundColor
         self.setNeedsLayout()
     }
@@ -411,7 +411,7 @@ public class MessageStateView: UIView {
         case .none:
             stateImage = nil
         case .pending:
-            stateImage = SBUIconSet.iconSpinnerSmall.with(tintColor: theme.pendingStateColor)
+            stateImage = SBUIconSet.iconSpinnerSmall.sbu_with(tintColor: theme.pendingStateColor)
 
             let rotation = CABasicAnimation(keyPath: "transform.rotation")
             rotation.fromValue = 0
@@ -421,15 +421,15 @@ public class MessageStateView: UIView {
             stateImageView.layer.add(rotation, forKey: "Spin")
             
         case .failed, .canceled:
-            stateImage = SBUIconSet.iconFailed.with(tintColor: theme.failedStateColor)
+            stateImage = SBUIconSet.iconFailed.sbu_with(tintColor: theme.failedStateColor)
         case .succeeded:
             switch receiptState {
             case .none:
-                stateImage = SBUIconSet.iconSent.with(tintColor: theme.succeededStateColor)
+                stateImage = SBUIconSet.iconSent.sbu_with(tintColor: theme.succeededStateColor)
             case .readReceipt:
-                stateImage = SBUIconSet.iconRead.with(tintColor: theme.readReceiptStateColor)
+                stateImage = SBUIconSet.iconRead.sbu_with(tintColor: theme.readReceiptStateColor)
             case .deliveryReceipt:
-                stateImage = SBUIconSet.iconDelivered.with(tintColor: theme.deliveryReceiptStateColor)
+                stateImage = SBUIconSet.iconDelivered.sbu_with(tintColor: theme.deliveryReceiptStateColor)
             }
         @unknown default:
             stateImage = nil

@@ -15,6 +15,8 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
     
     // MARK: - Public property
     public var channelName: String? = nil
+    public lazy var userInfoView: UIView? = _userInfoView
+    public lazy var titleView: UIView? = _titleView
     public lazy var leftBarButton: UIBarButtonItem? = _leftBarButton
     public lazy var rightBarButton: UIBarButtonItem? = _rightBarButton
     
@@ -22,8 +24,6 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
     // MARK: - Private property
     var theme: SBUChannelSettingsTheme = SBUTheme.channelSettingsTheme
 
-    private lazy var titleView: SBUNavigationTitleView = _titleView
-    private lazy var userInfoView: UIView = _userInfoView
     private lazy var tableView = UITableView()
     
     private lazy var _titleView: SBUNavigationTitleView = {
@@ -35,13 +35,19 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
     }()
     
     private lazy var _leftBarButton: UIBarButtonItem = {
-        let backButton = UIBarButtonItem(image: SBUIconSet.iconBack, style: .plain, target: self, action: #selector(onClickBack))
-        return backButton
+        return UIBarButtonItem(image: SBUIconSet.iconBack,
+                               style: .plain,
+                               target: self,
+                               action: #selector(onClickBack))
     }()
     
     private lazy var _rightBarButton: UIBarButtonItem = {
-        let editButton = UIBarButtonItem(title: SBUStringSet.Edit, style: .plain, target: self, action: #selector(onClickEdit))
-        return editButton
+        let rightItem =  UIBarButtonItem(title: SBUStringSet.Edit,
+                                         style: .plain,
+                                         target: self,
+                                         action: #selector(onClickEdit))
+        rightItem.setTitleTextAttributes([.font : SBUFontSet.button2], for: .normal)
+        return rightItem
     }()
     
     private lazy var _userInfoView: UIView =  {
@@ -100,7 +106,7 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
         self.tableView.bounces = false
         self.tableView.alwaysBounceVertical = false
         self.tableView.separatorStyle = .none
-        self.tableView.register(SBUChannelSettingCell.loadNibForSB(), forCellReuseIdentifier: SBUChannelSettingCell.className)
+        self.tableView.register(SBUChannelSettingCell.sbu_loadNib(), forCellReuseIdentifier: SBUChannelSettingCell.sbu_className)
         self.tableView.tableHeaderView = self.userInfoView
         self.tableView.rowHeight = UITableView.automaticDimension
         self.tableView.estimatedRowHeight = 44.0
@@ -115,20 +121,23 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
     
     /// This function handles the initialization of autolayouts.
     open func setupAutolayout() {
-        self.tableView.tableHeaderView?.frame.size = .init(width: tableView.bounds.width, height: 132)
+        if let userInfoView = self.userInfoView, userInfoView is UserInfoView {
+            self.tableView.tableHeaderView?.frame.size = .init(width: tableView.bounds.width, height: 132)
+            
+            userInfoView.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                userInfoView.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: 0),
+                userInfoView.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: 0),
+                userInfoView.centerXAnchor.constraint(equalTo: self.tableView.centerXAnchor, constant: 0),
+            ])
+        }
+        
         self.tableView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             self.tableView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 0),
             self.tableView.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: 0),
             self.tableView.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: 0),
             self.tableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 0),
-        ])
-        
-        self.userInfoView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            self.userInfoView.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: 0),
-            self.userInfoView.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: 0),
-            self.userInfoView.centerXAnchor.constraint(equalTo: self.tableView.centerXAnchor, constant: 0),
         ])
     }
     
@@ -323,8 +332,8 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
     
     /// Open the channel image selection menu.
     public func selectChannelImage() {
-        let cameraItem = SBUActionSheetItem(title: SBUStringSet.Camera, image: SBUIconSet.iconCamera.with(tintColor: theme.itemColor))
-        let libraryItem = SBUActionSheetItem(title: SBUStringSet.PhotoVideoLibrary, image: SBUIconSet.iconPhoto.with(tintColor: theme.itemColor))
+        let cameraItem = SBUActionSheetItem(title: SBUStringSet.Camera, image: SBUIconSet.iconCamera.sbu_with(tintColor: theme.itemColor))
+        let libraryItem = SBUActionSheetItem(title: SBUStringSet.PhotoVideoLibrary, image: SBUIconSet.iconPhoto.sbu_with(tintColor: theme.itemColor))
         let cancelItem = SBUActionSheetItem(title: SBUStringSet.Cancel, color: theme.itemColor)
         SBUActionSheet.show(items: [cameraItem, libraryItem], cancelItem: cancelItem, identifier: actionSheetIdPicker, delegate: self)
     }
@@ -343,8 +352,10 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
     
     // MARK: - UITableView relations
     // CUSTOM:
-    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.userInfoView.endEditing(true)
+    open func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if let userInfoView = self.userInfoView as? UserInfoView {
+            userInfoView.endEditing(true)
+        }
         
         switch indexPath.row {
         case 0: // Notification
@@ -361,8 +372,8 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
         }
     }
 
-    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: SBUChannelSettingCell.className) as? SBUChannelSettingCell else { fatalError() }
+    open func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: SBUChannelSettingCell.sbu_className) as? SBUChannelSettingCell else { fatalError() }
         cell.selectionStyle = .none
         
         switch indexPath.row {
@@ -385,7 +396,7 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
         return cell
     }
     
-    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    open func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 3
     }
     

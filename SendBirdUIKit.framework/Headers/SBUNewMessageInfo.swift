@@ -12,21 +12,33 @@ import QuartzCore
 public typealias SBUNewMessageInfoHandler = () -> Void
 
 open class SBUNewMessageInfo: UIView {
-    let messageInfoButton = UIButton()
-    var completionHandler: SBUNewMessageInfoHandler?
+    // MARK: - Properties (Public)
+    public lazy var messageInfoButton: UIButton? = _messageInfoButton
     
+    
+    // MARK: - Properties (Private)
+    let DefaultInfoButtonTag = 10001
+
+    private lazy var _messageInfoButton: UIButton = {
+        let messageInfoButton = UIButton()
+        messageInfoButton.setTitle(SBUStringSet.Channel_New_Message(0), for: .normal)
+        messageInfoButton.layer.cornerRadius = 16.0
+        messageInfoButton.layer.masksToBounds = true
+        messageInfoButton.semanticContentAttribute = .forceRightToLeft
+        messageInfoButton.tag = DefaultInfoButtonTag
+        return messageInfoButton
+    }()
+    
+    var actionHandler: SBUNewMessageInfoHandler?
     var theme: SBUComponentTheme = SBUTheme.componentTheme
     
+    
     // MARK: - Life cycle
-    override init(frame: CGRect) {
+    override public init(frame: CGRect) {
         super.init(frame: frame)
         
         self.setupViews()
         self.setupAutolayout()
-    }
-    
-    public init() {
-        super.init(frame: .zero)
     }
     
     @available(*, unavailable, renamed: "SBUNewMessageInfo.init(frame:)")
@@ -42,39 +54,41 @@ open class SBUNewMessageInfo: UIView {
         self.layer.shadowOpacity = 0.5
         self.layer.shadowRadius = 5
         self.layer.masksToBounds = false
-        
-        self.messageInfoButton.setTitle(SBUStringSet.Channel_New_Message(0), for: .normal)
-        self.messageInfoButton.layer.cornerRadius = 16.0
-        self.messageInfoButton.layer.masksToBounds = true
-        self.messageInfoButton.semanticContentAttribute = .forceRightToLeft
-        self.messageInfoButton.addTarget(self, action: #selector(onClickNewMessageInfo), for: .touchUpInside)
-        self.addSubview(self.messageInfoButton)
+
+        if let messageInfoButton = self.messageInfoButton {
+            messageInfoButton.addTarget(self, action: #selector(onClickNewMessageInfo), for: .touchUpInside)
+            self.addSubview(messageInfoButton)
+        }
     }
     
     /// This function handles the initialization of autolayouts.
     open func setupAutolayout() {
         self.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            self.widthAnchor.constraint(equalToConstant: 144.0),
-            self.heightAnchor.constraint(equalToConstant: 32.0),
+            self.widthAnchor.constraint(equalToConstant: SBUConstant.newMessageInfoSize.width),
+            self.heightAnchor.constraint(equalToConstant: SBUConstant.newMessageInfoSize.height),
         ])
         
-        self.messageInfoButton.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            self.messageInfoButton.widthAnchor.constraint(equalToConstant: 144.0),
-            self.messageInfoButton.heightAnchor.constraint(equalToConstant: 32.0),
-            self.messageInfoButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            self.messageInfoButton.centerYAnchor.constraint(equalTo: self.centerYAnchor),
-        ])
+        if let messageInfoButton = self.messageInfoButton {
+            messageInfoButton.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                messageInfoButton.leftAnchor.constraint(equalTo: self.leftAnchor),
+                messageInfoButton.rightAnchor.constraint(equalTo: self.rightAnchor),
+                messageInfoButton.topAnchor.constraint(equalTo: self.topAnchor),
+                messageInfoButton.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+            ])
+        }
     }
     
     /// This function handles the initialization of styles.
     open func setupStyles() {
-        self.messageInfoButton.setImage(SBUIconSet.iconChevronDown.with(tintColor: theme.newMessageTintColor), for: .normal)
-        self.messageInfoButton.titleLabel?.font = theme.newMessageFont
-        self.messageInfoButton.setTitleColor(theme.newMessageTintColor, for: .normal)
-        self.messageInfoButton.setBackgroundImage(UIImage.from(color: theme.newMessageBackground), for: .normal)
-        self.messageInfoButton.setBackgroundImage(UIImage.from(color: theme.newMessageHighlighted), for: .highlighted)
+        if let messageInfoButton = self.messageInfoButton, messageInfoButton.tag == DefaultInfoButtonTag {
+            messageInfoButton.setImage(SBUIconSet.iconChevronDown.sbu_with(tintColor: theme.newMessageTintColor), for: .normal)
+            messageInfoButton.titleLabel?.font = theme.newMessageFont
+            messageInfoButton.setTitleColor(theme.newMessageTintColor, for: .normal)
+            messageInfoButton.setBackgroundImage(UIImage.from(color: theme.newMessageBackground), for: .normal)
+            messageInfoButton.setBackgroundImage(UIImage.from(color: theme.newMessageHighlighted), for: .highlighted)
+        }
     }
     
     public override func draw(_ rect: CGRect) {
@@ -87,12 +101,20 @@ open class SBUNewMessageInfo: UIView {
         self.setupStyles()
     }
 
-    // MARK: - Common
-    @objc func onClickNewMessageInfo() {
-        self.completionHandler?()
+    // MARK: - Action
+    @objc open func onClickNewMessageInfo() {
+        self.actionHandler?()
     }
-    public func updateTitle(count: Int, completionHandler: SBUNewMessageInfoHandler?) {
-        self.messageInfoButton.setTitle(SBUStringSet.Channel_New_Message(count), for: .normal)
-        self.completionHandler = completionHandler
+    
+    // MARK: - Count
+    /// This function updates the count of new messages and sets the button's action.
+    /// - Parameters:
+    ///   - count: Message count
+    ///   - actionHandler: Button's action handler
+    open func updateCount(count: Int, actionHandler: SBUNewMessageInfoHandler?) {
+        if let messageInfoButton = self.messageInfoButton {
+            messageInfoButton.setTitle(SBUStringSet.Channel_New_Message(count), for: .normal)
+        }
+        self.actionHandler = actionHandler
     }
 }

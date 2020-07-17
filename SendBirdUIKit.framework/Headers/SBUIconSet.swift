@@ -74,7 +74,7 @@ private extension SBUIconSet {
     static func getImage(name: String, tintColor: UIColor? = nil) -> UIImage {
         let image = UIImage(named: name, in: bundle, compatibleWith: nil)!
         guard let tintColor = tintColor else { return image }
-        return image.with(tintColor: tintColor)
+        return image.sbu_with(tintColor: tintColor)
     }
     
 }

@@ -13,8 +13,7 @@ import SendBirdSDK
 open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UINavigationControllerDelegate {
     
     // MARK: - Public property
-    // for UI
-    
+    public lazy var titleView: UIView? = _titleView
     public lazy var leftBarButton: UIBarButtonItem? = _leftBarButton
     public lazy var rightBarButton: UIBarButtonItem? = _rightBarButton
     
@@ -23,8 +22,9 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
     // for UI
     var theme: SBUUserListTheme = SBUTheme.userListTheme
     
-    private lazy var titleView: SBUNavigationTitleView = _titleView
     private var tableView = UITableView()
+    
+    var userCell: UITableViewCell?
     
     private lazy var _titleView: SBUNavigationTitleView = {
         let titleView = SBUNavigationTitleView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 50))
@@ -34,23 +34,27 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
     }()
     
     private lazy var _leftBarButton: UIBarButtonItem = {
-        return UIBarButtonItem(image: nil,
+        return UIBarButtonItem(image: SBUIconSet.iconBack,
                                style: .plain,
                                target: self,
-                               action: #selector(onClickBack) )
+                               action: #selector(onClickBack))
     }()
     
     private lazy var _rightBarButton: UIBarButtonItem = {
-        return UIBarButtonItem(title: SBUStringSet.CreateChannel_Create(0),
-                               style: .plain,
-                               target: self,
-                               action: #selector(onClickCreate) )
+        let rightItem =  UIBarButtonItem(title: SBUStringSet.CreateChannel_Create(0),
+                                         style: .plain,
+                                         target: self,
+                                         action: #selector(onClickCreate))
+        rightItem.setTitleTextAttributes([.font : SBUFontSet.button2], for: .normal)
+        return rightItem
     }()
     
     // for logic
+    @SBUAtomic public private(set) var userList: [SBUUser] = []
+    @SBUAtomic public private(set) var selectedUserList: Set<SBUUser> = []
+    
     @SBUAtomic private var customizedUsers: [SBUUser]?
-    @SBUAtomic var userList: [SBUUser] = []
-    @SBUAtomic var selectedUserList: Set<SBUUser> = []
+    private var useCustomizedUsers = false
     var userListQuery: SBDApplicationUserListQuery?
     var isLoading = false
     let limit: UInt = 20
@@ -73,6 +77,9 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
         super.init(nibName: nil, bundle: nil)
         SBULog.info("")
         self.customizedUsers = users
+        if users?.count ?? 0 > 0 {
+            useCustomizedUsers = true
+        }
     }
     
     open override func loadView() {
@@ -88,9 +95,11 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
         self.tableView.delegate = self
         self.tableView.dataSource = self
         self.tableView.separatorStyle = .none
-        self.tableView.register(SBUUserCell.loadNibForSB(), forCellReuseIdentifier: SBUUserCell.className) // for xib
         self.tableView.rowHeight = UITableView.automaticDimension
         self.tableView.estimatedRowHeight = 44.0
+        if self.userCell == nil {
+            self.register(userCell: SBUUserCell(), nib: SBUUserCell.sbu_loadNib())
+        }
         self.view.addSubview(self.tableView)
         
         // autolayout
@@ -116,7 +125,6 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
         self.navigationController?.navigationBar.setBackgroundImage(UIImage.from(color: theme.navigationBarTintColor), for: .default)
         self.navigationController?.navigationBar.shadowImage = UIImage.from(color: theme.navigationShadowColor)
 
-        self.leftBarButton?.image = SBUIconSet.iconBack
         self.leftBarButton?.tintColor = theme.leftBarButtonTintColor
         self.rightBarButton?.tintColor = self.selectedUserList.isEmpty ? theme.rightBarButtonTintColor : theme.rightBarButtonSelectedTintColor
 
@@ -159,7 +167,7 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
     /// - Parameters:
     ///   - reset: `true` is reset user list and load new list
     ///   - users: customized `SBUUser` array for add to user list
-    open func loadNextUserList(reset: Bool, users: [SBUUser]? = nil) {
+    public func loadNextUserList(reset: Bool, users: [SBUUser]? = nil) {
         if self.isLoading { return }
         self.isLoading = true
         
@@ -174,17 +182,13 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
 
         if let users = users {
             // for using customized user list
-            if self.customizedUsers != nil {
-                self.customizedUsers! += users
-            }
-            
             SBULog.info("\(users.count) customized users have been added.")
             
             self.userList += users
             self.reloadUserList()
             self.isLoading = false
         }
-        else if self.customizedUsers == nil {
+        else if !self.useCustomizedUsers {
             if self.userListQuery == nil {
                 self.userListQuery = SBDMain.createApplicationUserListQuery()
                 self.userListQuery?.limit = self.limit
@@ -206,7 +210,7 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
                 }
                 let filteredUsers = users?.filter { $0.userId != SBUGlobals.CurrentUser?.userId }
 
-                guard let users = SBUUserManager.convertUserList(users: filteredUsers) else { return }
+                guard let users = filteredUsers?.sbu_convertUserList() else { return }
                 
                 SBULog.info("[Response] \(users.count) users")
                 
@@ -215,6 +219,13 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
                 self?.isLoading = false
             })
         }
+    }
+    
+    /// When creating and using a user list directly, overriding this function and return the next user list.
+    /// - Returns: next user list
+    /// - Since: 1.1.1
+    open func nextUserList() -> [SBUUser]? {
+        return nil
     }
     
     /// Creates the channel with userIds.
@@ -255,8 +266,8 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
     
     // MARK: - Common
     func reloadUserList() {
-        DispatchQueue.main.async {
-            self.tableView.reloadData()
+        DispatchQueue.main.async { [weak self] in
+            self?.tableView.reloadData()
         }
     }
     
@@ -272,7 +283,7 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
     @objc private func onClickCreate() {
         guard selectedUserList.isEmpty == false else { return }
         
-        let userIds = SBUUserManager.getUserIds(users: Array(self.selectedUserList))
+        let userIds = Array(self.selectedUserList).sbu_getUserIds()
         self.createChannel(userIds: userIds)
     }
     
@@ -292,37 +303,56 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
     
     
     // MARK: - UITableView relations
-    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public func register(userCell: UITableViewCell, nib: UINib? = nil) {
+        self.userCell = userCell
+        if let nib = nib {
+            self.tableView.register(nib, forCellReuseIdentifier: userCell.sbu_className)
+        } else {
+            self.tableView.register(type(of: userCell), forCellReuseIdentifier: userCell.sbu_className)
+        }
+    }
+    
+    open func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.userList.count
     }
     
-    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: SBUUserCell.className) as? SBUUserCell
-            else { return UITableViewCell() }
+    open func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let user = userList[indexPath.row]
-        cell.selectionStyle = .none
-        cell.configure(type: .createChannel,
-                       user:user,
-                       isChecked: self.selectedUserList.contains(user))
-        return cell
+
+        var cell: UITableViewCell? = nil
+        if let userCell = self.userCell {
+            cell = tableView.dequeueReusableCell(withIdentifier: userCell.sbu_className)
+        } else {
+            cell = tableView.dequeueReusableCell(withIdentifier: SBUUserCell.sbu_className)
+        }
+
+        cell?.selectionStyle = .none
+
+        if let defaultCell = cell as? SBUUserCell {
+            defaultCell.configure(type: .createChannel,
+                                  user: user,
+                                  isChecked: self.selectedUserList.contains(user))
+        }
+        return cell ?? UITableViewCell()
     }
 
-    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    open func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let user = userList[indexPath.row]
         self.selectUser(user: user)
         
-        let cell = self.tableView.cellForRow(at: indexPath) as? SBUUserCell
-        cell?.setSelected(isChecked: self.selectedUserList.contains(user))
+        if let defaultCell = self.tableView.cellForRow(at: indexPath) as? SBUUserCell {
+            defaultCell.setSelected(isChecked: self.selectedUserList.contains(user))
+        }
     }
     
-    public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+    open func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if self.userList.count > 0,
-            self.userListQuery?.hasNext == true,
+            (self.useCustomizedUsers || (self.userListQuery?.hasNext == true && self.userListQuery != nil)),
             indexPath.row == (self.userList.count - Int(self.limit)/2),
-            self.isLoading == false,
-            self.userListQuery != nil
+            !self.isLoading
         {
-            self.loadNextUserList(reset: false, users: self.customizedUsers ?? nil)
+            let nextUserList = (self.nextUserList()?.count ?? 0) > 0 ? self.nextUserList() : nil
+            self.loadNextUserList(reset: false, users: self.useCustomizedUsers ? nextUserList : nil)
         }
     }
     

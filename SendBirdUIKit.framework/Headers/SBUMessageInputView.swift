@@ -51,7 +51,7 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
     }
 
     @available(*, unavailable, renamed: "SBUMessageInputView.loadViewFromNibForSB()")
-    public override init(frame: CGRect) {
+    override public init(frame: CGRect) {
         super.init(frame: frame)
     }
     
@@ -75,7 +75,6 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
 
         // saveButton
         self.saveButton.layer.cornerRadius = 4
-        
     }
      
     /// This function handles the initialization of styles.
@@ -99,11 +98,11 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         self.textView.layer.borderColor = theme.textFieldBorderColor.cgColor
         
         // addButton
-        let iconAdd = SBUIconSet.iconAdd.with(tintColor: self.isFrozen ? theme.buttonDisabledTintColor : theme.buttonTintColor)
+        let iconAdd = SBUIconSet.iconAdd.sbu_with(tintColor: self.isFrozen ? theme.buttonDisabledTintColor : theme.buttonTintColor)
         self.addButton.setImage(iconAdd, for: .normal)
         
         // IconSend
-        self.sendButton.setImage(SBUIconSet.iconSend.with(tintColor: theme.buttonTintColor), for: .normal)
+        self.sendButton.setImage(SBUIconSet.iconSend.sbu_with(tintColor: theme.buttonTintColor), for: .normal)
         
         // cancelButton
         self.cancelButton.titleLabel?.font = theme.cancelButtonFont
@@ -115,9 +114,9 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         self.saveButton.titleLabel?.textColor = theme.saveButtonTextColor
         
         // Item
-        self.cameraItem.image = SBUIconSet.iconCamera.with(tintColor: theme.buttonTintColor)
-        self.libraryItem.image = SBUIconSet.iconPhoto.with(tintColor: theme.buttonTintColor)
-        self.documentItem.image = SBUIconSet.iconDocument.with(tintColor: theme.buttonTintColor)
+        self.cameraItem.image = SBUIconSet.iconCamera.sbu_with(tintColor: theme.buttonTintColor)
+        self.libraryItem.image = SBUIconSet.iconPhoto.sbu_with(tintColor: theme.buttonTintColor)
+        self.documentItem.image = SBUIconSet.iconDocument.sbu_with(tintColor: theme.buttonTintColor)
         self.cancelItem.color = theme.buttonTintColor
     }
     
@@ -253,7 +252,8 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
                 if success == false {
                     // TODO: Request camera capture permission
                 } else {
-                    DispatchQueue.main.async {
+                    DispatchQueue.main.async { [weak self] in
+                        guard let self = self else { return }
                         self.delegate?.messageInputView?(self, didSelectResource: type)
                     }
                 }
@@ -263,13 +263,15 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
                 if status != .authorized {
                     // TODO: Request photo library permission
                 } else {
-                    DispatchQueue.main.async {
+                    DispatchQueue.main.async { [weak self] in
+                        guard let self = self else { return }
                         self.delegate?.messageInputView?(self, didSelectResource: type)
                     }
                 }
             })
         } else {
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
                 self.delegate?.messageInputView?(self, didSelectResource: type)
             }
         }

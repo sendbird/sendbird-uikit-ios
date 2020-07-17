@@ -13,15 +13,19 @@ import SendBirdSDK
 open class SBUMemberListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     // MARK: - Public property
+    public lazy var titleView: UIView? = _titleView
     public lazy var leftBarButton: UIBarButtonItem? = _leftBarButton
     public lazy var rightBarButton: UIBarButtonItem? = _rightBarButton
-    
+
     
     // MARK: - Private property
     // for UI
     var theme: SBUUserListTheme = SBUTheme.userListTheme
     
-    private lazy var titleView: SBUNavigationTitleView = _titleView
+    private var tableView = UITableView()
+    
+    var userCell: UITableViewCell?
+    
     private lazy var _titleView: SBUNavigationTitleView = {
         let titleView = SBUNavigationTitleView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 50))
         titleView.text = SBUStringSet.MemberList_Header_Title
@@ -29,28 +33,24 @@ open class SBUMemberListViewController: UIViewController, UITableViewDelegate, U
         return titleView
     }()
 
-    private var tableView = UITableView()
-    
     private lazy var _leftBarButton: UIBarButtonItem = {
         return UIBarButtonItem(image: SBUIconSet.iconBack,
                                style: .plain,
                                target: self,
-                               action: #selector(onClickBack) )
-        
+                               action: #selector(onClickBack))
     }()
     
     private lazy var _rightBarButton: UIBarButtonItem = {
         return UIBarButtonItem(image: SBUIconSet.iconPlus,
                                style: .plain,
                                target: self,
-                               action: #selector(onClickInviteUser) )
+                               action: #selector(onClickInviteUser))
     }()
     
     // for logic
     public private(set) var channel: SBDGroupChannel?
-    private var channelUrl: String?
-    
-    private var memberList: [SBDMember] = []
+    public private(set) var channelUrl: String?
+    public private(set) var memberList: [SBDMember] = []
     
     
     // MARK: - Lifecycle
@@ -92,9 +92,11 @@ open class SBUMemberListViewController: UIViewController, UITableViewDelegate, U
         self.tableView.delegate = self
         self.tableView.dataSource = self
         self.tableView.separatorStyle = .none
-        self.tableView.register(SBUUserCell.loadNibForSB(), forCellReuseIdentifier: SBUUserCell.className) // for xib
         self.tableView.rowHeight = UITableView.automaticDimension
         self.tableView.estimatedRowHeight = 44.0
+        if self.userCell == nil {
+            self.register(userCell: SBUUserCell(), nib: SBUUserCell.sbu_loadNib())
+        }
         self.view.addSubview(self.tableView)
         
         // autolayout
@@ -216,20 +218,37 @@ open class SBUMemberListViewController: UIViewController, UITableViewDelegate, U
     
     
     // MARK: - UITableView relations
-    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public func register(userCell: UITableViewCell, nib: UINib? = nil) {
+        self.userCell = userCell
+        if let nib = nib {
+            self.tableView.register(nib, forCellReuseIdentifier: userCell.sbu_className)
+        } else {
+            self.tableView.register(type(of: userCell), forCellReuseIdentifier: userCell.sbu_className)
+        }
+    }
+    
+    open func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.memberList.count
     }
     
-    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: SBUUserCell.className) as? SBUUserCell
-            else { return UITableViewCell() }
-        cell.selectionStyle = .none
-        
+    open func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let member = memberList[indexPath.row]
         let user = SBUUser.init(user: member)
         
-        cell.configure(type: .channelMembers, user: user)
-        return cell
+        var cell: UITableViewCell? = nil
+        if let userCell = self.userCell {
+            cell = tableView.dequeueReusableCell(withIdentifier: userCell.sbu_className)
+        } else {
+            cell = tableView.dequeueReusableCell(withIdentifier: SBUUserCell.sbu_className)
+        }
+
+        cell?.selectionStyle = .none
+        
+        if let defaultCell = cell as? SBUUserCell {
+            defaultCell.configure(type: .channelMembers, user: user)
+        }
+        
+        return cell ?? UITableViewCell()
     }
     
     

@@ -11,9 +11,9 @@ import SendBirdSDK
 
 @objcMembers
 public class SBUUser: NSObject {
-    var userId: String
-    var nickname: String?
-    var profileUrl: String?
+    public private(set) var userId: String
+    public private(set) var nickname: String?
+    public private(set) var profileUrl: String?
     
     public init(userId: String, nickname: String? = nil, profileUrl: String? = nil) {
         self.userId = userId

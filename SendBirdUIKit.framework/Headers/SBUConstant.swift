@@ -9,10 +9,12 @@
 import Swift
 
 class SBUConstant {
-    
     static let messageCellMaxWidth: CGFloat = 244
     static let thumbnailSize: CGSize = .init(width: 240, height: 160)
     static let imageSize: CGSize = .init(width: 240, height: 160)
+    
+    static let newMessageInfoSize = CGSize(width: 144.0, height: 32.0)
+
 
     static let bottomSheetMaxMiddleHeight: CGFloat = 244
 

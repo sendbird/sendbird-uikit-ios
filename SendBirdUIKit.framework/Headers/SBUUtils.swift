@@ -32,9 +32,9 @@ class SBUUtils: NSObject {
         guard channel.name.contains(kDefaultCoverUrl) == false else { return channel.name }
         
         guard let members = channel.members as? [SBDUser] else { return channel.name }
-        let users = SBUUserManager.convertUserList(users: members)?.filter { $0.userId != SBUGlobals.CurrentUser?.userId }
-        guard users?.count != 0 else { return SBUStringSet.Channel_Name_No_Members}
-        let userNicknames = SBUUserManager.getUserNicknames(users: users)
+        let users = members.sbu_convertUserList().filter { $0.userId != SBUGlobals.CurrentUser?.userId }
+        guard users.count != 0 else { return SBUStringSet.Channel_Name_No_Members}
+        let userNicknames = users.sbu_getUserNicknames()
         let channelName = userNicknames.joined(separator: ", ")
 
         return channelName

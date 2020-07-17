@@ -19,17 +19,21 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
     // MARK: - UI properties (Public)
     public var channelName: String? = nil
     
+    // You can use the customized view and a view that inherits `SBUNewMessageInfo`. If you use a view that inherits SBUNewMessageInfo, you can change the button and their action.
+    public lazy var newMessageInfoView: UIView? = _newMessageInfoView
+    
     public lazy var messageInputView: SBUMessageInputView = _messageInputView
-    public lazy var newMessageInfoView: SBUNewMessageInfo = _newMessageInfoView
-
+    
+    public lazy var titleView: UIView? = _titleView
     public lazy var leftBarButton: UIBarButtonItem? = _leftBarButton
     public lazy var rightBarButton: UIBarButtonItem? = _rightBarButton
+    
+    public lazy var emptyView: UIView? = _emptyView
     
     
     // MARK: - UI properties (Private)
     var theme: SBUChannelTheme = SBUTheme.channelTheme
 
-    private lazy var titleView: SBUChannelTitleView = _titleView
     private lazy var tableView = UITableView()
 
     private lazy var _titleView: SBUChannelTitleView = {
@@ -38,28 +42,28 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
     }()
 
     private lazy var _leftBarButton: UIBarButtonItem = {
-        return UIBarButtonItem(image: nil,
+        return UIBarButtonItem(image: SBUIconSet.iconBack,
                                style: .plain,
                                target: self,
                                action: #selector(onClickBack))
     }()
 
     private lazy var _rightBarButton: UIBarButtonItem = {
-        return UIBarButtonItem(image: nil,
+        return UIBarButtonItem(image: SBUIconSet.iconInfo,
                                style: .plain,
                                target: self,
                                action: #selector(onClickSetting))
     }()
     
     private lazy var _messageInputView: SBUMessageInputView = {
-        return SBUMessageInputView.loadViewFromNibForSB() as! SBUMessageInputView
+        return SBUMessageInputView.sbu_loadViewFromNib() as! SBUMessageInputView
     }()
     
     private lazy var _newMessageInfoView: SBUNewMessageInfo = {
         return SBUNewMessageInfo()
     }()
 
-    private lazy var emptyView: SBUEmptyView = {
+    private lazy var _emptyView: SBUEmptyView = {
         let emptyView = SBUEmptyView()
         emptyView.type = EmptyViewType.none
         emptyView.delegate = self
@@ -191,8 +195,11 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         constraint.isActive = true
         constraint.priority = .defaultLow
 
-        let stack = UIStackView(arrangedSubviews: [self.titleView, spacer])
-        stack.axis = .horizontal
+        var stack = UIStackView()
+        if let titleView = self.titleView {
+            stack = UIStackView(arrangedSubviews: [titleView, spacer])
+            stack.axis = .horizontal
+        }
         
         self.navigationItem.titleView = stack
         if #available(iOS 13.0, *) {
@@ -223,7 +230,7 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
             self.register(unknownMessageCell: SBUUnknownMessageCell())
         }
 
-        self.emptyView.transform = CGAffineTransform(scaleX: 1, y: -1)
+        self.emptyView?.transform = CGAffineTransform(scaleX: 1, y: -1)
         self.tableView.backgroundView = self.emptyView
         self.tableView.transform = CGAffineTransform(scaleX: 1, y: -1)
         self.tableView.rowHeight = UITableView.automaticDimension
@@ -234,8 +241,10 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         self.view.addSubview(self.messageInputView)
         
         // new message info view
-        self.newMessageInfoView.isHidden = true
-        self.view.addSubview(self.newMessageInfoView)
+        if let newMessageInfoView = self.newMessageInfoView {
+            newMessageInfoView.isHidden = true
+            self.view.addSubview(newMessageInfoView)
+        }
         
         // autolayout
         self.setupAutolayout()
@@ -263,21 +272,20 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
             self.messageInputViewBottomConstraint,
         ])
         
-        self.newMessageInfoView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            self.newMessageInfoView.bottomAnchor.constraint(equalTo: self.messageInputView.topAnchor, constant: -17),
-            self.newMessageInfoView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 0),
-        ])
+        if let newMessageInfoView = self.newMessageInfoView {
+            newMessageInfoView.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                newMessageInfoView.bottomAnchor.constraint(equalTo: self.messageInputView.topAnchor, constant: -17),
+                newMessageInfoView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 0),
+            ])
+        }
     }
     
     open func setupStyles() {
         self.navigationController?.navigationBar.setBackgroundImage(UIImage.from(color: theme.navigationBarTintColor), for: .default)
         self.navigationController?.navigationBar.shadowImage = UIImage.from(color: theme.navigationBarShadowColor)
         
-        self.leftBarButton?.image = SBUIconSet.iconBack
         self.leftBarButton?.tintColor = theme.leftBarButtonTintColor
-        
-        self.rightBarButton?.image = SBUIconSet.iconInfo
         self.rightBarButton?.tintColor = theme.rightBarButtonTintColor
         
         self.view.backgroundColor = theme.backgroundColor
@@ -318,6 +326,7 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
         
         if let channel = self.channel {
+            guard let titleView = titleView as? SBUChannelTitleView else { return }
             titleView.updateChannelStatus(channel: channel)
         }
     }
@@ -391,7 +400,9 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
             SBULog.info("[Response] \(messages.count) messages")
             
             guard messages.count != 0 else {
-                self?.emptyView.updateType(.noMessages)
+                if let emptyView = self?.emptyView as? SBUEmptyView {
+                    emptyView.reloadData(.noMessages)
+                }
                 self?.hasPrevious = false
                 self?.isRequestingLoad = false
                 
@@ -779,7 +790,9 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
                 
                 self?.loadPrevMessageList(reset: true)
                 
-                self?.titleView.configure(channel: self?.channel, title: self?.channelName)
+                if let titleView = self?.titleView as? SBUChannelTitleView {
+                    titleView.configure(channel: self?.channel, title: self?.channelName)
+                }
                 
                 let isOperator = SBUChannelManager.isOperator(channel: self?.channel, userId: SBUGlobals.CurrentUser?.userId)
                 let isFrozen = self?.channel?.isFrozen ?? false
@@ -840,8 +853,12 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         // Generate full list for draw
         self.fullMessageList = self.sortedFullMessageList()
         
-        DispatchQueue.main.async {
-            self.emptyView.updateType(self.fullMessageList.isEmpty ? .noMessages : .none)
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            
+            if let emptyView = self.emptyView as? SBUEmptyView {
+                emptyView.reloadData(self.fullMessageList.isEmpty ? .noMessages : .none)
+            }
             
             guard needReload == true else { return }
             
@@ -861,7 +878,7 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         
         self.sortAllMessageList(needReload: needReload)
     }
-
+    
     private func upsertMessagesForSync(messages: [SBDBaseMessage]?, needUpdateNewMessage: Bool = true, needReload: Bool) {
         messages?.forEach { message in
             if let index = self.messageList.firstIndex(where: { $0.messageId == message.messageId }) {
@@ -873,12 +890,12 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
             case let userMessage as SBDUserMessage:
                 if userMessage.requestId.count > 0 { break }
                 if needUpdateNewMessage {
-                    self.countUpNewMessageInfo()
+                    self.increaseNewMessageCount()
                 }
             case let fileMessage as SBDFileMessage:
                 if fileMessage.requestId.count > 0 { break }
                 if needUpdateNewMessage {
-                    self.countUpNewMessageInfo()
+                    self.increaseNewMessageCount()
                 }
             default:
                 break
@@ -945,7 +962,8 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         self.sortAllMessageList(needReload: needReload)
     }
     
-    private func countUpNewMessageInfo() {
+    /// This function increases the new message count.
+    public func increaseNewMessageCount() {
         guard self.tableView.contentOffset != .zero else {
             self.lastSeenIndexPath = nil
             return
@@ -955,11 +973,17 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
             return
         }
         
-        self.newMessageInfoView.isHidden = false
-        self.newMessagesCount += 1
-        self.newMessageInfoView.updateTitle(count: self.newMessagesCount) { [weak self] in
-            self?.scrollToBottom()
+        if let newMessageInfoView = self.newMessageInfoView {
+            newMessageInfoView.isHidden = false
         }
+        self.newMessagesCount += 1
+        
+        if let newMessageInfoView = self.newMessageInfoView as? SBUNewMessageInfo {
+            newMessageInfoView.updateCount(count: self.newMessagesCount) { [weak self] in
+                self?.scrollToBottom()
+            }
+        }
+        
         if let indexPath = self.tableView.indexPathsForVisibleRows?[0] {
             self.lastSeenIndexPath = IndexPath(row: indexPath.row + 1, section: 0)
         }
@@ -967,7 +991,6 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
 
 
     // MARK: - Common
-    
     public func checkSameDayAsNextMessage(currentIndex: Int) -> Bool {
         guard currentIndex < self.fullMessageList.count-1 else { return false }
         
@@ -993,10 +1016,12 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         self.messageList = []
         self.hasPrevious = true
         self.lastUpdatedTimestamp = Int64(Date().timeIntervalSince1970*1000)
-        self.emptyView.updateType(.error)
+        if let emptyView = self.emptyView as? SBUEmptyView {
+            emptyView.reloadData(.error)
+        }
         
-        DispatchQueue.main.async {
-            self.tableView.reloadData()
+        DispatchQueue.main.async { [weak self] in
+            self?.tableView.reloadData()
         }
     }
     
@@ -1115,14 +1140,18 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
     public func scrollToBottom() {
         guard self.fullMessageList.count != 0 else { return }
         
-        DispatchQueue.main.async {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            
             UIView.animate(withDuration: 0.1, animations: {
                 let indexPath = IndexPath(row: 0, section: 0)
                 self.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
             }) { _ in
                 self.newMessagesCount = 0
                 self.lastSeenIndexPath = nil
-                self.newMessageInfoView.isHidden = true
+                if let newMessageInfoView = self.newMessageInfoView {
+                    newMessageInfoView.isHidden = true
+                }
             }
         }
     }
@@ -1132,27 +1161,27 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
     public func register(adminMessageCell: SBUBaseMessageCell, nib: UINib? = nil) {
         self.adminMessageCell = adminMessageCell
         if let nib = nib {
-            self.tableView.register(nib, forCellReuseIdentifier: adminMessageCell.className)
+            self.tableView.register(nib, forCellReuseIdentifier: adminMessageCell.sbu_className)
         } else {
-            self.tableView.register(type(of: adminMessageCell), forCellReuseIdentifier: adminMessageCell.className)
+            self.tableView.register(type(of: adminMessageCell), forCellReuseIdentifier: adminMessageCell.sbu_className)
         }
     }
 
     public func register(userMessageCell: SBUBaseMessageCell, nib: UINib? = nil) {
         self.userMessageCell = userMessageCell
         if let nib = nib {
-            self.tableView.register(nib, forCellReuseIdentifier: userMessageCell.className)
+            self.tableView.register(nib, forCellReuseIdentifier: userMessageCell.sbu_className)
         } else {
-            self.tableView.register(type(of: userMessageCell), forCellReuseIdentifier: userMessageCell.className)
+            self.tableView.register(type(of: userMessageCell), forCellReuseIdentifier: userMessageCell.sbu_className)
         }
     }
 
     public func register(fileMessageCell: SBUBaseMessageCell, nib: UINib? = nil) {
         self.fileMessageCell = fileMessageCell
         if let nib = nib {
-            self.tableView.register(nib, forCellReuseIdentifier: fileMessageCell.className)
+            self.tableView.register(nib, forCellReuseIdentifier: fileMessageCell.sbu_className)
         } else {
-            self.tableView.register(type(of: fileMessageCell), forCellReuseIdentifier: fileMessageCell.className)
+            self.tableView.register(type(of: fileMessageCell), forCellReuseIdentifier: fileMessageCell.sbu_className)
         }
     }
 
@@ -1160,36 +1189,36 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         self.customMessageCell = customMessageCell
         guard let customMessageCell = customMessageCell else { return }
         if let nib = nib {
-            self.tableView.register(nib, forCellReuseIdentifier: customMessageCell.className)
+            self.tableView.register(nib, forCellReuseIdentifier: customMessageCell.sbu_className)
         } else {
-            self.tableView.register(type(of: customMessageCell), forCellReuseIdentifier: customMessageCell.className)
+            self.tableView.register(type(of: customMessageCell), forCellReuseIdentifier: customMessageCell.sbu_className)
         }
     }
     
     private func register(unknownMessageCell: SBUBaseMessageCell, nib: UINib? = nil) {
         self.unknownMessageCell = unknownMessageCell
         if let nib = nib {
-            self.tableView.register(nib, forCellReuseIdentifier: unknownMessageCell.className)
+            self.tableView.register(nib, forCellReuseIdentifier: unknownMessageCell.sbu_className)
         } else {
-            self.tableView.register(type(of: unknownMessageCell), forCellReuseIdentifier: unknownMessageCell.className)
+            self.tableView.register(type(of: unknownMessageCell), forCellReuseIdentifier: unknownMessageCell.sbu_className)
         }
     }
 
     open func getCellIdentifier(by message: SBDBaseMessage) -> String {
         switch message {
-        case is SBDFileMessage:  return fileMessageCell?.className ?? SBUFileMessageCell.className
-        case is SBDUserMessage:  return userMessageCell?.className ?? SBUUserMessageCell.className
-        case is SBDAdminMessage: return adminMessageCell?.className ?? SBUAdminMessageCell.className
+        case is SBDFileMessage:  return fileMessageCell?.sbu_className ?? SBUFileMessageCell.sbu_className
+        case is SBDUserMessage:  return userMessageCell?.sbu_className ?? SBUUserMessageCell.sbu_className
+        case is SBDAdminMessage: return adminMessageCell?.sbu_className ?? SBUAdminMessageCell.sbu_className
         default:
-            return unknownMessageCell?.className ?? SBUUnknownMessageCell.className
+            return unknownMessageCell?.sbu_className ?? SBUUnknownMessageCell.sbu_className
         }
     }
 
-    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    open func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 
     }
 
-    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    open func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let channel = self.channel else {
             self.didReceiveError("Channel must exist!")
             return UITableViewCell()
@@ -1265,7 +1294,7 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         return cell
     }
     
-    public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+    open func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if self.fullMessageList.count > 0,
             self.hasPrevious == true,
             indexPath.row == (self.fullMessageList.count - Int(self.limit)/2),
@@ -1276,7 +1305,7 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         }
     }
     
-    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    open func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.fullMessageList.count
     }
     
@@ -1286,21 +1315,33 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         if scrollView.contentOffset.y < 10 {
             self.newMessagesCount = 0
             self.lastSeenIndexPath = nil
-            self.newMessageInfoView.isHidden = true
+            if let newMessageInfoView = self.newMessageInfoView {
+                newMessageInfoView.isHidden = true
+            }
         }
     }
     
     // MARK: - Cell generator
     func setUserMessageCell(_ cell: SBUUserMessageCell, userMessage: SBDUserMessage, indexPath: IndexPath) {
-        self.setTapGestureHandler(cell, message: userMessage)
+        cell.tapHandlerToContent = { [weak self] in
+            self?.setTapGestureHandler(cell, message: userMessage)
+        }
         
-        self.setLongTapGestureHandler(cell, message: userMessage, indexPath: indexPath)
+        cell.longPressHandlerToContent = { [weak self, weak cell] in
+            guard let self = self, let cell = cell else { return }
+            self.setLongTapGestureHandler(cell, message: userMessage, indexPath: indexPath)
+        }
     }
     
     func setFileMessageCell(_ cell: SBUFileMessageCell, fileMessage: SBDFileMessage, indexPath: IndexPath) {
-        self.setTapGestureHandler(cell, message: fileMessage)
+        cell.tapHandlerToContent = { [weak self] in
+            self?.setTapGestureHandler(cell, message: fileMessage)
+        }
 
-        self.setLongTapGestureHandler(cell, message: fileMessage, indexPath: indexPath)
+        cell.longPressHandlerToContent = { [weak self, weak cell] in
+            guard let self = self, let cell = cell else { return }
+            self.setLongTapGestureHandler(cell, message: fileMessage, indexPath: indexPath)
+        }
         
         switch fileMessage.sendingStatus {
         case .canceled, .pending, .failed, .none:
@@ -1331,9 +1372,14 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
     }
     
     func setUnkownMessageCell(_ cell: SBUUnknownMessageCell, unknownMessage: SBDBaseMessage, indexPath: IndexPath) {
-        self.setTapGestureHandler(cell, message: unknownMessage)
+        cell.tapHandlerToContent = { [weak self] in
+            self?.setTapGestureHandler(cell, message: unknownMessage)
+        }
         
-        self.setLongTapGestureHandler(cell, message: unknownMessage, indexPath: indexPath)
+        cell.longPressHandlerToContent = { [weak self, weak cell] in
+            guard let self = self, let cell = cell else { return }
+            self.setLongTapGestureHandler(cell, message: unknownMessage, indexPath: indexPath)
+        }
     }
     
     private func calculatorMenuPoint(indexPath: IndexPath, position: MessagePosition) -> CGPoint {
@@ -1353,66 +1399,63 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
     ///   - cell: Message cell object
     ///   - message: Message object
     open func setTapGestureHandler(_ cell: SBUBaseMessageCell, message: SBDBaseMessage) {
-        cell.tapHandlerToContent = { [weak self] in
-            guard let self = self else { return }
-            self.dismissKeyboard()
-
-            switch message {
-                
-            case let userMessage as SBDUserMessage:
-                // User message type
-                guard userMessage.sendingStatus == .failed, userMessage.sender?.userId == SBUGlobals.CurrentUser?.userId  else { return }
+        self.dismissKeyboard()
+        
+        switch message {
+            
+        case let userMessage as SBDUserMessage:
+            // User message type
+            guard userMessage.sendingStatus == .failed, userMessage.sender?.userId == SBUGlobals.CurrentUser?.userId  else { return }
+            let retryItem = SBUActionSheetItem(title: SBUStringSet.Retry) { [weak self] in
+                self?.resendMessage(failedMessage: userMessage)
+            }
+            let removeItem = SBUActionSheetItem(title: SBUStringSet.Remove, color: self.theme.removeItemColor) { [weak self] in
+                self?.deleteResendableMessages(requestIds: [userMessage.requestId], needReload: true)
+            }
+            let cancelItem = SBUActionSheetItem(title: SBUStringSet.Cancel, color: self.theme.cancelItemColor)
+            SBUActionSheet.show(items: [retryItem, removeItem], cancelItem: cancelItem)
+            
+        case let fileMessage as SBDFileMessage:
+            // File message type
+            switch fileMessage.sendingStatus {
+            case .pending:
+                break
+            case .failed:
+                guard fileMessage.sender?.userId == SBUGlobals.CurrentUser?.userId else { return }
                 let retryItem = SBUActionSheetItem(title: SBUStringSet.Retry) { [weak self] in
-                    self?.resendMessage(failedMessage: userMessage)
+                    self?.resendMessage(failedMessage: fileMessage)
                 }
-                let removeItem = SBUActionSheetItem(title: SBUStringSet.Remove, color: self.theme.removeItemColor) { [weak self] in
-                    self?.deleteResendableMessages(requestIds: [userMessage.requestId], needReload: true)
+                let removeItem = SBUActionSheetItem(title: SBUStringSet.Remove, color: self.theme.alertRemoveColor) { [weak self] in
+                    self?.deleteResendableMessages(requestIds: [fileMessage.requestId], needReload: true)
                 }
-                let cancelItem = SBUActionSheetItem(title: SBUStringSet.Cancel, color: self.theme.cancelItemColor)
+                let cancelItem = SBUActionSheetItem(title: SBUStringSet.Cancel, color: self.theme.alertCancelColor)
                 SBUActionSheet.show(items: [retryItem, removeItem], cancelItem: cancelItem)
-                
-            case let fileMessage as SBDFileMessage:
-                // File message type
-                switch fileMessage.sendingStatus {
-                case .pending:
-                    break
-                case .failed:
-                    guard fileMessage.sender?.userId == SBUGlobals.CurrentUser?.userId else { return }
-                    let retryItem = SBUActionSheetItem(title: SBUStringSet.Retry) { [weak self] in
-                        self?.resendMessage(failedMessage: fileMessage)
-                    }
-                    let removeItem = SBUActionSheetItem(title: SBUStringSet.Remove, color: self.theme.alertRemoveColor) { [weak self] in
-                        self?.deleteResendableMessages(requestIds: [fileMessage.requestId], needReload: true)
-                    }
-                    let cancelItem = SBUActionSheetItem(title: SBUStringSet.Cancel, color: self.theme.alertCancelColor)
-                    SBUActionSheet.show(items: [retryItem, removeItem], cancelItem: cancelItem)
-                case .succeeded:
-                    switch SBUUtils.getFileType(by: fileMessage) {
-                    case .image:
-                        let viewer = SBUFileViewer(fileMessage: fileMessage, delegate: self)
-                        let naviVC = UINavigationController(rootViewController: viewer)
-                        self.present(naviVC, animated: true)
-                    case .etc, .pdf:
-                        guard let url = URL(string: fileMessage.url) else { return }
-                        let safariVC = SFSafariViewController(url: url)
-                        self.present(safariVC, animated: true, completion: nil)
-                    case .video, .audio:
-                        guard let url = URL(string: fileMessage.url) else { return }
-                        let vc = AVPlayerViewController()
-                        vc.player = AVPlayer(url: url)
-                        self.present(vc, animated: true) { vc.player?.play() }
-                    default:
-                        break
-                    }
+            case .succeeded:
+                switch SBUUtils.getFileType(by: fileMessage) {
+                case .image:
+                    let viewer = SBUFileViewer(fileMessage: fileMessage, delegate: self)
+                    let naviVC = UINavigationController(rootViewController: viewer)
+                    self.present(naviVC, animated: true)
+                case .etc, .pdf:
+                    guard let url = URL(string: fileMessage.url) else { return }
+                    let safariVC = SFSafariViewController(url: url)
+                    self.present(safariVC, animated: true, completion: nil)
+                case .video, .audio:
+                    guard let url = URL(string: fileMessage.url) else { return }
+                    let vc = AVPlayerViewController()
+                    vc.player = AVPlayer(url: url)
+                    self.present(vc, animated: true) { vc.player?.play() }
                 default:
                     break
                 }
-            case _ as SBDAdminMessage:
-                // Admin message type
-                break
             default:
                 break
             }
+        case _ as SBDAdminMessage:
+            // Admin message type
+            break
+        default:
+            break
         }
     }
 
@@ -1422,51 +1465,48 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
     ///   - message: Message object
     ///   - indexPath: indexpath of cell
     open func setLongTapGestureHandler(_ cell: SBUBaseMessageCell, message: SBDBaseMessage, indexPath: IndexPath) {
-        cell.longPressHandlerToContent = { [weak self, weak cell] in
-            guard let self = self, let cell = cell else { return }
-            self.dismissKeyboard()
-
-            switch message {
-            case let userMessage as SBDUserMessage:
-                let isCurrentUser = userMessage.sender?.userId == SBUGlobals.CurrentUser?.userId
-                let types: [SBUMenuItemType] = isCurrentUser ? [.copy, .edit, .delete] : [.copy]
-                cell.isSelected = true
-
-                if SBUEmojiManager.useReaction {
-                    self.showMenuViewController(cell, message: message, types: types)
-                } else {
-                    self.showMenuModal(cell, indexPath: indexPath,  message: message, types: types)
-                }
-
-            case let fileMessage as SBDFileMessage:
-                guard fileMessage.sendingStatus == .succeeded else { return }
-                let isCurrentUser = fileMessage.sender?.userId == SBUGlobals.CurrentUser?.userId
-                let types: [SBUMenuItemType] = isCurrentUser ? [.save, .delete] : [.save]
-                cell.isSelected = true
-
-                if SBUEmojiManager.useReaction {
-                    self.showMenuViewController(cell, message: message, types: types)
-                } else {
-                    self.showMenuModal(cell, indexPath: indexPath, message: message, types: types)
-                }
-
-            case _ as SBDAdminMessage:
-                break
-                
-            default:
-                // Unknown Message
-                guard message.sender?.userId == SBUGlobals.CurrentUser?.userId else { return }
-                
-                let deleteItem = SBUMenuItem(title: SBUStringSet.Delete, color: self.theme.menuTextColor, image: SBUIconSet.iconDelete) { [weak self] in
-                    self?.deleteMessage(message: message)
-                }
-                let menuPoint = self.calculatorMenuPoint(indexPath: indexPath, position: cell.position)
-                let items = [deleteItem]
-
-                cell.isSelected = true
-                SBUMenuView.show(items: items, point: menuPoint) {
-                    cell.isSelected = false
-                }
+        self.dismissKeyboard()
+        
+        switch message {
+        case let userMessage as SBDUserMessage:
+            let isCurrentUser = userMessage.sender?.userId == SBUGlobals.CurrentUser?.userId
+            let types: [SBUMenuItemType] = isCurrentUser ? [.copy, .edit, .delete] : [.copy]
+            cell.isSelected = true
+            
+            if SBUEmojiManager.useReaction {
+                self.showMenuViewController(cell, message: message, types: types)
+            } else {
+                self.showMenuModal(cell, indexPath: indexPath,  message: message, types: types)
+            }
+            
+        case let fileMessage as SBDFileMessage:
+            guard fileMessage.sendingStatus == .succeeded else { return }
+            let isCurrentUser = fileMessage.sender?.userId == SBUGlobals.CurrentUser?.userId
+            let types: [SBUMenuItemType] = isCurrentUser ? [.save, .delete] : [.save]
+            cell.isSelected = true
+            
+            if SBUEmojiManager.useReaction {
+                self.showMenuViewController(cell, message: message, types: types)
+            } else {
+                self.showMenuModal(cell, indexPath: indexPath, message: message, types: types)
+            }
+            
+        case _ as SBDAdminMessage:
+            break
+            
+        default:
+            // Unknown Message
+            guard message.sender?.userId == SBUGlobals.CurrentUser?.userId else { return }
+            
+            let deleteItem = SBUMenuItem(title: SBUStringSet.Delete, color: self.theme.menuTextColor, image: SBUIconSet.iconDelete) { [weak self] in
+                self?.deleteMessage(message: message)
+            }
+            let menuPoint = self.calculatorMenuPoint(indexPath: indexPath, position: cell.position)
+            let items = [deleteItem]
+            
+            cell.isSelected = true
+            SBUMenuView.show(items: items, point: menuPoint) {
+                cell.isSelected = false
             }
         }
     }
@@ -1661,12 +1701,15 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
     // Mark as read
     open func channelDidUpdateReadReceipt(_ sender: SBDGroupChannel) {
         guard self.channel?.channelUrl == sender.channelUrl else { return }
-        titleView.updateChannelStatus(channel: sender)
+        
+        if let titleView = titleView as? SBUChannelTitleView {
+            titleView.updateChannelStatus(channel: sender)
+        }
         
         SBULog.info("Did update readReceipt, ChannelUrl:\(sender.channelUrl)")
         
-        DispatchQueue.main.async {
-            self.tableView.reloadData()
+        DispatchQueue.main.async { [weak self] in
+            self?.tableView.reloadData()
         }
     }
     
@@ -1676,8 +1719,8 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         
         SBULog.info("Did update deliveryReceipt, ChannelUrl:\(sender.channelUrl)")
         
-        DispatchQueue.main.async {
-            self.tableView.reloadData()
+        DispatchQueue.main.async { [weak self] in
+            self?.tableView.reloadData()
         }
     }
     
@@ -1686,7 +1729,9 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         
         SBULog.info("Did update typing status")
         
-        titleView.updateChannelStatus(channel: sender)
+        if let titleView = titleView as? SBUChannelTitleView {
+            titleView.updateChannelStatus(channel: sender)
+        }
     }
     
     open func channelWasChanged(_ sender: SBDBaseChannel) {
@@ -1694,9 +1739,11 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         guard let channel = sender as? SBDGroupChannel else { return }
         SBULog.info("Channel was changed, ChannelUrl:\(channel.channelUrl)")
 
-        titleView.configure(channel: channel, title: self.channelName)
+        if let titleView = titleView as? SBUChannelTitleView {
+            titleView.configure(channel: channel, title: self.channelName)
+        }
     }
-
+    
     public func channelWasFrozen(_ sender: SBDBaseChannel) {
         guard self.channel?.channelUrl == sender.channelUrl else { return }
         guard let channel = sender as? SBDGroupChannel else { return }
@@ -1818,11 +1865,13 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         self.channel?.endTyping()
     }
 
+    
     // MARK: - UIViewControllerTransitioningDelegate
     public func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
         return SBUBottomSheetController(presentedViewController: presented, presenting: presenting)
     }
 
+    
     // MARK: - UIImagePickerViewControllerDelegate
     public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         picker.dismiss(animated: true) { [weak self] in
@@ -1859,7 +1908,9 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
     
     // MARK: - SBUEmptyViewDelegate
     public func didSelectRetry() {
-        self.emptyView.updateType(.noMessages)
+        if let emptyView = self.emptyView as? SBUEmptyView {
+            emptyView.reloadData(.noMessages)
+        }
         
         self.loadChannel(channelUrl: self.channel?.channelUrl)
     }
@@ -1885,5 +1936,4 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
     open func didReceiveError(_ message: String?) {
         SBULog.error("Did receive error: \(message ?? "")")
     }
-
 }

@@ -1,6 +1,11 @@
 # Change Log
 
-### v1.1.0 (July 10, 2020)
+### v1.1.1 (Jul 17, 2020)
+* Supported - access control for customizing classes and functions
+* Modified - `userDidLeave` logic for `includeEmptyChannel`
+* Improved - Stability
+
+### v1.1.0 (Jul 10, 2020)
 * Supported - Reaction feature
   * Added classes 
   	* `SBUReactionsViewController`
@@ -13,15 +18,15 @@
   	* `setLongTapEmojiGestureHandler(cell:emojiKey:)` in `SBUChannelViewController` class
   	* `showEmojiListModal(message:)` in `SBUChannelViewController` class
 
-### v1.0.11 (June 25, 2020)
+### v1.0.11 (Jun 25, 2020)
 * Supported - Custom `SBDChanngeListQuery` in the initialization function of `SBUChannelListViewController`
 * Supported - Custom `SBDMessageListParams` in the initialization function of `SBUChannelViewController`
 * Added - Unknown type message
 
-### v1.0.10 (June 18, 2020)
+### v1.0.10 (Jun 18, 2020)
 * Fixed - Incorrect operator check logic in frozen group channel
 
-### v1.0.9 (June 8, 2020)
+### v1.0.9 (Jun 8, 2020)
 * Supported - customized params, Changed access control
 	* **`SBUChannelViewController`**
 		* `channel`, `messageList`, `resendableMessages` properties

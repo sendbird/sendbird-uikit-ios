@@ -13,14 +13,16 @@ import SendBirdSDK
 open class SBUChannelListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SBDChannelDelegate, SBDConnectionDelegate, SBUEmptyViewDelegate {
     
     // MARK: - UI properties (Public)
+    public lazy var titleView: UIView? = _titleView
     public lazy var leftBarButton: UIBarButtonItem? = _leftBarButton
     public lazy var rightBarButton: UIBarButtonItem? = _rightBarButton
 
+    public lazy var emptyView: UIView? = _emptyView
+    
     
     // MARK: - UI properties (Private)
     var theme: SBUChannelListTheme = SBUTheme.channelListTheme
 
-    private lazy var titleView: SBUNavigationTitleView = _titleView
     private var tableView = UITableView()
     private lazy var _titleView: SBUNavigationTitleView = {
         let titleView = SBUNavigationTitleView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 50))
@@ -31,20 +33,20 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
     }()
 
     private lazy var _leftBarButton: UIBarButtonItem = {
-        return UIBarButtonItem( image: nil,
-                         style: .plain,
-                         target: self,
-                         action: #selector(onClickBack) )
+        return UIBarButtonItem(image: SBUIconSet.iconBack,
+                               style: .plain,
+                               target: self,
+                               action: #selector(onClickBack))
     }()
     
     private lazy var _rightBarButton: UIBarButtonItem = {
-        return UIBarButtonItem( image: nil,
-                                style: .plain,
-                                target: self,
-                                action: #selector(onClickCreate) )
+        return UIBarButtonItem(image: SBUIconSet.iconCreate,
+                               style: .plain,
+                               target: self,
+                               action: #selector(onClickCreate))
     }()
     
-    private lazy var emptyView: SBUEmptyView = {
+    private lazy var _emptyView: SBUEmptyView = {
         let emptyView = SBUEmptyView()
         emptyView.type = EmptyViewType.none
         emptyView.delegate = self
@@ -90,8 +92,8 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
     /// See the example below for query generation.
     /// ````
     ///     let query = SBDGroupChannel.createMyGroupChannelListQuery()
-    ///     query.includeEmptyChannel = false
-    ///     query.includeFrozenChannel = true
+    ///     query?.includeEmptyChannel = false
+    ///     query?.includeFrozenChannel = true
     ///     ...
     /// ````
     /// - Parameter channelListQuery: Your own `SBDGroupChannelListQuery` object
@@ -148,11 +150,7 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
         self.navigationController?.navigationBar.setBackgroundImage(UIImage.from(color: theme.navigationBarTintColor), for: .default)
         self.navigationController?.navigationBar.shadowImage = UIImage.from(color: theme.navigationBarShadowColor)
 
-        self.view.backgroundColor = theme.backgroundColor
-        self.leftBarButton?.image = SBUIconSet.iconBack
         self.leftBarButton?.tintColor = theme.leftBarButtonTintColor
-       
-        self.rightBarButton?.image = SBUIconSet.iconCreate
         self.rightBarButton?.tintColor = theme.rightBarButtonTintColor
         
         self.view.backgroundColor = theme.backgroundColor
@@ -376,8 +374,12 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
         })
         
         self.channelList = sortedChannelList.unique()
-        DispatchQueue.main.async {
-            self.emptyView.updateType((self.channelList.count == 0) ? .noChannels : .none)
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            
+            if let emptyView = self.emptyView as? SBUEmptyView {
+                emptyView.reloadData((self.channelList.count == 0) ? .noChannels : .none)
+            }
             
             guard needReload == true else { return }
             
@@ -399,7 +401,8 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
         guard let channels = channels else { return }
         
         for channel in channels {
-            guard channel.lastMessage != nil else { continue }
+            let includeEmptyChannel = self.channelListQuery?.includeEmptyChannel ?? false
+            guard (channel.lastMessage != nil || includeEmptyChannel) else { continue }
             guard let index = self.channelList.firstIndex(of: channel) else {
                 self.channelList.append(channel)
                 continue
@@ -456,10 +459,12 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
         self.channelListQuery = nil
         self.channelList = []
         self.lastUpdatedTimestamp = Int64(Date().timeIntervalSince1970*1000)
-        self.emptyView.updateType(.error)
+        if let emptyView = self.emptyView as? SBUEmptyView {
+            emptyView.reloadData(.error)
+        }
         
-        DispatchQueue.main.async {
-            self.tableView.reloadData()
+        DispatchQueue.main.async { [weak self] in
+            self?.tableView.reloadData()
         }
     }
     
@@ -504,9 +509,9 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
         self.channelCell = channelCell
 
         if let nib = nib {
-            self.tableView.register(nib, forCellReuseIdentifier: channelCell.className)
+            self.tableView.register(nib, forCellReuseIdentifier: channelCell.sbu_className)
         } else {
-            self.tableView.register(type(of: channelCell), forCellReuseIdentifier: channelCell.className)
+            self.tableView.register(type(of: channelCell), forCellReuseIdentifier: channelCell.sbu_className)
         }
     }
     
@@ -519,13 +524,13 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
 
         guard let customCell = customCell else { return }
         if let nib = nib {
-            self.tableView.register(nib, forCellReuseIdentifier: customCell.className)
+            self.tableView.register(nib, forCellReuseIdentifier: customCell.sbu_className)
         } else {
-            self.tableView.register(type(of: customCell), forCellReuseIdentifier: customCell.className)
+            self.tableView.register(type(of: customCell), forCellReuseIdentifier: customCell.sbu_className)
         }
     }
 
-    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    open func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.showChannel(channelUrl: self.channelList[indexPath.row].channelUrl)
     }
 
@@ -535,9 +540,9 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
         var cell: SBUBaseChannelCell? = nil
         
         if let customCell = self.customCell, let customType = channel.customType, !customType.isEmpty {
-            cell = tableView.dequeueReusableCell(withIdentifier: customCell.className) as? SBUBaseChannelCell
+            cell = tableView.dequeueReusableCell(withIdentifier: customCell.sbu_className) as? SBUBaseChannelCell
         } else {
-            cell = tableView.dequeueReusableCell(withIdentifier: self.channelCell?.className ?? SBUBaseChannelCell.className) as? SBUBaseChannelCell
+            cell = tableView.dequeueReusableCell(withIdentifier: self.channelCell?.sbu_className ?? SBUBaseChannelCell.sbu_className) as? SBUBaseChannelCell
         }
 
         cell?.selectionStyle = .none
@@ -546,7 +551,7 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
 
     }
     
-    public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+    open func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if self.channelList.count > 0,
             self.channelListQuery?.hasNext == true,
             indexPath.row == (self.channelList.count - Int(self.limit)/2),
@@ -557,14 +562,14 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
         }
     }
     
-    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    open func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         tableView.backgroundView?.isHidden = (self.channelList.count != 0)
 
         return self.channelList.count
     }
     
     @available(iOS 11.0, *)
-    public func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+    open func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let index = indexPath.row
         let channel = self.channelList[index]
         let size = tableView.visibleCells[0].frame.height
@@ -580,7 +585,7 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
         leaveTypeView.layer.cornerRadius = iconSize/2
         leaveTypeView.backgroundColor = theme.leaveBackgroundColor
 
-        let leaveIcon = SBUIconSet.iconActionLeave.with(tintColor: theme.leaveTintColor)
+        let leaveIcon = SBUIconSet.iconActionLeave.sbu_with(tintColor: theme.leaveTintColor)
         
         leaveAction.backgroundColor = UIColor.from(image: leaveIcon, imageView: leaveTypeView, size: size, backgroundColor: theme.alertBackgroundColor)
         
@@ -602,10 +607,10 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
         let alarmIcon: UIImage
         if pushOption == .off {
             alarmTypeView.backgroundColor = theme.notificationOnBackgroundColor
-            alarmIcon = SBUIconSet.iconActionNotificationOn.with(tintColor: theme.notificationOnTintColor)
+            alarmIcon = SBUIconSet.iconActionNotificationOn.sbu_with(tintColor: theme.notificationOnTintColor)
         } else {
             alarmTypeView.backgroundColor = theme.notificationOffBackgroundColor
-            alarmIcon = SBUIconSet.iconActionNotificationOff.with(tintColor: theme.notificationOffTintColor)
+            alarmIcon = SBUIconSet.iconActionNotificationOff.sbu_with(tintColor: theme.notificationOffTintColor)
         }
         
         alarmAction.backgroundColor = UIColor.from(image: alarmIcon, imageView: alarmTypeView, size: size, backgroundColor: theme.alertBackgroundColor)
@@ -614,7 +619,7 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
     }
 
     @available(iOS, deprecated: 13.0)
-    public func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+    open func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         if #available(iOS 11.0, *) { return nil }
         
         let index = indexPath.row
@@ -631,7 +636,7 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
         let leaveTypeView = UIImageView(frame: CGRect(x: (size-iconSize)/2, y: (size-iconSize)/2, width: iconSize, height: iconSize))
         leaveTypeView.layer.cornerRadius = iconSize/2
         leaveTypeView.backgroundColor = theme.leaveBackgroundColor
-        let leaveIcon = SBUIconSet.iconActionLeave.with(tintColor: theme.leaveTintColor)
+        let leaveIcon = SBUIconSet.iconActionLeave.sbu_with(tintColor: theme.leaveTintColor)
         
         leave.backgroundColor = UIColor.from(image: leaveIcon, imageView: leaveTypeView, size: size, backgroundColor: theme.alertBackgroundColor)
 
@@ -653,10 +658,10 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
         let alarmIcon: UIImage
         if pushOption == .off {
             alarmTypeView.backgroundColor = theme.notificationOnBackgroundColor
-            alarmIcon = SBUIconSet.iconActionNotificationOn.with(tintColor: theme.notificationOnTintColor)
+            alarmIcon = SBUIconSet.iconActionNotificationOn.sbu_with(tintColor: theme.notificationOnTintColor)
         } else {
             alarmTypeView.backgroundColor = theme.notificationOffBackgroundColor
-            alarmIcon = SBUIconSet.iconActionNotificationOff.with(tintColor: theme.notificationOffTintColor)
+            alarmIcon = SBUIconSet.iconActionNotificationOff.sbu_with(tintColor: theme.notificationOffTintColor)
         }
         
         alarm.backgroundColor = UIColor.from(image: alarmIcon, imageView: alarmTypeView, size: size, backgroundColor: theme.alertBackgroundColor)
@@ -677,10 +682,18 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
     }
         
     open func channel(_ sender: SBDGroupChannel, userDidLeave user: SBDUser) {
-        guard user.userId == SBUGlobals.CurrentUser?.userId else { return }
         SBULog.info("User did leave the channel, Nickname:\(String(user.nickname ?? "")) - ChannelUrl:\(sender.channelUrl)")
         
-        self.deleteChannels(channelUrls: [sender.channelUrl], needReload: true)
+        guard sender.myMemberState != .none else {
+            self.deleteChannels(channelUrls: [sender.channelUrl], needReload: true)
+            return
+        }
+        
+        if self.channelListQuery?.includeEmptyChannel == false {
+            self.updateChannels(channels: [sender], needReload: true)
+        } else {
+            self.upsertChannels(channels: [sender], needReload: true)
+        }
     }
     
     open func channelWasChanged(_ sender: SBDBaseChannel) {
@@ -715,8 +728,10 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
     
     
     // MARK: - SBUEmptyViewDelegate
-    func didSelectRetry() {
-        self.emptyView.updateType(.noChannels)
+    public func didSelectRetry() {
+        if let emptyView = self.emptyView as? SBUEmptyView {
+            emptyView.reloadData(.noChannels)
+        }
         
         SBULog.info("[Request] Retry load channel list")
         SBUMain.connectionCheck { [weak self] user, error in
