@@ -52,7 +52,7 @@ class SBUUtils: NSObject {
     
     static func getReceiptState(channel: SBDGroupChannel, message: SBDBaseMessage) -> SBUMessageReceiptState {
         let didReadAll = channel.getUnreadMemberCount(message) == 0
-        let didDeliverAll = channel.getUnreadMemberCount(message) == 0
+        let didDeliverAll = channel.getUndeliveredMemberCount(message) == 0
         
         if didReadAll {
             return .readReceipt

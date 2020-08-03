@@ -1,5 +1,8 @@
 # Change Log
 
+### v1.1.2 (Aug 3, 2020)
+* Fixed - Undelivered state checker in message
+
 ### v1.1.1 (Jul 17, 2020)
 * Supported - access control for customizing classes and functions
 * Modified - `userDidLeave` logic for `includeEmptyChannel`
@@ -28,7 +31,7 @@
 
 ### v1.0.9 (Jun 8, 2020)
 * Supported - customized params, Changed access control
-	* **`SBUChannelViewController`**
+	* `SBUChannelViewController`**
 		* `channel`, `messageList`, `resendableMessages` properties
 		* `sendUserMessage(messageParams:)`
 		* `sendFileMessage(messageParams:)`
@@ -36,18 +39,18 @@
 		* `updateUserMessage(message:, text:)`
 		* `updateUserMessage(message:, messageParams:)`
 		* `deleteMessage(message:)`
-	* **`SBUChannelViewController`**
+	* `SBUChannelViewController`**
 		* `channelList` property
 		* `changePushTriggerOption(option:, channel:, completionHandler:)`
 		* `leaveChannel(channel:, completionHandler:)`
-	* **`SBUChannelSettingsViewController`**
+	* `SBUChannelSettingsViewController`**
 		* `updateChannel(channelName:, coverImage:)`
 		* `selectChannelImage()`
 		* `changeChannelName()`
-	* **`SBUCreateChannelViewController`**
+	* `SBUCreateChannelViewController`**
 		* `createChannel(userIds:)`
 		* `createChannel(params:)`
-	* **`SBUInviteUserViewController`**
+	* `SBUInviteUserViewController`**
 		* `inviteUsers()`
 		* `inviteUsers(userIds:)`
 * Added - `setFrozenModeState()` method for changing frozen channel UI in `MessageInputView`
