@@ -48,13 +48,6 @@ open class SBUNewMessageInfo: UIView {
 
     /// This function handles the initialization of views.
     open func setupViews() {
-        self.backgroundColor = .clear
-        self.layer.shadowColor = theme.shadowColor.withAlphaComponent(0.2).cgColor
-        self.layer.shadowOffset = CGSize(width: 5, height: 5)
-        self.layer.shadowOpacity = 0.5
-        self.layer.shadowRadius = 5
-        self.layer.masksToBounds = false
-
         if let messageInfoButton = self.messageInfoButton {
             messageInfoButton.addTarget(self, action: #selector(onClickNewMessageInfo), for: .touchUpInside)
             self.addSubview(messageInfoButton)
@@ -82,6 +75,13 @@ open class SBUNewMessageInfo: UIView {
     
     /// This function handles the initialization of styles.
     open func setupStyles() {
+        self.backgroundColor = .clear
+        self.layer.shadowColor = theme.shadowColor.withAlphaComponent(0.2).cgColor
+        self.layer.shadowOffset = CGSize(width: 5, height: 5)
+        self.layer.shadowOpacity = 0.5
+        self.layer.shadowRadius = 5
+        self.layer.masksToBounds = false
+        
         if let messageInfoButton = self.messageInfoButton, messageInfoButton.tag == DefaultInfoButtonTag {
             messageInfoButton.setImage(SBUIconSet.iconChevronDown.sbu_with(tintColor: theme.newMessageTintColor), for: .normal)
             messageInfoButton.titleLabel?.font = theme.newMessageFont
@@ -97,7 +97,6 @@ open class SBUNewMessageInfo: UIView {
     
     public override func layoutSubviews() {
         super.layoutSubviews()
-        
         self.setupStyles()
     }
 

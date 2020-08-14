@@ -48,7 +48,10 @@ open class SBUAdminMessageCell: SBUBaseMessageCell {
     
     // MARK: - Common
     public func configure(_ message: SBDAdminMessage, hideDateView: Bool) {
-        super.configure(message: message, position: .center, hideDateView: hideDateView, receiptState: .none)
+        super.configure(message: message,
+                        position: .center,
+                        hideDateView: hideDateView,
+                        receiptState: .none)
 
         self.messageLabel.numberOfLines = 0
         self.messageLabel.textAlignment = .center

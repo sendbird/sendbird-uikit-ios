@@ -1,5 +1,10 @@
 # Change Log
 
+### v1.1.3 (Aug 14, 2020)
+* Implemented - OG tag messages feature
+* Fixed - Unmodified message not editable
+* Updated - MessagingSDK minimum version to 3.0.198
+
 ### v1.1.2 (Aug 3, 2020)
 * Fixed - Undelivered state checker in message
 

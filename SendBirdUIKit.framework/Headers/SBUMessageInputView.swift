@@ -29,6 +29,7 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
     @IBOutlet public weak var editView: UIView!
     @IBOutlet public weak var cancelButton: UIButton!
     @IBOutlet public weak var saveButton: UIButton!
+    var basedText: String = ""
 
     @IBOutlet weak var textViewHieghtConstraint: NSLayoutConstraint!
 
@@ -129,6 +130,7 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
     // MARK: - Edit View
     public func startEditMode(text: String) {
         self.textView.text = text
+        self.basedText = text
         
         self.addButton.isHidden = true
         self.addButton.alpha = 0
@@ -148,6 +150,7 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
     
     public func endEditMode() {
         self.textView.text = ""
+        self.basedText = ""
         
         self.addButton.isHidden = false
         self.addButton.alpha = 1
@@ -211,10 +214,14 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
     
     @IBAction open func onClickCancelButton(_ sender: Any) {
         self.endEditMode()
-        self.updateTextViewHeight()
     }
     
     @IBAction open func onClickSaveButton(_ sender: Any) {
+        let editedText = self.textView.text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard basedText != editedText else {
+            self.endEditMode()
+            return
+        }
         self.delegate?.messageInputView?(self, didSelectEdit: self.textView.text.trimmingCharacters(in: .whitespacesAndNewlines))
     }
 

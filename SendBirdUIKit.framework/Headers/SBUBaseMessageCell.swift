@@ -12,7 +12,7 @@ import UIKit
 @available(*, deprecated, renamed: "SBUBaseMessageCell")
 open class SBUMessageBaseCell { }
 
-@IBDesignable
+@objcMembers @IBDesignable
 open class SBUBaseMessageCell: UITableViewCell {
     public var message: SBDBaseMessage = .init()
     public var position: MessagePosition = .center
@@ -79,7 +79,6 @@ open class SBUBaseMessageCell: UITableViewCell {
     
     open override func layoutSubviews() {
         super.layoutSubviews()
-        
         self.setupStyles()
     }
     
@@ -92,7 +91,11 @@ open class SBUBaseMessageCell: UITableViewCell {
     ///   - position: Cell position (left / right / center)
     ///   - hideDateView: Hide or expose date information
     ///   - receiptState: ReadReceipt state
-    open func configure(message: SBDBaseMessage, position: MessagePosition, hideDateView: Bool, receiptState: SBUMessageReceiptState) {
+    open func configure(message: SBDBaseMessage,
+                        position: MessagePosition,
+                        hideDateView: Bool,
+                        receiptState: SBUMessageReceiptState)
+    {
         self.message = message
         self.position = position
         self.dateView.isHidden = hideDateView
@@ -438,68 +441,5 @@ public class MessageStateView: UIView {
         
         self.layoutIfNeeded()
         self.updateConstraints()
-    }
-}
-
-class MessageDetailContainerView: UIView {
-
-    var isSelected: Bool = false
-    var position: MessagePosition = .left
-
-    let stackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        return stackView
-    }()
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        self.setupViews()
-        self.setupAutolayout()
-        self.setupStyles()
-    }
-
-    @available(*, unavailable, renamed: "MessageContentDetailView()")
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-    }
-
-    func setupViews() {
-        self.addSubview(self.stackView)
-    }
-
-    func setupAutolayout() {
-        self.stackView.setConstraint(from: self, left: 0, right: 0, top: 0, bottom: 0)
-    }
-
-    func setupStyles() {
-        self.layer.cornerRadius = 16
-        self.layer.borderColor = UIColor.clear.cgColor
-        self.layer.borderWidth = 1
-        self.clipsToBounds = true
-        self.setBackgroundColor()
-    }
-
-    func setBackgroundColor() {
-
-        let theme = SBUTheme.messageCellTheme
-
-        switch self.position {
-        case .left:
-            self.backgroundColor = self.isSelected ? theme.leftPressedBackgroundColor : theme.leftBackgroundColor
-        case .right:
-            self.backgroundColor = self.isSelected ? theme.rightPressedBackgroundColor : theme.rightBackgroundColor
-        case .center:
-            break
-        }
-
-    }
-
-    func configure(position: MessagePosition, isSelected: Bool) {
-        self.position = position
-        self.isSelected = isSelected
-
-        self.setBackgroundColor()
-        self.setNeedsLayout()
     }
 }

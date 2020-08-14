@@ -291,13 +291,38 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _No
 @property (nonatomic, readonly, copy) NSString * _Nonnull sbu_className;
 @end
 
+@class SBDBaseMessage;
+enum SBUMessageReceiptState : NSInteger;
 
 IB_DESIGNABLE
 SWIFT_CLASS("_TtC13SendBirdUIKit18SBUBaseMessageCell")
 @interface SBUBaseMessageCell : UITableViewCell
+@property (nonatomic, strong) SBDBaseMessage * _Nonnull message;
+@property (nonatomic) enum MessagePosition position;
+@property (nonatomic) enum SBUMessageReceiptState receiptState;
+@property (nonatomic, strong) UIView * _Nonnull messageContentView;
+@property (nonatomic, strong) UIView * _Nonnull dateView;
 - (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
+/// This function handles the initialization of views.
+- (void)setupViews;
+/// This function handles the initialization of actions.
+- (void)setupActions;
+/// This function handles the initialization of autolayouts.
+- (void)setupAutolayout;
+/// This function handles the initialization of styles.
+- (void)setupStyles;
 - (void)layoutSubviews;
+/// This function configure a cell using informations.
+/// \param message Message object
+///
+/// \param position Cell position (left / right / center)
+///
+/// \param hideDateView Hide or expose date information
+///
+/// \param receiptState ReadReceipt state
+///
+- (void)configureWithMessage:(SBDBaseMessage * _Nonnull)message position:(enum MessagePosition)position hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState;
 - (void)prepareForReuse;
 @end
 
@@ -628,7 +653,6 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit27SBUMessageInputViewDelegate_")
 - (void)messageInputViewDidEndTyping;
 @end
 
-@class SBDBaseMessage;
 @class SBDMessageListParams;
 @class SBDUserMessageParams;
 @class SBDFileMessageParams;
@@ -791,7 +815,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)sendDocumentFileMessageWithDocumentUrls:(NSArray<NSURL *> * _Nonnull)documentUrls;
 - (void)onClickBack;
 - (void)onClickSetting;
-- (void)scrollToBottom;
+- (void)scrollToBottomWithAnimated:(BOOL)animated;
 - (void)registerWithAdminMessageCell:(SBUBaseMessageCell * _Nonnull)adminMessageCell nib:(UINib * _Nullable)nib;
 - (void)registerWithUserMessageCell:(SBUBaseMessageCell * _Nonnull)userMessageCell nib:(UINib * _Nullable)nib;
 - (void)registerWithFileMessageCell:(SBUBaseMessageCell * _Nonnull)fileMessageCell nib:(UINib * _Nullable)nib;
@@ -1099,7 +1123,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit12SBUEmptyView")
 
 
 @class UIStackView;
-enum SBUMessageReceiptState : NSInteger;
 @class UILongPressGestureRecognizer;
 @class UITapGestureRecognizer;
 
@@ -1112,10 +1135,11 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUFileMessageCell")
 @property (nonatomic, strong) UIView * _Nonnull profileView;
 @property (nonatomic, strong) UIView * _Nonnull stateView;
 - (void)setupViews;
+- (void)setupStyles;
 - (void)setupAutolayout;
 - (void)setupActions;
 - (void)configure:(SBDFileMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState;
-- (void)setBackgroundColorWithColor:(UIColor * _Nonnull)color;
+- (void)layoutSubviews;
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated;
 - (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nonnull)sender;
 - (void)onTapContentViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
@@ -1143,11 +1167,14 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull body
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull body2;)
 + (UIFont * _Nonnull)body2 SWIFT_WARN_UNUSED_RESULT;
 + (void)setBody2:(UIFont * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull body3;)
++ (UIFont * _Nonnull)body3 SWIFT_WARN_UNUSED_RESULT;
++ (void)setBody3:(UIFont * _Nonnull)value;
 /// Semibold, 20pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull button1;)
 + (UIFont * _Nonnull)button1 SWIFT_WARN_UNUSED_RESULT;
 + (void)setButton1:(UIFont * _Nonnull)value;
-/// Medium, 16pt, Line hieght 22pt
+/// Medium, 16pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull button2;)
 + (UIFont * _Nonnull)button2 SWIFT_WARN_UNUSED_RESULT;
 + (void)setButton2:(UIFont * _Nonnull)value;
@@ -1167,6 +1194,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull capt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull caption3;)
 + (UIFont * _Nonnull)caption3 SWIFT_WARN_UNUSED_RESULT;
 + (void)setCaption3:(UIFont * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull caption4;)
++ (UIFont * _Nonnull)caption4 SWIFT_WARN_UNUSED_RESULT;
++ (void)setCaption4:(UIFont * _Nonnull)value;
 /// Medium, 16pt, Line hieght 22pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull subtitle1;)
 + (UIFont * _Nonnull)subtitle1 SWIFT_WARN_UNUSED_RESULT;
@@ -1522,7 +1552,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageCe
 + (SBUMessageCellTheme * _Nonnull)light SWIFT_WARN_UNUSED_RESULT;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageCellTheme * _Nonnull dark;)
 + (SBUMessageCellTheme * _Nonnull)dark SWIFT_WARN_UNUSED_RESULT;
-- (nonnull instancetype)initWithBackgroundColor:(UIColor * _Nonnull)backgroundColor leftBackgroundColor:(UIColor * _Nonnull)leftBackgroundColor leftPressedBackgroundColor:(UIColor * _Nonnull)leftPressedBackgroundColor rightBackgroundColor:(UIColor * _Nonnull)rightBackgroundColor rightPressedBackgroundColor:(UIColor * _Nonnull)rightPressedBackgroundColor dateFont:(UIFont * _Nonnull)dateFont dateTextColor:(UIColor * _Nonnull)dateTextColor dateBackgroundColor:(UIColor * _Nonnull)dateBackgroundColor userPlaceholderBackgroundColor:(UIColor * _Nonnull)userPlaceholderBackgroundColor userPlaceholderTintColor:(UIColor * _Nonnull)userPlaceholderTintColor userNameFont:(UIFont * _Nonnull)userNameFont userNameTextColor:(UIColor * _Nonnull)userNameTextColor timeFont:(UIFont * _Nonnull)timeFont timeTextColor:(UIColor * _Nonnull)timeTextColor pendingStateColor:(UIColor * _Nonnull)pendingStateColor failedStateColor:(UIColor * _Nonnull)failedStateColor succeededStateColor:(UIColor * _Nonnull)succeededStateColor readReceiptStateColor:(UIColor * _Nonnull)readReceiptStateColor deliveryReceiptStateColor:(UIColor * _Nonnull)deliveryReceiptStateColor userMessageFont:(UIFont * _Nonnull)userMessageFont userMessageLeftTextColor:(UIColor * _Nonnull)userMessageLeftTextColor userMessageLeftEditTextColor:(UIColor * _Nonnull)userMessageLeftEditTextColor userMessageRightTextColor:(UIColor * _Nonnull)userMessageRightTextColor userMessageRightEditTextColor:(UIColor * _Nonnull)userMessageRightEditTextColor fileIconBackgroundColor:(UIColor * _Nonnull)fileIconBackgroundColor fileIconColor:(UIColor * _Nonnull)fileIconColor fileMessageNameFont:(UIFont * _Nonnull)fileMessageNameFont fileMessageLeftTextColor:(UIColor * _Nonnull)fileMessageLeftTextColor fileMessageRightTextColor:(UIColor * _Nonnull)fileMessageRightTextColor fileMessagePlaceholderColor:(UIColor * _Nonnull)fileMessagePlaceholderColor adminMessageFont:(UIFont * _Nonnull)adminMessageFont adminMessageTextColor:(UIColor * _Nonnull)adminMessageTextColor unknownMessageDescFont:(UIFont * _Nonnull)unknownMessageDescFont unknownMessageDescTextColor:(UIColor * _Nonnull)unknownMessageDescTextColor OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithBackgroundColor:(UIColor * _Nonnull)backgroundColor leftBackgroundColor:(UIColor * _Nonnull)leftBackgroundColor leftPressedBackgroundColor:(UIColor * _Nonnull)leftPressedBackgroundColor rightBackgroundColor:(UIColor * _Nonnull)rightBackgroundColor rightPressedBackgroundColor:(UIColor * _Nonnull)rightPressedBackgroundColor dateFont:(UIFont * _Nonnull)dateFont dateTextColor:(UIColor * _Nonnull)dateTextColor dateBackgroundColor:(UIColor * _Nonnull)dateBackgroundColor userPlaceholderBackgroundColor:(UIColor * _Nonnull)userPlaceholderBackgroundColor userPlaceholderTintColor:(UIColor * _Nonnull)userPlaceholderTintColor userNameFont:(UIFont * _Nonnull)userNameFont userNameTextColor:(UIColor * _Nonnull)userNameTextColor timeFont:(UIFont * _Nonnull)timeFont timeTextColor:(UIColor * _Nonnull)timeTextColor pendingStateColor:(UIColor * _Nonnull)pendingStateColor failedStateColor:(UIColor * _Nonnull)failedStateColor succeededStateColor:(UIColor * _Nonnull)succeededStateColor readReceiptStateColor:(UIColor * _Nonnull)readReceiptStateColor deliveryReceiptStateColor:(UIColor * _Nonnull)deliveryReceiptStateColor userMessageFont:(UIFont * _Nonnull)userMessageFont userMessageLeftTextColor:(UIColor * _Nonnull)userMessageLeftTextColor userMessageLeftEditTextColor:(UIColor * _Nonnull)userMessageLeftEditTextColor userMessageRightTextColor:(UIColor * _Nonnull)userMessageRightTextColor userMessageRightEditTextColor:(UIColor * _Nonnull)userMessageRightEditTextColor fileIconBackgroundColor:(UIColor * _Nonnull)fileIconBackgroundColor fileIconColor:(UIColor * _Nonnull)fileIconColor fileMessageNameFont:(UIFont * _Nonnull)fileMessageNameFont fileMessageLeftTextColor:(UIColor * _Nonnull)fileMessageLeftTextColor fileMessageRightTextColor:(UIColor * _Nonnull)fileMessageRightTextColor fileMessagePlaceholderColor:(UIColor * _Nonnull)fileMessagePlaceholderColor adminMessageFont:(UIFont * _Nonnull)adminMessageFont adminMessageTextColor:(UIColor * _Nonnull)adminMessageTextColor unknownMessageDescFont:(UIFont * _Nonnull)unknownMessageDescFont unknownMessageDescTextColor:(UIColor * _Nonnull)unknownMessageDescTextColor ogTitleFont:(UIFont * _Nonnull)ogTitleFont ogTitleColor:(UIColor * _Nonnull)ogTitleColor ogDescriptionFont:(UIFont * _Nonnull)ogDescriptionFont ogDescriptionColor:(UIColor * _Nonnull)ogDescriptionColor ogURLAddressFont:(UIFont * _Nonnull)ogURLAddressFont ogURLAddressColor:(UIColor * _Nonnull)ogURLAddressColor contentBackgroundColor:(UIColor * _Nonnull)contentBackgroundColor pressedContentBackgroundColor:(UIColor * _Nonnull)pressedContentBackgroundColor OBJC_DESIGNATED_INITIALIZER;
 @property (nonatomic, strong) UIColor * _Nonnull backgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull leftBackgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull leftPressedBackgroundColor;
@@ -1542,6 +1572,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageCe
 @property (nonatomic, strong) UIColor * _Nonnull succeededStateColor;
 @property (nonatomic, strong) UIColor * _Nonnull readReceiptStateColor;
 @property (nonatomic, strong) UIColor * _Nonnull deliveryReceiptStateColor;
+@property (nonatomic, strong) UIColor * _Nonnull contentBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull pressedContentBackgroundColor;
 @property (nonatomic, strong) UIFont * _Nonnull userMessageFont;
 @property (nonatomic, strong) UIColor * _Nonnull userMessageLeftTextColor;
 @property (nonatomic, strong) UIColor * _Nonnull userMessageLeftEditTextColor;
@@ -1557,6 +1589,12 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageCe
 @property (nonatomic, strong) UIColor * _Nonnull adminMessageTextColor;
 @property (nonatomic, strong) UIFont * _Nonnull unknownMessageDescFont;
 @property (nonatomic, strong) UIColor * _Nonnull unknownMessageDescTextColor;
+@property (nonatomic, strong) UIFont * _Nonnull ogTitleFont;
+@property (nonatomic, strong) UIColor * _Nonnull ogTitleColor;
+@property (nonatomic, strong) UIFont * _Nonnull ogDescriptionFont;
+@property (nonatomic, strong) UIColor * _Nonnull ogDescriptionColor;
+@property (nonatomic, strong) UIFont * _Nonnull ogURLAddressFont;
+@property (nonatomic, strong) UIColor * _Nonnull ogURLAddressColor;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -1928,11 +1966,11 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUUserMessageCell")
 - (void)setupViews;
 - (void)setupAutolayout;
 - (void)setupActions;
+- (void)setupStyles;
 - (void)configure:(SBDUserMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState;
 - (void)configure:(SBDBaseMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState withTextView:(BOOL)withTextView;
-- (void)setBackgroundColorWithColor:(UIColor * _Nonnull)color;
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated;
-- (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nonnull)sender;
+- (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nullable)sender;
 - (void)onTapProfileImageViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
 - (void)onTapContentViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
 - (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER;
@@ -2275,13 +2313,38 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _No
 @property (nonatomic, readonly, copy) NSString * _Nonnull sbu_className;
 @end
 
+@class SBDBaseMessage;
+enum SBUMessageReceiptState : NSInteger;
 
 IB_DESIGNABLE
 SWIFT_CLASS("_TtC13SendBirdUIKit18SBUBaseMessageCell")
 @interface SBUBaseMessageCell : UITableViewCell
+@property (nonatomic, strong) SBDBaseMessage * _Nonnull message;
+@property (nonatomic) enum MessagePosition position;
+@property (nonatomic) enum SBUMessageReceiptState receiptState;
+@property (nonatomic, strong) UIView * _Nonnull messageContentView;
+@property (nonatomic, strong) UIView * _Nonnull dateView;
 - (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
+/// This function handles the initialization of views.
+- (void)setupViews;
+/// This function handles the initialization of actions.
+- (void)setupActions;
+/// This function handles the initialization of autolayouts.
+- (void)setupAutolayout;
+/// This function handles the initialization of styles.
+- (void)setupStyles;
 - (void)layoutSubviews;
+/// This function configure a cell using informations.
+/// \param message Message object
+///
+/// \param position Cell position (left / right / center)
+///
+/// \param hideDateView Hide or expose date information
+///
+/// \param receiptState ReadReceipt state
+///
+- (void)configureWithMessage:(SBDBaseMessage * _Nonnull)message position:(enum MessagePosition)position hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState;
 - (void)prepareForReuse;
 @end
 
@@ -2612,7 +2675,6 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit27SBUMessageInputViewDelegate_")
 - (void)messageInputViewDidEndTyping;
 @end
 
-@class SBDBaseMessage;
 @class SBDMessageListParams;
 @class SBDUserMessageParams;
 @class SBDFileMessageParams;
@@ -2775,7 +2837,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)sendDocumentFileMessageWithDocumentUrls:(NSArray<NSURL *> * _Nonnull)documentUrls;
 - (void)onClickBack;
 - (void)onClickSetting;
-- (void)scrollToBottom;
+- (void)scrollToBottomWithAnimated:(BOOL)animated;
 - (void)registerWithAdminMessageCell:(SBUBaseMessageCell * _Nonnull)adminMessageCell nib:(UINib * _Nullable)nib;
 - (void)registerWithUserMessageCell:(SBUBaseMessageCell * _Nonnull)userMessageCell nib:(UINib * _Nullable)nib;
 - (void)registerWithFileMessageCell:(SBUBaseMessageCell * _Nonnull)fileMessageCell nib:(UINib * _Nullable)nib;
@@ -3083,7 +3145,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit12SBUEmptyView")
 
 
 @class UIStackView;
-enum SBUMessageReceiptState : NSInteger;
 @class UILongPressGestureRecognizer;
 @class UITapGestureRecognizer;
 
@@ -3096,10 +3157,11 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUFileMessageCell")
 @property (nonatomic, strong) UIView * _Nonnull profileView;
 @property (nonatomic, strong) UIView * _Nonnull stateView;
 - (void)setupViews;
+- (void)setupStyles;
 - (void)setupAutolayout;
 - (void)setupActions;
 - (void)configure:(SBDFileMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState;
-- (void)setBackgroundColorWithColor:(UIColor * _Nonnull)color;
+- (void)layoutSubviews;
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated;
 - (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nonnull)sender;
 - (void)onTapContentViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
@@ -3127,11 +3189,14 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull body
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull body2;)
 + (UIFont * _Nonnull)body2 SWIFT_WARN_UNUSED_RESULT;
 + (void)setBody2:(UIFont * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull body3;)
++ (UIFont * _Nonnull)body3 SWIFT_WARN_UNUSED_RESULT;
++ (void)setBody3:(UIFont * _Nonnull)value;
 /// Semibold, 20pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull button1;)
 + (UIFont * _Nonnull)button1 SWIFT_WARN_UNUSED_RESULT;
 + (void)setButton1:(UIFont * _Nonnull)value;
-/// Medium, 16pt, Line hieght 22pt
+/// Medium, 16pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull button2;)
 + (UIFont * _Nonnull)button2 SWIFT_WARN_UNUSED_RESULT;
 + (void)setButton2:(UIFont * _Nonnull)value;
@@ -3151,6 +3216,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull capt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull caption3;)
 + (UIFont * _Nonnull)caption3 SWIFT_WARN_UNUSED_RESULT;
 + (void)setCaption3:(UIFont * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull caption4;)
++ (UIFont * _Nonnull)caption4 SWIFT_WARN_UNUSED_RESULT;
++ (void)setCaption4:(UIFont * _Nonnull)value;
 /// Medium, 16pt, Line hieght 22pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull subtitle1;)
 + (UIFont * _Nonnull)subtitle1 SWIFT_WARN_UNUSED_RESULT;
@@ -3506,7 +3574,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageCe
 + (SBUMessageCellTheme * _Nonnull)light SWIFT_WARN_UNUSED_RESULT;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageCellTheme * _Nonnull dark;)
 + (SBUMessageCellTheme * _Nonnull)dark SWIFT_WARN_UNUSED_RESULT;
-- (nonnull instancetype)initWithBackgroundColor:(UIColor * _Nonnull)backgroundColor leftBackgroundColor:(UIColor * _Nonnull)leftBackgroundColor leftPressedBackgroundColor:(UIColor * _Nonnull)leftPressedBackgroundColor rightBackgroundColor:(UIColor * _Nonnull)rightBackgroundColor rightPressedBackgroundColor:(UIColor * _Nonnull)rightPressedBackgroundColor dateFont:(UIFont * _Nonnull)dateFont dateTextColor:(UIColor * _Nonnull)dateTextColor dateBackgroundColor:(UIColor * _Nonnull)dateBackgroundColor userPlaceholderBackgroundColor:(UIColor * _Nonnull)userPlaceholderBackgroundColor userPlaceholderTintColor:(UIColor * _Nonnull)userPlaceholderTintColor userNameFont:(UIFont * _Nonnull)userNameFont userNameTextColor:(UIColor * _Nonnull)userNameTextColor timeFont:(UIFont * _Nonnull)timeFont timeTextColor:(UIColor * _Nonnull)timeTextColor pendingStateColor:(UIColor * _Nonnull)pendingStateColor failedStateColor:(UIColor * _Nonnull)failedStateColor succeededStateColor:(UIColor * _Nonnull)succeededStateColor readReceiptStateColor:(UIColor * _Nonnull)readReceiptStateColor deliveryReceiptStateColor:(UIColor * _Nonnull)deliveryReceiptStateColor userMessageFont:(UIFont * _Nonnull)userMessageFont userMessageLeftTextColor:(UIColor * _Nonnull)userMessageLeftTextColor userMessageLeftEditTextColor:(UIColor * _Nonnull)userMessageLeftEditTextColor userMessageRightTextColor:(UIColor * _Nonnull)userMessageRightTextColor userMessageRightEditTextColor:(UIColor * _Nonnull)userMessageRightEditTextColor fileIconBackgroundColor:(UIColor * _Nonnull)fileIconBackgroundColor fileIconColor:(UIColor * _Nonnull)fileIconColor fileMessageNameFont:(UIFont * _Nonnull)fileMessageNameFont fileMessageLeftTextColor:(UIColor * _Nonnull)fileMessageLeftTextColor fileMessageRightTextColor:(UIColor * _Nonnull)fileMessageRightTextColor fileMessagePlaceholderColor:(UIColor * _Nonnull)fileMessagePlaceholderColor adminMessageFont:(UIFont * _Nonnull)adminMessageFont adminMessageTextColor:(UIColor * _Nonnull)adminMessageTextColor unknownMessageDescFont:(UIFont * _Nonnull)unknownMessageDescFont unknownMessageDescTextColor:(UIColor * _Nonnull)unknownMessageDescTextColor OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithBackgroundColor:(UIColor * _Nonnull)backgroundColor leftBackgroundColor:(UIColor * _Nonnull)leftBackgroundColor leftPressedBackgroundColor:(UIColor * _Nonnull)leftPressedBackgroundColor rightBackgroundColor:(UIColor * _Nonnull)rightBackgroundColor rightPressedBackgroundColor:(UIColor * _Nonnull)rightPressedBackgroundColor dateFont:(UIFont * _Nonnull)dateFont dateTextColor:(UIColor * _Nonnull)dateTextColor dateBackgroundColor:(UIColor * _Nonnull)dateBackgroundColor userPlaceholderBackgroundColor:(UIColor * _Nonnull)userPlaceholderBackgroundColor userPlaceholderTintColor:(UIColor * _Nonnull)userPlaceholderTintColor userNameFont:(UIFont * _Nonnull)userNameFont userNameTextColor:(UIColor * _Nonnull)userNameTextColor timeFont:(UIFont * _Nonnull)timeFont timeTextColor:(UIColor * _Nonnull)timeTextColor pendingStateColor:(UIColor * _Nonnull)pendingStateColor failedStateColor:(UIColor * _Nonnull)failedStateColor succeededStateColor:(UIColor * _Nonnull)succeededStateColor readReceiptStateColor:(UIColor * _Nonnull)readReceiptStateColor deliveryReceiptStateColor:(UIColor * _Nonnull)deliveryReceiptStateColor userMessageFont:(UIFont * _Nonnull)userMessageFont userMessageLeftTextColor:(UIColor * _Nonnull)userMessageLeftTextColor userMessageLeftEditTextColor:(UIColor * _Nonnull)userMessageLeftEditTextColor userMessageRightTextColor:(UIColor * _Nonnull)userMessageRightTextColor userMessageRightEditTextColor:(UIColor * _Nonnull)userMessageRightEditTextColor fileIconBackgroundColor:(UIColor * _Nonnull)fileIconBackgroundColor fileIconColor:(UIColor * _Nonnull)fileIconColor fileMessageNameFont:(UIFont * _Nonnull)fileMessageNameFont fileMessageLeftTextColor:(UIColor * _Nonnull)fileMessageLeftTextColor fileMessageRightTextColor:(UIColor * _Nonnull)fileMessageRightTextColor fileMessagePlaceholderColor:(UIColor * _Nonnull)fileMessagePlaceholderColor adminMessageFont:(UIFont * _Nonnull)adminMessageFont adminMessageTextColor:(UIColor * _Nonnull)adminMessageTextColor unknownMessageDescFont:(UIFont * _Nonnull)unknownMessageDescFont unknownMessageDescTextColor:(UIColor * _Nonnull)unknownMessageDescTextColor ogTitleFont:(UIFont * _Nonnull)ogTitleFont ogTitleColor:(UIColor * _Nonnull)ogTitleColor ogDescriptionFont:(UIFont * _Nonnull)ogDescriptionFont ogDescriptionColor:(UIColor * _Nonnull)ogDescriptionColor ogURLAddressFont:(UIFont * _Nonnull)ogURLAddressFont ogURLAddressColor:(UIColor * _Nonnull)ogURLAddressColor contentBackgroundColor:(UIColor * _Nonnull)contentBackgroundColor pressedContentBackgroundColor:(UIColor * _Nonnull)pressedContentBackgroundColor OBJC_DESIGNATED_INITIALIZER;
 @property (nonatomic, strong) UIColor * _Nonnull backgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull leftBackgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull leftPressedBackgroundColor;
@@ -3526,6 +3594,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageCe
 @property (nonatomic, strong) UIColor * _Nonnull succeededStateColor;
 @property (nonatomic, strong) UIColor * _Nonnull readReceiptStateColor;
 @property (nonatomic, strong) UIColor * _Nonnull deliveryReceiptStateColor;
+@property (nonatomic, strong) UIColor * _Nonnull contentBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull pressedContentBackgroundColor;
 @property (nonatomic, strong) UIFont * _Nonnull userMessageFont;
 @property (nonatomic, strong) UIColor * _Nonnull userMessageLeftTextColor;
 @property (nonatomic, strong) UIColor * _Nonnull userMessageLeftEditTextColor;
@@ -3541,6 +3611,12 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageCe
 @property (nonatomic, strong) UIColor * _Nonnull adminMessageTextColor;
 @property (nonatomic, strong) UIFont * _Nonnull unknownMessageDescFont;
 @property (nonatomic, strong) UIColor * _Nonnull unknownMessageDescTextColor;
+@property (nonatomic, strong) UIFont * _Nonnull ogTitleFont;
+@property (nonatomic, strong) UIColor * _Nonnull ogTitleColor;
+@property (nonatomic, strong) UIFont * _Nonnull ogDescriptionFont;
+@property (nonatomic, strong) UIColor * _Nonnull ogDescriptionColor;
+@property (nonatomic, strong) UIFont * _Nonnull ogURLAddressFont;
+@property (nonatomic, strong) UIColor * _Nonnull ogURLAddressColor;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -3912,11 +3988,11 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUUserMessageCell")
 - (void)setupViews;
 - (void)setupAutolayout;
 - (void)setupActions;
+- (void)setupStyles;
 - (void)configure:(SBDUserMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState;
 - (void)configure:(SBDBaseMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState withTextView:(BOOL)withTextView;
-- (void)setBackgroundColorWithColor:(UIColor * _Nonnull)color;
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated;
-- (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nonnull)sender;
+- (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nullable)sender;
 - (void)onTapProfileImageViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
 - (void)onTapContentViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
 - (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER;
@@ -4261,13 +4337,38 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _No
 @property (nonatomic, readonly, copy) NSString * _Nonnull sbu_className;
 @end
 
+@class SBDBaseMessage;
+enum SBUMessageReceiptState : NSInteger;
 
 IB_DESIGNABLE
 SWIFT_CLASS("_TtC13SendBirdUIKit18SBUBaseMessageCell")
 @interface SBUBaseMessageCell : UITableViewCell
+@property (nonatomic, strong) SBDBaseMessage * _Nonnull message;
+@property (nonatomic) enum MessagePosition position;
+@property (nonatomic) enum SBUMessageReceiptState receiptState;
+@property (nonatomic, strong) UIView * _Nonnull messageContentView;
+@property (nonatomic, strong) UIView * _Nonnull dateView;
 - (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
+/// This function handles the initialization of views.
+- (void)setupViews;
+/// This function handles the initialization of actions.
+- (void)setupActions;
+/// This function handles the initialization of autolayouts.
+- (void)setupAutolayout;
+/// This function handles the initialization of styles.
+- (void)setupStyles;
 - (void)layoutSubviews;
+/// This function configure a cell using informations.
+/// \param message Message object
+///
+/// \param position Cell position (left / right / center)
+///
+/// \param hideDateView Hide or expose date information
+///
+/// \param receiptState ReadReceipt state
+///
+- (void)configureWithMessage:(SBDBaseMessage * _Nonnull)message position:(enum MessagePosition)position hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState;
 - (void)prepareForReuse;
 @end
 
@@ -4598,7 +4699,6 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit27SBUMessageInputViewDelegate_")
 - (void)messageInputViewDidEndTyping;
 @end
 
-@class SBDBaseMessage;
 @class SBDMessageListParams;
 @class SBDUserMessageParams;
 @class SBDFileMessageParams;
@@ -4761,7 +4861,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)sendDocumentFileMessageWithDocumentUrls:(NSArray<NSURL *> * _Nonnull)documentUrls;
 - (void)onClickBack;
 - (void)onClickSetting;
-- (void)scrollToBottom;
+- (void)scrollToBottomWithAnimated:(BOOL)animated;
 - (void)registerWithAdminMessageCell:(SBUBaseMessageCell * _Nonnull)adminMessageCell nib:(UINib * _Nullable)nib;
 - (void)registerWithUserMessageCell:(SBUBaseMessageCell * _Nonnull)userMessageCell nib:(UINib * _Nullable)nib;
 - (void)registerWithFileMessageCell:(SBUBaseMessageCell * _Nonnull)fileMessageCell nib:(UINib * _Nullable)nib;
@@ -5069,7 +5169,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit12SBUEmptyView")
 
 
 @class UIStackView;
-enum SBUMessageReceiptState : NSInteger;
 @class UILongPressGestureRecognizer;
 @class UITapGestureRecognizer;
 
@@ -5082,10 +5181,11 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUFileMessageCell")
 @property (nonatomic, strong) UIView * _Nonnull profileView;
 @property (nonatomic, strong) UIView * _Nonnull stateView;
 - (void)setupViews;
+- (void)setupStyles;
 - (void)setupAutolayout;
 - (void)setupActions;
 - (void)configure:(SBDFileMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState;
-- (void)setBackgroundColorWithColor:(UIColor * _Nonnull)color;
+- (void)layoutSubviews;
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated;
 - (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nonnull)sender;
 - (void)onTapContentViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
@@ -5113,11 +5213,14 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull body
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull body2;)
 + (UIFont * _Nonnull)body2 SWIFT_WARN_UNUSED_RESULT;
 + (void)setBody2:(UIFont * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull body3;)
++ (UIFont * _Nonnull)body3 SWIFT_WARN_UNUSED_RESULT;
++ (void)setBody3:(UIFont * _Nonnull)value;
 /// Semibold, 20pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull button1;)
 + (UIFont * _Nonnull)button1 SWIFT_WARN_UNUSED_RESULT;
 + (void)setButton1:(UIFont * _Nonnull)value;
-/// Medium, 16pt, Line hieght 22pt
+/// Medium, 16pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull button2;)
 + (UIFont * _Nonnull)button2 SWIFT_WARN_UNUSED_RESULT;
 + (void)setButton2:(UIFont * _Nonnull)value;
@@ -5137,6 +5240,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull capt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull caption3;)
 + (UIFont * _Nonnull)caption3 SWIFT_WARN_UNUSED_RESULT;
 + (void)setCaption3:(UIFont * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull caption4;)
++ (UIFont * _Nonnull)caption4 SWIFT_WARN_UNUSED_RESULT;
++ (void)setCaption4:(UIFont * _Nonnull)value;
 /// Medium, 16pt, Line hieght 22pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull subtitle1;)
 + (UIFont * _Nonnull)subtitle1 SWIFT_WARN_UNUSED_RESULT;
@@ -5492,7 +5598,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageCe
 + (SBUMessageCellTheme * _Nonnull)light SWIFT_WARN_UNUSED_RESULT;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageCellTheme * _Nonnull dark;)
 + (SBUMessageCellTheme * _Nonnull)dark SWIFT_WARN_UNUSED_RESULT;
-- (nonnull instancetype)initWithBackgroundColor:(UIColor * _Nonnull)backgroundColor leftBackgroundColor:(UIColor * _Nonnull)leftBackgroundColor leftPressedBackgroundColor:(UIColor * _Nonnull)leftPressedBackgroundColor rightBackgroundColor:(UIColor * _Nonnull)rightBackgroundColor rightPressedBackgroundColor:(UIColor * _Nonnull)rightPressedBackgroundColor dateFont:(UIFont * _Nonnull)dateFont dateTextColor:(UIColor * _Nonnull)dateTextColor dateBackgroundColor:(UIColor * _Nonnull)dateBackgroundColor userPlaceholderBackgroundColor:(UIColor * _Nonnull)userPlaceholderBackgroundColor userPlaceholderTintColor:(UIColor * _Nonnull)userPlaceholderTintColor userNameFont:(UIFont * _Nonnull)userNameFont userNameTextColor:(UIColor * _Nonnull)userNameTextColor timeFont:(UIFont * _Nonnull)timeFont timeTextColor:(UIColor * _Nonnull)timeTextColor pendingStateColor:(UIColor * _Nonnull)pendingStateColor failedStateColor:(UIColor * _Nonnull)failedStateColor succeededStateColor:(UIColor * _Nonnull)succeededStateColor readReceiptStateColor:(UIColor * _Nonnull)readReceiptStateColor deliveryReceiptStateColor:(UIColor * _Nonnull)deliveryReceiptStateColor userMessageFont:(UIFont * _Nonnull)userMessageFont userMessageLeftTextColor:(UIColor * _Nonnull)userMessageLeftTextColor userMessageLeftEditTextColor:(UIColor * _Nonnull)userMessageLeftEditTextColor userMessageRightTextColor:(UIColor * _Nonnull)userMessageRightTextColor userMessageRightEditTextColor:(UIColor * _Nonnull)userMessageRightEditTextColor fileIconBackgroundColor:(UIColor * _Nonnull)fileIconBackgroundColor fileIconColor:(UIColor * _Nonnull)fileIconColor fileMessageNameFont:(UIFont * _Nonnull)fileMessageNameFont fileMessageLeftTextColor:(UIColor * _Nonnull)fileMessageLeftTextColor fileMessageRightTextColor:(UIColor * _Nonnull)fileMessageRightTextColor fileMessagePlaceholderColor:(UIColor * _Nonnull)fileMessagePlaceholderColor adminMessageFont:(UIFont * _Nonnull)adminMessageFont adminMessageTextColor:(UIColor * _Nonnull)adminMessageTextColor unknownMessageDescFont:(UIFont * _Nonnull)unknownMessageDescFont unknownMessageDescTextColor:(UIColor * _Nonnull)unknownMessageDescTextColor OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithBackgroundColor:(UIColor * _Nonnull)backgroundColor leftBackgroundColor:(UIColor * _Nonnull)leftBackgroundColor leftPressedBackgroundColor:(UIColor * _Nonnull)leftPressedBackgroundColor rightBackgroundColor:(UIColor * _Nonnull)rightBackgroundColor rightPressedBackgroundColor:(UIColor * _Nonnull)rightPressedBackgroundColor dateFont:(UIFont * _Nonnull)dateFont dateTextColor:(UIColor * _Nonnull)dateTextColor dateBackgroundColor:(UIColor * _Nonnull)dateBackgroundColor userPlaceholderBackgroundColor:(UIColor * _Nonnull)userPlaceholderBackgroundColor userPlaceholderTintColor:(UIColor * _Nonnull)userPlaceholderTintColor userNameFont:(UIFont * _Nonnull)userNameFont userNameTextColor:(UIColor * _Nonnull)userNameTextColor timeFont:(UIFont * _Nonnull)timeFont timeTextColor:(UIColor * _Nonnull)timeTextColor pendingStateColor:(UIColor * _Nonnull)pendingStateColor failedStateColor:(UIColor * _Nonnull)failedStateColor succeededStateColor:(UIColor * _Nonnull)succeededStateColor readReceiptStateColor:(UIColor * _Nonnull)readReceiptStateColor deliveryReceiptStateColor:(UIColor * _Nonnull)deliveryReceiptStateColor userMessageFont:(UIFont * _Nonnull)userMessageFont userMessageLeftTextColor:(UIColor * _Nonnull)userMessageLeftTextColor userMessageLeftEditTextColor:(UIColor * _Nonnull)userMessageLeftEditTextColor userMessageRightTextColor:(UIColor * _Nonnull)userMessageRightTextColor userMessageRightEditTextColor:(UIColor * _Nonnull)userMessageRightEditTextColor fileIconBackgroundColor:(UIColor * _Nonnull)fileIconBackgroundColor fileIconColor:(UIColor * _Nonnull)fileIconColor fileMessageNameFont:(UIFont * _Nonnull)fileMessageNameFont fileMessageLeftTextColor:(UIColor * _Nonnull)fileMessageLeftTextColor fileMessageRightTextColor:(UIColor * _Nonnull)fileMessageRightTextColor fileMessagePlaceholderColor:(UIColor * _Nonnull)fileMessagePlaceholderColor adminMessageFont:(UIFont * _Nonnull)adminMessageFont adminMessageTextColor:(UIColor * _Nonnull)adminMessageTextColor unknownMessageDescFont:(UIFont * _Nonnull)unknownMessageDescFont unknownMessageDescTextColor:(UIColor * _Nonnull)unknownMessageDescTextColor ogTitleFont:(UIFont * _Nonnull)ogTitleFont ogTitleColor:(UIColor * _Nonnull)ogTitleColor ogDescriptionFont:(UIFont * _Nonnull)ogDescriptionFont ogDescriptionColor:(UIColor * _Nonnull)ogDescriptionColor ogURLAddressFont:(UIFont * _Nonnull)ogURLAddressFont ogURLAddressColor:(UIColor * _Nonnull)ogURLAddressColor contentBackgroundColor:(UIColor * _Nonnull)contentBackgroundColor pressedContentBackgroundColor:(UIColor * _Nonnull)pressedContentBackgroundColor OBJC_DESIGNATED_INITIALIZER;
 @property (nonatomic, strong) UIColor * _Nonnull backgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull leftBackgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull leftPressedBackgroundColor;
@@ -5512,6 +5618,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageCe
 @property (nonatomic, strong) UIColor * _Nonnull succeededStateColor;
 @property (nonatomic, strong) UIColor * _Nonnull readReceiptStateColor;
 @property (nonatomic, strong) UIColor * _Nonnull deliveryReceiptStateColor;
+@property (nonatomic, strong) UIColor * _Nonnull contentBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull pressedContentBackgroundColor;
 @property (nonatomic, strong) UIFont * _Nonnull userMessageFont;
 @property (nonatomic, strong) UIColor * _Nonnull userMessageLeftTextColor;
 @property (nonatomic, strong) UIColor * _Nonnull userMessageLeftEditTextColor;
@@ -5527,6 +5635,12 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageCe
 @property (nonatomic, strong) UIColor * _Nonnull adminMessageTextColor;
 @property (nonatomic, strong) UIFont * _Nonnull unknownMessageDescFont;
 @property (nonatomic, strong) UIColor * _Nonnull unknownMessageDescTextColor;
+@property (nonatomic, strong) UIFont * _Nonnull ogTitleFont;
+@property (nonatomic, strong) UIColor * _Nonnull ogTitleColor;
+@property (nonatomic, strong) UIFont * _Nonnull ogDescriptionFont;
+@property (nonatomic, strong) UIColor * _Nonnull ogDescriptionColor;
+@property (nonatomic, strong) UIFont * _Nonnull ogURLAddressFont;
+@property (nonatomic, strong) UIColor * _Nonnull ogURLAddressColor;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -5898,11 +6012,11 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUUserMessageCell")
 - (void)setupViews;
 - (void)setupAutolayout;
 - (void)setupActions;
+- (void)setupStyles;
 - (void)configure:(SBDUserMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState;
 - (void)configure:(SBDBaseMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState withTextView:(BOOL)withTextView;
-- (void)setBackgroundColorWithColor:(UIColor * _Nonnull)color;
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated;
-- (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nonnull)sender;
+- (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nullable)sender;
 - (void)onTapProfileImageViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
 - (void)onTapContentViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
 - (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER;
@@ -6245,13 +6359,38 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _No
 @property (nonatomic, readonly, copy) NSString * _Nonnull sbu_className;
 @end
 
+@class SBDBaseMessage;
+enum SBUMessageReceiptState : NSInteger;
 
 IB_DESIGNABLE
 SWIFT_CLASS("_TtC13SendBirdUIKit18SBUBaseMessageCell")
 @interface SBUBaseMessageCell : UITableViewCell
+@property (nonatomic, strong) SBDBaseMessage * _Nonnull message;
+@property (nonatomic) enum MessagePosition position;
+@property (nonatomic) enum SBUMessageReceiptState receiptState;
+@property (nonatomic, strong) UIView * _Nonnull messageContentView;
+@property (nonatomic, strong) UIView * _Nonnull dateView;
 - (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
+/// This function handles the initialization of views.
+- (void)setupViews;
+/// This function handles the initialization of actions.
+- (void)setupActions;
+/// This function handles the initialization of autolayouts.
+- (void)setupAutolayout;
+/// This function handles the initialization of styles.
+- (void)setupStyles;
 - (void)layoutSubviews;
+/// This function configure a cell using informations.
+/// \param message Message object
+///
+/// \param position Cell position (left / right / center)
+///
+/// \param hideDateView Hide or expose date information
+///
+/// \param receiptState ReadReceipt state
+///
+- (void)configureWithMessage:(SBDBaseMessage * _Nonnull)message position:(enum MessagePosition)position hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState;
 - (void)prepareForReuse;
 @end
 
@@ -6582,7 +6721,6 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit27SBUMessageInputViewDelegate_")
 - (void)messageInputViewDidEndTyping;
 @end
 
-@class SBDBaseMessage;
 @class SBDMessageListParams;
 @class SBDUserMessageParams;
 @class SBDFileMessageParams;
@@ -6745,7 +6883,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)sendDocumentFileMessageWithDocumentUrls:(NSArray<NSURL *> * _Nonnull)documentUrls;
 - (void)onClickBack;
 - (void)onClickSetting;
-- (void)scrollToBottom;
+- (void)scrollToBottomWithAnimated:(BOOL)animated;
 - (void)registerWithAdminMessageCell:(SBUBaseMessageCell * _Nonnull)adminMessageCell nib:(UINib * _Nullable)nib;
 - (void)registerWithUserMessageCell:(SBUBaseMessageCell * _Nonnull)userMessageCell nib:(UINib * _Nullable)nib;
 - (void)registerWithFileMessageCell:(SBUBaseMessageCell * _Nonnull)fileMessageCell nib:(UINib * _Nullable)nib;
@@ -7053,7 +7191,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit12SBUEmptyView")
 
 
 @class UIStackView;
-enum SBUMessageReceiptState : NSInteger;
 @class UILongPressGestureRecognizer;
 @class UITapGestureRecognizer;
 
@@ -7066,10 +7203,11 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUFileMessageCell")
 @property (nonatomic, strong) UIView * _Nonnull profileView;
 @property (nonatomic, strong) UIView * _Nonnull stateView;
 - (void)setupViews;
+- (void)setupStyles;
 - (void)setupAutolayout;
 - (void)setupActions;
 - (void)configure:(SBDFileMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState;
-- (void)setBackgroundColorWithColor:(UIColor * _Nonnull)color;
+- (void)layoutSubviews;
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated;
 - (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nonnull)sender;
 - (void)onTapContentViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
@@ -7097,11 +7235,14 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull body
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull body2;)
 + (UIFont * _Nonnull)body2 SWIFT_WARN_UNUSED_RESULT;
 + (void)setBody2:(UIFont * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull body3;)
++ (UIFont * _Nonnull)body3 SWIFT_WARN_UNUSED_RESULT;
++ (void)setBody3:(UIFont * _Nonnull)value;
 /// Semibold, 20pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull button1;)
 + (UIFont * _Nonnull)button1 SWIFT_WARN_UNUSED_RESULT;
 + (void)setButton1:(UIFont * _Nonnull)value;
-/// Medium, 16pt, Line hieght 22pt
+/// Medium, 16pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull button2;)
 + (UIFont * _Nonnull)button2 SWIFT_WARN_UNUSED_RESULT;
 + (void)setButton2:(UIFont * _Nonnull)value;
@@ -7121,6 +7262,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull capt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull caption3;)
 + (UIFont * _Nonnull)caption3 SWIFT_WARN_UNUSED_RESULT;
 + (void)setCaption3:(UIFont * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull caption4;)
++ (UIFont * _Nonnull)caption4 SWIFT_WARN_UNUSED_RESULT;
++ (void)setCaption4:(UIFont * _Nonnull)value;
 /// Medium, 16pt, Line hieght 22pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull subtitle1;)
 + (UIFont * _Nonnull)subtitle1 SWIFT_WARN_UNUSED_RESULT;
@@ -7476,7 +7620,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageCe
 + (SBUMessageCellTheme * _Nonnull)light SWIFT_WARN_UNUSED_RESULT;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageCellTheme * _Nonnull dark;)
 + (SBUMessageCellTheme * _Nonnull)dark SWIFT_WARN_UNUSED_RESULT;
-- (nonnull instancetype)initWithBackgroundColor:(UIColor * _Nonnull)backgroundColor leftBackgroundColor:(UIColor * _Nonnull)leftBackgroundColor leftPressedBackgroundColor:(UIColor * _Nonnull)leftPressedBackgroundColor rightBackgroundColor:(UIColor * _Nonnull)rightBackgroundColor rightPressedBackgroundColor:(UIColor * _Nonnull)rightPressedBackgroundColor dateFont:(UIFont * _Nonnull)dateFont dateTextColor:(UIColor * _Nonnull)dateTextColor dateBackgroundColor:(UIColor * _Nonnull)dateBackgroundColor userPlaceholderBackgroundColor:(UIColor * _Nonnull)userPlaceholderBackgroundColor userPlaceholderTintColor:(UIColor * _Nonnull)userPlaceholderTintColor userNameFont:(UIFont * _Nonnull)userNameFont userNameTextColor:(UIColor * _Nonnull)userNameTextColor timeFont:(UIFont * _Nonnull)timeFont timeTextColor:(UIColor * _Nonnull)timeTextColor pendingStateColor:(UIColor * _Nonnull)pendingStateColor failedStateColor:(UIColor * _Nonnull)failedStateColor succeededStateColor:(UIColor * _Nonnull)succeededStateColor readReceiptStateColor:(UIColor * _Nonnull)readReceiptStateColor deliveryReceiptStateColor:(UIColor * _Nonnull)deliveryReceiptStateColor userMessageFont:(UIFont * _Nonnull)userMessageFont userMessageLeftTextColor:(UIColor * _Nonnull)userMessageLeftTextColor userMessageLeftEditTextColor:(UIColor * _Nonnull)userMessageLeftEditTextColor userMessageRightTextColor:(UIColor * _Nonnull)userMessageRightTextColor userMessageRightEditTextColor:(UIColor * _Nonnull)userMessageRightEditTextColor fileIconBackgroundColor:(UIColor * _Nonnull)fileIconBackgroundColor fileIconColor:(UIColor * _Nonnull)fileIconColor fileMessageNameFont:(UIFont * _Nonnull)fileMessageNameFont fileMessageLeftTextColor:(UIColor * _Nonnull)fileMessageLeftTextColor fileMessageRightTextColor:(UIColor * _Nonnull)fileMessageRightTextColor fileMessagePlaceholderColor:(UIColor * _Nonnull)fileMessagePlaceholderColor adminMessageFont:(UIFont * _Nonnull)adminMessageFont adminMessageTextColor:(UIColor * _Nonnull)adminMessageTextColor unknownMessageDescFont:(UIFont * _Nonnull)unknownMessageDescFont unknownMessageDescTextColor:(UIColor * _Nonnull)unknownMessageDescTextColor OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithBackgroundColor:(UIColor * _Nonnull)backgroundColor leftBackgroundColor:(UIColor * _Nonnull)leftBackgroundColor leftPressedBackgroundColor:(UIColor * _Nonnull)leftPressedBackgroundColor rightBackgroundColor:(UIColor * _Nonnull)rightBackgroundColor rightPressedBackgroundColor:(UIColor * _Nonnull)rightPressedBackgroundColor dateFont:(UIFont * _Nonnull)dateFont dateTextColor:(UIColor * _Nonnull)dateTextColor dateBackgroundColor:(UIColor * _Nonnull)dateBackgroundColor userPlaceholderBackgroundColor:(UIColor * _Nonnull)userPlaceholderBackgroundColor userPlaceholderTintColor:(UIColor * _Nonnull)userPlaceholderTintColor userNameFont:(UIFont * _Nonnull)userNameFont userNameTextColor:(UIColor * _Nonnull)userNameTextColor timeFont:(UIFont * _Nonnull)timeFont timeTextColor:(UIColor * _Nonnull)timeTextColor pendingStateColor:(UIColor * _Nonnull)pendingStateColor failedStateColor:(UIColor * _Nonnull)failedStateColor succeededStateColor:(UIColor * _Nonnull)succeededStateColor readReceiptStateColor:(UIColor * _Nonnull)readReceiptStateColor deliveryReceiptStateColor:(UIColor * _Nonnull)deliveryReceiptStateColor userMessageFont:(UIFont * _Nonnull)userMessageFont userMessageLeftTextColor:(UIColor * _Nonnull)userMessageLeftTextColor userMessageLeftEditTextColor:(UIColor * _Nonnull)userMessageLeftEditTextColor userMessageRightTextColor:(UIColor * _Nonnull)userMessageRightTextColor userMessageRightEditTextColor:(UIColor * _Nonnull)userMessageRightEditTextColor fileIconBackgroundColor:(UIColor * _Nonnull)fileIconBackgroundColor fileIconColor:(UIColor * _Nonnull)fileIconColor fileMessageNameFont:(UIFont * _Nonnull)fileMessageNameFont fileMessageLeftTextColor:(UIColor * _Nonnull)fileMessageLeftTextColor fileMessageRightTextColor:(UIColor * _Nonnull)fileMessageRightTextColor fileMessagePlaceholderColor:(UIColor * _Nonnull)fileMessagePlaceholderColor adminMessageFont:(UIFont * _Nonnull)adminMessageFont adminMessageTextColor:(UIColor * _Nonnull)adminMessageTextColor unknownMessageDescFont:(UIFont * _Nonnull)unknownMessageDescFont unknownMessageDescTextColor:(UIColor * _Nonnull)unknownMessageDescTextColor ogTitleFont:(UIFont * _Nonnull)ogTitleFont ogTitleColor:(UIColor * _Nonnull)ogTitleColor ogDescriptionFont:(UIFont * _Nonnull)ogDescriptionFont ogDescriptionColor:(UIColor * _Nonnull)ogDescriptionColor ogURLAddressFont:(UIFont * _Nonnull)ogURLAddressFont ogURLAddressColor:(UIColor * _Nonnull)ogURLAddressColor contentBackgroundColor:(UIColor * _Nonnull)contentBackgroundColor pressedContentBackgroundColor:(UIColor * _Nonnull)pressedContentBackgroundColor OBJC_DESIGNATED_INITIALIZER;
 @property (nonatomic, strong) UIColor * _Nonnull backgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull leftBackgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull leftPressedBackgroundColor;
@@ -7496,6 +7640,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageCe
 @property (nonatomic, strong) UIColor * _Nonnull succeededStateColor;
 @property (nonatomic, strong) UIColor * _Nonnull readReceiptStateColor;
 @property (nonatomic, strong) UIColor * _Nonnull deliveryReceiptStateColor;
+@property (nonatomic, strong) UIColor * _Nonnull contentBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull pressedContentBackgroundColor;
 @property (nonatomic, strong) UIFont * _Nonnull userMessageFont;
 @property (nonatomic, strong) UIColor * _Nonnull userMessageLeftTextColor;
 @property (nonatomic, strong) UIColor * _Nonnull userMessageLeftEditTextColor;
@@ -7511,6 +7657,12 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageCe
 @property (nonatomic, strong) UIColor * _Nonnull adminMessageTextColor;
 @property (nonatomic, strong) UIFont * _Nonnull unknownMessageDescFont;
 @property (nonatomic, strong) UIColor * _Nonnull unknownMessageDescTextColor;
+@property (nonatomic, strong) UIFont * _Nonnull ogTitleFont;
+@property (nonatomic, strong) UIColor * _Nonnull ogTitleColor;
+@property (nonatomic, strong) UIFont * _Nonnull ogDescriptionFont;
+@property (nonatomic, strong) UIColor * _Nonnull ogDescriptionColor;
+@property (nonatomic, strong) UIFont * _Nonnull ogURLAddressFont;
+@property (nonatomic, strong) UIColor * _Nonnull ogURLAddressColor;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -7882,11 +8034,11 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUUserMessageCell")
 - (void)setupViews;
 - (void)setupAutolayout;
 - (void)setupActions;
+- (void)setupStyles;
 - (void)configure:(SBDUserMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState;
 - (void)configure:(SBDBaseMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState withTextView:(BOOL)withTextView;
-- (void)setBackgroundColorWithColor:(UIColor * _Nonnull)color;
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated;
-- (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nonnull)sender;
+- (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nullable)sender;
 - (void)onTapProfileImageViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
 - (void)onTapContentViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
 - (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER;

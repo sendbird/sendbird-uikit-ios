@@ -539,7 +539,7 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         self.sortAllMessageList(needReload: true)
         self.messageInputView.endTypingMode()
         self.channel?.endTyping()
-        self.scrollToBottom()
+        self.scrollToBottom(animated: false)
     }
     
     /// Sends a file message with file data, file name, mime type.
@@ -740,7 +740,7 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
                 self?.upsertMessagesForSync(messages: [updatedMessage], needReload: true)
                 self?.inEditingMessage = nil
                 self?.messageInputView.endEditMode()
-        }
+            }
     }
     
     /// Deletes a message with message object.
@@ -764,7 +764,9 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         }
         let cancelButton = SBUAlertButtonItem(title: SBUStringSet.Cancel) {_ in }
         
-        SBUAlertView.show(title: SBUStringSet.Alert_Delete, confirmButtonItem: deleteButton, cancelButtonItem: cancelButton)
+        SBUAlertView.show(title: SBUStringSet.Alert_Delete,
+                          confirmButtonItem: deleteButton,
+                          cancelButtonItem: cancelButton)
     }
     
     /// This function is used to load channel information.
@@ -980,7 +982,7 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         
         if let newMessageInfoView = self.newMessageInfoView as? SBUNewMessageInfo {
             newMessageInfoView.updateCount(count: self.newMessagesCount) { [weak self] in
-                self?.scrollToBottom()
+                self?.scrollToBottom(animated: false)
             }
         }
         
@@ -1088,13 +1090,17 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
             PHImageManager.default().requestImageData(for: gifAsset, options: requestOptions)
             { imageData, dataUTI, orientation, info in
                 guard let imageData = imageData else { return }
-                self.sendFileMessage(fileData: imageData, fileName: imageName, mimeType: mimeType)
+                self.sendFileMessage(fileData: imageData,
+                                     fileName: imageName,
+                                     mimeType: mimeType)
             }
             
         default:
             guard let originalImage = info[.originalImage] as? UIImage else { return }
             guard let imageData = originalImage.fixedOrientation().jpegData(compressionQuality: 1.0) else { return }
-            self.sendFileMessage(fileData: imageData, fileName: "image.jpg", mimeType: "image/jpeg")
+            self.sendFileMessage(fileData: imageData,
+                                 fileName: "image.jpg",
+                                 mimeType: "image/jpeg")
         }
         
     }
@@ -1106,7 +1112,9 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
             let videoName = videoUrl.lastPathComponent
             guard let mimeType = SBUUtils.getMimeType(url: videoUrl) else { return }
             
-            self.sendFileMessage(fileData: videoFileData, fileName: videoName, mimeType: mimeType)
+            self.sendFileMessage(fileData: videoFileData,
+                                 fileName: videoName,
+                                 mimeType: mimeType)
         } catch {
         }
     }
@@ -1117,7 +1125,9 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
             let documentData = try Data(contentsOf: documentUrl)
             let documentName = documentUrl.lastPathComponent
             guard let mimeType = SBUUtils.getMimeType(url: documentUrl) else { return }
-            self.sendFileMessage(fileData: documentData, fileName: documentName, mimeType: mimeType)
+            self.sendFileMessage(fileData: documentData,
+                                 fileName: documentName,
+                                 mimeType: mimeType)
         } catch {
             self.didReceiveError(error.localizedDescription)
         }
@@ -1137,21 +1147,18 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         self.showChannelSettings()
     }
     
-    public func scrollToBottom() {
+    public func scrollToBottom(animated: Bool) {
         guard self.fullMessageList.count != 0 else { return }
         
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             
-            UIView.animate(withDuration: 0.1, animations: {
-                let indexPath = IndexPath(row: 0, section: 0)
-                self.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
-            }) { _ in
-                self.newMessagesCount = 0
-                self.lastSeenIndexPath = nil
-                if let newMessageInfoView = self.newMessageInfoView {
-                    newMessageInfoView.isHidden = true
-                }
+            let indexPath = IndexPath(row: 0, section: 0)
+            self.tableView.scrollToRow(at: indexPath, at: .top, animated: animated)
+            self.newMessagesCount = 0
+            self.lastSeenIndexPath = nil
+            if let newMessageInfoView = self.newMessageInfoView {
+                newMessageInfoView.isHidden = true
             }
         }
     }
@@ -1161,27 +1168,45 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
     public func register(adminMessageCell: SBUBaseMessageCell, nib: UINib? = nil) {
         self.adminMessageCell = adminMessageCell
         if let nib = nib {
-            self.tableView.register(nib, forCellReuseIdentifier: adminMessageCell.sbu_className)
+            self.tableView.register(
+                nib,
+                forCellReuseIdentifier: adminMessageCell.sbu_className
+            )
         } else {
-            self.tableView.register(type(of: adminMessageCell), forCellReuseIdentifier: adminMessageCell.sbu_className)
+            self.tableView.register(
+                type(of: adminMessageCell),
+                forCellReuseIdentifier: adminMessageCell.sbu_className
+            )
         }
     }
 
     public func register(userMessageCell: SBUBaseMessageCell, nib: UINib? = nil) {
         self.userMessageCell = userMessageCell
         if let nib = nib {
-            self.tableView.register(nib, forCellReuseIdentifier: userMessageCell.sbu_className)
+            self.tableView.register(
+                nib,
+                forCellReuseIdentifier: userMessageCell.sbu_className
+            )
         } else {
-            self.tableView.register(type(of: userMessageCell), forCellReuseIdentifier: userMessageCell.sbu_className)
+            self.tableView.register(
+                type(of: userMessageCell),
+                forCellReuseIdentifier: userMessageCell.sbu_className
+            )
         }
     }
 
     public func register(fileMessageCell: SBUBaseMessageCell, nib: UINib? = nil) {
         self.fileMessageCell = fileMessageCell
         if let nib = nib {
-            self.tableView.register(nib, forCellReuseIdentifier: fileMessageCell.sbu_className)
+            self.tableView.register(
+                nib,
+                forCellReuseIdentifier: fileMessageCell.sbu_className
+            )
         } else {
-            self.tableView.register(type(of: fileMessageCell), forCellReuseIdentifier: fileMessageCell.sbu_className)
+            self.tableView.register(
+                type(of: fileMessageCell),
+                forCellReuseIdentifier: fileMessageCell.sbu_className
+            )
         }
     }
 
@@ -1240,35 +1265,45 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
             
         // Amdin Message
         case let (adminMessage, adminMessageCell) as (SBDAdminMessage, SBUAdminMessageCell):
-            adminMessageCell.configure(adminMessage,
-                                       hideDateView: hideDataView)
+            adminMessageCell.configure(
+                adminMessage,
+                hideDateView: hideDataView
+            )
         // Unknown Message
         case let (unknownMessage, unknownMessageCell) as (SBDBaseMessage, SBUUnknownMessageCell):
-            unknownMessageCell.configure(unknownMessage,
-                                         hideDateView: hideDataView,
-                                         receiptState: SBUUtils.getReceiptState(channel: channel, message: unknownMessage))
+            unknownMessageCell.configure(
+                unknownMessage,
+                hideDateView: hideDataView,
+                receiptState: SBUUtils.getReceiptState(channel: channel, message: unknownMessage)
+            )
             self.setUnkownMessageCell(unknownMessageCell, unknownMessage: unknownMessage, indexPath: indexPath)
             
         // User Message
         case let (userMessage, userMessageCell) as (SBDUserMessage, SBUUserMessageCell):
-            userMessageCell.configure(userMessage,
-                                      hideDateView: hideDataView,
-                                      receiptState: SBUUtils.getReceiptState(channel: channel, message: message))
+            userMessageCell.configure(
+                userMessage,
+                hideDateView: hideDataView,
+                receiptState: SBUUtils.getReceiptState(channel: channel, message: message)
+            )
             self.setUserMessageCell(userMessageCell, userMessage: userMessage, indexPath: indexPath)
             
         // File Message
         case let (fileMessage, fileMessageCell) as (SBDFileMessage, SBUFileMessageCell):
-            fileMessageCell.configure(fileMessage,
-                                      hideDateView: hideDataView,
-                                      receiptState: SBUUtils.getReceiptState(channel: channel, message: message))
+            fileMessageCell.configure(
+                fileMessage,
+                hideDateView: hideDataView,
+                receiptState: SBUUtils.getReceiptState(channel: channel, message: message)
+            )
             
             self.setFileMessageCell(fileMessageCell, fileMessage: fileMessage, indexPath: indexPath)
             
         default:
-            messageCell.configure(message: message,
-                                  position: .center,
-                                  hideDateView: hideDataView,
-                                  receiptState: SBUUtils.getReceiptState(channel: channel, message: message))
+            messageCell.configure(
+                message: message,
+                position: .center,
+                hideDateView: hideDataView,
+                receiptState: SBUUtils.getReceiptState(channel: channel, message: message)
+            )
         }
         
         // Tap profile action
@@ -1404,7 +1439,7 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         switch message {
             
         case let userMessage as SBDUserMessage:
-            // User message type
+            // User message type, only fail case
             guard userMessage.sendingStatus == .failed, userMessage.sender?.userId == SBUGlobals.CurrentUser?.userId  else { return }
             let retryItem = SBUActionSheetItem(title: SBUStringSet.Retry) { [weak self] in
                 self?.resendMessage(failedMessage: userMessage)

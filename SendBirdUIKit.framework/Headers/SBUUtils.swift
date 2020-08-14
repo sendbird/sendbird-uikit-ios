@@ -29,10 +29,12 @@ class SBUUtils: NSObject {
     }
     
     static func generateChannelName(channel: SBDGroupChannel) -> String {
-        guard channel.name.contains(kDefaultCoverUrl) == false else { return channel.name }
-        
+        guard !channel.name.contains(kDefaultCoverUrl) else { return channel.name }
         guard let members = channel.members as? [SBDUser] else { return channel.name }
-        let users = members.sbu_convertUserList().filter { $0.userId != SBUGlobals.CurrentUser?.userId }
+        let users = members
+            .sbu_convertUserList()
+            .filter { $0.userId != SBUGlobals.CurrentUser?.userId }
+
         guard users.count != 0 else { return SBUStringSet.Channel_Name_No_Members}
         let userNicknames = users.sbu_getUserNicknames()
         let channelName = userNicknames.joined(separator: ", ")
@@ -43,14 +45,19 @@ class SBUUtils: NSObject {
     static func getMimeType(url: URL) -> String? {
         let lastPathComponent = url.lastPathComponent
         let ext = (lastPathComponent as NSString).pathExtension
-        guard let UTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, ext as CFString, nil)?.takeRetainedValue() else { return nil }
-        guard let retainedValueMimeType = UTTypeCopyPreferredTagWithClass(UTI, kUTTagClassMIMEType)?.takeRetainedValue() else { return nil }
+        guard let UTI = UTTypeCreatePreferredIdentifierForTag(
+            kUTTagClassFilenameExtension, ext as CFString, nil)?
+            .takeRetainedValue() else { return nil }
+        guard let retainedValueMimeType = UTTypeCopyPreferredTagWithClass(
+            UTI, kUTTagClassMIMEType)?
+            .takeRetainedValue() else { return nil }
         let mimeType = retainedValueMimeType as String
         
         return mimeType
     }
     
-    static func getReceiptState(channel: SBDGroupChannel, message: SBDBaseMessage) -> SBUMessageReceiptState {
+    static func getReceiptState(channel: SBDGroupChannel,
+                                message: SBDBaseMessage) -> SBUMessageReceiptState {
         let didReadAll = channel.getUnreadMemberCount(message) == 0
         let didDeliverAll = channel.getUndeliveredMemberCount(message) == 0
         
@@ -71,7 +78,12 @@ class SBUUtils: NSObject {
         let flt_max = CGFloat.greatestFiniteMagnitude
         let maxSize = CGSize(width: flt_max, height: flt_max)
         let attributes = [NSAttributedString.Key.font : UIFont.systemFont(ofSize: UIFont.systemFontSize)]
-        let boundingRect = placeholderSymbol.boundingRect(with: maxSize, options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
+        let boundingRect = placeholderSymbol.boundingRect(
+            with: maxSize,
+            options: .usesLineFragmentOrigin,
+            attributes: attributes,
+            context: nil
+        )
         
         var usefulWidth = size.width - minimalActionWidth
         usefulWidth = usefulWidth < 0 ? 0 : usefulWidth
@@ -96,6 +108,4 @@ class SBUUtils: NSObject {
         
         return true
     }
-    
-    
 }
