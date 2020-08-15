@@ -51,12 +51,12 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         super.init(coder: aDecoder)
     }
 
-    @available(*, unavailable, renamed: "SBUMessageInputView.loadViewFromNibForSB()")
+    @available(*, unavailable, renamed: "SBUMessageInputView.sbu_loadViewFromNib()")
     override public init(frame: CGRect) {
         super.init(frame: frame)
     }
     
-    @available(*, unavailable, renamed: "SBUMessageInputView.loadViewFromNibForSB()")
+    @available(*, unavailable, renamed: "SBUMessageInputView.sbu_loadViewFromNib()")
     public init() {
         super.init(frame: .zero)
     }

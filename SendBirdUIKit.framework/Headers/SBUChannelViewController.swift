@@ -133,6 +133,12 @@ open class SBUChannelViewController: UIViewController, UITableViewDelegate, UITa
         super.init(coder: coder)
         SBULog.info("")
     }
+    
+    @available(*, unavailable, renamed: "SBUChannelViewController.init(channelUrl:)")
+    public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+        SBULog.info("")
+    }
 
     /// If you have channel object, use this initialize function. And, if you have own message list params, please set it. If not set, it is used as the default value.
     ///

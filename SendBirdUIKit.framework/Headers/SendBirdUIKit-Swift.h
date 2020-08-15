@@ -411,13 +411,13 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit20SBUEmptyViewDelegate_")
 @class UIBarButtonItem;
 @class SBDGroupChannel;
 @class SBDGroupChannelListQuery;
+@class NSBundle;
 @class UINib;
 @class UITableView;
 @class UISwipeActionsConfiguration;
 @class UITableViewRowAction;
 @class SBDUser;
 @class SBDBaseChannel;
-@class NSBundle;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 @interface SBUChannelListViewController : UIViewController <SBDChannelDelegate, SBDConnectionDelegate, SBUEmptyViewDelegate, UITableViewDataSource, UITableViewDelegate>
@@ -434,6 +434,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 /// 1.0.11
 @property (nonatomic, readonly, strong) SBDGroupChannelListQuery * _Nullable channelListQuery;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUChannelListViewController()'");
+- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER;
 /// You can initialize the class through this function.
 /// If you have <code>channelListQuery</code>, please set it. If not set, it is used as default value.
 /// See the example below for query generation.
@@ -514,7 +515,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 - (void)didReceiveError:(NSString * _Nullable)message;
 - (void)didSucceedReconnection;
 - (void)didSelectRetry;
-- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
 @end
 
 
@@ -561,6 +561,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
 /// One of two must be set.
 @property (nonatomic, readonly, strong) SBDGroupChannel * _Nullable channel;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithChannelUrl:'");
+- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithChannelUrl:'");
 /// If you have channel object, use this initialize function.
 /// \param channel Channel object
 ///
@@ -615,7 +616,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
 - (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
 - (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
 - (void)didReceiveError:(NSString * _Nullable)message;
-- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
 @end
 
 
@@ -685,6 +685,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 /// 1.0.11
 @property (nonatomic, readonly, strong) SBDMessageListParams * _Nonnull messageListParams;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUChannelViewController.init(channelUrl:)'");
+- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUChannelViewController.init(channelUrl:)'");
 /// If you have channel object, use this initialize function. And, if you have own message list params, please set it. If not set, it is used as the default value.
 /// See the example below for params generation.
 /// \code
@@ -886,7 +887,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)didSelectRetry;
 - (void)didSelectDeleteImageWithMessage:(SBDFileMessage * _Nonnull)message;
 - (void)didReceiveError:(NSString * _Nullable)message;
-- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
 @end
 
 
@@ -1052,6 +1052,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 @property (nonatomic, readonly, copy) NSArray<SBUUser *> * _Nonnull userList;
 @property (nonatomic, readonly, copy) NSSet<SBUUser *> * _Nonnull selectedUserList;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'init'");
+- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'init'");
 - (nonnull instancetype)init;
 /// If you have user objects, use this initialize function.
 /// \param users User object
@@ -1098,7 +1099,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 - (void)tableView:(UITableView * _Nonnull)tableView didSelectRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
 - (void)tableView:(UITableView * _Nonnull)tableView willDisplayCell:(UITableViewCell * _Nonnull)cell forRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
 - (void)didReceiveError:(NSString * _Nullable)message;
-- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
 @end
 
 @class UIImageView;
@@ -1401,6 +1401,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 @property (nonatomic, readonly, copy) NSArray<SBUUser *> * _Nonnull userList;
 @property (nonatomic, readonly, copy) NSSet<SBUUser *> * _Nonnull selectedUserList;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithChannelUrl:'");
+- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithChannelUrl:'");
 /// If you have channel object, use this initialize function.
 /// \param channel Channel object
 ///
@@ -1466,7 +1467,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 - (void)tableView:(UITableView * _Nonnull)tableView didSelectRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
 - (void)tableView:(UITableView * _Nonnull)tableView willDisplayCell:(UITableViewCell * _Nonnull)cell forRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
 - (void)didReceiveError:(NSString * _Nullable)message;
-- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
 @end
 
 @class SBDError;
@@ -1514,6 +1514,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 @property (nonatomic, readonly, copy) NSString * _Nullable channelUrl;
 @property (nonatomic, readonly, copy) NSArray<SBDMember *> * _Nonnull memberList;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithChannelUrl:'");
+- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithChannelUrl:'");
 /// If you have channel object, use this initialize function.
 /// \param channel Channel object
 ///
@@ -1542,7 +1543,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 - (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
 - (UITableViewCell * _Nonnull)tableView:(UITableView * _Nonnull)tableView cellForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
 - (void)didReceiveError:(NSString * _Nullable)message;
-- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
 @end
 
 
@@ -1637,8 +1637,8 @@ SWIFT_CLASS("_TtC13SendBirdUIKit19SBUMessageInputView")
 @property (nonatomic, weak) IBOutlet UIButton * _Null_unspecified cancelButton;
 @property (nonatomic, weak) IBOutlet UIButton * _Null_unspecified saveButton;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
-- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUMessageInputView.loadViewFromNibForSB()'");
-- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUMessageInputView.loadViewFromNibForSB()'");
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUMessageInputView.sbu_loadViewFromNib()'");
+- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUMessageInputView.sbu_loadViewFromNib()'");
 - (void)awakeFromNib;
 /// This function handles the initialization of views.
 - (void)setupViews;
@@ -2433,13 +2433,13 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit20SBUEmptyViewDelegate_")
 @class UIBarButtonItem;
 @class SBDGroupChannel;
 @class SBDGroupChannelListQuery;
+@class NSBundle;
 @class UINib;
 @class UITableView;
 @class UISwipeActionsConfiguration;
 @class UITableViewRowAction;
 @class SBDUser;
 @class SBDBaseChannel;
-@class NSBundle;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 @interface SBUChannelListViewController : UIViewController <SBDChannelDelegate, SBDConnectionDelegate, SBUEmptyViewDelegate, UITableViewDataSource, UITableViewDelegate>
@@ -2456,6 +2456,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 /// 1.0.11
 @property (nonatomic, readonly, strong) SBDGroupChannelListQuery * _Nullable channelListQuery;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUChannelListViewController()'");
+- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER;
 /// You can initialize the class through this function.
 /// If you have <code>channelListQuery</code>, please set it. If not set, it is used as default value.
 /// See the example below for query generation.
@@ -2536,7 +2537,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 - (void)didReceiveError:(NSString * _Nullable)message;
 - (void)didSucceedReconnection;
 - (void)didSelectRetry;
-- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
 @end
 
 
@@ -2583,6 +2583,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
 /// One of two must be set.
 @property (nonatomic, readonly, strong) SBDGroupChannel * _Nullable channel;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithChannelUrl:'");
+- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithChannelUrl:'");
 /// If you have channel object, use this initialize function.
 /// \param channel Channel object
 ///
@@ -2637,7 +2638,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
 - (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
 - (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
 - (void)didReceiveError:(NSString * _Nullable)message;
-- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
 @end
 
 
@@ -2707,6 +2707,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 /// 1.0.11
 @property (nonatomic, readonly, strong) SBDMessageListParams * _Nonnull messageListParams;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUChannelViewController.init(channelUrl:)'");
+- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUChannelViewController.init(channelUrl:)'");
 /// If you have channel object, use this initialize function. And, if you have own message list params, please set it. If not set, it is used as the default value.
 /// See the example below for params generation.
 /// \code
@@ -2908,7 +2909,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)didSelectRetry;
 - (void)didSelectDeleteImageWithMessage:(SBDFileMessage * _Nonnull)message;
 - (void)didReceiveError:(NSString * _Nullable)message;
-- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
 @end
 
 
@@ -3074,6 +3074,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 @property (nonatomic, readonly, copy) NSArray<SBUUser *> * _Nonnull userList;
 @property (nonatomic, readonly, copy) NSSet<SBUUser *> * _Nonnull selectedUserList;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'init'");
+- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'init'");
 - (nonnull instancetype)init;
 /// If you have user objects, use this initialize function.
 /// \param users User object
@@ -3120,7 +3121,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 - (void)tableView:(UITableView * _Nonnull)tableView didSelectRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
 - (void)tableView:(UITableView * _Nonnull)tableView willDisplayCell:(UITableViewCell * _Nonnull)cell forRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
 - (void)didReceiveError:(NSString * _Nullable)message;
-- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
 @end
 
 @class UIImageView;
@@ -3423,6 +3423,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 @property (nonatomic, readonly, copy) NSArray<SBUUser *> * _Nonnull userList;
 @property (nonatomic, readonly, copy) NSSet<SBUUser *> * _Nonnull selectedUserList;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithChannelUrl:'");
+- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithChannelUrl:'");
 /// If you have channel object, use this initialize function.
 /// \param channel Channel object
 ///
@@ -3488,7 +3489,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 - (void)tableView:(UITableView * _Nonnull)tableView didSelectRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
 - (void)tableView:(UITableView * _Nonnull)tableView willDisplayCell:(UITableViewCell * _Nonnull)cell forRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
 - (void)didReceiveError:(NSString * _Nullable)message;
-- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
 @end
 
 @class SBDError;
@@ -3536,6 +3536,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 @property (nonatomic, readonly, copy) NSString * _Nullable channelUrl;
 @property (nonatomic, readonly, copy) NSArray<SBDMember *> * _Nonnull memberList;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithChannelUrl:'");
+- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithChannelUrl:'");
 /// If you have channel object, use this initialize function.
 /// \param channel Channel object
 ///
@@ -3564,7 +3565,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 - (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
 - (UITableViewCell * _Nonnull)tableView:(UITableView * _Nonnull)tableView cellForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
 - (void)didReceiveError:(NSString * _Nullable)message;
-- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
 @end
 
 
@@ -3659,8 +3659,8 @@ SWIFT_CLASS("_TtC13SendBirdUIKit19SBUMessageInputView")
 @property (nonatomic, weak) IBOutlet UIButton * _Null_unspecified cancelButton;
 @property (nonatomic, weak) IBOutlet UIButton * _Null_unspecified saveButton;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
-- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUMessageInputView.loadViewFromNibForSB()'");
-- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUMessageInputView.loadViewFromNibForSB()'");
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUMessageInputView.sbu_loadViewFromNib()'");
+- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUMessageInputView.sbu_loadViewFromNib()'");
 - (void)awakeFromNib;
 /// This function handles the initialization of views.
 - (void)setupViews;
@@ -4457,13 +4457,13 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit20SBUEmptyViewDelegate_")
 @class UIBarButtonItem;
 @class SBDGroupChannel;
 @class SBDGroupChannelListQuery;
+@class NSBundle;
 @class UINib;
 @class UITableView;
 @class UISwipeActionsConfiguration;
 @class UITableViewRowAction;
 @class SBDUser;
 @class SBDBaseChannel;
-@class NSBundle;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 @interface SBUChannelListViewController : UIViewController <SBDChannelDelegate, SBDConnectionDelegate, SBUEmptyViewDelegate, UITableViewDataSource, UITableViewDelegate>
@@ -4480,6 +4480,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 /// 1.0.11
 @property (nonatomic, readonly, strong) SBDGroupChannelListQuery * _Nullable channelListQuery;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUChannelListViewController()'");
+- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER;
 /// You can initialize the class through this function.
 /// If you have <code>channelListQuery</code>, please set it. If not set, it is used as default value.
 /// See the example below for query generation.
@@ -4560,7 +4561,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 - (void)didReceiveError:(NSString * _Nullable)message;
 - (void)didSucceedReconnection;
 - (void)didSelectRetry;
-- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
 @end
 
 
@@ -4607,6 +4607,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
 /// One of two must be set.
 @property (nonatomic, readonly, strong) SBDGroupChannel * _Nullable channel;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithChannelUrl:'");
+- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithChannelUrl:'");
 /// If you have channel object, use this initialize function.
 /// \param channel Channel object
 ///
@@ -4661,7 +4662,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
 - (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
 - (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
 - (void)didReceiveError:(NSString * _Nullable)message;
-- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
 @end
 
 
@@ -4731,6 +4731,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 /// 1.0.11
 @property (nonatomic, readonly, strong) SBDMessageListParams * _Nonnull messageListParams;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUChannelViewController.init(channelUrl:)'");
+- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUChannelViewController.init(channelUrl:)'");
 /// If you have channel object, use this initialize function. And, if you have own message list params, please set it. If not set, it is used as the default value.
 /// See the example below for params generation.
 /// \code
@@ -4932,7 +4933,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)didSelectRetry;
 - (void)didSelectDeleteImageWithMessage:(SBDFileMessage * _Nonnull)message;
 - (void)didReceiveError:(NSString * _Nullable)message;
-- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
 @end
 
 
@@ -5098,6 +5098,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 @property (nonatomic, readonly, copy) NSArray<SBUUser *> * _Nonnull userList;
 @property (nonatomic, readonly, copy) NSSet<SBUUser *> * _Nonnull selectedUserList;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'init'");
+- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'init'");
 - (nonnull instancetype)init;
 /// If you have user objects, use this initialize function.
 /// \param users User object
@@ -5144,7 +5145,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 - (void)tableView:(UITableView * _Nonnull)tableView didSelectRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
 - (void)tableView:(UITableView * _Nonnull)tableView willDisplayCell:(UITableViewCell * _Nonnull)cell forRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
 - (void)didReceiveError:(NSString * _Nullable)message;
-- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
 @end
 
 @class UIImageView;
@@ -5447,6 +5447,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 @property (nonatomic, readonly, copy) NSArray<SBUUser *> * _Nonnull userList;
 @property (nonatomic, readonly, copy) NSSet<SBUUser *> * _Nonnull selectedUserList;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithChannelUrl:'");
+- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithChannelUrl:'");
 /// If you have channel object, use this initialize function.
 /// \param channel Channel object
 ///
@@ -5512,7 +5513,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 - (void)tableView:(UITableView * _Nonnull)tableView didSelectRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
 - (void)tableView:(UITableView * _Nonnull)tableView willDisplayCell:(UITableViewCell * _Nonnull)cell forRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
 - (void)didReceiveError:(NSString * _Nullable)message;
-- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
 @end
 
 @class SBDError;
@@ -5560,6 +5560,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 @property (nonatomic, readonly, copy) NSString * _Nullable channelUrl;
 @property (nonatomic, readonly, copy) NSArray<SBDMember *> * _Nonnull memberList;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithChannelUrl:'");
+- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithChannelUrl:'");
 /// If you have channel object, use this initialize function.
 /// \param channel Channel object
 ///
@@ -5588,7 +5589,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 - (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
 - (UITableViewCell * _Nonnull)tableView:(UITableView * _Nonnull)tableView cellForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
 - (void)didReceiveError:(NSString * _Nullable)message;
-- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
 @end
 
 
@@ -5683,8 +5683,8 @@ SWIFT_CLASS("_TtC13SendBirdUIKit19SBUMessageInputView")
 @property (nonatomic, weak) IBOutlet UIButton * _Null_unspecified cancelButton;
 @property (nonatomic, weak) IBOutlet UIButton * _Null_unspecified saveButton;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
-- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUMessageInputView.loadViewFromNibForSB()'");
-- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUMessageInputView.loadViewFromNibForSB()'");
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUMessageInputView.sbu_loadViewFromNib()'");
+- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUMessageInputView.sbu_loadViewFromNib()'");
 - (void)awakeFromNib;
 /// This function handles the initialization of views.
 - (void)setupViews;
@@ -6479,13 +6479,13 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit20SBUEmptyViewDelegate_")
 @class UIBarButtonItem;
 @class SBDGroupChannel;
 @class SBDGroupChannelListQuery;
+@class NSBundle;
 @class UINib;
 @class UITableView;
 @class UISwipeActionsConfiguration;
 @class UITableViewRowAction;
 @class SBDUser;
 @class SBDBaseChannel;
-@class NSBundle;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 @interface SBUChannelListViewController : UIViewController <SBDChannelDelegate, SBDConnectionDelegate, SBUEmptyViewDelegate, UITableViewDataSource, UITableViewDelegate>
@@ -6502,6 +6502,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 /// 1.0.11
 @property (nonatomic, readonly, strong) SBDGroupChannelListQuery * _Nullable channelListQuery;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUChannelListViewController()'");
+- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER;
 /// You can initialize the class through this function.
 /// If you have <code>channelListQuery</code>, please set it. If not set, it is used as default value.
 /// See the example below for query generation.
@@ -6582,7 +6583,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 - (void)didReceiveError:(NSString * _Nullable)message;
 - (void)didSucceedReconnection;
 - (void)didSelectRetry;
-- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
 @end
 
 
@@ -6629,6 +6629,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
 /// One of two must be set.
 @property (nonatomic, readonly, strong) SBDGroupChannel * _Nullable channel;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithChannelUrl:'");
+- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithChannelUrl:'");
 /// If you have channel object, use this initialize function.
 /// \param channel Channel object
 ///
@@ -6683,7 +6684,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
 - (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
 - (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
 - (void)didReceiveError:(NSString * _Nullable)message;
-- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
 @end
 
 
@@ -6753,6 +6753,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 /// 1.0.11
 @property (nonatomic, readonly, strong) SBDMessageListParams * _Nonnull messageListParams;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUChannelViewController.init(channelUrl:)'");
+- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUChannelViewController.init(channelUrl:)'");
 /// If you have channel object, use this initialize function. And, if you have own message list params, please set it. If not set, it is used as the default value.
 /// See the example below for params generation.
 /// \code
@@ -6954,7 +6955,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)didSelectRetry;
 - (void)didSelectDeleteImageWithMessage:(SBDFileMessage * _Nonnull)message;
 - (void)didReceiveError:(NSString * _Nullable)message;
-- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
 @end
 
 
@@ -7120,6 +7120,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 @property (nonatomic, readonly, copy) NSArray<SBUUser *> * _Nonnull userList;
 @property (nonatomic, readonly, copy) NSSet<SBUUser *> * _Nonnull selectedUserList;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'init'");
+- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'init'");
 - (nonnull instancetype)init;
 /// If you have user objects, use this initialize function.
 /// \param users User object
@@ -7166,7 +7167,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 - (void)tableView:(UITableView * _Nonnull)tableView didSelectRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
 - (void)tableView:(UITableView * _Nonnull)tableView willDisplayCell:(UITableViewCell * _Nonnull)cell forRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
 - (void)didReceiveError:(NSString * _Nullable)message;
-- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
 @end
 
 @class UIImageView;
@@ -7469,6 +7469,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 @property (nonatomic, readonly, copy) NSArray<SBUUser *> * _Nonnull userList;
 @property (nonatomic, readonly, copy) NSSet<SBUUser *> * _Nonnull selectedUserList;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithChannelUrl:'");
+- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithChannelUrl:'");
 /// If you have channel object, use this initialize function.
 /// \param channel Channel object
 ///
@@ -7534,7 +7535,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 - (void)tableView:(UITableView * _Nonnull)tableView didSelectRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
 - (void)tableView:(UITableView * _Nonnull)tableView willDisplayCell:(UITableViewCell * _Nonnull)cell forRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
 - (void)didReceiveError:(NSString * _Nullable)message;
-- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
 @end
 
 @class SBDError;
@@ -7582,6 +7582,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 @property (nonatomic, readonly, copy) NSString * _Nullable channelUrl;
 @property (nonatomic, readonly, copy) NSArray<SBDMember *> * _Nonnull memberList;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithChannelUrl:'");
+- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithChannelUrl:'");
 /// If you have channel object, use this initialize function.
 /// \param channel Channel object
 ///
@@ -7610,7 +7611,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 - (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
 - (UITableViewCell * _Nonnull)tableView:(UITableView * _Nonnull)tableView cellForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
 - (void)didReceiveError:(NSString * _Nullable)message;
-- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
 @end
 
 
@@ -7705,8 +7705,8 @@ SWIFT_CLASS("_TtC13SendBirdUIKit19SBUMessageInputView")
 @property (nonatomic, weak) IBOutlet UIButton * _Null_unspecified cancelButton;
 @property (nonatomic, weak) IBOutlet UIButton * _Null_unspecified saveButton;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
-- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUMessageInputView.loadViewFromNibForSB()'");
-- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUMessageInputView.loadViewFromNibForSB()'");
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUMessageInputView.sbu_loadViewFromNib()'");
+- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUMessageInputView.sbu_loadViewFromNib()'");
 - (void)awakeFromNib;
 /// This function handles the initialization of views.
 - (void)setupViews;

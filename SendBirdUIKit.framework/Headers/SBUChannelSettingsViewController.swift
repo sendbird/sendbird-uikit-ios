@@ -68,6 +68,12 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
         super.init(coder: coder)
         SBULog.info("")
     }
+    
+    @available(*, unavailable, renamed: "SBUChannelSettingsViewController.init(channelUrl:)")
+    public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+        SBULog.info("")
+    }
 
     /// If you have channel object, use this initialize function.
     /// - Parameter channel: Channel object

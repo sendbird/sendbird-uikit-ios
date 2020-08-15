@@ -60,6 +60,12 @@ open class SBUMemberListViewController: UIViewController, UITableViewDelegate, U
         SBULog.info("")
     }
     
+    @available(*, unavailable, renamed: "SBUMemberListViewController.init(channelUrl:)")
+    public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+        SBULog.info("")
+    }
+    
     /// If you have channel object, use this initialize function.
     /// - Parameter channel: Channel object
     public init(channel: SBDGroupChannel) {

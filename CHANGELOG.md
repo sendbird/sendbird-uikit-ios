@@ -1,5 +1,8 @@
 # Change Log
 
+### v1.1.4 (Aug 15, 2020)
+* Fixed - Default initialization function support for objC
+
 ### v1.1.3 (Aug 14, 2020)
 * Implemented - OG tag messages feature
 * Fixed - Unmodified message not editable

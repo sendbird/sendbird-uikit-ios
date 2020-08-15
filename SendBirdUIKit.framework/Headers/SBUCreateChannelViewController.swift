@@ -67,6 +67,12 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
         SBULog.info("")
     }
     
+    @available(*, unavailable, renamed: "SBUCreateChannelViewController.init()")
+    public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+        SBULog.info("")
+    }
+    
     convenience public init() {
         self.init(users: nil)
     }

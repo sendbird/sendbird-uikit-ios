@@ -85,6 +85,11 @@ open class SBUChannelListViewController: UIViewController, UITableViewDelegate, 
         super.init(coder: coder)
         SBULog.info("")
     }
+    
+    public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+        SBULog.info("")
+    }
 
     /// You can initialize the class through this function.
     /// If you have `channelListQuery`, please set it. If not set, it is used as default value.
