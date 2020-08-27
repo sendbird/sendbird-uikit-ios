@@ -10,16 +10,15 @@ import UIKit
 
 class SBUChannelManager: NSObject {
     
-    /// This function can check whether a specific UserId is an operator in the channel.
+    /// This function can check whether my role is an operator in the channel.
     /// - Parameters:
     ///   - channel: GroupChannel object
-    ///   - userId: used to verify that it is an operator
     /// - Returns: Returns `true` if it is an operator.
     /// - Since: 1.0.10
-    static func isOperator(channel: SBDGroupChannel?, userId: String?) -> Bool {
-        guard let channel = channel, let userId = userId else { return false }
+    static func isOperator(channel: SBDGroupChannel?) -> Bool {
+        guard let channel = channel else { return false }
         
-        if let role = channel.getMember(userId)?.role, role == .operator {
+        if channel.myRole == .operator {
             return true
         }
         else {

@@ -48,12 +48,16 @@ public class SBUMain: NSObject {
             
             SBULog.info("[Succeed] Connection to SendBird server")
             
-            SBUMain.updateUserInfo(nickname: nickname ?? userId, profileUrl: currentUser.profileUrl ?? user?.profileUrl) { error in
+            SBUMain.updateUserInfo(
+                nickname: nickname ?? userId,
+                profileUrl: currentUser.profileUrl ?? user?.profileUrl
+            ) { error in
+                
                 guard error == nil else {
                     completionHandler(nil, error)
                     return
                 }
-            
+                
                 #if !targetEnvironment(simulator)
                 if let pendingPushToken = SBDMain.getPendingPushToken() {
                     SBULog.info("[Request] Register pending push token to SendBird server")
@@ -65,11 +69,11 @@ public class SBUMain: NSObject {
                     }
                 }
                 #endif
-
+                
                 SBUEmojiManager.loadAllEmojis { _, error in
                     completionHandler(user, error)
                 }
-
+                
             }
         }
     }
@@ -97,7 +101,9 @@ public class SBUMain: NSObject {
     
     
     // MARK: - UserInfo
-    public static func updateUserInfo(nickname: String?, profileUrl: String?, completionHandler: ((_ error: SBDError?) -> Void)?) {
+    public static func updateUserInfo(nickname: String?,
+                                      profileUrl: String?,
+                                      completionHandler: ((_ error: SBDError?) -> Void)?) {
         SBULog.info("[Request] Update user info")
         SBDMain.updateCurrentUserInfo(withNickname: nickname, profileUrl: profileUrl) { error in
             if let error = error {
@@ -106,7 +112,10 @@ public class SBUMain: NSObject {
                 return
             }
             
-            SBULog.info("[Succeed] Update user info: \(String(SBUGlobals.CurrentUser?.description ?? ""))")
+            SBULog.info("""
+                [Succeed]
+                Update user info: \(String(SBUGlobals.CurrentUser?.description ?? ""))
+                """)
             completionHandler?(nil)
         }
     }
@@ -138,7 +147,8 @@ public class SBUMain: NSObject {
 
     
     // MARK: - Push Notification
-    public static func registerPush(deviceToken: Data, completionHandler: @escaping (_ success: Bool) -> Void) {
+    public static func registerPush(deviceToken: Data,
+                                    completionHandler: @escaping (_ success: Bool) -> Void) {
         SBULog.info("[Request] Register push token to SendBird server")
         
         #if !targetEnvironment(simulator)
@@ -151,7 +161,10 @@ public class SBUMain: NSObject {
                 SBULog.info("[Response] Push registration is pending.")
                 completionHandler(false)
             case .error:
-                SBULog.error("[Failed] APNs registration failed with error: \(String(describing: error ?? nil))")
+                SBULog.error("""
+                    [Failed]
+                    APNs registration failed with error: \(String(describing: error ?? nil))
+                    """)
                 completionHandler(false)
             @unknown default:
                 SBULog.error("[Failed] Push registration: unknown default")
@@ -170,16 +183,19 @@ public class SBUMain: NSObject {
             #if !targetEnvironment(simulator)
             guard let pendingPushToken = SBDMain.getPendingPushToken() else { return }
             SBULog.info("[Request] Unregister push token to SendBird server")
-            SBDMain.unregisterPushToken(pendingPushToken, completionHandler: { resonse, error in
+            SBDMain.unregisterPushToken(pendingPushToken) { resonse, error in
                 if let error = error {
-                    SBULog.error("[Failed] Push unregistration is fail: \(error.localizedDescription)")
+                    SBULog.error("""
+                        [Failed]
+                        Push unregistration is fail: \(error.localizedDescription)
+                        """)
                     completionHandler(false)
                     return
                 }
                 
                 SBULog.info("[Succeed] Push unregistration is success.")
                 completionHandler(true)
-            })
+            }
             #else
             completionHandler(false)
             #endif
@@ -215,7 +231,9 @@ public class SBUMain: NSObject {
             rootViewController = tabbarController.selectedViewController
         }
         
-        if let navigationController: UINavigationController = rootViewController?.presentedViewController as? UINavigationController {
+        if let navigationController: UINavigationController = rootViewController?
+            .presentedViewController as? UINavigationController {
+            
             for subViewController in navigationController.viewControllers {
                 if let subViewController = subViewController as? SBUChannelListViewController {
                     navigationController.popToViewController(subViewController, animated: false)
@@ -225,7 +243,9 @@ public class SBUMain: NSObject {
                     viewController = subViewController
                 }
             }
-        } else if let navigationController: UINavigationController = rootViewController as? UINavigationController {
+        } else if let navigationController: UINavigationController = rootViewController
+            as? UINavigationController {
+            
             for subViewController in navigationController.viewControllers {
                 if let subViewController = subViewController as? SBUChannelListViewController {
                     navigationController.popToViewController(subViewController, animated: false)
@@ -242,7 +262,7 @@ public class SBUMain: NSObject {
         } else if let viewController = viewController as? SBUChannelViewController {
             viewController.loadChannel(channelUrl: channelUrl)
         } else {
-            if basedOnChannelList == true {
+            if basedOnChannelList {
                 // If based on channelList
                 let vc = SBUChannelListViewController()
                 let naviVC = UINavigationController(rootViewController: vc)

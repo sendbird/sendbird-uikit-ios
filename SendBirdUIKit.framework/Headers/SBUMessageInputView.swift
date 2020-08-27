@@ -36,6 +36,7 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
     weak var delegate: SBUMessageInputViewDelegate?
     
     var isFrozen: Bool = false
+    var isMuted: Bool = false
 
     // MARK: - Theme
     var theme: SBUMessageInputTheme = SBUTheme.messageInputTheme
@@ -83,11 +84,16 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         self.backgroundColor = theme.backgroundColor
 
         // placeholderLabel
-        self.placeholderLabel.font = SBUFontSet.body2
+        self.placeholderLabel.font = theme.textFieldPlaceholderFont
         if self.isFrozen {
             self.placeholderLabel.text = SBUStringSet.MessageInput_Text_Unavailable
             self.placeholderLabel.textColor = theme.textFieldDisabledColor
-        } else {
+        }
+        else if self.isMuted {
+            self.placeholderLabel.text = SBUStringSet.MessageInput_Text_Muted
+            self.placeholderLabel.textColor = theme.textFieldDisabledColor
+        }
+        else {
             self.placeholderLabel.text = SBUStringSet.MessageInput_Text_Placeholder
             self.placeholderLabel.textColor = theme.textFieldPlaceholderColor
         }
@@ -99,11 +105,16 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         self.textView.layer.borderColor = theme.textFieldBorderColor.cgColor
         
         // addButton
-        let iconAdd = SBUIconSet.iconAdd.sbu_with(tintColor: self.isFrozen ? theme.buttonDisabledTintColor : theme.buttonTintColor)
+        let iconAdd = SBUIconSet.iconAdd
+            .sbu_with(tintColor:
+                (self.isFrozen || self.isMuted)
+                ? theme.buttonDisabledTintColor
+                : theme.buttonTintColor)
         self.addButton.setImage(iconAdd, for: .normal)
         
         // IconSend
-        self.sendButton.setImage(SBUIconSet.iconSend.sbu_with(tintColor: theme.buttonTintColor), for: .normal)
+        self.sendButton.setImage(SBUIconSet.iconSend
+            .sbu_with(tintColor: theme.buttonTintColor), for: .normal)
         
         // cancelButton
         self.cancelButton.titleLabel?.font = theme.cancelButtonFont
@@ -144,6 +155,8 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         self.updateTextViewHeight()
         let bottom = NSMakeRange(self.textView.text.count - 1, 1)
         self.textView.scrollRangeToVisible(bottom)
+        
+        self.textView.becomeFirstResponder()
 
         self.layoutIfNeeded()
     }
@@ -163,7 +176,7 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         self.layoutIfNeeded()
     }
     
-    // MARK: Frozen
+    // MARK: State
     
     /// Sets frozen mode state.
     /// - Parameter isFrozen `true` is frozen mode, `false` is unfrozen mode
@@ -171,7 +184,22 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         self.isFrozen = isFrozen
         
         self.textView.isEditable = !self.isFrozen
+        self.textView.isUserInteractionEnabled = !self.isFrozen
         self.addButton.isEnabled = !self.isFrozen
+        
+        self.endEditMode()
+        self.endTypingMode()
+        self.setupStyles()
+    }
+    
+    /// Sets frozen mode state.
+    /// - Parameter isMuted `true` is muted mode, `false` is unmuted mode
+    public func setMutedModeState(_ isMuted: Bool) {
+        self.isMuted = isMuted
+        
+        self.textView.isEditable = !self.isMuted
+        self.textView.isUserInteractionEnabled = !self.isMuted
+        self.addButton.isEnabled = !self.isMuted
         
         self.endEditMode()
         self.endTypingMode()
@@ -208,7 +236,10 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
     }
     
     @IBAction open func onClickSendButton(_ sender: Any) {
-        self.delegate?.messageInputView?(self, didSelectSend: self.textView.text.trimmingCharacters(in: .whitespacesAndNewlines))
+        self.delegate?.messageInputView?(
+            self,
+            didSelectSend: self.textView.text.trimmingCharacters(in: .whitespacesAndNewlines)
+        )
         self.updateTextViewHeight()
     }
     
@@ -222,7 +253,10 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
             self.endEditMode()
             return
         }
-        self.delegate?.messageInputView?(self, didSelectEdit: self.textView.text.trimmingCharacters(in: .whitespacesAndNewlines))
+        self.delegate?.messageInputView?(
+            self,
+            didSelectEdit: self.textView.text.trimmingCharacters(in: .whitespacesAndNewlines)
+        )
     }
 
     // MARK: UITextViewDelegate
@@ -241,7 +275,9 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         self.delegate?.messageInputViewDidEndTyping?()
     }
 
-    public func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+    public func textView(_ textView: UITextView,
+                         shouldChangeTextIn range: NSRange,
+                         replacementText text: String) -> Bool {
         if text.count > 0 {
             self.delegate?.messageInputViewDidStartTyping?()
         } else if text.count == 0, textView.text?.count ?? 0 <= 1 {

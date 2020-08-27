@@ -111,11 +111,15 @@ public class SBUEmojiManager {
         }
     }
 
-    static func loadAllEmojis(completionHandler: @escaping (_ container: SBDEmojiContainer?, _ error: SBDError?) -> Void) {
-
-        guard let appInfo = SBDMain.getAppInfo(), self.shared.emojiHash == nil || appInfo.isEmojiUpdateNeeded(shared.emojiHash ?? "") else {
-            completionHandler(nil, nil)
-            return
+    static func loadAllEmojis(completionHandler: @escaping (
+        _ container: SBDEmojiContainer?,
+        _ error: SBDError?) -> Void
+    ) {
+        guard let appInfo = SBDMain.getAppInfo(),
+            self.shared.emojiHash == nil || appInfo.isEmojiUpdateNeeded(shared.emojiHash ?? "")
+            else {
+                completionHandler(nil, nil)
+                return
         }
 
         SBULog.info("[Request] Load all emojis")

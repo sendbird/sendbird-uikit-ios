@@ -15,6 +15,16 @@ public class SBUUser: NSObject {
     public private(set) var nickname: String?
     public private(set) var profileUrl: String?
     
+    /// This is an operator state property.
+    /// - Since: 1.2.0
+    public private(set) var isOperator: Bool = false
+    
+    /// This is a muted state property.
+    /// - Since: 1.2.0
+    public private(set) var isMuted: Bool = false
+    
+    
+    // MARK: - User
     public init(userId: String, nickname: String? = nil, profileUrl: String? = nil) {
         self.userId = userId
         self.nickname = nickname ?? userId
@@ -27,6 +37,27 @@ public class SBUUser: NSObject {
         self.profileUrl = user.profileUrl
     }
     
+    
+    // MARK: - Member
+    public init(user: SBUUser, isOperator: Bool = false, isMuted: Bool = false) {
+        self.userId = user.userId
+        self.nickname = user.nickname
+        self.profileUrl = user.profileUrl
+        self.isOperator = isOperator
+        self.isMuted = isMuted
+    }
+    
+    public init(member: SBDMember) {
+        self.userId = member.userId
+        self.nickname = member.nickname
+        self.profileUrl = member.profileUrl
+        self.isOperator = member.role == .operator
+        self.isMuted = member.isMuted
+    }
+    
+    
+    // MARK: - Common
+    
     /// This method returns the default value if there is no alias value.
     /// - since: 1.0.1
     public func refinedNickname() -> String {
@@ -38,8 +69,13 @@ public class SBUUser: NSObject {
     }
     
     public override var description: String {
-        let desc = String(format: "UserId:%@, Nickname:%@, ProfileUrl:%@", self.userId, self.nickname ?? "", self.profileUrl ?? "")
-        
-        return desc
+        return String(
+            format: "UserId:%@, Nickname:%@, ProfileUrl:%@, Operator:%d Muted:%d",
+            self.userId,
+            self.nickname ?? "",
+            self.profileUrl ?? "",
+            self.isOperator,
+            self.isMuted
+        )
     }
 }

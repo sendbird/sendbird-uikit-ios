@@ -52,4 +52,8 @@ public class SBUColorSet: NSObject {
     // MARK: - Error
     public static var error = UIColor(red: 229.0 / 255.0, green: 49.0 / 255.0, blue: 87.0 / 255.0, alpha: 1.0)
     
+    // MARK: - Information
+    public static var information = UIColor(red: 178.0 / 255.0, green: 217.0 / 255.0, blue: 1.0, alpha: 1.0)
+
+    
 }

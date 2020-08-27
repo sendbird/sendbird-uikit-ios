@@ -6,7 +6,78 @@
 //  Copyright © 2020 SendBird, Inc. All rights reserved.
 //
 
-public enum MemberListType: Int {
+
+/// This is an enumeration for channel type.
+/// - Since: 1.2.0
+@objc public enum ChannelType: Int {
+    case group
+    case supergroup
+    case broadcast
+}
+
+/// This is an enumeration used to handling action and display by type in `ChannelSettingsViewController` and `ChannelSettingCell`.
+/// - Since: 1.2.0
+@objc public enum ChannelSettingItemType: Int {
+    case moderations
+    case notifications
+    case members
+    case leave
+    
+    static func allTypes(isOperator: Bool) -> [ChannelSettingItemType] {
+        return isOperator
+            ? [.moderations, notifications, members, leave]
+            : [.notifications, members, leave]
+    }
+}
+
+/// This is an enumeration used to handling action and display by type in `MederationsViewController` and `ModerationCell`.
+/// - Since: 1.2.0
+@objc public enum ModerationItemType: Int {
+    case operators
+    case mutedMembers
+    case bannedMembers
+    case freezeChannel
+    
+    static func allTypes(isBroadcast: Bool) -> [ModerationItemType] {
+        return isBroadcast
+        ? [.operators, .bannedMembers]
+        : [.operators, .mutedMembers, .bannedMembers, .freezeChannel]
+    }
+}
+
+/// This is an enumeration used to display `UserCell` by type.
+/// - Since: 1.2.0
+@objc public enum UserListType: Int {
+    case none
+    case createChannel
+    case channelMembers
+    case inviteUser
+    case reaction
+    case operators
+    case mutedMembers
+    case bannedMembers
+}
+
+/// This is an enumeration used in `MemberListViewController` to load member list by type.
+/// - Since: 1.2.0
+@objc public enum ChannelMemberListType: Int {
+    case none
+    case channelMembers
+    case operators
+    case mutedMembers
+    case bannedMembers
+}
+
+/// This is an enumeration used in `InviteUserViewController` to load user list by type.
+/// - Since: 1.2.0
+@objc public enum ChannelInviteListType: Int {
+    case none
+    case users
+    case operators
+}
+
+@available(*, deprecated, message: "deprecated in 1.2.0", renamed: "UserListType")
+@objc public enum MemberListType: Int {
     case none
     case createChannel
     case channelMembers
@@ -18,6 +89,8 @@ public enum MemberListType: Int {
     case none
     case noChannels
     case noMessages
+    case noMutedMembers
+    case noBannedMembers
     case error
 }
 
@@ -28,7 +101,7 @@ public enum MemberListType: Int {
     case unknown
 }
 
-public enum ChannelEditType: Int {
+@objc public enum ChannelEditType: Int {
     case name
     case image
 }

@@ -94,8 +94,7 @@ open class SBUBaseMessageCell: UITableViewCell {
     open func configure(message: SBDBaseMessage,
                         position: MessagePosition,
                         hideDateView: Bool,
-                        receiptState: SBUMessageReceiptState)
-    {
+                        receiptState: SBUMessageReceiptState) {
         self.message = message
         self.position = position
         self.dateView.isHidden = hideDateView
@@ -154,8 +153,8 @@ fileprivate class MessageDateView: UIView {
         self.dateLabel
             .setConstraint(from: self, centerX: true, centerY: true)
             .setConstraint(width: 91, height: 20)
-        self
-            .setConstraint(height: 20, priority: .defaultLow)
+        
+        self.setConstraint(height: 20, priority: .defaultLow)
     }
     
     func setupStyles() {
@@ -241,7 +240,10 @@ public class MessageProfileView: UIView {
     
     func configure(urlString: String) {
         self.urlString = urlString
-        self.imageView.loadImage(urlString: urlString, placeholder: SBUIconSet.iconUser.sbu_with(tintColor: theme.userPlaceholderTintColor))
+        self.imageView.loadImage(
+            urlString: urlString,
+            placeholder: SBUIconSet.iconUser.sbu_with(tintColor: theme.userPlaceholderTintColor)
+        )
         self.imageView.backgroundColor = theme.userPlaceholderBackgroundColor
         self.setNeedsLayout()
     }
@@ -334,16 +336,24 @@ public class MessageStateView: UIView {
         super.init(frame: .zero)
         self.setupViews()
         self.setupAutolayout()
-        self.configure(timestamp: self.timestamp, sendingState: sendingState,
-                       receiptState: self.receiptState, position: .center)
+        self.configure(
+            timestamp: self.timestamp,
+            sendingState: sendingState,
+            receiptState: self.receiptState,
+            position: .center
+        )
     }
     
     override public init(frame: CGRect) {
         super.init(frame: frame)
         self.setupViews()
         self.setupAutolayout()
-        self.configure(timestamp: self.timestamp, sendingState: sendingState,
-                       receiptState: self.receiptState, position: .center)
+        self.configure(
+            timestamp: self.timestamp,
+            sendingState: sendingState,
+            receiptState: self.receiptState,
+            position: .center
+        )
     }
     
     @available(*, unavailable, renamed: "MessageStateView(type:)")
@@ -361,7 +371,14 @@ public class MessageStateView: UIView {
         stateImageView.contentMode = .center
         let width = leftSpace + timeLabelWidth + rightSpace
         self.setConstraint(width: width)
-        self.stackView.setConstraint(from: self, left: 4, right: 4, top: 0, bottom: 0, priority: .defaultLow)
+        self.stackView.setConstraint(
+            from: self,
+            left: 4,
+            right: 4,
+            top: 0,
+            bottom: 0,
+            priority: .defaultLow
+        )
         self.timeLabel.setConstraint(width: timeLabelWidth, height: timeLabelHeight)
         self.stateImageView.setConstraint(height: 12)
     }
@@ -383,8 +400,8 @@ public class MessageStateView: UIView {
     func configure(timestamp: Int64,
                    sendingState: SBDMessageSendingStatus,
                    receiptState: SBUMessageReceiptState,
-                   position: MessagePosition)
-    {
+                   position: MessagePosition) {
+        
         self.receiptState = receiptState
         self.sendingState = sendingState
         self.position = position
@@ -432,7 +449,9 @@ public class MessageStateView: UIView {
             case .readReceipt:
                 stateImage = SBUIconSet.iconRead.sbu_with(tintColor: theme.readReceiptStateColor)
             case .deliveryReceipt:
-                stateImage = SBUIconSet.iconDelivered.sbu_with(tintColor: theme.deliveryReceiptStateColor)
+                stateImage = SBUIconSet.iconDelivered.sbu_with(
+                    tintColor: theme.deliveryReceiptStateColor
+                )
             }
         @unknown default:
             stateImage = nil

@@ -1,12 +1,32 @@
 # Change Log
 
+### v1.2.0 (Aug 27, 2020)
+* Added operator features
+  * Member managing (ban/unban, mute/unmute, promote/dismiss)
+  * Moderation feature for the operator
+  * Channel freezing/unfreezing
+  * Channel creator will be the default operator
+  * Added `SBUModerationsViewController` class
+* Added GroupChannel type selector to create
+* Improved image cache logic with auth key
+* Fixed the problem of chat bubbles width becoming the maximum on short messages
+* Fixed Bottom sheet closed automatically issue
+* Improved stability
+* Modified all codes indentation
+* Deprecated
+  * `SBUChannelSettingsViewController`
+    * `cellNotificationIconColor` -> Use `cellTypeIconTintColor`
+    * `cellMemberIconColor` -> Use `cellTypeIconTintColor`
+    * `cellMemberButtonColor`  -> Use `cellArrowIconTintColor `
+* Updated - MessagingSDK minimum version to **v3.0.200**
+
 ### v1.1.4 (Aug 15, 2020)
 * Fixed - Default initialization function support for Objective-C
 
 ### v1.1.3 (Aug 14, 2020)
 * Implemented - OG tag messages feature
 * Fixed - Unmodified message not editable
-* Updated - MessagingSDK minimum version to 3.0.198
+* Updated - MessagingSDK minimum version to v3.0.198
 
 ### v1.1.2 (Aug 3, 2020)
 * Fixed - Undelivered state checker in message
@@ -39,7 +59,7 @@
 
 ### v1.0.9 (Jun 8, 2020)
 * Supported - customized params, Changed access control
-	* `SBUChannelViewController`**
+	* `SBUChannelViewController`
 		* `channel`, `messageList`, `resendableMessages` properties
 		* `sendUserMessage(messageParams:)`
 		* `sendFileMessage(messageParams:)`
@@ -47,18 +67,18 @@
 		* `updateUserMessage(message:, text:)`
 		* `updateUserMessage(message:, messageParams:)`
 		* `deleteMessage(message:)`
-	* `SBUChannelViewController`**
+	* `SBUChannelViewController`
 		* `channelList` property
 		* `changePushTriggerOption(option:, channel:, completionHandler:)`
 		* `leaveChannel(channel:, completionHandler:)`
-	* `SBUChannelSettingsViewController`**
+	* `SBUChannelSettingsViewController`
 		* `updateChannel(channelName:, coverImage:)`
 		* `selectChannelImage()`
 		* `changeChannelName()`
-	* `SBUCreateChannelViewController`**
+	* `SBUCreateChannelViewController`
 		* `createChannel(userIds:)`
 		* `createChannel(params:)`
-	* `SBUInviteUserViewController`**
+	* `SBUInviteUserViewController`
 		* `inviteUsers()`
 		* `inviteUsers(userIds:)`
 * Added - `setFrozenModeState()` method for changing frozen channel UI in `MessageInputView`

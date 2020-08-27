@@ -33,7 +33,10 @@ open class SBUEmptyView: UIView {
     
     lazy var retryButton: UIButton = {
        let retryButton = UIButton()
-        retryButton.setImage(SBUIconSet.iconRefresh.sbu_with(tintColor: theme.emptyViewRetryButtonTintColor), for: .normal)
+        retryButton.setImage(
+            SBUIconSet.iconRefresh.sbu_with(tintColor: theme.emptyViewRetryButtonTintColor),
+            for: .normal
+        )
         retryButton.setTitle(SBUStringSet.Retry, for: .normal)
         retryButton.addTarget(self, action: #selector(onClickRetry), for: .touchUpInside)
         return retryButton
@@ -103,19 +106,32 @@ open class SBUEmptyView: UIView {
     
     /// Override this function to apply a custom type.
     open func updateViews() {
+        self.isHidden = false
         switch self.type {
         case .none:
             self.statusLabel.text = ""
             self.statusImageView.image = nil
+            self.isHidden = true
         case .noChannels:
             self.statusLabel.text = SBUStringSet.Empty_No_Channels
-            self.statusImageView.image = SBUIconSet.iconChat.sbu_with(tintColor: theme.emptyViewStatusTintColor)
+            self.statusImageView.image = SBUIconSet.iconChat
+                .sbu_with(tintColor: theme.emptyViewStatusTintColor)
         case .noMessages:
             self.statusLabel.text = SBUStringSet.Empty_No_Messages
-            self.statusImageView.image = SBUIconSet.iconChat.sbu_with(tintColor: theme.emptyViewStatusTintColor)
+            self.statusImageView.image = SBUIconSet.iconMessage
+                .sbu_with(tintColor: theme.emptyViewStatusTintColor)
+        case .noMutedMembers:
+            self.statusLabel.text = SBUStringSet.Empty_No_Muted_Members
+            self.statusImageView.image = SBUIconSet.iconMuted
+                .sbu_with(tintColor: theme.emptyViewStatusTintColor)
+        case .noBannedMembers:
+            self.statusLabel.text = SBUStringSet.Empty_No_Banned_Members
+            self.statusImageView.image = SBUIconSet.iconBanned
+                .sbu_with(tintColor: theme.emptyViewStatusTintColor)
         case .error:
             self.statusLabel.text = SBUStringSet.Empty_Wrong
-            self.statusImageView.image = SBUIconSet.iconError.sbu_with(tintColor: theme.emptyViewStatusTintColor)
+            self.statusImageView.image = SBUIconSet.iconError
+                .sbu_with(tintColor: theme.emptyViewStatusTintColor)
         }
     }
     

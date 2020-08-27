@@ -12,16 +12,16 @@ import UIKit
 @objcMembers
 public class SBUTheme: NSObject {
     
-    public init( channelListTheme: SBUChannelListTheme = .light,
-                 channelCellTheme: SBUChannelCellTheme = .light,
-                 channelTheme: SBUChannelTheme = .light,
-                 messageInputTheme: SBUMessageInputTheme = .light,
-                 messageCellTheme: SBUMessageCellTheme = .light,
-                 userListTheme: SBUUserListTheme = .light,
-                 userCellTheme: SBUUserCellTheme = .light,
-                 channelSettingsTheme: SBUChannelSettingsTheme = .light,
-                 componentTheme: SBUComponentTheme = .light )
-    {
+    public init(channelListTheme: SBUChannelListTheme = .light,
+                channelCellTheme: SBUChannelCellTheme = .light,
+                channelTheme: SBUChannelTheme = .light,
+                messageInputTheme: SBUMessageInputTheme = .light,
+                messageCellTheme: SBUMessageCellTheme = .light,
+                userListTheme: SBUUserListTheme = .light,
+                userCellTheme: SBUUserCellTheme = .light,
+                channelSettingsTheme: SBUChannelSettingsTheme = .light,
+                componentTheme: SBUComponentTheme = .light) {
+        
         self._channelListTheme = channelListTheme
         self._channelCellTheme = channelCellTheme
         self._channelTheme = channelTheme
@@ -55,8 +55,8 @@ public class SBUTheme: NSObject {
     }
     
     public static func setUserList(userListTheme: SBUUserListTheme,
-                                   userCellTheme: SBUUserCellTheme)
-    {
+                                   userCellTheme: SBUUserCellTheme) {
+        
         self.userListTheme = userListTheme
         self.userCellTheme = userCellTheme
     }
@@ -79,7 +79,7 @@ public class SBUTheme: NSObject {
     }
     
     public static var light: SBUTheme {
-        return SBUTheme( channelListTheme: .light,
+        return SBUTheme(channelListTheme: .light,
                          channelCellTheme: .light,
                          channelTheme: .light,
                          messageInputTheme: .light,
@@ -87,8 +87,7 @@ public class SBUTheme: NSObject {
                          userListTheme: .light,
                          userCellTheme: .light,
                          channelSettingsTheme: .light,
-                         componentTheme: .light )
-        
+                         componentTheme: .light)
     } 
 
     
@@ -234,8 +233,7 @@ public class SBUChannelListTheme: NSObject {
                 notificationOffTintColor: UIColor = SBUColorSet.onlight01,
                 leaveBackgroundColor: UIColor = SBUColorSet.error,
                 leaveTintColor: UIColor = SBUColorSet.background100,
-                alertBackgroundColor: UIColor = SBUColorSet.background100)
-    {
+                alertBackgroundColor: UIColor = SBUColorSet.background100) {
 
         self.statusBarStyle = statusBarStyle
         self.leftBarButtonTintColor = leftBarButtonTintColor
@@ -295,6 +293,10 @@ public class SBUChannelCellTheme: NSObject {
         theme.messageFont = SBUFontSet.body2
         theme.messageTextColor = SBUColorSet.onlight03
         
+        theme.broadcastMarkTintColor = SBUColorSet.secondary300
+        
+        theme.freezeStateTintColor = SBUColorSet.primary300
+        
         theme.unreadCountBackgroundColor = SBUColorSet.primary300
         theme.unreadCountTextColor = SBUColorSet.ondark01
         theme.unreadCountFont = SBUFontSet.caption1
@@ -318,6 +320,10 @@ public class SBUChannelCellTheme: NSObject {
         theme.messageFont = SBUFontSet.body2
         theme.messageTextColor = SBUColorSet.ondark03
         
+        theme.broadcastMarkTintColor = SBUColorSet.secondary200
+        
+        theme.freezeStateTintColor = SBUColorSet.primary200
+        
         theme.unreadCountBackgroundColor = SBUColorSet.primary200
         theme.unreadCountTextColor = SBUColorSet.onlight01
         theme.unreadCountFont = SBUFontSet.caption1
@@ -335,11 +341,13 @@ public class SBUChannelCellTheme: NSObject {
                 lastUpdatedTimeTextColor: UIColor = SBUColorSet.onlight02,
                 messageFont: UIFont = SBUFontSet.body1,
                 messageTextColor: UIColor = SBUColorSet.onlight03,
+                broadcastMarkTintColor: UIColor = SBUColorSet.secondary300,
+                freezeStateTintColor: UIColor = SBUColorSet.primary300,
                 unreadCountBackgroundColor: UIColor = SBUColorSet.primary300,
                 unreadCountTextColor: UIColor = SBUColorSet.ondark01,
                 unreadCountFont: UIFont = SBUFontSet.caption1,
-                separatorLineColor: UIColor = SBUColorSet.onlight04)
-    {
+                separatorLineColor: UIColor = SBUColorSet.onlight04) {
+        
         self.backgroundColor = backgroundColor
         self.titleFont = titleFont
         self.titleTextColor = titleTextColor
@@ -349,6 +357,8 @@ public class SBUChannelCellTheme: NSObject {
         self.lastUpdatedTimeTextColor = lastUpdatedTimeTextColor
         self.messageFont = messageFont
         self.messageTextColor = messageTextColor
+        self.broadcastMarkTintColor = broadcastMarkTintColor
+        self.freezeStateTintColor = freezeStateTintColor
         self.unreadCountBackgroundColor = unreadCountBackgroundColor
         self.unreadCountTextColor = unreadCountTextColor
         self.unreadCountFont = unreadCountFont
@@ -368,6 +378,10 @@ public class SBUChannelCellTheme: NSObject {
     
     public var messageFont: UIFont
     public var messageTextColor: UIColor
+    
+    public var broadcastMarkTintColor: UIColor
+    
+    public var freezeStateTintColor: UIColor
     
     public var unreadCountBackgroundColor: UIColor
     public var unreadCountTextColor: UIColor
@@ -405,6 +419,11 @@ public class SBUChannelTheme: NSObject {
         // Menu
         theme.menuTextColor = SBUColorSet.onlight01
         
+        // State banner
+        theme.channelStateBannerFont = SBUFontSet.caption2
+        theme.channelStateBannerTextColor = SBUColorSet.onlight01
+        theme.channelStateBannerBackgroundColor = SBUColorSet.information
+        
         return theme
     }
     
@@ -429,6 +448,11 @@ public class SBUChannelTheme: NSObject {
         // Menu
         theme.menuTextColor = SBUColorSet.ondark01
         
+        // State banner
+        theme.channelStateBannerFont = SBUFontSet.caption2
+        theme.channelStateBannerTextColor = SBUColorSet.onlight01
+        theme.channelStateBannerBackgroundColor = SBUColorSet.information
+        
         return theme
     }
     
@@ -442,8 +466,10 @@ public class SBUChannelTheme: NSObject {
                 cancelItemColor: UIColor = SBUColorSet.primary300,
                 alertRemoveColor: UIColor = SBUColorSet.error,
                 alertCancelColor: UIColor = SBUColorSet.primary300,
-                menuTextColor: UIColor = SBUColorSet.onlight01)
-    {
+                menuTextColor: UIColor = SBUColorSet.onlight01,
+                channelStateBannerFont: UIFont = SBUFontSet.caption2,
+                channelStateBannerTextColor: UIColor = SBUColorSet.onlight01,
+                channelStateBannerBackgroundColor: UIColor = SBUColorSet.information) {
 
         self.statusBarStyle = statusBarStyle
         self.navigationBarTintColor = navigationBarTintColor
@@ -456,6 +482,9 @@ public class SBUChannelTheme: NSObject {
         self.alertRemoveColor = alertRemoveColor
         self.alertCancelColor = alertCancelColor
         self.menuTextColor = menuTextColor
+        self.channelStateBannerFont = channelStateBannerFont
+        self.channelStateBannerTextColor = channelStateBannerTextColor
+        self.channelStateBannerBackgroundColor = channelStateBannerBackgroundColor
     }
 
     public var statusBarStyle: UIStatusBarStyle
@@ -475,7 +504,11 @@ public class SBUChannelTheme: NSObject {
     
     // Menu
     public var menuTextColor: UIColor
-    
+
+    // State Banner
+    public var channelStateBannerFont: UIFont
+    public var channelStateBannerTextColor: UIColor
+    public var channelStateBannerBackgroundColor: UIColor
 }
 
 // MARK: - Message Input Theme
@@ -488,6 +521,7 @@ public class SBUMessageInputTheme: NSObject {
         theme.backgroundColor = SBUColorSet.background100
         theme.textFieldBackgroundColor = SBUColorSet.background200
         theme.textFieldPlaceholderColor = SBUColorSet.onlight03
+        theme.textFieldPlaceholderFont = SBUFontSet.body2
         theme.textFieldDisabledColor = SBUColorSet.onlight04
         theme.textFieldTintColor = SBUColorSet.primary300
         theme.textFieldTextColor = SBUColorSet.onlight01
@@ -507,6 +541,7 @@ public class SBUMessageInputTheme: NSObject {
         theme.backgroundColor = SBUColorSet.background600
         theme.textFieldBackgroundColor = SBUColorSet.background400
         theme.textFieldPlaceholderColor = SBUColorSet.ondark03
+        theme.textFieldPlaceholderFont = SBUFontSet.body2
         theme.textFieldDisabledColor = SBUColorSet.ondark04
         theme.textFieldTintColor = SBUColorSet.primary200
         theme.textFieldTextColor = SBUColorSet.ondark01
@@ -525,6 +560,7 @@ public class SBUMessageInputTheme: NSObject {
     public init(backgroundColor: UIColor = SBUColorSet.background100,
                 textFieldBackgroundColor: UIColor = SBUColorSet.background200,
                 textFieldPlaceholderColor: UIColor = SBUColorSet.onlight03,
+                textFieldPlaceholderFont: UIFont = SBUFontSet.body2,
                 textFieldDisabledColor: UIColor = SBUColorSet.onlight04,
                 textFieldTintColor: UIColor = SBUColorSet.primary300,
                 textFieldTextColor: UIColor = SBUColorSet.onlight01,
@@ -533,11 +569,12 @@ public class SBUMessageInputTheme: NSObject {
                 buttonDisabledTintColor: UIColor = SBUColorSet.onlight04,
                 cancelButtonFont: UIFont = SBUFontSet.button2,
                 saveButtonFont: UIFont = SBUFontSet.button2,
-                saveButtonTextColor: UIColor = SBUColorSet.ondark01)
-    {
+                saveButtonTextColor: UIColor = SBUColorSet.ondark01) {
+        
         self.backgroundColor = backgroundColor
         self.textFieldBackgroundColor = textFieldBackgroundColor
         self.textFieldPlaceholderColor = textFieldPlaceholderColor
+        self.textFieldPlaceholderFont = textFieldPlaceholderFont
         self.textFieldDisabledColor = textFieldDisabledColor
         self.textFieldTintColor = textFieldTintColor
         self.textFieldTextColor = textFieldTextColor
@@ -552,6 +589,7 @@ public class SBUMessageInputTheme: NSObject {
     public var backgroundColor: UIColor
     public var textFieldBackgroundColor: UIColor
     public var textFieldPlaceholderColor: UIColor
+    public var textFieldPlaceholderFont: UIFont
     public var textFieldDisabledColor: UIColor
     public var textFieldTintColor: UIColor
     public var textFieldTextColor: UIColor
@@ -747,8 +785,8 @@ public class SBUMessageCellTheme: NSObject {
                 ogURLAddressFont: UIFont = SBUFontSet.caption2,
                 ogURLAddressColor: UIColor = SBUColorSet.onlight02,
                 contentBackgroundColor: UIColor = SBUColorSet.background200,
-                pressedContentBackgroundColor: UIColor = SBUColorSet.background300)
-    {
+                pressedContentBackgroundColor: UIColor = SBUColorSet.background300) {
+        
         self.backgroundColor = backgroundColor
         self.leftBackgroundColor = leftBackgroundColor
         self.leftPressedBackgroundColor = leftPressedBackgroundColor
@@ -895,8 +933,8 @@ public class SBUUserListTheme: NSObject {
                 leftBarButtonTintColor: UIColor = SBUColorSet.primary300,
                 rightBarButtonTintColor: UIColor = SBUColorSet.onlight04,
                 rightBarButtonSelectedTintColor: UIColor = SBUColorSet.primary300,
-                backgroundColor: UIColor = SBUColorSet.background100)
-    {
+                backgroundColor: UIColor = SBUColorSet.background100) {
+        
         self.statusBarStyle = statusBarStyle
         self.navigationBarTintColor = navigationBarTintColor
         self.navigationShadowColor = navigationShadowColor
@@ -913,14 +951,12 @@ public class SBUUserListTheme: NSObject {
     public var leftBarButtonTintColor: UIColor
     public var rightBarButtonTintColor: UIColor
     public var rightBarButtonSelectedTintColor: UIColor
-    public var backgroundColor: UIColor
-     
+    public var backgroundColor: UIColor     
 }
 
 // MARK: - User Cell Theme
 @objcMembers
 public class SBUUserCellTheme: NSObject {
-    
     public static var light: SBUUserCellTheme {
         let theme = SBUUserCellTheme()
         theme.backgroundColor = SBUColorSet.background100
@@ -930,6 +966,12 @@ public class SBUUserCellTheme: NSObject {
         theme.userNameFont = SBUFontSet.subtitle2
         theme.userPlaceholderBackgroundColor = SBUColorSet.background300
         theme.userPlaceholderTintColor = SBUColorSet.ondark01
+        theme.mutedStateBackgroundColor = SBUColorSet.primary300.withAlphaComponent(0.6)
+        theme.mutedStateIconColor = SBUColorSet.ondark01
+        theme.subInfoTextColor = SBUColorSet.onlight02
+        theme.subInfoFont = SBUFontSet.body3
+        theme.moreButtonColor = SBUColorSet.onlight01
+        theme.moreButtonDisabledColor = SBUColorSet.onlight04
         theme.separateColor = SBUColorSet.onlight04
         return theme
     }
@@ -943,7 +985,13 @@ public class SBUUserCellTheme: NSObject {
         theme.userNameFont = SBUFontSet.subtitle2
         theme.userPlaceholderBackgroundColor = SBUColorSet.background400
         theme.userPlaceholderTintColor = SBUColorSet.onlight01
-        theme.separateColor = SBUColorSet.onlight04
+        theme.mutedStateBackgroundColor = SBUColorSet.primary400.withAlphaComponent(0.6)
+        theme.mutedStateIconColor = SBUColorSet.ondark01
+        theme.subInfoTextColor = SBUColorSet.ondark02
+        theme.subInfoFont = SBUFontSet.body3
+        theme.moreButtonColor = SBUColorSet.ondark01
+        theme.moreButtonDisabledColor = SBUColorSet.ondark04
+        theme.separateColor = SBUColorSet.ondark04
         return theme
     }
     
@@ -954,8 +1002,14 @@ public class SBUUserCellTheme: NSObject {
                 userNameFont: UIFont = SBUFontSet.subtitle2,
                 userPlaceholderBackgroundColor: UIColor = SBUColorSet.background300,
                 userPlaceholderTintColor: UIColor = SBUColorSet.ondark01,
-                separateColor: UIColor = SBUColorSet.onlight04)
-    {
+                mutedStateBackgroundColor: UIColor = SBUColorSet.primary300.withAlphaComponent(0.6),
+                mutedStateIconColor: UIColor = SBUColorSet.ondark01,
+                subInfoTextColor: UIColor = SBUColorSet.onlight02,
+                subInfoFont: UIFont = SBUFontSet.body3,
+                moreButtonColor: UIColor = SBUColorSet.onlight01,
+                moreButtonDisabledColor: UIColor = SBUColorSet.onlight04,
+                separateColor: UIColor = SBUColorSet.onlight04) {
+        
         self.backgroundColor = backgroundColor
         self.checkboxOnColor = checkboxOnColor
         self.checkboxOffColor = checkboxOffColor
@@ -963,6 +1017,12 @@ public class SBUUserCellTheme: NSObject {
         self.userNameFont = userNameFont
         self.userPlaceholderBackgroundColor = userPlaceholderBackgroundColor
         self.userPlaceholderTintColor = userPlaceholderTintColor
+        self.mutedStateBackgroundColor = mutedStateBackgroundColor
+        self.mutedStateIconColor = mutedStateIconColor
+        self.subInfoTextColor = subInfoTextColor
+        self.subInfoFont = subInfoFont
+        self.moreButtonColor = moreButtonColor
+        self.moreButtonDisabledColor = moreButtonDisabledColor
         self.separateColor = separateColor
     }
     
@@ -973,6 +1033,12 @@ public class SBUUserCellTheme: NSObject {
     public var userNameFont: UIFont
     public var userPlaceholderBackgroundColor: UIColor
     public var userPlaceholderTintColor: UIColor
+    public var mutedStateBackgroundColor: UIColor
+    public var mutedStateIconColor: UIColor
+    public var subInfoTextColor: UIColor
+    public var subInfoFont: UIFont
+    public var moreButtonColor: UIColor
+    public var moreButtonDisabledColor: UIColor
     public var separateColor: UIColor
 }
 
@@ -998,13 +1064,14 @@ public class SBUChannelSettingsTheme: NSObject {
         // Cell
         theme.cellTextFont = SBUFontSet.subtitle2
         theme.cellTextColor = SBUColorSet.onlight01
+        theme.cellSubTextFont = SBUFontSet.subtitle2
+        theme.cellSubTextColor = SBUColorSet.onlight02
         theme.cellSwitchColor = SBUColorSet.primary300
         theme.cellSeparateColor = SBUColorSet.onlight04
         
         // Cell image
-        theme.cellNotificationIconColor = SBUColorSet.primary300
-        theme.cellMemberIconColor = SBUColorSet.primary300
-        theme.cellMemberButtonColor = SBUColorSet.onlight01
+        theme.cellTypeIconTintColor = SBUColorSet.primary300
+        theme.cellArrowIconTintColor = SBUColorSet.onlight01
         theme.cellLeaveIconColor = SBUColorSet.error
         
         // User Info View
@@ -1029,13 +1096,14 @@ public class SBUChannelSettingsTheme: NSObject {
         // Cell
         theme.cellTextFont = SBUFontSet.subtitle2
         theme.cellTextColor = SBUColorSet.ondark01
+        theme.cellSubTextFont = SBUFontSet.subtitle2
+        theme.cellSubTextColor = SBUColorSet.ondark02
         theme.cellSwitchColor = SBUColorSet.primary200
-        theme.cellSeparateColor = SBUColorSet.onlight04
+        theme.cellSeparateColor = SBUColorSet.ondark04
         
         // Cell image
-        theme.cellNotificationIconColor = SBUColorSet.primary200
-        theme.cellMemberIconColor = SBUColorSet.primary200
-        theme.cellMemberButtonColor = SBUColorSet.ondark01
+        theme.cellTypeIconTintColor = SBUColorSet.primary200
+        theme.cellArrowIconTintColor = SBUColorSet.ondark01
         theme.cellLeaveIconColor = SBUColorSet.error
         
         // User Info View
@@ -1058,17 +1126,18 @@ public class SBUChannelSettingsTheme: NSObject {
                 backgroundColor: UIColor = SBUColorSet.background100,
                 cellTextFont: UIFont = SBUFontSet.subtitle2,
                 cellTextColor: UIColor = SBUColorSet.onlight01,
+                cellSubTextFont: UIFont = SBUFontSet.subtitle2,
+                cellSubTextColor: UIColor = SBUColorSet.onlight02,
                 cellSwitchColor: UIColor = SBUColorSet.primary300,
                 cellSeparateColor: UIColor = SBUColorSet.onlight04,
-                cellNotificationIconColor: UIColor = SBUColorSet.primary300,
-                cellMemberIconColor: UIColor = SBUColorSet.primary300,
-                cellMemberButtonColor: UIColor = SBUColorSet.onlight01,
+                cellTypeIconTintColor: UIColor = SBUColorSet.primary300,
+                cellArrowIconTintColor: UIColor = SBUColorSet.onlight01,
                 cellLeaveIconColor: UIColor = SBUColorSet.error,
                 userNameFont: UIFont = SBUFontSet.subtitle1,
                 userNameTextColor: UIColor = SBUColorSet.onlight01,
                 itemTextColor: UIColor = SBUColorSet.onlight01,
-                itemColor: UIColor = SBUColorSet.primary300)
-    {
+                itemColor: UIColor = SBUColorSet.primary300) {
+        
         self.statusBarStyle = statusBarStyle
         self.navigationBarTintColor = navigationBarTintColor
         self.navigationShadowColor = navigationShadowColor
@@ -1077,11 +1146,12 @@ public class SBUChannelSettingsTheme: NSObject {
         self.backgroundColor = backgroundColor
         self.cellTextFont = cellTextFont
         self.cellTextColor = cellTextColor
+        self.cellSubTextFont = cellSubTextFont
+        self.cellSubTextColor = cellSubTextColor
         self.cellSwitchColor = cellSwitchColor
         self.cellSeparateColor = cellSeparateColor
-        self.cellNotificationIconColor = cellNotificationIconColor
-        self.cellMemberIconColor = cellMemberIconColor
-        self.cellMemberButtonColor = cellMemberButtonColor
+        self.cellTypeIconTintColor = cellTypeIconTintColor
+        self.cellArrowIconTintColor = cellArrowIconTintColor
         self.cellLeaveIconColor = cellLeaveIconColor
         self.userNameFont = userNameFont
         self.userNameTextColor = userNameTextColor
@@ -1100,14 +1170,23 @@ public class SBUChannelSettingsTheme: NSObject {
     // Cell
     public var cellTextFont: UIFont
     public var cellTextColor: UIColor
+    public var cellSubTextFont: UIFont
+    public var cellSubTextColor: UIColor
     public var cellSwitchColor: UIColor
     public var cellSeparateColor: UIColor
     
     // Cell image
-    public var cellNotificationIconColor: UIColor
-    public var cellMemberIconColor: UIColor
-    public var cellMemberButtonColor: UIColor
+    public var cellTypeIconTintColor: UIColor
+    public var cellArrowIconTintColor: UIColor
     public var cellLeaveIconColor: UIColor
+    
+    @available(*, deprecated, message: "deprecated in 1.2.0", renamed: "cellTypeIconTintColor")
+    public lazy var cellNotificationIconColor: UIColor = self.cellTypeIconTintColor
+    @available(*, deprecated, message: "deprecated in 1.2.0", renamed: "cellTypeIconTintColor")
+    public lazy var cellMemberIconColor: UIColor = self.cellTypeIconTintColor
+    @available(*, deprecated, message: "deprecated in 1.2.0", renamed: "cellArrowIconTintColor")
+    public lazy var cellMemberButtonColor: UIColor = self.cellArrowIconTintColor
+    
     
     // User Info View
     public var userNameFont: UIFont
@@ -1116,10 +1195,10 @@ public class SBUChannelSettingsTheme: NSObject {
     // ActionSheet
     public var itemTextColor: UIColor
     public var itemColor: UIColor
- 
 }
 
 
+// MARK: - Component
 @objcMembers
 public class SBUComponentTheme: NSObject {
     public static var light: SBUComponentTheme {
@@ -1138,6 +1217,7 @@ public class SBUComponentTheme: NSObject {
         theme.buttonTextColor = SBUColorSet.primary300
         theme.separatorColor = SBUColorSet.onlight04
         theme.shadowColor = SBUColorSet.background700
+        theme.closeBarButtonTintColor = SBUColorSet.onlight01
         
         // Alert
         theme.alertTitleColor = SBUColorSet.onlight01
@@ -1155,6 +1235,8 @@ public class SBUComponentTheme: NSObject {
         // Action Sheet
         theme.actionSheetTextFont = SBUFontSet.subtitle1
         theme.actionSheetTextColor = SBUColorSet.onlight01
+        theme.actionSheetSubTextFont = SBUFontSet.body3
+        theme.actionSheetSubTextColor = SBUColorSet.onlight02
         theme.actionSheetItemColor = SBUColorSet.primary300
         theme.actionSheetErrorColor = SBUColorSet.error
         theme.actionSheetButtonFont = SBUFontSet.button1
@@ -1194,7 +1276,15 @@ public class SBUComponentTheme: NSObject {
         theme.emojiListSelectedBackgroundColor = SBUColorSet.primary100
 
         theme.addReactionTintColor = SBUColorSet.onlight03
+        
+        // Create channel type
+        theme.channelTypeSelectorItemTintColor = SBUColorSet.primary300
+        theme.channelTypeSelectorItemTextColor = SBUColorSet.onlight01
+        theme.channelTypeSelectorItemFont = SBUFontSet.caption2
 
+        // Icon
+        theme.broadcastIconBackgroundColor = SBUColorSet.secondary300
+        
         return theme
     }
     
@@ -1215,10 +1305,12 @@ public class SBUComponentTheme: NSObject {
         theme.buttonTextColor = SBUColorSet.primary200
         theme.separatorColor = SBUColorSet.ondark04
         theme.shadowColor = SBUColorSet.background700
+        theme.closeBarButtonTintColor = SBUColorSet.ondark01
         
         // Alert
         theme.alertTitleColor = SBUColorSet.ondark01
         theme.alertTitleFont = SBUFontSet.h2
+        
         theme.alertDetailColor = SBUColorSet.ondark02
         theme.alertDetailFont = SBUFontSet.body2
         theme.alertPlaceholderColor = SBUColorSet.ondark03
@@ -1232,6 +1324,8 @@ public class SBUComponentTheme: NSObject {
         // Action Sheet
         theme.actionSheetTextFont = SBUFontSet.subtitle1
         theme.actionSheetTextColor = SBUColorSet.ondark01
+        theme.actionSheetSubTextFont = SBUFontSet.body3
+        theme.actionSheetSubTextColor = SBUColorSet.ondark02
         theme.actionSheetItemColor = SBUColorSet.primary200
         theme.actionSheetErrorColor = SBUColorSet.error
         theme.actionSheetButtonFont = SBUFontSet.button1
@@ -1272,6 +1366,14 @@ public class SBUComponentTheme: NSObject {
         
         theme.addReactionTintColor = SBUColorSet.ondark03
 
+        // Create channel type
+        theme.channelTypeSelectorItemTintColor = SBUColorSet.primary200
+        theme.channelTypeSelectorItemTextColor = SBUColorSet.ondark01
+        theme.channelTypeSelectorItemFont = SBUFontSet.caption2
+        
+        // Icon
+        theme.broadcastIconBackgroundColor = SBUColorSet.secondary200
+        
         return theme
     }
     
@@ -1287,6 +1389,7 @@ public class SBUComponentTheme: NSObject {
                 buttonTextColor: UIColor = SBUColorSet.primary300,
                 separatorColor: UIColor = SBUColorSet.onlight04,
                 shadowColor: UIColor = SBUColorSet.background700,
+                closeBarButtonTintColor: UIColor = SBUColorSet.onlight01,
                 alertTitleColor: UIColor = SBUColorSet.onlight01,
                 alertTitleFont: UIFont = SBUFontSet.h2,
                 alertDetailColor: UIColor = SBUColorSet.onlight02,
@@ -1300,6 +1403,8 @@ public class SBUComponentTheme: NSObject {
                 alertTextFieldFont: UIFont = SBUFontSet.body2,
                 actionSheetTextFont: UIFont = SBUFontSet.subtitle1,
                 actionSheetTextColor: UIColor = SBUColorSet.onlight01,
+                actionSheetSubTextFont: UIFont = SBUFontSet.body3,
+                actionSheetSubTextColor: UIColor = SBUColorSet.onlight02,
                 actionSheetItemColor: UIColor = SBUColorSet.primary300,
                 actionSheetErrorColor: UIColor = SBUColorSet.error,
                 actionSheetButtonFont: UIFont = SBUFontSet.button1,
@@ -1315,7 +1420,6 @@ public class SBUComponentTheme: NSObject {
                 menuTitleFont: UIFont = SBUFontSet.subtitle2,
                 userPlaceholderBackgroundColor: UIColor = SBUColorSet.background300,
                 userPlaceholderTintColor: UIColor = SBUColorSet.ondark01,
-
                 reactionBoxBackgroundColor: UIColor = SBUColorSet.background100,
                 reactionBoxBorderLineColor: UIColor = SBUColorSet.background200,
                 reactionBoxEmojiCountColor: UIColor = SBUColorSet.onlight01,
@@ -1328,8 +1432,12 @@ public class SBUComponentTheme: NSObject {
                 emojiCountFont: UIFont = SBUFontSet.button3,
                 reactionMenuLineColor: UIColor = SBUColorSet.ondark04,
                 emojiListSelectedBackgroundColor: UIColor = SBUColorSet.primary100,
-                addReactionTintColor: UIColor = SBUColorSet.onlight03)
-    {
+                addReactionTintColor: UIColor = SBUColorSet.onlight03,
+                channelTypeSelectorItemTintColor: UIColor = SBUColorSet.primary300,
+                channelTypeSelectorItemTextColor: UIColor = SBUColorSet.onlight01,
+                channelTypeSelectorItemFont: UIFont = SBUFontSet.caption2,
+                broadcastIconBackgroundColor: UIColor = SBUColorSet.secondary300) {
+        
         self.emptyViewBackgroundColor = emptyViewBackgroundColor
         self.emptyViewStatusFont = emptyViewStatusFont
         self.emptyViewStatusTintColor = emptyViewStatusTintColor
@@ -1341,6 +1449,7 @@ public class SBUComponentTheme: NSObject {
         self.buttonTextColor = buttonTextColor
         self.separatorColor = separatorColor
         self.shadowColor = shadowColor
+        self.closeBarButtonTintColor = closeBarButtonTintColor
         self.alertTitleColor = alertTitleColor
         self.alertTitleFont = alertTitleFont
         self.alertDetailColor = alertDetailColor
@@ -1354,6 +1463,8 @@ public class SBUComponentTheme: NSObject {
         self.alertTextFieldFont = alertTextFieldFont
         self.actionSheetTextFont = actionSheetTextFont
         self.actionSheetTextColor = actionSheetTextColor
+        self.actionSheetSubTextFont = actionSheetSubTextFont
+        self.actionSheetSubTextColor = actionSheetSubTextColor
         self.actionSheetItemColor = actionSheetItemColor
         self.actionSheetErrorColor = actionSheetErrorColor
         self.actionSheetButtonFont = actionSheetButtonFont
@@ -1384,14 +1495,20 @@ public class SBUComponentTheme: NSObject {
         self.reactionMenuLineColor = reactionMenuLineColor
         self.emojiListSelectedBackgroundColor = emojiListSelectedBackgroundColor
         self.addReactionTintColor = addReactionTintColor
+        
+        // Create channel type
+        self.channelTypeSelectorItemTintColor = channelTypeSelectorItemTintColor
+        self.channelTypeSelectorItemTextColor = channelTypeSelectorItemTextColor
+        self.channelTypeSelectorItemFont = channelTypeSelectorItemFont
+        
+        // Icon
+        self.broadcastIconBackgroundColor = broadcastIconBackgroundColor
     }
     
     // EmptyView
     public var emptyViewBackgroundColor: UIColor
-    
     public var emptyViewStatusFont: UIFont
     public var emptyViewStatusTintColor: UIColor
-    
     public var emptyViewRetryButtonTintColor: UIColor
     public var emptyViewRetryButtonFont: UIFont
     
@@ -1411,6 +1528,8 @@ public class SBUComponentTheme: NSObject {
     // Action Sheet
     public var actionSheetTextFont: UIFont
     public var actionSheetTextColor: UIColor
+    public var actionSheetSubTextFont: UIFont
+    public var actionSheetSubTextColor: UIColor
     public var actionSheetItemColor: UIColor
     public var actionSheetErrorColor: UIColor
     public var actionSheetButtonFont: UIFont
@@ -1438,29 +1557,41 @@ public class SBUComponentTheme: NSObject {
     public var buttonTextColor: UIColor
     public var separatorColor: UIColor
     public var shadowColor: UIColor
+    public var closeBarButtonTintColor: UIColor
 
     // placeholder
     public var userPlaceholderBackgroundColor: UIColor
     public var userPlaceholderTintColor: UIColor
 
-    // Reaction - Emoji reaction box
+    
+    // Emoji reaction box
     public var reactionBoxBackgroundColor: UIColor
     public var reactionBoxBorderLineColor: UIColor
+    
+    // Emoji Common
     public var reactionBoxEmojiCountColor: UIColor
     public var reactionBoxEmojiBackgroundColor: UIColor
     public var reactionBoxSelectedEmojiBackgroundColor: UIColor
     public var reactionBoxEmojiCountFont: UIFont
     
-    // Reaction - Reacted user list
     public var emojiCountColor: UIColor
     public var emojiSelectedCountColor: UIColor
     public var emojiSelectedUnderlineColor: UIColor
     public var emojiCountFont: UIFont
-    public var reactionMenuLineColor: UIColor
     
-    // Reaction - Emoji list
     public var emojiListSelectedBackgroundColor: UIColor
     
-    // Reaction - Add reaction
+    // Reacted user list
+    public var reactionMenuLineColor: UIColor
+    
+    // Add reaction
     public var addReactionTintColor: UIColor
+    
+    // Create channel type
+    public var channelTypeSelectorItemTintColor: UIColor
+    public var channelTypeSelectorItemTextColor: UIColor
+    public var channelTypeSelectorItemFont: UIFont
+    
+    // Icon
+    public var broadcastIconBackgroundColor: UIColor
 }

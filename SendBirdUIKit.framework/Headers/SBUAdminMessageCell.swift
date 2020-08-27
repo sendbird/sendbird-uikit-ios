@@ -24,24 +24,32 @@ open class SBUAdminMessageCell: SBUBaseMessageCell {
     open override func setupAutolayout() {
         super.setupAutolayout()
         
-        self.messageLabel
-            .setConstraint(from: self.messageContentView, left: 28, right: 27, top: 0, bottom: 0)
+        self.messageLabel.setConstraint(
+            from: self.messageContentView,
+            left: 28,
+            right: 27,
+            top: 0,
+            bottom: 0
+        )
     }
     
     open override func layoutSubviews() {
         super.layoutSubviews()
         let message = self.messageLabel.text ?? ""
-        let attributes: [NSAttributedString.Key : Any] = [ .font: theme.adminMessageFont,
-                                                           .foregroundColor : theme.adminMessageTextColor
+        let attributes: [NSAttributedString.Key : Any] = [
+            .font: theme.adminMessageFont,
+            .foregroundColor : theme.adminMessageTextColor
         ]
         
         let attributedString = NSMutableAttributedString(string: message, attributes: attributes)
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .center
         paragraphStyle.lineSpacing = 8
-        attributedString.addAttribute(.paragraphStyle,
-                                      value: paragraphStyle,
-                                      range: NSMakeRange(0, attributedString.length))
+        attributedString.addAttribute(
+            .paragraphStyle,
+            value: paragraphStyle,
+            range: NSMakeRange(0, attributedString.length)
+        )
         
         self.messageLabel.attributedText = attributedString
     }

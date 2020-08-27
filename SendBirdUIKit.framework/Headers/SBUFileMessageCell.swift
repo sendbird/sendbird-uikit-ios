@@ -330,11 +330,21 @@ fileprivate class ImageContentView: BaseFileContentView {
     }
     
     func setupAutolayout() {
-        self.imageView
-            .setConstraint(from: self, left: 0, right: 0, top: 0, bottom: 0, priority: .defaultLow)
+        self.imageView.setConstraint(
+            from: self,
+            left: 0,
+            right: 0,
+            top: 0,
+            bottom: 0,
+            priority: .defaultLow
+        )
         
-        self.widthConstraint = self.imageView.widthAnchor.constraint(equalToConstant: self.minWidth)
-        self.heightConstraint = self.imageView.heightAnchor.constraint(equalToConstant: self.minHeight)
+        self.widthConstraint = self.imageView.widthAnchor.constraint(
+            equalToConstant: self.minWidth
+        )
+        self.heightConstraint = self.imageView.heightAnchor.constraint(
+            equalToConstant: self.minHeight
+        )
 
         NSLayoutConstraint.activate([
             self.widthConstraint,
@@ -428,10 +438,12 @@ fileprivate class ImageContentView: BaseFileContentView {
     func resizeImageView(by size: CGSize) {
         let width = size.width
         let height = size.height
-        self.widthConstraint.constant = width < self.minWidth ?
-            self.minWidth : min(width, self.maxWidth)
-        self.heightConstraint.constant = height < self.minHeight ?
-            self.minHeight : min(height, self.maxHeight)
+        self.widthConstraint.constant = width < self.minWidth
+            ? self.minWidth
+            : min(width, self.maxWidth)
+        self.heightConstraint.constant = height < self.minHeight
+            ?self.minHeight
+            : min(height, self.maxHeight)
     }
 }
 
@@ -529,16 +541,20 @@ fileprivate class CommonContentView: BaseFileContentView {
         let attributes: [NSAttributedString.Key : Any]
         switch position {
         case .left:
-            attributes = [ .underlineStyle: NSUnderlineStyle.single.rawValue,
-                           .font: theme.fileMessageNameFont,
-                           .underlineColor: theme.fileMessageLeftTextColor,
-                           .foregroundColor: theme.fileMessageLeftTextColor ]
+            attributes = [
+                .underlineStyle: NSUnderlineStyle.single.rawValue,
+                .font: theme.fileMessageNameFont,
+                .underlineColor: theme.fileMessageLeftTextColor,
+                .foregroundColor: theme.fileMessageLeftTextColor
+            ]
             
         case .right:
-            attributes = [ .underlineStyle: NSUnderlineStyle.single.rawValue,
-                           .font: theme.fileMessageNameFont,
-                           .underlineColor: theme.fileMessageRightTextColor,
-                           .foregroundColor: theme.fileMessageRightTextColor ]
+            attributes = [
+                .underlineStyle: NSUnderlineStyle.single.rawValue,
+                .font: theme.fileMessageNameFont,
+                .underlineColor: theme.fileMessageRightTextColor,
+                .foregroundColor: theme.fileMessageRightTextColor
+            ]
         default:
             attributes = [:]
         }

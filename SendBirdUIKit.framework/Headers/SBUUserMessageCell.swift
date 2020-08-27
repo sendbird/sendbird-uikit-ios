@@ -101,7 +101,6 @@ open class SBUUserMessageCell: SBUBaseMessageCell {
 
         self.mainContainerView.addArrangedSubview(self.messageTextView)
         self.mainContainerView.addArrangedSubview(self.additionContainerView)
-        self.additionContainerView.addArrangedSubview(self.webView)
         self.additionContainerView.addArrangedSubview(self.reactionView)
     }
     
@@ -169,25 +168,24 @@ open class SBUUserMessageCell: SBUBaseMessageCell {
         self.mainContainerView.rightPressedBackgroundColor = self.theme.rightPressedBackgroundColor
         
         let isWebviewVisible = !self.webView.isHidden
-        self.additionContainerView.leftBackgroundColor = isWebviewVisible ?
-            self.theme.contentBackgroundColor :
-            self.theme.leftBackgroundColor
-        self.additionContainerView.leftPressedBackgroundColor = isWebviewVisible ?
-            self.theme.pressedContentBackgroundColor :
-            self.theme.leftPressedBackgroundColor
-        self.additionContainerView.rightBackgroundColor = isWebviewVisible ?
-            self.theme.contentBackgroundColor :
-            self.theme.rightBackgroundColor
-        self.additionContainerView.rightPressedBackgroundColor = isWebviewVisible ?
-            self.theme.pressedContentBackgroundColor :
-            self.theme.rightPressedBackgroundColor
+        self.additionContainerView.leftBackgroundColor = isWebviewVisible
+            ? self.theme.contentBackgroundColor
+            : self.theme.leftBackgroundColor
+        self.additionContainerView.leftPressedBackgroundColor = isWebviewVisible
+            ? self.theme.pressedContentBackgroundColor
+            : self.theme.leftPressedBackgroundColor
+        self.additionContainerView.rightBackgroundColor = isWebviewVisible
+            ? self.theme.contentBackgroundColor
+            : self.theme.rightBackgroundColor
+        self.additionContainerView.rightPressedBackgroundColor = isWebviewVisible
+            ? self.theme.pressedContentBackgroundColor
+            : self.theme.rightPressedBackgroundColor
     }
     
     // MARK: - Common
     public func configure(_ message: SBDUserMessage,
                           hideDateView: Bool,
-                          receiptState: SBUMessageReceiptState)
-    {
+                          receiptState: SBUMessageReceiptState) {
         self.configure(
             message,
             hideDateView: hideDateView,
@@ -199,8 +197,8 @@ open class SBUUserMessageCell: SBUBaseMessageCell {
     public func configure(_ message: SBDBaseMessage,
                           hideDateView: Bool,
                           receiptState: SBUMessageReceiptState,
-                          withTextView: Bool)
-    {
+                          withTextView: Bool) {
+        
         let position = SBUGlobals.CurrentUser?.userId == message.sender?.userId ?
             MessagePosition.right :
             MessagePosition.left
@@ -246,10 +244,12 @@ open class SBUUserMessageCell: SBUBaseMessageCell {
         }
 
         if let ogMetaData = message.ogMetaData {
-            let model = SBUMessageWebViewModel(metaData: ogMetaData)
+            self.additionContainerView.insertArrangedSubview(self.webView, at: 0)
             self.webView.isHidden = false
+            let model = SBUMessageWebViewModel(metaData: ogMetaData)
             self.webView.configure(model: model)
         } else {
+            self.additionContainerView.removeArrangedSubview(self.webView)
             self.webView.isHidden = true
         }
         

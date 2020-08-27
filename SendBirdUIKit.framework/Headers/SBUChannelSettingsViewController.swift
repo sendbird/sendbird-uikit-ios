@@ -11,7 +11,7 @@ import Photos
 import MobileCoreServices
 
 @objcMembers
-open class SBUChannelSettingsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SBUActionSheetDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+open class SBUChannelSettingsViewController: UIViewController, UINavigationControllerDelegate {
     
     // MARK: - Public property
     public var channelName: String? = nil
@@ -27,7 +27,14 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
     private lazy var tableView = UITableView()
     
     private lazy var _titleView: SBUNavigationTitleView = {
-        let titleView = SBUNavigationTitleView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 50))
+        var titleView: SBUNavigationTitleView
+        if #available(iOS 11, *) {
+            titleView = SBUNavigationTitleView()
+        } else {
+            titleView = SBUNavigationTitleView(
+                frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 50)
+            )
+        }
         titleView.text = self.channelName ?? SBUStringSet.ChannelSettings_Header_Title
         titleView.textAlignment = .left
         
@@ -35,17 +42,21 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
     }()
     
     private lazy var _leftBarButton: UIBarButtonItem = {
-        return UIBarButtonItem(image: SBUIconSet.iconBack,
-                               style: .plain,
-                               target: self,
-                               action: #selector(onClickBack))
+        return UIBarButtonItem(
+            image: SBUIconSet.iconBack,
+            style: .plain,
+            target: self,
+            action: #selector(onClickBack)
+        )
     }()
     
     private lazy var _rightBarButton: UIBarButtonItem = {
-        let rightItem =  UIBarButtonItem(title: SBUStringSet.Edit,
-                                         style: .plain,
-                                         target: self,
-                                         action: #selector(onClickEdit))
+        let rightItem =  UIBarButtonItem(
+            title: SBUStringSet.Edit,
+            style: .plain,
+            target: self,
+            action: #selector(onClickEdit)
+        )
         rightItem.setTitleTextAttributes([.font : SBUFontSet.button2], for: .normal)
         return rightItem
     }()
@@ -60,7 +71,10 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
     /// One of two must be set.
     public private(set) var channel: SBDGroupChannel?
     private var channelUrl: String?
-
+    private lazy var isOperator: Bool = {
+        return self.channel?.myRole == .operator
+    }()
+    
     
     // MARK: - Lifecycle
     @available(*, unavailable, renamed: "SBUChannelSettingsViewController.init(channelUrl:)")
@@ -77,18 +91,19 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
 
     /// If you have channel object, use this initialize function.
     /// - Parameter channel: Channel object
-    public init(channel: SBDGroupChannel?) {
+    public init(channel: SBDGroupChannel) {
         super.init(nibName: nil, bundle: nil)
         SBULog.info("")
         
         self.channel = channel
+        self.channelUrl = channel.channelUrl
         
         self.loadChannel(channelUrl: self.channel?.channelUrl)
     }
     
     /// If you don't have channel object and have channelUrl, use this initialize function.
     /// - Parameter channelUrl: Channel url string
-    public init(channelUrl: String?) {
+    public init(channelUrl: String) {
         super.init(nibName: nil, bundle: nil)
         SBULog.info("")
         
@@ -103,7 +118,9 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
         
         // navigation bar
         self.navigationItem.leftBarButtonItem = self.leftBarButton
-        self.navigationItem.rightBarButtonItem = self.rightBarButton
+        if !(self.channel?.isBroadcast == true && self.channel?.myRole != .operator) {
+            self.navigationItem.rightBarButtonItem = self.rightBarButton
+        }
         self.navigationItem.titleView = self.titleView
         
         // tableView
@@ -112,7 +129,10 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
         self.tableView.bounces = false
         self.tableView.alwaysBounceVertical = false
         self.tableView.separatorStyle = .none
-        self.tableView.register(SBUChannelSettingCell.sbu_loadNib(), forCellReuseIdentifier: SBUChannelSettingCell.sbu_className)
+        self.tableView.register(
+            type(of: SBUChannelSettingCell()),
+            forCellReuseIdentifier: SBUChannelSettingCell.sbu_className
+        )
         self.tableView.tableHeaderView = self.userInfoView
         self.tableView.rowHeight = UITableView.automaticDimension
         self.tableView.estimatedRowHeight = 44.0
@@ -127,30 +147,26 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
     
     /// This function handles the initialization of autolayouts.
     open func setupAutolayout() {
-        if let userInfoView = self.userInfoView, userInfoView is UserInfoView {
-            self.tableView.tableHeaderView?.frame.size = .init(width: tableView.bounds.width, height: 132)
-            
-            userInfoView.translatesAutoresizingMaskIntoConstraints = false
-            NSLayoutConstraint.activate([
-                userInfoView.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: 0),
-                userInfoView.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: 0),
-                userInfoView.centerXAnchor.constraint(equalTo: self.tableView.centerXAnchor, constant: 0),
-            ])
+        if let userInfoView = self.userInfoView as? UserInfoView {
+            userInfoView
+                .sbu_constraint(equalTo: self.view, left: 0, right: 0)
+                .sbu_constraint(equalTo: self.tableView, centerX: 0)
+                .sbu_constraint(width: self.view.frame.width, height: 132)
         }
-        
-        self.tableView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            self.tableView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 0),
-            self.tableView.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: 0),
-            self.tableView.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: 0),
-            self.tableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 0),
-        ])
+
+        self.tableView
+            .sbu_constraint(equalTo: self.view, left: 0, right: 0, top: 0, bottom: 0)
     }
     
     /// This function handles the initialization of styles.
     open func setupStyles() {
-        self.navigationController?.navigationBar.setBackgroundImage(UIImage.from(color: theme.navigationBarTintColor), for: .default)
-        self.navigationController?.navigationBar.shadowImage = UIImage.from(color: theme.navigationShadowColor)
+        self.navigationController?.navigationBar.setBackgroundImage(
+            UIImage.from(color: theme.navigationBarTintColor),
+            for: .default
+        )
+        self.navigationController?.navigationBar.shadowImage = UIImage.from(
+            color: theme.navigationShadowColor
+        )
 
         self.leftBarButton?.tintColor = theme.leftBarButtonTintColor
         self.rightBarButton?.tintColor = theme.rightBarButtonTintColor
@@ -193,16 +209,22 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
         guard let channelUrl = channelUrl else { return }
         
         SBUMain.connectionCheck { [weak self] user, error in
-
+            if let error = error { self?.didReceiveError(error.localizedDescription) }
+            
             SBULog.info("[Request] Load channel: \(String(channelUrl))")
             SBDGroupChannel.getWithUrl(channelUrl) { [weak self] channel, error in
                 if let error = error {
                     SBULog.error("[Failed] Load channel request: \(error.localizedDescription)")
+                    self?.didReceiveError(error.localizedDescription)
                     return
                 }
                 
                 self?.channel = channel
-                SBULog.info("[Succeed] Load channel request: \(String(format: "%@", self?.channel ?? ""))")
+                
+                SBULog.info("""
+                    [Succeed] Load channel request:
+                    \(String(format: "%@", self?.channel ?? ""))
+                    """)
                 
                 if let userInfoView = self?.userInfoView as? UserInfoView {
                     userInfoView.configure(channel: self?.channel)
@@ -251,7 +273,10 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
         SBULog.info("[Request] Channel update")
         channel.update(with: params) { [weak self] channel, error in
             if let error = error {
-                SBULog.error("[Failed] Channel update request: \(String(error.localizedDescription))")
+                SBULog.error("""
+                    [Failed] Channel update request:
+                    \(String(error.localizedDescription))
+                    """)
             }
             
             if let userInfoView = self?.userInfoView as? UserInfoView {
@@ -266,33 +291,53 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
     public func changeNotification(isOn: Bool) {
         let triggerOption: SBDGroupChannelPushTriggerOption = isOn ? .all : .off
         
-        SBULog.info("[Request] Channel push status : \(triggerOption == .off ? "on" : "off"), ChannelUrl:\(self.channel?.channelUrl ?? "")")
-        self.channel?.setMyPushTriggerOption(triggerOption, completionHandler: { [weak self] error in
+        SBULog.info("""
+            [Request] Channel push status :
+            \(triggerOption == .off ? "on" : "off"),
+            ChannelUrl:\(self.channel?.channelUrl ?? "")
+            """)
+        self.channel?.setMyPushTriggerOption(triggerOption) { [weak self] error in
             guard let self = self else { return }
             
             if let error = error {
-                SBULog.error("[Failed] Channel push status request: \(String(error.localizedDescription))")
+                SBULog.error("""
+                    [Failed] Channel push status request:
+                    \(String(error.localizedDescription))
+                    """)
             }
             
-            SBULog.info("[Succeed] Channel push status, ChannelUrl:\(self.channel?.channelUrl ?? "")")
-        })
+            SBULog.info("""
+                [Succeed] Channel push status,
+                ChannelUrl:\(self.channel?.channelUrl ?? "")
+                """)
+        }
     }
     
     /// Leaves the channel.
     public func leaveChannel() {
-        SBULog.info("[Request] Leave channel, ChannelUrl:\(self.channel?.channelUrl ?? "")")
+        SBULog.info("""
+            [Request] Leave channel,
+            ChannelUrl:\(self.channel?.channelUrl ?? "")
+            """)
         self.channel?.leave { [weak self] error in
             guard let self = self else { return }
 
             if let error = error {
-                SBULog.error("[Failed] Leave channel request: \(String(error.localizedDescription))")
+                SBULog.error("""
+                    [Failed] Leave channel request:
+                    \(String(error.localizedDescription))
+                    """)
             }
             
-            SBULog.info("[Succeed] Leave channel request, ChannelUrl:\(self.channel?.channelUrl ?? "")")
+            SBULog.info("""
+                [Succeed] Leave channel request,
+                ChannelUrl:\(self.channel?.channelUrl ?? "")
+                """)
             
-            guard let navigationController = self.navigationController, navigationController.viewControllers.count > 1 else {
-                self.dismiss(animated: true, completion: nil)
-                return
+            guard let navigationController = self.navigationController,
+                navigationController.viewControllers.count > 1 else {
+                    self.dismiss(animated: true, completion: nil)
+                    return
             }
             
             for vc in navigationController.viewControllers {
@@ -319,10 +364,22 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
         self.navigationController?.pushViewController(memberListVC, animated: true)
     }
     
+    /// If you want to use a custom moderationsViewController, override it and implement it.
+    /// - Since: 1.2.0
+    open func showModerationList() {
+        guard let channel = self.channel else {
+            SBULog.error("[Failed] Channel object is nil")
+            return
+        }
+        let moderationsVC = SBUModerationsViewController(channel: channel)
+        self.navigationController?.pushViewController(moderationsVC, animated: true)
+    }
+    
     
     // MARK: - Actions
     func onClickBack() {
-        if let navigationController = self.navigationController, navigationController.viewControllers.count > 1 {
+        if let navigationController = self.navigationController,
+            navigationController.viewControllers.count > 1 {
             navigationController.popViewController(animated: true)
         } else {
             self.dismiss(animated: true, completion: nil)
@@ -330,84 +387,137 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
     }
     
     func onClickEdit() {
-        let changeNameItem = SBUActionSheetItem(title: SBUStringSet.ChannelSettings_Change_Name, color: theme.itemTextColor, image: nil)
-        let changeImageItem = SBUActionSheetItem(title: SBUStringSet.ChannelSettings_Change_Image, color: theme.itemTextColor, image: nil)
-        let cancelItem = SBUActionSheetItem(title: SBUStringSet.Cancel, color: theme.itemColor)
-        SBUActionSheet.show(items: [changeNameItem, changeImageItem], cancelItem: cancelItem, identifier: actionSheetIdEdit, delegate: self)
+        let changeNameItem = SBUActionSheetItem(
+            title: SBUStringSet.ChannelSettings_Change_Name,
+            color: theme.itemTextColor,
+            image: nil
+        )
+        let changeImageItem = SBUActionSheetItem(
+            title: SBUStringSet.ChannelSettings_Change_Image,
+            color: theme.itemTextColor,
+            image: nil
+        )
+        let cancelItem = SBUActionSheetItem(
+            title: SBUStringSet.Cancel,
+            color: theme.itemColor
+        )
+        SBUActionSheet.show(
+            items: [changeNameItem, changeImageItem],
+            cancelItem: cancelItem,
+            identifier: actionSheetIdEdit,
+            delegate: self
+        )
     }
     
     /// Open the channel image selection menu.
     public func selectChannelImage() {
-        let cameraItem = SBUActionSheetItem(title: SBUStringSet.Camera, image: SBUIconSet.iconCamera.sbu_with(tintColor: theme.itemColor))
-        let libraryItem = SBUActionSheetItem(title: SBUStringSet.PhotoVideoLibrary, image: SBUIconSet.iconPhoto.sbu_with(tintColor: theme.itemColor))
-        let cancelItem = SBUActionSheetItem(title: SBUStringSet.Cancel, color: theme.itemColor)
-        SBUActionSheet.show(items: [cameraItem, libraryItem], cancelItem: cancelItem, identifier: actionSheetIdPicker, delegate: self)
+        let cameraItem = SBUActionSheetItem(
+            title: SBUStringSet.Camera,
+            image: SBUIconSet.iconCamera.sbu_with(tintColor: theme.itemColor)
+        )
+        let libraryItem = SBUActionSheetItem(
+            title: SBUStringSet.PhotoVideoLibrary,
+            image: SBUIconSet.iconPhoto.sbu_with(tintColor: theme.itemColor)
+        )
+        let cancelItem = SBUActionSheetItem(
+            title: SBUStringSet.Cancel,
+            color: theme.itemColor
+        )
+        SBUActionSheet.show(
+            items: [cameraItem, libraryItem],
+            cancelItem: cancelItem,
+            identifier: actionSheetIdPicker,
+            delegate: self
+        )
     }
     
     /// Open the channel name change popup.
     public func changeChannelName() {
-        let okButton = SBUAlertButtonItem(title: SBUStringSet.OK) { [weak self] newChannelName in
+        let okButton = SBUAlertButtonItem(title: SBUStringSet.OK) {[weak self] newChannelName in
             guard let newChannel = newChannelName as? String,
-                newChannel.trimmingCharacters(in: .whitespacesAndNewlines).count > 0 else { return }
-            self?.updateChannel(channelName: newChannel.trimmingCharacters(in: .whitespacesAndNewlines))
+                newChannel.trimmingCharacters(in: .whitespacesAndNewlines).count > 0
+                else { return }
+            
+            self?.updateChannel(
+                channelName: newChannel.trimmingCharacters(in: .whitespacesAndNewlines)
+            )
         }
-        let cancelButton = SBUAlertButtonItem(title: SBUStringSet.Cancel) {_ in }
-        SBUAlertView.show(title: SBUStringSet.ChannelSettings_Change_Name, needInputField: true, placeHolder: SBUStringSet.ChannelSettings_Enter_New_Name, centerYRatio: 0.75, confirmButtonItem: okButton, cancelButtonItem: cancelButton)
+        let cancelButton = SBUAlertButtonItem(title: SBUStringSet.Cancel) { _ in }
+        SBUAlertView.show(
+            title: SBUStringSet.ChannelSettings_Change_Name,
+            needInputField: true,
+            placeHolder: SBUStringSet.ChannelSettings_Enter_New_Name,
+            centerYRatio: 0.75,
+            confirmButtonItem: okButton,
+            cancelButtonItem: cancelButton
+        )
     }
     
     
-    // MARK: - UITableView relations
-    // CUSTOM:
+    // MARK: - Error handling
+    /// If an error occurs in viewController, a message is sent through here.
+    /// If necessary, override to handle errors.
+    /// - Parameter message: error message
+    open func didReceiveError(_ message: String?) {
+        SBULog.error("Did receive error: \(message ?? "")")
+    }
+}
+
+
+// MARK: - UITableView relations
+extension SBUChannelSettingsViewController: UITableViewDataSource, UITableViewDelegate {
     open func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
         if let userInfoView = self.userInfoView as? UserInfoView {
             userInfoView.endEditing(true)
         }
         
-        switch indexPath.row {
-        case 0: // Notification
+        let rowValue = indexPath.row + (self.isOperator ? 0 : 1)
+        let type = ChannelSettingItemType(rawValue: rowValue)
+        switch type {
+        case .moderations:
+            self.showModerationList()
+        case .notifications:
             break
-            
-        case 1: // Members
+        case .members:
             self.showMemberList()
-            
-        case 2: // Leave Channel
+        case .leave:
             self.leaveChannel()
-            
         default:
             break
         }
     }
 
-    open func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: SBUChannelSettingCell.sbu_className) as? SBUChannelSettingCell else { fatalError() }
-        cell.selectionStyle = .none
+    open func tableView(_ tableView: UITableView,
+                        cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: SBUChannelSettingCell.sbu_className
+            ) as? SBUChannelSettingCell else { fatalError() }
         
-        switch indexPath.row {
-        case 0: // Notification
-            cell.configure(type: .notification, channel: self.channel)
-            cell.switchAction = { [weak self] isOn in
-                self?.changeNotification(isOn: isOn)
-            }
-        case 1:
-            cell.configure(type: .member, channel: self.channel)
-            cell.rightButtonAction = { [weak self] in
-                self?.showMemberList()
-            }
-        case 2:
-            cell.configure(type: .leave, channel: nil)
+        cell.selectionStyle = .none
+
+        let rowValue = indexPath.row + (self.isOperator ? 0 : 1)
+        if let type = ChannelSettingItemType(rawValue: rowValue) {
+            cell.configure(type: type, channel: self.channel)
             
-        default: break
+            if type == .notifications {
+                cell.switchAction = { [weak self] isOn in
+                    self?.changeNotification(isOn: isOn)
+                }
+            }
         }
 
         return cell
     }
     
     open func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
+        return ChannelSettingItemType.allTypes(isOperator: self.isOperator).count
     }
-    
-    
-    // MARK: SBUActionSheetDelegate
+}
+
+
+// MARK: SBUActionSheetDelegate
+extension SBUChannelSettingsViewController: SBUActionSheetDelegate {
     func didSelectActionSheetItem(index: Int, identifier: Int) {
         if identifier == actionSheetIdEdit {
             let type = ChannelEditType.init(rawValue: index)
@@ -447,21 +557,23 @@ open class SBUChannelSettingsViewController: UIViewController, UITableViewDelega
             }
         }
     }
-    
-    
-    // MARK: UIImagePickerViewControllerDelegate
-    public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+}
+
+
+// MARK: UIImagePickerViewControllerDelegate
+extension SBUChannelSettingsViewController: UIImagePickerControllerDelegate {
+    public func imagePickerController(
+        _ picker: UIImagePickerController,
+        didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
         picker.dismiss(animated: true) { [weak self] in
-            guard let originalImage = info[.originalImage] as? UIImage, let userInfoView = self?.userInfoView as? UserInfoView else { return }
+            guard let originalImage = info[.originalImage] as? UIImage,
+                let userInfoView = self?.userInfoView as? UserInfoView else { return }
+            
             userInfoView.coverImage.setImage(withImage: originalImage)
             
             self?.updateChannel(coverImage: originalImage)
         }
-    }
-    
-    // MARK: - Error handling
-    open func didReceiveError(_ message: String?) {
-        
     }
 }
 
@@ -503,7 +615,10 @@ fileprivate class UserInfoView: UIView {
         self.channelNameField.isUserInteractionEnabled = false
         
         self.coverImage.clipsToBounds = true
-        self.coverImage.frame = CGRect(x: 0, y: 0, width: kCoverImageSize, height: kCoverImageSize)
+        self.coverImage.frame = CGRect(x: 0,
+                                       y: 0,
+                                       width: kCoverImageSize,
+                                       height: kCoverImageSize)
         
         self.stackView.alignment = .center
         self.stackView.axis = .vertical
@@ -516,27 +631,17 @@ fileprivate class UserInfoView: UIView {
     }
     
     func setupAutolayout() {
-        self.coverImage.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            self.coverImage.widthAnchor.constraint(equalToConstant: kCoverImageSize),
-            self.coverImage.heightAnchor.constraint(equalToConstant: kCoverImageSize),
-        ])
+        self.coverImage
+            .sbu_constraint(width: kCoverImageSize, height: kCoverImageSize)
+
+        self.stackView
+            .sbu_constraint(equalTo: self, left: 0, right: 0, top: 20)
         
-        self.stackView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            self.stackView.topAnchor.constraint(equalTo: self.topAnchor, constant: 20),
-            self.stackView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 0),
-            self.stackView.rightAnchor.constraint(equalTo: self.rightAnchor, constant: 0),
-        ])
-        
-        self.lineView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            self.lineView.heightAnchor.constraint(equalToConstant: 0.5),
-            self.lineView.topAnchor.constraint(equalTo: self.stackView.bottomAnchor, constant: 20),
-            self.lineView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0),
-            self.lineView.leftAnchor.constraint(equalTo: self.stackView.leftAnchor, constant: 16),
-            self.lineView.rightAnchor.constraint(equalTo: self.stackView.rightAnchor, constant: -16),
-        ])
+        self.lineView
+            .sbu_constraint(height: 0.5)
+            .sbu_constraint(equalTo: self, bottom: 0)
+            .sbu_constraint(equalTo: self.stackView, left: 16, right: -16)
+            .sbu_constraint_equalTo(topAnchor: self.bottomAnchor, top: 20)
     }
     
     func setupStyles() {
@@ -563,17 +668,22 @@ fileprivate class UserInfoView: UIView {
         
         if let url = channel?.coverUrl, SBUUtils.isValid(coverUrl: url) == true {
             self.coverImage.setImage(withCoverUrl: url)
-        } else if let members = self.channel?.members as? [SBDUser] {
-            self.coverImage.setImage(withUsers: members)
+        } else if channel?.isBroadcast == true {
+            self.coverImage.setBroadcastIcon()
         } else {
-            self.coverImage.setPlaceholderImage(iconSize: .init(width: 46, height: 46))
+            if let members = self.channel?.members as? [SBDUser] {
+                self.coverImage.setImage(withUsers: members)
+            } else {
+                self.coverImage.setPlaceholderImage(iconSize: .init(width: 46, height: 46))
+            }
         }
         
         guard let channel = self.channel else { return }
-        if SBUUtils.isValid(channelName: channel.name) == true {
+        if SBUUtils.isValid(channelName: channel.name) {
             self.channelNameField.text = channel.name
         } else {
             self.channelNameField.text = SBUUtils.generateChannelName(channel: channel)
         }
     }
 }
+

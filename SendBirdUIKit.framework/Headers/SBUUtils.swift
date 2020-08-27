@@ -77,7 +77,9 @@ class SBUUtils: NSObject {
 
         let flt_max = CGFloat.greatestFiniteMagnitude
         let maxSize = CGSize(width: flt_max, height: flt_max)
-        let attributes = [NSAttributedString.Key.font : UIFont.systemFont(ofSize: UIFont.systemFontSize)]
+        let attributes = [
+            NSAttributedString.Key.font : UIFont.systemFont(ofSize: UIFont.systemFontSize)
+        ]
         let boundingRect = placeholderSymbol.boundingRect(
             with: maxSize,
             options: .usesLineFragmentOrigin,

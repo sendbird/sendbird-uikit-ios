@@ -49,7 +49,11 @@ open class SBUNewMessageInfo: UIView {
     /// This function handles the initialization of views.
     open func setupViews() {
         if let messageInfoButton = self.messageInfoButton {
-            messageInfoButton.addTarget(self, action: #selector(onClickNewMessageInfo), for: .touchUpInside)
+            messageInfoButton.addTarget(
+                self,
+                action:#selector(onClickNewMessageInfo),
+                for: .touchUpInside
+            )
             self.addSubview(messageInfoButton)
         }
     }
@@ -82,12 +86,23 @@ open class SBUNewMessageInfo: UIView {
         self.layer.shadowRadius = 5
         self.layer.masksToBounds = false
         
-        if let messageInfoButton = self.messageInfoButton, messageInfoButton.tag == DefaultInfoButtonTag {
-            messageInfoButton.setImage(SBUIconSet.iconChevronDown.sbu_with(tintColor: theme.newMessageTintColor), for: .normal)
+        if let messageInfoButton = self.messageInfoButton,
+            messageInfoButton.tag == DefaultInfoButtonTag {
+            
             messageInfoButton.titleLabel?.font = theme.newMessageFont
             messageInfoButton.setTitleColor(theme.newMessageTintColor, for: .normal)
-            messageInfoButton.setBackgroundImage(UIImage.from(color: theme.newMessageBackground), for: .normal)
-            messageInfoButton.setBackgroundImage(UIImage.from(color: theme.newMessageHighlighted), for: .highlighted)
+            messageInfoButton.setImage(
+                SBUIconSet.iconChevronDown.sbu_with(tintColor: theme.newMessageTintColor),
+                for: .normal
+            )
+            messageInfoButton.setBackgroundImage(
+                UIImage.from(color: theme.newMessageBackground),
+                for: .normal
+            )
+            messageInfoButton.setBackgroundImage(
+                UIImage.from(color: theme.newMessageHighlighted),
+                for: .highlighted
+            )
         }
     }
     

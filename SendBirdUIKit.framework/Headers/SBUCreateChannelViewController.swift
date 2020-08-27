@@ -10,41 +10,52 @@ import UIKit
 import SendBirdSDK
 
 @objcMembers
-open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UINavigationControllerDelegate {
+open class SBUCreateChannelViewController: UIViewController, UINavigationControllerDelegate {
     
     // MARK: - Public property
     public lazy var titleView: UIView? = _titleView
     public lazy var leftBarButton: UIBarButtonItem? = _leftBarButton
     public lazy var rightBarButton: UIBarButtonItem? = _rightBarButton
     
+    public private(set) var channelType: ChannelType = .group
     
     // MARK: - Private property
     // for UI
     var theme: SBUUserListTheme = SBUTheme.userListTheme
-    
     private var tableView = UITableView()
     
     var userCell: UITableViewCell?
     
     private lazy var _titleView: SBUNavigationTitleView = {
-        let titleView = SBUNavigationTitleView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 50))
-        titleView.text = SBUStringSet.CreateChannel_Header_Title
+        var titleView: SBUNavigationTitleView
+        if #available(iOS 11, *) {
+            titleView = SBUNavigationTitleView()
+        } else {
+            titleView = SBUNavigationTitleView(
+                frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 50)
+            )
+        }
+        titleView.text = SBUStringSet.CreateChannel_Header_Select_Members
         titleView.textAlignment = .center
         return titleView
     }()
     
     private lazy var _leftBarButton: UIBarButtonItem = {
-        return UIBarButtonItem(image: SBUIconSet.iconBack,
-                               style: .plain,
-                               target: self,
-                               action: #selector(onClickBack))
+        return UIBarButtonItem(
+            image: SBUIconSet.iconBack,
+            style: .plain,
+            target: self,
+            action: #selector(onClickBack)
+        )
     }()
     
     private lazy var _rightBarButton: UIBarButtonItem = {
-        let rightItem =  UIBarButtonItem(title: SBUStringSet.CreateChannel_Create(0),
-                                         style: .plain,
-                                         target: self,
-                                         action: #selector(onClickCreate))
+            let rightItem =  UIBarButtonItem(
+                title: SBUStringSet.CreateChannel_Create(0),
+                style: .plain,
+                target: self,
+                action: #selector(onClickCreate)
+            )
         rightItem.setTitleTextAttributes([.font : SBUFontSet.button2], for: .normal)
         return rightItem
     }()
@@ -61,7 +72,7 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
     
     
     // MARK: - Lifecycle
-    @available(*, unavailable, renamed: "SBUCreateChannelViewController.init()")
+    @available(*, unavailable, renamed: "SBUCreateChannelViewController(type:)")
     required public init?(coder: NSCoder) {
         super.init(coder: coder)
         SBULog.info("")
@@ -78,10 +89,14 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
     }
 
     /// If you have user objects, use this initialize function.
-    /// - Parameter users: User object
-    public init(users: [SBUUser]?) {
+    /// - Parameters:
+    ///   - users: `SBUUser` array object
+    ///   - type: The type of channel to create (default: `.group`)
+    public init(users: [SBUUser]? = nil, type: ChannelType = .group) {
         super.init(nibName: nil, bundle: nil)
         SBULog.info("")
+        
+        self.channelType = type
         self.customizedUsers = users
         if users?.count ?? 0 > 0 {
             useCustomizedUsers = true
@@ -104,7 +119,7 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
         self.tableView.rowHeight = UITableView.automaticDimension
         self.tableView.estimatedRowHeight = 44.0
         if self.userCell == nil {
-            self.register(userCell: SBUUserCell(), nib: SBUUserCell.sbu_loadNib())
+            self.register(userCell: SBUUserCell())
         }
         self.view.addSubview(self.tableView)
         
@@ -128,11 +143,18 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
     
     /// This function handles the initialization of styles.
     open func setupStyles() {
-        self.navigationController?.navigationBar.setBackgroundImage(UIImage.from(color: theme.navigationBarTintColor), for: .default)
-        self.navigationController?.navigationBar.shadowImage = UIImage.from(color: theme.navigationShadowColor)
+        self.navigationController?.navigationBar.setBackgroundImage(
+            UIImage.from(color: theme.navigationBarTintColor),
+            for: .default
+        )
+        self.navigationController?.navigationBar.shadowImage = UIImage.from(
+            color: theme.navigationShadowColor
+        )
 
         self.leftBarButton?.tintColor = theme.leftBarButtonTintColor
-        self.rightBarButton?.tintColor = self.selectedUserList.isEmpty ? theme.rightBarButtonTintColor : theme.rightBarButtonSelectedTintColor
+        self.rightBarButton?.tintColor = self.selectedUserList.isEmpty
+            ? theme.rightBarButtonTintColor
+            : theme.rightBarButtonSelectedTintColor
 
         self.view.backgroundColor = theme.backgroundColor
         self.tableView.backgroundColor = theme.backgroundColor
@@ -175,7 +197,7 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
     ///   - users: customized `SBUUser` array for add to user list
     public func loadNextUserList(reset: Bool, users: [SBUUser]? = nil) {
         if self.isLoading { return }
-        self.isLoading = true
+        self.showLoading(state: true)
         
         if reset {
             self.userListQuery = nil
@@ -192,7 +214,7 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
             
             self.userList += users
             self.reloadUserList()
-            self.isLoading = false
+            self.showLoading(state: false)
         }
         else if !self.useCustomizedUsers {
             if self.userListQuery == nil {
@@ -201,13 +223,13 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
             }
             
             guard self.userListQuery?.hasNext == true else {
-                self.isLoading = false
+                self.showLoading(state: false)
                 SBULog.info("All users have been loaded.")
                 return
             }
             
             self.userListQuery?.loadNextPage(completionHandler: { [weak self] users, error in
-                defer { self?.isLoading = false }
+                defer { self?.showLoading(state: false) }
                 
                 if let error = error {
                     SBULog.error("[Failed] User list request: \(error.localizedDescription)")
@@ -222,7 +244,7 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
                 
                 self?.userList += users
                 self?.reloadUserList()
-                self?.isLoading = false
+                self?.showLoading(state: false)
             })
         }
     }
@@ -235,7 +257,7 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
     }
     
     /// Creates the channel with userIds.
-    /// - Parameter params: `SBDGroupChannelParams` class object
+    /// - Parameter userIds: User Ids to include
     /// - Since: 1.0.9
     public func createChannel(userIds: [String]) {
         let params = SBDGroupChannelParams()
@@ -243,6 +265,14 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
         params.coverUrl = ""
         params.addUserIds(userIds)
         params.isDistinct = false
+
+        let type = self.channelType
+        params.isSuper = (type == .broadcast) || (type == .supergroup)
+        params.isBroadcast = (type == .broadcast)
+        
+        if let currentUser = SBUGlobals.CurrentUser {
+            params.operatorUserIds = [currentUser.userId]
+        }
 
         self.createChannel(params: params)
     }
@@ -253,10 +283,16 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
     /// - Parameter params: `SBDGroupChannelParams` class object
     /// - Since: 1.0.9
     public func createChannel(params: SBDGroupChannelParams) {
-        SBULog.info("[Request] Create channel with users, Users: \(Array(self.selectedUserList))")
+        SBULog.info("""
+            [Request] Create channel with users,
+            Users: \(Array(self.selectedUserList))
+            """)
         SBDGroupChannel.createChannel(with: params) { [weak self] channel, error in
             if let error = error {
-                SBULog.error("[Failed] Create channel request: \(String(error.localizedDescription))")
+                SBULog.error("""
+                    [Failed] Create channel request:
+                    \(String(error.localizedDescription))
+                    """)
                 self?.didReceiveError(error.localizedDescription)
             }
             
@@ -269,6 +305,28 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
         }
     }
     
+
+    // MARK: - Custom viewController relations
+    
+    /// Used to register a custom cell as a base cell based on `UITableViewCell`.
+    /// - Parameters:
+    ///   - userCell: Customized channel cell
+    ///   - nib: nib information. If the value is nil, the nib file is not used.
+    public func register(userCell: UITableViewCell, nib: UINib? = nil) {
+        self.userCell = userCell
+        if let nib = nib {
+            self.tableView.register(
+                nib,
+                forCellReuseIdentifier: userCell.sbu_className
+            )
+        } else {
+            self.tableView.register(
+                type(of: userCell),
+                forCellReuseIdentifier: userCell.sbu_className
+            )
+        }
+    }
+    
     
     // MARK: - Common
     func reloadUserList() {
@@ -277,9 +335,21 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
         }
     }
     
+    func showLoading(state: Bool) {
+        self.isLoading = state
+
+        if self.userListQuery == nil, state {
+            SBULoading.start()
+        } else {
+            SBULoading.stop()
+        }
+    }
+
+    
     // MARK: - Actions
     @objc private func onClickBack() {
-        if let navigationController = self.navigationController, navigationController.viewControllers.count > 1 {
+        if let navigationController = self.navigationController,
+            navigationController.viewControllers.count > 1 {
             navigationController.popViewController(animated: true)
         } else {
             self.dismiss(animated: true, completion: nil)
@@ -308,21 +378,21 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
     }
     
     
-    // MARK: - UITableView relations
-    public func register(userCell: UITableViewCell, nib: UINib? = nil) {
-        self.userCell = userCell
-        if let nib = nib {
-            self.tableView.register(nib, forCellReuseIdentifier: userCell.sbu_className)
-        } else {
-            self.tableView.register(type(of: userCell), forCellReuseIdentifier: userCell.sbu_className)
-        }
+    // MARK: - Error handling
+    open func didReceiveError(_ message: String?) {
+        SBULog.error("Did receive error: \(message ?? "")")
     }
-    
+}
+
+
+// MARK: - UITableView relations
+extension SBUCreateChannelViewController: UITableViewDelegate, UITableViewDataSource {
     open func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.userList.count
     }
     
-    open func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    open func tableView(_ tableView: UITableView,
+                        cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let user = userList[indexPath.row]
 
         var cell: UITableViewCell? = nil
@@ -335,9 +405,11 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
         cell?.selectionStyle = .none
 
         if let defaultCell = cell as? SBUUserCell {
-            defaultCell.configure(type: .createChannel,
-                                  user: user,
-                                  isChecked: self.selectedUserList.contains(user))
+            defaultCell.configure(
+                type: .createChannel,
+                user: user,
+                isChecked: self.selectedUserList.contains(user)
+            )
         }
         return cell ?? UITableViewCell()
     }
@@ -347,24 +419,25 @@ open class SBUCreateChannelViewController: UIViewController, UITableViewDelegate
         self.selectUser(user: user)
         
         if let defaultCell = self.tableView.cellForRow(at: indexPath) as? SBUUserCell {
-            defaultCell.setSelected(isChecked: self.selectedUserList.contains(user))
+            defaultCell.selectUser(self.selectedUserList.contains(user))
         }
     }
     
-    open func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+    open func tableView(_ tableView: UITableView,
+                        willDisplay cell: UITableViewCell,
+                        forRowAt indexPath: IndexPath) {
+        
         if self.userList.count > 0,
-            (self.useCustomizedUsers || (self.userListQuery?.hasNext == true && self.userListQuery != nil)),
+            (self.useCustomizedUsers ||
+                (self.userListQuery?.hasNext == true && self.userListQuery != nil)),
             indexPath.row == (self.userList.count - Int(self.limit)/2),
-            !self.isLoading
-        {
+            !self.isLoading {
+            
             let nextUserList = (self.nextUserList()?.count ?? 0) > 0 ? self.nextUserList() : nil
-            self.loadNextUserList(reset: false, users: self.useCustomizedUsers ? nextUserList : nil)
+            self.loadNextUserList(
+                reset: false,
+                users: self.useCustomizedUsers ? nextUserList : nil
+            )
         }
-    }
-    
-    
-    // MARK: - Error handling
-    open func didReceiveError(_ message: String?) {
-        SBULog.error("Did receive error: \(message ?? "")")
     }
 }
