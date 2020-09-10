@@ -112,6 +112,13 @@
     case center
 }
 
+@objc public enum MessageGroupPosition: Int {
+    case none
+    case top
+    case middle
+    case bottom
+}
+
 @objc public enum MessageFileType: Int {
     case image
     case video

@@ -1,5 +1,9 @@
 # Change Log
 
+### v1.2.1 (Sep 10, 2020)
+* Supported message grouping
+* Improved stability
+
 ### v1.2.0 (Aug 27, 2020)
 * Added operator features
   * Member managing (ban/unban, mute/unmute, promote/dismiss)

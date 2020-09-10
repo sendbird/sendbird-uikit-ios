@@ -16,6 +16,7 @@ open class SBUMessageBaseCell { }
 open class SBUBaseMessageCell: UITableViewCell {
     public var message: SBDBaseMessage = .init()
     public var position: MessagePosition = .center
+    public var groupPosition: MessageGroupPosition = .none
     public var receiptState: SBUMessageReceiptState = .none
 
     public lazy var messageContentView: UIView = {
@@ -34,6 +35,8 @@ open class SBUBaseMessageCell: UITableViewCell {
         stackView.axis = .vertical
         return stackView
     }()
+    
+    var stackViewTopConstraint: NSLayoutConstraint?
 
 
     // MARK: - View Lifecycle
@@ -68,8 +71,10 @@ open class SBUBaseMessageCell: UITableViewCell {
     /// This function handles the initialization of autolayouts.
     open func setupAutolayout() {
         self.stackView
-            .setConstraint(from: self.contentView, left: 0, top: 16, bottom: 0)
+            .setConstraint(from: self.contentView, left: 0, bottom: 0)
             .setConstraint(from: self.contentView, right: 0, priority: .defaultHigh)
+        
+        self.updateTopAnchorConstraint()
     }
 
     /// This function handles the initialization of styles.
@@ -80,6 +85,16 @@ open class SBUBaseMessageCell: UITableViewCell {
     open override func layoutSubviews() {
         super.layoutSubviews()
         self.setupStyles()
+    }
+    
+    
+    func updateTopAnchorConstraint() {
+        self.stackViewTopConstraint?.isActive = false
+        self.stackViewTopConstraint = self.stackView.topAnchor.constraint(
+            equalTo: self.contentView.topAnchor,
+            constant: (self.groupPosition == .none || self.groupPosition == .top) ? 16 : 4
+        )
+        self.stackViewTopConstraint?.isActive = true
     }
     
     
@@ -94,9 +109,11 @@ open class SBUBaseMessageCell: UITableViewCell {
     open func configure(message: SBDBaseMessage,
                         position: MessagePosition,
                         hideDateView: Bool,
+                        groupPosition: MessageGroupPosition = .none,
                         receiptState: SBUMessageReceiptState) {
         self.message = message
         self.position = position
+        self.groupPosition = groupPosition
         self.dateView.isHidden = hideDateView
         self.receiptState = receiptState
         
@@ -104,6 +121,7 @@ open class SBUBaseMessageCell: UITableViewCell {
             dateView.configure(timestamp: self.message.createdAt)
         }
     }
+    
     
     // MARK: -
     open override func prepareForReuse() {
@@ -166,7 +184,7 @@ fileprivate class MessageDateView: UIView {
     }
     
     func configure(timestamp: Int64) {
-        self.dateLabel.text = Date.from(timestamp).toString(type: .EMMMdd)
+        self.dateLabel.text = Date.from(timestamp).toString(format: .EMMMdd)
     }
     
     override func layoutSubviews() {
@@ -406,7 +424,7 @@ public class MessageStateView: UIView {
         self.sendingState = sendingState
         self.position = position
         self.timestamp = timestamp
-        self.timeLabel.text = Date.from(timestamp).toString(type: .hhmma)
+        self.timeLabel.text = Date.from(timestamp).toString(format: .hhmma)
         
         switch position {
         case .center:

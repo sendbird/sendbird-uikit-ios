@@ -10,68 +10,21 @@ import UIKit
 import SendBirdSDK
 
 @objcMembers @IBDesignable
-open class SBUFileMessageCell: SBUBaseMessageCell {
+open class SBUFileMessageCell: SBUContentBaseMessageCell {
     
     // MARK: - Public property
-    public lazy var userNameStackView: UIStackView = _userNameStackView
-    public lazy var contentsStackView: UIStackView = _contentsStackView
-    public lazy var userNameView: UIView = _userNameView
-    public lazy var profileView: UIView = _profileView
-    public lazy var stateView: UIView = _stateView
-
-    // MARK: - Private property
-    private var fileMessage: SBDFileMessage? {
+    public var fileMessage: SBDFileMessage? {
         return self.message as? SBDFileMessage
     }
     
+    
+    // MARK: - Private property
     private lazy var baseFileContentView: BaseFileContentView = {
         let fileView = BaseFileContentView()
         return fileView
     }()
     
-    private var _userNameStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.spacing = 4
-        return stackView
-    }()
-    
-    private var _userNameView: UserNameView = {
-        let userNameView = UserNameView()
-        return userNameView
-    }()
-    
-    private var _contentsStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .horizontal
-        stackView.alignment = .bottom
-        return stackView
-    }()
-    
-    private var _profileView: MessageProfileView = {
-        let profileView = MessageProfileView()
-        return profileView
-    }()
-    
-    private var _stateView: MessageStateView = {
-        let stateView = MessageStateView()
-        return stateView
-    }()
-    
-    private var mainContainerView: SBUSelectableStackView = {
-        let mainView = SBUSelectableStackView()
-        mainView.layer.cornerRadius = 16
-        mainView.layer.borderColor = UIColor.clear.cgColor
-        mainView.layer.borderWidth = 1
-        mainView.clipsToBounds = true
-        return mainView
-    }()
-    
-    private var reactionView: SBUMessageReactionView = {
-        let reactionView = SBUMessageReactionView()
-        return reactionView
-    }()
-    
+
     private lazy var contentLongPressRecognizer: UILongPressGestureRecognizer = {
         return .init(target: self, action: #selector(self.onLongPressContentView(sender:)))
     }()
@@ -83,99 +36,41 @@ open class SBUFileMessageCell: SBUBaseMessageCell {
     // MARK: - View Lifecycle
     open override func setupViews() {
         super.setupViews()
-        
-        self.messageContentView.addSubview(self.userNameStackView)
-        
-        self.userNameStackView.addArrangedSubview(self.userNameView)
-        self.userNameStackView.addArrangedSubview(self.contentsStackView)
 
         self.mainContainerView.addArrangedSubview(self.baseFileContentView)
         self.mainContainerView.addArrangedSubview(self.reactionView)
+    }
 
-        self.contentsStackView.addArrangedSubview(self.profileView)
-        self.contentsStackView.addArrangedSubview(self.mainContainerView)
-        self.contentsStackView.addArrangedSubview(self.stateView)
-    }
-    
-    open override func setupStyles() {
-        super.setupStyles()
-        
-        self.mainContainerView.leftBackgroundColor = self.theme.leftBackgroundColor
-        self.mainContainerView.leftPressedBackgroundColor = self.theme.leftPressedBackgroundColor
-        self.mainContainerView.rightBackgroundColor = self.theme.rightBackgroundColor
-        self.mainContainerView.rightPressedBackgroundColor = self.theme.rightPressedBackgroundColor
-    }
-    
     open override func setupAutolayout() {
         super.setupAutolayout()
-        
-        self.userNameStackView
-            .setConstraint(from: self.messageContentView, left: 0, right: 12, bottom: 0)
-            .setConstraint(from: self.messageContentView, top: 0, priority: .defaultLow)
     }
     
     open override func setupActions() {
         super.setupActions()
-
-        self.stateView.addGestureRecognizer(UITapGestureRecognizer(
-            target: self,
-            action: #selector(self.onTapContentView(sender:)))
-        )
-
-        self.profileView.addGestureRecognizer(UITapGestureRecognizer(
-            target: self,
-            action: #selector(self.onTapProfileImageView(sender:)))
-        )
-
-        self.reactionView.emojiTapHandler = { [weak self] emojiKey in
-            self?.emojiTapHandler?(emojiKey)
-        }
-
-        self.reactionView.emojiLongPressHandler = { [weak self] emojiKey in
-            self?.emojiLongPressHandler?(emojiKey)
-        }
-
-        self.reactionView.moreEmojiTapHandler = { [weak self] in
-            self?.moreEmojiTapHandler?()
-        }
     }
     
+    open override func setupStyles() {
+        super.setupStyles()
+    }
+    
+    
     // MARK: - Common
-    public func configure(_ message: SBDFileMessage, hideDateView: Bool, receiptState: SBUMessageReceiptState) {
-//        let oldMessage = self.fileMessage
+    public func configure(_ message: SBDFileMessage,
+                          hideDateView: Bool,
+                          groupPosition: MessageGroupPosition,
+                          receiptState: SBUMessageReceiptState) {
+
         let position = SBUGlobals.CurrentUser?.userId == message.sender?.userId ?
             MessagePosition.right :
             MessagePosition.left
         
-        super.configure(
-            message: message,
-            position: position,
+        self.configure(
+            message,
             hideDateView: hideDateView,
+            position: position,
+            groupPosition: groupPosition,
             receiptState: receiptState
         )
- 
-        self.mainContainerView.position = position
-        self.mainContainerView.isSelected = false
-
-        if let userNameView = self.userNameView as? UserNameView {
-            var username = ""
-            if let sender = message.sender { username = SBUUser(user: sender).refinedNickname() }
-            userNameView.configure(username: username)
-        }
-        
-        if let profileView = self.profileView as? MessageProfileView {
-            let urlString = message.sender?.profileUrl ?? ""
-            profileView.configure(urlString: urlString)
-        }
-        
-        if let stateView = self.stateView as? MessageStateView {
-            stateView.configure(
-                timestamp: self.message.createdAt,
-                sendingState: message.sendingStatus,
-                receiptState: receiptState,
-                position: position
-            )
-        }
 
         self.reactionView.configure(
             maxWidth: SBUConstant.imageSize.width,
@@ -204,24 +99,32 @@ open class SBUFileMessageCell: SBUBaseMessageCell {
             self.baseFileContentView.configure(message: message, position: position)
         }
 
+        // Remove ArrangedSubviews
+        self.contentsStackView.arrangedSubviews.forEach(
+            self.contentsStackView.removeArrangedSubview(_:)
+        )
+        
         switch position {
         case .left:
             self.userNameStackView.alignment = .leading
-            self.profileView.isHidden = false
             self.userNameView.isHidden = false
-            self.contentsStackView.removeArrangedSubview(self.stateView)
+            self.profileView.isHidden = false
+           
+            self.contentsStackView.addArrangedSubview(self.profileView)
+            self.contentsStackView.addArrangedSubview(self.mainContainerView)
             self.contentsStackView.addArrangedSubview(self.stateView)
+            
         case .right:
             self.userNameStackView.alignment = .trailing
             self.userNameView.isHidden = true
             self.profileView.isHidden = true
-            self.contentsStackView.removeArrangedSubview(self.mainContainerView)
+            
+            self.contentsStackView.addArrangedSubview(self.stateView)
             self.contentsStackView.addArrangedSubview(self.mainContainerView)
+            
         case .center:
             break
         }
-
-        self.setNeedsLayout()
     }
     
     public func setImage(_ image: UIImage?, size: CGSize? = nil) {
@@ -232,29 +135,10 @@ open class SBUFileMessageCell: SBUBaseMessageCell {
         }
     }
 
-    open override func layoutSubviews() {
-        super.layoutSubviews()
-        self.setupStyles()
-    }
     
     // MARK: - Action
     public override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-        self.mainContainerView.isSelected = selected
-    }
-    
-    @objc open func onLongPressContentView(sender: UILongPressGestureRecognizer) {
-        if sender.state == .began {
-            self.longPressHandlerToContent?()
-        }
-    }
-    
-    @objc open func onTapContentView(sender: UITapGestureRecognizer) {
-        self.tapHandlerToContent?()
-    }
-    
-    @objc open func onTapProfileImageView(sender: UITapGestureRecognizer) {
-        self.tapHandlerToProfileImage?()
     }
 }
 
@@ -393,7 +277,7 @@ fileprivate class ImageContentView: BaseFileContentView {
 
         self.resizeImageView(by: thumbnail?.realSize ?? SBUConstant.thumbnailSize)
 
-        self.imageView.loadImage(urlString: urlString,option: imageOption) { [weak self] _ in
+        self.imageView.loadImage(urlString: urlString, option: imageOption) { [weak self] _ in
             self?.setFileIcon()
         }
 

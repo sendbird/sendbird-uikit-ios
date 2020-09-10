@@ -305,6 +305,13 @@ typedef SWIFT_ENUM(NSInteger, MessageFileType, open) {
   MessageFileTypeEtc = 4,
 };
 
+typedef SWIFT_ENUM(NSInteger, MessageGroupPosition, open) {
+  MessageGroupPositionNone = 0,
+  MessageGroupPositionTop = 1,
+  MessageGroupPositionMiddle = 2,
+  MessageGroupPositionBottom = 3,
+};
+
 typedef SWIFT_ENUM(NSInteger, MessagePosition, open) {
   MessagePositionLeft = 0,
   MessagePositionRight = 1,
@@ -363,6 +370,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUBaseMessageCell")
 @interface SBUBaseMessageCell : UITableViewCell
 @property (nonatomic, strong) SBDBaseMessage * _Nonnull message;
 @property (nonatomic) enum MessagePosition position;
+@property (nonatomic) enum MessageGroupPosition groupPosition;
 @property (nonatomic) enum SBUMessageReceiptState receiptState;
 @property (nonatomic, strong) UIView * _Nonnull messageContentView;
 @property (nonatomic, strong) UIView * _Nonnull dateView;
@@ -386,7 +394,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUBaseMessageCell")
 ///
 /// \param receiptState ReadReceipt state
 ///
-- (void)configureWithMessage:(SBDBaseMessage * _Nonnull)message position:(enum MessagePosition)position hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState;
+- (void)configureWithMessage:(SBDBaseMessage * _Nonnull)message position:(enum MessagePosition)position hideDateView:(BOOL)hideDateView groupPosition:(enum MessageGroupPosition)groupPosition receiptState:(enum SBUMessageReceiptState)receiptState;
 - (void)prepareForReuse;
 @end
 
@@ -785,13 +793,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
 - (void)didReceiveError:(NSString * _Nullable)message;
 @end
 
+
+
 @class UIImagePickerController;
 
 @interface SBUChannelSettingsViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
 - (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
 @end
-
-
 
 
 @interface SBUChannelSettingsViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UITableViewDataSource, UITableViewDelegate>
@@ -1029,17 +1037,21 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 /// \param showIndicator If true, the loading indicator is started, and if false, the indicator is stopped.
 ///
 - (void)setLoading:(BOOL)loadingState :(BOOL)showIndicator;
+/// This is a function that gets the location of the message to be grouped.
+/// Only successful messages can be grouped.
+/// since:
+/// 1.2.1
+/// \param currentIndex Index of current message in the message list
+///
+///
+/// returns:
+/// Position of a message when grouped
+- (enum MessageGroupPosition)getMessageGroupingPositionWithCurrentIndex:(NSInteger)currentIndex SWIFT_WARN_UNUSED_RESULT;
 - (void)onClickBack;
 - (void)onClickSetting;
 - (void)scrollToBottomWithAnimated:(BOOL)animated;
 - (void)scrollViewDidScroll:(UIScrollView * _Nonnull)scrollView;
 - (void)didReceiveError:(NSString * _Nullable)message;
-@end
-
-@class UIPresentationController;
-
-@interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
-- (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
@@ -1051,6 +1063,12 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 
 @interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
 - (void)didSelectDeleteImageWithMessage:(SBDFileMessage * _Nonnull)message;
+@end
+
+@class UIPresentationController;
+
+@interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
+- (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
 @end
 
 @class UIDocumentPickerViewController;
@@ -1278,6 +1296,34 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUComponent
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
+@class UIStackView;
+@class UILongPressGestureRecognizer;
+@class UITapGestureRecognizer;
+
+/// It is a base class used in message cell with contents.
+/// since:
+/// 1.2.1
+SWIFT_CLASS("_TtC13SendBirdUIKit25SBUContentBaseMessageCell")
+@interface SBUContentBaseMessageCell : SBUBaseMessageCell
+@property (nonatomic, strong) UIStackView * _Nonnull userNameStackView;
+@property (nonatomic, strong) UIStackView * _Nonnull contentsStackView;
+@property (nonatomic, strong) UIView * _Nonnull userNameView;
+@property (nonatomic, strong) UIView * _Nonnull profileView;
+@property (nonatomic, strong) UIView * _Nonnull stateView;
+- (void)setupViews;
+- (void)setupAutolayout;
+- (void)setupActions;
+- (void)setupStyles;
+- (void)configure:(SBDBaseMessage * _Nonnull)message hideDateView:(BOOL)hideDateView position:(enum MessagePosition)position groupPosition:(enum MessageGroupPosition)groupPosition receiptState:(enum SBUMessageReceiptState)receiptState;
+- (void)setMessageGrouping;
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated;
+- (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nullable)sender;
+- (void)onTapContentViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
+- (void)onTapProfileImageViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
+- (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
+@end
+
 
 
 /// This protocol is used to create a custom <code>CreateChannelTypeSelector</code>.
@@ -1380,28 +1426,17 @@ SWIFT_CLASS("_TtC13SendBirdUIKit12SBUEmptyView")
 @end
 
 
-@class UIStackView;
-@class UILongPressGestureRecognizer;
-@class UITapGestureRecognizer;
 
 IB_DESIGNABLE
 SWIFT_CLASS("_TtC13SendBirdUIKit18SBUFileMessageCell")
-@interface SBUFileMessageCell : SBUBaseMessageCell
-@property (nonatomic, strong) UIStackView * _Nonnull userNameStackView;
-@property (nonatomic, strong) UIStackView * _Nonnull contentsStackView;
-@property (nonatomic, strong) UIView * _Nonnull userNameView;
-@property (nonatomic, strong) UIView * _Nonnull profileView;
-@property (nonatomic, strong) UIView * _Nonnull stateView;
+@interface SBUFileMessageCell : SBUContentBaseMessageCell
+@property (nonatomic, readonly, strong) SBDFileMessage * _Nullable fileMessage;
 - (void)setupViews;
-- (void)setupStyles;
 - (void)setupAutolayout;
 - (void)setupActions;
-- (void)configure:(SBDFileMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState;
-- (void)layoutSubviews;
+- (void)setupStyles;
+- (void)configure:(SBDFileMessage * _Nonnull)message hideDateView:(BOOL)hideDateView groupPosition:(enum MessageGroupPosition)groupPosition receiptState:(enum SBUMessageReceiptState)receiptState;
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated;
-- (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nonnull)sender;
-- (void)onTapContentViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
-- (void)onTapProfileImageViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
 - (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
@@ -1478,6 +1513,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nullable Acc
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) SBUUser * _Nullable CurrentUser;)
 + (SBUUser * _Nullable)CurrentUser SWIFT_WARN_UNUSED_RESULT;
 + (void)setCurrentUser:(SBUUser * _Nullable)newCurrentUser;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL UsingMessageGrouping;)
++ (BOOL)UsingMessageGrouping SWIFT_WARN_UNUSED_RESULT;
++ (void)setUsingMessageGrouping:(BOOL)value;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
@@ -2574,24 +2612,16 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUUserListT
 
 IB_DESIGNABLE
 SWIFT_CLASS("_TtC13SendBirdUIKit18SBUUserMessageCell")
-@interface SBUUserMessageCell : SBUBaseMessageCell
+@interface SBUUserMessageCell : SBUContentBaseMessageCell
 @property (nonatomic, strong) UIView * _Nonnull messageTextView;
-@property (nonatomic, strong) UIStackView * _Nonnull userNameStackView;
-@property (nonatomic, strong) UIStackView * _Nonnull contentsStackView;
-@property (nonatomic, strong) UIView * _Nonnull userNameView;
-@property (nonatomic, strong) UIView * _Nonnull profileView;
-@property (nonatomic, strong) UIView * _Nonnull stateView;
 @property (nonatomic, readonly, strong) SBDUserMessage * _Nullable userMessage;
 - (void)setupViews;
 - (void)setupAutolayout;
 - (void)setupActions;
 - (void)setupStyles;
-- (void)configure:(SBDUserMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState;
-- (void)configure:(SBDBaseMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState withTextView:(BOOL)withTextView;
+- (void)configure:(SBDUserMessage * _Nonnull)message hideDateView:(BOOL)hideDateView groupPosition:(enum MessageGroupPosition)groupPosition receiptState:(enum SBUMessageReceiptState)receiptState;
+- (void)configure:(SBDBaseMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState groupPosition:(enum MessageGroupPosition)groupPosition withTextView:(BOOL)withTextView;
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated;
-- (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nullable)sender;
-- (void)onTapProfileImageViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
-- (void)onTapContentViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
 - (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
@@ -2960,6 +2990,13 @@ typedef SWIFT_ENUM(NSInteger, MessageFileType, open) {
   MessageFileTypeEtc = 4,
 };
 
+typedef SWIFT_ENUM(NSInteger, MessageGroupPosition, open) {
+  MessageGroupPositionNone = 0,
+  MessageGroupPositionTop = 1,
+  MessageGroupPositionMiddle = 2,
+  MessageGroupPositionBottom = 3,
+};
+
 typedef SWIFT_ENUM(NSInteger, MessagePosition, open) {
   MessagePositionLeft = 0,
   MessagePositionRight = 1,
@@ -3018,6 +3055,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUBaseMessageCell")
 @interface SBUBaseMessageCell : UITableViewCell
 @property (nonatomic, strong) SBDBaseMessage * _Nonnull message;
 @property (nonatomic) enum MessagePosition position;
+@property (nonatomic) enum MessageGroupPosition groupPosition;
 @property (nonatomic) enum SBUMessageReceiptState receiptState;
 @property (nonatomic, strong) UIView * _Nonnull messageContentView;
 @property (nonatomic, strong) UIView * _Nonnull dateView;
@@ -3041,7 +3079,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUBaseMessageCell")
 ///
 /// \param receiptState ReadReceipt state
 ///
-- (void)configureWithMessage:(SBDBaseMessage * _Nonnull)message position:(enum MessagePosition)position hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState;
+- (void)configureWithMessage:(SBDBaseMessage * _Nonnull)message position:(enum MessagePosition)position hideDateView:(BOOL)hideDateView groupPosition:(enum MessageGroupPosition)groupPosition receiptState:(enum SBUMessageReceiptState)receiptState;
 - (void)prepareForReuse;
 @end
 
@@ -3440,13 +3478,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
 - (void)didReceiveError:(NSString * _Nullable)message;
 @end
 
+
+
 @class UIImagePickerController;
 
 @interface SBUChannelSettingsViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
 - (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
 @end
-
-
 
 
 @interface SBUChannelSettingsViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UITableViewDataSource, UITableViewDelegate>
@@ -3684,17 +3722,21 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 /// \param showIndicator If true, the loading indicator is started, and if false, the indicator is stopped.
 ///
 - (void)setLoading:(BOOL)loadingState :(BOOL)showIndicator;
+/// This is a function that gets the location of the message to be grouped.
+/// Only successful messages can be grouped.
+/// since:
+/// 1.2.1
+/// \param currentIndex Index of current message in the message list
+///
+///
+/// returns:
+/// Position of a message when grouped
+- (enum MessageGroupPosition)getMessageGroupingPositionWithCurrentIndex:(NSInteger)currentIndex SWIFT_WARN_UNUSED_RESULT;
 - (void)onClickBack;
 - (void)onClickSetting;
 - (void)scrollToBottomWithAnimated:(BOOL)animated;
 - (void)scrollViewDidScroll:(UIScrollView * _Nonnull)scrollView;
 - (void)didReceiveError:(NSString * _Nullable)message;
-@end
-
-@class UIPresentationController;
-
-@interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
-- (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
@@ -3706,6 +3748,12 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 
 @interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
 - (void)didSelectDeleteImageWithMessage:(SBDFileMessage * _Nonnull)message;
+@end
+
+@class UIPresentationController;
+
+@interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
+- (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
 @end
 
 @class UIDocumentPickerViewController;
@@ -3933,6 +3981,34 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUComponent
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
+@class UIStackView;
+@class UILongPressGestureRecognizer;
+@class UITapGestureRecognizer;
+
+/// It is a base class used in message cell with contents.
+/// since:
+/// 1.2.1
+SWIFT_CLASS("_TtC13SendBirdUIKit25SBUContentBaseMessageCell")
+@interface SBUContentBaseMessageCell : SBUBaseMessageCell
+@property (nonatomic, strong) UIStackView * _Nonnull userNameStackView;
+@property (nonatomic, strong) UIStackView * _Nonnull contentsStackView;
+@property (nonatomic, strong) UIView * _Nonnull userNameView;
+@property (nonatomic, strong) UIView * _Nonnull profileView;
+@property (nonatomic, strong) UIView * _Nonnull stateView;
+- (void)setupViews;
+- (void)setupAutolayout;
+- (void)setupActions;
+- (void)setupStyles;
+- (void)configure:(SBDBaseMessage * _Nonnull)message hideDateView:(BOOL)hideDateView position:(enum MessagePosition)position groupPosition:(enum MessageGroupPosition)groupPosition receiptState:(enum SBUMessageReceiptState)receiptState;
+- (void)setMessageGrouping;
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated;
+- (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nullable)sender;
+- (void)onTapContentViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
+- (void)onTapProfileImageViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
+- (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
+@end
+
 
 
 /// This protocol is used to create a custom <code>CreateChannelTypeSelector</code>.
@@ -4035,28 +4111,17 @@ SWIFT_CLASS("_TtC13SendBirdUIKit12SBUEmptyView")
 @end
 
 
-@class UIStackView;
-@class UILongPressGestureRecognizer;
-@class UITapGestureRecognizer;
 
 IB_DESIGNABLE
 SWIFT_CLASS("_TtC13SendBirdUIKit18SBUFileMessageCell")
-@interface SBUFileMessageCell : SBUBaseMessageCell
-@property (nonatomic, strong) UIStackView * _Nonnull userNameStackView;
-@property (nonatomic, strong) UIStackView * _Nonnull contentsStackView;
-@property (nonatomic, strong) UIView * _Nonnull userNameView;
-@property (nonatomic, strong) UIView * _Nonnull profileView;
-@property (nonatomic, strong) UIView * _Nonnull stateView;
+@interface SBUFileMessageCell : SBUContentBaseMessageCell
+@property (nonatomic, readonly, strong) SBDFileMessage * _Nullable fileMessage;
 - (void)setupViews;
-- (void)setupStyles;
 - (void)setupAutolayout;
 - (void)setupActions;
-- (void)configure:(SBDFileMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState;
-- (void)layoutSubviews;
+- (void)setupStyles;
+- (void)configure:(SBDFileMessage * _Nonnull)message hideDateView:(BOOL)hideDateView groupPosition:(enum MessageGroupPosition)groupPosition receiptState:(enum SBUMessageReceiptState)receiptState;
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated;
-- (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nonnull)sender;
-- (void)onTapContentViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
-- (void)onTapProfileImageViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
 - (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
@@ -4133,6 +4198,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nullable Acc
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) SBUUser * _Nullable CurrentUser;)
 + (SBUUser * _Nullable)CurrentUser SWIFT_WARN_UNUSED_RESULT;
 + (void)setCurrentUser:(SBUUser * _Nullable)newCurrentUser;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL UsingMessageGrouping;)
++ (BOOL)UsingMessageGrouping SWIFT_WARN_UNUSED_RESULT;
++ (void)setUsingMessageGrouping:(BOOL)value;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
@@ -5229,24 +5297,16 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUUserListT
 
 IB_DESIGNABLE
 SWIFT_CLASS("_TtC13SendBirdUIKit18SBUUserMessageCell")
-@interface SBUUserMessageCell : SBUBaseMessageCell
+@interface SBUUserMessageCell : SBUContentBaseMessageCell
 @property (nonatomic, strong) UIView * _Nonnull messageTextView;
-@property (nonatomic, strong) UIStackView * _Nonnull userNameStackView;
-@property (nonatomic, strong) UIStackView * _Nonnull contentsStackView;
-@property (nonatomic, strong) UIView * _Nonnull userNameView;
-@property (nonatomic, strong) UIView * _Nonnull profileView;
-@property (nonatomic, strong) UIView * _Nonnull stateView;
 @property (nonatomic, readonly, strong) SBDUserMessage * _Nullable userMessage;
 - (void)setupViews;
 - (void)setupAutolayout;
 - (void)setupActions;
 - (void)setupStyles;
-- (void)configure:(SBDUserMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState;
-- (void)configure:(SBDBaseMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState withTextView:(BOOL)withTextView;
+- (void)configure:(SBDUserMessage * _Nonnull)message hideDateView:(BOOL)hideDateView groupPosition:(enum MessageGroupPosition)groupPosition receiptState:(enum SBUMessageReceiptState)receiptState;
+- (void)configure:(SBDBaseMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState groupPosition:(enum MessageGroupPosition)groupPosition withTextView:(BOOL)withTextView;
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated;
-- (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nullable)sender;
-- (void)onTapProfileImageViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
-- (void)onTapContentViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
 - (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
@@ -5617,6 +5677,13 @@ typedef SWIFT_ENUM(NSInteger, MessageFileType, open) {
   MessageFileTypeEtc = 4,
 };
 
+typedef SWIFT_ENUM(NSInteger, MessageGroupPosition, open) {
+  MessageGroupPositionNone = 0,
+  MessageGroupPositionTop = 1,
+  MessageGroupPositionMiddle = 2,
+  MessageGroupPositionBottom = 3,
+};
+
 typedef SWIFT_ENUM(NSInteger, MessagePosition, open) {
   MessagePositionLeft = 0,
   MessagePositionRight = 1,
@@ -5675,6 +5742,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUBaseMessageCell")
 @interface SBUBaseMessageCell : UITableViewCell
 @property (nonatomic, strong) SBDBaseMessage * _Nonnull message;
 @property (nonatomic) enum MessagePosition position;
+@property (nonatomic) enum MessageGroupPosition groupPosition;
 @property (nonatomic) enum SBUMessageReceiptState receiptState;
 @property (nonatomic, strong) UIView * _Nonnull messageContentView;
 @property (nonatomic, strong) UIView * _Nonnull dateView;
@@ -5698,7 +5766,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUBaseMessageCell")
 ///
 /// \param receiptState ReadReceipt state
 ///
-- (void)configureWithMessage:(SBDBaseMessage * _Nonnull)message position:(enum MessagePosition)position hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState;
+- (void)configureWithMessage:(SBDBaseMessage * _Nonnull)message position:(enum MessagePosition)position hideDateView:(BOOL)hideDateView groupPosition:(enum MessageGroupPosition)groupPosition receiptState:(enum SBUMessageReceiptState)receiptState;
 - (void)prepareForReuse;
 @end
 
@@ -6097,13 +6165,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
 - (void)didReceiveError:(NSString * _Nullable)message;
 @end
 
+
+
 @class UIImagePickerController;
 
 @interface SBUChannelSettingsViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
 - (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
 @end
-
-
 
 
 @interface SBUChannelSettingsViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UITableViewDataSource, UITableViewDelegate>
@@ -6341,17 +6409,21 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 /// \param showIndicator If true, the loading indicator is started, and if false, the indicator is stopped.
 ///
 - (void)setLoading:(BOOL)loadingState :(BOOL)showIndicator;
+/// This is a function that gets the location of the message to be grouped.
+/// Only successful messages can be grouped.
+/// since:
+/// 1.2.1
+/// \param currentIndex Index of current message in the message list
+///
+///
+/// returns:
+/// Position of a message when grouped
+- (enum MessageGroupPosition)getMessageGroupingPositionWithCurrentIndex:(NSInteger)currentIndex SWIFT_WARN_UNUSED_RESULT;
 - (void)onClickBack;
 - (void)onClickSetting;
 - (void)scrollToBottomWithAnimated:(BOOL)animated;
 - (void)scrollViewDidScroll:(UIScrollView * _Nonnull)scrollView;
 - (void)didReceiveError:(NSString * _Nullable)message;
-@end
-
-@class UIPresentationController;
-
-@interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
-- (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
@@ -6363,6 +6435,12 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 
 @interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
 - (void)didSelectDeleteImageWithMessage:(SBDFileMessage * _Nonnull)message;
+@end
+
+@class UIPresentationController;
+
+@interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
+- (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
 @end
 
 @class UIDocumentPickerViewController;
@@ -6590,6 +6668,34 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUComponent
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
+@class UIStackView;
+@class UILongPressGestureRecognizer;
+@class UITapGestureRecognizer;
+
+/// It is a base class used in message cell with contents.
+/// since:
+/// 1.2.1
+SWIFT_CLASS("_TtC13SendBirdUIKit25SBUContentBaseMessageCell")
+@interface SBUContentBaseMessageCell : SBUBaseMessageCell
+@property (nonatomic, strong) UIStackView * _Nonnull userNameStackView;
+@property (nonatomic, strong) UIStackView * _Nonnull contentsStackView;
+@property (nonatomic, strong) UIView * _Nonnull userNameView;
+@property (nonatomic, strong) UIView * _Nonnull profileView;
+@property (nonatomic, strong) UIView * _Nonnull stateView;
+- (void)setupViews;
+- (void)setupAutolayout;
+- (void)setupActions;
+- (void)setupStyles;
+- (void)configure:(SBDBaseMessage * _Nonnull)message hideDateView:(BOOL)hideDateView position:(enum MessagePosition)position groupPosition:(enum MessageGroupPosition)groupPosition receiptState:(enum SBUMessageReceiptState)receiptState;
+- (void)setMessageGrouping;
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated;
+- (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nullable)sender;
+- (void)onTapContentViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
+- (void)onTapProfileImageViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
+- (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
+@end
+
 
 
 /// This protocol is used to create a custom <code>CreateChannelTypeSelector</code>.
@@ -6692,28 +6798,17 @@ SWIFT_CLASS("_TtC13SendBirdUIKit12SBUEmptyView")
 @end
 
 
-@class UIStackView;
-@class UILongPressGestureRecognizer;
-@class UITapGestureRecognizer;
 
 IB_DESIGNABLE
 SWIFT_CLASS("_TtC13SendBirdUIKit18SBUFileMessageCell")
-@interface SBUFileMessageCell : SBUBaseMessageCell
-@property (nonatomic, strong) UIStackView * _Nonnull userNameStackView;
-@property (nonatomic, strong) UIStackView * _Nonnull contentsStackView;
-@property (nonatomic, strong) UIView * _Nonnull userNameView;
-@property (nonatomic, strong) UIView * _Nonnull profileView;
-@property (nonatomic, strong) UIView * _Nonnull stateView;
+@interface SBUFileMessageCell : SBUContentBaseMessageCell
+@property (nonatomic, readonly, strong) SBDFileMessage * _Nullable fileMessage;
 - (void)setupViews;
-- (void)setupStyles;
 - (void)setupAutolayout;
 - (void)setupActions;
-- (void)configure:(SBDFileMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState;
-- (void)layoutSubviews;
+- (void)setupStyles;
+- (void)configure:(SBDFileMessage * _Nonnull)message hideDateView:(BOOL)hideDateView groupPosition:(enum MessageGroupPosition)groupPosition receiptState:(enum SBUMessageReceiptState)receiptState;
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated;
-- (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nonnull)sender;
-- (void)onTapContentViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
-- (void)onTapProfileImageViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
 - (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
@@ -6790,6 +6885,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nullable Acc
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) SBUUser * _Nullable CurrentUser;)
 + (SBUUser * _Nullable)CurrentUser SWIFT_WARN_UNUSED_RESULT;
 + (void)setCurrentUser:(SBUUser * _Nullable)newCurrentUser;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL UsingMessageGrouping;)
++ (BOOL)UsingMessageGrouping SWIFT_WARN_UNUSED_RESULT;
++ (void)setUsingMessageGrouping:(BOOL)value;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
@@ -7886,24 +7984,16 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUUserListT
 
 IB_DESIGNABLE
 SWIFT_CLASS("_TtC13SendBirdUIKit18SBUUserMessageCell")
-@interface SBUUserMessageCell : SBUBaseMessageCell
+@interface SBUUserMessageCell : SBUContentBaseMessageCell
 @property (nonatomic, strong) UIView * _Nonnull messageTextView;
-@property (nonatomic, strong) UIStackView * _Nonnull userNameStackView;
-@property (nonatomic, strong) UIStackView * _Nonnull contentsStackView;
-@property (nonatomic, strong) UIView * _Nonnull userNameView;
-@property (nonatomic, strong) UIView * _Nonnull profileView;
-@property (nonatomic, strong) UIView * _Nonnull stateView;
 @property (nonatomic, readonly, strong) SBDUserMessage * _Nullable userMessage;
 - (void)setupViews;
 - (void)setupAutolayout;
 - (void)setupActions;
 - (void)setupStyles;
-- (void)configure:(SBDUserMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState;
-- (void)configure:(SBDBaseMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState withTextView:(BOOL)withTextView;
+- (void)configure:(SBDUserMessage * _Nonnull)message hideDateView:(BOOL)hideDateView groupPosition:(enum MessageGroupPosition)groupPosition receiptState:(enum SBUMessageReceiptState)receiptState;
+- (void)configure:(SBDBaseMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState groupPosition:(enum MessageGroupPosition)groupPosition withTextView:(BOOL)withTextView;
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated;
-- (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nullable)sender;
-- (void)onTapProfileImageViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
-- (void)onTapContentViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
 - (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
@@ -8272,6 +8362,13 @@ typedef SWIFT_ENUM(NSInteger, MessageFileType, open) {
   MessageFileTypeEtc = 4,
 };
 
+typedef SWIFT_ENUM(NSInteger, MessageGroupPosition, open) {
+  MessageGroupPositionNone = 0,
+  MessageGroupPositionTop = 1,
+  MessageGroupPositionMiddle = 2,
+  MessageGroupPositionBottom = 3,
+};
+
 typedef SWIFT_ENUM(NSInteger, MessagePosition, open) {
   MessagePositionLeft = 0,
   MessagePositionRight = 1,
@@ -8330,6 +8427,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUBaseMessageCell")
 @interface SBUBaseMessageCell : UITableViewCell
 @property (nonatomic, strong) SBDBaseMessage * _Nonnull message;
 @property (nonatomic) enum MessagePosition position;
+@property (nonatomic) enum MessageGroupPosition groupPosition;
 @property (nonatomic) enum SBUMessageReceiptState receiptState;
 @property (nonatomic, strong) UIView * _Nonnull messageContentView;
 @property (nonatomic, strong) UIView * _Nonnull dateView;
@@ -8353,7 +8451,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUBaseMessageCell")
 ///
 /// \param receiptState ReadReceipt state
 ///
-- (void)configureWithMessage:(SBDBaseMessage * _Nonnull)message position:(enum MessagePosition)position hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState;
+- (void)configureWithMessage:(SBDBaseMessage * _Nonnull)message position:(enum MessagePosition)position hideDateView:(BOOL)hideDateView groupPosition:(enum MessageGroupPosition)groupPosition receiptState:(enum SBUMessageReceiptState)receiptState;
 - (void)prepareForReuse;
 @end
 
@@ -8752,13 +8850,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
 - (void)didReceiveError:(NSString * _Nullable)message;
 @end
 
+
+
 @class UIImagePickerController;
 
 @interface SBUChannelSettingsViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
 - (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
 @end
-
-
 
 
 @interface SBUChannelSettingsViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UITableViewDataSource, UITableViewDelegate>
@@ -8996,17 +9094,21 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 /// \param showIndicator If true, the loading indicator is started, and if false, the indicator is stopped.
 ///
 - (void)setLoading:(BOOL)loadingState :(BOOL)showIndicator;
+/// This is a function that gets the location of the message to be grouped.
+/// Only successful messages can be grouped.
+/// since:
+/// 1.2.1
+/// \param currentIndex Index of current message in the message list
+///
+///
+/// returns:
+/// Position of a message when grouped
+- (enum MessageGroupPosition)getMessageGroupingPositionWithCurrentIndex:(NSInteger)currentIndex SWIFT_WARN_UNUSED_RESULT;
 - (void)onClickBack;
 - (void)onClickSetting;
 - (void)scrollToBottomWithAnimated:(BOOL)animated;
 - (void)scrollViewDidScroll:(UIScrollView * _Nonnull)scrollView;
 - (void)didReceiveError:(NSString * _Nullable)message;
-@end
-
-@class UIPresentationController;
-
-@interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
-- (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
@@ -9018,6 +9120,12 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 
 @interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
 - (void)didSelectDeleteImageWithMessage:(SBDFileMessage * _Nonnull)message;
+@end
+
+@class UIPresentationController;
+
+@interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
+- (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
 @end
 
 @class UIDocumentPickerViewController;
@@ -9245,6 +9353,34 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUComponent
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
+@class UIStackView;
+@class UILongPressGestureRecognizer;
+@class UITapGestureRecognizer;
+
+/// It is a base class used in message cell with contents.
+/// since:
+/// 1.2.1
+SWIFT_CLASS("_TtC13SendBirdUIKit25SBUContentBaseMessageCell")
+@interface SBUContentBaseMessageCell : SBUBaseMessageCell
+@property (nonatomic, strong) UIStackView * _Nonnull userNameStackView;
+@property (nonatomic, strong) UIStackView * _Nonnull contentsStackView;
+@property (nonatomic, strong) UIView * _Nonnull userNameView;
+@property (nonatomic, strong) UIView * _Nonnull profileView;
+@property (nonatomic, strong) UIView * _Nonnull stateView;
+- (void)setupViews;
+- (void)setupAutolayout;
+- (void)setupActions;
+- (void)setupStyles;
+- (void)configure:(SBDBaseMessage * _Nonnull)message hideDateView:(BOOL)hideDateView position:(enum MessagePosition)position groupPosition:(enum MessageGroupPosition)groupPosition receiptState:(enum SBUMessageReceiptState)receiptState;
+- (void)setMessageGrouping;
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated;
+- (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nullable)sender;
+- (void)onTapContentViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
+- (void)onTapProfileImageViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
+- (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
+@end
+
 
 
 /// This protocol is used to create a custom <code>CreateChannelTypeSelector</code>.
@@ -9347,28 +9483,17 @@ SWIFT_CLASS("_TtC13SendBirdUIKit12SBUEmptyView")
 @end
 
 
-@class UIStackView;
-@class UILongPressGestureRecognizer;
-@class UITapGestureRecognizer;
 
 IB_DESIGNABLE
 SWIFT_CLASS("_TtC13SendBirdUIKit18SBUFileMessageCell")
-@interface SBUFileMessageCell : SBUBaseMessageCell
-@property (nonatomic, strong) UIStackView * _Nonnull userNameStackView;
-@property (nonatomic, strong) UIStackView * _Nonnull contentsStackView;
-@property (nonatomic, strong) UIView * _Nonnull userNameView;
-@property (nonatomic, strong) UIView * _Nonnull profileView;
-@property (nonatomic, strong) UIView * _Nonnull stateView;
+@interface SBUFileMessageCell : SBUContentBaseMessageCell
+@property (nonatomic, readonly, strong) SBDFileMessage * _Nullable fileMessage;
 - (void)setupViews;
-- (void)setupStyles;
 - (void)setupAutolayout;
 - (void)setupActions;
-- (void)configure:(SBDFileMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState;
-- (void)layoutSubviews;
+- (void)setupStyles;
+- (void)configure:(SBDFileMessage * _Nonnull)message hideDateView:(BOOL)hideDateView groupPosition:(enum MessageGroupPosition)groupPosition receiptState:(enum SBUMessageReceiptState)receiptState;
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated;
-- (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nonnull)sender;
-- (void)onTapContentViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
-- (void)onTapProfileImageViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
 - (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
@@ -9445,6 +9570,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nullable Acc
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) SBUUser * _Nullable CurrentUser;)
 + (SBUUser * _Nullable)CurrentUser SWIFT_WARN_UNUSED_RESULT;
 + (void)setCurrentUser:(SBUUser * _Nullable)newCurrentUser;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL UsingMessageGrouping;)
++ (BOOL)UsingMessageGrouping SWIFT_WARN_UNUSED_RESULT;
++ (void)setUsingMessageGrouping:(BOOL)value;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
@@ -10541,24 +10669,16 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUUserListT
 
 IB_DESIGNABLE
 SWIFT_CLASS("_TtC13SendBirdUIKit18SBUUserMessageCell")
-@interface SBUUserMessageCell : SBUBaseMessageCell
+@interface SBUUserMessageCell : SBUContentBaseMessageCell
 @property (nonatomic, strong) UIView * _Nonnull messageTextView;
-@property (nonatomic, strong) UIStackView * _Nonnull userNameStackView;
-@property (nonatomic, strong) UIStackView * _Nonnull contentsStackView;
-@property (nonatomic, strong) UIView * _Nonnull userNameView;
-@property (nonatomic, strong) UIView * _Nonnull profileView;
-@property (nonatomic, strong) UIView * _Nonnull stateView;
 @property (nonatomic, readonly, strong) SBDUserMessage * _Nullable userMessage;
 - (void)setupViews;
 - (void)setupAutolayout;
 - (void)setupActions;
 - (void)setupStyles;
-- (void)configure:(SBDUserMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState;
-- (void)configure:(SBDBaseMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState withTextView:(BOOL)withTextView;
+- (void)configure:(SBDUserMessage * _Nonnull)message hideDateView:(BOOL)hideDateView groupPosition:(enum MessageGroupPosition)groupPosition receiptState:(enum SBUMessageReceiptState)receiptState;
+- (void)configure:(SBDBaseMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState groupPosition:(enum MessageGroupPosition)groupPosition withTextView:(BOOL)withTextView;
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated;
-- (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nullable)sender;
-- (void)onTapProfileImageViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
-- (void)onTapContentViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
 - (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end

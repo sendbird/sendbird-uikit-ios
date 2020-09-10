@@ -1637,6 +1637,72 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         }
     }
     
+    /// This is a function that gets the location of the message to be grouped.
+    /// Only successful messages can be grouped.
+    /// - Parameter currentIndex: Index of current message in the message list
+    /// - Returns: Position of a message when grouped
+    ///
+    /// - Since: 1.2.1
+    public func getMessageGroupingPosition(currentIndex: Int) -> MessageGroupPosition {
+        guard currentIndex < self.fullMessageList.count-1 else { return .none }
+        
+        let prevMessage = self.fullMessageList.count+2 > currentIndex
+            ? self.fullMessageList[currentIndex+1]
+            : nil
+        let currentMessage = self.fullMessageList[currentIndex]
+        let nextMessage = currentIndex != 0
+            ? self.fullMessageList[currentIndex-1]
+            : nil
+        
+        let succeededPrevMsg = prevMessage?.sendingStatus == .succeeded
+            ? prevMessage
+            : nil
+        let succeededCurrentMsg = currentMessage.sendingStatus == .succeeded
+            ? currentMessage
+            : nil
+        let succeededNextMsg = nextMessage?.sendingStatus == .succeeded
+            ? nextMessage
+            : nil
+        
+        let prevSender = succeededPrevMsg?.sender?.userId ?? nil
+        let currentSender = succeededCurrentMsg?.sender?.userId ?? nil
+        let nextSender = succeededNextMsg?.sender?.userId ?? nil
+        
+        // Unit : milliseconds
+        let prevTimestamp = Date.from(succeededPrevMsg?.createdAt ?? -1).toString(
+            format: .yyyyMMddhhmm
+        )
+        let currentTimestamp = Date.from(succeededCurrentMsg?.createdAt ?? -1).toString(
+            format: .yyyyMMddhhmm
+        )
+        let nextTimestamp = Date.from(succeededNextMsg?.createdAt ?? -1).toString(
+            format: .yyyyMMddhhmm
+        )
+        
+        if prevSender != currentSender && nextSender != currentSender {
+            return .none
+        }
+        else if prevSender == currentSender && nextSender == currentSender {
+            if prevTimestamp == nextTimestamp {
+                return .middle
+            }
+            else if prevTimestamp == currentTimestamp {
+                return .bottom
+            }
+            else if currentTimestamp == nextTimestamp {
+                return .top
+            }
+        }
+        else if prevSender == currentSender && nextSender != currentSender {
+            return prevTimestamp == currentTimestamp ? .bottom : .none
+        }
+        else if prevSender != currentSender && nextSender == currentSender {
+            return currentTimestamp == nextTimestamp ? .top : .none
+        }
+        
+        return .none
+    }
+    
     
     // MARK:- Actions
     public func onClickBack() {
@@ -1942,6 +2008,7 @@ extension SBUChannelViewController: UITableViewDelegate, UITableViewDataSource {
             unknownMessageCell.configure(
                 unknownMessage,
                 hideDateView: isSameDay,
+                groupPosition: self.getMessageGroupingPosition(currentIndex: indexPath.row),
                 receiptState: SBUUtils.getReceiptState(channel: channel, message: unknownMessage)
             )
             self.setUnkownMessageCell(
@@ -1955,6 +2022,7 @@ extension SBUChannelViewController: UITableViewDelegate, UITableViewDataSource {
             userMessageCell.configure(
                 userMessage,
                 hideDateView: isSameDay,
+                groupPosition: self.getMessageGroupingPosition(currentIndex: indexPath.row),
                 receiptState: SBUUtils.getReceiptState(channel: channel, message: message)
             )
             self.setUserMessageCell(
@@ -1968,6 +2036,7 @@ extension SBUChannelViewController: UITableViewDelegate, UITableViewDataSource {
             fileMessageCell.configure(
                 fileMessage,
                 hideDateView: isSameDay,
+                groupPosition: self.getMessageGroupingPosition(currentIndex: indexPath.row),
                 receiptState: SBUUtils.getReceiptState(channel: channel, message: message)
             )
             

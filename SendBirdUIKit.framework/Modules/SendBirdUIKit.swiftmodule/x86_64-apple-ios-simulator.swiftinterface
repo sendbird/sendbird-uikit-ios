@@ -240,6 +240,41 @@ extension NSObject {
   @objc deinit
   @objc override dynamic public init()
 }
+@objc @_inheritsConvenienceInitializers @objcMembers open class SBUContentBaseMessageCell : SendBirdUIKit.SBUBaseMessageCell {
+  @objc public var userNameStackView: UIKit.UIStackView {
+    @objc get
+    @objc set
+  }
+  @objc public var contentsStackView: UIKit.UIStackView {
+    @objc get
+    @objc set
+  }
+  @objc public var userNameView: UIKit.UIView {
+    @objc get
+    @objc set
+  }
+  @objc public var profileView: UIKit.UIView {
+    @objc get
+    @objc set
+  }
+  @objc public var stateView: UIKit.UIView {
+    @objc get
+    @objc set
+  }
+  @objc override open func setupViews()
+  @objc override open func setupAutolayout()
+  @objc override open func setupActions()
+  @objc override open func setupStyles()
+  @objc public func configure(_ message: SendBirdSDK.SBDBaseMessage, hideDateView: Swift.Bool, position: SendBirdUIKit.MessagePosition, groupPosition: SendBirdUIKit.MessageGroupPosition, receiptState: SendBirdUIKit.SBUMessageReceiptState)
+  @objc public func setMessageGrouping()
+  @objc override dynamic public func setSelected(_ selected: Swift.Bool, animated: Swift.Bool)
+  @objc open func onLongPressContentView(sender: UIKit.UILongPressGestureRecognizer?)
+  @objc open func onTapContentView(sender: UIKit.UITapGestureRecognizer)
+  @objc open func onTapProfileImageView(sender: UIKit.UITapGestureRecognizer)
+  @objc deinit
+  @objc override dynamic public init(style: UIKit.UITableViewCell.CellStyle, reuseIdentifier: Swift.String?)
+  @objc required dynamic public init?(coder: Foundation.NSCoder)
+}
 @objc @_inheritsConvenienceInitializers @objcMembers public class SBUColorSet : ObjectiveC.NSObject {
   @objc public static var primary100: UIKit.UIColor
   @objc public static var primary200: UIKit.UIColor
@@ -422,6 +457,7 @@ extension SBUModerationsViewController : UIKit.UITableViewDelegate, UIKit.UITabl
   @objc public func checkSameDayAsNextMessage(currentIndex: Swift.Int) -> Swift.Bool
   @objc public func configureOffset()
   @objc public func setLoading(_ loadingState: Swift.Bool, _ showIndicator: Swift.Bool)
+  @objc public func getMessageGroupingPosition(currentIndex: Swift.Int) -> SendBirdUIKit.MessageGroupPosition
   @objc public func onClickBack()
   @objc public func onClickSetting()
   @objc public func scrollToBottom(animated: Swift.Bool)
@@ -693,8 +729,8 @@ extension SBUCreateChannelViewController : UIKit.UITableViewDelegate, UIKit.UITa
   @objc override dynamic public var description: Swift.String {
     @objc get
   }
-  @objc deinit
   @objc override dynamic public init()
+  @objc deinit
 }
 @objc @_inheritsConvenienceInitializers @objcMembers public class SBUGlobals : ObjectiveC.NSObject {
   @objc public static var ApplicationId: Swift.String?
@@ -703,6 +739,7 @@ extension SBUCreateChannelViewController : UIKit.UITableViewDelegate, UIKit.UITa
     @objc get
     @objc set(newCurrentUser)
   }
+  @objc public static var UsingMessageGrouping: Swift.Bool
   @objc deinit
   @objc override dynamic public init()
 }
@@ -917,6 +954,17 @@ extension SBUCreateChannelViewController : UIKit.UITableViewDelegate, UIKit.UITa
     get
   }
 }
+@objc public enum MessageGroupPosition : Swift.Int {
+  case none
+  case top
+  case middle
+  case bottom
+  public typealias RawValue = Swift.Int
+  public init?(rawValue: Swift.Int)
+  public var rawValue: Swift.Int {
+    get
+  }
+}
 @objc public enum MessageFileType : Swift.Int {
   case image
   case video
@@ -997,6 +1045,7 @@ extension NSArray {
 @objc @_inheritsConvenienceInitializers @objcMembers @IBDesignable open class SBUBaseMessageCell : UIKit.UITableViewCell {
   @objc public var message: SendBirdSDK.SBDBaseMessage
   @objc public var position: SendBirdUIKit.MessagePosition
+  @objc public var groupPosition: SendBirdUIKit.MessageGroupPosition
   @objc public var receiptState: SendBirdUIKit.SBUMessageReceiptState
   @objc public var messageContentView: UIKit.UIView {
     @objc get
@@ -1013,7 +1062,7 @@ extension NSArray {
   @objc open func setupAutolayout()
   @objc open func setupStyles()
   @objc override dynamic open func layoutSubviews()
-  @objc open func configure(message: SendBirdSDK.SBDBaseMessage, position: SendBirdUIKit.MessagePosition, hideDateView: Swift.Bool, receiptState: SendBirdUIKit.SBUMessageReceiptState)
+  @objc open func configure(message: SendBirdSDK.SBDBaseMessage, position: SendBirdUIKit.MessagePosition, hideDateView: Swift.Bool, groupPosition: SendBirdUIKit.MessageGroupPosition = .none, receiptState: SendBirdUIKit.SBUMessageReceiptState)
   @objc override dynamic open func prepareForReuse()
   @objc deinit
 }
@@ -1149,28 +1198,8 @@ extension SBUChannelSettingsViewController : UIKit.UIImagePickerControllerDelega
   }
   public init(wrappedValue: T)
 }
-@objc @_inheritsConvenienceInitializers @objcMembers @IBDesignable open class SBUUserMessageCell : SendBirdUIKit.SBUBaseMessageCell {
+@objc @_inheritsConvenienceInitializers @objcMembers @IBDesignable open class SBUUserMessageCell : SendBirdUIKit.SBUContentBaseMessageCell {
   @objc public var messageTextView: UIKit.UIView {
-    @objc get
-    @objc set
-  }
-  @objc public var userNameStackView: UIKit.UIStackView {
-    @objc get
-    @objc set
-  }
-  @objc public var contentsStackView: UIKit.UIStackView {
-    @objc get
-    @objc set
-  }
-  @objc public var userNameView: UIKit.UIView {
-    @objc get
-    @objc set
-  }
-  @objc public var profileView: UIKit.UIView {
-    @objc get
-    @objc set
-  }
-  @objc public var stateView: UIKit.UIView {
     @objc get
     @objc set
   }
@@ -1181,12 +1210,9 @@ extension SBUChannelSettingsViewController : UIKit.UIImagePickerControllerDelega
   @objc override open func setupAutolayout()
   @objc override open func setupActions()
   @objc override open func setupStyles()
-  @objc public func configure(_ message: SendBirdSDK.SBDUserMessage, hideDateView: Swift.Bool, receiptState: SendBirdUIKit.SBUMessageReceiptState)
-  @objc public func configure(_ message: SendBirdSDK.SBDBaseMessage, hideDateView: Swift.Bool, receiptState: SendBirdUIKit.SBUMessageReceiptState, withTextView: Swift.Bool)
+  @objc public func configure(_ message: SendBirdSDK.SBDUserMessage, hideDateView: Swift.Bool, groupPosition: SendBirdUIKit.MessageGroupPosition, receiptState: SendBirdUIKit.SBUMessageReceiptState)
+  @objc public func configure(_ message: SendBirdSDK.SBDBaseMessage, hideDateView: Swift.Bool, receiptState: SendBirdUIKit.SBUMessageReceiptState, groupPosition: SendBirdUIKit.MessageGroupPosition, withTextView: Swift.Bool)
   @objc override dynamic public func setSelected(_ selected: Swift.Bool, animated: Swift.Bool)
-  @objc open func onLongPressContentView(sender: UIKit.UILongPressGestureRecognizer?)
-  @objc open func onTapProfileImageView(sender: UIKit.UITapGestureRecognizer)
-  @objc open func onTapContentView(sender: UIKit.UITapGestureRecognizer)
   @objc override dynamic public init(style: UIKit.UITableViewCell.CellStyle, reuseIdentifier: Swift.String?)
   @objc required dynamic public init?(coder: Foundation.NSCoder)
   @objc deinit
@@ -1553,38 +1579,17 @@ extension SBUChannelSettingsViewController : UIKit.UIImagePickerControllerDelega
   @objc deinit
   @objc override dynamic public init()
 }
-@objc @_inheritsConvenienceInitializers @objcMembers @IBDesignable open class SBUFileMessageCell : SendBirdUIKit.SBUBaseMessageCell {
-  @objc public var userNameStackView: UIKit.UIStackView {
+@objc @_inheritsConvenienceInitializers @objcMembers @IBDesignable open class SBUFileMessageCell : SendBirdUIKit.SBUContentBaseMessageCell {
+  @objc public var fileMessage: SendBirdSDK.SBDFileMessage? {
     @objc get
-    @objc set
-  }
-  @objc public var contentsStackView: UIKit.UIStackView {
-    @objc get
-    @objc set
-  }
-  @objc public var userNameView: UIKit.UIView {
-    @objc get
-    @objc set
-  }
-  @objc public var profileView: UIKit.UIView {
-    @objc get
-    @objc set
-  }
-  @objc public var stateView: UIKit.UIView {
-    @objc get
-    @objc set
   }
   @objc override open func setupViews()
-  @objc override open func setupStyles()
   @objc override open func setupAutolayout()
   @objc override open func setupActions()
-  @objc public func configure(_ message: SendBirdSDK.SBDFileMessage, hideDateView: Swift.Bool, receiptState: SendBirdUIKit.SBUMessageReceiptState)
+  @objc override open func setupStyles()
+  @objc public func configure(_ message: SendBirdSDK.SBDFileMessage, hideDateView: Swift.Bool, groupPosition: SendBirdUIKit.MessageGroupPosition, receiptState: SendBirdUIKit.SBUMessageReceiptState)
   public func setImage(_ image: UIKit.UIImage?, size: CoreGraphics.CGSize? = nil)
-  @objc override dynamic open func layoutSubviews()
   @objc override dynamic public func setSelected(_ selected: Swift.Bool, animated: Swift.Bool)
-  @objc open func onLongPressContentView(sender: UIKit.UILongPressGestureRecognizer)
-  @objc open func onTapContentView(sender: UIKit.UITapGestureRecognizer)
-  @objc open func onTapProfileImageView(sender: UIKit.UITapGestureRecognizer)
   @objc override dynamic public init(style: UIKit.UITableViewCell.CellStyle, reuseIdentifier: Swift.String?)
   @objc required dynamic public init?(coder: Foundation.NSCoder)
   @objc deinit
@@ -1711,6 +1716,9 @@ extension SendBirdUIKit.ChannelEditType : Swift.RawRepresentable {}
 extension SendBirdUIKit.MessagePosition : Swift.Equatable {}
 extension SendBirdUIKit.MessagePosition : Swift.Hashable {}
 extension SendBirdUIKit.MessagePosition : Swift.RawRepresentable {}
+extension SendBirdUIKit.MessageGroupPosition : Swift.Equatable {}
+extension SendBirdUIKit.MessageGroupPosition : Swift.Hashable {}
+extension SendBirdUIKit.MessageGroupPosition : Swift.RawRepresentable {}
 extension SendBirdUIKit.MessageFileType : Swift.Equatable {}
 extension SendBirdUIKit.MessageFileType : Swift.Hashable {}
 extension SendBirdUIKit.MessageFileType : Swift.RawRepresentable {}
