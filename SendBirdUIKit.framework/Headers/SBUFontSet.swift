@@ -27,7 +27,9 @@ public class SBUFontSet: NSObject {
             .paragraphStyle: style
         ]
     }()
-
+    /// Bold, 18pt
+    public static var h3 = UIFont.systemFont(ofSize: 18.0, weight: .bold)
+    
     // MARK: - Body
     /// Regular, 14pt, Line height: 20pt
     public static var body1 = UIFont.systemFont(ofSize: 14.0, weight: .regular)

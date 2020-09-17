@@ -79,6 +79,8 @@ open class SBUNewMessageInfo: UIView {
     
     /// This function handles the initialization of styles.
     open func setupStyles() {
+        self.theme = SBUTheme.componentTheme
+        
         self.backgroundColor = .clear
         self.layer.shadowColor = theme.shadowColor.withAlphaComponent(0.2).cgColor
         self.layer.shadowOffset = CGSize(width: 5, height: 5)

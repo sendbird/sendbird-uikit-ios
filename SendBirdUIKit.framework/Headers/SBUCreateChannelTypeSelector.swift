@@ -10,16 +10,16 @@ import UIKit
 
 /// This delegate is used in the class to handle the action.
 @objc public protocol SBUCreateChannelTypeSelectorDelegate {
-    /// This function notifies the `SBUchannelListViewController` when closing the selector.
+    /// This delegate function notifies the `SBUchannelListViewController` when closing the selector.
     @objc func didSelectCloseSelector()
     
-    /// This function notifies the `SBUchannelListViewController` when selecting the create group channel menu.
+    /// This delegate function notifies the `SBUchannelListViewController` when selecting the create group channel menu.
     @objc func didSelectCreateGroupChannel()
     
-    /// This function notifies the `SBUchannelListViewController` when selecting the create super group channel menu.
+    /// This delegate function notifies the `SBUchannelListViewController` when selecting the create super group channel menu.
     @objc func didSelectCreateSuperGroupChannel()
     
-    /// This function notifies the `SBUchannelListViewController` when selecting the create broadcast channel menu.
+    /// This delegate function notifies the `SBUchannelListViewController` when selecting the create broadcast channel menu.
     @objc func didSelectCreateBroadcastChannel()
 }
 
@@ -129,8 +129,8 @@ class SBUCreateChannelTypeSelector: UIView, SBUCreateChannelTypeSelectorProtocol
         self.addSubview(self.contentView)
     }
     
-    func setupStyle() {
-        
+    func setupStyles() {
+        self.theme = SBUTheme.componentTheme
     }
     
     func setupAutolayout() {
@@ -187,7 +187,7 @@ class SBUCreateChannelTypeSelector: UIView, SBUCreateChannelTypeSelectorProtocol
     }
     
     
-    // MARK: - Common
+    // MARK: - SBUCreateChannelTypeSelectorProtocol
     func show() {
         if !SBUAvailable.isSupportSuperGroupChannel() {
             self.createSuperGroupChannelButton.isHidden = true
@@ -221,8 +221,8 @@ class SBUCreateChannelTypeSelector: UIView, SBUCreateChannelTypeSelectorProtocol
 
 
 extension SBUCreateChannelTypeSelector {
-    func createButton(type: ChannelType) -> SBUBottomLabelButton {
-        let button = SBUBottomLabelButton(contentGap: 4)
+    func createButton(type: ChannelType) -> SBULayoutableButton {
+        let button = SBULayoutableButton(gap: 4, labelAlignment: .under)
         let tintColor = theme.channelTypeSelectorItemTintColor
         switch type {
         case .group:

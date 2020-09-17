@@ -20,6 +20,7 @@ public class SBUTheme: NSObject {
                 userListTheme: SBUUserListTheme = .light,
                 userCellTheme: SBUUserCellTheme = .light,
                 channelSettingsTheme: SBUChannelSettingsTheme = .light,
+                userProfileTheme: SBUUserProfileTheme = .light,
                 componentTheme: SBUComponentTheme = .light) {
         
         self._channelListTheme = channelListTheme
@@ -30,6 +31,7 @@ public class SBUTheme: NSObject {
         self._userListTheme = userListTheme
         self._userCellTheme = userCellTheme
         self._channelSettingsTheme = channelSettingsTheme
+        self._userProfileTheme = userProfileTheme
         self._componentTheme = componentTheme
     }
     
@@ -65,6 +67,10 @@ public class SBUTheme: NSObject {
         self.channelSettingsTheme = channelSettingsTheme
     }
     
+    public static func setUserProfile(userProfileTheme: SBUUserProfileTheme) {
+        self.userProfileTheme = userProfileTheme
+    }
+    
     public static var dark: SBUTheme {
         return SBUTheme( channelListTheme: .dark,
                          channelCellTheme: .dark,
@@ -74,6 +80,7 @@ public class SBUTheme: NSObject {
                          userListTheme: .dark,
                          userCellTheme: .dark,
                          channelSettingsTheme: .dark,
+                         userProfileTheme: .dark,
                          componentTheme: .dark )
         
     }
@@ -87,6 +94,7 @@ public class SBUTheme: NSObject {
                          userListTheme: .light,
                          userCellTheme: .light,
                          channelSettingsTheme: .light,
+                         userProfileTheme: .light,
                          componentTheme: .light)
     } 
 
@@ -136,6 +144,12 @@ public class SBUTheme: NSObject {
         get { return shared._channelSettingsTheme }
     }
     
+    // User profile
+    public static var userProfileTheme: SBUUserProfileTheme {
+        set { shared._userProfileTheme = newValue }
+        get { return shared._userProfileTheme }
+    }
+    
     // Component
     public static var componentTheme: SBUComponentTheme {
         set { shared._componentTheme = newValue }
@@ -161,6 +175,9 @@ public class SBUTheme: NSObject {
     
     // Setting
     var _channelSettingsTheme: SBUChannelSettingsTheme
+    
+    // User profile
+    var _userProfileTheme: SBUUserProfileTheme
     
     // Component
     var _componentTheme: SBUComponentTheme
@@ -271,7 +288,6 @@ public class SBUChannelListTheme: NSObject {
     public var leaveTintColor: UIColor
     
     public var alertBackgroundColor: UIColor
-    
 }
 
 // MARK: - Channel Cell Theme
@@ -1195,6 +1211,154 @@ public class SBUChannelSettingsTheme: NSObject {
     // ActionSheet
     public var itemTextColor: UIColor
     public var itemColor: UIColor
+}
+
+
+@objcMembers
+public class SBUUserProfileTheme: NSObject {
+    public static var light: SBUUserProfileTheme {
+        let theme = SBUUserProfileTheme()
+
+        if #available(iOS 13.0, *) {
+            theme.statusBarStyle = .darkContent
+        } else {
+            theme.statusBarStyle = .default
+        }
+
+        theme.overlayColor = SBUColorSet.overlay02
+        theme.backgroundColor = SBUColorSet.background100
+        theme.userPlaceholderBackgroundColor = SBUColorSet.background300
+        theme.userPlaceholderTintColor = SBUColorSet.ondark01
+        theme.usernameTextColor = SBUColorSet.onlight01
+        theme.usernameFont = SBUFontSet.h3
+        theme.userRoleTextColor = SBUColorSet.onlight02
+        theme.userRoleFont = SBUFontSet.body1
+        theme.largeItemTintColor = SBUColorSet.onlight01
+        theme.largeItemFont = SBUFontSet.button2
+        theme.largeItemBackgroundColor = SBUColorSet.background100
+        theme.largeItemHighlightedColor = SBUColorSet.background200
+        theme.itemFont = SBUFontSet.caption1
+        theme.itemBackgroundColor = SBUColorSet.background200
+        theme.itemSelectedBackgroundColor = SBUColorSet.primary300
+        theme.itemTintColor = SBUColorSet.onlight01
+        theme.itemSelectedTintColor = SBUColorSet.ondark01
+        theme.itemHighlightedTintColor = SBUColorSet.error
+        theme.separatorColor = SBUColorSet.onlight04
+        theme.informationTitleColor = SBUColorSet.onlight02
+        theme.informationTitleFont = SBUFontSet.body3
+        theme.informationDesctiptionColor = SBUColorSet.onlight01
+        theme.informationDesctiptionFont = SBUFontSet.body1
+        
+        return theme
+    }
+    
+    public static var dark: SBUUserProfileTheme {
+        let theme = SBUUserProfileTheme()
+
+        theme.statusBarStyle = .lightContent
+        
+        theme.overlayColor = SBUColorSet.overlay02
+        theme.backgroundColor = SBUColorSet.background500
+        theme.userPlaceholderBackgroundColor = SBUColorSet.background400
+        theme.userPlaceholderTintColor = SBUColorSet.onlight01
+        theme.usernameTextColor = SBUColorSet.ondark01
+        theme.usernameFont = SBUFontSet.h3
+        theme.userRoleTextColor = SBUColorSet.ondark02
+        theme.userRoleFont = SBUFontSet.body1
+        theme.largeItemTintColor = SBUColorSet.ondark01
+        theme.largeItemFont = SBUFontSet.button2
+        theme.largeItemBackgroundColor = SBUColorSet.background500
+        theme.largeItemHighlightedColor = SBUColorSet.background400
+        theme.itemFont = SBUFontSet.caption1
+        theme.itemBackgroundColor = SBUColorSet.background400
+        theme.itemSelectedBackgroundColor = SBUColorSet.primary200
+        theme.itemTintColor = SBUColorSet.ondark01
+        theme.itemSelectedTintColor = SBUColorSet.onlight01
+        theme.itemHighlightedTintColor = SBUColorSet.error
+        theme.separatorColor = SBUColorSet.ondark04
+        theme.informationTitleColor = SBUColorSet.ondark02
+        theme.informationTitleFont = SBUFontSet.body3
+        theme.informationDesctiptionColor = SBUColorSet.ondark01
+        theme.informationDesctiptionFont = SBUFontSet.body1
+
+        return theme
+    }
+    
+    public init(statusBarStyle: UIStatusBarStyle = .default,
+                overlayColor: UIColor = SBUColorSet.overlay02,
+                backgroundColor: UIColor = SBUColorSet.background100,
+                userPlaceholderBackgroundColor: UIColor = SBUColorSet.background300,
+                userPlaceholderTintColor: UIColor = SBUColorSet.ondark01,
+                usernameTextColor: UIColor = SBUColorSet.onlight01,
+                usernameFont: UIFont = SBUFontSet.h3,
+                userRoleTextColor: UIColor = SBUColorSet.onlight02,
+                userRoleFont: UIFont = SBUFontSet.body1,
+                largeItemTintColor: UIColor = SBUColorSet.onlight01,
+                largeItemFont: UIFont = SBUFontSet.button2,
+                largeItemBackgroundColor: UIColor = SBUColorSet.background100,
+                largeItemHighlightedColor: UIColor = SBUColorSet.background200,
+                itemFont: UIFont = SBUFontSet.caption1,
+                itemBackgroundColor:UIColor = SBUColorSet.background400,
+                itemSelectedBackgroundColor:UIColor = SBUColorSet.primary300,
+                itemTintColor: UIColor = SBUColorSet.onlight01,
+                itemSelectedTintColor: UIColor = SBUColorSet.ondark01,
+                itemHighlightedTintColor: UIColor = SBUColorSet.error,
+                separatorColor: UIColor = SBUColorSet.onlight04,
+                informationTitleColor: UIColor = SBUColorSet.onlight02,
+                informationTitleFont: UIFont = SBUFontSet.body3,
+                informationDesctiptionColor: UIColor = SBUColorSet.onlight01,
+                informationDesctiptionFont: UIFont = SBUFontSet.body1) {
+
+        self.statusBarStyle = statusBarStyle
+        self.overlayColor = overlayColor
+        self.backgroundColor = backgroundColor
+        self.userPlaceholderBackgroundColor = userPlaceholderBackgroundColor
+        self.userPlaceholderTintColor = userPlaceholderTintColor
+        self.usernameTextColor = usernameTextColor
+        self.usernameFont = usernameFont
+        self.userRoleTextColor = userRoleTextColor
+        self.userRoleFont = userRoleFont
+        self.largeItemTintColor = largeItemTintColor
+        self.largeItemFont = largeItemFont
+        self.largeItemBackgroundColor = largeItemBackgroundColor
+        self.largeItemHighlightedColor = largeItemHighlightedColor
+        self.itemFont = itemFont
+        self.itemBackgroundColor = itemBackgroundColor
+        self.itemSelectedBackgroundColor = itemSelectedBackgroundColor
+        self.itemTintColor = itemTintColor
+        self.itemSelectedTintColor = itemSelectedTintColor
+        self.itemHighlightedTintColor = itemHighlightedTintColor
+        self.separatorColor = separatorColor
+        self.informationTitleColor = informationTitleColor
+        self.informationTitleFont = informationTitleFont
+        self.informationDesctiptionColor = informationDesctiptionColor
+        self.informationDesctiptionFont = informationDesctiptionFont
+    }
+
+    public var statusBarStyle: UIStatusBarStyle
+    public var overlayColor: UIColor
+    public var backgroundColor: UIColor
+    public var userPlaceholderBackgroundColor: UIColor
+    public var userPlaceholderTintColor: UIColor
+    public var usernameTextColor: UIColor
+    public var usernameFont: UIFont
+    public var userRoleTextColor: UIColor
+    public var userRoleFont: UIFont
+    public var largeItemTintColor: UIColor
+    public var largeItemFont: UIFont
+    public var largeItemBackgroundColor: UIColor
+    public var largeItemHighlightedColor: UIColor
+    public var itemFont: UIFont
+    public var itemBackgroundColor: UIColor
+    public var itemSelectedBackgroundColor: UIColor
+    public var itemTintColor: UIColor
+    public var itemSelectedTintColor: UIColor
+    public var itemHighlightedTintColor: UIColor
+    public var separatorColor: UIColor
+    public var informationTitleColor: UIColor
+    public var informationTitleFont: UIFont
+    public var informationDesctiptionColor: UIColor
+    public var informationDesctiptionFont: UIFont
 }
 
 

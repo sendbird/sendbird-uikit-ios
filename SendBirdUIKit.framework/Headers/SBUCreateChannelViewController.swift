@@ -143,6 +143,8 @@ open class SBUCreateChannelViewController: UIViewController, UINavigationControl
     
     /// This function handles the initialization of styles.
     open func setupStyles() {
+        self.theme = SBUTheme.userListTheme
+        
         self.navigationController?.navigationBar.setBackgroundImage(
             UIImage.from(color: theme.navigationBarTintColor),
             for: .default
@@ -274,19 +276,25 @@ open class SBUCreateChannelViewController: UIViewController, UINavigationControl
             params.operatorUserIds = [currentUser.userId]
         }
 
+        SBUGlobalCustomParams.groupChannelParamsCreateBuilder?(params)
+        
         self.createChannel(params: params)
     }
     
     /// Creates the channel with channelParams.
     ///
     /// You can create a channel by setting various properties of ChannelParams.
-    /// - Parameter params: `SBDGroupChannelParams` class object
+    /// - Parameters:
+    ///   - params: `SBDGroupChannelParams` class object
+    ///   - messageListParams: If there is a messageListParams set directly for use in Channel, set it up here
     /// - Since: 1.0.9
-    public func createChannel(params: SBDGroupChannelParams) {
+    public func createChannel(params: SBDGroupChannelParams,
+                              messageListParams: SBDMessageListParams? = nil) {
         SBULog.info("""
             [Request] Create channel with users,
             Users: \(Array(self.selectedUserList))
             """)
+        
         SBDGroupChannel.createChannel(with: params) { [weak self] channel, error in
             if let error = error {
                 SBULog.error("""
@@ -301,7 +309,7 @@ open class SBUCreateChannelViewController: UIViewController, UINavigationControl
                 return
             }
             SBULog.info("[Succeed] Create channel: \(channel?.description ?? "")")
-            SBUMain.openChannel(channelUrl: channelUrl)
+            SBUMain.moveToChannel(channelUrl: channelUrl, messageListParams: messageListParams)
         }
     }
     

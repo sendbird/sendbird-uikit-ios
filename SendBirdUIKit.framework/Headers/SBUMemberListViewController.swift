@@ -18,6 +18,10 @@ open class SBUMemberListViewController: UIViewController {
     public lazy var emptyView: UIView? = _emptyView
     
     public private(set) var memberListType: ChannelMemberListType = .none
+    
+    /// To use the custom user profile view, set this to the custom view created using `SBUUserProfileViewProtocol`. And, if you do not want to use the user profile feature, please set this value to nil.
+    public lazy var userProfileView: UIView? = _userProfileView
+    
 
     // MARK: - Private property
     // for UI
@@ -73,6 +77,11 @@ open class SBUMemberListViewController: UIViewController {
             target: self,
             action: #selector(onClickInviteUser)
         )
+    }()
+    
+    private lazy var _userProfileView: SBUUserProfileView = {
+       let userProfileView = SBUUserProfileView(delegate: self)
+        return userProfileView
     }()
     
     private lazy var _emptyView: SBUEmptyView = {
@@ -222,6 +231,9 @@ open class SBUMemberListViewController: UIViewController {
     
     /// This function handles the initialization of styles
     open func setupStyles() {
+        self.theme = SBUTheme.userListTheme
+        self.componentTheme = SBUTheme.componentTheme
+        
         self.navigationController?.navigationBar.setBackgroundImage(
             UIImage.from(color: theme.navigationBarTintColor),
             for: .default
@@ -639,7 +651,7 @@ open class SBUMemberListViewController: UIViewController {
         self.showInviteUser()
     }
     
-    /// /// This function sets the cell's more menu button action handling.
+    /// This function sets the cell's more menu button action handling.
     /// - Parameter member: `SBUUser` obejct
     /// - Since: 1.2.0
     open func setMoreMenuActionHandler(_ member: SBUUser) {
@@ -716,6 +728,24 @@ open class SBUMemberListViewController: UIViewController {
         SBUActionSheet.show(items: items, cancelItem: cancelItem)
     }
     
+    /// This function sets the user profile tap gesture handling.
+    ///
+    /// If you do not want to use the user profile function, override this function and leave it empty.
+    /// - Parameter user: User object used for user profile configuration
+    ///
+    /// - Since: 1.2.2
+    open func setUserProfileTapGestureHandler(_ user: SBUUser) {
+        if let userProfileView = self.userProfileView as? SBUUserProfileView,
+            let baseView = self.navigationController?.view,
+            SBUGlobals.UsingUserProfile
+        {
+            userProfileView.show(
+                baseView: baseView,
+                user: user
+            )
+        }
+    }
+    
     
     // MARK: - Error handling
     open func didReceiveError(_ message: String?) {
@@ -767,6 +797,9 @@ extension SBUMemberListViewController: UITableViewDataSource, UITableViewDelegat
             cell.moreMenuHandler = { [weak self] in
                 self?.setMoreMenuActionHandler(member)
             }
+            cell.userProfileTapHandler = { [weak self] in
+                self?.setUserProfileTapGestureHandler(member)
+            }
         }
         
         return cell ?? UITableViewCell()
@@ -809,12 +842,36 @@ extension SBUMemberListViewController: UITableViewDataSource, UITableViewDelegat
 }
 
 
+// MARK:- SBUEmptyViewDelegate
 extension SBUMemberListViewController: SBUEmptyViewDelegate {
     @objc public func didSelectRetry() {
         
     }
 }
 
+
+// MARK:- SBUUserProfileViewDelegate
+extension SBUMemberListViewController: SBUUserProfileViewDelegate {
+    open func didSelectMessage(userId: String?) {
+        if let userProfileView = self.userProfileView
+            as? SBUUserProfileViewProtocol {
+            userProfileView.dismiss()
+            if let userId = userId {
+                SBUMain.createAndMoveToChannel(userIds: [userId])
+            }
+        }
+    }
+    
+    open func didSelectClose() {
+        if let userProfileView = self.userProfileView
+            as? SBUUserProfileViewProtocol {
+            userProfileView.dismiss()
+        }
+    }
+}
+
+
+// MARK:- SBDChannelDelegate
 extension SBUMemberListViewController: SBDChannelDelegate {
     public func channelDidUpdateOperators(_ sender: SBDBaseChannel) {
         self.reloadMemberList()

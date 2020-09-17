@@ -37,8 +37,6 @@ public class SBUUser: NSObject {
         self.profileUrl = user.profileUrl
     }
     
-    
-    // MARK: - Member
     public init(user: SBUUser, isOperator: Bool = false, isMuted: Bool = false) {
         self.userId = user.userId
         self.nickname = user.nickname
@@ -47,12 +45,22 @@ public class SBUUser: NSObject {
         self.isMuted = isMuted
     }
     
+    
+    // MARK: - Member
     public init(member: SBDMember) {
         self.userId = member.userId
         self.nickname = member.nickname
         self.profileUrl = member.profileUrl
         self.isOperator = member.role == .operator
         self.isMuted = member.isMuted
+    }
+    
+    // MARK: - Sender
+    public init(sender: SBDSender) {
+        self.userId = sender.userId
+        self.nickname = sender.nickname
+        self.profileUrl = sender.profileUrl
+        self.isOperator = sender.role == .operator
     }
     
     

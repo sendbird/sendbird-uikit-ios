@@ -11,13 +11,15 @@ import MobileCoreServices
 
 private let kDefaultCoverUrl = "static.sendbird.com/sample/cover"
 
-class SBUUtils: NSObject {
-    
-    static func getFileType(by fileMessage: SBDFileMessage) -> MessageFileType {
+@objcMembers
+public class SBUUtils: NSObject {
+    @objc(getFileTypeByFileMessage:)
+    public static func getFileType(by fileMessage: SBDFileMessage) -> MessageFileType {
         return getFileType(by: fileMessage.type)
     }
     
-    static func getFileType(by type: String) -> MessageFileType {
+    @objc(getFileTypeByType:)
+    public static func getFileType(by type: String) -> MessageFileType {
         let type = type.lowercased()
         
         if type.hasPrefix("image") { return .image }
@@ -28,7 +30,7 @@ class SBUUtils: NSObject {
         return .etc
     }
     
-    static func generateChannelName(channel: SBDGroupChannel) -> String {
+    public static func generateChannelName(channel: SBDGroupChannel) -> String {
         guard !channel.name.contains(kDefaultCoverUrl) else { return channel.name }
         guard let members = channel.members as? [SBDUser] else { return channel.name }
         let users = members
@@ -42,7 +44,7 @@ class SBUUtils: NSObject {
         return channelName
     }
     
-    static func getMimeType(url: URL) -> String? {
+    public static func getMimeType(url: URL) -> String? {
         let lastPathComponent = url.lastPathComponent
         let ext = (lastPathComponent as NSString).pathExtension
         guard let UTI = UTTypeCreatePreferredIdentifierForTag(
@@ -56,7 +58,7 @@ class SBUUtils: NSObject {
         return mimeType
     }
     
-    static func getReceiptState(channel: SBDGroupChannel,
+    public static func getReceiptState(channel: SBDGroupChannel,
                                 message: SBDBaseMessage) -> SBUMessageReceiptState {
         let didReadAll = channel.getUnreadMemberCount(message) == 0
         let didDeliverAll = channel.getUndeliveredMemberCount(message) == 0
@@ -70,7 +72,7 @@ class SBUUtils: NSObject {
         }
     }
     
-    static func emptyTitleForRowEditAction(for size: CGSize) -> String {
+    public static func emptyTitleForRowEditAction(for size: CGSize) -> String {
         let placeholderSymbol = "\u{200A}"
         let minimalActionWidth: CGFloat = 30
         let shiftFactor: CGFloat = 1.1
@@ -93,7 +95,7 @@ class SBUUtils: NSObject {
         return String(repeating: placeholderSymbol, count: countOfSymbols)
     }
     
-    static func isValid(coverUrl: String) -> Bool {
+    public static func isValid(coverUrl: String) -> Bool {
         guard coverUrl.hasPrefix(SBUConstant.coverImagePrefix) == false,
             coverUrl.count != 0  else {
                 return false
@@ -102,7 +104,7 @@ class SBUUtils: NSObject {
         return true
     }
     
-    static func isValid(channelName: String) -> Bool {
+    public static func isValid(channelName: String) -> Bool {
         guard channelName.hasPrefix(SBUStringSet.Channel_Name_Default) == false,
             channelName.count != 0  else {
                 return false

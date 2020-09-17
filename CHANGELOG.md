@@ -1,5 +1,33 @@
 # Change Log
 
+### v1.2.2 (Sep 17, 2020)
+* Supported UserProfile feature in `SBUChannelViewController`, `SBUMemberListViewController`
+  * Added `SBUUserProfileViewProtocol`, `SBUUserProfileViewDelegate`
+  * Added global user profile enable setting (`SBUGlobals.UsingUserProfile`)
+  * Added `SBUUserProfileTheme` theme
+  * Added user profile related stringSet
+* Added `SBUGlobalCustomParams` class to used when setting parameters globally in UIKit
+  * `groupChannelParamsCreateBuilder`
+  * `groupChannelParamsUpdateBuilder`
+  * `userMessageParamsSendBuilder`
+  * `userMessageParamsUpdateBuilder`
+  * `fileMessageParamsSendBuilder`
+  * `messageListParamsBuilder`
+* Added initialize function with `SBDSender` in `SBUUser`
+* Added to be able to set `messageListParams` to functions that have `SBUChannelViewController` initialization function
+* Added `createAndMoveToChannel(userIds:messageListParams:)` and `createAndMoveToChannel(params:messageListParams:)` functions that creates and moves the channel that can be called anywhere in `SBUMain` 
+* Added `updateUserInfo(nickname:profileImage:completionHandler:)` function in `SBDMain` for update user info with image
+* Added `h3` font
+* Changed access control
+  * Class : `SBUActionSheet`, `SBUAlertView`, `SBUCommonItem`, `SBUUtils`
+* Fixed the `loadChannel` function being called multiple times during the initialization of `SBUChannelViewController`.
+* Fixed a problem the placeholder disappears when an error occurs during image load
+* Fixed autolayout warning issues
+* Renamed the GestureHandler functions to union the function name
+* Renamed function name that `openChannel` to `moveToChannel` in `SBUMain`
+* Improved - When the connection is successful, update currentUser.
+* Improved for theme updates on changes at runtime
+
 ### v1.2.1 (Sep 10, 2020)
 * Supported message grouping
 * Improved stability

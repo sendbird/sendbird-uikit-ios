@@ -149,9 +149,8 @@ open class SBUChannelSettingsViewController: UIViewController, UINavigationContr
     open func setupAutolayout() {
         if let userInfoView = self.userInfoView as? UserInfoView {
             userInfoView
-                .sbu_constraint(equalTo: self.view, left: 0, right: 0)
+                .sbu_constraint(equalTo: self.view, left: 0, right: 0, top: 0)
                 .sbu_constraint(equalTo: self.tableView, centerX: 0)
-                .sbu_constraint(width: self.view.frame.width, height: 132)
         }
 
         self.tableView
@@ -160,6 +159,8 @@ open class SBUChannelSettingsViewController: UIViewController, UINavigationContr
     
     /// This function handles the initialization of styles.
     open func setupStyles() {
+        self.theme = SBUTheme.channelSettingsTheme
+        
         self.navigationController?.navigationBar.setBackgroundImage(
             UIImage.from(color: theme.navigationBarTintColor),
             for: .default
@@ -258,6 +259,8 @@ open class SBUChannelSettingsViewController: UIViewController, UINavigationContr
             channelParams.coverUrl = self.channel?.coverUrl
         }
         
+        SBUGlobalCustomParams.groupChannelParamsUpdateBuilder?(channelParams)
+
         self.updateChannel(params: channelParams)
     }
     
@@ -518,7 +521,7 @@ extension SBUChannelSettingsViewController: UITableViewDataSource, UITableViewDe
 
 // MARK: SBUActionSheetDelegate
 extension SBUChannelSettingsViewController: SBUActionSheetDelegate {
-    func didSelectActionSheetItem(index: Int, identifier: Int) {
+    public func didSelectActionSheetItem(index: Int, identifier: Int) {
         if identifier == actionSheetIdEdit {
             let type = ChannelEditType.init(rawValue: index)
             switch type {
@@ -615,10 +618,6 @@ fileprivate class UserInfoView: UIView {
         self.channelNameField.isUserInteractionEnabled = false
         
         self.coverImage.clipsToBounds = true
-        self.coverImage.frame = CGRect(x: 0,
-                                       y: 0,
-                                       width: kCoverImageSize,
-                                       height: kCoverImageSize)
         
         self.stackView.alignment = .center
         self.stackView.axis = .vertical
@@ -639,12 +638,14 @@ fileprivate class UserInfoView: UIView {
         
         self.lineView
             .sbu_constraint(height: 0.5)
-            .sbu_constraint(equalTo: self, bottom: 0)
             .sbu_constraint(equalTo: self.stackView, left: 16, right: -16)
-            .sbu_constraint_equalTo(topAnchor: self.bottomAnchor, top: 20)
+            .sbu_constraint_equalTo(topAnchor: self.stackView.bottomAnchor, top: 20)
+            .sbu_constraint(equalTo: self, bottom: 0)
     }
     
     func setupStyles() {
+        self.theme = SBUTheme.channelSettingsTheme
+        
         self.backgroundColor = .clear
             
         self.lineView.backgroundColor = theme.cellSeparateColor

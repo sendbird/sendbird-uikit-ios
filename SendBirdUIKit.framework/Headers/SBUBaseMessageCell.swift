@@ -14,6 +14,7 @@ open class SBUMessageBaseCell { }
 
 @objcMembers @IBDesignable
 open class SBUBaseMessageCell: UITableViewCell {
+    // MARK: - Public
     public var message: SBDBaseMessage = .init()
     public var position: MessagePosition = .center
     public var groupPosition: MessageGroupPosition = .none
@@ -26,6 +27,7 @@ open class SBUBaseMessageCell: UITableViewCell {
     
     public lazy var dateView: UIView = MessageDateView()
 
+    
     // MARK: - Private
     var theme: SBUMessageCellTheme = SBUTheme.messageCellTheme
 
@@ -37,6 +39,15 @@ open class SBUBaseMessageCell: UITableViewCell {
     }()
     
     var stackViewTopConstraint: NSLayoutConstraint?
+
+    
+    // MARK: - Action
+    var userProfileTapHandler: (() -> Void)? = nil
+    var tapHandlerToContent: (() -> Void)? = nil
+    var longPressHandlerToContent: (() -> Void)? = nil
+    var emojiTapHandler: ((_ emojiKey: String) -> Void)? = nil
+    var moreEmojiTapHandler: (() -> Void)? = nil
+    var emojiLongPressHandler: ((_ emojiKey: String) -> Void)? = nil
 
 
     // MARK: - View Lifecycle
@@ -79,6 +90,8 @@ open class SBUBaseMessageCell: UITableViewCell {
 
     /// This function handles the initialization of styles.
     open func setupStyles() {
+        self.theme = SBUTheme.messageCellTheme
+        
         self.backgroundColor = theme.backgroundColor
     }
     
@@ -127,14 +140,6 @@ open class SBUBaseMessageCell: UITableViewCell {
     open override func prepareForReuse() {
         super.prepareForReuse()
     }
-  
-    // MARK: - Action
-    var tapHandlerToProfileImage: (() -> Void)? = nil
-    var tapHandlerToContent: (() -> Void)? = nil
-    var longPressHandlerToContent: (() -> Void)? = nil
-    var emojiTapHandler: ((_ emojiKey: String) -> Void)? = nil
-    var moreEmojiTapHandler: (() -> Void)? = nil
-    var emojiLongPressHandler: ((_ emojiKey: String) -> Void)? = nil
 }
 
 
@@ -176,6 +181,8 @@ fileprivate class MessageDateView: UIView {
     }
     
     func setupStyles() {
+        self.theme = SBUTheme.messageCellTheme
+        
         self.backgroundColor = theme.backgroundColor
         
         self.dateLabel.font = theme.dateFont
@@ -242,6 +249,8 @@ public class MessageProfileView: UIView {
     }
     
     func setupStyles() {
+        self.theme = SBUTheme.messageCellTheme
+        
         self.backgroundColor = .clear
     }
     
@@ -308,6 +317,8 @@ public class UserNameView: UIView {
     }
     
     func setupStyles() {
+        self.theme = SBUTheme.messageCellTheme
+        
         self.backgroundColor = .clear
 
         self.button.titleLabel?.font = theme.userNameFont
@@ -402,6 +413,8 @@ public class MessageStateView: UIView {
     }
     
     func setupStyles() {
+        self.theme = SBUTheme.messageCellTheme
+        
         self.backgroundColor = .clear
         
         self.timeLabel.font = theme.timeFont

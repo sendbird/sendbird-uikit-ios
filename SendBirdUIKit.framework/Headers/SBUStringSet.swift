@@ -60,7 +60,7 @@ public class SBUStringSet: NSObject {
     public static var Channel_Name_Default = "Group Channel" // Just for default name checking
     public static var Channel_Name_No_Members = "(No members)"
     public static var Channel_Header_LastSeen = "Last seen"
-    public static var Channel_Header_Typing: ([SBDMember]) -> String = { members in
+    public static var Channel_Header_Typing: ([SBDUser]) -> String = { members in
         switch members.count {
         case 1:
             return String(format: "%@ is typing...",
@@ -186,6 +186,18 @@ public class SBUStringSet: NSObject {
     // MARK: - User
     public static var User_No_Name = "(No name)"
     public static var User_Operator = "Operator"
+    
+    
+    // MARK - User profile
+    public static var UserProfile_Role_Operator = "Operator"
+    public static var UserProfile_Role_Member = "Member"
+    public static var UserProfile_UserID = "User ID"
+    public static var UserProfile_Message = "Message"
+    public static var UserProfile_Promote = "Promote"
+    public static var UserProfile_Dismiss = "Dismiss"
+    public static var UserProfile_Mute = "Mute"
+    public static var UserProfile_Unmute = "Unmute"
+    public static var UserProfile_Ban = "Ban"
     
     
     // MARK: - Channel type

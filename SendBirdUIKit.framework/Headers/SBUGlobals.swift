@@ -24,8 +24,16 @@ public class SBUGlobals: NSObject {
         get{ return _currentUser }
     }
     
+    // Message Grouping
+    /// If this value is enabled, messages sent at similar times are grouped.
+    /// - Since: 1.2.1
     public static var UsingMessageGrouping: Bool = true
     
+    // User Profile
+    /// If this value is enabled, when you click on a user image, the user profile screen is displayed.
+    /// - Since: 1.2.2
+    public static var UsingUserProfile: Bool = false
+
     
     // MARK: - Private
     private static var _currentUser: SBUUser?

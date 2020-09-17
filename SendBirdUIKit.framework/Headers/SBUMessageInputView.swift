@@ -81,6 +81,8 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
      
     /// This function handles the initialization of styles.
     open func setupStyles() {
+        self.theme = SBUTheme.messageInputTheme
+        
         self.backgroundColor = theme.backgroundColor
 
         // placeholderLabel
@@ -288,7 +290,7 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
     }
 
     // MARK: SBUActionSheetDelegate
-    func didSelectActionSheetItem(index: Int, identifier: Int) {
+    public func didSelectActionSheetItem(index: Int, identifier: Int) {
         let type = MediaResourceType.init(rawValue: index) ?? .unknown
         if type == .camera, AVCaptureDevice.authorizationStatus(for: .video) != .authorized {
             AVCaptureDevice.requestAccess(for: .video) { success in

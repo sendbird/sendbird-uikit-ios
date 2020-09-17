@@ -102,7 +102,7 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
 
         self.profileView.addGestureRecognizer(UITapGestureRecognizer(
             target: self,
-            action: #selector(self.onTapProfileImageView(sender:)))
+            action: #selector(self.onTapUserProfileView(sender:)))
         )
 
         self.reactionView.emojiTapHandler = { [weak self] emojiKey in
@@ -219,7 +219,12 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         self.tapHandlerToContent?()
     }
     
+    @available(*, deprecated, message: "deprecated in 1.2.2", renamed: "onTapUserProfileView(sender:)")
     @objc open func onTapProfileImageView(sender: UITapGestureRecognizer) {
-        self.tapHandlerToProfileImage?()
+        self.onTapUserProfileView(sender: sender)
+    }
+    
+    @objc open func onTapUserProfileView(sender: UITapGestureRecognizer) {
+        self.userProfileTapHandler?()
     }
 }

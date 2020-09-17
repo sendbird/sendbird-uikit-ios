@@ -125,6 +125,8 @@ open class SBUModerationsViewController: UIViewController, UINavigationControlle
     
     /// This function handles the initialization of styles.
     open func setupStyles() {
+        self.theme = SBUTheme.channelSettingsTheme
+        
         self.navigationController?.navigationBar.setBackgroundImage(
             UIImage.from(color: theme.navigationBarTintColor), for: .default
         )

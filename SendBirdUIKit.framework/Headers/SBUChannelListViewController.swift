@@ -183,6 +183,8 @@ open class SBUChannelListViewController: UIViewController {
     }
     
     public func setupStyles() {
+        self.theme = SBUTheme.channelListTheme
+        
         self.navigationController?.navigationBar.setBackgroundImage(
             UIImage.from(color: theme.navigationBarTintColor),
             for: .default
@@ -506,15 +508,13 @@ open class SBUChannelListViewController: UIViewController {
     /// This is a function that shows the channelViewController.
     ///
     /// If you want to use a custom channelViewController, override it and implement it.
-    /// - Parameter channelUrl: channel url for use in channelViewController.
-    open func showChannel(channelUrl: String) {
-        let params = SBDMessageListParams()
-        params.includeMetaArray = true
-        params.includeReactions = true
-        params.includeReplies = true
+    /// - Parameters:
+    ///   - channelUrl: channel url for use in channelViewController.
+    ///   - messageListParams: If there is a messageListParams set directly for use in Channel, set it up here
+    open func showChannel(channelUrl: String, messageListParams: SBDMessageListParams? = nil) {
         let channelVC = SBUChannelViewController(
             channelUrl: channelUrl,
-            messageListParams: params
+            messageListParams: messageListParams
         )
         self.navigationController?.pushViewController(channelVC, animated: true)
     }
@@ -612,6 +612,10 @@ open class SBUChannelListViewController: UIViewController {
             emptyView.reloadData(.error)
         }
         
+        self.reloadTableView()
+    }
+    
+    public func reloadTableView() {
         DispatchQueue.main.async { [weak self] in
             self?.tableView.reloadData()
         }

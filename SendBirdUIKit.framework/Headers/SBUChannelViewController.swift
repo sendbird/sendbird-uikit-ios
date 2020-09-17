@@ -19,7 +19,8 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     // MARK:- UI properties (Public)
     public var channelName: String? = nil
     
-    // You can use the customized view and a view that inherits `SBUNewMessageInfo`. If you use a view that inherits SBUNewMessageInfo, you can change the button and their action.
+    /// You can use the customized view and a view that inherits `SBUNewMessageInfo`.
+    /// If you use a view that inherits SBUNewMessageInfo, you can change the button and their action.
     public lazy var newMessageInfoView: UIView? = _newMessageInfoView
     
     public lazy var messageInputView: SBUMessageInputView = _messageInputView
@@ -28,8 +29,11 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     public lazy var leftBarButton: UIBarButtonItem? = _leftBarButton
     public lazy var rightBarButton: UIBarButtonItem? = _rightBarButton
     public lazy var channelStateBanner: UIView? = _channelStateBanner
-    
     public lazy var emptyView: UIView? = _emptyView
+
+    /// To use the custom user profile view, set this to the custom view created using `SBUUserProfileViewProtocol`.
+    /// And, if you do not want to use the user profile feature, please set this value to nil.
+    public lazy var userProfileView: UIView? = _userProfileView
     
     
     // MARK:- UI properties (Private)
@@ -86,6 +90,11 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     
     private lazy var _newMessageInfoView: SBUNewMessageInfo = {
         return SBUNewMessageInfo()
+    }()
+    
+    private lazy var _userProfileView: SBUUserProfileView = {
+       let userProfileView = SBUUserProfileView(delegate: self)
+        return userProfileView
     }()
 
     private lazy var _emptyView: SBUEmptyView = {
@@ -153,13 +162,13 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
   
   
     // MARK:- Lifecycle
-    @available(*, unavailable, renamed: "SBUChannelViewController.init(channelUrl:)")
+    @available(*, unavailable, renamed: "SBUChannelViewController(channelUrl:)")
     required public init?(coder: NSCoder) {
         super.init(coder: coder)
         SBULog.info("")
     }
     
-    @available(*, unavailable, renamed: "SBUChannelViewController.init(channelUrl:)")
+    @available(*, unavailable, renamed: "SBUChannelViewController(channelUrl:)")
     public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         SBULog.info("")
@@ -175,7 +184,7 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     ///     params.includeReplies = true
     ///     ...
     /// ````
-    /// - note: The `reverse` and the `nextResultSize` properties in the `SBDMessageListParams` are set in the UIKit. Even though you set that property it will be ignored.
+    /// - note: The `reverse` and the `previousResultSize` properties in the `SBDMessageListParams` are set in the UIKit. Even though you set that property it will be ignored.
     /// - Parameter channel: Channel object
     /// - Since: 1.0.11
     public init(channel: SBDGroupChannel, messageListParams: SBDMessageListParams? = nil) {
@@ -186,8 +195,6 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         self.channelUrl = channel.channelUrl
 
         self.customizedMessageListParams = messageListParams
-        
-        self.loadChannel(channelUrl: self.channel?.channelUrl)
     }
     
     /// If you don't have channel object and have channelUrl, use this initialize function. And, if you have own message list params, please set it. If not set, it is used as the default value.
@@ -200,7 +207,7 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     ///     params.includeReplies = true
     ///     ...
     /// ````
-    /// - note: The `reverse` and the `nextResultSize` properties in the `SBDMessageListParams` are set in the UIKit. Even though you set that property it will be ignored.
+    /// - note: The `reverse` and the `previousResultSize` properties in the `SBDMessageListParams` are set in the UIKit. Even though you set that property it will be ignored.
     /// - Parameter channelUrl: Channel url string
     /// - Since: 1.0.11
     public init(channelUrl: String, messageListParams: SBDMessageListParams? = nil) {
@@ -210,8 +217,6 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         self.channelUrl = channelUrl
 
         self.customizedMessageListParams = messageListParams
-        
-        self.loadChannel(channelUrl: channelUrl)
     }
     
     open override func loadView() {
@@ -349,6 +354,8 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     }
     
     open func setupStyles() {
+        self.theme = SBUTheme.channelTheme
+        
         self.navigationController?.navigationBar.setBackgroundImage(
             UIImage.from(color: theme.navigationBarTintColor),
             for: .default
@@ -382,7 +389,7 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         SBDMain.add(self as SBDChannelDelegate, identifier: self.description)
         SBDMain.add(self as SBDConnectionDelegate, identifier: self.description)
 
-        if let channelUrl = self.channel?.channelUrl {
+        if let channelUrl = self.channelUrl {
             self.loadChannel(channelUrl: channelUrl)
         }
 
@@ -455,15 +462,18 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         
         if self.firstLoad {
             self.messageListParams = SBDMessageListParams()
+            
             if let customizedMessageListParams = self.customizedMessageListParams?.copy()
                 as? SBDMessageListParams {
                 self.messageListParams = customizedMessageListParams
             }
+            
             let prevResultSize = self.customizedMessageListParams?.previousResultSize ?? 0
             self.messageListParams.previousResultSize = prevResultSize == 0
                 ? Int(self.limit)
                 : prevResultSize
             self.messageListParams.reverse = true
+            self.messageListParams.includeReactions = SBUEmojiManager.useReaction
             self.firstLoad = false
         }
         
@@ -517,9 +527,9 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         self.channel?.getNextMessages(
             byTimestamp: self.lastUpdatedTimestamp,
             limit: limit,
-            reverse: true,
-            messageType: .all,
-            customType: nil,
+            reverse: self.messageListParams.reverse,
+            messageType: self.messageListParams.messageType,
+            customType: self.messageListParams.customType,
             completionHandler: { [weak self] messages, error in
                 
                 if let error = error {
@@ -608,8 +618,11 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     /// - Since: 1.0.9
     public func sendUserMessage(text: String) {
         let text = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard let messageParam = SBDUserMessageParams(message: text) else { return }
-        self.sendUserMessage(messageParams: messageParam)
+        guard let messageParams = SBDUserMessageParams(message: text) else { return }
+        
+        SBUGlobalCustomParams.userMessageParamsSendBuilder?(messageParams)
+        
+        self.sendUserMessage(messageParams: messageParams)
     }
     
     /// Sends a user messag with messageParams.
@@ -667,6 +680,8 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         messageParams.fileName = fileName
         messageParams.mimeType = mimeType
         messageParams.fileSize = UInt(fileData.count)
+        
+        SBUGlobalCustomParams.fileMessageParamsSendBuilder?(messageParams)
         
         self.sendFileMessage(messageParams: messageParams)
     }
@@ -854,8 +869,11 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     /// - Since: 1.0.9
     public func updateUserMessage(message: SBDUserMessage, text: String) {
         let text = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard let messageParam = SBDUserMessageParams(message: text) else { return }
-        self.updateUserMessage(message: message, messageParams: messageParam)
+        guard let messageParams = SBDUserMessageParams(message: text) else { return }
+        
+        SBUGlobalCustomParams.userMessageParamsUpdateBuilder?(messageParams)
+        
+        self.updateUserMessage(message: message, messageParams: messageParams)
     }
     
     /// Updates a user message with message object and messageParams.
@@ -927,9 +945,19 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     }
     
     /// This function is used to load channel information.
-    /// - Parameter channelUrl: channel url
-    public func loadChannel(channelUrl: String?) {
+    /// - Parameters:
+    ///   - channelUrl: channel url
+    ///   - messageListParams: Parameter to be used when getting channel information. If it is nil, it will not be used.
+    public func loadChannel(channelUrl: String?, messageListParams: SBDMessageListParams? = nil) {
         guard let channelUrl = channelUrl else { return }
+        
+        if let messageListParams = messageListParams {
+            self.customizedMessageListParams = messageListParams
+        } else {
+            let messageListParams = SBDMessageListParams()
+            SBUGlobalCustomParams.messageListParamsBuilder?(messageListParams)
+            self.customizedMessageListParams = messageListParams
+        }
         
         SBUMain.connectionCheck { [weak self] user, error in
             if let error = error { self?.didReceiveError(error.localizedDescription) }
@@ -1523,7 +1551,17 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     ///   - cell: Message cell object
     ///   - emojiKey: emoji key
     /// - Since: 1.1.0
+    @available(*, deprecated, message: "deprecated in 1.2.2", renamed: "setEmojiTapGestureHandler(_:emojiKey:)")
     open func setTapEmojiGestureHandler(_ cell: SBUBaseMessageCell, emojiKey: String) {
+        self.setEmojiTapGestureHandler(cell, emojiKey: emojiKey)
+    }
+    
+    /// This function sets the cell's tap emoji gesture handling.
+    /// - Parameters:
+    ///   - cell: Message cell object
+    ///   - emojiKey: emoji key
+    /// - Since: 1.2.2
+    open func setEmojiTapGestureHandler(_ cell: SBUBaseMessageCell, emojiKey: String) {
         guard let currentUser = SBUGlobals.CurrentUser else { return }
         let message = cell.message
         let shouldSelect = message.reactions.first { $0.key == emojiKey }?
@@ -1536,7 +1574,17 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     ///   - cell: Message cell object
     ///   - emojiKey: emoji key
     /// - Since: 1.1.0
+    @available(*, deprecated, message: "deprecated in 1.2.2", renamed: "setEmojiLongTapGestureHandler(_:emojiKey:)")
     open func setLongTapEmojiGestureHandler(_ cell: SBUBaseMessageCell, emojiKey: String) {
+        self.setEmojiLongTapGestureHandler(cell, emojiKey: emojiKey)
+    }
+    
+    /// This function sets the cell's long tap emoji gesture handling.
+    /// - Parameters:
+    ///   - cell: Message cell object
+    ///   - emojiKey: emoji key
+    /// - Since: 1.2.2
+    open func setEmojiLongTapGestureHandler(_ cell: SBUBaseMessageCell, emojiKey: String) {
         guard let channel = self.channel else { return }
         let message = cell.message
         let reaction = message.reactions.first { $0.key == emojiKey } ?? SBDReaction()
@@ -1548,6 +1596,24 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         reactionsVC.modalPresentationStyle = .custom
         reactionsVC.transitioningDelegate = self
         self.present(reactionsVC, animated: true)
+    }
+    
+    /// This function sets the user profile tap gesture handling.
+    ///
+    /// If you do not want to use the user profile function, override this function and leave it empty.
+    /// - Parameter user: User object used for user profile configuration
+    ///
+    /// - Since: 1.2.2
+    open func setUserProfileTapGestureHandler(_ user: SBUUser) {
+        if let userProfileView = self.userProfileView as? SBUUserProfileView,
+            let baseView = self.navigationController?.view,
+            SBUGlobals.UsingUserProfile
+        {
+            userProfileView.show(
+                baseView: baseView,
+                user: user
+            )
+        }
     }
 
     
@@ -2056,18 +2122,20 @@ extension SBUChannelViewController: UITableViewDelegate, UITableViewDataSource {
         }
         
         // Tap profile action
-        messageCell.tapHandlerToProfileImage = {
+        messageCell.userProfileTapHandler = { [weak messageCell, weak self] in
+            guard let cell = messageCell, let sender = cell.message.sender else { return }
+            self?.setUserProfileTapGestureHandler(SBUUser.init(sender: sender))
         }
 
         // Reaction action
         messageCell.emojiTapHandler = { [weak messageCell, weak self] emojiKey in
             guard let cell = messageCell else { return }
-            self?.setTapEmojiGestureHandler(cell, emojiKey: emojiKey)
+            self?.setEmojiTapGestureHandler(cell, emojiKey: emojiKey)
         }
 
         messageCell.emojiLongPressHandler = { [weak messageCell, weak self] emojiKey in
             guard let cell = messageCell else { return }
-            self?.setLongTapEmojiGestureHandler(cell, emojiKey: emojiKey)
+            self?.setEmojiLongTapGestureHandler(cell, emojiKey: emojiKey)
         }
 
         messageCell.moreEmojiTapHandler = { [weak self] in
@@ -2246,6 +2314,7 @@ extension SBUChannelViewController: SBUFileViewerDelegate {
     }
 }
 
+
 // MARK:- SBUEmptyViewDelegate
 extension SBUChannelViewController: SBUEmptyViewDelegate {
     public func didSelectRetry() {
@@ -2254,6 +2323,27 @@ extension SBUChannelViewController: SBUEmptyViewDelegate {
         }
         
         self.loadChannel(channelUrl: self.channel?.channelUrl)
+    }
+}
+
+
+// MARK:- SBUUserProfileViewDelegate
+extension SBUChannelViewController: SBUUserProfileViewDelegate {
+    open func didSelectMessage(userId: String?) {
+        if let userProfileView = self.userProfileView
+            as? SBUUserProfileViewProtocol {
+            userProfileView.dismiss()
+            if let userId = userId {
+                SBUMain.createAndMoveToChannel(userIds: [userId])
+            }
+        }
+    }
+    
+    open func didSelectClose() {
+        if let userProfileView = self.userProfileView
+            as? SBUUserProfileViewProtocol {
+            userProfileView.dismiss()
+        }
     }
 }
 

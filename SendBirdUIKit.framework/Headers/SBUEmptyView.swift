@@ -76,6 +76,8 @@ open class SBUEmptyView: UIView {
     }
     
     public func setupStyles() {
+        self.theme = SBUTheme.componentTheme
+        
         self.backgroundColor = theme.emptyViewBackgroundColor
         
         self.statusLabel.font = theme.emptyViewStatusFont

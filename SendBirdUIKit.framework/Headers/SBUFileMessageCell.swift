@@ -151,6 +151,10 @@ fileprivate class BaseFileContentView: UIView {
     var message: SBDFileMessage!
     var position: MessagePosition = .center
 
+    func setupStyles() {
+        self.theme = SBUTheme.messageCellTheme
+    }
+    
     func configure(message: SBDFileMessage, position: MessagePosition) {
         self.message = message
         self.position = position
@@ -240,8 +244,8 @@ fileprivate class ImageContentView: BaseFileContentView {
             .setConstraint(width: 48, height: 48)
     }
 
-    func setupStyles() {
-        
+    override func setupStyles() {
+        super.setupStyles()
     }
     
     override func layoutSubviews() {
@@ -397,7 +401,9 @@ fileprivate class CommonContentView: BaseFileContentView {
         self.fileImageView.setConstraint(width: 28, height: 28)
     }
     
-    func setupStyles() {
+    override func setupStyles() {
+        super.setupStyles()
+        
         self.fileImageView.backgroundColor = theme.fileIconBackgroundColor
     }
     

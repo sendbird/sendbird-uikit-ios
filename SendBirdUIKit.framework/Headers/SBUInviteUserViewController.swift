@@ -199,6 +199,8 @@ open class SBUInviteUserViewController: UIViewController {
     
     /// This function handles the initialization of styles.
     open func setupStyles() {
+        self.theme = SBUTheme.userListTheme
+        
         self.navigationController?.navigationBar
             .setBackgroundImage(UIImage.from(color: theme.navigationBarTintColor), for: .default)
         self.navigationController?.navigationBar

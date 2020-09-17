@@ -105,19 +105,49 @@ public class SBUMain: NSObject {
                                       profileUrl: String?,
                                       completionHandler: ((_ error: SBDError?) -> Void)?) {
         SBULog.info("[Request] Update user info")
-        SBDMain.updateCurrentUserInfo(withNickname: nickname, profileUrl: profileUrl) { error in
-            if let error = error {
-                SBULog.error("[Failed] Update user info: \(error.localizedDescription)")
-                completionHandler?(error)
-                return
-            }
-            
-            SBULog.info("""
-                [Succeed]
-                Update user info: \(String(SBUGlobals.CurrentUser?.description ?? ""))
-                """)
-            completionHandler?(nil)
+        SBDMain.updateCurrentUserInfo(
+            withNickname: nickname,
+            profileUrl: profileUrl
+        ) { error in
+            self.didFinishUpdateUserInfo(error: error, completionHandler: completionHandler)
         }
+    }
+    
+    public static func updateUserInfo(nickname: String?,
+                                      profileImage: Data?,
+                                      completionHandler: ((_ error: SBDError?) -> Void)?) {
+        SBULog.info("[Request] Update user info")
+        SBDMain.updateCurrentUserInfo(
+            withNickname: nickname,
+            profileImage: profileImage,
+            progressHandler: nil
+        ) { error in
+            self.didFinishUpdateUserInfo(error: error, completionHandler: completionHandler)
+        }
+    }
+    
+    private static func didFinishUpdateUserInfo(error: SBDError?,
+                                                completionHandler: ((_ error: SBDError?) -> Void)?) {
+        if let error = error {
+            SBULog.error("[Failed] Update user info: \(error.localizedDescription)")
+            completionHandler?(error)
+            return
+        }
+        
+        SBULog.info("""
+            [Succeed]
+            Update user info: \(String(SBUGlobals.CurrentUser?.description ?? ""))
+            """)
+        
+        if let user = SBDMain.getCurrentUser() {
+            SBUGlobals.CurrentUser = SBUUser(
+                userId: user.userId,
+                nickname: user.nickname ?? user.userId,
+                profileUrl: user.profileUrl
+            )
+        }
+        
+        completionHandler?(nil)
     }
     
     
@@ -221,13 +251,35 @@ public class SBUMain: NSObject {
         }
     }
     
-    public static func openChannel(channelUrl: String, basedOnChannelList: Bool = true) {
+    @available(*, deprecated, message: "deprecated in 1.2.2", renamed: "moveToChannel(channelUrl:basedOnChannelList:messageListParams:)")
+    public static func openChannel(channelUrl: String,
+                                   basedOnChannelList: Bool = true,
+                                   messageListParams: SBDMessageListParams? = nil) {
+        moveToChannel(
+            channelUrl: channelUrl,
+            basedOnChannelList: basedOnChannelList,
+            messageListParams: messageListParams
+        )
+    }
+    
+    /// This is a function that moves the channel that can be called anywhere.
+    /// - Parameters:
+    ///   - channelUrl: channel url for use in channel.
+    ///   - basedOnChannelList: `true` for services based on the channel list. Default value is `true`
+    ///   - messageListParams: If there is a messageListParams set directly for use in Channel, set it up here
+    /// - Since: 1.2.2
+    public static func moveToChannel(channelUrl: String,
+                                     basedOnChannelList: Bool = true,
+                                     messageListParams: SBDMessageListParams? = nil) {
         guard SBUGlobals.CurrentUser != nil else { return }
         
         var rootViewController = UIApplication.shared.keyWindow?.rootViewController
         var viewController: UIViewController? = nil
         
-        if let tabbarController: UITabBarController = rootViewController as? UITabBarController {
+        if let tabbarController: UITabBarController = rootViewController?.presentedViewController as? UITabBarController {
+            rootViewController = tabbarController.selectedViewController
+        }
+        else if let tabbarController: UITabBarController = rootViewController as? UITabBarController {
             rootViewController = tabbarController.selectedViewController
         }
         
@@ -260,7 +312,7 @@ public class SBUMain: NSObject {
         if let viewController = viewController as? SBUChannelListViewController {
             viewController.showChannel(channelUrl: channelUrl)
         } else if let viewController = viewController as? SBUChannelViewController {
-            viewController.loadChannel(channelUrl: channelUrl)
+            viewController.loadChannel(channelUrl: channelUrl, messageListParams: messageListParams)
         } else {
             if basedOnChannelList {
                 // If based on channelList
@@ -271,12 +323,64 @@ public class SBUMain: NSObject {
                 })
             } else {
                 // If based on channel
-                let vc = SBUChannelViewController(channelUrl: channelUrl)
+                let vc = SBUChannelViewController(
+                    channelUrl: channelUrl,
+                    messageListParams: messageListParams
+                )
                 let naviVC = UINavigationController(rootViewController: vc)
                 rootViewController?.present(naviVC, animated: true)
             }
         }
     }
+    
+    /// This is a function that creates and moves the channel that can be called anywhere.
+    /// - Parameters:
+    ///   - userId: <#userId description#>
+    ///   - messageListParams: If there is a messageListParams set directly for use in Channel, set it up here
+    /// - Since: 1.2.2
+    public static func createAndMoveToChannel(userIds: [String],
+                                              messageListParams: SBDMessageListParams? = nil) {
+        SBULog.info("""
+            [Request] Create channel with users,
+            User: \(userIds))
+            """)
+        
+        let params = SBDGroupChannelParams()
+        params.name = ""
+        params.coverUrl = ""
+        params.addUserIds(userIds)
+        
+        SBUGlobalCustomParams.groupChannelParamsCreateBuilder?(params)
+        
+        self.createAndMoveToChannel(params: params, messageListParams: messageListParams)
+    }
+    
+    /// This is a function that creates and moves the channel that can be called anywhere.
+    /// - Parameters:
+    ///   - params: `SBDGroupChannelParams` class object
+    ///   - messageListParams: If there is a messageListParams set directly for use in Channel, set it up here
+    /// - Since: 1.2.2
+    public static func createAndMoveToChannel(params: SBDGroupChannelParams,
+                                              messageListParams: SBDMessageListParams? = nil) {
+        SBDGroupChannel.createChannel(with: params) { channel, error in
+            if let error = error {
+                SBULog.error("""
+                    [Failed] Create channel request:
+                    \(String(error.localizedDescription))
+                    """)
+            }
+            
+            guard let channelUrl = channel?.channelUrl else {
+                SBULog.error("[Failed] Create channel request: There is no channel url.")
+                return
+            }
+            SBULog.info("[Succeed] Create channel: \(channel?.description ?? "")")
+            
+            SBUMain.moveToChannel(channelUrl: channelUrl, messageListParams: messageListParams)
+        }
+    }
+
+    
     
     // MARK: - Logger
     
