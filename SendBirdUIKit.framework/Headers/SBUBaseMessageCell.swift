@@ -93,6 +93,10 @@ open class SBUBaseMessageCell: UITableViewCell {
         self.theme = SBUTheme.messageCellTheme
         
         self.backgroundColor = theme.backgroundColor
+        
+        if let dateView = self.dateView as? MessageDateView {
+            dateView.setupStyles()
+        }
     }
     
     open override func layoutSubviews() {

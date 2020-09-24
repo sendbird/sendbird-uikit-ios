@@ -125,6 +125,21 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         self.mainContainerView.leftPressedBackgroundColor = self.theme.leftPressedBackgroundColor
         self.mainContainerView.rightBackgroundColor = self.theme.rightBackgroundColor
         self.mainContainerView.rightPressedBackgroundColor = self.theme.rightPressedBackgroundColor
+        
+        self.mainContainerView.setupStyles()
+        self.reactionView.setupStyles()
+        
+        if let userNameView = self.userNameView as? UserNameView {
+            userNameView.setupStyles()
+        }
+        
+        if let profileView = self.profileView as? MessageProfileView {
+            profileView.setupStyles()
+        }
+        
+        if let stateView = self.stateView as? MessageStateView {
+            stateView.setupStyles()
+        }
     }
     
     

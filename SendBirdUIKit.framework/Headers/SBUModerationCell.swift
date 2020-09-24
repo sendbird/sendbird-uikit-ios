@@ -16,6 +16,8 @@ class SBUModerationCell: SBUChannelSettingCell {
                    title: String? = nil,
                    icon: UIImage? = nil) {
         
+        self.theme = SBUTheme.channelSettingsTheme
+        
         self.subTitleLabel.isHidden = true
         self.rightButton.isHidden = true
         self.rightSwitch.isHidden = true

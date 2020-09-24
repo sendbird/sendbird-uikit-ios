@@ -175,6 +175,24 @@ open class SBUChannelSettingsViewController: UIViewController, UINavigationContr
         self.view.backgroundColor = theme.backgroundColor
         self.tableView.backgroundColor = theme.backgroundColor
     }
+    
+    open func updateStyles() {
+        self.theme = SBUTheme.channelSettingsTheme
+        
+        self.setupStyles()
+        
+        if let titleView = self.titleView as? SBUNavigationTitleView {
+            titleView.setupStyles()
+        }
+        
+        if let userInfoView = self.userInfoView as? UserInfoView {
+            userInfoView.setupStyles()
+        }
+        
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
+    }
 
     open override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -199,7 +217,8 @@ open class SBUChannelSettingsViewController: UIViewController, UINavigationContr
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.setNeedsStatusBarAppearanceUpdate()
-        self.setupStyles()
+        
+        self.updateStyles()
     }
     
     // MARK: - SDK relations
@@ -410,6 +429,8 @@ open class SBUChannelSettingsViewController: UIViewController, UINavigationContr
             identifier: actionSheetIdEdit,
             delegate: self
         )
+        
+        self.updateStyles()
     }
     
     /// Open the channel image selection menu.

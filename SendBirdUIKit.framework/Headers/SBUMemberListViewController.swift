@@ -248,6 +248,26 @@ open class SBUMemberListViewController: UIViewController {
         self.view.backgroundColor = theme.backgroundColor
         self.tableView.backgroundColor = theme.backgroundColor
     }
+    
+    open func updateStyles() {
+        self.theme = SBUTheme.userListTheme
+        
+        self.setupStyles()
+        
+        if let titleView = self.titleView as? SBUNavigationTitleView {
+            titleView.setupStyles()
+        }
+        
+        if let emptyView = self.emptyView as? SBUEmptyView {
+            emptyView.setupStyles()
+        }
+        
+        if let userProfileView = self.userProfileView as? SBUUserProfileView {
+            userProfileView.setupStyles()
+        }
+        
+        self.reloadData()
+    }
 
     open override var preferredStatusBarStyle: UIStatusBarStyle {
         return theme.statusBarStyle
@@ -270,7 +290,8 @@ open class SBUMemberListViewController: UIViewController {
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.setNeedsStatusBarAppearanceUpdate()
-        self.setupStyles()
+        
+        self.updateStyles()
     }
     
     deinit {

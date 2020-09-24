@@ -53,6 +53,7 @@ import UIKit
   @objc override dynamic open func loadView()
   @objc open func setupAutolayout()
   @objc open func setupStyles()
+  @objc open func updateStyles()
   @objc override dynamic open var preferredStatusBarStyle: UIKit.UIStatusBarStyle {
     @objc get
   }
@@ -145,6 +146,7 @@ extension UIView {
   @objc override dynamic open func loadView()
   @objc public func setupAutolayout()
   @objc public func setupStyles()
+  @objc public func updateStyles()
   @objc override dynamic open func viewDidLayoutSubviews()
   @objc override dynamic open var preferredStatusBarStyle: UIKit.UIStatusBarStyle {
     @objc get
@@ -395,6 +397,7 @@ public typealias SBUNewMessageInfoHandler = () -> Swift.Void
   @objc override dynamic open func loadView()
   @objc open func setupAutolayout()
   @objc open func setupStyles()
+  @objc open func updateStyles()
   @objc override dynamic open var preferredStatusBarStyle: UIKit.UIStatusBarStyle {
     @objc get
   }
@@ -471,6 +474,7 @@ extension SBUModerationsViewController : UIKit.UITableViewDelegate, UIKit.UITabl
   @objc override dynamic open func loadView()
   @objc open func setupAutolayout()
   @objc open func setupStyles()
+  @objc public func updateStyles()
   @objc override dynamic open func viewDidLayoutSubviews()
   @objc override dynamic open var preferredStatusBarStyle: UIKit.UIStatusBarStyle {
     @objc get
@@ -746,6 +750,7 @@ extension SBUChannelViewController : SendBirdSDK.SBDChannelDelegate, SendBirdSDK
   @objc override dynamic open func loadView()
   @objc open func setupAutolayout()
   @objc open func setupStyles()
+  @objc open func updateStyles()
   @objc override dynamic open var preferredStatusBarStyle: UIKit.UIStatusBarStyle {
     @objc get
   }
@@ -916,10 +921,10 @@ public typealias AlertButtonHandler = (Any?) -> Swift.Void
   case supergroup
   case broadcast
   public typealias RawValue = Swift.Int
-  public init?(rawValue: Swift.Int)
   public var rawValue: Swift.Int {
     get
   }
+  public init?(rawValue: Swift.Int)
 }
 @objc public enum ChannelSettingItemType : Swift.Int {
   case moderations
@@ -1219,6 +1224,7 @@ extension NSArray {
   @objc override dynamic open func loadView()
   @objc open func setupAutolayout()
   @objc open func setupStyles()
+  @objc open func updateStyles()
   @objc override dynamic open func viewDidLayoutSubviews()
   @objc override dynamic open var preferredStatusBarStyle: UIKit.UIStatusBarStyle {
     @objc get
@@ -1779,6 +1785,7 @@ extension UIImage {
   @objc override dynamic open func loadView()
   @objc open func setupAutolayout()
   @objc open func setupStyles()
+  @objc open func updateStyles()
   @objc override dynamic open var preferredStatusBarStyle: UIKit.UIStatusBarStyle {
     @objc get
   }

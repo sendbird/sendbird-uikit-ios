@@ -89,6 +89,10 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell {
         self.additionContainerView.rightPressedBackgroundColor = isWebviewVisible
             ? self.theme.pressedContentBackgroundColor
             : self.theme.rightPressedBackgroundColor
+
+        self.additionContainerView.setupStyles()
+        
+        self.webView.setupStyles()
     }
     
     

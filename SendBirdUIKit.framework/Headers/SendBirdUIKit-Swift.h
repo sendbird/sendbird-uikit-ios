@@ -587,6 +587,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 - (void)loadView;
 - (void)setupAutolayout;
 - (void)setupStyles;
+- (void)updateStyles;
 - (void)viewDidLayoutSubviews;
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 - (void)viewDidLoad;
@@ -779,6 +780,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
 - (void)setupAutolayout;
 /// This function handles the initialization of styles.
 - (void)setupStyles;
+- (void)updateStyles;
 - (void)viewDidLayoutSubviews;
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 - (void)viewDidLoad;
@@ -940,6 +942,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)loadView;
 - (void)setupAutolayout;
 - (void)setupStyles;
+- (void)updateStyles;
 - (void)viewDidLayoutSubviews;
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 - (void)viewDidLoad;
@@ -1442,6 +1445,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 - (void)setupAutolayout;
 /// This function handles the initialization of styles.
 - (void)setupStyles;
+- (void)updateStyles;
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 - (void)viewDidLoad;
 - (void)viewWillAppear:(BOOL)animated;
@@ -1967,6 +1971,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 - (void)setupAutolayout;
 /// This function handles the initialization of styles.
 - (void)setupStyles;
+- (void)updateStyles;
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 - (void)viewDidLoad;
 - (void)viewDidLayoutSubviews;
@@ -2143,6 +2148,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 - (void)setupAutolayout;
 /// This function handles the initialization of styles
 - (void)setupStyles;
+- (void)updateStyles;
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 - (void)viewDidLoad;
 - (void)viewDidLayoutSubviews;
@@ -2414,6 +2420,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUModerationsViewController")
 - (void)setupAutolayout;
 /// This function handles the initialization of styles.
 - (void)setupStyles;
+- (void)updateStyles;
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 - (void)viewDidLoad;
 - (void)viewWillAppear:(BOOL)animated;
@@ -3607,6 +3614,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 - (void)loadView;
 - (void)setupAutolayout;
 - (void)setupStyles;
+- (void)updateStyles;
 - (void)viewDidLayoutSubviews;
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 - (void)viewDidLoad;
@@ -3799,6 +3807,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
 - (void)setupAutolayout;
 /// This function handles the initialization of styles.
 - (void)setupStyles;
+- (void)updateStyles;
 - (void)viewDidLayoutSubviews;
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 - (void)viewDidLoad;
@@ -3960,6 +3969,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)loadView;
 - (void)setupAutolayout;
 - (void)setupStyles;
+- (void)updateStyles;
 - (void)viewDidLayoutSubviews;
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 - (void)viewDidLoad;
@@ -4462,6 +4472,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 - (void)setupAutolayout;
 /// This function handles the initialization of styles.
 - (void)setupStyles;
+- (void)updateStyles;
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 - (void)viewDidLoad;
 - (void)viewWillAppear:(BOOL)animated;
@@ -4987,6 +4998,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 - (void)setupAutolayout;
 /// This function handles the initialization of styles.
 - (void)setupStyles;
+- (void)updateStyles;
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 - (void)viewDidLoad;
 - (void)viewDidLayoutSubviews;
@@ -5163,6 +5175,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 - (void)setupAutolayout;
 /// This function handles the initialization of styles
 - (void)setupStyles;
+- (void)updateStyles;
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 - (void)viewDidLoad;
 - (void)viewDidLayoutSubviews;
@@ -5434,6 +5447,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUModerationsViewController")
 - (void)setupAutolayout;
 /// This function handles the initialization of styles.
 - (void)setupStyles;
+- (void)updateStyles;
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 - (void)viewDidLoad;
 - (void)viewWillAppear:(BOOL)animated;
@@ -6629,6 +6643,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 - (void)loadView;
 - (void)setupAutolayout;
 - (void)setupStyles;
+- (void)updateStyles;
 - (void)viewDidLayoutSubviews;
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 - (void)viewDidLoad;
@@ -6821,6 +6836,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
 - (void)setupAutolayout;
 /// This function handles the initialization of styles.
 - (void)setupStyles;
+- (void)updateStyles;
 - (void)viewDidLayoutSubviews;
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 - (void)viewDidLoad;
@@ -6982,6 +6998,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)loadView;
 - (void)setupAutolayout;
 - (void)setupStyles;
+- (void)updateStyles;
 - (void)viewDidLayoutSubviews;
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 - (void)viewDidLoad;
@@ -7484,6 +7501,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 - (void)setupAutolayout;
 /// This function handles the initialization of styles.
 - (void)setupStyles;
+- (void)updateStyles;
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 - (void)viewDidLoad;
 - (void)viewWillAppear:(BOOL)animated;
@@ -8009,6 +8027,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 - (void)setupAutolayout;
 /// This function handles the initialization of styles.
 - (void)setupStyles;
+- (void)updateStyles;
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 - (void)viewDidLoad;
 - (void)viewDidLayoutSubviews;
@@ -8185,6 +8204,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 - (void)setupAutolayout;
 /// This function handles the initialization of styles
 - (void)setupStyles;
+- (void)updateStyles;
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 - (void)viewDidLoad;
 - (void)viewDidLayoutSubviews;
@@ -8456,6 +8476,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUModerationsViewController")
 - (void)setupAutolayout;
 /// This function handles the initialization of styles.
 - (void)setupStyles;
+- (void)updateStyles;
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 - (void)viewDidLoad;
 - (void)viewWillAppear:(BOOL)animated;
@@ -9649,6 +9670,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 - (void)loadView;
 - (void)setupAutolayout;
 - (void)setupStyles;
+- (void)updateStyles;
 - (void)viewDidLayoutSubviews;
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 - (void)viewDidLoad;
@@ -9841,6 +9863,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
 - (void)setupAutolayout;
 /// This function handles the initialization of styles.
 - (void)setupStyles;
+- (void)updateStyles;
 - (void)viewDidLayoutSubviews;
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 - (void)viewDidLoad;
@@ -10002,6 +10025,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)loadView;
 - (void)setupAutolayout;
 - (void)setupStyles;
+- (void)updateStyles;
 - (void)viewDidLayoutSubviews;
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 - (void)viewDidLoad;
@@ -10504,6 +10528,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 - (void)setupAutolayout;
 /// This function handles the initialization of styles.
 - (void)setupStyles;
+- (void)updateStyles;
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 - (void)viewDidLoad;
 - (void)viewWillAppear:(BOOL)animated;
@@ -11029,6 +11054,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 - (void)setupAutolayout;
 /// This function handles the initialization of styles.
 - (void)setupStyles;
+- (void)updateStyles;
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 - (void)viewDidLoad;
 - (void)viewDidLayoutSubviews;
@@ -11205,6 +11231,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 - (void)setupAutolayout;
 /// This function handles the initialization of styles
 - (void)setupStyles;
+- (void)updateStyles;
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 - (void)viewDidLoad;
 - (void)viewDidLayoutSubviews;
@@ -11476,6 +11503,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUModerationsViewController")
 - (void)setupAutolayout;
 /// This function handles the initialization of styles.
 - (void)setupStyles;
+- (void)updateStyles;
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 - (void)viewDidLoad;
 - (void)viewWillAppear:(BOOL)animated;

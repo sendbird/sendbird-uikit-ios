@@ -200,6 +200,18 @@ open class SBUChannelListViewController: UIViewController {
         self.tableView.backgroundColor = theme.backgroundColor
     }
     
+    public func updateStyles() {
+        self.theme = SBUTheme.channelListTheme
+        
+        self.setupStyles()
+        
+        if let titleView = self.titleView as? SBUNavigationTitleView {
+            titleView.setupStyles()
+        }
+        
+        self.reloadTableView()
+    }
+    
     open override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
@@ -230,13 +242,14 @@ open class SBUChannelListViewController: UIViewController {
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.setNeedsStatusBarAppearanceUpdate()
-        self.setupStyles()
         
         if self.isLoading { return }
         
         if self.lastUpdatedToken != nil {
             self.loadChannelChangeLogs(hasMore: true, token: self.lastUpdatedToken)
         }
+        
+        self.updateStyles()
     }
     
     deinit {

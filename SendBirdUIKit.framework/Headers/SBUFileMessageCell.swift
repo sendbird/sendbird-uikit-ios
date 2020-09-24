@@ -51,6 +51,8 @@ open class SBUFileMessageCell: SBUContentBaseMessageCell {
     
     open override func setupStyles() {
         super.setupStyles()
+        
+        self.baseFileContentView.setupStyles()
     }
     
     

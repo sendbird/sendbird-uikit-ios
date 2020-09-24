@@ -161,6 +161,18 @@ open class SBUCreateChannelViewController: UIViewController, UINavigationControl
         self.view.backgroundColor = theme.backgroundColor
         self.tableView.backgroundColor = theme.backgroundColor
     }
+    
+    open func updateStyles() {
+        self.theme = SBUTheme.userListTheme
+        
+        self.setupStyles()
+        
+        if let titleView = self.titleView as? SBUNavigationTitleView {
+            titleView.setupStyles()
+        }
+        
+        self.reloadUserList()
+    }
 
     open override var preferredStatusBarStyle: UIStatusBarStyle {
         return theme.statusBarStyle
@@ -180,7 +192,8 @@ open class SBUCreateChannelViewController: UIViewController, UINavigationControl
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.setNeedsStatusBarAppearanceUpdate()
-        self.setupStyles()
+
+        self.updateStyles()
     }
     
     deinit {

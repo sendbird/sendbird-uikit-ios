@@ -140,6 +140,20 @@ open class SBUModerationsViewController: UIViewController, UINavigationControlle
         self.tableView.backgroundColor = theme.backgroundColor
     }
     
+    open func updateStyles() {
+        self.theme = SBUTheme.channelSettingsTheme
+        
+        self.setupStyles()
+        
+        if let titleView = self.titleView as? SBUNavigationTitleView {
+            titleView.setupStyles()
+        }
+        
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
+    }
+    
     open override var preferredStatusBarStyle: UIStatusBarStyle {
         return theme.statusBarStyle
     }
@@ -157,7 +171,8 @@ open class SBUModerationsViewController: UIViewController, UINavigationControlle
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.setNeedsStatusBarAppearanceUpdate()
-        self.setupStyles()
+        
+        self.updateStyles()
     }
     
     

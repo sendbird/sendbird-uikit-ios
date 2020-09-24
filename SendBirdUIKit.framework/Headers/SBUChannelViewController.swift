@@ -74,9 +74,6 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     private lazy var _channelStateBanner: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
-        label.textColor = self.theme.channelStateBannerTextColor
-        label.font = self.theme.channelStateBannerFont
-        label.backgroundColor = self.theme.channelStateBannerBackgroundColor
         label.text = SBUStringSet.Channel_State_Banner_Frozen
         label.layer.masksToBounds = true
         label.layer.cornerRadius = 5
@@ -367,8 +364,39 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         self.leftBarButton?.tintColor = theme.leftBarButtonTintColor
         self.rightBarButton?.tintColor = theme.rightBarButtonTintColor
         
+        if let channelStateBanner = self.channelStateBanner as? UILabel {
+            channelStateBanner.textColor = self.theme.channelStateBannerTextColor
+            channelStateBanner.font = self.theme.channelStateBannerFont
+            channelStateBanner.backgroundColor = self.theme.channelStateBannerBackgroundColor
+        }
+        
         self.view.backgroundColor = theme.backgroundColor
         self.tableView.backgroundColor = theme.backgroundColor
+    }
+    
+    public func updateStyles() {
+        self.theme = SBUTheme.channelTheme
+        
+        self.setupStyles()
+        
+        if let titleView = self.titleView as? SBUChannelTitleView {
+            titleView.setupStyles()
+        }
+        self.messageInputView.setupStyles()
+        
+        if let newMessageInfoView = self.newMessageInfoView as? SBUNewMessageInfo {
+            newMessageInfoView.setupStyles()
+        }
+        
+        if let userProfileView = self.userProfileView as? SBUUserProfileView {
+            userProfileView.setupStyles()
+        }
+        
+        if let emptyView = self.emptyView as? SBUEmptyView {
+            emptyView.setupStyles()
+        }
+        
+        self.tableView.reloadData()
     }
     
     open override func viewDidLayoutSubviews() {
@@ -399,7 +427,6 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.setNeedsStatusBarAppearanceUpdate()
-        self.setupStyles()
 
         NotificationCenter.default.addObserver(
             self,
@@ -418,6 +445,8 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
             guard let titleView = titleView as? SBUChannelTitleView else { return }
             titleView.updateChannelStatus(channel: channel)
         }
+        
+        self.updateStyles()
     }
     
     open override func viewWillDisappear(_ animated: Bool) {

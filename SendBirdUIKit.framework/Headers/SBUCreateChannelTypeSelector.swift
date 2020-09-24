@@ -40,6 +40,7 @@ class SBUCreateChannelTypeSelector: UIView, SBUCreateChannelTypeSelectorProtocol
     var theme: SBUComponentTheme = SBUTheme.componentTheme
     
     lazy var navigationBar = UINavigationBar()
+    lazy var navigationItem = UINavigationItem()
     lazy var contentView = UIView()
     lazy var rightBarButton: UIBarButtonItem = {
         return UIBarButtonItem(
@@ -86,6 +87,7 @@ class SBUCreateChannelTypeSelector: UIView, SBUCreateChannelTypeSelectorProtocol
         
         self.setupViews()
         self.setupAutolayout()
+        self.setupStyles()
     }
     
     @available(*, unavailable, renamed: "CreateChannelTypeSelectView.init(delegate:)")
@@ -94,6 +96,7 @@ class SBUCreateChannelTypeSelector: UIView, SBUCreateChannelTypeSelectorProtocol
         
         self.setupViews()
         self.setupAutolayout()
+        self.setupStyles()
     }
     
     @available(*, unavailable, renamed: "CreateChannelTypeSelectView.init(delegate:)")
@@ -102,21 +105,11 @@ class SBUCreateChannelTypeSelector: UIView, SBUCreateChannelTypeSelectorProtocol
     }
     
     func setupViews() {
-        self.contentView.backgroundColor = theme.overlayColor
-        
-        let navigationItem = UINavigationItem(title: SBUStringSet.CreateChannel_Header_Title)
-        navigationItem.rightBarButtonItem = self.rightBarButton
-        navigationItem.rightBarButtonItem?.tintColor = self.theme.closeBarButtonTintColor
+        self.navigationItem = UINavigationItem(title: SBUStringSet.CreateChannel_Header_Title)
+        self.navigationItem.rightBarButtonItem = self.rightBarButton
         
         self.navigationBar = UINavigationBar()
         self.navigationBar.items = [navigationItem]
-        self.navigationBar.titleTextAttributes = [
-            .foregroundColor: self.theme.titleColor,
-            .font: self.theme.titleFont
-        ]
-        self.navigationBar.setBackgroundImage(
-            UIImage.from(color: self.theme.backgroundColor), for: .default
-        )
         self.contentView.addSubview(self.navigationBar)
         self.contentView.addSubview(self.backgroundCloseButton)
         
@@ -131,6 +124,27 @@ class SBUCreateChannelTypeSelector: UIView, SBUCreateChannelTypeSelectorProtocol
     
     func setupStyles() {
         self.theme = SBUTheme.componentTheme
+        
+        self.contentView.backgroundColor = theme.overlayColor
+        self.navigationBar.titleTextAttributes = [
+            .foregroundColor: self.theme.titleColor,
+            .font: self.theme.titleFont
+        ]
+        self.navigationBar.setBackgroundImage(
+            UIImage.from(color: self.theme.backgroundColor), for: .default
+        )
+        
+        self.navigationItem.rightBarButtonItem?.tintColor = self.theme.closeBarButtonTintColor
+    }
+    
+    public func updateStyles() {
+        self.theme = SBUTheme.componentTheme
+
+        self.setupStyles()
+        
+        self.updateButton(type: .group)
+        self.updateButton(type: .supergroup)
+        self.updateButton(type: .broadcast)
     }
     
     func setupAutolayout() {
@@ -175,7 +189,6 @@ class SBUCreateChannelTypeSelector: UIView, SBUCreateChannelTypeSelectorProtocol
                 topAnchor: self.navigationBar.bottomAnchor,
                 top: 0
         )
-            
 
         self.createGroupChannelButton.sbu_constraint(height: 80)
         self.createSuperGroupChannelButton.sbu_constraint(height: 80)
@@ -186,9 +199,10 @@ class SBUCreateChannelTypeSelector: UIView, SBUCreateChannelTypeSelectorProtocol
         super.layoutSubviews()
     }
     
-    
     // MARK: - SBUCreateChannelTypeSelectorProtocol
     func show() {
+        self.updateStyles() 
+        
         if !SBUAvailable.isSupportSuperGroupChannel() {
             self.createSuperGroupChannelButton.isHidden = true
         }
@@ -259,10 +273,36 @@ extension SBUCreateChannelTypeSelector {
                 for: .touchUpInside
             )
         }
-        
+
+        button.tag = type.rawValue+10
         button.setTitleColor(theme.channelTypeSelectorItemTextColor, for: .normal)
         button.titleLabel?.font = theme.channelTypeSelectorItemFont
         button.backgroundColor = self.theme.backgroundColor
         return button
+    }
+    
+    func updateButton(type: ChannelType) {
+        guard let button = self.viewWithTag(type.rawValue+10) as? UIButton else { return }
+        let tintColor = theme.channelTypeSelectorItemTintColor
+        switch type {
+        case .group:
+            button.setImage(
+                SBUIconSet.channelTypeGroup.sbu_with(tintColor: tintColor),
+                for: .normal
+            )
+        case .supergroup:
+            button.setImage(
+                SBUIconSet.channelTypeSupergroup.sbu_with(tintColor: tintColor),
+                for: .normal
+            )
+        case .broadcast:
+            button.setImage(
+                SBUIconSet.channelTypeBroadcast.sbu_with(tintColor: tintColor),
+                for: .normal
+            )
+        }
+        
+        button.setTitleColor(theme.channelTypeSelectorItemTextColor, for: .normal)
+        button.backgroundColor = self.theme.backgroundColor
     }
 }

@@ -1,5 +1,8 @@
 # Change Log
 
+### v1.2.3 (Sep 24, 2020)
+* Improved logic for real-time theme changes
+
 ### v1.2.2 (Sep 17, 2020)
 * Supported UserProfile feature in `SBUChannelViewController`, `SBUMemberListViewController`
   * Added `SBUUserProfileViewProtocol`, `SBUUserProfileViewDelegate`
