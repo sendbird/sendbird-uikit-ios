@@ -102,7 +102,7 @@ github "sendbird/sendbird-ios-framework" == 3.0.200
 2. Install the `SendBirdUIKit` framework through `Carthage`.
 
 ```bash
-$ cartage update
+$ carthage update
 ```
 
 3. Go to your Xcode project target’s **General settings** tab in the `Frameworks and Libraries` section. Then drag and drop on the disk each framework from the `<YOUR_XCODE_PROJECT_DIRECTORY>/Carthage/Build/iOS` folder.
