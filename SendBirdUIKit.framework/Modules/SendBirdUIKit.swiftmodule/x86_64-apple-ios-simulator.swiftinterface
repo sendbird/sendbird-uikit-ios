@@ -27,6 +27,13 @@ import UIKit
     @objc get
     @objc set
   }
+  @objc public var tableView: UIKit.UITableView {
+    @objc get
+  }
+  @objc public var userCell: UIKit.UITableViewCell? {
+    get
+  }
+  @objc public var theme: SendBirdUIKit.SBUUserListTheme
   @objc public var inviteListType: SendBirdUIKit.ChannelInviteListType {
     get
   }
@@ -41,6 +48,15 @@ import UIKit
   }
   @objc @SendBirdUIKit.SBUAtomic public var selectedUserList: Swift.Set<SendBirdUIKit.SBUUser> {
     @objc get
+  }
+  @objc public var joinedUserIds: Swift.Set<Swift.String> {
+    get
+  }
+  @objc public var userListQuery: SendBirdSDK.SBDApplicationUserListQuery? {
+    get
+  }
+  @objc public var memberListQuery: SendBirdSDK.SBDGroupChannelMemberListQuery? {
+    get
   }
   @available(*, unavailable, renamed: "SBUInviteUserViewController.init(channelUrl:)")
   @objc required dynamic public init?(coder: Foundation.NSCoder)
@@ -69,6 +85,10 @@ import UIKit
   @objc public func promoteToOperators()
   @objc public func promoteToOperators(memberIds: [Swift.String])
   @objc public func register(userCell: UIKit.UITableViewCell, nib: UIKit.UINib? = nil)
+  @objc public func resetUserList()
+  @objc public func reloadData()
+  @objc public func onClickBack()
+  @objc public func onClickInviteOrPromote()
   @objc public func selectUser(user: SendBirdUIKit.SBUUser)
   @objc public func popToChannel()
   @objc public func popToPrevious()
@@ -95,11 +115,23 @@ extension UIView {
   @objc public static func generateChannelName(channel: SendBirdSDK.SBDGroupChannel) -> Swift.String
   @objc public static func getMimeType(url: Foundation.URL) -> Swift.String?
   @objc public static func getReceiptState(channel: SendBirdSDK.SBDGroupChannel, message: SendBirdSDK.SBDBaseMessage) -> SendBirdUIKit.SBUMessageReceiptState
-  @objc public static func emptyTitleForRowEditAction(for size: CoreGraphics.CGSize) -> Swift.String
   @objc public static func isValid(coverUrl: Swift.String) -> Swift.Bool
   @objc public static func isValid(channelName: Swift.String) -> Swift.Bool
+  @objc public static func emptyTitleForRowEditAction(for size: CoreGraphics.CGSize) -> Swift.String
   @objc deinit
   @objc override dynamic public init()
+}
+@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class SBUCoverImageView : UIKit.UIView {
+  public var theme: SendBirdUIKit.SBUComponentTheme
+  public func setImage(withCoverUrl coverUrl: Swift.String)
+  public func setPlaceholderImage(iconSize: CoreGraphics.CGSize)
+  public func setBroadcastIcon()
+  public func setImage(withImage image: UIKit.UIImage, backgroundColor: UIKit.UIColor? = nil, makeCircle: Swift.Bool = false)
+  public func setImage(withUsers users: [SendBirdSDK.SBDUser])
+  @objc deinit
+}
+extension UIImageView {
+  public func sbu_setProfileImageView(for user: SendBirdSDK.SBDUser, defaultImage: UIKit.UIImage)
 }
 @objc @_inheritsConvenienceInitializers @objcMembers @IBDesignable open class SBUAdminMessageCell : SendBirdUIKit.SBUBaseMessageCell {
   @objc public var messageLabel: UIKit.UILabel
@@ -129,14 +161,39 @@ extension UIView {
     @objc get
     @objc set
   }
+  @objc public var tableView: UIKit.UITableView {
+    get
+  }
+  @objc public var theme: SendBirdUIKit.SBUChannelListTheme
   @objc public var createChannelTypeSelector: UIKit.UIView? {
     @objc get
     @objc set
+  }
+  @objc public var channelCell: SendBirdUIKit.SBUBaseChannelCell? {
+    get
+  }
+  @objc public var customCell: SendBirdUIKit.SBUBaseChannelCell? {
+    get
   }
   @objc @SendBirdUIKit.SBUAtomic public var channelList: [SendBirdSDK.SBDGroupChannel] {
     @objc get
   }
   @objc public var channelListQuery: SendBirdSDK.SBDGroupChannelListQuery? {
+    get
+  }
+  @objc public var isLoading: Swift.Bool {
+    get
+  }
+  @objc public var lastUpdatedTimestamp: Swift.Int64 {
+    get
+  }
+  @objc public var lastUpdatedToken: Swift.String? {
+    get
+  }
+  @objc public var limit: Swift.UInt {
+    get
+  }
+  @objc public var includeEmptyChannel: Swift.Bool {
     get
   }
   @available(*, unavailable, renamed: "SBUChannelListViewController()")
@@ -156,6 +213,12 @@ extension UIView {
   @objc deinit
   @objc public func changePushTriggerOption(option: SendBirdSDK.SBDGroupChannelPushTriggerOption, channel: SendBirdSDK.SBDGroupChannel, completionHandler: ((Swift.Bool) -> Swift.Void)? = nil)
   @objc public func leaveChannel(_ channel: SendBirdSDK.SBDGroupChannel, completionHandler: ((Swift.Bool) -> Swift.Void)? = nil)
+  @objc public func loadNextChannelList(reset: Swift.Bool)
+  @objc public func loadChannelChangeLogs(hasMore: Swift.Bool, token: Swift.String?)
+  @objc public func sortChannelList(needReload: Swift.Bool)
+  @objc public func updateChannels(_ channels: [SendBirdSDK.SBDGroupChannel]?, needReload: Swift.Bool)
+  @objc public func upsertChannels(_ channels: [SendBirdSDK.SBDGroupChannel]?, needReload: Swift.Bool)
+  @objc public func deleteChannels(channelUrls: [Swift.String]?, needReload: Swift.Bool)
   @objc open func showChannel(channelUrl: Swift.String, messageListParams: SendBirdSDK.SBDMessageListParams? = nil)
   @objc open func showCreateChannelTypeSelector()
   @objc open func showCreateChannel(type: SendBirdUIKit.ChannelType = .group)
@@ -231,6 +294,10 @@ extension SBUChannelListViewController : SendBirdUIKit.SBUCreateChannelTypeSelec
     set
   }
   public var separateView: UIKit.UIView
+  public var theme: SendBirdUIKit.SBUUserCellTheme
+  public var type: SendBirdUIKit.UserListType {
+    get
+  }
   @objc override dynamic open func awakeFromNib()
   @objc required dynamic public init?(coder: Foundation.NSCoder)
   open func setupViews()
@@ -387,7 +454,14 @@ public typealias SBUNewMessageInfoHandler = () -> Swift.Void
     @objc get
     @objc set
   }
+  @objc public var tableView: UIKit.UITableView {
+    @objc get
+  }
+  @objc public var theme: SendBirdUIKit.SBUChannelSettingsTheme
   @objc public var channel: SendBirdSDK.SBDGroupChannel? {
+    get
+  }
+  @objc public var channelUrl: Swift.String? {
     get
   }
   @available(*, unavailable, renamed: "SBUModerationsViewController(channel:)")
@@ -409,6 +483,7 @@ public typealias SBUNewMessageInfoHandler = () -> Swift.Void
   @objc open func showOperatorList()
   @objc open func showMutedMeberList()
   @objc open func showBannedMeberList()
+  @objc public func onClickBack()
   @objc public func changeFreeze(_ freeze: Swift.Bool, _ completionHandler: ((Swift.Bool) -> Swift.Void)? = nil)
   @objc open func didReceiveError(_ message: Swift.String?)
   @objc deinit
@@ -449,17 +524,63 @@ extension SBUModerationsViewController : UIKit.UITableViewDelegate, UIKit.UITabl
     @objc get
     @objc set
   }
+  @objc public var tableView: UIKit.UITableView {
+    @objc get
+  }
   @objc public var userProfileView: UIKit.UIView? {
     @objc get
     @objc set
   }
+  @objc public var theme: SendBirdUIKit.SBUChannelTheme
+  @objc public var adminMessageCell: SendBirdUIKit.SBUBaseMessageCell? {
+    get
+  }
+  @objc public var userMessageCell: SendBirdUIKit.SBUBaseMessageCell? {
+    get
+  }
+  @objc public var fileMessageCell: SendBirdUIKit.SBUBaseMessageCell? {
+    get
+  }
+  @objc public var customMessageCell: SendBirdUIKit.SBUBaseMessageCell? {
+    get
+  }
+  @objc public var unknownMessageCell: SendBirdUIKit.SBUBaseMessageCell? {
+    get
+  }
+  @objc public var messageInputViewBottomConstraint: UIKit.NSLayoutConstraint! {
+    get
+  }
+  @objc public var tableViewTopConstraint: UIKit.NSLayoutConstraint! {
+    get
+  }
   @objc public var channel: SendBirdSDK.SBDGroupChannel? {
+    get
+  }
+  @objc public var channelUrl: Swift.String? {
     get
   }
   @objc @SendBirdUIKit.SBUAtomic public var messageList: [SendBirdSDK.SBDBaseMessage] {
     @objc get
   }
+  @objc @SendBirdUIKit.SBUAtomic public var fullMessageList: [SendBirdSDK.SBDBaseMessage] {
+    @objc get
+  }
+  @objc public var preSendMessages: [Swift.String : SendBirdSDK.SBDBaseMessage] {
+    get
+  }
   @objc public var resendableMessages: [Swift.String : SendBirdSDK.SBDBaseMessage] {
+    get
+  }
+  @objc public var inEditingMessage: SendBirdSDK.SBDUserMessage? {
+    get
+  }
+  @objc public var preSendFileData: [Swift.String : [Swift.String : Swift.AnyObject]] {
+    get
+  }
+  @objc public var resendableFileData: [Swift.String : [Swift.String : Swift.AnyObject]] {
+    get
+  }
+  @objc public var fileTransferProgress: [Swift.String : CoreGraphics.CGFloat] {
     get
   }
   @objc public var messageListParams: SendBirdSDK.SBDMessageListParams {
@@ -493,6 +614,10 @@ extension SBUModerationsViewController : UIKit.UITableViewDelegate, UIKit.UITabl
   @objc public func deleteMessage(message: SendBirdSDK.SBDBaseMessage)
   @objc public func loadChannel(channelUrl: Swift.String?, messageListParams: SendBirdSDK.SBDMessageListParams? = nil)
   @objc public func setReaction(message: SendBirdSDK.SBDBaseMessage, emojiKey: Swift.String, didSelect: Swift.Bool)
+  @objc public func sortAllMessageList(needReload: Swift.Bool)
+  @objc public func upsertMessagesInList(messages: [SendBirdSDK.SBDBaseMessage]?, needUpdateNewMessage: Swift.Bool = true, needReload: Swift.Bool)
+  @objc public func deleteMessagesInList(messageIds: [Swift.Int64], needReload: Swift.Bool)
+  @objc public func deleteResendableMessages(requestIds: [Swift.String], needReload: Swift.Bool)
   @objc public func increaseNewMessageCount()
   @objc public func sendImageFileMessage(info: [UIKit.UIImagePickerController.InfoKey : Any])
   @objc public func sendVideoFileMessage(info: [UIKit.UIImagePickerController.InfoKey : Any])
@@ -521,13 +646,23 @@ extension SBUModerationsViewController : UIKit.UITableViewDelegate, UIKit.UITabl
   @objc public func onClickSetting()
   @objc public func scrollToBottom(animated: Swift.Bool)
   @objc public func scrollViewDidScroll(_ scrollView: UIKit.UIScrollView)
+  @objc open func setUserMessageCellGestures(_ cell: SendBirdUIKit.SBUUserMessageCell, userMessage: SendBirdSDK.SBDUserMessage, indexPath: Foundation.IndexPath)
+  @objc open func setFileMessageCellGestures(_ cell: SendBirdUIKit.SBUFileMessageCell, fileMessage: SendBirdSDK.SBDFileMessage, indexPath: Foundation.IndexPath)
+  @objc open func setUnkownMessageCellGestures(_ cell: SendBirdUIKit.SBUUnknownMessageCell, unknownMessage: SendBirdSDK.SBDBaseMessage, indexPath: Foundation.IndexPath)
+  @objc public func calculatorMenuPoint(indexPath: Foundation.IndexPath, position: SendBirdUIKit.MessagePosition) -> CoreGraphics.CGPoint
+  public func showMenuViewController(_ cell: SendBirdUIKit.SBUBaseMessageCell, message: SendBirdSDK.SBDBaseMessage, types: [SendBirdUIKit.MessageMenuItem])
+  public func showMenuModal(_ cell: SendBirdUIKit.SBUBaseMessageCell, indexPath: Foundation.IndexPath, message: SendBirdSDK.SBDBaseMessage, types: [SendBirdUIKit.MessageMenuItem])
+  @objc public func keyboardWillShow(_ notification: Foundation.Notification)
+  @objc public func keyboardWillHide(_ notification: Foundation.Notification)
+  @objc public func dismissKeyboard()
+  @objc public func addGestureHideKeyboard()
   @objc open func didReceiveError(_ message: Swift.String?)
 }
 extension SBUChannelViewController : UIKit.UITableViewDelegate, UIKit.UITableViewDataSource {
   @objc dynamic open func tableView(_ tableView: UIKit.UITableView, cellForRowAt indexPath: Foundation.IndexPath) -> UIKit.UITableViewCell
   @objc dynamic open func tableView(_ tableView: UIKit.UITableView, willDisplay cell: UIKit.UITableViewCell, forRowAt indexPath: Foundation.IndexPath)
   @objc dynamic open func tableView(_ tableView: UIKit.UITableView, numberOfRowsInSection section: Swift.Int) -> Swift.Int
-  @objc dynamic open func getCellIdentifier(by message: SendBirdSDK.SBDBaseMessage) -> Swift.String
+  @objc dynamic open func generateCellIdentifier(by message: SendBirdSDK.SBDBaseMessage) -> Swift.String
 }
 extension SBUChannelViewController : UIKit.UIViewControllerTransitioningDelegate {
   @objc dynamic public func presentationController(forPresented presented: UIKit.UIViewController, presenting: UIKit.UIViewController?, source: UIKit.UIViewController) -> UIKit.UIPresentationController?
@@ -574,6 +709,11 @@ extension SBUChannelViewController : SendBirdSDK.SBDChannelDelegate, SendBirdSDK
   @objc dynamic public func channelDidUpdateOperators(_ sender: SendBirdSDK.SBDBaseChannel)
   @objc dynamic public func channel(_ sender: SendBirdSDK.SBDBaseChannel, userWasBanned user: SendBirdSDK.SBDUser)
   @objc dynamic open func didSucceedReconnection()
+}
+@_hasMissingDesignatedInitializers public class SBULoading {
+  public static func start()
+  public static func stop()
+  @objc deinit
 }
 @objc public protocol SBUMessageInputViewDelegate : ObjectiveC.NSObjectProtocol {
   @objc optional func messageInputView(_ messageInputView: SendBirdUIKit.SBUMessageInputView, didSelectSend text: Swift.String)
@@ -702,6 +842,10 @@ extension SBUChannelViewController : SendBirdSDK.SBDChannelDelegate, SendBirdSDK
   @objc func dismiss()
 }
 @objc @_inheritsConvenienceInitializers open class SBUBaseChannelCell : UIKit.UITableViewCell {
+  public var channel: SendBirdSDK.SBDGroupChannel? {
+    get
+  }
+  public var theme: SendBirdUIKit.SBUChannelCellTheme
   @objc override dynamic public init(style: UIKit.UITableViewCell.CellStyle, reuseIdentifier: Swift.String?)
   @objc required dynamic public init?(coder: Foundation.NSCoder)
   open func setupViews()
@@ -719,6 +863,58 @@ extension SBUChannelViewController : SendBirdSDK.SBDChannelDelegate, SendBirdSDK
   @objc deinit
   @objc override dynamic public init()
 }
+@objc @_inheritsConvenienceInitializers public class SBUChannelCell : SendBirdUIKit.SBUBaseChannelCell {
+  public var coverImage: SendBirdUIKit.SBUCoverImageView {
+    get
+  }
+  public var titleStackView: UIKit.UIStackView {
+    get
+  }
+  public var titleLabel: UIKit.UILabel {
+    get
+  }
+  public var broadcastIcon: UIKit.UIImageView {
+    get
+  }
+  public var memberCountLabel: UIKit.UILabel {
+    get
+  }
+  public var freezeState: UIKit.UIImageView {
+    get
+  }
+  public var notificationState: UIKit.UIImageView {
+    get
+  }
+  public var lastUpdatedTimeLabel: UIKit.UILabel {
+    get
+  }
+  public var messageLabel: UIKit.UILabel {
+    get
+  }
+  public var unreadCount: UIKit.UIButton {
+    get
+  }
+  public var separatorLine: UIKit.UIView {
+    get
+  }
+  final public let kCoverImageSize: CoreGraphics.CGFloat
+  final public let kUnreadCountSize: CoreGraphics.CGFloat
+  final public let kSideMarging: CoreGraphics.CGFloat
+  final public let kInfoIconSize: CoreGraphics.CGFloat
+  @objc override dynamic open func awakeFromNib()
+  override public func setupViews()
+  override public func setupActions()
+  override public func setupAutolayout()
+  override public func setupStyles()
+  @objc override dynamic open func layoutSubviews()
+  override public func configure(channel: SendBirdSDK.SBDGroupChannel)
+  public func buildLastUpdatedDate() -> Swift.String?
+  @objc override dynamic open func setSelected(_ selected: Swift.Bool, animated: Swift.Bool)
+  @objc override dynamic open func prepareForReuse()
+  @objc override dynamic public init(style: UIKit.UITableViewCell.CellStyle, reuseIdentifier: Swift.String?)
+  @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc deinit
+}
 @objc @_inheritsConvenienceInitializers @objcMembers open class SBUCreateChannelViewController : UIKit.UIViewController, UIKit.UINavigationControllerDelegate {
   @objc public var titleView: UIKit.UIView? {
     @objc get
@@ -732,6 +928,13 @@ extension SBUChannelViewController : SendBirdSDK.SBDChannelDelegate, SendBirdSDK
     @objc get
     @objc set
   }
+  @objc public var tableView: UIKit.UITableView {
+    @objc get
+  }
+  @objc public var userCell: UIKit.UITableViewCell? {
+    get
+  }
+  @objc public var theme: SendBirdUIKit.SBUUserListTheme
   @objc public var channelType: SendBirdUIKit.ChannelType {
     get
   }
@@ -740,6 +943,9 @@ extension SBUChannelViewController : SendBirdSDK.SBDChannelDelegate, SendBirdSDK
   }
   @objc @SendBirdUIKit.SBUAtomic public var selectedUserList: Swift.Set<SendBirdUIKit.SBUUser> {
     @objc get
+  }
+  @objc public var userListQuery: SendBirdSDK.SBDApplicationUserListQuery? {
+    get
   }
   @available(*, unavailable, renamed: "SBUCreateChannelViewController(type:)")
   @objc required dynamic public init?(coder: Foundation.NSCoder)
@@ -762,6 +968,11 @@ extension SBUChannelViewController : SendBirdSDK.SBDChannelDelegate, SendBirdSDK
   @objc public func createChannel(userIds: [Swift.String])
   @objc public func createChannel(params: SendBirdSDK.SBDGroupChannelParams, messageListParams: SendBirdSDK.SBDMessageListParams? = nil)
   @objc public func register(userCell: UIKit.UITableViewCell, nib: UIKit.UINib? = nil)
+  @objc public func reloadUserList()
+  @objc public func showLoading(state: Swift.Bool)
+  @objc public func onClickBack()
+  @objc public func onClickCreate()
+  @objc public func selectUser(user: SendBirdUIKit.SBUUser)
   @objc open func didReceiveError(_ message: Swift.String?)
 }
 extension SBUCreateChannelViewController : UIKit.UITableViewDelegate, UIKit.UITableViewDataSource {
@@ -915,6 +1126,12 @@ public typealias AlertButtonHandler = (Any?) -> Swift.Void
   @objc public static var ChannelType_Broadcast: Swift.String
   @objc deinit
   @objc override dynamic public init()
+}
+@objc @_inheritsConvenienceInitializers @objcMembers open class SBUUnknownMessageCell : SendBirdUIKit.SBUUserMessageCell {
+  @objc override public func configure(_ message: SendBirdSDK.SBDBaseMessage, hideDateView: Swift.Bool, groupPosition: SendBirdUIKit.MessageGroupPosition, receiptState: SendBirdUIKit.SBUMessageReceiptState)
+  @objc override dynamic public init(style: UIKit.UITableViewCell.CellStyle, reuseIdentifier: Swift.String?)
+  @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc deinit
 }
 @objc public enum ChannelType : Swift.Int {
   case group
@@ -1084,9 +1301,11 @@ public typealias AlertButtonHandler = (Any?) -> Swift.Void
     get
   }
 }
-@objc public enum FailedMessageOption : Swift.Int {
-  case retry
-  case remove
+@objc public enum MessageMenuItem : Swift.Int {
+  case save
+  case copy
+  case edit
+  case delete
   public typealias RawValue = Swift.Int
   public init?(rawValue: Swift.Int)
   public var rawValue: Swift.Int {
@@ -1142,6 +1361,7 @@ extension NSArray {
     @objc get
     @objc set
   }
+  @objc public var theme: SendBirdUIKit.SBUMessageCellTheme
   @objc override dynamic public init(style: UIKit.UITableViewCell.CellStyle, reuseIdentifier: Swift.String?)
   @objc required dynamic public init?(coder: Foundation.NSCoder)
   @objc open func setupViews()
@@ -1195,7 +1415,6 @@ extension NSArray {
   @objc override dynamic public init()
 }
 @objc @_inheritsConvenienceInitializers @objcMembers open class SBUChannelSettingsViewController : UIKit.UIViewController, UIKit.UINavigationControllerDelegate {
-  @objc public var channelName: Swift.String?
   @objc public var userInfoView: UIKit.UIView? {
     @objc get
     @objc set
@@ -1212,8 +1431,20 @@ extension NSArray {
     @objc get
     @objc set
   }
+  @objc public var tableView: UIKit.UITableView {
+    @objc get
+  }
+  @objc public var theme: SendBirdUIKit.SBUChannelSettingsTheme
+  @objc public var channelName: Swift.String?
   @objc public var channel: SendBirdSDK.SBDGroupChannel? {
     get
+  }
+  @objc public var channelUrl: Swift.String? {
+    get
+  }
+  @objc public var isOperator: Swift.Bool {
+    @objc get
+    @objc set
   }
   @available(*, unavailable, renamed: "SBUChannelSettingsViewController.init(channelUrl:)")
   @objc required dynamic public init?(coder: Foundation.NSCoder)
@@ -1240,6 +1471,8 @@ extension NSArray {
   @objc public func leaveChannel()
   @objc open func showMemberList()
   @objc open func showModerationList()
+  @objc public func onClickBack()
+  @objc public func onClickEdit()
   @objc public func selectChannelImage()
   @objc public func changeChannelName()
   @objc open func didReceiveError(_ message: Swift.String?)
@@ -1267,6 +1500,11 @@ extension SBUChannelSettingsViewController : UIKit.UIImagePickerControllerDelega
     @objc set
   }
   @objc public var statusLabel: UIKit.UILabel
+  @objc public var theme: SendBirdUIKit.SBUComponentTheme
+  @objc public var retryButton: UIKit.UIButton {
+    @objc get
+    @objc set
+  }
   @objc override dynamic public init(frame: CoreGraphics.CGRect)
   @available(*, unavailable, renamed: "SBUEmptyView.init(frame:)")
   @objc required dynamic public init?(coder: Foundation.NSCoder)
@@ -1758,12 +1996,20 @@ extension UIImage {
     @objc get
     @objc set
   }
-  @objc public var memberListType: SendBirdUIKit.ChannelMemberListType {
-    get
+  @objc public var tableView: UIKit.UITableView {
+    @objc get
   }
   @objc public var userProfileView: UIKit.UIView? {
     @objc get
     @objc set
+  }
+  @objc public var userCell: UIKit.UITableViewCell? {
+    get
+  }
+  @objc public var theme: SendBirdUIKit.SBUUserListTheme
+  @objc public var componentTheme: SendBirdUIKit.SBUComponentTheme
+  @objc public var memberListType: SendBirdUIKit.ChannelMemberListType {
+    get
   }
   @objc public var channel: SendBirdSDK.SBDGroupChannel? {
     get
@@ -1772,6 +2018,18 @@ extension UIImage {
     get
   }
   @objc public var memberList: [SendBirdUIKit.SBUUser] {
+    get
+  }
+  @objc public var memberListQuery: SendBirdSDK.SBDGroupChannelMemberListQuery? {
+    get
+  }
+  @objc public var operatorListQuery: SendBirdSDK.SBDOperatorListQuery? {
+    get
+  }
+  @objc public var mutedMemberListQuery: SendBirdSDK.SBDGroupChannelMemberListQuery? {
+    get
+  }
+  @objc public var bannedMemberListQuery: SendBirdSDK.SBDBannedUserListQuery? {
     get
   }
   @available(*, unavailable, renamed: "SBUMemberListViewController(channelUrl:type:)")
@@ -1805,7 +2063,11 @@ extension UIImage {
   @objc public func unban(member: SendBirdUIKit.SBUUser)
   @objc open func showInviteUser()
   @objc public func register(userCell: UIKit.UITableViewCell, nib: UIKit.UINib? = nil)
-  @objc public func reloadMemberList()
+  @objc @available(*, deprecated, renamed: "resetMemberList()", message: "deprecated in [NEXT_VERSION]")
+  public func reloadMemberList()
+  @objc public func resetMemberList()
+  @objc public func reloadData()
+  @objc public func onClickBack()
   @objc open func onClickInviteUser()
   @objc open func setMoreMenuActionHandler(_ member: SendBirdUIKit.SBUUser)
   @objc open func setUserProfileTapGestureHandler(_ user: SendBirdUIKit.SBUUser)
@@ -1882,9 +2144,9 @@ extension SendBirdUIKit.SBUMessageReceiptState : Swift.RawRepresentable {}
 extension SendBirdUIKit.MessageEditItem : Swift.Equatable {}
 extension SendBirdUIKit.MessageEditItem : Swift.Hashable {}
 extension SendBirdUIKit.MessageEditItem : Swift.RawRepresentable {}
-extension SendBirdUIKit.FailedMessageOption : Swift.Equatable {}
-extension SendBirdUIKit.FailedMessageOption : Swift.Hashable {}
-extension SendBirdUIKit.FailedMessageOption : Swift.RawRepresentable {}
+extension SendBirdUIKit.MessageMenuItem : Swift.Equatable {}
+extension SendBirdUIKit.MessageMenuItem : Swift.Hashable {}
+extension SendBirdUIKit.MessageMenuItem : Swift.RawRepresentable {}
 extension SendBirdUIKit.LogType : Swift.Equatable {}
 extension SendBirdUIKit.LogType : Swift.Hashable {}
 extension SendBirdUIKit.LogType : Swift.RawRepresentable {}

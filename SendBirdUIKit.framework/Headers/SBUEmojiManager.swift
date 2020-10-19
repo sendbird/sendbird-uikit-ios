@@ -19,7 +19,11 @@ public class SBUEmojiManager {
     }
     var useReactionCurrnetChannel: Bool = false
  
+    
     // MARK: - Public function
+    
+    /// This function gets a list of the emoji categories.
+    /// - Returns: `SBDEmojiCategory` type array
     public static func getEmojiCategories() -> [SBDEmojiCategory] {
         guard let container = shared.container else {
             SBULog.error("[Failed] Emoji Categories: load emoji")
@@ -45,6 +49,8 @@ public class SBUEmojiManager {
         return categories
     }
 
+    /// This function gets a list of all emojis.
+    /// - Returns: `SBDEmoji` type array
     public static func getAllEmojis() -> [SBDEmoji] {
         guard let container = shared.container else {
             SBULog.error("[Failed] Emoji List: load emoji")
@@ -70,6 +76,8 @@ public class SBUEmojiManager {
         return emojis
     }
 
+    /// This function gets a list of emojis corresponding to category id.
+    /// - Returns: `SBDEmoji` type array
     public static func getEmojis(emojiCategoryId: Int64) -> [SBDEmoji] {
         guard let container = shared.container else {
             SBULog.error("[Failed] Emojis with category id: load emoji")
@@ -100,9 +108,9 @@ public class SBUEmojiManager {
         return category.emojis
     }
 
+    
     // MARK: - private function
     static var useReaction: Bool {
-
         if let appInfo = SBDMain.getAppInfo(),
             appInfo.useReaction, shared.useReactionCurrnetChannel {
             return true

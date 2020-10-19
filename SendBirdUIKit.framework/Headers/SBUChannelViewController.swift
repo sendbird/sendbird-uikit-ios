@@ -16,7 +16,7 @@ import SendBirdSDK
 @objcMembers
 open class SBUChannelViewController: UIViewController, UINavigationControllerDelegate {
 
-    // MARK:- UI properties (Public)
+    // MARK: - UI properties (Public)
     public var channelName: String? = nil
     
     /// You can use the customized view and a view that inherits `SBUNewMessageInfo`.
@@ -30,17 +30,27 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     public lazy var rightBarButton: UIBarButtonItem? = _rightBarButton
     public lazy var channelStateBanner: UIView? = _channelStateBanner
     public lazy var emptyView: UIView? = _emptyView
+    public private(set) lazy var tableView = UITableView()
 
     /// To use the custom user profile view, set this to the custom view created using `SBUUserProfileViewProtocol`.
     /// And, if you do not want to use the user profile feature, please set this value to nil.
     public lazy var userProfileView: UIView? = _userProfileView
-    
-    
-    // MARK:- UI properties (Private)
-    var theme: SBUChannelTheme = SBUTheme.channelTheme
 
-    private lazy var tableView = UITableView()
+    public var theme: SBUChannelTheme = SBUTheme.channelTheme
 
+    // for cell
+    public private(set) var adminMessageCell: SBUBaseMessageCell?
+    public private(set) var userMessageCell: SBUBaseMessageCell?
+    public private(set) var fileMessageCell: SBUBaseMessageCell?
+    public private(set) var customMessageCell: SBUBaseMessageCell?
+    public private(set) var unknownMessageCell: SBUBaseMessageCell?
+    
+    // for constraint
+    public private(set) var messageInputViewBottomConstraint: NSLayoutConstraint!
+    public private(set) var tableViewTopConstraint: NSLayoutConstraint!
+
+    
+    // MARK: - UI properties (Private)
     private lazy var _titleView: SBUChannelTitleView = {
         var titleView: SBUChannelTitleView
         if #available(iOS 11, *) {
@@ -100,47 +110,45 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         emptyView.delegate = self
         return emptyView
     }()
-
-    private var messageInputViewBottomConstraint: NSLayoutConstraint!
-    private var tableViewTopConstraint: NSLayoutConstraint!
+    
+    let spacer = UIView()
 
     private var newMessagesCount: Int = 0
     private var touchedPoint: CGPoint = .zero
 
     
-    // MARK:- Logic properties (Public)
+    // MARK: - Logic properties (Public)
     
     /// This object is used to import a list of messages, send messages, modify messages, and so on, and is created during initialization.
     public private(set) var channel: SBDGroupChannel?
-
+    public private(set) var channelUrl: String?
+    
     /// This object has a list of all success messages synchronized with the server.
     @SBUAtomic public private(set) var messageList: [SBDBaseMessage] = []
+    /// This object has a list of all messages.
+    @SBUAtomic public private(set) var fullMessageList: [SBDBaseMessage] = []
     
+    // preSend -> error: resendable / succeeded: messageList -> fullMessageList
+    /// This object is used before response from the server
+    public private(set) var preSendMessages: [String:SBDBaseMessage] = [:]
     /// This object that has resendable messages, including `pending messages` and `failed messages`.
     public private(set) var resendableMessages: [String:SBDBaseMessage] = [:]
-    
+    /// This object is used in the user message in being edited.
+    public private(set) var inEditingMessage: SBDUserMessage? = nil
+
+    public private(set) var preSendFileData: [String:[String:AnyObject]] = [:] // Key: requestId
+    public private(set) var resendableFileData: [String:[String:AnyObject]] = [:] // Key: requestId
+    public private(set) var fileTransferProgress: [String:CGFloat] = [:] // Key: requestId, If have value, file message status is sending
+
     /// This is a params used to get a list of messages. Only getter is provided, please use initialization function to set params directly.
     /// - note: For params properties, see `SBDMessageListParams` class.
     /// - Since: 1.0.11
     public private(set) var messageListParams = SBDMessageListParams()
     
     
-    // MARK:- Logic properties (Private)
-    private var channelUrl: String?
-    
+    // MARK: - Logic properties (Private)
     var customizedMessageListParams: SBDMessageListParams? = nil
     
-    @SBUAtomic var fullMessageList: [SBDBaseMessage] = []
-    var preSendMessages: [String:SBDBaseMessage] = [:] // for use before response from the server
-    
-    // Pending, Failed messaged
-    var inEditingMessage: SBDUserMessage? = nil // for editing
-
-    // preSend -> error: resendable / succeeded: messageList -> fullMessageList
-    var preSendFileData: [String:[String:AnyObject]] = [:] // Key: requestId
-    var resendableFileData: [String:[String:AnyObject]] = [:] // Key: requestId
-    var fileTransferProgress: [String:CGFloat] = [:] // Key: requestId, If have value, file message status is sending
-
     var lastUpdatedTimestamp: Int64 = 0
     var firstLoad = true
     var hasPrevious = true
@@ -150,15 +158,8 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
 
     var lastSeenIndexPath: IndexPath?
 
-    // for cell
-    var adminMessageCell: SBUBaseMessageCell?
-    var userMessageCell: SBUBaseMessageCell?
-    var fileMessageCell: SBUBaseMessageCell?
-    var customMessageCell: SBUBaseMessageCell?
-    var unknownMessageCell: SBUBaseMessageCell?
-  
-  
-    // MARK:- Lifecycle
+
+    // MARK: - Lifecycle
     @available(*, unavailable, renamed: "SBUChannelViewController(channelUrl:)")
     required public init?(coder: NSCoder) {
         super.init(coder: coder)
@@ -174,13 +175,13 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     /// If you have channel object, use this initialize function. And, if you have own message list params, please set it. If not set, it is used as the default value.
     ///
     /// See the example below for params generation.
-    /// ````
+    /// ```
     ///     let params = SBDMessageListParams()
     ///     params.includeMetaArray = true
     ///     params.includeReactions = true
     ///     params.includeReplies = true
     ///     ...
-    /// ````
+    /// ```
     /// - note: The `reverse` and the `previousResultSize` properties in the `SBDMessageListParams` are set in the UIKit. Even though you set that property it will be ignored.
     /// - Parameter channel: Channel object
     /// - Since: 1.0.11
@@ -197,13 +198,13 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     /// If you don't have channel object and have channelUrl, use this initialize function. And, if you have own message list params, please set it. If not set, it is used as the default value.
     ///
     /// See the example below for params generation.
-    /// ````
+    /// ```
     ///     let params = SBDMessageListParams()
     ///     params.includeMetaArray = true
     ///     params.includeReactions = true
     ///     params.includeReplies = true
     ///     ...
-    /// ````
+    /// ```
     /// - note: The `reverse` and the `previousResultSize` properties in the `SBDMessageListParams` are set in the UIKit. Even though you set that property it will be ignored.
     /// - Parameter channelUrl: Channel url string
     /// - Since: 1.0.11
@@ -224,16 +225,9 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         self.navigationItem.leftBarButtonItem = self.leftBarButton
         self.navigationItem.rightBarButtonItem = self.rightBarButton
 
-        let spacer = UIView()
-        let constraint = spacer.widthAnchor.constraint(
-            greaterThanOrEqualToConstant: CGFloat.greatestFiniteMagnitude
-        )
-        constraint.isActive = true
-        constraint.priority = .defaultLow
-
         var stack = UIStackView()
         if let titleView = self.titleView {
-            stack = UIStackView(arrangedSubviews: [titleView, spacer])
+            stack = UIStackView(arrangedSubviews: [titleView, self.spacer])
             stack.axis = .horizontal
         }
         
@@ -295,6 +289,13 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     }
     
     open func setupAutolayout() {
+        self.spacer.translatesAutoresizingMaskIntoConstraints = false
+        let constraint = self.spacer.widthAnchor.constraint(
+            greaterThanOrEqualToConstant: self.view.bounds.width
+        )
+        constraint.isActive = true
+        constraint.priority = .defaultLow
+        
         self.tableView.translatesAutoresizingMaskIntoConstraints = false
         self.tableViewTopConstraint = self.tableView.topAnchor.constraint(
             equalTo: self.view.topAnchor,
@@ -464,7 +465,7 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     }
 
     
-    // MARK:- SDK relations
+    // MARK: - SDK relations
     private func loadPrevMessageList(reset: Bool) {
         if self.isLoading { return }
         self.setLoading(true, false)
@@ -534,7 +535,7 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
                 return
             }
             
-            self?.upsertMessagesForSync(messages: messages, needReload: true)
+            self?.upsertMessagesInList(messages: messages, needReload: true)
             self?.lastUpdatedTimestamp = self?.channel?.lastMessage?.createdAt
                 ?? Int64(Date().timeIntervalSince1970*1000)
         }
@@ -574,7 +575,7 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
                 
                 if messages.count > 0 {
                     self?.lastUpdatedTimestamp = messages[0].createdAt
-                    self?.upsertMessagesForSync(messages: messages, needReload: false)
+                    self?.upsertMessagesInList(messages: messages, needReload: false)
                 }
                 
                 self?.loadNextMessages(hasNext: (messages.count == limit))
@@ -608,8 +609,8 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
                     \(String(format: "%d deleted messages", deletedMessageIds?.count ?? 0))
                     """)
                 
-                self?.upsertMessagesForSync(messages: updatedMessages, needReload: false)
-                self?.deleteMessagesForSync(messageIds: deletedMessageIds as! [Int64],
+                self?.upsertMessagesInList(messages: updatedMessages, needReload: false)
+                self?.deleteMessagesInList(messageIds: deletedMessageIds as! [Int64],
                                             needReload: false)
                 self?.loadMessageChangeLogs(hasMore: hasMore, token: token)
             }
@@ -634,8 +635,8 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
                     \(String(format: "%d deleted messages", deletedMessageIds?.count ?? 0))
                     """)
                 
-                self?.upsertMessagesForSync(messages: updatedMessages, needReload: false)
-                self?.deleteMessagesForSync(messageIds: deletedMessageIds as! [Int64],
+                self?.upsertMessagesInList(messages: updatedMessages, needReload: false)
+                self?.deleteMessagesInList(messageIds: deletedMessageIds as! [Int64],
                                             needReload: false)
                 self?.loadMessageChangeLogs(hasMore: hasMore, token: token)
             }
@@ -683,7 +684,7 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
             
             self.preSendMessages.removeValue(forKey: requestId)
             self.resendableMessages.removeValue(forKey: requestId)
-            self.upsertMessagesForSync(messages: [message], needReload: true)
+            self.upsertMessagesInList(messages: [message], needReload: true)
             
             self.channel?.markAsRead()
         }
@@ -787,7 +788,7 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
                 self?.resendableMessages.removeValue(forKey: requestId)
                 self?.resendableFileData.removeValue(forKey: requestId)
                 self?.fileTransferProgress.removeValue(forKey: requestId)
-                self?.upsertMessagesForSync(messages: [message], needReload: true)
+                self?.upsertMessagesInList(messages: [message], needReload: true)
                 
                 self?.channel?.markAsRead()
         })
@@ -837,7 +838,7 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
                     
                     self?.preSendMessages.removeValue(forKey: requestId)
                     self?.resendableMessages.removeValue(forKey: requestId)
-                    self?.upsertMessagesForSync(messages: [message], needReload: true)
+                    self?.upsertMessagesInList(messages: [message], needReload: true)
                     
                     self?.channel?.markAsRead()
             })
@@ -884,7 +885,7 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
                     self?.resendableMessages.removeValue(forKey: requestId)
                     self?.resendableFileData.removeValue(forKey: requestId)
                     self?.fileTransferProgress.removeValue(forKey: requestId)
-                    self?.upsertMessagesForSync(messages: [message], needReload: true)
+                    self?.upsertMessagesInList(messages: [message], needReload: true)
                     
                     self?.channel?.markAsRead()
             })
@@ -934,8 +935,8 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
                 
                 SBULog.info("[Succeed] Update user message: \(updatedMessage.description)")
                 
-                self?.deleteMessagesForSync(messageIds: [message.messageId], needReload: false)
-                self?.upsertMessagesForSync(messages: [updatedMessage], needReload: true)
+                self?.deleteMessagesInList(messageIds: [message.messageId], needReload: false)
+                self?.upsertMessagesInList(messages: [updatedMessage], needReload: true)
                 self?.inEditingMessage = nil
                 self?.messageInputView.endEditMode()
             }
@@ -960,7 +961,7 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
                 
                 SBULog.info("[Succeed] Delete message: \(message.description)")
                 
-                self?.deleteMessagesForSync(messageIds: [message.messageId], needReload: true)
+                self?.deleteMessagesInList(messageIds: [message.messageId], needReload: true)
             })
         }
         
@@ -1049,20 +1050,20 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     }
 
 
-    // MARK:- List managing
-    private func sortedFullMessageList() -> [SBDBaseMessage] {
+    // MARK: - List managing
+    
+    /// This function sorts the all message list. (Included `presendMessages`, `messageList` and `resendableMessages`.)
+    /// - Parameter needReload: If set to `true`, the tableview will be call reloadData and, scroll to last seen index.
+    /// - Since: [NEXT_VERSION]
+    public func sortAllMessageList(needReload: Bool) {
+        // Generate full list for draw
         let presendMessages = self.preSendMessages.values
         let sendMessages = self.messageList
         let resendableMessages = self.resendableMessages.values
         
-        return ([] + resendableMessages + presendMessages)
+        self.fullMessageList = ([] + resendableMessages + presendMessages)
             .sorted { $0.createdAt > $1.createdAt }
             + sendMessages.sorted { $0.createdAt > $1.createdAt }
-    }
-    
-    private func sortAllMessageList(needReload: Bool) {
-        // Generate full list for draw
-        self.fullMessageList = self.sortedFullMessageList()
         
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
@@ -1079,8 +1080,16 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
             self.tableView.scrollToRow(at: lastSeenIndexPath, at: .top, animated: false)
         }
     }
-
-    private func updateMessagesForSync(messages: [SBDBaseMessage]?, needReload: Bool) {
+    
+    /// This function updates the messages in the list.
+    ///
+    /// It is updated only if the messages already exist in the list, and if not, it is ignored.
+    /// And, after updating the messages, a function to sort the message list is called.
+    /// - Parameters:
+    ///   - messages: Message array to update
+    ///   - needReload: If set to `true`, the tableview will be call reloadData.
+    /// - Since: [NEXT_VERSION]
+    private func updateMessagesInList(messages: [SBDBaseMessage]?, needReload: Bool) {
         messages?.forEach { message in
             if let index = self.messageList
                 .firstIndex(where: { $0.messageId == message.messageId }) {
@@ -1091,9 +1100,15 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         self.sortAllMessageList(needReload: needReload)
     }
     
-    private func upsertMessagesForSync(messages: [SBDBaseMessage]?,
-                                       needUpdateNewMessage: Bool = true,
-                                       needReload: Bool) {
+    /// This function upserts the messages in the list.
+    /// - Parameters:
+    ///   - messages: Message array to upsert
+    ///   - needUpdateNewMessage: If set to `true`, increases new message count.
+    ///   - needReload: If set to `true`, the tableview will be call reloadData.
+    /// - Since: [NEXT_VERSION]
+    public func upsertMessagesInList(messages: [SBDBaseMessage]?,
+                                      needUpdateNewMessage: Bool = true,
+                                      needReload: Bool) {
         messages?.forEach { message in
             if let index = self.messageList
                 .firstIndex(where: { $0.messageId == message.messageId }) {
@@ -1121,7 +1136,12 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         self.sortAllMessageList(needReload: needReload)
     }
     
-    private func deleteMessagesForSync(messageIds: [Int64], needReload: Bool) {
+    /// This function deletes the messages in the list using the message ids.
+    /// - Parameters:
+    ///   - messageIds: Message id array to delete
+    ///   - needReload: If set to `true`, the tableview will be call reloadData.
+    /// - Since: [NEXT_VERSION]
+    public func deleteMessagesInList(messageIds: [Int64], needReload: Bool) {
         var toBeDeleteIndexes: [Int] = []
         var toBeDeleteRequestIds: [String] = []
         
@@ -1154,18 +1174,15 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
             self.messageList.remove(at: index)
         }
         
-        for requestId in toBeDeleteRequestIds {
-            self.preSendMessages.removeValue(forKey: requestId)
-            self.preSendFileData.removeValue(forKey: requestId)
-            self.resendableMessages.removeValue(forKey: requestId)
-            self.resendableFileData.removeValue(forKey: requestId)
-            self.fileTransferProgress.removeValue(forKey: requestId)
-        }
-        
-        self.sortAllMessageList(needReload: needReload)
+        self.deleteResendableMessages(requestIds: toBeDeleteRequestIds, needReload: needReload)
     }
     
-    private func deleteResendableMessages(requestIds: [String], needReload: Bool) {
+    /// This functions deletes the resendable messages using the request ids.
+    /// - Parameters:
+    ///   - requestIds: Request id array to delete
+    ///   - needReload: If set to `true`, the tableview will be call reloadData.
+    /// - Since: [NEXT_VERSION]
+    public func deleteResendableMessages(requestIds: [String], needReload: Bool) {
         for requestId in requestIds {
             self.preSendMessages.removeValue(forKey: requestId)
             self.preSendFileData.removeValue(forKey: requestId)
@@ -1183,7 +1200,7 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
             self.lastSeenIndexPath = nil
             return
         }
-        guard self.isRequestingLoad == false else {
+        guard !self.isRequestingLoad else {
             self.lastSeenIndexPath = nil
             return
         }
@@ -1205,7 +1222,10 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     }
     
     
-    // MARK:- Send action relations
+    // MARK: - Send action relations
+    
+    /// Sends a image file message.
+    /// - Parameter info: Image information selected in `UIImagePickerController`
     public func sendImageFileMessage(info: [UIImagePickerController.InfoKey : Any]) {
         var _imageUrl: URL? = nil
         if #available(iOS 11.0, *) {
@@ -1279,6 +1299,8 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         }
     }
     
+    /// Sends a video file message.
+    /// - Parameter info: Video information selected in `UIImagePickerController`
     public func sendVideoFileMessage(info: [UIImagePickerController.InfoKey : Any]) {
         do {
             guard let videoUrl = info[.mediaURL] as? URL else { return }
@@ -1295,6 +1317,8 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         }
     }
     
+    /// Sends a document file message.
+    /// - Parameter documentUrls: Document information selected in `UIDocumentPickerViewController`
     public func sendDocumentFileMessage(documentUrls: [URL]) {
         do {
             guard let documentUrl = documentUrls.first else { return }
@@ -1312,7 +1336,7 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     }
     
 
-    // MARK:- Custom viewController relations
+    // MARK: - Custom viewController relations
     
     /// If you want to use a custom channelSettingsViewController, override it and implement it.
     open func showChannelSettings() {
@@ -1336,6 +1360,10 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         self.present(emojiListVC, animated: true)
     }
     
+    /// Used to register a custom cell as a admin message cell based on `SBUBaseMessageCell`.
+    /// - Parameters:
+    ///   - channelCell: Customized admin message cell
+    ///   - nib: nib information. If the value is nil, the nib file is not used.
     public func register(adminMessageCell: SBUBaseMessageCell, nib: UINib? = nil) {
         self.adminMessageCell = adminMessageCell
         if let nib = nib {
@@ -1351,6 +1379,10 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         }
     }
 
+    /// Used to register a custom cell as a user message cell based on `SBUBaseMessageCell`.
+    /// - Parameters:
+    ///   - channelCell: Customized user message cell
+    ///   - nib: nib information. If the value is nil, the nib file is not used.
     public func register(userMessageCell: SBUBaseMessageCell, nib: UINib? = nil) {
         self.userMessageCell = userMessageCell
         if let nib = nib {
@@ -1366,6 +1398,10 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         }
     }
 
+    /// Used to register a custom cell as a file message cell based on `SBUBaseMessageCell`.
+    /// - Parameters:
+    ///   - channelCell: Customized file message cell
+    ///   - nib: nib information. If the value is nil, the nib file is not used.
     public func register(fileMessageCell: SBUBaseMessageCell, nib: UINib? = nil) {
         self.fileMessageCell = fileMessageCell
         if let nib = nib {
@@ -1381,6 +1417,10 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         }
     }
 
+    /// Used to register a custom cell as a additional message cell based on `SBUBaseMessageCell`.
+    /// - Parameters:
+    ///   - channelCell: Customized message cell
+    ///   - nib: nib information. If the value is nil, the nib file is not used.
     public func register(customMessageCell: SBUBaseMessageCell?, nib: UINib? = nil) {
         self.customMessageCell = customMessageCell
         guard let customMessageCell = customMessageCell else { return }
@@ -1397,6 +1437,10 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         }
     }
     
+    /// Used to register a custom cell as a unknown message cell based on `SBUBaseMessageCell`.
+    /// - Parameters:
+    ///   - channelCell: Customized unknown message cell
+    ///   - nib: nib information. If the value is nil, the nib file is not used.
     private func register(unknownMessageCell: SBUBaseMessageCell, nib: UINib? = nil) {
         self.unknownMessageCell = unknownMessageCell
         if let nib = nib {
@@ -1414,7 +1458,6 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
 
     
     // MARK: Cell TapHandler
-    
     /// This function sets the cell's tap gesture handling.
     /// - Parameters:
     ///   - cell: Message cell object
@@ -1527,7 +1570,7 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         switch message {
         case let userMessage as SBDUserMessage:
             let isCurrentUser = userMessage.sender?.userId == SBUGlobals.CurrentUser?.userId
-            let types: [SBUMenuItemType] = isCurrentUser ? [.copy, .edit, .delete] : [.copy]
+            let types: [MessageMenuItem] = isCurrentUser ? [.copy, .edit, .delete] : [.copy]
             cell.isSelected = true
             
             if SBUEmojiManager.useReaction {
@@ -1539,7 +1582,7 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         case let fileMessage as SBDFileMessage:
             guard fileMessage.sendingStatus == .succeeded else { return }
             let isCurrentUser = fileMessage.sender?.userId == SBUGlobals.CurrentUser?.userId
-            let types: [SBUMenuItemType] = isCurrentUser ? [.save, .delete] : [.save]
+            let types: [MessageMenuItem] = isCurrentUser ? [.save, .delete] : [.save]
             cell.isSelected = true
             
             if SBUEmojiManager.useReaction {
@@ -1630,7 +1673,7 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     /// This function sets the user profile tap gesture handling.
     ///
     /// If you do not want to use the user profile function, override this function and leave it empty.
-    /// - Parameter user: User object used for user profile configuration
+    /// - Parameter user: `SBUUser` object used for user profile configuration
     ///
     /// - Since: 1.2.2
     open func setUserProfileTapGestureHandler(_ user: SBUUser) {
@@ -1682,7 +1725,11 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     }
 
 
-    // MARK:- Common
+    // MARK: - Common
+    
+    /// This function checks if the current message and the next message date have the same day.
+    /// - Parameter currentIndex: Current message index
+    /// - Returns: If `true`, the messages date is same day.
     public func checkSameDayAsNextMessage(currentIndex: Int) -> Bool {
         guard currentIndex < self.fullMessageList.count-1 else { return false }
         
@@ -1733,10 +1780,10 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     }
     
     /// This is a function that gets the location of the message to be grouped.
+    ///
     /// Only successful messages can be grouped.
     /// - Parameter currentIndex: Index of current message in the message list
     /// - Returns: Position of a message when grouped
-    ///
     /// - Since: 1.2.1
     public func getMessageGroupingPosition(currentIndex: Int) -> MessageGroupPosition {
         guard currentIndex < self.fullMessageList.count-1 else { return .none }
@@ -1799,7 +1846,9 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     }
     
     
-    // MARK:- Actions
+    // MARK: - Actions
+    
+    /// This function actions to pop or dismiss.
     public func onClickBack() {
         if let navigationController = self.navigationController,
             navigationController.viewControllers.count > 1 {
@@ -1809,12 +1858,16 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         }
     }
     
+    /// This function shows channel settings.
     public func onClickSetting() {
         self.showChannelSettings()
     }
     
     
-    // MARK:- ScrollView
+    // MARK: - ScrollView
+    
+    /// This function scrolls to bottom.
+    /// - Parameter animated: Animated
     public func scrollToBottom(animated: Bool) {
         guard self.fullMessageList.count != 0 else { return }
         
@@ -1844,10 +1897,17 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     }
     
 
-    // MARK:- Cell generator
-    func setUserMessageCell(_ cell: SBUUserMessageCell,
-                            userMessage: SBDUserMessage,
-                            indexPath: IndexPath) {
+    // MARK: - Cell generator
+    
+    /// This function sets gestures in user message cell.
+    /// - Parameters:
+    ///   - cell: User message cell
+    ///   - userMessage: User message object
+    ///   - indexPath: Cell's indexPath
+    /// - Since: [NEXT_VERSION]
+    open func setUserMessageCellGestures(_ cell: SBUUserMessageCell,
+                                         userMessage: SBDUserMessage,
+                                         indexPath: IndexPath) {
         cell.tapHandlerToContent = { [weak self] in
             self?.setTapGestureHandler(cell, message: userMessage)
         }
@@ -1858,18 +1918,51 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         }
     }
     
-    func setFileMessageCell(_ cell: SBUFileMessageCell,
-                            fileMessage: SBDFileMessage,
-                            indexPath: IndexPath) {
+    /// This function sets gestures in file message cell.
+    /// - Parameters:
+    ///   - cell: File message cell
+    ///   - fileMessage: File message object
+    ///   - indexPath: Cell's indexPath
+    /// - Since: [NEXT_VERSION]
+    open func setFileMessageCellGestures(_ cell: SBUFileMessageCell,
+                                         fileMessage: SBDFileMessage,
+                                         indexPath: IndexPath) {
         cell.tapHandlerToContent = { [weak self] in
             self?.setTapGestureHandler(cell, message: fileMessage)
         }
-
+        
         cell.longPressHandlerToContent = { [weak self, weak cell] in
             guard let self = self, let cell = cell else { return }
             self.setLongTapGestureHandler(cell, message: fileMessage, indexPath: indexPath)
         }
+    }
+    
+    /// This function sets gestures in unknown message cell.
+    /// - Parameters:
+    ///   - cell: Unknown message cell
+    ///   - unknownMessage: message object
+    ///   - indexPath: Cell's indexPath
+    /// - Since: [NEXT_VERSION]
+    open func setUnkownMessageCellGestures(_ cell: SBUUnknownMessageCell,
+                                           unknownMessage: SBDBaseMessage,
+                                           indexPath: IndexPath) {
+        cell.tapHandlerToContent = { [weak self] in
+            self?.setTapGestureHandler(cell, message: unknownMessage)
+        }
         
+        cell.longPressHandlerToContent = { [weak self, weak cell] in
+            guard let self = self, let cell = cell else { return }
+            self.setLongTapGestureHandler(cell, message: unknownMessage, indexPath: indexPath)
+        }
+    }
+    
+    /// This function sets images in file message cell.
+    /// - Parameters:
+    ///   - cell: File message cell
+    ///   - fileMessage: File message object
+    /// - Since: [NEXT_VERSION]
+    func setFileMessageCellImages(_ cell: SBUFileMessageCell,
+                                  fileMessage: SBDFileMessage) {
         switch fileMessage.sendingStatus {
         case .canceled, .pending, .failed, .none:
             let requestID = fileMessage.requestId
@@ -1889,30 +1982,24 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
                     cell.setImage(fileData.toImage(), size: SBUConstant.thumbnailSize)
                 }
             }
-            
         case .succeeded:
             break
-
         @unknown default:
             self.didReceiveError("unknown Type")
         }
     }
     
-    func setUnkownMessageCell(_ cell: SBUUnknownMessageCell,
-                              unknownMessage: SBDBaseMessage,
-                              indexPath: IndexPath) {
-        cell.tapHandlerToContent = { [weak self] in
-            self?.setTapGestureHandler(cell, message: unknownMessage)
-        }
-        
-        cell.longPressHandlerToContent = { [weak self, weak cell] in
-            guard let self = self, let cell = cell else { return }
-            self.setLongTapGestureHandler(cell, message: unknownMessage, indexPath: indexPath)
-        }
-    }
     
-    private func calculatorMenuPoint(indexPath: IndexPath,
-                                     position: MessagePosition) -> CGPoint {
+    // MARK: - Cell's menu
+    
+    /// This function calculates the point at which to draw the menu.
+    /// - Parameters:
+    ///   - indexPath: IndexPath
+    ///   - position: Message position
+    /// - Returns: `CGPoint` value
+    /// - Since: [NEXT_VERSION]
+    public func calculatorMenuPoint(indexPath: IndexPath,
+                                    position: MessagePosition) -> CGPoint {
         let rowRect = self.tableView.rectForRow(at: indexPath)
         let rowRectInSuperview = self.tableView.convert(rowRect,
                                                         to: self.tableView.superview?.superview)
@@ -1922,10 +2009,15 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         return menuPoint
     }
     
-    
-    func showMenuViewController(_ cell: SBUBaseMessageCell,
-                                message: SBDBaseMessage,
-                                types: [SBUMenuItemType]) {
+    /// This function shows cell's menu. This is used when the reaction feature is activated.
+    /// - Parameters:
+    ///   - cell: Message cell
+    ///   - message: Message object
+    ///   - types: Type array of menu items to use
+    /// - Since: [NEXT_VERSION]
+    public func showMenuViewController(_ cell: SBUBaseMessageCell,
+                                       message: SBDBaseMessage,
+                                       types: [MessageMenuItem]) {
         let menuVC = SBUMenuViewController(message: message, itemTypes: types)
         menuVC.modalPresentationStyle = .custom
         menuVC.transitioningDelegate = self
@@ -1972,10 +2064,17 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         }
     }
 
-    func showMenuModal(_ cell: SBUBaseMessageCell,
-                       indexPath: IndexPath,
-                       message: SBDBaseMessage,
-                       types: [SBUMenuItemType]) {
+    /// This function shows cell's menu. This is used when the reaction feature is inactivated.
+    /// - Parameters:
+    ///   - cell: Message cell
+    ///   - indexPath: IndexPath
+    ///   - message: Message object
+    ///   - types: Type array of menu items to use
+    /// - Since: [NEXT_VERSION]
+    public func showMenuModal(_ cell: SBUBaseMessageCell,
+                              indexPath: IndexPath,
+                              message: SBDBaseMessage,
+                              types: [MessageMenuItem]) {
         let items: [SBUMenuItem] = types.map {
             switch $0 {
             case .copy:
@@ -2033,8 +2132,11 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     }
 
     
-    // MARK:- Keyboard
-    func keyboardWillShow(_ notification: Notification) {
+    // MARK: - Keyboard
+    /// This function changes the messageInputView bottom constraint using keyboard height.
+    /// - Parameter notification: Notification object with keyboardFrame information
+    /// - Since: [NEXT_VERSION]
+    @objc public func keyboardWillShow(_ notification: Notification) {
         guard let keyboardFrame = notification.userInfo?[
             UIResponder.keyboardFrameEndUserInfoKey
             ] as? NSValue else { return }
@@ -2045,30 +2147,37 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         self.view.layoutIfNeeded()
     }
     
-    @objc func keyboardWillHide(_ notification: Notification) {
+    /// This function changes the messageInputView bottom constraint using keyboard height.
+    /// - Parameter notification: Notification object with keyboardFrame information
+    /// - Since: [NEXT_VERSION]
+    @objc public func keyboardWillHide(_ notification: Notification) {
         self.messageInputViewBottomConstraint.constant = 0
         self.view.layoutIfNeeded()
     }
     
-    @objc func dismissKeyboard() {
+    /// This function dismisses the keyboard.
+    /// - Since: [NEXT_VERSION]
+    @objc public func dismissKeyboard() {
         view.endEditing(true)
     }
     
-    func addGestureHideKeyboard() {
+    /// This functions adds the hide keyboard gesture in tableView.
+    /// - Since: [NEXT_VERSION]
+    public func addGestureHideKeyboard() {
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tap.cancelsTouchesInView = false
         tableView.addGestureRecognizer(tap)
     }
     
 
-    // MARK:- Error handling
+    // MARK: - Error handling
     open func didReceiveError(_ message: String?) {
         SBULog.error("Did receive error: \(message ?? "")")
     }
 }
 
 
-// MARK:- UITableViewDelegate, UITableViewDataSource
+// MARK: - UITableViewDelegate, UITableViewDataSource
 extension SBUChannelViewController: UITableViewDelegate, UITableViewDataSource {
     open func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let channel = self.channel else {
@@ -2079,7 +2188,7 @@ extension SBUChannelViewController: UITableViewDelegate, UITableViewDataSource {
         let message = self.fullMessageList[indexPath.row]
 
         let cell = tableView.dequeueReusableCell(
-            withIdentifier: self.getCellIdentifier(by: message)
+            withIdentifier: self.generateCellIdentifier(by: message)
             ) ?? UITableViewCell()
         cell.contentView.transform = CGAffineTransform(scaleX: 1, y: -1)
         cell.selectionStyle = .none
@@ -2106,7 +2215,7 @@ extension SBUChannelViewController: UITableViewDelegate, UITableViewDataSource {
                 groupPosition: self.getMessageGroupingPosition(currentIndex: indexPath.row),
                 receiptState: SBUUtils.getReceiptState(channel: channel, message: unknownMessage)
             )
-            self.setUnkownMessageCell(
+            self.setUnkownMessageCellGestures(
                 unknownMessageCell,
                 unknownMessage: unknownMessage,
                 indexPath: indexPath
@@ -2120,7 +2229,7 @@ extension SBUChannelViewController: UITableViewDelegate, UITableViewDataSource {
                 groupPosition: self.getMessageGroupingPosition(currentIndex: indexPath.row),
                 receiptState: SBUUtils.getReceiptState(channel: channel, message: message)
             )
-            self.setUserMessageCell(
+            self.setUserMessageCellGestures(
                 userMessageCell,
                 userMessage: userMessage,
                 indexPath: indexPath
@@ -2135,11 +2244,13 @@ extension SBUChannelViewController: UITableViewDelegate, UITableViewDataSource {
                 receiptState: SBUUtils.getReceiptState(channel: channel, message: message)
             )
             
-            self.setFileMessageCell(
+            self.setFileMessageCellGestures(
                 fileMessageCell,
                 fileMessage: fileMessage,
                 indexPath: indexPath
             )
+            
+            self.setFileMessageCellImages(fileMessageCell, fileMessage: fileMessage)
             
         default:
             messageCell.configure(
@@ -2191,7 +2302,10 @@ extension SBUChannelViewController: UITableViewDelegate, UITableViewDataSource {
         return self.fullMessageList.count
     }
     
-    open func getCellIdentifier(by message: SBDBaseMessage) -> String {
+    /// This function generates cell's identifier.
+    /// - Parameter message: Message object
+    /// - Returns: Identifier
+    open func generateCellIdentifier(by message: SBDBaseMessage) -> String {
         switch message {
         case is SBDFileMessage:
             return fileMessageCell?.sbu_className ?? SBUFileMessageCell.sbu_className
@@ -2206,7 +2320,7 @@ extension SBUChannelViewController: UITableViewDelegate, UITableViewDataSource {
 }
 
 
-// MARK:- UIViewControllerTransitioningDelegate
+// MARK: - UIViewControllerTransitioningDelegate
 extension SBUChannelViewController: UIViewControllerTransitioningDelegate {
     public func presentationController(forPresented presented: UIViewController,
                                        presenting: UIViewController?,
@@ -2219,7 +2333,7 @@ extension SBUChannelViewController: UIViewControllerTransitioningDelegate {
 }
 
 
-// MARK:- UIImagePickerControllerDelegate
+// MARK: - UIImagePickerControllerDelegate
 extension SBUChannelViewController: UIImagePickerControllerDelegate {
     public func imagePickerController(
         _ picker: UIImagePickerController,
@@ -2245,7 +2359,7 @@ extension SBUChannelViewController: UIImagePickerControllerDelegate {
 }
 
 
-// MARK:- UIDocumentPickerDelegate
+// MARK: - UIDocumentPickerDelegate
 extension SBUChannelViewController: UIDocumentPickerDelegate {
     @available(iOS 11.0, *)
     public func documentPicker(_ controller: UIDocumentPickerViewController,
@@ -2261,7 +2375,7 @@ extension SBUChannelViewController: UIDocumentPickerDelegate {
 }
 
 
-// MARK:- SBUMessageInputViewDelegate
+// MARK: - SBUMessageInputViewDelegate
 extension SBUChannelViewController: SBUMessageInputViewDelegate {
     open func messageInputView(_ messageInputView: SBUMessageInputView,
                                didSelectSend text: String) {
@@ -2325,7 +2439,7 @@ extension SBUChannelViewController: SBUMessageInputViewDelegate {
 }
 
 
-// MARK:- SBUFileViewerDelegate
+// MARK: - SBUFileViewerDelegate
 extension SBUChannelViewController: SBUFileViewerDelegate {
     open func didSelectDeleteImage(message: SBDFileMessage) {
         SBULog.info("[Request] Delete message: \(message.description)")
@@ -2338,13 +2452,13 @@ extension SBUChannelViewController: SBUFileViewerDelegate {
             }
 
             SBULog.info("[Succeed] Delete message: \(message.description)")
-            self?.deleteMessagesForSync(messageIds: [message.messageId], needReload: true)
+            self?.deleteMessagesInList(messageIds: [message.messageId], needReload: true)
         }
     }
 }
 
 
-// MARK:- SBUEmptyViewDelegate
+// MARK: - SBUEmptyViewDelegate
 extension SBUChannelViewController: SBUEmptyViewDelegate {
     public func didSelectRetry() {
         if let emptyView = self.emptyView as? SBUEmptyView {
@@ -2356,7 +2470,7 @@ extension SBUChannelViewController: SBUEmptyViewDelegate {
 }
 
 
-// MARK:- SBUUserProfileViewDelegate
+// MARK: - SBUUserProfileViewDelegate
 extension SBUChannelViewController: SBUUserProfileViewDelegate {
     open func didSelectMessage(userId: String?) {
         if let userProfileView = self.userProfileView
@@ -2377,7 +2491,7 @@ extension SBUChannelViewController: SBUUserProfileViewDelegate {
 }
 
 
-// MARK:- SBDChannelDelegate, SBDConnectionDelegate
+// MARK: - SBDChannelDelegate, SBDConnectionDelegate
 extension SBUChannelViewController: SBDChannelDelegate, SBDConnectionDelegate {
     // MARK: SBDChannelDelegate
     // Received message
@@ -2406,7 +2520,7 @@ extension SBUChannelViewController: SBDChannelDelegate, SBDConnectionDelegate {
         
         SBULog.info("[Request] markAsRead")
         self.channel?.markAsRead()
-        self.upsertMessagesForSync(messages: [message], needReload: true)
+        self.upsertMessagesInList(messages: [message], needReload: true)
     }
     
     // Updated message
@@ -2415,7 +2529,7 @@ extension SBUChannelViewController: SBDChannelDelegate, SBDConnectionDelegate {
         
         SBULog.info("Did update message: \(message)")
         
-        self.updateMessagesForSync(messages: [message], needReload: true)
+        self.updateMessagesInList(messages: [message], needReload: true)
     }
     
     // Deleted message
@@ -2424,7 +2538,7 @@ extension SBUChannelViewController: SBDChannelDelegate, SBDConnectionDelegate {
         
         SBULog.info("Message was deleted: \(messageId)")
         
-        self.deleteMessagesForSync(messageIds: [messageId], needReload: true)
+        self.deleteMessagesInList(messageIds: [messageId], needReload: true)
     }
 
     // Updated Reaction
@@ -2435,7 +2549,7 @@ extension SBUChannelViewController: SBDChannelDelegate, SBDConnectionDelegate {
         message.apply(reactionEvent)
 
         SBULog.info("Updated reaction, message:\(message.messageId), key: \(reactionEvent.key)")
-        self.upsertMessagesForSync(
+        self.upsertMessagesInList(
             messages: [message],
             needUpdateNewMessage: false,
             needReload: true

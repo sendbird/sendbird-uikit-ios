@@ -1,5 +1,11 @@
 # Change Log
 
+### v1.2.4 (Oct 19, 2020)
+* Changed access controls
+* Added documentation comments
+* Fixed autolayout warnings
+* Improved stability
+
 ### v1.2.3 (Sep 24, 2020)
 * Improved logic for real-time theme changes
 

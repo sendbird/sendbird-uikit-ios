@@ -294,7 +294,7 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         let type = MediaResourceType.init(rawValue: index) ?? .unknown
         if type == .camera, AVCaptureDevice.authorizationStatus(for: .video) != .authorized {
             AVCaptureDevice.requestAccess(for: .video) { success in
-                if success == false {
+                if !success {
                     // TODO: Request camera capture permission
                 } else {
                     DispatchQueue.main.async { [weak self] in

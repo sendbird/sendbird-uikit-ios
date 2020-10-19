@@ -13,19 +13,17 @@ import MobileCoreServices
 @objcMembers
 open class SBUChannelSettingsViewController: UIViewController, UINavigationControllerDelegate {
     
-    // MARK: - Public property
-    public var channelName: String? = nil
+    // MARK: - UI properties (Public)
     public lazy var userInfoView: UIView? = _userInfoView
     public lazy var titleView: UIView? = _titleView
     public lazy var leftBarButton: UIBarButtonItem? = _leftBarButton
     public lazy var rightBarButton: UIBarButtonItem? = _rightBarButton
+    public private(set) lazy var tableView = UITableView()
     
-    
-    // MARK: - Private property
-    var theme: SBUChannelSettingsTheme = SBUTheme.channelSettingsTheme
+    public var theme: SBUChannelSettingsTheme = SBUTheme.channelSettingsTheme
 
-    private lazy var tableView = UITableView()
     
+    // MARK: - UI properties (Private)
     private lazy var _titleView: SBUNavigationTitleView = {
         var titleView: SBUNavigationTitleView
         if #available(iOS 11, *) {
@@ -62,18 +60,24 @@ open class SBUChannelSettingsViewController: UIViewController, UINavigationContr
     }()
     
     private lazy var _userInfoView: UIView =  {
-        return UserInfoView()
+        return SBUChannelSettingsUserInfoView()
     }()
+
     
-    private let actionSheetIdEdit = 1
-    private let actionSheetIdPicker = 2
+    // MARK: - Logic properties (Public)
+    public var channelName: String? = nil
     
-    /// One of two must be set.
     public private(set) var channel: SBDGroupChannel?
-    private var channelUrl: String?
-    private lazy var isOperator: Bool = {
+    public private(set) var channelUrl: String?
+
+    public lazy var isOperator: Bool = {
         return self.channel?.myRole == .operator
     }()
+    
+    
+    // MARK: - Logic properties (Private)
+    private let actionSheetIdEdit = 1
+    private let actionSheetIdPicker = 2
     
     
     // MARK: - Lifecycle
@@ -147,7 +151,7 @@ open class SBUChannelSettingsViewController: UIViewController, UINavigationContr
     
     /// This function handles the initialization of autolayouts.
     open func setupAutolayout() {
-        if let userInfoView = self.userInfoView as? UserInfoView {
+        if let userInfoView = self.userInfoView as? SBUChannelSettingsUserInfoView {
             userInfoView
                 .sbu_constraint(equalTo: self.view, left: 0, right: 0, top: 0)
                 .sbu_constraint(equalTo: self.tableView, centerX: 0)
@@ -185,7 +189,7 @@ open class SBUChannelSettingsViewController: UIViewController, UINavigationContr
             titleView.setupStyles()
         }
         
-        if let userInfoView = self.userInfoView as? UserInfoView {
+        if let userInfoView = self.userInfoView as? SBUChannelSettingsUserInfoView {
             userInfoView.setupStyles()
         }
         
@@ -221,6 +225,7 @@ open class SBUChannelSettingsViewController: UIViewController, UINavigationContr
         self.updateStyles()
     }
     
+    
     // MARK: - SDK relations
     
     /// This function is used to load channel information.
@@ -246,7 +251,7 @@ open class SBUChannelSettingsViewController: UIViewController, UINavigationContr
                     \(String(format: "%@", self?.channel ?? ""))
                     """)
                 
-                if let userInfoView = self?.userInfoView as? UserInfoView {
+                if let userInfoView = self?.userInfoView as? SBUChannelSettingsUserInfoView {
                     userInfoView.configure(channel: self?.channel)
                 }
                 
@@ -301,7 +306,7 @@ open class SBUChannelSettingsViewController: UIViewController, UINavigationContr
                     """)
             }
             
-            if let userInfoView = self?.userInfoView as? UserInfoView {
+            if let userInfoView = self?.userInfoView as? SBUChannelSettingsUserInfoView {
                 userInfoView.configure(channel: self?.channel)
                 SBULog.info("[Succeed] Channel update")
             }
@@ -399,7 +404,10 @@ open class SBUChannelSettingsViewController: UIViewController, UINavigationContr
     
     
     // MARK: - Actions
-    func onClickBack() {
+    
+    /// This function actions to pop or dismiss.
+    /// - Since: [NEXT_VERSION]
+    @objc public func onClickBack() {
         if let navigationController = self.navigationController,
             navigationController.viewControllers.count > 1 {
             navigationController.popViewController(animated: true)
@@ -408,7 +416,9 @@ open class SBUChannelSettingsViewController: UIViewController, UINavigationContr
         }
     }
     
-    func onClickEdit() {
+    /// This function used to when edit button click.
+    /// - Since: [NEXT_VERSION]
+    @objc public func onClickEdit() {
         let changeNameItem = SBUActionSheetItem(
             title: SBUStringSet.ChannelSettings_Change_Name,
             color: theme.itemTextColor,
@@ -433,7 +443,7 @@ open class SBUChannelSettingsViewController: UIViewController, UINavigationContr
         self.updateStyles()
     }
     
-    /// Open the channel image selection menu.
+    /// This function shows the channel image selection menu.
     public func selectChannelImage() {
         let cameraItem = SBUActionSheetItem(
             title: SBUStringSet.Camera,
@@ -455,7 +465,7 @@ open class SBUChannelSettingsViewController: UIViewController, UINavigationContr
         )
     }
     
-    /// Open the channel name change popup.
+    /// This function shows the channel name change popup.
     public func changeChannelName() {
         let okButton = SBUAlertButtonItem(title: SBUStringSet.OK) {[weak self] newChannelName in
             guard let newChannel = newChannelName as? String,
@@ -492,7 +502,7 @@ open class SBUChannelSettingsViewController: UIViewController, UINavigationContr
 extension SBUChannelSettingsViewController: UITableViewDataSource, UITableViewDelegate {
     open func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        if let userInfoView = self.userInfoView as? UserInfoView {
+        if let userInfoView = self.userInfoView as? SBUChannelSettingsUserInfoView {
             userInfoView.endEditing(true)
         }
         
@@ -592,7 +602,7 @@ extension SBUChannelSettingsViewController: UIImagePickerControllerDelegate {
         
         picker.dismiss(animated: true) { [weak self] in
             guard let originalImage = info[.originalImage] as? UIImage,
-                let userInfoView = self?.userInfoView as? UserInfoView else { return }
+                let userInfoView = self?.userInfoView as? SBUChannelSettingsUserInfoView else { return }
             
             userInfoView.coverImage.setImage(withImage: originalImage)
             
@@ -600,112 +610,3 @@ extension SBUChannelSettingsViewController: UIImagePickerControllerDelegate {
         }
     }
 }
-
-
-// MARK: -
-@objcMembers
-fileprivate class UserInfoView: UIView {
-    lazy var stackView = UIStackView()
-    lazy var coverImage = SBUCoverImageView()
-    lazy var channelNameField = UITextField()
-    lazy var lineView = UIView()
-    
-    var theme: SBUChannelSettingsTheme = SBUTheme.channelSettingsTheme
-    
-    var channel: SBDGroupChannel?
-    
-    let kCoverImageSize: CGFloat = 64.0
-     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        
-        self.setupViews()
-        self.setupAutolayout()
-    }
-    
-    @available(*, unavailable, renamed: "UserInfoView.init(frame:)")
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-    }
-
-    func setupViews() {
-        self.channelNameField.textAlignment = .center
-        let paddingView: UIView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 0))
-        self.channelNameField.leftView = paddingView
-        self.channelNameField.leftViewMode = .always
-        self.channelNameField.rightView = paddingView
-        self.channelNameField.rightViewMode = .always
-        self.channelNameField.returnKeyType = .done
-        self.channelNameField.isUserInteractionEnabled = false
-        
-        self.coverImage.clipsToBounds = true
-        
-        self.stackView.alignment = .center
-        self.stackView.axis = .vertical
-        self.stackView.spacing = 7
-        self.stackView.alignment = .center
-        self.stackView.addArrangedSubview(self.coverImage)
-        self.stackView.addArrangedSubview(self.channelNameField)
-        self.addSubview(stackView)
-        self.addSubview(lineView)
-    }
-    
-    func setupAutolayout() {
-        self.coverImage
-            .sbu_constraint(width: kCoverImageSize, height: kCoverImageSize)
-
-        self.stackView
-            .sbu_constraint(equalTo: self, left: 0, right: 0, top: 20)
-        
-        self.lineView
-            .sbu_constraint(height: 0.5)
-            .sbu_constraint(equalTo: self.stackView, left: 16, right: -16)
-            .sbu_constraint_equalTo(topAnchor: self.stackView.bottomAnchor, top: 20)
-            .sbu_constraint(equalTo: self, bottom: 0)
-    }
-    
-    func setupStyles() {
-        self.theme = SBUTheme.channelSettingsTheme
-        
-        self.backgroundColor = .clear
-            
-        self.lineView.backgroundColor = theme.cellSeparateColor
-
-        self.channelNameField.font = theme.userNameFont
-        self.channelNameField.textColor = theme.userNameTextColor
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        self.coverImage.layer.cornerRadius = kCoverImageSize / 2
-        self.coverImage.layer.borderColor = UIColor.clear.cgColor
-        self.coverImage.layer.borderWidth = 1
-        
-        self.setupStyles()
-    }
-    
-    func configure(channel: SBDGroupChannel?) {
-        self.channel = channel
-        
-        if let url = channel?.coverUrl, SBUUtils.isValid(coverUrl: url) == true {
-            self.coverImage.setImage(withCoverUrl: url)
-        } else if channel?.isBroadcast == true {
-            self.coverImage.setBroadcastIcon()
-        } else {
-            if let members = self.channel?.members as? [SBDUser] {
-                self.coverImage.setImage(withUsers: members)
-            } else {
-                self.coverImage.setPlaceholderImage(iconSize: .init(width: 46, height: 46))
-            }
-        }
-        
-        guard let channel = self.channel else { return }
-        if SBUUtils.isValid(channelName: channel.name) {
-            self.channelNameField.text = channel.name
-        } else {
-            self.channelNameField.text = SBUUtils.generateChannelName(channel: channel)
-        }
-    }
-}
-

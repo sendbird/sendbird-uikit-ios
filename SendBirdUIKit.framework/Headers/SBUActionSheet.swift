@@ -18,14 +18,21 @@ public typealias SBUActionSheetHandler = () -> Void
 @objcMembers
 public class SBUActionSheetItem: SBUCommonItem {
     var completionHandler: SBUActionSheetHandler?
-     
+    
+    /// This function initializes actionSheet item.
+    /// - Parameters:
+    ///   - title: Title text
+    ///   - color: Title color
+    ///   - image: Item image
+    ///   - font: Title font
+    ///   - textAlignment: Title alignment
+    ///   - completionHandler: Item's completion handler
     public init(title: String? = nil,
-         color: UIColor? = nil,
-         image: UIImage? = nil,
-         font: UIFont? = nil,
-         textAlignment: NSTextAlignment = .left,
-         completionHandler: SBUActionSheetHandler? = nil) {
-        
+                color: UIColor? = nil,
+                image: UIImage? = nil,
+                font: UIFont? = nil,
+                textAlignment: NSTextAlignment = .left,
+                completionHandler: SBUActionSheetHandler? = nil) {
         super.init(
             title: title,
             color: color,
@@ -39,7 +46,6 @@ public class SBUActionSheetItem: SBUCommonItem {
 
 @objcMembers
 public class SBUActionSheet {
-    
     var theme: SBUComponentTheme = SBUTheme.componentTheme
     static private let shared = SBUActionSheet()
     private init() {}
@@ -58,24 +64,34 @@ public class SBUActionSheet {
 
     var prevOrientation: UIDeviceOrientation = .unknown
     
-    /** [sample]
-        SBUActionSheet.show(items: [SBUActionSheetItem(title: "Check", image: SBUImageSet.iconBack(tintColor: nil)),
-                SBUActionSheetItem(title: "Check111", image: SBUImageSet.iconBack(tintColor: nil)),
-                SBUActionSheetItem(title: "Check2222", image: SBUImageSet.iconBack(tintColor: nil))],
-        cancelItem: SBUActionSheetItem(title: "Check", image: SBUImageSet.iconBack(tintColor: nil)))
-     */
-    /**
-     [Order]
-     - item1
-     - item2
-     - item3
-     - cancel
-     */
+    
+    /// This static function shows the actionSheet.
+    ///
+    /// - Order
+    ///   - item1
+    ///   - item2
+    ///   - item3
+    ///   - cancel
+    ///   
+    /// See the example below for params generation.
+    /// ```
+    /// SBUActionSheet.show(
+    ///     items: [
+    ///         SBUActionSheetItem(title: TITLE1, image: IMAGE1),
+    ///         SBUActionSheetItem(title: TITLE2, image: IMAGE2),
+    ///     ],
+    ///     cancelItem: SBUActionSheetItem(title: CANCEL_TITLE, image: CANCEL_IMAGE)
+    /// )
+    /// ```
+    /// - Parameters:
+    ///   - items: Item array
+    ///   - cancelItem: Cancel item
+    ///   - identifier: ActionSheet identifier
+    ///   - delegate: ActionSheet delegate
     public static func show(items: [SBUActionSheetItem],
-                     cancelItem: SBUActionSheetItem,
-                     identifier: Int = -1,
-                     delegate: SBUActionSheetDelegate? = nil) {
-        
+                            cancelItem: SBUActionSheetItem,
+                            identifier: Int = -1,
+                            delegate: SBUActionSheetDelegate? = nil) {
         self.shared.show(
             items: items,
             cancelItem: cancelItem,
@@ -84,6 +100,7 @@ public class SBUActionSheet {
         )
     }
     
+    /// This static function dismissed the actionSheet.
     public static func dismiss() {
         self.shared.dismiss()
     }

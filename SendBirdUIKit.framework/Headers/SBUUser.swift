@@ -25,18 +25,30 @@ public class SBUUser: NSObject {
     
     
     // MARK: - User
+    /// This function initializes using the userId, nickname, and profileUrl.
+    /// - Parameters:
+    ///   - userId: userId
+    ///   - nickname: nickname (default: nil), If not set this value, sets with userId.
+    ///   - profileUrl: profileUrl (default: nil)
     public init(userId: String, nickname: String? = nil, profileUrl: String? = nil) {
         self.userId = userId
         self.nickname = nickname ?? userId
         self.profileUrl = profileUrl
     }
     
+    /// This function initializes using the user object.
+    /// - Parameter user: User obejct
     public init(user: SBDUser) {
         self.userId = user.userId
         self.nickname = user.nickname
         self.profileUrl = user.profileUrl
     }
     
+    /// This function initializes using the user object, operator state, and muted state.
+    /// - Parameters:
+    ///   - user: `SBUUser` object
+    ///   - isOperator: If the user is the operator, sets the value to `true`.
+    ///   - isMuted: If the user is the muted, sets the value to `true`.
     public init(user: SBUUser, isOperator: Bool = false, isMuted: Bool = false) {
         self.userId = user.userId
         self.nickname = user.nickname
@@ -47,6 +59,8 @@ public class SBUUser: NSObject {
     
     
     // MARK: - Member
+    /// This function initializes using the member object.
+    /// - Parameter member: `SBDMember` obejct
     public init(member: SBDMember) {
         self.userId = member.userId
         self.nickname = member.nickname
@@ -56,6 +70,8 @@ public class SBUUser: NSObject {
     }
     
     // MARK: - Sender
+    /// This function initializes using the sender object.
+    /// - Parameter sender: `SBDSender` obejct
     public init(sender: SBDSender) {
         self.userId = sender.userId
         self.nickname = sender.nickname
@@ -65,7 +81,6 @@ public class SBUUser: NSObject {
     
     
     // MARK: - Common
-    
     /// This method returns the default value if there is no alias value.
     /// - since: 1.0.1
     public func refinedNickname() -> String {

@@ -11,7 +11,10 @@ import UIKit
 open class SBUBaseChannelCell: UITableViewCell {
 
     // MARK: - Public property
-    var channel: SBDGroupChannel?
+    public private(set) var channel: SBDGroupChannel?
+    
+    public var theme: SBUChannelCellTheme = SBUTheme.channelCellTheme
+
 
     // MARK: - View Lifecycle
     public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {

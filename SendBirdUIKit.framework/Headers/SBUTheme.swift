@@ -7,7 +7,7 @@
 //
 
 import UIKit
-  
+
 // MARK: - Channel List Theme 
 @objcMembers
 public class SBUTheme: NSObject {
@@ -87,17 +87,17 @@ public class SBUTheme: NSObject {
     
     public static var light: SBUTheme {
         return SBUTheme(channelListTheme: .light,
-                         channelCellTheme: .light,
-                         channelTheme: .light,
-                         messageInputTheme: .light,
-                         messageCellTheme: .light,
-                         userListTheme: .light,
-                         userCellTheme: .light,
-                         channelSettingsTheme: .light,
-                         userProfileTheme: .light,
-                         componentTheme: .light)
+                        channelCellTheme: .light,
+                        channelTheme: .light,
+                        messageInputTheme: .light,
+                        messageCellTheme: .light,
+                        userListTheme: .light,
+                        userCellTheme: .light,
+                        channelSettingsTheme: .light,
+                        userProfileTheme: .light,
+                        componentTheme: .light)
     } 
-
+    
     
     // MARK: - Public property
     
@@ -155,7 +155,7 @@ public class SBUTheme: NSObject {
         set { shared._componentTheme = newValue }
         get { return shared._componentTheme }
     }
-      
+    
     // MARK: - Private property
     
     private static var shared: SBUTheme = SBUTheme()
@@ -181,7 +181,7 @@ public class SBUTheme: NSObject {
     
     // Component
     var _componentTheme: SBUComponentTheme
-
+    
 }
 
 // MARK: - Channel List Theme
@@ -189,7 +189,7 @@ public class SBUTheme: NSObject {
 public class SBUChannelListTheme: NSObject {
     public static var light: SBUChannelListTheme {
         let theme = SBUChannelListTheme()
-
+        
         if #available(iOS 13.0, *) {
             theme.statusBarStyle = .darkContent
         } else {
@@ -199,13 +199,13 @@ public class SBUChannelListTheme: NSObject {
         theme.rightBarButtonTintColor = SBUColorSet.primary300
         theme.navigationBarTintColor = SBUColorSet.background100
         theme.navigationBarShadowColor = SBUColorSet.onlight04
-
+        
         theme.backgroundColor = SBUColorSet.background100
         theme.notificationOnBackgroundColor = SBUColorSet.primary300
         theme.notificationOnTintColor = SBUColorSet.background100
         theme.notificationOffBackgroundColor = SBUColorSet.background200
         theme.notificationOffTintColor = SBUColorSet.onlight01
-
+        
         theme.leaveBackgroundColor = SBUColorSet.error
         theme.leaveTintColor = SBUColorSet.background100
         
@@ -216,25 +216,25 @@ public class SBUChannelListTheme: NSObject {
     
     public static var dark: SBUChannelListTheme {
         let theme = SBUChannelListTheme()
-
+        
         theme.statusBarStyle = .lightContent
         
         theme.leftBarButtonTintColor = SBUColorSet.primary200
         theme.rightBarButtonTintColor = SBUColorSet.primary200
         theme.navigationBarTintColor = SBUColorSet.background500
         theme.navigationBarShadowColor = SBUColorSet.background500
-
+        
         theme.backgroundColor = SBUColorSet.background600
         theme.notificationOnBackgroundColor = SBUColorSet.primary200
         theme.notificationOnTintColor = SBUColorSet.onlight01
         theme.notificationOffBackgroundColor = SBUColorSet.background400
         theme.notificationOffTintColor = SBUColorSet.background200
-
+        
         theme.leaveBackgroundColor = SBUColorSet.error
         theme.leaveTintColor = SBUColorSet.ondark01
         
         theme.alertBackgroundColor = SBUColorSet.background600
- 
+        
         return theme
     }
     
@@ -251,7 +251,7 @@ public class SBUChannelListTheme: NSObject {
                 leaveBackgroundColor: UIColor = SBUColorSet.error,
                 leaveTintColor: UIColor = SBUColorSet.background100,
                 alertBackgroundColor: UIColor = SBUColorSet.background100) {
-
+        
         self.statusBarStyle = statusBarStyle
         self.leftBarButtonTintColor = leftBarButtonTintColor
         self.rightBarButtonTintColor = rightBarButtonTintColor
@@ -267,23 +267,23 @@ public class SBUChannelListTheme: NSObject {
         self.alertBackgroundColor = alertBackgroundColor
         
     }
-
+    
     public var statusBarStyle: UIStatusBarStyle
-
+    
     public var leftBarButtonTintColor: UIColor
     
     public var rightBarButtonTintColor: UIColor
-     
+    
     public var navigationBarTintColor: UIColor
     public var navigationBarShadowColor: UIColor
     
     public var backgroundColor: UIColor
-
+    
     public var notificationOnBackgroundColor: UIColor
     public var notificationOnTintColor: UIColor
     public var notificationOffBackgroundColor: UIColor
     public var notificationOffTintColor: UIColor
-
+    
     public var leaveBackgroundColor: UIColor
     public var leaveTintColor: UIColor
     
@@ -380,7 +380,7 @@ public class SBUChannelCellTheme: NSObject {
         self.unreadCountFont = unreadCountFont
         self.separatorLineColor = separatorLineColor
     }
-
+    
     public var backgroundColor: UIColor
     
     public var titleFont: UIFont
@@ -402,7 +402,7 @@ public class SBUChannelCellTheme: NSObject {
     public var unreadCountBackgroundColor: UIColor
     public var unreadCountTextColor: UIColor
     public var unreadCountFont: UIFont
-     
+    
     public var separatorLineColor: UIColor
     
 }
@@ -413,7 +413,7 @@ public class SBUChannelTheme: NSObject {
     
     public static var light: SBUChannelTheme {
         let theme = SBUChannelTheme()
-
+        
         if #available(iOS 13.0, *) {
             theme.statusBarStyle = .darkContent
         } else {
@@ -428,7 +428,7 @@ public class SBUChannelTheme: NSObject {
         // Alert
         theme.removeItemColor = SBUColorSet.error
         theme.cancelItemColor = SBUColorSet.primary300
-         
+        
         theme.alertRemoveColor = SBUColorSet.error
         theme.alertCancelColor = SBUColorSet.primary300
         
@@ -445,9 +445,9 @@ public class SBUChannelTheme: NSObject {
     
     public static var dark: SBUChannelTheme {
         let theme = SBUChannelTheme()
-
+        
         theme.statusBarStyle = .lightContent
-
+        
         theme.navigationBarTintColor = SBUColorSet.background500
         theme.navigationBarShadowColor = SBUColorSet.background500
         theme.leftBarButtonTintColor = SBUColorSet.primary200
@@ -457,7 +457,7 @@ public class SBUChannelTheme: NSObject {
         // Alert
         theme.removeItemColor = SBUColorSet.error
         theme.cancelItemColor = SBUColorSet.primary200
-         
+        
         theme.alertRemoveColor = SBUColorSet.error
         theme.alertCancelColor = SBUColorSet.primary200
         
@@ -486,7 +486,7 @@ public class SBUChannelTheme: NSObject {
                 channelStateBannerFont: UIFont = SBUFontSet.caption2,
                 channelStateBannerTextColor: UIColor = SBUColorSet.onlight01,
                 channelStateBannerBackgroundColor: UIColor = SBUColorSet.information) {
-
+        
         self.statusBarStyle = statusBarStyle
         self.navigationBarTintColor = navigationBarTintColor
         self.navigationBarShadowColor = navigationBarShadowColor
@@ -502,9 +502,9 @@ public class SBUChannelTheme: NSObject {
         self.channelStateBannerTextColor = channelStateBannerTextColor
         self.channelStateBannerBackgroundColor = channelStateBannerBackgroundColor
     }
-
+    
     public var statusBarStyle: UIStatusBarStyle
-
+    
     public var navigationBarTintColor: UIColor
     public var navigationBarShadowColor: UIColor
     public var leftBarButtonTintColor: UIColor
@@ -514,13 +514,13 @@ public class SBUChannelTheme: NSObject {
     // Alert
     public var removeItemColor: UIColor
     public var cancelItemColor: UIColor
-     
+    
     public var alertRemoveColor: UIColor
     public var alertCancelColor: UIColor
     
     // Menu
     public var menuTextColor: UIColor
-
+    
     // State Banner
     public var channelStateBannerFont: UIFont
     public var channelStateBannerTextColor: UIColor
@@ -533,7 +533,7 @@ public class SBUMessageInputTheme: NSObject {
     
     public static var light: SBUMessageInputTheme {
         let theme = SBUMessageInputTheme()
-
+        
         theme.backgroundColor = SBUColorSet.background100
         theme.textFieldBackgroundColor = SBUColorSet.background200
         theme.textFieldPlaceholderColor = SBUColorSet.onlight03
@@ -601,7 +601,7 @@ public class SBUMessageInputTheme: NSObject {
         self.saveButtonFont = saveButtonFont
         self.saveButtonTextColor = saveButtonTextColor
     }
-     
+    
     public var backgroundColor: UIColor
     public var textFieldBackgroundColor: UIColor
     public var textFieldPlaceholderColor: UIColor
@@ -617,7 +617,7 @@ public class SBUMessageInputTheme: NSObject {
     public var cancelButtonFont: UIFont
     public var saveButtonFont: UIFont
     public var saveButtonTextColor: UIColor
- 
+    
 }
 
 // MARK: - Message Cell Theme
@@ -632,7 +632,7 @@ public class SBUMessageCellTheme: NSObject {
         theme.leftPressedBackgroundColor = SBUColorSet.primary100
         theme.rightBackgroundColor = SBUColorSet.primary300
         theme.rightPressedBackgroundColor = SBUColorSet.primary400
-
+        
         // Date Label
         theme.dateFont = SBUFontSet.caption1
         theme.dateTextColor = SBUColorSet.ondark01
@@ -701,7 +701,7 @@ public class SBUMessageCellTheme: NSObject {
         theme.leftPressedBackgroundColor = SBUColorSet.primary500
         theme.rightBackgroundColor = SBUColorSet.primary200
         theme.rightPressedBackgroundColor = SBUColorSet.primary400
-
+        
         // Date Label
         theme.dateFont = SBUFontSet.caption1
         theme.dateTextColor = SBUColorSet.ondark02
@@ -858,7 +858,7 @@ public class SBUMessageCellTheme: NSObject {
     public var dateFont: UIFont
     public var dateTextColor: UIColor
     public var dateBackgroundColor: UIColor
-      
+    
     // User
     public var userPlaceholderBackgroundColor: UIColor
     public var userPlaceholderTintColor: UIColor
@@ -868,7 +868,7 @@ public class SBUMessageCellTheme: NSObject {
     // TitleLabel
     public var timeFont: UIFont
     public var timeTextColor: UIColor
-     
+    
     // Message state
     public var pendingStateColor: UIColor
     public var failedStateColor: UIColor
@@ -894,7 +894,7 @@ public class SBUMessageCellTheme: NSObject {
     public var fileMessageLeftTextColor: UIColor
     public var fileMessageRightTextColor: UIColor
     public var fileMessagePlaceholderColor: UIColor
- 
+    
     // Admin message
     public var adminMessageFont: UIFont
     public var adminMessageTextColor: UIColor
@@ -960,7 +960,7 @@ public class SBUUserListTheme: NSObject {
         self.backgroundColor = backgroundColor
         
     }
-
+    
     public var statusBarStyle: UIStatusBarStyle
     public var navigationBarTintColor: UIColor
     public var navigationShadowColor: UIColor
@@ -1064,13 +1064,13 @@ public class SBUChannelSettingsTheme: NSObject {
     
     public static var light: SBUChannelSettingsTheme {
         let theme = SBUChannelSettingsTheme()
-
+        
         if #available(iOS 13.0, *) {
             theme.statusBarStyle = .darkContent
         } else {
             theme.statusBarStyle = .default
         }
-
+        
         theme.navigationBarTintColor = SBUColorSet.background100
         theme.navigationShadowColor = SBUColorSet.onlight04
         theme.leftBarButtonTintColor = SBUColorSet.primary300
@@ -1125,7 +1125,7 @@ public class SBUChannelSettingsTheme: NSObject {
         // User Info View
         theme.userNameFont = SBUFontSet.subtitle1
         theme.userNameTextColor = SBUColorSet.ondark01
-
+        
         // ActionSheet
         theme.itemTextColor = SBUColorSet.ondark01
         theme.itemColor = SBUColorSet.primary200
@@ -1174,9 +1174,9 @@ public class SBUChannelSettingsTheme: NSObject {
         self.itemTextColor = itemTextColor
         self.itemColor = itemColor
     }
-
+    
     public var statusBarStyle: UIStatusBarStyle
-
+    
     public var navigationBarTintColor: UIColor
     public var navigationShadowColor: UIColor
     public var leftBarButtonTintColor: UIColor
@@ -1218,13 +1218,13 @@ public class SBUChannelSettingsTheme: NSObject {
 public class SBUUserProfileTheme: NSObject {
     public static var light: SBUUserProfileTheme {
         let theme = SBUUserProfileTheme()
-
+        
         if #available(iOS 13.0, *) {
             theme.statusBarStyle = .darkContent
         } else {
             theme.statusBarStyle = .default
         }
-
+        
         theme.overlayColor = SBUColorSet.overlay02
         theme.backgroundColor = SBUColorSet.background100
         theme.userPlaceholderBackgroundColor = SBUColorSet.background300
@@ -1254,7 +1254,7 @@ public class SBUUserProfileTheme: NSObject {
     
     public static var dark: SBUUserProfileTheme {
         let theme = SBUUserProfileTheme()
-
+        
         theme.statusBarStyle = .lightContent
         
         theme.overlayColor = SBUColorSet.overlay02
@@ -1280,7 +1280,7 @@ public class SBUUserProfileTheme: NSObject {
         theme.informationTitleFont = SBUFontSet.body3
         theme.informationDesctiptionColor = SBUColorSet.ondark01
         theme.informationDesctiptionFont = SBUFontSet.body1
-
+        
         return theme
     }
     
@@ -1308,7 +1308,7 @@ public class SBUUserProfileTheme: NSObject {
                 informationTitleFont: UIFont = SBUFontSet.body3,
                 informationDesctiptionColor: UIColor = SBUColorSet.onlight01,
                 informationDesctiptionFont: UIFont = SBUFontSet.body1) {
-
+        
         self.statusBarStyle = statusBarStyle
         self.overlayColor = overlayColor
         self.backgroundColor = backgroundColor
@@ -1334,7 +1334,7 @@ public class SBUUserProfileTheme: NSObject {
         self.informationDesctiptionColor = informationDesctiptionColor
         self.informationDesctiptionFont = informationDesctiptionFont
     }
-
+    
     public var statusBarStyle: UIStatusBarStyle
     public var overlayColor: UIColor
     public var backgroundColor: UIColor
@@ -1419,10 +1419,10 @@ public class SBUComponentTheme: NSObject {
         
         // Menu
         theme.menuTitleFont = SBUFontSet.subtitle2
-
+        
         theme.userPlaceholderBackgroundColor = SBUColorSet.background300
         theme.userPlaceholderTintColor = SBUColorSet.ondark01
-
+        
         // Reaction
         theme.reactionBoxBackgroundColor = SBUColorSet.background100
         theme.reactionBoxBorderLineColor = SBUColorSet.background200
@@ -1436,16 +1436,16 @@ public class SBUComponentTheme: NSObject {
         theme.emojiSelectedUnderlineColor = SBUColorSet.primary300
         theme.emojiCountFont = SBUFontSet.button3
         theme.reactionMenuLineColor = SBUColorSet.onlight04
-
+        
         theme.emojiListSelectedBackgroundColor = SBUColorSet.primary100
-
+        
         theme.addReactionTintColor = SBUColorSet.onlight03
         
         // Create channel type
         theme.channelTypeSelectorItemTintColor = SBUColorSet.primary300
         theme.channelTypeSelectorItemTextColor = SBUColorSet.onlight01
         theme.channelTypeSelectorItemFont = SBUFontSet.caption2
-
+        
         // Icon
         theme.broadcastIconBackgroundColor = SBUColorSet.secondary300
         
@@ -1508,10 +1508,10 @@ public class SBUComponentTheme: NSObject {
         
         // Menu
         theme.menuTitleFont = SBUFontSet.subtitle2
-
+        
         theme.userPlaceholderBackgroundColor = SBUColorSet.background400
         theme.userPlaceholderTintColor = SBUColorSet.onlight01
-
+        
         // Reaction
         theme.reactionBoxBackgroundColor = SBUColorSet.background600
         theme.reactionBoxBorderLineColor = SBUColorSet.background400
@@ -1519,17 +1519,17 @@ public class SBUComponentTheme: NSObject {
         theme.reactionBoxEmojiBackgroundColor = SBUColorSet.background400
         theme.reactionBoxSelectedEmojiBackgroundColor = SBUColorSet.primary500
         theme.reactionBoxEmojiCountFont = SBUFontSet.caption3
-
+        
         theme.emojiCountColor = SBUColorSet.ondark02
         theme.emojiSelectedCountColor = SBUColorSet.primary200
         theme.emojiSelectedUnderlineColor = SBUColorSet.primary200
         theme.emojiCountFont = SBUFontSet.button3
         theme.reactionMenuLineColor = SBUColorSet.ondark04
-
+        
         theme.emojiListSelectedBackgroundColor = SBUColorSet.primary400
         
         theme.addReactionTintColor = SBUColorSet.ondark03
-
+        
         // Create channel type
         theme.channelTypeSelectorItemTintColor = SBUColorSet.primary200
         theme.channelTypeSelectorItemTextColor = SBUColorSet.ondark01
@@ -1644,7 +1644,7 @@ public class SBUComponentTheme: NSObject {
         self.menuTitleFont = menuTitleFont
         self.userPlaceholderTintColor = userPlaceholderTintColor
         self.userPlaceholderBackgroundColor = userPlaceholderBackgroundColor
-
+        
         // Reaction
         self.reactionBoxBackgroundColor = reactionBoxBackgroundColor
         self.reactionBoxBorderLineColor = reactionBoxBorderLineColor
@@ -1722,11 +1722,11 @@ public class SBUComponentTheme: NSObject {
     public var separatorColor: UIColor
     public var shadowColor: UIColor
     public var closeBarButtonTintColor: UIColor
-
+    
     // placeholder
     public var userPlaceholderBackgroundColor: UIColor
     public var userPlaceholderTintColor: UIColor
-
+    
     
     // Emoji reaction box
     public var reactionBoxBackgroundColor: UIColor

@@ -19,10 +19,11 @@ open class SBUEmptyView: UIView {
     public weak var delegate: SBUEmptyViewDelegate?
     public lazy var statusImageView = UIImageView()
     public var statusLabel: UILabel = .init()
+    public var theme: SBUComponentTheme = SBUTheme.componentTheme
+    public lazy var retryButton: UIButton = _retryButton
+    
 
     // MARK: - Properties (Private)
-    var theme: SBUComponentTheme = SBUTheme.componentTheme
-    
     lazy var stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.spacing = 28
@@ -31,7 +32,7 @@ open class SBUEmptyView: UIView {
         return stackView
     }()
     
-    lazy var retryButton: UIButton = {
+    lazy var _retryButton: UIButton = {
        let retryButton = UIButton()
         retryButton.setImage(
             SBUIconSet.iconRefresh.sbu_with(tintColor: theme.emptyViewRetryButtonTintColor),
@@ -96,6 +97,9 @@ open class SBUEmptyView: UIView {
     
     
     // MARK: - Common
+    
+    /// This function reloads emptyView.
+    /// - Parameter type: Empty view type
     public func reloadData(_ type: EmptyViewType) {
         self.type = type
         self.retryButton.isHidden = (self.type != .error)
@@ -139,6 +143,9 @@ open class SBUEmptyView: UIView {
     
     
     // MARK: - Action
+    
+    /// This function actions when the retry button click.
+    /// - Parameter sender: sender
     @objc open func onClickRetry(_ sender: Any) {
         self.delegate?.didSelectRetry()
     }

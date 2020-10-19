@@ -27,10 +27,10 @@ open class SBUBaseMessageCell: UITableViewCell {
     
     public lazy var dateView: UIView = MessageDateView()
 
+    public var theme: SBUMessageCellTheme = SBUTheme.messageCellTheme
+
     
     // MARK: - Private
-    var theme: SBUMessageCellTheme = SBUTheme.messageCellTheme
-
     private lazy var stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.spacing = 16

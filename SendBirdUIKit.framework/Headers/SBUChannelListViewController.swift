@@ -16,18 +16,22 @@ open class SBUChannelListViewController: UIViewController {
     public lazy var leftBarButton: UIBarButtonItem? = _leftBarButton
     public lazy var rightBarButton: UIBarButtonItem? = _rightBarButton
     public lazy var emptyView: UIView? = _emptyView
+    public private(set) var tableView = UITableView()
     
+    public var theme: SBUChannelListTheme = SBUTheme.channelListTheme
+
     /// This is a function that allows you to select the channel type when creating a channel.
     /// If set to the nil value, it is moved to groupChannel creation.
     /// - note: Type: GroupChannel / SuperGroupChannel / BroadcastChannel
     /// - Since: 1.2.0
     public lazy var createChannelTypeSelector: UIView? = _createChannelTypeSelector
-    
-    
+
+    // for cell
+    public private(set) var channelCell: SBUBaseChannelCell? = nil
+    public private(set) var customCell: SBUBaseChannelCell? = nil
+
+
     // MARK: - UI properties (Private)
-    var theme: SBUChannelListTheme = SBUTheme.channelListTheme
-    
-    private var tableView = UITableView()
     private lazy var _titleView: SBUNavigationTitleView = {
         var titleView: SBUNavigationTitleView
         if #available(iOS 11, *) {
@@ -85,19 +89,15 @@ open class SBUChannelListViewController: UIViewController {
     /// - Since: 1.0.11
     public private(set) var channelListQuery: SBDGroupChannelListQuery?
     
+    public private(set) var isLoading = false
+    public private(set) var lastUpdatedTimestamp: Int64 = 0
+    public private(set) var lastUpdatedToken: String? = nil
+    public private(set) var limit: UInt = 20
+    public private(set) var includeEmptyChannel: Bool = false
+    
     
     // MARK: - Logic properties (Private)
     var customizedChannelListQuery: SBDGroupChannelListQuery? = nil
-    
-    var lastUpdatedTimestamp: Int64 = 0
-    var lastUpdatedToken: String? = nil
-    var isLoading = false
-    var limit: UInt = 20
-    var includeEmptyChannel: Bool = false
-    
-    // for cell
-    var channelCell: SBUBaseChannelCell? = nil
-    var customCell: SBUBaseChannelCell? = nil
     
     
     // MARK: - Lifecycle
@@ -116,12 +116,12 @@ open class SBUChannelListViewController: UIViewController {
     /// If you have `channelListQuery`, please set it. If not set, it is used as default value.
     ///
     /// See the example below for query generation.
-    /// ````
+    /// ```
     ///     let query = SBDGroupChannel.createMyGroupChannelListQuery()
     ///     query?.includeEmptyChannel = false
     ///     query?.includeFrozenChannel = true
     ///     ...
-    /// ````
+    /// ```
     /// - Parameter channelListQuery: Your own `SBDGroupChannelListQuery` object
     /// - Since: 1.0.11
     public init(channelListQuery: SBDGroupChannelListQuery? = nil) {
@@ -219,7 +219,7 @@ open class SBUChannelListViewController: UIViewController {
     }
     
     open override var preferredStatusBarStyle: UIStatusBarStyle {
-        return theme.statusBarStyle
+        return self.theme.statusBarStyle
     }
     
     open override func viewDidLoad() {
@@ -318,7 +318,10 @@ open class SBUChannelListViewController: UIViewController {
         }
     }
     
-    func loadNextChannelList(reset: Bool) {
+    /// This function loads the channel list. If the reset value is true, the channel list will reset.
+    /// - Parameter reset: To reset the channel list
+    /// - Since: [NEXT_VERSION]
+    public func loadNextChannelList(reset: Bool) {
         if self.isLoading { return }
         self.setLoading(true, false)
         
@@ -372,7 +375,12 @@ open class SBUChannelListViewController: UIViewController {
         })
     }
     
-    func loadChannelChangeLogs(hasMore: Bool, token: String?) {
+    /// This function loads the channel changelogs.
+    /// - Parameters:
+    ///   - hasMore: If set to `true`, the changelogs will no longer be scanned.
+    ///   - token: Use when you have the last updated token value.
+    /// - Since: [NEXT_VERSION]
+    public func loadChannelChangeLogs(hasMore: Bool, token: String?) {
         guard hasMore else {
             SBULog.info("All channel changes have been loaded.")
             self.sortChannelList(needReload: true)
@@ -407,7 +415,7 @@ open class SBUChannelListViewController: UIViewController {
                     \(String(format: "%d deleted channels", deletedChannelUrls?.count ?? 0))
                     """)
                 
-                self?.upsertChannels(channels: updatedChannels, needReload: false)
+                self?.upsertChannels(updatedChannels, needReload: false)
                 self?.deleteChannels(channelUrls: deletedChannelUrls, needReload: false)
                 
                 self?.loadChannelChangeLogs(hasMore: hasMore, token: token)
@@ -435,7 +443,7 @@ open class SBUChannelListViewController: UIViewController {
                     \(String(format: "%d deleted channels", deletedChannelUrls?.count ?? 0))
                     """)
                 
-                self?.upsertChannels(channels: updatedChannels, needReload: false)
+                self?.upsertChannels(updatedChannels, needReload: false)
                 self?.deleteChannels(channelUrls: deletedChannelUrls, needReload: false)
                 
                 self?.loadChannelChangeLogs(hasMore: hasMore, token: token)
@@ -443,7 +451,10 @@ open class SBUChannelListViewController: UIViewController {
         }
     }
     
-    func sortChannelList(needReload: Bool) {
+    /// This function sorts the channel lists.
+    /// - Parameter needReload: If set to `true`, the tableview will be call reloadData.
+    /// - Since: [NEXT_VERSION]
+    public func sortChannelList(needReload: Bool) {
         let sortedChannelList = self.channelList
             .sorted(by: { (lhs: SBDGroupChannel, rhs: SBDGroupChannel) -> Bool in
                 let createdAt1: Int64 = lhs.lastMessage?.createdAt ?? -1
@@ -469,7 +480,15 @@ open class SBUChannelListViewController: UIViewController {
         }
     }
     
-    func updateChannels(channels: [SBDGroupChannel]?, needReload: Bool) {
+    /// This function updates the channels.
+    ///
+    /// It is updated only if the channels already exist in the list, and if not, it is ignored.
+    /// And, after updating the channels, a function to sort the channel list is called.
+    /// - Parameters:
+    ///   - channels: Channel array to update
+    ///   - needReload: If set to `true`, the tableview will be call reloadData.
+    /// - Since: [NEXT_VERSION]
+    public func updateChannels(_ channels: [SBDGroupChannel]?, needReload: Bool) {
         guard let channels = channels else { return }
         
         for channel in channels {
@@ -479,7 +498,15 @@ open class SBUChannelListViewController: UIViewController {
         self.sortChannelList(needReload: needReload)
     }
     
-    func upsertChannels(channels: [SBDGroupChannel]?, needReload: Bool) {
+    /// This function upserts the channels.
+    ///
+    /// If the channels are already in the list, it is updated, otherwise it is inserted.
+    /// And, after upserting the channels, a function to sort the channel list is called.
+    /// - Parameters:
+    ///   - channels: Channel array to upsert
+    ///   - needReload: If set to `true`, the tableview will be call reloadData.
+    /// - Since: [NEXT_VERSION]
+    public func upsertChannels(_ channels: [SBDGroupChannel]?, needReload: Bool) {
         guard let channels = channels else { return }
         
         for channel in channels {
@@ -494,7 +521,12 @@ open class SBUChannelListViewController: UIViewController {
         self.sortChannelList(needReload: needReload)
     }
     
-    func deleteChannels(channelUrls: [String]?, needReload: Bool) {
+    /// This function deletes the channels using the channel urls.
+    /// - Parameters:
+    ///   - channelUrls: Channel url array to delete
+    ///   - needReload: If set to `true`, the tableview will be call reloadData.
+    /// - Since: [NEXT_VERSION]
+    public func deleteChannels(channelUrls: [String]?, needReload: Bool) {
         guard let channelUrls = channelUrls else { return }
         
         var toBeDeleteIndexes: [Int] = []
@@ -558,7 +590,7 @@ open class SBUChannelListViewController: UIViewController {
         self.navigationController?.pushViewController(createChannelVC, animated: true)
     }
     
-    /// Used to register a custom cell as a base cell based on SBUBaseChannelCell.
+    /// Used to register a custom cell as a base cell based on `SBUBaseChannelCell`.
     /// - Parameters:
     ///   - channelCell: Customized channel cell
     ///   - nib: nib information. If the value is nil, the nib file is not used.
@@ -578,7 +610,7 @@ open class SBUChannelListViewController: UIViewController {
         }
     }
     
-    /// Used to register a custom cell as a additional cell based on SBUBaseChannelCell.
+    /// Used to register a custom cell as a additional cell based on `SBUBaseChannelCell`.
     /// - Parameters:
     ///   - customCell: Customized channel cell
     ///   - nib: nib information. If the value is nil, the nib file is not used.
@@ -763,7 +795,7 @@ extension SBUChannelListViewController: UITableViewDataSource, UITableViewDelega
                     actionHandler(true)
                     
                     DispatchQueue.main.async {
-                        tableView.reloadRows(at: [indexPath], with: .automatic)
+                        tableView.reloadData()
                     }
                 }
             }
@@ -842,7 +874,7 @@ extension SBUChannelListViewController: UITableViewDataSource, UITableViewDelega
                     guard success else { return }
                     
                     DispatchQueue.main.async {
-                        tableView.reloadRows(at: [indexPath], with: .automatic)
+                        tableView.reloadData()
                     }
             }
         }
@@ -860,12 +892,14 @@ extension SBUChannelListViewController: UITableViewDataSource, UITableViewDelega
         let alarmIcon: UIImage
         if pushOption == .off {
             alarmTypeView.backgroundColor = theme.notificationOnBackgroundColor
-            alarmIcon = SBUIconSet.iconActionNotificationOn
-                .sbu_with(tintColor: theme.notificationOnTintColor)
+            alarmIcon = SBUIconSet.iconActionNotificationOn.sbu_with(
+                tintColor: theme.notificationOnTintColor
+            )
         } else {
             alarmTypeView.backgroundColor = theme.notificationOffBackgroundColor
-            alarmIcon = SBUIconSet.iconActionNotificationOff
-                .sbu_with(tintColor: theme.notificationOffTintColor)
+            alarmIcon = SBUIconSet.iconActionNotificationOff.sbu_with(
+                tintColor: theme.notificationOffTintColor
+            )
         }
         
         alarm.backgroundColor = UIColor.from(
@@ -909,6 +943,7 @@ extension SBUChannelListViewController: SBUEmptyViewDelegate {
 
 // MARK: - SBDChannelDelegate, SBDConnectionDelegate
 extension SBUChannelListViewController: SBDChannelDelegate, SBDConnectionDelegate {
+
     // MARK: SBDChannelDelegate
     open func channel(_ sender: SBDGroupChannel, userDidJoin user: SBDUser) {
         SBULog.info("""
@@ -918,9 +953,9 @@ extension SBUChannelListViewController: SBDChannelDelegate, SBDConnectionDelegat
             """)
         
         if self.channelListQuery?.includeEmptyChannel == false {
-            self.updateChannels(channels: [sender], needReload: true)
+            self.updateChannels([sender], needReload: true)
         } else {
-            self.upsertChannels(channels: [sender], needReload: true)
+            self.upsertChannels([sender], needReload: true)
         }
     }
     
@@ -937,9 +972,9 @@ extension SBUChannelListViewController: SBDChannelDelegate, SBDConnectionDelegat
         }
         
         if self.channelListQuery?.includeEmptyChannel == false {
-            self.updateChannels(channels: [sender], needReload: true)
+            self.updateChannels([sender], needReload: true)
         } else {
-            self.upsertChannels(channels: [sender], needReload: true)
+            self.upsertChannels([sender], needReload: true)
         }
     }
     
@@ -947,7 +982,7 @@ extension SBUChannelListViewController: SBDChannelDelegate, SBDConnectionDelegat
         guard let channel = sender as? SBDGroupChannel else { return }
         SBULog.info("Channel was changed, ChannelUrl:\(sender.channelUrl)") // markAsRead, didReceiveMsg
         
-        self.upsertChannels(channels: [channel], needReload: true)
+        self.upsertChannels([channel], needReload: true)
     }
     
     open func channel(_ sender: SBDBaseChannel, messageWasDeleted messageId: Int64) {
@@ -958,21 +993,21 @@ extension SBUChannelListViewController: SBDChannelDelegate, SBDConnectionDelegat
             ChannelUrl:\(channel.channelUrl)
             """)
         
-        self.upsertChannels(channels: [channel], needReload: false)
+        self.upsertChannels([channel], needReload: false)
     }
     
     public func channelWasFrozen(_ sender: SBDBaseChannel) {
         guard let channel = sender as? SBDGroupChannel else { return }
         SBULog.info("Channel was frozen, ChannelUrl:\(channel.channelUrl)")
         
-        self.upsertChannels(channels: [channel], needReload: true)
+        self.upsertChannels([channel], needReload: true)
     }
     
     public func channelWasUnfrozen(_ sender: SBDBaseChannel) {
         guard let channel = sender as? SBDGroupChannel else { return }
         SBULog.info("Channel was unfrozen, ChannelUrl:\(channel.channelUrl)")
         
-        self.upsertChannels(channels: [channel], needReload: true)
+        self.upsertChannels([channel], needReload: true)
     }
     
     public func channel(_ sender: SBDBaseChannel, userWasBanned user: SBDUser) {

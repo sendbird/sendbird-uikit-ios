@@ -85,6 +85,7 @@
     case reaction
 }
 
+/// This is an enumeration used to display `EmptyView` by type.
 @objc public enum EmptyViewType: Int {
     case none
     case noChannels
@@ -94,6 +95,7 @@
     case error
 }
 
+/// This is an enumeration used to select a media resource type.
 @objc public enum MediaResourceType: Int {
     case camera
     case library
@@ -101,17 +103,20 @@
     case unknown
 }
 
+/// This is an enumeration used to select the channel editing type.
 @objc public enum ChannelEditType: Int {
     case name
     case image
 }
 
+/// This is an enumeration used to select the message position.
 @objc public enum MessagePosition: Int {
     case left
     case right
     case center
 }
 
+/// This is an enumeration used to select the message position in group messages.
 @objc public enum MessageGroupPosition: Int {
     case none
     case top
@@ -119,6 +124,7 @@
     case bottom
 }
 
+/// This is an enumeration to file type in the message.
 @objc public enum MessageFileType: Int {
     case image
     case video
@@ -127,21 +133,27 @@
     case etc
 }
  
+/// This is an enumeration to message receipt state.
 @objc public enum SBUMessageReceiptState: Int {
     case none 
     case readReceipt
     case deliveryReceipt
 }
 
+/// This is an enumeration used to the message edit type.
 @objc public enum MessageEditItem: Int {
     case copy
     case edit
     case delete
 }
 
-@objc public enum FailedMessageOption: Int {
-    case retry
-    case remove
+/// This is an enumeration for cell's menu item type.
+/// - Since: [NEXT_VERSION]
+@objc public enum MessageMenuItem: Int {
+    case save
+    case copy
+    case edit
+    case delete
 }
 
 @objc public enum LogType: UInt8 {

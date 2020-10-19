@@ -44,7 +44,6 @@ public class SBUFontSet: NSObject {
             .paragraphStyle: style
         ]
     }()
-    
     /// Regular, 14pt, Line height: 16pt
     public static var body2 = UIFont.systemFont(ofSize: 14.0, weight: .regular)
     static var body2Attributes: [NSAttributedString.Key: Any] = {
@@ -58,7 +57,7 @@ public class SBUFontSet: NSObject {
             .paragraphStyle: style
         ]
     }()
-    
+    /// Semibold, 14pt, Line height: 16pt
     public static var body3 = UIFont.systemFont(ofSize: 14.0, weight: .semibold)
     static var body3Attributes: [NSAttributedString.Key: Any] = {
         let style = NSMutableParagraphStyle()
@@ -87,7 +86,6 @@ public class SBUFontSet: NSObject {
             .paragraphStyle: style
         ]
     }()
-    
     /// Medium, 16pt
     public static var button2 = UIFont.systemFont(ofSize: 16.0, weight: .medium)
     static var button2Attributes: [NSAttributedString.Key: Any] = {
@@ -140,7 +138,7 @@ public class SBUFontSet: NSObject {
             .paragraphStyle: style
         ]
     }()
-    
+    /// Bold, 11pt
     public static var caption4 = UIFont.systemFont(ofSize: 11.0, weight: .bold)
     static var caption4Attributes: [NSAttributedString.Key: Any] = {
         let style = NSMutableParagraphStyle()

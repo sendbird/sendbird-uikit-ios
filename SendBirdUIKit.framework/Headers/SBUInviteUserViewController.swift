@@ -12,21 +12,18 @@ import SendBirdSDK
 @objcMembers
 open class SBUInviteUserViewController: UIViewController {
     
-    // MARK: - Public property
+    // MARK: - UI properties (Public)
     public lazy var titleView: UIView? = _titleView
     public lazy var leftBarButton: UIBarButtonItem? = _leftBarButton
     public lazy var rightBarButton: UIBarButtonItem? = _rightBarButton
+    public private(set) lazy var tableView = UITableView()
 
-    public private(set) var inviteListType: ChannelInviteListType = .users
+    public private(set) var userCell: UITableViewCell?
     
-    // MARK: - Private property
-    // for UI
-    var theme: SBUUserListTheme = SBUTheme.userListTheme
-
-    private var tableView = UITableView()
+    public var theme: SBUUserListTheme = SBUTheme.userListTheme
     
-    var userCell: UITableViewCell?
-   
+    
+    // MARK: - UI properties (Private)
     private lazy var _titleView: SBUNavigationTitleView = {
         var titleView: SBUNavigationTitleView
         if #available(iOS 11, *) {
@@ -60,23 +57,30 @@ open class SBUInviteUserViewController: UIViewController {
             title: SBUStringSet.Invite,
             style: .plain,
             target: self,
-            action: #selector(onClickInvite)
+            action: #selector(onClickInviteOrPromote)
         )
         rightItem.setTitleTextAttributes([.font : SBUFontSet.button2], for: .normal)
         return rightItem
     }()
     
-    // for logic
+    
+    // MARK: - Logic properties (Public)
+    public private(set) var inviteListType: ChannelInviteListType = .users
+    
     public private(set) var channel: SBDGroupChannel?
     public private(set) var channelUrl: String?
+    
     @SBUAtomic public private(set) var userList: [SBUUser] = []
     @SBUAtomic public private(set) var selectedUserList: Set<SBUUser> = []
     
+    public private(set) var joinedUserIds: Set<String> = []
+    public private(set) var userListQuery: SBDApplicationUserListQuery?
+    public private(set) var memberListQuery: SBDGroupChannelMemberListQuery?
+    
+    
+    // MARK: - Logic properties (Private)
     @SBUAtomic private var customizedUsers: [SBUUser]?
     private var useCustomizedUsers = false
-    var joinedUserIds: Set<String> = []
-    var userListQuery: SBDApplicationUserListQuery?
-    var memberListQuery: SBDGroupChannelMemberListQuery?
     var isLoading = false
     let limit: UInt = 20
     
@@ -224,7 +228,7 @@ open class SBUInviteUserViewController: UIViewController {
             titleView.setupStyles()
         }
         
-        self.reloadUserList()
+        self.reloadData()
     }
 
     open override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -283,11 +287,8 @@ open class SBUInviteUserViewController: UIViewController {
                 if self?.inviteListType == .users {
                     self?.prepareDatas()
                 }
-                // If want using your custom user list, filled users with your custom user list.
-                self?.loadNextUserList(
-                    reset: true,
-                    users: self?.customizedUsers ?? nil
-                )
+                
+                self?.resetUserList()
             }
         }
     }
@@ -318,7 +319,7 @@ open class SBUInviteUserViewController: UIViewController {
             SBULog.info("\(users.count) customized users have been added.")
             
             self.appendUsersWithFiltering(users: users)
-            self.reloadUserList()
+            self.reloadData()
             self.isLoading = false
         }
         else if !self.useCustomizedUsers {
@@ -333,7 +334,11 @@ open class SBUInviteUserViewController: UIViewController {
         }
     }
     
-    func loadNextApplicationUserList() {
+    /// This function loads application user list.
+    ///
+    /// If you want to call a list of users, use the `loadNextUserList(reset:users:)` function.
+    /// - Warning: Use this function only when you need to call `ApplicationUserList` alone.
+    private func loadNextApplicationUserList() {
         if self.userListQuery == nil {
             self.userListQuery = SBDMain.createApplicationUserListQuery()
             self.userListQuery?.limit = self.limit
@@ -342,7 +347,7 @@ open class SBUInviteUserViewController: UIViewController {
         guard self.userListQuery?.hasNext == true else {
             self.isLoading = false
             SBULog.info("All users have been loaded.")
-            self.reloadUserList()
+            self.reloadData()
             return
         }
         
@@ -359,11 +364,15 @@ open class SBUInviteUserViewController: UIViewController {
             SBULog.info("[Response] \(users.count) users")
             
             self?.appendUsersWithFiltering(users: users)
-            self?.reloadUserList()
+            self?.reloadData()
         })
     }
     
-    func loadNextChannelMemberList() {
+    /// This function loads channel member list.
+    ///
+    /// If you want to call a list of users, use the `loadNextUserList(reset:users:)` function.
+    /// - Warning: Use this function only when you need to call `MemberList` alone.
+    private func loadNextChannelMemberList() {
         if self.memberListQuery == nil {
             self.memberListQuery = self.channel?.createMemberListQuery()
             self.memberListQuery?.limit = self.limit
@@ -392,7 +401,7 @@ open class SBUInviteUserViewController: UIViewController {
             SBULog.info("[Response] \(members.count) members")
             
             self?.userList += members
-            self?.reloadUserList()
+            self?.reloadData()
         })
     }
     
@@ -515,15 +524,27 @@ open class SBUInviteUserViewController: UIViewController {
         }
     }
     
-    private func reloadUserList() {
+    /// This function resets the user list.
+    ///
+    /// If want to use your custom user list, add users object during this class initialization.
+    /// - Since: [NEXT_VERSION]
+    public func resetUserList() {
+        self.loadNextUserList(reset: true, users: self.customizedUsers ?? nil)
+    }
+    
+    /// This function reloads the list.
+    /// - Since: [NEXT_VERSION]
+    public func reloadData() {
         DispatchQueue.main.async { [weak self] in
             self?.tableView.reloadData()
         }
     }
- 
     
     // MARK: - Actions
-    @objc private func onClickBack() {
+    
+    /// This function actions to pop or dismiss.
+    /// - Since: [NEXT_VERSION]
+    @objc public func onClickBack() {
         if let navigationController = self.navigationController,
             navigationController.viewControllers.count > 1 {
             navigationController.popViewController(animated: true)
@@ -532,8 +553,10 @@ open class SBUInviteUserViewController: UIViewController {
         }
     }
     
-    @objc private func onClickInvite() {
-        guard selectedUserList.isEmpty == false else { return }
+    /// This function calls `inviteUsers` or `promoteToOperators` functions with `inviteListType`.
+    /// - Since: [NEXT_VERSION]
+    @objc public func onClickInviteOrPromote() {
+        guard !selectedUserList.isEmpty else { return }
 
         switch self.inviteListType {
         case .users:
@@ -545,6 +568,8 @@ open class SBUInviteUserViewController: UIViewController {
         }
     }
     
+    /// This function selects or deselects user.
+    /// - Parameter user: `SBUUser` object
     public func selectUser(user: SBUUser) {
         if let index = self.selectedUserList.firstIndex(of: user) {
             self.selectedUserList.remove(at: index)
@@ -566,6 +591,7 @@ open class SBUInviteUserViewController: UIViewController {
         self.setupStyles()
     }
     
+    /// This function is used to pop to channelViewController.
     public func popToChannel() {
         guard let navigationController = self.navigationController,
             navigationController.viewControllers.count > 1 else {
@@ -583,6 +609,7 @@ open class SBUInviteUserViewController: UIViewController {
         navigationController.popToRootViewController(animated: true)
     }
     
+    /// This function is used to pop to previous viewController.
     public func popToPrevious() {
         guard let navigationController = self.navigationController,
             navigationController.viewControllers.count > 1 else {

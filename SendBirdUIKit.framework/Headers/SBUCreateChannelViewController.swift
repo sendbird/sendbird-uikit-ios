@@ -12,20 +12,18 @@ import SendBirdSDK
 @objcMembers
 open class SBUCreateChannelViewController: UIViewController, UINavigationControllerDelegate {
     
-    // MARK: - Public property
+    // MARK: - UI properties (Public)
     public lazy var titleView: UIView? = _titleView
     public lazy var leftBarButton: UIBarButtonItem? = _leftBarButton
     public lazy var rightBarButton: UIBarButtonItem? = _rightBarButton
+    public private(set) lazy var tableView = UITableView()
+
+    public private(set) var userCell: UITableViewCell?
     
-    public private(set) var channelType: ChannelType = .group
+    public var theme: SBUUserListTheme = SBUTheme.userListTheme
     
-    // MARK: - Private property
-    // for UI
-    var theme: SBUUserListTheme = SBUTheme.userListTheme
-    private var tableView = UITableView()
     
-    var userCell: UITableViewCell?
-    
+    // MARK: - UI properties (Private)
     private lazy var _titleView: SBUNavigationTitleView = {
         var titleView: SBUNavigationTitleView
         if #available(iOS 11, *) {
@@ -60,13 +58,19 @@ open class SBUCreateChannelViewController: UIViewController, UINavigationControl
         return rightItem
     }()
     
-    // for logic
+    
+    // MARK: - Logic properties (Public)
+    public private(set) var channelType: ChannelType = .group
+    
     @SBUAtomic public private(set) var userList: [SBUUser] = []
     @SBUAtomic public private(set) var selectedUserList: Set<SBUUser> = []
+
+    public private(set) var userListQuery: SBDApplicationUserListQuery?
+
     
+    // MARK: - Logic properties (Private)
     @SBUAtomic private var customizedUsers: [SBUUser]?
     private var useCustomizedUsers = false
-    var userListQuery: SBDApplicationUserListQuery?
     var isLoading = false
     let limit: UInt = 20
     
@@ -265,7 +269,7 @@ open class SBUCreateChannelViewController: UIViewController, UINavigationControl
     }
     
     /// When creating and using a user list directly, overriding this function and return the next user list.
-    /// - Returns: next user list
+    /// - Returns: [`SBUUser`] next user list
     /// - Since: 1.1.1
     open func nextUserList() -> [SBUUser]? {
         return nil
@@ -350,13 +354,19 @@ open class SBUCreateChannelViewController: UIViewController, UINavigationControl
     
     
     // MARK: - Common
-    func reloadUserList() {
+    
+    /// This function reloads user list.
+    /// - Since: [NEXT_VERSION]
+    public func reloadUserList() {
         DispatchQueue.main.async { [weak self] in
             self?.tableView.reloadData()
         }
     }
     
-    func showLoading(state: Bool) {
+    /// This function shows loading indicator.
+    /// - Parameter state: If state is `true`, start loading indicator.
+    /// - Since: [NEXT_VERSION]
+    public func showLoading(state: Bool) {
         self.isLoading = state
 
         if self.userListQuery == nil, state {
@@ -368,7 +378,10 @@ open class SBUCreateChannelViewController: UIViewController, UINavigationControl
 
     
     // MARK: - Actions
-    @objc private func onClickBack() {
+    
+    /// This function actions to pop or dismiss.
+    /// - Since: [NEXT_VERSION]
+    @objc public func onClickBack() {
         if let navigationController = self.navigationController,
             navigationController.viewControllers.count > 1 {
             navigationController.popViewController(animated: true)
@@ -377,14 +390,19 @@ open class SBUCreateChannelViewController: UIViewController, UINavigationControl
         }
     }
     
-    @objc private func onClickCreate() {
-        guard selectedUserList.isEmpty == false else { return }
+    /// This function calls `createChannel:` function using the `selectedUserList`.
+    /// - Since: [NEXT_VERSION]
+    @objc public func onClickCreate() {
+        guard !selectedUserList.isEmpty else { return }
         
         let userIds = Array(self.selectedUserList).sbu_getUserIds()
         self.createChannel(userIds: userIds)
     }
     
-    private func selectUser(user: SBUUser) {
+    /// This function selects or deselects user.
+    /// - Parameter user: `SBUUser` object
+    /// - Since: [NEXT_VERSION]
+    public func selectUser(user: SBUUser) {
         if let index = self.selectedUserList.firstIndex(of: user) {
             self.selectedUserList.remove(at: index)
         } else {

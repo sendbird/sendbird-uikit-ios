@@ -11,27 +11,23 @@ import SendBirdSDK
 
 @objcMembers
 open class SBUMemberListViewController: UIViewController {
-    // MARK: - Public property
+    
+    // MARK: - UI properties (Public)
     public lazy var titleView: UIView? = _titleView
     public lazy var leftBarButton: UIBarButtonItem? = _leftBarButton
     public lazy var rightBarButton: UIBarButtonItem? = _rightBarButton
     public lazy var emptyView: UIView? = _emptyView
-    
-    public private(set) var memberListType: ChannelMemberListType = .none
-    
+    public private(set) lazy var tableView = UITableView()
+
     /// To use the custom user profile view, set this to the custom view created using `SBUUserProfileViewProtocol`. And, if you do not want to use the user profile feature, please set this value to nil.
     public lazy var userProfileView: UIView? = _userProfileView
+    public private(set) var userCell: UITableViewCell?
     
+    public var theme: SBUUserListTheme = SBUTheme.userListTheme
+    public var componentTheme: SBUComponentTheme = SBUTheme.componentTheme
 
-    // MARK: - Private property
-    // for UI
-    var theme: SBUUserListTheme = SBUTheme.userListTheme
-    var componentTheme: SBUComponentTheme = SBUTheme.componentTheme
     
-    private var tableView = UITableView()
-    
-    var userCell: UITableViewCell?
-    
+    // MARK: - UI properties (Private)
     private lazy var _titleView: SBUNavigationTitleView = {
         var titleView: SBUNavigationTitleView
         if #available(iOS 11, *) {
@@ -92,17 +88,23 @@ open class SBUMemberListViewController: UIViewController {
     }()
     
     
-    // for logic
+    // MARK: - Logic properties (Public)
+    public private(set) var memberListType: ChannelMemberListType = .none
+
     public private(set) var channel: SBDGroupChannel?
     public private(set) var channelUrl: String?
+
     public private(set) var memberList: [SBUUser] = []
     
+    public private(set) var memberListQuery: SBDGroupChannelMemberListQuery?
+    public private(set) var operatorListQuery: SBDOperatorListQuery?
+    public private(set) var mutedMemberListQuery: SBDGroupChannelMemberListQuery?
+    public private(set) var bannedMemberListQuery: SBDBannedUserListQuery?
+
+    
+    // MARK: - Logic properties (Private)
     @SBUAtomic private var customizedMembers: [SBUUser]?
     private var useCustomizedMembers = false
-    var memberListQuery: SBDGroupChannelMemberListQuery?
-    var operatorListQuery: SBDOperatorListQuery?
-    var mutedMemberListQuery: SBDGroupChannelMemberListQuery?
-    var bannedMemberListQuery: SBDBannedUserListQuery?
     var isLoading = false
     let limit: UInt = 20
     
@@ -379,7 +381,11 @@ open class SBUMemberListViewController: UIViewController {
         }
     }
     
-    func loadNextChannelMemberList() {
+    /// This function loads channel member list.
+    ///
+    /// If you want to call a list of operators, use the `loadNextMemberList(reset:members:)` function.
+    /// - Warning: Use this function only when you need to call `MemberList` alone.
+    private func loadNextChannelMemberList() {
         if self.memberListQuery == nil {
             self.memberListQuery = self.channel?.createMemberListQuery()
             self.memberListQuery?.limit = self.limit
@@ -411,7 +417,11 @@ open class SBUMemberListViewController: UIViewController {
         })
     }
     
-    func loadNextOperatorList() {
+    /// This function loads operator list.
+    ///
+    /// If you want to call a list of operators, use the `loadNextMemberList(reset:members:)` function.
+    /// - Warning: Use this function only when you need to call `OperatorList` alone.
+    private func loadNextOperatorList() {
         if self.operatorListQuery == nil {
             self.operatorListQuery = self.channel?.createOperatorListQuery()
             self.operatorListQuery?.limit = self.limit
@@ -443,7 +453,11 @@ open class SBUMemberListViewController: UIViewController {
         })
     }
     
-    func loadNextMutedMemberList() {
+    /// This function loads muted member list.
+    ///
+    /// If you want to call a list of muted members, use the `loadNextMemberList(reset:members:)` function.
+    /// - Warning: Use this function only when you need to call `MutedMemberList` alone.
+    private func loadNextMutedMemberList() {
         if self.mutedMemberListQuery == nil {
             self.mutedMemberListQuery = self.channel?.createMemberListQuery()
             self.mutedMemberListQuery?.limit = self.limit
@@ -476,7 +490,12 @@ open class SBUMemberListViewController: UIViewController {
         })
     }
     
-    func loadNextBannedMemberList() {
+    
+    /// This function loads banned member list.
+    ///
+    /// If you want to call a list of banned members, use the `loadNextMemberList(reset:members:)` function.
+    /// - Warning: Use this function only when you need to call `BannedMemberList` alone.
+    private func loadNextBannedMemberList() {
         if self.bannedMemberListQuery == nil {
             self.bannedMemberListQuery = self.channel?.createBannedUserListQuery()
             self.bannedMemberListQuery?.limit = self.limit
@@ -537,7 +556,7 @@ open class SBUMemberListViewController: UIViewController {
         self.channel?.addOperators(
             withUserIds: [member.userId],
             completionHandler: { [weak self] error in
-                self?.reloadMemberList()
+                self?.resetMemberList()
         })
     }
     
@@ -548,7 +567,7 @@ open class SBUMemberListViewController: UIViewController {
         self.channel?.removeOperators(
             withUserIds: [member.userId],
             completionHandler: { [weak self] error in
-                self?.reloadMemberList()
+                self?.resetMemberList()
         })
     }
     
@@ -559,7 +578,7 @@ open class SBUMemberListViewController: UIViewController {
         self.channel?.muteUser(
             withUserId: member.userId,
             completionHandler: { [weak self] error in
-                self?.reloadMemberList()
+                self?.resetMemberList()
         })
     }
     
@@ -570,7 +589,7 @@ open class SBUMemberListViewController: UIViewController {
         self.channel?.unmuteUser(
             withUserId: member.userId,
             completionHandler: { [weak self] error in
-                self?.reloadMemberList()
+                self?.resetMemberList()
         })
     }
     
@@ -583,7 +602,7 @@ open class SBUMemberListViewController: UIViewController {
             seconds: -1,
             description: nil,
             completionHandler: { [weak self] error in
-                self?.reloadMemberList()
+                self?.resetMemberList()
         })
     }
     
@@ -594,7 +613,7 @@ open class SBUMemberListViewController: UIViewController {
         self.channel?.unbanUser(
             withUserId: member.userId,
             completionHandler: { [weak self] error in
-                self?.reloadMemberList()
+                self?.resetMemberList()
         })
     }
     
@@ -632,13 +651,22 @@ open class SBUMemberListViewController: UIViewController {
     
     // MARK: - Common
     
-    /// This function reloads the member list.
+    /// This function resets the member list.
     /// - Since: 1.2.0
+    /// - Deprecate:
+    @available(*, deprecated, message: "deprecated in [NEXT_VERSION]", renamed: "resetMemberList()")
     public func reloadMemberList() {
+        self.resetMemberList()
+    }
+    /// This function resets the member list.
+    /// - Since: [NEXT_VERSION]]
+    public func resetMemberList() {
         self.loadNextMemberList(reset: true)
     }
     
-    private func reloadData() {
+    /// This function reloads the list.
+    /// - Since: [NEXT_VERSION]
+    public func reloadData() {
         DispatchQueue.main.async { [weak self] in
             if let emptyView = self?.emptyView as? SBUEmptyView,
                 (self?.memberListType == .mutedMembers || self?.memberListType == .bannedMembers) {
@@ -657,7 +685,10 @@ open class SBUMemberListViewController: UIViewController {
     
     
     // MARK: - Actions
-    @objc private func onClickBack() {
+    
+    /// This function actions to pop or dismiss.
+    /// - Since: [NEXT_VERSION]
+    @objc public func onClickBack() {
         if let navigationController = self.navigationController,
             navigationController.viewControllers.count > 1 {
             
@@ -668,6 +699,7 @@ open class SBUMemberListViewController: UIViewController {
         }
     }
     
+    /// This function shows inviteChannelViewController.
     @objc open func onClickInviteUser() {
         self.showInviteUser()
     }
@@ -752,7 +784,7 @@ open class SBUMemberListViewController: UIViewController {
     /// This function sets the user profile tap gesture handling.
     ///
     /// If you do not want to use the user profile function, override this function and leave it empty.
-    /// - Parameter user: User object used for user profile configuration
+    /// - Parameter user: `SBUUser` object used for user profile configuration
     ///
     /// - Since: 1.2.2
     open func setUserProfileTapGestureHandler(_ user: SBUUser) {
@@ -863,7 +895,7 @@ extension SBUMemberListViewController: UITableViewDataSource, UITableViewDelegat
 }
 
 
-// MARK:- SBUEmptyViewDelegate
+// MARK: - SBUEmptyViewDelegate
 extension SBUMemberListViewController: SBUEmptyViewDelegate {
     @objc public func didSelectRetry() {
         
@@ -871,7 +903,7 @@ extension SBUMemberListViewController: SBUEmptyViewDelegate {
 }
 
 
-// MARK:- SBUUserProfileViewDelegate
+// MARK: - SBUUserProfileViewDelegate
 extension SBUMemberListViewController: SBUUserProfileViewDelegate {
     open func didSelectMessage(userId: String?) {
         if let userProfileView = self.userProfileView
@@ -892,9 +924,9 @@ extension SBUMemberListViewController: SBUUserProfileViewDelegate {
 }
 
 
-// MARK:- SBDChannelDelegate
+// MARK: - SBDChannelDelegate
 extension SBUMemberListViewController: SBDChannelDelegate {
     public func channelDidUpdateOperators(_ sender: SBDBaseChannel) {
-        self.reloadMemberList()
+        self.resetMemberList()
     }
 }

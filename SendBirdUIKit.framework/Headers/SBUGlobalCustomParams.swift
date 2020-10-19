@@ -23,6 +23,7 @@ public class SBUGlobalCustomParams: NSObject {
     ///     ...
     /// }
     /// ```
+    /// - Since: 1.2.2
     public static var groupChannelParamsCreateBuilder:((_ params: SBDGroupChannelParams?) -> Void)? = nil
     
     /// This is a builder that allows you to predefined the global `SBDGroupChannelParams` processing to be used when updating a channel.
@@ -37,6 +38,7 @@ public class SBUGlobalCustomParams: NSObject {
     ///     ...
     /// }
     /// ```
+    /// - Since: 1.2.2
     public static var groupChannelParamsUpdateBuilder:((_ params: SBDGroupChannelParams?) -> Void)? = nil
     
     
@@ -52,6 +54,7 @@ public class SBUGlobalCustomParams: NSObject {
     ///     ...
     /// }
     /// ```
+    /// - Since: 1.2.2
     public static var userMessageParamsSendBuilder:((_ params: SBDUserMessageParams?) -> Void)? = nil
     
     /// This is a builder that allows you to predefined the global `SBDUserMessageParams` processing to be used when updating a user message.
@@ -66,6 +69,7 @@ public class SBUGlobalCustomParams: NSObject {
     ///     ...
     /// }
     /// ```
+    /// - Since: 1.2.2
     public static var userMessageParamsUpdateBuilder:((_ params: SBDUserMessageParams?) -> Void)? = nil
     
     /// This is a builder that allows you to predefined the global `SBDFileMessageParams` processing to be used when sending a file message.
@@ -80,6 +84,7 @@ public class SBUGlobalCustomParams: NSObject {
     ///     ...
     /// }
     /// ```
+    /// - Since: 1.2.2
     public static var fileMessageParamsSendBuilder:((_ params: SBDFileMessageParams?) -> Void)? = nil
 
     
@@ -96,5 +101,6 @@ public class SBUGlobalCustomParams: NSObject {
     ///     ...
     /// }
     /// ```
+    /// - Since: 1.2.2
     public static var messageListParamsBuilder:((_ params: SBDMessageListParams?) -> Void)? = nil
 }

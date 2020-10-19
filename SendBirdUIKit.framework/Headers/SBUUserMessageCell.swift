@@ -19,6 +19,7 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell {
         return self.message as? SBDUserMessage
     }
     
+    
     // MARK: - Private property
     private lazy var _messageTextView: SBUUserMessageTextView = {
         let messageView = SBUUserMessageTextView()
@@ -35,6 +36,7 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell {
         return webView
     }()
 
+    
     // MARK: - View Lifecycle
     open override func setupViews() {
         super.setupViews()

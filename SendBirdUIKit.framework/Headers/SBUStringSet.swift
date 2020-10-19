@@ -57,7 +57,7 @@ public class SBUStringSet: NSObject {
 
 
     // MARK: - Channel
-    public static var Channel_Name_Default = "Group Channel" // Just for default name checking
+    public static var Channel_Name_Default = "Group Channel"
     public static var Channel_Name_No_Members = "(No members)"
     public static var Channel_Header_LastSeen = "Last seen"
     public static var Channel_Header_Typing: ([SBDUser]) -> String = { members in

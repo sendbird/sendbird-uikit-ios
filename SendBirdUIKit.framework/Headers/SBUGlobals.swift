@@ -10,7 +10,6 @@ import UIKit
 
 @objcMembers
 public class SBUGlobals: NSObject {
-    // MARK: - Public
     
     // Application Id
     public static var ApplicationId: String?
@@ -23,13 +22,15 @@ public class SBUGlobals: NSObject {
         set(newCurrentUser){ _currentUser = newCurrentUser }
         get{ return _currentUser }
     }
+
     
-    // Message Grouping
+    // MARK: - Message Grouping
     /// If this value is enabled, messages sent at similar times are grouped.
     /// - Since: 1.2.1
     public static var UsingMessageGrouping: Bool = true
     
-    // User Profile
+    
+    // MARK: - User Profile
     /// If this value is enabled, when you click on a user image, the user profile screen is displayed.
     /// - Since: 1.2.2
     public static var UsingUserProfile: Bool = false

@@ -11,17 +11,16 @@ import UIKit
 @objcMembers
 open class SBUModerationsViewController: UIViewController, UINavigationControllerDelegate {
     
-    // MARK: - Public property
+    // MARK: - UI properties (Public)
     public lazy var titleView: UIView? = _titleView
     public lazy var leftBarButton: UIBarButtonItem? = _leftBarButton
     public lazy var rightBarButton: UIBarButtonItem? = _rightBarButton
+    public private(set) lazy var tableView = UITableView()
     
+    public var theme: SBUChannelSettingsTheme = SBUTheme.channelSettingsTheme
+
     
-    // MARK: - Private property
-    var theme: SBUChannelSettingsTheme = SBUTheme.channelSettingsTheme
-    
-    private lazy var tableView = UITableView()
-    
+    // MARK: - UI properties (Private)
     private lazy var _titleView: SBUNavigationTitleView = {
         var titleView: SBUNavigationTitleView
         if #available(iOS 11, *) {
@@ -48,9 +47,13 @@ open class SBUModerationsViewController: UIViewController, UINavigationControlle
     
     private lazy var _rightBarButton = UIBarButtonItem()
     
-    /// One of two must be set.
+    
+    // MARK: - Logic properties (Public)
     public private(set) var channel: SBDGroupChannel?
-    private var channelUrl: String?
+    public private(set) var channelUrl: String?
+    
+    
+    // MARK: - Logic properties (Private)
     
     
     // MARK: - Lifecycle
@@ -304,7 +307,10 @@ open class SBUModerationsViewController: UIViewController, UINavigationControlle
     
     
     // MARK: - Actions
-    func onClickBack() {
+    
+    /// This function actions to pop or dismiss.
+    /// - Since: [NEXT_VERSION]
+    @objc public func onClickBack() {
         if let navigationController = self.navigationController,
             navigationController.viewControllers.count > 1 {
             navigationController.popViewController(animated: true)
@@ -327,7 +333,7 @@ open class SBUModerationsViewController: UIViewController, UINavigationControlle
     
     // MARK: - Error handling
     open func didReceiveError(_ message: String?) {
-        
+        SBULog.error("Did receive error: \(message ?? "")")
     }
 }
 

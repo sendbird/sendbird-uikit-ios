@@ -16,6 +16,11 @@ public class SBUAlertButtonItem: NSObject {
     var color: UIColor?
     var completionHandler: AlertButtonHandler?
     
+    /// This function initializes alert button item.
+    /// - Parameters:
+    ///   - title: Button's title text
+    ///   - color: Button's title color
+    ///   - completionHandler: Button's completion handler
     public init(title: String,
                 color: UIColor? = nil,
                 completionHandler: @escaping AlertButtonHandler) {
@@ -57,10 +62,17 @@ public class SBUAlertView {
     let bufferMargin: CGFloat = 8.0
     
     var prevOrientation: UIDeviceOrientation = .unknown
+
     
-    /**
-     action: min:1, max:2
-     */
+    /// This static function shows the alertView.
+    /// - Parameters:
+    ///   - title: Title text
+    ///   - message: Message text (default: nil)
+    ///   - needInputField: If an input field is required, set value to `true`.
+    ///   - placeHolder: Placeholder text (default: "")
+    ///   - centerYRatio: AlertView's centerY ratio.
+    ///   - confirmButtonItem: Confirm button item
+    ///   - cancelButtonItem: Cancel button item (nullable)
     public static func show(title: String,
                             message: String? = nil,
                             needInputField: Bool = false,
@@ -79,6 +91,7 @@ public class SBUAlertView {
         )
     }
     
+    /// This static function dismissed the alert.
     public static func dismiss() {
         self.shared.dismiss()
     }
