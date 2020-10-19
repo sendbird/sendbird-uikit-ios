@@ -148,7 +148,7 @@
 }
 
 /// This is an enumeration for cell's menu item type.
-/// - Since: [NEXT_VERSION]
+/// - Since: 1.2.5
 @objc public enum MessageMenuItem: Int {
     case save
     case copy

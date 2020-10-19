@@ -309,7 +309,7 @@ open class SBUModerationsViewController: UIViewController, UINavigationControlle
     // MARK: - Actions
     
     /// This function actions to pop or dismiss.
-    /// - Since: [NEXT_VERSION]
+    /// - Since: 1.2.5
     @objc public func onClickBack() {
         if let navigationController = self.navigationController,
             navigationController.viewControllers.count > 1 {

@@ -356,7 +356,7 @@ open class SBUCreateChannelViewController: UIViewController, UINavigationControl
     // MARK: - Common
     
     /// This function reloads user list.
-    /// - Since: [NEXT_VERSION]
+    /// - Since: 1.2.5
     public func reloadUserList() {
         DispatchQueue.main.async { [weak self] in
             self?.tableView.reloadData()
@@ -365,7 +365,7 @@ open class SBUCreateChannelViewController: UIViewController, UINavigationControl
     
     /// This function shows loading indicator.
     /// - Parameter state: If state is `true`, start loading indicator.
-    /// - Since: [NEXT_VERSION]
+    /// - Since: 1.2.5
     public func showLoading(state: Bool) {
         self.isLoading = state
 
@@ -380,7 +380,7 @@ open class SBUCreateChannelViewController: UIViewController, UINavigationControl
     // MARK: - Actions
     
     /// This function actions to pop or dismiss.
-    /// - Since: [NEXT_VERSION]
+    /// - Since: 1.2.5
     @objc public func onClickBack() {
         if let navigationController = self.navigationController,
             navigationController.viewControllers.count > 1 {
@@ -391,7 +391,7 @@ open class SBUCreateChannelViewController: UIViewController, UINavigationControl
     }
     
     /// This function calls `createChannel:` function using the `selectedUserList`.
-    /// - Since: [NEXT_VERSION]
+    /// - Since: 1.2.5
     @objc public func onClickCreate() {
         guard !selectedUserList.isEmpty else { return }
         
@@ -401,7 +401,7 @@ open class SBUCreateChannelViewController: UIViewController, UINavigationControl
     
     /// This function selects or deselects user.
     /// - Parameter user: `SBUUser` object
-    /// - Since: [NEXT_VERSION]
+    /// - Since: 1.2.5
     public func selectUser(user: SBUUser) {
         if let index = self.selectedUserList.firstIndex(of: user) {
             self.selectedUserList.remove(at: index)

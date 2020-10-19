@@ -527,13 +527,13 @@ open class SBUInviteUserViewController: UIViewController {
     /// This function resets the user list.
     ///
     /// If want to use your custom user list, add users object during this class initialization.
-    /// - Since: [NEXT_VERSION]
+    /// - Since: 1.2.5
     public func resetUserList() {
         self.loadNextUserList(reset: true, users: self.customizedUsers ?? nil)
     }
     
     /// This function reloads the list.
-    /// - Since: [NEXT_VERSION]
+    /// - Since: 1.2.5
     public func reloadData() {
         DispatchQueue.main.async { [weak self] in
             self?.tableView.reloadData()
@@ -543,7 +543,7 @@ open class SBUInviteUserViewController: UIViewController {
     // MARK: - Actions
     
     /// This function actions to pop or dismiss.
-    /// - Since: [NEXT_VERSION]
+    /// - Since: 1.2.5
     @objc public func onClickBack() {
         if let navigationController = self.navigationController,
             navigationController.viewControllers.count > 1 {
@@ -554,7 +554,7 @@ open class SBUInviteUserViewController: UIViewController {
     }
     
     /// This function calls `inviteUsers` or `promoteToOperators` functions with `inviteListType`.
-    /// - Since: [NEXT_VERSION]
+    /// - Since: 1.2.5
     @objc public func onClickInviteOrPromote() {
         guard !selectedUserList.isEmpty else { return }
 

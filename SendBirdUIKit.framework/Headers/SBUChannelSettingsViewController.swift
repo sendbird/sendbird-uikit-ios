@@ -406,7 +406,7 @@ open class SBUChannelSettingsViewController: UIViewController, UINavigationContr
     // MARK: - Actions
     
     /// This function actions to pop or dismiss.
-    /// - Since: [NEXT_VERSION]
+    /// - Since: 1.2.5
     @objc public func onClickBack() {
         if let navigationController = self.navigationController,
             navigationController.viewControllers.count > 1 {
@@ -417,7 +417,7 @@ open class SBUChannelSettingsViewController: UIViewController, UINavigationContr
     }
     
     /// This function used to when edit button click.
-    /// - Since: [NEXT_VERSION]
+    /// - Since: 1.2.5
     @objc public func onClickEdit() {
         let changeNameItem = SBUActionSheetItem(
             title: SBUStringSet.ChannelSettings_Change_Name,

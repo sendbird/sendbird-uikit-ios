@@ -315,7 +315,7 @@ typedef SWIFT_ENUM(NSInteger, MessageGroupPosition, open) {
 
 /// This is an enumeration for cell’s menu item type.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 typedef SWIFT_ENUM(NSInteger, MessageMenuItem, open) {
   MessageMenuItemSave = 0,
   MessageMenuItemCopy = 1,
@@ -684,13 +684,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 - (void)leaveChannel:(SBDGroupChannel * _Nonnull)channel completionHandler:(void (^ _Nullable)(BOOL))completionHandler;
 /// This function loads the channel list. If the reset value is true, the channel list will reset.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param reset To reset the channel list
 ///
 - (void)loadNextChannelListWithReset:(BOOL)reset;
 /// This function loads the channel changelogs.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param hasMore If set to <code>true</code>, the changelogs will no longer be scanned.
 ///
 /// \param token Use when you have the last updated token value.
@@ -698,7 +698,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 - (void)loadChannelChangeLogsWithHasMore:(BOOL)hasMore token:(NSString * _Nullable)token;
 /// This function sorts the channel lists.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
 ///
 - (void)sortChannelListWithNeedReload:(BOOL)needReload;
@@ -706,7 +706,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 /// It is updated only if the channels already exist in the list, and if not, it is ignored.
 /// And, after updating the channels, a function to sort the channel list is called.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param channels Channel array to update
 ///
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
@@ -716,7 +716,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 /// If the channels are already in the list, it is updated, otherwise it is inserted.
 /// And, after upserting the channels, a function to sort the channel list is called.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param channels Channel array to upsert
 ///
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
@@ -724,7 +724,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 - (void)upsertChannels:(NSArray<SBDGroupChannel *> * _Nullable)channels needReload:(BOOL)needReload;
 /// This function deletes the channels using the channel urls.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param channelUrls Channel url array to delete
 ///
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
@@ -941,11 +941,11 @@ SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
 - (void)showModerationList;
 /// This function actions to pop or dismiss.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)onClickBack;
 /// This function used to when edit button click.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)onClickEdit;
 /// This function shows the channel image selection menu.
 - (void)selectChannelImage;
@@ -1179,13 +1179,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)setReactionWithMessage:(SBDBaseMessage * _Nonnull)message emojiKey:(NSString * _Nonnull)emojiKey didSelect:(BOOL)didSelect;
 /// This function sorts the all message list. (Included <code>presendMessages</code>, <code>messageList</code> and <code>resendableMessages</code>.)
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData and, scroll to last seen index.
 ///
 - (void)sortAllMessageListWithNeedReload:(BOOL)needReload;
 /// This function upserts the messages in the list.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param messages Message array to upsert
 ///
 /// \param needUpdateNewMessage If set to <code>true</code>, increases new message count.
@@ -1195,7 +1195,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)upsertMessagesInListWithMessages:(NSArray<SBDBaseMessage *> * _Nullable)messages needUpdateNewMessage:(BOOL)needUpdateNewMessage needReload:(BOOL)needReload;
 /// This function deletes the messages in the list using the message ids.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param messageIds Message id array to delete
 ///
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
@@ -1203,7 +1203,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)deleteMessagesInListWithMessageIds:(NSArray<NSNumber *> * _Nonnull)messageIds needReload:(BOOL)needReload;
 /// This functions deletes the resendable messages using the request ids.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param requestIds Request id array to delete
 ///
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
@@ -1347,7 +1347,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)scrollViewDidScroll:(UIScrollView * _Nonnull)scrollView;
 /// This function sets gestures in user message cell.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param cell User message cell
 ///
 /// \param userMessage User message object
@@ -1357,7 +1357,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)setUserMessageCellGestures:(SBUUserMessageCell * _Nonnull)cell userMessage:(SBDUserMessage * _Nonnull)userMessage indexPath:(NSIndexPath * _Nonnull)indexPath;
 /// This function sets gestures in file message cell.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param cell File message cell
 ///
 /// \param fileMessage File message object
@@ -1367,7 +1367,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)setFileMessageCellGestures:(SBUFileMessageCell * _Nonnull)cell fileMessage:(SBDFileMessage * _Nonnull)fileMessage indexPath:(NSIndexPath * _Nonnull)indexPath;
 /// This function sets gestures in unknown message cell.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param cell Unknown message cell
 ///
 /// \param unknownMessage message object
@@ -1377,7 +1377,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)setUnkownMessageCellGestures:(SBUUnknownMessageCell * _Nonnull)cell unknownMessage:(SBDBaseMessage * _Nonnull)unknownMessage indexPath:(NSIndexPath * _Nonnull)indexPath;
 /// This function calculates the point at which to draw the menu.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param indexPath IndexPath
 ///
 /// \param position Message position
@@ -1388,23 +1388,23 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (CGPoint)calculatorMenuPointWithIndexPath:(NSIndexPath * _Nonnull)indexPath position:(enum MessagePosition)position SWIFT_WARN_UNUSED_RESULT;
 /// This function changes the messageInputView bottom constraint using keyboard height.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param notification Notification object with keyboardFrame information
 ///
 - (void)keyboardWillShow:(NSNotification * _Nonnull)notification;
 /// This function changes the messageInputView bottom constraint using keyboard height.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param notification Notification object with keyboardFrame information
 ///
 - (void)keyboardWillHide:(NSNotification * _Nonnull)notification;
 /// This function dismisses the keyboard.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)dismissKeyboard;
 /// This functions adds the hide keyboard gesture in tableView.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)addGestureHideKeyboard;
 - (void)didReceiveError:(NSString * _Nullable)message;
 @end
@@ -1791,25 +1791,25 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 - (void)registerWithUserCell:(UITableViewCell * _Nonnull)userCell nib:(UINib * _Nullable)nib;
 /// This function reloads user list.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)reloadUserList;
 /// This function shows loading indicator.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param state If state is <code>true</code>, start loading indicator.
 ///
 - (void)showLoadingWithState:(BOOL)state;
 /// This function actions to pop or dismiss.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)onClickBack;
 /// This function calls <code>createChannel:</code> function using the <code>selectedUserList</code>.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)onClickCreate;
 /// This function selects or deselects user.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param user <code>SBUUser</code> object
 ///
 - (void)selectUserWithUser:(SBUUser * _Nonnull)user;
@@ -2377,19 +2377,19 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 /// This function resets the user list.
 /// If want to use your custom user list, add users object during this class initialization.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)resetUserList;
 /// This function reloads the list.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)reloadData;
 /// This function actions to pop or dismiss.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)onClickBack;
 /// This function calls <code>inviteUsers</code> or <code>promoteToOperators</code> functions with <code>inviteListType</code>.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)onClickInviteOrPromote;
 /// This function selects or deselects user.
 /// \param user <code>SBUUser</code> object
@@ -2664,18 +2664,18 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 ///     Deprecate:
 ///   </li>
 /// </ul>
-- (void)reloadMemberList SWIFT_DEPRECATED_MSG("deprecated in [NEXT_VERSION]", "resetMemberList");
+- (void)reloadMemberList SWIFT_DEPRECATED_MSG("deprecated in 1.2.5", "resetMemberList");
 /// This function resets the member list.
 /// since:
-/// [NEXT_VERSION]]
+/// 1.2.5
 - (void)resetMemberList;
 /// This function reloads the list.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)reloadData;
 /// This function actions to pop or dismiss.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)onClickBack;
 /// This function shows inviteChannelViewController.
 - (void)onClickInviteUser;
@@ -2899,7 +2899,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUModerationsViewController")
 - (void)showBannedMeberList;
 /// This function actions to pop or dismiss.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)onClickBack;
 /// Changes freeze status on channel.
 /// \param freeze freeze status
@@ -3893,7 +3893,7 @@ typedef SWIFT_ENUM(NSInteger, MessageGroupPosition, open) {
 
 /// This is an enumeration for cell’s menu item type.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 typedef SWIFT_ENUM(NSInteger, MessageMenuItem, open) {
   MessageMenuItemSave = 0,
   MessageMenuItemCopy = 1,
@@ -4262,13 +4262,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 - (void)leaveChannel:(SBDGroupChannel * _Nonnull)channel completionHandler:(void (^ _Nullable)(BOOL))completionHandler;
 /// This function loads the channel list. If the reset value is true, the channel list will reset.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param reset To reset the channel list
 ///
 - (void)loadNextChannelListWithReset:(BOOL)reset;
 /// This function loads the channel changelogs.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param hasMore If set to <code>true</code>, the changelogs will no longer be scanned.
 ///
 /// \param token Use when you have the last updated token value.
@@ -4276,7 +4276,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 - (void)loadChannelChangeLogsWithHasMore:(BOOL)hasMore token:(NSString * _Nullable)token;
 /// This function sorts the channel lists.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
 ///
 - (void)sortChannelListWithNeedReload:(BOOL)needReload;
@@ -4284,7 +4284,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 /// It is updated only if the channels already exist in the list, and if not, it is ignored.
 /// And, after updating the channels, a function to sort the channel list is called.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param channels Channel array to update
 ///
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
@@ -4294,7 +4294,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 /// If the channels are already in the list, it is updated, otherwise it is inserted.
 /// And, after upserting the channels, a function to sort the channel list is called.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param channels Channel array to upsert
 ///
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
@@ -4302,7 +4302,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 - (void)upsertChannels:(NSArray<SBDGroupChannel *> * _Nullable)channels needReload:(BOOL)needReload;
 /// This function deletes the channels using the channel urls.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param channelUrls Channel url array to delete
 ///
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
@@ -4519,11 +4519,11 @@ SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
 - (void)showModerationList;
 /// This function actions to pop or dismiss.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)onClickBack;
 /// This function used to when edit button click.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)onClickEdit;
 /// This function shows the channel image selection menu.
 - (void)selectChannelImage;
@@ -4757,13 +4757,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)setReactionWithMessage:(SBDBaseMessage * _Nonnull)message emojiKey:(NSString * _Nonnull)emojiKey didSelect:(BOOL)didSelect;
 /// This function sorts the all message list. (Included <code>presendMessages</code>, <code>messageList</code> and <code>resendableMessages</code>.)
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData and, scroll to last seen index.
 ///
 - (void)sortAllMessageListWithNeedReload:(BOOL)needReload;
 /// This function upserts the messages in the list.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param messages Message array to upsert
 ///
 /// \param needUpdateNewMessage If set to <code>true</code>, increases new message count.
@@ -4773,7 +4773,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)upsertMessagesInListWithMessages:(NSArray<SBDBaseMessage *> * _Nullable)messages needUpdateNewMessage:(BOOL)needUpdateNewMessage needReload:(BOOL)needReload;
 /// This function deletes the messages in the list using the message ids.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param messageIds Message id array to delete
 ///
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
@@ -4781,7 +4781,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)deleteMessagesInListWithMessageIds:(NSArray<NSNumber *> * _Nonnull)messageIds needReload:(BOOL)needReload;
 /// This functions deletes the resendable messages using the request ids.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param requestIds Request id array to delete
 ///
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
@@ -4925,7 +4925,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)scrollViewDidScroll:(UIScrollView * _Nonnull)scrollView;
 /// This function sets gestures in user message cell.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param cell User message cell
 ///
 /// \param userMessage User message object
@@ -4935,7 +4935,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)setUserMessageCellGestures:(SBUUserMessageCell * _Nonnull)cell userMessage:(SBDUserMessage * _Nonnull)userMessage indexPath:(NSIndexPath * _Nonnull)indexPath;
 /// This function sets gestures in file message cell.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param cell File message cell
 ///
 /// \param fileMessage File message object
@@ -4945,7 +4945,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)setFileMessageCellGestures:(SBUFileMessageCell * _Nonnull)cell fileMessage:(SBDFileMessage * _Nonnull)fileMessage indexPath:(NSIndexPath * _Nonnull)indexPath;
 /// This function sets gestures in unknown message cell.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param cell Unknown message cell
 ///
 /// \param unknownMessage message object
@@ -4955,7 +4955,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)setUnkownMessageCellGestures:(SBUUnknownMessageCell * _Nonnull)cell unknownMessage:(SBDBaseMessage * _Nonnull)unknownMessage indexPath:(NSIndexPath * _Nonnull)indexPath;
 /// This function calculates the point at which to draw the menu.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param indexPath IndexPath
 ///
 /// \param position Message position
@@ -4966,23 +4966,23 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (CGPoint)calculatorMenuPointWithIndexPath:(NSIndexPath * _Nonnull)indexPath position:(enum MessagePosition)position SWIFT_WARN_UNUSED_RESULT;
 /// This function changes the messageInputView bottom constraint using keyboard height.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param notification Notification object with keyboardFrame information
 ///
 - (void)keyboardWillShow:(NSNotification * _Nonnull)notification;
 /// This function changes the messageInputView bottom constraint using keyboard height.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param notification Notification object with keyboardFrame information
 ///
 - (void)keyboardWillHide:(NSNotification * _Nonnull)notification;
 /// This function dismisses the keyboard.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)dismissKeyboard;
 /// This functions adds the hide keyboard gesture in tableView.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)addGestureHideKeyboard;
 - (void)didReceiveError:(NSString * _Nullable)message;
 @end
@@ -5369,25 +5369,25 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 - (void)registerWithUserCell:(UITableViewCell * _Nonnull)userCell nib:(UINib * _Nullable)nib;
 /// This function reloads user list.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)reloadUserList;
 /// This function shows loading indicator.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param state If state is <code>true</code>, start loading indicator.
 ///
 - (void)showLoadingWithState:(BOOL)state;
 /// This function actions to pop or dismiss.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)onClickBack;
 /// This function calls <code>createChannel:</code> function using the <code>selectedUserList</code>.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)onClickCreate;
 /// This function selects or deselects user.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param user <code>SBUUser</code> object
 ///
 - (void)selectUserWithUser:(SBUUser * _Nonnull)user;
@@ -5955,19 +5955,19 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 /// This function resets the user list.
 /// If want to use your custom user list, add users object during this class initialization.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)resetUserList;
 /// This function reloads the list.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)reloadData;
 /// This function actions to pop or dismiss.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)onClickBack;
 /// This function calls <code>inviteUsers</code> or <code>promoteToOperators</code> functions with <code>inviteListType</code>.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)onClickInviteOrPromote;
 /// This function selects or deselects user.
 /// \param user <code>SBUUser</code> object
@@ -6242,18 +6242,18 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 ///     Deprecate:
 ///   </li>
 /// </ul>
-- (void)reloadMemberList SWIFT_DEPRECATED_MSG("deprecated in [NEXT_VERSION]", "resetMemberList");
+- (void)reloadMemberList SWIFT_DEPRECATED_MSG("deprecated in 1.2.5", "resetMemberList");
 /// This function resets the member list.
 /// since:
-/// [NEXT_VERSION]]
+/// 1.2.5
 - (void)resetMemberList;
 /// This function reloads the list.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)reloadData;
 /// This function actions to pop or dismiss.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)onClickBack;
 /// This function shows inviteChannelViewController.
 - (void)onClickInviteUser;
@@ -6477,7 +6477,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUModerationsViewController")
 - (void)showBannedMeberList;
 /// This function actions to pop or dismiss.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)onClickBack;
 /// Changes freeze status on channel.
 /// \param freeze freeze status
@@ -7473,7 +7473,7 @@ typedef SWIFT_ENUM(NSInteger, MessageGroupPosition, open) {
 
 /// This is an enumeration for cell’s menu item type.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 typedef SWIFT_ENUM(NSInteger, MessageMenuItem, open) {
   MessageMenuItemSave = 0,
   MessageMenuItemCopy = 1,
@@ -7842,13 +7842,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 - (void)leaveChannel:(SBDGroupChannel * _Nonnull)channel completionHandler:(void (^ _Nullable)(BOOL))completionHandler;
 /// This function loads the channel list. If the reset value is true, the channel list will reset.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param reset To reset the channel list
 ///
 - (void)loadNextChannelListWithReset:(BOOL)reset;
 /// This function loads the channel changelogs.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param hasMore If set to <code>true</code>, the changelogs will no longer be scanned.
 ///
 /// \param token Use when you have the last updated token value.
@@ -7856,7 +7856,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 - (void)loadChannelChangeLogsWithHasMore:(BOOL)hasMore token:(NSString * _Nullable)token;
 /// This function sorts the channel lists.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
 ///
 - (void)sortChannelListWithNeedReload:(BOOL)needReload;
@@ -7864,7 +7864,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 /// It is updated only if the channels already exist in the list, and if not, it is ignored.
 /// And, after updating the channels, a function to sort the channel list is called.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param channels Channel array to update
 ///
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
@@ -7874,7 +7874,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 /// If the channels are already in the list, it is updated, otherwise it is inserted.
 /// And, after upserting the channels, a function to sort the channel list is called.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param channels Channel array to upsert
 ///
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
@@ -7882,7 +7882,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 - (void)upsertChannels:(NSArray<SBDGroupChannel *> * _Nullable)channels needReload:(BOOL)needReload;
 /// This function deletes the channels using the channel urls.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param channelUrls Channel url array to delete
 ///
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
@@ -8099,11 +8099,11 @@ SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
 - (void)showModerationList;
 /// This function actions to pop or dismiss.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)onClickBack;
 /// This function used to when edit button click.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)onClickEdit;
 /// This function shows the channel image selection menu.
 - (void)selectChannelImage;
@@ -8337,13 +8337,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)setReactionWithMessage:(SBDBaseMessage * _Nonnull)message emojiKey:(NSString * _Nonnull)emojiKey didSelect:(BOOL)didSelect;
 /// This function sorts the all message list. (Included <code>presendMessages</code>, <code>messageList</code> and <code>resendableMessages</code>.)
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData and, scroll to last seen index.
 ///
 - (void)sortAllMessageListWithNeedReload:(BOOL)needReload;
 /// This function upserts the messages in the list.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param messages Message array to upsert
 ///
 /// \param needUpdateNewMessage If set to <code>true</code>, increases new message count.
@@ -8353,7 +8353,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)upsertMessagesInListWithMessages:(NSArray<SBDBaseMessage *> * _Nullable)messages needUpdateNewMessage:(BOOL)needUpdateNewMessage needReload:(BOOL)needReload;
 /// This function deletes the messages in the list using the message ids.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param messageIds Message id array to delete
 ///
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
@@ -8361,7 +8361,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)deleteMessagesInListWithMessageIds:(NSArray<NSNumber *> * _Nonnull)messageIds needReload:(BOOL)needReload;
 /// This functions deletes the resendable messages using the request ids.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param requestIds Request id array to delete
 ///
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
@@ -8505,7 +8505,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)scrollViewDidScroll:(UIScrollView * _Nonnull)scrollView;
 /// This function sets gestures in user message cell.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param cell User message cell
 ///
 /// \param userMessage User message object
@@ -8515,7 +8515,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)setUserMessageCellGestures:(SBUUserMessageCell * _Nonnull)cell userMessage:(SBDUserMessage * _Nonnull)userMessage indexPath:(NSIndexPath * _Nonnull)indexPath;
 /// This function sets gestures in file message cell.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param cell File message cell
 ///
 /// \param fileMessage File message object
@@ -8525,7 +8525,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)setFileMessageCellGestures:(SBUFileMessageCell * _Nonnull)cell fileMessage:(SBDFileMessage * _Nonnull)fileMessage indexPath:(NSIndexPath * _Nonnull)indexPath;
 /// This function sets gestures in unknown message cell.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param cell Unknown message cell
 ///
 /// \param unknownMessage message object
@@ -8535,7 +8535,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)setUnkownMessageCellGestures:(SBUUnknownMessageCell * _Nonnull)cell unknownMessage:(SBDBaseMessage * _Nonnull)unknownMessage indexPath:(NSIndexPath * _Nonnull)indexPath;
 /// This function calculates the point at which to draw the menu.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param indexPath IndexPath
 ///
 /// \param position Message position
@@ -8546,23 +8546,23 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (CGPoint)calculatorMenuPointWithIndexPath:(NSIndexPath * _Nonnull)indexPath position:(enum MessagePosition)position SWIFT_WARN_UNUSED_RESULT;
 /// This function changes the messageInputView bottom constraint using keyboard height.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param notification Notification object with keyboardFrame information
 ///
 - (void)keyboardWillShow:(NSNotification * _Nonnull)notification;
 /// This function changes the messageInputView bottom constraint using keyboard height.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param notification Notification object with keyboardFrame information
 ///
 - (void)keyboardWillHide:(NSNotification * _Nonnull)notification;
 /// This function dismisses the keyboard.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)dismissKeyboard;
 /// This functions adds the hide keyboard gesture in tableView.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)addGestureHideKeyboard;
 - (void)didReceiveError:(NSString * _Nullable)message;
 @end
@@ -8949,25 +8949,25 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 - (void)registerWithUserCell:(UITableViewCell * _Nonnull)userCell nib:(UINib * _Nullable)nib;
 /// This function reloads user list.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)reloadUserList;
 /// This function shows loading indicator.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param state If state is <code>true</code>, start loading indicator.
 ///
 - (void)showLoadingWithState:(BOOL)state;
 /// This function actions to pop or dismiss.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)onClickBack;
 /// This function calls <code>createChannel:</code> function using the <code>selectedUserList</code>.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)onClickCreate;
 /// This function selects or deselects user.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param user <code>SBUUser</code> object
 ///
 - (void)selectUserWithUser:(SBUUser * _Nonnull)user;
@@ -9535,19 +9535,19 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 /// This function resets the user list.
 /// If want to use your custom user list, add users object during this class initialization.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)resetUserList;
 /// This function reloads the list.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)reloadData;
 /// This function actions to pop or dismiss.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)onClickBack;
 /// This function calls <code>inviteUsers</code> or <code>promoteToOperators</code> functions with <code>inviteListType</code>.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)onClickInviteOrPromote;
 /// This function selects or deselects user.
 /// \param user <code>SBUUser</code> object
@@ -9822,18 +9822,18 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 ///     Deprecate:
 ///   </li>
 /// </ul>
-- (void)reloadMemberList SWIFT_DEPRECATED_MSG("deprecated in [NEXT_VERSION]", "resetMemberList");
+- (void)reloadMemberList SWIFT_DEPRECATED_MSG("deprecated in 1.2.5", "resetMemberList");
 /// This function resets the member list.
 /// since:
-/// [NEXT_VERSION]]
+/// 1.2.5
 - (void)resetMemberList;
 /// This function reloads the list.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)reloadData;
 /// This function actions to pop or dismiss.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)onClickBack;
 /// This function shows inviteChannelViewController.
 - (void)onClickInviteUser;
@@ -10057,7 +10057,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUModerationsViewController")
 - (void)showBannedMeberList;
 /// This function actions to pop or dismiss.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)onClickBack;
 /// Changes freeze status on channel.
 /// \param freeze freeze status
@@ -11051,7 +11051,7 @@ typedef SWIFT_ENUM(NSInteger, MessageGroupPosition, open) {
 
 /// This is an enumeration for cell’s menu item type.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 typedef SWIFT_ENUM(NSInteger, MessageMenuItem, open) {
   MessageMenuItemSave = 0,
   MessageMenuItemCopy = 1,
@@ -11420,13 +11420,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 - (void)leaveChannel:(SBDGroupChannel * _Nonnull)channel completionHandler:(void (^ _Nullable)(BOOL))completionHandler;
 /// This function loads the channel list. If the reset value is true, the channel list will reset.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param reset To reset the channel list
 ///
 - (void)loadNextChannelListWithReset:(BOOL)reset;
 /// This function loads the channel changelogs.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param hasMore If set to <code>true</code>, the changelogs will no longer be scanned.
 ///
 /// \param token Use when you have the last updated token value.
@@ -11434,7 +11434,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 - (void)loadChannelChangeLogsWithHasMore:(BOOL)hasMore token:(NSString * _Nullable)token;
 /// This function sorts the channel lists.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
 ///
 - (void)sortChannelListWithNeedReload:(BOOL)needReload;
@@ -11442,7 +11442,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 /// It is updated only if the channels already exist in the list, and if not, it is ignored.
 /// And, after updating the channels, a function to sort the channel list is called.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param channels Channel array to update
 ///
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
@@ -11452,7 +11452,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 /// If the channels are already in the list, it is updated, otherwise it is inserted.
 /// And, after upserting the channels, a function to sort the channel list is called.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param channels Channel array to upsert
 ///
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
@@ -11460,7 +11460,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 - (void)upsertChannels:(NSArray<SBDGroupChannel *> * _Nullable)channels needReload:(BOOL)needReload;
 /// This function deletes the channels using the channel urls.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param channelUrls Channel url array to delete
 ///
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
@@ -11677,11 +11677,11 @@ SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
 - (void)showModerationList;
 /// This function actions to pop or dismiss.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)onClickBack;
 /// This function used to when edit button click.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)onClickEdit;
 /// This function shows the channel image selection menu.
 - (void)selectChannelImage;
@@ -11915,13 +11915,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)setReactionWithMessage:(SBDBaseMessage * _Nonnull)message emojiKey:(NSString * _Nonnull)emojiKey didSelect:(BOOL)didSelect;
 /// This function sorts the all message list. (Included <code>presendMessages</code>, <code>messageList</code> and <code>resendableMessages</code>.)
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData and, scroll to last seen index.
 ///
 - (void)sortAllMessageListWithNeedReload:(BOOL)needReload;
 /// This function upserts the messages in the list.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param messages Message array to upsert
 ///
 /// \param needUpdateNewMessage If set to <code>true</code>, increases new message count.
@@ -11931,7 +11931,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)upsertMessagesInListWithMessages:(NSArray<SBDBaseMessage *> * _Nullable)messages needUpdateNewMessage:(BOOL)needUpdateNewMessage needReload:(BOOL)needReload;
 /// This function deletes the messages in the list using the message ids.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param messageIds Message id array to delete
 ///
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
@@ -11939,7 +11939,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)deleteMessagesInListWithMessageIds:(NSArray<NSNumber *> * _Nonnull)messageIds needReload:(BOOL)needReload;
 /// This functions deletes the resendable messages using the request ids.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param requestIds Request id array to delete
 ///
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
@@ -12083,7 +12083,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)scrollViewDidScroll:(UIScrollView * _Nonnull)scrollView;
 /// This function sets gestures in user message cell.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param cell User message cell
 ///
 /// \param userMessage User message object
@@ -12093,7 +12093,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)setUserMessageCellGestures:(SBUUserMessageCell * _Nonnull)cell userMessage:(SBDUserMessage * _Nonnull)userMessage indexPath:(NSIndexPath * _Nonnull)indexPath;
 /// This function sets gestures in file message cell.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param cell File message cell
 ///
 /// \param fileMessage File message object
@@ -12103,7 +12103,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)setFileMessageCellGestures:(SBUFileMessageCell * _Nonnull)cell fileMessage:(SBDFileMessage * _Nonnull)fileMessage indexPath:(NSIndexPath * _Nonnull)indexPath;
 /// This function sets gestures in unknown message cell.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param cell Unknown message cell
 ///
 /// \param unknownMessage message object
@@ -12113,7 +12113,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)setUnkownMessageCellGestures:(SBUUnknownMessageCell * _Nonnull)cell unknownMessage:(SBDBaseMessage * _Nonnull)unknownMessage indexPath:(NSIndexPath * _Nonnull)indexPath;
 /// This function calculates the point at which to draw the menu.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param indexPath IndexPath
 ///
 /// \param position Message position
@@ -12124,23 +12124,23 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (CGPoint)calculatorMenuPointWithIndexPath:(NSIndexPath * _Nonnull)indexPath position:(enum MessagePosition)position SWIFT_WARN_UNUSED_RESULT;
 /// This function changes the messageInputView bottom constraint using keyboard height.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param notification Notification object with keyboardFrame information
 ///
 - (void)keyboardWillShow:(NSNotification * _Nonnull)notification;
 /// This function changes the messageInputView bottom constraint using keyboard height.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param notification Notification object with keyboardFrame information
 ///
 - (void)keyboardWillHide:(NSNotification * _Nonnull)notification;
 /// This function dismisses the keyboard.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)dismissKeyboard;
 /// This functions adds the hide keyboard gesture in tableView.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)addGestureHideKeyboard;
 - (void)didReceiveError:(NSString * _Nullable)message;
 @end
@@ -12527,25 +12527,25 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 - (void)registerWithUserCell:(UITableViewCell * _Nonnull)userCell nib:(UINib * _Nullable)nib;
 /// This function reloads user list.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)reloadUserList;
 /// This function shows loading indicator.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param state If state is <code>true</code>, start loading indicator.
 ///
 - (void)showLoadingWithState:(BOOL)state;
 /// This function actions to pop or dismiss.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)onClickBack;
 /// This function calls <code>createChannel:</code> function using the <code>selectedUserList</code>.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)onClickCreate;
 /// This function selects or deselects user.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 /// \param user <code>SBUUser</code> object
 ///
 - (void)selectUserWithUser:(SBUUser * _Nonnull)user;
@@ -13113,19 +13113,19 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 /// This function resets the user list.
 /// If want to use your custom user list, add users object during this class initialization.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)resetUserList;
 /// This function reloads the list.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)reloadData;
 /// This function actions to pop or dismiss.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)onClickBack;
 /// This function calls <code>inviteUsers</code> or <code>promoteToOperators</code> functions with <code>inviteListType</code>.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)onClickInviteOrPromote;
 /// This function selects or deselects user.
 /// \param user <code>SBUUser</code> object
@@ -13400,18 +13400,18 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 ///     Deprecate:
 ///   </li>
 /// </ul>
-- (void)reloadMemberList SWIFT_DEPRECATED_MSG("deprecated in [NEXT_VERSION]", "resetMemberList");
+- (void)reloadMemberList SWIFT_DEPRECATED_MSG("deprecated in 1.2.5", "resetMemberList");
 /// This function resets the member list.
 /// since:
-/// [NEXT_VERSION]]
+/// 1.2.5
 - (void)resetMemberList;
 /// This function reloads the list.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)reloadData;
 /// This function actions to pop or dismiss.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)onClickBack;
 /// This function shows inviteChannelViewController.
 - (void)onClickInviteUser;
@@ -13635,7 +13635,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUModerationsViewController")
 - (void)showBannedMeberList;
 /// This function actions to pop or dismiss.
 /// since:
-/// [NEXT_VERSION]
+/// 1.2.5
 - (void)onClickBack;
 /// Changes freeze status on channel.
 /// \param freeze freeze status

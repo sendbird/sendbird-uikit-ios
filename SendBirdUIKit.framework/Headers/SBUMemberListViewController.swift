@@ -654,18 +654,18 @@ open class SBUMemberListViewController: UIViewController {
     /// This function resets the member list.
     /// - Since: 1.2.0
     /// - Deprecate:
-    @available(*, deprecated, message: "deprecated in [NEXT_VERSION]", renamed: "resetMemberList()")
+    @available(*, deprecated, message: "deprecated in 1.2.5", renamed: "resetMemberList()")
     public func reloadMemberList() {
         self.resetMemberList()
     }
     /// This function resets the member list.
-    /// - Since: [NEXT_VERSION]]
+    /// - Since: 1.2.5
     public func resetMemberList() {
         self.loadNextMemberList(reset: true)
     }
     
     /// This function reloads the list.
-    /// - Since: [NEXT_VERSION]
+    /// - Since: 1.2.5
     public func reloadData() {
         DispatchQueue.main.async { [weak self] in
             if let emptyView = self?.emptyView as? SBUEmptyView,
@@ -687,7 +687,7 @@ open class SBUMemberListViewController: UIViewController {
     // MARK: - Actions
     
     /// This function actions to pop or dismiss.
-    /// - Since: [NEXT_VERSION]
+    /// - Since: 1.2.5
     @objc public func onClickBack() {
         if let navigationController = self.navigationController,
             navigationController.viewControllers.count > 1 {

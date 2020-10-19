@@ -320,7 +320,7 @@ open class SBUChannelListViewController: UIViewController {
     
     /// This function loads the channel list. If the reset value is true, the channel list will reset.
     /// - Parameter reset: To reset the channel list
-    /// - Since: [NEXT_VERSION]
+    /// - Since: 1.2.5
     public func loadNextChannelList(reset: Bool) {
         if self.isLoading { return }
         self.setLoading(true, false)
@@ -379,7 +379,7 @@ open class SBUChannelListViewController: UIViewController {
     /// - Parameters:
     ///   - hasMore: If set to `true`, the changelogs will no longer be scanned.
     ///   - token: Use when you have the last updated token value.
-    /// - Since: [NEXT_VERSION]
+    /// - Since: 1.2.5
     public func loadChannelChangeLogs(hasMore: Bool, token: String?) {
         guard hasMore else {
             SBULog.info("All channel changes have been loaded.")
@@ -453,7 +453,7 @@ open class SBUChannelListViewController: UIViewController {
     
     /// This function sorts the channel lists.
     /// - Parameter needReload: If set to `true`, the tableview will be call reloadData.
-    /// - Since: [NEXT_VERSION]
+    /// - Since: 1.2.5
     public func sortChannelList(needReload: Bool) {
         let sortedChannelList = self.channelList
             .sorted(by: { (lhs: SBDGroupChannel, rhs: SBDGroupChannel) -> Bool in
@@ -487,7 +487,7 @@ open class SBUChannelListViewController: UIViewController {
     /// - Parameters:
     ///   - channels: Channel array to update
     ///   - needReload: If set to `true`, the tableview will be call reloadData.
-    /// - Since: [NEXT_VERSION]
+    /// - Since: 1.2.5
     public func updateChannels(_ channels: [SBDGroupChannel]?, needReload: Bool) {
         guard let channels = channels else { return }
         
@@ -505,7 +505,7 @@ open class SBUChannelListViewController: UIViewController {
     /// - Parameters:
     ///   - channels: Channel array to upsert
     ///   - needReload: If set to `true`, the tableview will be call reloadData.
-    /// - Since: [NEXT_VERSION]
+    /// - Since: 1.2.5
     public func upsertChannels(_ channels: [SBDGroupChannel]?, needReload: Bool) {
         guard let channels = channels else { return }
         
@@ -525,7 +525,7 @@ open class SBUChannelListViewController: UIViewController {
     /// - Parameters:
     ///   - channelUrls: Channel url array to delete
     ///   - needReload: If set to `true`, the tableview will be call reloadData.
-    /// - Since: [NEXT_VERSION]
+    /// - Since: 1.2.5
     public func deleteChannels(channelUrls: [String]?, needReload: Bool) {
         guard let channelUrls = channelUrls else { return }
         

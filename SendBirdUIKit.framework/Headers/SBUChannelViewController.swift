@@ -1054,7 +1054,7 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     
     /// This function sorts the all message list. (Included `presendMessages`, `messageList` and `resendableMessages`.)
     /// - Parameter needReload: If set to `true`, the tableview will be call reloadData and, scroll to last seen index.
-    /// - Since: [NEXT_VERSION]
+    /// - Since: 1.2.5
     public func sortAllMessageList(needReload: Bool) {
         // Generate full list for draw
         let presendMessages = self.preSendMessages.values
@@ -1088,7 +1088,7 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     /// - Parameters:
     ///   - messages: Message array to update
     ///   - needReload: If set to `true`, the tableview will be call reloadData.
-    /// - Since: [NEXT_VERSION]
+    /// - Since: 1.2.5
     private func updateMessagesInList(messages: [SBDBaseMessage]?, needReload: Bool) {
         messages?.forEach { message in
             if let index = self.messageList
@@ -1105,7 +1105,7 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     ///   - messages: Message array to upsert
     ///   - needUpdateNewMessage: If set to `true`, increases new message count.
     ///   - needReload: If set to `true`, the tableview will be call reloadData.
-    /// - Since: [NEXT_VERSION]
+    /// - Since: 1.2.5
     public func upsertMessagesInList(messages: [SBDBaseMessage]?,
                                       needUpdateNewMessage: Bool = true,
                                       needReload: Bool) {
@@ -1140,7 +1140,7 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     /// - Parameters:
     ///   - messageIds: Message id array to delete
     ///   - needReload: If set to `true`, the tableview will be call reloadData.
-    /// - Since: [NEXT_VERSION]
+    /// - Since: 1.2.5
     public func deleteMessagesInList(messageIds: [Int64], needReload: Bool) {
         var toBeDeleteIndexes: [Int] = []
         var toBeDeleteRequestIds: [String] = []
@@ -1181,7 +1181,7 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     /// - Parameters:
     ///   - requestIds: Request id array to delete
     ///   - needReload: If set to `true`, the tableview will be call reloadData.
-    /// - Since: [NEXT_VERSION]
+    /// - Since: 1.2.5
     public func deleteResendableMessages(requestIds: [String], needReload: Bool) {
         for requestId in requestIds {
             self.preSendMessages.removeValue(forKey: requestId)
@@ -1904,7 +1904,7 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     ///   - cell: User message cell
     ///   - userMessage: User message object
     ///   - indexPath: Cell's indexPath
-    /// - Since: [NEXT_VERSION]
+    /// - Since: 1.2.5
     open func setUserMessageCellGestures(_ cell: SBUUserMessageCell,
                                          userMessage: SBDUserMessage,
                                          indexPath: IndexPath) {
@@ -1923,7 +1923,7 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     ///   - cell: File message cell
     ///   - fileMessage: File message object
     ///   - indexPath: Cell's indexPath
-    /// - Since: [NEXT_VERSION]
+    /// - Since: 1.2.5
     open func setFileMessageCellGestures(_ cell: SBUFileMessageCell,
                                          fileMessage: SBDFileMessage,
                                          indexPath: IndexPath) {
@@ -1942,7 +1942,7 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     ///   - cell: Unknown message cell
     ///   - unknownMessage: message object
     ///   - indexPath: Cell's indexPath
-    /// - Since: [NEXT_VERSION]
+    /// - Since: 1.2.5
     open func setUnkownMessageCellGestures(_ cell: SBUUnknownMessageCell,
                                            unknownMessage: SBDBaseMessage,
                                            indexPath: IndexPath) {
@@ -1960,7 +1960,7 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     /// - Parameters:
     ///   - cell: File message cell
     ///   - fileMessage: File message object
-    /// - Since: [NEXT_VERSION]
+    /// - Since: 1.2.5
     func setFileMessageCellImages(_ cell: SBUFileMessageCell,
                                   fileMessage: SBDFileMessage) {
         switch fileMessage.sendingStatus {
@@ -1997,7 +1997,7 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     ///   - indexPath: IndexPath
     ///   - position: Message position
     /// - Returns: `CGPoint` value
-    /// - Since: [NEXT_VERSION]
+    /// - Since: 1.2.5
     public func calculatorMenuPoint(indexPath: IndexPath,
                                     position: MessagePosition) -> CGPoint {
         let rowRect = self.tableView.rectForRow(at: indexPath)
@@ -2014,7 +2014,7 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     ///   - cell: Message cell
     ///   - message: Message object
     ///   - types: Type array of menu items to use
-    /// - Since: [NEXT_VERSION]
+    /// - Since: 1.2.5
     public func showMenuViewController(_ cell: SBUBaseMessageCell,
                                        message: SBDBaseMessage,
                                        types: [MessageMenuItem]) {
@@ -2070,7 +2070,7 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     ///   - indexPath: IndexPath
     ///   - message: Message object
     ///   - types: Type array of menu items to use
-    /// - Since: [NEXT_VERSION]
+    /// - Since: 1.2.5
     public func showMenuModal(_ cell: SBUBaseMessageCell,
                               indexPath: IndexPath,
                               message: SBDBaseMessage,
@@ -2135,7 +2135,7 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     // MARK: - Keyboard
     /// This function changes the messageInputView bottom constraint using keyboard height.
     /// - Parameter notification: Notification object with keyboardFrame information
-    /// - Since: [NEXT_VERSION]
+    /// - Since: 1.2.5
     @objc public func keyboardWillShow(_ notification: Notification) {
         guard let keyboardFrame = notification.userInfo?[
             UIResponder.keyboardFrameEndUserInfoKey
@@ -2149,20 +2149,20 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     
     /// This function changes the messageInputView bottom constraint using keyboard height.
     /// - Parameter notification: Notification object with keyboardFrame information
-    /// - Since: [NEXT_VERSION]
+    /// - Since: 1.2.5
     @objc public func keyboardWillHide(_ notification: Notification) {
         self.messageInputViewBottomConstraint.constant = 0
         self.view.layoutIfNeeded()
     }
     
     /// This function dismisses the keyboard.
-    /// - Since: [NEXT_VERSION]
+    /// - Since: 1.2.5
     @objc public func dismissKeyboard() {
         view.endEditing(true)
     }
     
     /// This functions adds the hide keyboard gesture in tableView.
-    /// - Since: [NEXT_VERSION]
+    /// - Since: 1.2.5
     public func addGestureHideKeyboard() {
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tap.cancelsTouchesInView = false

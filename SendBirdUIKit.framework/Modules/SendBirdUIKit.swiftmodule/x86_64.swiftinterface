@@ -2063,7 +2063,7 @@ extension UIImage {
   @objc public func unban(member: SendBirdUIKit.SBUUser)
   @objc open func showInviteUser()
   @objc public func register(userCell: UIKit.UITableViewCell, nib: UIKit.UINib? = nil)
-  @objc @available(*, deprecated, renamed: "resetMemberList()", message: "deprecated in [NEXT_VERSION]")
+  @objc @available(*, deprecated, renamed: "resetMemberList()", message: "deprecated in 1.2.5")
   public func reloadMemberList()
   @objc public func resetMemberList()
   @objc public func reloadData()
