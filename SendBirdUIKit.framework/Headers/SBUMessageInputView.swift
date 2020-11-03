@@ -2,13 +2,14 @@
 //  SBUMessageInputView.swift
 //  SendBirdUIKit
 //
-//  Created by Tez Park on 03/02/2020.
+//  Created by Tez Park on 2020/11/02.
 //  Copyright © 2020 SendBird, Inc. All rights reserved.
 //
 
 import UIKit
 import Photos
 import AVKit
+
 
 @objc public protocol SBUMessageInputViewDelegate: NSObjectProtocol {
     @objc optional func messageInputView(_ messageInputView: SBUMessageInputView, didSelectSend text: String)
@@ -18,67 +19,200 @@ import AVKit
     @objc optional func messageInputViewDidEndTyping()
 }
 
-
-@IBDesignable @objcMembers
+@objcMembers
 open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelegate {
-    @IBOutlet public weak var addButton: UIButton!
-    @IBOutlet public weak var placeholderLabel: UILabel!
-    @IBOutlet public weak var textView: UITextView!
-    @IBOutlet public weak var sendButton: UIButton!
+    // MARK: - Properties (Public)
+    public lazy var addButton: UIButton? = _addButton
+    public lazy var placeholderLabel = UILabel()
+    public lazy var textView: UITextView? = _textView
+    public lazy var sendButton: UIButton? = _sendButton
 
-    @IBOutlet public weak var editView: UIView!
-    @IBOutlet public weak var cancelButton: UIButton!
-    @IBOutlet public weak var saveButton: UIButton!
-    var basedText: String = ""
+    public lazy var editView = UIView()
+    public lazy var cancelButton: UIButton? = _cancelButton
+    public lazy var saveButton: UIButton? = _saveButton
+    
 
-    @IBOutlet weak var textViewHieghtConstraint: NSLayoutConstraint!
+    // MARK: - Properties (Private)
+    var baseStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.alignment = .fill
+        stackView.distribution = .fill
+        stackView.spacing = 10
+        return stackView
+    }()
+    
+    var topSpace = UIView()
+    var inputBaseView = UIView()
+    var inputStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.alignment = .bottom
+        stackView.distribution = .fill
+        stackView.spacing = 12
+        return stackView
+    }()
+    var inputContentView = UIView()
+    var editStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.alignment = .fill
+        stackView.distribution = .fill
+        return stackView
+    }()
+    var editMarginView = UIView()
+    var bottomSpace = UIView()
+    
+    lazy var _addButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.addTarget(self, action: #selector(onClickAddButton(_:)), for: .touchUpInside)
+        return button
+    }()
+    
+    lazy var _textView: UITextView = {
+        let tv = UITextView()
+        tv.textContainerInset = UIEdgeInsets(top: 10, left: 9, bottom: 10, right: 16)
+        tv.layer.borderWidth = 1
+        tv.layer.cornerRadius = 20
+        tv.delegate = self
+        return tv
+    }()
+    
+    lazy var _sendButton: UIButton = {
+        let button = UIButton()
+        button.layer.cornerRadius = 4
+        button.addTarget(self, action: #selector(onClickSendButton(_:)), for: .touchUpInside)
+        return button
+    }()
+    
+    lazy var _cancelButton: UIButton = {
+        let button = UIButton()
+        button.setTitle(SBUStringSet.Cancel, for: .normal)
+        button.layer.cornerRadius = 4
+        button.addTarget(self, action: #selector(onClickCancelButton(_:)), for: .touchUpInside)
+        return button
+    }()
+    
+    lazy var _saveButton: UIButton = {
+        let button = UIButton()
+        button.setTitle(SBUStringSet.Save, for: .normal)
+        button.layer.cornerRadius = 4
+        button.addTarget(self, action: #selector(onClickSaveButton(_:)), for: .touchUpInside)
+        return button
+    }()
+    
+    var textViewHeightConstraint: NSLayoutConstraint!
 
     weak var delegate: SBUMessageInputViewDelegate?
+
+    var basedText: String = ""
     
     var isFrozen: Bool = false
     var isMuted: Bool = false
-
-    // MARK: - Theme
-    var theme: SBUMessageInputTheme = SBUTheme.messageInputTheme
 
     let cameraItem = SBUActionSheetItem(title: SBUStringSet.Camera)
     let libraryItem = SBUActionSheetItem(title: SBUStringSet.PhotoVideoLibrary)
     let documentItem = SBUActionSheetItem(title: SBUStringSet.Document)
     let cancelItem = SBUActionSheetItem(title: SBUStringSet.Cancel)
 
-    
-    // MARK: - View Lifecycle
-    required public init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
+    var theme: SBUMessageInputTheme = SBUTheme.messageInputTheme
 
-    @available(*, unavailable, renamed: "SBUMessageInputView.sbu_loadViewFromNib()")
+    
+    // MARK: - Life cycle
     override public init(frame: CGRect) {
         super.init(frame: frame)
-    }
-    
-    @available(*, unavailable, renamed: "SBUMessageInputView.sbu_loadViewFromNib()")
-    public init() {
-        super.init(frame: .zero)
-    }
-    
-    open override func awakeFromNib() {
-        super.awakeFromNib()
+        
         self.setupViews()
+        self.setupAutolayout()
     }
     
+    @available(*, unavailable, renamed: "SBUMessageInputView()")
+    required public init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
+
     /// This function handles the initialization of views.
     open func setupViews() {
-        // textView
-        self.textView.textContainerInset = UIEdgeInsets(top: 10, left: 9, bottom: 10, right: 16)
-        self.textView.layer.borderWidth = 1
-        self.textView.layer.cornerRadius = 20
-        self.textView.delegate = self
-
-        // saveButton
-        self.saveButton.layer.cornerRadius = 4
+        self.editView.isHidden = true
+        
+        // Add views
+        self.baseStackView.addArrangedSubview(self.topSpace)
+        
+        if let addButton = self.addButton {
+            self.inputStackView.addArrangedSubview(addButton)
+        }
+        if let textView = self.textView {
+            self.inputContentView.addSubview(textView)
+            self.inputContentView.addSubview(self.placeholderLabel)
+        }
+        self.inputStackView.addArrangedSubview(self.inputContentView)
+        if let sendButton = self.sendButton {
+            self.inputStackView.addArrangedSubview(sendButton)
+        }
+        self.inputBaseView.addSubview(self.inputStackView)
+        self.baseStackView.addArrangedSubview(self.inputBaseView)
+        
+        if let cancelButton = self.cancelButton {
+            self.editStackView.addArrangedSubview(cancelButton)
+        }
+        self.editStackView.addArrangedSubview(self.editMarginView)
+        if let saveButton = self.saveButton {
+            self.editStackView.addArrangedSubview(saveButton)
+        }
+        self.editView.addSubview(self.editStackView)
+        self.baseStackView.addArrangedSubview(self.editView)
+        
+        self.baseStackView.addArrangedSubview(self.bottomSpace)
+        
+        self.addSubview(self.baseStackView)
     }
-     
+    
+    /// This function handles the initialization of autolayouts.
+    open func setupAutolayout() {
+        if #available(iOS 11.0, *) {
+            self.baseStackView.sbu_constraint(equalTo: self, leading: 20, trailing: -16, top: 0)
+            self.baseStackView.sbu_constraint_equalTo(
+                bottomAnchor: self.safeAreaLayoutGuide.bottomAnchor,
+                bottom: 0
+            )
+        } else {
+            self.baseStackView.sbu_constraint(
+                equalTo: self,
+                leading: 20,
+                trailing: -16,
+                top: 0,
+                bottom: 0
+            )
+        }
+        
+        self.topSpace.sbu_constraint(width: self.baseStackView.frame.width, height: 0)
+        
+        self.inputBaseView.sbu_constraint(width: self.baseStackView.frame.width)
+        self.inputStackView.sbu_constraint(
+            equalTo: self.inputBaseView,
+            leading: 0,
+            trailing: 0,
+            top: 0,
+            bottom: 0
+        )
+        
+        self.addButton?.sbu_constraint(width: 32, height: 38)
+        self.textView?.sbu_constraint(equalTo: self.inputContentView, leading: 0, trailing: 0, top: 0, bottom: 0)
+        if let textView = self.textView {
+            self.placeholderLabel.sbu_constraint(equalTo: textView, leading: 14, top: 10)
+        }
+        self.textViewHeightConstraint = self.textView?.heightAnchor.constraint(equalToConstant: 38)
+        self.sendButton?.sbu_constraint(width: 32, height: 38)
+        self.textViewHeightConstraint.isActive = true
+
+        self.cancelButton?.sbu_constraint(width: 75)
+        self.saveButton?.sbu_constraint(width: 75)
+        self.editStackView.sbu_constraint(equalTo: self.editView, leading: 0, trailing: 0, top: 0, bottom: 0)
+        self.editView.sbu_constraint(height: 32)
+        
+        self.bottomSpace.sbu_constraint(width: self.baseStackView.frame.width, height: 0)
+    }
+    
     /// This function handles the initialization of styles.
     open func setupStyles() {
         self.theme = SBUTheme.messageInputTheme
@@ -101,10 +235,11 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         }
 
         // textView
-        self.textView.backgroundColor = theme.textFieldBackgroundColor
-        self.textView.tintColor = theme.textFieldTintColor
-        self.textView.textColor = theme.textFieldTextColor
-        self.textView.layer.borderColor = theme.textFieldBorderColor.cgColor
+        self.textView?.backgroundColor = theme.textFieldBackgroundColor
+        self.textView?.tintColor = theme.textFieldTintColor
+        self.textView?.textColor = theme.textFieldTextColor
+        self.textView?.layer.borderColor = theme.textFieldBorderColor.cgColor
+        self.textView?.font = theme.textFieldPlaceholderFont
         
         // addButton
         let iconAdd = SBUIconSet.iconAdd
@@ -112,20 +247,20 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
                 (self.isFrozen || self.isMuted)
                 ? theme.buttonDisabledTintColor
                 : theme.buttonTintColor)
-        self.addButton.setImage(iconAdd, for: .normal)
+        self.addButton?.setImage(iconAdd, for: .normal)
         
         // IconSend
-        self.sendButton.setImage(SBUIconSet.iconSend
+        self.sendButton?.setImage(SBUIconSet.iconSend
             .sbu_with(tintColor: theme.buttonTintColor), for: .normal)
         
         // cancelButton
-        self.cancelButton.titleLabel?.font = theme.cancelButtonFont
-        self.cancelButton.titleLabel?.textColor = theme.buttonTintColor
+        self.cancelButton?.setTitleColor(theme.buttonTintColor, for: .normal)
+        self.cancelButton?.titleLabel?.font = theme.cancelButtonFont
         
         // saveButton
-        self.saveButton.backgroundColor = theme.buttonTintColor
-        self.saveButton.titleLabel?.font = theme.saveButtonFont
-        self.saveButton.titleLabel?.textColor = theme.saveButtonTextColor
+        self.saveButton?.backgroundColor = theme.buttonTintColor
+        self.saveButton?.setTitleColor(theme.saveButtonTextColor, for: .normal)
+        self.saveButton?.titleLabel?.font = theme.saveButtonFont
         
         // Item
         self.cameraItem.image = SBUIconSet.iconCamera.sbu_with(tintColor: theme.buttonTintColor)
@@ -134,41 +269,41 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         self.cancelItem.color = theme.buttonTintColor
     }
     
-    open override func layoutSubviews() {
+    public override func layoutSubviews() {
         super.layoutSubviews()
-        
         self.setupStyles()
     }
-     
+
+    
     // MARK: - Edit View
     public func startEditMode(text: String) {
-        self.textView.text = text
+        self.textView?.text = text
         self.basedText = text
+
+        self.addButton?.isHidden = true
+        self.addButton?.alpha = 0
         
-        self.addButton.isHidden = true
-        self.addButton.alpha = 0
-        
-        self.sendButton.isHidden = true
-        self.sendButton.alpha = 0
+        self.sendButton?.isHidden = true
+        self.sendButton?.alpha = 0
         
         self.editView.isHidden = false
         self.editView.alpha = 1
 
         self.updateTextViewHeight()
-        let bottom = NSMakeRange(self.textView.text.count - 1, 1)
-        self.textView.scrollRangeToVisible(bottom)
+        let bottom = NSMakeRange((self.textView?.text.count ?? 0) - 1, 1)
+        self.textView?.scrollRangeToVisible(bottom)
         
-        self.textView.becomeFirstResponder()
+        self.textView?.becomeFirstResponder()
 
         self.layoutIfNeeded()
     }
     
     public func endEditMode() {
-        self.textView.text = ""
+        self.textView?.text = ""
         self.basedText = ""
         
-        self.addButton.isHidden = false
-        self.addButton.alpha = 1
+        self.addButton?.isHidden = false
+        self.addButton?.alpha = 1
         
         self.editView.isHidden = true
         self.editView.alpha = 0
@@ -185,9 +320,9 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
     public func setFrozenModeState(_ isFrozen: Bool) {
         self.isFrozen = isFrozen
         
-        self.textView.isEditable = !self.isFrozen
-        self.textView.isUserInteractionEnabled = !self.isFrozen
-        self.addButton.isEnabled = !self.isFrozen
+        self.textView?.isEditable = !self.isFrozen
+        self.textView?.isUserInteractionEnabled = !self.isFrozen
+        self.addButton?.isEnabled = !self.isFrozen
         
         self.endEditMode()
         self.endTypingMode()
@@ -199,9 +334,9 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
     public func setMutedModeState(_ isMuted: Bool) {
         self.isMuted = isMuted
         
-        self.textView.isEditable = !self.isMuted
-        self.textView.isUserInteractionEnabled = !self.isMuted
-        self.addButton.isEnabled = !self.isMuted
+        self.textView?.isEditable = !self.isMuted
+        self.textView?.isUserInteractionEnabled = !self.isMuted
+        self.addButton?.isEnabled = !self.isMuted
         
         self.endEditMode()
         self.endTypingMode()
@@ -210,54 +345,56 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
     
     // MARK: Common
     public func endTypingMode() {
-        self.textView.text = ""
-        self.sendButton.isHidden = true
-        self.sendButton.alpha = 0
+        self.textView?.text = ""
+        self.sendButton?.isHidden = true
+        self.sendButton?.alpha = 0
         self.endEditMode()
         self.layoutIfNeeded()
     }
 
     public func updateTextViewHeight() {
-        self.placeholderLabel.isHidden = !self.textView.text.isEmpty
-
-        switch self.textView.contentSize.height {
-        case ..<38:
-            self.textViewHieghtConstraint.constant = 38
-        case 38...87:
-            self.textViewHieghtConstraint.constant = self.textView.contentSize.height
-        default:
-            self.textViewHieghtConstraint.constant = 87
+        if let textView = self.textView {
+            self.placeholderLabel.isHidden = !textView.text.isEmpty
+            
+            switch textView.contentSize.height {
+            case ..<38:
+                self.textViewHeightConstraint.constant = 38
+            case 38...87:
+                self.textViewHeightConstraint.constant = textView.contentSize.height
+            default:
+                self.textViewHeightConstraint.constant = 87
+            }
         }
     }
 
     // MARK: - Action
-    @IBAction open func onClickAddButton(_ sender: Any) {
+    @objc open func onClickAddButton(_ sender: Any) {
         self.endEditing(true)
         let itmes = [self.cameraItem, self.libraryItem, self.documentItem]
         SBUActionSheet.show(items: itmes, cancelItem: self.cancelItem, delegate: self)
     }
     
-    @IBAction open func onClickSendButton(_ sender: Any) {
+    @objc open func onClickSendButton(_ sender: Any) {
         self.delegate?.messageInputView?(
             self,
-            didSelectSend: self.textView.text.trimmingCharacters(in: .whitespacesAndNewlines)
+            didSelectSend: self.textView?.text.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         )
         self.updateTextViewHeight()
     }
     
-    @IBAction open func onClickCancelButton(_ sender: Any) {
+    @objc open func onClickCancelButton(_ sender: Any) {
         self.endEditMode()
     }
     
-    @IBAction open func onClickSaveButton(_ sender: Any) {
-        let editedText = self.textView.text.trimmingCharacters(in: .whitespacesAndNewlines)
+    @objc open func onClickSaveButton(_ sender: Any) {
+        let editedText = self.textView?.text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard basedText != editedText else {
             self.endEditMode()
             return
         }
         self.delegate?.messageInputView?(
             self,
-            didSelectEdit: self.textView.text.trimmingCharacters(in: .whitespacesAndNewlines)
+            didSelectEdit: self.textView?.text.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         )
     }
 
@@ -266,8 +403,8 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         guard self.editView.isHidden else { self.updateTextViewHeight(); return }
 
         let text = textView.text ?? ""
-        self.sendButton.isHidden = text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-        self.sendButton.alpha = text.isEmpty ? 0 : 1
+        self.sendButton?.isHidden = text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        self.sendButton?.alpha = text.isEmpty ? 0 : 1
         self.updateTextViewHeight()
 
         self.layoutIfNeeded()

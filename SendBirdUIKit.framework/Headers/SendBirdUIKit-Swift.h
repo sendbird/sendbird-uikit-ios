@@ -958,15 +958,15 @@ SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
 - (void)didReceiveError:(NSString * _Nullable)message;
 @end
 
+
+@interface SBUChannelSettingsViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUActionSheetDelegate>
+- (void)didSelectActionSheetItemWithIndex:(NSInteger)index identifier:(NSInteger)identifier;
+@end
+
 @class UIImagePickerController;
 
 @interface SBUChannelSettingsViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
 - (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
-@end
-
-
-@interface SBUChannelSettingsViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUActionSheetDelegate>
-- (void)didSelectActionSheetItemWithIndex:(NSInteger)index identifier:(NSInteger)identifier;
 @end
 
 
@@ -1409,12 +1409,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)didReceiveError:(NSString * _Nullable)message;
 @end
 
-@class UIPresentationController;
-
-@interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
-- (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
-@end
-
 
 @interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
 - (void)didSelectDeleteImageWithMessage:(SBDFileMessage * _Nonnull)message;
@@ -1425,11 +1419,23 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)didSelectRetry;
 @end
 
+@class UIPresentationController;
+
+@interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
+- (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
+@end
+
 @class UIDocumentPickerViewController;
 
 @interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIDocumentPickerDelegate>
 - (void)documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentsAtURLs:(NSArray<NSURL *> * _Nonnull)urls SWIFT_AVAILABILITY(ios,introduced=11.0);
 - (void)documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentAtURL:(NSURL * _Nonnull)url;
+@end
+
+
+@interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
+- (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
+- (void)imagePickerControllerDidCancel:(UIImagePickerController * _Nonnull)picker;
 @end
 
 
@@ -1447,12 +1453,6 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit26SBUUserProfileViewDelegate_")
 @interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUUserProfileViewDelegate>
 - (void)didSelectMessageWithUserId:(NSString * _Nullable)userId;
 - (void)didSelectClose;
-@end
-
-
-@interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
-- (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
-- (void)imagePickerControllerDidCancel:(UIImagePickerController * _Nonnull)picker;
 @end
 
 
@@ -2696,13 +2696,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 @end
 
 
-@interface SBUMemberListViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBDChannelDelegate>
-- (void)channelDidUpdateOperators:(SBDBaseChannel * _Nonnull)sender;
+@interface SBUMemberListViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUEmptyViewDelegate>
+- (void)didSelectRetry;
 @end
 
 
-@interface SBUMemberListViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUEmptyViewDelegate>
-- (void)didSelectRetry;
+@interface SBUMemberListViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBDChannelDelegate>
+- (void)channelDidUpdateOperators:(SBDBaseChannel * _Nonnull)sender;
 @end
 
 
@@ -2799,22 +2799,21 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageIn
 
 @class UITextView;
 
-IB_DESIGNABLE
 SWIFT_CLASS("_TtC13SendBirdUIKit19SBUMessageInputView")
 @interface SBUMessageInputView : UIView <SBUActionSheetDelegate, UITextViewDelegate>
-@property (nonatomic, weak) IBOutlet UIButton * _Null_unspecified addButton;
-@property (nonatomic, weak) IBOutlet UILabel * _Null_unspecified placeholderLabel;
-@property (nonatomic, weak) IBOutlet UITextView * _Null_unspecified textView;
-@property (nonatomic, weak) IBOutlet UIButton * _Null_unspecified sendButton;
-@property (nonatomic, weak) IBOutlet UIView * _Null_unspecified editView;
-@property (nonatomic, weak) IBOutlet UIButton * _Null_unspecified cancelButton;
-@property (nonatomic, weak) IBOutlet UIButton * _Null_unspecified saveButton;
-- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
-- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUMessageInputView.sbu_loadViewFromNib()'");
-- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUMessageInputView.sbu_loadViewFromNib()'");
-- (void)awakeFromNib;
+@property (nonatomic, strong) UIButton * _Nullable addButton;
+@property (nonatomic, strong) UILabel * _Nonnull placeholderLabel;
+@property (nonatomic, strong) UITextView * _Nullable textView;
+@property (nonatomic, strong) UIButton * _Nullable sendButton;
+@property (nonatomic, strong) UIView * _Nonnull editView;
+@property (nonatomic, strong) UIButton * _Nullable cancelButton;
+@property (nonatomic, strong) UIButton * _Nullable saveButton;
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUMessageInputView()'");
 /// This function handles the initialization of views.
 - (void)setupViews;
+/// This function handles the initialization of autolayouts.
+- (void)setupAutolayout;
 /// This function handles the initialization of styles.
 - (void)setupStyles;
 - (void)layoutSubviews;
@@ -2830,10 +2829,10 @@ SWIFT_CLASS("_TtC13SendBirdUIKit19SBUMessageInputView")
 - (void)setMutedModeState:(BOOL)isMuted;
 - (void)endTypingMode;
 - (void)updateTextViewHeight;
-- (IBAction)onClickAddButton:(id _Nonnull)sender;
-- (IBAction)onClickSendButton:(id _Nonnull)sender;
-- (IBAction)onClickCancelButton:(id _Nonnull)sender;
-- (IBAction)onClickSaveButton:(id _Nonnull)sender;
+- (void)onClickAddButton:(id _Nonnull)sender;
+- (void)onClickSendButton:(id _Nonnull)sender;
+- (void)onClickCancelButton:(id _Nonnull)sender;
+- (void)onClickSaveButton:(id _Nonnull)sender;
 - (void)textViewDidChange:(UITextView * _Nonnull)textView;
 - (void)textViewDidEndEditing:(UITextView * _Nonnull)textView;
 - (BOOL)textView:(UITextView * _Nonnull)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString * _Nonnull)text SWIFT_WARN_UNUSED_RESULT;
@@ -4536,15 +4535,15 @@ SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
 - (void)didReceiveError:(NSString * _Nullable)message;
 @end
 
+
+@interface SBUChannelSettingsViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUActionSheetDelegate>
+- (void)didSelectActionSheetItemWithIndex:(NSInteger)index identifier:(NSInteger)identifier;
+@end
+
 @class UIImagePickerController;
 
 @interface SBUChannelSettingsViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
 - (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
-@end
-
-
-@interface SBUChannelSettingsViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUActionSheetDelegate>
-- (void)didSelectActionSheetItemWithIndex:(NSInteger)index identifier:(NSInteger)identifier;
 @end
 
 
@@ -4987,12 +4986,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)didReceiveError:(NSString * _Nullable)message;
 @end
 
-@class UIPresentationController;
-
-@interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
-- (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
-@end
-
 
 @interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
 - (void)didSelectDeleteImageWithMessage:(SBDFileMessage * _Nonnull)message;
@@ -5003,11 +4996,23 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)didSelectRetry;
 @end
 
+@class UIPresentationController;
+
+@interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
+- (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
+@end
+
 @class UIDocumentPickerViewController;
 
 @interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIDocumentPickerDelegate>
 - (void)documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentsAtURLs:(NSArray<NSURL *> * _Nonnull)urls SWIFT_AVAILABILITY(ios,introduced=11.0);
 - (void)documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentAtURL:(NSURL * _Nonnull)url;
+@end
+
+
+@interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
+- (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
+- (void)imagePickerControllerDidCancel:(UIImagePickerController * _Nonnull)picker;
 @end
 
 
@@ -5025,12 +5030,6 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit26SBUUserProfileViewDelegate_")
 @interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUUserProfileViewDelegate>
 - (void)didSelectMessageWithUserId:(NSString * _Nullable)userId;
 - (void)didSelectClose;
-@end
-
-
-@interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
-- (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
-- (void)imagePickerControllerDidCancel:(UIImagePickerController * _Nonnull)picker;
 @end
 
 
@@ -6274,13 +6273,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 @end
 
 
-@interface SBUMemberListViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBDChannelDelegate>
-- (void)channelDidUpdateOperators:(SBDBaseChannel * _Nonnull)sender;
+@interface SBUMemberListViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUEmptyViewDelegate>
+- (void)didSelectRetry;
 @end
 
 
-@interface SBUMemberListViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUEmptyViewDelegate>
-- (void)didSelectRetry;
+@interface SBUMemberListViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBDChannelDelegate>
+- (void)channelDidUpdateOperators:(SBDBaseChannel * _Nonnull)sender;
 @end
 
 
@@ -6377,22 +6376,21 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageIn
 
 @class UITextView;
 
-IB_DESIGNABLE
 SWIFT_CLASS("_TtC13SendBirdUIKit19SBUMessageInputView")
 @interface SBUMessageInputView : UIView <SBUActionSheetDelegate, UITextViewDelegate>
-@property (nonatomic, weak) IBOutlet UIButton * _Null_unspecified addButton;
-@property (nonatomic, weak) IBOutlet UILabel * _Null_unspecified placeholderLabel;
-@property (nonatomic, weak) IBOutlet UITextView * _Null_unspecified textView;
-@property (nonatomic, weak) IBOutlet UIButton * _Null_unspecified sendButton;
-@property (nonatomic, weak) IBOutlet UIView * _Null_unspecified editView;
-@property (nonatomic, weak) IBOutlet UIButton * _Null_unspecified cancelButton;
-@property (nonatomic, weak) IBOutlet UIButton * _Null_unspecified saveButton;
-- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
-- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUMessageInputView.sbu_loadViewFromNib()'");
-- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUMessageInputView.sbu_loadViewFromNib()'");
-- (void)awakeFromNib;
+@property (nonatomic, strong) UIButton * _Nullable addButton;
+@property (nonatomic, strong) UILabel * _Nonnull placeholderLabel;
+@property (nonatomic, strong) UITextView * _Nullable textView;
+@property (nonatomic, strong) UIButton * _Nullable sendButton;
+@property (nonatomic, strong) UIView * _Nonnull editView;
+@property (nonatomic, strong) UIButton * _Nullable cancelButton;
+@property (nonatomic, strong) UIButton * _Nullable saveButton;
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUMessageInputView()'");
 /// This function handles the initialization of views.
 - (void)setupViews;
+/// This function handles the initialization of autolayouts.
+- (void)setupAutolayout;
 /// This function handles the initialization of styles.
 - (void)setupStyles;
 - (void)layoutSubviews;
@@ -6408,10 +6406,10 @@ SWIFT_CLASS("_TtC13SendBirdUIKit19SBUMessageInputView")
 - (void)setMutedModeState:(BOOL)isMuted;
 - (void)endTypingMode;
 - (void)updateTextViewHeight;
-- (IBAction)onClickAddButton:(id _Nonnull)sender;
-- (IBAction)onClickSendButton:(id _Nonnull)sender;
-- (IBAction)onClickCancelButton:(id _Nonnull)sender;
-- (IBAction)onClickSaveButton:(id _Nonnull)sender;
+- (void)onClickAddButton:(id _Nonnull)sender;
+- (void)onClickSendButton:(id _Nonnull)sender;
+- (void)onClickCancelButton:(id _Nonnull)sender;
+- (void)onClickSaveButton:(id _Nonnull)sender;
 - (void)textViewDidChange:(UITextView * _Nonnull)textView;
 - (void)textViewDidEndEditing:(UITextView * _Nonnull)textView;
 - (BOOL)textView:(UITextView * _Nonnull)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString * _Nonnull)text SWIFT_WARN_UNUSED_RESULT;
@@ -8116,15 +8114,15 @@ SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
 - (void)didReceiveError:(NSString * _Nullable)message;
 @end
 
+
+@interface SBUChannelSettingsViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUActionSheetDelegate>
+- (void)didSelectActionSheetItemWithIndex:(NSInteger)index identifier:(NSInteger)identifier;
+@end
+
 @class UIImagePickerController;
 
 @interface SBUChannelSettingsViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
 - (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
-@end
-
-
-@interface SBUChannelSettingsViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUActionSheetDelegate>
-- (void)didSelectActionSheetItemWithIndex:(NSInteger)index identifier:(NSInteger)identifier;
 @end
 
 
@@ -8567,12 +8565,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)didReceiveError:(NSString * _Nullable)message;
 @end
 
-@class UIPresentationController;
-
-@interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
-- (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
-@end
-
 
 @interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
 - (void)didSelectDeleteImageWithMessage:(SBDFileMessage * _Nonnull)message;
@@ -8583,11 +8575,23 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)didSelectRetry;
 @end
 
+@class UIPresentationController;
+
+@interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
+- (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
+@end
+
 @class UIDocumentPickerViewController;
 
 @interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIDocumentPickerDelegate>
 - (void)documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentsAtURLs:(NSArray<NSURL *> * _Nonnull)urls SWIFT_AVAILABILITY(ios,introduced=11.0);
 - (void)documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentAtURL:(NSURL * _Nonnull)url;
+@end
+
+
+@interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
+- (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
+- (void)imagePickerControllerDidCancel:(UIImagePickerController * _Nonnull)picker;
 @end
 
 
@@ -8605,12 +8609,6 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit26SBUUserProfileViewDelegate_")
 @interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUUserProfileViewDelegate>
 - (void)didSelectMessageWithUserId:(NSString * _Nullable)userId;
 - (void)didSelectClose;
-@end
-
-
-@interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
-- (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
-- (void)imagePickerControllerDidCancel:(UIImagePickerController * _Nonnull)picker;
 @end
 
 
@@ -9854,13 +9852,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 @end
 
 
-@interface SBUMemberListViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBDChannelDelegate>
-- (void)channelDidUpdateOperators:(SBDBaseChannel * _Nonnull)sender;
+@interface SBUMemberListViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUEmptyViewDelegate>
+- (void)didSelectRetry;
 @end
 
 
-@interface SBUMemberListViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUEmptyViewDelegate>
-- (void)didSelectRetry;
+@interface SBUMemberListViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBDChannelDelegate>
+- (void)channelDidUpdateOperators:(SBDBaseChannel * _Nonnull)sender;
 @end
 
 
@@ -9957,22 +9955,21 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageIn
 
 @class UITextView;
 
-IB_DESIGNABLE
 SWIFT_CLASS("_TtC13SendBirdUIKit19SBUMessageInputView")
 @interface SBUMessageInputView : UIView <SBUActionSheetDelegate, UITextViewDelegate>
-@property (nonatomic, weak) IBOutlet UIButton * _Null_unspecified addButton;
-@property (nonatomic, weak) IBOutlet UILabel * _Null_unspecified placeholderLabel;
-@property (nonatomic, weak) IBOutlet UITextView * _Null_unspecified textView;
-@property (nonatomic, weak) IBOutlet UIButton * _Null_unspecified sendButton;
-@property (nonatomic, weak) IBOutlet UIView * _Null_unspecified editView;
-@property (nonatomic, weak) IBOutlet UIButton * _Null_unspecified cancelButton;
-@property (nonatomic, weak) IBOutlet UIButton * _Null_unspecified saveButton;
-- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
-- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUMessageInputView.sbu_loadViewFromNib()'");
-- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUMessageInputView.sbu_loadViewFromNib()'");
-- (void)awakeFromNib;
+@property (nonatomic, strong) UIButton * _Nullable addButton;
+@property (nonatomic, strong) UILabel * _Nonnull placeholderLabel;
+@property (nonatomic, strong) UITextView * _Nullable textView;
+@property (nonatomic, strong) UIButton * _Nullable sendButton;
+@property (nonatomic, strong) UIView * _Nonnull editView;
+@property (nonatomic, strong) UIButton * _Nullable cancelButton;
+@property (nonatomic, strong) UIButton * _Nullable saveButton;
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUMessageInputView()'");
 /// This function handles the initialization of views.
 - (void)setupViews;
+/// This function handles the initialization of autolayouts.
+- (void)setupAutolayout;
 /// This function handles the initialization of styles.
 - (void)setupStyles;
 - (void)layoutSubviews;
@@ -9988,10 +9985,10 @@ SWIFT_CLASS("_TtC13SendBirdUIKit19SBUMessageInputView")
 - (void)setMutedModeState:(BOOL)isMuted;
 - (void)endTypingMode;
 - (void)updateTextViewHeight;
-- (IBAction)onClickAddButton:(id _Nonnull)sender;
-- (IBAction)onClickSendButton:(id _Nonnull)sender;
-- (IBAction)onClickCancelButton:(id _Nonnull)sender;
-- (IBAction)onClickSaveButton:(id _Nonnull)sender;
+- (void)onClickAddButton:(id _Nonnull)sender;
+- (void)onClickSendButton:(id _Nonnull)sender;
+- (void)onClickCancelButton:(id _Nonnull)sender;
+- (void)onClickSaveButton:(id _Nonnull)sender;
 - (void)textViewDidChange:(UITextView * _Nonnull)textView;
 - (void)textViewDidEndEditing:(UITextView * _Nonnull)textView;
 - (BOOL)textView:(UITextView * _Nonnull)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString * _Nonnull)text SWIFT_WARN_UNUSED_RESULT;
@@ -11694,15 +11691,15 @@ SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
 - (void)didReceiveError:(NSString * _Nullable)message;
 @end
 
+
+@interface SBUChannelSettingsViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUActionSheetDelegate>
+- (void)didSelectActionSheetItemWithIndex:(NSInteger)index identifier:(NSInteger)identifier;
+@end
+
 @class UIImagePickerController;
 
 @interface SBUChannelSettingsViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
 - (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
-@end
-
-
-@interface SBUChannelSettingsViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUActionSheetDelegate>
-- (void)didSelectActionSheetItemWithIndex:(NSInteger)index identifier:(NSInteger)identifier;
 @end
 
 
@@ -12145,12 +12142,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)didReceiveError:(NSString * _Nullable)message;
 @end
 
-@class UIPresentationController;
-
-@interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
-- (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
-@end
-
 
 @interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
 - (void)didSelectDeleteImageWithMessage:(SBDFileMessage * _Nonnull)message;
@@ -12161,11 +12152,23 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)didSelectRetry;
 @end
 
+@class UIPresentationController;
+
+@interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
+- (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
+@end
+
 @class UIDocumentPickerViewController;
 
 @interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIDocumentPickerDelegate>
 - (void)documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentsAtURLs:(NSArray<NSURL *> * _Nonnull)urls SWIFT_AVAILABILITY(ios,introduced=11.0);
 - (void)documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentAtURL:(NSURL * _Nonnull)url;
+@end
+
+
+@interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
+- (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
+- (void)imagePickerControllerDidCancel:(UIImagePickerController * _Nonnull)picker;
 @end
 
 
@@ -12183,12 +12186,6 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit26SBUUserProfileViewDelegate_")
 @interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUUserProfileViewDelegate>
 - (void)didSelectMessageWithUserId:(NSString * _Nullable)userId;
 - (void)didSelectClose;
-@end
-
-
-@interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
-- (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
-- (void)imagePickerControllerDidCancel:(UIImagePickerController * _Nonnull)picker;
 @end
 
 
@@ -13432,13 +13429,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 @end
 
 
-@interface SBUMemberListViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBDChannelDelegate>
-- (void)channelDidUpdateOperators:(SBDBaseChannel * _Nonnull)sender;
+@interface SBUMemberListViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUEmptyViewDelegate>
+- (void)didSelectRetry;
 @end
 
 
-@interface SBUMemberListViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUEmptyViewDelegate>
-- (void)didSelectRetry;
+@interface SBUMemberListViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBDChannelDelegate>
+- (void)channelDidUpdateOperators:(SBDBaseChannel * _Nonnull)sender;
 @end
 
 
@@ -13535,22 +13532,21 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageIn
 
 @class UITextView;
 
-IB_DESIGNABLE
 SWIFT_CLASS("_TtC13SendBirdUIKit19SBUMessageInputView")
 @interface SBUMessageInputView : UIView <SBUActionSheetDelegate, UITextViewDelegate>
-@property (nonatomic, weak) IBOutlet UIButton * _Null_unspecified addButton;
-@property (nonatomic, weak) IBOutlet UILabel * _Null_unspecified placeholderLabel;
-@property (nonatomic, weak) IBOutlet UITextView * _Null_unspecified textView;
-@property (nonatomic, weak) IBOutlet UIButton * _Null_unspecified sendButton;
-@property (nonatomic, weak) IBOutlet UIView * _Null_unspecified editView;
-@property (nonatomic, weak) IBOutlet UIButton * _Null_unspecified cancelButton;
-@property (nonatomic, weak) IBOutlet UIButton * _Null_unspecified saveButton;
-- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
-- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUMessageInputView.sbu_loadViewFromNib()'");
-- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUMessageInputView.sbu_loadViewFromNib()'");
-- (void)awakeFromNib;
+@property (nonatomic, strong) UIButton * _Nullable addButton;
+@property (nonatomic, strong) UILabel * _Nonnull placeholderLabel;
+@property (nonatomic, strong) UITextView * _Nullable textView;
+@property (nonatomic, strong) UIButton * _Nullable sendButton;
+@property (nonatomic, strong) UIView * _Nonnull editView;
+@property (nonatomic, strong) UIButton * _Nullable cancelButton;
+@property (nonatomic, strong) UIButton * _Nullable saveButton;
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUMessageInputView()'");
 /// This function handles the initialization of views.
 - (void)setupViews;
+/// This function handles the initialization of autolayouts.
+- (void)setupAutolayout;
 /// This function handles the initialization of styles.
 - (void)setupStyles;
 - (void)layoutSubviews;
@@ -13566,10 +13562,10 @@ SWIFT_CLASS("_TtC13SendBirdUIKit19SBUMessageInputView")
 - (void)setMutedModeState:(BOOL)isMuted;
 - (void)endTypingMode;
 - (void)updateTextViewHeight;
-- (IBAction)onClickAddButton:(id _Nonnull)sender;
-- (IBAction)onClickSendButton:(id _Nonnull)sender;
-- (IBAction)onClickCancelButton:(id _Nonnull)sender;
-- (IBAction)onClickSaveButton:(id _Nonnull)sender;
+- (void)onClickAddButton:(id _Nonnull)sender;
+- (void)onClickSendButton:(id _Nonnull)sender;
+- (void)onClickCancelButton:(id _Nonnull)sender;
+- (void)onClickSaveButton:(id _Nonnull)sender;
 - (void)textViewDidChange:(UITextView * _Nonnull)textView;
 - (void)textViewDidEndEditing:(UITextView * _Nonnull)textView;
 - (BOOL)textView:(UITextView * _Nonnull)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString * _Nonnull)text SWIFT_WARN_UNUSED_RESULT;

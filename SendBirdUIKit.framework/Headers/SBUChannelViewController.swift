@@ -92,7 +92,7 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     }()
     
     private lazy var _messageInputView: SBUMessageInputView = {
-        return SBUMessageInputView.sbu_loadViewFromNib() as! SBUMessageInputView
+        return SBUMessageInputView()
     }()
     
     private lazy var _newMessageInfoView: SBUNewMessageInfo = {

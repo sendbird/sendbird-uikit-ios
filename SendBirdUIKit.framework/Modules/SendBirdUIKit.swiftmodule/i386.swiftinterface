@@ -715,46 +715,6 @@ extension SBUChannelViewController : SendBirdSDK.SBDChannelDelegate, SendBirdSDK
   public static func stop()
   @objc deinit
 }
-@objc public protocol SBUMessageInputViewDelegate : ObjectiveC.NSObjectProtocol {
-  @objc optional func messageInputView(_ messageInputView: SendBirdUIKit.SBUMessageInputView, didSelectSend text: Swift.String)
-  @objc optional func messageInputView(_ messageInputView: SendBirdUIKit.SBUMessageInputView, didSelectResource type: SendBirdUIKit.MediaResourceType)
-  @objc optional func messageInputView(_ messageInputView: SendBirdUIKit.SBUMessageInputView, didSelectEdit text: Swift.String)
-  @objc optional func messageInputViewDidStartTyping()
-  @objc optional func messageInputViewDidEndTyping()
-}
-@objc @_inheritsConvenienceInitializers @IBDesignable @objcMembers open class SBUMessageInputView : UIKit.UIView, SendBirdUIKit.SBUActionSheetDelegate, UIKit.UITextViewDelegate {
-  @objc @IBOutlet weak public var addButton: UIKit.UIButton!
-  @objc @IBOutlet weak public var placeholderLabel: UIKit.UILabel!
-  @objc @IBOutlet weak public var textView: UIKit.UITextView!
-  @objc @IBOutlet weak public var sendButton: UIKit.UIButton!
-  @objc @IBOutlet weak public var editView: UIKit.UIView!
-  @objc @IBOutlet weak public var cancelButton: UIKit.UIButton!
-  @objc @IBOutlet weak public var saveButton: UIKit.UIButton!
-  @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
-  @available(*, unavailable, renamed: "SBUMessageInputView.sbu_loadViewFromNib()")
-  @objc override dynamic public init(frame: CoreGraphics.CGRect)
-  @available(*, unavailable, renamed: "SBUMessageInputView.sbu_loadViewFromNib()")
-  @objc dynamic public init()
-  @objc override dynamic open func awakeFromNib()
-  @objc open func setupViews()
-  @objc open func setupStyles()
-  @objc override dynamic open func layoutSubviews()
-  @objc public func startEditMode(text: Swift.String)
-  @objc public func endEditMode()
-  @objc public func setFrozenModeState(_ isFrozen: Swift.Bool)
-  @objc public func setMutedModeState(_ isMuted: Swift.Bool)
-  @objc public func endTypingMode()
-  @objc public func updateTextViewHeight()
-  @objc @IBAction open func onClickAddButton(_ sender: Any)
-  @objc @IBAction open func onClickSendButton(_ sender: Any)
-  @objc @IBAction open func onClickCancelButton(_ sender: Any)
-  @objc @IBAction open func onClickSaveButton(_ sender: Any)
-  @objc public func textViewDidChange(_ textView: UIKit.UITextView)
-  @objc public func textViewDidEndEditing(_ textView: UIKit.UITextView)
-  @objc public func textView(_ textView: UIKit.UITextView, shouldChangeTextIn range: Foundation.NSRange, replacementText text: Swift.String) -> Swift.Bool
-  @objc public func didSelectActionSheetItem(index: Swift.Int, identifier: Swift.Int)
-  @objc deinit
-}
 @_hasMissingDesignatedInitializers @objcMembers public class SBUEmojiManager {
   @objc public static func getEmojiCategories() -> [SendBirdSDK.SBDEmojiCategory]
   @objc public static func getAllEmojis() -> [SendBirdSDK.SBDEmoji]
@@ -913,6 +873,65 @@ extension SBUChannelViewController : SendBirdSDK.SBDChannelDelegate, SendBirdSDK
   @objc override dynamic open func prepareForReuse()
   @objc override dynamic public init(style: UIKit.UITableViewCell.CellStyle, reuseIdentifier: Swift.String?)
   @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc deinit
+}
+@objc public protocol SBUMessageInputViewDelegate : ObjectiveC.NSObjectProtocol {
+  @objc optional func messageInputView(_ messageInputView: SendBirdUIKit.SBUMessageInputView, didSelectSend text: Swift.String)
+  @objc optional func messageInputView(_ messageInputView: SendBirdUIKit.SBUMessageInputView, didSelectResource type: SendBirdUIKit.MediaResourceType)
+  @objc optional func messageInputView(_ messageInputView: SendBirdUIKit.SBUMessageInputView, didSelectEdit text: Swift.String)
+  @objc optional func messageInputViewDidStartTyping()
+  @objc optional func messageInputViewDidEndTyping()
+}
+@objc @_inheritsConvenienceInitializers @objcMembers open class SBUMessageInputView : UIKit.UIView, SendBirdUIKit.SBUActionSheetDelegate, UIKit.UITextViewDelegate {
+  @objc public var addButton: UIKit.UIButton? {
+    @objc get
+    @objc set
+  }
+  @objc public var placeholderLabel: UIKit.UILabel {
+    @objc get
+    @objc set
+  }
+  @objc public var textView: UIKit.UITextView? {
+    @objc get
+    @objc set
+  }
+  @objc public var sendButton: UIKit.UIButton? {
+    @objc get
+    @objc set
+  }
+  @objc public var editView: UIKit.UIView {
+    @objc get
+    @objc set
+  }
+  @objc public var cancelButton: UIKit.UIButton? {
+    @objc get
+    @objc set
+  }
+  @objc public var saveButton: UIKit.UIButton? {
+    @objc get
+    @objc set
+  }
+  @objc override dynamic public init(frame: CoreGraphics.CGRect)
+  @available(*, unavailable, renamed: "SBUMessageInputView()")
+  @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc open func setupViews()
+  @objc open func setupAutolayout()
+  @objc open func setupStyles()
+  @objc override dynamic public func layoutSubviews()
+  @objc public func startEditMode(text: Swift.String)
+  @objc public func endEditMode()
+  @objc public func setFrozenModeState(_ isFrozen: Swift.Bool)
+  @objc public func setMutedModeState(_ isMuted: Swift.Bool)
+  @objc public func endTypingMode()
+  @objc public func updateTextViewHeight()
+  @objc open func onClickAddButton(_ sender: Any)
+  @objc open func onClickSendButton(_ sender: Any)
+  @objc open func onClickCancelButton(_ sender: Any)
+  @objc open func onClickSaveButton(_ sender: Any)
+  @objc public func textViewDidChange(_ textView: UIKit.UITextView)
+  @objc public func textViewDidEndEditing(_ textView: UIKit.UITextView)
+  @objc public func textView(_ textView: UIKit.UITextView, shouldChangeTextIn range: Foundation.NSRange, replacementText text: Swift.String) -> Swift.Bool
+  @objc public func didSelectActionSheetItem(index: Swift.Int, identifier: Swift.Int)
   @objc deinit
 }
 @objc @_inheritsConvenienceInitializers @objcMembers open class SBUCreateChannelViewController : UIKit.UIViewController, UIKit.UINavigationControllerDelegate {

@@ -1,5 +1,8 @@
 # Change Log
 
+### v1.2.6 (Nov 03, 2020)
+* Changed SBUMessageInputView class from Xib-based to code-based
+
 ### v1.2.5 (Oct 19, 2020)
 * Changed access controls
 * Added documentation comments
