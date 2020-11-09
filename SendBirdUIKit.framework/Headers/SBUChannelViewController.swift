@@ -2322,7 +2322,7 @@ extension SBUChannelViewController: UITableViewDelegate, UITableViewDataSource {
 
 // MARK: - UIViewControllerTransitioningDelegate
 extension SBUChannelViewController: UIViewControllerTransitioningDelegate {
-    public func presentationController(forPresented presented: UIViewController,
+    open func presentationController(forPresented presented: UIViewController,
                                        presenting: UIViewController?,
                                        source: UIViewController) -> UIPresentationController? {
         return SBUBottomSheetController(
@@ -2335,7 +2335,7 @@ extension SBUChannelViewController: UIViewControllerTransitioningDelegate {
 
 // MARK: - UIImagePickerControllerDelegate
 extension SBUChannelViewController: UIImagePickerControllerDelegate {
-    public func imagePickerController(
+    open func imagePickerController(
         _ picker: UIImagePickerController,
         didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         picker.dismiss(animated: true) { [weak self] in
@@ -2362,12 +2362,12 @@ extension SBUChannelViewController: UIImagePickerControllerDelegate {
 // MARK: - UIDocumentPickerDelegate
 extension SBUChannelViewController: UIDocumentPickerDelegate {
     @available(iOS 11.0, *)
-    public func documentPicker(_ controller: UIDocumentPickerViewController,
+    open func documentPicker(_ controller: UIDocumentPickerViewController,
                                didPickDocumentsAt urls: [URL]) {
         self.sendDocumentFileMessage(documentUrls: urls)
     }
     
-    public func documentPicker(_ controller: UIDocumentPickerViewController,
+    open func documentPicker(_ controller: UIDocumentPickerViewController,
                                didPickDocumentAt url: URL) {
         if #available(iOS 11.0, *) { return }
         self.sendDocumentFileMessage(documentUrls: [url])
@@ -2460,7 +2460,7 @@ extension SBUChannelViewController: SBUFileViewerDelegate {
 
 // MARK: - SBUEmptyViewDelegate
 extension SBUChannelViewController: SBUEmptyViewDelegate {
-    public func didSelectRetry() {
+    open func didSelectRetry() {
         if let emptyView = self.emptyView as? SBUEmptyView {
             emptyView.reloadData(.noMessages)
         }
@@ -2602,7 +2602,7 @@ extension SBUChannelViewController: SBDChannelDelegate, SBDConnectionDelegate {
         }
     }
     
-    public func channelWasFrozen(_ sender: SBDBaseChannel) {
+    open func channelWasFrozen(_ sender: SBDBaseChannel) {
         guard self.channel?.channelUrl == sender.channelUrl else { return }
         guard let channel = sender as? SBDGroupChannel else { return }
         SBULog.info("Channel was frozen, ChannelUrl:\(channel.channelUrl)")
@@ -2610,7 +2610,7 @@ extension SBUChannelViewController: SBDChannelDelegate, SBDConnectionDelegate {
         self.updateMessageInputModeState()
     }
     
-    public func channelWasUnfrozen(_ sender: SBDBaseChannel) {
+    open func channelWasUnfrozen(_ sender: SBDBaseChannel) {
         guard self.channel?.channelUrl == sender.channelUrl else { return }
         guard let channel = sender as? SBDGroupChannel else { return }
         SBULog.info("Channel was unfrozen, ChannelUrl:\(channel.channelUrl)")
@@ -2618,7 +2618,7 @@ extension SBUChannelViewController: SBDChannelDelegate, SBDConnectionDelegate {
         self.updateMessageInputModeState()
     }
     
-    public func channel(_ sender: SBDBaseChannel, userWasMuted user: SBDUser) {
+    open func channel(_ sender: SBDBaseChannel, userWasMuted user: SBDUser) {
         guard self.channel?.channelUrl == sender.channelUrl else { return }
         
         if user.userId == SBUGlobals.CurrentUser?.userId {
@@ -2627,7 +2627,7 @@ extension SBUChannelViewController: SBDChannelDelegate, SBDConnectionDelegate {
         }
     }
     
-    public func channel(_ sender: SBDBaseChannel, userWasUnmuted user: SBDUser) {
+    open func channel(_ sender: SBDBaseChannel, userWasUnmuted user: SBDUser) {
         guard self.channel?.channelUrl == sender.channelUrl else { return }
         
         if user.userId == SBUGlobals.CurrentUser?.userId {
@@ -2636,11 +2636,11 @@ extension SBUChannelViewController: SBDChannelDelegate, SBDConnectionDelegate {
         }
     }
     
-    public func channelDidUpdateOperators(_ sender: SBDBaseChannel) {
+    open func channelDidUpdateOperators(_ sender: SBDBaseChannel) {
         self.updateMessageInputModeState()
     }
 
-    public func channel(_ sender: SBDBaseChannel, userWasBanned user: SBDUser) {
+    open func channel(_ sender: SBDBaseChannel, userWasBanned user: SBDUser) {
         if user.userId == SBUGlobals.CurrentUser?.userId {
             SBULog.info("You are banned.")
             self.onClickBack()

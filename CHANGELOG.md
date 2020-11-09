@@ -1,5 +1,9 @@
 # Change Log
 
+### v1.2.7 (Nov 09, 2020)
+* Modified access level for delegate functions
+* Fixed `deinit` not called
+
 ### v1.2.6 (Nov 03, 2020)
 * Changed SBUMessageInputView class from Xib-based to code-based
 

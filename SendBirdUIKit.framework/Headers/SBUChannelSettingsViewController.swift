@@ -552,7 +552,7 @@ extension SBUChannelSettingsViewController: UITableViewDataSource, UITableViewDe
 
 // MARK: SBUActionSheetDelegate
 extension SBUChannelSettingsViewController: SBUActionSheetDelegate {
-    public func didSelectActionSheetItem(index: Int, identifier: Int) {
+    open func didSelectActionSheetItem(index: Int, identifier: Int) {
         if identifier == actionSheetIdEdit {
             let type = ChannelEditType.init(rawValue: index)
             switch type {
@@ -596,7 +596,7 @@ extension SBUChannelSettingsViewController: SBUActionSheetDelegate {
 
 // MARK: UIImagePickerViewControllerDelegate
 extension SBUChannelSettingsViewController: UIImagePickerControllerDelegate {
-    public func imagePickerController(
+    open func imagePickerController(
         _ picker: UIImagePickerController,
         didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         

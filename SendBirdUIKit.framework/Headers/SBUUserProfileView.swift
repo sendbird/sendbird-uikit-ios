@@ -29,7 +29,7 @@ import UIKit
 class SBUUserProfileView: UIView, SBUUserProfileViewProtocol {
     
     // MARK: - Property
-    var delegate: SBUUserProfileViewDelegate? = nil
+    weak var delegate: SBUUserProfileViewDelegate? = nil
     var user: SBUUser?
 
     var theme: SBUUserProfileTheme = SBUTheme.userProfileTheme

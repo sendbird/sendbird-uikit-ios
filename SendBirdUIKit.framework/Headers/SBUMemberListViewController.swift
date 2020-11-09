@@ -897,7 +897,7 @@ extension SBUMemberListViewController: UITableViewDataSource, UITableViewDelegat
 
 // MARK: - SBUEmptyViewDelegate
 extension SBUMemberListViewController: SBUEmptyViewDelegate {
-    @objc public func didSelectRetry() {
+    @objc open func didSelectRetry() {
         
     }
 }
@@ -926,7 +926,7 @@ extension SBUMemberListViewController: SBUUserProfileViewDelegate {
 
 // MARK: - SBDChannelDelegate
 extension SBUMemberListViewController: SBDChannelDelegate {
-    public func channelDidUpdateOperators(_ sender: SBDBaseChannel) {
+    open func channelDidUpdateOperators(_ sender: SBDBaseChannel) {
         self.resetMemberList()
     }
 }

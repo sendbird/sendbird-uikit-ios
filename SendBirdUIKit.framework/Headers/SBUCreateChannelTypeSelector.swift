@@ -35,7 +35,7 @@ import UIKit
 
 
 class SBUCreateChannelTypeSelector: UIView, SBUCreateChannelTypeSelectorProtocol {
-    var delegate: SBUCreateChannelTypeSelectorDelegate? = nil
+    weak var delegate: SBUCreateChannelTypeSelectorDelegate? = nil
     
     var theme: SBUComponentTheme = SBUTheme.componentTheme
     

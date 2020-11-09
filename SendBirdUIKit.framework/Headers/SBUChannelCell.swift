@@ -181,6 +181,10 @@ public class SBUChannelCell: SBUBaseChannelCell {
         self.setupStyles()
     }
     
+    deinit {
+        SBULog.info("")
+    }
+    
     /// This function configure a cell using channel information.
     /// - Parameter channel: cell object
     public override func configure(channel: SBDGroupChannel) {

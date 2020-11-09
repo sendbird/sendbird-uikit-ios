@@ -916,7 +916,7 @@ extension SBUChannelListViewController: UITableViewDataSource, UITableViewDelega
 
 // MARK: - SBUEmptyViewDelegate
 extension SBUChannelListViewController: SBUEmptyViewDelegate {
-    public func didSelectRetry() {
+    open func didSelectRetry() {
         if let emptyView = self.emptyView as? SBUEmptyView {
             emptyView.reloadData(.noChannels)
         }
@@ -996,21 +996,21 @@ extension SBUChannelListViewController: SBDChannelDelegate, SBDConnectionDelegat
         self.upsertChannels([channel], needReload: false)
     }
     
-    public func channelWasFrozen(_ sender: SBDBaseChannel) {
+    open func channelWasFrozen(_ sender: SBDBaseChannel) {
         guard let channel = sender as? SBDGroupChannel else { return }
         SBULog.info("Channel was frozen, ChannelUrl:\(channel.channelUrl)")
         
         self.upsertChannels([channel], needReload: true)
     }
     
-    public func channelWasUnfrozen(_ sender: SBDBaseChannel) {
+    open func channelWasUnfrozen(_ sender: SBDBaseChannel) {
         guard let channel = sender as? SBDGroupChannel else { return }
         SBULog.info("Channel was unfrozen, ChannelUrl:\(channel.channelUrl)")
         
         self.upsertChannels([channel], needReload: true)
     }
     
-    public func channel(_ sender: SBDBaseChannel, userWasBanned user: SBDUser) {
+    open func channel(_ sender: SBDBaseChannel, userWasBanned user: SBDUser) {
         if user.userId == SBUGlobals.CurrentUser?.userId {
             guard let channel = sender as? SBDGroupChannel else { return }
             SBULog.info("You are banned, ChannelUrl:\(channel.channelUrl)")

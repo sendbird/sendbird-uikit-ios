@@ -239,16 +239,16 @@ extension SBUChannelListViewController : UIKit.UITableViewDataSource, UIKit.UITa
   @objc dynamic open func tableView(_ tableView: UIKit.UITableView, editActionsForRowAt indexPath: Foundation.IndexPath) -> [UIKit.UITableViewRowAction]?
 }
 extension SBUChannelListViewController : SendBirdUIKit.SBUEmptyViewDelegate {
-  @objc dynamic public func didSelectRetry()
+  @objc dynamic open func didSelectRetry()
 }
 extension SBUChannelListViewController : SendBirdSDK.SBDChannelDelegate, SendBirdSDK.SBDConnectionDelegate {
   @objc dynamic open func channel(_ sender: SendBirdSDK.SBDGroupChannel, userDidJoin user: SendBirdSDK.SBDUser)
   @objc dynamic open func channel(_ sender: SendBirdSDK.SBDGroupChannel, userDidLeave user: SendBirdSDK.SBDUser)
   @objc dynamic open func channelWasChanged(_ sender: SendBirdSDK.SBDBaseChannel)
   @objc dynamic open func channel(_ sender: SendBirdSDK.SBDBaseChannel, messageWasDeleted messageId: Swift.Int64)
-  @objc dynamic public func channelWasFrozen(_ sender: SendBirdSDK.SBDBaseChannel)
-  @objc dynamic public func channelWasUnfrozen(_ sender: SendBirdSDK.SBDBaseChannel)
-  @objc dynamic public func channel(_ sender: SendBirdSDK.SBDBaseChannel, userWasBanned user: SendBirdSDK.SBDUser)
+  @objc dynamic open func channelWasFrozen(_ sender: SendBirdSDK.SBDBaseChannel)
+  @objc dynamic open func channelWasUnfrozen(_ sender: SendBirdSDK.SBDBaseChannel)
+  @objc dynamic open func channel(_ sender: SendBirdSDK.SBDBaseChannel, userWasBanned user: SendBirdSDK.SBDUser)
   @objc dynamic open func didSucceedReconnection()
 }
 extension SBUChannelListViewController : SendBirdUIKit.SBUCreateChannelTypeSelectorDelegate {
@@ -665,16 +665,16 @@ extension SBUChannelViewController : UIKit.UITableViewDelegate, UIKit.UITableVie
   @objc dynamic open func generateCellIdentifier(by message: SendBirdSDK.SBDBaseMessage) -> Swift.String
 }
 extension SBUChannelViewController : UIKit.UIViewControllerTransitioningDelegate {
-  @objc dynamic public func presentationController(forPresented presented: UIKit.UIViewController, presenting: UIKit.UIViewController?, source: UIKit.UIViewController) -> UIKit.UIPresentationController?
+  @objc dynamic open func presentationController(forPresented presented: UIKit.UIViewController, presenting: UIKit.UIViewController?, source: UIKit.UIViewController) -> UIKit.UIPresentationController?
 }
 extension SBUChannelViewController : UIKit.UIImagePickerControllerDelegate {
-  @objc dynamic public func imagePickerController(_ picker: UIKit.UIImagePickerController, didFinishPickingMediaWithInfo info: [UIKit.UIImagePickerController.InfoKey : Any])
+  @objc dynamic open func imagePickerController(_ picker: UIKit.UIImagePickerController, didFinishPickingMediaWithInfo info: [UIKit.UIImagePickerController.InfoKey : Any])
   @objc dynamic public func imagePickerControllerDidCancel(_ picker: UIKit.UIImagePickerController)
 }
 extension SBUChannelViewController : UIKit.UIDocumentPickerDelegate {
   @available(iOS 11.0, *)
-  @objc dynamic public func documentPicker(_ controller: UIKit.UIDocumentPickerViewController, didPickDocumentsAt urls: [Foundation.URL])
-  @objc dynamic public func documentPicker(_ controller: UIKit.UIDocumentPickerViewController, didPickDocumentAt url: Foundation.URL)
+  @objc dynamic open func documentPicker(_ controller: UIKit.UIDocumentPickerViewController, didPickDocumentsAt urls: [Foundation.URL])
+  @objc dynamic open func documentPicker(_ controller: UIKit.UIDocumentPickerViewController, didPickDocumentAt url: Foundation.URL)
 }
 extension SBUChannelViewController : SendBirdUIKit.SBUMessageInputViewDelegate {
   @objc dynamic open func messageInputView(_ messageInputView: SendBirdUIKit.SBUMessageInputView, didSelectSend text: Swift.String)
@@ -687,7 +687,7 @@ extension SBUChannelViewController {
   @objc dynamic open func didSelectDeleteImage(message: SendBirdSDK.SBDFileMessage)
 }
 extension SBUChannelViewController : SendBirdUIKit.SBUEmptyViewDelegate {
-  @objc dynamic public func didSelectRetry()
+  @objc dynamic open func didSelectRetry()
 }
 extension SBUChannelViewController : SendBirdUIKit.SBUUserProfileViewDelegate {
   @objc dynamic open func didSelectMessage(userId: Swift.String?)
@@ -702,12 +702,12 @@ extension SBUChannelViewController : SendBirdSDK.SBDChannelDelegate, SendBirdSDK
   @objc dynamic open func channelDidUpdateDeliveryReceipt(_ sender: SendBirdSDK.SBDGroupChannel)
   @objc dynamic open func channelDidUpdateTypingStatus(_ sender: SendBirdSDK.SBDGroupChannel)
   @objc dynamic open func channelWasChanged(_ sender: SendBirdSDK.SBDBaseChannel)
-  @objc dynamic public func channelWasFrozen(_ sender: SendBirdSDK.SBDBaseChannel)
-  @objc dynamic public func channelWasUnfrozen(_ sender: SendBirdSDK.SBDBaseChannel)
-  @objc dynamic public func channel(_ sender: SendBirdSDK.SBDBaseChannel, userWasMuted user: SendBirdSDK.SBDUser)
-  @objc dynamic public func channel(_ sender: SendBirdSDK.SBDBaseChannel, userWasUnmuted user: SendBirdSDK.SBDUser)
-  @objc dynamic public func channelDidUpdateOperators(_ sender: SendBirdSDK.SBDBaseChannel)
-  @objc dynamic public func channel(_ sender: SendBirdSDK.SBDBaseChannel, userWasBanned user: SendBirdSDK.SBDUser)
+  @objc dynamic open func channelWasFrozen(_ sender: SendBirdSDK.SBDBaseChannel)
+  @objc dynamic open func channelWasUnfrozen(_ sender: SendBirdSDK.SBDBaseChannel)
+  @objc dynamic open func channel(_ sender: SendBirdSDK.SBDBaseChannel, userWasMuted user: SendBirdSDK.SBDUser)
+  @objc dynamic open func channel(_ sender: SendBirdSDK.SBDBaseChannel, userWasUnmuted user: SendBirdSDK.SBDUser)
+  @objc dynamic open func channelDidUpdateOperators(_ sender: SendBirdSDK.SBDBaseChannel)
+  @objc dynamic open func channel(_ sender: SendBirdSDK.SBDBaseChannel, userWasBanned user: SendBirdSDK.SBDUser)
   @objc dynamic open func didSucceedReconnection()
 }
 @_hasMissingDesignatedInitializers public class SBULoading {
@@ -867,13 +867,13 @@ extension SBUChannelViewController : SendBirdSDK.SBDChannelDelegate, SendBirdSDK
   override public func setupAutolayout()
   override public func setupStyles()
   @objc override dynamic open func layoutSubviews()
+  @objc deinit
   override public func configure(channel: SendBirdSDK.SBDGroupChannel)
   public func buildLastUpdatedDate() -> Swift.String?
   @objc override dynamic open func setSelected(_ selected: Swift.Bool, animated: Swift.Bool)
   @objc override dynamic open func prepareForReuse()
   @objc override dynamic public init(style: UIKit.UITableViewCell.CellStyle, reuseIdentifier: Swift.String?)
   @objc required dynamic public init?(coder: Foundation.NSCoder)
-  @objc deinit
 }
 @objc public protocol SBUMessageInputViewDelegate : ObjectiveC.NSObjectProtocol {
   @objc optional func messageInputView(_ messageInputView: SendBirdUIKit.SBUMessageInputView, didSelectSend text: Swift.String)
@@ -1503,10 +1503,10 @@ extension SBUChannelSettingsViewController : UIKit.UITableViewDataSource, UIKit.
   @objc dynamic open func tableView(_ tableView: UIKit.UITableView, numberOfRowsInSection section: Swift.Int) -> Swift.Int
 }
 extension SBUChannelSettingsViewController : SendBirdUIKit.SBUActionSheetDelegate {
-  @objc dynamic public func didSelectActionSheetItem(index: Swift.Int, identifier: Swift.Int)
+  @objc dynamic open func didSelectActionSheetItem(index: Swift.Int, identifier: Swift.Int)
 }
 extension SBUChannelSettingsViewController : UIKit.UIImagePickerControllerDelegate {
-  @objc dynamic public func imagePickerController(_ picker: UIKit.UIImagePickerController, didFinishPickingMediaWithInfo info: [UIKit.UIImagePickerController.InfoKey : Any])
+  @objc dynamic open func imagePickerController(_ picker: UIKit.UIImagePickerController, didFinishPickingMediaWithInfo info: [UIKit.UIImagePickerController.InfoKey : Any])
 }
 @objc public protocol SBUEmptyViewDelegate : ObjectiveC.NSObjectProtocol {
   @objc func didSelectRetry()
@@ -2098,14 +2098,14 @@ extension SBUMemberListViewController : UIKit.UITableViewDataSource, UIKit.UITab
   @objc dynamic open func tableView(_ tableView: UIKit.UITableView, willDisplay cell: UIKit.UITableViewCell, forRowAt indexPath: Foundation.IndexPath)
 }
 extension SBUMemberListViewController : SendBirdUIKit.SBUEmptyViewDelegate {
-  @objc dynamic public func didSelectRetry()
+  @objc dynamic open func didSelectRetry()
 }
 extension SBUMemberListViewController : SendBirdUIKit.SBUUserProfileViewDelegate {
   @objc dynamic open func didSelectMessage(userId: Swift.String?)
   @objc dynamic open func didSelectClose()
 }
 extension SBUMemberListViewController : SendBirdSDK.SBDChannelDelegate {
-  @objc dynamic public func channelDidUpdateOperators(_ sender: SendBirdSDK.SBDBaseChannel)
+  @objc dynamic open func channelDidUpdateOperators(_ sender: SendBirdSDK.SBDBaseChannel)
 }
 public struct DiskCache {
   public init()
