@@ -11,9 +11,8 @@
   1. [Introduction](#introduction)
   1. [Before getting started](#before-getting-started)
   1. [Getting started](#getting-started)
-  1. [Make your first call](#make-your-first-call)
   1. [Implementation guide](#implementation-guide)  
-  1. [Appendix](#appendix)
+
 
 <br />
 
