@@ -11,9 +11,9 @@
   1. [Introduction](#introduction)
   1. [Before getting started](#before-getting-started)
   1. [Getting started](#getting-started)
-  1. [Implementation guide](#implementation-guide)  
-
-
+  1. [Implementation guide](#implementation-guide) 
+  1. [UIKit at a glance](#uikit-at-a-glance)  
+  
 <br />
 
 ## Introduction
@@ -401,7 +401,9 @@ do
 done
 ```
 
-### UIKit at a glance
+<br />
+
+## UIKit at a glance
 
 UIKit for iOS manages the lifecycle of its `ViewController` along with various views and data from the Chat SDK for iOS. UIKit Components are as follows:
 
