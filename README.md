@@ -225,7 +225,7 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
 
 User information must be set as `CurrentUser` in the `SBUGlobal` prior to launching Sendbird UIKit. This information will be used within the kit for various tasks. The `userId` field must be specified whereas other fields such as `nickname` and  `profileUrl` are optional and filled with default values if not specified.  
 
-Set the `CurrentUser` for UIKit through the `AppDeleagte` as below:
+Set the `CurrentUser` for UIKit through the `AppDelegate` as below:
 
 > **Note**: Even if you don’t use the `AppDelegate`, you should register user information before launching a chat service.
  
