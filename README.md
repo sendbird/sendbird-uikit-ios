@@ -168,7 +168,7 @@ Applications must acquire permission from end users to use their photo assets or
 <key>NSMicrophoneUsageDescription</key>
 	<string>$(PRODUCT_NAME) would like to use your microphone (for videos)</string>
 <key>NSPhotoLibraryAddUsageDescription</key>
-<string>$(PRODUCT_NAME) would like to save photos to your photo library</string>
+    <string>$(PRODUCT_NAME) would like to save photos to your photo library</string>
 ...
 
 ```
@@ -246,7 +246,7 @@ Set the `CurrentUser` for UIKit through the `AppDelegate` as below:
     
     // Case 2: Specify all fields
     [SBUGlobals setCurrentUser:[[SBUUser alloc] initWithUserId:{USER_ID} nickname:{(opt)NICKNAME} profileUrl:{(opt)PROFILE_URL}]];
-	...
+    ...
 
 }
 ```
