@@ -138,19 +138,18 @@ When these errors happen, follow the steps below which remove the annotations by
 ```bash
 # Cocoapods
 if [ -d "${PROJECT_DIR}/Pods/SendBirdUIKit" ]; then
-    find ${PROJECT_DIR}/Pods/SendBirdUIKit/SendBirdUIKit.framework/Modules/SendBirdUIKit.swiftmodule/ -type f -name '*.swiftinterface' -exec sed -i '' s/'@_inheritsConvenienceInitializers '// {} +
-    find ${PROJECT_DIR}/Pods/SendBirdUIKit/SendBirdUIKit.framework/Modules/SendBirdUIKit.swiftmodule/ -type f -name '*.swiftinterface' -exec sed -i '' s/'@_hasMissingDesignatedInitializers '// {} +
+	find ${PROJECT_DIR}/Pods/SendBirdUIKit/SendBirdUIKit.framework/Modules/SendBirdUIKit.swiftmodule/ -type f -name '*.swiftinterface' -exec sed -i '' s/'@_inheritsConvenienceInitializers '// {} +
+	find ${PROJECT_DIR}/Pods/SendBirdUIKit/SendBirdUIKit.framework/Modules/SendBirdUIKit.swiftmodule/ -type f -name '*.swiftinterface' -exec sed -i '' s/'@_hasMissingDesignatedInitializers '// {} +
 fi
 
 # Carthage
 if [ -d "${PROJECT_DIR}/Carthage/Build/iOS/SendBirdUIKit.framework" ]; then
-    find ${PROJECT_DIR}/Carthage/Build/iOS/SendBirdUIKit.framework/Modules/SendBirdUIKit.swiftmodule/ -type f -name '*.swiftinterface' -exec sed -i '' s/'@_inheritsConvenienceInitializers '// {} +
-    find ${PROJECT_DIR}/Carthage/Build/iOS/SendBirdUIKit.framework/Modules/SendBirdUIKit.swiftmodule/ -type f -name '*.swiftinterface' -exec sed -i '' s/'@_hasMissingDesignatedInitializers '// {} +
+	find ${PROJECT_DIR}/Carthage/Build/iOS/SendBirdUIKit.framework/Modules/SendBirdUIKit.swiftmodule/ -type f -name '*.swiftinterface' -exec sed -i '' s/'@_inheritsConvenienceInitializers '// {} +
+		find ${PROJECT_DIR}/Carthage/Build/iOS/SendBirdUIKit.framework/Modules/SendBirdUIKit.swiftmodule/ -type f -name '*.swiftinterface' -exec sed -i '' s/'@_hasMissingDesignatedInitializers '// {} +
 fi
 ```
 
 4. Try to build and run.
-
 
 ### Get attachment permission
 
@@ -169,8 +168,9 @@ Applications must acquire permission from end users to use their photo assets or
 <key>NSMicrophoneUsageDescription</key>
 	<string>$(PRODUCT_NAME) would like to use your microphone (for videos)</string>
 <key>NSPhotoLibraryAddUsageDescription</key>
-	<string>$(PRODUCT_NAME) would like to save photos to your photo library</string>
+<string>$(PRODUCT_NAME) would like to save photos to your photo library</string>
 ...
+
 ```
 
 ![Media attachment permission](https://static.sendbird.com/docs/uikit/ios/getting-started-02_20200416.png)
@@ -213,9 +213,11 @@ import SendBirdUIKit
 
 func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 	...
+	
 	let APP_ID = "2D7B4CDB-932F-4082-9B09-A1153792DC8D"	// The ID of the Sendbird application which UIKit sample app uses.
 	SBUMain.initialize(applicationId: APP_ID)
-    ...
+	
+	...
 }
 ```
 
@@ -244,6 +246,7 @@ Set the `CurrentUser` for UIKit through the `AppDelegate` as below:
 	// Case 2: Specify all fields
 	[SBUGlobals setCurrentUser:[[SBUUser alloc] initWithUserId:{USER_ID} nickname:{(opt)NICKNAME} profileUrl:{(opt)PROFILE_URL}]];
 	...
+
 }
 ```
 
@@ -255,13 +258,14 @@ import SendBirdUIKit
 
 func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 	...
-
+	
 	// Case 1: USER_ID only
 	SBUGlobals.CurrentUser = SBUUser(userId: {USER_ID})
-
+	
 	// Case 2: Specify all fields
 	SBUGlobals.CurrentUser = SBUUser(userId: {USER_ID}, nickname:{(opt)NICKNAME} profileUrl:{(opt)PROFILE_URL})
 	...
+	
 }
 ```
 
@@ -281,7 +285,7 @@ Use the following code for the [`SceneDelegate`](https://developer.apple.com/doc
 
 - (void)scene:(UIScene *)scene willConnectToSession:(UISceneSession *)session options:(UISceneConnectionOptions *)connectionOptions {
 	...
-
+	
 	SBUChannelListViewController *channelListVC = [[SBUChannelListViewController alloc] init];
 	UINavigationController *naviVC = [[UINavigationController alloc] initWithRootViewController:channelListVC];
 	self.window.rootViewController = naviVC;
@@ -296,7 +300,7 @@ import SendBirdUIKit
 
 func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
 	...
-
+	
 	let channelListVC = SBUChannelListViewController()
 	let naviVC = UINavigationController(rootViewController: channelListVC)
 	self.window?.rootViewController = naviVC
@@ -311,7 +315,7 @@ func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options conn
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 	...
-
+	
 	SBUChannelListViewController *channelListVC = [[SBUChannelListViewController alloc] init];
 	UINavigationController *naviVC = [[UINavigationController alloc] initWithRootViewController:channelListVC];
 	self.window.rootViewController = naviVC;
@@ -326,6 +330,7 @@ import SendBirdUIKit
 
 func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 	...
+	
 	let channelListVC = SBUChannelListViewController()
 	let naviVC = UINavigationController(rootViewController: channelListVC)
 	self.window?.rootViewController = naviVC
@@ -380,20 +385,20 @@ do
 	FRAMEWORK_EXECUTABLE_NAME=$(defaults read "$FRAMEWORK/Info.plist" CFBundleExecutable)
 	FRAMEWORK_EXECUTABLE_PATH="$FRAMEWORK/$FRAMEWORK_EXECUTABLE_NAME"
 	echo "Executable is $FRAMEWORK_EXECUTABLE_PATH"
-
+	
 	EXTRACTED_ARCHS=()
-
+	
 	for ARCH in $ARCHS
 	do
 		echo "Extracting $ARCH from $FRAMEWORK_EXECUTABLE_NAME"
 		lipo -extract "$ARCH" "$FRAMEWORK_EXECUTABLE_PATH" -o "$FRAMEWORK_EXECUTABLE_PATH-$ARCH"
 		EXTRACTED_ARCHS+=("$FRAMEWORK_EXECUTABLE_PATH-$ARCH")
 	done
-
+	
 	echo "Merging extracted architectures: ${ARCHS}"
 	lipo -o "$FRAMEWORK_EXECUTABLE_PATH-merged" -create "${EXTRACTED_ARCHS[@]}"
 	rm "${EXTRACTED_ARCHS[@]}"
-
+	
 	echo "Replacing original executable with thinned version"
 	rm "$FRAMEWORK_EXECUTABLE_PATH"
 	mv "$FRAMEWORK_EXECUTABLE_PATH-merged" "$FRAMEWORK_EXECUTABLE_PATH"
