@@ -364,7 +364,6 @@ present(naviVC, animated: true)
 
 UIKit is a `Swift`-based framework. However, If your project is in `Objective-C`, configuring just a few additional steps allows you to run the kit in your client app. Go to your Xcode project target's **Build settings** tab and then set the `ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES` to **YES**.
 
-
 ### Distribution setting 
 
 UIKit is distributed in the form of a fat binary, which contains information on both **Simulator** and **Device** architectures. Add the script below if you are planning to distribute your application in the App Store and wish to remove unnecessary architectures in the application's build phase.
