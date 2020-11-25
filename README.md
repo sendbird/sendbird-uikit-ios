@@ -84,7 +84,7 @@ platform :ios, '10.3'
 use_frameworks! 
 
 target YOUR_PROJECT_TARGET do
-	pod 'SendBirdUIKit'
+    pod 'SendBirdUIKit'
 end
 ```
 
@@ -138,14 +138,14 @@ When these errors happen, follow the steps below which remove the annotations by
 ```bash
 # Cocoapods
 if [ -d "${PROJECT_DIR}/Pods/SendBirdUIKit" ]; then
-	find ${PROJECT_DIR}/Pods/SendBirdUIKit/SendBirdUIKit.framework/Modules/SendBirdUIKit.swiftmodule/ -type f -name '*.swiftinterface' -exec sed -i '' s/'@_inheritsConvenienceInitializers '// {} +
-	find ${PROJECT_DIR}/Pods/SendBirdUIKit/SendBirdUIKit.framework/Modules/SendBirdUIKit.swiftmodule/ -type f -name '*.swiftinterface' -exec sed -i '' s/'@_hasMissingDesignatedInitializers '// {} +
+    find ${PROJECT_DIR}/Pods/SendBirdUIKit/SendBirdUIKit.framework/Modules/SendBirdUIKit.swiftmodule/ -type f -name '*.swiftinterface' -exec sed -i '' s/'@_inheritsConvenienceInitializers '// {} +
+    find ${PROJECT_DIR}/Pods/SendBirdUIKit/SendBirdUIKit.framework/Modules/SendBirdUIKit.swiftmodule/ -type f -name '*.swiftinterface' -exec sed -i '' s/'@_hasMissingDesignatedInitializers '// {} +
 fi
 
 # Carthage
 if [ -d "${PROJECT_DIR}/Carthage/Build/iOS/SendBirdUIKit.framework" ]; then
-	find ${PROJECT_DIR}/Carthage/Build/iOS/SendBirdUIKit.framework/Modules/SendBirdUIKit.swiftmodule/ -type f -name '*.swiftinterface' -exec sed -i '' s/'@_inheritsConvenienceInitializers '// {} +
-		find ${PROJECT_DIR}/Carthage/Build/iOS/SendBirdUIKit.framework/Modules/SendBirdUIKit.swiftmodule/ -type f -name '*.swiftinterface' -exec sed -i '' s/'@_hasMissingDesignatedInitializers '// {} +
+    find ${PROJECT_DIR}/Carthage/Build/iOS/SendBirdUIKit.framework/Modules/SendBirdUIKit.swiftmodule/ -type f -name '*.swiftinterface' -exec sed -i '' s/'@_inheritsConvenienceInitializers '// {} +
+    find ${PROJECT_DIR}/Carthage/Build/iOS/SendBirdUIKit.framework/Modules/SendBirdUIKit.swiftmodule/ -type f -name '*.swiftinterface' -exec sed -i '' s/'@_hasMissingDesignatedInitializers '// {} +
 fi
 ```
 
@@ -199,10 +199,11 @@ Initialize the `SendBirdUIKit` instance through `AppDelegate` as below:
 ...
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-	...
-	NSString *APP_ID = @"2D7B4CDB-932F-4082-9B09-A1153792DC8D";	// The ID of the Sendbird application which UIKit sample app uses..
-	[SBUMain initializeWithApplicationId:APP_ID];
-	...
+    ...
+    NSString *APP_ID = @"2D7B4CDB-932F-4082-9B09-A1153792DC8D";	// The ID of the Sendbird application which UIKit sample app uses..
+    [SBUMain initializeWithApplicationId:APP_ID];
+    ...
+    
 ```
 
 ```swift
@@ -215,9 +216,9 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
     ...
     
     let APP_ID = "2D7B4CDB-932F-4082-9B09-A1153792DC8D"	// The ID of the Sendbird application which UIKit sample app uses.
-	SBUMain.initialize(applicationId: APP_ID)
-	
-	...
+    SBUMain.initialize(applicationId: APP_ID)
+    ...
+
 }
 ```
 
@@ -238,13 +239,13 @@ Set the `CurrentUser` for UIKit through the `AppDelegate` as below:
 ...
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-	...
-	
-	// Case 1: USER_ID only
-	[SBUGlobals setCurrentUser:[[SBUUser alloc] initWithUserId:{USER_ID} nickname:nil profileUrl:nil]];
-	
-	// Case 2: Specify all fields
-	[SBUGlobals setCurrentUser:[[SBUUser alloc] initWithUserId:{USER_ID} nickname:{(opt)NICKNAME} profileUrl:{(opt)PROFILE_URL}]];
+    ...
+    
+    // Case 1: USER_ID only
+    [SBUGlobals setCurrentUser:[[SBUUser alloc] initWithUserId:{USER_ID} nickname:nil profileUrl:nil]];
+    
+    // Case 2: Specify all fields
+    [SBUGlobals setCurrentUser:[[SBUUser alloc] initWithUserId:{USER_ID} nickname:{(opt)NICKNAME} profileUrl:{(opt)PROFILE_URL}]];
 	...
 
 }
@@ -257,14 +258,14 @@ import SendBirdUIKit
 ...
 
 func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-	...
-	
-	// Case 1: USER_ID only
-	SBUGlobals.CurrentUser = SBUUser(userId: {USER_ID})
-	
-	// Case 2: Specify all fields
-	SBUGlobals.CurrentUser = SBUUser(userId: {USER_ID}, nickname:{(opt)NICKNAME} profileUrl:{(opt)PROFILE_URL})
-	...
+    ...
+    
+    // Case 1: USER_ID only
+    SBUGlobals.CurrentUser = SBUUser(userId: {USER_ID})
+    
+    // Case 2: Specify all fields
+    SBUGlobals.CurrentUser = SBUUser(userId: {USER_ID}, nickname:{(opt)NICKNAME} profileUrl:{(opt)PROFILE_URL})
+    ...
 	
 }
 ```
@@ -284,11 +285,11 @@ Use the following code for the [`SceneDelegate`](https://developer.apple.com/doc
 ...
 
 - (void)scene:(UIScene *)scene willConnectToSession:(UISceneSession *)session options:(UISceneConnectionOptions *)connectionOptions {
-	...
-	
-	SBUChannelListViewController *channelListVC = [[SBUChannelListViewController alloc] init];
-	UINavigationController *naviVC = [[UINavigationController alloc] initWithRootViewController:channelListVC];
-	self.window.rootViewController = naviVC;
+    ...
+    
+    SBUChannelListViewController *channelListVC = [[SBUChannelListViewController alloc] init];
+    UINavigationController *naviVC = [[UINavigationController alloc] initWithRootViewController:channelListVC];
+    self.window.rootViewController = naviVC;
 }
 ```
 
@@ -299,11 +300,11 @@ import SendBirdUIKit
 ...
 
 func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-	...
-	
-	let channelListVC = SBUChannelListViewController()
-	let naviVC = UINavigationController(rootViewController: channelListVC)
-	self.window?.rootViewController = naviVC
+    ...
+    
+    let channelListVC = SBUChannelListViewController()
+    let naviVC = UINavigationController(rootViewController: channelListVC)
+    self.window?.rootViewController = naviVC
 }
 ```
 
@@ -314,11 +315,11 @@ func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options conn
 ...
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-	...
-	
-	SBUChannelListViewController *channelListVC = [[SBUChannelListViewController alloc] init];
-	UINavigationController *naviVC = [[UINavigationController alloc] initWithRootViewController:channelListVC];
-	self.window.rootViewController = naviVC;
+    ...
+    
+    SBUChannelListViewController *channelListVC = [[SBUChannelListViewController alloc] init];
+    UINavigationController *naviVC = [[UINavigationController alloc] initWithRootViewController:channelListVC];
+    self.window.rootViewController = naviVC;
 }
 ```
 
@@ -330,10 +331,10 @@ import SendBirdUIKit
 
 func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 	...
-	
-	let channelListVC = SBUChannelListViewController()
-	let naviVC = UINavigationController(rootViewController: channelListVC)
-	self.window?.rootViewController = naviVC
+    
+    let channelListVC = SBUChannelListViewController()
+    let naviVC = UINavigationController(rootViewController: channelListVC)
+    self.window?.rootViewController = naviVC
 }
 ```
 
@@ -382,26 +383,26 @@ APP_PATH="${TARGET_BUILD_DIR}/${WRAPPER_NAME}"
 # removes unused architectures.
 find "$APP_PATH" -name '*.framework' -type d | while read -r FRAMEWORK
 do
-	FRAMEWORK_EXECUTABLE_NAME=$(defaults read "$FRAMEWORK/Info.plist" CFBundleExecutable)
-	FRAMEWORK_EXECUTABLE_PATH="$FRAMEWORK/$FRAMEWORK_EXECUTABLE_NAME"
-	echo "Executable is $FRAMEWORK_EXECUTABLE_PATH"
-	
-	EXTRACTED_ARCHS=()
-	
-	for ARCH in $ARCHS
-	do
-		echo "Extracting $ARCH from $FRAMEWORK_EXECUTABLE_NAME"
-		lipo -extract "$ARCH" "$FRAMEWORK_EXECUTABLE_PATH" -o "$FRAMEWORK_EXECUTABLE_PATH-$ARCH"
-		EXTRACTED_ARCHS+=("$FRAMEWORK_EXECUTABLE_PATH-$ARCH")
-	done
-	
-	echo "Merging extracted architectures: ${ARCHS}"
-	lipo -o "$FRAMEWORK_EXECUTABLE_PATH-merged" -create "${EXTRACTED_ARCHS[@]}"
-	rm "${EXTRACTED_ARCHS[@]}"
-	
-	echo "Replacing original executable with thinned version"
-	rm "$FRAMEWORK_EXECUTABLE_PATH"
-	mv "$FRAMEWORK_EXECUTABLE_PATH-merged" "$FRAMEWORK_EXECUTABLE_PATH"
+    FRAMEWORK_EXECUTABLE_NAME=$(defaults read "$FRAMEWORK/Info.plist" CFBundleExecutable)
+    FRAMEWORK_EXECUTABLE_PATH="$FRAMEWORK/$FRAMEWORK_EXECUTABLE_NAME"
+    echo "Executable is $FRAMEWORK_EXECUTABLE_PATH"
+    
+    EXTRACTED_ARCHS=()
+    
+    for ARCH in $ARCHS
+    do
+        echo "Extracting $ARCH from $FRAMEWORK_EXECUTABLE_NAME"
+        lipo -extract "$ARCH" "$FRAMEWORK_EXECUTABLE_PATH" -o "$FRAMEWORK_EXECUTABLE_PATH-$ARCH"
+        EXTRACTED_ARCHS+=("$FRAMEWORK_EXECUTABLE_PATH-$ARCH")
+    done
+    
+    echo "Merging extracted architectures: ${ARCHS}"
+    lipo -o "$FRAMEWORK_EXECUTABLE_PATH-merged" -create "${EXTRACTED_ARCHS[@]}"
+    rm "${EXTRACTED_ARCHS[@]}"
+    
+    echo "Replacing original executable with thinned version"
+    rm "$FRAMEWORK_EXECUTABLE_PATH"
+    mv "$FRAMEWORK_EXECUTABLE_PATH-merged" "$FRAMEWORK_EXECUTABLE_PATH"
 done
 ```
 
