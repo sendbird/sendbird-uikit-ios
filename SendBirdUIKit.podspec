@@ -1,13 +1,13 @@
 Pod::Spec.new do |s|
 	s.name         = "SendBirdUIKit"
-	s.version      = "1.2.7"
+	s.version      = "1.2.8"
 	s.summary      = "UIKit based on SendBirdSDK"
 	s.description  = "SendBird UIKit is a framework composed of basic UI components based on SendBirdSDK."
 	s.homepage     = "https://sendbird.com"
 	s.documentation_url = 'https://docs.sendbird.com/ios'
 	s.license      = "Commercial"
-	s.authors      = { 
-	"Tez Park" => "tez.park@sendbird.com",
+	s.authors      = {
+	"Jaesung Lee" => "jaesung.lee@sendbird.com",
 	"Jed Gyeong" => "jed.gyeong@sendbird.com", 
 	"Woo" => "wooyoung.chung@sendbird.com" 
   	}

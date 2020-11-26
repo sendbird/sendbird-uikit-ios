@@ -1,5 +1,9 @@
 # Change Log
 
+### v1.2.8 (Nov 26, 2020)
+* Modified access level for delegate function
+    * Opened `imagePickerControllerDidCancel(_:)`
+
 ### v1.2.7 (Nov 09, 2020)
 * Modified access level for delegate functions
 * Fixed `deinit` not called

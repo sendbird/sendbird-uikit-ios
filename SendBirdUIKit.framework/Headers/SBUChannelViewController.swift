@@ -2353,7 +2353,7 @@ extension SBUChannelViewController: UIImagePickerControllerDelegate {
         }
     }
     
-    public func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+    open func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true, completion: nil)
     }
 }
