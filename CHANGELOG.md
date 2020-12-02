@@ -1,5 +1,8 @@
 # Change Log
 
+### v1.2.9 (Dec 2, 2020)
+* Improved stability
+
 ### v1.2.8 (Nov 26, 2020)
 * Modified access level for delegate function
     * Opened `imagePickerControllerDidCancel(_:)`

@@ -293,8 +293,8 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         let constraint = self.spacer.widthAnchor.constraint(
             greaterThanOrEqualToConstant: self.view.bounds.width
         )
-        constraint.isActive = true
         constraint.priority = .defaultLow
+        constraint.isActive = true
         
         self.tableView.translatesAutoresizingMaskIntoConstraints = false
         self.tableViewTopConstraint = self.tableView.topAnchor.constraint(
