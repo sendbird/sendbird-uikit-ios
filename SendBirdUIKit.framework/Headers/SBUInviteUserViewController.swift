@@ -476,8 +476,12 @@ open class SBUInviteUserViewController: UIViewController {
     /// - Since: 1.2.0
     public func promoteToOperators(memberIds: [String]) {
         SBULog.info("[Request] Promote members, Members: \(Array(self.selectedUserList))")
-        self.channel?.addOperators(withUserIds: memberIds,
-                                   completionHandler: { [weak self] error in
+        self.shouldShowLoadingIndicator()
+        
+        self.channel?.addOperators(
+            withUserIds: memberIds,
+            completionHandler: { [weak self] error in
+            defer { self?.shouldDismissLoadingIndicator() }
             if let error = error {
                 SBULog.error("""
                     [Failed] Promote members request:
@@ -487,6 +491,7 @@ open class SBUInviteUserViewController: UIViewController {
             }
             
             SBULog.info("[Succeed] Promote members")
+            
             self?.popToPrevious()
         })
     }
@@ -693,5 +698,19 @@ extension SBUInviteUserViewController: UITableViewDelegate, UITableViewDataSourc
                 users: self.useCustomizedUsers ? nextUserList : nil
             )
         }
+    }
+}
+
+extension SBUInviteUserViewController: LoadingIndicatorDelegate {
+    @discardableResult
+    open func shouldShowLoadingIndicator() -> Bool {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+            SBULoading.start()
+        }
+        return false;
+    }
+    
+    open func shouldDismissLoadingIndicator() {
+        SBULoading.stop()
     }
 }

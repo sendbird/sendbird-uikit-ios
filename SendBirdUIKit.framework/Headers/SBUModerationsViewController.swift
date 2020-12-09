@@ -185,12 +185,15 @@ open class SBUModerationsViewController: UIViewController, UINavigationControlle
     /// - Parameter channelUrl: channel url
     public func loadChannel(channelUrl: String?) {
         guard let channelUrl = channelUrl else { return }
+        self.shouldShowLoadingIndicator()
         
         SBUMain.connectionCheck { [weak self] user, error in
             if let error = error { self?.didReceiveError(error.localizedDescription) }
             
             SBULog.info("[Request] Load channel: \(String(channelUrl))")
             SBDGroupChannel.getWithUrl(channelUrl) { [weak self] channel, error in
+                defer { self?.shouldDismissLoadingIndicator() }
+                
                 if let error = error {
                     SBULog.error("[Failed] Load channel request: \(error.localizedDescription)")
                     self?.didReceiveError(error.localizedDescription)
@@ -218,7 +221,10 @@ open class SBUModerationsViewController: UIViewController, UINavigationControlle
             [Request] Freeze channel,
             ChannelUrl:\(self.channel?.channelUrl ?? "")
             """)
+        self.shouldShowLoadingIndicator()
         self.channel?.freeze { [weak self] error in
+            defer { self?.shouldDismissLoadingIndicator() }
+            
             guard let self = self else {
                 completionHandler?(false)
                 return
@@ -247,7 +253,10 @@ open class SBUModerationsViewController: UIViewController, UINavigationControlle
             [Request] Freeze channel,
             ChannelUrl:\(self.channel?.channelUrl ?? "")
             """)
+        self.shouldShowLoadingIndicator()
         self.channel?.unfreeze { [weak self] error in
+            defer { self?.shouldDismissLoadingIndicator() }
+            
             guard let self = self else {
                 completionHandler?(false)
                 return
@@ -384,5 +393,19 @@ extension SBUModerationsViewController: UITableViewDelegate, UITableViewDataSour
     
     open func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return ModerationItemType.allTypes(isBroadcast: self.channel?.isBroadcast ?? false).count
+    }
+}
+
+extension SBUModerationsViewController : LoadingIndicatorDelegate {
+    @discardableResult
+    open func shouldShowLoadingIndicator() -> Bool {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+            SBULoading.start()
+        }
+        return false;
+    }
+    
+    open func shouldDismissLoadingIndicator() {
+        SBULoading.stop()
     }
 }

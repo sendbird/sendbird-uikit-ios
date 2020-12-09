@@ -128,16 +128,20 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     /// This object has a list of all messages.
     @SBUAtomic public private(set) var fullMessageList: [SBDBaseMessage] = []
     
-    // preSend -> error: resendable / succeeded: messageList -> fullMessageList
-    /// This object is used before response from the server
-    public private(set) var preSendMessages: [String:SBDBaseMessage] = [:]
-    /// This object that has resendable messages, including `pending messages` and `failed messages`.
-    public private(set) var resendableMessages: [String:SBDBaseMessage] = [:]
     /// This object is used in the user message in being edited.
     public private(set) var inEditingMessage: SBDUserMessage? = nil
 
+    /// This object is used before response from the server
+    @available(*, deprecated, message: "deprecated in 1.2.10")
+    public private(set) var preSendMessages: [String:SBDBaseMessage] = [:]
+    /// This object that has resendable messages, including `pending messages` and `failed messages`.
+    @available(*, deprecated, message: "deprecated in 1.2.10")
+    public private(set) var resendableMessages: [String:SBDBaseMessage] = [:]
+    @available(*, deprecated, message: "deprecated in 1.2.10")
     public private(set) var preSendFileData: [String:[String:AnyObject]] = [:] // Key: requestId
+    @available(*, deprecated, message: "deprecated in 1.2.10")
     public private(set) var resendableFileData: [String:[String:AnyObject]] = [:] // Key: requestId
+    @available(*, deprecated, message: "deprecated in 1.2.10")
     public private(set) var fileTransferProgress: [String:CGFloat] = [:] // Key: requestId, If have value, file message status is sending
 
     /// This is a params used to get a list of messages. Only getter is provided, please use initialization function to set params directly.
@@ -535,6 +539,10 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
                 return
             }
             
+            if reset {
+                self?.shouldDismissLoadingIndicator()
+            }
+            
             self?.upsertMessagesInList(messages: messages, needReload: true)
             self?.lastUpdatedTimestamp = self?.channel?.lastMessage?.createdAt
                 ?? Int64(Date().timeIntervalSince1970*1000)
@@ -668,9 +676,10 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
             guard let self = self else { return }
             
             if let error = error {
-                guard let requestId = userMessage?.requestId else { return }
-                self.preSendMessages.removeValue(forKey: requestId)
-                self.resendableMessages[requestId] = userMessage
+                SBUMessageManager.shared.upsertPendingMessage(
+                    with: self.channel?.channelUrl,
+                    message: userMessage
+                )
                 self.sortAllMessageList(needReload: true)
                 self.didReceiveError(error.localizedDescription)
                 SBULog.error("[Failed] Send user message request: \(error.localizedDescription)")
@@ -678,21 +687,22 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
             }
             
             guard let message = userMessage else { return }
-            guard let requestId = userMessage?.requestId else { return }
-            
             SBULog.info("[Succeed] Send user message: \(message.description)")
             
-            self.preSendMessages.removeValue(forKey: requestId)
-            self.resendableMessages.removeValue(forKey: requestId)
+            SBUMessageManager.shared.removePendingMessage(
+                with: self.channel?.channelUrl,
+                requestId: userMessage?.requestId
+            )
+  
             self.upsertMessagesInList(messages: [message], needReload: true)
-            
             self.channel?.markAsRead()
         }
+               
+        SBUMessageManager.shared.upsertPendingMessage(
+            with: self.channel?.channelUrl,
+            message: preSendMessage
+        )
         
-        guard let unwrappedPreSendMessage = preSendMessage else { return }
-        SBULog.info("Presend user message: \(unwrappedPreSendMessage.description)")
-        let requestId = unwrappedPreSendMessage.requestId
-        self.preSendMessages[requestId] = unwrappedPreSendMessage
         self.sortAllMessageList(needReload: true)
         self.messageInputView.endTypingMode()
         self.channel?.endTyping()
@@ -754,20 +764,10 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         },
             completionHandler: { [weak self] fileMessage, error in
                 if let error = error {
-                    guard let requestId = fileMessage?.requestId else { return }
-                    self?.resendableMessages[requestId] = fileMessage
-                    if let fileData = messageParams.file,
-                        let mimeType = messageParams.mimeType,
-                        let fileName = messageParams.fileName {
-                        
-                        self?.resendableFileData[requestId] = [
-                            "data": fileData,
-                            "type": mimeType,
-                            "filename": fileName
-                            ] as [String : AnyObject]
-                    }
-                    self?.preSendMessages.removeValue(forKey: requestId)
-                    self?.preSendFileData.removeValue(forKey: requestId)
+                    SBUMessageManager.shared.upsertPendingMessage(
+                        with: self?.channel?.channelUrl,
+                        message: fileMessage
+                    )
                     self?.sortAllMessageList(needReload: true)
                     
                     self?.didReceiveError(error.localizedDescription)
@@ -779,34 +779,31 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
                 }
                 
                 guard let message = fileMessage else { return }
-                guard let requestId = fileMessage?.requestId else { return }
+//                guard let requestId = fileMessage?.requestId else { return }
                 
                 SBULog.info("[Succeed] Send file message: \(message.description)")
-                
-                self?.preSendMessages.removeValue(forKey: requestId)
-                self?.preSendFileData.removeValue(forKey: requestId)
-                self?.resendableMessages.removeValue(forKey: requestId)
-                self?.resendableFileData.removeValue(forKey: requestId)
-                self?.fileTransferProgress.removeValue(forKey: requestId)
+                SBUMessageManager.shared.removePendingMessage(
+                    with: self?.channel?.channelUrl,
+                    requestId: fileMessage?.requestId
+                )
+//                self?.fileTransferProgress.removeValue(forKey: requestId)
                 self?.upsertMessagesInList(messages: [message], needReload: true)
                 
                 self?.channel?.markAsRead()
         })
         
-        guard let unwrappedPreSendMessage = preSendMessage else { return }
-        SBULog.info("Presend file message: \(unwrappedPreSendMessage.description)")
-        let requestId = unwrappedPreSendMessage.requestId
-        self.preSendMessages[requestId] = unwrappedPreSendMessage
-        if let fileData = messageParams.file,
-            let mimeType = messageParams.mimeType,
-            let fileName = messageParams.fileName {
-            self.preSendFileData[requestId] = [
-                "data": fileData,
-                "type": mimeType,
-                "filename": fileName
-                ] as [String : AnyObject]
-        }
-        self.fileTransferProgress[requestId] = 0
+        SBUMessageManager.shared.upsertPendingMessage(
+            with: self.channel?.channelUrl,
+            message: preSendMessage
+        )
+        SBUMessageManager.shared.addFileInfo(
+            with: self.channel?.channelUrl,
+            params: messageParams
+        )
+        
+//        if let reqId = preSendMessage?.requestId {
+//            self.fileTransferProgress[reqId] = 0
+//        }
         self.sortAllMessageList(needReload: true)
     }
     
@@ -821,6 +818,10 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
                                             completionHandler:
                 { [weak self] userMessage, error in
                     if let error = error {
+                        SBUMessageManager.shared.upsertPendingMessage(
+                            with: self?.channel?.channelUrl,
+                            message: userMessage
+                        )
                         self?.sortAllMessageList(needReload: true)
                         self?.didReceiveError(error.localizedDescription)
                         SBULog.error("""
@@ -832,34 +833,30 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
                     }
                     
                     guard let message = userMessage else { return }
-                    guard let requestId = userMessage?.requestId else { return }
                     
-                    SBULog.info("[Succeed] Resend failed user message: \(message.description)")
-                    
-                    self?.preSendMessages.removeValue(forKey: requestId)
-                    self?.resendableMessages.removeValue(forKey: requestId)
+                    SBUMessageManager.shared.removePendingMessage(
+                        with: self?.channel?.channelUrl,
+                        requestId: userMessage?.requestId
+                    )
                     self?.upsertMessagesInList(messages: [message], needReload: true)
-                    
                     self?.channel?.markAsRead()
             })
         } else if let failedMessage = failedMessage as? SBDFileMessage {
             var data: Data? = nil
-            let requestId = failedMessage.requestId
-            if let fileData = self.resendableFileData[requestId], fileData["data"] is Data {
-                data = fileData["data"] as? Data
+
+            if let fileInfo = SBUMessageManager.shared.getFileInfo(with: failedMessage.requestId) {
+                data = fileInfo.file
             }
-            
+
             SBULog.info("[Request] Resend failed file message")
             
             self.channel?.resendFileMessage(
                 with: failedMessage,
                 binaryData: data,
-                progressHandler:
-                { [weak self] (bytesSent, totalBytesSent, totalBytesExpectedToSend) in
-                    
-                    self?.fileTransferProgress[requestId] = CGFloat(
-                        totalBytesSent/totalBytesExpectedToSend
-                    )
+                progressHandler: { (bytesSent, totalBytesSent, totalBytesExpectedToSend) in
+//                    self?.fileTransferProgress[requestId] = CGFloat(
+//                        totalBytesSent/totalBytesExpectedToSend
+//                    )
                     //// If need reload cell for progress, call reload action in here.
                     // self?.tableView.reloadData()
                 },
@@ -876,15 +873,13 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
                     }
                     
                     guard let message = fileMessage else { return }
-                    guard let requestId = fileMessage?.requestId else { return }
-                    
                     SBULog.info("[Succeed] Resend failed file message: \(message.description)")
                     
-                    self?.preSendMessages.removeValue(forKey: requestId)
-                    self?.preSendFileData.removeValue(forKey: requestId)
-                    self?.resendableMessages.removeValue(forKey: requestId)
-                    self?.resendableFileData.removeValue(forKey: requestId)
-                    self?.fileTransferProgress.removeValue(forKey: requestId)
+                    SBUMessageManager.shared.removePendingMessage(
+                        with: self?.channel?.channelUrl,
+                        requestId: fileMessage?.requestId
+                    )
+//                    self?.fileTransferProgress.removeValue(forKey: requestId)
                     self?.upsertMessagesInList(messages: [message], needReload: true)
                     
                     self?.channel?.markAsRead()
@@ -980,7 +975,9 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     ///   - messageListParams: Parameter to be used when getting channel information. If it is nil, it will not be used.
     public func loadChannel(channelUrl: String?, messageListParams: SBDMessageListParams? = nil) {
         guard let channelUrl = channelUrl else { return }
+        self.shouldShowLoadingIndicator()
         
+        //NOTE: this load channel do too much work...
         if let messageListParams = messageListParams {
             self.customizedMessageListParams = messageListParams
         } else {
@@ -1011,11 +1008,9 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
                     = channel?.isSuper == false && channel?.isBroadcast == false
                 
                 self?.loadPrevMessageList(reset: true)
-                
                 if let titleView = self?.titleView as? SBUChannelTitleView {
                     titleView.configure(channel: self?.channel, title: self?.channelName)
                 }
-                
                 self?.updateMessageInputModeState()
             }
         }
@@ -1057,11 +1052,12 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     /// - Since: 1.2.5
     public func sortAllMessageList(needReload: Bool) {
         // Generate full list for draw
-        let presendMessages = self.preSendMessages.values
+        let pendingMessages = SBUMessageManager.shared.getPendingMessages(
+            with: self.channel?.channelUrl
+        )
         let sendMessages = self.messageList
-        let resendableMessages = self.resendableMessages.values
         
-        self.fullMessageList = ([] + resendableMessages + presendMessages)
+        self.fullMessageList = pendingMessages
             .sorted { $0.createdAt > $1.createdAt }
             + sendMessages.sorted { $0.createdAt > $1.createdAt }
         
@@ -1184,11 +1180,11 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     /// - Since: 1.2.5
     public func deleteResendableMessages(requestIds: [String], needReload: Bool) {
         for requestId in requestIds {
-            self.preSendMessages.removeValue(forKey: requestId)
-            self.preSendFileData.removeValue(forKey: requestId)
-            self.resendableMessages.removeValue(forKey: requestId)
-            self.resendableFileData.removeValue(forKey: requestId)
-            self.fileTransferProgress.removeValue(forKey: requestId)
+            SBUMessageManager.shared.removePendingMessage(
+                with: self.channel?.channelUrl,
+                requestId: requestId
+            )
+//            self.fileTransferProgress.removeValue(forKey: requestId)
         }
         
         self.sortAllMessageList(needReload: needReload)
@@ -1471,31 +1467,8 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
             // User message type, only fail case
             guard userMessage.sendingStatus == .failed,
                 userMessage.sender?.userId == SBUGlobals.CurrentUser?.userId  else { return }
-            
-            let retryItem = SBUActionSheetItem(
-                title: SBUStringSet.Retry
-            ) { [weak self] in
-                self?.resendMessage(failedMessage: userMessage)
-            }
-            let removeItem = SBUActionSheetItem(
-                title: SBUStringSet.Remove,
-                color: self.theme.removeItemColor
-            ) { [weak self] in
-                self?.deleteResendableMessages(
-                    requestIds: [userMessage.requestId],
-                    needReload: true
-                )
-            }
-            let cancelItem = SBUActionSheetItem(
-                title: SBUStringSet.Cancel,
-                color: self.theme.cancelItemColor
-            )
-
-            SBUActionSheet.show(
-                items: [retryItem, removeItem],
-                cancelItem: cancelItem
-            )
-            
+            self.resendMessage(failedMessage: userMessage)
+           
         case let fileMessage as SBDFileMessage:
             // File message type
             switch fileMessage.sendingStatus {
@@ -1503,30 +1476,7 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
                 break
             case .failed:
                 guard fileMessage.sender?.userId == SBUGlobals.CurrentUser?.userId else { return }
-                
-                let retryItem = SBUActionSheetItem(
-                    title: SBUStringSet.Retry
-                ) { [weak self] in
-                    self?.resendMessage(failedMessage: fileMessage)
-                }
-                let removeItem = SBUActionSheetItem(
-                    title: SBUStringSet.Remove,
-                    color: self.theme.alertRemoveColor
-                ) { [weak self] in
-                    self?.deleteResendableMessages(
-                        requestIds: [fileMessage.requestId],
-                        needReload: true
-                    )
-                }
-                let cancelItem = SBUActionSheetItem(
-                    title: SBUStringSet.Cancel,
-                    color: self.theme.alertCancelColor
-                )
-                
-                SBUActionSheet.show(
-                    items: [retryItem, removeItem],
-                    cancelItem: cancelItem
-                )
+                self.resendMessage(failedMessage: fileMessage)
                 
             case .succeeded:
                 switch SBUUtils.getFileType(by: fileMessage) {
@@ -1569,26 +1519,77 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         
         switch message {
         case let userMessage as SBDUserMessage:
-            let isCurrentUser = userMessage.sender?.userId == SBUGlobals.CurrentUser?.userId
-            let types: [MessageMenuItem] = isCurrentUser ? [.copy, .edit, .delete] : [.copy]
-            cell.isSelected = true
-            
-            if SBUEmojiManager.useReaction {
-                self.showMenuViewController(cell, message: message, types: types)
-            } else {
-                self.showMenuModal(cell, indexPath: indexPath,  message: message, types: types)
+            switch userMessage.sendingStatus {
+            case .none, .canceled, .pending:
+                break
+            case .failed:
+                let removeItem = SBUActionSheetItem(
+                    title: SBUStringSet.Remove,
+                    color: self.theme.removeItemColor
+                ) { [weak self] in
+                    self?.deleteResendableMessages(
+                        requestIds: [userMessage.requestId],
+                        needReload: true
+                    )
+                }
+                let cancelItem = SBUActionSheetItem(
+                    title: SBUStringSet.Cancel,
+                    color: self.theme.cancelItemColor
+                )
+
+                SBUActionSheet.show(
+                    items: [removeItem],
+                    cancelItem: cancelItem
+                )
+            case .succeeded:
+                let isCurrentUser = userMessage.sender?.userId == SBUGlobals.CurrentUser?.userId
+                let types: [MessageMenuItem] = isCurrentUser ? [.copy, .edit, .delete] : [.copy]
+                cell.isSelected = true
+                
+                if SBUEmojiManager.useReaction {
+                    self.showMenuViewController(cell, message: message, types: types)
+                } else {
+                    self.showMenuModal(cell, indexPath: indexPath,  message: message, types: types)
+                }
+            @unknown default:
+                break;
             }
             
         case let fileMessage as SBDFileMessage:
-            guard fileMessage.sendingStatus == .succeeded else { return }
-            let isCurrentUser = fileMessage.sender?.userId == SBUGlobals.CurrentUser?.userId
-            let types: [MessageMenuItem] = isCurrentUser ? [.save, .delete] : [.save]
-            cell.isSelected = true
-            
-            if SBUEmojiManager.useReaction {
-                self.showMenuViewController(cell, message: message, types: types)
-            } else {
-                self.showMenuModal(cell, indexPath: indexPath, message: message, types: types)
+            switch fileMessage.sendingStatus {
+            case .none, .canceled, .pending:
+                break;
+            case .failed:
+                let removeItem = SBUActionSheetItem(
+                    title: SBUStringSet.Remove,
+                    color: self.theme.removeItemColor
+                ) { [weak self] in
+                    self?.deleteResendableMessages(
+                        requestIds: [fileMessage.requestId],
+                        needReload: true
+                    )
+                }
+                let cancelItem = SBUActionSheetItem(
+                    title: SBUStringSet.Cancel,
+                    color: self.theme.cancelItemColor
+                )
+
+                SBUActionSheet.show(
+                    items: [removeItem],
+                    cancelItem: cancelItem
+                )
+            case .succeeded:
+                let isCurrentUser = fileMessage.sender?.userId == SBUGlobals.CurrentUser?.userId
+                let types: [MessageMenuItem] = isCurrentUser ? [.save, .delete] : [.save]
+                cell.isSelected = true
+                
+                if SBUEmojiManager.useReaction {
+                    self.showMenuViewController(cell, message: message, types: types)
+                } else {
+                    self.showMenuModal(cell, indexPath: indexPath, message: message, types: types)
+                }
+            @unknown default:
+                break;
             }
             
         case _ as SBDAdminMessage:
@@ -1965,20 +1966,9 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
                                   fileMessage: SBDFileMessage) {
         switch fileMessage.sendingStatus {
         case .canceled, .pending, .failed, .none:
-            let requestID = fileMessage.requestId
-            
-            if let fileDict = self.preSendFileData[requestID] {
-                guard let fileData = fileDict["data"] as? Data,
-                    let typeString = fileDict["type"] as? String else { return }
-
-                if SBUUtils.getFileType(by: typeString) == .image {
-                    cell.setImage(fileData.toImage(), size: SBUConstant.thumbnailSize)
-                }
-            } else if let fileDict = self.resendableFileData[requestID] {
-                guard let fileData = fileDict["data"] as? Data,
-                    let typeString = fileDict["type"] as? String else { return }
-
-                if SBUUtils.getFileType(by: typeString) == .image {
+            if let fileInfo = SBUMessageManager.shared.getFileInfo(with: fileMessage.requestId),
+               let type = fileInfo.mimeType, let fileData = fileInfo.file {
+                if SBUUtils.getFileType(by: type) == .image {
                     cell.setImage(fileData.toImage(), size: SBUConstant.thumbnailSize)
                 }
             }
@@ -2667,5 +2657,20 @@ extension SBUChannelViewController: SBDChannelDelegate, SBDConnectionDelegate {
             
             self?.updateMessageInputModeState()
         }
+    }
+}
+
+extension SBUChannelViewController: LoadingIndicatorDelegate {
+    @discardableResult
+    open func shouldShowLoadingIndicator() -> Bool {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+            SBULoading.start()
+        }
+        
+        return false
+    }
+    
+    open func shouldDismissLoadingIndicator() {
+        SBULoading.stop()
     }
 }

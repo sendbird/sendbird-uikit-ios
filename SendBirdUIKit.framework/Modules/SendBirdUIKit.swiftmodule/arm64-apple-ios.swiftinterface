@@ -100,6 +100,11 @@ extension SBUInviteUserViewController : UIKit.UITableViewDelegate, UIKit.UITable
   @objc dynamic open func tableView(_ tableView: UIKit.UITableView, didSelectRowAt indexPath: Foundation.IndexPath)
   @objc dynamic open func tableView(_ tableView: UIKit.UITableView, willDisplay cell: UIKit.UITableViewCell, forRowAt indexPath: Foundation.IndexPath)
 }
+extension SBUInviteUserViewController {
+  @objc @discardableResult
+  dynamic open func shouldShowLoadingIndicator() -> Swift.Bool
+  @objc dynamic open func shouldDismissLoadingIndicator()
+}
 extension UIView {
   @objc public static func sbu_loadNib() -> UIKit.UINib
   @objc public static func sbu_loadViewFromNib() -> UIKit.UIView
@@ -494,6 +499,11 @@ extension SBUModerationsViewController : UIKit.UITableViewDelegate, UIKit.UITabl
   @objc dynamic open func tableView(_ tableView: UIKit.UITableView, cellForRowAt indexPath: Foundation.IndexPath) -> UIKit.UITableViewCell
   @objc dynamic open func tableView(_ tableView: UIKit.UITableView, numberOfRowsInSection section: Swift.Int) -> Swift.Int
 }
+extension SBUModerationsViewController {
+  @objc @discardableResult
+  dynamic open func shouldShowLoadingIndicator() -> Swift.Bool
+  @objc dynamic open func shouldDismissLoadingIndicator()
+}
 @objc @_inheritsConvenienceInitializers @objcMembers open class SBUChannelViewController : UIKit.UIViewController, UIKit.UINavigationControllerDelegate {
   @objc public var channelName: Swift.String?
   @objc public var newMessageInfoView: UIKit.UIView? {
@@ -565,22 +575,27 @@ extension SBUModerationsViewController : UIKit.UITableViewDelegate, UIKit.UITabl
   @objc @SendBirdUIKit.SBUAtomic public var fullMessageList: [SendBirdSDK.SBDBaseMessage] {
     @objc get
   }
-  @objc public var preSendMessages: [Swift.String : SendBirdSDK.SBDBaseMessage] {
-    get
-  }
-  @objc public var resendableMessages: [Swift.String : SendBirdSDK.SBDBaseMessage] {
-    get
-  }
   @objc public var inEditingMessage: SendBirdSDK.SBDUserMessage? {
     get
   }
-  @objc public var preSendFileData: [Swift.String : [Swift.String : Swift.AnyObject]] {
+  @objc @available(*, deprecated, message: "deprecated in 1.2.10")
+  public var preSendMessages: [Swift.String : SendBirdSDK.SBDBaseMessage] {
     get
   }
-  @objc public var resendableFileData: [Swift.String : [Swift.String : Swift.AnyObject]] {
+  @objc @available(*, deprecated, message: "deprecated in 1.2.10")
+  public var resendableMessages: [Swift.String : SendBirdSDK.SBDBaseMessage] {
     get
   }
-  @objc public var fileTransferProgress: [Swift.String : CoreGraphics.CGFloat] {
+  @objc @available(*, deprecated, message: "deprecated in 1.2.10")
+  public var preSendFileData: [Swift.String : [Swift.String : Swift.AnyObject]] {
+    get
+  }
+  @objc @available(*, deprecated, message: "deprecated in 1.2.10")
+  public var resendableFileData: [Swift.String : [Swift.String : Swift.AnyObject]] {
+    get
+  }
+  @objc @available(*, deprecated, message: "deprecated in 1.2.10")
+  public var fileTransferProgress: [Swift.String : CoreGraphics.CGFloat] {
     get
   }
   @objc public var messageListParams: SendBirdSDK.SBDMessageListParams {
@@ -709,6 +724,11 @@ extension SBUChannelViewController : SendBirdSDK.SBDChannelDelegate, SendBirdSDK
   @objc dynamic open func channelDidUpdateOperators(_ sender: SendBirdSDK.SBDBaseChannel)
   @objc dynamic open func channel(_ sender: SendBirdSDK.SBDBaseChannel, userWasBanned user: SendBirdSDK.SBDUser)
   @objc dynamic open func didSucceedReconnection()
+}
+extension SBUChannelViewController {
+  @objc @discardableResult
+  dynamic open func shouldShowLoadingIndicator() -> Swift.Bool
+  @objc dynamic open func shouldDismissLoadingIndicator()
 }
 @_hasMissingDesignatedInitializers public class SBULoading {
   public static func start()
@@ -999,6 +1019,11 @@ extension SBUCreateChannelViewController : UIKit.UITableViewDelegate, UIKit.UITa
   @objc dynamic open func tableView(_ tableView: UIKit.UITableView, cellForRowAt indexPath: Foundation.IndexPath) -> UIKit.UITableViewCell
   @objc dynamic open func tableView(_ tableView: UIKit.UITableView, didSelectRowAt indexPath: Foundation.IndexPath)
   @objc dynamic open func tableView(_ tableView: UIKit.UITableView, willDisplay cell: UIKit.UITableViewCell, forRowAt indexPath: Foundation.IndexPath)
+}
+extension SBUCreateChannelViewController {
+  @objc @discardableResult
+  dynamic open func shouldShowLoadingIndicator() -> Swift.Bool
+  @objc dynamic open func shouldDismissLoadingIndicator()
 }
 @objc @objcMembers public class SBUUser : ObjectiveC.NSObject {
   @objc public var userId: Swift.String {
@@ -1507,6 +1532,11 @@ extension SBUChannelSettingsViewController : SendBirdUIKit.SBUActionSheetDelegat
 }
 extension SBUChannelSettingsViewController : UIKit.UIImagePickerControllerDelegate {
   @objc dynamic open func imagePickerController(_ picker: UIKit.UIImagePickerController, didFinishPickingMediaWithInfo info: [UIKit.UIImagePickerController.InfoKey : Any])
+}
+extension SBUChannelSettingsViewController {
+  @objc @discardableResult
+  dynamic open func shouldShowLoadingIndicator() -> Swift.Bool
+  @objc dynamic open func shouldDismissLoadingIndicator()
 }
 @objc public protocol SBUEmptyViewDelegate : ObjectiveC.NSObjectProtocol {
   @objc func didSelectRetry()
@@ -2106,6 +2136,11 @@ extension SBUMemberListViewController : SendBirdUIKit.SBUUserProfileViewDelegate
 }
 extension SBUMemberListViewController : SendBirdSDK.SBDChannelDelegate {
   @objc dynamic open func channelDidUpdateOperators(_ sender: SendBirdSDK.SBDBaseChannel)
+}
+extension SBUMemberListViewController {
+  @objc @discardableResult
+  dynamic open func shouldShowLoadingIndicator() -> Swift.Bool
+  @objc dynamic open func shouldDismissLoadingIndicator()
 }
 public struct DiskCache {
   public init()

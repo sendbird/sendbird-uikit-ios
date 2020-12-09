@@ -553,9 +553,11 @@ open class SBUMemberListViewController: UIViewController {
     /// - Parameter member: A member to be promoted
     /// - Since: 1.2.0
     public func promoteToOperator(member: SBUUser) {
+        self.shouldShowLoadingIndicator()
         self.channel?.addOperators(
             withUserIds: [member.userId],
             completionHandler: { [weak self] error in
+                self?.shouldDismissLoadingIndicator()
                 self?.resetMemberList()
         })
     }
@@ -564,9 +566,11 @@ open class SBUMemberListViewController: UIViewController {
     /// - Parameter member: A member to be dismissed
     /// - Since: 1.2.0
     public func dismissOperator(member: SBUUser) {
+        self.shouldShowLoadingIndicator()
         self.channel?.removeOperators(
             withUserIds: [member.userId],
             completionHandler: { [weak self] error in
+                self?.shouldDismissLoadingIndicator()
                 self?.resetMemberList()
         })
     }
@@ -575,9 +579,11 @@ open class SBUMemberListViewController: UIViewController {
     /// - Parameter member: A member to be muted
     /// - Since: 1.2.0
     public func mute(member: SBUUser) {
+        self.shouldShowLoadingIndicator()
         self.channel?.muteUser(
             withUserId: member.userId,
             completionHandler: { [weak self] error in
+                self?.shouldDismissLoadingIndicator()
                 self?.resetMemberList()
         })
     }
@@ -586,9 +592,11 @@ open class SBUMemberListViewController: UIViewController {
     /// - Parameter member: A member to be unmuted
     /// - Since: 1.2.0
     public func unmute(member: SBUUser) {
+        self.shouldShowLoadingIndicator()
         self.channel?.unmuteUser(
             withUserId: member.userId,
             completionHandler: { [weak self] error in
+                self?.shouldDismissLoadingIndicator()
                 self?.resetMemberList()
         })
     }
@@ -597,11 +605,13 @@ open class SBUMemberListViewController: UIViewController {
     /// - Parameter member: A member to be banned
     /// - Since: 1.2.0
     public func ban(member: SBUUser) {
+        self.shouldShowLoadingIndicator()
         self.channel?.banUser(
             withUserId: member.userId,
             seconds: -1,
             description: nil,
             completionHandler: { [weak self] error in
+                self?.shouldDismissLoadingIndicator()
                 self?.resetMemberList()
         })
     }
@@ -610,9 +620,11 @@ open class SBUMemberListViewController: UIViewController {
     /// - Parameter member: A member to be unbanned
     /// - Since: 1.2.0
     public func unban(member: SBUUser) {
+        self.shouldShowLoadingIndicator()
         self.channel?.unbanUser(
             withUserId: member.userId,
             completionHandler: { [weak self] error in
+                self?.shouldDismissLoadingIndicator()
                 self?.resetMemberList()
         })
     }
@@ -928,5 +940,19 @@ extension SBUMemberListViewController: SBUUserProfileViewDelegate {
 extension SBUMemberListViewController: SBDChannelDelegate {
     open func channelDidUpdateOperators(_ sender: SBDBaseChannel) {
         self.resetMemberList()
+    }
+}
+
+extension SBUMemberListViewController: LoadingIndicatorDelegate {
+    @discardableResult
+    open func shouldShowLoadingIndicator() -> Bool {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+            SBULoading.start()
+        }
+        return false
+    }
+    
+    open func shouldDismissLoadingIndicator() {
+        SBULoading.stop()
     }
 }

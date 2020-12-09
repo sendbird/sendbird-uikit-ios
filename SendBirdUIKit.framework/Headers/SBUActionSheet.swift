@@ -272,29 +272,23 @@ public class SBUActionSheet {
             itemButton.addSubview(separatorLine)
         }
         
-        if isTop {
-            let rectShape = CAShapeLayer()
-            rectShape.bounds = itemButton.frame
-            rectShape.position = itemButton.center
-            rectShape.path = UIBezierPath(
-                roundedRect: itemButton.bounds,
-                byRoundingCorners: [.topLeft, .topRight],
-                cornerRadii: CGSize(width: 10, height: 10))
-                .cgPath
-            itemButton.layer.mask = rectShape
-        }
+        let rectShape = CAShapeLayer()
+        rectShape.bounds = itemButton.frame
+        rectShape.position = itemButton.center
         
-        if isBottom {
-            let rectShape = CAShapeLayer()
-            rectShape.bounds = itemButton.frame
-            rectShape.position = itemButton.center
-            rectShape.path = UIBezierPath(
-                roundedRect: itemButton.bounds,
-                byRoundingCorners: [.bottomLeft, .bottomRight],
-                cornerRadii: CGSize(width: 10, height: 10))
-                .cgPath
-            itemButton.layer.mask = rectShape
+        var corners: UIRectCorner = []
+        if isTop {
+            corners.update(with: [.topLeft, .topRight])
         }
+        if isBottom {
+            corners.update(with: [.bottomLeft, .bottomRight])
+        }
+        rectShape.path = UIBezierPath(
+            roundedRect: itemButton.bounds,
+            byRoundingCorners: corners,
+            cornerRadii: CGSize(width: 10, height: 10))
+            .cgPath
+        itemButton.layer.mask = rectShape
         
         return itemButton
     }

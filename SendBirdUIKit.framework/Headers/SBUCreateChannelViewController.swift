@@ -311,8 +311,11 @@ open class SBUCreateChannelViewController: UIViewController, UINavigationControl
             [Request] Create channel with users,
             Users: \(Array(self.selectedUserList))
             """)
+        self.shouldShowLoadingIndicator()
         
         SBDGroupChannel.createChannel(with: params) { [weak self] channel, error in
+            defer { self?.shouldDismissLoadingIndicator() }
+            
             if let error = error {
                 SBULog.error("""
                     [Failed] Create channel request:
@@ -478,5 +481,19 @@ extension SBUCreateChannelViewController: UITableViewDelegate, UITableViewDataSo
                 users: self.useCustomizedUsers ? nextUserList : nil
             )
         }
+    }
+}
+
+extension SBUCreateChannelViewController: LoadingIndicatorDelegate {
+    @discardableResult
+    open func shouldShowLoadingIndicator() -> Bool {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+            SBULoading.start()
+        }
+        return false;
+    }
+    
+    open func shouldDismissLoadingIndicator() {
+        SBULoading.stop()
     }
 }

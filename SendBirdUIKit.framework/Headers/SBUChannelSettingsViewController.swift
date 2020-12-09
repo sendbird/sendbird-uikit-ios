@@ -232,12 +232,14 @@ open class SBUChannelSettingsViewController: UIViewController, UINavigationContr
     /// - Parameter channelUrl: channel url
     public func loadChannel(channelUrl: String?) {
         guard let channelUrl = channelUrl else { return }
+        self.shouldShowLoadingIndicator()
         
         SBUMain.connectionCheck { [weak self] user, error in
             if let error = error { self?.didReceiveError(error.localizedDescription) }
             
             SBULog.info("[Request] Load channel: \(String(channelUrl))")
             SBDGroupChannel.getWithUrl(channelUrl) { [weak self] channel, error in
+                defer { self?.shouldDismissLoadingIndicator() }
                 if let error = error {
                     SBULog.error("[Failed] Load channel request: \(error.localizedDescription)")
                     self?.didReceiveError(error.localizedDescription)
@@ -298,7 +300,9 @@ open class SBUChannelSettingsViewController: UIViewController, UINavigationContr
         guard let channel = self.channel else { return }
         
         SBULog.info("[Request] Channel update")
+        self.shouldShowLoadingIndicator()
         channel.update(with: params) { [weak self] channel, error in
+            defer { self?.shouldDismissLoadingIndicator() }
             if let error = error {
                 SBULog.error("""
                     [Failed] Channel update request:
@@ -323,8 +327,10 @@ open class SBUChannelSettingsViewController: UIViewController, UINavigationContr
             \(triggerOption == .off ? "on" : "off"),
             ChannelUrl:\(self.channel?.channelUrl ?? "")
             """)
+        self.shouldShowLoadingIndicator()
         self.channel?.setMyPushTriggerOption(triggerOption) { [weak self] error in
             guard let self = self else { return }
+            defer { self.shouldDismissLoadingIndicator() }
             
             if let error = error {
                 SBULog.error("""
@@ -346,9 +352,11 @@ open class SBUChannelSettingsViewController: UIViewController, UINavigationContr
             [Request] Leave channel,
             ChannelUrl:\(self.channel?.channelUrl ?? "")
             """)
+        self.shouldShowLoadingIndicator()
+        
         self.channel?.leave { [weak self] error in
             guard let self = self else { return }
-
+            defer { self.shouldDismissLoadingIndicator() }
             if let error = error {
                 SBULog.error("""
                     [Failed] Leave channel request:
@@ -608,5 +616,20 @@ extension SBUChannelSettingsViewController: UIImagePickerControllerDelegate {
             
             self?.updateChannel(coverImage: originalImage)
         }
+    }
+}
+
+extension SBUChannelSettingsViewController: LoadingIndicatorDelegate {
+    @discardableResult
+    open func shouldShowLoadingIndicator() -> Bool {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+            SBULoading.start()
+        }
+        
+        return false
+    }
+    
+    open func shouldDismissLoadingIndicator() {
+        SBULoading.stop()
     }
 }

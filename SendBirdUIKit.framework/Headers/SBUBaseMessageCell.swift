@@ -413,7 +413,7 @@ public class MessageStateView: UIView {
             priority: .defaultLow
         )
         self.timeLabel.setConstraint(width: timeLabelWidth, height: timeLabelHeight)
-        self.stateImageView.setConstraint(height: 12)
+        self.stateImageView.setConstraint(height: 14)
     }
     
     func setupStyles() {

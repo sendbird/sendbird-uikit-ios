@@ -32,7 +32,7 @@ public class SBUUser: NSObject {
     ///   - profileUrl: profileUrl (default: nil)
     public init(userId: String, nickname: String? = nil, profileUrl: String? = nil) {
         self.userId = userId
-        self.nickname = nickname ?? userId
+        self.nickname = nickname
         self.profileUrl = profileUrl
     }
     

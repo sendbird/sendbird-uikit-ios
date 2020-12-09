@@ -56,8 +56,18 @@ public class SBUMain: NSObject {
             
             SBULog.info("[Succeed] Connection to SendBird server")
             
+            var updatedNickname = nickname
+            
+            if updatedNickname == nil {
+                if user?.nickname?.isEmpty == false {
+                    updatedNickname = user?.nickname
+                } else {
+                    updatedNickname = userId
+                }
+            }
+            
             SBUMain.updateUserInfo(
-                nickname: nickname ?? userId,
+                nickname: updatedNickname,
                 profileUrl: currentUser.profileUrl ?? user?.profileUrl
             ) { error in
                 
