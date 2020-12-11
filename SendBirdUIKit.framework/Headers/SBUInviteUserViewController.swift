@@ -488,6 +488,7 @@ open class SBUInviteUserViewController: UIViewController {
                     \(String(error.localizedDescription))
                     """)
                 self?.didReceiveError(error.localizedDescription)
+                return
             }
             
             SBULog.info("[Succeed] Promote members")
@@ -704,9 +705,7 @@ extension SBUInviteUserViewController: UITableViewDelegate, UITableViewDataSourc
 extension SBUInviteUserViewController: LoadingIndicatorDelegate {
     @discardableResult
     open func shouldShowLoadingIndicator() -> Bool {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
-            SBULoading.start()
-        }
+        SBULoading.start()
         return false;
     }
     

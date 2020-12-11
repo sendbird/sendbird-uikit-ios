@@ -236,6 +236,7 @@ open class SBUModerationsViewController: UIViewController, UINavigationControlle
                     \(String(error.localizedDescription))
                     """)
                 completionHandler?(false)
+                return
             }
             
             SBULog.info("""
@@ -268,6 +269,7 @@ open class SBUModerationsViewController: UIViewController, UINavigationControlle
                     \(String(error.localizedDescription))
                     """)
                 completionHandler?(false)
+                return
             }
             
             SBULog.info("""
@@ -399,9 +401,7 @@ extension SBUModerationsViewController: UITableViewDelegate, UITableViewDataSour
 extension SBUModerationsViewController : LoadingIndicatorDelegate {
     @discardableResult
     open func shouldShowLoadingIndicator() -> Bool {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
-            SBULoading.start()
-        }
+        SBULoading.start()
         return false;
     }
     

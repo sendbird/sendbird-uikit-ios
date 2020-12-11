@@ -1,5 +1,8 @@
 # Change Log
 
+### v1.2.11 (Dec 11, 2020)
+* Imporved stability
+
 ### v1.2.10 (Dec 9, 2020)
 * Supported loading indicator feature
     * Added `shouldShowLoadingIndicator()`

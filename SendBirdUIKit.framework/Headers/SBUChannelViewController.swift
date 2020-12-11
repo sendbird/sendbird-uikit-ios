@@ -516,7 +516,10 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         let timestamp: Int64 = self.messageList.last?.createdAt ?? LLONG_MAX
         channel.getMessagesByTimestamp(timestamp, params: self.messageListParams)
         { [weak self] (messages, error) in
-            defer { self?.setLoading(false, false) }
+            defer {
+                self?.setLoading(false, false)
+                self?.shouldDismissLoadingIndicator()
+            }
             
             if let error = error {
                 SBULog.error("[Failed] Message list request: \(error.localizedDescription)")
@@ -538,11 +541,7 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
                 SBULog.info("All previous messages have been loaded.")
                 return
             }
-            
-            if reset {
-                self?.shouldDismissLoadingIndicator()
-            }
-            
+
             self?.upsertMessagesInList(messages: messages, needReload: true)
             self?.lastUpdatedTimestamp = self?.channel?.lastMessage?.createdAt
                 ?? Int64(Date().timeIntervalSince1970*1000)
@@ -2663,14 +2662,8 @@ extension SBUChannelViewController: SBDChannelDelegate, SBDConnectionDelegate {
 extension SBUChannelViewController: LoadingIndicatorDelegate {
     @discardableResult
     open func shouldShowLoadingIndicator() -> Bool {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
-            SBULoading.start()
-        }
-        
         return false
     }
     
-    open func shouldDismissLoadingIndicator() {
-        SBULoading.stop()
-    }
+    open func shouldDismissLoadingIndicator() {}
 }

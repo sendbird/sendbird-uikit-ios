@@ -946,9 +946,7 @@ extension SBUMemberListViewController: SBDChannelDelegate {
 extension SBUMemberListViewController: LoadingIndicatorDelegate {
     @discardableResult
     open func shouldShowLoadingIndicator() -> Bool {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
-            SBULoading.start()
-        }
+        SBULoading.start()
         return false
     }
     

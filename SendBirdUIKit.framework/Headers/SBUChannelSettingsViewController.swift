@@ -308,6 +308,7 @@ open class SBUChannelSettingsViewController: UIViewController, UINavigationContr
                     [Failed] Channel update request:
                     \(String(error.localizedDescription))
                     """)
+                return
             }
             
             if let userInfoView = self?.userInfoView as? SBUChannelSettingsUserInfoView {
@@ -337,6 +338,7 @@ open class SBUChannelSettingsViewController: UIViewController, UINavigationContr
                     [Failed] Channel push status request:
                     \(String(error.localizedDescription))
                     """)
+                return
             }
             
             SBULog.info("""
@@ -362,6 +364,7 @@ open class SBUChannelSettingsViewController: UIViewController, UINavigationContr
                     [Failed] Leave channel request:
                     \(String(error.localizedDescription))
                     """)
+                return
             }
             
             SBULog.info("""
@@ -622,10 +625,7 @@ extension SBUChannelSettingsViewController: UIImagePickerControllerDelegate {
 extension SBUChannelSettingsViewController: LoadingIndicatorDelegate {
     @discardableResult
     open func shouldShowLoadingIndicator() -> Bool {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
-            SBULoading.start()
-        }
-        
+        SBULoading.start()
         return false
     }
     

@@ -322,6 +322,7 @@ open class SBUCreateChannelViewController: UIViewController, UINavigationControl
                     \(String(error.localizedDescription))
                     """)
                 self?.didReceiveError(error.localizedDescription)
+                return
             }
             
             guard let channelUrl = channel?.channelUrl else {
@@ -487,9 +488,7 @@ extension SBUCreateChannelViewController: UITableViewDelegate, UITableViewDataSo
 extension SBUCreateChannelViewController: LoadingIndicatorDelegate {
     @discardableResult
     open func shouldShowLoadingIndicator() -> Bool {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
-            SBULoading.start()
-        }
+        SBULoading.start()
         return false;
     }
     
