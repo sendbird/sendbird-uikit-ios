@@ -17,14 +17,12 @@ open class SBUFileMessageCell: SBUContentBaseMessageCell {
         return self.message as? SBDFileMessage
     }
     
-    
     // MARK: - Private property
     private lazy var baseFileContentView: BaseFileContentView = {
         let fileView = BaseFileContentView()
         return fileView
     }()
     
-
     private lazy var contentLongPressRecognizer: UILongPressGestureRecognizer = {
         return .init(target: self, action: #selector(self.onLongPressContentView(sender:)))
     }()
@@ -55,6 +53,15 @@ open class SBUFileMessageCell: SBUContentBaseMessageCell {
         self.baseFileContentView.setupStyles()
     }
     
+    open override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        guard let imageContentView = self.baseFileContentView as? ImageContentView else { return }
+        imageContentView.task?.cancel()
+        imageContentView.task = nil
+//        imageContentView.imageView.image = nil
+    }
+
     
     // MARK: - Common
     public func configure(_ message: SBDFileMessage,
@@ -72,11 +79,6 @@ open class SBUFileMessageCell: SBUContentBaseMessageCell {
             position: position,
             groupPosition: groupPosition,
             receiptState: receiptState
-        )
-
-        self.reactionView.configure(
-            maxWidth: SBUConstant.imageSize.width,
-            reactions: message.reactions
         )
         
         switch SBUUtils.getFileType(by: message) {
@@ -100,41 +102,13 @@ open class SBUFileMessageCell: SBUContentBaseMessageCell {
             }
             self.baseFileContentView.configure(message: message, position: position)
         }
-
-        // Remove ArrangedSubviews
-        self.contentsStackView.arrangedSubviews.forEach(
-            self.contentsStackView.removeArrangedSubview(_:)
-        )
-        
-        switch position {
-        case .left:
-            self.userNameStackView.alignment = .leading
-            self.userNameView.isHidden = false
-            self.profileView.isHidden = false
-           
-            self.contentsStackView.addArrangedSubview(self.profileView)
-            self.contentsStackView.addArrangedSubview(self.mainContainerView)
-            self.contentsStackView.addArrangedSubview(self.stateView)
-            
-        case .right:
-            self.userNameStackView.alignment = .trailing
-            self.userNameView.isHidden = true
-            self.profileView.isHidden = true
-            
-            self.contentsStackView.addArrangedSubview(self.stateView)
-            self.contentsStackView.addArrangedSubview(self.mainContainerView)
-            
-        case .center:
-            break
-        }
     }
     
+    /// This method has to be called in main thread
     public func setImage(_ image: UIImage?, size: CGSize? = nil) {
-        DispatchQueue.main.async { [weak self] in
-            guard let imageContentView = self?.baseFileContentView as? ImageContentView else { return }
-            imageContentView.setImage(image, size: size)
-            imageContentView.setNeedsLayout()
-        }
+        guard let imageContentView = self.baseFileContentView as? ImageContentView else { return }
+        imageContentView.setImage(image, size: size)
+        imageContentView.setNeedsLayout()
     }
 
     
@@ -181,6 +155,7 @@ fileprivate class ImageContentView: BaseFileContentView {
         return imageView
     }()
     
+    var task: URLSessionTask?
     var widthConstraint: NSLayoutConstraint!
     var heightConstraint: NSLayoutConstraint!
     
@@ -256,6 +231,11 @@ fileprivate class ImageContentView: BaseFileContentView {
     }
     
     override func configure(message: SBDFileMessage, position: MessagePosition) {
+        if self.message?.requestId != message.requestId ||
+            self.message?.updatedAt != message.updatedAt {
+            self.imageView.image = nil
+        }
+        
         super.configure(message: message, position: position)
         let thumbnail = message.thumbnails?.first
 
@@ -289,7 +269,7 @@ fileprivate class ImageContentView: BaseFileContentView {
 
         self.setFileIcon()
     }
-
+    
     func setImage(_ image: UIImage?, size: CGSize? = nil) {
         if let size = size {
             self.resizeImageView(by: size)
@@ -309,7 +289,6 @@ fileprivate class ImageContentView: BaseFileContentView {
             self.iconImageView.image = isThumbnailAnimated ? nil : SBUIconSet.iconGif
             
         default:
-
             switch self.message.sendingStatus {
             case .canceled, .failed:
                 self.iconImageView.image = SBUIconSet.iconNoThumbnailLight
@@ -415,6 +394,11 @@ fileprivate class CommonContentView: BaseFileContentView {
     }
     
     override func configure(message: SBDFileMessage, position: MessagePosition) {
+        if self.message?.requestId != message.requestId ||
+            self.message?.updatedAt != message.updatedAt {
+            self.fileImageView.image = nil
+        }
+        
         super.configure(message: message, position: position)
         
         let type = SBUUtils.getFileType(by: message)

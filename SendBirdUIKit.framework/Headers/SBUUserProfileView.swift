@@ -21,6 +21,8 @@ import UIKit
 @objc public protocol SBUUserProfileViewProtocol {
     /// This function shows selector view.
     @objc func show(baseView: UIView, user: SBUUser?)
+    
+    @objc func show(baseView: UIView, user: SBUUser?, isOpenChannel: Bool)
 
     /// This function dismisses selector view.
     @objc func dismiss()
@@ -31,6 +33,7 @@ class SBUUserProfileView: UIView, SBUUserProfileViewProtocol {
     // MARK: - Property
     weak var delegate: SBUUserProfileViewDelegate? = nil
     var user: SBUUser?
+    
 
     var theme: SBUUserProfileTheme = SBUTheme.userProfileTheme
 
@@ -98,6 +101,8 @@ class SBUUserProfileView: UIView, SBUUserProfileViewProtocol {
         }
     }
     
+    var isMenuStackViewHidden = false
+    
     var separatorTop: NSLayoutConstraint?
     var contentTopConstraint: NSLayoutConstraint?
     var contentBottomConstraint: NSLayoutConstraint?
@@ -139,7 +144,7 @@ class SBUUserProfileView: UIView, SBUUserProfileViewProtocol {
         
         self.menuStackView.addArrangedSubview(self.largeMessageButton)
         self.contentView.addSubview(self.menuStackView)
-        self.menuStackView.isHidden = self.user?.userId == SBUGlobals.CurrentUser?.userId
+        self.menuStackView.isHidden = (self.user?.userId == SBUGlobals.CurrentUser?.userId) || self.isMenuStackViewHidden
         
         self.contentView.addSubview(self.separatorView)
         self.contentView.addSubview(self.userIdTitleLabel)
@@ -219,9 +224,8 @@ class SBUUserProfileView: UIView, SBUUserProfileViewProtocol {
         self.menuStackView
             .sbu_constraint_equalTo(topAnchor: self.userNameLabel.bottomAnchor, top: 16)
             .sbu_constraint(equalTo: self.contentView, leading: 24, trailing: -24, centerX: 0)
-//            .sbu_constraint(height: kItemSize.height)
         
-        if self.user?.userId == SBUGlobals.CurrentUser?.userId {
+        if (self.user?.userId == SBUGlobals.CurrentUser?.userId) || self.isMenuStackViewHidden {
             self.separatorYAxisAnchor = self.userNameLabel.bottomAnchor
         } else {
             self.separatorYAxisAnchor = self.menuStackView.bottomAnchor
@@ -289,8 +293,13 @@ class SBUUserProfileView: UIView, SBUUserProfileViewProtocol {
     
     // MARK: SBUUserProfileViewProtocol
     func show(baseView: UIView, user: SBUUser?) {
+        self.show(baseView: baseView, user: user, isOpenChannel: false)
+    }
+    
+    func show(baseView: UIView, user: SBUUser?, isOpenChannel: Bool) {
         self.baseView = baseView
         self.user = user
+        self.isMenuStackViewHidden = isOpenChannel
 
         self.setupViews()
         self.setupStyles()
@@ -330,215 +339,3 @@ class SBUUserProfileView: UIView, SBUUserProfileViewProtocol {
         }
     }
 }
-
-
-
-// MARK: - TODO
-//@objc public protocol SBUUserProfileViewDelegate {
-//    @objc func didSelectPromoteToOperator(userId: String?)
-//    @objc func didSelectDismissOperator(userId: String?)
-//    @objc func didSelectMute(userId: String?)
-//    @objc func didSelectUnmute(userId: String?)
-//    @objc func didSelectBan(userId: String?)
-//}
-//
-//@objc public protocol SBUUserProfileViewProtocol {
-//    @objc func show(baseView: UIView, user: SBUUser?, myRole: SBDRole)
-//}
-//
-//class SBUUserProfileView: UIView, SBUUserProfileViewProtocol {
-//    var myRole: SBDRole = .none
-//
-//    lazy var userRoleLabel = UILabel()
-//
-//
-//    lazy var messageItemButton: SBULayoutableButton = {
-//        let button = SBULayoutableButton(gap: 8, labelAlignment: .under)
-//        let tintColor = self.theme.itemTintColor
-//        button.setImage(
-//            SBUIconSet.iconMessage
-//                .sbu_with(tintColor: theme.itemTintColor)
-//                .resize(with: .init(width: kItemImageSize, height: kItemImageSize))
-//                .withBackground(
-//                    color: self.theme.itemBackgroundColor,
-//                    margin: kItemImageMargin,
-//                    circle: true
-//            ),
-//            for: .normal
-//        )
-//        button.addTarget(self, action: #selector(onClickMessage), for: .touchUpInside)
-//        return button
-//    }()
-//
-//    lazy var promoteItemButton: SBULayoutableButton = {
-//    let button = SBULayoutableButton(gap: 8, labelAlignment: .under)
-//        let tintColor = self.theme.itemTintColor
-//        button.setImage(
-//            SBUIconSet
-//                .iconOperator
-//                .sbu_with(tintColor: tintColor)
-//                .resize(with: .init(width: kItemImageSize, height: kItemImageSize))
-//                .withBackground(
-//                    color: self.theme.itemBackgroundColor,
-//                    margin: kItemImageMargin,
-//                    circle: true
-//            ),
-//            for: .normal
-//        )
-//        button.addTarget(self, action: #selector(onClickPromoteToOperator), for: .touchUpInside)
-//        button.imageView?.contentMode = .scaleAspectFit
-//        return button
-//    }()
-//
-//    lazy var muteItemButton: SBULayoutableButton = {
-//    let button = SBULayoutableButton(gap: 8, labelAlignment: .under)
-//        let tintColor = self.theme.itemTintColor
-//        button.setImage(
-//            SBUIconSet
-//                .iconMuted
-//                .sbu_with(tintColor: tintColor)
-//                .resize(with: .init(width: kItemImageSize, height: kItemImageSize))
-//                .withBackground(
-//                    color: self.theme.itemBackgroundColor,
-//                    margin: kItemImageMargin,
-//                    circle: true
-//            ),
-//            for: .normal
-//        )
-//        button.addTarget(self, action: #selector(onClickMute), for: .touchUpInside)
-//        button.imageView?.contentMode = .scaleAspectFit
-//        return button
-//    }()
-//
-//    lazy var banItemButton: SBULayoutableButton = {
-//    let button = SBULayoutableButton(gap: 8, labelAlignment: .under)
-//        let tintColor = self.theme.itemHighlightedTintColor
-//        button.setImage(
-//            SBUIconSet
-//                .iconBanned
-//                .sbu_with(tintColor: tintColor)
-//                .resize(with: .init(width: kItemImageSize, height: kItemImageSize))
-//                .withBackground(
-//                    color: self.theme.itemBackgroundColor,
-//                    margin: kItemImageMargin,
-//                    circle: true
-//            ),
-//            for: .normal
-//        )
-//        button.addTarget(self, action: #selector(onClickBan), for: .touchUpInside)
-//        button.imageView?.contentMode = .scaleAspectFit
-//        return button
-//    }()
-//
-//    let kItemImageSize: CGFloat = 48
-//    let kItemImageMargin: CGFloat = 12
-//
-//
-//    func show(baseView: UIView, user: SBUUser?, myRole: SBDRole) {
-//        ...
-//        self.myRole = myRole
-//
-//        ...
-//    }
-//
-//    func setupViews() {
-//        // View
-//        ...
-//        self.userRoleLabel.textAlignment = .center
-//        ...
-//        self.contentView.addSubview(self.userRoleLabel)
-//
-//        if self.myRole == .operator {
-//            self.menuStackView.addArrangedSubview(self.messageItemButton)
-//            self.menuStackView.addArrangedSubview(self.promoteItemButton)
-//            self.menuStackView.addArrangedSubview(self.muteItemButton)
-//            self.menuStackView.addArrangedSubview(self.banItemButton)
-//        } else {
-//            self.menuStackView.addArrangedSubview(self.largeMessageButton)
-//        }
-//        ...
-//        // Text
-//        ...
-//        self.userRoleLabel.text = self.user?.isOperator ?? false
-//            ? SBUStringSet.UserProfile_Role_Operator
-//            : SBUStringSet.UserProfile_Role_Member
-//
-//        if self.myRole == .operator {
-//            self.messageItemButton.setTitle(SBUStringSet.UserProfile_Message, for: .normal)
-//            self.promoteItemButton.setTitle(SBUStringSet.UserProfile_Promote, for: .normal)
-//            self.muteItemButton.setTitle(SBUStringSet.UserProfile_Mute, for: .normal)
-//            self.banItemButton.setTitle(SBUStringSet.UserProfile_Ban, for: .normal)
-//
-//        } else {
-//            self.largeMessageButton.setTitle(SBUStringSet.UserProfile_Message, for: .normal)
-//        }
-//        ...
-//    }
-//
-//    func setupStyles() {
-//        ...
-//
-//        self.userRoleLabel.textColor = self.theme.userRoleTextColor
-//        self.userRoleLabel.font = self.theme.userRoleFont
-//
-//        ...
-//
-//        self.messageItemButton.setTitleColor(theme.itemTintColor, for: .normal)
-//        self.messageItemButton.titleLabel?.font = theme.itemFont
-//        self.messageItemButton.backgroundColor = self.theme.backgroundColor
-//
-//        self.promoteItemButton.setTitleColor(theme.itemTintColor, for: .normal)
-//        self.promoteItemButton.titleLabel?.font = theme.itemFont
-//        self.promoteItemButton.backgroundColor = self.theme.backgroundColor
-//
-//        self.muteItemButton.setTitleColor(theme.itemTintColor, for: .normal)
-//        self.muteItemButton.titleLabel?.font = theme.itemFont
-//        self.muteItemButton.backgroundColor = self.theme.backgroundColor
-//
-//        self.banItemButton.setTitleColor(theme.itemTintColor, for: .normal)
-//        self.banItemButton.titleLabel?.font = theme.itemFont
-//        self.banItemButton.backgroundColor = self.theme.backgroundColor
-//        ...
-//    }
-//
-//    func setupAutolayout() {
-//        ...
-//
-//        self.userRoleLabel
-//            .sbu_constraint_equalTo(topAnchor: self.userNameLabel.bottomAnchor, top: 0)
-//            .sbu_constraint(equalTo: self.contentView, leading: 24, trailing: -24)
-//
-//        ...
-//
-//        self.messageItemButton.sbu_constraint(height: kItemSize.height)
-//        self.promoteItemButton.sbu_constraint(height: kItemSize.height)
-//        self.muteItemButton.sbu_constraint(height: kItemSize.height)
-//        self.banItemButton.sbu_constraint(height: kItemSize.height)
-//        self.menuStackView
-//            .sbu_constraint_equalTo(topAnchor: self.userRoleLabel.bottomAnchor, top: 16)
-//            .sbu_constraint(equalTo: self.contentView, leading: 24, trailing: -24, centerX: 0)
-//            .sbu_constraint(height: kItemSize.height)
-//        ...
-//    }
-//
-//    @objc func onClickPromoteToOperator() {
-//        self.delegate?.didSelectPromoteToOperator(userId: self.user?.userId)
-//    }
-//
-//    @objc func onClickDismissOperator() {
-//        self.delegate?.didSelectDismissOperator(userId: self.user?.userId)
-//    }
-//
-//    @objc func onClickMute() {
-//        self.delegate?.didSelectMute(userId: self.user?.userId)
-//    }
-//
-//    @objc func onClickUnmute() {
-//        self.delegate?.didSelectUnmute(userId: self.user?.userId)
-//    }
-//
-//    @objc func onClickBan() {
-//        self.delegate?.didSelectBan(userId: self.user?.userId)
-//    }
-//}
-

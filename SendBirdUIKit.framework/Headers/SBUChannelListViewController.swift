@@ -10,7 +10,7 @@ import UIKit
 import SendBirdSDK
 
 @objcMembers
-open class SBUChannelListViewController: UIViewController {
+open class SBUChannelListViewController: SBUBaseChannelListViewController {
     // MARK: - UI properties (Public)
     public lazy var titleView: UIView? = _titleView
     public lazy var leftBarButton: UIBarButtonItem? = _leftBarButton
@@ -24,7 +24,7 @@ open class SBUChannelListViewController: UIViewController {
     /// If set to the nil value, it is moved to groupChannel creation.
     /// - note: Type: GroupChannel / SuperGroupChannel / BroadcastChannel
     /// - Since: 1.2.0
-    public lazy var createChannelTypeSelector: UIView? = _createChannelTypeSelector
+    public lazy var createChannelTypeSelector: UIView? = nil
 
     // for cell
     public private(set) var channelCell: SBUBaseChannelCell? = nil
@@ -155,11 +155,6 @@ open class SBUChannelListViewController: UIViewController {
         self.navigationItem.rightBarButtonItem = self.rightBarButton
         self.navigationItem.titleView = self.titleView
         
-        // create channel type selector
-        if let createChannelTypeSelector = self.createChannelTypeSelector {
-            self.navigationController?.view.addSubview(createChannelTypeSelector)
-        }
-        
         // autolayout
         self.setupAutolayout()
         
@@ -167,7 +162,9 @@ open class SBUChannelListViewController: UIViewController {
         self.setupStyles()
     }
     
-    public func setupAutolayout() {
+    open override func setupAutolayout() {
+        super.setupAutolayout()
+        
         self.tableView.sbu_constraint(equalTo: self.view, left: 0, right: 0, top: 0, bottom: 0)
         
         if let view = self.navigationController?.view,
@@ -182,7 +179,9 @@ open class SBUChannelListViewController: UIViewController {
         }
     }
     
-    public func setupStyles() {
+    open override func setupStyles() {
+        super.setupStyles()
+        
         self.theme = SBUTheme.channelListTheme
         
         self.navigationController?.navigationBar.setBackgroundImage(
@@ -200,7 +199,9 @@ open class SBUChannelListViewController: UIViewController {
         self.tableView.backgroundColor = theme.backgroundColor
     }
     
-    public func updateStyles() {
+    open override func updateStyles() {
+        super.updateStyles()
+        
         self.theme = SBUTheme.channelListTheme
         
         self.setupStyles()
@@ -234,6 +235,15 @@ open class SBUChannelListViewController: UIViewController {
             
             SBDMain.add(self as SBDChannelDelegate, identifier: self.description)
             SBDMain.add(self as SBDConnectionDelegate, identifier: self.description)
+            
+            if SBUAvailable.isSupportSuperGroupChannel() || SBUAvailable.isSupportBroadcastChannel() {
+                self.createChannelTypeSelector = self._createChannelTypeSelector
+                
+                if let createChannelTypeSelector = self.createChannelTypeSelector {
+                    self.navigationController?.view.addSubview(createChannelTypeSelector)
+                }
+                self.setupAutolayout()
+            }
             
             self.loadNextChannelList(reset: true)
         }
@@ -276,13 +286,14 @@ open class SBUChannelListViewController: UIViewController {
             ChannelUrl: \(channel.channelUrl)
             """)
         channel.setMyPushTriggerOption(option) { [weak self] error in
+            guard let self = self else { return }
             if let error = error {
                 SBULog.error("""
                     [Failed]
                     Channel push status request: \(String(error.localizedDescription))
                     """)
                 completionHandler?(false)
-                self?.didReceiveError(error.localizedDescription)
+                self.didReceiveError(error.localizedDescription)
                 return
             }
             
@@ -302,13 +313,14 @@ open class SBUChannelListViewController: UIViewController {
         SBULog.info("[Request] Leave channel, ChannelUrl: \(channel.channelUrl)")
         
         channel.leave { [weak self] error in
+            guard let self = self else { return }
             if let error = error {
                 SBULog.error("""
                     [Failed]
                     Leave channel request: \(String(error.localizedDescription))
                     """)
                 completionHandler?(false)
-                self?.didReceiveError(error.localizedDescription)
+                self.didReceiveError(error.localizedDescription)
                 return
             }
             
@@ -353,15 +365,16 @@ open class SBUChannelListViewController: UIViewController {
         }
         
         self.channelListQuery?.loadNextPage(completionHandler: { [weak self] channels, error in
-            defer { self?.setLoading(false, false) }
+            guard let self = self else { return }
+            defer { self.setLoading(false, false) }
             
             if let error = error {
                 SBULog.error("""
                     [Failed]
                     Channel list request: \(String(describing: error.localizedDescription))
                     """)
-                self?.didReceiveError(error.localizedDescription)
-                self?.showNetworkError()
+                self.didReceiveError(error.localizedDescription)
+                self.showNetworkError()
                 return
             }
             guard let channels = channels else { return }
@@ -369,9 +382,9 @@ open class SBUChannelListViewController: UIViewController {
             SBULog.info("[Response] \(channels.count) channels")
             
             
-            self?.channelList += channels
-            self?.sortChannelList(needReload: true)
-            self?.lastUpdatedTimestamp = Int64(Date().timeIntervalSince1970*1000)
+            self.channelList += channels
+            self.sortChannelList(needReload: true)
+            self.lastUpdatedTimestamp = Int64(Date().timeIntervalSince1970*1000)
         })
     }
     
@@ -399,15 +412,16 @@ open class SBUChannelListViewController: UIViewController {
                 byToken: token,
                 params: channelLogsParams
             ){ [weak self] updatedChannels, deletedChannelUrls, hasMore, token, error in
+                guard let self = self else { return }
                 if let error = error {
                     SBULog.error("""
                         [Failed]
                         Channel change logs request: \(error.localizedDescription)
                         """)
-                    self?.didReceiveError(error.localizedDescription)
+                    self.didReceiveError(error.localizedDescription)
                 }
                 
-                self?.lastUpdatedToken = token
+                self.lastUpdatedToken = token
                 
                 SBULog.info("""
                     [Response]
@@ -415,10 +429,10 @@ open class SBUChannelListViewController: UIViewController {
                     \(String(format: "%d deleted channels", deletedChannelUrls?.count ?? 0))
                     """)
                 
-                self?.upsertChannels(updatedChannels, needReload: false)
-                self?.deleteChannels(channelUrls: deletedChannelUrls, needReload: false)
+                self.upsertChannels(updatedChannels, needReload: false)
+                self.deleteChannels(channelUrls: deletedChannelUrls, needReload: false)
                 
-                self?.loadChannelChangeLogs(hasMore: hasMore, token: token)
+                self.loadChannelChangeLogs(hasMore: hasMore, token: token)
             }
         }
         else {
@@ -427,15 +441,16 @@ open class SBUChannelListViewController: UIViewController {
                 byTimestamp: self.lastUpdatedTimestamp,
                 params: channelLogsParams
             ) { [weak self] updatedChannels, deletedChannelUrls, hasMore, token, error in
+                guard let self = self else { return }
                 if let error = error {
                     SBULog.error("""
                         [Failed]
                         Channel change logs request: \(error.localizedDescription)
                         """)
-                    self?.didReceiveError(error.localizedDescription)
+                    self.didReceiveError(error.localizedDescription)
                 }
                 
-                self?.lastUpdatedToken = token
+                self.lastUpdatedToken = token
                 
                 SBULog.info("""
                     [Response]
@@ -443,10 +458,10 @@ open class SBUChannelListViewController: UIViewController {
                     \(String(format: "%d deleted channels", deletedChannelUrls?.count ?? 0))
                     """)
                 
-                self?.upsertChannels(updatedChannels, needReload: false)
-                self?.deleteChannels(channelUrls: deletedChannelUrls, needReload: false)
+                self.upsertChannels(updatedChannels, needReload: false)
+                self.deleteChannels(channelUrls: deletedChannelUrls, needReload: false)
                 
-                self?.loadChannelChangeLogs(hasMore: hasMore, token: token)
+                self.loadChannelChangeLogs(hasMore: hasMore, token: token)
             }
         }
     }
@@ -466,7 +481,7 @@ open class SBUChannelListViewController: UIViewController {
                 }
             })
         
-        self.channelList = sortedChannelList.unique()
+        self.channelList = sortedChannelList.sbu_unique()
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             
@@ -556,7 +571,7 @@ open class SBUChannelListViewController: UIViewController {
     /// - Parameters:
     ///   - channelUrl: channel url for use in channelViewController.
     ///   - messageListParams: If there is a messageListParams set directly for use in Channel, set it up here
-    open func showChannel(channelUrl: String, messageListParams: SBDMessageListParams? = nil) {
+    open override func showChannel(channelUrl: String, messageListParams: SBDMessageListParams? = nil) {
         let channelVC = SBUChannelViewController(
             channelUrl: channelUrl,
             messageListParams: messageListParams
@@ -566,18 +581,11 @@ open class SBUChannelListViewController: UIViewController {
     
     /// This is a function that shows the channel type selector when a supergroup/broadcast channel can be set.
     ///
-    /// * If both types cannot be set, it moves directly to the group channel creation viewController.
-    /// * If you want to use a custom createChannelTypeSelector or createChannel action, override it and implement it.
+    /// * If you want to use a custom `createChannelTypeSelector`, override it and implement it.
     /// - Since: 1.2.0
     open func showCreateChannelTypeSelector() {
-        if SBUAvailable.isSupportSuperGroupChannel() ||
-            SBUAvailable.isSupportBroadcastChannel() {
-            
-            if let typeSelector = self.createChannelTypeSelector as? SBUCreateChannelTypeSelector {
-                typeSelector.show()
-            }
-        } else {
-            self.showCreateChannel(type: .group)
+        if let typeSelector = self.createChannelTypeSelector as? SBUCreateChannelTypeSelectorProtocol {
+            typeSelector.show()        // create channel type selector
         }
     }
     
@@ -644,7 +652,11 @@ open class SBUChannelListViewController: UIViewController {
     }
     
     func onClickCreate() {
-        self.showCreateChannelTypeSelector()
+        if self.createChannelTypeSelector != nil {
+            self.showCreateChannelTypeSelector()
+        } else {
+            self.showCreateChannel(type: .group)
+        }
     }
     
     
@@ -662,7 +674,8 @@ open class SBUChannelListViewController: UIViewController {
     
     public func reloadTableView() {
         DispatchQueue.main.async { [weak self] in
-            self?.tableView.reloadData()
+            guard let self = self else { return }
+            self.tableView.reloadData()
         }
     }
     
@@ -774,7 +787,7 @@ extension SBUChannelListViewController: UITableViewDataSource, UITableViewDelega
             
             let leaveIcon = SBUIconSet.iconActionLeave.sbu_with(tintColor: theme.leaveTintColor)
             
-            leaveAction.backgroundColor = UIColor.from(
+            leaveAction.backgroundColor = UIColor.sbu_from(
                 image: leaveIcon,
                 imageView: leaveTypeView,
                 size: size,
@@ -821,7 +834,7 @@ extension SBUChannelListViewController: UITableViewDataSource, UITableViewDelega
                 )
             }
             
-            alarmAction.backgroundColor = UIColor.from(
+            alarmAction.backgroundColor = UIColor.sbu_from(
                 image: alarmIcon,
                 imageView: alarmTypeView,
                 size: size,
@@ -859,7 +872,7 @@ extension SBUChannelListViewController: UITableViewDataSource, UITableViewDelega
         leaveTypeView.backgroundColor = theme.leaveBackgroundColor
         let leaveIcon = SBUIconSet.iconActionLeave.sbu_with(tintColor: theme.leaveTintColor)
         
-        leave.backgroundColor = UIColor.from(
+        leave.backgroundColor = UIColor.sbu_from(
             image: leaveIcon,
             imageView: leaveTypeView,
             size: size,
@@ -902,7 +915,7 @@ extension SBUChannelListViewController: UITableViewDataSource, UITableViewDelega
             )
         }
         
-        alarm.backgroundColor = UIColor.from(
+        alarm.backgroundColor = UIColor.sbu_from(
             image: alarmIcon,
             imageView: alarmTypeView,
             size: size,

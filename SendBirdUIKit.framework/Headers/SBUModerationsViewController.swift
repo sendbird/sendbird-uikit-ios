@@ -188,27 +188,27 @@ open class SBUModerationsViewController: UIViewController, UINavigationControlle
         self.shouldShowLoadingIndicator()
         
         SBUMain.connectionCheck { [weak self] user, error in
-            if let error = error { self?.didReceiveError(error.localizedDescription) }
+            guard let self = self else { return }
+            if let error = error { self.didReceiveError(error.localizedDescription) }
             
             SBULog.info("[Request] Load channel: \(String(channelUrl))")
             SBDGroupChannel.getWithUrl(channelUrl) { [weak self] channel, error in
                 defer { self?.shouldDismissLoadingIndicator() }
+                guard let self = self else { return }
                 
                 if let error = error {
                     SBULog.error("[Failed] Load channel request: \(error.localizedDescription)")
-                    self?.didReceiveError(error.localizedDescription)
+                    self.didReceiveError(error.localizedDescription)
                     return
                 }
                 
-                self?.channel = channel
+                self.channel = channel
                 
-                SBULog.info("""
-                    [Succeed] Load channel request:
-                    \(String(format: "%@", self?.channel ?? ""))
-                    """)
+                SBULog.info("[Succeed] Load channel request: \(String(describing: self.channel))")
                 
-                DispatchQueue.main.async {
-                    self?.tableView.reloadData()
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+                    self.tableView.reloadData()
                 }
             }
         }
@@ -321,7 +321,7 @@ open class SBUModerationsViewController: UIViewController, UINavigationControlle
     
     /// This function actions to pop or dismiss.
     /// - Since: 1.2.5
-    @objc public func onClickBack() {
+    public func onClickBack() {
         if let navigationController = self.navigationController,
             navigationController.viewControllers.count > 1 {
             navigationController.popViewController(animated: true)
@@ -382,10 +382,10 @@ extension SBUModerationsViewController: UITableViewDelegate, UITableViewDataSour
         
         if type == .freezeChannel {
             cell.switchAction = { [weak self] isOn in
-                self?.changeFreeze(isOn, { [weak cell] success in
-                    if !success {
-                        cell?.changeBackSwitch()
-                    }
+                guard let self = self else { return }
+                self.changeFreeze(isOn, { [weak cell] success in
+                    guard let cell = cell else{ return }
+                    if !success { cell.changeBackSwitch() }
                 })
             }
         }

@@ -31,10 +31,10 @@ public class SBUAlertButtonItem: NSObject {
 }
 
 @objcMembers
-public class SBUAlertView {
+public class SBUAlertView: NSObject {
     static private let shared = SBUAlertView()
     var theme: SBUComponentTheme = SBUTheme.componentTheme
-    private init() {}
+    private override init() {}
     
     var window: UIWindow? = nil
     var baseView = UIView()
@@ -71,6 +71,7 @@ public class SBUAlertView {
     ///   - needInputField: If an input field is required, set value to `true`.
     ///   - placeHolder: Placeholder text (default: "")
     ///   - centerYRatio: AlertView's centerY ratio.
+    ///   - oneTimetheme: One-time theme setting
     ///   - confirmButtonItem: Confirm button item
     ///   - cancelButtonItem: Cancel button item (nullable)
     public static func show(title: String,
@@ -78,6 +79,7 @@ public class SBUAlertView {
                             needInputField: Bool = false,
                             placeHolder: String? = "",
                             centerYRatio: CGFloat? = 1.0,
+                            oneTimetheme: SBUComponentTheme? = nil,
                             confirmButtonItem: SBUAlertButtonItem,
                             cancelButtonItem: SBUAlertButtonItem?) {
         self.shared.show(
@@ -86,6 +88,7 @@ public class SBUAlertView {
             needInputField: needInputField,
             placeHolder: placeHolder,
             centerYRatio: centerYRatio,
+            oneTimetheme: oneTimetheme,
             confirmButtonItem: confirmButtonItem,
             cancelButtonItem: cancelButtonItem
         )
@@ -101,6 +104,7 @@ public class SBUAlertView {
                       needInputField: Bool = false,
                       placeHolder: String? = "",
                       centerYRatio: CGFloat? = 1.0,
+                      oneTimetheme: SBUComponentTheme? = nil,
                       confirmButtonItem: SBUAlertButtonItem,
                       cancelButtonItem: SBUAlertButtonItem?) {
         
@@ -115,7 +119,7 @@ public class SBUAlertView {
             object: nil
         )
         
-        self.theme = SBUTheme.componentTheme
+        self.theme = oneTimetheme ?? SBUTheme.componentTheme
         
         self.window = UIApplication.shared.keyWindow
         guard let window = self.window else { return }

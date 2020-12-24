@@ -248,11 +248,12 @@ open class SBUCreateChannelViewController: UIViewController, UINavigationControl
             }
             
             self.userListQuery?.loadNextPage(completionHandler: { [weak self] users, error in
-                defer { self?.showLoading(state: false) }
+                guard let self = self else { return }
+                defer { self.showLoading(state: false) }
                 
                 if let error = error {
                     SBULog.error("[Failed] User list request: \(error.localizedDescription)")
-                    self?.didReceiveError(error.localizedDescription)
+                    self.didReceiveError(error.localizedDescription)
                     return
                 }
                 let filteredUsers = users?.filter { $0.userId != SBUGlobals.CurrentUser?.userId }
@@ -261,9 +262,9 @@ open class SBUCreateChannelViewController: UIViewController, UINavigationControl
                 
                 SBULog.info("[Response] \(users.count) users")
                 
-                self?.userList += users
-                self?.reloadUserList()
-                self?.showLoading(state: false)
+                self.userList += users
+                self.reloadUserList()
+                self.showLoading(state: false)
             })
         }
     }
@@ -313,15 +314,19 @@ open class SBUCreateChannelViewController: UIViewController, UINavigationControl
             """)
         self.shouldShowLoadingIndicator()
         
+        self.rightBarButton?.isEnabled = false
+        
         SBDGroupChannel.createChannel(with: params) { [weak self] channel, error in
             defer { self?.shouldDismissLoadingIndicator() }
+            guard let self = self else { return }
+            self.rightBarButton?.isEnabled = true
             
             if let error = error {
                 SBULog.error("""
                     [Failed] Create channel request:
                     \(String(error.localizedDescription))
                     """)
-                self?.didReceiveError(error.localizedDescription)
+                self.didReceiveError(error.localizedDescription)
                 return
             }
             
@@ -363,7 +368,8 @@ open class SBUCreateChannelViewController: UIViewController, UINavigationControl
     /// - Since: 1.2.5
     public func reloadUserList() {
         DispatchQueue.main.async { [weak self] in
-            self?.tableView.reloadData()
+            guard let self = self else { return }
+            self.tableView.reloadData()
         }
     }
     
@@ -385,7 +391,7 @@ open class SBUCreateChannelViewController: UIViewController, UINavigationControl
     
     /// This function actions to pop or dismiss.
     /// - Since: 1.2.5
-    @objc public func onClickBack() {
+    public func onClickBack() {
         if let navigationController = self.navigationController,
             navigationController.viewControllers.count > 1 {
             navigationController.popViewController(animated: true)
@@ -396,7 +402,7 @@ open class SBUCreateChannelViewController: UIViewController, UINavigationControl
     
     /// This function calls `createChannel:` function using the `selectedUserList`.
     /// - Since: 1.2.5
-    @objc public func onClickCreate() {
+    public func onClickCreate() {
         guard !selectedUserList.isEmpty else { return }
         
         let userIds = Array(self.selectedUserList).sbu_getUserIds()

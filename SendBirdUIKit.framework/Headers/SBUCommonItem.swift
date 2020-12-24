@@ -14,18 +14,25 @@ public class SBUCommonItem: NSObject {
     var color: UIColor?
     var image: UIImage?
     var font: UIFont?
+    var tintColor: UIColor?
     var textAlignment: NSTextAlignment
+    
+    override convenience init() {
+        self.init(title: nil)
+    }
     
     public init(title: String? = nil,
                 color: UIColor? = SBUColorSet.onlight01,
                 image: UIImage? = nil,
                 font: UIFont? = nil,
+                tintColor: UIColor? = nil,
                 textAlignment: NSTextAlignment = .left) {
         
         self.title = title
         self.color = color
         self.image = image
         self.font = font
+        self.tintColor = tintColor
         self.textAlignment = textAlignment
     }
 }

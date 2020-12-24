@@ -272,6 +272,8 @@ extension SBUCreateChannelTypeSelector {
                 action: #selector(onClickCreateBroadcastChannel),
                 for: .touchUpInside
             )
+        default:
+            break
         }
 
         button.tag = type.rawValue+10
@@ -300,6 +302,8 @@ extension SBUCreateChannelTypeSelector {
                 SBUIconSet.channelTypeBroadcast.sbu_with(tintColor: tintColor),
                 for: .normal
             )
+        default:
+            break
         }
         
         button.setTitleColor(theme.channelTypeSelectorItemTextColor, for: .normal)

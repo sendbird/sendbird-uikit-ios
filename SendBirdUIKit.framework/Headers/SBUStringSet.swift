@@ -24,7 +24,9 @@ public class SBUStringSet: NSObject {
     public static var Document = "Files"
     public static var Loading = "Loading..."
     public static var Invite = "Invite"
-    
+    public static var TakePhoto = "Take photo"
+    public static var ChoosePhoto = "Choose photo"
+    public static var RemovePhoto = "Remove photo"
     
     // MARK: - Alert
     public static var Alert_Delete = "Are you sure you want to delete?"
@@ -84,6 +86,19 @@ public class SBUStringSet: NSObject {
         }
     }
     public static var Channel_State_Banner_Frozen = "Channel frozen"
+    
+    
+    // MARK: - Open Channel
+    public static var Open_Channel_Name_Default = "Open Channel"
+    public static var Open_Channel_Participants = "Participants"
+    public static var Open_Channel_Participants_Count: (Int) -> String = { count in
+        switch count {
+        case 1:
+            return "1 participant"
+        default:
+            return "\(count) participants"
+        }
+    }
 
 
     // MARK: - Channel Setting
@@ -91,8 +106,10 @@ public class SBUStringSet: NSObject {
     public static var ChannelSettings_Change_Name = "Change name"
     public static var ChannelSettings_Change_Image = "Change channel image"
     public static var ChannelSettings_Enter_New_Name = "Enter name"
+    public static var ChannelSettings_Enter_New_Channel_Name = "Enter channel name"
     public static var ChannelSettings_Notifications = "Notifications"
     public static var ChannelSettings_Members_Title = "Members"
+    public static var ChannelSettings_Participants_Title = "Participants"
     public static var ChannelSettings_Members: (UInt) -> String = { count in
         switch count {
         case 0:
@@ -102,12 +119,15 @@ public class SBUStringSet: NSObject {
         }
     }
     public static var ChannelSettings_Leave = "Leave channel"
+    public static var ChannelSettings_Delete = "Delete channel"
     
     public static var ChannelSettings_Moderations = "Moderations"
     public static var ChannelSettings_Operators = "Operators"
     public static var ChannelSettings_Muted_Members = "Muted members"
     public static var ChannelSettings_Banned_Members = "Banned members"
     public static var ChannelSettings_Freeze_Channel = "Freeze channel"
+    
+    public static var ChannelSettings_URL = "URL"
 
 
     // MARK: - Message Input
@@ -143,7 +163,7 @@ public class SBUStringSet: NSObject {
     }
     public static var CreateChannel_Header_Title = "New Channel"
     public static var CreateChannel_Header_Select_Members = "Select members"
-
+    public static var CreateChannel_Header_Title_Profile = "New channel profile"
 
     // MARK: - Invite Channel
     public static var InviteChannel_Header_Title = "Invite users"
@@ -181,7 +201,7 @@ public class SBUStringSet: NSObject {
     public static var MemberList_Title_Operators = "Operators"
     public static var MemberList_Title_Muted_Members = "Muted members"
     public static var MemberList_Title_Banned_Members = "Banned members"
-    
+    public static var MemberList_Title_Participants = "Participants"
     
     // MARK: - User
     public static var User_No_Name = "(No name)"

@@ -318,11 +318,11 @@ public class SBUMain: NSObject {
     /// - Since: 1.2.2
     public static func moveToChannel(channelUrl: String,
                                      basedOnChannelList: Bool = true,
-                                     messageListParams: SBDMessageListParams? = nil) {
+                                     messageListParams: SBDMessageListParams? = nil,
+                                     channelType: ChannelType = .group) {
         guard SBUGlobals.CurrentUser != nil else { return }
         
         var rootViewController = UIApplication.shared.keyWindow?.rootViewController
-        var viewController: UIViewController? = nil
         
         if let tabbarController: UITabBarController = rootViewController?.presentedViewController as? UITabBarController {
             rootViewController = tabbarController.selectedViewController
@@ -331,7 +331,31 @@ public class SBUMain: NSObject {
             rootViewController = tabbarController.selectedViewController
         }
         
-        if let navigationController: UINavigationController = rootViewController?
+        if channelType == .group {
+            self.moveToGroupChannel(
+                channelUrl: channelUrl,
+                basedOnChannelList: basedOnChannelList,
+                messageListParams: messageListParams,
+                rootViewController: rootViewController
+            )
+        }
+        else {
+            self.moveToOpenChannel(
+                channelUrl: channelUrl,
+                basedOnChannelList: basedOnChannelList,
+                messageListParams: messageListParams,
+                rootViewController: rootViewController
+            )
+        }
+    }
+    
+    private static func moveToGroupChannel(channelUrl: String,
+                                          basedOnChannelList: Bool = true,
+                                          messageListParams: SBDMessageListParams? = nil,
+                                          rootViewController: UIViewController?) {
+        var viewController: UIViewController? = nil
+        
+        if let navigationController = rootViewController?
             .presentedViewController as? UINavigationController {
             
             for subViewController in navigationController.viewControllers {
@@ -343,9 +367,7 @@ public class SBUMain: NSObject {
                     viewController = subViewController
                 }
             }
-        } else if let navigationController: UINavigationController = rootViewController
-            as? UINavigationController {
-            
+        } else if let navigationController = rootViewController as? UINavigationController {
             for subViewController in navigationController.viewControllers {
                 if let subViewController = subViewController as? SBUChannelListViewController {
                     navigationController.popToViewController(subViewController, animated: false)
@@ -372,6 +394,61 @@ public class SBUMain: NSObject {
             } else {
                 // If based on channel
                 let vc = SBUChannelViewController(
+                    channelUrl: channelUrl,
+                    messageListParams: messageListParams
+                )
+                let naviVC = UINavigationController(rootViewController: vc)
+                rootViewController?.present(naviVC, animated: true)
+            }
+        }
+    }
+    
+    private static func moveToOpenChannel(channelUrl: String,
+                                          basedOnChannelList: Bool = true,
+                                          messageListParams: SBDMessageListParams? = nil,
+                                          rootViewController: UIViewController?) {
+        var viewController: UIViewController? = nil
+        
+        if let navigationController = rootViewController?
+            .presentedViewController as? UINavigationController {
+            
+            for subViewController in navigationController.viewControllers {
+                if let subViewController = subViewController as? SBUBaseChannelListViewController {
+                    navigationController.popToViewController(subViewController, animated: false)
+                    viewController = subViewController
+                    break
+                } else if let subViewController = subViewController as? SBUOpenChannelViewController {
+                    viewController = subViewController
+                }
+            }
+        } else if let navigationController = rootViewController as? UINavigationController {
+            
+            for subViewController in navigationController.viewControllers {
+                if let subViewController = subViewController as? SBUBaseChannelListViewController {
+                    navigationController.popToViewController(subViewController, animated: false)
+                    viewController = subViewController
+                    break
+                } else if let subViewController = subViewController as? SBUOpenChannelViewController {
+                    viewController = subViewController
+                }
+            }
+        }
+        
+        if let viewController = viewController as? SBUBaseChannelListViewController {
+            viewController.showChannel(channelUrl: channelUrl)
+        } else if let viewController = viewController as? SBUOpenChannelViewController {
+            viewController.loadChannel(channelUrl: channelUrl, messageListParams: messageListParams)
+        } else {
+            if basedOnChannelList {
+                // If based on channelList
+                let vc = SBUBaseChannelListViewController()
+                let naviVC = UINavigationController(rootViewController: vc)
+                rootViewController?.present(naviVC, animated: true, completion: {
+                    vc.showChannel(channelUrl: channelUrl)
+                })
+            } else {
+                // If based on channel
+                let vc = SBUOpenChannelViewController(
                     channelUrl: channelUrl,
                     messageListParams: messageListParams
                 )

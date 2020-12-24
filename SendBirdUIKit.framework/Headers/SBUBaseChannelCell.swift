@@ -11,7 +11,7 @@ import UIKit
 open class SBUBaseChannelCell: UITableViewCell {
 
     // MARK: - Public property
-    public private(set) var channel: SBDGroupChannel?
+    public private(set) var channel: SBDBaseChannel?
     
     public var theme: SBUChannelCellTheme = SBUTheme.channelCellTheme
 
@@ -53,7 +53,7 @@ open class SBUBaseChannelCell: UITableViewCell {
 
     /// This function configure a cell using channel information.
     /// - Parameter channel: cell object
-    open func configure(channel: SBDGroupChannel) {
+    open func configure(channel: SBDBaseChannel) {
         self.channel = channel
     }
 }

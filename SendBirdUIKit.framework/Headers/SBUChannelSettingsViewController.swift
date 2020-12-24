@@ -235,30 +235,30 @@ open class SBUChannelSettingsViewController: UIViewController, UINavigationContr
         self.shouldShowLoadingIndicator()
         
         SBUMain.connectionCheck { [weak self] user, error in
-            if let error = error { self?.didReceiveError(error.localizedDescription) }
+            guard let self = self else { return }
+            if let error = error { self.didReceiveError(error.localizedDescription) }
             
             SBULog.info("[Request] Load channel: \(String(channelUrl))")
             SBDGroupChannel.getWithUrl(channelUrl) { [weak self] channel, error in
                 defer { self?.shouldDismissLoadingIndicator() }
+                guard let self = self else { return }
+                
                 if let error = error {
                     SBULog.error("[Failed] Load channel request: \(error.localizedDescription)")
-                    self?.didReceiveError(error.localizedDescription)
+                    self.didReceiveError(error.localizedDescription)
                     return
                 }
                 
-                self?.channel = channel
+                self.channel = channel
                 
-                SBULog.info("""
-                    [Succeed] Load channel request:
-                    \(String(format: "%@", self?.channel ?? ""))
-                    """)
+                SBULog.info("[Succeed] Load channel request: \(String(describing: self.channel))")
                 
-                if let userInfoView = self?.userInfoView as? SBUChannelSettingsUserInfoView {
-                    userInfoView.configure(channel: self?.channel)
+                if let userInfoView = self.userInfoView as? SBUChannelSettingsUserInfoView {
+                    userInfoView.configure(channel: self.channel)
                 }
                 
                 DispatchQueue.main.async {
-                    self?.tableView.reloadData()
+                    self.tableView.reloadData()
                 }
             }
         }
@@ -303,6 +303,8 @@ open class SBUChannelSettingsViewController: UIViewController, UINavigationContr
         self.shouldShowLoadingIndicator()
         channel.update(with: params) { [weak self] channel, error in
             defer { self?.shouldDismissLoadingIndicator() }
+            guard let self = self else { return }
+
             if let error = error {
                 SBULog.error("""
                     [Failed] Channel update request:
@@ -311,8 +313,8 @@ open class SBUChannelSettingsViewController: UIViewController, UINavigationContr
                 return
             }
             
-            if let userInfoView = self?.userInfoView as? SBUChannelSettingsUserInfoView {
-                userInfoView.configure(channel: self?.channel)
+            if let userInfoView = self.userInfoView as? SBUChannelSettingsUserInfoView {
+                userInfoView.configure(channel: self.channel)
                 SBULog.info("[Succeed] Channel update")
             }
         }
@@ -418,7 +420,7 @@ open class SBUChannelSettingsViewController: UIViewController, UINavigationContr
     
     /// This function actions to pop or dismiss.
     /// - Since: 1.2.5
-    @objc public func onClickBack() {
+    public func onClickBack() {
         if let navigationController = self.navigationController,
             navigationController.viewControllers.count > 1 {
             navigationController.popViewController(animated: true)
@@ -429,7 +431,7 @@ open class SBUChannelSettingsViewController: UIViewController, UINavigationContr
     
     /// This function used to when edit button click.
     /// - Since: 1.2.5
-    @objc public func onClickEdit() {
+    public func onClickEdit() {
         let changeNameItem = SBUActionSheetItem(
             title: SBUStringSet.ChannelSettings_Change_Name,
             color: theme.itemTextColor,
@@ -478,12 +480,13 @@ open class SBUChannelSettingsViewController: UIViewController, UINavigationContr
     
     /// This function shows the channel name change popup.
     public func changeChannelName() {
-        let okButton = SBUAlertButtonItem(title: SBUStringSet.OK) {[weak self] newChannelName in
+        let okButton = SBUAlertButtonItem(title: SBUStringSet.OK) { [weak self] newChannelName in
+            guard let self = self else { return }
             guard let newChannel = newChannelName as? String,
                 newChannel.trimmingCharacters(in: .whitespacesAndNewlines).count > 0
                 else { return }
             
-            self?.updateChannel(
+            self.updateChannel(
                 channelName: newChannel.trimmingCharacters(in: .whitespacesAndNewlines)
             )
         }
@@ -547,7 +550,8 @@ extension SBUChannelSettingsViewController: UITableViewDataSource, UITableViewDe
             
             if type == .notifications {
                 cell.switchAction = { [weak self] isOn in
-                    self?.changeNotification(isOn: isOn)
+                    guard let self = self else { return }
+                    self.changeNotification(isOn: isOn)
                 }
             }
         }
@@ -612,12 +616,13 @@ extension SBUChannelSettingsViewController: UIImagePickerControllerDelegate {
         didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         
         picker.dismiss(animated: true) { [weak self] in
+            guard let self = self else { return }
             guard let originalImage = info[.originalImage] as? UIImage,
-                let userInfoView = self?.userInfoView as? SBUChannelSettingsUserInfoView else { return }
+                let userInfoView = self.userInfoView as? SBUChannelSettingsUserInfoView else { return }
             
             userInfoView.coverImage.setImage(withImage: originalImage)
             
-            self?.updateChannel(coverImage: originalImage)
+            self.updateChannel(coverImage: originalImage)
         }
     }
 }

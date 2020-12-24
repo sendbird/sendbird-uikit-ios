@@ -30,8 +30,9 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         return stackView
     }()
     
-    internal var _userNameView: UserNameView = {
-        let userNameView = UserNameView()
+    internal var _userNameView: SBUUserNameView = {
+        let userNameView = SBUUserNameView()
+        userNameView.leftMargin = 50
         return userNameView
     }()
     
@@ -39,16 +40,17 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.alignment = .bottom
+        stackView.spacing = 12
         return stackView
     }()
     
-    internal var _profileView: MessageProfileView = {
-        let profileView = MessageProfileView()
+    internal var _profileView: SBUMessageProfileView = {
+        let profileView = SBUMessageProfileView()
         return profileView
     }()
     
-    internal var _stateView: MessageStateView = {
-        let stateView = MessageStateView()
+    internal var _stateView: SBUMessageStateView = {
+        let stateView = SBUMessageStateView()
         return stateView
     }()
     
@@ -88,7 +90,7 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         super.setupAutolayout()
 
         self.userNameStackView
-            .setConstraint(from: self.messageContentView, left: 0, right: 12, bottom: 0)
+            .setConstraint(from: self.messageContentView, left: 12, right: 12, bottom: 0)
             .setConstraint(from: self.messageContentView, top: 0, priority: .defaultLow)
     }
     
@@ -106,15 +108,18 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         )
 
         self.reactionView.emojiTapHandler = { [weak self] emojiKey in
-            self?.emojiTapHandler?(emojiKey)
+            guard let self = self else { return }
+            self.emojiTapHandler?(emojiKey)
         }
 
         self.reactionView.emojiLongPressHandler = { [weak self] emojiKey in
-            self?.emojiLongPressHandler?(emojiKey)
+            guard let self = self else { return }
+            self.emojiLongPressHandler?(emojiKey)
         }
 
         self.reactionView.moreEmojiTapHandler = { [weak self] in
-            self?.moreEmojiTapHandler?()
+            guard let self = self else { return }
+            self.moreEmojiTapHandler?()
         }
     }
     
@@ -129,15 +134,15 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         self.mainContainerView.setupStyles()
         self.reactionView.setupStyles()
         
-        if let userNameView = self.userNameView as? UserNameView {
+        if let userNameView = self.userNameView as? SBUUserNameView {
             userNameView.setupStyles()
         }
         
-        if let profileView = self.profileView as? MessageProfileView {
+        if let profileView = self.profileView as? SBUMessageProfileView {
             profileView.setupStyles()
         }
         
-        if let stateView = self.stateView as? MessageStateView {
+        if let stateView = self.stateView as? SBUMessageStateView {
             stateView.setupStyles()
         }
     }
@@ -158,10 +163,15 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
             receiptState: receiptState
         )
         
+        self.reactionView.configure(
+            maxWidth: SBUConstant.imageSize.width,
+            reactions: message.reactions
+        )
+        
         self.mainContainerView.position = self.position
         self.mainContainerView.isSelected = false
         
-        if let userNameView = self.userNameView as? UserNameView {
+        if let userNameView = self.userNameView as? SBUUserNameView {
             var username = ""
             if let sender = message.sender {
                 username = SBUUser(user: sender).refinedNickname()
@@ -169,12 +179,12 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
             userNameView.configure(username: username)
         }
         
-        if let profileView = self.profileView as? MessageProfileView {
+        if let profileView = self.profileView as? SBUMessageProfileView {
             let urlString = message.sender?.profileUrl ?? ""
             profileView.configure(urlString: urlString)
         }
         
-        if let stateView = self.stateView as? MessageStateView {
+        if let stateView = self.stateView as? SBUMessageStateView {
             stateView.configure(
                 timestamp: message.createdAt,
                 sendingState: message.sendingStatus,
@@ -188,9 +198,30 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
     
     public func setMessageGrouping() {
         guard SBUGlobals.UsingMessageGrouping else { return }
+        self.profileView.isHidden = self.position == .right
+        let profileImageView = (self.profileView as? SBUMessageProfileView)?.imageView
+        let timeLabel = (self.stateView as? SBUMessageStateView)?.timeLabel
         
-        let profileImageView = (self.profileView as? MessageProfileView)?.imageView
-        let timeLabel = (self.stateView as? MessageStateView)?.timeLabel
+        self.contentsStackView.arrangedSubviews.forEach(
+            self.contentsStackView.removeArrangedSubview(_:)
+        )
+        
+        switch self.position {
+        case .left:
+            self.userNameStackView.alignment = .leading
+            self.contentsStackView.addArrangedSubview(self.profileView)
+            self.contentsStackView.addArrangedSubview(self.mainContainerView)
+            self.contentsStackView.addArrangedSubview(self.stateView)
+            
+        case .right:
+            self.userNameStackView.alignment = .trailing
+            self.contentsStackView.addArrangedSubview(self.stateView)
+            self.contentsStackView.addArrangedSubview(self.mainContainerView)
+            
+        case .center:
+            break
+        }
+        
         switch self.groupPosition {
         case .top:
             self.userNameView.isHidden = self.position == .right

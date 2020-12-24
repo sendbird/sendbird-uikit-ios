@@ -14,28 +14,51 @@ public typealias SBUNewMessageInfoHandler = () -> Void
 open class SBUNewMessageInfo: UIView {
     // MARK: - Properties (Public)
     public lazy var messageInfoButton: UIButton? = _messageInfoButton
-    
+    public var actionHandler: SBUNewMessageInfoHandler?
     
     // MARK: - Properties (Private)
     let DefaultInfoButtonTag = 10001
+    var type: NewMessageInfoItemType = .tooltip
 
-    private lazy var _messageInfoButton: UIButton = {
+    private lazy var _messageInfoTooltipButton: UIButton = {
         let messageInfoButton = UIButton()
         messageInfoButton.setTitle(SBUStringSet.Channel_New_Message(0), for: .normal)
-        messageInfoButton.layer.cornerRadius = 16.0
+        messageInfoButton.layer.cornerRadius = SBUConstant.newMessageInfoSize.height/2
         messageInfoButton.layer.masksToBounds = true
         messageInfoButton.semanticContentAttribute = .forceRightToLeft
         messageInfoButton.tag = DefaultInfoButtonTag
         return messageInfoButton
     }()
     
-    var actionHandler: SBUNewMessageInfoHandler?
+    private lazy var _messageInfoButton: UIButton = {
+        let messageInfoButton = UIButton()
+        messageInfoButton.layer.cornerRadius = SBUConstant.newMessageButtonSize.height/2
+        messageInfoButton.layer.masksToBounds = true
+        messageInfoButton.tag = DefaultInfoButtonTag
+        return messageInfoButton
+    }()
+    
     var theme: SBUComponentTheme = SBUTheme.componentTheme
     
     
     // MARK: - Life cycle
     override public init(frame: CGRect) {
         super.init(frame: frame)
+        
+        self.setupViews()
+        self.setupAutolayout()
+    }
+    
+    /// This function Initializes the new message information item.
+    /// - Parameter type: Type of new message info item (default: tooltip)
+    public init(type: NewMessageInfoItemType = .tooltip) {
+        super.init(frame: .zero)
+        
+        self.type = type
+        
+        if self.type == .button {
+            self.messageInfoButton = _messageInfoButton
+        }
         
         self.setupViews()
         self.setupAutolayout()
@@ -61,9 +84,15 @@ open class SBUNewMessageInfo: UIView {
     /// This function handles the initialization of autolayouts.
     open func setupAutolayout() {
         self.translatesAutoresizingMaskIntoConstraints = false
+        
+        var infoItemSize = SBUConstant.newMessageInfoSize
+        if self.type == .button {
+            infoItemSize = SBUConstant.newMessageButtonSize
+        }
+        
         NSLayoutConstraint.activate([
-            self.widthAnchor.constraint(equalToConstant: SBUConstant.newMessageInfoSize.width),
-            self.heightAnchor.constraint(equalToConstant: SBUConstant.newMessageInfoSize.height),
+            self.widthAnchor.constraint(equalToConstant: infoItemSize.width),
+            self.heightAnchor.constraint(equalToConstant: infoItemSize.height),
         ])
         
         if let messageInfoButton = self.messageInfoButton {
@@ -82,7 +111,7 @@ open class SBUNewMessageInfo: UIView {
         self.theme = SBUTheme.componentTheme
         
         self.backgroundColor = .clear
-        self.layer.shadowColor = theme.shadowColor.withAlphaComponent(0.2).cgColor
+        self.layer.shadowColor = theme.shadowColor.withAlphaComponent(0.5).cgColor
         self.layer.shadowOffset = CGSize(width: 5, height: 5)
         self.layer.shadowOpacity = 0.5
         self.layer.shadowRadius = 5
@@ -91,20 +120,36 @@ open class SBUNewMessageInfo: UIView {
         if let messageInfoButton = self.messageInfoButton,
             messageInfoButton.tag == DefaultInfoButtonTag {
             
-            messageInfoButton.titleLabel?.font = theme.newMessageFont
-            messageInfoButton.setTitleColor(theme.newMessageTintColor, for: .normal)
-            messageInfoButton.setImage(
-                SBUIconSet.iconChevronDown.sbu_with(tintColor: theme.newMessageTintColor),
-                for: .normal
-            )
-            messageInfoButton.setBackgroundImage(
-                UIImage.from(color: theme.newMessageBackground),
-                for: .normal
-            )
-            messageInfoButton.setBackgroundImage(
-                UIImage.from(color: theme.newMessageHighlighted),
-                for: .highlighted
-            )
+            switch self.type {
+            case .tooltip:
+                messageInfoButton.titleLabel?.font = theme.newMessageFont
+                messageInfoButton.setTitleColor(theme.newMessageTintColor, for: .normal)
+                messageInfoButton.setImage(
+                    SBUIconSet.iconChevronDown.sbu_with(tintColor: theme.newMessageTintColor),
+                    for: .normal
+                )
+                messageInfoButton.setBackgroundImage(
+                    UIImage.from(color: theme.newMessageBackground),
+                    for: .normal
+                )
+                messageInfoButton.setBackgroundImage(
+                    UIImage.from(color: theme.newMessageHighlighted),
+                    for: .highlighted
+                )
+            case .button:
+                messageInfoButton.setImage(
+                    SBUIconSet.iconChevronDown.sbu_with(tintColor: theme.newMessageButtonTintColor),
+                    for: .normal
+                )
+                messageInfoButton.setBackgroundImage(
+                    UIImage.from(color: theme.newMessageButtonBackground),
+                    for: .normal
+                )
+                messageInfoButton.setBackgroundImage(
+                    UIImage.from(color: theme.newMessageButtonHighlighted),
+                    for: .highlighted
+                )
+            }
         }
     }
     

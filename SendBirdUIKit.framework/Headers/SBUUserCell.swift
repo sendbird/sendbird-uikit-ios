@@ -221,9 +221,10 @@ open class SBUUserCell: UITableViewCell {
         self.userImageView.loadImage(
             urlString: user.profileUrl ?? "",
             placeholder: SBUIconSet.iconUser.sbu_with(
-                tintColor: theme.userPlaceholderTintColor
+                tintColor: self.theme.userPlaceholderTintColor
             )
         )
+        
         self.userImageView.backgroundColor = theme.userPlaceholderBackgroundColor
         self.userImageView.contentMode = .scaleAspectFill
         
@@ -252,9 +253,10 @@ open class SBUUserCell: UITableViewCell {
             self.userImageView.loadImage(
                 urlString: profileImageUrl,
                 placeholder: SBUIconSet.iconUser.sbu_with(
-                    tintColor: theme.userPlaceholderTintColor
+                    tintColor: self.theme.userPlaceholderTintColor
                 )
             )
+        
             self.separateView.isHidden = true
            
         case .operators:

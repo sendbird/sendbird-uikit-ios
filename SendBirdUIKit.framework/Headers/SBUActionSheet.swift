@@ -45,10 +45,10 @@ public class SBUActionSheetItem: SBUCommonItem {
 }
 
 @objcMembers
-public class SBUActionSheet {
+public class SBUActionSheet: NSObject {
     var theme: SBUComponentTheme = SBUTheme.componentTheme
     static private let shared = SBUActionSheet()
-    private init() {}
+    private override init() {}
     weak var delegate: SBUActionSheetDelegate?
     private var items: [SBUActionSheetItem] = []
     
@@ -87,15 +87,18 @@ public class SBUActionSheet {
     ///   - items: Item array
     ///   - cancelItem: Cancel item
     ///   - identifier: ActionSheet identifier
+    ///   - oneTimetheme: One-time theme setting
     ///   - delegate: ActionSheet delegate
     public static func show(items: [SBUActionSheetItem],
                             cancelItem: SBUActionSheetItem,
                             identifier: Int = -1,
+                            oneTimetheme: SBUComponentTheme? = nil,
                             delegate: SBUActionSheetDelegate? = nil) {
         self.shared.show(
             items: items,
             cancelItem: cancelItem,
             identifier: identifier,
+            oneTimetheme: oneTimetheme,
             delegate: delegate
         )
     }
@@ -108,6 +111,7 @@ public class SBUActionSheet {
     private func show(items: [SBUActionSheetItem],
                       cancelItem: SBUActionSheetItem,
                       identifier: Int = -1,
+                      oneTimetheme: SBUComponentTheme? = nil,
                       delegate: SBUActionSheetDelegate?) {
         
         self.dismiss()
@@ -121,7 +125,7 @@ public class SBUActionSheet {
             object: nil
         )
         
-        self.theme = SBUTheme.componentTheme
+        self.theme = oneTimetheme ?? SBUTheme.componentTheme
         
         self.window = UIApplication.shared.keyWindow
         guard let window = self.window else { return }

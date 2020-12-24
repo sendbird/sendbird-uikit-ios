@@ -42,6 +42,21 @@ public class SBUGlobalCustomParams: NSObject {
     public static var groupChannelParamsUpdateBuilder:((_ params: SBDGroupChannelParams?) -> Void)? = nil
     
     
+    /// This is a builder that allows you to predefined the global `SBDOpenChannelParams` processing to be used when updating a channel.
+    ///
+    /// - Important:
+    /// This value is ignored if you set the parameter value directly through functions that receive the parameter inside the class.
+    ///
+    /// See the example below for builder setting.
+    /// ```
+    /// SBUGlobalCustomParams.openChannelParamsUpdateBuilder = { params in
+    ///     params?.coverUrl = <URL_PATH>
+    ///     ...
+    /// }
+    /// ```
+    /// - Since: 1.2.2
+    public static var openChannelParamsUpdateBuilder:((_ params: SBDOpenChannelParams?) -> Void)? = nil
+    
     /// This is a builder that allows you to predefined the global `SBDUserMessageParams` processing to be used when sending a user message.
     ///
     /// - Important:

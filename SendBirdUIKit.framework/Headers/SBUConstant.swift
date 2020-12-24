@@ -13,7 +13,11 @@ class SBUConstant {
     static let thumbnailSize: CGSize = .init(width: 240, height: 160)
     static let imageSize: CGSize = .init(width: 240, height: 160)
     
+    static let openChannelThumbnailSize: CGSize = .init(width: 311, height: 207)
+    static let openChannelImageSize: CGSize = .init(width: 311, height: 207)
+    
     static let newMessageInfoSize = CGSize(width: 144.0, height: 32.0)
+    static let newMessageButtonSize = CGSize(width: 40.0, height: 40.0)
 
 
     static let bottomSheetMaxMiddleHeight: CGFloat = 244

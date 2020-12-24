@@ -11,6 +11,7 @@ import MobileCoreServices
 
 private let kDefaultCoverUrl = "static.sendbird.com/sample/cover"
 private let kDefaultGroupChannelName = "Group Channel"
+private let kDefaultOpenChannelName = "Open Channel"
 
 @objcMembers
 public class SBUUtils: NSObject {
@@ -112,9 +113,16 @@ public class SBUUtils: NSObject {
     
     /// This function checks the validity of channel name.
     /// - Parameter channelName: Channel name string
+    /// - Parameter type: Channel type
     /// - Returns: If channel name is valid, return `true`.
-    public static func isValid(channelName: String) -> Bool {
-        guard !channelName.hasPrefix(kDefaultGroupChannelName),
+    public static func isValid(channelName: String, type: ChannelType = .group) -> Bool {
+        var prefixString = kDefaultGroupChannelName
+        
+        if type == .open {
+            prefixString = kDefaultOpenChannelName
+        }
+        
+        guard !channelName.hasPrefix(prefixString),
             channelName.count != 0  else {
                 return false
         }

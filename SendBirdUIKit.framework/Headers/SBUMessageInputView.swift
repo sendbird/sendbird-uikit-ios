@@ -116,11 +116,22 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
     let cancelItem = SBUActionSheetItem(title: SBUStringSet.Cancel)
 
     var theme: SBUMessageInputTheme = SBUTheme.messageInputTheme
+    
+    var isOverlay = false
 
     
     // MARK: - Life cycle
     override public init(frame: CGRect) {
         super.init(frame: frame)
+        
+        self.setupViews()
+        self.setupAutolayout()
+    }
+    
+    init(isOverlay: Bool) {
+        super.init(frame: .zero)
+        
+        self.isOverlay = isOverlay
         
         self.setupViews()
         self.setupAutolayout()
@@ -215,7 +226,7 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
     
     /// This function handles the initialization of styles.
     open func setupStyles() {
-        self.theme = SBUTheme.messageInputTheme
+        self.theme = self.isOverlay ? SBUMessageInputTheme.overlay : SBUTheme.messageInputTheme
         
         self.backgroundColor = theme.backgroundColor
 
@@ -371,7 +382,12 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
     @objc open func onClickAddButton(_ sender: Any) {
         self.endEditing(true)
         let itmes = [self.cameraItem, self.libraryItem, self.documentItem]
-        SBUActionSheet.show(items: itmes, cancelItem: self.cancelItem, delegate: self)
+        SBUActionSheet.show(
+            items: itmes,
+            cancelItem: self.cancelItem,
+            oneTimetheme: isOverlay ? SBUComponentTheme.dark : nil,
+            delegate: self
+        )
     }
     
     @objc open func onClickSendButton(_ sender: Any) {
@@ -429,29 +445,37 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
     // MARK: SBUActionSheetDelegate
     public func didSelectActionSheetItem(index: Int, identifier: Int) {
         let type = MediaResourceType.init(rawValue: index) ?? .unknown
-        if type == .camera, AVCaptureDevice.authorizationStatus(for: .video) != .authorized {
-            AVCaptureDevice.requestAccess(for: .video) { success in
-                if !success {
-                    // TODO: Request camera capture permission
-                } else {
+        switch type {
+        case .camera:
+            SBUPermissionManager.shared.requestDeviceAccessIfNeeded(for: .video) { (granted) in
+                if (granted) {
                     DispatchQueue.main.async { [weak self] in
                         guard let self = self else { return }
                         self.delegate?.messageInputView?(self, didSelectResource: type)
+                    }
+                } else {
+                    //show alert view to go to settings
+                    if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+                        UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
                     }
                 }
             }
-        } else if type == .library, PHPhotoLibrary.authorizationStatus() != .authorized {
-            PHPhotoLibrary.requestAuthorization({ (status: PHAuthorizationStatus) -> Void in
-                if status != .authorized {
-                    // TODO: Request photo library permission
-                } else {
+        case .library:
+            //need to know access level for ios 14
+            SBUPermissionManager.shared.requestPhotoAccessIfNeeded { (completed) in
+                if (completed) {
                     DispatchQueue.main.async { [weak self] in
                         guard let self = self else { return }
                         self.delegate?.messageInputView?(self, didSelectResource: type)
                     }
+                } else {
+                    //show alert view to go to settings
+                    if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+                        UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
+                    }
                 }
-            })
-        } else {
+            }
+        default:
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
                 self.delegate?.messageInputView?(self, didSelectResource: type)

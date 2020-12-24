@@ -9,6 +9,7 @@
 import UIKit
 import SendBirdSDK
 
+/// `UITableViewCell` for `SBDGroupChannel` list.
 public class SBUChannelCell: SBUBaseChannelCell {
     
     // MARK: - property
@@ -185,18 +186,21 @@ public class SBUChannelCell: SBUBaseChannelCell {
         SBULog.info("")
     }
     
-    /// This function configure a cell using channel information.
-    /// - Parameter channel: cell object
-    public override func configure(channel: SBDGroupChannel) {
+    /// This function configure a cell using `SBDGroupChannel` information.
+    /// - Note: If you use `SBDOpenChannel`, your cell class must inherit `SBUBaseChannelCell` and override `configure(channel:)` method.
+    /// - Parameter channel: `SBDGroupChannel` object
+    public override func configure(channel: SBDBaseChannel) {
         super.configure(channel: channel)
+        
+        guard let channel = channel as? SBDGroupChannel else { return }
 
         // Cover image
         if let url = channel.coverUrl, SBUUtils.isValid(coverUrl: url) {
             self.coverImage.setImage(withCoverUrl: url)
-        } else if let isBroadcast = self.channel?.isBroadcast, isBroadcast {
+        } else if channel.isBroadcast {
             self.coverImage.setBroadcastIcon()
         } else {
-            if let members = self.channel?.members as? [SBDUser] {
+            if let members = channel.members as? [SBDUser] {
                 self.coverImage.setImage(withUsers: members)
             } else {
                 self.coverImage.setPlaceholderImage(iconSize: .init(width: 40, height: 40))
@@ -211,21 +215,21 @@ public class SBUChannelCell: SBUBaseChannelCell {
         }
         
         // Member cound. If 1:1 channel, not set
-        if let memberCount = self.channel?.memberCount, memberCount > 2 {
-            self.memberCountLabel.text = memberCount.unitFormattedString
+        if channel.memberCount > 2 {
+            self.memberCountLabel.text = channel.memberCount.unitFormattedString
         }
         else {
             self.memberCountLabel.text = nil
         }
         
         // Broadcast channel state. If isBroadcast is false, this property will hidden.
-        self.broadcastIcon.isHidden = self.channel?.isBroadcast == false
+        self.broadcastIcon.isHidden = channel.isBroadcast == false
         
         // Channel frozen state. If isFrozen is false, this property will hidden.
-        self.freezeState.isHidden = self.channel?.isFrozen == false
+        self.freezeState.isHidden = channel.isFrozen == false
         
         // Notification state. If myPushTriggerOption is all, this property will hidden.
-        self.notificationState.alpha = (self.channel?.myPushTriggerOption != .off) ? 0.0 : 1.0
+        self.notificationState.alpha = (channel.myPushTriggerOption != .off) ? 0.0 : 1.0
         
         // Last updated time
         self.lastUpdatedTimeLabel.text = self.buildLastUpdatedDate()
@@ -243,7 +247,6 @@ public class SBUChannelCell: SBUBaseChannelCell {
         default:
             self.messageLabel.text = ""
         }
- 
         
         // Unread count
         switch channel.unreadMessageCount {
@@ -266,7 +269,7 @@ public class SBUChannelCell: SBUBaseChannelCell {
     /// This function builds last message updated date.
     /// - Returns: last updated date string
     public func buildLastUpdatedDate() -> String? {
-        guard let channel = self.channel else { return nil }
+        guard let channel = self.channel as? SBDGroupChannel else { return nil }
         var lastUpdatedAt: Int64
         
         if let lastMessage = channel.lastMessage {

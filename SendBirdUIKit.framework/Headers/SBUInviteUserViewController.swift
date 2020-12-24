@@ -267,28 +267,30 @@ open class SBUInviteUserViewController: UIViewController {
         guard let channelUrl = channelUrl else { return }
         
         SBUMain.connectionCheck { [weak self] user, error in
-            if let error = error { self?.didReceiveError(error.localizedDescription) }
+            guard let self = self else { return }
+            if let error = error { self.didReceiveError(error.localizedDescription) }
             
             SBULog.info("[Request] Load channel: \(String(channelUrl))")
             SBDGroupChannel.getWithUrl(channelUrl) { [weak self] channel, error in
+                guard let self = self else { return }
                 if let error = error {
                     SBULog.error("[Failed] Load channel request: \(error.localizedDescription)")
-                    self?.didReceiveError(error.localizedDescription)
+                    self.didReceiveError(error.localizedDescription)
                     return
                 }
                 
-                self?.channel = channel
+                self.channel = channel
 
                 SBULog.info("""
                     [Succeed] Load channel request:
-                    \(String(format: "%@", self?.channel ?? ""))
+                    \(String(format: "%@", self.channel ?? ""))
                     """)
 
-                if self?.inviteListType == .users {
-                    self?.prepareDatas()
+                if self.inviteListType == .users {
+                    self.prepareDatas()
                 }
                 
-                self?.resetUserList()
+                self.resetUserList()
             }
         }
     }
@@ -352,19 +354,20 @@ open class SBUInviteUserViewController: UIViewController {
         }
         
         self.userListQuery?.loadNextPage(completionHandler: { [weak self] users, error in
-            defer { self?.isLoading = false }
+            guard let self = self else { return }
+            defer { self.isLoading = false }
             
             if let error = error {
                 SBULog.error("[Failed] User list request: \(error.localizedDescription)")
-                self?.didReceiveError(error.localizedDescription)
+                self.didReceiveError(error.localizedDescription)
                 return
             }
             guard let users = users?.sbu_convertUserList() else { return }
             
             SBULog.info("[Response] \(users.count) users")
             
-            self?.appendUsersWithFiltering(users: users)
-            self?.reloadData()
+            self.appendUsersWithFiltering(users: users)
+            self.reloadData()
         })
     }
     
@@ -388,20 +391,20 @@ open class SBUInviteUserViewController: UIViewController {
         // return [SBDMember]
         self.memberListQuery?.loadNextPage(completionHandler: {
             [weak self] members, error in
-            
-            defer { self?.isLoading = false }
+            guard let self = self else { return }
+            defer { self.isLoading = false }
             
             if let error = error {
                 SBULog.error("[Failed] Member list request: \(error.localizedDescription)")
-                self?.didReceiveError(error.localizedDescription)
+                self.didReceiveError(error.localizedDescription)
                 return
             }
             guard let members = members?.sbu_convertUserList() else { return }
             
             SBULog.info("[Response] \(members.count) members")
             
-            self?.userList += members
-            self?.reloadData()
+            self.userList += members
+            self.reloadData()
         })
     }
     
@@ -450,16 +453,17 @@ open class SBUInviteUserViewController: UIViewController {
     public func inviteUsers(userIds: [String]) {
         SBULog.info("[Request] Invite users, Users: \(Array(self.selectedUserList))")
         self.channel?.inviteUserIds(userIds, completionHandler: { [weak self] error in
+            guard let self = self else { return }
             if let error = error {
                 SBULog.error("""
                     [Failed] Invite users request:
                     \(String(error.localizedDescription))
                     """)
-                self?.didReceiveError(error.localizedDescription)
+                self.didReceiveError(error.localizedDescription)
             }
             
             SBULog.info("[Succeed] Invite users")
-            self?.popToChannel()
+            self.popToChannel()
         })
     }
     
@@ -476,24 +480,26 @@ open class SBUInviteUserViewController: UIViewController {
     /// - Since: 1.2.0
     public func promoteToOperators(memberIds: [String]) {
         SBULog.info("[Request] Promote members, Members: \(Array(self.selectedUserList))")
+
         self.shouldShowLoadingIndicator()
         
         self.channel?.addOperators(
             withUserIds: memberIds,
             completionHandler: { [weak self] error in
-            defer { self?.shouldDismissLoadingIndicator() }
+                guard let self = self else { return }
+            defer { self.shouldDismissLoadingIndicator() }
+                
             if let error = error {
                 SBULog.error("""
                     [Failed] Promote members request:
                     \(String(error.localizedDescription))
                     """)
-                self?.didReceiveError(error.localizedDescription)
+                self.didReceiveError(error.localizedDescription)
                 return
             }
             
             SBULog.info("[Succeed] Promote members")
-            
-            self?.popToPrevious()
+            self.popToPrevious()
         })
     }
     
@@ -542,7 +548,8 @@ open class SBUInviteUserViewController: UIViewController {
     /// - Since: 1.2.5
     public func reloadData() {
         DispatchQueue.main.async { [weak self] in
-            self?.tableView.reloadData()
+            guard let self = self else { return }
+            self.tableView.reloadData()
         }
     }
     
@@ -550,7 +557,7 @@ open class SBUInviteUserViewController: UIViewController {
     
     /// This function actions to pop or dismiss.
     /// - Since: 1.2.5
-    @objc public func onClickBack() {
+    public func onClickBack() {
         if let navigationController = self.navigationController,
             navigationController.viewControllers.count > 1 {
             navigationController.popViewController(animated: true)
@@ -561,7 +568,7 @@ open class SBUInviteUserViewController: UIViewController {
     
     /// This function calls `inviteUsers` or `promoteToOperators` functions with `inviteListType`.
     /// - Since: 1.2.5
-    @objc public func onClickInviteOrPromote() {
+    public func onClickInviteOrPromote() {
         guard !selectedUserList.isEmpty else { return }
 
         switch self.inviteListType {

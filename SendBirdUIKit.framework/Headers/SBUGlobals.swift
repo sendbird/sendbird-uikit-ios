@@ -23,18 +23,28 @@ public class SBUGlobals: NSObject {
         get{ return _currentUser }
     }
 
-    
     // MARK: - Message Grouping
     /// If this value is enabled, messages sent at similar times are grouped.
     /// - Since: 1.2.1
     public static var UsingMessageGrouping: Bool = true
-    
     
     // MARK: - User Profile
     /// If this value is enabled, when you click on a user image, the user profile screen is displayed.
     /// - Since: 1.2.2
     public static var UsingUserProfile: Bool = false
 
+    /// If this value is enabled, when you click on a user image in open channel, the user profile screen is displayed.
+    /// - Since: 2.0.0
+    public static var UsingUserProfileInOpenChannel: Bool = false
+
+    /// Image compression rate value that will be used when sending image. Default value is 0.85.
+    /// Typically this value will be used in `jpegData(compressionQuality:)`
+    /// - Since: 2.0.0
+    public static var imageCompressionRate: CGFloat = 0.85
+    
+    /// Image resizing size value that will be used when sending image. Default value is a device screen size.
+    /// - Since: 2.0.0
+    public static var imageResizingSize: CGSize = UIScreen.main.bounds.size;
     
     // MARK: - Private
     private static var _currentUser: SBUUser?

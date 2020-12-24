@@ -14,7 +14,7 @@ import SafariServices
 import SendBirdSDK
 
 @objcMembers
-open class SBUChannelViewController: UIViewController, UINavigationControllerDelegate {
+open class SBUChannelViewController: SBUBaseChannelViewController, UINavigationControllerDelegate {
 
     // MARK: - UI properties (Public)
     public var channelName: String? = nil
@@ -53,13 +53,10 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     // MARK: - UI properties (Private)
     private lazy var _titleView: SBUChannelTitleView = {
         var titleView: SBUChannelTitleView
-        if #available(iOS 11, *) {
-            titleView = SBUChannelTitleView()
-        } else {
-            titleView = SBUChannelTitleView(
-                frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 50)
-            )
-        }
+        titleView = SBUChannelTitleView(
+            frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 50)
+        )
+
         return titleView
     }()
 
@@ -161,8 +158,7 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     var isRequestingLoad = false
 
     var lastSeenIndexPath: IndexPath?
-
-
+    
     // MARK: - Lifecycle
     @available(*, unavailable, renamed: "SBUChannelViewController(channelUrl:)")
     required public init?(coder: NSCoder) {
@@ -292,7 +288,9 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         self.setupStyles()
     }
     
-    open func setupAutolayout() {
+    open override func setupAutolayout() {
+        super.setupAutolayout()
+        
         self.spacer.translatesAutoresizingMaskIntoConstraints = false
         let constraint = self.spacer.widthAnchor.constraint(
             greaterThanOrEqualToConstant: self.view.bounds.width
@@ -355,7 +353,9 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         }
     }
     
-    open func setupStyles() {
+    open override func setupStyles() {
+        super.setupStyles()
+        
         self.theme = SBUTheme.channelTheme
         
         self.navigationController?.navigationBar.setBackgroundImage(
@@ -379,7 +379,9 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         self.tableView.backgroundColor = theme.backgroundColor
     }
     
-    public func updateStyles() {
+    open override func updateStyles() {
+        super.updateStyles()
+        
         self.theme = SBUTheme.channelTheme
         
         self.setupStyles()
@@ -464,7 +466,6 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         SBULog.info("")
         SBDMain.removeChannelDelegate(forIdentifier: self.description)
         SBDMain.removeConnectionDelegate(forIdentifier: self.description)
-
         NotificationCenter.default.removeObserver(self)
     }
 
@@ -516,34 +517,40 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         let timestamp: Int64 = self.messageList.last?.createdAt ?? LLONG_MAX
         channel.getMessagesByTimestamp(timestamp, params: self.messageListParams)
         { [weak self] (messages, error) in
+            guard let self = self else { return }
             defer {
-                self?.setLoading(false, false)
-                self?.shouldDismissLoadingIndicator()
+                self.setLoading(false, false)
+                self.shouldDismissLoadingIndicator()
             }
             
             if let error = error {
                 SBULog.error("[Failed] Message list request: \(error.localizedDescription)")
-                self?.isRequestingLoad = false;
-                self?.didReceiveError(error.localizedDescription)
+                self.isRequestingLoad = false;
+                self.didReceiveError(error.localizedDescription)
                 return
             }
-            guard let messages = messages else { self?.isRequestingLoad = false; return }
+            guard let messages = messages else {
+                self.isRequestingLoad = false
+                return
+            }
             
             SBULog.info("[Response] \(messages.count) messages")
             
             guard messages.count != 0 else {
-                if let emptyView = self?.emptyView as? SBUEmptyView {
-                    emptyView.reloadData(.noMessages)
+                if self.messageList.count == 0 {
+                    if let emptyView = self.emptyView as? SBUEmptyView {
+                        emptyView.reloadData(.noMessages)
+                    }
                 }
-                self?.hasPrevious = false
-                self?.isRequestingLoad = false
+                self.hasPrevious = false
+                self.isRequestingLoad = false
                 
                 SBULog.info("All previous messages have been loaded.")
                 return
             }
 
-            self?.upsertMessagesInList(messages: messages, needReload: true)
-            self?.lastUpdatedTimestamp = self?.channel?.lastMessage?.createdAt
+            self.upsertMessagesInList(messages: messages, needReload: true)
+            self.lastUpdatedTimestamp = self.channel?.lastMessage?.createdAt
                 ?? Int64(Date().timeIntervalSince1970*1000)
         }
     }
@@ -568,11 +575,11 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
             messageType: self.messageListParams.messageType,
             customType: self.messageListParams.customType,
             completionHandler: { [weak self] messages, error in
-                
+                guard let self = self else { return }
                 if let error = error {
                     SBULog.error("[Failed] Message list request: \(error.localizedDescription)")
-                    self?.sortAllMessageList(needReload: true)
-                    self?.didReceiveError(error.localizedDescription)
+                    self.sortAllMessageList(needReload: true)
+                    self.didReceiveError(error.localizedDescription)
                     return
                 }
                 
@@ -581,11 +588,11 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
                 SBULog.info("[Response] \(messages.count) messages")
                 
                 if messages.count > 0 {
-                    self?.lastUpdatedTimestamp = messages[0].createdAt
-                    self?.upsertMessagesInList(messages: messages, needReload: false)
+                    self.lastUpdatedTimestamp = messages[0].createdAt
+                    self.upsertMessagesInList(messages: messages, needReload: false)
                 }
                 
-                self?.loadNextMessages(hasNext: (messages.count == limit))
+                self.loadNextMessages(hasNext: (messages.count == limit))
         })
     }
     
@@ -602,12 +609,13 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
             SBULog.info("[Request] Message change logs with token")
             self.channel?.getMessageChangeLogs(sinceToken: token, params: changeLogsParams)
             { [weak self] updatedMessages, deletedMessageIds, hasMore, token, error in
+                guard let self = self else { return }
                 if let error = error {
                     SBULog.error("""
                         [Failed] Message change logs request:
                         \(error.localizedDescription)
                         """)
-                    self?.didReceiveError(error.localizedDescription)
+                    self.didReceiveError(error.localizedDescription)
                 }
                 
                 SBULog.info("""
@@ -616,10 +624,10 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
                     \(String(format: "%d deleted messages", deletedMessageIds?.count ?? 0))
                     """)
                 
-                self?.upsertMessagesInList(messages: updatedMessages, needReload: false)
-                self?.deleteMessagesInList(messageIds: deletedMessageIds as! [Int64],
+                self.upsertMessagesInList(messages: updatedMessages, needReload: false)
+                self.deleteMessagesInList(messageIds: deletedMessageIds as! [Int64],
                                             needReload: false)
-                self?.loadMessageChangeLogs(hasMore: hasMore, token: token)
+                self.loadMessageChangeLogs(hasMore: hasMore, token: token)
             }
         }
         else {
@@ -628,12 +636,13 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
                 sinceTimestamp: self.lastUpdatedTimestamp,
                 params: changeLogsParams
             ) { [weak self] updatedMessages, deletedMessageIds, hasMore, token, error in
+                guard let self = self else { return }
                 if let error = error {
                     SBULog.error("""
                         [Failed] Message change logs request:
                         \(error.localizedDescription)
                         """)
-                    self?.didReceiveError(error.localizedDescription)
+                    self.didReceiveError(error.localizedDescription)
                 }
                 
                 SBULog.info("""
@@ -642,10 +651,10 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
                     \(String(format: "%d deleted messages", deletedMessageIds?.count ?? 0))
                     """)
                 
-                self?.upsertMessagesInList(messages: updatedMessages, needReload: false)
-                self?.deleteMessagesInList(messageIds: deletedMessageIds as! [Int64],
+                self.upsertMessagesInList(messages: updatedMessages, needReload: false)
+                self.deleteMessagesInList(messageIds: deletedMessageIds as! [Int64],
                                             needReload: false)
-                self?.loadMessageChangeLogs(hasMore: hasMore, token: token)
+                self.loadMessageChangeLogs(hasMore: hasMore, token: token)
             }
         }
     }
@@ -672,13 +681,21 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         
         let preSendMessage = self.channel?.sendUserMessage(with: messageParams)
         { [weak self] userMessage, error in
+            if (error != nil) {
+                SBUPendingMessageManager.shared.upsertPendingMessage(
+                    channelUrl: userMessage?.channelUrl,
+                    message: userMessage
+                )
+            } else {
+                SBUPendingMessageManager.shared.removePendingMessage(
+                    channelUrl: userMessage?.channelUrl,
+                    requestId: userMessage?.requestId
+                )
+            }
+            
             guard let self = self else { return }
             
             if let error = error {
-                SBUMessageManager.shared.upsertPendingMessage(
-                    with: self.channel?.channelUrl,
-                    message: userMessage
-                )
                 self.sortAllMessageList(needReload: true)
                 self.didReceiveError(error.localizedDescription)
                 SBULog.error("[Failed] Send user message request: \(error.localizedDescription)")
@@ -687,18 +704,13 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
             
             guard let message = userMessage else { return }
             SBULog.info("[Succeed] Send user message: \(message.description)")
-            
-            SBUMessageManager.shared.removePendingMessage(
-                with: self.channel?.channelUrl,
-                requestId: userMessage?.requestId
-            )
-  
+              
             self.upsertMessagesInList(messages: [message], needReload: true)
             self.channel?.markAsRead()
         }
                
-        SBUMessageManager.shared.upsertPendingMessage(
-            with: self.channel?.channelUrl,
+        SBUPendingMessageManager.shared.upsertPendingMessage(
+            channelUrl: self.channel?.channelUrl,
             message: preSendMessage
         )
         
@@ -741,35 +753,28 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         preSendMessage = channel.sendFileMessage(
             with: messageParams,
             progressHandler: { bytesSent, totalBytesSent, totalBytesExpectedToSend in
-                // [weak self]
-                
                 //// If need reload cell for progress, call reload action in here.
                 guard let requestId = preSendMessage?.requestId else { return }
-                let fileTransferProgress = CGFloat(totalBytesSent/totalBytesExpectedToSend)
+                let fileTransferProgress = CGFloat(totalBytesSent)/CGFloat(totalBytesExpectedToSend)
                 SBULog.info("File message transfer progress: \(requestId) - \(fileTransferProgress)")
-                
-                
-                // self.fileTransferProgress[requestId] = CGFloat(totalBytesSent) / CGFloat(totalBytesExpectedToSend)
-                // DispatchQueue.main.async {
-                //     let visibleCell = self.tableView.visibleCells.first {
-                //         (($0 as? SBUFileMessageCell)?.message as? SBDFileMessage)?.requestId == preSendMessage?.requestId
-                //
-                //     }
-                //     guard let fileMessageCell = visibleCell else { return }
-                //     guard let indexPath = self.tableView.indexPath(for: fileMessageCell) else { return }
-                //
-                //     self.tableView.reloadRows(at: [indexPath], with: .automatic)
-                // }
-        },
+            },
             completionHandler: { [weak self] fileMessage, error in
-                if let error = error {
-                    SBUMessageManager.shared.upsertPendingMessage(
-                        with: self?.channel?.channelUrl,
+                if (error != nil) {
+                    SBUPendingMessageManager.shared.upsertPendingMessage(
+                        channelUrl: fileMessage?.channelUrl,
                         message: fileMessage
                     )
-                    self?.sortAllMessageList(needReload: true)
-                    
-                    self?.didReceiveError(error.localizedDescription)
+                } else {
+                    SBUPendingMessageManager.shared.removePendingMessage(
+                        channelUrl: fileMessage?.channelUrl,
+                        requestId: fileMessage?.requestId
+                    )
+                }
+                
+                guard let self = self else { return }
+                if let error = error {
+                    self.sortAllMessageList(needReload: true)
+                    self.didReceiveError(error.localizedDescription)
                     SBULog.error("""
                         [Failed] Send file message request:
                         \(error.localizedDescription)
@@ -778,31 +783,23 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
                 }
                 
                 guard let message = fileMessage else { return }
-//                guard let requestId = fileMessage?.requestId else { return }
                 
                 SBULog.info("[Succeed] Send file message: \(message.description)")
-                SBUMessageManager.shared.removePendingMessage(
-                    with: self?.channel?.channelUrl,
-                    requestId: fileMessage?.requestId
-                )
-//                self?.fileTransferProgress.removeValue(forKey: requestId)
-                self?.upsertMessagesInList(messages: [message], needReload: true)
                 
-                self?.channel?.markAsRead()
-        })
+                self.upsertMessagesInList(messages: [message], needReload: true)
+                self.channel?.markAsRead()
+            })
         
-        SBUMessageManager.shared.upsertPendingMessage(
-            with: self.channel?.channelUrl,
+        SBUPendingMessageManager.shared.upsertPendingMessage(
+            channelUrl: self.channel?.channelUrl,
             message: preSendMessage
         )
-        SBUMessageManager.shared.addFileInfo(
-            with: self.channel?.channelUrl,
+        
+        SBUPendingMessageManager.shared.addFileInfo(
+            requestId: preSendMessage?.requestId,
             params: messageParams
         )
         
-//        if let reqId = preSendMessage?.requestId {
-//            self.fileTransferProgress[reqId] = 0
-//        }
         self.sortAllMessageList(needReload: true)
     }
     
@@ -813,16 +810,26 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         if let failedMessage = failedMessage as? SBDUserMessage {
             SBULog.info("[Request] Resend failed user message")
             
-            self.channel?.resendUserMessage(with: failedMessage,
-                                            completionHandler:
-                { [weak self] userMessage, error in
-                    if let error = error {
-                        SBUMessageManager.shared.upsertPendingMessage(
-                            with: self?.channel?.channelUrl,
+            let pendingMessage = self.channel?.resendUserMessage(
+                with: failedMessage,
+                completionHandler: { [weak self] userMessage, error in
+                    if (error != nil) {
+                        SBUPendingMessageManager.shared.upsertPendingMessage(
+                            channelUrl: userMessage?.channelUrl,
                             message: userMessage
                         )
-                        self?.sortAllMessageList(needReload: true)
-                        self?.didReceiveError(error.localizedDescription)
+                    } else {
+                        SBUPendingMessageManager.shared.removePendingMessage(
+                            channelUrl: userMessage?.channelUrl,
+                            requestId: userMessage?.requestId
+                        )
+                    }
+                    
+                    guard let self = self else { return }
+                    if let error = error {
+                        self.sortAllMessageList(needReload: true)
+                        self.didReceiveError(error.localizedDescription)
+ 
                         SBULog.error("""
                             [Failed] Resend failed user message request:
                             \(error.localizedDescription)\n
@@ -833,36 +840,48 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
                     
                     guard let message = userMessage else { return }
                     
-                    SBUMessageManager.shared.removePendingMessage(
-                        with: self?.channel?.channelUrl,
-                        requestId: userMessage?.requestId
-                    )
-                    self?.upsertMessagesInList(messages: [message], needReload: true)
-                    self?.channel?.markAsRead()
+                    self.upsertMessagesInList(messages: [message], needReload: true)
+                    self.channel?.markAsRead()
             })
+            
+            SBUPendingMessageManager.shared.upsertPendingMessage(
+                channelUrl: self.channel?.channelUrl,
+                message: pendingMessage
+            )
         } else if let failedMessage = failedMessage as? SBDFileMessage {
             var data: Data? = nil
 
-            if let fileInfo = SBUMessageManager.shared.getFileInfo(with: failedMessage.requestId) {
+            if let fileInfo = SBUPendingMessageManager.shared.getFileInfo(
+                requestId: failedMessage.requestId) {
                 data = fileInfo.file
             }
 
             SBULog.info("[Request] Resend failed file message")
             
-            self.channel?.resendFileMessage(
+            let pendingMessage = self.channel?.resendFileMessage(
                 with: failedMessage,
                 binaryData: data,
                 progressHandler: { (bytesSent, totalBytesSent, totalBytesExpectedToSend) in
-//                    self?.fileTransferProgress[requestId] = CGFloat(
-//                        totalBytesSent/totalBytesExpectedToSend
-//                    )
                     //// If need reload cell for progress, call reload action in here.
-                    // self?.tableView.reloadData()
+                    // self.tableView.reloadData()
                 },
                 completionHandler: { [weak self] (fileMessage, error) in
+                    if (error != nil) {
+                        SBUPendingMessageManager.shared.upsertPendingMessage(
+                            channelUrl: fileMessage?.channelUrl,
+                            message: fileMessage
+                        )
+                    } else {
+                        SBUPendingMessageManager.shared.removePendingMessage(
+                            channelUrl: fileMessage?.channelUrl,
+                            requestId: fileMessage?.requestId
+                        )
+                    }
+                    
+                    guard let self = self else { return }
                     if let error = error {
-                        self?.sortAllMessageList(needReload: true)
-                        self?.didReceiveError(error.localizedDescription)
+                        self.sortAllMessageList(needReload: true)
+                        self.didReceiveError(error.localizedDescription)
                         SBULog.error("""
                             [Failed] Resend failed file message request:
                             \(error.localizedDescription)\n
@@ -873,16 +892,15 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
                     
                     guard let message = fileMessage else { return }
                     SBULog.info("[Succeed] Resend failed file message: \(message.description)")
-                    
-                    SBUMessageManager.shared.removePendingMessage(
-                        with: self?.channel?.channelUrl,
-                        requestId: fileMessage?.requestId
-                    )
-//                    self?.fileTransferProgress.removeValue(forKey: requestId)
-                    self?.upsertMessagesInList(messages: [message], needReload: true)
-                    
-                    self?.channel?.markAsRead()
-            })
+
+                    self.upsertMessagesInList(messages: [message], needReload: true)
+                    self.channel?.markAsRead()
+                })
+            
+            SBUPendingMessageManager.shared.upsertPendingMessage(
+                channelUrl: self.channel?.channelUrl,
+                message: pendingMessage
+            )
         }
     }
     
@@ -913,8 +931,9 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         self.channel?.updateUserMessage(
             withMessageId: message.messageId,
             userMessageParams: messageParams) { [weak self] updatedMessage, error in
+                guard let self = self else { return }
                 if let error = error {
-                    self?.didReceiveError(error.localizedDescription)
+                    self.didReceiveError(error.localizedDescription)
                     SBULog.error("""
                         [Failed] Send user message request:
                         \(String(error.localizedDescription))
@@ -929,10 +948,10 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
                 
                 SBULog.info("[Succeed] Update user message: \(updatedMessage.description)")
                 
-                self?.deleteMessagesInList(messageIds: [message.messageId], needReload: false)
-                self?.upsertMessagesInList(messages: [updatedMessage], needReload: true)
-                self?.inEditingMessage = nil
-                self?.messageInputView.endEditMode()
+                self.deleteMessagesInList(messageIds: [message.messageId], needReload: false)
+                self.upsertMessagesInList(messages: [updatedMessage], needReload: true)
+                self.inEditingMessage = nil
+                self.messageInputView.endEditMode()
             }
     }
     
@@ -944,18 +963,20 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
             title: SBUStringSet.Delete,
             color: theme.alertRemoveColor
         ) { [weak self] info in
+            guard let self = self else { return }
             SBULog.info("[Request] Delete message: \(message.description)")
             
-            self?.channel?.delete(message, completionHandler: { [weak self] error in
+            self.channel?.delete(message, completionHandler: { [weak self] error in
+                guard let self = self else { return }
                 if let error = error {
-                    self?.didReceiveError(error.localizedDescription)
+                    self.didReceiveError(error.localizedDescription)
                     SBULog.error("[Failed] Delete message request: \(error.localizedDescription)")
                     return
                 }
                 
                 SBULog.info("[Succeed] Delete message: \(message.description)")
                 
-                self?.deleteMessagesInList(messageIds: [message.messageId], needReload: true)
+                self.deleteMessagesInList(messageIds: [message.messageId], needReload: true)
             })
         }
         
@@ -971,7 +992,7 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     /// This function is used to load channel information.
     /// - Parameters:
     ///   - channelUrl: channel url
-    ///   - messageListParams: Parameter to be used when getting channel information. If it is nil, it will not be used.
+    ///   - messageListParams: (Optional) The parameter to be used when getting channel information. 
     public func loadChannel(channelUrl: String?, messageListParams: SBDMessageListParams? = nil) {
         guard let channelUrl = channelUrl else { return }
         self.shouldShowLoadingIndicator()
@@ -990,27 +1011,28 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
 
             SBULog.info("[Request] Load channel: \(String(channelUrl))")
             SBDGroupChannel.getWithUrl(channelUrl) { [weak self] channel, error in
+                guard let self = self else { return }
                 if let error = error {
                     SBULog.error("[Failed] Load channel request: \(error.localizedDescription)")
-                    self?.didReceiveError(error.localizedDescription)
+                    self.didReceiveError(error.localizedDescription)
                     return
                 }
             
-                self?.channel = channel
+                self.channel = channel
 
                 SBULog.info("""
                     [Succeed] Load channel request:
-                    \(String(format: "%@", self?.channel ?? ""))
+                    \(String(format: "%@", self.channel ?? ""))
                     """)
                 
-                SBUEmojiManager.shared.useReactionCurrnetChannel
+                SBUEmojiManager.shared.useReactionCurrentChannel
                     = channel?.isSuper == false && channel?.isBroadcast == false
                 
-                self?.loadPrevMessageList(reset: true)
-                if let titleView = self?.titleView as? SBUChannelTitleView {
-                    titleView.configure(channel: self?.channel, title: self?.channelName)
+                self.loadPrevMessageList(reset: true)
+                if let titleView = self.titleView as? SBUChannelTitleView {
+                    titleView.configure(channel: self.channel, title: self.channelName)
                 }
-                self?.updateMessageInputModeState()
+                self.updateMessageInputModeState()
             }
         }
     }
@@ -1051,8 +1073,8 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     /// - Since: 1.2.5
     public func sortAllMessageList(needReload: Bool) {
         // Generate full list for draw
-        let pendingMessages = SBUMessageManager.shared.getPendingMessages(
-            with: self.channel?.channelUrl
+        let pendingMessages = SBUPendingMessageManager.shared.getPendingMessages(
+            channelUrl: self.channel?.channelUrl
         )
         let sendMessages = self.messageList
         
@@ -1084,7 +1106,7 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     ///   - messages: Message array to update
     ///   - needReload: If set to `true`, the tableview will be call reloadData.
     /// - Since: 1.2.5
-    private func updateMessagesInList(messages: [SBDBaseMessage]?, needReload: Bool) {
+    public func updateMessagesInList(messages: [SBDBaseMessage]?, needReload: Bool) {
         messages?.forEach { message in
             if let index = self.messageList
                 .firstIndex(where: { $0.messageId == message.messageId }) {
@@ -1145,19 +1167,18 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
                 guard message.messageId == messageId else { continue }
                 toBeDeleteIndexes.append(index)
                 
+                guard message.requestId.count > 0 else { continue }
+                
                 switch message {
                 case let userMessage as SBDUserMessage:
                     let requestId = userMessage.requestId
-                    guard requestId.count > 0 else { break }
                     toBeDeleteRequestIds.append(requestId)
 
                 case let fileMessage as SBDFileMessage:
                     let requestId = fileMessage.requestId
-                    guard requestId.count > 0 else { break }
                     toBeDeleteRequestIds.append(requestId)
                     
-                default:
-                    break
+                default: break
                 }
             }
         }
@@ -1179,11 +1200,10 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     /// - Since: 1.2.5
     public func deleteResendableMessages(requestIds: [String], needReload: Bool) {
         for requestId in requestIds {
-            SBUMessageManager.shared.removePendingMessage(
-                with: self.channel?.channelUrl,
+            SBUPendingMessageManager.shared.removePendingMessage(
+                channelUrl: self.channel?.channelUrl,
                 requestId: requestId
             )
-//            self.fileTransferProgress.removeValue(forKey: requestId)
         }
         
         self.sortAllMessageList(needReload: needReload)
@@ -1207,7 +1227,8 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         
         if let newMessageInfoView = self.newMessageInfoView as? SBUNewMessageInfo {
             newMessageInfoView.updateCount(count: self.newMessagesCount) { [weak self] in
-                self?.scrollToBottom(animated: false)
+                guard let self = self else { return }
+                self.scrollToBottom(animated: false)
             }
         }
         
@@ -1240,7 +1261,8 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
             // for Camera capture
             guard let imageData = originalImage?
                 .fixedOrientation()
-                .jpegData(compressionQuality: 1.0) else { return }
+                .resize(with: SBUGlobals.imageResizingSize)
+                .jpegData(compressionQuality: SBUGlobals.imageCompressionRate) else { return }
             
             self.sendFileMessage(
                 fileData: imageData,
@@ -1273,9 +1295,9 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
             
             PHImageManager.default().requestImageData(for: gifAsset, options: requestOptions)
             { [weak self] imageData, dataUTI, orientation, info in
-                
+                guard let self = self else { return }
                 guard let imageData = imageData else { return }
-                self?.sendFileMessage(fileData: imageData,
+                self.sendFileMessage(fileData: imageData,
                                       fileName: imageName,
                                       mimeType: mimeType)
             }
@@ -1284,7 +1306,8 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
             guard let originalImage = info[.originalImage] as? UIImage else { return }
             guard let imageData = originalImage
                 .fixedOrientation()
-                .jpegData(compressionQuality: 1.0) else { return }
+                .resize(with: SBUGlobals.imageResizingSize)
+                .jpegData(compressionQuality: SBUGlobals.imageCompressionRate) else { return }
             
             self.sendFileMessage(
                 fileData: imageData,
@@ -1350,7 +1373,8 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         emojiListVC.transitioningDelegate = self
 
         emojiListVC.emojiTapHandler = { [weak self] emojiKey, setSelect in
-            self?.setReaction(message: message, emojiKey: emojiKey, didSelect: setSelect)
+            guard let self = self else { return }
+            self.setReaction(message: message, emojiKey: emojiKey, didSelect: setSelect)
         }
         self.present(emojiListVC, animated: true)
     }
@@ -1476,7 +1500,6 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
             case .failed:
                 guard fileMessage.sender?.userId == SBUGlobals.CurrentUser?.userId else { return }
                 self.resendMessage(failedMessage: fileMessage)
-                
             case .succeeded:
                 switch SBUUtils.getFileType(by: fileMessage) {
                 case .image:
@@ -1603,7 +1626,8 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
                 color: self.theme.menuTextColor,
                 image: SBUIconSet.iconDelete
             ) { [weak self] in
-                self?.deleteMessage(message: message)
+                guard let self = self else { return }
+                self.deleteMessage(message: message)
             }
             let menuPoint = self.calculatorMenuPoint(
                 indexPath: indexPath,
@@ -1760,7 +1784,8 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         }
         
         DispatchQueue.main.async { [weak self] in
-            self?.tableView.reloadData()
+            guard let self = self else { return }
+            self.tableView.reloadData()
         }
     }
     
@@ -1786,9 +1811,9 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     /// - Returns: Position of a message when grouped
     /// - Since: 1.2.1
     public func getMessageGroupingPosition(currentIndex: Int) -> MessageGroupPosition {
-        guard currentIndex < self.fullMessageList.count-1 else { return .none }
+        guard currentIndex < self.fullMessageList.count else { return .none }
         
-        let prevMessage = self.fullMessageList.count+2 > currentIndex
+        let prevMessage = self.fullMessageList.count - 1 != currentIndex
             ? self.fullMessageList[currentIndex+1]
             : nil
         let currentMessage = self.fullMessageList[currentIndex]
@@ -1796,13 +1821,13 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
             ? self.fullMessageList[currentIndex-1]
             : nil
         
-        let succeededPrevMsg = prevMessage?.sendingStatus == .succeeded
+        let succeededPrevMsg = prevMessage?.sendingStatus != .failed
             ? prevMessage
             : nil
-        let succeededCurrentMsg = currentMessage.sendingStatus == .succeeded
+        let succeededCurrentMsg = currentMessage.sendingStatus != .failed
             ? currentMessage
             : nil
-        let succeededNextMsg = nextMessage?.sendingStatus == .succeeded
+        let succeededNextMsg = nextMessage?.sendingStatus != .failed
             ? nextMessage
             : nil
         
@@ -1909,7 +1934,8 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
                                          userMessage: SBDUserMessage,
                                          indexPath: IndexPath) {
         cell.tapHandlerToContent = { [weak self] in
-            self?.setTapGestureHandler(cell, message: userMessage)
+            guard let self = self else { return }
+            self.setTapGestureHandler(cell, message: userMessage)
         }
         
         cell.longPressHandlerToContent = { [weak self, weak cell] in
@@ -1928,7 +1954,8 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
                                          fileMessage: SBDFileMessage,
                                          indexPath: IndexPath) {
         cell.tapHandlerToContent = { [weak self] in
-            self?.setTapGestureHandler(cell, message: fileMessage)
+            guard let self = self else { return }
+            self.setTapGestureHandler(cell, message: fileMessage)
         }
         
         cell.longPressHandlerToContent = { [weak self, weak cell] in
@@ -1947,7 +1974,8 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
                                            unknownMessage: SBDBaseMessage,
                                            indexPath: IndexPath) {
         cell.tapHandlerToContent = { [weak self] in
-            self?.setTapGestureHandler(cell, message: unknownMessage)
+            guard let self = self else { return }
+            self.setTapGestureHandler(cell, message: unknownMessage)
         }
         
         cell.longPressHandlerToContent = { [weak self, weak cell] in
@@ -1965,8 +1993,9 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
                                   fileMessage: SBDFileMessage) {
         switch fileMessage.sendingStatus {
         case .canceled, .pending, .failed, .none:
-            if let fileInfo = SBUMessageManager.shared.getFileInfo(with: fileMessage.requestId),
-               let type = fileInfo.mimeType, let fileData = fileInfo.file {
+            if let fileInfo = SBUPendingMessageManager.shared
+                .getFileInfo(requestId: fileMessage.requestId),
+                let type = fileInfo.mimeType, let fileData = fileInfo.file {
                 if SBUUtils.getFileType(by: type) == .image {
                     cell.setImage(fileData.toImage(), size: SBUConstant.thumbnailSize)
                 }
@@ -2043,12 +2072,14 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
         }
 
         menuVC.emojiTapHandler = { [weak self] emojiKey, setSelect in
-            self?.setReaction(message: message, emojiKey: emojiKey, didSelect: setSelect)
+            guard let self = self else { return }
+            self.setReaction(message: message, emojiKey: emojiKey, didSelect: setSelect)
         }
 
         menuVC.moreEmojiTapHandler = { [weak self] in
             DispatchQueue.main.async {
-                self?.showEmojiListModal(message: message)
+                guard let self = self else { return }
+                self.showEmojiListModal(message: message)
             }
         }
     }
@@ -2083,11 +2114,12 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
                     color: self.theme.menuTextColor,
                     image: SBUIconSet.iconEdit
                 ) { [weak self] in
+                    guard let self = self else { return }
                     guard let userMessage = message as? SBDUserMessage else { return }
                     
-                    if self?.channel?.isFrozen == false {
-                        self?.inEditingMessage = userMessage
-                        self?.messageInputView.startEditMode(text: userMessage.message)
+                    if self.channel?.isFrozen == false {
+                        self.inEditingMessage = userMessage
+                        self.messageInputView.startEditMode(text: userMessage.message)
                     } else {
                         SBULog.info("This channel is frozen")
                     }
@@ -2098,7 +2130,8 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
                     color: self.theme.menuTextColor,
                     image: SBUIconSet.iconDelete
                 ) { [weak self] in
-                    self?.deleteMessage(message: message)
+                    guard let self = self else { return }
+                    self.deleteMessage(message: message)
                 }
             case .save:
                 return SBUMenuItem(
@@ -2106,8 +2139,8 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
                     color: self.theme.menuTextColor,
                     image: SBUIconSet.iconDownload
                 ) { [weak self] in
-                    guard let self = self,
-                        let fileMessage = message as? SBDFileMessage else { return }
+                    guard let self = self else { return }
+                    guard let fileMessage = message as? SBDFileMessage else { return }
                     
                     SBUDownloadManager.saveFile(with: fileMessage, parent: self)
                 }
@@ -2125,7 +2158,7 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     /// This function changes the messageInputView bottom constraint using keyboard height.
     /// - Parameter notification: Notification object with keyboardFrame information
     /// - Since: 1.2.5
-    @objc public func keyboardWillShow(_ notification: Notification) {
+    public func keyboardWillShow(_ notification: Notification) {
         guard let keyboardFrame = notification.userInfo?[
             UIResponder.keyboardFrameEndUserInfoKey
             ] as? NSValue else { return }
@@ -2139,14 +2172,14 @@ open class SBUChannelViewController: UIViewController, UINavigationControllerDel
     /// This function changes the messageInputView bottom constraint using keyboard height.
     /// - Parameter notification: Notification object with keyboardFrame information
     /// - Since: 1.2.5
-    @objc public func keyboardWillHide(_ notification: Notification) {
+    public func keyboardWillHide(_ notification: Notification) {
         self.messageInputViewBottomConstraint.constant = 0
         self.view.layoutIfNeeded()
     }
     
     /// This function dismisses the keyboard.
     /// - Since: 1.2.5
-    @objc public func dismissKeyboard() {
+    public func dismissKeyboard() {
         view.endEditing(true)
     }
     
@@ -2252,24 +2285,29 @@ extension SBUChannelViewController: UITableViewDelegate, UITableViewDataSource {
         
         // Tap profile action
         messageCell.userProfileTapHandler = { [weak messageCell, weak self] in
-            guard let cell = messageCell, let sender = cell.message.sender else { return }
-            self?.setUserProfileTapGestureHandler(SBUUser.init(sender: sender))
+            guard let self = self else { return }
+            guard let cell = messageCell else { return }
+            guard let sender = cell.message.sender else { return }
+            self.setUserProfileTapGestureHandler(SBUUser.init(sender: sender))
         }
 
         // Reaction action
         messageCell.emojiTapHandler = { [weak messageCell, weak self] emojiKey in
+            guard let self = self else { return }
             guard let cell = messageCell else { return }
-            self?.setEmojiTapGestureHandler(cell, emojiKey: emojiKey)
+            self.setEmojiTapGestureHandler(cell, emojiKey: emojiKey)
         }
 
         messageCell.emojiLongPressHandler = { [weak messageCell, weak self] emojiKey in
+            guard let self = self else { return }
             guard let cell = messageCell else { return }
-            self?.setEmojiLongTapGestureHandler(cell, emojiKey: emojiKey)
+            self.setEmojiLongTapGestureHandler(cell, emojiKey: emojiKey)
         }
 
         messageCell.moreEmojiTapHandler = { [weak self] in
-            self?.dismissKeyboard()
-            self?.showEmojiListModal(message: message)
+            guard let self = self else { return }
+            self.dismissKeyboard()
+            self.showEmojiListModal(message: message)
         }
 
         return cell
@@ -2328,14 +2366,15 @@ extension SBUChannelViewController: UIImagePickerControllerDelegate {
         _ picker: UIImagePickerController,
         didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         picker.dismiss(animated: true) { [weak self] in
+            guard let self = self else { return }
             guard info[.mediaType] != nil else { return }
             let mediaType = info[.mediaType] as! CFString
 
             switch mediaType {
             case kUTTypeImage:
-                self?.sendImageFileMessage(info: info)
+                self.sendImageFileMessage(info: info)
             case kUTTypeMovie:
-                self?.sendVideoFileMessage(info: info)
+                self.sendVideoFileMessage(info: info)
             default:
                 break
             }
@@ -2434,14 +2473,15 @@ extension SBUChannelViewController: SBUFileViewerDelegate {
         SBULog.info("[Request] Delete message: \(message.description)")
         
         self.channel?.delete(message) { [weak self] error in
+            guard let self = self else { return }
             if let error = error {
-                self?.didReceiveError(error.localizedDescription)
+                self.didReceiveError(error.localizedDescription)
                 SBULog.error("[Failed] Delete message request: \(error.localizedDescription)")
                 return
             }
 
             SBULog.info("[Succeed] Delete message: \(message.description)")
-            self?.deleteMessagesInList(messageIds: [message.messageId], needReload: true)
+            self.deleteMessagesInList(messageIds: [message.messageId], needReload: true)
         }
     }
 }
@@ -2556,7 +2596,8 @@ extension SBUChannelViewController: SBDChannelDelegate, SBDConnectionDelegate {
         SBULog.info("Did update readReceipt, ChannelUrl:\(sender.channelUrl)")
         
         DispatchQueue.main.async { [weak self] in
-            self?.tableView.reloadData()
+            guard let self = self else { return }
+            self.tableView.reloadData()
         }
     }
     
@@ -2567,7 +2608,8 @@ extension SBUChannelViewController: SBDChannelDelegate, SBDConnectionDelegate {
         SBULog.info("Did update deliveryReceipt, ChannelUrl:\(sender.channelUrl)")
         
         DispatchQueue.main.async { [weak self] in
-            self?.tableView.reloadData()
+            guard let self = self else { return }
+            self.tableView.reloadData()
         }
     }
     
@@ -2635,7 +2677,6 @@ extension SBUChannelViewController: SBDChannelDelegate, SBDConnectionDelegate {
             self.onClickBack()
         }
     }
-    
 
     // MARK: SBDConnectionDelegate
     open func didSucceedReconnection() {
@@ -2645,16 +2686,17 @@ extension SBUChannelViewController: SBDChannelDelegate, SBDConnectionDelegate {
         
         SBULog.info("[Request] Refresh channel")
         channel.refresh { [weak self] error in
+            guard let self = self else { return }
             if let error = error {
-                self?.didReceiveError(error.localizedDescription)
+                self.didReceiveError(error.localizedDescription)
                 SBULog.error("[Failed] Refresh channel request : \(error.localizedDescription)")
                 return
             }
             
             SBULog.info("[Succeed] Refresh channel request")
-            self?.loadMessageChangeLogs(hasMore: true, token: nil)
+            self.loadMessageChangeLogs(hasMore: true, token: nil)
             
-            self?.updateMessageInputModeState()
+            self.updateMessageInputModeState()
         }
     }
 }

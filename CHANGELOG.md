@@ -1,5 +1,38 @@
 # Change Log
 
+### v2.0.0 (Dec 24, 2020)
+* Added OpenChannel features.
+    *  `SBUOpenChannelViewController`
+    * `SBUOpenChannelBaseMessageCell`
+    * `SBUOpenChannelContentBaseMessageCell`
+    * `SBUOpenChannelAdminMessageCell`
+    * `SBUOpenChannelUserMessageCell`
+    * `SBUOpenChannelFileMessageCell`
+    * `SBUOpenChannelMessageWebView`
+    * `SBUOpenChannelUnknownMessageCell`
+    * `SBUOpenChannelSettingsViewController`
+    * `SBUOpenChannelSettingCell`
+    * `OpenChannelSettingItemType`
+    * Added `UsingUserProfileInOpenChannel` to `SBUGlobals`
+    * Added `overlay` themes. 
+* Deprecated properties in `SBUChannelViewController` class
+    * `preSendMessages` 
+    * `resendableMessages` 
+    * `preSendFileData`
+    * `resendableFileData`
+    * `fileTransferProgress`
+* Ranamed classes
+    * Renamed `SBUMessageBaseCell` to `SBUBaseMessageCell`
+    * Renamed `MessageDateView` to `SBUMessageDateView`
+    * Renamed `MessageProfileView` to `SBUMessageProfileView`
+    * Renamed `UserNameView` to `SBUUserNameView`
+    * Renamed `MessageStateView` to `SBUMessageStateView`
+* Supported image resizing and compression
+    * Added `imageCompressionRate` to `SBUGlobals`
+    * Added `imageResizingSize` to `SBUGlobals`
+    
+* Improved stability.
+
 ### v1.2.11 (Dec 11, 2020)
 * Imporved stability
 

@@ -9,7 +9,7 @@
 import Foundation
 
 @objcMembers
-public class SBUEmojiManager {
+public class SBUEmojiManager: NSObject {
 
     // MARK: - Private property
     static let shared = SBUEmojiManager()
@@ -17,7 +17,7 @@ public class SBUEmojiManager {
     private var emojiHash: String? {
         container?.emojiHash
     }
-    var useReactionCurrnetChannel: Bool = false
+    var useReactionCurrentChannel: Bool = false
  
     
     // MARK: - Public function
@@ -112,7 +112,7 @@ public class SBUEmojiManager {
     // MARK: - private function
     static var useReaction: Bool {
         if let appInfo = SBDMain.getAppInfo(),
-            appInfo.useReaction, shared.useReactionCurrnetChannel {
+            appInfo.useReaction, shared.useReactionCurrentChannel {
             return true
         } else {
             return false

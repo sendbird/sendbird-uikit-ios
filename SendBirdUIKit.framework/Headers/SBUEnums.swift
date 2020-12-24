@@ -13,6 +13,7 @@
     case group
     case supergroup
     case broadcast
+    case open
 }
 
 /// This is an enumeration used to handling action and display by type in `ChannelSettingsViewController` and `ChannelSettingCell`.
@@ -29,6 +30,20 @@
             : [.notifications, members, leave]
     }
 }
+
+/// This is an enumeration used to handling action and display by type in `OpenChannelSettingsViewController` and `ChannelSettingCell`.
+/// - Since: 2.0.0
+@objc public enum OpenChannelSettingItemType: Int {
+    case participants
+    case delete
+    
+    static func allTypes(isOperator: Bool) -> [OpenChannelSettingItemType] {
+        return isOperator
+            ? [.participants, .delete]
+            : [.participants]
+    }
+}
+
 
 /// This is an enumeration used to handling action and display by type in `MederationsViewController` and `ModerationCell`.
 /// - Since: 1.2.0
@@ -56,6 +71,7 @@
     case operators
     case mutedMembers
     case bannedMembers
+    case participants
 }
 
 /// This is an enumeration used in `MemberListViewController` to load member list by type.
@@ -66,6 +82,7 @@
     case operators
     case mutedMembers
     case bannedMembers
+    case participants
 }
 
 /// This is an enumeration used in `InviteUserViewController` to load user list by type.
@@ -155,6 +172,14 @@
     case edit
     case delete
 }
+
+/// This is an enumeration for new message info item type.
+/// - Since: 2.0.0
+@objc public enum NewMessageInfoItemType: Int {
+    case tooltip
+    case button
+}
+
 
 @objc public enum LogType: UInt8 {
     case none    = 0b00000000

@@ -21,9 +21,10 @@ open class SBUEmptyView: UIView {
     public var statusLabel: UILabel = .init()
     public var theme: SBUComponentTheme = SBUTheme.componentTheme
     public lazy var retryButton: UIButton = _retryButton
-    
 
     // MARK: - Properties (Private)
+    var isOverlay = false
+    
     lazy var stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.spacing = 28
@@ -77,12 +78,13 @@ open class SBUEmptyView: UIView {
     }
     
     public func setupStyles() {
-        self.theme = SBUTheme.componentTheme
+        self.theme = self.isOverlay ? SBUComponentTheme.overlay : SBUTheme.componentTheme
         
         self.backgroundColor = theme.emptyViewBackgroundColor
         
         self.statusLabel.font = theme.emptyViewStatusFont
         self.statusLabel.textColor = theme.emptyViewStatusTintColor
+        self.statusImageView.image = self.statusImageView.image?.sbu_with(tintColor: theme.emptyViewStatusTintColor)
          
         self.retryButton.setTitleColor(theme.emptyViewRetryButtonTintColor, for: .normal)
         self.retryButton.titleLabel?.font = theme.emptyViewRetryButtonFont

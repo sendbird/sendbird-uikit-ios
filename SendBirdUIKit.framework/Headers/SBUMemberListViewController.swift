@@ -46,6 +46,8 @@ open class SBUMemberListViewController: UIViewController {
             titleView.text = SBUStringSet.MemberList_Title_Muted_Members
         case .bannedMembers:
             titleView.text = SBUStringSet.MemberList_Title_Banned_Members
+        case .participants:
+            titleView.text = SBUStringSet.MemberList_Title_Participants
         default:
             break
         }
@@ -91,7 +93,7 @@ open class SBUMemberListViewController: UIViewController {
     // MARK: - Logic properties (Public)
     public private(set) var memberListType: ChannelMemberListType = .none
 
-    public private(set) var channel: SBDGroupChannel?
+    public private(set) var channel: SBDBaseChannel?
     public private(set) var channelUrl: String?
 
     public private(set) var memberList: [SBUUser] = []
@@ -100,6 +102,7 @@ open class SBUMemberListViewController: UIViewController {
     public private(set) var operatorListQuery: SBDOperatorListQuery?
     public private(set) var mutedMemberListQuery: SBDGroupChannelMemberListQuery?
     public private(set) var bannedMemberListQuery: SBDBannedUserListQuery?
+    public private(set) var participantListQuery: SBDParticipantListQuery?
 
     
     // MARK: - Logic properties (Private)
@@ -126,7 +129,7 @@ open class SBUMemberListViewController: UIViewController {
     /// - Parameters:
     ///   - channel: Channel object
     ///   - type: Channel member list type (default: `.channelMembers`)
-    public init(channel: SBDGroupChannel, type: ChannelMemberListType = .channelMembers) {
+    public init(channel: SBDBaseChannel, type: ChannelMemberListType = .channelMembers) {
         super.init(nibName: nil, bundle: nil)
         SBULog.info("")
 
@@ -157,7 +160,7 @@ open class SBUMemberListViewController: UIViewController {
     ///   - members: `SBUUser` array object
     ///   - type: Channel member list type (default: `.channelMembers`)
     /// - Since: 1.2.0
-    public init(channel: SBDGroupChannel,
+    public init(channel: SBDBaseChannel,
                 members: [SBUUser],
                 type: ChannelMemberListType = .channelMembers) {
         super.init(nibName: nil, bundle: nil)
@@ -309,25 +312,34 @@ open class SBUMemberListViewController: UIViewController {
         guard let channelUrl = channelUrl else { return }
         
         SBUMain.connectionCheck { [weak self] user, error in
-            if let error = error { self?.didReceiveError(error.localizedDescription) }
+            guard let self = self else { return }
+            if let error = error { self.didReceiveError(error.localizedDescription) }
             
             SBULog.info("[Request] Load channel: \(String(channelUrl))")
-            SBDGroupChannel.getWithUrl(channelUrl) { [weak self] channel, error in
+            
+            let completionHandler: ((SBDBaseChannel?, SBDError?) -> Void)? = { [weak self] channel, error in
+                guard let self = self else { return }
                 if let error = error {
                     SBULog.error("[Failed] Load channel request: \(error.localizedDescription)")
-                    self?.didReceiveError(error.localizedDescription)
+                    self.didReceiveError(error.localizedDescription)
                     return
                 }
                 
-                self?.channel = channel
+                self.channel = channel
                 
                 SBULog.info("""
                     [Succeed] Load channel request:
-                    \(String(format: "%@", self?.channel ?? ""))
+                    \(String(format: "%@", self.channel ?? ""))
                     """)
                 
                 // If want using your custom member list, filled users with your custom user list.
-                self?.loadNextMemberList(reset: true, members: self?.customizedMembers ?? nil)
+                self.loadNextMemberList(reset: true, members: self.customizedMembers ?? nil)
+            }
+            
+            if self.channel is SBDGroupChannel {
+                SBDGroupChannel.getWithUrl(channelUrl, completionHandler: completionHandler)
+            } else if self.channel is SBDOpenChannel {
+                SBDOpenChannel.getWithUrl(channelUrl, completionHandler: completionHandler)
             }
         }
     }
@@ -350,6 +362,7 @@ open class SBUMemberListViewController: UIViewController {
             self.operatorListQuery = nil
             self.mutedMemberListQuery = nil
             self.bannedMemberListQuery = nil
+            self.participantListQuery = nil
             self.memberList = []
             
             SBULog.info("[Request] Member List")
@@ -375,6 +388,8 @@ open class SBUMemberListViewController: UIViewController {
                 self.loadNextMutedMemberList()
             case .bannedMembers:
                 self.loadNextBannedMemberList()
+            case .participants:
+                self.loadNextChannelParticipantsList()
             default:
                 break
             }
@@ -386,8 +401,8 @@ open class SBUMemberListViewController: UIViewController {
     /// If you want to call a list of operators, use the `loadNextMemberList(reset:members:)` function.
     /// - Warning: Use this function only when you need to call `MemberList` alone.
     private func loadNextChannelMemberList() {
-        if self.memberListQuery == nil {
-            self.memberListQuery = self.channel?.createMemberListQuery()
+        if self.memberListQuery == nil, let channel = self.channel as? SBDGroupChannel {
+            self.memberListQuery = channel.createMemberListQuery()
             self.memberListQuery?.limit = self.limit
         }
         
@@ -397,23 +412,22 @@ open class SBUMemberListViewController: UIViewController {
             return
         }
         
-        // return [SBDMember]
         self.memberListQuery?.loadNextPage(completionHandler: {
             [weak self] members, error in
-            
-            defer { self?.isLoading = false }
+            guard let self = self else { return }
+            defer { self.isLoading = false }
             
             if let error = error {
                 SBULog.error("[Failed] Member list request: \(error.localizedDescription)")
-                self?.didReceiveError(error.localizedDescription)
+                self.didReceiveError(error.localizedDescription)
                 return
             }
             guard let members = members?.sbu_convertUserList() else { return }
             
             SBULog.info("[Response] \(members.count) members")
             
-            self?.memberList += members
-            self?.reloadData()
+            self.memberList += members
+            self.reloadData()
         })
     }
     
@@ -433,23 +447,22 @@ open class SBUMemberListViewController: UIViewController {
             return
         }
         
-        // return [SBDUser]
         self.operatorListQuery?.loadNextPage(completionHandler: {
             [weak self] operators, error in
-            
-            defer { self?.isLoading = false }
+            guard let self = self else { return }
+            defer { self.isLoading = false }
             
             if let error = error {
                 SBULog.error("[Failed] Operator list request: \(error.localizedDescription)")
-                self?.didReceiveError(error.localizedDescription)
+                self.didReceiveError(error.localizedDescription)
                 return
             }
             guard let operators = operators?.sbu_convertUserList() else { return }
             
             SBULog.info("[Response] \(operators.count) operators")
             
-            self?.memberList += operators
-            self?.reloadData()
+            self.memberList += operators
+            self.reloadData()
         })
     }
     
@@ -458,8 +471,8 @@ open class SBUMemberListViewController: UIViewController {
     /// If you want to call a list of muted members, use the `loadNextMemberList(reset:members:)` function.
     /// - Warning: Use this function only when you need to call `MutedMemberList` alone.
     private func loadNextMutedMemberList() {
-        if self.mutedMemberListQuery == nil {
-            self.mutedMemberListQuery = self.channel?.createMemberListQuery()
+        if self.mutedMemberListQuery == nil, let channel = self.channel as? SBDGroupChannel {
+            self.mutedMemberListQuery = channel.createMemberListQuery()
             self.mutedMemberListQuery?.limit = self.limit
             self.mutedMemberListQuery?.mutedMemberFilter = .muted
         }
@@ -473,20 +486,20 @@ open class SBUMemberListViewController: UIViewController {
         // return [SBDMember]
         self.mutedMemberListQuery?.loadNextPage(completionHandler: {
             [weak self] members, error in
-            
-            defer { self?.isLoading = false }
+            guard let self = self else { return }
+            defer { self.isLoading = false }
             
             if let error = error {
                 SBULog.error("[Failed] Muted member list request: \(error.localizedDescription)")
-                self?.didReceiveError(error.localizedDescription)
+                self.didReceiveError(error.localizedDescription)
                 return
             }
             guard let members = members?.sbu_convertUserList() else { return }
             
             SBULog.info("[Response] \(members.count) members")
             
-            self?.memberList += members
-            self?.reloadData()
+            self.memberList += members
+            self.reloadData()
         })
     }
     
@@ -496,8 +509,8 @@ open class SBUMemberListViewController: UIViewController {
     /// If you want to call a list of banned members, use the `loadNextMemberList(reset:members:)` function.
     /// - Warning: Use this function only when you need to call `BannedMemberList` alone.
     private func loadNextBannedMemberList() {
-        if self.bannedMemberListQuery == nil {
-            self.bannedMemberListQuery = self.channel?.createBannedUserListQuery()
+        if self.bannedMemberListQuery == nil, let channel = self.channel as? SBDGroupChannel {
+            self.bannedMemberListQuery = channel.createBannedUserListQuery()
             self.bannedMemberListQuery?.limit = self.limit
         }
         
@@ -510,20 +523,56 @@ open class SBUMemberListViewController: UIViewController {
         // return [SBDUser]
         self.bannedMemberListQuery?.loadNextPage(completionHandler: {
             [weak self] users, error in
-            
-            defer { self?.isLoading = false }
+            guard let self = self else { return }
+            defer { self.isLoading = false }
             
             if let error = error {
                 SBULog.error("[Failed] Muted member list request: \(error.localizedDescription)")
-                self?.didReceiveError(error.localizedDescription)
+                self.didReceiveError(error.localizedDescription)
                 return
             }
             guard let users = users?.sbu_convertUserList() else { return }
             
             SBULog.info("[Response] \(users.count) members")
             
-            self?.memberList += users
-            self?.reloadData()
+            self.memberList += users
+            self.reloadData()
+        })
+    }
+    
+    /// This function loads channel participants list.
+    ///
+    /// If you want to call a list of operators, use the `loadNextMemberList(reset:members:)` function.
+    /// - Warning: Use this function only when you need to call `MemberList` alone.
+    /// - Since: 2.0.0
+    private func loadNextChannelParticipantsList() {
+        if self.participantListQuery == nil, let channel = self.channel as? SBDOpenChannel {
+            self.participantListQuery = channel.createParticipantListQuery()
+            self.participantListQuery?.limit = self.limit
+        }
+        
+        guard self.participantListQuery?.hasNext == true else {
+            self.isLoading = false
+            SBULog.info("All participants have been loaded.")
+            return
+        }
+        
+        self.participantListQuery?.loadNextPage(completionHandler: {
+            [weak self] participants, error in
+            guard let self = self else { return }
+            defer { self.isLoading = false }
+            
+            if let error = error {
+                SBULog.error("[Failed] Participants list request: \(error.localizedDescription)")
+                self.didReceiveError(error.localizedDescription)
+                return
+            }
+            guard let participants = participants?.sbu_convertUserList() else { return }
+            
+            SBULog.info("[Response] \(participants.count) participants")
+            
+            self.memberList += participants
+            self.reloadData()
         })
     }
     
@@ -541,7 +590,8 @@ open class SBUMemberListViewController: UIViewController {
     /// If you use it in SuperGroup, Broadcast channel, only some member information can be loaded.
     /// - Since: 1.2.0
     public func loadMembers() {
-        if let members = self.channel?.members as? [SBDMember] {
+        guard let channel = self.channel as? SBDGroupChannel else { return }
+        if let members = channel.members as? [SBDMember] {
             self.memberList = members.sbu_convertUserList()
             SBULog.info("Load with \(self.memberList.count) members")
             
@@ -559,7 +609,7 @@ open class SBUMemberListViewController: UIViewController {
             completionHandler: { [weak self] error in
                 self?.shouldDismissLoadingIndicator()
                 self?.resetMemberList()
-        })
+            })
     }
     
     /// This function dismiss the operator as a member.
@@ -572,61 +622,72 @@ open class SBUMemberListViewController: UIViewController {
             completionHandler: { [weak self] error in
                 self?.shouldDismissLoadingIndicator()
                 self?.resetMemberList()
-        })
+            })
     }
     
-    /// This function mutes the member.
+    /// This function mutes the member in the case of Group/SuperGroup/Broadcast channel.
     /// - Parameter member: A member to be muted
     /// - Since: 1.2.0
     public func mute(member: SBUUser) {
+        guard let channel = self.channel as? SBDGroupChannel else { return }
         self.shouldShowLoadingIndicator()
-        self.channel?.muteUser(
+        channel.muteUser(
             withUserId: member.userId,
             completionHandler: { [weak self] error in
                 self?.shouldDismissLoadingIndicator()
                 self?.resetMemberList()
-        })
+            })
     }
     
-    /// This function unmutes the member.
+    /// This function unmutes the member in the case of Group/SuperGroup/Broadcast channel.
     /// - Parameter member: A member to be unmuted
     /// - Since: 1.2.0
     public func unmute(member: SBUUser) {
+        guard let channel = self.channel as? SBDGroupChannel else { return }
         self.shouldShowLoadingIndicator()
-        self.channel?.unmuteUser(
+        channel.unmuteUser(
             withUserId: member.userId,
             completionHandler: { [weak self] error in
                 self?.shouldDismissLoadingIndicator()
                 self?.resetMemberList()
-        })
+            })
     }
     
-    /// This function bans the member.
+    /// This function bans the member in the case of Group/SuperGroup/Broadcast channel.
     /// - Parameter member: A member to be banned
     /// - Since: 1.2.0
     public func ban(member: SBUUser) {
+        guard let channel = self.channel as? SBDGroupChannel else { return }
         self.shouldShowLoadingIndicator()
-        self.channel?.banUser(
+        channel.banUser(
             withUserId: member.userId,
             seconds: -1,
             description: nil,
             completionHandler: { [weak self] error in
                 self?.shouldDismissLoadingIndicator()
                 self?.resetMemberList()
-        })
+            })
     }
     
     /// This function unbans the member.
     /// - Parameter member: A member to be unbanned
     /// - Since: 1.2.0
     public func unban(member: SBUUser) {
-        self.shouldShowLoadingIndicator()
-        self.channel?.unbanUser(
-            withUserId: member.userId,
-            completionHandler: { [weak self] error in
-                self?.shouldDismissLoadingIndicator()
-                self?.resetMemberList()
-        })
+        if let groupChannel = self.channel as? SBDGroupChannel {
+            self.shouldShowLoadingIndicator()
+            groupChannel.unbanUser(withUserId: member.userId) { [weak self] error in
+                guard let self = self else { return }
+                self.shouldDismissLoadingIndicator()
+                self.resetMemberList()
+            }
+        } else if let openChannel = self.channel as? SBDOpenChannel {
+            self.shouldShowLoadingIndicator()
+            openChannel.unbanUser(withUserId: member.userId) { [weak self] error in
+                guard let self = self else { return }
+                self.shouldDismissLoadingIndicator()
+                self.resetMemberList()
+            }
+        }
     }
     
     
@@ -634,7 +695,7 @@ open class SBUMemberListViewController: UIViewController {
     
     /// If you want to use a custom inviteChannelViewController, override it and implement it.
     open func showInviteUser() {
-        guard let channel = self.channel else { return }
+        guard let channel = self.channel as? SBDGroupChannel else { return }
         
         let type: ChannelInviteListType = self.memberListType == .operators ? .operators : .users
         let inviteUserVC = SBUInviteUserViewController(channel: channel, type: type)
@@ -680,18 +741,19 @@ open class SBUMemberListViewController: UIViewController {
     /// - Since: 1.2.5
     public func reloadData() {
         DispatchQueue.main.async { [weak self] in
-            if let emptyView = self?.emptyView as? SBUEmptyView,
-                (self?.memberListType == .mutedMembers || self?.memberListType == .bannedMembers) {
+            guard let self = self else { return }
+            if let emptyView = self.emptyView as? SBUEmptyView,
+                (self.memberListType == .mutedMembers || self.memberListType == .bannedMembers) {
                 
-                if self?.memberList.count != 0 {
+                if self.memberList.count != 0 {
                     emptyView.reloadData(.none)
                 } else {
-                    emptyView.reloadData((self?.memberListType == .mutedMembers)
+                    emptyView.reloadData(self.memberListType == .mutedMembers
                     ? .noMutedMembers : .noBannedMembers)
                 }
             }
             
-            self?.tableView.reloadData()
+            self.tableView.reloadData()
         }
     }
     
@@ -700,7 +762,7 @@ open class SBUMemberListViewController: UIViewController {
     
     /// This function actions to pop or dismiss.
     /// - Since: 1.2.5
-    @objc public func onClickBack() {
+    public func onClickBack() {
         if let navigationController = self.navigationController,
             navigationController.viewControllers.count > 1 {
             
@@ -716,10 +778,12 @@ open class SBUMemberListViewController: UIViewController {
         self.showInviteUser()
     }
     
-    /// This function sets the cell's more menu button action handling.
+    /// This function sets the cell's more menu button action handling. (GroupChannel only)
     /// - Parameter member: `SBUUser` obejct
     /// - Since: 1.2.0
     open func setMoreMenuActionHandler(_ member: SBUUser) {
+        guard let channel = self.channel as? SBDGroupChannel else { return }
+        
         let userNameItem = SBUActionSheetItem(
             title: member.nickname ?? member.userId,
             color: self.componentTheme.actionSheetSubTextColor,
@@ -733,10 +797,11 @@ open class SBUMemberListViewController: UIViewController {
             color: self.componentTheme.actionSheetTextColor,
             textAlignment: .center
         ) { [weak self] in
-            if member.isOperator || self?.memberListType == .operators {
-                self?.dismissOperator(member: member)
+            guard let self = self else { return }
+            if member.isOperator || self.memberListType == .operators {
+                self.dismissOperator(member: member)
             } else {
-                self?.promoteToOperator(member: member)
+                self.promoteToOperator(member: member)
             }
         }
         
@@ -747,10 +812,11 @@ open class SBUMemberListViewController: UIViewController {
             color: self.componentTheme.actionSheetTextColor,
             textAlignment: .center
         ) { [weak self] in
+            guard let self = self else { return }
             if member.isMuted {
-                self?.unmute(member: member)
+                self.unmute(member: member)
             } else {
-                self?.mute(member: member)
+                self.mute(member: member)
             }
         }
         
@@ -763,10 +829,11 @@ open class SBUMemberListViewController: UIViewController {
                 : self.componentTheme.actionSheetErrorColor,
             textAlignment: .center
         ) { [weak self] in
-            if self?.memberListType == .bannedMembers {
-                self?.unban(member: member)
+            guard let self = self else { return }
+            if self.memberListType == .bannedMembers {
+                self.unban(member: member)
             } else {
-                self?.ban(member: member)
+                self.ban(member: member)
             }
         }
         
@@ -778,7 +845,7 @@ open class SBUMemberListViewController: UIViewController {
         
         switch self.memberListType {
         case .channelMembers:
-            let isBroadcast = (self.channel?.isBroadcast ?? false)
+            let isBroadcast = channel.isBroadcast
             items += isBroadcast ? [operatorItem, banItem] : [operatorItem, muteItem, banItem]
         case .operators:
             items += [operatorItem]
@@ -800,14 +867,18 @@ open class SBUMemberListViewController: UIViewController {
     ///
     /// - Since: 1.2.2
     open func setUserProfileTapGestureHandler(_ user: SBUUser) {
-        if let userProfileView = self.userProfileView as? SBUUserProfileView,
-            let baseView = self.navigationController?.view,
-            SBUGlobals.UsingUserProfile
-        {
-            userProfileView.show(
-                baseView: baseView,
-                user: user
-            )
+        guard let userProfileView = self.userProfileView as? SBUUserProfileView else { return }
+        guard let baseView = self.navigationController?.view else { return }
+        switch self.channel {
+        case is SBDGroupChannel:
+            guard SBUGlobals.UsingUserProfile else { return }
+            userProfileView.show(baseView: baseView, user: user)
+            
+        case is SBDOpenChannel:
+            guard SBUGlobals.UsingUserProfileInOpenChannel else { return }
+            userProfileView.show(baseView: baseView, user: user, isOpenChannel: true)
+            
+        default: return
         }
     }
     
@@ -850,20 +921,32 @@ extension SBUMemberListViewController: UITableViewDataSource, UITableViewDelegat
                 userListType = .mutedMembers
             case .bannedMembers:
                 userListType = .bannedMembers
+            case .participants:
+                userListType = .participants
             default:
                 break
+            }
+            
+            var operatorMode = false
+            if let channel = self.channel as? SBDGroupChannel {
+                operatorMode = channel.myRole == .operator
             }
             
             cell.configure(
                 type: userListType,
                 user: member,
-                operatorMode: self.channel?.myRole == .operator
+                operatorMode: operatorMode
             )
-            cell.moreMenuHandler = { [weak self] in
-                self?.setMoreMenuActionHandler(member)
+            
+            if self.channel is SBDGroupChannel {
+                cell.moreMenuHandler = { [weak self] in
+                    guard let self = self else { return }
+                    self.setMoreMenuActionHandler(member)
+                }
             }
             cell.userProfileTapHandler = { [weak self] in
-                self?.setUserProfileTapGestureHandler(member)
+                guard let self = self else { return }
+                self.setUserProfileTapGestureHandler(member)
             }
         }
         
@@ -884,16 +967,26 @@ extension SBUMemberListViewController: UITableViewDataSource, UITableViewDelegat
             queryCheck = (self.mutedMemberListQuery?.hasNext == true && self.mutedMemberListQuery != nil)
         case .bannedMembers:
             queryCheck = (self.bannedMemberListQuery?.hasNext == true && self.bannedMemberListQuery != nil)
+        case .participants:
+            queryCheck = (self.participantListQuery?.hasNext == true && self.participantListQuery != nil)
         default:
             break
         }
         
-        guard self.memberList.count > 0,
-            (self.useCustomizedMembers || queryCheck),
-            indexPath.row == (self.memberList.count - Int(self.limit)/2),
-            (self.channel?.isBroadcast ?? false || self.channel?.isSuper ?? false),
-            !self.isLoading
-            else { return }
+        if let groupChannel = self.channel as? SBDGroupChannel {
+            guard self.memberList.count > 0,
+                (self.useCustomizedMembers || queryCheck),
+                indexPath.row == (self.memberList.count - Int(self.limit)/2),
+                (groupChannel.isBroadcast || groupChannel.isSuper),
+                !self.isLoading
+                else { return }
+        } else if self.channel is SBDOpenChannel {
+            guard self.memberList.count > 0,
+                (self.useCustomizedMembers || queryCheck),
+                indexPath.row == (self.memberList.count - Int(self.limit)/2),
+                !self.isLoading
+                else { return }
+        }
         
         let nextMemberList = (self.nextMemberList()?.count ?? 0) > 0
             ? self.nextMemberList()
@@ -939,6 +1032,22 @@ extension SBUMemberListViewController: SBUUserProfileViewDelegate {
 // MARK: - SBDChannelDelegate
 extension SBUMemberListViewController: SBDChannelDelegate {
     open func channelDidUpdateOperators(_ sender: SBDBaseChannel) {
+        self.resetMemberList()
+    }
+    
+    open func channel(_ sender: SBDGroupChannel, userDidJoin user: SBDUser) {
+        self.resetMemberList()
+    }
+    
+    open func channel(_ sender: SBDGroupChannel, userDidLeave user: SBDUser) {
+        self.resetMemberList()
+    }
+    
+    open func channel(_ sender: SBDOpenChannel, userDidExit user: SBDUser) {
+        self.resetMemberList()
+    }
+    
+    open func channel(_ sender: SBDOpenChannel, userDidEnter user: SBDUser) {
         self.resetMemberList()
     }
 }

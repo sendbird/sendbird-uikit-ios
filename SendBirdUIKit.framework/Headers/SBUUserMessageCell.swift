@@ -55,7 +55,8 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell {
 
         if let messageTextView = self.messageTextView as? SBUUserMessageTextView {
             messageTextView.longPressHandler = { [weak self] url in
-                self?.onLongPressContentView(sender: nil)
+                guard let self = self else { return }
+                self.onLongPressContentView(sender: nil)
             }
         }
         
@@ -147,38 +148,6 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell {
         } else {
             self.additionContainerView.removeArrangedSubview(self.webView)
             self.webView.isHidden = true
-        }
-        
-        self.reactionView.configure(
-            maxWidth: SBUConstant.messageCellMaxWidth,
-            reactions: message.reactions
-        )
-
-        // Remove ArrangedSubviews
-        self.contentsStackView.arrangedSubviews.forEach(
-            self.contentsStackView.removeArrangedSubview(_:)
-        )
-
-        switch self.position {
-        case .left:
-            self.userNameStackView.alignment = .leading
-            self.userNameView.isHidden = false
-            self.profileView.isHidden = false
-           
-            self.contentsStackView.addArrangedSubview(self.profileView)
-            self.contentsStackView.addArrangedSubview(self.mainContainerView)
-            self.contentsStackView.addArrangedSubview(self.stateView)
-            
-        case .right:
-            self.userNameStackView.alignment = .trailing
-            self.userNameView.isHidden = true
-            self.profileView.isHidden = true
-            
-            self.contentsStackView.addArrangedSubview(self.stateView)
-            self.contentsStackView.addArrangedSubview(self.mainContainerView)
-            
-        case .center:
-            break
         }
     }
     
