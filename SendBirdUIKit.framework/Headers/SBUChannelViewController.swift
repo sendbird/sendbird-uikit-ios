@@ -1264,11 +1264,10 @@ open class SBUChannelViewController: SBUBaseChannelViewController, UINavigationC
                 .fixedOrientation()
                 .resize(with: SBUGlobals.imageResizingSize) else { return }
             
-            var imageData: Data?
-            if SBUGlobals.UsingImageCompression {
-                imageData = image
-                    .jpegData(compressionQuality: SBUGlobals.imageCompressionRate)
-            }
+            let imageData = image.jpegData(
+                compressionQuality: SBUGlobals.UsingImageCompression ?
+                    SBUGlobals.imageCompressionRate : 1.0
+            )
             
             self.sendFileMessage(
                 fileData: imageData,
@@ -1314,11 +1313,10 @@ open class SBUChannelViewController: SBUBaseChannelViewController, UINavigationC
                 .fixedOrientation()
                 .resize(with: SBUGlobals.imageResizingSize) else { return }
             
-            var imageData: Data?
-            if SBUGlobals.UsingImageCompression {
-                imageData = image
-                    .jpegData(compressionQuality: SBUGlobals.imageCompressionRate)
-            }
+            let imageData = image.jpegData(
+                compressionQuality: SBUGlobals.UsingImageCompression ?
+                    SBUGlobals.imageCompressionRate : 1.0
+            )
             
             self.sendFileMessage(
                 fileData: imageData,

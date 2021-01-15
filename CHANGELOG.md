@@ -1,5 +1,8 @@
 # Change Log
 
+### v2.0.4 (Jan 15, 2021)
+* Improved stability
+
 ### v2.0.3 (Jan 14, 2021)
 * Improved stability
 * Added `UsingImageCompression` flag in `SBUGlobals`
