@@ -726,7 +726,8 @@ open class SBUChannelViewController: SBUBaseChannelViewController, UINavigationC
     ///   - fileName: file name. Used when displayed in channel list.
     ///   - mimeType: file's mime type.
     /// - Since: 1.0.9
-    public func sendFileMessage(fileData: Data, fileName: String, mimeType: String) {
+    public func sendFileMessage(fileData: Data?, fileName: String, mimeType: String) {
+        guard let fileData = fileData else { return }
         let messageParams = SBDFileMessageParams(file: fileData)!
         messageParams.fileName = fileName
         messageParams.mimeType = mimeType
@@ -1259,10 +1260,15 @@ open class SBUChannelViewController: SBUBaseChannelViewController, UINavigationC
         guard let imageUrl = _imageUrl else {
             let originalImage = info[.originalImage] as? UIImage
             // for Camera capture
-            guard let imageData = originalImage?
+            guard let image = originalImage?
                 .fixedOrientation()
-                .resize(with: SBUGlobals.imageResizingSize)
-                .jpegData(compressionQuality: SBUGlobals.imageCompressionRate) else { return }
+                .resize(with: SBUGlobals.imageResizingSize) else { return }
+            
+            var imageData: Data?
+            if SBUGlobals.shouldUseImageCompression {
+                imageData = image
+                    .jpegData(compressionQuality: SBUGlobals.imageCompressionRate)
+            }
             
             self.sendFileMessage(
                 fileData: imageData,
@@ -1303,11 +1309,16 @@ open class SBUChannelViewController: SBUBaseChannelViewController, UINavigationC
             }
             
         default:
-            guard let originalImage = info[.originalImage] as? UIImage else { return }
-            guard let imageData = originalImage
+            let originalImage = info[.originalImage] as? UIImage
+            guard let image = originalImage?
                 .fixedOrientation()
-                .resize(with: SBUGlobals.imageResizingSize)
-                .jpegData(compressionQuality: SBUGlobals.imageCompressionRate) else { return }
+                .resize(with: SBUGlobals.imageResizingSize) else { return }
+            
+            var imageData: Data?
+            if SBUGlobals.shouldUseImageCompression {
+                imageData = image
+                    .jpegData(compressionQuality: SBUGlobals.imageCompressionRate)
+            }
             
             self.sendFileMessage(
                 fileData: imageData,
@@ -1556,7 +1567,8 @@ open class SBUChannelViewController: SBUBaseChannelViewController, UINavigationC
                 }
                 let cancelItem = SBUActionSheetItem(
                     title: SBUStringSet.Cancel,
-                    color: self.theme.cancelItemColor
+                    color: self.theme.cancelItemColor,
+                    completionHandler: nil
                 )
 
                 SBUActionSheet.show(
@@ -1593,7 +1605,8 @@ open class SBUChannelViewController: SBUBaseChannelViewController, UINavigationC
                 }
                 let cancelItem = SBUActionSheetItem(
                     title: SBUStringSet.Cancel,
-                    color: self.theme.cancelItemColor
+                    color: self.theme.cancelItemColor,
+                    completionHandler: nil
                 )
 
                 SBUActionSheet.show(
@@ -2221,6 +2234,7 @@ extension SBUChannelViewController: UITableViewDelegate, UITableViewDataSource {
         }
         
         let isSameDay = self.checkSameDayAsNextMessage(currentIndex: indexPath.row)
+        let receiptState = SBUUtils.getReceiptState(channel: channel, message: message)
         switch (message, messageCell) {
             
         // Amdin Message
@@ -2235,7 +2249,7 @@ extension SBUChannelViewController: UITableViewDelegate, UITableViewDataSource {
                 unknownMessage,
                 hideDateView: isSameDay,
                 groupPosition: self.getMessageGroupingPosition(currentIndex: indexPath.row),
-                receiptState: SBUUtils.getReceiptState(channel: channel, message: unknownMessage)
+                receiptState: receiptState
             )
             self.setUnkownMessageCellGestures(
                 unknownMessageCell,
@@ -2249,7 +2263,7 @@ extension SBUChannelViewController: UITableViewDelegate, UITableViewDataSource {
                 userMessage,
                 hideDateView: isSameDay,
                 groupPosition: self.getMessageGroupingPosition(currentIndex: indexPath.row),
-                receiptState: SBUUtils.getReceiptState(channel: channel, message: message)
+                receiptState: receiptState
             )
             self.setUserMessageCellGestures(
                 userMessageCell,
@@ -2263,7 +2277,7 @@ extension SBUChannelViewController: UITableViewDelegate, UITableViewDataSource {
                 fileMessage,
                 hideDateView: isSameDay,
                 groupPosition: self.getMessageGroupingPosition(currentIndex: indexPath.row),
-                receiptState: SBUUtils.getReceiptState(channel: channel, message: message)
+                receiptState: receiptState
             )
             
             self.setFileMessageCellGestures(
@@ -2279,7 +2293,7 @@ extension SBUChannelViewController: UITableViewDelegate, UITableViewDataSource {
                 message: message,
                 position: .center,
                 hideDateView: isSameDay,
-                receiptState: SBUUtils.getReceiptState(channel: channel, message: message)
+                receiptState: receiptState
             )
         }
         

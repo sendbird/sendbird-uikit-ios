@@ -84,7 +84,9 @@ open class SBUEmptyView: UIView {
         
         self.statusLabel.font = theme.emptyViewStatusFont
         self.statusLabel.textColor = theme.emptyViewStatusTintColor
-        self.statusImageView.image = self.statusImageView.image?.sbu_with(tintColor: theme.emptyViewStatusTintColor)
+        //NOTE: this will cause unexpected image when tint with not desirable
+        //image
+        //self.statusImageView.image = self.statusImageView.image?.sbu_with(tintColor: theme.emptyViewStatusTintColor)
          
         self.retryButton.setTitleColor(theme.emptyViewRetryButtonTintColor, for: .normal)
         self.retryButton.titleLabel?.font = theme.emptyViewRetryButtonFont

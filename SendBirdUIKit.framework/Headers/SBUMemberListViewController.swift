@@ -787,7 +787,8 @@ open class SBUMemberListViewController: UIViewController {
         let userNameItem = SBUActionSheetItem(
             title: member.nickname ?? member.userId,
             color: self.componentTheme.actionSheetSubTextColor,
-            textAlignment: .center
+            textAlignment: .center,
+            completionHandler: nil
         )
         
         let operatorItem = SBUActionSheetItem(
@@ -839,7 +840,8 @@ open class SBUMemberListViewController: UIViewController {
         
         let cancelItem = SBUActionSheetItem(
             title: SBUStringSet.Cancel,
-            color: self.componentTheme.actionSheetItemColor)
+            color: self.componentTheme.actionSheetItemColor,
+            completionHandler: nil)
 
         var items: [SBUActionSheetItem] = [userNameItem]
         

@@ -32,7 +32,7 @@ public class SBUActionSheetItem: SBUCommonItem {
                 image: UIImage? = nil,
                 font: UIFont? = nil,
                 textAlignment: NSTextAlignment = .left,
-                completionHandler: SBUActionSheetHandler? = nil) {
+                completionHandler: SBUActionSheetHandler?) {
         super.init(
             title: title,
             color: color,

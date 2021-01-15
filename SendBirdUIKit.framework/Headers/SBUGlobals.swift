@@ -37,6 +37,10 @@ public class SBUGlobals: NSObject {
     /// - Since: 2.0.0
     public static var UsingUserProfileInOpenChannel: Bool = false
 
+    /// if this value is enabled, image compression and resizing will be applied when sending a file message
+    /// - Since: 2.0.1
+    public static var shouldUseImageCompression: Bool = false
+    
     /// Image compression rate value that will be used when sending image. Default value is 0.85.
     /// Typically this value will be used in `jpegData(compressionQuality:)`
     /// - Since: 2.0.0

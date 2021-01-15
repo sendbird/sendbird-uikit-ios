@@ -386,16 +386,19 @@ open class SBUOpenChannelSettingsViewController: UIViewController, UINavigationC
         let changeNameItem = SBUActionSheetItem(
             title: SBUStringSet.ChannelSettings_Change_Name,
             color: theme.itemTextColor,
-            image: nil
+            image: nil,
+            completionHandler: nil
         )
         let changeImageItem = SBUActionSheetItem(
             title: SBUStringSet.ChannelSettings_Change_Image,
             color: theme.itemTextColor,
-            image: nil
+            image: nil,
+            completionHandler: nil
         )
         let cancelItem = SBUActionSheetItem(
             title: SBUStringSet.Cancel,
-            color: theme.itemColor
+            color: theme.itemColor,
+            completionHandler: nil
         )
         SBUActionSheet.show(
             items: [changeNameItem, changeImageItem],
@@ -411,15 +414,18 @@ open class SBUOpenChannelSettingsViewController: UIViewController, UINavigationC
     public func selectChannelImage() {
         let cameraItem = SBUActionSheetItem(
             title: SBUStringSet.Camera,
-            image: SBUIconSet.iconCamera.sbu_with(tintColor: theme.itemColor)
+            image: SBUIconSet.iconCamera.sbu_with(tintColor: theme.itemColor),
+            completionHandler: nil
         )
         let libraryItem = SBUActionSheetItem(
             title: SBUStringSet.PhotoVideoLibrary,
-            image: SBUIconSet.iconPhoto.sbu_with(tintColor: theme.itemColor)
+            image: SBUIconSet.iconPhoto.sbu_with(tintColor: theme.itemColor),
+            completionHandler: nil
         )
         let cancelItem = SBUActionSheetItem(
             title: SBUStringSet.Cancel,
-            color: theme.itemColor
+            color: theme.itemColor,
+            completionHandler: nil
         )
         SBUActionSheet.show(
             items: [cameraItem, libraryItem],

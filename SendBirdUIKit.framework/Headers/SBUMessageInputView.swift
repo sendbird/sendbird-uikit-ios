@@ -110,10 +110,10 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
     var isFrozen: Bool = false
     var isMuted: Bool = false
 
-    let cameraItem = SBUActionSheetItem(title: SBUStringSet.Camera)
-    let libraryItem = SBUActionSheetItem(title: SBUStringSet.PhotoVideoLibrary)
-    let documentItem = SBUActionSheetItem(title: SBUStringSet.Document)
-    let cancelItem = SBUActionSheetItem(title: SBUStringSet.Cancel)
+    let cameraItem = SBUActionSheetItem(title: SBUStringSet.Camera, completionHandler: nil)
+    let libraryItem = SBUActionSheetItem(title: SBUStringSet.PhotoVideoLibrary, completionHandler: nil)
+    let documentItem = SBUActionSheetItem(title: SBUStringSet.Document, completionHandler: nil)
+    let cancelItem = SBUActionSheetItem(title: SBUStringSet.Cancel, completionHandler: nil)
 
     var theme: SBUMessageInputTheme = SBUTheme.messageInputTheme
     

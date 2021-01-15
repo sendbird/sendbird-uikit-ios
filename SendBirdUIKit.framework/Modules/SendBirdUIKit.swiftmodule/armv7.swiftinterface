@@ -1,5 +1,5 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.1.3 (swiftlang-1100.0.282.1 clang-1100.0.33.15)
+// swift-compiler-version: Apple Swift version 5.2.4 (swiftlang-1103.0.32.9 clang-1103.0.32.53)
 // swift-module-flags: -target armv7-apple-ios10.3 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name SendBirdUIKit
 import AVFoundation
 import AVKit
@@ -14,7 +14,7 @@ import SendBirdSDK
 @_exported import SendBirdUIKit
 import Swift
 import UIKit
-@objc @objcMembers open class SBUInviteUserViewController : UIKit.UIViewController {
+@objc @_inheritsConvenienceInitializers @objcMembers open class SBUInviteUserViewController : UIKit.UIViewController {
   @objc public var titleView: UIKit.UIView? {
     @objc get
     @objc set
@@ -32,17 +32,17 @@ import UIKit
   }
   @objc public var userCell: UIKit.UITableViewCell? {
     get
-    }
+  }
   @objc public var theme: SendBirdUIKit.SBUUserListTheme
   @objc public var inviteListType: SendBirdUIKit.ChannelInviteListType {
     get
-    }
+  }
   @objc public var channel: SendBirdSDK.SBDGroupChannel? {
     get
-    }
+  }
   @objc public var channelUrl: Swift.String? {
     get
-    }
+  }
   @objc @SendBirdUIKit.SBUAtomic public var userList: [SendBirdUIKit.SBUUser] {
     @objc get
   }
@@ -51,13 +51,13 @@ import UIKit
   }
   @objc public var joinedUserIds: Swift.Set<Swift.String> {
     get
-    }
+  }
   @objc public var userListQuery: SendBirdSDK.SBDApplicationUserListQuery? {
     get
-    }
+  }
   @objc public var memberListQuery: SendBirdSDK.SBDGroupChannelMemberListQuery? {
     get
-    }
+  }
   @available(*, unavailable, renamed: "SBUInviteUserViewController.init(channelUrl:)")
   @objc required dynamic public init?(coder: Foundation.NSCoder)
   @available(*, unavailable, renamed: "SBUInviteUserViewController.init(channelUrl:)")
@@ -105,11 +105,11 @@ extension SBUInviteUserViewController {
   dynamic open func shouldShowLoadingIndicator() -> Swift.Bool
   @objc dynamic open func shouldDismissLoadingIndicator()
 }
-@objc @objcMembers open class SBUOpenChannelUnknownMessageCell : SendBirdUIKit.SBUOpenChannelUserMessageCell {
+@objc @_inheritsConvenienceInitializers @objcMembers open class SBUOpenChannelUnknownMessageCell : SendBirdUIKit.SBUOpenChannelUserMessageCell {
   @objc override public func configure(_ message: SendBirdSDK.SBDBaseMessage, hideDateView: Swift.Bool, groupPosition: SendBirdUIKit.MessageGroupPosition, isOverlay: Swift.Bool = false)
+  @objc deinit
   @objc override dynamic public init(style: UIKit.UITableViewCell.CellStyle, reuseIdentifier: Swift.String?)
   @objc required dynamic public init?(coder: Foundation.NSCoder)
-  @objc deinit
 }
 extension UIView {
   @objc public static func sbu_loadNib() -> UIKit.UINib
@@ -137,11 +137,11 @@ extension UIView {
   @discardableResult
   public func sbu_constraint_lessThan(widthAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutDimension>? = nil, width: CoreGraphics.CGFloat? = nil, heightAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutDimension>? = nil, height: CoreGraphics.CGFloat? = nil, priority: UIKit.UILayoutPriority? = nil) -> UIKit.UIView
 }
-@objc @objcMembers public class SBUCommonItem : ObjectiveC.NSObject {
+@objc @_inheritsConvenienceInitializers @objcMembers public class SBUCommonItem : ObjectiveC.NSObject {
   @objc public init(title: Swift.String? = nil, color: UIKit.UIColor? = SBUColorSet.onlight01, image: UIKit.UIImage? = nil, font: UIKit.UIFont? = nil, tintColor: UIKit.UIColor? = nil, textAlignment: UIKit.NSTextAlignment = .left)
   @objc deinit
 }
-@objc @objcMembers public class SBUUtils : ObjectiveC.NSObject {
+@objc @_inheritsConvenienceInitializers @objcMembers public class SBUUtils : ObjectiveC.NSObject {
   @objc(getFileTypeByFileMessage:) public static func getFileType(by fileMessage: SendBirdSDK.SBDFileMessage) -> SendBirdUIKit.MessageFileType
   @objc(getFileTypeByType:) public static func getFileType(by type: Swift.String) -> SendBirdUIKit.MessageFileType
   @objc public static func generateChannelName(channel: SendBirdSDK.SBDGroupChannel) -> Swift.String
@@ -150,11 +150,12 @@ extension UIView {
   @objc public static func isValid(coverUrl: Swift.String) -> Swift.Bool
   @objc public static func isValid(channelName: Swift.String, type: SendBirdUIKit.ChannelType = .group) -> Swift.Bool
   @objc public static func emptyTitleForRowEditAction(for size: CoreGraphics.CGSize) -> Swift.String
-  @objc override dynamic public init()
   @objc deinit
+  @objc override dynamic public init()
 }
-@objc public class SBUCoverImageView : UIKit.UIView {
+@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class SBUCoverImageView : UIKit.UIView {
   public var theme: SendBirdUIKit.SBUComponentTheme
+  @objc dynamic public init()
   public func setImage(withCoverUrl coverUrl: Swift.String)
   public func setImage(with coverURL: Swift.String, makeCircle: Swift.Bool = true)
   public func setPlaceholderImage(iconSize: CoreGraphics.CGSize)
@@ -166,7 +167,7 @@ extension UIView {
 extension UIImageView {
   public func sbu_setProfileImageView(for user: SendBirdSDK.SBDUser, defaultImage: UIKit.UIImage)
 }
-@objc @objcMembers @IBDesignable open class SBUOpenChannelBaseMessageCell : UIKit.UITableViewCell {
+@objc @_inheritsConvenienceInitializers @objcMembers @IBDesignable open class SBUOpenChannelBaseMessageCell : UIKit.UITableViewCell {
   @objc public var message: SendBirdSDK.SBDBaseMessage
   @objc public var groupPosition: SendBirdUIKit.MessageGroupPosition
   @objc public var dateView: UIKit.UIView {
@@ -190,16 +191,16 @@ extension UIImageView {
   @objc override dynamic open func prepareForReuse()
   @objc deinit
 }
-@objc @objcMembers open class SBUBaseChannelListViewController : UIKit.UIViewController {
+@objc @_inheritsConvenienceInitializers @objcMembers open class SBUBaseChannelListViewController : UIKit.UIViewController {
   @objc open func setupAutolayout()
   @objc open func setupStyles()
   @objc open func updateStyles()
   @objc open func showChannel(channelUrl: Swift.String, messageListParams: SendBirdSDK.SBDMessageListParams? = nil)
+  @objc deinit
   @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
   @objc required dynamic public init?(coder: Foundation.NSCoder)
-  @objc deinit
 }
-@objc @objcMembers open class SBUOpenChannelAdminMessageCell : SendBirdUIKit.SBUOpenChannelBaseMessageCell {
+@objc @_inheritsConvenienceInitializers @objcMembers open class SBUOpenChannelAdminMessageCell : SendBirdUIKit.SBUOpenChannelBaseMessageCell {
   @objc public var baseView: UIKit.UIView
   @objc public var messageLabel: UIKit.UILabel
   @objc override open func setupViews()
@@ -208,27 +209,27 @@ extension UIImageView {
   @objc override dynamic open func layoutSubviews()
   @objc public func configure(_ message: SendBirdSDK.SBDAdminMessage, hideDateView: Swift.Bool, isOverlay: Swift.Bool = false)
   @objc override dynamic open func setSelected(_ selected: Swift.Bool, animated: Swift.Bool)
+  @objc deinit
   @objc override dynamic public init(style: UIKit.UITableViewCell.CellStyle, reuseIdentifier: Swift.String?)
   @objc required dynamic public init?(coder: Foundation.NSCoder)
-  @objc deinit
 }
-@objc @objcMembers @IBDesignable open class SBUAdminMessageCell : SendBirdUIKit.SBUBaseMessageCell {
+@objc @_inheritsConvenienceInitializers @objcMembers @IBDesignable open class SBUAdminMessageCell : SendBirdUIKit.SBUBaseMessageCell {
   @objc public var messageLabel: UIKit.UILabel
   @objc override open func setupViews()
   @objc override open func setupAutolayout()
   @objc override dynamic open func layoutSubviews()
   @objc public func configure(_ message: SendBirdSDK.SBDAdminMessage, hideDateView: Swift.Bool)
   @objc override dynamic open func setSelected(_ selected: Swift.Bool, animated: Swift.Bool)
+  @objc deinit
   @objc override dynamic public init(style: UIKit.UITableViewCell.CellStyle, reuseIdentifier: Swift.String?)
   @objc required dynamic public init?(coder: Foundation.NSCoder)
-  @objc deinit
 }
 @objc public protocol SBUChannelInfoHeaderViewDelegate {
   @objc optional func didSelectChannelInfo()
   @objc optional func didSelectChannelMembers()
   @objc optional func didSelectChannelParticipants()
 }
-@objc @objcMembers public class SBUChannelInfoHeaderView : UIKit.UIView {
+@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objcMembers public class SBUChannelInfoHeaderView : UIKit.UIView {
   @objc public var coverImage: SendBirdUIKit.SBUCoverImageView {
     @objc get
     @objc set
@@ -247,7 +248,7 @@ extension UIImageView {
   }
   @objc public var channel: SendBirdSDK.SBDBaseChannel? {
     get
-    }
+  }
   @objc override dynamic public init(frame: CoreGraphics.CGRect)
   @objc override dynamic public func layoutSubviews()
   @objc public func configure(channel: SendBirdSDK.SBDBaseChannel?, description: Swift.String?)
@@ -256,7 +257,7 @@ extension UIImageView {
   @objc public func onClickChannelParticipants()
   @objc deinit
 }
-@objc @objcMembers open class SBUChannelListViewController : SendBirdUIKit.SBUBaseChannelListViewController {
+@objc @_inheritsConvenienceInitializers @objcMembers open class SBUChannelListViewController : SendBirdUIKit.SBUBaseChannelListViewController {
   @objc public var titleView: UIKit.UIView? {
     @objc get
     @objc set
@@ -275,7 +276,7 @@ extension UIImageView {
   }
   @objc public var tableView: UIKit.UITableView {
     get
-    }
+  }
   @objc public var theme: SendBirdUIKit.SBUChannelListTheme
   @objc public var createChannelTypeSelector: UIKit.UIView? {
     @objc get
@@ -283,31 +284,31 @@ extension UIImageView {
   }
   @objc public var channelCell: SendBirdUIKit.SBUBaseChannelCell? {
     get
-    }
+  }
   @objc public var customCell: SendBirdUIKit.SBUBaseChannelCell? {
     get
-    }
+  }
   @objc @SendBirdUIKit.SBUAtomic public var channelList: [SendBirdSDK.SBDGroupChannel] {
     @objc get
   }
   @objc public var channelListQuery: SendBirdSDK.SBDGroupChannelListQuery? {
     get
-    }
+  }
   @objc public var isLoading: Swift.Bool {
     get
-    }
+  }
   @objc public var lastUpdatedTimestamp: Swift.Int64 {
     get
-    }
+  }
   @objc public var lastUpdatedToken: Swift.String? {
     get
-    }
+  }
   @objc public var limit: Swift.UInt {
     get
-    }
+  }
   @objc public var includeEmptyChannel: Swift.Bool {
     get
-    }
+  }
   @available(*, unavailable, renamed: "SBUChannelListViewController()")
   @objc required dynamic public init?(coder: Foundation.NSCoder)
   @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
@@ -369,7 +370,7 @@ extension SBUChannelListViewController : SendBirdUIKit.SBUCreateChannelTypeSelec
   @objc dynamic open func didSelectCreateSuperGroupChannel()
   @objc dynamic open func didSelectCreateBroadcastChannel()
 }
-@objc @objcMembers public class SBUGlobalCustomParams : ObjectiveC.NSObject {
+@objc @_inheritsConvenienceInitializers @objcMembers public class SBUGlobalCustomParams : ObjectiveC.NSObject {
   @objc public static var groupChannelParamsCreateBuilder: ((SendBirdSDK.SBDGroupChannelParams?) -> Swift.Void)?
   @objc public static var groupChannelParamsUpdateBuilder: ((SendBirdSDK.SBDGroupChannelParams?) -> Swift.Void)?
   @objc public static var openChannelParamsUpdateBuilder: ((SendBirdSDK.SBDOpenChannelParams?) -> Swift.Void)?
@@ -377,10 +378,10 @@ extension SBUChannelListViewController : SendBirdUIKit.SBUCreateChannelTypeSelec
   @objc public static var userMessageParamsUpdateBuilder: ((SendBirdSDK.SBDUserMessageParams?) -> Swift.Void)?
   @objc public static var fileMessageParamsSendBuilder: ((SendBirdSDK.SBDFileMessageParams?) -> Swift.Void)?
   @objc public static var messageListParamsBuilder: ((SendBirdSDK.SBDMessageListParams?) -> Swift.Void)?
-  @objc override dynamic public init()
   @objc deinit
+  @objc override dynamic public init()
 }
-@objc open class SBUUserCell : UIKit.UITableViewCell {
+@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers open class SBUUserCell : UIKit.UITableViewCell {
   public var baseStackView: UIKit.UIStackView {
     get
     set
@@ -410,7 +411,7 @@ extension SBUChannelListViewController : SendBirdUIKit.SBUCreateChannelTypeSelec
   public var theme: SendBirdUIKit.SBUUserCellTheme
   public var type: SendBirdUIKit.UserListType {
     get
-    }
+  }
   @objc override dynamic open func awakeFromNib()
   @objc required dynamic public init?(coder: Foundation.NSCoder)
   open func setupViews()
@@ -433,7 +434,7 @@ extension NSObject {
     @objc get
   }
 }
-@objc @objcMembers public class SBUFontSet : ObjectiveC.NSObject {
+@objc @_inheritsConvenienceInitializers @objcMembers public class SBUFontSet : ObjectiveC.NSObject {
   @objc public static var h1: UIKit.UIFont
   @objc public static var h2: UIKit.UIFont
   @objc public static var h3: UIKit.UIFont
@@ -449,10 +450,10 @@ extension NSObject {
   @objc public static var caption4: UIKit.UIFont
   @objc public static var subtitle1: UIKit.UIFont
   @objc public static var subtitle2: UIKit.UIFont
-  @objc override dynamic public init()
   @objc deinit
+  @objc override dynamic public init()
 }
-@objc @objcMembers open class SBUOpenChannelContentBaseMessageCell : SendBirdUIKit.SBUOpenChannelBaseMessageCell {
+@objc @_inheritsConvenienceInitializers @objcMembers open class SBUOpenChannelContentBaseMessageCell : SendBirdUIKit.SBUOpenChannelBaseMessageCell {
   @objc public var baseStackView: UIKit.UIStackView {
     @objc get
     @objc set
@@ -501,7 +502,7 @@ extension NSObject {
   @objc required dynamic public init?(coder: Foundation.NSCoder)
   @objc deinit
 }
-@objc @objcMembers open class SBUOpenChannelViewController : SendBirdUIKit.SBUBaseChannelViewController, UIKit.UINavigationControllerDelegate {
+@objc @_inheritsConvenienceInitializers @objcMembers open class SBUOpenChannelViewController : SendBirdUIKit.SBUBaseChannelViewController, UIKit.UINavigationControllerDelegate {
   @objc public var newMessageInfoView: UIKit.UIView? {
     @objc get
     @objc set
@@ -544,67 +545,67 @@ extension NSObject {
   }
   @objc public var adminMessageCell: SendBirdUIKit.SBUOpenChannelBaseMessageCell? {
     get
-    }
+  }
   @objc public var userMessageCell: SendBirdUIKit.SBUOpenChannelBaseMessageCell? {
     get
-    }
+  }
   @objc public var fileMessageCell: SendBirdUIKit.SBUOpenChannelBaseMessageCell? {
     get
-    }
+  }
   @objc public var customMessageCell: SendBirdUIKit.SBUOpenChannelBaseMessageCell? {
     get
-    }
+  }
   @objc public var unknownMessageCell: SendBirdUIKit.SBUOpenChannelBaseMessageCell? {
     get
-    }
+  }
   @objc public var hideNavigationBar: Swift.Bool
   @objc public var hideChannelInfoView: Swift.Bool
   @objc public var channelDescription: Swift.String?
   @objc public var mediaView: UIKit.UIView
   @objc public var isMediaViewEnabled: Swift.Bool {
     get
-    }
+  }
   @objc public var mediaViewRatio: CoreGraphics.CGFloat {
     get
-    }
+  }
   @objc public var messageListRatio: CoreGraphics.CGFloat {
     get
-    }
+  }
   @objc public var isMediaViewOverlaying: Swift.Bool {
     get
-    }
+  }
   @objc public var isMediaViewIgnoringSafeArea: Swift.Bool {
     get
-    }
+  }
   @objc public func enableMediaView(_ enabled: Swift.Bool = true)
   public func updateRatio(mediaView: CoreGraphics.CGFloat? = nil, messageList: CoreGraphics.CGFloat? = nil)
   @objc public func overlayMediaView(_ overlaying: Swift.Bool, messageListRatio: CoreGraphics.CGFloat)
   @objc public func mediaViewIgnoringSafeArea(_ enabled: Swift.Bool = true)
   @objc public var messageInputViewBottomConstraint: UIKit.NSLayoutConstraint! {
     get
-    }
+  }
   @objc public var tableViewTopConstraint: UIKit.NSLayoutConstraint! {
     get
-    }
+  }
   @objc public var mediaViewConstraints: [UIKit.NSLayoutConstraint] {
     get
-    }
+  }
   @objc public var channelInfoViewAnchorConstraint: UIKit.NSLayoutConstraint! {
     get
-    }
+  }
   @objc public var channelInfoViewAnchorConstraints: [UIKit.NSLayoutConstraint] {
     get
-    }
+  }
   @objc public var channelInfoViewHeightConstraint: UIKit.NSLayoutConstraint! {
     get
-    }
+  }
   @objc public var currentOrientation: UIKit.UIDeviceOrientation
   @objc public var channel: SendBirdSDK.SBDOpenChannel? {
     get
-    }
+  }
   @objc public var channelUrl: Swift.String? {
     get
-    }
+  }
   @objc public var channelName: Swift.String?
   @objc @SendBirdUIKit.SBUAtomic public var messageList: [SendBirdSDK.SBDBaseMessage] {
     @objc get
@@ -614,10 +615,10 @@ extension NSObject {
   }
   @objc public var inEditingMessage: SendBirdSDK.SBDUserMessage? {
     get
-    }
+  }
   @objc public var messageListParams: SendBirdSDK.SBDMessageListParams {
     get
-    }
+  }
   @available(*, unavailable, renamed: "SBUOpenChannelViewController(channelUrl:)")
   @objc required dynamic public init?(coder: Foundation.NSCoder)
   @available(*, unavailable, renamed: "SBUOpenChannelViewController(channelUrl:)")
@@ -640,7 +641,7 @@ extension NSObject {
   @objc deinit
   @objc public func sendUserMessage(text: Swift.String)
   @objc public func sendUserMessage(messageParams: SendBirdSDK.SBDUserMessageParams)
-  @objc public func sendFileMessage(fileData: Foundation.Data, fileName: Swift.String, mimeType: Swift.String)
+  @objc public func sendFileMessage(fileData: Foundation.Data?, fileName: Swift.String, mimeType: Swift.String)
   @objc public func sendFileMessage(messageParams: SendBirdSDK.SBDFileMessageParams)
   @objc public func resendMessage(failedMessage: SendBirdSDK.SBDBaseMessage)
   @objc public func updateUserMessage(message: SendBirdSDK.SBDUserMessage, text: Swift.String)
@@ -740,7 +741,7 @@ extension SBUOpenChannelViewController : SendBirdSDK.SBDChannelDelegate, SendBir
   @objc dynamic open func channelWasDeleted(_ channelUrl: Swift.String, channelType: SendBirdSDK.SBDChannelType)
   @objc dynamic open func didSucceedReconnection()
 }
-@objc @objcMembers open class SBUContentBaseMessageCell : SendBirdUIKit.SBUBaseMessageCell {
+@objc @_inheritsConvenienceInitializers @objcMembers open class SBUContentBaseMessageCell : SendBirdUIKit.SBUBaseMessageCell {
   @objc public var userNameStackView: UIKit.UIStackView {
     @objc get
     @objc set
@@ -773,25 +774,25 @@ extension SBUOpenChannelViewController : SendBirdSDK.SBDChannelDelegate, SendBir
   @available(*, deprecated, renamed: "onTapUserProfileView(sender:)", message: "deprecated in 1.2.2")
   @objc open func onTapProfileImageView(sender: UIKit.UITapGestureRecognizer)
   @objc open func onTapUserProfileView(sender: UIKit.UITapGestureRecognizer)
+  @objc deinit
   @objc override dynamic public init(style: UIKit.UITableViewCell.CellStyle, reuseIdentifier: Swift.String?)
   @objc required dynamic public init?(coder: Foundation.NSCoder)
-  @objc deinit
 }
 public typealias SBUActionSheetHandler = () -> Swift.Void
 @objc public protocol SBUActionSheetDelegate : ObjectiveC.NSObjectProtocol {
   @objc func didSelectActionSheetItem(index: Swift.Int, identifier: Swift.Int)
 }
 @objc @objcMembers public class SBUActionSheetItem : SendBirdUIKit.SBUCommonItem {
-  @objc public init(title: Swift.String? = nil, color: UIKit.UIColor? = nil, image: UIKit.UIImage? = nil, font: UIKit.UIFont? = nil, textAlignment: UIKit.NSTextAlignment = .left, completionHandler: SendBirdUIKit.SBUActionSheetHandler? = nil)
+  @objc public init(title: Swift.String? = nil, color: UIKit.UIColor? = nil, image: UIKit.UIImage? = nil, font: UIKit.UIFont? = nil, textAlignment: UIKit.NSTextAlignment = .left, completionHandler: SendBirdUIKit.SBUActionSheetHandler?)
   @objc override public init(title: Swift.String? = super, color: UIKit.UIColor? = super, image: UIKit.UIImage? = super, font: UIKit.UIFont? = super, tintColor: UIKit.UIColor? = super, textAlignment: UIKit.NSTextAlignment = super)
   @objc deinit
 }
-@objc @objcMembers public class SBUActionSheet : ObjectiveC.NSObject {
+@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objcMembers public class SBUActionSheet : ObjectiveC.NSObject {
   @objc public static func show(items: [SendBirdUIKit.SBUActionSheetItem], cancelItem: SendBirdUIKit.SBUActionSheetItem, identifier: Swift.Int = -1, oneTimetheme: SendBirdUIKit.SBUComponentTheme? = nil, delegate: SendBirdUIKit.SBUActionSheetDelegate? = nil)
   @objc public static func dismiss()
   @objc deinit
 }
-@objc @objcMembers public class SBUColorSet : ObjectiveC.NSObject {
+@objc @_inheritsConvenienceInitializers @objcMembers public class SBUColorSet : ObjectiveC.NSObject {
   @objc public static var primary100: UIKit.UIColor
   @objc public static var primary200: UIKit.UIColor
   @objc public static var primary300: UIKit.UIColor
@@ -821,11 +822,11 @@ public typealias SBUActionSheetHandler = () -> Swift.Void
   @objc public static var ondark04: UIKit.UIColor
   @objc public static var error: UIKit.UIColor
   @objc public static var information: UIKit.UIColor
-  @objc override dynamic public init()
   @objc deinit
+  @objc override dynamic public init()
 }
 public typealias SBUNewMessageInfoHandler = () -> Swift.Void
-@objc open class SBUNewMessageInfo : UIKit.UIView {
+@objc @_inheritsConvenienceInitializers open class SBUNewMessageInfo : UIKit.UIView {
   public var messageInfoButton: UIKit.UIButton? {
     get
     set
@@ -844,7 +845,7 @@ public typealias SBUNewMessageInfoHandler = () -> Swift.Void
   open func updateCount(count: Swift.Int, actionHandler: SendBirdUIKit.SBUNewMessageInfoHandler?)
   @objc deinit
 }
-@objc @objcMembers open class SBUBaseChannelViewController : UIKit.UIViewController {
+@objc @_inheritsConvenienceInitializers @objcMembers open class SBUBaseChannelViewController : UIKit.UIViewController {
   @objc open func setupAutolayout()
   @objc open func setupStyles()
   @objc open func updateStyles()
@@ -871,10 +872,10 @@ public typealias SBUNewMessageInfoHandler = () -> Swift.Void
   @objc public var theme: SendBirdUIKit.SBUChannelSettingsTheme
   @objc public var channel: SendBirdSDK.SBDGroupChannel? {
     get
-    }
+  }
   @objc public var channelUrl: Swift.String? {
     get
-    }
+  }
   @available(*, unavailable, renamed: "SBUModerationsViewController(channel:)")
   @objc required dynamic public init?(coder: Foundation.NSCoder)
   @objc public init(channel: SendBirdSDK.SBDGroupChannel)
@@ -897,8 +898,8 @@ public typealias SBUNewMessageInfoHandler = () -> Swift.Void
   @objc public func onClickBack()
   @objc public func changeFreeze(_ freeze: Swift.Bool, _ completionHandler: ((Swift.Bool) -> Swift.Void)? = nil)
   @objc open func didReceiveError(_ message: Swift.String?)
-  @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
   @objc deinit
+  @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
 }
 extension SBUModerationsViewController : UIKit.UITableViewDelegate, UIKit.UITableViewDataSource {
   @objc dynamic open func tableView(_ tableView: UIKit.UITableView, didSelectRowAt indexPath: Foundation.IndexPath)
@@ -910,7 +911,7 @@ extension SBUModerationsViewController {
   dynamic open func shouldShowLoadingIndicator() -> Swift.Bool
   @objc dynamic open func shouldDismissLoadingIndicator()
 }
-@objc @objcMembers open class SBUChannelViewController : SendBirdUIKit.SBUBaseChannelViewController, UIKit.UINavigationControllerDelegate {
+@objc @_inheritsConvenienceInitializers @objcMembers open class SBUChannelViewController : SendBirdUIKit.SBUBaseChannelViewController, UIKit.UINavigationControllerDelegate {
   @objc public var channelName: Swift.String?
   @objc public var newMessageInfoView: UIKit.UIView? {
     @objc get
@@ -950,31 +951,31 @@ extension SBUModerationsViewController {
   @objc public var theme: SendBirdUIKit.SBUChannelTheme
   @objc public var adminMessageCell: SendBirdUIKit.SBUBaseMessageCell? {
     get
-    }
+  }
   @objc public var userMessageCell: SendBirdUIKit.SBUBaseMessageCell? {
     get
-    }
+  }
   @objc public var fileMessageCell: SendBirdUIKit.SBUBaseMessageCell? {
     get
-    }
+  }
   @objc public var customMessageCell: SendBirdUIKit.SBUBaseMessageCell? {
     get
-    }
+  }
   @objc public var unknownMessageCell: SendBirdUIKit.SBUBaseMessageCell? {
     get
-    }
+  }
   @objc public var messageInputViewBottomConstraint: UIKit.NSLayoutConstraint! {
     get
-    }
+  }
   @objc public var tableViewTopConstraint: UIKit.NSLayoutConstraint! {
     get
-    }
+  }
   @objc public var channel: SendBirdSDK.SBDGroupChannel? {
     get
-    }
+  }
   @objc public var channelUrl: Swift.String? {
     get
-    }
+  }
   @objc @SendBirdUIKit.SBUAtomic public var messageList: [SendBirdSDK.SBDBaseMessage] {
     @objc get
   }
@@ -983,30 +984,30 @@ extension SBUModerationsViewController {
   }
   @objc public var inEditingMessage: SendBirdSDK.SBDUserMessage? {
     get
-    }
+  }
   @objc @available(*, deprecated, message: "deprecated in 1.2.10")
   public var preSendMessages: [Swift.String : SendBirdSDK.SBDBaseMessage] {
     get
-    }
+  }
   @objc @available(*, deprecated, message: "deprecated in 1.2.10")
   public var resendableMessages: [Swift.String : SendBirdSDK.SBDBaseMessage] {
     get
-    }
+  }
   @objc @available(*, deprecated, message: "deprecated in 1.2.10")
   public var preSendFileData: [Swift.String : [Swift.String : Swift.AnyObject]] {
     get
-    }
+  }
   @objc @available(*, deprecated, message: "deprecated in 1.2.10")
   public var resendableFileData: [Swift.String : [Swift.String : Swift.AnyObject]] {
     get
-    }
+  }
   @objc @available(*, deprecated, message: "deprecated in 1.2.10")
   public var fileTransferProgress: [Swift.String : CoreGraphics.CGFloat] {
     get
-    }
+  }
   @objc public var messageListParams: SendBirdSDK.SBDMessageListParams {
     get
-    }
+  }
   @available(*, unavailable, renamed: "SBUChannelViewController(channelUrl:)")
   @objc required dynamic public init?(coder: Foundation.NSCoder)
   @available(*, unavailable, renamed: "SBUChannelViewController(channelUrl:)")
@@ -1027,7 +1028,7 @@ extension SBUModerationsViewController {
   @objc deinit
   @objc public func sendUserMessage(text: Swift.String)
   @objc public func sendUserMessage(messageParams: SendBirdSDK.SBDUserMessageParams)
-  @objc public func sendFileMessage(fileData: Foundation.Data, fileName: Swift.String, mimeType: Swift.String)
+  @objc public func sendFileMessage(fileData: Foundation.Data?, fileName: Swift.String, mimeType: Swift.String)
   @objc public func sendFileMessage(messageParams: SendBirdSDK.SBDFileMessageParams)
   @objc public func resendMessage(failedMessage: SendBirdSDK.SBDBaseMessage)
   @objc public func updateUserMessage(message: SendBirdSDK.SBDUserMessage, text: Swift.String)
@@ -1137,25 +1138,25 @@ extension SBUChannelViewController {
   dynamic open func shouldShowLoadingIndicator() -> Swift.Bool
   @objc dynamic open func shouldDismissLoadingIndicator()
 }
-@objc @objcMembers public class SBUPendingMessageManager : ObjectiveC.NSObject {
+@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objcMembers public class SBUPendingMessageManager : ObjectiveC.NSObject {
   @objc public static let shared: SendBirdUIKit.SBUPendingMessageManager
   @objc public func addFileInfo(requestId: Swift.String?, params: SendBirdSDK.SBDFileMessageParams?)
   @objc public func getFileInfo(requestId: Swift.String?) -> SendBirdSDK.SBDFileMessageParams?
   @objc deinit
 }
-@objc public class SBULoading : ObjectiveC.NSObject {
+@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class SBULoading : ObjectiveC.NSObject {
   public static func start()
   public static func stop()
   @objc deinit
 }
-@objc @objcMembers public class SBUEmojiManager : ObjectiveC.NSObject {
+@objc @_inheritsConvenienceInitializers @objcMembers public class SBUEmojiManager : ObjectiveC.NSObject {
   @objc public static func getEmojiCategories() -> [SendBirdSDK.SBDEmojiCategory]
   @objc public static func getAllEmojis() -> [SendBirdSDK.SBDEmoji]
   @objc public static func getEmojis(emojiCategoryId: Swift.Int64) -> [SendBirdSDK.SBDEmoji]
   @objc override dynamic public init()
   @objc deinit
 }
-@objc @objcMembers public class SBUIconSet : ObjectiveC.NSObject {
+@objc @_inheritsConvenienceInitializers @objcMembers public class SBUIconSet : ObjectiveC.NSObject {
   @objc public static var iconActionLeave: UIKit.UIImage
   @objc public static var iconActionNotificationOn: UIKit.UIImage
   @objc public static var iconActionNotificationOff: UIKit.UIImage
@@ -1225,8 +1226,8 @@ extension SBUChannelViewController {
   @objc public static var emojiThumbsup: UIKit.UIImage
   @objc public static var emojiThubsdown: UIKit.UIImage
   @objc public static var emojiFail: UIKit.UIImage
-  @objc override dynamic public init()
   @objc deinit
+  @objc override dynamic public init()
 }
 @objc public protocol SBUCreateChannelTypeSelectorDelegate {
   @objc func didSelectCloseSelector()
@@ -1238,10 +1239,10 @@ extension SBUChannelViewController {
   @objc func show()
   @objc func dismiss()
 }
-@objc open class SBUBaseChannelCell : UIKit.UITableViewCell {
+@objc @_inheritsConvenienceInitializers open class SBUBaseChannelCell : UIKit.UITableViewCell {
   public var channel: SendBirdSDK.SBDBaseChannel? {
     get
-    }
+  }
   public var theme: SendBirdUIKit.SBUChannelCellTheme
   @objc override dynamic public init(style: UIKit.UITableViewCell.CellStyle, reuseIdentifier: Swift.String?)
   @objc required dynamic public init?(coder: Foundation.NSCoder)
@@ -1252,15 +1253,15 @@ extension SBUChannelViewController {
   open func configure(channel: SendBirdSDK.SBDBaseChannel)
   @objc deinit
 }
-@objc @objcMembers public class SBUAvailable : ObjectiveC.NSObject {
+@objc @_inheritsConvenienceInitializers @objcMembers public class SBUAvailable : ObjectiveC.NSObject {
   @objc public static func isSupportSuperGroupChannel() -> Swift.Bool
   @objc public static func isSupportBroadcastChannel() -> Swift.Bool
   @objc public static func isSupportReactions() -> Swift.Bool
   @objc public static func isSupportOgTag() -> Swift.Bool
-  @objc override dynamic public init()
   @objc deinit
+  @objc override dynamic public init()
 }
-@objc @objcMembers open class SBUOpenChannelSettingsViewController : UIKit.UIViewController, UIKit.UINavigationControllerDelegate {
+@objc @_inheritsConvenienceInitializers @objcMembers open class SBUOpenChannelSettingsViewController : UIKit.UIViewController, UIKit.UINavigationControllerDelegate {
   @objc public var userInfoView: UIKit.UIView? {
     @objc get
     @objc set
@@ -1284,10 +1285,10 @@ extension SBUChannelViewController {
   @objc public var channelName: Swift.String?
   @objc public var channel: SendBirdSDK.SBDOpenChannel? {
     get
-    }
+  }
   @objc public var channelUrl: Swift.String? {
     get
-    }
+  }
   @objc public var isOperator: Swift.Bool {
     @objc get
   }
@@ -1334,7 +1335,7 @@ extension SBUOpenChannelSettingsViewController : SendBirdSDK.SBDChannelDelegate 
   @objc dynamic open func channel(_ sender: SendBirdSDK.SBDOpenChannel, userDidEnter user: SendBirdSDK.SBDUser)
   @objc dynamic open func channel(_ sender: SendBirdSDK.SBDOpenChannel, userDidExit user: SendBirdSDK.SBDUser)
 }
-@objc public class SBUChannelCell : SendBirdUIKit.SBUBaseChannelCell {
+@objc @_inheritsConvenienceInitializers public class SBUChannelCell : SendBirdUIKit.SBUBaseChannelCell {
   public var coverImage: SendBirdUIKit.SBUCoverImageView {
     get
   }
@@ -1367,7 +1368,7 @@ extension SBUOpenChannelSettingsViewController : SendBirdSDK.SBDChannelDelegate 
   }
   public var separatorLine: UIKit.UIView {
     get
-    }
+  }
   final public let kCoverImageSize: CoreGraphics.CGFloat
   final public let kUnreadCountSize: CoreGraphics.CGFloat
   final public let kSideMarging: CoreGraphics.CGFloat
@@ -1393,7 +1394,7 @@ extension SBUOpenChannelSettingsViewController : SendBirdSDK.SBDChannelDelegate 
   @objc optional func messageInputViewDidStartTyping()
   @objc optional func messageInputViewDidEndTyping()
 }
-@objc @objcMembers open class SBUMessageInputView : UIKit.UIView, SendBirdUIKit.SBUActionSheetDelegate, UIKit.UITextViewDelegate {
+@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objcMembers open class SBUMessageInputView : UIKit.UIView, SendBirdUIKit.SBUActionSheetDelegate, UIKit.UITextViewDelegate {
   @objc public var addButton: UIKit.UIButton? {
     @objc get
     @objc set
@@ -1445,7 +1446,7 @@ extension SBUOpenChannelSettingsViewController : SendBirdSDK.SBDChannelDelegate 
   @objc public func didSelectActionSheetItem(index: Swift.Int, identifier: Swift.Int)
   @objc deinit
 }
-@objc @objcMembers open class SBUCreateChannelViewController : UIKit.UIViewController, UIKit.UINavigationControllerDelegate {
+@objc @_inheritsConvenienceInitializers @objcMembers open class SBUCreateChannelViewController : UIKit.UIViewController, UIKit.UINavigationControllerDelegate {
   @objc public var titleView: UIKit.UIView? {
     @objc get
     @objc set
@@ -1463,11 +1464,11 @@ extension SBUOpenChannelSettingsViewController : SendBirdSDK.SBDChannelDelegate 
   }
   @objc public var userCell: UIKit.UITableViewCell? {
     get
-    }
+  }
   @objc public var theme: SendBirdUIKit.SBUUserListTheme
   @objc public var channelType: SendBirdUIKit.ChannelType {
     get
-    }
+  }
   @objc @SendBirdUIKit.SBUAtomic public var userList: [SendBirdUIKit.SBUUser] {
     @objc get
   }
@@ -1476,7 +1477,7 @@ extension SBUOpenChannelSettingsViewController : SendBirdSDK.SBDChannelDelegate 
   }
   @objc public var userListQuery: SendBirdSDK.SBDApplicationUserListQuery? {
     get
-    }
+  }
   @available(*, unavailable, renamed: "SBUCreateChannelViewController(type:)")
   @objc required dynamic public init?(coder: Foundation.NSCoder)
   @available(*, unavailable, renamed: "SBUCreateChannelViewController.init()")
@@ -1519,19 +1520,19 @@ extension SBUCreateChannelViewController {
 @objc @objcMembers public class SBUUser : ObjectiveC.NSObject {
   @objc public var userId: Swift.String {
     get
-    }
+  }
   @objc public var nickname: Swift.String? {
     get
-    }
+  }
   @objc public var profileUrl: Swift.String? {
     get
-    }
+  }
   @objc public var isOperator: Swift.Bool {
     get
-    }
+  }
   @objc public var isMuted: Swift.Bool {
     get
-    }
+  }
   @objc public init(userId: Swift.String, nickname: Swift.String? = nil, profileUrl: Swift.String? = nil)
   @objc public init(user: SendBirdSDK.SBDUser)
   @objc public init(user: SendBirdUIKit.SBUUser, isOperator: Swift.Bool = false, isMuted: Swift.Bool = false)
@@ -1544,7 +1545,7 @@ extension SBUCreateChannelViewController {
   @objc override dynamic public init()
   @objc deinit
 }
-@objc @objcMembers public class SBUGlobals : ObjectiveC.NSObject {
+@objc @_inheritsConvenienceInitializers @objcMembers public class SBUGlobals : ObjectiveC.NSObject {
   @objc public static var ApplicationId: Swift.String?
   @objc public static var AccessToken: Swift.String?
   @objc public static var CurrentUser: SendBirdUIKit.SBUUser? {
@@ -1554,10 +1555,11 @@ extension SBUCreateChannelViewController {
   @objc public static var UsingMessageGrouping: Swift.Bool
   @objc public static var UsingUserProfile: Swift.Bool
   @objc public static var UsingUserProfileInOpenChannel: Swift.Bool
+  @objc public static var shouldUseImageCompression: Swift.Bool
   @objc public static var imageCompressionRate: CoreGraphics.CGFloat
   @objc public static var imageResizingSize: CoreGraphics.CGSize
-  @objc override dynamic public init()
   @objc deinit
+  @objc override dynamic public init()
 }
 public typealias AlertButtonHandler = (Any?) -> Swift.Void
 @objc @objcMembers public class SBUAlertButtonItem : ObjectiveC.NSObject {
@@ -1565,12 +1567,12 @@ public typealias AlertButtonHandler = (Any?) -> Swift.Void
   @objc override dynamic public init()
   @objc deinit
 }
-@objc @objcMembers public class SBUAlertView : ObjectiveC.NSObject {
+@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objcMembers public class SBUAlertView : ObjectiveC.NSObject {
   public static func show(title: Swift.String, message: Swift.String? = nil, needInputField: Swift.Bool = false, placeHolder: Swift.String? = "", centerYRatio: CoreGraphics.CGFloat? = 1.0, oneTimetheme: SendBirdUIKit.SBUComponentTheme? = nil, confirmButtonItem: SendBirdUIKit.SBUAlertButtonItem, cancelButtonItem: SendBirdUIKit.SBUAlertButtonItem?)
   @objc public static func dismiss()
   @objc deinit
 }
-@objc @objcMembers public class SBUStringSet : ObjectiveC.NSObject {
+@objc @_inheritsConvenienceInitializers @objcMembers public class SBUStringSet : ObjectiveC.NSObject {
   @objc public static var Cancel: Swift.String
   @objc public static var OK: Swift.String
   @objc public static var Retry: Swift.String
@@ -1674,16 +1676,16 @@ public typealias AlertButtonHandler = (Any?) -> Swift.Void
   @objc public static var ChannelType_Group: Swift.String
   @objc public static var ChannelType_SuperGroup: Swift.String
   @objc public static var ChannelType_Broadcast: Swift.String
-  @objc override dynamic public init()
   @objc deinit
+  @objc override dynamic public init()
 }
-@objc @objcMembers open class SBUUnknownMessageCell : SendBirdUIKit.SBUUserMessageCell {
+@objc @_inheritsConvenienceInitializers @objcMembers open class SBUUnknownMessageCell : SendBirdUIKit.SBUUserMessageCell {
   @objc override public func configure(_ message: SendBirdSDK.SBDBaseMessage, hideDateView: Swift.Bool, groupPosition: SendBirdUIKit.MessageGroupPosition, receiptState: SendBirdUIKit.SBUMessageReceiptState)
   @objc override dynamic public init(style: UIKit.UITableViewCell.CellStyle, reuseIdentifier: Swift.String?)
   @objc required dynamic public init?(coder: Foundation.NSCoder)
   @objc deinit
 }
-@objc @objcMembers public class SBUNavigationTitleView : UIKit.UIView {
+@objc @_inheritsConvenienceInitializers @objcMembers public class SBUNavigationTitleView : UIKit.UIView {
   @objc public var text: Swift.String? {
     @objc get
     @objc set
@@ -1708,10 +1710,10 @@ public typealias AlertButtonHandler = (Any?) -> Swift.Void
   case broadcast
   case open
   public typealias RawValue = Swift.Int
-  public init?(rawValue: Swift.Int)
   public var rawValue: Swift.Int {
     get
   }
+  public init?(rawValue: Swift.Int)
 }
 @objc public enum ChannelSettingItemType : Swift.Int {
   case moderations
@@ -1919,7 +1921,7 @@ extension UINavigationController {
     @objc get
   }
 }
-@objc public class SBUMessageStateView : UIKit.UIView {
+@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class SBUMessageStateView : UIKit.UIView {
   public init(sendingState: SendBirdSDK.SBDMessageSendingStatus, receiptState: SendBirdUIKit.SBUMessageReceiptState)
   @objc override dynamic public init(frame: CoreGraphics.CGRect)
   @objc override dynamic public func layoutSubviews()
@@ -1940,11 +1942,11 @@ extension NSArray {
   @objc dynamic public func sbu_getUserNicknames() -> [Swift.String]
   @objc dynamic public func sbu_convertUserList() -> [SendBirdUIKit.SBUUser]
 }
-@available(*, deprecated, renamed: "SBUBaseMessageCell")
+@_hasMissingDesignatedInitializers @available(*, deprecated, renamed: "SBUBaseMessageCell")
 @IBDesignable open class SBUMessageBaseCell {
   @objc deinit
 }
-@objc @objcMembers @IBDesignable open class SBUBaseMessageCell : UIKit.UITableViewCell {
+@objc @_inheritsConvenienceInitializers @objcMembers @IBDesignable open class SBUBaseMessageCell : UIKit.UITableViewCell {
   @objc public var message: SendBirdSDK.SBDBaseMessage
   @objc public var position: SendBirdUIKit.MessagePosition
   @objc public var groupPosition: SendBirdUIKit.MessageGroupPosition
@@ -1969,31 +1971,31 @@ extension NSArray {
   @objc override dynamic open func prepareForReuse()
   @objc deinit
 }
-@objc @available(*, deprecated, renamed: "SBUMessageProfileView", message: "deprecated in 2.0.0")
+@objc @_inheritsConvenienceInitializers @available(*, deprecated, renamed: "SBUMessageProfileView", message: "deprecated in 2.0.0")
 public class MessageProfileView : SendBirdUIKit.SBUMessageProfileView {
+  @objc deinit
   override public init(urlString: Swift.String)
   @objc override dynamic public init(frame: CoreGraphics.CGRect)
-  @objc deinit
 }
-@objc @available(*, deprecated, renamed: "SBUUserNameView", message: "deprecated in 2.0.0")
+@objc @_inheritsConvenienceInitializers @available(*, deprecated, renamed: "SBUUserNameView", message: "deprecated in 2.0.0")
 public class UserNameView : SendBirdUIKit.SBUUserNameView {
+  @objc deinit
   override public init(username: Swift.String)
   @objc override dynamic public init(frame: CoreGraphics.CGRect)
-  @objc deinit
 }
-@objc @available(*, deprecated, renamed: "SBUMessageStateView", message: "deprecated in 2.0.0")
+@objc @_inheritsConvenienceInitializers @available(*, deprecated, renamed: "SBUMessageStateView", message: "deprecated in 2.0.0")
 public class MessageStateView : SendBirdUIKit.SBUMessageStateView {
+  @objc deinit
   override public init(sendingState: SendBirdSDK.SBDMessageSendingStatus, receiptState: SendBirdUIKit.SBUMessageReceiptState)
   @objc override dynamic public init(frame: CoreGraphics.CGRect)
-  @objc deinit
 }
-@objc public class SBUMessageProfileView : UIKit.UIView {
+@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class SBUMessageProfileView : UIKit.UIView {
   public init(urlString: Swift.String)
   @objc override dynamic public init(frame: CoreGraphics.CGRect)
   @objc override dynamic public func layoutSubviews()
   @objc deinit
 }
-@objc @objcMembers public class SBUMain : ObjectiveC.NSObject {
+@objc @_inheritsConvenienceInitializers @objcMembers public class SBUMain : ObjectiveC.NSObject {
   @objc public static func initialize(applicationId: Swift.String)
   @objc public static func connect(completionHandler: @escaping (SendBirdSDK.SBDUser?, SendBirdSDK.SBDError?) -> Swift.Void)
   @objc public static func connectionCheck(completionHandler: @escaping (SendBirdSDK.SBDUser?, SendBirdSDK.SBDError?) -> Swift.Void)
@@ -2014,16 +2016,16 @@ public class MessageStateView : SendBirdUIKit.SBUMessageStateView {
   @objc public static func createAndMoveToChannel(params: SendBirdSDK.SBDGroupChannelParams, messageListParams: SendBirdSDK.SBDMessageListParams? = nil)
   @objc public static func setLogLevel(_ type: SendBirdUIKit.LogType)
   public static func setLogLevel(_ types: [SendBirdUIKit.LogType])
-  @objc override dynamic public init()
   @objc deinit
+  @objc override dynamic public init()
 }
-@objc public class SBUUserNameView : UIKit.UIView {
+@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class SBUUserNameView : UIKit.UIView {
   public var usernameColor: UIKit.UIColor?
   public init(username: Swift.String)
   @objc override dynamic public init(frame: CoreGraphics.CGRect)
   @objc deinit
 }
-@objc @objcMembers open class SBUChannelSettingsViewController : UIKit.UIViewController, UIKit.UINavigationControllerDelegate {
+@objc @_inheritsConvenienceInitializers @objcMembers open class SBUChannelSettingsViewController : UIKit.UIViewController, UIKit.UINavigationControllerDelegate {
   @objc public var userInfoView: UIKit.UIView? {
     @objc get
     @objc set
@@ -2047,10 +2049,10 @@ public class MessageStateView : SendBirdUIKit.SBUMessageStateView {
   @objc public var channelName: Swift.String?
   @objc public var channel: SendBirdSDK.SBDGroupChannel? {
     get
-    }
+  }
   @objc public var channelUrl: Swift.String? {
     get
-    }
+  }
   @objc public var isOperator: Swift.Bool {
     @objc get
     @objc set
@@ -2106,7 +2108,7 @@ extension SBUChannelSettingsViewController {
 @objc public protocol SBUEmptyViewDelegate : ObjectiveC.NSObjectProtocol {
   @objc func didSelectRetry()
 }
-@objc @objcMembers open class SBUEmptyView : UIKit.UIView {
+@objc @_inheritsConvenienceInitializers @objcMembers open class SBUEmptyView : UIKit.UIView {
   @objc public var type: SendBirdUIKit.EmptyViewType
   @objc weak public var delegate: SendBirdUIKit.SBUEmptyViewDelegate?
   @objc public var statusImageView: UIKit.UIImageView {
@@ -2149,7 +2151,7 @@ extension Sequence where Self.Element : Swift.Hashable {
   }
   public init(wrappedValue: T)
 }
-@objc @objcMembers @IBDesignable open class SBUUserMessageCell : SendBirdUIKit.SBUContentBaseMessageCell {
+@objc @_inheritsConvenienceInitializers @objcMembers @IBDesignable open class SBUUserMessageCell : SendBirdUIKit.SBUContentBaseMessageCell {
   @objc public var messageTextView: UIKit.UIView {
     @objc get
     @objc set
@@ -2180,7 +2182,7 @@ extension UIColor {
   @objc func show(baseView: UIKit.UIView, user: SendBirdUIKit.SBUUser?, isOpenChannel: Swift.Bool)
   @objc func dismiss()
 }
-@objc @objcMembers public class SBUTheme : ObjectiveC.NSObject {
+@objc @_inheritsConvenienceInitializers @objcMembers public class SBUTheme : ObjectiveC.NSObject {
   @objc public init(channelListTheme: SendBirdUIKit.SBUChannelListTheme = .light, channelCellTheme: SendBirdUIKit.SBUChannelCellTheme = .light, channelTheme: SendBirdUIKit.SBUChannelTheme = .light, messageInputTheme: SendBirdUIKit.SBUMessageInputTheme = .light, messageCellTheme: SendBirdUIKit.SBUMessageCellTheme = .light, userListTheme: SendBirdUIKit.SBUUserListTheme = .light, userCellTheme: SendBirdUIKit.SBUUserCellTheme = .light, channelSettingsTheme: SendBirdUIKit.SBUChannelSettingsTheme = .light, userProfileTheme: SendBirdUIKit.SBUUserProfileTheme = .light, componentTheme: SendBirdUIKit.SBUComponentTheme = .light)
   @objc public static func set(theme: SendBirdUIKit.SBUTheme)
   @objc public static func setChannelList(channelListTheme: SendBirdUIKit.SBUChannelListTheme, channelCellTheme: SendBirdUIKit.SBUChannelCellTheme)
@@ -2236,7 +2238,7 @@ extension UIColor {
   }
   @objc deinit
 }
-@objc @objcMembers public class SBUChannelListTheme : ObjectiveC.NSObject {
+@objc @_inheritsConvenienceInitializers @objcMembers public class SBUChannelListTheme : ObjectiveC.NSObject {
   @objc public static var light: SendBirdUIKit.SBUChannelListTheme {
     @objc get
   }
@@ -2259,7 +2261,7 @@ extension UIColor {
   @objc public var alertBackgroundColor: UIKit.UIColor
   @objc deinit
 }
-@objc @objcMembers public class SBUChannelCellTheme : ObjectiveC.NSObject {
+@objc @_inheritsConvenienceInitializers @objcMembers public class SBUChannelCellTheme : ObjectiveC.NSObject {
   @objc public static var light: SendBirdUIKit.SBUChannelCellTheme {
     @objc get
   }
@@ -2284,7 +2286,7 @@ extension UIColor {
   @objc public var separatorLineColor: UIKit.UIColor
   @objc deinit
 }
-@objc @objcMembers public class SBUChannelTheme : ObjectiveC.NSObject {
+@objc @_inheritsConvenienceInitializers @objcMembers public class SBUChannelTheme : ObjectiveC.NSObject {
   @objc public static var light: SendBirdUIKit.SBUChannelTheme {
     @objc get
   }
@@ -2312,7 +2314,7 @@ extension UIColor {
   @objc public var channelStateBannerBackgroundColor: UIKit.UIColor
   @objc deinit
 }
-@objc @objcMembers public class SBUMessageInputTheme : ObjectiveC.NSObject {
+@objc @_inheritsConvenienceInitializers @objcMembers public class SBUMessageInputTheme : ObjectiveC.NSObject {
   @objc public static var light: SendBirdUIKit.SBUMessageInputTheme {
     @objc get
   }
@@ -2338,7 +2340,7 @@ extension UIColor {
   @objc public var saveButtonTextColor: UIKit.UIColor
   @objc deinit
 }
-@objc @objcMembers public class SBUMessageCellTheme : ObjectiveC.NSObject {
+@objc @_inheritsConvenienceInitializers @objcMembers public class SBUMessageCellTheme : ObjectiveC.NSObject {
   @objc public static var light: SendBirdUIKit.SBUMessageCellTheme {
     @objc get
   }
@@ -2395,7 +2397,7 @@ extension UIColor {
   @objc public var linkColor: UIKit.UIColor
   @objc deinit
 }
-@objc @objcMembers public class SBUUserListTheme : ObjectiveC.NSObject {
+@objc @_inheritsConvenienceInitializers @objcMembers public class SBUUserListTheme : ObjectiveC.NSObject {
   @objc public static var light: SendBirdUIKit.SBUUserListTheme {
     @objc get
   }
@@ -2421,7 +2423,7 @@ extension UIColor {
   @objc public var textfieldTextColor: UIKit.UIColor
   @objc deinit
 }
-@objc @objcMembers public class SBUUserCellTheme : ObjectiveC.NSObject {
+@objc @_inheritsConvenienceInitializers @objcMembers public class SBUUserCellTheme : ObjectiveC.NSObject {
   @objc public static var light: SendBirdUIKit.SBUUserCellTheme {
     @objc get
   }
@@ -2445,7 +2447,7 @@ extension UIColor {
   @objc public var separateColor: UIKit.UIColor
   @objc deinit
 }
-@objc @objcMembers public class SBUChannelSettingsTheme : ObjectiveC.NSObject {
+@objc @_inheritsConvenienceInitializers @objcMembers public class SBUChannelSettingsTheme : ObjectiveC.NSObject {
   @objc public static var light: SendBirdUIKit.SBUChannelSettingsTheme {
     @objc get
   }
@@ -2494,7 +2496,7 @@ extension UIColor {
   @objc public var urlColor: UIKit.UIColor
   @objc deinit
 }
-@objc @objcMembers public class SBUUserProfileTheme : ObjectiveC.NSObject {
+@objc @_inheritsConvenienceInitializers @objcMembers public class SBUUserProfileTheme : ObjectiveC.NSObject {
   @objc public static var light: SendBirdUIKit.SBUUserProfileTheme {
     @objc get
   }
@@ -2528,7 +2530,7 @@ extension UIColor {
   @objc public var informationDesctiptionFont: UIKit.UIFont
   @objc deinit
 }
-@objc @objcMembers public class SBUComponentTheme : ObjectiveC.NSObject {
+@objc @_inheritsConvenienceInitializers @objcMembers public class SBUComponentTheme : ObjectiveC.NSObject {
   @objc public static var light: SendBirdUIKit.SBUComponentTheme {
     @objc get
   }
@@ -2604,7 +2606,7 @@ extension UIColor {
   @objc public var barItemTintColor: UIKit.UIColor
   @objc deinit
 }
-@objc @objcMembers @IBDesignable open class SBUOpenChannelUserMessageCell : SendBirdUIKit.SBUOpenChannelContentBaseMessageCell {
+@objc @_inheritsConvenienceInitializers @objcMembers @IBDesignable open class SBUOpenChannelUserMessageCell : SendBirdUIKit.SBUOpenChannelContentBaseMessageCell {
   @objc public var messageTextView: UIKit.UIView {
     @objc get
     @objc set
@@ -2622,7 +2624,7 @@ extension UIColor {
   @objc required dynamic public init?(coder: Foundation.NSCoder)
   @objc deinit
 }
-@objc @objcMembers @IBDesignable open class SBUFileMessageCell : SendBirdUIKit.SBUContentBaseMessageCell {
+@objc @_inheritsConvenienceInitializers @objcMembers @IBDesignable open class SBUFileMessageCell : SendBirdUIKit.SBUContentBaseMessageCell {
   @objc public var fileMessage: SendBirdSDK.SBDFileMessage? {
     @objc get
   }
@@ -2641,7 +2643,7 @@ extension UIColor {
 extension UIImage {
   @objc dynamic public func sbu_with(tintColor: UIKit.UIColor?) -> UIKit.UIImage
 }
-@objc @objcMembers open class SBUMemberListViewController : UIKit.UIViewController {
+@objc @_inheritsConvenienceInitializers @objcMembers open class SBUMemberListViewController : UIKit.UIViewController {
   @objc public var titleView: UIKit.UIView? {
     @objc get
     @objc set
@@ -2667,36 +2669,36 @@ extension UIImage {
   }
   @objc public var userCell: UIKit.UITableViewCell? {
     get
-    }
+  }
   @objc public var theme: SendBirdUIKit.SBUUserListTheme
   @objc public var componentTheme: SendBirdUIKit.SBUComponentTheme
   @objc public var memberListType: SendBirdUIKit.ChannelMemberListType {
     get
-    }
+  }
   @objc public var channel: SendBirdSDK.SBDBaseChannel? {
     get
-    }
+  }
   @objc public var channelUrl: Swift.String? {
     get
-    }
+  }
   @objc public var memberList: [SendBirdUIKit.SBUUser] {
     get
-    }
+  }
   @objc public var memberListQuery: SendBirdSDK.SBDGroupChannelMemberListQuery? {
     get
-    }
+  }
   @objc public var operatorListQuery: SendBirdSDK.SBDOperatorListQuery? {
     get
-    }
+  }
   @objc public var mutedMemberListQuery: SendBirdSDK.SBDGroupChannelMemberListQuery? {
     get
-    }
+  }
   @objc public var bannedMemberListQuery: SendBirdSDK.SBDBannedUserListQuery? {
     get
-    }
+  }
   @objc public var participantListQuery: SendBirdSDK.SBDParticipantListQuery? {
     get
-    }
+  }
   @available(*, unavailable, renamed: "SBUMemberListViewController(channelUrl:type:)")
   @objc required dynamic public init?(coder: Foundation.NSCoder)
   @available(*, unavailable, renamed: "SBUMemberListViewController.init(channelUrl:)")
@@ -2762,7 +2764,7 @@ extension SBUMemberListViewController {
   dynamic open func shouldShowLoadingIndicator() -> Swift.Bool
   @objc dynamic open func shouldDismissLoadingIndicator()
 }
-@objc @objcMembers @IBDesignable open class SBUOpenChannelFileMessageCell : SendBirdUIKit.SBUOpenChannelContentBaseMessageCell {
+@objc @_inheritsConvenienceInitializers @objcMembers @IBDesignable open class SBUOpenChannelFileMessageCell : SendBirdUIKit.SBUOpenChannelContentBaseMessageCell {
   @objc public var fileMessage: SendBirdSDK.SBDFileMessage? {
     @objc get
   }
@@ -2786,6 +2788,7 @@ public struct DiskCache {
   public func remove(key: Swift.String)
   public func removeAll()
 }
+extension SendBirdUIKit.ChannelType : Swift.Equatable {}
 extension SendBirdUIKit.ChannelType : Swift.Hashable {}
 extension SendBirdUIKit.ChannelType : Swift.RawRepresentable {}
 extension SendBirdUIKit.ChannelSettingItemType : Swift.Equatable {}
@@ -2794,13 +2797,16 @@ extension SendBirdUIKit.ChannelSettingItemType : Swift.RawRepresentable {}
 extension SendBirdUIKit.OpenChannelSettingItemType : Swift.Equatable {}
 extension SendBirdUIKit.OpenChannelSettingItemType : Swift.Hashable {}
 extension SendBirdUIKit.OpenChannelSettingItemType : Swift.RawRepresentable {}
+extension SendBirdUIKit.ModerationItemType : Swift.Equatable {}
 extension SendBirdUIKit.ModerationItemType : Swift.Hashable {}
 extension SendBirdUIKit.ModerationItemType : Swift.RawRepresentable {}
+extension SendBirdUIKit.UserListType : Swift.Equatable {}
 extension SendBirdUIKit.UserListType : Swift.Hashable {}
 extension SendBirdUIKit.UserListType : Swift.RawRepresentable {}
 extension SendBirdUIKit.ChannelMemberListType : Swift.Equatable {}
 extension SendBirdUIKit.ChannelMemberListType : Swift.Hashable {}
 extension SendBirdUIKit.ChannelMemberListType : Swift.RawRepresentable {}
+extension SendBirdUIKit.ChannelInviteListType : Swift.Equatable {}
 extension SendBirdUIKit.ChannelInviteListType : Swift.Hashable {}
 extension SendBirdUIKit.ChannelInviteListType : Swift.RawRepresentable {}
 @available(*, deprecated, renamed: "UserListType", message: "deprecated in 1.2.0")
@@ -2812,15 +2818,19 @@ extension SendBirdUIKit.MemberListType : Swift.RawRepresentable {}
 extension SendBirdUIKit.EmptyViewType : Swift.Equatable {}
 extension SendBirdUIKit.EmptyViewType : Swift.Hashable {}
 extension SendBirdUIKit.EmptyViewType : Swift.RawRepresentable {}
+extension SendBirdUIKit.MediaResourceType : Swift.Equatable {}
 extension SendBirdUIKit.MediaResourceType : Swift.Hashable {}
 extension SendBirdUIKit.MediaResourceType : Swift.RawRepresentable {}
 extension SendBirdUIKit.ChannelEditType : Swift.Equatable {}
 extension SendBirdUIKit.ChannelEditType : Swift.Hashable {}
 extension SendBirdUIKit.ChannelEditType : Swift.RawRepresentable {}
+extension SendBirdUIKit.MessagePosition : Swift.Equatable {}
 extension SendBirdUIKit.MessagePosition : Swift.Hashable {}
 extension SendBirdUIKit.MessagePosition : Swift.RawRepresentable {}
+extension SendBirdUIKit.MessageGroupPosition : Swift.Equatable {}
 extension SendBirdUIKit.MessageGroupPosition : Swift.Hashable {}
 extension SendBirdUIKit.MessageGroupPosition : Swift.RawRepresentable {}
+extension SendBirdUIKit.MessageFileType : Swift.Equatable {}
 extension SendBirdUIKit.MessageFileType : Swift.Hashable {}
 extension SendBirdUIKit.MessageFileType : Swift.RawRepresentable {}
 extension SendBirdUIKit.SBUMessageReceiptState : Swift.Equatable {}
@@ -2832,6 +2842,7 @@ extension SendBirdUIKit.MessageEditItem : Swift.RawRepresentable {}
 extension SendBirdUIKit.MessageMenuItem : Swift.Equatable {}
 extension SendBirdUIKit.MessageMenuItem : Swift.Hashable {}
 extension SendBirdUIKit.MessageMenuItem : Swift.RawRepresentable {}
+extension SendBirdUIKit.NewMessageInfoItemType : Swift.Equatable {}
 extension SendBirdUIKit.NewMessageInfoItemType : Swift.Hashable {}
 extension SendBirdUIKit.NewMessageInfoItemType : Swift.RawRepresentable {}
 extension SendBirdUIKit.LogType : Swift.Equatable {}
