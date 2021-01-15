@@ -2310,9 +2310,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL UsingUserProfileInOpenCha
 /// if this value is enabled, image compression and resizing will be applied when sending a file message
 /// since:
 /// 2.0.1
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL shouldUseImageCompression;)
-+ (BOOL)shouldUseImageCompression SWIFT_WARN_UNUSED_RESULT;
-+ (void)setShouldUseImageCompression:(BOOL)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL UsingImageCompression;)
++ (BOOL)UsingImageCompression SWIFT_WARN_UNUSED_RESULT;
++ (void)setUsingImageCompression:(BOOL)value;
 /// Image compression rate value that will be used when sending image. Default value is 0.85.
 /// Typically this value will be used in <code>jpegData(compressionQuality:)</code>
 /// since:
@@ -6951,9 +6951,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL UsingUserProfileInOpenCha
 /// if this value is enabled, image compression and resizing will be applied when sending a file message
 /// since:
 /// 2.0.1
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL shouldUseImageCompression;)
-+ (BOOL)shouldUseImageCompression SWIFT_WARN_UNUSED_RESULT;
-+ (void)setShouldUseImageCompression:(BOOL)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL UsingImageCompression;)
++ (BOOL)UsingImageCompression SWIFT_WARN_UNUSED_RESULT;
++ (void)setUsingImageCompression:(BOOL)value;
 /// Image compression rate value that will be used when sending image. Default value is 0.85.
 /// Typically this value will be used in <code>jpegData(compressionQuality:)</code>
 /// since:
@@ -11594,9 +11594,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL UsingUserProfileInOpenCha
 /// if this value is enabled, image compression and resizing will be applied when sending a file message
 /// since:
 /// 2.0.1
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL shouldUseImageCompression;)
-+ (BOOL)shouldUseImageCompression SWIFT_WARN_UNUSED_RESULT;
-+ (void)setShouldUseImageCompression:(BOOL)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL UsingImageCompression;)
++ (BOOL)UsingImageCompression SWIFT_WARN_UNUSED_RESULT;
++ (void)setUsingImageCompression:(BOOL)value;
 /// Image compression rate value that will be used when sending image. Default value is 0.85.
 /// Typically this value will be used in <code>jpegData(compressionQuality:)</code>
 /// since:
@@ -16235,9 +16235,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL UsingUserProfileInOpenCha
 /// if this value is enabled, image compression and resizing will be applied when sending a file message
 /// since:
 /// 2.0.1
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL shouldUseImageCompression;)
-+ (BOOL)shouldUseImageCompression SWIFT_WARN_UNUSED_RESULT;
-+ (void)setShouldUseImageCompression:(BOOL)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL UsingImageCompression;)
++ (BOOL)UsingImageCompression SWIFT_WARN_UNUSED_RESULT;
++ (void)setUsingImageCompression:(BOOL)value;
 /// Image compression rate value that will be used when sending image. Default value is 0.85.
 /// Typically this value will be used in <code>jpegData(compressionQuality:)</code>
 /// since:

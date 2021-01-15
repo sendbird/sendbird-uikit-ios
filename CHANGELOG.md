@@ -1,8 +1,8 @@
 # Change Log
 
-### v2.0.1 (Jan 14, 2021)
+### v2.0.3 (Jan 14, 2021)
 * Improved stability
-* Added `shouldUseImageCompression` flag in `SBUGlobals`
+* Added `UsingImageCompression` flag in `SBUGlobals`
 
 ### v2.0.0 (Dec 24, 2020)
 * Added OpenChannel features.

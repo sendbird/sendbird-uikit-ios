@@ -1265,7 +1265,7 @@ open class SBUChannelViewController: SBUBaseChannelViewController, UINavigationC
                 .resize(with: SBUGlobals.imageResizingSize) else { return }
             
             var imageData: Data?
-            if SBUGlobals.shouldUseImageCompression {
+            if SBUGlobals.UsingImageCompression {
                 imageData = image
                     .jpegData(compressionQuality: SBUGlobals.imageCompressionRate)
             }
@@ -1315,7 +1315,7 @@ open class SBUChannelViewController: SBUBaseChannelViewController, UINavigationC
                 .resize(with: SBUGlobals.imageResizingSize) else { return }
             
             var imageData: Data?
-            if SBUGlobals.shouldUseImageCompression {
+            if SBUGlobals.UsingImageCompression {
                 imageData = image
                     .jpegData(compressionQuality: SBUGlobals.imageCompressionRate)
             }

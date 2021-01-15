@@ -1555,7 +1555,7 @@ extension SBUCreateChannelViewController {
   @objc public static var UsingMessageGrouping: Swift.Bool
   @objc public static var UsingUserProfile: Swift.Bool
   @objc public static var UsingUserProfileInOpenChannel: Swift.Bool
-  @objc public static var shouldUseImageCompression: Swift.Bool
+  @objc public static var UsingImageCompression: Swift.Bool
   @objc public static var imageCompressionRate: CoreGraphics.CGFloat
   @objc public static var imageResizingSize: CoreGraphics.CGSize
   @objc deinit
