@@ -364,9 +364,13 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
             return
         }
         
+        self.shouldShowLoadingIndicator()
         self.channelListQuery?.loadNextPage(completionHandler: { [weak self] channels, error in
             guard let self = self else { return }
-            defer { self.setLoading(false, false) }
+            defer {
+                self.shouldDismissLoadingIndicator();
+                self.setLoading(false, false)
+            }
             
             if let error = error {
                 SBULog.error("""
@@ -405,6 +409,7 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
             channelLogsParams = SBDGroupChannelChangeLogsParams.create(with: channelListQuery)
         }
         
+        self.shouldShowLoadingIndicator()
         if let token = token {
             SBULog.info("[Request] Channel change logs with token")
             
@@ -413,6 +418,8 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
                 params: channelLogsParams
             ){ [weak self] updatedChannels, deletedChannelUrls, hasMore, token, error in
                 guard let self = self else { return }
+                defer { self.shouldDismissLoadingIndicator() }
+                
                 if let error = error {
                     SBULog.error("""
                         [Failed]
@@ -442,6 +449,8 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
                 params: channelLogsParams
             ) { [weak self] updatedChannels, deletedChannelUrls, hasMore, token, error in
                 guard let self = self else { return }
+                defer { self.shouldDismissLoadingIndicator() }
+                
                 if let error = error {
                     SBULog.error("""
                         [Failed]
@@ -1040,7 +1049,6 @@ extension SBUChannelListViewController: SBDChannelDelegate, SBDConnectionDelegat
     }
 }
 
-
 // MARK: - SBUCreateChannelTypeSelectorDelegate
 extension SBUChannelListViewController: SBUCreateChannelTypeSelectorDelegate {
     open func didSelectCloseSelector() {
@@ -1073,4 +1081,14 @@ extension SBUChannelListViewController: SBUCreateChannelTypeSelectorDelegate {
         }
         self.showCreateChannel(type: .broadcast)
     }
+}
+
+// MARK: - LoadingIndicatorDelegate
+extension SBUChannelListViewController: LoadingIndicatorDelegate {
+    @discardableResult
+    open func shouldShowLoadingIndicator() -> Bool {
+        return false
+    }
+    
+    open func shouldDismissLoadingIndicator() {}
 }

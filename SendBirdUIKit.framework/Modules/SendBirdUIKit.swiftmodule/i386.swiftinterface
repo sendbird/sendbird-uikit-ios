@@ -370,6 +370,11 @@ extension SBUChannelListViewController : SendBirdUIKit.SBUCreateChannelTypeSelec
   @objc dynamic open func didSelectCreateSuperGroupChannel()
   @objc dynamic open func didSelectCreateBroadcastChannel()
 }
+extension SBUChannelListViewController {
+  @objc @discardableResult
+  dynamic open func shouldShowLoadingIndicator() -> Swift.Bool
+  @objc dynamic open func shouldDismissLoadingIndicator()
+}
 @objc @_inheritsConvenienceInitializers @objcMembers public class SBUGlobalCustomParams : ObjectiveC.NSObject {
   @objc public static var groupChannelParamsCreateBuilder: ((SendBirdSDK.SBDGroupChannelParams?) -> Swift.Void)?
   @objc public static var groupChannelParamsUpdateBuilder: ((SendBirdSDK.SBDGroupChannelParams?) -> Swift.Void)?
