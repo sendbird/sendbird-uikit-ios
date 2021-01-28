@@ -10,12 +10,17 @@ import UIKit
 
 @objcMembers
 open class SBUBaseChannelViewController: UIViewController {
-    open func setupAutolayout() {
-    }
+    open func setupAutolayout() {}
     
-    open func setupStyles() {
-    }
+    open func setupStyles() {}
     
-    open func updateStyles() {
+    open func updateStyles() {}
+}
+
+extension SBUBaseChannelViewController: UIGestureRecognizerDelegate {
+    open func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer,
+           shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer)
+            -> Bool {
+       return true
     }
 }

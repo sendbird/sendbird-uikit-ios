@@ -246,7 +246,7 @@ open class SBUChannelViewController: SBUBaseChannelViewController, UINavigationC
         self.tableView.alwaysBounceVertical = false
         self.tableView.separatorStyle = .none
         self.tableView.allowsSelection = false
-
+        
         if self.adminMessageCell == nil {
             self.register(adminMessageCell: SBUAdminMessageCell())
         }
@@ -2191,7 +2191,14 @@ open class SBUChannelViewController: SBUBaseChannelViewController, UINavigationC
     /// This function dismisses the keyboard.
     /// - Since: 1.2.5
     public func dismissKeyboard() {
-        view.endEditing(true)
+        self.view.endEditing(true)
+    }
+    
+    @objc private func dismissKeyboardIfTouchInput(gestureRecognizer: UIPanGestureRecognizer) {
+        let point = gestureRecognizer.location(in: view)
+        if self.messageInputView.frame.contains(point) {
+            self.view.endEditing(true)
+        }
     }
     
     /// This functions adds the hide keyboard gesture in tableView.
@@ -2200,6 +2207,10 @@ open class SBUChannelViewController: SBUBaseChannelViewController, UINavigationC
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tap.cancelsTouchesInView = false
         tableView.addGestureRecognizer(tap)
+        
+        let pan = UIPanGestureRecognizer(target: self, action: #selector(dismissKeyboardIfTouchInput))
+        pan.cancelsTouchesInView = false
+        tableView.addGestureRecognizer(pan)
     }
     
 
