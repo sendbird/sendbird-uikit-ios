@@ -6,7 +6,7 @@
 	<dict>
 		<key>Assets.car</key>
 		<data>
-		+uLAfJVAgJ1metfYKJOqnKv2eLo=
+		FG16Y1EuxhWLnc4qZCWkv7wzEqw=
 		</data>
 		<key>Headers/Array+SBUIKit.swift</key>
 		<data>
@@ -58,7 +58,7 @@
 		</data>
 		<key>Headers/SBUChannelViewController.swift</key>
 		<data>
-		p5BCO17fu+3wE7Hn+twTshtZHSg=
+		LoHvQFSdzWF0HRPKfvJEHEpLQbA=
 		</data>
 		<key>Headers/SBUColorSet.swift</key>
 		<data>
@@ -198,7 +198,7 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		jIyUhRF6MMoURIACYAVmldIKwJc=
+		JgUqftdMGyrKIEhWKti9x3LMYA8=
 		</data>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm.swiftdoc</key>
 		<data>
@@ -266,23 +266,23 @@
 		</data>
 		<key>SBUMenuCell.nib/objects-13.0+.nib</key>
 		<data>
-		bZbPNk7oNlHbI3LwXzCSl+8UGuw=
+		TmKySDAKUNnVmedZ+7tzKyGhO9I=
 		</data>
 		<key>SBUMenuCell.nib/runtime.nib</key>
 		<data>
-		l6XeWuO+C2cjRJ/DDrRt//2m81I=
+		vW/DVOsXQFRrklnxuNQyTelQzHo=
 		</data>
 		<key>SBUReactionCollectionViewCell.nib/objects-12.3+.nib</key>
 		<data>
-		+Nh9mJOmfqHtPbd51un1GDwTMjY=
+		7VJHKDxa29H+yZztmdTTVI9jZXY=
 		</data>
 		<key>SBUReactionCollectionViewCell.nib/objects-13.0+.nib</key>
 		<data>
-		vQLFuaLSODAbl8D07/XvEGeH7Z0=
+		Rttw3OZGgiwAKHjrV/GxWBb0ADI=
 		</data>
 		<key>SBUReactionCollectionViewCell.nib/runtime.nib</key>
 		<data>
-		mAS7NuwZB2jXg1GHK5Co3/hGq2s=
+		W7m747mRnJPZi9N5f9mwFwxNL0c=
 		</data>
 	</dict>
 	<key>files2</key>
@@ -291,11 +291,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			+uLAfJVAgJ1metfYKJOqnKv2eLo=
+			FG16Y1EuxhWLnc4qZCWkv7wzEqw=
 			</data>
 			<key>hash2</key>
 			<data>
-			r77RaYHbrELQ4nYdKpR3Qiu0MVHkeEXnoD9PGQeQXZQ=
+			oTQXf9/o94H2OxkeTKAN4un2dtkydpAw/k+RWk4Wks4=
 			</data>
 		</dict>
 		<key>Headers/Array+SBUIKit.swift</key>
@@ -434,11 +434,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			p5BCO17fu+3wE7Hn+twTshtZHSg=
+			LoHvQFSdzWF0HRPKfvJEHEpLQbA=
 			</data>
 			<key>hash2</key>
 			<data>
-			fTvW3+i7NNU7J8BNXq4v8Q7cu5VWvHtzXEDdl461VYQ=
+			ArPM9W6u/x5CaxsoNvRerNZllofmVBjOZA1plLKvwKo=
 			</data>
 		</dict>
 		<key>Headers/SBUColorSet.swift</key>
@@ -995,55 +995,55 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			bZbPNk7oNlHbI3LwXzCSl+8UGuw=
+			TmKySDAKUNnVmedZ+7tzKyGhO9I=
 			</data>
 			<key>hash2</key>
 			<data>
-			9FLJ83edMx9XDuSpX+J8P0VqAE4XA7BX/0wVXCy2gr4=
+			BhAKyB4nx2n64T45jau7hqYesS+rPhqp1TtL1vmQllU=
 			</data>
 		</dict>
 		<key>SBUMenuCell.nib/runtime.nib</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			l6XeWuO+C2cjRJ/DDrRt//2m81I=
+			vW/DVOsXQFRrklnxuNQyTelQzHo=
 			</data>
 			<key>hash2</key>
 			<data>
-			vsmJu7vOTV6njMO+y2IOGFCCx/lUx2+kfeQ7/v24kJo=
+			RywYMbOxFBJKHXD60ltpR2iW68KGBOCV2QDlnqgiu6Y=
 			</data>
 		</dict>
 		<key>SBUReactionCollectionViewCell.nib/objects-12.3+.nib</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			+Nh9mJOmfqHtPbd51un1GDwTMjY=
+			7VJHKDxa29H+yZztmdTTVI9jZXY=
 			</data>
 			<key>hash2</key>
 			<data>
-			QeT71HmY8AUreoh1ao0pJv+Pzxn7UKMlpxDGjd5UEcI=
+			vNnYY5jKVSczgqcTxwRPAby7D6eB9Abd4JrDoFTpnt0=
 			</data>
 		</dict>
 		<key>SBUReactionCollectionViewCell.nib/objects-13.0+.nib</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			vQLFuaLSODAbl8D07/XvEGeH7Z0=
+			Rttw3OZGgiwAKHjrV/GxWBb0ADI=
 			</data>
 			<key>hash2</key>
 			<data>
-			tXCHHnjqizBCgPUT9pH9q45sOR01rtV+BIRqERZLp34=
+			BUMtHq08tpKLRgcpgySktG+Su4yiboxwY6Hxr8OH2wM=
 			</data>
 		</dict>
 		<key>SBUReactionCollectionViewCell.nib/runtime.nib</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			mAS7NuwZB2jXg1GHK5Co3/hGq2s=
+			W7m747mRnJPZi9N5f9mwFwxNL0c=
 			</data>
 			<key>hash2</key>
 			<data>
-			zKW/BwTxKvwv8Ym/tsZqVYshfuNsXgp3mdE7u/hXNtQ=
+			wYbQcsp3wB/pEhrOOrXGy6Fdw3Pecm962X42VvuS+Y4=
 			</data>
 		</dict>
 	</dict>

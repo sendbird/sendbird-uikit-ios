@@ -2209,6 +2209,7 @@ open class SBUChannelViewController: SBUBaseChannelViewController, UINavigationC
         tableView.addGestureRecognizer(tap)
         
         let pan = UIPanGestureRecognizer(target: self, action: #selector(dismissKeyboardIfTouchInput))
+        pan.delegate = self
         pan.cancelsTouchesInView = false
         tableView.addGestureRecognizer(pan)
     }

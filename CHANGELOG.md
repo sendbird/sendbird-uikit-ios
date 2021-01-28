@@ -1,6 +1,6 @@
 # Change Log
 
-### v2.0.6 (Jan 28, 2021)
+### v2.0.7 (Jan 28, 2021)
 * Dismiss keyboard on swiping message list
 
 ### v2.0.5 (Jan 20, 2021)
