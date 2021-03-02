@@ -379,6 +379,9 @@ public class SBUMain: NSObject {
             }
         }
         
+        // Dismiss any presented view controllers before pushing other vc on top
+        viewController?.presentedViewController?.dismiss(animated: false, completion: nil)
+        
         if let viewController = viewController as? SBUChannelListViewController {
             viewController.showChannel(channelUrl: channelUrl)
         } else if let viewController = viewController as? SBUChannelViewController {
@@ -433,6 +436,9 @@ public class SBUMain: NSObject {
                 }
             }
         }
+        
+        // Dismiss any presented view controllers before pushing other vc on top
+        viewController?.presentedViewController?.dismiss(animated: false, completion: nil)
         
         if let viewController = viewController as? SBUBaseChannelListViewController {
             viewController.showChannel(channelUrl: channelUrl)

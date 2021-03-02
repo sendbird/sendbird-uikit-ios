@@ -200,6 +200,12 @@ open class SBUCreateChannelViewController: UIViewController, UINavigationControl
         self.updateStyles()
     }
     
+    open override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        SBULoading.stop()
+    }
+    
     deinit {
         SBULog.info("")
     }

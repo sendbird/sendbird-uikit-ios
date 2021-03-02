@@ -299,6 +299,17 @@ open class SBUMemberListViewController: UIViewController {
         self.updateStyles()
     }
     
+    open override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        if let userProfileView = userProfileView as? SBUUserProfileView {
+            userProfileView.dismiss()
+        }
+        
+        SBUActionSheet.dismiss()
+        SBULoading.stop()
+    }
+    
     deinit {
         SBULog.info("")
     }

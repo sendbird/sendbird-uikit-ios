@@ -262,6 +262,14 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
         self.updateStyles()
     }
     
+    open override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        SBUUtils.dismissPresentedOnDisappear(presentedViewController: self.presentedViewController)
+        
+        SBULoading.stop()
+    }
+    
     deinit {
         SBULog.info("")
         SBDMain.removeChannelDelegate(forIdentifier: self.description)

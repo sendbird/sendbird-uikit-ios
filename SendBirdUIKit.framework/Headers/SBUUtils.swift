@@ -153,3 +153,20 @@ public class SBUUtils: NSObject {
         return String(repeating: placeholderSymbol, count: countOfSymbols)
     }
 }
+
+extension SBUUtils {
+
+    // To dismiss presented views which should be dismissed on view disappear.
+    // - `SBUEmojiListViewController`
+    // - `SBUReactionsViewController`
+    // - `SBUMenuViewController`
+    static func dismissPresentedOnDisappear(presentedViewController: UIViewController?) {
+        guard let presented = presentedViewController else { return }
+        
+        if presented is SBUEmojiListViewController ||
+            presented is SBUReactionsViewController ||
+            presented is SBUMenuViewController {
+            presented.dismiss(animated: false, completion: nil)
+        }
+    }
+}

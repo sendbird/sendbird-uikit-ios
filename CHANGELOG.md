@@ -1,5 +1,10 @@
 # Change Log
 
+### v2.0.8 (March 2, 2021)
+* Changes in `SBUChannelViewController` and `SBUOpenChannelViewController`
+  * Set `keyboardDismissMode` of `tableView` to `.interactive` as default.
+  * Changed `messageInputViewBottomConstraint`, `tableViewTopConstraint` properties to private access.
+
 ### v2.0.7 (Jan 28, 2021)
 * Dismiss keyboard on swiping message list
 

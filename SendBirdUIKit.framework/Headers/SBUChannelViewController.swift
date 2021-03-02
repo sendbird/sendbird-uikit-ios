@@ -23,18 +23,11 @@ open class SBUChannelViewController: SBUBaseChannelViewController, UINavigationC
     /// If you use a view that inherits SBUNewMessageInfo, you can change the button and their action.
     public lazy var newMessageInfoView: UIView? = _newMessageInfoView
     
-    public lazy var messageInputView: SBUMessageInputView = _messageInputView
-    
     public lazy var titleView: UIView? = _titleView
     public lazy var leftBarButton: UIBarButtonItem? = _leftBarButton
     public lazy var rightBarButton: UIBarButtonItem? = _rightBarButton
     public lazy var channelStateBanner: UIView? = _channelStateBanner
     public lazy var emptyView: UIView? = _emptyView
-    public private(set) lazy var tableView = UITableView()
-
-    /// To use the custom user profile view, set this to the custom view created using `SBUUserProfileViewProtocol`.
-    /// And, if you do not want to use the user profile feature, please set this value to nil.
-    public lazy var userProfileView: UIView? = _userProfileView
 
     public var theme: SBUChannelTheme = SBUTheme.channelTheme
 
@@ -45,10 +38,6 @@ open class SBUChannelViewController: SBUBaseChannelViewController, UINavigationC
     public private(set) var customMessageCell: SBUBaseMessageCell?
     public private(set) var unknownMessageCell: SBUBaseMessageCell?
     
-    // for constraint
-    public private(set) var messageInputViewBottomConstraint: NSLayoutConstraint!
-    public private(set) var tableViewTopConstraint: NSLayoutConstraint!
-
     
     // MARK: - UI properties (Private)
     private lazy var _titleView: SBUChannelTitleView = {
@@ -88,19 +77,10 @@ open class SBUChannelViewController: SBUBaseChannelViewController, UINavigationC
         return label
     }()
     
-    private lazy var _messageInputView: SBUMessageInputView = {
-        return SBUMessageInputView()
-    }()
-    
     private lazy var _newMessageInfoView: SBUNewMessageInfo = {
         return SBUNewMessageInfo()
     }()
     
-    private lazy var _userProfileView: SBUUserProfileView = {
-       let userProfileView = SBUUserProfileView(delegate: self)
-        return userProfileView
-    }()
-
     private lazy var _emptyView: SBUEmptyView = {
         let emptyView = SBUEmptyView()
         emptyView.type = EmptyViewType.none
@@ -238,14 +218,6 @@ open class SBUChannelViewController: SBUBaseChannelViewController, UINavigationC
         
         // Message Input View
         self.messageInputView.delegate = self
-        
-        // tableview
-        self.tableView.delegate = self
-        self.tableView.dataSource = self
-        self.tableView.bounces = false
-        self.tableView.alwaysBounceVertical = false
-        self.tableView.separatorStyle = .none
-        self.tableView.allowsSelection = false
         
         if self.adminMessageCell == nil {
             self.register(adminMessageCell: SBUAdminMessageCell())
@@ -395,10 +367,6 @@ open class SBUChannelViewController: SBUBaseChannelViewController, UINavigationC
             newMessageInfoView.setupStyles()
         }
         
-        if let userProfileView = self.userProfileView as? SBUUserProfileView {
-            userProfileView.setupStyles()
-        }
-        
         if let emptyView = self.emptyView as? SBUEmptyView {
             emptyView.setupStyles()
         }
@@ -433,20 +401,6 @@ open class SBUChannelViewController: SBUBaseChannelViewController, UINavigationC
     
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.setNeedsStatusBarAppearanceUpdate()
-
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(keyboardWillShow),
-            name: UIResponder.keyboardWillShowNotification,
-            object: nil
-        )
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(keyboardWillHide),
-            name: UIResponder.keyboardWillHideNotification,
-            object: nil
-        )
         
         if let channel = self.channel {
             guard let titleView = titleView as? SBUChannelTitleView else { return }
@@ -1125,7 +1079,7 @@ open class SBUChannelViewController: SBUBaseChannelViewController, UINavigationC
     ///   - needReload: If set to `true`, the tableview will be call reloadData.
     /// - Since: 1.2.5
     public func upsertMessagesInList(messages: [SBDBaseMessage]?,
-                                      needUpdateNewMessage: Bool = true,
+                                      needUpdateNewMessage: Bool = false,
                                       needReload: Bool) {
         messages?.forEach { message in
             if let index = self.messageList
@@ -1134,19 +1088,11 @@ open class SBUChannelViewController: SBUBaseChannelViewController, UINavigationC
             }
             self.messageList.append(message)
             
-            switch message {
-            case let userMessage as SBDUserMessage:
-                if userMessage.requestId.count > 0 { break }
-                if needUpdateNewMessage {
-                    self.increaseNewMessageCount()
-                }
-            case let fileMessage as SBDFileMessage:
-                if fileMessage.requestId.count > 0 { break }
-                if needUpdateNewMessage {
-                    self.increaseNewMessageCount()
-                }
-            default:
-                break
+            guard message is SBDUserMessage ||
+                    message is SBDFileMessage else { return }
+
+            if needUpdateNewMessage {
+                self.increaseNewMessageCount()
             }
         }
         
@@ -1704,24 +1650,6 @@ open class SBUChannelViewController: SBUBaseChannelViewController, UINavigationC
         reactionsVC.transitioningDelegate = self
         self.present(reactionsVC, animated: true)
     }
-    
-    /// This function sets the user profile tap gesture handling.
-    ///
-    /// If you do not want to use the user profile function, override this function and leave it empty.
-    /// - Parameter user: `SBUUser` object used for user profile configuration
-    ///
-    /// - Since: 1.2.2
-    open func setUserProfileTapGestureHandler(_ user: SBUUser) {
-        if let userProfileView = self.userProfileView as? SBUUserProfileView,
-            let baseView = self.navigationController?.view,
-            SBUGlobals.UsingUserProfile
-        {
-            userProfileView.show(
-                baseView: baseView,
-                user: user
-            )
-        }
-    }
 
     
     // MARK: - Message input mode
@@ -1920,7 +1848,8 @@ open class SBUChannelViewController: SBUBaseChannelViewController, UINavigationC
         }
     }
     
-    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    public override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        super.scrollViewDidScroll(scrollView)
         self.lastSeenIndexPath = nil
         
         if scrollView.contentOffset.y < 10 {
@@ -2163,68 +2092,17 @@ open class SBUChannelViewController: SBUBaseChannelViewController, UINavigationC
             cell.isSelected = false
         }
     }
-
-    
-    // MARK: - Keyboard
-    /// This function changes the messageInputView bottom constraint using keyboard height.
-    /// - Parameter notification: Notification object with keyboardFrame information
-    /// - Since: 1.2.5
-    public func keyboardWillShow(_ notification: Notification) {
-        guard let keyboardFrame = notification.userInfo?[
-            UIResponder.keyboardFrameEndUserInfoKey
-            ] as? NSValue else { return }
-        let keyboardRectangle = keyboardFrame.cgRectValue
-        let keyboardHeight = keyboardRectangle.height
-        
-        self.messageInputViewBottomConstraint.constant = -keyboardHeight
-        self.view.layoutIfNeeded()
-    }
-    
-    /// This function changes the messageInputView bottom constraint using keyboard height.
-    /// - Parameter notification: Notification object with keyboardFrame information
-    /// - Since: 1.2.5
-    public func keyboardWillHide(_ notification: Notification) {
-        self.messageInputViewBottomConstraint.constant = 0
-        self.view.layoutIfNeeded()
-    }
-    
-    /// This function dismisses the keyboard.
-    /// - Since: 1.2.5
-    public func dismissKeyboard() {
-        self.view.endEditing(true)
-    }
-    
-    @objc private func dismissKeyboardIfTouchInput(gestureRecognizer: UIPanGestureRecognizer) {
-        let point = gestureRecognizer.location(in: view)
-        if self.messageInputView.frame.contains(point) {
-            self.view.endEditing(true)
-        }
-    }
-    
-    /// This functions adds the hide keyboard gesture in tableView.
-    /// - Since: 1.2.5
-    public func addGestureHideKeyboard() {
-        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-        tap.cancelsTouchesInView = false
-        tableView.addGestureRecognizer(tap)
-        
-        let pan = UIPanGestureRecognizer(target: self, action: #selector(dismissKeyboardIfTouchInput))
-        pan.delegate = self
-        pan.cancelsTouchesInView = false
-        tableView.addGestureRecognizer(pan)
-    }
     
 
     // MARK: - Error handling
     open func didReceiveError(_ message: String?) {
         SBULog.error("Did receive error: \(message ?? "")")
     }
-}
 
 
-// MARK: - UITableViewDelegate, UITableViewDataSource
-extension SBUChannelViewController: UITableViewDelegate, UITableViewDataSource {
-    open func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    // MARK: - UITableViewDelegate, UITableViewDataSource
+    
+    open override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let channel = self.channel else {
             self.didReceiveError("Channel must exist!")
             return UITableViewCell()
@@ -2242,6 +2120,9 @@ extension SBUChannelViewController: UITableViewDelegate, UITableViewDataSource {
             self.didReceiveError("There are no message cells!")
             return cell
         }
+        
+        //NOTE: to disable unwanted animation while configuring cells
+        UIView.setAnimationsEnabled(false)
         
         let isSameDay = self.checkSameDayAsNextMessage(currentIndex: indexPath.row)
         let receiptState = SBUUtils.getReceiptState(channel: channel, message: message)
@@ -2307,6 +2188,8 @@ extension SBUChannelViewController: UITableViewDelegate, UITableViewDataSource {
             )
         }
         
+        UIView.setAnimationsEnabled(true)
+        
         // Tap profile action
         messageCell.userProfileTapHandler = { [weak messageCell, weak self] in
             guard let self = self else { return }
@@ -2349,7 +2232,7 @@ extension SBUChannelViewController: UITableViewDelegate, UITableViewDataSource {
         }
     }
     
-    open func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    open override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.fullMessageList.count
     }
     
@@ -2523,27 +2406,6 @@ extension SBUChannelViewController: SBUEmptyViewDelegate {
 }
 
 
-// MARK: - SBUUserProfileViewDelegate
-extension SBUChannelViewController: SBUUserProfileViewDelegate {
-    open func didSelectMessage(userId: String?) {
-        if let userProfileView = self.userProfileView
-            as? SBUUserProfileViewProtocol {
-            userProfileView.dismiss()
-            if let userId = userId {
-                SBUMain.createAndMoveToChannel(userIds: [userId])
-            }
-        }
-    }
-    
-    open func didSelectClose() {
-        if let userProfileView = self.userProfileView
-            as? SBUUserProfileViewProtocol {
-            userProfileView.dismiss()
-        }
-    }
-}
-
-
 // MARK: - SBDChannelDelegate, SBDConnectionDelegate
 extension SBUChannelViewController: SBDChannelDelegate, SBDConnectionDelegate {
     // MARK: SBDChannelDelegate
@@ -2573,7 +2435,7 @@ extension SBUChannelViewController: SBDChannelDelegate, SBDConnectionDelegate {
         
         SBULog.info("[Request] markAsRead")
         self.channel?.markAsRead()
-        self.upsertMessagesInList(messages: [message], needReload: true)
+        self.upsertMessagesInList(messages: [message], needUpdateNewMessage: true, needReload: true)
     }
     
     // Updated message

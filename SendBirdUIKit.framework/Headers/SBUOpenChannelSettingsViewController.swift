@@ -227,6 +227,13 @@ open class SBUOpenChannelSettingsViewController: UIViewController, UINavigationC
         self.updateStyles()
     }
     
+    open override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        SBUActionSheet.dismiss()
+        SBUAlertView.dismiss()
+    }
+    
     
     // MARK: - SDK relations
     

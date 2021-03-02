@@ -27,7 +27,7 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
     public lazy var textView: UITextView? = _textView
     public lazy var sendButton: UIButton? = _sendButton
 
-    public lazy var editView = UIView()
+    public lazy var editView: UIView = _editView
     public lazy var cancelButton: UIButton? = _cancelButton
     public lazy var saveButton: UIButton? = _saveButton
     
@@ -66,6 +66,8 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
     lazy var _addButton: UIButton = {
         let button = UIButton(type: .custom)
         button.addTarget(self, action: #selector(onClickAddButton(_:)), for: .touchUpInside)
+        button.isHidden = false
+        button.alpha = 1
         return button
     }()
     
@@ -78,10 +80,19 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         return tv
     }()
     
+    lazy var _editView: UIView = {
+        let editView = UIView()
+        editView.isHidden = true
+        editView.alpha = 0
+        return editView
+    }()
+    
     lazy var _sendButton: UIButton = {
         let button = UIButton()
         button.layer.cornerRadius = 4
         button.addTarget(self, action: #selector(onClickSendButton(_:)), for: .touchUpInside)
+        button.isHidden = true
+        button.alpha = 0
         return button
     }()
     
@@ -181,7 +192,18 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
     /// This function handles the initialization of autolayouts.
     open func setupAutolayout() {
         if #available(iOS 11.0, *) {
-            self.baseStackView.sbu_constraint(equalTo: self, leading: 20, trailing: -16, top: 0)
+            self.baseStackView.sbu_constraint_equalTo(
+                leadingAnchor: self.safeAreaLayoutGuide.leadingAnchor,
+                leading: 20
+            )
+            self.baseStackView.sbu_constraint_equalTo(
+                topAnchor: self.safeAreaLayoutGuide.topAnchor,
+                top: 0
+            )
+            self.baseStackView.sbu_constraint_equalTo(
+                trailingAnchor: self.safeAreaLayoutGuide.trailingAnchor,
+                trailing: -16
+            )
             self.baseStackView.sbu_constraint_equalTo(
                 bottomAnchor: self.safeAreaLayoutGuide.bottomAnchor,
                 bottom: 0
@@ -335,8 +357,10 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         self.textView?.isUserInteractionEnabled = !self.isFrozen
         self.addButton?.isEnabled = !self.isFrozen
         
-        self.endEditMode()
-        self.endTypingMode()
+        if self.isFrozen {
+            self.endEditMode()
+            self.endTypingMode()
+        }
         self.setupStyles()
     }
     
@@ -349,8 +373,10 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         self.textView?.isUserInteractionEnabled = !self.isMuted
         self.addButton?.isEnabled = !self.isMuted
         
-        self.endEditMode()
-        self.endTypingMode()
+        if self.isMuted {
+            self.endEditMode()
+            self.endTypingMode()
+        }
         self.setupStyles()
     }
     

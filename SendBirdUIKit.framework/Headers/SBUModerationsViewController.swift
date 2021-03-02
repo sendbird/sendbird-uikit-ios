@@ -178,6 +178,12 @@ open class SBUModerationsViewController: UIViewController, UINavigationControlle
         self.updateStyles()
     }
     
+    open override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        SBULoading.stop()
+    }
+    
     
     // MARK: - SDK relations
     
