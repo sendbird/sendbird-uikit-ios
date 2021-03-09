@@ -1,5 +1,8 @@
 # Change Log
 
+### v2.0.9 (March 9, 2021)
+* Fixed runtime debugger issue.
+
 ### v2.0.8 (March 2, 2021)
 * Changes in `SBUChannelViewController` and `SBUOpenChannelViewController`
   * Set `keyboardDismissMode` of `tableView` to `.interactive` as default.

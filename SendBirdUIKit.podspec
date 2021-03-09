@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
 	s.name         = "SendBirdUIKit"
-	s.version      = "2.0.8"
+	s.version      = "2.0.9"
 	s.summary      = "UIKit based on SendBirdSDK"
 	s.description  = "SendBird UIKit is a framework composed of basic UI components based on SendBirdSDK."
 	s.homepage     = "https://sendbird.com"
