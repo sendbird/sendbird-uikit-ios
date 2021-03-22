@@ -21,7 +21,13 @@ open class SBUUserCell: UITableViewCell {
     public var separateView = UIView()
 
     public var theme: SBUUserCellTheme = SBUTheme.userCellTheme
-
+    
+    // MARK: - Properties (Private)
+    private var loadImageSession: URLSessionTask? {
+        willSet {
+            loadImageSession?.cancel()
+        }
+    }
     
     // MARK: - UI properties (Private)
     lazy var _baseStackView: UIStackView = {
@@ -43,9 +49,14 @@ open class SBUUserCell: UITableViewCell {
         let imageView = UIImageView()
         imageView.isHidden = true
         imageView.contentMode = .center
-        let image = SBUIconSet.iconMuted
-            .sbu_with(tintColor: self.theme.mutedStateIconColor)
-            .resize(with: .init(width: 24, height: 24))
+        
+        let image = SBUIconSetType.iconMute.image(
+            with: self.theme.mutedStateIconColor,
+            to: SBUIconSetType.Metric.defaultIconSize
+        ).resize(
+            with: .init(width: 24, height: 24)
+        )
+        
         imageView.image = image
         return imageView
     }()
@@ -60,11 +71,17 @@ open class SBUUserCell: UITableViewCell {
     lazy var _checkboxButton: UIButton = {
         let button = UIButton()
         button.setImage(
-            SBUIconSet.iconCheckboxOff.sbu_with(tintColor: self.theme.checkboxOffColor),
+            SBUIconSetType.iconCheckboxUnchecked.image(
+                with: self.theme.checkboxOffColor,
+                to: SBUIconSetType.Metric.defaultIconSize
+            ),
             for: .normal
         )
         button.setImage(
-            SBUIconSet.iconCheckbox.sbu_with(tintColor: self.theme.checkboxOnColor),
+            SBUIconSetType.iconCheckboxChecked.image(
+                with: self.theme.checkboxOnColor,
+                to: SBUIconSetType.Metric.defaultIconSize
+            ),
             for: .selected
         )
         button.isHidden = true
@@ -75,11 +92,17 @@ open class SBUUserCell: UITableViewCell {
     lazy var _moreButton: UIButton = {
         let button = UIButton()
         button.setImage(
-            SBUIconSet.iconMore.sbu_with(tintColor: self.theme.moreButtonColor),
+            SBUIconSetType.iconMore.image(
+                with: self.theme.moreButtonColor,
+                to: SBUIconSetType.Metric.defaultIconSize
+            ),
             for: .normal
         )
         button.setImage(
-            SBUIconSet.iconMore.sbu_with(tintColor: self.theme.moreButtonDisabledColor),
+            SBUIconSetType.iconMore.image(
+                with: self.theme.moreButtonDisabledColor,
+                to: SBUIconSetType.Metric.defaultIconSize
+            ),
             for: .disabled
         )
         button.isHidden = true
@@ -218,10 +241,11 @@ open class SBUUserCell: UITableViewCell {
         self.userNameLabel.text = user.refinedNickname()
             + (isMe ? " \(SBUStringSet.MemberList_Me)" : "")
         
-        self.userImageView.loadImage(
+        self.loadImageSession = self.userImageView.loadImage(
             urlString: user.profileUrl ?? "",
-            placeholder: SBUIconSet.iconUser.sbu_with(
-                tintColor: self.theme.userPlaceholderTintColor
+            placeholder: SBUIconSetType.iconUser.image(
+                with: self.theme.userPlaceholderTintColor,
+                to: SBUIconSetType.Metric.defaultIconSize
             )
         )
         
@@ -229,7 +253,7 @@ open class SBUUserCell: UITableViewCell {
         self.userImageView.contentMode = .scaleAspectFill
         
         self.mutedStateImageView.isHidden = !user.isMuted
-        self.operatorLabel.isHidden = !user.isOperator
+        self.operatorLabel.isHidden = type == .operators || !user.isOperator
 
         self.separateView.isHidden = false
         self.checkboxButton.isHidden = true
@@ -246,21 +270,20 @@ open class SBUUserCell: UITableViewCell {
                 self.moreButton.isHidden = false
                 self.moreButton.isEnabled = !isMe
             }
-            break
 
         case .reaction:
             let profileImageUrl = user.profileUrl ?? ""
             self.userImageView.loadImage(
                 urlString: profileImageUrl,
-                placeholder: SBUIconSet.iconUser.sbu_with(
-                    tintColor: self.theme.userPlaceholderTintColor
+                placeholder: SBUIconSetType.iconUser.image(
+                    with: self.theme.userPlaceholderTintColor,
+                    to: SBUIconSetType.Metric.defaultIconSize
                 )
             )
         
             self.separateView.isHidden = true
            
         case .operators:
-            self.operatorLabel.isHidden = false
             self.moreButton.isHidden = false
             self.moreButton.isEnabled = !isMe
             

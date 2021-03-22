@@ -44,7 +44,7 @@ class SBUCreateChannelTypeSelector: UIView, SBUCreateChannelTypeSelectorProtocol
     lazy var contentView = UIView()
     lazy var rightBarButton: UIBarButtonItem = {
         return UIBarButtonItem(
-            image: SBUIconSet.iconClose,
+            image: SBUIconSetType.iconClose.image(to: SBUIconSetType.Metric.defaultIconSize),
             style: .plain,
             target: self,
             action: #selector(onClickClose)
@@ -135,16 +135,14 @@ class SBUCreateChannelTypeSelector: UIView, SBUCreateChannelTypeSelectorProtocol
         )
         
         self.navigationItem.rightBarButtonItem?.tintColor = self.theme.closeBarButtonTintColor
-    }
-    
-    public func updateStyles() {
-        self.theme = SBUTheme.componentTheme
-
-        self.setupStyles()
         
         self.updateButton(type: .group)
         self.updateButton(type: .supergroup)
         self.updateButton(type: .broadcast)
+    }
+    
+    public func updateStyles() {
+        self.setupStyles()
     }
     
     func setupAutolayout() {
@@ -242,7 +240,10 @@ extension SBUCreateChannelTypeSelector {
         case .group:
             button.setTitle(SBUStringSet.ChannelType_Group, for: .normal)
             button.setImage(
-                SBUIconSet.channelTypeGroup.sbu_with(tintColor: tintColor),
+                SBUIconSetType.iconChat.image(
+                    with: tintColor,
+                    to: SBUIconSetType.Metric.defaultIconSize
+                ),
                 for: .normal
             )
             button.addTarget(
@@ -253,7 +254,10 @@ extension SBUCreateChannelTypeSelector {
         case .supergroup:
             button.setTitle(SBUStringSet.ChannelType_SuperGroup, for: .normal)
             button.setImage(
-                SBUIconSet.channelTypeSupergroup.sbu_with(tintColor: tintColor),
+                SBUIconSetType.iconSupergroup.image(
+                    with: tintColor,
+                    to: SBUIconSetType.Metric.defaultIconSize
+                ),
                 for: .normal
             )
             button.addTarget(
@@ -264,7 +268,10 @@ extension SBUCreateChannelTypeSelector {
         case .broadcast:
             button.setTitle(SBUStringSet.ChannelType_Broadcast, for: .normal)
             button.setImage(
-                SBUIconSet.channelTypeBroadcast.sbu_with(tintColor: tintColor),
+                SBUIconSetType.iconBroadcast.image(
+                    with: tintColor,
+                    to: SBUIconSetType.Metric.defaultIconSize
+                ),
                 for: .normal
             )
             button.addTarget(
@@ -289,17 +296,26 @@ extension SBUCreateChannelTypeSelector {
         switch type {
         case .group:
             button.setImage(
-                SBUIconSet.channelTypeGroup.sbu_with(tintColor: tintColor),
+                SBUIconSetType.iconChat.image(
+                    with: tintColor,
+                    to: SBUIconSetType.Metric.defaultIconSize
+                ),
                 for: .normal
             )
         case .supergroup:
             button.setImage(
-                SBUIconSet.channelTypeSupergroup.sbu_with(tintColor: tintColor),
+                SBUIconSetType.iconSupergroup.image(
+                    with: tintColor,
+                    to: SBUIconSetType.Metric.defaultIconSize
+                ),
                 for: .normal
             )
         case .broadcast:
             button.setImage(
-                SBUIconSet.channelTypeBroadcast.sbu_with(tintColor: tintColor),
+                SBUIconSetType.iconBroadcast.image(
+                    with: tintColor,
+                    to: SBUIconSetType.Metric.defaultIconSize
+                ),
                 for: .normal
             )
         default:

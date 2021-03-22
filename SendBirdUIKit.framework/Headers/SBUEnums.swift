@@ -22,12 +22,34 @@
     case moderations
     case notifications
     case members
+    case search
     case leave
     
     static func allTypes(isOperator: Bool) -> [ChannelSettingItemType] {
-        return isOperator
+        var items: [ChannelSettingItemType] = isOperator
             ? [.moderations, notifications, members, leave]
             : [.notifications, members, leave]
+        
+        if SBUAvailable.isSupportMessageSearch() {
+            items += [.search]
+        }
+        return items
+    }
+    
+    static func from(row: Int) -> ChannelSettingItemType? {
+        switch row {
+        case 0: return .moderations
+        case 1: return .notifications
+        case 2: return .members
+        case 3:
+            if SBUAvailable.isSupportMessageSearch() {
+                return .search
+            } else {
+                return .leave
+            }
+        case 4: return .leave
+        default: return nil
+        }
     }
 }
 
@@ -109,6 +131,7 @@
     case noMessages
     case noMutedMembers
     case noBannedMembers
+    case noSearchResults
     case error
 }
 
@@ -179,7 +202,6 @@
     case tooltip
     case button
 }
-
 
 @objc public enum LogType: UInt8 {
     case none    = 0b00000000

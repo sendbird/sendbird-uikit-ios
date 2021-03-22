@@ -9,12 +9,24 @@
 import UIKit
 
 @objcMembers
-open class SBUModerationsViewController: UIViewController, UINavigationControllerDelegate {
+open class SBUModerationsViewController: SBUBaseViewController {
     
     // MARK: - UI properties (Public)
-    public lazy var titleView: UIView? = _titleView
-    public lazy var leftBarButton: UIBarButtonItem? = _leftBarButton
-    public lazy var rightBarButton: UIBarButtonItem? = _rightBarButton
+    public var titleView: UIView? = nil {
+        didSet {
+            self.navigationItem.titleView = self.titleView
+        }
+    }
+    public var leftBarButton: UIBarButtonItem? = nil {
+        didSet {
+            self.navigationItem.leftBarButtonItem = self.leftBarButton
+        }
+    }
+    public var rightBarButton: UIBarButtonItem? = nil {
+        didSet {
+                self.navigationItem.rightBarButtonItem = self.rightBarButton
+        }
+    }
     public private(set) lazy var tableView = UITableView()
     
     public var theme: SBUChannelSettingsTheme = SBUTheme.channelSettingsTheme
@@ -37,12 +49,7 @@ open class SBUModerationsViewController: UIViewController, UINavigationControlle
     }()
     
     private lazy var _leftBarButton: UIBarButtonItem = {
-        return UIBarButtonItem(
-            image: SBUIconSet.iconBack,
-            style: .plain,
-            target: self,
-            action: #selector(onClickBack)
-        )
+        return SBUCommonViews.backButton(vc: self, selector: #selector(onClickBack))
     }()
     
     private lazy var _rightBarButton = UIBarButtonItem()
@@ -90,6 +97,16 @@ open class SBUModerationsViewController: UIViewController, UINavigationControlle
         super.loadView()
         SBULog.info("")
         
+        if self.titleView == nil {
+            self.titleView = _titleView
+        }
+        if self.leftBarButton == nil {
+            self.leftBarButton = _leftBarButton
+        }
+        if self.rightBarButton == nil {
+            self.rightBarButton = _rightBarButton
+        }
+        
         // navigation bar
         self.navigationItem.leftBarButtonItem = self.leftBarButton
         self.navigationItem.titleView = self.titleView
@@ -116,7 +133,7 @@ open class SBUModerationsViewController: UIViewController, UINavigationControlle
     }
     
     /// This function handles the initialization of autolayouts.
-    open func setupAutolayout() {
+    open override func setupAutolayout() {
         self.tableView.sbu_constraint(
             equalTo: self.view,
             left: 0,
@@ -127,7 +144,7 @@ open class SBUModerationsViewController: UIViewController, UINavigationControlle
     }
     
     /// This function handles the initialization of styles.
-    open func setupStyles() {
+    open override func setupStyles() {
         self.theme = SBUTheme.channelSettingsTheme
         
         self.navigationController?.navigationBar.setBackgroundImage(
@@ -143,7 +160,7 @@ open class SBUModerationsViewController: UIViewController, UINavigationControlle
         self.tableView.backgroundColor = theme.backgroundColor
     }
     
-    open func updateStyles() {
+    open override func updateStyles() {
         self.theme = SBUTheme.channelSettingsTheme
         
         self.setupStyles()
@@ -173,7 +190,6 @@ open class SBUModerationsViewController: UIViewController, UINavigationControlle
     
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.setNeedsStatusBarAppearanceUpdate()
         
         self.updateStyles()
     }
@@ -324,17 +340,6 @@ open class SBUModerationsViewController: UIViewController, UINavigationControlle
     
     
     // MARK: - Actions
-    
-    /// This function actions to pop or dismiss.
-    /// - Since: 1.2.5
-    public func onClickBack() {
-        if let navigationController = self.navigationController,
-            navigationController.viewControllers.count > 1 {
-            navigationController.popViewController(animated: true)
-        } else {
-            self.dismiss(animated: true, completion: nil)
-        }
-    }
     
     /// Changes freeze status on channel.
     /// - Parameter freeze: freeze status

@@ -11,13 +11,27 @@ import Photos
 import MobileCoreServices
 
 @objcMembers
-open class SBUChannelSettingsViewController: UIViewController, UINavigationControllerDelegate {
+open class SBUChannelSettingsViewController: SBUBaseViewController {
     
     // MARK: - UI properties (Public)
     public lazy var userInfoView: UIView? = _userInfoView
-    public lazy var titleView: UIView? = _titleView
-    public lazy var leftBarButton: UIBarButtonItem? = _leftBarButton
-    public lazy var rightBarButton: UIBarButtonItem? = _rightBarButton
+    public var titleView: UIView? = nil {
+        didSet {
+            self.navigationItem.titleView = self.titleView
+        }
+    }
+    public var leftBarButton: UIBarButtonItem? = nil {
+        didSet {
+            self.navigationItem.leftBarButtonItem = self.leftBarButton
+        }
+    }
+    public var rightBarButton: UIBarButtonItem? = nil {
+        didSet {
+            if !(self.channel?.isBroadcast == true && self.channel?.myRole != .operator) {
+                self.navigationItem.rightBarButtonItem = self.rightBarButton
+            }
+        }
+    }
     public private(set) lazy var tableView = UITableView()
     
     public var theme: SBUChannelSettingsTheme = SBUTheme.channelSettingsTheme
@@ -40,12 +54,7 @@ open class SBUChannelSettingsViewController: UIViewController, UINavigationContr
     }()
     
     private lazy var _leftBarButton: UIBarButtonItem = {
-        return UIBarButtonItem(
-            image: SBUIconSet.iconBack,
-            style: .plain,
-            target: self,
-            action: #selector(onClickBack)
-        )
+        return SBUCommonViews.backButton(vc: self, selector: #selector(onClickBack))
     }()
     
     private lazy var _rightBarButton: UIBarButtonItem = {
@@ -120,6 +129,16 @@ open class SBUChannelSettingsViewController: UIViewController, UINavigationContr
         super.loadView()
         SBULog.info("")
         
+        if self.titleView == nil {
+            self.titleView = _titleView
+        }
+        if self.leftBarButton == nil {
+            self.leftBarButton = _leftBarButton
+        }
+        if self.rightBarButton == nil {
+            self.rightBarButton = _rightBarButton
+        }
+        
         // navigation bar
         self.navigationItem.leftBarButtonItem = self.leftBarButton
         if !(self.channel?.isBroadcast == true && self.channel?.myRole != .operator) {
@@ -150,7 +169,7 @@ open class SBUChannelSettingsViewController: UIViewController, UINavigationContr
     }
     
     /// This function handles the initialization of autolayouts.
-    open func setupAutolayout() {
+    open override func setupAutolayout() {
         if let userInfoView = self.userInfoView as? SBUChannelSettingsUserInfoView {
             userInfoView
                 .sbu_constraint(equalTo: self.view, left: 0, right: 0, top: 0)
@@ -162,7 +181,7 @@ open class SBUChannelSettingsViewController: UIViewController, UINavigationContr
     }
     
     /// This function handles the initialization of styles.
-    open func setupStyles() {
+    open override func setupStyles() {
         self.theme = SBUTheme.channelSettingsTheme
         
         self.navigationController?.navigationBar.setBackgroundImage(
@@ -180,7 +199,7 @@ open class SBUChannelSettingsViewController: UIViewController, UINavigationContr
         self.tableView.backgroundColor = theme.backgroundColor
     }
     
-    open func updateStyles() {
+    open override func updateStyles() {
         self.theme = SBUTheme.channelSettingsTheme
         
         self.setupStyles()
@@ -220,7 +239,6 @@ open class SBUChannelSettingsViewController: UIViewController, UINavigationContr
 
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.setNeedsStatusBarAppearanceUpdate()
         
         self.updateStyles()
     }
@@ -423,19 +441,21 @@ open class SBUChannelSettingsViewController: UIViewController, UINavigationContr
         self.navigationController?.pushViewController(moderationsVC, animated: true)
     }
     
+    /// If you want to use a custom MessageSearchViewController, override it and implement it.
+    ///
+    /// - Since: 2.1.0
+    open func showSearch() {
+        guard let channel = self.channel else { return }
+        let searchVc = SBUMessageSearchViewController(channel: channel)
+        
+        let nav = UINavigationController(rootViewController: searchVc)
+        nav.modalPresentationStyle = .fullScreen
+        
+        self.present(nav, animated: true, completion: nil)
+    }
+    
     
     // MARK: - Actions
-    
-    /// This function actions to pop or dismiss.
-    /// - Since: 1.2.5
-    public func onClickBack() {
-        if let navigationController = self.navigationController,
-            navigationController.viewControllers.count > 1 {
-            navigationController.popViewController(animated: true)
-        } else {
-            self.dismiss(animated: true, completion: nil)
-        }
-    }
     
     /// This function used to when edit button click.
     /// - Since: 1.2.5
@@ -471,12 +491,18 @@ open class SBUChannelSettingsViewController: UIViewController, UINavigationContr
     public func selectChannelImage() {
         let cameraItem = SBUActionSheetItem(
             title: SBUStringSet.Camera,
-            image: SBUIconSet.iconCamera.sbu_with(tintColor: theme.itemColor),
+            image: SBUIconSetType.iconCamera.image(
+                with: theme.itemColor,
+                to: SBUIconSetType.Metric.iconActionSheetItem
+            ),
             completionHandler: nil
         )
         let libraryItem = SBUActionSheetItem(
             title: SBUStringSet.PhotoVideoLibrary,
-            image: SBUIconSet.iconPhoto.sbu_with(tintColor: theme.itemColor),
+            image: SBUIconSetType.iconPhoto.image(
+                with: theme.itemColor,
+                to: SBUIconSetType.Metric.iconActionSheetItem
+            ),
             completionHandler: nil
         )
         let cancelItem = SBUActionSheetItem(
@@ -535,7 +561,8 @@ extension SBUChannelSettingsViewController: UITableViewDataSource, UITableViewDe
         }
         
         let rowValue = indexPath.row + (self.isOperator ? 0 : 1)
-        let type = ChannelSettingItemType(rawValue: rowValue)
+        guard let type = ChannelSettingItemType.from(row: rowValue) else { return }
+        
         switch type {
         case .moderations:
             self.showModerationList()
@@ -545,6 +572,8 @@ extension SBUChannelSettingsViewController: UITableViewDataSource, UITableViewDe
             self.showMemberList()
         case .leave:
             self.leaveChannel()
+        case .search:
+            self.showSearch()
         default:
             break
         }
@@ -557,16 +586,16 @@ extension SBUChannelSettingsViewController: UITableViewDataSource, UITableViewDe
             ) as? SBUChannelSettingCell else { fatalError() }
         
         cell.selectionStyle = .none
-
+        
         let rowValue = indexPath.row + (self.isOperator ? 0 : 1)
-        if let type = ChannelSettingItemType(rawValue: rowValue) {
-            cell.configure(type: type, channel: self.channel)
-            
-            if type == .notifications {
-                cell.switchAction = { [weak self] isOn in
-                    guard let self = self else { return }
-                    self.changeNotification(isOn: isOn)
-                }
+        guard let type = ChannelSettingItemType.from(row: rowValue) else { return cell }
+        
+        cell.configure(type: type, channel: self.channel)
+        
+        if type == .notifications {
+            cell.switchAction = { [weak self] isOn in
+                guard let self = self else { return }
+                self.changeNotification(isOn: isOn)
             }
         }
 

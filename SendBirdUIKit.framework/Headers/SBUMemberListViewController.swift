@@ -10,12 +10,24 @@ import UIKit
 import SendBirdSDK
 
 @objcMembers
-open class SBUMemberListViewController: UIViewController {
+open class SBUMemberListViewController: SBUBaseViewController {
     
     // MARK: - UI properties (Public)
-    public lazy var titleView: UIView? = _titleView
-    public lazy var leftBarButton: UIBarButtonItem? = _leftBarButton
-    public lazy var rightBarButton: UIBarButtonItem? = _rightBarButton
+    public var titleView: UIView? = nil {
+        didSet {
+            self.navigationItem.titleView = self.titleView
+        }
+    }
+    public var leftBarButton: UIBarButtonItem? = nil {
+        didSet {
+            self.navigationItem.leftBarButtonItem = self.leftBarButton
+        }
+    }
+    public var rightBarButton: UIBarButtonItem? = nil {
+        didSet {
+            self.navigationItem.rightBarButtonItem = self.rightBarButton
+        }
+    }
     public lazy var emptyView: UIView? = _emptyView
     public private(set) lazy var tableView = UITableView()
 
@@ -57,12 +69,7 @@ open class SBUMemberListViewController: UIViewController {
     }()
 
     private lazy var _leftBarButton: UIBarButtonItem = {
-        return UIBarButtonItem(
-            image: SBUIconSet.iconBack,
-            style: .plain,
-            target: self,
-            action: #selector(onClickBack)
-        )
+        return SBUCommonViews.backButton(vc: self, selector: #selector(onClickBack))
     }()
     
     private lazy var _rightBarButton: UIBarButtonItem = {
@@ -70,7 +77,7 @@ open class SBUMemberListViewController: UIViewController {
             self.memberListType == .operators else { return UIBarButtonItem() }
         
         return UIBarButtonItem(
-            image: SBUIconSet.iconPlus,
+            image: SBUIconSetType.iconPlus.image(to: SBUIconSetType.Metric.defaultIconSize),
             style: .plain,
             target: self,
             action: #selector(onClickInviteUser)
@@ -198,6 +205,16 @@ open class SBUMemberListViewController: UIViewController {
     open override func loadView() {
         super.loadView()
         SBULog.info("")
+        
+        if self.titleView == nil {
+            self.titleView = _titleView
+        }
+        if self.leftBarButton == nil {
+            self.leftBarButton = _leftBarButton
+        }
+        if self.rightBarButton == nil {
+            self.rightBarButton = _rightBarButton
+        }
 
         // navigation bar
         self.navigationItem.leftBarButtonItem = self.leftBarButton
@@ -224,7 +241,7 @@ open class SBUMemberListViewController: UIViewController {
     }
     
     /// This function handles the initialization of autolayouts.
-    open func setupAutolayout() {
+    open override func setupAutolayout() {
         self.tableView.sbu_constraint(
             equalTo: self.view,
             left: 0,
@@ -235,7 +252,7 @@ open class SBUMemberListViewController: UIViewController {
     }
     
     /// This function handles the initialization of styles
-    open func setupStyles() {
+    open override func setupStyles() {
         self.theme = SBUTheme.userListTheme
         self.componentTheme = SBUTheme.componentTheme
         
@@ -254,7 +271,7 @@ open class SBUMemberListViewController: UIViewController {
         self.tableView.backgroundColor = theme.backgroundColor
     }
     
-    open func updateStyles() {
+    open override func updateStyles() {
         self.theme = SBUTheme.userListTheme
         
         self.setupStyles()
@@ -294,7 +311,6 @@ open class SBUMemberListViewController: UIViewController {
 
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.setNeedsStatusBarAppearanceUpdate()
         
         self.updateStyles()
     }
@@ -770,19 +786,6 @@ open class SBUMemberListViewController: UIViewController {
     
     
     // MARK: - Actions
-    
-    /// This function actions to pop or dismiss.
-    /// - Since: 1.2.5
-    public func onClickBack() {
-        if let navigationController = self.navigationController,
-            navigationController.viewControllers.count > 1 {
-            
-            navigationController.popViewController(animated: true)
-        }
-        else {
-            self.dismiss(animated: true, completion: nil)
-        }
-    }
     
     /// This function shows inviteChannelViewController.
     @objc open func onClickInviteUser() {

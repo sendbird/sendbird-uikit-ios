@@ -11,13 +11,27 @@ import Photos
 import MobileCoreServices
 
 @objcMembers
-open class SBUOpenChannelSettingsViewController: UIViewController, UINavigationControllerDelegate {
+open class SBUOpenChannelSettingsViewController: SBUBaseViewController {
     
     // MARK: - UI properties (Public)
     public lazy var userInfoView: UIView? = _userInfoView
-    public lazy var titleView: UIView? = _titleView
-    public lazy var leftBarButton: UIBarButtonItem? = _leftBarButton
-    public lazy var rightBarButton: UIBarButtonItem? = _rightBarButton
+    public var titleView: UIView? = nil {
+        didSet {
+            self.navigationItem.titleView = self.titleView
+        }
+    }
+    public var leftBarButton: UIBarButtonItem? = nil {
+        didSet {
+            self.navigationItem.leftBarButtonItem = self.leftBarButton
+        }
+    }
+    public var rightBarButton: UIBarButtonItem? = nil {
+        didSet {
+            if self.isOperator {
+                self.navigationItem.rightBarButtonItem = self.rightBarButton
+            }
+        }
+    }
     public private(set) lazy var tableView = UITableView()
     
     public var theme: SBUChannelSettingsTheme = SBUTheme.channelSettingsTheme
@@ -40,12 +54,7 @@ open class SBUOpenChannelSettingsViewController: UIViewController, UINavigationC
     }()
     
     private lazy var _leftBarButton: UIBarButtonItem = {
-        return UIBarButtonItem(
-            image: SBUIconSet.iconBack,
-            style: .plain,
-            target: self,
-            action: #selector(onClickBack)
-        )
+        return SBUCommonViews.backButton(vc: self, selector: #selector(onClickBack))
     }()
     
     private lazy var _rightBarButton: UIBarButtonItem = {
@@ -120,6 +129,16 @@ open class SBUOpenChannelSettingsViewController: UIViewController, UINavigationC
         super.loadView()
         SBULog.info("")
         
+        if self.titleView == nil {
+            self.titleView = _titleView
+        }
+        if self.leftBarButton == nil {
+            self.leftBarButton = _leftBarButton
+        }
+        if self.rightBarButton == nil {
+            self.rightBarButton = _rightBarButton
+        }
+        
         // navigation bar
         self.navigationItem.leftBarButtonItem = self.leftBarButton
         if self.isOperator {
@@ -150,7 +169,7 @@ open class SBUOpenChannelSettingsViewController: UIViewController, UINavigationC
     }
     
     /// This function handles the initialization of autolayouts.
-    open func setupAutolayout() {
+    open override func setupAutolayout() {
         if let userInfoView = self.userInfoView as? SBUChannelSettingsUserInfoView {
             userInfoView
                 .sbu_constraint(equalTo: self.view, left: 0, right: 0, top: 0)
@@ -162,7 +181,7 @@ open class SBUOpenChannelSettingsViewController: UIViewController, UINavigationC
     }
     
     /// This function handles the initialization of styles.
-    open func setupStyles() {
+    open override func setupStyles() {
         self.theme = SBUTheme.channelSettingsTheme
         
         self.navigationController?.navigationBar.setBackgroundImage(
@@ -180,7 +199,7 @@ open class SBUOpenChannelSettingsViewController: UIViewController, UINavigationC
         self.tableView.backgroundColor = theme.backgroundColor
     }
     
-    open func updateStyles() {
+    open override func updateStyles() {
         self.theme = SBUTheme.channelSettingsTheme
         
         self.setupStyles()
@@ -222,7 +241,6 @@ open class SBUOpenChannelSettingsViewController: UIViewController, UINavigationC
 
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.setNeedsStatusBarAppearanceUpdate()
         
         self.updateStyles()
     }
@@ -378,16 +396,6 @@ open class SBUOpenChannelSettingsViewController: UIViewController, UINavigationC
     
     // MARK: - Actions
     
-    /// This function actions to pop or dismiss.
-    public func onClickBack() {
-        if let navigationController = self.navigationController,
-            navigationController.viewControllers.count > 1 {
-            navigationController.popViewController(animated: true)
-        } else {
-            self.dismiss(animated: true, completion: nil)
-        }
-    }
-    
     /// This function used to when edit button click.
     public func onClickEdit() {
         let changeNameItem = SBUActionSheetItem(
@@ -421,12 +429,18 @@ open class SBUOpenChannelSettingsViewController: UIViewController, UINavigationC
     public func selectChannelImage() {
         let cameraItem = SBUActionSheetItem(
             title: SBUStringSet.Camera,
-            image: SBUIconSet.iconCamera.sbu_with(tintColor: theme.itemColor),
+            image: SBUIconSetType.iconCamera.image(
+                with: theme.itemColor,
+                to: SBUIconSetType.Metric.iconActionSheetItem
+            ),
             completionHandler: nil
         )
         let libraryItem = SBUActionSheetItem(
             title: SBUStringSet.PhotoVideoLibrary,
-            image: SBUIconSet.iconPhoto.sbu_with(tintColor: theme.itemColor),
+            image: SBUIconSetType.iconPhoto.image(
+                with: theme.itemColor,
+                to: SBUIconSetType.Metric.iconActionSheetItem
+            ),
             completionHandler: nil
         )
         let cancelItem = SBUActionSheetItem(

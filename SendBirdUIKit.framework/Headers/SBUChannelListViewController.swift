@@ -12,10 +12,30 @@ import SendBirdSDK
 @objcMembers
 open class SBUChannelListViewController: SBUBaseChannelListViewController {
     // MARK: - UI properties (Public)
-    public lazy var titleView: UIView? = _titleView
-    public lazy var leftBarButton: UIBarButtonItem? = _leftBarButton
-    public lazy var rightBarButton: UIBarButtonItem? = _rightBarButton
-    public lazy var emptyView: UIView? = _emptyView
+    public var titleView: UIView? = nil {
+        didSet {
+            self.navigationItem.titleView = self.titleView
+        }
+    }
+    public var leftBarButton: UIBarButtonItem? = nil {
+        didSet {
+            self.navigationItem.leftBarButtonItem = self.leftBarButton
+        }
+    }
+    public var rightBarButton: UIBarButtonItem? = nil {
+        didSet {
+            self.navigationItem.rightBarButtonItem = self.rightBarButton
+        }
+    }
+    public var emptyView: UIView? = nil {
+        didSet {
+            self.tableView.backgroundView = self.emptyView
+            if let emptyView = self.emptyView as? SBUEmptyView {
+                emptyView.reloadData((self.channelList.count == 0) ? .noChannels : .none)
+            }
+        }
+    }
+    
     public private(set) var tableView = UITableView()
     
     public var theme: SBUChannelListTheme = SBUTheme.channelListTheme
@@ -48,17 +68,12 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
     }()
     
     private lazy var _leftBarButton: UIBarButtonItem = {
-        return UIBarButtonItem(
-            image: SBUIconSet.iconBack,
-            style: .plain,
-            target: self,
-            action: #selector(onClickBack)
-        )
+        return SBUCommonViews.backButton(vc: self, selector: #selector(onClickBack))
     }()
     
     private lazy var _rightBarButton: UIBarButtonItem = {
         return UIBarButtonItem(
-            image: SBUIconSet.iconCreate,
+            image: SBUIconSetType.iconCreate.image(to: SBUIconSetType.Metric.defaultIconSize),
             style: .plain,
             target: self,
             action: #selector(onClickCreate)
@@ -135,6 +150,19 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
         super.loadView()
         SBULog.info("")
         
+        if self.titleView == nil {
+            self.titleView = _titleView
+        }
+        if self.leftBarButton == nil {
+            self.leftBarButton = _leftBarButton
+        }
+        if self.rightBarButton == nil {
+            self.rightBarButton = _rightBarButton
+        }
+        if self.emptyView == nil {
+            self.emptyView = _emptyView;
+        }
+        
         // tableview
         self.tableView.delegate = self
         self.tableView.dataSource = self
@@ -195,6 +223,10 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
         self.leftBarButton?.tintColor = theme.leftBarButtonTintColor
         self.rightBarButton?.tintColor = theme.rightBarButtonTintColor
         
+        if let createChannelTypeSelector = self.createChannelTypeSelector as? SBUCreateChannelTypeSelector {
+            createChannelTypeSelector.setupStyles()
+        }
+        
         self.view.backgroundColor = theme.backgroundColor
         self.tableView.backgroundColor = theme.backgroundColor
     }
@@ -228,13 +260,13 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
         
         self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
         
+        SBDMain.add(self as SBDChannelDelegate, identifier: self.description)
+        SBDMain.add(self as SBDConnectionDelegate, identifier: self.description)
+        
         SBUMain.connectionCheck { [weak self] user, error in
             guard let self = self else { return }
             
             if let error = error { self.didReceiveError(error.localizedDescription) }
-            
-            SBDMain.add(self as SBDChannelDelegate, identifier: self.description)
-            SBDMain.add(self as SBDConnectionDelegate, identifier: self.description)
             
             if SBUAvailable.isSupportSuperGroupChannel() || SBUAvailable.isSupportBroadcastChannel() {
                 self.createChannelTypeSelector = self._createChannelTypeSelector
@@ -251,13 +283,10 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
     
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.setNeedsStatusBarAppearanceUpdate()
         
         if self.isLoading { return }
         
-        if self.lastUpdatedToken != nil {
-            self.loadChannelChangeLogs(hasMore: true, token: self.lastUpdatedToken)
-        }
+        self.loadChannelChangeLogs(hasMore: true, token: self.lastUpdatedToken)
         
         self.updateStyles()
     }
@@ -658,15 +687,6 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
     
     
     // MARK: - Actions
-    func onClickBack() {
-        if let navigationController = self.navigationController,
-            navigationController.viewControllers.count > 1 {
-            navigationController.popViewController(animated: true)
-        }
-        else {
-            self.dismiss(animated: true, completion: nil)
-        }
-    }
     
     func onClickCreate() {
         if self.createChannelTypeSelector != nil {
@@ -750,6 +770,7 @@ extension SBUChannelListViewController: UITableViewDataSource, UITableViewDelega
         
         cell?.selectionStyle = .none
         cell?.configure(channel: channel)
+        cell?.setupStyles()
         return cell ?? UITableViewCell()
         
     }
@@ -801,15 +822,12 @@ extension SBUChannelListViewController: UITableViewDataSource, UITableViewDelega
             ))
             leaveTypeView.layer.cornerRadius = iconSize/2
             leaveTypeView.backgroundColor = theme.leaveBackgroundColor
+            leaveTypeView.image = SBUIconSetType.iconLeave.image(with: theme.leaveTintColor,
+                                                             to: SBUIconSetType.Metric.defaultIconSize)
+            leaveTypeView.contentMode = .center
             
-            let leaveIcon = SBUIconSet.iconActionLeave.sbu_with(tintColor: theme.leaveTintColor)
-            
-            leaveAction.backgroundColor = UIColor.sbu_from(
-                image: leaveIcon,
-                imageView: leaveTypeView,
-                size: size,
-                backgroundColor: theme.alertBackgroundColor
-            )
+            leaveAction.image = leaveTypeView.asImage()
+            leaveAction.backgroundColor = theme.alertBackgroundColor
             
             let pushOption = channel.myPushTriggerOption
             let alarmAction = UIContextualAction(
@@ -837,26 +855,27 @@ extension SBUChannelListViewController: UITableViewDataSource, UITableViewDelega
                     width: iconSize,
                     height: iconSize
             ))
-            alarmTypeView.layer.cornerRadius = iconSize/2
             let alarmIcon: UIImage
+            
             if pushOption == .off {
                 alarmTypeView.backgroundColor = theme.notificationOnBackgroundColor
-                alarmIcon = SBUIconSet.iconActionNotificationOn.sbu_with(
-                    tintColor: theme.notificationOnTintColor
+                alarmIcon = SBUIconSetType.iconNotificationFilled.image(
+                    with: theme.notificationOnTintColor,
+                    to: SBUIconSetType.Metric.defaultIconSize
                 )
             } else {
                 alarmTypeView.backgroundColor = theme.notificationOffBackgroundColor
-                alarmIcon = SBUIconSet.iconActionNotificationOff.sbu_with(
-                    tintColor: theme.notificationOffTintColor
+                alarmIcon = SBUIconSetType.iconNotificationOffFilled.image(
+                    with: theme.notificationOffTintColor,
+                    to: SBUIconSetType.Metric.defaultIconSize
                 )
             }
+            alarmTypeView.image = alarmIcon
+            alarmTypeView.contentMode = .center
+            alarmTypeView.layer.cornerRadius = iconSize/2
             
-            alarmAction.backgroundColor = UIColor.sbu_from(
-                image: alarmIcon,
-                imageView: alarmTypeView,
-                size: size,
-                backgroundColor: theme.alertBackgroundColor
-            )
+            alarmAction.image = alarmTypeView.asImage()
+            alarmAction.backgroundColor = theme.alertBackgroundColor
             
             return UISwipeActionsConfiguration(actions: [leaveAction, alarmAction])
     }
@@ -887,7 +906,10 @@ extension SBUChannelListViewController: UITableViewDataSource, UITableViewDelega
         ))
         leaveTypeView.layer.cornerRadius = iconSize/2
         leaveTypeView.backgroundColor = theme.leaveBackgroundColor
-        let leaveIcon = SBUIconSet.iconActionLeave.sbu_with(tintColor: theme.leaveTintColor)
+        let leaveIcon = SBUIconSetType.iconLeave.image(
+            with: theme.leaveTintColor,
+            to: SBUIconSetType.Metric.defaultIconSize
+        )
         
         leave.backgroundColor = UIColor.sbu_from(
             image: leaveIcon,
@@ -922,13 +944,15 @@ extension SBUChannelListViewController: UITableViewDataSource, UITableViewDelega
         let alarmIcon: UIImage
         if pushOption == .off {
             alarmTypeView.backgroundColor = theme.notificationOnBackgroundColor
-            alarmIcon = SBUIconSet.iconActionNotificationOn.sbu_with(
-                tintColor: theme.notificationOnTintColor
+            alarmIcon = SBUIconSetType.iconNotificationFilled.image(
+                with: theme.notificationOnTintColor,
+                to: SBUIconSetType.Metric.defaultIconSize
             )
         } else {
             alarmTypeView.backgroundColor = theme.notificationOffBackgroundColor
-            alarmIcon = SBUIconSet.iconActionNotificationOff.sbu_with(
-                tintColor: theme.notificationOffTintColor
+            alarmIcon = SBUIconSetType.iconNotificationOffFilled.image(
+                with: theme.notificationOffTintColor,
+                to: SBUIconSetType.Metric.defaultIconSize
             )
         }
         

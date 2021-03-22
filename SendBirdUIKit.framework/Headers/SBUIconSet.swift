@@ -11,90 +11,157 @@ import UIKit
 @objcMembers
 public class SBUIconSet: NSObject {
     
-    private static let bundle = Bundle(identifier: "com.sendbird.uikit")
+    // MARK: - Icons
     
-    public static var iconActionLeave = getImage(name: "iconActionLeave")
-    public static var iconActionNotificationOn = getImage(name: "iconActionNotificationOn")
-    public static var iconActionNotificationOff = getImage(name: "iconActionNotificationOff")
-    public static var iconAdd = getImage(name: "iconAdd")
-    public static var iconBack = getImage(name: "iconBack")
-    public static var iconCamera = getImage(name: "iconCamera")
-    public static var iconPlus = getImage(name: "iconPlus")
-    public static var iconChat = getImage(name: "iconChat")
-    public static var iconChatHide = getImage(name: "icChatHide")
-    public static var iconChatShow = getImage(name: "icChatShow")
-    public static var iconCheckbox = getImage(name: "iconCheckbox")
-    public static var iconCheckboxOff = getImage(name: "iconCheckboxOff")
-    public static var iconClose = getImage(name: "iconClose")
-    public static var iconCopy = getImage(name: "iconCopy")
-    public static var iconCreate = getImage(name: "iconCreate")
-    public static var iconDelete = getImage(name: "iconDelete")
-    public static var iconDelivered = getImage(name: "iconDelivered")
-    public static var iconDocument = getImage(name: "iconDocument")
-    public static var iconDownload = getImage(name: "iconDownload")
-    public static var iconDummy = getImage(name: "iconDummy")
-    public static var iconEdit = getImage(name: "iconEdit")
-    public static var iconError = getImage(name: "iconError")
-    public static var iconErrorFilled = getImage(name: "iconErrorFilled")
-    public static var iconGif = getImage(name: "iconGif")
-    public static var iconInfo = getImage(name: "iconInfo")
-    public static var iconLeave = getImage(name: "iconLeave")
-    public static var iconMembers = getImage(name: "iconMembers")
-    public static var iconModerations = getImage(name: "iconModerations")
-    public static var iconSupergroup = getImage(name: "iconSupergroup")
-    public static var iconBroadcastSmall = getImage(name: "iconBroadcastSmall")
-    public static var iconBroadcastMedium = getImage(name: "iconBroadcastMedium")
-    public static var iconBroadcastLarge = getImage(name: "iconBroadcastLarge")
-    public static var iconFreeze = getImage(name: "iconFreeze")
-    public static var iconMute = getImage(name: "iconMute")
-    public static var iconNotifications = getImage(name: "iconNotifications")
-    public static var iconThumbnailLight = getImage(name: "iconThumbnailLight")
-    public static var iconNoThumbnailLight = getImage(name: "iconNoThumbnailLight")
-    public static var iconPhoto = getImage(name: "iconPhoto")
-    public static var iconPlay = getImage(name: "iconPlay")
-    public static var iconRead = getImage(name: "iconRead")
-    public static var iconRefresh = getImage(name: "iconRefresh")
-    public static var iconAvatarLight = getImage(name: "iconAvatarLight")
-    public static var iconSend = getImage(name: "iconSend")
-    public static var iconSent = getImage(name: "iconSent")
-    public static var iconFailed = getImage(name: "iconFailed")
-    public static var iconShevronRight = getImage(name: "iconShevronRight")
-    public static var iconUser = getImage(name: "iconUser")
-    public static var iconSpinnerSmall = getImage(name: "iconSpinnerSmall")
-    public static var iconSpinnerLarge = getImage(name: "iconSpinnerLarge")
-    public static var iconFileDocument = getImage(name: "iconFileDocument")
-    public static var iconFileAudio = getImage(name: "iconFileAudio")
-    public static var iconChevronDown = getImage(name: "iconChevronDown")
-    public static var iconMore = getImage(name: "iconMore")
-    public static var iconOperator = getImage(name: "iconOperator")
-    public static var iconMuted = getImage(name: "iconMuted")
-    public static var iconBanned = getImage(name: "iconBanned")
-    public static var iconMessage = getImage(name: "iconMessage")
-    
-    public static var channelTypeGroup = getImage(name: "iconChat")
-        .resize(with: .init(width: 24, height: 24))
-    public static var channelTypeSupergroup = getImage(name: "iconSupergroup")
-        .resize(with: .init(width: 24, height: 24))
-    public static var channelTypeBroadcast = getImage(name: "iconBroadcast")
-        .resize(with: .init(width: 24, height: 24))
-
-    public static var emojiHeartEyes = getImage(name: "emojiHeartEyes")
-    public static var emojiLaughing = getImage(name: "emojiLaughing")
-    public static var emojiSweatSmile = getImage(name: "emojiSweatSmile")
-    public static var emojiSob = getImage(name: "emojiSob")
-    public static var emojiRage = getImage(name: "emojiRage")
-    public static var emojiMoreLarge = getImage(name: "emojiMoreLarge")
-    public static var emojiThumbsup = getImage(name: "emojiThumbsup")
-    public static var emojiThubsdown = getImage(name: "emojiThubsdown")
-    public static var emojiFail = getImage(name: "emojiFail")
-}
-
-private extension SBUIconSet {
-    
-    static func getImage(name: String, tintColor: UIColor? = nil) -> UIImage {
-        let image = UIImage(named: name, in: bundle, compatibleWith: nil)!
-        guard let tintColor = tintColor else { return image }
-        return image.sbu_with(tintColor: tintColor)
+    public static var iconAdd: UIImage = SBUIconSetType.iconAdd.load() {
+        didSet { SBUIconSetType.iconAdd.markCustomized() }
+    }
+    public static var iconBack: UIImage = SBUIconSetType.iconBack.load() {
+        didSet { SBUIconSetType.iconBack.markCustomized() }
+    }
+    public static var iconBan: UIImage = SBUIconSetType.iconBan.load() {
+        didSet { SBUIconSetType.iconBan.markCustomized() }
+    }
+    public static var iconBroadcast: UIImage = SBUIconSetType.iconBroadcast.load() {
+        didSet { SBUIconSetType.iconBroadcast.markCustomized() }
+    }
+    public static var iconCamera: UIImage = SBUIconSetType.iconCamera.load() {
+        didSet { SBUIconSetType.iconCamera.markCustomized() }
+    }
+    public static var iconChat: UIImage = SBUIconSetType.iconChat.load() {
+        didSet { SBUIconSetType.iconChat.markCustomized() }
+    }
+    public static var iconCheckboxChecked: UIImage = SBUIconSetType.iconCheckboxChecked.load() {
+        didSet { SBUIconSetType.iconCheckboxChecked.markCustomized() }
+    }
+    public static var iconCheckboxUnchecked: UIImage = SBUIconSetType.iconCheckboxUnchecked.load() {
+        didSet { SBUIconSetType.iconCheckboxUnchecked.markCustomized() }
+    }
+    public static var iconChevronDown: UIImage = SBUIconSetType.iconChevronDown.load() {
+        didSet { SBUIconSetType.iconChevronDown.markCustomized() }
+    }
+    public static var iconChevronRight: UIImage = SBUIconSetType.iconChevronRight.load() {
+        didSet { SBUIconSetType.iconChevronRight.markCustomized() }
+    }
+    public static var iconClose: UIImage = SBUIconSetType.iconClose.load() {
+        didSet { SBUIconSetType.iconClose.markCustomized() }
+    }
+    public static var iconCopy: UIImage = SBUIconSetType.iconCopy.load() {
+        didSet { SBUIconSetType.iconCopy.markCustomized() }
+    }
+    public static var iconCreate: UIImage = SBUIconSetType.iconCreate.load() {
+        didSet { SBUIconSetType.iconCreate.markCustomized() }
+    }
+    public static var iconDelete: UIImage = SBUIconSetType.iconDelete.load() {
+        didSet { SBUIconSetType.iconDelete.markCustomized() }
+    }
+    public static var iconDocument: UIImage = SBUIconSetType.iconDocument.load() {
+        didSet { SBUIconSetType.iconDocument.markCustomized() }
+    }
+    public static var iconDone: UIImage = SBUIconSetType.iconDone.load() {
+        didSet { SBUIconSetType.iconDone.markCustomized() }
+    }
+    public static var iconDoneAll: UIImage = SBUIconSetType.iconDoneAll.load() {
+        didSet { SBUIconSetType.iconDoneAll.markCustomized() }
+    }
+    public static var iconDownload: UIImage = SBUIconSetType.iconDownload.load() {
+        didSet { SBUIconSetType.iconDownload.markCustomized() }
+    }
+    public static var iconEdit: UIImage = SBUIconSetType.iconEdit.load() {
+        didSet { SBUIconSetType.iconEdit.markCustomized() }
+    }
+    public static var iconEmojiMore: UIImage = SBUIconSetType.iconEmojiMore.load() {
+        didSet { SBUIconSetType.iconEmojiMore.markCustomized() }
+    }
+    public static var iconError: UIImage = SBUIconSetType.iconError.load() {
+        didSet { SBUIconSetType.iconError.markCustomized() }
+    }
+    public static var iconFileAudio: UIImage = SBUIconSetType.iconFileAudio.load() {
+        didSet { SBUIconSetType.iconFileAudio.markCustomized() }
+    }
+    public static var iconFileDocument: UIImage = SBUIconSetType.iconFileDocument.load() {
+        didSet { SBUIconSetType.iconFileDocument.markCustomized() }
+    }
+    public static var iconFreeze: UIImage = SBUIconSetType.iconFreeze.load() {
+        didSet { SBUIconSetType.iconFreeze.markCustomized() }
+    }
+    public static var iconGif: UIImage = SBUIconSetType.iconGif.load() {
+        didSet { SBUIconSetType.iconGif.markCustomized() }
+    }
+    public static var iconInfo: UIImage = SBUIconSetType.iconInfo.load() {
+        didSet { SBUIconSetType.iconInfo.markCustomized() }
+    }
+    public static var iconLeave: UIImage = SBUIconSetType.iconLeave.load() {
+        didSet { SBUIconSetType.iconLeave.markCustomized() }
+    }
+    public static var iconMembers: UIImage = SBUIconSetType.iconMembers.load() {
+        didSet { SBUIconSetType.iconMembers.markCustomized() }
+    }
+    public static var iconMessage: UIImage = SBUIconSetType.iconMessage.load() {
+        didSet { SBUIconSetType.iconMessage.markCustomized() }
+    }
+    public static var iconModerations: UIImage = SBUIconSetType.iconModerations.load() {
+        didSet { SBUIconSetType.iconModerations.markCustomized() }
+    }
+    public static var iconMore: UIImage = SBUIconSetType.iconMore.load() {
+        didSet { SBUIconSetType.iconMore.markCustomized() }
+    }
+    public static var iconMute: UIImage = SBUIconSetType.iconMute.load() {
+        didSet { SBUIconSetType.iconMute.markCustomized() }
+    }
+    public static var iconNotificationFilled: UIImage = SBUIconSetType.iconNotificationFilled.load() {
+        didSet { SBUIconSetType.iconNotificationFilled.markCustomized() }
+    }
+    public static var iconNotificationOffFilled: UIImage = SBUIconSetType.iconNotificationOffFilled.load() {
+        didSet { SBUIconSetType.iconNotificationOffFilled.markCustomized() }
+    }
+    public static var iconNotifications: UIImage = SBUIconSetType.iconNotifications.load() {
+        didSet { SBUIconSetType.iconNotifications.markCustomized() }
+    }
+    public static var iconOperator: UIImage = SBUIconSetType.iconOperator.load() {
+        didSet { SBUIconSetType.iconOperator.markCustomized() }
+    }
+    public static var iconPhoto: UIImage = SBUIconSetType.iconPhoto.load() {
+        didSet { SBUIconSetType.iconPhoto.markCustomized() }
+    }
+    public static var iconPlay: UIImage = SBUIconSetType.iconPlay.load() {
+        didSet { SBUIconSetType.iconPlay.markCustomized() }
+    }
+    public static var iconPlus: UIImage = SBUIconSetType.iconPlus.load() {
+        didSet { SBUIconSetType.iconPlus.markCustomized() }
+    }
+    public static var iconQuestion: UIImage = SBUIconSetType.iconQuestion.load() {
+        didSet { SBUIconSetType.iconQuestion.markCustomized() }
+    }
+    public static var iconRefresh: UIImage = SBUIconSetType.iconRefresh.load() {
+        didSet { SBUIconSetType.iconRefresh.markCustomized() }
+    }
+    public static var iconRemove: UIImage = SBUIconSetType.iconRemove.load() {
+        didSet { SBUIconSetType.iconRemove.markCustomized() }
+    }
+    public static var iconSearch: UIImage = SBUIconSetType.iconSearch.load() {
+        didSet { SBUIconSetType.iconSearch.markCustomized() }
+    }
+    public static var iconSend: UIImage = SBUIconSetType.iconSend.load() {
+        didSet { SBUIconSetType.iconSend.markCustomized() }
+    }
+    public static var iconSpinner: UIImage = SBUIconSetType.iconSpinner.load() {
+        didSet { SBUIconSetType.iconSpinner.markCustomized() }
+    }
+    public static var iconSupergroup: UIImage = SBUIconSetType.iconSupergroup.load() {
+        didSet { SBUIconSetType.iconSupergroup.markCustomized() }
+    }
+    public static var iconThumbnailNone: UIImage = SBUIconSetType.iconThumbnailNone.load() {
+        didSet { SBUIconSetType.iconThumbnailNone.markCustomized() }
+    }
+    public static var iconUser: UIImage = SBUIconSetType.iconUser.load() {
+        didSet { SBUIconSetType.iconUser.markCustomized() }
     }
     
+    /// Restore all customized icons to SDK's default icons.
+    ///
+    /// - Since: 2.1.0
+    public static func restoreDefaultIcons() {
+        SBUIconSetType.resetCustomized()
+    }
 }

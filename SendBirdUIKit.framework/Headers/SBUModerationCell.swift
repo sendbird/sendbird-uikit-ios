@@ -24,29 +24,33 @@ class SBUModerationCell: SBUChannelSettingCell {
         
         switch type {
         case .operators:
-            self.typeIcon.image = icon ?? SBUIconSet.iconOperator.sbu_with(
-                tintColor: theme.cellTypeIconTintColor
+            self.typeIcon.image = icon ?? SBUIconSetType.iconOperator.image(
+                with: theme.cellTypeIconTintColor,
+                to: SBUIconSetType.Metric.defaultIconSize
             )
             self.titleLabel.text = title ?? SBUStringSet.ChannelSettings_Operators
             self.rightButton.isHidden = false
             
         case .mutedMembers:
-            self.typeIcon.image = icon ?? SBUIconSet.iconMuted.sbu_with(
-                tintColor: theme.cellTypeIconTintColor
+            self.typeIcon.image = icon ?? SBUIconSetType.iconMute.image(
+                with: theme.cellTypeIconTintColor,
+                to: SBUIconSetType.Metric.defaultIconSize
             )
             self.titleLabel.text = title ?? SBUStringSet.ChannelSettings_Muted_Members
             self.rightButton.isHidden = false
             
         case .bannedMembers:
-            self.typeIcon.image = icon ?? SBUIconSet.iconBanned.sbu_with(
-                tintColor: theme.cellTypeIconTintColor
+            self.typeIcon.image = icon ?? SBUIconSetType.iconBan.image(
+                with: theme.cellTypeIconTintColor,
+                to: SBUIconSetType.Metric.defaultIconSize
             )
             self.titleLabel.text = title ?? SBUStringSet.ChannelSettings_Banned_Members
             self.rightButton.isHidden = false
             
         case .freezeChannel:
-            self.typeIcon.image = icon ?? SBUIconSet.iconFreeze.sbu_with(
-                tintColor: theme.cellTypeIconTintColor
+            self.typeIcon.image = icon ?? SBUIconSetType.iconFreeze.image(
+                with: theme.cellTypeIconTintColor,
+                to: SBUIconSetType.Metric.defaultIconSize
             )
             self.titleLabel.text = title ?? SBUStringSet.ChannelSettings_Freeze_Channel
             self.rightSwitch.isHidden = false

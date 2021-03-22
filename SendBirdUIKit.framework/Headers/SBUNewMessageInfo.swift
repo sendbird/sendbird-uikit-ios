@@ -20,21 +20,11 @@ open class SBUNewMessageInfo: UIView {
     let DefaultInfoButtonTag = 10001
     var type: NewMessageInfoItemType = .tooltip
 
-    private lazy var _messageInfoTooltipButton: UIButton = {
-        let messageInfoButton = UIButton()
-        messageInfoButton.setTitle(SBUStringSet.Channel_New_Message(0), for: .normal)
-        messageInfoButton.layer.cornerRadius = SBUConstant.newMessageInfoSize.height/2
-        messageInfoButton.layer.masksToBounds = true
-        messageInfoButton.semanticContentAttribute = .forceRightToLeft
-        messageInfoButton.tag = DefaultInfoButtonTag
-        return messageInfoButton
-    }()
-    
     private lazy var _messageInfoButton: UIButton = {
         let messageInfoButton = UIButton()
-        messageInfoButton.layer.cornerRadius = SBUConstant.newMessageButtonSize.height/2
         messageInfoButton.layer.masksToBounds = true
         messageInfoButton.tag = DefaultInfoButtonTag
+        messageInfoButton.titleLabel?.textAlignment = .center
         return messageInfoButton
     }()
     
@@ -88,10 +78,11 @@ open class SBUNewMessageInfo: UIView {
         var infoItemSize = SBUConstant.newMessageInfoSize
         if self.type == .button {
             infoItemSize = SBUConstant.newMessageButtonSize
+            self.widthAnchor.constraint(equalToConstant: infoItemSize.width).isActive = true
         }
-        
+        /// Note: width for .tooltip is `sizeToFit()`
+
         NSLayoutConstraint.activate([
-            self.widthAnchor.constraint(equalToConstant: infoItemSize.width),
             self.heightAnchor.constraint(equalToConstant: infoItemSize.height),
         ])
         
@@ -112,10 +103,12 @@ open class SBUNewMessageInfo: UIView {
         
         self.backgroundColor = .clear
         self.layer.shadowColor = theme.shadowColor.withAlphaComponent(0.5).cgColor
-        self.layer.shadowOffset = CGSize(width: 5, height: 5)
+        self.layer.shadowOffset = CGSize(width: 0, height: 5)
         self.layer.shadowOpacity = 0.5
         self.layer.shadowRadius = 5
         self.layer.masksToBounds = false
+        
+        setupButtonStyle()
         
         if let messageInfoButton = self.messageInfoButton,
             messageInfoButton.tag == DefaultInfoButtonTag {
@@ -124,10 +117,6 @@ open class SBUNewMessageInfo: UIView {
             case .tooltip:
                 messageInfoButton.titleLabel?.font = theme.newMessageFont
                 messageInfoButton.setTitleColor(theme.newMessageTintColor, for: .normal)
-                messageInfoButton.setImage(
-                    SBUIconSet.iconChevronDown.sbu_with(tintColor: theme.newMessageTintColor),
-                    for: .normal
-                )
                 messageInfoButton.setBackgroundImage(
                     UIImage.from(color: theme.newMessageBackground),
                     for: .normal
@@ -138,7 +127,10 @@ open class SBUNewMessageInfo: UIView {
                 )
             case .button:
                 messageInfoButton.setImage(
-                    SBUIconSet.iconChevronDown.sbu_with(tintColor: theme.newMessageButtonTintColor),
+                    SBUIconSetType.iconChevronDown.image(
+                        with: theme.newMessageButtonTintColor,
+                        to: SBUIconSetType.Metric.defaultIconSizeSmall
+                    ),
                     for: .normal
                 )
                 messageInfoButton.setBackgroundImage(
@@ -161,6 +153,11 @@ open class SBUNewMessageInfo: UIView {
         super.layoutSubviews()
         self.setupStyles()
     }
+    
+    private func setupButtonStyle() {
+        self.messageInfoButton?.layer.cornerRadius = self.frame.height / 2
+        self.messageInfoButton?.clipsToBounds = true
+    }
 
     // MARK: - Action
     @objc open func onClickNewMessageInfo() {
@@ -175,6 +172,8 @@ open class SBUNewMessageInfo: UIView {
     open func updateCount(count: Int, actionHandler: SBUNewMessageInfoHandler?) {
         if let messageInfoButton = self.messageInfoButton {
             messageInfoButton.setTitle(SBUStringSet.Channel_New_Message(count), for: .normal)
+            messageInfoButton.contentEdgeInsets = UIEdgeInsets(top: 10, left: 12, bottom: 10, right: 12)
+            messageInfoButton.sizeToFit()
         }
         self.actionHandler = actionHandler
     }

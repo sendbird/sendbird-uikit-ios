@@ -27,6 +27,7 @@ public class SBUStringSet: NSObject {
     public static var TakePhoto = "Take photo"
     public static var ChoosePhoto = "Choose photo"
     public static var RemovePhoto = "Remove photo"
+    public static var Search = "Search"
     
     // MARK: - Alert
     public static var Alert_Delete = "Are you sure you want to delete?"
@@ -81,8 +82,12 @@ public class SBUStringSet: NSObject {
         switch count {
         case 1:
             return "1 new message"
-        default:
+        case 2...99:
             return "\(count) new messages"
+        case 100...:
+            return "99+ new messages"
+        default:
+            return ""
         }
     }
     public static var Channel_State_Banner_Frozen = "Channel frozen"
@@ -120,6 +125,7 @@ public class SBUStringSet: NSObject {
     }
     public static var ChannelSettings_Leave = "Leave channel"
     public static var ChannelSettings_Delete = "Delete channel"
+    public static var ChannelSettings_Search = "Search in channel"
     
     public static var ChannelSettings_Moderations = "Moderations"
     public static var ChannelSettings_Operators = "Operators"
@@ -150,6 +156,7 @@ public class SBUStringSet: NSObject {
     public static var Empty_No_Muted_Members = "No muted members"
     public static var Empty_No_Banned_Members = "No banned members"
     public static var Empty_Wrong = "Something went wrong"
+    public static var Empty_Search_Result = "No results found."
 
 
     // MARK: - Create Channel

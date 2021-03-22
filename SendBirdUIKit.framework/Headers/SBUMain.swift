@@ -311,6 +311,11 @@ public class SBUMain: NSObject {
     }
     
     /// This is a function that moves the channel that can be called anywhere.
+    ///
+    /// If you wish to open an open channel view controller, or any class that subclasses `SBUOpenChannelViewController`,
+    /// you must guarentee that a channel list's view controller, subclass of `SBUBaseChannelListViewController`,
+    /// is present within the `UINavigationController.viewControllers` if you set the `basedOnChannelList` to `true`.
+    ///
     /// - Parameters:
     ///   - channelUrl: channel url for use in channel.
     ///   - basedOnChannelList: `true` for services based on the channel list. Default value is `true`
@@ -331,137 +336,130 @@ public class SBUMain: NSObject {
             rootViewController = tabbarController.selectedViewController
         }
         
-        if channelType == .group {
-            self.moveToGroupChannel(
-                channelUrl: channelUrl,
-                basedOnChannelList: basedOnChannelList,
-                messageListParams: messageListParams,
-                rootViewController: rootViewController
+        // If search view controller is found, dismiss it first (it'll be in different navigation controller)
+        if let searchViewController = findSearchViewController(rootViewController: rootViewController) {
+            // Dismiss any presented view controllers before pushing other vc on top
+            searchViewController.presentedViewController?.dismiss(animated: false, completion: nil)
+            
+            searchViewController.dismiss(animated: false) {
+                let viewController: UIViewController? = findChannelViewController(
+                    rootViewController: rootViewController,
+                    channelType: channelType
+                )
+                showChannelViewController(with: viewController ?? rootViewController,
+                                          channelUrl: channelUrl,
+                                          basedOnChannelList: basedOnChannelList,
+                                          messageListParams: messageListParams,
+                                          channelType: channelType)
+            }
+        } else {
+            let viewController: UIViewController? = findChannelViewController(
+                rootViewController: rootViewController,
+                channelType: channelType
             )
-        }
-        else {
-            self.moveToOpenChannel(
-                channelUrl: channelUrl,
-                basedOnChannelList: basedOnChannelList,
-                messageListParams: messageListParams,
-                rootViewController: rootViewController
-            )
+            showChannelViewController(with: viewController ?? rootViewController,
+                                      channelUrl: channelUrl,
+                                      basedOnChannelList: basedOnChannelList,
+                                      messageListParams: messageListParams,
+                                      channelType: channelType)
         }
     }
     
-    private static func moveToGroupChannel(channelUrl: String,
-                                          basedOnChannelList: Bool = true,
-                                          messageListParams: SBDMessageListParams? = nil,
-                                          rootViewController: UIViewController?) {
-        var viewController: UIViewController? = nil
-        
-        if let navigationController = rootViewController?
-            .presentedViewController as? UINavigationController {
-            
-            for subViewController in navigationController.viewControllers {
-                if let subViewController = subViewController as? SBUChannelListViewController {
-                    navigationController.popToViewController(subViewController, animated: false)
-                    viewController = subViewController
-                    break
-                } else if let subViewController = subViewController as? SBUChannelViewController {
-                    viewController = subViewController
-                }
-            }
-        } else if let navigationController = rootViewController as? UINavigationController {
-            for subViewController in navigationController.viewControllers {
-                if let subViewController = subViewController as? SBUChannelListViewController {
-                    navigationController.popToViewController(subViewController, animated: false)
-                    viewController = subViewController
-                    break
-                } else if let subViewController = subViewController as? SBUChannelViewController {
-                    viewController = subViewController
-                }
-            }
-        }
-        
+    /// Shows channel viewcontroller.
+    private static func showChannelViewController(with viewController: UIViewController?,
+                                                  channelUrl: String,
+                                                  basedOnChannelList: Bool,
+                                                  messageListParams: SBDMessageListParams?,
+                                                  channelType: ChannelType) {
         // Dismiss any presented view controllers before pushing other vc on top
         viewController?.presentedViewController?.dismiss(animated: false, completion: nil)
         
-        if let viewController = viewController as? SBUChannelListViewController {
-            viewController.showChannel(channelUrl: channelUrl)
-        } else if let viewController = viewController as? SBUChannelViewController {
-            viewController.loadChannel(channelUrl: channelUrl, messageListParams: messageListParams)
+        if let channelListViewController = viewController as? SBUBaseChannelListViewController {
+            channelListViewController
+                .navigationController?
+                .popToViewController(channelListViewController, animated: false)
+            
+            channelListViewController.showChannel(channelUrl: channelUrl)
+        } else if let channelViewController = viewController as? SBUBaseChannelViewController {
+            channelViewController.loadChannel(channelUrl: channelUrl,
+                                              messageListParams: messageListParams)
         } else {
+            let isGroupChannel = channelType == .group
             if basedOnChannelList {
-                // If based on channelList
-                let vc = SBUChannelListViewController()
+                // If based on channelList.
+                // FIXME: - Needs a way to get user's open channel list vc?? (not in SDK)
+                let vc: SBUBaseChannelListViewController = isGroupChannel ? SBUChannelListViewController() : SBUBaseChannelListViewController()
                 let naviVC = UINavigationController(rootViewController: vc)
-                rootViewController?.present(naviVC, animated: true, completion: {
+                viewController?.present(naviVC, animated: true, completion: {
                     vc.showChannel(channelUrl: channelUrl)
                 })
             } else {
                 // If based on channel
-                let vc = SBUChannelViewController(
-                    channelUrl: channelUrl,
-                    messageListParams: messageListParams
-                )
+                let vc: SBUBaseChannelViewController
+                if isGroupChannel {
+                    vc = SBUChannelViewController(
+                        channelUrl: channelUrl,
+                        messageListParams: messageListParams
+                    )
+                } else {
+                    vc = SBUOpenChannelViewController(
+                        channelUrl: channelUrl,
+                        messageListParams: messageListParams
+                    )
+                }
                 let naviVC = UINavigationController(rootViewController: vc)
-                rootViewController?.present(naviVC, animated: true)
+                viewController?.present(naviVC, animated: true)
             }
         }
     }
     
-    private static func moveToOpenChannel(channelUrl: String,
-                                          basedOnChannelList: Bool = true,
-                                          messageListParams: SBDMessageListParams? = nil,
-                                          rootViewController: UIViewController?) {
-        var viewController: UIViewController? = nil
+    /// Finds instance of channel list or channel viewcontroller from the navigation controller's viewcontrollers.
+    ///
+    /// - Returns: instance of `SBUBaseChannelListViewController` or `SBUBaseChannelViewController`, or
+    ///            `nil` if none are fonud.
+    private static func findChannelViewController(rootViewController: UIViewController?,
+                                                  channelType: ChannelType) -> UIViewController? {
+        guard let navigationController: UINavigationController =
+                rootViewController?.presentedViewController as? UINavigationController ??
+                rootViewController as? UINavigationController else { return nil }
         
-        if let navigationController = rootViewController?
-            .presentedViewController as? UINavigationController {
-            
-            for subViewController in navigationController.viewControllers {
-                if let subViewController = subViewController as? SBUBaseChannelListViewController {
-                    navigationController.popToViewController(subViewController, animated: false)
-                    viewController = subViewController
-                    break
-                } else if let subViewController = subViewController as? SBUOpenChannelViewController {
-                    viewController = subViewController
+        if let channelListVc = navigationController
+            .viewControllers
+            .first(where: {
+                if channelType == .group {
+                    return $0 is SBUChannelListViewController
+                } else {
+                    // shouldn't be instance of SBUChannelListViewController since this is for group channel.
+                    return !($0 is SBUChannelListViewController) && $0 is SBUBaseChannelListViewController
                 }
-            }
-        } else if let navigationController = rootViewController as? UINavigationController {
-            
-            for subViewController in navigationController.viewControllers {
-                if let subViewController = subViewController as? SBUBaseChannelListViewController {
-                    navigationController.popToViewController(subViewController, animated: false)
-                    viewController = subViewController
-                    break
-                } else if let subViewController = subViewController as? SBUOpenChannelViewController {
-                    viewController = subViewController
-                }
-            }
-        }
-        
-        // Dismiss any presented view controllers before pushing other vc on top
-        viewController?.presentedViewController?.dismiss(animated: false, completion: nil)
-        
-        if let viewController = viewController as? SBUBaseChannelListViewController {
-            viewController.showChannel(channelUrl: channelUrl)
-        } else if let viewController = viewController as? SBUOpenChannelViewController {
-            viewController.loadChannel(channelUrl: channelUrl, messageListParams: messageListParams)
+            }) {
+            return channelListVc
         } else {
-            if basedOnChannelList {
-                // If based on channelList
-                let vc = SBUBaseChannelListViewController()
-                let naviVC = UINavigationController(rootViewController: vc)
-                rootViewController?.present(naviVC, animated: true, completion: {
-                    vc.showChannel(channelUrl: channelUrl)
+            return navigationController
+                .viewControllers
+                .last(where: {
+                    if channelType == .group {
+                        return $0 is SBUChannelViewController
+                    } else {
+                        return $0 is SBUOpenChannelViewController
+                    }
                 })
-            } else {
-                // If based on channel
-                let vc = SBUOpenChannelViewController(
-                    channelUrl: channelUrl,
-                    messageListParams: messageListParams
-                )
-                let naviVC = UINavigationController(rootViewController: vc)
-                rootViewController?.present(naviVC, animated: true)
-            }
         }
+    }
+    
+    
+    /// Finds instance of message shearch viewcontroller from the navigation controller's viewcontrollers.
+    ///
+    /// - Returns: instance of `SBUMessageSearchViewController`or `nil` if none are fonud.
+    private static func findSearchViewController(rootViewController: UIViewController?) -> UIViewController? {
+        guard let navigationController: UINavigationController =
+                rootViewController?.presentedViewController as? UINavigationController ??
+                rootViewController as? UINavigationController else { return nil }
+        
+        return navigationController
+            .viewControllers
+            .compactMap { $0 as? SBUMessageSearchViewController }
+            .first
     }
     
     /// This is a function that creates and moves the channel that can be called anywhere.
@@ -480,6 +478,11 @@ public class SBUMain: NSObject {
         params.name = ""
         params.coverUrl = ""
         params.addUserIds(userIds)
+        params.isDistinct = false
+        
+        if let currentUser = SBUGlobals.CurrentUser {
+            params.operatorUserIds = [currentUser.userId]
+        }
         
         SBUGlobalCustomParams.groupChannelParamsCreateBuilder?(params)
         

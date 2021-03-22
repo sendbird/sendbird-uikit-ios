@@ -47,7 +47,7 @@ The minimum requirements for Sendbird UIKit for iOS are:
 
 - iOS 10.3+
 - Swift 4.2+ / Objective-C
-- Sendbird Chat SDK for iOS 3.0.200+
+- Sendbird Chat SDK for iOS 3.0.216+
 
 <br />
 
@@ -73,7 +73,7 @@ You can get started by creating a project. Sendbird UIKit supports both `Objecti
 
 UIKit for iOS can be installed through either [`CocoaPods`](https://cocoapods.org/) or [`Carthage`](https://github.com/Carthage/Carthage): 
 
-> Note: Sendbird UIKit for iOS is Sendbird Chat SDK-dependent. If you install the UIKit, `CocoaPods` will automatically install the Chat SDK for iOS as well. The minimum requirement of the Chat SDK for iOS is 3.0.200 or higher.
+> Note: Sendbird UIKit for iOS is Sendbird Chat SDK-dependent. If you install the UIKit, `CocoaPods` will automatically install the Chat SDK for iOS as well. The minimum requirement of the Chat SDK for iOS is 3.0.216 or higher.
 
 
 #### - CocoaPods
@@ -103,7 +103,7 @@ $ pod update
 1. Add `SendBirdUIKit` and `SendBirdSDK` into your `Cartfile` as below:
 ```bash
 github "sendbird/sendbird-uikit-ios"
-github "sendbird/sendbird-ios-framework" == 3.0.205
+github "sendbird/sendbird-ios-framework" == 3.0.216
 ```
 2. Install the `SendBirdUIKit` framework through `Carthage`.
 ```bash

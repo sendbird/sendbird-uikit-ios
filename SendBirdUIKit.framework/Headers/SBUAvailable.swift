@@ -25,12 +25,15 @@ public class SBUAvailable: NSObject {
     static let ALLOW_GROUP_CHANNEL_UPDATE_FROM_SDK = "allow_group_channel_update_from_sdk"
     static let ALLOW_ONLY_OPERATOR_SDK_TO_UPDATE_GROUP_CHANNEL = "allow_only_operator_sdk_to_update_group_channel"
     static let ALLOW_BROADCAST_CHANNEL = "allow_broadcast_channel"
+    static let MESSAGE_SEARCH = "message_search_v3"
 
     private static func isAvailable(key: String) -> Bool {
         guard let appInfo = SBDMain.getAppInfo(),
-            let applicationAttributes = appInfo.applicationAttributes else { return false }
+              let applicationAttributes = appInfo.applicationAttributes,
+              let premiumFeatureList = appInfo.premiumFeatureList else { return false }
         
-        return applicationAttributes.contains(key)
+        return applicationAttributes.contains(key) ||
+            premiumFeatureList.contains(key)
     }
     
     
@@ -62,5 +65,12 @@ public class SBUAvailable: NSObject {
     /// - Since: 1.2.0
     public static func isSupportOgTag() -> Bool {
         return self.isAvailable(key: ENABLE_OG_TAG)
+    }
+    
+    /// This method checks if the application support message search.
+    /// - Returns: `true` if the message search can be used, `false` otherwise.
+    /// - Since: 2.1.0
+    public static func isSupportMessageSearch() -> Bool {
+        return self.isAvailable(key: MESSAGE_SEARCH)
     }
 }

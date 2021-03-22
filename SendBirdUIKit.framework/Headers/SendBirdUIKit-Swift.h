@@ -246,7 +246,8 @@ typedef SWIFT_ENUM(NSInteger, ChannelSettingItemType, open) {
   ChannelSettingItemTypeModerations = 0,
   ChannelSettingItemTypeNotifications = 1,
   ChannelSettingItemTypeMembers = 2,
-  ChannelSettingItemTypeLeave = 3,
+  ChannelSettingItemTypeSearch = 3,
+  ChannelSettingItemTypeLeave = 4,
 };
 
 /// This is an enumeration for channel type.
@@ -266,7 +267,8 @@ typedef SWIFT_ENUM(NSInteger, EmptyViewType, open) {
   EmptyViewTypeNoMessages = 2,
   EmptyViewTypeNoMutedMembers = 3,
   EmptyViewTypeNoBannedMembers = 4,
-  EmptyViewTypeError = 5,
+  EmptyViewTypeNoSearchResults = 5,
+  EmptyViewTypeError = 6,
 };
 
 typedef SWIFT_ENUM(uint8_t, LogType, open) {
@@ -397,7 +399,6 @@ typedef SWIFT_ENUM(NSInteger, ModerationItemType, open) {
 @end
 
 
-
 @interface NSObject (SWIFT_EXTENSION(SendBirdUIKit))
 /// This gets the class name of object.
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nonnull sbu_className;)
@@ -495,6 +496,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit13SBUCommonItem")
 
 SWIFT_CLASS("_TtC13SendBirdUIKit18SBUActionSheetItem")
 @interface SBUActionSheetItem : SBUCommonItem
+- (nonnull instancetype)initWithTitle:(NSString * _Nullable)title color:(UIColor * _Nullable)color image:(UIImage * _Nullable)image font:(UIFont * _Nullable)font tintColor:(UIColor * _Nullable)tintColor textAlignment:(NSTextAlignment)textAlignment OBJC_DESIGNATED_INITIALIZER;
 /// This function initializes actionSheet item.
 /// \param title Title text
 ///
@@ -509,7 +511,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUActionSheetItem")
 /// \param completionHandler Item’s completion handler
 ///
 - (nonnull instancetype)initWithTitle:(NSString * _Nullable)title color:(UIColor * _Nullable)color image:(UIImage * _Nullable)image font:(UIFont * _Nullable)font textAlignment:(NSTextAlignment)textAlignment completionHandler:(void (^ _Nullable)(void))completionHandler OBJC_DESIGNATED_INITIALIZER;
-- (nonnull instancetype)initWithTitle:(NSString * _Nullable)title color:(UIColor * _Nullable)color image:(UIImage * _Nullable)image font:(UIFont * _Nullable)font tintColor:(UIColor * _Nullable)tintColor textAlignment:(NSTextAlignment)textAlignment SWIFT_UNAVAILABLE;
 @end
 
 @class SBDBaseMessage;
@@ -621,6 +622,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit12SBUAvailable")
 /// returns:
 /// <code>true</code> if the og metadata can be usable, <code>false</code> otherwise.
 + (BOOL)isSupportOgTag SWIFT_WARN_UNUSED_RESULT;
+/// This method checks if the application support message search.
+/// since:
+/// 2.1.0
+///
+/// returns:
+/// <code>true</code> if the message search can be used, <code>false</code> otherwise.
++ (BOOL)isSupportMessageSearch SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
@@ -631,8 +639,21 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUBaseChannelCell")
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
 
-@class SBDMessageListParams;
 @class NSBundle;
+
+SWIFT_CLASS("_TtC13SendBirdUIKit21SBUBaseViewController")
+@interface SBUBaseViewController : UIViewController
+- (void)viewWillAppear:(BOOL)animated;
+- (void)setupAutolayout;
+- (void)setupStyles;
+- (void)updateStyles;
+/// This is to pop or dismiss (depending on current view controller) the search view controller.
+- (void)onClickBack;
+- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
+@end
+
+@class SBDMessageListParams;
 
 /// note:
 /// When you create channel list for open channels, please inherit <code>SBUBaseChannelListViewController</code>
@@ -643,10 +664,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUBaseChannelCell")
 ///
 /// \endcode
 SWIFT_CLASS("_TtC13SendBirdUIKit32SBUBaseChannelListViewController")
-@interface SBUBaseChannelListViewController : UIViewController
-- (void)setupAutolayout;
-- (void)setupStyles;
-- (void)updateStyles;
+@interface SBUBaseChannelListViewController : SBUBaseViewController
 /// This is a function that shows the channelViewController.
 /// If you want to use a custom channelViewController, override it and implement it.
 /// \param channelUrl channel url for use in channelViewController.
@@ -662,7 +680,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit32SBUBaseChannelListViewController")
 @class SBUMessageInputView;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit28SBUBaseChannelViewController")
-@interface SBUBaseChannelViewController : UIViewController
+@interface SBUBaseChannelViewController : SBUBaseViewController
 @property (nonatomic, readonly, strong) UITableView * _Nonnull tableView;
 @property (nonatomic, strong) SBUMessageInputView * _Nonnull messageInputView;
 /// To use the custom user profile view, set this to the custom view created using <code>SBUUserProfileViewProtocol</code>.
@@ -671,8 +689,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUBaseChannelViewController")
 - (void)viewWillAppear:(BOOL)animated;
 - (void)viewWillDisappear:(BOOL)animated;
 - (void)loadView;
-- (void)setupAutolayout;
-- (void)setupStyles;
 - (void)updateStyles;
 /// This function sets the user profile tap gesture handling.
 /// If you do not want to use the user profile function, override this function and leave it empty.
@@ -701,6 +717,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUBaseChannelViewController")
 /// since:
 /// 1.2.5
 - (void)addGestureHideKeyboard;
+- (void)loadChannelWithChannelUrl:(NSString * _Nullable)channelUrl messageListParams:(SBDMessageListParams * _Nullable)messageListParams;
+/// This is used to check the loading status and control loading indicator.
+/// \param loadingState Set to true when the list is loading.
+///
+/// \param showIndicator If true, the loading indicator is started, and if false, the indicator is stopped.
+///
+- (void)setLoading:(BOOL)loadingState :(BOOL)showIndicator;
 - (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
@@ -736,6 +759,13 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit26SBUUserProfileViewDelegate_")
 - (void)scrollViewDidScroll:(UIScrollView * _Nonnull)scrollView;
 @end
 
+
+
+@class UINavigationController;
+
+@interface SBUBaseViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UINavigationControllerDelegate>
+- (void)navigationController:(UINavigationController * _Nonnull)navigationController didShowViewController:(UIViewController * _Nonnull)viewController animated:(BOOL)animated;
+@end
 
 
 /// <code>UITableViewCell</code> for <code>SBDGroupChannel</code> list.
@@ -1112,7 +1142,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUChannelSe
 @class SBDGroupChannelParams;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
-@interface SBUChannelSettingsViewController : UIViewController <UINavigationControllerDelegate>
+@interface SBUChannelSettingsViewController : SBUBaseViewController
 @property (nonatomic, strong) UIView * _Nullable userInfoView;
 @property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
@@ -1176,10 +1206,10 @@ SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
 /// since:
 /// 1.2.0
 - (void)showModerationList;
-/// This function actions to pop or dismiss.
+/// If you want to use a custom MessageSearchViewController, override it and implement it.
 /// since:
-/// 1.2.5
-- (void)onClickBack;
+/// 2.1.0
+- (void)showSearch;
 /// This function used to when edit button click.
 /// since:
 /// 1.2.5
@@ -1248,6 +1278,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUChannelTh
 @property (nonatomic, strong) UIColor * _Nonnull channelStateBannerBackgroundColor;
 @end
 
+@class SBUHighlightMessageInfo;
 @class SBDUserMessage;
 @class SBDUserMessageParams;
 @class SBDFileMessageParams;
@@ -1257,7 +1288,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUChannelTh
 @class SBUUnknownMessageCell;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
-@interface SBUChannelViewController : SBUBaseChannelViewController <UINavigationControllerDelegate>
+@interface SBUChannelViewController : SBUBaseChannelViewController
 @property (nonatomic, copy) NSString * _Nullable channelName;
 /// You can use the customized view and a view that inherits <code>SBUNewMessageInfo</code>.
 /// If you use a view that inherits SBUNewMessageInfo, you can change the button and their action.
@@ -1267,6 +1298,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
 @property (nonatomic, strong) UIView * _Nullable channelStateBanner;
 @property (nonatomic, strong) UIView * _Nullable emptyView;
+@property (nonatomic, strong) UIView * _Nullable scrollBottomView;
 @property (nonatomic, strong) SBUChannelTheme * _Nonnull theme;
 @property (nonatomic, readonly, strong) SBUBaseMessageCell * _Nullable adminMessageCell;
 @property (nonatomic, readonly, strong) SBUBaseMessageCell * _Nullable userMessageCell;
@@ -1276,6 +1308,9 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 /// This object is used to import a list of messages, send messages, modify messages, and so on, and is created during initialization.
 @property (nonatomic, readonly, strong) SBDGroupChannel * _Nullable channel;
 @property (nonatomic, readonly, copy) NSString * _Nullable channelUrl;
+@property (nonatomic, strong) SBUHighlightMessageInfo * _Nullable highlightInfo;
+/// To decide whether to use right bar button item or not
+@property (nonatomic) BOOL useRightBarButtonItem;
 /// This object has a list of all success messages synchronized with the server.
 @property (nonatomic, readonly, copy) NSArray<SBDBaseMessage *> * _Nonnull messageList;
 /// This object has a list of all messages.
@@ -1329,6 +1364,16 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 /// \param channelUrl Channel url string
 ///
 - (nonnull instancetype)initWithChannelUrl:(NSString * _Nonnull)channelUrl messageListParams:(SBDMessageListParams * _Nullable)messageListParams OBJC_DESIGNATED_INITIALIZER;
+/// Use this initializer to enter a channel to start from a specific timestamp..
+/// since:
+/// 2.1.0
+/// \param channelUrl Channel’s url
+///
+/// \param startingPoint A starting point timestamp to start the message list from
+///
+/// \param messageListParams <code>SBDMessageListParams</code> object to be used when loading messages.
+///
+- (nonnull instancetype)initWithChannelUrl:(NSString * _Nonnull)channelUrl startingPoint:(int64_t)startingPoint messageListParams:(SBDMessageListParams * _Nullable)messageListParams OBJC_DESIGNATED_INITIALIZER;
 - (void)loadView;
 - (void)setupAutolayout;
 - (void)setupStyles;
@@ -1446,7 +1491,11 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 ///
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
 ///
-- (void)deleteMessagesInListWithMessageIds:(NSArray<NSNumber *> * _Nonnull)messageIds needReload:(BOOL)needReload;
+- (void)deleteMessagesInListWithMessageIds:(NSArray<NSNumber *> * _Nullable)messageIds needReload:(BOOL)needReload;
+/// This functions clears current message lists
+/// since:
+/// 2.1.0
+- (void)clearMessageList;
 /// This functions deletes the resendable messages using the request ids.
 /// since:
 /// 1.2.5
@@ -1575,10 +1624,9 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 /// returns:
 /// Position of a message when grouped
 - (enum MessageGroupPosition)getMessageGroupingPositionWithCurrentIndex:(NSInteger)currentIndex SWIFT_WARN_UNUSED_RESULT;
-/// This function actions to pop or dismiss.
-- (void)onClickBack;
 /// This function shows channel settings.
 - (void)onClickSetting;
+- (void)onClickScrollBottomWithSender:(UIButton * _Nullable)sender;
 /// This function scrolls to bottom.
 /// \param animated Animated
 ///
@@ -1638,15 +1686,15 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (NSString * _Nonnull)generateCellIdentifierBy:(SBDBaseMessage * _Nonnull)message SWIFT_WARN_UNUSED_RESULT;
 @end
 
-
-@interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
-- (void)didSelectDeleteImageWithMessage:(SBDFileMessage * _Nonnull)message;
-@end
-
 @class UIPresentationController;
 
 @interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
 - (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
+@end
+
+
+@interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
+- (void)didSelectDeleteImageWithMessage:(SBDFileMessage * _Nonnull)message;
 @end
 
 
@@ -1746,6 +1794,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull sec
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull secondary500;)
 + (UIColor * _Nonnull)secondary500 SWIFT_WARN_UNUSED_RESULT;
 + (void)setSecondary500:(UIColor * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull background50;)
++ (UIColor * _Nonnull)background50 SWIFT_WARN_UNUSED_RESULT;
++ (void)setBackground50:(UIColor * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull background100;)
 + (UIColor * _Nonnull)background100 SWIFT_WARN_UNUSED_RESULT;
 + (void)setBackground100:(UIColor * _Nonnull)value;
@@ -1797,12 +1848,27 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull ond
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull ondark04;)
 + (UIColor * _Nonnull)ondark04 SWIFT_WARN_UNUSED_RESULT;
 + (void)setOndark04:(UIColor * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull error;)
-+ (UIColor * _Nonnull)error SWIFT_WARN_UNUSED_RESULT;
-+ (void)setError:(UIColor * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull error100;)
++ (UIColor * _Nonnull)error100 SWIFT_WARN_UNUSED_RESULT;
++ (void)setError100:(UIColor * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull error200;)
++ (UIColor * _Nonnull)error200 SWIFT_WARN_UNUSED_RESULT;
++ (void)setError200:(UIColor * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull error300;)
++ (UIColor * _Nonnull)error300 SWIFT_WARN_UNUSED_RESULT;
++ (void)setError300:(UIColor * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull error400;)
++ (UIColor * _Nonnull)error400 SWIFT_WARN_UNUSED_RESULT;
++ (void)setError400:(UIColor * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull error500;)
++ (UIColor * _Nonnull)error500 SWIFT_WARN_UNUSED_RESULT;
++ (void)setError500:(UIColor * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull information;)
 + (UIColor * _Nonnull)information SWIFT_WARN_UNUSED_RESULT;
 + (void)setInformation:(UIColor * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull highlight;)
++ (UIColor * _Nonnull)highlight SWIFT_WARN_UNUSED_RESULT;
++ (void)setHighlight:(UIColor * _Nonnull)value;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
@@ -1818,7 +1884,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUComponent
 + (SBUComponentTheme * _Nonnull)overlay SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
-- (nonnull instancetype)initWithEmptyViewBackgroundColor:(UIColor * _Nonnull)emptyViewBackgroundColor emptyViewStatusFont:(UIFont * _Nonnull)emptyViewStatusFont emptyViewStatusTintColor:(UIColor * _Nonnull)emptyViewStatusTintColor emptyViewRetryButtonTintColor:(UIColor * _Nonnull)emptyViewRetryButtonTintColor emptyViewRetryButtonFont:(UIFont * _Nonnull)emptyViewRetryButtonFont overlayColor:(UIColor * _Nonnull)overlayColor backgroundColor:(UIColor * _Nonnull)backgroundColor highlightedColor:(UIColor * _Nonnull)highlightedColor buttonTextColor:(UIColor * _Nonnull)buttonTextColor separatorColor:(UIColor * _Nonnull)separatorColor shadowColor:(UIColor * _Nonnull)shadowColor closeBarButtonTintColor:(UIColor * _Nonnull)closeBarButtonTintColor alertTitleColor:(UIColor * _Nonnull)alertTitleColor alertTitleFont:(UIFont * _Nonnull)alertTitleFont alertDetailColor:(UIColor * _Nonnull)alertDetailColor alertDetailFont:(UIFont * _Nonnull)alertDetailFont alertPlaceholderColor:(UIColor * _Nonnull)alertPlaceholderColor alertButtonColor:(UIColor * _Nonnull)alertButtonColor alertErrorColor:(UIColor * _Nonnull)alertErrorColor alertButtonFont:(UIFont * _Nonnull)alertButtonFont alertTextFieldBackgroundColor:(UIColor * _Nonnull)alertTextFieldBackgroundColor alertTextFieldTintColor:(UIColor * _Nonnull)alertTextFieldTintColor alertTextFieldFont:(UIFont * _Nonnull)alertTextFieldFont actionSheetTextFont:(UIFont * _Nonnull)actionSheetTextFont actionSheetTextColor:(UIColor * _Nonnull)actionSheetTextColor actionSheetSubTextFont:(UIFont * _Nonnull)actionSheetSubTextFont actionSheetSubTextColor:(UIColor * _Nonnull)actionSheetSubTextColor actionSheetItemColor:(UIColor * _Nonnull)actionSheetItemColor actionSheetErrorColor:(UIColor * _Nonnull)actionSheetErrorColor actionSheetButtonFont:(UIFont * _Nonnull)actionSheetButtonFont newMessageFont:(UIFont * _Nonnull)newMessageFont newMessageTintColor:(UIColor * _Nonnull)newMessageTintColor newMessageBackground:(UIColor * _Nonnull)newMessageBackground newMessageHighlighted:(UIColor * _Nonnull)newMessageHighlighted newMessageButtonTintColor:(UIColor * _Nonnull)newMessageButtonTintColor newMessageButtonBackground:(UIColor * _Nonnull)newMessageButtonBackground newMessageButtonHighlighted:(UIColor * _Nonnull)newMessageButtonHighlighted titleOnlineStateColor:(UIColor * _Nonnull)titleOnlineStateColor titleColor:(UIColor * _Nonnull)titleColor titleFont:(UIFont * _Nonnull)titleFont titleStatusColor:(UIColor * _Nonnull)titleStatusColor titleStatusFont:(UIFont * _Nonnull)titleStatusFont menuTitleFont:(UIFont * _Nonnull)menuTitleFont userPlaceholderBackgroundColor:(UIColor * _Nonnull)userPlaceholderBackgroundColor userPlaceholderTintColor:(UIColor * _Nonnull)userPlaceholderTintColor reactionBoxBackgroundColor:(UIColor * _Nonnull)reactionBoxBackgroundColor reactionBoxBorderLineColor:(UIColor * _Nonnull)reactionBoxBorderLineColor reactionBoxEmojiCountColor:(UIColor * _Nonnull)reactionBoxEmojiCountColor reactionBoxEmojiBackgroundColor:(UIColor * _Nonnull)reactionBoxEmojiBackgroundColor reactionBoxSelectedEmojiBackgroundColor:(UIColor * _Nonnull)reactionBoxSelectedEmojiBackgroundColor reactionBoxEmojiCountFont:(UIFont * _Nonnull)reactionBoxEmojiCountFont emojiCountColor:(UIColor * _Nonnull)emojiCountColor emojiSelectedCountColor:(UIColor * _Nonnull)emojiSelectedCountColor emojiSelectedUnderlineColor:(UIColor * _Nonnull)emojiSelectedUnderlineColor emojiCountFont:(UIFont * _Nonnull)emojiCountFont reactionMenuLineColor:(UIColor * _Nonnull)reactionMenuLineColor emojiListSelectedBackgroundColor:(UIColor * _Nonnull)emojiListSelectedBackgroundColor addReactionTintColor:(UIColor * _Nonnull)addReactionTintColor channelTypeSelectorItemTintColor:(UIColor * _Nonnull)channelTypeSelectorItemTintColor channelTypeSelectorItemTextColor:(UIColor * _Nonnull)channelTypeSelectorItemTextColor channelTypeSelectorItemFont:(UIFont * _Nonnull)channelTypeSelectorItemFont broadcastIconBackgroundColor:(UIColor * _Nonnull)broadcastIconBackgroundColor barItemTintColor:(UIColor * _Nonnull)barItemTintColor OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithEmptyViewBackgroundColor:(UIColor * _Nonnull)emptyViewBackgroundColor emptyViewStatusFont:(UIFont * _Nonnull)emptyViewStatusFont emptyViewStatusTintColor:(UIColor * _Nonnull)emptyViewStatusTintColor emptyViewRetryButtonTintColor:(UIColor * _Nonnull)emptyViewRetryButtonTintColor emptyViewRetryButtonFont:(UIFont * _Nonnull)emptyViewRetryButtonFont overlayColor:(UIColor * _Nonnull)overlayColor backgroundColor:(UIColor * _Nonnull)backgroundColor highlightedColor:(UIColor * _Nonnull)highlightedColor buttonTextColor:(UIColor * _Nonnull)buttonTextColor separatorColor:(UIColor * _Nonnull)separatorColor shadowColor:(UIColor * _Nonnull)shadowColor closeBarButtonTintColor:(UIColor * _Nonnull)closeBarButtonTintColor alertTitleColor:(UIColor * _Nonnull)alertTitleColor alertTitleFont:(UIFont * _Nonnull)alertTitleFont alertDetailColor:(UIColor * _Nonnull)alertDetailColor alertDetailFont:(UIFont * _Nonnull)alertDetailFont alertPlaceholderColor:(UIColor * _Nonnull)alertPlaceholderColor alertButtonColor:(UIColor * _Nonnull)alertButtonColor alertErrorColor:(UIColor * _Nonnull)alertErrorColor alertButtonFont:(UIFont * _Nonnull)alertButtonFont alertTextFieldBackgroundColor:(UIColor * _Nonnull)alertTextFieldBackgroundColor alertTextFieldTintColor:(UIColor * _Nonnull)alertTextFieldTintColor alertTextFieldFont:(UIFont * _Nonnull)alertTextFieldFont actionSheetTextFont:(UIFont * _Nonnull)actionSheetTextFont actionSheetTextColor:(UIColor * _Nonnull)actionSheetTextColor actionSheetSubTextFont:(UIFont * _Nonnull)actionSheetSubTextFont actionSheetSubTextColor:(UIColor * _Nonnull)actionSheetSubTextColor actionSheetItemColor:(UIColor * _Nonnull)actionSheetItemColor actionSheetErrorColor:(UIColor * _Nonnull)actionSheetErrorColor actionSheetButtonFont:(UIFont * _Nonnull)actionSheetButtonFont newMessageFont:(UIFont * _Nonnull)newMessageFont newMessageTintColor:(UIColor * _Nonnull)newMessageTintColor newMessageBackground:(UIColor * _Nonnull)newMessageBackground newMessageHighlighted:(UIColor * _Nonnull)newMessageHighlighted newMessageButtonTintColor:(UIColor * _Nonnull)newMessageButtonTintColor newMessageButtonBackground:(UIColor * _Nonnull)newMessageButtonBackground newMessageButtonHighlighted:(UIColor * _Nonnull)newMessageButtonHighlighted scrollBottomButtonIconColor:(UIColor * _Nonnull)scrollBottomButtonIconColor scrollBottomButtonBackground:(UIColor * _Nonnull)scrollBottomButtonBackground scrollBottomButtonHighlighted:(UIColor * _Nonnull)scrollBottomButtonHighlighted titleOnlineStateColor:(UIColor * _Nonnull)titleOnlineStateColor titleColor:(UIColor * _Nonnull)titleColor titleFont:(UIFont * _Nonnull)titleFont titleStatusColor:(UIColor * _Nonnull)titleStatusColor titleStatusFont:(UIFont * _Nonnull)titleStatusFont menuTitleFont:(UIFont * _Nonnull)menuTitleFont userPlaceholderBackgroundColor:(UIColor * _Nonnull)userPlaceholderBackgroundColor userPlaceholderTintColor:(UIColor * _Nonnull)userPlaceholderTintColor reactionBoxBackgroundColor:(UIColor * _Nonnull)reactionBoxBackgroundColor reactionBoxBorderLineColor:(UIColor * _Nonnull)reactionBoxBorderLineColor reactionBoxEmojiCountColor:(UIColor * _Nonnull)reactionBoxEmojiCountColor reactionBoxEmojiBackgroundColor:(UIColor * _Nonnull)reactionBoxEmojiBackgroundColor reactionBoxSelectedEmojiBackgroundColor:(UIColor * _Nonnull)reactionBoxSelectedEmojiBackgroundColor reactionBoxEmojiCountFont:(UIFont * _Nonnull)reactionBoxEmojiCountFont emojiCountColor:(UIColor * _Nonnull)emojiCountColor emojiSelectedCountColor:(UIColor * _Nonnull)emojiSelectedCountColor emojiSelectedUnderlineColor:(UIColor * _Nonnull)emojiSelectedUnderlineColor emojiCountFont:(UIFont * _Nonnull)emojiCountFont reactionMenuLineColor:(UIColor * _Nonnull)reactionMenuLineColor emojiListSelectedBackgroundColor:(UIColor * _Nonnull)emojiListSelectedBackgroundColor addReactionTintColor:(UIColor * _Nonnull)addReactionTintColor channelTypeSelectorItemTintColor:(UIColor * _Nonnull)channelTypeSelectorItemTintColor channelTypeSelectorItemTextColor:(UIColor * _Nonnull)channelTypeSelectorItemTextColor channelTypeSelectorItemFont:(UIFont * _Nonnull)channelTypeSelectorItemFont broadcastIconBackgroundColor:(UIColor * _Nonnull)broadcastIconBackgroundColor broadcastIconTintColor:(UIColor * _Nonnull)broadcastIconTintColor barItemTintColor:(UIColor * _Nonnull)barItemTintColor loadingBackgroundColor:(UIColor * _Nonnull)loadingBackgroundColor loadingPopupBackgroundColor:(UIColor * _Nonnull)loadingPopupBackgroundColor loadingFont:(UIFont * _Nonnull)loadingFont loadingTextColor:(UIColor * _Nonnull)loadingTextColor loadingSpinnerColor:(UIColor * _Nonnull)loadingSpinnerColor OBJC_DESIGNATED_INITIALIZER;
 @property (nonatomic, strong) UIColor * _Nonnull emptyViewBackgroundColor;
 @property (nonatomic, strong) UIFont * _Nonnull emptyViewStatusFont;
 @property (nonatomic, strong) UIColor * _Nonnull emptyViewStatusTintColor;
@@ -1849,6 +1915,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUComponent
 @property (nonatomic, strong) UIColor * _Nonnull newMessageButtonTintColor;
 @property (nonatomic, strong) UIColor * _Nonnull newMessageButtonBackground;
 @property (nonatomic, strong) UIColor * _Nonnull newMessageButtonHighlighted;
+@property (nonatomic, strong) UIColor * _Nonnull scrollBottomButtonIconColor;
+@property (nonatomic, strong) UIColor * _Nonnull scrollBottomButtonBackground;
+@property (nonatomic, strong) UIColor * _Nonnull scrollBottomButtonHighlighted;
 @property (nonatomic, strong) UIColor * _Nonnull titleOnlineStateColor;
 @property (nonatomic, strong) UIColor * _Nonnull titleColor;
 @property (nonatomic, strong) UIFont * _Nonnull titleFont;
@@ -1881,7 +1950,13 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUComponent
 @property (nonatomic, strong) UIColor * _Nonnull channelTypeSelectorItemTextColor;
 @property (nonatomic, strong) UIFont * _Nonnull channelTypeSelectorItemFont;
 @property (nonatomic, strong) UIColor * _Nonnull broadcastIconBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull broadcastIconTintColor;
 @property (nonatomic, strong) UIColor * _Nonnull barItemTintColor;
+@property (nonatomic, strong) UIColor * _Nonnull loadingBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull loadingPopupBackgroundColor;
+@property (nonatomic, strong) UIFont * _Nonnull loadingFont;
+@property (nonatomic, strong) UIColor * _Nonnull loadingTextColor;
+@property (nonatomic, strong) UIColor * _Nonnull loadingSpinnerColor;
 @end
 
 @class UIStackView;
@@ -1902,7 +1977,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit25SBUContentBaseMessageCell")
 - (void)setupAutolayout;
 - (void)setupActions;
 - (void)setupStyles;
-- (void)configure:(SBDBaseMessage * _Nonnull)message hideDateView:(BOOL)hideDateView position:(enum MessagePosition)position groupPosition:(enum MessageGroupPosition)groupPosition receiptState:(enum SBUMessageReceiptState)receiptState;
 - (void)setMessageGrouping;
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated;
 - (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nullable)sender;
@@ -1936,7 +2010,7 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit36SBUCreateChannelTypeSelectorProtocol_")
 @class SBDApplicationUserListQuery;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
-@interface SBUCreateChannelViewController : UIViewController <UINavigationControllerDelegate>
+@interface SBUCreateChannelViewController : SBUBaseViewController
 @property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
@@ -2011,10 +2085,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 /// \param state If state is <code>true</code>, start loading indicator.
 ///
 - (void)showLoadingWithState:(BOOL)state;
-/// This function actions to pop or dismiss.
-/// since:
-/// 1.2.5
-- (void)onClickBack;
 /// This function calls <code>createChannel:</code> function using the <code>selectedUserList</code>.
 /// since:
 /// 1.2.5
@@ -2103,8 +2173,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUFileMessageCell")
 - (void)setupAutolayout;
 - (void)setupActions;
 - (void)setupStyles;
-- (void)prepareForReuse;
-- (void)configure:(SBDFileMessage * _Nonnull)message hideDateView:(BOOL)hideDateView groupPosition:(enum MessageGroupPosition)groupPosition receiptState:(enum SBUMessageReceiptState)receiptState;
+- (void)configureWithHighlightInfo:(SBUHighlightMessageInfo * _Nullable)highlightInfo;
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated;
 - (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
@@ -2113,31 +2182,31 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUFileMessageCell")
 
 SWIFT_CLASS("_TtC13SendBirdUIKit10SBUFontSet")
 @interface SBUFontSet : NSObject
-/// Medium, 18pt
+/// Bold, 18pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull h1;)
 + (UIFont * _Nonnull)h1 SWIFT_WARN_UNUSED_RESULT;
 + (void)setH1:(UIFont * _Nonnull)value;
-/// Bold, 16pt
+/// Medium, 18pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull h2;)
 + (UIFont * _Nonnull)h2 SWIFT_WARN_UNUSED_RESULT;
 + (void)setH2:(UIFont * _Nonnull)value;
-/// Bold, 18pt
+/// Bold, 16pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull h3;)
 + (UIFont * _Nonnull)h3 SWIFT_WARN_UNUSED_RESULT;
 + (void)setH3:(UIFont * _Nonnull)value;
-/// Regular, 14pt, Line height: 20pt
+/// Regular, 16pt, Line height: 20pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull body1;)
 + (UIFont * _Nonnull)body1 SWIFT_WARN_UNUSED_RESULT;
 + (void)setBody1:(UIFont * _Nonnull)value;
-/// Regular, 14pt, Line height: 16pt
+/// Semibold, 14pt, Line height: 16pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull body2;)
 + (UIFont * _Nonnull)body2 SWIFT_WARN_UNUSED_RESULT;
 + (void)setBody2:(UIFont * _Nonnull)value;
-/// Semibold, 14pt, Line height: 16pt
+/// Regular, 14pt, Line height: 16pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull body3;)
 + (UIFont * _Nonnull)body3 SWIFT_WARN_UNUSED_RESULT;
 + (void)setBody3:(UIFont * _Nonnull)value;
-/// Semibold, 20pt
+/// Semibold, 18pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull button1;)
 + (UIFont * _Nonnull)button1 SWIFT_WARN_UNUSED_RESULT;
 + (void)setButton1:(UIFont * _Nonnull)value;
@@ -2157,11 +2226,11 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull capt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull caption2;)
 + (UIFont * _Nonnull)caption2 SWIFT_WARN_UNUSED_RESULT;
 + (void)setCaption2:(UIFont * _Nonnull)value;
-/// Regular, 11pt
+/// Medium, 11pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull caption3;)
 + (UIFont * _Nonnull)caption3 SWIFT_WARN_UNUSED_RESULT;
 + (void)setCaption3:(UIFont * _Nonnull)value;
-/// Bold, 11pt
+/// Regular, 11pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull caption4;)
 + (UIFont * _Nonnull)caption4 SWIFT_WARN_UNUSED_RESULT;
 + (void)setCaption4:(UIFont * _Nonnull)value;
@@ -2349,44 +2418,48 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class) CGSize imageResizingSize;)
 @end
 
 
+SWIFT_CLASS("_TtC13SendBirdUIKit23SBUHighlightMessageInfo")
+@interface SBUHighlightMessageInfo : NSObject
+@property (nonatomic, readonly) int64_t messageId;
+@property (nonatomic, readonly) int64_t updatedAt;
+- (nonnull instancetype)initWithMessageId:(int64_t)messageId updatedAt:(int64_t)updatedAt OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+
 SWIFT_CLASS("_TtC13SendBirdUIKit10SBUIconSet")
 @interface SBUIconSet : NSObject
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconActionLeave;)
-+ (UIImage * _Nonnull)iconActionLeave SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconActionLeave:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconActionNotificationOn;)
-+ (UIImage * _Nonnull)iconActionNotificationOn SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconActionNotificationOn:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconActionNotificationOff;)
-+ (UIImage * _Nonnull)iconActionNotificationOff SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconActionNotificationOff:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconAdd;)
 + (UIImage * _Nonnull)iconAdd SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconAdd:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconBack;)
 + (UIImage * _Nonnull)iconBack SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconBack:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconBan;)
++ (UIImage * _Nonnull)iconBan SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconBan:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconBroadcast;)
++ (UIImage * _Nonnull)iconBroadcast SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconBroadcast:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconCamera;)
 + (UIImage * _Nonnull)iconCamera SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconCamera:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconPlus;)
-+ (UIImage * _Nonnull)iconPlus SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconPlus:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconChat;)
 + (UIImage * _Nonnull)iconChat SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconChat:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconChatHide;)
-+ (UIImage * _Nonnull)iconChatHide SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconChatHide:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconChatShow;)
-+ (UIImage * _Nonnull)iconChatShow SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconChatShow:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconCheckbox;)
-+ (UIImage * _Nonnull)iconCheckbox SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconCheckbox:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconCheckboxOff;)
-+ (UIImage * _Nonnull)iconCheckboxOff SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconCheckboxOff:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconCheckboxChecked;)
++ (UIImage * _Nonnull)iconCheckboxChecked SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconCheckboxChecked:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconCheckboxUnchecked;)
++ (UIImage * _Nonnull)iconCheckboxUnchecked SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconCheckboxUnchecked:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconChevronDown;)
++ (UIImage * _Nonnull)iconChevronDown SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconChevronDown:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconChevronRight;)
++ (UIImage * _Nonnull)iconChevronRight SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconChevronRight:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconClose;)
 + (UIImage * _Nonnull)iconClose SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconClose:(UIImage * _Nonnull)value;
@@ -2399,27 +2472,36 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull ico
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconDelete;)
 + (UIImage * _Nonnull)iconDelete SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconDelete:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconDelivered;)
-+ (UIImage * _Nonnull)iconDelivered SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconDelivered:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconDocument;)
 + (UIImage * _Nonnull)iconDocument SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconDocument:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconDone;)
++ (UIImage * _Nonnull)iconDone SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconDone:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconDoneAll;)
++ (UIImage * _Nonnull)iconDoneAll SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconDoneAll:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconDownload;)
 + (UIImage * _Nonnull)iconDownload SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconDownload:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconDummy;)
-+ (UIImage * _Nonnull)iconDummy SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconDummy:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconEdit;)
 + (UIImage * _Nonnull)iconEdit SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconEdit:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconEmojiMore;)
++ (UIImage * _Nonnull)iconEmojiMore SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconEmojiMore:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconError;)
 + (UIImage * _Nonnull)iconError SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconError:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconErrorFilled;)
-+ (UIImage * _Nonnull)iconErrorFilled SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconErrorFilled:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconFileAudio;)
++ (UIImage * _Nonnull)iconFileAudio SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconFileAudio:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconFileDocument;)
++ (UIImage * _Nonnull)iconFileDocument SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconFileDocument:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconFreeze;)
++ (UIImage * _Nonnull)iconFreeze SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconFreeze:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconGif;)
 + (UIImage * _Nonnull)iconGif SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconGif:(UIImage * _Nonnull)value;
@@ -2432,140 +2514,77 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull ico
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconMembers;)
 + (UIImage * _Nonnull)iconMembers SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconMembers:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconMessage;)
++ (UIImage * _Nonnull)iconMessage SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconMessage:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconModerations;)
 + (UIImage * _Nonnull)iconModerations SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconModerations:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconSupergroup;)
-+ (UIImage * _Nonnull)iconSupergroup SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconSupergroup:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconBroadcastSmall;)
-+ (UIImage * _Nonnull)iconBroadcastSmall SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconBroadcastSmall:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconBroadcastMedium;)
-+ (UIImage * _Nonnull)iconBroadcastMedium SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconBroadcastMedium:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconBroadcastLarge;)
-+ (UIImage * _Nonnull)iconBroadcastLarge SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconBroadcastLarge:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconFreeze;)
-+ (UIImage * _Nonnull)iconFreeze SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconFreeze:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconMore;)
++ (UIImage * _Nonnull)iconMore SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconMore:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconMute;)
 + (UIImage * _Nonnull)iconMute SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconMute:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconNotificationFilled;)
++ (UIImage * _Nonnull)iconNotificationFilled SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconNotificationFilled:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconNotificationOffFilled;)
++ (UIImage * _Nonnull)iconNotificationOffFilled SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconNotificationOffFilled:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconNotifications;)
 + (UIImage * _Nonnull)iconNotifications SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconNotifications:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconThumbnailLight;)
-+ (UIImage * _Nonnull)iconThumbnailLight SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconThumbnailLight:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconNoThumbnailLight;)
-+ (UIImage * _Nonnull)iconNoThumbnailLight SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconNoThumbnailLight:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconOperator;)
++ (UIImage * _Nonnull)iconOperator SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconOperator:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconPhoto;)
 + (UIImage * _Nonnull)iconPhoto SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconPhoto:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconPlay;)
 + (UIImage * _Nonnull)iconPlay SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconPlay:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconRead;)
-+ (UIImage * _Nonnull)iconRead SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconRead:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconPlus;)
++ (UIImage * _Nonnull)iconPlus SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconPlus:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconQuestion;)
++ (UIImage * _Nonnull)iconQuestion SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconQuestion:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconRefresh;)
 + (UIImage * _Nonnull)iconRefresh SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconRefresh:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconAvatarLight;)
-+ (UIImage * _Nonnull)iconAvatarLight SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconAvatarLight:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconRemove;)
++ (UIImage * _Nonnull)iconRemove SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconRemove:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconSearch;)
++ (UIImage * _Nonnull)iconSearch SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconSearch:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconSend;)
 + (UIImage * _Nonnull)iconSend SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconSend:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconSent;)
-+ (UIImage * _Nonnull)iconSent SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconSent:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconFailed;)
-+ (UIImage * _Nonnull)iconFailed SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconFailed:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconShevronRight;)
-+ (UIImage * _Nonnull)iconShevronRight SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconShevronRight:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconSpinner;)
++ (UIImage * _Nonnull)iconSpinner SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconSpinner:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconSupergroup;)
++ (UIImage * _Nonnull)iconSupergroup SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconSupergroup:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconThumbnailNone;)
++ (UIImage * _Nonnull)iconThumbnailNone SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconThumbnailNone:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconUser;)
 + (UIImage * _Nonnull)iconUser SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconUser:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconSpinnerSmall;)
-+ (UIImage * _Nonnull)iconSpinnerSmall SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconSpinnerSmall:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconSpinnerLarge;)
-+ (UIImage * _Nonnull)iconSpinnerLarge SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconSpinnerLarge:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconFileDocument;)
-+ (UIImage * _Nonnull)iconFileDocument SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconFileDocument:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconFileAudio;)
-+ (UIImage * _Nonnull)iconFileAudio SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconFileAudio:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconChevronDown;)
-+ (UIImage * _Nonnull)iconChevronDown SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconChevronDown:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconMore;)
-+ (UIImage * _Nonnull)iconMore SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconMore:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconOperator;)
-+ (UIImage * _Nonnull)iconOperator SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconOperator:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconMuted;)
-+ (UIImage * _Nonnull)iconMuted SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconMuted:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconBanned;)
-+ (UIImage * _Nonnull)iconBanned SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconBanned:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconMessage;)
-+ (UIImage * _Nonnull)iconMessage SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconMessage:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull channelTypeGroup;)
-+ (UIImage * _Nonnull)channelTypeGroup SWIFT_WARN_UNUSED_RESULT;
-+ (void)setChannelTypeGroup:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull channelTypeSupergroup;)
-+ (UIImage * _Nonnull)channelTypeSupergroup SWIFT_WARN_UNUSED_RESULT;
-+ (void)setChannelTypeSupergroup:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull channelTypeBroadcast;)
-+ (UIImage * _Nonnull)channelTypeBroadcast SWIFT_WARN_UNUSED_RESULT;
-+ (void)setChannelTypeBroadcast:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiHeartEyes;)
-+ (UIImage * _Nonnull)emojiHeartEyes SWIFT_WARN_UNUSED_RESULT;
-+ (void)setEmojiHeartEyes:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiLaughing;)
-+ (UIImage * _Nonnull)emojiLaughing SWIFT_WARN_UNUSED_RESULT;
-+ (void)setEmojiLaughing:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiSweatSmile;)
-+ (UIImage * _Nonnull)emojiSweatSmile SWIFT_WARN_UNUSED_RESULT;
-+ (void)setEmojiSweatSmile:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiSob;)
-+ (UIImage * _Nonnull)emojiSob SWIFT_WARN_UNUSED_RESULT;
-+ (void)setEmojiSob:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiRage;)
-+ (UIImage * _Nonnull)emojiRage SWIFT_WARN_UNUSED_RESULT;
-+ (void)setEmojiRage:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiMoreLarge;)
-+ (UIImage * _Nonnull)emojiMoreLarge SWIFT_WARN_UNUSED_RESULT;
-+ (void)setEmojiMoreLarge:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiThumbsup;)
-+ (UIImage * _Nonnull)emojiThumbsup SWIFT_WARN_UNUSED_RESULT;
-+ (void)setEmojiThumbsup:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiThubsdown;)
-+ (UIImage * _Nonnull)emojiThubsdown SWIFT_WARN_UNUSED_RESULT;
-+ (void)setEmojiThubsdown:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiFail;)
-+ (UIImage * _Nonnull)emojiFail SWIFT_WARN_UNUSED_RESULT;
-+ (void)setEmojiFail:(UIImage * _Nonnull)value;
+/// Restore all customized icons to SDK’s default icons.
+/// since:
+/// 2.1.0
++ (void)restoreDefaultIcons;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
-
 
 @class SBDGroupChannelMemberListQuery;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
-@interface SBUInviteUserViewController : UIViewController
+@interface SBUInviteUserViewController : SBUBaseViewController
 @property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
@@ -2675,10 +2694,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 /// since:
 /// 1.2.5
 - (void)reloadData;
-/// This function actions to pop or dismiss.
-/// since:
-/// 1.2.5
-- (void)onClickBack;
 /// This function calls <code>inviteUsers</code> or <code>promoteToOperators</code> functions with <code>inviteListType</code>.
 /// since:
 /// 1.2.5
@@ -2780,6 +2795,9 @@ SWIFT_CLASS("_TtC13SendBirdUIKit7SBUMain")
 + (void)unregisterAllPushTokenWithCompletionHandler:(void (^ _Nonnull)(BOOL))completionHandler;
 + (void)openChannelWithChannelUrl:(NSString * _Nonnull)channelUrl basedOnChannelList:(BOOL)basedOnChannelList messageListParams:(SBDMessageListParams * _Nullable)messageListParams SWIFT_DEPRECATED_MSG("deprecated in 1.2.2", "moveToChannel(channelUrl:basedOnChannelList:messageListParams:)");
 /// This is a function that moves the channel that can be called anywhere.
+/// If you wish to open an open channel view controller, or any class that subclasses <code>SBUOpenChannelViewController</code>,
+/// you must guarentee that a channel list’s view controller, subclass of <code>SBUBaseChannelListViewController</code>,
+/// is present within the <code>UINavigationController.viewControllers</code> if you set the <code>basedOnChannelList</code> to <code>true</code>.
 /// since:
 /// 1.2.2
 /// \param channelUrl channel url for use in channel.
@@ -2828,7 +2846,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit7SBUMain")
 @class SBDParticipantListQuery;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
-@interface SBUMemberListViewController : UIViewController
+@interface SBUMemberListViewController : SBUBaseViewController
 @property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
@@ -2981,10 +2999,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 /// since:
 /// 1.2.5
 - (void)reloadData;
-/// This function actions to pop or dismiss.
-/// since:
-/// 1.2.5
-- (void)onClickBack;
 /// This function shows inviteChannelViewController.
 - (void)onClickInviteUser;
 /// This function sets the cell’s more menu button action handling. (GroupChannel only)
@@ -3048,12 +3062,14 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageCe
 + (SBUMessageCellTheme * _Nonnull)overlay SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
-- (nonnull instancetype)initWithBackgroundColor:(UIColor * _Nonnull)backgroundColor leftBackgroundColor:(UIColor * _Nonnull)leftBackgroundColor leftPressedBackgroundColor:(UIColor * _Nonnull)leftPressedBackgroundColor rightBackgroundColor:(UIColor * _Nonnull)rightBackgroundColor rightPressedBackgroundColor:(UIColor * _Nonnull)rightPressedBackgroundColor dateFont:(UIFont * _Nonnull)dateFont dateTextColor:(UIColor * _Nonnull)dateTextColor dateBackgroundColor:(UIColor * _Nonnull)dateBackgroundColor userPlaceholderBackgroundColor:(UIColor * _Nonnull)userPlaceholderBackgroundColor userPlaceholderTintColor:(UIColor * _Nonnull)userPlaceholderTintColor userNameFont:(UIFont * _Nonnull)userNameFont userNameTextColor:(UIColor * _Nonnull)userNameTextColor currentUserNameTextColor:(UIColor * _Nonnull)currentUserNameTextColor timeFont:(UIFont * _Nonnull)timeFont timeTextColor:(UIColor * _Nonnull)timeTextColor pendingStateColor:(UIColor * _Nonnull)pendingStateColor failedStateColor:(UIColor * _Nonnull)failedStateColor succeededStateColor:(UIColor * _Nonnull)succeededStateColor readReceiptStateColor:(UIColor * _Nonnull)readReceiptStateColor deliveryReceiptStateColor:(UIColor * _Nonnull)deliveryReceiptStateColor userMessageFont:(UIFont * _Nonnull)userMessageFont userMessageLeftTextColor:(UIColor * _Nonnull)userMessageLeftTextColor userMessageLeftEditTextColor:(UIColor * _Nonnull)userMessageLeftEditTextColor userMessageRightTextColor:(UIColor * _Nonnull)userMessageRightTextColor userMessageRightEditTextColor:(UIColor * _Nonnull)userMessageRightEditTextColor fileIconBackgroundColor:(UIColor * _Nonnull)fileIconBackgroundColor fileIconColor:(UIColor * _Nonnull)fileIconColor fileMessageNameFont:(UIFont * _Nonnull)fileMessageNameFont fileMessageLeftTextColor:(UIColor * _Nonnull)fileMessageLeftTextColor fileMessageRightTextColor:(UIColor * _Nonnull)fileMessageRightTextColor fileMessagePlaceholderColor:(UIColor * _Nonnull)fileMessagePlaceholderColor adminMessageFont:(UIFont * _Nonnull)adminMessageFont adminMessageTextColor:(UIColor * _Nonnull)adminMessageTextColor unknownMessageDescFont:(UIFont * _Nonnull)unknownMessageDescFont unknownMessageDescTextColor:(UIColor * _Nonnull)unknownMessageDescTextColor ogTitleFont:(UIFont * _Nonnull)ogTitleFont ogTitleColor:(UIColor * _Nonnull)ogTitleColor ogDescriptionFont:(UIFont * _Nonnull)ogDescriptionFont ogDescriptionColor:(UIColor * _Nonnull)ogDescriptionColor ogURLAddressFont:(UIFont * _Nonnull)ogURLAddressFont ogURLAddressColor:(UIColor * _Nonnull)ogURLAddressColor linkColor:(UIColor * _Nonnull)linkColor contentBackgroundColor:(UIColor * _Nonnull)contentBackgroundColor pressedContentBackgroundColor:(UIColor * _Nonnull)pressedContentBackgroundColor OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithBackgroundColor:(UIColor * _Nonnull)backgroundColor leftBackgroundColor:(UIColor * _Nonnull)leftBackgroundColor leftPressedBackgroundColor:(UIColor * _Nonnull)leftPressedBackgroundColor rightBackgroundColor:(UIColor * _Nonnull)rightBackgroundColor rightPressedBackgroundColor:(UIColor * _Nonnull)rightPressedBackgroundColor openChannelBackgroundColor:(UIColor * _Nonnull)openChannelBackgroundColor openChannelPressedBackgroundColor:(UIColor * _Nonnull)openChannelPressedBackgroundColor dateFont:(UIFont * _Nonnull)dateFont dateTextColor:(UIColor * _Nonnull)dateTextColor dateBackgroundColor:(UIColor * _Nonnull)dateBackgroundColor userPlaceholderBackgroundColor:(UIColor * _Nonnull)userPlaceholderBackgroundColor userPlaceholderTintColor:(UIColor * _Nonnull)userPlaceholderTintColor userNameFont:(UIFont * _Nonnull)userNameFont userNameTextColor:(UIColor * _Nonnull)userNameTextColor currentUserNameTextColor:(UIColor * _Nonnull)currentUserNameTextColor timeFont:(UIFont * _Nonnull)timeFont timeTextColor:(UIColor * _Nonnull)timeTextColor pendingStateColor:(UIColor * _Nonnull)pendingStateColor failedStateColor:(UIColor * _Nonnull)failedStateColor succeededStateColor:(UIColor * _Nonnull)succeededStateColor readReceiptStateColor:(UIColor * _Nonnull)readReceiptStateColor deliveryReceiptStateColor:(UIColor * _Nonnull)deliveryReceiptStateColor userMessageFont:(UIFont * _Nonnull)userMessageFont userMessageLeftTextColor:(UIColor * _Nonnull)userMessageLeftTextColor userMessageLeftEditTextColor:(UIColor * _Nonnull)userMessageLeftEditTextColor userMessageLeftHighlightTextColor:(UIColor * _Nonnull)userMessageLeftHighlightTextColor userMessageRightTextColor:(UIColor * _Nonnull)userMessageRightTextColor userMessageRightEditTextColor:(UIColor * _Nonnull)userMessageRightEditTextColor userMessageRightHighlightTextColor:(UIColor * _Nonnull)userMessageRightHighlightTextColor fileIconBackgroundColor:(UIColor * _Nonnull)fileIconBackgroundColor fileImageBackgroundColor:(UIColor * _Nonnull)fileImageBackgroundColor fileImageIconColor:(UIColor * _Nonnull)fileImageIconColor fileIconColor:(UIColor * _Nonnull)fileIconColor fileMessageNameFont:(UIFont * _Nonnull)fileMessageNameFont fileMessageLeftTextColor:(UIColor * _Nonnull)fileMessageLeftTextColor fileMessageRightTextColor:(UIColor * _Nonnull)fileMessageRightTextColor fileMessagePlaceholderColor:(UIColor * _Nonnull)fileMessagePlaceholderColor adminMessageFont:(UIFont * _Nonnull)adminMessageFont adminMessageTextColor:(UIColor * _Nonnull)adminMessageTextColor unknownMessageDescFont:(UIFont * _Nonnull)unknownMessageDescFont unknownMessageDescTextColor:(UIColor * _Nonnull)unknownMessageDescTextColor ogTitleFont:(UIFont * _Nonnull)ogTitleFont ogTitleColor:(UIColor * _Nonnull)ogTitleColor ogDescriptionFont:(UIFont * _Nonnull)ogDescriptionFont ogDescriptionColor:(UIColor * _Nonnull)ogDescriptionColor ogURLAddressFont:(UIFont * _Nonnull)ogURLAddressFont ogURLAddressColor:(UIColor * _Nonnull)ogURLAddressColor linkColor:(UIColor * _Nonnull)linkColor contentBackgroundColor:(UIColor * _Nonnull)contentBackgroundColor pressedContentBackgroundColor:(UIColor * _Nonnull)pressedContentBackgroundColor OBJC_DESIGNATED_INITIALIZER;
 @property (nonatomic, strong) UIColor * _Nonnull backgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull leftBackgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull leftPressedBackgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull rightBackgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull rightPressedBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull openChannelBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull openChannelPressedBackgroundColor;
 @property (nonatomic, strong) UIFont * _Nonnull dateFont;
 @property (nonatomic, strong) UIColor * _Nonnull dateTextColor;
 @property (nonatomic, strong) UIColor * _Nonnull dateBackgroundColor;
@@ -3078,6 +3094,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageCe
 @property (nonatomic, strong) UIColor * _Nonnull userMessageRightEditTextColor;
 @property (nonatomic, strong) UIColor * _Nonnull fileIconBackgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull fileIconColor;
+@property (nonatomic, strong) UIColor * _Nonnull fileImageBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull fileImageIconColor;
 @property (nonatomic, strong) UIFont * _Nonnull fileMessageNameFont;
 @property (nonatomic, strong) UIColor * _Nonnull fileMessageLeftTextColor;
 @property (nonatomic, strong) UIColor * _Nonnull fileMessageRightTextColor;
@@ -3086,6 +3104,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageCe
 @property (nonatomic, strong) UIColor * _Nonnull adminMessageTextColor;
 @property (nonatomic, strong) UIFont * _Nonnull unknownMessageDescFont;
 @property (nonatomic, strong) UIColor * _Nonnull unknownMessageDescTextColor;
+@property (nonatomic, strong) UIColor * _Nonnull messageLeftHighlightTextColor;
+@property (nonatomic, strong) UIColor * _Nonnull messageRightHighlightTextColor;
 @property (nonatomic, strong) UIFont * _Nonnull ogTitleFont;
 @property (nonatomic, strong) UIColor * _Nonnull ogTitleColor;
 @property (nonatomic, strong) UIFont * _Nonnull ogDescriptionFont;
@@ -3152,6 +3172,8 @@ SWIFT_CLASS("_TtC13SendBirdUIKit19SBUMessageInputView")
 /// \param isMuted <code>true</code> is muted mode, <code>false</code> is unmuted mode
 ///
 - (void)setMutedModeState:(BOOL)isMuted;
+/// Sets error state. Disable all
+- (void)setErrorState;
 - (void)endTypingMode;
 - (void)updateTextViewHeight;
 - (void)onClickAddButton:(id _Nonnull)sender;
@@ -3173,10 +3195,181 @@ typedef SWIFT_ENUM(NSInteger, SBUMessageReceiptState, open) {
   SBUMessageReceiptStateDeliveryReceipt = 2,
 };
 
+@class SBUMessageSearchResultCellTheme;
+
+SWIFT_CLASS("_TtC13SendBirdUIKit26SBUMessageSearchResultCell")
+@interface SBUMessageSearchResultCell : UITableViewCell
+@property (nonatomic, readonly, strong) SBUCoverImageView * _Nonnull coverImage;
+@property (nonatomic, readonly, strong) UILabel * _Nonnull titleLabel;
+@property (nonatomic, readonly, strong) UILabel * _Nonnull messageLabel;
+@property (nonatomic, readonly, strong) UILabel * _Nonnull fileMessageLabel;
+@property (nonatomic, readonly, strong) UIImageView * _Nonnull fileMessageIcon;
+@property (nonatomic, readonly, strong) UIStackView * _Nonnull fileStackView;
+@property (nonatomic, readonly, strong) UILabel * _Nonnull createdAtLabel;
+@property (nonatomic, readonly, strong) UIView * _Nonnull separatorLine;
+@property (nonatomic, strong) SBUMessageSearchResultCellTheme * _Nonnull theme;
+- (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
+- (void)awakeFromNib;
+/// This function handles the initialization of views.
+- (void)setupViews;
+/// This function handles the initialization of actions.
+- (void)setupActions;
+/// This function handles the initialization of autolayouts.
+- (void)setupAutolayout;
+/// This function handles the initialization of styles.
+- (void)setupStyles;
+- (void)layoutSubviews;
+/// This function configure a cell using <code>SBDBaseMessage</code> information.
+/// \param channel <code>SBDBaseMessage</code> object
+///
+- (void)configureWithMessage:(SBDBaseMessage * _Nonnull)message;
+/// Sets file message icon depending on the message’s file type using <code>SBUUtils.getFileType(by: fileMessage)</code>.
+- (void)setupFileIcon;
+@end
+
+
+SWIFT_CLASS("_TtC13SendBirdUIKit31SBUMessageSearchResultCellTheme")
+@interface SBUMessageSearchResultCellTheme : NSObject
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageSearchResultCellTheme * _Nonnull light;)
++ (SBUMessageSearchResultCellTheme * _Nonnull)light SWIFT_WARN_UNUSED_RESULT;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageSearchResultCellTheme * _Nonnull dark;)
++ (SBUMessageSearchResultCellTheme * _Nonnull)dark SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, strong) UIColor * _Nonnull backgroundColor;
+@property (nonatomic, strong) UIFont * _Nonnull titleFont;
+@property (nonatomic, strong) UIColor * _Nonnull titleTextColor;
+@property (nonatomic, strong) UIFont * _Nonnull descriptionFont;
+@property (nonatomic, strong) UIColor * _Nonnull descriptionTextColor;
+@property (nonatomic, strong) UIFont * _Nonnull updatedAtFont;
+@property (nonatomic, strong) UIColor * _Nonnull updatedAtTextColor;
+@property (nonatomic, strong) UIFont * _Nonnull fileMessageFont;
+@property (nonatomic, strong) UIColor * _Nonnull fileMessageTextColor;
+@property (nonatomic, strong) UIColor * _Nonnull fileMessageIconBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull fileMessageIconTintColor;
+@property (nonatomic, strong) UIColor * _Nonnull separatorLineColor;
+- (nonnull instancetype)initWithBackgroundColor:(UIColor * _Nonnull)backgroundColor titleFont:(UIFont * _Nonnull)titleFont titleTextColor:(UIColor * _Nonnull)titleTextColor descriptionFont:(UIFont * _Nonnull)descriptionFont descriptionTextColor:(UIColor * _Nonnull)descriptionTextColor updatedAtFont:(UIFont * _Nonnull)updatedAtFont updatedAtTextColor:(UIColor * _Nonnull)updatedAtTextColor fileMessageFont:(UIFont * _Nonnull)fileMessageFont fileMessageTextColor:(UIColor * _Nonnull)fileMessageTextColor fileMessageIconBackgroundColor:(UIColor * _Nonnull)fileMessageIconBackgroundColor fileMessageIconTinkColor:(UIColor * _Nonnull)fileMessageIconTinkColor separatorLineColor:(UIColor * _Nonnull)separatorLineColor OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+
+SWIFT_CLASS("_TtC13SendBirdUIKit21SBUMessageSearchTheme")
+@interface SBUMessageSearchTheme : NSObject
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageSearchTheme * _Nonnull light;)
++ (SBUMessageSearchTheme * _Nonnull)light SWIFT_WARN_UNUSED_RESULT;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageSearchTheme * _Nonnull dark;)
++ (SBUMessageSearchTheme * _Nonnull)dark SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic) UIStatusBarStyle statusBarStyle;
+@property (nonatomic) UIBarStyle navigationBarStyle;
+@property (nonatomic, strong) UIColor * _Nonnull navigationBarTintColor;
+@property (nonatomic, strong) UIColor * _Nonnull navigationBarShadowColor;
+@property (nonatomic, strong) UIColor * _Nonnull backgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull searchTextColor;
+@property (nonatomic, strong) UIFont * _Nonnull searchTextFont;
+@property (nonatomic, strong) UIColor * _Nonnull searchTextBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull searchPlaceholderColor;
+@property (nonatomic, strong) UIColor * _Nonnull searchIconTintColor;
+@property (nonatomic, strong) UIColor * _Nonnull clearIconTintColor;
+@property (nonatomic, strong) UIColor * _Nonnull cancelButtonTintColor;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+- (nonnull instancetype)initWithStatusBarStyle:(UIStatusBarStyle)statusBarStyle navigationBarStyle:(UIBarStyle)navigationBarStyle navigationBarTintColor:(UIColor * _Nonnull)navigationBarTintColor navigationBarShadowColor:(UIColor * _Nonnull)navigationBarShadowColor backgroundColor:(UIColor * _Nonnull)backgroundColor searchTextColor:(UIColor * _Nonnull)searchTextColor searchTextFont:(UIFont * _Nonnull)searchTextFont searchTextBackgroundColor:(UIColor * _Nonnull)searchTextBackgroundColor searchPlaceholderColor:(UIColor * _Nonnull)searchPlaceholderColor searchIconTintColor:(UIColor * _Nonnull)searchIconTintColor clearIconTintColor:(UIColor * _Nonnull)clearIconTintColor cancelButtonTintColor:(UIColor * _Nonnull)cancelButtonTintColor OBJC_DESIGNATED_INITIALIZER;
+@end
+
+@class SBDMessageSearchQueryBuilder;
+@class UISearchBar;
+
+/// ViewController handling a message search.
+/// since:
+/// 2.1.0
+SWIFT_CLASS("_TtC13SendBirdUIKit30SBUMessageSearchViewController")
+@interface SBUMessageSearchViewController : SBUBaseViewController
+@property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
+@property (nonatomic, strong) SBUMessageSearchTheme * _Nonnull theme;
+@property (nonatomic, strong) SBDBaseChannel * _Nullable channel;
+/// This param will be used on entering a channel from selecting an item from the search results.
+@property (nonatomic, strong) SBDMessageListParams * _Nullable messageListParams;
+/// You can set custom query params for message search.
+/// <code>keyword</code>, <code>channelUrl</code>, <code>order</code> is reserved in SDK. (The SDK value will override the custom values)
+/// <code>messageFromTs</code> is set to user’s channel joined ts as a default. You can set this value to <code>0</code> to search for all previous messages as well.
+/// <code>limit</code> will be set to default value of <code>defaultSearchLimit</code> in case if it’s set to 0 or smaller value.
+@property (nonatomic, copy) void (^ _Nullable customMessageSearchQueryBuilder)(SBDMessageSearchQueryBuilder * _Nonnull);
+/// Message search result’s cell.
+@property (nonatomic, strong) SBUMessageSearchResultCell * _Nullable messageSearchResultCell;
+@property (nonatomic, readonly, strong) UIView * _Null_unspecified searchBar;
+@property (nonatomic, readonly, strong) UITableView * _Nonnull tableView;
+@property (nonatomic, readonly, strong) UIView * _Nullable emptyView;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUMessageSearchViewController(channel:)'");
+- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUMessageSearchViewController(channel:)'");
+- (nonnull instancetype)initWithChannel:(SBDBaseChannel * _Nonnull)channel OBJC_DESIGNATED_INITIALIZER;
+- (void)viewDidLoad;
+- (void)viewWillAppear:(BOOL)animated;
+- (void)viewWillDisappear:(BOOL)animated;
+- (void)loadView;
+- (void)viewDidLayoutSubviews;
+- (void)didReceiveError:(NSString * _Nullable)message;
+/// Used to register a custom cell as a search result cell based on <code>SBUMessageSearchResultCell</code>.
+/// \param messageSearchResultCell Customized search result cell
+///
+/// \param nib nib information. If the value is nil, the nib file is not used.
+///
+- (void)registerWithMessageSearchResultCell:(SBUMessageSearchResultCell * _Nonnull)messageSearchResultCell nib:(UINib * _Nullable)nib;
+/// Performs keyword search
+/// <ul>
+///   <li>
+///     Parameters: keyword: A keyword to search for.
+///   </li>
+/// </ul>
+///
+/// returns:
+/// A <code>SBDMessageSearchQuery</code> with the params set.
+- (void)searchWithKeyword:(NSString * _Nonnull)keyword;
+/// This is to pop or dismiss (depending on current view controller) the search view controller.
+- (void)onClickBack;
+- (void)setupStyles;
+- (void)setupAutolayout;
+- (void)setupSearchBarStyleWithSearchBar:(UISearchBar * _Nonnull)searchBar;
+/// Enters a <code>SBUChannelViewController</code> with the selected message.
+/// \param message A <code>SBDBaseMessage</code> object to load channel from.
+///
+/// \param highlightInfo An  optional<code>SBUHighlightInfo</code> class to have message highlighted.
+///
+/// \param messageListParams An optional <code>SBDMessageListParams</code> params to be used in loading messages.
+///
+- (void)enterChannelWith:(SBDBaseMessage * _Nonnull)message highlightInfo:(SBUHighlightMessageInfo * _Nullable)highlightInfo messageListParams:(SBDMessageListParams * _Nullable)messageListParams;
+@end
+
+
+@interface SBUMessageSearchViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUEmptyViewDelegate>
+- (void)didSelectRetry;
+@end
+
+
+@interface SBUMessageSearchViewController (SWIFT_EXTENSION(SendBirdUIKit))
+- (BOOL)shouldShowLoadingIndicator;
+- (void)shouldDismissLoadingIndicator;
+@end
+
+
+@interface SBUMessageSearchViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UISearchBarDelegate>
+- (void)searchBarTextDidEndEditing:(UISearchBar * _Nonnull)searchBar;
+- (void)searchBarCancelButtonClicked:(UISearchBar * _Nonnull)searchBar;
+- (void)searchBarSearchButtonClicked:(UISearchBar * _Nonnull)searchBar;
+@end
+
+
+@interface SBUMessageSearchViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UITableViewDataSource, UITableViewDelegate>
+- (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
+- (UITableViewCell * _Nonnull)tableView:(UITableView * _Nonnull)tableView cellForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
+- (void)tableView:(UITableView * _Nonnull)tableView didSelectRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
+- (void)tableView:(UITableView * _Nonnull)tableView willDisplayCell:(UITableViewCell * _Nonnull)cell forRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
+- (CGFloat)tableView:(UITableView * _Nonnull)tableView heightForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
+@end
+
 
 
 SWIFT_CLASS("_TtC13SendBirdUIKit28SBUModerationsViewController")
-@interface SBUModerationsViewController : UIViewController <UINavigationControllerDelegate>
+@interface SBUModerationsViewController : SBUBaseViewController
 @property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
@@ -3224,10 +3417,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUModerationsViewController")
 /// This is a function that shows the banned member List.
 /// If you want to use a custom MemberListViewController, override it and implement it.
 - (void)showBannedMeberList;
-/// This function actions to pop or dismiss.
-/// since:
-/// 1.2.5
-- (void)onClickBack;
 /// Changes freeze status on channel.
 /// \param freeze freeze status
 ///
@@ -3346,6 +3535,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit36SBUOpenChannelContentBaseMessageCell")
 - (void)configure:(SBDBaseMessage * _Nonnull)message hideDateView:(BOOL)hideDateView groupPosition:(enum MessageGroupPosition)groupPosition isOverlay:(BOOL)isOverlay;
 - (void)setMessageGrouping;
 - (void)setUsernameColor:(UIColor * _Nonnull)color;
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated;
 - (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nullable)sender;
 - (void)onTapContentViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
 - (void)onTapUserProfileViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
@@ -3371,7 +3561,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit29SBUOpenChannelFileMessageCell")
 
 
 SWIFT_CLASS("_TtC13SendBirdUIKit36SBUOpenChannelSettingsViewController")
-@interface SBUOpenChannelSettingsViewController : UIViewController <UINavigationControllerDelegate>
+@interface SBUOpenChannelSettingsViewController : SBUBaseViewController
 @property (nonatomic, strong) UIView * _Nullable userInfoView;
 @property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
@@ -3422,8 +3612,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit36SBUOpenChannelSettingsViewController")
 - (void)deleteChannel;
 /// If you want to use a custom memberListViewController, override it and implement it.
 - (void)showParticipantsList;
-/// This function actions to pop or dismiss.
-- (void)onClickBack;
 /// This function used to when edit button click.
 - (void)onClickEdit;
 /// This function shows the channel image selection menu.
@@ -3488,7 +3676,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit32SBUOpenChannelUnknownMessageCell")
 @protocol UIViewControllerTransitionCoordinator;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
-@interface SBUOpenChannelViewController : SBUBaseChannelViewController <UINavigationControllerDelegate>
+@interface SBUOpenChannelViewController : SBUBaseChannelViewController
 /// You can use the customized view and a view that inherits <code>SBUNewMessageInfo</code>.
 /// If you use a view that inherits SBUNewMessageInfo, you can change the button and their action.
 @property (nonatomic, strong) UIView * _Nullable newMessageInfoView;
@@ -3510,7 +3698,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 @property (nonatomic) BOOL hideChannelInfoView;
 /// Sets text in <code>channelInfoView.descriptionLabel</code>
 @property (nonatomic, copy) NSString * _Nullable channelDescription;
-/// The internal view provided for media such as photo or video. If you want to use <code>mediaView</code>, please call <code>enableMediaView(_:)</code> to enable and set its ratio through <code>updateRatio(medialView:messageList:)</code>. If you want to overlay, use <code>overlayMediaView(_:messageListRatio:)</code> method.
+/// The internal view provided for media such as photo or video. If you want to use <code>mediaView</code>, please call <code>enableMediaView(_:)</code> to enable and set its ratio through <code>updateMessageListRatio(to ratio:)</code>. If you want to overlay, use <code>overlayMediaView(_:messageListRatio:)</code> method.
 @property (nonatomic, strong) UIView * _Nonnull mediaView;
 /// A boolean value whether the media view is enabled or not. The default value is <code>false</code>.
 /// note:
@@ -3525,12 +3713,12 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 /// A relative ratio value of <code>mediaView</code>to entire screen. The default value is <code>0</code>.
 /// note:
 ///
-/// Use <code>updateRatio(mediaView:messageList:)</code> to set value.
+/// Use <code>updateMessageListRatio(to ratio:)</code> to set value.
 @property (nonatomic, readonly) CGFloat mediaViewRatio;
 /// A relative ratio value of messaging view to entire screen. The default value is <code>1</code>
 /// note:
 ///
-/// Use <code>updateRatio(mediaView:messageList:)</code> to set value.
+/// Use <code>updateMessageListRatio(to ratio:)</code> to set value.
 @property (nonatomic, readonly) CGFloat messageListRatio;
 /// A boolean value whether <code>mediaView</code> is overlay or not. The default value is <code>false</code>.
 /// note:
@@ -3545,11 +3733,31 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 /// Enable the internal media view.
 /// \code
 /// self.enableMediaView(true)
-/// self.updateRatio(mediaView: 0.3: messageList: 0.7)
+/// self.updateMessageListRatio(to: 0.7)
 ///
 /// \endcode\param enabled If it’s <code>true</code> It uses the media view.
 ///
 - (void)enableMediaView:(BOOL)enabled;
+/// Updates a relative ratio value of the message list with  <code>ratio</code> to entire screen.
+/// The mediaView will have it’s ratio accordingly, meaning
+/// important:
+///
+/// The ratio must be in range of <code>0...1</code>.
+/// <ul>
+///   <li>
+///     normal mode : mediaView’s ratio = (1 - message list’s ratio). Media view & message list is side by side in landscape mode, top to bottom in portrait mode.
+///   </li>
+///   <li>
+///     overlay mode : mediaView’s ratio = 1 (fills the whole screen). Media view fills the whole screen & message list is above the media view with transparent background.
+///     After this method, You might need to call <code>setupStyles</code> or <code>updateComponentStyle</code>.
+///   </li>
+/// </ul>
+/// \code
+/// self.updateMessageListRatio(to: 0.7)
+///
+/// \endcode\param ratio A relative ratio value of message list to entire screen. If it’s <code>nil</code> or it’s not in range from 0 to 1 inclusive, the value won’t be set.
+///
+- (void)updateMessageListRatioTo:(CGFloat)ratio;
 /// Overlays the media view.
 /// \code
 /// // Enable overlay mode
@@ -3708,7 +3916,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 ///
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
 ///
-- (void)deleteMessagesInListWithMessageIds:(NSArray<NSNumber *> * _Nonnull)messageIds needReload:(BOOL)needReload;
+- (void)deleteMessagesInListWithMessageIds:(NSArray<NSNumber *> * _Nullable)messageIds needReload:(BOOL)needReload;
 /// This functions deletes the resendable messages using the request ids.
 /// \param requestIds Request id array to delete
 ///
@@ -3770,6 +3978,11 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 /// \param indexPath indexpath of cell
 ///
 - (void)setLongTapGestureHandler:(SBUOpenChannelBaseMessageCell * _Nonnull)cell message:(SBDBaseMessage * _Nonnull)message indexPath:(NSIndexPath * _Nonnull)indexPath;
+/// This function sets the user profile tap gesture handling.
+/// If you do not want to use the user profile function, override this function and leave it empty.
+/// \param user <code>SBUUser</code> object used for user profile configuration
+///
+- (void)setUserProfileTapGestureHandler:(SBUUser * _Nonnull)user;
 - (void)updateBarButton;
 /// This is used to messageInputView state update.
 - (void)updateMessageInputModeState;
@@ -3800,6 +4013,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 /// This function shows channel settings.
 - (void)onClickSetting;
 - (void)onClickParticipantsList;
+- (void)onClickScrollBottomWithSender:(UIButton * _Nullable)sender;
 /// This function scrolls to bottom.
 /// \param animated Animated
 ///
@@ -3852,11 +4066,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 @end
 
 
-@interface SBUOpenChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUEmptyViewDelegate>
-- (void)didSelectRetry;
-@end
-
-
 @interface SBUOpenChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
 - (void)didSelectDeleteImageWithMessage:(SBDFileMessage * _Nonnull)message;
 @end
@@ -3864,6 +4073,17 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 
 @interface SBUOpenChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
 - (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
+@end
+
+
+@interface SBUOpenChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUEmptyViewDelegate>
+- (void)didSelectRetry;
+@end
+
+
+@interface SBUOpenChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUChannelInfoHeaderViewDelegate>
+- (void)didSelectChannelInfo;
+- (void)didSelectChannelParticipants;
 @end
 
 
@@ -3876,12 +4096,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 @interface SBUOpenChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
 - (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
 - (void)imagePickerControllerDidCancel:(UIImagePickerController * _Nonnull)picker;
-@end
-
-
-@interface SBUOpenChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUChannelInfoHeaderViewDelegate>
-- (void)didSelectChannelInfo;
-- (void)didSelectChannelParticipants;
 @end
 
 
@@ -3907,6 +4121,18 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 - (void)channel:(SBDOpenChannel * _Nonnull)sender userDidExit:(SBDUser * _Nonnull)user;
 - (void)channelWasDeleted:(NSString * _Nonnull)channelUrl channelType:(SBDChannelType)channelType;
 - (void)didSucceedReconnection;
+@end
+
+
+SWIFT_CLASS("_TtC13SendBirdUIKit15SBUOverlayTheme")
+@interface SBUOverlayTheme : NSObject
+- (nonnull instancetype)initWithChannelTheme:(SBUChannelTheme * _Nonnull)channelTheme messageInputTheme:(SBUMessageInputTheme * _Nonnull)messageInputTheme messageCellTheme:(SBUMessageCellTheme * _Nonnull)messageCellTheme componentTheme:(SBUComponentTheme * _Nonnull)componentTheme OBJC_DESIGNATED_INITIALIZER;
+@property (nonatomic, strong) SBUChannelTheme * _Nonnull channelTheme;
+@property (nonatomic, strong) SBUMessageInputTheme * _Nonnull messageInputTheme;
+@property (nonatomic, strong) SBUMessageCellTheme * _Nonnull messageCellTheme;
+@property (nonatomic, strong) SBUComponentTheme * _Nonnull componentTheme;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
 
@@ -3971,6 +4197,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Choo
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull RemovePhoto;)
 + (NSString * _Nonnull)RemovePhoto SWIFT_WARN_UNUSED_RESULT;
 + (void)setRemovePhoto:(NSString * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Search;)
++ (NSString * _Nonnull)Search SWIFT_WARN_UNUSED_RESULT;
++ (void)setSearch:(NSString * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Alert_Delete;)
 + (NSString * _Nonnull)Alert_Delete SWIFT_WARN_UNUSED_RESULT;
 + (void)setAlert_Delete:(NSString * _Nonnull)value;
@@ -4070,6 +4299,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Chan
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull ChannelSettings_Delete;)
 + (NSString * _Nonnull)ChannelSettings_Delete SWIFT_WARN_UNUSED_RESULT;
 + (void)setChannelSettings_Delete:(NSString * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull ChannelSettings_Search;)
++ (NSString * _Nonnull)ChannelSettings_Search SWIFT_WARN_UNUSED_RESULT;
++ (void)setChannelSettings_Search:(NSString * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull ChannelSettings_Moderations;)
 + (NSString * _Nonnull)ChannelSettings_Moderations SWIFT_WARN_UNUSED_RESULT;
 + (void)setChannelSettings_Moderations:(NSString * _Nonnull)value;
@@ -4127,6 +4359,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Empt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Empty_Wrong;)
 + (NSString * _Nonnull)Empty_Wrong SWIFT_WARN_UNUSED_RESULT;
 + (void)setEmpty_Wrong:(NSString * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Empty_Search_Result;)
++ (NSString * _Nonnull)Empty_Search_Result SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmpty_Search_Result:(NSString * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull (^ _Nonnull CreateChannel_Create)(NSInteger);)
 + (NSString * _Nonnull (^ _Nonnull)(NSInteger))CreateChannel_Create SWIFT_WARN_UNUSED_RESULT;
 + (void)setCreateChannel_Create:(NSString * _Nonnull (^ _Nonnull)(NSInteger))value;
@@ -4242,7 +4477,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit8SBUTheme")
 @interface SBUTheme : NSObject
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
-- (nonnull instancetype)initWithChannelListTheme:(SBUChannelListTheme * _Nonnull)channelListTheme channelCellTheme:(SBUChannelCellTheme * _Nonnull)channelCellTheme channelTheme:(SBUChannelTheme * _Nonnull)channelTheme messageInputTheme:(SBUMessageInputTheme * _Nonnull)messageInputTheme messageCellTheme:(SBUMessageCellTheme * _Nonnull)messageCellTheme userListTheme:(SBUUserListTheme * _Nonnull)userListTheme userCellTheme:(SBUUserCellTheme * _Nonnull)userCellTheme channelSettingsTheme:(SBUChannelSettingsTheme * _Nonnull)channelSettingsTheme userProfileTheme:(SBUUserProfileTheme * _Nonnull)userProfileTheme componentTheme:(SBUComponentTheme * _Nonnull)componentTheme OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithChannelListTheme:(SBUChannelListTheme * _Nonnull)channelListTheme channelCellTheme:(SBUChannelCellTheme * _Nonnull)channelCellTheme channelTheme:(SBUChannelTheme * _Nonnull)channelTheme messageInputTheme:(SBUMessageInputTheme * _Nonnull)messageInputTheme messageCellTheme:(SBUMessageCellTheme * _Nonnull)messageCellTheme userListTheme:(SBUUserListTheme * _Nonnull)userListTheme userCellTheme:(SBUUserCellTheme * _Nonnull)userCellTheme channelSettingsTheme:(SBUChannelSettingsTheme * _Nonnull)channelSettingsTheme userProfileTheme:(SBUUserProfileTheme * _Nonnull)userProfileTheme componentTheme:(SBUComponentTheme * _Nonnull)componentTheme overlayTheme:(SBUOverlayTheme * _Nonnull)overlayTheme messageSearchTheme:(SBUMessageSearchTheme * _Nonnull)messageSearchTheme messageSearchResultCellTheme:(SBUMessageSearchResultCellTheme * _Nonnull)messageSearchResultCellTheme OBJC_DESIGNATED_INITIALIZER;
 + (void)setWithTheme:(SBUTheme * _Nonnull)theme;
 + (void)setChannelListWithChannelListTheme:(SBUChannelListTheme * _Nonnull)channelListTheme channelCellTheme:(SBUChannelCellTheme * _Nonnull)channelCellTheme;
 + (void)setChannelWithChannelTheme:(SBUChannelTheme * _Nonnull)channelTheme messageCellTheme:(SBUMessageCellTheme * _Nonnull)messageCellTheme messageInputTheme:(SBUMessageInputTheme * _Nonnull)messageInputTheme componentTheme:(SBUComponentTheme * _Nonnull)componentTheme;
@@ -4283,6 +4518,15 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) SBUUserProfileTheme * 
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) SBUComponentTheme * _Nonnull componentTheme;)
 + (SBUComponentTheme * _Nonnull)componentTheme SWIFT_WARN_UNUSED_RESULT;
 + (void)setComponentTheme:(SBUComponentTheme * _Nonnull)newValue;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) SBUOverlayTheme * _Nonnull overlayTheme;)
++ (SBUOverlayTheme * _Nonnull)overlayTheme SWIFT_WARN_UNUSED_RESULT;
++ (void)setOverlayTheme:(SBUOverlayTheme * _Nonnull)newValue;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) SBUMessageSearchTheme * _Nonnull messageSearchTheme;)
++ (SBUMessageSearchTheme * _Nonnull)messageSearchTheme SWIFT_WARN_UNUSED_RESULT;
++ (void)setMessageSearchTheme:(SBUMessageSearchTheme * _Nonnull)newValue;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) SBUMessageSearchResultCellTheme * _Nonnull messageSearchResultCellTheme;)
++ (SBUMessageSearchResultCellTheme * _Nonnull)messageSearchResultCellTheme SWIFT_WARN_UNUSED_RESULT;
++ (void)setMessageSearchResultCellTheme:(SBUMessageSearchResultCellTheme * _Nonnull)newValue;
 @end
 
 
@@ -4295,8 +4539,8 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUUserMessageCell")
 - (void)setupAutolayout;
 - (void)setupActions;
 - (void)setupStyles;
-- (void)configure:(SBDUserMessage * _Nonnull)message hideDateView:(BOOL)hideDateView groupPosition:(enum MessageGroupPosition)groupPosition receiptState:(enum SBUMessageReceiptState)receiptState;
-- (void)configure:(SBDBaseMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState groupPosition:(enum MessageGroupPosition)groupPosition withTextView:(BOOL)withTextView;
+/// Adds highlight attribute to the message
+- (void)configureWithHighlightInfo:(SBUHighlightMessageInfo * _Nullable)highlightInfo;
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated;
 - (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
@@ -4305,7 +4549,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUUserMessageCell")
 
 SWIFT_CLASS("_TtC13SendBirdUIKit21SBUUnknownMessageCell")
 @interface SBUUnknownMessageCell : SBUUserMessageCell
-- (void)configure:(SBDBaseMessage * _Nonnull)message hideDateView:(BOOL)hideDateView groupPosition:(enum MessageGroupPosition)groupPosition receiptState:(enum SBUMessageReceiptState)receiptState;
 - (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
@@ -4531,7 +4774,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit8SBUUtils")
 ///
 /// returns:
 /// <code>SBUMessageReceiptState</code>
-+ (enum SBUMessageReceiptState)getReceiptStateWithChannel:(SBDGroupChannel * _Nonnull)channel message:(SBDBaseMessage * _Nonnull)message SWIFT_WARN_UNUSED_RESULT;
++ (enum SBUMessageReceiptState)getReceiptStateWithChannel:(SBDGroupChannel * _Nonnull)channel message:(SBDBaseMessage * _Nonnull)message SWIFT_WARN_UNUSED_RESULT SWIFT_DEPRECATED_MSG("deprecated in 2.0.5", "getReceiptStateIfExists");
 /// This function checks the validity of coverUrl.
 /// \param coverUrl Cover url string
 ///
@@ -4573,6 +4816,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit8SBUUtils")
 @interface UINavigationController (SWIFT_EXTENSION(SendBirdUIKit))
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 @end
+
 
 
 
@@ -4865,7 +5109,8 @@ typedef SWIFT_ENUM(NSInteger, ChannelSettingItemType, open) {
   ChannelSettingItemTypeModerations = 0,
   ChannelSettingItemTypeNotifications = 1,
   ChannelSettingItemTypeMembers = 2,
-  ChannelSettingItemTypeLeave = 3,
+  ChannelSettingItemTypeSearch = 3,
+  ChannelSettingItemTypeLeave = 4,
 };
 
 /// This is an enumeration for channel type.
@@ -4885,7 +5130,8 @@ typedef SWIFT_ENUM(NSInteger, EmptyViewType, open) {
   EmptyViewTypeNoMessages = 2,
   EmptyViewTypeNoMutedMembers = 3,
   EmptyViewTypeNoBannedMembers = 4,
-  EmptyViewTypeError = 5,
+  EmptyViewTypeNoSearchResults = 5,
+  EmptyViewTypeError = 6,
 };
 
 typedef SWIFT_ENUM(uint8_t, LogType, open) {
@@ -5016,7 +5262,6 @@ typedef SWIFT_ENUM(NSInteger, ModerationItemType, open) {
 @end
 
 
-
 @interface NSObject (SWIFT_EXTENSION(SendBirdUIKit))
 /// This gets the class name of object.
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nonnull sbu_className;)
@@ -5114,6 +5359,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit13SBUCommonItem")
 
 SWIFT_CLASS("_TtC13SendBirdUIKit18SBUActionSheetItem")
 @interface SBUActionSheetItem : SBUCommonItem
+- (nonnull instancetype)initWithTitle:(NSString * _Nullable)title color:(UIColor * _Nullable)color image:(UIImage * _Nullable)image font:(UIFont * _Nullable)font tintColor:(UIColor * _Nullable)tintColor textAlignment:(NSTextAlignment)textAlignment OBJC_DESIGNATED_INITIALIZER;
 /// This function initializes actionSheet item.
 /// \param title Title text
 ///
@@ -5128,7 +5374,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUActionSheetItem")
 /// \param completionHandler Item’s completion handler
 ///
 - (nonnull instancetype)initWithTitle:(NSString * _Nullable)title color:(UIColor * _Nullable)color image:(UIImage * _Nullable)image font:(UIFont * _Nullable)font textAlignment:(NSTextAlignment)textAlignment completionHandler:(void (^ _Nullable)(void))completionHandler OBJC_DESIGNATED_INITIALIZER;
-- (nonnull instancetype)initWithTitle:(NSString * _Nullable)title color:(UIColor * _Nullable)color image:(UIImage * _Nullable)image font:(UIFont * _Nullable)font tintColor:(UIColor * _Nullable)tintColor textAlignment:(NSTextAlignment)textAlignment SWIFT_UNAVAILABLE;
 @end
 
 @class SBDBaseMessage;
@@ -5240,6 +5485,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit12SBUAvailable")
 /// returns:
 /// <code>true</code> if the og metadata can be usable, <code>false</code> otherwise.
 + (BOOL)isSupportOgTag SWIFT_WARN_UNUSED_RESULT;
+/// This method checks if the application support message search.
+/// since:
+/// 2.1.0
+///
+/// returns:
+/// <code>true</code> if the message search can be used, <code>false</code> otherwise.
++ (BOOL)isSupportMessageSearch SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
@@ -5250,8 +5502,21 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUBaseChannelCell")
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
 
-@class SBDMessageListParams;
 @class NSBundle;
+
+SWIFT_CLASS("_TtC13SendBirdUIKit21SBUBaseViewController")
+@interface SBUBaseViewController : UIViewController
+- (void)viewWillAppear:(BOOL)animated;
+- (void)setupAutolayout;
+- (void)setupStyles;
+- (void)updateStyles;
+/// This is to pop or dismiss (depending on current view controller) the search view controller.
+- (void)onClickBack;
+- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
+@end
+
+@class SBDMessageListParams;
 
 /// note:
 /// When you create channel list for open channels, please inherit <code>SBUBaseChannelListViewController</code>
@@ -5262,10 +5527,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUBaseChannelCell")
 ///
 /// \endcode
 SWIFT_CLASS("_TtC13SendBirdUIKit32SBUBaseChannelListViewController")
-@interface SBUBaseChannelListViewController : UIViewController
-- (void)setupAutolayout;
-- (void)setupStyles;
-- (void)updateStyles;
+@interface SBUBaseChannelListViewController : SBUBaseViewController
 /// This is a function that shows the channelViewController.
 /// If you want to use a custom channelViewController, override it and implement it.
 /// \param channelUrl channel url for use in channelViewController.
@@ -5281,7 +5543,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit32SBUBaseChannelListViewController")
 @class SBUMessageInputView;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit28SBUBaseChannelViewController")
-@interface SBUBaseChannelViewController : UIViewController
+@interface SBUBaseChannelViewController : SBUBaseViewController
 @property (nonatomic, readonly, strong) UITableView * _Nonnull tableView;
 @property (nonatomic, strong) SBUMessageInputView * _Nonnull messageInputView;
 /// To use the custom user profile view, set this to the custom view created using <code>SBUUserProfileViewProtocol</code>.
@@ -5290,8 +5552,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUBaseChannelViewController")
 - (void)viewWillAppear:(BOOL)animated;
 - (void)viewWillDisappear:(BOOL)animated;
 - (void)loadView;
-- (void)setupAutolayout;
-- (void)setupStyles;
 - (void)updateStyles;
 /// This function sets the user profile tap gesture handling.
 /// If you do not want to use the user profile function, override this function and leave it empty.
@@ -5320,6 +5580,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUBaseChannelViewController")
 /// since:
 /// 1.2.5
 - (void)addGestureHideKeyboard;
+- (void)loadChannelWithChannelUrl:(NSString * _Nullable)channelUrl messageListParams:(SBDMessageListParams * _Nullable)messageListParams;
+/// This is used to check the loading status and control loading indicator.
+/// \param loadingState Set to true when the list is loading.
+///
+/// \param showIndicator If true, the loading indicator is started, and if false, the indicator is stopped.
+///
+- (void)setLoading:(BOOL)loadingState :(BOOL)showIndicator;
 - (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
@@ -5355,6 +5622,13 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit26SBUUserProfileViewDelegate_")
 - (void)scrollViewDidScroll:(UIScrollView * _Nonnull)scrollView;
 @end
 
+
+
+@class UINavigationController;
+
+@interface SBUBaseViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UINavigationControllerDelegate>
+- (void)navigationController:(UINavigationController * _Nonnull)navigationController didShowViewController:(UIViewController * _Nonnull)viewController animated:(BOOL)animated;
+@end
 
 
 /// <code>UITableViewCell</code> for <code>SBDGroupChannel</code> list.
@@ -5731,7 +6005,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUChannelSe
 @class SBDGroupChannelParams;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
-@interface SBUChannelSettingsViewController : UIViewController <UINavigationControllerDelegate>
+@interface SBUChannelSettingsViewController : SBUBaseViewController
 @property (nonatomic, strong) UIView * _Nullable userInfoView;
 @property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
@@ -5795,10 +6069,10 @@ SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
 /// since:
 /// 1.2.0
 - (void)showModerationList;
-/// This function actions to pop or dismiss.
+/// If you want to use a custom MessageSearchViewController, override it and implement it.
 /// since:
-/// 1.2.5
-- (void)onClickBack;
+/// 2.1.0
+- (void)showSearch;
 /// This function used to when edit button click.
 /// since:
 /// 1.2.5
@@ -5867,6 +6141,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUChannelTh
 @property (nonatomic, strong) UIColor * _Nonnull channelStateBannerBackgroundColor;
 @end
 
+@class SBUHighlightMessageInfo;
 @class SBDUserMessage;
 @class SBDUserMessageParams;
 @class SBDFileMessageParams;
@@ -5876,7 +6151,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUChannelTh
 @class SBUUnknownMessageCell;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
-@interface SBUChannelViewController : SBUBaseChannelViewController <UINavigationControllerDelegate>
+@interface SBUChannelViewController : SBUBaseChannelViewController
 @property (nonatomic, copy) NSString * _Nullable channelName;
 /// You can use the customized view and a view that inherits <code>SBUNewMessageInfo</code>.
 /// If you use a view that inherits SBUNewMessageInfo, you can change the button and their action.
@@ -5886,6 +6161,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
 @property (nonatomic, strong) UIView * _Nullable channelStateBanner;
 @property (nonatomic, strong) UIView * _Nullable emptyView;
+@property (nonatomic, strong) UIView * _Nullable scrollBottomView;
 @property (nonatomic, strong) SBUChannelTheme * _Nonnull theme;
 @property (nonatomic, readonly, strong) SBUBaseMessageCell * _Nullable adminMessageCell;
 @property (nonatomic, readonly, strong) SBUBaseMessageCell * _Nullable userMessageCell;
@@ -5895,6 +6171,9 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 /// This object is used to import a list of messages, send messages, modify messages, and so on, and is created during initialization.
 @property (nonatomic, readonly, strong) SBDGroupChannel * _Nullable channel;
 @property (nonatomic, readonly, copy) NSString * _Nullable channelUrl;
+@property (nonatomic, strong) SBUHighlightMessageInfo * _Nullable highlightInfo;
+/// To decide whether to use right bar button item or not
+@property (nonatomic) BOOL useRightBarButtonItem;
 /// This object has a list of all success messages synchronized with the server.
 @property (nonatomic, readonly, copy) NSArray<SBDBaseMessage *> * _Nonnull messageList;
 /// This object has a list of all messages.
@@ -5948,6 +6227,16 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 /// \param channelUrl Channel url string
 ///
 - (nonnull instancetype)initWithChannelUrl:(NSString * _Nonnull)channelUrl messageListParams:(SBDMessageListParams * _Nullable)messageListParams OBJC_DESIGNATED_INITIALIZER;
+/// Use this initializer to enter a channel to start from a specific timestamp..
+/// since:
+/// 2.1.0
+/// \param channelUrl Channel’s url
+///
+/// \param startingPoint A starting point timestamp to start the message list from
+///
+/// \param messageListParams <code>SBDMessageListParams</code> object to be used when loading messages.
+///
+- (nonnull instancetype)initWithChannelUrl:(NSString * _Nonnull)channelUrl startingPoint:(int64_t)startingPoint messageListParams:(SBDMessageListParams * _Nullable)messageListParams OBJC_DESIGNATED_INITIALIZER;
 - (void)loadView;
 - (void)setupAutolayout;
 - (void)setupStyles;
@@ -6065,7 +6354,11 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 ///
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
 ///
-- (void)deleteMessagesInListWithMessageIds:(NSArray<NSNumber *> * _Nonnull)messageIds needReload:(BOOL)needReload;
+- (void)deleteMessagesInListWithMessageIds:(NSArray<NSNumber *> * _Nullable)messageIds needReload:(BOOL)needReload;
+/// This functions clears current message lists
+/// since:
+/// 2.1.0
+- (void)clearMessageList;
 /// This functions deletes the resendable messages using the request ids.
 /// since:
 /// 1.2.5
@@ -6194,10 +6487,9 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 /// returns:
 /// Position of a message when grouped
 - (enum MessageGroupPosition)getMessageGroupingPositionWithCurrentIndex:(NSInteger)currentIndex SWIFT_WARN_UNUSED_RESULT;
-/// This function actions to pop or dismiss.
-- (void)onClickBack;
 /// This function shows channel settings.
 - (void)onClickSetting;
+- (void)onClickScrollBottomWithSender:(UIButton * _Nullable)sender;
 /// This function scrolls to bottom.
 /// \param animated Animated
 ///
@@ -6257,15 +6549,15 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (NSString * _Nonnull)generateCellIdentifierBy:(SBDBaseMessage * _Nonnull)message SWIFT_WARN_UNUSED_RESULT;
 @end
 
-
-@interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
-- (void)didSelectDeleteImageWithMessage:(SBDFileMessage * _Nonnull)message;
-@end
-
 @class UIPresentationController;
 
 @interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
 - (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
+@end
+
+
+@interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
+- (void)didSelectDeleteImageWithMessage:(SBDFileMessage * _Nonnull)message;
 @end
 
 
@@ -6365,6 +6657,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull sec
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull secondary500;)
 + (UIColor * _Nonnull)secondary500 SWIFT_WARN_UNUSED_RESULT;
 + (void)setSecondary500:(UIColor * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull background50;)
++ (UIColor * _Nonnull)background50 SWIFT_WARN_UNUSED_RESULT;
++ (void)setBackground50:(UIColor * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull background100;)
 + (UIColor * _Nonnull)background100 SWIFT_WARN_UNUSED_RESULT;
 + (void)setBackground100:(UIColor * _Nonnull)value;
@@ -6416,12 +6711,27 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull ond
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull ondark04;)
 + (UIColor * _Nonnull)ondark04 SWIFT_WARN_UNUSED_RESULT;
 + (void)setOndark04:(UIColor * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull error;)
-+ (UIColor * _Nonnull)error SWIFT_WARN_UNUSED_RESULT;
-+ (void)setError:(UIColor * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull error100;)
++ (UIColor * _Nonnull)error100 SWIFT_WARN_UNUSED_RESULT;
++ (void)setError100:(UIColor * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull error200;)
++ (UIColor * _Nonnull)error200 SWIFT_WARN_UNUSED_RESULT;
++ (void)setError200:(UIColor * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull error300;)
++ (UIColor * _Nonnull)error300 SWIFT_WARN_UNUSED_RESULT;
++ (void)setError300:(UIColor * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull error400;)
++ (UIColor * _Nonnull)error400 SWIFT_WARN_UNUSED_RESULT;
++ (void)setError400:(UIColor * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull error500;)
++ (UIColor * _Nonnull)error500 SWIFT_WARN_UNUSED_RESULT;
++ (void)setError500:(UIColor * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull information;)
 + (UIColor * _Nonnull)information SWIFT_WARN_UNUSED_RESULT;
 + (void)setInformation:(UIColor * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull highlight;)
++ (UIColor * _Nonnull)highlight SWIFT_WARN_UNUSED_RESULT;
++ (void)setHighlight:(UIColor * _Nonnull)value;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
@@ -6437,7 +6747,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUComponent
 + (SBUComponentTheme * _Nonnull)overlay SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
-- (nonnull instancetype)initWithEmptyViewBackgroundColor:(UIColor * _Nonnull)emptyViewBackgroundColor emptyViewStatusFont:(UIFont * _Nonnull)emptyViewStatusFont emptyViewStatusTintColor:(UIColor * _Nonnull)emptyViewStatusTintColor emptyViewRetryButtonTintColor:(UIColor * _Nonnull)emptyViewRetryButtonTintColor emptyViewRetryButtonFont:(UIFont * _Nonnull)emptyViewRetryButtonFont overlayColor:(UIColor * _Nonnull)overlayColor backgroundColor:(UIColor * _Nonnull)backgroundColor highlightedColor:(UIColor * _Nonnull)highlightedColor buttonTextColor:(UIColor * _Nonnull)buttonTextColor separatorColor:(UIColor * _Nonnull)separatorColor shadowColor:(UIColor * _Nonnull)shadowColor closeBarButtonTintColor:(UIColor * _Nonnull)closeBarButtonTintColor alertTitleColor:(UIColor * _Nonnull)alertTitleColor alertTitleFont:(UIFont * _Nonnull)alertTitleFont alertDetailColor:(UIColor * _Nonnull)alertDetailColor alertDetailFont:(UIFont * _Nonnull)alertDetailFont alertPlaceholderColor:(UIColor * _Nonnull)alertPlaceholderColor alertButtonColor:(UIColor * _Nonnull)alertButtonColor alertErrorColor:(UIColor * _Nonnull)alertErrorColor alertButtonFont:(UIFont * _Nonnull)alertButtonFont alertTextFieldBackgroundColor:(UIColor * _Nonnull)alertTextFieldBackgroundColor alertTextFieldTintColor:(UIColor * _Nonnull)alertTextFieldTintColor alertTextFieldFont:(UIFont * _Nonnull)alertTextFieldFont actionSheetTextFont:(UIFont * _Nonnull)actionSheetTextFont actionSheetTextColor:(UIColor * _Nonnull)actionSheetTextColor actionSheetSubTextFont:(UIFont * _Nonnull)actionSheetSubTextFont actionSheetSubTextColor:(UIColor * _Nonnull)actionSheetSubTextColor actionSheetItemColor:(UIColor * _Nonnull)actionSheetItemColor actionSheetErrorColor:(UIColor * _Nonnull)actionSheetErrorColor actionSheetButtonFont:(UIFont * _Nonnull)actionSheetButtonFont newMessageFont:(UIFont * _Nonnull)newMessageFont newMessageTintColor:(UIColor * _Nonnull)newMessageTintColor newMessageBackground:(UIColor * _Nonnull)newMessageBackground newMessageHighlighted:(UIColor * _Nonnull)newMessageHighlighted newMessageButtonTintColor:(UIColor * _Nonnull)newMessageButtonTintColor newMessageButtonBackground:(UIColor * _Nonnull)newMessageButtonBackground newMessageButtonHighlighted:(UIColor * _Nonnull)newMessageButtonHighlighted titleOnlineStateColor:(UIColor * _Nonnull)titleOnlineStateColor titleColor:(UIColor * _Nonnull)titleColor titleFont:(UIFont * _Nonnull)titleFont titleStatusColor:(UIColor * _Nonnull)titleStatusColor titleStatusFont:(UIFont * _Nonnull)titleStatusFont menuTitleFont:(UIFont * _Nonnull)menuTitleFont userPlaceholderBackgroundColor:(UIColor * _Nonnull)userPlaceholderBackgroundColor userPlaceholderTintColor:(UIColor * _Nonnull)userPlaceholderTintColor reactionBoxBackgroundColor:(UIColor * _Nonnull)reactionBoxBackgroundColor reactionBoxBorderLineColor:(UIColor * _Nonnull)reactionBoxBorderLineColor reactionBoxEmojiCountColor:(UIColor * _Nonnull)reactionBoxEmojiCountColor reactionBoxEmojiBackgroundColor:(UIColor * _Nonnull)reactionBoxEmojiBackgroundColor reactionBoxSelectedEmojiBackgroundColor:(UIColor * _Nonnull)reactionBoxSelectedEmojiBackgroundColor reactionBoxEmojiCountFont:(UIFont * _Nonnull)reactionBoxEmojiCountFont emojiCountColor:(UIColor * _Nonnull)emojiCountColor emojiSelectedCountColor:(UIColor * _Nonnull)emojiSelectedCountColor emojiSelectedUnderlineColor:(UIColor * _Nonnull)emojiSelectedUnderlineColor emojiCountFont:(UIFont * _Nonnull)emojiCountFont reactionMenuLineColor:(UIColor * _Nonnull)reactionMenuLineColor emojiListSelectedBackgroundColor:(UIColor * _Nonnull)emojiListSelectedBackgroundColor addReactionTintColor:(UIColor * _Nonnull)addReactionTintColor channelTypeSelectorItemTintColor:(UIColor * _Nonnull)channelTypeSelectorItemTintColor channelTypeSelectorItemTextColor:(UIColor * _Nonnull)channelTypeSelectorItemTextColor channelTypeSelectorItemFont:(UIFont * _Nonnull)channelTypeSelectorItemFont broadcastIconBackgroundColor:(UIColor * _Nonnull)broadcastIconBackgroundColor barItemTintColor:(UIColor * _Nonnull)barItemTintColor OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithEmptyViewBackgroundColor:(UIColor * _Nonnull)emptyViewBackgroundColor emptyViewStatusFont:(UIFont * _Nonnull)emptyViewStatusFont emptyViewStatusTintColor:(UIColor * _Nonnull)emptyViewStatusTintColor emptyViewRetryButtonTintColor:(UIColor * _Nonnull)emptyViewRetryButtonTintColor emptyViewRetryButtonFont:(UIFont * _Nonnull)emptyViewRetryButtonFont overlayColor:(UIColor * _Nonnull)overlayColor backgroundColor:(UIColor * _Nonnull)backgroundColor highlightedColor:(UIColor * _Nonnull)highlightedColor buttonTextColor:(UIColor * _Nonnull)buttonTextColor separatorColor:(UIColor * _Nonnull)separatorColor shadowColor:(UIColor * _Nonnull)shadowColor closeBarButtonTintColor:(UIColor * _Nonnull)closeBarButtonTintColor alertTitleColor:(UIColor * _Nonnull)alertTitleColor alertTitleFont:(UIFont * _Nonnull)alertTitleFont alertDetailColor:(UIColor * _Nonnull)alertDetailColor alertDetailFont:(UIFont * _Nonnull)alertDetailFont alertPlaceholderColor:(UIColor * _Nonnull)alertPlaceholderColor alertButtonColor:(UIColor * _Nonnull)alertButtonColor alertErrorColor:(UIColor * _Nonnull)alertErrorColor alertButtonFont:(UIFont * _Nonnull)alertButtonFont alertTextFieldBackgroundColor:(UIColor * _Nonnull)alertTextFieldBackgroundColor alertTextFieldTintColor:(UIColor * _Nonnull)alertTextFieldTintColor alertTextFieldFont:(UIFont * _Nonnull)alertTextFieldFont actionSheetTextFont:(UIFont * _Nonnull)actionSheetTextFont actionSheetTextColor:(UIColor * _Nonnull)actionSheetTextColor actionSheetSubTextFont:(UIFont * _Nonnull)actionSheetSubTextFont actionSheetSubTextColor:(UIColor * _Nonnull)actionSheetSubTextColor actionSheetItemColor:(UIColor * _Nonnull)actionSheetItemColor actionSheetErrorColor:(UIColor * _Nonnull)actionSheetErrorColor actionSheetButtonFont:(UIFont * _Nonnull)actionSheetButtonFont newMessageFont:(UIFont * _Nonnull)newMessageFont newMessageTintColor:(UIColor * _Nonnull)newMessageTintColor newMessageBackground:(UIColor * _Nonnull)newMessageBackground newMessageHighlighted:(UIColor * _Nonnull)newMessageHighlighted newMessageButtonTintColor:(UIColor * _Nonnull)newMessageButtonTintColor newMessageButtonBackground:(UIColor * _Nonnull)newMessageButtonBackground newMessageButtonHighlighted:(UIColor * _Nonnull)newMessageButtonHighlighted scrollBottomButtonIconColor:(UIColor * _Nonnull)scrollBottomButtonIconColor scrollBottomButtonBackground:(UIColor * _Nonnull)scrollBottomButtonBackground scrollBottomButtonHighlighted:(UIColor * _Nonnull)scrollBottomButtonHighlighted titleOnlineStateColor:(UIColor * _Nonnull)titleOnlineStateColor titleColor:(UIColor * _Nonnull)titleColor titleFont:(UIFont * _Nonnull)titleFont titleStatusColor:(UIColor * _Nonnull)titleStatusColor titleStatusFont:(UIFont * _Nonnull)titleStatusFont menuTitleFont:(UIFont * _Nonnull)menuTitleFont userPlaceholderBackgroundColor:(UIColor * _Nonnull)userPlaceholderBackgroundColor userPlaceholderTintColor:(UIColor * _Nonnull)userPlaceholderTintColor reactionBoxBackgroundColor:(UIColor * _Nonnull)reactionBoxBackgroundColor reactionBoxBorderLineColor:(UIColor * _Nonnull)reactionBoxBorderLineColor reactionBoxEmojiCountColor:(UIColor * _Nonnull)reactionBoxEmojiCountColor reactionBoxEmojiBackgroundColor:(UIColor * _Nonnull)reactionBoxEmojiBackgroundColor reactionBoxSelectedEmojiBackgroundColor:(UIColor * _Nonnull)reactionBoxSelectedEmojiBackgroundColor reactionBoxEmojiCountFont:(UIFont * _Nonnull)reactionBoxEmojiCountFont emojiCountColor:(UIColor * _Nonnull)emojiCountColor emojiSelectedCountColor:(UIColor * _Nonnull)emojiSelectedCountColor emojiSelectedUnderlineColor:(UIColor * _Nonnull)emojiSelectedUnderlineColor emojiCountFont:(UIFont * _Nonnull)emojiCountFont reactionMenuLineColor:(UIColor * _Nonnull)reactionMenuLineColor emojiListSelectedBackgroundColor:(UIColor * _Nonnull)emojiListSelectedBackgroundColor addReactionTintColor:(UIColor * _Nonnull)addReactionTintColor channelTypeSelectorItemTintColor:(UIColor * _Nonnull)channelTypeSelectorItemTintColor channelTypeSelectorItemTextColor:(UIColor * _Nonnull)channelTypeSelectorItemTextColor channelTypeSelectorItemFont:(UIFont * _Nonnull)channelTypeSelectorItemFont broadcastIconBackgroundColor:(UIColor * _Nonnull)broadcastIconBackgroundColor broadcastIconTintColor:(UIColor * _Nonnull)broadcastIconTintColor barItemTintColor:(UIColor * _Nonnull)barItemTintColor loadingBackgroundColor:(UIColor * _Nonnull)loadingBackgroundColor loadingPopupBackgroundColor:(UIColor * _Nonnull)loadingPopupBackgroundColor loadingFont:(UIFont * _Nonnull)loadingFont loadingTextColor:(UIColor * _Nonnull)loadingTextColor loadingSpinnerColor:(UIColor * _Nonnull)loadingSpinnerColor OBJC_DESIGNATED_INITIALIZER;
 @property (nonatomic, strong) UIColor * _Nonnull emptyViewBackgroundColor;
 @property (nonatomic, strong) UIFont * _Nonnull emptyViewStatusFont;
 @property (nonatomic, strong) UIColor * _Nonnull emptyViewStatusTintColor;
@@ -6468,6 +6778,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUComponent
 @property (nonatomic, strong) UIColor * _Nonnull newMessageButtonTintColor;
 @property (nonatomic, strong) UIColor * _Nonnull newMessageButtonBackground;
 @property (nonatomic, strong) UIColor * _Nonnull newMessageButtonHighlighted;
+@property (nonatomic, strong) UIColor * _Nonnull scrollBottomButtonIconColor;
+@property (nonatomic, strong) UIColor * _Nonnull scrollBottomButtonBackground;
+@property (nonatomic, strong) UIColor * _Nonnull scrollBottomButtonHighlighted;
 @property (nonatomic, strong) UIColor * _Nonnull titleOnlineStateColor;
 @property (nonatomic, strong) UIColor * _Nonnull titleColor;
 @property (nonatomic, strong) UIFont * _Nonnull titleFont;
@@ -6500,7 +6813,13 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUComponent
 @property (nonatomic, strong) UIColor * _Nonnull channelTypeSelectorItemTextColor;
 @property (nonatomic, strong) UIFont * _Nonnull channelTypeSelectorItemFont;
 @property (nonatomic, strong) UIColor * _Nonnull broadcastIconBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull broadcastIconTintColor;
 @property (nonatomic, strong) UIColor * _Nonnull barItemTintColor;
+@property (nonatomic, strong) UIColor * _Nonnull loadingBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull loadingPopupBackgroundColor;
+@property (nonatomic, strong) UIFont * _Nonnull loadingFont;
+@property (nonatomic, strong) UIColor * _Nonnull loadingTextColor;
+@property (nonatomic, strong) UIColor * _Nonnull loadingSpinnerColor;
 @end
 
 @class UIStackView;
@@ -6521,7 +6840,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit25SBUContentBaseMessageCell")
 - (void)setupAutolayout;
 - (void)setupActions;
 - (void)setupStyles;
-- (void)configure:(SBDBaseMessage * _Nonnull)message hideDateView:(BOOL)hideDateView position:(enum MessagePosition)position groupPosition:(enum MessageGroupPosition)groupPosition receiptState:(enum SBUMessageReceiptState)receiptState;
 - (void)setMessageGrouping;
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated;
 - (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nullable)sender;
@@ -6555,7 +6873,7 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit36SBUCreateChannelTypeSelectorProtocol_")
 @class SBDApplicationUserListQuery;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
-@interface SBUCreateChannelViewController : UIViewController <UINavigationControllerDelegate>
+@interface SBUCreateChannelViewController : SBUBaseViewController
 @property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
@@ -6630,10 +6948,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 /// \param state If state is <code>true</code>, start loading indicator.
 ///
 - (void)showLoadingWithState:(BOOL)state;
-/// This function actions to pop or dismiss.
-/// since:
-/// 1.2.5
-- (void)onClickBack;
 /// This function calls <code>createChannel:</code> function using the <code>selectedUserList</code>.
 /// since:
 /// 1.2.5
@@ -6722,8 +7036,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUFileMessageCell")
 - (void)setupAutolayout;
 - (void)setupActions;
 - (void)setupStyles;
-- (void)prepareForReuse;
-- (void)configure:(SBDFileMessage * _Nonnull)message hideDateView:(BOOL)hideDateView groupPosition:(enum MessageGroupPosition)groupPosition receiptState:(enum SBUMessageReceiptState)receiptState;
+- (void)configureWithHighlightInfo:(SBUHighlightMessageInfo * _Nullable)highlightInfo;
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated;
 - (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
@@ -6732,31 +7045,31 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUFileMessageCell")
 
 SWIFT_CLASS("_TtC13SendBirdUIKit10SBUFontSet")
 @interface SBUFontSet : NSObject
-/// Medium, 18pt
+/// Bold, 18pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull h1;)
 + (UIFont * _Nonnull)h1 SWIFT_WARN_UNUSED_RESULT;
 + (void)setH1:(UIFont * _Nonnull)value;
-/// Bold, 16pt
+/// Medium, 18pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull h2;)
 + (UIFont * _Nonnull)h2 SWIFT_WARN_UNUSED_RESULT;
 + (void)setH2:(UIFont * _Nonnull)value;
-/// Bold, 18pt
+/// Bold, 16pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull h3;)
 + (UIFont * _Nonnull)h3 SWIFT_WARN_UNUSED_RESULT;
 + (void)setH3:(UIFont * _Nonnull)value;
-/// Regular, 14pt, Line height: 20pt
+/// Regular, 16pt, Line height: 20pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull body1;)
 + (UIFont * _Nonnull)body1 SWIFT_WARN_UNUSED_RESULT;
 + (void)setBody1:(UIFont * _Nonnull)value;
-/// Regular, 14pt, Line height: 16pt
+/// Semibold, 14pt, Line height: 16pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull body2;)
 + (UIFont * _Nonnull)body2 SWIFT_WARN_UNUSED_RESULT;
 + (void)setBody2:(UIFont * _Nonnull)value;
-/// Semibold, 14pt, Line height: 16pt
+/// Regular, 14pt, Line height: 16pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull body3;)
 + (UIFont * _Nonnull)body3 SWIFT_WARN_UNUSED_RESULT;
 + (void)setBody3:(UIFont * _Nonnull)value;
-/// Semibold, 20pt
+/// Semibold, 18pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull button1;)
 + (UIFont * _Nonnull)button1 SWIFT_WARN_UNUSED_RESULT;
 + (void)setButton1:(UIFont * _Nonnull)value;
@@ -6776,11 +7089,11 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull capt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull caption2;)
 + (UIFont * _Nonnull)caption2 SWIFT_WARN_UNUSED_RESULT;
 + (void)setCaption2:(UIFont * _Nonnull)value;
-/// Regular, 11pt
+/// Medium, 11pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull caption3;)
 + (UIFont * _Nonnull)caption3 SWIFT_WARN_UNUSED_RESULT;
 + (void)setCaption3:(UIFont * _Nonnull)value;
-/// Bold, 11pt
+/// Regular, 11pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull caption4;)
 + (UIFont * _Nonnull)caption4 SWIFT_WARN_UNUSED_RESULT;
 + (void)setCaption4:(UIFont * _Nonnull)value;
@@ -6968,44 +7281,48 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class) CGSize imageResizingSize;)
 @end
 
 
+SWIFT_CLASS("_TtC13SendBirdUIKit23SBUHighlightMessageInfo")
+@interface SBUHighlightMessageInfo : NSObject
+@property (nonatomic, readonly) int64_t messageId;
+@property (nonatomic, readonly) int64_t updatedAt;
+- (nonnull instancetype)initWithMessageId:(int64_t)messageId updatedAt:(int64_t)updatedAt OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+
 SWIFT_CLASS("_TtC13SendBirdUIKit10SBUIconSet")
 @interface SBUIconSet : NSObject
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconActionLeave;)
-+ (UIImage * _Nonnull)iconActionLeave SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconActionLeave:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconActionNotificationOn;)
-+ (UIImage * _Nonnull)iconActionNotificationOn SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconActionNotificationOn:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconActionNotificationOff;)
-+ (UIImage * _Nonnull)iconActionNotificationOff SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconActionNotificationOff:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconAdd;)
 + (UIImage * _Nonnull)iconAdd SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconAdd:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconBack;)
 + (UIImage * _Nonnull)iconBack SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconBack:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconBan;)
++ (UIImage * _Nonnull)iconBan SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconBan:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconBroadcast;)
++ (UIImage * _Nonnull)iconBroadcast SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconBroadcast:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconCamera;)
 + (UIImage * _Nonnull)iconCamera SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconCamera:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconPlus;)
-+ (UIImage * _Nonnull)iconPlus SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconPlus:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconChat;)
 + (UIImage * _Nonnull)iconChat SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconChat:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconChatHide;)
-+ (UIImage * _Nonnull)iconChatHide SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconChatHide:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconChatShow;)
-+ (UIImage * _Nonnull)iconChatShow SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconChatShow:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconCheckbox;)
-+ (UIImage * _Nonnull)iconCheckbox SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconCheckbox:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconCheckboxOff;)
-+ (UIImage * _Nonnull)iconCheckboxOff SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconCheckboxOff:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconCheckboxChecked;)
++ (UIImage * _Nonnull)iconCheckboxChecked SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconCheckboxChecked:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconCheckboxUnchecked;)
++ (UIImage * _Nonnull)iconCheckboxUnchecked SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconCheckboxUnchecked:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconChevronDown;)
++ (UIImage * _Nonnull)iconChevronDown SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconChevronDown:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconChevronRight;)
++ (UIImage * _Nonnull)iconChevronRight SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconChevronRight:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconClose;)
 + (UIImage * _Nonnull)iconClose SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconClose:(UIImage * _Nonnull)value;
@@ -7018,27 +7335,36 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull ico
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconDelete;)
 + (UIImage * _Nonnull)iconDelete SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconDelete:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconDelivered;)
-+ (UIImage * _Nonnull)iconDelivered SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconDelivered:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconDocument;)
 + (UIImage * _Nonnull)iconDocument SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconDocument:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconDone;)
++ (UIImage * _Nonnull)iconDone SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconDone:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconDoneAll;)
++ (UIImage * _Nonnull)iconDoneAll SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconDoneAll:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconDownload;)
 + (UIImage * _Nonnull)iconDownload SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconDownload:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconDummy;)
-+ (UIImage * _Nonnull)iconDummy SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconDummy:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconEdit;)
 + (UIImage * _Nonnull)iconEdit SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconEdit:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconEmojiMore;)
++ (UIImage * _Nonnull)iconEmojiMore SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconEmojiMore:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconError;)
 + (UIImage * _Nonnull)iconError SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconError:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconErrorFilled;)
-+ (UIImage * _Nonnull)iconErrorFilled SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconErrorFilled:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconFileAudio;)
++ (UIImage * _Nonnull)iconFileAudio SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconFileAudio:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconFileDocument;)
++ (UIImage * _Nonnull)iconFileDocument SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconFileDocument:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconFreeze;)
++ (UIImage * _Nonnull)iconFreeze SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconFreeze:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconGif;)
 + (UIImage * _Nonnull)iconGif SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconGif:(UIImage * _Nonnull)value;
@@ -7051,140 +7377,77 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull ico
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconMembers;)
 + (UIImage * _Nonnull)iconMembers SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconMembers:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconMessage;)
++ (UIImage * _Nonnull)iconMessage SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconMessage:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconModerations;)
 + (UIImage * _Nonnull)iconModerations SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconModerations:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconSupergroup;)
-+ (UIImage * _Nonnull)iconSupergroup SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconSupergroup:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconBroadcastSmall;)
-+ (UIImage * _Nonnull)iconBroadcastSmall SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconBroadcastSmall:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconBroadcastMedium;)
-+ (UIImage * _Nonnull)iconBroadcastMedium SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconBroadcastMedium:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconBroadcastLarge;)
-+ (UIImage * _Nonnull)iconBroadcastLarge SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconBroadcastLarge:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconFreeze;)
-+ (UIImage * _Nonnull)iconFreeze SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconFreeze:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconMore;)
++ (UIImage * _Nonnull)iconMore SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconMore:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconMute;)
 + (UIImage * _Nonnull)iconMute SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconMute:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconNotificationFilled;)
++ (UIImage * _Nonnull)iconNotificationFilled SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconNotificationFilled:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconNotificationOffFilled;)
++ (UIImage * _Nonnull)iconNotificationOffFilled SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconNotificationOffFilled:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconNotifications;)
 + (UIImage * _Nonnull)iconNotifications SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconNotifications:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconThumbnailLight;)
-+ (UIImage * _Nonnull)iconThumbnailLight SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconThumbnailLight:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconNoThumbnailLight;)
-+ (UIImage * _Nonnull)iconNoThumbnailLight SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconNoThumbnailLight:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconOperator;)
++ (UIImage * _Nonnull)iconOperator SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconOperator:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconPhoto;)
 + (UIImage * _Nonnull)iconPhoto SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconPhoto:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconPlay;)
 + (UIImage * _Nonnull)iconPlay SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconPlay:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconRead;)
-+ (UIImage * _Nonnull)iconRead SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconRead:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconPlus;)
++ (UIImage * _Nonnull)iconPlus SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconPlus:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconQuestion;)
++ (UIImage * _Nonnull)iconQuestion SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconQuestion:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconRefresh;)
 + (UIImage * _Nonnull)iconRefresh SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconRefresh:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconAvatarLight;)
-+ (UIImage * _Nonnull)iconAvatarLight SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconAvatarLight:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconRemove;)
++ (UIImage * _Nonnull)iconRemove SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconRemove:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconSearch;)
++ (UIImage * _Nonnull)iconSearch SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconSearch:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconSend;)
 + (UIImage * _Nonnull)iconSend SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconSend:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconSent;)
-+ (UIImage * _Nonnull)iconSent SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconSent:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconFailed;)
-+ (UIImage * _Nonnull)iconFailed SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconFailed:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconShevronRight;)
-+ (UIImage * _Nonnull)iconShevronRight SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconShevronRight:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconSpinner;)
++ (UIImage * _Nonnull)iconSpinner SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconSpinner:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconSupergroup;)
++ (UIImage * _Nonnull)iconSupergroup SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconSupergroup:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconThumbnailNone;)
++ (UIImage * _Nonnull)iconThumbnailNone SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconThumbnailNone:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconUser;)
 + (UIImage * _Nonnull)iconUser SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconUser:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconSpinnerSmall;)
-+ (UIImage * _Nonnull)iconSpinnerSmall SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconSpinnerSmall:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconSpinnerLarge;)
-+ (UIImage * _Nonnull)iconSpinnerLarge SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconSpinnerLarge:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconFileDocument;)
-+ (UIImage * _Nonnull)iconFileDocument SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconFileDocument:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconFileAudio;)
-+ (UIImage * _Nonnull)iconFileAudio SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconFileAudio:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconChevronDown;)
-+ (UIImage * _Nonnull)iconChevronDown SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconChevronDown:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconMore;)
-+ (UIImage * _Nonnull)iconMore SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconMore:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconOperator;)
-+ (UIImage * _Nonnull)iconOperator SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconOperator:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconMuted;)
-+ (UIImage * _Nonnull)iconMuted SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconMuted:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconBanned;)
-+ (UIImage * _Nonnull)iconBanned SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconBanned:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconMessage;)
-+ (UIImage * _Nonnull)iconMessage SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconMessage:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull channelTypeGroup;)
-+ (UIImage * _Nonnull)channelTypeGroup SWIFT_WARN_UNUSED_RESULT;
-+ (void)setChannelTypeGroup:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull channelTypeSupergroup;)
-+ (UIImage * _Nonnull)channelTypeSupergroup SWIFT_WARN_UNUSED_RESULT;
-+ (void)setChannelTypeSupergroup:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull channelTypeBroadcast;)
-+ (UIImage * _Nonnull)channelTypeBroadcast SWIFT_WARN_UNUSED_RESULT;
-+ (void)setChannelTypeBroadcast:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiHeartEyes;)
-+ (UIImage * _Nonnull)emojiHeartEyes SWIFT_WARN_UNUSED_RESULT;
-+ (void)setEmojiHeartEyes:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiLaughing;)
-+ (UIImage * _Nonnull)emojiLaughing SWIFT_WARN_UNUSED_RESULT;
-+ (void)setEmojiLaughing:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiSweatSmile;)
-+ (UIImage * _Nonnull)emojiSweatSmile SWIFT_WARN_UNUSED_RESULT;
-+ (void)setEmojiSweatSmile:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiSob;)
-+ (UIImage * _Nonnull)emojiSob SWIFT_WARN_UNUSED_RESULT;
-+ (void)setEmojiSob:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiRage;)
-+ (UIImage * _Nonnull)emojiRage SWIFT_WARN_UNUSED_RESULT;
-+ (void)setEmojiRage:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiMoreLarge;)
-+ (UIImage * _Nonnull)emojiMoreLarge SWIFT_WARN_UNUSED_RESULT;
-+ (void)setEmojiMoreLarge:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiThumbsup;)
-+ (UIImage * _Nonnull)emojiThumbsup SWIFT_WARN_UNUSED_RESULT;
-+ (void)setEmojiThumbsup:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiThubsdown;)
-+ (UIImage * _Nonnull)emojiThubsdown SWIFT_WARN_UNUSED_RESULT;
-+ (void)setEmojiThubsdown:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiFail;)
-+ (UIImage * _Nonnull)emojiFail SWIFT_WARN_UNUSED_RESULT;
-+ (void)setEmojiFail:(UIImage * _Nonnull)value;
+/// Restore all customized icons to SDK’s default icons.
+/// since:
+/// 2.1.0
++ (void)restoreDefaultIcons;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
-
 
 @class SBDGroupChannelMemberListQuery;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
-@interface SBUInviteUserViewController : UIViewController
+@interface SBUInviteUserViewController : SBUBaseViewController
 @property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
@@ -7294,10 +7557,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 /// since:
 /// 1.2.5
 - (void)reloadData;
-/// This function actions to pop or dismiss.
-/// since:
-/// 1.2.5
-- (void)onClickBack;
 /// This function calls <code>inviteUsers</code> or <code>promoteToOperators</code> functions with <code>inviteListType</code>.
 /// since:
 /// 1.2.5
@@ -7399,6 +7658,9 @@ SWIFT_CLASS("_TtC13SendBirdUIKit7SBUMain")
 + (void)unregisterAllPushTokenWithCompletionHandler:(void (^ _Nonnull)(BOOL))completionHandler;
 + (void)openChannelWithChannelUrl:(NSString * _Nonnull)channelUrl basedOnChannelList:(BOOL)basedOnChannelList messageListParams:(SBDMessageListParams * _Nullable)messageListParams SWIFT_DEPRECATED_MSG("deprecated in 1.2.2", "moveToChannel(channelUrl:basedOnChannelList:messageListParams:)");
 /// This is a function that moves the channel that can be called anywhere.
+/// If you wish to open an open channel view controller, or any class that subclasses <code>SBUOpenChannelViewController</code>,
+/// you must guarentee that a channel list’s view controller, subclass of <code>SBUBaseChannelListViewController</code>,
+/// is present within the <code>UINavigationController.viewControllers</code> if you set the <code>basedOnChannelList</code> to <code>true</code>.
 /// since:
 /// 1.2.2
 /// \param channelUrl channel url for use in channel.
@@ -7447,7 +7709,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit7SBUMain")
 @class SBDParticipantListQuery;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
-@interface SBUMemberListViewController : UIViewController
+@interface SBUMemberListViewController : SBUBaseViewController
 @property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
@@ -7600,10 +7862,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 /// since:
 /// 1.2.5
 - (void)reloadData;
-/// This function actions to pop or dismiss.
-/// since:
-/// 1.2.5
-- (void)onClickBack;
 /// This function shows inviteChannelViewController.
 - (void)onClickInviteUser;
 /// This function sets the cell’s more menu button action handling. (GroupChannel only)
@@ -7667,12 +7925,14 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageCe
 + (SBUMessageCellTheme * _Nonnull)overlay SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
-- (nonnull instancetype)initWithBackgroundColor:(UIColor * _Nonnull)backgroundColor leftBackgroundColor:(UIColor * _Nonnull)leftBackgroundColor leftPressedBackgroundColor:(UIColor * _Nonnull)leftPressedBackgroundColor rightBackgroundColor:(UIColor * _Nonnull)rightBackgroundColor rightPressedBackgroundColor:(UIColor * _Nonnull)rightPressedBackgroundColor dateFont:(UIFont * _Nonnull)dateFont dateTextColor:(UIColor * _Nonnull)dateTextColor dateBackgroundColor:(UIColor * _Nonnull)dateBackgroundColor userPlaceholderBackgroundColor:(UIColor * _Nonnull)userPlaceholderBackgroundColor userPlaceholderTintColor:(UIColor * _Nonnull)userPlaceholderTintColor userNameFont:(UIFont * _Nonnull)userNameFont userNameTextColor:(UIColor * _Nonnull)userNameTextColor currentUserNameTextColor:(UIColor * _Nonnull)currentUserNameTextColor timeFont:(UIFont * _Nonnull)timeFont timeTextColor:(UIColor * _Nonnull)timeTextColor pendingStateColor:(UIColor * _Nonnull)pendingStateColor failedStateColor:(UIColor * _Nonnull)failedStateColor succeededStateColor:(UIColor * _Nonnull)succeededStateColor readReceiptStateColor:(UIColor * _Nonnull)readReceiptStateColor deliveryReceiptStateColor:(UIColor * _Nonnull)deliveryReceiptStateColor userMessageFont:(UIFont * _Nonnull)userMessageFont userMessageLeftTextColor:(UIColor * _Nonnull)userMessageLeftTextColor userMessageLeftEditTextColor:(UIColor * _Nonnull)userMessageLeftEditTextColor userMessageRightTextColor:(UIColor * _Nonnull)userMessageRightTextColor userMessageRightEditTextColor:(UIColor * _Nonnull)userMessageRightEditTextColor fileIconBackgroundColor:(UIColor * _Nonnull)fileIconBackgroundColor fileIconColor:(UIColor * _Nonnull)fileIconColor fileMessageNameFont:(UIFont * _Nonnull)fileMessageNameFont fileMessageLeftTextColor:(UIColor * _Nonnull)fileMessageLeftTextColor fileMessageRightTextColor:(UIColor * _Nonnull)fileMessageRightTextColor fileMessagePlaceholderColor:(UIColor * _Nonnull)fileMessagePlaceholderColor adminMessageFont:(UIFont * _Nonnull)adminMessageFont adminMessageTextColor:(UIColor * _Nonnull)adminMessageTextColor unknownMessageDescFont:(UIFont * _Nonnull)unknownMessageDescFont unknownMessageDescTextColor:(UIColor * _Nonnull)unknownMessageDescTextColor ogTitleFont:(UIFont * _Nonnull)ogTitleFont ogTitleColor:(UIColor * _Nonnull)ogTitleColor ogDescriptionFont:(UIFont * _Nonnull)ogDescriptionFont ogDescriptionColor:(UIColor * _Nonnull)ogDescriptionColor ogURLAddressFont:(UIFont * _Nonnull)ogURLAddressFont ogURLAddressColor:(UIColor * _Nonnull)ogURLAddressColor linkColor:(UIColor * _Nonnull)linkColor contentBackgroundColor:(UIColor * _Nonnull)contentBackgroundColor pressedContentBackgroundColor:(UIColor * _Nonnull)pressedContentBackgroundColor OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithBackgroundColor:(UIColor * _Nonnull)backgroundColor leftBackgroundColor:(UIColor * _Nonnull)leftBackgroundColor leftPressedBackgroundColor:(UIColor * _Nonnull)leftPressedBackgroundColor rightBackgroundColor:(UIColor * _Nonnull)rightBackgroundColor rightPressedBackgroundColor:(UIColor * _Nonnull)rightPressedBackgroundColor openChannelBackgroundColor:(UIColor * _Nonnull)openChannelBackgroundColor openChannelPressedBackgroundColor:(UIColor * _Nonnull)openChannelPressedBackgroundColor dateFont:(UIFont * _Nonnull)dateFont dateTextColor:(UIColor * _Nonnull)dateTextColor dateBackgroundColor:(UIColor * _Nonnull)dateBackgroundColor userPlaceholderBackgroundColor:(UIColor * _Nonnull)userPlaceholderBackgroundColor userPlaceholderTintColor:(UIColor * _Nonnull)userPlaceholderTintColor userNameFont:(UIFont * _Nonnull)userNameFont userNameTextColor:(UIColor * _Nonnull)userNameTextColor currentUserNameTextColor:(UIColor * _Nonnull)currentUserNameTextColor timeFont:(UIFont * _Nonnull)timeFont timeTextColor:(UIColor * _Nonnull)timeTextColor pendingStateColor:(UIColor * _Nonnull)pendingStateColor failedStateColor:(UIColor * _Nonnull)failedStateColor succeededStateColor:(UIColor * _Nonnull)succeededStateColor readReceiptStateColor:(UIColor * _Nonnull)readReceiptStateColor deliveryReceiptStateColor:(UIColor * _Nonnull)deliveryReceiptStateColor userMessageFont:(UIFont * _Nonnull)userMessageFont userMessageLeftTextColor:(UIColor * _Nonnull)userMessageLeftTextColor userMessageLeftEditTextColor:(UIColor * _Nonnull)userMessageLeftEditTextColor userMessageLeftHighlightTextColor:(UIColor * _Nonnull)userMessageLeftHighlightTextColor userMessageRightTextColor:(UIColor * _Nonnull)userMessageRightTextColor userMessageRightEditTextColor:(UIColor * _Nonnull)userMessageRightEditTextColor userMessageRightHighlightTextColor:(UIColor * _Nonnull)userMessageRightHighlightTextColor fileIconBackgroundColor:(UIColor * _Nonnull)fileIconBackgroundColor fileImageBackgroundColor:(UIColor * _Nonnull)fileImageBackgroundColor fileImageIconColor:(UIColor * _Nonnull)fileImageIconColor fileIconColor:(UIColor * _Nonnull)fileIconColor fileMessageNameFont:(UIFont * _Nonnull)fileMessageNameFont fileMessageLeftTextColor:(UIColor * _Nonnull)fileMessageLeftTextColor fileMessageRightTextColor:(UIColor * _Nonnull)fileMessageRightTextColor fileMessagePlaceholderColor:(UIColor * _Nonnull)fileMessagePlaceholderColor adminMessageFont:(UIFont * _Nonnull)adminMessageFont adminMessageTextColor:(UIColor * _Nonnull)adminMessageTextColor unknownMessageDescFont:(UIFont * _Nonnull)unknownMessageDescFont unknownMessageDescTextColor:(UIColor * _Nonnull)unknownMessageDescTextColor ogTitleFont:(UIFont * _Nonnull)ogTitleFont ogTitleColor:(UIColor * _Nonnull)ogTitleColor ogDescriptionFont:(UIFont * _Nonnull)ogDescriptionFont ogDescriptionColor:(UIColor * _Nonnull)ogDescriptionColor ogURLAddressFont:(UIFont * _Nonnull)ogURLAddressFont ogURLAddressColor:(UIColor * _Nonnull)ogURLAddressColor linkColor:(UIColor * _Nonnull)linkColor contentBackgroundColor:(UIColor * _Nonnull)contentBackgroundColor pressedContentBackgroundColor:(UIColor * _Nonnull)pressedContentBackgroundColor OBJC_DESIGNATED_INITIALIZER;
 @property (nonatomic, strong) UIColor * _Nonnull backgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull leftBackgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull leftPressedBackgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull rightBackgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull rightPressedBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull openChannelBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull openChannelPressedBackgroundColor;
 @property (nonatomic, strong) UIFont * _Nonnull dateFont;
 @property (nonatomic, strong) UIColor * _Nonnull dateTextColor;
 @property (nonatomic, strong) UIColor * _Nonnull dateBackgroundColor;
@@ -7697,6 +7957,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageCe
 @property (nonatomic, strong) UIColor * _Nonnull userMessageRightEditTextColor;
 @property (nonatomic, strong) UIColor * _Nonnull fileIconBackgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull fileIconColor;
+@property (nonatomic, strong) UIColor * _Nonnull fileImageBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull fileImageIconColor;
 @property (nonatomic, strong) UIFont * _Nonnull fileMessageNameFont;
 @property (nonatomic, strong) UIColor * _Nonnull fileMessageLeftTextColor;
 @property (nonatomic, strong) UIColor * _Nonnull fileMessageRightTextColor;
@@ -7705,6 +7967,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageCe
 @property (nonatomic, strong) UIColor * _Nonnull adminMessageTextColor;
 @property (nonatomic, strong) UIFont * _Nonnull unknownMessageDescFont;
 @property (nonatomic, strong) UIColor * _Nonnull unknownMessageDescTextColor;
+@property (nonatomic, strong) UIColor * _Nonnull messageLeftHighlightTextColor;
+@property (nonatomic, strong) UIColor * _Nonnull messageRightHighlightTextColor;
 @property (nonatomic, strong) UIFont * _Nonnull ogTitleFont;
 @property (nonatomic, strong) UIColor * _Nonnull ogTitleColor;
 @property (nonatomic, strong) UIFont * _Nonnull ogDescriptionFont;
@@ -7771,6 +8035,8 @@ SWIFT_CLASS("_TtC13SendBirdUIKit19SBUMessageInputView")
 /// \param isMuted <code>true</code> is muted mode, <code>false</code> is unmuted mode
 ///
 - (void)setMutedModeState:(BOOL)isMuted;
+/// Sets error state. Disable all
+- (void)setErrorState;
 - (void)endTypingMode;
 - (void)updateTextViewHeight;
 - (void)onClickAddButton:(id _Nonnull)sender;
@@ -7792,10 +8058,181 @@ typedef SWIFT_ENUM(NSInteger, SBUMessageReceiptState, open) {
   SBUMessageReceiptStateDeliveryReceipt = 2,
 };
 
+@class SBUMessageSearchResultCellTheme;
+
+SWIFT_CLASS("_TtC13SendBirdUIKit26SBUMessageSearchResultCell")
+@interface SBUMessageSearchResultCell : UITableViewCell
+@property (nonatomic, readonly, strong) SBUCoverImageView * _Nonnull coverImage;
+@property (nonatomic, readonly, strong) UILabel * _Nonnull titleLabel;
+@property (nonatomic, readonly, strong) UILabel * _Nonnull messageLabel;
+@property (nonatomic, readonly, strong) UILabel * _Nonnull fileMessageLabel;
+@property (nonatomic, readonly, strong) UIImageView * _Nonnull fileMessageIcon;
+@property (nonatomic, readonly, strong) UIStackView * _Nonnull fileStackView;
+@property (nonatomic, readonly, strong) UILabel * _Nonnull createdAtLabel;
+@property (nonatomic, readonly, strong) UIView * _Nonnull separatorLine;
+@property (nonatomic, strong) SBUMessageSearchResultCellTheme * _Nonnull theme;
+- (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
+- (void)awakeFromNib;
+/// This function handles the initialization of views.
+- (void)setupViews;
+/// This function handles the initialization of actions.
+- (void)setupActions;
+/// This function handles the initialization of autolayouts.
+- (void)setupAutolayout;
+/// This function handles the initialization of styles.
+- (void)setupStyles;
+- (void)layoutSubviews;
+/// This function configure a cell using <code>SBDBaseMessage</code> information.
+/// \param channel <code>SBDBaseMessage</code> object
+///
+- (void)configureWithMessage:(SBDBaseMessage * _Nonnull)message;
+/// Sets file message icon depending on the message’s file type using <code>SBUUtils.getFileType(by: fileMessage)</code>.
+- (void)setupFileIcon;
+@end
+
+
+SWIFT_CLASS("_TtC13SendBirdUIKit31SBUMessageSearchResultCellTheme")
+@interface SBUMessageSearchResultCellTheme : NSObject
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageSearchResultCellTheme * _Nonnull light;)
++ (SBUMessageSearchResultCellTheme * _Nonnull)light SWIFT_WARN_UNUSED_RESULT;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageSearchResultCellTheme * _Nonnull dark;)
++ (SBUMessageSearchResultCellTheme * _Nonnull)dark SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, strong) UIColor * _Nonnull backgroundColor;
+@property (nonatomic, strong) UIFont * _Nonnull titleFont;
+@property (nonatomic, strong) UIColor * _Nonnull titleTextColor;
+@property (nonatomic, strong) UIFont * _Nonnull descriptionFont;
+@property (nonatomic, strong) UIColor * _Nonnull descriptionTextColor;
+@property (nonatomic, strong) UIFont * _Nonnull updatedAtFont;
+@property (nonatomic, strong) UIColor * _Nonnull updatedAtTextColor;
+@property (nonatomic, strong) UIFont * _Nonnull fileMessageFont;
+@property (nonatomic, strong) UIColor * _Nonnull fileMessageTextColor;
+@property (nonatomic, strong) UIColor * _Nonnull fileMessageIconBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull fileMessageIconTintColor;
+@property (nonatomic, strong) UIColor * _Nonnull separatorLineColor;
+- (nonnull instancetype)initWithBackgroundColor:(UIColor * _Nonnull)backgroundColor titleFont:(UIFont * _Nonnull)titleFont titleTextColor:(UIColor * _Nonnull)titleTextColor descriptionFont:(UIFont * _Nonnull)descriptionFont descriptionTextColor:(UIColor * _Nonnull)descriptionTextColor updatedAtFont:(UIFont * _Nonnull)updatedAtFont updatedAtTextColor:(UIColor * _Nonnull)updatedAtTextColor fileMessageFont:(UIFont * _Nonnull)fileMessageFont fileMessageTextColor:(UIColor * _Nonnull)fileMessageTextColor fileMessageIconBackgroundColor:(UIColor * _Nonnull)fileMessageIconBackgroundColor fileMessageIconTinkColor:(UIColor * _Nonnull)fileMessageIconTinkColor separatorLineColor:(UIColor * _Nonnull)separatorLineColor OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+
+SWIFT_CLASS("_TtC13SendBirdUIKit21SBUMessageSearchTheme")
+@interface SBUMessageSearchTheme : NSObject
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageSearchTheme * _Nonnull light;)
++ (SBUMessageSearchTheme * _Nonnull)light SWIFT_WARN_UNUSED_RESULT;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageSearchTheme * _Nonnull dark;)
++ (SBUMessageSearchTheme * _Nonnull)dark SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic) UIStatusBarStyle statusBarStyle;
+@property (nonatomic) UIBarStyle navigationBarStyle;
+@property (nonatomic, strong) UIColor * _Nonnull navigationBarTintColor;
+@property (nonatomic, strong) UIColor * _Nonnull navigationBarShadowColor;
+@property (nonatomic, strong) UIColor * _Nonnull backgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull searchTextColor;
+@property (nonatomic, strong) UIFont * _Nonnull searchTextFont;
+@property (nonatomic, strong) UIColor * _Nonnull searchTextBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull searchPlaceholderColor;
+@property (nonatomic, strong) UIColor * _Nonnull searchIconTintColor;
+@property (nonatomic, strong) UIColor * _Nonnull clearIconTintColor;
+@property (nonatomic, strong) UIColor * _Nonnull cancelButtonTintColor;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+- (nonnull instancetype)initWithStatusBarStyle:(UIStatusBarStyle)statusBarStyle navigationBarStyle:(UIBarStyle)navigationBarStyle navigationBarTintColor:(UIColor * _Nonnull)navigationBarTintColor navigationBarShadowColor:(UIColor * _Nonnull)navigationBarShadowColor backgroundColor:(UIColor * _Nonnull)backgroundColor searchTextColor:(UIColor * _Nonnull)searchTextColor searchTextFont:(UIFont * _Nonnull)searchTextFont searchTextBackgroundColor:(UIColor * _Nonnull)searchTextBackgroundColor searchPlaceholderColor:(UIColor * _Nonnull)searchPlaceholderColor searchIconTintColor:(UIColor * _Nonnull)searchIconTintColor clearIconTintColor:(UIColor * _Nonnull)clearIconTintColor cancelButtonTintColor:(UIColor * _Nonnull)cancelButtonTintColor OBJC_DESIGNATED_INITIALIZER;
+@end
+
+@class SBDMessageSearchQueryBuilder;
+@class UISearchBar;
+
+/// ViewController handling a message search.
+/// since:
+/// 2.1.0
+SWIFT_CLASS("_TtC13SendBirdUIKit30SBUMessageSearchViewController")
+@interface SBUMessageSearchViewController : SBUBaseViewController
+@property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
+@property (nonatomic, strong) SBUMessageSearchTheme * _Nonnull theme;
+@property (nonatomic, strong) SBDBaseChannel * _Nullable channel;
+/// This param will be used on entering a channel from selecting an item from the search results.
+@property (nonatomic, strong) SBDMessageListParams * _Nullable messageListParams;
+/// You can set custom query params for message search.
+/// <code>keyword</code>, <code>channelUrl</code>, <code>order</code> is reserved in SDK. (The SDK value will override the custom values)
+/// <code>messageFromTs</code> is set to user’s channel joined ts as a default. You can set this value to <code>0</code> to search for all previous messages as well.
+/// <code>limit</code> will be set to default value of <code>defaultSearchLimit</code> in case if it’s set to 0 or smaller value.
+@property (nonatomic, copy) void (^ _Nullable customMessageSearchQueryBuilder)(SBDMessageSearchQueryBuilder * _Nonnull);
+/// Message search result’s cell.
+@property (nonatomic, strong) SBUMessageSearchResultCell * _Nullable messageSearchResultCell;
+@property (nonatomic, readonly, strong) UIView * _Null_unspecified searchBar;
+@property (nonatomic, readonly, strong) UITableView * _Nonnull tableView;
+@property (nonatomic, readonly, strong) UIView * _Nullable emptyView;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUMessageSearchViewController(channel:)'");
+- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUMessageSearchViewController(channel:)'");
+- (nonnull instancetype)initWithChannel:(SBDBaseChannel * _Nonnull)channel OBJC_DESIGNATED_INITIALIZER;
+- (void)viewDidLoad;
+- (void)viewWillAppear:(BOOL)animated;
+- (void)viewWillDisappear:(BOOL)animated;
+- (void)loadView;
+- (void)viewDidLayoutSubviews;
+- (void)didReceiveError:(NSString * _Nullable)message;
+/// Used to register a custom cell as a search result cell based on <code>SBUMessageSearchResultCell</code>.
+/// \param messageSearchResultCell Customized search result cell
+///
+/// \param nib nib information. If the value is nil, the nib file is not used.
+///
+- (void)registerWithMessageSearchResultCell:(SBUMessageSearchResultCell * _Nonnull)messageSearchResultCell nib:(UINib * _Nullable)nib;
+/// Performs keyword search
+/// <ul>
+///   <li>
+///     Parameters: keyword: A keyword to search for.
+///   </li>
+/// </ul>
+///
+/// returns:
+/// A <code>SBDMessageSearchQuery</code> with the params set.
+- (void)searchWithKeyword:(NSString * _Nonnull)keyword;
+/// This is to pop or dismiss (depending on current view controller) the search view controller.
+- (void)onClickBack;
+- (void)setupStyles;
+- (void)setupAutolayout;
+- (void)setupSearchBarStyleWithSearchBar:(UISearchBar * _Nonnull)searchBar;
+/// Enters a <code>SBUChannelViewController</code> with the selected message.
+/// \param message A <code>SBDBaseMessage</code> object to load channel from.
+///
+/// \param highlightInfo An  optional<code>SBUHighlightInfo</code> class to have message highlighted.
+///
+/// \param messageListParams An optional <code>SBDMessageListParams</code> params to be used in loading messages.
+///
+- (void)enterChannelWith:(SBDBaseMessage * _Nonnull)message highlightInfo:(SBUHighlightMessageInfo * _Nullable)highlightInfo messageListParams:(SBDMessageListParams * _Nullable)messageListParams;
+@end
+
+
+@interface SBUMessageSearchViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUEmptyViewDelegate>
+- (void)didSelectRetry;
+@end
+
+
+@interface SBUMessageSearchViewController (SWIFT_EXTENSION(SendBirdUIKit))
+- (BOOL)shouldShowLoadingIndicator;
+- (void)shouldDismissLoadingIndicator;
+@end
+
+
+@interface SBUMessageSearchViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UISearchBarDelegate>
+- (void)searchBarTextDidEndEditing:(UISearchBar * _Nonnull)searchBar;
+- (void)searchBarCancelButtonClicked:(UISearchBar * _Nonnull)searchBar;
+- (void)searchBarSearchButtonClicked:(UISearchBar * _Nonnull)searchBar;
+@end
+
+
+@interface SBUMessageSearchViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UITableViewDataSource, UITableViewDelegate>
+- (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
+- (UITableViewCell * _Nonnull)tableView:(UITableView * _Nonnull)tableView cellForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
+- (void)tableView:(UITableView * _Nonnull)tableView didSelectRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
+- (void)tableView:(UITableView * _Nonnull)tableView willDisplayCell:(UITableViewCell * _Nonnull)cell forRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
+- (CGFloat)tableView:(UITableView * _Nonnull)tableView heightForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
+@end
+
 
 
 SWIFT_CLASS("_TtC13SendBirdUIKit28SBUModerationsViewController")
-@interface SBUModerationsViewController : UIViewController <UINavigationControllerDelegate>
+@interface SBUModerationsViewController : SBUBaseViewController
 @property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
@@ -7843,10 +8280,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUModerationsViewController")
 /// This is a function that shows the banned member List.
 /// If you want to use a custom MemberListViewController, override it and implement it.
 - (void)showBannedMeberList;
-/// This function actions to pop or dismiss.
-/// since:
-/// 1.2.5
-- (void)onClickBack;
 /// Changes freeze status on channel.
 /// \param freeze freeze status
 ///
@@ -7965,6 +8398,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit36SBUOpenChannelContentBaseMessageCell")
 - (void)configure:(SBDBaseMessage * _Nonnull)message hideDateView:(BOOL)hideDateView groupPosition:(enum MessageGroupPosition)groupPosition isOverlay:(BOOL)isOverlay;
 - (void)setMessageGrouping;
 - (void)setUsernameColor:(UIColor * _Nonnull)color;
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated;
 - (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nullable)sender;
 - (void)onTapContentViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
 - (void)onTapUserProfileViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
@@ -7990,7 +8424,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit29SBUOpenChannelFileMessageCell")
 
 
 SWIFT_CLASS("_TtC13SendBirdUIKit36SBUOpenChannelSettingsViewController")
-@interface SBUOpenChannelSettingsViewController : UIViewController <UINavigationControllerDelegate>
+@interface SBUOpenChannelSettingsViewController : SBUBaseViewController
 @property (nonatomic, strong) UIView * _Nullable userInfoView;
 @property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
@@ -8041,8 +8475,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit36SBUOpenChannelSettingsViewController")
 - (void)deleteChannel;
 /// If you want to use a custom memberListViewController, override it and implement it.
 - (void)showParticipantsList;
-/// This function actions to pop or dismiss.
-- (void)onClickBack;
 /// This function used to when edit button click.
 - (void)onClickEdit;
 /// This function shows the channel image selection menu.
@@ -8107,7 +8539,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit32SBUOpenChannelUnknownMessageCell")
 @protocol UIViewControllerTransitionCoordinator;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
-@interface SBUOpenChannelViewController : SBUBaseChannelViewController <UINavigationControllerDelegate>
+@interface SBUOpenChannelViewController : SBUBaseChannelViewController
 /// You can use the customized view and a view that inherits <code>SBUNewMessageInfo</code>.
 /// If you use a view that inherits SBUNewMessageInfo, you can change the button and their action.
 @property (nonatomic, strong) UIView * _Nullable newMessageInfoView;
@@ -8129,7 +8561,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 @property (nonatomic) BOOL hideChannelInfoView;
 /// Sets text in <code>channelInfoView.descriptionLabel</code>
 @property (nonatomic, copy) NSString * _Nullable channelDescription;
-/// The internal view provided for media such as photo or video. If you want to use <code>mediaView</code>, please call <code>enableMediaView(_:)</code> to enable and set its ratio through <code>updateRatio(medialView:messageList:)</code>. If you want to overlay, use <code>overlayMediaView(_:messageListRatio:)</code> method.
+/// The internal view provided for media such as photo or video. If you want to use <code>mediaView</code>, please call <code>enableMediaView(_:)</code> to enable and set its ratio through <code>updateMessageListRatio(to ratio:)</code>. If you want to overlay, use <code>overlayMediaView(_:messageListRatio:)</code> method.
 @property (nonatomic, strong) UIView * _Nonnull mediaView;
 /// A boolean value whether the media view is enabled or not. The default value is <code>false</code>.
 /// note:
@@ -8144,12 +8576,12 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 /// A relative ratio value of <code>mediaView</code>to entire screen. The default value is <code>0</code>.
 /// note:
 ///
-/// Use <code>updateRatio(mediaView:messageList:)</code> to set value.
+/// Use <code>updateMessageListRatio(to ratio:)</code> to set value.
 @property (nonatomic, readonly) CGFloat mediaViewRatio;
 /// A relative ratio value of messaging view to entire screen. The default value is <code>1</code>
 /// note:
 ///
-/// Use <code>updateRatio(mediaView:messageList:)</code> to set value.
+/// Use <code>updateMessageListRatio(to ratio:)</code> to set value.
 @property (nonatomic, readonly) CGFloat messageListRatio;
 /// A boolean value whether <code>mediaView</code> is overlay or not. The default value is <code>false</code>.
 /// note:
@@ -8164,11 +8596,31 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 /// Enable the internal media view.
 /// \code
 /// self.enableMediaView(true)
-/// self.updateRatio(mediaView: 0.3: messageList: 0.7)
+/// self.updateMessageListRatio(to: 0.7)
 ///
 /// \endcode\param enabled If it’s <code>true</code> It uses the media view.
 ///
 - (void)enableMediaView:(BOOL)enabled;
+/// Updates a relative ratio value of the message list with  <code>ratio</code> to entire screen.
+/// The mediaView will have it’s ratio accordingly, meaning
+/// important:
+///
+/// The ratio must be in range of <code>0...1</code>.
+/// <ul>
+///   <li>
+///     normal mode : mediaView’s ratio = (1 - message list’s ratio). Media view & message list is side by side in landscape mode, top to bottom in portrait mode.
+///   </li>
+///   <li>
+///     overlay mode : mediaView’s ratio = 1 (fills the whole screen). Media view fills the whole screen & message list is above the media view with transparent background.
+///     After this method, You might need to call <code>setupStyles</code> or <code>updateComponentStyle</code>.
+///   </li>
+/// </ul>
+/// \code
+/// self.updateMessageListRatio(to: 0.7)
+///
+/// \endcode\param ratio A relative ratio value of message list to entire screen. If it’s <code>nil</code> or it’s not in range from 0 to 1 inclusive, the value won’t be set.
+///
+- (void)updateMessageListRatioTo:(CGFloat)ratio;
 /// Overlays the media view.
 /// \code
 /// // Enable overlay mode
@@ -8327,7 +8779,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 ///
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
 ///
-- (void)deleteMessagesInListWithMessageIds:(NSArray<NSNumber *> * _Nonnull)messageIds needReload:(BOOL)needReload;
+- (void)deleteMessagesInListWithMessageIds:(NSArray<NSNumber *> * _Nullable)messageIds needReload:(BOOL)needReload;
 /// This functions deletes the resendable messages using the request ids.
 /// \param requestIds Request id array to delete
 ///
@@ -8389,6 +8841,11 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 /// \param indexPath indexpath of cell
 ///
 - (void)setLongTapGestureHandler:(SBUOpenChannelBaseMessageCell * _Nonnull)cell message:(SBDBaseMessage * _Nonnull)message indexPath:(NSIndexPath * _Nonnull)indexPath;
+/// This function sets the user profile tap gesture handling.
+/// If you do not want to use the user profile function, override this function and leave it empty.
+/// \param user <code>SBUUser</code> object used for user profile configuration
+///
+- (void)setUserProfileTapGestureHandler:(SBUUser * _Nonnull)user;
 - (void)updateBarButton;
 /// This is used to messageInputView state update.
 - (void)updateMessageInputModeState;
@@ -8419,6 +8876,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 /// This function shows channel settings.
 - (void)onClickSetting;
 - (void)onClickParticipantsList;
+- (void)onClickScrollBottomWithSender:(UIButton * _Nullable)sender;
 /// This function scrolls to bottom.
 /// \param animated Animated
 ///
@@ -8471,11 +8929,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 @end
 
 
-@interface SBUOpenChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUEmptyViewDelegate>
-- (void)didSelectRetry;
-@end
-
-
 @interface SBUOpenChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
 - (void)didSelectDeleteImageWithMessage:(SBDFileMessage * _Nonnull)message;
 @end
@@ -8483,6 +8936,17 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 
 @interface SBUOpenChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
 - (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
+@end
+
+
+@interface SBUOpenChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUEmptyViewDelegate>
+- (void)didSelectRetry;
+@end
+
+
+@interface SBUOpenChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUChannelInfoHeaderViewDelegate>
+- (void)didSelectChannelInfo;
+- (void)didSelectChannelParticipants;
 @end
 
 
@@ -8495,12 +8959,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 @interface SBUOpenChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
 - (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
 - (void)imagePickerControllerDidCancel:(UIImagePickerController * _Nonnull)picker;
-@end
-
-
-@interface SBUOpenChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUChannelInfoHeaderViewDelegate>
-- (void)didSelectChannelInfo;
-- (void)didSelectChannelParticipants;
 @end
 
 
@@ -8526,6 +8984,18 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 - (void)channel:(SBDOpenChannel * _Nonnull)sender userDidExit:(SBDUser * _Nonnull)user;
 - (void)channelWasDeleted:(NSString * _Nonnull)channelUrl channelType:(SBDChannelType)channelType;
 - (void)didSucceedReconnection;
+@end
+
+
+SWIFT_CLASS("_TtC13SendBirdUIKit15SBUOverlayTheme")
+@interface SBUOverlayTheme : NSObject
+- (nonnull instancetype)initWithChannelTheme:(SBUChannelTheme * _Nonnull)channelTheme messageInputTheme:(SBUMessageInputTheme * _Nonnull)messageInputTheme messageCellTheme:(SBUMessageCellTheme * _Nonnull)messageCellTheme componentTheme:(SBUComponentTheme * _Nonnull)componentTheme OBJC_DESIGNATED_INITIALIZER;
+@property (nonatomic, strong) SBUChannelTheme * _Nonnull channelTheme;
+@property (nonatomic, strong) SBUMessageInputTheme * _Nonnull messageInputTheme;
+@property (nonatomic, strong) SBUMessageCellTheme * _Nonnull messageCellTheme;
+@property (nonatomic, strong) SBUComponentTheme * _Nonnull componentTheme;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
 
@@ -8590,6 +9060,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Choo
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull RemovePhoto;)
 + (NSString * _Nonnull)RemovePhoto SWIFT_WARN_UNUSED_RESULT;
 + (void)setRemovePhoto:(NSString * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Search;)
++ (NSString * _Nonnull)Search SWIFT_WARN_UNUSED_RESULT;
++ (void)setSearch:(NSString * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Alert_Delete;)
 + (NSString * _Nonnull)Alert_Delete SWIFT_WARN_UNUSED_RESULT;
 + (void)setAlert_Delete:(NSString * _Nonnull)value;
@@ -8689,6 +9162,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Chan
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull ChannelSettings_Delete;)
 + (NSString * _Nonnull)ChannelSettings_Delete SWIFT_WARN_UNUSED_RESULT;
 + (void)setChannelSettings_Delete:(NSString * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull ChannelSettings_Search;)
++ (NSString * _Nonnull)ChannelSettings_Search SWIFT_WARN_UNUSED_RESULT;
++ (void)setChannelSettings_Search:(NSString * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull ChannelSettings_Moderations;)
 + (NSString * _Nonnull)ChannelSettings_Moderations SWIFT_WARN_UNUSED_RESULT;
 + (void)setChannelSettings_Moderations:(NSString * _Nonnull)value;
@@ -8746,6 +9222,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Empt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Empty_Wrong;)
 + (NSString * _Nonnull)Empty_Wrong SWIFT_WARN_UNUSED_RESULT;
 + (void)setEmpty_Wrong:(NSString * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Empty_Search_Result;)
++ (NSString * _Nonnull)Empty_Search_Result SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmpty_Search_Result:(NSString * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull (^ _Nonnull CreateChannel_Create)(NSInteger);)
 + (NSString * _Nonnull (^ _Nonnull)(NSInteger))CreateChannel_Create SWIFT_WARN_UNUSED_RESULT;
 + (void)setCreateChannel_Create:(NSString * _Nonnull (^ _Nonnull)(NSInteger))value;
@@ -8861,7 +9340,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit8SBUTheme")
 @interface SBUTheme : NSObject
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
-- (nonnull instancetype)initWithChannelListTheme:(SBUChannelListTheme * _Nonnull)channelListTheme channelCellTheme:(SBUChannelCellTheme * _Nonnull)channelCellTheme channelTheme:(SBUChannelTheme * _Nonnull)channelTheme messageInputTheme:(SBUMessageInputTheme * _Nonnull)messageInputTheme messageCellTheme:(SBUMessageCellTheme * _Nonnull)messageCellTheme userListTheme:(SBUUserListTheme * _Nonnull)userListTheme userCellTheme:(SBUUserCellTheme * _Nonnull)userCellTheme channelSettingsTheme:(SBUChannelSettingsTheme * _Nonnull)channelSettingsTheme userProfileTheme:(SBUUserProfileTheme * _Nonnull)userProfileTheme componentTheme:(SBUComponentTheme * _Nonnull)componentTheme OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithChannelListTheme:(SBUChannelListTheme * _Nonnull)channelListTheme channelCellTheme:(SBUChannelCellTheme * _Nonnull)channelCellTheme channelTheme:(SBUChannelTheme * _Nonnull)channelTheme messageInputTheme:(SBUMessageInputTheme * _Nonnull)messageInputTheme messageCellTheme:(SBUMessageCellTheme * _Nonnull)messageCellTheme userListTheme:(SBUUserListTheme * _Nonnull)userListTheme userCellTheme:(SBUUserCellTheme * _Nonnull)userCellTheme channelSettingsTheme:(SBUChannelSettingsTheme * _Nonnull)channelSettingsTheme userProfileTheme:(SBUUserProfileTheme * _Nonnull)userProfileTheme componentTheme:(SBUComponentTheme * _Nonnull)componentTheme overlayTheme:(SBUOverlayTheme * _Nonnull)overlayTheme messageSearchTheme:(SBUMessageSearchTheme * _Nonnull)messageSearchTheme messageSearchResultCellTheme:(SBUMessageSearchResultCellTheme * _Nonnull)messageSearchResultCellTheme OBJC_DESIGNATED_INITIALIZER;
 + (void)setWithTheme:(SBUTheme * _Nonnull)theme;
 + (void)setChannelListWithChannelListTheme:(SBUChannelListTheme * _Nonnull)channelListTheme channelCellTheme:(SBUChannelCellTheme * _Nonnull)channelCellTheme;
 + (void)setChannelWithChannelTheme:(SBUChannelTheme * _Nonnull)channelTheme messageCellTheme:(SBUMessageCellTheme * _Nonnull)messageCellTheme messageInputTheme:(SBUMessageInputTheme * _Nonnull)messageInputTheme componentTheme:(SBUComponentTheme * _Nonnull)componentTheme;
@@ -8902,6 +9381,15 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) SBUUserProfileTheme * 
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) SBUComponentTheme * _Nonnull componentTheme;)
 + (SBUComponentTheme * _Nonnull)componentTheme SWIFT_WARN_UNUSED_RESULT;
 + (void)setComponentTheme:(SBUComponentTheme * _Nonnull)newValue;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) SBUOverlayTheme * _Nonnull overlayTheme;)
++ (SBUOverlayTheme * _Nonnull)overlayTheme SWIFT_WARN_UNUSED_RESULT;
++ (void)setOverlayTheme:(SBUOverlayTheme * _Nonnull)newValue;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) SBUMessageSearchTheme * _Nonnull messageSearchTheme;)
++ (SBUMessageSearchTheme * _Nonnull)messageSearchTheme SWIFT_WARN_UNUSED_RESULT;
++ (void)setMessageSearchTheme:(SBUMessageSearchTheme * _Nonnull)newValue;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) SBUMessageSearchResultCellTheme * _Nonnull messageSearchResultCellTheme;)
++ (SBUMessageSearchResultCellTheme * _Nonnull)messageSearchResultCellTheme SWIFT_WARN_UNUSED_RESULT;
++ (void)setMessageSearchResultCellTheme:(SBUMessageSearchResultCellTheme * _Nonnull)newValue;
 @end
 
 
@@ -8914,8 +9402,8 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUUserMessageCell")
 - (void)setupAutolayout;
 - (void)setupActions;
 - (void)setupStyles;
-- (void)configure:(SBDUserMessage * _Nonnull)message hideDateView:(BOOL)hideDateView groupPosition:(enum MessageGroupPosition)groupPosition receiptState:(enum SBUMessageReceiptState)receiptState;
-- (void)configure:(SBDBaseMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState groupPosition:(enum MessageGroupPosition)groupPosition withTextView:(BOOL)withTextView;
+/// Adds highlight attribute to the message
+- (void)configureWithHighlightInfo:(SBUHighlightMessageInfo * _Nullable)highlightInfo;
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated;
 - (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
@@ -8924,7 +9412,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUUserMessageCell")
 
 SWIFT_CLASS("_TtC13SendBirdUIKit21SBUUnknownMessageCell")
 @interface SBUUnknownMessageCell : SBUUserMessageCell
-- (void)configure:(SBDBaseMessage * _Nonnull)message hideDateView:(BOOL)hideDateView groupPosition:(enum MessageGroupPosition)groupPosition receiptState:(enum SBUMessageReceiptState)receiptState;
 - (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
@@ -9150,7 +9637,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit8SBUUtils")
 ///
 /// returns:
 /// <code>SBUMessageReceiptState</code>
-+ (enum SBUMessageReceiptState)getReceiptStateWithChannel:(SBDGroupChannel * _Nonnull)channel message:(SBDBaseMessage * _Nonnull)message SWIFT_WARN_UNUSED_RESULT;
++ (enum SBUMessageReceiptState)getReceiptStateWithChannel:(SBDGroupChannel * _Nonnull)channel message:(SBDBaseMessage * _Nonnull)message SWIFT_WARN_UNUSED_RESULT SWIFT_DEPRECATED_MSG("deprecated in 2.0.5", "getReceiptStateIfExists");
 /// This function checks the validity of coverUrl.
 /// \param coverUrl Cover url string
 ///
@@ -9192,6 +9679,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit8SBUUtils")
 @interface UINavigationController (SWIFT_EXTENSION(SendBirdUIKit))
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 @end
+
 
 
 
@@ -9486,7 +9974,8 @@ typedef SWIFT_ENUM(NSInteger, ChannelSettingItemType, open) {
   ChannelSettingItemTypeModerations = 0,
   ChannelSettingItemTypeNotifications = 1,
   ChannelSettingItemTypeMembers = 2,
-  ChannelSettingItemTypeLeave = 3,
+  ChannelSettingItemTypeSearch = 3,
+  ChannelSettingItemTypeLeave = 4,
 };
 
 /// This is an enumeration for channel type.
@@ -9506,7 +9995,8 @@ typedef SWIFT_ENUM(NSInteger, EmptyViewType, open) {
   EmptyViewTypeNoMessages = 2,
   EmptyViewTypeNoMutedMembers = 3,
   EmptyViewTypeNoBannedMembers = 4,
-  EmptyViewTypeError = 5,
+  EmptyViewTypeNoSearchResults = 5,
+  EmptyViewTypeError = 6,
 };
 
 typedef SWIFT_ENUM(uint8_t, LogType, open) {
@@ -9637,7 +10127,6 @@ typedef SWIFT_ENUM(NSInteger, ModerationItemType, open) {
 @end
 
 
-
 @interface NSObject (SWIFT_EXTENSION(SendBirdUIKit))
 /// This gets the class name of object.
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nonnull sbu_className;)
@@ -9735,6 +10224,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit13SBUCommonItem")
 
 SWIFT_CLASS("_TtC13SendBirdUIKit18SBUActionSheetItem")
 @interface SBUActionSheetItem : SBUCommonItem
+- (nonnull instancetype)initWithTitle:(NSString * _Nullable)title color:(UIColor * _Nullable)color image:(UIImage * _Nullable)image font:(UIFont * _Nullable)font tintColor:(UIColor * _Nullable)tintColor textAlignment:(NSTextAlignment)textAlignment OBJC_DESIGNATED_INITIALIZER;
 /// This function initializes actionSheet item.
 /// \param title Title text
 ///
@@ -9749,7 +10239,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUActionSheetItem")
 /// \param completionHandler Item’s completion handler
 ///
 - (nonnull instancetype)initWithTitle:(NSString * _Nullable)title color:(UIColor * _Nullable)color image:(UIImage * _Nullable)image font:(UIFont * _Nullable)font textAlignment:(NSTextAlignment)textAlignment completionHandler:(void (^ _Nullable)(void))completionHandler OBJC_DESIGNATED_INITIALIZER;
-- (nonnull instancetype)initWithTitle:(NSString * _Nullable)title color:(UIColor * _Nullable)color image:(UIImage * _Nullable)image font:(UIFont * _Nullable)font tintColor:(UIColor * _Nullable)tintColor textAlignment:(NSTextAlignment)textAlignment SWIFT_UNAVAILABLE;
 @end
 
 @class SBDBaseMessage;
@@ -9861,6 +10350,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit12SBUAvailable")
 /// returns:
 /// <code>true</code> if the og metadata can be usable, <code>false</code> otherwise.
 + (BOOL)isSupportOgTag SWIFT_WARN_UNUSED_RESULT;
+/// This method checks if the application support message search.
+/// since:
+/// 2.1.0
+///
+/// returns:
+/// <code>true</code> if the message search can be used, <code>false</code> otherwise.
++ (BOOL)isSupportMessageSearch SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
@@ -9871,8 +10367,21 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUBaseChannelCell")
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
 
-@class SBDMessageListParams;
 @class NSBundle;
+
+SWIFT_CLASS("_TtC13SendBirdUIKit21SBUBaseViewController")
+@interface SBUBaseViewController : UIViewController
+- (void)viewWillAppear:(BOOL)animated;
+- (void)setupAutolayout;
+- (void)setupStyles;
+- (void)updateStyles;
+/// This is to pop or dismiss (depending on current view controller) the search view controller.
+- (void)onClickBack;
+- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
+@end
+
+@class SBDMessageListParams;
 
 /// note:
 /// When you create channel list for open channels, please inherit <code>SBUBaseChannelListViewController</code>
@@ -9883,10 +10392,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUBaseChannelCell")
 ///
 /// \endcode
 SWIFT_CLASS("_TtC13SendBirdUIKit32SBUBaseChannelListViewController")
-@interface SBUBaseChannelListViewController : UIViewController
-- (void)setupAutolayout;
-- (void)setupStyles;
-- (void)updateStyles;
+@interface SBUBaseChannelListViewController : SBUBaseViewController
 /// This is a function that shows the channelViewController.
 /// If you want to use a custom channelViewController, override it and implement it.
 /// \param channelUrl channel url for use in channelViewController.
@@ -9902,7 +10408,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit32SBUBaseChannelListViewController")
 @class SBUMessageInputView;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit28SBUBaseChannelViewController")
-@interface SBUBaseChannelViewController : UIViewController
+@interface SBUBaseChannelViewController : SBUBaseViewController
 @property (nonatomic, readonly, strong) UITableView * _Nonnull tableView;
 @property (nonatomic, strong) SBUMessageInputView * _Nonnull messageInputView;
 /// To use the custom user profile view, set this to the custom view created using <code>SBUUserProfileViewProtocol</code>.
@@ -9911,8 +10417,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUBaseChannelViewController")
 - (void)viewWillAppear:(BOOL)animated;
 - (void)viewWillDisappear:(BOOL)animated;
 - (void)loadView;
-- (void)setupAutolayout;
-- (void)setupStyles;
 - (void)updateStyles;
 /// This function sets the user profile tap gesture handling.
 /// If you do not want to use the user profile function, override this function and leave it empty.
@@ -9941,6 +10445,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUBaseChannelViewController")
 /// since:
 /// 1.2.5
 - (void)addGestureHideKeyboard;
+- (void)loadChannelWithChannelUrl:(NSString * _Nullable)channelUrl messageListParams:(SBDMessageListParams * _Nullable)messageListParams;
+/// This is used to check the loading status and control loading indicator.
+/// \param loadingState Set to true when the list is loading.
+///
+/// \param showIndicator If true, the loading indicator is started, and if false, the indicator is stopped.
+///
+- (void)setLoading:(BOOL)loadingState :(BOOL)showIndicator;
 - (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
@@ -9976,6 +10487,13 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit26SBUUserProfileViewDelegate_")
 - (void)scrollViewDidScroll:(UIScrollView * _Nonnull)scrollView;
 @end
 
+
+
+@class UINavigationController;
+
+@interface SBUBaseViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UINavigationControllerDelegate>
+- (void)navigationController:(UINavigationController * _Nonnull)navigationController didShowViewController:(UIViewController * _Nonnull)viewController animated:(BOOL)animated;
+@end
 
 
 /// <code>UITableViewCell</code> for <code>SBDGroupChannel</code> list.
@@ -10352,7 +10870,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUChannelSe
 @class SBDGroupChannelParams;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
-@interface SBUChannelSettingsViewController : UIViewController <UINavigationControllerDelegate>
+@interface SBUChannelSettingsViewController : SBUBaseViewController
 @property (nonatomic, strong) UIView * _Nullable userInfoView;
 @property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
@@ -10416,10 +10934,10 @@ SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
 /// since:
 /// 1.2.0
 - (void)showModerationList;
-/// This function actions to pop or dismiss.
+/// If you want to use a custom MessageSearchViewController, override it and implement it.
 /// since:
-/// 1.2.5
-- (void)onClickBack;
+/// 2.1.0
+- (void)showSearch;
 /// This function used to when edit button click.
 /// since:
 /// 1.2.5
@@ -10488,6 +11006,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUChannelTh
 @property (nonatomic, strong) UIColor * _Nonnull channelStateBannerBackgroundColor;
 @end
 
+@class SBUHighlightMessageInfo;
 @class SBDUserMessage;
 @class SBDUserMessageParams;
 @class SBDFileMessageParams;
@@ -10497,7 +11016,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUChannelTh
 @class SBUUnknownMessageCell;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
-@interface SBUChannelViewController : SBUBaseChannelViewController <UINavigationControllerDelegate>
+@interface SBUChannelViewController : SBUBaseChannelViewController
 @property (nonatomic, copy) NSString * _Nullable channelName;
 /// You can use the customized view and a view that inherits <code>SBUNewMessageInfo</code>.
 /// If you use a view that inherits SBUNewMessageInfo, you can change the button and their action.
@@ -10507,6 +11026,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
 @property (nonatomic, strong) UIView * _Nullable channelStateBanner;
 @property (nonatomic, strong) UIView * _Nullable emptyView;
+@property (nonatomic, strong) UIView * _Nullable scrollBottomView;
 @property (nonatomic, strong) SBUChannelTheme * _Nonnull theme;
 @property (nonatomic, readonly, strong) SBUBaseMessageCell * _Nullable adminMessageCell;
 @property (nonatomic, readonly, strong) SBUBaseMessageCell * _Nullable userMessageCell;
@@ -10516,6 +11036,9 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 /// This object is used to import a list of messages, send messages, modify messages, and so on, and is created during initialization.
 @property (nonatomic, readonly, strong) SBDGroupChannel * _Nullable channel;
 @property (nonatomic, readonly, copy) NSString * _Nullable channelUrl;
+@property (nonatomic, strong) SBUHighlightMessageInfo * _Nullable highlightInfo;
+/// To decide whether to use right bar button item or not
+@property (nonatomic) BOOL useRightBarButtonItem;
 /// This object has a list of all success messages synchronized with the server.
 @property (nonatomic, readonly, copy) NSArray<SBDBaseMessage *> * _Nonnull messageList;
 /// This object has a list of all messages.
@@ -10569,6 +11092,16 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 /// \param channelUrl Channel url string
 ///
 - (nonnull instancetype)initWithChannelUrl:(NSString * _Nonnull)channelUrl messageListParams:(SBDMessageListParams * _Nullable)messageListParams OBJC_DESIGNATED_INITIALIZER;
+/// Use this initializer to enter a channel to start from a specific timestamp..
+/// since:
+/// 2.1.0
+/// \param channelUrl Channel’s url
+///
+/// \param startingPoint A starting point timestamp to start the message list from
+///
+/// \param messageListParams <code>SBDMessageListParams</code> object to be used when loading messages.
+///
+- (nonnull instancetype)initWithChannelUrl:(NSString * _Nonnull)channelUrl startingPoint:(int64_t)startingPoint messageListParams:(SBDMessageListParams * _Nullable)messageListParams OBJC_DESIGNATED_INITIALIZER;
 - (void)loadView;
 - (void)setupAutolayout;
 - (void)setupStyles;
@@ -10686,7 +11219,11 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 ///
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
 ///
-- (void)deleteMessagesInListWithMessageIds:(NSArray<NSNumber *> * _Nonnull)messageIds needReload:(BOOL)needReload;
+- (void)deleteMessagesInListWithMessageIds:(NSArray<NSNumber *> * _Nullable)messageIds needReload:(BOOL)needReload;
+/// This functions clears current message lists
+/// since:
+/// 2.1.0
+- (void)clearMessageList;
 /// This functions deletes the resendable messages using the request ids.
 /// since:
 /// 1.2.5
@@ -10815,10 +11352,9 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 /// returns:
 /// Position of a message when grouped
 - (enum MessageGroupPosition)getMessageGroupingPositionWithCurrentIndex:(NSInteger)currentIndex SWIFT_WARN_UNUSED_RESULT;
-/// This function actions to pop or dismiss.
-- (void)onClickBack;
 /// This function shows channel settings.
 - (void)onClickSetting;
+- (void)onClickScrollBottomWithSender:(UIButton * _Nullable)sender;
 /// This function scrolls to bottom.
 /// \param animated Animated
 ///
@@ -10878,15 +11414,15 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (NSString * _Nonnull)generateCellIdentifierBy:(SBDBaseMessage * _Nonnull)message SWIFT_WARN_UNUSED_RESULT;
 @end
 
-
-@interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
-- (void)didSelectDeleteImageWithMessage:(SBDFileMessage * _Nonnull)message;
-@end
-
 @class UIPresentationController;
 
 @interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
 - (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
+@end
+
+
+@interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
+- (void)didSelectDeleteImageWithMessage:(SBDFileMessage * _Nonnull)message;
 @end
 
 
@@ -10986,6 +11522,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull sec
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull secondary500;)
 + (UIColor * _Nonnull)secondary500 SWIFT_WARN_UNUSED_RESULT;
 + (void)setSecondary500:(UIColor * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull background50;)
++ (UIColor * _Nonnull)background50 SWIFT_WARN_UNUSED_RESULT;
++ (void)setBackground50:(UIColor * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull background100;)
 + (UIColor * _Nonnull)background100 SWIFT_WARN_UNUSED_RESULT;
 + (void)setBackground100:(UIColor * _Nonnull)value;
@@ -11037,12 +11576,27 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull ond
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull ondark04;)
 + (UIColor * _Nonnull)ondark04 SWIFT_WARN_UNUSED_RESULT;
 + (void)setOndark04:(UIColor * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull error;)
-+ (UIColor * _Nonnull)error SWIFT_WARN_UNUSED_RESULT;
-+ (void)setError:(UIColor * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull error100;)
++ (UIColor * _Nonnull)error100 SWIFT_WARN_UNUSED_RESULT;
++ (void)setError100:(UIColor * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull error200;)
++ (UIColor * _Nonnull)error200 SWIFT_WARN_UNUSED_RESULT;
++ (void)setError200:(UIColor * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull error300;)
++ (UIColor * _Nonnull)error300 SWIFT_WARN_UNUSED_RESULT;
++ (void)setError300:(UIColor * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull error400;)
++ (UIColor * _Nonnull)error400 SWIFT_WARN_UNUSED_RESULT;
++ (void)setError400:(UIColor * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull error500;)
++ (UIColor * _Nonnull)error500 SWIFT_WARN_UNUSED_RESULT;
++ (void)setError500:(UIColor * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull information;)
 + (UIColor * _Nonnull)information SWIFT_WARN_UNUSED_RESULT;
 + (void)setInformation:(UIColor * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull highlight;)
++ (UIColor * _Nonnull)highlight SWIFT_WARN_UNUSED_RESULT;
++ (void)setHighlight:(UIColor * _Nonnull)value;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
@@ -11058,7 +11612,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUComponent
 + (SBUComponentTheme * _Nonnull)overlay SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
-- (nonnull instancetype)initWithEmptyViewBackgroundColor:(UIColor * _Nonnull)emptyViewBackgroundColor emptyViewStatusFont:(UIFont * _Nonnull)emptyViewStatusFont emptyViewStatusTintColor:(UIColor * _Nonnull)emptyViewStatusTintColor emptyViewRetryButtonTintColor:(UIColor * _Nonnull)emptyViewRetryButtonTintColor emptyViewRetryButtonFont:(UIFont * _Nonnull)emptyViewRetryButtonFont overlayColor:(UIColor * _Nonnull)overlayColor backgroundColor:(UIColor * _Nonnull)backgroundColor highlightedColor:(UIColor * _Nonnull)highlightedColor buttonTextColor:(UIColor * _Nonnull)buttonTextColor separatorColor:(UIColor * _Nonnull)separatorColor shadowColor:(UIColor * _Nonnull)shadowColor closeBarButtonTintColor:(UIColor * _Nonnull)closeBarButtonTintColor alertTitleColor:(UIColor * _Nonnull)alertTitleColor alertTitleFont:(UIFont * _Nonnull)alertTitleFont alertDetailColor:(UIColor * _Nonnull)alertDetailColor alertDetailFont:(UIFont * _Nonnull)alertDetailFont alertPlaceholderColor:(UIColor * _Nonnull)alertPlaceholderColor alertButtonColor:(UIColor * _Nonnull)alertButtonColor alertErrorColor:(UIColor * _Nonnull)alertErrorColor alertButtonFont:(UIFont * _Nonnull)alertButtonFont alertTextFieldBackgroundColor:(UIColor * _Nonnull)alertTextFieldBackgroundColor alertTextFieldTintColor:(UIColor * _Nonnull)alertTextFieldTintColor alertTextFieldFont:(UIFont * _Nonnull)alertTextFieldFont actionSheetTextFont:(UIFont * _Nonnull)actionSheetTextFont actionSheetTextColor:(UIColor * _Nonnull)actionSheetTextColor actionSheetSubTextFont:(UIFont * _Nonnull)actionSheetSubTextFont actionSheetSubTextColor:(UIColor * _Nonnull)actionSheetSubTextColor actionSheetItemColor:(UIColor * _Nonnull)actionSheetItemColor actionSheetErrorColor:(UIColor * _Nonnull)actionSheetErrorColor actionSheetButtonFont:(UIFont * _Nonnull)actionSheetButtonFont newMessageFont:(UIFont * _Nonnull)newMessageFont newMessageTintColor:(UIColor * _Nonnull)newMessageTintColor newMessageBackground:(UIColor * _Nonnull)newMessageBackground newMessageHighlighted:(UIColor * _Nonnull)newMessageHighlighted newMessageButtonTintColor:(UIColor * _Nonnull)newMessageButtonTintColor newMessageButtonBackground:(UIColor * _Nonnull)newMessageButtonBackground newMessageButtonHighlighted:(UIColor * _Nonnull)newMessageButtonHighlighted titleOnlineStateColor:(UIColor * _Nonnull)titleOnlineStateColor titleColor:(UIColor * _Nonnull)titleColor titleFont:(UIFont * _Nonnull)titleFont titleStatusColor:(UIColor * _Nonnull)titleStatusColor titleStatusFont:(UIFont * _Nonnull)titleStatusFont menuTitleFont:(UIFont * _Nonnull)menuTitleFont userPlaceholderBackgroundColor:(UIColor * _Nonnull)userPlaceholderBackgroundColor userPlaceholderTintColor:(UIColor * _Nonnull)userPlaceholderTintColor reactionBoxBackgroundColor:(UIColor * _Nonnull)reactionBoxBackgroundColor reactionBoxBorderLineColor:(UIColor * _Nonnull)reactionBoxBorderLineColor reactionBoxEmojiCountColor:(UIColor * _Nonnull)reactionBoxEmojiCountColor reactionBoxEmojiBackgroundColor:(UIColor * _Nonnull)reactionBoxEmojiBackgroundColor reactionBoxSelectedEmojiBackgroundColor:(UIColor * _Nonnull)reactionBoxSelectedEmojiBackgroundColor reactionBoxEmojiCountFont:(UIFont * _Nonnull)reactionBoxEmojiCountFont emojiCountColor:(UIColor * _Nonnull)emojiCountColor emojiSelectedCountColor:(UIColor * _Nonnull)emojiSelectedCountColor emojiSelectedUnderlineColor:(UIColor * _Nonnull)emojiSelectedUnderlineColor emojiCountFont:(UIFont * _Nonnull)emojiCountFont reactionMenuLineColor:(UIColor * _Nonnull)reactionMenuLineColor emojiListSelectedBackgroundColor:(UIColor * _Nonnull)emojiListSelectedBackgroundColor addReactionTintColor:(UIColor * _Nonnull)addReactionTintColor channelTypeSelectorItemTintColor:(UIColor * _Nonnull)channelTypeSelectorItemTintColor channelTypeSelectorItemTextColor:(UIColor * _Nonnull)channelTypeSelectorItemTextColor channelTypeSelectorItemFont:(UIFont * _Nonnull)channelTypeSelectorItemFont broadcastIconBackgroundColor:(UIColor * _Nonnull)broadcastIconBackgroundColor barItemTintColor:(UIColor * _Nonnull)barItemTintColor OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithEmptyViewBackgroundColor:(UIColor * _Nonnull)emptyViewBackgroundColor emptyViewStatusFont:(UIFont * _Nonnull)emptyViewStatusFont emptyViewStatusTintColor:(UIColor * _Nonnull)emptyViewStatusTintColor emptyViewRetryButtonTintColor:(UIColor * _Nonnull)emptyViewRetryButtonTintColor emptyViewRetryButtonFont:(UIFont * _Nonnull)emptyViewRetryButtonFont overlayColor:(UIColor * _Nonnull)overlayColor backgroundColor:(UIColor * _Nonnull)backgroundColor highlightedColor:(UIColor * _Nonnull)highlightedColor buttonTextColor:(UIColor * _Nonnull)buttonTextColor separatorColor:(UIColor * _Nonnull)separatorColor shadowColor:(UIColor * _Nonnull)shadowColor closeBarButtonTintColor:(UIColor * _Nonnull)closeBarButtonTintColor alertTitleColor:(UIColor * _Nonnull)alertTitleColor alertTitleFont:(UIFont * _Nonnull)alertTitleFont alertDetailColor:(UIColor * _Nonnull)alertDetailColor alertDetailFont:(UIFont * _Nonnull)alertDetailFont alertPlaceholderColor:(UIColor * _Nonnull)alertPlaceholderColor alertButtonColor:(UIColor * _Nonnull)alertButtonColor alertErrorColor:(UIColor * _Nonnull)alertErrorColor alertButtonFont:(UIFont * _Nonnull)alertButtonFont alertTextFieldBackgroundColor:(UIColor * _Nonnull)alertTextFieldBackgroundColor alertTextFieldTintColor:(UIColor * _Nonnull)alertTextFieldTintColor alertTextFieldFont:(UIFont * _Nonnull)alertTextFieldFont actionSheetTextFont:(UIFont * _Nonnull)actionSheetTextFont actionSheetTextColor:(UIColor * _Nonnull)actionSheetTextColor actionSheetSubTextFont:(UIFont * _Nonnull)actionSheetSubTextFont actionSheetSubTextColor:(UIColor * _Nonnull)actionSheetSubTextColor actionSheetItemColor:(UIColor * _Nonnull)actionSheetItemColor actionSheetErrorColor:(UIColor * _Nonnull)actionSheetErrorColor actionSheetButtonFont:(UIFont * _Nonnull)actionSheetButtonFont newMessageFont:(UIFont * _Nonnull)newMessageFont newMessageTintColor:(UIColor * _Nonnull)newMessageTintColor newMessageBackground:(UIColor * _Nonnull)newMessageBackground newMessageHighlighted:(UIColor * _Nonnull)newMessageHighlighted newMessageButtonTintColor:(UIColor * _Nonnull)newMessageButtonTintColor newMessageButtonBackground:(UIColor * _Nonnull)newMessageButtonBackground newMessageButtonHighlighted:(UIColor * _Nonnull)newMessageButtonHighlighted scrollBottomButtonIconColor:(UIColor * _Nonnull)scrollBottomButtonIconColor scrollBottomButtonBackground:(UIColor * _Nonnull)scrollBottomButtonBackground scrollBottomButtonHighlighted:(UIColor * _Nonnull)scrollBottomButtonHighlighted titleOnlineStateColor:(UIColor * _Nonnull)titleOnlineStateColor titleColor:(UIColor * _Nonnull)titleColor titleFont:(UIFont * _Nonnull)titleFont titleStatusColor:(UIColor * _Nonnull)titleStatusColor titleStatusFont:(UIFont * _Nonnull)titleStatusFont menuTitleFont:(UIFont * _Nonnull)menuTitleFont userPlaceholderBackgroundColor:(UIColor * _Nonnull)userPlaceholderBackgroundColor userPlaceholderTintColor:(UIColor * _Nonnull)userPlaceholderTintColor reactionBoxBackgroundColor:(UIColor * _Nonnull)reactionBoxBackgroundColor reactionBoxBorderLineColor:(UIColor * _Nonnull)reactionBoxBorderLineColor reactionBoxEmojiCountColor:(UIColor * _Nonnull)reactionBoxEmojiCountColor reactionBoxEmojiBackgroundColor:(UIColor * _Nonnull)reactionBoxEmojiBackgroundColor reactionBoxSelectedEmojiBackgroundColor:(UIColor * _Nonnull)reactionBoxSelectedEmojiBackgroundColor reactionBoxEmojiCountFont:(UIFont * _Nonnull)reactionBoxEmojiCountFont emojiCountColor:(UIColor * _Nonnull)emojiCountColor emojiSelectedCountColor:(UIColor * _Nonnull)emojiSelectedCountColor emojiSelectedUnderlineColor:(UIColor * _Nonnull)emojiSelectedUnderlineColor emojiCountFont:(UIFont * _Nonnull)emojiCountFont reactionMenuLineColor:(UIColor * _Nonnull)reactionMenuLineColor emojiListSelectedBackgroundColor:(UIColor * _Nonnull)emojiListSelectedBackgroundColor addReactionTintColor:(UIColor * _Nonnull)addReactionTintColor channelTypeSelectorItemTintColor:(UIColor * _Nonnull)channelTypeSelectorItemTintColor channelTypeSelectorItemTextColor:(UIColor * _Nonnull)channelTypeSelectorItemTextColor channelTypeSelectorItemFont:(UIFont * _Nonnull)channelTypeSelectorItemFont broadcastIconBackgroundColor:(UIColor * _Nonnull)broadcastIconBackgroundColor broadcastIconTintColor:(UIColor * _Nonnull)broadcastIconTintColor barItemTintColor:(UIColor * _Nonnull)barItemTintColor loadingBackgroundColor:(UIColor * _Nonnull)loadingBackgroundColor loadingPopupBackgroundColor:(UIColor * _Nonnull)loadingPopupBackgroundColor loadingFont:(UIFont * _Nonnull)loadingFont loadingTextColor:(UIColor * _Nonnull)loadingTextColor loadingSpinnerColor:(UIColor * _Nonnull)loadingSpinnerColor OBJC_DESIGNATED_INITIALIZER;
 @property (nonatomic, strong) UIColor * _Nonnull emptyViewBackgroundColor;
 @property (nonatomic, strong) UIFont * _Nonnull emptyViewStatusFont;
 @property (nonatomic, strong) UIColor * _Nonnull emptyViewStatusTintColor;
@@ -11089,6 +11643,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUComponent
 @property (nonatomic, strong) UIColor * _Nonnull newMessageButtonTintColor;
 @property (nonatomic, strong) UIColor * _Nonnull newMessageButtonBackground;
 @property (nonatomic, strong) UIColor * _Nonnull newMessageButtonHighlighted;
+@property (nonatomic, strong) UIColor * _Nonnull scrollBottomButtonIconColor;
+@property (nonatomic, strong) UIColor * _Nonnull scrollBottomButtonBackground;
+@property (nonatomic, strong) UIColor * _Nonnull scrollBottomButtonHighlighted;
 @property (nonatomic, strong) UIColor * _Nonnull titleOnlineStateColor;
 @property (nonatomic, strong) UIColor * _Nonnull titleColor;
 @property (nonatomic, strong) UIFont * _Nonnull titleFont;
@@ -11121,7 +11678,13 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUComponent
 @property (nonatomic, strong) UIColor * _Nonnull channelTypeSelectorItemTextColor;
 @property (nonatomic, strong) UIFont * _Nonnull channelTypeSelectorItemFont;
 @property (nonatomic, strong) UIColor * _Nonnull broadcastIconBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull broadcastIconTintColor;
 @property (nonatomic, strong) UIColor * _Nonnull barItemTintColor;
+@property (nonatomic, strong) UIColor * _Nonnull loadingBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull loadingPopupBackgroundColor;
+@property (nonatomic, strong) UIFont * _Nonnull loadingFont;
+@property (nonatomic, strong) UIColor * _Nonnull loadingTextColor;
+@property (nonatomic, strong) UIColor * _Nonnull loadingSpinnerColor;
 @end
 
 @class UIStackView;
@@ -11142,7 +11705,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit25SBUContentBaseMessageCell")
 - (void)setupAutolayout;
 - (void)setupActions;
 - (void)setupStyles;
-- (void)configure:(SBDBaseMessage * _Nonnull)message hideDateView:(BOOL)hideDateView position:(enum MessagePosition)position groupPosition:(enum MessageGroupPosition)groupPosition receiptState:(enum SBUMessageReceiptState)receiptState;
 - (void)setMessageGrouping;
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated;
 - (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nullable)sender;
@@ -11176,7 +11738,7 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit36SBUCreateChannelTypeSelectorProtocol_")
 @class SBDApplicationUserListQuery;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
-@interface SBUCreateChannelViewController : UIViewController <UINavigationControllerDelegate>
+@interface SBUCreateChannelViewController : SBUBaseViewController
 @property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
@@ -11251,10 +11813,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 /// \param state If state is <code>true</code>, start loading indicator.
 ///
 - (void)showLoadingWithState:(BOOL)state;
-/// This function actions to pop or dismiss.
-/// since:
-/// 1.2.5
-- (void)onClickBack;
 /// This function calls <code>createChannel:</code> function using the <code>selectedUserList</code>.
 /// since:
 /// 1.2.5
@@ -11343,8 +11901,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUFileMessageCell")
 - (void)setupAutolayout;
 - (void)setupActions;
 - (void)setupStyles;
-- (void)prepareForReuse;
-- (void)configure:(SBDFileMessage * _Nonnull)message hideDateView:(BOOL)hideDateView groupPosition:(enum MessageGroupPosition)groupPosition receiptState:(enum SBUMessageReceiptState)receiptState;
+- (void)configureWithHighlightInfo:(SBUHighlightMessageInfo * _Nullable)highlightInfo;
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated;
 - (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
@@ -11353,31 +11910,31 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUFileMessageCell")
 
 SWIFT_CLASS("_TtC13SendBirdUIKit10SBUFontSet")
 @interface SBUFontSet : NSObject
-/// Medium, 18pt
+/// Bold, 18pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull h1;)
 + (UIFont * _Nonnull)h1 SWIFT_WARN_UNUSED_RESULT;
 + (void)setH1:(UIFont * _Nonnull)value;
-/// Bold, 16pt
+/// Medium, 18pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull h2;)
 + (UIFont * _Nonnull)h2 SWIFT_WARN_UNUSED_RESULT;
 + (void)setH2:(UIFont * _Nonnull)value;
-/// Bold, 18pt
+/// Bold, 16pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull h3;)
 + (UIFont * _Nonnull)h3 SWIFT_WARN_UNUSED_RESULT;
 + (void)setH3:(UIFont * _Nonnull)value;
-/// Regular, 14pt, Line height: 20pt
+/// Regular, 16pt, Line height: 20pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull body1;)
 + (UIFont * _Nonnull)body1 SWIFT_WARN_UNUSED_RESULT;
 + (void)setBody1:(UIFont * _Nonnull)value;
-/// Regular, 14pt, Line height: 16pt
+/// Semibold, 14pt, Line height: 16pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull body2;)
 + (UIFont * _Nonnull)body2 SWIFT_WARN_UNUSED_RESULT;
 + (void)setBody2:(UIFont * _Nonnull)value;
-/// Semibold, 14pt, Line height: 16pt
+/// Regular, 14pt, Line height: 16pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull body3;)
 + (UIFont * _Nonnull)body3 SWIFT_WARN_UNUSED_RESULT;
 + (void)setBody3:(UIFont * _Nonnull)value;
-/// Semibold, 20pt
+/// Semibold, 18pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull button1;)
 + (UIFont * _Nonnull)button1 SWIFT_WARN_UNUSED_RESULT;
 + (void)setButton1:(UIFont * _Nonnull)value;
@@ -11397,11 +11954,11 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull capt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull caption2;)
 + (UIFont * _Nonnull)caption2 SWIFT_WARN_UNUSED_RESULT;
 + (void)setCaption2:(UIFont * _Nonnull)value;
-/// Regular, 11pt
+/// Medium, 11pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull caption3;)
 + (UIFont * _Nonnull)caption3 SWIFT_WARN_UNUSED_RESULT;
 + (void)setCaption3:(UIFont * _Nonnull)value;
-/// Bold, 11pt
+/// Regular, 11pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull caption4;)
 + (UIFont * _Nonnull)caption4 SWIFT_WARN_UNUSED_RESULT;
 + (void)setCaption4:(UIFont * _Nonnull)value;
@@ -11589,44 +12146,48 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class) CGSize imageResizingSize;)
 @end
 
 
+SWIFT_CLASS("_TtC13SendBirdUIKit23SBUHighlightMessageInfo")
+@interface SBUHighlightMessageInfo : NSObject
+@property (nonatomic, readonly) int64_t messageId;
+@property (nonatomic, readonly) int64_t updatedAt;
+- (nonnull instancetype)initWithMessageId:(int64_t)messageId updatedAt:(int64_t)updatedAt OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+
 SWIFT_CLASS("_TtC13SendBirdUIKit10SBUIconSet")
 @interface SBUIconSet : NSObject
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconActionLeave;)
-+ (UIImage * _Nonnull)iconActionLeave SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconActionLeave:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconActionNotificationOn;)
-+ (UIImage * _Nonnull)iconActionNotificationOn SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconActionNotificationOn:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconActionNotificationOff;)
-+ (UIImage * _Nonnull)iconActionNotificationOff SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconActionNotificationOff:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconAdd;)
 + (UIImage * _Nonnull)iconAdd SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconAdd:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconBack;)
 + (UIImage * _Nonnull)iconBack SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconBack:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconBan;)
++ (UIImage * _Nonnull)iconBan SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconBan:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconBroadcast;)
++ (UIImage * _Nonnull)iconBroadcast SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconBroadcast:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconCamera;)
 + (UIImage * _Nonnull)iconCamera SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconCamera:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconPlus;)
-+ (UIImage * _Nonnull)iconPlus SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconPlus:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconChat;)
 + (UIImage * _Nonnull)iconChat SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconChat:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconChatHide;)
-+ (UIImage * _Nonnull)iconChatHide SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconChatHide:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconChatShow;)
-+ (UIImage * _Nonnull)iconChatShow SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconChatShow:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconCheckbox;)
-+ (UIImage * _Nonnull)iconCheckbox SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconCheckbox:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconCheckboxOff;)
-+ (UIImage * _Nonnull)iconCheckboxOff SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconCheckboxOff:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconCheckboxChecked;)
++ (UIImage * _Nonnull)iconCheckboxChecked SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconCheckboxChecked:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconCheckboxUnchecked;)
++ (UIImage * _Nonnull)iconCheckboxUnchecked SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconCheckboxUnchecked:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconChevronDown;)
++ (UIImage * _Nonnull)iconChevronDown SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconChevronDown:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconChevronRight;)
++ (UIImage * _Nonnull)iconChevronRight SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconChevronRight:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconClose;)
 + (UIImage * _Nonnull)iconClose SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconClose:(UIImage * _Nonnull)value;
@@ -11639,27 +12200,36 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull ico
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconDelete;)
 + (UIImage * _Nonnull)iconDelete SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconDelete:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconDelivered;)
-+ (UIImage * _Nonnull)iconDelivered SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconDelivered:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconDocument;)
 + (UIImage * _Nonnull)iconDocument SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconDocument:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconDone;)
++ (UIImage * _Nonnull)iconDone SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconDone:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconDoneAll;)
++ (UIImage * _Nonnull)iconDoneAll SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconDoneAll:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconDownload;)
 + (UIImage * _Nonnull)iconDownload SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconDownload:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconDummy;)
-+ (UIImage * _Nonnull)iconDummy SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconDummy:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconEdit;)
 + (UIImage * _Nonnull)iconEdit SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconEdit:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconEmojiMore;)
++ (UIImage * _Nonnull)iconEmojiMore SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconEmojiMore:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconError;)
 + (UIImage * _Nonnull)iconError SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconError:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconErrorFilled;)
-+ (UIImage * _Nonnull)iconErrorFilled SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconErrorFilled:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconFileAudio;)
++ (UIImage * _Nonnull)iconFileAudio SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconFileAudio:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconFileDocument;)
++ (UIImage * _Nonnull)iconFileDocument SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconFileDocument:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconFreeze;)
++ (UIImage * _Nonnull)iconFreeze SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconFreeze:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconGif;)
 + (UIImage * _Nonnull)iconGif SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconGif:(UIImage * _Nonnull)value;
@@ -11672,140 +12242,77 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull ico
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconMembers;)
 + (UIImage * _Nonnull)iconMembers SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconMembers:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconMessage;)
++ (UIImage * _Nonnull)iconMessage SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconMessage:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconModerations;)
 + (UIImage * _Nonnull)iconModerations SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconModerations:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconSupergroup;)
-+ (UIImage * _Nonnull)iconSupergroup SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconSupergroup:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconBroadcastSmall;)
-+ (UIImage * _Nonnull)iconBroadcastSmall SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconBroadcastSmall:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconBroadcastMedium;)
-+ (UIImage * _Nonnull)iconBroadcastMedium SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconBroadcastMedium:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconBroadcastLarge;)
-+ (UIImage * _Nonnull)iconBroadcastLarge SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconBroadcastLarge:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconFreeze;)
-+ (UIImage * _Nonnull)iconFreeze SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconFreeze:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconMore;)
++ (UIImage * _Nonnull)iconMore SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconMore:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconMute;)
 + (UIImage * _Nonnull)iconMute SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconMute:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconNotificationFilled;)
++ (UIImage * _Nonnull)iconNotificationFilled SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconNotificationFilled:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconNotificationOffFilled;)
++ (UIImage * _Nonnull)iconNotificationOffFilled SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconNotificationOffFilled:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconNotifications;)
 + (UIImage * _Nonnull)iconNotifications SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconNotifications:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconThumbnailLight;)
-+ (UIImage * _Nonnull)iconThumbnailLight SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconThumbnailLight:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconNoThumbnailLight;)
-+ (UIImage * _Nonnull)iconNoThumbnailLight SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconNoThumbnailLight:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconOperator;)
++ (UIImage * _Nonnull)iconOperator SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconOperator:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconPhoto;)
 + (UIImage * _Nonnull)iconPhoto SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconPhoto:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconPlay;)
 + (UIImage * _Nonnull)iconPlay SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconPlay:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconRead;)
-+ (UIImage * _Nonnull)iconRead SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconRead:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconPlus;)
++ (UIImage * _Nonnull)iconPlus SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconPlus:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconQuestion;)
++ (UIImage * _Nonnull)iconQuestion SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconQuestion:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconRefresh;)
 + (UIImage * _Nonnull)iconRefresh SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconRefresh:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconAvatarLight;)
-+ (UIImage * _Nonnull)iconAvatarLight SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconAvatarLight:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconRemove;)
++ (UIImage * _Nonnull)iconRemove SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconRemove:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconSearch;)
++ (UIImage * _Nonnull)iconSearch SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconSearch:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconSend;)
 + (UIImage * _Nonnull)iconSend SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconSend:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconSent;)
-+ (UIImage * _Nonnull)iconSent SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconSent:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconFailed;)
-+ (UIImage * _Nonnull)iconFailed SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconFailed:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconShevronRight;)
-+ (UIImage * _Nonnull)iconShevronRight SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconShevronRight:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconSpinner;)
++ (UIImage * _Nonnull)iconSpinner SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconSpinner:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconSupergroup;)
++ (UIImage * _Nonnull)iconSupergroup SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconSupergroup:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconThumbnailNone;)
++ (UIImage * _Nonnull)iconThumbnailNone SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconThumbnailNone:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconUser;)
 + (UIImage * _Nonnull)iconUser SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconUser:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconSpinnerSmall;)
-+ (UIImage * _Nonnull)iconSpinnerSmall SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconSpinnerSmall:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconSpinnerLarge;)
-+ (UIImage * _Nonnull)iconSpinnerLarge SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconSpinnerLarge:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconFileDocument;)
-+ (UIImage * _Nonnull)iconFileDocument SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconFileDocument:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconFileAudio;)
-+ (UIImage * _Nonnull)iconFileAudio SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconFileAudio:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconChevronDown;)
-+ (UIImage * _Nonnull)iconChevronDown SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconChevronDown:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconMore;)
-+ (UIImage * _Nonnull)iconMore SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconMore:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconOperator;)
-+ (UIImage * _Nonnull)iconOperator SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconOperator:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconMuted;)
-+ (UIImage * _Nonnull)iconMuted SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconMuted:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconBanned;)
-+ (UIImage * _Nonnull)iconBanned SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconBanned:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconMessage;)
-+ (UIImage * _Nonnull)iconMessage SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconMessage:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull channelTypeGroup;)
-+ (UIImage * _Nonnull)channelTypeGroup SWIFT_WARN_UNUSED_RESULT;
-+ (void)setChannelTypeGroup:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull channelTypeSupergroup;)
-+ (UIImage * _Nonnull)channelTypeSupergroup SWIFT_WARN_UNUSED_RESULT;
-+ (void)setChannelTypeSupergroup:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull channelTypeBroadcast;)
-+ (UIImage * _Nonnull)channelTypeBroadcast SWIFT_WARN_UNUSED_RESULT;
-+ (void)setChannelTypeBroadcast:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiHeartEyes;)
-+ (UIImage * _Nonnull)emojiHeartEyes SWIFT_WARN_UNUSED_RESULT;
-+ (void)setEmojiHeartEyes:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiLaughing;)
-+ (UIImage * _Nonnull)emojiLaughing SWIFT_WARN_UNUSED_RESULT;
-+ (void)setEmojiLaughing:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiSweatSmile;)
-+ (UIImage * _Nonnull)emojiSweatSmile SWIFT_WARN_UNUSED_RESULT;
-+ (void)setEmojiSweatSmile:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiSob;)
-+ (UIImage * _Nonnull)emojiSob SWIFT_WARN_UNUSED_RESULT;
-+ (void)setEmojiSob:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiRage;)
-+ (UIImage * _Nonnull)emojiRage SWIFT_WARN_UNUSED_RESULT;
-+ (void)setEmojiRage:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiMoreLarge;)
-+ (UIImage * _Nonnull)emojiMoreLarge SWIFT_WARN_UNUSED_RESULT;
-+ (void)setEmojiMoreLarge:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiThumbsup;)
-+ (UIImage * _Nonnull)emojiThumbsup SWIFT_WARN_UNUSED_RESULT;
-+ (void)setEmojiThumbsup:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiThubsdown;)
-+ (UIImage * _Nonnull)emojiThubsdown SWIFT_WARN_UNUSED_RESULT;
-+ (void)setEmojiThubsdown:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiFail;)
-+ (UIImage * _Nonnull)emojiFail SWIFT_WARN_UNUSED_RESULT;
-+ (void)setEmojiFail:(UIImage * _Nonnull)value;
+/// Restore all customized icons to SDK’s default icons.
+/// since:
+/// 2.1.0
++ (void)restoreDefaultIcons;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
-
 
 @class SBDGroupChannelMemberListQuery;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
-@interface SBUInviteUserViewController : UIViewController
+@interface SBUInviteUserViewController : SBUBaseViewController
 @property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
@@ -11915,10 +12422,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 /// since:
 /// 1.2.5
 - (void)reloadData;
-/// This function actions to pop or dismiss.
-/// since:
-/// 1.2.5
-- (void)onClickBack;
 /// This function calls <code>inviteUsers</code> or <code>promoteToOperators</code> functions with <code>inviteListType</code>.
 /// since:
 /// 1.2.5
@@ -12020,6 +12523,9 @@ SWIFT_CLASS("_TtC13SendBirdUIKit7SBUMain")
 + (void)unregisterAllPushTokenWithCompletionHandler:(void (^ _Nonnull)(BOOL))completionHandler;
 + (void)openChannelWithChannelUrl:(NSString * _Nonnull)channelUrl basedOnChannelList:(BOOL)basedOnChannelList messageListParams:(SBDMessageListParams * _Nullable)messageListParams SWIFT_DEPRECATED_MSG("deprecated in 1.2.2", "moveToChannel(channelUrl:basedOnChannelList:messageListParams:)");
 /// This is a function that moves the channel that can be called anywhere.
+/// If you wish to open an open channel view controller, or any class that subclasses <code>SBUOpenChannelViewController</code>,
+/// you must guarentee that a channel list’s view controller, subclass of <code>SBUBaseChannelListViewController</code>,
+/// is present within the <code>UINavigationController.viewControllers</code> if you set the <code>basedOnChannelList</code> to <code>true</code>.
 /// since:
 /// 1.2.2
 /// \param channelUrl channel url for use in channel.
@@ -12068,7 +12574,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit7SBUMain")
 @class SBDParticipantListQuery;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
-@interface SBUMemberListViewController : UIViewController
+@interface SBUMemberListViewController : SBUBaseViewController
 @property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
@@ -12221,10 +12727,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 /// since:
 /// 1.2.5
 - (void)reloadData;
-/// This function actions to pop or dismiss.
-/// since:
-/// 1.2.5
-- (void)onClickBack;
 /// This function shows inviteChannelViewController.
 - (void)onClickInviteUser;
 /// This function sets the cell’s more menu button action handling. (GroupChannel only)
@@ -12288,12 +12790,14 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageCe
 + (SBUMessageCellTheme * _Nonnull)overlay SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
-- (nonnull instancetype)initWithBackgroundColor:(UIColor * _Nonnull)backgroundColor leftBackgroundColor:(UIColor * _Nonnull)leftBackgroundColor leftPressedBackgroundColor:(UIColor * _Nonnull)leftPressedBackgroundColor rightBackgroundColor:(UIColor * _Nonnull)rightBackgroundColor rightPressedBackgroundColor:(UIColor * _Nonnull)rightPressedBackgroundColor dateFont:(UIFont * _Nonnull)dateFont dateTextColor:(UIColor * _Nonnull)dateTextColor dateBackgroundColor:(UIColor * _Nonnull)dateBackgroundColor userPlaceholderBackgroundColor:(UIColor * _Nonnull)userPlaceholderBackgroundColor userPlaceholderTintColor:(UIColor * _Nonnull)userPlaceholderTintColor userNameFont:(UIFont * _Nonnull)userNameFont userNameTextColor:(UIColor * _Nonnull)userNameTextColor currentUserNameTextColor:(UIColor * _Nonnull)currentUserNameTextColor timeFont:(UIFont * _Nonnull)timeFont timeTextColor:(UIColor * _Nonnull)timeTextColor pendingStateColor:(UIColor * _Nonnull)pendingStateColor failedStateColor:(UIColor * _Nonnull)failedStateColor succeededStateColor:(UIColor * _Nonnull)succeededStateColor readReceiptStateColor:(UIColor * _Nonnull)readReceiptStateColor deliveryReceiptStateColor:(UIColor * _Nonnull)deliveryReceiptStateColor userMessageFont:(UIFont * _Nonnull)userMessageFont userMessageLeftTextColor:(UIColor * _Nonnull)userMessageLeftTextColor userMessageLeftEditTextColor:(UIColor * _Nonnull)userMessageLeftEditTextColor userMessageRightTextColor:(UIColor * _Nonnull)userMessageRightTextColor userMessageRightEditTextColor:(UIColor * _Nonnull)userMessageRightEditTextColor fileIconBackgroundColor:(UIColor * _Nonnull)fileIconBackgroundColor fileIconColor:(UIColor * _Nonnull)fileIconColor fileMessageNameFont:(UIFont * _Nonnull)fileMessageNameFont fileMessageLeftTextColor:(UIColor * _Nonnull)fileMessageLeftTextColor fileMessageRightTextColor:(UIColor * _Nonnull)fileMessageRightTextColor fileMessagePlaceholderColor:(UIColor * _Nonnull)fileMessagePlaceholderColor adminMessageFont:(UIFont * _Nonnull)adminMessageFont adminMessageTextColor:(UIColor * _Nonnull)adminMessageTextColor unknownMessageDescFont:(UIFont * _Nonnull)unknownMessageDescFont unknownMessageDescTextColor:(UIColor * _Nonnull)unknownMessageDescTextColor ogTitleFont:(UIFont * _Nonnull)ogTitleFont ogTitleColor:(UIColor * _Nonnull)ogTitleColor ogDescriptionFont:(UIFont * _Nonnull)ogDescriptionFont ogDescriptionColor:(UIColor * _Nonnull)ogDescriptionColor ogURLAddressFont:(UIFont * _Nonnull)ogURLAddressFont ogURLAddressColor:(UIColor * _Nonnull)ogURLAddressColor linkColor:(UIColor * _Nonnull)linkColor contentBackgroundColor:(UIColor * _Nonnull)contentBackgroundColor pressedContentBackgroundColor:(UIColor * _Nonnull)pressedContentBackgroundColor OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithBackgroundColor:(UIColor * _Nonnull)backgroundColor leftBackgroundColor:(UIColor * _Nonnull)leftBackgroundColor leftPressedBackgroundColor:(UIColor * _Nonnull)leftPressedBackgroundColor rightBackgroundColor:(UIColor * _Nonnull)rightBackgroundColor rightPressedBackgroundColor:(UIColor * _Nonnull)rightPressedBackgroundColor openChannelBackgroundColor:(UIColor * _Nonnull)openChannelBackgroundColor openChannelPressedBackgroundColor:(UIColor * _Nonnull)openChannelPressedBackgroundColor dateFont:(UIFont * _Nonnull)dateFont dateTextColor:(UIColor * _Nonnull)dateTextColor dateBackgroundColor:(UIColor * _Nonnull)dateBackgroundColor userPlaceholderBackgroundColor:(UIColor * _Nonnull)userPlaceholderBackgroundColor userPlaceholderTintColor:(UIColor * _Nonnull)userPlaceholderTintColor userNameFont:(UIFont * _Nonnull)userNameFont userNameTextColor:(UIColor * _Nonnull)userNameTextColor currentUserNameTextColor:(UIColor * _Nonnull)currentUserNameTextColor timeFont:(UIFont * _Nonnull)timeFont timeTextColor:(UIColor * _Nonnull)timeTextColor pendingStateColor:(UIColor * _Nonnull)pendingStateColor failedStateColor:(UIColor * _Nonnull)failedStateColor succeededStateColor:(UIColor * _Nonnull)succeededStateColor readReceiptStateColor:(UIColor * _Nonnull)readReceiptStateColor deliveryReceiptStateColor:(UIColor * _Nonnull)deliveryReceiptStateColor userMessageFont:(UIFont * _Nonnull)userMessageFont userMessageLeftTextColor:(UIColor * _Nonnull)userMessageLeftTextColor userMessageLeftEditTextColor:(UIColor * _Nonnull)userMessageLeftEditTextColor userMessageLeftHighlightTextColor:(UIColor * _Nonnull)userMessageLeftHighlightTextColor userMessageRightTextColor:(UIColor * _Nonnull)userMessageRightTextColor userMessageRightEditTextColor:(UIColor * _Nonnull)userMessageRightEditTextColor userMessageRightHighlightTextColor:(UIColor * _Nonnull)userMessageRightHighlightTextColor fileIconBackgroundColor:(UIColor * _Nonnull)fileIconBackgroundColor fileImageBackgroundColor:(UIColor * _Nonnull)fileImageBackgroundColor fileImageIconColor:(UIColor * _Nonnull)fileImageIconColor fileIconColor:(UIColor * _Nonnull)fileIconColor fileMessageNameFont:(UIFont * _Nonnull)fileMessageNameFont fileMessageLeftTextColor:(UIColor * _Nonnull)fileMessageLeftTextColor fileMessageRightTextColor:(UIColor * _Nonnull)fileMessageRightTextColor fileMessagePlaceholderColor:(UIColor * _Nonnull)fileMessagePlaceholderColor adminMessageFont:(UIFont * _Nonnull)adminMessageFont adminMessageTextColor:(UIColor * _Nonnull)adminMessageTextColor unknownMessageDescFont:(UIFont * _Nonnull)unknownMessageDescFont unknownMessageDescTextColor:(UIColor * _Nonnull)unknownMessageDescTextColor ogTitleFont:(UIFont * _Nonnull)ogTitleFont ogTitleColor:(UIColor * _Nonnull)ogTitleColor ogDescriptionFont:(UIFont * _Nonnull)ogDescriptionFont ogDescriptionColor:(UIColor * _Nonnull)ogDescriptionColor ogURLAddressFont:(UIFont * _Nonnull)ogURLAddressFont ogURLAddressColor:(UIColor * _Nonnull)ogURLAddressColor linkColor:(UIColor * _Nonnull)linkColor contentBackgroundColor:(UIColor * _Nonnull)contentBackgroundColor pressedContentBackgroundColor:(UIColor * _Nonnull)pressedContentBackgroundColor OBJC_DESIGNATED_INITIALIZER;
 @property (nonatomic, strong) UIColor * _Nonnull backgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull leftBackgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull leftPressedBackgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull rightBackgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull rightPressedBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull openChannelBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull openChannelPressedBackgroundColor;
 @property (nonatomic, strong) UIFont * _Nonnull dateFont;
 @property (nonatomic, strong) UIColor * _Nonnull dateTextColor;
 @property (nonatomic, strong) UIColor * _Nonnull dateBackgroundColor;
@@ -12318,6 +12822,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageCe
 @property (nonatomic, strong) UIColor * _Nonnull userMessageRightEditTextColor;
 @property (nonatomic, strong) UIColor * _Nonnull fileIconBackgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull fileIconColor;
+@property (nonatomic, strong) UIColor * _Nonnull fileImageBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull fileImageIconColor;
 @property (nonatomic, strong) UIFont * _Nonnull fileMessageNameFont;
 @property (nonatomic, strong) UIColor * _Nonnull fileMessageLeftTextColor;
 @property (nonatomic, strong) UIColor * _Nonnull fileMessageRightTextColor;
@@ -12326,6 +12832,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageCe
 @property (nonatomic, strong) UIColor * _Nonnull adminMessageTextColor;
 @property (nonatomic, strong) UIFont * _Nonnull unknownMessageDescFont;
 @property (nonatomic, strong) UIColor * _Nonnull unknownMessageDescTextColor;
+@property (nonatomic, strong) UIColor * _Nonnull messageLeftHighlightTextColor;
+@property (nonatomic, strong) UIColor * _Nonnull messageRightHighlightTextColor;
 @property (nonatomic, strong) UIFont * _Nonnull ogTitleFont;
 @property (nonatomic, strong) UIColor * _Nonnull ogTitleColor;
 @property (nonatomic, strong) UIFont * _Nonnull ogDescriptionFont;
@@ -12392,6 +12900,8 @@ SWIFT_CLASS("_TtC13SendBirdUIKit19SBUMessageInputView")
 /// \param isMuted <code>true</code> is muted mode, <code>false</code> is unmuted mode
 ///
 - (void)setMutedModeState:(BOOL)isMuted;
+/// Sets error state. Disable all
+- (void)setErrorState;
 - (void)endTypingMode;
 - (void)updateTextViewHeight;
 - (void)onClickAddButton:(id _Nonnull)sender;
@@ -12413,10 +12923,181 @@ typedef SWIFT_ENUM(NSInteger, SBUMessageReceiptState, open) {
   SBUMessageReceiptStateDeliveryReceipt = 2,
 };
 
+@class SBUMessageSearchResultCellTheme;
+
+SWIFT_CLASS("_TtC13SendBirdUIKit26SBUMessageSearchResultCell")
+@interface SBUMessageSearchResultCell : UITableViewCell
+@property (nonatomic, readonly, strong) SBUCoverImageView * _Nonnull coverImage;
+@property (nonatomic, readonly, strong) UILabel * _Nonnull titleLabel;
+@property (nonatomic, readonly, strong) UILabel * _Nonnull messageLabel;
+@property (nonatomic, readonly, strong) UILabel * _Nonnull fileMessageLabel;
+@property (nonatomic, readonly, strong) UIImageView * _Nonnull fileMessageIcon;
+@property (nonatomic, readonly, strong) UIStackView * _Nonnull fileStackView;
+@property (nonatomic, readonly, strong) UILabel * _Nonnull createdAtLabel;
+@property (nonatomic, readonly, strong) UIView * _Nonnull separatorLine;
+@property (nonatomic, strong) SBUMessageSearchResultCellTheme * _Nonnull theme;
+- (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
+- (void)awakeFromNib;
+/// This function handles the initialization of views.
+- (void)setupViews;
+/// This function handles the initialization of actions.
+- (void)setupActions;
+/// This function handles the initialization of autolayouts.
+- (void)setupAutolayout;
+/// This function handles the initialization of styles.
+- (void)setupStyles;
+- (void)layoutSubviews;
+/// This function configure a cell using <code>SBDBaseMessage</code> information.
+/// \param channel <code>SBDBaseMessage</code> object
+///
+- (void)configureWithMessage:(SBDBaseMessage * _Nonnull)message;
+/// Sets file message icon depending on the message’s file type using <code>SBUUtils.getFileType(by: fileMessage)</code>.
+- (void)setupFileIcon;
+@end
+
+
+SWIFT_CLASS("_TtC13SendBirdUIKit31SBUMessageSearchResultCellTheme")
+@interface SBUMessageSearchResultCellTheme : NSObject
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageSearchResultCellTheme * _Nonnull light;)
++ (SBUMessageSearchResultCellTheme * _Nonnull)light SWIFT_WARN_UNUSED_RESULT;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageSearchResultCellTheme * _Nonnull dark;)
++ (SBUMessageSearchResultCellTheme * _Nonnull)dark SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, strong) UIColor * _Nonnull backgroundColor;
+@property (nonatomic, strong) UIFont * _Nonnull titleFont;
+@property (nonatomic, strong) UIColor * _Nonnull titleTextColor;
+@property (nonatomic, strong) UIFont * _Nonnull descriptionFont;
+@property (nonatomic, strong) UIColor * _Nonnull descriptionTextColor;
+@property (nonatomic, strong) UIFont * _Nonnull updatedAtFont;
+@property (nonatomic, strong) UIColor * _Nonnull updatedAtTextColor;
+@property (nonatomic, strong) UIFont * _Nonnull fileMessageFont;
+@property (nonatomic, strong) UIColor * _Nonnull fileMessageTextColor;
+@property (nonatomic, strong) UIColor * _Nonnull fileMessageIconBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull fileMessageIconTintColor;
+@property (nonatomic, strong) UIColor * _Nonnull separatorLineColor;
+- (nonnull instancetype)initWithBackgroundColor:(UIColor * _Nonnull)backgroundColor titleFont:(UIFont * _Nonnull)titleFont titleTextColor:(UIColor * _Nonnull)titleTextColor descriptionFont:(UIFont * _Nonnull)descriptionFont descriptionTextColor:(UIColor * _Nonnull)descriptionTextColor updatedAtFont:(UIFont * _Nonnull)updatedAtFont updatedAtTextColor:(UIColor * _Nonnull)updatedAtTextColor fileMessageFont:(UIFont * _Nonnull)fileMessageFont fileMessageTextColor:(UIColor * _Nonnull)fileMessageTextColor fileMessageIconBackgroundColor:(UIColor * _Nonnull)fileMessageIconBackgroundColor fileMessageIconTinkColor:(UIColor * _Nonnull)fileMessageIconTinkColor separatorLineColor:(UIColor * _Nonnull)separatorLineColor OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+
+SWIFT_CLASS("_TtC13SendBirdUIKit21SBUMessageSearchTheme")
+@interface SBUMessageSearchTheme : NSObject
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageSearchTheme * _Nonnull light;)
++ (SBUMessageSearchTheme * _Nonnull)light SWIFT_WARN_UNUSED_RESULT;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageSearchTheme * _Nonnull dark;)
++ (SBUMessageSearchTheme * _Nonnull)dark SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic) UIStatusBarStyle statusBarStyle;
+@property (nonatomic) UIBarStyle navigationBarStyle;
+@property (nonatomic, strong) UIColor * _Nonnull navigationBarTintColor;
+@property (nonatomic, strong) UIColor * _Nonnull navigationBarShadowColor;
+@property (nonatomic, strong) UIColor * _Nonnull backgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull searchTextColor;
+@property (nonatomic, strong) UIFont * _Nonnull searchTextFont;
+@property (nonatomic, strong) UIColor * _Nonnull searchTextBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull searchPlaceholderColor;
+@property (nonatomic, strong) UIColor * _Nonnull searchIconTintColor;
+@property (nonatomic, strong) UIColor * _Nonnull clearIconTintColor;
+@property (nonatomic, strong) UIColor * _Nonnull cancelButtonTintColor;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+- (nonnull instancetype)initWithStatusBarStyle:(UIStatusBarStyle)statusBarStyle navigationBarStyle:(UIBarStyle)navigationBarStyle navigationBarTintColor:(UIColor * _Nonnull)navigationBarTintColor navigationBarShadowColor:(UIColor * _Nonnull)navigationBarShadowColor backgroundColor:(UIColor * _Nonnull)backgroundColor searchTextColor:(UIColor * _Nonnull)searchTextColor searchTextFont:(UIFont * _Nonnull)searchTextFont searchTextBackgroundColor:(UIColor * _Nonnull)searchTextBackgroundColor searchPlaceholderColor:(UIColor * _Nonnull)searchPlaceholderColor searchIconTintColor:(UIColor * _Nonnull)searchIconTintColor clearIconTintColor:(UIColor * _Nonnull)clearIconTintColor cancelButtonTintColor:(UIColor * _Nonnull)cancelButtonTintColor OBJC_DESIGNATED_INITIALIZER;
+@end
+
+@class SBDMessageSearchQueryBuilder;
+@class UISearchBar;
+
+/// ViewController handling a message search.
+/// since:
+/// 2.1.0
+SWIFT_CLASS("_TtC13SendBirdUIKit30SBUMessageSearchViewController")
+@interface SBUMessageSearchViewController : SBUBaseViewController
+@property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
+@property (nonatomic, strong) SBUMessageSearchTheme * _Nonnull theme;
+@property (nonatomic, strong) SBDBaseChannel * _Nullable channel;
+/// This param will be used on entering a channel from selecting an item from the search results.
+@property (nonatomic, strong) SBDMessageListParams * _Nullable messageListParams;
+/// You can set custom query params for message search.
+/// <code>keyword</code>, <code>channelUrl</code>, <code>order</code> is reserved in SDK. (The SDK value will override the custom values)
+/// <code>messageFromTs</code> is set to user’s channel joined ts as a default. You can set this value to <code>0</code> to search for all previous messages as well.
+/// <code>limit</code> will be set to default value of <code>defaultSearchLimit</code> in case if it’s set to 0 or smaller value.
+@property (nonatomic, copy) void (^ _Nullable customMessageSearchQueryBuilder)(SBDMessageSearchQueryBuilder * _Nonnull);
+/// Message search result’s cell.
+@property (nonatomic, strong) SBUMessageSearchResultCell * _Nullable messageSearchResultCell;
+@property (nonatomic, readonly, strong) UIView * _Null_unspecified searchBar;
+@property (nonatomic, readonly, strong) UITableView * _Nonnull tableView;
+@property (nonatomic, readonly, strong) UIView * _Nullable emptyView;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUMessageSearchViewController(channel:)'");
+- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUMessageSearchViewController(channel:)'");
+- (nonnull instancetype)initWithChannel:(SBDBaseChannel * _Nonnull)channel OBJC_DESIGNATED_INITIALIZER;
+- (void)viewDidLoad;
+- (void)viewWillAppear:(BOOL)animated;
+- (void)viewWillDisappear:(BOOL)animated;
+- (void)loadView;
+- (void)viewDidLayoutSubviews;
+- (void)didReceiveError:(NSString * _Nullable)message;
+/// Used to register a custom cell as a search result cell based on <code>SBUMessageSearchResultCell</code>.
+/// \param messageSearchResultCell Customized search result cell
+///
+/// \param nib nib information. If the value is nil, the nib file is not used.
+///
+- (void)registerWithMessageSearchResultCell:(SBUMessageSearchResultCell * _Nonnull)messageSearchResultCell nib:(UINib * _Nullable)nib;
+/// Performs keyword search
+/// <ul>
+///   <li>
+///     Parameters: keyword: A keyword to search for.
+///   </li>
+/// </ul>
+///
+/// returns:
+/// A <code>SBDMessageSearchQuery</code> with the params set.
+- (void)searchWithKeyword:(NSString * _Nonnull)keyword;
+/// This is to pop or dismiss (depending on current view controller) the search view controller.
+- (void)onClickBack;
+- (void)setupStyles;
+- (void)setupAutolayout;
+- (void)setupSearchBarStyleWithSearchBar:(UISearchBar * _Nonnull)searchBar;
+/// Enters a <code>SBUChannelViewController</code> with the selected message.
+/// \param message A <code>SBDBaseMessage</code> object to load channel from.
+///
+/// \param highlightInfo An  optional<code>SBUHighlightInfo</code> class to have message highlighted.
+///
+/// \param messageListParams An optional <code>SBDMessageListParams</code> params to be used in loading messages.
+///
+- (void)enterChannelWith:(SBDBaseMessage * _Nonnull)message highlightInfo:(SBUHighlightMessageInfo * _Nullable)highlightInfo messageListParams:(SBDMessageListParams * _Nullable)messageListParams;
+@end
+
+
+@interface SBUMessageSearchViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUEmptyViewDelegate>
+- (void)didSelectRetry;
+@end
+
+
+@interface SBUMessageSearchViewController (SWIFT_EXTENSION(SendBirdUIKit))
+- (BOOL)shouldShowLoadingIndicator;
+- (void)shouldDismissLoadingIndicator;
+@end
+
+
+@interface SBUMessageSearchViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UISearchBarDelegate>
+- (void)searchBarTextDidEndEditing:(UISearchBar * _Nonnull)searchBar;
+- (void)searchBarCancelButtonClicked:(UISearchBar * _Nonnull)searchBar;
+- (void)searchBarSearchButtonClicked:(UISearchBar * _Nonnull)searchBar;
+@end
+
+
+@interface SBUMessageSearchViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UITableViewDataSource, UITableViewDelegate>
+- (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
+- (UITableViewCell * _Nonnull)tableView:(UITableView * _Nonnull)tableView cellForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
+- (void)tableView:(UITableView * _Nonnull)tableView didSelectRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
+- (void)tableView:(UITableView * _Nonnull)tableView willDisplayCell:(UITableViewCell * _Nonnull)cell forRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
+- (CGFloat)tableView:(UITableView * _Nonnull)tableView heightForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
+@end
+
 
 
 SWIFT_CLASS("_TtC13SendBirdUIKit28SBUModerationsViewController")
-@interface SBUModerationsViewController : UIViewController <UINavigationControllerDelegate>
+@interface SBUModerationsViewController : SBUBaseViewController
 @property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
@@ -12464,10 +13145,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUModerationsViewController")
 /// This is a function that shows the banned member List.
 /// If you want to use a custom MemberListViewController, override it and implement it.
 - (void)showBannedMeberList;
-/// This function actions to pop or dismiss.
-/// since:
-/// 1.2.5
-- (void)onClickBack;
 /// Changes freeze status on channel.
 /// \param freeze freeze status
 ///
@@ -12586,6 +13263,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit36SBUOpenChannelContentBaseMessageCell")
 - (void)configure:(SBDBaseMessage * _Nonnull)message hideDateView:(BOOL)hideDateView groupPosition:(enum MessageGroupPosition)groupPosition isOverlay:(BOOL)isOverlay;
 - (void)setMessageGrouping;
 - (void)setUsernameColor:(UIColor * _Nonnull)color;
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated;
 - (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nullable)sender;
 - (void)onTapContentViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
 - (void)onTapUserProfileViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
@@ -12611,7 +13289,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit29SBUOpenChannelFileMessageCell")
 
 
 SWIFT_CLASS("_TtC13SendBirdUIKit36SBUOpenChannelSettingsViewController")
-@interface SBUOpenChannelSettingsViewController : UIViewController <UINavigationControllerDelegate>
+@interface SBUOpenChannelSettingsViewController : SBUBaseViewController
 @property (nonatomic, strong) UIView * _Nullable userInfoView;
 @property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
@@ -12662,8 +13340,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit36SBUOpenChannelSettingsViewController")
 - (void)deleteChannel;
 /// If you want to use a custom memberListViewController, override it and implement it.
 - (void)showParticipantsList;
-/// This function actions to pop or dismiss.
-- (void)onClickBack;
 /// This function used to when edit button click.
 - (void)onClickEdit;
 /// This function shows the channel image selection menu.
@@ -12728,7 +13404,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit32SBUOpenChannelUnknownMessageCell")
 @protocol UIViewControllerTransitionCoordinator;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
-@interface SBUOpenChannelViewController : SBUBaseChannelViewController <UINavigationControllerDelegate>
+@interface SBUOpenChannelViewController : SBUBaseChannelViewController
 /// You can use the customized view and a view that inherits <code>SBUNewMessageInfo</code>.
 /// If you use a view that inherits SBUNewMessageInfo, you can change the button and their action.
 @property (nonatomic, strong) UIView * _Nullable newMessageInfoView;
@@ -12750,7 +13426,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 @property (nonatomic) BOOL hideChannelInfoView;
 /// Sets text in <code>channelInfoView.descriptionLabel</code>
 @property (nonatomic, copy) NSString * _Nullable channelDescription;
-/// The internal view provided for media such as photo or video. If you want to use <code>mediaView</code>, please call <code>enableMediaView(_:)</code> to enable and set its ratio through <code>updateRatio(medialView:messageList:)</code>. If you want to overlay, use <code>overlayMediaView(_:messageListRatio:)</code> method.
+/// The internal view provided for media such as photo or video. If you want to use <code>mediaView</code>, please call <code>enableMediaView(_:)</code> to enable and set its ratio through <code>updateMessageListRatio(to ratio:)</code>. If you want to overlay, use <code>overlayMediaView(_:messageListRatio:)</code> method.
 @property (nonatomic, strong) UIView * _Nonnull mediaView;
 /// A boolean value whether the media view is enabled or not. The default value is <code>false</code>.
 /// note:
@@ -12765,12 +13441,12 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 /// A relative ratio value of <code>mediaView</code>to entire screen. The default value is <code>0</code>.
 /// note:
 ///
-/// Use <code>updateRatio(mediaView:messageList:)</code> to set value.
+/// Use <code>updateMessageListRatio(to ratio:)</code> to set value.
 @property (nonatomic, readonly) CGFloat mediaViewRatio;
 /// A relative ratio value of messaging view to entire screen. The default value is <code>1</code>
 /// note:
 ///
-/// Use <code>updateRatio(mediaView:messageList:)</code> to set value.
+/// Use <code>updateMessageListRatio(to ratio:)</code> to set value.
 @property (nonatomic, readonly) CGFloat messageListRatio;
 /// A boolean value whether <code>mediaView</code> is overlay or not. The default value is <code>false</code>.
 /// note:
@@ -12785,11 +13461,31 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 /// Enable the internal media view.
 /// \code
 /// self.enableMediaView(true)
-/// self.updateRatio(mediaView: 0.3: messageList: 0.7)
+/// self.updateMessageListRatio(to: 0.7)
 ///
 /// \endcode\param enabled If it’s <code>true</code> It uses the media view.
 ///
 - (void)enableMediaView:(BOOL)enabled;
+/// Updates a relative ratio value of the message list with  <code>ratio</code> to entire screen.
+/// The mediaView will have it’s ratio accordingly, meaning
+/// important:
+///
+/// The ratio must be in range of <code>0...1</code>.
+/// <ul>
+///   <li>
+///     normal mode : mediaView’s ratio = (1 - message list’s ratio). Media view & message list is side by side in landscape mode, top to bottom in portrait mode.
+///   </li>
+///   <li>
+///     overlay mode : mediaView’s ratio = 1 (fills the whole screen). Media view fills the whole screen & message list is above the media view with transparent background.
+///     After this method, You might need to call <code>setupStyles</code> or <code>updateComponentStyle</code>.
+///   </li>
+/// </ul>
+/// \code
+/// self.updateMessageListRatio(to: 0.7)
+///
+/// \endcode\param ratio A relative ratio value of message list to entire screen. If it’s <code>nil</code> or it’s not in range from 0 to 1 inclusive, the value won’t be set.
+///
+- (void)updateMessageListRatioTo:(CGFloat)ratio;
 /// Overlays the media view.
 /// \code
 /// // Enable overlay mode
@@ -12948,7 +13644,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 ///
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
 ///
-- (void)deleteMessagesInListWithMessageIds:(NSArray<NSNumber *> * _Nonnull)messageIds needReload:(BOOL)needReload;
+- (void)deleteMessagesInListWithMessageIds:(NSArray<NSNumber *> * _Nullable)messageIds needReload:(BOOL)needReload;
 /// This functions deletes the resendable messages using the request ids.
 /// \param requestIds Request id array to delete
 ///
@@ -13010,6 +13706,11 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 /// \param indexPath indexpath of cell
 ///
 - (void)setLongTapGestureHandler:(SBUOpenChannelBaseMessageCell * _Nonnull)cell message:(SBDBaseMessage * _Nonnull)message indexPath:(NSIndexPath * _Nonnull)indexPath;
+/// This function sets the user profile tap gesture handling.
+/// If you do not want to use the user profile function, override this function and leave it empty.
+/// \param user <code>SBUUser</code> object used for user profile configuration
+///
+- (void)setUserProfileTapGestureHandler:(SBUUser * _Nonnull)user;
 - (void)updateBarButton;
 /// This is used to messageInputView state update.
 - (void)updateMessageInputModeState;
@@ -13040,6 +13741,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 /// This function shows channel settings.
 - (void)onClickSetting;
 - (void)onClickParticipantsList;
+- (void)onClickScrollBottomWithSender:(UIButton * _Nullable)sender;
 /// This function scrolls to bottom.
 /// \param animated Animated
 ///
@@ -13092,11 +13794,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 @end
 
 
-@interface SBUOpenChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUEmptyViewDelegate>
-- (void)didSelectRetry;
-@end
-
-
 @interface SBUOpenChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
 - (void)didSelectDeleteImageWithMessage:(SBDFileMessage * _Nonnull)message;
 @end
@@ -13104,6 +13801,17 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 
 @interface SBUOpenChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
 - (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
+@end
+
+
+@interface SBUOpenChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUEmptyViewDelegate>
+- (void)didSelectRetry;
+@end
+
+
+@interface SBUOpenChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUChannelInfoHeaderViewDelegate>
+- (void)didSelectChannelInfo;
+- (void)didSelectChannelParticipants;
 @end
 
 
@@ -13116,12 +13824,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 @interface SBUOpenChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
 - (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
 - (void)imagePickerControllerDidCancel:(UIImagePickerController * _Nonnull)picker;
-@end
-
-
-@interface SBUOpenChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUChannelInfoHeaderViewDelegate>
-- (void)didSelectChannelInfo;
-- (void)didSelectChannelParticipants;
 @end
 
 
@@ -13147,6 +13849,18 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 - (void)channel:(SBDOpenChannel * _Nonnull)sender userDidExit:(SBDUser * _Nonnull)user;
 - (void)channelWasDeleted:(NSString * _Nonnull)channelUrl channelType:(SBDChannelType)channelType;
 - (void)didSucceedReconnection;
+@end
+
+
+SWIFT_CLASS("_TtC13SendBirdUIKit15SBUOverlayTheme")
+@interface SBUOverlayTheme : NSObject
+- (nonnull instancetype)initWithChannelTheme:(SBUChannelTheme * _Nonnull)channelTheme messageInputTheme:(SBUMessageInputTheme * _Nonnull)messageInputTheme messageCellTheme:(SBUMessageCellTheme * _Nonnull)messageCellTheme componentTheme:(SBUComponentTheme * _Nonnull)componentTheme OBJC_DESIGNATED_INITIALIZER;
+@property (nonatomic, strong) SBUChannelTheme * _Nonnull channelTheme;
+@property (nonatomic, strong) SBUMessageInputTheme * _Nonnull messageInputTheme;
+@property (nonatomic, strong) SBUMessageCellTheme * _Nonnull messageCellTheme;
+@property (nonatomic, strong) SBUComponentTheme * _Nonnull componentTheme;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
 
@@ -13211,6 +13925,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Choo
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull RemovePhoto;)
 + (NSString * _Nonnull)RemovePhoto SWIFT_WARN_UNUSED_RESULT;
 + (void)setRemovePhoto:(NSString * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Search;)
++ (NSString * _Nonnull)Search SWIFT_WARN_UNUSED_RESULT;
++ (void)setSearch:(NSString * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Alert_Delete;)
 + (NSString * _Nonnull)Alert_Delete SWIFT_WARN_UNUSED_RESULT;
 + (void)setAlert_Delete:(NSString * _Nonnull)value;
@@ -13310,6 +14027,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Chan
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull ChannelSettings_Delete;)
 + (NSString * _Nonnull)ChannelSettings_Delete SWIFT_WARN_UNUSED_RESULT;
 + (void)setChannelSettings_Delete:(NSString * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull ChannelSettings_Search;)
++ (NSString * _Nonnull)ChannelSettings_Search SWIFT_WARN_UNUSED_RESULT;
++ (void)setChannelSettings_Search:(NSString * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull ChannelSettings_Moderations;)
 + (NSString * _Nonnull)ChannelSettings_Moderations SWIFT_WARN_UNUSED_RESULT;
 + (void)setChannelSettings_Moderations:(NSString * _Nonnull)value;
@@ -13367,6 +14087,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Empt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Empty_Wrong;)
 + (NSString * _Nonnull)Empty_Wrong SWIFT_WARN_UNUSED_RESULT;
 + (void)setEmpty_Wrong:(NSString * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Empty_Search_Result;)
++ (NSString * _Nonnull)Empty_Search_Result SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmpty_Search_Result:(NSString * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull (^ _Nonnull CreateChannel_Create)(NSInteger);)
 + (NSString * _Nonnull (^ _Nonnull)(NSInteger))CreateChannel_Create SWIFT_WARN_UNUSED_RESULT;
 + (void)setCreateChannel_Create:(NSString * _Nonnull (^ _Nonnull)(NSInteger))value;
@@ -13482,7 +14205,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit8SBUTheme")
 @interface SBUTheme : NSObject
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
-- (nonnull instancetype)initWithChannelListTheme:(SBUChannelListTheme * _Nonnull)channelListTheme channelCellTheme:(SBUChannelCellTheme * _Nonnull)channelCellTheme channelTheme:(SBUChannelTheme * _Nonnull)channelTheme messageInputTheme:(SBUMessageInputTheme * _Nonnull)messageInputTheme messageCellTheme:(SBUMessageCellTheme * _Nonnull)messageCellTheme userListTheme:(SBUUserListTheme * _Nonnull)userListTheme userCellTheme:(SBUUserCellTheme * _Nonnull)userCellTheme channelSettingsTheme:(SBUChannelSettingsTheme * _Nonnull)channelSettingsTheme userProfileTheme:(SBUUserProfileTheme * _Nonnull)userProfileTheme componentTheme:(SBUComponentTheme * _Nonnull)componentTheme OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithChannelListTheme:(SBUChannelListTheme * _Nonnull)channelListTheme channelCellTheme:(SBUChannelCellTheme * _Nonnull)channelCellTheme channelTheme:(SBUChannelTheme * _Nonnull)channelTheme messageInputTheme:(SBUMessageInputTheme * _Nonnull)messageInputTheme messageCellTheme:(SBUMessageCellTheme * _Nonnull)messageCellTheme userListTheme:(SBUUserListTheme * _Nonnull)userListTheme userCellTheme:(SBUUserCellTheme * _Nonnull)userCellTheme channelSettingsTheme:(SBUChannelSettingsTheme * _Nonnull)channelSettingsTheme userProfileTheme:(SBUUserProfileTheme * _Nonnull)userProfileTheme componentTheme:(SBUComponentTheme * _Nonnull)componentTheme overlayTheme:(SBUOverlayTheme * _Nonnull)overlayTheme messageSearchTheme:(SBUMessageSearchTheme * _Nonnull)messageSearchTheme messageSearchResultCellTheme:(SBUMessageSearchResultCellTheme * _Nonnull)messageSearchResultCellTheme OBJC_DESIGNATED_INITIALIZER;
 + (void)setWithTheme:(SBUTheme * _Nonnull)theme;
 + (void)setChannelListWithChannelListTheme:(SBUChannelListTheme * _Nonnull)channelListTheme channelCellTheme:(SBUChannelCellTheme * _Nonnull)channelCellTheme;
 + (void)setChannelWithChannelTheme:(SBUChannelTheme * _Nonnull)channelTheme messageCellTheme:(SBUMessageCellTheme * _Nonnull)messageCellTheme messageInputTheme:(SBUMessageInputTheme * _Nonnull)messageInputTheme componentTheme:(SBUComponentTheme * _Nonnull)componentTheme;
@@ -13523,6 +14246,15 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) SBUUserProfileTheme * 
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) SBUComponentTheme * _Nonnull componentTheme;)
 + (SBUComponentTheme * _Nonnull)componentTheme SWIFT_WARN_UNUSED_RESULT;
 + (void)setComponentTheme:(SBUComponentTheme * _Nonnull)newValue;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) SBUOverlayTheme * _Nonnull overlayTheme;)
++ (SBUOverlayTheme * _Nonnull)overlayTheme SWIFT_WARN_UNUSED_RESULT;
++ (void)setOverlayTheme:(SBUOverlayTheme * _Nonnull)newValue;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) SBUMessageSearchTheme * _Nonnull messageSearchTheme;)
++ (SBUMessageSearchTheme * _Nonnull)messageSearchTheme SWIFT_WARN_UNUSED_RESULT;
++ (void)setMessageSearchTheme:(SBUMessageSearchTheme * _Nonnull)newValue;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) SBUMessageSearchResultCellTheme * _Nonnull messageSearchResultCellTheme;)
++ (SBUMessageSearchResultCellTheme * _Nonnull)messageSearchResultCellTheme SWIFT_WARN_UNUSED_RESULT;
++ (void)setMessageSearchResultCellTheme:(SBUMessageSearchResultCellTheme * _Nonnull)newValue;
 @end
 
 
@@ -13535,8 +14267,8 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUUserMessageCell")
 - (void)setupAutolayout;
 - (void)setupActions;
 - (void)setupStyles;
-- (void)configure:(SBDUserMessage * _Nonnull)message hideDateView:(BOOL)hideDateView groupPosition:(enum MessageGroupPosition)groupPosition receiptState:(enum SBUMessageReceiptState)receiptState;
-- (void)configure:(SBDBaseMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState groupPosition:(enum MessageGroupPosition)groupPosition withTextView:(BOOL)withTextView;
+/// Adds highlight attribute to the message
+- (void)configureWithHighlightInfo:(SBUHighlightMessageInfo * _Nullable)highlightInfo;
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated;
 - (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
@@ -13545,7 +14277,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUUserMessageCell")
 
 SWIFT_CLASS("_TtC13SendBirdUIKit21SBUUnknownMessageCell")
 @interface SBUUnknownMessageCell : SBUUserMessageCell
-- (void)configure:(SBDBaseMessage * _Nonnull)message hideDateView:(BOOL)hideDateView groupPosition:(enum MessageGroupPosition)groupPosition receiptState:(enum SBUMessageReceiptState)receiptState;
 - (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
@@ -13771,7 +14502,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit8SBUUtils")
 ///
 /// returns:
 /// <code>SBUMessageReceiptState</code>
-+ (enum SBUMessageReceiptState)getReceiptStateWithChannel:(SBDGroupChannel * _Nonnull)channel message:(SBDBaseMessage * _Nonnull)message SWIFT_WARN_UNUSED_RESULT;
++ (enum SBUMessageReceiptState)getReceiptStateWithChannel:(SBDGroupChannel * _Nonnull)channel message:(SBDBaseMessage * _Nonnull)message SWIFT_WARN_UNUSED_RESULT SWIFT_DEPRECATED_MSG("deprecated in 2.0.5", "getReceiptStateIfExists");
 /// This function checks the validity of coverUrl.
 /// \param coverUrl Cover url string
 ///
@@ -13813,6 +14544,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit8SBUUtils")
 @interface UINavigationController (SWIFT_EXTENSION(SendBirdUIKit))
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 @end
+
 
 
 
@@ -14105,7 +14837,8 @@ typedef SWIFT_ENUM(NSInteger, ChannelSettingItemType, open) {
   ChannelSettingItemTypeModerations = 0,
   ChannelSettingItemTypeNotifications = 1,
   ChannelSettingItemTypeMembers = 2,
-  ChannelSettingItemTypeLeave = 3,
+  ChannelSettingItemTypeSearch = 3,
+  ChannelSettingItemTypeLeave = 4,
 };
 
 /// This is an enumeration for channel type.
@@ -14125,7 +14858,8 @@ typedef SWIFT_ENUM(NSInteger, EmptyViewType, open) {
   EmptyViewTypeNoMessages = 2,
   EmptyViewTypeNoMutedMembers = 3,
   EmptyViewTypeNoBannedMembers = 4,
-  EmptyViewTypeError = 5,
+  EmptyViewTypeNoSearchResults = 5,
+  EmptyViewTypeError = 6,
 };
 
 typedef SWIFT_ENUM(uint8_t, LogType, open) {
@@ -14256,7 +14990,6 @@ typedef SWIFT_ENUM(NSInteger, ModerationItemType, open) {
 @end
 
 
-
 @interface NSObject (SWIFT_EXTENSION(SendBirdUIKit))
 /// This gets the class name of object.
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, copy) NSString * _Nonnull sbu_className;)
@@ -14354,6 +15087,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit13SBUCommonItem")
 
 SWIFT_CLASS("_TtC13SendBirdUIKit18SBUActionSheetItem")
 @interface SBUActionSheetItem : SBUCommonItem
+- (nonnull instancetype)initWithTitle:(NSString * _Nullable)title color:(UIColor * _Nullable)color image:(UIImage * _Nullable)image font:(UIFont * _Nullable)font tintColor:(UIColor * _Nullable)tintColor textAlignment:(NSTextAlignment)textAlignment OBJC_DESIGNATED_INITIALIZER;
 /// This function initializes actionSheet item.
 /// \param title Title text
 ///
@@ -14368,7 +15102,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUActionSheetItem")
 /// \param completionHandler Item’s completion handler
 ///
 - (nonnull instancetype)initWithTitle:(NSString * _Nullable)title color:(UIColor * _Nullable)color image:(UIImage * _Nullable)image font:(UIFont * _Nullable)font textAlignment:(NSTextAlignment)textAlignment completionHandler:(void (^ _Nullable)(void))completionHandler OBJC_DESIGNATED_INITIALIZER;
-- (nonnull instancetype)initWithTitle:(NSString * _Nullable)title color:(UIColor * _Nullable)color image:(UIImage * _Nullable)image font:(UIFont * _Nullable)font tintColor:(UIColor * _Nullable)tintColor textAlignment:(NSTextAlignment)textAlignment SWIFT_UNAVAILABLE;
 @end
 
 @class SBDBaseMessage;
@@ -14480,6 +15213,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit12SBUAvailable")
 /// returns:
 /// <code>true</code> if the og metadata can be usable, <code>false</code> otherwise.
 + (BOOL)isSupportOgTag SWIFT_WARN_UNUSED_RESULT;
+/// This method checks if the application support message search.
+/// since:
+/// 2.1.0
+///
+/// returns:
+/// <code>true</code> if the message search can be used, <code>false</code> otherwise.
++ (BOOL)isSupportMessageSearch SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
@@ -14490,8 +15230,21 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUBaseChannelCell")
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
 
-@class SBDMessageListParams;
 @class NSBundle;
+
+SWIFT_CLASS("_TtC13SendBirdUIKit21SBUBaseViewController")
+@interface SBUBaseViewController : UIViewController
+- (void)viewWillAppear:(BOOL)animated;
+- (void)setupAutolayout;
+- (void)setupStyles;
+- (void)updateStyles;
+/// This is to pop or dismiss (depending on current view controller) the search view controller.
+- (void)onClickBack;
+- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
+@end
+
+@class SBDMessageListParams;
 
 /// note:
 /// When you create channel list for open channels, please inherit <code>SBUBaseChannelListViewController</code>
@@ -14502,10 +15255,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUBaseChannelCell")
 ///
 /// \endcode
 SWIFT_CLASS("_TtC13SendBirdUIKit32SBUBaseChannelListViewController")
-@interface SBUBaseChannelListViewController : UIViewController
-- (void)setupAutolayout;
-- (void)setupStyles;
-- (void)updateStyles;
+@interface SBUBaseChannelListViewController : SBUBaseViewController
 /// This is a function that shows the channelViewController.
 /// If you want to use a custom channelViewController, override it and implement it.
 /// \param channelUrl channel url for use in channelViewController.
@@ -14521,7 +15271,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit32SBUBaseChannelListViewController")
 @class SBUMessageInputView;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit28SBUBaseChannelViewController")
-@interface SBUBaseChannelViewController : UIViewController
+@interface SBUBaseChannelViewController : SBUBaseViewController
 @property (nonatomic, readonly, strong) UITableView * _Nonnull tableView;
 @property (nonatomic, strong) SBUMessageInputView * _Nonnull messageInputView;
 /// To use the custom user profile view, set this to the custom view created using <code>SBUUserProfileViewProtocol</code>.
@@ -14530,8 +15280,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUBaseChannelViewController")
 - (void)viewWillAppear:(BOOL)animated;
 - (void)viewWillDisappear:(BOOL)animated;
 - (void)loadView;
-- (void)setupAutolayout;
-- (void)setupStyles;
 - (void)updateStyles;
 /// This function sets the user profile tap gesture handling.
 /// If you do not want to use the user profile function, override this function and leave it empty.
@@ -14560,6 +15308,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUBaseChannelViewController")
 /// since:
 /// 1.2.5
 - (void)addGestureHideKeyboard;
+- (void)loadChannelWithChannelUrl:(NSString * _Nullable)channelUrl messageListParams:(SBDMessageListParams * _Nullable)messageListParams;
+/// This is used to check the loading status and control loading indicator.
+/// \param loadingState Set to true when the list is loading.
+///
+/// \param showIndicator If true, the loading indicator is started, and if false, the indicator is stopped.
+///
+- (void)setLoading:(BOOL)loadingState :(BOOL)showIndicator;
 - (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
@@ -14595,6 +15350,13 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit26SBUUserProfileViewDelegate_")
 - (void)scrollViewDidScroll:(UIScrollView * _Nonnull)scrollView;
 @end
 
+
+
+@class UINavigationController;
+
+@interface SBUBaseViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UINavigationControllerDelegate>
+- (void)navigationController:(UINavigationController * _Nonnull)navigationController didShowViewController:(UIViewController * _Nonnull)viewController animated:(BOOL)animated;
+@end
 
 
 /// <code>UITableViewCell</code> for <code>SBDGroupChannel</code> list.
@@ -14971,7 +15733,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUChannelSe
 @class SBDGroupChannelParams;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
-@interface SBUChannelSettingsViewController : UIViewController <UINavigationControllerDelegate>
+@interface SBUChannelSettingsViewController : SBUBaseViewController
 @property (nonatomic, strong) UIView * _Nullable userInfoView;
 @property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
@@ -15035,10 +15797,10 @@ SWIFT_CLASS("_TtC13SendBirdUIKit32SBUChannelSettingsViewController")
 /// since:
 /// 1.2.0
 - (void)showModerationList;
-/// This function actions to pop or dismiss.
+/// If you want to use a custom MessageSearchViewController, override it and implement it.
 /// since:
-/// 1.2.5
-- (void)onClickBack;
+/// 2.1.0
+- (void)showSearch;
 /// This function used to when edit button click.
 /// since:
 /// 1.2.5
@@ -15107,6 +15869,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUChannelTh
 @property (nonatomic, strong) UIColor * _Nonnull channelStateBannerBackgroundColor;
 @end
 
+@class SBUHighlightMessageInfo;
 @class SBDUserMessage;
 @class SBDUserMessageParams;
 @class SBDFileMessageParams;
@@ -15116,7 +15879,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUChannelTh
 @class SBUUnknownMessageCell;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
-@interface SBUChannelViewController : SBUBaseChannelViewController <UINavigationControllerDelegate>
+@interface SBUChannelViewController : SBUBaseChannelViewController
 @property (nonatomic, copy) NSString * _Nullable channelName;
 /// You can use the customized view and a view that inherits <code>SBUNewMessageInfo</code>.
 /// If you use a view that inherits SBUNewMessageInfo, you can change the button and their action.
@@ -15126,6 +15889,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
 @property (nonatomic, strong) UIView * _Nullable channelStateBanner;
 @property (nonatomic, strong) UIView * _Nullable emptyView;
+@property (nonatomic, strong) UIView * _Nullable scrollBottomView;
 @property (nonatomic, strong) SBUChannelTheme * _Nonnull theme;
 @property (nonatomic, readonly, strong) SBUBaseMessageCell * _Nullable adminMessageCell;
 @property (nonatomic, readonly, strong) SBUBaseMessageCell * _Nullable userMessageCell;
@@ -15135,6 +15899,9 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 /// This object is used to import a list of messages, send messages, modify messages, and so on, and is created during initialization.
 @property (nonatomic, readonly, strong) SBDGroupChannel * _Nullable channel;
 @property (nonatomic, readonly, copy) NSString * _Nullable channelUrl;
+@property (nonatomic, strong) SBUHighlightMessageInfo * _Nullable highlightInfo;
+/// To decide whether to use right bar button item or not
+@property (nonatomic) BOOL useRightBarButtonItem;
 /// This object has a list of all success messages synchronized with the server.
 @property (nonatomic, readonly, copy) NSArray<SBDBaseMessage *> * _Nonnull messageList;
 /// This object has a list of all messages.
@@ -15188,6 +15955,16 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 /// \param channelUrl Channel url string
 ///
 - (nonnull instancetype)initWithChannelUrl:(NSString * _Nonnull)channelUrl messageListParams:(SBDMessageListParams * _Nullable)messageListParams OBJC_DESIGNATED_INITIALIZER;
+/// Use this initializer to enter a channel to start from a specific timestamp..
+/// since:
+/// 2.1.0
+/// \param channelUrl Channel’s url
+///
+/// \param startingPoint A starting point timestamp to start the message list from
+///
+/// \param messageListParams <code>SBDMessageListParams</code> object to be used when loading messages.
+///
+- (nonnull instancetype)initWithChannelUrl:(NSString * _Nonnull)channelUrl startingPoint:(int64_t)startingPoint messageListParams:(SBDMessageListParams * _Nullable)messageListParams OBJC_DESIGNATED_INITIALIZER;
 - (void)loadView;
 - (void)setupAutolayout;
 - (void)setupStyles;
@@ -15305,7 +16082,11 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 ///
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
 ///
-- (void)deleteMessagesInListWithMessageIds:(NSArray<NSNumber *> * _Nonnull)messageIds needReload:(BOOL)needReload;
+- (void)deleteMessagesInListWithMessageIds:(NSArray<NSNumber *> * _Nullable)messageIds needReload:(BOOL)needReload;
+/// This functions clears current message lists
+/// since:
+/// 2.1.0
+- (void)clearMessageList;
 /// This functions deletes the resendable messages using the request ids.
 /// since:
 /// 1.2.5
@@ -15434,10 +16215,9 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 /// returns:
 /// Position of a message when grouped
 - (enum MessageGroupPosition)getMessageGroupingPositionWithCurrentIndex:(NSInteger)currentIndex SWIFT_WARN_UNUSED_RESULT;
-/// This function actions to pop or dismiss.
-- (void)onClickBack;
 /// This function shows channel settings.
 - (void)onClickSetting;
+- (void)onClickScrollBottomWithSender:(UIButton * _Nullable)sender;
 /// This function scrolls to bottom.
 /// \param animated Animated
 ///
@@ -15497,15 +16277,15 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (NSString * _Nonnull)generateCellIdentifierBy:(SBDBaseMessage * _Nonnull)message SWIFT_WARN_UNUSED_RESULT;
 @end
 
-
-@interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
-- (void)didSelectDeleteImageWithMessage:(SBDFileMessage * _Nonnull)message;
-@end
-
 @class UIPresentationController;
 
 @interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
 - (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
+@end
+
+
+@interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
+- (void)didSelectDeleteImageWithMessage:(SBDFileMessage * _Nonnull)message;
 @end
 
 
@@ -15605,6 +16385,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull sec
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull secondary500;)
 + (UIColor * _Nonnull)secondary500 SWIFT_WARN_UNUSED_RESULT;
 + (void)setSecondary500:(UIColor * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull background50;)
++ (UIColor * _Nonnull)background50 SWIFT_WARN_UNUSED_RESULT;
++ (void)setBackground50:(UIColor * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull background100;)
 + (UIColor * _Nonnull)background100 SWIFT_WARN_UNUSED_RESULT;
 + (void)setBackground100:(UIColor * _Nonnull)value;
@@ -15656,12 +16439,27 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull ond
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull ondark04;)
 + (UIColor * _Nonnull)ondark04 SWIFT_WARN_UNUSED_RESULT;
 + (void)setOndark04:(UIColor * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull error;)
-+ (UIColor * _Nonnull)error SWIFT_WARN_UNUSED_RESULT;
-+ (void)setError:(UIColor * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull error100;)
++ (UIColor * _Nonnull)error100 SWIFT_WARN_UNUSED_RESULT;
++ (void)setError100:(UIColor * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull error200;)
++ (UIColor * _Nonnull)error200 SWIFT_WARN_UNUSED_RESULT;
++ (void)setError200:(UIColor * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull error300;)
++ (UIColor * _Nonnull)error300 SWIFT_WARN_UNUSED_RESULT;
++ (void)setError300:(UIColor * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull error400;)
++ (UIColor * _Nonnull)error400 SWIFT_WARN_UNUSED_RESULT;
++ (void)setError400:(UIColor * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull error500;)
++ (UIColor * _Nonnull)error500 SWIFT_WARN_UNUSED_RESULT;
++ (void)setError500:(UIColor * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull information;)
 + (UIColor * _Nonnull)information SWIFT_WARN_UNUSED_RESULT;
 + (void)setInformation:(UIColor * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull highlight;)
++ (UIColor * _Nonnull)highlight SWIFT_WARN_UNUSED_RESULT;
++ (void)setHighlight:(UIColor * _Nonnull)value;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
@@ -15677,7 +16475,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUComponent
 + (SBUComponentTheme * _Nonnull)overlay SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
-- (nonnull instancetype)initWithEmptyViewBackgroundColor:(UIColor * _Nonnull)emptyViewBackgroundColor emptyViewStatusFont:(UIFont * _Nonnull)emptyViewStatusFont emptyViewStatusTintColor:(UIColor * _Nonnull)emptyViewStatusTintColor emptyViewRetryButtonTintColor:(UIColor * _Nonnull)emptyViewRetryButtonTintColor emptyViewRetryButtonFont:(UIFont * _Nonnull)emptyViewRetryButtonFont overlayColor:(UIColor * _Nonnull)overlayColor backgroundColor:(UIColor * _Nonnull)backgroundColor highlightedColor:(UIColor * _Nonnull)highlightedColor buttonTextColor:(UIColor * _Nonnull)buttonTextColor separatorColor:(UIColor * _Nonnull)separatorColor shadowColor:(UIColor * _Nonnull)shadowColor closeBarButtonTintColor:(UIColor * _Nonnull)closeBarButtonTintColor alertTitleColor:(UIColor * _Nonnull)alertTitleColor alertTitleFont:(UIFont * _Nonnull)alertTitleFont alertDetailColor:(UIColor * _Nonnull)alertDetailColor alertDetailFont:(UIFont * _Nonnull)alertDetailFont alertPlaceholderColor:(UIColor * _Nonnull)alertPlaceholderColor alertButtonColor:(UIColor * _Nonnull)alertButtonColor alertErrorColor:(UIColor * _Nonnull)alertErrorColor alertButtonFont:(UIFont * _Nonnull)alertButtonFont alertTextFieldBackgroundColor:(UIColor * _Nonnull)alertTextFieldBackgroundColor alertTextFieldTintColor:(UIColor * _Nonnull)alertTextFieldTintColor alertTextFieldFont:(UIFont * _Nonnull)alertTextFieldFont actionSheetTextFont:(UIFont * _Nonnull)actionSheetTextFont actionSheetTextColor:(UIColor * _Nonnull)actionSheetTextColor actionSheetSubTextFont:(UIFont * _Nonnull)actionSheetSubTextFont actionSheetSubTextColor:(UIColor * _Nonnull)actionSheetSubTextColor actionSheetItemColor:(UIColor * _Nonnull)actionSheetItemColor actionSheetErrorColor:(UIColor * _Nonnull)actionSheetErrorColor actionSheetButtonFont:(UIFont * _Nonnull)actionSheetButtonFont newMessageFont:(UIFont * _Nonnull)newMessageFont newMessageTintColor:(UIColor * _Nonnull)newMessageTintColor newMessageBackground:(UIColor * _Nonnull)newMessageBackground newMessageHighlighted:(UIColor * _Nonnull)newMessageHighlighted newMessageButtonTintColor:(UIColor * _Nonnull)newMessageButtonTintColor newMessageButtonBackground:(UIColor * _Nonnull)newMessageButtonBackground newMessageButtonHighlighted:(UIColor * _Nonnull)newMessageButtonHighlighted titleOnlineStateColor:(UIColor * _Nonnull)titleOnlineStateColor titleColor:(UIColor * _Nonnull)titleColor titleFont:(UIFont * _Nonnull)titleFont titleStatusColor:(UIColor * _Nonnull)titleStatusColor titleStatusFont:(UIFont * _Nonnull)titleStatusFont menuTitleFont:(UIFont * _Nonnull)menuTitleFont userPlaceholderBackgroundColor:(UIColor * _Nonnull)userPlaceholderBackgroundColor userPlaceholderTintColor:(UIColor * _Nonnull)userPlaceholderTintColor reactionBoxBackgroundColor:(UIColor * _Nonnull)reactionBoxBackgroundColor reactionBoxBorderLineColor:(UIColor * _Nonnull)reactionBoxBorderLineColor reactionBoxEmojiCountColor:(UIColor * _Nonnull)reactionBoxEmojiCountColor reactionBoxEmojiBackgroundColor:(UIColor * _Nonnull)reactionBoxEmojiBackgroundColor reactionBoxSelectedEmojiBackgroundColor:(UIColor * _Nonnull)reactionBoxSelectedEmojiBackgroundColor reactionBoxEmojiCountFont:(UIFont * _Nonnull)reactionBoxEmojiCountFont emojiCountColor:(UIColor * _Nonnull)emojiCountColor emojiSelectedCountColor:(UIColor * _Nonnull)emojiSelectedCountColor emojiSelectedUnderlineColor:(UIColor * _Nonnull)emojiSelectedUnderlineColor emojiCountFont:(UIFont * _Nonnull)emojiCountFont reactionMenuLineColor:(UIColor * _Nonnull)reactionMenuLineColor emojiListSelectedBackgroundColor:(UIColor * _Nonnull)emojiListSelectedBackgroundColor addReactionTintColor:(UIColor * _Nonnull)addReactionTintColor channelTypeSelectorItemTintColor:(UIColor * _Nonnull)channelTypeSelectorItemTintColor channelTypeSelectorItemTextColor:(UIColor * _Nonnull)channelTypeSelectorItemTextColor channelTypeSelectorItemFont:(UIFont * _Nonnull)channelTypeSelectorItemFont broadcastIconBackgroundColor:(UIColor * _Nonnull)broadcastIconBackgroundColor barItemTintColor:(UIColor * _Nonnull)barItemTintColor OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithEmptyViewBackgroundColor:(UIColor * _Nonnull)emptyViewBackgroundColor emptyViewStatusFont:(UIFont * _Nonnull)emptyViewStatusFont emptyViewStatusTintColor:(UIColor * _Nonnull)emptyViewStatusTintColor emptyViewRetryButtonTintColor:(UIColor * _Nonnull)emptyViewRetryButtonTintColor emptyViewRetryButtonFont:(UIFont * _Nonnull)emptyViewRetryButtonFont overlayColor:(UIColor * _Nonnull)overlayColor backgroundColor:(UIColor * _Nonnull)backgroundColor highlightedColor:(UIColor * _Nonnull)highlightedColor buttonTextColor:(UIColor * _Nonnull)buttonTextColor separatorColor:(UIColor * _Nonnull)separatorColor shadowColor:(UIColor * _Nonnull)shadowColor closeBarButtonTintColor:(UIColor * _Nonnull)closeBarButtonTintColor alertTitleColor:(UIColor * _Nonnull)alertTitleColor alertTitleFont:(UIFont * _Nonnull)alertTitleFont alertDetailColor:(UIColor * _Nonnull)alertDetailColor alertDetailFont:(UIFont * _Nonnull)alertDetailFont alertPlaceholderColor:(UIColor * _Nonnull)alertPlaceholderColor alertButtonColor:(UIColor * _Nonnull)alertButtonColor alertErrorColor:(UIColor * _Nonnull)alertErrorColor alertButtonFont:(UIFont * _Nonnull)alertButtonFont alertTextFieldBackgroundColor:(UIColor * _Nonnull)alertTextFieldBackgroundColor alertTextFieldTintColor:(UIColor * _Nonnull)alertTextFieldTintColor alertTextFieldFont:(UIFont * _Nonnull)alertTextFieldFont actionSheetTextFont:(UIFont * _Nonnull)actionSheetTextFont actionSheetTextColor:(UIColor * _Nonnull)actionSheetTextColor actionSheetSubTextFont:(UIFont * _Nonnull)actionSheetSubTextFont actionSheetSubTextColor:(UIColor * _Nonnull)actionSheetSubTextColor actionSheetItemColor:(UIColor * _Nonnull)actionSheetItemColor actionSheetErrorColor:(UIColor * _Nonnull)actionSheetErrorColor actionSheetButtonFont:(UIFont * _Nonnull)actionSheetButtonFont newMessageFont:(UIFont * _Nonnull)newMessageFont newMessageTintColor:(UIColor * _Nonnull)newMessageTintColor newMessageBackground:(UIColor * _Nonnull)newMessageBackground newMessageHighlighted:(UIColor * _Nonnull)newMessageHighlighted newMessageButtonTintColor:(UIColor * _Nonnull)newMessageButtonTintColor newMessageButtonBackground:(UIColor * _Nonnull)newMessageButtonBackground newMessageButtonHighlighted:(UIColor * _Nonnull)newMessageButtonHighlighted scrollBottomButtonIconColor:(UIColor * _Nonnull)scrollBottomButtonIconColor scrollBottomButtonBackground:(UIColor * _Nonnull)scrollBottomButtonBackground scrollBottomButtonHighlighted:(UIColor * _Nonnull)scrollBottomButtonHighlighted titleOnlineStateColor:(UIColor * _Nonnull)titleOnlineStateColor titleColor:(UIColor * _Nonnull)titleColor titleFont:(UIFont * _Nonnull)titleFont titleStatusColor:(UIColor * _Nonnull)titleStatusColor titleStatusFont:(UIFont * _Nonnull)titleStatusFont menuTitleFont:(UIFont * _Nonnull)menuTitleFont userPlaceholderBackgroundColor:(UIColor * _Nonnull)userPlaceholderBackgroundColor userPlaceholderTintColor:(UIColor * _Nonnull)userPlaceholderTintColor reactionBoxBackgroundColor:(UIColor * _Nonnull)reactionBoxBackgroundColor reactionBoxBorderLineColor:(UIColor * _Nonnull)reactionBoxBorderLineColor reactionBoxEmojiCountColor:(UIColor * _Nonnull)reactionBoxEmojiCountColor reactionBoxEmojiBackgroundColor:(UIColor * _Nonnull)reactionBoxEmojiBackgroundColor reactionBoxSelectedEmojiBackgroundColor:(UIColor * _Nonnull)reactionBoxSelectedEmojiBackgroundColor reactionBoxEmojiCountFont:(UIFont * _Nonnull)reactionBoxEmojiCountFont emojiCountColor:(UIColor * _Nonnull)emojiCountColor emojiSelectedCountColor:(UIColor * _Nonnull)emojiSelectedCountColor emojiSelectedUnderlineColor:(UIColor * _Nonnull)emojiSelectedUnderlineColor emojiCountFont:(UIFont * _Nonnull)emojiCountFont reactionMenuLineColor:(UIColor * _Nonnull)reactionMenuLineColor emojiListSelectedBackgroundColor:(UIColor * _Nonnull)emojiListSelectedBackgroundColor addReactionTintColor:(UIColor * _Nonnull)addReactionTintColor channelTypeSelectorItemTintColor:(UIColor * _Nonnull)channelTypeSelectorItemTintColor channelTypeSelectorItemTextColor:(UIColor * _Nonnull)channelTypeSelectorItemTextColor channelTypeSelectorItemFont:(UIFont * _Nonnull)channelTypeSelectorItemFont broadcastIconBackgroundColor:(UIColor * _Nonnull)broadcastIconBackgroundColor broadcastIconTintColor:(UIColor * _Nonnull)broadcastIconTintColor barItemTintColor:(UIColor * _Nonnull)barItemTintColor loadingBackgroundColor:(UIColor * _Nonnull)loadingBackgroundColor loadingPopupBackgroundColor:(UIColor * _Nonnull)loadingPopupBackgroundColor loadingFont:(UIFont * _Nonnull)loadingFont loadingTextColor:(UIColor * _Nonnull)loadingTextColor loadingSpinnerColor:(UIColor * _Nonnull)loadingSpinnerColor OBJC_DESIGNATED_INITIALIZER;
 @property (nonatomic, strong) UIColor * _Nonnull emptyViewBackgroundColor;
 @property (nonatomic, strong) UIFont * _Nonnull emptyViewStatusFont;
 @property (nonatomic, strong) UIColor * _Nonnull emptyViewStatusTintColor;
@@ -15708,6 +16506,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUComponent
 @property (nonatomic, strong) UIColor * _Nonnull newMessageButtonTintColor;
 @property (nonatomic, strong) UIColor * _Nonnull newMessageButtonBackground;
 @property (nonatomic, strong) UIColor * _Nonnull newMessageButtonHighlighted;
+@property (nonatomic, strong) UIColor * _Nonnull scrollBottomButtonIconColor;
+@property (nonatomic, strong) UIColor * _Nonnull scrollBottomButtonBackground;
+@property (nonatomic, strong) UIColor * _Nonnull scrollBottomButtonHighlighted;
 @property (nonatomic, strong) UIColor * _Nonnull titleOnlineStateColor;
 @property (nonatomic, strong) UIColor * _Nonnull titleColor;
 @property (nonatomic, strong) UIFont * _Nonnull titleFont;
@@ -15740,7 +16541,13 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUComponent
 @property (nonatomic, strong) UIColor * _Nonnull channelTypeSelectorItemTextColor;
 @property (nonatomic, strong) UIFont * _Nonnull channelTypeSelectorItemFont;
 @property (nonatomic, strong) UIColor * _Nonnull broadcastIconBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull broadcastIconTintColor;
 @property (nonatomic, strong) UIColor * _Nonnull barItemTintColor;
+@property (nonatomic, strong) UIColor * _Nonnull loadingBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull loadingPopupBackgroundColor;
+@property (nonatomic, strong) UIFont * _Nonnull loadingFont;
+@property (nonatomic, strong) UIColor * _Nonnull loadingTextColor;
+@property (nonatomic, strong) UIColor * _Nonnull loadingSpinnerColor;
 @end
 
 @class UIStackView;
@@ -15761,7 +16568,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit25SBUContentBaseMessageCell")
 - (void)setupAutolayout;
 - (void)setupActions;
 - (void)setupStyles;
-- (void)configure:(SBDBaseMessage * _Nonnull)message hideDateView:(BOOL)hideDateView position:(enum MessagePosition)position groupPosition:(enum MessageGroupPosition)groupPosition receiptState:(enum SBUMessageReceiptState)receiptState;
 - (void)setMessageGrouping;
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated;
 - (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nullable)sender;
@@ -15795,7 +16601,7 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit36SBUCreateChannelTypeSelectorProtocol_")
 @class SBDApplicationUserListQuery;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
-@interface SBUCreateChannelViewController : UIViewController <UINavigationControllerDelegate>
+@interface SBUCreateChannelViewController : SBUBaseViewController
 @property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
@@ -15870,10 +16676,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 /// \param state If state is <code>true</code>, start loading indicator.
 ///
 - (void)showLoadingWithState:(BOOL)state;
-/// This function actions to pop or dismiss.
-/// since:
-/// 1.2.5
-- (void)onClickBack;
 /// This function calls <code>createChannel:</code> function using the <code>selectedUserList</code>.
 /// since:
 /// 1.2.5
@@ -15962,8 +16764,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUFileMessageCell")
 - (void)setupAutolayout;
 - (void)setupActions;
 - (void)setupStyles;
-- (void)prepareForReuse;
-- (void)configure:(SBDFileMessage * _Nonnull)message hideDateView:(BOOL)hideDateView groupPosition:(enum MessageGroupPosition)groupPosition receiptState:(enum SBUMessageReceiptState)receiptState;
+- (void)configureWithHighlightInfo:(SBUHighlightMessageInfo * _Nullable)highlightInfo;
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated;
 - (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
@@ -15972,31 +16773,31 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUFileMessageCell")
 
 SWIFT_CLASS("_TtC13SendBirdUIKit10SBUFontSet")
 @interface SBUFontSet : NSObject
-/// Medium, 18pt
+/// Bold, 18pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull h1;)
 + (UIFont * _Nonnull)h1 SWIFT_WARN_UNUSED_RESULT;
 + (void)setH1:(UIFont * _Nonnull)value;
-/// Bold, 16pt
+/// Medium, 18pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull h2;)
 + (UIFont * _Nonnull)h2 SWIFT_WARN_UNUSED_RESULT;
 + (void)setH2:(UIFont * _Nonnull)value;
-/// Bold, 18pt
+/// Bold, 16pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull h3;)
 + (UIFont * _Nonnull)h3 SWIFT_WARN_UNUSED_RESULT;
 + (void)setH3:(UIFont * _Nonnull)value;
-/// Regular, 14pt, Line height: 20pt
+/// Regular, 16pt, Line height: 20pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull body1;)
 + (UIFont * _Nonnull)body1 SWIFT_WARN_UNUSED_RESULT;
 + (void)setBody1:(UIFont * _Nonnull)value;
-/// Regular, 14pt, Line height: 16pt
+/// Semibold, 14pt, Line height: 16pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull body2;)
 + (UIFont * _Nonnull)body2 SWIFT_WARN_UNUSED_RESULT;
 + (void)setBody2:(UIFont * _Nonnull)value;
-/// Semibold, 14pt, Line height: 16pt
+/// Regular, 14pt, Line height: 16pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull body3;)
 + (UIFont * _Nonnull)body3 SWIFT_WARN_UNUSED_RESULT;
 + (void)setBody3:(UIFont * _Nonnull)value;
-/// Semibold, 20pt
+/// Semibold, 18pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull button1;)
 + (UIFont * _Nonnull)button1 SWIFT_WARN_UNUSED_RESULT;
 + (void)setButton1:(UIFont * _Nonnull)value;
@@ -16016,11 +16817,11 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull capt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull caption2;)
 + (UIFont * _Nonnull)caption2 SWIFT_WARN_UNUSED_RESULT;
 + (void)setCaption2:(UIFont * _Nonnull)value;
-/// Regular, 11pt
+/// Medium, 11pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull caption3;)
 + (UIFont * _Nonnull)caption3 SWIFT_WARN_UNUSED_RESULT;
 + (void)setCaption3:(UIFont * _Nonnull)value;
-/// Bold, 11pt
+/// Regular, 11pt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIFont * _Nonnull caption4;)
 + (UIFont * _Nonnull)caption4 SWIFT_WARN_UNUSED_RESULT;
 + (void)setCaption4:(UIFont * _Nonnull)value;
@@ -16208,44 +17009,48 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class) CGSize imageResizingSize;)
 @end
 
 
+SWIFT_CLASS("_TtC13SendBirdUIKit23SBUHighlightMessageInfo")
+@interface SBUHighlightMessageInfo : NSObject
+@property (nonatomic, readonly) int64_t messageId;
+@property (nonatomic, readonly) int64_t updatedAt;
+- (nonnull instancetype)initWithMessageId:(int64_t)messageId updatedAt:(int64_t)updatedAt OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+
 SWIFT_CLASS("_TtC13SendBirdUIKit10SBUIconSet")
 @interface SBUIconSet : NSObject
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconActionLeave;)
-+ (UIImage * _Nonnull)iconActionLeave SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconActionLeave:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconActionNotificationOn;)
-+ (UIImage * _Nonnull)iconActionNotificationOn SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconActionNotificationOn:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconActionNotificationOff;)
-+ (UIImage * _Nonnull)iconActionNotificationOff SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconActionNotificationOff:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconAdd;)
 + (UIImage * _Nonnull)iconAdd SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconAdd:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconBack;)
 + (UIImage * _Nonnull)iconBack SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconBack:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconBan;)
++ (UIImage * _Nonnull)iconBan SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconBan:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconBroadcast;)
++ (UIImage * _Nonnull)iconBroadcast SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconBroadcast:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconCamera;)
 + (UIImage * _Nonnull)iconCamera SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconCamera:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconPlus;)
-+ (UIImage * _Nonnull)iconPlus SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconPlus:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconChat;)
 + (UIImage * _Nonnull)iconChat SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconChat:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconChatHide;)
-+ (UIImage * _Nonnull)iconChatHide SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconChatHide:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconChatShow;)
-+ (UIImage * _Nonnull)iconChatShow SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconChatShow:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconCheckbox;)
-+ (UIImage * _Nonnull)iconCheckbox SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconCheckbox:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconCheckboxOff;)
-+ (UIImage * _Nonnull)iconCheckboxOff SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconCheckboxOff:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconCheckboxChecked;)
++ (UIImage * _Nonnull)iconCheckboxChecked SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconCheckboxChecked:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconCheckboxUnchecked;)
++ (UIImage * _Nonnull)iconCheckboxUnchecked SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconCheckboxUnchecked:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconChevronDown;)
++ (UIImage * _Nonnull)iconChevronDown SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconChevronDown:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconChevronRight;)
++ (UIImage * _Nonnull)iconChevronRight SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconChevronRight:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconClose;)
 + (UIImage * _Nonnull)iconClose SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconClose:(UIImage * _Nonnull)value;
@@ -16258,27 +17063,36 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull ico
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconDelete;)
 + (UIImage * _Nonnull)iconDelete SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconDelete:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconDelivered;)
-+ (UIImage * _Nonnull)iconDelivered SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconDelivered:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconDocument;)
 + (UIImage * _Nonnull)iconDocument SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconDocument:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconDone;)
++ (UIImage * _Nonnull)iconDone SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconDone:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconDoneAll;)
++ (UIImage * _Nonnull)iconDoneAll SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconDoneAll:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconDownload;)
 + (UIImage * _Nonnull)iconDownload SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconDownload:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconDummy;)
-+ (UIImage * _Nonnull)iconDummy SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconDummy:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconEdit;)
 + (UIImage * _Nonnull)iconEdit SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconEdit:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconEmojiMore;)
++ (UIImage * _Nonnull)iconEmojiMore SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconEmojiMore:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconError;)
 + (UIImage * _Nonnull)iconError SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconError:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconErrorFilled;)
-+ (UIImage * _Nonnull)iconErrorFilled SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconErrorFilled:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconFileAudio;)
++ (UIImage * _Nonnull)iconFileAudio SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconFileAudio:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconFileDocument;)
++ (UIImage * _Nonnull)iconFileDocument SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconFileDocument:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconFreeze;)
++ (UIImage * _Nonnull)iconFreeze SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconFreeze:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconGif;)
 + (UIImage * _Nonnull)iconGif SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconGif:(UIImage * _Nonnull)value;
@@ -16291,140 +17105,77 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull ico
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconMembers;)
 + (UIImage * _Nonnull)iconMembers SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconMembers:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconMessage;)
++ (UIImage * _Nonnull)iconMessage SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconMessage:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconModerations;)
 + (UIImage * _Nonnull)iconModerations SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconModerations:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconSupergroup;)
-+ (UIImage * _Nonnull)iconSupergroup SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconSupergroup:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconBroadcastSmall;)
-+ (UIImage * _Nonnull)iconBroadcastSmall SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconBroadcastSmall:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconBroadcastMedium;)
-+ (UIImage * _Nonnull)iconBroadcastMedium SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconBroadcastMedium:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconBroadcastLarge;)
-+ (UIImage * _Nonnull)iconBroadcastLarge SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconBroadcastLarge:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconFreeze;)
-+ (UIImage * _Nonnull)iconFreeze SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconFreeze:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconMore;)
++ (UIImage * _Nonnull)iconMore SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconMore:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconMute;)
 + (UIImage * _Nonnull)iconMute SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconMute:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconNotificationFilled;)
++ (UIImage * _Nonnull)iconNotificationFilled SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconNotificationFilled:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconNotificationOffFilled;)
++ (UIImage * _Nonnull)iconNotificationOffFilled SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconNotificationOffFilled:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconNotifications;)
 + (UIImage * _Nonnull)iconNotifications SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconNotifications:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconThumbnailLight;)
-+ (UIImage * _Nonnull)iconThumbnailLight SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconThumbnailLight:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconNoThumbnailLight;)
-+ (UIImage * _Nonnull)iconNoThumbnailLight SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconNoThumbnailLight:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconOperator;)
++ (UIImage * _Nonnull)iconOperator SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconOperator:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconPhoto;)
 + (UIImage * _Nonnull)iconPhoto SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconPhoto:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconPlay;)
 + (UIImage * _Nonnull)iconPlay SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconPlay:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconRead;)
-+ (UIImage * _Nonnull)iconRead SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconRead:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconPlus;)
++ (UIImage * _Nonnull)iconPlus SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconPlus:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconQuestion;)
++ (UIImage * _Nonnull)iconQuestion SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconQuestion:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconRefresh;)
 + (UIImage * _Nonnull)iconRefresh SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconRefresh:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconAvatarLight;)
-+ (UIImage * _Nonnull)iconAvatarLight SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconAvatarLight:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconRemove;)
++ (UIImage * _Nonnull)iconRemove SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconRemove:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconSearch;)
++ (UIImage * _Nonnull)iconSearch SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconSearch:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconSend;)
 + (UIImage * _Nonnull)iconSend SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconSend:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconSent;)
-+ (UIImage * _Nonnull)iconSent SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconSent:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconFailed;)
-+ (UIImage * _Nonnull)iconFailed SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconFailed:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconShevronRight;)
-+ (UIImage * _Nonnull)iconShevronRight SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconShevronRight:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconSpinner;)
++ (UIImage * _Nonnull)iconSpinner SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconSpinner:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconSupergroup;)
++ (UIImage * _Nonnull)iconSupergroup SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconSupergroup:(UIImage * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconThumbnailNone;)
++ (UIImage * _Nonnull)iconThumbnailNone SWIFT_WARN_UNUSED_RESULT;
++ (void)setIconThumbnailNone:(UIImage * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconUser;)
 + (UIImage * _Nonnull)iconUser SWIFT_WARN_UNUSED_RESULT;
 + (void)setIconUser:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconSpinnerSmall;)
-+ (UIImage * _Nonnull)iconSpinnerSmall SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconSpinnerSmall:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconSpinnerLarge;)
-+ (UIImage * _Nonnull)iconSpinnerLarge SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconSpinnerLarge:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconFileDocument;)
-+ (UIImage * _Nonnull)iconFileDocument SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconFileDocument:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconFileAudio;)
-+ (UIImage * _Nonnull)iconFileAudio SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconFileAudio:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconChevronDown;)
-+ (UIImage * _Nonnull)iconChevronDown SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconChevronDown:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconMore;)
-+ (UIImage * _Nonnull)iconMore SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconMore:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconOperator;)
-+ (UIImage * _Nonnull)iconOperator SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconOperator:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconMuted;)
-+ (UIImage * _Nonnull)iconMuted SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconMuted:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconBanned;)
-+ (UIImage * _Nonnull)iconBanned SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconBanned:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull iconMessage;)
-+ (UIImage * _Nonnull)iconMessage SWIFT_WARN_UNUSED_RESULT;
-+ (void)setIconMessage:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull channelTypeGroup;)
-+ (UIImage * _Nonnull)channelTypeGroup SWIFT_WARN_UNUSED_RESULT;
-+ (void)setChannelTypeGroup:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull channelTypeSupergroup;)
-+ (UIImage * _Nonnull)channelTypeSupergroup SWIFT_WARN_UNUSED_RESULT;
-+ (void)setChannelTypeSupergroup:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull channelTypeBroadcast;)
-+ (UIImage * _Nonnull)channelTypeBroadcast SWIFT_WARN_UNUSED_RESULT;
-+ (void)setChannelTypeBroadcast:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiHeartEyes;)
-+ (UIImage * _Nonnull)emojiHeartEyes SWIFT_WARN_UNUSED_RESULT;
-+ (void)setEmojiHeartEyes:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiLaughing;)
-+ (UIImage * _Nonnull)emojiLaughing SWIFT_WARN_UNUSED_RESULT;
-+ (void)setEmojiLaughing:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiSweatSmile;)
-+ (UIImage * _Nonnull)emojiSweatSmile SWIFT_WARN_UNUSED_RESULT;
-+ (void)setEmojiSweatSmile:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiSob;)
-+ (UIImage * _Nonnull)emojiSob SWIFT_WARN_UNUSED_RESULT;
-+ (void)setEmojiSob:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiRage;)
-+ (UIImage * _Nonnull)emojiRage SWIFT_WARN_UNUSED_RESULT;
-+ (void)setEmojiRage:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiMoreLarge;)
-+ (UIImage * _Nonnull)emojiMoreLarge SWIFT_WARN_UNUSED_RESULT;
-+ (void)setEmojiMoreLarge:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiThumbsup;)
-+ (UIImage * _Nonnull)emojiThumbsup SWIFT_WARN_UNUSED_RESULT;
-+ (void)setEmojiThumbsup:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiThubsdown;)
-+ (UIImage * _Nonnull)emojiThubsdown SWIFT_WARN_UNUSED_RESULT;
-+ (void)setEmojiThubsdown:(UIImage * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull emojiFail;)
-+ (UIImage * _Nonnull)emojiFail SWIFT_WARN_UNUSED_RESULT;
-+ (void)setEmojiFail:(UIImage * _Nonnull)value;
+/// Restore all customized icons to SDK’s default icons.
+/// since:
+/// 2.1.0
++ (void)restoreDefaultIcons;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
-
 
 @class SBDGroupChannelMemberListQuery;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
-@interface SBUInviteUserViewController : UIViewController
+@interface SBUInviteUserViewController : SBUBaseViewController
 @property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
@@ -16534,10 +17285,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 /// since:
 /// 1.2.5
 - (void)reloadData;
-/// This function actions to pop or dismiss.
-/// since:
-/// 1.2.5
-- (void)onClickBack;
 /// This function calls <code>inviteUsers</code> or <code>promoteToOperators</code> functions with <code>inviteListType</code>.
 /// since:
 /// 1.2.5
@@ -16639,6 +17386,9 @@ SWIFT_CLASS("_TtC13SendBirdUIKit7SBUMain")
 + (void)unregisterAllPushTokenWithCompletionHandler:(void (^ _Nonnull)(BOOL))completionHandler;
 + (void)openChannelWithChannelUrl:(NSString * _Nonnull)channelUrl basedOnChannelList:(BOOL)basedOnChannelList messageListParams:(SBDMessageListParams * _Nullable)messageListParams SWIFT_DEPRECATED_MSG("deprecated in 1.2.2", "moveToChannel(channelUrl:basedOnChannelList:messageListParams:)");
 /// This is a function that moves the channel that can be called anywhere.
+/// If you wish to open an open channel view controller, or any class that subclasses <code>SBUOpenChannelViewController</code>,
+/// you must guarentee that a channel list’s view controller, subclass of <code>SBUBaseChannelListViewController</code>,
+/// is present within the <code>UINavigationController.viewControllers</code> if you set the <code>basedOnChannelList</code> to <code>true</code>.
 /// since:
 /// 1.2.2
 /// \param channelUrl channel url for use in channel.
@@ -16687,7 +17437,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit7SBUMain")
 @class SBDParticipantListQuery;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
-@interface SBUMemberListViewController : UIViewController
+@interface SBUMemberListViewController : SBUBaseViewController
 @property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
@@ -16840,10 +17590,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 /// since:
 /// 1.2.5
 - (void)reloadData;
-/// This function actions to pop or dismiss.
-/// since:
-/// 1.2.5
-- (void)onClickBack;
 /// This function shows inviteChannelViewController.
 - (void)onClickInviteUser;
 /// This function sets the cell’s more menu button action handling. (GroupChannel only)
@@ -16907,12 +17653,14 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageCe
 + (SBUMessageCellTheme * _Nonnull)overlay SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
-- (nonnull instancetype)initWithBackgroundColor:(UIColor * _Nonnull)backgroundColor leftBackgroundColor:(UIColor * _Nonnull)leftBackgroundColor leftPressedBackgroundColor:(UIColor * _Nonnull)leftPressedBackgroundColor rightBackgroundColor:(UIColor * _Nonnull)rightBackgroundColor rightPressedBackgroundColor:(UIColor * _Nonnull)rightPressedBackgroundColor dateFont:(UIFont * _Nonnull)dateFont dateTextColor:(UIColor * _Nonnull)dateTextColor dateBackgroundColor:(UIColor * _Nonnull)dateBackgroundColor userPlaceholderBackgroundColor:(UIColor * _Nonnull)userPlaceholderBackgroundColor userPlaceholderTintColor:(UIColor * _Nonnull)userPlaceholderTintColor userNameFont:(UIFont * _Nonnull)userNameFont userNameTextColor:(UIColor * _Nonnull)userNameTextColor currentUserNameTextColor:(UIColor * _Nonnull)currentUserNameTextColor timeFont:(UIFont * _Nonnull)timeFont timeTextColor:(UIColor * _Nonnull)timeTextColor pendingStateColor:(UIColor * _Nonnull)pendingStateColor failedStateColor:(UIColor * _Nonnull)failedStateColor succeededStateColor:(UIColor * _Nonnull)succeededStateColor readReceiptStateColor:(UIColor * _Nonnull)readReceiptStateColor deliveryReceiptStateColor:(UIColor * _Nonnull)deliveryReceiptStateColor userMessageFont:(UIFont * _Nonnull)userMessageFont userMessageLeftTextColor:(UIColor * _Nonnull)userMessageLeftTextColor userMessageLeftEditTextColor:(UIColor * _Nonnull)userMessageLeftEditTextColor userMessageRightTextColor:(UIColor * _Nonnull)userMessageRightTextColor userMessageRightEditTextColor:(UIColor * _Nonnull)userMessageRightEditTextColor fileIconBackgroundColor:(UIColor * _Nonnull)fileIconBackgroundColor fileIconColor:(UIColor * _Nonnull)fileIconColor fileMessageNameFont:(UIFont * _Nonnull)fileMessageNameFont fileMessageLeftTextColor:(UIColor * _Nonnull)fileMessageLeftTextColor fileMessageRightTextColor:(UIColor * _Nonnull)fileMessageRightTextColor fileMessagePlaceholderColor:(UIColor * _Nonnull)fileMessagePlaceholderColor adminMessageFont:(UIFont * _Nonnull)adminMessageFont adminMessageTextColor:(UIColor * _Nonnull)adminMessageTextColor unknownMessageDescFont:(UIFont * _Nonnull)unknownMessageDescFont unknownMessageDescTextColor:(UIColor * _Nonnull)unknownMessageDescTextColor ogTitleFont:(UIFont * _Nonnull)ogTitleFont ogTitleColor:(UIColor * _Nonnull)ogTitleColor ogDescriptionFont:(UIFont * _Nonnull)ogDescriptionFont ogDescriptionColor:(UIColor * _Nonnull)ogDescriptionColor ogURLAddressFont:(UIFont * _Nonnull)ogURLAddressFont ogURLAddressColor:(UIColor * _Nonnull)ogURLAddressColor linkColor:(UIColor * _Nonnull)linkColor contentBackgroundColor:(UIColor * _Nonnull)contentBackgroundColor pressedContentBackgroundColor:(UIColor * _Nonnull)pressedContentBackgroundColor OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithBackgroundColor:(UIColor * _Nonnull)backgroundColor leftBackgroundColor:(UIColor * _Nonnull)leftBackgroundColor leftPressedBackgroundColor:(UIColor * _Nonnull)leftPressedBackgroundColor rightBackgroundColor:(UIColor * _Nonnull)rightBackgroundColor rightPressedBackgroundColor:(UIColor * _Nonnull)rightPressedBackgroundColor openChannelBackgroundColor:(UIColor * _Nonnull)openChannelBackgroundColor openChannelPressedBackgroundColor:(UIColor * _Nonnull)openChannelPressedBackgroundColor dateFont:(UIFont * _Nonnull)dateFont dateTextColor:(UIColor * _Nonnull)dateTextColor dateBackgroundColor:(UIColor * _Nonnull)dateBackgroundColor userPlaceholderBackgroundColor:(UIColor * _Nonnull)userPlaceholderBackgroundColor userPlaceholderTintColor:(UIColor * _Nonnull)userPlaceholderTintColor userNameFont:(UIFont * _Nonnull)userNameFont userNameTextColor:(UIColor * _Nonnull)userNameTextColor currentUserNameTextColor:(UIColor * _Nonnull)currentUserNameTextColor timeFont:(UIFont * _Nonnull)timeFont timeTextColor:(UIColor * _Nonnull)timeTextColor pendingStateColor:(UIColor * _Nonnull)pendingStateColor failedStateColor:(UIColor * _Nonnull)failedStateColor succeededStateColor:(UIColor * _Nonnull)succeededStateColor readReceiptStateColor:(UIColor * _Nonnull)readReceiptStateColor deliveryReceiptStateColor:(UIColor * _Nonnull)deliveryReceiptStateColor userMessageFont:(UIFont * _Nonnull)userMessageFont userMessageLeftTextColor:(UIColor * _Nonnull)userMessageLeftTextColor userMessageLeftEditTextColor:(UIColor * _Nonnull)userMessageLeftEditTextColor userMessageLeftHighlightTextColor:(UIColor * _Nonnull)userMessageLeftHighlightTextColor userMessageRightTextColor:(UIColor * _Nonnull)userMessageRightTextColor userMessageRightEditTextColor:(UIColor * _Nonnull)userMessageRightEditTextColor userMessageRightHighlightTextColor:(UIColor * _Nonnull)userMessageRightHighlightTextColor fileIconBackgroundColor:(UIColor * _Nonnull)fileIconBackgroundColor fileImageBackgroundColor:(UIColor * _Nonnull)fileImageBackgroundColor fileImageIconColor:(UIColor * _Nonnull)fileImageIconColor fileIconColor:(UIColor * _Nonnull)fileIconColor fileMessageNameFont:(UIFont * _Nonnull)fileMessageNameFont fileMessageLeftTextColor:(UIColor * _Nonnull)fileMessageLeftTextColor fileMessageRightTextColor:(UIColor * _Nonnull)fileMessageRightTextColor fileMessagePlaceholderColor:(UIColor * _Nonnull)fileMessagePlaceholderColor adminMessageFont:(UIFont * _Nonnull)adminMessageFont adminMessageTextColor:(UIColor * _Nonnull)adminMessageTextColor unknownMessageDescFont:(UIFont * _Nonnull)unknownMessageDescFont unknownMessageDescTextColor:(UIColor * _Nonnull)unknownMessageDescTextColor ogTitleFont:(UIFont * _Nonnull)ogTitleFont ogTitleColor:(UIColor * _Nonnull)ogTitleColor ogDescriptionFont:(UIFont * _Nonnull)ogDescriptionFont ogDescriptionColor:(UIColor * _Nonnull)ogDescriptionColor ogURLAddressFont:(UIFont * _Nonnull)ogURLAddressFont ogURLAddressColor:(UIColor * _Nonnull)ogURLAddressColor linkColor:(UIColor * _Nonnull)linkColor contentBackgroundColor:(UIColor * _Nonnull)contentBackgroundColor pressedContentBackgroundColor:(UIColor * _Nonnull)pressedContentBackgroundColor OBJC_DESIGNATED_INITIALIZER;
 @property (nonatomic, strong) UIColor * _Nonnull backgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull leftBackgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull leftPressedBackgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull rightBackgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull rightPressedBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull openChannelBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull openChannelPressedBackgroundColor;
 @property (nonatomic, strong) UIFont * _Nonnull dateFont;
 @property (nonatomic, strong) UIColor * _Nonnull dateTextColor;
 @property (nonatomic, strong) UIColor * _Nonnull dateBackgroundColor;
@@ -16937,6 +17685,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageCe
 @property (nonatomic, strong) UIColor * _Nonnull userMessageRightEditTextColor;
 @property (nonatomic, strong) UIColor * _Nonnull fileIconBackgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull fileIconColor;
+@property (nonatomic, strong) UIColor * _Nonnull fileImageBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull fileImageIconColor;
 @property (nonatomic, strong) UIFont * _Nonnull fileMessageNameFont;
 @property (nonatomic, strong) UIColor * _Nonnull fileMessageLeftTextColor;
 @property (nonatomic, strong) UIColor * _Nonnull fileMessageRightTextColor;
@@ -16945,6 +17695,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageCe
 @property (nonatomic, strong) UIColor * _Nonnull adminMessageTextColor;
 @property (nonatomic, strong) UIFont * _Nonnull unknownMessageDescFont;
 @property (nonatomic, strong) UIColor * _Nonnull unknownMessageDescTextColor;
+@property (nonatomic, strong) UIColor * _Nonnull messageLeftHighlightTextColor;
+@property (nonatomic, strong) UIColor * _Nonnull messageRightHighlightTextColor;
 @property (nonatomic, strong) UIFont * _Nonnull ogTitleFont;
 @property (nonatomic, strong) UIColor * _Nonnull ogTitleColor;
 @property (nonatomic, strong) UIFont * _Nonnull ogDescriptionFont;
@@ -17011,6 +17763,8 @@ SWIFT_CLASS("_TtC13SendBirdUIKit19SBUMessageInputView")
 /// \param isMuted <code>true</code> is muted mode, <code>false</code> is unmuted mode
 ///
 - (void)setMutedModeState:(BOOL)isMuted;
+/// Sets error state. Disable all
+- (void)setErrorState;
 - (void)endTypingMode;
 - (void)updateTextViewHeight;
 - (void)onClickAddButton:(id _Nonnull)sender;
@@ -17032,10 +17786,181 @@ typedef SWIFT_ENUM(NSInteger, SBUMessageReceiptState, open) {
   SBUMessageReceiptStateDeliveryReceipt = 2,
 };
 
+@class SBUMessageSearchResultCellTheme;
+
+SWIFT_CLASS("_TtC13SendBirdUIKit26SBUMessageSearchResultCell")
+@interface SBUMessageSearchResultCell : UITableViewCell
+@property (nonatomic, readonly, strong) SBUCoverImageView * _Nonnull coverImage;
+@property (nonatomic, readonly, strong) UILabel * _Nonnull titleLabel;
+@property (nonatomic, readonly, strong) UILabel * _Nonnull messageLabel;
+@property (nonatomic, readonly, strong) UILabel * _Nonnull fileMessageLabel;
+@property (nonatomic, readonly, strong) UIImageView * _Nonnull fileMessageIcon;
+@property (nonatomic, readonly, strong) UIStackView * _Nonnull fileStackView;
+@property (nonatomic, readonly, strong) UILabel * _Nonnull createdAtLabel;
+@property (nonatomic, readonly, strong) UIView * _Nonnull separatorLine;
+@property (nonatomic, strong) SBUMessageSearchResultCellTheme * _Nonnull theme;
+- (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
+- (void)awakeFromNib;
+/// This function handles the initialization of views.
+- (void)setupViews;
+/// This function handles the initialization of actions.
+- (void)setupActions;
+/// This function handles the initialization of autolayouts.
+- (void)setupAutolayout;
+/// This function handles the initialization of styles.
+- (void)setupStyles;
+- (void)layoutSubviews;
+/// This function configure a cell using <code>SBDBaseMessage</code> information.
+/// \param channel <code>SBDBaseMessage</code> object
+///
+- (void)configureWithMessage:(SBDBaseMessage * _Nonnull)message;
+/// Sets file message icon depending on the message’s file type using <code>SBUUtils.getFileType(by: fileMessage)</code>.
+- (void)setupFileIcon;
+@end
+
+
+SWIFT_CLASS("_TtC13SendBirdUIKit31SBUMessageSearchResultCellTheme")
+@interface SBUMessageSearchResultCellTheme : NSObject
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageSearchResultCellTheme * _Nonnull light;)
++ (SBUMessageSearchResultCellTheme * _Nonnull)light SWIFT_WARN_UNUSED_RESULT;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageSearchResultCellTheme * _Nonnull dark;)
++ (SBUMessageSearchResultCellTheme * _Nonnull)dark SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, strong) UIColor * _Nonnull backgroundColor;
+@property (nonatomic, strong) UIFont * _Nonnull titleFont;
+@property (nonatomic, strong) UIColor * _Nonnull titleTextColor;
+@property (nonatomic, strong) UIFont * _Nonnull descriptionFont;
+@property (nonatomic, strong) UIColor * _Nonnull descriptionTextColor;
+@property (nonatomic, strong) UIFont * _Nonnull updatedAtFont;
+@property (nonatomic, strong) UIColor * _Nonnull updatedAtTextColor;
+@property (nonatomic, strong) UIFont * _Nonnull fileMessageFont;
+@property (nonatomic, strong) UIColor * _Nonnull fileMessageTextColor;
+@property (nonatomic, strong) UIColor * _Nonnull fileMessageIconBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull fileMessageIconTintColor;
+@property (nonatomic, strong) UIColor * _Nonnull separatorLineColor;
+- (nonnull instancetype)initWithBackgroundColor:(UIColor * _Nonnull)backgroundColor titleFont:(UIFont * _Nonnull)titleFont titleTextColor:(UIColor * _Nonnull)titleTextColor descriptionFont:(UIFont * _Nonnull)descriptionFont descriptionTextColor:(UIColor * _Nonnull)descriptionTextColor updatedAtFont:(UIFont * _Nonnull)updatedAtFont updatedAtTextColor:(UIColor * _Nonnull)updatedAtTextColor fileMessageFont:(UIFont * _Nonnull)fileMessageFont fileMessageTextColor:(UIColor * _Nonnull)fileMessageTextColor fileMessageIconBackgroundColor:(UIColor * _Nonnull)fileMessageIconBackgroundColor fileMessageIconTinkColor:(UIColor * _Nonnull)fileMessageIconTinkColor separatorLineColor:(UIColor * _Nonnull)separatorLineColor OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+
+SWIFT_CLASS("_TtC13SendBirdUIKit21SBUMessageSearchTheme")
+@interface SBUMessageSearchTheme : NSObject
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageSearchTheme * _Nonnull light;)
++ (SBUMessageSearchTheme * _Nonnull)light SWIFT_WARN_UNUSED_RESULT;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUMessageSearchTheme * _Nonnull dark;)
++ (SBUMessageSearchTheme * _Nonnull)dark SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic) UIStatusBarStyle statusBarStyle;
+@property (nonatomic) UIBarStyle navigationBarStyle;
+@property (nonatomic, strong) UIColor * _Nonnull navigationBarTintColor;
+@property (nonatomic, strong) UIColor * _Nonnull navigationBarShadowColor;
+@property (nonatomic, strong) UIColor * _Nonnull backgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull searchTextColor;
+@property (nonatomic, strong) UIFont * _Nonnull searchTextFont;
+@property (nonatomic, strong) UIColor * _Nonnull searchTextBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull searchPlaceholderColor;
+@property (nonatomic, strong) UIColor * _Nonnull searchIconTintColor;
+@property (nonatomic, strong) UIColor * _Nonnull clearIconTintColor;
+@property (nonatomic, strong) UIColor * _Nonnull cancelButtonTintColor;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+- (nonnull instancetype)initWithStatusBarStyle:(UIStatusBarStyle)statusBarStyle navigationBarStyle:(UIBarStyle)navigationBarStyle navigationBarTintColor:(UIColor * _Nonnull)navigationBarTintColor navigationBarShadowColor:(UIColor * _Nonnull)navigationBarShadowColor backgroundColor:(UIColor * _Nonnull)backgroundColor searchTextColor:(UIColor * _Nonnull)searchTextColor searchTextFont:(UIFont * _Nonnull)searchTextFont searchTextBackgroundColor:(UIColor * _Nonnull)searchTextBackgroundColor searchPlaceholderColor:(UIColor * _Nonnull)searchPlaceholderColor searchIconTintColor:(UIColor * _Nonnull)searchIconTintColor clearIconTintColor:(UIColor * _Nonnull)clearIconTintColor cancelButtonTintColor:(UIColor * _Nonnull)cancelButtonTintColor OBJC_DESIGNATED_INITIALIZER;
+@end
+
+@class SBDMessageSearchQueryBuilder;
+@class UISearchBar;
+
+/// ViewController handling a message search.
+/// since:
+/// 2.1.0
+SWIFT_CLASS("_TtC13SendBirdUIKit30SBUMessageSearchViewController")
+@interface SBUMessageSearchViewController : SBUBaseViewController
+@property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
+@property (nonatomic, strong) SBUMessageSearchTheme * _Nonnull theme;
+@property (nonatomic, strong) SBDBaseChannel * _Nullable channel;
+/// This param will be used on entering a channel from selecting an item from the search results.
+@property (nonatomic, strong) SBDMessageListParams * _Nullable messageListParams;
+/// You can set custom query params for message search.
+/// <code>keyword</code>, <code>channelUrl</code>, <code>order</code> is reserved in SDK. (The SDK value will override the custom values)
+/// <code>messageFromTs</code> is set to user’s channel joined ts as a default. You can set this value to <code>0</code> to search for all previous messages as well.
+/// <code>limit</code> will be set to default value of <code>defaultSearchLimit</code> in case if it’s set to 0 or smaller value.
+@property (nonatomic, copy) void (^ _Nullable customMessageSearchQueryBuilder)(SBDMessageSearchQueryBuilder * _Nonnull);
+/// Message search result’s cell.
+@property (nonatomic, strong) SBUMessageSearchResultCell * _Nullable messageSearchResultCell;
+@property (nonatomic, readonly, strong) UIView * _Null_unspecified searchBar;
+@property (nonatomic, readonly, strong) UITableView * _Nonnull tableView;
+@property (nonatomic, readonly, strong) UIView * _Nullable emptyView;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUMessageSearchViewController(channel:)'");
+- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUMessageSearchViewController(channel:)'");
+- (nonnull instancetype)initWithChannel:(SBDBaseChannel * _Nonnull)channel OBJC_DESIGNATED_INITIALIZER;
+- (void)viewDidLoad;
+- (void)viewWillAppear:(BOOL)animated;
+- (void)viewWillDisappear:(BOOL)animated;
+- (void)loadView;
+- (void)viewDidLayoutSubviews;
+- (void)didReceiveError:(NSString * _Nullable)message;
+/// Used to register a custom cell as a search result cell based on <code>SBUMessageSearchResultCell</code>.
+/// \param messageSearchResultCell Customized search result cell
+///
+/// \param nib nib information. If the value is nil, the nib file is not used.
+///
+- (void)registerWithMessageSearchResultCell:(SBUMessageSearchResultCell * _Nonnull)messageSearchResultCell nib:(UINib * _Nullable)nib;
+/// Performs keyword search
+/// <ul>
+///   <li>
+///     Parameters: keyword: A keyword to search for.
+///   </li>
+/// </ul>
+///
+/// returns:
+/// A <code>SBDMessageSearchQuery</code> with the params set.
+- (void)searchWithKeyword:(NSString * _Nonnull)keyword;
+/// This is to pop or dismiss (depending on current view controller) the search view controller.
+- (void)onClickBack;
+- (void)setupStyles;
+- (void)setupAutolayout;
+- (void)setupSearchBarStyleWithSearchBar:(UISearchBar * _Nonnull)searchBar;
+/// Enters a <code>SBUChannelViewController</code> with the selected message.
+/// \param message A <code>SBDBaseMessage</code> object to load channel from.
+///
+/// \param highlightInfo An  optional<code>SBUHighlightInfo</code> class to have message highlighted.
+///
+/// \param messageListParams An optional <code>SBDMessageListParams</code> params to be used in loading messages.
+///
+- (void)enterChannelWith:(SBDBaseMessage * _Nonnull)message highlightInfo:(SBUHighlightMessageInfo * _Nullable)highlightInfo messageListParams:(SBDMessageListParams * _Nullable)messageListParams;
+@end
+
+
+@interface SBUMessageSearchViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUEmptyViewDelegate>
+- (void)didSelectRetry;
+@end
+
+
+@interface SBUMessageSearchViewController (SWIFT_EXTENSION(SendBirdUIKit))
+- (BOOL)shouldShowLoadingIndicator;
+- (void)shouldDismissLoadingIndicator;
+@end
+
+
+@interface SBUMessageSearchViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UISearchBarDelegate>
+- (void)searchBarTextDidEndEditing:(UISearchBar * _Nonnull)searchBar;
+- (void)searchBarCancelButtonClicked:(UISearchBar * _Nonnull)searchBar;
+- (void)searchBarSearchButtonClicked:(UISearchBar * _Nonnull)searchBar;
+@end
+
+
+@interface SBUMessageSearchViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UITableViewDataSource, UITableViewDelegate>
+- (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
+- (UITableViewCell * _Nonnull)tableView:(UITableView * _Nonnull)tableView cellForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
+- (void)tableView:(UITableView * _Nonnull)tableView didSelectRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
+- (void)tableView:(UITableView * _Nonnull)tableView willDisplayCell:(UITableViewCell * _Nonnull)cell forRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
+- (CGFloat)tableView:(UITableView * _Nonnull)tableView heightForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
+@end
+
 
 
 SWIFT_CLASS("_TtC13SendBirdUIKit28SBUModerationsViewController")
-@interface SBUModerationsViewController : UIViewController <UINavigationControllerDelegate>
+@interface SBUModerationsViewController : SBUBaseViewController
 @property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
@@ -17083,10 +18008,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUModerationsViewController")
 /// This is a function that shows the banned member List.
 /// If you want to use a custom MemberListViewController, override it and implement it.
 - (void)showBannedMeberList;
-/// This function actions to pop or dismiss.
-/// since:
-/// 1.2.5
-- (void)onClickBack;
 /// Changes freeze status on channel.
 /// \param freeze freeze status
 ///
@@ -17205,6 +18126,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit36SBUOpenChannelContentBaseMessageCell")
 - (void)configure:(SBDBaseMessage * _Nonnull)message hideDateView:(BOOL)hideDateView groupPosition:(enum MessageGroupPosition)groupPosition isOverlay:(BOOL)isOverlay;
 - (void)setMessageGrouping;
 - (void)setUsernameColor:(UIColor * _Nonnull)color;
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated;
 - (void)onLongPressContentViewWithSender:(UILongPressGestureRecognizer * _Nullable)sender;
 - (void)onTapContentViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
 - (void)onTapUserProfileViewWithSender:(UITapGestureRecognizer * _Nonnull)sender;
@@ -17230,7 +18152,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit29SBUOpenChannelFileMessageCell")
 
 
 SWIFT_CLASS("_TtC13SendBirdUIKit36SBUOpenChannelSettingsViewController")
-@interface SBUOpenChannelSettingsViewController : UIViewController <UINavigationControllerDelegate>
+@interface SBUOpenChannelSettingsViewController : SBUBaseViewController
 @property (nonatomic, strong) UIView * _Nullable userInfoView;
 @property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
@@ -17281,8 +18203,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit36SBUOpenChannelSettingsViewController")
 - (void)deleteChannel;
 /// If you want to use a custom memberListViewController, override it and implement it.
 - (void)showParticipantsList;
-/// This function actions to pop or dismiss.
-- (void)onClickBack;
 /// This function used to when edit button click.
 - (void)onClickEdit;
 /// This function shows the channel image selection menu.
@@ -17347,7 +18267,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit32SBUOpenChannelUnknownMessageCell")
 @protocol UIViewControllerTransitionCoordinator;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
-@interface SBUOpenChannelViewController : SBUBaseChannelViewController <UINavigationControllerDelegate>
+@interface SBUOpenChannelViewController : SBUBaseChannelViewController
 /// You can use the customized view and a view that inherits <code>SBUNewMessageInfo</code>.
 /// If you use a view that inherits SBUNewMessageInfo, you can change the button and their action.
 @property (nonatomic, strong) UIView * _Nullable newMessageInfoView;
@@ -17369,7 +18289,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 @property (nonatomic) BOOL hideChannelInfoView;
 /// Sets text in <code>channelInfoView.descriptionLabel</code>
 @property (nonatomic, copy) NSString * _Nullable channelDescription;
-/// The internal view provided for media such as photo or video. If you want to use <code>mediaView</code>, please call <code>enableMediaView(_:)</code> to enable and set its ratio through <code>updateRatio(medialView:messageList:)</code>. If you want to overlay, use <code>overlayMediaView(_:messageListRatio:)</code> method.
+/// The internal view provided for media such as photo or video. If you want to use <code>mediaView</code>, please call <code>enableMediaView(_:)</code> to enable and set its ratio through <code>updateMessageListRatio(to ratio:)</code>. If you want to overlay, use <code>overlayMediaView(_:messageListRatio:)</code> method.
 @property (nonatomic, strong) UIView * _Nonnull mediaView;
 /// A boolean value whether the media view is enabled or not. The default value is <code>false</code>.
 /// note:
@@ -17384,12 +18304,12 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 /// A relative ratio value of <code>mediaView</code>to entire screen. The default value is <code>0</code>.
 /// note:
 ///
-/// Use <code>updateRatio(mediaView:messageList:)</code> to set value.
+/// Use <code>updateMessageListRatio(to ratio:)</code> to set value.
 @property (nonatomic, readonly) CGFloat mediaViewRatio;
 /// A relative ratio value of messaging view to entire screen. The default value is <code>1</code>
 /// note:
 ///
-/// Use <code>updateRatio(mediaView:messageList:)</code> to set value.
+/// Use <code>updateMessageListRatio(to ratio:)</code> to set value.
 @property (nonatomic, readonly) CGFloat messageListRatio;
 /// A boolean value whether <code>mediaView</code> is overlay or not. The default value is <code>false</code>.
 /// note:
@@ -17404,11 +18324,31 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 /// Enable the internal media view.
 /// \code
 /// self.enableMediaView(true)
-/// self.updateRatio(mediaView: 0.3: messageList: 0.7)
+/// self.updateMessageListRatio(to: 0.7)
 ///
 /// \endcode\param enabled If it’s <code>true</code> It uses the media view.
 ///
 - (void)enableMediaView:(BOOL)enabled;
+/// Updates a relative ratio value of the message list with  <code>ratio</code> to entire screen.
+/// The mediaView will have it’s ratio accordingly, meaning
+/// important:
+///
+/// The ratio must be in range of <code>0...1</code>.
+/// <ul>
+///   <li>
+///     normal mode : mediaView’s ratio = (1 - message list’s ratio). Media view & message list is side by side in landscape mode, top to bottom in portrait mode.
+///   </li>
+///   <li>
+///     overlay mode : mediaView’s ratio = 1 (fills the whole screen). Media view fills the whole screen & message list is above the media view with transparent background.
+///     After this method, You might need to call <code>setupStyles</code> or <code>updateComponentStyle</code>.
+///   </li>
+/// </ul>
+/// \code
+/// self.updateMessageListRatio(to: 0.7)
+///
+/// \endcode\param ratio A relative ratio value of message list to entire screen. If it’s <code>nil</code> or it’s not in range from 0 to 1 inclusive, the value won’t be set.
+///
+- (void)updateMessageListRatioTo:(CGFloat)ratio;
 /// Overlays the media view.
 /// \code
 /// // Enable overlay mode
@@ -17567,7 +18507,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 ///
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
 ///
-- (void)deleteMessagesInListWithMessageIds:(NSArray<NSNumber *> * _Nonnull)messageIds needReload:(BOOL)needReload;
+- (void)deleteMessagesInListWithMessageIds:(NSArray<NSNumber *> * _Nullable)messageIds needReload:(BOOL)needReload;
 /// This functions deletes the resendable messages using the request ids.
 /// \param requestIds Request id array to delete
 ///
@@ -17629,6 +18569,11 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 /// \param indexPath indexpath of cell
 ///
 - (void)setLongTapGestureHandler:(SBUOpenChannelBaseMessageCell * _Nonnull)cell message:(SBDBaseMessage * _Nonnull)message indexPath:(NSIndexPath * _Nonnull)indexPath;
+/// This function sets the user profile tap gesture handling.
+/// If you do not want to use the user profile function, override this function and leave it empty.
+/// \param user <code>SBUUser</code> object used for user profile configuration
+///
+- (void)setUserProfileTapGestureHandler:(SBUUser * _Nonnull)user;
 - (void)updateBarButton;
 /// This is used to messageInputView state update.
 - (void)updateMessageInputModeState;
@@ -17659,6 +18604,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 /// This function shows channel settings.
 - (void)onClickSetting;
 - (void)onClickParticipantsList;
+- (void)onClickScrollBottomWithSender:(UIButton * _Nullable)sender;
 /// This function scrolls to bottom.
 /// \param animated Animated
 ///
@@ -17711,11 +18657,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 @end
 
 
-@interface SBUOpenChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUEmptyViewDelegate>
-- (void)didSelectRetry;
-@end
-
-
 @interface SBUOpenChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
 - (void)didSelectDeleteImageWithMessage:(SBDFileMessage * _Nonnull)message;
 @end
@@ -17723,6 +18664,17 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 
 @interface SBUOpenChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
 - (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
+@end
+
+
+@interface SBUOpenChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUEmptyViewDelegate>
+- (void)didSelectRetry;
+@end
+
+
+@interface SBUOpenChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUChannelInfoHeaderViewDelegate>
+- (void)didSelectChannelInfo;
+- (void)didSelectChannelParticipants;
 @end
 
 
@@ -17735,12 +18687,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 @interface SBUOpenChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
 - (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
 - (void)imagePickerControllerDidCancel:(UIImagePickerController * _Nonnull)picker;
-@end
-
-
-@interface SBUOpenChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUChannelInfoHeaderViewDelegate>
-- (void)didSelectChannelInfo;
-- (void)didSelectChannelParticipants;
 @end
 
 
@@ -17766,6 +18712,18 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 - (void)channel:(SBDOpenChannel * _Nonnull)sender userDidExit:(SBDUser * _Nonnull)user;
 - (void)channelWasDeleted:(NSString * _Nonnull)channelUrl channelType:(SBDChannelType)channelType;
 - (void)didSucceedReconnection;
+@end
+
+
+SWIFT_CLASS("_TtC13SendBirdUIKit15SBUOverlayTheme")
+@interface SBUOverlayTheme : NSObject
+- (nonnull instancetype)initWithChannelTheme:(SBUChannelTheme * _Nonnull)channelTheme messageInputTheme:(SBUMessageInputTheme * _Nonnull)messageInputTheme messageCellTheme:(SBUMessageCellTheme * _Nonnull)messageCellTheme componentTheme:(SBUComponentTheme * _Nonnull)componentTheme OBJC_DESIGNATED_INITIALIZER;
+@property (nonatomic, strong) SBUChannelTheme * _Nonnull channelTheme;
+@property (nonatomic, strong) SBUMessageInputTheme * _Nonnull messageInputTheme;
+@property (nonatomic, strong) SBUMessageCellTheme * _Nonnull messageCellTheme;
+@property (nonatomic, strong) SBUComponentTheme * _Nonnull componentTheme;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
 
@@ -17830,6 +18788,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Choo
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull RemovePhoto;)
 + (NSString * _Nonnull)RemovePhoto SWIFT_WARN_UNUSED_RESULT;
 + (void)setRemovePhoto:(NSString * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Search;)
++ (NSString * _Nonnull)Search SWIFT_WARN_UNUSED_RESULT;
++ (void)setSearch:(NSString * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Alert_Delete;)
 + (NSString * _Nonnull)Alert_Delete SWIFT_WARN_UNUSED_RESULT;
 + (void)setAlert_Delete:(NSString * _Nonnull)value;
@@ -17929,6 +18890,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Chan
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull ChannelSettings_Delete;)
 + (NSString * _Nonnull)ChannelSettings_Delete SWIFT_WARN_UNUSED_RESULT;
 + (void)setChannelSettings_Delete:(NSString * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull ChannelSettings_Search;)
++ (NSString * _Nonnull)ChannelSettings_Search SWIFT_WARN_UNUSED_RESULT;
++ (void)setChannelSettings_Search:(NSString * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull ChannelSettings_Moderations;)
 + (NSString * _Nonnull)ChannelSettings_Moderations SWIFT_WARN_UNUSED_RESULT;
 + (void)setChannelSettings_Moderations:(NSString * _Nonnull)value;
@@ -17986,6 +18950,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Empt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Empty_Wrong;)
 + (NSString * _Nonnull)Empty_Wrong SWIFT_WARN_UNUSED_RESULT;
 + (void)setEmpty_Wrong:(NSString * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Empty_Search_Result;)
++ (NSString * _Nonnull)Empty_Search_Result SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmpty_Search_Result:(NSString * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull (^ _Nonnull CreateChannel_Create)(NSInteger);)
 + (NSString * _Nonnull (^ _Nonnull)(NSInteger))CreateChannel_Create SWIFT_WARN_UNUSED_RESULT;
 + (void)setCreateChannel_Create:(NSString * _Nonnull (^ _Nonnull)(NSInteger))value;
@@ -18101,7 +19068,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit8SBUTheme")
 @interface SBUTheme : NSObject
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
-- (nonnull instancetype)initWithChannelListTheme:(SBUChannelListTheme * _Nonnull)channelListTheme channelCellTheme:(SBUChannelCellTheme * _Nonnull)channelCellTheme channelTheme:(SBUChannelTheme * _Nonnull)channelTheme messageInputTheme:(SBUMessageInputTheme * _Nonnull)messageInputTheme messageCellTheme:(SBUMessageCellTheme * _Nonnull)messageCellTheme userListTheme:(SBUUserListTheme * _Nonnull)userListTheme userCellTheme:(SBUUserCellTheme * _Nonnull)userCellTheme channelSettingsTheme:(SBUChannelSettingsTheme * _Nonnull)channelSettingsTheme userProfileTheme:(SBUUserProfileTheme * _Nonnull)userProfileTheme componentTheme:(SBUComponentTheme * _Nonnull)componentTheme OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithChannelListTheme:(SBUChannelListTheme * _Nonnull)channelListTheme channelCellTheme:(SBUChannelCellTheme * _Nonnull)channelCellTheme channelTheme:(SBUChannelTheme * _Nonnull)channelTheme messageInputTheme:(SBUMessageInputTheme * _Nonnull)messageInputTheme messageCellTheme:(SBUMessageCellTheme * _Nonnull)messageCellTheme userListTheme:(SBUUserListTheme * _Nonnull)userListTheme userCellTheme:(SBUUserCellTheme * _Nonnull)userCellTheme channelSettingsTheme:(SBUChannelSettingsTheme * _Nonnull)channelSettingsTheme userProfileTheme:(SBUUserProfileTheme * _Nonnull)userProfileTheme componentTheme:(SBUComponentTheme * _Nonnull)componentTheme overlayTheme:(SBUOverlayTheme * _Nonnull)overlayTheme messageSearchTheme:(SBUMessageSearchTheme * _Nonnull)messageSearchTheme messageSearchResultCellTheme:(SBUMessageSearchResultCellTheme * _Nonnull)messageSearchResultCellTheme OBJC_DESIGNATED_INITIALIZER;
 + (void)setWithTheme:(SBUTheme * _Nonnull)theme;
 + (void)setChannelListWithChannelListTheme:(SBUChannelListTheme * _Nonnull)channelListTheme channelCellTheme:(SBUChannelCellTheme * _Nonnull)channelCellTheme;
 + (void)setChannelWithChannelTheme:(SBUChannelTheme * _Nonnull)channelTheme messageCellTheme:(SBUMessageCellTheme * _Nonnull)messageCellTheme messageInputTheme:(SBUMessageInputTheme * _Nonnull)messageInputTheme componentTheme:(SBUComponentTheme * _Nonnull)componentTheme;
@@ -18142,6 +19109,15 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) SBUUserProfileTheme * 
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) SBUComponentTheme * _Nonnull componentTheme;)
 + (SBUComponentTheme * _Nonnull)componentTheme SWIFT_WARN_UNUSED_RESULT;
 + (void)setComponentTheme:(SBUComponentTheme * _Nonnull)newValue;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) SBUOverlayTheme * _Nonnull overlayTheme;)
++ (SBUOverlayTheme * _Nonnull)overlayTheme SWIFT_WARN_UNUSED_RESULT;
++ (void)setOverlayTheme:(SBUOverlayTheme * _Nonnull)newValue;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) SBUMessageSearchTheme * _Nonnull messageSearchTheme;)
++ (SBUMessageSearchTheme * _Nonnull)messageSearchTheme SWIFT_WARN_UNUSED_RESULT;
++ (void)setMessageSearchTheme:(SBUMessageSearchTheme * _Nonnull)newValue;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) SBUMessageSearchResultCellTheme * _Nonnull messageSearchResultCellTheme;)
++ (SBUMessageSearchResultCellTheme * _Nonnull)messageSearchResultCellTheme SWIFT_WARN_UNUSED_RESULT;
++ (void)setMessageSearchResultCellTheme:(SBUMessageSearchResultCellTheme * _Nonnull)newValue;
 @end
 
 
@@ -18154,8 +19130,8 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUUserMessageCell")
 - (void)setupAutolayout;
 - (void)setupActions;
 - (void)setupStyles;
-- (void)configure:(SBDUserMessage * _Nonnull)message hideDateView:(BOOL)hideDateView groupPosition:(enum MessageGroupPosition)groupPosition receiptState:(enum SBUMessageReceiptState)receiptState;
-- (void)configure:(SBDBaseMessage * _Nonnull)message hideDateView:(BOOL)hideDateView receiptState:(enum SBUMessageReceiptState)receiptState groupPosition:(enum MessageGroupPosition)groupPosition withTextView:(BOOL)withTextView;
+/// Adds highlight attribute to the message
+- (void)configureWithHighlightInfo:(SBUHighlightMessageInfo * _Nullable)highlightInfo;
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated;
 - (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
@@ -18164,7 +19140,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit18SBUUserMessageCell")
 
 SWIFT_CLASS("_TtC13SendBirdUIKit21SBUUnknownMessageCell")
 @interface SBUUnknownMessageCell : SBUUserMessageCell
-- (void)configure:(SBDBaseMessage * _Nonnull)message hideDateView:(BOOL)hideDateView groupPosition:(enum MessageGroupPosition)groupPosition receiptState:(enum SBUMessageReceiptState)receiptState;
 - (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
@@ -18390,7 +19365,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit8SBUUtils")
 ///
 /// returns:
 /// <code>SBUMessageReceiptState</code>
-+ (enum SBUMessageReceiptState)getReceiptStateWithChannel:(SBDGroupChannel * _Nonnull)channel message:(SBDBaseMessage * _Nonnull)message SWIFT_WARN_UNUSED_RESULT;
++ (enum SBUMessageReceiptState)getReceiptStateWithChannel:(SBDGroupChannel * _Nonnull)channel message:(SBDBaseMessage * _Nonnull)message SWIFT_WARN_UNUSED_RESULT SWIFT_DEPRECATED_MSG("deprecated in 2.0.5", "getReceiptStateIfExists");
 /// This function checks the validity of coverUrl.
 /// \param coverUrl Cover url string
 ///
@@ -18432,6 +19407,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit8SBUUtils")
 @interface UINavigationController (SWIFT_EXTENSION(SendBirdUIKit))
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 @end
+
 
 
 

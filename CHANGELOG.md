@@ -1,9 +1,91 @@
 # Change Log
 
-### v2.0.9 (March 9, 2021)
+### v2.1.0 (Mar 24, 2021)
+* Added Message Search features.
+  * Added `SBUMessageSearchViewController` and `SBUHighlightMessageInfo` classes.
+  * Added `SBUChannelViewController(channelUrl:startingPoint:messageListParams:)`
+  * Added `startingPoint`, `highlightInfo`, `useRightBarButtonItem` properties in `SBUChannelViewController`.
+  * Added `SBUAvailable.isSupportMessageSearch()`.
+* Deprecated lastSeenAt feature.
+* Changes in SBUIconSet
+  * Added
+    * iconBan
+    * iconBroadcast
+    * iconCheckboxChecked
+    * iconCheckboxUnchecked
+    * iconChevronRight
+    * iconDone
+    * iconDoneAll
+    * iconEmojiMore
+    * iconNotificationFilled
+    * iconNotificationOffFilled
+    * iconQuestion
+    * iconSpinner
+    * iconThumbnailNone
+  * Replaced
+    * channelTypeBroadcast -> iconBroadcast
+    * channelTypeGroup -> iconChat
+    * channelTypeSupergroup -> iconSupergroup
+    * emojiFail -> iconQuestion
+    * emojiMoreLarge -> iconEmojiMore
+    * iconActionLeave -> iconLeave
+    * iconActionNotificationOff -> iconNotificationOffFilled
+    * iconActionNotificationOn -> iconNotificationFilled
+    * iconAvatarLight -> iconUser
+    * iconBanned -> iconBan
+    * iconBroadcastSmall -> iconBroadcast
+    * iconBroadcastMedium -> iconBroadcast
+    * iconBroadcastLarge -> iconBroadcast
+    * iconCheckbox -> iconCheckboxChecked
+    * iconCheckboxOff -> iconCheckboxUnchecked
+    * iconDelivered -> iconDoneAll
+    * iconErrorFilled -> iconError
+    * iconFailed -> iconError
+    * iconMuted -> iconMute
+    * iconNoThumbnailLight -> iconThumbnailNone
+    * iconRead -> iconDoneAll
+    * iconSent -> iconDone
+    * iconShevronRight -> iconChevronRight
+    * iconSpinnerLarge -> iconSpinner
+    * iconSpinnerSmall -> iconSpinner
+    * iconThumbnailLight -> iconPhoto
+  * Removed
+    * emojiHeartEyes
+    * emojiLaughing
+    * emojiRage
+    * emojiSob
+    * emojiSweatSmile
+    * emojiThubsdown
+    * emojiThumbsup
+    * iconChatHide
+    * iconChatShow
+    * iconCreate
+    * iconDummy
+* Changes in SBUColorSet
+  * Changed `primary*` colors.
+  * Changed `secondary*` colors.
+  * Changed `background300` color.
+  * Changed `background200` color.
+  * Changed `background100` color.
+  * Added `background50`.
+  * Added `error*` colors.
+  * Removed `error` (replaced with `error300`)
+* Changes in SBUFontSet
+  * Changed weight of `h1`.
+  * Changed size and weight of `h2`.
+  * Changed size of `h3`.
+  * Changed size of `body1`.
+  * Changed weight of `body2`.
+  * Changed weight of `body3`.
+  * Changed size of `button1`.
+  * Changed weight of `caption3`.
+  * Changed weight of `caption4`.
+* Improved stability.
+
+### v2.0.9 (Mar 9, 2021)
 * Fixed runtime debugger issue.
 
-### v2.0.8 (March 2, 2021)
+### v2.0.8 (Mar 2, 2021)
 * Changes in `SBUChannelViewController` and `SBUOpenChannelViewController`
   * Set `keyboardDismissMode` of `tableView` to `.interactive` as default.
   * Changed `messageInputViewBottomConstraint`, `tableViewTopConstraint` properties to private access.

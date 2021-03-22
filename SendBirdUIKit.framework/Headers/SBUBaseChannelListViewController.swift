@@ -18,15 +18,7 @@ import UIKit
  ```
  */
 @objcMembers
-open class SBUBaseChannelListViewController: UIViewController {
-    open func setupAutolayout() {
-    }
-    
-    open func setupStyles() {
-    }
-    
-    open func updateStyles() {
-    }
+open class SBUBaseChannelListViewController: SBUBaseViewController {
     
     /// This is a function that shows the channelViewController.
     ///

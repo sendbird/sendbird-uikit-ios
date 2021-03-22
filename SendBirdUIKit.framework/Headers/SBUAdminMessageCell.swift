@@ -55,7 +55,7 @@ open class SBUAdminMessageCell: SBUBaseMessageCell {
     }
     
     // MARK: - Common
-    public func configure(_ message: SBDAdminMessage, hideDateView: Bool) {
+    open func configure(_ message: SBDAdminMessage, hideDateView: Bool) {
         super.configure(message: message,
                         position: .center,
                         hideDateView: hideDateView,

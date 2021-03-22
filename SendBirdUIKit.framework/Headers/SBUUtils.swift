@@ -31,7 +31,10 @@ public class SBUUtils: NSObject {
     public static func getFileType(by type: String) -> MessageFileType {
         let type = type.lowercased()
         
-        if type.hasPrefix("image") { return .image }
+        if type.hasPrefix("image") {
+            if type.contains("svg") { return .etc }
+            else { return .image }
+        }
         if type.hasPrefix("video") { return .video }
         if type.hasPrefix("audio") { return .audio }
         if type.hasPrefix("pdf")   { return .pdf }
@@ -85,6 +88,7 @@ public class SBUUtils: NSObject {
     ///   - channel: `SBDGroupChannel` object
     ///   - message: `SBDBaseMessage` object
     /// - Returns: `SBUMessageReceiptState`
+    @available(*, deprecated, message: "deprecated in 2.0.5", renamed: "getReceiptStateIfExists")
     public static func getReceiptState(channel: SBDGroupChannel,
                                        message: SBDBaseMessage) -> SBUMessageReceiptState {
         let didReadAll = channel.getUnreadMemberCount(message) == 0
@@ -96,6 +100,30 @@ public class SBUUtils: NSObject {
             return .deliveryReceipt
         } else {
             return .none
+        }
+    }
+    
+    /// This function gets the receipt state of the message on the channel.
+    /// Will return nil for `Super Group Channel` or `Broadcast Channel` which  doesn't support receipts.
+    ///
+    /// - Parameters:
+    ///   - channel: `SBDGroupChannel` object
+    ///   - message: `SBDBaseMessage` object
+    /// - Returns: `SBUMessageReceiptState`, or nil if the channel doesn't support receipts.
+    public static func getReceiptStateIfExists(for channel: SBDGroupChannel,
+                                               message: SBDBaseMessage) -> SBUMessageReceiptState? {
+        guard !channel.isSuper
+            && !channel.isBroadcast else { return nil }
+        
+        let didReadAll = channel.getUnreadMemberCount(message) == 0
+        let didDeliverAll = channel.getUndeliveredMemberCount(message) == 0
+        
+        if didReadAll {
+            return .readReceipt
+        } else if didDeliverAll {
+            return .deliveryReceipt
+        } else {
+            return SBUMessageReceiptState.none
         }
     }
     
@@ -168,5 +196,13 @@ extension SBUUtils {
             presented is SBUMenuViewController {
             presented.dismiss(animated: false, completion: nil)
         }
+    }
+    
+    static func findIndex(of message: SBDBaseMessage, in messageList: [SBDBaseMessage]) -> Int? {
+        return messageList.firstIndex(where: { $0.messageId == message.messageId })
+    }
+    
+    static func contains(messageId: Int64, in messageList: [SBDBaseMessage]) -> Bool {
+        return messageList.contains(where: { $0.messageId == messageId })
     }
 }

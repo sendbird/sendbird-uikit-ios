@@ -10,12 +10,24 @@ import UIKit
 import SendBirdSDK
 
 @objcMembers
-open class SBUCreateChannelViewController: UIViewController, UINavigationControllerDelegate {
+open class SBUCreateChannelViewController: SBUBaseViewController {
     
     // MARK: - UI properties (Public)
-    public lazy var titleView: UIView? = _titleView
-    public lazy var leftBarButton: UIBarButtonItem? = _leftBarButton
-    public lazy var rightBarButton: UIBarButtonItem? = _rightBarButton
+    public var titleView: UIView? = nil {
+        didSet {
+            self.navigationItem.titleView = self.titleView
+        }
+    }
+    public var leftBarButton: UIBarButtonItem? = nil {
+        didSet {
+            self.navigationItem.leftBarButtonItem = self.leftBarButton
+        }
+    }
+    public var rightBarButton: UIBarButtonItem? = nil {
+        didSet {
+            self.navigationItem.rightBarButtonItem = self.rightBarButton
+        }
+    }
     public private(set) lazy var tableView = UITableView()
 
     public private(set) var userCell: UITableViewCell?
@@ -39,12 +51,7 @@ open class SBUCreateChannelViewController: UIViewController, UINavigationControl
     }()
     
     private lazy var _leftBarButton: UIBarButtonItem = {
-        return UIBarButtonItem(
-            image: SBUIconSet.iconBack,
-            style: .plain,
-            target: self,
-            action: #selector(onClickBack)
-        )
+        return SBUCommonViews.backButton(vc: self, selector: #selector(onClickBack))
     }()
     
     private lazy var _rightBarButton: UIBarButtonItem = {
@@ -111,6 +118,16 @@ open class SBUCreateChannelViewController: UIViewController, UINavigationControl
         super.loadView()
         SBULog.info("")
         
+        if self.titleView == nil {
+            self.titleView = _titleView
+        }
+        if self.leftBarButton == nil {
+            self.leftBarButton = _leftBarButton
+        }
+        if self.rightBarButton == nil {
+            self.rightBarButton = _rightBarButton
+        }
+        
         // navigation bar
         self.navigationItem.leftBarButtonItem = self.leftBarButton
         self.navigationItem.rightBarButtonItem = self.rightBarButton
@@ -135,7 +152,7 @@ open class SBUCreateChannelViewController: UIViewController, UINavigationControl
     }
     
     /// This function handles the initialization of autolayouts.
-    open func setupAutolayout() {
+    open override func setupAutolayout() {
         self.tableView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             self.tableView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 0),
@@ -146,7 +163,7 @@ open class SBUCreateChannelViewController: UIViewController, UINavigationControl
     }
     
     /// This function handles the initialization of styles.
-    open func setupStyles() {
+    open override func setupStyles() {
         self.theme = SBUTheme.userListTheme
         
         self.navigationController?.navigationBar.setBackgroundImage(
@@ -166,7 +183,7 @@ open class SBUCreateChannelViewController: UIViewController, UINavigationControl
         self.tableView.backgroundColor = theme.backgroundColor
     }
     
-    open func updateStyles() {
+    open override func updateStyles() {
         self.theme = SBUTheme.userListTheme
         
         self.setupStyles()
@@ -195,7 +212,6 @@ open class SBUCreateChannelViewController: UIViewController, UINavigationControl
 
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.setNeedsStatusBarAppearanceUpdate()
 
         self.updateStyles()
     }
@@ -394,17 +410,6 @@ open class SBUCreateChannelViewController: UIViewController, UINavigationControl
 
     
     // MARK: - Actions
-    
-    /// This function actions to pop or dismiss.
-    /// - Since: 1.2.5
-    public func onClickBack() {
-        if let navigationController = self.navigationController,
-            navigationController.viewControllers.count > 1 {
-            navigationController.popViewController(animated: true)
-        } else {
-            self.dismiss(animated: true, completion: nil)
-        }
-    }
     
     /// This function calls `createChannel:` function using the `selectedUserList`.
     /// - Since: 1.2.5

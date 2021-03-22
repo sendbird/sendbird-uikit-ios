@@ -27,7 +27,7 @@ open class SBUEmptyView: UIView {
     
     lazy var stackView: UIStackView = {
         let stackView = UIStackView()
-        stackView.spacing = 28
+        stackView.spacing = 24
         stackView.axis = .vertical
         stackView.alignment = .center
         return stackView
@@ -36,7 +36,10 @@ open class SBUEmptyView: UIView {
     lazy var _retryButton: UIButton = {
        let retryButton = UIButton()
         retryButton.setImage(
-            SBUIconSet.iconRefresh.sbu_with(tintColor: theme.emptyViewRetryButtonTintColor),
+            SBUIconSetType.iconRefresh.image(
+                with: theme.emptyViewRetryButtonTintColor,
+                to: SBUIconSetType.Metric.defaultIconSize
+            ),
             for: .normal
         )
         retryButton.setTitle(SBUStringSet.Retry, for: .normal)
@@ -78,7 +81,7 @@ open class SBUEmptyView: UIView {
     }
     
     public func setupStyles() {
-        self.theme = self.isOverlay ? SBUComponentTheme.overlay : SBUTheme.componentTheme
+        self.theme = self.isOverlay ? SBUTheme.overlayTheme.componentTheme : SBUTheme.componentTheme
         
         self.backgroundColor = theme.emptyViewBackgroundColor
         
@@ -117,6 +120,7 @@ open class SBUEmptyView: UIView {
     /// Override this function to apply a custom type.
     open func updateViews() {
         self.isHidden = false
+        
         switch self.type {
         case .none:
             self.statusLabel.text = ""
@@ -124,24 +128,46 @@ open class SBUEmptyView: UIView {
             self.isHidden = true
         case .noChannels:
             self.statusLabel.text = SBUStringSet.Empty_No_Channels
-            self.statusImageView.image = SBUIconSet.iconChat
-                .sbu_with(tintColor: theme.emptyViewStatusTintColor)
+            self.statusImageView.image = SBUIconSetType.iconChat.image(
+                with: theme.emptyViewStatusTintColor,
+                to: SBUIconSetType.Metric.iconEmptyView,
+                forceResizeCustomized: false
+            )
         case .noMessages:
             self.statusLabel.text = SBUStringSet.Empty_No_Messages
-            self.statusImageView.image = SBUIconSet.iconMessage
-                .sbu_with(tintColor: theme.emptyViewStatusTintColor)
+            self.statusImageView.image = SBUIconSetType.iconMessage.image(
+                with: theme.emptyViewStatusTintColor,
+                to: SBUIconSetType.Metric.iconEmptyView,
+                forceResizeCustomized: false
+            )
         case .noMutedMembers:
             self.statusLabel.text = SBUStringSet.Empty_No_Muted_Members
-            self.statusImageView.image = SBUIconSet.iconMuted
-                .sbu_with(tintColor: theme.emptyViewStatusTintColor)
+            self.statusImageView.image = SBUIconSetType.iconMute.image(
+                with: theme.emptyViewStatusTintColor,
+                to: SBUIconSetType.Metric.iconEmptyView,
+                forceResizeCustomized: false
+            )
         case .noBannedMembers:
             self.statusLabel.text = SBUStringSet.Empty_No_Banned_Members
-            self.statusImageView.image = SBUIconSet.iconBanned
-                .sbu_with(tintColor: theme.emptyViewStatusTintColor)
+            self.statusImageView.image = SBUIconSetType.iconBan.image(
+                with: theme.emptyViewStatusTintColor,
+                to: SBUIconSetType.Metric.iconEmptyView,
+                forceResizeCustomized: false
+            )
+        case .noSearchResults:
+            self.statusLabel.text = SBUStringSet.Empty_Search_Result
+            self.statusImageView.image = SBUIconSetType.iconSearch.image(
+                with: theme.emptyViewStatusTintColor,
+                to: SBUIconSetType.Metric.iconEmptyView,
+                forceResizeCustomized: false
+            )
         case .error:
             self.statusLabel.text = SBUStringSet.Empty_Wrong
-            self.statusImageView.image = SBUIconSet.iconError
-                .sbu_with(tintColor: theme.emptyViewStatusTintColor)
+            self.statusImageView.image = SBUIconSetType.iconError.image(
+                with: theme.emptyViewStatusTintColor,
+                to: SBUIconSetType.Metric.iconEmptyView,
+                forceResizeCustomized: false
+            )
         }
     }
     

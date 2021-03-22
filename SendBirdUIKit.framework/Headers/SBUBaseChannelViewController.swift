@@ -9,7 +9,7 @@
 import UIKit
 
 @objcMembers
-open class SBUBaseChannelViewController: UIViewController {
+open class SBUBaseChannelViewController: SBUBaseViewController {
     
     // MARK: - Properties (View)
     
@@ -40,7 +40,6 @@ open class SBUBaseChannelViewController: UIViewController {
     
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.setNeedsStatusBarAppearanceUpdate()
 
         NotificationCenter.default.addObserver(
             self,
@@ -80,16 +79,32 @@ open class SBUBaseChannelViewController: UIViewController {
         self.tableView.separatorStyle = .none
         self.tableView.allowsSelection = false
         self.tableView.keyboardDismissMode = .interactive
+        self.tableView.bounces = false
+        self.tableView.alwaysBounceVertical = false
     }
     
-    open func setupAutolayout() {}
     
-    open func setupStyles() {}
+    // MARK: - Styles
     
-    open func updateStyles() {
+    open override func updateStyles() {
         if let userProfileView = self.userProfileView as? SBUUserProfileView {
             userProfileView.setupStyles()
         }
+    }
+    
+    func setupScrollBottomViewStyle(scrollBottomView: UIView, theme: SBUComponentTheme = SBUTheme.componentTheme) {
+        view.layer.shadowColor = theme.shadowColor.withAlphaComponent(0.5).cgColor
+        
+        guard let scrollBottomButton = scrollBottomView.subviews.first as? UIButton else { return }
+        
+        scrollBottomButton.layer.cornerRadius = scrollBottomButton.frame.height / 2
+        scrollBottomButton.clipsToBounds = true
+        
+        scrollBottomButton.setImage(SBUIconSetType.iconChevronDown.image(with: theme.scrollBottomButtonIconColor,
+                                                                         to: SBUIconSetType.Metric.iconChevronDown),
+                                    for: .normal)
+        scrollBottomButton.backgroundColor = theme.scrollBottomButtonBackground
+        scrollBottomButton.setBackgroundImage(UIImage.from(color: theme.scrollBottomButtonHighlighted), for: .highlighted)
     }
     
     /// This function sets the user profile tap gesture handling.
@@ -99,6 +114,7 @@ open class SBUBaseChannelViewController: UIViewController {
     ///
     /// - Since: 1.2.2
     open func setUserProfileTapGestureHandler(_ user: SBUUser) {
+        self.dismissKeyboard()
         if let userProfileView = self.userProfileView as? SBUUserProfileView,
             let baseView = self.navigationController?.view,
             SBUGlobals.UsingUserProfile
@@ -236,6 +252,24 @@ open class SBUBaseChannelViewController: UIViewController {
         pan.cancelsTouchesInView = false
         tableView.addGestureRecognizer(pan)
     }
+    
+    // MARK: - Channel
+    
+    public func loadChannel(channelUrl: String?, messageListParams: SBDMessageListParams? = nil) {}
+    
+    func isScrollNearBottom() -> Bool {
+        return self.tableView.contentOffset.y < 10
+    }
+    
+    
+    // MARK: - Common
+    
+    /// This is used to check the loading status and control loading indicator.
+    /// - Parameters:
+    ///   - loadingState: Set to true when the list is loading.
+    ///   - showIndicator: If true, the loading indicator is started, and if false, the indicator is stopped.
+    public func setLoading(_ loadingState: Bool, _ showIndicator: Bool) {}
+    
 }
 
 extension SBUBaseChannelViewController: UIGestureRecognizerDelegate {
