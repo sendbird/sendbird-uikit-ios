@@ -4127,12 +4127,11 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 SWIFT_CLASS("_TtC13SendBirdUIKit15SBUOverlayTheme")
 @interface SBUOverlayTheme : NSObject
 - (nonnull instancetype)initWithChannelTheme:(SBUChannelTheme * _Nonnull)channelTheme messageInputTheme:(SBUMessageInputTheme * _Nonnull)messageInputTheme messageCellTheme:(SBUMessageCellTheme * _Nonnull)messageCellTheme componentTheme:(SBUComponentTheme * _Nonnull)componentTheme OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)init;
 @property (nonatomic, strong) SBUChannelTheme * _Nonnull channelTheme;
 @property (nonatomic, strong) SBUMessageInputTheme * _Nonnull messageInputTheme;
 @property (nonatomic, strong) SBUMessageCellTheme * _Nonnull messageCellTheme;
 @property (nonatomic, strong) SBUComponentTheme * _Nonnull componentTheme;
-- (nonnull instancetype)init SWIFT_UNAVAILABLE;
-+ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
 
@@ -8990,12 +8989,11 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 SWIFT_CLASS("_TtC13SendBirdUIKit15SBUOverlayTheme")
 @interface SBUOverlayTheme : NSObject
 - (nonnull instancetype)initWithChannelTheme:(SBUChannelTheme * _Nonnull)channelTheme messageInputTheme:(SBUMessageInputTheme * _Nonnull)messageInputTheme messageCellTheme:(SBUMessageCellTheme * _Nonnull)messageCellTheme componentTheme:(SBUComponentTheme * _Nonnull)componentTheme OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)init;
 @property (nonatomic, strong) SBUChannelTheme * _Nonnull channelTheme;
 @property (nonatomic, strong) SBUMessageInputTheme * _Nonnull messageInputTheme;
 @property (nonatomic, strong) SBUMessageCellTheme * _Nonnull messageCellTheme;
 @property (nonatomic, strong) SBUComponentTheme * _Nonnull componentTheme;
-- (nonnull instancetype)init SWIFT_UNAVAILABLE;
-+ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
 
@@ -13855,12 +13853,11 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 SWIFT_CLASS("_TtC13SendBirdUIKit15SBUOverlayTheme")
 @interface SBUOverlayTheme : NSObject
 - (nonnull instancetype)initWithChannelTheme:(SBUChannelTheme * _Nonnull)channelTheme messageInputTheme:(SBUMessageInputTheme * _Nonnull)messageInputTheme messageCellTheme:(SBUMessageCellTheme * _Nonnull)messageCellTheme componentTheme:(SBUComponentTheme * _Nonnull)componentTheme OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)init;
 @property (nonatomic, strong) SBUChannelTheme * _Nonnull channelTheme;
 @property (nonatomic, strong) SBUMessageInputTheme * _Nonnull messageInputTheme;
 @property (nonatomic, strong) SBUMessageCellTheme * _Nonnull messageCellTheme;
 @property (nonatomic, strong) SBUComponentTheme * _Nonnull componentTheme;
-- (nonnull instancetype)init SWIFT_UNAVAILABLE;
-+ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
 
@@ -18718,12 +18715,11 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 SWIFT_CLASS("_TtC13SendBirdUIKit15SBUOverlayTheme")
 @interface SBUOverlayTheme : NSObject
 - (nonnull instancetype)initWithChannelTheme:(SBUChannelTheme * _Nonnull)channelTheme messageInputTheme:(SBUMessageInputTheme * _Nonnull)messageInputTheme messageCellTheme:(SBUMessageCellTheme * _Nonnull)messageCellTheme componentTheme:(SBUComponentTheme * _Nonnull)componentTheme OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)init;
 @property (nonatomic, strong) SBUChannelTheme * _Nonnull channelTheme;
 @property (nonatomic, strong) SBUMessageInputTheme * _Nonnull messageInputTheme;
 @property (nonatomic, strong) SBUMessageCellTheme * _Nonnull messageCellTheme;
 @property (nonatomic, strong) SBUComponentTheme * _Nonnull componentTheme;
-- (nonnull instancetype)init SWIFT_UNAVAILABLE;
-+ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
 

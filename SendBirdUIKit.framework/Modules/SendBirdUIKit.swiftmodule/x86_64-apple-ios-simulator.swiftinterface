@@ -2425,7 +2425,7 @@ extension UIColor {
   @objc func dismiss()
 }
 @objc @_inheritsConvenienceInitializers @objcMembers public class SBUTheme : ObjectiveC.NSObject {
-  @objc public init(channelListTheme: SendBirdUIKit.SBUChannelListTheme = .light, channelCellTheme: SendBirdUIKit.SBUChannelCellTheme = .light, channelTheme: SendBirdUIKit.SBUChannelTheme = .light, messageInputTheme: SendBirdUIKit.SBUMessageInputTheme = .light, messageCellTheme: SendBirdUIKit.SBUMessageCellTheme = .light, userListTheme: SendBirdUIKit.SBUUserListTheme = .light, userCellTheme: SendBirdUIKit.SBUUserCellTheme = .light, channelSettingsTheme: SendBirdUIKit.SBUChannelSettingsTheme = .light, userProfileTheme: SendBirdUIKit.SBUUserProfileTheme = .light, componentTheme: SendBirdUIKit.SBUComponentTheme = .light, overlayTheme: SendBirdUIKit.SBUOverlayTheme = SBUOverlayTheme(), messageSearchTheme: SendBirdUIKit.SBUMessageSearchTheme = .light, messageSearchResultCellTheme: SendBirdUIKit.SBUMessageSearchResultCellTheme = .light)
+  @objc public init(channelListTheme: SendBirdUIKit.SBUChannelListTheme = .light, channelCellTheme: SendBirdUIKit.SBUChannelCellTheme = .light, channelTheme: SendBirdUIKit.SBUChannelTheme = .light, messageInputTheme: SendBirdUIKit.SBUMessageInputTheme = .light, messageCellTheme: SendBirdUIKit.SBUMessageCellTheme = .light, userListTheme: SendBirdUIKit.SBUUserListTheme = .light, userCellTheme: SendBirdUIKit.SBUUserCellTheme = .light, channelSettingsTheme: SendBirdUIKit.SBUChannelSettingsTheme = .light, userProfileTheme: SendBirdUIKit.SBUUserProfileTheme = .light, componentTheme: SendBirdUIKit.SBUComponentTheme = .light, overlayTheme: SendBirdUIKit.SBUOverlayTheme = .init(), messageSearchTheme: SendBirdUIKit.SBUMessageSearchTheme = .light, messageSearchResultCellTheme: SendBirdUIKit.SBUMessageSearchResultCellTheme = .light)
   @objc public static func set(theme: SendBirdUIKit.SBUTheme)
   @objc public static func setChannelList(channelListTheme: SendBirdUIKit.SBUChannelListTheme, channelCellTheme: SendBirdUIKit.SBUChannelCellTheme)
   @objc public static func setChannel(channelTheme: SendBirdUIKit.SBUChannelTheme, messageCellTheme: SendBirdUIKit.SBUMessageCellTheme, messageInputTheme: SendBirdUIKit.SBUMessageInputTheme, componentTheme: SendBirdUIKit.SBUComponentTheme)
@@ -2492,8 +2492,9 @@ extension UIColor {
   }
   @objc deinit
 }
-@objc @objcMembers public class SBUOverlayTheme : ObjectiveC.NSObject {
+@objc @_inheritsConvenienceInitializers @objcMembers public class SBUOverlayTheme : ObjectiveC.NSObject {
   @objc public init(channelTheme: SendBirdUIKit.SBUChannelTheme = .overlay, messageInputTheme: SendBirdUIKit.SBUMessageInputTheme = .overlay, messageCellTheme: SendBirdUIKit.SBUMessageCellTheme = .overlay, componentTheme: SendBirdUIKit.SBUComponentTheme = .overlay)
+  @objc override convenience dynamic public init()
   @objc public var channelTheme: SendBirdUIKit.SBUChannelTheme {
     @objc get
     @objc set
@@ -2510,7 +2511,6 @@ extension UIColor {
     @objc get
     @objc set
   }
-  @objc override dynamic public init()
   @objc deinit
 }
 @objc @_inheritsConvenienceInitializers @objcMembers public class SBUChannelListTheme : ObjectiveC.NSObject {

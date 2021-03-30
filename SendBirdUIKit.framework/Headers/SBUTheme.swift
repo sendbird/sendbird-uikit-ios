@@ -25,7 +25,7 @@ public class SBUTheme: NSObject {
                 channelSettingsTheme: SBUChannelSettingsTheme = .light,
                 userProfileTheme: SBUUserProfileTheme = .light,
                 componentTheme: SBUComponentTheme = .light,
-                overlayTheme: SBUOverlayTheme = SBUOverlayTheme(),
+                overlayTheme: SBUOverlayTheme = .init(),
                 messageSearchTheme: SBUMessageSearchTheme = .light,
                 messageSearchResultCellTheme: SBUMessageSearchResultCellTheme = .light
                 ) {
@@ -92,6 +92,7 @@ public class SBUTheme: NSObject {
                          channelSettingsTheme: .dark,
                          userProfileTheme: .dark,
                          componentTheme: .dark,
+                         overlayTheme: .init(),
                          messageSearchTheme: .dark,
                          messageSearchResultCellTheme: .dark)
         
@@ -108,6 +109,7 @@ public class SBUTheme: NSObject {
                         channelSettingsTheme: .light,
                         userProfileTheme: .light,
                         componentTheme: .light,
+                        overlayTheme: .init(),
                         messageSearchTheme: .light,
                         messageSearchResultCellTheme: .light)
     }
@@ -235,6 +237,10 @@ public class SBUOverlayTheme: NSObject {
         self._componentTheme = componentTheme
     }
 
+    public override convenience init() {
+        self.init(channelTheme: .overlay)
+    }
+    
     // Channel & Message
     public var channelTheme: SBUChannelTheme {
         set { self._channelTheme = newValue }
@@ -268,6 +274,7 @@ public class SBUOverlayTheme: NSObject {
 // MARK: - Channel List Theme
 @objcMembers
 public class SBUChannelListTheme: NSObject {
+    
     public static var light: SBUChannelListTheme {
         let theme = SBUChannelListTheme()
         
