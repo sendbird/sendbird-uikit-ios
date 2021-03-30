@@ -92,7 +92,6 @@ public class SBUTheme: NSObject {
                          channelSettingsTheme: .dark,
                          userProfileTheme: .dark,
                          componentTheme: .dark,
-                         overlayTheme: .init(),
                          messageSearchTheme: .dark,
                          messageSearchResultCellTheme: .dark)
         
@@ -109,7 +108,6 @@ public class SBUTheme: NSObject {
                         channelSettingsTheme: .light,
                         userProfileTheme: .light,
                         componentTheme: .light,
-                        overlayTheme: .init(),
                         messageSearchTheme: .light,
                         messageSearchResultCellTheme: .light)
     }
