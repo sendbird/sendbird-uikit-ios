@@ -22,14 +22,80 @@ import AVKit
 @objcMembers
 open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelegate {
     // MARK: - Properties (Public)
-    public lazy var addButton: UIButton? = _addButton
+    public lazy var addButton: UIButton? = {
+        let button = UIButton(type: .custom)
+        button.addTarget(self, action: #selector(onClickAddButton(_:)), for: .touchUpInside)
+        button.isHidden = false
+        button.alpha = 1
+        return button
+    }()
+    
     public lazy var placeholderLabel = UILabel()
-    public lazy var textView: UITextView? = _textView
-    public lazy var sendButton: UIButton? = _sendButton
+    
+    public lazy var textView: UITextView? = {
+        let tv = UITextView()
+        tv.textContainerInset = UIEdgeInsets(top: 10, left: 9, bottom: 10, right: 16)
+        tv.layer.borderWidth = 1
+        tv.layer.cornerRadius = 20
+        tv.delegate = self
+        return tv
+    }()
+    
+    public lazy var sendButton: UIButton? = {
+        let button = UIButton()
+        button.layer.cornerRadius = 4
+        button.addTarget(self, action: #selector(onClickSendButton(_:)), for: .touchUpInside)
+        button.isHidden = !showsSendButton
+        return button
+    }()
 
-    public lazy var editView: UIView = _editView
-    public lazy var cancelButton: UIButton? = _cancelButton
-    public lazy var saveButton: UIButton? = _saveButton
+    public lazy var editView: UIView = {
+        let editView = UIView()
+        editView.isHidden = true
+        editView.alpha = 0
+        return editView
+    }()
+    
+    public lazy var cancelButton: UIButton? = {
+        let button = UIButton()
+        button.setTitle(SBUStringSet.Cancel, for: .normal)
+        button.layer.cornerRadius = 4
+        button.addTarget(self, action: #selector(onClickCancelButton(_:)), for: .touchUpInside)
+        return button
+    }()
+    
+    public lazy var saveButton: UIButton? = {
+        let button = UIButton()
+        button.setTitle(SBUStringSet.Save, for: .normal)
+        button.layer.cornerRadius = 4
+        button.addTarget(self, action: #selector(onClickSaveButton(_:)), for: .touchUpInside)
+        return button
+    }()
+    
+    
+    // MARK: - Property values (Public)
+    
+    /// Textview's minimum height value.
+    public var textViewMinHeight: CGFloat = 38
+    /// Textview's maximum height value.
+    public var textViewMaxHeight: CGFloat = 87
+    /// Whether to always show the send button. Default is `false`.
+    public var showsSendButton: Bool = false
+    
+    /// Leading spacing value for `textView`.
+    /// If `addButton` is available, this will be spacing between the `addButton` and the `textView`.
+    public var textViewLeadingSpacing: CGFloat = 12
+    /// Trailing spacing value for `textView`.
+    /// If `sendButton` is available, this will be spacing between the `textView` and the `sendButton`.
+    public var textViewTrailingSpacing: CGFloat = 12
+    
+    /// The padding values for the input view.
+    /// This value will be relative to the `safeAreaLayoutGuide` if available.
+    public var layoutInsets: UIEdgeInsets =
+        UIEdgeInsets(top: 0,
+                     left: 20,
+                     bottom: 0,
+                     right: -16)
     
 
     // MARK: - Properties (Private)
@@ -42,17 +108,27 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         return stackView
     }()
     
+    /// Space above the input fields.
     var topSpace = UIView()
-    var inputBaseView = UIView()
-    var inputStackView: UIStackView = {
+    
+    /// Input row (add button, text view, send button)
+    lazy var inputStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.alignment = .bottom
         stackView.distribution = .fill
-        stackView.spacing = 12
+        stackView.spacing = 0
         return stackView
     }()
+    
+    /// Text view + placeholder label.
     var inputContentView = UIView()
+    
+    /// Textview's leading/trailing padding view
+    var textViewLeadingPaddingView: UIView = UIView()
+    var textViewTrailingPaddingView: UIView = UIView()
+    
+    /// Edit view (edit / cancel button on the bottom)
     var editStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
@@ -60,59 +136,14 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         stackView.distribution = .fill
         return stackView
     }()
+    
+    /// Empty margin view in `editStackView` between cancel/edit buttons.
     var editMarginView = UIView()
+    
+    /// Space below the input fields (below edit view).
     var bottomSpace = UIView()
     
-    lazy var _addButton: UIButton = {
-        let button = UIButton(type: .custom)
-        button.addTarget(self, action: #selector(onClickAddButton(_:)), for: .touchUpInside)
-        button.isHidden = false
-        button.alpha = 1
-        return button
-    }()
-    
-    lazy var _textView: UITextView = {
-        let tv = UITextView()
-        tv.textContainerInset = UIEdgeInsets(top: 10, left: 9, bottom: 10, right: 16)
-        tv.layer.borderWidth = 1
-        tv.layer.cornerRadius = 20
-        tv.delegate = self
-        return tv
-    }()
-    
-    lazy var _editView: UIView = {
-        let editView = UIView()
-        editView.isHidden = true
-        editView.alpha = 0
-        return editView
-    }()
-    
-    lazy var _sendButton: UIButton = {
-        let button = UIButton()
-        button.layer.cornerRadius = 4
-        button.addTarget(self, action: #selector(onClickSendButton(_:)), for: .touchUpInside)
-        button.isHidden = true
-        button.alpha = 0
-        return button
-    }()
-    
-    lazy var _cancelButton: UIButton = {
-        let button = UIButton()
-        button.setTitle(SBUStringSet.Cancel, for: .normal)
-        button.layer.cornerRadius = 4
-        button.addTarget(self, action: #selector(onClickCancelButton(_:)), for: .touchUpInside)
-        return button
-    }()
-    
-    lazy var _saveButton: UIButton = {
-        let button = UIButton()
-        button.setTitle(SBUStringSet.Save, for: .normal)
-        button.layer.cornerRadius = 4
-        button.addTarget(self, action: #selector(onClickSaveButton(_:)), for: .touchUpInside)
-        return button
-    }()
-    
-    var textViewHeightConstraint: NSLayoutConstraint!
+    var textViewHeightConstraint: NSLayoutConstraint?
 
     weak var delegate: SBUMessageInputViewDelegate?
 
@@ -163,16 +194,17 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         if let addButton = self.addButton {
             self.inputStackView.addArrangedSubview(addButton)
         }
+        self.inputStackView.addArrangedSubview(self.textViewLeadingPaddingView)
         if let textView = self.textView {
             self.inputContentView.addSubview(textView)
             self.inputContentView.addSubview(self.placeholderLabel)
         }
         self.inputStackView.addArrangedSubview(self.inputContentView)
+        self.inputStackView.addArrangedSubview(self.textViewTrailingPaddingView)
         if let sendButton = self.sendButton {
             self.inputStackView.addArrangedSubview(sendButton)
         }
-        self.inputBaseView.addSubview(self.inputStackView)
-        self.baseStackView.addArrangedSubview(self.inputBaseView)
+        self.baseStackView.addArrangedSubview(self.inputStackView)
         
         if let cancelButton = self.cancelButton {
             self.editStackView.addArrangedSubview(cancelButton)
@@ -194,49 +226,53 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         if #available(iOS 11.0, *) {
             self.baseStackView.sbu_constraint_equalTo(
                 leadingAnchor: self.safeAreaLayoutGuide.leadingAnchor,
-                leading: 20
+                leading: layoutInsets.left
             )
             self.baseStackView.sbu_constraint_equalTo(
                 topAnchor: self.safeAreaLayoutGuide.topAnchor,
-                top: 0
+                top: layoutInsets.top
             )
             self.baseStackView.sbu_constraint_equalTo(
                 trailingAnchor: self.safeAreaLayoutGuide.trailingAnchor,
-                trailing: -16
+                trailing: layoutInsets.right
             )
             self.baseStackView.sbu_constraint_equalTo(
                 bottomAnchor: self.safeAreaLayoutGuide.bottomAnchor,
-                bottom: 0
+                bottom: layoutInsets.bottom
             )
         } else {
             self.baseStackView.sbu_constraint(
                 equalTo: self,
-                leading: 20,
-                trailing: -16,
-                top: 0,
-                bottom: 0
+                leading: layoutInsets.left,
+                trailing: layoutInsets.right,
+                top: layoutInsets.top,
+                bottom: layoutInsets.bottom
             )
         }
         
         self.topSpace.sbu_constraint(width: self.baseStackView.frame.width, height: 0)
         
-        self.inputBaseView.sbu_constraint(width: self.baseStackView.frame.width)
-        self.inputStackView.sbu_constraint(
-            equalTo: self.inputBaseView,
-            leading: 0,
-            trailing: 0,
-            top: 0,
-            bottom: 0
-        )
+        self.inputStackView.sbu_constraint(width: self.baseStackView.frame.width)
         
         self.addButton?.sbu_constraint(width: 32, height: 38)
         self.textView?.sbu_constraint(equalTo: self.inputContentView, leading: 0, trailing: 0, top: 0, bottom: 0)
         if let textView = self.textView {
             self.placeholderLabel.sbu_constraint(equalTo: textView, leading: 14, top: 10)
+            self.setupTextViewHeight(textView: textView)
         }
-        self.textViewHeightConstraint = self.textView?.heightAnchor.constraint(equalToConstant: 38)
         self.sendButton?.sbu_constraint(width: 32, height: 38)
-        self.textViewHeightConstraint.isActive = true
+        
+        // leading/trailing spacing for textview
+        self.textViewLeadingPaddingView.translatesAutoresizingMaskIntoConstraints = false
+        self.textViewTrailingPaddingView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            self.textViewLeadingPaddingView.widthAnchor.constraint(
+                equalToConstant: self.textViewLeadingSpacing
+            ),
+            self.textViewTrailingPaddingView.widthAnchor.constraint(
+                equalToConstant: self.textViewTrailingSpacing
+            )
+        ])
 
         self.cancelButton?.sbu_constraint(width: 75)
         self.saveButton?.sbu_constraint(width: 75)
@@ -326,12 +362,12 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
     public func startEditMode(text: String) {
         self.textView?.text = text
         self.basedText = text
+        self.placeholderLabel.isHidden = !text.isEmpty
 
         self.addButton?.isHidden = true
         self.addButton?.alpha = 0
         
-        self.sendButton?.isHidden = true
-        self.sendButton?.alpha = 0
+        self.sendButton?.isHidden = !showsSendButton
         
         self.editView.isHidden = false
         self.editView.alpha = 1
@@ -348,7 +384,8 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
     public func endEditMode() {
         self.textView?.text = ""
         self.basedText = ""
-        
+        self.placeholderLabel.isHidden = false
+
         self.addButton?.isHidden = false
         self.addButton?.alpha = 1
         
@@ -408,24 +445,34 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
     // MARK: Common
     public func endTypingMode() {
         self.textView?.text = ""
-        self.sendButton?.isHidden = true
-        self.sendButton?.alpha = 0
+        self.sendButton?.isHidden = !showsSendButton
         self.endEditMode()
         self.layoutIfNeeded()
     }
-
+    
+    /// Setup textview's initial height.
+    /// The initial height will be set to the `textViewMinHeight` value.
+    ///
+    /// - Parameter textView: Your input text view.
+    /// - Since: 2.1.1
+    public func setupTextViewHeight(textView: UIView) {
+        self.textViewHeightConstraint = textView.heightAnchor.constraint(equalToConstant: self.textViewMinHeight)
+        self.textViewHeightConstraint?.isActive = true
+    }
+    
+    /// Updates textview's height depending on the content size..
+    /// `setupTextViewHeight(textView:)` must be called prior to this for this to work.
+    /// The min/max height of the text view can be modified by changing `textViewMinHeight` and `textViewMaxHeight` values.
     public func updateTextViewHeight() {
-        if let textView = self.textView {
-            self.placeholderLabel.isHidden = !textView.text.isEmpty
-            
-            switch textView.contentSize.height {
-            case ..<38:
-                self.textViewHeightConstraint.constant = 38
-            case 38...87:
-                self.textViewHeightConstraint.constant = textView.contentSize.height
-            default:
-                self.textViewHeightConstraint.constant = 87
-            }
+        guard let textViewContentHeight = self.textView?.contentSize.height else { return }
+        
+        switch textViewContentHeight {
+        case ..<self.textViewMinHeight:
+            self.textViewHeightConstraint?.constant = self.textViewMinHeight
+        case self.textViewMaxHeight...:
+            self.textViewHeightConstraint?.constant = self.textViewMaxHeight
+        default:
+            self.textViewHeightConstraint?.constant = textViewContentHeight
         }
     }
 
@@ -446,6 +493,7 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
             self,
             didSelectSend: self.textView?.text.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         )
+        self.placeholderLabel.isHidden = !(self.textView?.text.isEmpty ?? true)
         self.updateTextViewHeight()
     }
     
@@ -467,14 +515,16 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
 
     // MARK: UITextViewDelegate
     public func textViewDidChange(_ textView: UITextView) {
-        guard self.editView.isHidden else { self.updateTextViewHeight(); return }
-
-        let text = textView.text ?? ""
-        self.sendButton?.isHidden = text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-        self.sendButton?.alpha = text.isEmpty ? 0 : 1
+        self.placeholderLabel.isHidden = !textView.text.isEmpty
         self.updateTextViewHeight()
-
-        self.layoutIfNeeded()
+        
+        if self.editView.isHidden {
+            let text = textView.text ?? ""
+            self.sendButton?.isHidden = !showsSendButton &&
+                text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            
+            self.layoutIfNeeded()
+        }
     }
 
     public func textViewDidEndEditing(_ textView: UITextView) {

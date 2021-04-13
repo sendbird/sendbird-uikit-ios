@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SendBirdSDK
 
 @objcMembers
 public class SBUEmojiManager: NSObject {

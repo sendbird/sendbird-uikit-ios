@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SendBirdSDK
 
 open class SBUBaseChannelCell: UITableViewCell {
 

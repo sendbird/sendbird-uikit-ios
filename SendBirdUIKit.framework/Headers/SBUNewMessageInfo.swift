@@ -13,14 +13,7 @@ public typealias SBUNewMessageInfoHandler = () -> Void
 
 open class SBUNewMessageInfo: UIView {
     // MARK: - Properties (Public)
-    public lazy var messageInfoButton: UIButton? = _messageInfoButton
-    public var actionHandler: SBUNewMessageInfoHandler?
-    
-    // MARK: - Properties (Private)
-    let DefaultInfoButtonTag = 10001
-    var type: NewMessageInfoItemType = .tooltip
-
-    private lazy var _messageInfoButton: UIButton = {
+    public lazy var messageInfoButton: UIButton? = {
         let messageInfoButton = UIButton()
         messageInfoButton.layer.masksToBounds = true
         messageInfoButton.tag = DefaultInfoButtonTag
@@ -28,6 +21,12 @@ open class SBUNewMessageInfo: UIView {
         return messageInfoButton
     }()
     
+    public var actionHandler: SBUNewMessageInfoHandler?
+    
+    // MARK: - Properties (Private)
+    let DefaultInfoButtonTag = 10001
+    var type: NewMessageInfoItemType = .tooltip
+
     var theme: SBUComponentTheme = SBUTheme.componentTheme
     
     
@@ -45,11 +44,6 @@ open class SBUNewMessageInfo: UIView {
         super.init(frame: .zero)
         
         self.type = type
-        
-        if self.type == .button {
-            self.messageInfoButton = _messageInfoButton
-        }
-        
         self.setupViews()
         self.setupAutolayout()
     }

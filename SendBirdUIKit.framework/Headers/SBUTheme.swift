@@ -30,17 +30,17 @@ public class SBUTheme: NSObject {
                 messageSearchResultCellTheme: SBUMessageSearchResultCellTheme = .light
                 ) {
         
-        self._channelListTheme = channelListTheme
-        self._channelCellTheme = channelCellTheme
-        self._channelTheme = channelTheme
-        self._messageInputTheme = messageInputTheme
-        self._messageCellTheme = messageCellTheme
-        self._userListTheme = userListTheme
-        self._userCellTheme = userCellTheme
-        self._channelSettingsTheme = channelSettingsTheme
-        self._userProfileTheme = userProfileTheme
-        self._componentTheme = componentTheme
-        self._overlayTheme = overlayTheme
+        self.channelListTheme = channelListTheme
+        self.channelCellTheme = channelCellTheme
+        self.channelTheme = channelTheme
+        self.messageInputTheme = messageInputTheme
+        self.messageCellTheme = messageCellTheme
+        self.userListTheme = userListTheme
+        self.userCellTheme = userCellTheme
+        self.channelSettingsTheme = channelSettingsTheme
+        self.userProfileTheme = userProfileTheme
+        self.componentTheme = componentTheme
+        self.overlayTheme = overlayTheme
         self.messageSearchTheme = messageSearchTheme
         self.messageSearchResultCellTheme = messageSearchResultCellTheme
     }
@@ -119,64 +119,64 @@ public class SBUTheme: NSObject {
     
     // Channel List
     public static var channelListTheme: SBUChannelListTheme {
-        set { shared._channelListTheme = newValue }
-        get { return shared._channelListTheme }
+        set { shared.channelListTheme = newValue }
+        get { return shared.channelListTheme }
     }
     
     public static var channelCellTheme: SBUChannelCellTheme {
-        set { shared._channelCellTheme = newValue }
-        get { return shared._channelCellTheme }
+        set { shared.channelCellTheme = newValue }
+        get { return shared.channelCellTheme }
     }
     
     // Channel & Message
     public static var channelTheme: SBUChannelTheme {
-        set { shared._channelTheme = newValue }
-        get { return shared._channelTheme }
+        set { shared.channelTheme = newValue }
+        get { return shared.channelTheme }
     }
     
     public static var messageInputTheme: SBUMessageInputTheme {
-        set { shared._messageInputTheme = newValue }
-        get { return shared._messageInputTheme }
+        set { shared.messageInputTheme = newValue }
+        get { return shared.messageInputTheme }
     }
     
     public static var messageCellTheme: SBUMessageCellTheme {
-        set { shared._messageCellTheme = newValue }
-        get { return shared._messageCellTheme }
+        set { shared.messageCellTheme = newValue }
+        get { return shared.messageCellTheme }
     }
     
     // User List
     public static var userListTheme: SBUUserListTheme {
-        set { shared._userListTheme = newValue }
-        get { return shared._userListTheme }
+        set { shared.userListTheme = newValue }
+        get { return shared.userListTheme }
     }
     
     public static var userCellTheme: SBUUserCellTheme {
-        set { shared._userCellTheme = newValue }
-        get { return shared._userCellTheme }
+        set { shared.userCellTheme = newValue }
+        get { return shared.userCellTheme }
     }
     
     // Setting
     public static var channelSettingsTheme: SBUChannelSettingsTheme {
-        set { shared._channelSettingsTheme = newValue }
-        get { return shared._channelSettingsTheme }
+        set { shared.channelSettingsTheme = newValue }
+        get { return shared.channelSettingsTheme }
     }
     
     // User profile
     public static var userProfileTheme: SBUUserProfileTheme {
-        set { shared._userProfileTheme = newValue }
-        get { return shared._userProfileTheme }
+        set { shared.userProfileTheme = newValue }
+        get { return shared.userProfileTheme }
     }
     
     // Component
     public static var componentTheme: SBUComponentTheme {
-        set { shared._componentTheme = newValue }
-        get { return shared._componentTheme }
+        set { shared.componentTheme = newValue }
+        get { return shared.componentTheme }
     }
     
     // Overlay Specific
     public static var overlayTheme: SBUOverlayTheme {
-        set { shared._overlayTheme = newValue }
-        get { return shared._overlayTheme }
+        set { shared.overlayTheme = newValue }
+        get { return shared.overlayTheme }
     }
     
     public static var messageSearchTheme: SBUMessageSearchTheme {
@@ -194,29 +194,29 @@ public class SBUTheme: NSObject {
     private static var shared: SBUTheme = SBUTheme()
     
     // Channel List
-    var _channelListTheme: SBUChannelListTheme
-    var _channelCellTheme: SBUChannelCellTheme
+    private var channelListTheme: SBUChannelListTheme
+    private var channelCellTheme: SBUChannelCellTheme
     
     // Channel & Message
-    var _channelTheme: SBUChannelTheme
-    var _messageInputTheme: SBUMessageInputTheme
-    var _messageCellTheme: SBUMessageCellTheme
+    private var channelTheme: SBUChannelTheme
+    private var messageInputTheme: SBUMessageInputTheme
+    private var messageCellTheme: SBUMessageCellTheme
     
     // User List
-    var _userListTheme: SBUUserListTheme
-    var _userCellTheme: SBUUserCellTheme
+    private var userListTheme: SBUUserListTheme
+    private var userCellTheme: SBUUserCellTheme
     
     // Setting
-    var _channelSettingsTheme: SBUChannelSettingsTheme
+    private var channelSettingsTheme: SBUChannelSettingsTheme
     
     // User profile
-    var _userProfileTheme: SBUUserProfileTheme
+    private var userProfileTheme: SBUUserProfileTheme
     
     // Component
-    var _componentTheme: SBUComponentTheme
+    private var componentTheme: SBUComponentTheme
     
     // Overlay Specific
-    var _overlayTheme: SBUOverlayTheme
+    private var overlayTheme: SBUOverlayTheme
     
     // Message Search
     private var messageSearchTheme: SBUMessageSearchTheme
@@ -231,10 +231,10 @@ public class SBUOverlayTheme: NSObject {
                 messageInputTheme: SBUMessageInputTheme = .overlay,
                 messageCellTheme: SBUMessageCellTheme = .overlay,
                 componentTheme: SBUComponentTheme = .overlay) {
-        self._channelTheme = channelTheme
-        self._messageInputTheme = messageInputTheme
-        self._messageCellTheme = messageCellTheme
-        self._componentTheme = componentTheme
+        self.channelTheme = channelTheme
+        self.messageInputTheme = messageInputTheme
+        self.messageCellTheme = messageCellTheme
+        self.componentTheme = componentTheme
     }
 
     public override convenience init() {
@@ -242,33 +242,12 @@ public class SBUOverlayTheme: NSObject {
     }
     
     // Channel & Message
-    public var channelTheme: SBUChannelTheme {
-        set { self._channelTheme = newValue }
-        get { return _channelTheme }
-    }
-    
-    public var messageInputTheme: SBUMessageInputTheme {
-        set { self._messageInputTheme = newValue }
-        get { return _messageInputTheme }
-    }
-    
-    public var messageCellTheme: SBUMessageCellTheme {
-        set { self._messageCellTheme = newValue }
-        get { return _messageCellTheme }
-    }
+    public var channelTheme: SBUChannelTheme
+    public var messageInputTheme: SBUMessageInputTheme
+    public var messageCellTheme: SBUMessageCellTheme
 
     // Component
-    public var componentTheme: SBUComponentTheme {
-        set { self._componentTheme = newValue }
-        get { return _componentTheme }
-    }
-
-    // MARK: - Private property
-    
-    var _channelTheme: SBUChannelTheme
-    var _messageInputTheme: SBUMessageInputTheme
-    var _messageCellTheme: SBUMessageCellTheme
-    var _componentTheme: SBUComponentTheme
+    public var componentTheme: SBUComponentTheme
 }
 
 // MARK: - Channel List Theme

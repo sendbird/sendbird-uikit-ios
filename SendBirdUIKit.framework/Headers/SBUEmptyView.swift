@@ -20,7 +20,20 @@ open class SBUEmptyView: UIView {
     public lazy var statusImageView = UIImageView()
     public var statusLabel: UILabel = .init()
     public var theme: SBUComponentTheme = SBUTheme.componentTheme
-    public lazy var retryButton: UIButton = _retryButton
+    
+    public lazy var retryButton: UIButton = {
+        let retryButton = UIButton()
+         retryButton.setImage(
+             SBUIconSetType.iconRefresh.image(
+                 with: theme.emptyViewRetryButtonTintColor,
+                 to: SBUIconSetType.Metric.defaultIconSize
+             ),
+             for: .normal
+         )
+         retryButton.setTitle(SBUStringSet.Retry, for: .normal)
+         retryButton.addTarget(self, action: #selector(onClickRetry), for: .touchUpInside)
+         return retryButton
+     }()
 
     // MARK: - Properties (Private)
     var isOverlay = false
@@ -33,20 +46,6 @@ open class SBUEmptyView: UIView {
         return stackView
     }()
     
-    lazy var _retryButton: UIButton = {
-       let retryButton = UIButton()
-        retryButton.setImage(
-            SBUIconSetType.iconRefresh.image(
-                with: theme.emptyViewRetryButtonTintColor,
-                to: SBUIconSetType.Metric.defaultIconSize
-            ),
-            for: .normal
-        )
-        retryButton.setTitle(SBUStringSet.Retry, for: .normal)
-        retryButton.addTarget(self, action: #selector(onClickRetry), for: .touchUpInside)
-        return retryButton
-    }()
-
     
     // MARK: - Lifecycle
     override public init(frame: CGRect) {
@@ -131,42 +130,42 @@ open class SBUEmptyView: UIView {
             self.statusImageView.image = SBUIconSetType.iconChat.image(
                 with: theme.emptyViewStatusTintColor,
                 to: SBUIconSetType.Metric.iconEmptyView,
-                forceResizeCustomized: false
+                tintAndResize: false
             )
         case .noMessages:
             self.statusLabel.text = SBUStringSet.Empty_No_Messages
             self.statusImageView.image = SBUIconSetType.iconMessage.image(
                 with: theme.emptyViewStatusTintColor,
                 to: SBUIconSetType.Metric.iconEmptyView,
-                forceResizeCustomized: false
+                tintAndResize: false
             )
         case .noMutedMembers:
             self.statusLabel.text = SBUStringSet.Empty_No_Muted_Members
             self.statusImageView.image = SBUIconSetType.iconMute.image(
                 with: theme.emptyViewStatusTintColor,
                 to: SBUIconSetType.Metric.iconEmptyView,
-                forceResizeCustomized: false
+                tintAndResize: false
             )
         case .noBannedMembers:
             self.statusLabel.text = SBUStringSet.Empty_No_Banned_Members
             self.statusImageView.image = SBUIconSetType.iconBan.image(
                 with: theme.emptyViewStatusTintColor,
                 to: SBUIconSetType.Metric.iconEmptyView,
-                forceResizeCustomized: false
+                tintAndResize: false
             )
         case .noSearchResults:
             self.statusLabel.text = SBUStringSet.Empty_Search_Result
             self.statusImageView.image = SBUIconSetType.iconSearch.image(
                 with: theme.emptyViewStatusTintColor,
                 to: SBUIconSetType.Metric.iconEmptyView,
-                forceResizeCustomized: false
+                tintAndResize: false
             )
         case .error:
             self.statusLabel.text = SBUStringSet.Empty_Wrong
             self.statusImageView.image = SBUIconSetType.iconError.image(
                 with: theme.emptyViewStatusTintColor,
                 to: SBUIconSetType.Metric.iconEmptyView,
-                forceResizeCustomized: false
+                tintAndResize: false
             )
         }
     }

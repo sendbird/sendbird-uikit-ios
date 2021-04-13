@@ -11,33 +11,14 @@ import UIKit
 open class SBUUserCell: UITableViewCell {
     
     // MARK: - UI properties (Public)
-    public lazy var baseStackView: UIStackView = _baseStackView
-    public lazy var userImageView: UIImageView = _userImageView
-    public lazy var mutedStateImageView: UIImageView = _mutedStateImageView
-    public var userNameLabel = UILabel()
-    public lazy var operatorLabel: UILabel = _operatorLabel
-    public lazy var checkboxButton: UIButton = _checkboxButton
-    public lazy var moreButton: UIButton = _moreButton
-    public var separateView = UIView()
-
-    public var theme: SBUUserCellTheme = SBUTheme.userCellTheme
-    
-    // MARK: - Properties (Private)
-    private var loadImageSession: URLSessionTask? {
-        willSet {
-            loadImageSession?.cancel()
-        }
-    }
-    
-    // MARK: - UI properties (Private)
-    lazy var _baseStackView: UIStackView = {
+    public lazy var baseStackView: UIStackView = {
         let baseStackView = UIStackView()
         baseStackView.spacing = 16.0
         baseStackView.axis = .horizontal
         return baseStackView
     }()
     
-    lazy var _userImageView: UIImageView = {
+    public lazy var userImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
@@ -45,7 +26,7 @@ open class SBUUserCell: UITableViewCell {
         return imageView
     }()
     
-    lazy var _mutedStateImageView: UIImageView = {
+    public lazy var mutedStateImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.isHidden = true
         imageView.contentMode = .center
@@ -61,14 +42,16 @@ open class SBUUserCell: UITableViewCell {
         return imageView
     }()
     
-    lazy var _operatorLabel: UILabel = {
-       let label = UILabel()
-        label.isHidden = true
-        label.textAlignment = .right
-        return label
-    }()
+    public var userNameLabel = UILabel()
     
-    lazy var _checkboxButton: UIButton = {
+    public lazy var operatorLabel: UILabel = {
+        let label = UILabel()
+         label.isHidden = true
+         label.textAlignment = .right
+         return label
+     }()
+    
+    public lazy var checkboxButton: UIButton = {
         let button = UIButton()
         button.setImage(
             SBUIconSetType.iconCheckboxUnchecked.image(
@@ -89,7 +72,7 @@ open class SBUUserCell: UITableViewCell {
         return button
     }()
     
-    lazy var _moreButton: UIButton = {
+    public lazy var moreButton: UIButton = {
         let button = UIButton()
         button.setImage(
             SBUIconSetType.iconMore.image(
@@ -109,6 +92,17 @@ open class SBUUserCell: UITableViewCell {
         button.addTarget(self, action: #selector(onClickMoreMenu), for: .touchUpInside)
         return button
     }()
+    
+    public var separateView = UIView()
+
+    public var theme: SBUUserCellTheme = SBUTheme.userCellTheme
+    
+    // MARK: - Properties (Private)
+    private var loadImageSession: URLSessionTask? {
+        willSet {
+            loadImageSession?.cancel()
+        }
+    }
     
     
     // MARK: - Logic properties (Public)

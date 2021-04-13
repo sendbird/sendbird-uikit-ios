@@ -36,7 +36,7 @@ open class SBUInviteUserViewController: SBUBaseViewController {
     
     
     // MARK: - UI properties (Private)
-    private lazy var _titleView: SBUNavigationTitleView = {
+    private lazy var defaultTitleView: SBUNavigationTitleView = {
         var titleView: SBUNavigationTitleView
         if #available(iOS 11, *) {
             titleView = SBUNavigationTitleView()
@@ -53,7 +53,7 @@ open class SBUInviteUserViewController: SBUBaseViewController {
         return titleView
     }()
 
-    private lazy var _leftBarButton: UIBarButtonItem = {
+    private lazy var cancelButton: UIBarButtonItem = {
         let leftItem =  UIBarButtonItem(
             title: SBUStringSet.Cancel,
             style: .plain,
@@ -64,7 +64,7 @@ open class SBUInviteUserViewController: SBUBaseViewController {
         return leftItem
     }()
     
-    private lazy var _rightBarButton: UIBarButtonItem = {
+    private lazy var inviteButton: UIBarButtonItem = {
         let rightItem =  UIBarButtonItem(
             title: SBUStringSet.Invite,
             style: .plain,
@@ -180,13 +180,13 @@ open class SBUInviteUserViewController: SBUBaseViewController {
         SBULog.info("")
         
         if self.titleView == nil {
-            self.titleView = _titleView
+            self.titleView = self.defaultTitleView
         }
         if self.leftBarButton == nil {
-            self.leftBarButton = _leftBarButton
+            self.leftBarButton = self.cancelButton
         }
         if self.rightBarButton == nil {
-            self.rightBarButton = _rightBarButton
+            self.rightBarButton = self.inviteButton
         }
         
         // navigation bar
@@ -273,12 +273,6 @@ open class SBUInviteUserViewController: SBUBaseViewController {
         super.viewWillAppear(animated)
         
         self.updateStyles()
-    }
-    
-    open override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        SBULoading.stop()
     }
     
     deinit {

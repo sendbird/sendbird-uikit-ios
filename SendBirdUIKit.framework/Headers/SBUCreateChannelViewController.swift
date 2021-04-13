@@ -36,7 +36,7 @@ open class SBUCreateChannelViewController: SBUBaseViewController {
     
     
     // MARK: - UI properties (Private)
-    private lazy var _titleView: SBUNavigationTitleView = {
+    private lazy var defaultTitleView: SBUNavigationTitleView = {
         var titleView: SBUNavigationTitleView
         if #available(iOS 11, *) {
             titleView = SBUNavigationTitleView()
@@ -50,17 +50,18 @@ open class SBUCreateChannelViewController: SBUBaseViewController {
         return titleView
     }()
     
-    private lazy var _leftBarButton: UIBarButtonItem = {
-        return SBUCommonViews.backButton(vc: self, selector: #selector(onClickBack))
-    }()
+    private lazy var backButton: UIBarButtonItem = SBUCommonViews.backButton(
+        vc: self,
+        selector: #selector(onClickBack)
+    )
     
-    private lazy var _rightBarButton: UIBarButtonItem = {
-            let rightItem =  UIBarButtonItem(
-                title: SBUStringSet.CreateChannel_Create(0),
-                style: .plain,
-                target: self,
-                action: #selector(onClickCreate)
-            )
+    private lazy var createButton: UIBarButtonItem = {
+        let rightItem =  UIBarButtonItem(
+            title: SBUStringSet.CreateChannel_Create(0),
+            style: .plain,
+            target: self,
+            action: #selector(onClickCreate)
+        )
         rightItem.setTitleTextAttributes([.font : SBUFontSet.button2], for: .normal)
         return rightItem
     }()
@@ -119,13 +120,13 @@ open class SBUCreateChannelViewController: SBUBaseViewController {
         SBULog.info("")
         
         if self.titleView == nil {
-            self.titleView = _titleView
+            self.titleView = self.defaultTitleView
         }
         if self.leftBarButton == nil {
-            self.leftBarButton = _leftBarButton
+            self.leftBarButton = self.backButton
         }
         if self.rightBarButton == nil {
-            self.rightBarButton = _rightBarButton
+            self.rightBarButton = self.createButton
         }
         
         // navigation bar
@@ -214,12 +215,6 @@ open class SBUCreateChannelViewController: SBUBaseViewController {
         super.viewWillAppear(animated)
 
         self.updateStyles()
-    }
-    
-    open override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        SBULoading.stop()
     }
     
     deinit {

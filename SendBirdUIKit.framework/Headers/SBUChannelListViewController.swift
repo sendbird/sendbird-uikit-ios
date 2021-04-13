@@ -27,12 +27,10 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
             self.navigationItem.rightBarButtonItem = self.rightBarButton
         }
     }
+    
     public var emptyView: UIView? = nil {
         didSet {
             self.tableView.backgroundView = self.emptyView
-            if let emptyView = self.emptyView as? SBUEmptyView {
-                emptyView.reloadData((self.channelList.count == 0) ? .noChannels : .none)
-            }
         }
     }
     
@@ -52,7 +50,7 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
 
 
     // MARK: - UI properties (Private)
-    private lazy var _titleView: SBUNavigationTitleView = {
+    private lazy var defaultTitleView: SBUNavigationTitleView = {
         var titleView: SBUNavigationTitleView
         if #available(iOS 11, *) {
             titleView = SBUNavigationTitleView()
@@ -67,26 +65,25 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
         return titleView
     }()
     
-    private lazy var _leftBarButton: UIBarButtonItem = {
-        return SBUCommonViews.backButton(vc: self, selector: #selector(onClickBack))
-    }()
+    private lazy var backButton: UIBarButtonItem = SBUCommonViews.backButton(
+        vc: self,
+        selector: #selector(onClickBack)
+    )
     
-    private lazy var _rightBarButton: UIBarButtonItem = {
-        return UIBarButtonItem(
-            image: SBUIconSetType.iconCreate.image(to: SBUIconSetType.Metric.defaultIconSize),
-            style: .plain,
-            target: self,
-            action: #selector(onClickCreate)
-        )
-    }()
+    private lazy var createChannelButton: UIBarButtonItem = UIBarButtonItem(
+        image: SBUIconSetType.iconCreate.image(to: SBUIconSetType.Metric.defaultIconSize),
+        style: .plain,
+        target: self,
+        action: #selector(onClickCreate)
+    )
     
-    private lazy var _createChannelTypeSelector: SBUCreateChannelTypeSelector = {
+    private lazy var defaultCreateChannelTypeSelector: SBUCreateChannelTypeSelector = {
         let view = SBUCreateChannelTypeSelector(delegate: self)
         view.isHidden = true
         return view
     }()
     
-    private lazy var _emptyView: SBUEmptyView = {
+    private lazy var defaultEmptyView: SBUEmptyView? = {
         let emptyView = SBUEmptyView()
         emptyView.type = EmptyViewType.none
         emptyView.delegate = self
@@ -151,16 +148,16 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
         SBULog.info("")
         
         if self.titleView == nil {
-            self.titleView = _titleView
+            self.titleView = self.defaultTitleView
         }
         if self.leftBarButton == nil {
-            self.leftBarButton = _leftBarButton
+            self.leftBarButton = self.backButton
         }
         if self.rightBarButton == nil {
-            self.rightBarButton = _rightBarButton
+            self.rightBarButton = self.createChannelButton
         }
         if self.emptyView == nil {
-            self.emptyView = _emptyView;
+            self.emptyView = self.defaultEmptyView
         }
         
         // tableview
@@ -269,7 +266,7 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
             if let error = error { self.didReceiveError(error.localizedDescription) }
             
             if SBUAvailable.isSupportSuperGroupChannel() || SBUAvailable.isSupportBroadcastChannel() {
-                self.createChannelTypeSelector = self._createChannelTypeSelector
+                self.createChannelTypeSelector = self.defaultCreateChannelTypeSelector
                 
                 if let createChannelTypeSelector = self.createChannelTypeSelector {
                     self.navigationController?.view.addSubview(createChannelTypeSelector)
@@ -289,14 +286,6 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
         self.loadChannelChangeLogs(hasMore: true, token: self.lastUpdatedToken)
         
         self.updateStyles()
-    }
-    
-    open override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-
-        SBUUtils.dismissPresentedOnDisappear(presentedViewController: self.presentedViewController)
-        
-        SBULoading.stop()
     }
     
     deinit {

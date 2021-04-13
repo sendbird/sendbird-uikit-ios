@@ -7,11 +7,11 @@
 //
 
 import UIKit
+import SendBirdSDK
 import Photos
 import MobileCoreServices
 import AVKit
 import SafariServices
-import SendBirdSDK
 
 @objcMembers
 open class SBUChannelViewController: SBUBaseChannelViewController {
@@ -21,7 +21,7 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
     
     /// You can use the customized view and a view that inherits `SBUNewMessageInfo`.
     /// If you use a view that inherits SBUNewMessageInfo, you can change the button and their action.
-    public lazy var newMessageInfoView: UIView? = _newMessageInfoView
+    public lazy var newMessageInfoView: UIView? = SBUNewMessageInfo()
 
     public var titleView: UIView? = nil {
         didSet {
@@ -44,8 +44,17 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
             self.navigationItem.rightBarButtonItem = self.useRightBarButtonItem ? self.rightBarButton : nil
         }
     }
-    public lazy var channelStateBanner: UIView? = _channelStateBanner
-    public lazy var emptyView: UIView? = _emptyView
+    
+    public lazy var channelStateBanner: UIView? = {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.text = SBUStringSet.Channel_State_Banner_Frozen
+        label.layer.masksToBounds = true
+        label.layer.cornerRadius = 5
+        label.isHidden = true
+        return label
+    }()
+    
     public lazy var scrollBottomView: UIView? = {
         let view: UIView = UIView(frame: CGRect(origin: .zero, size: SBUConstant.scrollBottomButtonSize))
         let theme = SBUTheme.componentTheme
@@ -80,8 +89,6 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
         
         return view
     }()
-    
-    public var theme: SBUChannelTheme = SBUTheme.channelTheme
 
     // for cell
     public private(set) var adminMessageCell: SBUBaseMessageCell?
@@ -92,7 +99,7 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
     
     
     // MARK: - UI properties (Private)
-    private lazy var _titleView: SBUChannelTitleView = {
+    private lazy var defaultTitleView: SBUChannelTitleView = {
         var titleView: SBUChannelTitleView
         titleView = SBUChannelTitleView(
             frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 50)
@@ -100,60 +107,32 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
 
         return titleView
     }()
-
-    private lazy var _leftBarButton: UIBarButtonItem = {
-        return SBUCommonViews.backButton(vc: self, selector: #selector(onClickBack))
-    }()
-
-    private lazy var _rightBarButton: UIBarButtonItem = {
-        return UIBarButtonItem(
-            image: SBUIconSetType.iconInfo.image(to: SBUIconSetType.Metric.defaultIconSize),
-            style: .plain,
-            target: self,
-            action: #selector(onClickSetting)
-        )
-    }()
     
-    private lazy var _channelStateBanner: UILabel = {
-        let label = UILabel()
-        label.textAlignment = .center
-        label.text = SBUStringSet.Channel_State_Banner_Frozen
-        label.layer.masksToBounds = true
-        label.layer.cornerRadius = 5
-        label.isHidden = true
-        return label
-    }()
+    private lazy var backButton: UIBarButtonItem = SBUCommonViews.backButton(
+        vc: self,
+        selector: #selector(onClickBack)
+    )
     
-    private lazy var _newMessageInfoView: SBUNewMessageInfo = {
-        return SBUNewMessageInfo()
-    }()
-    
-    private lazy var _emptyView: SBUEmptyView = {
-        let emptyView = SBUEmptyView()
-        emptyView.type = EmptyViewType.none
-        emptyView.delegate = self
-        return emptyView
-    }()
+    private lazy var infoButton: UIBarButtonItem = UIBarButtonItem(
+        image: SBUIconSetType.iconInfo.image(
+            to: SBUIconSetType.Metric.defaultIconSize
+        ),
+        style: .plain,
+        target: self,
+        action: #selector(onClickSetting)
+    )
     
     let spacer = UIView()
 
     private var newMessagesCount: Int = 0
-    private var touchedPoint: CGPoint = .zero
 
     
     // MARK: - Logic properties (Public)
     
     /// This object is used to import a list of messages, send messages, modify messages, and so on, and is created during initialization.
-    public private(set) var channel: SBDGroupChannel? {
-        didSet {
-            // set from channelUrl
-            if channel != nil {
-                self.initViewModel(startingPoint: self.startingPoint)
-            }
-        }
+    public var channel: SBDGroupChannel? {
+        return super.baseChannel as? SBDGroupChannel
     }
-    public private(set) var channelUrl: String?
-    public let startingPoint: Int64?
     public var highlightInfo: SBUHighlightMessageInfo? = nil
     
     /// To decide whether to use right bar button item or not
@@ -162,14 +141,6 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
             self.navigationItem.rightBarButtonItem = useRightBarButtonItem ? self.rightBarButton : nil
         }
     }
-    
-    /// This object has a list of all success messages synchronized with the server.
-    @SBUAtomic public private(set) var messageList: [SBDBaseMessage] = []
-    /// This object has a list of all messages.
-    @SBUAtomic public private(set) var fullMessageList: [SBDBaseMessage] = []
-    
-    /// This object is used in the user message in being edited.
-    public private(set) var inEditingMessage: SBDUserMessage? = nil
 
     /// This object is used before response from the server
     @available(*, deprecated, message: "deprecated in 1.2.10")
@@ -187,36 +158,15 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
     
     // MARK: - Logic properties (Private)
     
-    private var channelViewModel: SBUChannelViewModel? {
-        willSet {
-            channelViewModel?.dispose()
-        }
-        didSet {
-            self.bindViewModel()
-        }
-    }
-    
-    /// This is a params used to get a list of messages. Only getter is provided, please use initialization function to set params directly.
-    /// - note: For params properties, see `SBDMessageListParams` class.
-    /// - Since: 1.0.11
-    public var messageListParams: SBDMessageListParams {
-        return self.channelViewModel?.messageListParams ?? self.customizedMessageListParams ?? SBDMessageListParams()
-    }
-    private var customizedMessageListParams: SBDMessageListParams? = nil
-
-    var lastSeenIndexPath: IndexPath?
-    
     // MARK: - Lifecycle
     @available(*, unavailable, renamed: "SBUChannelViewController(channelUrl:)")
     required public init?(coder: NSCoder) {
-        self.startingPoint = nil
         super.init(coder: coder)
         SBULog.info("")
     }
     
     @available(*, unavailable, renamed: "SBUChannelViewController(channelUrl:)")
     public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        self.startingPoint = nil
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         SBULog.info("")
     }
@@ -235,14 +185,8 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
     /// - Parameter channel: Channel object
     /// - Since: 1.0.11
     public init(channel: SBDGroupChannel, messageListParams: SBDMessageListParams? = nil) {
-        self.startingPoint = nil
-        super.init(nibName: nil, bundle: nil)
+        super.init(baseChannel: channel, messageListParams: messageListParams)
         SBULog.info("")
-        
-        self.channel = channel
-        self.channelUrl = channel.channelUrl
-
-        self.customizedMessageListParams = messageListParams
     }
     
     /// If you don't have channel object and have channelUrl, use this initialize function. And, if you have own message list params, please set it. If not set, it is used as the default value.
@@ -258,14 +202,9 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
     /// - note: The `reverse` and the `previousResultSize` properties in the `SBDMessageListParams` are set in the UIKit. Even though you set that property it will be ignored.
     /// - Parameter channelUrl: Channel url string
     /// - Since: 1.0.11
-    public init(channelUrl: String, messageListParams: SBDMessageListParams? = nil) {
-        self.startingPoint = nil
-        super.init(nibName: nil, bundle: nil)
+    public override init(channelUrl: String, messageListParams: SBDMessageListParams? = nil) {
+        super.init(channelUrl: channelUrl, messageListParams: messageListParams)
         SBULog.info("")
-        
-        self.channelUrl = channelUrl
-
-        self.customizedMessageListParams = messageListParams
     }
     
     /// Use this initializer to enter a channel to start from a specific timestamp..
@@ -276,13 +215,9 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
     ///     - messageListParams: `SBDMessageListParams` object to be used when loading messages.
     ///
     /// - Since: 2.1.0
-    public init(channelUrl: String, startingPoint: Int64, messageListParams: SBDMessageListParams? = nil) {
-        self.startingPoint = startingPoint
-        super.init(nibName: nil, bundle: nil)
+    public override init(channelUrl: String, startingPoint: Int64, messageListParams: SBDMessageListParams? = nil) {
+        super.init(channelUrl: channelUrl, startingPoint: startingPoint, messageListParams: messageListParams)
         SBULog.info("")
-        
-        self.channelUrl = channelUrl
-        self.customizedMessageListParams = messageListParams
     }
     
     open override func loadView() {
@@ -290,13 +225,13 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
         SBULog.info("")
         
         if self.titleView == nil {
-            self.titleView = _titleView
+            self.titleView = self.defaultTitleView
         }
         if self.leftBarButton == nil {
-            self.leftBarButton = _leftBarButton
+            self.leftBarButton = self.backButton
         }
         if self.rightBarButton == nil {
-            self.rightBarButton = _rightBarButton
+            self.rightBarButton = self.infoButton
         }
         
         // navigation bar
@@ -539,7 +474,6 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
     
     deinit {
         SBULog.info("")
-        self.disposeViewModel()
         SBDMain.removeChannelDelegate(forIdentifier: self.description)
         SBDMain.removeConnectionDelegate(forIdentifier: self.description)
         NotificationCenter.default.removeObserver(self)
@@ -547,464 +481,12 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
     
     // MARK: - View Binding
     
-    /// Recreates the view model, loading initial messages from given starting point.
-    /// - Parameters:
-    ///     - startingPoint: The starting point timestamp of the messages. `nil` to start from the latest.
-    ///     - showIndicator: Whether to show loading indicator on loading the initial messages.
-    private func initViewModel(startingPoint: Int64?, showIndicator: Bool = true) {
-        guard let channel = self.channel else {
-            SBULog.warning("Something wrong. Channel object is nil.")
-            return
-        }
+    override func createViewModel(startingPoint: Int64?, showIndicator: Bool = true) {
+        super.createViewModel(startingPoint: startingPoint, showIndicator: showIndicator)
         
         self.setEditMode(for: nil)
-        
-        let cachedMessages = self.channelViewModel?.messageCache.flush(with: [])
-
-        self.channelViewModel = SBUChannelViewModel(channel: channel, customizedMessageListParams: self.customizedMessageListParams)
-        self.channelViewModel?.loadInitialMessages(startingPoint: startingPoint,
-                                                   showIndicator: showIndicator,
-                                                   initialMessages: cachedMessages)
-    }
-
-    private func bindViewModel() {
-        SBULog.info("bindViewModel")
-        guard let channelViewModel = self.channelViewModel else { return }
-        
-        channelViewModel.loadingObservable.observe { [weak self] loadingState in
-            guard let _ = self else { return }
-            
-            if loadingState {
-                self?.shouldShowLoadingIndicator()
-            } else {
-                self?.shouldDismissLoadingIndicator()
-            }
-        }
-        channelViewModel.errorObservable.observe { [weak self] error in
-            guard let self = self else { return }
-            
-            if self.messageList.isEmpty {
-                if let emptyView = self.emptyView as? SBUEmptyView {
-                    emptyView.reloadData(self.fullMessageList.isEmpty ? .error : .none)
-                }
-            }
-            
-            self.didReceiveError(error.localizedDescription)
-        }
-        
-        channelViewModel.initialLoadObservable.observe { [weak self] messages in
-            guard let self = self else { return }
-            SBULog.info("Initial messages count : \(messages.count)")
-            
-            self.shouldDismissLoadingIndicator()
-            
-            if messages.isEmpty {
-                SBULog.info("Fetched empty messages.")
-                if let emptyView = self.emptyView as? SBUEmptyView {
-                    emptyView.reloadData(.noMessages)
-                }
-            }
-            
-            let firstVisibleIndexPath = self.tableView.indexPathsForVisibleRows?.first ?? IndexPath(row: 0, section: 0)
-            let firstRect = self.tableView.rectForRow(at: firstVisibleIndexPath)
-            SBULog.error("firstVisibleIndexPath : \(firstVisibleIndexPath) firstrectg : \(firstRect), offset : \(self.tableView.contentOffset)")
-            
-            self.clearMessageList()
-            self.upsertMessagesInList(messages: messages, needReload: true)
-            
-            self.tableView.layoutIfNeeded()
-
-            if let startingPoint = self.channelViewModel?.startingPoint,
-               let index = self.fullMessageList.firstIndex(where: { $0.createdAt <= startingPoint }) {
-                SBULog.info("Scrolling to : \(index)")
-                self.scrollTableViewTo(row: index, at: .middle)
-            } else {
-                self.scrollTableViewTo(row: 0)
-            }
-        }
-        
-        channelViewModel.messageFetchedObservable.observe { [weak self] upsertedMessages, keepScroll in
-            guard let self = self else { return }
-            SBULog.info("Fetched : \(upsertedMessages.count), keepScroll : \(keepScroll)")
-            
-            guard !upsertedMessages.isEmpty else {
-                SBULog.info("Fetched empty messages.")
-                return
-            }
-            
-            if keepScroll {
-                let firstVisibleIndexPath = self.tableView.indexPathsForVisibleRows?.first ?? IndexPath(row: 0, section: 0)
-                var nextInsertedCount = 0
-                if let newestMessage = self.messageList.first {
-                    // only filter out messages inserted at the bottom (newer) of current visible item
-                    nextInsertedCount = upsertedMessages
-                        .filter({ $0.createdAt > newestMessage.createdAt })
-                        .filter({ !SBUUtils.contains(messageId: $0.messageId, in: self.messageList) }).count
-                }
-                
-                SBULog.info("New messages inserted : \(nextInsertedCount)")
-                self.lastSeenIndexPath = IndexPath(row: firstVisibleIndexPath.row + nextInsertedCount, section: 0)
-            }
-            
-            self.upsertMessagesInList(messages: upsertedMessages, needReload: true)
-        }
-        
-        channelViewModel.messageUpdatedObservable.observe { [weak self] updatedMessages in
-            guard let self = self else { return }
-            
-            let messagesToUpdate = updatedMessages.filter { SBUUtils.findIndex(of: $0, in: self.messageList) != nil }
-            SBULog.info("UpdatedMessages : \(updatedMessages.count), messagesToUpdate : \(messagesToUpdate)")
-            
-            guard !messagesToUpdate.isEmpty else { return }
-            self.upsertMessagesInList(messages: messagesToUpdate, needReload: true)
-        }
-        channelViewModel.deletedMessageFetchedObservable.observe { [weak self] deletedMessageIds in
-            guard !deletedMessageIds.isEmpty else { return }
-            self?.deleteMessagesInList(messageIds: deletedMessageIds, needReload: false)
-        }
     }
     
-    private func disposeViewModel() {
-        self.channelViewModel?.dispose()
-    }
-    
-    
-    // MARK: - Sending messages
-    
-    /// Sends a user message with only text.
-    /// - Parameter text: String value
-    /// - Since: 1.0.9
-    public func sendUserMessage(text: String) {
-        let text = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard let messageParams = SBDUserMessageParams(message: text) else { return }
-        
-        SBUGlobalCustomParams.userMessageParamsSendBuilder?(messageParams)
-        
-        self.sendUserMessage(messageParams: messageParams)
-    }
-    
-    /// Sends a user messag with messageParams.
-    ///
-    /// You can send a message by setting various properties of MessageParams.
-    /// - Parameter messageParams: `SBDUserMessageParams` class object
-    /// - Since: 1.0.9
-    public func sendUserMessage(messageParams: SBDUserMessageParams) {
-        SBULog.info("[Request] Send user message")
-        
-        let preSendMessage = self.channel?.sendUserMessage(with: messageParams)
-        { [weak self] userMessage, error in
-            if (error != nil) {
-                SBUPendingMessageManager.shared.upsertPendingMessage(
-                    channelUrl: userMessage?.channelUrl,
-                    message: userMessage
-                )
-            } else {
-                SBUPendingMessageManager.shared.removePendingMessage(
-                    channelUrl: userMessage?.channelUrl,
-                    requestId: userMessage?.requestId
-                )
-            }
-            
-            guard let self = self else { return }
-            
-            if let error = error {
-                self.sortAllMessageList(needReload: true)
-                self.didReceiveError(error.localizedDescription)
-                SBULog.error("[Failed] Send user message request: \(error.localizedDescription)")
-                return
-            }
-            
-            guard let message = userMessage else { return }
-            SBULog.info("[Succeed] Send user message: \(message.description)")
-              
-            self.upsertMessagesInList(messages: [message], needReload: true)
-            self.channel?.markAsRead()
-        }
-               
-        SBUPendingMessageManager.shared.upsertPendingMessage(
-            channelUrl: self.channel?.channelUrl,
-            message: preSendMessage
-        )
-        
-        self.sortAllMessageList(needReload: true)
-        self.messageInputView.endTypingMode()
-        self.channel?.endTyping()
-        self.scrollToBottom(animated: false)
-    }
-    
-    /// Sends a file message with file data, file name, mime type.
-    /// - Parameters:
-    ///   - fileData: `Data` class object
-    ///   - fileName: file name. Used when displayed in channel list.
-    ///   - mimeType: file's mime type.
-    /// - Since: 1.0.9
-    public func sendFileMessage(fileData: Data?, fileName: String, mimeType: String) {
-        guard let fileData = fileData else { return }
-        let messageParams = SBDFileMessageParams(file: fileData)!
-        messageParams.fileName = fileName
-        messageParams.mimeType = mimeType
-        messageParams.fileSize = UInt(fileData.count)
-        
-        if let image = UIImage(data: fileData) {
-            let thumbnailSize = SBDThumbnailSize.make(withMaxCGSize: image.size)
-            messageParams.thumbnailSizes = [thumbnailSize]
-        }
-        
-        SBUGlobalCustomParams.fileMessageParamsSendBuilder?(messageParams)
-        
-        self.sendFileMessage(messageParams: messageParams)
-    }
-
-    /// Sends a file message with messageParams.
-    ///
-    /// You can send a file message by setting various properties of MessageParams.
-    /// - Parameter messageParams: `SBDFileMessageParams` class object
-    /// - Since: 1.0.9
-    public func sendFileMessage(messageParams: SBDFileMessageParams) {
-        /*********************************
-          Thumbnail is a premium feature.
-        ***********************************/
-        guard let channel = self.channel else { return }
-        
-        SBULog.info("[Request] Send file message")
-        var preSendMessage: SBDFileMessage?
-        preSendMessage = channel.sendFileMessage(
-            with: messageParams,
-            progressHandler: { bytesSent, totalBytesSent, totalBytesExpectedToSend in
-                //// If need reload cell for progress, call reload action in here.
-                guard let requestId = preSendMessage?.requestId else { return }
-                let fileTransferProgress = CGFloat(totalBytesSent)/CGFloat(totalBytesExpectedToSend)
-                SBULog.info("File message transfer progress: \(requestId) - \(fileTransferProgress)")
-            },
-            completionHandler: { [weak self] fileMessage, error in
-                if (error != nil) {
-                    SBUPendingMessageManager.shared.upsertPendingMessage(
-                        channelUrl: fileMessage?.channelUrl,
-                        message: fileMessage
-                    )
-                } else {
-                    SBUPendingMessageManager.shared.removePendingMessage(
-                        channelUrl: fileMessage?.channelUrl,
-                        requestId: fileMessage?.requestId
-                    )
-                }
-                
-                guard let self = self else { return }
-                if let error = error {
-                    self.sortAllMessageList(needReload: true)
-                    self.didReceiveError(error.localizedDescription)
-                    SBULog.error("""
-                        [Failed] Send file message request:
-                        \(error.localizedDescription)
-                        """)
-                    return
-                }
-                
-                guard let message = fileMessage else { return }
-                
-                SBULog.info("[Succeed] Send file message: \(message.description)")
-                
-                self.upsertMessagesInList(messages: [message], needReload: true)
-                self.channel?.markAsRead()
-            })
-        
-        SBUPendingMessageManager.shared.upsertPendingMessage(
-            channelUrl: self.channel?.channelUrl,
-            message: preSendMessage
-        )
-        
-        SBUPendingMessageManager.shared.addFileInfo(
-            requestId: preSendMessage?.requestId,
-            params: messageParams
-        )
-        
-        self.sortAllMessageList(needReload: true)
-    }
-    
-    /// Resends a message with failedMessage object.
-    /// - Parameter failedMessage: `SBDBaseMessage` class based failed object
-    /// - Since: 1.0.9
-    public func resendMessage(failedMessage: SBDBaseMessage) {
-        if let failedMessage = failedMessage as? SBDUserMessage {
-            SBULog.info("[Request] Resend failed user message")
-            
-            let pendingMessage = self.channel?.resendUserMessage(
-                with: failedMessage,
-                completionHandler: { [weak self] userMessage, error in
-                    if (error != nil) {
-                        SBUPendingMessageManager.shared.upsertPendingMessage(
-                            channelUrl: userMessage?.channelUrl,
-                            message: userMessage
-                        )
-                    } else {
-                        SBUPendingMessageManager.shared.removePendingMessage(
-                            channelUrl: userMessage?.channelUrl,
-                            requestId: userMessage?.requestId
-                        )
-                    }
-                    
-                    guard let self = self else { return }
-                    if let error = error {
-                        self.sortAllMessageList(needReload: true)
-                        self.didReceiveError(error.localizedDescription)
- 
-                        SBULog.error("""
-                            [Failed] Resend failed user message request:
-                            \(error.localizedDescription)\n
-                            \(failedMessage)
-                            """)
-                        return
-                    }
-                    
-                    guard let message = userMessage else { return }
-                    
-                    self.upsertMessagesInList(messages: [message], needReload: true)
-                    self.channel?.markAsRead()
-            })
-            
-            SBUPendingMessageManager.shared.upsertPendingMessage(
-                channelUrl: self.channel?.channelUrl,
-                message: pendingMessage
-            )
-        } else if let failedMessage = failedMessage as? SBDFileMessage {
-            var data: Data? = nil
-
-            if let fileInfo = SBUPendingMessageManager.shared.getFileInfo(
-                requestId: failedMessage.requestId) {
-                data = fileInfo.file
-            }
-
-            SBULog.info("[Request] Resend failed file message")
-            
-            let pendingMessage = self.channel?.resendFileMessage(
-                with: failedMessage,
-                binaryData: data,
-                progressHandler: { (bytesSent, totalBytesSent, totalBytesExpectedToSend) in
-                    //// If need reload cell for progress, call reload action in here.
-                    // self.tableView.reloadData()
-                },
-                completionHandler: { [weak self] (fileMessage, error) in
-                    if (error != nil) {
-                        SBUPendingMessageManager.shared.upsertPendingMessage(
-                            channelUrl: fileMessage?.channelUrl,
-                            message: fileMessage
-                        )
-                    } else {
-                        SBUPendingMessageManager.shared.removePendingMessage(
-                            channelUrl: fileMessage?.channelUrl,
-                            requestId: fileMessage?.requestId
-                        )
-                    }
-                    
-                    guard let self = self else { return }
-                    if let error = error {
-                        self.sortAllMessageList(needReload: true)
-                        self.didReceiveError(error.localizedDescription)
-                        SBULog.error("""
-                            [Failed] Resend failed file message request:
-                            \(error.localizedDescription)\n
-                            \(failedMessage)
-                            """)
-                        return
-                    }
-                    
-                    guard let message = fileMessage else { return }
-                    SBULog.info("[Succeed] Resend failed file message: \(message.description)")
-
-                    self.upsertMessagesInList(messages: [message], needReload: true)
-                    self.channel?.markAsRead()
-                })
-            
-            SBUPendingMessageManager.shared.upsertPendingMessage(
-                channelUrl: self.channel?.channelUrl,
-                message: pendingMessage
-            )
-        }
-    }
-    
-    /// Updates a user message with message object.
-    /// - Parameters:
-    ///   - message: `SBDUserMessage` object to update
-    ///   - text: String to be updated
-    /// - Since: 1.0.9
-    public func updateUserMessage(message: SBDUserMessage, text: String) {
-        let text = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard let messageParams = SBDUserMessageParams(message: text) else { return }
-        
-        SBUGlobalCustomParams.userMessageParamsUpdateBuilder?(messageParams)
-        
-        self.updateUserMessage(message: message, messageParams: messageParams)
-    }
-    
-    /// Updates a user message with message object and messageParams.
-    ///
-    /// You can update messages by setting various properties of MessageParams.
-    /// - Parameters:
-    ///   - message: `SBDUserMessage` object to update
-    ///   - messageParams: `SBDUserMessageParams` class object
-    /// - Since: 1.0.9
-    public func updateUserMessage(message: SBDUserMessage, messageParams: SBDUserMessageParams) {
-        SBULog.info("[Request] Update user message")
-        
-        self.channel?.updateUserMessage(
-            withMessageId: message.messageId,
-            userMessageParams: messageParams) { [weak self] updatedMessage, error in
-                guard let self = self else { return }
-                if let error = error {
-                    self.didReceiveError(error.localizedDescription)
-                    SBULog.error("""
-                        [Failed] Send user message request:
-                        \(String(error.localizedDescription))
-                        """)
-                    return
-                }
-                
-                guard let updatedMessage = updatedMessage else {
-                    SBULog.error("[Failed] Update user message is nil")
-                    return
-                }
-                
-                SBULog.info("[Succeed] Update user message: \(updatedMessage.description)")
-                
-                self.deleteMessagesInList(messageIds: [message.messageId], needReload: false)
-                self.upsertMessagesInList(messages: [updatedMessage], needReload: true)
-                self.setEditMode(for: nil)
-            }
-    }
-    
-    /// Deletes a message with message object.
-    /// - Parameter message: `SBDBaseMessage` based class object
-    /// - Since: 1.0.9
-    public func deleteMessage(message: SBDBaseMessage) {
-        let deleteButton = SBUAlertButtonItem(
-            title: SBUStringSet.Delete,
-            color: theme.alertRemoveColor
-        ) { [weak self] info in
-            guard let self = self else { return }
-            SBULog.info("[Request] Delete message: \(message.description)")
-            
-            self.channel?.delete(message, completionHandler: { [weak self] error in
-                guard let self = self else { return }
-                if let error = error {
-                    self.didReceiveError(error.localizedDescription)
-                    SBULog.error("[Failed] Delete message request: \(error.localizedDescription)")
-                    return
-                }
-                
-                SBULog.info("[Succeed] Delete message: \(message.description)")
-                
-                self.deleteMessagesInList(messageIds: [message.messageId], needReload: true)
-            })
-        }
-        
-        let cancelButton = SBUAlertButtonItem(title: SBUStringSet.Cancel) {_ in }
-        
-        SBUAlertView.show(
-            title: SBUStringSet.Alert_Delete,
-            confirmButtonItem: deleteButton,
-            cancelButtonItem: cancelButton
-        )
-    }
     
     /// This function is used to load channel information.
     /// - Parameters:
@@ -1047,7 +529,7 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
                     // don't return to allow failed UI
                 }
                 
-                self.channel = channel
+                self.baseChannel = channel
                 
                 guard self.canProceed(with: self.channel, error: error) else { return }
 
@@ -1101,37 +583,6 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
 
     // MARK: - List managing
     
-    /// This function sorts the all message list. (Included `presendMessages`, `messageList` and `resendableMessages`.)
-    /// - Parameter needReload: If set to `true`, the tableview will be call reloadData and, scroll to last seen index.
-    /// - Since: 1.2.5
-    public func sortAllMessageList(needReload: Bool) {
-        // Generate full list for draw
-        let pendingMessages = SBUPendingMessageManager.shared.getPendingMessages(
-            channelUrl: self.channel?.channelUrl
-        )
-        let sendMessages = self.messageList
-        
-        self.fullMessageList = pendingMessages
-            .sorted { $0.createdAt > $1.createdAt }
-            + sendMessages.sorted { $0.createdAt > $1.createdAt }
-        
-        if let emptyView = self.emptyView as? SBUEmptyView {
-            emptyView.reloadData(self.fullMessageList.isEmpty ? .noMessages : .none)
-        }
-        
-        guard needReload else { return }
-        
-        self.reloadTableView()
-        
-        guard let lastSeenIndexPath = self.lastSeenIndexPath else {
-            self.setScrollBottomView(hidden: nil)
-            return
-        }
-        
-        self.scrollTableViewTo(row: lastSeenIndexPath.row)
-        self.setScrollBottomView(hidden: nil)
-    }
-    
     /// This function updates the messages in the list.
     ///
     /// It is updated only if the messages already exist in the list, and if not, it is ignored.
@@ -1150,118 +601,10 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
         self.sortAllMessageList(needReload: needReload)
     }
     
-    /// This function upserts the messages in the list.
-    /// - Parameters:
-    ///   - messages: Message array to upsert
-    ///   - needUpdateNewMessage: If set to `true`, increases new message count.
-    ///   - needReload: If set to `true`, the tableview will be call reloadData.
-    /// - Since: 1.2.5
-    public func upsertMessagesInList(messages: [SBDBaseMessage]?,
-                                      needUpdateNewMessage: Bool = false,
-                                      needReload: Bool) {
-        SBULog.info("First : \(String(describing: messages?.first)), Last : \(String(describing: messages?.last))")
-        messages?.forEach { message in
-            if let index = SBUUtils.findIndex(of: message, in: self.messageList) {
-                self.messageList.remove(at: index)
-            }
-            self.messageList.append(message)
-            
-            guard message is SBDUserMessage ||
-                    message is SBDFileMessage else { return }
-
-            if needUpdateNewMessage {
-                self.increaseNewMessageCount()
-            }
-        }
-        
-        self.channelViewModel?.resetRequestingLoad()
-        self.sortAllMessageList(needReload: needReload)
-    }
-    
-    /// This function deletes the messages in the list using the message ids.
-    /// - Parameters:
-    ///   - messageIds: Message id array to delete
-    ///   - needReload: If set to `true`, the tableview will be call reloadData.
-    /// - Since: 1.2.5
-    public func deleteMessagesInList(messageIds: [Int64]?, needReload: Bool) {
-        guard let messageIds = messageIds else { return }
-        
-        // if deleted message contains the currently editing message,
-        // end edit mode.
-        if let editMessage = inEditingMessage,
-           messageIds.contains(editMessage.messageId) {
-            self.setEditMode(for: nil)
-        }
-        
-        var toBeDeleteIndexes: [Int] = []
-        var toBeDeleteRequestIds: [String] = []
-        
-        for (index, message) in self.messageList.enumerated() {
-            for messageId in messageIds {
-                guard message.messageId == messageId else { continue }
-                toBeDeleteIndexes.append(index)
-                
-                guard message.requestId.count > 0 else { continue }
-                
-                switch message {
-                case let userMessage as SBDUserMessage:
-                    let requestId = userMessage.requestId
-                    toBeDeleteRequestIds.append(requestId)
-
-                case let fileMessage as SBDFileMessage:
-                    let requestId = fileMessage.requestId
-                    toBeDeleteRequestIds.append(requestId)
-                    
-                default: break
-                }
-            }
-        }
-        
-        // for remove from last
-        let sortedIndexes = toBeDeleteIndexes.sorted().reversed()
-        
-        for index in sortedIndexes {
-            self.messageList.remove(at: index)
-        }
-        
-        self.deleteResendableMessages(requestIds: toBeDeleteRequestIds, needReload: needReload)
-    }
-    
-    /// This functions clears current message lists
-    ///
-    /// - Since: 2.1.0
-    public func clearMessageList() {
-        self.fullMessageList.removeAll(where: { SBUUtils.findIndex(of: $0, in: self.messageList) != nil })
-        self.messageList = []
-    }
-    
-    /// This functions deletes the resendable messages using the request ids.
-    /// - Parameters:
-    ///   - requestIds: Request id array to delete
-    ///   - needReload: If set to `true`, the tableview will be call reloadData.
-    /// - Since: 1.2.5
-    public func deleteResendableMessages(requestIds: [String], needReload: Bool) {
-        for requestId in requestIds {
-            SBUPendingMessageManager.shared.removePendingMessage(
-                channelUrl: self.channel?.channelUrl,
-                requestId: requestId
-            )
-        }
-        
-        self.sortAllMessageList(needReload: needReload)
-    }
-    
     /// This function increases the new message count.
-    public func increaseNewMessageCount() {
-        guard self.tableView.contentOffset != .zero else {
-            self.lastSeenIndexPath = nil
-            return
-        }
-        
-        guard self.channelViewModel?.isRequestingLoad == false else {
-            self.lastSeenIndexPath = nil
-            return
-        }
+    public override func increaseNewMessageCount() {
+        guard !isScrollNearBottom() else { return }
+        super.increaseNewMessageCount()
         
         self.setNewMessageInfoView(hidden: false)
         self.newMessagesCount += 1
@@ -1272,10 +615,6 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
                 self.scrollToBottom(animated: false)
             }
         }
-        
-        
-        let firstVisibleIndexPath = self.tableView.indexPathsForVisibleRows?.first ?? IndexPath(row: 0, section: 0)
-        self.lastSeenIndexPath = IndexPath(row: firstVisibleIndexPath.row + 1, section: 0)
     }
     
     // MARK: - Channel related
@@ -1328,108 +667,6 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
     
     private func belongsToChannel(error: SBDError) -> Bool {
         return error.code != SBDErrorCode.nonAuthorized.rawValue
-    }
-    
-    // MARK: - Send action relations
-    
-    /// Sends a image file message.
-    /// - Parameter info: Image information selected in `UIImagePickerController`
-    public func sendImageFileMessage(info: [UIImagePickerController.InfoKey : Any]) {
-        var _imageUrl: URL? = nil
-        if #available(iOS 11.0, *) {
-            if let tempImageUrl = info[.imageURL] as? URL {
-                // file:///~~~
-                _imageUrl = tempImageUrl
-            }
-        } else {
-            if let tempImageUrl = info[.referenceURL] as? URL {
-                // assets-library://~~~
-                _imageUrl = tempImageUrl
-            }
-        }
-        
-        guard let imageUrl = _imageUrl else {
-            let originalImage = info[.originalImage] as? UIImage
-            // for Camera capture
-            guard let image = originalImage?
-                .fixedOrientation()
-                .resize(with: SBUGlobals.imageResizingSize) else { return }
-            
-            let imageData = image.jpegData(
-                compressionQuality: SBUGlobals.UsingImageCompression ?
-                    SBUGlobals.imageCompressionRate : 1.0
-            )
-            
-            self.sendFileMessage(
-                fileData: imageData,
-                fileName: "image.jpg",
-                mimeType: "image/jpeg"
-            )
-            
-            return
-        }
-        
-        let imageName = imageUrl.lastPathComponent
-        guard let mimeType = SBUUtils.getMimeType(url: imageUrl) else { return }
-        
-        switch mimeType {
-        case "image/gif":
-            let gifData = try? Data(contentsOf: imageUrl)
-            self.sendFileMessage(fileData: gifData, fileName: imageName, mimeType: mimeType)
-            
-        default:
-            let originalImage = info[.originalImage] as? UIImage
-            guard let image = originalImage?
-                .fixedOrientation()
-                .resize(with: SBUGlobals.imageResizingSize) else { return }
-            
-            let imageData = image.jpegData(
-                compressionQuality: SBUGlobals.UsingImageCompression ?
-                    SBUGlobals.imageCompressionRate : 1.0
-            )
-            
-            self.sendFileMessage(
-                fileData: imageData,
-                fileName: "image.jpg",
-                mimeType: "image/jpeg"
-            )
-        }
-    }
-    
-    /// Sends a video file message.
-    /// - Parameter info: Video information selected in `UIImagePickerController`
-    public func sendVideoFileMessage(info: [UIImagePickerController.InfoKey : Any]) {
-        do {
-            guard let videoUrl = info[.mediaURL] as? URL else { return }
-            let videoFileData = try Data(contentsOf: videoUrl)
-            let videoName = videoUrl.lastPathComponent
-            guard let mimeType = SBUUtils.getMimeType(url: videoUrl) else { return }
-            
-            self.sendFileMessage(
-                fileData: videoFileData,
-                fileName: videoName,
-                mimeType: mimeType
-            )
-        } catch {
-        }
-    }
-    
-    /// Sends a document file message.
-    /// - Parameter documentUrls: Document information selected in `UIDocumentPickerViewController`
-    public func sendDocumentFileMessage(documentUrls: [URL]) {
-        do {
-            guard let documentUrl = documentUrls.first else { return }
-            let documentData = try Data(contentsOf: documentUrl)
-            let documentName = documentUrl.lastPathComponent
-            guard let mimeType = SBUUtils.getMimeType(url: documentUrl) else { return }
-            self.sendFileMessage(
-                fileData: documentData,
-                fileName: documentName,
-                mimeType: mimeType
-            )
-        } catch {
-            self.didReceiveError(error.localizedDescription)
-        }
     }
     
 
@@ -1814,18 +1051,6 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
             self.messageInputView.setMutedModeState(isMuted)
         }
     }
-    
-    /// Set/Unset edit mode for given userMessage.
-    /// - Parameter userMessage : User message to edit, or nil to end edit mode.
-    func setEditMode(for userMessage: SBDUserMessage?) {
-        inEditingMessage = userMessage
-        
-        if let userMessage = userMessage {
-            self.messageInputView.startEditMode(text: userMessage.message)
-        } else {
-            self.messageInputView.endEditMode()
-        }
-    }
 
     // MARK: - Common
     
@@ -1936,22 +1161,6 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
         return .none
     }
     
-    /// To keep track of which reloads tableview.
-    private func reloadTableView() {
-        self.tableView.reloadData()
-    }
-    
-    /// To keep track of which scrolls tableview.
-    private func scrollTableViewTo(row: Int, at position: UITableView.ScrollPosition = .top, animated: Bool = false) {
-        if self.fullMessageList.isEmpty {
-            guard self.tableView.contentOffset != .zero else { return }
-            
-            self.tableView.setContentOffset(.zero, animated: false)
-        } else {
-            self.tableView.scrollToRow(at: IndexPath(row: row, section: 0), at: position, animated: animated)
-        }
-    }
-    
     
     // MARK: - Actions
     
@@ -1967,34 +1176,9 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
     
     // MARK: - ScrollView
     
-    /// This function scrolls to bottom.
-    /// - Parameter animated: Animated
-    public func scrollToBottom(animated: Bool) {
-        guard self.fullMessageList.count != 0 else { return }
-        self.newMessagesCount = 0
-        self.lastSeenIndexPath = nil
+    open func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        guard scrollView == self.tableView else { return }
         
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            
-            self.inEditingMessage = nil
-            self.messageInputView.endEditMode()
-            
-            if self.channelViewModel?.hasNext ?? false {
-                self.tableView.setContentOffset(self.tableView.contentOffset, animated: false)
-                self.initViewModel(startingPoint: nil, showIndicator: false)
-                self.scrollTableViewTo(row: 0)
-            } else {
-                let indexPath = IndexPath(row: 0, section: 0)
-                self.scrollTableViewTo(row: indexPath.row, animated: animated)
-                self.setNewMessageInfoView(hidden: true)
-                self.setScrollBottomView(hidden: true)
-            }
-        }
-    }
-    
-    public override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        super.scrollViewDidScroll(scrollView)
         self.lastSeenIndexPath = nil
         
         if isScrollNearBottom() {
@@ -2007,7 +1191,7 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
     // MARK: - Floating Buttons
     
     /// This shows new message view based on `hasNext`
-    private func setNewMessageInfoView(hidden: Bool) {
+    override func setNewMessageInfoView(hidden: Bool) {
         guard let newMessageInfoView = self.newMessageInfoView else { return }
         guard hidden != newMessageInfoView.isHidden else { return }
         guard let channelViewModel = self.channelViewModel else { return }
@@ -2015,13 +1199,20 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
         newMessageInfoView.isHidden = hidden && !channelViewModel.hasNext
     }
     
-    public func setScrollBottomView(hidden: Bool?) {
+    /// Sets the scroll to bottom view.
+    /// - Parameter hidden: whether to hide the view. `nil` to handle it automatically depending on the current scroll position.
+    public override func setScrollBottomView(hidden: Bool?) {
         let hasNext = self.channelViewModel?.hasNext ?? false
         let shouldHide = hidden ?? isScrollNearBottom()
         let hide = shouldHide && !hasNext
         
         guard hide != self.scrollBottomView?.isHidden else { return }
         self.scrollBottomView?.isHidden = hide
+    }
+    
+    public override func scrollToBottom(animated: Bool) {
+        self.newMessagesCount = 0
+        super.scrollToBottom(animated: animated)
     }
     
 
@@ -2094,22 +1285,7 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
     /// - Since: 1.2.5
     func setFileMessageCellImages(_ cell: SBUFileMessageCell,
                                   fileMessage: SBDFileMessage) {
-        switch fileMessage.sendingStatus {
-        case .canceled, .pending, .failed, .none:
-            if let fileInfo = SBUPendingMessageManager.shared.getFileInfo(requestId: fileMessage.requestId),
-               let type = fileInfo.mimeType, let fileData = fileInfo.file {
-                if SBUUtils.getFileType(by: type) == .image {
-                    let image = UIImage.createImage(from: fileData)
-                    let isAnimatedImage = image?.isAnimatedImage() == true
-                    
-                    cell.setImage(isAnimatedImage ? image?.images?.first : image, size: SBUConstant.thumbnailSize)
-                }
-            }
-        case .succeeded:
-            break
-        @unknown default:
-            self.didReceiveError("unknown Type")
-        }
+        self.setCellImage(cell, fileMessage: fileMessage)
     }
     
     
@@ -2267,12 +1443,6 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
             cell.isSelected = false
         }
     }
-    
-
-    // MARK: - Error handling
-    open func didReceiveError(_ message: String?) {
-        SBULog.error("Did receive error: \(message ?? "")")
-    }
 
 
     // MARK: - UITableViewDelegate, UITableViewDataSource
@@ -2398,25 +1568,6 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
         return cell
     }
     
-    open func tableView(_ tableView: UITableView,
-                        willDisplay cell: UITableViewCell,
-                        forRowAt indexPath: IndexPath) {
-        guard self.fullMessageList.count > 0 else { return }
-        guard let channelViewModel = self.channelViewModel else { return }
-        
-        if indexPath.row >= (self.fullMessageList.count - self.messageListParams.previousResultSize / 2),
-           channelViewModel.hasPrevious {
-            self.channelViewModel?.loadPrevMessages(timestamp: self.messageList.last?.createdAt)
-        } else if indexPath.row < 5,
-                  channelViewModel.hasNext {
-            self.channelViewModel?.loadNextMessages()
-        }
-    }
-    
-    open override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.fullMessageList.count
-    }
-    
     /// This function generates cell's identifier.
     /// - Parameter message: Message object
     /// - Returns: Identifier
@@ -2432,154 +1583,13 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
             return unknownMessageCell?.sbu_className ?? SBUUnknownMessageCell.sbu_className
         }
     }
-}
-
-
-// MARK: - UIViewControllerTransitioningDelegate
-extension SBUChannelViewController: UIViewControllerTransitioningDelegate {
-    open func presentationController(forPresented presented: UIViewController,
-                                       presenting: UIViewController?,
-                                       source: UIViewController) -> UIPresentationController? {
-        return SBUBottomSheetController(
-            presentedViewController: presented,
-            presenting: presenting
-        )
-    }
-}
-
-
-// MARK: - UIImagePickerControllerDelegate
-extension SBUChannelViewController: UIImagePickerControllerDelegate {
-    open func imagePickerController(
-        _ picker: UIImagePickerController,
-        didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        picker.dismiss(animated: true) { [weak self] in
-            guard let self = self else { return }
-            guard info[.mediaType] != nil else { return }
-            let mediaType = info[.mediaType] as! CFString
-
-            switch mediaType {
-            case kUTTypeImage:
-                self.sendImageFileMessage(info: info)
-            case kUTTypeMovie:
-                self.sendVideoFileMessage(info: info)
-            default:
-                break
-            }
-        }
-    }
     
-    open func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        picker.dismiss(animated: true, completion: nil)
-    }
-}
-
-
-// MARK: - UIDocumentPickerDelegate
-extension SBUChannelViewController: UIDocumentPickerDelegate {
-    @available(iOS 11.0, *)
-    open func documentPicker(_ controller: UIDocumentPickerViewController,
-                               didPickDocumentsAt urls: [URL]) {
-        self.sendDocumentFileMessage(documentUrls: urls)
-    }
     
-    open func documentPicker(_ controller: UIDocumentPickerViewController,
-                               didPickDocumentAt url: URL) {
-        if #available(iOS 11.0, *) { return }
-        self.sendDocumentFileMessage(documentUrls: [url])
-    }
-}
-
-
-// MARK: - SBUMessageInputViewDelegate
-extension SBUChannelViewController: SBUMessageInputViewDelegate {
-    open func messageInputView(_ messageInputView: SBUMessageInputView,
-                               didSelectSend text: String) {
-        guard text.count > 0 else { return }
-        self.sendUserMessage(text: text)
-    }
-
-    open func messageInputView(_ messageInputView: SBUMessageInputView,
-                               didSelectResource type: MediaResourceType) {
-        if type == .document {
-            let documentPicker = UIDocumentPickerViewController(
-                documentTypes: ["public.content"],
-                in: UIDocumentPickerMode.import
-            )
-            documentPicker.delegate = self
-            documentPicker.modalPresentationStyle = .formSheet
-            self.present(documentPicker, animated: true, completion: nil)
-        }
-        else {
-            var sourceType: UIImagePickerController.SourceType = .photoLibrary
-            let mediaType: [String] = [
-                String(kUTTypeImage),
-                String(kUTTypeGIF),
-                String(kUTTypeMovie)
-            ]
-            
-            switch type {
-            case .camera:
-                sourceType = .camera
-            case .library:
-                sourceType = .photoLibrary
-            default:
-                break
-            }
-            
-            if UIImagePickerController.isSourceTypeAvailable(sourceType) {
-                let imagePickerController = UIImagePickerController()
-                imagePickerController.delegate = self
-                imagePickerController.sourceType = sourceType
-                imagePickerController.mediaTypes = mediaType
-                self.present(imagePickerController, animated: true, completion: nil)
-            }
-        }
-    }
-
-    open func messageInputView(_ messageInputView: SBUMessageInputView,
-                               didSelectEdit text: String) {
-        guard let message = self.inEditingMessage else { return }
-
-        self.updateUserMessage(message: message, text: text)
-    }
-    
-    open func messageInputViewDidStartTyping() {
-        self.channel?.startTyping()
-    }
-    
-    open func messageInputViewDidEndTyping() {
+    // MARK: - SBUMessageInputViewDelegate
+        
+    open override func messageInputViewDidEndTyping() {
         SBULog.info("[Request] End typing")
         self.channel?.endTyping()
-    }
-}
-
-
-// MARK: - SBUFileViewerDelegate
-extension SBUChannelViewController: SBUFileViewerDelegate {
-    open func didSelectDeleteImage(message: SBDFileMessage) {
-        SBULog.info("[Request] Delete message: \(message.description)")
-        
-        self.channel?.delete(message) { [weak self] error in
-            guard let self = self else { return }
-            if let error = error {
-                self.didReceiveError(error.localizedDescription)
-                SBULog.error("[Failed] Delete message request: \(error.localizedDescription)")
-                return
-            }
-
-            SBULog.info("[Succeed] Delete message: \(message.description)")
-            self.deleteMessagesInList(messageIds: [message.messageId], needReload: true)
-        }
-    }
-}
-
-
-// MARK: - SBUEmptyViewDelegate
-extension SBUChannelViewController: SBUEmptyViewDelegate {
-    open func didSelectRetry() {
-        
-        self.loadChannel(channelUrl: self.channel?.channelUrl ?? self.channelUrl)
     }
 }
 
@@ -2755,17 +1765,6 @@ extension SBUChannelViewController: SBDChannelDelegate, SBDConnectionDelegate {
     // MARK: SBDConnectionDelegate
     open func didSucceedReconnection() {
         SBULog.info("Did succeed reconnection")
-        
-        SBULog.info("[Request] Refresh channel")
         self.refreshChannel(applyChangelog: true)
     }
-}
-
-extension SBUChannelViewController: LoadingIndicatorDelegate {
-    @discardableResult
-    open func shouldShowLoadingIndicator() -> Bool {
-        return false
-    }
-    
-    open func shouldDismissLoadingIndicator() {}
 }

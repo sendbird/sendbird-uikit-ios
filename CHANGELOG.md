@@ -1,5 +1,17 @@
 # Change Log
 
+### v2.1.3 (Apr 13, 2021)
+* Added properties in `SBUMessageInputView`.
+  * `textViewMinHeight`: the minimun height of the textview.
+  * `textViewMaxHeight`: the maximum height of the textview.
+  * `textViewLeadingSpacing`: the spacing between the textview and the `+` button.
+  * `textViewTrailingSpacing`: the spacing between the textview and the send button.
+  * `layoutInsets`: the outer spacing of the `SBUMessageInputView`, relative to `safeAreaLayoutGuide`.
+  * `showsSendButton`: whether to always show the send button.
+* Applied tint to all `SBUIconSet`.
+* Applied localization on datetime string.
+* Improved stability.
+
 ### v2.1.2 (Mar 30, 2021)
 * Improved stability 
 

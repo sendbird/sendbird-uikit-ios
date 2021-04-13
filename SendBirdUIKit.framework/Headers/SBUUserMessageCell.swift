@@ -13,7 +13,7 @@ import SendBirdSDK
 open class SBUUserMessageCell: SBUContentBaseMessageCell {
 
     // MARK: - Public property
-    public lazy var messageTextView: UIView = _messageTextView
+    public lazy var messageTextView: UIView = SBUUserMessageTextView()
     
     public var userMessage: SBDUserMessage? {
         return self.message as? SBDUserMessage
@@ -21,10 +21,6 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell {
     
     
     // MARK: - Private property
-    private lazy var _messageTextView: SBUUserMessageTextView = {
-        let messageView = SBUUserMessageTextView()
-        return messageView
-    }()
 
     private var additionContainerView: SBUSelectableStackView = {
         let view = SBUSelectableStackView()
@@ -44,10 +40,6 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell {
         self.mainContainerView.addArrangedSubview(self.messageTextView)
         self.mainContainerView.addArrangedSubview(self.additionContainerView)
         self.additionContainerView.addArrangedSubview(self.reactionView)
-    }
-    
-    open override func setupAutolayout() {
-        super.setupAutolayout()
     }
     
     open override func setupActions() {
@@ -89,6 +81,8 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell {
         self.additionContainerView.setupStyles()
         
         self.webView.setupStyles()
+        
+        self.additionContainerView.layer.cornerRadius = 8
     }
     
     

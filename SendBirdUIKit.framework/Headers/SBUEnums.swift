@@ -5,7 +5,7 @@
 //  Created by Tez Park on 05/02/2020.
 //  Copyright © 2020 SendBird, Inc. All rights reserved.
 //
-
+import SendBirdSDK
 
 /// This is an enumeration for channel type.
 /// - Since: 1.2.0

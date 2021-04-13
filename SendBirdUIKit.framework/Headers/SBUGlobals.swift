@@ -18,10 +18,7 @@ public class SBUGlobals: NSObject {
     public static var AccessToken: String?
 
     // Current User
-    public static var CurrentUser: SBUUser? {
-        set(newCurrentUser){ _currentUser = newCurrentUser }
-        get{ return _currentUser }
-    }
+    public static var CurrentUser: SBUUser?
 
     // MARK: - Message Grouping
     /// If this value is enabled, messages sent at similar times are grouped.
@@ -50,6 +47,4 @@ public class SBUGlobals: NSObject {
     /// - Since: 2.0.0
     public static var imageResizingSize: CGSize = UIScreen.main.bounds.size;
     
-    // MARK: - Private
-    private static var _currentUser: SBUUser?
 }

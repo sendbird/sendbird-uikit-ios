@@ -12,18 +12,8 @@ import UIKit
 public class SBUNavigationTitleView: UIView {
     
     var theme: SBUComponentTheme = SBUTheme.componentTheme
-    public var text: String? {
-        get { return _text }
-        set { _text = newValue ?? "" }
-    }
-    
-    public var textAlignment: NSTextAlignment {
-        get { return _textAlignment }
-        set { _textAlignment = newValue }
-    }
-    
-    lazy var _text: String = { return "" }()
-    lazy var _textAlignment: NSTextAlignment = { return .center }()
+    public var text: String? = ""
+    public var textAlignment: NSTextAlignment = .center
     
     private var titleLabel = UILabel()
      

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SendBirdSDK
 
 @objcMembers
 open class SBUUnknownMessageCell: SBUUserMessageCell {

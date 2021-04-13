@@ -6,7 +6,8 @@
 //  Copyright © 2020 SendBird, Inc. All rights reserved.
 //
 
-import UIKit 
+import UIKit
+import SendBirdSDK
 import MobileCoreServices
 
 private let kDefaultCoverUrl = "static.sendbird.com/sample/cover"

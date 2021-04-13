@@ -6,7 +6,7 @@
 //  Copyright © 2020 SendBird, Inc. All rights reserved.
 //
 
-import Swift
+import UIKit
 
 class SBUConstant {
     static let messageCellMaxWidth: CGFloat = 244

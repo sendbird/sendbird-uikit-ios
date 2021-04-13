@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+import SendBirdSDK
 
 /// It is a base class used in message cell with contents.
 /// - Since: 1.2.1
@@ -15,27 +15,14 @@ import UIKit
 open class SBUContentBaseMessageCell: SBUBaseMessageCell {
     
     // MARK: - Public property
-    public lazy var userNameStackView: UIStackView = _userNameStackView
-    public lazy var contentsStackView: UIStackView = _contentsStackView
-    public lazy var userNameView: UIView = _userNameView
-    public lazy var profileView: UIView = _profileView
-    public lazy var stateView: UIView = _stateView
-
-    // MARK: - Private property
-    internal var _userNameStackView: UIStackView = {
+    public lazy var userNameStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.spacing = 4
         return stackView
     }()
     
-    internal var _userNameView: SBUUserNameView = {
-        let userNameView = SBUUserNameView()
-        userNameView.leftMargin = 50
-        return userNameView
-    }()
-    
-    internal var _contentsStackView: UIStackView = {
+    public lazy var contentsStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.alignment = .bottom
@@ -43,17 +30,19 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         return stackView
     }()
     
-    internal var _profileView: SBUMessageProfileView = {
-        let profileView = SBUMessageProfileView()
-        return profileView
+    public lazy var userNameView: UIView = {
+        let userNameView = SBUUserNameView()
+        userNameView.leftMargin = 50
+        return userNameView
     }()
     
-    internal var _stateView: SBUMessageStateView = {
-        let stateView = SBUMessageStateView()
-        return stateView
-    }()
+    public lazy var profileView: UIView = SBUMessageProfileView()
+    public lazy var stateView: UIView = SBUMessageStateView()
+
+
+    // MARK: - Private property
     
-    internal var mainContainerView: SBUSelectableStackView = {
+    var mainContainerView: SBUSelectableStackView = {
         let mainView = SBUSelectableStackView()
         mainView.layer.cornerRadius = 16
         mainView.layer.borderColor = UIColor.clear.cgColor
@@ -62,15 +51,8 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         return mainView
     }()
     
-    internal var reactionView: SBUMessageReactionView = {
-        let reactionView = SBUMessageReactionView()
-        return reactionView
-    }()
-    
-    internal lazy var profileContentSpacing: UIView = {
-        let view = UIView()
-        return view
-    }()
+    var reactionView: SBUMessageReactionView = SBUMessageReactionView()
+    lazy var profileContentSpacing: UIView = UIView()
     
     // MARK: - Gesture Recognizers
     

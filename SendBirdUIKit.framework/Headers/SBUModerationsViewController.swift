@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SendBirdSDK
 
 @objcMembers
 open class SBUModerationsViewController: SBUBaseViewController {
@@ -33,7 +34,7 @@ open class SBUModerationsViewController: SBUBaseViewController {
 
     
     // MARK: - UI properties (Private)
-    private lazy var _titleView: SBUNavigationTitleView = {
+    private lazy var defaultTitleView: SBUNavigationTitleView = {
         var titleView: SBUNavigationTitleView
         if #available(iOS 11, *) {
             titleView = SBUNavigationTitleView()
@@ -48,11 +49,10 @@ open class SBUModerationsViewController: SBUBaseViewController {
         return titleView
     }()
     
-    private lazy var _leftBarButton: UIBarButtonItem = {
-        return SBUCommonViews.backButton(vc: self, selector: #selector(onClickBack))
-    }()
-    
-    private lazy var _rightBarButton = UIBarButtonItem()
+    private lazy var backButton: UIBarButtonItem = SBUCommonViews.backButton(
+        vc: self,
+        selector: #selector(onClickBack)
+    )
     
     
     // MARK: - Logic properties (Public)
@@ -61,6 +61,11 @@ open class SBUModerationsViewController: SBUBaseViewController {
     
     
     // MARK: - Logic properties (Private)
+    
+    private var channelActionViewModel: SBUChannelActionViewModel = SBUChannelActionViewModel() {
+        willSet { self.disposeViewModel() }
+        didSet { self.bindViewModel() }
+    }
     
     
     // MARK: - Lifecycle
@@ -79,6 +84,7 @@ open class SBUModerationsViewController: SBUBaseViewController {
         self.channel = channel
         self.channelUrl = channel.channelUrl
         
+        self.bindViewModel()
         self.loadChannel(channelUrl: self.channel?.channelUrl)
     }
     
@@ -90,6 +96,7 @@ open class SBUModerationsViewController: SBUBaseViewController {
         
         self.channelUrl = channelUrl
         
+        self.bindViewModel()
         self.loadChannel(channelUrl: channelUrl)
     }
     
@@ -98,13 +105,10 @@ open class SBUModerationsViewController: SBUBaseViewController {
         SBULog.info("")
         
         if self.titleView == nil {
-            self.titleView = _titleView
+            self.titleView = self.defaultTitleView
         }
         if self.leftBarButton == nil {
-            self.leftBarButton = _leftBarButton
-        }
-        if self.rightBarButton == nil {
-            self.rightBarButton = _rightBarButton
+            self.leftBarButton = self.backButton
         }
         
         // navigation bar
@@ -194,10 +198,51 @@ open class SBUModerationsViewController: SBUBaseViewController {
         self.updateStyles()
     }
     
-    open override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
+    deinit {
+        self.disposeViewModel()
+    }
+    
+    
+    // MARK: - ViewModel
+    
+    private func bindViewModel() {
+        self.channelActionViewModel.errorObservable.observe { [weak self] error in
+            guard let self = self else { return }
+            
+            self.didReceiveError(error.localizedDescription)
+        }
         
-        SBULoading.stop()
+        self.channelActionViewModel.loadingObservable.observe { [weak self] isLoading in
+            guard let self = self else { return }
+            
+            if isLoading {
+                self.shouldShowLoadingIndicator()
+            } else {
+                self.shouldDismissLoadingIndicator()
+            }
+        }
+        
+        self.channelActionViewModel.channelLoadedObservable.observe { [weak self] channel in
+            guard let self = self else { return }
+            guard let channel = channel as? SBDGroupChannel else { return }
+            
+            SBULog.info("Channel loaded: \(String(describing: channel))")
+            self.channel = channel
+            self.updateStyles()
+        }
+        
+        self.channelActionViewModel.channelChangedObservable.observe { [weak self] channel in
+            guard let self = self else { return }
+            guard let channel = channel as? SBDGroupChannel else { return }
+            
+            SBULog.info("Channel changed: \(String(describing: channel))")
+            self.channel = channel
+            self.updateStyles()
+        }
+    }
+    
+    private func disposeViewModel() {
+        self.channelActionViewModel.dispose()
     }
     
     
@@ -207,33 +252,8 @@ open class SBUModerationsViewController: SBUBaseViewController {
     /// - Parameter channelUrl: channel url
     public func loadChannel(channelUrl: String?) {
         guard let channelUrl = channelUrl else { return }
-        self.shouldShowLoadingIndicator()
         
-        SBUMain.connectionCheck { [weak self] user, error in
-            guard let self = self else { return }
-            if let error = error { self.didReceiveError(error.localizedDescription) }
-            
-            SBULog.info("[Request] Load channel: \(String(channelUrl))")
-            SBDGroupChannel.getWithUrl(channelUrl) { [weak self] channel, error in
-                defer { self?.shouldDismissLoadingIndicator() }
-                guard let self = self else { return }
-                
-                if let error = error {
-                    SBULog.error("[Failed] Load channel request: \(error.localizedDescription)")
-                    self.didReceiveError(error.localizedDescription)
-                    return
-                }
-                
-                self.channel = channel
-                
-                SBULog.info("[Succeed] Load channel request: \(String(describing: self.channel))")
-                
-                DispatchQueue.main.async { [weak self] in
-                    guard let self = self else { return }
-                    self.tableView.reloadData()
-                }
-            }
-        }
+        self.channelActionViewModel.loadGroupChannel(with: channelUrl)
     }
     
     /// This function freezes the channel.
@@ -243,30 +263,7 @@ open class SBUModerationsViewController: SBUBaseViewController {
             [Request] Freeze channel,
             ChannelUrl:\(self.channel?.channelUrl ?? "")
             """)
-        self.shouldShowLoadingIndicator()
-        self.channel?.freeze { [weak self] error in
-            defer { self?.shouldDismissLoadingIndicator() }
-            
-            guard let self = self else {
-                completionHandler?(false)
-                return
-            }
-            
-            if let error = error {
-                SBULog.error("""
-                    [Failed] Freeze channel request:
-                    \(String(error.localizedDescription))
-                    """)
-                completionHandler?(false)
-                return
-            }
-            
-            SBULog.info("""
-                [Succeed] Freeze channel request,
-                ChannelUrl:\(self.channel?.channelUrl ?? "")
-                """)
-            completionHandler?(true)
-        }
+        self.channelActionViewModel.freezeChannel(completionHandler: completionHandler)
     }
     
     /// This function unfreezes the channel.
@@ -276,30 +273,7 @@ open class SBUModerationsViewController: SBUBaseViewController {
             [Request] Freeze channel,
             ChannelUrl:\(self.channel?.channelUrl ?? "")
             """)
-        self.shouldShowLoadingIndicator()
-        self.channel?.unfreeze { [weak self] error in
-            defer { self?.shouldDismissLoadingIndicator() }
-            
-            guard let self = self else {
-                completionHandler?(false)
-                return
-            }
-            
-            if let error = error {
-                SBULog.error("""
-                    [Failed] Unfreeze channel request:
-                    \(String(error.localizedDescription))
-                    """)
-                completionHandler?(false)
-                return
-            }
-            
-            SBULog.info("""
-                [Succeed] Unfreeze channel request,
-                ChannelUrl:\(self.channel?.channelUrl ?? "")
-                """)
-            completionHandler?(true)
-        }
+        self.channelActionViewModel.unfreezeChannel(completionHandler: completionHandler)
     }
     
     
@@ -394,10 +368,8 @@ extension SBUModerationsViewController: UITableViewDelegate, UITableViewDataSour
         if type == .freezeChannel {
             cell.switchAction = { [weak self] isOn in
                 guard let self = self else { return }
-                self.changeFreeze(isOn, { [weak cell] success in
-                    guard let cell = cell else{ return }
-                    if !success { cell.changeBackSwitch() }
-                })
+                
+                self.changeFreeze(isOn)
             }
         }
         
@@ -413,7 +385,7 @@ extension SBUModerationsViewController : LoadingIndicatorDelegate {
     @discardableResult
     open func shouldShowLoadingIndicator() -> Bool {
         SBULoading.start()
-        return false;
+        return true
     }
     
     open func shouldDismissLoadingIndicator() {

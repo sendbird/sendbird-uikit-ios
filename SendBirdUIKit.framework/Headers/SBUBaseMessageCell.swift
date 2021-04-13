@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SendBirdSDK
 
 @IBDesignable
 @available(*, deprecated, renamed: "SBUBaseMessageCell")

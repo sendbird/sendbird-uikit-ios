@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SendBirdSDK
 
 /**
  - Note: When you create channel list for open channels, please inherit `SBUBaseChannelListViewController`

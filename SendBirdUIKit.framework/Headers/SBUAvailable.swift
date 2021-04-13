@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SendBirdSDK
 
 @objcMembers
 public class SBUAvailable: NSObject {

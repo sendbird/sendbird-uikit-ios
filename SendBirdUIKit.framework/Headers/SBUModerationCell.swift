@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SendBirdSDK
 
 class SBUModerationCell: SBUChannelSettingCell {
     /// This function configure a cell using moderation list information.
