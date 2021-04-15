@@ -1,5 +1,8 @@
 # Change Log
 
+### v2.1.4 (Apr 14, 2021)
+* Improved stability
+
 ### v2.1.3 (Apr 13, 2021)
 * Added properties in `SBUMessageInputView`.
   * `textViewMinHeight`: the minimun height of the textview.
