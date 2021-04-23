@@ -2216,6 +2216,9 @@ public class MessageStateView : SendBirdUIKit.SBUMessageStateView {
   }
   @objc public var messageListParams: SendBirdSDK.SBDMessageListParams?
   @objc public var customMessageSearchQueryBuilder: ((SendBirdSDK.SBDMessageSearchQueryBuilder) -> Swift.Void)?
+  @objc public var searchResultList: [SendBirdSDK.SBDBaseMessage] {
+    @objc get
+  }
   @objc public var messageSearchResultCell: SendBirdUIKit.SBUMessageSearchResultCell?
   @objc public var searchBar: UIKit.UIView! {
     @objc get
@@ -2244,6 +2247,7 @@ public class MessageStateView : SendBirdUIKit.SBUMessageStateView {
   @objc override open func setupStyles()
   @objc override open func setupAutolayout()
   @objc public func setupSearchBarStyle(searchBar: UIKit.UISearchBar)
+  @objc open func message(at indexPath: Foundation.IndexPath) -> SendBirdSDK.SBDBaseMessage?
   @objc public func enterChannel(with message: SendBirdSDK.SBDBaseMessage, highlightInfo: SendBirdUIKit.SBUHighlightMessageInfo?, messageListParams: SendBirdSDK.SBDMessageListParams? = nil)
 }
 extension SBUMessageSearchViewController : UIKit.UITableViewDelegate, UIKit.UITableViewDataSource {

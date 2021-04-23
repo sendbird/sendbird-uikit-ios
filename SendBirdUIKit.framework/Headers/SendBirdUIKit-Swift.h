@@ -3358,6 +3358,8 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUMessageSearchViewController")
 /// <code>messageFromTs</code> is set to user’s channel joined ts as a default. You can set this value to <code>0</code> to search for all previous messages as well.
 /// <code>limit</code> will be set to default value of <code>defaultSearchLimit</code> in case if it’s set to 0 or smaller value.
 @property (nonatomic, copy) void (^ _Nullable customMessageSearchQueryBuilder)(SBDMessageSearchQueryBuilder * _Nonnull);
+/// The search result list. Use this list to locate the <code>SBDBaseMessage</code> object from the <code>tableView</code>.
+@property (nonatomic, readonly, copy) NSArray<SBDBaseMessage *> * _Nonnull searchResultList;
 /// Message search result’s cell.
 @property (nonatomic, strong) SBUMessageSearchResultCell * _Nullable messageSearchResultCell;
 @property (nonatomic, readonly, strong) UIView * _Null_unspecified searchBar;
@@ -3393,6 +3395,15 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUMessageSearchViewController")
 - (void)setupStyles;
 - (void)setupAutolayout;
 - (void)setupSearchBarStyleWithSearchBar:(UISearchBar * _Nonnull)searchBar;
+/// Retrives the <code>SBDBaseMessage</code> object from the given <code>IndexPath</code> of the tableView.
+/// since:
+/// 2.1.5
+/// \param indexPath <code>IndexPath</code> of which you want to retrieve the <code>SBDMessage</code> object.
+///
+///
+/// returns:
+/// <code>SBDBaseMessage</code> object of the corresponding <code>IndexPath</code>, or <code>nil</code> if the message can’t be found.
+- (SBDBaseMessage * _Nullable)messageAt:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
 /// Enters a <code>SBUChannelViewController</code> with the selected message.
 /// \param message A <code>SBDBaseMessage</code> object to load channel from.
 ///
@@ -8099,6 +8110,8 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUMessageSearchViewController")
 /// <code>messageFromTs</code> is set to user’s channel joined ts as a default. You can set this value to <code>0</code> to search for all previous messages as well.
 /// <code>limit</code> will be set to default value of <code>defaultSearchLimit</code> in case if it’s set to 0 or smaller value.
 @property (nonatomic, copy) void (^ _Nullable customMessageSearchQueryBuilder)(SBDMessageSearchQueryBuilder * _Nonnull);
+/// The search result list. Use this list to locate the <code>SBDBaseMessage</code> object from the <code>tableView</code>.
+@property (nonatomic, readonly, copy) NSArray<SBDBaseMessage *> * _Nonnull searchResultList;
 /// Message search result’s cell.
 @property (nonatomic, strong) SBUMessageSearchResultCell * _Nullable messageSearchResultCell;
 @property (nonatomic, readonly, strong) UIView * _Null_unspecified searchBar;
@@ -8134,6 +8147,15 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUMessageSearchViewController")
 - (void)setupStyles;
 - (void)setupAutolayout;
 - (void)setupSearchBarStyleWithSearchBar:(UISearchBar * _Nonnull)searchBar;
+/// Retrives the <code>SBDBaseMessage</code> object from the given <code>IndexPath</code> of the tableView.
+/// since:
+/// 2.1.5
+/// \param indexPath <code>IndexPath</code> of which you want to retrieve the <code>SBDMessage</code> object.
+///
+///
+/// returns:
+/// <code>SBDBaseMessage</code> object of the corresponding <code>IndexPath</code>, or <code>nil</code> if the message can’t be found.
+- (SBDBaseMessage * _Nullable)messageAt:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
 /// Enters a <code>SBUChannelViewController</code> with the selected message.
 /// \param message A <code>SBDBaseMessage</code> object to load channel from.
 ///
@@ -12842,6 +12864,8 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUMessageSearchViewController")
 /// <code>messageFromTs</code> is set to user’s channel joined ts as a default. You can set this value to <code>0</code> to search for all previous messages as well.
 /// <code>limit</code> will be set to default value of <code>defaultSearchLimit</code> in case if it’s set to 0 or smaller value.
 @property (nonatomic, copy) void (^ _Nullable customMessageSearchQueryBuilder)(SBDMessageSearchQueryBuilder * _Nonnull);
+/// The search result list. Use this list to locate the <code>SBDBaseMessage</code> object from the <code>tableView</code>.
+@property (nonatomic, readonly, copy) NSArray<SBDBaseMessage *> * _Nonnull searchResultList;
 /// Message search result’s cell.
 @property (nonatomic, strong) SBUMessageSearchResultCell * _Nullable messageSearchResultCell;
 @property (nonatomic, readonly, strong) UIView * _Null_unspecified searchBar;
@@ -12877,6 +12901,15 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUMessageSearchViewController")
 - (void)setupStyles;
 - (void)setupAutolayout;
 - (void)setupSearchBarStyleWithSearchBar:(UISearchBar * _Nonnull)searchBar;
+/// Retrives the <code>SBDBaseMessage</code> object from the given <code>IndexPath</code> of the tableView.
+/// since:
+/// 2.1.5
+/// \param indexPath <code>IndexPath</code> of which you want to retrieve the <code>SBDMessage</code> object.
+///
+///
+/// returns:
+/// <code>SBDBaseMessage</code> object of the corresponding <code>IndexPath</code>, or <code>nil</code> if the message can’t be found.
+- (SBDBaseMessage * _Nullable)messageAt:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
 /// Enters a <code>SBUChannelViewController</code> with the selected message.
 /// \param message A <code>SBDBaseMessage</code> object to load channel from.
 ///
@@ -17583,6 +17616,8 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUMessageSearchViewController")
 /// <code>messageFromTs</code> is set to user’s channel joined ts as a default. You can set this value to <code>0</code> to search for all previous messages as well.
 /// <code>limit</code> will be set to default value of <code>defaultSearchLimit</code> in case if it’s set to 0 or smaller value.
 @property (nonatomic, copy) void (^ _Nullable customMessageSearchQueryBuilder)(SBDMessageSearchQueryBuilder * _Nonnull);
+/// The search result list. Use this list to locate the <code>SBDBaseMessage</code> object from the <code>tableView</code>.
+@property (nonatomic, readonly, copy) NSArray<SBDBaseMessage *> * _Nonnull searchResultList;
 /// Message search result’s cell.
 @property (nonatomic, strong) SBUMessageSearchResultCell * _Nullable messageSearchResultCell;
 @property (nonatomic, readonly, strong) UIView * _Null_unspecified searchBar;
@@ -17618,6 +17653,15 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUMessageSearchViewController")
 - (void)setupStyles;
 - (void)setupAutolayout;
 - (void)setupSearchBarStyleWithSearchBar:(UISearchBar * _Nonnull)searchBar;
+/// Retrives the <code>SBDBaseMessage</code> object from the given <code>IndexPath</code> of the tableView.
+/// since:
+/// 2.1.5
+/// \param indexPath <code>IndexPath</code> of which you want to retrieve the <code>SBDMessage</code> object.
+///
+///
+/// returns:
+/// <code>SBDBaseMessage</code> object of the corresponding <code>IndexPath</code>, or <code>nil</code> if the message can’t be found.
+- (SBDBaseMessage * _Nullable)messageAt:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
 /// Enters a <code>SBUChannelViewController</code> with the selected message.
 /// \param message A <code>SBDBaseMessage</code> object to load channel from.
 ///
