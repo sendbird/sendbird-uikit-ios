@@ -1,7 +1,7 @@
 # Change Log
 
 ### v2.1.5 (Apr 23, 2021)
-* Added
+* Added in `SBUMessageSearchViewController`
   * `searchResultList: [SBDBaseMessage]` : Holds the search results.
   * `open func message(at indexPath:) -> SBDBaseMessage?` : Retrieves the `SBDBaseMessage` object from given `IndexPath`.
 
