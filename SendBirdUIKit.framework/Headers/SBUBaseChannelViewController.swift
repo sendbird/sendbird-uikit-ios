@@ -79,7 +79,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+    public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         self.startingPoint = nil
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }

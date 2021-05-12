@@ -1,5 +1,9 @@
 # Change Log
 
+### v2.1.6 (May 11, 2021)
+* Fixed video thumbnail bug
+* Removed `configureContentOffset` in `SBUChannelViewController` and allowed to adjust tableView  contentInset
+
 ### v2.1.5 (Apr 23, 2021)
 * Added in `SBUMessageSearchViewController`
   * `searchResultList: [SBDBaseMessage]` : Holds the search results.

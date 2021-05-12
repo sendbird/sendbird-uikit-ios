@@ -796,7 +796,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUBaseChannelViewController")
 /// This object has a list of all messages.
 @property (nonatomic, readonly, copy) NSArray<SBDBaseMessage *> * _Nonnull fullMessageList;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
-- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
+- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER;
 - (void)viewWillAppear:(BOOL)animated;
 - (void)viewWillDisappear:(BOOL)animated;
 - (void)loadView;
@@ -1693,7 +1693,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 /// returns:
 /// If <code>true</code>, the messages date is same day.
 - (BOOL)checkSameDayAsNextMessageWithCurrentIndex:(NSInteger)currentIndex SWIFT_WARN_UNUSED_RESULT;
-- (void)configureOffset;
 /// This is used to check the loading status and control loading indicator.
 /// \param loadingState Set to true when the list is loading.
 ///
@@ -5548,7 +5547,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUBaseChannelViewController")
 /// This object has a list of all messages.
 @property (nonatomic, readonly, copy) NSArray<SBDBaseMessage *> * _Nonnull fullMessageList;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
-- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
+- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER;
 - (void)viewWillAppear:(BOOL)animated;
 - (void)viewWillDisappear:(BOOL)animated;
 - (void)loadView;
@@ -6445,7 +6444,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 /// returns:
 /// If <code>true</code>, the messages date is same day.
 - (BOOL)checkSameDayAsNextMessageWithCurrentIndex:(NSInteger)currentIndex SWIFT_WARN_UNUSED_RESULT;
-- (void)configureOffset;
 /// This is used to check the loading status and control loading indicator.
 /// \param loadingState Set to true when the list is loading.
 ///
@@ -10302,7 +10300,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUBaseChannelViewController")
 /// This object has a list of all messages.
 @property (nonatomic, readonly, copy) NSArray<SBDBaseMessage *> * _Nonnull fullMessageList;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
-- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
+- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER;
 - (void)viewWillAppear:(BOOL)animated;
 - (void)viewWillDisappear:(BOOL)animated;
 - (void)loadView;
@@ -11199,7 +11197,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 /// returns:
 /// If <code>true</code>, the messages date is same day.
 - (BOOL)checkSameDayAsNextMessageWithCurrentIndex:(NSInteger)currentIndex SWIFT_WARN_UNUSED_RESULT;
-- (void)configureOffset;
 /// This is used to check the loading status and control loading indicator.
 /// \param loadingState Set to true when the list is loading.
 ///
@@ -15054,7 +15051,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUBaseChannelViewController")
 /// This object has a list of all messages.
 @property (nonatomic, readonly, copy) NSArray<SBDBaseMessage *> * _Nonnull fullMessageList;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
-- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
+- (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER;
 - (void)viewWillAppear:(BOOL)animated;
 - (void)viewWillDisappear:(BOOL)animated;
 - (void)loadView;
@@ -15951,7 +15948,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 /// returns:
 /// If <code>true</code>, the messages date is same day.
 - (BOOL)checkSameDayAsNextMessageWithCurrentIndex:(NSInteger)currentIndex SWIFT_WARN_UNUSED_RESULT;
-- (void)configureOffset;
 /// This is used to check the loading status and control loading indicator.
 /// \param loadingState Set to true when the list is loading.
 ///

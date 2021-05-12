@@ -579,7 +579,7 @@ extension NSObject {
   @available(*, unavailable, renamed: "SBUOpenChannelViewController(channelUrl:)")
   @objc required dynamic public init?(coder: Foundation.NSCoder)
   @available(*, unavailable, renamed: "SBUOpenChannelViewController(channelUrl:)")
-  @objc dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
+  @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
   @objc public init(channel: SendBirdSDK.SBDOpenChannel, messageListParams: SendBirdSDK.SBDMessageListParams? = nil)
   @objc public init(channelUrl: Swift.String, messageListParams: SendBirdSDK.SBDMessageListParams? = nil)
   @objc override dynamic open func loadView()
@@ -792,6 +792,7 @@ public typealias SBUNewMessageInfoHandler = () -> Swift.Void
     @objc get
   }
   @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
   @objc override dynamic open func viewWillAppear(_ animated: Swift.Bool)
   @objc override dynamic open func viewWillDisappear(_ animated: Swift.Bool)
   @objc override dynamic open func loadView()
@@ -1010,7 +1011,7 @@ extension SBUBaseViewController : UIKit.UINavigationControllerDelegate {
   @available(*, unavailable, renamed: "SBUChannelViewController(channelUrl:)")
   @objc required dynamic public init?(coder: Foundation.NSCoder)
   @available(*, unavailable, renamed: "SBUChannelViewController(channelUrl:)")
-  @objc dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
+  @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
   @objc public init(channel: SendBirdSDK.SBDGroupChannel, messageListParams: SendBirdSDK.SBDMessageListParams? = nil)
   @objc public init(channelUrl: Swift.String, messageListParams: SendBirdSDK.SBDMessageListParams? = nil)
   @objc public init(channelUrl: Swift.String, startingPoint: Swift.Int64, messageListParams: SendBirdSDK.SBDMessageListParams? = nil)
@@ -1046,7 +1047,6 @@ extension SBUBaseViewController : UIKit.UINavigationControllerDelegate {
   @objc open func setEmojiLongTapGestureHandler(_ cell: SendBirdUIKit.SBUBaseMessageCell, emojiKey: Swift.String)
   @objc public func updateMessageInputModeState()
   @objc public func checkSameDayAsNextMessage(currentIndex: Swift.Int) -> Swift.Bool
-  @objc public func configureOffset()
   @objc override public func setLoading(_ loadingState: Swift.Bool, _ showIndicator: Swift.Bool)
   @objc public func getMessageGroupingPosition(currentIndex: Swift.Int) -> SendBirdUIKit.MessageGroupPosition
   @objc public func onClickSetting()

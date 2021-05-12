@@ -431,8 +431,6 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
     
     open override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        self.configureOffset()
-        
         self.setupStyles()
     }
 
@@ -1067,14 +1065,6 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
         let prevCreatedAt = nextMessage.createdAt
         
         return Date.from(prevCreatedAt).isSameDay(as: Date.from(curCreatedAt))
-    }
-    
-    public func configureOffset() {
-        guard self.tableView.contentOffset.y < 0,
-            self.tableViewTopConstraint.constant <= 0 else { return }
-      
-        let tempOffset = self.tableView.contentOffset.y
-        self.tableViewTopConstraint.constant -= tempOffset
     }
     
     /// This is used to check the loading status and control loading indicator.
