@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
 	s.name         = "SendBirdUIKit"
-	s.version      = "2.1.6"
+	s.version      = "2.1.7"
 	s.summary      = "UIKit based on SendBirdSDK"
 	s.description  = "SendBird UIKit is a framework composed of basic UI components based on SendBirdSDK."
 	s.homepage     = "https://sendbird.com"
@@ -9,7 +9,8 @@ Pod::Spec.new do |s|
 	s.authors      = {
 	"Jaesung Lee" => "jaesung.lee@sendbird.com",
 	"Jed Gyeong" => "jed.gyeong@sendbird.com", 
-	"Woo" => "wooyoung.chung@sendbird.com" 
+	"Woo" => "wooyoung.chung@sendbird.com",
+	"Tez" => "tez.park@sendbird.com"
   	}
 	s.platform     = :ios, "10.3"
 	s.source = { :git => "https://github.com/sendbird/sendbird-uikit-ios.git", :tag => "v#{s.version}" }

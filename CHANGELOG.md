@@ -1,5 +1,10 @@
 # Change Log
 
+### v2.1.7 (May 26, 2021)
+* Fixed problems recognized as the same video file if other URL video files have the same file name
+* Fixed `customizedMembers` not working in `SBUMemberListViewController`
+* Modified the use of the same file name when transferring image files
+
 ### v2.1.6 (May 11, 2021)
 * Fixed video thumbnail bug
 * Removed `configureContentOffset` in `SBUChannelViewController` and allowed to adjust tableView  contentInset

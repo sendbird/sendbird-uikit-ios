@@ -1204,7 +1204,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
             
             self.sendFileMessage(
                 fileData: imageData,
-                fileName: "image.jpg",
+                fileName: "\(Date().toString(format: .yyyyMMddhhmmss, localizedFormat: false)).jpg",
                 mimeType: "image/jpeg"
             )
             
@@ -1232,7 +1232,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
             
             self.sendFileMessage(
                 fileData: imageData,
-                fileName: "image.jpg",
+                fileName: "\(Date().toString(format: .yyyyMMddhhmmss, localizedFormat: false)).jpg",
                 mimeType: "image/jpeg"
             )
         }
