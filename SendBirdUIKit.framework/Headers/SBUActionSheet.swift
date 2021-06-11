@@ -4,7 +4,7 @@
 //  SendBirdUIKit
 //
 //  Created by Tez Park on 16/02/2020.
-//  Copyright © 2020 SendBird, Inc. All rights reserved.
+//  Copyright © 2020 Sendbird, Inc. All rights reserved.
 //
 
 import UIKit

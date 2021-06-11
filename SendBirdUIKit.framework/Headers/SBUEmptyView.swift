@@ -3,7 +3,7 @@
 //  SendBirdUIKit
 //
 //  Created by Tez Park on 27/02/2020.
-//  Copyright © 2020 SendBird, Inc. All rights reserved.
+//  Copyright © 2020 Sendbird, Inc. All rights reserved.
 //
 
 import UIKit
@@ -60,7 +60,7 @@ open class SBUEmptyView: UIView {
         super.init(coder: coder)
     }
     
-    public func setupViews() {
+    open func setupViews() {
         self.stackView.alignment = .center
         self.stackView.addArrangedSubview(self.statusImageView)
         self.stackView.addArrangedSubview(self.statusLabel)
@@ -69,23 +69,38 @@ open class SBUEmptyView: UIView {
         self.addSubview(stackView)
     }
     
-    public func setupAutolayout() {
+    open func setupAutolayout() {
         self.stackView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             self.stackView.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: 0),
             self.stackView.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: 0)
         ])
         
+        if #available(iOS 11.0, *) {
+            NSLayoutConstraint.activate([
+                self.stackView.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 0),
+                self.stackView.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: 0)
+            ])
+        } else {
+            NSLayoutConstraint.activate([
+                self.stackView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 0),
+                self.stackView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 0)
+            ])
+        }
+        
         self.statusImageView.setConstraint(width: 60.0, height: 60.0)
     }
     
-    public func setupStyles() {
+    open func setupStyles() {
         self.theme = self.isOverlay ? SBUTheme.overlayTheme.componentTheme : SBUTheme.componentTheme
         
         self.backgroundColor = theme.emptyViewBackgroundColor
         
         self.statusLabel.font = theme.emptyViewStatusFont
         self.statusLabel.textColor = theme.emptyViewStatusTintColor
+        self.statusLabel.contentMode = .center
+        self.statusLabel.numberOfLines = 0
+        self.statusLabel.lineBreakMode = .byWordWrapping
         //NOTE: this will cause unexpected image when tint with not desirable
         //image
         //self.statusImageView.image = self.statusImageView.image?.sbu_with(tintColor: theme.emptyViewStatusTintColor)

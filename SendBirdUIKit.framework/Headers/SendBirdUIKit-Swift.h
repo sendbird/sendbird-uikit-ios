@@ -849,7 +849,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUBaseChannelViewController")
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
 ///
 - (void)upsertMessagesInListWithMessages:(NSArray<SBDBaseMessage *> * _Nullable)messages needUpdateNewMessage:(BOOL)needUpdateNewMessage needReload:(BOOL)needReload;
-/// This function deletes the messages in the list using the message ids.
+/// This function deletes the messages in the list using the message ids. (Resendable messages are also delete together.)
 /// since:
 /// 1.2.5
 /// \param messageIds Message id array to delete
@@ -857,6 +857,16 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUBaseChannelViewController")
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
 ///
 - (void)deleteMessagesInListWithMessageIds:(NSArray<NSNumber *> * _Nullable)messageIds needReload:(BOOL)needReload;
+/// This function deletes the messages in the list using the message ids.
+/// since:
+/// 2.1.8
+/// \param messageIds Message id array to delete
+///
+/// \param excludeResendableMessages If set to <code>true</code>, the resendable messages are not deleted.
+///
+/// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
+///
+- (void)deleteMessagesInListWithMessageIds:(NSArray<NSNumber *> * _Nullable)messageIds excludeResendableMessages:(BOOL)excludeResendableMessages needReload:(BOOL)needReload;
 /// This functions deletes the resendable messages using the request ids.
 /// since:
 /// 1.2.5
@@ -880,6 +890,10 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUBaseChannelViewController")
 /// This function increases the new message count.
 - (void)increaseNewMessageCount;
 - (void)didReceiveError:(NSString * _Nullable)message;
+/// Set/Unset edit mode for given userMessage.
+/// \param userMessage User message to edit, or nil to end edit mode.
+///
+- (void)setEditModeFor:(SBDUserMessage * _Nullable)userMessage;
 /// Sends a user message with only text.
 /// since:
 /// 1.0.9
@@ -957,12 +971,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUBaseChannelViewController")
 - (void)setLoading:(BOOL)loadingState :(BOOL)showIndicator;
 @end
 
-@class UIPresentationController;
-
-@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
-- (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
-@end
-
 @class UIGestureRecognizer;
 
 @interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIGestureRecognizerDelegate>
@@ -986,17 +994,16 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit20SBUEmptyViewDelegate_")
 - (void)didSelectDeleteImageWithMessage:(SBDFileMessage * _Nonnull)message;
 @end
 
+@class UIPresentationController;
 
-@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
-- (BOOL)shouldShowLoadingIndicator;
-- (void)shouldDismissLoadingIndicator;
+@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
+- (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
 @end
 
-@class UIDocumentPickerViewController;
 
-@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIDocumentPickerDelegate>
-- (void)documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentsAtURLs:(NSArray<NSURL *> * _Nonnull)urls SWIFT_AVAILABILITY(ios,introduced=11.0);
-- (void)documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentAtURL:(NSURL * _Nonnull)url;
+@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
+- (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
+- (void)imagePickerControllerDidCancel:(UIImagePickerController * _Nonnull)picker;
 @end
 
 
@@ -1017,9 +1024,16 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit26SBUUserProfileViewDelegate_")
 @end
 
 
-@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
-- (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
-- (void)imagePickerControllerDidCancel:(UIImagePickerController * _Nonnull)picker;
+@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
+- (BOOL)shouldShowLoadingIndicator;
+- (void)shouldDismissLoadingIndicator;
+@end
+
+@class UIDocumentPickerViewController;
+
+@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIDocumentPickerDelegate>
+- (void)documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentsAtURLs:(NSArray<NSURL *> * _Nonnull)urls SWIFT_AVAILABILITY(ios,introduced=11.0);
+- (void)documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentAtURL:(NSURL * _Nonnull)url;
 @end
 
 
@@ -2611,6 +2625,19 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull ico
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
+
+SWIFT_PROTOCOL("_TtP13SendBirdUIKit27SBUInviteUserListDatasource_")
+@protocol SBUInviteUserListDatasource <NSObject>
+/// When creating and using a user list directly, overriding this function and return the next user list.
+/// Make this function return the next list each time it is called.
+/// since:
+/// 1.1.1
+///
+/// returns:
+/// next user list
+- (NSArray<SBUUser *> * _Nullable)nextUserList SWIFT_WARN_UNUSED_RESULT;
+@end
+
 @class SBDGroupChannelMemberListQuery;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
@@ -2680,14 +2707,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 /// \param users customized <code>SBUUser</code> array for add to user list
 ///
 - (void)loadNextUserListWithReset:(BOOL)reset users:(NSArray<SBUUser *> * _Nullable)users;
-/// When creating and using a user list directly, overriding this function and return the next user list.
-/// Make this function return the next list each time it is called.
-/// since:
-/// 1.1.1
-///
-/// returns:
-/// next user list
-- (NSArray<SBUUser *> * _Nullable)nextUserList SWIFT_WARN_UNUSED_RESULT;
 /// Invites users in the channel with selected userIds.
 /// since:
 /// 1.0.9
@@ -2736,6 +2755,20 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 /// This function is used to pop to previous viewController.
 - (void)popToPrevious;
 - (void)didReceiveError:(NSString * _Nullable)message;
+@end
+
+
+@interface SBUInviteUserViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUInviteUserListDatasource>
+/// When creating and using a user list directly, overriding this function and return the next user list.
+/// Make this function return the next list each time it is called.
+/// important:
+/// If you want to use this function, please set the <code>SBUInviteUserListDatasource</code> in your class.
+/// since:
+/// 1.1.1
+///
+/// returns:
+/// next user list
+- (NSArray<SBUUser *> * _Nullable)nextUserList SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
@@ -3068,15 +3101,15 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 @end
 
 
-@interface SBUMemberListViewController (SWIFT_EXTENSION(SendBirdUIKit))
-- (BOOL)shouldShowLoadingIndicator;
-- (void)shouldDismissLoadingIndicator;
-@end
-
-
 @interface SBUMemberListViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUUserProfileViewDelegate>
 - (void)didSelectMessageWithUserId:(NSString * _Nullable)userId;
 - (void)didSelectClose;
+@end
+
+
+@interface SBUMemberListViewController (SWIFT_EXTENSION(SendBirdUIKit))
+- (BOOL)shouldShowLoadingIndicator;
+- (void)shouldDismissLoadingIndicator;
 @end
 
 
@@ -5606,7 +5639,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUBaseChannelViewController")
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
 ///
 - (void)upsertMessagesInListWithMessages:(NSArray<SBDBaseMessage *> * _Nullable)messages needUpdateNewMessage:(BOOL)needUpdateNewMessage needReload:(BOOL)needReload;
-/// This function deletes the messages in the list using the message ids.
+/// This function deletes the messages in the list using the message ids. (Resendable messages are also delete together.)
 /// since:
 /// 1.2.5
 /// \param messageIds Message id array to delete
@@ -5614,6 +5647,16 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUBaseChannelViewController")
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
 ///
 - (void)deleteMessagesInListWithMessageIds:(NSArray<NSNumber *> * _Nullable)messageIds needReload:(BOOL)needReload;
+/// This function deletes the messages in the list using the message ids.
+/// since:
+/// 2.1.8
+/// \param messageIds Message id array to delete
+///
+/// \param excludeResendableMessages If set to <code>true</code>, the resendable messages are not deleted.
+///
+/// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
+///
+- (void)deleteMessagesInListWithMessageIds:(NSArray<NSNumber *> * _Nullable)messageIds excludeResendableMessages:(BOOL)excludeResendableMessages needReload:(BOOL)needReload;
 /// This functions deletes the resendable messages using the request ids.
 /// since:
 /// 1.2.5
@@ -5637,6 +5680,10 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUBaseChannelViewController")
 /// This function increases the new message count.
 - (void)increaseNewMessageCount;
 - (void)didReceiveError:(NSString * _Nullable)message;
+/// Set/Unset edit mode for given userMessage.
+/// \param userMessage User message to edit, or nil to end edit mode.
+///
+- (void)setEditModeFor:(SBDUserMessage * _Nullable)userMessage;
 /// Sends a user message with only text.
 /// since:
 /// 1.0.9
@@ -5714,12 +5761,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUBaseChannelViewController")
 - (void)setLoading:(BOOL)loadingState :(BOOL)showIndicator;
 @end
 
-@class UIPresentationController;
-
-@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
-- (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
-@end
-
 @class UIGestureRecognizer;
 
 @interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIGestureRecognizerDelegate>
@@ -5743,17 +5784,16 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit20SBUEmptyViewDelegate_")
 - (void)didSelectDeleteImageWithMessage:(SBDFileMessage * _Nonnull)message;
 @end
 
+@class UIPresentationController;
 
-@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
-- (BOOL)shouldShowLoadingIndicator;
-- (void)shouldDismissLoadingIndicator;
+@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
+- (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
 @end
 
-@class UIDocumentPickerViewController;
 
-@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIDocumentPickerDelegate>
-- (void)documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentsAtURLs:(NSArray<NSURL *> * _Nonnull)urls SWIFT_AVAILABILITY(ios,introduced=11.0);
-- (void)documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentAtURL:(NSURL * _Nonnull)url;
+@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
+- (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
+- (void)imagePickerControllerDidCancel:(UIImagePickerController * _Nonnull)picker;
 @end
 
 
@@ -5774,9 +5814,16 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit26SBUUserProfileViewDelegate_")
 @end
 
 
-@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
-- (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
-- (void)imagePickerControllerDidCancel:(UIImagePickerController * _Nonnull)picker;
+@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
+- (BOOL)shouldShowLoadingIndicator;
+- (void)shouldDismissLoadingIndicator;
+@end
+
+@class UIDocumentPickerViewController;
+
+@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIDocumentPickerDelegate>
+- (void)documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentsAtURLs:(NSArray<NSURL *> * _Nonnull)urls SWIFT_AVAILABILITY(ios,introduced=11.0);
+- (void)documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentAtURL:(NSURL * _Nonnull)url;
 @end
 
 
@@ -7368,6 +7415,19 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull ico
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
+
+SWIFT_PROTOCOL("_TtP13SendBirdUIKit27SBUInviteUserListDatasource_")
+@protocol SBUInviteUserListDatasource <NSObject>
+/// When creating and using a user list directly, overriding this function and return the next user list.
+/// Make this function return the next list each time it is called.
+/// since:
+/// 1.1.1
+///
+/// returns:
+/// next user list
+- (NSArray<SBUUser *> * _Nullable)nextUserList SWIFT_WARN_UNUSED_RESULT;
+@end
+
 @class SBDGroupChannelMemberListQuery;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
@@ -7437,14 +7497,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 /// \param users customized <code>SBUUser</code> array for add to user list
 ///
 - (void)loadNextUserListWithReset:(BOOL)reset users:(NSArray<SBUUser *> * _Nullable)users;
-/// When creating and using a user list directly, overriding this function and return the next user list.
-/// Make this function return the next list each time it is called.
-/// since:
-/// 1.1.1
-///
-/// returns:
-/// next user list
-- (NSArray<SBUUser *> * _Nullable)nextUserList SWIFT_WARN_UNUSED_RESULT;
 /// Invites users in the channel with selected userIds.
 /// since:
 /// 1.0.9
@@ -7493,6 +7545,20 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 /// This function is used to pop to previous viewController.
 - (void)popToPrevious;
 - (void)didReceiveError:(NSString * _Nullable)message;
+@end
+
+
+@interface SBUInviteUserViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUInviteUserListDatasource>
+/// When creating and using a user list directly, overriding this function and return the next user list.
+/// Make this function return the next list each time it is called.
+/// important:
+/// If you want to use this function, please set the <code>SBUInviteUserListDatasource</code> in your class.
+/// since:
+/// 1.1.1
+///
+/// returns:
+/// next user list
+- (NSArray<SBUUser *> * _Nullable)nextUserList SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
@@ -7825,15 +7891,15 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 @end
 
 
-@interface SBUMemberListViewController (SWIFT_EXTENSION(SendBirdUIKit))
-- (BOOL)shouldShowLoadingIndicator;
-- (void)shouldDismissLoadingIndicator;
-@end
-
-
 @interface SBUMemberListViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUUserProfileViewDelegate>
 - (void)didSelectMessageWithUserId:(NSString * _Nullable)userId;
 - (void)didSelectClose;
+@end
+
+
+@interface SBUMemberListViewController (SWIFT_EXTENSION(SendBirdUIKit))
+- (BOOL)shouldShowLoadingIndicator;
+- (void)shouldDismissLoadingIndicator;
 @end
 
 
@@ -10365,7 +10431,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUBaseChannelViewController")
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
 ///
 - (void)upsertMessagesInListWithMessages:(NSArray<SBDBaseMessage *> * _Nullable)messages needUpdateNewMessage:(BOOL)needUpdateNewMessage needReload:(BOOL)needReload;
-/// This function deletes the messages in the list using the message ids.
+/// This function deletes the messages in the list using the message ids. (Resendable messages are also delete together.)
 /// since:
 /// 1.2.5
 /// \param messageIds Message id array to delete
@@ -10373,6 +10439,16 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUBaseChannelViewController")
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
 ///
 - (void)deleteMessagesInListWithMessageIds:(NSArray<NSNumber *> * _Nullable)messageIds needReload:(BOOL)needReload;
+/// This function deletes the messages in the list using the message ids.
+/// since:
+/// 2.1.8
+/// \param messageIds Message id array to delete
+///
+/// \param excludeResendableMessages If set to <code>true</code>, the resendable messages are not deleted.
+///
+/// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
+///
+- (void)deleteMessagesInListWithMessageIds:(NSArray<NSNumber *> * _Nullable)messageIds excludeResendableMessages:(BOOL)excludeResendableMessages needReload:(BOOL)needReload;
 /// This functions deletes the resendable messages using the request ids.
 /// since:
 /// 1.2.5
@@ -10396,6 +10472,10 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUBaseChannelViewController")
 /// This function increases the new message count.
 - (void)increaseNewMessageCount;
 - (void)didReceiveError:(NSString * _Nullable)message;
+/// Set/Unset edit mode for given userMessage.
+/// \param userMessage User message to edit, or nil to end edit mode.
+///
+- (void)setEditModeFor:(SBDUserMessage * _Nullable)userMessage;
 /// Sends a user message with only text.
 /// since:
 /// 1.0.9
@@ -10473,12 +10553,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUBaseChannelViewController")
 - (void)setLoading:(BOOL)loadingState :(BOOL)showIndicator;
 @end
 
-@class UIPresentationController;
-
-@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
-- (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
-@end
-
 @class UIGestureRecognizer;
 
 @interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIGestureRecognizerDelegate>
@@ -10502,17 +10576,16 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit20SBUEmptyViewDelegate_")
 - (void)didSelectDeleteImageWithMessage:(SBDFileMessage * _Nonnull)message;
 @end
 
+@class UIPresentationController;
 
-@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
-- (BOOL)shouldShowLoadingIndicator;
-- (void)shouldDismissLoadingIndicator;
+@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
+- (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
 @end
 
-@class UIDocumentPickerViewController;
 
-@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIDocumentPickerDelegate>
-- (void)documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentsAtURLs:(NSArray<NSURL *> * _Nonnull)urls SWIFT_AVAILABILITY(ios,introduced=11.0);
-- (void)documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentAtURL:(NSURL * _Nonnull)url;
+@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
+- (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
+- (void)imagePickerControllerDidCancel:(UIImagePickerController * _Nonnull)picker;
 @end
 
 
@@ -10533,9 +10606,16 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit26SBUUserProfileViewDelegate_")
 @end
 
 
-@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
-- (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
-- (void)imagePickerControllerDidCancel:(UIImagePickerController * _Nonnull)picker;
+@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
+- (BOOL)shouldShowLoadingIndicator;
+- (void)shouldDismissLoadingIndicator;
+@end
+
+@class UIDocumentPickerViewController;
+
+@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIDocumentPickerDelegate>
+- (void)documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentsAtURLs:(NSArray<NSURL *> * _Nonnull)urls SWIFT_AVAILABILITY(ios,introduced=11.0);
+- (void)documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentAtURL:(NSURL * _Nonnull)url;
 @end
 
 
@@ -12127,6 +12207,19 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull ico
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
+
+SWIFT_PROTOCOL("_TtP13SendBirdUIKit27SBUInviteUserListDatasource_")
+@protocol SBUInviteUserListDatasource <NSObject>
+/// When creating and using a user list directly, overriding this function and return the next user list.
+/// Make this function return the next list each time it is called.
+/// since:
+/// 1.1.1
+///
+/// returns:
+/// next user list
+- (NSArray<SBUUser *> * _Nullable)nextUserList SWIFT_WARN_UNUSED_RESULT;
+@end
+
 @class SBDGroupChannelMemberListQuery;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
@@ -12196,14 +12289,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 /// \param users customized <code>SBUUser</code> array for add to user list
 ///
 - (void)loadNextUserListWithReset:(BOOL)reset users:(NSArray<SBUUser *> * _Nullable)users;
-/// When creating and using a user list directly, overriding this function and return the next user list.
-/// Make this function return the next list each time it is called.
-/// since:
-/// 1.1.1
-///
-/// returns:
-/// next user list
-- (NSArray<SBUUser *> * _Nullable)nextUserList SWIFT_WARN_UNUSED_RESULT;
 /// Invites users in the channel with selected userIds.
 /// since:
 /// 1.0.9
@@ -12252,6 +12337,20 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 /// This function is used to pop to previous viewController.
 - (void)popToPrevious;
 - (void)didReceiveError:(NSString * _Nullable)message;
+@end
+
+
+@interface SBUInviteUserViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUInviteUserListDatasource>
+/// When creating and using a user list directly, overriding this function and return the next user list.
+/// Make this function return the next list each time it is called.
+/// important:
+/// If you want to use this function, please set the <code>SBUInviteUserListDatasource</code> in your class.
+/// since:
+/// 1.1.1
+///
+/// returns:
+/// next user list
+- (NSArray<SBUUser *> * _Nullable)nextUserList SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
@@ -12584,15 +12683,15 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 @end
 
 
-@interface SBUMemberListViewController (SWIFT_EXTENSION(SendBirdUIKit))
-- (BOOL)shouldShowLoadingIndicator;
-- (void)shouldDismissLoadingIndicator;
-@end
-
-
 @interface SBUMemberListViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUUserProfileViewDelegate>
 - (void)didSelectMessageWithUserId:(NSString * _Nullable)userId;
 - (void)didSelectClose;
+@end
+
+
+@interface SBUMemberListViewController (SWIFT_EXTENSION(SendBirdUIKit))
+- (BOOL)shouldShowLoadingIndicator;
+- (void)shouldDismissLoadingIndicator;
 @end
 
 
@@ -15122,7 +15221,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUBaseChannelViewController")
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
 ///
 - (void)upsertMessagesInListWithMessages:(NSArray<SBDBaseMessage *> * _Nullable)messages needUpdateNewMessage:(BOOL)needUpdateNewMessage needReload:(BOOL)needReload;
-/// This function deletes the messages in the list using the message ids.
+/// This function deletes the messages in the list using the message ids. (Resendable messages are also delete together.)
 /// since:
 /// 1.2.5
 /// \param messageIds Message id array to delete
@@ -15130,6 +15229,16 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUBaseChannelViewController")
 /// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
 ///
 - (void)deleteMessagesInListWithMessageIds:(NSArray<NSNumber *> * _Nullable)messageIds needReload:(BOOL)needReload;
+/// This function deletes the messages in the list using the message ids.
+/// since:
+/// 2.1.8
+/// \param messageIds Message id array to delete
+///
+/// \param excludeResendableMessages If set to <code>true</code>, the resendable messages are not deleted.
+///
+/// \param needReload If set to <code>true</code>, the tableview will be call reloadData.
+///
+- (void)deleteMessagesInListWithMessageIds:(NSArray<NSNumber *> * _Nullable)messageIds excludeResendableMessages:(BOOL)excludeResendableMessages needReload:(BOOL)needReload;
 /// This functions deletes the resendable messages using the request ids.
 /// since:
 /// 1.2.5
@@ -15153,6 +15262,10 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUBaseChannelViewController")
 /// This function increases the new message count.
 - (void)increaseNewMessageCount;
 - (void)didReceiveError:(NSString * _Nullable)message;
+/// Set/Unset edit mode for given userMessage.
+/// \param userMessage User message to edit, or nil to end edit mode.
+///
+- (void)setEditModeFor:(SBDUserMessage * _Nullable)userMessage;
 /// Sends a user message with only text.
 /// since:
 /// 1.0.9
@@ -15230,12 +15343,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUBaseChannelViewController")
 - (void)setLoading:(BOOL)loadingState :(BOOL)showIndicator;
 @end
 
-@class UIPresentationController;
-
-@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
-- (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
-@end
-
 @class UIGestureRecognizer;
 
 @interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIGestureRecognizerDelegate>
@@ -15259,17 +15366,16 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit20SBUEmptyViewDelegate_")
 - (void)didSelectDeleteImageWithMessage:(SBDFileMessage * _Nonnull)message;
 @end
 
+@class UIPresentationController;
 
-@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
-- (BOOL)shouldShowLoadingIndicator;
-- (void)shouldDismissLoadingIndicator;
+@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
+- (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
 @end
 
-@class UIDocumentPickerViewController;
 
-@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIDocumentPickerDelegate>
-- (void)documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentsAtURLs:(NSArray<NSURL *> * _Nonnull)urls SWIFT_AVAILABILITY(ios,introduced=11.0);
-- (void)documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentAtURL:(NSURL * _Nonnull)url;
+@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
+- (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
+- (void)imagePickerControllerDidCancel:(UIImagePickerController * _Nonnull)picker;
 @end
 
 
@@ -15290,9 +15396,16 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit26SBUUserProfileViewDelegate_")
 @end
 
 
-@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
-- (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
-- (void)imagePickerControllerDidCancel:(UIImagePickerController * _Nonnull)picker;
+@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
+- (BOOL)shouldShowLoadingIndicator;
+- (void)shouldDismissLoadingIndicator;
+@end
+
+@class UIDocumentPickerViewController;
+
+@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIDocumentPickerDelegate>
+- (void)documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentsAtURLs:(NSArray<NSURL *> * _Nonnull)urls SWIFT_AVAILABILITY(ios,introduced=11.0);
+- (void)documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentAtURL:(NSURL * _Nonnull)url;
 @end
 
 
@@ -16884,6 +16997,19 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull ico
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
+
+SWIFT_PROTOCOL("_TtP13SendBirdUIKit27SBUInviteUserListDatasource_")
+@protocol SBUInviteUserListDatasource <NSObject>
+/// When creating and using a user list directly, overriding this function and return the next user list.
+/// Make this function return the next list each time it is called.
+/// since:
+/// 1.1.1
+///
+/// returns:
+/// next user list
+- (NSArray<SBUUser *> * _Nullable)nextUserList SWIFT_WARN_UNUSED_RESULT;
+@end
+
 @class SBDGroupChannelMemberListQuery;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
@@ -16953,14 +17079,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 /// \param users customized <code>SBUUser</code> array for add to user list
 ///
 - (void)loadNextUserListWithReset:(BOOL)reset users:(NSArray<SBUUser *> * _Nullable)users;
-/// When creating and using a user list directly, overriding this function and return the next user list.
-/// Make this function return the next list each time it is called.
-/// since:
-/// 1.1.1
-///
-/// returns:
-/// next user list
-- (NSArray<SBUUser *> * _Nullable)nextUserList SWIFT_WARN_UNUSED_RESULT;
 /// Invites users in the channel with selected userIds.
 /// since:
 /// 1.0.9
@@ -17009,6 +17127,20 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 /// This function is used to pop to previous viewController.
 - (void)popToPrevious;
 - (void)didReceiveError:(NSString * _Nullable)message;
+@end
+
+
+@interface SBUInviteUserViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUInviteUserListDatasource>
+/// When creating and using a user list directly, overriding this function and return the next user list.
+/// Make this function return the next list each time it is called.
+/// important:
+/// If you want to use this function, please set the <code>SBUInviteUserListDatasource</code> in your class.
+/// since:
+/// 1.1.1
+///
+/// returns:
+/// next user list
+- (NSArray<SBUUser *> * _Nullable)nextUserList SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
@@ -17341,15 +17473,15 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 @end
 
 
-@interface SBUMemberListViewController (SWIFT_EXTENSION(SendBirdUIKit))
-- (BOOL)shouldShowLoadingIndicator;
-- (void)shouldDismissLoadingIndicator;
-@end
-
-
 @interface SBUMemberListViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUUserProfileViewDelegate>
 - (void)didSelectMessageWithUserId:(NSString * _Nullable)userId;
 - (void)didSelectClose;
+@end
+
+
+@interface SBUMemberListViewController (SWIFT_EXTENSION(SendBirdUIKit))
+- (BOOL)shouldShowLoadingIndicator;
+- (void)shouldDismissLoadingIndicator;
 @end
 
 

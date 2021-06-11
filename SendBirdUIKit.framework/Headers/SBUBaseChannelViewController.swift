@@ -3,7 +3,7 @@
 //  SendBirdUIKit
 //
 //  Created by Tez Park on 2020/11/17.
-//  Copyright © 2020 SendBird, Inc. All rights reserved.
+//  Copyright © 2020 Sendbird, Inc. All rights reserved.
 //
 
 import UIKit
@@ -541,12 +541,28 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
         self.sortAllMessageList(needReload: needReload)
     }
     
-    /// This function deletes the messages in the list using the message ids.
+    /// This function deletes the messages in the list using the message ids. (Resendable messages are also delete together.)
     /// - Parameters:
     ///   - messageIds: Message id array to delete
     ///   - needReload: If set to `true`, the tableview will be call reloadData.
     /// - Since: 1.2.5
     public func deleteMessagesInList(messageIds: [Int64]?, needReload: Bool) {
+        self.deleteMessagesInList(
+            messageIds: messageIds,
+            excludeResendableMessages: false,
+            needReload: needReload
+        )
+    }
+    
+    /// This function deletes the messages in the list using the message ids.
+    /// - Parameters:
+    ///   - messageIds: Message id array to delete
+    ///   - excludeResendableMessages: If set to `true`, the resendable messages are not deleted.
+    ///   - needReload: If set to `true`, the tableview will be call reloadData.
+    /// - Since: 2.1.8
+    public func deleteMessagesInList(messageIds: [Int64]?,
+                                     excludeResendableMessages: Bool,
+                                     needReload: Bool) {
         guard let messageIds = messageIds else { return }
         
         // if deleted message contains the currently editing message,
@@ -587,7 +603,11 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
             self.messageList.remove(at: index)
         }
         
-        self.deleteResendableMessages(requestIds: toBeDeleteRequestIds, needReload: needReload)
+        if excludeResendableMessages {
+            self.sortAllMessageList(needReload: needReload)
+        } else {
+            self.deleteResendableMessages(requestIds: toBeDeleteRequestIds, needReload: needReload)
+        }
     }
     
     /// This functions deletes the resendable messages using the request ids.
@@ -704,7 +724,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
     
     /// Set/Unset edit mode for given userMessage.
     /// - Parameter userMessage : User message to edit, or nil to end edit mode.
-    func setEditMode(for userMessage: SBDUserMessage?) {
+    public func setEditMode(for userMessage: SBDUserMessage?) {
         inEditingMessage = userMessage
         
         if let userMessage = userMessage {
@@ -1073,6 +1093,15 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
                 channelUrl: self.baseChannel?.channelUrl,
                 message: pendingMessage
             )
+            
+            if let failedMessage = pendingMessage {
+                self.deleteMessagesInList(
+                    messageIds: [failedMessage.messageId],
+                    excludeResendableMessages: true,
+                    needReload: true
+                )
+            }
+            
         } else if let failedMessage = failedMessage as? SBDFileMessage {
             var data: Data? = nil
 
@@ -1129,6 +1158,14 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
                 channelUrl: self.baseChannel?.channelUrl,
                 message: pendingMessage
             )
+            
+            if let failedMessage = pendingMessage {
+                self.deleteMessagesInList(
+                    messageIds: [failedMessage.messageId],
+                    excludeResendableMessages: true,
+                    needReload: true
+                )
+            }
         }
     }
     
@@ -1465,9 +1502,13 @@ extension SBUBaseChannelViewController: SBUMessageInputViewDelegate {
         self.updateUserMessage(message: message, text: text)
     }
     
-    open func messageInputViewDidStartTyping() {}
+    open func messageInputViewDidStartTyping() {
+        self.channelViewModel?.startTypingMessage()
+    }
     
-    open func messageInputViewDidEndTyping() {}
+    open func messageInputViewDidEndTyping() {
+        self.channelViewModel?.endTypingMessage()
+    }
 }
 
 

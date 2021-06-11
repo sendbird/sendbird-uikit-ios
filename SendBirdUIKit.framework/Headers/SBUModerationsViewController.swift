@@ -3,7 +3,7 @@
 //  SendBirdUIKit
 //
 //  Created by Tez Park on 2020/07/27.
-//  Copyright © 2020 SendBird, Inc. All rights reserved.
+//  Copyright © 2020 Sendbird, Inc. All rights reserved.
 //
 
 import UIKit
@@ -231,7 +231,7 @@ open class SBUModerationsViewController: SBUBaseViewController {
             self.updateStyles()
         }
         
-        self.channelActionViewModel.channelChangedObservable.observe { [weak self] channel in
+        self.channelActionViewModel.channelChangedObservable.observe { [weak self] channel, _ in
             guard let self = self else { return }
             guard let channel = channel as? SBDGroupChannel else { return }
             

@@ -3,7 +3,7 @@
 //  SendBirdUIKit
 //
 //  Created by Tez Park on 05/02/2020.
-//  Copyright © 2020 SendBird, Inc. All rights reserved.
+//  Copyright © 2020 Sendbird, Inc. All rights reserved.
 //
 
 import UIKit
@@ -14,22 +14,15 @@ open class SBUInviteUserViewController: SBUBaseViewController {
     
     // MARK: - UI properties (Public)
     public var titleView: UIView? = nil {
-        didSet {
-            self.navigationItem.titleView = self.titleView
-        }
+        didSet { self.navigationItem.titleView = self.titleView }
     }
     public var leftBarButton: UIBarButtonItem? = nil {
-        didSet {
-            self.navigationItem.leftBarButtonItem = self.leftBarButton
-        }
+        didSet { self.navigationItem.leftBarButtonItem = self.leftBarButton }
     }
     public var rightBarButton: UIBarButtonItem? = nil {
-        didSet {
-            self.navigationItem.rightBarButtonItem = self.rightBarButton
-        }
+        didSet { self.navigationItem.rightBarButtonItem = self.rightBarButton }
     }
     public private(set) lazy var tableView = UITableView()
-
     public private(set) var userCell: UITableViewCell?
     
     public var theme: SBUUserListTheme = SBUTheme.userListTheme
@@ -76,25 +69,46 @@ open class SBUInviteUserViewController: SBUBaseViewController {
     }()
     
     
-    // MARK: - Logic properties (Public)
-    public private(set) var inviteListType: ChannelInviteListType = .users
+    // MARK: - Logic properties (Public, get-only)
+    public var inviteListType: ChannelInviteListType {
+        return inviteUserListViewModel?.inviteListType ?? .users
+    }
     
-    public private(set) var channel: SBDGroupChannel?
-    public private(set) var channelUrl: String?
+    public var channel: SBDGroupChannel? {
+        return inviteUserListViewModel?.channel as? SBDGroupChannel
+    }
+    public var channelUrl: String? {
+        return inviteUserListViewModel?.channelUrl
+    }
     
-    @SBUAtomic public private(set) var userList: [SBUUser] = []
-    @SBUAtomic public private(set) var selectedUserList: Set<SBUUser> = []
+    public var userList: [SBUUser] {
+        return inviteUserListViewModel?.userList ?? []
+    }
+    public var selectedUserList: Set<SBUUser> {
+        return inviteUserListViewModel?.selectedUserList ?? []
+    }
     
-    public private(set) var joinedUserIds: Set<String> = []
-    public private(set) var userListQuery: SBDApplicationUserListQuery?
-    public private(set) var memberListQuery: SBDGroupChannelMemberListQuery?
+    public var joinedUserIds: Set<String> {
+        return inviteUserListViewModel?.joinedUserIds ?? []
+    }
+    public var userListQuery: SBDApplicationUserListQuery? {
+        return inviteUserListViewModel?.userListQuery
+    }
+    
+    public var memberListQuery: SBDGroupChannelMemberListQuery? {
+        return inviteUserListViewModel?.memberListQuery
+    }
     
     
     // MARK: - Logic properties (Private)
-    @SBUAtomic private var customizedUsers: [SBUUser]?
-    private var useCustomizedUsers = false
-    var isLoading = false
-    let limit: UInt = 20
+    private var customizedUsers: [SBUUser]? {
+        return inviteUserListViewModel?.customizedUsers
+    }
+
+    private var inviteUserListViewModel: SBUInviteUserListViewModel? {
+        willSet { self.disposeViewModel() }
+        didSet { self.bindViewModel() }
+    }
     
     
     // MARK: - Lifecycle
@@ -118,11 +132,7 @@ open class SBUInviteUserViewController: SBUBaseViewController {
         super.init(nibName: nil, bundle: nil)
         SBULog.info("")
 
-        self.channel = channel
-        self.channelUrl = channel.channelUrl
-        self.customizedUsers = nil
-        self.inviteListType = type
-        
+        self.createViewModel(type: type)
         self.loadChannel(channelUrl: channel.channelUrl)
     }
 
@@ -134,9 +144,7 @@ open class SBUInviteUserViewController: SBUBaseViewController {
         super.init(nibName: nil, bundle: nil)
         SBULog.info("")
 
-        self.channelUrl = channelUrl
-        self.inviteListType = type
-
+        self.createViewModel(type: type)
         self.loadChannel(channelUrl: channelUrl)
     }
     
@@ -149,12 +157,7 @@ open class SBUInviteUserViewController: SBUBaseViewController {
         super.init(nibName: nil, bundle: nil)
         SBULog.info("")
         
-        self.channel = channel
-        self.channelUrl = channel.channelUrl
-        self.customizedUsers = users
-        self.useCustomizedUsers = users.count > 0
-        self.inviteListType = type
-        
+        self.createViewModel(users: users, type: type)
         self.loadChannel(channelUrl: channel.channelUrl)
     }
 
@@ -167,11 +170,7 @@ open class SBUInviteUserViewController: SBUBaseViewController {
         super.init(nibName: nil, bundle: nil)
         SBULog.info("")
         
-        self.channelUrl = channelUrl
-        self.customizedUsers = users
-        self.useCustomizedUsers = users.count > 0
-        self.inviteListType = type
-        
+        self.createViewModel(users: users, type: type)
         self.loadChannel(channelUrl: channelUrl)
     }
 
@@ -233,7 +232,7 @@ open class SBUInviteUserViewController: SBUBaseViewController {
             .shadowImage = UIImage.from(color: theme.navigationShadowColor)
 
         self.leftBarButton?.tintColor = theme.leftBarButtonTintColor
-        self.rightBarButton?.tintColor = self.selectedUserList.isEmpty
+        self.rightBarButton?.tintColor = inviteUserListViewModel?.selectedUserList.isEmpty ?? true
             ? theme.rightBarButtonTintColor
             : theme.rightBarButtonSelectedTintColor
 
@@ -277,6 +276,75 @@ open class SBUInviteUserViewController: SBUBaseViewController {
     
     deinit {
         SBULog.info("")
+        self.disposeViewModel()
+    }
+    
+    
+    // MARK: - ViewModel
+    
+    private func createViewModel(users: [SBUUser]? = nil,
+                                 type: ChannelInviteListType) {
+        self.inviteUserListViewModel = SBUInviteUserListViewModel(
+            users: users,
+            type: type
+        )
+        self.inviteUserListViewModel?.datasource = self
+    }
+    
+    private func bindViewModel() {
+        guard let inviteUserListViewModel = self.inviteUserListViewModel else { return }
+        
+        inviteUserListViewModel.errorObservable.observe { [weak self] error in
+            self?.didReceiveError(error.localizedDescription)
+        }
+        
+        inviteUserListViewModel.loadingObservable.observe { [weak self] isLoading in
+            if isLoading {
+                self?.shouldShowLoadingIndicator()
+            } else {
+                self?.shouldDismissLoadingIndicator()
+            }
+        }
+        
+        inviteUserListViewModel.channelLoadedObservable.observe { [weak self] channel in
+            guard let self = self else { return }
+            
+            SBULog.info("Channel loaded: \(String(describing: channel))")
+
+            self.resetUserList()
+        }
+        
+        inviteUserListViewModel.channelChangedObservable.observe { [weak self] channel, type in
+            switch type {
+            case .invite:
+                self?.popToChannel()
+            case .promote:
+                self?.popToChannel()
+            default:
+                break
+            }
+        }
+        
+        inviteUserListViewModel.userListChangedObservable.observe { [weak self] _ in
+            self?.reloadData()
+        }
+        
+        inviteUserListViewModel.selectedUserObservable.observe { [weak self] selectedUserList in
+            switch self?.inviteListType {
+            case .users:
+                self?.rightBarButton?.title = SBUStringSet.InviteChannel_Invite(selectedUserList.count)
+            case .operators:
+                self?.rightBarButton?.title = SBUStringSet.InviteChannel_Add(selectedUserList.count)
+            default:
+                self?.rightBarButton?.title = ""
+            }
+            
+            self?.setupStyles()
+        }
+    }
+    
+    private func disposeViewModel() {
+        self.inviteUserListViewModel?.dispose()
     }
     
     
@@ -286,34 +354,7 @@ open class SBUInviteUserViewController: SBUBaseViewController {
     /// - Parameter channelUrl: channel url
     public func loadChannel(channelUrl: String?) {
         guard let channelUrl = channelUrl else { return }
-        
-        SBUMain.connectionCheck { [weak self] user, error in
-            guard let self = self else { return }
-            if let error = error { self.didReceiveError(error.localizedDescription) }
-            
-            SBULog.info("[Request] Load channel: \(String(channelUrl))")
-            SBDGroupChannel.getWithUrl(channelUrl) { [weak self] channel, error in
-                guard let self = self else { return }
-                if let error = error {
-                    SBULog.error("[Failed] Load channel request: \(error.localizedDescription)")
-                    self.didReceiveError(error.localizedDescription)
-                    return
-                }
-                
-                self.channel = channel
-
-                SBULog.info("""
-                    [Succeed] Load channel request:
-                    \(String(format: "%@", self.channel ?? ""))
-                    """)
-
-                if self.inviteListType == .users {
-                    self.prepareDatas()
-                }
-                
-                self.resetUserList()
-            }
-        }
+        inviteUserListViewModel?.loadChannel(url: channelUrl, type: .group)
     }
     
     /// Load user list.
@@ -324,175 +365,27 @@ open class SBUInviteUserViewController: SBUBaseViewController {
     ///   - reset: `true` is reset user list and load new list
     ///   - users: customized `SBUUser` array for add to user list
     public func loadNextUserList(reset: Bool, users: [SBUUser]? = nil) {
-        if self.isLoading { return }
-        self.isLoading = true
-        
-        if reset {
-            self.userListQuery = nil
-            self.memberListQuery = nil
-            self.userList = []
-            
-            SBULog.info("[Request] User List")
-        } else {
-            SBULog.info("[Request] Next user List")
-        }
-
-        if let users = users {
-            // Customized user list
-            SBULog.info("\(users.count) customized users have been added.")
-            
-            self.appendUsersWithFiltering(users: users)
-            self.reloadData()
-            self.isLoading = false
-        }
-        else if !self.useCustomizedUsers {
-            switch self.inviteListType {
-            case .users:
-                self.loadNextApplicationUserList()
-            case .operators:
-                self.loadNextChannelMemberList()
-            default:
-                break
-            }
-        }
-    }
-    
-    /// This function loads application user list.
-    ///
-    /// If you want to call a list of users, use the `loadNextUserList(reset:users:)` function.
-    /// - Warning: Use this function only when you need to call `ApplicationUserList` alone.
-    private func loadNextApplicationUserList() {
-        if self.userListQuery == nil {
-            self.userListQuery = SBDMain.createApplicationUserListQuery()
-            self.userListQuery?.limit = self.limit
-        }
-        
-        guard self.userListQuery?.hasNext == true else {
-            self.isLoading = false
-            SBULog.info("All users have been loaded.")
-            self.reloadData()
-            return
-        }
-        
-        self.userListQuery?.loadNextPage(completionHandler: { [weak self] users, error in
-            guard let self = self else { return }
-            defer { self.isLoading = false }
-            
-            if let error = error {
-                SBULog.error("[Failed] User list request: \(error.localizedDescription)")
-                self.didReceiveError(error.localizedDescription)
-                return
-            }
-            guard let users = users?.sbu_convertUserList() else { return }
-            
-            SBULog.info("[Response] \(users.count) users")
-            
-            self.appendUsersWithFiltering(users: users)
-            self.reloadData()
-        })
-    }
-    
-    /// This function loads channel member list.
-    ///
-    /// If you want to call a list of users, use the `loadNextUserList(reset:users:)` function.
-    /// - Warning: Use this function only when you need to call `MemberList` alone.
-    private func loadNextChannelMemberList() {
-        if self.memberListQuery == nil {
-            self.memberListQuery = self.channel?.createMemberListQuery()
-            self.memberListQuery?.limit = self.limit
-            self.memberListQuery?.operatorFilter = .nonOperator
-        }
-        
-        guard self.memberListQuery?.hasNext == true else {
-            self.isLoading = false
-            SBULog.info("All members have been loaded.")
-            return
-        }
-        
-        // return [SBDMember]
-        self.memberListQuery?.loadNextPage(completionHandler: {
-            [weak self] members, error in
-            guard let self = self else { return }
-            defer { self.isLoading = false }
-            
-            if let error = error {
-                SBULog.error("[Failed] Member list request: \(error.localizedDescription)")
-                self.didReceiveError(error.localizedDescription)
-                return
-            }
-            guard let members = members?.sbu_convertUserList() else { return }
-            
-            SBULog.info("[Response] \(members.count) members")
-            
-            self.userList += members
-            self.reloadData()
-        })
-    }
-    
-
-    /// When creating and using a user list directly, overriding this function and return the next user list.
-    /// Make this function return the next list each time it is called.
-    /// - Returns: next user list
-    /// - Since: 1.1.1
-    open func nextUserList() -> [SBUUser]? {
-        return nil
-    }
-    
-    private func appendUsersWithFiltering(users: [SBUUser]) {
-        // Super,Broadcast channel does not contain all information in joined members.
-        if self.channel?.isBroadcast ?? false || self.channel?.isSuper ?? false {
-            self.userList += users
-            return
-        }
-
-        guard self.joinedUserIds.count != 0 else {
-            self.userList += users
-            return
-        }
-        
-        let filteredUsers = users.filter { joinedUserIds.contains($0.userId) == false }
-        if filteredUsers.count == 0 {
-            self.isLoading = false
-            let nextUserList = (self.nextUserList()?.count ?? 0) > 0 ? self.nextUserList() : nil
-            self.loadNextUserList(reset: false, users: self.useCustomizedUsers ? nextUserList : nil)
-        } else {
-            self.userList += filteredUsers
-        }
+        self.inviteUserListViewModel?.loadNextUserList(reset: reset, users: users)
     }
     
     /// Invites users in the channel with selected userIds.
     /// - Since: 1.0.9
     public func inviteUsers() {
         let userIds = Array(self.selectedUserList).sbu_getUserIds()
-        
-        self.inviteUsers(userIds: userIds)
+        self.inviteUserListViewModel?.inviteUsers(userIds: userIds)
     }
     
     /// Invites users in the channel with directly generated userIds.
     /// - Parameter userIds: User IDs to invite
     /// - Since: 1.0.9
     public func inviteUsers(userIds: [String]) {
-        SBULog.info("[Request] Invite users, Users: \(Array(self.selectedUserList))")
-        self.channel?.inviteUserIds(userIds, completionHandler: { [weak self] error in
-            guard let self = self else { return }
-            if let error = error {
-                SBULog.error("""
-                    [Failed] Invite users request:
-                    \(String(error.localizedDescription))
-                    """)
-                self.didReceiveError(error.localizedDescription)
-            }
-            
-            SBULog.info("[Succeed] Invite users")
-            self.popToChannel()
-        })
+        self.inviteUserListViewModel?.inviteUsers(userIds: userIds)
     }
     
     /// Promotes members as operator with selected userIds.
     /// - Since: 1.2.0
     public func promoteToOperators() {
         let memberIds = Array(self.selectedUserList).sbu_getUserIds()
-        
         self.promoteToOperators(memberIds: memberIds)
     }
     
@@ -500,28 +393,7 @@ open class SBUInviteUserViewController: SBUBaseViewController {
     /// - Parameter userIds: member IDs to invite
     /// - Since: 1.2.0
     public func promoteToOperators(memberIds: [String]) {
-        SBULog.info("[Request] Promote members, Members: \(Array(self.selectedUserList))")
-
-        self.shouldShowLoadingIndicator()
-        
-        self.channel?.addOperators(
-            withUserIds: memberIds,
-            completionHandler: { [weak self] error in
-                guard let self = self else { return }
-            defer { self.shouldDismissLoadingIndicator() }
-                
-            if let error = error {
-                SBULog.error("""
-                    [Failed] Promote members request:
-                    \(String(error.localizedDescription))
-                    """)
-                self.didReceiveError(error.localizedDescription)
-                return
-            }
-            
-            SBULog.info("[Succeed] Promote members")
-            self.popToPrevious()
-        })
+        self.inviteUserListViewModel?.promoteToOperators(memberIds: memberIds)
     }
     
     
@@ -548,14 +420,6 @@ open class SBUInviteUserViewController: SBUBaseViewController {
     
     
     // MARK: - Common
-    private func prepareDatas() {
-        guard let members = self.channel?.members as? [SBDUser] else { return }
-
-        let joinedMemberList = members.sbu_convertUserList()
-        if joinedMemberList.count > 0 {
-            self.joinedUserIds = Set(joinedMemberList.sbu_getUserIds())
-        }
-    }
     
     /// This function resets the user list.
     ///
@@ -594,24 +458,7 @@ open class SBUInviteUserViewController: SBUBaseViewController {
     /// This function selects or deselects user.
     /// - Parameter user: `SBUUser` object
     public func selectUser(user: SBUUser) {
-        if let index = self.selectedUserList.firstIndex(of: user) {
-            self.selectedUserList.remove(at: index)
-        } else {
-            self.selectedUserList.insert(user)
-        }
-        
-        SBULog.info("Selected user: \(user)")
-        
-        switch self.inviteListType {
-        case .users:
-            self.rightBarButton?.title = SBUStringSet.InviteChannel_Invite(selectedUserList.count)
-        case .operators:
-            self.rightBarButton?.title = SBUStringSet.InviteChannel_Add(selectedUserList.count)
-        default:
-            self.rightBarButton?.title = ""
-        }
-        
-        self.setupStyles()
+        self.inviteUserListViewModel?.selectUser(user: user)
     }
     
     /// This function is used to pop to channelViewController.
@@ -693,32 +540,12 @@ extension SBUInviteUserViewController: UITableViewDelegate, UITableViewDataSourc
     open func tableView(_ tableView: UITableView,
                         willDisplay cell: UITableViewCell,
                         forRowAt indexPath: IndexPath) {
-        
-        var queryCheck = false
-        switch self.inviteListType {
-        case .users:
-            queryCheck = (self.userListQuery?.hasNext == true && self.userListQuery != nil)
-        case .operators:
-            queryCheck = (self.memberListQuery?.hasNext == true && self.memberListQuery != nil)
-        case .none:
-            break
-        }
-        
-        if self.userList.count > 0,
-            (self.useCustomizedUsers || queryCheck),
-            indexPath.row == (self.userList.count - Int(self.limit)/2),
-            !self.isLoading {
-            let nextUserList = (self.nextUserList()?.count ?? 0) > 0
-                ? self.nextUserList()
-                : nil
-            self.loadNextUserList(
-                reset: false,
-                users: self.useCustomizedUsers ? nextUserList : nil
-            )
-        }
+        self.inviteUserListViewModel?.preLoadNextUserList(indexPath: indexPath)
     }
 }
 
+
+// MARK: - LoadingIndicatorDelegate
 extension SBUInviteUserViewController: LoadingIndicatorDelegate {
     @discardableResult
     open func shouldShowLoadingIndicator() -> Bool {
@@ -728,5 +555,19 @@ extension SBUInviteUserViewController: LoadingIndicatorDelegate {
     
     open func shouldDismissLoadingIndicator() {
         SBULoading.stop()
+    }
+}
+
+
+// MARK: - SBUInviteUserListDatasource
+extension SBUInviteUserViewController: SBUInviteUserListDatasource {
+    /// When creating and using a user list directly, overriding this function and return the next user list.
+    /// Make this function return the next list each time it is called.
+    /// - Important: If you want to use this function, please set the `SBUInviteUserListDatasource` in your class.
+    ///
+    /// - Returns: next user list
+    /// - Since: 1.1.1
+    open func nextUserList() -> [SBUUser]? {
+        return nil
     }
 }

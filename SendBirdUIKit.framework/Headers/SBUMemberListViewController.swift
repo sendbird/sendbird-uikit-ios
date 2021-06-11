@@ -3,7 +3,7 @@
 //  SendBirdUIKit
 //
 //  Created by Tez Park on 05/02/2020.
-//  Copyright © 2020 SendBird, Inc. All rights reserved.
+//  Copyright © 2020 Sendbird, Inc. All rights reserved.
 //
 
 import UIKit
@@ -430,7 +430,7 @@ open class SBUMemberListViewController: SBUBaseViewController {
             self.loadNextMemberList(reset: true, members: self.customizedMembers ?? nil)
         }
         
-        memberListViewModel.channelChangedObservable.observe { [weak self] channel in
+        memberListViewModel.channelChangedObservable.observe { [weak self] channel, _ in
             guard let self = self else { return }
 
             SBULog.info("Channel changed: \(String(describing: channel))")

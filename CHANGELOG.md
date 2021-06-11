@@ -1,5 +1,12 @@
 # Change Log
 
+### v2.1.8 (Jun 11, 2021)
+* Fixed an issue that failed to send typing status
+* Fixed multiline text not functioning for `statusLabel` in `SBUEmptyView` class.
+* Fixed multiple messages sending issue when sending a failed message.
+* Changed access control  to public
+  * `setEditMode(for:)` in  `SBUBaseChannelViewController` class. 
+
 ### v2.1.7 (May 26, 2021)
 * Fixed problems recognized as the same video file if other URL video files have the same file name
 * Fixed `customizedMembers` not working in `SBUMemberListViewController`
