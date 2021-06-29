@@ -1,5 +1,8 @@
 # Change Log
 
+### v2.1.10 (Jun 29, 2021)
+* Improvement stability 
+
 ### v2.1.9 (Jun 29, 2021)
 * Supports SPM(Swift package manager)
 * Expands file open and download status Toast.
