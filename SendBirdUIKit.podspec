@@ -14,9 +14,9 @@ Pod::Spec.new do |s|
   	}
 	s.platform     = :ios, "10.3"
 	s.source = { :git => "https://github.com/sendbird/sendbird-uikit-ios.git", :tag => "v#{s.version}" }
-	s.ios.vendored_frameworks = 'Sources/SendBirdUIKit.xcframework'
+	s.ios.vendored_frameworks = 'SendBirdUIKit.xcframework'
 	s.ios.frameworks = ["UIKit", "Foundation", "CoreData", "SendBirdSDK"]
 	s.requires_arc = true
-	s.dependency "SendBirdSDK", "~>3.0.216"
+	s.dependency "SendBirdSDK", "~>3.0.226"
 	s.ios.library = "icucore"
 end
