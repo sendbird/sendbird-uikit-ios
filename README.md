@@ -47,7 +47,7 @@ The minimum requirements for Sendbird UIKit for iOS are:
 
 - iOS 10.3+
 - Swift 4.2+ / Objective-C
-- Sendbird Chat SDK for iOS 3.0.216+
+- Sendbird Chat SDK for iOS 3.0.226+
 
 <br />
 
@@ -71,9 +71,9 @@ You can get started by creating a project. Sendbird UIKit supports both `Objecti
 
 ### Install UIKit for iOS 
 
-UIKit for iOS can be installed through either [`CocoaPods`](https://cocoapods.org/) or [`Carthage`](https://github.com/Carthage/Carthage): 
+UIKit for iOS can be installed through either [`CocoaPods`](https://cocoapods.org/), [`Carthage`](https://github.com/Carthage/Carthage) or [`Swift Package Manager`](https://swift.org/package-manager/): 
 
-> Note: Sendbird UIKit for iOS is Sendbird Chat SDK-dependent. If you install the UIKit, `CocoaPods` will automatically install the Chat SDK for iOS as well. The minimum requirement of the Chat SDK for iOS is 3.0.216 or higher.
+> Note: Sendbird UIKit for iOS is Sendbird Chat SDK-dependent. The minimum requirement of the Chat SDK for iOS is 3.0.226 or higher.
 
 
 #### - CocoaPods
@@ -101,22 +101,33 @@ $ pod update
 #### - Carthage
 
 1. Add `SendBirdUIKit` and `SendBirdSDK` into your `Cartfile` as below:
+
 ```bash
 github "sendbird/sendbird-uikit-ios"
-github "sendbird/sendbird-ios-framework" == 3.0.216
-```
-2. Install the `SendBirdUIKit` framework through `Carthage`.
-```bash
-$ carthage update
-```
-3. Go to your Xcode project target’s **General settings** tab in the `Frameworks and Libraries` section. Then drag and drop on the disk each framework from the `<YOUR_XCODE_PROJECT_DIRECTORY>/Carthage/Build/iOS` folder.
-4. Go to your Xcode project target’s **Build Phases settings** tab, click the **+** icon, and choose **New Run Script Phase**. Create a `Run Script`, specify your shell (ex: /bin/sh), and add `/usr/local/bin/carthage copy-frameworks` to the script below the shell. Finally, add the paths to the frameworks (`SendBirdUIKit` and `SendBirdSDK`) under **Input Files**.
-```bash
-$(SRCROOT)/Carthage/Build/iOS/SendBirdUIKit.framework
-$(SRCROOT)/Carthage/Build/iOS/SendBirdSDK.framework
+github "sendbird/sendbird-ios-framework" == 3.0.226
 ```
 
-> __Note__: The `SendBirdUIKit` Carthage built created in the latest `Swift` version. So, if the latest `Swift` environment is not configured, you need to copying the framework into the project manually.
+2. Install the `SendBirdUIKit` framework through `Carthage`.
+
+```bash
+$ carthage update --use-xcframeworks
+```
+
+> __Note__: Building or creating the `SendbirdUIKit` framework with `Carthage` can only be done using the latest `Swift`. If your `Swift` is not the most recent version, the framework should be copied into your project manually.
+
+3. Go to your Xcode project target's **General settings** tab in the `Frameworks and Libraries` section. Then drag and drop on the disk each framework from the `<YOUR_XCODE_PROJECT_DIRECTORY>/Carthage/Build` folder.
+
+>__Note__: Errors may occur if you're building your project with Xcode 11.3 or earlier versions. To fix these errors, refer to [Handle errors caused by unknown attributes](https://github.com/sendbird/sendbird-uikit-ios-sources#handling-errors-caused-by-unknown-attributes) in the sample app.
+
+#### - Swift Package Manager
+1. File -> Swift Packages -> Add package dependency...
+
+2. Choose Package Repository as the Sendbird UIKit repository with below link:
+```bash
+https://github.com/sendbird/sendbird-uikit-ios.git
+```
+
+3. Select Up to Next Major rules and click the Next button to add the package.
 
 #### - Handle errors caused by unknown attributes
 
@@ -276,67 +287,31 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
 
 UIKit allows you to create a channel specifically for 1-on-1 chat and to list 1-on-1 chat channels so that you can easily view and manage them. With the `SBUChannelListViewController` class, you can provide end users a complete chat service featuring a [channel list](https://sendbird.com/docs/uikit/v1/ios/guides/key-functions#2-list-channels). 
 
-Use the following code for the [`SceneDelegate`](https://developer.apple.com/documentation/uikit/uiscenedelegate) and [`AppDelegate`](https://developer.apple.com/documentation/uikit/uiapplicationdelegate).
+Implement the code below wherever you want to start UIKit.
 
 ```objectivec
-// SceneDelegate.m
-
 @import SendBirdUIKit;
 ...
 
-- (void)scene:(UIScene *)scene willConnectToSession:(UISceneSession *)session options:(UISceneConnectionOptions *)connectionOptions {
-    ...
-    
-    SBUChannelListViewController *channelListVC = [[SBUChannelListViewController alloc] init];
-    UINavigationController *naviVC = [[UINavigationController alloc] initWithRootViewController:channelListVC];
-    self.window.rootViewController = naviVC;
-}
+SBUChannelListViewController *channelListVC = [[SBUChannelListViewController alloc] init];
+UINavigationController *naviVC = [[UINavigationController alloc] initWithRootViewController:channelListVC];
+[self presentViewController:naviVC animated:YES completion:nil];
+
+...
 ```
 
 ```swift
-// SceneDelegate.swift
-
 import SendBirdUIKit
 ...
 
-func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-    ...
-    
-    let channelListVC = SBUChannelListViewController()
-    let naviVC = UINavigationController(rootViewController: channelListVC)
-    self.window?.rootViewController = naviVC
-}
-```
+let channelListVC = SBUChannelListViewController()
+let naviVC = UINavigationController(rootViewController: channelListVC)
+self.present(naviVC, animated: true)
 
-```objectivec
-// AppDelegate.m
-
-@import SendBirdUIKit;
 ...
-
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    ...
-    
-    SBUChannelListViewController *channelListVC = [[SBUChannelListViewController alloc] init];
-    UINavigationController *naviVC = [[UINavigationController alloc] initWithRootViewController:channelListVC];
-    self.window.rootViewController = naviVC;
-}
 ```
 
-```swift
-// AppDelegate.swift
-
-import SendBirdUIKit
-...
-
-func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-    ...
-    
-    let channelListVC = SBUChannelListViewController()
-    let naviVC = UINavigationController(rootViewController: channelListVC)
-    self.window?.rootViewController = naviVC
-}
-```
+>__Note__: If you are already using a navigation controller, you can use `pushViewController` function.
 
 > **Note**: **At this point**, you can confirm if the service is working by running your client app.
 
