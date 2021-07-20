@@ -521,7 +521,7 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
             guard let self = self else { return }
             
             if let emptyView = self.emptyView as? SBUEmptyView {
-                emptyView.reloadData((self.channelList.count == 0) ? .noChannels : .none)
+                emptyView.reloadData(self.channelList.isEmpty ? .noChannels : .none)
             }
             
             guard needReload else { return }
@@ -783,7 +783,7 @@ extension SBUChannelListViewController: UITableViewDataSource, UITableViewDelega
     }
     
     open func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        tableView.backgroundView?.isHidden = (self.channelList.count != 0)
+        tableView.backgroundView?.isHidden = !self.channelList.isEmpty
         
         return self.channelList.count
     }

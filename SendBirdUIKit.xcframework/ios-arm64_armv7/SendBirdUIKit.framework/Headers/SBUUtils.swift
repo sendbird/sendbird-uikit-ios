@@ -59,7 +59,7 @@ public class SBUUtils: NSObject {
             .sbu_convertUserList()
             .filter { $0.userId != SBUGlobals.CurrentUser?.userId }
 
-        guard users.count != 0 else { return SBUStringSet.Channel_Name_No_Members}
+        guard !users.isEmpty else { return SBUStringSet.Channel_Name_No_Members}
         let userNicknames = users.sbu_getUserNicknames()
         let channelName = userNicknames.joined(separator: ", ")
 
@@ -133,7 +133,7 @@ public class SBUUtils: NSObject {
     /// - Returns: If corverUrl is valid, return `true`.
     public static func isValid(coverUrl: String) -> Bool {
         guard !coverUrl.hasPrefix(SBUConstant.coverImagePrefix),
-            coverUrl.count != 0  else {
+            !coverUrl.isEmpty  else {
                 return false
         }
         
@@ -152,7 +152,7 @@ public class SBUUtils: NSObject {
         }
         
         guard !channelName.hasPrefix(prefixString),
-            channelName.count != 0  else {
+            !channelName.isEmpty  else {
                 return false
         }
         

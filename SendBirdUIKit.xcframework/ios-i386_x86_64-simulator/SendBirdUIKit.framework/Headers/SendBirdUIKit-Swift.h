@@ -265,10 +265,11 @@ typedef SWIFT_ENUM(NSInteger, EmptyViewType, open) {
   EmptyViewTypeNone = 0,
   EmptyViewTypeNoChannels = 1,
   EmptyViewTypeNoMessages = 2,
-  EmptyViewTypeNoMutedMembers = 3,
-  EmptyViewTypeNoBannedMembers = 4,
-  EmptyViewTypeNoSearchResults = 5,
-  EmptyViewTypeError = 6,
+  EmptyViewTypeNoMembers = 3,
+  EmptyViewTypeNoMutedMembers = 4,
+  EmptyViewTypeNoBannedMembers = 5,
+  EmptyViewTypeNoSearchResults = 6,
+  EmptyViewTypeError = 7,
 };
 
 typedef SWIFT_ENUM(uint8_t, LogType, open) {
@@ -735,15 +736,15 @@ SWIFT_CLASS("_TtC13SendBirdUIKit35SBUBaseChannelSettingViewController")
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
 
+
+@interface SBUBaseChannelSettingViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUActionSheetDelegate>
+- (void)didSelectActionSheetItemWithIndex:(NSInteger)index identifier:(NSInteger)identifier;
+@end
+
 @class UIImagePickerController;
 
 @interface SBUBaseChannelSettingViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
 - (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
-@end
-
-
-@interface SBUBaseChannelSettingViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUActionSheetDelegate>
-- (void)didSelectActionSheetItemWithIndex:(NSInteger)index identifier:(NSInteger)identifier;
 @end
 
 
@@ -971,16 +972,16 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUBaseChannelViewController")
 - (void)setLoading:(BOOL)loadingState :(BOOL)showIndicator;
 @end
 
-@class UIGestureRecognizer;
-
-@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIGestureRecognizerDelegate>
-- (BOOL)gestureRecognizer:(UIGestureRecognizer * _Nonnull)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer * _Nonnull)otherGestureRecognizer SWIFT_WARN_UNUSED_RESULT;
-@end
-
 @class SBDFileMessage;
 
 @interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
 - (void)didSelectDeleteImageWithMessage:(SBDFileMessage * _Nonnull)message;
+@end
+
+@class UIPresentationController;
+
+@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
+- (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
@@ -994,10 +995,23 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit20SBUEmptyViewDelegate_")
 - (void)didSelectRetry;
 @end
 
-@class UIPresentationController;
+@class UIGestureRecognizer;
 
-@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
-- (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
+@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIGestureRecognizerDelegate>
+- (BOOL)gestureRecognizer:(UIGestureRecognizer * _Nonnull)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer * _Nonnull)otherGestureRecognizer SWIFT_WARN_UNUSED_RESULT;
+@end
+
+@class UIDocumentPickerViewController;
+
+@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIDocumentPickerDelegate>
+- (void)documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentsAtURLs:(NSArray<NSURL *> * _Nonnull)urls SWIFT_AVAILABILITY(ios,introduced=11.0);
+- (void)documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentAtURL:(NSURL * _Nonnull)url;
+@end
+
+
+@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
+- (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
+- (void)imagePickerControllerDidCancel:(UIImagePickerController * _Nonnull)picker;
 @end
 
 
@@ -1021,19 +1035,6 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit26SBUUserProfileViewDelegate_")
 @interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
 - (BOOL)shouldShowLoadingIndicator;
 - (void)shouldDismissLoadingIndicator;
-@end
-
-@class UIDocumentPickerViewController;
-
-@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIDocumentPickerDelegate>
-- (void)documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentsAtURLs:(NSArray<NSURL *> * _Nonnull)urls SWIFT_AVAILABILITY(ios,introduced=11.0);
-- (void)documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentAtURL:(NSURL * _Nonnull)url;
-@end
-
-
-@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
-- (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
-- (void)imagePickerControllerDidCancel:(UIImagePickerController * _Nonnull)picker;
 @end
 
 
@@ -2066,6 +2067,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 @property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
+@property (nonatomic, strong) UIView * _Nullable emptyView;
 @property (nonatomic, readonly, strong) UITableView * _Nonnull tableView;
 @property (nonatomic, readonly, strong) UITableViewCell * _Nullable userCell;
 @property (nonatomic, strong) SBUUserListTheme * _Nonnull theme;
@@ -2129,7 +2131,11 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 /// This function reloads user list.
 /// since:
 /// 1.2.5
-- (void)reloadUserList;
+- (void)reloadUserList SWIFT_DEPRECATED_MSG("deprecated in 2.1.11", "reloadData");
+/// This function reloads the list.
+/// since:
+/// 2.1.11
+- (void)reloadData;
 /// This function shows loading indicator.
 /// since:
 /// 1.2.5
@@ -2147,6 +2153,11 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 ///
 - (void)selectUserWithUser:(SBUUser * _Nonnull)user;
 - (void)didReceiveError:(NSString * _Nullable)message;
+@end
+
+
+@interface SBUCreateChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUEmptyViewDelegate>
+- (void)didSelectRetry;
 @end
 
 
@@ -3070,11 +3081,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 /// This function resets the member list.
 /// since:
 /// 1.2.0
-/// <ul>
-///   <li>
-///     Deprecate:
-///   </li>
-/// </ul>
 - (void)reloadMemberList SWIFT_DEPRECATED_MSG("deprecated in 1.2.5", "resetMemberList");
 /// This function resets the member list.
 /// since:
@@ -3237,6 +3243,10 @@ SWIFT_CLASS("_TtC13SendBirdUIKit19SBUMessageInputView")
 @property (nonatomic, strong) UIView * _Nonnull editView;
 @property (nonatomic, strong) UIButton * _Nullable cancelButton;
 @property (nonatomic, strong) UIButton * _Nullable saveButton;
+/// Input area - horizontal stack (add button, text view, send button)
+/// since:
+/// 2.1.11
+@property (nonatomic, strong) UIStackView * _Nonnull inputHStackView;
 /// Textview’s minimum height value.
 @property (nonatomic) CGFloat textViewMinHeight;
 /// Textview’s maximum height value.
@@ -4299,12 +4309,12 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Empt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Empty_No_Banned_Members;)
 + (NSString * _Nonnull)Empty_No_Banned_Members SWIFT_WARN_UNUSED_RESULT;
 + (void)setEmpty_No_Banned_Members:(NSString * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Empty_Wrong;)
-+ (NSString * _Nonnull)Empty_Wrong SWIFT_WARN_UNUSED_RESULT;
-+ (void)setEmpty_Wrong:(NSString * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Empty_Search_Result;)
 + (NSString * _Nonnull)Empty_Search_Result SWIFT_WARN_UNUSED_RESULT;
 + (void)setEmpty_Search_Result:(NSString * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Empty_Wrong;)
++ (NSString * _Nonnull)Empty_Wrong SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmpty_Wrong:(NSString * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull (^ _Nonnull CreateChannel_Create)(NSInteger);)
 + (NSString * _Nonnull (^ _Nonnull)(NSInteger))CreateChannel_Create SWIFT_WARN_UNUSED_RESULT;
 + (void)setCreateChannel_Create:(NSString * _Nonnull (^ _Nonnull)(NSInteger))value;
@@ -5070,10 +5080,11 @@ typedef SWIFT_ENUM(NSInteger, EmptyViewType, open) {
   EmptyViewTypeNone = 0,
   EmptyViewTypeNoChannels = 1,
   EmptyViewTypeNoMessages = 2,
-  EmptyViewTypeNoMutedMembers = 3,
-  EmptyViewTypeNoBannedMembers = 4,
-  EmptyViewTypeNoSearchResults = 5,
-  EmptyViewTypeError = 6,
+  EmptyViewTypeNoMembers = 3,
+  EmptyViewTypeNoMutedMembers = 4,
+  EmptyViewTypeNoBannedMembers = 5,
+  EmptyViewTypeNoSearchResults = 6,
+  EmptyViewTypeError = 7,
 };
 
 typedef SWIFT_ENUM(uint8_t, LogType, open) {
@@ -5540,15 +5551,15 @@ SWIFT_CLASS("_TtC13SendBirdUIKit35SBUBaseChannelSettingViewController")
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
 
+
+@interface SBUBaseChannelSettingViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUActionSheetDelegate>
+- (void)didSelectActionSheetItemWithIndex:(NSInteger)index identifier:(NSInteger)identifier;
+@end
+
 @class UIImagePickerController;
 
 @interface SBUBaseChannelSettingViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
 - (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
-@end
-
-
-@interface SBUBaseChannelSettingViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUActionSheetDelegate>
-- (void)didSelectActionSheetItemWithIndex:(NSInteger)index identifier:(NSInteger)identifier;
 @end
 
 
@@ -5776,16 +5787,16 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUBaseChannelViewController")
 - (void)setLoading:(BOOL)loadingState :(BOOL)showIndicator;
 @end
 
-@class UIGestureRecognizer;
-
-@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIGestureRecognizerDelegate>
-- (BOOL)gestureRecognizer:(UIGestureRecognizer * _Nonnull)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer * _Nonnull)otherGestureRecognizer SWIFT_WARN_UNUSED_RESULT;
-@end
-
 @class SBDFileMessage;
 
 @interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
 - (void)didSelectDeleteImageWithMessage:(SBDFileMessage * _Nonnull)message;
+@end
+
+@class UIPresentationController;
+
+@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
+- (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
@@ -5799,10 +5810,23 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit20SBUEmptyViewDelegate_")
 - (void)didSelectRetry;
 @end
 
-@class UIPresentationController;
+@class UIGestureRecognizer;
 
-@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
-- (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
+@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIGestureRecognizerDelegate>
+- (BOOL)gestureRecognizer:(UIGestureRecognizer * _Nonnull)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer * _Nonnull)otherGestureRecognizer SWIFT_WARN_UNUSED_RESULT;
+@end
+
+@class UIDocumentPickerViewController;
+
+@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIDocumentPickerDelegate>
+- (void)documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentsAtURLs:(NSArray<NSURL *> * _Nonnull)urls SWIFT_AVAILABILITY(ios,introduced=11.0);
+- (void)documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentAtURL:(NSURL * _Nonnull)url;
+@end
+
+
+@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
+- (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
+- (void)imagePickerControllerDidCancel:(UIImagePickerController * _Nonnull)picker;
 @end
 
 
@@ -5826,19 +5850,6 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit26SBUUserProfileViewDelegate_")
 @interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
 - (BOOL)shouldShowLoadingIndicator;
 - (void)shouldDismissLoadingIndicator;
-@end
-
-@class UIDocumentPickerViewController;
-
-@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIDocumentPickerDelegate>
-- (void)documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentsAtURLs:(NSArray<NSURL *> * _Nonnull)urls SWIFT_AVAILABILITY(ios,introduced=11.0);
-- (void)documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentAtURL:(NSURL * _Nonnull)url;
-@end
-
-
-@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
-- (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
-- (void)imagePickerControllerDidCancel:(UIImagePickerController * _Nonnull)picker;
 @end
 
 
@@ -6871,6 +6882,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 @property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
+@property (nonatomic, strong) UIView * _Nullable emptyView;
 @property (nonatomic, readonly, strong) UITableView * _Nonnull tableView;
 @property (nonatomic, readonly, strong) UITableViewCell * _Nullable userCell;
 @property (nonatomic, strong) SBUUserListTheme * _Nonnull theme;
@@ -6934,7 +6946,11 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 /// This function reloads user list.
 /// since:
 /// 1.2.5
-- (void)reloadUserList;
+- (void)reloadUserList SWIFT_DEPRECATED_MSG("deprecated in 2.1.11", "reloadData");
+/// This function reloads the list.
+/// since:
+/// 2.1.11
+- (void)reloadData;
 /// This function shows loading indicator.
 /// since:
 /// 1.2.5
@@ -6952,6 +6968,11 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 ///
 - (void)selectUserWithUser:(SBUUser * _Nonnull)user;
 - (void)didReceiveError:(NSString * _Nullable)message;
+@end
+
+
+@interface SBUCreateChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUEmptyViewDelegate>
+- (void)didSelectRetry;
 @end
 
 
@@ -7875,11 +7896,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 /// This function resets the member list.
 /// since:
 /// 1.2.0
-/// <ul>
-///   <li>
-///     Deprecate:
-///   </li>
-/// </ul>
 - (void)reloadMemberList SWIFT_DEPRECATED_MSG("deprecated in 1.2.5", "resetMemberList");
 /// This function resets the member list.
 /// since:
@@ -8042,6 +8058,10 @@ SWIFT_CLASS("_TtC13SendBirdUIKit19SBUMessageInputView")
 @property (nonatomic, strong) UIView * _Nonnull editView;
 @property (nonatomic, strong) UIButton * _Nullable cancelButton;
 @property (nonatomic, strong) UIButton * _Nullable saveButton;
+/// Input area - horizontal stack (add button, text view, send button)
+/// since:
+/// 2.1.11
+@property (nonatomic, strong) UIStackView * _Nonnull inputHStackView;
 /// Textview’s minimum height value.
 @property (nonatomic) CGFloat textViewMinHeight;
 /// Textview’s maximum height value.
@@ -9104,12 +9124,12 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Empt
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Empty_No_Banned_Members;)
 + (NSString * _Nonnull)Empty_No_Banned_Members SWIFT_WARN_UNUSED_RESULT;
 + (void)setEmpty_No_Banned_Members:(NSString * _Nonnull)value;
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Empty_Wrong;)
-+ (NSString * _Nonnull)Empty_Wrong SWIFT_WARN_UNUSED_RESULT;
-+ (void)setEmpty_Wrong:(NSString * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Empty_Search_Result;)
 + (NSString * _Nonnull)Empty_Search_Result SWIFT_WARN_UNUSED_RESULT;
 + (void)setEmpty_Search_Result:(NSString * _Nonnull)value;
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull Empty_Wrong;)
++ (NSString * _Nonnull)Empty_Wrong SWIFT_WARN_UNUSED_RESULT;
++ (void)setEmpty_Wrong:(NSString * _Nonnull)value;
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) NSString * _Nonnull (^ _Nonnull CreateChannel_Create)(NSInteger);)
 + (NSString * _Nonnull (^ _Nonnull)(NSInteger))CreateChannel_Create SWIFT_WARN_UNUSED_RESULT;
 + (void)setCreateChannel_Create:(NSString * _Nonnull (^ _Nonnull)(NSInteger))value;

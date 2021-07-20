@@ -28,6 +28,13 @@ open class SBUCreateChannelViewController: SBUBaseViewController {
             self.navigationItem.rightBarButtonItem = self.rightBarButton
         }
     }
+    public lazy var emptyView: UIView? = {
+        let emptyView = SBUEmptyView()
+        emptyView.type = EmptyViewType.none
+        emptyView.delegate = self
+        return emptyView
+    }()
+    
     public private(set) lazy var tableView = UITableView()
 
     public private(set) var userCell: UITableViewCell?
@@ -138,6 +145,7 @@ open class SBUCreateChannelViewController: SBUBaseViewController {
         self.tableView.delegate = self
         self.tableView.dataSource = self
         self.tableView.separatorStyle = .none
+        self.tableView.backgroundView = self.emptyView
         self.tableView.rowHeight = UITableView.automaticDimension
         self.tableView.estimatedRowHeight = 44.0
         if self.userCell == nil {
@@ -193,7 +201,11 @@ open class SBUCreateChannelViewController: SBUBaseViewController {
             titleView.setupStyles()
         }
         
-        self.reloadUserList()
+        if let emptyView = self.emptyView as? SBUEmptyView {
+            emptyView.setupStyles()
+        }
+        
+        self.reloadData()
     }
 
     open override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -207,8 +219,6 @@ open class SBUCreateChannelViewController: SBUBaseViewController {
         
         // If want using your custom user list, filled users with your custom user list.
         self.loadNextUserList(reset: true, users: self.customizedUsers ?? nil)
-        
-        self.tableView.reloadData()
     }
 
     open override func viewWillAppear(_ animated: Bool) {
@@ -249,7 +259,7 @@ open class SBUCreateChannelViewController: SBUBaseViewController {
             SBULog.info("\(users.count) customized users have been added.")
             
             self.userList += users
-            self.reloadUserList()
+            self.reloadData()
             self.showLoading(state: false)
         }
         else if !self.useCustomizedUsers {
@@ -266,11 +276,17 @@ open class SBUCreateChannelViewController: SBUBaseViewController {
             
             self.userListQuery?.loadNextPage(completionHandler: { [weak self] users, error in
                 guard let self = self else { return }
-                defer { self.showLoading(state: false) }
+                defer {
+                    self.reloadData()
+                    self.showLoading(state: false)
+                }
                 
                 if let error = error {
                     SBULog.error("[Failed] User list request: \(error.localizedDescription)")
                     self.didReceiveError(error.localizedDescription)
+                    if let emptyView = self.emptyView as? SBUEmptyView {
+                        emptyView.reloadData(.error)
+                    }
                     return
                 }
                 let filteredUsers = users?.filter { $0.userId != SBUGlobals.CurrentUser?.userId }
@@ -280,7 +296,16 @@ open class SBUCreateChannelViewController: SBUBaseViewController {
                 SBULog.info("[Response] \(users.count) users")
                 
                 self.userList += users
-                self.reloadUserList()
+                
+                if let emptyView = self.emptyView as? SBUEmptyView {
+                    if self.userList.isEmpty {
+                        emptyView.reloadData(.noMembers)
+                    } else {
+                        emptyView.reloadData(.none)
+                    }
+                }
+                
+                self.reloadData()
                 self.showLoading(state: false)
             })
         }
@@ -383,12 +408,20 @@ open class SBUCreateChannelViewController: SBUBaseViewController {
     
     /// This function reloads user list.
     /// - Since: 1.2.5
+    @available(*, deprecated, message: "deprecated in 2.1.11", renamed: "reloadData()")
     public func reloadUserList() {
+        self.reloadData()
+    }
+    
+    /// This function reloads the list.
+    /// - Since: 2.1.11
+    public func reloadData() {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             self.tableView.reloadData()
         }
     }
+    
     
     /// This function shows loading indicator.
     /// - Parameter state: If state is `true`, start loading indicator.
@@ -497,6 +530,16 @@ extension SBUCreateChannelViewController: UITableViewDelegate, UITableViewDataSo
     }
 }
 
+
+// MARK: - SBUEmptyViewDelegate
+extension SBUCreateChannelViewController: SBUEmptyViewDelegate {
+    @objc open func didSelectRetry() {
+        self.loadNextUserList(reset: true, users: self.customizedUsers ?? nil)
+    }
+}
+
+
+// MARK: - LoadingIndicatorDelegate
 extension SBUCreateChannelViewController: LoadingIndicatorDelegate {
     @discardableResult
     open func shouldShowLoadingIndicator() -> Bool {

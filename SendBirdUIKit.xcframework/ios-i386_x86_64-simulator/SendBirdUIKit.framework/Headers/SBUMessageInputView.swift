@@ -72,6 +72,17 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         return button
     }()
     
+    /// Input area - horizontal stack (add button, text view, send button)
+    /// - Since: 2.1.11
+    public lazy var inputHStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.alignment = .bottom
+        stackView.distribution = .fill
+        stackView.spacing = 0
+        return stackView
+    }()
+    
     
     // MARK: - Property values (Public)
     
@@ -110,16 +121,6 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
     
     /// Space above the input fields.
     var topSpace = UIView()
-    
-    /// Input row (add button, text view, send button)
-    lazy var inputStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .horizontal
-        stackView.alignment = .bottom
-        stackView.distribution = .fill
-        stackView.spacing = 0
-        return stackView
-    }()
     
     /// Text view + placeholder label.
     var inputContentView = UIView()
@@ -192,19 +193,19 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         self.baseStackView.addArrangedSubview(self.topSpace)
         
         if let addButton = self.addButton {
-            self.inputStackView.addArrangedSubview(addButton)
+            self.inputHStackView.addArrangedSubview(addButton)
         }
-        self.inputStackView.addArrangedSubview(self.textViewLeadingPaddingView)
+        self.inputHStackView.addArrangedSubview(self.textViewLeadingPaddingView)
         if let textView = self.textView {
             self.inputContentView.addSubview(textView)
             self.inputContentView.addSubview(self.placeholderLabel)
         }
-        self.inputStackView.addArrangedSubview(self.inputContentView)
-        self.inputStackView.addArrangedSubview(self.textViewTrailingPaddingView)
+        self.inputHStackView.addArrangedSubview(self.inputContentView)
+        self.inputHStackView.addArrangedSubview(self.textViewTrailingPaddingView)
         if let sendButton = self.sendButton {
-            self.inputStackView.addArrangedSubview(sendButton)
+            self.inputHStackView.addArrangedSubview(sendButton)
         }
-        self.baseStackView.addArrangedSubview(self.inputStackView)
+        self.baseStackView.addArrangedSubview(self.inputHStackView)
         
         if let cancelButton = self.cancelButton {
             self.editStackView.addArrangedSubview(cancelButton)
@@ -252,7 +253,7 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         
         self.topSpace.sbu_constraint(width: self.baseStackView.frame.width, height: 0)
         
-        self.inputStackView.sbu_constraint(width: self.baseStackView.frame.width)
+        self.inputHStackView.sbu_constraint(width: self.baseStackView.frame.width)
         
         self.addButton?.sbu_constraint(width: 32, height: 38)
         self.textView?.sbu_constraint(equalTo: self.inputContentView, leading: 0, trailing: 0, top: 0, bottom: 0)
@@ -536,7 +537,7 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
                          replacementText text: String) -> Bool {
         if text.count > 0 {
             self.delegate?.messageInputViewDidStartTyping?()
-        } else if text.count == 0, textView.text?.count ?? 0 <= 1 {
+        } else if text.isEmpty, textView.text?.count ?? 0 <= 1 {
             self.delegate?.messageInputViewDidEndTyping?()
         }
 

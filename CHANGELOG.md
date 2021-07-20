@@ -1,5 +1,12 @@
 # Change Log
 
+### v2.1.11 (Jul 20, 2021)
+* Changed access control of `inputHStackView` on `SBUMessageInputView`.
+* Changed `SBUEmptyView` related stringSet.
+* Added `emptyView` in user selection in `SBUCreateChannelViewController`.
+* Added missing retry logic in `SBUCreateChannelViewController`.
+* Improvement stability.
+
 ### v2.1.10 (Jun 29, 2021)
 * Improvement stability 
 

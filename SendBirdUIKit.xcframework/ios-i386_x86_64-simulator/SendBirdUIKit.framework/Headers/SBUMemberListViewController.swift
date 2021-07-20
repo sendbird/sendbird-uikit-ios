@@ -579,7 +579,6 @@ open class SBUMemberListViewController: SBUBaseViewController {
     
     /// This function resets the member list.
     /// - Since: 1.2.0
-    /// - Deprecate:
     @available(*, deprecated, message: "deprecated in 1.2.5", renamed: "resetMemberList()")
     public func reloadMemberList() {
         self.resetMemberList()
@@ -598,11 +597,11 @@ open class SBUMemberListViewController: SBUBaseViewController {
             if let emptyView = self.emptyView as? SBUEmptyView,
                 (self.memberListType == .mutedMembers || self.memberListType == .bannedMembers) {
                 
-                if self.memberList.count != 0 {
-                    emptyView.reloadData(.none)
-                } else {
+                if self.memberList.isEmpty {
                     emptyView.reloadData(self.memberListType == .mutedMembers
-                    ? .noMutedMembers : .noBannedMembers)
+                                            ? .noMutedMembers : .noBannedMembers)
+                } else {
+                    emptyView.reloadData(.none)
                 }
             }
             

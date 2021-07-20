@@ -158,8 +158,8 @@ public class SBUStringSet: NSObject {
     public static var Empty_No_Users = "No users"
     public static var Empty_No_Muted_Members = "No muted members"
     public static var Empty_No_Banned_Members = "No banned members"
+    public static var Empty_Search_Result = "No results found"
     public static var Empty_Wrong = "Something went wrong"
-    public static var Empty_Search_Result = "No results found."
 
 
     // MARK: - Create Channel

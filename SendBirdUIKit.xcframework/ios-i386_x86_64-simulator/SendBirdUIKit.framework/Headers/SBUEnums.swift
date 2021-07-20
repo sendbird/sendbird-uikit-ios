@@ -129,6 +129,7 @@ import SendBirdSDK
     case none
     case noChannels
     case noMessages
+    case noMembers
     case noMutedMembers
     case noBannedMembers
     case noSearchResults

@@ -154,6 +154,13 @@ open class SBUEmptyView: UIView {
                 to: SBUIconSetType.Metric.iconEmptyView,
                 tintAndResize: false
             )
+        case .noMembers:
+            self.statusLabel.text = SBUStringSet.Empty_No_Users
+            self.statusImageView.image = SBUIconSetType.iconMembers.image(
+                with: theme.emptyViewStatusTintColor,
+                to: SBUIconSetType.Metric.iconEmptyView,
+                tintAndResize: false
+            )
         case .noMutedMembers:
             self.statusLabel.text = SBUStringSet.Empty_No_Muted_Members
             self.statusImageView.image = SBUIconSetType.iconMute.image(

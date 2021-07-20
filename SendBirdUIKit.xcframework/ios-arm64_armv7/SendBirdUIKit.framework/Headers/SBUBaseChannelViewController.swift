@@ -1179,7 +1179,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
     /// This function scrolls to bottom.
     /// - Parameter animated: Animated
     public func scrollToBottom(animated: Bool) {
-        guard self.fullMessageList.count != 0 else { return }
+        guard !self.fullMessageList.isEmpty else { return }
         self.lastSeenIndexPath = nil
         
         DispatchQueue.main.async { [weak self] in

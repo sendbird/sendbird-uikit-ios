@@ -1487,6 +1487,10 @@ extension SBUChannelViewController : UIKit.UIDocumentInteractionControllerDelega
     @objc get
     @objc set
   }
+  @objc public var inputHStackView: UIKit.UIStackView {
+    @objc get
+    @objc set
+  }
   @objc public var textViewMinHeight: CoreGraphics.CGFloat
   @objc public var textViewMaxHeight: CoreGraphics.CGFloat
   @objc public var showsSendButton: Swift.Bool
@@ -1531,6 +1535,10 @@ extension SBUChannelViewController : UIKit.UIDocumentInteractionControllerDelega
     @objc get
     @objc set
   }
+  @objc public var emptyView: UIKit.UIView? {
+    @objc get
+    @objc set
+  }
   @objc public var tableView: UIKit.UITableView {
     @objc get
   }
@@ -1571,7 +1579,9 @@ extension SBUChannelViewController : UIKit.UIDocumentInteractionControllerDelega
   @objc public func createChannel(userIds: [Swift.String])
   @objc public func createChannel(params: SendBirdSDK.SBDGroupChannelParams, messageListParams: SendBirdSDK.SBDMessageListParams? = nil)
   @objc public func register(userCell: UIKit.UITableViewCell, nib: UIKit.UINib? = nil)
-  @objc public func reloadUserList()
+  @objc @available(*, deprecated, renamed: "reloadData()", message: "deprecated in 2.1.11")
+  public func reloadUserList()
+  @objc public func reloadData()
   @objc public func showLoading(state: Swift.Bool)
   @objc public func onClickCreate()
   @objc public func selectUser(user: SendBirdUIKit.SBUUser)
@@ -1582,6 +1592,9 @@ extension SBUCreateChannelViewController : UIKit.UITableViewDelegate, UIKit.UITa
   @objc dynamic open func tableView(_ tableView: UIKit.UITableView, cellForRowAt indexPath: Foundation.IndexPath) -> UIKit.UITableViewCell
   @objc dynamic open func tableView(_ tableView: UIKit.UITableView, didSelectRowAt indexPath: Foundation.IndexPath)
   @objc dynamic open func tableView(_ tableView: UIKit.UITableView, willDisplay cell: UIKit.UITableViewCell, forRowAt indexPath: Foundation.IndexPath)
+}
+extension SBUCreateChannelViewController : SendBirdUIKit.SBUEmptyViewDelegate {
+  @objc dynamic open func didSelectRetry()
 }
 extension SBUCreateChannelViewController {
   @objc @discardableResult
@@ -1712,8 +1725,8 @@ public typealias AlertButtonHandler = (Any?) -> Swift.Void
   @objc public static var Empty_No_Users: Swift.String
   @objc public static var Empty_No_Muted_Members: Swift.String
   @objc public static var Empty_No_Banned_Members: Swift.String
-  @objc public static var Empty_Wrong: Swift.String
   @objc public static var Empty_Search_Result: Swift.String
+  @objc public static var Empty_Wrong: Swift.String
   @objc public static var CreateChannel_Create: (Swift.Int) -> Swift.String
   @objc public static var CreateChannel_Header_Title: Swift.String
   @objc public static var CreateChannel_Header_Select_Members: Swift.String
@@ -1944,6 +1957,7 @@ extension SBUBaseChannelSettingViewController {
   case none
   case noChannels
   case noMessages
+  case noMembers
   case noMutedMembers
   case noBannedMembers
   case noSearchResults
