@@ -59,7 +59,7 @@ This section gives you information you need to get started with Sendbird UIKit f
 
 Our sample app has all the core features of Sendbird UIKit for iOS. Download the app from our GitHub repository to get an idea of what you can build with the actual UIKit before building your own project.
 
-- https://github.com/sendbird/UIKit-iOS-Swift
+- https://github.com/sendbird/sendbird-uikit-ios-sources
 
 
 ### Create a project
