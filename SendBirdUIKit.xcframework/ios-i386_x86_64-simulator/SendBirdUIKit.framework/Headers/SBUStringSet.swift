@@ -21,7 +21,7 @@ public class SBUStringSet: NSObject {
     public static var Edit = "Edit"
     public static var Remove = "Remove"
     public static var Camera = "Camera"
-    public static var PhotoVideoLibrary = "Photos and videos"
+    public static var PhotoVideoLibrary = "Photo library"
     public static var Document = "Files"
     public static var Loading = "Loading..."
     public static var Invite = "Invite"
@@ -146,7 +146,7 @@ public class SBUStringSet: NSObject {
 
 
     // MARK: - Message
-    public static var Message_Edited = "(Edited)"
+    public static var Message_Edited = "(edited)"
     public static var Message_System = "System message"
     public static var Message_Unknown_Title = "(Unknown message type)"
     public static var Message_Unknown_Desctiption = "Cannot read this message."
@@ -201,7 +201,7 @@ public class SBUStringSet: NSObject {
     public static var MemberList_Me = "(You)"
     
     public static var MemberList_Ban = "Ban"
-    public static var MemberList_Unban = "Unban this member"
+    public static var MemberList_Unban = "Unban"
     public static var MemberList_Mute = "Mute"
     public static var MemberList_Unmute = "Unmute"
     public static var MemberList_Dismiss_Operator = "Dismiss operator"

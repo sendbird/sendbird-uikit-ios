@@ -281,7 +281,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
                 }
             }
             
-            self.didReceiveError(error.localizedDescription)
+            self.errorHandler(error)
         }
         
         channelViewModel.initialLoadObservable.observe { [weak self] messages in
@@ -528,6 +528,9 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
             if let index = SBUUtils.findIndex(of: message, in: self.messageList) {
                 self.messageList.remove(at: index)
             }
+            
+            guard self.messageListParams.belongs(to: message) else { return }
+            
             self.messageList.append(message)
             
             guard message is SBDUserMessage ||
@@ -646,7 +649,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
             self.baseChannel?.delete(message, completionHandler: { [weak self] error in
                 guard let self = self else { return }
                 if let error = error {
-                    self.didReceiveError(error.localizedDescription)
+                    self.errorHandler(error)
                     SBULog.error("[Failed] Delete message request: \(error.localizedDescription)")
                     return
                 }
@@ -716,10 +719,24 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
     }
     
     // MARK: - Error handling
+    internal func errorHandler(_ error: SBDError) {
+        self.errorHandler(error.localizedDescription, error.code)
+    }
     
-    open func didReceiveError(_ message: String?) {
+    /// If an error occurs in viewController, a message is sent through here.
+    /// If necessary, override to handle errors.
+    /// - Parameters:
+    ///   - message: error message
+    ///   - code: error code
+    open func errorHandler(_ message: String?, _ code: NSInteger? = nil) {
         SBULog.error("Did receive error: \(message ?? "")")
     }
+    
+    @available(*, deprecated, message: "deprecated in 2.1.12", renamed: "errorHandler")
+    open func didReceiveError(_ message: String?, _ code: NSInteger? = nil) {
+        self.errorHandler(message, code)
+    }
+    
     
     // MARK: - Message input mode
     
@@ -763,24 +780,23 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
         case .succeeded:
             break
         @unknown default:
-            self.didReceiveError("unknown Type")
+            self.errorHandler("unknown Type", -1)
         }
     }
     
     // MARK: - Cell's menu
     
     func createMenuItems(message: SBDBaseMessage,
-                         titleColor: UIColor,
-                         iconColor: UIColor,
-                         types: [MessageMenuItem]) -> [SBUMenuItem] {
+                         types: [MessageMenuItem],
+                         isMediaViewOverlaying: Bool) -> [SBUMenuItem] {
         let items: [SBUMenuItem] = types.map {
             switch $0 {
             case .copy:
                 return SBUMenuItem(
                     title: SBUStringSet.Copy,
-                    color: titleColor,
+                    color: self.theme.menuTextColor,
                     image: SBUIconSetType.iconCopy.image(
-                        with: iconColor,
+                        with: SBUTheme.componentTheme.alertButtonColor,
                         to: SBUIconSetType.Metric.iconActionSheetItem
                     )
                 ) {
@@ -792,9 +808,9 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
             case .edit:
                 return SBUMenuItem(
                     title: SBUStringSet.Edit,
-                    color: titleColor,
+                    color: self.theme.menuTextColor,
                     image: SBUIconSetType.iconEdit.image(
-                        with: iconColor,
+                        with: SBUTheme.componentTheme.alertButtonColor,
                         to: SBUIconSetType.Metric.iconActionSheetItem
                     )
                 ) { [weak self] in
@@ -810,9 +826,9 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
             case .delete:
                 return SBUMenuItem(
                     title: SBUStringSet.Delete,
-                    color: titleColor,
+                    color: self.theme.menuTextColor,
                     image: SBUIconSetType.iconDelete.image(
-                        with: iconColor,
+                        with: SBUTheme.componentTheme.alertButtonColor,
                         to: SBUIconSetType.Metric.iconActionSheetItem
                     )
                 ) { [weak self] in
@@ -822,9 +838,9 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
             case .save:
                 return SBUMenuItem(
                     title: SBUStringSet.Save,
-                    color: titleColor,
+                    color: self.theme.menuTextColor,
                     image: SBUIconSetType.iconDownload.image(
-                        with: iconColor,
+                        with: SBUTheme.componentTheme.alertButtonColor,
                         to: SBUIconSetType.Metric.iconActionSheetItem
                     )
                 ) { [weak self] in
@@ -845,7 +861,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
     /// Sends a user message with only text.
     /// - Parameter text: String value
     /// - Since: 1.0.9
-    public func sendUserMessage(text: String) {
+    open func sendUserMessage(text: String) {
         let text = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard let messageParams = SBDUserMessageParams(message: text) else { return }
         
@@ -859,7 +875,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
     /// You can send a message by setting various properties of MessageParams.
     /// - Parameter messageParams: `SBDUserMessageParams` class object
     /// - Since: 1.0.9
-    public func sendUserMessage(messageParams: SBDUserMessageParams) {
+    open func sendUserMessage(messageParams: SBDUserMessageParams) {
         SBULog.info("[Request] Send user message")
         
         let preSendMessage = self.baseChannel?.sendUserMessage(with: messageParams)
@@ -880,7 +896,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
             
             if let error = error {
                 self.sortAllMessageList(needReload: true)
-                self.didReceiveError(error.localizedDescription)
+                self.errorHandler(error)
                 SBULog.error("[Failed] Send user message request: \(error.localizedDescription)")
                 return
             }
@@ -894,10 +910,16 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
             }
         }
                
-        SBUPendingMessageManager.shared.upsertPendingMessage(
-            channelUrl: self.baseChannel?.channelUrl,
-            message: preSendMessage
-        )
+        if let preSendMessage = preSendMessage,
+           self.messageListParams.belongs(to: preSendMessage)
+        {
+            SBUPendingMessageManager.shared.upsertPendingMessage(
+                channelUrl: self.baseChannel?.channelUrl,
+                message: preSendMessage
+            )
+        } else {
+            SBULog.info("A filtered user message has been sent.")
+        }
         
         self.sortAllMessageList(needReload: true)
         self.messageInputView.endTypingMode()
@@ -913,7 +935,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
     ///   - fileName: file name. Used when displayed in channel list.
     ///   - mimeType: file's mime type.
     /// - Since: 1.0.9
-    public func sendFileMessage(fileData: Data?, fileName: String, mimeType: String) {
+    open func sendFileMessage(fileData: Data?, fileName: String, mimeType: String) {
         guard let fileData = fileData else { return }
         let messageParams = SBDFileMessageParams(file: fileData)!
         messageParams.fileName = fileName
@@ -935,7 +957,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
     /// You can send a file message by setting various properties of MessageParams.
     /// - Parameter messageParams: `SBDFileMessageParams` class object
     /// - Since: 1.0.9
-    public func sendFileMessage(messageParams: SBDFileMessageParams) {
+    open func sendFileMessage(messageParams: SBDFileMessageParams) {
         guard let channel = self.baseChannel else { return }
         
         SBULog.info("[Request] Send file message")
@@ -950,10 +972,14 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
             },
             completionHandler: { [weak self] fileMessage, error in
                 if (error != nil) {
-                    SBUPendingMessageManager.shared.upsertPendingMessage(
-                        channelUrl: fileMessage?.channelUrl,
-                        message: fileMessage
-                    )
+                    if let fileMessage = fileMessage,
+                       self?.messageListParams.belongs(to: fileMessage) == true
+                    {
+                        SBUPendingMessageManager.shared.upsertPendingMessage(
+                            channelUrl: fileMessage.channelUrl,
+                            message: fileMessage
+                        )
+                    }
                 } else {
                     SBUPendingMessageManager.shared.removePendingMessage(
                         channelUrl: fileMessage?.channelUrl,
@@ -964,7 +990,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
                 guard let self = self else { return }
                 if let error = error {
                     self.sortAllMessageList(needReload: true)
-                    self.didReceiveError(error.localizedDescription)
+                    self.errorHandler(error)
                     SBULog.error("""
                         [Failed] Send file message request:
                         \(error.localizedDescription)
@@ -983,15 +1009,21 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
                 }
             })
         
-        SBUPendingMessageManager.shared.upsertPendingMessage(
-            channelUrl: self.baseChannel?.channelUrl,
-            message: preSendMessage
-        )
-        
-        SBUPendingMessageManager.shared.addFileInfo(
-            requestId: preSendMessage?.requestId,
-            params: messageParams
-        )
+        if let preSendMessage = preSendMessage,
+           self.messageListParams.belongs(to: preSendMessage)
+        {
+            SBUPendingMessageManager.shared.upsertPendingMessage(
+                channelUrl: self.baseChannel?.channelUrl,
+                message: preSendMessage
+            )
+            
+            SBUPendingMessageManager.shared.addFileInfo(
+                requestId: preSendMessage.requestId,
+                params: messageParams
+            )
+        } else {
+            SBULog.info("A filtered file message has been sent.")
+        }
         
         self.sortAllMessageList(needReload: true)
     }
@@ -1025,7 +1057,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
             userMessageParams: messageParams) { [weak self] updatedMessage, error in
                 guard let self = self else { return }
                 if let error = error {
-                    self.didReceiveError(error.localizedDescription)
+                    self.errorHandler(error)
                     SBULog.error("""
                         [Failed] Send user message request:
                         \(String(error.localizedDescription))
@@ -1071,7 +1103,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
                     guard let self = self else { return }
                     if let error = error {
                         self.sortAllMessageList(needReload: true)
-                        self.didReceiveError(error.localizedDescription)
+                        self.errorHandler(error)
  
                         SBULog.error("""
                             [Failed] Resend failed user message request:
@@ -1136,7 +1168,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
                     guard let self = self else { return }
                     if let error = error {
                         self.sortAllMessageList(needReload: true)
-                        self.didReceiveError(error.localizedDescription)
+                        self.errorHandler(error)
                         SBULog.error("""
                             [Failed] Resend failed file message request:
                             \(error.localizedDescription)\n
@@ -1308,7 +1340,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
                 mimeType: mimeType
             )
         } catch {
-            self.didReceiveError(error.localizedDescription)
+            self.errorHandler(error.localizedDescription)
         }
     }
     
@@ -1521,7 +1553,7 @@ extension SBUBaseChannelViewController: SBUFileViewerDelegate {
         self.baseChannel?.delete(message) { [weak self] error in
             guard let self = self else { return }
             if let error = error {
-                self.didReceiveError(error.localizedDescription)
+                self.errorHandler(error)
                 SBULog.error("[Failed] Delete message request: \(error.localizedDescription)")
                 return
             }

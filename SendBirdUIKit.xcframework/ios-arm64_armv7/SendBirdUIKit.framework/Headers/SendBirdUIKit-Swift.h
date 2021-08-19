@@ -727,11 +727,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit35SBUBaseChannelSettingViewController")
 - (void)selectChannelImage;
 /// This function shows the channel name change popup.
 - (void)changeChannelName;
-/// If an error occurs in viewController, a message is sent through here.
-/// If necessary, override to handle errors.
-/// \param message error message
-///
-- (void)didReceiveError:(NSString * _Nullable)message;
 - (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
@@ -890,7 +885,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUBaseChannelViewController")
 - (void)sortAllMessageListWithNeedReload:(BOOL)needReload;
 /// This function increases the new message count.
 - (void)increaseNewMessageCount;
-- (void)didReceiveError:(NSString * _Nullable)message;
 /// Set/Unset edit mode for given userMessage.
 /// \param userMessage User message to edit, or nil to end edit mode.
 ///
@@ -972,12 +966,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUBaseChannelViewController")
 - (void)setLoading:(BOOL)loadingState :(BOOL)showIndicator;
 @end
 
-@class SBDFileMessage;
-
-@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
-- (void)didSelectDeleteImageWithMessage:(SBDFileMessage * _Nonnull)message;
-@end
-
 @class UIPresentationController;
 
 @interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
@@ -1001,6 +989,12 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit20SBUEmptyViewDelegate_")
 - (BOOL)gestureRecognizer:(UIGestureRecognizer * _Nonnull)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer * _Nonnull)otherGestureRecognizer SWIFT_WARN_UNUSED_RESULT;
 @end
 
+@class SBDFileMessage;
+
+@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
+- (void)didSelectDeleteImageWithMessage:(SBDFileMessage * _Nonnull)message;
+@end
+
 @class UIDocumentPickerViewController;
 
 @interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIDocumentPickerDelegate>
@@ -1009,9 +1003,9 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit20SBUEmptyViewDelegate_")
 @end
 
 
-@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
-- (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
-- (void)imagePickerControllerDidCancel:(UIImagePickerController * _Nonnull)picker;
+@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
+- (BOOL)shouldShowLoadingIndicator;
+- (void)shouldDismissLoadingIndicator;
 @end
 
 
@@ -1032,9 +1026,9 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit26SBUUserProfileViewDelegate_")
 @end
 
 
-@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
-- (BOOL)shouldShowLoadingIndicator;
-- (void)shouldDismissLoadingIndicator;
+@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
+- (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
+- (void)imagePickerControllerDidCancel:(UIImagePickerController * _Nonnull)picker;
 @end
 
 
@@ -1331,11 +1325,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 /// \param showIndicator If true, the loading indicator is started, and if false, the indicator is stopped.
 ///
 - (void)setLoading:(BOOL)loadingState :(BOOL)showIndicator;
-/// If an error occurs in viewController, a message is sent through here.
-/// If necessary, override to handle errors.
-/// \param message error message
-///
-- (void)didReceiveError:(NSString * _Nullable)message;
 @end
 
 
@@ -1492,7 +1481,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUChannelTh
 + (SBUChannelTheme * _Nonnull)overlay SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
-- (nonnull instancetype)initWithStatusBarStyle:(UIStatusBarStyle)statusBarStyle navigationBarTintColor:(UIColor * _Nonnull)navigationBarTintColor navigationBarShadowColor:(UIColor * _Nonnull)navigationBarShadowColor leftBarButtonTintColor:(UIColor * _Nonnull)leftBarButtonTintColor rightBarButtonTintColor:(UIColor * _Nonnull)rightBarButtonTintColor backgroundColor:(UIColor * _Nonnull)backgroundColor removeItemColor:(UIColor * _Nonnull)removeItemColor cancelItemColor:(UIColor * _Nonnull)cancelItemColor alertRemoveColor:(UIColor * _Nonnull)alertRemoveColor alertCancelColor:(UIColor * _Nonnull)alertCancelColor menuTextColor:(UIColor * _Nonnull)menuTextColor menuItemTintColor:(UIColor * _Nonnull)menuItemTintColor channelStateBannerFont:(UIFont * _Nonnull)channelStateBannerFont channelStateBannerTextColor:(UIColor * _Nonnull)channelStateBannerTextColor channelStateBannerBackgroundColor:(UIColor * _Nonnull)channelStateBannerBackgroundColor OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithStatusBarStyle:(UIStatusBarStyle)statusBarStyle navigationBarTintColor:(UIColor * _Nonnull)navigationBarTintColor navigationBarShadowColor:(UIColor * _Nonnull)navigationBarShadowColor leftBarButtonTintColor:(UIColor * _Nonnull)leftBarButtonTintColor rightBarButtonTintColor:(UIColor * _Nonnull)rightBarButtonTintColor backgroundColor:(UIColor * _Nonnull)backgroundColor removeItemColor:(UIColor * _Nonnull)removeItemColor deleteItemColor:(UIColor * _Nonnull)deleteItemColor cancelItemColor:(UIColor * _Nonnull)cancelItemColor alertRemoveColor:(UIColor * _Nonnull)alertRemoveColor alertCancelColor:(UIColor * _Nonnull)alertCancelColor menuTextColor:(UIColor * _Nonnull)menuTextColor menuItemTintColor:(UIColor * _Nonnull)menuItemTintColor channelStateBannerFont:(UIFont * _Nonnull)channelStateBannerFont channelStateBannerTextColor:(UIColor * _Nonnull)channelStateBannerTextColor channelStateBannerBackgroundColor:(UIColor * _Nonnull)channelStateBannerBackgroundColor OBJC_DESIGNATED_INITIALIZER;
 @property (nonatomic) UIStatusBarStyle statusBarStyle;
 @property (nonatomic, strong) UIColor * _Nonnull navigationBarTintColor;
 @property (nonatomic, strong) UIColor * _Nonnull navigationBarShadowColor;
@@ -1500,6 +1489,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUChannelTh
 @property (nonatomic, strong) UIColor * _Nonnull rightBarButtonTintColor;
 @property (nonatomic, strong) UIColor * _Nonnull backgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull removeItemColor;
+@property (nonatomic, strong) UIColor * _Nonnull deleteItemColor;
 @property (nonatomic, strong) UIColor * _Nonnull cancelItemColor;
 @property (nonatomic, strong) UIColor * _Nonnull alertRemoveColor;
 @property (nonatomic, strong) UIColor * _Nonnull alertCancelColor;
@@ -1776,6 +1766,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 /// returns:
 /// <code>CGPoint</code> value
 - (CGPoint)calculatorMenuPointWithIndexPath:(NSIndexPath * _Nonnull)indexPath position:(enum MessagePosition)position SWIFT_WARN_UNUSED_RESULT;
+/// This function shows cell’s menu: retry, delete, cancel.
+/// This is used when selected failed message.
+/// since:
+/// 2.1.12
+/// \param message message object
+///
+- (void)showFailedMessageMenuWithMessage:(SBDBaseMessage * _Nonnull)message;
 - (UITableViewCell * _Nonnull)tableView:(UITableView * _Nonnull)tableView cellForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
 /// This function generates cell’s identifier.
 /// \param message Message object
@@ -2152,7 +2149,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 /// \param user <code>SBUUser</code> object
 ///
 - (void)selectUserWithUser:(SBUUser * _Nonnull)user;
-- (void)didReceiveError:(NSString * _Nullable)message;
 @end
 
 
@@ -2772,7 +2768,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 - (void)popToChannel;
 /// This function is used to pop to previous viewController.
 - (void)popToPrevious;
-- (void)didReceiveError:(NSString * _Nullable)message;
 @end
 
 
@@ -3105,7 +3100,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 /// \param user <code>SBUUser</code> object used for user profile configuration
 ///
 - (void)setUserProfileTapGestureHandler:(SBUUser * _Nonnull)user;
-- (void)didReceiveError:(NSString * _Nullable)message;
 @end
 
 
@@ -3428,7 +3422,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUMessageSearchViewController")
 - (void)viewWillDisappear:(BOOL)animated;
 - (void)loadView;
 - (void)viewDidLayoutSubviews;
-- (void)didReceiveError:(NSString * _Nullable)message;
 /// Used to register a custom cell as a search result cell based on <code>SBUMessageSearchResultCell</code>.
 /// \param messageSearchResultCell Customized search result cell
 ///
@@ -3554,7 +3547,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUModerationsViewController")
 /// \param completionHandler completion handler of freeze status change
 ///
 - (void)changeFreeze:(BOOL)freeze :(void (^ _Nullable)(BOOL))completionHandler;
-- (void)didReceiveError:(NSString * _Nullable)message;
 - (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
 @end
 
@@ -4037,6 +4029,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 /// returns:
 /// <code>CGPoint</code> value
 - (CGPoint)calculatorMenuPointWithIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
+/// This function shows cell’s menu: retry, delete, cancel.
+/// This is used when selected failed message.
+/// since:
+/// 2.1.12
+/// \param message message object
+///
+- (void)showFailedMessageMenuWithMessage:(SBDBaseMessage * _Nonnull)message;
 - (UITableViewCell * _Nonnull)tableView:(UITableView * _Nonnull)tableView cellForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
 /// This function generates cell’s identifier.
 /// \param message Message object
@@ -4045,6 +4044,11 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 /// returns:
 /// Identifier
 - (NSString * _Nonnull)generateCellIdentifierBy:(SBDBaseMessage * _Nonnull)message SWIFT_WARN_UNUSED_RESULT;
+@end
+
+
+@interface SBUOpenChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIDocumentInteractionControllerDelegate>
+- (UIViewController * _Nonnull)documentInteractionControllerViewControllerForPreview:(UIDocumentInteractionController * _Nonnull)controller SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
@@ -5542,11 +5546,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit35SBUBaseChannelSettingViewController")
 - (void)selectChannelImage;
 /// This function shows the channel name change popup.
 - (void)changeChannelName;
-/// If an error occurs in viewController, a message is sent through here.
-/// If necessary, override to handle errors.
-/// \param message error message
-///
-- (void)didReceiveError:(NSString * _Nullable)message;
 - (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
@@ -5705,7 +5704,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUBaseChannelViewController")
 - (void)sortAllMessageListWithNeedReload:(BOOL)needReload;
 /// This function increases the new message count.
 - (void)increaseNewMessageCount;
-- (void)didReceiveError:(NSString * _Nullable)message;
 /// Set/Unset edit mode for given userMessage.
 /// \param userMessage User message to edit, or nil to end edit mode.
 ///
@@ -5787,12 +5785,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUBaseChannelViewController")
 - (void)setLoading:(BOOL)loadingState :(BOOL)showIndicator;
 @end
 
-@class SBDFileMessage;
-
-@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
-- (void)didSelectDeleteImageWithMessage:(SBDFileMessage * _Nonnull)message;
-@end
-
 @class UIPresentationController;
 
 @interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
@@ -5816,6 +5808,12 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit20SBUEmptyViewDelegate_")
 - (BOOL)gestureRecognizer:(UIGestureRecognizer * _Nonnull)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer * _Nonnull)otherGestureRecognizer SWIFT_WARN_UNUSED_RESULT;
 @end
 
+@class SBDFileMessage;
+
+@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
+- (void)didSelectDeleteImageWithMessage:(SBDFileMessage * _Nonnull)message;
+@end
+
 @class UIDocumentPickerViewController;
 
 @interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIDocumentPickerDelegate>
@@ -5824,9 +5822,9 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit20SBUEmptyViewDelegate_")
 @end
 
 
-@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
-- (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
-- (void)imagePickerControllerDidCancel:(UIImagePickerController * _Nonnull)picker;
+@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
+- (BOOL)shouldShowLoadingIndicator;
+- (void)shouldDismissLoadingIndicator;
 @end
 
 
@@ -5847,9 +5845,9 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit26SBUUserProfileViewDelegate_")
 @end
 
 
-@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
-- (BOOL)shouldShowLoadingIndicator;
-- (void)shouldDismissLoadingIndicator;
+@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
+- (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
+- (void)imagePickerControllerDidCancel:(UIImagePickerController * _Nonnull)picker;
 @end
 
 
@@ -6146,11 +6144,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 /// \param showIndicator If true, the loading indicator is started, and if false, the indicator is stopped.
 ///
 - (void)setLoading:(BOOL)loadingState :(BOOL)showIndicator;
-/// If an error occurs in viewController, a message is sent through here.
-/// If necessary, override to handle errors.
-/// \param message error message
-///
-- (void)didReceiveError:(NSString * _Nullable)message;
 @end
 
 
@@ -6307,7 +6300,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUChannelTh
 + (SBUChannelTheme * _Nonnull)overlay SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
-- (nonnull instancetype)initWithStatusBarStyle:(UIStatusBarStyle)statusBarStyle navigationBarTintColor:(UIColor * _Nonnull)navigationBarTintColor navigationBarShadowColor:(UIColor * _Nonnull)navigationBarShadowColor leftBarButtonTintColor:(UIColor * _Nonnull)leftBarButtonTintColor rightBarButtonTintColor:(UIColor * _Nonnull)rightBarButtonTintColor backgroundColor:(UIColor * _Nonnull)backgroundColor removeItemColor:(UIColor * _Nonnull)removeItemColor cancelItemColor:(UIColor * _Nonnull)cancelItemColor alertRemoveColor:(UIColor * _Nonnull)alertRemoveColor alertCancelColor:(UIColor * _Nonnull)alertCancelColor menuTextColor:(UIColor * _Nonnull)menuTextColor menuItemTintColor:(UIColor * _Nonnull)menuItemTintColor channelStateBannerFont:(UIFont * _Nonnull)channelStateBannerFont channelStateBannerTextColor:(UIColor * _Nonnull)channelStateBannerTextColor channelStateBannerBackgroundColor:(UIColor * _Nonnull)channelStateBannerBackgroundColor OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithStatusBarStyle:(UIStatusBarStyle)statusBarStyle navigationBarTintColor:(UIColor * _Nonnull)navigationBarTintColor navigationBarShadowColor:(UIColor * _Nonnull)navigationBarShadowColor leftBarButtonTintColor:(UIColor * _Nonnull)leftBarButtonTintColor rightBarButtonTintColor:(UIColor * _Nonnull)rightBarButtonTintColor backgroundColor:(UIColor * _Nonnull)backgroundColor removeItemColor:(UIColor * _Nonnull)removeItemColor deleteItemColor:(UIColor * _Nonnull)deleteItemColor cancelItemColor:(UIColor * _Nonnull)cancelItemColor alertRemoveColor:(UIColor * _Nonnull)alertRemoveColor alertCancelColor:(UIColor * _Nonnull)alertCancelColor menuTextColor:(UIColor * _Nonnull)menuTextColor menuItemTintColor:(UIColor * _Nonnull)menuItemTintColor channelStateBannerFont:(UIFont * _Nonnull)channelStateBannerFont channelStateBannerTextColor:(UIColor * _Nonnull)channelStateBannerTextColor channelStateBannerBackgroundColor:(UIColor * _Nonnull)channelStateBannerBackgroundColor OBJC_DESIGNATED_INITIALIZER;
 @property (nonatomic) UIStatusBarStyle statusBarStyle;
 @property (nonatomic, strong) UIColor * _Nonnull navigationBarTintColor;
 @property (nonatomic, strong) UIColor * _Nonnull navigationBarShadowColor;
@@ -6315,6 +6308,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUChannelTh
 @property (nonatomic, strong) UIColor * _Nonnull rightBarButtonTintColor;
 @property (nonatomic, strong) UIColor * _Nonnull backgroundColor;
 @property (nonatomic, strong) UIColor * _Nonnull removeItemColor;
+@property (nonatomic, strong) UIColor * _Nonnull deleteItemColor;
 @property (nonatomic, strong) UIColor * _Nonnull cancelItemColor;
 @property (nonatomic, strong) UIColor * _Nonnull alertRemoveColor;
 @property (nonatomic, strong) UIColor * _Nonnull alertCancelColor;
@@ -6591,6 +6585,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 /// returns:
 /// <code>CGPoint</code> value
 - (CGPoint)calculatorMenuPointWithIndexPath:(NSIndexPath * _Nonnull)indexPath position:(enum MessagePosition)position SWIFT_WARN_UNUSED_RESULT;
+/// This function shows cell’s menu: retry, delete, cancel.
+/// This is used when selected failed message.
+/// since:
+/// 2.1.12
+/// \param message message object
+///
+- (void)showFailedMessageMenuWithMessage:(SBDBaseMessage * _Nonnull)message;
 - (UITableViewCell * _Nonnull)tableView:(UITableView * _Nonnull)tableView cellForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
 /// This function generates cell’s identifier.
 /// \param message Message object
@@ -6967,7 +6968,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUCreateChannelViewController")
 /// \param user <code>SBUUser</code> object
 ///
 - (void)selectUserWithUser:(SBUUser * _Nonnull)user;
-- (void)didReceiveError:(NSString * _Nullable)message;
 @end
 
 
@@ -7587,7 +7587,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUInviteUserViewController")
 - (void)popToChannel;
 /// This function is used to pop to previous viewController.
 - (void)popToPrevious;
-- (void)didReceiveError:(NSString * _Nullable)message;
 @end
 
 
@@ -7920,7 +7919,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 /// \param user <code>SBUUser</code> object used for user profile configuration
 ///
 - (void)setUserProfileTapGestureHandler:(SBUUser * _Nonnull)user;
-- (void)didReceiveError:(NSString * _Nullable)message;
 @end
 
 
@@ -8243,7 +8241,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUMessageSearchViewController")
 - (void)viewWillDisappear:(BOOL)animated;
 - (void)loadView;
 - (void)viewDidLayoutSubviews;
-- (void)didReceiveError:(NSString * _Nullable)message;
 /// Used to register a custom cell as a search result cell based on <code>SBUMessageSearchResultCell</code>.
 /// \param messageSearchResultCell Customized search result cell
 ///
@@ -8369,7 +8366,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUModerationsViewController")
 /// \param completionHandler completion handler of freeze status change
 ///
 - (void)changeFreeze:(BOOL)freeze :(void (^ _Nullable)(BOOL))completionHandler;
-- (void)didReceiveError:(NSString * _Nullable)message;
 - (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil SWIFT_UNAVAILABLE;
 @end
 
@@ -8852,6 +8848,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 /// returns:
 /// <code>CGPoint</code> value
 - (CGPoint)calculatorMenuPointWithIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
+/// This function shows cell’s menu: retry, delete, cancel.
+/// This is used when selected failed message.
+/// since:
+/// 2.1.12
+/// \param message message object
+///
+- (void)showFailedMessageMenuWithMessage:(SBDBaseMessage * _Nonnull)message;
 - (UITableViewCell * _Nonnull)tableView:(UITableView * _Nonnull)tableView cellForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
 /// This function generates cell’s identifier.
 /// \param message Message object
@@ -8860,6 +8863,11 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUOpenChannelViewController")
 /// returns:
 /// Identifier
 - (NSString * _Nonnull)generateCellIdentifierBy:(SBDBaseMessage * _Nonnull)message SWIFT_WARN_UNUSED_RESULT;
+@end
+
+
+@interface SBUOpenChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIDocumentInteractionControllerDelegate>
+- (UIViewController * _Nonnull)documentInteractionControllerViewControllerForPreview:(UIDocumentInteractionController * _Nonnull)controller SWIFT_WARN_UNUSED_RESULT;
 @end
 
 

@@ -263,7 +263,7 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
         SBUMain.connectionCheck { [weak self] user, error in
             guard let self = self else { return }
             
-            if let error = error { self.didReceiveError(error.localizedDescription) }
+            if let error = error { self.errorHandler(error) }
             
             if SBUAvailable.isSupportSuperGroupChannel() || SBUAvailable.isSupportBroadcastChannel() {
                 self.createChannelTypeSelector = self.defaultCreateChannelTypeSelector
@@ -319,7 +319,7 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
                     Channel push status request: \(String(error.localizedDescription))
                     """)
                 completionHandler?(false)
-                self.didReceiveError(error.localizedDescription)
+                self.errorHandler(error)
                 return
             }
             
@@ -346,7 +346,7 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
                     Leave channel request: \(String(error.localizedDescription))
                     """)
                 completionHandler?(false)
-                self.didReceiveError(error.localizedDescription)
+                self.errorHandler(error)
                 return
             }
             
@@ -403,7 +403,7 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
                     [Failed]
                     Channel list request: \(String(describing: error.localizedDescription))
                     """)
-                self.didReceiveError(error.localizedDescription)
+                self.errorHandler(error)
                 self.showNetworkError()
                 return
             }
@@ -451,7 +451,7 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
                         [Failed]
                         Channel change logs request: \(error.localizedDescription)
                         """)
-                    self.didReceiveError(error.localizedDescription)
+                    self.errorHandler(error)
                 }
                 
                 self.lastUpdatedToken = token
@@ -482,7 +482,7 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
                         [Failed]
                         Channel change logs request: \(error.localizedDescription)
                         """)
-                    self.didReceiveError(error.localizedDescription)
+                    self.errorHandler(error)
                 }
                 
                 self.lastUpdatedToken = token
@@ -542,6 +542,7 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
         guard let channels = channels else { return }
         
         for channel in channels {
+            guard self.channelListQuery?.belongs(to: channel) == true else { continue }
             guard let index = self.channelList.firstIndex(of: channel) else { continue }
             self.channelList.append(self.channelList.remove(at: index))
         }
@@ -560,6 +561,7 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
         guard let channels = channels else { return }
         
         for channel in channels {
+            guard self.channelListQuery?.belongs(to: channel) == true else { continue }
             let includeEmptyChannel = self.channelListQuery?.includeEmptyChannel ?? false
             guard (channel.lastMessage != nil || includeEmptyChannel) else { continue }
             guard let index = self.channelList.firstIndex(of: channel) else {
@@ -722,11 +724,22 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
     
     
     // MARK: - Error handling
+    private func errorHandler(_ error: SBDError) {
+        self.errorHandler(error.localizedDescription, error.code)
+    }
+    
     /// If an error occurs in viewController, a message is sent through here.
     /// If necessary, override to handle errors.
-    /// - Parameter message: error message
-    open func didReceiveError(_ message: String?) {
+    /// - Parameters:
+    ///   - message: error message
+    ///   - code: error code
+    open func errorHandler(_ message: String?, _ code: NSInteger? = nil) {
         SBULog.error("Did receive error: \(message ?? "")")
+    }
+    
+    @available(*, deprecated, message: "deprecated in 2.1.12", renamed: "errorHandler")
+    open func didReceiveError(_ message: String?, _ code: NSInteger? = nil) {
+        self.errorHandler(message, code)
     }
 }
 
@@ -740,7 +753,7 @@ extension SBUChannelListViewController: UITableViewDataSource, UITableViewDelega
     open func tableView(_ tableView: UITableView,
                         cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard indexPath.row < self.channelList.count else {
-            self.didReceiveError("The index is out of range.")
+            self.errorHandler("The index is out of range.", -1)
             return UITableViewCell()
         }
         
@@ -975,7 +988,7 @@ extension SBUChannelListViewController: SBUEmptyViewDelegate {
             
             if let error = error {
                 SBULog.error("[Failed] Retry request: \(String(error.localizedDescription))")
-                self.didReceiveError(error.localizedDescription)
+                self.errorHandler(error)
             }
             
             SBDMain.removeChannelDelegate(forIdentifier: self.description)

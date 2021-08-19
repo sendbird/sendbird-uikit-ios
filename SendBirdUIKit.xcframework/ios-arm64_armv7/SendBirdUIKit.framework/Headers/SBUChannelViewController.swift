@@ -506,7 +506,7 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
         SBUMain.connectionCheck { [weak self] user, error in
             guard let self = self else { return }
             if let error = error {
-                self.didReceiveError(error.localizedDescription)
+                self.errorHandler(error)
                 // do not proceed to getChannel()
                 return
             }
@@ -523,7 +523,7 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
                         }
                     }
                     
-                    self.didReceiveError(error.localizedDescription)
+                    self.errorHandler(error)
                     // don't return to allow failed UI
                 }
                 
@@ -560,6 +560,7 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
             self.channel?.addReaction(with: message, key: emojiKey) { reactionEvent, error in
                 if let error = error {
                     SBULog.error("[Failed] Add reaction : \(error.localizedDescription)")
+                    self.errorHandler(error)
                 }
                 SBULog.info("[Response] \(reactionEvent?.key ?? "") reaction")
             }
@@ -568,6 +569,7 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
             self.channel?.deleteReaction(with: message, key: emojiKey) { reactionEvent, error in
                 if let error = error {
                     SBULog.error("[Failed] Delete reaction : \(error.localizedDescription)")
+                    self.errorHandler(error)
                 }
 
                 SBULog.info("[Response] \(reactionEvent?.key ?? "") reaction")
@@ -619,7 +621,7 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
             channel.refresh { [weak self] error in
                 guard let self = self else { return }
                 if let error = error {
-                    self.didReceiveError(error.localizedDescription)
+                    self.errorHandler(error)
                     SBULog.error("[Failed] Refresh channel request : \(error.localizedDescription)")
                 }
                  
@@ -642,6 +644,7 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
     private func canProceed(with channel: SBDGroupChannel?, error: SBDError?) -> Bool {
         if let error = error {
             SBULog.info("canProceed error : \(error.localizedDescription)")
+            self.errorHandler(error)
             if !self.belongsToChannel(error: error) {
                 self.onClickBack()
                 return false
@@ -804,7 +807,18 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
             self.resendMessage(failedMessage: userMessage)
            
         case let fileMessage as SBDFileMessage:
-            self.openFile(fileMessage: fileMessage)
+            // File message type
+            switch fileMessage.sendingStatus {
+            case .pending:
+                break
+            case .failed:
+                guard fileMessage.sender?.userId == SBUGlobals.CurrentUser?.userId else { return }
+                self.resendMessage(failedMessage: fileMessage)
+            case .succeeded:
+                self.openFile(fileMessage: fileMessage)
+            default:
+                break
+            }
 
         case _ as SBDAdminMessage:
             // Admin message type
@@ -870,33 +884,14 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
                                        message: SBDBaseMessage,
                                        indexPath: IndexPath) {
         self.dismissKeyboard()
-        
-        switch message {
-        case let userMessage as SBDUserMessage:
-            switch userMessage.sendingStatus {
-            case .none, .canceled, .pending:
-                break
-            case .failed:
-                let removeItem = SBUActionSheetItem(
-                    title: SBUStringSet.Remove,
-                    color: self.theme.removeItemColor
-                ) { [weak self] in
-                    self?.deleteResendableMessages(
-                        requestIds: [userMessage.requestId],
-                        needReload: true
-                    )
-                }
-                let cancelItem = SBUActionSheetItem(
-                    title: SBUStringSet.Cancel,
-                    color: self.theme.cancelItemColor,
-                    completionHandler: nil
-                )
-
-                SBUActionSheet.show(
-                    items: [removeItem],
-                    cancelItem: cancelItem
-                )
-            case .succeeded:
+        switch message.sendingStatus {
+        case .none, .canceled, .pending:
+            break
+        case .failed:
+            self.showFailedMessageMenu(message: message)
+        case .succeeded:
+            switch message {
+            case let userMessage as SBDUserMessage:
                 let isCurrentUser = userMessage.sender?.userId == SBUGlobals.CurrentUser?.userId
                 let types: [MessageMenuItem] = isCurrentUser ? [.copy, .edit, .delete] : [.copy]
                 cell.isSelected = true
@@ -904,37 +899,9 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
                 if SBUEmojiManager.useReaction(channel: self.channel) {
                     self.showMenuViewController(cell, message: message, types: types)
                 } else {
-                    self.showMenuModal(cell, indexPath: indexPath,  message: message, types: types)
+                    self.showMenuModal(cell, indexPath: indexPath,  message: userMessage, types: types)
                 }
-            @unknown default:
-                break;
-            }
-            
-        case let fileMessage as SBDFileMessage:
-            switch fileMessage.sendingStatus {
-            case .none, .canceled, .pending:
-                break;
-            case .failed:
-                let removeItem = SBUActionSheetItem(
-                    title: SBUStringSet.Remove,
-                    color: self.theme.removeItemColor
-                ) { [weak self] in
-                    self?.deleteResendableMessages(
-                        requestIds: [fileMessage.requestId],
-                        needReload: true
-                    )
-                }
-                let cancelItem = SBUActionSheetItem(
-                    title: SBUStringSet.Cancel,
-                    color: self.theme.cancelItemColor,
-                    completionHandler: nil
-                )
-
-                SBUActionSheet.show(
-                    items: [removeItem],
-                    cancelItem: cancelItem
-                )
-            case .succeeded:
+            case let fileMessage as SBDFileMessage:
                 let isCurrentUser = fileMessage.sender?.userId == SBUGlobals.CurrentUser?.userId
                 let types: [MessageMenuItem] = isCurrentUser ? [.save, .delete] : [.save]
                 cell.isSelected = true
@@ -942,37 +909,16 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
                 if SBUEmojiManager.useReaction(channel: self.channel) {
                     self.showMenuViewController(cell, message: message, types: types)
                 } else {
-                    self.showMenuModal(cell, indexPath: indexPath, message: message, types: types)
+                    self.showMenuModal(cell, indexPath: indexPath, message: fileMessage, types: types)
                 }
-            @unknown default:
-                break;
+            default:
+                break
             }
-            
-        case _ as SBDAdminMessage:
-            break
-            
         default:
             // Unknown Message
             guard message.sender?.userId == SBUGlobals.CurrentUser?.userId else { return }
-            
-            let deleteItem = SBUMenuItem(
-                title: SBUStringSet.Delete,
-                color: self.theme.menuTextColor,
-                image: SBUIconSetType.iconDelete.image(to: SBUIconSetType.Metric.iconActionSheetItem)
-            ) { [weak self] in
-                guard let self = self else { return }
-                self.deleteMessage(message: message)
-            }
-            let menuPoint = self.calculatorMenuPoint(
-                indexPath: indexPath,
-                position: cell.position
-            )
-            let items = [deleteItem]
-            
-            cell.isSelected = true
-            SBUMenuView.show(items: items, point: menuPoint) {
-                cell.isSelected = false
-            }
+            let types: [MessageMenuItem] = [.delete]
+            self.showMenuModal(cell, indexPath: indexPath, message: message, types: types)
         }
     }
 
@@ -1322,7 +1268,7 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
     ///   - message: Message object
     ///   - types: Type array of menu items to use
     /// - Since: 1.2.5
-    public func showMenuViewController(_ cell: SBUBaseMessageCell,
+    public func showMenuViewController(_ cell: UITableViewCell,
                                        message: SBDBaseMessage,
                                        types: [MessageMenuItem]) {
         let useReaction = SBUEmojiManager.useReaction(channel: self.channel)
@@ -1381,77 +1327,56 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
     ///   - message: Message object
     ///   - types: Type array of menu items to use
     /// - Since: 1.2.5
-    public func showMenuModal(_ cell: SBUBaseMessageCell,
+    public func showMenuModal(_ cell: UITableViewCell,
                               indexPath: IndexPath,
                               message: SBDBaseMessage,
                               types: [MessageMenuItem]) {
-        let items: [SBUMenuItem] = types.map {
-            switch $0 {
-            case .copy:
-                return SBUMenuItem(
-                    title: SBUStringSet.Copy,
-                    color: self.theme.menuTextColor,
-                    image: SBUIconSetType.iconCopy.image(
-                        with: SBUTheme.componentTheme.alertButtonColor,
-                        to: SBUIconSetType.Metric.iconActionSheetItem
-                    )
-                ) {
-                    guard let userMessage = message as? SBDUserMessage else { return }
-                    
-                    let pasteboard = UIPasteboard.general
-                    pasteboard.string = userMessage.message
-                }
-            case .edit:
-                return SBUMenuItem(
-                    title: SBUStringSet.Edit,
-                    color: self.theme.menuTextColor,
-                    image: SBUIconSetType.iconEdit.image(
-                        with: SBUTheme.componentTheme.alertButtonColor,
-                        to: SBUIconSetType.Metric.iconActionSheetItem
-                    )
-                ) { [weak self] in
-                    guard let self = self else { return }
-                    guard let userMessage = message as? SBDUserMessage else { return }
-                    
-                    if self.channel?.isFrozen == false {
-                        self.setEditMode(for: userMessage)
-                    } else {
-                        SBULog.info("This channel is frozen")
-                    }
-                }
-            case .delete:
-                return SBUMenuItem(
-                    title: SBUStringSet.Delete,
-                    color: self.theme.menuTextColor,
-                    image: SBUIconSetType.iconDelete.image(
-                        with: SBUTheme.componentTheme.alertButtonColor,
-                        to: SBUIconSetType.Metric.iconActionSheetItem
-                    )
-                ) { [weak self] in
-                    guard let self = self else { return }
-                    self.deleteMessage(message: message)
-                }
-            case .save:
-                return SBUMenuItem(
-                    title: SBUStringSet.Save,
-                    color: self.theme.menuTextColor,
-                    image: SBUIconSetType.iconDownload.image(
-                        with: SBUTheme.componentTheme.alertButtonColor,
-                        to: SBUIconSetType.Metric.iconActionSheetItem
-                    )
-                ) { [weak self] in
-                    guard let self = self else { return }
-                    guard let fileMessage = message as? SBDFileMessage else { return }
-                    
-                    SBUDownloadManager.save(fileMessage: fileMessage, parent: self)
-                }
-            }
-        }
+        guard let cell = cell as? SBUBaseMessageCell else { return }
+        
+        let menuItems = self.createMenuItems(
+            message: message,
+            types: types,
+            isMediaViewOverlaying: false
+        )
 
         let menuPoint = self.calculatorMenuPoint(indexPath: indexPath, position: cell.position)
-        SBUMenuView.show(items: items, point: menuPoint) {
+        SBUMenuView.show(items: menuItems, point: menuPoint) {
             cell.isSelected = false
         }
+    }
+    
+    
+    /// This function shows cell's menu: retry, delete, cancel.
+    ///
+    /// This is used when selected failed message.
+    /// - Parameter message: message object
+    /// - Since: 2.1.12
+    public func showFailedMessageMenu(message: SBDBaseMessage) {
+        let retryItem = SBUActionSheetItem(
+            title: SBUStringSet.Retry,
+            color: self.theme.menuItemTintColor
+        ) { [weak self] in
+            self?.resendMessage(failedMessage: message)
+        }
+        let deleteItem = SBUActionSheetItem(
+            title: SBUStringSet.Delete,
+            color: self.theme.deleteItemColor
+        ) { [weak self] in
+            self?.deleteResendableMessages(
+                requestIds: [message.requestId],
+                needReload: true
+            )
+        }
+        let cancelItem = SBUActionSheetItem(
+            title: SBUStringSet.Cancel,
+            color: self.theme.cancelItemColor,
+            completionHandler: nil
+        )
+
+        SBUActionSheet.show(
+            items: [retryItem, deleteItem],
+            cancelItem: cancelItem
+        )
     }
 
 
@@ -1459,12 +1384,12 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
     
     open override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let channel = self.channel else {
-            self.didReceiveError("Channel must exist!")
+            self.errorHandler("Channel must exist!", -1)
             return UITableViewCell()
         }
         
         guard indexPath.row < self.fullMessageList.count else {
-            self.didReceiveError("The index is out of range.")
+            self.errorHandler("The index is out of range.", -1)
             return UITableViewCell()
         }
         
@@ -1477,7 +1402,7 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
         cell.selectionStyle = .none
         
         guard let messageCell = cell as? SBUBaseMessageCell else {
-            self.didReceiveError("There are no message cells!")
+            self.errorHandler("There are no message cells!", -1)
             return cell
         }
         
@@ -1620,7 +1545,8 @@ extension SBUChannelViewController: SBDChannelDelegate, SBDConnectionDelegate {
     // Received message
     open func channel(_ sender: SBDBaseChannel, didReceive message: SBDBaseMessage) {
         guard self.channel?.channelUrl == sender.channelUrl else { return }
-        
+        guard self.messageListParams.belongs(to: message) else { return }
+
         switch message {
         case is SBDUserMessage:
             //// If need specific logic for user message, implement here
@@ -1660,6 +1586,10 @@ extension SBUChannelViewController: SBDChannelDelegate, SBDConnectionDelegate {
     // Updated message
     open func channel(_ sender: SBDBaseChannel, didUpdate message: SBDBaseMessage) {
         guard self.channel?.channelUrl == sender.channelUrl else { return }
+        guard self.messageListParams.belongs(to: message) else {
+            self.deleteMessagesInList(messageIds: [message.messageId], needReload: true)
+            return
+        }
         
         SBULog.info("Did update message: \(message)")
         
@@ -1679,6 +1609,7 @@ extension SBUChannelViewController: SBDChannelDelegate, SBDConnectionDelegate {
     open func channel(_ sender: SBDBaseChannel, updatedReaction reactionEvent: SBDReactionEvent) {
         guard let message = messageList
             .first(where: { $0.messageId == reactionEvent.messageId }) else { return }
+        guard self.messageListParams.belongs(to: message) else { return }
         
         message.apply(reactionEvent)
 

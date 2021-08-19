@@ -90,7 +90,9 @@ import UIKit
   @objc public func selectUser(user: SendBirdUIKit.SBUUser)
   @objc public func popToChannel()
   @objc public func popToPrevious()
-  @objc open func didReceiveError(_ message: Swift.String?)
+  open func errorHandler(_ message: Swift.String?, _ code: ObjectiveC.NSInteger? = nil)
+  @available(*, deprecated, renamed: "errorHandler", message: "deprecated in 2.1.12")
+  open func didReceiveError(_ message: Swift.String?, _ code: ObjectiveC.NSInteger? = nil)
 }
 extension SBUInviteUserViewController : UIKit.UITableViewDelegate, UIKit.UITableViewDataSource {
   @objc dynamic open func tableView(_ tableView: UIKit.UITableView, numberOfRowsInSection section: Swift.Int) -> Swift.Int
@@ -339,7 +341,9 @@ extension UIImageView {
   @objc public func register(customCell: SendBirdUIKit.SBUBaseChannelCell?, nib: UIKit.UINib? = nil)
   @objc public func reloadTableView()
   @objc public func setLoading(_ loadingState: Swift.Bool, _ showIndicator: Swift.Bool)
-  @objc open func didReceiveError(_ message: Swift.String?)
+  open func errorHandler(_ message: Swift.String?, _ code: ObjectiveC.NSInteger? = nil)
+  @available(*, deprecated, renamed: "errorHandler", message: "deprecated in 2.1.12")
+  open func didReceiveError(_ message: Swift.String?, _ code: ObjectiveC.NSInteger? = nil)
 }
 extension SBUChannelListViewController : UIKit.UITableViewDataSource, UIKit.UITableViewDelegate {
   @objc dynamic open func tableView(_ tableView: UIKit.UITableView, didSelectRowAt indexPath: Foundation.IndexPath)
@@ -626,7 +630,8 @@ extension NSObject {
   @objc open func setFileMessageCellGestures(_ cell: SendBirdUIKit.SBUOpenChannelFileMessageCell, fileMessage: SendBirdSDK.SBDFileMessage, indexPath: Foundation.IndexPath)
   @objc open func setUnkownMessageCellGestures(_ cell: SendBirdUIKit.SBUOpenChannelUnknownMessageCell, unknownMessage: SendBirdSDK.SBDBaseMessage, indexPath: Foundation.IndexPath)
   @objc public func calculatorMenuPoint(indexPath: Foundation.IndexPath) -> CoreGraphics.CGPoint
-  public func showMenuModal(_ cell: SendBirdUIKit.SBUOpenChannelBaseMessageCell, indexPath: Foundation.IndexPath, message: SendBirdSDK.SBDBaseMessage, types: [SendBirdUIKit.MessageMenuItem])
+  public func showMenuModal(_ cell: UIKit.UITableViewCell, indexPath: Foundation.IndexPath, message: SendBirdSDK.SBDBaseMessage, types: [SendBirdUIKit.MessageMenuItem])
+  @objc public func showFailedMessageMenu(message: SendBirdSDK.SBDBaseMessage)
   @objc override dynamic open func tableView(_ tableView: UIKit.UITableView, cellForRowAt indexPath: Foundation.IndexPath) -> UIKit.UITableViewCell
   @objc open func generateCellIdentifier(by message: SendBirdSDK.SBDBaseMessage) -> Swift.String
 }
@@ -649,6 +654,9 @@ extension SBUOpenChannelViewController : SendBirdSDK.SBDChannelDelegate, SendBir
   @objc dynamic open func channel(_ sender: SendBirdSDK.SBDOpenChannel, userDidExit user: SendBirdSDK.SBDUser)
   @objc dynamic open func channelWasDeleted(_ channelUrl: Swift.String, channelType: SendBirdSDK.SBDChannelType)
   @objc dynamic open func didSucceedReconnection()
+}
+extension SBUOpenChannelViewController : UIKit.UIDocumentInteractionControllerDelegate {
+  @objc dynamic public func documentInteractionControllerViewControllerForPreview(_ controller: UIKit.UIDocumentInteractionController) -> UIKit.UIViewController
 }
 @objc @_inheritsConvenienceInitializers @objcMembers open class SBUContentBaseMessageCell : SendBirdUIKit.SBUBaseMessageCell {
   @objc public var userNameStackView: UIKit.UIStackView {
@@ -815,12 +823,14 @@ public typealias SBUNewMessageInfoHandler = () -> Swift.Void
   @objc public func deleteMessage(message: SendBirdSDK.SBDBaseMessage)
   @objc public func sortAllMessageList(needReload: Swift.Bool)
   @objc public func increaseNewMessageCount()
-  @objc open func didReceiveError(_ message: Swift.String?)
+  open func errorHandler(_ message: Swift.String?, _ code: ObjectiveC.NSInteger? = nil)
+  @available(*, deprecated, renamed: "errorHandler", message: "deprecated in 2.1.12")
+  open func didReceiveError(_ message: Swift.String?, _ code: ObjectiveC.NSInteger? = nil)
   @objc public func setEditMode(for userMessage: SendBirdSDK.SBDUserMessage?)
-  @objc public func sendUserMessage(text: Swift.String)
-  @objc public func sendUserMessage(messageParams: SendBirdSDK.SBDUserMessageParams)
-  @objc public func sendFileMessage(fileData: Foundation.Data?, fileName: Swift.String, mimeType: Swift.String)
-  @objc public func sendFileMessage(messageParams: SendBirdSDK.SBDFileMessageParams)
+  @objc open func sendUserMessage(text: Swift.String)
+  @objc open func sendUserMessage(messageParams: SendBirdSDK.SBDUserMessageParams)
+  @objc open func sendFileMessage(fileData: Foundation.Data?, fileName: Swift.String, mimeType: Swift.String)
+  @objc open func sendFileMessage(messageParams: SendBirdSDK.SBDFileMessageParams)
   @objc public func updateUserMessage(message: SendBirdSDK.SBDUserMessage, text: Swift.String)
   @objc public func updateUserMessage(message: SendBirdSDK.SBDUserMessage, messageParams: SendBirdSDK.SBDUserMessageParams)
   @objc public func resendMessage(failedMessage: SendBirdSDK.SBDBaseMessage)
@@ -921,7 +931,9 @@ extension SBUBaseChannelViewController {
   open func showBannedMeberList()
   @objc open func showBannedMemberList()
   @objc public func changeFreeze(_ freeze: Swift.Bool, _ completionHandler: ((Swift.Bool) -> Swift.Void)? = nil)
-  @objc open func didReceiveError(_ message: Swift.String?)
+  open func errorHandler(_ message: Swift.String?, _ code: ObjectiveC.NSInteger? = nil)
+  @available(*, deprecated, renamed: "errorHandler", message: "deprecated in 2.1.12")
+  open func didReceiveError(_ message: Swift.String?, _ code: ObjectiveC.NSInteger? = nil)
   @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
 }
 extension SBUModerationsViewController : UIKit.UITableViewDelegate, UIKit.UITableViewDataSource {
@@ -1067,8 +1079,9 @@ extension SBUBaseViewController : UIKit.UINavigationControllerDelegate {
   @objc open func setFileMessageCellGestures(_ cell: SendBirdUIKit.SBUFileMessageCell, fileMessage: SendBirdSDK.SBDFileMessage, indexPath: Foundation.IndexPath)
   @objc open func setUnkownMessageCellGestures(_ cell: SendBirdUIKit.SBUUnknownMessageCell, unknownMessage: SendBirdSDK.SBDBaseMessage, indexPath: Foundation.IndexPath)
   @objc public func calculatorMenuPoint(indexPath: Foundation.IndexPath, position: SendBirdUIKit.MessagePosition) -> CoreGraphics.CGPoint
-  public func showMenuViewController(_ cell: SendBirdUIKit.SBUBaseMessageCell, message: SendBirdSDK.SBDBaseMessage, types: [SendBirdUIKit.MessageMenuItem])
-  public func showMenuModal(_ cell: SendBirdUIKit.SBUBaseMessageCell, indexPath: Foundation.IndexPath, message: SendBirdSDK.SBDBaseMessage, types: [SendBirdUIKit.MessageMenuItem])
+  public func showMenuViewController(_ cell: UIKit.UITableViewCell, message: SendBirdSDK.SBDBaseMessage, types: [SendBirdUIKit.MessageMenuItem])
+  public func showMenuModal(_ cell: UIKit.UITableViewCell, indexPath: Foundation.IndexPath, message: SendBirdSDK.SBDBaseMessage, types: [SendBirdUIKit.MessageMenuItem])
+  @objc public func showFailedMessageMenu(message: SendBirdSDK.SBDBaseMessage)
   @objc override dynamic open func tableView(_ tableView: UIKit.UITableView, cellForRowAt indexPath: Foundation.IndexPath) -> UIKit.UITableViewCell
   @objc open func generateCellIdentifier(by message: SendBirdSDK.SBDBaseMessage) -> Swift.String
   @objc override dynamic open func messageInputViewDidEndTyping()
@@ -1585,7 +1598,9 @@ extension SBUChannelViewController : UIKit.UIDocumentInteractionControllerDelega
   @objc public func showLoading(state: Swift.Bool)
   @objc public func onClickCreate()
   @objc public func selectUser(user: SendBirdUIKit.SBUUser)
-  @objc open func didReceiveError(_ message: Swift.String?)
+  open func errorHandler(_ message: Swift.String?, _ code: ObjectiveC.NSInteger? = nil)
+  @available(*, deprecated, renamed: "errorHandler", message: "deprecated in 2.1.12")
+  open func didReceiveError(_ message: Swift.String?, _ code: ObjectiveC.NSInteger? = nil)
 }
 extension SBUCreateChannelViewController : UIKit.UITableViewDelegate, UIKit.UITableViewDataSource {
   @objc dynamic open func tableView(_ tableView: UIKit.UITableView, numberOfRowsInSection section: Swift.Int) -> Swift.Int
@@ -1820,7 +1835,9 @@ public typealias AlertButtonHandler = (Any?) -> Swift.Void
   @objc public func onClickEdit()
   @objc public func selectChannelImage()
   @objc public func changeChannelName()
-  @objc open func didReceiveError(_ message: Swift.String?)
+  open func errorHandler(_ message: Swift.String?, _ code: ObjectiveC.NSInteger? = nil)
+  @available(*, deprecated, renamed: "errorHandler", message: "deprecated in 2.1.12")
+  open func didReceiveError(_ message: Swift.String?, _ code: ObjectiveC.NSInteger? = nil)
   @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
   @objc required dynamic public init?(coder: Foundation.NSCoder)
 }
@@ -2268,7 +2285,9 @@ public class MessageStateView : SendBirdUIKit.SBUMessageStateView {
   @objc deinit
   @objc override dynamic open func loadView()
   @objc override dynamic open func viewDidLayoutSubviews()
-  @objc open func didReceiveError(_ message: Swift.String?)
+  open func errorHandler(_ message: Swift.String?, _ code: ObjectiveC.NSInteger? = nil)
+  @available(*, deprecated, renamed: "errorHandler", message: "deprecated in 2.1.12")
+  open func didReceiveError(_ message: Swift.String?, _ code: ObjectiveC.NSInteger? = nil)
   @objc public func register(messageSearchResultCell: SendBirdUIKit.SBUMessageSearchResultCell, nib: UIKit.UINib? = nil)
   @objc public func search(keyword: Swift.String)
   @objc override public func onClickBack()
@@ -2489,7 +2508,7 @@ extension UIColor {
   @objc public static var overlay: SendBirdUIKit.SBUChannelTheme {
     @objc get
   }
-  @objc public init(statusBarStyle: UIKit.UIStatusBarStyle = .default, navigationBarTintColor: UIKit.UIColor = SBUColorSet.background50, navigationBarShadowColor: UIKit.UIColor = SBUColorSet.onlight04, leftBarButtonTintColor: UIKit.UIColor = SBUColorSet.primary300, rightBarButtonTintColor: UIKit.UIColor = SBUColorSet.primary300, backgroundColor: UIKit.UIColor = SBUColorSet.background50, removeItemColor: UIKit.UIColor = SBUColorSet.error300, cancelItemColor: UIKit.UIColor = SBUColorSet.primary300, alertRemoveColor: UIKit.UIColor = SBUColorSet.error300, alertCancelColor: UIKit.UIColor = SBUColorSet.primary300, menuTextColor: UIKit.UIColor = SBUColorSet.onlight01, menuItemTintColor: UIKit.UIColor = SBUColorSet.onlight01, channelStateBannerFont: UIKit.UIFont = SBUFontSet.caption2, channelStateBannerTextColor: UIKit.UIColor = SBUColorSet.onlight01, channelStateBannerBackgroundColor: UIKit.UIColor = SBUColorSet.information)
+  @objc public init(statusBarStyle: UIKit.UIStatusBarStyle = .default, navigationBarTintColor: UIKit.UIColor = SBUColorSet.background50, navigationBarShadowColor: UIKit.UIColor = SBUColorSet.onlight04, leftBarButtonTintColor: UIKit.UIColor = SBUColorSet.primary300, rightBarButtonTintColor: UIKit.UIColor = SBUColorSet.primary300, backgroundColor: UIKit.UIColor = SBUColorSet.background50, removeItemColor: UIKit.UIColor = SBUColorSet.error300, deleteItemColor: UIKit.UIColor = SBUColorSet.error300, cancelItemColor: UIKit.UIColor = SBUColorSet.primary300, alertRemoveColor: UIKit.UIColor = SBUColorSet.error300, alertCancelColor: UIKit.UIColor = SBUColorSet.primary300, menuTextColor: UIKit.UIColor = SBUColorSet.onlight01, menuItemTintColor: UIKit.UIColor = SBUColorSet.onlight01, channelStateBannerFont: UIKit.UIFont = SBUFontSet.caption2, channelStateBannerTextColor: UIKit.UIColor = SBUColorSet.onlight01, channelStateBannerBackgroundColor: UIKit.UIColor = SBUColorSet.information)
   @objc public var statusBarStyle: UIKit.UIStatusBarStyle
   @objc public var navigationBarTintColor: UIKit.UIColor
   @objc public var navigationBarShadowColor: UIKit.UIColor
@@ -2497,6 +2516,7 @@ extension UIColor {
   @objc public var rightBarButtonTintColor: UIKit.UIColor
   @objc public var backgroundColor: UIKit.UIColor
   @objc public var removeItemColor: UIKit.UIColor
+  @objc public var deleteItemColor: UIKit.UIColor
   @objc public var cancelItemColor: UIKit.UIColor
   @objc public var alertRemoveColor: UIKit.UIColor
   @objc public var alertCancelColor: UIKit.UIColor
@@ -2998,7 +3018,9 @@ extension UIImage {
   @objc open func onClickInviteUser()
   @objc open func setMoreMenuActionHandler(_ member: SendBirdUIKit.SBUUser)
   @objc open func setUserProfileTapGestureHandler(_ user: SendBirdUIKit.SBUUser)
-  @objc open func didReceiveError(_ message: Swift.String?)
+  open func errorHandler(_ message: Swift.String?, _ code: ObjectiveC.NSInteger? = nil)
+  @available(*, deprecated, renamed: "errorHandler", message: "deprecated in 2.1.12")
+  open func didReceiveError(_ message: Swift.String?, _ code: ObjectiveC.NSInteger? = nil)
 }
 extension SBUMemberListViewController : UIKit.UITableViewDataSource, UIKit.UITableViewDelegate {
   @objc dynamic open func tableView(_ tableView: UIKit.UITableView, numberOfRowsInSection section: Swift.Int) -> Swift.Int

@@ -502,6 +502,7 @@ public class SBUChannelTheme: NSObject {
         
         // Alert
         theme.removeItemColor = SBUColorSet.error300
+        theme.deleteItemColor = SBUColorSet.error300
         theme.cancelItemColor = SBUColorSet.primary300
         
         theme.alertRemoveColor = SBUColorSet.error300
@@ -532,6 +533,7 @@ public class SBUChannelTheme: NSObject {
         
         // Alert
         theme.removeItemColor = SBUColorSet.error300
+        theme.deleteItemColor = SBUColorSet.error300
         theme.cancelItemColor = SBUColorSet.primary200
         
         theme.alertRemoveColor = SBUColorSet.error300
@@ -562,6 +564,7 @@ public class SBUChannelTheme: NSObject {
         
         // Alert
         theme.removeItemColor = SBUColorSet.error300
+        theme.deleteItemColor = SBUColorSet.error300
         theme.cancelItemColor = SBUColorSet.primary200
         
         theme.alertRemoveColor = SBUColorSet.ondark01
@@ -590,6 +593,7 @@ public class SBUChannelTheme: NSObject {
                 rightBarButtonTintColor: UIColor = SBUColorSet.primary300,
                 backgroundColor: UIColor = SBUColorSet.background50,
                 removeItemColor: UIColor = SBUColorSet.error300,
+                deleteItemColor: UIColor = SBUColorSet.error300,
                 cancelItemColor: UIColor = SBUColorSet.primary300,
                 alertRemoveColor: UIColor = SBUColorSet.error300,
                 alertCancelColor: UIColor = SBUColorSet.primary300,
@@ -606,6 +610,7 @@ public class SBUChannelTheme: NSObject {
         self.rightBarButtonTintColor = rightBarButtonTintColor
         self.backgroundColor = backgroundColor
         self.removeItemColor = removeItemColor
+        self.deleteItemColor = deleteItemColor
         self.cancelItemColor = cancelItemColor
         self.alertRemoveColor = alertRemoveColor
         self.alertCancelColor = alertCancelColor
@@ -626,6 +631,7 @@ public class SBUChannelTheme: NSObject {
     
     // Alert
     public var removeItemColor: UIColor
+    public var deleteItemColor: UIColor
     public var cancelItemColor: UIColor
     
     public var alertRemoveColor: UIColor

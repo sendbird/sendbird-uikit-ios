@@ -295,7 +295,7 @@ open class SBUInviteUserViewController: SBUBaseViewController {
         guard let inviteUserListViewModel = self.inviteUserListViewModel else { return }
         
         inviteUserListViewModel.errorObservable.observe { [weak self] error in
-            self?.didReceiveError(error.localizedDescription)
+            self?.errorHandler(error)
         }
         
         inviteUserListViewModel.loadingObservable.observe { [weak self] isLoading in
@@ -492,8 +492,22 @@ open class SBUInviteUserViewController: SBUBaseViewController {
     
     
     // MARK: - Error handling
-    open func didReceiveError(_ message: String?) {
+    private func errorHandler(_ error: SBDError) {
+        self.errorHandler(error.localizedDescription, error.code)
+    }
+    
+    /// If an error occurs in viewController, a message is sent through here.
+    /// If necessary, override to handle errors.
+    /// - Parameters:
+    ///   - message: error message
+    ///   - code: error code
+    open func errorHandler(_ message: String?, _ code: NSInteger? = nil) {
         SBULog.error("Did receive error: \(message ?? "")")
+    }
+    
+    @available(*, deprecated, message: "deprecated in 2.1.12", renamed: "errorHandler")
+    open func didReceiveError(_ message: String?, _ code: NSInteger? = nil) {
+        self.errorHandler(message, code)
     }
 }
 

@@ -1,5 +1,20 @@
 # Change Log
 
+### v2.1.12 (Aug 19, 2021)
+* Added filtering logics for channel events by custom message list params
+* Added filtering logics for channel list events by custom channel list query
+* Changed `didReceiveError` function name to `errorHandler`.
+    * Added error code in error handler.
+* Modified `SBUStringSet`
+    * `PhotoVideoLibrary`
+    * `Message_Edited`
+    * `MemberList_Unban`
+* Modified on long tap gesture menu
+    * stringSet `Remove` to `Delete`
+    * colorSet `removeItemColor` to `deleteItemColor`
+* Fixed cannot customize `rightBarButton` on `SBUOpenChannelViewController`
+* Improved stability
+
 ### v2.1.11 (Jul 20, 2021)
 * Changed access control of `inputHStackView` on `SBUMessageInputView`.
 * Changed `SBUEmptyView` related stringSet.
