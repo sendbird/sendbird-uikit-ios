@@ -24,6 +24,10 @@
 
 ![ThemeLight](https://static.sendbird.com/docs/uikit/ios/theme-light_20200416.png)
 
+This repository houses the UIKit source code and UIKit sample in addition to a UIKit Framework.
+- **Sources** is where you can find the open source code. Check out [UIKit Open Source Guidelines](https://github.com/sendbird/sendbird-uikit-ios/blob/master/OPENSOURCE_GUIDELINES.md) for more information regarding our stance on open source.
+- **Sample** is a chat app which contains custom sample code for various key features written in `Swift`. 
+
 ### Benefits
 
 - Easy installation
