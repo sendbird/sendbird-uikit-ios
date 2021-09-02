@@ -19,7 +19,8 @@ open class SBUBaseChannelSettingViewController: SBUBaseViewController {
     }
     
     // MARK: - Logic properties (Public)
-    public var theme: SBUChannelSettingsTheme = SBUTheme.channelSettingsTheme
+    @SBUThemeWrapper(theme: SBUTheme.channelSettingsTheme)
+    public var theme: SBUChannelSettingsTheme
     
     public var channelName: String? = nil
     public internal(set) var channelUrl: String?
@@ -79,14 +80,7 @@ open class SBUBaseChannelSettingViewController: SBUBaseViewController {
     // MARK: - UI properties (Private)
     
     lazy var defaultTitleView: SBUNavigationTitleView = {
-        var titleView: SBUNavigationTitleView
-        if #available(iOS 11, *) {
-            titleView = SBUNavigationTitleView()
-        } else {
-            titleView = SBUNavigationTitleView(
-                frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 50)
-            )
-        }
+        var titleView = SBUNavigationTitleView()
         titleView.text = self.channelName ?? SBUStringSet.ChannelSettings_Header_Title
         titleView.textAlignment = .left
         
@@ -200,8 +194,6 @@ open class SBUBaseChannelSettingViewController: SBUBaseViewController {
     
     /// This function handles the initialization of styles.
     open override func setupStyles() {
-        self.theme = SBUTheme.channelSettingsTheme
-        
         self.navigationController?.navigationBar.setBackgroundImage(
             UIImage.from(color: theme.navigationBarTintColor),
             for: .default
@@ -218,8 +210,6 @@ open class SBUBaseChannelSettingViewController: SBUBaseViewController {
     }
     
     open override func updateStyles() {
-        self.theme = SBUTheme.channelSettingsTheme
-        
         self.setupStyles()
         
         if let titleView = self.titleView as? SBUNavigationTitleView {

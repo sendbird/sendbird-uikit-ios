@@ -23,7 +23,8 @@ open class SBUMessageSearchViewController: SBUBaseViewController {
         return self.theme.statusBarStyle
     }
     
-    public var theme: SBUMessageSearchTheme = SBUTheme.messageSearchTheme
+    @SBUThemeWrapper(theme: SBUTheme.messageSearchTheme)
+    public var theme: SBUMessageSearchTheme
 
     public var channel: SBDBaseChannel? {
         didSet { self.createViewModel() }
@@ -324,8 +325,6 @@ open class SBUMessageSearchViewController: SBUBaseViewController {
     // MARK: - Style & Layout
     
     open override func setupStyles() {
-        self.theme = SBUTheme.messageSearchTheme
-        
         self.navigationController?.navigationBar.barStyle = self.theme.navigationBarStyle
         self.navigationController?.navigationBar.setBackgroundImage(UIImage.from(color: theme.navigationBarTintColor),
                                                                     for: .default)
@@ -351,15 +350,9 @@ open class SBUMessageSearchViewController: SBUBaseViewController {
             self.tableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
         ])
         
-        if #available(iOS 11.0, *) {
-            NSLayoutConstraint.activate([
-                self.tableView.topAnchor.constraint(equalToSystemSpacingBelow: self.view.topAnchor, multiplier: 1.0)
-            ])
-        } else {
-            NSLayoutConstraint.activate([
-                self.tableView.topAnchor.constraint(equalTo: self.view.topAnchor)
-            ])
-        }
+        NSLayoutConstraint.activate([
+            self.tableView.topAnchor.constraint(equalToSystemSpacingBelow: self.view.topAnchor, multiplier: 1.0)
+        ])
     }
     
     public func setupSearchBarStyle(searchBar: UISearchBar) {

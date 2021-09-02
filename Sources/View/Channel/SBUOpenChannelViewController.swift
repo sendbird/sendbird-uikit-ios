@@ -17,6 +17,9 @@ import SafariServices
 open class SBUOpenChannelViewController: SBUBaseChannelViewController {
 
     // MARK: - UI properties (Public)
+    @SBUThemeWrapper(theme: SBUTheme.overlayTheme.channelTheme, setToDefault: true)
+    public var overlayTheme: SBUChannelTheme
+    
     /// You can use the customized view and a view that inherits `SBUNewMessageInfo`.
     /// If you use a view that inherits SBUNewMessageInfo, you can change the button and their action.
     public lazy var newMessageInfoView: UIView? = {
@@ -275,14 +278,7 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController {
     // MARK: - UI properties (Private)
     
     private lazy var defaultTitleView: SBUChannelTitleView = {
-        var titleView: SBUChannelTitleView
-        if #available(iOS 11, *) {
-            titleView = SBUChannelTitleView()
-        } else {
-            titleView = SBUChannelTitleView(
-                frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 50)
-            )
-        }
+        var titleView = SBUChannelTitleView()
         return titleView
     }()
 
@@ -291,24 +287,26 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController {
     }()
 
     private lazy var settingBarButton: UIBarButtonItem = {
+        let theme = self.isMediaViewOverlaying ? self.overlayTheme : self.theme
         let barButton = UIBarButtonItem(
             image: SBUIconSetType.iconInfo.image(to: SBUIconSetType.Metric.defaultIconSize),
             style: .plain,
             target: self,
             action: #selector(onClickSetting)
         )
-        barButton.tintColor = self.theme.rightBarButtonTintColor
+        barButton.tintColor = theme.rightBarButtonTintColor
         return barButton
     }()
     
     private lazy var participantListBarButton: UIBarButtonItem = {
+        let theme = self.isMediaViewOverlaying ? self.overlayTheme : self.theme
         let barButton = UIBarButtonItem(
             image: SBUIconSetType.iconMembers.image(to: SBUIconSetType.Metric.defaultIconSize),
             style: .plain,
             target: self,
             action: #selector(onClickParticipantsList)
         )
-        barButton.tintColor = self.theme.rightBarButtonTintColor
+        barButton.tintColor = theme.rightBarButtonTintColor
         return barButton
     }()
     
@@ -621,33 +619,31 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController {
     }
     
     open override func setupStyles() {
-        self.theme = self.isMediaViewOverlaying ? SBUTheme.overlayTheme.channelTheme : SBUTheme.channelTheme
+        let theme = self.isMediaViewOverlaying ? self.overlayTheme : self.theme
         
         self.navigationController?.navigationBar.setBackgroundImage(
-            UIImage.from(color: self.theme.navigationBarTintColor),
+            UIImage.from(color: theme.navigationBarTintColor),
             for: .default
         )
         self.navigationController?.navigationBar.shadowImage = UIImage.from(
-            color: self.theme.navigationBarShadowColor
+            color: theme.navigationBarShadowColor
         )
         
-        self.leftBarButton?.tintColor = self.theme.leftBarButtonTintColor
-        self.rightBarButton?.tintColor = self.theme.rightBarButtonTintColor
+        self.leftBarButton?.tintColor = theme.leftBarButtonTintColor
+        self.rightBarButton?.tintColor = theme.rightBarButtonTintColor
         
         if let channelStateBanner = self.channelStateBanner as? UILabel {
-            channelStateBanner.textColor = self.theme.channelStateBannerTextColor
-            channelStateBanner.font = self.theme.channelStateBannerFont
-            channelStateBanner.backgroundColor = self.theme.channelStateBannerBackgroundColor
+            channelStateBanner.textColor = theme.channelStateBannerTextColor
+            channelStateBanner.font = theme.channelStateBannerFont
+            channelStateBanner.backgroundColor = theme.channelStateBannerBackgroundColor
         }
         
-        self.view.backgroundColor = self.theme.backgroundColor
+        self.view.backgroundColor = theme.backgroundColor
         
-        self.tableView.backgroundColor = self.theme.backgroundColor
+        self.tableView.backgroundColor = theme.backgroundColor
     }
     
     open override func updateStyles() {
-        self.theme = self.isMediaViewOverlaying ? SBUTheme.overlayTheme.channelTheme : SBUTheme.channelTheme
-        
         self.setupStyles()
         
         if let titleView = self.titleView as? SBUChannelTitleView {
@@ -1321,13 +1317,13 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController {
         let nextSender = succeededNextMsg?.sender?.userId ?? nil
         
         // Unit : milliseconds
-        let prevTimestamp = Date.from(succeededPrevMsg?.createdAt ?? -1).toString(
+        let prevTimestamp = Date.from(succeededPrevMsg?.createdAt ?? -1).sbu_toString(
             format: .yyyyMMddhhmm
         )
-        let currentTimestamp = Date.from(succeededCurrentMsg?.createdAt ?? -1).toString(
+        let currentTimestamp = Date.from(succeededCurrentMsg?.createdAt ?? -1).sbu_toString(
             format: .yyyyMMddhhmm
         )
-        let nextTimestamp = Date.from(succeededNextMsg?.createdAt ?? -1).toString(
+        let nextTimestamp = Date.from(succeededNextMsg?.createdAt ?? -1).sbu_toString(
             format: .yyyyMMddhhmm
         )
         
@@ -1568,15 +1564,17 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController {
     /// - Parameter message: message object
     /// - Since: 2.1.12
     public func showFailedMessageMenu(message: SBDBaseMessage) {
+        let theme = self.isMediaViewOverlaying ? self.overlayTheme : self.theme
+        
         let retryItem = SBUActionSheetItem(
             title: SBUStringSet.Retry,
-            color: self.theme.menuItemTintColor
+            color: theme.menuItemTintColor
         ) { [weak self] in
             self?.resendMessage(failedMessage: message)
         }
         let deleteItem = SBUActionSheetItem(
             title: SBUStringSet.Delete,
-            color: self.theme.deleteItemColor
+            color: theme.deleteItemColor
         ) { [weak self] in
             self?.deleteResendableMessages(
                 requestIds: [message.requestId],
@@ -1585,7 +1583,7 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController {
         }
         let cancelItem = SBUActionSheetItem(
             title: SBUStringSet.Cancel,
-            color: self.theme.cancelItemColor,
+            color: theme.cancelItemColor,
             completionHandler: nil
         )
 

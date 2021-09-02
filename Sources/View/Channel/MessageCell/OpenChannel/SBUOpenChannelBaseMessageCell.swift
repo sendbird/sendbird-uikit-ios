@@ -22,8 +22,10 @@ open class SBUOpenChannelBaseMessageCell: UITableViewCell {
         return view
     }()
     
-    public var theme: SBUMessageCellTheme = SBUTheme.messageCellTheme
-
+    @SBUThemeWrapper(theme: SBUTheme.messageCellTheme)
+    public var theme: SBUMessageCellTheme
+    @SBUThemeWrapper(theme: SBUTheme.overlayTheme.messageCellTheme, setToDefault: true)
+    public var overlayTheme: SBUMessageCellTheme
     
     // MARK: - Private
     private lazy var stackView: UIStackView = {
@@ -85,8 +87,6 @@ open class SBUOpenChannelBaseMessageCell: UITableViewCell {
 
     /// This function handles the initialization of styles.
     open func setupStyles() {
-        self.theme = self.isOverlay ? SBUTheme.overlayTheme.messageCellTheme : SBUTheme.messageCellTheme
-        
         self.backgroundColor = .clear
         
         if let dateView = self.dateView as? SBUMessageDateView {
@@ -125,19 +125,19 @@ open class SBUOpenChannelBaseMessageCell: UITableViewCell {
         self.dateView.isHidden = hideDateView
         self.isOverlay = isOverlay
         
-        self.theme = self.isOverlay ? SBUTheme.overlayTheme.messageCellTheme : SBUTheme.messageCellTheme
-        
         if let dateView = self.dateView as? SBUMessageDateView {
             dateView.configure(timestamp: self.message.createdAt)
         }
     }
     
     public override func setSelected(_ selected: Bool, animated: Bool) {
+        let theme = self.isOverlay ? self.overlayTheme : self.theme
+        
         super.setSelected(selected, animated: animated)
         if selected {
-            self.backgroundColor = self.theme.leftBackgroundColor
+            self.backgroundColor = theme.leftBackgroundColor
         } else {
-            self.backgroundColor = self.theme.backgroundColor
+            self.backgroundColor = theme.backgroundColor
         }
     }
     

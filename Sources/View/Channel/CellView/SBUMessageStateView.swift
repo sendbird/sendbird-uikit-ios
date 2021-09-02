@@ -9,26 +9,56 @@
 import UIKit
 import SendBirdSDK
 
-public class SBUMessageStateView: UIView {
-    var theme: SBUMessageCellTheme = SBUTheme.messageCellTheme
+open class SBUMessageStateView: UIView {
+    // MARK: Public properties (UI)
     
-    var stackView: UIStackView = {
-     let stackView = UIStackView()
+    /// The theme of the view which is type of `SBUMessageCellTheme`.
+    /// - Since: 2.1.13
+    @SBUThemeWrapper(theme: SBUTheme.messageCellTheme)
+    public var theme: SBUMessageCellTheme
+    
+    /// `UIStackView` that contains UI components such as `stateImageView` and `timeLabel`
+    /// - Since: 2.1.13
+    public var stackView: UIStackView = {
+        let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.alignment = .leading
         return stackView
     }()
-    var stateImageView: UIImageView = UIImageView()
-    var timeLabel: UILabel = UILabel()
+    
+    /// `UIImageView` representing message sending/receipt state
+    /// - Since: 2.1.13
+    public var stateImageView: UIImageView = UIImageView()
+    
+    /// `UILabel` representing when the message was sent
+    /// - Since: 2.1.13
+    public var timeLabel: UILabel = UILabel()
+    
+    /// The data format for `timeLabel`.
+    /// e.g. "hh:mm", "hh:mm a", ...
+    /// - Since: 2.1.13
+    public var timeFormat: String = Date.SBUDateFormat.hhmma.rawValue
 
+    /// Custom size for `timeLabel`
+    /// - Since: 2.1.13
+    public var timeLabelCustomSize: CGSize?
+    
     private let timeLabelWidth: CGFloat = 55
     private let timeLabelHeight: CGFloat = 12
-     
+    
+    // MARK: Internal Properties (View models)
     var timestamp: Int64 = 0
     var sendingState: SBDMessageSendingStatus = .none
     var receiptState: SBUMessageReceiptState? = nil
     var position: MessagePosition = .center
      
+    /// Initializes `SBUMessageStateView`
+    ///
+    /// - Parameters:
+    ///   - sendingState: `SBDMessageSendingStatus`.
+    ///   - receiptState: `SBUMessageReceiptState`.
+    ///
+    /// - Since: 2.1.13
     public init(sendingState: SBDMessageSendingStatus, receiptState: SBUMessageReceiptState) {
         self.receiptState = receiptState
         super.init(frame: .zero)
@@ -55,18 +85,27 @@ public class SBUMessageStateView: UIView {
     }
     
     @available(*, unavailable, renamed: "MessageStateView(type:)")
-    required init?(coder: NSCoder) {
+    required public init?(coder: NSCoder) {
         super.init(coder: coder)
     }
     
-    func setupViews() {
+    /// Sets up views.
+    ///
+    /// - Since: 2.1.13`
+    open func setupViews() {
         self.addSubview(self.stackView)
         self.stackView.addArrangedSubview(self.stateImageView)
         self.stackView.addArrangedSubview(self.timeLabel)
     }
     
-    func setupAutolayout() {
-        stateImageView.contentMode = .center
+    /// Sets up auto layouts of views.
+    ///
+    /// - Since: 2.1.13`
+    open func setupAutolayout() {
+        let timeLabelWidth = self.timeLabelCustomSize?.width ?? self.timeLabelWidth
+        let timeLabelHeight = self.timeLabelCustomSize?.height ?? self.timeLabelHeight
+        
+        self.stateImageView.contentMode = .center
         self.setConstraint(width: timeLabelWidth)
         self.stackView.setConstraint(
             from: self,
@@ -80,9 +119,10 @@ public class SBUMessageStateView: UIView {
         self.stateImageView.setConstraint(height: 12)
     }
     
-    func setupStyles() {
-        self.theme = SBUTheme.messageCellTheme
-        
+    /// Sets up UI details of views such as fonts and colors.
+    ///
+    /// - Since: 2.1.13`
+    open func setupStyles() {
         self.backgroundColor = .clear
         
         self.timeLabel.font = theme.timeFont
@@ -96,7 +136,16 @@ public class SBUMessageStateView: UIView {
         self.setupStyles()
     }
     
-    func configure(timestamp: Int64,
+    /// Configures views with message information.
+    ///
+    /// - Parameters:
+    ///   - timestamp: The timestamp of message.
+    ///   - sendingState: The sending state of message
+    ///   - receiptState: The receipt state of message
+    ///   - position: The position of message
+    ///
+    /// - Since: 2.1.13
+    open func configure(timestamp: Int64,
                    sendingState: SBDMessageSendingStatus,
                    receiptState: SBUMessageReceiptState?,
                    position: MessagePosition) {
@@ -105,7 +154,7 @@ public class SBUMessageStateView: UIView {
         self.sendingState = sendingState
         self.position = position
         self.timestamp = timestamp
-        self.timeLabel.text = Date.from(timestamp).toString(format: .hhmma)
+        self.timeLabel.text = Date.from(timestamp).sbu_toString(formatString: timeFormat)
         
         switch position {
         case .center:

@@ -138,14 +138,9 @@ class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegate, UI
         super.viewDidLoad()
         if let bottomSheet = self.presentationController as? SBUBottomSheetController {
 
-            if #available(iOS 11.0, *) {
-                let window = UIApplication.shared.keyWindow
-                let bottomPadding = window?.safeAreaInsets.bottom ?? 0
-                bottomSheet.contentHeight = SBUConstant.bottomSheetMaxMiddleHeight + bottomPadding
-            } else {
-                bottomSheet.contentHeight = SBUConstant.bottomSheetMaxMiddleHeight
-            }
-
+            let window = UIApplication.shared.keyWindow
+            let bottomPadding = window?.safeAreaInsets.bottom ?? 0
+            bottomSheet.contentHeight = SBUConstant.bottomSheetMaxMiddleHeight + bottomPadding
         }
     }
 

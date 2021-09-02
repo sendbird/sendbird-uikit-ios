@@ -16,7 +16,9 @@ class SBUEmojiListViewController: SBUBaseViewController, UICollectionViewDelegat
     let layout: UICollectionViewFlowLayout = SBUCollectionViewFlowLayout()
     let emojiList: [SBDEmoji] = SBUEmojiManager.getAllEmojis()
     let message: SBDBaseMessage
-    var theme: SBUComponentTheme = SBUTheme.componentTheme
+    
+    @SBUThemeWrapper(theme: SBUTheme.componentTheme)
+    var theme: SBUComponentTheme
 
     var maxEmojiOneLine = 6
 
@@ -25,12 +27,8 @@ class SBUEmojiListViewController: SBUBaseViewController, UICollectionViewDelegat
     }()
 
     var safeBottomPadding: CGFloat {
-        if #available(iOS 11.0, *) {
-            let window = UIApplication.shared.keyWindow
-            return window?.safeAreaInsets.bottom ?? 0
-        } else {
-            return 0
-        }
+        let window = UIApplication.shared.keyWindow
+        return window?.safeAreaInsets.bottom ?? 0
     }
 
     
@@ -98,8 +96,6 @@ class SBUEmojiListViewController: SBUBaseViewController, UICollectionViewDelegat
 
     /// This function handles the initialization of styles.
     override func setupStyles() {
-        self.theme = SBUTheme.componentTheme
-        
         self.view.backgroundColor = theme.backgroundColor
     }
 

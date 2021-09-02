@@ -86,34 +86,21 @@ class SBUMessageWebView: UIStackView {
         self.detailStackView.translatesAutoresizingMaskIntoConstraints = false
         self.detailStackView.isLayoutMarginsRelativeArrangement = true
         
-        if #available(iOS 11.0, *) {
-            self.detailStackView.directionalLayoutMargins = NSDirectionalEdgeInsets(
-                top: Metric.textTopMargin,
-                leading: Metric.textSideMargin,
-                bottom: Metric.textSideMargin,
-                trailing: Metric.textSideMargin
-            )
-        } else {
-            self.detailStackView.layoutMargins = UIEdgeInsets(
-                top: Metric.textTopMargin,
-                left: Metric.textSideMargin,
-                bottom: Metric.textSideMargin,
-                right: Metric.textSideMargin
-            )
-        }
+        self.detailStackView.directionalLayoutMargins = NSDirectionalEdgeInsets(
+            top: Metric.textTopMargin,
+            leading: Metric.textSideMargin,
+            bottom: Metric.textSideMargin,
+            trailing: Metric.textSideMargin
+        )
         
-        if #available(iOS 11.0, *) {
-            self.detailStackView.setCustomSpacing(
-                Metric.titleBottomMargin,
-                after: self.titleLabel
-            )
-            self.detailStackView.setCustomSpacing(
-                Metric.descBottomMargin,
-                after: self.descriptionLabel
-            )
-        } else {
-            self.detailStackView.spacing = Metric.stackSpacing
-        }
+        self.detailStackView.setCustomSpacing(
+            Metric.titleBottomMargin,
+            after: self.titleLabel
+        )
+        self.detailStackView.setCustomSpacing(
+            Metric.descBottomMargin,
+            after: self.descriptionLabel
+        )
     }
     
     func setupStyles() {}

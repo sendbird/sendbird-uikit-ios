@@ -130,10 +130,12 @@ open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
     open override func setupStyles() {
         super.setupStyles()
         
+        let theme = self.isOverlay ? self.overlayTheme : self.theme
+        
         if let mainContainerView = self.mainContainerView as? SBUSelectableStackView {
             if self.isFileType {
-                mainContainerView.leftBackgroundColor = self.theme.leftBackgroundColor
-                mainContainerView.leftPressedBackgroundColor = self.theme.leftPressedBackgroundColor
+                mainContainerView.leftBackgroundColor = theme.leftBackgroundColor
+                mainContainerView.leftPressedBackgroundColor = theme.leftPressedBackgroundColor
                 
                 mainContainerView.layer.cornerRadius = 12
                 mainContainerView.clipsToBounds = true
@@ -171,6 +173,8 @@ open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
             isOverlay: isOverlay
         )
         
+        let theme = self.isOverlay ? self.overlayTheme : self.theme
+        
         if let mainContainerView = self.mainContainerView as? SBUSelectableStackView {
             mainContainerView.position = .left
             mainContainerView.isSelected = false
@@ -183,15 +187,15 @@ open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
                 
                 userNameView.setUsernameColor(
                     message.isOperatorMessage
-                        ? self.theme.currentUserNameTextColor
-                        : self.theme.userNameTextColor
+                        ? theme.currentUserNameTextColor
+                        : theme.userNameTextColor
                 )
             }
             
             userNameView.configure(username: username, isOverlay: self.isOverlay)
         }
         
-        self.messageTimeLabel.text = Date.from(message.createdAt).toString(format: .hhmma)
+        self.messageTimeLabel.text = Date.from(message.createdAt).sbu_toString(format: .hhmma)
         self.messageTimeLabel.textAlignment = .left
         
         if let profileView = self.profileView as? SBUMessageProfileView {
@@ -274,10 +278,12 @@ open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
     
     public override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
+        let theme = self.isOverlay ? self.overlayTheme : self.theme
+        
         if selected {
-            self.messageContentView.backgroundColor = self.theme.openChannelPressedBackgroundColor
+            self.messageContentView.backgroundColor = theme.openChannelPressedBackgroundColor
         } else {
-            self.messageContentView.backgroundColor = self.theme.openChannelBackgroundColor
+            self.messageContentView.backgroundColor = theme.openChannelBackgroundColor
         }
     }
         

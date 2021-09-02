@@ -10,7 +10,9 @@ import UIKit
 
 class SBUMessageDateView: UIView {
      
-    var theme: SBUMessageCellTheme = SBUTheme.messageCellTheme
+    @SBUThemeWrapper(theme: SBUTheme.messageCellTheme)
+    var theme: SBUMessageCellTheme
+    
     lazy var dateLabel: UILabel = {
         let view = UILabel()
         view.layer.cornerRadius = 10
@@ -49,8 +51,6 @@ class SBUMessageDateView: UIView {
     }
     
     func setupStyles() {
-        self.theme = SBUTheme.messageCellTheme
-        
         self.backgroundColor = .clear
         
         self.dateLabel.font = theme.dateFont
@@ -59,7 +59,7 @@ class SBUMessageDateView: UIView {
     }
     
     func configure(timestamp: Int64) {
-        self.dateLabel.text = Date.from(timestamp).toString(format: .EMMMdd)
+        self.dateLabel.text = Date.from(timestamp).sbu_toString(format: .EMMMdd)
     }
     
     override func layoutSubviews() {

@@ -161,7 +161,7 @@ class SBUFileViewer: SBUBaseViewController, UIScrollViewDelegate {
         if let titleView = self.navigationItem.titleView as? TitleView {
             titleView.titleLabel.text = fileMessage?.name ?? ""
             if let timestamp = fileMessage?.createdAt {
-                titleView.dateTimeLabel.text = Date.from(timestamp).toString(format: .hhmma)
+                titleView.dateTimeLabel.text = Date.from(timestamp).sbu_toString(format: .hhmma)
             } else {
                 titleView.dateTimeLabel.text = ""
             }
@@ -198,11 +198,7 @@ class SBUFileViewer: SBUBaseViewController, UIScrollViewDelegate {
     
     open override func updateViewConstraints() {
         super.updateViewConstraints()
-        if #available(iOS 11.0, *) {
-            bottomViewHeightAnchor.constant = 56 + view.safeAreaInsets.bottom
-        } else {
-            bottomViewHeightAnchor.constant = 56
-        }
+        bottomViewHeightAnchor.constant = 56 + view.safeAreaInsets.bottom
     }
     
     open override func viewDidLayoutSubviews() {

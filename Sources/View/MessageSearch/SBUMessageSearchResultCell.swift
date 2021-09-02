@@ -61,7 +61,8 @@ open class SBUMessageSearchResultCell: UITableViewCell {
     
     // MARK: - Properties
     
-    public var theme: SBUMessageSearchResultCellTheme = SBUTheme.messageSearchResultCellTheme
+    @SBUThemeWrapper(theme: SBUTheme.messageSearchResultCellTheme)
+    public var theme: SBUMessageSearchResultCellTheme
 
     private let coverImageSize: CGSize = CGSize(value: 56)
     private let fileIconSize: CGSize = CGSize(value: 26)
@@ -173,8 +174,6 @@ open class SBUMessageSearchResultCell: UITableViewCell {
     
     /// This function handles the initialization of styles.
     open func setupStyles() {
-        self.theme = SBUTheme.messageSearchResultCellTheme
-        
         self.backgroundColor = theme.backgroundColor
         
         self.titleLabel.font = theme.titleFont
@@ -207,8 +206,6 @@ open class SBUMessageSearchResultCell: UITableViewCell {
     /// This function configure a cell using `SBDBaseMessage` information.
     /// - Parameter channel: `SBDBaseMessage` object
     open func configure(message: SBDBaseMessage) {
-        self.theme = SBUTheme.messageSearchResultCellTheme
-        
         self.message = message
         
         self.selectionStyle = .none
@@ -265,7 +262,7 @@ open class SBUMessageSearchResultCell: UITableViewCell {
         
         let createdAt = Date.lastUpdatedTime(baseTimestamp: message.createdAt)
         self.createdAtLabel.text = createdAt ??
-            Date.from(message.createdAt).toString(format: .hhmma)
+            Date.from(message.createdAt).sbu_toString(format: .hhmma)
     }
     
     /// Sets file message icon depending on the message's file type using `SBUUtils.getFileType(by: fileMessage)`.

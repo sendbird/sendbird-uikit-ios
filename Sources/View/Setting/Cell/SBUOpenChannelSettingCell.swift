@@ -41,7 +41,8 @@ class SBUOpenChannelSettingCell: UITableViewCell {
     }()
     var separateView = UIView()
     
-    var theme: SBUChannelSettingsTheme = SBUTheme.channelSettingsTheme
+    @SBUThemeWrapper(theme: SBUTheme.channelSettingsTheme)
+    var theme: SBUChannelSettingsTheme
     
     
     // MARK: - View Lifecycle
@@ -68,9 +69,7 @@ class SBUOpenChannelSettingCell: UITableViewCell {
         self.baseStackView.addArrangedSubview(self.typeIcon)
         self.baseStackView.addArrangedSubview(self.titleLabel)
         self.baseStackView.addArrangedSubview(self.subTitleLabel)
-        if #available(iOS 11.0, *) {
-            self.baseStackView.setCustomSpacing(8.0, after: self.subTitleLabel)
-        }
+        self.baseStackView.setCustomSpacing(8.0, after: self.subTitleLabel)
         self.baseStackView.addArrangedSubview(self.rightButton)
         
         self.contentView.addSubview(self.baseStackView)
@@ -105,8 +104,6 @@ class SBUOpenChannelSettingCell: UITableViewCell {
     
     /// This function handles the initialization of styles.
     func setupStyles() {
-        self.theme = SBUTheme.channelSettingsTheme
-        
         self.backgroundColor = theme.backgroundColor
         
         self.titleLabel.font = theme.cellTextFont
@@ -136,8 +133,6 @@ class SBUOpenChannelSettingCell: UITableViewCell {
                         channel: SBDOpenChannel?,
                         title: String? = nil,
                         icon: UIImage? = nil) {
-        
-        self.theme = SBUTheme.channelSettingsTheme
         
         switch type {
         case .participants:

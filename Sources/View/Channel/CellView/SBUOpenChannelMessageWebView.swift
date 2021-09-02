@@ -39,45 +39,28 @@ class SBUOpenChannelMessageWebView: SBUMessageWebView {
         self.translatesAutoresizingMaskIntoConstraints = false
         self.isLayoutMarginsRelativeArrangement = true
         
-        if #available(iOS 11.0, *) {
-            self.directionalLayoutMargins = NSDirectionalEdgeInsets(
-                top: OpenChannelMetric.textSideMargin,
-                leading: OpenChannelMetric.textSideMargin,
-                bottom: OpenChannelMetric.textSideMargin,
-                trailing: OpenChannelMetric.textSideMargin
-            )
-        } else {
-            self.layoutMargins = UIEdgeInsets(
-                top: OpenChannelMetric.textSideMargin,
-                left: OpenChannelMetric.textSideMargin,
-                bottom: OpenChannelMetric.textSideMargin,
-                right: OpenChannelMetric.textSideMargin
-            )
-        }
+        self.directionalLayoutMargins = NSDirectionalEdgeInsets(
+            top: OpenChannelMetric.textSideMargin,
+            leading: OpenChannelMetric.textSideMargin,
+            bottom: OpenChannelMetric.textSideMargin,
+            trailing: OpenChannelMetric.textSideMargin
+        )
         
         let imageHeightConstraint = self.imageView.heightAnchor
             .constraint(equalToConstant: Metric.imageHeight)
         imageHeightConstraint.isActive = true
         self.imageHeightConstraint = imageHeightConstraint
         
-        if #available(iOS 11.0, *) {
-            self.setCustomSpacing(OpenChannelMetric.imageTopMargin, after: detailStackView)
-        } else {
-            self.spacing = OpenChannelMetric.imageTopMargin
-        }
+        self.setCustomSpacing(OpenChannelMetric.imageTopMargin, after: detailStackView)
         
-        if #available(iOS 11.0, *) {
-            self.detailStackView.setCustomSpacing(
-                Metric.titleBottomMargin,
-                after: self.titleLabel
-            )
-            self.detailStackView.setCustomSpacing(
-                Metric.descBottomMargin,
-                after: self.descriptionLabel
-            )
-        } else {
-            self.detailStackView.spacing = Metric.stackSpacing
-        }
+        self.detailStackView.setCustomSpacing(
+            Metric.titleBottomMargin,
+            after: self.titleLabel
+        )
+        self.detailStackView.setCustomSpacing(
+            Metric.descBottomMargin,
+            after: self.descriptionLabel
+        )
     }
     
     override func configure(model: SBUMessageWebViewModel) {

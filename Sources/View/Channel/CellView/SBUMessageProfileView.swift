@@ -11,7 +11,9 @@ import UIKit
 public class SBUMessageProfileView: UIView {
     private static let imageSize: CGFloat = 26
     
-    var theme: SBUMessageCellTheme = SBUTheme.messageCellTheme
+    @SBUThemeWrapper(theme: SBUTheme.messageCellTheme)
+    var theme: SBUMessageCellTheme
+    
     var imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.layer.cornerRadius = SBUMessageProfileView.imageSize / 2
@@ -54,8 +56,6 @@ public class SBUMessageProfileView: UIView {
     }
     
     func setupStyles() {
-        self.theme = SBUTheme.messageCellTheme
-        
         self.backgroundColor = .clear
     }
     

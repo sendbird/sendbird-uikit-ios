@@ -110,15 +110,11 @@ class SBUBottomSheetController: UIPresentationController {
     override var frameOfPresentedViewInContainerView: CGRect {
         guard let containerView = containerView else { return .zero }
 
-        if #available(iOS 11.0, *) {
-            let safeAreaFrame = containerView.bounds.insetBy(
-                dx: (containerView.safeAreaInsets.left + containerView.safeAreaInsets.right)/2,
-                dy: self.topMargin/2
-            )
-            return safeAreaFrame
-        } else {
-            return super.frameOfPresentedViewInContainerView
-        }
+        let safeAreaFrame = containerView.bounds.insetBy(
+            dx: (containerView.safeAreaInsets.left + containerView.safeAreaInsets.right)/2,
+            dy: self.topMargin/2
+        )
+        return safeAreaFrame
     }
 
     override func presentationTransitionWillBegin() {

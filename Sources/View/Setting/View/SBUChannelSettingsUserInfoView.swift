@@ -19,7 +19,8 @@ class SBUChannelSettingsUserInfoView: UIView {
     lazy var urlLabel = UILabel()
     lazy var urlLineView = UIView()
     
-    var theme: SBUChannelSettingsTheme = SBUTheme.channelSettingsTheme
+    @SBUThemeWrapper(theme: SBUTheme.channelSettingsTheme)
+    var theme: SBUChannelSettingsTheme
     
     var channel: SBDBaseChannel?
     var channelType: ChannelType = .group
@@ -107,8 +108,6 @@ class SBUChannelSettingsUserInfoView: UIView {
     }
     
     func setupStyles() {
-        self.theme = SBUTheme.channelSettingsTheme
-        
         self.backgroundColor = .clear
             
         self.lineView.backgroundColor = theme.cellSeparateColor

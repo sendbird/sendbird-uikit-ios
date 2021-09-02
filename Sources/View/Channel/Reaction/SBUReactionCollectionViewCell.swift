@@ -27,7 +27,8 @@ class SBUReactionCollectionViewCell: UICollectionViewCell {
 
     var type: SBUReactionCellType = .messageMenu
 
-    var theme: SBUComponentTheme = SBUTheme.componentTheme
+    @SBUThemeWrapper(theme: SBUTheme.componentTheme)
+    var theme: SBUComponentTheme
 
     override var isSelected: Bool {
         didSet {
@@ -77,8 +78,6 @@ class SBUReactionCollectionViewCell: UICollectionViewCell {
     }
 
     func setupStyles() {
-        self.theme = SBUTheme.componentTheme
-        
         switch type {
         case .messageReaction:
             self.countLabel.textColor = self.theme.reactionBoxEmojiCountColor

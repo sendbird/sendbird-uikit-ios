@@ -32,7 +32,10 @@ public class SBUChannelInfoHeaderView: UIView {
     
     var isOverlay = false
     
-    var theme: SBUComponentTheme = SBUTheme.componentTheme
+    @SBUThemeWrapper(theme: SBUTheme.componentTheme)
+    var theme: SBUComponentTheme
+    @SBUThemeWrapper(theme: SBUTheme.overlayTheme.componentTheme, setToDefault: true)
+    public var overlayTheme: SBUComponentTheme
     
     // MARK: - Private
     private lazy var stackView = UIStackView()
@@ -115,7 +118,7 @@ public class SBUChannelInfoHeaderView: UIView {
     }
     
     func setupStyles() {
-        self.theme = self.isOverlay ? SBUTheme.overlayTheme.componentTheme : SBUTheme.componentTheme
+        let theme = self.isOverlay ? self.overlayTheme : self.theme
         
         self.titleLabel.font = theme.titleFont
         self.titleLabel.textColor = theme.titleColor
@@ -131,6 +134,8 @@ public class SBUChannelInfoHeaderView: UIView {
     }
     
     func setupInfoButtonStyle() {
+        let theme = self.isOverlay ? self.overlayTheme : self.theme
+        
         if let channel = self.channel as? SBDOpenChannel {
             guard let userId = SBUGlobals.CurrentUser?.userId else { return }
             let isOperator = channel.isOperator(withUserId: userId)

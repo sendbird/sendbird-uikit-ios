@@ -51,7 +51,8 @@ open class SBUOpenChannelAdminMessageCell: SBUOpenChannelBaseMessageCell {
     open override func setupStyles() {
         super.setupStyles()
      
-        self.baseView.backgroundColor = self.theme.contentBackgroundColor
+        let theme = self.isOverlay ? self.overlayTheme : self.theme
+        self.baseView.backgroundColor = theme.contentBackgroundColor
     }
     
     open override func layoutSubviews() {

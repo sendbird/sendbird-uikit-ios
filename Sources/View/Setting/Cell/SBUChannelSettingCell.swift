@@ -48,7 +48,8 @@ class SBUChannelSettingCell: UITableViewCell {
     }()
     var separateView = UIView()
     
-    var theme: SBUChannelSettingsTheme = SBUTheme.channelSettingsTheme
+    @SBUThemeWrapper(theme: SBUTheme.channelSettingsTheme)
+    var theme: SBUChannelSettingsTheme
     
     var switchAction: ((Bool) -> Void)? = nil
     
@@ -77,9 +78,7 @@ class SBUChannelSettingCell: UITableViewCell {
         self.baseStackView.addArrangedSubview(self.typeIcon)
         self.baseStackView.addArrangedSubview(self.titleLabel)
         self.baseStackView.addArrangedSubview(self.subTitleLabel)
-        if #available(iOS 11.0, *) {
-            self.baseStackView.setCustomSpacing(8.0, after: self.subTitleLabel)
-        }
+        self.baseStackView.setCustomSpacing(8.0, after: self.subTitleLabel)
         self.baseStackView.addArrangedSubview(self.rightSwitch)
         self.baseStackView.addArrangedSubview(self.rightButton)
         
@@ -116,8 +115,6 @@ class SBUChannelSettingCell: UITableViewCell {
     
     /// This function handles the initialization of styles.
     func setupStyles() {
-        self.theme = SBUTheme.channelSettingsTheme
-        
         self.backgroundColor = theme.backgroundColor
         
         self.titleLabel.font = theme.cellTextFont
@@ -152,8 +149,6 @@ class SBUChannelSettingCell: UITableViewCell {
                         channel: SBDGroupChannel?,
                         title: String? = nil,
                         icon: UIImage? = nil) {
-        
-        self.theme = SBUTheme.channelSettingsTheme
         
         self.subTitleLabel.isHidden = true
         self.rightButton.isHidden = true

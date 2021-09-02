@@ -26,7 +26,8 @@ class SBUMenuViewController: SBUBaseViewController, UITableViewDelegate, UITable
 
     let maxEmojiOneLine = 6
 
-    var theme: SBUComponentTheme = SBUTheme.componentTheme
+    @SBUThemeWrapper(theme: SBUTheme.componentTheme)
+    var theme: SBUComponentTheme
 
     // MARK: - Action
     var tapHandlerToMenu: ((MessageMenuItem) -> Void)? = nil
@@ -117,8 +118,6 @@ class SBUMenuViewController: SBUBaseViewController, UITableViewDelegate, UITable
 
     /// This function handles the initialization of styles.
     override func setupStyles() {
-        self.theme = SBUTheme.componentTheme
-        
         self.view.backgroundColor = theme.backgroundColor
     }
 
@@ -145,14 +144,9 @@ class SBUMenuViewController: SBUBaseViewController, UITableViewDelegate, UITable
         if let bottomSheet = self.presentationController as? SBUBottomSheetController {
 
             bottomSheet.isEnableTop = false
-
-            if #available(iOS 11.0, *) {
-                let window = UIApplication.shared.keyWindow
-                let bottomPadding = window?.safeAreaInsets.bottom ?? 0
-                bottomSheet.contentHeight = tableView.contentSize.height + bottomPadding
-            } else {
-                bottomSheet.contentHeight = tableView.contentSize.height
-            }
+            let window = UIApplication.shared.keyWindow
+            let bottomPadding = window?.safeAreaInsets.bottom ?? 0
+            bottomSheet.contentHeight = tableView.contentSize.height + bottomPadding
         }
     }
 

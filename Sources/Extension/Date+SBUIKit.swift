@@ -9,12 +9,13 @@
 import UIKit
 
 extension Date {
-    enum DateFormat: String {
+    public enum SBUDateFormat: String {
         case EMMMyyyy = "E, MMM yyyy"
         case MMMddyyyy = "MMM dd, yyyy"
         case EMMMdd = "E, MMM dd"
         case MMMdd = "MMM dd"
         case hhmma = "hh:mm a"
+        case hhmm = "hh:mm"
         case yyyyMMddhhmm = "yyyyMMddhhmm"
         case yyyyMMddhhmmss = "yyyyMMddhhmmss"
     }
@@ -27,11 +28,11 @@ extension Date {
         return Date(timeIntervalSince1970: timeInterval)
     }
     
-    func toString(format: DateFormat, localizedFormat: Bool = true) -> String {
-        self.toString(formatString: format.rawValue, localizedFormat: localizedFormat)
+    public func sbu_toString(format: SBUDateFormat, localizedFormat: Bool = true) -> String {
+        self.sbu_toString(formatString: format.rawValue, localizedFormat: localizedFormat)
     }
     
-    func toString(formatString: String, localizedFormat: Bool = true) -> String {
+    public func sbu_toString(formatString: String, localizedFormat: Bool = true) -> String {
         let formatter = DateFormatter()
 
         if localizedFormat {
@@ -95,10 +96,10 @@ extension Date {
                 }
             }
             
-            return baseDate.toString(format: .MMMdd)
+            return baseDate.sbu_toString(format: .MMMdd)
         }
         else {
-            return baseDate.toString(format: .hhmma)
+            return baseDate.sbu_toString(format: .hhmma)
         }
     }
     
@@ -117,7 +118,7 @@ extension Date {
             baseDateComponents.month != currDateComponents.month {
             return SBUStringSet.Channel_Header_LastSeen
                 + " " + SBUStringSet.Date_On
-                + " " + baseDate.toString(format: .MMMddyyyy)
+                + " " + baseDate.sbu_toString(format: .MMMddyyyy)
         } else if baseDateComponents.day != currDateComponents.day {
             let interval = (currDateComponents.day ?? 0) - (baseDateComponents.day ?? 0)
             lastSeenString = SBUStringSet.Date_Day(interval)

@@ -12,7 +12,8 @@ import SendBirdSDK
 public class SBUCoverImageView: UIView {
 
     // MARK: - UI properties (Public)
-    public var theme: SBUComponentTheme = SBUTheme.componentTheme
+    @SBUThemeWrapper(theme: SBUTheme.componentTheme)
+    public var theme: SBUComponentTheme
 
     
     // MARK: - UI properties (Private)
@@ -57,8 +58,6 @@ public class SBUCoverImageView: UIView {
     ///     - CoverURL: Cover image url string
     ///     - makeCircle: A default value is `true`. If it's `true`, the image has rounded corners
     public func setImage(with coverURL: String, makeCircle: Bool = true) {
-        self.theme = SBUTheme.componentTheme
-        
         let imageView = UIImageView(
             frame: CGRect(x: 0, y: 0, width: self.frame.width, height: self.frame.height)
         )
@@ -92,7 +91,6 @@ public class SBUCoverImageView: UIView {
     /// This function sets placeholder image with icon size.
     /// - Parameter iconSize: icon size
     public func setPlaceholderImage(iconSize: CGSize) {
-        self.theme = SBUTheme.componentTheme
         self.setIconImage(type: .iconUser,
                           tintColor: theme.userPlaceholderTintColor,
                           backgroundColor: theme.userPlaceholderBackgroundColor)
@@ -100,7 +98,6 @@ public class SBUCoverImageView: UIView {
     
     /// This function sets the broadcast icon
     public func setBroadcastIcon() {
-        self.theme = SBUTheme.componentTheme
         self.setIconImage(type: .iconBroadcast,
                           tintColor: self.theme.broadcastIconTintColor,
                           backgroundColor: theme.broadcastIconBackgroundColor)
@@ -216,8 +213,6 @@ public class SBUCoverImageView: UIView {
     }
     
     private func setupImageStack(users: [SBDUser]) -> UIStackView {
-        self.theme = SBUTheme.componentTheme
-        
         let mainStackView = UIStackView(
             frame: CGRect(x: 0, y: 0, width: self.frame.width, height: self.frame.height)
         )

@@ -1,16 +1,16 @@
 Pod::Spec.new do |s|
 	s.name         = "SendBirdUIKit"
-	s.version      = "2.1.12"
+	s.version      = "2.1.13"
 	s.summary      = "UIKit based on SendBirdSDK"
 	s.description  = "SendBird UIKit is a framework composed of basic UI components based on SendBirdSDK."
 	s.homepage     = "https://sendbird.com"
-	s.documentation_url = 'https://docs.sendbird.com/ios'
+	s.documentation_url = 'https://sendbird.com/docs/uikit'
 	s.license      = "Commercial"
 	s.authors      = {
 	"Jaesung Lee" => "jaesung.lee@sendbird.com",
 	"Tez" => "tez.park@sendbird.com"
   	}
-	s.platform     = :ios, "10.3"
+	s.platform     = :ios, "11.0"
 	s.source = { :git => "https://github.com/sendbird/sendbird-uikit-ios.git", :tag => "v#{s.version}" }
 	s.ios.vendored_frameworks = 'Framework/SendBirdUIKit.xcframework'
 	s.ios.frameworks = ["UIKit", "Foundation", "CoreData", "SendBirdSDK"]

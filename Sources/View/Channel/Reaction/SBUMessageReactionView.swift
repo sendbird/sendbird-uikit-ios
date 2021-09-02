@@ -20,7 +20,8 @@ class SBUMessageReactionView: UIView, UICollectionViewDelegate, UICollectionView
     var reactions: [SBDReaction] = []
     var maxWidth: CGFloat = SBUConstant.messageCellMaxWidth
 
-    var theme: SBUComponentTheme = SBUTheme.componentTheme
+    @SBUThemeWrapper(theme: SBUTheme.componentTheme)
+    var theme: SBUComponentTheme
 
     var emojiTapHandler: ((_ emojiKey: String) -> Void)? = nil
     var moreEmojiTapHandler: (() -> Void)? = nil
@@ -89,8 +90,6 @@ class SBUMessageReactionView: UIView, UICollectionViewDelegate, UICollectionView
     }
 
     func setupStyles() {
-        self.theme = SBUTheme.componentTheme
-        
         self.clipsToBounds = true
         self.backgroundColor = theme.reactionBoxBackgroundColor
         self.layer.cornerRadius = 16

@@ -14,7 +14,8 @@ class SBUChannelTitleView: UIView {
     // MARK: - Public
     public var channel: SBDBaseChannel?
     
-    var theme: SBUComponentTheme = SBUTheme.componentTheme
+    @SBUThemeWrapper(theme: SBUTheme.componentTheme)
+    var theme: SBUComponentTheme
     
     
     // MARK: - Private
@@ -121,8 +122,6 @@ class SBUChannelTitleView: UIView {
     }
     
     func setupStyles() {
-        self.theme = SBUTheme.componentTheme
-        
         self.onlineStateIcon.backgroundColor = theme.titleOnlineStateColor
         
         self.titleLabel.font = theme.titleFont

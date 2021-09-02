@@ -88,13 +88,15 @@ open class SBUOpenChannelUserMessageCell: SBUOpenChannelContentBaseMessageCell {
     open override func setupStyles() {
         super.setupStyles()
         
+        let theme = self.isOverlay ? self.overlayTheme : self.theme
+        
         let isWebviewVisible = !self.webView.isHidden
         self.additionContainerView.leftBackgroundColor = isWebviewVisible
-            ? self.theme.contentBackgroundColor
-            : self.theme.leftBackgroundColor
+            ? theme.contentBackgroundColor
+            : theme.leftBackgroundColor
         self.additionContainerView.leftPressedBackgroundColor = isWebviewVisible
-            ? self.theme.pressedContentBackgroundColor
-            : self.theme.leftPressedBackgroundColor
+            ? theme.pressedContentBackgroundColor
+            : theme.leftPressedBackgroundColor
 
         self.additionContainerView.setupStyles()
         
@@ -140,7 +142,8 @@ open class SBUOpenChannelUserMessageCell: SBUOpenChannelContentBaseMessageCell {
         }
 
         if let messageTextView = messageTextView as? SBUUserMessageTextView, withTextView {
-            let textColor = isOverlay ? SBUTheme.overlayTheme.messageCellTheme.linkColor : SBUTheme.messageCellTheme.linkColor
+            let theme = self.isOverlay ? self.overlayTheme : self.theme
+            let textColor = theme.linkColor
             
             messageTextView.configure(
                 model: SBUUserMessageCellModel(message: message, position: position, textColor: isWebType ? textColor : nil, isOverlay: isOverlay)

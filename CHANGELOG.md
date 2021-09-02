@@ -1,5 +1,20 @@
 # Change Log
 
+### v2.1.13 (Sep 2, 2021)
+* Updated minor iOS version 10 to 11.
+* Modified keyboard height logic when using `isTranslucent=false` option.
+* Applied property-wrapper to theme properties.
+    * Removed logic that set theme to a global theme in the `setupStyles`, `updateStyles` functions.
+    * Added `overlayTheme` property to classes ​that use them differently depending on the overlay.
+* Added `messageInputView(_:didChangeText:)` event to `SBUMessageInputViewDelegate`.
+* Modified access level of `SBUMessageStateView` to `open`
+    * Added `timeFormat` which is type of `String`
+    * Added `timeLabelCustomSize` which is type of `CGSize`
+    * Modified access level of UI components to `public`
+* Aded extensions of `Date`
+    * Added `Date.DateFormat` enum.
+    * Modified access level of `Date sub_toString(formatString:localizedFormat:) -> String` to public
+
 ### v2.1.12 (Aug 19, 2021)
 * Added filtering logics for channel events by custom message list params
 * Added filtering logics for channel list events by custom channel list query

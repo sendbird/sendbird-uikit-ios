@@ -26,7 +26,10 @@ class SBUMenuItem: SBUCommonItem {
 
 class SBUMenuView {
     static private let shared = SBUMenuView()
-    var theme: SBUComponentTheme = SBUTheme.componentTheme
+    
+    @SBUThemeWrapper(theme: SBUTheme.componentTheme)
+    var theme: SBUComponentTheme
+    
     private init() {}
     private var items: [SBUMenuItem] = []
     
@@ -89,7 +92,9 @@ class SBUMenuView {
             object: nil
         )
         
-        self.theme = oneTimetheme ?? SBUTheme.componentTheme
+        if let oneTimetheme = oneTimetheme {
+            self.theme = oneTimetheme
+        }
         
         self.window = UIApplication.shared.keyWindow
         guard let window = self.window else { return }

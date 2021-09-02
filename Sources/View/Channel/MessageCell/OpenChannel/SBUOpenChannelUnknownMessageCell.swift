@@ -24,6 +24,8 @@ open class SBUOpenChannelUnknownMessageCell: SBUOpenChannelUserMessageCell {
             isOverlay: isOverlay
         )
         
+        let theme = self.isOverlay ? self.overlayTheme : self.theme
+        
         if let messageTextView = self.messageTextView as? SBUUserMessageTextView {
             let text = SBUStringSet.Message_Unknown_Title
                 + "\n"

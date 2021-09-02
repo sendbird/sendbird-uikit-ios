@@ -11,7 +11,11 @@ import UIKit
 public class SBUUserNameView: UIView {
     public var usernameColor: UIColor?
     
-    var theme: SBUMessageCellTheme = SBUTheme.messageCellTheme
+    @SBUThemeWrapper(theme: SBUTheme.messageCellTheme)
+    var theme: SBUMessageCellTheme
+    @SBUThemeWrapper(theme: SBUTheme.overlayTheme.messageCellTheme, setToDefault: true)
+    var overlayTheme: SBUMessageCellTheme
+    
     var button: UIButton = .init()
     var username: String = ""
     var leftMargin: CGFloat = 0
@@ -64,7 +68,7 @@ public class SBUUserNameView: UIView {
     }
     
     func setupStyles() {
-        self.theme = self.isOverlay ? SBUTheme.overlayTheme.messageCellTheme : SBUTheme.messageCellTheme
+        let theme = self.isOverlay ? self.overlayTheme : self.theme
         
         self.backgroundColor = .clear
 
@@ -84,8 +88,6 @@ public class SBUUserNameView: UIView {
 
     func configure(username: String, isOverlay: Bool = false) {
         self.isOverlay = isOverlay
-        
-        self.theme = self.isOverlay ? SBUTheme.overlayTheme.messageCellTheme : SBUTheme.messageCellTheme
         
         self.username = username
         self.button.setTitle(username, for: .normal)
