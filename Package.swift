@@ -29,8 +29,7 @@ let package = Package(
                 .target(name: "SendBirdUIKit"),
                 .product(name: "SendBirdSDK", package: "SendBirdSDK")
             ],
-            path: "Framework/Dependency",
-            exclude: ["Sample", "Sources"]
+            path: "Framework/Dependency"
         ),
     ]
 )
