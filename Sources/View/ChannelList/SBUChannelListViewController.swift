@@ -346,6 +346,13 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
         }
     }
     
+    /// This is a query used to get a list of channels.
+    /// - note: For query properties, see `SBDGroupChannelListQuery` class.
+    public func updateChannelListQuery(_ channelListQuery: SBDGroupChannelListQuery) {
+        self.customizedChannelListQuery = channelListQuery
+        self.loadNextChannelList(reset: true)
+    }
+    
     /// This function loads the channel list. If the reset value is true, the channel list will reset.
     /// - Parameter reset: To reset the channel list
     /// - Since: 1.2.5
