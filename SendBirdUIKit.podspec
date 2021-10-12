@@ -13,11 +13,17 @@ Pod::Spec.new do |s|
 	s.platform     = :ios, "11.0"
 	s.source = { :git => "https://github.com/MojoSport/sendbird-uikit-ios.git", :tag => "v#{s.version}" }
 	s.ios.frameworks = ["UIKit", "Foundation", "CoreData", "SendBirdSDK"]
-  	s.ios.source_files = 'Sources/**/*.{h,m,swift}'
- 	s.ios.resources = 'Sources/Resource/*.{xcassets}'
+  
+  s.ios.source_files = 'Sources/**/*.{h,m,swift}'
+  
+ 	s.ios.resources = ['Sources/Resource/*.*', 'Sources/**/*.xib']
+  
 	s.requires_arc = true
 	s.dependency "SendBirdSDK", "~>3.0.226"
 	s.ios.library = "icucore"
 	s.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
-	s.pod_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
+	s.pod_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' } 
+  s.pod_target_xcconfig = { 'PRODUCT_BUNDLE_IDENTIFIER': 'com.sendbird.uikit' }
+  
 end
+
