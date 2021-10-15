@@ -10,7 +10,7 @@ import UIKit
 import SendBirdSDK
 
 @objcMembers
-public class SBUUser: NSObject {
+open class SBUUser: NSObject {
     public private(set) var userId: String
     public private(set) var nickname: String?
     public private(set) var profileUrl: String?
