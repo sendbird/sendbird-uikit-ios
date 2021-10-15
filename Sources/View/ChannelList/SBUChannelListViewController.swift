@@ -88,7 +88,7 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
     // MARK: - Logic properties (Public)
     
     /// This object has a list of all channels.
-    @SBUAtomic public private(set) var channelList: [SBDGroupChannel] = []
+    @SBUAtomic public var channelList: [SBDGroupChannel] = []
     
     /// This is a query used to get a list of channels. Only getter is provided, please use initialization function to set query directly.
     /// - note: For query properties, see `SBDGroupChannelListQuery` class.
@@ -501,7 +501,7 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
     /// This function sorts the channel lists.
     /// - Parameter needReload: If set to `true`, the tableview will be call reloadData.
     /// - Since: 1.2.5
-    public func sortChannelList(needReload: Bool) {
+    open func sortChannelList(needReload: Bool) {
         let sortedChannelList = self.channelList
             .sorted(by: { (lhs: SBDGroupChannel, rhs: SBDGroupChannel) -> Bool in
                 let createdAt1: Int64 = lhs.lastMessage?.createdAt ?? -1
