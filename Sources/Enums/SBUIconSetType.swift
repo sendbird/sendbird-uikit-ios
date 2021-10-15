@@ -8,7 +8,7 @@
 
 import UIKit
 
-enum SBUIconSetType: String, Hashable {
+public enum SBUIconSetType: String, Hashable {
     case iconAdd
     case iconBack
     case iconBan
@@ -60,28 +60,28 @@ enum SBUIconSetType: String, Hashable {
     
     // MARK: - Metric
     
-    struct Metric {
-        static let defaultIconSizeSmall = CGSize(value: 16)
-        static let defaultIconSizeMedium = CGSize(value: 18)
-        static let defaultIconSize = CGSize(value: 24)
-        static let defaultIconSizeLarge = CGSize(value: 32)
-        static let defaultIconSizeXLarge = CGSize(value: 48)
-        static let iconActionSheetItem = defaultIconSize
-        static let iconEmojiSmall = CGSize(value: 20)
-        static let iconEmojiLarge = CGSize(value: 38)
-        static let iconEmptyView = CGSize(value: 60)
-        static let iconGifPlay = CGSize(value: 28)
-        static let iconSpinnerLarge = CGSize(value: 40)
-        static let iconUserProfile = CGSize(value: 40)
-        static let iconUserProfileInChat = CGSize(value: 15)
-        static let iconChevronDown = CGSize(value: 22)
+    public struct Metric {
+        public static let defaultIconSizeSmall = CGSize(value: 16)
+        public static let defaultIconSizeMedium = CGSize(value: 18)
+        public static let defaultIconSize = CGSize(value: 24)
+        public static let defaultIconSizeLarge = CGSize(value: 32)
+        public static let defaultIconSizeXLarge = CGSize(value: 48)
+        public static let iconActionSheetItem = defaultIconSize
+        public static let iconEmojiSmall = CGSize(value: 20)
+        public static let iconEmojiLarge = CGSize(value: 38)
+        public static let iconEmptyView = CGSize(value: 60)
+        public static let iconGifPlay = CGSize(value: 28)
+        public static let iconSpinnerLarge = CGSize(value: 40)
+        public static let iconUserProfile = CGSize(value: 40)
+        public static let iconUserProfileInChat = CGSize(value: 15)
+        public static let iconChevronDown = CGSize(value: 22)
     }
     
     // MARK: - Image handling
     
     private static let bundle = Bundle(identifier: "com.sendbird.uikit")
     
-    func load(tintColor: UIColor? = nil) -> UIImage {
+    public func load(tintColor: UIColor? = nil) -> UIImage {
         let image = UIImage(named: self.rawValue, in: SBUIconSetType.bundle, compatibleWith: nil)!
         guard let tintColor = tintColor else { return image }
         
@@ -94,7 +94,7 @@ enum SBUIconSetType: String, Hashable {
     ///     - size: Size for the icon to be resized to. Resizing is applied to default icons according to `tintAndResize` flag.
     ///     - tintAndResize: Whether to apply tint & resized icons for customized icons as well.
     /// - Returns: `UIImage` with tint applied & resized if possible.
-    func image(with tintColor: UIColor? = nil, to size: CGSize, tintAndResize: Bool = true) -> UIImage {
+    public func image(with tintColor: UIColor? = nil, to size: CGSize, tintAndResize: Bool = true) -> UIImage {
         // Prevents customized icons from being applied with tintColor.
         let isCustomized = SBUIconSetType.customizedIcons.contains(self)
         
