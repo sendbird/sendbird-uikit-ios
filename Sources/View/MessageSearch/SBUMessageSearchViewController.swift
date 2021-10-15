@@ -434,7 +434,7 @@ open class SBUMessageSearchViewController: SBUBaseViewController {
     ///   - message: A `SBDBaseMessage` object to load channel from.
     ///   - highlightInfo: An  optional`SBUHighlightInfo` class to have message highlighted.
     ///   - messageListParams:An optional `SBDMessageListParams` params to be used in loading messages.
-    public func enterChannel(with message: SBDBaseMessage,
+    open func enterChannel(with message: SBDBaseMessage,
                              highlightInfo: SBUHighlightMessageInfo?,
                              messageListParams: SBDMessageListParams? = nil) {
         // result only has group channel for now.
