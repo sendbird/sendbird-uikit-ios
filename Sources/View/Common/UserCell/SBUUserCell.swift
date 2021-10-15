@@ -124,7 +124,7 @@ open class SBUUserCell: UITableViewCell {
         super.awakeFromNib()
     }
     
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+    public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.setupViews()
         self.setupAutolayout()
@@ -221,7 +221,7 @@ open class SBUUserCell: UITableViewCell {
 
     
     // MARK: - Common
-    public func configure(type: UserListType,
+    open func configure(type: UserListType,
                           user: SBUUser,
                           isChecked: Bool = false,
                           operatorMode: Bool = false) {
