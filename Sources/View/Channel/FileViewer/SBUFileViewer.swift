@@ -10,12 +10,12 @@ import UIKit
 import SendBirdSDK
 import AssetsLibrary
 
-@objc protocol SBUFileViewerDelegate: NSObjectProtocol {
+@objc public protocol SBUFileViewerDelegate: NSObjectProtocol {
     func didSelectDeleteImage(message: SBDFileMessage)
 }
 
 @objcMembers
-class SBUFileViewer: SBUBaseViewController, UIScrollViewDelegate {
+public class SBUFileViewer: SBUBaseViewController, UIScrollViewDelegate {
     
     // MARK: - Public property
     public var leftBarButton: UIBarButtonItem? = nil {
@@ -118,7 +118,7 @@ class SBUFileViewer: SBUBaseViewController, UIScrollViewDelegate {
         self.setupStyles()
     }
 
-    override func setupAutolayout() {
+    public override func setupAutolayout() {
         self.bottomView.translatesAutoresizingMaskIntoConstraints = false
         self.bottomViewHeightAnchor = self.bottomView.heightAnchor.constraint(equalToConstant: 56)
         
@@ -132,8 +132,18 @@ class SBUFileViewer: SBUBaseViewController, UIScrollViewDelegate {
         NSLayoutConstraint.activate(constraints)
     }
 
-    override func setupStyles() {
+    public override func setupStyles() {
         self.view.backgroundColor = SBUColorSet.background600
+        
+        // Don't add padding on iOS 15
+        if #available(iOS 15.0, *) {
+            let appearance = UINavigationBarAppearance()
+            appearance.configureWithTransparentBackground()
+            appearance.backgroundColor = .clear
+            appearance.shadowImage = UIImage()
+            self.navigationController?.navigationBar.standardAppearance = appearance
+            self.navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        }
         
         self.navigationController?.navigationBar.backgroundColor = .clear
         self.navigationController?.navigationBar.barTintColor = SBUColorSet.overlay01
@@ -186,8 +196,11 @@ class SBUFileViewer: SBUBaseViewController, UIScrollViewDelegate {
         guard let urlString = urlString else { return }
         self.imageView.loadImage(urlString: urlString)
         
-        if let url = URL(string: urlString), let fileMessage = fileMessage {
-            SBUCacheManager.saveAndLoadFileToLocal(url: url, fileName: fileMessage.name)
+        if let url = URL(string: urlString), let fileMessage = self.fileMessage {
+            DispatchQueue.global(qos: .background).async {
+                SBUCacheManager.saveAndLoadFileToLocal(url: url,
+                                                       fileName: fileMessage.name)
+            }
         }
     }
     
@@ -217,7 +230,7 @@ class SBUFileViewer: SBUBaseViewController, UIScrollViewDelegate {
     
     // MARK: - Actions
     
-    override func onClickBack() {
+    public override func onClickBack() {
         self.dismiss(animated: true)
     }
     
