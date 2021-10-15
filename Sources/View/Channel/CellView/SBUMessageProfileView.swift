@@ -65,7 +65,7 @@ public class SBUMessageProfileView: UIView {
         self.setupStyles()
     }
     
-    func configure(urlString: String) {
+    public func configure(urlString: String) {
         self.urlString = urlString
         
         self.imageView.loadImage(
@@ -75,6 +75,11 @@ public class SBUMessageProfileView: UIView {
                 to: SBUIconSetType.Metric.iconUserProfileInChat
             )
         )
+        self.imageView.backgroundColor = theme.userPlaceholderBackgroundColor
+    }
+    
+    public func configure(image: UIImage) {
+        self.imageView.image = image
         self.imageView.backgroundColor = theme.userPlaceholderBackgroundColor
     }
 }
