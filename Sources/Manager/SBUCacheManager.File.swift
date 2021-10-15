@@ -10,7 +10,7 @@ import UIKit
 
 extension SBUCacheManager {
     
-    @discardableResult static func saveAndLoadFileToLocal(url: URL, fileName: String) -> URL? {
+    @discardableResult static public func saveAndLoadFileToLocal(url: URL, fileName: String) -> URL? {
         if let filePath = self.generateFilePath(
             fileName: fileName,
             additionalPath: "\(url.absoluteString.persistantHash)"

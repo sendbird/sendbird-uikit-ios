@@ -8,14 +8,14 @@
 
 import UIKit
 
-enum ToastType {
+public enum ToastType {
     case fileDownloadSuccess
     case fileDownloadFailed
     case fileOpenFailed
 }
 
-class SBUToastManager: NSObject {
-    static func showToast(parentVC: UIViewController?, type: ToastType) {
+public class SBUToastManager: NSObject {
+    static public func showToast(parentVC: UIViewController?, type: ToastType) {
         var title = ""
         switch type {
         case .fileDownloadFailed:

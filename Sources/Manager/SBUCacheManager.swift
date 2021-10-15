@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SBUCacheManager {
+public class SBUCacheManager {
     
     static private let diskCache = DiskCache()
     static private let memoryCache = MemoryCache()
