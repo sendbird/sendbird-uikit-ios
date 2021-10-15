@@ -10,7 +10,7 @@ import UIKit
 import SendBirdSDK
 
 /// Reacted user list
-class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate, SBUBottomSheetControllerDelegate {
+public class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate, SBUBottomSheetControllerDelegate {
 
     lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
     let layout: UICollectionViewFlowLayout = SBUCollectionViewFlowLayout()
@@ -28,6 +28,9 @@ class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegate, UI
     var collectionViewConstraintMaxWidth: NSLayoutConstraint!
 
     var theme = SBUTheme.componentTheme
+    
+    // for cell
+    public private(set) var userCell: UITableViewCell?
 
     // MARK: - Lifecycle
     @available(*, unavailable, renamed: "SBUReactionsViewController.init(channel:message:selectedReaction:)")
@@ -37,7 +40,7 @@ class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegate, UI
 
     /// Use this function when initialize.
     /// - Parameter message: SBDBaseMessage types
-    init(channel: SBDGroupChannel, message: SBDBaseMessage, selectedReaction: SBDReaction) {
+    public init(channel: SBDGroupChannel, message: SBDBaseMessage, selectedReaction: SBDReaction) {
         super.init(nibName: nil, bundle: nil)
         self.channel = channel
         self.reactionList = message.reactions
@@ -47,7 +50,7 @@ class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegate, UI
         self.memberList = members
     }
 
-    override func loadView() {
+    public override func loadView() {
         super.loadView()
 
         // stackView
@@ -63,10 +66,11 @@ class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegate, UI
         self.tableView.rowHeight = UITableView.automaticDimension
         self.tableView.allowsSelection = false
         self.tableView.isScrollEnabled = false
-        self.tableView.register(
-            type(of: SBUUserCell()),
-            forCellReuseIdentifier: SBUUserCell.sbu_className
-        )
+        
+        if self.userCell == nil {
+            self.register(userCell: SBUUserCell())
+        }
+        
         self.tableView.rowHeight = UITableView.automaticDimension
         self.tableView.estimatedRowHeight = 56
 
@@ -101,7 +105,7 @@ class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegate, UI
     }
 
     /// This function handles the initialization of autolayouts.
-    override func setupAutolayout() {
+    public override func setupAutolayout() {
         self.stackView.setConstraint(from: self.view, left: 0, right: 0, top: 0, bottom: 0)
         self.tableView.setConstraint(from: self.stackView, left: 0)
         self.lineView .setConstraint(from: self.stackView, left: 0).setConstraint(height: 0.5)
@@ -127,14 +131,14 @@ class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegate, UI
     }
 
     /// This function handles the initialization of styles.
-    override func setupStyles() {
+    public override func setupStyles() {
         self.view.backgroundColor = theme.backgroundColor
         self.lineView.backgroundColor = theme.reactionMenuLineColor
         self.tableView.backgroundColor = .clear
         self.collectionView.backgroundColor = .clear
     }
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         if let bottomSheet = self.presentationController as? SBUBottomSheetController {
 
@@ -144,7 +148,7 @@ class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegate, UI
         }
     }
 
-    override func viewDidLayoutSubviews() {
+    public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         self.collectionViewConstraintWidth.constant = self.collectionView.contentSize.width
         self.collectionViewConstraintMaxWidth.constant = self.view.bounds.width
@@ -155,20 +159,20 @@ class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegate, UI
         }
     }
 
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         guard self.selectedReaction.userIds.count > 0 else { return }
         self.tableView.scrollToRow(at: .init(row: 0, section: 0), at: .top, animated: true)
     }
 
-    override func viewWillAppear(_ animated: Bool) {
+    public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         if let indexPath = getSelectedIndexPath() {
             collectionView.selectItem(at: indexPath, animated: false, scrollPosition: .bottom)
         }
     }
 
-    override func viewDidAppear(_ animated: Bool) {
+    public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if let indexPath = getSelectedIndexPath() {
             collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
@@ -194,16 +198,38 @@ class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegate, UI
             return CGSize(width: 57, height: 44)
         }
     }
+    
+    /// Used to register a custom cell as a base cell based on `UITableViewCell`.
+    /// - Parameters:
+    ///   - userCell: Customized channel cell
+    ///   - nib: nib information. If the value is nil, the nib file is not used.
+    public func register(userCell: UITableViewCell, nib: UINib? = nil) {
+        self.userCell = userCell
+        if let nib = nib {
+            self.tableView.register(
+                nib,
+                forCellReuseIdentifier: userCell.sbu_className
+            )
+        } else {
+            self.tableView.register(
+                type(of: userCell),
+                forCellReuseIdentifier: userCell.sbu_className
+            )
+        }
+    }
 
     // MARK: - UITableView relations
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.selectedReaction.userIds.count
     }
 
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = self.tableView.dequeueReusableCell(
-            withIdentifier: SBUUserCell.sbu_className
-            ) as? SBUUserCell else { return .init() }
+    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        var cell: UITableViewCell? = nil
+        if let userCell = self.userCell {
+            cell = tableView.dequeueReusableCell(withIdentifier: userCell.sbu_className)
+        } else {
+            cell = tableView.dequeueReusableCell(withIdentifier: SBUUserCell.sbu_className)
+        }
 
         guard indexPath.row < self.selectedReaction.userIds.count else { return .init() }
 
@@ -213,20 +239,23 @@ class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegate, UI
                 userId: userId,
                 nickname: SBUStringSet.User_No_Name,
                 profileUrl: nil)
-        cell.configure(type: .reaction, user: user)
-        return cell
+        
+        if let cell = cell as? SBUUserCell {
+            cell.configure(type: .reaction, user: user)
+        }
+        return cell ?? UITableViewCell()
     }
 
     // MARK: - UICollectionView relations
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
+    public func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
 
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.reactionList.count
     }
 
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: SBUReactionCollectionViewCell.sbu_className,
             for: indexPath) as? SBUReactionCollectionViewCell else { return .init() }
@@ -237,11 +266,11 @@ class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegate, UI
         return cell
     }
 
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return self.getCellSize(count: self.reactionList[indexPath.row].userIds.count)
     }
 
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
 
         var deleteAnimation: UITableView.RowAnimation = .none
         var insertAnimation: UITableView.RowAnimation = .none
