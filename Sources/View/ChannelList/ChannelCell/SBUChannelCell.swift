@@ -10,7 +10,7 @@ import UIKit
 import SendBirdSDK
 
 /// `UITableViewCell` for `SBDGroupChannel` list.
-public class SBUChannelCell: SBUBaseChannelCell {
+open class SBUChannelCell: SBUBaseChannelCell {
     
     // MARK: - property
     public private(set) lazy var coverImage = SBUCoverImageView()
