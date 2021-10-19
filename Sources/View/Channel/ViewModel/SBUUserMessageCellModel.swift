@@ -33,7 +33,7 @@ struct SBUUserMessageCellModel {
         }
         
         let theme = isOverlay ? SBUTheme.overlayTheme.messageCellTheme : SBUTheme.messageCellTheme
-        let font = font ?? theme.userMessageFont
+        let font = UIFont.preferredFont(forTextStyle: .body)
         
         var editTextColor: UIColor?
         var normalTextColor: UIColor

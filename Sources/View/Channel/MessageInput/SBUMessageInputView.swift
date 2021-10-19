@@ -283,7 +283,7 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         self.backgroundColor = theme.backgroundColor
 
         // placeholderLabel
-        self.placeholderLabel.font = theme.textFieldPlaceholderFont
+        self.placeholderLabel.font = UIFont.preferredFont(forTextStyle: .body)
         if self.isFrozen {
             self.placeholderLabel.text = SBUStringSet.MessageInput_Text_Unavailable
             self.placeholderLabel.textColor = theme.textFieldDisabledColor
@@ -302,7 +302,7 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         self.textView?.tintColor = theme.textFieldTintColor
         self.textView?.textColor = theme.textFieldTextColor
         self.textView?.layer.borderColor = theme.textFieldBorderColor.cgColor
-        self.textView?.font = theme.textFieldPlaceholderFont
+        self.textView?.font = UIFont.preferredFont(forTextStyle: .body)
         
         // addButton
         let iconAdd = SBUIconSetType.iconAdd

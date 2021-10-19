@@ -28,11 +28,11 @@ class SBUUserMessageTextView: UIView {
         textView.isScrollEnabled = false
         textView.isEditable = false
         textView.isSelectable = true
-
         textView.dataDetectorTypes = [.link, .phoneNumber]
         textView.textContainer.lineFragmentPadding = 0
         textView.textContainerInset = .zero
         textView.font = SBUTheme.messageCellTheme.userMessageFont
+        textView.adjustsFontForContentSizeCategory = true
         return textView
     }()
     
