@@ -9,7 +9,7 @@
 import UIKit
 
 extension Double {
-    var unitFormattedString: String {
+    public var unitFormattedString: String {
         let units = ["", "K", "M"]
         var reducedNumber = self
         var i = 0
@@ -27,19 +27,19 @@ extension Double {
 }
 
 extension UInt {
-    var unitFormattedString: String {
+    public var unitFormattedString: String {
         return Double(self).unitFormattedString
     }
 }
 
 extension Int {
-    var unitFormattedString: String {
+    public var unitFormattedString: String {
         return Double(self).unitFormattedString
     }
 }
 
 extension Float {
-    var unitFormattedString: String {
+    public var unitFormattedString: String {
         return Double(self).unitFormattedString
     }
 }
