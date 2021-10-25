@@ -211,10 +211,7 @@ open class SBUMessageSearchViewController: SBUBaseViewController {
             
             if loading {
                 self.shouldShowLoadingIndicator()
-                
-                if let emptyView = self.emptyView as? SBUEmptyView {
-                    emptyView.reloadData(.none)
-                }
+                self.showEmptyView(type: .none)
             } else {
                 self.shouldDismissLoadingIndicator()
             }
@@ -222,22 +219,20 @@ open class SBUMessageSearchViewController: SBUBaseViewController {
         
         messageSearchViewModel.errorObservable.observe { [weak self] error in
             guard let self = self else { return }
-            
-            if let emptyView = self.emptyView as? SBUEmptyView {
-                emptyView.reloadData(self.searchResultList.isEmpty ? .error : .none)
-            }
-            
+            self.showEmptyView(type: self.searchResultList.isEmpty ? .error : .none)
             self.errorHandler(error)
         }
         
         messageSearchViewModel.resultListChangedObservable.observe { [weak self] _ in
             guard let self = self else { return }
-            
-            if let emptyView = self.emptyView as? SBUEmptyView {
-                emptyView.reloadData(self.searchResultList.isEmpty ? .noSearchResults : .none)
-            }
-            
+            self.showEmptyView(type: self.searchResultList.isEmpty ? .noSearchResults : .none)
             self.tableView.reloadData()
+        }
+    }
+    
+    open func showEmptyView(type: EmptyViewType) {
+        if let emptyView = self.emptyView as? SBUEmptyView {
+            emptyView.reloadData(self.searchResultList.isEmpty ? .noSearchResults : .none)
         }
     }
     
