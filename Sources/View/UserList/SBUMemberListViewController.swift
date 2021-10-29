@@ -452,7 +452,7 @@ open class SBUMemberListViewController: SBUBaseViewController {
     
     /// This function is used to load channel information.
     /// - Parameter channelUrl: channel url
-    public func loadChannel(channelUrl: String?) {
+    open func loadChannel(channelUrl: String?) {
         guard let channelUrl = channelUrl else { return }
         
         self.memberListViewModel?.loadChannel(url: channelUrl, type: self.channelType)
@@ -582,7 +582,7 @@ open class SBUMemberListViewController: SBUBaseViewController {
     
     /// This function reloads the list.
     /// - Since: 1.2.5
-    public func reloadData() {
+    open func reloadData() {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             if let emptyView = self.emptyView as? SBUEmptyView,

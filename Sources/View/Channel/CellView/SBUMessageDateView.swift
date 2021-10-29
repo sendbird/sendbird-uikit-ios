@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SBUMessageDateView: UIView {
+public class SBUMessageDateView: UIView {
      
     @SBUThemeWrapper(theme: SBUTheme.messageCellTheme)
     var theme: SBUMessageCellTheme
@@ -58,11 +58,11 @@ class SBUMessageDateView: UIView {
         self.dateLabel.backgroundColor = theme.dateBackgroundColor
     }
     
-    func configure(timestamp: Int64) {
+    public func configure(timestamp: Int64) {
         self.dateLabel.text = Date.from(timestamp).sbu_toString(format: .EMMMdd)
     }
     
-    override func layoutSubviews() {
+    public override func layoutSubviews() {
         super.layoutSubviews()
 
         self.setupStyles()

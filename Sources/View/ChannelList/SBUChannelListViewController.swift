@@ -350,7 +350,6 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
     /// - note: For query properties, see `SBDGroupChannelListQuery` class.
     public func updateChannelListQuery(_ channelListQuery: SBDGroupChannelListQuery) {
         self.customizedChannelListQuery = channelListQuery
-        self.loadNextChannelList(reset: true)
     }
     
     /// This function loads the channel list. If the reset value is true, the channel list will reset.
@@ -708,7 +707,7 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
     /// - Parameters:
     ///   - loadingState: Set to true when the list is loading.
     ///   - showIndicator: If true, the loading indicator is started, and if false, the indicator is stopped.
-    public func setLoading(_ loadingState: Bool, _ showIndicator: Bool) {
+    open func setLoading(_ loadingState: Bool, _ showIndicator: Bool) {
         self.isLoading = loadingState
         guard showIndicator else { return }
         
@@ -989,7 +988,6 @@ extension SBUChannelListViewController: SBDChannelDelegate, SBDConnectionDelegat
             self.deleteChannels(channelUrls: [channel.channelUrl], needReload: true)
         }
     }
-    
     
     // MARK: SBDConnectionDelegate
     open func didSucceedReconnection() {

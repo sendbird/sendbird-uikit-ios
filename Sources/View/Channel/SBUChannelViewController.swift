@@ -612,7 +612,7 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
     
     // MARK: - Channel related
     
-    private func refreshChannel(applyChangelog: Bool = false) {
+    open func refreshChannel(applyChangelog: Bool = false) {
         if let channel = channel {
             channel.refresh { [weak self] error in
                 guard let self = self else { return }
