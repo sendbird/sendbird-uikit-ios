@@ -326,9 +326,16 @@ open class SBUMessageSearchViewController: SBUBaseViewController {
     
     open override func setupStyles() {
         self.navigationController?.navigationBar.barStyle = self.theme.navigationBarStyle
-        self.navigationController?.navigationBar.setBackgroundImage(UIImage.from(color: theme.navigationBarTintColor),
-                                                                    for: .default)
-        self.navigationController?.navigationBar.shadowImage = UIImage.from(color: theme.navigationBarShadowColor)
+        self.navigationController?.navigationBar.setBackgroundImage(
+            UIImage.from(color: theme.navigationBarTintColor),
+            for: .default
+        )
+        self.navigationController?.navigationBar.shadowImage = UIImage.from(
+            color: theme.navigationBarShadowColor
+        )
+        
+        // For iOS 15
+        self.navigationController?.sbu_setupNavigationBarAppearance(tintColor: theme.navigationBarTintColor)
         
         self.view.backgroundColor = self.theme.backgroundColor
         self.tableView.backgroundColor = self.theme.backgroundColor

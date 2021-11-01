@@ -136,9 +136,16 @@ class StreamingChannelListViewController: SBUBaseChannelListViewController, SBUE
         self.theme = SBUTheme.channelListTheme
         
         let navigationBar = self.navigationController?.navigationBar
-        navigationBar?.setBackgroundImage(UIImage.from(color: theme.navigationBarTintColor),
-                                         for: .default)
-        navigationBar?.shadowImage = UIImage.from(color: theme.navigationBarShadowColor)
+        navigationBar?.setBackgroundImage(
+            UIImage.from(color: theme.navigationBarTintColor),
+            for: .default
+        )
+        navigationBar?.shadowImage = UIImage.from(
+            color: theme.navigationBarShadowColor
+        )
+        self.navigationController?.sbu_setupNavigationBarAppearance(
+            tintColor: theme.navigationBarTintColor
+        )
         
         self.view.backgroundColor = theme.backgroundColor
         self.tableView.backgroundColor = theme.backgroundColor

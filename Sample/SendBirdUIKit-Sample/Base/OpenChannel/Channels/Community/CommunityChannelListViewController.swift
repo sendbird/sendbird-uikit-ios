@@ -134,6 +134,9 @@ class CommunityChannelListViewController: SBUBaseChannelListViewController, SBUE
         self.navigationController?.navigationBar.shadowImage = UIImage.from(
             color: theme.navigationBarShadowColor
         )
+        self.navigationController?.sbu_setupNavigationBarAppearance(
+            tintColor: theme.navigationBarTintColor
+        )
         
         self.rightBarButton.tintColor = theme.rightBarButtonTintColor
         

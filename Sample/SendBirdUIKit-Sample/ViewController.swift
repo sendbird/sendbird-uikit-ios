@@ -105,6 +105,7 @@ class ViewController: UIViewController {
                 height: textField.frame.size.height)
             )
             textField.leftView = paddingView
+            textField.delegate = self
             textField.leftViewMode = .always
             textField.layer.borderWidth = 1
             textField.layer.cornerRadius = CornerRadius.small.rawValue
@@ -290,10 +291,28 @@ class ViewController: UIViewController {
     
     func moveToCustomSamples() {
         SBUTheme.set(theme: .light)
-        let mainVC = CustomBaseViewController(style: .grouped)
-        let naviVC = UINavigationController(rootViewController: mainVC)
-        naviVC.modalPresentationStyle = .fullScreen
-        present(naviVC, animated: true)
+        let params = SBDGroupChannelParams()
+        SBDGroupChannel.createChannel(with: params) { [self] channel, error in
+            if let error = error {
+                fatalError(error.localizedDescription)
+            }
+            DispatchQueue.main.async {
+                let vc = SBUChannelViewController(channel: channel!)
+                if #available(iOS 15.0, *) {
+                    if let sheet = vc.sheetPresentationController {
+                        sheet.prefersScrollingExpandsWhenScrolledToEdge = false
+                        sheet.prefersGrabberVisible = true
+                    }
+                } else {
+                    // Fallback on earlier versions
+                }
+                self.present(vc, animated: true, completion: nil)
+            }
+        }
+//        let mainVC = CustomBaseViewController(style: .grouped)
+//        let naviVC = UINavigationController(rootViewController: mainVC)
+//        naviVC.modalPresentationStyle = .fullScreen
+//        present(naviVC, animated: true)
     }
 }
 
@@ -301,6 +320,17 @@ class ViewController: UIViewController {
 extension ViewController: UINavigationControllerDelegate {
      public override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return UIInterfaceOrientationMask.portrait
+    }
+}
+
+extension ViewController: UITextFieldDelegate {
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 }
 

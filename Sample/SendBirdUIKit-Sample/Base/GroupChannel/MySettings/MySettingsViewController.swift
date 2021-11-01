@@ -117,6 +117,9 @@ open class MySettingsViewController: UIViewController, UINavigationControllerDel
         self.navigationController?.navigationBar.shadowImage = UIImage.from(
             color: theme.navigationShadowColor
         )
+        self.navigationController?.sbu_setupNavigationBarAppearance(
+            tintColor: theme.navigationBarTintColor
+        )
         
         self.rightBarButton.tintColor = theme.rightBarButtonTintColor
         

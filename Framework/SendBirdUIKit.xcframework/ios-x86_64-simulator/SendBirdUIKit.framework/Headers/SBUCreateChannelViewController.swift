@@ -174,6 +174,9 @@ open class SBUCreateChannelViewController: SBUBaseViewController {
         self.navigationController?.navigationBar.shadowImage = UIImage.from(
             color: theme.navigationShadowColor
         )
+        
+        // For iOS 15
+        self.navigationController?.sbu_setupNavigationBarAppearance(tintColor: theme.navigationBarTintColor)
 
         self.leftBarButton?.tintColor = theme.leftBarButtonTintColor
         self.rightBarButton?.tintColor = self.selectedUserList.isEmpty

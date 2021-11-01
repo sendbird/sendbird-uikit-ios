@@ -1,5 +1,10 @@
 # Change Log
 
+### v2.1.14 (Nov 1, 2021)
+* Fixed issue on navigation bar in iOS 15
+    * Added `sbu_setupNavigationBarAppearance(tintColor:)`
+* Improved stability
+
 ### v2.1.13 (Sep 2, 2021)
 * Updated minor iOS version 10 to 11.
 * Modified keyboard height logic when using `isTranslucent=false` option.
