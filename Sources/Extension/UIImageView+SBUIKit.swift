@@ -82,7 +82,7 @@ internal extension UIImageView {
             }
             return nil
         }
-        
+                
         let task = URLSession(configuration: .default).dataTask(with: url) { [weak self] data, response, error in
             guard let self = self else {
                 completion?(false)
@@ -100,7 +100,7 @@ internal extension UIImageView {
             
             let image = SBUCacheManager.savedImage(fileName: fileName, data: data)
             DispatchQueue.main.async {
-                self.setImage(image, completion: completion)
+                self.setImage(image, animate: true, completion: completion)
             }
         }
         task.resume()
@@ -143,7 +143,7 @@ internal extension UIImageView {
                 if let data = image.pngData() {
                     SBUCacheManager.savedImage(fileName: fileName, data: data)
                 }
-                self.setImage(image, completion: completion)
+                self.setImage(image, animate: true, completion: completion)
             }
         }
         
@@ -198,7 +198,7 @@ internal extension UIImageView {
                 SBUCacheManager.savedImage(fileName: thumbnailFileName, image: thumbnailImage)
                 
                 DispatchQueue.main.async {
-                    self.setImage(thumbnailImage, completion: completion)
+                    self.setImage(thumbnailImage, animate: true, completion: completion)
                 }
             }
         }
@@ -206,9 +206,19 @@ internal extension UIImageView {
         return task
     }
 
-    private func setImage(_ image: UIImage?, completion: ((Bool) -> Void)? = nil) {
+    private func setImage(_ image: UIImage?, animate: Bool = false, completion: ((Bool) -> Void)? = nil) {
         if let image = image {
-            self.image = image
+            DispatchQueue.main.async {
+                if animate {
+                    UIView.transition(with: self,
+                                      duration: 0.75,
+                                      options: .transitionCrossDissolve,
+                                      animations: { self.image = image },
+                                      completion: nil)
+                } else {
+                    self.image = image
+                }
+            }
         }
         completion?(image != nil)
     }
