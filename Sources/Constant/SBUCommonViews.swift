@@ -8,14 +8,12 @@
 
 import UIKit
 
-class SBUCommonViews {
+public class SBUCommonViews {
     
-    static func backButton(vc: UIViewController, selector: Selector) -> UIBarButtonItem {
-        return UIBarButtonItem(
-            image: SBUIconSetType.iconBack.image(to: SBUIconSetType.Metric.defaultIconSize),
-            style: .plain,
-            target: vc,
-            action: selector
-        )
+    public static func backButton(vc: UIViewController, selector: Selector) -> UIBarButtonItem {
+        return UIBarButtonItem(image: SBUIconSetType.iconBack.image(to: CGSize(value: 34)),
+                               style: .plain,
+                               target: vc,
+                               action: selector)
     }
 }
