@@ -69,7 +69,7 @@ public class SBUCoverImageView: UIView {
             )
         )
         imageView.backgroundColor = theme.userPlaceholderBackgroundColor
-        imageView.contentMode = .scaleAspectFill
+        imageView.contentMode = .scaleAspectFit
         
         let subviews = self.subviews
         
