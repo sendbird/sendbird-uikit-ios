@@ -452,7 +452,7 @@ open class SBUInviteUserViewController: SBUBaseViewController {
     }
     
     /// This function is used to pop to channelViewController.
-    public func popToChannel() {
+    open func popToChannel() {
         guard let navigationController = self.navigationController,
             navigationController.viewControllers.count > 1 else {
             self.dismiss(animated: true, completion: nil)

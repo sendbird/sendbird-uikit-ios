@@ -119,7 +119,7 @@ open class SBUChannelSettingsViewController: SBUBaseChannelSettingViewController
     
     /// Changes push trigger option on channel.
     /// - Parameter isOn: notification status
-    public func changeNotification(isOn: Bool) {
+    open func changeNotification(isOn: Bool) {
         let triggerOption: SBDGroupChannelPushTriggerOption = isOn ? .all : .off
         
         SBULog.info("""
@@ -132,7 +132,7 @@ open class SBUChannelSettingsViewController: SBUBaseChannelSettingViewController
     }
     
     /// Leaves the channel.
-    public func leaveChannel() {
+    open func leaveChannel() {
         SBULog.info("""
             [Request] Leave channel,
             ChannelUrl:\(self.channel?.channelUrl ?? "")
