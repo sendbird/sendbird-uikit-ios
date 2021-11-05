@@ -186,9 +186,11 @@ class SBUFileViewer: SBUBaseViewController, UIScrollViewDelegate {
         guard let urlString = urlString else { return }
         self.imageView.loadImage(urlString: urlString)
         
-        if let url = URL(string: urlString), let fileMessage = fileMessage {
-            SBUCacheManager.saveAndLoadFileToLocal(url: url, fileName: fileMessage.name)
-        }
+        // This code synchronously calls NSData(contentsOf: URL) causing the UI to hang until this method is executed.
+        // Also, this method is not necessary, because UIImageView.loadImage() caches the loaded image
+//        if let url = URL(string: urlString), let fileMessage = fileMessage {
+//            SBUCacheManager.saveAndLoadFileToLocal(url: url, fileName: fileMessage.name)
+//        }
     }
     
     open override func viewWillAppear(_ animated: Bool) {
