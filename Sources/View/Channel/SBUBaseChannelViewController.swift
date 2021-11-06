@@ -640,7 +640,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
     /// Deletes a message with message object.
     /// - Parameter message: `SBDBaseMessage` based class object
     /// - Since: 1.0.9
-    public func deleteMessage(message: SBDBaseMessage) {
+    open func deleteMessage(message: SBDBaseMessage) {
         self.deleteMessage(message: message, oneTimetheme: nil)
     }
                        
@@ -1253,7 +1253,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
     
     /// Sends a image file message.
     /// - Parameter info: Image information selected in `UIImagePickerController`
-    public func sendImageFileMessage(info: [UIImagePickerController.InfoKey : Any]) {
+    open func sendImageFileMessage(info: [UIImagePickerController.InfoKey : Any]) {
         var tempImageUrl: URL? = nil
         if let imageUrl = info[.imageURL] as? URL {
             // file:///~~~
@@ -1310,7 +1310,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
     
     /// Sends a video file message.
     /// - Parameter info: Video information selected in `UIImagePickerController`
-    public func sendVideoFileMessage(info: [UIImagePickerController.InfoKey : Any]) {
+    open func sendVideoFileMessage(info: [UIImagePickerController.InfoKey : Any]) {
         do {
             guard let videoUrl = info[.mediaURL] as? URL else { return }
             let videoFileData = try Data(contentsOf: videoUrl)

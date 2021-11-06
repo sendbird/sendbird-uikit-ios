@@ -36,7 +36,7 @@ import SendBirdSDK
         return items
     }
     
-    static func from(row: Int) -> ChannelSettingItemType? {
+    public static func from(row: Int) -> ChannelSettingItemType? {
         switch row {
         case 0: return .moderations
         case 1: return .notifications

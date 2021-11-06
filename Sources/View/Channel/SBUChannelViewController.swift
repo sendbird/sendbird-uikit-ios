@@ -549,7 +549,7 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
     ///   - emojiKey: set emoji key
     ///   - didSelect: set reaction state
     /// - Since: 1.1.0
-    public func setReaction(message: SBDBaseMessage, emojiKey: String, didSelect: Bool) {
+    open func setReaction(message: SBDBaseMessage, emojiKey: String, didSelect: Bool) {
         switch didSelect {
         case true:
             SBULog.info("[Request] Add Reaction")
