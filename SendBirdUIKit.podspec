@@ -17,6 +17,4 @@ Pod::Spec.new do |s|
 	s.requires_arc = true
 	s.dependency "SendBirdSDK", "~>3.0.226"
 	s.ios.library = "icucore"
-	s.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
-	s.pod_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
 end
