@@ -291,28 +291,10 @@ class ViewController: UIViewController {
     
     func moveToCustomSamples() {
         SBUTheme.set(theme: .light)
-        let params = SBDGroupChannelParams()
-        SBDGroupChannel.createChannel(with: params) { [self] channel, error in
-            if let error = error {
-                fatalError(error.localizedDescription)
-            }
-            DispatchQueue.main.async {
-                let vc = SBUChannelViewController(channel: channel!)
-                if #available(iOS 15.0, *) {
-                    if let sheet = vc.sheetPresentationController {
-                        sheet.prefersScrollingExpandsWhenScrolledToEdge = false
-                        sheet.prefersGrabberVisible = true
-                    }
-                } else {
-                    // Fallback on earlier versions
-                }
-                self.present(vc, animated: true, completion: nil)
-            }
-        }
-//        let mainVC = CustomBaseViewController(style: .grouped)
-//        let naviVC = UINavigationController(rootViewController: mainVC)
-//        naviVC.modalPresentationStyle = .fullScreen
-//        present(naviVC, animated: true)
+        let mainVC = CustomBaseViewController(style: .grouped)
+        let naviVC = UINavigationController(rootViewController: mainVC)
+        naviVC.modalPresentationStyle = .fullScreen
+        present(naviVC, animated: true)
     }
 }
 

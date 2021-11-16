@@ -1,5 +1,8 @@
 # Change Log
 
+### v2.1.15 (Nov 16, 2021)
+* Improved stability
+
 ### v2.1.14 (Nov 1, 2021)
 * Fixed issue on navigation bar in iOS 15
     * Added `sbu_setupNavigationBarAppearance(tintColor:)`
