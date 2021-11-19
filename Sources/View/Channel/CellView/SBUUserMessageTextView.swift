@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SBUUserMessageTextView: UIView {
+open class SBUUserMessageTextView: UIView {
     struct Metric {
         static let textLeftRightMargin = 12.f
         static let textTopDownMargin = 7.f
@@ -39,7 +39,7 @@ class SBUUserMessageTextView: UIView {
     var channelType: ChannelType = .group
     var isWebType = false
     
-    var longPressHandler: ((URL) -> ())? = nil
+    public var longPressHandler: ((URL) -> ())? = nil
     
     var textLeftConstraint: NSLayoutConstraint!
     var textRightConstraint: NSLayoutConstraint!
@@ -69,7 +69,7 @@ class SBUUserMessageTextView: UIView {
     }
     
     @available(*, unavailable, renamed: "UserMessageTextView(frame:)")
-    required init?(coder: NSCoder) {
+    required public init?(coder: NSCoder) {
         super.init(coder: coder)
     }
     
@@ -147,7 +147,7 @@ class SBUUserMessageTextView: UIView {
     
     func setupStyles() { }
     
-    func configure(model: SBUUserMessageCellModel) {
+    public func configure(model: SBUUserMessageCellModel) {
         self.text = model.text
         self.textView.attributedText = model.attributedText
         self.textView.linkTextAttributes = [
@@ -158,7 +158,7 @@ class SBUUserMessageTextView: UIView {
 }
 
 extension SBUUserMessageTextView: UITextViewDelegate {
-    func textView(_ textView: UITextView,
+    public func textView(_ textView: UITextView,
                   shouldInteractWith URL: URL,
                   in characterRange: NSRange,
                   interaction: UITextItemInteraction) -> Bool {

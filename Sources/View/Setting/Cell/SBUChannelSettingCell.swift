@@ -9,7 +9,7 @@
 import UIKit
 import SendBirdSDK
 
-class SBUChannelSettingCell: UITableViewCell {
+public class SBUChannelSettingCell: UITableViewCell {
     // MARK: - property
     lazy var baseStackView: UIStackView = {
         let baseStackView = UIStackView()
@@ -51,11 +51,11 @@ class SBUChannelSettingCell: UITableViewCell {
     @SBUThemeWrapper(theme: SBUTheme.channelSettingsTheme)
     var theme: SBUChannelSettingsTheme
     
-    var switchAction: ((Bool) -> Void)? = nil
+    public var switchAction: ((Bool) -> Void)? = nil
     
     
     // MARK: - View Lifecycle
-    override func awakeFromNib() {
+    public override func awakeFromNib() {
         super.awakeFromNib()
     }
     
@@ -207,7 +207,7 @@ class SBUChannelSettingCell: UITableViewCell {
         }
     }
     
-    override func setSelected(_ selected: Bool, animated: Bool) {
+    public override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
     }
 

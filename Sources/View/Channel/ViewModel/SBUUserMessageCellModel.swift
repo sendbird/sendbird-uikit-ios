@@ -9,12 +9,12 @@
 import UIKit
 import SendBirdSDK
 
-struct SBUUserMessageCellModel {
+public struct SBUUserMessageCellModel {
     var text: String
     var attributedText: NSMutableAttributedString?
     var textColor: UIColor
     
-    init(message: SBDBaseMessage?,
+    public init(message: SBDBaseMessage?,
          position: MessagePosition = .right,
          text: String? = nil,
          font: UIFont? = nil,

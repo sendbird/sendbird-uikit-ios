@@ -8,8 +8,8 @@
 
 import UIKit
 
-class SBUSelectableStackView: UIView, Selectable {
-    var isSelected: Bool = false {
+public class SBUSelectableStackView: UIView, Selectable {
+    public var isSelected: Bool = false {
         didSet {
             self.stackView.subviews.forEach { (view) in
                 if var view = view as? Selectable {
@@ -20,12 +20,12 @@ class SBUSelectableStackView: UIView, Selectable {
         }
     }
     
-    var position: MessagePosition = .right
+    public var position: MessagePosition = .right
     
-    var rightPressedBackgroundColor: UIColor?
-    var rightBackgroundColor: UIColor?
-    var leftPressedBackgroundColor: UIColor?
-    var leftBackgroundColor: UIColor?
+    public var rightPressedBackgroundColor: UIColor?
+    public var rightBackgroundColor: UIColor?
+    public var leftPressedBackgroundColor: UIColor?
+    public var leftBackgroundColor: UIColor?
     
     private let stackView: UIStackView = {
         let stackView = UIStackView()
@@ -41,7 +41,7 @@ class SBUSelectableStackView: UIView, Selectable {
     }
     
     @available(*, unavailable, renamed: "MessageContentDetailView()")
-    required init?(coder: NSCoder) {
+    required public init?(coder: NSCoder) {
         super.init(coder: coder)
     }
         
@@ -53,12 +53,12 @@ class SBUSelectableStackView: UIView, Selectable {
         self.stackView.setConstraint(from: self, left: 0, right: 0, top: 0, bottom: 0)
     }
     
-    override func layoutSubviews() {
+    public override func layoutSubviews() {
         super.layoutSubviews()
         self.setupStyles()
     }
     
-    func setupStyles() {
+    public func setupStyles() {
         switch self.position {
         case .left:
             self.backgroundColor = self.isSelected
@@ -74,19 +74,19 @@ class SBUSelectableStackView: UIView, Selectable {
         }
     }
     
-    func setAxis(_ axis: NSLayoutConstraint.Axis) {
+    public func setAxis(_ axis: NSLayoutConstraint.Axis) {
         self.stackView.axis = axis
     }
     
-    func addArrangedSubview(_ view: UIView) {
+    public func addArrangedSubview(_ view: UIView) {
         self.stackView.addArrangedSubview(view)
     }
     
-    func removeArrangedSubview(_ view: UIView) {
+    public func removeArrangedSubview(_ view: UIView) {
         self.stackView.removeArrangedSubview(view)
     }
     
-    func insertArrangedSubview(_ view: UIView, at index: Int) {
+    public func insertArrangedSubview(_ view: UIView, at index: Int) {
         self.stackView.insertArrangedSubview(view, at: index)
     }
 }

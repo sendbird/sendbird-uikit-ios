@@ -44,7 +44,7 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
 
     // MARK: - Private property
     
-    var mainContainerView: SBUSelectableStackView = {
+    public var mainContainerView: SBUSelectableStackView = {
         let mainView = SBUSelectableStackView()
         mainView.layer.cornerRadius = 16
         mainView.layer.borderColor = UIColor.clear.cgColor
@@ -53,16 +53,16 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         return mainView
     }()
     
-    var reactionView: SBUMessageReactionView = SBUMessageReactionView()
+    public var reactionView: SBUMessageReactionView = SBUMessageReactionView()
     lazy var profileContentSpacing: UIView = UIView()
     
     // MARK: - Gesture Recognizers
     
-    lazy var contentLongPressRecognizer: UILongPressGestureRecognizer = {
+    lazy public var contentLongPressRecognizer: UILongPressGestureRecognizer = {
         return .init(target: self, action: #selector(self.onLongPressContentView(sender:)))
     }()
     
-    lazy var contentTapRecognizer: UITapGestureRecognizer = {
+    lazy public var contentTapRecognizer: UITapGestureRecognizer = {
         return .init(target: self, action: #selector(self.onTapContentView(sender:)))
     }()
 

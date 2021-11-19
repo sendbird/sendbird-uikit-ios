@@ -11,7 +11,7 @@ import SendBirdSDK
 
 
 /// Emoji reaction box
-class SBUMessageReactionView: UIView, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+public class SBUMessageReactionView: UIView, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
 
     lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
     let layout: UICollectionViewFlowLayout = SBUCollectionViewFlowLayout()
@@ -150,11 +150,11 @@ class SBUMessageReactionView: UIView, UICollectionViewDelegate, UICollectionView
 
 
     // MARK: - UICollectionView relations
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
+    public func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
 
-    func collectionView(_ collectionView: UICollectionView,
+    public func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
         guard !reactions.isEmpty else { return 0 }
 
@@ -165,7 +165,7 @@ class SBUMessageReactionView: UIView, UICollectionViewDelegate, UICollectionView
         }
     }
 
-    func collectionView(_ collectionView: UICollectionView,
+    public func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         guard let cell = collectionView.dequeueReusableCell(
@@ -204,7 +204,7 @@ class SBUMessageReactionView: UIView, UICollectionViewDelegate, UICollectionView
         return cell
     }
 
-    func collectionView(_ collectionView: UICollectionView,
+    public func collectionView(_ collectionView: UICollectionView,
                         didSelectItemAt indexPath: IndexPath) {
         
         guard !self.hasMoreEmoji(at: indexPath) else { return }
@@ -213,7 +213,7 @@ class SBUMessageReactionView: UIView, UICollectionViewDelegate, UICollectionView
         self.emojiTapHandler?(reaction.key)
     }
 
-    func collectionView(_ collectionView: UICollectionView,
+    public func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
         
