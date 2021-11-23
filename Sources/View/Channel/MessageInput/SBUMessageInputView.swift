@@ -9,14 +9,72 @@
 import UIKit
 import Photos
 import AVKit
+import SendBirdSDK
 
 
-@objc public protocol SBUMessageInputViewDelegate: NSObjectProtocol {
-    @objc optional func messageInputView(_ messageInputView: SBUMessageInputView, didSelectSend text: String)
-    @objc optional func messageInputView(_ messageInputView: SBUMessageInputView, didSelectResource type: MediaResourceType)
-    @objc optional func messageInputView(_ messageInputView: SBUMessageInputView, didSelectEdit text: String)
-    @objc optional func messageInputViewDidStartTyping()
-    @objc optional func messageInputViewDidEndTyping()
+@objc
+public protocol SBUMessageInputViewDelegate: NSObjectProtocol {
+    /// Called when the send button was selected.
+    /// - Parameters:
+    ///    - messageInputView: `SBUMessageinputView` object.
+    ///    - text: The sent text.
+    /// - Since: 2.2.0
+    @objc
+    optional func messageInputView(_ messageInputView: SBUMessageInputView, didSelectSend text: String)
+    
+    /// Called when the media resource button was selected.
+    /// - Parameters:
+    ///    - messageInputView: `SBUMessageinputView` object.
+    ///    - type: `MediaResourceType` value.
+    /// - Since: 2.2.0
+    @objc
+    optional func messageInputView(_ messageInputView: SBUMessageInputView, didSelectResource type: MediaResourceType)
+    
+    
+    /// Called when the edit button was selected.
+    /// - Parameters:
+    ///    - messageInputView: `SBUMessageinputView` object.
+    ///    - text: The text on editing
+    /// - Since: 2.2.0
+    @objc
+    optional func messageInputView(_ messageInputView: SBUMessageInputView, didSelectEdit text: String)
+    
+    /// Called when the text was changed.
+    /// - Parameters:
+    ///    - messageInputView: `SBUMessageinputView` object.
+    ///    - text: The changed text.
+    /// - Since: 2.2.0
+    @objc
+    optional func messageInputView(_ messageInputView: SBUMessageInputView, didChangeText text: String)
+
+    /// Called when the message input mode was changed.
+    /// - Parameters:
+    ///    - messageInputView: `SBUMessageinputView` object.
+    ///    - mode: `SBUMessageInputMode` value. It represents the current mode of `messageInputView`.
+    ///    - message: `SBDBaseMessage` object. It's `nil` when the `mode` is `none`.
+    /// - Since: 2.2.0
+    @objc
+    optional func messageInputView(_ messageInputView: SBUMessageInputView, didChangeMode mode: SBUMessageInputMode, message: SBDBaseMessage?)
+    
+    /// Called when the message input mode will be changed via `setMode(_:message:)` method.
+    /// - Parameters:
+    ///    - messageInputView: `SBUMessageinputView` object.
+    ///    - mode: `SBUMessageInputMode` value. The `messageInputView` changes its mode to this value.
+    ///    - message: `SBDBaseMessage` object. It's `nil` when the `mode` is `none`.
+    /// - Since: 2.2.0
+    @objc
+    optional func messageInputView(_ messageInputView: SBUMessageInputView, willChangeMode mode: SBUMessageInputMode, message: SBDBaseMessage?)
+    
+    
+    /// Called when the message input view started to type.
+    /// - Since: 2.2.0
+    @objc
+    optional func messageInputViewDidStartTyping()
+    
+    /// Called when the message Input view ended typing.
+    /// - Since: 2.2.0
+    @objc
+    optional func messageInputViewDidEndTyping()
 }
 
 @objcMembers
@@ -72,19 +130,46 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         return button
     }()
     
+    // + --------- + ------- + ---------------- + ------- + ---------- +
+    // | addButton | tvLP(*) | inputContentView | tvTP(*) | sendButton |
+    // + --------- + ------- + ---------------- + ------- + ---------- +
+    // * tvLP: textViewLeadingPaddingView
+    // * tvTP: textViewTrailingPaddinView
+    
     /// Input area - horizontal stack (add button, text view, send button)
     /// - Since: 2.1.11
     public lazy var inputHStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .horizontal
-        stackView.alignment = .bottom
+        let stackView = SBUStackView(
+            axis: .horizontal,
+            alignment: .bottom,
+            spacing: 0
+        )
         stackView.distribution = .fill
-        stackView.spacing = 0
         return stackView
     }()
     
+    /// The quote message view which is type of `SBUQuoteMessageInputView`.
+    /// - Since: 2.2.0
+    public lazy var quoteMessageView: SBUQuoteMessageInputView? = {
+        let view = SBUQuoteMessageInputView()
+        view.delegate = self
+        return view
+    }() {
+        didSet {
+            oldValue?.delegate = nil
+            quoteMessageView?.delegate = self
+        }
+    }
+    
+    private lazy var divider: UIView = {
+        return UIView()
+    }()
     
     // MARK: - Property values (Public)
+    /// The leading spacing for message input view
+    public var leadingSpacing: CGFloat = 12
+    /// The trailing spacing for message input view
+    public var trailingSpacing: CGFloat = 12
     
     /// Textview's minimum height value.
     public var textViewMinHeight: CGFloat = 38
@@ -102,38 +187,89 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
     
     /// The padding values for the input view.
     /// This value will be relative to the `safeAreaLayoutGuide` if available.
-    public var layoutInsets: UIEdgeInsets =
-        UIEdgeInsets(top: 0,
-                     left: 20,
-                     bottom: 0,
-                     right: -16)
-    
+    public var layoutInsets: UIEdgeInsets = UIEdgeInsets(
+        top: 0,
+        left: 20,
+        bottom: 0,
+        right: -16
+    )
 
     // MARK: - Properties (Private)
-    var baseStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.alignment = .fill
+    
+    // + ----------------- +
+    // | divider           |
+    // + ----------------- +
+    // | contentVStackView |
+    // + ----------------- +
+    
+    private lazy var baseStackView: SBUStackView = {
+        return SBUStackView(axis: .vertical, alignment: .fill, spacing: 0)
+    }()
+    
+    private lazy var contentView: UIView = {
+        return UIView()
+    }()
+    
+    // + ----------------- +
+    // | quoteMessageView  |
+    // + ----------------- +
+    // | contentHStackView |
+    // + ----------------- +
+    
+    private lazy var contentVStackView: SBUStackView = {
+        return SBUStackView(axis: .vertical, alignment: .fill, spacing: 0)
+    }()
+    
+    // + ------------------ + --------------- + ------------------ +
+    // | leadingPaddingView | inputVStackView | trailingPaddinView |
+    // + ------------------ + --------------- + ------------------ +
+    
+    private lazy var contentHStackView: SBUStackView = {
+        return SBUStackView(axis: .horizontal, alignment: .fill, spacing: 0)
+    }()
+    
+    // + --------------------- +
+    // | inputViewTopSpacer    |
+    // + --------------------- +
+    // | inputHStackView       |
+    // + --------------------- +
+    // | editView              |
+    // + --------------------- +
+    // | inputViewBottomSpacer |
+    // + --------------------- +
+    
+    private lazy var inputVStackView: SBUStackView = {
+        let stackView = SBUStackView(axis: .vertical, alignment: .fill, spacing: 10)
         stackView.distribution = .fill
-        stackView.spacing = 10
         return stackView
     }()
     
     /// Space above the input fields.
-    var topSpace = UIView()
+    var inputViewTopSpacer = UIView()
     
     /// Text view + placeholder label.
     var inputContentView = UIView()
     
     /// Textview's leading/trailing padding view
     var textViewLeadingPaddingView: UIView = UIView()
-    var textViewTrailingPaddingView: UIView = UIView()
+    
+    lazy var textViewTrailingPaddingView: UIView = {
+        let view = UIView()
+        view.isHidden = !showsSendButton
+        return view
+    }()
+    
+    /// SBUMessageInputView's leading / trailing padding view
+    var leadingPaddingView = UIView()
+    var trailingPaddingView = UIView()
+    
+    // + ------------ + -------------- + ---------- +
+    // | cancelButton | editMarginView | saveButton |
+    // + ------------ + -------------- + ---------- +
     
     /// Edit view (edit / cancel button on the bottom)
-    var editStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .horizontal
-        stackView.alignment = .fill
+    var editStackView: SBUStackView = {
+        let stackView = SBUStackView(axis: .horizontal, alignment: .fill)
         stackView.distribution = .fill
         return stackView
     }()
@@ -142,7 +278,7 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
     var editMarginView = UIView()
     
     /// Space below the input fields (below edit view).
-    var bottomSpace = UIView()
+    var inputViewBottomSpacer = UIView()
     
     var textViewHeightConstraint: NSLayoutConstraint?
 
@@ -187,93 +323,247 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
     required public init?(coder: NSCoder) {
         super.init(coder: coder)
     }
+    
+    /// The `SBUMessageInputMode` value.
+    /// - Since: 2.2.0
+    public var mode: SBUMessageInputMode {
+        self.option.value
+    }
+    
+    // Only for Swift
+    var option: MessageInputMode = .none {
+        willSet {
+            // End a previous mode
+            switch self.option {
+                case .edit:
+                    self.endEditMode()
+                case .quoteReply:
+                    self.endQuoteReplyMode()
+                default: break
+            }
+            
+            
+            // Start a new mode
+            switch newValue {
+                case .edit(let message):
+                    self.startEditMode(text: message.message)
+                case .quoteReply(let message):
+                    self.startQuoteReplyMode(message: message)
+                default: break
+            }
+        }
+        didSet {
+            SBULog.info("Message input view changed mode to \(self.option.toString)")
+        }
+    }
+    
+    open func setMode(_ mode: SBUMessageInputMode, message: SBDBaseMessage? = nil) {
+        // Call delegate event: willChangeMode
+        self.delegate?.messageInputView?(self, willChangeMode: mode, message: message)
+        
+        switch mode {
+            case .edit:
+                guard let message = message as? SBDUserMessage else { break }
+                self.option = .edit(message)
+            case .quoteReply:
+                guard let message = message else { break }
+                self.option = .quoteReply(message)
+            default: self.option = .none
+        }
+        
+        self.delegate?.messageInputView?(self, didChangeMode: mode, message: message)
+    }
+    
+    /**
+     Starts to reply to message. It's called when `mode` is set to `.quoteReply`
+     
+     - Parameter message: `SBDBaseMessage` that is replied to.
+     - Since: 2.2.0
+     */
+    public func startQuoteReplyMode(message: SBDBaseMessage) {
+        self.quoteMessageView?.isHidden = false
+        self.divider.isHidden = false
+        let configuration = SBUQuoteMessageInputViewParams(
+            message: message
+        )
+        self.quoteMessageView?.configure(with: configuration)
+    }
+    
+    /**
+     Ends replying to message. It's called when `mode` is set from `.quoteReply` to the other.
+     - Since: 2.2.0
+     */
+    public func endQuoteReplyMode() {
+        self.quoteMessageView?.isHidden = true
+        self.divider.isHidden = true
+    }
 
     /// This function handles the initialization of views.
     open func setupViews() {
         self.editView.isHidden = true
+        self.quoteMessageView?.isHidden = true
+        self.divider.isHidden = true
+        
+        // baseStackView
+        // + ---------------------------------------------------------------- +
+        // | divider                                                          |
+        // + ---------------------------------------------------------------- +
+        // | quoteMessageView                                                 |
+        // + ------------------ + --------------------- + ------------------- +
+        // |                    | inputViewTopSpacer    |                     |
+        // |                    + --------------------- +                     |
+        // |                    | inputHStackView       |                     |
+        // | leadingPaddingView + --------------------- + trailingPaddingView |
+        // |                    | editView              |                     |
+        // |                    + --------------------- +                     |
+        // |                    | inputViewBottomSpacer |                     |
+        // + ------------------ + --------------------- + ------------------- +
+        
+        // inputHStacView
+        // + --------- + ------- + ---------------- + ------- + ---------- +
+        // | addButton | tvLP(*) | inputContentView | tvTP(*) | sendButton |
+        // + --------- + ------- + ---------------- + ------- + ---------- +
+        // * tvLP: textViewLeadingPaddingView
+        // * tvTP: textViewTrailingPaddinView
+        
+        // editView
+        // + ------------ + -------------- + ---------- +
+        // | cancelButton | editMarginView | saveButton |
+        // + ------------ + -------------- + ---------- +
+        
         
         // Add views
-        self.baseStackView.addArrangedSubview(self.topSpace)
-        
-        if let addButton = self.addButton {
-            self.inputHStackView.addArrangedSubview(addButton)
-        }
-        self.inputHStackView.addArrangedSubview(self.textViewLeadingPaddingView)
         if let textView = self.textView {
             self.inputContentView.addSubview(textView)
             self.inputContentView.addSubview(self.placeholderLabel)
         }
-        self.inputHStackView.addArrangedSubview(self.inputContentView)
-        self.inputHStackView.addArrangedSubview(self.textViewTrailingPaddingView)
-        if let sendButton = self.sendButton {
-            self.inputHStackView.addArrangedSubview(sendButton)
-        }
-        self.baseStackView.addArrangedSubview(self.inputHStackView)
+
+        self.editView.addSubview(
+            self.editStackView.setHStack([
+                self.cancelButton,
+                self.editMarginView,
+                self.saveButton
+            ])
+        )
         
-        if let cancelButton = self.cancelButton {
-            self.editStackView.addArrangedSubview(cancelButton)
-        }
-        self.editStackView.addArrangedSubview(self.editMarginView)
-        if let saveButton = self.saveButton {
-            self.editStackView.addArrangedSubview(saveButton)
-        }
-        self.editView.addSubview(self.editStackView)
-        self.baseStackView.addArrangedSubview(self.editView)
+        self.contentView.addSubview(
+            self.contentVStackView.setVStack([
+                self.quoteMessageView,
+                self.contentHStackView.setHStack([
+                    self.leadingPaddingView,
+                    self.inputVStackView.setVStack([
+                        self.inputViewTopSpacer,
+                        self.inputHStackView.setHStack([
+                            self.addButton,
+                            self.textViewLeadingPaddingView,
+                            self.inputContentView,
+                            self.textViewTrailingPaddingView,
+                            self.sendButton,
+                        ]),
+                        self.editView,
+                        self.inputViewBottomSpacer
+                    ]),
+                    self.trailingPaddingView
+                ]),
+            ])
+        )
         
-        self.baseStackView.addArrangedSubview(self.bottomSpace)
+        self.baseStackView.setVStack([
+            self.divider,
+            self.contentView
+        ])
         
         self.addSubview(self.baseStackView)
     }
     
     /// This function handles the initialization of autolayouts.
     open func setupAutolayout() {
-        self.baseStackView.sbu_constraint_equalTo(
+        self.baseStackView
+            .sbu_constraint(
+                equalTo: self,
+                leading: 0,
+                trailing: 0,
+                top: 0,
+                bottom: 0
+            )
+        
+        self.contentVStackView.sbu_constraint_equalTo(
             leadingAnchor: self.safeAreaLayoutGuide.leadingAnchor,
-            leading: layoutInsets.left
+            leading: 0
         )
-        self.baseStackView.sbu_constraint_equalTo(
+        self.contentVStackView.sbu_constraint_equalTo(
             topAnchor: self.safeAreaLayoutGuide.topAnchor,
             top: layoutInsets.top
         )
-        self.baseStackView.sbu_constraint_equalTo(
+        self.contentVStackView.sbu_constraint_equalTo(
             trailingAnchor: self.safeAreaLayoutGuide.trailingAnchor,
-            trailing: layoutInsets.right
+            trailing: 0
         )
-        self.baseStackView.sbu_constraint_equalTo(
+        self.contentVStackView.sbu_constraint_equalTo(
             bottomAnchor: self.safeAreaLayoutGuide.bottomAnchor,
             bottom: layoutInsets.bottom
         )
         
-        self.topSpace.sbu_constraint(width: self.baseStackView.frame.width, height: 0)
+        // Subviews in ContentVStackView
+        self.divider
+            .setConstraint(height: 1)
         
-        self.inputHStackView.sbu_constraint(width: self.baseStackView.frame.width)
+        self.quoteMessageView?
+            .setConstraint(height: 56)
         
-        self.addButton?.sbu_constraint(width: 32, height: 38)
-        self.textView?.sbu_constraint(equalTo: self.inputContentView, leading: 0, trailing: 0, top: 0, bottom: 0)
-        if let textView = self.textView {
-            self.placeholderLabel.sbu_constraint(equalTo: textView, leading: 14, top: 10)
-            self.setupTextViewHeight(textView: textView)
-        }
-        self.sendButton?.sbu_constraint(width: 32, height: 38)
+        // Subviews in ContentHStackView
+        self.leadingPaddingView
+            .setConstraint(width: self.leadingSpacing)
+        
+        self.trailingPaddingView
+            .setConstraint(width: self.trailingSpacing)
+        
+        // Subviews in InputVStackView
+        self.inputViewTopSpacer
+            .sbu_constraint(height: 0)
+        
+        self.inputViewBottomSpacer
+            .sbu_constraint(height: 0)
+        
+        self.inputHStackView
+            .sbu_constraint(width: self.baseStackView.frame.width)
+        
+        // Subviews in InputHStackView
+        self.addButton?
+            .setConstraint(width: 32, height: 38)
         
         // leading/trailing spacing for textview
-        self.textViewLeadingPaddingView.translatesAutoresizingMaskIntoConstraints = false
-        self.textViewTrailingPaddingView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            self.textViewLeadingPaddingView.widthAnchor.constraint(
-                equalToConstant: self.textViewLeadingSpacing
-            ),
-            self.textViewTrailingPaddingView.widthAnchor.constraint(
-                equalToConstant: self.textViewTrailingSpacing
-            )
-        ])
-
-        self.cancelButton?.sbu_constraint(width: 75)
-        self.saveButton?.sbu_constraint(width: 75)
-        self.editStackView.sbu_constraint(equalTo: self.editView, leading: 0, trailing: 0, top: 0, bottom: 0)
-        self.editView.sbu_constraint(height: 32)
+        self.textViewLeadingPaddingView
+            .sbu_constraint(width: self.textViewLeadingSpacing)
         
-        self.bottomSpace.sbu_constraint(width: self.baseStackView.frame.width, height: 0)
+        self.textViewTrailingPaddingView
+            .sbu_constraint(width: self.textViewTrailingSpacing)
+        
+        self.sendButton?
+            .sbu_constraint(width: 32, height: 38)
+        
+        // Subivews in InputContentView
+        self.textView?
+            .sbu_constraint(equalTo: self.inputContentView, leading: 0, trailing: 0, top: 0, bottom: 0)
+        
+        if let textView = self.textView {
+            self.placeholderLabel
+                .sbu_constraint(equalTo: textView, leading: 14, top: 10)
+            self.setupTextViewHeight(textView: textView)
+        }
+        
+        // Subviews of EditView
+        self.editView
+            .sbu_constraint(height: 32)
+        
+        self.cancelButton?
+            .sbu_constraint(width: 75)
+        
+        self.saveButton?
+            .sbu_constraint(width: 75)
+        
+        self.editStackView
+            .sbu_constraint(equalTo: self.editView, leading: 0, trailing: 0, top: 0, bottom: 0)
     }
     
     /// This function handles the initialization of styles.
@@ -291,6 +581,10 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         else if self.isMuted {
             self.placeholderLabel.text = SBUStringSet.MessageInput_Text_Muted
             self.placeholderLabel.textColor = theme.textFieldDisabledColor
+        }
+        else if self.mode == .quoteReply {
+            self.placeholderLabel.text = SBUStringSet.MessageInput_Text_Reply
+            self.placeholderLabel.textColor = theme.textFieldPlaceholderColor
         }
         else {
             self.placeholderLabel.text = SBUStringSet.MessageInput_Text_Placeholder
@@ -344,6 +638,8 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
             to: SBUIconSetType.Metric.iconActionSheetItem
         )
         self.cancelItem.color = theme.buttonTintColor
+        
+        self.divider.backgroundColor = theme.channelViewDividerColor
     }
     
     public override func layoutSubviews() {
@@ -362,6 +658,7 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         self.addButton?.alpha = 0
         
         self.sendButton?.isHidden = !showsSendButton
+        self.textViewTrailingPaddingView.isHidden = !showsSendButton
         
         self.editView.isHidden = false
         self.editView.alpha = 1
@@ -391,7 +688,7 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         self.layoutIfNeeded()
     }
     
-    // MARK: State
+    // MARK: - State
     
     /// Sets frozen mode state.
     /// - Parameter isFrozen `true` is frozen mode, `false` is unfrozen mode
@@ -403,7 +700,6 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         self.addButton?.isEnabled = !self.isFrozen
         
         if self.isFrozen {
-            self.endEditMode()
             self.endTypingMode()
         }
         self.setupStyles()
@@ -419,7 +715,6 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         self.addButton?.isEnabled = !self.isMuted
         
         if self.isMuted {
-            self.endEditMode()
             self.endTypingMode()
         }
         self.setupStyles()
@@ -431,16 +726,16 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         self.textView?.isUserInteractionEnabled = false
         self.addButton?.isEnabled = false
         
-        self.endEditMode()
         self.endTypingMode()
         self.setupStyles()
     }
     
-    // MARK: Common
+    // MARK: - Common
     public func endTypingMode() {
         self.textView?.text = ""
         self.sendButton?.isHidden = !showsSendButton
-        self.endEditMode()
+        self.textViewTrailingPaddingView.isHidden = !showsSendButton
+        self.setMode(.none)
         self.layoutIfNeeded()
     }
     
@@ -507,18 +802,20 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         )
     }
 
-    // MARK: UITextViewDelegate
+    // MARK: - UITextViewDelegate
     public func textViewDidChange(_ textView: UITextView) {
         self.placeholderLabel.isHidden = !textView.text.isEmpty
         self.updateTextViewHeight()
         
+        let text = textView.text ?? ""
         if self.editView.isHidden {
-            let text = textView.text ?? ""
             self.sendButton?.isHidden = !showsSendButton &&
                 text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-            
+            self.textViewTrailingPaddingView.isHidden = self.sendButton?.isHidden == true
             self.layoutIfNeeded()
         }
+        
+        self.delegate?.messageInputView?(self, didChangeText: text)
     }
 
     public func textViewDidEndEditing(_ textView: UITextView) {
@@ -537,7 +834,7 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         return true
     }
 
-    // MARK: SBUActionSheetDelegate
+    // MARK: - SBUActionSheetDelegate
     public func didSelectActionSheetItem(index: Int, identifier: Int) {
         let type = MediaResourceType.init(rawValue: index) ?? .unknown
         switch type {
@@ -578,4 +875,10 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         }
     }
 
+}
+
+extension SBUMessageInputView: SBUQuoteMessageInputViewDelegate {
+    func didTapClose() {
+        self.setMode(.none)
+    }
 }

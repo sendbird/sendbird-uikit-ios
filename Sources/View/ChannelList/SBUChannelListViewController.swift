@@ -13,25 +13,17 @@ import SendBirdSDK
 open class SBUChannelListViewController: SBUBaseChannelListViewController {
     // MARK: - UI properties (Public)
     public var titleView: UIView? = nil {
-        didSet {
-            self.navigationItem.titleView = self.titleView
-        }
+        didSet { self.navigationItem.titleView = self.titleView }
     }
     public var leftBarButton: UIBarButtonItem? = nil {
-        didSet {
-            self.navigationItem.leftBarButtonItem = self.leftBarButton
-        }
+        didSet { self.navigationItem.leftBarButtonItem = self.leftBarButton }
     }
     public var rightBarButton: UIBarButtonItem? = nil {
-        didSet {
-            self.navigationItem.rightBarButtonItem = self.rightBarButton
-        }
+        didSet { self.navigationItem.rightBarButtonItem = self.rightBarButton }
     }
     
     public var emptyView: UIView? = nil {
-        didSet {
-            self.tableView.backgroundView = self.emptyView
-        }
+        didSet { self.tableView.backgroundView = self.emptyView }
     }
     
     public private(set) var tableView = UITableView()
@@ -93,17 +85,22 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
     /// This is a query used to get a list of channels. Only getter is provided, please use initialization function to set query directly.
     /// - note: For query properties, see `SBDGroupChannelListQuery` class.
     /// - Since: 1.0.11
-    public private(set) var channelListQuery: SBDGroupChannelListQuery?
+    public var channelListQuery: SBDGroupChannelListQuery? { self.channelListViewModel?.channelListQuery }
     
-    public private(set) var isLoading = false
-    public private(set) var lastUpdatedTimestamp: Int64 = 0
-    public private(set) var lastUpdatedToken: String? = nil
-    public private(set) var limit: UInt = 20
-    public private(set) var includeEmptyChannel: Bool = false
+    public var isLoading: Bool { channelListViewModel?.isLoading ?? false }
+    public var lastUpdatedTimestamp: Int64 { channelListViewModel?.lastUpdatedTimestamp ?? Int64(Date().timeIntervalSince1970 * 1000) }
+    public var lastUpdatedToken: String? { channelListViewModel?.lastUpdatedToken }
+    public var limit: UInt { SBUChannelListViewModel.channelLoadLimit }
+    public var includeEmptyChannel: Bool { channelListViewModel?.channelListQuery?.includeEmptyChannel ?? false }
     
     
     // MARK: - Logic properties (Private)
     var customizedChannelListQuery: SBDGroupChannelListQuery? = nil
+    
+    private var channelListViewModel: SBUChannelListViewModel? {
+        didSet { bindViewModel() }
+        willSet { disposeViewModel() }
+    }
     
     
     // MARK: - Lifecycle
@@ -253,38 +250,87 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
         SBDMain.add(self as SBDChannelDelegate, identifier: self.description)
         SBDMain.add(self as SBDConnectionDelegate, identifier: self.description)
         
-        SBUMain.connectionCheck { [weak self] user, error in
-            guard let self = self else { return }
-            
-            if let error = error { self.errorHandler(error) }
-            
-            if SBUAvailable.isSupportSuperGroupChannel() || SBUAvailable.isSupportBroadcastChannel() {
-                self.createChannelTypeSelector = self.defaultCreateChannelTypeSelector
-                
-                if let createChannelTypeSelector = self.createChannelTypeSelector {
-                    self.navigationController?.view.addSubview(createChannelTypeSelector)
-                }
-                self.setupAutolayout()
+        SBUMain.connectIfNeeded { user, error in
+            if let error = error {
+                self.errorHandler(error)
+                return
             }
             
-            self.loadNextChannelList(reset: true)
+            self.initChannelList()
         }
     }
     
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        if self.isLoading { return }
-        
-        self.loadChannelChangeLogs(hasMore: true, token: self.lastUpdatedToken)
-        
         self.updateStyles()
     }
     
     deinit {
         SBULog.info("")
+        disposeViewModel()
+        
         SBDMain.removeChannelDelegate(forIdentifier: self.description)
         SBDMain.removeConnectionDelegate(forIdentifier: self.description)
+    }
+    
+    
+    // MARK: - View Binding
+    
+    /// Recreates the view model, loading initial messages from given starting point.
+    /// - Parameters:
+    ///     - startingPoint: The starting point timestamp of the messages. `nil` to start from the latest.
+    ///     - showIndicator: Whether to show loading indicator on loading the initial messages.
+    func createViewModel() {
+        self.channelListViewModel = SBUChannelListViewModel(
+            customizedChannelListQuery: self.customizedChannelListQuery
+        )
+    }
+
+    private func bindViewModel() {
+        SBULog.info("bindViewModel")
+        guard let channelListViewModel = self.channelListViewModel else { return }
+        
+        channelListViewModel.errorObservable.observe { [weak self] error in
+            guard let self = self else { return }
+            
+            SBULog.error("""
+                    [Failed] \(String(describing: error.localizedDescription))
+                    """)
+            self.errorHandler(error)
+            self.showNetworkError()
+        }
+        
+        channelListViewModel.loadingObservable.observe { [weak self] loadingState in
+            guard let self = self else { return }
+            
+            if loadingState {
+                self.shouldShowLoadingIndicator()
+            } else {
+                self.shouldDismissLoadingIndicator()
+            }
+        }
+        
+        channelListViewModel.channelDeleteObservable.observe {
+            [weak self] deletedChannelUrls in
+            
+            guard let self = self else { return }
+            
+            if !deletedChannelUrls.isEmpty {
+                self.deleteChannels(channelUrls: deletedChannelUrls, needReload: true)
+            }
+        }
+        
+        channelListViewModel.channelUpsertObservable.observe {
+            [weak self] channels in
+            
+            guard let self = self else { return }
+            
+            self.upsertChannels(channels, needReload: true)
+        }
+    }
+    
+    private func disposeViewModel() {
+        self.channelListViewModel?.dispose()
     }
     
     
@@ -349,149 +395,21 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
         }
     }
     
+    /// This function resets the channel list.
+    /// - Since: x.x.x
+    public func resetChannelList() {
+        self.channelList = []
+        self.channelListViewModel?.reset()
+    }
+
     /// This function loads the channel list. If the reset value is true, the channel list will reset.
     /// - Parameter reset: To reset the channel list
     /// - Since: 1.2.5
     public func loadNextChannelList(reset: Bool) {
-        if self.isLoading { return }
-        self.setLoading(true, false)
-        
         if reset {
-            self.channelListQuery = nil
-            self.channelList = []
-            self.lastUpdatedTimestamp = Int64(Date().timeIntervalSince1970*1000)
-            self.lastUpdatedToken = nil
-            SBULog.info("[Request] Channel List")
-        } else {
-            SBULog.info("[Request] Next channel List")
+            self.resetChannelList()
         }
-        
-        if self.channelListQuery == nil {
-            if let query = self.customizedChannelListQuery?.copy() as? SBDGroupChannelListQuery {
-                self.channelListQuery = query
-            } else {
-                self.channelListQuery = SBDGroupChannel.createMyGroupChannelListQuery()
-                self.channelListQuery?.order = .latestLastMessage
-                self.channelListQuery?.limit = self.limit
-                self.channelListQuery?.includeEmptyChannel = self.includeEmptyChannel
-            }
-        }
-        
-        guard self.channelListQuery?.hasNext == true else {
-            SBULog.info("All channels have been loaded.")
-            self.setLoading(false, false)
-            return
-        }
-        
-        self.shouldShowLoadingIndicator()
-        self.channelListQuery?.loadNextPage(completionHandler: { [weak self] channels, error in
-            guard let self = self else { return }
-            defer {
-                self.shouldDismissLoadingIndicator();
-                self.setLoading(false, false)
-            }
-            
-            if let error = error {
-                SBULog.error("""
-                    [Failed]
-                    Channel list request: \(String(describing: error.localizedDescription))
-                    """)
-                self.errorHandler(error)
-                self.showNetworkError()
-                return
-            }
-            guard let channels = channels else { return }
-            
-            SBULog.info("[Response] \(channels.count) channels")
-            
-            
-            self.channelList += channels
-            self.sortChannelList(needReload: true)
-            self.lastUpdatedTimestamp = Int64(Date().timeIntervalSince1970*1000)
-        })
-    }
-    
-    /// This function loads the channel changelogs.
-    /// - Parameters:
-    ///   - hasMore: If set to `true`, the changelogs will no longer be scanned.
-    ///   - token: Use when you have the last updated token value.
-    /// - Since: 1.2.5
-    public func loadChannelChangeLogs(hasMore: Bool, token: String?) {
-        guard hasMore else {
-            SBULog.info("All channel changes have been loaded.")
-            self.sortChannelList(needReload: true)
-            return
-        }
-        
-        var channelLogsParams = SBDGroupChannelChangeLogsParams()
-        if let channelListQuery = self.channelListQuery {
-            channelLogsParams = SBDGroupChannelChangeLogsParams.create(with: channelListQuery)
-        }
-        
-        self.shouldShowLoadingIndicator()
-        if let token = token {
-            SBULog.info("[Request] Channel change logs with token")
-            
-            SBDMain.getMyGroupChannelChangeLogs(
-                byToken: token,
-                params: channelLogsParams
-            ){ [weak self] updatedChannels, deletedChannelUrls, hasMore, token, error in
-                guard let self = self else { return }
-                defer { self.shouldDismissLoadingIndicator() }
-                
-                if let error = error {
-                    SBULog.error("""
-                        [Failed]
-                        Channel change logs request: \(error.localizedDescription)
-                        """)
-                    self.errorHandler(error)
-                }
-                
-                self.lastUpdatedToken = token
-                
-                SBULog.info("""
-                    [Response]
-                    \(String(format: "%d updated channels", updatedChannels?.count ?? 0)),
-                    \(String(format: "%d deleted channels", deletedChannelUrls?.count ?? 0))
-                    """)
-                
-                self.upsertChannels(updatedChannels, needReload: false)
-                self.deleteChannels(channelUrls: deletedChannelUrls, needReload: false)
-                
-                self.loadChannelChangeLogs(hasMore: hasMore, token: token)
-            }
-        }
-        else {
-            SBULog.info("[Request] Channel change logs with last updated timestamp")
-            SBDMain.getMyGroupChannelChangeLogs(
-                byTimestamp: self.lastUpdatedTimestamp,
-                params: channelLogsParams
-            ) { [weak self] updatedChannels, deletedChannelUrls, hasMore, token, error in
-                guard let self = self else { return }
-                defer { self.shouldDismissLoadingIndicator() }
-                
-                if let error = error {
-                    SBULog.error("""
-                        [Failed]
-                        Channel change logs request: \(error.localizedDescription)
-                        """)
-                    self.errorHandler(error)
-                }
-                
-                self.lastUpdatedToken = token
-                
-                SBULog.info("""
-                    [Response]
-                    \(String(format: "%d updated channels", updatedChannels?.count ?? 0)),
-                    \(String(format: "%d deleted channels", deletedChannelUrls?.count ?? 0))
-                    """)
-                
-                self.upsertChannels(updatedChannels, needReload: false)
-                self.deleteChannels(channelUrls: deletedChannelUrls, needReload: false)
-                
-                self.loadChannelChangeLogs(hasMore: hasMore, token: token)
-            }
-        }
+        self.channelListViewModel?.loadNextChannelList()
     }
     
     /// This function sorts the channel lists.
@@ -500,13 +418,7 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
     public func sortChannelList(needReload: Bool) {
         let sortedChannelList = self.channelList
             .sorted(by: { (lhs: SBDGroupChannel, rhs: SBDGroupChannel) -> Bool in
-                let createdAt1: Int64 = lhs.lastMessage?.createdAt ?? -1
-                let createdAt2: Int64 = rhs.lastMessage?.createdAt ?? -1
-                if (createdAt1 == -1 && createdAt2 == -1) {
-                    return Int64(lhs.createdAt * 1000) > Int64(rhs.createdAt * 1000)
-                } else {
-                    return createdAt1 > createdAt2
-                }
+                return SBDGroupChannel.compare(withChannelA: lhs, channelB: rhs, order: channelListQuery?.order ?? .latestLastMessage) == .orderedAscending
             })
         
         self.channelList = sortedChannelList.sbu_unique()
@@ -553,11 +465,10 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
     public func upsertChannels(_ channels: [SBDGroupChannel]?, needReload: Bool) {
         guard let channels = channels else { return }
         
+        let includeEmptyChannel = self.channelListViewModel?.channelListQuery?.includeEmptyChannel ?? false
         for channel in channels {
-            guard self.channelListQuery?.belongs(to: channel) == true else { continue }
-            let includeEmptyChannel = self.channelListQuery?.includeEmptyChannel ?? false
             guard (channel.lastMessage != nil || includeEmptyChannel) else { continue }
-            guard let index = self.channelList.firstIndex(of: channel) else {
+            guard let index = self.channelList.firstIndex(where: { $0.channelUrl == channel.channelUrl }) else {
                 self.channelList.append(channel)
                 continue
             }
@@ -673,7 +584,8 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
     // MARK: - Actions
     
     func onClickCreate() {
-        if self.createChannelTypeSelector != nil {
+        if (SBUAvailable.isSupportSuperGroupChannel() || SBUAvailable.isSupportBroadcastChannel())
+            && self.createChannelTypeSelector != nil {
             self.showCreateChannelTypeSelector()
         } else {
             self.showCreateChannel(type: .group)
@@ -682,10 +594,24 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
     
     
     // MARK: - Common
+    
+    private func initChannelList() {
+        if SBUAvailable.isSupportSuperGroupChannel() || SBUAvailable.isSupportBroadcastChannel() {
+            self.createChannelTypeSelector = self.defaultCreateChannelTypeSelector
+            
+            if let createChannelTypeSelector = self.createChannelTypeSelector {
+                self.navigationController?.view.addSubview(createChannelTypeSelector)
+            }
+            self.setupAutolayout()
+        }
+        
+        self.createViewModel()
+        self.loadNextChannelList(reset: true)
+    }
+    
     func showNetworkError() {
-        self.channelListQuery = nil
         self.channelList = []
-        self.lastUpdatedTimestamp = Int64(Date().timeIntervalSince1970*1000)
+        self.channelListViewModel?.reset()
         if let emptyView = self.emptyView as? SBUEmptyView {
             emptyView.reloadData(.error)
         }
@@ -705,7 +631,6 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
     ///   - loadingState: Set to true when the list is loading.
     ///   - showIndicator: If true, the loading indicator is started, and if false, the indicator is stopped.
     public func setLoading(_ loadingState: Bool, _ showIndicator: Bool) {
-        self.isLoading = loadingState
         guard showIndicator else { return }
         
         if loadingState {
@@ -730,7 +655,7 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
         SBULog.error("Did receive error: \(message ?? "")")
     }
     
-    @available(*, deprecated, message: "deprecated in 2.1.12", renamed: "errorHandler")
+    @available(*, deprecated, renamed: "errorHandler") // 2.1.12
     open func didReceiveError(_ message: String?, _ code: NSInteger? = nil) {
         self.errorHandler(message, code)
     }
@@ -779,11 +704,7 @@ extension SBUChannelListViewController: UITableViewDataSource, UITableViewDelega
                         willDisplay cell: UITableViewCell,
                         forRowAt indexPath: IndexPath) {
         if self.channelList.count > 0,
-            self.channelListQuery?.hasNext == true,
-            indexPath.row == (self.channelList.count - Int(self.limit)/2),
-            self.isLoading == false,
-            self.channelListQuery != nil {
-            
+            indexPath.row == (self.channelList.count - Int(SBUChannelListViewModel.channelLoadLimit) / 2) {
             self.loadNextChannelList(reset: false)
         }
     }
@@ -889,110 +810,50 @@ extension SBUChannelListViewController: SBUEmptyViewDelegate {
         }
         
         SBULog.info("[Request] Retry load channel list")
-        SBUMain.connectionCheck { [weak self] user, error in
-            guard let self = self else { return }
-            
+        SBUMain.connectIfNeeded { user, error in
             if let error = error {
                 SBULog.error("[Failed] Retry request: \(String(error.localizedDescription))")
                 self.errorHandler(error)
+                return
             }
-            
-            SBDMain.removeChannelDelegate(forIdentifier: self.description)
-            SBDMain.removeConnectionDelegate(forIdentifier: self.description)
-            
-            SBDMain.add(self as SBDChannelDelegate, identifier: self.description)
-            SBDMain.add(self as SBDConnectionDelegate, identifier: self.description)
-            
-            self.loadNextChannelList(reset: true)
+
+            if self.channelListViewModel == nil {
+                self.initChannelList()
+            } else {
+                self.loadNextChannelList(reset: true)
+            }
         }
     }
 }
 
-// MARK: - SBDChannelDelegate, SBDConnectionDelegate
-extension SBUChannelListViewController: SBDChannelDelegate, SBDConnectionDelegate {
 
-    // MARK: SBDChannelDelegate
-    open func channel(_ sender: SBDGroupChannel, userDidJoin user: SBDUser) {
-        SBULog.info("""
-            User did join the channel,
-            Nickname:\(String(user.nickname ?? "")) -
-            ChannelUrl:\(sender.channelUrl)
-            """)
-        
-        if self.channelListQuery?.includeEmptyChannel == false {
-            self.updateChannels([sender], needReload: true)
-        } else {
-            self.upsertChannels([sender], needReload: true)
-        }
-    }
-    
-    open func channel(_ sender: SBDGroupChannel, userDidLeave user: SBDUser) {
-        SBULog.info("""
-            User did leave the channel,
-            Nickname:\(String(user.nickname ?? "")) -
-            ChannelUrl:\(sender.channelUrl)
-            """)
-        
-        guard sender.myMemberState != .none else {
-            self.deleteChannels(channelUrls: [sender.channelUrl], needReload: true)
-            return
-        }
-        
-        if self.channelListQuery?.includeEmptyChannel == false {
-            self.updateChannels([sender], needReload: true)
-        } else {
-            self.upsertChannels([sender], needReload: true)
-        }
-    }
-    
-    open func channelWasChanged(_ sender: SBDBaseChannel) {
-        guard let channel = sender as? SBDGroupChannel else { return }
-        SBULog.info("Channel was changed, ChannelUrl:\(sender.channelUrl)") // markAsRead, didReceiveMsg
-        
-        self.upsertChannels([channel], needReload: true)
-    }
-    
-    open func channel(_ sender: SBDBaseChannel, messageWasDeleted messageId: Int64) {
-        guard let channel = sender as? SBDGroupChannel else { return }
-        SBULog.info("""
-            Message was deleted in the channel,
-            MessageID:\(String(messageId)) -
-            ChannelUrl:\(channel.channelUrl)
-            """)
-        
-        self.upsertChannels([channel], needReload: false)
-    }
-    
-    open func channelWasFrozen(_ sender: SBDBaseChannel) {
-        guard let channel = sender as? SBDGroupChannel else { return }
-        SBULog.info("Channel was frozen, ChannelUrl:\(channel.channelUrl)")
-        
-        self.upsertChannels([channel], needReload: true)
-    }
-    
-    open func channelWasUnfrozen(_ sender: SBDBaseChannel) {
-        guard let channel = sender as? SBDGroupChannel else { return }
-        SBULog.info("Channel was unfrozen, ChannelUrl:\(channel.channelUrl)")
-        
-        self.upsertChannels([channel], needReload: true)
-    }
-    
-    open func channel(_ sender: SBDBaseChannel, userWasBanned user: SBDUser) {
-        if user.userId == SBUGlobals.CurrentUser?.userId {
-            guard let channel = sender as? SBDGroupChannel else { return }
-            SBULog.info("You are banned, ChannelUrl:\(channel.channelUrl)")
+// MARK: - SBDChannelDelegate : Please do not use it.
+extension SBUChannelListViewController: SBDChannelDelegate {
+    open func channel(_ sender: SBDGroupChannel, userDidJoin user: SBDUser) {}
+    open func channel(_ sender: SBDGroupChannel, userDidLeave user: SBDUser) {}
+    open func channelWasChanged(_ sender: SBDBaseChannel) {}
+    open func channel(_ sender: SBDBaseChannel, messageWasDeleted messageId: Int64) {}
+    open func channelWasFrozen(_ sender: SBDBaseChannel) {}
+    open func channelWasUnfrozen(_ sender: SBDBaseChannel) {}
+    open func channel(_ sender: SBDBaseChannel, userWasBanned user: SBDUser) {}
+}
 
-            self.deleteChannels(channelUrls: [channel.channelUrl], needReload: true)
-        }
-    }
-    
-    
-    // MARK: SBDConnectionDelegate
+
+// MARK: - SBDConnectionDelegate
+extension SBUChannelListViewController: SBDConnectionDelegate {
     open func didSucceedReconnection() {
         SBULog.info("Did succeed reconnection")
-        self.loadChannelChangeLogs(hasMore: true, token: self.lastUpdatedToken)
+        SBUMain.updateUserInfo { error in
+            if let error = error {
+                SBULog.error("[Failed] Update user info: \(error.localizedDescription)")
+            }
+        }
+        if self.channelListViewModel == nil {
+            self.initChannelList()
+        }
     }
 }
+
 
 // MARK: - SBUCreateChannelTypeSelectorDelegate
 extension SBUChannelListViewController: SBUCreateChannelTypeSelectorDelegate {
@@ -1036,4 +897,17 @@ extension SBUChannelListViewController: LoadingIndicatorDelegate {
     }
     
     open func shouldDismissLoadingIndicator() {}
+}
+
+
+
+
+
+
+
+
+// MARK: - Deprecated
+extension SBUChannelListViewController {
+    @available(*, deprecated, message: "Since it automatically detects channel changes internally, it is no longer necessary to use this function.") // 2.2.0
+    public func loadChannelChangeLogs(hasMore: Bool, token: String?) { }
 }

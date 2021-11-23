@@ -9,6 +9,8 @@
 import UIKit
 
 extension Date {
+    /// Default date formats.
+    /// - Since: 2.1.13
     public enum SBUDateFormat: String {
         case EMMMyyyy = "E, MMM yyyy"
         case MMMddyyyy = "MMM dd, yyyy"
@@ -20,7 +22,10 @@ extension Date {
         case yyyyMMddhhmmss = "yyyyMMddhhmmss"
     }
     
-    static func from(_ baseTimestamp: Int64) -> Date {
+    /// The `Date` value represents the time interval since 1970 with the time stamp
+    /// - Parameter baseTimestamp: The `Int64` value representing the base timestamp.
+    /// - Since: 2.2.0
+    static public func sbu_from(_ baseTimestamp: Int64) -> Date {
         let timestampString = String(format: "%lld", baseTimestamp)
         let timeInterval = timestampString.count == 10
             ? TimeInterval(baseTimestamp)
@@ -28,10 +33,21 @@ extension Date {
         return Date(timeIntervalSince1970: timeInterval)
     }
     
+    /// Gets string value with `SBUDateFormat`.
+    /// - Parameters:
+    ///    - format: The `SBUDateFormat` value.
+    ///    - localizedFormat: If `true`, it sets localized date format.
+    /// - Note: If you want to use your own date format, please see `sbu_toString(formatString:localizedFormat:)`.
+    /// - Since: 2.1.13
     public func sbu_toString(format: SBUDateFormat, localizedFormat: Bool = true) -> String {
         self.sbu_toString(formatString: format.rawValue, localizedFormat: localizedFormat)
     }
     
+    /// Gets string value with own date format string.
+    /// - Parameters:
+    ///   - formatString: The string value representing the date format.
+    ///   - localizedFormat: If `true`, it sets localized date format.
+    /// - Since: 2.1.13
     public func sbu_toString(formatString: String, localizedFormat: Bool = true) -> String {
         let formatter = DateFormatter()
 
@@ -44,7 +60,7 @@ extension Date {
     }
  
     static func elplasedTimeBetweenNow(baseTimestamp: Int64) -> String? {
-        let baseDate = Date.from(baseTimestamp)
+        let baseDate = Date.sbu_from(baseTimestamp)
         let currDate = Date()
   
         let baseDateComponents = Calendar.current.dateComponents(
@@ -77,7 +93,7 @@ extension Date {
     }
     
     static func lastUpdatedTime(baseTimestamp: Int64) -> String? {
-        let baseDate = Date.from(baseTimestamp)
+        let baseDate = Date.sbu_from(baseTimestamp)
         let currDate = Date()
          
         let baseDateComponents = Calendar.current
@@ -104,7 +120,7 @@ extension Date {
     }
     
     static func lastSeenTime(baseTimestamp: Int64) -> String? {
-        let baseDate = Date.from(baseTimestamp)
+        let baseDate = Date.sbu_from(baseTimestamp)
         let currDate = Date()
         
         let baseDateComponents = Calendar.current

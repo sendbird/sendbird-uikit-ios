@@ -25,6 +25,11 @@ public class SBUGlobals: NSObject {
     /// - Since: 1.2.1
     public static var UsingMessageGrouping: Bool = true
     
+    // MARK: - Reply Type
+    /// If this value is enabled, replying features are activated.
+    /// - Since: 2.2.0
+    public static var ReplyTypeToUse: SBUReplyType = .none
+    
     // MARK: - User Profile
     /// If this value is enabled, when you click on a user image, the user profile screen is displayed.
     /// - Since: 1.2.2
@@ -41,7 +46,7 @@ public class SBUGlobals: NSObject {
     /// Image compression rate value that will be used when sending image. Default value is 0.85.
     /// Typically this value will be used in `jpegData(compressionQuality:)`
     /// - Since: 2.0.0
-    public static var imageCompressionRate: CGFloat = 0.85
+    public static var imageCompressionRate: CGFloat = 0.25
     
     /// Image resizing size value that will be used when sending image. Default value is a device screen size.
     /// - Since: 2.0.0

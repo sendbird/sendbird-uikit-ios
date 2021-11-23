@@ -12,6 +12,12 @@ typealias SBUMenunHandler = () -> Void
 
 class SBUMenuItem: SBUCommonItem {
     var completionHandler: SBUMenunHandler?
+    var isEnabled: Bool = true {
+        didSet {
+            guard isEnabled == false else { return }
+            completionHandler = nil
+        }
+    }
     
     init(title: String? = nil,
          color: UIColor? = SBUColorSet.onlight01,

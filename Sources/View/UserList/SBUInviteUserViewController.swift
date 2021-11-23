@@ -312,9 +312,7 @@ open class SBUInviteUserViewController: SBUBaseViewController {
         
         inviteUserListViewModel.channelChangedObservable.observe { [weak self] channel, type in
             switch type {
-            case .invite:
-                self?.popToChannel()
-            case .promote:
+            case .invite, .promote:
                 self?.popToChannel()
             default:
                 break
@@ -501,7 +499,7 @@ open class SBUInviteUserViewController: SBUBaseViewController {
         SBULog.error("Did receive error: \(message ?? "")")
     }
     
-    @available(*, deprecated, message: "deprecated in 2.1.12", renamed: "errorHandler")
+    @available(*, deprecated, renamed: "errorHandler") // 2.1.12
     open func didReceiveError(_ message: String?, _ code: NSInteger? = nil) {
         self.errorHandler(message, code)
     }

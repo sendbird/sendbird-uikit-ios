@@ -195,7 +195,7 @@ open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
             userNameView.configure(username: username, isOverlay: self.isOverlay)
         }
         
-        self.messageTimeLabel.text = Date.from(message.createdAt).sbu_toString(format: .hhmma)
+        self.messageTimeLabel.text = Date.sbu_from(message.createdAt).sbu_toString(format: .hhmma)
         self.messageTimeLabel.textAlignment = .left
         
         if let profileView = self.profileView as? SBUMessageProfileView {
@@ -209,7 +209,7 @@ open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
     }
     
     func configureStateImage() {
-        stateImageView.layer.removeAnimation(forKey: "Spin")
+        stateImageView.layer.removeAnimation(forKey: SBUAnimation.Key.spin.rawValue)
         let stateImage: UIImage?
         
         switch message.sendingStatus {
@@ -226,7 +226,7 @@ open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
                 rotation.toValue = 2 * Double.pi
                 rotation.duration = 1.1
                 rotation.repeatCount = Float.infinity
-                stateImageView.layer.add(rotation, forKey: "Spin")
+                stateImageView.layer.add(rotation, forKey: SBUAnimation.Key.spin.rawValue)
             case .failed, .canceled:
                 stateImage = SBUIconSetType.iconError.image(
                     with: theme.failedStateColor,

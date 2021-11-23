@@ -115,7 +115,7 @@ import SendBirdSDK
     case operators
 }
 
-@available(*, deprecated, message: "deprecated in 1.2.0", renamed: "UserListType")
+@available(*, deprecated, renamed: "UserListType") // 1.2.0
 @objc public enum MemberListType: Int {
     case none
     case createChannel
@@ -176,8 +176,19 @@ import SendBirdSDK
  
 /// This is an enumeration to message receipt state.
 @objc public enum SBUMessageReceiptState: Int {
-    case none 
+    /// The message is sent
+    case none
+    /// The message is delivered
+    case delivered
+    /// The message is read
+    case read
+    /// Not use receipt state
+    case notUsed
+    
+    @available(*, unavailable, renamed: "read") // 2.2.0
     case readReceipt
+    
+    @available(*, unavailable, renamed: "delivered") // 2.2.0
     case deliveryReceipt
 }
 
@@ -195,6 +206,7 @@ import SendBirdSDK
     case copy
     case edit
     case delete
+    case reply
 }
 
 /// This is an enumeration for new message info item type.

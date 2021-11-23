@@ -8,12 +8,12 @@
 
 import UIKit
 
-class SBUUserMessageTextView: UIView {
+class SBUUserMessageTextView: SBUView {
     struct Metric {
         static let textLeftRightMargin = 12.f
         static let textTopDownMargin = 7.f
         static let textMaxWidth = SBUConstant.messageCellMaxWidth
-        static let textMinHeight = 20.f
+        static let textMinHeight = 16.f
         static let textMinWidth = 10.f
         static let viewCornerRadius = 16.f
         static let viewBorderWidth = 1.f
@@ -25,6 +25,8 @@ class SBUUserMessageTextView: UIView {
         var textView = SBULinkClickableTextView()
         textView.backgroundColor = .clear
         textView.textAlignment = .left
+        textView.showsVerticalScrollIndicator = false
+        textView.showsHorizontalScrollIndicator = false
         textView.isScrollEnabled = false
         textView.isEditable = false
         textView.isSelectable = true
@@ -44,41 +46,29 @@ class SBUUserMessageTextView: UIView {
     var textLeftConstraint: NSLayoutConstraint!
     var textRightConstraint: NSLayoutConstraint!
     
-    init() {
-        super.init(frame: .zero)
-        self.setupViews()
+    override init() {
+        super.init()
         self.setupStyles()
-        self.setupAutolayout()
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.setupViews()
         self.setupStyles()
-        self.setupAutolayout()
     }
     
     public init(channelType: ChannelType) {
-        super.init(frame: .zero)
-        
         self.channelType = channelType
-        
-        self.setupViews()
+
+        super.init()
         self.setupStyles()
-        self.setupAutolayout()
     }
     
-    @available(*, unavailable, renamed: "UserMessageTextView(frame:)")
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-    }
-    
-    func setupViews() {
+    override func setupViews() {
         self.textView.delegate = self
         self.addSubview(self.textView)
     }
     
-    func setupAutolayout() {
+    override func setupAutolayout() {
         self.translatesAutoresizingMaskIntoConstraints = false
         
         if self.channelType != .open {
@@ -145,9 +135,9 @@ class SBUUserMessageTextView: UIView {
         self.updateConstraintsIfNeeded()
     }
     
-    func setupStyles() { }
+    override func setupStyles() { }
     
-    func configure(model: SBUUserMessageCellModel) {
+    func configure(model: SBUUserMessageTextViewModel) {
         self.text = model.text
         self.textView.attributedText = model.attributedText
         self.textView.linkTextAttributes = [

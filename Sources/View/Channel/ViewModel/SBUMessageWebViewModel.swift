@@ -57,11 +57,11 @@ class SBUMessageWebViewModel {
         self.imageURL = imageData?.secureURL ?? imageData?.url
         self.placeHolderImage = SBUIconSetType.iconPhoto.image(
             with: theme.fileMessagePlaceholderColor,
-            to: SBUIconSetType.Metric.defaultIconSizeXLarge
+            to: SBUIconSetType.Metric.defaultIconSizeVeryLarge
         )
         self.errorImage = SBUIconSetType.iconThumbnailNone.image(
             with: theme.fileMessagePlaceholderColor,
-            to: SBUIconSetType.Metric.defaultIconSizeXLarge
+            to: SBUIconSetType.Metric.defaultIconSizeVeryLarge
         )
     }
     

@@ -15,19 +15,16 @@ class SBUMessageCache: NSObject {
     private let channel: SBDBaseChannel
     
     @SBUAtomic private(set) var cachedMessageList: [SBDBaseMessage] = []
-    private(set) var messageListParam: SBDMessageListParams = SBDMessageListParams()
+    private let messageListParam: SBDMessageListParams
     private var latestUpdatedAt: Int64 = 0
     
-    init(channel: SBDBaseChannel) {
+    init(channel: SBDBaseChannel,
+         messageListParam: SBDMessageListParams) {
         self.channel = channel
-    }
-    
-    func updateParam(param: SBDMessageListParams) {
-        let messageListParam: SBDMessageListParams = param.copy() as? SBDMessageListParams ?? SBDMessageListParams()
-        messageListParam.previousResultSize = self.fetchLimit
-        messageListParam.nextResultSize = self.fetchLimit
         
-        self.messageListParam = messageListParam
+        self.messageListParam = messageListParam.copy() as? SBDMessageListParams ?? SBDMessageListParams()
+        self.messageListParam.previousResultSize = self.fetchLimit
+        self.messageListParam.nextResultSize = self.fetchLimit
     }
     
     // MARK: - Loading messages in cache

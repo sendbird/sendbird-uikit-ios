@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SBUMessageWebView: UIStackView {
+class SBUMessageWebView: UIStackView, SBUViewLifeCycle {
     struct Metric {
         static let imageHeight = 136.f
         static let textTopMargin = 8.f
@@ -27,11 +27,7 @@ class SBUMessageWebView: UIStackView {
         return imageView
     }()
     
-    let detailStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        return stackView
-    }()
+    let detailStackView = SBUStackView(axis: .vertical)
     
     let titleLabel:UILabel = {
         let label = UILabel()
@@ -70,11 +66,14 @@ class SBUMessageWebView: UIStackView {
     
     func setupViews() {
         self.axis = .vertical
-        self.addArrangedSubview(self.imageView)
-        self.addArrangedSubview(self.detailStackView)
-        self.detailStackView.addArrangedSubview(self.titleLabel)
-        self.detailStackView.addArrangedSubview(self.descriptionLabel)
-        self.detailStackView.addArrangedSubview(self.urlLabel)
+        self.setVStack([
+            self.imageView,
+            self.detailStackView.setVStack([
+                self.titleLabel,
+                self.descriptionLabel,
+                self.urlLabel
+            ])
+        ])
     }
     
     func setupAutolayout() {
@@ -103,7 +102,9 @@ class SBUMessageWebView: UIStackView {
         )
     }
     
-    func setupStyles() {}
+    func setupStyles() { }
+    
+    func setupActions() { }
 
     func configure(model: SBUMessageWebViewModel) {
         if let imageURL = model.imageURL {

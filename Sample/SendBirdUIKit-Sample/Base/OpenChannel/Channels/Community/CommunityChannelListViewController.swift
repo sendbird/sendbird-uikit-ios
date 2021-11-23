@@ -83,7 +83,7 @@ class CommunityChannelListViewController: SBUBaseChannelListViewController, SBUE
         
         self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
         
-        SBUMain.connectionCheck { [weak self] user, error in
+        SBUMain.connectIfNeeded { [weak self] user, error in
             guard let self = self else { return }
             
             SBDMain.add(self as SBDChannelDelegate, identifier: self.description)
@@ -334,7 +334,7 @@ class CommunityChannelListViewController: SBUBaseChannelListViewController, SBUE
             emptyView.reloadData(.noChannels)
         }
         
-        SBUMain.connectionCheck { [weak self] user, error in
+        SBUMain.connectIfNeeded { [weak self] user, error in
             self?.loadNextChannelList(reset: true)
         }
     }

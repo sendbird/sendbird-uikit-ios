@@ -148,7 +148,14 @@ class ViewController: UIViewController {
         UserDefaults.saveIsLightTheme(true)
         
         let coreVersion: String = SBDMain.getSDKVersion()
-        let uikitVersion: String = SBUMain.shortVersionString() ?? "?"
+        var uikitVersion: String {
+            if SBUMain.shortVersion == "[NEXT_VERSION]" {
+                let bundle = Bundle(identifier: "com.sendbird.uikit.sample")
+                return "\(bundle?.infoDictionary?["CFBundleShortVersionString"] ?? "")"
+            } else {
+                return SBUMain.shortVersion
+            }
+        }
         versionLabel.text = "UIKit v\(uikitVersion)\t|\tSDK v\(coreVersion)"
          
         userIdTextField.text = UserDefaults.loadUserID()
@@ -156,6 +163,10 @@ class ViewController: UIViewController {
         
         SBDMain.add(self as SBDUserEventDelegate, identifier: self.description)
         SBDMain.add(self as SBDConnectionDelegate, identifier: self.description)
+        
+        guard userIdTextField.text != nil,
+              nicknameTextField.text != nil else { return }
+        signinAction()
     }
     
     deinit {

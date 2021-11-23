@@ -146,7 +146,7 @@ open class SBUOpenChannelUserMessageCell: SBUOpenChannelContentBaseMessageCell {
             let textColor = theme.linkColor
             
             messageTextView.configure(
-                model: SBUUserMessageCellModel(message: message, position: position, textColor: isWebType ? textColor : nil, isOverlay: isOverlay)
+                model: SBUUserMessageTextViewModel(message: message, position: position, textColor: isWebType ? textColor : nil, isOverlay: isOverlay)
             )
             messageTextView.updateSideConstraint()
             messageTextView.sizeToFit()

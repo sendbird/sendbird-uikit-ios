@@ -89,42 +89,51 @@ public class SBUUtils: NSObject {
     ///   - channel: `SBDGroupChannel` object
     ///   - message: `SBDBaseMessage` object
     /// - Returns: `SBUMessageReceiptState`
-    @available(*, deprecated, message: "deprecated in 2.0.5", renamed: "getReceiptStateIfExists")
+    @available(*, deprecated, renamed: "getReceiptStateIfExists") // 2.0.5
     public static func getReceiptState(channel: SBDGroupChannel,
                                        message: SBDBaseMessage) -> SBUMessageReceiptState {
-        let didReadAll = channel.getUnreadMemberCount(message) == 0
-        let didDeliverAll = channel.getUndeliveredMemberCount(message) == 0
-        
-        if didReadAll {
-            return .readReceipt
-        } else if didDeliverAll {
-            return .deliveryReceipt
-        } else {
-            return .none
-        }
+        Self.getReceiptState(of: message, in: channel)
     }
     
     /// This function gets the receipt state of the message on the channel.
     /// Will return nil for `Super Group Channel` or `Broadcast Channel` which  doesn't support receipts.
     ///
+    /// - Important: Please set returned value to `SBUMessageReceiptState.notUsed`.
+    ///
     /// - Parameters:
     ///   - channel: `SBDGroupChannel` object
     ///   - message: `SBDBaseMessage` object
     /// - Returns: `SBUMessageReceiptState`, or nil if the channel doesn't support receipts.
+    @available(*, unavailable, message: "It returns nil when th channel is super group channel or broadcast channel. Please set the value to `SBUMessageReceitState.notUsed`.", renamed: "getReceiptState(of:in:)") // 2.2.0
     public static func getReceiptStateIfExists(for channel: SBDGroupChannel,
                                                message: SBDBaseMessage) -> SBUMessageReceiptState? {
-        guard !channel.isSuper
-            && !channel.isBroadcast else { return nil }
+        let receiptState = Self.getReceiptState(of: message, in: channel)
+        return receiptState == .notUsed ? nil : receiptState
+    }
+    
+    /// This function gets the receipt state of the message on the channel.
+    ///
+    /// - Parameters:
+    ///   - channel: `SBDGroupChannel` object
+    ///   - message: `SBDBaseMessage` object
+    ///
+    /// - Returns: `SBUMessageReceiptState`. , It returns `.notUsed` when the channel is *super group channel* or *broadcast channel* which doesn't support receipts.
+    ///
+    /// - Since: 2.2.0
+    public static func getReceiptState(of message: SBDBaseMessage, in channel: SBDGroupChannel) -> SBUMessageReceiptState {
+        if channel.isSuper || channel.isBroadcast {
+            return .notUsed
+        }
         
         let didReadAll = channel.getUnreadMemberCount(message) == 0
         let didDeliverAll = channel.getUndeliveredMemberCount(message) == 0
         
         if didReadAll {
-            return .readReceipt
+            return .read
         } else if didDeliverAll {
-            return .deliveryReceipt
+            return .delivered
         } else {
-            return SBUMessageReceiptState.none
+            return .none
         }
     }
     

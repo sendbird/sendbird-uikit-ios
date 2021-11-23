@@ -113,7 +113,7 @@ public class SBUGlobalCustomParams: NSObject {
     /// ```
     /// SBUGlobalCustomParams.messageListParamsBuilder = { params in
     ///     params?.includeReactions = true
-    ///     params?.includeReplies = true
+    ///     params?.includeThreadInfo = true
     ///     ...
     /// }
     /// ```

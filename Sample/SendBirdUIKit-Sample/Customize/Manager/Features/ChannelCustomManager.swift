@@ -79,7 +79,9 @@ extension ChannelCustomManager {
             let params = SBDMessageListParams()
             params.includeMetaArray = true
             params.includeReactions = true
-            params.includeReplies = true
+            params.includeThreadInfo = true
+            params.includeParentMessageInfo = SBUGlobals.ReplyTypeToUse != .none
+            params.replyType = SBUGlobals.ReplyTypeToUse.filterValue
             params.messageType = .user
             // ... You can set more query options
             

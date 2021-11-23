@@ -456,7 +456,7 @@ open class SBUBaseChannelSettingViewController: SBUBaseViewController {
         SBULog.error("Did receive error: \(message ?? "")")
     }
     
-    @available(*, deprecated, message: "deprecated in 2.1.12", renamed: "errorHandler")
+    @available(*, deprecated, renamed: "errorHandler") // 2.1.12
     open func didReceiveError(_ message: String?, _ code: NSInteger? = nil) {
         self.errorHandler(message, code)
     }

@@ -148,6 +148,7 @@ class MySettingsCell: UITableViewCell {
         
         switch type {
         case .darkTheme:
+            self.rightSwitch.isOn = isDarkMode
             self.typeIcon.image = UIImage(named: "iconTheme")?
                 .sbu_with(tintColor: isDarkMode ? nil : .white)
                 .resize(with: CGSize(width: 18, height: 18))
@@ -185,16 +186,18 @@ class MySettingsCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
     }
     
+    // For Do Not Disturb
     func changeSwitch(_ isOn: Bool) {
         self.rightSwitch.isOn = isOn
     }
 
     
     // MARK: - Action
-    @objc func onChangeSwitch(_ sender: Any) {
-        self.switchAction?(rightSwitch.isOn)
+    @objc func onChangeSwitch(_ sender: UISwitch) {
+        self.switchAction?(sender.isOn)
     }
     
+    // For Do Not Disturb
     func changeBackSwitch() {
         self.rightSwitch.isOn = !self.rightSwitch.isOn
     }

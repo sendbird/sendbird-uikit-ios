@@ -53,135 +53,162 @@
 		9CED4D1924ADE42A00D81B10 /* MemberListCustomManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CED4D1824ADE42A00D81B10 /* MemberListCustomManager.swift */; };
 		9CED4D1C24ADE69900D81B10 /* CustomChannelListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CED4D1B24ADE69900D81B10 /* CustomChannelListCell.swift */; };
 		9CED4D1F24AF02D800D81B10 /* SampleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CED4D1E24AF02D800D81B10 /* SampleManager.swift */; };
-		A948A1682743A631004B3DEA /* URL+SBUKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0C22743A62F004B3DEA /* URL+SBUKit.swift */; };
-		A948A1692743A631004B3DEA /* Array+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0C32743A62F004B3DEA /* Array+SBUIKit.swift */; };
-		A948A16A2743A631004B3DEA /* UIColor+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0C42743A62F004B3DEA /* UIColor+SBUIKit.swift */; };
-		A948A16B2743A631004B3DEA /* Formatter+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0C52743A62F004B3DEA /* Formatter+SBUIKit.swift */; };
-		A948A16C2743A631004B3DEA /* UIImage+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0C62743A62F004B3DEA /* UIImage+SBUIKit.swift */; };
-		A948A16D2743A631004B3DEA /* UINavigationController+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0C72743A62F004B3DEA /* UINavigationController+SBUIKit.swift */; };
-		A948A16E2743A631004B3DEA /* String+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0C82743A62F004B3DEA /* String+SBUIKit.swift */; };
-		A948A16F2743A631004B3DEA /* CGSize+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0C92743A62F004B3DEA /* CGSize+SBUIKit.swift */; };
-		A948A1702743A631004B3DEA /* Float+SBUKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0CA2743A62F004B3DEA /* Float+SBUKit.swift */; };
-		A948A1712743A631004B3DEA /* Data+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0CB2743A62F004B3DEA /* Data+SBUIKit.swift */; };
-		A948A1722743A631004B3DEA /* UIViewController+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0CC2743A62F004B3DEA /* UIViewController+SBUIKit.swift */; };
-		A948A1732743A631004B3DEA /* Date+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0CD2743A62F004B3DEA /* Date+SBUIKit.swift */; };
-		A948A1742743A631004B3DEA /* UIView+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0CE2743A62F004B3DEA /* UIView+SBUIKit.swift */; };
-		A948A1752743A631004B3DEA /* Sequence+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0CF2743A62F004B3DEA /* Sequence+SBUIKit.swift */; };
-		A948A1762743A631004B3DEA /* UIImageView+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0D02743A62F004B3DEA /* UIImageView+SBUIKit.swift */; };
-		A948A1772743A631004B3DEA /* NSObject+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0D12743A62F004B3DEA /* NSObject+SBUIKit.swift */; };
-		A948A1782743A631004B3DEA /* SBUPropertyWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0D32743A62F004B3DEA /* SBUPropertyWrapper.swift */; };
-		A948A1792743A631004B3DEA /* SBUUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0D42743A62F004B3DEA /* SBUUtils.swift */; };
-		A948A17A2743A631004B3DEA /* SBULogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0D52743A62F004B3DEA /* SBULogger.swift */; };
-		A948A17B2743A631004B3DEA /* SBUMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0D62743A62F004B3DEA /* SBUMain.swift */; };
-		A948A17C2743A631004B3DEA /* SBUAvailable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0D72743A62F004B3DEA /* SBUAvailable.swift */; };
-		A948A17D2743A631004B3DEA /* SBUIconSetType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0D92743A62F004B3DEA /* SBUIconSetType.swift */; };
-		A948A17E2743A631004B3DEA /* SBUEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0DA2743A62F004B3DEA /* SBUEnums.swift */; };
-		A948A17F2743A631004B3DEA /* CommonProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0DC2743A62F004B3DEA /* CommonProtocols.swift */; };
-		A948A1802743A631004B3DEA /* SBUEmojiManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0DE2743A62F004B3DEA /* SBUEmojiManager.swift */; };
-		A948A1812743A631004B3DEA /* SBUCacheManager.File.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0DF2743A62F004B3DEA /* SBUCacheManager.File.swift */; };
-		A948A1822743A631004B3DEA /* SBUPendingMessageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0E02743A62F004B3DEA /* SBUPendingMessageManager.swift */; };
-		A948A1832743A631004B3DEA /* SBUDownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0E12743A62F004B3DEA /* SBUDownloadManager.swift */; };
-		A948A1842743A631004B3DEA /* SBUPermissionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0E22743A62F004B3DEA /* SBUPermissionManager.swift */; };
-		A948A1852743A631004B3DEA /* SBUCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0E32743A62F004B3DEA /* SBUCacheManager.swift */; };
-		A948A1862743A631004B3DEA /* SBUToastManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0E42743A62F004B3DEA /* SBUToastManager.swift */; };
-		A948A1872743A631004B3DEA /* SBUGlobalCustomParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0E52743A62F004B3DEA /* SBUGlobalCustomParams.swift */; };
-		A948A1882743A631004B3DEA /* SBUConstant.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0E72743A62F004B3DEA /* SBUConstant.swift */; };
-		A948A1892743A631004B3DEA /* SBUStringSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0E82743A62F004B3DEA /* SBUStringSet.swift */; };
-		A948A18A2743A631004B3DEA /* SBUCommonViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0E92743A62F004B3DEA /* SBUCommonViews.swift */; };
-		A948A18B2743A631004B3DEA /* SBUIconSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0EB2743A630004B3DEA /* SBUIconSet.swift */; };
-		A948A18C2743A631004B3DEA /* SBUColorSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0EC2743A630004B3DEA /* SBUColorSet.swift */; };
-		A948A18D2743A631004B3DEA /* SBUTheme+Type.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0ED2743A630004B3DEA /* SBUTheme+Type.swift */; };
-		A948A18E2743A631004B3DEA /* SBUFontSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0EE2743A630004B3DEA /* SBUFontSet.swift */; };
-		A948A18F2743A631004B3DEA /* SBUTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0EF2743A630004B3DEA /* SBUTheme.swift */; };
-		A948A1902743A631004B3DEA /* SBUMessageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0F12743A630004B3DEA /* SBUMessageCache.swift */; };
-		A948A1912743A631004B3DEA /* SBUUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0F22743A630004B3DEA /* SBUUser.swift */; };
-		A948A1922743A631004B3DEA /* SBUHighlightMessageInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0F32743A630004B3DEA /* SBUHighlightMessageInfo.swift */; };
-		A948A1932743A631004B3DEA /* SBUBaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0F62743A630004B3DEA /* SBUBaseViewController.swift */; };
-		A948A1942743A631004B3DEA /* SBUMessageSearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0F72743A630004B3DEA /* SBUMessageSearchViewModel.swift */; };
-		A948A1952743A631004B3DEA /* SBUMemberListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0F82743A630004B3DEA /* SBUMemberListViewModel.swift */; };
-		A948A1962743A631004B3DEA /* SBUInviteUserListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0F92743A630004B3DEA /* SBUInviteUserListViewModel.swift */; };
-		A948A1972743A631004B3DEA /* SBUViewModelDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0FB2743A630004B3DEA /* SBUViewModelDelegate.swift */; };
-		A948A1982743A631004B3DEA /* SBULoadableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0FC2743A630004B3DEA /* SBULoadableViewModel.swift */; };
-		A948A1992743A631004B3DEA /* SBUChannelActionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0FD2743A630004B3DEA /* SBUChannelActionViewModel.swift */; };
-		A948A19A2743A631004B3DEA /* SBUChannelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0FE2743A630004B3DEA /* SBUChannelViewModel.swift */; };
-		A948A19B2743A631004B3DEA /* SBUObservable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A0FF2743A630004B3DEA /* SBUObservable.swift */; };
-		A948A19C2743A631004B3DEA /* SBUChannelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1022743A630004B3DEA /* SBUChannelCell.swift */; };
-		A948A19D2743A631004B3DEA /* SBUBaseChannelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1032743A630004B3DEA /* SBUBaseChannelCell.swift */; };
-		A948A19E2743A631004B3DEA /* SBUChannelListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1042743A630004B3DEA /* SBUChannelListViewController.swift */; };
-		A948A19F2743A631004B3DEA /* SBUBaseChannelListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1052743A630004B3DEA /* SBUBaseChannelListViewController.swift */; };
-		A948A1A02743A631004B3DEA /* SBUUserProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1072743A630004B3DEA /* SBUUserProfileView.swift */; };
-		A948A1A12743A631004B3DEA /* SBUUserMessageCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A10A2743A630004B3DEA /* SBUUserMessageCellModel.swift */; };
-		A948A1A22743A631004B3DEA /* SBUMessageWebViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A10B2743A630004B3DEA /* SBUMessageWebViewModel.swift */; };
-		A948A1A32743A631004B3DEA /* SBUReactionCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A10D2743A630004B3DEA /* SBUReactionCollectionViewCell.swift */; };
-		A948A1A42743A631004B3DEA /* SBUReactionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A10E2743A630004B3DEA /* SBUReactionsViewController.swift */; };
-		A948A1A52743A631004B3DEA /* SBUMessageReactionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A10F2743A630004B3DEA /* SBUMessageReactionView.swift */; };
-		A948A1A62743A631004B3DEA /* SBUReactionCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A948A1102743A630004B3DEA /* SBUReactionCollectionViewCell.xib */; };
-		A948A1A72743A631004B3DEA /* SBUEmojiListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1112743A630004B3DEA /* SBUEmojiListViewController.swift */; };
-		A948A1A82743A631004B3DEA /* SBUBaseChannelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1122743A630004B3DEA /* SBUBaseChannelViewController.swift */; };
-		A948A1A92743A631004B3DEA /* OpenChannelCommonContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1152743A630004B3DEA /* OpenChannelCommonContentView.swift */; };
-		A948A1AA2743A631004B3DEA /* BaseFileContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1162743A630004B3DEA /* BaseFileContentView.swift */; };
-		A948A1AB2743A631004B3DEA /* ImageContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1172743A630004B3DEA /* ImageContentView.swift */; };
-		A948A1AC2743A631004B3DEA /* CommonContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1182743A630004B3DEA /* CommonContentView.swift */; };
-		A948A1AD2743A631004B3DEA /* OpenChannelImageContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1192743A630004B3DEA /* OpenChannelImageContentView.swift */; };
-		A948A1AE2743A631004B3DEA /* SBUBaseMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A11B2743A630004B3DEA /* SBUBaseMessageCell.swift */; };
-		A948A1AF2743A631004B3DEA /* SBUOpenChannelFileMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A11D2743A630004B3DEA /* SBUOpenChannelFileMessageCell.swift */; };
-		A948A1B02743A631004B3DEA /* SBUOpenChannelAdminMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A11E2743A630004B3DEA /* SBUOpenChannelAdminMessageCell.swift */; };
-		A948A1B12743A631004B3DEA /* SBUOpenChannelContentBaseMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A11F2743A630004B3DEA /* SBUOpenChannelContentBaseMessageCell.swift */; };
-		A948A1B22743A631004B3DEA /* SBUOpenChannelUserMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1202743A630004B3DEA /* SBUOpenChannelUserMessageCell.swift */; };
-		A948A1B32743A631004B3DEA /* SBUOpenChannelUnknownMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1212743A630004B3DEA /* SBUOpenChannelUnknownMessageCell.swift */; };
-		A948A1B42743A631004B3DEA /* SBUOpenChannelBaseMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1222743A630004B3DEA /* SBUOpenChannelBaseMessageCell.swift */; };
-		A948A1B52743A631004B3DEA /* SBUFileMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1232743A630004B3DEA /* SBUFileMessageCell.swift */; };
-		A948A1B62743A631004B3DEA /* SBUAdminMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1242743A630004B3DEA /* SBUAdminMessageCell.swift */; };
-		A948A1B72743A631004B3DEA /* SBUContentBaseMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1252743A630004B3DEA /* SBUContentBaseMessageCell.swift */; };
-		A948A1B82743A631004B3DEA /* SBUUnknownMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1262743A630004B3DEA /* SBUUnknownMessageCell.swift */; };
-		A948A1B92743A631004B3DEA /* SBUUserMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1272743A630004B3DEA /* SBUUserMessageCell.swift */; };
-		A948A1BA2743A631004B3DEA /* SBUMessageInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1292743A630004B3DEA /* SBUMessageInputView.swift */; };
-		A948A1BB2743A631004B3DEA /* SBUMessageStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A12B2743A630004B3DEA /* SBUMessageStateView.swift */; };
-		A948A1BC2743A631004B3DEA /* SBUMessageProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A12C2743A630004B3DEA /* SBUMessageProfileView.swift */; };
-		A948A1BD2743A631004B3DEA /* SBUUserMessageTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A12D2743A630004B3DEA /* SBUUserMessageTextView.swift */; };
-		A948A1BE2743A631004B3DEA /* SBUUserNameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A12E2743A630004B3DEA /* SBUUserNameView.swift */; };
-		A948A1BF2743A631004B3DEA /* SBUMessageWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A12F2743A630004B3DEA /* SBUMessageWebView.swift */; };
-		A948A1C02743A631004B3DEA /* SBUMessageDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1302743A630004B3DEA /* SBUMessageDateView.swift */; };
-		A948A1C12743A631004B3DEA /* SBULinkClickableTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1312743A630004B3DEA /* SBULinkClickableTextView.swift */; };
-		A948A1C22743A631004B3DEA /* SBUOpenChannelMessageWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1322743A630004B3DEA /* SBUOpenChannelMessageWebView.swift */; };
-		A948A1C32743A631004B3DEA /* SBUSelectableStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1332743A630004B3DEA /* SBUSelectableStackView.swift */; };
-		A948A1C42743A631004B3DEA /* SBUFileViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1352743A630004B3DEA /* SBUFileViewer.swift */; };
-		A948A1C52743A631004B3DEA /* SBUChannelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1362743A630004B3DEA /* SBUChannelViewController.swift */; };
-		A948A1C62743A631004B3DEA /* SBUNewMessageInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1382743A630004B3DEA /* SBUNewMessageInfo.swift */; };
-		A948A1C72743A631004B3DEA /* SBUOpenChannelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1392743A630004B3DEA /* SBUOpenChannelViewController.swift */; };
-		A948A1C82743A631004B3DEA /* SBUChannelInfoHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A13B2743A630004B3DEA /* SBUChannelInfoHeaderView.swift */; };
-		A948A1C92743A631004B3DEA /* SBUChannelTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A13C2743A630004B3DEA /* SBUChannelTitleView.swift */; };
-		A948A1CA2743A631004B3DEA /* SBUEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A13E2743A630004B3DEA /* SBUEmptyView.swift */; };
-		A948A1CB2743A631004B3DEA /* SBUCoverImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A13F2743A630004B3DEA /* SBUCoverImageView.swift */; };
-		A948A1CC2743A631004B3DEA /* SBUCommonItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1402743A630004B3DEA /* SBUCommonItem.swift */; };
-		A948A1CD2743A631004B3DEA /* SBULayoutableButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1412743A630004B3DEA /* SBULayoutableButton.swift */; };
-		A948A1CE2743A631004B3DEA /* SBUNavigationTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1422743A630004B3DEA /* SBUNavigationTitleView.swift */; };
-		A948A1CF2743A631004B3DEA /* SBUActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1432743A630004B3DEA /* SBUActionSheet.swift */; };
-		A948A1D02743A631004B3DEA /* SBUAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1442743A630004B3DEA /* SBUAlertView.swift */; };
-		A948A1D12743A631004B3DEA /* SBUMenuCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A948A1462743A630004B3DEA /* SBUMenuCell.xib */; };
-		A948A1D22743A631004B3DEA /* SBUMenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1472743A630004B3DEA /* SBUMenuCell.swift */; };
-		A948A1D32743A631004B3DEA /* SBUMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1482743A630004B3DEA /* SBUMenuView.swift */; };
-		A948A1D42743A631004B3DEA /* SBUBottomSheetController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1492743A630004B3DEA /* SBUBottomSheetController.swift */; };
-		A948A1D52743A631004B3DEA /* SBUMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A14A2743A630004B3DEA /* SBUMenuViewController.swift */; };
-		A948A1D62743A631004B3DEA /* SBUUserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A14C2743A630004B3DEA /* SBUUserCell.swift */; };
-		A948A1D72743A631004B3DEA /* SBULoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A14D2743A630004B3DEA /* SBULoading.swift */; };
-		A948A1D82743A631004B3DEA /* SBUCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A14E2743A630004B3DEA /* SBUCollectionViewFlowLayout.swift */; };
-		A948A1D92743A631004B3DEA /* SBUMemberListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1502743A630004B3DEA /* SBUMemberListViewController.swift */; };
-		A948A1DA2743A631004B3DEA /* SBUInviteUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1512743A630004B3DEA /* SBUInviteUserViewController.swift */; };
-		A948A1DB2743A631004B3DEA /* SBUMessageSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1532743A630004B3DEA /* SBUMessageSearchViewController.swift */; };
-		A948A1DC2743A631004B3DEA /* SBUMessageSearchResultCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1542743A630004B3DEA /* SBUMessageSearchResultCell.swift */; };
-		A948A1DD2743A631004B3DEA /* SBUOpenChannelSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1562743A630004B3DEA /* SBUOpenChannelSettingsViewController.swift */; };
-		A948A1DE2743A631004B3DEA /* SBUOpenChannelSettingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1582743A630004B3DEA /* SBUOpenChannelSettingCell.swift */; };
-		A948A1DF2743A631004B3DEA /* SBUModerationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1592743A630004B3DEA /* SBUModerationCell.swift */; };
-		A948A1E02743A631004B3DEA /* SBUChannelSettingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A15A2743A630004B3DEA /* SBUChannelSettingCell.swift */; };
-		A948A1E12743A631004B3DEA /* SBUModerationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A15B2743A630004B3DEA /* SBUModerationsViewController.swift */; };
-		A948A1E22743A631004B3DEA /* SBUChannelSettingsUserInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A15D2743A630004B3DEA /* SBUChannelSettingsUserInfoView.swift */; };
-		A948A1E32743A631004B3DEA /* SBUBaseChannelSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A15E2743A630004B3DEA /* SBUBaseChannelSettingViewController.swift */; };
-		A948A1E42743A631004B3DEA /* SBUChannelSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A15F2743A630004B3DEA /* SBUChannelSettingsViewController.swift */; };
-		A948A1E52743A631004B3DEA /* SBUCreateChannelTypeSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1612743A630004B3DEA /* SBUCreateChannelTypeSelector.swift */; };
-		A948A1E62743A631004B3DEA /* SBUCreateChannelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1622743A630004B3DEA /* SBUCreateChannelViewController.swift */; };
-		A948A1E72743A631004B3DEA /* SBUGlobals.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948A1642743A630004B3DEA /* SBUGlobals.swift */; };
-		A948A1E82743A631004B3DEA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A948A1662743A630004B3DEA /* Assets.xcassets */; };
+		A90A38F4274CE604009F8626 /* UIStackView.SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A382D274CE604009F8626 /* UIStackView.SBUIKit.swift */; };
+		A90A38F5274CE604009F8626 /* URL+SBUKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A382E274CE604009F8626 /* URL+SBUKit.swift */; };
+		A90A38F6274CE604009F8626 /* Array+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A382F274CE604009F8626 /* Array+SBUIKit.swift */; };
+		A90A38F7274CE604009F8626 /* UIColor+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3830274CE604009F8626 /* UIColor+SBUIKit.swift */; };
+		A90A38F8274CE604009F8626 /* Formatter+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3831274CE604009F8626 /* Formatter+SBUIKit.swift */; };
+		A90A38F9274CE604009F8626 /* UIImage+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3832274CE604009F8626 /* UIImage+SBUIKit.swift */; };
+		A90A38FA274CE604009F8626 /* UINavigationController+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3833274CE604009F8626 /* UINavigationController+SBUIKit.swift */; };
+		A90A38FB274CE604009F8626 /* String+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3834274CE604009F8626 /* String+SBUIKit.swift */; };
+		A90A38FC274CE604009F8626 /* CGSize+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3835274CE604009F8626 /* CGSize+SBUIKit.swift */; };
+		A90A38FD274CE604009F8626 /* Float+SBUKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3836274CE604009F8626 /* Float+SBUKit.swift */; };
+		A90A38FE274CE604009F8626 /* Data+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3837274CE604009F8626 /* Data+SBUIKit.swift */; };
+		A90A38FF274CE604009F8626 /* UIViewController+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3838274CE604009F8626 /* UIViewController+SBUIKit.swift */; };
+		A90A3900274CE604009F8626 /* Date+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3839274CE604009F8626 /* Date+SBUIKit.swift */; };
+		A90A3901274CE604009F8626 /* UIView+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A383A274CE604009F8626 /* UIView+SBUIKit.swift */; };
+		A90A3902274CE604009F8626 /* Sequence+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A383B274CE604009F8626 /* Sequence+SBUIKit.swift */; };
+		A90A3903274CE604009F8626 /* UIImageView+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A383C274CE604009F8626 /* UIImageView+SBUIKit.swift */; };
+		A90A3904274CE604009F8626 /* NSObject+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A383D274CE604009F8626 /* NSObject+SBUIKit.swift */; };
+		A90A3905274CE604009F8626 /* SBUPropertyWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A383F274CE604009F8626 /* SBUPropertyWrapper.swift */; };
+		A90A3906274CE604009F8626 /* SBUUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3840274CE604009F8626 /* SBUUtils.swift */; };
+		A90A3907274CE604009F8626 /* SBULogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3841274CE604009F8626 /* SBULogger.swift */; };
+		A90A3908274CE604009F8626 /* SBUMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3842274CE604009F8626 /* SBUMain.swift */; };
+		A90A3909274CE604009F8626 /* SBUAvailable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3843274CE604009F8626 /* SBUAvailable.swift */; };
+		A90A390A274CE604009F8626 /* SBUIconSetType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3845274CE604009F8626 /* SBUIconSetType.swift */; };
+		A90A390B274CE604009F8626 /* SBUEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3846274CE604009F8626 /* SBUEnums.swift */; };
+		A90A390C274CE604009F8626 /* CommonProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3848274CE604009F8626 /* CommonProtocols.swift */; };
+		A90A390D274CE604009F8626 /* SBUEmojiManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A384A274CE604009F8626 /* SBUEmojiManager.swift */; };
+		A90A390E274CE604009F8626 /* SBUCacheManager.File.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A384B274CE604009F8626 /* SBUCacheManager.File.swift */; };
+		A90A390F274CE604009F8626 /* SBUPendingMessageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A384C274CE604009F8626 /* SBUPendingMessageManager.swift */; };
+		A90A3910274CE604009F8626 /* SBUDownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A384D274CE604009F8626 /* SBUDownloadManager.swift */; };
+		A90A3911274CE604009F8626 /* SBUPermissionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A384E274CE604009F8626 /* SBUPermissionManager.swift */; };
+		A90A3912274CE604009F8626 /* SBUCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A384F274CE604009F8626 /* SBUCacheManager.swift */; };
+		A90A3913274CE604009F8626 /* SBUToastManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3850274CE604009F8626 /* SBUToastManager.swift */; };
+		A90A3914274CE604009F8626 /* SBUGlobalCustomParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3851274CE604009F8626 /* SBUGlobalCustomParams.swift */; };
+		A90A3915274CE604009F8626 /* SBUConstant.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3853274CE604009F8626 /* SBUConstant.swift */; };
+		A90A3916274CE604009F8626 /* SBUStringSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3854274CE604009F8626 /* SBUStringSet.swift */; };
+		A90A3917274CE604009F8626 /* SBUCommonViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3855274CE604009F8626 /* SBUCommonViews.swift */; };
+		A90A3918274CE604009F8626 /* SBUIconSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3857274CE604009F8626 /* SBUIconSet.swift */; };
+		A90A3919274CE604009F8626 /* SBUColorSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3858274CE604009F8626 /* SBUColorSet.swift */; };
+		A90A391A274CE604009F8626 /* SBUTheme+Type.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3859274CE604009F8626 /* SBUTheme+Type.swift */; };
+		A90A391B274CE604009F8626 /* SBUFontSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A385A274CE604009F8626 /* SBUFontSet.swift */; };
+		A90A391C274CE604009F8626 /* SBUTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A385B274CE604009F8626 /* SBUTheme.swift */; };
+		A90A391D274CE604009F8626 /* SBUMessageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A385D274CE604009F8626 /* SBUMessageCache.swift */; };
+		A90A391E274CE604009F8626 /* SBUUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A385E274CE604009F8626 /* SBUUser.swift */; };
+		A90A391F274CE604009F8626 /* SBUHighlightMessageInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A385F274CE604009F8626 /* SBUHighlightMessageInfo.swift */; };
+		A90A3920274CE604009F8626 /* SBUBaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3862274CE604009F8626 /* SBUBaseViewController.swift */; };
+		A90A3921274CE604009F8626 /* SBUOpenChannelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3863274CE604009F8626 /* SBUOpenChannelViewModel.swift */; };
+		A90A3922274CE604009F8626 /* SBUMessageSearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3864274CE604009F8626 /* SBUMessageSearchViewModel.swift */; };
+		A90A3923274CE604009F8626 /* SBUMemberListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3865274CE604009F8626 /* SBUMemberListViewModel.swift */; };
+		A90A3924274CE604009F8626 /* SBUInviteUserListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3866274CE604009F8626 /* SBUInviteUserListViewModel.swift */; };
+		A90A3925274CE604009F8626 /* SBUViewModelDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3868274CE604009F8626 /* SBUViewModelDelegate.swift */; };
+		A90A3926274CE604009F8626 /* SBULoadableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3869274CE604009F8626 /* SBULoadableViewModel.swift */; };
+		A90A3927274CE604009F8626 /* SBUChannelActionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A386A274CE604009F8626 /* SBUChannelActionViewModel.swift */; };
+		A90A3928274CE604009F8626 /* SBUChannelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A386B274CE604009F8626 /* SBUChannelViewModel.swift */; };
+		A90A3929274CE604009F8626 /* SBUObservable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A386C274CE604009F8626 /* SBUObservable.swift */; };
+		A90A392A274CE604009F8626 /* SBUChannelListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A386D274CE604009F8626 /* SBUChannelListViewModel.swift */; };
+		A90A392B274CE604009F8626 /* SBUChannelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3870274CE604009F8626 /* SBUChannelCell.swift */; };
+		A90A392C274CE604009F8626 /* SBUBaseChannelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3871274CE604009F8626 /* SBUBaseChannelCell.swift */; };
+		A90A392D274CE604009F8626 /* SBUChannelListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3872274CE604009F8626 /* SBUChannelListViewController.swift */; };
+		A90A392E274CE604009F8626 /* SBUBaseChannelListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3873274CE604009F8626 /* SBUBaseChannelListViewController.swift */; };
+		A90A392F274CE604009F8626 /* SBUUserProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3875274CE604009F8626 /* SBUUserProfileView.swift */; };
+		A90A3930274CE604009F8626 /* SBUUserMessageTextViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3878274CE604009F8626 /* SBUUserMessageTextViewModel.swift */; };
+		A90A3931274CE604009F8626 /* SBUMessageWebViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3879274CE604009F8626 /* SBUMessageWebViewModel.swift */; };
+		A90A3932274CE604009F8626 /* SBUReactionCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A387B274CE604009F8626 /* SBUReactionCollectionViewCell.swift */; };
+		A90A3933274CE604009F8626 /* SBUReactionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A387C274CE604009F8626 /* SBUReactionsViewController.swift */; };
+		A90A3934274CE604009F8626 /* SBUMessageReactionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A387D274CE604009F8626 /* SBUMessageReactionView.swift */; };
+		A90A3935274CE604009F8626 /* SBUReactionCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A90A387E274CE604009F8626 /* SBUReactionCollectionViewCell.xib */; };
+		A90A3936274CE604009F8626 /* SBUEmojiListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A387F274CE604009F8626 /* SBUEmojiListViewController.swift */; };
+		A90A3937274CE604009F8626 /* SBUBaseChannelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3880274CE604009F8626 /* SBUBaseChannelViewController.swift */; };
+		A90A3938274CE604009F8626 /* SBUUserMessageCellParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3883274CE604009F8626 /* SBUUserMessageCellParams.swift */; };
+		A90A3939274CE604009F8626 /* SBUUnknownMessageCellParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3884274CE604009F8626 /* SBUUnknownMessageCellParams.swift */; };
+		A90A393A274CE604009F8626 /* SBUAdminMessageCellParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3885274CE604009F8626 /* SBUAdminMessageCellParams.swift */; };
+		A90A393B274CE604009F8626 /* SBUBaseMessageCellParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3886274CE604009F8626 /* SBUBaseMessageCellParams.swift */; };
+		A90A393C274CE604009F8626 /* SBUFileMessageCellParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3887274CE604009F8626 /* SBUFileMessageCellParams.swift */; };
+		A90A393D274CE604009F8626 /* OpenChannelCommonContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3889274CE604009F8626 /* OpenChannelCommonContentView.swift */; };
+		A90A393E274CE604009F8626 /* BaseFileContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A388A274CE604009F8626 /* BaseFileContentView.swift */; };
+		A90A393F274CE604009F8626 /* ImageContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A388B274CE604009F8626 /* ImageContentView.swift */; };
+		A90A3940274CE604009F8626 /* CommonContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A388C274CE604009F8626 /* CommonContentView.swift */; };
+		A90A3941274CE604009F8626 /* OpenChannelImageContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A388D274CE604009F8626 /* OpenChannelImageContentView.swift */; };
+		A90A3942274CE604009F8626 /* QuotedFileCommonContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3890274CE604009F8626 /* QuotedFileCommonContentView.swift */; };
+		A90A3943274CE604009F8626 /* SBUQuotedBaseMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3891274CE604009F8626 /* SBUQuotedBaseMessageView.swift */; };
+		A90A3944274CE604009F8626 /* QuotedFileImageContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3892274CE604009F8626 /* QuotedFileImageContentView.swift */; };
+		A90A3945274CE604009F8626 /* SBUQuotedFileMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3893274CE604009F8626 /* SBUQuotedFileMessageView.swift */; };
+		A90A3946274CE604009F8626 /* SBUQuotedUserMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3894274CE604009F8626 /* SBUQuotedUserMessageView.swift */; };
+		A90A3947274CE604009F8626 /* SBUQuotedBaseMessageViewParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3896274CE604009F8626 /* SBUQuotedBaseMessageViewParams.swift */; };
+		A90A3948274CE604009F8626 /* SBUBaseMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3897274CE604009F8626 /* SBUBaseMessageCell.swift */; };
+		A90A3949274CE604009F8626 /* SBUOpenChannelFileMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A3899274CE604009F8626 /* SBUOpenChannelFileMessageCell.swift */; };
+		A90A394A274CE604009F8626 /* SBUOpenChannelAdminMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A389A274CE604009F8626 /* SBUOpenChannelAdminMessageCell.swift */; };
+		A90A394B274CE604009F8626 /* SBUOpenChannelContentBaseMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A389B274CE604009F8626 /* SBUOpenChannelContentBaseMessageCell.swift */; };
+		A90A394C274CE604009F8626 /* SBUOpenChannelUserMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A389C274CE604009F8626 /* SBUOpenChannelUserMessageCell.swift */; };
+		A90A394D274CE604009F8626 /* SBUOpenChannelUnknownMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A389D274CE604009F8626 /* SBUOpenChannelUnknownMessageCell.swift */; };
+		A90A394E274CE604009F8626 /* SBUOpenChannelBaseMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A389E274CE604009F8626 /* SBUOpenChannelBaseMessageCell.swift */; };
+		A90A394F274CE604009F8626 /* SBUFileMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A389F274CE604009F8626 /* SBUFileMessageCell.swift */; };
+		A90A3950274CE604009F8626 /* SBUAdminMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38A0274CE604009F8626 /* SBUAdminMessageCell.swift */; };
+		A90A3951274CE604009F8626 /* SBUContentBaseMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38A1274CE604009F8626 /* SBUContentBaseMessageCell.swift */; };
+		A90A3952274CE604009F8626 /* SBUUnknownMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38A2274CE604009F8626 /* SBUUnknownMessageCell.swift */; };
+		A90A3953274CE604009F8626 /* SBUUserMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38A3274CE604009F8626 /* SBUUserMessageCell.swift */; };
+		A90A3954274CE604009F8626 /* SBUQuoteMessageInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38A5274CE604009F8626 /* SBUQuoteMessageInputView.swift */; };
+		A90A3955274CE604009F8626 /* SBUMessageInputMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38A6274CE604009F8626 /* SBUMessageInputMode.swift */; };
+		A90A3956274CE604009F8626 /* SBUQuoteMessageInputViewParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38A8274CE604009F8626 /* SBUQuoteMessageInputViewParams.swift */; };
+		A90A3957274CE604009F8626 /* SBUMessageInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38A9274CE604009F8626 /* SBUMessageInputView.swift */; };
+		A90A3958274CE604009F8626 /* SBUChannelViewController.ParentMessageViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38AA274CE604009F8626 /* SBUChannelViewController.ParentMessageViewDelegate.swift */; };
+		A90A3959274CE604009F8626 /* SBUMessageStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38AC274CE604009F8626 /* SBUMessageStateView.swift */; };
+		A90A395A274CE604009F8626 /* SBUMessageProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38AD274CE604009F8626 /* SBUMessageProfileView.swift */; };
+		A90A395B274CE604009F8626 /* SBUUserMessageTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38AE274CE604009F8626 /* SBUUserMessageTextView.swift */; };
+		A90A395C274CE604009F8626 /* SBUUserNameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38AF274CE604009F8626 /* SBUUserNameView.swift */; };
+		A90A395D274CE604009F8626 /* SBUMessageWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38B0274CE604009F8626 /* SBUMessageWebView.swift */; };
+		A90A395E274CE604009F8626 /* SBUMessageDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38B1274CE604009F8626 /* SBUMessageDateView.swift */; };
+		A90A395F274CE604009F8626 /* SBULinkClickableTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38B2274CE604009F8626 /* SBULinkClickableTextView.swift */; };
+		A90A3960274CE604009F8626 /* SBUOpenChannelMessageWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38B3274CE604009F8626 /* SBUOpenChannelMessageWebView.swift */; };
+		A90A3961274CE604009F8626 /* SBUSelectableStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38B4274CE604009F8626 /* SBUSelectableStackView.swift */; };
+		A90A3962274CE604009F8626 /* SBUFileViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38B6274CE604009F8626 /* SBUFileViewer.swift */; };
+		A90A3963274CE604009F8626 /* SBUChannelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38B7274CE604009F8626 /* SBUChannelViewController.swift */; };
+		A90A3964274CE604009F8626 /* SBUNewMessageInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38B9274CE604009F8626 /* SBUNewMessageInfo.swift */; };
+		A90A3965274CE604009F8626 /* SBUOpenChannelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38BA274CE604009F8626 /* SBUOpenChannelViewController.swift */; };
+		A90A3966274CE604009F8626 /* SBUChannelInfoHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38BC274CE604009F8626 /* SBUChannelInfoHeaderView.swift */; };
+		A90A3967274CE604009F8626 /* SBUChannelTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38BD274CE604009F8626 /* SBUChannelTitleView.swift */; };
+		A90A3968274CE604009F8626 /* SBUStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38BF274CE604009F8626 /* SBUStackView.swift */; };
+		A90A3969274CE604009F8626 /* SBUAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38C0274CE604009F8626 /* SBUAnimation.swift */; };
+		A90A396A274CE604009F8626 /* SBUEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38C1274CE604009F8626 /* SBUEmptyView.swift */; };
+		A90A396B274CE604009F8626 /* SBUCoverImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38C2274CE604009F8626 /* SBUCoverImageView.swift */; };
+		A90A396C274CE604009F8626 /* SBUReplyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38C4274CE604009F8626 /* SBUReplyType.swift */; };
+		A90A396D274CE604009F8626 /* SBUCommonItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38C5274CE604009F8626 /* SBUCommonItem.swift */; };
+		A90A396E274CE604009F8626 /* SBULayoutableButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38C6274CE604009F8626 /* SBULayoutableButton.swift */; };
+		A90A396F274CE604009F8626 /* SBUNavigationTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38C7274CE604009F8626 /* SBUNavigationTitleView.swift */; };
+		A90A3970274CE604009F8626 /* SBUActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38C8274CE604009F8626 /* SBUActionSheet.swift */; };
+		A90A3971274CE604009F8626 /* SBUAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38C9274CE604009F8626 /* SBUAlertView.swift */; };
+		A90A3972274CE604009F8626 /* SBUMenuCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A90A38CB274CE604009F8626 /* SBUMenuCell.xib */; };
+		A90A3973274CE604009F8626 /* SBUMenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38CC274CE604009F8626 /* SBUMenuCell.swift */; };
+		A90A3974274CE604009F8626 /* SBUMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38CD274CE604009F8626 /* SBUMenuView.swift */; };
+		A90A3975274CE604009F8626 /* SBUBottomSheetController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38CE274CE604009F8626 /* SBUBottomSheetController.swift */; };
+		A90A3976274CE605009F8626 /* SBUMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38CF274CE604009F8626 /* SBUMenuViewController.swift */; };
+		A90A3977274CE605009F8626 /* SBUUserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38D1274CE604009F8626 /* SBUUserCell.swift */; };
+		A90A3978274CE605009F8626 /* SBULoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38D2274CE604009F8626 /* SBULoading.swift */; };
+		A90A3979274CE605009F8626 /* SBUCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38D3274CE604009F8626 /* SBUCollectionViewFlowLayout.swift */; };
+		A90A397A274CE605009F8626 /* SBUMemberListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38D5274CE604009F8626 /* SBUMemberListViewController.swift */; };
+		A90A397B274CE605009F8626 /* SBUInviteUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38D6274CE604009F8626 /* SBUInviteUserViewController.swift */; };
+		A90A397C274CE605009F8626 /* SBUMessageSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38D8274CE604009F8626 /* SBUMessageSearchViewController.swift */; };
+		A90A397D274CE605009F8626 /* SBUMessageSearchResultCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38D9274CE604009F8626 /* SBUMessageSearchResultCell.swift */; };
+		A90A397E274CE605009F8626 /* SBUTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38DB274CE604009F8626 /* SBUTableViewCell.swift */; };
+		A90A397F274CE605009F8626 /* SBUQuoteMessageInputViewProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38DC274CE604009F8626 /* SBUQuoteMessageInputViewProtocol.swift */; };
+		A90A3980274CE605009F8626 /* SBUMessageCellProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38DD274CE604009F8626 /* SBUMessageCellProtocol.swift */; };
+		A90A3981274CE605009F8626 /* SBUViewLifeCycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38DE274CE604009F8626 /* SBUViewLifeCycle.swift */; };
+		A90A3982274CE605009F8626 /* SBUQuotedMessageViewProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38DF274CE604009F8626 /* SBUQuotedMessageViewProtocol.swift */; };
+		A90A3983274CE605009F8626 /* SBUView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38E0274CE604009F8626 /* SBUView.swift */; };
+		A90A3984274CE605009F8626 /* SBUOpenChannelSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38E2274CE604009F8626 /* SBUOpenChannelSettingsViewController.swift */; };
+		A90A3985274CE605009F8626 /* SBUOpenChannelSettingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38E4274CE604009F8626 /* SBUOpenChannelSettingCell.swift */; };
+		A90A3986274CE605009F8626 /* SBUModerationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38E5274CE604009F8626 /* SBUModerationCell.swift */; };
+		A90A3987274CE605009F8626 /* SBUChannelSettingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38E6274CE604009F8626 /* SBUChannelSettingCell.swift */; };
+		A90A3988274CE605009F8626 /* SBUModerationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38E7274CE604009F8626 /* SBUModerationsViewController.swift */; };
+		A90A3989274CE605009F8626 /* SBUChannelSettingsUserInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38E9274CE604009F8626 /* SBUChannelSettingsUserInfoView.swift */; };
+		A90A398A274CE605009F8626 /* SBUBaseChannelSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38EA274CE604009F8626 /* SBUBaseChannelSettingViewController.swift */; };
+		A90A398B274CE605009F8626 /* SBUChannelSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38EB274CE604009F8626 /* SBUChannelSettingsViewController.swift */; };
+		A90A398C274CE605009F8626 /* SBUCreateChannelTypeSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38ED274CE604009F8626 /* SBUCreateChannelTypeSelector.swift */; };
+		A90A398D274CE605009F8626 /* SBUCreateChannelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38EE274CE604009F8626 /* SBUCreateChannelViewController.swift */; };
+		A90A398E274CE605009F8626 /* SBUGlobals.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90A38F0274CE604009F8626 /* SBUGlobals.swift */; };
+		A90A398F274CE605009F8626 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A90A38F2274CE604009F8626 /* Assets.xcassets */; };
 		A9A3AEAA256A44A700007FC2 /* PaddingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9A3AEA9256A44A700007FC2 /* PaddingLabel.swift */; };
 		A9A3AEAC256A532700007FC2 /* SBDOpenChannel+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9A3AEAB256A532700007FC2 /* SBDOpenChannel+Ext.swift */; };
 		A9A3AECE256B786E00007FC2 /* UIImageView+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9A3AECD256B786E00007FC2 /* UIImageView+Ext.swift */; };
@@ -245,136 +272,163 @@
 		9CED4D1824ADE42A00D81B10 /* MemberListCustomManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberListCustomManager.swift; sourceTree = "<group>"; };
 		9CED4D1B24ADE69900D81B10 /* CustomChannelListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomChannelListCell.swift; sourceTree = "<group>"; };
 		9CED4D1E24AF02D800D81B10 /* SampleManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleManager.swift; sourceTree = "<group>"; };
-		A948A0C22743A62F004B3DEA /* URL+SBUKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL+SBUKit.swift"; sourceTree = "<group>"; };
-		A948A0C32743A62F004B3DEA /* Array+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+SBUIKit.swift"; sourceTree = "<group>"; };
-		A948A0C42743A62F004B3DEA /* UIColor+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+SBUIKit.swift"; sourceTree = "<group>"; };
-		A948A0C52743A62F004B3DEA /* Formatter+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Formatter+SBUIKit.swift"; sourceTree = "<group>"; };
-		A948A0C62743A62F004B3DEA /* UIImage+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+SBUIKit.swift"; sourceTree = "<group>"; };
-		A948A0C72743A62F004B3DEA /* UINavigationController+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UINavigationController+SBUIKit.swift"; sourceTree = "<group>"; };
-		A948A0C82743A62F004B3DEA /* String+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+SBUIKit.swift"; sourceTree = "<group>"; };
-		A948A0C92743A62F004B3DEA /* CGSize+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGSize+SBUIKit.swift"; sourceTree = "<group>"; };
-		A948A0CA2743A62F004B3DEA /* Float+SBUKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Float+SBUKit.swift"; sourceTree = "<group>"; };
-		A948A0CB2743A62F004B3DEA /* Data+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Data+SBUIKit.swift"; sourceTree = "<group>"; };
-		A948A0CC2743A62F004B3DEA /* UIViewController+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+SBUIKit.swift"; sourceTree = "<group>"; };
-		A948A0CD2743A62F004B3DEA /* Date+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Date+SBUIKit.swift"; sourceTree = "<group>"; };
-		A948A0CE2743A62F004B3DEA /* UIView+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+SBUIKit.swift"; sourceTree = "<group>"; };
-		A948A0CF2743A62F004B3DEA /* Sequence+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Sequence+SBUIKit.swift"; sourceTree = "<group>"; };
-		A948A0D02743A62F004B3DEA /* UIImageView+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImageView+SBUIKit.swift"; sourceTree = "<group>"; };
-		A948A0D12743A62F004B3DEA /* NSObject+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSObject+SBUIKit.swift"; sourceTree = "<group>"; };
-		A948A0D32743A62F004B3DEA /* SBUPropertyWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUPropertyWrapper.swift; sourceTree = "<group>"; };
-		A948A0D42743A62F004B3DEA /* SBUUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUtils.swift; sourceTree = "<group>"; };
-		A948A0D52743A62F004B3DEA /* SBULogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBULogger.swift; sourceTree = "<group>"; };
-		A948A0D62743A62F004B3DEA /* SBUMain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMain.swift; sourceTree = "<group>"; };
-		A948A0D72743A62F004B3DEA /* SBUAvailable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUAvailable.swift; sourceTree = "<group>"; };
-		A948A0D92743A62F004B3DEA /* SBUIconSetType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUIconSetType.swift; sourceTree = "<group>"; };
-		A948A0DA2743A62F004B3DEA /* SBUEnums.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUEnums.swift; sourceTree = "<group>"; };
-		A948A0DC2743A62F004B3DEA /* CommonProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonProtocols.swift; sourceTree = "<group>"; };
-		A948A0DE2743A62F004B3DEA /* SBUEmojiManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUEmojiManager.swift; sourceTree = "<group>"; };
-		A948A0DF2743A62F004B3DEA /* SBUCacheManager.File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUCacheManager.File.swift; sourceTree = "<group>"; };
-		A948A0E02743A62F004B3DEA /* SBUPendingMessageManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUPendingMessageManager.swift; sourceTree = "<group>"; };
-		A948A0E12743A62F004B3DEA /* SBUDownloadManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUDownloadManager.swift; sourceTree = "<group>"; };
-		A948A0E22743A62F004B3DEA /* SBUPermissionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUPermissionManager.swift; sourceTree = "<group>"; };
-		A948A0E32743A62F004B3DEA /* SBUCacheManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUCacheManager.swift; sourceTree = "<group>"; };
-		A948A0E42743A62F004B3DEA /* SBUToastManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUToastManager.swift; sourceTree = "<group>"; };
-		A948A0E52743A62F004B3DEA /* SBUGlobalCustomParams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUGlobalCustomParams.swift; sourceTree = "<group>"; };
-		A948A0E72743A62F004B3DEA /* SBUConstant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUConstant.swift; sourceTree = "<group>"; };
-		A948A0E82743A62F004B3DEA /* SBUStringSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUStringSet.swift; sourceTree = "<group>"; };
-		A948A0E92743A62F004B3DEA /* SBUCommonViews.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUCommonViews.swift; sourceTree = "<group>"; };
-		A948A0EB2743A630004B3DEA /* SBUIconSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUIconSet.swift; sourceTree = "<group>"; };
-		A948A0EC2743A630004B3DEA /* SBUColorSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUColorSet.swift; sourceTree = "<group>"; };
-		A948A0ED2743A630004B3DEA /* SBUTheme+Type.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SBUTheme+Type.swift"; sourceTree = "<group>"; };
-		A948A0EE2743A630004B3DEA /* SBUFontSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUFontSet.swift; sourceTree = "<group>"; };
-		A948A0EF2743A630004B3DEA /* SBUTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUTheme.swift; sourceTree = "<group>"; };
-		A948A0F12743A630004B3DEA /* SBUMessageCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageCache.swift; sourceTree = "<group>"; };
-		A948A0F22743A630004B3DEA /* SBUUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUser.swift; sourceTree = "<group>"; };
-		A948A0F32743A630004B3DEA /* SBUHighlightMessageInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUHighlightMessageInfo.swift; sourceTree = "<group>"; };
-		A948A0F62743A630004B3DEA /* SBUBaseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUBaseViewController.swift; sourceTree = "<group>"; };
-		A948A0F72743A630004B3DEA /* SBUMessageSearchViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageSearchViewModel.swift; sourceTree = "<group>"; };
-		A948A0F82743A630004B3DEA /* SBUMemberListViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMemberListViewModel.swift; sourceTree = "<group>"; };
-		A948A0F92743A630004B3DEA /* SBUInviteUserListViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUInviteUserListViewModel.swift; sourceTree = "<group>"; };
-		A948A0FB2743A630004B3DEA /* SBUViewModelDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUViewModelDelegate.swift; sourceTree = "<group>"; };
-		A948A0FC2743A630004B3DEA /* SBULoadableViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBULoadableViewModel.swift; sourceTree = "<group>"; };
-		A948A0FD2743A630004B3DEA /* SBUChannelActionViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelActionViewModel.swift; sourceTree = "<group>"; };
-		A948A0FE2743A630004B3DEA /* SBUChannelViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelViewModel.swift; sourceTree = "<group>"; };
-		A948A0FF2743A630004B3DEA /* SBUObservable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUObservable.swift; sourceTree = "<group>"; };
-		A948A1022743A630004B3DEA /* SBUChannelCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelCell.swift; sourceTree = "<group>"; };
-		A948A1032743A630004B3DEA /* SBUBaseChannelCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUBaseChannelCell.swift; sourceTree = "<group>"; };
-		A948A1042743A630004B3DEA /* SBUChannelListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelListViewController.swift; sourceTree = "<group>"; };
-		A948A1052743A630004B3DEA /* SBUBaseChannelListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUBaseChannelListViewController.swift; sourceTree = "<group>"; };
-		A948A1072743A630004B3DEA /* SBUUserProfileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUserProfileView.swift; sourceTree = "<group>"; };
-		A948A10A2743A630004B3DEA /* SBUUserMessageCellModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUserMessageCellModel.swift; sourceTree = "<group>"; };
-		A948A10B2743A630004B3DEA /* SBUMessageWebViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageWebViewModel.swift; sourceTree = "<group>"; };
-		A948A10D2743A630004B3DEA /* SBUReactionCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUReactionCollectionViewCell.swift; sourceTree = "<group>"; };
-		A948A10E2743A630004B3DEA /* SBUReactionsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUReactionsViewController.swift; sourceTree = "<group>"; };
-		A948A10F2743A630004B3DEA /* SBUMessageReactionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageReactionView.swift; sourceTree = "<group>"; };
-		A948A1102743A630004B3DEA /* SBUReactionCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SBUReactionCollectionViewCell.xib; sourceTree = "<group>"; };
-		A948A1112743A630004B3DEA /* SBUEmojiListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUEmojiListViewController.swift; sourceTree = "<group>"; };
-		A948A1122743A630004B3DEA /* SBUBaseChannelViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUBaseChannelViewController.swift; sourceTree = "<group>"; };
-		A948A1152743A630004B3DEA /* OpenChannelCommonContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenChannelCommonContentView.swift; sourceTree = "<group>"; };
-		A948A1162743A630004B3DEA /* BaseFileContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseFileContentView.swift; sourceTree = "<group>"; };
-		A948A1172743A630004B3DEA /* ImageContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageContentView.swift; sourceTree = "<group>"; };
-		A948A1182743A630004B3DEA /* CommonContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonContentView.swift; sourceTree = "<group>"; };
-		A948A1192743A630004B3DEA /* OpenChannelImageContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenChannelImageContentView.swift; sourceTree = "<group>"; };
-		A948A11B2743A630004B3DEA /* SBUBaseMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUBaseMessageCell.swift; sourceTree = "<group>"; };
-		A948A11D2743A630004B3DEA /* SBUOpenChannelFileMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelFileMessageCell.swift; sourceTree = "<group>"; };
-		A948A11E2743A630004B3DEA /* SBUOpenChannelAdminMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelAdminMessageCell.swift; sourceTree = "<group>"; };
-		A948A11F2743A630004B3DEA /* SBUOpenChannelContentBaseMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelContentBaseMessageCell.swift; sourceTree = "<group>"; };
-		A948A1202743A630004B3DEA /* SBUOpenChannelUserMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelUserMessageCell.swift; sourceTree = "<group>"; };
-		A948A1212743A630004B3DEA /* SBUOpenChannelUnknownMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelUnknownMessageCell.swift; sourceTree = "<group>"; };
-		A948A1222743A630004B3DEA /* SBUOpenChannelBaseMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelBaseMessageCell.swift; sourceTree = "<group>"; };
-		A948A1232743A630004B3DEA /* SBUFileMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUFileMessageCell.swift; sourceTree = "<group>"; };
-		A948A1242743A630004B3DEA /* SBUAdminMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUAdminMessageCell.swift; sourceTree = "<group>"; };
-		A948A1252743A630004B3DEA /* SBUContentBaseMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUContentBaseMessageCell.swift; sourceTree = "<group>"; };
-		A948A1262743A630004B3DEA /* SBUUnknownMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUnknownMessageCell.swift; sourceTree = "<group>"; };
-		A948A1272743A630004B3DEA /* SBUUserMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUserMessageCell.swift; sourceTree = "<group>"; };
-		A948A1292743A630004B3DEA /* SBUMessageInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageInputView.swift; sourceTree = "<group>"; };
-		A948A12B2743A630004B3DEA /* SBUMessageStateView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageStateView.swift; sourceTree = "<group>"; };
-		A948A12C2743A630004B3DEA /* SBUMessageProfileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageProfileView.swift; sourceTree = "<group>"; };
-		A948A12D2743A630004B3DEA /* SBUUserMessageTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUserMessageTextView.swift; sourceTree = "<group>"; };
-		A948A12E2743A630004B3DEA /* SBUUserNameView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUserNameView.swift; sourceTree = "<group>"; };
-		A948A12F2743A630004B3DEA /* SBUMessageWebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageWebView.swift; sourceTree = "<group>"; };
-		A948A1302743A630004B3DEA /* SBUMessageDateView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageDateView.swift; sourceTree = "<group>"; };
-		A948A1312743A630004B3DEA /* SBULinkClickableTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBULinkClickableTextView.swift; sourceTree = "<group>"; };
-		A948A1322743A630004B3DEA /* SBUOpenChannelMessageWebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelMessageWebView.swift; sourceTree = "<group>"; };
-		A948A1332743A630004B3DEA /* SBUSelectableStackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUSelectableStackView.swift; sourceTree = "<group>"; };
-		A948A1352743A630004B3DEA /* SBUFileViewer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUFileViewer.swift; sourceTree = "<group>"; };
-		A948A1362743A630004B3DEA /* SBUChannelViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelViewController.swift; sourceTree = "<group>"; };
-		A948A1382743A630004B3DEA /* SBUNewMessageInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUNewMessageInfo.swift; sourceTree = "<group>"; };
-		A948A1392743A630004B3DEA /* SBUOpenChannelViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelViewController.swift; sourceTree = "<group>"; };
-		A948A13B2743A630004B3DEA /* SBUChannelInfoHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelInfoHeaderView.swift; sourceTree = "<group>"; };
-		A948A13C2743A630004B3DEA /* SBUChannelTitleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelTitleView.swift; sourceTree = "<group>"; };
-		A948A13E2743A630004B3DEA /* SBUEmptyView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUEmptyView.swift; sourceTree = "<group>"; };
-		A948A13F2743A630004B3DEA /* SBUCoverImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUCoverImageView.swift; sourceTree = "<group>"; };
-		A948A1402743A630004B3DEA /* SBUCommonItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUCommonItem.swift; sourceTree = "<group>"; };
-		A948A1412743A630004B3DEA /* SBULayoutableButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBULayoutableButton.swift; sourceTree = "<group>"; };
-		A948A1422743A630004B3DEA /* SBUNavigationTitleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUNavigationTitleView.swift; sourceTree = "<group>"; };
-		A948A1432743A630004B3DEA /* SBUActionSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUActionSheet.swift; sourceTree = "<group>"; };
-		A948A1442743A630004B3DEA /* SBUAlertView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUAlertView.swift; sourceTree = "<group>"; };
-		A948A1462743A630004B3DEA /* SBUMenuCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SBUMenuCell.xib; sourceTree = "<group>"; };
-		A948A1472743A630004B3DEA /* SBUMenuCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMenuCell.swift; sourceTree = "<group>"; };
-		A948A1482743A630004B3DEA /* SBUMenuView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMenuView.swift; sourceTree = "<group>"; };
-		A948A1492743A630004B3DEA /* SBUBottomSheetController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUBottomSheetController.swift; sourceTree = "<group>"; };
-		A948A14A2743A630004B3DEA /* SBUMenuViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMenuViewController.swift; sourceTree = "<group>"; };
-		A948A14C2743A630004B3DEA /* SBUUserCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUserCell.swift; sourceTree = "<group>"; };
-		A948A14D2743A630004B3DEA /* SBULoading.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBULoading.swift; sourceTree = "<group>"; };
-		A948A14E2743A630004B3DEA /* SBUCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
-		A948A1502743A630004B3DEA /* SBUMemberListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMemberListViewController.swift; sourceTree = "<group>"; };
-		A948A1512743A630004B3DEA /* SBUInviteUserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUInviteUserViewController.swift; sourceTree = "<group>"; };
-		A948A1532743A630004B3DEA /* SBUMessageSearchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageSearchViewController.swift; sourceTree = "<group>"; };
-		A948A1542743A630004B3DEA /* SBUMessageSearchResultCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageSearchResultCell.swift; sourceTree = "<group>"; };
-		A948A1562743A630004B3DEA /* SBUOpenChannelSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelSettingsViewController.swift; sourceTree = "<group>"; };
-		A948A1582743A630004B3DEA /* SBUOpenChannelSettingCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelSettingCell.swift; sourceTree = "<group>"; };
-		A948A1592743A630004B3DEA /* SBUModerationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUModerationCell.swift; sourceTree = "<group>"; };
-		A948A15A2743A630004B3DEA /* SBUChannelSettingCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelSettingCell.swift; sourceTree = "<group>"; };
-		A948A15B2743A630004B3DEA /* SBUModerationsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUModerationsViewController.swift; sourceTree = "<group>"; };
-		A948A15D2743A630004B3DEA /* SBUChannelSettingsUserInfoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelSettingsUserInfoView.swift; sourceTree = "<group>"; };
-		A948A15E2743A630004B3DEA /* SBUBaseChannelSettingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUBaseChannelSettingViewController.swift; sourceTree = "<group>"; };
-		A948A15F2743A630004B3DEA /* SBUChannelSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelSettingsViewController.swift; sourceTree = "<group>"; };
-		A948A1612743A630004B3DEA /* SBUCreateChannelTypeSelector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUCreateChannelTypeSelector.swift; sourceTree = "<group>"; };
-		A948A1622743A630004B3DEA /* SBUCreateChannelViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUCreateChannelViewController.swift; sourceTree = "<group>"; };
-		A948A1632743A630004B3DEA /* SendBirdUIKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SendBirdUIKit.h; sourceTree = "<group>"; };
-		A948A1642743A630004B3DEA /* SBUGlobals.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUGlobals.swift; sourceTree = "<group>"; };
-		A948A1662743A630004B3DEA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A90A382D274CE604009F8626 /* UIStackView.SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIStackView.SBUIKit.swift; sourceTree = "<group>"; };
+		A90A382E274CE604009F8626 /* URL+SBUKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL+SBUKit.swift"; sourceTree = "<group>"; };
+		A90A382F274CE604009F8626 /* Array+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+SBUIKit.swift"; sourceTree = "<group>"; };
+		A90A3830274CE604009F8626 /* UIColor+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+SBUIKit.swift"; sourceTree = "<group>"; };
+		A90A3831274CE604009F8626 /* Formatter+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Formatter+SBUIKit.swift"; sourceTree = "<group>"; };
+		A90A3832274CE604009F8626 /* UIImage+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+SBUIKit.swift"; sourceTree = "<group>"; };
+		A90A3833274CE604009F8626 /* UINavigationController+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UINavigationController+SBUIKit.swift"; sourceTree = "<group>"; };
+		A90A3834274CE604009F8626 /* String+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+SBUIKit.swift"; sourceTree = "<group>"; };
+		A90A3835274CE604009F8626 /* CGSize+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGSize+SBUIKit.swift"; sourceTree = "<group>"; };
+		A90A3836274CE604009F8626 /* Float+SBUKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Float+SBUKit.swift"; sourceTree = "<group>"; };
+		A90A3837274CE604009F8626 /* Data+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Data+SBUIKit.swift"; sourceTree = "<group>"; };
+		A90A3838274CE604009F8626 /* UIViewController+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+SBUIKit.swift"; sourceTree = "<group>"; };
+		A90A3839274CE604009F8626 /* Date+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Date+SBUIKit.swift"; sourceTree = "<group>"; };
+		A90A383A274CE604009F8626 /* UIView+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+SBUIKit.swift"; sourceTree = "<group>"; };
+		A90A383B274CE604009F8626 /* Sequence+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Sequence+SBUIKit.swift"; sourceTree = "<group>"; };
+		A90A383C274CE604009F8626 /* UIImageView+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImageView+SBUIKit.swift"; sourceTree = "<group>"; };
+		A90A383D274CE604009F8626 /* NSObject+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSObject+SBUIKit.swift"; sourceTree = "<group>"; };
+		A90A383F274CE604009F8626 /* SBUPropertyWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUPropertyWrapper.swift; sourceTree = "<group>"; };
+		A90A3840274CE604009F8626 /* SBUUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUtils.swift; sourceTree = "<group>"; };
+		A90A3841274CE604009F8626 /* SBULogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBULogger.swift; sourceTree = "<group>"; };
+		A90A3842274CE604009F8626 /* SBUMain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMain.swift; sourceTree = "<group>"; };
+		A90A3843274CE604009F8626 /* SBUAvailable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUAvailable.swift; sourceTree = "<group>"; };
+		A90A3845274CE604009F8626 /* SBUIconSetType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUIconSetType.swift; sourceTree = "<group>"; };
+		A90A3846274CE604009F8626 /* SBUEnums.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUEnums.swift; sourceTree = "<group>"; };
+		A90A3848274CE604009F8626 /* CommonProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonProtocols.swift; sourceTree = "<group>"; };
+		A90A384A274CE604009F8626 /* SBUEmojiManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUEmojiManager.swift; sourceTree = "<group>"; };
+		A90A384B274CE604009F8626 /* SBUCacheManager.File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUCacheManager.File.swift; sourceTree = "<group>"; };
+		A90A384C274CE604009F8626 /* SBUPendingMessageManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUPendingMessageManager.swift; sourceTree = "<group>"; };
+		A90A384D274CE604009F8626 /* SBUDownloadManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUDownloadManager.swift; sourceTree = "<group>"; };
+		A90A384E274CE604009F8626 /* SBUPermissionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUPermissionManager.swift; sourceTree = "<group>"; };
+		A90A384F274CE604009F8626 /* SBUCacheManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUCacheManager.swift; sourceTree = "<group>"; };
+		A90A3850274CE604009F8626 /* SBUToastManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUToastManager.swift; sourceTree = "<group>"; };
+		A90A3851274CE604009F8626 /* SBUGlobalCustomParams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUGlobalCustomParams.swift; sourceTree = "<group>"; };
+		A90A3853274CE604009F8626 /* SBUConstant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUConstant.swift; sourceTree = "<group>"; };
+		A90A3854274CE604009F8626 /* SBUStringSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUStringSet.swift; sourceTree = "<group>"; };
+		A90A3855274CE604009F8626 /* SBUCommonViews.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUCommonViews.swift; sourceTree = "<group>"; };
+		A90A3857274CE604009F8626 /* SBUIconSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUIconSet.swift; sourceTree = "<group>"; };
+		A90A3858274CE604009F8626 /* SBUColorSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUColorSet.swift; sourceTree = "<group>"; };
+		A90A3859274CE604009F8626 /* SBUTheme+Type.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SBUTheme+Type.swift"; sourceTree = "<group>"; };
+		A90A385A274CE604009F8626 /* SBUFontSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUFontSet.swift; sourceTree = "<group>"; };
+		A90A385B274CE604009F8626 /* SBUTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUTheme.swift; sourceTree = "<group>"; };
+		A90A385D274CE604009F8626 /* SBUMessageCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageCache.swift; sourceTree = "<group>"; };
+		A90A385E274CE604009F8626 /* SBUUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUser.swift; sourceTree = "<group>"; };
+		A90A385F274CE604009F8626 /* SBUHighlightMessageInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUHighlightMessageInfo.swift; sourceTree = "<group>"; };
+		A90A3862274CE604009F8626 /* SBUBaseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUBaseViewController.swift; sourceTree = "<group>"; };
+		A90A3863274CE604009F8626 /* SBUOpenChannelViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelViewModel.swift; sourceTree = "<group>"; };
+		A90A3864274CE604009F8626 /* SBUMessageSearchViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageSearchViewModel.swift; sourceTree = "<group>"; };
+		A90A3865274CE604009F8626 /* SBUMemberListViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMemberListViewModel.swift; sourceTree = "<group>"; };
+		A90A3866274CE604009F8626 /* SBUInviteUserListViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUInviteUserListViewModel.swift; sourceTree = "<group>"; };
+		A90A3868274CE604009F8626 /* SBUViewModelDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUViewModelDelegate.swift; sourceTree = "<group>"; };
+		A90A3869274CE604009F8626 /* SBULoadableViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBULoadableViewModel.swift; sourceTree = "<group>"; };
+		A90A386A274CE604009F8626 /* SBUChannelActionViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelActionViewModel.swift; sourceTree = "<group>"; };
+		A90A386B274CE604009F8626 /* SBUChannelViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelViewModel.swift; sourceTree = "<group>"; };
+		A90A386C274CE604009F8626 /* SBUObservable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUObservable.swift; sourceTree = "<group>"; };
+		A90A386D274CE604009F8626 /* SBUChannelListViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelListViewModel.swift; sourceTree = "<group>"; };
+		A90A3870274CE604009F8626 /* SBUChannelCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelCell.swift; sourceTree = "<group>"; };
+		A90A3871274CE604009F8626 /* SBUBaseChannelCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUBaseChannelCell.swift; sourceTree = "<group>"; };
+		A90A3872274CE604009F8626 /* SBUChannelListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelListViewController.swift; sourceTree = "<group>"; };
+		A90A3873274CE604009F8626 /* SBUBaseChannelListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUBaseChannelListViewController.swift; sourceTree = "<group>"; };
+		A90A3875274CE604009F8626 /* SBUUserProfileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUserProfileView.swift; sourceTree = "<group>"; };
+		A90A3878274CE604009F8626 /* SBUUserMessageTextViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUserMessageTextViewModel.swift; sourceTree = "<group>"; };
+		A90A3879274CE604009F8626 /* SBUMessageWebViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageWebViewModel.swift; sourceTree = "<group>"; };
+		A90A387B274CE604009F8626 /* SBUReactionCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUReactionCollectionViewCell.swift; sourceTree = "<group>"; };
+		A90A387C274CE604009F8626 /* SBUReactionsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUReactionsViewController.swift; sourceTree = "<group>"; };
+		A90A387D274CE604009F8626 /* SBUMessageReactionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageReactionView.swift; sourceTree = "<group>"; };
+		A90A387E274CE604009F8626 /* SBUReactionCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SBUReactionCollectionViewCell.xib; sourceTree = "<group>"; };
+		A90A387F274CE604009F8626 /* SBUEmojiListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUEmojiListViewController.swift; sourceTree = "<group>"; };
+		A90A3880274CE604009F8626 /* SBUBaseChannelViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUBaseChannelViewController.swift; sourceTree = "<group>"; };
+		A90A3883274CE604009F8626 /* SBUUserMessageCellParams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUserMessageCellParams.swift; sourceTree = "<group>"; };
+		A90A3884274CE604009F8626 /* SBUUnknownMessageCellParams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUnknownMessageCellParams.swift; sourceTree = "<group>"; };
+		A90A3885274CE604009F8626 /* SBUAdminMessageCellParams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUAdminMessageCellParams.swift; sourceTree = "<group>"; };
+		A90A3886274CE604009F8626 /* SBUBaseMessageCellParams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUBaseMessageCellParams.swift; sourceTree = "<group>"; };
+		A90A3887274CE604009F8626 /* SBUFileMessageCellParams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUFileMessageCellParams.swift; sourceTree = "<group>"; };
+		A90A3889274CE604009F8626 /* OpenChannelCommonContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenChannelCommonContentView.swift; sourceTree = "<group>"; };
+		A90A388A274CE604009F8626 /* BaseFileContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseFileContentView.swift; sourceTree = "<group>"; };
+		A90A388B274CE604009F8626 /* ImageContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageContentView.swift; sourceTree = "<group>"; };
+		A90A388C274CE604009F8626 /* CommonContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonContentView.swift; sourceTree = "<group>"; };
+		A90A388D274CE604009F8626 /* OpenChannelImageContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenChannelImageContentView.swift; sourceTree = "<group>"; };
+		A90A3890274CE604009F8626 /* QuotedFileCommonContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuotedFileCommonContentView.swift; sourceTree = "<group>"; };
+		A90A3891274CE604009F8626 /* SBUQuotedBaseMessageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUQuotedBaseMessageView.swift; sourceTree = "<group>"; };
+		A90A3892274CE604009F8626 /* QuotedFileImageContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuotedFileImageContentView.swift; sourceTree = "<group>"; };
+		A90A3893274CE604009F8626 /* SBUQuotedFileMessageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUQuotedFileMessageView.swift; sourceTree = "<group>"; };
+		A90A3894274CE604009F8626 /* SBUQuotedUserMessageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUQuotedUserMessageView.swift; sourceTree = "<group>"; };
+		A90A3896274CE604009F8626 /* SBUQuotedBaseMessageViewParams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUQuotedBaseMessageViewParams.swift; sourceTree = "<group>"; };
+		A90A3897274CE604009F8626 /* SBUBaseMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUBaseMessageCell.swift; sourceTree = "<group>"; };
+		A90A3899274CE604009F8626 /* SBUOpenChannelFileMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelFileMessageCell.swift; sourceTree = "<group>"; };
+		A90A389A274CE604009F8626 /* SBUOpenChannelAdminMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelAdminMessageCell.swift; sourceTree = "<group>"; };
+		A90A389B274CE604009F8626 /* SBUOpenChannelContentBaseMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelContentBaseMessageCell.swift; sourceTree = "<group>"; };
+		A90A389C274CE604009F8626 /* SBUOpenChannelUserMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelUserMessageCell.swift; sourceTree = "<group>"; };
+		A90A389D274CE604009F8626 /* SBUOpenChannelUnknownMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelUnknownMessageCell.swift; sourceTree = "<group>"; };
+		A90A389E274CE604009F8626 /* SBUOpenChannelBaseMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelBaseMessageCell.swift; sourceTree = "<group>"; };
+		A90A389F274CE604009F8626 /* SBUFileMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUFileMessageCell.swift; sourceTree = "<group>"; };
+		A90A38A0274CE604009F8626 /* SBUAdminMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUAdminMessageCell.swift; sourceTree = "<group>"; };
+		A90A38A1274CE604009F8626 /* SBUContentBaseMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUContentBaseMessageCell.swift; sourceTree = "<group>"; };
+		A90A38A2274CE604009F8626 /* SBUUnknownMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUnknownMessageCell.swift; sourceTree = "<group>"; };
+		A90A38A3274CE604009F8626 /* SBUUserMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUserMessageCell.swift; sourceTree = "<group>"; };
+		A90A38A5274CE604009F8626 /* SBUQuoteMessageInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUQuoteMessageInputView.swift; sourceTree = "<group>"; };
+		A90A38A6274CE604009F8626 /* SBUMessageInputMode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageInputMode.swift; sourceTree = "<group>"; };
+		A90A38A8274CE604009F8626 /* SBUQuoteMessageInputViewParams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUQuoteMessageInputViewParams.swift; sourceTree = "<group>"; };
+		A90A38A9274CE604009F8626 /* SBUMessageInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageInputView.swift; sourceTree = "<group>"; };
+		A90A38AA274CE604009F8626 /* SBUChannelViewController.ParentMessageViewDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelViewController.ParentMessageViewDelegate.swift; sourceTree = "<group>"; };
+		A90A38AC274CE604009F8626 /* SBUMessageStateView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageStateView.swift; sourceTree = "<group>"; };
+		A90A38AD274CE604009F8626 /* SBUMessageProfileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageProfileView.swift; sourceTree = "<group>"; };
+		A90A38AE274CE604009F8626 /* SBUUserMessageTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUserMessageTextView.swift; sourceTree = "<group>"; };
+		A90A38AF274CE604009F8626 /* SBUUserNameView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUserNameView.swift; sourceTree = "<group>"; };
+		A90A38B0274CE604009F8626 /* SBUMessageWebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageWebView.swift; sourceTree = "<group>"; };
+		A90A38B1274CE604009F8626 /* SBUMessageDateView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageDateView.swift; sourceTree = "<group>"; };
+		A90A38B2274CE604009F8626 /* SBULinkClickableTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBULinkClickableTextView.swift; sourceTree = "<group>"; };
+		A90A38B3274CE604009F8626 /* SBUOpenChannelMessageWebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelMessageWebView.swift; sourceTree = "<group>"; };
+		A90A38B4274CE604009F8626 /* SBUSelectableStackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUSelectableStackView.swift; sourceTree = "<group>"; };
+		A90A38B6274CE604009F8626 /* SBUFileViewer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUFileViewer.swift; sourceTree = "<group>"; };
+		A90A38B7274CE604009F8626 /* SBUChannelViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelViewController.swift; sourceTree = "<group>"; };
+		A90A38B9274CE604009F8626 /* SBUNewMessageInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUNewMessageInfo.swift; sourceTree = "<group>"; };
+		A90A38BA274CE604009F8626 /* SBUOpenChannelViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelViewController.swift; sourceTree = "<group>"; };
+		A90A38BC274CE604009F8626 /* SBUChannelInfoHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelInfoHeaderView.swift; sourceTree = "<group>"; };
+		A90A38BD274CE604009F8626 /* SBUChannelTitleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelTitleView.swift; sourceTree = "<group>"; };
+		A90A38BF274CE604009F8626 /* SBUStackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUStackView.swift; sourceTree = "<group>"; };
+		A90A38C0274CE604009F8626 /* SBUAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUAnimation.swift; sourceTree = "<group>"; };
+		A90A38C1274CE604009F8626 /* SBUEmptyView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUEmptyView.swift; sourceTree = "<group>"; };
+		A90A38C2274CE604009F8626 /* SBUCoverImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUCoverImageView.swift; sourceTree = "<group>"; };
+		A90A38C4274CE604009F8626 /* SBUReplyType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUReplyType.swift; sourceTree = "<group>"; };
+		A90A38C5274CE604009F8626 /* SBUCommonItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUCommonItem.swift; sourceTree = "<group>"; };
+		A90A38C6274CE604009F8626 /* SBULayoutableButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBULayoutableButton.swift; sourceTree = "<group>"; };
+		A90A38C7274CE604009F8626 /* SBUNavigationTitleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUNavigationTitleView.swift; sourceTree = "<group>"; };
+		A90A38C8274CE604009F8626 /* SBUActionSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUActionSheet.swift; sourceTree = "<group>"; };
+		A90A38C9274CE604009F8626 /* SBUAlertView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUAlertView.swift; sourceTree = "<group>"; };
+		A90A38CB274CE604009F8626 /* SBUMenuCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SBUMenuCell.xib; sourceTree = "<group>"; };
+		A90A38CC274CE604009F8626 /* SBUMenuCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMenuCell.swift; sourceTree = "<group>"; };
+		A90A38CD274CE604009F8626 /* SBUMenuView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMenuView.swift; sourceTree = "<group>"; };
+		A90A38CE274CE604009F8626 /* SBUBottomSheetController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUBottomSheetController.swift; sourceTree = "<group>"; };
+		A90A38CF274CE604009F8626 /* SBUMenuViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMenuViewController.swift; sourceTree = "<group>"; };
+		A90A38D1274CE604009F8626 /* SBUUserCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUserCell.swift; sourceTree = "<group>"; };
+		A90A38D2274CE604009F8626 /* SBULoading.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBULoading.swift; sourceTree = "<group>"; };
+		A90A38D3274CE604009F8626 /* SBUCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
+		A90A38D5274CE604009F8626 /* SBUMemberListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMemberListViewController.swift; sourceTree = "<group>"; };
+		A90A38D6274CE604009F8626 /* SBUInviteUserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUInviteUserViewController.swift; sourceTree = "<group>"; };
+		A90A38D8274CE604009F8626 /* SBUMessageSearchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageSearchViewController.swift; sourceTree = "<group>"; };
+		A90A38D9274CE604009F8626 /* SBUMessageSearchResultCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageSearchResultCell.swift; sourceTree = "<group>"; };
+		A90A38DB274CE604009F8626 /* SBUTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUTableViewCell.swift; sourceTree = "<group>"; };
+		A90A38DC274CE604009F8626 /* SBUQuoteMessageInputViewProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUQuoteMessageInputViewProtocol.swift; sourceTree = "<group>"; };
+		A90A38DD274CE604009F8626 /* SBUMessageCellProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageCellProtocol.swift; sourceTree = "<group>"; };
+		A90A38DE274CE604009F8626 /* SBUViewLifeCycle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUViewLifeCycle.swift; sourceTree = "<group>"; };
+		A90A38DF274CE604009F8626 /* SBUQuotedMessageViewProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUQuotedMessageViewProtocol.swift; sourceTree = "<group>"; };
+		A90A38E0274CE604009F8626 /* SBUView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUView.swift; sourceTree = "<group>"; };
+		A90A38E2274CE604009F8626 /* SBUOpenChannelSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelSettingsViewController.swift; sourceTree = "<group>"; };
+		A90A38E4274CE604009F8626 /* SBUOpenChannelSettingCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelSettingCell.swift; sourceTree = "<group>"; };
+		A90A38E5274CE604009F8626 /* SBUModerationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUModerationCell.swift; sourceTree = "<group>"; };
+		A90A38E6274CE604009F8626 /* SBUChannelSettingCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelSettingCell.swift; sourceTree = "<group>"; };
+		A90A38E7274CE604009F8626 /* SBUModerationsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUModerationsViewController.swift; sourceTree = "<group>"; };
+		A90A38E9274CE604009F8626 /* SBUChannelSettingsUserInfoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelSettingsUserInfoView.swift; sourceTree = "<group>"; };
+		A90A38EA274CE604009F8626 /* SBUBaseChannelSettingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUBaseChannelSettingViewController.swift; sourceTree = "<group>"; };
+		A90A38EB274CE604009F8626 /* SBUChannelSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelSettingsViewController.swift; sourceTree = "<group>"; };
+		A90A38ED274CE604009F8626 /* SBUCreateChannelTypeSelector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUCreateChannelTypeSelector.swift; sourceTree = "<group>"; };
+		A90A38EE274CE604009F8626 /* SBUCreateChannelViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUCreateChannelViewController.swift; sourceTree = "<group>"; };
+		A90A38EF274CE604009F8626 /* SendBirdUIKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SendBirdUIKit.h; sourceTree = "<group>"; };
+		A90A38F0274CE604009F8626 /* SBUGlobals.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUGlobals.swift; sourceTree = "<group>"; };
+		A90A38F2274CE604009F8626 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A9A3AEA9256A44A700007FC2 /* PaddingLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddingLabel.swift; sourceTree = "<group>"; };
 		A9A3AEAB256A532700007FC2 /* SBDOpenChannel+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SBDOpenChannel+Ext.swift"; sourceTree = "<group>"; };
 		A9A3AECD256B786E00007FC2 /* UIImageView+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Ext.swift"; sourceTree = "<group>"; };
@@ -506,7 +560,7 @@
 		9C777D4E241B9022006FFE25 = {
 			isa = PBXGroup;
 			children = (
-				A948A0C02743A62F004B3DEA /* Sources */,
+				A90A382B274CE604009F8626 /* Sources */,
 				9C777D59241B9022006FFE25 /* SendBirdUIKit-Sample */,
 				9C777D58241B9022006FFE25 /* Products */,
 				5460078929767A6C021710D0 /* Pods */,
@@ -672,428 +726,503 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		A948A0C02743A62F004B3DEA /* Sources */ = {
+		A90A382B274CE604009F8626 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				A948A0C12743A62F004B3DEA /* Extension */,
-				A948A0D22743A62F004B3DEA /* Util */,
-				A948A0D62743A62F004B3DEA /* SBUMain.swift */,
-				A948A0D72743A62F004B3DEA /* SBUAvailable.swift */,
-				A948A0D82743A62F004B3DEA /* Enums */,
-				A948A0DB2743A62F004B3DEA /* Protocol */,
-				A948A0DD2743A62F004B3DEA /* Manager */,
-				A948A0E52743A62F004B3DEA /* SBUGlobalCustomParams.swift */,
-				A948A0E62743A62F004B3DEA /* Constant */,
-				A948A0EA2743A630004B3DEA /* Theme */,
-				A948A0F02743A630004B3DEA /* Model */,
-				A948A0F42743A630004B3DEA /* View */,
-				A948A1632743A630004B3DEA /* SendBirdUIKit.h */,
-				A948A1642743A630004B3DEA /* SBUGlobals.swift */,
-				A948A1652743A630004B3DEA /* Resource */,
+				A90A382C274CE604009F8626 /* Extension */,
+				A90A383E274CE604009F8626 /* Util */,
+				A90A3842274CE604009F8626 /* SBUMain.swift */,
+				A90A3843274CE604009F8626 /* SBUAvailable.swift */,
+				A90A3844274CE604009F8626 /* Enums */,
+				A90A3847274CE604009F8626 /* Protocol */,
+				A90A3849274CE604009F8626 /* Manager */,
+				A90A3851274CE604009F8626 /* SBUGlobalCustomParams.swift */,
+				A90A3852274CE604009F8626 /* Constant */,
+				A90A3856274CE604009F8626 /* Theme */,
+				A90A385C274CE604009F8626 /* Model */,
+				A90A3860274CE604009F8626 /* View */,
+				A90A38EF274CE604009F8626 /* SendBirdUIKit.h */,
+				A90A38F0274CE604009F8626 /* SBUGlobals.swift */,
+				A90A38F1274CE604009F8626 /* Resource */,
 			);
 			name = Sources;
 			path = ../Sources;
 			sourceTree = "<group>";
 		};
-		A948A0C12743A62F004B3DEA /* Extension */ = {
+		A90A382C274CE604009F8626 /* Extension */ = {
 			isa = PBXGroup;
 			children = (
-				A948A0C22743A62F004B3DEA /* URL+SBUKit.swift */,
-				A948A0C32743A62F004B3DEA /* Array+SBUIKit.swift */,
-				A948A0C42743A62F004B3DEA /* UIColor+SBUIKit.swift */,
-				A948A0C52743A62F004B3DEA /* Formatter+SBUIKit.swift */,
-				A948A0C62743A62F004B3DEA /* UIImage+SBUIKit.swift */,
-				A948A0C72743A62F004B3DEA /* UINavigationController+SBUIKit.swift */,
-				A948A0C82743A62F004B3DEA /* String+SBUIKit.swift */,
-				A948A0C92743A62F004B3DEA /* CGSize+SBUIKit.swift */,
-				A948A0CA2743A62F004B3DEA /* Float+SBUKit.swift */,
-				A948A0CB2743A62F004B3DEA /* Data+SBUIKit.swift */,
-				A948A0CC2743A62F004B3DEA /* UIViewController+SBUIKit.swift */,
-				A948A0CD2743A62F004B3DEA /* Date+SBUIKit.swift */,
-				A948A0CE2743A62F004B3DEA /* UIView+SBUIKit.swift */,
-				A948A0CF2743A62F004B3DEA /* Sequence+SBUIKit.swift */,
-				A948A0D02743A62F004B3DEA /* UIImageView+SBUIKit.swift */,
-				A948A0D12743A62F004B3DEA /* NSObject+SBUIKit.swift */,
+				A90A382D274CE604009F8626 /* UIStackView.SBUIKit.swift */,
+				A90A382E274CE604009F8626 /* URL+SBUKit.swift */,
+				A90A382F274CE604009F8626 /* Array+SBUIKit.swift */,
+				A90A3830274CE604009F8626 /* UIColor+SBUIKit.swift */,
+				A90A3831274CE604009F8626 /* Formatter+SBUIKit.swift */,
+				A90A3832274CE604009F8626 /* UIImage+SBUIKit.swift */,
+				A90A3833274CE604009F8626 /* UINavigationController+SBUIKit.swift */,
+				A90A3834274CE604009F8626 /* String+SBUIKit.swift */,
+				A90A3835274CE604009F8626 /* CGSize+SBUIKit.swift */,
+				A90A3836274CE604009F8626 /* Float+SBUKit.swift */,
+				A90A3837274CE604009F8626 /* Data+SBUIKit.swift */,
+				A90A3838274CE604009F8626 /* UIViewController+SBUIKit.swift */,
+				A90A3839274CE604009F8626 /* Date+SBUIKit.swift */,
+				A90A383A274CE604009F8626 /* UIView+SBUIKit.swift */,
+				A90A383B274CE604009F8626 /* Sequence+SBUIKit.swift */,
+				A90A383C274CE604009F8626 /* UIImageView+SBUIKit.swift */,
+				A90A383D274CE604009F8626 /* NSObject+SBUIKit.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
 		};
-		A948A0D22743A62F004B3DEA /* Util */ = {
+		A90A383E274CE604009F8626 /* Util */ = {
 			isa = PBXGroup;
 			children = (
-				A948A0D32743A62F004B3DEA /* SBUPropertyWrapper.swift */,
-				A948A0D42743A62F004B3DEA /* SBUUtils.swift */,
-				A948A0D52743A62F004B3DEA /* SBULogger.swift */,
+				A90A383F274CE604009F8626 /* SBUPropertyWrapper.swift */,
+				A90A3840274CE604009F8626 /* SBUUtils.swift */,
+				A90A3841274CE604009F8626 /* SBULogger.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
 		};
-		A948A0D82743A62F004B3DEA /* Enums */ = {
+		A90A3844274CE604009F8626 /* Enums */ = {
 			isa = PBXGroup;
 			children = (
-				A948A0D92743A62F004B3DEA /* SBUIconSetType.swift */,
-				A948A0DA2743A62F004B3DEA /* SBUEnums.swift */,
+				A90A3845274CE604009F8626 /* SBUIconSetType.swift */,
+				A90A3846274CE604009F8626 /* SBUEnums.swift */,
 			);
 			path = Enums;
 			sourceTree = "<group>";
 		};
-		A948A0DB2743A62F004B3DEA /* Protocol */ = {
+		A90A3847274CE604009F8626 /* Protocol */ = {
 			isa = PBXGroup;
 			children = (
-				A948A0DC2743A62F004B3DEA /* CommonProtocols.swift */,
+				A90A3848274CE604009F8626 /* CommonProtocols.swift */,
 			);
 			path = Protocol;
 			sourceTree = "<group>";
 		};
-		A948A0DD2743A62F004B3DEA /* Manager */ = {
+		A90A3849274CE604009F8626 /* Manager */ = {
 			isa = PBXGroup;
 			children = (
-				A948A0DE2743A62F004B3DEA /* SBUEmojiManager.swift */,
-				A948A0DF2743A62F004B3DEA /* SBUCacheManager.File.swift */,
-				A948A0E02743A62F004B3DEA /* SBUPendingMessageManager.swift */,
-				A948A0E12743A62F004B3DEA /* SBUDownloadManager.swift */,
-				A948A0E22743A62F004B3DEA /* SBUPermissionManager.swift */,
-				A948A0E32743A62F004B3DEA /* SBUCacheManager.swift */,
-				A948A0E42743A62F004B3DEA /* SBUToastManager.swift */,
+				A90A384A274CE604009F8626 /* SBUEmojiManager.swift */,
+				A90A384B274CE604009F8626 /* SBUCacheManager.File.swift */,
+				A90A384C274CE604009F8626 /* SBUPendingMessageManager.swift */,
+				A90A384D274CE604009F8626 /* SBUDownloadManager.swift */,
+				A90A384E274CE604009F8626 /* SBUPermissionManager.swift */,
+				A90A384F274CE604009F8626 /* SBUCacheManager.swift */,
+				A90A3850274CE604009F8626 /* SBUToastManager.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
 		};
-		A948A0E62743A62F004B3DEA /* Constant */ = {
+		A90A3852274CE604009F8626 /* Constant */ = {
 			isa = PBXGroup;
 			children = (
-				A948A0E72743A62F004B3DEA /* SBUConstant.swift */,
-				A948A0E82743A62F004B3DEA /* SBUStringSet.swift */,
-				A948A0E92743A62F004B3DEA /* SBUCommonViews.swift */,
+				A90A3853274CE604009F8626 /* SBUConstant.swift */,
+				A90A3854274CE604009F8626 /* SBUStringSet.swift */,
+				A90A3855274CE604009F8626 /* SBUCommonViews.swift */,
 			);
 			path = Constant;
 			sourceTree = "<group>";
 		};
-		A948A0EA2743A630004B3DEA /* Theme */ = {
+		A90A3856274CE604009F8626 /* Theme */ = {
 			isa = PBXGroup;
 			children = (
-				A948A0EB2743A630004B3DEA /* SBUIconSet.swift */,
-				A948A0EC2743A630004B3DEA /* SBUColorSet.swift */,
-				A948A0ED2743A630004B3DEA /* SBUTheme+Type.swift */,
-				A948A0EE2743A630004B3DEA /* SBUFontSet.swift */,
-				A948A0EF2743A630004B3DEA /* SBUTheme.swift */,
+				A90A3857274CE604009F8626 /* SBUIconSet.swift */,
+				A90A3858274CE604009F8626 /* SBUColorSet.swift */,
+				A90A3859274CE604009F8626 /* SBUTheme+Type.swift */,
+				A90A385A274CE604009F8626 /* SBUFontSet.swift */,
+				A90A385B274CE604009F8626 /* SBUTheme.swift */,
 			);
 			path = Theme;
 			sourceTree = "<group>";
 		};
-		A948A0F02743A630004B3DEA /* Model */ = {
+		A90A385C274CE604009F8626 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				A948A0F12743A630004B3DEA /* SBUMessageCache.swift */,
-				A948A0F22743A630004B3DEA /* SBUUser.swift */,
-				A948A0F32743A630004B3DEA /* SBUHighlightMessageInfo.swift */,
+				A90A385D274CE604009F8626 /* SBUMessageCache.swift */,
+				A90A385E274CE604009F8626 /* SBUUser.swift */,
+				A90A385F274CE604009F8626 /* SBUHighlightMessageInfo.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
 		};
-		A948A0F42743A630004B3DEA /* View */ = {
+		A90A3860274CE604009F8626 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				A948A0F52743A630004B3DEA /* ViewModel */,
-				A948A1002743A630004B3DEA /* ChannelList */,
-				A948A1062743A630004B3DEA /* User */,
-				A948A1082743A630004B3DEA /* Channel */,
-				A948A13D2743A630004B3DEA /* Common */,
-				A948A14F2743A630004B3DEA /* UserList */,
-				A948A1522743A630004B3DEA /* MessageSearch */,
-				A948A1552743A630004B3DEA /* Setting */,
-				A948A1602743A630004B3DEA /* CreateChannel */,
+				A90A3861274CE604009F8626 /* ViewModel */,
+				A90A386E274CE604009F8626 /* ChannelList */,
+				A90A3874274CE604009F8626 /* User */,
+				A90A3876274CE604009F8626 /* Channel */,
+				A90A38BE274CE604009F8626 /* Common */,
+				A90A38D4274CE604009F8626 /* UserList */,
+				A90A38D7274CE604009F8626 /* MessageSearch */,
+				A90A38DA274CE604009F8626 /* Life cycles */,
+				A90A38E1274CE604009F8626 /* Setting */,
+				A90A38EC274CE604009F8626 /* CreateChannel */,
 			);
 			path = View;
 			sourceTree = "<group>";
 		};
-		A948A0F52743A630004B3DEA /* ViewModel */ = {
+		A90A3861274CE604009F8626 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				A948A0F62743A630004B3DEA /* SBUBaseViewController.swift */,
-				A948A0F72743A630004B3DEA /* SBUMessageSearchViewModel.swift */,
-				A948A0F82743A630004B3DEA /* SBUMemberListViewModel.swift */,
-				A948A0F92743A630004B3DEA /* SBUInviteUserListViewModel.swift */,
-				A948A0FA2743A630004B3DEA /* Common */,
-				A948A0FE2743A630004B3DEA /* SBUChannelViewModel.swift */,
-				A948A0FF2743A630004B3DEA /* SBUObservable.swift */,
+				A90A3862274CE604009F8626 /* SBUBaseViewController.swift */,
+				A90A3863274CE604009F8626 /* SBUOpenChannelViewModel.swift */,
+				A90A3864274CE604009F8626 /* SBUMessageSearchViewModel.swift */,
+				A90A3865274CE604009F8626 /* SBUMemberListViewModel.swift */,
+				A90A3866274CE604009F8626 /* SBUInviteUserListViewModel.swift */,
+				A90A3867274CE604009F8626 /* Common */,
+				A90A386B274CE604009F8626 /* SBUChannelViewModel.swift */,
+				A90A386C274CE604009F8626 /* SBUObservable.swift */,
+				A90A386D274CE604009F8626 /* SBUChannelListViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
-		A948A0FA2743A630004B3DEA /* Common */ = {
+		A90A3867274CE604009F8626 /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				A948A0FB2743A630004B3DEA /* SBUViewModelDelegate.swift */,
-				A948A0FC2743A630004B3DEA /* SBULoadableViewModel.swift */,
-				A948A0FD2743A630004B3DEA /* SBUChannelActionViewModel.swift */,
+				A90A3868274CE604009F8626 /* SBUViewModelDelegate.swift */,
+				A90A3869274CE604009F8626 /* SBULoadableViewModel.swift */,
+				A90A386A274CE604009F8626 /* SBUChannelActionViewModel.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
 		};
-		A948A1002743A630004B3DEA /* ChannelList */ = {
+		A90A386E274CE604009F8626 /* ChannelList */ = {
 			isa = PBXGroup;
 			children = (
-				A948A1012743A630004B3DEA /* ChannelCell */,
-				A948A1042743A630004B3DEA /* SBUChannelListViewController.swift */,
-				A948A1052743A630004B3DEA /* SBUBaseChannelListViewController.swift */,
+				A90A386F274CE604009F8626 /* ChannelCell */,
+				A90A3872274CE604009F8626 /* SBUChannelListViewController.swift */,
+				A90A3873274CE604009F8626 /* SBUBaseChannelListViewController.swift */,
 			);
 			path = ChannelList;
 			sourceTree = "<group>";
 		};
-		A948A1012743A630004B3DEA /* ChannelCell */ = {
+		A90A386F274CE604009F8626 /* ChannelCell */ = {
 			isa = PBXGroup;
 			children = (
-				A948A1022743A630004B3DEA /* SBUChannelCell.swift */,
-				A948A1032743A630004B3DEA /* SBUBaseChannelCell.swift */,
+				A90A3870274CE604009F8626 /* SBUChannelCell.swift */,
+				A90A3871274CE604009F8626 /* SBUBaseChannelCell.swift */,
 			);
 			path = ChannelCell;
 			sourceTree = "<group>";
 		};
-		A948A1062743A630004B3DEA /* User */ = {
+		A90A3874274CE604009F8626 /* User */ = {
 			isa = PBXGroup;
 			children = (
-				A948A1072743A630004B3DEA /* SBUUserProfileView.swift */,
+				A90A3875274CE604009F8626 /* SBUUserProfileView.swift */,
 			);
 			path = User;
 			sourceTree = "<group>";
 		};
-		A948A1082743A630004B3DEA /* Channel */ = {
+		A90A3876274CE604009F8626 /* Channel */ = {
 			isa = PBXGroup;
 			children = (
-				A948A1092743A630004B3DEA /* ViewModel */,
-				A948A10C2743A630004B3DEA /* Reaction */,
-				A948A1122743A630004B3DEA /* SBUBaseChannelViewController.swift */,
-				A948A1132743A630004B3DEA /* MessageCell */,
-				A948A1282743A630004B3DEA /* MessageInput */,
-				A948A12A2743A630004B3DEA /* CellView */,
-				A948A1342743A630004B3DEA /* FileViewer */,
-				A948A1362743A630004B3DEA /* SBUChannelViewController.swift */,
-				A948A1372743A630004B3DEA /* NewMessageInfo */,
-				A948A1392743A630004B3DEA /* SBUOpenChannelViewController.swift */,
-				A948A13A2743A630004B3DEA /* Header */,
+				A90A3877274CE604009F8626 /* ViewModel */,
+				A90A387A274CE604009F8626 /* Reaction */,
+				A90A3880274CE604009F8626 /* SBUBaseChannelViewController.swift */,
+				A90A3881274CE604009F8626 /* MessageCell */,
+				A90A38A4274CE604009F8626 /* MessageInput */,
+				A90A38AA274CE604009F8626 /* SBUChannelViewController.ParentMessageViewDelegate.swift */,
+				A90A38AB274CE604009F8626 /* CellView */,
+				A90A38B5274CE604009F8626 /* FileViewer */,
+				A90A38B7274CE604009F8626 /* SBUChannelViewController.swift */,
+				A90A38B8274CE604009F8626 /* NewMessageInfo */,
+				A90A38BA274CE604009F8626 /* SBUOpenChannelViewController.swift */,
+				A90A38BB274CE604009F8626 /* Header */,
 			);
 			path = Channel;
 			sourceTree = "<group>";
 		};
-		A948A1092743A630004B3DEA /* ViewModel */ = {
+		A90A3877274CE604009F8626 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				A948A10A2743A630004B3DEA /* SBUUserMessageCellModel.swift */,
-				A948A10B2743A630004B3DEA /* SBUMessageWebViewModel.swift */,
+				A90A3878274CE604009F8626 /* SBUUserMessageTextViewModel.swift */,
+				A90A3879274CE604009F8626 /* SBUMessageWebViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
-		A948A10C2743A630004B3DEA /* Reaction */ = {
+		A90A387A274CE604009F8626 /* Reaction */ = {
 			isa = PBXGroup;
 			children = (
-				A948A10D2743A630004B3DEA /* SBUReactionCollectionViewCell.swift */,
-				A948A10E2743A630004B3DEA /* SBUReactionsViewController.swift */,
-				A948A10F2743A630004B3DEA /* SBUMessageReactionView.swift */,
-				A948A1102743A630004B3DEA /* SBUReactionCollectionViewCell.xib */,
-				A948A1112743A630004B3DEA /* SBUEmojiListViewController.swift */,
+				A90A387B274CE604009F8626 /* SBUReactionCollectionViewCell.swift */,
+				A90A387C274CE604009F8626 /* SBUReactionsViewController.swift */,
+				A90A387D274CE604009F8626 /* SBUMessageReactionView.swift */,
+				A90A387E274CE604009F8626 /* SBUReactionCollectionViewCell.xib */,
+				A90A387F274CE604009F8626 /* SBUEmojiListViewController.swift */,
 			);
 			path = Reaction;
 			sourceTree = "<group>";
 		};
-		A948A1132743A630004B3DEA /* MessageCell */ = {
+		A90A3881274CE604009F8626 /* MessageCell */ = {
 			isa = PBXGroup;
 			children = (
-				A948A1142743A630004B3DEA /* FileMessageContentView */,
-				A948A11A2743A630004B3DEA /* Replies */,
-				A948A11B2743A630004B3DEA /* SBUBaseMessageCell.swift */,
-				A948A11C2743A630004B3DEA /* OpenChannel */,
-				A948A1232743A630004B3DEA /* SBUFileMessageCell.swift */,
-				A948A1242743A630004B3DEA /* SBUAdminMessageCell.swift */,
-				A948A1252743A630004B3DEA /* SBUContentBaseMessageCell.swift */,
-				A948A1262743A630004B3DEA /* SBUUnknownMessageCell.swift */,
-				A948A1272743A630004B3DEA /* SBUUserMessageCell.swift */,
+				A90A3882274CE604009F8626 /* MessageCellParams */,
+				A90A3888274CE604009F8626 /* FileMessageContentView */,
+				A90A388E274CE604009F8626 /* Replies */,
+				A90A3897274CE604009F8626 /* SBUBaseMessageCell.swift */,
+				A90A3898274CE604009F8626 /* OpenChannel */,
+				A90A389F274CE604009F8626 /* SBUFileMessageCell.swift */,
+				A90A38A0274CE604009F8626 /* SBUAdminMessageCell.swift */,
+				A90A38A1274CE604009F8626 /* SBUContentBaseMessageCell.swift */,
+				A90A38A2274CE604009F8626 /* SBUUnknownMessageCell.swift */,
+				A90A38A3274CE604009F8626 /* SBUUserMessageCell.swift */,
 			);
 			path = MessageCell;
 			sourceTree = "<group>";
 		};
-		A948A1142743A630004B3DEA /* FileMessageContentView */ = {
+		A90A3882274CE604009F8626 /* MessageCellParams */ = {
 			isa = PBXGroup;
 			children = (
-				A948A1152743A630004B3DEA /* OpenChannelCommonContentView.swift */,
-				A948A1162743A630004B3DEA /* BaseFileContentView.swift */,
-				A948A1172743A630004B3DEA /* ImageContentView.swift */,
-				A948A1182743A630004B3DEA /* CommonContentView.swift */,
-				A948A1192743A630004B3DEA /* OpenChannelImageContentView.swift */,
+				A90A3883274CE604009F8626 /* SBUUserMessageCellParams.swift */,
+				A90A3884274CE604009F8626 /* SBUUnknownMessageCellParams.swift */,
+				A90A3885274CE604009F8626 /* SBUAdminMessageCellParams.swift */,
+				A90A3886274CE604009F8626 /* SBUBaseMessageCellParams.swift */,
+				A90A3887274CE604009F8626 /* SBUFileMessageCellParams.swift */,
+			);
+			path = MessageCellParams;
+			sourceTree = "<group>";
+		};
+		A90A3888274CE604009F8626 /* FileMessageContentView */ = {
+			isa = PBXGroup;
+			children = (
+				A90A3889274CE604009F8626 /* OpenChannelCommonContentView.swift */,
+				A90A388A274CE604009F8626 /* BaseFileContentView.swift */,
+				A90A388B274CE604009F8626 /* ImageContentView.swift */,
+				A90A388C274CE604009F8626 /* CommonContentView.swift */,
+				A90A388D274CE604009F8626 /* OpenChannelImageContentView.swift */,
 			);
 			path = FileMessageContentView;
 			sourceTree = "<group>";
 		};
-		A948A11A2743A630004B3DEA /* Replies */ = {
+		A90A388E274CE604009F8626 /* Replies */ = {
 			isa = PBXGroup;
 			children = (
+				A90A388F274CE604009F8626 /* MessageView */,
+				A90A3895274CE604009F8626 /* ViewParams */,
 			);
 			path = Replies;
 			sourceTree = "<group>";
 		};
-		A948A11C2743A630004B3DEA /* OpenChannel */ = {
+		A90A388F274CE604009F8626 /* MessageView */ = {
 			isa = PBXGroup;
 			children = (
-				A948A11D2743A630004B3DEA /* SBUOpenChannelFileMessageCell.swift */,
-				A948A11E2743A630004B3DEA /* SBUOpenChannelAdminMessageCell.swift */,
-				A948A11F2743A630004B3DEA /* SBUOpenChannelContentBaseMessageCell.swift */,
-				A948A1202743A630004B3DEA /* SBUOpenChannelUserMessageCell.swift */,
-				A948A1212743A630004B3DEA /* SBUOpenChannelUnknownMessageCell.swift */,
-				A948A1222743A630004B3DEA /* SBUOpenChannelBaseMessageCell.swift */,
+				A90A3890274CE604009F8626 /* QuotedFileCommonContentView.swift */,
+				A90A3891274CE604009F8626 /* SBUQuotedBaseMessageView.swift */,
+				A90A3892274CE604009F8626 /* QuotedFileImageContentView.swift */,
+				A90A3893274CE604009F8626 /* SBUQuotedFileMessageView.swift */,
+				A90A3894274CE604009F8626 /* SBUQuotedUserMessageView.swift */,
+			);
+			path = MessageView;
+			sourceTree = "<group>";
+		};
+		A90A3895274CE604009F8626 /* ViewParams */ = {
+			isa = PBXGroup;
+			children = (
+				A90A3896274CE604009F8626 /* SBUQuotedBaseMessageViewParams.swift */,
+			);
+			path = ViewParams;
+			sourceTree = "<group>";
+		};
+		A90A3898274CE604009F8626 /* OpenChannel */ = {
+			isa = PBXGroup;
+			children = (
+				A90A3899274CE604009F8626 /* SBUOpenChannelFileMessageCell.swift */,
+				A90A389A274CE604009F8626 /* SBUOpenChannelAdminMessageCell.swift */,
+				A90A389B274CE604009F8626 /* SBUOpenChannelContentBaseMessageCell.swift */,
+				A90A389C274CE604009F8626 /* SBUOpenChannelUserMessageCell.swift */,
+				A90A389D274CE604009F8626 /* SBUOpenChannelUnknownMessageCell.swift */,
+				A90A389E274CE604009F8626 /* SBUOpenChannelBaseMessageCell.swift */,
 			);
 			path = OpenChannel;
 			sourceTree = "<group>";
 		};
-		A948A1282743A630004B3DEA /* MessageInput */ = {
+		A90A38A4274CE604009F8626 /* MessageInput */ = {
 			isa = PBXGroup;
 			children = (
-				A948A1292743A630004B3DEA /* SBUMessageInputView.swift */,
+				A90A38A5274CE604009F8626 /* SBUQuoteMessageInputView.swift */,
+				A90A38A6274CE604009F8626 /* SBUMessageInputMode.swift */,
+				A90A38A7274CE604009F8626 /* ViewParams */,
+				A90A38A9274CE604009F8626 /* SBUMessageInputView.swift */,
 			);
 			path = MessageInput;
 			sourceTree = "<group>";
 		};
-		A948A12A2743A630004B3DEA /* CellView */ = {
+		A90A38A7274CE604009F8626 /* ViewParams */ = {
 			isa = PBXGroup;
 			children = (
-				A948A12B2743A630004B3DEA /* SBUMessageStateView.swift */,
-				A948A12C2743A630004B3DEA /* SBUMessageProfileView.swift */,
-				A948A12D2743A630004B3DEA /* SBUUserMessageTextView.swift */,
-				A948A12E2743A630004B3DEA /* SBUUserNameView.swift */,
-				A948A12F2743A630004B3DEA /* SBUMessageWebView.swift */,
-				A948A1302743A630004B3DEA /* SBUMessageDateView.swift */,
-				A948A1312743A630004B3DEA /* SBULinkClickableTextView.swift */,
-				A948A1322743A630004B3DEA /* SBUOpenChannelMessageWebView.swift */,
-				A948A1332743A630004B3DEA /* SBUSelectableStackView.swift */,
+				A90A38A8274CE604009F8626 /* SBUQuoteMessageInputViewParams.swift */,
+			);
+			path = ViewParams;
+			sourceTree = "<group>";
+		};
+		A90A38AB274CE604009F8626 /* CellView */ = {
+			isa = PBXGroup;
+			children = (
+				A90A38AC274CE604009F8626 /* SBUMessageStateView.swift */,
+				A90A38AD274CE604009F8626 /* SBUMessageProfileView.swift */,
+				A90A38AE274CE604009F8626 /* SBUUserMessageTextView.swift */,
+				A90A38AF274CE604009F8626 /* SBUUserNameView.swift */,
+				A90A38B0274CE604009F8626 /* SBUMessageWebView.swift */,
+				A90A38B1274CE604009F8626 /* SBUMessageDateView.swift */,
+				A90A38B2274CE604009F8626 /* SBULinkClickableTextView.swift */,
+				A90A38B3274CE604009F8626 /* SBUOpenChannelMessageWebView.swift */,
+				A90A38B4274CE604009F8626 /* SBUSelectableStackView.swift */,
 			);
 			path = CellView;
 			sourceTree = "<group>";
 		};
-		A948A1342743A630004B3DEA /* FileViewer */ = {
+		A90A38B5274CE604009F8626 /* FileViewer */ = {
 			isa = PBXGroup;
 			children = (
-				A948A1352743A630004B3DEA /* SBUFileViewer.swift */,
+				A90A38B6274CE604009F8626 /* SBUFileViewer.swift */,
 			);
 			path = FileViewer;
 			sourceTree = "<group>";
 		};
-		A948A1372743A630004B3DEA /* NewMessageInfo */ = {
+		A90A38B8274CE604009F8626 /* NewMessageInfo */ = {
 			isa = PBXGroup;
 			children = (
-				A948A1382743A630004B3DEA /* SBUNewMessageInfo.swift */,
+				A90A38B9274CE604009F8626 /* SBUNewMessageInfo.swift */,
 			);
 			path = NewMessageInfo;
 			sourceTree = "<group>";
 		};
-		A948A13A2743A630004B3DEA /* Header */ = {
+		A90A38BB274CE604009F8626 /* Header */ = {
 			isa = PBXGroup;
 			children = (
-				A948A13B2743A630004B3DEA /* SBUChannelInfoHeaderView.swift */,
-				A948A13C2743A630004B3DEA /* SBUChannelTitleView.swift */,
+				A90A38BC274CE604009F8626 /* SBUChannelInfoHeaderView.swift */,
+				A90A38BD274CE604009F8626 /* SBUChannelTitleView.swift */,
 			);
 			path = Header;
 			sourceTree = "<group>";
 		};
-		A948A13D2743A630004B3DEA /* Common */ = {
+		A90A38BE274CE604009F8626 /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				A948A13E2743A630004B3DEA /* SBUEmptyView.swift */,
-				A948A13F2743A630004B3DEA /* SBUCoverImageView.swift */,
-				A948A1402743A630004B3DEA /* SBUCommonItem.swift */,
-				A948A1412743A630004B3DEA /* SBULayoutableButton.swift */,
-				A948A1422743A630004B3DEA /* SBUNavigationTitleView.swift */,
-				A948A1432743A630004B3DEA /* SBUActionSheet.swift */,
-				A948A1442743A630004B3DEA /* SBUAlertView.swift */,
-				A948A1452743A630004B3DEA /* Menu */,
-				A948A14B2743A630004B3DEA /* UserCell */,
-				A948A14D2743A630004B3DEA /* SBULoading.swift */,
-				A948A14E2743A630004B3DEA /* SBUCollectionViewFlowLayout.swift */,
+				A90A38BF274CE604009F8626 /* SBUStackView.swift */,
+				A90A38C0274CE604009F8626 /* SBUAnimation.swift */,
+				A90A38C1274CE604009F8626 /* SBUEmptyView.swift */,
+				A90A38C2274CE604009F8626 /* SBUCoverImageView.swift */,
+				A90A38C3274CE604009F8626 /* Replies */,
+				A90A38C5274CE604009F8626 /* SBUCommonItem.swift */,
+				A90A38C6274CE604009F8626 /* SBULayoutableButton.swift */,
+				A90A38C7274CE604009F8626 /* SBUNavigationTitleView.swift */,
+				A90A38C8274CE604009F8626 /* SBUActionSheet.swift */,
+				A90A38C9274CE604009F8626 /* SBUAlertView.swift */,
+				A90A38CA274CE604009F8626 /* Menu */,
+				A90A38D0274CE604009F8626 /* UserCell */,
+				A90A38D2274CE604009F8626 /* SBULoading.swift */,
+				A90A38D3274CE604009F8626 /* SBUCollectionViewFlowLayout.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
 		};
-		A948A1452743A630004B3DEA /* Menu */ = {
+		A90A38C3274CE604009F8626 /* Replies */ = {
 			isa = PBXGroup;
 			children = (
-				A948A1462743A630004B3DEA /* SBUMenuCell.xib */,
-				A948A1472743A630004B3DEA /* SBUMenuCell.swift */,
-				A948A1482743A630004B3DEA /* SBUMenuView.swift */,
-				A948A1492743A630004B3DEA /* SBUBottomSheetController.swift */,
-				A948A14A2743A630004B3DEA /* SBUMenuViewController.swift */,
+				A90A38C4274CE604009F8626 /* SBUReplyType.swift */,
+			);
+			path = Replies;
+			sourceTree = "<group>";
+		};
+		A90A38CA274CE604009F8626 /* Menu */ = {
+			isa = PBXGroup;
+			children = (
+				A90A38CB274CE604009F8626 /* SBUMenuCell.xib */,
+				A90A38CC274CE604009F8626 /* SBUMenuCell.swift */,
+				A90A38CD274CE604009F8626 /* SBUMenuView.swift */,
+				A90A38CE274CE604009F8626 /* SBUBottomSheetController.swift */,
+				A90A38CF274CE604009F8626 /* SBUMenuViewController.swift */,
 			);
 			path = Menu;
 			sourceTree = "<group>";
 		};
-		A948A14B2743A630004B3DEA /* UserCell */ = {
+		A90A38D0274CE604009F8626 /* UserCell */ = {
 			isa = PBXGroup;
 			children = (
-				A948A14C2743A630004B3DEA /* SBUUserCell.swift */,
+				A90A38D1274CE604009F8626 /* SBUUserCell.swift */,
 			);
 			path = UserCell;
 			sourceTree = "<group>";
 		};
-		A948A14F2743A630004B3DEA /* UserList */ = {
+		A90A38D4274CE604009F8626 /* UserList */ = {
 			isa = PBXGroup;
 			children = (
-				A948A1502743A630004B3DEA /* SBUMemberListViewController.swift */,
-				A948A1512743A630004B3DEA /* SBUInviteUserViewController.swift */,
+				A90A38D5274CE604009F8626 /* SBUMemberListViewController.swift */,
+				A90A38D6274CE604009F8626 /* SBUInviteUserViewController.swift */,
 			);
 			path = UserList;
 			sourceTree = "<group>";
 		};
-		A948A1522743A630004B3DEA /* MessageSearch */ = {
+		A90A38D7274CE604009F8626 /* MessageSearch */ = {
 			isa = PBXGroup;
 			children = (
-				A948A1532743A630004B3DEA /* SBUMessageSearchViewController.swift */,
-				A948A1542743A630004B3DEA /* SBUMessageSearchResultCell.swift */,
+				A90A38D8274CE604009F8626 /* SBUMessageSearchViewController.swift */,
+				A90A38D9274CE604009F8626 /* SBUMessageSearchResultCell.swift */,
 			);
 			path = MessageSearch;
 			sourceTree = "<group>";
 		};
-		A948A1552743A630004B3DEA /* Setting */ = {
+		A90A38DA274CE604009F8626 /* Life cycles */ = {
 			isa = PBXGroup;
 			children = (
-				A948A1562743A630004B3DEA /* SBUOpenChannelSettingsViewController.swift */,
-				A948A1572743A630004B3DEA /* Cell */,
-				A948A15B2743A630004B3DEA /* SBUModerationsViewController.swift */,
-				A948A15C2743A630004B3DEA /* View */,
-				A948A15E2743A630004B3DEA /* SBUBaseChannelSettingViewController.swift */,
-				A948A15F2743A630004B3DEA /* SBUChannelSettingsViewController.swift */,
+				A90A38DB274CE604009F8626 /* SBUTableViewCell.swift */,
+				A90A38DC274CE604009F8626 /* SBUQuoteMessageInputViewProtocol.swift */,
+				A90A38DD274CE604009F8626 /* SBUMessageCellProtocol.swift */,
+				A90A38DE274CE604009F8626 /* SBUViewLifeCycle.swift */,
+				A90A38DF274CE604009F8626 /* SBUQuotedMessageViewProtocol.swift */,
+				A90A38E0274CE604009F8626 /* SBUView.swift */,
+			);
+			path = "Life cycles";
+			sourceTree = "<group>";
+		};
+		A90A38E1274CE604009F8626 /* Setting */ = {
+			isa = PBXGroup;
+			children = (
+				A90A38E2274CE604009F8626 /* SBUOpenChannelSettingsViewController.swift */,
+				A90A38E3274CE604009F8626 /* Cell */,
+				A90A38E7274CE604009F8626 /* SBUModerationsViewController.swift */,
+				A90A38E8274CE604009F8626 /* View */,
+				A90A38EA274CE604009F8626 /* SBUBaseChannelSettingViewController.swift */,
+				A90A38EB274CE604009F8626 /* SBUChannelSettingsViewController.swift */,
 			);
 			path = Setting;
 			sourceTree = "<group>";
 		};
-		A948A1572743A630004B3DEA /* Cell */ = {
+		A90A38E3274CE604009F8626 /* Cell */ = {
 			isa = PBXGroup;
 			children = (
-				A948A1582743A630004B3DEA /* SBUOpenChannelSettingCell.swift */,
-				A948A1592743A630004B3DEA /* SBUModerationCell.swift */,
-				A948A15A2743A630004B3DEA /* SBUChannelSettingCell.swift */,
+				A90A38E4274CE604009F8626 /* SBUOpenChannelSettingCell.swift */,
+				A90A38E5274CE604009F8626 /* SBUModerationCell.swift */,
+				A90A38E6274CE604009F8626 /* SBUChannelSettingCell.swift */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
 		};
-		A948A15C2743A630004B3DEA /* View */ = {
+		A90A38E8274CE604009F8626 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				A948A15D2743A630004B3DEA /* SBUChannelSettingsUserInfoView.swift */,
+				A90A38E9274CE604009F8626 /* SBUChannelSettingsUserInfoView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
 		};
-		A948A1602743A630004B3DEA /* CreateChannel */ = {
+		A90A38EC274CE604009F8626 /* CreateChannel */ = {
 			isa = PBXGroup;
 			children = (
-				A948A1612743A630004B3DEA /* SBUCreateChannelTypeSelector.swift */,
-				A948A1622743A630004B3DEA /* SBUCreateChannelViewController.swift */,
+				A90A38ED274CE604009F8626 /* SBUCreateChannelTypeSelector.swift */,
+				A90A38EE274CE604009F8626 /* SBUCreateChannelViewController.swift */,
 			);
 			path = CreateChannel;
 			sourceTree = "<group>";
 		};
-		A948A1652743A630004B3DEA /* Resource */ = {
+		A90A38F1274CE604009F8626 /* Resource */ = {
 			isa = PBXGroup;
 			children = (
-				A948A1662743A630004B3DEA /* Assets.xcassets */,
+				A90A38F2274CE604009F8626 /* Assets.xcassets */,
 			);
 			path = Resource;
 			sourceTree = "<group>";
@@ -1180,11 +1309,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A948A1A62743A631004B3DEA /* SBUReactionCollectionViewCell.xib in Resources */,
-				A948A1D12743A631004B3DEA /* SBUMenuCell.xib in Resources */,
+				A90A3935274CE604009F8626 /* SBUReactionCollectionViewCell.xib in Resources */,
+				A90A3972274CE604009F8626 /* SBUMenuCell.xib in Resources */,
 				9C777D67241B9024006FFE25 /* LaunchScreen.storyboard in Resources */,
 				9C777D64241B9024006FFE25 /* Assets.xcassets in Resources */,
-				A948A1E82743A631004B3DEA /* Assets.xcassets in Resources */,
+				A90A398F274CE605009F8626 /* Assets.xcassets in Resources */,
 				9C777D62241B9022006FFE25 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1255,181 +1384,208 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A948A18E2743A631004B3DEA /* SBUFontSet.swift in Sources */,
-				A948A1D02743A631004B3DEA /* SBUAlertView.swift in Sources */,
-				A948A1AE2743A631004B3DEA /* SBUBaseMessageCell.swift in Sources */,
+				A90A3961274CE604009F8626 /* SBUSelectableStackView.swift in Sources */,
+				A90A3955274CE604009F8626 /* SBUMessageInputMode.swift in Sources */,
+				A90A3979274CE605009F8626 /* SBUCollectionViewFlowLayout.swift in Sources */,
 				9CEB7797250F4A42004AC1D6 /* MainChannelTabbarController.swift in Sources */,
+				A90A38FE274CE604009F8626 /* Data+SBUIKit.swift in Sources */,
+				A90A3907274CE604009F8626 /* SBULogger.swift in Sources */,
+				A90A393D274CE604009F8626 /* OpenChannelCommonContentView.swift in Sources */,
+				A90A3974274CE604009F8626 /* SBUMenuView.swift in Sources */,
+				A90A38F7274CE604009F8626 /* UIColor+SBUIKit.swift in Sources */,
+				A90A3932274CE604009F8626 /* SBUReactionCollectionViewCell.swift in Sources */,
+				A90A394E274CE604009F8626 /* SBUOpenChannelBaseMessageCell.swift in Sources */,
 				9CDDA30324B47FF200F77A59 /* CustomUserCell.swift in Sources */,
-				A948A19A2743A631004B3DEA /* SBUChannelViewModel.swift in Sources */,
-				A948A1A52743A631004B3DEA /* SBUMessageReactionView.swift in Sources */,
-				A948A1C92743A631004B3DEA /* SBUChannelTitleView.swift in Sources */,
+				A90A3971274CE604009F8626 /* SBUAlertView.swift in Sources */,
+				A90A3923274CE604009F8626 /* SBUMemberListViewModel.swift in Sources */,
+				A90A395A274CE604009F8626 /* SBUMessageProfileView.swift in Sources */,
+				A90A3973274CE604009F8626 /* SBUMenuCell.swift in Sources */,
 				9C777D5F241B9022006FFE25 /* ViewController.swift in Sources */,
-				A948A1CA2743A631004B3DEA /* SBUEmptyView.swift in Sources */,
-				A948A1C02743A631004B3DEA /* SBUMessageDateView.swift in Sources */,
-				A948A1E52743A631004B3DEA /* SBUCreateChannelTypeSelector.swift in Sources */,
-				A948A18D2743A631004B3DEA /* SBUTheme+Type.swift in Sources */,
-				A948A1AC2743A631004B3DEA /* CommonContentView.swift in Sources */,
+				A90A396C274CE604009F8626 /* SBUReplyType.swift in Sources */,
 				9CED4D1324ADE41200D81B10 /* ChannelSettingsCustomManager.swift in Sources */,
-				A948A1DC2743A631004B3DEA /* SBUMessageSearchResultCell.swift in Sources */,
+				A90A38F9274CE604009F8626 /* UIImage+SBUIKit.swift in Sources */,
+				A90A3969274CE604009F8626 /* SBUAnimation.swift in Sources */,
+				A90A3927274CE604009F8626 /* SBUChannelActionViewModel.swift in Sources */,
+				A90A3946274CE604009F8626 /* SBUQuotedUserMessageView.swift in Sources */,
 				9CC8E2F52510C53A00C038A5 /* MySettingsCell.swift in Sources */,
-				A948A1912743A631004B3DEA /* SBUUser.swift in Sources */,
+				A90A3933274CE604009F8626 /* SBUReactionsViewController.swift in Sources */,
+				A90A394D274CE604009F8626 /* SBUOpenChannelUnknownMessageCell.swift in Sources */,
 				9CED4D0524ADA20B00D81B10 /* GlobalSetCustomManager.swift in Sources */,
-				A948A1B62743A631004B3DEA /* SBUAdminMessageCell.swift in Sources */,
-				A948A1B22743A631004B3DEA /* SBUOpenChannelUserMessageCell.swift in Sources */,
-				A948A17C2743A631004B3DEA /* SBUAvailable.swift in Sources */,
-				A948A1952743A631004B3DEA /* SBUMemberListViewModel.swift in Sources */,
-				A948A1A32743A631004B3DEA /* SBUReactionCollectionViewCell.swift in Sources */,
 				9CED4D0B24ADE36100D81B10 /* ChannelListVC_Overriding.swift in Sources */,
-				A948A1C22743A631004B3DEA /* SBUOpenChannelMessageWebView.swift in Sources */,
 				9CDDA31D24BEF1A300F77A59 /* UIcolor+Ext.swift in Sources */,
-				A948A1C62743A631004B3DEA /* SBUNewMessageInfo.swift in Sources */,
-				A948A1902743A631004B3DEA /* SBUMessageCache.swift in Sources */,
+				A90A3905274CE604009F8626 /* SBUPropertyWrapper.swift in Sources */,
+				A90A396B274CE604009F8626 /* SBUCoverImageView.swift in Sources */,
+				A90A391D274CE604009F8626 /* SBUMessageCache.swift in Sources */,
+				A90A3901274CE604009F8626 /* UIView+SBUIKit.swift in Sources */,
 				9CED4D1524ADE41B00D81B10 /* CreateChannelCustomManager.swift in Sources */,
-				A948A1872743A631004B3DEA /* SBUGlobalCustomParams.swift in Sources */,
-				A948A1DA2743A631004B3DEA /* SBUInviteUserViewController.swift in Sources */,
+				A90A38FD274CE604009F8626 /* Float+SBUKit.swift in Sources */,
+				A90A38F8274CE604009F8626 /* Formatter+SBUIKit.swift in Sources */,
 				9C2AA7E82561255800C6F6CB /* StreamingChannelListViewController.swift in Sources */,
-				A948A16B2743A631004B3DEA /* Formatter+SBUIKit.swift in Sources */,
+				A90A3916274CE604009F8626 /* SBUStringSet.swift in Sources */,
 				9CDDA31B24B720A300F77A59 /* ChannelVC_Overriding.swift in Sources */,
-				A948A1D72743A631004B3DEA /* SBULoading.swift in Sources */,
-				A948A16E2743A631004B3DEA /* String+SBUIKit.swift in Sources */,
 				9CED4D1C24ADE69900D81B10 /* CustomChannelListCell.swift in Sources */,
-				A948A1982743A631004B3DEA /* SBULoadableViewModel.swift in Sources */,
-				A948A17F2743A631004B3DEA /* CommonProtocols.swift in Sources */,
-				A948A18C2743A631004B3DEA /* SBUColorSet.swift in Sources */,
-				A948A1862743A631004B3DEA /* SBUToastManager.swift in Sources */,
+				A90A3921274CE604009F8626 /* SBUOpenChannelViewModel.swift in Sources */,
+				A90A3909274CE604009F8626 /* SBUAvailable.swift in Sources */,
+				A90A3947274CE604009F8626 /* SBUQuotedBaseMessageViewParams.swift in Sources */,
+				A90A395C274CE604009F8626 /* SBUUserNameView.swift in Sources */,
+				A90A3975274CE604009F8626 /* SBUBottomSheetController.swift in Sources */,
+				A90A393E274CE604009F8626 /* BaseFileContentView.swift in Sources */,
 				9C2AA7E325611A8200C6F6CB /* MainOpenChannelTabbarController.swift in Sources */,
-				A948A1C52743A631004B3DEA /* SBUChannelViewController.swift in Sources */,
-				A948A1D82743A631004B3DEA /* SBUCollectionViewFlowLayout.swift in Sources */,
+				A90A395D274CE604009F8626 /* SBUMessageWebView.swift in Sources */,
+				A90A392A274CE604009F8626 /* SBUChannelListViewModel.swift in Sources */,
 				9C56414C24AF29C00057B529 /* CustomSampleEnums.swift in Sources */,
-				A948A1B02743A631004B3DEA /* SBUOpenChannelAdminMessageCell.swift in Sources */,
+				A90A391A274CE604009F8626 /* SBUTheme+Type.swift in Sources */,
 				9C56415424AF99E70057B529 /* ChannelVC_MessageParam.swift in Sources */,
-				A948A1E12743A631004B3DEA /* SBUModerationsViewController.swift in Sources */,
-				A948A1A12743A631004B3DEA /* SBUUserMessageCellModel.swift in Sources */,
+				A90A3908274CE604009F8626 /* SBUMain.swift in Sources */,
+				A90A3912274CE604009F8626 /* SBUCacheManager.swift in Sources */,
+				A90A3951274CE604009F8626 /* SBUContentBaseMessageCell.swift in Sources */,
+				A90A391E274CE604009F8626 /* SBUUser.swift in Sources */,
+				A90A3981274CE605009F8626 /* SBUViewLifeCycle.swift in Sources */,
 				9CEB7796250F4A42004AC1D6 /* MySettingsViewController.swift in Sources */,
-				A948A1922743A631004B3DEA /* SBUHighlightMessageInfo.swift in Sources */,
-				A948A19D2743A631004B3DEA /* SBUBaseChannelCell.swift in Sources */,
-				A948A1742743A631004B3DEA /* UIView+SBUIKit.swift in Sources */,
-				A948A16F2743A631004B3DEA /* CGSize+SBUIKit.swift in Sources */,
 				9CEB77A0250F7948004AC1D6 /* UserInfoTitleView.swift in Sources */,
+				A90A3920274CE604009F8626 /* SBUBaseViewController.swift in Sources */,
+				A90A396F274CE604009F8626 /* SBUNavigationTitleView.swift in Sources */,
+				A90A3903274CE604009F8626 /* UIImageView+SBUIKit.swift in Sources */,
 				A9C29B332564C65E007248F5 /* CommunityChannelListViewController.swift in Sources */,
-				A948A1892743A631004B3DEA /* SBUStringSet.swift in Sources */,
-				A948A1C42743A631004B3DEA /* SBUFileViewer.swift in Sources */,
-				A948A1DF2743A631004B3DEA /* SBUModerationCell.swift in Sources */,
-				A948A1D62743A631004B3DEA /* SBUUserCell.swift in Sources */,
-				A948A1762743A631004B3DEA /* UIImageView+SBUIKit.swift in Sources */,
 				9C32648724B39090000F8313 /* InviteUserVC_UserList.swift in Sources */,
-				A948A1A22743A631004B3DEA /* SBUMessageWebViewModel.swift in Sources */,
-				A948A1B42743A631004B3DEA /* SBUOpenChannelBaseMessageCell.swift in Sources */,
-				A948A1CC2743A631004B3DEA /* SBUCommonItem.swift in Sources */,
+				A90A3953274CE604009F8626 /* SBUUserMessageCell.swift in Sources */,
+				A90A3911274CE604009F8626 /* SBUPermissionManager.swift in Sources */,
+				A90A3985274CE605009F8626 /* SBUOpenChannelSettingCell.swift in Sources */,
+				A90A392C274CE604009F8626 /* SBUBaseChannelCell.swift in Sources */,
+				A90A390C274CE604009F8626 /* CommonProtocols.swift in Sources */,
+				A90A38F6274CE604009F8626 /* Array+SBUIKit.swift in Sources */,
+				A90A3943274CE604009F8626 /* SBUQuotedBaseMessageView.swift in Sources */,
+				A90A390E274CE604009F8626 /* SBUCacheManager.File.swift in Sources */,
+				A90A3919274CE604009F8626 /* SBUColorSet.swift in Sources */,
+				A90A394C274CE604009F8626 /* SBUOpenChannelUserMessageCell.swift in Sources */,
+				A90A392E274CE604009F8626 /* SBUBaseChannelListViewController.swift in Sources */,
+				A90A397A274CE605009F8626 /* SBUMemberListViewController.swift in Sources */,
 				A9A3AEAC256A532700007FC2 /* SBDOpenChannel+Ext.swift in Sources */,
+				A90A3959274CE604009F8626 /* SBUMessageStateView.swift in Sources */,
+				A90A3986274CE605009F8626 /* SBUModerationCell.swift in Sources */,
 				9C32648324B38FAF000F8313 /* ChannelSettingsVC_Overriding.swift in Sources */,
-				A948A1E32743A631004B3DEA /* SBUBaseChannelSettingViewController.swift in Sources */,
-				A948A1BA2743A631004B3DEA /* SBUMessageInputView.swift in Sources */,
+				A90A392F274CE604009F8626 /* SBUUserProfileView.swift in Sources */,
+				A90A3982274CE605009F8626 /* SBUQuotedMessageViewProtocol.swift in Sources */,
 				9C32648124B37DD2000F8313 /* CustomUserMessageCell.swift in Sources */,
-				A948A1712743A631004B3DEA /* Data+SBUIKit.swift in Sources */,
-				A948A1972743A631004B3DEA /* SBUViewModelDelegate.swift in Sources */,
+				A90A3939274CE604009F8626 /* SBUUnknownMessageCellParams.swift in Sources */,
+				A90A394F274CE604009F8626 /* SBUFileMessageCell.swift in Sources */,
+				A90A3929274CE604009F8626 /* SBUObservable.swift in Sources */,
+				A90A3952274CE604009F8626 /* SBUUnknownMessageCell.swift in Sources */,
+				A90A397C274CE605009F8626 /* SBUMessageSearchViewController.swift in Sources */,
+				A90A3924274CE604009F8626 /* SBUInviteUserListViewModel.swift in Sources */,
 				9CEB7799250F5E2F004AC1D6 /* ChannelListViewController.swift in Sources */,
-				A948A1852743A631004B3DEA /* SBUCacheManager.swift in Sources */,
-				A948A1882743A631004B3DEA /* SBUConstant.swift in Sources */,
-				A948A1D32743A631004B3DEA /* SBUMenuView.swift in Sources */,
-				A948A1802743A631004B3DEA /* SBUEmojiManager.swift in Sources */,
-				A948A1A82743A631004B3DEA /* SBUBaseChannelViewController.swift in Sources */,
+				A90A3936274CE604009F8626 /* SBUEmojiListViewController.swift in Sources */,
+				A90A3988274CE605009F8626 /* SBUModerationsViewController.swift in Sources */,
 				9CDDA30924B4DCF500F77A59 /* InviteUserVC_Cell.swift in Sources */,
-				A948A1AF2743A631004B3DEA /* SBUOpenChannelFileMessageCell.swift in Sources */,
-				A948A16D2743A631004B3DEA /* UINavigationController+SBUIKit.swift in Sources */,
-				A948A1C82743A631004B3DEA /* SBUChannelInfoHeaderView.swift in Sources */,
+				A90A38FB274CE604009F8626 /* String+SBUIKit.swift in Sources */,
+				A90A3945274CE604009F8626 /* SBUQuotedFileMessageView.swift in Sources */,
+				A90A3957274CE604009F8626 /* SBUMessageInputView.swift in Sources */,
+				A90A393F274CE604009F8626 /* ImageContentView.swift in Sources */,
+				A90A3934274CE604009F8626 /* SBUMessageReactionView.swift in Sources */,
+				A90A38F4274CE604009F8626 /* UIStackView.SBUIKit.swift in Sources */,
+				A90A397D274CE605009F8626 /* SBUMessageSearchResultCell.swift in Sources */,
 				9C2AA7E625611EB100C6F6CB /* MyOpenChannelSettingsViewController.swift in Sources */,
-				A948A1B52743A631004B3DEA /* SBUFileMessageCell.swift in Sources */,
-				A948A19B2743A631004B3DEA /* SBUObservable.swift in Sources */,
-				A948A1A72743A631004B3DEA /* SBUEmojiListViewController.swift in Sources */,
+				A90A393B274CE604009F8626 /* SBUBaseMessageCellParams.swift in Sources */,
+				A90A3948274CE604009F8626 /* SBUBaseMessageCell.swift in Sources */,
+				A90A3931274CE604009F8626 /* SBUMessageWebViewModel.swift in Sources */,
+				A90A3978274CE605009F8626 /* SBULoading.swift in Sources */,
+				A90A394A274CE604009F8626 /* SBUOpenChannelAdminMessageCell.swift in Sources */,
+				A90A3906274CE604009F8626 /* SBUUtils.swift in Sources */,
+				A90A390A274CE604009F8626 /* SBUIconSetType.swift in Sources */,
+				A90A3968274CE604009F8626 /* SBUStackView.swift in Sources */,
+				A90A398E274CE605009F8626 /* SBUGlobals.swift in Sources */,
+				A90A3904274CE604009F8626 /* NSObject+SBUIKit.swift in Sources */,
+				A90A3910274CE604009F8626 /* SBUDownloadManager.swift in Sources */,
+				A90A397E274CE605009F8626 /* SBUTableViewCell.swift in Sources */,
+				A90A3941274CE604009F8626 /* OpenChannelImageContentView.swift in Sources */,
+				A90A393C274CE604009F8626 /* SBUFileMessageCellParams.swift in Sources */,
 				9C32648524B3907E000F8313 /* CreateChannelVC_UserList.swift in Sources */,
 				9CED4D1124ADE40700D81B10 /* ChannelCustomManager.swift in Sources */,
-				A948A17E2743A631004B3DEA /* SBUEnums.swift in Sources */,
-				A948A1E72743A631004B3DEA /* SBUGlobals.swift in Sources */,
-				A948A18B2743A631004B3DEA /* SBUIconSet.swift in Sources */,
+				A90A395F274CE604009F8626 /* SBULinkClickableTextView.swift in Sources */,
+				A90A391C274CE604009F8626 /* SBUTheme.swift in Sources */,
+				A90A398B274CE605009F8626 /* SBUChannelSettingsViewController.swift in Sources */,
+				A90A3926274CE604009F8626 /* SBULoadableViewModel.swift in Sources */,
 				9CDDA30524B4DA8600F77A59 /* MemberListVC_Cell.swift in Sources */,
-				A948A1AD2743A631004B3DEA /* OpenChannelImageContentView.swift in Sources */,
-				A948A1D22743A631004B3DEA /* SBUMenuCell.swift in Sources */,
-				A948A1D42743A631004B3DEA /* SBUBottomSheetController.swift in Sources */,
-				A948A1CB2743A631004B3DEA /* SBUCoverImageView.swift in Sources */,
+				A90A394B274CE604009F8626 /* SBUOpenChannelContentBaseMessageCell.swift in Sources */,
+				A90A398A274CE605009F8626 /* SBUBaseChannelSettingViewController.swift in Sources */,
+				A90A398D274CE605009F8626 /* SBUCreateChannelViewController.swift in Sources */,
+				A90A3977274CE605009F8626 /* SBUUserCell.swift in Sources */,
 				9C777D5B241B9022006FFE25 /* AppDelegate.swift in Sources */,
+				A90A3928274CE604009F8626 /* SBUChannelViewModel.swift in Sources */,
+				A90A397B274CE605009F8626 /* SBUInviteUserViewController.swift in Sources */,
+				A90A3917274CE604009F8626 /* SBUCommonViews.swift in Sources */,
+				A90A390F274CE604009F8626 /* SBUPendingMessageManager.swift in Sources */,
+				A90A3966274CE604009F8626 /* SBUChannelInfoHeaderView.swift in Sources */,
+				A90A390B274CE604009F8626 /* SBUEnums.swift in Sources */,
+				A90A3954274CE604009F8626 /* SBUQuoteMessageInputView.swift in Sources */,
 				9CDDA31724B6F39700F77A59 /* CustomNewMessageInfo.swift in Sources */,
-				A948A1962743A631004B3DEA /* SBUInviteUserListViewModel.swift in Sources */,
-				A948A1702743A631004B3DEA /* Float+SBUKit.swift in Sources */,
-				A948A1BD2743A631004B3DEA /* SBUUserMessageTextView.swift in Sources */,
+				A90A392B274CE604009F8626 /* SBUChannelCell.swift in Sources */,
+				A90A3944274CE604009F8626 /* QuotedFileImageContentView.swift in Sources */,
 				A9C29B382564FF63007248F5 /* CommunityChannelCell.swift in Sources */,
-				A948A17D2743A631004B3DEA /* SBUIconSetType.swift in Sources */,
-				A948A19E2743A631004B3DEA /* SBUChannelListViewController.swift in Sources */,
 				A9A3AEAA256A44A700007FC2 /* PaddingLabel.swift in Sources */,
-				A948A1832743A631004B3DEA /* SBUDownloadManager.swift in Sources */,
-				A948A1732743A631004B3DEA /* Date+SBUIKit.swift in Sources */,
-				A948A1DB2743A631004B3DEA /* SBUMessageSearchViewController.swift in Sources */,
+				A90A3949274CE604009F8626 /* SBUOpenChannelFileMessageCell.swift in Sources */,
+				A90A395B274CE604009F8626 /* SBUUserMessageTextView.swift in Sources */,
 				9C2AA7EA256125FA00C6F6CB /* StreamingChannelCell.swift in Sources */,
 				9CED4D0724ADA66200D81B10 /* UserDefaults+Ext.swift in Sources */,
-				A948A1722743A631004B3DEA /* UIViewController+SBUIKit.swift in Sources */,
-				A948A1992743A631004B3DEA /* SBUChannelActionViewModel.swift in Sources */,
+				A90A396A274CE604009F8626 /* SBUEmptyView.swift in Sources */,
+				A90A3989274CE605009F8626 /* SBUChannelSettingsUserInfoView.swift in Sources */,
+				A90A3956274CE604009F8626 /* SBUQuoteMessageInputViewParams.swift in Sources */,
+				A90A3984274CE605009F8626 /* SBUOpenChannelSettingsViewController.swift in Sources */,
+				A90A3960274CE604009F8626 /* SBUOpenChannelMessageWebView.swift in Sources */,
+				A90A3925274CE604009F8626 /* SBUViewModelDelegate.swift in Sources */,
+				A90A3965274CE604009F8626 /* SBUOpenChannelViewController.swift in Sources */,
+				A90A395E274CE604009F8626 /* SBUMessageDateView.swift in Sources */,
 				A9A3AECE256B786E00007FC2 /* UIImageView+Ext.swift in Sources */,
-				A948A1942743A631004B3DEA /* SBUMessageSearchViewModel.swift in Sources */,
-				A948A1BF2743A631004B3DEA /* SBUMessageWebView.swift in Sources */,
-				A948A16A2743A631004B3DEA /* UIColor+SBUIKit.swift in Sources */,
+				A90A390D274CE604009F8626 /* SBUEmojiManager.swift in Sources */,
+				A90A397F274CE605009F8626 /* SBUQuoteMessageInputViewProtocol.swift in Sources */,
 				9CED4CF024AC817400D81B10 /* UIView+Ext.swift in Sources */,
-				A948A1BB2743A631004B3DEA /* SBUMessageStateView.swift in Sources */,
-				A948A1C12743A631004B3DEA /* SBULinkClickableTextView.swift in Sources */,
-				A948A1772743A631004B3DEA /* NSObject+SBUIKit.swift in Sources */,
-				A948A1C72743A631004B3DEA /* SBUOpenChannelViewController.swift in Sources */,
+				A90A3980274CE605009F8626 /* SBUMessageCellProtocol.swift in Sources */,
 				9CED4CF424AC86BB00D81B10 /* CustomBaseViewController.swift in Sources */,
-				A948A1E02743A631004B3DEA /* SBUChannelSettingCell.swift in Sources */,
-				A948A1A42743A631004B3DEA /* SBUReactionsViewController.swift in Sources */,
-				A948A1682743A631004B3DEA /* URL+SBUKit.swift in Sources */,
-				A948A1E22743A631004B3DEA /* SBUChannelSettingsUserInfoView.swift in Sources */,
+				A90A3918274CE604009F8626 /* SBUIconSet.swift in Sources */,
 				9CDDA30724B4DA9000F77A59 /* MemberListVC_Overriding.swift in Sources */,
 				A9F1B1B62579F28B008DEB11 /* CreateCommunityChannelViewController.swift in Sources */,
-				A948A1CF2743A631004B3DEA /* SBUActionSheet.swift in Sources */,
+				A90A391F274CE604009F8626 /* SBUHighlightMessageInfo.swift in Sources */,
+				A90A3922274CE604009F8626 /* SBUMessageSearchViewModel.swift in Sources */,
+				A90A396E274CE604009F8626 /* SBULayoutableButton.swift in Sources */,
+				A90A3902274CE604009F8626 /* Sequence+SBUIKit.swift in Sources */,
 				9CED4D1F24AF02D800D81B10 /* SampleManager.swift in Sources */,
-				A948A18A2743A631004B3DEA /* SBUCommonViews.swift in Sources */,
-				A948A1782743A631004B3DEA /* SBUPropertyWrapper.swift in Sources */,
 				9CED4D1724ADE42200D81B10 /* InviteUserCustomManager.swift in Sources */,
-				A948A1A02743A631004B3DEA /* SBUUserProfileView.swift in Sources */,
-				A948A1692743A631004B3DEA /* Array+SBUIKit.swift in Sources */,
+				A90A3930274CE604009F8626 /* SBUUserMessageTextViewModel.swift in Sources */,
+				A90A38FF274CE604009F8626 /* UIViewController+SBUIKit.swift in Sources */,
 				A9B0703D2563D01E006C5BBA /* StreamingChannel.swift in Sources */,
-				A948A1C32743A631004B3DEA /* SBUSelectableStackView.swift in Sources */,
-				A948A1CE2743A631004B3DEA /* SBUNavigationTitleView.swift in Sources */,
-				A948A1AB2743A631004B3DEA /* ImageContentView.swift in Sources */,
+				A90A396D274CE604009F8626 /* SBUCommonItem.swift in Sources */,
+				A90A3950274CE604009F8626 /* SBUAdminMessageCell.swift in Sources */,
 				9CED4D1924ADE42A00D81B10 /* MemberListCustomManager.swift in Sources */,
+				A90A3962274CE604009F8626 /* SBUFileViewer.swift in Sources */,
+				A90A3915274CE604009F8626 /* SBUConstant.swift in Sources */,
+				A90A3938274CE604009F8626 /* SBUUserMessageCellParams.swift in Sources */,
+				A90A38F5274CE604009F8626 /* URL+SBUKit.swift in Sources */,
+				A90A3987274CE605009F8626 /* SBUChannelSettingCell.swift in Sources */,
+				A90A3937274CE604009F8626 /* SBUBaseChannelViewController.swift in Sources */,
+				A90A3970274CE604009F8626 /* SBUActionSheet.swift in Sources */,
+				A90A3967274CE604009F8626 /* SBUChannelTitleView.swift in Sources */,
 				A9B0703F2563F05D006C5BBA /* StreamingChannelViewController.swift in Sources */,
 				9CED4D0F24ADE3F800D81B10 /* ChannelListCustomManager.swift in Sources */,
-				A948A1B12743A631004B3DEA /* SBUOpenChannelContentBaseMessageCell.swift in Sources */,
-				A948A17A2743A631004B3DEA /* SBULogger.swift in Sources */,
-				A948A1B82743A631004B3DEA /* SBUUnknownMessageCell.swift in Sources */,
-				A948A16C2743A631004B3DEA /* UIImage+SBUIKit.swift in Sources */,
+				A90A3900274CE604009F8626 /* Date+SBUIKit.swift in Sources */,
+				A90A3914274CE604009F8626 /* SBUGlobalCustomParams.swift in Sources */,
+				A90A391B274CE604009F8626 /* SBUFontSet.swift in Sources */,
+				A90A3958274CE604009F8626 /* SBUChannelViewController.ParentMessageViewDelegate.swift in Sources */,
+				A90A3940274CE604009F8626 /* CommonContentView.swift in Sources */,
 				9CDDA30D24B555E500F77A59 /* CustomEmptyView.swift in Sources */,
-				A948A1D52743A631004B3DEA /* SBUMenuViewController.swift in Sources */,
-				A948A1842743A631004B3DEA /* SBUPermissionManager.swift in Sources */,
-				A948A1E42743A631004B3DEA /* SBUChannelSettingsViewController.swift in Sources */,
-				A948A1BE2743A631004B3DEA /* SBUUserNameView.swift in Sources */,
-				A948A1DD2743A631004B3DEA /* SBUOpenChannelSettingsViewController.swift in Sources */,
-				A948A1DE2743A631004B3DEA /* SBUOpenChannelSettingCell.swift in Sources */,
-				A948A1822743A631004B3DEA /* SBUPendingMessageManager.swift in Sources */,
-				A948A1AA2743A631004B3DEA /* BaseFileContentView.swift in Sources */,
-				A948A1D92743A631004B3DEA /* SBUMemberListViewController.swift in Sources */,
-				A948A1B32743A631004B3DEA /* SBUOpenChannelUnknownMessageCell.swift in Sources */,
-				A948A18F2743A631004B3DEA /* SBUTheme.swift in Sources */,
-				A948A1792743A631004B3DEA /* SBUUtils.swift in Sources */,
-				A948A19C2743A631004B3DEA /* SBUChannelCell.swift in Sources */,
-				A948A19F2743A631004B3DEA /* SBUBaseChannelListViewController.swift in Sources */,
+				A90A392D274CE604009F8626 /* SBUChannelListViewController.swift in Sources */,
+				A90A398C274CE605009F8626 /* SBUCreateChannelTypeSelector.swift in Sources */,
+				A90A3913274CE604009F8626 /* SBUToastManager.swift in Sources */,
 				9CDDA31924B714A700F77A59 /* BaseCustomManager.swift in Sources */,
-				A948A1932743A631004B3DEA /* SBUBaseViewController.swift in Sources */,
-				A948A17B2743A631004B3DEA /* SBUMain.swift in Sources */,
-				A948A1B92743A631004B3DEA /* SBUUserMessageCell.swift in Sources */,
-				A948A1CD2743A631004B3DEA /* SBULayoutableButton.swift in Sources */,
-				A948A1812743A631004B3DEA /* SBUCacheManager.File.swift in Sources */,
+				A90A393A274CE604009F8626 /* SBUAdminMessageCellParams.swift in Sources */,
 				9CDDA30B24B4DE0600F77A59 /* CreateChannelVC_Cell.swift in Sources */,
+				A90A3964274CE604009F8626 /* SBUNewMessageInfo.swift in Sources */,
+				A90A3963274CE604009F8626 /* SBUChannelViewController.swift in Sources */,
 				9CED4CF224AC81E200D81B10 /* UILabel+Ext.swift in Sources */,
-				A948A1BC2743A631004B3DEA /* SBUMessageProfileView.swift in Sources */,
-				A948A1752743A631004B3DEA /* Sequence+SBUIKit.swift in Sources */,
-				A948A1E62743A631004B3DEA /* SBUCreateChannelViewController.swift in Sources */,
-				A948A1A92743A631004B3DEA /* OpenChannelCommonContentView.swift in Sources */,
-				A948A1B72743A631004B3DEA /* SBUContentBaseMessageCell.swift in Sources */,
+				A90A3976274CE605009F8626 /* SBUMenuViewController.swift in Sources */,
+				A90A38FC274CE604009F8626 /* CGSize+SBUIKit.swift in Sources */,
+				A90A3983274CE605009F8626 /* SBUView.swift in Sources */,
+				A90A3942274CE604009F8626 /* QuotedFileCommonContentView.swift in Sources */,
+				A90A38FA274CE604009F8626 /* UINavigationController+SBUIKit.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1578,7 +1734,7 @@
 				CODE_SIGN_ENTITLEMENTS = "SendBirdUIKit-Sample/SendBirdUIKit-Sample.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = NO;
 				DEVELOPMENT_TEAM = RM4A5PXTUX;
 				ENABLE_BITCODE = NO;
@@ -1592,7 +1748,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.1.15;
+				MARKETING_VERSION = 2.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sendbird.uikit.sample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -1609,7 +1765,7 @@
 				CODE_SIGN_ENTITLEMENTS = "SendBirdUIKit-Sample/SendBirdUIKit-Sample.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = NO;
 				DEVELOPMENT_TEAM = RM4A5PXTUX;
 				ENABLE_BITCODE = NO;
@@ -1623,7 +1779,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.1.15;
+				MARKETING_VERSION = 2.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sendbird.uikit.sample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;

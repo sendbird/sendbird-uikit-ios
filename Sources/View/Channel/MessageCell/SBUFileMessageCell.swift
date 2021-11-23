@@ -9,7 +9,8 @@
 import UIKit
 import SendBirdSDK
 
-@objcMembers @IBDesignable
+@objcMembers
+@IBDesignable
 open class SBUFileMessageCell: SBUContentBaseMessageCell {
     
     // MARK: - Public property
@@ -18,7 +19,7 @@ open class SBUFileMessageCell: SBUContentBaseMessageCell {
     }
     
     // MARK: - Private property
-    private lazy var baseFileContentView: BaseFileContentView = {
+    lazy var baseFileContentView: BaseFileContentView = {
         let fileView = BaseFileContentView()
         return fileView
     }()
@@ -27,16 +28,16 @@ open class SBUFileMessageCell: SBUContentBaseMessageCell {
     open override func setupViews() {
         super.setupViews()
 
-        self.mainContainerView.addArrangedSubview(self.baseFileContentView)
-        self.mainContainerView.addArrangedSubview(self.reactionView)
-    }
-
-    open override func setupAutolayout() {
-        super.setupAutolayout()
-    }
-    
-    open override func setupActions() {
-        super.setupActions()
+        // + ------------------- +
+        // | baseFileContentView |
+        // + ------------------- +
+        // | reactionView        |
+        // + ------------------- +
+        
+        self.mainContainerView.setStack([
+            self.baseFileContentView,
+            self.reactionView
+        ])
     }
     
     open override func setupStyles() {
@@ -46,27 +47,20 @@ open class SBUFileMessageCell: SBUContentBaseMessageCell {
     }
     
     // MARK: - Common
-    open func configure(_ message: SBDFileMessage,
-                          hideDateView: Bool,
-                          groupPosition: MessageGroupPosition,
-                          receiptState: SBUMessageReceiptState?,
-                          useReaction: Bool) {
-        self.useReaction = useReaction
+    open override func configure(with configuration: SBUBaseMessageCellParams) {
+        guard let configuration = configuration as? SBUFileMessageCellParams else { return }
+        guard let message = configuration.fileMessage else { return }
+        // Set using reaction
+        self.useReaction = configuration.useReaction
         
-        let position = SBUGlobals.CurrentUser?.userId == message.sender?.userId ?
-            MessagePosition.right :
-            MessagePosition.left
+        self.usingQuotedMessage = configuration.usingQuotedMessage
         
-        self.configure(
-            message,
-            hideDateView: hideDateView,
-            position: position,
-            groupPosition: groupPosition,
-            receiptState: receiptState
-        )
+        // Configure Content base message cell
+        super.configure(with: configuration)
         
+        // Set up base file content view
         switch SBUUtils.getFileType(by: message) {
-        case .image, .video:
+            case .image, .video:
             if !(self.baseFileContentView is ImageContentView){
                 self.baseFileContentView.removeFromSuperview()
                 self.baseFileContentView = ImageContentView()
@@ -74,9 +68,12 @@ open class SBUFileMessageCell: SBUContentBaseMessageCell {
                 self.baseFileContentView.addGestureRecognizer(self.contentTapRecognizer)
                 self.mainContainerView.insertArrangedSubview(self.baseFileContentView, at: 0)
             }
-            self.baseFileContentView.configure(message: message, position: position)
-
-        case .audio, .pdf, .etc:
+            self.baseFileContentView.configure(
+                message: message,
+                position: configuration.messagePosition
+            )
+                
+            case .audio, .pdf, .etc:
             if !(self.baseFileContentView is CommonContentView) {
                 self.baseFileContentView.removeFromSuperview()
                 self.baseFileContentView = CommonContentView()
@@ -85,14 +82,15 @@ open class SBUFileMessageCell: SBUContentBaseMessageCell {
                 self.mainContainerView.insertArrangedSubview(self.baseFileContentView, at: 0)
             }
             if let commonContentView = self.baseFileContentView as? CommonContentView {
-                commonContentView.configure(message: message,
-                                            position: position,
-                                            highlight: false)
+                commonContentView.configure(
+                    message: message,
+                    position: configuration.messagePosition,
+                    highlight: false)
             }
         }
     }
     
-    open func configure(highlightInfo: SBUHighlightMessageInfo?) {
+    open override func configure(highlightInfo: SBUHighlightMessageInfo?) {
         // Only apply highlight for the given message, that's not edited (updatedAt didn't change)
         guard self.message.messageId == highlightInfo?.messageId,
               self.message.updatedAt == highlightInfo?.updatedAt else { return }
@@ -110,6 +108,23 @@ open class SBUFileMessageCell: SBUContentBaseMessageCell {
         guard let imageContentView = self.baseFileContentView as? ImageContentView else { return }
         imageContentView.setImage(image, size: size)
         imageContentView.setNeedsLayout()
+    }
+    
+    @available(*, deprecated, renamed: "configure(with:)") // 2.2.0
+    open func configure(_ message: SBDFileMessage,
+                        hideDateView: Bool,
+                        groupPosition: MessageGroupPosition,
+                        receiptState: SBUMessageReceiptState?,
+                        useReaction: Bool) {
+        let configuration = SBUFileMessageCellParams(
+            message: message,
+            hideDateView: hideDateView,
+            useMessagePosition: true,
+            groupPosition: groupPosition,
+            receiptState: receiptState ?? .none,
+            useReaction: useReaction
+        )
+        self.configure(with: configuration)
     }
 
     

@@ -30,7 +30,7 @@ open class SBUOpenChannelUnknownMessageCell: SBUOpenChannelUserMessageCell {
             let text = SBUStringSet.Message_Unknown_Title
                 + "\n"
                 + SBUStringSet.Message_Unknown_Desctiption
-            let model = SBUUserMessageCellModel(
+            let model = SBUUserMessageTextViewModel(
                 message: message,
                 text: text,
                 font: theme.unknownMessageDescFont,

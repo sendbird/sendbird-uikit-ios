@@ -16,6 +16,10 @@ import SafariServices
 @objcMembers
 open class SBUOpenChannelViewController: SBUBaseChannelViewController {
 
+    private var openChannelViewModel: SBUOpenChannelViewModel? {
+        self.channelViewModel as? SBUOpenChannelViewModel
+    }
+    
     // MARK: - UI properties (Public)
     @SBUThemeWrapper(theme: SBUTheme.overlayTheme.channelTheme, setToDefault: true)
     public var overlayTheme: SBUChannelTheme
@@ -191,7 +195,7 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController {
      self.updateRatio(mediaView: 0.3: messageList: 0.7)
      ````
      */
-    @available(*, deprecated, message: "deprecated in 2.0.6", renamed: "updateMessageListRatio")
+    @available(*, deprecated, renamed: "updateMessageListRatio(to:)") // 2.0.6
     public func updateRatio(mediaView: CGFloat? = nil, messageList: CGFloat? = nil) {
         if mediaView == nil, messageList == nil { return }
         if let mediaViewRatio = mediaView {
@@ -339,7 +343,6 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController {
     var hasPrevious = true
     var isLoading = false
     var limit: UInt = 20
-    var isRequestingLoad = false
 
     // MARK: - Lifecycle
     @available(*, unavailable, renamed: "SBUOpenChannelViewController(channelUrl:)")
@@ -360,7 +363,6 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController {
     /// ```
     ///     let params = SBDMessageListParams()
     ///     params.includeMetaArray = true
-    ///     params.includeReplies = true
     ///     ...
     /// ```
     /// - note: The `reverse` and the `previousResultSize` properties in the `SBDMessageListParams` are set in the UIKit. Even though you set that property it will be ignored.
@@ -376,7 +378,6 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController {
     /// ```
     ///     let params = SBDMessageListParams()
     ///     params.includeMetaArray = true
-    ///     params.includeReplies = true
     ///     ...
     /// ```
     /// - note: The `reverse` and the `previousResultSize` properties in the `SBDMessageListParams` are set in the UIKit. Even though you set that property it will be ignored.
@@ -877,8 +878,7 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController {
             self.customizedMessageListParams = messageListParams
         }
         
-        SBUMain.connectionCheck { [weak self] user, error in
-            guard let self = self else { return }
+        SBUMain.connectIfNeeded { user, error in
             if let error = error {
                 self.errorHandler(error)
                 // do not proceed to getChannel()
@@ -957,7 +957,7 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController {
                 }
                 SBULog.info("[Succeed] Refresh channel request")
                 
-                self.channelViewModel?.loadMessageChangeLogs()
+                self.openChannelViewModel?.loadMessageChangeLogs()
                 self.updateMessageInputModeState()
             }
         } else if let channelUrl = self.channelUrl {
@@ -1079,7 +1079,7 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController {
         }
     }
     
-    // MARK: Cell TapHandler
+    // MARK: - Cell TapHandler
     /// This function sets the cell's tap gesture handling.
     /// - Parameters:
     ///   - cell: Message cell object
@@ -1262,7 +1262,7 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController {
         let curCreatedAt = currentMessage.createdAt
         let prevCreatedAt = nextMessage.createdAt
         
-        return Date.from(prevCreatedAt).isSameDay(as: Date.from(curCreatedAt))
+        return Date.sbu_from(prevCreatedAt).isSameDay(as: Date.sbu_from(curCreatedAt))
     }
     
     public func configureOffset() {
@@ -1319,13 +1319,13 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController {
         let nextSender = succeededNextMsg?.sender?.userId ?? nil
         
         // Unit : milliseconds
-        let prevTimestamp = Date.from(succeededPrevMsg?.createdAt ?? -1).sbu_toString(
+        let prevTimestamp = Date.sbu_from(succeededPrevMsg?.createdAt ?? -1).sbu_toString(
             format: .yyyyMMddhhmm
         )
-        let currentTimestamp = Date.from(succeededCurrentMsg?.createdAt ?? -1).sbu_toString(
+        let currentTimestamp = Date.sbu_from(succeededCurrentMsg?.createdAt ?? -1).sbu_toString(
             format: .yyyyMMddhhmm
         )
-        let nextTimestamp = Date.from(succeededNextMsg?.createdAt ?? -1).sbu_toString(
+        let nextTimestamp = Date.sbu_from(succeededNextMsg?.createdAt ?? -1).sbu_toString(
             format: .yyyyMMddhhmm
         )
         
@@ -1353,7 +1353,7 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController {
         return .none
     }
     
-    // MARK: Orientation
+    // MARK: - Orientation
     func orientationChanged(_ notification: NSNotification) {
         if UIDevice.current.orientation == .faceUp || UIDevice.current.orientation == .faceDown { return }
         self.currentOrientation = UIDevice.current.orientation
@@ -1432,9 +1432,9 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController {
     override func setNewMessageInfoView(hidden: Bool) {
         guard let newMessageInfoView = self.newMessageInfoView else { return }
         guard hidden != newMessageInfoView.isHidden else { return }
-        guard let channelViewModel = self.channelViewModel else { return }
+        guard let openChannelViewModel = self.openChannelViewModel else { return }
         
-        newMessageInfoView.isHidden = hidden && !channelViewModel.hasNext
+        newMessageInfoView.isHidden = hidden && !openChannelViewModel.hasNext()
     }
     
 
@@ -1755,7 +1755,22 @@ extension SBUOpenChannelViewController: SBDChannelDelegate, SBDConnectionDelegat
             break
         }
         
-        self.upsertMessagesInList(messages: [message], needUpdateNewMessage: true, needReload: true)
+        let hasNext = channelViewModel?.hasNext() ?? false
+        if hasNext || !self.isScrollNearBottom() {
+            self.channelViewModel?.messageCache?.add(messages: [message])
+            
+            if message is SBDUserMessage ||
+                message is SBDFileMessage {
+                // message is not added.
+                // reset lastSeenIndexPath to not keep scroll in `increaseNewMessageCount`.
+                self.lastSeenIndexPath = nil
+                self.increaseNewMessageCount()
+            }
+        }
+        
+        if !hasNext {
+            self.upsertMessagesInList(messages: [message], needUpdateNewMessage: true, needReload: true)
+        }
     }
     
     // Updated message
@@ -1854,9 +1869,14 @@ extension SBUOpenChannelViewController: SBDChannelDelegate, SBDConnectionDelegat
         }
     }
 
-    // MARK: SBDConnectionDelegate
+    // MARK: - SBDConnectionDelegate
     open func didSucceedReconnection() {
         SBULog.info("Did succeed reconnection")
+        SBUMain.updateUserInfo { error in
+            if let error = error {
+                SBULog.error("[Failed] Update user info: \(error.localizedDescription)")
+            }
+        }
         refreshChannel()
     }
 }

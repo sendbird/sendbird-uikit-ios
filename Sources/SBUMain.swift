@@ -11,35 +11,105 @@ import SendBirdSDK
 
 @objcMembers
 public class SBUMain: NSObject {
-    
     // MARK: - Initialize
     /// This function is used to initializes SDK with applicationId.
     /// - Parameter applicationId: Application ID
+    @available(*, unavailable, message: "Using the `initialize(applicationId:migrationStartHandler:completionHandler:)` function, and in the CompletionHandler, please proceed with the following procedure.", renamed: "initialize(applicationId:migrationStartHandler:completionHandler:)") // 2.2.0
     public static func initialize(applicationId: String) {
+        SBUMain.initialize(applicationId: applicationId) {
+            
+        } completionHandler: { error in
+            
+        }
+    }
+    
+    /// This function is used to initializes SDK with applicationId.
+    ///
+    /// When the completion handler is called, please proceed with the next operation.
+    ///
+    /// - Parameters:
+    ///   - applicationId: Application ID
+    ///   - migrationStartHandler: Do something to display the progress of the DB migration.
+    ///   - completionHandler: Do something to display the completion of the DB migration.
+    ///
+    /// - Since: 2.2.0
+    public static func initialize(applicationId: String,
+                                  migrationStartHandler: @escaping (() -> Void),
+                                  completionHandler: @escaping ((_ error: SBDError?) -> ())) {
         SBUGlobals.ApplicationId = applicationId
         
-        if let version = SBUMain.shortVersionString() {
-            SBDMain.addExtension(SBUConstant.sbdExtensionKeyUIKit, version: version)
-        }
-        
-        SBDMain.initWithApplicationId(applicationId)
-        
-        SBULog.info("[Init] UIKit initialized with id: \(applicationId)")
+        SBDMain.addExtension(SBUConstant.sbdExtensionKeyUIKit, version: SBUMain.shortVersion)
+    
+        SBDMain.initWithApplicationId(
+            applicationId,
+            useCaching: true,
+            migrationStartHandler: {
+                SBULog.info("[Init] Migration start")
+                migrationStartHandler()
+            }, completionHandler: { error in
+                if let _ = error {
+                    SBULog.info("[Init] Failed initialized with id: \(applicationId)")
+                } else {
+                    SBULog.info("[Init] Finish initialized with id: \(applicationId)")
+                }
+                
+                completionHandler(error)
+            })
     }
     
     
     // MARK: - Connection
-    /// This function is used to connect to the SendBird server.
+    /// This function is used to connect to the Sendbird server or local cahing database.
     ///
     /// Before invoking this function, `CurrentUser` object of `SBUGlobals` claas must be set.
     /// - Parameter completionHandler: The handler block to execute.
     public static func connect(
         completionHandler: @escaping (_ user: SBDUser?, _ error: SBDError?) -> Void
     ) {
-        SBULog.info("[Request] Connection to SendBird server")
+        SBUMain.connectIfNeeded(completionHandler: completionHandler)
+    }
+    
+    @available(*, deprecated, renamed: "connectIfNeeded(completionHandler:)") // 2.2.0
+    public static func connectionCheck(
+        completionHandler: @escaping (_ user: SBDUser?, _ error: SBDError?) -> Void
+    ) {
+        self.connectIfNeeded(completionHandler: completionHandler)
+    }
+    
+    
+    /// This function is used to check the connection state.
+    ///  if connected, returns the SBDUser object, otherwise, call the connect function from the inside.
+    ///  If local caching is enabled, the currentUser object is delivered and the connect operation is performed.
+    ///
+    /// - Parameter completionHandler: The handler block to execute.
+    public static func connectIfNeeded(
+        completionHandler: @escaping (_ user: SBDUser?, _ error: SBDError?) -> Void
+    ) {
+        SBULog.info("[Check] Connection status : \(SBDMain.getConnectState().rawValue)")
+        
+        if SBDMain.getConnectState() == .open {
+            completionHandler(SBDMain.getCurrentUser(), nil)
+        } else {
+            SBULog.info("currentUser: \(String(describing: SBDMain.getCurrentUser()?.userId))")
+            if SBDMain.isUsingLocalCaching(),
+               let _ = SBDMain.getCurrentUser() {
+                completionHandler(SBDMain.getCurrentUser(), nil)
+                SBUMain.connectAndUpdates { _, _ in }
+            } else {
+                SBUMain.connectAndUpdates(completionHandler: completionHandler)
+            }
+        }
+    }
+    
+    /// This function is used to check connection state and connect to the Sendbird server or local caching database.
+    /// - Parameter completionHandler: The handler block to execute.
+    static func connectAndUpdates(
+        completionHandler: @escaping (_ user: SBDUser?, _ error: SBDError?) -> Void
+    ) {
+        SBULog.info("[Request] Connection to Sendbird")
         
         guard let currentUser = SBUGlobals.CurrentUser else {
-            SBULog.error("[Failed] Connection to SendBird server: CurrentUser value is not set")
+            SBULog.error("[Failed] Connection to Sendbird: CurrentUser value is not set")
             completionHandler(SBDMain.getCurrentUser(), nil)
             return
         }
@@ -47,20 +117,30 @@ public class SBUMain: NSObject {
         let userId = currentUser.userId.trimmingCharacters(in: .whitespacesAndNewlines)
         let nickname = currentUser.nickname?.trimmingCharacters(in: .whitespacesAndNewlines)
         
-        SBDMain.connect(withUserId: userId, accessToken: SBUGlobals.AccessToken) { user, error in
-            if let error = error {
-                SBULog.error("[Failed] Connection to SendBird server: \(error.localizedDescription)")
+        SBDMain.connect(withUserId: userId, accessToken: SBUGlobals.AccessToken) { [userId, nickname] user, error in
+            defer {
+                SBUEmojiManager.loadAllEmojis { _, error in }
+            }
+            
+            guard let user = user else {
+                SBULog.error("[Failed] Connection to Sendbird: \(error?.localizedDescription ?? "")")
                 completionHandler(nil, error)
                 return
             }
             
-            SBULog.info("[Succeed] Connection to SendBird server")
+            if let error = error {
+                SBULog.warning("[Warning] Connection to Sendbird: Succeed but error was occurred: \(error.localizedDescription)")
+                completionHandler(user, error)
+                return
+            }
+            
+            SBULog.info("[Succeed] Connection to Sendbird")
             
             var updatedNickname = nickname
             
             if updatedNickname == nil {
-                if user?.nickname?.isEmpty == false {
-                    updatedNickname = user?.nickname
+                if let currentNickname = user.nickname, !currentNickname.isEmpty {
+                    updatedNickname = user.nickname
                 } else {
                     updatedNickname = userId
                 }
@@ -68,57 +148,79 @@ public class SBUMain: NSObject {
             
             SBUMain.updateUserInfo(
                 nickname: updatedNickname,
-                profileUrl: currentUser.profileUrl ?? user?.profileUrl
+                profileUrl: currentUser.profileUrl ?? user.profileUrl
             ) { error in
-                
-                guard error == nil else {
-                    completionHandler(nil, error)
-                    return
-                }
                 
                 #if !targetEnvironment(simulator)
                 if let pendingPushToken = SBDMain.getPendingPushToken() {
-                    SBULog.info("[Request] Register pending push token to SendBird server")
+                    SBULog.info("[Request] Register pending push token to Sendbird server")
                     SBUMain.registerPush(deviceToken: pendingPushToken) { success in
                         if !success {
-                            SBULog.error("[Failed] Register pending push token to SendBird server")
+                            SBULog.error("[Failed] Register pending push token to Sendbird server")
                         }
-                        SBULog.info("[Succeed] Register pending push token to SendBird server")
+                        SBULog.info("[Succeed] Register pending push token to Sendbird server")
                     }
                 }
                 #endif
                 
-                SBUEmojiManager.loadAllEmojis { _, error in
-                    completionHandler(user, error)
-                }
-                
+                completionHandler(user, error)
             }
         }
     }
     
-    /// This function is used to check the connection state.
-    ///  if connected, returns the SBDUser object, otherwise, call the connect function from the inside.
-    /// - Parameter completionHandler: The handler block to execute.
-    public static func connectionCheck(
-        completionHandler: @escaping (_ user: SBDUser?, _ error: SBDError?) -> Void
-    ) {
-        SBULog.info("[Check] Connection status")
-        
-        if SBDMain.getConnectState() == .open {
-            completionHandler(SBDMain.getCurrentUser(), nil)
+    public static func updateUserInfo(completionHandler: @escaping (_ error: SBDError?) ->Void) {
+        guard let sbuUser = SBUGlobals.CurrentUser else {
+            SBULog.error("[Failed] Connection to Sendbird: CurrentUser value is not set")
+            completionHandler(nil)
+            return
         }
-        else {
-            SBUMain.connect(completionHandler: completionHandler)
+        guard let sbdUser = SBDMain.getCurrentUser() else {
+            SBULog.error("[Failed] Connection to Sendbird")
+            completionHandler(nil)
+            return
+        }
+        
+        let userId = sbuUser.userId.trimmingCharacters(in: .whitespacesAndNewlines)
+        let nickname = sbuUser.nickname?.trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        var updatedNickname = nickname
+        
+        if updatedNickname == nil {
+            if let currentNickname = sbdUser.nickname, !currentNickname.isEmpty {
+                updatedNickname = sbdUser.nickname
+            } else {
+                updatedNickname = userId
+            }
+        }
+        
+        SBUMain.updateUserInfo(
+            nickname: updatedNickname,
+            profileUrl: sbuUser.profileUrl ?? sbdUser.profileUrl
+        ) { error in
+            
+            #if !targetEnvironment(simulator)
+            if let pendingPushToken = SBDMain.getPendingPushToken() {
+                SBULog.info("[Request] Register pending push token to Sendbird server")
+                SBUMain.registerPush(deviceToken: pendingPushToken) { success in
+                    if !success {
+                        SBULog.error("[Failed] Register pending push token to Sendbird server")
+                    }
+                    SBULog.info("[Succeed] Register pending push token to Sendbird server")
+                }
+            }
+            #endif
+            
+            completionHandler(error)
         }
     }
     
     /// This function is used to disconnect
     /// - Parameter completionHandler: The handler block to execute.
     public static func disconnect(completionHandler: (() -> Void)?) {
-        SBULog.info("[Request] Disconnection to SendBird server")
+        SBULog.info("[Request] Disconnection to Sendbird")
         
         SBDMain.disconnect(completionHandler: {
-            SBULog.info("[Succeed] Disconnection to SendBird server")
+            SBULog.info("[Succeed] Disconnection to Sendbird")
             SBUGlobals.CurrentUser = nil
             completionHandler?()
         })
@@ -187,10 +289,9 @@ public class SBUMain: NSObject {
     
     
     // MARK: - Common
-    @available(*, deprecated, renamed: "shortVersionString()")
-    public static func getUIKitVersion() -> String {
-        return SBUMain.shortVersionString() ?? ""
-    }
+    /// This function gets UIKit SDK's short version string. (e.g. 1.0.0)
+    /// - Since: 2.2.0
+    public static let shortVersion: String = "2.2.0"
     
     /// This function gets UIKit SDK's version string.
     /// - Returns: version string
@@ -199,12 +300,18 @@ public class SBUMain: NSObject {
         if let build = bundle?.infoDictionary?[kCFBundleVersionKey as String] {
             return "\(build)"
         }
-
+        
         return nil
+    }
+    
+    @available(*, unavailable, renamed: "shortVersion") // 2.2.0
+    public static func getUIKitVersion() -> String {
+        SBUMain.shortVersion
     }
     
     /// This function gets UIKit SDK's short version string.
     /// - Returns: short version string
+    @available(*, unavailable, renamed: "shortVersion") // 2.2.0
     public static func shortVersionString() -> String? {
         let bundle = Bundle(identifier: "com.sendbird.uikit")
         if let shortVersion = bundle?.infoDictionary?["CFBundleShortVersionString"] {
@@ -217,13 +324,13 @@ public class SBUMain: NSObject {
     
     // MARK: - Push Notification
     
-    /// This function is used to register push token for using push service on the SendBird server.
+    /// This function is used to register push token for using push service on the Sendbird server.
     /// - Parameters:
     ///   - deviceToken: Device token
     ///   - completionHandler: The handler block to execute.
     public static func registerPush(deviceToken: Data,
                                     completionHandler: @escaping (_ success: Bool) -> Void) {
-        SBULog.info("[Request] Register push token to SendBird server")
+        SBULog.info("[Request] Register push token to Sendbird server")
         
         #if !targetEnvironment(simulator)
         SBDMain.registerDevicePushToken(deviceToken, unique: true) { status, error in
@@ -250,15 +357,15 @@ public class SBUMain: NSObject {
         #endif
     }
     
-    /// This function is used to unregister push token on the SendBird server.
+    /// This function is used to unregister push token on the Sendbird server.
     /// - Parameter completionHandler: The handler block to execute.
     public static func unregisterPushToken(completionHandler: @escaping (_ success: Bool) -> Void) {
-        SBUMain.connectionCheck { user, error in
+        SBUMain.connectIfNeeded { user, error in
         guard error == nil else { return }
             
             #if !targetEnvironment(simulator)
             guard let pendingPushToken = SBDMain.getPendingPushToken() else { return }
-            SBULog.info("[Request] Unregister push token to SendBird server")
+            SBULog.info("[Request] Unregister push token to Sendbird server")
             SBDMain.unregisterPushToken(pendingPushToken) { resonse, error in
                 if let error = error {
                     SBULog.error("""
@@ -278,13 +385,13 @@ public class SBUMain: NSObject {
         }
     }
     
-    /// This function is used to unregister all push token on the SendBird server.
+    /// This function is used to unregister all push token on the Sendbird server.
     /// - Parameter completionHandler: The handler block to execute.
     public static func unregisterAllPushToken(completionHandler: @escaping (_ success: Bool) -> Void) {
-        SBUMain.connectionCheck { user, error in
+        SBUMain.connectIfNeeded { user, error in
         guard error == nil else { return }
             
-            SBULog.info("[Request] Unregister all push token to SendBird server")
+            SBULog.info("[Request] Unregister all push token to Sendbird server")
             
             SBDMain.unregisterAllPushToken { resonse, error in
                 if let error = error {
@@ -299,7 +406,7 @@ public class SBUMain: NSObject {
         }
     }
     
-    @available(*, deprecated, message: "deprecated in 1.2.2", renamed: "moveToChannel(channelUrl:basedOnChannelList:messageListParams:)")
+    @available(*, deprecated, renamed: "moveToChannel(channelUrl:basedOnChannelList:messageListParams:)") // 1.2.2
     public static func openChannel(channelUrl: String,
                                    basedOnChannelList: Bool = true,
                                    messageListParams: SBDMessageListParams? = nil) {
@@ -537,3 +644,4 @@ public class SBUMain: NSObject {
         SBULog.logType = type
     }
 }
+

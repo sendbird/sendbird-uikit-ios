@@ -81,7 +81,7 @@ open class SBUChannelSettingsViewController: SBUBaseChannelSettingViewController
         self.channelActionViewModel.loadGroupChannel(with: channelUrl)
     }
 
-    @available(*, deprecated, message: "deprecated in 1.0.9", renamed: "updateChannel(channelName:coverImage:)")
+    @available(*, deprecated, renamed: "updateChannel(channelName:coverImage:)") // 1.0.9
     public func updateChannelInfo(channelName: String? = nil) {
         self.updateChannel(channelName: channelName)
     }

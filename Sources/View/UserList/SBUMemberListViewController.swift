@@ -163,7 +163,7 @@ open class SBUMemberListViewController: SBUBaseViewController {
     /// - Parameters:
     ///   - channelUrl: Channel url string
     ///   - type: Channel member list type (default: `.channelMembers`)
-    @available(*, deprecated, message: "deprecated in 2.1.0", renamed: "init(channelUrl:channelType:memberListType:)")
+    @available(*, deprecated, renamed: "init(channelUrl:channelType:memberListType:)") // 2.1.0
     public init(channelUrl: String, type: ChannelMemberListType = .channelMembers) {
         super.init(nibName: nil, bundle: nil)
         SBULog.info("")
@@ -208,7 +208,7 @@ open class SBUMemberListViewController: SBUBaseViewController {
     ///   - members: `SBUUser` array object
     ///   - type: Channel member list type (default: `.channelMembers`)
     /// - Since: 1.2.0
-    @available(*, deprecated, message: "deprecated in 2.1.0", renamed: "init(channelUrl:channelType:members:memberListType:)")
+    @available(*, deprecated, renamed: "init(channelUrl:channelType:members:memberListType:)") // 2.1.0
     public init(channelUrl: String,
                 members: [SBUUser],
                 type: ChannelMemberListType = .channelMembers) {
@@ -573,7 +573,7 @@ open class SBUMemberListViewController: SBUBaseViewController {
     
     /// This function resets the member list.
     /// - Since: 1.2.0
-    @available(*, deprecated, message: "deprecated in 1.2.5", renamed: "resetMemberList()")
+    @available(*, deprecated, renamed: "resetMemberList()") // 1.2.5
     public func reloadMemberList() {
         self.resetMemberList()
     }
@@ -732,7 +732,7 @@ open class SBUMemberListViewController: SBUBaseViewController {
         SBULog.error("Did receive error: \(message ?? "")")
     }
     
-    @available(*, deprecated, message: "deprecated in 2.1.12", renamed: "errorHandler")
+    @available(*, deprecated, renamed: "errorHandler") // 2.1.12
     open func didReceiveError(_ message: String?, _ code: NSInteger? = nil) {
         self.errorHandler(message, code)
     }

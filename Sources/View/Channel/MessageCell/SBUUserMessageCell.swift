@@ -19,9 +19,11 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell {
         return self.message as? SBDUserMessage
     }
     
-    
     // MARK: - Private property
 
+    // + ------------ +
+    // | reactionView |
+    // + ------------ +
     private var additionContainerView: SBUSelectableStackView = {
         let view = SBUSelectableStackView()
         return view
@@ -37,9 +39,22 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell {
     open override func setupViews() {
         super.setupViews()
 
-        self.mainContainerView.addArrangedSubview(self.messageTextView)
-        self.mainContainerView.addArrangedSubview(self.additionContainerView)
-        self.additionContainerView.addArrangedSubview(self.reactionView)
+        // + --------------- +
+        // | messageTextView |
+        // + --------------- +
+        // | reactionView    |
+        // + --------------- +
+        
+        self.mainContainerView.setStack([
+            self.messageTextView,
+            self.additionContainerView.setStack([
+                self.reactionView
+            ])
+        ])
+    }
+    
+    open override func setupAutolayout() {
+        super.setupAutolayout()
     }
     
     open override func setupActions() {
@@ -87,50 +102,32 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell {
     
     
     // MARK: - Common
-    open func configure(_ message: SBDUserMessage,
-                          hideDateView: Bool,
-                          groupPosition: MessageGroupPosition,
-                          receiptState: SBUMessageReceiptState?,
-                          useReaction: Bool) {
-        self.useReaction = useReaction
+    open override func configure(with configuration: SBUBaseMessageCellParams) {
+        guard let configuration = configuration as? SBUUserMessageCellParams else { return }
+        guard let message = configuration.userMessage else { return }
+        // Set using reaction
+        self.useReaction = configuration.useReaction
         
-        self.configure(
-            message,
-            hideDateView: hideDateView,
-            receiptState: receiptState,
-            groupPosition: groupPosition,
-            withTextView: true
-        )
-    }
-    
-    open func configure(_ message: SBDBaseMessage,
-                          hideDateView: Bool,
-                          receiptState: SBUMessageReceiptState?,
-                          groupPosition: MessageGroupPosition,
-                          withTextView: Bool) {
-
-        let position = SBUGlobals.CurrentUser?.userId == message.sender?.userId ?
-            MessagePosition.right :
-            MessagePosition.left
+        self.usingQuotedMessage = configuration.usingQuotedMessage
         
-        self.configure(
-            message,
-            hideDateView: hideDateView,
-            position: position,
-            groupPosition: groupPosition,
-            receiptState: receiptState
-        )
-
+        // Configure Content base message cell
+        super.configure(with: configuration)
+        
+        // Set up message position of additionContainerView(reactionView)
         self.additionContainerView.position = self.position
         self.additionContainerView.isSelected = false
         
-        if let messageTextView = messageTextView as? SBUUserMessageTextView, withTextView {
+        // Set up SBUUserMessageTextView
+        if let messageTextView = messageTextView as? SBUUserMessageTextView, configuration.withTextView {
             messageTextView.configure(
-                model: SBUUserMessageCellModel(message: message, position: position)
+                model: SBUUserMessageTextViewModel(
+                    message: message,
+                    position: configuration.messagePosition
+                )
             )
         }
-        
-        if let ogMetaData = message.ogMetaData {
+        // Set up WebView with OG meta data
+        if let ogMetaData = configuration.message.ogMetaData {
             self.additionContainerView.insertArrangedSubview(self.webView, at: 0)
             self.webView.isHidden = false
             let model = SBUMessageWebViewModel(metaData: ogMetaData)
@@ -141,23 +138,63 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell {
         }
     }
     
+    @available(*, deprecated, renamed: "configure(with:)") // 2.2.0
+    open func configure(_ message: SBDUserMessage,
+                        hideDateView: Bool,
+                        groupPosition: MessageGroupPosition,
+                        receiptState: SBUMessageReceiptState?,
+                        useReaction: Bool) {
+        let configuration = SBUUserMessageCellParams(
+            message: message,
+            hideDateView: hideDateView,
+            useMessagePosition: true,
+            groupPosition: groupPosition,
+            receiptState: receiptState ?? .none,
+            useReaction: false,
+            withTextView: true
+        )
+        self.configure(with: configuration)
+    }
+    
+    @available(*, deprecated, renamed: "configure(with:)") // 2.2.0
+    open func configure(_ message: SBDBaseMessage,
+                        hideDateView: Bool,
+                        receiptState: SBUMessageReceiptState?,
+                        groupPosition: MessageGroupPosition,
+                        withTextView: Bool) {
+        guard let userMessage = message as? SBDUserMessage else {
+            // TODO: error
+            return
+        }
+
+        let configuration = SBUUserMessageCellParams(
+            message: userMessage,
+            hideDateView: hideDateView,
+            useMessagePosition: true,
+            groupPosition: groupPosition,
+            receiptState: receiptState ?? .none,
+            useReaction: self.useReaction,
+            withTextView: withTextView
+        )
+        self.configure(with: configuration)
+    }
+    
     /// Adds highlight attribute to the message
-    open func configure(highlightInfo: SBUHighlightMessageInfo?) {
+    open override func configure(highlightInfo: SBUHighlightMessageInfo?) {
         // Only apply highlight for the given message, that's not edited (updatedAt didn't change)
         guard self.message.messageId == highlightInfo?.messageId,
               self.message.updatedAt == highlightInfo?.updatedAt else { return }
-        
+
         guard let messageTextView = messageTextView as? SBUUserMessageTextView else { return }
-        
+
         messageTextView.configure(
-            model: SBUUserMessageCellModel(
+            model: SBUUserMessageTextViewModel(
                 message: message,
                 position: position,
                 highlight: true
             )
         )
     }
-    
     
     // MARK: - Action
     public override func setSelected(_ selected: Bool, animated: Bool) {

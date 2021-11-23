@@ -51,6 +51,8 @@ enum SBUIconSetType: String, Hashable {
     case iconQuestion
     case iconRefresh
     case iconRemove
+    case iconReply
+    case iconReplied
     case iconSearch
     case iconSend
     case iconSpinner
@@ -61,11 +63,13 @@ enum SBUIconSetType: String, Hashable {
     // MARK: - Metric
     
     struct Metric {
+        static let defaultIconSizeVerySmall = CGSize(value: 12)
         static let defaultIconSizeSmall = CGSize(value: 16)
         static let defaultIconSizeMedium = CGSize(value: 18)
         static let defaultIconSize = CGSize(value: 24)
         static let defaultIconSizeLarge = CGSize(value: 32)
-        static let defaultIconSizeXLarge = CGSize(value: 48)
+        static let defaultIconSizeVeryLarge = CGSize(value: 48)
+        static let quotedMessageIconSize = CGSize(value: 20)
         static let iconActionSheetItem = defaultIconSize
         static let iconEmojiSmall = CGSize(value: 20)
         static let iconEmojiLarge = CGSize(value: 38)
@@ -163,6 +167,8 @@ enum SBUIconSetType: String, Hashable {
         case .iconQuestion: SBUIconSet.iconQuestion = SBUIconSetType.iconQuestion.load()
         case .iconRefresh: SBUIconSet.iconRefresh = SBUIconSetType.iconRefresh.load()
         case .iconRemove: SBUIconSet.iconRemove = SBUIconSetType.iconRemove.load()
+        case .iconReply: SBUIconSet.iconReply = SBUIconSetType.iconReply.load()
+        case .iconReplied: SBUIconSet.iconReplied = SBUIconSetType.iconReplied.load()
         case .iconSearch: SBUIconSet.iconSearch = SBUIconSetType.iconSearch.load()
         case .iconSend: SBUIconSet.iconSend = SBUIconSetType.iconSend.load()
         case .iconSpinner: SBUIconSet.iconSpinner = SBUIconSetType.iconSpinner.load()
@@ -223,6 +229,8 @@ enum SBUIconSetType: String, Hashable {
         case .iconQuestion: return SBUIconSet.iconQuestion
         case .iconRefresh: return SBUIconSet.iconRefresh
         case .iconRemove: return SBUIconSet.iconRemove
+        case .iconReply: return SBUIconSet.iconReply
+        case .iconReplied: return SBUIconSet.iconReplied
         case .iconSearch: return SBUIconSet.iconSearch
         case .iconSend: return SBUIconSet.iconSend
         case .iconSpinner: return SBUIconSet.iconSpinner

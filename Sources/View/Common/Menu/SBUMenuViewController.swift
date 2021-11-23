@@ -166,11 +166,25 @@ class SBUMenuViewController: SBUBaseViewController, UITableViewDelegate, UITable
             for: indexPath
             ) as? SBUMenuCell else { return .init() }
         
+        let item = self.itemTypes[indexPath.row]
+        switch item {
+        case .delete:
+            cell.isEnabled = message.threadInfo.replyCount == 0
+        case .reply:
+            cell.isEnabled = message.parent == nil
+        default: break
+        }
         cell.configure(type: self.itemTypes[indexPath.row])
         return cell
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if let cell = tableView.cellForRow(at: indexPath) as? SBUMenuCell {
+            if cell.isEnabled == false {
+                tableView.deselectRow(at: indexPath, animated: true)
+                return
+            }
+        }
         self.dismiss(animated: true) {
             self.tapHandlerToMenu?(self.itemTypes[indexPath.row])
         }

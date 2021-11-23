@@ -77,7 +77,7 @@ class SBUMemberListViewModel: SBUChannelActionViewModel  {
     }
     
     func loadNextMemberList(memberListType: ChannelMemberListType, members: [SBUUser]? = nil) {
-        if self.isLoading { return }
+        guard !self.isLoading else { return }
         self.isLoading = true
         
         SBULog.info("[Request] Next member List")
@@ -268,4 +268,9 @@ class SBUMemberListViewModel: SBUChannelActionViewModel  {
         })
     }
     
+    override func dispose() {
+        super.dispose()
+        self.resetObservable.dispose()
+        self.queryListObservable.dispose()
+    }
 }

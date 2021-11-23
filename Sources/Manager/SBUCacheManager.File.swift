@@ -56,7 +56,7 @@ extension SBUCacheManager {
         do {
             try FileManager.default.createDirectory(atPath: "\(documentsPath)/\(additionalPath)", withIntermediateDirectories: true, attributes: nil)
         }
-        catch let error {
+        catch {
             SBULog.info("[Failed] Create directory : \(error.localizedDescription)")
             return nil
         }

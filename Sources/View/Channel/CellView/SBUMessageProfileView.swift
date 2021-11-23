@@ -8,6 +8,7 @@
 
 import UIKit
 
+// TODO: SBU View life cycle
 public class SBUMessageProfileView: UIView {
     private static let imageSize: CGFloat = 26
     

@@ -82,7 +82,7 @@ public class SBULoading: NSObject {
         ).cgPath
         self.baseView.layer.mask = self.rectLayer
         
-        self.spinner.layer.add(self.rotationLayer, forKey: "Spin")
+        self.spinner.layer.add(self.rotationLayer, forKey: SBUAnimation.Key.spin.rawValue)
         
         self.setupStyles()
         
@@ -102,7 +102,7 @@ public class SBULoading: NSObject {
     }
     
     @objc private func dismiss() {
-        self.spinner.layer.removeAnimation(forKey: "Spin")
+        self.spinner.layer.removeAnimation(forKey: SBUAnimation.Key.spin.rawValue)
         for subView in self.baseView.subviews {
             subView.removeFromSuperview()
         }

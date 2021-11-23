@@ -283,7 +283,7 @@ open class SBUModerationsViewController: SBUBaseViewController {
         self.navigationController?.pushViewController(memberListVC, animated: true)
     }
     
-    @available(*, deprecated, message: "deprecated in 2.1.9", renamed: "showMutedMemberList")
+    @available(*, deprecated, renamed: "showMutedMemberList") // 2.1.9
     open func showMutedMeberList() { self.showMutedMemberList() }
     
     /// This is a function that shows the muted member List.
@@ -297,7 +297,7 @@ open class SBUModerationsViewController: SBUBaseViewController {
         self.navigationController?.pushViewController(memberListVC, animated: true)
     }
     
-    @available(*, deprecated, message: "deprecated in 2.1.9", renamed: "showMutedMemberList")
+    @available(*, deprecated, renamed: "showBannedMemberList") // 2.1.9
     open func showBannedMeberList() { self.showBannedMemberList() }
     
     /// This is a function that shows the banned member List.
@@ -340,7 +340,7 @@ open class SBUModerationsViewController: SBUBaseViewController {
         SBULog.error("Did receive error: \(message ?? "")")
     }
     
-    @available(*, deprecated, message: "deprecated in 2.1.12", renamed: "errorHandler")
+    @available(*, deprecated, renamed: "errorHandler") // 2.1.12
     open func didReceiveError(_ message: String?, _ code: NSInteger? = nil) {
         self.errorHandler(message, code)
     }

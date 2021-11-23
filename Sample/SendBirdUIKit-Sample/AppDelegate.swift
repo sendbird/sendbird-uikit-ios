@@ -18,11 +18,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         SBUMain.setLogLevel(.all)
         
         // TODO: Change to your AppId
-        SBUMain.initialize(applicationId: "2D7B4CDB-932F-4082-9B09-A1153792DC8D")// origin
+        SBUMain.initialize(applicationId: "2D7B4CDB-932F-4082-9B09-A1153792DC8D") { // origin
+            //
+        } completionHandler: { error in
+            //
+        }
         
         SBUGlobals.AccessToken = ""
         SBUGlobals.UsingUserProfile = true
         SBUGlobals.UsingUserProfileInOpenChannel = true
+        SBUGlobals.ReplyTypeToUse = .quoteReply
         
         initializeRemoteNotification()
         

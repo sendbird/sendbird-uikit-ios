@@ -159,9 +159,13 @@ class SBUFileViewer: SBUBaseViewController, UIScrollViewDelegate {
 
         // Title View
         if let titleView = self.navigationItem.titleView as? TitleView {
-            titleView.titleLabel.text = fileMessage?.name ?? ""
+            if let sender = fileMessage?.sender {
+                titleView.titleLabel.text = SBUUser(user: sender).refinedNickname()
+            } else {
+                titleView.titleLabel.text = SBUStringSet.User_No_Name
+            }
             if let timestamp = fileMessage?.createdAt {
-                titleView.dateTimeLabel.text = Date.from(timestamp).sbu_toString(format: .hhmma)
+                titleView.dateTimeLabel.text = Date.sbu_from(timestamp).sbu_toString(format: .hhmma)
             } else {
                 titleView.dateTimeLabel.text = ""
             }
@@ -178,9 +182,14 @@ class SBUFileViewer: SBUBaseViewController, UIScrollViewDelegate {
             bottomView.downloadButton.addTarget(self,
                                                 action: #selector(onClickDownload(sender:)),
                                                 for: .touchUpInside)
-            bottomView.deleteButton.addTarget(self,
-                                              action: #selector(onClickDelete(sender:)),
-                                              for: .touchUpInside)
+            if let fileMessage = fileMessage, fileMessage.threadInfo.replyCount > 0 {
+                bottomView.deleteButton.isHidden = true
+            } else {
+                bottomView.deleteButton.addTarget(self,
+                                                  action: #selector(onClickDelete(sender:)),
+                                                  for: .touchUpInside)
+            }
+                
         }
         
         guard let urlString = urlString else { return }
@@ -297,142 +306,141 @@ class SBUFileViewer: SBUBaseViewController, UIScrollViewDelegate {
         SBULog.error("Did receive error: \(message ?? "")")
     }
     
-    @available(*, deprecated, message: "deprecated in 2.1.12", renamed: "errorHandler")
+    @available(*, deprecated, renamed: "errorHandler") // 2.1.12
     open func didReceiveError(_ message: String?, _ code: NSInteger? = nil) {
         self.errorHandler(message, code)
     }
 }
 
-
-// MARK: -
-fileprivate class TitleView: UIView {
-    
-    lazy var titleLabel = UILabel()
-    lazy var dateTimeLabel = UILabel()
-    
-    lazy var stackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        return stackView
-    }()
- 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-         
-        self.setupViews()
-        self.setupAutolayout()
-    }
-    
-    @available(*, unavailable, renamed: "TitleView.init(frame:)")
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-    }
-    
-    func setupViews() {
-        self.addSubview(self.stackView)
-        self.stackView.addArrangedSubview(self.titleLabel)
-        self.stackView.addArrangedSubview(self.dateTimeLabel)
+extension SBUFileViewer {
+    // MARK: - Default Title View
+    fileprivate class TitleView: UIView {
         
-        self.titleLabel.textAlignment = .center
-        self.dateTimeLabel.textAlignment = .center
-    }
-  
-    func setupAutolayout() {
-        self.stackView.translatesAutoresizingMaskIntoConstraints = false
+        let titleLabel = UILabel()
+        let dateTimeLabel = UILabel()
         
-        let constraints = [
-            self.stackView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0),
-            self.stackView.topAnchor.constraint(equalTo: self.topAnchor, constant: 0),
-            self.stackView.rightAnchor.constraint(equalTo: self.rightAnchor, constant: 0),
-            self.stackView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 0),
-        ]
+        lazy var stackView: SBUStackView = {
+            let stackView = SBUStackView(axis: .vertical)
+            return stackView
+        }()
         
-        NSLayoutConstraint.activate(constraints)
-    }
-    
-    func setupStyles() {
-        self.backgroundColor = .clear
+        override init(frame: CGRect) {
+            super.init(frame: frame)
+            
+            self.setupViews()
+            self.setupAutolayout()
+        }
         
-        self.titleLabel.font = SBUFontSet.subtitle1
-        self.titleLabel.textColor = SBUColorSet.ondark01
+        @available(*, unavailable, renamed: "TitleView.init(frame:)")
+        required init?(coder: NSCoder) {
+            super.init(coder: coder)
+        }
         
-        self.dateTimeLabel.font = SBUFontSet.caption2
-        self.dateTimeLabel.textColor = SBUColorSet.ondark01
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
+        func setupViews() {
+            self.addSubview(self.stackView)
+            self.stackView.addArrangedSubview(self.titleLabel)
+            self.stackView.addArrangedSubview(self.dateTimeLabel)
+            
+            self.titleLabel.textAlignment = .center
+            self.dateTimeLabel.textAlignment = .center
+        }
         
-        self.setupStyles()
-    }
-}
-
-
-// MARK: -
-fileprivate class BottomView: UIView {
-     
-    lazy var downloadButton = UIButton()
-    lazy var deleteButton = UIButton()
-    lazy var stackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .horizontal
-        stackView.distribution = .equalSpacing
-        return stackView
-    }()
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+        func setupAutolayout() {
+            self.stackView.translatesAutoresizingMaskIntoConstraints = false
+            
+            let constraints = [
+                self.stackView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0),
+                self.stackView.topAnchor.constraint(equalTo: self.topAnchor, constant: 0),
+                self.stackView.rightAnchor.constraint(equalTo: self.rightAnchor, constant: 0),
+                self.stackView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 0),
+            ]
+            
+            NSLayoutConstraint.activate(constraints)
+        }
         
-        self.setupViews()
-        self.setupAutolayout()
-    }
-    
-    @available(*, unavailable, renamed: "BottomView.init(frame:)")
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-    }
-    
-    func setupViews() { 
-        self.stackView.addArrangedSubview(self.downloadButton)
-        self.stackView.addArrangedSubview(UIView())
-        self.stackView.addArrangedSubview(self.deleteButton)
-        self.addSubview(self.stackView)
+        func setupStyles() {
+            self.backgroundColor = .clear
+            
+            self.titleLabel.font = SBUFontSet.subtitle1
+            self.titleLabel.textColor = SBUColorSet.ondark01
+            
+            self.dateTimeLabel.font = SBUFontSet.caption2
+            self.dateTimeLabel.textColor = SBUColorSet.ondark01
+        }
+        
+        override func layoutSubviews() {
+            super.layoutSubviews()
+            
+            self.setupStyles()
+        }
     }
     
-    func setupAutolayout() {
-        self.stackView.translatesAutoresizingMaskIntoConstraints = false
+    // MARK: - Default Bottom View
+    fileprivate class BottomView: UIView {
         
-        let constraints = [
-            self.stackView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 12),
-            self.stackView.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -12),
-            self.stackView.topAnchor.constraint(equalTo: self.topAnchor, constant: 12),
-            self.stackView.heightAnchor.constraint(equalToConstant: 32),
-            self.deleteButton.widthAnchor.constraint(equalToConstant: 32),
-            self.downloadButton.widthAnchor.constraint(equalToConstant: 32),
-        ]
+        lazy var downloadButton = UIButton()
+        lazy var deleteButton = UIButton()
+        lazy var stackView: UIStackView = {
+            let stackView = UIStackView()
+            stackView.axis = .horizontal
+            stackView.distribution = .equalSpacing
+            return stackView
+        }()
         
-        NSLayoutConstraint.activate(constraints)
-    }
-    
-    func setupStyles() {
-        self.backgroundColor = SBUColorSet.overlay01
-        self.downloadButton.setImage(
-            SBUIconSetType.iconDownload.image(
-                with: SBUColorSet.ondark01,
-                to: SBUIconSetType.Metric.defaultIconSize
-            ),
-            for: .normal
-        )
-        self.deleteButton.setImage(
-        SBUIconSetType.iconDelete.image(with: SBUColorSet.ondark01,
-                                        to: SBUIconSetType.Metric.iconActionSheetItem),
-            for: .normal
-        )
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
+        override init(frame: CGRect) {
+            super.init(frame: frame)
+            
+            self.setupViews()
+            self.setupAutolayout()
+        }
         
-        self.setupStyles()
+        @available(*, unavailable, renamed: "BottomView.init(frame:)")
+        required init?(coder: NSCoder) {
+            super.init(coder: coder)
+        }
+        
+        func setupViews() {
+            self.stackView.addArrangedSubview(self.downloadButton)
+            self.stackView.addArrangedSubview(UIView())
+            self.stackView.addArrangedSubview(self.deleteButton)
+            self.addSubview(self.stackView)
+        }
+        
+        func setupAutolayout() {
+            self.stackView.translatesAutoresizingMaskIntoConstraints = false
+            
+            let constraints = [
+                self.stackView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 12),
+                self.stackView.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -12),
+                self.stackView.topAnchor.constraint(equalTo: self.topAnchor, constant: 12),
+                self.stackView.heightAnchor.constraint(equalToConstant: 32),
+                self.deleteButton.widthAnchor.constraint(equalToConstant: 32),
+                self.downloadButton.widthAnchor.constraint(equalToConstant: 32),
+            ]
+            
+            NSLayoutConstraint.activate(constraints)
+        }
+        
+        func setupStyles() {
+            self.backgroundColor = SBUColorSet.overlay01
+            self.downloadButton.setImage(
+                SBUIconSetType.iconDownload.image(
+                    with: SBUColorSet.ondark01,
+                    to: SBUIconSetType.Metric.defaultIconSize
+                ),
+                for: .normal
+            )
+            self.deleteButton.setImage(
+                SBUIconSetType.iconDelete.image(with: SBUColorSet.ondark01,
+                                                to: SBUIconSetType.Metric.iconActionSheetItem),
+                for: .normal
+            )
+        }
+        
+        override func layoutSubviews() {
+            super.layoutSubviews()
+            
+            self.setupStyles()
+        }
     }
 }

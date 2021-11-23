@@ -8,7 +8,17 @@
 
 import UIKit
 
-class SBUSelectableStackView: UIView, Selectable {
+public class SBUSelectableStackView: SBUView, Selectable {
+    // MARK: Public properties
+    public let stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        return stackView
+    }()
+
+    public var position: MessagePosition = .right
+    
+    // MARK: Internal properties
     var isSelected: Bool = false {
         didSet {
             self.stackView.subviews.forEach { (view) in
@@ -20,45 +30,33 @@ class SBUSelectableStackView: UIView, Selectable {
         }
     }
     
-    var position: MessagePosition = .right
     
     var rightPressedBackgroundColor: UIColor?
     var rightBackgroundColor: UIColor?
     var leftPressedBackgroundColor: UIColor?
     var leftBackgroundColor: UIColor?
     
-    private let stackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        return stackView
-    }()
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        self.setupViews()
-        self.setupAutolayout()
+    // MARK: SBUView
+    public override init() {
+        super.init()
         self.setupStyles()
     }
     
-    @available(*, unavailable, renamed: "MessageContentDetailView()")
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
+    public override init(frame: CGRect) {
+        super.init(frame: frame)
+        self.setupStyles()
     }
-        
-    func setupViews() {
+    
+    // MARK: SBUView Life Cycle
+    public override func setupViews() {
         self.addSubview(self.stackView)
     }
     
-    func setupAutolayout() {
+    public override func setupAutolayout() {
         self.stackView.setConstraint(from: self, left: 0, right: 0, top: 0, bottom: 0)
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        self.setupStyles()
-    }
-    
-    func setupStyles() {
+    public override func setupStyles() {
         switch self.position {
         case .left:
             self.backgroundColor = self.isSelected
@@ -74,19 +72,48 @@ class SBUSelectableStackView: UIView, Selectable {
         }
     }
     
-    func setAxis(_ axis: NSLayoutConstraint.Axis) {
+    public func setAxis(_ axis: NSLayoutConstraint.Axis) {
         self.stackView.axis = axis
     }
     
-    func addArrangedSubview(_ view: UIView) {
+    public func addArrangedSubview(_ view: UIView) {
         self.stackView.addArrangedSubview(view)
     }
     
-    func removeArrangedSubview(_ view: UIView) {
+    public func removeArrangedSubview(_ view: UIView) {
         self.stackView.removeArrangedSubview(view)
     }
     
-    func insertArrangedSubview(_ view: UIView, at index: Int) {
+    public func insertArrangedSubview(_ view: UIView, at index: Int) {
         self.stackView.insertArrangedSubview(view, at: index)
+    }
+}
+
+extension SBUSelectableStackView {
+    /**
+     Adds arranged subviews to the stack view.
+     */
+    @discardableResult
+    func setStack(_ views: [UIView]) -> Self {
+        views.forEach { self.addArrangedSubview($0) }
+        return self
+    }
+    
+    /**
+     Sets `axis`as  `.vertical` and adds arranged subviews to the stack view.
+     */
+    @discardableResult
+    func setVStack(_ views: [UIView]) -> Self {
+        self.stackView.axis = .vertical
+        return self.setStack(views)
+    }
+    
+    /**
+     Sets `axis`as  `.horizontal` and adds arranged subviews to the stack view.
+     */
+    @discardableResult
+    func setHStack(_ views: [UIView]) -> Self {
+        self.stackView.axis = .horizontal
+        return self.setStack(views)
     }
 }

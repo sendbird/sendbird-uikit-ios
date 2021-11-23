@@ -29,6 +29,7 @@ public class SBUStringSet: NSObject {
     public static var ChoosePhoto = "Choose photo"
     public static var RemovePhoto = "Remove photo"
     public static var Search = "Search"
+    public static var Reply = "Reply"
     
     // MARK: - Alert
     public static var Alert_Delete = "Are you sure you want to delete?"
@@ -143,13 +144,23 @@ public class SBUStringSet: NSObject {
     public static var MessageInput_Text_Placeholder = "Type a message"
     public static var MessageInput_Text_Unavailable = "Chat is unavailable in this channel"
     public static var MessageInput_Text_Muted = "You are muted"
-
+    public static var MessageInput_Text_Reply = "Reply to message"
+    public static var MessageInput_Reply_To: (String) -> String = { quotedMessageNickname in
+        return "Reply to \(quotedMessageNickname)"
+    }
+    public static var MessageInput_Quote_Message_Photo = "Photo"
+    public static var MessageInput_Quote_Message_GIF = "GIF"
+    public static var MessageInput_Quote_Message_Video = "Video"
 
     // MARK: - Message
     public static var Message_Edited = "(edited)"
     public static var Message_System = "System message"
     public static var Message_Unknown_Title = "(Unknown message type)"
     public static var Message_Unknown_Desctiption = "Cannot read this message."
+    public static var Message_Replied_To: (String, String) -> String = { replierNickname, quotedMessageNickname in
+        return "\(replierNickname) replied to \(quotedMessageNickname)"
+    }
+    public static var Message_You = "You"
 
 
     // MARK: - Empty

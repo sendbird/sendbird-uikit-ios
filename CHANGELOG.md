@@ -1,5 +1,21 @@
 # Change Log
 
+### v2.2.0 (Nov 23, 2021)
+* Added Reply to Channel feature
+    * Added `SBUGlobals.ReplyTypeToUse`
+    * Added `SBUReplyType` and its `filterValue` returns `SBDReplyType`
+    * Added `SBUQuoteMessageInputView` and its params for configuration
+    * Added `SBUQuotedMessageViewProtocol`
+    * Added `SBUQuotedBaseMessageView` and its params for configuration
+    * Added `SBUQuotedUserMessageView`, `SBUQuotedFileMessageView` as subclass
+* Cleaning up Message Cell code
+    * Added *params* to configure message cells
+    * Added `SBUViewLifeCycle`, `SBUView`, `SBUTableView`
+    * Added `SBUStackView`
+* Local caching support
+    * Modified `SBUMain.initialize(applicationId:)` to `SBUMain.initialize(applicationId:migrationStartHandler:completionHandler:)`
+    * `SBUMain.connect` can return user instance even when it's online. 
+
 ### v2.1.16 (Nov 16, 2021)
 * Updated chat SDK Swift package to **v3.0.208**
 

@@ -35,25 +35,8 @@ class ImageContentView: BaseFileContentView {
             loadImageSession?.cancel()
         }
     }
-
-    init() {
-        super.init(frame: .zero)
-        self.setupViews()
-        self.setupAutolayout()
-    }
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        self.setupViews()
-        self.setupAutolayout()
-    }
-    
-    @available(*, unavailable, renamed: "ImageContentView(frame:)")
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-    }
-    
-    func setupViews() {
+    override func setupViews() {
         self.layer.cornerRadius = 12
         self.layer.borderColor = UIColor.clear.cgColor
         self.layer.borderWidth = 1
@@ -63,7 +46,7 @@ class ImageContentView: BaseFileContentView {
         self.addSubview(self.iconImageView)
     }
     
-    func setupAutolayout() {
+    override func setupAutolayout() {
         self.imageView.setConstraint(
             from: self,
             left: 0,
@@ -93,15 +76,6 @@ class ImageContentView: BaseFileContentView {
             self.widthConstraint,
             self.heightConstraint
         ])
-    }
-
-    override func setupStyles() {
-        super.setupStyles()
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        self.setupStyles()
     }
     
     override func configure(message: SBDFileMessage, position: MessagePosition) {
@@ -183,13 +157,13 @@ class ImageContentView: BaseFileContentView {
             case .canceled, .failed:
                 self.iconImageView.image = SBUIconSetType.iconThumbnailNone.image(
                     with: theme.fileMessagePlaceholderColor,
-                    to: SBUIconSetType.Metric.defaultIconSizeXLarge
+                    to: SBUIconSetType.Metric.defaultIconSizeVeryLarge
                 )
             default:
                 if self.imageView.image == nil {
                     self.iconImageView.image = SBUIconSetType.iconPhoto.image(
                         with: theme.fileMessagePlaceholderColor,
-                        to: SBUIconSetType.Metric.defaultIconSizeXLarge
+                        to: SBUIconSetType.Metric.defaultIconSizeVeryLarge
                     )
                 } else {
                     self.iconImageView.image = nil

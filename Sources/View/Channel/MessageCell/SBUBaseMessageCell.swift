@@ -9,12 +9,8 @@
 import UIKit
 import SendBirdSDK
 
-@IBDesignable
-@available(*, deprecated, renamed: "SBUBaseMessageCell")
-open class SBUMessageBaseCell { }
-
 @objcMembers @IBDesignable
-open class SBUBaseMessageCell: UITableViewCell {
+open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol {
     // MARK: - Public
     public var message: SBDBaseMessage = .init()
     public var position: MessagePosition = .center
@@ -33,11 +29,14 @@ open class SBUBaseMessageCell: UITableViewCell {
 
     
     // MARK: - Private
+    
+    // + ------------------ +
+    // | dateView           |
+    // + ------------------ +
+    // | messageContentView |
+    // + ------------------ +
     private lazy var stackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.spacing = 16
-        stackView.axis = .vertical
-        return stackView
+        return SBUStackView(axis: .vertical, spacing: 16)
     }()
     
     var stackViewTopConstraint: NSLayoutConstraint?
@@ -53,36 +52,31 @@ open class SBUBaseMessageCell: UITableViewCell {
 
 
     // MARK: - View Lifecycle
-    public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.setupViews()
-        self.setupAutolayout()
-        self.setupActions()
-    }
-    
-    required public init?(coder: NSCoder) {
-        super.init(coder: coder)
-        self.setupViews()
-        self.setupAutolayout()
-        self.setupActions()
-    }
     
     /// This function handles the initialization of views.
-    open func setupViews() {
+    open override func setupViews() {
         self.dateView.isHidden = true
         
+        // + ------------------ +
+        // | dateView           |
+        // + ------------------ +
+        // | messageContentView |
+        // + ------------------ +
+        
         self.contentView.addSubview(self.stackView)
-        self.stackView.addArrangedSubview(self.dateView)
-        self.stackView.addArrangedSubview(self.messageContentView)
+        self.stackView.setVStack([
+            self.dateView,
+            self.messageContentView
+        ])
     }
     
     /// This function handles the initialization of actions.
-    open func setupActions() {
+    open override func setupActions() {
         
     }
     
     /// This function handles the initialization of autolayouts.
-    open func setupAutolayout() {
+    open override func setupAutolayout() {
         self.stackView
             .setConstraint(from: self.contentView, left: 0, bottom: 0)
             .setConstraint(from: self.contentView, right: 0, priority: .defaultHigh)
@@ -90,20 +84,13 @@ open class SBUBaseMessageCell: UITableViewCell {
         self.updateTopAnchorConstraint()
     }
 
-    /// This function handles the initialization of styles.
-    open func setupStyles() {
+    open override func setupStyles() {
         self.backgroundColor = theme.backgroundColor
         
         if let dateView = self.dateView as? SBUMessageDateView {
             dateView.setupStyles()
         }
     }
-    
-    open override func layoutSubviews() {
-        super.layoutSubviews()
-        self.setupStyles()
-    }
-    
     
     func updateTopAnchorConstraint() {
         self.stackViewTopConstraint?.isActive = false
@@ -117,26 +104,47 @@ open class SBUBaseMessageCell: UITableViewCell {
     
     // MARK: - Common
     
+    /**
+     This function configure a cell using informations.
+     
+     - Parameter configuration: `SBUBaseMessageCellParams` object.
+     */
+    open func configure(with configuration: SBUBaseMessageCellParams) {
+        self.message = configuration.message
+        self.position = configuration.messagePosition
+        self.groupPosition = configuration.groupPosition
+        self.dateView.isHidden = configuration.hideDateView
+        self.receiptState = configuration.receiptState
+        
+        if let dateView = self.dateView as? SBUMessageDateView {
+            dateView.configure(timestamp: self.message.createdAt)
+        }
+    }
+    
+    open func configure(highlightInfo: SBUHighlightMessageInfo?) {
+        
+    }
+    
     /// This function configure a cell using informations.
     /// - Parameters:
     ///   - message: Message object
     ///   - position: Cell position (left / right / center)
     ///   - hideDateView: Hide or expose date information
     ///   - receiptState: ReadReceipt state
+    @available(*, deprecated, renamed: "configure(message:configuration:)") // 2.2.0
     open func configure(message: SBDBaseMessage,
                         position: MessagePosition,
                         hideDateView: Bool,
                         groupPosition: MessageGroupPosition = .none,
                         receiptState: SBUMessageReceiptState) {
-        self.message = message
-        self.position = position
-        self.groupPosition = groupPosition
-        self.dateView.isHidden = hideDateView
-        self.receiptState = receiptState
-        
-        if let dateView = self.dateView as? SBUMessageDateView {
-            dateView.configure(timestamp: self.message.createdAt)
-        }
+        let configuration = SBUBaseMessageCellParams(
+            message: message,
+            hideDateView: hideDateView,
+            messagePosition: position,
+            groupPosition: groupPosition,
+            receiptState: receiptState
+        )
+        self.configure(with: configuration)
     }
     
     
@@ -147,18 +155,7 @@ open class SBUBaseMessageCell: UITableViewCell {
 }
 
 
-// MARK: -
-@available(*, deprecated, message: "deprecated in 2.0.0", renamed: "SBUMessageDateView")
-fileprivate class MessageDateView: SBUMessageDateView { }
-
-// MARK: -
-@available(*, deprecated, message: "deprecated in 2.0.0", renamed: "SBUMessageProfileView")
-public class MessageProfileView: SBUMessageProfileView { }
-
-// MARK: -
-@available(*, deprecated, message: "deprecated in 2.0.0", renamed: "SBUUserNameView")
-public class UserNameView: SBUUserNameView { }
-
-// MARK: -
-@available(*, deprecated, message: "deprecated in 2.0.0", renamed: "SBUMessageStateView")
-public class MessageStateView: SBUMessageStateView { }
+// TODO: Remove
+@IBDesignable
+@available(*, deprecated, renamed: "SBUBaseMessageCell")
+open class SBUMessageBaseCell { }

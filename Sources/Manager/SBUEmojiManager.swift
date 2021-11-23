@@ -11,10 +11,14 @@ import SendBirdSDK
 
 @objcMembers
 public class SBUEmojiManager: NSObject {
-
+    // MARK: - Private keys
+    static let kEmojiCacheKey = "LOCAL_CACHING_EMOJI_CONTAINER"
+    
     // MARK: - Private property
     static let shared = SBUEmojiManager()
-    private var container: SBDEmojiContainer?
+    private var container: SBDEmojiContainer? {
+        didSet { self.didSetContainer() }
+    }
     private var emojiHash: String? {
         container?.emojiHash
     }
@@ -126,29 +130,52 @@ public class SBUEmojiManager: NSObject {
         _ error: SBDError?) -> Void
     ) {
         guard let appInfo = SBDMain.getAppInfo(),
-            self.shared.emojiHash == nil || appInfo.isEmojiUpdateNeeded(shared.emojiHash ?? "")
-            else {
-                completionHandler(nil, nil)
-                return
+              self.shared.emojiHash == nil || appInfo.isEmojiUpdateNeeded(shared.emojiHash ?? "")
+        else {
+            completionHandler(shared.container, nil)
+            return
         }
-
+        
         SBULog.info("[Request] Load all emojis")
+        
+        // Load from cached data first.
+        if let cachedContainer = UserDefaults.standard.data(forKey: SBUEmojiManager.kEmojiCacheKey) {
+            let container = SBDEmojiContainer.build(fromSerializedData: cachedContainer)
+            shared.container = container
+        }
+        
         SBDMain.getAllEmojis { container, error in
             if let error = error {
-                SBULog.error("[Failed] Load all emojis: \(error.localizedDescription)")
-                completionHandler(container, error)
+                if let cachedContainer = shared.container, container == nil {
+                    SBULog.error("[Succeed] Load all emojis from cache")
+                    completionHandler(cachedContainer, nil)
+                } else {
+                    SBULog.error("[Failed] Load all emojis: \(error.localizedDescription)")
+                    completionHandler(nil, error)
+                }
                 return
             }
-
+            
             guard let container = container else {
-                SBULog.error("[Failed] Load all emojis: EmojiContainer is not set")
-                completionHandler(nil, nil)
+                if let cachedContainer = shared.container {
+                    SBULog.error("[Succeed] Load all emojis from cache")
+                    completionHandler(cachedContainer, nil)
+                } else {
+                    SBULog.error("[Failed] Load all emojis: EmojiContainer is not set")
+                    completionHandler(nil, nil)
+                }
                 return
             }
-
+            
             SBULog.info("[Succeed] Load all emojis")
             shared.container = container
             completionHandler(container, nil)
+        }
+    }
+    
+    private func didSetContainer() {
+        if let serializedContainer = container?.serialize() {
+            UserDefaults.standard.setValue(serializedContainer, forKey: SBUEmojiManager.kEmojiCacheKey)
         }
     }
 }

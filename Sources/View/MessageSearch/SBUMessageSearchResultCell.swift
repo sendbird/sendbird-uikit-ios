@@ -262,7 +262,7 @@ open class SBUMessageSearchResultCell: UITableViewCell {
         
         let createdAt = Date.lastUpdatedTime(baseTimestamp: message.createdAt)
         self.createdAtLabel.text = createdAt ??
-            Date.from(message.createdAt).sbu_toString(format: .hhmma)
+            Date.sbu_from(message.createdAt).sbu_toString(format: .hhmma)
     }
     
     /// Sets file message icon depending on the message's file type using `SBUUtils.getFileType(by: fileMessage)`.

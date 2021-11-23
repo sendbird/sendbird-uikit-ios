@@ -158,6 +158,14 @@ public class SBUIconSet: NSObject {
         didSet { SBUIconSetType.iconUser.markCustomized() }
     }
     
+    public static var iconReply: UIImage = SBUIconSetType.iconReply.load() {
+        didSet { SBUIconSetType.iconReply.markCustomized() }
+    }
+    
+    public static var iconReplied: UIImage = SBUIconSetType.iconReplied.load() {
+        didSet { SBUIconSetType.iconReplied.markCustomized() }
+    }
+    
     /// Restore all customized icons to SDK's default icons.
     ///
     /// - Since: 2.1.0

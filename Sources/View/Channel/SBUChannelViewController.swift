@@ -125,7 +125,6 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
     let spacer = UIView()
 
     private var newMessagesCount: Int = 0
-
     
     // MARK: - Logic properties (Public)
     
@@ -143,16 +142,16 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
     }
 
     /// This object is used before response from the server
-    @available(*, deprecated, message: "deprecated in 1.2.10")
+    @available(*, deprecated, message: "Property value is always empty.") // 1.2.10
     public private(set) var preSendMessages: [String:SBDBaseMessage] = [:]
     /// This object that has resendable messages, including `pending messages` and `failed messages`.
-    @available(*, deprecated, message: "deprecated in 1.2.10")
+    @available(*, deprecated, message: "Property value is always empty.") // 1.2.10
     public private(set) var resendableMessages: [String:SBDBaseMessage] = [:]
-    @available(*, deprecated, message: "deprecated in 1.2.10")
+    @available(*, deprecated, message: "Property value is always empty.") // 1.2.10
     public private(set) var preSendFileData: [String:[String:AnyObject]] = [:] // Key: requestId
-    @available(*, deprecated, message: "deprecated in 1.2.10")
+    @available(*, deprecated, message: "Property value is always empty.") // 1.2.10
     public private(set) var resendableFileData: [String:[String:AnyObject]] = [:] // Key: requestId
-    @available(*, deprecated, message: "deprecated in 1.2.10")
+    @available(*, deprecated, message: "Property value is always empty.") // 1.2.10
     public private(set) var fileTransferProgress: [String:CGFloat] = [:] // Key: requestId, If have value, file message status is sending
     
     
@@ -178,7 +177,7 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
     ///     let params = SBDMessageListParams()
     ///     params.includeMetaArray = true
     ///     params.includeReactions = true
-    ///     params.includeReplies = true
+    ///     params.includeThreadInfo = true
     ///     ...
     /// ```
     /// - note: The `reverse` and the `previousResultSize` properties in the `SBDMessageListParams` are set in the UIKit. Even though you set that property it will be ignored.
@@ -196,7 +195,7 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
     ///     let params = SBDMessageListParams()
     ///     params.includeMetaArray = true
     ///     params.includeReactions = true
-    ///     params.includeReplies = true
+    ///     params.includeThreadInfo = true
     ///     ...
     /// ```
     /// - note: The `reverse` and the `previousResultSize` properties in the `SBDMessageListParams` are set in the UIKit. Even though you set that property it will be ignored.
@@ -459,7 +458,6 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
         }
         
         self.updateStyles()
-        self.refreshChannel(applyChangelog: true)
     }
     
     open override func viewWillDisappear(_ animated: Bool) {
@@ -480,7 +478,53 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
     override func createViewModel(startingPoint: Int64?, showIndicator: Bool = true) {
         super.createViewModel(startingPoint: startingPoint, showIndicator: showIndicator)
         
-        self.setEditMode(for: nil)
+        self.messageInputView.setMode(.none)
+    }
+    
+    override func bindViewModel() {
+        super.bindViewModel()
+        guard let channelViewModel = self.channelViewModel else { return }
+        
+        channelViewModel.channelChangeObservable.observe { [weak self] messageContext, channel in
+            guard let self = self else { return }
+            
+            if let channel = channel {
+                // channel changed
+                switch messageContext.source {
+                case .eventReadReceiptUpdated, .eventDeliveryReceiptUpdated:
+                    if messageContext.source == .eventReadReceiptUpdated {
+                        if let titleView = self.titleView as? SBUChannelTitleView {
+                            titleView.updateChannelStatus(channel: channel)
+                        }
+                    }
+                    self.reloadTableView()
+                case .eventTypingStatusUpdated:
+                    if let titleView = self.titleView as? SBUChannelTitleView {
+                        titleView.updateChannelStatus(channel: channel)
+                    }
+                case .channelChangelog:
+                    if let titleView = self.titleView as? SBUChannelTitleView {
+                        titleView.configure(channel: channel, title: self.channelName)
+                    }
+                    self.updateMessageInputModeState()
+                    self.reloadTableView()
+                case .eventChannelChanged:
+                    if let titleView = self.titleView as? SBUChannelTitleView {
+                        titleView.configure(channel: channel, title: self.channelName)
+                    }
+                    self.updateMessageInputModeState()
+                case .eventChannelFrozen, .eventChannelUnfrozen,
+                     .eventUserMuted, .eventUserUnmuted,
+                     .eventOperatorUpdated,
+                     .eventUserBanned: // Other User Banned
+                    self.updateMessageInputModeState()
+                default: break
+                }
+            } else {
+                // channel deleted
+                self.onClickBack()
+            }
+        }
     }
     
     
@@ -501,8 +545,7 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
             self.customizedMessageListParams = messageListParams
         }
         
-        SBUMain.connectionCheck { [weak self] user, error in
-            guard let self = self else { return }
+        SBUMain.connectIfNeeded { user, error in
             if let error = error {
                 self.errorHandler(error)
                 // do not proceed to getChannel()
@@ -614,22 +657,11 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
     
     // MARK: - Channel related
     
-    private func refreshChannel(applyChangelog: Bool = false) {
+    private func refreshChannel() {
         if let channel = channel {
             channel.refresh { [weak self] error in
-                guard let self = self else { return }
-                if let error = error {
-                    self.errorHandler(error)
-                    SBULog.error("[Failed] Refresh channel request : \(error.localizedDescription)")
-                }
-                 
-                guard self.canProceed(with: self.channel, error: error) else { return }
-                
-                SBULog.info("[Succeed] Refresh channel request")
-                if applyChangelog {
-                    self.channelViewModel?.loadMessageChangeLogs()
-                    self.updateMessageInputModeState()
-                }
+                let _ = self?.canProceed(with: self?.channel, error: error)
+                self?.updateMessageInputModeState()
             }
         } else if let channelUrl = self.channelUrl {
             // channel hasn't been loaded before.
@@ -788,7 +820,7 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
     }
 
     
-    // MARK: Cell TapHandler
+    // MARK: - Cell TapHandler
     /// This function sets the cell's tap gesture handling.
     /// - Parameters:
     ///   - cell: Message cell object
@@ -891,7 +923,17 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
             switch message {
             case let userMessage as SBDUserMessage:
                 let isCurrentUser = userMessage.sender?.userId == SBUGlobals.CurrentUser?.userId
-                let types: [MessageMenuItem] = isCurrentUser ? [.copy, .edit, .delete] : [.copy]
+                var types: [MessageMenuItem] = []
+                if isCurrentUser {
+                    types = SBUGlobals.ReplyTypeToUse == .none
+                        ? [.copy, .edit, .delete]
+                        : [.copy, .edit, .delete, .reply]
+                } else {
+                    types = SBUGlobals.ReplyTypeToUse == .none
+                        ? [.copy]
+                        : [.copy, .reply]
+                }
+                    
                 cell.isSelected = true
                 
                 if SBUEmojiManager.useReaction(channel: self.channel) {
@@ -901,7 +943,16 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
                 }
             case let fileMessage as SBDFileMessage:
                 let isCurrentUser = fileMessage.sender?.userId == SBUGlobals.CurrentUser?.userId
-                let types: [MessageMenuItem] = isCurrentUser ? [.save, .delete] : [.save]
+                var types: [MessageMenuItem] = []
+                if isCurrentUser {
+                    types = SBUGlobals.ReplyTypeToUse == .none
+                        ? [.save, .delete]
+                        : [.save, .delete, .reply]
+                } else {
+                    types = SBUGlobals.ReplyTypeToUse == .none
+                        ? [.save]
+                        : [.save, .reply]
+                }
                 cell.isSelected = true
                 
                 if SBUEmojiManager.useReaction(channel: self.channel) {
@@ -925,7 +976,7 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
     ///   - cell: Message cell object
     ///   - emojiKey: emoji key
     /// - Since: 1.1.0
-    @available(*, deprecated, message: "deprecated in 1.2.2", renamed: "setEmojiTapGestureHandler(_:emojiKey:)")
+    @available(*, deprecated, renamed: "setEmojiTapGestureHandler(_:emojiKey:)") //  1.2.2
     open func setTapEmojiGestureHandler(_ cell: SBUBaseMessageCell, emojiKey: String) {
         self.setEmojiTapGestureHandler(cell, emojiKey: emojiKey)
     }
@@ -948,7 +999,7 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
     ///   - cell: Message cell object
     ///   - emojiKey: emoji key
     /// - Since: 1.1.0
-    @available(*, deprecated, message: "deprecated in 1.2.2", renamed: "setEmojiLongTapGestureHandler(_:emojiKey:)")
+    @available(*, deprecated, renamed: "setEmojiLongTapGestureHandler(_:emojiKey:)") //  1.2.2
     open func setLongTapEmojiGestureHandler(_ cell: SBUBaseMessageCell, emojiKey: String) {
         self.setEmojiLongTapGestureHandler(cell, emojiKey: emojiKey)
     }
@@ -1026,7 +1077,7 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
         let curCreatedAt = currentMessage.createdAt
         let prevCreatedAt = nextMessage.createdAt
         
-        return Date.from(prevCreatedAt).isSameDay(as: Date.from(curCreatedAt))
+        return Date.sbu_from(prevCreatedAt).isSameDay(as: Date.sbu_from(curCreatedAt))
     }
     
     /// This is used to check the loading status and control loading indicator.
@@ -1079,13 +1130,13 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
         let nextSender = succeededNextMsg?.sender?.userId ?? nil
         
         // Unit : milliseconds
-        let prevTimestamp = Date.from(succeededPrevMsg?.createdAt ?? -1).sbu_toString(
+        let prevTimestamp = Date.sbu_from(succeededPrevMsg?.createdAt ?? -1).sbu_toString(
             format: .yyyyMMddhhmm
         )
-        let currentTimestamp = Date.from(succeededCurrentMsg?.createdAt ?? -1).sbu_toString(
+        let currentTimestamp = Date.sbu_from(succeededCurrentMsg?.createdAt ?? -1).sbu_toString(
             format: .yyyyMMddhhmm
         )
-        let nextTimestamp = Date.from(succeededNextMsg?.createdAt ?? -1).sbu_toString(
+        let nextTimestamp = Date.sbu_from(succeededNextMsg?.createdAt ?? -1).sbu_toString(
             format: .yyyyMMddhhmm
         )
         
@@ -1148,13 +1199,13 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
         guard hidden != newMessageInfoView.isHidden else { return }
         guard let channelViewModel = self.channelViewModel else { return }
         
-        newMessageInfoView.isHidden = hidden && !channelViewModel.hasNext
+        newMessageInfoView.isHidden = hidden && !channelViewModel.hasNext()
     }
     
     /// Sets the scroll to bottom view.
     /// - Parameter hidden: whether to hide the view. `nil` to handle it automatically depending on the current scroll position.
     public override func setScrollBottomView(hidden: Bool?) {
-        let hasNext = self.channelViewModel?.hasNext ?? false
+        let hasNext = self.channelViewModel?.hasNext() ?? false
         let shouldHide = hidden ?? isScrollNearBottom()
         let hide = shouldHide && !hasNext
         
@@ -1290,7 +1341,7 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
             case .edit:
                 guard let userMessage = message as? SBDUserMessage else { return }
                 if self.channel?.isFrozen == false {
-                    self.setEditMode(for: userMessage)
+                    self.messageInputView.setMode(.edit, message: userMessage)
                 } else {
                     SBULog.info("This channel is frozen")
                 }
@@ -1298,6 +1349,9 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
             case .save:
                 guard let fileMessage = message as? SBDFileMessage else { return }
                 SBUDownloadManager.save(fileMessage: fileMessage, parent: self)
+                
+            case .reply:
+                self.messageInputView.setMode(.quoteReply, message: message)
             }
         }
 
@@ -1332,6 +1386,7 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
         guard let cell = cell as? SBUBaseMessageCell else { return }
         
         let menuItems = self.createMenuItems(
+            cell: cell,
             message: message,
             types: types,
             isMediaViewOverlaying: false
@@ -1408,26 +1463,29 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
         UIView.setAnimationsEnabled(false)
         
         let isSameDay = self.checkSameDayAsNextMessage(currentIndex: indexPath.row)
-        let receiptState = SBUUtils.getReceiptStateIfExists(for: channel, message: message)
+        let receiptState = SBUUtils.getReceiptState(of: message, in: channel)
         let useReaction = SBUEmojiManager.useReaction(channel: self.channel)
         
         switch (message, messageCell) {
             
         // Amdin Message
         case let (adminMessage, adminMessageCell) as (SBDAdminMessage, SBUAdminMessageCell):
-            adminMessageCell.configure(
-                adminMessage,
+            let configuration = SBUAdminMessageCellParams(
+                message: adminMessage,
                 hideDateView: isSameDay
             )
+            adminMessageCell.configure(with: configuration)
         // Unknown Message
         case let (unknownMessage, unknownMessageCell) as (SBDBaseMessage, SBUUnknownMessageCell):
-            unknownMessageCell.configure(
-                unknownMessage,
+            let configuration = SBUUnknownMessageCellParams(
+                message: unknownMessage,
                 hideDateView: isSameDay,
                 groupPosition: self.getMessageGroupingPosition(currentIndex: indexPath.row),
                 receiptState: receiptState,
                 useReaction: useReaction
             )
+            unknownMessageCell.configure(with: configuration)
+                
             self.setUnkownMessageCellGestures(
                 unknownMessageCell,
                 unknownMessage: unknownMessage,
@@ -1436,15 +1494,21 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
             
         // User Message
         case let (userMessage, userMessageCell) as (SBDUserMessage, SBUUserMessageCell):
-            userMessageCell.configure(
-                userMessage,
+            let configuration = SBUUserMessageCellParams(
+                message: userMessage,
                 hideDateView: isSameDay,
+                useMessagePosition: true,
                 groupPosition: self.getMessageGroupingPosition(currentIndex: indexPath.row),
                 receiptState: receiptState,
-                useReaction: useReaction
+                useReaction: useReaction,
+                withTextView: true
             )
+            userMessageCell.configure(with: configuration)
+                
             userMessageCell.configure(highlightInfo: self.highlightInfo)
             
+            (userMessageCell.quotedMessageView as? SBUQuotedBaseMessageView)?.delegate = self
+                
             self.setUserMessageCellGestures(
                 userMessageCell,
                 userMessage: userMessage,
@@ -1453,15 +1517,20 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
             
         // File Message
         case let (fileMessage, fileMessageCell) as (SBDFileMessage, SBUFileMessageCell):
-            fileMessageCell.configure(
-                fileMessage,
+            let configuration = SBUFileMessageCellParams(
+                message: fileMessage,
                 hideDateView: isSameDay,
+                useMessagePosition: true,
                 groupPosition: self.getMessageGroupingPosition(currentIndex: indexPath.row),
                 receiptState: receiptState,
                 useReaction: useReaction
             )
+            fileMessageCell.configure(with: configuration)
+            
             fileMessageCell.configure(highlightInfo: self.highlightInfo)
             
+            (fileMessageCell.quotedMessageView as? SBUQuotedBaseMessageView)?.delegate = self
+                
             self.setFileMessageCellGestures(
                 fileMessageCell,
                 fileMessage: fileMessage,
@@ -1471,12 +1540,14 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
             self.setFileMessageCellImages(fileMessageCell, fileMessage: fileMessage)
             
         default:
-            messageCell.configure(
+            let configuration = SBUBaseMessageCellParams(
                 message: message,
-                position: .center,
                 hideDateView: isSameDay,
-                receiptState: receiptState ?? .none
+                messagePosition: .center,
+                groupPosition: .none,
+                receiptState: receiptState
             )
+            messageCell.configure(with: configuration)
         }
         
         UIView.setAnimationsEnabled(true)
@@ -1510,7 +1581,6 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
 
         return cell
     }
-    
     /// This function generates cell's identifier.
     /// - Parameter message: Message object
     /// - Returns: Identifier
@@ -1537,9 +1607,8 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
 }
 
 
-// MARK: - SBDChannelDelegate, SBDConnectionDelegate
-extension SBUChannelViewController: SBDChannelDelegate, SBDConnectionDelegate {
-    // MARK: SBDChannelDelegate
+// MARK: - SBDChannelDelegate
+extension SBUChannelViewController: SBDChannelDelegate {
     // Received message
     open func channel(_ sender: SBDBaseChannel, didReceive message: SBDBaseMessage) {
         guard self.channel?.channelUrl == sender.channelUrl else { return }
@@ -1565,11 +1634,8 @@ extension SBUChannelViewController: SBDChannelDelegate, SBDConnectionDelegate {
             break
         }
         
-        let hasNext = channelViewModel?.hasNext ?? false
-        if !hasNext {
-            self.channel?.markAsRead()
-            self.upsertMessagesInList(messages: [message], needUpdateNewMessage: true, needReload: true)
-        } else {
+        let hasNext = channelViewModel?.hasNext() ?? false
+        if hasNext || !self.isScrollNearBottom() {
             if message is SBDUserMessage ||
                 message is SBDFileMessage {
                 // message is not added.
@@ -1577,144 +1643,43 @@ extension SBUChannelViewController: SBDChannelDelegate, SBDConnectionDelegate {
                 self.lastSeenIndexPath = nil
                 self.increaseNewMessageCount()
             }
-            self.channelViewModel?.messageCache.add(messages: [message])
         }
     }
-    
-    // Updated message
-    open func channel(_ sender: SBDBaseChannel, didUpdate message: SBDBaseMessage) {
-        guard self.channel?.channelUrl == sender.channelUrl else { return }
-        guard self.messageListParams.belongs(to: message) else {
-            self.deleteMessagesInList(messageIds: [message.messageId], needReload: true)
-            return
-        }
-        
-        SBULog.info("Did update message: \(message)")
-        
-        self.updateMessagesInList(messages: [message], needReload: true)
-    }
-    
-    // Deleted message
-    open func channel(_ sender: SBDBaseChannel, messageWasDeleted messageId: Int64) {
-        guard self.channel?.channelUrl == sender.channelUrl else { return }
-        
-        SBULog.info("Message was deleted: \(messageId)")
-        
-        self.deleteMessagesInList(messageIds: [messageId], needReload: true)
-    }
+ 
+    // Please do not use belows.
+    open func channel(_ sender: SBDBaseChannel, didUpdate message: SBDBaseMessage) {}
+    open func channel(_ sender: SBDBaseChannel, messageWasDeleted messageId: Int64) {}
+    open func channel(_ sender: SBDBaseChannel, updatedReaction reactionEvent: SBDReactionEvent) {}
+    open func channelDidUpdateReadReceipt(_ sender: SBDGroupChannel) {}
+    open func channelDidUpdateDeliveryReceipt(_ sender: SBDGroupChannel) {}
+    open func channelDidUpdateTypingStatus(_ sender: SBDGroupChannel) {}
+    open func channelWasChanged(_ sender: SBDBaseChannel) {}
+    open func channelWasFrozen(_ sender: SBDBaseChannel) {}
+    open func channelWasUnfrozen(_ sender: SBDBaseChannel) {}
+    open func channel(_ sender: SBDBaseChannel, userWasMuted user: SBDUser) {}
+    open func channel(_ sender: SBDBaseChannel, userWasUnmuted user: SBDUser) {}
+    open func channelDidUpdateOperators(_ sender: SBDBaseChannel) {}
+    open func channel(_ sender: SBDBaseChannel, userWasBanned user: SBDUser) {}
+}
 
-    // Updated Reaction
-    open func channel(_ sender: SBDBaseChannel, updatedReaction reactionEvent: SBDReactionEvent) {
-        guard let message = messageList
-            .first(where: { $0.messageId == reactionEvent.messageId }) else { return }
-        guard self.messageListParams.belongs(to: message) else { return }
-        
-        message.apply(reactionEvent)
 
-        SBULog.info("Updated reaction, message:\(message.messageId), key: \(reactionEvent.key)")
-        self.upsertMessagesInList(
-            messages: [message],
-            needReload: true
-        )
-    }
-    
-    // Mark as read
-    open func channelDidUpdateReadReceipt(_ sender: SBDGroupChannel) {
-        guard self.channel?.channelUrl == sender.channelUrl else { return }
-        
-        if let titleView = titleView as? SBUChannelTitleView {
-            titleView.updateChannelStatus(channel: sender)
-        }
-        
-        SBULog.info("Did update readReceipt, ChannelUrl:\(sender.channelUrl)")
-        
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            self.reloadTableView()
-        }
-    }
-    
-    // Mark as delivered
-    open func channelDidUpdateDeliveryReceipt(_ sender: SBDGroupChannel) {
-        guard self.channel?.channelUrl == sender.channelUrl else { return }
-        
-        SBULog.info("Did update deliveryReceipt, ChannelUrl:\(sender.channelUrl)")
-        
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            self.reloadTableView()
-        }
-    }
-    
-    open func channelDidUpdateTypingStatus(_ sender: SBDGroupChannel) {
-        guard self.channel?.channelUrl == sender.channelUrl else { return }
-        
-        SBULog.info("Did update typing status")
-        
-        if let titleView = titleView as? SBUChannelTitleView {
-            titleView.updateChannelStatus(channel: sender)
-        }
-    }
-    
-    open func channelWasChanged(_ sender: SBDBaseChannel) {
-        guard self.channel?.channelUrl == sender.channelUrl else { return }
-        guard let channel = sender as? SBDGroupChannel else { return }
-        SBULog.info("Channel was changed, ChannelUrl:\(channel.channelUrl)")
-
-        if let titleView = titleView as? SBUChannelTitleView {
-            titleView.configure(channel: channel, title: self.channelName)
-        }
-    }
-    
-    open func channelWasFrozen(_ sender: SBDBaseChannel) {
-        guard self.channel?.channelUrl == sender.channelUrl else { return }
-        guard let channel = sender as? SBDGroupChannel else { return }
-        SBULog.info("Channel was frozen, ChannelUrl:\(channel.channelUrl)")
-        
-        self.updateMessageInputModeState()
-    }
-    
-    open func channelWasUnfrozen(_ sender: SBDBaseChannel) {
-        guard self.channel?.channelUrl == sender.channelUrl else { return }
-        guard let channel = sender as? SBDGroupChannel else { return }
-        SBULog.info("Channel was unfrozen, ChannelUrl:\(channel.channelUrl)")
-        
-        self.updateMessageInputModeState()
-    }
-    
-    open func channel(_ sender: SBDBaseChannel, userWasMuted user: SBDUser) {
-        guard self.channel?.channelUrl == sender.channelUrl else { return }
-        
-        if user.userId == SBUGlobals.CurrentUser?.userId {
-            SBULog.info("You are muted.")
-            self.updateMessageInputModeState()
-        }
-    }
-    
-    open func channel(_ sender: SBDBaseChannel, userWasUnmuted user: SBDUser) {
-        guard self.channel?.channelUrl == sender.channelUrl else { return }
-        
-        if user.userId == SBUGlobals.CurrentUser?.userId {
-            SBULog.info("You are unmuted.")
-            self.updateMessageInputModeState()
-        }
-    }
-    
-    open func channelDidUpdateOperators(_ sender: SBDBaseChannel) {
-        self.updateMessageInputModeState()
-    }
-
-    open func channel(_ sender: SBDBaseChannel, userWasBanned user: SBDUser) {
-        if user.userId == SBUGlobals.CurrentUser?.userId {
-            SBULog.info("You are banned.")
-            self.onClickBack()
-        }
-    }
-
-    // MARK: SBDConnectionDelegate
+// MARK: - SBDConnectionDelegate
+extension SBUChannelViewController: SBDConnectionDelegate {
     open func didSucceedReconnection() {
-        SBULog.info("Did succeed reconnection")
-        self.refreshChannel(applyChangelog: true)
+        SBUMain.updateUserInfo { error in
+            if let error = error {
+                SBULog.error("[Failed] Update user info: \(error.localizedDescription)")
+            }
+        }
+        if self.channelViewModel?.hasNext() ?? false {
+            self.channelViewModel?.messageCache?.loadNext()
+        }
+        
+        if channelViewModel == nil {
+            self.refreshChannel()
+        }
+        
+        self.channelViewModel?.markAsRead()
     }
 }
 

@@ -259,7 +259,7 @@ open class SBUMessageSearchViewController: SBUBaseViewController {
         SBULog.error("Did receive error: \(message ?? "")")
     }
     
-    @available(*, deprecated, message: "deprecated in 2.1.12", renamed: "errorHandler")
+    @available(*, deprecated, renamed: "errorHandler") // 2.1.12
     open func didReceiveError(_ message: String?, _ code: NSInteger? = nil) {
         self.errorHandler(message, code)
     }
@@ -450,13 +450,15 @@ open class SBUMessageSearchViewController: SBUBaseViewController {
             return
         }
         
-        let channelVc = SBUChannelViewController(channelUrl: message.channelUrl,
-                                                 startingPoint: message.createdAt,
-                                                 messageListParams: messageListParams)
-        channelVc.highlightInfo = highlightInfo
-        channelVc.useRightBarButtonItem = false
+        let channelVC = SBUChannelViewController(
+            channelUrl: message.channelUrl,
+            startingPoint: message.createdAt,
+            messageListParams: messageListParams
+        )
+        channelVC.highlightInfo = highlightInfo
+        channelVC.useRightBarButtonItem = false
         
-        self.navigationController?.pushViewController(channelVc, animated: true)
+        self.navigationController?.pushViewController(channelVC, animated: true)
     }
 }
 

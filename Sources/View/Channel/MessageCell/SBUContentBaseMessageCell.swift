@@ -13,22 +13,12 @@ import SendBirdSDK
 /// - Since: 1.2.1
 @objcMembers
 open class SBUContentBaseMessageCell: SBUBaseMessageCell {
+    // MARK: - Quoted Reply
+    public lazy var quotedMessageView: (UIView & SBUQuotedMessageViewProtocol)? = SBUQuotedBaseMessageView()
     
     // MARK: - Public property
-    public lazy var userNameStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.spacing = 4
-        return stackView
-    }()
-    
-    public lazy var contentsStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .horizontal
-        stackView.alignment = .bottom
-        stackView.spacing = 4
-        return stackView
-    }()
+
+    // MARK: - Views: Controls
     
     public lazy var userNameView: UIView = {
         let userNameView = SBUUserNameView()
@@ -39,12 +29,53 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
     public lazy var profileView: UIView = SBUMessageProfileView()
     public lazy var stateView: UIView = SBUMessageStateView()
     
-    public var useReaction = false
+    // MARK: Views: Layouts
+    
+    // + ----------------- +
+    // | userNameView      |
+    // + ----------------- +
+    // | contentHStackView |
+    // + ----------------- +
+    public lazy var userNameStackView: UIStackView = {
+        return SBUStackView(axis: .vertical, spacing: 4)
+    }()
+    
+    // + -------------+-----------------------+-------------------+
+    // | profileView  | profileContentSpacing | contentVStackView |
+    // + -------------+-----------------------+-------------------+
+    public lazy var contentHStackView: UIStackView = {
+        return SBUStackView(axis: .horizontal, alignment: .bottom, spacing: 4)
+    }()
+    
+    // MARK: Properties
 
+    public var useReaction = false
+    
+    public var usingQuotedMessage = false
 
     // MARK: - Private property
     
-    var mainContainerView: SBUSelectableStackView = {
+    // + ----------------- +
+    // | quotedMessageView |
+    // + ----------------- +
+    // | messageHStackView |
+    // + ----------------- +
+    public lazy var contentVStackView: UIStackView = {
+        return SBUStackView(
+            axis: .vertical,
+            alignment: self.position == .left ? .leading : .trailing,
+            spacing: -6
+        )
+    }()
+    
+    // + ----------------- + --------- +
+    // | mainContainerView | stateView |
+    // + ----------------- + --------- +
+    public lazy var messageHStackView: UIStackView = {
+        return SBUStackView(axis: .horizontal, alignment: .bottom, spacing: 4)
+    }()
+    
+    public var mainContainerView: SBUSelectableStackView = {
         let mainView = SBUSelectableStackView()
         mainView.layer.cornerRadius = 16
         mainView.layer.borderColor = UIColor.clear.cgColor
@@ -55,6 +86,8 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
     
     var reactionView: SBUMessageReactionView = SBUMessageReactionView()
     lazy var profileContentSpacing: UIView = UIView()
+    private let messageSpacing = UIView()
+
     
     // MARK: - Gesture Recognizers
     
@@ -73,16 +106,34 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         
         self.userNameView.isHidden = true
         self.profileView.isHidden = true
+        self.quotedMessageView?.isHidden = true
         
-        self.contentsStackView.addArrangedSubview(self.profileView)
-        self.contentsStackView.addArrangedSubview(self.profileContentSpacing)
-        self.contentsStackView.addArrangedSubview(self.mainContainerView)
-        self.contentsStackView.addArrangedSubview(self.stateView)
+        // + ---------------------------------------------------------+
+        // | userNameView                                             |
+        // + -------------+-----------------------+-------------------+
+        // | profileView  | profileContentSpacing | quotedMessageView |
+        // |              |                       +-------------------+
+        // |              |                       | messageHStackView |
+        // + -------------+-----------------------+-------------------+
         
-        self.userNameStackView.addArrangedSubview(self.userNameView)
-        self.userNameStackView.addArrangedSubview(self.contentsStackView)
+        self.userNameStackView.setVStack([
+            self.userNameView,
+            self.contentHStackView.setHStack([
+                self.profileView,
+                self.profileContentSpacing,
+                self.contentVStackView.setVStack([
+                    self.quotedMessageView,
+                    self.messageHStackView.setHStack([
+                        self.mainContainerView,
+                        self.stateView,
+                        self.messageSpacing
+                    ])
+                ])
+            ])
+        ])
 
-        self.messageContentView.addSubview(self.userNameStackView)
+        self.messageContentView
+            .addSubview(self.userNameStackView)
     }
     
     open override func setupAutolayout() {
@@ -153,106 +204,211 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
     
     
     // MARK: - Common
-    open func configure(_ message: SBDBaseMessage,
-                          hideDateView: Bool,
-                          position: MessagePosition,
-                          groupPosition: MessageGroupPosition,
-                          receiptState: SBUMessageReceiptState?) {
-
+    open override func configure(with configuration: SBUBaseMessageCellParams) {
         // nil for super/broadcast channel which doesn't support receipts.
         // Kept receipt to .none for backward compatibility as this configure() is *open*.
-        super.configure(
-            message: message,
-            position: position,
-            hideDateView: hideDateView,
-            groupPosition: groupPosition,
-            receiptState: receiptState ?? .none
-        )
+        // MARK: Configure base message cell
+        super.configure(with: configuration)
         
+        // MARK: Configure reaction view
         self.reactionView.configure(
             maxWidth: SBUConstant.imageSize.width,
             useReaction: self.useReaction,
-            reactions: message.reactions
+            reactions: self.message.reactions
         )
+        
+        // MARK: update UI with message position
+        
+        self.contentVStackView.alignment = self.position == .left
+        ? .leading
+        : .trailing
         
         self.mainContainerView.position = self.position
         self.mainContainerView.isSelected = false
         
+        // MARK: Set up SBU user name view
         if let userNameView = self.userNameView as? SBUUserNameView {
             var username = ""
-            if let sender = message.sender {
+            if let sender = self.message.sender {
                 username = SBUUser(user: sender).refinedNickname()
             }
             userNameView.configure(username: username)
         }
         
+        // MARK: Set up SBU message profile view
         if let profileView = self.profileView as? SBUMessageProfileView {
-            let urlString = message.sender?.profileUrl ?? ""
+            let urlString = self.message.sender?.profileUrl ?? ""
             profileView.configure(urlString: urlString)
         }
         
-        if let stateView = self.stateView as? SBUMessageStateView {
-            stateView.configure(
-                timestamp: message.createdAt,
-                sendingState: message.sendingStatus,
-                receiptState: receiptState,
-                position: position
+        // MARK: Set up SBU message state view
+        if self.stateView is SBUMessageStateView {
+            let isQuotedReplyMessage = self.message.parent != nil
+            let configuration = SBUMessageStateViewParams(
+                timestamp: self.message.createdAt,
+                sendingState: self.message.sendingStatus,
+                receiptState: self.receiptState,
+                position: self.position,
+                isQuotedReplyMessage: usingQuotedMessage ? isQuotedReplyMessage : false
             )
+            self.messageHStackView.arrangedSubviews.forEach {
+                $0.removeFromSuperview()
+            }
+            self.stateView = SBUMessageStateView(
+                isQuotedReplyMessage: usingQuotedMessage
+                ? isQuotedReplyMessage
+                : false
+            )
+            self.messageHStackView.setHStack([
+                self.mainContainerView,
+                self.stateView,
+                self.messageSpacing
+            ])
+            (self.stateView as? SBUMessageStateView)?.configure(with: configuration)
         }
         
+        // TODO: (모듈화 할 때) 백워드가 많이 깨질거라 cell 쪽 구조를 편한 방향으로 싹 바꾸는 것도 좋아보임
+        if self.usingQuotedMessage {
+            self.setupQuotedMessageView()
+        }
+        // MARK: Group messages
         self.setMessageGrouping()
+    }
+    
+    public func setupQuotedMessageView() {
+        guard self.quotedMessageView != nil else { return }
+        guard let quotedMessage = self.message.parent else { return }
+        let configuration = SBUQuotedBaseMessageViewParams(
+            message: self.message,
+            position: self.position,
+            usingQuotedMessage: self.usingQuotedMessage
+        )
+        guard self.quotedMessageView is SBUQuotedBaseMessageView else {
+            // For customized parent message view.
+            self.quotedMessageView?.configure(with: configuration)
+            return
+        }
+        
+        switch quotedMessage {
+        case is SBDUserMessage :
+            if !(self.quotedMessageView is SBUQuotedUserMessageView) {
+                self.contentVStackView.arrangedSubviews.forEach {
+                    $0.removeFromSuperview()
+                }
+                self.quotedMessageView = SBUQuotedUserMessageView()
+                self.contentVStackView.setVStack([
+                    quotedMessageView,
+                    messageHStackView
+                ])
+            }
+            (self.quotedMessageView as? SBUQuotedUserMessageView)?.configure(with: configuration)
+        case is SBDFileMessage:
+            if !(self.quotedMessageView is SBUQuotedFileMessageView) {
+                self.contentVStackView.arrangedSubviews.forEach {
+                    $0.removeFromSuperview()
+                }
+                self.quotedMessageView = SBUQuotedFileMessageView()
+                self.contentVStackView.setVStack([
+                    quotedMessageView,
+                    messageHStackView
+                ])
+            }
+            (self.quotedMessageView as? SBUQuotedFileMessageView)?.configure(with: configuration)
+        default:
+            self.quotedMessageView?.removeFromSuperview()
+        }
+        self.updateContentsPosition()
     }
     
     public func setMessageGrouping() {
         guard SBUGlobals.UsingMessageGrouping else { return }
+        guard !self.usingQuotedMessage else { return }
+        self.quotedMessageView?.isHidden = true
+        
+        self.updateContentsPosition()
+    }
+    
+    private func updateContentsPosition() {
         self.profileView.isHidden = self.position == .right
+        
+        self.contentHStackView.arrangedSubviews.forEach {
+            $0.removeFromSuperview()
+        }
+        
+        self.contentVStackView.arrangedSubviews.forEach {
+            $0.removeFromSuperview()
+        }
+        
+        self.messageHStackView.arrangedSubviews.forEach {
+            $0.removeFromSuperview()
+        }
+        
+        switch self.position {
+            case .left:
+                self.userNameStackView.alignment = .leading
+                self.messageHStackView.setHStack([
+                    self.mainContainerView,
+                    self.stateView,
+                    self.messageSpacing
+                ])
+                self.contentVStackView.setVStack([
+                    self.quotedMessageView,
+                    self.messageHStackView
+                ])
+                self.contentHStackView.setHStack([
+                    self.profileView,
+                    self.profileContentSpacing,
+                    self.contentVStackView
+                ])
+                
+            case .right:
+                self.userNameStackView.alignment = .trailing
+                self.messageHStackView.setHStack([
+                    self.messageSpacing,
+                    self.stateView,
+                    self.mainContainerView
+                ])
+                self.contentVStackView.setVStack([
+                    self.quotedMessageView,
+                    self.messageHStackView
+                ])
+                self.contentHStackView.setHStack([
+                    self.contentVStackView,
+                    self.profileContentSpacing
+                ])
+                
+            case .center:
+                break
+        }
+        
         let profileImageView = (self.profileView as? SBUMessageProfileView)?.imageView
         let timeLabel = (self.stateView as? SBUMessageStateView)?.timeLabel
         
-        self.contentsStackView.arrangedSubviews.forEach(
-            self.contentsStackView.removeArrangedSubview(_:)
-        )
-        
-        switch self.position {
-        case .left:
-            self.userNameStackView.alignment = .leading
-            self.contentsStackView.addArrangedSubview(self.profileView)
-            self.contentsStackView.addArrangedSubview(self.profileContentSpacing)
-            self.contentsStackView.addArrangedSubview(self.mainContainerView)
-            self.contentsStackView.addArrangedSubview(self.stateView)
-            
-        case .right:
-            self.userNameStackView.alignment = .trailing
-            self.contentsStackView.addArrangedSubview(self.stateView)
-            self.contentsStackView.addArrangedSubview(self.mainContainerView)
-            self.contentsStackView.addArrangedSubview(self.profileContentSpacing)
-            
-        case .center:
-            break
+        switch self.groupPosition {
+            case .top:
+                self.userNameView.isHidden = self.position == .right
+                profileImageView?.isHidden = true
+                timeLabel?.isHidden = true
+            case .middle:
+                self.userNameView.isHidden = true
+                profileImageView?.isHidden = true
+                timeLabel?.isHidden = true
+            case .bottom:
+                self.userNameView.isHidden = true
+                profileImageView?.isHidden = false
+                timeLabel?.isHidden = false
+            case .none:
+                self.userNameView.isHidden = self.position == .right
+                profileImageView?.isHidden = false
+                timeLabel?.isHidden = false
         }
         
-        switch self.groupPosition {
-        case .top:
-            self.userNameView.isHidden = self.position == .right
-            profileImageView?.isHidden = true
-            timeLabel?.isHidden = true
-        case .middle:
+        if usingQuotedMessage {
             self.userNameView.isHidden = true
-            profileImageView?.isHidden = true
-            timeLabel?.isHidden = true
-        case .bottom:
-            self.userNameView.isHidden = true
-            profileImageView?.isHidden = false
-            timeLabel?.isHidden = false
-        case .none:
-            self.userNameView.isHidden = self.position == .right
-            profileImageView?.isHidden = false
-            timeLabel?.isHidden = false
         }
         
         self.updateTopAnchorConstraint()
     }
-    
     
     public override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
@@ -274,12 +430,24 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         self.tapHandlerToContent?()
     }
     
-    @available(*, deprecated, message: "deprecated in 1.2.2", renamed: "onTapUserProfileView(sender:)")
-    @objc open func onTapProfileImageView(sender: UITapGestureRecognizer) {
-        self.onTapUserProfileView(sender: sender)
-    }
-    
     @objc open func onTapUserProfileView(sender: UITapGestureRecognizer) {
         self.userProfileTapHandler?()
+    }
+    
+    
+    @available(*, deprecated, renamed: "configure(message:configuration:)") // 2.2.0
+    open func configure(_ message: SBDBaseMessage,
+                        hideDateView: Bool,
+                        position: MessagePosition,
+                        groupPosition: MessageGroupPosition,
+                        receiptState: SBUMessageReceiptState?) {
+        let configuration = SBUBaseMessageCellParams(
+            message: message,
+            hideDateView: hideDateView,
+            messagePosition: position,
+            groupPosition: groupPosition,
+            receiptState: receiptState ?? .none
+        )
+        self.configure(with: configuration)
     }
 }

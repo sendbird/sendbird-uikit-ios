@@ -29,24 +29,7 @@ class CommonContentView: BaseFileContentView {
         return label
     }()
 
-    init() {
-        super.init(frame: .zero)
-        self.setupViews()
-        self.setupAutolayout()
-    }
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        self.setupViews()
-        self.setupAutolayout()
-    }
-    
-    @available(*, unavailable, renamed: "CommonContentView(frame:)")
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-    }
-
-    func setupViews() {
+    override func setupViews() {
         self.layer.cornerRadius = 8
         self.layer.borderColor = UIColor.clear.cgColor
         self.layer.borderWidth = 1
@@ -62,7 +45,7 @@ class CommonContentView: BaseFileContentView {
         self.stackView.addArrangedSubview(self.fileNameLabel)
     }
     
-    func setupAutolayout() {
+    override func setupAutolayout() {
         self.sbu_constraint(height: 44)
         self.stackView.setConstraint(from: self,
                                      left: 12,
@@ -81,11 +64,6 @@ class CommonContentView: BaseFileContentView {
         default: break
         }
         self.fileImageView.backgroundColor = theme.fileIconBackgroundColor
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        self.setupStyles()
     }
     
     func configure(message: SBDFileMessage,

@@ -180,7 +180,7 @@ class StreamingChannelListViewController: SBUBaseChannelListViewController, SBUE
         
         self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
         
-        SBUMain.connectionCheck { [weak self] user, error in
+        SBUMain.connectIfNeeded { [weak self] user, error in
             guard let self = self else { return }
             self.loadNextChannelList(reset: true)
         }
@@ -284,7 +284,7 @@ class StreamingChannelListViewController: SBUBaseChannelListViewController, SBUE
         channelVC.enableMediaView()
         channelVC.mediaView = UIImageView()
         channelVC.mediaView.isUserInteractionEnabled = true
-        channelVC.updateRatio(mediaView: 0.3, messageList: 0.7)
+        channelVC.updateMessageListRatio(to: 0.7)
         channelVC.mediaViewIgnoringSafeArea(false)
         channelVC.channelDescription = streamingData.creatorInfo.name
         
@@ -389,7 +389,7 @@ class StreamingChannelListViewController: SBUBaseChannelListViewController, SBUE
             emptyView.reloadData(.noChannels)
         }
         
-        SBUMain.connectionCheck { [weak self] user, error in
+        SBUMain.connectIfNeeded { [weak self] user, error in
             guard let self = self else { return }
             self.loadNextChannelList(reset: true)
         }

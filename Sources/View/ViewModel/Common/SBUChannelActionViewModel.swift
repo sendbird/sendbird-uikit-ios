@@ -157,7 +157,7 @@ class SBUChannelActionViewModel: SBULoadableViewModel  {
     func loadGroupChannel(with channelUrl: String) {
         self.loadingObservable.set(value: true)
         
-        SBUMain.connectionCheck { [weak self] user, error in
+        SBUMain.connectIfNeeded { [weak self] user, error in
             guard let self = self else { return }
             
             if let error = error {
@@ -309,7 +309,7 @@ class SBUChannelActionViewModel: SBULoadableViewModel  {
     func loadOpenChannel(with channelUrl: String) {
         self.loadingObservable.set(value: true)
         
-        SBUMain.connectionCheck { [weak self] user, error in
+        SBUMain.connectIfNeeded { [weak self] user, error in
             guard let self = self else { return }
             
             if let error = error {
