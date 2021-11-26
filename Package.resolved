@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/sendbird/sendbird-ios-framework",
         "state": {
           "branch": null,
-          "revision": "6271f13d0ede244a50be663fed3c9465baa02f49",
-          "version": "3.0.231"
+          "revision": "4c325efbe610ef798e46c24aec8750d751eee6d6",
+          "version": "3.1.0"
         }
       }
     ]
