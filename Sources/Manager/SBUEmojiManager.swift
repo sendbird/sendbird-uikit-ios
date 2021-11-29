@@ -110,7 +110,7 @@ public class SBUEmojiManager: NSObject {
 
     
     // MARK: - private function
-    static func useReaction(channel: SBDBaseChannel?) -> Bool {
+    public static func useReaction(channel: SBDBaseChannel?) -> Bool {
         guard let groupChannel = channel as? SBDGroupChannel else { return false }
         
         if let appInfo = SBDMain.getAppInfo(),

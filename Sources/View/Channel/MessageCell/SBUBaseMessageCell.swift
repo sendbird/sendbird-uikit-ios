@@ -44,12 +44,12 @@ open class SBUBaseMessageCell: UITableViewCell {
 
     
     // MARK: - Action
-    var userProfileTapHandler: (() -> Void)? = nil
-    var tapHandlerToContent: (() -> Void)? = nil
-    var longPressHandlerToContent: (() -> Void)? = nil
-    var emojiTapHandler: ((_ emojiKey: String) -> Void)? = nil
-    var moreEmojiTapHandler: (() -> Void)? = nil
-    var emojiLongPressHandler: ((_ emojiKey: String) -> Void)? = nil
+    public var userProfileTapHandler: (() -> Void)? = nil
+    public var tapHandlerToContent: (() -> Void)? = nil
+    public var longPressHandlerToContent: (() -> Void)? = nil
+    public var emojiTapHandler: ((_ emojiKey: String) -> Void)? = nil
+    public var moreEmojiTapHandler: (() -> Void)? = nil
+    public var emojiLongPressHandler: ((_ emojiKey: String) -> Void)? = nil
 
 
     // MARK: - View Lifecycle
