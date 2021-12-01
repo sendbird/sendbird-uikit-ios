@@ -10,7 +10,7 @@ import UIKit
 import SendBirdSDK
 
 @objcMembers
-class SBUChannelSettingsUserInfoView: UIView {
+public class SBUChannelSettingsUserInfoView: UIView {
     lazy var stackView = UIStackView()
     lazy var coverImage = SBUCoverImageView()
     lazy var channelNameField = UITextField()
@@ -124,7 +124,7 @@ class SBUChannelSettingsUserInfoView: UIView {
         self.urlLineView.backgroundColor = theme.cellSeparateColor
     }
     
-    override func layoutSubviews() {
+    public override func layoutSubviews() {
         super.layoutSubviews()
         
         self.coverImage.layer.cornerRadius = kCoverImageSize / 2
