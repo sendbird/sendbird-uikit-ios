@@ -114,10 +114,10 @@ public class SBUEmojiManager: NSObject {
         guard let groupChannel = channel as? SBDGroupChannel else { return false }
         
         if let appInfo = SBDMain.getAppInfo(),
-           appInfo.useReaction, !groupChannel.isSuper, !groupChannel.isBroadcast  {
+           appInfo.useReaction, !groupChannel.isOpen(), !groupChannel.isBroadcast  {
             return true
         } else {
-            return false
+            return true
         }
     }
 
