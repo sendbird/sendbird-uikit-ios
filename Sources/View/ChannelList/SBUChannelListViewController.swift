@@ -242,6 +242,7 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
         return self.theme.statusBarStyle
     }
     
+    /*
     open override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -267,6 +268,7 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
             self.loadNextChannelList(reset: true)
         }
     }
+     */
     
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
