@@ -117,7 +117,7 @@ public class SBUEmojiManager: NSObject {
            appInfo.useReaction, !groupChannel.isOpen(), !groupChannel.isBroadcast  {
             return true
         } else {
-            return true
+            return false
         }
     }
 
