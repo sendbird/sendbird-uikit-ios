@@ -59,7 +59,7 @@ public class SBUFontSet: NSObject {
     }()
     /// Regular, 14pt, Line height: 16pt
     public static var body3 = UIFont.systemFont(ofSize: 14.0, weight: .regular)
-    static var body3Attributes: [NSAttributedString.Key: Any] = {
+    static public var body3Attributes: [NSAttributedString.Key: Any] = {
         let style = NSMutableParagraphStyle()
         let pointSize = SBUFontSet.body3.pointSize
         let defaultLineHeight = 16.f

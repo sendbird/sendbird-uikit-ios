@@ -19,9 +19,9 @@ open class SBUUserMessageTextView: UIView {
         static let viewBorderWidth = 1.f
     }
     
-    var text: String = ""
+    public var text: String = ""
     
-    var textView: SBULinkClickableTextView = {
+    public var textView: SBULinkClickableTextView = {
         var textView = SBULinkClickableTextView()
         textView.backgroundColor = .clear
         textView.textAlignment = .left

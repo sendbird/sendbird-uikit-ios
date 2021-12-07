@@ -546,7 +546,7 @@ extension UIView {
     
     // Set left, right, top, bottom
     @discardableResult
-    func setConstraint(from view: UIView,
+    public func setConstraint(from view: UIView,
                        leading: CGFloat? = nil,
                        trailing: CGFloat? = nil,
                        left: CGFloat? = nil,
@@ -603,7 +603,7 @@ extension UIView {
     
     // Set width, height
     @discardableResult
-    func setConstraint(width: CGFloat? = nil,
+    public func setConstraint(width: CGFloat? = nil,
                        height: CGFloat? = nil,
                        priority: UILayoutPriority? = nil) -> UIView {
         
@@ -630,7 +630,7 @@ extension UIView {
     
     // Set CenterX, CenterY
     @discardableResult
-    func setConstraint(from view: UIView,
+    public func setConstraint(from view: UIView,
                        centerX: Bool = false,
                        centerY: Bool = false,
                        priority: UILayoutPriority? = nil) -> UIView {

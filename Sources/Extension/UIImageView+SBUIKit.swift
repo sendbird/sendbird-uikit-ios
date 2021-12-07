@@ -9,7 +9,7 @@
 import UIKit
 import AVFoundation
 
-internal extension UIImageView {
+public extension UIImageView {
     enum ImageOption {
         case imageToThumbnail
         case original
