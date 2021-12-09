@@ -1,5 +1,9 @@
 # Change Log
 
+### v2.2.1 (Dec 9, 2021)
+* Added `deleteResendableMessage(_:needReload:)`
+* Improved stability
+
 ### v2.2.0 (Nov 23, 2021)
 * Added Reply to Channel feature
     * Added `SBUGlobals.ReplyTypeToUse`

@@ -660,10 +660,24 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
         }
     }
     
+    /// This functions deletes the resendable message.
+    /// If `baseChannel` is type of `SBDGroupChannel`, it deletes the message by using local caching.
+    /// If `baseChannel` is not type of `SBDGroupChannel` that not using local caching, it calls `deleteResendableMessages(requestIds:needReload:)`.
+    /// - Parameters:
+    ///   - message: The resendable`SBDBaseMessage` object such as failed message.
+    ///   - needReload: If `true`, the table view will call `reloadData()`.
+    /// - Since: [NEXT_VERSION]
+    public func deleteResendableMessage(_ message: SBDBaseMessage, needReload: Bool) {
+        if self.baseChannel is SBDGroupChannel {
+            self.channelViewModel?.messageCollection?.removeFailedMessages([message], completionHandler: nil)
+        }
+        self.deleteResendableMessages(requestIds: [message.requestId], needReload: needReload)
+    }
+    
     /// This functions deletes the resendable messages using the request ids.
     /// - Parameters:
     ///   - requestIds: Request id array to delete
-    ///   - needReload: If set to `true`, the tableview will be call reloadData.
+    ///   - needReload: If `true`, the table view will call `reloadData()`.
     /// - Since: 1.2.5
     public func deleteResendableMessages(requestIds: [String], needReload: Bool) {
         for requestId in requestIds {
@@ -1147,16 +1161,46 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
             }
     }
     
+    func handlePendingResendableMessage<Message: SBDBaseMessage>(_ message: Message?, _ error: SBDError?) {
+        guard self.baseChannel is SBDOpenChannel else { return }
+        if let error = error {
+            SBUPendingMessageManager.shared.upsertPendingMessage(
+                channelUrl: message?.channelUrl,
+                message: message
+            )
+            
+            self.sortAllMessageList(needReload: true)
+            self.errorHandler(error)
+            
+            SBULog.error("[Failed] Resend failed user message request: \(error.localizedDescription)")
+            return
+            
+        } else {
+            SBUPendingMessageManager.shared.removePendingMessage(
+                channelUrl: message?.channelUrl,
+                requestId: message?.requestId
+            )
+            
+            guard let message = message else { return }
+            
+            SBULog.info("[Succeed] Resend failed file message: \(message.description)")
+            
+            self.upsertMessagesInList(messages: [message], needReload: true)
+        }
+    }
+    
     /// Resends a message with failedMessage object.
     /// - Parameter failedMessage: `SBDBaseMessage` class based failed object
     /// - Since: 1.0.9
     public func resendMessage(failedMessage: SBDBaseMessage) {
         if let failedMessage = failedMessage as? SBDUserMessage {
             SBULog.info("[Request] Resend failed user message")
-            
             let pendingMessage = self.baseChannel?.resendUserMessage(
-                with: failedMessage,
-                completionHandler: nil)
+                with: failedMessage
+            ) { [weak self] message, error in
+                guard let self = self else { return }
+                self.handlePendingResendableMessage(message, error)
+            }
             
             SBUPendingMessageManager.shared.upsertPendingMessage(
                 channelUrl: self.baseChannel?.channelUrl,
@@ -1183,12 +1227,15 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
             
             let pendingMessage = self.baseChannel?.resendFileMessage(
                 with: failedMessage,
-                binaryData: data,
-                progressHandler: { (bytesSent, totalBytesSent, totalBytesExpectedToSend) in
-                    //// If need reload cell for progress, call reload action in here.
-                    // self.tableView.reloadData()
-                },
-                completionHandler: nil)
+                binaryData: data
+            ) { (bytesSent, totalBytesSent, totalBytesExpectedToSend) in
+                //// If need reload cell for progress, call reload action in here.
+                // self.tableView.reloadData()
+            } completionHandler: { [weak self] message, error in
+                guard let self = self else { return }
+                self.handlePendingResendableMessage(message, error)
+                
+            }
             
             SBUPendingMessageManager.shared.upsertPendingMessage(
                 channelUrl: self.baseChannel?.channelUrl,
@@ -1458,6 +1505,10 @@ extension SBUBaseChannelViewController: UITableViewDelegate, UITableViewDataSour
                   channelViewModel.hasNext() {
             self.channelViewModel?.loadNextMessages()
         }
+    }
+    
+    open func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableView.automaticDimension
     }
 }
 

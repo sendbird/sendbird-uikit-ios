@@ -1415,10 +1415,7 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
             title: SBUStringSet.Delete,
             color: self.theme.deleteItemColor
         ) { [weak self] in
-            self?.deleteResendableMessages(
-                requestIds: [message.requestId],
-                needReload: true
-            )
+            self?.deleteResendableMessage(message, needReload: true)
         }
         let cancelItem = SBUActionSheetItem(
             title: SBUStringSet.Cancel,

@@ -8,14 +8,14 @@
 
 import UIKit
 
-// TODO: SBU View life cycle
-public class SBUMessageProfileView: UIView {
+@objcMembers
+open class SBUMessageProfileView: SBUView {
     private static let imageSize: CGFloat = 26
     
     @SBUThemeWrapper(theme: SBUTheme.messageCellTheme)
-    var theme: SBUMessageCellTheme
+    public var theme: SBUMessageCellTheme
     
-    var imageView: UIImageView = {
+    public lazy var imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.layer.cornerRadius = SBUMessageProfileView.imageSize / 2
         imageView.layer.borderColor = UIColor.clear.cgColor
@@ -23,50 +23,43 @@ public class SBUMessageProfileView: UIView {
         imageView.clipsToBounds = true
         return imageView
     }()
-    var urlString: String = ""
+    public var urlString: String
      
-    public init(urlString: String) {
+    public init(urlString: String = "") {
         self.urlString = urlString
         super.init(frame: .init(x: 0, y: 0, width: 26, height: 26))
-        self.setupViews()
-        self.setupAutolayout()
         self.configure(urlString: urlString)
     }
     
-    override public init(frame: CGRect) {
-        super.init(frame: frame)
+    public override init() {
+        self.urlString = ""
+        super.init()
         self.setupViews()
-        self.setupAutolayout()
         self.configure(urlString: self.urlString)
     }
     
-    @available(*, unavailable, renamed: "MessageProfileView(imageURL:)")
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
+    override public init(frame: CGRect) {
+        self.urlString = ""
+        super.init(frame: frame)
+        self.configure(urlString: self.urlString)
     }
 
-    func setupViews() {
+    open override func setupViews() {
         self.addSubview(self.imageView)
     }
      
-    func setupAutolayout() {
+    open override func setupAutolayout() {
         self.imageView
             .setConstraint(width: SBUMessageProfileView.imageSize,
                            height: SBUMessageProfileView.imageSize)
             .setConstraint(from: self, left: 0, right: 0, top: 0, bottom: 0)
     }
     
-    func setupStyles() {
+    open override func setupStyles() {
         self.backgroundColor = .clear
     }
     
-    public override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        self.setupStyles()
-    }
-    
-    func configure(urlString: String) {
+    open func configure(urlString: String) {
         self.urlString = urlString
         
         self.imageView.loadImage(
