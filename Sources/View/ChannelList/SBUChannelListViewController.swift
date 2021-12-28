@@ -465,7 +465,8 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
     public func upsertChannels(_ channels: [SBDGroupChannel]?, needReload: Bool) {
         guard let channels = channels else { return }
         
-        let includeEmptyChannel = self.channelListViewModel?.channelListQuery?.includeEmptyChannel ?? false
+        let includeCustomizedEmptyChannel = self.customizedChannelListQuery?.includeEmptyChannel ?? false
+        let includeEmptyChannel = self.channelListViewModel?.channelListQuery?.includeEmptyChannel ?? includeCustomizedEmptyChannel
         for channel in channels {
             guard (channel.lastMessage != nil || includeEmptyChannel) else { continue }
             guard let index = self.channelList.firstIndex(where: { $0.channelUrl == channel.channelUrl }) else {
