@@ -50,7 +50,7 @@ extension Date {
     /// - Since: 2.1.13
     public func sbu_toString(formatString: String, localizedFormat: Bool = true) -> String {
         let formatter = DateFormatter()
-
+        formatter.locale = Locale(identifier: "ko_KR")
         if localizedFormat {
             formatter.setLocalizedDateFormatFromTemplate(formatString)
         } else {
