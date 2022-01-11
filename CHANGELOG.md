@@ -1,5 +1,10 @@
 # Change Log
 
+### v2.2.2 (Jan 11, 2022)
+* Fixed date comparison logic.
+* Fixed freezing issue when the file opens the first time.
+* Improved file cache logic.
+
 ### v2.2.1 (Dec 9, 2021)
 * Added `deleteResendableMessage(_:needReload:)`
 * Improved stability

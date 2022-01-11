@@ -666,7 +666,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
     /// - Parameters:
     ///   - message: The resendable`SBDBaseMessage` object such as failed message.
     ///   - needReload: If `true`, the table view will call `reloadData()`.
-    /// - Since: [NEXT_VERSION]
+    /// - Since: 2.2.0
     public func deleteResendableMessage(_ message: SBDBaseMessage, needReload: Bool) {
         if self.baseChannel is SBDGroupChannel {
             self.channelViewModel?.messageCollection?.removeFailedMessages([message], completionHandler: nil)

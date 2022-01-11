@@ -105,7 +105,7 @@ class StreamingChannelViewController: SBUOpenChannelViewController {
     
     // This method will be called inside of `super.loadView`
     override func setupAutolayout() {
-        let isLandscape = self.currentOrientation.isLandscape
+        let isLandscape = true//self.currentOrientation.isLandscape
         self.mediaViewIgnoringSafeArea(isLandscape)
         self.overlayMediaView(isLandscape,
                               messageListRatio: isLandscape ? 0.4 : 0.7)
@@ -117,7 +117,7 @@ class StreamingChannelViewController: SBUOpenChannelViewController {
     // When it received event of the device orientation,
     // `updateAutolayout` and `updateStyles` methods will be called.
     override func updateAutolayout() {
-        let isLandscape = self.currentOrientation.isLandscape
+        let isLandscape = true//self.currentOrientation.isLandscape
         self.mediaViewIgnoringSafeArea(isLandscape)
         if self.currentOrientation == .portrait {
             self.isMessageListHidden = false

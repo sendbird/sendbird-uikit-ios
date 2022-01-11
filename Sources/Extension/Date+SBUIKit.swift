@@ -105,7 +105,9 @@ extension Date {
             baseDateComponents.month != currDateComponents.month ||
             baseDateComponents.day != currDateComponents.day {
 
-            if baseDateComponents.day != currDateComponents.day {
+            if baseDateComponents.year == currDateComponents.year &&
+                baseDateComponents.month == currDateComponents.month &&
+                baseDateComponents.day != currDateComponents.day {
                 let interval = (currDateComponents.day ?? 0) - (baseDateComponents.day ?? 0)
                 if interval == 1 {
                     return SBUStringSet.Date_Yesterday

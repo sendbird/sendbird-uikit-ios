@@ -196,7 +196,7 @@ class SBUFileViewer: SBUBaseViewController, UIScrollViewDelegate {
         self.imageView.loadImage(urlString: urlString)
         
         if let url = URL(string: urlString), let fileMessage = fileMessage {
-            SBUCacheManager.saveAndLoadFileToLocal(url: url, fileName: fileMessage.name)
+            SBUCacheManager.saveFileIfNeeded(url: url, fileName: fileMessage.name)
         }
     }
     

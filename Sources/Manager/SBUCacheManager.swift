@@ -12,6 +12,7 @@ class SBUCacheManager {
     
     static private let diskCache = DiskCache()
     static private let memoryCache = MemoryCache()
+    static internal let fileCacheQueue = DispatchQueue(label: "com.sendbird.cache.file", qos: .background)
 
     @discardableResult
     static func savedImage(fileName: String, image: UIImage) -> UIImage? {

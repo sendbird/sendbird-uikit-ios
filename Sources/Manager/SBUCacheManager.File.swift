@@ -11,43 +11,44 @@ import UIKit
 extension SBUCacheManager {
     
     @discardableResult static func saveAndLoadFileToLocal(url: URL, fileName: String) -> URL? {
-        if let filePath = self.generateFilePath(
-            fileName: fileName,
-            additionalPath: "\(url.absoluteString.persistantHash)"
-        ) {
-            if SBUCacheManager.isFileExist(at: filePath) {
-                SBULog.info("Already have exists cached file")
-                return URL(fileURLWithPath: filePath)
-            }
-            
-            guard let urlData = NSData(contentsOf: url) else {
-                SBULog.error("[Failed] Save File")
-                return nil
-            }
-            
-            urlData.write(toFile: filePath, atomically: true)
-            SBULog.info("[Succeed] File is saved.")
-            return URL(fileURLWithPath: filePath)
+        // When open the file at first time (not cached file), this function return the original url and cache the file in background.
+        if let fileUrl = self.loadFileIfExist(url: url, fileName: fileName) {
+            return fileUrl
+        } else {
+            self.saveFileIfNeeded(url: url, fileName: fileName)
+            return url
         }
-        
-        return url
     }
     
-    // Not used now
     static func loadFileIfExist(url: URL, fileName: String) -> URL? {
-        if let filePath = self.generateFilePath(
-            fileName: fileName,
-            additionalPath: "\(url.absoluteString.persistantHash)"
-        ) {
+        if let filePath = self.generateFilePath(url: url, fileName: fileName) {
             if SBUCacheManager.isFileExist(at: filePath) {
                 return URL(fileURLWithPath: filePath)
             }
         }
         
-        return url
+        return nil
     }
     
-    static fileprivate func generateFilePath(fileName: String, additionalPath: String) -> String? {
+    static func saveFileIfNeeded(url: URL, fileName: String) {
+        if let filePath = self.generateFilePath(url: url, fileName: fileName) {
+            if SBUCacheManager.isFileExist(at: filePath) == false {
+                SBUCacheManager.fileCacheQueue.async {
+                    do {
+                        let urlData = try Data(contentsOf: url)
+                        try urlData.write(to: URL(fileURLWithPath: filePath))
+                        SBULog.info("[Succeed] File is saved.")
+                    } catch {
+                        SBULog.error("[Failed] File is saved: \(error)")
+                    }
+                }
+            }
+        }
+    }
+    
+    static fileprivate func generateFilePath(url: URL, fileName: String) -> String? {
+        let additionalPath = "\(url.absoluteString.persistantHash)"
+        
         let documentsPath = NSSearchPathForDirectoriesInDomains(
             .documentDirectory,
             .userDomainMask,
