@@ -20,7 +20,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         // TODO: Change to your AppId
 //        SBUMain.initialize(applicationId: "2D7B4CDB-932F-4082-9B09-A1153792DC8D") { // origin
             //
-        SBUMain.initialize(applicationId: "6F450DEC-18CC-4113-9DFB-27082FCBD393") {
+//        SBUMain.initialize(applicationId: "6F450DEC-18CC-4113-9DFB-27082FCBD393") {
+        SBUMain.initialize(applicationId: "09975327-1B09-4466-90E3-C3F59522DDEB") {
         } completionHandler: { error in
             //
         }

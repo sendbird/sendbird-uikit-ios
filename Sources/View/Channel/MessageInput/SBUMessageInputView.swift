@@ -104,6 +104,9 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         button.layer.cornerRadius = 4
         button.addTarget(self, action: #selector(onClickSendButton(_:)), for: .touchUpInside)
         button.isHidden = !showsSendButton
+        
+        button.setImage(UIImage(named: "btSend"), for: .normal)
+        button.setImage(UIImage(named: "btSendNone"), for: .disabled)
         return button
     }()
 
@@ -130,6 +133,53 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         return button
     }()
     
+    public lazy var qButton1: UIButton? = {
+        let button = UIButton()
+        button.setTitle("전화주세요", for: .normal)
+        button.titleLabel?.font = SBUFontSet.button3
+        button.setTitleColor(UIColor(red: 34/255, green: 34/255, blue: 34/255, alpha: 1), for: .normal)
+        button.layer.borderColor = UIColor(red: 221/255, green: 221/255, blue: 221/255, alpha: 1).cgColor
+        button.layer.borderWidth = 1
+        button.layer.cornerRadius = 8
+        button.addTarget(self, action: #selector(onClickqButton1(_:)), for: .touchUpInside)
+        button.sbu_constraint(width: 38, height: 50)
+        return button
+    }()
+    public lazy var qButton2: UIButton? = {
+        let button = UIButton()
+        button.setTitle("보고주세요", for: .normal)
+        button.titleLabel?.font = SBUFontSet.button3
+        button.setTitleColor(UIColor(red: 34/255, green: 34/255, blue: 34/255, alpha: 1), for: .normal)
+        button.layer.borderColor = UIColor(red: 221/255, green: 221/255, blue: 221/255, alpha: 1).cgColor
+        button.layer.borderWidth = 1
+        button.layer.cornerRadius = 8
+        button.addTarget(self, action: #selector(onClickqButton2(_:)), for: .touchUpInside)
+        button.sbu_constraint(width: 38, height: 50)
+        return button
+    }()
+    public lazy var qButton3: UIButton? = {
+        let button = UIButton()
+        button.setTitle("보냈습니다", for: .normal)
+        button.titleLabel?.font = SBUFontSet.button3
+        button.setTitleColor(UIColor(red: 34/255, green: 34/255, blue: 34/255, alpha: 1), for: .normal)
+        button.layer.borderColor = UIColor(red: 221/255, green: 221/255, blue: 221/255, alpha: 1).cgColor
+        button.layer.borderWidth = 1
+        button.layer.cornerRadius = 8
+        button.addTarget(self, action: #selector(onClickqButton3(_:)), for: .touchUpInside)
+        button.sbu_constraint(width: 38, height: 50)
+        return button
+    }()
+    
+    @objc open func onClickqButton1(_ sender: Any) {
+        self.delegate?.messageInputView?(self, didSelectSend: "전화주세요")
+    }
+    @objc open func onClickqButton2(_ sender: Any) {
+        self.delegate?.messageInputView?(self, didSelectSend: "보고주세요")
+    }
+    @objc open func onClickqButton3(_ sender: Any) {
+        self.delegate?.messageInputView?(self, didSelectSend: "보냈습니다")
+    }
+    
     // + --------- + ------- + ---------------- + ------- + ---------- +
     // | addButton | tvLP(*) | inputContentView | tvTP(*) | sendButton |
     // + --------- + ------- + ---------------- + ------- + ---------- +
@@ -144,6 +194,8 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
             alignment: .bottom,
             spacing: 0
         )
+        stackView.backgroundColor = UIColor(red: 244/255, green: 244/255, blue: 244/255, alpha: 1)
+        stackView.layer.cornerRadius = 20
         stackView.distribution = .fill
         return stackView
     }()
@@ -224,6 +276,10 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
     // | leadingPaddingView | inputVStackView | trailingPaddinView |
     // + ------------------ + --------------- + ------------------ +
     
+    private lazy var quickStackView: SBUStackView = {
+        return SBUStackView(axis: .horizontal, alignment: .fill, spacing: 10)
+    }()
+    
     private lazy var contentHStackView: SBUStackView = {
         return SBUStackView(axis: .horizontal, alignment: .fill, spacing: 0)
     }()
@@ -252,6 +308,8 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
     
     /// Textview's leading/trailing padding view
     var textViewLeadingPaddingView: UIView = UIView()
+    var textViewLeftLeadingPaddingView: UIView = UIView()
+    var textViewRightsLeadingPaddingView: UIView = UIView()
     
     lazy var textViewTrailingPaddingView: UIView = {
         let view = UIView()
@@ -453,12 +511,17 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
                     self.leadingPaddingView,
                     self.inputVStackView.setVStack([
                         self.inputViewTopSpacer,
+                        self.quickStackView.setHStack([
+                            self.qButton1,
+                            self.qButton2,
+                            self.qButton3
+                        ]),
                         self.inputHStackView.setHStack([
                             self.addButton,
-                            self.textViewLeadingPaddingView,
                             self.inputContentView,
                             self.textViewTrailingPaddingView,
                             self.sendButton,
+                            self.textViewRightsLeadingPaddingView
                         ]),
                         self.editView,
                         self.inputViewBottomSpacer
@@ -530,17 +593,30 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         
         // Subviews in InputHStackView
         self.addButton?
-            .setConstraint(width: 32, height: 38)
+            .setConstraint(width: 44, height: 38)
         
         // leading/trailing spacing for textview
         self.textViewLeadingPaddingView
+            .sbu_constraint(width: self.textViewLeadingSpacing)
+        self.textViewLeftLeadingPaddingView
+            .sbu_constraint(width: self.textViewLeadingSpacing)
+        self.textViewRightsLeadingPaddingView
             .sbu_constraint(width: self.textViewLeadingSpacing)
         
         self.textViewTrailingPaddingView
             .sbu_constraint(width: self.textViewTrailingSpacing)
         
         self.sendButton?
-            .sbu_constraint(width: 32, height: 38)
+            .sbu_constraint(width: 38, height: 38)
+        self.sendButton?.isHidden = false
+        self.sendButton?.isEnabled = false
+        
+        self.quickStackView.isHidden = false
+        self.quickStackView
+            .sbu_constraint(width: self.baseStackView.frame.width)
+        self.quickStackView.distribution = .fillEqually
+        self.qButton1?
+            .sbu_constraint(width: 38, height: 50)
         
         // Subivews in InputContentView
         self.textView?
@@ -592,28 +668,34 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         }
 
         // textView
-        self.textView?.backgroundColor = theme.textFieldBackgroundColor
+//        self.textView?.backgroundColor = theme.textFieldBackgroundColor
+        self.textView?.backgroundColor = UIColor(red: 244/255, green: 244/255, blue: 244/255, alpha: 1)
         self.textView?.tintColor = theme.textFieldTintColor
         self.textView?.textColor = theme.textFieldTextColor
-        self.textView?.layer.borderColor = theme.textFieldBorderColor.cgColor
+//        self.textView?.layer.borderColor = theme.textFieldBorderColor.cgColor
+        self.textView?.layer.borderColor = UIColor(red: 244/255, green: 244/255, blue: 244/255, alpha: 1).cgColor
         self.textView?.font = theme.textFieldPlaceholderFont
         
         // addButton
-        let iconAdd = SBUIconSetType.iconAdd
-            .image(with:
-                    (self.isFrozen || self.isMuted)
-                    ? theme.buttonDisabledTintColor
-                    : theme.buttonTintColor,
-                   to: SBUIconSetType.Metric.defaultIconSize)
-        self.addButton?.setImage(iconAdd, for: .normal)
+//        let iconAdd = SBUIconSetType.iconAdd
+//            .image(with:
+//                    (self.isFrozen || self.isMuted)
+//                    ? theme.buttonDisabledTintColor
+//                    : theme.buttonTintColor,
+//                   to: SBUIconSetType.Metric.defaultIconSize)
+//        self.addButton?.setImage(iconAdd, for: .normal)
+        self.addButton?.setImage(UIImage(named: "btChatCall"), for: .normal)
         
         // IconSend
-        self.sendButton?.setImage(
-            SBUIconSetType.iconSend.image(
-                with: theme.buttonTintColor,
-                to: SBUIconSetType.Metric.defaultIconSize
-            ),
-            for: .normal)
+//        self.sendButton?.setImage(
+//            SBUIconSetType.iconSend.image(
+//                with: theme.buttonTintColor,
+//                to: SBUIconSetType.Metric.defaultIconSize
+//            ),
+//            for: .normal)
+        
+        self.sendButton?.setImage(UIImage(named: "btSend"), for: .normal)
+        self.sendButton?.setImage(UIImage(named: "btSendNone"), for: .disabled)
         
         // cancelButton
         self.cancelButton?.setTitleColor(theme.buttonTintColor, for: .normal)
@@ -657,7 +739,9 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         self.addButton?.isHidden = true
         self.addButton?.alpha = 0
         
-        self.sendButton?.isHidden = !showsSendButton
+        self.sendButton?.isHidden = false
+        self.sendButton?.isEnabled = !(text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+        
         self.textViewTrailingPaddingView.isHidden = !showsSendButton
         
         self.editView.isHidden = false
@@ -809,8 +893,13 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         
         let text = textView.text ?? ""
         if self.editView.isHidden {
-            self.sendButton?.isHidden = !showsSendButton &&
-                text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+//            self.sendButton?.isHidden = !showsSendButton &&
+//                text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            
+            self.sendButton?.isHidden = false
+            self.sendButton?.isEnabled = !(!showsSendButton &&
+            text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+            
             self.textViewTrailingPaddingView.isHidden = self.sendButton?.isHidden == true
             self.layoutIfNeeded()
         }

@@ -57,7 +57,7 @@ public class SBUStringSet: NSObject {
 
 
     // MARK: - Channel List
-    public static var ChannelList_Header_Title = "Channels"
+    public static var ChannelList_Header_Title = "채팅"
     public static var ChannelList_Last_File_Message = "uploaded a file."
 
 
@@ -141,7 +141,7 @@ public class SBUStringSet: NSObject {
 
 
     // MARK: - Message Input
-    public static var MessageInput_Text_Placeholder = "Type a message"
+    public static var MessageInput_Text_Placeholder = "메세지 입력"
     public static var MessageInput_Text_Unavailable = "Chat is unavailable in this channel"
     public static var MessageInput_Text_Muted = "You are muted"
     public static var MessageInput_Text_Reply = "Reply to message"

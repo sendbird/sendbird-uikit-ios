@@ -45,7 +45,7 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
     // MARK: - UI properties (Private)
     private lazy var defaultTitleView: SBUNavigationTitleView = {
         var titleView = SBUNavigationTitleView()
-        titleView.text = SBUStringSet.ChannelList_Header_Title
+        titleView.text = "채팅"
         titleView.textAlignment = .center
         
         return titleView
@@ -209,8 +209,8 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
         // For iOS 15
         self.navigationController?.sbu_setupNavigationBarAppearance(tintColor: theme.navigationBarTintColor)
         
-        self.leftBarButton?.tintColor = theme.leftBarButtonTintColor
-        self.rightBarButton?.tintColor = theme.rightBarButtonTintColor
+        self.leftBarButton?.tintColor = .black
+        self.rightBarButton?.tintColor = .black
         
         if let createChannelTypeSelector = self.createChannelTypeSelector as? SBUCreateChannelTypeSelector {
             createChannelTypeSelector.setupStyles()
