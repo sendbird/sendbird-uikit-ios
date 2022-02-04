@@ -803,7 +803,7 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
     }
 
     // MARK: - UITextViewDelegate
-    public func textViewDidChange(_ textView: UITextView) {
+    open func textViewDidChange(_ textView: UITextView) {
         self.placeholderLabel.isHidden = !textView.text.isEmpty
         self.updateTextViewHeight()
         
@@ -818,11 +818,11 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         self.delegate?.messageInputView?(self, didChangeText: text)
     }
 
-    public func textViewDidEndEditing(_ textView: UITextView) {
+    open func textViewDidEndEditing(_ textView: UITextView) {
         self.delegate?.messageInputViewDidEndTyping?()
     }
 
-    public func textView(_ textView: UITextView,
+    open func textView(_ textView: UITextView,
                          shouldChangeTextIn range: NSRange,
                          replacementText text: String) -> Bool {
         if text.count > 0 {
@@ -835,7 +835,7 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
     }
 
     // MARK: - SBUActionSheetDelegate
-    public func didSelectActionSheetItem(index: Int, identifier: Int) {
+    open func didSelectActionSheetItem(index: Int, identifier: Int) {
         let type = MediaResourceType.init(rawValue: index) ?? .unknown
         switch type {
         case .camera:

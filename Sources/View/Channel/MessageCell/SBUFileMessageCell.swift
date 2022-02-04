@@ -19,8 +19,8 @@ open class SBUFileMessageCell: SBUContentBaseMessageCell {
     }
     
     // MARK: - Private property
-    lazy var baseFileContentView: BaseFileContentView = {
-        let fileView = BaseFileContentView()
+    public lazy var baseFileContentView: SBUBaseFileContentView = {
+        let fileView = SBUBaseFileContentView()
         return fileView
     }()
     
@@ -61,9 +61,9 @@ open class SBUFileMessageCell: SBUContentBaseMessageCell {
         // Set up base file content view
         switch SBUUtils.getFileType(by: message) {
             case .image, .video:
-            if !(self.baseFileContentView is ImageContentView){
+            if !(self.baseFileContentView is SBUImageContentView){
                 self.baseFileContentView.removeFromSuperview()
-                self.baseFileContentView = ImageContentView()
+                self.baseFileContentView = SBUImageContentView()
                 self.baseFileContentView.addGestureRecognizer(self.contentLongPressRecognizer)
                 self.baseFileContentView.addGestureRecognizer(self.contentTapRecognizer)
                 self.mainContainerView.insertArrangedSubview(self.baseFileContentView, at: 0)
@@ -74,14 +74,14 @@ open class SBUFileMessageCell: SBUContentBaseMessageCell {
             )
                 
             case .audio, .pdf, .etc:
-            if !(self.baseFileContentView is CommonContentView) {
+            if !(self.baseFileContentView is SBUCommonContentView) {
                 self.baseFileContentView.removeFromSuperview()
-                self.baseFileContentView = CommonContentView()
+                self.baseFileContentView = SBUCommonContentView()
                 self.baseFileContentView.addGestureRecognizer(self.contentLongPressRecognizer)
                 self.baseFileContentView.addGestureRecognizer(self.contentTapRecognizer)
                 self.mainContainerView.insertArrangedSubview(self.baseFileContentView, at: 0)
             }
-            if let commonContentView = self.baseFileContentView as? CommonContentView {
+            if let commonContentView = self.baseFileContentView as? SBUCommonContentView {
                 commonContentView.configure(
                     message: message,
                     position: configuration.messagePosition,
@@ -95,7 +95,7 @@ open class SBUFileMessageCell: SBUContentBaseMessageCell {
         guard self.message.messageId == highlightInfo?.messageId,
               self.message.updatedAt == highlightInfo?.updatedAt else { return }
         
-        guard let commonContentView = self.baseFileContentView as? CommonContentView,
+        guard let commonContentView = self.baseFileContentView as? SBUCommonContentView,
               let fileMessage = self.fileMessage else { return }
         
         commonContentView.configure(message: fileMessage,
@@ -105,7 +105,7 @@ open class SBUFileMessageCell: SBUContentBaseMessageCell {
     
     /// This method has to be called in main thread
     public func setImage(_ image: UIImage?, size: CGSize? = nil) {
-        guard let imageContentView = self.baseFileContentView as? ImageContentView else { return }
+        guard let imageContentView = self.baseFileContentView as? SBUImageContentView else { return }
         imageContentView.setImage(image, size: size)
         imageContentView.setNeedsLayout()
     }

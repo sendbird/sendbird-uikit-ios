@@ -9,15 +9,15 @@
 import UIKit
 import SendBirdSDK
 
-class ImageContentView: BaseFileContentView {
-    var imageView: UIImageView = {
+open class SBUImageContentView: SBUBaseFileContentView {
+    public var imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
         return imageView
     }()
     
-    var iconImageView: UIImageView = {
+    public var iconImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.clipsToBounds = true
         imageView.contentMode = .center
@@ -36,7 +36,7 @@ class ImageContentView: BaseFileContentView {
         }
     }
     
-    override func setupViews() {
+    open override func setupViews() {
         self.layer.cornerRadius = 12
         self.layer.borderColor = UIColor.clear.cgColor
         self.layer.borderWidth = 1
@@ -46,7 +46,7 @@ class ImageContentView: BaseFileContentView {
         self.addSubview(self.iconImageView)
     }
     
-    override func setupAutolayout() {
+    open override func setupAutolayout() {
         self.imageView.setConstraint(
             from: self,
             left: 0,
@@ -78,7 +78,7 @@ class ImageContentView: BaseFileContentView {
         ])
     }
     
-    override func configure(message: SBDFileMessage, position: MessagePosition) {
+    open override func configure(message: SBDFileMessage, position: MessagePosition) {
         if self.message?.requestId != message.requestId ||
             self.message?.updatedAt != message.updatedAt {
             self.imageView.image = nil
@@ -124,7 +124,7 @@ class ImageContentView: BaseFileContentView {
         self.setFileIcon()
     }
     
-    func setImage(_ image: UIImage?, size: CGSize? = nil) {
+    public func setImage(_ image: UIImage?, size: CGSize? = nil) {
         if let size = size {
             self.resizeImageView(by: size)
         }
@@ -133,7 +133,7 @@ class ImageContentView: BaseFileContentView {
         self.setFileIcon()
     }
     
-    func setFileIcon() {
+    public func setFileIcon() {
         switch SBUUtils.getFileType(by: self.message) {
         case .video:
             self.iconImageView.image = SBUIconSetType.iconPlay.image(
@@ -172,7 +172,7 @@ class ImageContentView: BaseFileContentView {
         }
     }
     
-    func resizeImageView(by size: CGSize) {
+    public func resizeImageView(by size: CGSize) {
         self.widthConstraint.constant = min(size.width,
                                             SBUConstant.thumbnailSize.width)
         self.heightConstraint.constant = min(size.height,

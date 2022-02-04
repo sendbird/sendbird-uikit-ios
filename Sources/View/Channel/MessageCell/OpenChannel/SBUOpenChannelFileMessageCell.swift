@@ -19,8 +19,8 @@ open class SBUOpenChannelFileMessageCell: SBUOpenChannelContentBaseMessageCell {
     
     
     // MARK: - Private property
-    private lazy var baseFileContentView: BaseFileContentView = {
-        let fileView = BaseFileContentView()
+    public lazy var baseFileContentView: SBUBaseFileContentView = {
+        let fileView = SBUBaseFileContentView()
         return fileView
     }()
     
@@ -78,9 +78,9 @@ open class SBUOpenChannelFileMessageCell: SBUOpenChannelContentBaseMessageCell {
         
         switch fileType {
         case .image, .video:
-            if !(self.baseFileContentView is OpenChannelImageContentView){
+            if !(self.baseFileContentView is SBUOpenChannelImageContentView){
                 self.baseFileContentView.removeFromSuperview()
-                self.baseFileContentView = OpenChannelImageContentView()
+                self.baseFileContentView = SBUOpenChannelImageContentView()
                 self.baseFileContentView.addGestureRecognizer(self.contentLongPressRecognizer)
                 self.baseFileContentView.addGestureRecognizer(self.contentTapRecognizer)
                 if let mainContainerView = self.mainContainerView as? SBUSelectableStackView {
@@ -91,9 +91,9 @@ open class SBUOpenChannelFileMessageCell: SBUOpenChannelContentBaseMessageCell {
             self.baseFileContentView.configure(message: message, position: .left)
 
         case .audio, .pdf, .etc:
-            if !(self.baseFileContentView is OpenChannelCommonContentView) {
+            if !(self.baseFileContentView is SBUOpenChannelCommonContentView) {
                 self.baseFileContentView.removeFromSuperview()
-                self.baseFileContentView = CommonContentView()
+                self.baseFileContentView = SBUCommonContentView()
                 self.baseFileContentView.addGestureRecognizer(self.contentLongPressRecognizer)
                 self.baseFileContentView.addGestureRecognizer(self.contentTapRecognizer)
                 if let mainContainerView = self.mainContainerView as? SBUSelectableStackView {
@@ -101,7 +101,7 @@ open class SBUOpenChannelFileMessageCell: SBUOpenChannelContentBaseMessageCell {
                 }
             }
             self.ratioConstraint.isActive = false
-            if let commonContentView = self.baseFileContentView as? CommonContentView {
+            if let commonContentView = self.baseFileContentView as? SBUCommonContentView {
                 commonContentView.configure(message: message,
                                             position: .left,
                                             highlight: false)
@@ -124,7 +124,7 @@ open class SBUOpenChannelFileMessageCell: SBUOpenChannelContentBaseMessageCell {
     public func setImage(_ image: UIImage?, size: CGSize? = nil) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
-            guard let imageContentView = self.baseFileContentView as? ImageContentView else { return }
+            guard let imageContentView = self.baseFileContentView as? SBUImageContentView else { return }
             imageContentView.setImage(image, size: size)
             imageContentView.setNeedsLayout()
         }

@@ -9,8 +9,8 @@
 import UIKit
 import SendBirdSDK
 
-class CommonContentView: BaseFileContentView {
-    var stackView: UIStackView = {
+open class SBUCommonContentView: SBUBaseFileContentView {
+    public var stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.spacing = 8
@@ -18,18 +18,18 @@ class CommonContentView: BaseFileContentView {
         return stackView
     }()
     
-    var fileImageView: UIImageView = {
+    public var fileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .center
         return imageView
     }()
-    var fileNameLabel: UILabel = {
+    public var fileNameLabel: UILabel = {
         let label = UILabel()
         label.lineBreakMode = .byTruncatingMiddle
         return label
     }()
 
-    override func setupViews() {
+    open override func setupViews() {
         self.layer.cornerRadius = 8
         self.layer.borderColor = UIColor.clear.cgColor
         self.layer.borderWidth = 1
@@ -45,7 +45,7 @@ class CommonContentView: BaseFileContentView {
         self.stackView.addArrangedSubview(self.fileNameLabel)
     }
     
-    override func setupAutolayout() {
+    open override func setupAutolayout() {
         self.sbu_constraint(height: 44)
         self.stackView.setConstraint(from: self,
                                      left: 12,
@@ -55,7 +55,7 @@ class CommonContentView: BaseFileContentView {
         self.fileImageView.setConstraint(width: 28, height: 28)
     }
     
-    override func setupStyles() {
+    open override func setupStyles() {
         super.setupStyles()
         
         switch position {
@@ -66,7 +66,7 @@ class CommonContentView: BaseFileContentView {
         self.fileImageView.backgroundColor = theme.fileIconBackgroundColor
     }
     
-    func configure(message: SBDFileMessage,
+    open func configure(message: SBDFileMessage,
                    position: MessagePosition,
                    highlight: Bool) {
         super.configure(message: message, position: position)

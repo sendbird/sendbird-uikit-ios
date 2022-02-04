@@ -9,14 +9,14 @@
 import UIKit
 import SendBirdSDK
 
-class BaseFileContentView: SBUView {
+open class SBUBaseFileContentView: SBUView {
     @SBUThemeWrapper(theme: SBUTheme.messageCellTheme)
     public var theme: SBUMessageCellTheme
     
-    var message: SBDFileMessage!
-    var position: MessagePosition = .center
+    public var message: SBDFileMessage!
+    public var position: MessagePosition = .center
     
-    func configure(message: SBDFileMessage, position: MessagePosition) {
+    open func configure(message: SBDFileMessage, position: MessagePosition) {
         self.message = message
         self.position = position
     }

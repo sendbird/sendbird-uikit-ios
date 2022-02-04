@@ -122,9 +122,7 @@ open class SBUEmptyView: UIView {
     public func reloadData(_ type: EmptyViewType) {
         self.type = type
         self.retryButton.isHidden = (self.type != .error)
-
         self.updateViews()
-        
         self.layoutIfNeeded()
         self.updateConstraintsIfNeeded()
     }

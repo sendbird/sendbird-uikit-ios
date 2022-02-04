@@ -1448,8 +1448,8 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController {
     open func setUserMessageCellGestures(_ cell: SBUOpenChannelUserMessageCell,
                                          userMessage: SBDUserMessage,
                                          indexPath: IndexPath) {
-        cell.tapHandlerToContent = { [weak self] in
-            guard let self = self else { return }
+        cell.tapHandlerToContent = { [weak self, weak cell] in
+            guard let self = self, let cell = cell else { return }
             self.setTapGestureHandler(cell, message: userMessage)
         }
         
@@ -1467,8 +1467,8 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController {
     open func setFileMessageCellGestures(_ cell: SBUOpenChannelFileMessageCell,
                                          fileMessage: SBDFileMessage,
                                          indexPath: IndexPath) {
-        cell.tapHandlerToContent = { [weak self] in
-            guard let self = self else { return }
+        cell.tapHandlerToContent = { [weak self, weak cell] in
+            guard let self = self, let cell = cell else { return }
             self.setTapGestureHandler(cell, message: fileMessage)
         }
         
@@ -1486,8 +1486,8 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController {
     open func setUnkownMessageCellGestures(_ cell: SBUOpenChannelUnknownMessageCell,
                                            unknownMessage: SBDBaseMessage,
                                            indexPath: IndexPath) {
-        cell.tapHandlerToContent = { [weak self] in
-            guard let self = self else { return }
+        cell.tapHandlerToContent = { [weak self, weak cell] in
+            guard let self = self, let cell = cell else { return }
             self.setTapGestureHandler(cell, message: unknownMessage)
         }
         

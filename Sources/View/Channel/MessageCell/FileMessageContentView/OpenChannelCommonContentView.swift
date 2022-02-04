@@ -9,9 +9,9 @@
 import UIKit
 import SendBirdSDK
 
-class OpenChannelCommonContentView: CommonContentView {
+open class SBUOpenChannelCommonContentView: SBUCommonContentView {
     
-    override func setupAutolayout() {
+    open override func setupAutolayout() {
         self.sbu_constraint(height: 56)
         self.stackView.setConstraint(from: self,
                                      left: 12,
@@ -21,14 +21,14 @@ class OpenChannelCommonContentView: CommonContentView {
         self.fileImageView.setConstraint(width: 40, height: 40)
     }
     
-    override func setupStyles() {
+    open override func setupStyles() {
         super.setupStyles()
         
         self.backgroundColor = theme.contentBackgroundColor
         self.fileImageView.backgroundColor = theme.fileIconBackgroundColor
     }
     
-    override func configure(message: SBDFileMessage,
+    open override func configure(message: SBDFileMessage,
                    position: MessagePosition,
                    highlight: Bool) {
         super.configure(message: message, position: position)

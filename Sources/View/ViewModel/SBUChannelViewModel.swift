@@ -175,6 +175,8 @@ class SBUChannelViewModel: SBULoadableViewModel {
             setupCache()
         }
         
+        self.loadingObservable.set(value: true)
+        
         self.messageCollection?.start(
             with: initPolicy,
             cacheResultHandler: { [weak self] cacheResult, error in

@@ -25,6 +25,11 @@ public class SBUGlobals: NSObject {
     /// - Since: 1.2.1
     public static var UsingMessageGrouping: Bool = true
     
+    // MARK: - PHPickerViewController
+    /// If it's `true`, uses `PHPickerViewController` instead of `UIImagePickerController` when access to the photo library for sending file message.
+    /// - Since: 2.2.3
+    public static var UsingPHPicker: Bool = false
+    
     // MARK: - Reply Type
     /// If this value is enabled, replying features are activated.
     /// - Since: 2.2.0

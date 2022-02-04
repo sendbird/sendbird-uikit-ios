@@ -1952,11 +1952,11 @@ public class SBUComponentTheme: NSObject {
         theme.barItemTintColor = SBUColorSet.primary300
         
         // Loading
-        theme.loadingBackgroundColor = SBUColorSet.background700.withAlphaComponent(0.4)
-        theme.loadingPopupBackgroundColor = SBUColorSet.onlight02
+        theme.loadingBackgroundColor = .clear
+        theme.loadingPopupBackgroundColor = .clear
         theme.loadingFont = SBUFontSet.subtitle2
         theme.loadingTextColor = SBUColorSet.ondark01
-        theme.loadingSpinnerColor = SBUColorSet.ondark01
+        theme.loadingSpinnerColor = SBUColorSet.primary300
         
         return theme
     }
@@ -2059,11 +2059,11 @@ public class SBUComponentTheme: NSObject {
         theme.barItemTintColor = SBUColorSet.primary200
         
         // Loading
-        theme.loadingBackgroundColor = SBUColorSet.background700.withAlphaComponent(0.4)
-        theme.loadingPopupBackgroundColor = SBUColorSet.ondark03
+        theme.loadingBackgroundColor = .clear
+        theme.loadingPopupBackgroundColor = .clear
         theme.loadingFont = SBUFontSet.subtitle2
         theme.loadingTextColor = SBUColorSet.onlight01
-        theme.loadingSpinnerColor = SBUColorSet.background700
+        theme.loadingSpinnerColor = SBUColorSet.primary200
         
         return theme
     }
@@ -2166,11 +2166,11 @@ public class SBUComponentTheme: NSObject {
         theme.barItemTintColor = SBUColorSet.ondark01
         
         // Loading
-        theme.loadingBackgroundColor = SBUColorSet.background700.withAlphaComponent(0.4)
-        theme.loadingPopupBackgroundColor = SBUColorSet.ondark03
+        theme.loadingBackgroundColor = .clear
+        theme.loadingPopupBackgroundColor = .clear
         theme.loadingFont = SBUFontSet.subtitle2
         theme.loadingTextColor = SBUColorSet.onlight01
-        theme.loadingSpinnerColor = SBUColorSet.background700
+        theme.loadingSpinnerColor = SBUColorSet.primary200
         
         return theme
     }
@@ -2247,11 +2247,11 @@ public class SBUComponentTheme: NSObject {
                 broadcastIconBackgroundColor: UIColor = SBUColorSet.secondary300,
                 broadcastIconTintColor: UIColor = SBUColorSet.ondark01,
                 barItemTintColor: UIColor = SBUColorSet.primary300,
-                loadingBackgroundColor: UIColor = SBUColorSet.background700.withAlphaComponent(0.4),
-                loadingPopupBackgroundColor: UIColor = SBUColorSet.onlight02,
+                loadingBackgroundColor: UIColor = .clear,
+                loadingPopupBackgroundColor: UIColor = .clear,
                 loadingFont: UIFont = SBUFontSet.subtitle2,
                 loadingTextColor: UIColor = SBUColorSet.ondark01,
-                loadingSpinnerColor: UIColor = SBUColorSet.ondark03) {
+                loadingSpinnerColor: UIColor = SBUColorSet.primary300) {
         
         self.emptyViewBackgroundColor = emptyViewBackgroundColor
         self.emptyViewStatusFont = emptyViewStatusFont

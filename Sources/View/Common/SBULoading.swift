@@ -17,7 +17,6 @@ public class SBULoading: NSObject {
     var backgroundView = UIButton()
     var spinner = UIImageView()
 
-    private var label: UILabel = UILabel()
     private var rotationLayer: CAAnimation = {
         let rotation = CABasicAnimation(keyPath: "transform.rotation")
         rotation.fromValue = 0
@@ -29,6 +28,7 @@ public class SBULoading: NSObject {
     private var rectLayer: CAShapeLayer = CAShapeLayer()
     
     let itemSize: CGFloat = 100.0
+    let spinnerSize: CGFloat = 64.0
     
     
     /// This static function starts the loading indicator.
@@ -48,9 +48,6 @@ public class SBULoading: NSObject {
         self.backgroundView.backgroundColor = theme.loadingBackgroundColor
         self.baseView.backgroundColor = theme.loadingPopupBackgroundColor
         
-        self.label.font = theme.loadingFont
-        self.label.textColor = theme.loadingTextColor
-        
         self.spinner.image = SBUIconSetType.iconSpinner.image(with: theme.loadingSpinnerColor, to: SBUIconSetType.Metric.iconSpinnerLarge)
     }
     
@@ -60,18 +57,14 @@ public class SBULoading: NSObject {
         
         // Set backgroundView
         self.backgroundView.frame = self.window?.bounds ?? .zero
-//        self.backgroundView.addTarget(self, action: #selector(dismiss), for: .touchUpInside)
         
         // BaseView
         self.baseView.frame = CGRect(x: 0, y: 0, width: itemSize, height: itemSize)
         
-        self.spinner.frame = CGRect(x: 30, y: 16, width: 40, height: 40)
+        self.spinner.frame = CGRect(x: 0, y: 0, width: spinnerSize, height: spinnerSize)
+        self.spinner.center = baseView.center
         self.baseView.addSubview(self.spinner)
         
-        self.label.frame = CGRect(x: 14, y: self.spinner.frame.maxY + 8, width: 72, height: 24)
-        label.text = SBUStringSet.Loading
-        self.baseView.addSubview(label)
-                
         // RoundRect
         rectLayer.bounds = self.baseView.frame
         rectLayer.position = self.baseView.center

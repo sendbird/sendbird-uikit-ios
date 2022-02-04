@@ -1,5 +1,26 @@
 # Change Log
 
+### v2.2.3 (Feb 3, 2022)
+* Added `PHPickerViewControllerDelegate` to `SBUBaseChannelViewController`
+    * Added `picker(_:didFinishPicking:)` 
+    * Added `showPhotoLibraryPicker()`
+    * Added `showCamera()`
+    * Added `showDocumentPicker()`
+    * Added `UsingPHPicker` to `SBUGlobals`
+* Added `SBUBaseFileContentView`
+    * Added `SBUCommonContentView`
+    * Added `SBUImageContentView`
+    * Added `SBUOpenChannelCommonContentView`
+    * Added `SBUOpenChannelImageContentView`
+* Opened action sheet delegate in `SBUMessageInputView` 
+    * Opened `textViewDidChange(_:)`
+    * Opened `textViewDidEndEditing(_:)`
+    * Opened `textView(_:shouldChangeTextIn:replacementText:)`
+    * Opened `didSelectActionSheetItem(index:identifier:)`
+* Updated the UI of `SBULoading`
+* Modified `SBUBaseChannelViewController` to show loading indicator at the first loading.
+* Improved stabilities
+
 ### v2.2.2 (Jan 11, 2022)
 * Fixed date comparison logic.
 * Fixed freezing issue when the file opens the first time.

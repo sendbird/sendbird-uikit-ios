@@ -8,9 +8,9 @@
 
 import UIKit
 
-class OpenChannelImageContentView: ImageContentView {
+class SBUOpenChannelImageContentView: SBUImageContentView {
     
-    override func setupSizeContraint() {
+    open override func setupSizeContraint() {
         self.widthConstraint = self.imageView.widthAnchor.constraint(
             equalToConstant: SBUConstant.openChannelThumbnailSize.width
         )
@@ -24,7 +24,7 @@ class OpenChannelImageContentView: ImageContentView {
         ])
     }
 
-    override func resizeImageView(by size: CGSize) {
+    open override func resizeImageView(by size: CGSize) {
         self.widthConstraint.constant = min(size.width,
                                             SBUConstant.openChannelThumbnailSize.width)
         self.heightConstraint.constant = min(size.height,

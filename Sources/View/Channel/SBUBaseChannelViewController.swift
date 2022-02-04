@@ -10,6 +10,7 @@ import UIKit
 import SendBirdSDK
 import MobileCoreServices
 import AVFoundation
+import PhotosUI
 
 @objcMembers
 open class SBUBaseChannelViewController: SBUBaseViewController {
@@ -56,7 +57,6 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
     @SBUAtomic public internal(set) var messageList: [SBDBaseMessage] = []
     /// This object has a list of all messages.
     @SBUAtomic public internal(set) var fullMessageList: [SBDBaseMessage] = []
-    
     
     var baseChannel: SBDBaseChannel? {
         didSet { createViewModel(startingPoint: self.startingPoint) }
@@ -303,8 +303,6 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
             guard let self = self else { return }
             SBULog.info("Initial messages count : \(messages.count)")
             
-            self.shouldDismissLoadingIndicator()
-            
             if fromCache {
                 self.clearMessageList()
                 
@@ -322,6 +320,10 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
             self.tableView.layoutIfNeeded()
             
             self.scrollToInitialPosition()
+            
+            if fromCache == false { // Cache result -> API result
+                self.shouldDismissLoadingIndicator()
+            }
         }
         
         channelViewModel.messageUpsertObservable.observe { [weak self] upsertedMessages, messageContext, keepScroll in
@@ -1543,10 +1545,13 @@ extension SBUBaseChannelViewController: SBUEmptyViewDelegate {
 extension SBUBaseChannelViewController: LoadingIndicatorDelegate {
     @discardableResult
     open func shouldShowLoadingIndicator() -> Bool {
-        return false
+        SBULoading.start()
+        return true
     }
     
-    open func shouldDismissLoadingIndicator() {}
+    open func shouldDismissLoadingIndicator() {
+        SBULoading.stop()
+    }
 }
 
 
@@ -1589,6 +1594,116 @@ extension SBUBaseChannelViewController: UIImagePickerControllerDelegate {
     }
 }
 
+// MARK: - PHPickerViewControllerDelegate
+
+extension SBUBaseChannelViewController: PHPickerViewControllerDelegate {
+    
+    /// Override this method to handle the `results` from `PHPickerViewController`.
+    /// As defaults, it doesn't support multi-selection and live photo.
+    /// - Important: To use this method, please assign self as delegate to `PHPickerViewController` object.
+    @available(iOS 14, *)
+    open func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        picker.dismiss(animated: true)
+        
+        results.forEach {
+            let itemProvider = $0.itemProvider
+            // image
+            if itemProvider.hasItemConformingToTypeIdentifier(UTType.image.identifier) {
+                itemProvider.loadItem(forTypeIdentifier: UTType.image.identifier, options: [:]) { url, error in
+                    if itemProvider.canLoadObject(ofClass: UIImage.self) {
+                        itemProvider.loadObject(ofClass: UIImage.self) { [weak self] imageItem, error in
+                            guard let self = self else { return }
+                            guard let originalImage = imageItem as? UIImage else { return }
+                            let image = originalImage
+                                .fixedOrientation()
+                                .resize(with: SBUGlobals.imageResizingSize)
+                            let imageData = image.jpegData(
+                                compressionQuality: SBUGlobals.UsingImageCompression
+                                ? SBUGlobals.imageCompressionRate
+                                : 1.0
+                            )
+                            var parentMessage: SBDBaseMessage? = nil
+                            switch self.messageInputView.option {
+                                case .quoteReply(let message):
+                                    parentMessage = message
+                                default: break
+                            }
+                            DispatchQueue.main.async { [imageData, parentMessage] in
+                                self.messageInputView.setMode(.none)
+                                
+                                self.sendFileMessage(
+                                    fileData: imageData,
+                                    fileName: "\(Date().sbu_toString(format: .yyyyMMddhhmmss, localizedFormat: false)).jpg",
+                                    mimeType: "image/jpeg",
+                                    parentMessage: parentMessage
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // GIF
+            else if itemProvider.hasItemConformingToTypeIdentifier(UTType.gif.identifier) {
+                itemProvider.loadItem(forTypeIdentifier: UTType.gif.identifier, options: [:]) { [weak self] url, error in
+                    guard let imageURL = url as? URL else { return }
+                    guard let self = self else { return }
+                    let imageName = imageURL.lastPathComponent
+                    let gifData = try? Data(contentsOf: imageURL)
+                    
+                    var parentMessage: SBDBaseMessage? = nil
+                    switch self.messageInputView.option {
+                        case .quoteReply(let message):
+                            parentMessage = message
+                        default: break
+                    }
+                    DispatchQueue.main.async { [gifData, parentMessage] in
+                        self.messageInputView.setMode(.none)
+                        
+                        self.sendFileMessage(
+                            fileData: gifData,
+                            fileName: imageName,
+                            mimeType: "image/gif",
+                            parentMessage: parentMessage
+                        )
+                    }
+                }
+            }
+            
+            // video
+            else if itemProvider.hasItemConformingToTypeIdentifier(UTType.movie.identifier) {
+                itemProvider.loadFileRepresentation(forTypeIdentifier: UTType.movie.identifier) { [weak self] url, error in
+                    guard let videoURL = url else { return }
+                    guard let self = self else { return }
+                    do {
+                        let videoFileData = try Data(contentsOf: videoURL)
+                        let videoName = videoURL.lastPathComponent
+                        guard let mimeType = SBUUtils.getMimeType(url: videoURL) else { return }
+                        var parentMessage: SBDBaseMessage? = nil
+                        switch self.messageInputView.option {
+                            case .quoteReply(let message):
+                                parentMessage = message
+                            default: break
+                        }
+                        DispatchQueue.main.async { [videoFileData, videoName, mimeType, parentMessage] in
+                            self.messageInputView.setMode(.none)
+                            
+                            self.sendFileMessage(
+                                fileData: videoFileData,
+                                fileName: videoName,
+                                mimeType: mimeType,
+                                parentMessage: parentMessage
+                            )
+                        }
+                    } catch {
+                        SBULog.error(error.localizedDescription)
+                    }
+                }
+            }
+        }
+    }
+}
+
 
 // MARK: - UIDocumentPickerDelegate
 extension SBUBaseChannelViewController: UIDocumentPickerDelegate {
@@ -1615,42 +1730,74 @@ extension SBUBaseChannelViewController: SBUMessageInputViewDelegate {
         }
         self.sendUserMessage(text: text, parentMessage: parentMessage)
     }
-
+    
     open func messageInputView(_ messageInputView: SBUMessageInputView,
                                didSelectResource type: MediaResourceType) {
-        if type == .document {
-            let documentPicker = UIDocumentPickerViewController(
-                documentTypes: ["public.content"],
-                in: UIDocumentPickerMode.import
-            )
-            documentPicker.delegate = self
-            documentPicker.modalPresentationStyle = .formSheet
-            self.present(documentPicker, animated: true, completion: nil)
+        switch type {
+            case .document: self.showDocumentPicker()
+            case .library: self.showPhotoLibraryPicker()
+            case .camera: self.showCamera()
+            default: self.showPhotoLibraryPicker()
         }
-        else {
-            var sourceType: UIImagePickerController.SourceType = .photoLibrary
-            let mediaType: [String] = [
-                String(kUTTypeImage),
-                String(kUTTypeGIF),
-                String(kUTTypeMovie)
-            ]
-            
-            switch type {
-            case .camera:
-                sourceType = .camera
-            case .library:
-                sourceType = .photoLibrary
-            default:
-                break
-            }
-            
-            if UIImagePickerController.isSourceTypeAvailable(sourceType) {
-                let imagePickerController = UIImagePickerController()
-                imagePickerController.delegate = self
-                imagePickerController.sourceType = sourceType
-                imagePickerController.mediaTypes = mediaType
-                self.present(imagePickerController, animated: true, completion: nil)
-            }
+    }
+    
+    /// Presents `UIDocumentPickerViewController`.
+    /// - Since: 2.2.3
+    open func showDocumentPicker() {
+        let documentPicker = UIDocumentPickerViewController(
+            documentTypes: ["public.content"],
+            in: UIDocumentPickerMode.import
+        )
+        documentPicker.delegate = self
+        documentPicker.modalPresentationStyle = .formSheet
+        self.present(documentPicker, animated: true, completion: nil)
+    }
+    
+    /// Presents `UIImagePickerController`. If `SBUGlobals.UsingPHPicker`is `true`, it presents `PHPickerViewController` in iOS 14 or later.
+    /// - NOTE: If you want to use customized `PHPickerConfiguration`, please override this method.
+    /// - Since: 2.2.3
+    open func showPhotoLibraryPicker() {
+        if #available(iOS 14, *), SBUGlobals.UsingPHPicker {
+            var configuration = PHPickerConfiguration()
+            configuration.filter = .any(of: [.images, .videos])
+            let picker = PHPickerViewController(configuration: configuration)
+            picker.delegate = self
+            self.present(picker, animated: true, completion: nil)
+            return
+        }
+        
+        let sourceType: UIImagePickerController.SourceType = .photoLibrary
+        let mediaType: [String] = [
+            String(kUTTypeImage),
+            String(kUTTypeGIF),
+            String(kUTTypeMovie)
+        ]
+        
+        if UIImagePickerController.isSourceTypeAvailable(sourceType) {
+            let imagePickerController = UIImagePickerController()
+            imagePickerController.delegate = self
+            imagePickerController.sourceType = sourceType
+            imagePickerController.mediaTypes = mediaType
+            self.present(imagePickerController, animated: true, completion: nil)
+        }
+    }
+    
+    /// Presents `UIImagePickerController` for using camera.
+    /// - Since: 2.2.3
+    open func showCamera() {
+        let sourceType: UIImagePickerController.SourceType = .camera
+        let mediaType: [String] = [
+            String(kUTTypeImage),
+            String(kUTTypeGIF),
+            String(kUTTypeMovie)
+        ]
+        
+        if UIImagePickerController.isSourceTypeAvailable(sourceType) {
+            let imagePickerController = UIImagePickerController()
+            imagePickerController.delegate = self
+            imagePickerController.sourceType = sourceType
+            imagePickerController.mediaTypes = mediaType
+            self.present(imagePickerController, animated: true, completion: nil)
         }
     }
 

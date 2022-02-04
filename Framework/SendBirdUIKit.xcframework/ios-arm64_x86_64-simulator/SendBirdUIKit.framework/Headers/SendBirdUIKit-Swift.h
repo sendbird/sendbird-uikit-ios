@@ -1036,16 +1036,23 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUBaseChannelViewController")
 - (void)setLoading:(BOOL)loadingState :(BOOL)showIndicator;
 @end
 
-@class UIPresentationController;
-
-@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
-- (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
-@end
-
 @class SBDFileMessage;
 
 @interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
 - (void)didSelectDeleteImageWithMessage:(SBDFileMessage * _Nonnull)message;
+@end
+
+@class UIDocumentPickerViewController;
+
+@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIDocumentPickerDelegate>
+- (void)documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentsAtURLs:(NSArray<NSURL *> * _Nonnull)urls;
+@end
+
+
+@class UIPresentationController;
+
+@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
+- (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
@@ -1059,22 +1066,10 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit20SBUEmptyViewDelegate_")
 - (void)didSelectRetry;
 @end
 
-@class UIDocumentPickerViewController;
-
-@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIDocumentPickerDelegate>
-- (void)documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentsAtURLs:(NSArray<NSURL *> * _Nonnull)urls;
-@end
-
 @class UIGestureRecognizer;
 
 @interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIGestureRecognizerDelegate>
 - (BOOL)gestureRecognizer:(UIGestureRecognizer * _Nonnull)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer * _Nonnull)otherGestureRecognizer SWIFT_WARN_UNUSED_RESULT;
-@end
-
-
-@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
-- (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
-- (void)imagePickerControllerDidCancel:(UIImagePickerController * _Nonnull)picker;
 @end
 
 
@@ -1092,6 +1087,12 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit26SBUUserProfileViewDelegate_")
 @interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUUserProfileViewDelegate>
 - (void)didSelectMessageWithUserId:(NSString * _Nullable)userId;
 - (void)didSelectClose;
+@end
+
+
+@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
+- (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
+- (void)imagePickerControllerDidCancel:(UIImagePickerController * _Nonnull)picker;
 @end
 
 
@@ -1179,12 +1180,53 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit27SBUMessageInputViewDelegate_")
 @interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUMessageInputViewDelegate>
 - (void)messageInputView:(SBUMessageInputView * _Nonnull)messageInputView didSelectSend:(NSString * _Nonnull)text;
 - (void)messageInputView:(SBUMessageInputView * _Nonnull)messageInputView didSelectResource:(enum MediaResourceType)type;
+/// Presents <code>UIDocumentPickerViewController</code>.
+/// since:
+/// 2.2.3
+- (void)showDocumentPicker;
+/// Presents <code>UIImagePickerController</code>. If <code>SBUGlobals.UsingPHPicker</code>is <code>true</code>, it presents <code>PHPickerViewController</code> in iOS 14 or later.
+/// note:
+/// If you want to use customized <code>PHPickerConfiguration</code>, please override this method.
+/// since:
+/// 2.2.3
+- (void)showPhotoLibraryPicker;
+/// Presents <code>UIImagePickerController</code> for using camera.
+/// since:
+/// 2.2.3
+- (void)showCamera;
 - (void)messageInputView:(SBUMessageInputView * _Nonnull)messageInputView didSelectEdit:(NSString * _Nonnull)text;
 - (void)messageInputView:(SBUMessageInputView * _Nonnull)messageInputView didChangeText:(NSString * _Nonnull)text;
 - (void)messageInputView:(SBUMessageInputView * _Nonnull)messageInputView willChangeMode:(enum SBUMessageInputMode)mode message:(SBDBaseMessage * _Nullable)message;
 - (void)messageInputView:(SBUMessageInputView * _Nonnull)messageInputView didChangeMode:(enum SBUMessageInputMode)mode message:(SBDBaseMessage * _Nullable)message;
 - (void)messageInputViewDidStartTyping;
 - (void)messageInputViewDidEndTyping;
+@end
+
+
+/// The <code>UIView</code> conforming to <code>SBUViewLifeCycle</code>
+/// since:
+/// 2.2.0
+IB_DESIGNABLE
+SWIFT_CLASS("_TtC13SendBirdUIKit7SBUView")
+@interface SBUView : UIView
+/// Initializes <code>UIView</code> and set up subviews, auto layouts and actions for SendBirdUIKit.
+- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+/// Initializes <code>UIView</code> and set up subviews, auto layouts and actions for SendBirdUIKit.
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithFrame:'");
+/// Lays out subviews and set up styles for SendBirdUIKit.
+- (void)layoutSubviews;
+@end
+
+
+SWIFT_CLASS("_TtC13SendBirdUIKit22SBUBaseFileContentView")
+@interface SBUBaseFileContentView : SBUView
+@property (nonatomic, strong) SBUMessageCellTheme * _Nonnull theme;
+@property (nonatomic, strong) SBDFileMessage * _Null_unspecified message;
+@property (nonatomic) enum MessagePosition position;
+- (void)configureWithMessage:(SBDFileMessage * _Nonnull)message position:(enum MessagePosition)position;
+- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
 @end
 
 
@@ -1460,13 +1502,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 @end
 
 
-@interface SBUChannelListViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBDConnectionDelegate>
-- (void)didSucceedReconnection;
+@interface SBUChannelListViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUEmptyViewDelegate>
+- (void)didSelectRetry;
 @end
 
 
-@interface SBUChannelListViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUEmptyViewDelegate>
-- (void)didSelectRetry;
+@interface SBUChannelListViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBDConnectionDelegate>
+- (void)didSucceedReconnection;
 @end
 
 
@@ -1918,12 +1960,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)messageInputViewDidEndTyping;
 @end
 
-@class UIDocumentInteractionController;
-
-@interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIDocumentInteractionControllerDelegate>
-- (UIViewController * _Nonnull)documentInteractionControllerViewControllerForPreview:(UIDocumentInteractionController * _Nonnull)controller SWIFT_WARN_UNUSED_RESULT;
-@end
-
 @class SBUQuotedBaseMessageView;
 
 SWIFT_PROTOCOL("_TtP13SendBirdUIKit28SBUQuotedMessageViewDelegate_")
@@ -1939,6 +1975,12 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit28SBUQuotedMessageViewDelegate_")
 
 @interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBDConnectionDelegate>
 - (void)didSucceedReconnection;
+@end
+
+@class UIDocumentInteractionController;
+
+@interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIDocumentInteractionControllerDelegate>
+- (UIViewController * _Nonnull)documentInteractionControllerViewControllerForPreview:(UIDocumentInteractionController * _Nonnull)controller SWIFT_WARN_UNUSED_RESULT;
 @end
 
 @class SBDReactionEvent;
@@ -2071,6 +2113,22 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull hig
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
+@class UIStackView;
+@class UIImageView;
+
+SWIFT_CLASS("_TtC13SendBirdUIKit20SBUCommonContentView")
+@interface SBUCommonContentView : SBUBaseFileContentView
+@property (nonatomic, strong) UIStackView * _Nonnull stackView;
+@property (nonatomic, strong) UIImageView * _Nonnull fileImageView;
+@property (nonatomic, strong) UILabel * _Nonnull fileNameLabel;
+- (void)setupViews;
+- (void)setupAutolayout;
+- (void)setupStyles;
+- (void)configureWithMessage:(SBDFileMessage * _Nonnull)message position:(enum MessagePosition)position highlight:(BOOL)highlight;
+- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+@end
+
 
 
 SWIFT_CLASS("_TtC13SendBirdUIKit17SBUComponentTheme")
@@ -2160,7 +2218,6 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUComponent
 @end
 
 @protocol SBUQuotedMessageViewProtocol;
-@class UIStackView;
 @class SBUSelectableStackView;
 @class UILongPressGestureRecognizer;
 @class UITapGestureRecognizer;
@@ -2352,7 +2409,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit15SBUEmojiManager")
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
-@class UIImageView;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit12SBUEmptyView")
 @interface SBUEmptyView : UIView
@@ -2387,6 +2443,7 @@ IB_DESIGNABLE
 SWIFT_CLASS("_TtC13SendBirdUIKit18SBUFileMessageCell")
 @interface SBUFileMessageCell : SBUContentBaseMessageCell
 @property (nonatomic, readonly, strong) SBDFileMessage * _Nullable fileMessage;
+@property (nonatomic, strong) SBUBaseFileContentView * _Nonnull baseFileContentView;
 - (void)setupViews;
 - (void)setupStyles;
 - (void)configureWith:(SBUBaseMessageCellParams * _Nonnull)configuration;
@@ -2609,6 +2666,12 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) SBUUser * _Nullable Cu
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL UsingMessageGrouping;)
 + (BOOL)UsingMessageGrouping SWIFT_WARN_UNUSED_RESULT;
 + (void)setUsingMessageGrouping:(BOOL)value;
+/// If it’s <code>true</code>, uses <code>PHPickerViewController</code> instead of <code>UIImagePickerController</code> when access to the photo library for sending file message.
+/// since:
+/// 2.2.3
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL UsingPHPicker;)
++ (BOOL)UsingPHPicker SWIFT_WARN_UNUSED_RESULT;
++ (void)setUsingPHPicker:(BOOL)value;
 /// If this value is enabled, when you click on a user image, the user profile screen is displayed.
 /// since:
 /// 1.2.2
@@ -2811,6 +2874,20 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull ico
 /// 2.1.0
 + (void)restoreDefaultIcons;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+@end
+
+
+SWIFT_CLASS("_TtC13SendBirdUIKit19SBUImageContentView")
+@interface SBUImageContentView : SBUBaseFileContentView
+@property (nonatomic, strong) UIImageView * _Nonnull imageView;
+@property (nonatomic, strong) UIImageView * _Nonnull iconImageView;
+- (void)setupViews;
+- (void)setupAutolayout;
+- (void)configureWithMessage:(SBDFileMessage * _Nonnull)message position:(enum MessagePosition)position;
+- (void)setFileIcon;
+- (void)resizeImageViewBy:(CGSize)size;
+- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
 @end
 
 
@@ -3301,15 +3378,15 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 @end
 
 
-@interface SBUMemberListViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUUserProfileViewDelegate>
-- (void)didSelectMessageWithUserId:(NSString * _Nullable)userId;
-- (void)didSelectClose;
-@end
-
-
 @interface SBUMemberListViewController (SWIFT_EXTENSION(SendBirdUIKit))
 - (BOOL)shouldShowLoadingIndicator;
 - (void)shouldDismissLoadingIndicator;
+@end
+
+
+@interface SBUMemberListViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUUserProfileViewDelegate>
+- (void)didSelectMessageWithUserId:(NSString * _Nullable)userId;
+- (void)didSelectClose;
 @end
 
 
@@ -3558,22 +3635,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit19SBUMessageInputView")
 @end
 
 
-
-
-/// The <code>UIView</code> conforming to <code>SBUViewLifeCycle</code>
-/// since:
-/// 2.2.0
-IB_DESIGNABLE
-SWIFT_CLASS("_TtC13SendBirdUIKit7SBUView")
-@interface SBUView : UIView
-/// Initializes <code>UIView</code> and set up subviews, auto layouts and actions for SendBirdUIKit.
-- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
-/// Initializes <code>UIView</code> and set up subviews, auto layouts and actions for SendBirdUIKit.
-- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
-- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithFrame:'");
-/// Lays out subviews and set up styles for SendBirdUIKit.
-- (void)layoutSubviews;
-@end
 
 
 SWIFT_CLASS("_TtC13SendBirdUIKit21SBUMessageProfileView")
@@ -4017,6 +4078,16 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUOpenChannelAdminMessageCell")
 
 
 
+SWIFT_CLASS("_TtC13SendBirdUIKit31SBUOpenChannelCommonContentView")
+@interface SBUOpenChannelCommonContentView : SBUCommonContentView
+- (void)setupAutolayout;
+- (void)setupStyles;
+- (void)configureWithMessage:(SBDFileMessage * _Nonnull)message position:(enum MessagePosition)position highlight:(BOOL)highlight;
+- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+@end
+
+
 /// It is a base class used in message cell with contents.
 /// since:
 /// 2.0.0
@@ -4052,6 +4123,7 @@ IB_DESIGNABLE
 SWIFT_CLASS("_TtC13SendBirdUIKit29SBUOpenChannelFileMessageCell")
 @interface SBUOpenChannelFileMessageCell : SBUOpenChannelContentBaseMessageCell
 @property (nonatomic, readonly, strong) SBDFileMessage * _Nullable fileMessage;
+@property (nonatomic, strong) SBUBaseFileContentView * _Nonnull baseFileContentView;
 - (void)setupViews;
 - (void)setupAutolayout;
 - (void)setupActions;
@@ -6606,16 +6678,23 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUBaseChannelViewController")
 - (void)setLoading:(BOOL)loadingState :(BOOL)showIndicator;
 @end
 
-@class UIPresentationController;
-
-@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
-- (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
-@end
-
 @class SBDFileMessage;
 
 @interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
 - (void)didSelectDeleteImageWithMessage:(SBDFileMessage * _Nonnull)message;
+@end
+
+@class UIDocumentPickerViewController;
+
+@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIDocumentPickerDelegate>
+- (void)documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentsAtURLs:(NSArray<NSURL *> * _Nonnull)urls;
+@end
+
+
+@class UIPresentationController;
+
+@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIViewControllerTransitioningDelegate>
+- (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
@@ -6629,22 +6708,10 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit20SBUEmptyViewDelegate_")
 - (void)didSelectRetry;
 @end
 
-@class UIDocumentPickerViewController;
-
-@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIDocumentPickerDelegate>
-- (void)documentPicker:(UIDocumentPickerViewController * _Nonnull)controller didPickDocumentsAtURLs:(NSArray<NSURL *> * _Nonnull)urls;
-@end
-
 @class UIGestureRecognizer;
 
 @interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIGestureRecognizerDelegate>
 - (BOOL)gestureRecognizer:(UIGestureRecognizer * _Nonnull)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer * _Nonnull)otherGestureRecognizer SWIFT_WARN_UNUSED_RESULT;
-@end
-
-
-@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
-- (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
-- (void)imagePickerControllerDidCancel:(UIImagePickerController * _Nonnull)picker;
 @end
 
 
@@ -6662,6 +6729,12 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit26SBUUserProfileViewDelegate_")
 @interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUUserProfileViewDelegate>
 - (void)didSelectMessageWithUserId:(NSString * _Nullable)userId;
 - (void)didSelectClose;
+@end
+
+
+@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
+- (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
+- (void)imagePickerControllerDidCancel:(UIImagePickerController * _Nonnull)picker;
 @end
 
 
@@ -6749,12 +6822,53 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit27SBUMessageInputViewDelegate_")
 @interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUMessageInputViewDelegate>
 - (void)messageInputView:(SBUMessageInputView * _Nonnull)messageInputView didSelectSend:(NSString * _Nonnull)text;
 - (void)messageInputView:(SBUMessageInputView * _Nonnull)messageInputView didSelectResource:(enum MediaResourceType)type;
+/// Presents <code>UIDocumentPickerViewController</code>.
+/// since:
+/// 2.2.3
+- (void)showDocumentPicker;
+/// Presents <code>UIImagePickerController</code>. If <code>SBUGlobals.UsingPHPicker</code>is <code>true</code>, it presents <code>PHPickerViewController</code> in iOS 14 or later.
+/// note:
+/// If you want to use customized <code>PHPickerConfiguration</code>, please override this method.
+/// since:
+/// 2.2.3
+- (void)showPhotoLibraryPicker;
+/// Presents <code>UIImagePickerController</code> for using camera.
+/// since:
+/// 2.2.3
+- (void)showCamera;
 - (void)messageInputView:(SBUMessageInputView * _Nonnull)messageInputView didSelectEdit:(NSString * _Nonnull)text;
 - (void)messageInputView:(SBUMessageInputView * _Nonnull)messageInputView didChangeText:(NSString * _Nonnull)text;
 - (void)messageInputView:(SBUMessageInputView * _Nonnull)messageInputView willChangeMode:(enum SBUMessageInputMode)mode message:(SBDBaseMessage * _Nullable)message;
 - (void)messageInputView:(SBUMessageInputView * _Nonnull)messageInputView didChangeMode:(enum SBUMessageInputMode)mode message:(SBDBaseMessage * _Nullable)message;
 - (void)messageInputViewDidStartTyping;
 - (void)messageInputViewDidEndTyping;
+@end
+
+
+/// The <code>UIView</code> conforming to <code>SBUViewLifeCycle</code>
+/// since:
+/// 2.2.0
+IB_DESIGNABLE
+SWIFT_CLASS("_TtC13SendBirdUIKit7SBUView")
+@interface SBUView : UIView
+/// Initializes <code>UIView</code> and set up subviews, auto layouts and actions for SendBirdUIKit.
+- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+/// Initializes <code>UIView</code> and set up subviews, auto layouts and actions for SendBirdUIKit.
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithFrame:'");
+/// Lays out subviews and set up styles for SendBirdUIKit.
+- (void)layoutSubviews;
+@end
+
+
+SWIFT_CLASS("_TtC13SendBirdUIKit22SBUBaseFileContentView")
+@interface SBUBaseFileContentView : SBUView
+@property (nonatomic, strong) SBUMessageCellTheme * _Nonnull theme;
+@property (nonatomic, strong) SBDFileMessage * _Null_unspecified message;
+@property (nonatomic) enum MessagePosition position;
+- (void)configureWithMessage:(SBDFileMessage * _Nonnull)message position:(enum MessagePosition)position;
+- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
 @end
 
 
@@ -7030,13 +7144,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 @end
 
 
-@interface SBUChannelListViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBDConnectionDelegate>
-- (void)didSucceedReconnection;
+@interface SBUChannelListViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUEmptyViewDelegate>
+- (void)didSelectRetry;
 @end
 
 
-@interface SBUChannelListViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUEmptyViewDelegate>
-- (void)didSelectRetry;
+@interface SBUChannelListViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBDConnectionDelegate>
+- (void)didSucceedReconnection;
 @end
 
 
@@ -7488,12 +7602,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)messageInputViewDidEndTyping;
 @end
 
-@class UIDocumentInteractionController;
-
-@interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIDocumentInteractionControllerDelegate>
-- (UIViewController * _Nonnull)documentInteractionControllerViewControllerForPreview:(UIDocumentInteractionController * _Nonnull)controller SWIFT_WARN_UNUSED_RESULT;
-@end
-
 @class SBUQuotedBaseMessageView;
 
 SWIFT_PROTOCOL("_TtP13SendBirdUIKit28SBUQuotedMessageViewDelegate_")
@@ -7509,6 +7617,12 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit28SBUQuotedMessageViewDelegate_")
 
 @interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBDConnectionDelegate>
 - (void)didSucceedReconnection;
+@end
+
+@class UIDocumentInteractionController;
+
+@interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIDocumentInteractionControllerDelegate>
+- (UIViewController * _Nonnull)documentInteractionControllerViewControllerForPreview:(UIDocumentInteractionController * _Nonnull)controller SWIFT_WARN_UNUSED_RESULT;
 @end
 
 @class SBDReactionEvent;
@@ -7641,6 +7755,22 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIColor * _Nonnull hig
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
+@class UIStackView;
+@class UIImageView;
+
+SWIFT_CLASS("_TtC13SendBirdUIKit20SBUCommonContentView")
+@interface SBUCommonContentView : SBUBaseFileContentView
+@property (nonatomic, strong) UIStackView * _Nonnull stackView;
+@property (nonatomic, strong) UIImageView * _Nonnull fileImageView;
+@property (nonatomic, strong) UILabel * _Nonnull fileNameLabel;
+- (void)setupViews;
+- (void)setupAutolayout;
+- (void)setupStyles;
+- (void)configureWithMessage:(SBDFileMessage * _Nonnull)message position:(enum MessagePosition)position highlight:(BOOL)highlight;
+- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+@end
+
 
 
 SWIFT_CLASS("_TtC13SendBirdUIKit17SBUComponentTheme")
@@ -7730,7 +7860,6 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) SBUComponent
 @end
 
 @protocol SBUQuotedMessageViewProtocol;
-@class UIStackView;
 @class SBUSelectableStackView;
 @class UILongPressGestureRecognizer;
 @class UITapGestureRecognizer;
@@ -7922,7 +8051,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit15SBUEmojiManager")
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
-@class UIImageView;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit12SBUEmptyView")
 @interface SBUEmptyView : UIView
@@ -7957,6 +8085,7 @@ IB_DESIGNABLE
 SWIFT_CLASS("_TtC13SendBirdUIKit18SBUFileMessageCell")
 @interface SBUFileMessageCell : SBUContentBaseMessageCell
 @property (nonatomic, readonly, strong) SBDFileMessage * _Nullable fileMessage;
+@property (nonatomic, strong) SBUBaseFileContentView * _Nonnull baseFileContentView;
 - (void)setupViews;
 - (void)setupStyles;
 - (void)configureWith:(SBUBaseMessageCellParams * _Nonnull)configuration;
@@ -8179,6 +8308,12 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) SBUUser * _Nullable Cu
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL UsingMessageGrouping;)
 + (BOOL)UsingMessageGrouping SWIFT_WARN_UNUSED_RESULT;
 + (void)setUsingMessageGrouping:(BOOL)value;
+/// If it’s <code>true</code>, uses <code>PHPickerViewController</code> instead of <code>UIImagePickerController</code> when access to the photo library for sending file message.
+/// since:
+/// 2.2.3
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL UsingPHPicker;)
++ (BOOL)UsingPHPicker SWIFT_WARN_UNUSED_RESULT;
++ (void)setUsingPHPicker:(BOOL)value;
 /// If this value is enabled, when you click on a user image, the user profile screen is displayed.
 /// since:
 /// 1.2.2
@@ -8381,6 +8516,20 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UIImage * _Nonnull ico
 /// 2.1.0
 + (void)restoreDefaultIcons;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+@end
+
+
+SWIFT_CLASS("_TtC13SendBirdUIKit19SBUImageContentView")
+@interface SBUImageContentView : SBUBaseFileContentView
+@property (nonatomic, strong) UIImageView * _Nonnull imageView;
+@property (nonatomic, strong) UIImageView * _Nonnull iconImageView;
+- (void)setupViews;
+- (void)setupAutolayout;
+- (void)configureWithMessage:(SBDFileMessage * _Nonnull)message position:(enum MessagePosition)position;
+- (void)setFileIcon;
+- (void)resizeImageViewBy:(CGSize)size;
+- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
 @end
 
 
@@ -8871,15 +9020,15 @@ SWIFT_CLASS("_TtC13SendBirdUIKit27SBUMemberListViewController")
 @end
 
 
-@interface SBUMemberListViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUUserProfileViewDelegate>
-- (void)didSelectMessageWithUserId:(NSString * _Nullable)userId;
-- (void)didSelectClose;
-@end
-
-
 @interface SBUMemberListViewController (SWIFT_EXTENSION(SendBirdUIKit))
 - (BOOL)shouldShowLoadingIndicator;
 - (void)shouldDismissLoadingIndicator;
+@end
+
+
+@interface SBUMemberListViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUUserProfileViewDelegate>
+- (void)didSelectMessageWithUserId:(NSString * _Nullable)userId;
+- (void)didSelectClose;
 @end
 
 
@@ -9128,22 +9277,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit19SBUMessageInputView")
 @end
 
 
-
-
-/// The <code>UIView</code> conforming to <code>SBUViewLifeCycle</code>
-/// since:
-/// 2.2.0
-IB_DESIGNABLE
-SWIFT_CLASS("_TtC13SendBirdUIKit7SBUView")
-@interface SBUView : UIView
-/// Initializes <code>UIView</code> and set up subviews, auto layouts and actions for SendBirdUIKit.
-- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
-/// Initializes <code>UIView</code> and set up subviews, auto layouts and actions for SendBirdUIKit.
-- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
-- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'initWithFrame:'");
-/// Lays out subviews and set up styles for SendBirdUIKit.
-- (void)layoutSubviews;
-@end
 
 
 SWIFT_CLASS("_TtC13SendBirdUIKit21SBUMessageProfileView")
@@ -9587,6 +9720,16 @@ SWIFT_CLASS("_TtC13SendBirdUIKit30SBUOpenChannelAdminMessageCell")
 
 
 
+SWIFT_CLASS("_TtC13SendBirdUIKit31SBUOpenChannelCommonContentView")
+@interface SBUOpenChannelCommonContentView : SBUCommonContentView
+- (void)setupAutolayout;
+- (void)setupStyles;
+- (void)configureWithMessage:(SBDFileMessage * _Nonnull)message position:(enum MessagePosition)position highlight:(BOOL)highlight;
+- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+@end
+
+
 /// It is a base class used in message cell with contents.
 /// since:
 /// 2.0.0
@@ -9622,6 +9765,7 @@ IB_DESIGNABLE
 SWIFT_CLASS("_TtC13SendBirdUIKit29SBUOpenChannelFileMessageCell")
 @interface SBUOpenChannelFileMessageCell : SBUOpenChannelContentBaseMessageCell
 @property (nonatomic, readonly, strong) SBDFileMessage * _Nullable fileMessage;
+@property (nonatomic, strong) SBUBaseFileContentView * _Nonnull baseFileContentView;
 - (void)setupViews;
 - (void)setupAutolayout;
 - (void)setupActions;
