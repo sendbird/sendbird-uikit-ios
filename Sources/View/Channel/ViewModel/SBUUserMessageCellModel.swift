@@ -33,8 +33,12 @@ public struct SBUUserMessageCellModel {
         }
         
         let theme = isOverlay ? SBUTheme.overlayTheme.messageCellTheme : SBUTheme.messageCellTheme
-        let font = UIFont.preferredFont(forTextStyle: .body)
         
+        let metrics = UIFontMetrics(forTextStyle: .body)
+        let desc = UIFontDescriptor.preferredFontDescriptor(withTextStyle: .body)
+        let font = UIFont.systemFont(ofSize: desc.pointSize, weight: .regular)
+        let finalFont = metrics.scaledFont(for: font, maximumPointSize: 30)
+                
         var editTextColor: UIColor?
         var normalTextColor: UIColor
         var highlightTextColor: UIColor
@@ -61,7 +65,7 @@ public struct SBUUserMessageCellModel {
         let attributedString = NSMutableAttributedString(
             string: text,
             attributes: [
-                .font: font,
+                .font: finalFont,
                 .paragraphStyle: paragraphStyle,
                 .foregroundColor: normalTextColor
             ])
