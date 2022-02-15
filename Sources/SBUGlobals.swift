@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Photos
 
 @objcMembers
 public class SBUGlobals: NSObject {
@@ -28,7 +29,13 @@ public class SBUGlobals: NSObject {
     // MARK: - PHPickerViewController
     /// If it's `true`, uses `PHPickerViewController` instead of `UIImagePickerController` when access to the photo library for sending file message.
     /// - Since: 2.2.3
+    @available(iOS 14, *)
     public static var UsingPHPicker: Bool = false
+    
+    /// The level of access to the photo library. The default value is `.readWrite`.
+    /// - Since: 2.2.4
+    @available(iOS 14, *)
+    public static var photoLibraryAccessLevel: PHAccessLevel = .readWrite
     
     // MARK: - Reply Type
     /// If this value is enabled, replying features are activated.

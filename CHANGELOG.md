@@ -1,5 +1,9 @@
 # Change Log
 
+### v2.2.4 (Feb 15, 2022)
+* Added `photoLibraryAccessLevel` to `SBUGlobals`
+* Improved stabilities
+
 ### v2.2.3 (Feb 3, 2022)
 * Added `PHPickerViewControllerDelegate` to `SBUBaseChannelViewController`
     * Added `picker(_:didFinishPicking:)` 

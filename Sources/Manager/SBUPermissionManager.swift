@@ -14,29 +14,30 @@ class SBUPermissionManager {
     static let shared = SBUPermissionManager()
     private init() {}
     
-//    @available(iOS 14, *)
-//    func requestPhotoAccessIfNeeded(level: PHAccessLevel, completion: @escaping (Bool) -> ()) {
-//        let granted = PHPhotoLibrary.authorizationStatus(for: level)
-//        if (granted != .authorized) {
-//            PHPhotoLibrary.requestAuthorization(for: level) { (status: PHAuthorizationStatus) -> Void in
-//                completion(status != .authorized)
-//            }
-//        } else {
-//            completion(true)
-//        }
-//    }
-    
     func requestPhotoAccessIfNeeded(completion: @escaping (Bool) -> ()) {
-        let granted = PHPhotoLibrary.authorizationStatus()
-        if (granted != .authorized) {
-            PHPhotoLibrary.requestAuthorization { (status: PHAuthorizationStatus) -> Void in
-                DispatchQueue.main.async {
-                    completion(status == .authorized)
-                }
-                
-            }
+        var granted: PHAuthorizationStatus
+        if #available(iOS 14, *) {
+            granted = PHPhotoLibrary.authorizationStatus(for: SBUGlobals.photoLibraryAccessLevel)
         } else {
-            completion(true)
+            granted = PHPhotoLibrary.authorizationStatus()
+        }
+        switch granted {
+            case .authorized, .limited:
+                completion(true)
+            default:
+                PHPhotoLibrary.requestAuthorization { (status: PHAuthorizationStatus) -> Void in
+                    DispatchQueue.main.async {
+                        var isAccessible: Bool
+                        
+                        if #available(iOS 14, *) {
+                            isAccessible = status == .authorized || status == .limited
+                        } else {
+                            isAccessible = status == .authorized
+                        }
+                        completion(isAccessible)
+                    }
+                    
+                }
         }
     }
     

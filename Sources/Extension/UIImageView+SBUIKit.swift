@@ -61,16 +61,11 @@ internal extension UIImageView {
     // When failed, return error, like failure?(error)
     static let error = NSError(domain:"com.sendbird.uikit", code: -1, userInfo: nil)
 
-    func createFileName(urlString: String) -> String {
-        let filename = "\(urlString.persistantHash)"
-        return filename
-    }
-    
     func loadOriginalImage(urlString: String,
                            errorImage: UIImage? = nil,
                            completion: ((Bool) -> Void)? = nil) -> URLSessionTask? {
         
-        let fileName = self.createFileName(urlString: urlString)
+        let fileName = SBUCacheManager.createHashName(urlString: urlString)
         if let image = SBUCacheManager.getImage(fileName: fileName) {
             self.setImage(image, completion: completion)
             return nil
@@ -110,7 +105,7 @@ internal extension UIImageView {
     func loadVideoThumbnailImage(urlString: String,
                                  errorImage: UIImage? = nil,
                                  completion: ((Bool) -> Void)? = nil) -> URLSessionTask? {
-        let fileName = self.createFileName(urlString: urlString)
+        let fileName = SBUCacheManager.createHashName(urlString: urlString)
         if let image = SBUCacheManager.getImage(fileName: fileName) {
             self.setImage(image, completion: completion)
             return nil
@@ -157,7 +152,7 @@ internal extension UIImageView {
                             thumbnailSize: CGSize? = SBUConstant.thumbnailSize,
                             completion: ((Bool) -> Void)? = nil) -> URLSessionTask? {
         
-        let fileName = self.createFileName(urlString: urlString)
+        let fileName = SBUCacheManager.createHashName(urlString: urlString)
         let thumbnailFileName = "thumb_" + fileName
         
         // Load thumbnail cacheImage

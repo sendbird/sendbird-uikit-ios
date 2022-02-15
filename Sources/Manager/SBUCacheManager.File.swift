@@ -30,7 +30,7 @@ extension SBUCacheManager {
         return nil
     }
     
-    static func saveFileIfNeeded(url: URL, fileName: String) {
+    static func saveFileIfNeeded(url: URL, fileName: String, completionHandler: ((String?) -> Void)? = nil) {
         if let filePath = self.generateFilePath(url: url, fileName: fileName) {
             if SBUCacheManager.isFileExist(at: filePath) == false {
                 SBUCacheManager.fileCacheQueue.async {
@@ -38,15 +38,21 @@ extension SBUCacheManager {
                         let urlData = try Data(contentsOf: url)
                         try urlData.write(to: URL(fileURLWithPath: filePath))
                         SBULog.info("[Succeed] File is saved.")
+                        completionHandler?(filePath)
                     } catch {
                         SBULog.error("[Failed] File is saved: \(error)")
+                        completionHandler?(nil)
                     }
                 }
+            } else {
+                completionHandler?(filePath)
             }
+        } else {
+            completionHandler?(nil)
         }
     }
     
-    static fileprivate func generateFilePath(url: URL, fileName: String) -> String? {
+    static func generateFilePath(url: URL, fileName: String) -> String? {
         let additionalPath = "\(url.absoluteString.persistantHash)"
         
         let documentsPath = NSSearchPathForDirectoriesInDomains(

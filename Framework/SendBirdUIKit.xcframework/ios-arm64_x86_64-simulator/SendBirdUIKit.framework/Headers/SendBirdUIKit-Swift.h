@@ -193,6 +193,7 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 @import CoreGraphics;
 @import Foundation;
 @import ObjectiveC;
+@import Photos;
 @import SendBirdSDK;
 @import UIKit;
 #endif
@@ -2669,9 +2670,15 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL UsingMessageGrouping;)
 /// If it’s <code>true</code>, uses <code>PHPickerViewController</code> instead of <code>UIImagePickerController</code> when access to the photo library for sending file message.
 /// since:
 /// 2.2.3
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL UsingPHPicker;)
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL UsingPHPicker SWIFT_AVAILABILITY(ios,introduced=14);)
 + (BOOL)UsingPHPicker SWIFT_WARN_UNUSED_RESULT;
 + (void)setUsingPHPicker:(BOOL)value;
+/// The level of access to the photo library. The default value is <code>.readWrite</code>.
+/// since:
+/// 2.2.4
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class) PHAccessLevel photoLibraryAccessLevel SWIFT_AVAILABILITY(ios,introduced=14);)
++ (PHAccessLevel)photoLibraryAccessLevel SWIFT_WARN_UNUSED_RESULT;
++ (void)setPhotoLibraryAccessLevel:(PHAccessLevel)value;
 /// If this value is enabled, when you click on a user image, the user profile screen is displayed.
 /// since:
 /// 1.2.2
@@ -5835,6 +5842,7 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 @import CoreGraphics;
 @import Foundation;
 @import ObjectiveC;
+@import Photos;
 @import SendBirdSDK;
 @import UIKit;
 #endif
@@ -8311,9 +8319,15 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL UsingMessageGrouping;)
 /// If it’s <code>true</code>, uses <code>PHPickerViewController</code> instead of <code>UIImagePickerController</code> when access to the photo library for sending file message.
 /// since:
 /// 2.2.3
-SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL UsingPHPicker;)
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL UsingPHPicker SWIFT_AVAILABILITY(ios,introduced=14);)
 + (BOOL)UsingPHPicker SWIFT_WARN_UNUSED_RESULT;
 + (void)setUsingPHPicker:(BOOL)value;
+/// The level of access to the photo library. The default value is <code>.readWrite</code>.
+/// since:
+/// 2.2.4
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class) PHAccessLevel photoLibraryAccessLevel SWIFT_AVAILABILITY(ios,introduced=14);)
++ (PHAccessLevel)photoLibraryAccessLevel SWIFT_WARN_UNUSED_RESULT;
++ (void)setPhotoLibraryAccessLevel:(PHAccessLevel)value;
 /// If this value is enabled, when you click on a user image, the user profile screen is displayed.
 /// since:
 /// 1.2.2

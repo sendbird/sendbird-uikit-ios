@@ -49,6 +49,10 @@ class SBUCacheManager {
     static func hasImage(fileName: String) -> Bool {
         return memoryCache.hasImage(key: fileName) ? true : diskCache.hasImage(key: fileName)
     }
+    
+    static func createHashName(urlString: String) -> String {
+        return "\(urlString.persistantHash)"
+    }
 }
 
 public struct DiskCache {

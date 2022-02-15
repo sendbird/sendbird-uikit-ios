@@ -91,6 +91,7 @@ class SBUChannelListViewModel: SBULoadableViewModel {
     func reset() {
         self.channelListQuery = nil
         self.channelCollection?.dispose()
+        self.channelCollection = nil
         self.lastUpdatedToken = nil
     }
     

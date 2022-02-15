@@ -2009,7 +2009,10 @@ extension SendBirdUIKit.SBUCreateChannelViewController {
   @objc public static var AccessToken: Swift.String?
   @objc public static var CurrentUser: SendBirdUIKit.SBUUser?
   @objc public static var UsingMessageGrouping: Swift.Bool
-  @objc public static var UsingPHPicker: Swift.Bool
+  @objc @available(iOS 14, *)
+  public static var UsingPHPicker: Swift.Bool
+  @objc @available(iOS 14, *)
+  public static var photoLibraryAccessLevel: Photos.PHAccessLevel
   public static var ReplyTypeToUse: SendBirdUIKit.SBUReplyType
   @objc public static var UsingUserProfile: Swift.Bool
   @objc public static var UsingUserProfileInOpenChannel: Swift.Bool
