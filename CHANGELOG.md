@@ -1,5 +1,8 @@
 # Change Log
 
+### v2.1.17 (Mar 2, 2022)
+* Updated chat SDK to **v3.1.5**
+
 ### v2.1.16 (Nov 16, 2021)
 * Updated chat SDK Swift package to **v3.0.208**
 

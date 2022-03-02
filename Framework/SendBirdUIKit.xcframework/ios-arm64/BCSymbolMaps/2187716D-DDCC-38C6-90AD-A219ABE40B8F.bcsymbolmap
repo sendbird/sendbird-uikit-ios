@@ -2,8 +2,8 @@ BCSymbolMap Version: 2.0
 Apple clang version 13.0.0 (clang-1300.0.29.3)
 /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator15.0.sdk
 iPhoneSimulator15.0.sdk
-/Users/jedgyeong/Library/Developer/Xcode/DerivedData/SendBirdSDK-hixhuqjxcnpbpzgkmdzuzvdruxxn/ArchiveIntermediates/SendBirdSDK/IntermediateBuildFilesPath/SendBirdSDK.build/Release-iphonesimulator/SendBirdSDK.build/DerivedSources/SendBirdSDK_vers.c
-/Users/jedgyeong/git/messaging-ios
+/Users/celine.moon/Library/Developer/Xcode/DerivedData/SendBirdSDK-bksuyzasaulutbfrxwpmjhqsykue/ArchiveIntermediates/SendBirdSDK/IntermediateBuildFilesPath/SendBirdSDK.build/Release-iphonesimulator/SendBirdSDK.build/DerivedSources/SendBirdSDK_vers.c
+/Users/celine.moon/Programming/messaging-ios
 -[SBDChannelSyncManager init]
 -[SBDChannelSyncManager dealloc]
 -[SBDChannelSyncManager dispose]
@@ -170,7 +170,7 @@ _OBJC_IVAR_$_SBDChannelSyncManager._changeLogsPagers
 __OBJC_$_INSTANCE_VARIABLES_SBDChannelSyncManager
 __OBJC_$_PROP_LIST_SBDChannelSyncManager
 __OBJC_CLASS_RO_$_SBDChannelSyncManager
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDChannelSyncManager.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDChannelSyncManager.m
 SendBirdSDK/SBDChannelSyncManager.m
 __52-[SBDChannelSyncManager requestChangeLogsWithOrder:]_block_invoke
 __destroy_helper_block_e8_32s
@@ -194,7 +194,7 @@ _OBJC_IVAR_$_SBDPollRetrievalParams._pollId
 __OBJC_$_INSTANCE_VARIABLES_SBDPollRetrievalParams
 __OBJC_$_PROP_LIST_SBDPollRetrievalParams
 __OBJC_CLASS_RO_$_SBDPollRetrievalParams
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/Poll/SBDPollRetrievalParams.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/Poll/SBDPollRetrievalParams.m
 SendBirdSDK/Poll/SBDPollRetrievalParams.m
 SendBirdSDK/Poll/SBDPollRetrievalParams.h
 -[SBDPair initWithFirstObject:secondObject:]
@@ -210,13 +210,13 @@ _OBJC_IVAR_$_SBDPair._second
 __OBJC_$_INSTANCE_VARIABLES_SBDPair
 __OBJC_$_PROP_LIST_SBDPair
 __OBJC_CLASS_RO_$_SBDPair
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDPair.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDPair.m
 SendBirdSDK/SBDPair.m
 SendBirdSDK/SBDPair.h
 +[NSRunLoop(SBDTimer) SBDTimer_runLoop]
 __OBJC_$_CATEGORY_CLASS_METHODS_NSRunLoop_$_SBDTimer
 __OBJC_$_CATEGORY_NSRunLoop_$_SBDTimer
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/NSRunLoop+SBDTimer.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/NSRunLoop+SBDTimer.m
 SendBirdSDK/NSRunLoop+SBDTimer.m
 -[SBDMutableOrderedDictionary init]
 -[SBDMutableOrderedDictionary addObject:forKey:]
@@ -251,7 +251,7 @@ _OBJC_IVAR_$_SBDMutableOrderedDictionary._lock
 __OBJC_$_INSTANCE_VARIABLES_SBDMutableOrderedDictionary
 __OBJC_$_PROP_LIST_SBDMutableOrderedDictionary
 __OBJC_CLASS_RO_$_SBDMutableOrderedDictionary
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDMutableOrderedDictionary.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDMutableOrderedDictionary.m
 SendBirdSDK/SBDMutableOrderedDictionary.m
 -[SBDApplicationUserListQuery setUserIdsFilter:]
 -[SBDApplicationUserListQuery setNicknameStartsWithFilter:]
@@ -278,12 +278,12 @@ __OBJC_$_INSTANCE_METHODS_SBDApplicationUserListQuery
 __OBJC_$_INSTANCE_VARIABLES_SBDApplicationUserListQuery
 __OBJC_$_PROP_LIST_SBDApplicationUserListQuery
 __OBJC_CLASS_RO_$_SBDApplicationUserListQuery
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDApplicationUserListQuery.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDApplicationUserListQuery.m
 SendBirdSDK/SBDApplicationUserListQuery.m
 SendBirdSDK/SBDApplicationUserListQuery.h
 __OBJC_METACLASS_RO_$_SBDMutedUserListQuery
 __OBJC_CLASS_RO_$_SBDMutedUserListQuery
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDMutedUserListQuery.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDMutedUserListQuery.m
 -[SBDDeliveryStatus initWithDictionary:]
 -[SBDDeliveryStatus channelUrl]
 -[SBDDeliveryStatus setChannelUrl:]
@@ -307,7 +307,7 @@ _OBJC_IVAR_$_SBDDeliveryStatus._updatedDeliveryReceipt
 __OBJC_$_INSTANCE_VARIABLES_SBDDeliveryStatus
 __OBJC_$_PROP_LIST_SBDDeliveryStatus
 __OBJC_CLASS_RO_$_SBDDeliveryStatus
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDDeliveryStatus.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDDeliveryStatus.m
 SendBirdSDK/SBDDeliveryStatus.m
 SendBirdSDK/SBDDeliveryStatus.h
 -[SBDFriendListQuery init]
@@ -352,7 +352,7 @@ _OBJC_IVAR_$_SBDFriendListQuery._token
 __OBJC_$_INSTANCE_VARIABLES_SBDFriendListQuery
 __OBJC_$_PROP_LIST_SBDFriendListQuery
 __OBJC_CLASS_RO_$_SBDFriendListQuery
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDFriendListQuery.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDFriendListQuery.m
 SendBirdSDK/SBDFriendListQuery.m
 SendBirdSDK/SBDFriendListQuery.h
 __copy_helper_block_e8_32s40b
@@ -426,7 +426,7 @@ __OBJC_$_INSTANCE_METHODS_SBDUserMessage
 __OBJC_$_INSTANCE_VARIABLES_SBDUserMessage
 __OBJC_$_PROP_LIST_SBDUserMessage
 __OBJC_CLASS_RO_$_SBDUserMessage
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDUserMessage.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDUserMessage.m
 SendBirdSDK/SBDUserMessage.m
 SendBirdSDK/SBDUserMessage.h
 +[SBDLocalCachePrefs clearAll]
@@ -456,7 +456,7 @@ _OBJC_IVAR_$_SBDLocalCachePrefs._userDefaults
 __OBJC_$_INSTANCE_VARIABLES_SBDLocalCachePrefs
 __OBJC_$_PROP_LIST_SBDLocalCachePrefs
 __OBJC_CLASS_RO_$_SBDLocalCachePrefs
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDLocalCachePrefs.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDLocalCachePrefs.m
 SendBirdSDK/SBDLocalCachePrefs.m
 __36+[SBDLocalCachePrefs sharedInstance]_block_invoke
 +[NSJSONSerialization(SBDObject) SBDJSONObjectWithData:options:error:]
@@ -468,7 +468,7 @@ _OBJC_SELECTOR_REFERENCES_.15
 _OBJC_SELECTOR_REFERENCES_.17
 __OBJC_$_CATEGORY_CLASS_METHODS_NSJSONSerialization_$_SBDObject
 __OBJC_$_CATEGORY_NSJSONSerialization_$_SBDObject
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/NSJSONSerialization+SBDObject.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/NSJSONSerialization+SBDObject.m
 SendBirdSDK/NSJSONSerialization+SBDObject.m
 -[SBDChannelRepository initWithGroupChannelListQuery:]
 -[SBDChannelRepository loadWithOffset:]
@@ -507,7 +507,7 @@ _OBJC_IVAR_$_SBDChannelRepository._changeLogsPager
 __OBJC_$_INSTANCE_VARIABLES_SBDChannelRepository
 __OBJC_$_PROP_LIST_SBDChannelRepository
 __OBJC_CLASS_RO_$_SBDChannelRepository
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDChannelRepository.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDChannelRepository.m
 SendBirdSDK/SBDChannelRepository.m
 __destroy_helper_block_e8_32w
 __copy_helper_block_e8_32w
@@ -569,7 +569,7 @@ _OBJC_IVAR_$_SBDOpenChannelListQuery._token
 __OBJC_$_INSTANCE_VARIABLES_SBDOpenChannelListQuery
 __OBJC_$_PROP_LIST_SBDOpenChannelListQuery
 __OBJC_CLASS_RO_$_SBDOpenChannelListQuery
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDOpenChannelListQuery.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDOpenChannelListQuery.m
 SendBirdSDK/SBDOpenChannelListQuery.m
 SendBirdSDK/SBDOpenChannelListQuery.h
 __61-[SBDOpenChannelListQuery loadNextPageWithCompletionHandler:]_block_invoke_4
@@ -579,7 +579,7 @@ __61-[SBDOpenChannelListQuery loadNextPageWithCompletionHandler:]_block_invoke.4
 __61-[SBDOpenChannelListQuery loadNextPageWithCompletionHandler:]_block_invoke.27
 __61-[SBDOpenChannelListQuery loadNextPageWithCompletionHandler:]_block_invoke
 _OBJC_CLASSLIST_REFERENCES_$_.27
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/WebSocket/SocketRocket/Internal/Utilities/SendBird_SRURLUtilities.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/WebSocket/SocketRocket/Internal/Utilities/SendBird_SRURLUtilities.m
 SendBird_SRStreamNetworkServiceTypeFromURLRequest
 SendBirdSDK/WebSocket/SocketRocket/Internal/Utilities/SendBird_SRURLUtilities.m
 SendBird_SRBasicAuthorizationHeaderFromURL
@@ -686,7 +686,7 @@ _OBJC_IVAR_$_SBDUserListQuery._nicknameStartsWith
 __OBJC_$_INSTANCE_VARIABLES_SBDUserListQuery
 __OBJC_$_PROP_LIST_SBDUserListQuery
 __OBJC_CLASS_RO_$_SBDUserListQuery
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDUserListQuery.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDUserListQuery.m
 SendBirdSDK/SBDUserListQuery.m
 SendBirdSDK/SBDUserListQuery.h
 __68-[SBDUserListQuery loadBannedUserListNextPageWithCompletionHandler:]_block_invoke_6
@@ -724,7 +724,7 @@ __65-[SBDUserListQuery loadAllUserListNextPageWithCompletionHandler:]_block_invo
 -[NSString(Utils) toDictionary]
 __OBJC_$_CATEGORY_INSTANCE_METHODS_NSString_$_Utils
 __OBJC_$_CATEGORY_NSString_$_Utils
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/NSString+Utils.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/NSString+Utils.m
 SendBirdSDK/NSString+Utils.m
 -[SBDUpdatedVoteCount initWithDictionary:]
 -[SBDUpdatedVoteCount description]
@@ -745,7 +745,7 @@ _OBJC_IVAR_$_SBDUpdatedVoteCount._voteCount
 __OBJC_$_INSTANCE_VARIABLES_SBDUpdatedVoteCount
 __OBJC_$_PROP_LIST_SBDUpdatedVoteCount
 __OBJC_CLASS_RO_$_SBDUpdatedVoteCount
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/Poll/SBDUpdatedVoteCount.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/Poll/SBDUpdatedVoteCount.m
 SendBirdSDK/Poll/SBDUpdatedVoteCount.m
 SendBirdSDK/Poll/SBDUpdatedVoteCount.h
 __44+[SBDUpdatedVoteCount objectsFromJsonArray:]_block_invoke
@@ -760,12 +760,12 @@ _OBJC_IVAR_$_SendBird_SRIOConsumerPool._poolSize
 _OBJC_IVAR_$_SendBird_SRIOConsumerPool._bufferedConsumers
 __OBJC_$_INSTANCE_VARIABLES_SendBird_SRIOConsumerPool
 __OBJC_CLASS_RO_$_SendBird_SRIOConsumerPool
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/WebSocket/SocketRocket/Internal/IOConsumer/SendBird_SRIOConsumerPool.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/WebSocket/SocketRocket/Internal/IOConsumer/SendBird_SRIOConsumerPool.m
 SendBirdSDK/WebSocket/SocketRocket/Internal/IOConsumer/SendBird_SRIOConsumerPool.m
 +[NSRunLoop(SendBird_SRWebSocket) SendBird_SR_networkRunLoop]
 __OBJC_$_CATEGORY_CLASS_METHODS_NSRunLoop_$_SendBird_SRWebSocket
 __OBJC_$_CATEGORY_NSRunLoop_$_SendBird_SRWebSocket
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/WebSocket/SocketRocket/NSRunLoop+SendBird_SRWebSocket.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/WebSocket/SocketRocket/NSRunLoop+SendBird_SRWebSocket.m
 SendBirdSDK/WebSocket/SocketRocket/NSRunLoop+SendBird_SRWebSocket.m
 import_NSRunLoop_SendBird_SRWebSocket
 +[SendBird_SRSecurityPolicy defaultPolicy]
@@ -782,7 +782,7 @@ _OBJC_IVAR_$_SendBird_SRSecurityPolicy._certificateChainValidationEnabled
 __OBJC_$_INSTANCE_VARIABLES_SendBird_SRSecurityPolicy
 __OBJC_$_PROP_LIST_SendBird_SRSecurityPolicy
 __OBJC_CLASS_RO_$_SendBird_SRSecurityPolicy
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/WebSocket/SocketRocket/SendBird_SRSecurityPolicy.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/WebSocket/SocketRocket/SendBird_SRSecurityPolicy.m
 SendBirdSDK/WebSocket/SocketRocket/SendBird_SRSecurityPolicy.m
 +[SBDTimer scheduledTimerWithTimeInterval:target:selector:userInfo:repeat:onBoard:]
 +[SBDTimer scheduledTimerWithTimeInterval:target:selector:userInfo:repeat:identifier:onBoard:]
@@ -839,7 +839,7 @@ _OBJC_IVAR_$_SBDTimer._queue
 __OBJC_$_INSTANCE_VARIABLES_SBDTimer
 __OBJC_$_PROP_LIST_SBDTimer
 __OBJC_CLASS_RO_$_SBDTimer
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDTimer.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDTimer.m
 SendBirdSDK/SBDTimer.m
 SendBirdSDK/SBDTimer.h
 __copy_helper_block_e8_32s40s
@@ -865,7 +865,7 @@ _OBJC_IVAR_$_SBDPollUpdateEvent._timestamp
 __OBJC_$_INSTANCE_VARIABLES_SBDPollUpdateEvent
 __OBJC_$_PROP_LIST_SBDPollUpdateEvent
 __OBJC_CLASS_RO_$_SBDPollUpdateEvent
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/Poll/SBDPollUpdateEvent.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/Poll/SBDPollUpdateEvent.m
 SendBirdSDK/Poll/SBDPollUpdateEvent.m
 SendBirdSDK/Poll/SBDPollUpdateEvent.h
 -[SBDReaction init]
@@ -899,10 +899,10 @@ _OBJC_IVAR_$_SBDReaction._mutableReactionUpdatedAt
 __OBJC_$_INSTANCE_VARIABLES_SBDReaction
 __OBJC_$_PROP_LIST_SBDReaction
 __OBJC_CLASS_RO_$_SBDReaction
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDReaction.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDReaction.m
 SendBirdSDK/SBDReaction.m
 SendBirdSDK/SBDReaction.h
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/WebSocket/SocketRocket/Internal/Utilities/SendBird_SRRandom.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/WebSocket/SocketRocket/Internal/Utilities/SendBird_SRRandom.m
 SendBird_SRRandomData
 SendBirdSDK/WebSocket/SocketRocket/Internal/Utilities/SendBird_SRRandom.m
 -[SBDMain init]
@@ -1850,7 +1850,7 @@ _OBJC_IVAR_$_SBDMain._blockBackgroundQueue
 __OBJC_$_INSTANCE_VARIABLES_SBDMain
 __OBJC_$_PROP_LIST_SBDMain
 __OBJC_CLASS_RO_$_SBDMain
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDMain.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDMain.m
 SendBirdSDK/SBDMain.m
 SendBirdSDK/SBDMain.h
 __destroy_helper_block_e8_32s48s
@@ -2070,13 +2070,13 @@ _OBJC_IVAR_$_SBDAppleCriticalAlertOptions._name
 __OBJC_$_INSTANCE_VARIABLES_SBDAppleCriticalAlertOptions
 __OBJC_$_PROP_LIST_SBDAppleCriticalAlertOptions
 __OBJC_CLASS_RO_$_SBDAppleCriticalAlertOptions
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDAppleCriticalAlertOptions.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDAppleCriticalAlertOptions.m
 SendBirdSDK/SBDAppleCriticalAlertOptions.m
 SendBirdSDK/SBDAppleCriticalAlertOptions.h
 -[NSData(SBDInternal) sbd_hexString]
 __OBJC_$_CATEGORY_INSTANCE_METHODS_NSData_$_SBDInternal
 __OBJC_$_CATEGORY_NSData_$_SBDInternal
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/NSData+SBDInternal.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/NSData+SBDInternal.m
 SendBirdSDK/NSData+SBDInternal.m
 -[SBDUnreadItemCount init]
 -[SBDUnreadItemCount initWithDictionary:]
@@ -2124,7 +2124,7 @@ _OBJC_IVAR_$_SBDUnreadItemCount._superInvitationCount
 __OBJC_$_INSTANCE_VARIABLES_SBDUnreadItemCount
 __OBJC_$_PROP_LIST_SBDUnreadItemCount
 __OBJC_CLASS_RO_$_SBDUnreadItemCount
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDUnreadItemCount.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDUnreadItemCount.m
 SendBirdSDK/SBDUnreadItemCount.m
 SendBirdSDK/SBDUnreadItemCount.h
 -[SBDPreviousMessageListQuery initWithChannel:]
@@ -2210,7 +2210,7 @@ _OBJC_IVAR_$_SBDPreviousMessageListQuery._channelType
 __OBJC_$_INSTANCE_VARIABLES_SBDPreviousMessageListQuery
 __OBJC_$_PROP_LIST_SBDPreviousMessageListQuery
 __OBJC_CLASS_RO_$_SBDPreviousMessageListQuery
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDPreviousMessageListQuery.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDPreviousMessageListQuery.m
 SendBirdSDK/SBDPreviousMessageListQuery.m
 SendBirdSDK/SBDPreviousMessageListQuery.h
 __57-[SBDPreviousMessageListQuery loadWithCompletionHandler:]_block_invoke_3
@@ -2250,7 +2250,7 @@ _OBJC_IVAR_$_SBDPollListQuery._token
 __OBJC_$_INSTANCE_VARIABLES_SBDPollListQuery
 __OBJC_$_PROP_LIST_SBDPollListQuery
 __OBJC_CLASS_RO_$_SBDPollListQuery
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDPollListQuery.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDPollListQuery.m
 SendBirdSDK/SBDPollListQuery.m
 SendBirdSDK/SBDPollListQuery.h
 __54-[SBDPollListQuery loadNextPageWithCompletionHandler:]_block_invoke_3
@@ -2266,7 +2266,7 @@ __OBJC_$_CATEGORY_NSURLRequest_$_SendBird_SRWebSocket
 __OBJC_$_CATEGORY_INSTANCE_METHODS_NSMutableURLRequest_$_SendBird_SRWebSocket
 __OBJC_$_PROP_LIST_NSMutableURLRequest_$_SendBird_SRWebSocket
 __OBJC_$_CATEGORY_NSMutableURLRequest_$_SendBird_SRWebSocket
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/WebSocket/SocketRocket/NSURLRequest+SendBird_SRWebSocket.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/WebSocket/SocketRocket/NSURLRequest+SendBird_SRWebSocket.m
 SendBirdSDK/WebSocket/SocketRocket/NSURLRequest+SendBird_SRWebSocket.m
 import_NSURLRequest_SendBird_SRWebSocket
 -[SBDMessageSearchQueryBuilder init]
@@ -2436,7 +2436,7 @@ _OBJC_IVAR_$_SBDMessageSearchQuery._totalCount
 __OBJC_$_INSTANCE_VARIABLES_SBDMessageSearchQuery
 __OBJC_$_PROP_LIST_SBDMessageSearchQuery
 __OBJC_CLASS_RO_$_SBDMessageSearchQuery
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDMessageSearchQuery.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDMessageSearchQuery.m
 SendBirdSDK/SBDMessageSearchQuery.m
 __59-[SBDMessageSearchQuery loadNextPageWithCompletionHandler:]_block_invoke_4
 __59-[SBDMessageSearchQuery loadNextPageWithCompletionHandler:]_block_invoke_3
@@ -2477,7 +2477,7 @@ _OBJC_IVAR_$_SBDMessageListQuery._channel
 __OBJC_$_INSTANCE_VARIABLES_SBDMessageListQuery
 __OBJC_$_PROP_LIST_SBDMessageListQuery
 __OBJC_CLASS_RO_$_SBDMessageListQuery
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDMessageListQuery.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDMessageListQuery.m
 SendBirdSDK/SBDMessageListQuery.m
 __95-[SBDMessageListQuery loadMessagesFromTimestamp:prevLimit:nextLimit:reverse:completionHandler:]_block_invoke_5
 __95-[SBDMessageListQuery loadMessagesFromTimestamp:prevLimit:nextLimit:reverse:completionHandler:]_block_invoke_4
@@ -2530,7 +2530,7 @@ _OBJC_IVAR_$_SBDAppInfo._concurrentCallLimit
 __OBJC_$_INSTANCE_VARIABLES_SBDAppInfo
 __OBJC_$_PROP_LIST_SBDAppInfo
 __OBJC_CLASS_RO_$_SBDAppInfo
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDAppInfo.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDAppInfo.m
 SendBirdSDK/SBDAppInfo.m
 SendBirdSDK/SBDAppInfo.h
 +[SBDMessageDatabase removeAllMessagesWithChannelUrls:]
@@ -2578,7 +2578,7 @@ ___block_descriptor_76_e8_32s40s48s56r64r_e5_v8?0l
 __OBJC_$_CLASS_METHODS_SBDMessageDatabase
 __OBJC_METACLASS_RO_$_SBDMessageDatabase
 __OBJC_CLASS_RO_$_SBDMessageDatabase
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDMessageDatabase.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDMessageDatabase.m
 __destroy_helper_block_e8_32s40s48s56r64r
 __copy_helper_block_e8_32s40s48s56r64r
 __70+[SBDMessageDatabase loadMessagesWithWhereClause:orderByClause:limit:]_block_invoke
@@ -2616,12 +2616,12 @@ _OBJC_IVAR_$_SBDReadStatus._channelType
 __OBJC_$_INSTANCE_VARIABLES_SBDReadStatus
 __OBJC_$_PROP_LIST_SBDReadStatus
 __OBJC_CLASS_RO_$_SBDReadStatus
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDReadStatus.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDReadStatus.m
 SendBirdSDK/SBDReadStatus.m
 SendBirdSDK/SBDReadStatus.h
 _OBJC_CLASSLIST_REFERENCES_$_.1
 _OBJC_CLASSLIST_REFERENCES_$_.4
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/WebSocket/SocketRocket/Internal/Utilities/SendBird_SRError.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/WebSocket/SocketRocket/Internal/Utilities/SendBird_SRError.m
 SendBird_SRHTTPErrorWithCodeDescription
 SendBirdSDK/WebSocket/SocketRocket/Internal/Utilities/SendBird_SRError.m
 SendBird_SRErrorWithCodeDescriptionUnderlyingError
@@ -2645,7 +2645,7 @@ _OBJC_IVAR_$_SBDPollVoteEvent._timestamp
 __OBJC_$_INSTANCE_VARIABLES_SBDPollVoteEvent
 __OBJC_$_PROP_LIST_SBDPollVoteEvent
 __OBJC_CLASS_RO_$_SBDPollVoteEvent
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/Poll/SBDPollVoteEvent.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/Poll/SBDPollVoteEvent.m
 SendBirdSDK/Poll/SBDPollVoteEvent.m
 SendBirdSDK/Poll/SBDPollVoteEvent.h
 -[SBDPollVoterListQuery initWithChannelUrl:pollId:optionId:]
@@ -2686,7 +2686,7 @@ _OBJC_IVAR_$_SBDPollVoterListQuery._token
 __OBJC_$_INSTANCE_VARIABLES_SBDPollVoterListQuery
 __OBJC_$_PROP_LIST_SBDPollVoterListQuery
 __OBJC_CLASS_RO_$_SBDPollVoterListQuery
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDPollVoterListQuery.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDPollVoterListQuery.m
 SendBirdSDK/SBDPollVoterListQuery.m
 SendBirdSDK/SBDPollVoterListQuery.h
 __59-[SBDPollVoterListQuery loadNextPageWithCompletionHandler:]_block_invoke_3
@@ -2697,7 +2697,7 @@ __59-[SBDPollVoterListQuery loadNextPageWithCompletionHandler:]_block_invoke
 -[NSDictionary(SBDQueryString) sbd_buildQueryStringFromParameters]
 __OBJC_$_CATEGORY_INSTANCE_METHODS_NSDictionary_$_SBDQueryString
 __OBJC_$_CATEGORY_NSDictionary_$_SBDQueryString
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/NSDictionary+SBDQueryString.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/NSDictionary+SBDQueryString.m
 SendBirdSDK/NSDictionary+SBDQueryString.m
 -[SBDDatabase setup]
 ___20-[SBDDatabase setup]_block_invoke
@@ -2747,7 +2747,7 @@ _OBJC_IVAR_$_SBDDatabase._db
 __OBJC_$_INSTANCE_VARIABLES_SBDDatabase
 __OBJC_$_PROP_LIST_SBDDatabase
 __OBJC_CLASS_RO_$_SBDDatabase
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDDatabase.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDDatabase.m
 SendBirdSDK/SBDDatabase.m
 SendBirdSDK/SBDDatabase.h
 __31-[SBDDatabase getSqlStatements]_block_invoke
@@ -2776,7 +2776,7 @@ _OBJC_IVAR_$_SBDPlugin._detail
 __OBJC_$_INSTANCE_VARIABLES_SBDPlugin
 __OBJC_$_PROP_LIST_SBDPlugin
 __OBJC_CLASS_RO_$_SBDPlugin
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDPlugin.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDPlugin.m
 SendBirdSDK/SBDPlugin.m
 SendBirdSDK/SBDPlugin.h
 _importCategories
@@ -3031,7 +3031,7 @@ __OBJC_$_INSTANCE_VARIABLES_SendBird_SRWebSocket
 __OBJC_$_PROP_LIST_SendBird_SRWebSocket
 __OBJC_CLASS_RO_$_SendBird_SRWebSocket
 _OBJC_SELECTOR_REFERENCES_.574
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/WebSocket/SocketRocket/SendBird_SRWebSocket.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/WebSocket/SocketRocket/SendBird_SRWebSocket.m
 -[SendBird_SRWebSocket start:].cold.1
 SendBirdSDK/WebSocket/SocketRocket/SendBird_SRWebSocket.m
 -[SendBird_SRWebSocket safeHandleEvent:stream:].cold.1
@@ -3154,7 +3154,7 @@ _OBJC_IVAR_$_SBDGroupChannelMemberListQuery._channelURL
 __OBJC_$_INSTANCE_VARIABLES_SBDGroupChannelMemberListQuery
 __OBJC_$_PROP_LIST_SBDGroupChannelMemberListQuery
 __OBJC_CLASS_RO_$_SBDGroupChannelMemberListQuery
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDGroupChannelMemberListQuery.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDGroupChannelMemberListQuery.m
 SendBirdSDK/SBDGroupChannelMemberListQuery.m
 SendBirdSDK/SBDGroupChannelMemberListQuery.h
 __68-[SBDGroupChannelMemberListQuery loadNextPageWithCompletionHandler:]_block_invoke_4
@@ -3217,7 +3217,7 @@ _OBJC_IVAR_$_SBDMessageSync._nextMessageListParams
 __OBJC_$_INSTANCE_VARIABLES_SBDMessageSync
 __OBJC_$_PROP_LIST_SBDMessageSync
 __OBJC_CLASS_RO_$_SBDMessageSync
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDMessageSync.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDMessageSync.m
 SendBirdSDK/SBDMessageSync.m
 SendBirdSDK/SBDMessageSync.h
 __destroy_helper_block_e8_32s40r48r56r64r72r80r
@@ -3236,7 +3236,7 @@ _OBJC_IVAR_$_SBDMessageContext._source
 __OBJC_$_INSTANCE_VARIABLES_SBDMessageContext
 __OBJC_$_PROP_LIST_SBDMessageContext
 __OBJC_CLASS_RO_$_SBDMessageContext
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDMessageContext.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDMessageContext.m
 SendBirdSDK/SBDMessageContext.h
 SendBirdSDK/SBDMessageContext.m
 +[SBDCallbackBroadcaster notifyChannelChanged:]
@@ -3380,7 +3380,7 @@ ___block_descriptor_41_e8_32s_e5_v8?0l
 __OBJC_$_CLASS_METHODS_SBDCallbackBroadcaster
 __OBJC_METACLASS_RO_$_SBDCallbackBroadcaster
 __OBJC_CLASS_RO_$_SBDCallbackBroadcaster
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDCallbackBroadcaster.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDCallbackBroadcaster.m
 __48+[SBDCallbackBroadcaster notifySessionWasClosed]_block_invoke
 SendBirdSDK/SBDCallbackBroadcaster.m
 __52+[SBDCallbackBroadcaster notifySessionDidHaveError:]_block_invoke
@@ -3474,7 +3474,7 @@ __OBJC_$_CATEGORY_INSTANCE_METHODS_NSString_$_SBDMessage
 __OBJC_$_CATEGORY_NSString_$_SBDMessage
 __OBJC_$_CATEGORY_INSTANCE_METHODS_NSString_$_SendBirdSDK
 __OBJC_$_CATEGORY_NSString_$_SendBirdSDK
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/NSString+SBDMessage.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/NSString+SBDMessage.m
 SendBirdSDK/NSString+SBDMessage.m
 CFStringGetCharacterFromInlineBuffer
 /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator15.0.sdk/System/Library/Frameworks/CoreFoundation.framework/Headers/CFString.h
@@ -3487,7 +3487,7 @@ CFStringInitInlineBuffer
 __OBJC_$_CLASS_METHODS_SBDUtils
 __OBJC_METACLASS_RO_$_SBDUtils
 __OBJC_CLASS_RO_$_SBDUtils
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDUtils.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDUtils.m
 SendBirdSDK/SBDUtils.m
 -[SBDMessageCollection initWithChannel:startingPoint:params:]
 -[SBDMessageCollection startCollectionWithInitPolicy:cacheResultHandler:apiResultHandler:]
@@ -3689,7 +3689,7 @@ __OBJC_$_INSTANCE_METHODS_SBDMessageCollection
 __OBJC_$_INSTANCE_VARIABLES_SBDMessageCollection
 __OBJC_$_PROP_LIST_SBDMessageCollection
 __OBJC_CLASS_RO_$_SBDMessageCollection
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDMessageCollection.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDMessageCollection.m
 SendBirdSDK/SBDMessageCollection.m
 SendBirdSDK/SBDMessageCollection.h
 __46-[SBDMessageCollection didSucceedReconnection]_block_invoke
@@ -3718,7 +3718,7 @@ __90-[SBDMessageCollection startCollectionWithInitPolicy:cacheResultHandler:apiR
 __copy_helper_block_e8_32s40b48s
 __90-[SBDMessageCollection startCollectionWithInitPolicy:cacheResultHandler:apiResultHandler:]_block_invoke_2
 __90-[SBDMessageCollection startCollectionWithInitPolicy:cacheResultHandler:apiResultHandler:]_block_invoke
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/WebSocket/SocketRocket/Internal/Utilities/SendBird_SRSIMDHelpers.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/WebSocket/SocketRocket/Internal/Utilities/SendBird_SRSIMDHelpers.m
 SendBird_SRMaskBytesSIMD
 SendBirdSDK/WebSocket/SocketRocket/Internal/Utilities/SendBird_SRSIMDHelpers.m
 SRMaskBytesManual
@@ -3767,7 +3767,7 @@ _OBJC_IVAR_$_SBDChannelEvent._restrictionData
 __OBJC_$_INSTANCE_VARIABLES_SBDChannelEvent
 __OBJC_$_PROP_LIST_SBDChannelEvent
 __OBJC_CLASS_RO_$_SBDChannelEvent
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDChannelEvent.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDChannelEvent.m
 SendBirdSDK/SBDChannelEvent.m
 SendBirdSDK/SBDChannelEvent.h
 __24-[SBDChannelEvent users]_block_invoke
@@ -3793,7 +3793,7 @@ _OBJC_IVAR_$_SBDMessageDispatcher._queue
 __OBJC_$_INSTANCE_VARIABLES_SBDMessageDispatcher
 __OBJC_$_PROP_LIST_SBDMessageDispatcher
 __OBJC_CLASS_RO_$_SBDMessageDispatcher
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDMessageDispatcher.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDMessageDispatcher.m
 SendBirdSDK/SBDMessageDispatcher.m
 __31-[SBDMessageDispatcher dequeue]_block_invoke
 __37-[SBDMessageDispatcher readyToStart:]_block_invoke
@@ -3832,7 +3832,7 @@ _OBJC_IVAR_$_SBDCachedDataMap._timer
 __OBJC_$_INSTANCE_VARIABLES_SBDCachedDataMap
 __OBJC_$_PROP_LIST_SBDCachedDataMap
 __OBJC_CLASS_RO_$_SBDCachedDataMap
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDCachedDataMap.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDCachedDataMap.m
 SendBirdSDK/SBDCachedDataMap.m
 -[SBDThumbnailSize initWithMaxWidth:maxHeight:]
 +[SBDThumbnailSize makeWithMaxCGSize:]
@@ -3923,7 +3923,7 @@ __OBJC_$_INSTANCE_METHODS_SBDFileMessage
 __OBJC_$_INSTANCE_VARIABLES_SBDFileMessage
 __OBJC_$_PROP_LIST_SBDFileMessage
 __OBJC_CLASS_RO_$_SBDFileMessage
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDFileMessage.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDFileMessage.m
 SendBirdSDK/SBDFileMessage.m
 SendBirdSDK/SBDFileMessage.h
 -[SBDGroupChannelTotalUnreadMessageCountParams init]
@@ -3939,7 +3939,7 @@ _OBJC_IVAR_$_SBDGroupChannelTotalUnreadMessageCountParams._superChannelFilter
 __OBJC_$_INSTANCE_VARIABLES_SBDGroupChannelTotalUnreadMessageCountParams
 __OBJC_$_PROP_LIST_SBDGroupChannelTotalUnreadMessageCountParams
 __OBJC_CLASS_RO_$_SBDGroupChannelTotalUnreadMessageCountParams
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDGroupChannelTotalUnreadMessageCountParams.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDGroupChannelTotalUnreadMessageCountParams.m
 SendBirdSDK/SBDGroupChannelTotalUnreadMessageCountParams.m
 SendBirdSDK/SBDGroupChannelTotalUnreadMessageCountParams.h
 -[SBDCachedData copyWithZone:]
@@ -3962,7 +3962,7 @@ _OBJC_IVAR_$_SBDCachedData._updatedAt
 __OBJC_$_INSTANCE_VARIABLES_SBDCachedData
 __OBJC_$_PROP_LIST_SBDCachedData
 __OBJC_CLASS_RO_$_SBDCachedData
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDCachedData.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDCachedData.m
 SendBirdSDK/SBDCachedData.m
 SendBirdSDK/SBDCachedData.h
 -[SBDSortedMessageList initWithOrder:]
@@ -4022,7 +4022,7 @@ _OBJC_IVAR_$_SBDSortedMessageList._oldestMessage
 __OBJC_$_INSTANCE_VARIABLES_SBDSortedMessageList
 __OBJC_$_PROP_LIST_SBDSortedMessageList
 __OBJC_CLASS_RO_$_SBDSortedMessageList
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDSortedMessageList.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDSortedMessageList.m
 SendBirdSDK/SBDSortedMessageList.m
 SendBirdSDK/SBDSortedMessageList.h
 __38-[SBDSortedMessageList initWithOrder:]_block_invoke
@@ -4041,7 +4041,7 @@ __OBJC_$_CLASS_METHODS_SBDMessageDataSource
 __OBJC_METACLASS_RO_$_SBDMessageDataSource
 __OBJC_$_INSTANCE_METHODS_SBDMessageDataSource
 __OBJC_CLASS_RO_$_SBDMessageDataSource
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDMessageDataSource.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDMessageDataSource.m
 SendBirdSDK/SBDMessageDataSource.m
 __38+[SBDMessageDataSource sharedInstance]_block_invoke
 -[SendBird_SRPinningSecurityPolicy initWithCertificates:]
@@ -4054,7 +4054,7 @@ __OBJC_$_INSTANCE_METHODS_SendBird_SRPinningSecurityPolicy
 __OBJC_$_INSTANCE_VARIABLES_SendBird_SRPinningSecurityPolicy
 __OBJC_$_PROP_LIST_SendBird_SRPinningSecurityPolicy
 __OBJC_CLASS_RO_$_SendBird_SRPinningSecurityPolicy
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/WebSocket/SocketRocket/Internal/Security/SendBird_SRPinningSecurityPolicy.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/WebSocket/SocketRocket/Internal/Security/SendBird_SRPinningSecurityPolicy.m
 SendBirdSDK/WebSocket/SocketRocket/Internal/Security/SendBird_SRPinningSecurityPolicy.m
 -[SBDTask initWithTask:]
 -[SBDTask execute]
@@ -4078,7 +4078,7 @@ _OBJC_IVAR_$_SBDTask._thread
 __OBJC_$_INSTANCE_VARIABLES_SBDTask
 __OBJC_$_PROP_LIST_SBDTask
 __OBJC_CLASS_RO_$_SBDTask
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDTask.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDTask.m
 SendBirdSDK/SBDTask.m
 SendBirdSDK/SBDTask.h
 __18-[SBDTask execute]_block_invoke
@@ -4118,7 +4118,7 @@ _OBJC_IVAR_$_SBDMessageChangeLogsParams._replyType
 __OBJC_$_INSTANCE_VARIABLES_SBDMessageChangeLogsParams
 __OBJC_$_PROP_LIST_SBDMessageChangeLogsParams
 __OBJC_CLASS_RO_$_SBDMessageChangeLogsParams
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDMessageChangeLogsParams.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDMessageChangeLogsParams.m
 SendBirdSDK/SBDMessageChangeLogsParams.h
 SendBirdSDK/SBDMessageChangeLogsParams.m
 +[SBDGroupChannelDatabase insertOrReplaceWithChannels:]
@@ -4171,7 +4171,7 @@ _OBJC_SELECTOR_REFERENCES_.178
 __OBJC_$_CLASS_METHODS_SBDGroupChannelDatabase
 __OBJC_METACLASS_RO_$_SBDGroupChannelDatabase
 __OBJC_CLASS_RO_$_SBDGroupChannelDatabase
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDGroupChannelDatabase.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDGroupChannelDatabase.m
 SendBirdSDK/SBDGroupChannelDatabase.m
 __58+[SBDGroupChannelDatabase completePrevSyncWithChannelUrl:]_block_invoke
 __64+[SBDGroupChannelDatabase updateChunkRangeWithChannelUrl:endTs:]_block_invoke
@@ -4204,7 +4204,7 @@ _OBJC_CLASSLIST_REFERENCES_$_.31
 __OBJC_$_CATEGORY_INSTANCE_METHODS_NSDictionary_$_SBDJson
 __OBJC_$_CATEGORY_CLASS_METHODS_NSDictionary_$_SBDJson
 __OBJC_$_CATEGORY_NSDictionary_$_SBDJson
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/NSDictionary+SBDJson.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/NSDictionary+SBDJson.m
 SendBirdSDK/NSDictionary+SBDJson.m
 __51-[NSDictionary(SBDJson) sbd_metaArraysFromKeyValue]_block_invoke
 __41-[NSDictionary(SBDJson) sbd_allKeyValues]_block_invoke
@@ -4217,7 +4217,7 @@ __OBJC_$_CLASS_METHODS_SBDError
 __OBJC_METACLASS_RO_$_SBDError
 __OBJC_$_INSTANCE_METHODS_SBDError
 __OBJC_CLASS_RO_$_SBDError
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDError.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDError.m
 SendBirdSDK/SBDError.m
 -[SBDChannelCollection initWithQuery:]
 ___38-[SBDChannelCollection initWithQuery:]_block_invoke
@@ -4330,7 +4330,7 @@ __OBJC_$_INSTANCE_METHODS_SBDChannelCollection
 __OBJC_$_INSTANCE_VARIABLES_SBDChannelCollection
 __OBJC_$_PROP_LIST_SBDChannelCollection
 __OBJC_CLASS_RO_$_SBDChannelCollection
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDChannelCollection.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDChannelCollection.m
 SendBirdSDK/SBDChannelCollection.m
 SendBirdSDK/SBDChannelCollection.h
 __46-[SBDChannelCollection didSucceedReconnection]_block_invoke
@@ -4347,7 +4347,7 @@ __38-[SBDChannelCollection initWithQuery:]_block_invoke
 __OBJC_$_CLASS_METHODS_SBDValidators
 __OBJC_METACLASS_RO_$_SBDValidators
 __OBJC_CLASS_RO_$_SBDValidators
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDValidators.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDValidators.m
 SendBirdSDK/SBDValidators.m
 +[SendBird_SRRunLoopThread sharedThread]
 ___40+[SendBird_SRRunLoopThread sharedThread]_block_invoke
@@ -4366,7 +4366,7 @@ __OBJC_$_INSTANCE_METHODS_SendBird_SRRunLoopThread
 __OBJC_$_INSTANCE_VARIABLES_SendBird_SRRunLoopThread
 __OBJC_$_PROP_LIST_SendBird_SRRunLoopThread
 __OBJC_CLASS_RO_$_SendBird_SRRunLoopThread
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/WebSocket/SocketRocket/Internal/RunLoop/SendBird_SRRunLoopThread.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/WebSocket/SocketRocket/Internal/RunLoop/SendBird_SRRunLoopThread.m
 SendBirdSDK/WebSocket/SocketRocket/Internal/RunLoop/SendBird_SRRunLoopThread.m
 __40+[SendBird_SRRunLoopThread sharedThread]_block_invoke
 -[SBDWebSocketDelegateController init]
@@ -4402,7 +4402,7 @@ _OBJC_IVAR_$_SBDWebSocketDelegateController._accessQueue
 __OBJC_$_INSTANCE_VARIABLES_SBDWebSocketDelegateController
 __OBJC_$_PROP_LIST_SBDWebSocketDelegateController
 __OBJC_CLASS_RO_$_SBDWebSocketDelegateController
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/WebSocket/SBDWebSocketDelegateController.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/WebSocket/SBDWebSocketDelegateController.m
 SendBirdSDK/WebSocket/SBDWebSocketDelegateController.m
 SendBirdSDK/WebSocket/SBDWebSocketDelegateController.h
 __copy_helper_block_e8_32b40r48r
@@ -4430,7 +4430,7 @@ _OBJC_IVAR_$_SBDRestrictionInfo._restrictionType
 __OBJC_$_INSTANCE_VARIABLES_SBDRestrictionInfo
 __OBJC_$_PROP_LIST_SBDRestrictionInfo
 __OBJC_CLASS_RO_$_SBDRestrictionInfo
-/Users/jedgyeong/git/messaging-ios/SBDRestrictionInfo.m
+/Users/celine.moon/Programming/messaging-ios/SBDRestrictionInfo.m
 SBDRestrictionInfo.m
 SBDRestrictionInfo.h
 -[SBDPoll initWithDictionary:]
@@ -4493,7 +4493,7 @@ _OBJC_IVAR_$_SBDPoll._details
 __OBJC_$_INSTANCE_VARIABLES_SBDPoll
 __OBJC_$_PROP_LIST_SBDPoll
 __OBJC_CLASS_RO_$_SBDPoll
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/Poll/SBDPoll.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/Poll/SBDPoll.m
 SendBirdSDK/Poll/SBDPoll.m
 SendBirdSDK/Poll/SBDPoll.h
 __58-[SBDPoll voteWithOptionIds:channelUrl:completionHandler:]_block_invoke_4
@@ -4603,7 +4603,7 @@ _OBJC_IVAR_$_SBDSessionWebSocketEngine._netStatus
 __OBJC_$_INSTANCE_VARIABLES_SBDSessionWebSocketEngine
 __OBJC_$_PROP_LIST_SBDSessionWebSocketEngine
 __OBJC_CLASS_RO_$_SBDSessionWebSocketEngine
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/WebSocket/SessionSocket/SBDSessionWebSocketEngine.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/WebSocket/SessionSocket/SBDSessionWebSocketEngine.m
 -[SBDSessionWebSocketEngine start:].cold.1
 SendBirdSDK/WebSocket/SessionSocket/SBDSessionWebSocketEngine.m
 __78-[SBDSessionWebSocketEngine URLSession:webSocketTask:didCloseWithCode:reason:]_block_invoke
@@ -4634,7 +4634,7 @@ _OBJC_IVAR_$_SBDGroupChannelChangeLogsParams._customTypes
 __OBJC_$_INSTANCE_VARIABLES_SBDGroupChannelChangeLogsParams
 __OBJC_$_PROP_LIST_SBDGroupChannelChangeLogsParams
 __OBJC_CLASS_RO_$_SBDGroupChannelChangeLogsParams
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDGroupChannelChangeLogsParams.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDGroupChannelChangeLogsParams.m
 SendBirdSDK/SBDGroupChannelChangeLogsParams.m
 SendBirdSDK/SBDGroupChannelChangeLogsParams.h
 -[SBDGapCheckResult initWithPrevMessages:nextMessages:prevHasMore:nextHasMore:]
@@ -4656,7 +4656,7 @@ _OBJC_IVAR_$_SBDGapCheckResult._nextMessages
 __OBJC_$_INSTANCE_VARIABLES_SBDGapCheckResult
 __OBJC_$_PROP_LIST_SBDGapCheckResult
 __OBJC_CLASS_RO_$_SBDGapCheckResult
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDGapCheckResult.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDGapCheckResult.m
 SendBirdSDK/SBDGapCheckResult.m
 SendBirdSDK/SBDGapCheckResult.h
 -[SBDChannelChangeLogsPager initWithGroupChannelChangeLogsParams:]
@@ -4689,7 +4689,7 @@ _OBJC_IVAR_$_SBDChannelChangeLogsPager._queue
 __OBJC_$_INSTANCE_VARIABLES_SBDChannelChangeLogsPager
 __OBJC_$_PROP_LIST_SBDChannelChangeLogsPager
 __OBJC_CLASS_RO_$_SBDChannelChangeLogsPager
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDChannelChangeLogsPager.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDChannelChangeLogsPager.m
 SendBirdSDK/SBDChannelChangeLogsPager.m
 SendBirdSDK/SBDChannelChangeLogsPager.h
 __copy_helper_block_e8_32b40s48w
@@ -4798,7 +4798,7 @@ _OBJC_IVAR_$_SBDCommand._requestId
 __OBJC_$_INSTANCE_VARIABLES_SBDCommand
 __OBJC_$_PROP_LIST_SBDCommand
 __OBJC_CLASS_RO_$_SBDCommand
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDCommand.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDCommand.m
 SendBirdSDK/SBDCommand.m
 SendBirdSDK/SBDCommand.h
 -[SBDBaseChannel init]
@@ -5323,7 +5323,7 @@ _OBJC_IVAR_$_SBDBaseChannel._cachedMetaData
 __OBJC_$_INSTANCE_VARIABLES_SBDBaseChannel
 __OBJC_$_PROP_LIST_SBDBaseChannel
 __OBJC_CLASS_RO_$_SBDBaseChannel
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDBaseChannel.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDBaseChannel.m
 SendBirdSDK/SBDBaseChannel.m
 SendBirdSDK/SBDBaseChannel.h
 __58+[SBDBaseChannel getChannelFromServerWithUrl:channelType:]_block_invoke.627
@@ -5546,13 +5546,13 @@ _OBJC_IVAR_$_SBDPollData._text
 __OBJC_$_INSTANCE_VARIABLES_SBDPollData
 __OBJC_$_PROP_LIST_SBDPollData
 __OBJC_CLASS_RO_$_SBDPollData
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/Poll/SBDPollData.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/Poll/SBDPollData.m
 SendBirdSDK/Poll/SBDPollData.m
 SendBirdSDK/Poll/SBDPollData.h
 -[NSNumber(Utils) sbd_toString]
 __OBJC_$_CATEGORY_INSTANCE_METHODS_NSNumber_$_Utils
 __OBJC_$_CATEGORY_NSNumber_$_Utils
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/NSNumber+Utils.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/NSNumber+Utils.m
 SendBirdSDK/NSNumber+Utils.m
 +[SBDConnectionManager sharedInstance]
 ___38+[SBDConnectionManager sharedInstance]_block_invoke
@@ -5608,7 +5608,7 @@ _OBJC_IVAR_$_SBDConnectionManager._authenticationTimerBoard
 __OBJC_$_INSTANCE_VARIABLES_SBDConnectionManager
 __OBJC_$_PROP_LIST_SBDConnectionManager
 __OBJC_CLASS_RO_$_SBDConnectionManager
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDConnectionManager.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDConnectionManager.m
 SendBirdSDK/SBDConnectionManager.m
 __103+[SBDConnectionManager localAuthenticateWithUserId:accessToken:apiHost:wsHost:timer:completionHandler:]_block_invoke
 __36-[SBDConnectionManager authTimeout:]_block_invoke
@@ -5671,7 +5671,7 @@ _OBJC_IVAR_$_SBDPollDetails._status
 __OBJC_$_INSTANCE_VARIABLES_SBDPollDetails
 __OBJC_$_PROP_LIST_SBDPollDetails
 __OBJC_CLASS_RO_$_SBDPollDetails
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/Poll/SBDPollDetails.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/Poll/SBDPollDetails.m
 SendBirdSDK/Poll/SBDPollDetails.m
 SendBirdSDK/Poll/SBDPollDetails.h
 +[SBDMember buildFromSerializedData:]
@@ -5709,7 +5709,7 @@ __OBJC_$_INSTANCE_METHODS_SBDMember
 __OBJC_$_INSTANCE_VARIABLES_SBDMember
 __OBJC_$_PROP_LIST_SBDMember
 __OBJC_CLASS_RO_$_SBDMember
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDMember.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDMember.m
 SendBirdSDK/SBDMember.m
 SendBirdSDK/SBDMember.h
 +[SBDSessionManager sharedInstance]
@@ -5781,7 +5781,7 @@ _OBJC_IVAR_$_SBDSessionManager._tokenDidRequireBlockTimerBoard
 __OBJC_$_INSTANCE_VARIABLES_SBDSessionManager
 __OBJC_$_PROP_LIST_SBDSessionManager
 __OBJC_CLASS_RO_$_SBDSessionManager
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDSessionManager.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDSessionManager.m
 SendBirdSDK/SBDSessionManager.m
 __74+[SBDSessionManager updateSessionKeyUsingApiRequestWithCompletionHandler:]_block_invoke_2
 __74+[SBDSessionManager updateSessionKeyUsingApiRequestWithCompletionHandler:]_block_invoke
@@ -5806,7 +5806,7 @@ __35+[SBDSessionManager sharedInstance]_block_invoke
 -[NSData(SBDCrypto) AES256Operation:key:initializationVector:]
 __OBJC_$_CATEGORY_INSTANCE_METHODS_NSData_$_SBDCrypto
 __OBJC_$_CATEGORY_NSData_$_SBDCrypto
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/NSData+SBDCrypto.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/NSData+SBDCrypto.m
 SendBirdSDK/NSData+SBDCrypto.m
 -[SBDBaseMessageParams init]
 -[SBDBaseMessageParams initWithBaseMessage:copyMessage:]
@@ -5864,14 +5864,14 @@ _OBJC_IVAR_$_SBDBaseMessageParams._payload
 __OBJC_$_INSTANCE_VARIABLES_SBDBaseMessageParams
 __OBJC_$_PROP_LIST_SBDBaseMessageParams
 __OBJC_CLASS_RO_$_SBDBaseMessageParams
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDBaseMessageParams.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDBaseMessageParams.m
 SendBirdSDK/SBDBaseMessageParams.m
 SendBirdSDK/SBDBaseMessageParams.h
 ___SendBird_SRHTTPConnectMessageCreate_block_invoke
 ___SendBird_SRHTTPConnectMessageCreate_block_invoke_2
 ___block_descriptor_40_e35_v32?0"NSString"8"NSString"16^B24l
 ___block_descriptor_40_e15_v32?0816^B24l
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/WebSocket/SocketRocket/Internal/Utilities/SendBird_SRHTTPConnectMessage.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/WebSocket/SocketRocket/Internal/Utilities/SendBird_SRHTTPConnectMessage.m
 __SendBird_SRHTTPConnectMessageCreate_block_invoke_2
 SendBirdSDK/WebSocket/SocketRocket/Internal/Utilities/SendBird_SRHTTPConnectMessage.m
 __SendBird_SRHTTPConnectMessageCreate_block_invoke
@@ -5953,7 +5953,7 @@ _OBJC_IVAR_$_SBDPublicGroupChannelListQuery._token
 __OBJC_$_INSTANCE_VARIABLES_SBDPublicGroupChannelListQuery
 __OBJC_$_PROP_LIST_SBDPublicGroupChannelListQuery
 __OBJC_CLASS_RO_$_SBDPublicGroupChannelListQuery
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDPublicGroupChannelListQuery.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDPublicGroupChannelListQuery.m
 SendBirdSDK/SBDPublicGroupChannelListQuery.m
 SendBirdSDK/SBDPublicGroupChannelListQuery.h
 __68-[SBDPublicGroupChannelListQuery loadNextPageWithCompletionHandler:]_block_invoke.82
@@ -5991,7 +5991,7 @@ _OBJC_IVAR_$_SBDMessageMetaArray._valueSet
 __OBJC_$_INSTANCE_VARIABLES_SBDMessageMetaArray
 __OBJC_$_PROP_LIST_SBDMessageMetaArray
 __OBJC_CLASS_RO_$_SBDMessageMetaArray
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDMessageMetaArray.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDMessageMetaArray.m
 SendBirdSDK/SBDMessageMetaArray.m
 SendBirdSDK/SBDMessageMetaArray.h
 -[SBDScheduledUserMessage initWithDictionary:]
@@ -6069,7 +6069,7 @@ _OBJC_IVAR_$_SBDScheduledUserMessage._channelType
 __OBJC_$_INSTANCE_VARIABLES_SBDScheduledUserMessage
 __OBJC_$_PROP_LIST_SBDScheduledUserMessage
 __OBJC_CLASS_RO_$_SBDScheduledUserMessage
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDScheduledUserMessage.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDScheduledUserMessage.m
 SendBirdSDK/SBDScheduledUserMessage.m
 SendBirdSDK/SBDScheduledUserMessage.h
 __46-[SBDScheduledUserMessage initWithDictionary:]_block_invoke
@@ -6102,7 +6102,7 @@ __46-[SBDScheduledUserMessage initWithDictionary:]_block_invoke
 __OBJC_$_CLASS_METHODS_SBDTypes
 __OBJC_METACLASS_RO_$_SBDTypes
 __OBJC_CLASS_RO_$_SBDTypes
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDInternalTypes2.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDInternalTypes2.m
 stringFromReplyType
 SendBirdSDK/SBDInternalTypes2.m
 restrictionTypeFromStringRestrictionType
@@ -6308,7 +6308,7 @@ _OBJC_IVAR_$_SBDCoreAPIClient._messageIds
 __OBJC_$_INSTANCE_VARIABLES_SBDCoreAPIClient
 __OBJC_$_PROP_LIST_SBDCoreAPIClient
 __OBJC_CLASS_RO_$_SBDCoreAPIClient
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDCoreAPIClient.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDCoreAPIClient.m
 SendBirdSDK/SBDCoreAPIClient.m
 __65-[SBDCoreAPIClient getAllowFriendDiscoveryWithCompletionHandler:]_block_invoke
 __62-[SBDCoreAPIClient setAllowFriendDiscovery:completionHandler:]_block_invoke
@@ -6370,7 +6370,7 @@ _OBJC_IVAR_$_SendBird_SRProxyConnect._outputStream
 __OBJC_$_INSTANCE_VARIABLES_SendBird_SRProxyConnect
 __OBJC_$_PROP_LIST_SendBird_SRProxyConnect
 __OBJC_CLASS_RO_$_SendBird_SRProxyConnect
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/WebSocket/SocketRocket/Internal/Proxy/SendBird_SRProxyConnect.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/WebSocket/SocketRocket/Internal/Proxy/SendBird_SRProxyConnect.m
 SendBirdSDK/WebSocket/SocketRocket/Internal/Proxy/SendBird_SRProxyConnect.m
 __38-[SendBird_SRProxyConnect _writeData:]_block_invoke
 __55-[SendBird_SRProxyConnect _fetchPAC:withProxySettings:]_block_invoke
@@ -6388,7 +6388,7 @@ __OBJC_$_INSTANCE_METHODS_SBDReachability
 _OBJC_IVAR_$_SBDReachability._reachabilityRef
 __OBJC_$_INSTANCE_VARIABLES_SBDReachability
 __OBJC_CLASS_RO_$_SBDReachability
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDReachability.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDReachability.m
 SendBirdSDK/SBDReachability.m
 PrintReachabilityFlags
 ReachabilityCallback
@@ -6409,7 +6409,7 @@ _OBJC_IVAR_$_SBDOGMetaData._defaultImage
 __OBJC_$_INSTANCE_VARIABLES_SBDOGMetaData
 __OBJC_$_PROP_LIST_SBDOGMetaData
 __OBJC_CLASS_RO_$_SBDOGMetaData
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDOGMetaData.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDOGMetaData.m
 SendBirdSDK/SBDOGMetaData.m
 SendBirdSDK/SBDOGMetaData.h
 +[SBDChannelDataSource sharedInstance]
@@ -6451,7 +6451,7 @@ _OBJC_IVAR_$_SBDChannelDataSource._channelCache
 __OBJC_$_INSTANCE_VARIABLES_SBDChannelDataSource
 __OBJC_$_PROP_LIST_SBDChannelDataSource
 __OBJC_CLASS_RO_$_SBDChannelDataSource
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDChannelDataSource.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDChannelDataSource.m
 SendBirdSDK/SBDChannelDataSource.m
 __38+[SBDChannelDataSource sharedInstance]_block_invoke
 -[SBDGroupChannelParams init]
@@ -6536,7 +6536,7 @@ _OBJC_IVAR_$_SBDGroupChannelParams._mutableOperatorUserIds
 __OBJC_$_INSTANCE_VARIABLES_SBDGroupChannelParams
 __OBJC_$_PROP_LIST_SBDGroupChannelParams
 __OBJC_CLASS_RO_$_SBDGroupChannelParams
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDGroupChannelParams.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDGroupChannelParams.m
 SendBirdSDK/SBDGroupChannelParams.m
 SendBirdSDK/SBDGroupChannelParams.h
 -[NSMutableOrderedSet(Utils) sbd_containsChannel:]
@@ -6545,7 +6545,7 @@ SendBirdSDK/SBDGroupChannelParams.h
 -[NSMutableOrderedSet(Utils) sbd_JSONString]
 __OBJC_$_CATEGORY_INSTANCE_METHODS_NSMutableOrderedSet_$_Utils
 __OBJC_$_CATEGORY_NSMutableOrderedSet_$_Utils
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/NSMutableOrderedSet+Utils.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/NSMutableOrderedSet+Utils.m
 SendBirdSDK/NSMutableOrderedSet+Utils.m
 -[SendBird_SRIOConsumer resetWithScanner:handler:bytesNeeded:readToCurrentFrame:unmaskBytes:]
 -[SendBird_SRIOConsumer bytesNeeded]
@@ -6561,7 +6561,7 @@ __OBJC_$_INSTANCE_METHODS_SendBird_SRIOConsumer
 __OBJC_$_INSTANCE_VARIABLES_SendBird_SRIOConsumer
 __OBJC_$_PROP_LIST_SendBird_SRIOConsumer
 __OBJC_CLASS_RO_$_SendBird_SRIOConsumer
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/WebSocket/SocketRocket/Internal/IOConsumer/SendBird_SRIOConsumer.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/WebSocket/SocketRocket/Internal/IOConsumer/SendBird_SRIOConsumer.m
 -[SendBird_SRIOConsumer resetWithScanner:handler:bytesNeeded:readToCurrentFrame:unmaskBytes:].cold.1
 SendBirdSDK/WebSocket/SocketRocket/Internal/IOConsumer/SendBird_SRIOConsumer.m
 +[SBDGroupChannel createMyGroupChannelListQueryWithToken:]
@@ -7129,7 +7129,7 @@ __OBJC_$_INSTANCE_METHODS_SBDGroupChannel
 __OBJC_$_INSTANCE_VARIABLES_SBDGroupChannel
 __OBJC_$_PROP_LIST_SBDGroupChannel
 __OBJC_CLASS_RO_$_SBDGroupChannel
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDGroupChannel.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDGroupChannel.m
 SendBirdSDK/SBDGroupChannel.m
 SendBirdSDK/SBDGroupChannel.h
 __29-[SBDGroupChannel comparator]_block_invoke
@@ -7333,7 +7333,7 @@ _OBJC_IVAR_$_SBDMessageListParams._customTypes
 __OBJC_$_INSTANCE_VARIABLES_SBDMessageListParams
 __OBJC_$_PROP_LIST_SBDMessageListParams
 __OBJC_CLASS_RO_$_SBDMessageListParams
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDMessageListParams.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDMessageListParams.m
 SendBirdSDK/SBDMessageListParams.m
 SendBirdSDK/SBDMessageListParams.h
 +[SBDPersistentConfig shared]
@@ -7354,7 +7354,7 @@ _OBJC_IVAR_$_SBDPersistentConfig._userDefault
 __OBJC_$_INSTANCE_VARIABLES_SBDPersistentConfig
 __OBJC_$_PROP_LIST_SBDPersistentConfig
 __OBJC_CLASS_RO_$_SBDPersistentConfig
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDPersistentConfig.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDPersistentConfig.m
 SendBirdSDK/SBDPersistentConfig.m
 __29+[SBDPersistentConfig shared]_block_invoke
 -[SBDBaseCollection getConnectionDelegateId]
@@ -7372,7 +7372,7 @@ _OBJC_IVAR_$_SBDBaseCollection._channelDelegateId
 __OBJC_$_INSTANCE_VARIABLES_SBDBaseCollection
 __OBJC_$_PROP_LIST_SBDBaseCollection
 __OBJC_CLASS_RO_$_SBDBaseCollection
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDBaseCollection.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDBaseCollection.m
 SendBirdSDK/SBDBaseCollection.m
 -[SBDOGImage initWithDictionary:]
 -[SBDOGImage _toDictionary]
@@ -7407,7 +7407,7 @@ _OBJC_IVAR_$_SBDOGImage._height
 __OBJC_$_INSTANCE_VARIABLES_SBDOGImage
 __OBJC_$_PROP_LIST_SBDOGImage
 __OBJC_CLASS_RO_$_SBDOGImage
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDOGImage.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDOGImage.m
 SendBirdSDK/SBDOGImage.m
 SendBirdSDK/SBDOGImage.h
 -[SBDChannelContext initWithChannelSource:]
@@ -7420,7 +7420,7 @@ _OBJC_IVAR_$_SBDChannelContext._source
 __OBJC_$_INSTANCE_VARIABLES_SBDChannelContext
 __OBJC_$_PROP_LIST_SBDChannelContext
 __OBJC_CLASS_RO_$_SBDChannelContext
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDChannelContext.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDChannelContext.m
 SendBirdSDK/SBDChannelContext.h
 SendBirdSDK/SBDChannelContext.m
 -[SBDEmoji init]
@@ -7486,7 +7486,7 @@ _OBJC_IVAR_$_SBDEmojiContainer._hashValue
 __OBJC_$_INSTANCE_VARIABLES_SBDEmojiContainer
 __OBJC_$_PROP_LIST_SBDEmojiContainer
 __OBJC_CLASS_RO_$_SBDEmojiContainer
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/Emojis/SBDEmoji.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/Emojis/SBDEmoji.m
 SendBirdSDK/Emojis/SBDEmoji.m
 SendBirdSDK/Emojis/SBDEmoji.h
 -[SBDWebSocketClient initWithHost:timeout:useNative:]
@@ -7582,7 +7582,7 @@ _OBJC_IVAR_$_SBDWebSocketClient._onError
 __OBJC_$_INSTANCE_VARIABLES_SBDWebSocketClient
 __OBJC_$_PROP_LIST_SBDWebSocketClient
 __OBJC_CLASS_RO_$_SBDWebSocketClient
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDWebSocketClient.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDWebSocketClient.m
 SendBirdSDK/SBDWebSocketClient.m
 SendBirdSDK/SBDWebSocketClient.h
 __52-[SBDWebSocketClient sendCommand:completionHandler:]_block_invoke
@@ -7617,7 +7617,7 @@ _OBJC_IVAR_$_SBDPollParams._closeAt
 __OBJC_$_INSTANCE_VARIABLES_SBDPollParams
 __OBJC_$_PROP_LIST_SBDPollParams
 __OBJC_CLASS_RO_$_SBDPollParams
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/Poll/SBDPollParams.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/Poll/SBDPollParams.m
 SendBirdSDK/Poll/SBDPollParams.m
 SendBirdSDK/Poll/SBDPollParams.h
 -[SBDTimerBoard init]
@@ -7654,7 +7654,7 @@ _OBJC_IVAR_$_SBDTimerBoard._capacity
 __OBJC_$_INSTANCE_VARIABLES_SBDTimerBoard
 __OBJC_$_PROP_LIST_SBDTimerBoard
 __OBJC_CLASS_RO_$_SBDTimerBoard
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDTimerBoard.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDTimerBoard.m
 SendBirdSDK/SBDTimerBoard.m
 __29-[SBDTimerBoard removeTimer:]_block_invoke
 __26-[SBDTimerBoard addTimer:]_block_invoke_2
@@ -7924,7 +7924,7 @@ _OBJC_IVAR_$_SBDPlatformAPIClient._uploadSizeLimit
 __OBJC_$_INSTANCE_VARIABLES_SBDPlatformAPIClient
 __OBJC_$_PROP_LIST_SBDPlatformAPIClient
 __OBJC_CLASS_RO_$_SBDPlatformAPIClient
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDPlatformAPIClient.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDPlatformAPIClient.m
 SendBirdSDK/SBDPlatformAPIClient.m
 __71-[SBDPlatformAPIClient enableReaction:applicationId:completionHandler:]_block_invoke
 __74-[SBDPlatformAPIClient setPlanAttributes:applicationId:completionHandler:]_block_invoke
@@ -7995,7 +7995,7 @@ _OBJC_IVAR_$_SBDThreadInfo._updatedAt
 __OBJC_$_INSTANCE_VARIABLES_SBDThreadInfo
 __OBJC_$_PROP_LIST_SBDThreadInfo
 __OBJC_CLASS_RO_$_SBDThreadInfo
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDThreadInfo.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDThreadInfo.m
 SendBirdSDK/SBDThreadInfo.m
 SendBirdSDK/SBDThreadInfo.h
 +[SBDMessageSyncManager setRunningQueueSize:]
@@ -8046,7 +8046,7 @@ _OBJC_IVAR_$_SBDMessageSyncManager._allSyncQueue
 __OBJC_$_INSTANCE_VARIABLES_SBDMessageSyncManager
 __OBJC_$_PROP_LIST_SBDMessageSyncManager
 __OBJC_CLASS_RO_$_SBDMessageSyncManager
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDMessageSyncManager.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDMessageSyncManager.m
 SendBirdSDK/SBDMessageSyncManager.m
 __35-[SBDMessageSyncManager runAllSync]_block_invoke
 __39+[SBDMessageSyncManager sharedInstance]_block_invoke
@@ -8055,7 +8055,7 @@ __36+[SBDMessageSyncManager stopAllSync]_block_invoke
 ___SendBird_SRDefaultBufferSize_block_invoke
 _SendBird_SRDefaultBufferSize.size
 _SendBird_SRDefaultBufferSize.onceToken
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/WebSocket/SocketRocket/Internal/Utilities/SendBird_SRConstants.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/WebSocket/SocketRocket/Internal/Utilities/SendBird_SRConstants.m
 SendBird_SRSBUserAgent
 SendBirdSDK/WebSocket/SocketRocket/Internal/Utilities/SendBird_SRConstants.m
 SendBird_SRUserAgent
@@ -8192,7 +8192,7 @@ _OBJC_IVAR_$_SBDCommandProcessor._queue
 __OBJC_$_INSTANCE_VARIABLES_SBDCommandProcessor
 __OBJC_$_PROP_LIST_SBDCommandProcessor
 __OBJC_CLASS_RO_$_SBDCommandProcessor
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDCommandProcessor.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDCommandProcessor.m
 SendBirdSDK/SBDCommandProcessor.m
 __56-[SBDCommandProcessor response:error:completionHandler:]_block_invoke
 __50-[SBDCommandProcessor processChannelEvent:isJoin:]_block_invoke
@@ -8225,7 +8225,7 @@ __51-[SBDCommandProcessor sendCommand:lazy:completion:]_block_invoke_2
 __51-[SBDCommandProcessor sendCommand:lazy:completion:]_block_invoke
 __OBJC_METACLASS_RO_$_SBDBannedUserListQuery
 __OBJC_CLASS_RO_$_SBDBannedUserListQuery
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDBannedUserListQuery.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDBannedUserListQuery.m
 +[SBDOpenChannel createOpenChannelListQuery]
 +[SBDOpenChannel getCachedChannels]
 +[SBDOpenChannel createChannelWithCompletionHandler:]
@@ -8371,7 +8371,7 @@ __OBJC_$_INSTANCE_METHODS_SBDOpenChannel
 __OBJC_$_INSTANCE_VARIABLES_SBDOpenChannel
 __OBJC_$_PROP_LIST_SBDOpenChannel
 __OBJC_CLASS_RO_$_SBDOpenChannel
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDOpenChannel.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDOpenChannel.m
 SendBirdSDK/SBDOpenChannel.m
 SendBirdSDK/SBDOpenChannel.h
 __119-[SBDOpenChannel updateChannelWithName:coverImage:coverImageName:data:operatorUsers:progressHandler:completionHandler:]_block_invoke
@@ -8459,7 +8459,7 @@ __OBJC_$_INSTANCE_METHODS_SBDOperation
 __OBJC_$_INSTANCE_VARIABLES_SBDOperation
 __OBJC_$_PROP_LIST_SBDOperation
 __OBJC_CLASS_RO_$_SBDOperation
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDOperation.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDOperation.m
 SendBirdSDK/SBDOperation.m
 SendBirdSDK/SBDOperation.h
 -[SBDFileMessageParams initWithFile:fileUrl:]
@@ -8498,7 +8498,7 @@ __OBJC_$_INSTANCE_METHODS_SBDFileMessageParams
 __OBJC_$_INSTANCE_VARIABLES_SBDFileMessageParams
 __OBJC_$_PROP_LIST_SBDFileMessageParams
 __OBJC_CLASS_RO_$_SBDFileMessageParams
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDFileMessageParams.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDFileMessageParams.m
 SendBirdSDK/SBDFileMessageParams.m
 SendBirdSDK/SBDFileMessageParams.h
 -[SBDThreadedMessageListParams init]
@@ -8545,10 +8545,10 @@ _OBJC_IVAR_$_SBDThreadedMessageListParams._customTypes
 __OBJC_$_INSTANCE_VARIABLES_SBDThreadedMessageListParams
 __OBJC_$_PROP_LIST_SBDThreadedMessageListParams
 __OBJC_CLASS_RO_$_SBDThreadedMessageListParams
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDThreadedMessageListParams.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDThreadedMessageListParams.m
 SendBirdSDK/SBDThreadedMessageListParams.m
 SendBirdSDK/SBDThreadedMessageListParams.h
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/WebSocket/SocketRocket/Internal/Utilities/SendBird_SRLog.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/WebSocket/SocketRocket/Internal/Utilities/SendBird_SRLog.m
 SendBird_SRDebugLog
 SendBirdSDK/WebSocket/SocketRocket/Internal/Utilities/SendBird_SRLog.m
 SendBird_SRErrorLog
@@ -8588,7 +8588,7 @@ _OBJC_IVAR_$_SBDOpenChannelParams._mutableOperatorUserIds
 __OBJC_$_INSTANCE_VARIABLES_SBDOpenChannelParams
 __OBJC_$_PROP_LIST_SBDOpenChannelParams
 __OBJC_CLASS_RO_$_SBDOpenChannelParams
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDOpenChannelParams.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDOpenChannelParams.m
 SendBirdSDK/SBDOpenChannelParams.m
 SendBirdSDK/SBDOpenChannelParams.h
 -[SBDThreadInfoUpdateEvent initWithDictionary:]
@@ -8607,7 +8607,7 @@ _OBJC_IVAR_$_SBDThreadInfoUpdateEvent._channelType
 __OBJC_$_INSTANCE_VARIABLES_SBDThreadInfoUpdateEvent
 __OBJC_$_PROP_LIST_SBDThreadInfoUpdateEvent
 __OBJC_CLASS_RO_$_SBDThreadInfoUpdateEvent
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDThreadInfoUpdateEvent.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDThreadInfoUpdateEvent.m
 SendBirdSDK/SBDThreadInfoUpdateEvent.m
 SendBirdSDK/SBDThreadInfoUpdateEvent.h
 -[SBDReconnectionTask initWithConfiguration:]
@@ -8630,7 +8630,7 @@ _OBJC_IVAR_$_SBDReconnectionTask._configuration
 __OBJC_$_INSTANCE_VARIABLES_SBDReconnectionTask
 __OBJC_$_PROP_LIST_SBDReconnectionTask
 __OBJC_CLASS_RO_$_SBDReconnectionTask
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDReconnectionTask.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDReconnectionTask.m
 SendBirdSDK/SBDReconnectionTask.m
 SendBirdSDK/SBDReconnectionTask.h
 -[SBDMessageChangeLogsPager initWithChannel:]
@@ -8657,7 +8657,7 @@ _OBJC_IVAR_$_SBDMessageChangeLogsPager._queue
 __OBJC_$_INSTANCE_VARIABLES_SBDMessageChangeLogsPager
 __OBJC_$_PROP_LIST_SBDMessageChangeLogsPager
 __OBJC_CLASS_RO_$_SBDMessageChangeLogsPager
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDMessageChangeLogsPager.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDMessageChangeLogsPager.m
 SendBirdSDK/SBDMessageChangeLogsPager.m
 __87-[SBDMessageChangeLogsPager requestAllChangeLogsWithTokenDataSource:completionHandler:]_block_invoke.69
 __87-[SBDMessageChangeLogsPager requestAllChangeLogsWithTokenDataSource:completionHandler:]_block_invoke.51
@@ -8694,7 +8694,7 @@ _OBJC_IVAR_$_SBDHugeGapParams._nextCount
 __OBJC_$_INSTANCE_VARIABLES_SBDHugeGapParams
 __OBJC_$_PROP_LIST_SBDHugeGapParams
 __OBJC_CLASS_RO_$_SBDHugeGapParams
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDHugeGapParams.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDHugeGapParams.m
 SendBirdSDK/SBDHugeGapParams.m
 SendBirdSDK/SBDHugeGapParams.h
 -[SBDAdminMessage serialize]
@@ -8706,12 +8706,12 @@ __OBJC_CLASS_PROTOCOLS_$_SBDAdminMessage
 __OBJC_METACLASS_RO_$_SBDAdminMessage
 __OBJC_$_INSTANCE_METHODS_SBDAdminMessage
 __OBJC_CLASS_RO_$_SBDAdminMessage
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDAdminMessage.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDAdminMessage.m
 SendBirdSDK/SBDAdminMessage.m
 -[NSException(Internal) exceptionToError]
 __OBJC_$_CATEGORY_INSTANCE_METHODS_NSException_$_Internal
 __OBJC_$_CATEGORY_NSException_$_Internal
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/NSException+Internal.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/NSException+Internal.m
 SendBirdSDK/NSException+Internal.m
 +[SBDUser buildFromSerializedData:]
 -[SBDUser setPreferredLanguages:]
@@ -8791,7 +8791,7 @@ _OBJC_IVAR_$_SBDUser._metaData
 __OBJC_$_INSTANCE_VARIABLES_SBDUser
 __OBJC_$_PROP_LIST_SBDUser
 __OBJC_CLASS_RO_$_SBDUser
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDUser.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDUser.m
 SendBirdSDK/SBDUser.m
 SendBirdSDK/SBDUser.h
 __50-[SBDUser deleteAllMetaDataWithCompletionHandler:]_block_invoke_3
@@ -8827,7 +8827,7 @@ _OBJC_IVAR_$_SBDDispatchTask._taskBlock
 __OBJC_$_INSTANCE_VARIABLES_SBDDispatchTask
 __OBJC_$_PROP_LIST_SBDDispatchTask
 __OBJC_CLASS_RO_$_SBDDispatchTask
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDDispatchTask.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDDispatchTask.m
 SendBirdSDK/SBDDispatchTask.m
 SendBirdSDK/SBDDispatchTask.h
 -[SBDMessageRetrievalParams init]
@@ -8848,6 +8848,8 @@ SendBirdSDK/SBDDispatchTask.h
 -[SBDMessageRetrievalParams setIncludePollDetails:]
 -[SBDMessageRetrievalParams includeParentMessageInfo]
 -[SBDMessageRetrievalParams setIncludeParentMessageInfo:]
+-[SBDMessageRetrievalParams includeReactions]
+-[SBDMessageRetrievalParams setIncludeReactions:]
 -[SBDMessageRetrievalParams .cxx_destruct]
 __OBJC_CLASS_PROTOCOLS_$_SBDMessageRetrievalParams
 __OBJC_METACLASS_RO_$_SBDMessageRetrievalParams
@@ -8857,13 +8859,14 @@ _OBJC_IVAR_$_SBDMessageRetrievalParams._includeMetaArray
 _OBJC_IVAR_$_SBDMessageRetrievalParams._includeThreadInfo
 _OBJC_IVAR_$_SBDMessageRetrievalParams._includePollDetails
 _OBJC_IVAR_$_SBDMessageRetrievalParams._includeParentMessageInfo
+_OBJC_IVAR_$_SBDMessageRetrievalParams._includeReactions
 _OBJC_IVAR_$_SBDMessageRetrievalParams._channelUrl
 _OBJC_IVAR_$_SBDMessageRetrievalParams._channelType
 _OBJC_IVAR_$_SBDMessageRetrievalParams._messageId
 __OBJC_$_INSTANCE_VARIABLES_SBDMessageRetrievalParams
 __OBJC_$_PROP_LIST_SBDMessageRetrievalParams
 __OBJC_CLASS_RO_$_SBDMessageRetrievalParams
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDMessageRetrievalParams.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDMessageRetrievalParams.m
 SendBirdSDK/SBDMessageRetrievalParams.m
 SendBirdSDK/SBDMessageRetrievalParams.h
 -[SBDReactionEvent init]
@@ -8890,7 +8893,7 @@ _OBJC_IVAR_$_SBDReactionEvent._updatedAt
 __OBJC_$_INSTANCE_VARIABLES_SBDReactionEvent
 __OBJC_$_PROP_LIST_SBDReactionEvent
 __OBJC_CLASS_RO_$_SBDReactionEvent
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDReactionEvent.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDReactionEvent.m
 SendBirdSDK/SBDReactionEvent.m
 SendBirdSDK/SBDReactionEvent.h
 +[SBDRunLoopThread sharedThread]
@@ -8910,7 +8913,7 @@ __OBJC_$_INSTANCE_METHODS_SBDRunLoopThread
 __OBJC_$_INSTANCE_VARIABLES_SBDRunLoopThread
 __OBJC_$_PROP_LIST_SBDRunLoopThread
 __OBJC_CLASS_RO_$_SBDRunLoopThread
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDRunLoopThread.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDRunLoopThread.m
 SendBirdSDK/SBDRunLoopThread.m
 __32+[SBDRunLoopThread sharedThread]_block_invoke
 +[NSDate(Utils) sbd_currentTime]
@@ -8918,7 +8921,7 @@ __32+[SBDRunLoopThread sharedThread]_block_invoke
 __OBJC_$_CATEGORY_INSTANCE_METHODS_NSDate_$_Utils
 __OBJC_$_CATEGORY_CLASS_METHODS_NSDate_$_Utils
 __OBJC_$_CATEGORY_NSDate_$_Utils
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/NSDate+Utils.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/NSDate+Utils.m
 SendBirdSDK/NSDate+Utils.m
 -[NSArray(SBDJson) jsonStringWithPrettyPrint:]
 -[NSArray(SBDJson) sbd_dictionaryMetaArrays]
@@ -8931,7 +8934,7 @@ ___block_descriptor_56_e8_32s40s48s_e36_v32?0"SBDMessageMetaArray"8Q16^B24l
 ___block_descriptor_40_e8_32s_e15_v32?08Q16^B24l
 __OBJC_$_CATEGORY_INSTANCE_METHODS_NSArray_$_SBDJson
 __OBJC_$_CATEGORY_NSArray_$_SBDJson
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/NSArray+SBDJson.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/NSArray+SBDJson.m
 __56-[NSArray(SBDJson) sbd_arrayOfDictionaryOfMetaArrayKeys]_block_invoke
 SendBirdSDK/NSArray+SBDJson.m
 __39-[NSArray(SBDJson) sbd_arrayMetaArrays]_block_invoke
@@ -9076,7 +9079,7 @@ _OBJC_IVAR_$_SBDGroupChannelListQuery._queue
 __OBJC_$_INSTANCE_VARIABLES_SBDGroupChannelListQuery
 __OBJC_$_PROP_LIST_SBDGroupChannelListQuery
 __OBJC_CLASS_RO_$_SBDGroupChannelListQuery
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDGroupChannelListQuery.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDGroupChannelListQuery.m
 SendBirdSDK/SBDGroupChannelListQuery.m
 SendBirdSDK/SBDGroupChannelListQuery.h
 __40-[SBDGroupChannelListQuery loadNextPage]_block_invoke
@@ -9133,12 +9136,12 @@ _OBJC_IVAR_$_SBDMessageRepository._lastSyncedToken
 __OBJC_$_INSTANCE_VARIABLES_SBDMessageRepository
 __OBJC_$_PROP_LIST_SBDMessageRepository
 __OBJC_CLASS_RO_$_SBDMessageRepository
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDMessageRepository.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDMessageRepository.m
 SendBirdSDK/SBDMessageRepository.m
 __75+[SBDMessageRepository loadMessagesFromServerWithChannel:timestamp:params:]_block_invoke
 __69-[SBDMessageRepository requestChangeLogsWithToken:completionHandler:]_block_invoke
 __47-[SBDMessageRepository checkHugeGapWithParams:]_block_invoke
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/WebSocket/SocketRocket/Internal/Utilities/SendBird_SRMutex.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/WebSocket/SocketRocket/Internal/Utilities/SendBird_SRMutex.m
 SendBird_SRMutexUnlock
 SendBirdSDK/WebSocket/SocketRocket/Internal/Utilities/SendBird_SRMutex.m
 SendBird_SRMutexLock
@@ -9162,7 +9165,7 @@ __OBJC_$_INSTANCE_METHODS_SBDUserMessageParams
 __OBJC_$_INSTANCE_VARIABLES_SBDUserMessageParams
 __OBJC_$_PROP_LIST_SBDUserMessageParams
 __OBJC_CLASS_RO_$_SBDUserMessageParams
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDUserMessageParams.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDUserMessageParams.m
 SendBirdSDK/SBDUserMessageParams.m
 SendBirdSDK/SBDUserMessageParams.h
 -[SBDPollOption initWithDictionary:]
@@ -9222,7 +9225,7 @@ _OBJC_IVAR_$_SBDPollOption._partialVoters
 __OBJC_$_INSTANCE_VARIABLES_SBDPollOption
 __OBJC_$_PROP_LIST_SBDPollOption
 __OBJC_CLASS_RO_$_SBDPollOption
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/Poll/SBDPollOption.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/Poll/SBDPollOption.m
 SendBirdSDK/Poll/SBDPollOption.m
 SendBirdSDK/Poll/SBDPollOption.h
 __45-[SBDPollOption deleteWithCompletionHandler:]_block_invoke_2
@@ -9257,7 +9260,7 @@ _SBDPollIncludeDetails
 __OBJC_$_CLASS_METHODS_SBDOptions
 __OBJC_METACLASS_RO_$_SBDOptions
 __OBJC_CLASS_RO_$_SBDOptions
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDOptions.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDOptions.m
 SendBirdSDK/SBDOptions.m
 -[SBDPollOptionVoterResult initWithDictionary:]
 -[SBDPollOptionVoterResult voteCount]
@@ -9275,7 +9278,7 @@ _OBJC_IVAR_$_SBDPollOptionVoterResult._voterCount
 __OBJC_$_INSTANCE_VARIABLES_SBDPollOptionVoterResult
 __OBJC_$_PROP_LIST_SBDPollOptionVoterResult
 __OBJC_CLASS_RO_$_SBDPollOptionVoterResult
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/Poll/SBDPollOptionVoterResult.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/Poll/SBDPollOptionVoterResult.m
 SendBirdSDK/Poll/SBDPollOptionVoterResult.m
 SendBirdSDK/Poll/SBDPollOptionVoterResult.h
 +[SBDOperationQueue queue]
@@ -9308,7 +9311,7 @@ _OBJC_IVAR_$_SBDOperationQueue._operations
 __OBJC_$_INSTANCE_VARIABLES_SBDOperationQueue
 __OBJC_$_PROP_LIST_SBDOperationQueue
 __OBJC_CLASS_RO_$_SBDOperationQueue
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDOperationQueue.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDOperationQueue.m
 SendBirdSDK/SBDOperationQueue.m
 SendBirdSDK/SBDOperationQueue.h
 -[SBDUserEvent initWithDictionary:]
@@ -9337,10 +9340,10 @@ _OBJC_IVAR_$_SBDUserEvent._friendDiscoveries
 __OBJC_$_INSTANCE_VARIABLES_SBDUserEvent
 __OBJC_$_PROP_LIST_SBDUserEvent
 __OBJC_CLASS_RO_$_SBDUserEvent
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDUserEvent.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDUserEvent.m
 SendBirdSDK/SBDUserEvent.m
 SendBirdSDK/SBDUserEvent.h
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/WebSocket/SocketRocket/Internal/Utilities/SendBird_SRHash.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/WebSocket/SocketRocket/Internal/Utilities/SendBird_SRHash.m
 SendBird_SRBase64EncodedStringFromData
 SendBirdSDK/WebSocket/SocketRocket/Internal/Utilities/SendBird_SRHash.m
 SendBird_SRSHA1HashFromBytes
@@ -9355,7 +9358,7 @@ __OBJC_$_INSTANCE_METHODS_SBDRestrictedUser
 __OBJC_$_INSTANCE_VARIABLES_SBDRestrictedUser
 __OBJC_$_PROP_LIST_SBDRestrictedUser
 __OBJC_CLASS_RO_$_SBDRestrictedUser
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDRestrictedUser.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDRestrictedUser.m
 SendBirdSDK/SBDRestrictedUser.m
 SendBirdSDK/SBDRestrictedUser.h
 +[SBDHTTPClient shared]
@@ -9503,7 +9506,7 @@ _OBJC_IVAR_$_SBDBinaryData._data
 __OBJC_$_INSTANCE_VARIABLES_SBDBinaryData
 __OBJC_$_PROP_LIST_SBDBinaryData
 __OBJC_CLASS_RO_$_SBDBinaryData
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDHTTPClient.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDHTTPClient.m
 SendBirdSDK/SBDHTTPClient.m
 SendBirdSDK/SBDHTTPClient.h
 __86-[SBDHTTPClient runBackgroundRequest:uri:requestId:progressHandler:completionHandler:]_block_invoke
@@ -9545,7 +9548,7 @@ _OBJC_IVAR_$_SBDReconnectionConfiguration._maximumRetryCount
 __OBJC_$_INSTANCE_VARIABLES_SBDReconnectionConfiguration
 __OBJC_$_PROP_LIST_SBDReconnectionConfiguration
 __OBJC_CLASS_RO_$_SBDReconnectionConfiguration
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDReconnectionConfiguration.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDReconnectionConfiguration.m
 SendBirdSDK/SBDReconnectionConfiguration.h
 SendBirdSDK/SBDReconnectionConfiguration.m
 -[SBDBaseMessage initWithDictionary:]
@@ -9719,7 +9722,7 @@ _OBJC_IVAR_$_SBDBaseMessage._mutableReactionLock
 __OBJC_$_INSTANCE_VARIABLES_SBDBaseMessage
 __OBJC_$_PROP_LIST_SBDBaseMessage
 __OBJC_CLASS_RO_$_SBDBaseMessage
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDBaseMessage.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDBaseMessage.m
 SendBirdSDK/SBDBaseMessage.m
 SendBirdSDK/SBDBaseMessage.h
 __28-[SBDBaseMessage comparator]_block_invoke
@@ -9741,7 +9744,7 @@ _OBJC_IVAR_$_SBDSessionExpirationEvent._reason
 __OBJC_$_INSTANCE_VARIABLES_SBDSessionExpirationEvent
 __OBJC_$_PROP_LIST_SBDSessionExpirationEvent
 __OBJC_CLASS_RO_$_SBDSessionExpirationEvent
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDSessionExpirationEvent.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDSessionExpirationEvent.m
 SendBirdSDK/SBDSessionExpirationEvent.h
 SendBirdSDK/SBDSessionExpirationEvent.m
 +[SBDSender buildFromSerializedData:]
@@ -9766,7 +9769,7 @@ __OBJC_$_INSTANCE_METHODS_SBDSender
 __OBJC_$_INSTANCE_VARIABLES_SBDSender
 __OBJC_$_PROP_LIST_SBDSender
 __OBJC_CLASS_RO_$_SBDSender
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDSender.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDSender.m
 SendBirdSDK/SBDSender.m
 SendBirdSDK/SBDSender.h
 -[NSArray(Utils) sbd_map:]
@@ -9782,7 +9785,7 @@ ___34-[NSArray(Utils) sbd_toDictionary]_block_invoke
 ___block_descriptor_48_e8_32bs40s_e15_v32?08Q16^B24l
 __OBJC_$_CATEGORY_INSTANCE_METHODS_NSArray_$_Utils
 __OBJC_$_CATEGORY_NSArray_$_Utils
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/NSArray+Utils.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/NSArray+Utils.m
 SendBirdSDK/NSArray+Utils.m
 __34-[NSArray(Utils) sbd_toDictionary]_block_invoke
 __30-[NSArray(Utils) sbd_flatMap:]_block_invoke
@@ -9799,7 +9802,7 @@ __OBJC_$_INSTANCE_METHODS_SBDBlockedUserListQuery
 __OBJC_$_INSTANCE_VARIABLES_SBDBlockedUserListQuery
 __OBJC_$_PROP_LIST_SBDBlockedUserListQuery
 __OBJC_CLASS_RO_$_SBDBlockedUserListQuery
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDBlockedUserListQuery.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDBlockedUserListQuery.m
 SendBirdSDK/SBDBlockedUserListQuery.m
 SendBirdSDK/SBDBlockedUserListQuery.h
 -[SBDScheduledUserMessageParams initWithMessage:year:month:day:hour:min:timezone:]
@@ -9816,7 +9819,7 @@ __OBJC_$_INSTANCE_METHODS_SBDScheduledUserMessageParams
 __OBJC_$_INSTANCE_VARIABLES_SBDScheduledUserMessageParams
 __OBJC_$_PROP_LIST_SBDScheduledUserMessageParams
 __OBJC_CLASS_RO_$_SBDScheduledUserMessageParams
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDScheduledUserMessageParams.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDScheduledUserMessageParams.m
 SendBirdSDK/SBDScheduledUserMessageParams.m
 SendBirdSDK/SBDScheduledUserMessageParams.h
 +[SBDConsoleLogWriter printWithLogLevel:format:]
@@ -9830,11 +9833,11 @@ __OBJC_CLASS_PROTOCOLS_$_SBDConsoleLogWriter
 __OBJC_METACLASS_RO_$_SBDConsoleLogWriter
 __OBJC_$_PROP_LIST_SBDConsoleLogWriter
 __OBJC_CLASS_RO_$_SBDConsoleLogWriter
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDLogger.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDLogger.m
 SendBirdSDK/SBDLogger.m
 __OBJC_METACLASS_RO_$_SBDParticipantListQuery
 __OBJC_CLASS_RO_$_SBDParticipantListQuery
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDParticipantListQuery.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDParticipantListQuery.m
 -[SBDOperatorListQuery initWithChannel:]
 -[SBDOperatorListQuery loadNextPageWithCompletionHandler:]
 ___58-[SBDOperatorListQuery loadNextPageWithCompletionHandler:]_block_invoke
@@ -9870,7 +9873,7 @@ _OBJC_IVAR_$_SBDOperatorListQuery._channelType
 __OBJC_$_INSTANCE_VARIABLES_SBDOperatorListQuery
 __OBJC_$_PROP_LIST_SBDOperatorListQuery
 __OBJC_CLASS_RO_$_SBDOperatorListQuery
-/Users/jedgyeong/git/messaging-ios/SendBirdSDK/SBDOperatorListQuery.m
+/Users/celine.moon/Programming/messaging-ios/SendBirdSDK/SBDOperatorListQuery.m
 SendBirdSDK/SBDOperatorListQuery.m
 SendBirdSDK/SBDOperatorListQuery.h
 __58-[SBDOperatorListQuery loadNextPageWithCompletionHandler:]_block_invoke_3

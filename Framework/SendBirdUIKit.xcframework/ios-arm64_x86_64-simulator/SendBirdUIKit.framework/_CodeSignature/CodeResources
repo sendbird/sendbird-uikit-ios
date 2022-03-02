@@ -6,23 +6,23 @@
 	<dict>
 		<key>Assets.car</key>
 		<data>
-		G2I2vMTQpxbc+Z9zn8TIFXHDvm4=
+		Egc6O6iUeF7Xl2VkqF/YkA+KbcU=
 		</data>
 		<key>Frameworks/SendBirdSDK.framework/Info.plist</key>
 		<data>
-		DRzXf3codXOmfti9sVhLFiWP6sU=
+		b+YZXF/tQXTSBn/y5Ax4mTqLay8=
 		</data>
 		<key>Frameworks/SendBirdSDK.framework/SendBirdSDK</key>
 		<data>
-		xogPWu3FuOooLMlQnP55cqa+LJw=
+		OQRbMG2mWVmdDsARfGrZnegIJQA=
 		</data>
 		<key>Frameworks/SendBirdSDK.framework/_CodeSignature/CodeResources</key>
 		<data>
-		33ZvklS/nTMYmaC53wSca3hXo34=
+		V32EaLPIysHJ6oBZ3KBtsRGATyE=
 		</data>
 		<key>Headers/SendBirdUIKit-Swift.h</key>
 		<data>
-		YqJXWijv1ZT1gH4dB3kEUneoUIc=
+		u0YjxfOgp2Jd+g2tXlKqJ2KJCJs=
 		</data>
 		<key>Headers/SendBirdUIKit.h</key>
 		<data>
@@ -30,55 +30,55 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		hd03AOQ7JNxEX05QrtiIlcOzTpE=
+		/KIGDibc9EBOXwV0IsFven/vztk=
 		</data>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
 		<data>
-		/0keg7+CYRyRPgqycPM0Uzpi4HE=
+		fgbCMhjTgGQSFaxVbEdp4+nefCc=
 		</data>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		u0KgmxoSUrmsO5I+j8ZAT3/PiOc=
+		04DIPxYjbVKH77EA+rG8RR2pyxY=
 		</data>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		SNkfFuT5kCqRiUK0+15XixJBP08=
+		VOu7IdjBJm20vwymE6R2pqX5hKs=
 		</data>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm64.swiftdoc</key>
 		<data>
-		/0keg7+CYRyRPgqycPM0Uzpi4HE=
+		fgbCMhjTgGQSFaxVbEdp4+nefCc=
 		</data>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm64.swiftinterface</key>
 		<data>
-		u0KgmxoSUrmsO5I+j8ZAT3/PiOc=
+		04DIPxYjbVKH77EA+rG8RR2pyxY=
 		</data>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm64.swiftmodule</key>
 		<data>
-		SNkfFuT5kCqRiUK0+15XixJBP08=
+		VOu7IdjBJm20vwymE6R2pqX5hKs=
 		</data>
 		<key>Modules/SendBirdUIKit.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<data>
-		DnA+ue1UMw7esTblubDrFvUWO3U=
+		+TWeu6EuGxHgt9+rJGHpI/nOfvY=
 		</data>
 		<key>Modules/SendBirdUIKit.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		WssR58dDzWxwuMDno2DzO8sIvks=
+		wRjVk8Un9M8iFlVKI0sKy8lZJzk=
 		</data>
 		<key>Modules/SendBirdUIKit.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		1nb8kKbagNq26Gl+aFBfClwqHFk=
+		/KgZM5uFlTVZjo6qcv5yS+hAFzk=
 		</data>
 		<key>Modules/SendBirdUIKit.swiftmodule/x86_64.swiftdoc</key>
 		<data>
-		DnA+ue1UMw7esTblubDrFvUWO3U=
+		+TWeu6EuGxHgt9+rJGHpI/nOfvY=
 		</data>
 		<key>Modules/SendBirdUIKit.swiftmodule/x86_64.swiftinterface</key>
 		<data>
-		WssR58dDzWxwuMDno2DzO8sIvks=
+		wRjVk8Un9M8iFlVKI0sKy8lZJzk=
 		</data>
 		<key>Modules/SendBirdUIKit.swiftmodule/x86_64.swiftmodule</key>
 		<data>
-		1nb8kKbagNq26Gl+aFBfClwqHFk=
+		/KgZM5uFlTVZjo6qcv5yS+hAFzk=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -103,35 +103,35 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			OgyGQ2+83raKEKne/KtHm+LFlFHB6vSiWpEBAEtfYeA=
+			kzOmz4Ag4FWGOtHnSGqbsfVHhlSO7h9ZwrOZ5cVlEF4=
 			</data>
 		</dict>
 		<key>Frameworks/SendBirdSDK.framework/Info.plist</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			CFzz6eAGUS03nP5cmZiDKEZeAQHU5gneTPIs08uNckg=
+			7+tIwcM5jbRRT17mbTU+ssOxdX37A/2CqcBnF0dFERY=
 			</data>
 		</dict>
 		<key>Frameworks/SendBirdSDK.framework/SendBirdSDK</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			X0pAHxKywknHqX1AdNxdDzfVfBE+BLfhrlv3gwMI+Lc=
+			jQ3zuTatgByiH8IJfHdN2xkHomkD6sUN4k5IBKLXWrY=
 			</data>
 		</dict>
 		<key>Frameworks/SendBirdSDK.framework/_CodeSignature/CodeResources</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			e7GhUpe/DvorlI+/8VpLH520AbN4s8k/CpAE07VO3L0=
+			+hTJddIbO/DylA+kBi/sYgMlLJzWAclhxbvefGKjj6M=
 			</data>
 		</dict>
 		<key>Headers/SendBirdUIKit-Swift.h</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			ZgIsuq/rjn3xxInh1fxM1A3HcKfNE2KiSHB0Qmjp0RE=
+			dtGrricOvJwKpKV5PirImpv2cM77Ir+D8NBSW3gnXhc=
 			</data>
 		</dict>
 		<key>Headers/SendBirdUIKit.h</key>
@@ -145,84 +145,84 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			7jr0MlWwgAuGI6ZVlQt36s7OGY0FsCbPj2N+/dUgOhE=
+			LG+I0KEIW/nQp0Xqp4qACCceMJFoqBNKievDWCegr4w=
 			</data>
 		</dict>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			bdMKsMh1w5nVL7+AjhsxqYIs5MsT6FePHoGNkTro+r8=
+			Itu94AvRzUIyeDGuOrib762wnUaHgHSrdp9JGA57igk=
 			</data>
 		</dict>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			R3v8SGd0lO1pgHdOJIZk62MlbIiwdvFCts9PNKrYrDc=
+			55t5aygRCBme4gP9Ul+0CbNk9Vh/5wLjCBH1yrSG5NU=
 			</data>
 		</dict>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm64.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			7jr0MlWwgAuGI6ZVlQt36s7OGY0FsCbPj2N+/dUgOhE=
+			LG+I0KEIW/nQp0Xqp4qACCceMJFoqBNKievDWCegr4w=
 			</data>
 		</dict>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm64.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			bdMKsMh1w5nVL7+AjhsxqYIs5MsT6FePHoGNkTro+r8=
+			Itu94AvRzUIyeDGuOrib762wnUaHgHSrdp9JGA57igk=
 			</data>
 		</dict>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm64.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			R3v8SGd0lO1pgHdOJIZk62MlbIiwdvFCts9PNKrYrDc=
+			55t5aygRCBme4gP9Ul+0CbNk9Vh/5wLjCBH1yrSG5NU=
 			</data>
 		</dict>
 		<key>Modules/SendBirdUIKit.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			scWh7STnW6Og5f5rYb54hmFgKwJQFIP2RfI+YXv1dls=
+			WdMzsTRhi8bW+Oo9lS5uidGVQkJ5ZU+nvQnV41VLFDE=
 			</data>
 		</dict>
 		<key>Modules/SendBirdUIKit.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			RaczoWZyTmAPlrk8PmP2wraHQW637gnCv8X3SS+FUxo=
+			osnUg88L0PM48jaaATUZ20glmRKIwcxO/cHubTMKt08=
 			</data>
 		</dict>
 		<key>Modules/SendBirdUIKit.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			k3IWZDNpsSUvdErsPtpwKnkAwDjVrNpx21cuq1twpl0=
+			bp8It41jltlbbzAMz4ocmJXb3KFFIGbKe1xFqYo4LCk=
 			</data>
 		</dict>
 		<key>Modules/SendBirdUIKit.swiftmodule/x86_64.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			scWh7STnW6Og5f5rYb54hmFgKwJQFIP2RfI+YXv1dls=
+			WdMzsTRhi8bW+Oo9lS5uidGVQkJ5ZU+nvQnV41VLFDE=
 			</data>
 		</dict>
 		<key>Modules/SendBirdUIKit.swiftmodule/x86_64.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			RaczoWZyTmAPlrk8PmP2wraHQW637gnCv8X3SS+FUxo=
+			osnUg88L0PM48jaaATUZ20glmRKIwcxO/cHubTMKt08=
 			</data>
 		</dict>
 		<key>Modules/SendBirdUIKit.swiftmodule/x86_64.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			k3IWZDNpsSUvdErsPtpwKnkAwDjVrNpx21cuq1twpl0=
+			bp8It41jltlbbzAMz4ocmJXb3KFFIGbKe1xFqYo4LCk=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
