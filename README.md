@@ -128,7 +128,7 @@ $ carthage update --use-xcframeworks
 
 2. Choose Package Repository as the Sendbird UIKit repository with below link:
 ```bash
-https://github.com/sendbird/sendbird-uikit-ios.git
+https://github.com/sendbird/sendbird-uikit-ios-spm.git
 ```
 
 3. Select Up to Next Major rules and click the Next button to add the package.
