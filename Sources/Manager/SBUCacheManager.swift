@@ -60,22 +60,19 @@ public struct DiskCache {
     // MARK: - Properties
     private let fileManager = FileManager.default
     private let directory = "image/"
-    private let diskQueue = DispatchQueue(label: "com.sendbird.diskcache", qos: .background)
+    private let diskQueue = DispatchQueue(label: "\(SBUConstant.bundleIdentifier).queue.diskcache", qos: .background)
     
     // MARK: - Initializers
     public init() {
-        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
-        let documentsDirectory = paths[0]
-        let docURL = URL(string: documentsDirectory)!
-        let dataPath = docURL.appendingPathComponent(self.directory)
+        let imageCachePath = self.imageCacheURL().path
         
-        if self.fileManager.fileExists(atPath: dataPath.path) {
+        if self.fileManager.fileExists(atPath: imageCachePath) {
             return
         }
         
         do {
             try self.fileManager.createDirectory(
-                atPath: dataPath.absoluteString,
+                atPath: imageCachePath,
                 withIntermediateDirectories: true,
                 attributes: nil
             )
@@ -85,28 +82,29 @@ public struct DiskCache {
     }
 
     public func hasImage(key: String) -> Bool {
-        diskQueue.sync {
-            return NSKeyedUnarchiver.unarchiveObject(withFile: self.pathForKey(key)) != nil
-        }
+            return fileManager.fileExists(atPath: self.pathForKey(key))
     }
 
     public func get(key: String) -> NSData? {
-        diskQueue.sync {
-            return NSKeyedUnarchiver.unarchiveObject(withFile: self.pathForKey(key)) as? NSData
+        let filePath = URL(fileURLWithPath: self.pathForKey(key))
+        
+        do {
+            let data = try Data(contentsOf: filePath)//6
+            return data as NSData
+        } catch {
+            SBULog.error(error.localizedDescription)
         }
+        return nil
     }
 
     public func set(key: String, data: NSData) {
         diskQueue.async {
-            let path = self.pathForKey(key)
-            if self.fileManager.fileExists(atPath: path) {
-                do {
-                    try self.fileManager.removeItem(atPath: path)
-                } catch {
-                    SBULog.error(error.localizedDescription)
-                }
+            let filePath = URL(fileURLWithPath: self.pathForKey(key))
+            do {
+                try data.write(to: filePath)
+            } catch {
+                SBULog.error(error.localizedDescription)
             }
-            NSKeyedArchiver.archiveRootObject(data, toFile: path)
         }
     }
     
@@ -124,27 +122,36 @@ public struct DiskCache {
     public func removeAll() {
         diskQueue.async {
             let fileManager = self.fileManager
-            let directory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!.path
+            let imageCachePath = self.imageCacheURL().path
             
             try? fileManager
-                .contentsOfDirectory(atPath: directory)
+                .contentsOfDirectory(atPath: imageCachePath)
                 .forEach { try? fileManager.removeItem(atPath: $0) }
         }
     }
 
+    private func imageCacheURL() -> URL {
+        guard let cacheDirectoryURL = try? FileManager.default.url(
+            for: .cachesDirectory,
+               in: .userDomainMask,
+               appropriateFor: nil,
+               create: true) else { return URL(fileURLWithPath: "") }
+        
+        let imageCachePath = cacheDirectoryURL.appendingPathComponent(self.directory)
+        return imageCachePath
+    }
+    
     private func pathForKey(_ key: String) -> String {
-        return
-            self.fileManager
-                .urls(for: .documentDirectory, in: .userDomainMask)
-                .first!
-                .appendingPathComponent(directory)
-                .appendingPathComponent(key)
-                .path
+        let imageCachePath = imageCacheURL()
+        let fullPath = imageCachePath.appendingPathComponent(key)
+        return fullPath.path
     }
 }
 
 struct MemoryCache {
 
+    private let memoryQueue = DispatchQueue(label: "\(SBUConstant.bundleIdentifier).queue.memorycache", qos: .background)
+    
     // MARK: - Memory Cache
     private var memoryCache: NSCache<NSString, UIImage> = {
         let cache = NSCache<NSString, UIImage>()
@@ -154,13 +161,16 @@ struct MemoryCache {
     }()
 
     func set(key: String, image: UIImage) {
-        self.memoryCache.setObject(image, forKey: key as NSString)
+        memoryQueue.async {
+            self.memoryCache.setObject(image, forKey: key as NSString)
+        }
     }
 
     func set(key: String, data: NSData) {
-        guard let image = UIImage.createImage(from: data as Data) else { return }
-        self.set(key: key, image: image)
-//        SBULog.info("[Succeed] The image was stored in the memory cache.")
+        memoryQueue.async {
+            guard let image = UIImage.createImage(from: data as Data) else { return }
+            self.set(key: key, image: image)
+        }
     }
 
     func getImage(key: String) -> UIImage? {

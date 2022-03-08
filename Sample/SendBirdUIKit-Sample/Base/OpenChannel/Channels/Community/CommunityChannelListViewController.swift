@@ -207,17 +207,13 @@ class CommunityChannelListViewController: SBUBaseChannelListViewController, SBUE
             })
         
         self.channelList = sortedChannelList.sbu_unique()
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            
-            if let emptyView = self.emptyView as? SBUEmptyView {
-                emptyView.reloadData((self.channelList.count == 0) ? .noChannels : .none)
-            }
-            
-            guard needReload else { return }
-            
-            self.tableView.reloadData()
+        if let emptyView = self.emptyView as? SBUEmptyView {
+            emptyView.reloadData((self.channelList.count == 0) ? .noChannels : .none)
         }
+        
+        guard needReload else { return }
+        
+        self.tableView.reloadData()
     }
     
     /// Upserts the channels.
@@ -254,6 +250,18 @@ class CommunityChannelListViewController: SBUBaseChannelListViewController, SBUE
         }
         
         self.sortChannelList(needReload: needReload)
+    }
+    
+    func isOperator(with channelUrl: String) -> Bool {
+        let channel = self.channelList.first { channel in
+            channel.channelUrl == channelUrl
+        }
+        guard let userId = SBUGlobals.CurrentUser?.userId,
+              let isOperator = channel?.isOperator(withUserId: userId) else {
+                  return false
+              }
+        
+        return isOperator
     }
     
     // MARK: - Common
@@ -352,7 +360,6 @@ class CommunityChannelListViewController: SBUBaseChannelListViewController, SBUE
     func channelWasDeleted(_ channelUrl: String, channelType: SBDChannelType) {
         guard channelType == .open else { return }
         self.deleteChannels(channelUrls: [channelUrl], needReload: true)
-        self.navigationController?.popViewController(animated: true)
     }
     
     func channelWasFrozen(_ sender: SBDBaseChannel) {

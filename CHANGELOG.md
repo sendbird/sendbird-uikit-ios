@@ -1,5 +1,9 @@
 # Change Log
 
+### v2.2.5 (Mar 8, 2022)
+* Improved logic for caching
+* Improved stabilities
+
 ### v2.2.4 (Feb 15, 2022)
 * Added `photoLibraryAccessLevel` to `SBUGlobals`
 * Improved stabilities

@@ -28,6 +28,17 @@ class SBUChannelViewModel: SBULoadableViewModel {
         self.channel as? SBDGroupChannel
     }
     
+    /// This object is used to check if current user is an operator.
+    var isOperator: Bool {
+        if let groupChannel = self.channel as? SBDGroupChannel {
+            return groupChannel.myRole == .operator
+        } else if let openChannel = self.channel as? SBDOpenChannel {
+            guard let userId = SBUGlobals.CurrentUser?.userId else { return false }
+            return openChannel.isOperator(withUserId: userId)
+        }
+        return false
+    }
+    
     /// Memory cache of newest messages to be used when message has loaded from specific timestamp.
     private(set) var messageCache: SBUMessageCache?
     

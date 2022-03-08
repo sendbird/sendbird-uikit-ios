@@ -422,17 +422,14 @@ open class SBUChannelListViewController: SBUBaseChannelListViewController {
             })
         
         self.channelList = sortedChannelList.sbu_unique()
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            
-            if let emptyView = self.emptyView as? SBUEmptyView {
-                emptyView.reloadData(self.channelList.isEmpty ? .noChannels : .none)
-            }
-            
-            guard needReload else { return }
-            
-            self.tableView.reloadData()
+
+        if let emptyView = self.emptyView as? SBUEmptyView {
+            emptyView.reloadData(self.channelList.isEmpty ? .noChannels : .none)
         }
+        
+        guard needReload else { return }
+        
+        self.reloadTableView()
     }
     
     /// This function updates the channels.

@@ -25,7 +25,7 @@ open class SBUBaseChannelSettingViewController: SBUBaseViewController {
     public var channelName: String? = nil
     public internal(set) var channelUrl: String?
     
-    public lazy var isOperator: Bool = {
+    public var isOperator: Bool {
         if let groupChannel = self.baseChannel as? SBDGroupChannel {
             return groupChannel.myRole == .operator
         } else if let openChannel = self.baseChannel as? SBDOpenChannel {
@@ -33,7 +33,7 @@ open class SBUBaseChannelSettingViewController: SBUBaseViewController {
             return openChannel.isOperator(withUserId: userId)
         }
         return false
-    }()
+    }
     
     // MARK: - UI properties (Public)
     

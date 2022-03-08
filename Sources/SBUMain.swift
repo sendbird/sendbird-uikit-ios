@@ -291,7 +291,7 @@ public class SBUMain: NSObject {
     // MARK: - Common
     /// This function gets UIKit SDK's short version string. (e.g. 1.0.0)
     /// - Since: 2.2.0
-    public static let shortVersion: String = "2.2.4"
+    public static let shortVersion: String = "2.2.3"
     
     /// This function gets UIKit SDK's version string.
     /// - Returns: version string

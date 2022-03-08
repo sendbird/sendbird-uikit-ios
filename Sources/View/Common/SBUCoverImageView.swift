@@ -65,26 +65,23 @@ public class SBUCoverImageView: UIView {
             urlString: coverURL,
             placeholder: SBUIconSetType.iconUser.image(
                 with: self.theme.userPlaceholderTintColor,
-                to: iconSize()
+                to: self.iconSize()
             )
         )
-        imageView.backgroundColor = theme.userPlaceholderBackgroundColor
+        imageView.backgroundColor = self.theme.userPlaceholderBackgroundColor
         imageView.contentMode = .scaleAspectFill
-        
+
+        self.addSubview(imageView)
+
         let subviews = self.subviews
-        
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            
-            self.addSubview(imageView)
-            
-            for subView in subviews{
+        for subView in subviews {
+            if subView != imageView {
                 subView.removeFromSuperview()
             }
         }
         
         if makeCircle {
-            makeCircularWithSpacing(spacing: 0)
+            self.makeCircularWithSpacing(spacing: 0)
         }
     }
     
@@ -111,45 +108,39 @@ public class SBUCoverImageView: UIView {
     public func setImage(withImage image: UIImage,
                          backgroundColor: UIColor? = nil,
                          makeCircle: Bool = false) {
-        let imageView = createImageView(withImage: image,
-                                        backgroundColor: backgroundColor,
-                                        makeCircle: makeCircle,
-                                        contentMode: .scaleAspectFill)
+        let imageView = self.createImageView(withImage: image,
+                                             backgroundColor: backgroundColor,
+                                             makeCircle: makeCircle,
+                                             contentMode: .scaleAspectFill)
+        self.addSubview(imageView)
+
         let subviews = self.subviews
-
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            
-            self.addSubview(imageView)
-
-            for subView in subviews {
+        for subView in subviews {
+            if subView != imageView {
                 subView.removeFromSuperview()
             }
         }
-
-        makeCircularWithSpacing(spacing: 0)
+        
+        self.makeCircularWithSpacing(spacing: 0)
     }
     
     private func setIconImage(type: SBUIconSetType,
                       tintColor: UIColor?,
                       backgroundColor: UIColor? = nil) {
-        let imageView = createImageView(withImage: type.image(with: tintColor, to: iconSize()),
-                                        backgroundColor: backgroundColor,
-                                        makeCircle: true,
-                                        contentMode: .center)
-        let subviews = self.subviews
+        let imageView = self.createImageView(withImage: type.image(with: tintColor, to: self.iconSize()),
+                                             backgroundColor: backgroundColor,
+                                             makeCircle: true,
+                                             contentMode: .center)
+        self.addSubview(imageView)
         
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            
-            self.addSubview(imageView)
-            
-            for subView in subviews {
+        let subviews = self.subviews
+        for subView in subviews {
+            if subView != imageView {
                 subView.removeFromSuperview()
             }
         }
-
-        makeCircularWithSpacing(spacing: 0)
+        
+        self.makeCircularWithSpacing(spacing: 0)
     }
     
     private func iconSize() -> CGSize {
@@ -196,20 +187,17 @@ public class SBUCoverImageView: UIView {
         let newUsers = Array(filteredUsers[0..<index])
         
         let stackView = self.setupImageStack(users: newUsers)
+
+        self.addSubview(stackView)
         
         let subviews = self.subviews
-        
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            
-            self.addSubview(stackView)
-
-            for subView in subviews {
+        for subView in subviews {
+            if subView != stackView {
                 subView.removeFromSuperview()
             }
         }
-
-        makeCircularWithSpacing(spacing: 0)
+        
+        self.makeCircularWithSpacing(spacing: 0)
     }
     
     private func setupImageStack(users: [SBDUser]) -> UIStackView {
@@ -278,15 +266,18 @@ public class SBUCoverImageView: UIView {
 
 extension UIImageView {
     public func sbu_setProfileImageView(for user: SBDUser, defaultImage: UIImage) {
-        guard let _ = URL(string: ImageUtil.transformUserProfileImage(user: user)) else {
-            self.image = defaultImage
+        guard URL(string: ImageUtil.transformUserProfileImage(user: user)) != nil else {
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                self.image = defaultImage
+            }
             return
         }
         
         self.loadImage(
             urlString: ImageUtil.transformUserProfileImage(user: user),
             placeholder: defaultImage
-        )        
+        )
     }
 }
 

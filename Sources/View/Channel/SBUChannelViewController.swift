@@ -1336,7 +1336,8 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
 
             case .edit:
                 guard let userMessage = message as? SBDUserMessage else { return }
-                if self.channel?.isFrozen == false {
+                if self.channel?.isFrozen == false ||
+                    self.channelViewModel?.isOperator == true {
                     self.messageInputView.setMode(.edit, message: userMessage)
                 } else {
                     SBULog.info("This channel is frozen")

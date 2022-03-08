@@ -114,7 +114,9 @@ class SBUMessageWebView: UIStackView, SBUViewLifeCycle {
                 errorImage: model.errorImage,
                 option: .imageToThumbnail
             ) { success in
-                self.imageView.contentMode = !success ? .center : .scaleAspectFill
+                DispatchQueue.main.async { [weak self] in
+                    self?.imageView.contentMode = !success ? .center : .scaleAspectFill
+                }
             }
             self.imageView.isHidden = false
             self.imageHeightConstraint?.isActive = true

@@ -23,8 +23,7 @@ internal extension UIImageView {
                    option: ImageOption = .original,
                    thumbnailSize: CGSize? = SBUConstant.thumbnailSize,
                    completion: ((Bool) -> Void)? = nil) -> URLSessionTask? {
-        
-        self.image = placeholder
+        self.setImage(placeholder)
         
         if urlString.isEmpty {
             if let errorImage = errorImage {
@@ -59,7 +58,11 @@ internal extension UIImageView {
 
 internal extension UIImageView {
     // When failed, return error, like failure?(error)
-    static let error = NSError(domain:"com.sendbird.uikit", code: -1, userInfo: nil)
+    static let error = NSError(
+        domain: SBUConstant.bundleIdentifier,
+        code: -1,
+        userInfo: nil
+    )
 
     func loadOriginalImage(urlString: String,
                            errorImage: UIImage? = nil,
@@ -85,18 +88,14 @@ internal extension UIImageView {
             }
             
             guard let data = data, error == nil else {
-                DispatchQueue.main.async {
-                    self.setImage(errorImage) { _ in
-                        completion?(false)
-                    }
+                self.setImage(errorImage) { _ in
+                    completion?(false)
                 }
                 return
             }
             
             let image = SBUCacheManager.savedImage(fileName: fileName, data: data)
-            DispatchQueue.main.async {
-                self.setImage(image, completion: completion)
-            }
+            self.setImage(image, completion: completion)
         }
         task.resume()
         return task
@@ -134,12 +133,10 @@ internal extension UIImageView {
             }
             
             let image = UIImage(cgImage: cgImage)
-            DispatchQueue.main.async {
-                if let data = image.pngData() {
-                    SBUCacheManager.savedImage(fileName: fileName, data: data)
-                }
-                self.setImage(image, completion: completion)
+            if let data = image.pngData() {
+                SBUCacheManager.savedImage(fileName: fileName, data: data)
             }
+            self.setImage(image, completion: completion)
         }
         
         task.resume()
@@ -173,9 +170,7 @@ internal extension UIImageView {
         let task = URLSession(configuration: .default).dataTask(with: url) { [weak self] data, response, error in
             guard let self = self else { return }
             guard let data = data, error == nil, let image = UIImage.createImage(from: data) else {
-                DispatchQueue.main.async {
-                    self.setImage(errorImage) { _ in completion?(false) }
-                }
+                self.setImage(errorImage) { _ in completion?(false) }
                 return
             }
             
@@ -183,18 +178,14 @@ internal extension UIImageView {
                 SBUCacheManager.savedImage(fileName: fileName, data: data)
                 SBUCacheManager.savedImage(fileName: thumbnailFileName, data: data)
                 
-                DispatchQueue.main.async {
-                    self.setImage(image.images?.first ?? image, completion: completion)
-                }
+                self.setImage(image.images?.first ?? image, completion: completion)
             } else {
                 let thumbnailSize: CGSize = thumbnailSize ?? SBUConstant.thumbnailSize
                 let thumbnailImage = image.resize(with: thumbnailSize)
                 SBUCacheManager.savedImage(fileName: fileName, image: image)
                 SBUCacheManager.savedImage(fileName: thumbnailFileName, image: thumbnailImage)
                 
-                DispatchQueue.main.async {
-                    self.setImage(thumbnailImage, completion: completion)
-                }
+                self.setImage(thumbnailImage, completion: completion)
             }
         }
         task.resume()
@@ -203,7 +194,13 @@ internal extension UIImageView {
 
     private func setImage(_ image: UIImage?, completion: ((Bool) -> Void)? = nil) {
         if let image = image {
-            self.image = image
+            if Thread.isMainThread {
+                self.image = image
+            } else {
+                DispatchQueue.main.async {
+                    self.image = image
+                }
+            }
         }
         completion?(image != nil)
     }

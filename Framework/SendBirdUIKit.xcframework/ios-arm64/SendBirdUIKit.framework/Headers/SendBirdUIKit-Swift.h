@@ -729,7 +729,7 @@ SWIFT_CLASS("_TtC13SendBirdUIKit35SBUBaseChannelSettingViewController")
 @property (nonatomic, strong) SBUChannelSettingsTheme * _Nonnull theme;
 @property (nonatomic, copy) NSString * _Nullable channelName;
 @property (nonatomic, readonly, copy) NSString * _Nullable channelUrl;
-@property (nonatomic) BOOL isOperator;
+@property (nonatomic, readonly) BOOL isOperator;
 @property (nonatomic, strong) UIView * _Nullable titleView;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;

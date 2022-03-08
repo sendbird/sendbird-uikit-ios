@@ -254,17 +254,17 @@ open class MySettingsViewController: UIViewController, UINavigationControllerDel
     public func selectUserImage() {
         let cameraItem = SBUActionSheetItem(
             title: SBUStringSet.Camera,
-            image: SBUIconSet.iconCamera.sbu_with(tintColor: SBUColorSet.primary300),
+            image: SBUIconSet.iconCamera.sbu_with(tintColor: theme.itemColor),
             completionHandler: nil
         )
         let libraryItem = SBUActionSheetItem(
             title: SBUStringSet.PhotoVideoLibrary,
-            image: SBUIconSet.iconPhoto.sbu_with(tintColor: SBUColorSet.primary300),
+            image: SBUIconSet.iconPhoto.sbu_with(tintColor: theme.itemColor),
             completionHandler: nil
         )
         let cancelItem = SBUActionSheetItem(
             title: SBUStringSet.Cancel,
-            color: SBUColorSet.primary300,
+            color: theme.itemColor,
             completionHandler: nil
         )
         SBUActionSheet.show(

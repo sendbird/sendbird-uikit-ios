@@ -120,11 +120,18 @@ open class SBUEmptyView: UIView {
     /// This function reloads emptyView.
     /// - Parameter type: Empty view type
     public func reloadData(_ type: EmptyViewType) {
-        self.type = type
-        self.retryButton.isHidden = (self.type != .error)
-        self.updateViews()
-        self.layoutIfNeeded()
-        self.updateConstraintsIfNeeded()
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            
+            self.type = type
+            
+            self.retryButton.isHidden = (self.type != .error)
+            
+            self.updateViews()
+            
+            self.layoutIfNeeded()
+            self.updateConstraintsIfNeeded()
+        }
     }
     
     /// Override this function to apply a custom type.
