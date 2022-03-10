@@ -208,6 +208,7 @@
 		9CF8AA0327D766D90023C95D /* SBUCreateChannelTypeSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CF8A96727D766D80023C95D /* SBUCreateChannelTypeSelector.swift */; };
 		9CF8AA0427D766D90023C95D /* SBUCreateChannelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CF8A96827D766D80023C95D /* SBUCreateChannelViewController.swift */; };
 		9CF8AA0527D766D90023C95D /* SBUGlobals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CF8A96A27D766D80023C95D /* SBUGlobals.swift */; };
+		9CF8AA0827D9BD3D0023C95D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9CF8AA0727D9BD3D0023C95D /* Assets.xcassets */; };
 		A9A3AEAA256A44A700007FC2 /* PaddingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9A3AEA9256A44A700007FC2 /* PaddingLabel.swift */; };
 		A9A3AEAC256A532700007FC2 /* SBDOpenChannel+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9A3AEAB256A532700007FC2 /* SBDOpenChannel+Ext.swift */; };
 		A9A3AECE256B786E00007FC2 /* UIImageView+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9A3AECD256B786E00007FC2 /* UIImageView+Ext.swift */; };
@@ -427,6 +428,7 @@
 		9CF8A96827D766D80023C95D /* SBUCreateChannelViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUCreateChannelViewController.swift; sourceTree = "<group>"; };
 		9CF8A96927D766D80023C95D /* SendBirdUIKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SendBirdUIKit.h; sourceTree = "<group>"; };
 		9CF8A96A27D766D80023C95D /* SBUGlobals.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUGlobals.swift; sourceTree = "<group>"; };
+		9CF8AA0727D9BD3D0023C95D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A9A3AEA9256A44A700007FC2 /* PaddingLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddingLabel.swift; sourceTree = "<group>"; };
 		A9A3AEAB256A532700007FC2 /* SBDOpenChannel+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SBDOpenChannel+Ext.swift"; sourceTree = "<group>"; };
 		A9A3AECD256B786E00007FC2 /* UIImageView+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Ext.swift"; sourceTree = "<group>"; };
@@ -716,6 +718,7 @@
 		9CF8A8A527D766D80023C95D /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				9CF8AA0627D9BD3D0023C95D /* Resource */,
 				9CF8A8A627D766D80023C95D /* Extension */,
 				9CF8A8B827D766D80023C95D /* Util */,
 				9CF8A8BC27D766D80023C95D /* SBUMain.swift */,
@@ -1205,6 +1208,14 @@
 			path = CreateChannel;
 			sourceTree = "<group>";
 		};
+		9CF8AA0627D9BD3D0023C95D /* Resource */ = {
+			isa = PBXGroup;
+			children = (
+				9CF8AA0727D9BD3D0023C95D /* Assets.xcassets */,
+			);
+			path = Resource;
+			sourceTree = "<group>";
+		};
 		A3BC29C7BEE55436EBCAD26A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -1302,6 +1313,7 @@
 				9CF8A9E927D766D90023C95D /* SBUMenuCell.xib in Resources */,
 				9C777D67241B9024006FFE25 /* LaunchScreen.storyboard in Resources */,
 				9C777D64241B9024006FFE25 /* Assets.xcassets in Resources */,
+				9CF8AA0827D9BD3D0023C95D /* Assets.xcassets in Resources */,
 				9C777D62241B9022006FFE25 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
