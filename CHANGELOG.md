@@ -1,5 +1,8 @@
 # Change Log
 
+### v2.1.18 (Mar 10, 2022)
+* Updated chat SDK to **v3.1.7**
+
 ### v2.1.17 (Mar 2, 2022)
 * Updated chat SDK to **v3.1.5**
 
