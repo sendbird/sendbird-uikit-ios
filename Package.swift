@@ -30,7 +30,7 @@ let package = Package(
                 .product(name: "SendBirdSDK", package: "SendBirdSDK")
             ],
             path: "Framework/Dependency",
-            exclude: ["Sample", "Sources"]
+            exclude: ["../../Sample", "../../Sources"]
         ),
     ]
 )
