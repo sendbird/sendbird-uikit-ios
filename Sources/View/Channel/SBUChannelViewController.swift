@@ -488,41 +488,45 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
         channelViewModel.channelChangeObservable.observe { [weak self] messageContext, channel in
             guard let self = self else { return }
             
-            if let channel = channel {
-                // channel changed
-                switch messageContext.source {
-                case .eventReadReceiptUpdated, .eventDeliveryReceiptUpdated:
-                    if messageContext.source == .eventReadReceiptUpdated {
-                        if let titleView = self.titleView as? SBUChannelTitleView {
-                            titleView.updateChannelStatus(channel: channel)
-                        }
-                    }
-                    self.reloadTableView()
-                case .eventTypingStatusUpdated:
+            guard channel != nil else {
+                // channel deleted
+                if self.navigationController?.viewControllers.last == self {
+                    // If leave is called in the ChannelSettingsViewController, this logic needs to be prevented.
+                    self.onClickBack()
+                }
+                return
+            }
+            
+            // channel changed
+            switch messageContext.source {
+            case .eventReadReceiptUpdated, .eventDeliveryReceiptUpdated:
+                if messageContext.source == .eventReadReceiptUpdated {
                     if let titleView = self.titleView as? SBUChannelTitleView {
                         titleView.updateChannelStatus(channel: channel)
                     }
-                case .channelChangelog:
-                    if let titleView = self.titleView as? SBUChannelTitleView {
-                        titleView.configure(channel: channel, title: self.channelName)
-                    }
-                    self.updateMessageInputModeState()
-                    self.reloadTableView()
-                case .eventChannelChanged:
-                    if let titleView = self.titleView as? SBUChannelTitleView {
-                        titleView.configure(channel: channel, title: self.channelName)
-                    }
-                    self.updateMessageInputModeState()
-                case .eventChannelFrozen, .eventChannelUnfrozen,
-                     .eventUserMuted, .eventUserUnmuted,
-                     .eventOperatorUpdated,
-                     .eventUserBanned: // Other User Banned
-                    self.updateMessageInputModeState()
-                default: break
                 }
-            } else {
-                // channel deleted
-                self.onClickBack()
+                self.reloadTableView()
+            case .eventTypingStatusUpdated:
+                if let titleView = self.titleView as? SBUChannelTitleView {
+                    titleView.updateChannelStatus(channel: channel)
+                }
+            case .channelChangelog:
+                if let titleView = self.titleView as? SBUChannelTitleView {
+                    titleView.configure(channel: channel, title: self.channelName)
+                }
+                self.updateMessageInputModeState()
+                self.reloadTableView()
+            case .eventChannelChanged:
+                if let titleView = self.titleView as? SBUChannelTitleView {
+                    titleView.configure(channel: channel, title: self.channelName)
+                }
+                self.updateMessageInputModeState()
+            case .eventChannelFrozen, .eventChannelUnfrozen,
+                    .eventUserMuted, .eventUserUnmuted,
+                    .eventOperatorUpdated,
+                    .eventUserBanned: // Other User Banned
+                self.updateMessageInputModeState()
+            default: break
             }
         }
     }
@@ -1299,10 +1303,12 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
     public func calculatorMenuPoint(indexPath: IndexPath,
                                     position: MessagePosition) -> CGPoint {
         let rowRect = self.tableView.rectForRow(at: indexPath)
-        let rowRectInSuperview = self.tableView.convert(rowRect,
-                                                        to: self.tableView.superview?.superview)
-        let originX = (position == .right) ? rowRectInSuperview.width : 0
-        let menuPoint = CGPoint(x: originX, y: (rowRectInSuperview.origin.y))
+        let rowRectInSuperview = self.tableView.convert(
+            rowRect,
+            to: UIApplication.shared.currentWindow
+        )
+        let originX = (position == .right) ? rowRectInSuperview.width : rowRectInSuperview.origin.x
+        let menuPoint = CGPoint(x: originX, y: rowRectInSuperview.origin.y)
         
         return menuPoint
     }

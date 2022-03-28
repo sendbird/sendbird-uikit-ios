@@ -28,12 +28,16 @@ public class SBUStringSet: NSObject {
     public static var TakePhoto = "Take photo"
     public static var ChoosePhoto = "Choose photo"
     public static var RemovePhoto = "Remove photo"
+    public static var ViewLibrary = "View library"
     public static var Search = "Search"
+    public static var Settings = "Settings"
     public static var Reply = "Reply"
     
     // MARK: - Alert
     public static var Alert_Delete = "Are you sure you want to delete?"
-
+    public static var Alert_Allow_PhotoLibrary_Access = "Please Allow PhotoLibrary Access"
+    public static var Alert_Allow_PhotoLibrary_Access_Message = "PhotoLibrary access required to get your photos and videos"
+    
 
     // MARK: - Date Format
     public static var Date_Yesterday = "Yesterday"

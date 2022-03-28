@@ -34,8 +34,7 @@ public class SBUGlobals: NSObject {
     
     /// The level of access to the photo library. The default value is `.readWrite`.
     /// - Since: 2.2.4
-    @available(iOS 14, *)
-    public static var photoLibraryAccessLevel: PHAccessLevel = .readWrite
+    public static var photoLibraryAccessLevel: SBUPhotoAccessLevel = .readWrite
     
     // MARK: - Reply Type
     /// If this value is enabled, replying features are activated.

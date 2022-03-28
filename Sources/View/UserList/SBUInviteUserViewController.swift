@@ -464,7 +464,7 @@ open class SBUInviteUserViewController: SBUBaseViewController {
         }
         
         for vc in navigationController.viewControllers {
-            if vc is SBUChannelViewController {
+            if vc is SBUBaseChannelViewController {
                 navigationController.popToViewController(vc, animated: true)
                 return
             }

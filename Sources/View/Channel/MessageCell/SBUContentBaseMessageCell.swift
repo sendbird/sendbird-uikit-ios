@@ -236,9 +236,18 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         }
         
         // MARK: Set up SBU message profile view
-        if let profileView = self.profileView as? SBUMessageProfileView {
-            let urlString = self.message.sender?.profileUrl ?? ""
-            profileView.configure(urlString: urlString)
+        self.profileView.isHidden = self.position == .right
+        
+        let usingProfileView = !(
+            SBUGlobals.UsingMessageGrouping &&
+            (configuration.groupPosition == .top || configuration.groupPosition == .middle)
+        )
+        
+        if configuration.messagePosition != .right, usingProfileView {
+            if let profileView = self.profileView as? SBUMessageProfileView {
+                let urlString = self.message.sender?.profileUrl ?? ""
+                profileView.configure(urlString: urlString)
+            }
         }
         
         // MARK: Set up SBU message state view
@@ -267,9 +276,10 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
             (self.stateView as? SBUMessageStateView)?.configure(with: configuration)
         }
         
-        // TODO: (모듈화 할 때) 백워드가 많이 깨질거라 cell 쪽 구조를 편한 방향으로 싹 바꾸는 것도 좋아보임
         if self.usingQuotedMessage {
             self.setupQuotedMessageView()
+        } else {
+            self.quotedMessageView?.isHidden = true
         }
         // MARK: Group messages
         self.setMessageGrouping()
@@ -321,16 +331,38 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
     }
     
     public func setMessageGrouping() {
-        guard SBUGlobals.UsingMessageGrouping else { return }
-        guard !self.usingQuotedMessage else { return }
-        self.quotedMessageView?.isHidden = true
+        let isMessageGroupingEnabled = SBUGlobals.UsingMessageGrouping
+        let profileImageView = (self.profileView as? SBUMessageProfileView)?.imageView
+        let timeLabel = (self.stateView as? SBUMessageStateView)?.timeLabel
+        
+        switch self.groupPosition {
+        case .top:
+            self.userNameView.isHidden = false
+            profileImageView?.isHidden = isMessageGroupingEnabled
+            timeLabel?.isHidden = isMessageGroupingEnabled
+        case .middle:
+            self.userNameView.isHidden = isMessageGroupingEnabled
+            profileImageView?.isHidden = isMessageGroupingEnabled
+            timeLabel?.isHidden = isMessageGroupingEnabled
+        case .bottom:
+            self.userNameView.isHidden = isMessageGroupingEnabled
+            profileImageView?.isHidden = false
+            timeLabel?.isHidden = false
+        case .none:
+            self.userNameView.isHidden = false
+            profileImageView?.isHidden = false
+            timeLabel?.isHidden = false
+        }
+        
+        if self.position == .right {
+            self.userNameView.isHidden = true
+            self.profileView.isHidden = true
+        }
         
         self.updateContentsPosition()
     }
     
     private func updateContentsPosition() {
-        self.profileView.isHidden = self.position == .right
-        
         self.contentHStackView.arrangedSubviews.forEach {
             $0.removeFromSuperview()
         }
@@ -379,28 +411,6 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
                 
             case .center:
                 break
-        }
-        
-        let profileImageView = (self.profileView as? SBUMessageProfileView)?.imageView
-        let timeLabel = (self.stateView as? SBUMessageStateView)?.timeLabel
-        
-        switch self.groupPosition {
-            case .top:
-                self.userNameView.isHidden = self.position == .right
-                profileImageView?.isHidden = true
-                timeLabel?.isHidden = true
-            case .middle:
-                self.userNameView.isHidden = true
-                profileImageView?.isHidden = true
-                timeLabel?.isHidden = true
-            case .bottom:
-                self.userNameView.isHidden = true
-                profileImageView?.isHidden = false
-                timeLabel?.isHidden = false
-            case .none:
-                self.userNameView.isHidden = self.position == .right
-                profileImageView?.isHidden = false
-                timeLabel?.isHidden = false
         }
         
         if usingQuotedMessage {

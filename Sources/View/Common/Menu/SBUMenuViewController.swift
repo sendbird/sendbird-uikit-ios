@@ -144,7 +144,7 @@ class SBUMenuViewController: SBUBaseViewController, UITableViewDelegate, UITable
         if let bottomSheet = self.presentationController as? SBUBottomSheetController {
 
             bottomSheet.isEnableTop = false
-            let window = UIApplication.shared.keyWindow
+            let window = UIApplication.shared.currentWindow
             let bottomPadding = window?.safeAreaInsets.bottom ?? 0
             bottomSheet.contentHeight = tableView.contentSize.height + bottomPadding
         }

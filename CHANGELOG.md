@@ -1,5 +1,15 @@
 # Change Log
 
+### v2.2.6 (Mar 28, 2022)
+* Updated chat SDK minor version to **v3.1.17**
+* Added new classes to support limited photo access level.
+  * Added `SBUSelectablePhotoViewController` class.
+  * Added `SBUPhotoCollectionViewCell` class.
+  * Added `SBUPhotoAccessLevel` and `SBUPhotoAccessibleStatus`.
+* Added `rootViewController` parameter in `moveToChannel` function on `SBUMain` class and changed access level.
+* Added `dismissAndMoveToChannel` function on `SBUCreateChannelViewController`.
+* Improved stabilities
+
 ### v2.2.5 (Mar 8, 2022)
 * Improved logic for caching
 * Improved stabilities

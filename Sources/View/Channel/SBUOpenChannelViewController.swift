@@ -1515,21 +1515,13 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController {
     ///   - position: Message position
     /// - Returns: `CGPoint` value
     public func calculatorMenuPoint(indexPath: IndexPath) -> CGPoint {
-        
-        // Jaesung's Opinion: What about `open`, not `public`?
         let rowRect = self.tableView.rectForRow(at: indexPath)
         let rowRectInSuperview = self.tableView.convert(
             rowRect,
-            to: self.tableView.superview?.superview
+            to: UIApplication.shared.currentWindow
         )
         
-        let y = rowRectInSuperview.origin.y < self.tableView.frame.minY
-            ? self.tableView.frame.origin.y
-            : rowRectInSuperview.origin.y
-
-        let menuPoint = CGPoint(x: self.messageInputView.frame.minX, y: y)
-        
-        return menuPoint
+        return rowRectInSuperview.origin
     }
     
     /// This function shows cell's menu.
@@ -1861,11 +1853,15 @@ extension SBUOpenChannelViewController: SBDChannelDelegate, SBDConnectionDelegat
     }
     
     open func channelWasDeleted(_ channelUrl: String, channelType: SBDChannelType) {
-        if let navigationController = self.navigationController,
-            navigationController.viewControllers.count > 1 {
-            navigationController.popViewController(animated: true)
-        } else {
-            self.dismiss(animated: true, completion: nil)
+        if self.navigationController?.viewControllers.last == self {
+            // If leave is called in the ChannelSettingsViewController, this logic needs to be prevented.
+            
+            if let navigationController = self.navigationController,
+               navigationController.viewControllers.count > 1 {
+                navigationController.popViewController(animated: true)
+            } else {
+                self.dismiss(animated: true, completion: nil)
+            }
         }
     }
 

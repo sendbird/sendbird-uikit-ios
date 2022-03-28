@@ -9,7 +9,7 @@
 import UIKit
 import AVFoundation
 
-internal extension UIImageView {
+public extension UIImageView {
     enum ImageOption {
         case imageToThumbnail
         case original
@@ -21,7 +21,7 @@ internal extension UIImageView {
                    placeholder: UIImage? = nil,
                    errorImage: UIImage? = nil,
                    option: ImageOption = .original,
-                   thumbnailSize: CGSize? = SBUConstant.thumbnailSize,
+                   thumbnailSize: CGSize? = nil,
                    completion: ((Bool) -> Void)? = nil) -> URLSessionTask? {
         self.setImage(placeholder)
         

@@ -255,7 +255,7 @@ class SBUUserProfileView: UIView, SBUUserProfileViewProtocol {
         )
         self.separatorTop?.isActive = true
         
-        let bottomInset = UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 0.0
+        let bottomInset = UIApplication.shared.currentWindow?.safeAreaInsets.bottom ?? 0.0
         let bottomMargin: CGFloat = 20 + bottomInset
 
         self.userIdLabel.sbu_constraint(equalTo: self.contentView, bottom: bottomMargin)

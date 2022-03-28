@@ -853,18 +853,10 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
                 }
             }
         case .library:
-            //need to know access level for ios 14
-            SBUPermissionManager.shared.requestPhotoAccessIfNeeded { (completed) in
-                if (completed) {
-                    DispatchQueue.main.async { [weak self] in
-                        guard let self = self else { return }
-                        self.delegate?.messageInputView?(self, didSelectResource: type)
-                    }
-                } else {
-                    //show alert view to go to settings
-                    if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
-                        UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
-                    }
+            SBUPermissionManager.shared.requestPhotoAccessIfNeeded { status in
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+                    self.delegate?.messageInputView?(self, didSelectResource: type)
                 }
             }
         default:

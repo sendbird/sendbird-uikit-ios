@@ -31,6 +31,8 @@ open class SBUMessageProfileView: SBUView {
         self.configure(urlString: urlString)
     }
     
+    public var imageDownloadTask: URLSessionTask? = nil
+    
     public override init() {
         self.urlString = ""
         super.init()
@@ -62,7 +64,7 @@ open class SBUMessageProfileView: SBUView {
     open func configure(urlString: String) {
         self.urlString = urlString
         
-        self.imageView.loadImage(
+        self.imageDownloadTask = self.imageView.loadImage(
             urlString: urlString,
             placeholder: SBUIconSetType.iconUser.image(
                 with: self.theme.userPlaceholderTintColor,

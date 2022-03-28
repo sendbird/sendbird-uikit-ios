@@ -427,15 +427,17 @@ public class SBUMain: NSObject {
     ///   - channelUrl: channel url for use in channel.
     ///   - basedOnChannelList: `true` for services based on the channel list. Default value is `true`
     ///   - messageListParams: If there is a messageListParams set directly for use in Channel, set it up here
-    /// - Since: 1.2.2
+    ///   - channelType: channel type
+    ///   - rootViewController: If you use a complex hierarchy structure, ㄴet your ChannelList or Channel ViewController here.
+    /// - Since: 2.2.6
     public static func moveToChannel(channelUrl: String,
                                      basedOnChannelList: Bool = true,
                                      messageListParams: SBDMessageListParams? = nil,
-                                     channelType: ChannelType = .group) {
+                                     channelType: ChannelType = .group,
+                                     rootViewController: UIViewController? = nil) {
         guard SBUGlobals.CurrentUser != nil else { return }
         
-        var rootViewController = UIApplication.shared.keyWindow?.rootViewController
-        
+        var rootViewController = rootViewController ?? UIApplication.shared.keyWindow?.rootViewController
         if let tabbarController: UITabBarController = rootViewController?.presentedViewController as? UITabBarController {
             rootViewController = tabbarController.selectedViewController
         }

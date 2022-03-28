@@ -52,7 +52,7 @@ public class SBULoading: NSObject {
     }
     
     private func show() {
-        self.window = UIApplication.shared.keyWindow
+        self.window = UIApplication.shared.currentWindow
         guard let window = self.window else { return }
         
         // Set backgroundView

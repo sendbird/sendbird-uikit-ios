@@ -365,12 +365,13 @@ open class SBUCreateChannelViewController: SBUBaseViewController {
                 return
             }
             
-            guard let channelUrl = channel?.channelUrl else {
-                SBULog.error("[Failed] Create channel request: There is no channel url.")
+            SBULog.info("[Succeed] Create channel: \(channel?.description ?? "")")
+            
+            guard let channel = channel else {
+                SBULog.error("[Failed] Create channel request: There is no channel.")
                 return
             }
-            SBULog.info("[Succeed] Create channel: \(channel?.description ?? "")")
-            SBUMain.moveToChannel(channelUrl: channelUrl, messageListParams: messageListParams)
+            self.dismissAndMoveToChannel(channel, messageListParams: messageListParams)
         }
     }
     
@@ -398,6 +399,19 @@ open class SBUCreateChannelViewController: SBUBaseViewController {
     
     
     // MARK: - Common
+    
+    /// This function dismisses `createViewController` and moves to created channel.
+    /// - Parameters:
+    ///   - channel: Created channel
+    ///   - messageListParams: messageListParams
+    /// - Since: 2.2.6
+    open func dismissAndMoveToChannel(_ channel: SBDBaseChannel,
+                                      messageListParams: SBDMessageListParams?) {
+        SBUMain.moveToChannel(
+            channelUrl: channel.channelUrl,
+            messageListParams: messageListParams
+        )
+    }
     
     /// This function reloads user list.
     /// - Since: 1.2.5

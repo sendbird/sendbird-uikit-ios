@@ -205,8 +205,10 @@ class SBUChannelViewModel: SBULoadableViewModel {
             
             if let error = error {
                 // ignore error if using local caching
-                if !SBDMain.isUsingLocalCaching() {
+                if SBDMain.isUsingLocalCaching() == false {
                     self.errorObservable.set(value: error)
+                } else {
+                    self.loadingObservable.set(value: false)
                 }
                 return
             }

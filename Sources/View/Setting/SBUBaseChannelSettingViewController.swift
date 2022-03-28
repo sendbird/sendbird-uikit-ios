@@ -284,7 +284,7 @@ open class SBUBaseChannelSettingViewController: SBUBaseViewController {
             }
             
             for vc in navigationController.viewControllers {
-                if vc is SBUChannelListViewController {
+                if vc is SBUBaseChannelListViewController {
                     navigationController.popToViewController(vc, animated: true)
                     return
                 }

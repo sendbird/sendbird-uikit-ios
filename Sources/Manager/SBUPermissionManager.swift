@@ -14,30 +14,47 @@ class SBUPermissionManager {
     static let shared = SBUPermissionManager()
     private init() {}
     
-    func requestPhotoAccessIfNeeded(completion: @escaping (Bool) -> ()) {
+    var currentStatus: SBUPhotoAccessibleStatus {
         var granted: PHAuthorizationStatus
         if #available(iOS 14, *) {
-            granted = PHPhotoLibrary.authorizationStatus(for: SBUGlobals.photoLibraryAccessLevel)
+            granted = PHPhotoLibrary.authorizationStatus(for: SBUGlobals.photoLibraryAccessLevel.asPHAccessLevel)
         } else {
             granted = PHPhotoLibrary.authorizationStatus()
         }
+        return SBUPhotoAccessibleStatus.from(granted)
+    }
+    
+    func requestPhotoAccessIfNeeded(completion: @escaping (SBUPhotoAccessibleStatus) -> Void) {
+        // authorizationStatus
+        var granted: PHAuthorizationStatus
+        if #available(iOS 14, *) {
+            granted = PHPhotoLibrary.authorizationStatus(for: SBUGlobals.photoLibraryAccessLevel.asPHAccessLevel)
+        } else {
+            granted = PHPhotoLibrary.authorizationStatus()
+        }
+        
         switch granted {
-            case .authorized, .limited:
-                completion(true)
-            default:
-                PHPhotoLibrary.requestAuthorization { (status: PHAuthorizationStatus) -> Void in
-                    DispatchQueue.main.async {
-                        var isAccessible: Bool
-                        
-                        if #available(iOS 14, *) {
-                            isAccessible = status == .authorized || status == .limited
-                        } else {
-                            isAccessible = status == .authorized
-                        }
-                        completion(isAccessible)
-                    }
-                    
+        case .authorized:
+            DispatchQueue.main.async {
+                completion(.all)
+            }
+        default:
+            // request authorization when not authorized
+            let handler: (PHAuthorizationStatus) -> Void = { status in
+                DispatchQueue.main.async {
+                    let accessibleStatus = SBUPhotoAccessibleStatus.from(status)
+                    completion(accessibleStatus)
                 }
+            }
+            if #available(iOS 14, *) {
+                PHPhotoLibrary.requestAuthorization(
+                    for: SBUGlobals.photoLibraryAccessLevel.asPHAccessLevel,
+                    handler: handler
+                )
+            } else {
+                PHPhotoLibrary.requestAuthorization(handler)
+                
+            }
         }
     }
     

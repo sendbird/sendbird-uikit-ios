@@ -100,10 +100,15 @@ open class SBUOpenChannelBaseMessageCell: UITableViewCell {
     }
     
     func updateTopAnchorConstraint() {
+        let isGrouped = SBUGlobals.UsingMessageGrouping
+        && self.groupPosition != .none
+        && self.groupPosition != .top
+        let constant: CGFloat = isGrouped ? 4 : 16
+        
         self.stackViewTopConstraint?.isActive = false
         self.stackViewTopConstraint = self.stackView.topAnchor.constraint(
             equalTo: self.contentView.topAnchor,
-            constant: (self.groupPosition == .none || self.groupPosition == .top) ? 16 : 4
+            constant: constant
         )
         self.stackViewTopConstraint?.isActive = true
     }

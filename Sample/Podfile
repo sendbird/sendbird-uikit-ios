@@ -5,6 +5,6 @@ target 'SendBirdUIKit-Sample' do
   # Comment the next line if you don't want to use dynamic frameworks
   use_modular_headers!
 
-  pod 'SendBirdSDK', '~> 3.1.1'
+  pod 'SendBirdSDK', '~> 3.1.7'
 
 end

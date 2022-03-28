@@ -160,6 +160,16 @@ open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
         }
     }
     
+    open override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        if let profileView = self.profileView as? SBUMessageProfileView {
+            profileView.imageDownloadTask?.cancel()
+            profileView.urlString = ""
+            profileView.imageView.image = nil
+        }
+    }
+    
     
     // MARK: - Common
     open func configure(_ message: SBDBaseMessage,
@@ -244,29 +254,27 @@ open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
     }
     
     public func setMessageGrouping() {
-        guard SBUGlobals.UsingMessageGrouping else { return }
-        
+        let isMessageGroupingEnabled = SBUGlobals.UsingMessageGrouping
         let profileImageView = (self.profileView as? SBUMessageProfileView)?.imageView
+        
         switch self.groupPosition {
         case .top:
             self.userNameView.isHidden = false
-            self.messageTimeLabel.isHidden = false
             profileImageView?.isHidden = false
+            self.messageTimeLabel.isHidden = false
         case .middle:
-            self.userNameView.isHidden = true
-            self.messageTimeLabel.isHidden = true
-            profileImageView?.isHidden = true
+            self.userNameView.isHidden = isMessageGroupingEnabled
+            profileImageView?.isHidden = isMessageGroupingEnabled
+            self.messageTimeLabel.isHidden = isMessageGroupingEnabled
         case .bottom:
-            self.userNameView.isHidden = true
-            self.messageTimeLabel.isHidden = true
-            profileImageView?.isHidden = true
+            self.userNameView.isHidden = isMessageGroupingEnabled
+            profileImageView?.isHidden = isMessageGroupingEnabled
+            self.messageTimeLabel.isHidden = isMessageGroupingEnabled
         case .none:
             self.userNameView.isHidden = false
-            self.messageTimeLabel.isHidden = false
             profileImageView?.isHidden = false
+            self.messageTimeLabel.isHidden = false
         }
-        
-        self.updateTopAnchorConstraint()
     }
     
     public func setUsernameColor(_ color: UIColor) {

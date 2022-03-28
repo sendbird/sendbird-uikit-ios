@@ -17,6 +17,11 @@
 			<key>primary</key>
 			<true/>
 		</dict>
+		<key>SendBirdUIKitTarget</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>SendBirdUIKitTests</key>
 		<dict>
 			<key>primary</key>

@@ -1,5 +1,5 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.5.2 (swiftlang-1300.0.47.5 clang-1300.0.29.30)
+// swift-compiler-version: Apple Swift version 5.6 (swiftlang-5.6.0.323.62 clang-1316.0.20.8)
 // swift-module-flags: -target arm64-apple-ios11.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name SendBirdUIKit
 import AVFoundation
 import AVKit
@@ -447,6 +447,32 @@ extension SendBirdUIKit.SBUChannelListViewController {
   @objc override dynamic public init()
   @objc deinit
 }
+@objc(SBUPhotoAccessLevel) public enum SBUPhotoAccessLevel : Swift.Int, Swift.Hashable {
+  case addOnly
+  case readWrite
+  @available(iOS 14, *)
+  public var asPHAccessLevel: Photos.PHAccessLevel {
+    get
+  }
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@objc(SBUPhotoAccessibleStatus) public enum SBUPhotoAccessibleStatus : Swift.Int, Swift.Hashable {
+  case all
+  case limited
+  case notDetermined
+  case restricted
+  case denied
+  case none
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
 @objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) open class SBUUserCell : UIKit.UITableViewCell {
   @_Concurrency.MainActor(unsafe) public var baseStackView: UIKit.UIStackView {
     get
@@ -582,6 +608,7 @@ extension ObjectiveC.NSObject {
   @_Concurrency.MainActor(unsafe) @objc override open func setupAutolayout()
   @_Concurrency.MainActor(unsafe) @objc override open func setupActions()
   @_Concurrency.MainActor(unsafe) @objc override open func setupStyles()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func prepareForReuse()
   @objc @_Concurrency.MainActor(unsafe) open func configure(_ message: SendBirdSDK.SBDBaseMessage, hideDateView: Swift.Bool, groupPosition: SendBirdUIKit.MessageGroupPosition, isOverlay: Swift.Bool = false)
   @objc @_Concurrency.MainActor(unsafe) public func setMessageGrouping()
   @objc @_Concurrency.MainActor(unsafe) public func setUsernameColor(_ color: UIKit.UIColor)
@@ -1118,14 +1145,20 @@ extension SendBirdUIKit.SBUBaseChannelViewController : SendBirdUIKit.SBUMessageI
   @_Concurrency.MainActor(unsafe) @objc dynamic open func messageInputView(_ messageInputView: SendBirdUIKit.SBUMessageInputView, didSelectSend text: Swift.String)
   @_Concurrency.MainActor(unsafe) @objc dynamic open func messageInputView(_ messageInputView: SendBirdUIKit.SBUMessageInputView, didSelectResource type: SendBirdUIKit.MediaResourceType)
   @objc @_Concurrency.MainActor(unsafe) dynamic open func showDocumentPicker()
+  @objc @_Concurrency.MainActor(unsafe) dynamic open func showLimitedPhotoLibraryPicker()
   @objc @_Concurrency.MainActor(unsafe) dynamic open func showPhotoLibraryPicker()
   @objc @_Concurrency.MainActor(unsafe) dynamic open func showCamera()
+  @objc @_Concurrency.MainActor(unsafe) dynamic open func showPermissionAlert()
   @_Concurrency.MainActor(unsafe) @objc dynamic open func messageInputView(_ messageInputView: SendBirdUIKit.SBUMessageInputView, didSelectEdit text: Swift.String)
   @_Concurrency.MainActor(unsafe) @objc dynamic open func messageInputView(_ messageInputView: SendBirdUIKit.SBUMessageInputView, didChangeText text: Swift.String)
   @_Concurrency.MainActor(unsafe) @objc dynamic open func messageInputView(_ messageInputView: SendBirdUIKit.SBUMessageInputView, willChangeMode mode: SendBirdUIKit.SBUMessageInputMode, message: SendBirdSDK.SBDBaseMessage?)
   @_Concurrency.MainActor(unsafe) @objc dynamic open func messageInputView(_ messageInputView: SendBirdUIKit.SBUMessageInputView, didChangeMode mode: SendBirdUIKit.SBUMessageInputMode, message: SendBirdSDK.SBDBaseMessage?)
   @_Concurrency.MainActor(unsafe) @objc dynamic open func messageInputViewDidStartTyping()
   @_Concurrency.MainActor(unsafe) @objc dynamic open func messageInputViewDidEndTyping()
+}
+extension SendBirdUIKit.SBUBaseChannelViewController : SendBirdUIKit.SBUSelectablePhotoViewDelegate {
+  @_Concurrency.MainActor(unsafe) @objc dynamic open func didTapSendImageData(_ data: Foundation.Data)
+  @_Concurrency.MainActor(unsafe) @objc dynamic open func didTapSendVideoURL(_ url: Foundation.URL)
 }
 extension SendBirdUIKit.SBUBaseChannelViewController {
   @_Concurrency.MainActor(unsafe) @objc dynamic open func didSelectDeleteImage(message: SendBirdSDK.SBDFileMessage)
@@ -1209,6 +1242,24 @@ extension SendBirdUIKit.SBUModerationsViewController {
 }
 extension SendBirdUIKit.SBUBaseViewController : UIKit.UINavigationControllerDelegate {
   @_Concurrency.MainActor(unsafe) @objc dynamic open func navigationController(_ navigationController: UIKit.UINavigationController, didShow viewController: UIKit.UIViewController, animated: Swift.Bool)
+}
+@objc @_inheritsConvenienceInitializers @objcMembers @_Concurrency.MainActor(unsafe) open class SBUPhotoCollectionViewCell : UIKit.UICollectionViewCell, SendBirdUIKit.SBUViewLifeCycle {
+  @objc @_Concurrency.MainActor(unsafe) public var imageView: UIKit.UIImageView
+  @objc @_Concurrency.MainActor(unsafe) public var iconImageView: UIKit.UIImageView
+  @objc @SendBirdUIKit.SBUThemeWrapper @_Concurrency.MainActor(unsafe) public var theme: SendBirdUIKit.SBUMessageCellTheme {
+    @objc get
+    @objc set
+    _modify
+  }
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func layoutSubviews()
+  @_Concurrency.MainActor(unsafe) @objc open func setupViews()
+  @_Concurrency.MainActor(unsafe) @objc open func setupActions()
+  @_Concurrency.MainActor(unsafe) @objc open func setupAutolayout()
+  @objc @_Concurrency.MainActor(unsafe) open func configure(image: UIKit.UIImage?, forMediaType mediaType: Photos.PHAssetMediaType)
+  @_Concurrency.MainActor(unsafe) @objc open func setupStyles()
+  @objc deinit
 }
 @objc @_hasMissingDesignatedInitializers @objcMembers @_Concurrency.MainActor(unsafe) open class SBUChannelViewController : SendBirdUIKit.SBUBaseChannelViewController {
   @objc @_Concurrency.MainActor(unsafe) public var channelName: Swift.String?
@@ -1631,6 +1682,20 @@ extension UIKit.UIStackView {
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
   @objc deinit
 }
+extension UIKit.UIImageView {
+  public enum ImageOption {
+    case imageToThumbnail
+    case original
+    case videoUrlToImage
+    public static func == (a: UIKit.UIImageView.ImageOption, b: UIKit.UIImageView.ImageOption) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+  @discardableResult
+  @_Concurrency.MainActor(unsafe) public func loadImage(urlString: Swift.String, placeholder: UIKit.UIImage? = nil, errorImage: UIKit.UIImage? = nil, option: UIKit.UIImageView.ImageOption = .original, thumbnailSize: CoreGraphics.CGSize? = nil, completion: ((Swift.Bool) -> Swift.Void)? = nil) -> Foundation.URLSessionTask?
+}
 @objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUBaseChannelCell : UIKit.UITableViewCell {
   @_Concurrency.MainActor(unsafe) public var channel: SendBirdSDK.SBDBaseChannel? {
     get
@@ -1648,6 +1713,51 @@ extension UIKit.UIStackView {
   @_Concurrency.MainActor(unsafe) open func setupStyles()
   @_Concurrency.MainActor(unsafe) open func configure(channel: SendBirdSDK.SBDBaseChannel)
   @objc deinit
+}
+@objc public protocol SBUSelectablePhotoViewDelegate {
+  @objc func didTapSendImageData(_ data: Foundation.Data)
+  @objc func didTapSendVideoURL(_ url: Foundation.URL)
+}
+@objc @_inheritsConvenienceInitializers @objcMembers @_Concurrency.MainActor(unsafe) open class SBUSelectablePhotoViewController : UIKit.UIViewController, SendBirdUIKit.SBUViewLifeCycle {
+  @objc @_Concurrency.MainActor(unsafe) public var collectionView: UIKit.UICollectionView {
+    @objc get
+  }
+  @objc @_Concurrency.MainActor(unsafe) public var rightBarButton: UIKit.UIBarButtonItem? {
+    @objc get
+    @objc set
+  }
+  @objc @SendBirdUIKit.SBUThemeWrapper @_Concurrency.MainActor(unsafe) public var theme: SendBirdUIKit.SBUComponentTheme {
+    @objc get
+    @objc set
+    _modify
+  }
+  @objc @_Concurrency.MainActor(unsafe) weak public var delegate: SendBirdUIKit.SBUSelectablePhotoViewDelegate?
+  @objc @_Concurrency.MainActor(unsafe) public var fetchResult: Photos.PHFetchResult<Photos.PHAsset>
+  @objc @_Concurrency.MainActor(unsafe) public var columnSize: CoreGraphics.CGSize {
+    @objc get
+  }
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func loadView()
+  @objc deinit
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewDidLayoutSubviews()
+  @_Concurrency.MainActor(unsafe) @objc open func setupViews()
+  @_Concurrency.MainActor(unsafe) @objc open func setupAutolayout()
+  @_Concurrency.MainActor(unsafe) @objc open func setupActions()
+  @_Concurrency.MainActor(unsafe) @objc open func setupStyles()
+  @objc @_Concurrency.MainActor(unsafe) public func register(photoCell: SendBirdUIKit.SBUPhotoCollectionViewCell, nib: UIKit.UINib? = nil)
+  @objc @_Concurrency.MainActor(unsafe) open func didTapRightBarButton()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
+}
+extension SendBirdUIKit.SBUSelectablePhotoViewController : UIKit.UICollectionViewDelegate, UIKit.UICollectionViewDataSource, UIKit.UICollectionViewDelegateFlowLayout {
+  @_Concurrency.MainActor(unsafe) @objc dynamic open func collectionView(_ collectionView: UIKit.UICollectionView, numberOfItemsInSection section: Swift.Int) -> Swift.Int
+  @_Concurrency.MainActor(unsafe) @objc dynamic open func collectionView(_ collectionView: UIKit.UICollectionView, cellForItemAt indexPath: Foundation.IndexPath) -> UIKit.UICollectionViewCell
+  @_Concurrency.MainActor(unsafe) @objc dynamic open func collectionView(_ collectionView: UIKit.UICollectionView, layout collectionViewLayout: UIKit.UICollectionViewLayout, sizeForItemAt indexPath: Foundation.IndexPath) -> CoreGraphics.CGSize
+  @_Concurrency.MainActor(unsafe) @objc dynamic open func collectionView(_ collectionView: UIKit.UICollectionView, layout collectionViewLayout: UIKit.UICollectionViewLayout, minimumLineSpacingForSectionAt section: Swift.Int) -> CoreGraphics.CGFloat
+  @_Concurrency.MainActor(unsafe) @objc dynamic open func collectionView(_ collectionView: UIKit.UICollectionView, layout collectionViewLayout: UIKit.UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Swift.Int) -> CoreGraphics.CGFloat
+  @_Concurrency.MainActor(unsafe) @objc dynamic open func collectionView(_ collectionView: UIKit.UICollectionView, didSelectItemAt indexPath: Foundation.IndexPath)
+}
+extension SendBirdUIKit.SBUSelectablePhotoViewController : Photos.PHPhotoLibraryChangeObserver {
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func photoLibraryDidChange(_ changeInstance: Photos.PHChange)
 }
 @objc @_inheritsConvenienceInitializers @objcMembers public class SBUAvailable : ObjectiveC.NSObject {
   @objc public static func isSupportSuperGroupChannel() -> Swift.Bool
@@ -1937,6 +2047,7 @@ public enum SBUReplyType : Swift.Int {
   @objc @_Concurrency.MainActor(unsafe) public func createChannel(userIds: [Swift.String])
   @objc @_Concurrency.MainActor(unsafe) public func createChannel(params: SendBirdSDK.SBDGroupChannelParams, messageListParams: SendBirdSDK.SBDMessageListParams? = nil)
   @objc @_Concurrency.MainActor(unsafe) public func register(userCell: UIKit.UITableViewCell, nib: UIKit.UINib? = nil)
+  @objc @_Concurrency.MainActor(unsafe) open func dismissAndMoveToChannel(_ channel: SendBirdSDK.SBDBaseChannel, messageListParams: SendBirdSDK.SBDMessageListParams?)
   @objc @available(*, deprecated, renamed: "reloadData()")
   @_Concurrency.MainActor(unsafe) public func reloadUserList()
   @objc @_Concurrency.MainActor(unsafe) public func reloadData()
@@ -1954,7 +2065,7 @@ extension SendBirdUIKit.SBUCreateChannelViewController : UIKit.UITableViewDelega
   @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, willDisplay cell: UIKit.UITableViewCell, forRowAt indexPath: Foundation.IndexPath)
 }
 extension SendBirdUIKit.SBUCreateChannelViewController : SendBirdUIKit.SBUEmptyViewDelegate {
-  @objc @_Concurrency.MainActor(unsafe) dynamic open func didSelectRetry()
+  @_Concurrency.MainActor(unsafe) @objc dynamic open func didSelectRetry()
 }
 extension SendBirdUIKit.SBUCreateChannelViewController {
   @objc @discardableResult
@@ -2011,8 +2122,7 @@ extension SendBirdUIKit.SBUCreateChannelViewController {
   @objc public static var UsingMessageGrouping: Swift.Bool
   @objc @available(iOS 14, *)
   public static var UsingPHPicker: Swift.Bool
-  @objc @available(iOS 14, *)
-  public static var photoLibraryAccessLevel: Photos.PHAccessLevel
+  @objc public static var photoLibraryAccessLevel: SendBirdUIKit.SBUPhotoAccessLevel
   public static var ReplyTypeToUse: SendBirdUIKit.SBUReplyType
   @objc public static var UsingUserProfile: Swift.Bool
   @objc public static var UsingUserProfileInOpenChannel: Swift.Bool
@@ -2049,9 +2159,13 @@ public typealias AlertButtonHandler = (_ info: Any?) -> Swift.Void
   @objc public static var TakePhoto: Swift.String
   @objc public static var ChoosePhoto: Swift.String
   @objc public static var RemovePhoto: Swift.String
+  @objc public static var ViewLibrary: Swift.String
   @objc public static var Search: Swift.String
+  @objc public static var Settings: Swift.String
   @objc public static var Reply: Swift.String
   @objc public static var Alert_Delete: Swift.String
+  @objc public static var Alert_Allow_PhotoLibrary_Access: Swift.String
+  @objc public static var Alert_Allow_PhotoLibrary_Access_Message: Swift.String
   @objc public static var Date_Yesterday: Swift.String
   @objc public static var Date_Year: (_ interval: Swift.Int) -> Swift.String
   @objc public static var Date_Day: (_ interval: Swift.Int) -> Swift.String
@@ -2619,6 +2733,7 @@ extension Foundation.NSArray {
   }
   @objc @_Concurrency.MainActor(unsafe) public var urlString: Swift.String
   @objc @_Concurrency.MainActor(unsafe) public init(urlString: Swift.String = "")
+  @objc @_Concurrency.MainActor(unsafe) public var imageDownloadTask: Foundation.URLSessionTask?
   @objc override dynamic public init()
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupViews()
@@ -2650,7 +2765,7 @@ extension Foundation.NSArray {
   @objc public static func unregisterAllPushToken(completionHandler: @escaping (_ success: Swift.Bool) -> Swift.Void)
   @objc @available(*, deprecated, renamed: "moveToChannel(channelUrl:basedOnChannelList:messageListParams:)")
   public static func openChannel(channelUrl: Swift.String, basedOnChannelList: Swift.Bool = true, messageListParams: SendBirdSDK.SBDMessageListParams? = nil)
-  @objc public static func moveToChannel(channelUrl: Swift.String, basedOnChannelList: Swift.Bool = true, messageListParams: SendBirdSDK.SBDMessageListParams? = nil, channelType: SendBirdUIKit.ChannelType = .group)
+  @objc public static func moveToChannel(channelUrl: Swift.String, basedOnChannelList: Swift.Bool = true, messageListParams: SendBirdSDK.SBDMessageListParams? = nil, channelType: SendBirdUIKit.ChannelType = .group, rootViewController: UIKit.UIViewController? = nil)
   @objc public static func createAndMoveToChannel(userIds: [Swift.String], messageListParams: SendBirdSDK.SBDMessageListParams? = nil)
   @objc public static func createAndMoveToChannel(params: SendBirdSDK.SBDGroupChannelParams, messageListParams: SendBirdSDK.SBDMessageListParams? = nil)
   @objc public static func setLogLevel(_ type: SendBirdUIKit.LogType)
@@ -3607,7 +3722,7 @@ extension SendBirdUIKit.SBUMemberListViewController : UIKit.UITableViewDataSourc
   @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, willDisplay cell: UIKit.UITableViewCell, forRowAt indexPath: Foundation.IndexPath)
 }
 extension SendBirdUIKit.SBUMemberListViewController : SendBirdUIKit.SBUEmptyViewDelegate {
-  @objc @_Concurrency.MainActor(unsafe) dynamic open func didSelectRetry()
+  @_Concurrency.MainActor(unsafe) @objc dynamic open func didSelectRetry()
 }
 extension SendBirdUIKit.SBUMemberListViewController : SendBirdUIKit.SBUUserProfileViewDelegate {
   @_Concurrency.MainActor(unsafe) @objc dynamic open func didSelectMessage(userId: Swift.String?)
@@ -3628,6 +3743,11 @@ extension SendBirdUIKit.SBUMemberListViewController {
 @objc public protocol SBUMessageCellProtocol {
   @objc func configure(with configuration: SendBirdUIKit.SBUBaseMessageCellParams)
   @objc func configure(highlightInfo: SendBirdUIKit.SBUHighlightMessageInfo?)
+}
+extension UIKit.UIApplication {
+  @_Concurrency.MainActor(unsafe) open var currentWindow: UIKit.UIWindow? {
+    get
+  }
 }
 @objc @_inheritsConvenienceInitializers @objcMembers @IBDesignable @_Concurrency.MainActor(unsafe) open class SBUOpenChannelFileMessageCell : SendBirdUIKit.SBUOpenChannelContentBaseMessageCell {
   @objc @_Concurrency.MainActor(unsafe) public var fileMessage: SendBirdSDK.SBDFileMessage? {
@@ -3667,9 +3787,13 @@ public struct DiskCache {
     get
   }
 }
+extension SendBirdUIKit.SBUPhotoAccessLevel : Swift.RawRepresentable {}
+extension SendBirdUIKit.SBUPhotoAccessibleStatus : Swift.RawRepresentable {}
 extension SendBirdUIKit.SBUQuoteMessageInputView.Edge : Swift.Equatable {}
 extension SendBirdUIKit.SBUQuoteMessageInputView.Edge : Swift.Hashable {}
 extension SendBirdUIKit.SBUQuoteMessageInputView.Edge : Swift.RawRepresentable {}
+extension UIKit.UIImageView.ImageOption : Swift.Equatable {}
+extension UIKit.UIImageView.ImageOption : Swift.Hashable {}
 extension SendBirdUIKit.SBUReplyType : Swift.Equatable {}
 extension SendBirdUIKit.SBUReplyType : Swift.Hashable {}
 extension SendBirdUIKit.SBUReplyType : Swift.RawRepresentable {}

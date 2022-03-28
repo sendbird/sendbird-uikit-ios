@@ -150,7 +150,7 @@ public class SBUActionSheet: NSObject {
             self.theme = oneTimetheme
         }
         
-        self.window = UIApplication.shared.keyWindow
+        self.window = UIApplication.shared.currentWindow
         guard let window = self.window else { return }
         self.identifier = identifier
         self.delegate = delegate

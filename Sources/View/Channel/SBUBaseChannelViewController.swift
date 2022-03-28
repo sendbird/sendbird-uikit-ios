@@ -59,7 +59,10 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
     @SBUAtomic public internal(set) var fullMessageList: [SBDBaseMessage] = []
     
     var baseChannel: SBDBaseChannel? {
-        didSet { createViewModel(startingPoint: self.startingPoint) }
+        didSet {
+            self.channelUrl = baseChannel?.channelUrl
+            createViewModel(startingPoint: self.startingPoint)
+        }
     }
     var channelViewModel: SBUChannelViewModel? {
         willSet { self.disposeViewModel() }
@@ -571,7 +574,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
                 self.messageList.append(message)
 
                 SBUPendingMessageManager.shared.removePendingMessage(
-                    channelUrl: channelUrl,
+                    channelUrl: self.baseChannel?.channelUrl,
                     requestId: message.requestId
                 )
                 
@@ -580,7 +583,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
             } else if message.sendingStatus == .failed ||
                         message.sendingStatus == .pending {
                 SBUPendingMessageManager.shared.upsertPendingMessage(
-                    channelUrl: channelUrl,
+                    channelUrl: self.baseChannel?.channelUrl,
                     message: message
                 )
             }
@@ -780,6 +783,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
     ///   - code: error code
     open func errorHandler(_ message: String?, _ code: NSInteger? = nil) {
         SBULog.error("Did receive error: \(message ?? "")")
+        self.shouldDismissLoadingIndicator()
     }
     
     @available(*, deprecated, renamed: "errorHandler") // 2.1.12
@@ -1437,6 +1441,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
                 parentMessage: parentMessage
             )
         } catch {
+            SBULog.error(error.localizedDescription)
         }
     }
     
@@ -1735,10 +1740,18 @@ extension SBUBaseChannelViewController: SBUMessageInputViewDelegate {
     open func messageInputView(_ messageInputView: SBUMessageInputView,
                                didSelectResource type: MediaResourceType) {
         switch type {
-            case .document: self.showDocumentPicker()
-            case .library: self.showPhotoLibraryPicker()
-            case .camera: self.showCamera()
-            default: self.showPhotoLibraryPicker()
+        case .document: self.showDocumentPicker()
+        case .library:
+            switch SBUPermissionManager.shared.currentStatus {
+            case .all:
+                self.showPhotoLibraryPicker()
+            case .limited:
+                self.showLimitedPhotoLibraryPicker()
+            default:
+                self.showPermissionAlert()
+            }
+        case .camera: self.showCamera()
+        default: self.showPhotoLibraryPicker()
         }
     }
     
@@ -1752,6 +1765,13 @@ extension SBUBaseChannelViewController: SBUMessageInputViewDelegate {
         documentPicker.delegate = self
         documentPicker.modalPresentationStyle = .formSheet
         self.present(documentPicker, animated: true, completion: nil)
+    }
+    
+    open func showLimitedPhotoLibraryPicker() {
+        let selectablePhotoVC = SBUSelectablePhotoViewController()
+        selectablePhotoVC.delegate = self
+        let nav = UINavigationController(rootViewController: selectablePhotoVC)
+        self.present(nav, animated: true, completion: nil)
     }
     
     /// Presents `UIImagePickerController`. If `SBUGlobals.UsingPHPicker`is `true`, it presents `PHPickerViewController` in iOS 14 or later.
@@ -1801,7 +1821,29 @@ extension SBUBaseChannelViewController: SBUMessageInputViewDelegate {
             self.present(imagePickerController, animated: true, completion: nil)
         }
     }
-
+    
+    /// Shows permission request alert.
+    /// - Since: 2.2.6
+    open func showPermissionAlert() {
+        let settingButton = SBUAlertButtonItem(
+            title: SBUStringSet.Settings
+        ) { info in
+            if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+                UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
+            }
+        }
+        
+        let cancelButton = SBUAlertButtonItem(title: SBUStringSet.Cancel) {_ in }
+        
+        SBUAlertView.show(
+            title: SBUStringSet.Alert_Allow_PhotoLibrary_Access,
+            message: SBUStringSet.Alert_Allow_PhotoLibrary_Access_Message,
+            oneTimetheme: SBUTheme.componentTheme,
+            confirmButtonItem: settingButton,
+            cancelButtonItem: cancelButton
+        )
+    }
+    
     open func messageInputView(_ messageInputView: SBUMessageInputView,
                                didSelectEdit text: String) {
         guard let message = self.inEditingMessage else { return }
@@ -1828,6 +1870,49 @@ extension SBUBaseChannelViewController: SBUMessageInputViewDelegate {
     
     open func messageInputViewDidEndTyping() {
         self.channelViewModel?.endTypingMessage()
+    }
+}
+
+// MARK: - SBUSelectablePhotoViewDelegate
+extension SBUBaseChannelViewController: SBUSelectablePhotoViewDelegate {
+    open func didTapSendImageData(_ data: Data) {
+        var parentMessage: SBDBaseMessage? = nil
+        switch self.messageInputView.option {
+            case .quoteReply(let message):
+                parentMessage = message
+            default: break
+        }
+        self.messageInputView.setMode(.none)
+        self.sendFileMessage(
+            fileData: data,
+            fileName: "\(Date().sbu_toString(format: .yyyyMMddhhmmss, localizedFormat: false)).jpg",
+            mimeType: "image/jpeg",
+            parentMessage: parentMessage
+        )
+    }
+    
+    open func didTapSendVideoURL(_ url: URL) {
+        do {
+            let videoFileData = try Data(contentsOf: url)
+            let videoName = url.lastPathComponent
+            guard let mimeType = SBUUtils.getMimeType(url: url) else { return }
+            var parentMessage: SBDBaseMessage? = nil
+            switch self.messageInputView.option {
+                case .quoteReply(let message):
+                    parentMessage = message
+                default: break
+            }
+            self.messageInputView.setMode(.none)
+            
+            self.sendFileMessage(
+                fileData: videoFileData,
+                fileName: videoName,
+                mimeType: mimeType,
+                parentMessage: parentMessage
+            )
+        } catch {
+            SBULog.error(error.localizedDescription)
+        }
     }
 }
 

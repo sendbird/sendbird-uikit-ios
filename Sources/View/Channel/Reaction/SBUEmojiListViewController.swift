@@ -27,7 +27,7 @@ class SBUEmojiListViewController: SBUBaseViewController, UICollectionViewDelegat
     }()
 
     var safeBottomPadding: CGFloat {
-        let window = UIApplication.shared.keyWindow
+        let window = UIApplication.shared.currentWindow
         return window?.safeAreaInsets.bottom ?? 0
     }
 
