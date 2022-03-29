@@ -225,23 +225,13 @@ class UserInfoTitleView: UIView {
     }
     
     func configure(user: SBUUser) {
-        if let urlString = user.profileUrl, let url = URL(string: urlString) {
-            self.downloadImage(from: url)
+        if let urlString = user.profileUrl {
+            self.coverImage.loadImage(urlString: urlString)
         }
         self.userNicknameLabel.text = user.nickname ?? user.userId
         
         self.userIdTitleLabel.text = "User ID"
         self.userIdLabel.text = user.userId
-    }
-    
-    func downloadImage(from url: URL) {
-        print("Download Started")
-        URLSession.shared.dataTask(with: url) { (data, response, error) in
-            guard let data = data, error == nil else { return }
-            DispatchQueue.main.async() { [weak self] in
-                self?.coverImage.image = UIImage(data: data)
-            }
-        }.resume()
     }
 }
 
