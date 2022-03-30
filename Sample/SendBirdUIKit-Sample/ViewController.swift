@@ -263,8 +263,12 @@ class ViewController: UIViewController {
                 
                 print("SBUMain.connect: \(user)")
                 self?.isSignedIn = true
-                
                 self?.updateUnreadCount()
+                
+                if let appDelegate = UIApplication.shared.delegate as? AppDelegate,
+                    let payload = appDelegate.pendingNotificationPayload {
+                    self?.startChatAction(with: payload)
+                }
             }
         }
     }
@@ -289,6 +293,18 @@ class ViewController: UIViewController {
             let mainVC = MainChannelTabbarController()
             mainVC.modalPresentationStyle = .fullScreen
             present(mainVC, animated: true)
+        }
+    }
+    
+    func startChatAction(with payload: NSDictionary) {
+        guard let channel: NSDictionary = payload["channel"] as? NSDictionary,
+              let channelUrl: String = channel["channel_url"] as? String else { return }
+        
+        let mainVC = SBUChannelListViewController()
+        let naviVC = UINavigationController(rootViewController: mainVC)
+        naviVC.modalPresentationStyle = .fullScreen
+        self.present(naviVC, animated: true) {
+            SBUMain.moveToChannel(channelUrl: channelUrl)
         }
     }
     

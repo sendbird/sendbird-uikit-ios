@@ -12,6 +12,7 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
     var window: UIWindow?
     
+    var pendingNotificationPayload: NSDictionary?
     
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -69,10 +70,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                                        didReceive response: UNNotificationResponse,
                                        withCompletionHandler completionHandler: @escaping () -> Swift.Void) {
         let userInfo = response.notification.request.content.userInfo
-        guard let payload: NSDictionary = userInfo["sendbird"] as? NSDictionary,
-            let channel: NSDictionary = payload["channel"] as? NSDictionary,
-            let channelUrl: String = channel["channel_url"] as? String else { return }
-        
-        SBUMain.moveToChannel(channelUrl: channelUrl, basedOnChannelList: true)
+        guard let payload: NSDictionary = userInfo["sendbird"] as? NSDictionary else { return }
+        self.pendingNotificationPayload = payload
     }
 }
