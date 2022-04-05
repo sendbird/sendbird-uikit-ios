@@ -268,6 +268,7 @@ class ViewController: UIViewController {
                 if let appDelegate = UIApplication.shared.delegate as? AppDelegate,
                     let payload = appDelegate.pendingNotificationPayload {
                     self?.startChatAction(with: payload)
+                    appDelegate.pendingNotificationPayload = nil
                 }
             }
         }

@@ -71,6 +71,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                                        withCompletionHandler completionHandler: @escaping () -> Swift.Void) {
         let userInfo = response.notification.request.content.userInfo
         guard let payload: NSDictionary = userInfo["sendbird"] as? NSDictionary else { return }
-        self.pendingNotificationPayload = payload
+        
+        
+        let havePresentedVC = UIApplication.shared.currentWindow?.rootViewController?.presentedViewController != nil
+        let isSignedIn = (UIApplication.shared.currentWindow?.rootViewController as? ViewController)?.isSignedIn ?? false
+        let needToPedning = !(isSignedIn || havePresentedVC)
+        
+        if needToPedning {
+            self.pendingNotificationPayload = payload
+        } else {
+            guard let channel: NSDictionary = payload["channel"] as? NSDictionary,
+                  let channelUrl: String = channel["channel_url"] as? String else { return }
+            
+            if havePresentedVC {
+                SBUMain.moveToChannel(channelUrl: channelUrl, basedOnChannelList: true)
+            } else {
+                let mainVC = SBUChannelListViewController()
+                let naviVC = UINavigationController(rootViewController: mainVC)
+                naviVC.modalPresentationStyle = .fullScreen
+                UIApplication.shared.currentWindow?.rootViewController?.present(naviVC, animated: true) {
+                    SBUMain.moveToChannel(channelUrl: channelUrl)
+                }
+            }
+        }
     }
 }
