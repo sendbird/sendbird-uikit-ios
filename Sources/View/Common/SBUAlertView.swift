@@ -1,6 +1,6 @@
 //
 //  SBUAlertView.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 16/02/2020.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -10,8 +10,8 @@ import UIKit
 
 public typealias AlertButtonHandler = (_ info: Any?) -> Void
 
-@objcMembers
-public class SBUAlertButtonItem: NSObject {
+
+public class SBUAlertButtonItem {
     var title: String
     var color: UIColor?
     var completionHandler: AlertButtonHandler?
@@ -30,14 +30,14 @@ public class SBUAlertButtonItem: NSObject {
     }
 }
 
-@objcMembers
-public class SBUAlertView: NSObject {
+
+public class SBUAlertView {
     static private let shared = SBUAlertView()
     
     @SBUThemeWrapper(theme: SBUTheme.componentTheme)
     var theme: SBUComponentTheme
     
-    private override init() {}
+    private init() {}
     
     var window: UIWindow? = nil
     var baseView = UIView()
@@ -375,7 +375,8 @@ public class SBUAlertView: NSObject {
     }
     
     // MARK: Orientation
-    @objc func orientationChanged(_ notification: NSNotification) {
+    @objc
+    func orientationChanged(_ notification: NSNotification) {
         let currentOrientation = UIDevice.current.orientation
         
         if (prevOrientation.isPortrait && currentOrientation.isLandscape ||

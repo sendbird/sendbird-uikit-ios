@@ -1,6 +1,6 @@
 //
 //  SBUQuoteMessageInputView.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Jaesung Lee on 2021/07/07.
 //  Copyright © 2021 Sendbird, Inc. All rights reserved.
@@ -13,12 +13,12 @@ protocol SBUQuoteMessageInputViewDelegate: AnyObject {
     func didTapClose()
 }
 
-@objcMembers @IBDesignable
+@IBDesignable
 open class SBUQuoteMessageInputView: SBUView, SBUQuoteMessageInputViewProtocol {
     // MARK: - Models
     
-    // TODO: Need to adjust SBUTheme property wrapper
-    var theme: SBUMessageInputTheme = SBUTheme.messageInputTheme
+    @SBUThemeWrapper(theme: SBUTheme.messageInputTheme)
+    public var theme: SBUMessageInputTheme
     
     // MARK: - Views
     
@@ -115,14 +115,10 @@ open class SBUQuoteMessageInputView: SBUView, SBUQuoteMessageInputViewProtocol {
     // MARK: - SBUView Life cycle
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        
-        self.setupStyles()
     }
     
     public override init() {
         super.init()
-        
-        self.setupStyles()
     }
     
     open override func setupViews() {
@@ -155,7 +151,7 @@ open class SBUQuoteMessageInputView: SBUView, SBUQuoteMessageInputViewProtocol {
         self.addSubview(self.paddableVStackView)
     }
     
-    open override func setupAutolayout() {
+    open override func setupLayouts() {
         self.leadingSpacer
             .setConstraint(width: 18, height: 0)
         

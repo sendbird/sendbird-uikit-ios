@@ -1,6 +1,6 @@
 //
 //  NSObject+SBUIKit.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Harry Kim on 2020/02/11.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.

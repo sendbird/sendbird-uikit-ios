@@ -1,6 +1,6 @@
 //
 //  SBUView.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Jaesung Lee on 2021/07/30.
 //  Copyright © 2021 Sendbird, Inc. All rights reserved.
@@ -10,27 +10,23 @@ import UIKit
 
 /// The `UIView` conforming to `SBUViewLifeCycle`
 /// - Since: 2.2.0
-@objcMembers
+
 @IBDesignable
 open class SBUView: UIView {
-    /**
-     Initializes `UIView` and set up subviews, auto layouts and actions for SendBirdUIKit.
-     */
+    /// Initializes `UIView` and set up subviews, auto layouts and actions for SendbirdUIKit.
     public init() {
         super.init(frame: .zero)
         self.setupViews()
-        self.setupAutolayout()
+        self.setupLayouts()
         self.setupActions()
     }
     
-    /**
-     Initializes `UIView` and set up subviews, auto layouts and actions for SendBirdUIKit.
-     */
+    /// Initializes `UIView` and set up subviews, auto layouts and actions for SendbirdUIKit.
     public override init(frame: CGRect) {
         super.init(frame: frame)
         
         self.setupViews()
-        self.setupAutolayout()
+        self.setupLayouts()
         self.setupActions()
     }
     
@@ -39,13 +35,11 @@ open class SBUView: UIView {
         super.init(coder: coder)
         
         self.setupViews()
-        self.setupAutolayout()
+        self.setupLayouts()
         self.setupActions()
     }
     
-    /**
-     Lays out subviews and set up styles for SendBirdUIKit.
-     */
+    /// Lays out subviews and set up styles for SendbirdUIKit.
     open override func layoutSubviews() {
         super.layoutSubviews()
         self.setupStyles()
@@ -55,9 +49,13 @@ open class SBUView: UIView {
 extension SBUView: SBUViewLifeCycle {
     open func setupViews() { }
     
-    open func setupAutolayout() { }
+    open func setupLayouts() { }
+    
+    open func updateLayouts() { }
     
     open func setupStyles() { }
+    
+    open func updateStyles() { }
     
     open func setupActions() { }
 }

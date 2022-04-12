@@ -1,6 +1,6 @@
 //
 //  QuotedFileCommonContentView.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Jaesung Lee on 2021/07/30.
 //  Copyright © 2021 Sendbird, Inc. All rights reserved.
@@ -50,8 +50,8 @@ class QuotedFileCommonContentView: SBUView {
         ])
     }
     
-    override func setupAutolayout() {
-        super.setupAutolayout()
+    override func setupLayouts() {
+        super.setupLayouts()
         
         self.sbu_constraint(height: 34)
         

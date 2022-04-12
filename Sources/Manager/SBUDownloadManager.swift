@@ -1,6 +1,6 @@
 //
 //  SBUDownloadManager.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Harry Kim on 2020/03/05.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -10,14 +10,14 @@ import UIKit
 import SendBirdSDK
 import Photos
 
-class SBUDownloadManager: NSObject {
+class SBUDownloadManager {
     
     static func saveImage(parent: UIViewController?, url: URL, fileName: String) {
         guard let parent = parent else {
             SBULog.error("[Failed] Save image")
             return
         }
-
+        
         DispatchQueue.global(qos: .background).async {
             let downloadHandler: ((URL) -> Void) = { fileURL in
                 DispatchQueue.main.async {

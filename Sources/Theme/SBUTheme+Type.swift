@@ -1,6 +1,6 @@
 //
 //  SBUTheme+Type.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 2021/08/23.
 //  Copyright © 2021 Sendbird, Inc. All rights reserved.

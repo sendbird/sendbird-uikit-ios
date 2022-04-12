@@ -1,6 +1,6 @@
 //
 //  SBDMessageManager.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Wooyoung Chung on 12/5/20.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -9,10 +9,11 @@
 import Foundation
 import SendBirdSDK
 
-@objcMembers
-public class SBUPendingMessageManager: NSObject {
+
+public class SBUPendingMessageManager {
     public static let shared = SBUPendingMessageManager()
-    private override init() {}
+    
+    private init() { }
     
     /// channel url : array of pending
     private var pendingMessages: [String:[String:SBDBaseMessage]] = [:]

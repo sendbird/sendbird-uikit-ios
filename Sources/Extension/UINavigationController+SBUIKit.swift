@@ -1,6 +1,6 @@
 //
 //  UINavigationController+SBUIKit.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Harry Kim on 2020/04/09.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.

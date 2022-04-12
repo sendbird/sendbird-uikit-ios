@@ -1,6 +1,6 @@
 //
 //  SBUToastManager.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 2021/06/16.
 //  Copyright © 2021 Sendbird, Inc. All rights reserved.
@@ -14,7 +14,7 @@ enum ToastType {
     case fileOpenFailed
 }
 
-class SBUToastManager: NSObject {
+class SBUToastManager {
     static func showToast(parentVC: UIViewController?, type: ToastType) {
         var title = ""
         switch type {

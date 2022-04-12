@@ -3,34 +3,34 @@
 import PackageDescription
 
 let package = Package(
-    name: "SendBirdUIKit",
+    name: "SendbirdUIKit",
     platforms: [.iOS(.v11)],
     products: [
         .library(
-            name: "SendBirdUIKit",
-            targets: ["SendBirdUIKitTarget"]
+            name: "SendbirdUIKit",
+            targets: ["SendbirdUIKitTarget"]
         ),
     ],
     dependencies: [
         .package(
             name: "SendBirdSDK",
-            url: "https://github.com/sendbird/sendbird-ios-framework",
-            from: "3.1.7"
+            url: "https://github.com/sendbird/sendbird-chat-ios-spm",
+            from: "3.1.12"
         ),
     ],
     targets: [
         .binaryTarget(
-            name: "SendBirdUIKit",
-            path: "Framework/SendBirdUIKit.xcframework"
+            name: "SendbirdUIKit",
+            path: "Framework/SendbirdUIKit.xcframework"
         ),
         .target(
-            name: "SendBirdUIKitTarget",
+            name: "SendbirdUIKitTarget",
             dependencies: [
-                .target(name: "SendBirdUIKit"),
+                .target(name: "SendbirdUIKit"),
                 .product(name: "SendBirdSDK", package: "SendBirdSDK")
             ],
             path: "Framework/Dependency",
-            exclude: ["../../Sample", "../../Sources"]
+            exclude: ["Sample", "Sources"]
         ),
     ]
 )

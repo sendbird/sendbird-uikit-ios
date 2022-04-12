@@ -1,6 +1,6 @@
 //
 //  SBUUserNameView.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 2020/10/27.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-public class SBUUserNameView: UIView {
+public class SBUUserNameView: SBUView {
     public var usernameColor: UIColor?
     
     @SBUThemeWrapper(theme: SBUTheme.messageCellTheme)
@@ -24,29 +24,34 @@ public class SBUUserNameView: UIView {
     
     private var buttonLeftConstraint: NSLayoutConstraint!
     
+    public override init() {
+        super.init(frame: .zero)
+    }
+    
     public init(username: String) {
         self.username = username
+        
         super.init(frame: .zero)
-        self.setupViews()
-        self.setupAutolayout()
     }
     
     override public init(frame: CGRect) {
         super.init(frame: frame)
-        self.setupViews()
-        self.setupAutolayout()
     }
     
     @available(*, unavailable, renamed: "UserNameView(username:)")
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
+        fatalError()
     }
     
-    func setupViews() {
+    public override func setupViews() {
+        super.setupViews()
+        
         self.addSubview(self.button)
     }
     
-    func setupAutolayout() {
+    public override func setupLayouts() {
+        super.setupLayouts()
+        
         self.button
             .setConstraint(from: self, right: 0, top: 0, bottom: 0)
             .setConstraint(height: 12)
@@ -58,7 +63,9 @@ public class SBUUserNameView: UIView {
         self.buttonLeftConstraint.isActive = true
     }
     
-    func updateAutolayout() {
+    public override func updateLayouts() {
+        super.updateLayouts()
+        
         self.buttonLeftConstraint.isActive = false
         self.buttonLeftConstraint = self.button.leftAnchor.constraint(
             equalTo: self.leftAnchor,
@@ -67,7 +74,9 @@ public class SBUUserNameView: UIView {
         self.buttonLeftConstraint.isActive = true
     }
     
-    func setupStyles() {
+    public override func setupStyles() {
+        super.setupStyles()
+        
         let theme = self.isOverlay ? self.overlayTheme : self.theme
         
         self.backgroundColor = .clear
@@ -82,7 +91,9 @@ public class SBUUserNameView: UIView {
         }
     }
     
-    func updateStyles() {
+    public override func updateStyles() {
+        super.updateStyles()
+        
         self.setupStyles()
     }
 
@@ -92,8 +103,9 @@ public class SBUUserNameView: UIView {
         self.username = username
         self.button.setTitle(username, for: .normal)
         self.button.sizeToFit()
+        
         self.updateStyles()
-        self.updateAutolayout()
+        self.updateLayouts()
         
         self.setNeedsLayout()
     }

@@ -1,6 +1,6 @@
 //
 //  SBUCommonItem.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 17/02/2020.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -8,18 +8,14 @@
 
 import UIKit
 
-@objcMembers
-public class SBUCommonItem: NSObject {
+
+public class SBUCommonItem {
     var title: String?
     var color: UIColor?
     var image: UIImage?
     var font: UIFont?
     var tintColor: UIColor?
     var textAlignment: NSTextAlignment
-    
-    override convenience init() {
-        self.init(title: nil)
-    }
     
     public init(title: String? = nil,
                 color: UIColor? = SBUColorSet.onlight01,

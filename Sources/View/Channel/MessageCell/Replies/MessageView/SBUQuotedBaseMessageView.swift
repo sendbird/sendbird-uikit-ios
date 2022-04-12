@@ -1,6 +1,6 @@
 //
 //  SBUQuotedBaseMessageView.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Jaesung Lee on 2021/07/05.
 //  Copyright © 2021 Sendbird, Inc. All rights reserved.
@@ -16,10 +16,12 @@ enum QuotedMessageType {
 
 @objc
 public protocol SBUQuotedMessageViewDelegate: AnyObject {
+    /// Called when `SBUQuotedBaseMessageView` was tapped.
+    /// - Parameter quotedMessageView: The tapped quoted message view
     func didTapQuotedMessageView(_ quotedMessageView: SBUQuotedBaseMessageView)
 }
 
-@objcMembers @IBDesignable
+ @IBDesignable
 open class SBUQuotedBaseMessageView: SBUView, SBUQuotedMessageViewProtocol {
     // MARK: - Properties
     public var theme: SBUMessageCellTheme = SBUTheme.messageCellTheme
@@ -163,14 +165,10 @@ open class SBUQuotedBaseMessageView: SBUView, SBUQuotedMessageViewProtocol {
     // MARK: - Initializer
     public override init() {
         super.init()
-        
-        self.setupStyles()
     }
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
-    
-        self.setupStyles()
     }
     
     // MARK: - Views: Life cycle
@@ -198,7 +196,7 @@ open class SBUQuotedBaseMessageView: SBUView, SBUQuotedMessageViewProtocol {
         self.addSubview(contentStackView)
     }
     
-    open override func setupAutolayout() {
+    open override func setupLayouts() {
         self.contentStackView
             .setConstraint(from: self, leading: 0, trailing: 0, top: 0, bottom: 0)
         
@@ -235,7 +233,6 @@ open class SBUQuotedBaseMessageView: SBUView, SBUQuotedMessageViewProtocol {
     }
     
     public func configure(with configuration: SBUQuotedBaseMessageViewParams) {
-        // TODO: re arrange stack view in contentView
         self.isHidden = false
         self.messageId = configuration.messageId
         self.messagePosition = configuration.messagePosition
@@ -252,6 +249,7 @@ open class SBUQuotedBaseMessageView: SBUView, SBUQuotedMessageViewProtocol {
     /**
      The action invokes  `SBUQuotedMessageViewDelegate didTapQuotedMessageView(_:)` method and scrolls to parent message cell.
      */
+    @objc
     open func didTapQuotedMessageView(sender: UITapGestureRecognizer) {
         self.tapHandlerToContent?()
     }

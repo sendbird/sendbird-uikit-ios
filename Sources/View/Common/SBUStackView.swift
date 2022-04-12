@@ -1,6 +1,6 @@
 //
 //  SBUStackView.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Jaesung Lee on 2021/07/02.
 //  Copyright © 2021 Sendbird, Inc. All rights reserved.
@@ -18,7 +18,7 @@ public class SBUStackView: UIStackView {
     }
     
     public init(
-        axis: NSLayoutConstraint.Axis,
+        axis: NSLayoutConstraint.Axis = .horizontal,
         alignment: UIStackView.Alignment = .fill,
         spacing: CGFloat = 0.0
     ) {

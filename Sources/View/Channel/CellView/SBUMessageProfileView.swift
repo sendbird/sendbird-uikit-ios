@@ -1,6 +1,6 @@
 //
 //  SBUMessageProfileView.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 2020/10/27.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -27,7 +27,9 @@ open class SBUMessageProfileView: SBUView {
      
     public init(urlString: String = "") {
         self.urlString = urlString
+
         super.init(frame: .init(x: 0, y: 0, width: 26, height: 26))
+
         self.configure(urlString: urlString)
     }
     
@@ -35,14 +37,17 @@ open class SBUMessageProfileView: SBUView {
     
     public override init() {
         self.urlString = ""
+
         super.init()
-        self.setupViews()
+
         self.configure(urlString: self.urlString)
     }
     
     override public init(frame: CGRect) {
         self.urlString = ""
+
         super.init(frame: frame)
+
         self.configure(urlString: self.urlString)
     }
 
@@ -50,7 +55,7 @@ open class SBUMessageProfileView: SBUView {
         self.addSubview(self.imageView)
     }
      
-    open override func setupAutolayout() {
+    open override func setupLayouts() {
         self.imageView
             .setConstraint(width: SBUMessageProfileView.imageSize,
                            height: SBUMessageProfileView.imageSize)

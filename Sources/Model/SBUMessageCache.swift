@@ -1,6 +1,6 @@
 //
 //  SBUMessageCache.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Hoon Sung on 2021/02/24.
 //  Copyright © 2021 Sendbird, Inc. All rights reserved.
@@ -9,7 +9,7 @@
 import Foundation
 import SendBirdSDK
 
-class SBUMessageCache: NSObject {
+class SBUMessageCache {
     
     private let fetchLimit: Int = 100
     private let channel: SBDBaseChannel

@@ -1,6 +1,6 @@
 //
 //  Array+SBUIKit.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 2020/07/16.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -49,7 +49,7 @@ public extension NSArray {
     /// This is a function that extracts the userId array using the `SBUUser` type array.
     /// This is a function used in Objective-C.
     /// - Returns: userId `String` type array
-    @objc func sbu_getUserIds() -> [String] {
+    func sbu_getUserIds() -> [String] {
         guard let users = self as? [SBUUser] else { return [] }
         return users.sbu_getUserIds()
     }
@@ -57,7 +57,7 @@ public extension NSArray {
     /// This is a function that extracts the nickname array using the `SBUUser` type array.
     /// This is a function used in Objective-C.
     /// - Returns: nickname `String` type array
-    @objc func sbu_getUserNicknames() -> [String] {
+    func sbu_getUserNicknames() -> [String] {
         guard let users = self as? [SBUUser] else { return [] }
         return users.sbu_getUserNicknames()
     }
@@ -65,7 +65,7 @@ public extension NSArray {
     /// This is a function that extracts the `SBUUser` array using the `SBDUser` type array.
     /// This is a function used in Objective-C.
     /// - Returns: `SBUUser`  type array
-    @objc func sbu_convertUserList() -> [SBUUser] {
+    func sbu_convertUserList() -> [SBUUser] {
         guard let users = self as? [SBDUser] else { return [] }
         return users.sbu_convertUserList()
     }

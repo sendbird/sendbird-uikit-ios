@@ -1,6 +1,6 @@
 //
 //  SBUUnknownMessageCellParams.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Jaesung Lee on 2021/10/07.
 //  Copyright © 2021 Sendbird, Inc. All rights reserved.
@@ -8,7 +8,7 @@
 
 import SendBirdSDK
 
-@objcMembers
+
 public class SBUUnknownMessageCellParams: SBUBaseMessageCellParams {
     public var unknownMessage: SBDBaseMessage {
         self.message
@@ -20,7 +20,7 @@ public class SBUUnknownMessageCellParams: SBUBaseMessageCellParams {
         self.useReaction = useReaction
         
         var messagePosition: MessagePosition = .left
-        let isMyMessage = SBUGlobals.CurrentUser?.userId == message.sender?.userId
+        let isMyMessage = SBUGlobals.currentUser?.userId == message.sender?.userId
         messagePosition = isMyMessage ? .right : .left
         
         super.init(

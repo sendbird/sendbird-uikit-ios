@@ -1,6 +1,6 @@
 //
 //  SBUAdminMessageCell.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Harry Kim on 2020/02/20.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -9,7 +9,7 @@
 import UIKit
 import SendBirdSDK
 
-@objcMembers @IBDesignable
+ @IBDesignable
 open class SBUAdminMessageCell: SBUBaseMessageCell {
 
     // MARK: - Public property
@@ -21,8 +21,8 @@ open class SBUAdminMessageCell: SBUBaseMessageCell {
         self.messageContentView.addSubview(self.messageLabel)
     }
     
-    open override func setupAutolayout() {
-        super.setupAutolayout()
+    open override func setupLayouts() {
+        super.setupLayouts()
         
         self.messageLabel.setConstraint(
             from: self.messageContentView,

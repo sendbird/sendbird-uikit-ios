@@ -1,19 +1,20 @@
 //
 //  SBUEnums.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 05/02/2020.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
 //
 import SendBirdSDK
 
+
 /// This is an enumeration for channel type.
-/// - Since: 1.2.0
-@objc public enum ChannelType: Int {
+/// - Since: 3.0.0
+@objc public enum ChannelCreationType: Int {
+    case open
     case group
     case supergroup
     case broadcast
-    case open
 }
 
 /// This is an enumeration used to handling action and display by type in `ChannelSettingsViewController` and `ChannelSettingCell`.
@@ -113,15 +114,6 @@ import SendBirdSDK
     case none
     case users
     case operators
-}
-
-@available(*, deprecated, renamed: "UserListType") // 1.2.0
-@objc public enum MemberListType: Int {
-    case none
-    case createChannel
-    case channelMembers
-    case inviteUser
-    case reaction
 }
 
 /// This is an enumeration used to display `EmptyView` by type.

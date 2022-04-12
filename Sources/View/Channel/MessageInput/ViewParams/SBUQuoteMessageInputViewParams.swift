@@ -1,6 +1,6 @@
 //
 //  SBUQuoteMessageInputViewParams.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Jaesung Lee on 2021/07/21.
 //  Copyright © 2021 Sendbird, Inc. All rights reserved.
@@ -9,8 +9,8 @@
 import UIKit
 import SendBirdSDK
 
-@objcMembers
-public class SBUQuoteMessageInputViewParams: NSObject {
+
+public class SBUQuoteMessageInputViewParams {
     /// The message that is going to be replied.
     /// - Since: 2.2.0
     public let message: SBDBaseMessage

@@ -1,6 +1,6 @@
 //
 //  SBUAvailable.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 2020/07/24.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -9,8 +9,8 @@
 import UIKit
 import SendBirdSDK
 
-@objcMembers
-public class SBUAvailable: NSObject {
+
+public class SBUAvailable {
     // MARK: - Private
     static let REACTIONS = "reactions"
     static let ENABLE_OG_TAG = "enable_og_tag"

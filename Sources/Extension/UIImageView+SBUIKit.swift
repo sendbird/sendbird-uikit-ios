@@ -1,6 +1,6 @@
 //
 //  UIImageView+SBUIKit.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Harry Kim on 2020/02/25.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -18,11 +18,11 @@ public extension UIImageView {
 
     @discardableResult
     func loadImage(urlString: String,
-                   placeholder: UIImage? = nil,
-                   errorImage: UIImage? = nil,
-                   option: ImageOption = .original,
-                   thumbnailSize: CGSize? = nil,
-                   completion: ((Bool) -> Void)? = nil) -> URLSessionTask? {
+                          placeholder: UIImage? = nil,
+                          errorImage: UIImage? = nil,
+                          option: ImageOption = .original,
+                          thumbnailSize: CGSize? = nil,
+                          completion: ((Bool) -> Void)? = nil) -> URLSessionTask? {
         self.setImage(placeholder)
         
         if urlString.isEmpty {

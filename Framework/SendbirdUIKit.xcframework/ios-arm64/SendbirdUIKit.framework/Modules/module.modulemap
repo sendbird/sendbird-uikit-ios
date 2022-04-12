@@ -1,0 +1,11 @@
+framework module SendbirdUIKit {
+  umbrella header "SendbirdUIKit.h"
+
+  export *
+  module * { export * }
+}
+
+module SendbirdUIKit.Swift {
+    header "SendbirdUIKit-Swift.h"
+    requires objc
+}

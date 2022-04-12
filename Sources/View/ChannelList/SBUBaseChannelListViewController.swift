@@ -1,6 +1,6 @@
 //
 //  SBUBaseChannelListViewController.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 2020/11/17.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -18,7 +18,7 @@ import SendBirdSDK
  class CustomizedOpenChannelListViewController: SBUBaseChannelListViewController, UITableViewDataSource, UITableViewDelegate
  ```
  */
-@objcMembers
+
 open class SBUBaseChannelListViewController: SBUBaseViewController {
     
     /// This is a function that shows the channelViewController.

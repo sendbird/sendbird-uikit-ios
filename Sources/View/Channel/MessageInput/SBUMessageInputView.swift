@@ -1,6 +1,6 @@
 //
 //  SBUMessageInputView.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 2020/11/02.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -77,8 +77,8 @@ public protocol SBUMessageInputViewDelegate: NSObjectProtocol {
     optional func messageInputViewDidEndTyping()
 }
 
-@objcMembers
-open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelegate {
+
+open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDelegate {
     // MARK: - Properties (Public)
     public lazy var addButton: UIButton? = {
         let button = UIButton(type: .custom)
@@ -305,23 +305,21 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
     // MARK: - Life cycle
     override public init(frame: CGRect) {
         super.init(frame: frame)
-        
-        self.setupViews()
-        self.setupAutolayout()
     }
     
     init(isOverlay: Bool) {
-        super.init(frame: .zero)
-        
         self.isOverlay = isOverlay
-        
-        self.setupViews()
-        self.setupAutolayout()
+
+        super.init(frame: .zero)
+    }
+    
+    public override init() {
+        super.init()
     }
     
     @available(*, unavailable, renamed: "SBUMessageInputView()")
     required public init?(coder: NSCoder) {
-        super.init(coder: coder)
+        super.init()
     }
     
     /// The `SBUMessageInputMode` value.
@@ -335,21 +333,22 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         willSet {
             // End a previous mode
             switch self.option {
-                case .edit:
-                    self.endEditMode()
-                case .quoteReply:
-                    self.endQuoteReplyMode()
-                default: break
+            case .edit:
+                self.endEditMode()
+            case .quoteReply:
+                self.endQuoteReplyMode()
+            default: break
             }
             
             
             // Start a new mode
             switch newValue {
-                case .edit(let message):
-                    self.startEditMode(text: message.message)
-                case .quoteReply(let message):
-                    self.startQuoteReplyMode(message: message)
-                default: break
+            case .edit(let message):
+                self.startEditMode(text: message.message)
+            case .quoteReply(let message):
+                self.startQuoteReplyMode(message: message)
+            case .none:
+                self.delegate?.messageInputViewDidEndTyping?()
             }
         }
         didSet {
@@ -362,13 +361,15 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         self.delegate?.messageInputView?(self, willChangeMode: mode, message: message)
         
         switch mode {
-            case .edit:
-                guard let message = message as? SBDUserMessage else { break }
-                self.option = .edit(message)
-            case .quoteReply:
-                guard let message = message else { break }
-                self.option = .quoteReply(message)
-            default: self.option = .none
+        case .edit:
+            guard let message = message as? SBDUserMessage else { break }
+            self.option = .edit(message)
+        case .quoteReply:
+            guard let message = message else { break }
+            self.option = .quoteReply(message)
+        default:
+            self.option = .none
+            
         }
         
         self.delegate?.messageInputView?(self, didChangeMode: mode, message: message)
@@ -399,7 +400,7 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
     }
 
     /// This function handles the initialization of views.
-    open func setupViews() {
+    open override func setupViews() {
         self.editView.isHidden = true
         self.quoteMessageView?.isHidden = true
         self.divider.isHidden = true
@@ -477,7 +478,7 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
     }
     
     /// This function handles the initialization of autolayouts.
-    open func setupAutolayout() {
+    open override func setupLayouts() {
         self.baseStackView
             .sbu_constraint(
                 equalTo: self,
@@ -567,7 +568,7 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
     }
     
     /// This function handles the initialization of styles.
-    open func setupStyles() {
+    open override func setupStyles() {
         let theme = self.isOverlay ? self.overlayTheme : self.theme
         
         self.backgroundColor = theme.backgroundColor
@@ -644,7 +645,6 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
     
     public override func layoutSubviews() {
         super.layoutSubviews()
-        self.setupStyles()
     }
 
     
@@ -782,6 +782,7 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
             self,
             didSelectSend: self.textView?.text.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         )
+        self.endTypingMode()
         self.placeholderLabel.isHidden = !(self.textView?.text.isEmpty ?? true)
         self.updateTextViewHeight()
     }
@@ -803,7 +804,7 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
     }
 
     // MARK: - UITextViewDelegate
-    open func textViewDidChange(_ textView: UITextView) {
+    public func textViewDidChange(_ textView: UITextView) {
         self.placeholderLabel.isHidden = !textView.text.isEmpty
         self.updateTextViewHeight()
         
@@ -818,11 +819,11 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
         self.delegate?.messageInputView?(self, didChangeText: text)
     }
 
-    open func textViewDidEndEditing(_ textView: UITextView) {
+    public func textViewDidEndEditing(_ textView: UITextView) {
         self.delegate?.messageInputViewDidEndTyping?()
     }
 
-    open func textView(_ textView: UITextView,
+    public func textView(_ textView: UITextView,
                          shouldChangeTextIn range: NSRange,
                          replacementText text: String) -> Bool {
         if text.count > 0 {
@@ -856,6 +857,7 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
             SBUPermissionManager.shared.requestPhotoAccessIfNeeded { status in
                 DispatchQueue.main.async { [weak self] in
                     guard let self = self else { return }
+                    
                     self.delegate?.messageInputView?(self, didSelectResource: type)
                 }
             }

@@ -1,6 +1,6 @@
 //
 //  SBUUnknownMessageCell.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 2020/06/18.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -9,7 +9,7 @@
 import UIKit
 import SendBirdSDK
 
-@objcMembers
+
 open class SBUUnknownMessageCell: SBUUserMessageCell {
     open override func configure(with configuration: SBUBaseMessageCellParams) {
         guard let configuration = configuration as? SBUUnknownMessageCellParams else { return }

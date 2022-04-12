@@ -1,6 +1,6 @@
 //
 //  SBUIconSetType.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Hoon Sung on 2021/01/22.
 //  Copyright © 2021 Sendbird, Inc. All rights reserved.
@@ -83,7 +83,7 @@ enum SBUIconSetType: String, Hashable {
     
     // MARK: - Image handling
     
-    private static let bundle = Bundle(identifier: "com.sendbird.uikit")
+    private static let bundle = Bundle(identifier: SBUConstant.bundleIdentifier)
     
     func load(tintColor: UIColor? = nil) -> UIImage {
         let image = UIImage(named: self.rawValue, in: SBUIconSetType.bundle, compatibleWith: nil)!

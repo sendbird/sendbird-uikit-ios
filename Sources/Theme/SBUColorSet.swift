@@ -1,6 +1,6 @@
 //
 //  SBUColorSet.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Harry Kim on 2020/02/05.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -8,8 +8,8 @@
 
 import UIKit
 
-@objcMembers
-public class SBUColorSet: NSObject {
+
+public class SBUColorSet {
     // MARK: - Primary
     public static var primary100 = UIColor(red: 219.0 / 255.0, green: 209.0 / 255.0, blue: 1.0, alpha: 1.0)
     public static var primary200 = UIColor(red: 194.0 / 255.0, green: 169.0 / 255.0, blue: 250.0 / 255.0, alpha: 1.0)

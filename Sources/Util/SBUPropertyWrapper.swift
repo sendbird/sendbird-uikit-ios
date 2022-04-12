@@ -1,6 +1,6 @@
 //
 //  SBUPropertyWrapper.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 12/02/2020.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.

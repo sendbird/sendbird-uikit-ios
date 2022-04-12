@@ -1,6 +1,6 @@
 //
 //  SBUMessageReactionView.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Harry Kim on 2020/05/06.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -11,7 +11,7 @@ import SendBirdSDK
 
 
 /// Emoji reaction box
-class SBUMessageReactionView: UIView, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
 
     lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
     let layout: UICollectionViewFlowLayout = SBUCollectionViewFlowLayout()
@@ -37,26 +37,22 @@ class SBUMessageReactionView: UIView, UICollectionViewDelegate, UICollectionView
         action: #selector(self.onTapMoreEmoji(sender:))
     )
         
-    init() {
+    override init() {
         super.init(frame: .zero)
-        self.setupViews()
-        self.setupAutolayout()
-        setupStyles()
     }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.setupViews()
-        self.setupAutolayout()
-        setupStyles()
     }
 
     @available(*, unavailable, renamed: "MessageReactionView()")
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
+        fatalError()
     }
 
-    func setupViews() {
+    override func setupViews() {
+        super.setupViews()
+        
         self.layout.sectionInset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 4)
         self.layout.minimumInteritemSpacing = 4
         self.layout.minimumLineSpacing = 4
@@ -77,7 +73,9 @@ class SBUMessageReactionView: UIView, UICollectionViewDelegate, UICollectionView
         self.addSubview(self.collectionView)
     }
 
-    func setupAutolayout() {
+    override func setupLayouts() {
+        super.setupLayouts()
+        
         self.collectionView.setConstraint(from: self, left: 0, right: 0, top: 0, bottom: 0)
 
         self.collectionViewHeightConstraint = self.collectionView
@@ -89,7 +87,9 @@ class SBUMessageReactionView: UIView, UICollectionViewDelegate, UICollectionView
         self.collectionViewMinWidthContraint.isActive = true
     }
 
-    func setupStyles() {
+    override func setupStyles() {
+        super.setupStyles()
+        
         self.clipsToBounds = true
         self.backgroundColor = theme.reactionBoxBackgroundColor
         self.layer.cornerRadius = 16
@@ -141,7 +141,8 @@ class SBUMessageReactionView: UIView, UICollectionViewDelegate, UICollectionView
 
     // MARK: - Action
 
-    @objc func onTapMoreEmoji(sender: UITapGestureRecognizer) {
+    @objc
+    func onTapMoreEmoji(sender: UITapGestureRecognizer) {
         let indexPath = IndexPath(row: reactions.count, section: 0)
         collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .init())
         collectionView.deselectItem(at: indexPath, animated: true)
@@ -199,7 +200,7 @@ class SBUMessageReactionView: UIView, UICollectionViewDelegate, UICollectionView
             self.emojiLongPressHandler?(emojiKey)
         }
         
-        guard let currentUser = SBUGlobals.CurrentUser else { return cell }
+        guard let currentUser = SBUGlobals.currentUser else { return cell }
         cell.isSelected = reaction.userIds.contains(currentUser.userId)
         return cell
     }

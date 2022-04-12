@@ -1,6 +1,6 @@
 //
 //  SBUCacheManager.File.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 2021/06/18.
 //  Copyright © 2021 Sendbird, Inc. All rights reserved.

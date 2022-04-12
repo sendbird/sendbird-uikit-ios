@@ -1,6 +1,6 @@
 //
 //  SBUUserCell.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 05/02/2020.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-open class SBUUserCell: UITableViewCell {
+open class SBUUserCell: SBUTableViewCell {
     
     // MARK: - UI properties (Public)
     public lazy var baseStackView: UIStackView = {
@@ -124,22 +124,8 @@ open class SBUUserCell: UITableViewCell {
         super.awakeFromNib()
     }
     
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.setupViews()
-        self.setupAutolayout()
-        self.setupActions()
-    }
-    
-    required public init?(coder: NSCoder) {
-        super.init(coder: coder)
-        self.setupViews()
-        self.setupAutolayout()
-        self.setupActions()
-    }
-    
     /// This function handles the initialization of views.
-    open func setupViews() {
+    open override func setupViews() {
         self.operatorLabel.text = SBUStringSet.User_Operator
         
         self.userImageView.addSubview(self.mutedStateImageView)
@@ -156,7 +142,7 @@ open class SBUUserCell: UITableViewCell {
     }
     
     /// This function handles the initialization of actions.
-    func setupActions() {
+    open override func setupActions() {
         self.userImageView.addGestureRecognizer(UITapGestureRecognizer(
             target: self,
             action: #selector(self.onTapUserProfileView(sender:)))
@@ -164,7 +150,7 @@ open class SBUUserCell: UITableViewCell {
     }
     
     /// This function handles the initialization of autolayouts.
-    open func setupAutolayout() {
+    open override func setupLayouts() {
         self.baseStackView
             .sbu_constraint(equalTo: self.contentView,
                             leading: 16,
@@ -189,7 +175,7 @@ open class SBUUserCell: UITableViewCell {
     }
     
     /// This function handles the initialization of styles.
-    open func setupStyles() {
+    open override func setupStyles() {
         self.backgroundColor = theme.backgroundColor
 
         self.userImageView.layer.cornerRadius = kUserImageSize/2
@@ -213,22 +199,16 @@ open class SBUUserCell: UITableViewCell {
         }
     }
     
-    open override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        self.setupStyles()
-    }
-
     
     // MARK: - Common
-    public func configure(type: UserListType,
-                          user: SBUUser,
-                          isChecked: Bool = false,
-                          operatorMode: Bool = false) {
+    open func configure(type: UserListType,
+                        user: SBUUser,
+                        isChecked: Bool = false,
+                        operatorMode: Bool = false) {
         self.type = type
         self.isChecked = isChecked
         
-        let isMe = (user.userId == SBUGlobals.CurrentUser?.userId)
+        let isMe = (user.userId == SBUGlobals.currentUser?.userId)
         self.userNameLabel.text = user.refinedNickname()
             + (isMe ? " \(SBUStringSet.MemberList_Me)" : "")
         

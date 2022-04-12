@@ -1,6 +1,6 @@
 //
 //  SBUNewMessageInfo.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 03/03/2020.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -11,7 +11,7 @@ import QuartzCore
 
 public typealias SBUNewMessageInfoHandler = () -> Void
 
-open class SBUNewMessageInfo: UIView {
+open class SBUNewMessageInfo: SBUView {
     // MARK: - Properties (Public)
     public lazy var messageInfoButton: UIButton? = {
         let messageInfoButton = UIButton()
@@ -34,9 +34,6 @@ open class SBUNewMessageInfo: UIView {
     // MARK: - Life cycle
     override public init(frame: CGRect) {
         super.init(frame: frame)
-        
-        self.setupViews()
-        self.setupAutolayout()
     }
     
     /// This function Initializes the new message information item.
@@ -45,17 +42,15 @@ open class SBUNewMessageInfo: UIView {
         super.init(frame: .zero)
         
         self.type = type
-        self.setupViews()
-        self.setupAutolayout()
     }
     
     @available(*, unavailable, renamed: "SBUNewMessageInfo.init(frame:)")
     required public init?(coder: NSCoder) {
-        super.init(coder: coder)
+        super.init(frame: .zero)
     }
 
     /// This function handles the initialization of views.
-    open func setupViews() {
+    open override func setupViews() {
         if let messageInfoButton = self.messageInfoButton {
             messageInfoButton.addTarget(
                 self,
@@ -67,7 +62,7 @@ open class SBUNewMessageInfo: UIView {
     }
     
     /// This function handles the initialization of autolayouts.
-    open func setupAutolayout() {
+    open override func setupLayouts() {
         self.translatesAutoresizingMaskIntoConstraints = false
         
         var infoItemSize = SBUConstant.newMessageInfoSize
@@ -93,7 +88,7 @@ open class SBUNewMessageInfo: UIView {
     }
     
     /// This function handles the initialization of styles.
-    open func setupStyles() {
+    open override func setupStyles() {
         self.backgroundColor = .clear
         self.layer.shadowColor = theme.shadowColor.withAlphaComponent(0.5).cgColor
         self.layer.shadowOffset = CGSize(width: 0, height: 5)
@@ -140,11 +135,6 @@ open class SBUNewMessageInfo: UIView {
     
     public override func draw(_ rect: CGRect) {
         super.draw(rect)
-    }
-    
-    public override func layoutSubviews() {
-        super.layoutSubviews()
-        self.setupStyles()
     }
     
     private func setupButtonStyle() {

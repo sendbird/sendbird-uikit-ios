@@ -1,6 +1,6 @@
 //
 //  SBULoading.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 28/02/2020.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -8,9 +8,10 @@
 
 import UIKit
 
-public class SBULoading: NSObject {
+public class SBULoading {
     static private let shared = SBULoading()
-    private override init() {}
+    
+    private init() { }
     
     var window: UIWindow? = nil
     var baseView = UIView()
@@ -75,7 +76,7 @@ public class SBULoading: NSObject {
         ).cgPath
         self.baseView.layer.mask = self.rectLayer
         
-        self.spinner.layer.add(self.rotationLayer, forKey: SBUAnimation.Key.spin.rawValue)
+        self.spinner.layer.add(self.rotationLayer, forKey: SBUAnimation.Key.spin.identifier)
         
         self.setupStyles()
         
@@ -95,7 +96,7 @@ public class SBULoading: NSObject {
     }
     
     @objc private func dismiss() {
-        self.spinner.layer.removeAnimation(forKey: SBUAnimation.Key.spin.rawValue)
+        self.spinner.layer.removeAnimation(forKey: SBUAnimation.Key.spin.identifier)
         for subView in self.baseView.subviews {
             subView.removeFromSuperview()
         }

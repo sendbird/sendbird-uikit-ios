@@ -1,6 +1,6 @@
 //
 //  UIView+SBUIKit.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 03/02/2020.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -11,15 +11,15 @@ import UIKit
 
 // MARK: - Load Nib
 public extension UIView {
-    /// This loads the nib file from the SendBird UIKit bundle.
+    /// This loads the nib file from the Sendbird UIKit bundle.
     /// - Returns: nib object
     @objc static func sbu_loadNib() -> UINib {
         let nibName = String(NSStringFromClass(self).split(separator: ".").last ?? "")
-        let nib = UINib(nibName: nibName, bundle: Bundle(identifier: "com.sendbird.uikit"))
+        let nib = UINib(nibName: nibName, bundle: Bundle(identifier: SBUConstant.bundleIdentifier))
         return nib
     }
 
-    /// This loads the view with the nib in the SendBird UIKit bundle.
+    /// This loads the view with the nib in the Sendbird UIKit bundle.
     /// - Returns: Loaded `UIView` object 
     @objc static func sbu_loadViewFromNib() -> UIView {
         let nib = self.sbu_loadNib()

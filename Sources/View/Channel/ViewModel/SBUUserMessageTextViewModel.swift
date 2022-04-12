@@ -1,6 +1,6 @@
 //
 //  SBUUserMessageTextViewModel.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Wooyoung Chung on 7/8/20.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.

@@ -1,6 +1,6 @@
 //
 //  SBUMessageCellProtocol.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Jaesung Lee on 2021/07/23.
 //  Copyright © 2021 Sendbird, Inc. All rights reserved.
@@ -12,7 +12,6 @@ import SendBirdSDK
 /// The protocol to configure message cells. It conforms to `SBUViewLifeCycle`
 ///
 /// - Since: 2.2.0
-@objc
 public protocol SBUMessageCellProtocol {
     
     /// This function configure a cell using informations.

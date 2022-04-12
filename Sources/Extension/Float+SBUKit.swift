@@ -1,6 +1,6 @@
 //
 //  Float+Extension.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 // The MIT License (MIT)
 //

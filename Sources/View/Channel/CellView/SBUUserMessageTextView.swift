@@ -1,6 +1,6 @@
 //
 //  SBUUserMessageTextView.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Wooyoung Chung on 7/8/20.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -38,7 +38,7 @@ class SBUUserMessageTextView: SBUView {
         return textView
     }()
     
-    var channelType: ChannelType = .group
+    var channelType: ChannelCreationType = .group
     var isWebType = false
     
     var longPressHandler: ((URL) -> ())? = nil
@@ -48,19 +48,16 @@ class SBUUserMessageTextView: SBUView {
     
     override init() {
         super.init()
-        self.setupStyles()
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.setupStyles()
     }
     
-    public init(channelType: ChannelType) {
+    public init(channelType: ChannelCreationType) {
         self.channelType = channelType
 
         super.init()
-        self.setupStyles()
     }
     
     override func setupViews() {
@@ -68,7 +65,7 @@ class SBUUserMessageTextView: SBUView {
         self.addSubview(self.textView)
     }
     
-    override func setupAutolayout() {
+    override func setupLayouts() {
         self.translatesAutoresizingMaskIntoConstraints = false
         
         if self.channelType != .open {

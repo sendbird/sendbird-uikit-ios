@@ -1,6 +1,6 @@
 //
 //  SBUQuotedFileMessageView.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Jaesung Lee on 2021/07/28.
 //  Copyright © 2021 Sendbird, Inc. All rights reserved.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-@objcMembers
+
 open class SBUQuotedFileMessageView: SBUQuotedBaseMessageView {
     /// The string value of file URL.
     /// - Since: 2.2.0
@@ -54,8 +54,8 @@ open class SBUQuotedFileMessageView: SBUQuotedBaseMessageView {
         super.setupViews()
     }
     
-    open override func setupAutolayout() {
-        super.setupAutolayout()
+    open override func setupLayouts() {
+        super.setupLayouts()
     }
     
     open override func configure(with configuration: SBUQuotedBaseMessageViewParams) {

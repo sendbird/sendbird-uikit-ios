@@ -1,6 +1,6 @@
 //
 //  SBUPermissionManager.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Wooyoung Chung on 12/15/20.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -12,26 +12,32 @@ import Photos
 
 class SBUPermissionManager {
     static let shared = SBUPermissionManager()
-    private init() {}
     
     var currentStatus: SBUPhotoAccessibleStatus {
         var granted: PHAuthorizationStatus
         if #available(iOS 14, *) {
-            granted = PHPhotoLibrary.authorizationStatus(for: SBUGlobals.photoLibraryAccessLevel.asPHAccessLevel)
+            granted = PHPhotoLibrary.authorizationStatus(
+                for: SBUGlobals.photoLibraryAccessLevel.asPHAccessLevel
+            )
         } else {
             granted = PHPhotoLibrary.authorizationStatus()
         }
         return SBUPhotoAccessibleStatus.from(granted)
     }
     
+    private init() {}
+    
     func requestPhotoAccessIfNeeded(completion: @escaping (SBUPhotoAccessibleStatus) -> Void) {
         // authorizationStatus
         var granted: PHAuthorizationStatus
         if #available(iOS 14, *) {
-            granted = PHPhotoLibrary.authorizationStatus(for: SBUGlobals.photoLibraryAccessLevel.asPHAccessLevel)
+            granted = PHPhotoLibrary.authorizationStatus(
+                for: SBUGlobals.photoLibraryAccessLevel.asPHAccessLevel
+            )
         } else {
             granted = PHPhotoLibrary.authorizationStatus()
         }
+        
         
         switch granted {
         case .authorized:
@@ -46,6 +52,7 @@ class SBUPermissionManager {
                     completion(accessibleStatus)
                 }
             }
+            
             if #available(iOS 14, *) {
                 PHPhotoLibrary.requestAuthorization(
                     for: SBUGlobals.photoLibraryAccessLevel.asPHAccessLevel,
@@ -53,7 +60,6 @@ class SBUPermissionManager {
                 )
             } else {
                 PHPhotoLibrary.requestAuthorization(handler)
-                
             }
         }
     }

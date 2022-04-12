@@ -1,6 +1,6 @@
 //
 //  SBUNavigationTitleView.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 21/02/2020.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -8,8 +8,8 @@
 
 import UIKit
 
-@objcMembers
-public class SBUNavigationTitleView: UIView {
+
+public class SBUNavigationTitleView: SBUView {
     @SBUThemeWrapper(theme: SBUTheme.componentTheme)
     var theme: SBUComponentTheme
     
@@ -18,24 +18,28 @@ public class SBUNavigationTitleView: UIView {
     
     private var titleLabel = UILabel()
      
-    override public init(frame: CGRect) {
+    public override init() {
+        super.init()
+    }
+    
+    public override init(frame: CGRect) {
         super.init(frame: frame)
-        self.setupViews()
-        self.setupAutolayout()
     }
     
     @available(*, unavailable, renamed: "SBUNavigationTitleView.init(frame:)")
     required public init?(coder: NSCoder) {
-        super.init(coder: coder)
+        fatalError()
     }
     
-    public func setupViews() {
+    public override func setupViews() {
         self.titleLabel.textAlignment = self.textAlignment
 
         self.addSubview(self.titleLabel)
     }
     
-    public func setupAutolayout() {
+    public override func setupLayouts() {
+        super.setupLayouts()
+        
         self.titleLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             self.titleLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 0),
@@ -45,7 +49,9 @@ public class SBUNavigationTitleView: UIView {
         ])
     }
     
-    public func setupStyles() {
+    public override func setupStyles() {
+        super.setupStyles()
+        
         self.titleLabel.font = theme.titleFont
         self.titleLabel.textColor = theme.titleColor
     }
@@ -62,7 +68,5 @@ public class SBUNavigationTitleView: UIView {
         self.titleLabel.text = self.text
         
         self.backgroundColor = .clear
-        
-        self.setupStyles()
     }
 }

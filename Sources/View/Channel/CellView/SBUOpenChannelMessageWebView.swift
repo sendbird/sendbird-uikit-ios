@@ -1,6 +1,6 @@
 //
 //  SBUOpenChannelMessageWebView.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Jaesung Lee on 2020/11/30.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -35,7 +35,7 @@ class SBUOpenChannelMessageWebView: SBUMessageWebView {
         self.imageView.clipsToBounds = true
     }
     
-    override func setupAutolayout() {
+    override func setupLayouts() {
         self.translatesAutoresizingMaskIntoConstraints = false
         self.isLayoutMarginsRelativeArrangement = true
         

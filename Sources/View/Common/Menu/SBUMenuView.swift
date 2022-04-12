@@ -1,6 +1,6 @@
 //
 //  SBUMenuView.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 16/02/2020.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -281,7 +281,8 @@ class SBUMenuView {
     }
     
     // MARK: Orientation
-    @objc func orientationChanged(_ notification: NSNotification) {
+    @objc
+    func orientationChanged(_ notification: NSNotification) {
         let currentOrientation = UIDevice.current.orientation
         
         if (prevOrientation.isPortrait && currentOrientation.isLandscape ||

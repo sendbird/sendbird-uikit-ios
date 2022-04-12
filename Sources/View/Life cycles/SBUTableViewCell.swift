@@ -1,6 +1,6 @@
 //
 //  SBUTableViewCell.MessageCell.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Jaesung Lee on 2021/07/30.
 //  Copyright © 2021 Sendbird, Inc. All rights reserved.
@@ -10,20 +10,20 @@ import UIKit
 
 /// The `UITableViewCell` conforming to `SBUViewLifeCycle`
 /// - Since: 2.2.0
-@objcMembers
+
 @IBDesignable
-open class SBUTableViewCell: UITableViewCell {
+@objcMembers open class SBUTableViewCell: UITableViewCell {
     public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.setupViews()
-        self.setupAutolayout()
+        self.setupLayouts()
         self.setupActions()
     }
     
     required public init?(coder: NSCoder) {
         super.init(coder: coder)
         self.setupViews()
-        self.setupAutolayout()
+        self.setupLayouts()
         self.setupActions()
     }
     
@@ -34,23 +34,15 @@ open class SBUTableViewCell: UITableViewCell {
 }
 
 extension SBUTableViewCell: SBUViewLifeCycle {
-    /// This function handles the initialization of views.
-    open func setupViews() {
-        
-    }
+    open func setupViews() { }
     
-    /// This function handles the initialization of actions.
-    open func setupActions() {
-        
-    }
+    open func setupLayouts() { }
     
-    /// This function handles the initialization of autolayouts.
-    open func setupAutolayout() {
-    }
+    open func updateLayouts() { }
     
-    /// This function handles the initialization of styles.
-    open func setupStyles() {
-        
-    }
+    open func setupStyles() { }
     
+    open func updateStyles() { }
+    
+    open func setupActions() { }
 }

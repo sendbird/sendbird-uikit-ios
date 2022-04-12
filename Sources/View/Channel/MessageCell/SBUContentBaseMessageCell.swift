@@ -1,6 +1,6 @@
 //
 //  SBUContentBaseMessageCell.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 2020/08/27.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -11,7 +11,7 @@ import SendBirdSDK
 
 /// It is a base class used in message cell with contents.
 /// - Since: 1.2.1
-@objcMembers
+
 open class SBUContentBaseMessageCell: SBUBaseMessageCell {
     // MARK: - Quoted Reply
     public lazy var quotedMessageView: (UIView & SBUQuotedMessageViewProtocol)? = SBUQuotedBaseMessageView()
@@ -136,8 +136,8 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
             .addSubview(self.userNameStackView)
     }
     
-    open override func setupAutolayout() {
-        super.setupAutolayout()
+    open override func setupLayouts() {
+        super.setupLayouts()
 
         NSLayoutConstraint.activate([
             self.profileContentSpacing.widthAnchor.constraint(equalToConstant: 4),
@@ -202,6 +202,15 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         }
     }
     
+    open override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        if let profileView = self.profileView as? SBUMessageProfileView {
+            profileView.imageDownloadTask?.cancel()
+            profileView.urlString = ""
+            profileView.imageView.image = nil
+        }
+    }
     
     // MARK: - Common
     open override func configure(with configuration: SBUBaseMessageCellParams) {
@@ -239,7 +248,7 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         self.profileView.isHidden = self.position == .right
         
         let usingProfileView = !(
-            SBUGlobals.UsingMessageGrouping &&
+            SBUGlobals.isMessageGroupingEnabled &&
             (configuration.groupPosition == .top || configuration.groupPosition == .middle)
         )
         
@@ -281,6 +290,7 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         } else {
             self.quotedMessageView?.isHidden = true
         }
+        
         // MARK: Group messages
         self.setMessageGrouping()
     }
@@ -331,7 +341,7 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
     }
     
     public func setMessageGrouping() {
-        let isMessageGroupingEnabled = SBUGlobals.UsingMessageGrouping
+        let isMessageGroupingEnabled = SBUGlobals.isMessageGroupingEnabled
         let profileImageView = (self.profileView as? SBUMessageProfileView)?.imageView
         let timeLabel = (self.stateView as? SBUMessageStateView)?.timeLabel
         

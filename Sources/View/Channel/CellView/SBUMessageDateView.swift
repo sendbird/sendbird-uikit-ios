@@ -1,6 +1,6 @@
 //
 //  SBUMessageDateView.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 2020/10/27.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -25,7 +25,7 @@ class SBUMessageDateView: SBUView {
         self.addSubview(self.dateLabel)
     }
     
-    override func setupAutolayout() {
+    override func setupLayouts() {
         self.dateLabel
             .setConstraint(from: self, centerX: true, centerY: true)
             .setConstraint(width: 91, height: 20)

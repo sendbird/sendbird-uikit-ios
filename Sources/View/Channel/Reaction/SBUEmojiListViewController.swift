@@ -1,6 +1,6 @@
 //
 //  SBUEmojiListViewController.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Harry Kim on 2020/04/26.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -50,75 +50,10 @@ class SBUEmojiListViewController: SBUBaseViewController, UICollectionViewDelegat
         super.init(nibName: nil, bundle: nil)
     }
 
-    override func loadView() {
-        super.loadView()
-
-        // collectionView
-        self.layout.itemSize = SBUConstant.emojiListCollectionViewCellSize
-        self.layout.sectionInset = UIEdgeInsets(
-            top: 12,
-            left: 16,
-            bottom: safeBottomPadding + 8,
-            right: 16
-        )
-        self.layout.scrollDirection = .vertical
-        self.layout.minimumLineSpacing = 16
-
-        self.collectionView.dataSource = self
-        self.collectionView.delegate = self
-        self.collectionView.register(
-            SBUReactionCollectionViewCell.sbu_loadNib(),
-            forCellWithReuseIdentifier: SBUReactionCollectionViewCell.sbu_className
-        ) // for xib
-        self.collectionView.bounces = false
-        self.collectionView.showsHorizontalScrollIndicator = false
-        self.collectionView.isScrollEnabled = false
-        self.collectionView.backgroundColor = .clear
-
-        self.bottomSheet?.bottomSheetDelegate = self
-        self.bottomSheet?.panGesture.delegate = self
-
-
-        self.view.addSubview(self.collectionView)
-
-        // autolayout
-        self.setupAutolayout()
-
-        // Styles
-        self.setupStyles()
-    }
-
-    /// This function handles the initialization of autolayouts.
-    override func setupAutolayout() {
-        self.collectionView.setConstraint(from: self.view, left: 0, right: 0, top: 0, bottom: 0)
-        self.collectionView.layoutIfNeeded()
-    }
-
-    /// This function handles the initialization of styles.
-    override func setupStyles() {
-        self.view.backgroundColor = theme.backgroundColor
-    }
-
     override func viewDidLayoutSubviews() {
+        self.updateLayouts()
+        
         super.viewDidLayoutSubviews()
-        let itemCount = CGFloat(
-            emojiList.count < maxEmojiOneLine
-            ? emojiList.count
-            : maxEmojiOneLine
-        )
-        if itemCount > 2 {
-            let space = (
-                self.view.frame.width
-                    - layout.sectionInset.left
-                    - layout.sectionInset.right
-                    - itemCount * layout.itemSize.width - 1
-                ) / (itemCount - 1)
-            self.layout.minimumInteritemSpacing = space
-        }
-        self.collectionView.layoutIfNeeded()
-        self.collectionView.reloadData()
-
-        self.collectionView.isScrollEnabled = self.bottomSheet?.currentSnapPoint == .top
     }
 
     override func viewDidLoad() {
@@ -144,7 +79,70 @@ class SBUEmojiListViewController: SBUBaseViewController, UICollectionViewDelegat
         guard emojiList.count > 0 else { return }
         self.collectionView.scrollToItem(at: .init(row: 0, section: 0), at: .top, animated: true)
     }
+    
+    
+    // MARK: - Sendbird UIKit Life cycle
+    override func setupViews() {
+        // collectionView
+        self.layout.itemSize = SBUConstant.emojiListCollectionViewCellSize
+        self.layout.sectionInset = UIEdgeInsets(
+            top: 12,
+            left: 16,
+            bottom: safeBottomPadding + 8,
+            right: 16
+        )
+        self.layout.scrollDirection = .vertical
+        self.layout.minimumLineSpacing = 16
 
+        self.collectionView.dataSource = self
+        self.collectionView.delegate = self
+        self.collectionView.register(
+            SBUReactionCollectionViewCell.sbu_loadNib(),
+            forCellWithReuseIdentifier: SBUReactionCollectionViewCell.sbu_className
+        ) // for xib
+        self.collectionView.bounces = false
+        self.collectionView.showsHorizontalScrollIndicator = false
+        self.collectionView.isScrollEnabled = false
+        self.collectionView.backgroundColor = .clear
+
+        self.bottomSheet?.bottomSheetDelegate = self
+        self.bottomSheet?.panGesture.delegate = self
+
+        self.view.addSubview(self.collectionView)
+    }
+
+    override func setupLayouts() {
+        self.collectionView.setConstraint(from: self.view, left: 0, right: 0, top: 0, bottom: 0)
+        self.collectionView.layoutIfNeeded()
+    }
+    
+    override func updateLayouts() {
+        let itemCount = CGFloat(
+            emojiList.count < maxEmojiOneLine
+            ? emojiList.count
+            : maxEmojiOneLine
+        )
+        if itemCount > 2 {
+            let space = (
+                self.view.frame.width
+                    - layout.sectionInset.left
+                    - layout.sectionInset.right
+                    - itemCount * layout.itemSize.width - 1
+                ) / (itemCount - 1)
+            self.layout.minimumInteritemSpacing = space
+        }
+        self.collectionView.layoutIfNeeded()
+        self.collectionView.reloadData()
+
+        self.collectionView.isScrollEnabled = self.bottomSheet?.currentSnapPoint == .top
+    }
+
+    override func setupStyles() {
+        self.view.backgroundColor = theme.backgroundColor
+    }
+    
+
+    // MARK: - Common
     func calculateCollectionViewContentHieght() -> CGFloat {
         let lineCount = CGFloat((emojiList.count + maxEmojiOneLine - 1) / maxEmojiOneLine)
         return lineCount * layout.itemSize.height
@@ -173,7 +171,7 @@ class SBUEmojiListViewController: SBUBaseViewController, UICollectionViewDelegat
         let emoji = emojiList[indexPath.row]
         cell.configure(type: .messageMenu, url: emoji.url)
 
-        guard let currentUesr = SBUGlobals.CurrentUser else { return cell }
+        guard let currentUesr = SBUGlobals.currentUser else { return cell }
         let didSelect = self.message.reactions.first {
             $0.key == emoji.key
             }?.userIds.contains(currentUesr.userId) ?? false
@@ -182,7 +180,7 @@ class SBUEmojiListViewController: SBUBaseViewController, UICollectionViewDelegat
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let currentUesr = SBUGlobals.CurrentUser else { self.dismiss(animated: true); return }
+        guard let currentUesr = SBUGlobals.currentUser else { self.dismiss(animated: true); return }
 
         let emoji = emojiList[indexPath.row]
 

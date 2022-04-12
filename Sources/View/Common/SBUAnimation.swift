@@ -1,6 +1,6 @@
 //
 //  SBUAnimation.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Jaesung Lee on 2021/08/20.
 //  Copyright © 2021 Sendbird, Inc. All rights reserved.
@@ -27,7 +27,11 @@ import UIKit
  */
 class SBUAnimation {
     enum Key: String {
-        case spin = "com.sendbird.uikit.animation.key.spin"
+        case spin = "spin"
+        
+        var identifier: String {
+            return "\(SBUConstant.bundleIdentifier).animation.key.\(self.rawValue)"
+        }
     }
     /**
      Shakes view vertically.

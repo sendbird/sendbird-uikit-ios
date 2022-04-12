@@ -1,6 +1,6 @@
 //
 //  SBUChannelTitleView.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 25/02/2020.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -9,7 +9,7 @@
 import UIKit
 import SendBirdSDK
 
-@objcMembers
+
 class SBUChannelTitleView: UIView {
     // MARK: - Public
     public var channel: SBDBaseChannel?
@@ -34,7 +34,7 @@ class SBUChannelTitleView: UIView {
         super.init(frame: frame)
         
         self.setupViews()
-        self.setupAutolayout()
+        self.setupLayouts()
     }
     
     @available(*, unavailable, renamed: "SBUChannelTitleView.init(frame:)")
@@ -66,7 +66,7 @@ class SBUChannelTitleView: UIView {
         self.addSubview(self.contentView)
     }
     
-    func setupAutolayout() {
+    func setupLayouts() {
         self.contentView.translatesAutoresizingMaskIntoConstraints = false
         let contentHeightConstant = self.contentView.heightAnchor.constraint(
             equalToConstant: self.bounds.height

@@ -1,6 +1,6 @@
 //
 //  Data+SBUIKit.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Wooyoung Chung on 5/5/21.
 //  Copyright © 2021 Sendbird, Inc. All rights reserved.

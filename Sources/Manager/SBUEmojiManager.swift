@@ -1,6 +1,6 @@
 //
 //  SBUEmojiManager.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Harry Kim on 2020/05/19.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -9,8 +9,8 @@
 import Foundation
 import SendBirdSDK
 
-@objcMembers
-public class SBUEmojiManager: NSObject {
+
+public class SBUEmojiManager {
     // MARK: - Private keys
     static let kEmojiCacheKey = "LOCAL_CACHING_EMOJI_CONTAINER"
     

@@ -1,6 +1,6 @@
 //
 //  SBUCoverImageView.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 04/03/2020.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -182,7 +182,7 @@ public class SBUCoverImageView: UIView {
     /// The image is created using up to four user objects.
     /// - Parameter users: `SBUUser` object array
     public func setImage(withUsers users: [SBDUser]) {
-        let filteredUsers = users.filter { $0.userId != SBUGlobals.CurrentUser?.userId }
+        let filteredUsers = users.filter { $0.userId != SBUGlobals.currentUser?.userId }
         let index = (filteredUsers.count > 3) ? 4 : filteredUsers.count
         let newUsers = Array(filteredUsers[0..<index])
         
@@ -221,7 +221,7 @@ public class SBUCoverImageView: UIView {
             mainStackView.addArrangedSubview(imageView)
 
         } else {
-            let filteredUsers = users.filter { $0.userId != SBUGlobals.CurrentUser?.userId }
+            let filteredUsers = users.filter { $0.userId != SBUGlobals.currentUser?.userId }
             for user in filteredUsers {
                 let imageView = UIImageView(frame: self.frame)
                 imageView.sbu_setProfileImageView(
@@ -277,7 +277,7 @@ extension UIImageView {
         self.loadImage(
             urlString: ImageUtil.transformUserProfileImage(user: user),
             placeholder: defaultImage
-        )
+        )        
     }
 }
 

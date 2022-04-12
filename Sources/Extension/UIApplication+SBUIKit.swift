@@ -5,6 +5,7 @@
 //  Created by Tez Park on 2022/03/15.
 //  Copyright © 2022 Sendbird, Inc. All rights reserved.
 //
+
 import UIKit
 
 extension UIApplication {

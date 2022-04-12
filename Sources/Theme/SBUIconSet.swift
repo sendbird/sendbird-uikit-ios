@@ -1,6 +1,6 @@
 //
 //  SBUIconSet.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Harry Kim on 2020/02/07.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -8,8 +8,8 @@
 
 import UIKit
 
-@objcMembers
-public class SBUIconSet: NSObject {
+
+public class SBUIconSet {
     
     // MARK: - Icons
     

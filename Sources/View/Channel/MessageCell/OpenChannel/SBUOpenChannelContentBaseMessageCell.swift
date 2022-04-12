@@ -1,6 +1,6 @@
 //
 //  SBUOpenChannelContentBaseMessageCell.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 2020/10/27.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -12,7 +12,7 @@ import SendBirdSDK
 
 /// It is a base class used in message cell with contents.
 /// - Since: 2.0.0
-@objcMembers
+
 open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
     
     // MARK: - Public property
@@ -100,8 +100,8 @@ open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
         self.messageContentView.addSubview(self.baseStackView)
     }
     
-    open override func setupAutolayout() {
-        super.setupAutolayout()
+    open override func setupLayouts() {
+        super.setupLayouts()
         
         self.stateImageView.setConstraint(
             width: 12,
@@ -219,7 +219,7 @@ open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
     }
     
     func configureStateImage() {
-        stateImageView.layer.removeAnimation(forKey: SBUAnimation.Key.spin.rawValue)
+        stateImageView.layer.removeAnimation(forKey: SBUAnimation.Key.spin.identifier)
         let stateImage: UIImage?
         
         switch message.sendingStatus {
@@ -236,7 +236,7 @@ open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
                 rotation.toValue = 2 * Double.pi
                 rotation.duration = 1.1
                 rotation.repeatCount = Float.infinity
-                stateImageView.layer.add(rotation, forKey: SBUAnimation.Key.spin.rawValue)
+                stateImageView.layer.add(rotation, forKey: SBUAnimation.Key.spin.identifier)
             case .failed, .canceled:
                 stateImage = SBUIconSetType.iconError.image(
                     with: theme.failedStateColor,
@@ -254,7 +254,7 @@ open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
     }
     
     public func setMessageGrouping() {
-        let isMessageGroupingEnabled = SBUGlobals.UsingMessageGrouping
+        let isMessageGroupingEnabled = SBUGlobals.isMessageGroupingEnabled
         let profileImageView = (self.profileView as? SBUMessageProfileView)?.imageView
         
         switch self.groupPosition {
@@ -275,6 +275,8 @@ open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
             profileImageView?.isHidden = false
             self.messageTimeLabel.isHidden = false
         }
+        
+        self.updateTopAnchorConstraint()
     }
     
     public func setUsernameColor(_ color: UIColor) {

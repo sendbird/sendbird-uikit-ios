@@ -1,6 +1,6 @@
 //
 //  SBUReactionCollectionViewCell.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Harry Kim on 2020/04/28.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -66,7 +66,7 @@ class SBUReactionCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    func setupAutolayout() {
+    func setupLayouts() {
         switch type {
         case .messageReaction:
             self.setStackConstraints(top: -5, leading: 8, trailing: 8, height: 20)
@@ -107,7 +107,8 @@ class SBUReactionCollectionViewCell: UICollectionViewCell {
     // MARK: - Action
     var emojiLongPressHandler: (() -> Void)? = nil
 
-    @objc func onLongPressEmoji(sender: UILongPressGestureRecognizer) {
+    @objc
+    func onLongPressEmoji(sender: UILongPressGestureRecognizer) {
         if sender.state == .began {
             self.emojiLongPressHandler?()
         }
@@ -127,7 +128,7 @@ class SBUReactionCollectionViewCell: UICollectionViewCell {
         }
         
         self.setupViews()
-        self.setupAutolayout()
+        self.setupLayouts()
         self.setupStyles()
         self.setSelected()
         self.setNeedsLayout()

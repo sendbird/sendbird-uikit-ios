@@ -1,6 +1,6 @@
 //
 //  SBUBaseMessageCell.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 03/02/2020.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -9,7 +9,7 @@
 import UIKit
 import SendBirdSDK
 
-@objcMembers @IBDesignable
+ @IBDesignable
 open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol {
     // MARK: - Public
     public var message: SBDBaseMessage = .init()
@@ -76,7 +76,7 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol {
     }
     
     /// This function handles the initialization of autolayouts.
-    open override func setupAutolayout() {
+    open override func setupLayouts() {
         self.stackView
             .setConstraint(from: self.contentView, left: 0, bottom: 0)
             .setConstraint(from: self.contentView, right: 0, priority: .defaultHigh)
@@ -93,11 +93,11 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol {
     }
     
     func updateTopAnchorConstraint() {
-        let isGrouped = SBUGlobals.UsingMessageGrouping
-        && self.groupPosition != .none
-        && self.groupPosition != .top
+        let isGrouped = SBUGlobals.isMessageGroupingEnabled
+            && self.groupPosition != .none
+            && self.groupPosition != .top
         let constant: CGFloat = isGrouped ? 4 : 16
-        
+
         self.stackViewTopConstraint?.isActive = false
         self.stackViewTopConstraint = self.stackView.topAnchor.constraint(
             equalTo: self.contentView.topAnchor,
@@ -158,9 +158,3 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol {
         super.prepareForReuse()
     }
 }
-
-
-// TODO: Remove
-@IBDesignable
-@available(*, deprecated, renamed: "SBUBaseMessageCell")
-open class SBUMessageBaseCell { }

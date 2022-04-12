@@ -1,6 +1,6 @@
 //
 //  UIColor+SBUIKit.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 02/03/2020.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.

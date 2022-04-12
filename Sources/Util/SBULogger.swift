@@ -1,6 +1,6 @@
 //
 //  SBULogger.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 20/04/2020.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -10,7 +10,7 @@ import UIKit
 
 //📕📙📗📘📓📔
 
-class SBULog: NSObject {
+class SBULog {
     static var logType: UInt8 = LogType.none.rawValue
     
     static func error<T>(_ object: T?, filepath: String = #file, line: Int = #line, funcName: String = #function) {

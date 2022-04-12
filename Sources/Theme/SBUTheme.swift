@@ -1,6 +1,6 @@
 //
 //  SBUTheme.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Harry Kim on 2020/02/05.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -9,12 +9,8 @@
 import UIKit
 
 // MARK: - Channel List Theme 
-@objcMembers
-public class SBUTheme: NSObject {
-    override convenience init() {
-        self.init(channelListTheme: .light)
-    }
-    
+
+public class SBUTheme {
     public init(channelListTheme: SBUChannelListTheme = .light,
                 channelCellTheme: SBUChannelCellTheme = .light,
                 channelTheme: SBUChannelTheme = .light,
@@ -224,8 +220,8 @@ public class SBUTheme: NSObject {
 }
 
 // MARK: - Overlay Theme
-@objcMembers
-public class SBUOverlayTheme: NSObject {
+
+public class SBUOverlayTheme {
     
     public init(channelTheme: SBUChannelTheme = .overlay,
                 messageInputTheme: SBUMessageInputTheme = .overlay,
@@ -235,10 +231,6 @@ public class SBUOverlayTheme: NSObject {
         self.messageInputTheme = messageInputTheme
         self.messageCellTheme = messageCellTheme
         self.componentTheme = componentTheme
-    }
-
-    public override convenience init() {
-        self.init(channelTheme: .overlay)
     }
     
     // Channel & Message
@@ -251,8 +243,8 @@ public class SBUOverlayTheme: NSObject {
 }
 
 // MARK: - Channel List Theme
-@objcMembers
-public class SBUChannelListTheme: NSObject {
+
+public class SBUChannelListTheme {
     
     public static var light: SBUChannelListTheme {
         let theme = SBUChannelListTheme()
@@ -303,10 +295,6 @@ public class SBUChannelListTheme: NSObject {
         theme.alertBackgroundColor = SBUColorSet.background600
         
         return theme
-    }
-    
-    override convenience init() {
-        self.init(statusBarStyle: .default)
     }
     
     public init(statusBarStyle: UIStatusBarStyle = .default,
@@ -362,8 +350,8 @@ public class SBUChannelListTheme: NSObject {
 }
 
 // MARK: - Channel Cell Theme
-@objcMembers
-public class SBUChannelCellTheme: NSObject {
+
+public class SBUChannelCellTheme {
     public static var light: SBUChannelCellTheme {
         let theme = SBUChannelCellTheme()
         theme.backgroundColor = SBUColorSet.background50
@@ -417,10 +405,6 @@ public class SBUChannelCellTheme: NSObject {
         
         theme.separatorLineColor = SBUColorSet.ondark04
         return theme
-    }
-    
-    override convenience init() {
-        self.init(backgroundColor: SBUColorSet.background50)
     }
     
     public init(backgroundColor: UIColor = SBUColorSet.background50,
@@ -483,8 +467,8 @@ public class SBUChannelCellTheme: NSObject {
 }
 
 // MARK: - Channel Theme
-@objcMembers
-public class SBUChannelTheme: NSObject {
+
+public class SBUChannelTheme {
     
     public static var light: SBUChannelTheme {
         let theme = SBUChannelTheme()
@@ -585,10 +569,6 @@ public class SBUChannelTheme: NSObject {
         return theme
     }
     
-    override convenience init() {
-        self.init(statusBarStyle: .default)
-    }
-    
     public init(statusBarStyle: UIStatusBarStyle = .default,
                 navigationBarTintColor: UIColor = SBUColorSet.background50,
                 navigationBarShadowColor: UIColor = SBUColorSet.onlight04,
@@ -654,8 +634,8 @@ public class SBUChannelTheme: NSObject {
 }
 
 // MARK: - Message Input Theme
-@objcMembers
-public class SBUMessageInputTheme: NSObject {
+
+public class SBUMessageInputTheme {
     
     public static var light: SBUMessageInputTheme {
         let theme = SBUMessageInputTheme()
@@ -736,10 +716,6 @@ public class SBUMessageInputTheme: NSObject {
         theme.saveButtonTextColor = SBUColorSet.onlight01
         
         return theme
-    }
-    
-    override convenience init() {
-        self.init(backgroundColor: SBUColorSet.background50)
     }
     
     public init(backgroundColor: UIColor = SBUColorSet.background50,
@@ -827,8 +803,8 @@ public class SBUMessageInputTheme: NSObject {
 }
 
 // MARK: - Message Cell Theme
-@objcMembers
-public class SBUMessageCellTheme: NSObject {
+
+public class SBUMessageCellTheme {
     
     public static var light: SBUMessageCellTheme {
         let theme = SBUMessageCellTheme()
@@ -952,7 +928,7 @@ public class SBUMessageCellTheme: NSObject {
         theme.pendingStateColor = SBUColorSet.primary200
         theme.failedStateColor = SBUColorSet.error300
         theme.succeededStateColor = SBUColorSet.ondark03
-        theme.readReceiptStateColor = SBUColorSet.secondary300
+        theme.readReceiptStateColor = SBUColorSet.secondary200
         theme.deliveryReceiptStateColor = SBUColorSet.ondark03
         
         theme.contentBackgroundColor = SBUColorSet.background500
@@ -1088,10 +1064,6 @@ public class SBUMessageCellTheme: NSObject {
         theme.linkColor = SBUColorSet.primary200
         
         return theme
-    }
-    
-    override convenience init() {
-        self.init(backgroundColor: SBUColorSet.background50)
     }
     
     public init(backgroundColor: UIColor = SBUColorSet.background50,
@@ -1310,8 +1282,8 @@ public class SBUMessageCellTheme: NSObject {
 
 
 // MARK: - User List Theme
-@objcMembers
-public class SBUUserListTheme: NSObject {
+
+public class SBUUserListTheme {
     
     public static var light: SBUUserListTheme {
         let theme = SBUUserListTheme()
@@ -1362,10 +1334,6 @@ public class SBUUserListTheme: NSObject {
         return theme
     }
     
-    override convenience init() {
-        self.init(statusBarStyle: .default)
-    }
-    
     public init(statusBarStyle: UIStatusBarStyle = .default,
                 navigationBarTintColor: UIColor = SBUColorSet.background50,
                 navigationShadowColor: UIColor = SBUColorSet.onlight04,
@@ -1403,6 +1371,7 @@ public class SBUUserListTheme: NSObject {
     
     public var statusBarStyle: UIStatusBarStyle
     public var navigationBarTintColor: UIColor
+    // TODO: Rename from `navigationShadowColor` to `navigationBarShadowColor`
     public var navigationShadowColor: UIColor
     public var leftBarButtonTintColor: UIColor
     public var rightBarButtonTintColor: UIColor
@@ -1420,8 +1389,8 @@ public class SBUUserListTheme: NSObject {
 }
 
 // MARK: - User Cell Theme
-@objcMembers
-public class SBUUserCellTheme: NSObject {
+
+public class SBUUserCellTheme {
     public static var light: SBUUserCellTheme {
         let theme = SBUUserCellTheme()
         theme.backgroundColor = SBUColorSet.background50
@@ -1458,10 +1427,6 @@ public class SBUUserCellTheme: NSObject {
         theme.moreButtonDisabledColor = SBUColorSet.ondark04
         theme.separateColor = SBUColorSet.ondark04
         return theme
-    }
-    
-    override convenience init() {
-        self.init(backgroundColor: SBUColorSet.background50)
     }
     
     public init(backgroundColor: UIColor = SBUColorSet.background50,
@@ -1512,8 +1477,8 @@ public class SBUUserCellTheme: NSObject {
 }
 
 // MARK: - Channel Setting Theme
-@objcMembers
-public class SBUChannelSettingsTheme: NSObject {
+
+public class SBUChannelSettingsTheme {
     
     public static var light: SBUChannelSettingsTheme {
         let theme = SBUChannelSettingsTheme()
@@ -1600,10 +1565,6 @@ public class SBUChannelSettingsTheme: NSObject {
         return theme
     }
     
-    override convenience init() {
-        self.init(statusBarStyle: .default)
-    }
-    
     public init(statusBarStyle: UIStatusBarStyle = .default,
                 navigationBarTintColor: UIColor = SBUColorSet.background50,
                 navigationShadowColor: UIColor = SBUColorSet.onlight04,
@@ -1659,6 +1620,7 @@ public class SBUChannelSettingsTheme: NSObject {
     public var statusBarStyle: UIStatusBarStyle
     
     public var navigationBarTintColor: UIColor
+    // TODO: Rename from `navigationShadowColor` to `navigationBarShadowColor`
     public var navigationShadowColor: UIColor
     public var leftBarButtonTintColor: UIColor
     public var rightBarButtonTintColor: UIColor
@@ -1701,8 +1663,8 @@ public class SBUChannelSettingsTheme: NSObject {
 }
 
 
-@objcMembers
-public class SBUUserProfileTheme: NSObject {
+
+public class SBUUserProfileTheme {
     public static var light: SBUUserProfileTheme {
         let theme = SBUUserProfileTheme()
         
@@ -1769,10 +1731,6 @@ public class SBUUserProfileTheme: NSObject {
         theme.informationDesctiptionFont = SBUFontSet.body3
         
         return theme
-    }
-    
-    override convenience init() {
-        self.init(statusBarStyle: .default);
     }
     
     public init(statusBarStyle: UIStatusBarStyle = .default,
@@ -1854,8 +1812,8 @@ public class SBUUserProfileTheme: NSObject {
 
 
 // MARK: - Component
-@objcMembers
-public class SBUComponentTheme: NSObject {
+
+public class SBUComponentTheme {
     public static var light: SBUComponentTheme {
         let theme = SBUComponentTheme()
         theme.emptyViewBackgroundColor = SBUColorSet.background50
@@ -2175,10 +2133,6 @@ public class SBUComponentTheme: NSObject {
         return theme
     }
     
-    override convenience init() {
-        self.init(emptyViewBackgroundColor: SBUColorSet.background50)
-    }
-    
     public init(emptyViewBackgroundColor: UIColor = SBUColorSet.background50,
                 emptyViewStatusFont: UIFont = SBUFontSet.body3,
                 emptyViewStatusTintColor: UIColor = SBUColorSet.onlight03,
@@ -2447,8 +2401,8 @@ public class SBUComponentTheme: NSObject {
 
 
 // MARK: - Message Search Theme
-@objcMembers
-public class SBUMessageSearchTheme: NSObject {
+
+public class SBUMessageSearchTheme {
     
     public static var light: SBUMessageSearchTheme {
         let theme = SBUMessageSearchTheme()
@@ -2510,10 +2464,6 @@ public class SBUMessageSearchTheme: NSObject {
     public var clearIconTintColor: UIColor
     public var cancelButtonTintColor: UIColor
     
-    override convenience init() {
-        self.init(statusBarStyle: .default)
-    }
-    
     public init(statusBarStyle: UIStatusBarStyle = .default,
                 navigationBarStyle: UIBarStyle = .default,
                 navigationBarTintColor: UIColor = SBUColorSet.background50,
@@ -2543,8 +2493,8 @@ public class SBUMessageSearchTheme: NSObject {
 }
 
 // MARK: - Message Search Result Theme
-@objcMembers
-public class SBUMessageSearchResultCellTheme: NSObject {
+
+public class SBUMessageSearchResultCellTheme {
     
     public static var light: SBUMessageSearchResultCellTheme {
         let theme = SBUMessageSearchResultCellTheme()

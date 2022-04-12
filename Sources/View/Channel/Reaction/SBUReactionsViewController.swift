@@ -1,6 +1,6 @@
 //
 //  SBUReactionsViewController.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Harry Kim on 2020/04/24.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -47,9 +47,7 @@ class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegate, UI
         self.memberList = members
     }
 
-    override func loadView() {
-        super.loadView()
-
+    override func setupViews() {
         // stackView
         self.stackView.axis = .vertical
         self.stackView.alignment = .center
@@ -92,16 +90,10 @@ class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegate, UI
         self.stackView.addArrangedSubview(self.collectionView)
         self.stackView.addArrangedSubview(self.lineView)
         self.stackView.addArrangedSubview(self.tableView)
-
-        // autolayout
-        self.setupAutolayout()
-
-        // Styles
-        self.setupStyles()
     }
 
     /// This function handles the initialization of autolayouts.
-    override func setupAutolayout() {
+    override func setupLayouts() {
         self.stackView.setConstraint(from: self.view, left: 0, right: 0, top: 0, bottom: 0)
         self.tableView.setConstraint(from: self.stackView, left: 0)
         self.lineView .setConstraint(from: self.stackView, left: 0).setConstraint(height: 0.5)
@@ -125,6 +117,16 @@ class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegate, UI
         self.collectionView.layoutIfNeeded()
         self.view.setNeedsLayout()
     }
+    
+    override func updateLayouts() {
+        self.collectionViewConstraintWidth.constant = self.collectionView.contentSize.width
+        self.collectionViewConstraintMaxWidth.constant = self.view.bounds.width
+        self.collectionView.layoutIfNeeded()
+
+        if let bottomSheet = self.presentationController as? SBUBottomSheetController {
+            self.tableView.isScrollEnabled = bottomSheet.currentSnapPoint == .top
+        }
+    }
 
     /// This function handles the initialization of styles.
     override func setupStyles() {
@@ -145,14 +147,9 @@ class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegate, UI
     }
 
     override func viewDidLayoutSubviews() {
+        self.updateLayouts()
+        
         super.viewDidLayoutSubviews()
-        self.collectionViewConstraintWidth.constant = self.collectionView.contentSize.width
-        self.collectionViewConstraintMaxWidth.constant = self.view.bounds.width
-        self.collectionView.layoutIfNeeded()
-
-        if let bottomSheet = self.presentationController as? SBUBottomSheetController {
-            self.tableView.isScrollEnabled = bottomSheet.currentSnapPoint == .top
-        }
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {

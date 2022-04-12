@@ -1,6 +1,6 @@
 //
 //  SBUUser.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 26/02/2020.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -9,7 +9,7 @@
 import UIKit
 import SendBirdSDK
 
-@objcMembers
+
 public class SBUUser: NSObject {
     public private(set) var userId: String
     public private(set) var nickname: String?

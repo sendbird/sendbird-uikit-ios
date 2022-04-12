@@ -1,6 +1,6 @@
 //
 //  SBUOpenChannelAdminMessageCell.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 2020/10/27.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -9,7 +9,7 @@
 import UIKit
 import SendBirdSDK
 
-@objcMembers
+
 open class SBUOpenChannelAdminMessageCell: SBUOpenChannelBaseMessageCell {
 
     // MARK: - Public property
@@ -27,8 +27,8 @@ open class SBUOpenChannelAdminMessageCell: SBUOpenChannelBaseMessageCell {
         self.messageContentView.addSubview(self.baseView)
     }
     
-    open override func setupAutolayout() {
-        super.setupAutolayout()
+    open override func setupLayouts() {
+        super.setupLayouts()
         
         self.baseView.sbu_constraint(
             equalTo: self.messageContentView,

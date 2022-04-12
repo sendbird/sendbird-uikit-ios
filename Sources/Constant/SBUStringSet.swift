@@ -1,6 +1,6 @@
 //
 //  SBUStringSet.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 05/03/2020.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -9,8 +9,7 @@
 import UIKit
 import SendBirdSDK
 
-@objcMembers
-public class SBUStringSet: NSObject {
+public class SBUStringSet {
     // MARK: - Common
     public static var Cancel = "Cancel"
     public static var OK = "OK"
@@ -37,7 +36,6 @@ public class SBUStringSet: NSObject {
     public static var Alert_Delete = "Are you sure you want to delete?"
     public static var Alert_Allow_PhotoLibrary_Access = "Please Allow PhotoLibrary Access"
     public static var Alert_Allow_PhotoLibrary_Access_Message = "PhotoLibrary access required to get your photos and videos"
-    
 
     // MARK: - Date Format
     public static var Date_Yesterday = "Yesterday"

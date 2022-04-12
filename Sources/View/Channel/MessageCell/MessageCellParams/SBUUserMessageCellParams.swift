@@ -1,6 +1,6 @@
 //
 //  SBUUserMessageCellParams.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Jaesung Lee on 2021/07/19.
 //  Copyright © 2021 Sendbird, Inc. All rights reserved.
@@ -8,7 +8,7 @@
 
 import SendBirdSDK
 
-@objcMembers
+
 public class SBUUserMessageCellParams: SBUBaseMessageCellParams {
     public var userMessage: SBDUserMessage? {
         self.message as? SBDUserMessage
@@ -23,7 +23,7 @@ public class SBUUserMessageCellParams: SBUBaseMessageCellParams {
         
         var messagePosition: MessagePosition = .left
         if useMessagePosition {
-            let isMyMessage = SBUGlobals.CurrentUser?.userId == message.sender?.userId
+            let isMyMessage = SBUGlobals.currentUser?.userId == message.sender?.userId
             messagePosition = isMyMessage ? .right : .left
         }
         

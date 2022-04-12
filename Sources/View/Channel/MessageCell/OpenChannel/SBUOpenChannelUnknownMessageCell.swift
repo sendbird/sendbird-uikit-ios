@@ -1,6 +1,6 @@
 //
 //  SBUOpenChannelUnknownMessageCell.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 2020/10/27.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -9,7 +9,7 @@
 import UIKit
 import SendBirdSDK
 
-@objcMembers
+
 open class SBUOpenChannelUnknownMessageCell: SBUOpenChannelUserMessageCell {
     open override func configure(_ message: SBDBaseMessage,
                                    hideDateView: Bool,

@@ -1,6 +1,6 @@
 //
 //  SBUEmptyView.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 27/02/2020.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -8,12 +8,13 @@
 
 import UIKit
 
-@objc public protocol SBUEmptyViewDelegate: NSObjectProtocol {
-    @objc func didSelectRetry()
+public protocol SBUEmptyViewDelegate: NSObjectProtocol {
+    /// Called when the retry button on the empty view was tapped.
+    func didSelectRetry()
 }
 
-@objcMembers
-open class SBUEmptyView: UIView {
+
+open class SBUEmptyView: SBUView {
     // MARK: - Properties (Public)
     public var type: EmptyViewType = .none
     public weak var delegate: SBUEmptyViewDelegate?
@@ -55,17 +56,20 @@ open class SBUEmptyView: UIView {
     // MARK: - Lifecycle
     override public init(frame: CGRect) {
         super.init(frame: frame)
-        
-        self.setupViews()
-        self.setupAutolayout()
     }
     
     @available(*, unavailable, renamed: "SBUEmptyView.init(frame:)")
     required public init?(coder: NSCoder) {
-        super.init(coder: coder)
+        super.init(frame: .zero)
     }
     
-    open func setupViews() {
+    public override init() {
+        super.init()
+    }
+    
+    open override func setupViews() {
+        super.setupViews()
+        
         self.stackView.alignment = .center
         self.stackView.addArrangedSubview(self.statusImageView)
         self.stackView.addArrangedSubview(self.statusLabel)
@@ -74,7 +78,9 @@ open class SBUEmptyView: UIView {
         self.addSubview(stackView)
     }
     
-    open func setupAutolayout() {
+    open override func setupLayouts() {
+        super.setupLayouts()
+        
         self.stackView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             self.stackView.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: 0),
@@ -89,7 +95,9 @@ open class SBUEmptyView: UIView {
         self.statusImageView.setConstraint(width: 60.0, height: 60.0)
     }
     
-    open func setupStyles() {
+    open override func setupStyles() {
+        super.setupStyles()
+        
         let theme = self.isOverlay ? self.overlayTheme : self.theme
         
         self.backgroundColor = theme.emptyViewBackgroundColor
@@ -106,12 +114,6 @@ open class SBUEmptyView: UIView {
         self.retryButton.setTitleColor(theme.emptyViewRetryButtonTintColor, for: .normal)
         self.retryButton.titleLabel?.font = theme.emptyViewRetryButtonFont
         self.retryButton.tintColor = theme.emptyViewRetryButtonTintColor
-    }
-    
-    open override func layoutSubviews() {
-        super.layoutSubviews()
-
-        self.setupStyles()
     }
     
     

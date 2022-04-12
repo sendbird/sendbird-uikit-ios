@@ -1,6 +1,6 @@
 //
 //  SBUView.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Jaesung Lee on 2021/07/05.
 //  Copyright © 2021 Sendbird, Inc. All rights reserved.
@@ -20,8 +20,14 @@ public protocol SBUViewLifeCycle {
     /// This function handles the initialization of styles.
     func setupStyles()
     
+    /// This function updates styles.
+    func updateStyles()
+    
     /// This function handles the initialization of autolayouts.
-    func setupAutolayout()
+    func setupLayouts()
+    
+    /// This function updates layouts.
+    func updateLayouts()
     
     /// This function handles the initialization of actions.
     func setupActions()

@@ -1,6 +1,6 @@
 //
 //  UIImage+SBUIKit.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 16/02/2020.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -8,11 +8,12 @@
 
 import UIKit
 
+// MARK: - Public extension
 public extension UIImage {
     /// This applies the tint color to the `UIImage`.
     /// - Parameter tintColor: tint color
     /// - Returns: `Uiimage` objects with tint color
-    @objc func sbu_with(tintColor: UIColor?) -> UIImage {
+    func sbu_with(tintColor: UIColor?) -> UIImage {
         guard let tintColor = tintColor else { return self }
         if #available(iOS 13.0, *) {
             return withTintColor(tintColor)
@@ -42,6 +43,8 @@ public extension UIImage {
     }
 }
 
+
+// MARK: - Private extension
 extension UIImage {
     static func from(color: UIColor) -> UIImage {
         let rect = CGRect(x: 0, y: 0, width: 1, height: 1)
@@ -131,10 +134,12 @@ extension UIImage {
             return UIImage(data: data)
         }
     }
-    
-    // MARK: - GIF image handling (figuring out gif delays)
-    /// Note: https://github.com/kiritmodi2702/GIF-Swift/blob/master/GIF-Swift/iOSDevCenters%2BGIF.swift
-    
+}
+
+
+// MARK: - GIF image handling (figuring out gif delays)
+/// Note: https://github.com/kiritmodi2702/GIF-Swift/blob/master/GIF-Swift/iOSDevCenters%2BGIF.swift
+extension UIImage {
     internal class func delayForImageAtIndex(_ index: Int, source: CGImageSource!) -> Double {
         var delay = 0.0
         

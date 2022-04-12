@@ -1,6 +1,6 @@
 //
 //  SBUOpenChannelUserMessageCell.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 2020/10/27.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -9,7 +9,7 @@
 import UIKit
 import SendBirdSDK
 
-@objcMembers @IBDesignable
+ @IBDesignable
 open class SBUOpenChannelUserMessageCell: SBUOpenChannelContentBaseMessageCell {
 
     // MARK: - Public property
@@ -48,8 +48,8 @@ open class SBUOpenChannelUserMessageCell: SBUOpenChannelContentBaseMessageCell {
         }
     }
     
-    open override func setupAutolayout() {
-        super.setupAutolayout()
+    open override func setupLayouts() {
+        super.setupLayouts()
         
         self.messageTypeConstraint = self.messageTextView.trailingAnchor.constraint(
             lessThanOrEqualTo: self.trailingAnchor, constant: -12
@@ -172,7 +172,8 @@ open class SBUOpenChannelUserMessageCell: SBUOpenChannelContentBaseMessageCell {
         self.additionContainerView.isSelected = selected
     }
 
-    @objc func onTapWebview(sender: UITapGestureRecognizer) {
+    @objc
+    func onTapWebview(sender: UITapGestureRecognizer) {
         guard
             let ogMetaData = self.userMessage?.ogMetaData,
             let urlString = ogMetaData.url,

@@ -1,6 +1,6 @@
 //
 //  SBUChannelInfoHeaderView.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 2020/10/29.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -10,22 +10,36 @@ import UIKit
 import SendBirdSDK
 
 /// This delegate is used in the class to handle the action.
-@objc public protocol SBUChannelInfoHeaderViewDelegate {
-    @objc optional func didSelectChannelInfo()
-    @objc optional func didSelectChannelMembers()
-    @objc optional func didSelectChannelParticipants()
+public protocol SBUChannelInfoHeaderViewDelegate: AnyObject {
+    func didSelectChannelInfo()
+    func didSelectChannelMembers()
+    func didSelectChannelParticipants()
 }
 
+extension SBUChannelInfoHeaderViewDelegate {
+    public func didSelectChannelInfo() { }
+    public func didSelectChannelMembers() { }
+    public func didSelectChannelParticipants() { }
+}
 
-@objcMembers
-public class SBUChannelInfoHeaderView: UIView {
+/// A view contains a channel information such as cover image, channel name and info button.
+public class SBUChannelInfoHeaderView: SBUView {
     // MARK: - Public
+    
+    /// The channel cover image view.
     public lazy var coverImage = SBUCoverImageView()
+    
+    /// The label represents the channel's name
     public lazy var titleLabel = UILabel()
-    /// - Note: To update value with *open* channel description, please set `SBUOpenChannelViewController.channelDescription`
+    
+    /// The label that shows a description for the channel
+    /// - NOTE: To update value with *open* channel description, please set `SBUOpenChannelViewController.channelDescription`
     public lazy var descriptionLabel = UILabel()
+    
+    /// The button that shows channel information.
     public lazy var infoButton: UIButton? = UIButton()
     
+    /// The channel object.
     public private(set) var channel: SBDBaseChannel?
     
     weak var delegate: SBUChannelInfoHeaderViewDelegate? = nil
@@ -34,6 +48,8 @@ public class SBUChannelInfoHeaderView: UIView {
     
     @SBUThemeWrapper(theme: SBUTheme.componentTheme)
     var theme: SBUComponentTheme
+    
+    /// The object that is used as theme in overlay mode. The theme is type of `SBUComponentTheme`.
     @SBUThemeWrapper(theme: SBUTheme.overlayTheme.componentTheme, setToDefault: true)
     public var overlayTheme: SBUComponentTheme
     
@@ -46,28 +62,27 @@ public class SBUChannelInfoHeaderView: UIView {
     
     
     // MARK: - Life cycle
+    
+    /// Initializes `SBUChannelInfoHeaderView` with the `delegate`.
+    /// - Parameter delegate: The object that acts as the delegate of the channel info header view. The delegate must adopt the `SBUChannelInfoHeaderViewDelegate` protocol.
     init(delegate: SBUChannelInfoHeaderViewDelegate?) {
-        super.init(frame: .zero)
-        
         self.delegate = delegate
-        
-        self.setupViews()
-        self.setupAutolayout()
+
+        super.init(frame: .zero)
     }
     
     override public init(frame: CGRect) {
         super.init(frame: frame)
-        
-        self.setupViews()
-        self.setupAutolayout()
     }
 
     @available(*, unavailable, renamed: "SBUChannelInfoHeaderView()")
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
+        fatalError()
     }
 
-    func setupViews() {
+    public override func setupViews() {
+        super.setupViews()
+        
         self.coverImage.clipsToBounds = true
         
         self.titleLabel.textAlignment = .left
@@ -89,7 +104,9 @@ public class SBUChannelInfoHeaderView: UIView {
         self.addSubview(self.lineView)
     }
     
-    func setupAutolayout() {
+    public override func setupLayouts() {
+        super.setupLayouts()
+        
         self.coverImage.sbu_constraint(equalTo: self, leading: 12)
         self.coverImage.sbu_constraint(width: coverImageSize, height: coverImageSize)
         self.coverImage.sbu_constraint(equalTo: self, centerY: 0)
@@ -117,7 +134,9 @@ public class SBUChannelInfoHeaderView: UIView {
         self.lineView.sbu_constraint(height: 0.5)
     }
     
-    func setupStyles() {
+    public override func setupStyles() {
+        super.setupStyles()
+        
         let theme = self.isOverlay ? self.overlayTheme : self.theme
         
         self.titleLabel.font = theme.titleFont
@@ -137,7 +156,7 @@ public class SBUChannelInfoHeaderView: UIView {
         let theme = self.isOverlay ? self.overlayTheme : self.theme
         
         if let channel = self.channel as? SBDOpenChannel {
-            guard let userId = SBUGlobals.CurrentUser?.userId else { return }
+            guard let userId = SBUGlobals.currentUser?.userId else { return }
             let isOperator = channel.isOperator(withUserId: userId)
             let iconImage = isOperator
                 ? SBUIconSetType.iconInfo.image(
@@ -172,8 +191,6 @@ public class SBUChannelInfoHeaderView: UIView {
         self.coverImage.layer.cornerRadius = coverImageSize/2
         self.coverImage.layer.borderColor = UIColor.clear.cgColor
         self.coverImage.layer.borderWidth = 1
-        
-        self.setupStyles()
     }
 
     // MARK: - Common
@@ -198,7 +215,7 @@ public class SBUChannelInfoHeaderView: UIView {
         
         self.setupInfoButtonStyle()
         if let channel = self.channel as? SBDOpenChannel {
-            guard let userId = SBUGlobals.CurrentUser?.userId else { return }
+            guard let userId = SBUGlobals.currentUser?.userId else { return }
             let isOperator = channel.isOperator(withUserId: userId)
             self.infoButton?.addTarget(
                 self,
@@ -245,15 +262,18 @@ public class SBUChannelInfoHeaderView: UIView {
     
     
     // MARK: - Action
+    @objc
     public func onClickChannelInfo() {
-        self.delegate?.didSelectChannelInfo?()
+        self.delegate?.didSelectChannelInfo()
     }
     
+    @objc
     public func onClickChannelMembers() {
-        self.delegate?.didSelectChannelMembers?()
+        self.delegate?.didSelectChannelMembers()
     }
     
+    @objc
     public func onClickChannelParticipants() {
-        self.delegate?.didSelectChannelParticipants?()
+        self.delegate?.didSelectChannelParticipants()
     }
 }

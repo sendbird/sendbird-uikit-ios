@@ -1,12 +1,16 @@
 //
 //  SBUSelectableStackView.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Wooyoung Chung on 7/8/20.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
 //
 
 import UIKit
+
+protocol Selectable {
+    var isSelected: Bool { get set }
+}
 
 public class SBUSelectableStackView: SBUView, Selectable {
     // MARK: Public properties
@@ -39,24 +43,29 @@ public class SBUSelectableStackView: SBUView, Selectable {
     // MARK: SBUView
     public override init() {
         super.init()
-        self.setupStyles()
     }
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        self.setupStyles()
     }
     
+
     // MARK: SBUView Life Cycle
     public override func setupViews() {
+        super.setupViews()
+        
         self.addSubview(self.stackView)
     }
     
-    public override func setupAutolayout() {
+    public override func setupLayouts() {
+        super.setupLayouts()
+        
         self.stackView.setConstraint(from: self, left: 0, right: 0, top: 0, bottom: 0)
     }
     
     public override func setupStyles() {
+        super.setupStyles()
+        
         switch self.position {
         case .left:
             self.backgroundColor = self.isSelected

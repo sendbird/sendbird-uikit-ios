@@ -1,6 +1,6 @@
 //
 //  SBUMessageWebView.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Wooyoung Chung on 7/9/20.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -53,15 +53,19 @@ class SBUMessageWebView: UIStackView, SBUViewLifeCycle {
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.setupViews()
-        self.setupStyles()
-        self.setupAutolayout()
+        self.setupLayouts()
     }
     
     required init(coder: NSCoder) {
         super.init(coder: coder)
         self.setupViews()
+        self.setupLayouts()
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
         self.setupStyles()
-        self.setupAutolayout()
     }
     
     func setupViews() {
@@ -76,7 +80,7 @@ class SBUMessageWebView: UIStackView, SBUViewLifeCycle {
         ])
     }
     
-    func setupAutolayout() {
+    func setupLayouts() {
         self.translatesAutoresizingMaskIntoConstraints = false
         let imageHeightConstraint = self.imageView.heightAnchor
             .constraint(equalToConstant: Metric.imageHeight)
@@ -102,7 +106,11 @@ class SBUMessageWebView: UIStackView, SBUViewLifeCycle {
         )
     }
     
+    func updateLayouts() { }
+    
     func setupStyles() { }
+    
+    func updateStyles() { }
     
     func setupActions() { }
 

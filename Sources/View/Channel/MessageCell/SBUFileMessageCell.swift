@@ -1,6 +1,6 @@
 //
 //  SBUFileMessageCell.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Harry Kim on 2020/02/20.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -9,7 +9,7 @@
 import UIKit
 import SendBirdSDK
 
-@objcMembers
+
 @IBDesignable
 open class SBUFileMessageCell: SBUContentBaseMessageCell {
     
@@ -19,7 +19,7 @@ open class SBUFileMessageCell: SBUContentBaseMessageCell {
     }
     
     // MARK: - Private property
-    public lazy var baseFileContentView: SBUBaseFileContentView = {
+    lazy var baseFileContentView: SBUBaseFileContentView = {
         let fileView = SBUBaseFileContentView()
         return fileView
     }()

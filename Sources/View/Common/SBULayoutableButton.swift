@@ -1,6 +1,6 @@
 //
 //  SBULayoutableButton.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 2020/07/21.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -9,7 +9,7 @@
 import UIKit
 
 // https://gist.github.com/gbitaudeau/6540847de8f5ee9f2e0393a00d2cb11e
-class SBULayoutableButton: UIButton {
+public class SBULayoutableButton: UIButton {
     enum LabelAlignment : Int {
         case right, left, under, top
     }
@@ -40,7 +40,7 @@ class SBULayoutableButton: UIButton {
     
     var extraContentEdgeInsets:UIEdgeInsets = UIEdgeInsets.zero
     
-    override var contentEdgeInsets: UIEdgeInsets {
+    public override var contentEdgeInsets: UIEdgeInsets {
         get {
             return super.contentEdgeInsets
         }
@@ -52,7 +52,7 @@ class SBULayoutableButton: UIButton {
     
     var extraImageEdgeInsets:UIEdgeInsets = UIEdgeInsets.zero
     
-    override var imageEdgeInsets: UIEdgeInsets {
+    public override var imageEdgeInsets: UIEdgeInsets {
         get {
             return super.imageEdgeInsets
         }
@@ -64,7 +64,7 @@ class SBULayoutableButton: UIButton {
     
     var extraTitleEdgeInsets:UIEdgeInsets = UIEdgeInsets.zero
     
-    override var titleEdgeInsets: UIEdgeInsets {
+    public override var titleEdgeInsets: UIEdgeInsets {
         get {
             return super.titleEdgeInsets
         }
@@ -108,7 +108,7 @@ class SBULayoutableButton: UIButton {
         self.contentEdgeInsets = super.contentEdgeInsets
     }
     
-    override func layoutSubviews() {
+    public override func layoutSubviews() {
         if let imageSize = self.imageView?.image?.size,
             let font = self.titleLabel?.font,
             let textSize = self.titleLabel?.attributedText?.size()

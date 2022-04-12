@@ -1,6 +1,6 @@
 //
 //  SBUBottomSheetController.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Harry Kim on 2020/04/26.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -169,13 +169,15 @@ class SBUBottomSheetController: UIPresentationController {
         self.sendToMiddle()
     }
 
-    @objc func dismiss() {
+    @objc
+    func dismiss() {
         self.currentSnapPoint = .close
         self.bottomSheetDelegate?.bottomSheet(moveTo: self.currentSnapPoint)
         self.presentedViewController.dismiss(animated: true, completion: nil)
     }
 
-    @objc func drag(_ gesture:UIPanGestureRecognizer) {
+    @objc
+    func drag(_ gesture:UIPanGestureRecognizer) {
 
         guard let presenterView = self.containerView else { return }
         guard let presentedView = self.presentedView else { return }

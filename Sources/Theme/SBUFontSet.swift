@@ -1,6 +1,6 @@
 //
 //  SBUFontSet.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Harry Kim on 2020/02/05.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -8,8 +8,8 @@
 
 import UIKit
 
-@objcMembers
-public class SBUFontSet: NSObject {
+
+public class SBUFontSet {
     // MARK: - H
     /// Bold, 18pt
     public static var h1 = UIFont.systemFont(ofSize: 18.0, weight: .bold)

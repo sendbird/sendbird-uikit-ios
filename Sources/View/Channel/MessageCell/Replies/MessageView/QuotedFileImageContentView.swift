@@ -1,6 +1,6 @@
 //
 //  QuotedFileImageContentView.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Jaesung Lee on 2021/07/29.
 //  Copyright © 2021 Sendbird, Inc. All rights reserved.
@@ -50,8 +50,8 @@ class QuotedFileImageContentView: SBUView {
         self.addSubview(self.iconImageView)
     }
     
-    override func setupAutolayout() {
-        super.setupAutolayout()
+    override func setupLayouts() {
+        super.setupLayouts()
         
         self.imageView
             .setConstraint(

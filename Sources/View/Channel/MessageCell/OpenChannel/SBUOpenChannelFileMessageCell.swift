@@ -1,6 +1,6 @@
 //
 //  SBUOpenChannelFileMessageCell.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 2020/10/27.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -9,7 +9,7 @@
 import UIKit
 import SendBirdSDK
 
-@objcMembers @IBDesignable
+ @IBDesignable
 open class SBUOpenChannelFileMessageCell: SBUOpenChannelContentBaseMessageCell {
     
     // MARK: - Public property
@@ -19,7 +19,7 @@ open class SBUOpenChannelFileMessageCell: SBUOpenChannelContentBaseMessageCell {
     
     
     // MARK: - Private property
-    public lazy var baseFileContentView: SBUBaseFileContentView = {
+    private lazy var baseFileContentView: SBUBaseFileContentView = {
         let fileView = SBUBaseFileContentView()
         return fileView
     }()
@@ -36,8 +36,8 @@ open class SBUOpenChannelFileMessageCell: SBUOpenChannelContentBaseMessageCell {
         }
     }
 
-    open override func setupAutolayout() {
-        super.setupAutolayout()
+    open override func setupLayouts() {
+        super.setupLayouts()
         
         self.mainContainerView.sbu_constraint_lessThan(width: SBUConstant.openChannelThumbnailSize.width)
         

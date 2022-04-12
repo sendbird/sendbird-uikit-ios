@@ -1,6 +1,6 @@
 //
 //  SBUMessageStateView.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 2020/10/27.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -9,8 +9,8 @@
 import UIKit
 import SendBirdSDK
 
-@objcMembers
-open class SBUMessageStateViewParams: NSObject {
+
+open class SBUMessageStateViewParams {
     /// The timestamp of message.
     public let timestamp: Int64
     /// The sending state of message.
@@ -46,7 +46,7 @@ open class SBUMessageStateViewParams: NSObject {
     }
 }
 
-@objcMembers
+
 open class SBUMessageStateView: SBUView {
     // MARK: Public properties (UI)
     
@@ -126,8 +126,8 @@ open class SBUMessageStateView: SBUView {
         ])
     }
     
-    open override func setupAutolayout() {
-        super.setupAutolayout()
+    open override func setupLayouts() {
+        super.setupLayouts()
         
         let timeLabelWidth = self.timeLabelCustomSize?.width ?? self.timeLabelWidth
         let timeLabelHeight = self.timeLabelCustomSize?.height ?? self.timeLabelHeight
@@ -218,7 +218,7 @@ open class SBUMessageStateView: SBUView {
         }
         
         guard !self.stateImageView.isHidden else { return }
-        stateImageView.layer.removeAnimation(forKey: SBUAnimation.Key.spin.rawValue)
+        stateImageView.layer.removeAnimation(forKey: SBUAnimation.Key.spin.identifier)
         
         let stateImage: UIImage?
         switch self.sendingState {
@@ -235,7 +235,7 @@ open class SBUMessageStateView: SBUView {
                 rotation.toValue = 2 * Double.pi
                 rotation.duration = 1.1
                 rotation.repeatCount = Float.infinity
-                stateImageView.layer.add(rotation, forKey: SBUAnimation.Key.spin.rawValue)
+                stateImageView.layer.add(rotation, forKey: SBUAnimation.Key.spin.identifier)
                 
             case .failed, .canceled:
                 stateImage = SBUIconSetType.iconError.image(
@@ -275,7 +275,7 @@ open class SBUMessageStateView: SBUView {
     private func willEnterForeground() {
         guard sendingState == .pending else { return }
      
-        stateImageView.layer.removeAnimation(forKey: SBUAnimation.Key.spin.rawValue)
+        stateImageView.layer.removeAnimation(forKey: SBUAnimation.Key.spin.identifier)
         
         let rotation = CABasicAnimation(keyPath: "transform.rotation")
         rotation.fromValue = 0
@@ -283,7 +283,7 @@ open class SBUMessageStateView: SBUView {
         rotation.duration = 1.1
         rotation.repeatCount = Float.infinity
         
-        stateImageView.layer.add(rotation, forKey: SBUAnimation.Key.spin.rawValue)
+        stateImageView.layer.add(rotation, forKey: SBUAnimation.Key.spin.identifier)
     }
     
     /// Configures views with message information.

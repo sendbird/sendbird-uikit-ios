@@ -1,6 +1,6 @@
 //
 //  SBUMenuViewController.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Harry Kim on 2020/04/26.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -53,9 +53,30 @@ class SBUMenuViewController: SBUBaseViewController, UITableViewDelegate, UITable
         super.init(nibName: nil, bundle: nil)
     }
 
-    override func loadView() {
-        super.loadView()
-        // autolayout
+    override func viewDidLayoutSubviews() {
+        self.updateLayouts()
+        super.viewDidLayoutSubviews()
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        if let bottomSheet = self.presentationController as? SBUBottomSheetController {
+
+            bottomSheet.isEnableTop = false
+            let window = UIApplication.shared.currentWindow
+            let bottomPadding = window?.safeAreaInsets.bottom ?? 0
+            bottomSheet.contentHeight = tableView.contentSize.height + bottomPadding
+        }
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.dismissHandler?()
+    }
+    
+    
+    // MARK: - Sendbird UIKit Life cycle
+    override func setupViews() {
         self.view.addSubview(self.tableView)
 
         // tableView
@@ -91,17 +112,9 @@ class SBUMenuViewController: SBUBaseViewController, UITableViewDelegate, UITable
             self.collectionView.showsHorizontalScrollIndicator = false
             self.collectionView.backgroundColor = .clear
         }
-
-        // autolayout
-        self.setupAutolayout()
-
-        // Styles
-        self.setupStyles()
     }
 
-
-    /// This function handles the initialization of autolayouts.
-    override func setupAutolayout() {
+    override func setupLayouts() {
         self.tableView.setConstraint(from: self.view, left: 0, right: 0, top: 0, bottom: 0)
         self.tableView.layoutIfNeeded()
 
@@ -115,13 +128,8 @@ class SBUMenuViewController: SBUBaseViewController, UITableViewDelegate, UITable
             )
         }
     }
-
-    /// This function handles the initialization of styles.
-    override func setupStyles() {
-        self.view.backgroundColor = theme.backgroundColor
-    }
-
-    override func viewDidLayoutSubviews() {
+    
+    override func updateLayouts() {
         super.viewDidLayoutSubviews()
         let itemCount: CGFloat = CGFloat(
             emojiList.count < maxEmojiOneLine
@@ -138,22 +146,12 @@ class SBUMenuViewController: SBUBaseViewController, UITableViewDelegate, UITable
             self.layout.minimumLineSpacing = space
         }
     }
+    
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        if let bottomSheet = self.presentationController as? SBUBottomSheetController {
-
-            bottomSheet.isEnableTop = false
-            let window = UIApplication.shared.currentWindow
-            let bottomPadding = window?.safeAreaInsets.bottom ?? 0
-            bottomSheet.contentHeight = tableView.contentSize.height + bottomPadding
-        }
+    override func setupStyles() {
+        self.view.backgroundColor = theme.backgroundColor
     }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        self.dismissHandler?()
-    }
+    
 
     // MARK: - UITableView relations
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -220,7 +218,7 @@ class SBUMenuViewController: SBUBaseViewController, UITableViewDelegate, UITable
         let emoji = emojiList[indexPath.row]
         cell.configure(type: .messageMenu, url: emoji.url)
 
-        guard let currentUesr = SBUGlobals.CurrentUser else { return cell }
+        guard let currentUesr = SBUGlobals.currentUser else { return cell }
         let didSelect = message.reactions
             .first { $0.key == emoji.key }?.userIds
             .contains(currentUesr.userId) ?? false
@@ -238,7 +236,7 @@ class SBUMenuViewController: SBUBaseViewController, UITableViewDelegate, UITable
             return
         }
 
-        guard let currentUesr = SBUGlobals.CurrentUser else {
+        guard let currentUesr = SBUGlobals.currentUser else {
             self.dismiss(animated: true); return
         }
 

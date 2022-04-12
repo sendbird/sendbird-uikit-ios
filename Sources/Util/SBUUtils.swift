@@ -1,6 +1,6 @@
 //
 //  SBUUtils.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 26/02/2020.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -14,13 +14,12 @@ private let kDefaultCoverUrl = "static.sendbird.com/sample/cover"
 private let kDefaultGroupChannelName = "Group Channel"
 private let kDefaultOpenChannelName = "Open Channel"
 
-@objcMembers
-public class SBUUtils: NSObject {
+
+public class SBUUtils {
     
     /// This function gets the message file type of the file message.
     /// - Parameter fileMessage: `SBDFileMessage` object
     /// - Returns: `MessageFileType`
-    @objc(getFileTypeByFileMessage:)
     public static func getFileType(by fileMessage: SBDFileMessage) -> MessageFileType {
         return getFileType(by: fileMessage.type)
     }
@@ -28,7 +27,6 @@ public class SBUUtils: NSObject {
     /// This function gets the message file type string as the type.
     /// - Parameter type: File type string
     /// - Returns: `MessageFileType`
-    @objc(getFileTypeByType:)
     public static func getFileType(by type: String) -> MessageFileType {
         let type = type.lowercased()
         
@@ -57,7 +55,7 @@ public class SBUUtils: NSObject {
         guard let members = channel.members as? [SBDUser] else { return channel.name }
         let users = members
             .sbu_convertUserList()
-            .filter { $0.userId != SBUGlobals.CurrentUser?.userId }
+            .filter { $0.userId != SBUGlobals.currentUser?.userId }
 
         guard !users.isEmpty else { return SBUStringSet.Channel_Name_No_Members}
         let userNicknames = users.sbu_getUserNicknames()
@@ -89,7 +87,7 @@ public class SBUUtils: NSObject {
     ///   - channel: `SBDGroupChannel` object
     ///   - message: `SBDBaseMessage` object
     /// - Returns: `SBUMessageReceiptState`
-    @available(*, deprecated, renamed: "getReceiptStateIfExists") // 2.0.5
+    @available(*, deprecated, renamed: "getReceiptState(of:in:)") // 2.0.5
     public static func getReceiptState(channel: SBDGroupChannel,
                                        message: SBDBaseMessage) -> SBUMessageReceiptState {
         Self.getReceiptState(of: message, in: channel)
@@ -153,7 +151,7 @@ public class SBUUtils: NSObject {
     /// - Parameter channelName: Channel name string
     /// - Parameter type: Channel type
     /// - Returns: If channel name is valid, return `true`.
-    public static func isValid(channelName: String, type: ChannelType = .group) -> Bool {
+    public static func isValid(channelName: String, type: SBDChannelType = .group) -> Bool {
         var prefixString = kDefaultGroupChannelName
         
         if type == .open {

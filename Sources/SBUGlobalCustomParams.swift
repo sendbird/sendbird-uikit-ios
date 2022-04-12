@@ -1,6 +1,6 @@
 //
 //  SBUGlobalCustomParams.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 2020/09/09.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -9,8 +9,8 @@
 import UIKit
 import SendBirdSDK
 
-@objcMembers
-public class SBUGlobalCustomParams: NSObject {
+
+public class SBUGlobalCustomParams {
     
     /// This is a builder that allows you to predefined the global `SBDGroupChannelParams` processing to be used when creating a channel.
     ///

@@ -1,6 +1,6 @@
 //
 //  SBUQuotedUserMessageView.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Jaesung Lee on 2021/07/28.
 //  Copyright © 2021 Sendbird, Inc. All rights reserved.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-@objcMembers
+
 open class SBUQuotedUserMessageView: SBUQuotedBaseMessageView {
     /// The label displaying quoted message text.
     /// The limit of lines is 2.
@@ -31,7 +31,7 @@ open class SBUQuotedUserMessageView: SBUQuotedBaseMessageView {
         ])
     }
     
-    open override func setupAutolayout() {
+    open override func setupLayouts() {
         self.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             self.quotedMessageLabel.widthAnchor.constraint(lessThanOrEqualToConstant: SBUConstant.messageCellMaxWidth)
@@ -41,7 +41,7 @@ open class SBUQuotedUserMessageView: SBUQuotedBaseMessageView {
                 from: self.mainContainerView,
                 leading: 12, trailing: -12, top: 6, bottom: 12
             )
-        super.setupAutolayout()
+        super.setupLayouts()
     }
     
     open override func setupStyles() {

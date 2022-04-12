@@ -1,6 +1,6 @@
 //
 //  SBUQuotedBaseMessageViewParams.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Jaesung Lee on 2021/07/21.
 //  Copyright © 2021 Sendbird, Inc. All rights reserved.
@@ -9,8 +9,8 @@
 import UIKit
 import SendBirdSDK
 
-@objcMembers
-public class SBUQuotedBaseMessageViewParams: NSObject {
+
+public class SBUQuotedBaseMessageViewParams {
     // MARK: Public
     /// The ID of the quoted message.
     /// - Since: 2.2.0
@@ -79,7 +79,7 @@ public class SBUQuotedBaseMessageViewParams: NSObject {
         self.messageId = message.parentMessageId
         self.text = message.parent?.message ?? ""
         if let quotedMessageSender = message.parent?.sender {
-            let isRepliedToMe = quotedMessageSender.userId == SBUGlobals.CurrentUser?.userId
+            let isRepliedToMe = quotedMessageSender.userId == SBUGlobals.currentUser?.userId
             self.quotedMessageNickname = isRepliedToMe
             ? SBUStringSet.Message_You
             : SBUUser(user: quotedMessageSender).refinedNickname()
@@ -88,7 +88,7 @@ public class SBUQuotedBaseMessageViewParams: NSObject {
         }
         
         if let replier = message.sender {
-            let isRepliedByMe = replier.userId == SBUGlobals.CurrentUser?.userId
+            let isRepliedByMe = replier.userId == SBUGlobals.currentUser?.userId
             self.replierNickname = isRepliedByMe
             ? SBUStringSet.Message_You
             : SBUUser(user: replier).refinedNickname()
@@ -109,7 +109,7 @@ public class SBUQuotedBaseMessageViewParams: NSObject {
     }
     
     // MARK: Test model
-    init(messageId: Int64, messagePosition: MessagePosition, quotedMessageNickname: String, replierNickname: String, text: String, usingQuotedMessage: Bool = true) {
+    public init(messageId: Int64, messagePosition: MessagePosition, quotedMessageNickname: String, replierNickname: String, text: String, usingQuotedMessage: Bool = true) {
         self.messageId = messageId
         self.messagePosition = messagePosition
         self.quotedMessageNickname = quotedMessageNickname

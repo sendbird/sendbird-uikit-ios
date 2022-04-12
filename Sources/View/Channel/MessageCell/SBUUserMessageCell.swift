@@ -1,6 +1,6 @@
 //
 //  SBUUserMessageCell.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Harry Kim on 2020/02/20.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -9,7 +9,7 @@
 import UIKit
 import SendBirdSDK
 
-@objcMembers @IBDesignable
+ @IBDesignable
 open class SBUUserMessageCell: SBUContentBaseMessageCell {
 
     // MARK: - Public property
@@ -53,8 +53,8 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell {
         ])
     }
     
-    open override func setupAutolayout() {
-        super.setupAutolayout()
+    open override func setupLayouts() {
+        super.setupLayouts()
     }
     
     open override func setupActions() {
@@ -163,7 +163,7 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell {
                         groupPosition: MessageGroupPosition,
                         withTextView: Bool) {
         guard let userMessage = message as? SBDUserMessage else {
-            // TODO: error
+            SBULog.error("The message is not a type of SBDUserMessage")
             return
         }
 
@@ -202,7 +202,8 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell {
         self.additionContainerView.isSelected = selected
     }
 
-    @objc func onTapWebview(sender: UITapGestureRecognizer) {
+    @objc
+    func onTapWebview(sender: UITapGestureRecognizer) {
         guard
             let ogMetaData = self.userMessage?.ogMetaData,
             let urlString = ogMetaData.url,

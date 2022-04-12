@@ -1,6 +1,6 @@
 //
 //  SBUBaseMessageCellParams.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Jaesung Lee on 2021/07/19.
 //  Copyright © 2021 Sendbird, Inc. All rights reserved.
@@ -8,8 +8,8 @@
 
 import SendBirdSDK
 
-@objcMembers
-public class SBUBaseMessageCellParams: NSObject {
+
+public class SBUBaseMessageCellParams {
     /// The message.
     public let message: SBDBaseMessage
     
@@ -27,7 +27,7 @@ public class SBUBaseMessageCellParams: NSObject {
     
     /// If `true` when `SBUGloabls.ReplyTypeToUse` is `.quoteReply` and the message has the parent message.
     public var usingQuotedMessage: Bool {
-        SBUGlobals.ReplyTypeToUse == .quoteReply && message.parent != nil
+        SBUGlobals.replyType == .quoteReply && message.parent != nil
     }
     
     /**
@@ -42,10 +42,8 @@ public class SBUBaseMessageCellParams: NSObject {
         self.messagePosition = messagePosition
         self.receiptState = receiptState
         
-        self.groupPosition = SBUGlobals.ReplyTypeToUse == .quoteReply && message.parent != nil
+        self.groupPosition = SBUGlobals.replyType == .quoteReply && message.parent != nil
             ? .none
             : groupPosition
-        
-        super.init()
     }
 }

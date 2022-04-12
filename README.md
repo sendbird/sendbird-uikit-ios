@@ -1,10 +1,14 @@
 # [Sendbird](https://sendbird.com) UIKit for iOS
 
 [![Platform](https://img.shields.io/badge/platform-iOS-orange.svg)](https://cocoapods.org/pods/SendBirdUIKit)
-[![Languages](https://img.shields.io/badge/language-Objective--C%20%7C%20Swift-orange.svg)](https://github.com/sendbird/sendbird-uikit-ios)
+[![Languages](https://img.shields.io/badge/language-Swift-orange.svg)](https://github.com/sendbird/sendbird-uikit-ios)
 [![CocoaPods](https://img.shields.io/badge/CocoaPods-compatible-green.svg)](https://cocoapods.org/pods/SendBirdUIKit)
-[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
-[![Commercial License](https://img.shields.io/badge/license-Commercial-brightgreen.svg)](https://github.com/sendbird/sendbird-uikit-ios/blob/master/LICENSE.md)
+[![Swift Package Manager](https://img.shields.io/badge/SPM-compatible-green.svg)](https://github.com/sendbird/sendbird-uikit-ios-spm)
+[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-green.svg?style=flat)](https://github.com/Carthage/Carthage)
+[![Commercial License](https://img.shields.io/badge/license-Commercial-green.svg)](https://github.com/sendbird/sendbird-uikit-ios/blob/master/LICENSE.md)
+[![Version](https://img.shields.io/badge/version-3.0.0--beta-informational)](https://cocoapods.org/pods/SendBirdUIKit)
+
+We are introducing a new version of the Sendbird Chat UIKit. Version 3 features a new modular architecture with more granular components that give you enhanced flexibility to customize your web and mobile apps. Check out our [migration guides](/Migration_guide.md) and download our [samples](/Sample)
 
 ## Table of contents
 
@@ -50,8 +54,8 @@ This section shows the prerequisites you need to check to use Sendbird UIKit for
 The minimum requirements for Sendbird UIKit for iOS are:
 
 - iOS 11+
-- Swift 5.0+ / Objective-C
-- Sendbird Chat SDK for iOS 3.1.1+
+- Swift 5.0+
+- Sendbird Chat SDK for iOS 3.1.12+
 
 <br />
 
@@ -68,7 +72,7 @@ Our sample app has all the core features of Sendbird UIKit for iOS. Download the
 
 ### Create a project
 
-You can get started by creating a project. Sendbird UIKit supports both `Objective-c` and `Swift`, so you can create and work on a project in the language you want to develop with.
+You can get started by creating a project. Sendbird UIKit support `Swift`, so you can create and work on a project in the language you want to develop with.
 
 ![Create a project](https://static.sendbird.com/docs/uikit/ios/getting-started-01_20200416.png)
 
@@ -77,7 +81,7 @@ You can get started by creating a project. Sendbird UIKit supports both `Objecti
 
 UIKit for iOS can be installed through either [`CocoaPods`](https://cocoapods.org/), [`Carthage`](https://github.com/Carthage/Carthage) or [`Swift Package Manager`](https://swift.org/package-manager/): 
 
-> Note: Sendbird UIKit for iOS is Sendbird Chat SDK-dependent. The minimum requirement of the Chat SDK for iOS is 3.1.1 or higher.
+> Note: Sendbird UIKit for iOS is Sendbird Chat SDK-dependent. The minimum requirement of the Chat SDK for iOS is 3.1.2 or higher.
 
 
 #### - CocoaPods
@@ -108,7 +112,7 @@ $ pod update
 
 ```bash
 github "sendbird/sendbird-uikit-ios"
-github "sendbird/sendbird-ios-framework" == 3.1.1
+github "sendbird/sendbird-ios-framework" == 3.1.2
 ```
 
 2. Install the `SendBirdUIKit` framework through `Carthage`.
@@ -208,19 +212,6 @@ In order to use the Chat SDK's features, you must initialize the `SendBirdUIKit`
 
 Initialize the `SendBirdUIKit` instance through `AppDelegate` as below:
 
-```objectivec
-// AppDelegate.m
-@import SendBirdUIKit;
-...
-
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    ...
-    NSString *APP_ID = @"2D7B4CDB-932F-4082-9B09-A1153792DC8D";	// The ID of the Sendbird application which UIKit sample app uses..
-    [SBUMain initializeWithApplicationId:APP_ID];
-    ...
-    
-```
-
 ```swift
 // AppDelegate.swift
 
@@ -247,25 +238,6 @@ Set the `CurrentUser` for UIKit through the `AppDelegate` as below:
 
 > **Note**: Even if you don’t use the `AppDelegate`, you should register user information before launching a chat service.
  
-```objectivec
-// AppDelegate.m
-
-@import SendBirdUIKit;
-...
-
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    ...
-    
-    // Case 1: USER_ID only
-    [SBUGlobals setCurrentUser:[[SBUUser alloc] initWithUserId:{USER_ID} nickname:nil profileUrl:nil]];
-    
-    // Case 2: Specify all fields
-    [SBUGlobals setCurrentUser:[[SBUUser alloc] initWithUserId:{USER_ID} nickname:{(opt)NICKNAME} profileUrl:{(opt)PROFILE_URL}]];
-    ...
-
-}
-```
-
 ```swift
 // AppDelegate.swift
 
@@ -293,17 +265,6 @@ UIKit allows you to create a channel specifically for 1-on-1 chat and to list 1-
 
 Implement the code below wherever you want to start UIKit.
 
-```objectivec
-@import SendBirdUIKit;
-...
-
-SBUChannelListViewController *channelListVC = [[SBUChannelListViewController alloc] init];
-UINavigationController *naviVC = [[UINavigationController alloc] initWithRootViewController:channelListVC];
-[self presentViewController:naviVC animated:YES completion:nil];
-
-...
-```
-
 ```swift
 import SendBirdUIKit
 ...
@@ -327,15 +288,6 @@ With the `SBUChannelViewController` class, you can build a channel-based chat se
 
 Use the following code to implement the chat service.
 
-```objectivec
-@import SendBirdUIKit;
-...
-
-SBUChannelViewController *channelVC = [[SBUChannelViewController alloc] initWithChannelUrl:{CHANNEL_URL}];
-UINavigationController *naviVC = [[UINavigationController alloc] initWithRootViewController:channelVC];
-[self presentViewController:naviVC animated:YES completion:nil];
-```
-
 ```swift
 import SendBirdUIKit
 ...
@@ -344,10 +296,6 @@ let vc = SBUChannelViewController(channelUrl: {CHANNEL_URL})
 let naviVC = UINavigationController(rootViewController: vc)
 present(naviVC, animated: true)
 ```
-
-#### - For Objective-C 
-
-UIKit is a `Swift`-based framework. However, If your project is in `Objective-C`, configuring just a few additional steps allows you to run the kit in your client app. Go to your Xcode project target's **Build settings** tab and then set the `ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES` to **YES**.
 
 ### Distribution setting 
 

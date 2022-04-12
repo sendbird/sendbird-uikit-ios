@@ -1,7 +1,7 @@
 
 //
 //  SBUActionSheet.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 16/02/2020.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
@@ -11,11 +11,11 @@ import UIKit
 
 public typealias SBUActionSheetHandler = () -> Void
 
-@objc public protocol SBUActionSheetDelegate: NSObjectProtocol {
+public protocol SBUActionSheetDelegate: NSObjectProtocol {
     func didSelectActionSheetItem(index: Int, identifier: Int)
 }
 
-@objcMembers
+
 public class SBUActionSheetItem: SBUCommonItem {
     var completionHandler: SBUActionSheetHandler?
     
@@ -59,14 +59,17 @@ public class SBUActionSheetItem: SBUCommonItem {
     }
 }
 
-@objcMembers
-public class SBUActionSheet: NSObject {
+
+public class SBUActionSheet {
     @SBUThemeWrapper(theme: SBUTheme.componentTheme)
     var theme: SBUComponentTheme
     
     static private let shared = SBUActionSheet()
-    private override init() {}
+    
+    private init() {}
+    
     weak var delegate: SBUActionSheetDelegate?
+    
     private var items: [SBUActionSheetItem] = []
     
     private var safeAreaInset: UIEdgeInsets {
@@ -377,7 +380,8 @@ public class SBUActionSheet: NSObject {
     }
     
     // MARK: Orientation
-    @objc func orientationChanged(_ notification: NSNotification) {
+    @objc
+    func orientationChanged(_ notification: NSNotification) {
         let currentOrientation = UIDevice.current.orientation
         
         if (prevOrientation.isPortrait && currentOrientation.isLandscape ||

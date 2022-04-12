@@ -1,6 +1,6 @@
 //
 //  Double+SBUIKit.swift
-//  SendBirdUIKit
+//  SendbirdUIKit
 //
 //  Created by Tez Park on 2020/07/27.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
