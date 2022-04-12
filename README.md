@@ -8,7 +8,7 @@
 [![Commercial License](https://img.shields.io/badge/license-Commercial-green.svg)](https://github.com/sendbird/sendbird-uikit-ios/blob/master/LICENSE.md)
 [![Version](https://img.shields.io/badge/version-3.0.0--beta-informational)](https://cocoapods.org/pods/SendBirdUIKit)
 
-We are introducing a new version of the Sendbird Chat UIKit. Version 3 features a new modular architecture with more granular components that give you enhanced flexibility to customize your web and mobile apps. Check out our [migration guides](changelogs/MIGRATION_GUIDE_V3.md) and download our [samples](/Sample)
+We are introducing a new version of the Sendbird UIKit. Version 3 features a new modular architecture with more granular components that give you enhanced flexibility to customize your web and mobile apps. Check out our [migration guides](changelogs/MIGRATION_GUIDE_V3.md) and download our [samples](/Sample)
 
 ## Table of contents
 
