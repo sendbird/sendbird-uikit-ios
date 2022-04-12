@@ -92,7 +92,7 @@ platform :ios, '11'
 use_frameworks! 
 
 target YOUR_PROJECT_TARGET do
-    pod 'SendBirdUIKit'
+    pod 'SendBirdUIKit', '3.0.0-beta'
 end
 ```
 
@@ -108,14 +108,14 @@ $ pod update
 
 #### - Carthage
 
-1. Add `SendBirdUIKit` and `SendBirdSDK` into your `Cartfile` as below:
+1. Add `SendbirdUIKit` and `SendBirdSDK` into your `Cartfile` as below:
 
 ```bash
 github "sendbird/sendbird-uikit-ios"
 github "sendbird/sendbird-ios-framework" == 3.1.2
 ```
 
-2. Install the `SendBirdUIKit` framework through `Carthage`.
+2. Install the `SendbirdUIKit` framework through `Carthage`.
 
 ```bash
 $ carthage update --use-xcframeworks
@@ -135,7 +135,7 @@ $ carthage update --use-xcframeworks
 https://github.com/sendbird/sendbird-uikit-ios-spm.git
 ```
 
-3. Select Up to Next Major rules and click the Next button to add the package.
+3. Select Up Branch to `main-beta` rules and click the Next button to add the package.
 
 #### - Handle errors caused by unknown attributes
 
@@ -156,15 +156,15 @@ When these errors happen, follow the steps below which remove the annotations by
 ![ApplyScript](https://static.sendbird.com/docs/uikit/ios/getting-started-handling-errors-03_20200623.png)
 ```bash
 # Cocoapods
-if [ -d "${PROJECT_DIR}/Pods/SendBirdUIKit" ]; then
-    find ${PROJECT_DIR}/Pods/SendBirdUIKit/SendBirdUIKit.framework/Modules/SendBirdUIKit.swiftmodule/ -type f -name '*.swiftinterface' -exec sed -i '' s/'@_inheritsConvenienceInitializers '// {} +
-    find ${PROJECT_DIR}/Pods/SendBirdUIKit/SendBirdUIKit.framework/Modules/SendBirdUIKit.swiftmodule/ -type f -name '*.swiftinterface' -exec sed -i '' s/'@_hasMissingDesignatedInitializers '// {} +
+if [ -d "${PROJECT_DIR}/Pods/SendbirdUIKit" ]; then
+    find ${PROJECT_DIR}/Pods/SendbirdUIKit/SendbirdUIKit.framework/Modules/SendbirdUIKit.swiftmodule/ -type f -name '*.swiftinterface' -exec sed -i '' s/'@_inheritsConvenienceInitializers '// {} +
+    find ${PROJECT_DIR}/Pods/SendbirdUIKit/SendbirdUIKit.framework/Modules/SendbirdUIKit.swiftmodule/ -type f -name '*.swiftinterface' -exec sed -i '' s/'@_hasMissingDesignatedInitializers '// {} +
 fi
 
 # Carthage
-if [ -d "${PROJECT_DIR}/Carthage/Build/iOS/SendBirdUIKit.framework" ]; then
-    find ${PROJECT_DIR}/Carthage/Build/iOS/SendBirdUIKit.framework/Modules/SendBirdUIKit.swiftmodule/ -type f -name '*.swiftinterface' -exec sed -i '' s/'@_inheritsConvenienceInitializers '// {} +
-    find ${PROJECT_DIR}/Carthage/Build/iOS/SendBirdUIKit.framework/Modules/SendBirdUIKit.swiftmodule/ -type f -name '*.swiftinterface' -exec sed -i '' s/'@_hasMissingDesignatedInitializers '// {} +
+if [ -d "${PROJECT_DIR}/Carthage/Build/iOS/SendbirdUIKit.framework" ]; then
+    find ${PROJECT_DIR}/Carthage/Build/iOS/SendbirdUIKit.framework/Modules/SendbirdUIKit.swiftmodule/ -type f -name '*.swiftinterface' -exec sed -i '' s/'@_inheritsConvenienceInitializers '// {} +
+    find ${PROJECT_DIR}/Carthage/Build/iOS/SendbirdUIKit.framework/Modules/SendbirdUIKit.swiftmodule/ -type f -name '*.swiftinterface' -exec sed -i '' s/'@_hasMissingDesignatedInitializers '// {} +
 fi
 ```
 
@@ -208,14 +208,14 @@ Go to your Xcode project's **Signing & Capabilities** tab. Then, click **+ Capab
 
 ### Initialize with APP_ID
 
-In order to use the Chat SDK's features, you must initialize the `SendBirdUIKit` instance with `APP_ID`. This step also initializes the Chat SDK for iOS. 
+In order to use the Chat SDK's features, you must initialize the `SendbirdUIKit` instance with `APP_ID`. This step also initializes the Chat SDK for iOS. 
 
-Initialize the `SendBirdUIKit` instance through `AppDelegate` as below:
+Initialize the `SendbirdUIKit` instance through `AppDelegate` as below:
 
 ```swift
 // AppDelegate.swift
 
-import SendBirdUIKit
+import SendbirdUIKit
 ...
 
 func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -241,23 +241,23 @@ Set the `CurrentUser` for UIKit through the `AppDelegate` as below:
 ```swift
 // AppDelegate.swift
 
-import SendBirdUIKit
+import SendbirdUIKit
 ...
 
 func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
     ...
     
     // Case 1: USER_ID only
-    SBUGlobals.CurrentUser = SBUUser(userId: {USER_ID})
+    SBUGlobals.currentUser = SBUUser(userId: {USER_ID})
     
     // Case 2: Specify all fields
-    SBUGlobals.CurrentUser = SBUUser(userId: {USER_ID}, nickname:{(opt)NICKNAME} profileUrl:{(opt)PROFILE_URL})
+    SBUGlobals.currentUser = SBUUser(userId: {USER_ID}, nickname:{(opt)NICKNAME} profileUrl:{(opt)PROFILE_URL})
     ...
 	
 }
 ```
 
-> **Note**: If the `CurrentUser` is not set in advance, there will be restrictions to your usage of UIKit.
+> **Note**: If the `currentUser` is not set in advance, there will be restrictions to your usage of UIKit.
 
 ### Channel list
 
@@ -266,7 +266,7 @@ UIKit allows you to create a channel specifically for 1-on-1 chat and to list 1-
 Implement the code below wherever you want to start UIKit.
 
 ```swift
-import SendBirdUIKit
+import SendbirdUIKit
 ...
 
 let channelListVC = SBUChannelListViewController()
@@ -289,7 +289,7 @@ With the `SBUChannelViewController` class, you can build a channel-based chat se
 Use the following code to implement the chat service.
 
 ```swift
-import SendBirdUIKit
+import SendbirdUIKit
 ...
 
 let vc = SBUChannelViewController(channelUrl: {CHANNEL_URL})
