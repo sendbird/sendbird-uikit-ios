@@ -1,10 +1,13 @@
 # [Sendbird](https://sendbird.com) UIKit for iOS
 
 [![Platform](https://img.shields.io/badge/platform-iOS-orange.svg)](https://cocoapods.org/pods/SendBirdUIKit)
-[![Languages](https://img.shields.io/badge/language-Objective--C%20%7C%20Swift-orange.svg)](https://github.com/sendbird/sendbird-uikit-ios)
+[![Languages](https://img.shields.io/badge/language-Swift-orange.svg)](https://github.com/sendbird/sendbird-uikit-ios)
 [![CocoaPods](https://img.shields.io/badge/CocoaPods-compatible-green.svg)](https://cocoapods.org/pods/SendBirdUIKit)
-[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
-[![Commercial License](https://img.shields.io/badge/license-Commercial-brightgreen.svg)](https://github.com/sendbird/sendbird-uikit-ios/blob/master/LICENSE.md)
+[![Swift Package Manager](https://img.shields.io/badge/SPM-compatible-green.svg)](https://github.com/sendbird/sendbird-uikit-ios-spm)
+[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-green.svg?style=flat)](https://github.com/Carthage/Carthage)
+[![Commercial License](https://img.shields.io/badge/license-Commercial-green.svg)](https://github.com/sendbird/sendbird-uikit-ios/blob/master/LICENSE.md)
+
+The new version of the Sendbird UIKit is now available as the beta. Compared to UIKit v2, UIKit v3 beta features a new modular architecture with more granular components that give you enhanced flexibility to customize your web and mobile apps. Check out our [migration guides](https://github.com/sendbird/sendbird-uikit-ios/blob/main-beta/changelogs/MIGRATION_GUIDE_V3.md) and go visit the [v3 branch](https://github.com/sendbird/sendbird-uikit-ios/tree/main-beta) here.
 
 ## Table of contents
 
