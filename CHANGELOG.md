@@ -1,7 +1,7 @@
 # Change Log
 
 ### v2.2.6 (Mar 28, 2022)
-* Updated chat SDK minor version to **v3.1.17**
+* Updated chat SDK minor version to **v3.1.7**
 * Added new classes to support limited photo access level.
   * Added `SBUSelectablePhotoViewController` class.
   * Added `SBUPhotoCollectionViewCell` class.
