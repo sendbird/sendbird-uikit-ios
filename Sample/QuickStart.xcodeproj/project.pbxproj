@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -59,6 +59,9 @@
 		9C037E60280432DC00059696 /* MemberListVC_Overriding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C037E2A280432DB00059696 /* MemberListVC_Overriding.swift */; };
 		9C037E61280432DC00059696 /* CreateChannelVC_Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C037E2C280432DB00059696 /* CreateChannelVC_Cell.swift */; };
 		9C037E62280432DC00059696 /* CreateChannelVC_UserList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C037E2D280432DB00059696 /* CreateChannelVC_UserList.swift */; };
+		9C3EBE2328091D2A00B5366B /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C3EBE2228091D2A00B5366B /* NotificationService.swift */; };
+		9C3EBE2728091D2A00B5366B /* NotificationService.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 9C3EBE2028091D2A00B5366B /* NotificationService.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		9C3EBE2E28091DA500B5366B /* SendBirdSDK.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C3EBE2D28091DA500B5366B /* SendBirdSDK.xcframework */; };
 		9C5DCD49242AFA7C00C41106 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C5DCD48242AFA7C00C41106 /* UserNotifications.framework */; };
 		A9574CC72805258A00CF8F79 /* SBUViewModelDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9574B8F2805258A00CF8F79 /* SBUViewModelDelegate.swift */; };
 		A9574CC82805258A00CF8F79 /* SBUGroupChannelListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9574B912805258A00CF8F79 /* SBUGroupChannelListViewModel.swift */; };
@@ -298,6 +301,30 @@
 		D5B8B6636F5A9DDC2C29723A /* libPods-QuickStart.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FB02E525C1E1DE04CD86163 /* libPods-QuickStart.a */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		9C3EBE2528091D2A00B5366B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9C777D4F241B9022006FFE25 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9C3EBE1F28091D2A00B5366B;
+			remoteInfo = NotificationService;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		9C3EBE2828091D2A00B5366B /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				9C3EBE2728091D2A00B5366B /* NotificationService.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		0FB02E525C1E1DE04CD86163 /* libPods-QuickStart.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-QuickStart.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C037DD4280432DB00059696 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -353,6 +380,11 @@
 		9C037E2A280432DB00059696 /* MemberListVC_Overriding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MemberListVC_Overriding.swift; sourceTree = "<group>"; };
 		9C037E2C280432DB00059696 /* CreateChannelVC_Cell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateChannelVC_Cell.swift; sourceTree = "<group>"; };
 		9C037E2D280432DB00059696 /* CreateChannelVC_UserList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateChannelVC_UserList.swift; sourceTree = "<group>"; };
+		9C3EBE2028091D2A00B5366B /* NotificationService.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NotificationService.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		9C3EBE2228091D2A00B5366B /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		9C3EBE2428091D2A00B5366B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9C3EBE2C28091D4200B5366B /* NotificationService.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NotificationService.entitlements; sourceTree = "<group>"; };
+		9C3EBE2D28091DA500B5366B /* SendBirdSDK.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = SendBirdSDK.xcframework; path = Pods/SendBirdSDK/Sources/SendBirdSDK.xcframework; sourceTree = "<group>"; };
 		9C5DCD48242AFA7C00C41106 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		9C5DCD4D242B0C7E00C41106 /* libicucore.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libicucore.tbd; path = usr/lib/libicucore.tbd; sourceTree = SDKROOT; };
 		9C777D57241B9022006FFE25 /* QuickStart.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QuickStart.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -597,6 +629,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		9C3EBE1D28091D2A00B5366B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9C3EBE2E28091DA500B5366B /* SendBirdSDK.xcframework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9C777D54241B9022006FFE25 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -951,11 +991,22 @@
 			path = CreateChannel;
 			sourceTree = "<group>";
 		};
+		9C3EBE2128091D2A00B5366B /* NotificationService */ = {
+			isa = PBXGroup;
+			children = (
+				9C3EBE2C28091D4200B5366B /* NotificationService.entitlements */,
+				9C3EBE2228091D2A00B5366B /* NotificationService.swift */,
+				9C3EBE2428091D2A00B5366B /* Info.plist */,
+			);
+			path = NotificationService;
+			sourceTree = "<group>";
+		};
 		9C777D4E241B9022006FFE25 = {
 			isa = PBXGroup;
 			children = (
 				A9574B8D2805258A00CF8F79 /* Sources */,
 				9C037DD3280432DB00059696 /* QuickStart */,
+				9C3EBE2128091D2A00B5366B /* NotificationService */,
 				9C777D58241B9022006FFE25 /* Products */,
 				5460078929767A6C021710D0 /* Pods */,
 				A3BC29C7BEE55436EBCAD26A /* Frameworks */,
@@ -966,6 +1017,7 @@
 			isa = PBXGroup;
 			children = (
 				9C777D57241B9022006FFE25 /* QuickStart.app */,
+				9C3EBE2028091D2A00B5366B /* NotificationService.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -973,6 +1025,7 @@
 		A3BC29C7BEE55436EBCAD26A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9C3EBE2D28091DA500B5366B /* SendBirdSDK.xcframework */,
 				9C5DCD4D242B0C7E00C41106 /* libicucore.tbd */,
 				9C5DCD48242AFA7C00C41106 /* UserNotifications.framework */,
 				C6D3DCE726141350003E6DCB /* SendBirdSDK.framework */,
@@ -1851,6 +1904,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		9C3EBE1F28091D2A00B5366B /* NotificationService */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9C3EBE2B28091D2A00B5366B /* Build configuration list for PBXNativeTarget "NotificationService" */;
+			buildPhases = (
+				9C3EBE1C28091D2A00B5366B /* Sources */,
+				9C3EBE1D28091D2A00B5366B /* Frameworks */,
+				9C3EBE1E28091D2A00B5366B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = NotificationService;
+			productName = NotificationService;
+			productReference = 9C3EBE2028091D2A00B5366B /* NotificationService.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		9C777D56241B9022006FFE25 /* QuickStart */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 9C777D6B241B9024006FFE25 /* Build configuration list for PBXNativeTarget "QuickStart" */;
@@ -1861,10 +1931,12 @@
 				9C777D55241B9022006FFE25 /* Resources */,
 				9C442672241CCE0A00FE9975 /* ShellScript */,
 				9CE0C4650CF4DC88C9978E4A /* [CP] Embed Pods Frameworks */,
+				9C3EBE2828091D2A00B5366B /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				9C3EBE2628091D2A00B5366B /* PBXTargetDependency */,
 			);
 			name = QuickStart;
 			productName = "SendBirdUIKit-Sample";
@@ -1877,10 +1949,13 @@
 		9C777D4F241B9022006FFE25 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1130;
+				LastSwiftUpdateCheck = 1330;
 				LastUpgradeCheck = 1150;
 				ORGANIZATIONNAME = "SendBird, Inc";
 				TargetAttributes = {
+					9C3EBE1F28091D2A00B5366B = {
+						CreatedOnToolsVersion = 13.3;
+					};
 					9C777D56241B9022006FFE25 = {
 						CreatedOnToolsVersion = 11.3.1;
 					};
@@ -1900,11 +1975,19 @@
 			projectRoot = "";
 			targets = (
 				9C777D56241B9022006FFE25 /* QuickStart */,
+				9C3EBE1F28091D2A00B5366B /* NotificationService */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		9C3EBE1E28091D2A00B5366B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9C777D55241B9022006FFE25 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1980,6 +2063,14 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		9C3EBE1C28091D2A00B5366B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9C3EBE2328091D2A00B5366B /* NotificationService.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9C777D53241B9022006FFE25 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2269,6 +2360,14 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		9C3EBE2628091D2A00B5366B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9C3EBE1F28091D2A00B5366B /* NotificationService */;
+			targetProxy = 9C3EBE2528091D2A00B5366B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
 		9C037DDE280432DB00059696 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
@@ -2289,6 +2388,64 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		9C3EBE2928091D2A00B5366B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_ENTITLEMENTS = NotificationService/NotificationService.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = RM4A5PXTUX;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = NotificationService/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = NotificationService;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2022 SendBird, Inc. All rights reserved.";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sendbird.uikit.sample.NotificationService;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		9C3EBE2A28091D2A00B5366B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_ENTITLEMENTS = NotificationService/NotificationService.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = RM4A5PXTUX;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = NotificationService/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = NotificationService;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2022 SendBird, Inc. All rights reserved.";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sendbird.uikit.sample.NotificationService;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		9C777D69241B9024006FFE25 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2407,6 +2564,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = B38307AD4EF5266DC1175BD5 /* Pods-QuickStart.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CODE_SIGN_ENTITLEMENTS = QuickStart/QuickStart.entitlements;
@@ -2438,6 +2596,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = DFAE16FA0084848C637A3259 /* Pods-QuickStart.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CODE_SIGN_ENTITLEMENTS = QuickStart/QuickStart.entitlements;
@@ -2468,6 +2627,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		9C3EBE2B28091D2A00B5366B /* Build configuration list for PBXNativeTarget "NotificationService" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9C3EBE2928091D2A00B5366B /* Debug */,
+				9C3EBE2A28091D2A00B5366B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		9C777D52241B9022006FFE25 /* Build configuration list for PBXProject "QuickStart" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
