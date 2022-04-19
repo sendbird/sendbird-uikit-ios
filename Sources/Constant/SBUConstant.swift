@@ -9,7 +9,7 @@
 import UIKit
 
 public class SBUConstant {
-    public static let messageCellMaxWidth: CGFloat = 270
+    public static let messageCellMaxWidth: CGFloat = 244
     public static let thumbnailSize: CGSize = .init(width: 240, height: 160)
     public static let imageSize: CGSize = .init(width: 240, height: 160)
     
