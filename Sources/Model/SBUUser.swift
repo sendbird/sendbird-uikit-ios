@@ -91,6 +91,15 @@ public class SBUUser: NSObject {
         }
     }
     
+    /// This method returns the mentioned value
+    /// - Returns: mentioned nickname
+    /// - since: 3.0.0
+    public func mentionedNickname() -> String {
+        let trigger = SBUGlobals.userMentionConfig?.trigger ?? ""
+        let refinedNickname = refinedNickname()
+        return "\(trigger)\(refinedNickname)"
+    }
+    
     public override var description: String {
         return String(
             format: "UserId:%@, Nickname:%@, ProfileUrl:%@, Operator:%d Muted:%d",
@@ -100,5 +109,22 @@ public class SBUUser: NSObject {
             self.isOperator,
             self.isMuted
         )
+    }
+    
+    /// This method converts the CoreSDK's user list to UIKit's user list.
+    /// - Parameter users: CoreSDK's user list
+    /// - Returns: UIKit's user list
+    /// - Since: 3.0.0
+    public static func convertUsers(_ users: [SBDUser]?) -> [SBUUser] {
+        var sbuUsers: [SBUUser] = []
+        
+        if let users = users {
+            
+            for user in users {
+                let sbuUser = SBUUser(user: user)
+                sbuUsers.append(sbuUser)
+            }
+        }
+        return sbuUsers
     }
 }

@@ -201,7 +201,9 @@ class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollectionVie
         }
         
         guard let currentUser = SBUGlobals.currentUser else { return cell }
-        cell.isSelected = reaction.userIds.contains(currentUser.userId)
+        DispatchQueue.main.async {
+            cell.isSelected = reaction.userIds.contains(currentUser.userId)
+        }
         return cell
     }
 

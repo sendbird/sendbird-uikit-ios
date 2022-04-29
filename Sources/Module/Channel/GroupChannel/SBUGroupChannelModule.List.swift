@@ -34,6 +34,11 @@ public protocol SBUGroupChannelModuleListDelegate: SBUBaseChannelModuleListDeleg
     /// - Parameters:
     ///   - messageCell: Message cell object
     func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didTapMoreEmojiForCell messageCell: SBUBaseMessageCell)
+    
+    /// Called when tapped the mentioned nickname in the cell.
+    /// - Parameters:
+    ///    - user: The`SBUUser` object from the tapped mention.
+    func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didTapMentionUser user: SBUUser)
 }
 
 /// Methods to get data source for list component in a group channel.
@@ -390,6 +395,7 @@ extension SBUGroupChannelModule {
             
             UIView.setAnimationsEnabled(true)
             
+            // TODO: Move to `setMessageCellGestures`?
             messageCell.userProfileTapHandler = { [weak messageCell, weak self] in
                 guard let self = self else { return }
                 guard let cell = messageCell else { return }
@@ -416,6 +422,10 @@ extension SBUGroupChannelModule {
                 self.delegate?.groupChannelModule(self, didTapMoreEmojiForCell: cell)
             }
             
+            messageCell.mentionTapHandler = { [weak self] user in
+                guard let self = self else { return }
+                self.delegate?.groupChannelModule(self, didTapMentionUser: user)
+            }
         }
         
         open override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

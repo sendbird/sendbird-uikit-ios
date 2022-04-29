@@ -82,4 +82,26 @@ public class SBUGlobals {
     /// - Since: 2.0.0
     public static var imageResizingSize: CGSize = UIScreen.main.bounds.size;
     
+    /// The configuration for user mention.
+    /// - NOTE: If `userMentionConfig` is set to `SBUUserMentionConfiguration` instance, user mention feature is enabled.
+    /// - NOTE: If `userMentionConfig` is set to `nil` instance, user mention feature is disabled.
+    /// - Since: 3.0.0
+    public static var userMentionConfig: SBUUserMentionConfiguration?
+    
+    /// The boolean value that indicates whether the user mention feature is enabled or not.
+    /// - NOTE: If set to `true`, it sets `userMentionConfig` to default value when it was `nil`.
+    /// - Since: 3.0.0
+    public static var isUserMentionEnabled: Bool {
+        get { SBUGlobals.userMentionConfig != nil }
+        set {
+            switch newValue {
+            case true:
+                if userMentionConfig == nil {
+                    SBUGlobals.userMentionConfig = .init()
+                }
+            case false:
+                SBUGlobals.userMentionConfig = nil
+            }
+        }
+    }
 }

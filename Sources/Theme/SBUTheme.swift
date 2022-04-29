@@ -376,6 +376,9 @@ public class SBUChannelCellTheme {
         theme.unreadCountTextColor = SBUColorSet.ondark01
         theme.unreadCountFont = SBUFontSet.caption1
         
+        theme.unreadMentionTextFont = SBUFontSet.h3
+        theme.unreadMentionTextColor = SBUColorSet.primary300
+        
         theme.separatorLineColor = SBUColorSet.onlight04
         return theme
     }
@@ -403,6 +406,9 @@ public class SBUChannelCellTheme {
         theme.unreadCountTextColor = SBUColorSet.onlight01
         theme.unreadCountFont = SBUFontSet.caption1
         
+        theme.unreadMentionTextFont = SBUFontSet.h3
+        theme.unreadMentionTextColor = SBUColorSet.primary200
+        
         theme.separatorLineColor = SBUColorSet.ondark04
         return theme
     }
@@ -421,6 +427,8 @@ public class SBUChannelCellTheme {
                 unreadCountBackgroundColor: UIColor = SBUColorSet.primary300,
                 unreadCountTextColor: UIColor = SBUColorSet.ondark01,
                 unreadCountFont: UIFont = SBUFontSet.caption1,
+                unreadMentionFont: UIFont = SBUFontSet.h3,
+                unreadMentionColor: UIColor = SBUColorSet.primary300,
                 separatorLineColor: UIColor = SBUColorSet.onlight04) {
         
         self.backgroundColor = backgroundColor
@@ -437,6 +445,8 @@ public class SBUChannelCellTheme {
         self.unreadCountBackgroundColor = unreadCountBackgroundColor
         self.unreadCountTextColor = unreadCountTextColor
         self.unreadCountFont = unreadCountFont
+        self.unreadMentionTextFont = unreadMentionFont
+        self.unreadMentionTextColor = unreadMentionColor
         self.separatorLineColor = separatorLineColor
     }
     
@@ -461,6 +471,9 @@ public class SBUChannelCellTheme {
     public var unreadCountBackgroundColor: UIColor
     public var unreadCountTextColor: UIColor
     public var unreadCountFont: UIFont
+    
+    public var unreadMentionTextFont: UIFont
+    public var unreadMentionTextColor: UIColor
     
     public var separatorLineColor: UIColor
     
@@ -502,6 +515,12 @@ public class SBUChannelTheme {
         theme.channelStateBannerTextColor = SBUColorSet.onlight01
         theme.channelStateBannerBackgroundColor = SBUColorSet.information
         
+        // Mention Limitation
+        theme.mentionLimitGuideTextFont = SBUFontSet.body1
+        theme.mentionLimitGuideTextColor = SBUColorSet.onlight02
+        
+        theme.separatorColor = SBUColorSet.onlight04
+        
         return theme
     }
     
@@ -533,6 +552,12 @@ public class SBUChannelTheme {
         theme.channelStateBannerFont = SBUFontSet.caption2
         theme.channelStateBannerTextColor = SBUColorSet.onlight01
         theme.channelStateBannerBackgroundColor = SBUColorSet.information
+        
+        // Mention Limitation
+        theme.mentionLimitGuideTextFont = SBUFontSet.body1
+        theme.mentionLimitGuideTextColor = SBUColorSet.ondark02
+        
+        theme.separatorColor = SBUColorSet.background500
         
         return theme
     }
@@ -566,6 +591,12 @@ public class SBUChannelTheme {
         theme.channelStateBannerTextColor = SBUColorSet.onlight01
         theme.channelStateBannerBackgroundColor = SBUColorSet.information
         
+        // Mention Limitation
+        theme.mentionLimitGuideTextFont = SBUFontSet.body1
+        theme.mentionLimitGuideTextColor = SBUColorSet.ondark02
+        
+        theme.separatorColor = SBUColorSet.background500
+        
         return theme
     }
     
@@ -585,7 +616,11 @@ public class SBUChannelTheme {
                 menuItemDisabledColor: UIColor = SBUColorSet.ondark04,
                 channelStateBannerFont: UIFont = SBUFontSet.caption2,
                 channelStateBannerTextColor: UIColor = SBUColorSet.onlight01,
-                channelStateBannerBackgroundColor: UIColor = SBUColorSet.information) {
+                channelStateBannerBackgroundColor: UIColor = SBUColorSet.information,
+                mentionLimitGuideTextFont: UIFont = SBUFontSet.body1,
+                mentionLimitGuideTextColor: UIColor = SBUColorSet.onlight02,
+                separatorColor: UIColor = SBUColorSet.onlight04
+    ) {
         
         self.statusBarStyle = statusBarStyle
         self.navigationBarTintColor = navigationBarTintColor
@@ -604,6 +639,9 @@ public class SBUChannelTheme {
         self.channelStateBannerFont = channelStateBannerFont
         self.channelStateBannerTextColor = channelStateBannerTextColor
         self.channelStateBannerBackgroundColor = channelStateBannerBackgroundColor
+        self.mentionLimitGuideTextFont = mentionLimitGuideTextFont
+        self.mentionLimitGuideTextColor = mentionLimitGuideTextColor
+        self.separatorColor = separatorColor
     }
     
     public var statusBarStyle: UIStatusBarStyle
@@ -631,6 +669,12 @@ public class SBUChannelTheme {
     public var channelStateBannerFont: UIFont
     public var channelStateBannerTextColor: UIColor
     public var channelStateBannerBackgroundColor: UIColor
+    
+    // Mention Limitation
+    public var mentionLimitGuideTextFont: UIFont
+    public var mentionLimitGuideTextColor: UIColor
+    
+    public var separatorColor: UIColor
 }
 
 // MARK: - Message Input Theme
@@ -648,6 +692,7 @@ public class SBUMessageInputTheme {
         theme.textFieldTintColor = SBUColorSet.primary300
         theme.textFieldTextColor = SBUColorSet.onlight01
         theme.textFieldBorderColor = SBUColorSet.background100
+        theme.textFieldFont = SBUFontSet.body3
         
         theme.buttonTintColor = SBUColorSet.primary300
         theme.buttonDisabledTintColor = SBUColorSet.onlight04
@@ -666,6 +711,10 @@ public class SBUMessageInputTheme {
         theme.quotedMessageTextFont = SBUFontSet.caption2
         theme.closeReplyButtonColor = SBUColorSet.onlight02
         
+        theme.mentionTextFont = SBUFontSet.body2
+        theme.mentionTextColor = SBUColorSet.onlight01
+        theme.mentionTextBackgroundColor = .clear
+        
         return theme
     }
     public static var dark: SBUMessageInputTheme {
@@ -678,6 +727,7 @@ public class SBUMessageInputTheme {
         theme.textFieldTintColor = SBUColorSet.primary200
         theme.textFieldTextColor = SBUColorSet.ondark01
         theme.textFieldBorderColor = SBUColorSet.background400
+        theme.textFieldFont = SBUFontSet.body3
         
         theme.buttonTintColor = SBUColorSet.primary200
         theme.buttonDisabledTintColor = SBUColorSet.ondark04
@@ -695,6 +745,10 @@ public class SBUMessageInputTheme {
         theme.quotedMessageTextFont = SBUFontSet.caption2
         theme.closeReplyButtonColor = SBUColorSet.ondark02
         
+        theme.mentionTextFont = SBUFontSet.body2
+        theme.mentionTextColor = SBUColorSet.ondark01
+        theme.mentionTextBackgroundColor = .clear
+        
         return theme
     }
     public static var overlay: SBUMessageInputTheme {
@@ -707,6 +761,7 @@ public class SBUMessageInputTheme {
         theme.textFieldTintColor = SBUColorSet.primary200
         theme.textFieldTextColor = SBUColorSet.ondark01
         theme.textFieldBorderColor = SBUColorSet.background400
+        theme.textFieldFont = SBUFontSet.body3
         
         theme.buttonTintColor = SBUColorSet.ondark01
         theme.buttonDisabledTintColor = SBUColorSet.background400
@@ -714,6 +769,10 @@ public class SBUMessageInputTheme {
         theme.cancelButtonFont = SBUFontSet.button2
         theme.saveButtonFont = SBUFontSet.button2
         theme.saveButtonTextColor = SBUColorSet.onlight01
+        
+        theme.mentionTextFont = SBUFontSet.body2
+        theme.mentionTextColor = SBUColorSet.ondark01
+        theme.mentionTextBackgroundColor = .clear
         
         return theme
     }
@@ -726,6 +785,7 @@ public class SBUMessageInputTheme {
                 textFieldTintColor: UIColor = SBUColorSet.primary300,
                 textFieldTextColor: UIColor = SBUColorSet.onlight01,
                 textFieldBorderColor: UIColor = SBUColorSet.background100,
+                textFieldFont: UIFont = SBUFontSet.body3,
                 buttonTintColor: UIColor = SBUColorSet.primary300,
                 buttonDisabledTintColor: UIColor = SBUColorSet.onlight04,
                 cancelButtonFont: UIFont = SBUFontSet.button2,
@@ -738,7 +798,10 @@ public class SBUMessageInputTheme {
                 replyToTextFont: UIFont = SBUFontSet.caption1,
                 quotedMessageTextColor: UIColor = SBUColorSet.onlight03,
                 quotedMessageTextFont: UIFont = SBUFontSet.caption2,
-                closeReplyButtonColor: UIColor = SBUColorSet.onlight02
+                closeReplyButtonColor: UIColor = SBUColorSet.onlight02,
+                mentionTextFont: UIFont = SBUFontSet.body2,
+                mentionTextColor: UIColor = SBUColorSet.onlight01,
+                mentionTextBackgroundColor: UIColor = .clear
                 
     ) {
         
@@ -750,6 +813,7 @@ public class SBUMessageInputTheme {
         self.textFieldTintColor = textFieldTintColor
         self.textFieldTextColor = textFieldTextColor
         self.textFieldBorderColor = textFieldBorderColor
+        self.textFieldFont = textFieldFont
         self.buttonTintColor = buttonTintColor
         self.buttonDisabledTintColor = buttonDisabledTintColor
         self.cancelButtonFont = cancelButtonFont
@@ -765,6 +829,9 @@ public class SBUMessageInputTheme {
         self.quotedMessageTextColor = quotedMessageTextColor
         self.quotedMessageTextFont = quotedMessageTextFont
         self.closeReplyButtonColor = closeReplyButtonColor
+        self.mentionTextFont = mentionTextFont
+        self.mentionTextColor = mentionTextColor
+        self.mentionTextBackgroundColor = mentionTextBackgroundColor
     }
     
     public var backgroundColor: UIColor
@@ -775,6 +842,7 @@ public class SBUMessageInputTheme {
     public var textFieldTintColor: UIColor
     public var textFieldTextColor: UIColor
     public var textFieldBorderColor: UIColor
+    public var textFieldFont: UIFont
     
     public var buttonTintColor: UIColor
     public var buttonDisabledTintColor: UIColor
@@ -783,7 +851,7 @@ public class SBUMessageInputTheme {
     public var saveButtonFont: UIFont
     public var saveButtonTextColor: UIColor
     
-    // Quoted message
+    // MARK: Quoted message
     /// The color of divider between message input view and table view of channel view.
     public var channelViewDividerColor: UIColor
     /// The background color of thumbnail image of the quoted message
@@ -800,6 +868,14 @@ public class SBUMessageInputTheme {
     public var quotedMessageTextFont: UIFont
     /// The color of the `closeReplyButton` as normal state.
     public var closeReplyButtonColor: UIColor
+    
+    // MARK: Mention
+    /// The text font of the mention.
+    public var mentionTextFont: UIFont
+    /// The text color of the mention.
+    public var mentionTextColor: UIColor
+    /// The background color of the mention.
+    public var mentionTextBackgroundColor: UIColor
 }
 
 // MARK: - Message Cell Theme
@@ -893,6 +969,13 @@ public class SBUMessageCellTheme {
         theme.repliedToTextColor = SBUColorSet.onlight03
         theme.repliedToTextFont = SBUFontSet.caption1
         
+        // Mention
+        theme.mentionTextFont = SBUFontSet.body4
+        theme.mentionLeftTextColor = SBUColorSet.onlight01
+        theme.mentionRightTextColor = SBUColorSet.ondark01
+        theme.mentionLeftTextBackgroundColor = .clear
+        theme.mentionRightTextBackgroundColor = .clear
+        
         return theme
     }
     
@@ -984,6 +1067,13 @@ public class SBUMessageCellTheme {
         theme.repliedToTextColor = SBUColorSet.ondark03
         theme.repliedToTextFont = SBUFontSet.caption1
         
+        // Mention
+        theme.mentionTextFont = SBUFontSet.body4
+        theme.mentionLeftTextColor = SBUColorSet.ondark01
+        theme.mentionRightTextColor = SBUColorSet.onlight01
+        theme.mentionLeftTextBackgroundColor = .clear
+        theme.mentionRightTextBackgroundColor = .clear
+        
         return theme
     }
     
@@ -1063,6 +1153,22 @@ public class SBUMessageCellTheme {
         
         theme.linkColor = SBUColorSet.primary200
         
+        // Thread Message
+        theme.quotedMessageBackgroundColor = SBUColorSet.background500
+        theme.quotedFileMessageThumbnailColor = SBUColorSet.ondark02
+        theme.quotedMessageTextColor = SBUColorSet.ondark03
+        theme.quotedMessageTextFont = SBUFontSet.body3
+        theme.repliedIconColor = SBUColorSet.ondark03
+        theme.repliedToTextColor = SBUColorSet.ondark03
+        theme.repliedToTextFont = SBUFontSet.caption1
+        
+        // Mention
+        theme.mentionTextFont = SBUFontSet.body4
+        theme.mentionLeftTextColor = SBUColorSet.ondark01
+        theme.mentionRightTextColor = SBUColorSet.onlight01
+        theme.mentionLeftTextBackgroundColor = .clear
+        theme.mentionRightTextBackgroundColor = .clear
+        
         return theme
     }
     
@@ -1122,7 +1228,12 @@ public class SBUMessageCellTheme {
                 quotedMessageTextFont: UIFont = SBUFontSet.body3,
                 repliedIconColor: UIColor = SBUColorSet.onlight03,
                 repliedToTextColor: UIColor = SBUColorSet.onlight03,
-                repliedToTextFont: UIFont = SBUFontSet.caption1
+                repliedToTextFont: UIFont = SBUFontSet.caption1,
+                mentionTextFont: UIFont = SBUFontSet.body4,
+                mentionLeftTextColor: UIColor = SBUColorSet.onlight01,
+                mentionRightTextColor: UIColor = SBUColorSet.ondark01,
+                mentionLeftTextBackgroundColor: UIColor = .clear,
+                mentionRightTextBackgroundColor: UIColor = .clear
     ) {
         
         self.backgroundColor = backgroundColor
@@ -1183,6 +1294,12 @@ public class SBUMessageCellTheme {
         self.repliedIconColor = repliedIconColor
         self.repliedToTextColor = repliedToTextColor
         self.repliedToTextFont = repliedToTextFont
+        
+        self.mentionTextFont = mentionTextFont
+        self.mentionLeftTextColor = mentionLeftTextColor
+        self.mentionRightTextColor = mentionRightTextColor
+        self.mentionLeftTextBackgroundColor = mentionLeftTextBackgroundColor
+        self.mentionRightTextBackgroundColor = mentionRightTextBackgroundColor
     }
     
     public var backgroundColor: UIColor
@@ -1278,6 +1395,18 @@ public class SBUMessageCellTheme {
     public var repliedIconColor: UIColor
     /// The text color of `repliedToLabel` of the quoted message view.
     public var repliedToTextColor: UIColor
+    
+    // MARK: Mention
+    /// The text font of the mention.
+    public var mentionTextFont: UIFont
+    /// The text color of the mention on the left message.
+    public var mentionLeftTextColor: UIColor
+    /// The text color of the mention on the right message.
+    public var mentionRightTextColor: UIColor
+    /// The background color of the mention on the left message.
+    public var mentionLeftTextBackgroundColor: UIColor
+    /// The background color of the mention on the right message.
+    public var mentionRightTextBackgroundColor: UIColor
 }
 
 
@@ -1396,8 +1525,11 @@ public class SBUUserCellTheme {
         theme.backgroundColor = SBUColorSet.background50
         theme.checkboxOnColor = SBUColorSet.primary300
         theme.checkboxOffColor = SBUColorSet.background300
-        theme.userNameTextColor = SBUColorSet.onlight01
-        theme.userNameFont = SBUFontSet.subtitle2
+        theme.nicknameTextColor = SBUColorSet.onlight01
+        theme.nicknameTextFont = SBUFontSet.subtitle2
+        theme.nonameTextColor = SBUColorSet.onlight03
+        theme.userIdTextColor = SBUColorSet.onlight02
+        theme.userIdTextFont = SBUFontSet.body3
         theme.userPlaceholderBackgroundColor = SBUColorSet.background300
         theme.userPlaceholderTintColor = SBUColorSet.ondark01
         theme.mutedStateBackgroundColor = SBUColorSet.primary300.withAlphaComponent(0.6)
@@ -1415,8 +1547,11 @@ public class SBUUserCellTheme {
         theme.backgroundColor = SBUColorSet.background600
         theme.checkboxOnColor = SBUColorSet.primary200
         theme.checkboxOffColor = SBUColorSet.ondark03
-        theme.userNameTextColor = SBUColorSet.ondark01
-        theme.userNameFont = SBUFontSet.subtitle2
+        theme.nicknameTextColor = SBUColorSet.ondark01
+        theme.nicknameTextFont = SBUFontSet.subtitle2
+        theme.nonameTextColor = SBUColorSet.ondark03
+        theme.userIdTextColor = SBUColorSet.ondark02
+        theme.userIdTextFont = SBUFontSet.body3
         theme.userPlaceholderBackgroundColor = SBUColorSet.background400
         theme.userPlaceholderTintColor = SBUColorSet.onlight01
         theme.mutedStateBackgroundColor = SBUColorSet.primary400.withAlphaComponent(0.6)
@@ -1429,26 +1564,34 @@ public class SBUUserCellTheme {
         return theme
     }
     
-    public init(backgroundColor: UIColor = SBUColorSet.background50,
-                checkboxOnColor: UIColor = SBUColorSet.primary300,
-                checkboxOffColor: UIColor = SBUColorSet.background300,
-                userNameTextColor: UIColor = SBUColorSet.onlight01,
-                userNameFont: UIFont = SBUFontSet.subtitle2,
-                userPlaceholderBackgroundColor: UIColor = SBUColorSet.background300,
-                userPlaceholderTintColor: UIColor = SBUColorSet.ondark01,
-                mutedStateBackgroundColor: UIColor = SBUColorSet.primary300.withAlphaComponent(0.6),
-                mutedStateIconColor: UIColor = SBUColorSet.ondark01,
-                subInfoTextColor: UIColor = SBUColorSet.onlight02,
-                subInfoFont: UIFont = SBUFontSet.body2,
-                moreButtonColor: UIColor = SBUColorSet.onlight01,
-                moreButtonDisabledColor: UIColor = SBUColorSet.onlight04,
-                separateColor: UIColor = SBUColorSet.onlight04) {
+    public init(
+        backgroundColor: UIColor = SBUColorSet.background50,
+        checkboxOnColor: UIColor = SBUColorSet.primary300,
+        checkboxOffColor: UIColor = SBUColorSet.background300,
+        nicknameTextColor: UIColor = SBUColorSet.onlight01,
+        nicknameFont: UIFont = SBUFontSet.subtitle2,
+        nonameTextColor: UIColor = SBUColorSet.onlight03,
+        userIdTextColor: UIColor = SBUColorSet.onlight02,
+        userIdFont: UIFont = SBUFontSet.body3,
+        userPlaceholderBackgroundColor: UIColor = SBUColorSet.background300,
+        userPlaceholderTintColor: UIColor = SBUColorSet.ondark01,
+        mutedStateBackgroundColor: UIColor = SBUColorSet.primary300.withAlphaComponent(0.6),
+        mutedStateIconColor: UIColor = SBUColorSet.ondark01,
+        subInfoTextColor: UIColor = SBUColorSet.onlight02,
+        subInfoFont: UIFont = SBUFontSet.body2,
+        moreButtonColor: UIColor = SBUColorSet.onlight01,
+        moreButtonDisabledColor: UIColor = SBUColorSet.onlight04,
+        separateColor: UIColor = SBUColorSet.onlight04
+    ) {
         
         self.backgroundColor = backgroundColor
         self.checkboxOnColor = checkboxOnColor
         self.checkboxOffColor = checkboxOffColor
-        self.userNameTextColor = userNameTextColor
-        self.userNameFont = userNameFont
+        self.nicknameTextColor = nicknameTextColor
+        self.nicknameTextFont = nicknameFont
+        self.nonameTextColor = nonameTextColor
+        self.userIdTextColor = userIdTextColor
+        self.userIdTextFont = userIdFont
         self.userPlaceholderBackgroundColor = userPlaceholderBackgroundColor
         self.userPlaceholderTintColor = userPlaceholderTintColor
         self.mutedStateBackgroundColor = mutedStateBackgroundColor
@@ -1463,8 +1606,11 @@ public class SBUUserCellTheme {
     public var backgroundColor: UIColor
     public var checkboxOnColor: UIColor
     public var checkboxOffColor: UIColor
-    public var userNameTextColor: UIColor
-    public var userNameFont: UIFont
+    public var nicknameTextColor: UIColor
+    public var nicknameTextFont: UIFont
+    public var nonameTextColor: UIColor
+    public var userIdTextColor: UIColor
+    public var userIdTextFont: UIFont
     public var userPlaceholderBackgroundColor: UIColor
     public var userPlaceholderTintColor: UIColor
     public var mutedStateBackgroundColor: UIColor
@@ -1474,6 +1620,11 @@ public class SBUUserCellTheme {
     public var moreButtonColor: UIColor
     public var moreButtonDisabledColor: UIColor
     public var separateColor: UIColor
+    
+    @available(*, unavailable, renamed: "nicknameTextColor")
+    public var userNameTextColor: UIColor { self.nicknameTextColor }
+    @available(*, unavailable, renamed: "nicknameFont")
+    public var userNameFont: UIFont { self.nicknameTextFont }
 }
 
 // MARK: - Channel Setting Theme

@@ -28,9 +28,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         SBUGlobals.accessToken = ""
         SBUGlobals.isUserProfileEnabled = true
         SBUGlobals.isOpenChannelUserProfileEnabled = true
+        
+        // Reply
         SBUGlobals.replyType = .quoteReply
+        // Channel List - Typing indicator
         SBUGlobals.isChannelListTypingIndicatorEnabled = true
+        // Channel List - Message receipt state
         SBUGlobals.isChannelListMessageReceiptStateEnabled = true
+        // User Mention
+        SBUGlobals.isUserMentionEnabled = true
         
         initializeRemoteNotification()
         

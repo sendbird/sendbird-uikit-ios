@@ -49,6 +49,7 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol {
     var emojiTapHandler: ((_ emojiKey: String) -> Void)? = nil
     var moreEmojiTapHandler: (() -> Void)? = nil
     var emojiLongPressHandler: ((_ emojiKey: String) -> Void)? = nil
+    var mentionTapHandler: ((_ user: SBUUser) -> Void)? = nil
 
 
     // MARK: - View Lifecycle

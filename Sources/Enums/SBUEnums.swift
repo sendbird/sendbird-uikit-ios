@@ -85,7 +85,7 @@ import SendBirdSDK
 
 /// This is an enumeration used to display `UserCell` by type.
 /// - Since: 1.2.0
-@objc public enum UserListType: Int {
+public enum UserListType: Hashable {
     case none
     case createChannel
     case channelMembers
@@ -95,6 +95,7 @@ import SendBirdSDK
     case mutedMembers
     case bannedMembers
     case participants
+    case suggestedMention(_ withUserId: Bool)
 }
 
 /// This is an enumeration used in `MemberListViewController` to load member list by type.

@@ -16,7 +16,7 @@ import SafariServices
 
 
 @objcMembers
-open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroupChannelViewModelDelegate, SBUGroupChannelModuleHeaderDelegate, SBUGroupChannelModuleListDelegate, SBUGroupChannelModuleListDataSource, SBUGroupChannelModuleInputDelegate, SBUGroupChannelModuleInputDataSource, SBUGroupChannelViewModelDataSource {
+open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroupChannelViewModelDelegate, SBUGroupChannelModuleHeaderDelegate, SBUGroupChannelModuleListDelegate, SBUGroupChannelModuleListDataSource, SBUGroupChannelModuleInputDelegate, SBUGroupChannelModuleInputDataSource, SBUGroupChannelViewModelDataSource, SBUMentionManagerDataSource {
 
     // MARK: - UI properties (Public)
     public var headerComponent: SBUGroupChannelModule.Header? {
@@ -145,7 +145,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         self.listComponent?
             .configure(delegate: self, dataSource: self, theme: self.theme)
         self.inputComponent?
-            .configure(delegate: self, dataSource: self, theme: self.theme)
+            .configure(delegate: self, dataSource: self, mentionManagerDataSource: self, theme: self.theme)
     }
     
     open override func setupLayouts() {
@@ -323,6 +323,14 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         }
     }
     
+    open func groupChannelViewModel(
+        _ viewModel: SBUGroupChannelViewModel,
+        didReceiveSuggestedMentions users: [SBUUser]?)
+    {
+        let members = users ?? []
+        self.inputComponent?.handlePendingMentionSuggestion(with: members)
+    }
+    
     // MARK: - SBUGroupChannelModuleHeaderDelegate
     open override func baseChannelModule(_ headerComponent: SBUBaseChannelModule.Header, didTapLeftItem leftItem: UIBarButtonItem) {
         self.onClickBack()
@@ -379,6 +387,20 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         cell.messageContentView.animate(.shakeUpDown)
     }
     
+    open func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didTapMentionUser user: SBUUser) {
+        self.dismissKeyboard()
+        
+        if let userProfileView = self.baseListComponent?.userProfileView as? SBUUserProfileView,
+           let baseView = self.navigationController?.view,
+           SBUGlobals.isUserProfileEnabled
+        {
+            userProfileView.show(
+                baseView: baseView,
+                user: user
+            )
+        }
+    }
+    
     open override func baseChannelModuleDidTapScrollToButton(_ listComponent: SBUBaseChannelModule.List, animated: Bool) {
         guard self.baseViewModel?.fullMessageList.isEmpty == false else { return }
         self.newMessagesCount = 0
@@ -417,6 +439,44 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         )
     }
     
+    open func groupChannelModule(
+        _ inputComponent: SBUGroupChannelModule.Input,
+        didTapSend text: String,
+        mentionedMessageTemplate: String,
+        mentionedUserIds: [String],
+        parentMessage: SBDBaseMessage?
+    ) {
+        self.viewModel?.sendUserMessage(
+            text: text,
+            mentionedMessageTemplate: mentionedMessageTemplate,
+            mentionedUserIds: mentionedUserIds,
+            parentMessage: parentMessage
+        )
+    }
+    
+    open func groupChannelModule(
+        _ inputComponent: SBUGroupChannelModule.Input,
+        didTapEdit text: String,
+        mentionedMessageTemplate: String,
+        mentionedUserIds: [String]
+    ) {
+        guard let message = self.baseViewModel?.inEditingMessage else { return }
+        self.viewModel?.updateUserMessage(
+            message: message,
+            text: text,
+            mentionedMessageTemplate: mentionedMessageTemplate,
+            mentionedUserIds: mentionedUserIds
+        )
+    }
+    
+    open func groupChannelModule(_ inputComponent: SBUGroupChannelModule.Input, shouldLoadSuggestedMentions filterText: String) {
+        self.viewModel?.loadSuggestedMentions(with: filterText)
+    }
+    
+    open func groupChannelModuleShouldStopSuggestingMention(_ inputComponent: SBUGroupChannelModule.Input) {
+        self.viewModel?.cancelLoadingSuggestedMentions()
+    }
+    
     open override func baseChannelModuleDidStartTyping(_ inputComponent: SBUBaseChannelModule.Input) {
         self.viewModel?.startTypingMessage()
     }
@@ -430,5 +490,11 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     open func groupChannelViewModel(_ viewModel: SBUGroupChannelViewModel,
                                     startingPointIndexPathsForChannel channel: SBDGroupChannel?) -> [IndexPath]? {
         return self.listComponent?.tableView.indexPathsForVisibleRows
+    }
+    
+    
+    // MARK: SBUMentionManagerDataSource
+    open func mentionManager(_ manager: SBUMentionManager, suggestedMentionUsersWith filterText: String) -> [SBUUser] {
+        return self.viewModel?.suggestedMemberList ?? []
     }
 }

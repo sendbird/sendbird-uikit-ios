@@ -12,10 +12,13 @@ open class SBUUserCell: SBUTableViewCell {
     
     // MARK: - UI properties (Public)
     public lazy var baseStackView: UIStackView = {
-        let baseStackView = UIStackView()
-        baseStackView.spacing = 16.0
-        baseStackView.axis = .horizontal
-        return baseStackView
+        let stackView = SBUStackView(
+            axis: .horizontal,
+            alignment: .fill,
+            spacing: 16.0
+        )
+        stackView.distribution = .fill
+        return stackView
     }()
     
     public lazy var userImageView: UIImageView = {
@@ -42,7 +45,15 @@ open class SBUUserCell: SBUTableViewCell {
         return imageView
     }()
     
-    public var userNameLabel = UILabel()
+    @available(*, deprecated, renamed: "nicknameLabel") // 3.0.0
+    public var userNickname: UILabel {
+        get { self.nicknameLabel }
+        set { self.nicknameLabel = newValue }
+    }
+    
+    public lazy var nicknameLabel = UILabel()
+    
+    public lazy var userIdLabel = UILabel()
     
     public lazy var operatorLabel: UILabel = {
         let label = UILabel()
@@ -112,11 +123,12 @@ open class SBUUserCell: SBUTableViewCell {
     
     // MARK: - Logic properties (Private)
     var isChecked: Bool = false
+    var hasNickname: Bool = true
     
     var userProfileTapHandler: (() -> Void)? = nil
     var moreMenuHandler: (() -> Void)? = nil
     
-    let kUserImageSize: CGFloat = 40
+    internal private(set) var userImageSize: CGFloat = 40
   
     
     // MARK: - View Lifecycle
@@ -127,15 +139,22 @@ open class SBUUserCell: SBUTableViewCell {
     /// This function handles the initialization of views.
     open override func setupViews() {
         self.operatorLabel.text = SBUStringSet.User_Operator
-        
+        self.userIdLabel.isHidden = true
         self.userImageView.addSubview(self.mutedStateImageView)
         
-        self.baseStackView.addArrangedSubview(self.userImageView)
-        self.baseStackView.addArrangedSubview(self.userNameLabel)
-        self.baseStackView.addArrangedSubview(self.operatorLabel)
+        self.baseStackView.setHStack([
+            self.userImageView,
+            self.nicknameLabel,
+            self.userIdLabel,
+            self.operatorLabel,
+            self.moreButton,
+            self.checkboxButton,
+        ])
+        
+        if case .suggestedMention = self.type {
+            self.baseStackView.setCustomSpacing(6.0, after: self.userIdLabel)
+        }
         self.baseStackView.setCustomSpacing(8.0, after: self.operatorLabel)
-        self.baseStackView.addArrangedSubview(self.moreButton)
-        self.baseStackView.addArrangedSubview(self.checkboxButton)
         
         self.contentView.addSubview(self.baseStackView)
         self.contentView.addSubview(self.separateView)
@@ -152,40 +171,66 @@ open class SBUUserCell: SBUTableViewCell {
     /// This function handles the initialization of autolayouts.
     open override func setupLayouts() {
         self.baseStackView
-            .sbu_constraint(equalTo: self.contentView,
-                            leading: 16,
-                            trailing: -16,
-                            top:8,
-                            bottom: 8)
-            .sbu_constraint(height: kUserImageSize)
+            .sbu_constraint(
+                equalTo: self.contentView,
+                leading: 16,
+                trailing: -16,
+                top:8,
+                bottom: 8
+            )
+            .sbu_constraint(height: userImageSize)
 
-        self.userImageView.sbu_constraint(width: kUserImageSize, height: kUserImageSize)
+        self.userImageView
+            .sbu_constraint(width: userImageSize, height: userImageSize)
+        
+        self.nicknameLabel
+            .setContentHuggingPriority(.required, for: .horizontal)
+        
         self.mutedStateImageView
-            .sbu_constraint(width: kUserImageSize, height: kUserImageSize)
+            .sbu_constraint(width: userImageSize, height: userImageSize)
             .sbu_constraint(equalTo: self.userImageView, leading: 0, top: 0)
-        self.moreButton.sbu_constraint(width: 24)
-        self.checkboxButton.sbu_constraint(width: 24)
+        
+        self.moreButton
+            .sbu_constraint(width: 24)
+        
+        self.checkboxButton
+            .sbu_constraint(width: 24)
         
         self.separateView
-            .sbu_constraint(equalTo: self.contentView,
-                            leading: 68,
-                            trailing: -0.5,
-                            bottom: 0.5)
+            .sbu_constraint(equalTo: self.nicknameLabel, leading: 0)
+            .sbu_constraint(
+                equalTo: self.contentView,
+                trailing: -0.5,
+                bottom: 0.5
+            )
             .sbu_constraint(height: 0.5)
+    }
+    
+    open override func updateLayouts() {
+        super.updateLayouts()
+        
+        self.setupLayouts()
     }
     
     /// This function handles the initialization of styles.
     open override func setupStyles() {
         self.backgroundColor = theme.backgroundColor
 
-        self.userImageView.layer.cornerRadius = kUserImageSize/2
+        self.userImageView.layer.cornerRadius = userImageSize/2
         self.userImageView.backgroundColor = theme.userPlaceholderBackgroundColor
         
-        self.mutedStateImageView.layer.cornerRadius = kUserImageSize/2
+        self.mutedStateImageView.layer.cornerRadius = userImageSize/2
         self.mutedStateImageView.backgroundColor = self.theme.mutedStateBackgroundColor
         
-        self.userNameLabel.textColor = theme.userNameTextColor
-        self.userNameLabel.font = theme.userNameFont
+        if case .suggestedMention = self.type, hasNickname == false {
+            self.nicknameLabel.textColor = theme.nonameTextColor
+        } else {
+            self.nicknameLabel.textColor = theme.nicknameTextColor
+        }
+        self.nicknameLabel.font = theme.nicknameTextFont
+        
+        self.userIdLabel.textColor = theme.userIdTextColor
+        self.userIdLabel.font = theme.userIdTextFont
         
         self.operatorLabel.font = theme.subInfoFont
         self.operatorLabel.textColor = theme.subInfoTextColor
@@ -209,8 +254,10 @@ open class SBUUserCell: SBUTableViewCell {
         self.isChecked = isChecked
         
         let isMe = (user.userId == SBUGlobals.currentUser?.userId)
-        self.userNameLabel.text = user.refinedNickname()
+        self.userIdLabel.text = user.userId
+        self.nicknameLabel.text = user.refinedNickname()
             + (isMe ? " \(SBUStringSet.MemberList_Me)" : "")
+        self.hasNickname = user.nickname != nil && user.nickname?.isEmpty == false
         
         self.loadImageSession = self.userImageView.loadImage(
             urlString: user.profileUrl ?? "",
@@ -262,6 +309,10 @@ open class SBUUserCell: SBUTableViewCell {
             self.moreButton.isHidden = false
             self.moreButton.isEnabled = !isMe
 
+        case .suggestedMention(let showsUserId):
+            self.userIdLabel.isHidden = !showsUserId
+            self.userImageSize = 28
+            self.updateLayouts()
         default:
             break
         }

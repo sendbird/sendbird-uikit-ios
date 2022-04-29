@@ -320,9 +320,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
                 guard let userMessage = message as? SBDUserMessage else { return }
                 if self.baseViewModel?.channel?.isFrozen == false ||
                     self.baseViewModel?.isOperator == true {
-                    if let messageInputView = self.baseInputComponent?.messageInputView as? SBUMessageInputView {
-                        messageInputView.setMode(.edit, message: userMessage)
-                    }
+                    self.setMessageInputViewMode(.edit, message: userMessage)
                 } else {
                     SBULog.info("This channel is frozen")
                 }
@@ -544,9 +542,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
                     
                     if channel.isFrozen == false ||
                         self.baseViewModel?.isOperator == true {
-                        if let messageInputView = self.baseInputComponent?.messageInputView as? SBUMessageInputView {
-                            messageInputView.setMode(.edit, message: userMessage)
-                        }
+                        self.setMessageInputViewMode(.edit, message: userMessage)
                     } else {
                         SBULog.info("This channel is frozen")
                     }
@@ -648,8 +644,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         case .etc, .pdf:
             if let messageInputView = self.baseInputComponent?.messageInputView as? SBUMessageInputView {
                 if messageInputView.mode != .quoteReply {
-                    // set mode to `.none`
-                    messageInputView.setMode(.none)
+                    self.setMessageInputViewMode(.none)
                 }
             }
             
@@ -694,9 +689,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     // MARK: - MessageInputView
     
     open func setMessageInputViewMode(_ mode: SBUMessageInputMode, message: SBDBaseMessage? = nil) {
-        if let messageInputView = self.baseInputComponent?.messageInputView as? SBUMessageInputView {
-            messageInputView.setMode(mode, message: message)
-        }
+        self.baseInputComponent?.updateMessageInputMode(mode, message: message)
     }
     
     
@@ -734,9 +727,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         _ viewModel: SBUBaseChannelViewModel,
         shouldFinishEditModeForChannel channel: SBDBaseChannel
     ) {
-        if let messageInputView = baseInputComponent?.messageInputView as? SBUMessageInputView {
-            messageInputView.setMode(.none)
-        }
+        self.setMessageInputViewMode(.none)
     }
     
     open func baseChannelViewModel(
@@ -958,7 +949,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
             
             if let messageInputView = self.baseInputComponent?.messageInputView as? SBUMessageInputView,
                messageInputView.mode != .quoteReply {
-                messageInputView.setMode(.none)
+                self.setMessageInputViewMode(.none)
             }
             
             if self.baseViewModel?.hasNext() ?? false {

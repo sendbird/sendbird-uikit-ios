@@ -70,6 +70,19 @@ public class SBUFontSet {
             .paragraphStyle: style
         ]
     }()
+    /// Bold, 14pt, Line height: 20pt
+    public static var body4 = UIFont.systemFont(ofSize: 14.0, weight: .bold)
+    static var body4Attributes: [NSAttributedString.Key: Any] = {
+        let style = NSMutableParagraphStyle()
+        let pointSize = SBUFontSet.body4.pointSize
+        let defaultLineHeight = 20.f
+        let defaultFontSize = 14.f
+        style.minimumLineHeight = defaultLineHeight * pointSize / defaultFontSize
+        return [
+            .font: SBUFontSet.body4,
+            .paragraphStyle: style
+        ]
+    }()
     
     // MARK: - Button
     /// Semibold, 18pt

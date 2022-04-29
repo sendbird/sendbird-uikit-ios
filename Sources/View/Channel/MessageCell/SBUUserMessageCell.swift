@@ -10,7 +10,7 @@ import UIKit
 import SendBirdSDK
 
  @IBDesignable
-open class SBUUserMessageCell: SBUContentBaseMessageCell {
+open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextViewDelegate {
 
     // MARK: - Public property
     public lazy var messageTextView: UIView = SBUUserMessageTextView()
@@ -38,6 +38,8 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell {
     // MARK: - View Lifecycle
     open override func setupViews() {
         super.setupViews()
+        
+        (self.messageTextView as? SBUUserMessageTextView)?.delegate = self
 
         // + --------------- +
         // | messageTextView |
@@ -213,5 +215,11 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell {
         }
         
         url.open()
+    }
+    
+    // MARK: - Mention
+    func userMessageTextView(_ textView: SBUUserMessageTextView, didTapMention user: SBUUser) {
+        // will call `groupChannelModule(_:didTapMentionUser:)`
+        self.mentionTapHandler?(user)
     }
 }

@@ -16,6 +16,7 @@ import SendBirdSDK
 import Swift
 import UIKit
 import _Concurrency
+import simd
 public class SBUModerationsModule {
   public var headerComponent: SendbirdUIKit.SBUModerationsModule.Header? {
     get
@@ -445,6 +446,40 @@ extension SendbirdUIKit.SBUGlobals {
   @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
   @objc deinit
 }
+public protocol SBUMentionManagerDelegate : AnyObject {
+  func mentionManager(_ manager: SendbirdUIKit.SBUMentionManager, didChangeSuggestedMention users: [SendbirdUIKit.SBUUser], filteredText: Swift.String?, isTriggered: Swift.Bool)
+  func mentionManager(_ manager: SendbirdUIKit.SBUMentionManager, didInsertMentionsTo textView: UIKit.UITextView)
+  func mentionManager(_ manager: SendbirdUIKit.SBUMentionManager, shouldLoadSuggestedMentions filterText: Swift.String)
+}
+public protocol SBUMentionManagerDataSource : AnyObject {
+  func mentionManager(_ manager: SendbirdUIKit.SBUMentionManager, suggestedMentionUsersWith filterText: Swift.String) -> [SendbirdUIKit.SBUUser]
+}
+@objc @_inheritsConvenienceInitializers public class SBUMentionManager : ObjectiveC.NSObject {
+  public var mentionedList: [SendbirdUIKit.SBUMention] {
+    get
+  }
+  final public let trigger: Swift.String
+  public var defaultTextAttributes: [Foundation.NSAttributedString.Key : Any]
+  public var mentionTextAttributes: [Foundation.NSAttributedString.Key : Any]
+  @objc override dynamic public init()
+  public func configure(delegate: SendbirdUIKit.SBUMentionManagerDelegate? = nil, dataSource: SendbirdUIKit.SBUMentionManagerDataSource? = nil, defaultTextAttributes: [Foundation.NSAttributedString.Key : Any]? = nil, mentionTextAttributes: [Foundation.NSAttributedString.Key : Any]? = nil)
+  @discardableResult
+  public func addMention(at textView: UIKit.UITextView, user: SendbirdUIKit.SBUUser) -> Swift.Bool
+  public func clearMentions(_ mentions: [SendbirdUIKit.SBUMention], with replaceText: Swift.String = "", on textView: UIKit.UITextView, at range: Foundation.NSRange)
+  public func shouldChangeText(on textView: UIKit.UITextView, in range: Foundation.NSRange, replacementText: Swift.String) -> Swift.Bool
+  public func needToSkipSelection(_ textView: UIKit.UITextView) -> Swift.Bool
+  public func findMentions(with range: Foundation.NSRange) -> [SendbirdUIKit.SBUMention]
+  public func handlePendingMentionSuggestion()
+  public func handleMentionSuggestion(on textView: UIKit.UITextView, range: Foundation.NSRange)
+  public var suggestedMentionUsers: [SendbirdUIKit.SBUUser] {
+    get
+  }
+  public func suggestedMentionUsers(with filterText: Swift.String) -> [SendbirdUIKit.SBUUser]
+  public func generateMentionedMessage(with mentionedMessageTemplate: Swift.String, mentionedUsers: [SendbirdUIKit.SBUUser]) -> Foundation.NSAttributedString
+  public func generateTemplate(with attributedText: Foundation.NSAttributedString, mentions: [SendbirdUIKit.SBUMention]) -> Swift.String
+  public func reset()
+  @objc deinit
+}
 public protocol SBUOpenChannelModuleInputDelegate : SendbirdUIKit.SBUBaseChannelModuleInputDelegate {
   func openChannelModule(_ inputComponent: SendbirdUIKit.SBUOpenChannelModule.Input, didPickFileData fileData: Foundation.Data?, fileName: Swift.String, mimeType: Swift.String)
 }
@@ -537,6 +572,18 @@ public class SBUGroupChannelListModule {
     set
   }
   public init(headerComponent: SendbirdUIKit.SBUGroupChannelListModule.Header? = nil, listComponent: SendbirdUIKit.SBUGroupChannelListModule.List? = nil)
+  @objc deinit
+}
+@_inheritsConvenienceInitializers public class SBUUserMentionConfiguration : SendbirdUIKit.SBUMentionConfiguration {
+  public var trigger: Swift.String {
+    get
+  }
+  final public let debounceTime: Swift.Double
+  final public let delimiter: Swift.String
+  public var mentionLimit: Swift.Int
+  public var suggestionLimit: Swift.Int
+  public var isCustomMemberListUsed: Swift.Bool
+  override public init()
   @objc deinit
 }
 @objc @_inheritsConvenienceInitializers @objcMembers @_Concurrency.MainActor(unsafe) open class SBUGroupChannelListViewController : SendbirdUIKit.SBUBaseChannelListViewController, SendbirdUIKit.SBUGroupChannelListModuleHeaderDelegate, SendbirdUIKit.SBUGroupChannelListModuleListDelegate, SendbirdUIKit.SBUGroupChannelListModuleListDataSource, SendbirdUIKit.SBUCreateChannelTypeSelectorDelegate, SendbirdUIKit.SBUCommonViewModelDelegate, SendbirdUIKit.SBUGroupChannelListViewModelDelegate {
@@ -647,7 +694,19 @@ public protocol SBUCommonDelegate : AnyObject {
     @objc get
     @objc set
   }
-  @objc @_Concurrency.MainActor(unsafe) public var userNameLabel: UIKit.UILabel
+  @objc @available(*, deprecated, renamed: "nicknameLabel")
+  @_Concurrency.MainActor(unsafe) public var userNickname: UIKit.UILabel {
+    @objc get
+    @objc set
+  }
+  @objc @_Concurrency.MainActor(unsafe) public var nicknameLabel: UIKit.UILabel {
+    @objc get
+    @objc set
+  }
+  @objc @_Concurrency.MainActor(unsafe) public var userIdLabel: UIKit.UILabel {
+    @objc get
+    @objc set
+  }
   @objc @_Concurrency.MainActor(unsafe) public var operatorLabel: UIKit.UILabel {
     @objc get
     @objc set
@@ -666,15 +725,16 @@ public protocol SBUCommonDelegate : AnyObject {
     set
     _modify
   }
-  @objc @_Concurrency.MainActor(unsafe) public var type: SendbirdUIKit.UserListType {
+  @_Concurrency.MainActor(unsafe) public var type: SendbirdUIKit.UserListType {
     get
   }
   @objc override dynamic open func awakeFromNib()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupViews()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupActions()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupLayouts()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func updateLayouts()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupStyles()
-  @objc @_Concurrency.MainActor(unsafe) open func configure(type: SendbirdUIKit.UserListType, user: SendbirdUIKit.SBUUser, isChecked: Swift.Bool = false, operatorMode: Swift.Bool = false)
+  @_Concurrency.MainActor(unsafe) open func configure(type: SendbirdUIKit.UserListType, user: SendbirdUIKit.SBUUser, isChecked: Swift.Bool = false, operatorMode: Swift.Bool = false)
   @objc @_Concurrency.MainActor(unsafe) public func selectUser(_ selected: Swift.Bool)
   @objc @_Concurrency.MainActor(unsafe) open func onClickMoreMenu()
   @objc @_Concurrency.MainActor(unsafe) open func onTapUserProfileView(sender: UIKit.UITapGestureRecognizer)
@@ -776,6 +836,7 @@ extension SendbirdUIKit.SBUBaseChannelSettingsModule {
   public static var body1: UIKit.UIFont
   public static var body2: UIKit.UIFont
   public static var body3: UIKit.UIFont
+  public static var body4: UIKit.UIFont
   public static var button1: UIKit.UIFont
   public static var button2: UIKit.UIFont
   public static var button3: UIKit.UIFont
@@ -941,6 +1002,14 @@ extension SendbirdUIKit.SBUMemberListModule {
   @_Concurrency.MainActor(unsafe) open func configure(message: SendBirdSDK.SBDFileMessage, position: SendbirdUIKit.MessagePosition, highlight: Swift.Bool)
   @objc override dynamic public init()
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
+  @objc deinit
+}
+@objc public class SBUDebouncer : ObjectiveC.NSObject {
+  public static let defaultTime: Swift.Double
+  public init(debounceTime: Foundation.TimeInterval = SBUDebouncer.defaultTime)
+  public func add(handler: @escaping (() -> Swift.Void))
+  public func updateTimer()
+  public func cancel()
   @objc deinit
 }
 @objc @_hasMissingDesignatedInitializers @objcMembers @_Concurrency.MainActor(unsafe) open class SBUOpenChannelViewController : SendbirdUIKit.SBUBaseChannelViewController, SendbirdUIKit.SBUOpenChannelViewModelDelegate, SendbirdUIKit.SBUOpenChannelModuleHeaderDelegate, SendbirdUIKit.SBUOpenChannelModuleListDelegate, SendbirdUIKit.SBUOpenChannelModuleInputDelegate, SendbirdUIKit.SBUOpenChannelModuleMediaDelegate, SendbirdUIKit.SBUOpenChannelModuleListDataSource, SendbirdUIKit.SBUOpenChannelModuleInputDataSource, SendbirdUIKit.SBUOpenChannelViewModelDataSource {
@@ -1112,6 +1181,41 @@ public class SBUOpenChannelModule {
   @_Concurrency.MainActor(unsafe) open func configure(_ message: SendBirdSDK.SBDBaseMessage, hideDateView: Swift.Bool, position: SendbirdUIKit.MessagePosition, groupPosition: SendbirdUIKit.MessageGroupPosition, receiptState: SendbirdUIKit.SBUMessageReceiptState?)
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init(style: UIKit.UITableViewCell.CellStyle, reuseIdentifier: Swift.String?)
   @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc deinit
+}
+public protocol SBUSuggestedMentionListDelegate : AnyObject {
+  func suggestedUserList(_ list: SendbirdUIKit.SBUSuggestedMentionList, didSelectUser user: SendbirdUIKit.SBUUser)
+}
+@objc @_Concurrency.MainActor(unsafe) open class SBUSuggestedMentionList : SendbirdUIKit.SBUView, UIKit.UITableViewDelegate, UIKit.UITableViewDataSource {
+  @_Concurrency.MainActor(unsafe) public var tableView: UIKit.UITableView {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var userCell: UIKit.UITableViewCell?
+  @_Concurrency.MainActor(unsafe) public var limitGuideCell: UIKit.UITableViewCell?
+  @_Concurrency.MainActor(unsafe) public var heightConstraint: UIKit.NSLayoutConstraint!
+  @_Concurrency.MainActor(unsafe) public var filteredUsers: [SendbirdUIKit.SBUUser] {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public var isLimitGuideEnabled: Swift.Bool
+  @_Concurrency.MainActor(unsafe) weak public var delegate: SendbirdUIKit.SBUSuggestedMentionListDelegate?
+  @_Concurrency.MainActor(unsafe) public var theme: SendbirdUIKit.SBUChannelTheme
+  @_Concurrency.MainActor(unsafe) public var showsUserId: Swift.Bool {
+    get
+    set
+  }
+  @objc override dynamic public init()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupViews()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupLayouts()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupStyles()
+  @_Concurrency.MainActor(unsafe) public func register(userCell: UIKit.UITableViewCell, nib: UIKit.UINib? = nil)
+  @_Concurrency.MainActor(unsafe) public func register(limitGuideCell: UIKit.UITableViewCell, nib: UIKit.UINib? = nil)
+  @_Concurrency.MainActor(unsafe) @objc open func tableView(_ tableView: UIKit.UITableView, numberOfRowsInSection section: Swift.Int) -> Swift.Int
+  @_Concurrency.MainActor(unsafe) @objc open func tableView(_ tableView: UIKit.UITableView, cellForRowAt indexPath: Foundation.IndexPath) -> UIKit.UITableViewCell
+  @_Concurrency.MainActor(unsafe) @objc open func tableView(_ tableView: UIKit.UITableView, didSelectRowAt indexPath: Foundation.IndexPath)
+  @_Concurrency.MainActor(unsafe) open func configureCell(_ cell: UIKit.UITableViewCell?, forRowAt indexPath: Foundation.IndexPath)
+  @_Concurrency.MainActor(unsafe) open func selectUser(_ user: SendbirdUIKit.SBUUser)
+  @_Concurrency.MainActor(unsafe) open func reloadData(with users: [SendbirdUIKit.SBUUser])
   @objc deinit
 }
 public protocol SBUBaseChannelModuleHeaderDelegate : SendbirdUIKit.SBUCommonDelegate {
@@ -1770,7 +1874,7 @@ extension SendbirdUIKit.SBUMemberListViewController {
   @_Concurrency.MainActor(unsafe) open func configure(channel: SendBirdSDK.SBDBaseChannel?)
   @objc deinit
 }
-@objc @_hasMissingDesignatedInitializers @objcMembers @_Concurrency.MainActor(unsafe) open class SBUGroupChannelViewController : SendbirdUIKit.SBUBaseChannelViewController, SendbirdUIKit.SBUGroupChannelViewModelDelegate, SendbirdUIKit.SBUGroupChannelModuleHeaderDelegate, SendbirdUIKit.SBUGroupChannelModuleListDelegate, SendbirdUIKit.SBUGroupChannelModuleListDataSource, SendbirdUIKit.SBUGroupChannelModuleInputDelegate, SendbirdUIKit.SBUGroupChannelModuleInputDataSource, SendbirdUIKit.SBUGroupChannelViewModelDataSource {
+@objc @_hasMissingDesignatedInitializers @objcMembers @_Concurrency.MainActor(unsafe) open class SBUGroupChannelViewController : SendbirdUIKit.SBUBaseChannelViewController, SendbirdUIKit.SBUGroupChannelViewModelDelegate, SendbirdUIKit.SBUGroupChannelModuleHeaderDelegate, SendbirdUIKit.SBUGroupChannelModuleListDelegate, SendbirdUIKit.SBUGroupChannelModuleListDataSource, SendbirdUIKit.SBUGroupChannelModuleInputDelegate, SendbirdUIKit.SBUGroupChannelModuleInputDataSource, SendbirdUIKit.SBUGroupChannelViewModelDataSource, SendbirdUIKit.SBUMentionManagerDataSource {
   @objc @_Concurrency.MainActor(unsafe) public var headerComponent: SendbirdUIKit.SBUGroupChannelModule.Header? {
     @objc get
     @objc set
@@ -1814,20 +1918,27 @@ extension SendbirdUIKit.SBUMemberListViewController {
   @_Concurrency.MainActor(unsafe) override public func showMenuModal(_ cell: UIKit.UITableViewCell, indexPath: Foundation.IndexPath, message: SendBirdSDK.SBDBaseMessage, types: [SendbirdUIKit.MessageMenuItem]?)
   @_Concurrency.MainActor(unsafe) @objc override open func showChannelSettings()
   @_Concurrency.MainActor(unsafe) @objc override open func baseChannelViewModel(_ viewModel: SendbirdUIKit.SBUBaseChannelViewModel, didChangeChannel channel: SendBirdSDK.SBDBaseChannel?, withContext context: SendBirdSDK.SBDMessageContext)
+  @objc @_Concurrency.MainActor(unsafe) open func groupChannelViewModel(_ viewModel: SendbirdUIKit.SBUGroupChannelViewModel, didReceiveSuggestedMentions users: [SendbirdUIKit.SBUUser]?)
   @_Concurrency.MainActor(unsafe) @objc override open func baseChannelModule(_ headerComponent: SendbirdUIKit.SBUBaseChannelModule.Header, didTapLeftItem leftItem: UIKit.UIBarButtonItem)
   @_Concurrency.MainActor(unsafe) @objc override open func baseChannelModule(_ headerComponent: SendbirdUIKit.SBUBaseChannelModule.Header, didTapRightItem rightItem: UIKit.UIBarButtonItem)
   @objc @_Concurrency.MainActor(unsafe) open func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, didTapEmoji emojiKey: Swift.String, messageCell: SendbirdUIKit.SBUBaseMessageCell)
   @objc @_Concurrency.MainActor(unsafe) open func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, didLongTapEmoji emojiKey: Swift.String, messageCell: SendbirdUIKit.SBUBaseMessageCell)
   @objc @_Concurrency.MainActor(unsafe) open func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, didTapMoreEmojiForCell messageCell: SendbirdUIKit.SBUBaseMessageCell)
   @objc @_Concurrency.MainActor(unsafe) open func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, didTapQuotedMessageView quotedMessageView: SendbirdUIKit.SBUQuotedBaseMessageView)
+  @objc @_Concurrency.MainActor(unsafe) open func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, didTapMentionUser user: SendbirdUIKit.SBUUser)
   @_Concurrency.MainActor(unsafe) @objc override open func baseChannelModuleDidTapScrollToButton(_ listComponent: SendbirdUIKit.SBUBaseChannelModule.List, animated: Swift.Bool)
   @_Concurrency.MainActor(unsafe) @objc override open func baseChannelModule(_ listComponent: SendbirdUIKit.SBUBaseChannelModule.List, didScroll scrollView: UIKit.UIScrollView)
   @_Concurrency.MainActor(unsafe) open func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, highlightInfoInTableView tableView: UIKit.UITableView) -> SendbirdUIKit.SBUHighlightMessageInfo?
   @_Concurrency.MainActor(unsafe) @objc override open func baseChannelModule(_ inputComponent: SendbirdUIKit.SBUBaseChannelModule.Input, didUpdateFrozenState isFrozen: Swift.Bool)
   @objc @_Concurrency.MainActor(unsafe) open func groupChannelModule(_ inputComponent: SendbirdUIKit.SBUGroupChannelModule.Input, didPickFileData fileData: Foundation.Data?, fileName: Swift.String, mimeType: Swift.String, parentMessage: SendBirdSDK.SBDBaseMessage?)
+  @objc @_Concurrency.MainActor(unsafe) open func groupChannelModule(_ inputComponent: SendbirdUIKit.SBUGroupChannelModule.Input, didTapSend text: Swift.String, mentionedMessageTemplate: Swift.String, mentionedUserIds: [Swift.String], parentMessage: SendBirdSDK.SBDBaseMessage?)
+  @objc @_Concurrency.MainActor(unsafe) open func groupChannelModule(_ inputComponent: SendbirdUIKit.SBUGroupChannelModule.Input, didTapEdit text: Swift.String, mentionedMessageTemplate: Swift.String, mentionedUserIds: [Swift.String])
+  @objc @_Concurrency.MainActor(unsafe) open func groupChannelModule(_ inputComponent: SendbirdUIKit.SBUGroupChannelModule.Input, shouldLoadSuggestedMentions filterText: Swift.String)
+  @objc @_Concurrency.MainActor(unsafe) open func groupChannelModuleShouldStopSuggestingMention(_ inputComponent: SendbirdUIKit.SBUGroupChannelModule.Input)
   @_Concurrency.MainActor(unsafe) @objc override open func baseChannelModuleDidStartTyping(_ inputComponent: SendbirdUIKit.SBUBaseChannelModule.Input)
   @_Concurrency.MainActor(unsafe) @objc override open func baseChannelModuleDidEndTyping(_ inputComponent: SendbirdUIKit.SBUBaseChannelModule.Input)
   @objc @_Concurrency.MainActor(unsafe) open func groupChannelViewModel(_ viewModel: SendbirdUIKit.SBUGroupChannelViewModel, startingPointIndexPathsForChannel channel: SendBirdSDK.SBDGroupChannel?) -> [Foundation.IndexPath]?
+  @objc @_Concurrency.MainActor(unsafe) open func mentionManager(_ manager: SendbirdUIKit.SBUMentionManager, suggestedMentionUsersWith filterText: Swift.String) -> [SendbirdUIKit.SBUUser]
 }
 @objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) public class SBUSelectableStackView : SendbirdUIKit.SBUView {
   @_Concurrency.MainActor(unsafe) final public let stackView: UIKit.UIStackView
@@ -1841,6 +1952,25 @@ extension SendbirdUIKit.SBUMemberListViewController {
   @_Concurrency.MainActor(unsafe) public func addArrangedSubview(_ view: UIKit.UIView)
   @_Concurrency.MainActor(unsafe) public func removeArrangedSubview(_ view: UIKit.UIView)
   @_Concurrency.MainActor(unsafe) public func insertArrangedSubview(_ view: UIKit.UIView, at index: Swift.Int)
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUMentionLimitGuideCell : SendbirdUIKit.SBUTableViewCell {
+  @objc @_Concurrency.MainActor(unsafe) public var iconImageView: UIKit.UIImageView {
+    @objc get
+    @objc set
+  }
+  @objc @_Concurrency.MainActor(unsafe) final public let limitGuideLabel: UIKit.UILabel
+  @objc @_Concurrency.MainActor(unsafe) public var baseStackView: UIKit.UIStackView
+  @SendbirdUIKit.SBUThemeWrapper @_Concurrency.MainActor(unsafe) public var theme: SendbirdUIKit.SBUChannelTheme {
+    get
+    set
+    _modify
+  }
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupViews()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupLayouts()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupStyles()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(style: UIKit.UITableViewCell.CellStyle, reuseIdentifier: Swift.String?)
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
   @objc deinit
 }
 @_hasMissingDesignatedInitializers public class SBUPendingMessageManager {
@@ -2570,6 +2700,7 @@ extension SendbirdUIKit.SBUBaseChannelModule {
     @objc @_Concurrency.MainActor(unsafe) open func setupViews()
     @objc @_Concurrency.MainActor(unsafe) open func setupLayouts()
     @_Concurrency.MainActor(unsafe) open func setupStyles(theme: SendbirdUIKit.SBUChannelTheme? = nil)
+    @objc @_Concurrency.MainActor(unsafe) open func updateMessageInputMode(_ mode: SendbirdUIKit.SBUMessageInputMode, message: SendBirdSDK.SBDBaseMessage? = nil)
     @objc @_Concurrency.MainActor(unsafe) open func updateMessageInputModeState()
     @objc @_Concurrency.MainActor(unsafe) open func updateFrozenModeState()
     @objc @_Concurrency.MainActor(unsafe) open func pickImageFile(info: [UIKit.UIImagePickerController.InfoKey : Any])
@@ -2583,14 +2714,17 @@ extension SendbirdUIKit.SBUBaseChannelModule {
     @objc @_Concurrency.MainActor(unsafe) open func pickImageData(_ data: Foundation.Data)
     @objc @_Concurrency.MainActor(unsafe) open func pickVideoURL(_ url: Foundation.URL)
     @objc @_Concurrency.MainActor(unsafe) open func pickDocumentFile(documentUrls: [Foundation.URL])
-    @_Concurrency.MainActor(unsafe) @objc public func messageInputViewDidStartTyping()
-    @_Concurrency.MainActor(unsafe) @objc public func messageInputViewDidEndTyping()
-    @_Concurrency.MainActor(unsafe) @objc public func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, didSelectSend text: Swift.String)
-    @_Concurrency.MainActor(unsafe) @objc public func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, didSelectResource type: SendbirdUIKit.MediaResourceType)
-    @_Concurrency.MainActor(unsafe) @objc public func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, didSelectEdit text: Swift.String)
-    @_Concurrency.MainActor(unsafe) @objc public func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, didChangeText text: Swift.String)
-    @_Concurrency.MainActor(unsafe) @objc public func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, willChangeMode mode: SendbirdUIKit.SBUMessageInputMode, message: SendBirdSDK.SBDBaseMessage?)
-    @_Concurrency.MainActor(unsafe) @objc public func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, didChangeMode mode: SendbirdUIKit.SBUMessageInputMode, message: SendBirdSDK.SBDBaseMessage?)
+    @objc @_Concurrency.MainActor(unsafe) public func messageInputViewDidStartTyping()
+    @objc @_Concurrency.MainActor(unsafe) public func messageInputViewDidEndTyping()
+    @objc @_Concurrency.MainActor(unsafe) public func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, didSelectSend text: Swift.String)
+    @objc @_Concurrency.MainActor(unsafe) public func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, didSelectResource type: SendbirdUIKit.MediaResourceType)
+    @objc @_Concurrency.MainActor(unsafe) public func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, didSelectEdit text: Swift.String)
+    @objc @_Concurrency.MainActor(unsafe) public func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, didChangeText text: Swift.String)
+    @objc @_Concurrency.MainActor(unsafe) public func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, willChangeMode mode: SendbirdUIKit.SBUMessageInputMode, message: SendBirdSDK.SBDBaseMessage?)
+    @objc @_Concurrency.MainActor(unsafe) public func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, didChangeMode mode: SendbirdUIKit.SBUMessageInputMode, message: SendBirdSDK.SBDBaseMessage?)
+    @objc @_Concurrency.MainActor(unsafe) public func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, shouldChangeTextIn range: Foundation.NSRange, replacementText text: Swift.String) -> Swift.Bool
+    @objc @_Concurrency.MainActor(unsafe) public func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, shouldInteractWith url: Foundation.URL, in characterRange: Foundation.NSRange, interaction: UIKit.UITextItemInteraction) -> Swift.Bool
+    @objc @_Concurrency.MainActor(unsafe) public func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, didChangeSelection range: Foundation.NSRange)
     @objc deinit
   }
 }
@@ -2816,6 +2950,10 @@ public typealias SBUChannelCell = SendbirdUIKit.SBUGroupChannelCell
     @objc get
     @objc set
   }
+  @objc @_Concurrency.MainActor(unsafe) public var unreadMentionLabel: UIKit.UILabel {
+    @objc get
+    @objc set
+  }
   @objc @_Concurrency.MainActor(unsafe) public var unreadCount: UIKit.UIButton {
     @objc get
     @objc set
@@ -3018,15 +3156,31 @@ extension SendbirdUIKit.SBUBaseChannelModule.List {
   }
   @objc @_Concurrency.MainActor(unsafe) dynamic public func checkSameDayAsNextMessage(currentIndex: Swift.Int, fullMessageList: [SendBirdSDK.SBDBaseMessage]) -> Swift.Bool
 }
-@objc public protocol SBUMessageInputViewDelegate : ObjectiveC.NSObjectProtocol {
-  @objc optional func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, didSelectSend text: Swift.String)
-  @objc optional func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, didSelectResource type: SendbirdUIKit.MediaResourceType)
-  @objc optional func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, didSelectEdit text: Swift.String)
-  @objc optional func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, didChangeText text: Swift.String)
-  @objc optional func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, didChangeMode mode: SendbirdUIKit.SBUMessageInputMode, message: SendBirdSDK.SBDBaseMessage?)
-  @objc optional func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, willChangeMode mode: SendbirdUIKit.SBUMessageInputMode, message: SendBirdSDK.SBDBaseMessage?)
-  @objc optional func messageInputViewDidStartTyping()
-  @objc optional func messageInputViewDidEndTyping()
+public protocol SBUMessageInputViewDelegate : AnyObject {
+  func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, didSelectSend text: Swift.String)
+  func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, didSelectResource type: SendbirdUIKit.MediaResourceType)
+  func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, didSelectEdit text: Swift.String)
+  func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, didChangeText text: Swift.String)
+  func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, didChangeMode mode: SendbirdUIKit.SBUMessageInputMode, message: SendBirdSDK.SBDBaseMessage?)
+  func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, willChangeMode mode: SendbirdUIKit.SBUMessageInputMode, message: SendBirdSDK.SBDBaseMessage?)
+  func messageInputViewDidStartTyping()
+  func messageInputViewDidEndTyping()
+  func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, shouldChangeTextIn range: Foundation.NSRange, replacementText text: Swift.String) -> Swift.Bool
+  func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, shouldInteractWith url: Foundation.URL, in characterRange: Foundation.NSRange, interaction: UIKit.UITextItemInteraction) -> Swift.Bool
+  func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, didChangeSelection range: Foundation.NSRange)
+}
+extension SendbirdUIKit.SBUMessageInputViewDelegate {
+  public func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, didSelectSend text: Swift.String)
+  public func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, didSelectResource type: SendbirdUIKit.MediaResourceType)
+  public func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, didSelectEdit text: Swift.String)
+  public func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, didChangeText text: Swift.String)
+  public func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, didChangeMode mode: SendbirdUIKit.SBUMessageInputMode, message: SendBirdSDK.SBDBaseMessage?)
+  public func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, willChangeMode mode: SendbirdUIKit.SBUMessageInputMode, message: SendBirdSDK.SBDBaseMessage?)
+  public func messageInputViewDidStartTyping()
+  public func messageInputViewDidEndTyping()
+  public func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, shouldChangeTextIn range: Foundation.NSRange, replacementText text: Swift.String) -> Swift.Bool
+  public func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, shouldInteractWith url: Foundation.URL, in characterRange: Foundation.NSRange, interaction: UIKit.UITextItemInteraction) -> Swift.Bool
+  public func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, didChangeSelection range: Foundation.NSRange)
 }
 @objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) open class SBUMessageInputView : SendbirdUIKit.SBUView, SendbirdUIKit.SBUActionSheetDelegate, UIKit.UITextViewDelegate {
   @_Concurrency.MainActor(unsafe) public var addButton: UIKit.UIButton? {
@@ -3073,6 +3227,12 @@ extension SendbirdUIKit.SBUBaseChannelModule.List {
   @_Concurrency.MainActor(unsafe) public var textViewLeadingSpacing: CoreGraphics.CGFloat
   @_Concurrency.MainActor(unsafe) public var textViewTrailingSpacing: CoreGraphics.CGFloat
   @_Concurrency.MainActor(unsafe) public var layoutInsets: UIKit.UIEdgeInsets
+  @_Concurrency.MainActor(unsafe) public var defaultAttributes: [Foundation.NSAttributedString.Key : Any] {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public var mentionedAttributes: [Foundation.NSAttributedString.Key : Any] {
+    get
+  }
   @SendbirdUIKit.SBUThemeWrapper @_Concurrency.MainActor(unsafe) public var overlayTheme: SendbirdUIKit.SBUMessageInputTheme {
     get
     set
@@ -3107,6 +3267,8 @@ extension SendbirdUIKit.SBUBaseChannelModule.List {
   @_Concurrency.MainActor(unsafe) @objc public func textViewDidChange(_ textView: UIKit.UITextView)
   @_Concurrency.MainActor(unsafe) @objc public func textViewDidEndEditing(_ textView: UIKit.UITextView)
   @_Concurrency.MainActor(unsafe) @objc public func textView(_ textView: UIKit.UITextView, shouldChangeTextIn range: Foundation.NSRange, replacementText text: Swift.String) -> Swift.Bool
+  @_Concurrency.MainActor(unsafe) @objc public func textView(_ textView: UIKit.UITextView, shouldInteractWith URL: Foundation.URL, in characterRange: Foundation.NSRange, interaction: UIKit.UITextItemInteraction) -> Swift.Bool
+  @_Concurrency.MainActor(unsafe) @objc public func textViewDidChangeSelection(_ textView: UIKit.UITextView)
   @_Concurrency.MainActor(unsafe) open func didSelectActionSheetItem(index: Swift.Int, identifier: Swift.Int)
   @objc deinit
 }
@@ -3194,10 +3356,12 @@ public protocol SBUBaseChannelViewModelDelegate : SendbirdUIKit.SBUCommonViewMod
   public func loadNextMessages()
   public func reloadMessageList()
   open func sendUserMessage(text: Swift.String, parentMessage: SendBirdSDK.SBDBaseMessage? = nil)
+  open func sendUserMessage(text: Swift.String, mentionedMessageTemplate: Swift.String, mentionedUserIds: [Swift.String], parentMessage: SendBirdSDK.SBDBaseMessage? = nil)
   open func sendUserMessage(messageParams: SendBirdSDK.SBDUserMessageParams, parentMessage: SendBirdSDK.SBDBaseMessage? = nil)
   open func sendFileMessage(fileData: Foundation.Data?, fileName: Swift.String, mimeType: Swift.String, parentMessage: SendBirdSDK.SBDBaseMessage? = nil)
   open func sendFileMessage(messageParams: SendBirdSDK.SBDFileMessageParams, parentMessage: SendBirdSDK.SBDBaseMessage? = nil)
   public func updateUserMessage(message: SendBirdSDK.SBDUserMessage, text: Swift.String)
+  open func updateUserMessage(message: SendBirdSDK.SBDUserMessage, text: Swift.String, mentionedMessageTemplate: Swift.String, mentionedUserIds: [Swift.String])
   public func updateUserMessage(message: SendBirdSDK.SBDUserMessage, messageParams: SendBirdSDK.SBDUserMessageParams)
   public func resendMessage(failedMessage: SendBirdSDK.SBDBaseMessage)
   public func deleteMessage(message: SendBirdSDK.SBDBaseMessage)
@@ -3642,9 +3806,11 @@ extension SendbirdUIKit.SBUGroupChannelSettingsModule {
   public init(member: SendBirdSDK.SBDMember)
   public init(sender: SendBirdSDK.SBDSender)
   public func refinedNickname() -> Swift.String
+  public func mentionedNickname() -> Swift.String
   @objc override dynamic public var description: Swift.String {
     @objc get
   }
+  public static func convertUsers(_ users: [SendBirdSDK.SBDUser]?) -> [SendbirdUIKit.SBUUser]
   @objc deinit
 }
 @_hasMissingDesignatedInitializers public class SBUGlobals {
@@ -3664,6 +3830,11 @@ extension SendbirdUIKit.SBUGroupChannelSettingsModule {
   public static var isImageCompressionEnabled: Swift.Bool
   public static var imageCompressionRate: CoreGraphics.CGFloat
   public static var imageResizingSize: CoreGraphics.CGSize
+  public static var userMentionConfig: SendbirdUIKit.SBUUserMentionConfiguration?
+  public static var isUserMentionEnabled: Swift.Bool {
+    get
+    set
+  }
   @objc deinit
 }
 public typealias AlertButtonHandler = (_ info: Any?) -> Swift.Void
@@ -3797,6 +3968,11 @@ public class SBUAlertButtonItem {
   public static var ChannelType_Group: Swift.String
   public static var ChannelType_SuperGroup: Swift.String
   public static var ChannelType_Broadcast: Swift.String
+  @_hasMissingDesignatedInitializers public class Mention {
+    public static let Trigger_Key: Swift.String
+    public static var Limit_Guide: Swift.String
+    @objc deinit
+  }
   @objc deinit
 }
 @available(*, deprecated, renamed: "SBUGroupChannelViewModelDataSource")
@@ -3809,6 +3985,7 @@ public protocol SBUGroupChannelViewModelDataSource : SendbirdUIKit.SBUBaseChanne
   func groupChannelViewModel(_ viewModel: SendbirdUIKit.SBUGroupChannelViewModel, startingPointIndexPathsForChannel channel: SendBirdSDK.SBDGroupChannel?) -> [Foundation.IndexPath]?
 }
 public protocol SBUGroupChannelViewModelDelegate : SendbirdUIKit.SBUBaseChannelViewModelDelegate {
+  func groupChannelViewModel(_ viewModel: SendbirdUIKit.SBUGroupChannelViewModel, didReceiveSuggestedMentions users: [SendbirdUIKit.SBUUser]?)
 }
 @objc open class SBUGroupChannelViewModel : SendbirdUIKit.SBUBaseChannelViewModel {
   weak public var delegate: SendbirdUIKit.SBUGroupChannelViewModelDelegate? {
@@ -3830,6 +4007,8 @@ public protocol SBUGroupChannelViewModelDelegate : SendbirdUIKit.SBUBaseChannelV
   public func markAsRead()
   public func startTypingMessage()
   public func endTypingMessage()
+  public func loadSuggestedMentions(with filterText: Swift.String)
+  public func cancelLoadingSuggestedMentions()
   override public func hasNext() -> Swift.Bool
   override public func hasPrevious() -> Swift.Bool
 }
@@ -4181,7 +4360,7 @@ public class SBUUnknownMessageCellParams : SendbirdUIKit.SBUBaseMessageCellParam
     get
   }
 }
-@objc public enum UserListType : Swift.Int {
+public enum UserListType : Swift.Hashable {
   case none
   case createChannel
   case channelMembers
@@ -4191,9 +4370,10 @@ public class SBUUnknownMessageCellParams : SendbirdUIKit.SBUBaseMessageCellParam
   case mutedMembers
   case bannedMembers
   case participants
-  public init?(rawValue: Swift.Int)
-  public typealias RawValue = Swift.Int
-  public var rawValue: Swift.Int {
+  case suggestedMention(_: Swift.Bool)
+  public static func == (a: SendbirdUIKit.UserListType, b: SendbirdUIKit.UserListType) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
     get
   }
 }
@@ -4390,6 +4570,7 @@ public protocol SBUGroupChannelModuleListDelegate : SendbirdUIKit.SBUBaseChannel
   func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, didTapEmoji emojiKey: Swift.String, messageCell: SendbirdUIKit.SBUBaseMessageCell)
   func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, didLongTapEmoji emojiKey: Swift.String, messageCell: SendbirdUIKit.SBUBaseMessageCell)
   func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, didTapMoreEmojiForCell messageCell: SendbirdUIKit.SBUBaseMessageCell)
+  func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, didTapMentionUser user: SendbirdUIKit.SBUUser)
 }
 public protocol SBUGroupChannelModuleListDataSource : SendbirdUIKit.SBUBaseChannelModuleListDataSource {
   func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, highlightInfoInTableView tableView: UIKit.UITableView) -> SendbirdUIKit.SBUHighlightMessageInfo?
@@ -4457,11 +4638,16 @@ extension UIKit.UINavigationController {
 }
 public protocol SBUGroupChannelModuleInputDelegate : SendbirdUIKit.SBUBaseChannelModuleInputDelegate {
   func groupChannelModule(_ inputComponent: SendbirdUIKit.SBUGroupChannelModule.Input, didPickFileData fileData: Foundation.Data?, fileName: Swift.String, mimeType: Swift.String, parentMessage: SendBirdSDK.SBDBaseMessage?)
+  func groupChannelModule(_ inputComponent: SendbirdUIKit.SBUGroupChannelModule.Input, didTapSend text: Swift.String, mentionedMessageTemplate: Swift.String, mentionedUserIds: [Swift.String], parentMessage: SendBirdSDK.SBDBaseMessage?)
+  func groupChannelModule(_ inputComponent: SendbirdUIKit.SBUGroupChannelModule.Input, didTapEdit text: Swift.String, mentionedMessageTemplate: Swift.String, mentionedUserIds: [Swift.String])
+  func groupChannelModule(_ inputComponent: SendbirdUIKit.SBUGroupChannelModule.Input, shouldLoadSuggestedMentions filterText: Swift.String)
+  func groupChannelModuleShouldStopSuggestingMention(_ inputComponent: SendbirdUIKit.SBUGroupChannelModule.Input)
 }
 public protocol SBUGroupChannelModuleInputDataSource : SendbirdUIKit.SBUBaseChannelModuleInputDataSource {
 }
 extension SendbirdUIKit.SBUGroupChannelModule {
-  @objc @_inheritsConvenienceInitializers @objcMembers @_Concurrency.MainActor(unsafe) open class Input : SendbirdUIKit.SBUBaseChannelModule.Input {
+  @_inheritsConvenienceInitializers @objc(SBUGroupChannelModuleInput) @objcMembers @_Concurrency.MainActor(unsafe) open class Input : SendbirdUIKit.SBUBaseChannelModule.Input, SendbirdUIKit.SBUMentionManagerDelegate, SendbirdUIKit.SBUSuggestedMentionListDelegate {
+    @objc @_Concurrency.MainActor(unsafe) public var suggestedMentionList: SendbirdUIKit.SBUSuggestedMentionList?
     @objc @_Concurrency.MainActor(unsafe) public var currentQuotedMessage: SendBirdSDK.SBDBaseMessage? {
       @objc get
     }
@@ -4476,7 +4662,9 @@ extension SendbirdUIKit.SBUGroupChannelModule {
       get
       set
     }
-    @_Concurrency.MainActor(unsafe) open func configure(delegate: SendbirdUIKit.SBUGroupChannelModuleInputDelegate, dataSource: SendbirdUIKit.SBUGroupChannelModuleInputDataSource, theme: SendbirdUIKit.SBUChannelTheme)
+    @_Concurrency.MainActor(unsafe) weak public var mentionManagerDataSource: SendbirdUIKit.SBUMentionManagerDataSource?
+    @objc @_Concurrency.MainActor(unsafe) public var mentionManager: SendbirdUIKit.SBUMentionManager?
+    @_Concurrency.MainActor(unsafe) open func configure(delegate: SendbirdUIKit.SBUGroupChannelModuleInputDelegate, dataSource: SendbirdUIKit.SBUGroupChannelModuleInputDataSource, mentionManagerDataSource: SendbirdUIKit.SBUMentionManagerDataSource? = nil, theme: SendbirdUIKit.SBUChannelTheme)
     @_Concurrency.MainActor(unsafe) @objc override open func setupViews()
     @_Concurrency.MainActor(unsafe) @objc override open func setupLayouts()
     @_Concurrency.MainActor(unsafe) @objc override open func pickImageFile(info: [UIKit.UIImagePickerController.InfoKey : Any])
@@ -4490,10 +4678,28 @@ extension SendbirdUIKit.SBUGroupChannelModule {
     @_Concurrency.MainActor(unsafe) @objc override open func pickDocumentFile(documentUrls: [Foundation.URL])
     @_Concurrency.MainActor(unsafe) @objc override open func pickImageData(_ data: Foundation.Data)
     @_Concurrency.MainActor(unsafe) @objc override open func pickVideoURL(_ url: Foundation.URL)
+    @_Concurrency.MainActor(unsafe) @objc override open func updateMessageInputMode(_ mode: SendbirdUIKit.SBUMessageInputMode, message: SendBirdSDK.SBDBaseMessage? = nil)
     @_Concurrency.MainActor(unsafe) @objc override open func updateMessageInputModeState()
     @_Concurrency.MainActor(unsafe) @objc override open func updateFrozenModeState()
     @objc @_Concurrency.MainActor(unsafe) open func updateBroadcastModeState()
     @objc @_Concurrency.MainActor(unsafe) open func updateMutedModeState()
+    @objc @_Concurrency.MainActor(unsafe) open func setupMentionManager()
+    @objc @_Concurrency.MainActor(unsafe) open func handlePendingMentionSuggestion(with members: [SendbirdUIKit.SBUUser]?)
+    @objc @_Concurrency.MainActor(unsafe) open func updateSuggestedMentionList(with users: [SendbirdUIKit.SBUUser])
+    @objc @_Concurrency.MainActor(unsafe) open func presentSuggestedMentionList()
+    @objc @_Concurrency.MainActor(unsafe) open func dismissSuggestedMentionList()
+    @_Concurrency.MainActor(unsafe) @objc override dynamic open func point(inside point: CoreGraphics.CGPoint, with event: UIKit.UIEvent?) -> Swift.Bool
+    @_Concurrency.MainActor(unsafe) @objc override open func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, shouldChangeTextIn range: Foundation.NSRange, replacementText text: Swift.String) -> Swift.Bool
+    @_Concurrency.MainActor(unsafe) @objc override open func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, shouldInteractWith url: Foundation.URL, in characterRange: Foundation.NSRange, interaction: UIKit.UITextItemInteraction) -> Swift.Bool
+    @_Concurrency.MainActor(unsafe) @objc override open func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, didChangeSelection range: Foundation.NSRange)
+    @_Concurrency.MainActor(unsafe) @objc override open func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, didSelectSend text: Swift.String)
+    @objc @_Concurrency.MainActor(unsafe) open func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, didSelectSend text: Foundation.NSAttributedString, mentionManager: SendbirdUIKit.SBUMentionManager)
+    @_Concurrency.MainActor(unsafe) @objc override open func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, didSelectEdit text: Swift.String)
+    @objc @_Concurrency.MainActor(unsafe) open func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, didSelectEdit text: Foundation.NSAttributedString, mentionManager: SendbirdUIKit.SBUMentionManager)
+    @objc @_Concurrency.MainActor(unsafe) open func mentionManager(_ manager: SendbirdUIKit.SBUMentionManager, didChangeSuggestedMention users: [SendbirdUIKit.SBUUser], filteredText: Swift.String?, isTriggered: Swift.Bool)
+    @objc @_Concurrency.MainActor(unsafe) open func mentionManager(_ manager: SendbirdUIKit.SBUMentionManager, didInsertMentionsTo textView: UIKit.UITextView)
+    @objc @_Concurrency.MainActor(unsafe) open func mentionManager(_ manager: SendbirdUIKit.SBUMentionManager, shouldLoadSuggestedMentions keyword: Swift.String)
+    @objc @_Concurrency.MainActor(unsafe) open func suggestedUserList(_ list: SendbirdUIKit.SBUSuggestedMentionList, didSelectUser user: SendbirdUIKit.SBUUser)
     @objc deinit
   }
 }
@@ -4666,6 +4872,14 @@ extension SendbirdUIKit.SBUGroupChannelViewController {
   @_Concurrency.MainActor(unsafe) dynamic open func setFileMessageCellGestures(_ cell: SendbirdUIKit.SBUFileMessageCell, fileMessage: SendBirdSDK.SBDFileMessage, indexPath: Foundation.IndexPath)
   @objc @available(*, deprecated, renamed: "listComponent.setMessageCellGestures(_:message:indexPath:)", message: "This function has been moved to `SBUGroupChannelModule.List` and replaced to `setMessageCellGestures(_:message:indexPath:)`.")
   @_Concurrency.MainActor(unsafe) dynamic open func setUnkownMessageCellGestures(_ cell: SendbirdUIKit.SBUUnknownMessageCell, unknownMessage: SendBirdSDK.SBDBaseMessage, indexPath: Foundation.IndexPath)
+}
+@_hasMissingDesignatedInitializers public class SBUMention : Swift.Equatable {
+  public var range: Foundation.NSRange
+  public var user: SendbirdUIKit.SBUUser {
+    get
+  }
+  public static func == (lhs: SendbirdUIKit.SBUMention, rhs: SendbirdUIKit.SBUMention) -> Swift.Bool
+  @objc deinit
 }
 @objc @_inheritsConvenienceInitializers @IBDesignable @_Concurrency.MainActor(unsafe) open class SBUBaseMessageCell : SendbirdUIKit.SBUTableViewCell, SendbirdUIKit.SBUMessageCellProtocol {
   @objc @_Concurrency.MainActor(unsafe) public var message: SendBirdSDK.SBDBaseMessage
@@ -5075,6 +5289,10 @@ public class SBUQuoteMessageInputViewParams {
     get
   }
   public init(message: SendBirdSDK.SBDBaseMessage)
+  @objc deinit
+}
+public class SBUMentionConfiguration {
+  public init()
   @objc deinit
 }
 extension SendbirdUIKit.SBUTableViewCell {
@@ -5497,7 +5715,7 @@ public class SBUChannelCellTheme {
   public static var dark: SendbirdUIKit.SBUChannelCellTheme {
     get
   }
-  public init(backgroundColor: UIKit.UIColor = SBUColorSet.background50, titleFont: UIKit.UIFont = SBUFontSet.subtitle1, titleTextColor: UIKit.UIColor = SBUColorSet.onlight01, memberCountFont: UIKit.UIFont = SBUFontSet.caption1, memberCountTextColor: UIKit.UIColor = SBUColorSet.onlight02, lastUpdatedTimeFont: UIKit.UIFont = SBUFontSet.caption2, lastUpdatedTimeTextColor: UIKit.UIColor = SBUColorSet.onlight02, messageFont: UIKit.UIFont = SBUFontSet.body3, messageTextColor: UIKit.UIColor = SBUColorSet.onlight03, broadcastMarkTintColor: UIKit.UIColor = SBUColorSet.secondary300, freezeStateTintColor: UIKit.UIColor = SBUColorSet.primary300, unreadCountBackgroundColor: UIKit.UIColor = SBUColorSet.primary300, unreadCountTextColor: UIKit.UIColor = SBUColorSet.ondark01, unreadCountFont: UIKit.UIFont = SBUFontSet.caption1, separatorLineColor: UIKit.UIColor = SBUColorSet.onlight04)
+  public init(backgroundColor: UIKit.UIColor = SBUColorSet.background50, titleFont: UIKit.UIFont = SBUFontSet.subtitle1, titleTextColor: UIKit.UIColor = SBUColorSet.onlight01, memberCountFont: UIKit.UIFont = SBUFontSet.caption1, memberCountTextColor: UIKit.UIColor = SBUColorSet.onlight02, lastUpdatedTimeFont: UIKit.UIFont = SBUFontSet.caption2, lastUpdatedTimeTextColor: UIKit.UIColor = SBUColorSet.onlight02, messageFont: UIKit.UIFont = SBUFontSet.body3, messageTextColor: UIKit.UIColor = SBUColorSet.onlight03, broadcastMarkTintColor: UIKit.UIColor = SBUColorSet.secondary300, freezeStateTintColor: UIKit.UIColor = SBUColorSet.primary300, unreadCountBackgroundColor: UIKit.UIColor = SBUColorSet.primary300, unreadCountTextColor: UIKit.UIColor = SBUColorSet.ondark01, unreadCountFont: UIKit.UIFont = SBUFontSet.caption1, unreadMentionFont: UIKit.UIFont = SBUFontSet.h3, unreadMentionColor: UIKit.UIColor = SBUColorSet.primary300, separatorLineColor: UIKit.UIColor = SBUColorSet.onlight04)
   public var backgroundColor: UIKit.UIColor
   public var titleFont: UIKit.UIFont
   public var titleTextColor: UIKit.UIColor
@@ -5512,6 +5730,8 @@ public class SBUChannelCellTheme {
   public var unreadCountBackgroundColor: UIKit.UIColor
   public var unreadCountTextColor: UIKit.UIColor
   public var unreadCountFont: UIKit.UIFont
+  public var unreadMentionTextFont: UIKit.UIFont
+  public var unreadMentionTextColor: UIKit.UIColor
   public var separatorLineColor: UIKit.UIColor
   @objc deinit
 }
@@ -5525,7 +5745,7 @@ public class SBUChannelTheme {
   public static var overlay: SendbirdUIKit.SBUChannelTheme {
     get
   }
-  public init(statusBarStyle: UIKit.UIStatusBarStyle = .default, navigationBarTintColor: UIKit.UIColor = SBUColorSet.background50, navigationBarShadowColor: UIKit.UIColor = SBUColorSet.onlight04, leftBarButtonTintColor: UIKit.UIColor = SBUColorSet.primary300, rightBarButtonTintColor: UIKit.UIColor = SBUColorSet.primary300, backgroundColor: UIKit.UIColor = SBUColorSet.background50, removeItemColor: UIKit.UIColor = SBUColorSet.error300, deleteItemColor: UIKit.UIColor = SBUColorSet.error300, cancelItemColor: UIKit.UIColor = SBUColorSet.primary300, alertRemoveColor: UIKit.UIColor = SBUColorSet.error300, alertCancelColor: UIKit.UIColor = SBUColorSet.primary300, menuTextColor: UIKit.UIColor = SBUColorSet.onlight01, menuItemTintColor: UIKit.UIColor = SBUColorSet.onlight01, menuItemDisabledColor: UIKit.UIColor = SBUColorSet.ondark04, channelStateBannerFont: UIKit.UIFont = SBUFontSet.caption2, channelStateBannerTextColor: UIKit.UIColor = SBUColorSet.onlight01, channelStateBannerBackgroundColor: UIKit.UIColor = SBUColorSet.information)
+  public init(statusBarStyle: UIKit.UIStatusBarStyle = .default, navigationBarTintColor: UIKit.UIColor = SBUColorSet.background50, navigationBarShadowColor: UIKit.UIColor = SBUColorSet.onlight04, leftBarButtonTintColor: UIKit.UIColor = SBUColorSet.primary300, rightBarButtonTintColor: UIKit.UIColor = SBUColorSet.primary300, backgroundColor: UIKit.UIColor = SBUColorSet.background50, removeItemColor: UIKit.UIColor = SBUColorSet.error300, deleteItemColor: UIKit.UIColor = SBUColorSet.error300, cancelItemColor: UIKit.UIColor = SBUColorSet.primary300, alertRemoveColor: UIKit.UIColor = SBUColorSet.error300, alertCancelColor: UIKit.UIColor = SBUColorSet.primary300, menuTextColor: UIKit.UIColor = SBUColorSet.onlight01, menuItemTintColor: UIKit.UIColor = SBUColorSet.onlight01, menuItemDisabledColor: UIKit.UIColor = SBUColorSet.ondark04, channelStateBannerFont: UIKit.UIFont = SBUFontSet.caption2, channelStateBannerTextColor: UIKit.UIColor = SBUColorSet.onlight01, channelStateBannerBackgroundColor: UIKit.UIColor = SBUColorSet.information, mentionLimitGuideTextFont: UIKit.UIFont = SBUFontSet.body1, mentionLimitGuideTextColor: UIKit.UIColor = SBUColorSet.onlight02, separatorColor: UIKit.UIColor = SBUColorSet.onlight04)
   public var statusBarStyle: UIKit.UIStatusBarStyle
   public var navigationBarTintColor: UIKit.UIColor
   public var navigationBarShadowColor: UIKit.UIColor
@@ -5543,6 +5763,9 @@ public class SBUChannelTheme {
   public var channelStateBannerFont: UIKit.UIFont
   public var channelStateBannerTextColor: UIKit.UIColor
   public var channelStateBannerBackgroundColor: UIKit.UIColor
+  public var mentionLimitGuideTextFont: UIKit.UIFont
+  public var mentionLimitGuideTextColor: UIKit.UIColor
+  public var separatorColor: UIKit.UIColor
   @objc deinit
 }
 public class SBUMessageInputTheme {
@@ -5555,7 +5778,7 @@ public class SBUMessageInputTheme {
   public static var overlay: SendbirdUIKit.SBUMessageInputTheme {
     get
   }
-  public init(backgroundColor: UIKit.UIColor = SBUColorSet.background50, textFieldBackgroundColor: UIKit.UIColor = SBUColorSet.background100, textFieldPlaceholderColor: UIKit.UIColor = SBUColorSet.onlight03, textFieldPlaceholderFont: UIKit.UIFont = SBUFontSet.body3, textFieldDisabledColor: UIKit.UIColor = SBUColorSet.onlight04, textFieldTintColor: UIKit.UIColor = SBUColorSet.primary300, textFieldTextColor: UIKit.UIColor = SBUColorSet.onlight01, textFieldBorderColor: UIKit.UIColor = SBUColorSet.background100, buttonTintColor: UIKit.UIColor = SBUColorSet.primary300, buttonDisabledTintColor: UIKit.UIColor = SBUColorSet.onlight04, cancelButtonFont: UIKit.UIFont = SBUFontSet.button2, saveButtonFont: UIKit.UIFont = SBUFontSet.button2, saveButtonTextColor: UIKit.UIColor = SBUColorSet.ondark01, channelViewDividerColor: UIKit.UIColor = SBUColorSet.onlight04, quotedFileMessageThumbnailBackgroundColor: UIKit.UIColor = SBUColorSet.background100, quotedFileMessageThumbnailTintColor: UIKit.UIColor = SBUColorSet.onlight02, replyToTextColor: UIKit.UIColor = SBUColorSet.onlight01, replyToTextFont: UIKit.UIFont = SBUFontSet.caption1, quotedMessageTextColor: UIKit.UIColor = SBUColorSet.onlight03, quotedMessageTextFont: UIKit.UIFont = SBUFontSet.caption2, closeReplyButtonColor: UIKit.UIColor = SBUColorSet.onlight02)
+  public init(backgroundColor: UIKit.UIColor = SBUColorSet.background50, textFieldBackgroundColor: UIKit.UIColor = SBUColorSet.background100, textFieldPlaceholderColor: UIKit.UIColor = SBUColorSet.onlight03, textFieldPlaceholderFont: UIKit.UIFont = SBUFontSet.body3, textFieldDisabledColor: UIKit.UIColor = SBUColorSet.onlight04, textFieldTintColor: UIKit.UIColor = SBUColorSet.primary300, textFieldTextColor: UIKit.UIColor = SBUColorSet.onlight01, textFieldBorderColor: UIKit.UIColor = SBUColorSet.background100, textFieldFont: UIKit.UIFont = SBUFontSet.body3, buttonTintColor: UIKit.UIColor = SBUColorSet.primary300, buttonDisabledTintColor: UIKit.UIColor = SBUColorSet.onlight04, cancelButtonFont: UIKit.UIFont = SBUFontSet.button2, saveButtonFont: UIKit.UIFont = SBUFontSet.button2, saveButtonTextColor: UIKit.UIColor = SBUColorSet.ondark01, channelViewDividerColor: UIKit.UIColor = SBUColorSet.onlight04, quotedFileMessageThumbnailBackgroundColor: UIKit.UIColor = SBUColorSet.background100, quotedFileMessageThumbnailTintColor: UIKit.UIColor = SBUColorSet.onlight02, replyToTextColor: UIKit.UIColor = SBUColorSet.onlight01, replyToTextFont: UIKit.UIFont = SBUFontSet.caption1, quotedMessageTextColor: UIKit.UIColor = SBUColorSet.onlight03, quotedMessageTextFont: UIKit.UIFont = SBUFontSet.caption2, closeReplyButtonColor: UIKit.UIColor = SBUColorSet.onlight02, mentionTextFont: UIKit.UIFont = SBUFontSet.body2, mentionTextColor: UIKit.UIColor = SBUColorSet.onlight01, mentionTextBackgroundColor: UIKit.UIColor = .clear)
   public var backgroundColor: UIKit.UIColor
   public var textFieldBackgroundColor: UIKit.UIColor
   public var textFieldPlaceholderColor: UIKit.UIColor
@@ -5564,6 +5787,7 @@ public class SBUMessageInputTheme {
   public var textFieldTintColor: UIKit.UIColor
   public var textFieldTextColor: UIKit.UIColor
   public var textFieldBorderColor: UIKit.UIColor
+  public var textFieldFont: UIKit.UIFont
   public var buttonTintColor: UIKit.UIColor
   public var buttonDisabledTintColor: UIKit.UIColor
   public var cancelButtonFont: UIKit.UIFont
@@ -5577,6 +5801,9 @@ public class SBUMessageInputTheme {
   public var quotedMessageTextColor: UIKit.UIColor
   public var quotedMessageTextFont: UIKit.UIFont
   public var closeReplyButtonColor: UIKit.UIColor
+  public var mentionTextFont: UIKit.UIFont
+  public var mentionTextColor: UIKit.UIColor
+  public var mentionTextBackgroundColor: UIKit.UIColor
   @objc deinit
 }
 public class SBUMessageCellTheme {
@@ -5589,7 +5816,7 @@ public class SBUMessageCellTheme {
   public static var overlay: SendbirdUIKit.SBUMessageCellTheme {
     get
   }
-  public init(backgroundColor: UIKit.UIColor = SBUColorSet.background50, leftBackgroundColor: UIKit.UIColor = SBUColorSet.background100, leftPressedBackgroundColor: UIKit.UIColor = SBUColorSet.primary100, rightBackgroundColor: UIKit.UIColor = SBUColorSet.primary300, rightPressedBackgroundColor: UIKit.UIColor = SBUColorSet.primary400, openChannelBackgroundColor: UIKit.UIColor = .clear, openChannelPressedBackgroundColor: UIKit.UIColor = SBUColorSet.background100, dateFont: UIKit.UIFont = SBUFontSet.caption1, dateTextColor: UIKit.UIColor = SBUColorSet.ondark01, dateBackgroundColor: UIKit.UIColor = SBUColorSet.overlay02, userPlaceholderBackgroundColor: UIKit.UIColor = SBUColorSet.background300, userPlaceholderTintColor: UIKit.UIColor = SBUColorSet.ondark01, userNameFont: UIKit.UIFont = SBUFontSet.caption1, userNameTextColor: UIKit.UIColor = SBUColorSet.onlight02, currentUserNameTextColor: UIKit.UIColor = SBUColorSet.secondary300, timeFont: UIKit.UIFont = SBUFontSet.caption4, timeTextColor: UIKit.UIColor = SBUColorSet.onlight03, pendingStateColor: UIKit.UIColor = SBUColorSet.primary300, failedStateColor: UIKit.UIColor = SBUColorSet.error300, succeededStateColor: UIKit.UIColor = SBUColorSet.onlight03, readReceiptStateColor: UIKit.UIColor = SBUColorSet.secondary300, deliveryReceiptStateColor: UIKit.UIColor = SBUColorSet.onlight03, userMessageFont: UIKit.UIFont = SBUFontSet.body3, userMessageLeftTextColor: UIKit.UIColor = SBUColorSet.onlight01, userMessageLeftEditTextColor: UIKit.UIColor = SBUColorSet.onlight02, userMessageLeftHighlightTextColor: UIKit.UIColor = SBUColorSet.onlight01, userMessageRightTextColor: UIKit.UIColor = SBUColorSet.ondark01, userMessageRightEditTextColor: UIKit.UIColor = SBUColorSet.ondark02, userMessageRightHighlightTextColor: UIKit.UIColor = SBUColorSet.onlight01, fileIconBackgroundColor: UIKit.UIColor = SBUColorSet.background50, fileImageBackgroundColor: UIKit.UIColor = SBUColorSet.ondark01, fileImageIconColor: UIKit.UIColor = SBUColorSet.onlight02, fileIconColor: UIKit.UIColor = SBUColorSet.primary300, fileMessageNameFont: UIKit.UIFont = SBUFontSet.body3, fileMessageLeftTextColor: UIKit.UIColor = SBUColorSet.onlight01, fileMessageRightTextColor: UIKit.UIColor = SBUColorSet.ondark01, fileMessagePlaceholderColor: UIKit.UIColor = SBUColorSet.onlight02, adminMessageFont: UIKit.UIFont = SBUFontSet.caption2, adminMessageTextColor: UIKit.UIColor = SBUColorSet.onlight02, unknownMessageDescFont: UIKit.UIFont = SBUFontSet.body3, unknownMessageDescTextColor: UIKit.UIColor = SBUColorSet.onlight03, ogTitleFont: UIKit.UIFont = SBUFontSet.body2, ogTitleColor: UIKit.UIColor = SBUColorSet.onlight01, ogDescriptionFont: UIKit.UIFont = SBUFontSet.caption2, ogDescriptionColor: UIKit.UIColor = SBUColorSet.onlight01, ogURLAddressFont: UIKit.UIFont = SBUFontSet.caption2, ogURLAddressColor: UIKit.UIColor = SBUColorSet.onlight02, linkColor: UIKit.UIColor = SBUColorSet.primary300, contentBackgroundColor: UIKit.UIColor = SBUColorSet.background100, pressedContentBackgroundColor: UIKit.UIColor = SBUColorSet.background300, quotedMessageBackgroundColor: UIKit.UIColor = SBUColorSet.background100.withAlphaComponent(0.5), quotedFileMessageThumbnailColor: UIKit.UIColor = SBUColorSet.onlight02, quotedMessageTextColor: UIKit.UIColor = SBUColorSet.onlight03, quotedMessageTextFont: UIKit.UIFont = SBUFontSet.body3, repliedIconColor: UIKit.UIColor = SBUColorSet.onlight03, repliedToTextColor: UIKit.UIColor = SBUColorSet.onlight03, repliedToTextFont: UIKit.UIFont = SBUFontSet.caption1)
+  public init(backgroundColor: UIKit.UIColor = SBUColorSet.background50, leftBackgroundColor: UIKit.UIColor = SBUColorSet.background100, leftPressedBackgroundColor: UIKit.UIColor = SBUColorSet.primary100, rightBackgroundColor: UIKit.UIColor = SBUColorSet.primary300, rightPressedBackgroundColor: UIKit.UIColor = SBUColorSet.primary400, openChannelBackgroundColor: UIKit.UIColor = .clear, openChannelPressedBackgroundColor: UIKit.UIColor = SBUColorSet.background100, dateFont: UIKit.UIFont = SBUFontSet.caption1, dateTextColor: UIKit.UIColor = SBUColorSet.ondark01, dateBackgroundColor: UIKit.UIColor = SBUColorSet.overlay02, userPlaceholderBackgroundColor: UIKit.UIColor = SBUColorSet.background300, userPlaceholderTintColor: UIKit.UIColor = SBUColorSet.ondark01, userNameFont: UIKit.UIFont = SBUFontSet.caption1, userNameTextColor: UIKit.UIColor = SBUColorSet.onlight02, currentUserNameTextColor: UIKit.UIColor = SBUColorSet.secondary300, timeFont: UIKit.UIFont = SBUFontSet.caption4, timeTextColor: UIKit.UIColor = SBUColorSet.onlight03, pendingStateColor: UIKit.UIColor = SBUColorSet.primary300, failedStateColor: UIKit.UIColor = SBUColorSet.error300, succeededStateColor: UIKit.UIColor = SBUColorSet.onlight03, readReceiptStateColor: UIKit.UIColor = SBUColorSet.secondary300, deliveryReceiptStateColor: UIKit.UIColor = SBUColorSet.onlight03, userMessageFont: UIKit.UIFont = SBUFontSet.body3, userMessageLeftTextColor: UIKit.UIColor = SBUColorSet.onlight01, userMessageLeftEditTextColor: UIKit.UIColor = SBUColorSet.onlight02, userMessageLeftHighlightTextColor: UIKit.UIColor = SBUColorSet.onlight01, userMessageRightTextColor: UIKit.UIColor = SBUColorSet.ondark01, userMessageRightEditTextColor: UIKit.UIColor = SBUColorSet.ondark02, userMessageRightHighlightTextColor: UIKit.UIColor = SBUColorSet.onlight01, fileIconBackgroundColor: UIKit.UIColor = SBUColorSet.background50, fileImageBackgroundColor: UIKit.UIColor = SBUColorSet.ondark01, fileImageIconColor: UIKit.UIColor = SBUColorSet.onlight02, fileIconColor: UIKit.UIColor = SBUColorSet.primary300, fileMessageNameFont: UIKit.UIFont = SBUFontSet.body3, fileMessageLeftTextColor: UIKit.UIColor = SBUColorSet.onlight01, fileMessageRightTextColor: UIKit.UIColor = SBUColorSet.ondark01, fileMessagePlaceholderColor: UIKit.UIColor = SBUColorSet.onlight02, adminMessageFont: UIKit.UIFont = SBUFontSet.caption2, adminMessageTextColor: UIKit.UIColor = SBUColorSet.onlight02, unknownMessageDescFont: UIKit.UIFont = SBUFontSet.body3, unknownMessageDescTextColor: UIKit.UIColor = SBUColorSet.onlight03, ogTitleFont: UIKit.UIFont = SBUFontSet.body2, ogTitleColor: UIKit.UIColor = SBUColorSet.onlight01, ogDescriptionFont: UIKit.UIFont = SBUFontSet.caption2, ogDescriptionColor: UIKit.UIColor = SBUColorSet.onlight01, ogURLAddressFont: UIKit.UIFont = SBUFontSet.caption2, ogURLAddressColor: UIKit.UIColor = SBUColorSet.onlight02, linkColor: UIKit.UIColor = SBUColorSet.primary300, contentBackgroundColor: UIKit.UIColor = SBUColorSet.background100, pressedContentBackgroundColor: UIKit.UIColor = SBUColorSet.background300, quotedMessageBackgroundColor: UIKit.UIColor = SBUColorSet.background100.withAlphaComponent(0.5), quotedFileMessageThumbnailColor: UIKit.UIColor = SBUColorSet.onlight02, quotedMessageTextColor: UIKit.UIColor = SBUColorSet.onlight03, quotedMessageTextFont: UIKit.UIFont = SBUFontSet.body3, repliedIconColor: UIKit.UIColor = SBUColorSet.onlight03, repliedToTextColor: UIKit.UIColor = SBUColorSet.onlight03, repliedToTextFont: UIKit.UIFont = SBUFontSet.caption1, mentionTextFont: UIKit.UIFont = SBUFontSet.body4, mentionLeftTextColor: UIKit.UIColor = SBUColorSet.onlight01, mentionRightTextColor: UIKit.UIColor = SBUColorSet.ondark01, mentionLeftTextBackgroundColor: UIKit.UIColor = .clear, mentionRightTextBackgroundColor: UIKit.UIColor = .clear)
   public var backgroundColor: UIKit.UIColor
   public var leftBackgroundColor: UIKit.UIColor
   public var leftPressedBackgroundColor: UIKit.UIColor
@@ -5647,6 +5874,11 @@ public class SBUMessageCellTheme {
   public var quotedMessageTextColor: UIKit.UIColor
   public var repliedIconColor: UIKit.UIColor
   public var repliedToTextColor: UIKit.UIColor
+  public var mentionTextFont: UIKit.UIFont
+  public var mentionLeftTextColor: UIKit.UIColor
+  public var mentionRightTextColor: UIKit.UIColor
+  public var mentionLeftTextBackgroundColor: UIKit.UIColor
+  public var mentionRightTextBackgroundColor: UIKit.UIColor
   @objc deinit
 }
 public class SBUUserListTheme {
@@ -5682,12 +5914,15 @@ public class SBUUserCellTheme {
   public static var dark: SendbirdUIKit.SBUUserCellTheme {
     get
   }
-  public init(backgroundColor: UIKit.UIColor = SBUColorSet.background50, checkboxOnColor: UIKit.UIColor = SBUColorSet.primary300, checkboxOffColor: UIKit.UIColor = SBUColorSet.background300, userNameTextColor: UIKit.UIColor = SBUColorSet.onlight01, userNameFont: UIKit.UIFont = SBUFontSet.subtitle2, userPlaceholderBackgroundColor: UIKit.UIColor = SBUColorSet.background300, userPlaceholderTintColor: UIKit.UIColor = SBUColorSet.ondark01, mutedStateBackgroundColor: UIKit.UIColor = SBUColorSet.primary300.withAlphaComponent(0.6), mutedStateIconColor: UIKit.UIColor = SBUColorSet.ondark01, subInfoTextColor: UIKit.UIColor = SBUColorSet.onlight02, subInfoFont: UIKit.UIFont = SBUFontSet.body2, moreButtonColor: UIKit.UIColor = SBUColorSet.onlight01, moreButtonDisabledColor: UIKit.UIColor = SBUColorSet.onlight04, separateColor: UIKit.UIColor = SBUColorSet.onlight04)
+  public init(backgroundColor: UIKit.UIColor = SBUColorSet.background50, checkboxOnColor: UIKit.UIColor = SBUColorSet.primary300, checkboxOffColor: UIKit.UIColor = SBUColorSet.background300, nicknameTextColor: UIKit.UIColor = SBUColorSet.onlight01, nicknameFont: UIKit.UIFont = SBUFontSet.subtitle2, nonameTextColor: UIKit.UIColor = SBUColorSet.onlight03, userIdTextColor: UIKit.UIColor = SBUColorSet.onlight02, userIdFont: UIKit.UIFont = SBUFontSet.body3, userPlaceholderBackgroundColor: UIKit.UIColor = SBUColorSet.background300, userPlaceholderTintColor: UIKit.UIColor = SBUColorSet.ondark01, mutedStateBackgroundColor: UIKit.UIColor = SBUColorSet.primary300.withAlphaComponent(0.6), mutedStateIconColor: UIKit.UIColor = SBUColorSet.ondark01, subInfoTextColor: UIKit.UIColor = SBUColorSet.onlight02, subInfoFont: UIKit.UIFont = SBUFontSet.body2, moreButtonColor: UIKit.UIColor = SBUColorSet.onlight01, moreButtonDisabledColor: UIKit.UIColor = SBUColorSet.onlight04, separateColor: UIKit.UIColor = SBUColorSet.onlight04)
   public var backgroundColor: UIKit.UIColor
   public var checkboxOnColor: UIKit.UIColor
   public var checkboxOffColor: UIKit.UIColor
-  public var userNameTextColor: UIKit.UIColor
-  public var userNameFont: UIKit.UIFont
+  public var nicknameTextColor: UIKit.UIColor
+  public var nicknameTextFont: UIKit.UIFont
+  public var nonameTextColor: UIKit.UIColor
+  public var userIdTextColor: UIKit.UIColor
+  public var userIdTextFont: UIKit.UIFont
   public var userPlaceholderBackgroundColor: UIKit.UIColor
   public var userPlaceholderTintColor: UIKit.UIColor
   public var mutedStateBackgroundColor: UIKit.UIColor
@@ -5697,6 +5932,14 @@ public class SBUUserCellTheme {
   public var moreButtonColor: UIKit.UIColor
   public var moreButtonDisabledColor: UIKit.UIColor
   public var separateColor: UIKit.UIColor
+  @available(*, unavailable, renamed: "nicknameTextColor")
+  public var userNameTextColor: UIKit.UIColor {
+    get
+  }
+  @available(*, unavailable, renamed: "nicknameFont")
+  public var userNameFont: UIKit.UIFont {
+    get
+  }
   @objc deinit
 }
 public class SBUChannelSettingsTheme {
@@ -6560,9 +6803,6 @@ extension SendbirdUIKit.OpenChannelSettingItemType : Swift.RawRepresentable {}
 extension SendbirdUIKit.ModerationItemType : Swift.Equatable {}
 extension SendbirdUIKit.ModerationItemType : Swift.Hashable {}
 extension SendbirdUIKit.ModerationItemType : Swift.RawRepresentable {}
-extension SendbirdUIKit.UserListType : Swift.Equatable {}
-extension SendbirdUIKit.UserListType : Swift.Hashable {}
-extension SendbirdUIKit.UserListType : Swift.RawRepresentable {}
 extension SendbirdUIKit.ChannelMemberListType : Swift.Equatable {}
 extension SendbirdUIKit.ChannelMemberListType : Swift.Hashable {}
 extension SendbirdUIKit.ChannelMemberListType : Swift.RawRepresentable {}

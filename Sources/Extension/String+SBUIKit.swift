@@ -14,4 +14,54 @@ extension String {
             ($0 << 5) &+ $0 &+ Int($1)
         }
     }
+    
+    func regexMatchingList(regex: String) -> [String] {
+        do {
+            let regex = try NSRegularExpression(pattern: regex)
+            let results = regex.matches(in: self,
+                                        range: NSRange(self.startIndex..., in: self))
+            return results.map {
+                String(self[Range($0.range, in: self)!])
+            }
+        } catch let error {
+            SBULog.error("invalid regex: \(error.localizedDescription)")
+            return []
+        }
+    }
+    
+    func removingRegex(_ regex: String, replace: String = "") -> String {
+        // No use now
+        do {
+            let regex = try NSRegularExpression(pattern: regex, options: .caseInsensitive)
+            let range = NSRange(location: 0, length: count)
+            let removingRegexString = regex.stringByReplacingMatches(
+                in: self,
+                options: [],
+                range: range,
+                withTemplate: replace
+            )
+            return removingRegexString
+        } catch let error {
+            SBULog.error("failed removing regex: \(error.localizedDescription)")
+            return self
+        }
+    }
+    
+    func unwrappingRegex(_ regex: String) -> String? {
+        // Reference: https://stackoverflow.com/a/40040472
+        guard let regex = try? NSRegularExpression(pattern: regex, options: []) else { return nil }
+        let nsString = self as NSString
+        let matches = regex.matches(in: self, options: [], range: NSMakeRange(0, nsString.length))
+        let results = matches.map { result in
+            (0..<result.numberOfRanges).map {
+                result.range(at: $0).location != NSNotFound
+                    ? nsString.substring(with: result.range(at: $0))
+                    : ""
+            }
+        }
+
+        guard !results.isEmpty, let result = results.first, result.count > 2 else { return nil }
+        let unwrappedString = result[1]
+        return unwrappedString
+    }
 }

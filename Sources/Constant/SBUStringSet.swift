@@ -247,4 +247,12 @@ public class SBUStringSet {
     public static var ChannelType_Group = "Group"
     public static var ChannelType_SuperGroup = "Super group"
     public static var ChannelType_Broadcast = "Broadcast"
+    
+    public class Mention {
+        /// "@"
+        public static let Trigger_Key: String = "@"
+        
+        /// e.g., "You can mention up to 10 times at a time."
+        public static var Limit_Guide = "You can mention up to \(SBUGlobals.userMentionConfig?.mentionLimit ?? 10) times per message. "
+    }
 }

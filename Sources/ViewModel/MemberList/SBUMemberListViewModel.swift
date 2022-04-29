@@ -9,7 +9,6 @@
 import Foundation
 import SendBirdSDK
 
-
 public protocol SBUMemberListViewModelDelegate: SBUCommonViewModelDelegate {
     /// Called when the members has been changed
     func memberListViewModel(

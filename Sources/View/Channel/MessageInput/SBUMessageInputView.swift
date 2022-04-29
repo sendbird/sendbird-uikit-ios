@@ -12,23 +12,20 @@ import AVKit
 import SendBirdSDK
 
 
-@objc
-public protocol SBUMessageInputViewDelegate: NSObjectProtocol {
+public protocol SBUMessageInputViewDelegate: AnyObject {
     /// Called when the send button was selected.
     /// - Parameters:
     ///    - messageInputView: `SBUMessageinputView` object.
     ///    - text: The sent text.
     /// - Since: 2.2.0
-    @objc
-    optional func messageInputView(_ messageInputView: SBUMessageInputView, didSelectSend text: String)
+    func messageInputView(_ messageInputView: SBUMessageInputView, didSelectSend text: String)
     
     /// Called when the media resource button was selected.
     /// - Parameters:
     ///    - messageInputView: `SBUMessageinputView` object.
     ///    - type: `MediaResourceType` value.
     /// - Since: 2.2.0
-    @objc
-    optional func messageInputView(_ messageInputView: SBUMessageInputView, didSelectResource type: MediaResourceType)
+    func messageInputView(_ messageInputView: SBUMessageInputView, didSelectResource type: MediaResourceType)
     
     
     /// Called when the edit button was selected.
@@ -36,16 +33,14 @@ public protocol SBUMessageInputViewDelegate: NSObjectProtocol {
     ///    - messageInputView: `SBUMessageinputView` object.
     ///    - text: The text on editing
     /// - Since: 2.2.0
-    @objc
-    optional func messageInputView(_ messageInputView: SBUMessageInputView, didSelectEdit text: String)
+    func messageInputView(_ messageInputView: SBUMessageInputView, didSelectEdit text: String)
     
     /// Called when the text was changed.
     /// - Parameters:
     ///    - messageInputView: `SBUMessageinputView` object.
     ///    - text: The changed text.
     /// - Since: 2.2.0
-    @objc
-    optional func messageInputView(_ messageInputView: SBUMessageInputView, didChangeText text: String)
+    func messageInputView(_ messageInputView: SBUMessageInputView, didChangeText text: String)
 
     /// Called when the message input mode was changed.
     /// - Parameters:
@@ -53,8 +48,7 @@ public protocol SBUMessageInputViewDelegate: NSObjectProtocol {
     ///    - mode: `SBUMessageInputMode` value. It represents the current mode of `messageInputView`.
     ///    - message: `SBDBaseMessage` object. It's `nil` when the `mode` is `none`.
     /// - Since: 2.2.0
-    @objc
-    optional func messageInputView(_ messageInputView: SBUMessageInputView, didChangeMode mode: SBUMessageInputMode, message: SBDBaseMessage?)
+    func messageInputView(_ messageInputView: SBUMessageInputView, didChangeMode mode: SBUMessageInputMode, message: SBDBaseMessage?)
     
     /// Called when the message input mode will be changed via `setMode(_:message:)` method.
     /// - Parameters:
@@ -62,19 +56,65 @@ public protocol SBUMessageInputViewDelegate: NSObjectProtocol {
     ///    - mode: `SBUMessageInputMode` value. The `messageInputView` changes its mode to this value.
     ///    - message: `SBDBaseMessage` object. It's `nil` when the `mode` is `none`.
     /// - Since: 2.2.0
-    @objc
-    optional func messageInputView(_ messageInputView: SBUMessageInputView, willChangeMode mode: SBUMessageInputMode, message: SBDBaseMessage?)
+    func messageInputView(_ messageInputView: SBUMessageInputView, willChangeMode mode: SBUMessageInputMode, message: SBDBaseMessage?)
     
     
     /// Called when the message input view started to type.
     /// - Since: 2.2.0
-    @objc
-    optional func messageInputViewDidStartTyping()
+    func messageInputViewDidStartTyping()
     
     /// Called when the message Input view ended typing.
     /// - Since: 2.2.0
-    @objc
-    optional func messageInputViewDidEndTyping()
+    func messageInputViewDidEndTyping()
+    
+    // MARK: Mention
+    
+    /// Asks the delegate whether to replace the specified text in the `messageInputView`. Please refer to `textView(_:shouldChangeTextIn:replacementText:)` in `UITextViewDelegate`.
+    /// - Parameters:
+    ///   - messageInputView: `SBUMessageInputView` object.
+    ///   - range: The current selection range. If the length of the range is `0`, range reflects the current insertion point. If the user presses the Delete key, the length of the range is `1` and an empty string object replaces that single character.
+    ///   - text: The text to insert.
+    /// - Returns: `true` if the old text should be replaced by the new text; `false` if the replacement operation should be aborted.
+    func messageInputView(_ messageInputView: SBUMessageInputView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool
+    
+    /// Asks the delegate whether the specified text view allows the specified type of user interaction with the specified URL in the specified range of text. Please refer to `textView(_:shouldInteractWith:in:interaction:)`
+    /// - Parameters:
+    ///   - messageInputView: `SBUMessageInputView` object.
+    ///   - url: The URL to be processed.
+    ///   - characterRange: The character range containing the URL.
+    ///   - interaction: The type of interaction that is occurring (for possible values, see `UITextItemInteraction`).
+    /// - Returns: `true` if interaction with the URL should be allowed; `false` if interaction should not be allowed.
+    func messageInputView(_ messageInputView: SBUMessageInputView, shouldInteractWith url: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool
+    
+    /// Tells the delegate when the text selection changes in the specified message input view.. Please refer to `textViewDidChangeSelection(_:)`
+    /// - Parameters:
+    ///   - messageInputView: `SBUMessageInputView` object.
+    ///   - range: The selected range of the text view in `SBUMessageInputView`
+    func messageInputView(_ messageInputView: SBUMessageInputView, didChangeSelection range: NSRange)
+}
+
+public extension SBUMessageInputViewDelegate {
+    func messageInputView(_ messageInputView: SBUMessageInputView, didSelectSend text: String) { }
+    
+    func messageInputView(_ messageInputView: SBUMessageInputView, didSelectResource type: MediaResourceType) { }
+    
+    func messageInputView(_ messageInputView: SBUMessageInputView, didSelectEdit text: String) { }
+    
+    func messageInputView(_ messageInputView: SBUMessageInputView, didChangeText text: String) { }
+
+    func messageInputView(_ messageInputView: SBUMessageInputView, didChangeMode mode: SBUMessageInputMode, message: SBDBaseMessage?) { }
+    
+    func messageInputView(_ messageInputView: SBUMessageInputView, willChangeMode mode: SBUMessageInputMode, message: SBDBaseMessage?) { }
+    
+    func messageInputViewDidStartTyping() { }
+    
+    func messageInputViewDidEndTyping() { }
+    
+    func messageInputView(_ messageInputView: SBUMessageInputView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool { true }
+    
+    func messageInputView(_ messageInputView: SBUMessageInputView, shouldInteractWith url: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool { true }
+    
+    func messageInputView(_ messageInputView: SBUMessageInputView, didChangeSelection range: NSRange) { }
 }
 
 
@@ -193,7 +233,30 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         bottom: 0,
         right: -16
     )
+    
+    /// The default attributes values for the input view
+    public var defaultAttributes: [NSAttributedString.Key: Any] {
+        return [
+            .font: theme.textFieldFont,
+            .backgroundColor: UIColor.clear,
+            .foregroundColor: theme.textFieldTextColor
+        ]
+    }
+    
+    /// The mentioned attributes values for the input view
+    public var mentionedAttributes: [NSAttributedString.Key: Any] {
+        let mentionAttributes: [NSAttributedString.Key: Any] = [
+            .font: theme.mentionTextFont,
+            .backgroundColor: theme.mentionTextBackgroundColor,
+            .foregroundColor: theme.mentionTextColor,
+            .link: "",
+            .underlineColor: UIColor.clear
+        ]
+        
+        return mentionAttributes
+    }
 
+    
     // MARK: - Properties (Private)
     
     // + ----------------- +
@@ -348,7 +411,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
             case .quoteReply(let message):
                 self.startQuoteReplyMode(message: message)
             case .none:
-                self.delegate?.messageInputViewDidEndTyping?()
+                self.delegate?.messageInputViewDidEndTyping()
             }
         }
         didSet {
@@ -358,7 +421,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     
     open func setMode(_ mode: SBUMessageInputMode, message: SBDBaseMessage? = nil) {
         // Call delegate event: willChangeMode
-        self.delegate?.messageInputView?(self, willChangeMode: mode, message: message)
+        self.delegate?.messageInputView(self, willChangeMode: mode, message: message)
         
         switch mode {
         case .edit:
@@ -372,7 +435,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
             
         }
         
-        self.delegate?.messageInputView?(self, didChangeMode: mode, message: message)
+        self.delegate?.messageInputView(self, didChangeMode: mode, message: message)
     }
     
     /**
@@ -593,11 +656,10 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         }
 
         // textView
+        self.textView?.typingAttributes = defaultAttributes
         self.textView?.backgroundColor = theme.textFieldBackgroundColor
         self.textView?.tintColor = theme.textFieldTintColor
-        self.textView?.textColor = theme.textFieldTextColor
         self.textView?.layer.borderColor = theme.textFieldBorderColor.cgColor
-        self.textView?.font = theme.textFieldPlaceholderFont
         
         // addButton
         let iconAdd = SBUIconSetType.iconAdd
@@ -764,6 +826,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
             self.textViewHeightConstraint?.constant = textViewContentHeight
         }
     }
+    
 
     // MARK: - Action
     @objc open func onClickAddButton(_ sender: Any) {
@@ -778,7 +841,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     }
     
     @objc open func onClickSendButton(_ sender: Any) {
-        self.delegate?.messageInputView?(
+        self.delegate?.messageInputView(
             self,
             didSelectSend: self.textView?.text.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         )
@@ -797,7 +860,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
             self.endEditMode()
             return
         }
-        self.delegate?.messageInputView?(
+        self.delegate?.messageInputView(
             self,
             didSelectEdit: self.textView?.text.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         )
@@ -816,23 +879,40 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
             self.layoutIfNeeded()
         }
         
-        self.delegate?.messageInputView?(self, didChangeText: text)
+        self.delegate?.messageInputView(self, didChangeText: text)
     }
 
     public func textViewDidEndEditing(_ textView: UITextView) {
-        self.delegate?.messageInputViewDidEndTyping?()
+        self.delegate?.messageInputViewDidEndTyping()
     }
 
     public func textView(_ textView: UITextView,
                          shouldChangeTextIn range: NSRange,
                          replacementText text: String) -> Bool {
         if text.count > 0 {
-            self.delegate?.messageInputViewDidStartTyping?()
+            self.delegate?.messageInputViewDidStartTyping()
         } else if text.isEmpty, textView.text?.count ?? 0 <= 1 {
-            self.delegate?.messageInputViewDidEndTyping?()
+            self.delegate?.messageInputViewDidEndTyping()
         }
 
-        return true
+        return self.delegate?.messageInputView(
+            self,
+            shouldChangeTextIn: range,
+            replacementText: text
+        ) ?? true
+    }
+    
+    public func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        return self.delegate?.messageInputView(
+            self,
+            shouldInteractWith: URL,
+            in: characterRange,
+            interaction: interaction
+        ) ?? true
+    }
+    
+    public func textViewDidChangeSelection(_ textView: UITextView) {
+        self.delegate?.messageInputView(self, didChangeSelection: textView.selectedRange)
     }
 
     // MARK: - SBUActionSheetDelegate
@@ -844,7 +924,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
                 if (granted) {
                     DispatchQueue.main.async { [weak self] in
                         guard let self = self else { return }
-                        self.delegate?.messageInputView?(self, didSelectResource: type)
+                        self.delegate?.messageInputView(self, didSelectResource: type)
                     }
                 } else {
                     //show alert view to go to settings
@@ -858,13 +938,13 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
                 DispatchQueue.main.async { [weak self] in
                     guard let self = self else { return }
                     
-                    self.delegate?.messageInputView?(self, didSelectResource: type)
+                    self.delegate?.messageInputView(self, didSelectResource: type)
                 }
             }
         default:
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
-                self.delegate?.messageInputView?(self, didSelectResource: type)
+                self.delegate?.messageInputView(self, didSelectResource: type)
             }
         }
     }

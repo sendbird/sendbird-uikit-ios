@@ -110,7 +110,7 @@ open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, 
     // MARK: - ViewModel
     /// Creates the view model.
     /// - Parameter channelListQuery: Customer's own `SBDGroupChannelListQuery` object
-    /// - Since: [3.0.0
+    /// - Since: 3.0.0
     open func createViewModel(channelListQuery: SBDGroupChannelListQuery?) {
         self.viewModel = SBUGroupChannelListViewModel(
             delegate: self,

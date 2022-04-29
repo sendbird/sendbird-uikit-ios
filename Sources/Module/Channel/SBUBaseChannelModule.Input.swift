@@ -163,6 +163,16 @@ extension SBUBaseChannelModule {
             }
         }
         
+        /// Updates mode of `messageInputView`.
+        /// - Parameters:
+        ///   - mode: `SBUMessageInputMode` value.
+        ///   - message: `SBDBaseMessage` value for some specific modes such as `.edit` or `.quoteReply`
+        open func updateMessageInputMode(_ mode: SBUMessageInputMode, message: SBDBaseMessage? = nil) {
+            if let messageInputView = self.messageInputView as? SBUMessageInputView {
+                messageInputView.setMode(mode, message: message)
+            }
+        }
+        
         /// Updates state of `messageInputView`.
         /// - IMPORTANT: The implemetation is required. Please refer to same method in  `SBUGroupChannelModule.Input`
         open func updateMessageInputModeState() { }
@@ -272,5 +282,16 @@ extension SBUBaseChannelModule {
         public func messageInputView(_ messageInputView: SBUMessageInputView, didChangeMode mode: SBUMessageInputMode, message: SBDBaseMessage?) {
             self.baseDelegate?.baseChannelModule(self, didChangeMode: mode, message: message)
         }
+        
+        public func messageInputView(_ messageInputView: SBUMessageInputView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+            return true
+        }
+        
+        public func messageInputView(_ messageInputView: SBUMessageInputView, shouldInteractWith url: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+            // TODO: Mention tap action
+            return true
+        }
+        
+        public func messageInputView(_ messageInputView: SBUMessageInputView, didChangeSelection range: NSRange) { }
     }
 }

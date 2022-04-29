@@ -33,6 +33,8 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
     public lazy var lastUpdatedTimeLabel = UILabel()
     /// The label that shows the last message in up to 2 lines of text.
     public lazy var messageLabel = UILabel()
+    /// The label that shows the unread mention messages.
+    public lazy var unreadMentionLabel = UILabel()
     /// The button that shows the number of the unread messages.
     public lazy var unreadCount = UIButton()
     /// The image view that represents read/delivery receipt state of the last message that was sent by the current user.
@@ -70,7 +72,7 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
     /// A horizontal stack view to configure layouts of the `titleLabel`, `lastUpdatedTimeLabel` and icons.
     public lazy var titleStackView = SBUStackView(axis: .horizontal, alignment: .center, spacing: 4)
     /// A horizontal stack view to configure layouts of the `messageLabel` and the `unreadCount`.
-    public lazy var messageStackView = SBUStackView(axis: .horizontal, alignment: .top, spacing: 8)
+    public lazy var messageStackView = SBUStackView(axis: .horizontal, alignment: .top, spacing: 4)
     
     // MARK: - View Lifecycle
     open override func awakeFromNib() {
@@ -85,6 +87,7 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
         
         self.broadcastIcon.isHidden = true
         self.freezeState.isHidden = true
+        self.unreadMentionLabel.isHidden = true
         self.notificationState.isHidden = true
         self.messageLabel.numberOfLines = 2
         
@@ -105,6 +108,7 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
                     self.messageStackView.setHStack([
                         self.messageLabel,
                         self.messageSpacer,
+                        self.unreadMentionLabel,
                         self.unreadCount
                     ]),
                 ])
@@ -167,7 +171,7 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
         
         self.unreadCount
             .sbu_constraint(height: unreadCountSize)
-            .sbu_constraint_lessThan(width: 34)
+            .sbu_constraint_greaterThan(width: unreadCountSize)
         
         self.separatorLine
             .sbu_constraint(equalTo: self.contentView, trailing: 0, bottom: 0.5)
@@ -193,6 +197,11 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
         
         self.messageLabel.font = theme.messageFont
         self.messageLabel.textColor = theme.messageTextColor
+        
+        // TODO: Need to add StringSet constant?
+        self.unreadMentionLabel.text = SBUGlobals.userMentionConfig?.trigger ?? SBUStringSet.Mention.Trigger_Key
+        self.unreadMentionLabel.textColor = theme.unreadMentionTextColor
+        self.unreadMentionLabel.font = theme.unreadMentionTextFont
         
         self.unreadCount.backgroundColor = theme.unreadCountBackgroundColor
         self.unreadCount.setTitleColor(theme.unreadCountTextColor, for: .normal)
@@ -305,6 +314,8 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
         default:
             break
         }
+        
+        self.unreadMentionLabel.isHidden = !SBUGlobals.isUserMentionEnabled || channel.unreadMentionCount == 0
         
         self.updateMessageLabel()
         self.updateStateImageView()

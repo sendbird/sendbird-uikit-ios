@@ -8,6 +8,10 @@
 
 import UIKit
 
+protocol SBUUserMessageTextViewDelegate: AnyObject {
+    func userMessageTextView(_ textView: SBUUserMessageTextView, didTapMention user: SBUUser)
+}
+
 class SBUUserMessageTextView: SBUView {
     struct Metric {
         static let textLeftRightMargin = 12.f
@@ -46,6 +50,10 @@ class SBUUserMessageTextView: SBUView {
     var textLeftConstraint: NSLayoutConstraint!
     var textRightConstraint: NSLayoutConstraint!
     
+    var mentionManager: SBUMentionManager?
+    
+    weak var delegate: SBUUserMessageTextViewDelegate?
+    
     override init() {
         super.init()
     }
@@ -62,6 +70,7 @@ class SBUUserMessageTextView: SBUView {
     
     override func setupViews() {
         self.textView.delegate = self
+        
         self.addSubview(self.textView)
     }
     
@@ -141,6 +150,27 @@ class SBUUserMessageTextView: SBUView {
             .foregroundColor: model.textColor,
             .underlineStyle: NSUnderlineStyle.single.rawValue
         ]
+        
+        if model.haveMentionedMessage(), SBUGlobals.isUserMentionEnabled {
+            guard let mentionedMessageTemplate = model.message?.mentionedMessageTemplate,
+                  let mentionedUsers = model.message?.mentionedUsers,
+                  !mentionedUsers.isEmpty else { return }
+            self.mentionManager = SBUMentionManager()
+            mentionManager!.configure(
+                defaultTextAttributes: model.defaultAttributes,
+                mentionTextAttributes: model.mentionedAttributes
+            )
+            
+            let attributedText = mentionManager!.generateMentionedMessage(
+                with: mentionedMessageTemplate,
+                mentionedUsers: SBUUser.convertUsers(mentionedUsers)
+            )
+            let mutableAttributedText = NSMutableAttributedString(attributedString: attributedText)
+            model.addhighlightIfNeeded(with: mutableAttributedText)
+            model.addEditedStateIfNeeded(with: mutableAttributedText)
+            
+            textView.attributedText = mutableAttributedText
+        }
     }
 }
 
@@ -149,7 +179,15 @@ extension SBUUserMessageTextView: UITextViewDelegate {
                   shouldInteractWith URL: URL,
                   in characterRange: NSRange,
                   interaction: UITextItemInteraction) -> Bool {
-        
+        if let mentionManager = mentionManager {
+            if let mention = mentionManager.findMentions(with: characterRange).first,
+                interaction == .invokeDefaultAction {
+                self.delegate?.userMessageTextView(self, didTapMention: mention.user)
+                return false
+            } else {
+                (self.superview as? SBUUserMessageCell)?.longPressHandlerToContent?()
+            }
+        }
         if interaction == .presentActions {
             self.longPressHandler?(URL)
         } else if interaction == .invokeDefaultAction {

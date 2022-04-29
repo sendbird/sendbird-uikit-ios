@@ -8,6 +8,7 @@
 
 import Foundation
 import SendBirdSDK
+import simd
 
 @available(*, deprecated, renamed: "SBUGroupChannelViewModelDataSource") // 3.0.0
 public typealias SBUChannelViewModelDataSource = SBUGroupChannelViewModelDataSource
@@ -24,11 +25,21 @@ public protocol SBUGroupChannelViewModelDataSource: SBUBaseChannelViewModelDataS
     ///    - viewModel: `SBUGroupChannelViewModel` object.
     ///    - channel: `SBDGroupChannel` object from `viewModel`
     /// - Returns: The array of `IndexPath` object representing starting point.
-    func groupChannelViewModel(_ viewModel: SBUGroupChannelViewModel, startingPointIndexPathsForChannel channel: SBDGroupChannel?) -> [IndexPath]?
+    func groupChannelViewModel(
+        _ viewModel: SBUGroupChannelViewModel,
+        startingPointIndexPathsForChannel channel: SBDGroupChannel?
+    ) -> [IndexPath]?
 }
 
 public protocol SBUGroupChannelViewModelDelegate: SBUBaseChannelViewModelDelegate {
-    
+    /// Called when the channel has received mentional member list. Please refer to `loadSuggestedMentions(with:)` in `SBUGroupChannelViewModel`.
+    /// - Parameters:
+    ///   - viewModel: `SBUGroupChannelViewModel` object.
+    ///   - users: Mentional members
+    func groupChannelViewModel(
+        _ viewModel: SBUGroupChannelViewModel,
+        didReceiveSuggestedMentions users: [SBUUser]?
+    )
 }
 
 open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
@@ -46,6 +57,8 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
     
     // MARK: - Logic properties (private)
     var messageCollection: SBDMessageCollection?
+    var debouncer: SBUDebouncer?
+    var suggestedMemberList: [SBUUser]?
 
     
     // MARK: - LifeCycle
@@ -70,6 +83,10 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
         
         self.customizedMessageListParams = messageListParams
         self.startingPoint = startingPoint
+        
+        self.debouncer = SBUDebouncer(
+            debounceTime: SBUGlobals.userMentionConfig?.debounceTime ?? SBUDebouncer.defaultTime
+        )
         
         guard let channelUrl = self.channelUrl else { return }
         self.loadChannel(
@@ -350,6 +367,61 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
         channel.endTyping()
     }
 
+    
+    // MARK: - Mention
+    
+    /// Loads mentionable member list.
+    /// When the suggested list is received, it calls `groupChannelViewModel(_:didReceiveSuggestedMembers:)` delegate method.
+    /// - Parameter filterText: The text that is used as filter while searching for the suggested mentions.
+    public func loadSuggestedMentions(with filterText: String) {
+        self.debouncer?.add { [weak self] in
+            guard let self = self else { return }
+            
+            if let channel = self.channel as? SBDGroupChannel {
+                if channel.isSuper {
+                    let query = channel.createMemberListQuery()
+                    query?.limit = UInt(SBUGlobals.userMentionConfig?.suggestionLimit ?? 0)
+                    query?.nicknameStartsWithFilter = filterText
+                    
+                    query?.loadNextPage { [weak self] members, error in
+                        guard let self = self else { return }
+                        self.suggestedMemberList = SBUUser.convertUsers(members)
+                        self.delegate?.groupChannelViewModel(
+                            self,
+                            didReceiveSuggestedMentions: self.suggestedMemberList
+                        )
+                    }
+                } else {
+                    guard let members = channel.members as? [SBDMember] else {
+                        self.suggestedMemberList = nil
+                        self.delegate?.groupChannelViewModel(self, didReceiveSuggestedMentions: nil)
+                        return
+                    }
+                    
+                    let sortedMembers = members.sorted { $0.nickname?.lowercased() ?? "" < $1.nickname?.lowercased() ?? "" }
+                    let matchedMembers = sortedMembers.filter {
+                        return $0.nickname?.lowercased().hasPrefix(filterText.lowercased()) ?? false
+                    }
+                    let memberCount = matchedMembers.count
+                    let limit = SBUGlobals.userMentionConfig?.suggestionLimit ?? 0
+                    let splitCount = min(memberCount, Int(limit))
+                    
+                    let resultMembers = Array(matchedMembers[0..<splitCount])
+                    self.suggestedMemberList = SBUUser.convertUsers(resultMembers)
+                    self.delegate?.groupChannelViewModel(
+                        self,
+                        didReceiveSuggestedMentions: self.suggestedMemberList
+                    )
+                }
+            }
+        }
+    }
+    
+    /// Cancels loading the suggested mentions.
+    public func cancelLoadingSuggestedMentions() {
+        self.debouncer?.cancel()
+    }
+    
     
     // MARK: - Common
     private func createCollectionIfNeeded(startingPoint: Int64) {
