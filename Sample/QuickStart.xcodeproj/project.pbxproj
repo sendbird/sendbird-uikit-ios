@@ -3,10 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		34840DBBA55BB0F85C5E03A4 /* libPods-NotificationService.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C4043E37F4DD742217D2962 /* libPods-NotificationService.a */; };
 		9C037E2E280432DB00059696 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C037DD4280432DB00059696 /* ViewController.swift */; };
 		9C037E2F280432DB00059696 /* UILabel+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C037DD7280432DB00059696 /* UILabel+Ext.swift */; };
 		9C037E30280432DB00059696 /* UIImageView+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C037DD8280432DB00059696 /* UIImageView+Ext.swift */; };
@@ -61,7 +62,6 @@
 		9C037E62280432DC00059696 /* CreateChannelVC_UserList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C037E2D280432DB00059696 /* CreateChannelVC_UserList.swift */; };
 		9C3EBE2328091D2A00B5366B /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C3EBE2228091D2A00B5366B /* NotificationService.swift */; };
 		9C3EBE2728091D2A00B5366B /* NotificationService.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 9C3EBE2028091D2A00B5366B /* NotificationService.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		9C3EBE2E28091DA500B5366B /* SendBirdSDK.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C3EBE2D28091DA500B5366B /* SendBirdSDK.xcframework */; };
 		9C4C80AE281FC44500F212F7 /* SBUViewModelDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C4C7F6C281FC44400F212F7 /* SBUViewModelDelegate.swift */; };
 		9C4C80AF281FC44500F212F7 /* SBUGroupChannelListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C4C7F6E281FC44400F212F7 /* SBUGroupChannelListViewModel.swift */; };
 		9C4C80B0281FC44500F212F7 /* SBUOpenChannelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C4C7F70281FC44400F212F7 /* SBUOpenChannelViewModel.swift */; };
@@ -334,6 +334,9 @@
 
 /* Begin PBXFileReference section */
 		0FB02E525C1E1DE04CD86163 /* libPods-QuickStart.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-QuickStart.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4A43E3BD85258644BB555D74 /* Pods-NotificationService.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotificationService.debug.xcconfig"; path = "Target Support Files/Pods-NotificationService/Pods-NotificationService.debug.xcconfig"; sourceTree = "<group>"; };
+		601A4FC937A03BF1F84A16B1 /* Pods-NotificationService.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotificationService.release.xcconfig"; path = "Target Support Files/Pods-NotificationService/Pods-NotificationService.release.xcconfig"; sourceTree = "<group>"; };
+		6C4043E37F4DD742217D2962 /* libPods-NotificationService.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NotificationService.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C037DD4280432DB00059696 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		9C037DD5280432DB00059696 /* QuickStart.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = QuickStart.entitlements; sourceTree = "<group>"; };
 		9C037DD7280432DB00059696 /* UILabel+Ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UILabel+Ext.swift"; sourceTree = "<group>"; };
@@ -647,7 +650,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9C3EBE2E28091DA500B5366B /* SendBirdSDK.xcframework in Frameworks */,
+				34840DBBA55BB0F85C5E03A4 /* libPods-NotificationService.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -669,6 +672,8 @@
 			children = (
 				B38307AD4EF5266DC1175BD5 /* Pods-QuickStart.debug.xcconfig */,
 				DFAE16FA0084848C637A3259 /* Pods-QuickStart.release.xcconfig */,
+				4A43E3BD85258644BB555D74 /* Pods-NotificationService.debug.xcconfig */,
+				601A4FC937A03BF1F84A16B1 /* Pods-NotificationService.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -1942,6 +1947,7 @@
 				9C5DCD48242AFA7C00C41106 /* UserNotifications.framework */,
 				C6D3DCE726141350003E6DCB /* SendBirdSDK.framework */,
 				0FB02E525C1E1DE04CD86163 /* libPods-QuickStart.a */,
+				6C4043E37F4DD742217D2962 /* libPods-NotificationService.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1953,6 +1959,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 9C3EBE2B28091D2A00B5366B /* Build configuration list for PBXNativeTarget "NotificationService" */;
 			buildPhases = (
+				74BAB80DC8E48778709C2227 /* [CP] Check Pods Manifest.lock */,
 				9C3EBE1C28091D2A00B5366B /* Sources */,
 				9C3EBE1D28091D2A00B5366B /* Frameworks */,
 				9C3EBE1E28091D2A00B5366B /* Resources */,
@@ -2049,6 +2056,28 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		74BAB80DC8E48778709C2227 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-NotificationService-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 		9C442672241CCE0A00FE9975 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2442,6 +2471,7 @@
 /* Begin XCBuildConfiguration section */
 		9C3EBE2928091D2A00B5366B /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4A43E3BD85258644BB555D74 /* Pods-NotificationService.debug.xcconfig */;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
@@ -2453,7 +2483,7 @@
 				INFOPLIST_FILE = NotificationService/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = NotificationService;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2022 SendBird, Inc. All rights reserved.";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2471,6 +2501,7 @@
 		};
 		9C3EBE2A28091D2A00B5366B /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 601A4FC937A03BF1F84A16B1 /* Pods-NotificationService.release.xcconfig */;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
@@ -2482,7 +2513,7 @@
 				INFOPLIST_FILE = NotificationService/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = NotificationService;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2022 SendBird, Inc. All rights reserved.";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

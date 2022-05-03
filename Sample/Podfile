@@ -2,9 +2,11 @@
 # platform :ios, '11.0'
 
 target 'QuickStart' do
-  # Comment the next line if you don't want to use dynamic frameworks
   use_modular_headers!
-
   pod 'SendBirdSDK', '~> 3.1.13'
+end
 
+target 'NotificationService' do
+  use_modular_headers!
+  pod 'SendBirdSDK', '~> 3.1.13'
 end
