@@ -2,9 +2,11 @@
 # platform :ios, '9.0'
 
 target 'SendBirdUIKit-Sample' do
-  # Comment the next line if you don't want to use dynamic frameworks
   use_modular_headers!
+  pod 'SendBirdSDK', '~> 3.1.13'
+end
 
-  pod 'SendBirdSDK', '~> 3.1.7'
-
+target 'NotificationService' do
+  use_modular_headers!
+  pod 'SendBirdSDK', '~> 3.1.13'
 end
