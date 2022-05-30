@@ -81,29 +81,44 @@ You can get started by creating a project. Sendbird UIKit support `Swift`, so yo
 
 UIKit for iOS can be installed through either [`CocoaPods`](https://cocoapods.org/), [`Carthage`](https://github.com/Carthage/Carthage) or [`Swift Package Manager`](https://swift.org/package-manager/): 
 
-> Note: Sendbird UIKit for iOS is Sendbird Chat SDK-dependent. The minimum requirement of the Chat SDK for iOS is 3.1.2 or higher.
+> Note: Sendbird UIKit for iOS is Sendbird Chat SDK-dependent. The minimum requirement of the Chat SDK for iOS is 3.1.13 or higher.
 
+
+#### - Swift Packages
+
+1. Go to your Swift Package Manager's **File** tab and select **Swift Packages**. Then choose **Add package dependency...**.
+
+2. Add `SendbirdUIKit` into your `Package Repository` as below:
+
+```bash
+https://github.com/sendbird/sendbird-uikit-ios-spm.git
+```
+
+3. To add the package, select **Branch Rules**, input `main-beta` and click **Next**.
 
 #### - CocoaPods
 
-1. Add `SendBirdUIKit` into your `Podfile` in Xcode as below:
+1. Add `SendbirdUIKit` into your `Podfile` in Xcode as below:
+
 ```bash
-platform :ios, '11' 
-use_frameworks! 
+platform :ios, '11.0'
+use_frameworks!
 
 target YOUR_PROJECT_TARGET do
-    pod 'SendBirdUIKit', '3.0.0-beta'
+	pod 'SendbirdUIKit', '~> 3.0.0-beta.2' // Add this line.
 end
 ```
 
-2. Install the `SendBirdUIKit` framework through `CocoaPods`.
+2. Install the `SendbirdUIKit` framework through `CocoaPods`.
+
 ```bash
 $ pod install
 ```
 
-3. Update the `SendBirdUIKit` framework through `CocoaPods`.
+3. Update the `SendbirdUIKit` framework through `CocoaPods`.
+
 ```bash
-$ pod update 
+$ pod update
 ```
 
 #### - Carthage
@@ -112,7 +127,7 @@ $ pod update
 
 ```bash
 github "sendbird/sendbird-uikit-ios"
-github "sendbird/sendbird-ios-framework" == 3.1.2
+github "sendbird/sendbird-ios-framework" == 3.1.13
 ```
 
 2. Install the `SendbirdUIKit` framework through `Carthage`.
@@ -123,19 +138,9 @@ $ carthage update --use-xcframeworks
 
 > __Note__: Building or creating the `SendbirdUIKit` framework with `Carthage` can only be done using the latest `Swift`. If your `Swift` is not the most recent version, the framework should be copied into your project manually.
 
-3. Go to your Xcode project target's **General settings** tab in the `Frameworks and Libraries` section. Then drag and drop on the disk each framework from the `<YOUR_XCODE_PROJECT_DIRECTORY>/Carthage/Build` folder.
+3. Go to your Xcode project target's **General settings** tab in the `Frameworks and Libraries` section. Then drag and drop `SendbirdUIKit.framework` from the `<YOUR_XCODE_PROJECT_DIRECTORY>/Carthage/Build` folder.
 
->__Note__: Errors may occur if you're building your project with Xcode 11.3 or earlier versions. To fix these errors, refer to [Handle errors caused by unknown attributes](https://github.com/sendbird/sendbird-uikit-ios-sources#handling-errors-caused-by-unknown-attributes) in the sample app.
-
-#### - Swift Package Manager
-1. File -> Swift Packages -> Add package dependency...
-
-2. Choose Package Repository as the Sendbird UIKit repository with below link:
-```bash
-https://github.com/sendbird/sendbird-uikit-ios-spm.git
-```
-
-3. Select Up Branch to `main-beta` rules and click the Next button to add the package.
+>__Note__: Errors may occur if you're building your project with Xcode 11.3 or earlier versions. To fix these errors, refer to [Handle errors caused by unknown attributes](https://github.com/sendbird/sendbird-uikit-ios#--handle-errors-caused-by-unknown-attributes).
 
 #### - Handle errors caused by unknown attributes
 
