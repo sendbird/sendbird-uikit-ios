@@ -1,6 +1,7 @@
 # Change Log
 
 ### v2.2.7 (Jun 2, 2022)
+* Updated chat SDK minor version to **v3.1.13**
 * Added `leftBarButton` to `SBUSelectablePhotoViewController`
   * Added `leftBarButton`
   * Added `didTapLeftBarButton()`
