@@ -349,7 +349,8 @@ open class SBUMessageInputView: UIView, SBUActionSheetDelegate, UITextViewDelega
                     self.startEditMode(text: message.message)
                 case .quoteReply(let message):
                     self.startQuoteReplyMode(message: message)
-                default: break
+                case .none:
+                    self.delegate?.messageInputViewDidEndTyping?()
             }
         }
         didSet {

@@ -186,7 +186,7 @@ class SBUOpenChannelViewModel: SBUChannelViewModel {
     
     /// Loads previous messages from given timestamp.
     /// - Parameter timestamp: Timestamp to load messages from to the `previous` direction, or `nil` to start from the latest (`LLONG_MAX`).
-    override func loadPrevMessages(timestamp: Int64?) {
+    func loadPrevMessages(timestamp: Int64?) {
         guard self.prevLock.try() else {
             SBULog.info("Prev message already loading")
             return

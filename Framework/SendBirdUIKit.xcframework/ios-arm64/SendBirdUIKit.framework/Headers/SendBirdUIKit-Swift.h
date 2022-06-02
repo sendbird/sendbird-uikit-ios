@@ -1041,18 +1041,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUBaseChannelViewController")
 - (void)setLoading:(BOOL)loadingState :(BOOL)showIndicator;
 @end
 
-
-SWIFT_PROTOCOL("_TtP13SendBirdUIKit20SBUEmptyViewDelegate_")
-@protocol SBUEmptyViewDelegate <NSObject>
-- (void)didSelectRetry;
-@end
-
-
-@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUEmptyViewDelegate>
-- (void)didSelectRetry;
-@end
-
-
 @class SBDFileMessage;
 
 @interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
@@ -1071,6 +1059,17 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit20SBUEmptyViewDelegate_")
 - (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
 @end
 
+
+SWIFT_PROTOCOL("_TtP13SendBirdUIKit20SBUEmptyViewDelegate_")
+@protocol SBUEmptyViewDelegate <NSObject>
+- (void)didSelectRetry;
+@end
+
+
+@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUEmptyViewDelegate>
+- (void)didSelectRetry;
+@end
+
 @class UIGestureRecognizer;
 
 @interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIGestureRecognizerDelegate>
@@ -1078,9 +1077,29 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit20SBUEmptyViewDelegate_")
 @end
 
 
+
+@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
+- (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
+- (void)imagePickerControllerDidCancel:(UIImagePickerController * _Nonnull)picker;
+@end
+
+
+/// Event methods for <code>SBUSelectablePhotoViewController</code>.
+/// since:
+/// 2.2.6
 SWIFT_PROTOCOL("_TtP13SendBirdUIKit30SBUSelectablePhotoViewDelegate_")
 @protocol SBUSelectablePhotoViewDelegate
+/// Called when an image is picked from <code>SBUSelectablePhotoViewController</code>
+/// since:
+/// 2.2.6
+/// \param data The JPEG data of selected image. Its <code>compressionQuality</code> follows <code>SBUGlobals.imageCompressionRate</code> when <code>SBUGlobals.UsingImageCompression</code> is <code>true</code>
+///
 - (void)didTapSendImageData:(NSData * _Nonnull)data;
+/// Called when tap a video is picked from <code>SBUSelectablePhotoViewController</code>
+/// since:
+/// 2.2.6
+/// \param url The URL of selected video.
+///
 - (void)didTapSendVideoURL:(NSURL * _Nonnull)url;
 @end
 
@@ -1094,12 +1113,6 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit30SBUSelectablePhotoViewDelegate_")
 @interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit))
 - (BOOL)shouldShowLoadingIndicator;
 - (void)shouldDismissLoadingIndicator;
-@end
-
-
-@interface SBUBaseChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIImagePickerControllerDelegate>
-- (void)imagePickerController:(UIImagePickerController * _Nonnull)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> * _Nonnull)info;
-- (void)imagePickerControllerDidCancel:(UIImagePickerController * _Nonnull)picker;
 @end
 
 
@@ -1525,13 +1538,13 @@ SWIFT_CLASS("_TtC13SendBirdUIKit28SBUChannelListViewController")
 @end
 
 
-@interface SBUChannelListViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBDConnectionDelegate>
-- (void)didSucceedReconnection;
+@interface SBUChannelListViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUEmptyViewDelegate>
+- (void)didSelectRetry;
 @end
 
 
-@interface SBUChannelListViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUEmptyViewDelegate>
-- (void)didSelectRetry;
+@interface SBUChannelListViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBDConnectionDelegate>
+- (void)didSucceedReconnection;
 @end
 
 
@@ -1983,17 +1996,6 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUChannelViewController")
 - (void)messageInputViewDidEndTyping;
 @end
 
-@class UIDocumentInteractionController;
-
-@interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIDocumentInteractionControllerDelegate>
-- (UIViewController * _Nonnull)documentInteractionControllerViewControllerForPreview:(UIDocumentInteractionController * _Nonnull)controller SWIFT_WARN_UNUSED_RESULT;
-@end
-
-
-@interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBDConnectionDelegate>
-- (void)didSucceedReconnection;
-@end
-
 @class SBUQuotedBaseMessageView;
 
 SWIFT_PROTOCOL("_TtP13SendBirdUIKit28SBUQuotedMessageViewDelegate_")
@@ -2004,6 +2006,17 @@ SWIFT_PROTOCOL("_TtP13SendBirdUIKit28SBUQuotedMessageViewDelegate_")
 
 @interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBUQuotedMessageViewDelegate>
 - (void)didTapQuotedMessageView:(SBUQuotedBaseMessageView * _Nonnull)quotedMessageView;
+@end
+
+@class UIDocumentInteractionController;
+
+@interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <UIDocumentInteractionControllerDelegate>
+- (UIViewController * _Nonnull)documentInteractionControllerViewControllerForPreview:(UIDocumentInteractionController * _Nonnull)controller SWIFT_WARN_UNUSED_RESULT;
+@end
+
+
+@interface SBUChannelViewController (SWIFT_EXTENSION(SendBirdUIKit)) <SBDConnectionDelegate>
+- (void)didSucceedReconnection;
 @end
 
 @class SBDReactionEvent;
@@ -2680,6 +2693,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, copy) void (^ _Nullable messag
 @end
 
 enum SBUPhotoAccessLevel : NSInteger;
+enum SBUReplyType : NSInteger;
 
 SWIFT_CLASS("_TtC13SendBirdUIKit10SBUGlobals")
 @interface SBUGlobals : NSObject
@@ -2710,6 +2724,12 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL UsingPHPicker SWIFT_AVAIL
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class) enum SBUPhotoAccessLevel photoLibraryAccessLevel;)
 + (enum SBUPhotoAccessLevel)photoLibraryAccessLevel SWIFT_WARN_UNUSED_RESULT;
 + (void)setPhotoLibraryAccessLevel:(enum SBUPhotoAccessLevel)value;
+/// If this value is enabled, replying features are activated.
+/// since:
+/// 2.2.0
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class) enum SBUReplyType ReplyTypeToUse;)
++ (enum SBUReplyType)ReplyTypeToUse SWIFT_WARN_UNUSED_RESULT;
++ (void)setReplyTypeToUse:(enum SBUReplyType)value;
 /// If this value is enabled, when you click on a user image, the user profile screen is displayed.
 /// since:
 /// 1.2.2
@@ -4898,38 +4918,78 @@ SWIFT_CLASS("_TtC13SendBirdUIKit24SBUQuotedUserMessageView")
 - (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
 @end
 
+typedef SWIFT_ENUM(NSInteger, SBUReplyType, open) {
+/// Doesn’t display any replies.
+  SBUReplyTypeNone = 0,
+/// Displays the replies on the message list
+  SBUReplyTypeQuoteReply = 1,
+  SBUReplyTypeThread = 2,
+};
+
 @class UICollectionView;
 @class PHAsset;
 
+/// The view controller that shows the selected accessible photos and videos.
+/// since:
+/// 2.2.6
 SWIFT_CLASS("_TtC13SendBirdUIKit32SBUSelectablePhotoViewController")
 @interface SBUSelectablePhotoViewController : UIViewController <SBUViewLifeCycle>
 /// The collection view that shows the preselected photos and videos.
+/// since:
+/// 2.2.6
 @property (nonatomic, readonly, strong) UICollectionView * _Nonnull collectionView;
+/// The left bar button item on the navigation bar. The default action is dismissing this view controller.
+/// since:
+/// 2.2.7
+@property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 /// The right bar button item on the navigation bar. The default action is showing up the limited library picker to select accessible photos and videos.
+/// since:
+/// 2.2.6
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
 /// The object that is used as a theme. The theme inherits from <code>SBUComponentTheme</code>.
+/// since:
+/// 2.2.6
 @property (nonatomic, strong) SBUComponentTheme * _Nonnull theme;
 @property (nonatomic, weak) id <SBUSelectablePhotoViewDelegate> _Nullable delegate;
 @property (nonatomic, strong) PHFetchResult<PHAsset *> * _Nonnull fetchResult;
 /// If it’s <code>nil</code>, it returns the size that has 1/3 length of the collection view ‘s horizontal length
+/// since:
+/// 2.2.6
 @property (nonatomic, readonly) CGSize columnSize;
 - (void)loadView;
 - (void)viewDidLayoutSubviews;
 /// This function handles the initialization of views.
+/// since:
+/// 2.2.6
 - (void)setupViews;
 /// This function handles the initialization of autolayouts.
+/// since:
+/// 2.2.6
 - (void)setupAutolayout;
 /// This function handles the initialization of actions.
+/// since:
+/// 2.2.6
 - (void)setupActions;
 /// This function handles the initialization of styles.
+/// since:
+/// 2.2.6
 - (void)setupStyles;
 /// Used to register a custom cell as a base cell based on <code>SBUPhotoCollectionViewCell</code>.
+/// since:
+/// 2.2.6
 /// \param channelCell Customized channel cell
 ///
 /// \param nib nib information. If the value is nil, the nib file is not used.
 ///
 - (void)registerWithPhotoCell:(SBUPhotoCollectionViewCell * _Nonnull)photoCell nib:(UINib * _Nullable)nib;
+/// Called when <code>rightBarButton</code> was tapped. The default action is showing up the limited library picker to select accessible photos and videos.
+/// since:
+/// 2.2.6
 - (void)didTapRightBarButton;
+/// Called when <code>leftBarButton</code> was tapped. The default action is dismissing this view controller.
+/// since:
+/// 2.2.7
+- (void)didTapLeftBarButton;
 - (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
@@ -4940,6 +5000,8 @@ SWIFT_CLASS("_TtC13SendBirdUIKit32SBUSelectablePhotoViewController")
 /// The <code>PHPhotoLibraryChangeObserver</code> delegate method that tells your observer that a set of changes has occurred in the Photos library.
 /// Override this method to handle action when there’s any change on the accessible media in photo library.
 /// It reloads the collection view with the changes of preselected photos videos.
+/// since:
+/// 2.2.6
 - (void)photoLibraryDidChange:(PHChange * _Nonnull)changeInstance;
 @end
 

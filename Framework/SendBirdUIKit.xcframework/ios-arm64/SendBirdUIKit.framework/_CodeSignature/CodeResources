@@ -6,11 +6,11 @@
 	<dict>
 		<key>Assets.car</key>
 		<data>
-		eKjrRuZm9EifBiZ2uDBzj6Y0wp0=
+		wLUG7mHprJb2l9peAWxlU1Lzdr8=
 		</data>
 		<key>Headers/SendBirdUIKit-Swift.h</key>
 		<data>
-		1Cnloyhg+nYK4hb4Y8+esdI43yI=
+		rmPMMqWfqbFoX/Gd/jSx3wQeMKA=
 		</data>
 		<key>Headers/SendBirdUIKit.h</key>
 		<data>
@@ -18,19 +18,19 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		BtL8mRXDHS07TfOhYQQmi+aaAE0=
+		hvjMa7IqFbxSJqKFVi2XGcpVWR4=
 		</data>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm64-apple-ios.swiftdoc</key>
 		<data>
-		clBucT0DducUH8Hnb8h+4veOx0Q=
+		hRoEKVQGaxGblVltKrieBOdbcLo=
 		</data>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm64-apple-ios.swiftinterface</key>
 		<data>
-		zazFlC/AsH/d4tAnUvyAX8iHy/4=
+		wItp61YLnNa1XNWtXvPnzwRSkG8=
 		</data>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm64-apple-ios.swiftmodule</key>
 		<data>
-		teHfdF//5hWWEGnZtYwYaRdsG7c=
+		ebPA6vZrY897l1gASYoznayqxUQ=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -55,14 +55,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			sWEh6s9gM9VdSJQv+FUTYpiGihZetp/uSeN8SHy6OMU=
+			P6eGMfC3lIjRkNVl+k8bXTJObaor3pBrrzOaVGuWZA0=
 			</data>
 		</dict>
 		<key>Headers/SendBirdUIKit-Swift.h</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			PT0dFSMbVLGWEFdewvAURx1mCVHq7I28aH2S3+wy128=
+			GuzTttp96O/nb7BtSolcj9JZr01P8iD8v0qnUHFJpTM=
 			</data>
 		</dict>
 		<key>Headers/SendBirdUIKit.h</key>
@@ -76,21 +76,21 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			JBshGpie4kPQH/obBcB51OAxFoDv4hztWw4iMFzEel4=
+			yiJO5fakB8/Li5rO+Qb567H5nVhTVeP60FN93h+Icgk=
 			</data>
 		</dict>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm64-apple-ios.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			eCWYXjHn0itnKLovAgoEedsaK7MQfoiMDWW5Y0zeDQU=
+			MAPHwQs971uDkkJ3LaI/FelESTFU+/jvK36jSIea0L4=
 			</data>
 		</dict>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm64-apple-ios.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			ULl1S8gGRJ1qHI1VPZKb/VV5XzFp2rio+VskDVpUrYo=
+			HKpz7Di1G4LK9QImt5dGLE5elQzy8qtjr1IFF6cfxOw=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

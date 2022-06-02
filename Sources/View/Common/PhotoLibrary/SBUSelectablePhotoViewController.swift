@@ -9,17 +9,28 @@
 import UIKit
 import Photos
 
+/// Event methods for `SBUSelectablePhotoViewController`.
+/// - Since: 2.2.6
 @objc
 public protocol SBUSelectablePhotoViewDelegate: AnyObject {
+    /// Called when an image is picked from `SBUSelectablePhotoViewController`
+    /// - Parameter data: The JPEG data of selected image. Its `compressionQuality` follows `SBUGlobals.imageCompressionRate` when `SBUGlobals.UsingImageCompression` is `true`
+    /// - Since: 2.2.6
     @objc func didTapSendImageData(_ data: Data)
     
+    /// Called when tap a video is picked from `SBUSelectablePhotoViewController`
+    /// - Parameter url: The URL of selected video.
+    /// - Since: 2.2.6
     @objc func didTapSendVideoURL(_ url: URL)
 }
 
+/// The view controller that shows the selected accessible photos and videos.
+/// - Since: 2.2.6
 @objcMembers
 open class SBUSelectablePhotoViewController: UIViewController, SBUViewLifeCycle {
     // MARK: - Views
     /// The collection view that shows the preselected photos and videos.
+    /// - Since: 2.2.6
     public private(set) lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.estimatedItemSize = .zero
@@ -29,14 +40,36 @@ open class SBUSelectablePhotoViewController: UIViewController, SBUViewLifeCycle 
         return collectionView
     }()
     
+    /// The left bar button item on the navigation bar. The default action is dismissing this view controller.
+    /// - Since: 2.2.7
+    public var leftBarButton: UIBarButtonItem? = nil {
+        didSet {
+            self.navigationItem.leftBarButtonItem = self.leftBarButton
+        }
+    }
+    
     /// The right bar button item on the navigation bar. The default action is showing up the limited library picker to select accessible photos and videos.
+    /// - Since: 2.2.6
     public var rightBarButton: UIBarButtonItem? = nil {
         didSet {
             self.navigationItem.rightBarButtonItem = self.rightBarButton
         }
     }
     
-    private lazy var editButton: UIBarButtonItem = {
+    private lazy var closeButton: UIBarButtonItem = {
+        let barButton = UIBarButtonItem(
+            image: SBUIconSetType.iconClose.image(
+                to: SBUIconSetType.Metric.defaultIconSize
+            ),
+            style: .plain,
+            target: self,
+            action: #selector(didTapLeftBarButton)
+        )
+        barButton.tintColor = theme.barItemTintColor
+        return barButton
+    }()
+    
+    private lazy var libraryButton: UIBarButtonItem = {
         let barButton = UIBarButtonItem(
             title: SBUStringSet.ViewLibrary,
             style: .plain,
@@ -48,6 +81,7 @@ open class SBUSelectablePhotoViewController: UIViewController, SBUViewLifeCycle 
     }()
     
     /// The object that is used as a theme. The theme inherits from `SBUComponentTheme`.
+    /// - Since: 2.2.6
     @SBUThemeWrapper(theme: SBUTheme.componentTheme)
     public var theme: SBUComponentTheme
     
@@ -58,6 +92,7 @@ open class SBUSelectablePhotoViewController: UIViewController, SBUViewLifeCycle 
     
     // MARK: Layouts
     /// If it's `nil`, it returns the size that has 1/3 length of the collection view ‘s horizontal length
+    /// - Since: 2.2.6
     public var columnSize: CGSize {
         customColumnSize ?? defaultColumnSize
     }
@@ -95,12 +130,17 @@ open class SBUSelectablePhotoViewController: UIViewController, SBUViewLifeCycle 
     }
     
     /// This function handles the initialization of views.
+    /// - Since: 2.2.6
     open func setupViews() {
+        if self.leftBarButton == nil {
+            self.leftBarButton = self.closeButton
+        }
         if #available(iOS 14, *), self.rightBarButton == nil {
-            self.rightBarButton = self.editButton
+            self.rightBarButton = self.libraryButton
         }
 
         // Navigation Bar
+        self.navigationItem.leftBarButtonItem = self.leftBarButton
         self.navigationItem.rightBarButtonItem = self.rightBarButton
         
         
@@ -109,15 +149,18 @@ open class SBUSelectablePhotoViewController: UIViewController, SBUViewLifeCycle 
     }
     
     /// This function handles the initialization of autolayouts.
+    /// - Since: 2.2.6
     open func setupAutolayout() {
         self.collectionView
             .sbu_constraint(equalTo: self.view, leading: 0, trailing: 0, top: 0, bottom: 0)
     }
     
     /// This function handles the initialization of actions.
+    /// - Since: 2.2.6
     open func setupActions() { }
     
     /// This function handles the initialization of styles.
+    /// - Since: 2.2.6
     open func setupStyles() {
         self.view.backgroundColor = SBUColorSet.background100
     }
@@ -126,6 +169,7 @@ open class SBUSelectablePhotoViewController: UIViewController, SBUViewLifeCycle 
     /// - Parameters:
     ///   - channelCell: Customized channel cell
     ///   - nib: nib information. If the value is nil, the nib file is not used.
+    /// - Since: 2.2.6
     public func register(photoCell: SBUPhotoCollectionViewCell, nib: UINib? = nil) {
         if let nib = nib {
             self.collectionView.register(nib, forCellWithReuseIdentifier: photoCell.sbu_className)
@@ -134,11 +178,20 @@ open class SBUSelectablePhotoViewController: UIViewController, SBUViewLifeCycle 
         }
     }
     
+    /// Called when `rightBarButton` was tapped. The default action is showing up the limited library picker to select accessible photos and videos.
+    /// - Since: 2.2.6
     @objc
     open func didTapRightBarButton() {
         if #available(iOS 14, *) {
             PHPhotoLibrary.shared().presentLimitedLibraryPicker(from: self)
         }
+    }
+    
+    /// Called when `leftBarButton` was tapped. The default action is dismissing this view controller.
+    /// - Since: 2.2.7
+    @objc
+    open func didTapLeftBarButton() {
+        self.dismiss(animated: true)
     }
 }
 
@@ -212,6 +265,7 @@ extension SBUSelectablePhotoViewController: PHPhotoLibraryChangeObserver {
     /// The `PHPhotoLibraryChangeObserver` delegate method that tells your observer that a set of changes has occurred in the Photos library.
     /// Override this method to handle action when there's any change on the accessible media in photo library.
     /// It reloads the collection view with the changes of preselected photos videos.
+    /// - Since: 2.2.6
     public func photoLibraryDidChange(_ changeInstance: PHChange) {
         guard let details = changeInstance.changeDetails(for: self.fetchResult) else { return }
         self.fetchResult = details.fetchResultAfterChanges

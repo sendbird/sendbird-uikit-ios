@@ -1722,6 +1722,10 @@ extension UIKit.UIImageView {
   @objc @_Concurrency.MainActor(unsafe) public var collectionView: UIKit.UICollectionView {
     @objc get
   }
+  @objc @_Concurrency.MainActor(unsafe) public var leftBarButton: UIKit.UIBarButtonItem? {
+    @objc get
+    @objc set
+  }
   @objc @_Concurrency.MainActor(unsafe) public var rightBarButton: UIKit.UIBarButtonItem? {
     @objc get
     @objc set
@@ -1745,6 +1749,7 @@ extension UIKit.UIImageView {
   @_Concurrency.MainActor(unsafe) @objc open func setupStyles()
   @objc @_Concurrency.MainActor(unsafe) public func register(photoCell: SendBirdUIKit.SBUPhotoCollectionViewCell, nib: UIKit.UINib? = nil)
   @objc @_Concurrency.MainActor(unsafe) open func didTapRightBarButton()
+  @objc @_Concurrency.MainActor(unsafe) open func didTapLeftBarButton()
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
   @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
 }
@@ -1973,9 +1978,10 @@ extension SendBirdUIKit.SBUSelectablePhotoViewController : Photos.PHPhotoLibrary
   @_Concurrency.MainActor(unsafe) @objc open func didSelectActionSheetItem(index: Swift.Int, identifier: Swift.Int)
   @objc deinit
 }
-public enum SBUReplyType : Swift.Int {
+@objc public enum SBUReplyType : Swift.Int {
   case none
   case quoteReply
+  @available(*, unavailable, renamed: "quoteReply")
   case thread
   public var filterValue: SendBirdSDK.SBDReplyType {
     get
@@ -2123,7 +2129,7 @@ extension SendBirdUIKit.SBUCreateChannelViewController {
   @objc @available(iOS 14, *)
   public static var UsingPHPicker: Swift.Bool
   @objc public static var photoLibraryAccessLevel: SendBirdUIKit.SBUPhotoAccessLevel
-  public static var ReplyTypeToUse: SendBirdUIKit.SBUReplyType
+  @objc public static var ReplyTypeToUse: SendBirdUIKit.SBUReplyType
   @objc public static var UsingUserProfile: Swift.Bool
   @objc public static var UsingUserProfileInOpenChannel: Swift.Bool
   @objc public static var UsingImageCompression: Swift.Bool

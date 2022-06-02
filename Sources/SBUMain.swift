@@ -130,11 +130,14 @@ public class SBUMain: NSObject {
             
             if let error = error {
                 SBULog.warning("[Warning] Connection to Sendbird: Succeed but error was occurred: \(error.localizedDescription)")
-                completionHandler(user, error)
-                return
+                
+                if !SBDMain.isUsingLocalCaching() {
+                    completionHandler(user, error)
+                    return
+                }
+            } else {
+                SBULog.info("[Succeed] Connection to Sendbird")
             }
-            
-            SBULog.info("[Succeed] Connection to Sendbird")
             
             var updatedNickname = nickname
             
@@ -267,14 +270,17 @@ public class SBUMain: NSObject {
                                                 completionHandler: ((_ error: SBDError?) -> Void)?) {
         if let error = error {
             SBULog.error("[Failed] Update user info: \(error.localizedDescription)")
-            completionHandler?(error)
-            return
-        }
-        
-        SBULog.info("""
+            
+            if !SBDMain.isUsingLocalCaching() {
+                completionHandler?(error)
+                return
+            }
+        } else {
+            SBULog.info("""
             [Succeed]
             Update user info: \(String(SBUGlobals.CurrentUser?.description ?? ""))
             """)
+        }
         
         if let user = SBDMain.getCurrentUser() {
             SBUGlobals.CurrentUser = SBUUser(
@@ -284,14 +290,14 @@ public class SBUMain: NSObject {
             )
         }
         
-        completionHandler?(nil)
+        completionHandler?(error)
     }
     
     
     // MARK: - Common
     /// This function gets UIKit SDK's short version string. (e.g. 1.0.0)
     /// - Since: 2.2.0
-    public static let shortVersion: String = "2.2.3"
+    public static let shortVersion: String = "2.2.7"
     
     /// This function gets UIKit SDK's version string.
     /// - Returns: version string
@@ -361,10 +367,16 @@ public class SBUMain: NSObject {
     /// - Parameter completionHandler: The handler block to execute.
     public static func unregisterPushToken(completionHandler: @escaping (_ success: Bool) -> Void) {
         SBUMain.connectIfNeeded { user, error in
-        guard error == nil else { return }
+            guard error == nil else {
+                completionHandler(false)
+                return
+            }
             
             #if !targetEnvironment(simulator)
-            guard let pendingPushToken = SBDMain.getPendingPushToken() else { return }
+            guard let pendingPushToken = SBDMain.getPendingPushToken() else {
+                completionHandler(false)
+                return
+            }
             SBULog.info("[Request] Unregister push token to Sendbird server")
             SBDMain.unregisterPushToken(pendingPushToken) { resonse, error in
                 if let error = error {
@@ -389,7 +401,10 @@ public class SBUMain: NSObject {
     /// - Parameter completionHandler: The handler block to execute.
     public static func unregisterAllPushToken(completionHandler: @escaping (_ success: Bool) -> Void) {
         SBUMain.connectIfNeeded { user, error in
-        guard error == nil else { return }
+            guard error == nil else {
+                completionHandler(false)
+                return
+            }
             
             SBULog.info("[Request] Unregister all push token to Sendbird server")
             

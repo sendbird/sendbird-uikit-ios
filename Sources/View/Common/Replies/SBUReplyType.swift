@@ -9,15 +9,29 @@
 import Foundation
 import SendBirdSDK
 
+@objc
 public enum SBUReplyType: Int {
+    /// Doesn’t display any replies.
     case `none`
+    
+    /// Displays the replies on the message list
     case quoteReply
+    
+    @available(*, unavailable, renamed: "quoteReply")
     case thread
     
     public var filterValue: SBDReplyType {
         switch self {
-            case .none: return .none
-            default: return .all
+        case .none: return .none
+        default: return .onlyReplyToChannel
         }
+    }
+    
+    var includesThreadInfo: Bool {
+        return true
+    }
+    
+    var includesParentMessageInfo: Bool {
+        return self != .none
     }
 }

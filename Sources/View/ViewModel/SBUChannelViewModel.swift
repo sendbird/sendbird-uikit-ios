@@ -81,8 +81,8 @@ class SBUChannelViewModel: SBULoadableViewModel {
         self.messageListParams.reverse = true
         self.messageListParams.includeReactions = SBUEmojiManager.useReaction(channel: channel)
         
-        self.messageListParams.includeThreadInfo = true
-        self.messageListParams.includeParentMessageInfo = SBUGlobals.ReplyTypeToUse != .none
+        self.messageListParams.includeThreadInfo =  SBUGlobals.ReplyTypeToUse.includesThreadInfo
+        self.messageListParams.includeParentMessageInfo = SBUGlobals.ReplyTypeToUse.includesParentMessageInfo
         self.messageListParams.replyType = SBUGlobals.ReplyTypeToUse.filterValue
     }
     
@@ -231,16 +231,15 @@ class SBUChannelViewModel: SBULoadableViewModel {
         }
     }
     
-    /// Loads previous messages from given timestamp.
-    /// - Parameter timestamp: Timestamp to load messages from to the `previous` direction, or `nil` to start from the latest (`LLONG_MAX`).
-    func loadPrevMessages(timestamp: Int64?) {
+    /// Loads previous messages.
+    func loadPrevMessages() {
         guard let messageCollection = self.messageCollection else { return }
         guard self.prevLock.try() else {
             SBULog.info("Prev message already loading")
             return
         }
         
-        SBULog.info("[Request] Prev message list from : \(String(describing: timestamp))")
+        SBULog.info("[Request] Prev message list")
         self.setLoading(true, false)
         
         messageCollection.loadPrevious { [weak self] messages, error in
