@@ -85,7 +85,8 @@ open class SBUFileMessageCell: SBUContentBaseMessageCell {
                 commonContentView.configure(
                     message: message,
                     position: configuration.messagePosition,
-                    highlight: false)
+                    highlightKeyword: nil
+                )
             }
         }
     }
@@ -98,9 +99,11 @@ open class SBUFileMessageCell: SBUContentBaseMessageCell {
         guard let commonContentView = self.baseFileContentView as? SBUCommonContentView,
               let fileMessage = self.fileMessage else { return }
         
-        commonContentView.configure(message: fileMessage,
-                                    position: self.position,
-                                    highlight: true)
+        commonContentView.configure(
+            message: fileMessage,
+            position: self.position,
+            highlightKeyword: highlightInfo?.keyword
+        )
     }
     
     /// This method has to be called in main thread

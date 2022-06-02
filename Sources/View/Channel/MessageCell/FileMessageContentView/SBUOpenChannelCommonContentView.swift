@@ -28,9 +28,11 @@ open class SBUOpenChannelCommonContentView: SBUCommonContentView {
         self.fileImageView.backgroundColor = theme.fileIconBackgroundColor
     }
     
-    open override func configure(message: SBDFileMessage,
-                   position: MessagePosition,
-                   highlight: Bool) {
+    open override func configure(
+        message: SBDFileMessage,
+        position: MessagePosition,
+        highlightKeyword: String?
+    ) {
         super.configure(message: message, position: position)
         
         if self.message?.requestId != message.requestId ||

@@ -90,7 +90,7 @@ open class SBUQuotedFileMessageView: SBUQuotedBaseMessageView {
                         with: type,
                         fileName: name,
                         position: configuration.messagePosition,
-                        highlight: false
+                        highlightKeyword: nil
                     )
         }
         self.updateConstraintsIfNeeded()

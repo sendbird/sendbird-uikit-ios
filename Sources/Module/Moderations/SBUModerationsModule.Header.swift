@@ -10,7 +10,7 @@ import UIKit
 import SendBirdSDK
 
 
-/// Even methods for the views updates and performing actions from the header component in moderation module.
+/// Event methods for the views updates and performing actions from the header component in moderation module.
 public protocol SBUModerationsModuleHeaderDelegate: SBUCommonDelegate {
     /// Called when `titleView` value has been updated.
     /// - Parameters:
@@ -153,7 +153,8 @@ extension SBUModerationsModule {
         // MARK: - Actions
         
         /// The action of `leftBarButton`. It calls `moderationsModule(_:didTapLeftItem:)` when it's tapped
-        @objc public func onTapLeftBarButton() {
+        @objc
+        public func onTapLeftBarButton() {
             if let leftBarButton = self.leftBarButton {
                 self.delegate?.moderationsModule(self, didTapLeftItem: leftBarButton)
             }

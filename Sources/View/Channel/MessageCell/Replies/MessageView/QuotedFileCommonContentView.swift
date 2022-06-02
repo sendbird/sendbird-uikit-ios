@@ -82,7 +82,12 @@ class QuotedFileCommonContentView: SBUView {
         self.fileImageView.backgroundColor = .clear
     }
     
-    func configure(with fileType: String, fileName: String, position: MessagePosition, highlight: Bool) {
+    func configure(
+        with fileType: String,
+        fileName: String,
+        position: MessagePosition,
+        highlightKeyword: String?
+    ) {
         let image: UIImage
         let fileType = SBUUtils.getFileType(by: fileType)
         
@@ -114,20 +119,65 @@ class QuotedFileCommonContentView: SBUView {
         ]
         highlightTextColor = theme.messageLeftHighlightTextColor
         
-        if highlight {
-            attributes[.backgroundColor] = SBUColorSet.highlight
-            attributes[.foregroundColor] = highlightTextColor
-        }
-        
-        let attributedText = NSAttributedString(
+        let attributedText = NSMutableAttributedString(
             string: fileName,
             attributes: attributes
         )
+        if let keyword = highlightKeyword {
+            self.addHighlight(
+                keyword: keyword,
+                toAttributedString: attributedText,
+                highlightTextColor: highlightTextColor
+            )
+        }
         self.fileNameLabel.attributedText = attributedText
         self.fileNameLabel.sizeToFit()
         
         self.setupStyles()
         
         self.layoutIfNeeded()
+    }
+    
+    func addHighlight(keyword: String, toAttributedString attributedString: NSMutableAttributedString, highlightTextColor: UIColor) {
+        let highlightAll = keyword.isEmpty
+        if highlightAll {
+            let range = NSRange(location: 0, length: attributedString.length)
+            attributedString.addAttributes(
+                [
+                    .backgroundColor: SBUColorSet.highlight,
+                    .foregroundColor: highlightTextColor
+                ],
+                range: range
+            )
+        } else {
+            var baseRange = NSRange(location: 0, length: attributedString.length)
+            var ranges: [NSRange] = []
+            // Loop until no more keyword found.
+            while baseRange.location != NSNotFound {
+                baseRange = (attributedString.string as NSString)
+                    .range(
+                        of: keyword,
+                        options: .caseInsensitive,
+                        range: baseRange
+                    )
+                ranges.append(baseRange)
+                
+                if (baseRange.location != NSNotFound) {
+                    baseRange = NSRange(
+                        location: NSMaxRange(baseRange),
+                        length: attributedString.length - NSMaxRange(baseRange)
+                    )
+                }
+            }
+            ranges.forEach { (range) in
+                attributedString.addAttributes(
+                    [
+                        .backgroundColor: SBUColorSet.highlight,
+                        .foregroundColor: highlightTextColor
+                    ],
+                    range: range
+                )
+            }
+        }
     }
 }

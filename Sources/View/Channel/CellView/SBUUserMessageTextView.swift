@@ -166,7 +166,7 @@ class SBUUserMessageTextView: SBUView {
                 mentionedUsers: SBUUser.convertUsers(mentionedUsers)
             )
             let mutableAttributedText = NSMutableAttributedString(attributedString: attributedText)
-            model.addhighlightIfNeeded(with: mutableAttributedText)
+            model.addMentionedUserHighlightIfNeeded(with: mutableAttributedText, mentionedList: mentionManager?.mentionedList)
             model.addEditedStateIfNeeded(with: mutableAttributedText)
             
             textView.attributedText = mutableAttributedText

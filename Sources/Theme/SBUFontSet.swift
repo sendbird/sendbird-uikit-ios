@@ -210,6 +210,20 @@ public class SBUFontSet {
             .paragraphStyle: style
         ]
     }()
+    /// Regular, 14pt
+    public static var subtitle3 = UIFont.systemFont(ofSize: 14.0, weight: .regular)
+    static var subtitle3Attributes: [NSAttributedString.Key: Any] = {
+        let style = NSMutableParagraphStyle()
+        let pointSize = SBUFontSet.subtitle3.pointSize
+        let defaultLineHeight = 20.f
+        let defaultFontSize = 14.f
+        style.minimumLineHeight = defaultLineHeight * pointSize / defaultFontSize
+        return [
+            .font: SBUFontSet.subtitle3,
+            .kern: -0.2,
+            .paragraphStyle: style
+        ]
+    }()
      
 }
  

@@ -390,16 +390,15 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     open func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didTapMentionUser user: SBUUser) {
         self.dismissKeyboard()
         
-        // TODO: Activate after policy confirmation
-//        if let userProfileView = self.baseListComponent?.userProfileView as? SBUUserProfileView,
-//           let baseView = self.navigationController?.view,
-//           SBUGlobals.isUserProfileEnabled
-//        {
-//            userProfileView.show(
-//                baseView: baseView,
-//                user: user
-//            )
-//        }
+        if let userProfileView = self.baseListComponent?.userProfileView as? SBUUserProfileView,
+           let baseView = self.navigationController?.view,
+           SBUGlobals.isUserProfileEnabled
+        {
+            userProfileView.show(
+                baseView: baseView,
+                user: user
+            )
+        }
     }
     
     open override func baseChannelModuleDidTapScrollToButton(_ listComponent: SBUBaseChannelModule.List, animated: Bool) {
@@ -422,6 +421,9 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     
     // MARK: - SBUGroupChannelModuleListDataSource
     open func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, highlightInfoInTableView tableView: UITableView) -> SBUHighlightMessageInfo? {
+
+        guard self.viewModel?.isInitialLoading == false else { return nil }
+        
         return self.highlightInfo
     }
     

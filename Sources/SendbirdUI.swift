@@ -370,10 +370,16 @@ public class SendbirdUI {
     /// - Parameter completionHandler: The handler block to execute.
     public static func unregisterPushToken(completionHandler: @escaping (_ success: Bool) -> Void) {
         SendbirdUI.connectIfNeeded { user, error in
-        guard error == nil else { return }
+        guard error == nil else {
+            completionHandler(false)
+            return
+        }
             
             #if !targetEnvironment(simulator)
-            guard let pendingPushToken = SBDMain.getPendingPushToken() else { return }
+            guard let pendingPushToken = SBDMain.getPendingPushToken() else {
+                completionHandler(false)
+                return
+            }
             SBULog.info("[Request] Unregister push token to Sendbird server")
             SBDMain.unregisterPushToken(pendingPushToken) { resonse, error in
                 if let error = error {
@@ -398,7 +404,10 @@ public class SendbirdUI {
     /// - Parameter completionHandler: The handler block to execute.
     public static func unregisterAllPushToken(completionHandler: @escaping (_ success: Bool) -> Void) {
         SendbirdUI.connectIfNeeded { user, error in
-        guard error == nil else { return }
+            guard error == nil else {
+                completionHandler(false)
+                return
+            }
             
             SBULog.info("[Request] Unregister all push token to Sendbird server")
             

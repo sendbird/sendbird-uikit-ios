@@ -10,7 +10,7 @@ import UIKit
 import SendBirdSDK
 
 
-/// Even methods for the views updates and performing actions from the header component in message search module.
+/// Event methods for the views updates and performing actions from the header component in message search module.
 public protocol SBUMessageSearchModuleHeaderDelegate: SBUCommonDelegate {
     /// Called when `titleView` value has been updated.
     /// - Parameters:

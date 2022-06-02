@@ -173,8 +173,17 @@ class SBUChannelSettingCell: UITableViewCell {
             
             self.titleLabel.text = title ?? SBUStringSet.ChannelSettings_Notifications
             
-            self.rightSwitch.isHidden = false
-            self.rightSwitch.setOn((channel?.myPushTriggerOption != .off), animated: false)
+            // TODO: StringSet
+            switch channel?.myPushTriggerOption {
+            case .off:
+                self.subTitleLabel.text = "Off"
+            case .mentionOnly:
+                self.subTitleLabel.text = "Mentions only"
+            default:
+                self.subTitleLabel.text = "On"
+            }
+            self.subTitleLabel.isHidden = false
+            self.rightButton.isHidden = false
 
         case .members:
             self.typeIcon.image = icon ?? SBUIconSetType.iconMembers.image(

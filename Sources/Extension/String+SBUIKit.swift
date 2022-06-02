@@ -18,8 +18,10 @@ extension String {
     func regexMatchingList(regex: String) -> [String] {
         do {
             let regex = try NSRegularExpression(pattern: regex)
-            let results = regex.matches(in: self,
-                                        range: NSRange(self.startIndex..., in: self))
+            let results = regex.matches(
+                in: self,
+                range: NSRange(self.startIndex..., in: self)
+            )
             return results.map {
                 String(self[Range($0.range, in: self)!])
             }
@@ -48,20 +50,23 @@ extension String {
     }
     
     func unwrappingRegex(_ regex: String) -> String? {
-        // Reference: https://stackoverflow.com/a/40040472
         guard let regex = try? NSRegularExpression(pattern: regex, options: []) else { return nil }
         let nsString = self as NSString
         let matches = regex.matches(in: self, options: [], range: NSMakeRange(0, nsString.length))
         let results = matches.map { result in
             (0..<result.numberOfRanges).map {
                 result.range(at: $0).location != NSNotFound
-                    ? nsString.substring(with: result.range(at: $0))
-                    : ""
+                ? nsString.substring(with: result.range(at: $0))
+                : ""
             }
         }
-
-        guard !results.isEmpty, let result = results.first, result.count > 2 else { return nil }
-        let unwrappedString = result[1]
+        
+        guard !results.isEmpty else { return nil }
+        
+        var unwrappedString = self
+        for result in results where result.count >= 2 {
+            unwrappedString = unwrappedString.replacingOccurrences(of: result[0], with: result[1])
+        }
         return unwrappedString
     }
 }

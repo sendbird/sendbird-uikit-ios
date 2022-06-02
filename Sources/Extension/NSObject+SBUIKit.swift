@@ -10,7 +10,7 @@ import Foundation
 
 public extension NSObject {
     /// This gets the class name of object.
-    @objc static var sbu_className: String {
+    static var sbu_className: String {
         guard let className = String(describing: self).components(separatedBy: ".").last else {
             SBULog.error(String(describing: self))
             fatalError("Class name couldn't find.")
@@ -19,7 +19,7 @@ public extension NSObject {
     }
     
     /// This gets the class name of object.
-    @objc var sbu_className: String {
+    var sbu_className: String {
         guard let className = String(describing: self)
             .components(separatedBy: ":").first?
             .components(separatedBy: ".").last else {

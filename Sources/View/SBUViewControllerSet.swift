@@ -21,6 +21,8 @@ public class SBUViewControllerSet {
     
     public static var MemberListViewController: SBUMemberListViewController.Type = SBUMemberListViewController.self
     
+    public static var groupChannelPushSettingsViewController: SBUGroupChannelPushSettingsViewController.Type = SBUGroupChannelPushSettingsViewController.self
+    
     public static var GroupChannelSettingsViewController: SBUGroupChannelSettingsViewController.Type = SBUGroupChannelSettingsViewController.self
     public static var OpenChannelSettingsViewController: SBUOpenChannelSettingsViewController.Type = SBUOpenChannelSettingsViewController.self
     

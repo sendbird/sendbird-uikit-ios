@@ -154,8 +154,6 @@ extension SBUGroupChannelModule {
         
         open override func setupViews() {
             super.setupViews()
-            
-            // TODO: setup up suggestedMention list
         }
         
         open override func setupLayouts() {
@@ -549,9 +547,15 @@ extension SBUGroupChannelModule {
             
             suggestedMentionList.translatesAutoresizingMaskIntoConstraints = false
             suggestedMentionList.heightConstraint = suggestedMentionList.heightAnchor.constraint(equalToConstant: 0)
+            
             suggestedMentionList
                 .sbu_constraint(equalTo: self, leading: 0, trailing: 0)
-                .sbu_constraint_equalTo(bottomAnchor: messageInputView.topAnchor, bottom: 0)
+                .sbu_constraint_equalTo(
+                    bottomAnchor:
+                        (messageInputView as? SBUMessageInputView)?.contentHStackView.topAnchor
+                        ?? messageInputView.topAnchor,
+                    bottom: 0
+                )
                 .sbu_constraint_lessThan(height: 196)
             
             NSLayoutConstraint.activate([

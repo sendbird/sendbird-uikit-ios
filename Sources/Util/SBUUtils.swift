@@ -152,13 +152,13 @@ public class SBUUtils {
     /// - Parameter type: Channel type
     /// - Returns: If channel name is valid, return `true`.
     public static func isValid(channelName: String, type: SBDChannelType = .group) -> Bool {
-        var prefixString = kDefaultGroupChannelName
+        var defaultName = kDefaultGroupChannelName
         
         if type == .open {
-            prefixString = kDefaultOpenChannelName
+            defaultName = kDefaultOpenChannelName
         }
         
-        guard !channelName.hasPrefix(prefixString),
+        guard channelName != defaultName,
             !channelName.isEmpty  else {
                 return false
         }

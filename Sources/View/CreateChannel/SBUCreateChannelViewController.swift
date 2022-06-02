@@ -42,6 +42,14 @@ open class SBUCreateChannelViewController: SBUBaseViewController, SBUCreateChann
         fatalError()
     }
     
+    public init() {
+        super.init(nibName: nil, bundle: nil)
+        
+        self.createViewModel(type: .group)
+        self.headerComponent = SBUModuleSet.createChannelModule.headerComponent
+        self.listComponent = SBUModuleSet.createChannelModule.listComponent
+    }
+    
     /// If you have user objects, use this initialize function.
     /// - Parameters:
     ///   - users: `SBUUser` array object

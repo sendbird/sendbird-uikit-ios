@@ -193,7 +193,7 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
             model: SBUUserMessageTextViewModel(
                 message: message,
                 position: position,
-                highlight: true
+                highlightKeyword: highlightInfo?.keyword
             )
         )
     }

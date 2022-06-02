@@ -232,7 +232,7 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
                 if cacheResult == nil, cacheResult?.isEmpty == true { return }
                 
                 self.isInitialLoading = true
-                self.upsertMessagesInList(messages: cacheResult, needReload: true)
+                self.upsertMessagesInList(messages: cacheResult, needReload: false)
                 
             }, apiResultHandler: { [weak self] apiResult, error in
                 guard let self = self else { return }

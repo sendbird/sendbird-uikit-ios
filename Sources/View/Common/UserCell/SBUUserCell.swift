@@ -186,6 +186,12 @@ open class SBUUserCell: SBUTableViewCell {
         self.nicknameLabel
             .setContentHuggingPriority(.required, for: .horizontal)
         
+        if !self.userIdLabel.isHidden {
+            self.userIdLabel
+                .sbu_constraint(width:32, priority: .defaultLow)
+                .sbu_constraint_greaterThan(width: 32, priority: .defaultLow)
+        }
+        
         self.mutedStateImageView
             .sbu_constraint(width: userImageSize, height: userImageSize)
             .sbu_constraint(equalTo: self.userImageView, leading: 0, top: 0)

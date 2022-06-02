@@ -152,17 +152,12 @@ open class SBUGroupChannelSettingsViewController: SBUBaseChannelSettingsViewCont
         
         switch type {
         case .moderations: self.showModerationList()
-        case .notifications: break
+        case .notifications: self.showNotifications()
         case .members: self.showMemberList()
         case .leave: self.viewModel?.leaveChannel()
         case .search: self.showSearch()
         default: break
         }
-    }
-    
-    open func groupChannelSettingsModule(_ listComponent: SBUGroupChannelSettingsModule.List,
-                                         didChangeNotification state: Bool) {
-        self.viewModel?.changeNotification(isOn: state)
     }
     
     

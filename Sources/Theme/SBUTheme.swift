@@ -376,6 +376,10 @@ public class SBUChannelCellTheme {
         theme.unreadCountTextColor = SBUColorSet.ondark01
         theme.unreadCountFont = SBUFontSet.caption1
         
+        theme.succeededStateColor = SBUColorSet.onlight03
+        theme.deliveryReceiptStateColor = SBUColorSet.onlight03
+        theme.readReceiptStateColor = SBUColorSet.secondary300
+        
         theme.unreadMentionTextFont = SBUFontSet.h3
         theme.unreadMentionTextColor = SBUColorSet.primary300
         
@@ -406,6 +410,10 @@ public class SBUChannelCellTheme {
         theme.unreadCountTextColor = SBUColorSet.onlight01
         theme.unreadCountFont = SBUFontSet.caption1
         
+        theme.succeededStateColor = SBUColorSet.ondark03
+        theme.deliveryReceiptStateColor = SBUColorSet.ondark03
+        theme.readReceiptStateColor = SBUColorSet.secondary200
+        
         theme.unreadMentionTextFont = SBUFontSet.h3
         theme.unreadMentionTextColor = SBUColorSet.primary200
         
@@ -428,6 +436,9 @@ public class SBUChannelCellTheme {
                 unreadCountTextColor: UIColor = SBUColorSet.ondark01,
                 unreadCountFont: UIFont = SBUFontSet.caption1,
                 unreadMentionFont: UIFont = SBUFontSet.h3,
+                succeededStateColor: UIColor = SBUColorSet.onlight03,
+                deliveryReceiptStateColor: UIColor = SBUColorSet.onlight03,
+                readReceiptStateColor: UIColor = SBUColorSet.secondary300,
                 unreadMentionColor: UIColor = SBUColorSet.primary300,
                 separatorLineColor: UIColor = SBUColorSet.onlight04) {
         
@@ -445,6 +456,9 @@ public class SBUChannelCellTheme {
         self.unreadCountBackgroundColor = unreadCountBackgroundColor
         self.unreadCountTextColor = unreadCountTextColor
         self.unreadCountFont = unreadCountFont
+        self.succeededStateColor = succeededStateColor
+        self.deliveryReceiptStateColor = deliveryReceiptStateColor
+        self.readReceiptStateColor = readReceiptStateColor
         self.unreadMentionTextFont = unreadMentionFont
         self.unreadMentionTextColor = unreadMentionColor
         self.separatorLineColor = separatorLineColor
@@ -471,6 +485,13 @@ public class SBUChannelCellTheme {
     public var unreadCountBackgroundColor: UIColor
     public var unreadCountTextColor: UIColor
     public var unreadCountFont: UIFont
+    
+    /// The color represent a succeeded(sent) state of delivery/read receipt.
+    public var succeededStateColor: UIColor
+    /// The color represent a delivered state of delivery/read receipt.
+    public var deliveryReceiptStateColor: UIColor
+    /// The color represent a read state of delivery/read receipt.
+    public var readReceiptStateColor: UIColor
     
     public var unreadMentionTextFont: UIFont
     public var unreadMentionTextColor: UIColor
@@ -1651,8 +1672,12 @@ public class SBUChannelSettingsTheme {
         theme.cellTextColor = SBUColorSet.onlight01
         theme.cellSubTextFont = SBUFontSet.subtitle2
         theme.cellSubTextColor = SBUColorSet.onlight02
+        theme.cellDescriptionTextFont = SBUFontSet.subtitle3
+        theme.cellDescriptionTextColor = SBUColorSet.onlight02
         theme.cellSwitchColor = SBUColorSet.primary300
         theme.cellSeparateColor = SBUColorSet.onlight04
+        theme.cellRadioButtonSelectedColor = SBUColorSet.primary300
+        theme.cellRadioButtonDeselectedColor = SBUColorSet.onlight03
         
         // Cell image
         theme.cellTypeIconTintColor = SBUColorSet.primary300
@@ -1690,8 +1715,12 @@ public class SBUChannelSettingsTheme {
         theme.cellTextColor = SBUColorSet.ondark01
         theme.cellSubTextFont = SBUFontSet.subtitle2
         theme.cellSubTextColor = SBUColorSet.ondark02
+        theme.cellDescriptionTextFont = SBUFontSet.subtitle3
+        theme.cellDescriptionTextColor = SBUColorSet.ondark02
         theme.cellSwitchColor = SBUColorSet.primary200
         theme.cellSeparateColor = SBUColorSet.ondark04
+        theme.cellRadioButtonSelectedColor = SBUColorSet.primary300
+        theme.cellRadioButtonDeselectedColor = SBUColorSet.ondark03
         
         // Cell image
         theme.cellTypeIconTintColor = SBUColorSet.primary200
@@ -1726,8 +1755,12 @@ public class SBUChannelSettingsTheme {
                 cellTextColor: UIColor = SBUColorSet.onlight01,
                 cellSubTextFont: UIFont = SBUFontSet.subtitle2,
                 cellSubTextColor: UIColor = SBUColorSet.onlight02,
+                cellDescriptionTextFont: UIFont = SBUFontSet.subtitle3,
+                cellDescriptionTextColor: UIColor = SBUColorSet.onlight02,
                 cellSwitchColor: UIColor = SBUColorSet.primary300,
                 cellSeparateColor: UIColor = SBUColorSet.onlight04,
+                cellRadioButtonSelectedColor: UIColor = SBUColorSet.primary300,
+                cellRadioButtonDeselectedColor: UIColor = SBUColorSet.onlight03,
                 cellTypeIconTintColor: UIColor = SBUColorSet.primary300,
                 cellArrowIconTintColor: UIColor = SBUColorSet.onlight01,
                 cellLeaveIconColor: UIColor = SBUColorSet.error300,
@@ -1752,8 +1785,12 @@ public class SBUChannelSettingsTheme {
         self.cellTextColor = cellTextColor
         self.cellSubTextFont = cellSubTextFont
         self.cellSubTextColor = cellSubTextColor
+        self.cellDescriptionTextFont = cellDescriptionTextFont
+        self.cellDescriptionTextColor = cellDescriptionTextColor
         self.cellSwitchColor = cellSwitchColor
         self.cellSeparateColor = cellSeparateColor
+        self.cellRadioButtonSelectedColor = cellRadioButtonSelectedColor
+        self.cellRadioButtonDeselectedColor = cellRadioButtonDeselectedColor
         self.cellTypeIconTintColor = cellTypeIconTintColor
         self.cellArrowIconTintColor = cellArrowIconTintColor
         self.cellLeaveIconColor = cellLeaveIconColor
@@ -1782,8 +1819,12 @@ public class SBUChannelSettingsTheme {
     public var cellTextColor: UIColor
     public var cellSubTextFont: UIFont
     public var cellSubTextColor: UIColor
+    public var cellDescriptionTextFont: UIFont // 3.0.0
+    public var cellDescriptionTextColor: UIColor // 3.0.0
     public var cellSwitchColor: UIColor
     public var cellSeparateColor: UIColor
+    public var cellRadioButtonSelectedColor: UIColor
+    public var cellRadioButtonDeselectedColor: UIColor
     
     // Cell image
     public var cellTypeIconTintColor: UIColor

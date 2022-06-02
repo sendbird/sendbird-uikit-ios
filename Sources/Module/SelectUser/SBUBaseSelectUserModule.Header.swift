@@ -10,7 +10,7 @@ import UIKit
 import SendBirdSDK
 
 
-/// Even methods for the views updates and performing actions from the header component in user selection module.
+/// Event methods for the views updates and performing actions from the header component in user selection module.
 public protocol SBUBaseSelectUserModuleHeaderDelegate: SBUCommonDelegate { }
 
 /// Methods to get data source for header component in a user selection.

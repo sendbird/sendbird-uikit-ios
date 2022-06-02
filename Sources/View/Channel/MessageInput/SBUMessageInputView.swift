@@ -287,7 +287,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     // | leadingPaddingView | inputVStackView | trailingPaddinView |
     // + ------------------ + --------------- + ------------------ +
     
-    private lazy var contentHStackView: SBUStackView = {
+    lazy var contentHStackView: SBUStackView = {
         return SBUStackView(axis: .horizontal, alignment: .fill, spacing: 0)
     }()
     

@@ -59,6 +59,13 @@ public class SBUModuleSet {
         set { shared.memberListModule = newValue }
     }
     
+    // Group Channel Push Settings
+    /// The module for the notification settings
+    public static var groupChannelPushSettingsModule: SBUGroupChannelPushSettingsModule {
+        get { shared.groupChannelPushSettingsModule }
+        set { shared.groupChannelPushSettingsModule = newValue }
+    }
+    
     // Create channel
     /// The module for creating a new channel.
     public static var createChannelModule: SBUCreateChannelModule {
@@ -101,6 +108,7 @@ public class SBUModuleSet {
                 inviteUserModule: SBUInviteUserModule = SBUInviteUserModule(),
                 promoteMemberModule: SBUPromoteMemberModule = SBUPromoteMemberModule(),
                 memberListModule: SBUMemberListModule = SBUMemberListModule(),
+                groupChannelPushSettingsModule: SBUGroupChannelPushSettingsModule = SBUGroupChannelPushSettingsModule(),
                 createChannelModule: SBUCreateChannelModule = SBUCreateChannelModule(),
                 groupChannelSettingsModule: SBUGroupChannelSettingsModule = SBUGroupChannelSettingsModule(),
                 openChannelSettingsModule: SBUOpenChannelSettingsModule = SBUOpenChannelSettingsModule(),
@@ -116,6 +124,8 @@ public class SBUModuleSet {
         self.promoteMemberModule = promoteMemberModule
         
         self.memberListModule = memberListModule
+
+        self.groupChannelPushSettingsModule = groupChannelPushSettingsModule
         
         self.createChannelModule = createChannelModule
         
@@ -139,6 +149,8 @@ public class SBUModuleSet {
     private var promoteMemberModule: SBUPromoteMemberModule
     
     private var memberListModule: SBUMemberListModule
+
+    private var groupChannelPushSettingsModule: SBUGroupChannelPushSettingsModule
     
     private var createChannelModule: SBUCreateChannelModule
     

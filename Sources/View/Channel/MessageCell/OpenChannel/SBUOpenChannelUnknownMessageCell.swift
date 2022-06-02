@@ -29,7 +29,7 @@ open class SBUOpenChannelUnknownMessageCell: SBUOpenChannelUserMessageCell {
         if let messageTextView = self.messageTextView as? SBUUserMessageTextView {
             let text = SBUStringSet.Message_Unknown_Title
                 + "\n"
-                + SBUStringSet.Message_Unknown_Desctiption
+                + SBUStringSet.Message_Unknown_Description
             let model = SBUUserMessageTextViewModel(
                 message: message,
                 text: text,

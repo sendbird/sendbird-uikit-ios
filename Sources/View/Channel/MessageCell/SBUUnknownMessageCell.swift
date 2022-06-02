@@ -26,7 +26,7 @@ open class SBUUnknownMessageCell: SBUUserMessageCell {
         guard let messageTextView = self.messageTextView as? SBUUserMessageTextView else { return }
         let text = SBUStringSet.Message_Unknown_Title
         + "\n"
-        + SBUStringSet.Message_Unknown_Desctiption
+        + SBUStringSet.Message_Unknown_Description
         let model = SBUUserMessageTextViewModel(
             message: message,
             position: self.position,

@@ -231,10 +231,13 @@ open class SBUMessageSearchViewController: SBUBaseViewController, SBUMessageSear
     open func messageSearchModule(_ listComponent: SBUMessageSearchModule.List,
                                   didSelectRowAt indexPath: IndexPath) {
         guard let message = self.listComponent?.message(at: indexPath) else { return }
-        
+        // 220523: removed highlightInfo in search result.
+//        let keyword = (self.headerComponent?.titleView as? UISearchBar)?.text ?? nil
         let highlightInfo = SBUHighlightMessageInfo(
+            keyword: nil,
             messageId: message.messageId,
-            updatedAt: message.updatedAt
+            updatedAt: message.updatedAt,
+            animated: true
         )
         
         self.enterChannel(

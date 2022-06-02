@@ -117,6 +117,13 @@ public enum UserListType: Hashable {
     case operators
 }
 
+/// This is an enumeration used in `ChannelPushSettingsViewController` to show notification controls by types.
+/// - Since: 3.0.0
+public enum ChannelPushSettingsSubType: Int, CaseIterable {
+    case all
+    case mention
+}
+
 /// This is an enumeration used to display `EmptyView` by type.
 @objc public enum EmptyViewType: Int {
     case none

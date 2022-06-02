@@ -57,5 +57,6 @@ open class SBUMentionLimitGuideCell: SBUTableViewCell {
         self.limitGuideLabel.font = theme.mentionLimitGuideTextFont
         self.limitGuideLabel.textColor = theme.mentionLimitGuideTextColor
         self.limitGuideLabel.text = SBUStringSet.Mention.Limit_Guide
+        self.limitGuideLabel.adjustsFontSizeToFitWidth = true
     }
 }

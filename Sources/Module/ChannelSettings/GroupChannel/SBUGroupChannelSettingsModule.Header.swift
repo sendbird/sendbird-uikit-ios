@@ -10,7 +10,7 @@ import UIKit
 import SendBirdSDK
 
 
-/// Even methods for the views updates and performing actions from the header component in group channel settings module.
+/// Event methods for the views updates and performing actions from the header component in group channel settings module.
 public protocol SBUGroupChannelSettingsModuleHeaderDelegate: SBUBaseChannelSettingsModuleHeaderDelegate {
     /// Called when `titleView` value has been updated.
     /// - Parameters:

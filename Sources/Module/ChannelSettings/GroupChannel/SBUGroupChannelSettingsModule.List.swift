@@ -16,12 +16,6 @@ public protocol SBUGroupChannelSettingsModuleListDelegate: SBUBaseChannelSetting
     ///    - listComponent: `SBUGroupChannelSettingsModule.List` object.
     ///    - indexPath: An index path locating the row in table view of `listComponent
     func groupChannelSettingsModule(_ listComponent: SBUGroupChannelSettingsModule.List, didSelectRowAt indexPath: IndexPath)
-    
-    /// Called when changed notification toggle.
-    /// - Parameters:
-    ///    - listComponent: `SBUGroupChannelSettingsModule.List` object.
-    ///    - state: The notification state.
-    func groupChannelSettingsModule(_ listComponent: SBUGroupChannelSettingsModule.List, didChangeNotification state: Bool)
 }
 
 
@@ -96,13 +90,6 @@ extension SBUGroupChannelSettingsModule {
             
             if let channel = self.channel {
                 defaultCell.configure(type: type, channel: channel)
-            }
-            
-            if type == .notifications {
-                defaultCell.switchAction = { [weak self] isOn in
-                    guard let self = self else { return }
-                    self.delegate?.groupChannelSettingsModule(self, didChangeNotification: isOn)
-                }
             }
         }
     }

@@ -32,8 +32,8 @@ open class SBUGroupChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
     
     // MARK: - LifeCycle
     public init(channel: SBDBaseChannel? = nil,
-         channelUrl: String? = nil,
-         delegate: SBUGroupChannelSettingsViewModelDelegate? = nil) {
+                channelUrl: String? = nil,
+                delegate: SBUGroupChannelSettingsViewModelDelegate? = nil) {
         super.init()
         
         self.delegate = delegate
@@ -92,36 +92,6 @@ open class SBUGroupChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
             } else if let channel = channel {
                 self.channel = channel
                 
-                let context = SBDMessageContext()
-                context.source = .eventChannelChanged
-                self.delegate?.baseChannelSettingsViewModel(
-                    self,
-                    didChangeChannel: channel,
-                    withContext: context
-                )
-            }
-        }
-    }
-    
-    /// Changes push trigger option on channel.
-    /// - Parameter isOn: notification status
-    public func changeNotification(isOn: Bool) {
-        guard let groupChannel = self.channel as? SBDGroupChannel else { return }
-        let triggerOption: SBDGroupChannelPushTriggerOption = isOn ? .all : .off
-        
-        self.delegate?.shouldUpdateLoadingState(true)
-        
-        groupChannel.setMyPushTriggerOption(triggerOption) { [weak self] error in
-            guard let self = self else { return }
-            
-            self.delegate?.shouldUpdateLoadingState(false)
-            
-            if let error = error {
-                self.delegate?.didReceiveError(error)
-                return
-            }
-            
-            if let channel = self.channel {
                 let context = SBDMessageContext()
                 context.source = .eventChannelChanged
                 self.delegate?.baseChannelSettingsViewModel(

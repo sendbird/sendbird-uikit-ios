@@ -239,6 +239,12 @@ extension SBUBaseChannelModule {
         }
         
         
+        // MARK: - Logic properties (Private)
+        
+        /// The object that is used as the cell animation debouncer.
+        lazy var cellAnimationDebouncer: SBUDebouncer = SBUDebouncer()
+        
+        
         // MARK: - LifeCycle
         @available(*, unavailable, renamed: "SBUBaseChannelModule.List()")
         required public init?(coder: NSCoder) {

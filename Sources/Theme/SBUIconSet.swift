@@ -172,4 +172,12 @@ public class SBUIconSet {
     public static func restoreDefaultIcons() {
         SBUIconSetType.resetCustomized()
     }
+    
+    
+    public static var iconRadioButtonOn = SBUIconSetType.iconRadioButtonOn.load() {
+        didSet { SBUIconSetType.iconRadioButtonOn.markCustomized() }
+    }
+    public static var iconRadioButtonOff = SBUIconSetType.iconRadioButtonOff.load() {
+        didSet { SBUIconSetType.iconRadioButtonOff.markCustomized() }
+    }
 }

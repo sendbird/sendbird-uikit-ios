@@ -59,6 +59,8 @@ enum SBUIconSetType: String, Hashable {
     case iconSupergroup
     case iconThumbnailNone
     case iconUser
+    case iconRadioButtonOn
+    case iconRadioButtonOff
     
     // MARK: - Metric
     
@@ -175,6 +177,8 @@ enum SBUIconSetType: String, Hashable {
         case .iconSupergroup: SBUIconSet.iconSupergroup = SBUIconSetType.iconSupergroup.load()
         case .iconThumbnailNone: SBUIconSet.iconThumbnailNone = SBUIconSetType.iconThumbnailNone.load()
         case .iconUser: SBUIconSet.iconUser = SBUIconSetType.iconUser.load()
+        case .iconRadioButtonOn: SBUIconSet.iconRadioButtonOn = SBUIconSetType.iconRadioButtonOn.load()
+        case .iconRadioButtonOff: SBUIconSet.iconRadioButtonOff = SBUIconSetType.iconRadioButtonOff.load()
         }
         
         SBUIconSetType.customizedIcons.remove(self)
@@ -237,6 +241,8 @@ enum SBUIconSetType: String, Hashable {
         case .iconSupergroup: return SBUIconSet.iconSupergroup
         case .iconThumbnailNone: return SBUIconSet.iconThumbnailNone
         case .iconUser: return SBUIconSet.iconUser
+        case .iconRadioButtonOn: return SBUIconSet.iconRadioButtonOn
+        case .iconRadioButtonOff: return SBUIconSet.iconRadioButtonOff
         }
     }
 }

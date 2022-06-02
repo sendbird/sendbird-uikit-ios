@@ -1,5 +1,28 @@
 # Changelog
 
+### v3.0.0-beta.3 (Jun 2, 2022)
+* Added channel push settings feature.
+  * Added `SBUGroupChannelPushSettingsViewController` class.
+  * Added `SBUGroupChannelPushSettingsModule`, `SBUGroupChannelPushSettingsModule.Header` and  
+`SBUGroupChannelPushSettingsModule.List` classes.
+  * Added `SBUGroupChannelPushSettingsViewModel` class.
+  * Added `ChannelPushSettings_Header_Title`, `ChannelPushSettings_Notification_Title`, `ChannelPushSettings_Item_All`, `ChannelPushSettings_Item_Mentions_Only`, `ChannelPushSettings_Notification_Description`.
+* Added `keyword` to `SBUHighlightInfo`
+* Modify parameter `highlight` to `highlightKeyword` in `SBUCommonContentView`
+* Modified searched message cell display method (highlight -> animation)
+* Added mentioned user nickname highlighting.
+* Added show mini profile function when touch mentioned nickname. 
+* Added initialize function in `SBUCreateChannelVC`.
+* Renamed `SBUStringSet.Channel_Header_Typing` to `SBUStringSet.Channel_Typing`
+* Updated `SBUTheme.channelCell`
+  * Added `succeededStateColor`
+  * Added `deliveryReceiptStateColor`
+  * Added `readReceiptStateColor`
+* Added `leftBarButton` to `SBUSelectablePhotoViewController`
+  * Added `leftBarButton`
+  * Added `didTapLeftBarButton()`
+* Improved stability.
+
 ### v3.0.0-beta.2 (Apr 29, 2022) with Chat SDK v3.1.13
 * Added User Mention Features
   * Added Mention feature to `SBUGlobals`

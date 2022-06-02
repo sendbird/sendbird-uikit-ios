@@ -102,9 +102,11 @@ open class SBUOpenChannelFileMessageCell: SBUOpenChannelContentBaseMessageCell {
             }
             self.ratioConstraint.isActive = false
             if let commonContentView = self.baseFileContentView as? SBUCommonContentView {
-                commonContentView.configure(message: message,
-                                            position: .left,
-                                            highlight: false)
+                commonContentView.configure(
+                    message: message,
+                    position: .left,
+                    highlightKeyword: nil
+                )
             }
         }
 

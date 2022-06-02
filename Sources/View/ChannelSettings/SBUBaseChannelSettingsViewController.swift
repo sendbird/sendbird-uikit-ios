@@ -227,6 +227,15 @@ open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActio
     
     
     // MARK: - Actions
+    
+    open func showNotifications() {
+        guard let channel = self.channel else { return }
+        if channel is SBDGroupChannel {
+            let pushSettingsVC = SBUViewControllerSet.groupChannelPushSettingsViewController.init(channel: channel)
+            self.navigationController?.pushViewController(pushSettingsVC, animated: true)
+        }
+    }
+    
     /// If you want to use a custom memberListViewController, override it and implement it.
     open func showMemberList() {
         guard let channel = self.channel else { return }

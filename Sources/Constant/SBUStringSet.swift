@@ -67,7 +67,13 @@ public class SBUStringSet {
     public static var Channel_Name_Default = "Group Channel"
     public static var Channel_Name_No_Members = "(No members)"
     public static var Channel_Header_LastSeen = "Last seen"
-    public static var Channel_Header_Typing: ([SBDUser]) -> String = { members in
+    
+    @available(*, deprecated, renamed: "Channel_Typing") // 3.0.0
+    public static var Channel_Header_Typing: ([SBDUser]) -> String {
+        { Channel_Typing($0) }
+    }
+    
+    public static var Channel_Typing: ([SBDUser]) -> String = { members in
         switch members.count {
         case 1:
             return String(format: "%@ is typing...",
@@ -141,6 +147,15 @@ public class SBUStringSet {
     
     public static var ChannelSettings_URL = "URL"
 
+    
+    // MARK: Channel push settings
+    public static var ChannelPushSettings_Header_Title = "Notifications"
+    public static var ChannelPushSettings_Notification_Title = "Notifications"
+    public static var ChannelPushSettings_Item_All = "All new messages"
+    public static var ChannelPushSettings_Item_Mentions_Only = "Mentions only"
+    public static var ChannelPushSettings_Notification_Description = "Turn on push notifications if you wish to be notified when messages are delivered to this channel."
+    
+    
 
     // MARK: - Message Input
     public static var MessageInput_Text_Placeholder = "Type a message"
@@ -158,7 +173,7 @@ public class SBUStringSet {
     public static var Message_Edited = "(edited)"
     public static var Message_System = "System message"
     public static var Message_Unknown_Title = "(Unknown message type)"
-    public static var Message_Unknown_Desctiption = "Cannot read this message."
+    public static var Message_Unknown_Description = "Cannot read this message."
     public static var Message_Replied_To: (String, String) -> String = { replierNickname, quotedMessageNickname in
         return "\(replierNickname) replied to \(quotedMessageNickname)"
     }

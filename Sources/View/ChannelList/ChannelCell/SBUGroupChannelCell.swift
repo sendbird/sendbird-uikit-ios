@@ -84,6 +84,12 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
         super.setupViews()
         
         self.coverImage.clipsToBounds = true
+        self.coverImage.frame = CGRect(
+            x: 0,
+            y: 0,
+            width: coverImageSize,
+            height: coverImageSize
+        )
         
         self.broadcastIcon.isHidden = true
         self.freezeState.isHidden = true
@@ -329,7 +335,7 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
         
         if let typingMembers = groupChannel.getTypingUsers(), !typingMembers.isEmpty {
             messageLabel.lineBreakMode = .byTruncatingTail
-            messageLabel.text = SBUStringSet.Channel_Header_Typing(typingMembers)
+            messageLabel.text = SBUStringSet.Channel_Typing(typingMembers)
         } else {
             switch groupChannel.lastMessage {
             case let userMessage as SBDUserMessage:
@@ -360,15 +366,15 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
         switch receiptState {
         case .none:
             stateImage = SBUIconSet.iconDone
-                .sbu_with(tintColor: SBUTheme.messageCellTheme.succeededStateColor)
+                .sbu_with(tintColor: theme.succeededStateColor)
                 .resize(with: CGSize(value: infoIconSize))
         case .delivered:
             stateImage = SBUIconSet.iconDoneAll
-                .sbu_with(tintColor: SBUTheme.messageCellTheme.deliveryReceiptStateColor)
+                .sbu_with(tintColor: theme.deliveryReceiptStateColor)
                 .resize(with: CGSize(value: infoIconSize))
         case .read:
             stateImage = SBUIconSet.iconDoneAll
-                .sbu_with(tintColor: SBUTheme.messageCellTheme.readReceiptStateColor)
+                .sbu_with(tintColor: theme.readReceiptStateColor)
                 .resize(with: CGSize(value: infoIconSize))
         default:
             stateImage = nil

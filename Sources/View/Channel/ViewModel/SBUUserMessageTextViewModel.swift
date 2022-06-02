@@ -20,7 +20,8 @@ struct SBUUserMessageTextViewModel {
     var editTextColor: UIColor?
     var edited = false
     
-    var highlight: Bool
+    var highlight: Bool { highlightKeyword != nil }
+    var highlightKeyword: String?
     var highlightTextColor: UIColor
     
     var paragraphStyle: NSMutableParagraphStyle
@@ -43,16 +44,16 @@ struct SBUUserMessageTextViewModel {
         return mentionAttributes
     }
     
-    
-    init(message: SBDBaseMessage?,
-         position: MessagePosition = .right,
-         text: String? = nil,
-         font: UIFont? = nil,
-         textColor: UIColor? = nil,
-         isEdited: Bool? = nil,
-         isOverlay: Bool = false,
-         highlight: Bool = false) {
-        
+    init(
+        message: SBDBaseMessage?,
+        position: MessagePosition = .right,
+        text: String? = nil,
+        font: UIFont? = nil,
+        textColor: UIColor? = nil,
+        isEdited: Bool? = nil,
+        isOverlay: Bool = false,
+        highlightKeyword: String? = nil
+    ) {
         let text = message?.message ?? text ?? ""
         
         if let isEdited = isEdited {
@@ -64,7 +65,7 @@ struct SBUUserMessageTextViewModel {
         self.theme = isOverlay ? SBUTheme.overlayTheme.messageCellTheme : SBUTheme.messageCellTheme
         self.font = font ?? theme.userMessageFont
         
-        self.highlight = highlight
+        self.highlightKeyword = highlightKeyword
         
         var normalTextColor: UIColor
         
@@ -118,9 +119,60 @@ struct SBUUserMessageTextViewModel {
     }
     
     func addhighlightIfNeeded(with attributedString: NSMutableAttributedString) {
+        guard let highlightKeyword = highlightKeyword else { return }
+        
+        let highlightAll = highlightKeyword == ""
         /// Highlighting text
-        if highlight, text.utf16.count <= attributedString.length {
+        if highlightAll, text.utf16.count <= attributedString.length {
             let range = NSRange(location: 0, length: text.utf16.count)
+            attributedString.addAttributes(
+                [
+                    .backgroundColor: SBUColorSet.highlight,
+                    .foregroundColor: highlightTextColor
+                ],
+                range: range
+            )
+        } else {
+            var baseRange = NSRange(location: 0, length: attributedString.length)
+            var ranges: [NSRange] = []
+            // Loop until no more keyword found.
+            while baseRange.location != NSNotFound {
+                baseRange = (attributedString.string as NSString)
+                    .range(
+                        of: highlightKeyword,
+                        options: .caseInsensitive,
+                        range: baseRange
+                    )
+                ranges.append(baseRange)
+                
+                if (baseRange.location != NSNotFound) {
+                    baseRange = NSRange(
+                        location: NSMaxRange(baseRange),
+                        length: attributedString.length - NSMaxRange(baseRange)
+                    )
+                }
+            }
+            ranges.forEach { (range) in
+                attributedString.addAttributes(
+                    [
+                        .backgroundColor: SBUColorSet.highlight,
+                        .foregroundColor: highlightTextColor
+                    ],
+                    range: range
+                )
+            }
+        }
+    }
+    
+    func addMentionedUserHighlightIfNeeded(with attributedString: NSMutableAttributedString, mentionedList: [SBUMention]?) {
+        guard let mentionedList = mentionedList,
+              let currentUser = SBUGlobals.currentUser else { return }
+        
+        let currentUserRanges = mentionedList
+            .filter { currentUser.userId == $0.user.userId }
+            .map(\.range)
+        
+        currentUserRanges.forEach { (range) in
             attributedString.addAttributes(
                 [
                     .backgroundColor: SBUColorSet.highlight,

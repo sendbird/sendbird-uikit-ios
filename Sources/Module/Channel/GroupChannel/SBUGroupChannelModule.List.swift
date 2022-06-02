@@ -337,6 +337,7 @@ extension SBUGroupChannelModule {
                         hideDateView: isSameDay
                     )
                     adminMessageCell.configure(with: configuration)
+                    self.setMessageCellAnimation(adminMessageCell, message: adminMessage, indexPath: indexPath)
                     self.setMessageCellGestures(adminMessageCell, message: adminMessage, indexPath: indexPath)
                     
                     // Unknown message
@@ -349,6 +350,7 @@ extension SBUGroupChannelModule {
                         useReaction: useReaction
                     )
                     unknownMessageCell.configure(with: configuration)
+                    self.setMessageCellAnimation(unknownMessageCell, message: unknownMessage, indexPath: indexPath)
                     self.setMessageCellGestures(unknownMessageCell, message: unknownMessage, indexPath: indexPath)
                     
                     // User message
@@ -365,6 +367,7 @@ extension SBUGroupChannelModule {
                     userMessageCell.configure(with: configuration)
                     userMessageCell.configure(highlightInfo: self.highlightInfo)
                     (userMessageCell.quotedMessageView as? SBUQuotedBaseMessageView)?.delegate = self
+                    self.setMessageCellAnimation(userMessageCell, message: userMessage, indexPath: indexPath)
                     self.setMessageCellGestures(userMessageCell, message: userMessage, indexPath: indexPath)
                     
                     // File message
@@ -380,6 +383,7 @@ extension SBUGroupChannelModule {
                     fileMessageCell.configure(with: configuration)
                     fileMessageCell.configure(highlightInfo: self.highlightInfo)
                     (fileMessageCell.quotedMessageView as? SBUQuotedBaseMessageView)?.delegate = self
+                    self.setMessageCellAnimation(fileMessageCell, message: fileMessage, indexPath: indexPath)
                     self.setMessageCellGestures(fileMessageCell, message: fileMessage, indexPath: indexPath)
                     self.setFileMessageCellImage(fileMessageCell, fileMessage: fileMessage)
                 default:
@@ -544,6 +548,23 @@ extension SBUGroupChannelModule {
             
             return .none
         }
+        
+        /// Sets animation in message cell.
+        /// - Parameters:
+        ///   - cell: The message cell
+        ///   - message: message object
+        ///   - indexPath: Cell's indexPath
+        open func setMessageCellAnimation(_ messageCell: SBUBaseMessageCell, message: SBDBaseMessage, indexPath: IndexPath) {
+            if message.messageId == highlightInfo?.messageId,
+               message.updatedAt == highlightInfo?.updatedAt,
+               self.highlightInfo?.animated == true
+            {
+                self.cellAnimationDebouncer.add {
+                    messageCell.messageContentView.animate(.shakeUpDown)
+                }
+            }
+        }
+        
         
         // MARK: - Menu
         

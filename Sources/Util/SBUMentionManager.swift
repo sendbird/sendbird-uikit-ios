@@ -251,7 +251,9 @@ public class SBUMentionManager: NSObject {
                 
                 var range = textView.selectedRange
                 range.location = location
-                textView.selectedRange = range
+                if textView.selectedRange != range {
+                    textView.selectedRange = range
+                }
                 return true
             } else {
                 var selectedRange = textView.selectedRange

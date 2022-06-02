@@ -96,10 +96,8 @@ extension SBUGroupChannelSettingsViewController {
         self.viewModel?.updateChannel(params: params)
     }
     
-    @available(*, deprecated, message: "This function has been moved to the `SBUGroupChannelSettingsViewModel`.", renamed: "viewModel.changeNotification(isOn:)")
-    public func changeNotification(isOn: Bool) {
-        self.viewModel?.changeNotification(isOn: isOn)
-    }
+    @available(*, unavailable, message: "This function has been moved to the `SBUGroupChannelPushSettingsViewModel`. and a SBUGroupChannelPushSettingsViewController has been created for channel's push settings.") // 3.0.0
+    public func changeNotification(isOn: Bool) {}
     
     @available(*, deprecated, message: "This function has been moved to the `SBUGroupChannelSettingsViewModel`.", renamed: "viewModel.leaveChannel()")
     public func leaveChannel() {
