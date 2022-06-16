@@ -116,8 +116,14 @@ public class SBUMessageReactionView: UIView, UICollectionViewDelegate, UICollect
         self.emojiList = SBUEmojiManager.getAllEmojis()
 
         let hasMoreEmoji = self.reactions.count < emojiList.count
-        let cellSizes = reactions.reduce(0) {
-            $0 + self.getCellSize(count: $1.userIds.count).width
+        let cellSizes = reactions.reduce(CGFloat.zero) {
+            let userIds: [String]? = $1.userIds
+
+            guard let userIds = userIds else {
+                return $0
+            }
+
+            return $0 + self.getCellSize(count: userIds.count).width
         }
 
         var width: CGFloat = cellSizes
