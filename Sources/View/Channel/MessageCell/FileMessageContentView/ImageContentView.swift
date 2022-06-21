@@ -10,6 +10,7 @@ import UIKit
 import SendBirdSDK
 
 open class SBUImageContentView: SBUBaseFileContentView {
+    /// A image view that represents the image of file message
     public var imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.clipsToBounds = true
@@ -17,6 +18,7 @@ open class SBUImageContentView: SBUBaseFileContentView {
         return imageView
     }()
     
+    /// A image view that represents the icon of file type.
     public var iconImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.clipsToBounds = true
@@ -27,6 +29,7 @@ open class SBUImageContentView: SBUBaseFileContentView {
     var widthConstraint: NSLayoutConstraint!
     var heightConstraint: NSLayoutConstraint!
     
+    // TODO: Unused?
     var text: String = ""
     
     // MARK: - Properties (Private)
@@ -64,7 +67,7 @@ open class SBUImageContentView: SBUBaseFileContentView {
         self.iconImageView.layoutIfNeeded()
     }
     
-    func setupSizeContraint() {
+    open func setupSizeContraint() {
         self.widthConstraint = self.imageView.widthAnchor.constraint(
             equalToConstant: SBUConstant.thumbnailSize.width
         )

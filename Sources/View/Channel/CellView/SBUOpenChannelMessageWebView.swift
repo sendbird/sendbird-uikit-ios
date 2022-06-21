@@ -8,18 +8,19 @@
 
 import UIKit
 
-class SBUOpenChannelMessageWebView: SBUMessageWebView {
-    struct OpenChannelMetric {
-        static let imageHeight: CGFloat = 164
-        static let imageTopMargin: CGFloat = 12
-        static let imageSideMargin: CGFloat = 8
-        static let textSideMargin: CGFloat = 8
-        static let titleBottomMargin: CGFloat = 4
-        static let descBottomMargin: CGFloat = 8
-        static let stackSpacing: CGFloat = 8
+/// A view shows preview of web link on the message in the open channel.
+open class SBUOpenChannelMessageWebView: SBUMessageWebView {
+    public struct OpenChannelMetric {
+        public static var imageHeight: CGFloat = 164
+        public static var imageTopMargin: CGFloat = 12
+        public static var imageSideMargin: CGFloat = 8
+        public static var textSideMargin: CGFloat = 8
+        public static var titleBottomMargin: CGFloat = 4
+        public static var descBottomMargin: CGFloat = 8
+        public static var stackSpacing: CGFloat = 8
     }
     
-    override func setupViews() {
+    open override func setupViews() {
         self.axis = .vertical
         self.addArrangedSubview(self.detailStackView)
         self.addArrangedSubview(self.imageView)
@@ -28,14 +29,14 @@ class SBUOpenChannelMessageWebView: SBUMessageWebView {
         self.detailStackView.addArrangedSubview(self.descriptionLabel)
     }
     
-    override func setupStyles() {
+    open override func setupStyles() {
         super.setupStyles()
         
         self.clipsToBounds = true
         self.imageView.clipsToBounds = true
     }
     
-    override func setupAutolayout() {
+    open override func setupAutolayout() {
         self.translatesAutoresizingMaskIntoConstraints = false
         self.isLayoutMarginsRelativeArrangement = true
         
@@ -63,7 +64,7 @@ class SBUOpenChannelMessageWebView: SBUMessageWebView {
         )
     }
     
-    override func configure(model: SBUMessageWebViewModel) {
+    open override func configure(model: SBUMessageWebViewModel) {
         self.descriptionLabel.numberOfLines = 2
         self.imageView.layer.cornerRadius = 8
         

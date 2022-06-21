@@ -1362,7 +1362,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
         
             self.sendFileMessage(
                 fileData: imageData,
-                fileName: "\(Date().sbu_toString(format: .yyyyMMddhhmmss, localizedFormat: false)).jpg",
+                fileName: "\(Date().sbu_toString(dateFormat: SBUDateFormatSet.Message.fileNameFormat, localizedFormat: false)).jpg",
                 mimeType: "image/jpeg",
                 parentMessage: parentMessage
             )
@@ -1411,7 +1411,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController {
                 
             self.sendFileMessage(
                 fileData: imageData,
-                fileName: "\(Date().sbu_toString(format: .yyyyMMddhhmmss, localizedFormat: false)).jpg",
+                fileName: "\(Date().sbu_toString(dateFormat: SBUDateFormatSet.Message.fileNameFormat, localizedFormat: false)).jpg",
                 mimeType: "image/jpeg",
                 parentMessage: parentMessage
             )
@@ -1639,7 +1639,7 @@ extension SBUBaseChannelViewController: PHPickerViewControllerDelegate {
                                 
                                 self.sendFileMessage(
                                     fileData: imageData,
-                                    fileName: "\(Date().sbu_toString(format: .yyyyMMddhhmmss, localizedFormat: false)).jpg",
+                                    fileName: "\(Date().sbu_toString(dateFormat: SBUDateFormatSet.Message.fileNameFormat, localizedFormat: false)).jpg",
                                     mimeType: "image/jpeg",
                                     parentMessage: parentMessage
                                 )
@@ -1885,7 +1885,7 @@ extension SBUBaseChannelViewController: SBUSelectablePhotoViewDelegate {
         self.messageInputView.setMode(.none)
         self.sendFileMessage(
             fileData: data,
-            fileName: "\(Date().sbu_toString(format: .yyyyMMddhhmmss, localizedFormat: false)).jpg",
+            fileName: "\(Date().sbu_toString(dateFormat: SBUDateFormatSet.Message.fileNameFormat, localizedFormat: false)).jpg",
             mimeType: "image/jpeg",
             parentMessage: parentMessage
         )

@@ -26,20 +26,19 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol {
 
     @SBUThemeWrapper(theme: SBUTheme.messageCellTheme)
     public var theme: SBUMessageCellTheme
-
-    
-    // MARK: - Private
     
     // + ------------------ +
     // | dateView           |
     // + ------------------ +
     // | messageContentView |
     // + ------------------ +
-    private lazy var stackView: UIStackView = {
+    /// A stack view that contains `dateView` and `messageContentView`
+    /// The default value is `SBUStackView` with `.vertical` axis and spacing value `16`.
+    public private(set) lazy var stackView: UIStackView = {
         return SBUStackView(axis: .vertical, spacing: 16)
     }()
     
-    var stackViewTopConstraint: NSLayoutConstraint?
+    public var stackViewTopConstraint: NSLayoutConstraint?
 
     
     // MARK: - Action
@@ -92,7 +91,15 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol {
         }
     }
     
-    func updateTopAnchorConstraint() {
+    /// Update top spacing of the message cell with `stackViewTopConstraint`. As a default, the spacing is `16`, but it's `4` when the message is located among grouped messages.
+    ///
+    /// - IMPORTANT: Please update `stackViewTopConstraint` to `stackView.topAnchor.constraint` before activate.
+    ///
+    /// ```swift
+    /// stackViewTopConstraint?.isActive = false
+    /// stackViewTopConstraint = stackView.topAnchor.contraint(...)
+    /// stackViewTopConstraint?.isActive = true
+    open func updateTopAnchorConstraint() {
         let isGrouped = SBUGlobals.UsingMessageGrouping
         && self.groupPosition != .none
         && self.groupPosition != .top

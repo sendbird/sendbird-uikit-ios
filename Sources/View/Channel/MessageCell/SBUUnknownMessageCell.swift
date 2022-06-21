@@ -22,7 +22,7 @@ open class SBUUnknownMessageCell: SBUUserMessageCell {
         self.layoutIfNeeded()
     }
     
-    func setupMessageTextView() {
+    open func setupMessageTextView() {
         guard let messageTextView = self.messageTextView as? SBUUserMessageTextView else { return }
         let text = SBUStringSet.Message_Unknown_Title
         + "\n"

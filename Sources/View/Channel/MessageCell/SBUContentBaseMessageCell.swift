@@ -18,7 +18,7 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
     
     // MARK: - Public property
 
-    // MARK: - Views: Controls
+    // MARK: Views: Controls
     
     public lazy var userNameView: UIView = {
         let userNameView = SBUUserNameView()
@@ -36,6 +36,11 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
     // + ----------------- +
     // | contentHStackView |
     // + ----------------- +
+    /// A vertical stack view that contains `userNameView` and `contentHStackView` as defaults.
+    ///
+    /// As a default, it has following configuration:
+    /// - axis: `.vertical`
+    /// - spacing: `4`
     public lazy var userNameStackView: UIStackView = {
         return SBUStackView(axis: .vertical, spacing: 4)
     }()
@@ -43,11 +48,17 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
     // + -------------+-----------------------+-------------------+
     // | profileView  | profileContentSpacing | contentVStackView |
     // + -------------+-----------------------+-------------------+
+    /// A horizontal stack view that contains `profileView`, `profileContentSpacing` and `contentVStackView` as defaults.
+    ///
+    /// As a default, it has following configuration:
+    /// - axis: `.horizontal`
+    /// - alignment: `.bottom`
+    /// - spacing: `4`
     public lazy var contentHStackView: UIStackView = {
         return SBUStackView(axis: .horizontal, alignment: .bottom, spacing: 4)
     }()
     
-    // MARK: Properties
+    // MARK: - Properties
 
     public var useReaction = false
     
@@ -60,6 +71,12 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
     // + ----------------- +
     // | messageHStackView |
     // + ----------------- +
+    /// A vertical stack view that contains `quotedMessageView` and `messageHStackView` as defaults.
+    ///
+    /// As a default, it has following configuration:
+    /// - axis: `.vertical`
+    /// - alignment: `.leading` or `.trailing` (following `self.position`)
+    /// - spacing: `-6`
     public lazy var contentVStackView: UIStackView = {
         return SBUStackView(
             axis: .vertical,
@@ -71,10 +88,17 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
     // + ----------------- + --------- +
     // | mainContainerView | stateView |
     // + ----------------- + --------- +
+    /// A horizontal stack view that contains `mainContainerView` and `stateView` as defaults.
+    ///
+    /// As a default, it has ollowing  configuration:
+    /// - axis: `.horizontal`
+    /// - alignment: `.bottom`
+    /// - spacing: `4`
     public lazy var messageHStackView: UIStackView = {
         return SBUStackView(axis: .horizontal, alignment: .bottom, spacing: 4)
     }()
     
+    /// A ``SBUSelectableStackView`` that represents a message bubble.
     public var mainContainerView: SBUSelectableStackView = {
         let mainView = SBUSelectableStackView()
         mainView.layer.cornerRadius = 16
@@ -84,9 +108,13 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         return mainView
     }()
     
-    var reactionView: SBUMessageReactionView = SBUMessageReactionView()
-    lazy var profileContentSpacing: UIView = UIView()
-    private let messageSpacing = UIView()
+    /// A ``SBUMessageReactionView`` that shows reactions on the message.
+    public var reactionView: SBUMessageReactionView = SBUMessageReactionView()
+    
+    public private(set) lazy var profileContentSpacing: UIView = UIView()
+    
+    /// A view that is a spacer in `messageHStackView`.
+    public let messageSpacing = UIView()
 
     
     // MARK: - Gesture Recognizers
@@ -362,7 +390,7 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         self.updateContentsPosition()
     }
     
-    private func updateContentsPosition() {
+    open func updateContentsPosition() {
         self.contentHStackView.arrangedSubviews.forEach {
             $0.removeFromSuperview()
         }

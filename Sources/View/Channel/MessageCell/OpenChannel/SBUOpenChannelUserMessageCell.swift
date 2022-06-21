@@ -21,19 +21,22 @@ open class SBUOpenChannelUserMessageCell: SBUOpenChannelContentBaseMessageCell {
     
     // MARK: - Private property
 
-    private var additionContainerView: SBUSelectableStackView = {
+    public private(set) var additionContainerView: SBUSelectableStackView = {
         let view = SBUSelectableStackView()
         return view
     }()
     
-    private var webView: SBUOpenChannelMessageWebView = {
+    /// A ``SBUOpenChannelMessageWebView`` which represents a preview of the web link
+    public var webView: SBUOpenChannelMessageWebView = {
         let webView = SBUOpenChannelMessageWebView()
         
         return webView
     }()
     
-    private var messageTypeConstraint: NSLayoutConstraint!
-    private var webTypeConstraints: [NSLayoutConstraint] = []
+    /// As a default, the value is the constraint of `messageTextView.trailingAnchor`and  it's activated when the message has no `ogMetaData`.
+    public private(set) var messageTypeConstraint: NSLayoutConstraint!
+    /// Activated when the message has `ogMetaData`.
+    public private(set) var webTypeConstraints: [NSLayoutConstraint] = []
 
     
     // MARK: - View Lifecycle
@@ -172,7 +175,8 @@ open class SBUOpenChannelUserMessageCell: SBUOpenChannelContentBaseMessageCell {
         self.additionContainerView.isSelected = selected
     }
 
-    @objc func onTapWebview(sender: UITapGestureRecognizer) {
+    @objc
+    open func onTapWebview(sender: UITapGestureRecognizer) {
         guard
             let ogMetaData = self.userMessage?.ogMetaData,
             let urlString = ogMetaData.url,

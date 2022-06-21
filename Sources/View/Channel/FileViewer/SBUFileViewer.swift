@@ -165,7 +165,9 @@ class SBUFileViewer: SBUBaseViewController, UIScrollViewDelegate {
                 titleView.titleLabel.text = SBUStringSet.User_No_Name
             }
             if let timestamp = fileMessage?.createdAt {
-                titleView.dateTimeLabel.text = Date.sbu_from(timestamp).sbu_toString(format: .hhmma)
+                titleView.dateTimeLabel.text = Date
+                    .sbu_from(timestamp)
+                    .sbu_toString(dateFormat: SBUDateFormatSet.Message.fileViewerTimeFormat)
             } else {
                 titleView.dateTimeLabel.text = ""
             }

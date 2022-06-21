@@ -1319,15 +1319,17 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController {
         let nextSender = succeededNextMsg?.sender?.userId ?? nil
         
         // Unit : milliseconds
-        let prevTimestamp = Date.sbu_from(succeededPrevMsg?.createdAt ?? -1).sbu_toString(
-            format: .yyyyMMddhhmm
-        )
-        let currentTimestamp = Date.sbu_from(succeededCurrentMsg?.createdAt ?? -1).sbu_toString(
-            format: .yyyyMMddhhmm
-        )
-        let nextTimestamp = Date.sbu_from(succeededNextMsg?.createdAt ?? -1).sbu_toString(
-            format: .yyyyMMddhhmm
-        )
+        let prevTimestamp = Date
+            .sbu_from(succeededPrevMsg?.createdAt ?? -1)
+            .sbu_toString(dateFormat: SBUDateFormatSet.yyyyMMddhhmm)
+        
+        let currentTimestamp = Date
+            .sbu_from(succeededCurrentMsg?.createdAt ?? -1)
+            .sbu_toString(dateFormat: SBUDateFormatSet.yyyyMMddhhmm)
+        
+        let nextTimestamp = Date
+            .sbu_from(succeededNextMsg?.createdAt ?? -1)
+            .sbu_toString(dateFormat: SBUDateFormatSet.yyyyMMddhhmm)
         
         if prevSender != currentSender && nextSender != currentSender {
             return .none

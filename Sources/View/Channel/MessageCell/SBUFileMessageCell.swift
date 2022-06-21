@@ -18,7 +18,6 @@ open class SBUFileMessageCell: SBUContentBaseMessageCell {
         return self.message as? SBDFileMessage
     }
     
-    // MARK: - Private property
     public lazy var baseFileContentView: SBUBaseFileContentView = {
         let fileView = SBUBaseFileContentView()
         return fileView

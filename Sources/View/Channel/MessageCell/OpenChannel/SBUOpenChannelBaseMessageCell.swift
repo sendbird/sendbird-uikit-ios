@@ -17,25 +17,26 @@ open class SBUOpenChannelBaseMessageCell: UITableViewCell {
 
     public lazy var dateView: UIView = SBUMessageDateView()
 
-    public lazy var messageContentView: UIView = {
-        let view = UIView()
-        return view
-    }()
+    public lazy var messageContentView: UIView = UIView()
     
     @SBUThemeWrapper(theme: SBUTheme.messageCellTheme)
     public var theme: SBUMessageCellTheme
     @SBUThemeWrapper(theme: SBUTheme.overlayTheme.messageCellTheme, setToDefault: true)
     public var overlayTheme: SBUMessageCellTheme
     
-    // MARK: - Private
-    private lazy var stackView: UIStackView = {
+    /// A vertical stack view that contains `dateView` and `messageContentView` as defaults.
+    ///
+    /// As a default, it has following  configuration:
+    /// - axis: `.vertical`
+    /// - spacing: `16`
+    public lazy var stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.spacing = 16
         stackView.axis = .vertical
         return stackView
     }()
     
-    var stackViewTopConstraint: NSLayoutConstraint?
+    public var stackViewTopConstraint: NSLayoutConstraint?
     
     var isOverlay = false
 
@@ -65,8 +66,10 @@ open class SBUOpenChannelBaseMessageCell: UITableViewCell {
     open func setupViews() {
         self.dateView.isHidden = true
         
-        self.stackView.addArrangedSubview(self.dateView)
-        self.stackView.addArrangedSubview(self.messageContentView)
+        self.stackView.setVStack([
+            self.dateView,
+            self.messageContentView
+        ])
         
         self.contentView.addSubview(self.stackView)
     }
@@ -99,7 +102,7 @@ open class SBUOpenChannelBaseMessageCell: UITableViewCell {
         self.setupStyles()
     }
     
-    func updateTopAnchorConstraint() {
+    open func updateTopAnchorConstraint() {
         let isGrouped = SBUGlobals.UsingMessageGrouping
         && self.groupPosition != .none
         && self.groupPosition != .top

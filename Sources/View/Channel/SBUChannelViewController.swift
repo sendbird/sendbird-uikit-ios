@@ -1130,15 +1130,17 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
         let nextSender = succeededNextMsg?.sender?.userId ?? nil
         
         // Unit : milliseconds
-        let prevTimestamp = Date.sbu_from(succeededPrevMsg?.createdAt ?? -1).sbu_toString(
-            format: .yyyyMMddhhmm
-        )
-        let currentTimestamp = Date.sbu_from(succeededCurrentMsg?.createdAt ?? -1).sbu_toString(
-            format: .yyyyMMddhhmm
-        )
-        let nextTimestamp = Date.sbu_from(succeededNextMsg?.createdAt ?? -1).sbu_toString(
-            format: .yyyyMMddhhmm
-        )
+        let prevTimestamp = Date
+            .sbu_from(succeededPrevMsg?.createdAt ?? -1)
+            .sbu_toString(dateFormat: SBUDateFormatSet.yyyyMMddhhmm)
+        
+        let currentTimestamp = Date
+            .sbu_from(succeededCurrentMsg?.createdAt ?? -1)
+            .sbu_toString(dateFormat: SBUDateFormatSet.yyyyMMddhhmm)
+        
+        let nextTimestamp = Date
+            .sbu_from(succeededNextMsg?.createdAt ?? -1)
+            .sbu_toString(dateFormat: SBUDateFormatSet.yyyyMMddhhmm)
         
         if prevSender != currentSender && nextSender != currentSender {
             return .none
@@ -1553,6 +1555,14 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
         UIView.setAnimationsEnabled(true)
         
         // Tap profile action
+        self.setMessageCellGesture(messageCell, message: message)
+
+        return cell
+    }
+    
+    /// Set up gestures on the `messageCell` with `message`.
+    /// - Since: 2.2.8
+    public func setMessageCellGesture(_ messageCell: SBUBaseMessageCell, message: SBDBaseMessage) {
         messageCell.userProfileTapHandler = { [weak messageCell, weak self] in
             guard let self = self else { return }
             guard let cell = messageCell else { return }
@@ -1578,9 +1588,8 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
             self.dismissKeyboard()
             self.showEmojiListModal(message: message)
         }
-
-        return cell
     }
+    
     /// This function generates cell's identifier.
     /// - Parameter message: Message object
     /// - Returns: Identifier

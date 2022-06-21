@@ -19,17 +19,17 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell {
         return self.message as? SBDUserMessage
     }
     
-    // MARK: - Private property
-
     // + ------------ +
     // | reactionView |
     // + ------------ +
-    private var additionContainerView: SBUSelectableStackView = {
+    /// A ``SBUSelectableStackView`` that contains `reactionView`.
+    public private(set) var additionContainerView: SBUSelectableStackView = {
         let view = SBUSelectableStackView()
         return view
     }()
     
-    private var webView: SBUMessageWebView = {
+    /// A ``SBUMessageWebView`` which represents a preview of the web link
+    public var webView: SBUMessageWebView = {
         let webView = SBUMessageWebView()
         return webView
     }()
@@ -202,7 +202,8 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell {
         self.additionContainerView.isSelected = selected
     }
 
-    @objc func onTapWebview(sender: UITapGestureRecognizer) {
+    @objc
+    open func onTapWebview(sender: UITapGestureRecognizer) {
         guard
             let ogMetaData = self.userMessage?.ogMetaData,
             let urlString = ogMetaData.url,

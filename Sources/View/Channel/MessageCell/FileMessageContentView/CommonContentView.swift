@@ -10,6 +10,12 @@ import UIKit
 import SendBirdSDK
 
 open class SBUCommonContentView: SBUBaseFileContentView {
+    /// A stack view that contains `fileImageview` and `fileNameLabel` as defaults.
+    ///
+    /// As a default, it has following configuration:
+    /// - axis: `.horizontal`
+    /// - alignment: `.center`
+    /// - spacing: `8`
     public var stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
@@ -18,11 +24,14 @@ open class SBUCommonContentView: SBUBaseFileContentView {
         return stackView
     }()
     
+    /// A image view that represents the icon of file type.
     public var fileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .center
         return imageView
     }()
+    
+    /// A label that represents the name of file
     public var fileNameLabel: UILabel = {
         let label = UILabel()
         label.lineBreakMode = .byTruncatingMiddle

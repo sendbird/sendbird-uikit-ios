@@ -8,63 +8,74 @@
 
 import UIKit
 
-class SBUMessageWebView: UIStackView, SBUViewLifeCycle {
-    struct Metric {
-        static let imageHeight = 136.f
-        static let textTopMargin = 8.f
-        static let textSideMargin = 12.f
-        static let titleBottomMargin = 4.f
-        static let descBottomMargin = 8.f
-        static let maxWidth = SBUConstant.messageCellMaxWidth
-        static let stackSpacing = 8.f
-        static let textMaxPrefWidth = Metric.maxWidth - Metric.textSideMargin * 2
+/// A view shows preview of web link on the message.
+open class SBUMessageWebView: UIStackView, SBUViewLifeCycle {
+    public struct Metric {
+        public static var imageHeight = 136.f
+        public static var textTopMargin = 8.f
+        public static var textSideMargin = 12.f
+        public static var titleBottomMargin = 4.f
+        public static var descBottomMargin = 8.f
+        public static var maxWidth = SBUConstant.messageCellMaxWidth
+        public static var stackSpacing = 8.f
+        /// Read-only
+        public static let textMaxPrefWidth = Metric.maxWidth - Metric.textSideMargin * 2
     }
     
-    let imageView: UIImageView = {
+    /// An image view that represents the web link.
+    public let imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         return imageView
     }()
     
-    let detailStackView = SBUStackView(axis: .vertical)
+    public let detailStackView = SBUStackView(axis: .vertical)
     
-    let titleLabel:UILabel = {
+    /// A label that represents a title of the web link
+    public let titleLabel:UILabel = {
         let label = UILabel()
         label.numberOfLines = 10
         label.preferredMaxLayoutWidth = Metric.textMaxPrefWidth
         return label
     }()
     
-    let descriptionLabel:UILabel = {
+    /// A label that shows a description of the web link
+    public let descriptionLabel:UILabel = {
         let label = UILabel()
         label.numberOfLines = 1
         return label
     }()
     
-    let urlLabel:UILabel = {
+    /// A label that shows the URL
+    public let urlLabel:UILabel = {
         let label = UILabel()
         label.numberOfLines = 1
         return label
     }()
     
-    var imageHeightConstraint: NSLayoutConstraint?
+    public var imageHeightConstraint: NSLayoutConstraint?
     
-    override init(frame: CGRect) {
+    public override init(frame: CGRect) {
         super.init(frame: frame)
         self.setupViews()
-        self.setupStyles()
         self.setupAutolayout()
+        self.setupActions()
     }
     
-    required init(coder: NSCoder) {
+    public required init(coder: NSCoder) {
         super.init(coder: coder)
         self.setupViews()
-        self.setupStyles()
         self.setupAutolayout()
+        self.setupActions()
     }
     
-    func setupViews() {
+    open override func layoutSubviews() {
+        super.layoutSubviews()
+        self.setupStyles()
+    }
+    
+    open func setupViews() {
         self.axis = .vertical
         self.setVStack([
             self.imageView,
@@ -76,7 +87,7 @@ class SBUMessageWebView: UIStackView, SBUViewLifeCycle {
         ])
     }
     
-    func setupAutolayout() {
+    open func setupAutolayout() {
         self.translatesAutoresizingMaskIntoConstraints = false
         let imageHeightConstraint = self.imageView.heightAnchor
             .constraint(equalToConstant: Metric.imageHeight)
@@ -102,11 +113,11 @@ class SBUMessageWebView: UIStackView, SBUViewLifeCycle {
         )
     }
     
-    func setupStyles() { }
+    open func setupStyles() { }
     
-    func setupActions() { }
+    open func setupActions() { }
 
-    func configure(model: SBUMessageWebViewModel) {
+    open func configure(model: SBUMessageWebViewModel) {
         if let imageURL = model.imageURL {
             self.imageView.loadImage(
                 urlString: imageURL,

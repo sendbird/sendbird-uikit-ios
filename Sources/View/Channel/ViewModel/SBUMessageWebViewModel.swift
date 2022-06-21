@@ -9,15 +9,15 @@
 import UIKit
 import SendBirdSDK
 
-class SBUMessageWebViewModel {
-    var imageURL: String?
-    var titleAttributedText: NSAttributedString?
-    var descAttributedText: NSAttributedString?
-    var urlAttributedText: NSAttributedString?
-    var placeHolderImage: UIImage?
-    var errorImage: UIImage?
+public class SBUMessageWebViewModel {
+    public var imageURL: String?
+    public var titleAttributedText: NSAttributedString?
+    public var descAttributedText: NSAttributedString?
+    public var urlAttributedText: NSAttributedString?
+    public var placeHolderImage: UIImage?
+    public var errorImage: UIImage?
     
-    init(metaData: SBDOGMetaData?, isOverlay: Bool = false) {
+    public init(metaData: SBDOGMetaData?, isOverlay: Bool = false) {
         let theme = isOverlay ? SBUTheme.overlayTheme.messageCellTheme : SBUTheme.messageCellTheme
         let imageData = metaData?.defaultImage
         

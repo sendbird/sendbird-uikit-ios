@@ -10,7 +10,7 @@ import UIKit
 import SendBirdSDK
 
 /// `UITableViewCell` for `SBDGroupChannel` list.
-public class SBUChannelCell: SBUBaseChannelCell {
+open class SBUChannelCell: SBUBaseChannelCell {
     
     // MARK: - property
     public private(set) lazy var coverImage = SBUCoverImageView()
@@ -43,7 +43,7 @@ public class SBUChannelCell: SBUBaseChannelCell {
     }
     
     /// This function handles the initialization of views.
-    public override func setupViews() {
+    open override func setupViews() {
         super.setupViews()
         
         self.coverImage.clipsToBounds = true
@@ -75,12 +75,12 @@ public class SBUChannelCell: SBUBaseChannelCell {
     }
     
     /// This function handles the initialization of actions.
-    public override func setupActions() {
+    open override func setupActions() {
         super.setupActions()
     }
     
     /// This function handles the initialization of autolayouts.
-    public override func setupAutolayout() {
+    open override func setupAutolayout() {
         super.setupAutolayout()
         
         self.coverImage
@@ -132,7 +132,7 @@ public class SBUChannelCell: SBUBaseChannelCell {
     }
     
     /// This function handles the initialization of styles.
-    public override func setupStyles() {
+    open override func setupStyles() {
         super.setupStyles()
         
         self.backgroundColor = theme.backgroundColor
@@ -278,7 +278,12 @@ public class SBUChannelCell: SBUBaseChannelCell {
         }
         
         guard let lastSeenTiemString = Date.lastUpdatedTime(
-            baseTimestamp: lastUpdatedAt) else { return nil }
+            baseTimestamp: lastUpdatedAt,
+            dateFormat: SBUDateFormatSet.Channel.lastUpdatedDateFormat,
+            timeFormat: SBUDateFormatSet.Channel.lastUpdatedTimeFormat
+        ) else {
+            return nil
+        }
         
         return lastSeenTiemString
     }

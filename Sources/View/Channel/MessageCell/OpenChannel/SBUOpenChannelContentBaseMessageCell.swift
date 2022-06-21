@@ -14,7 +14,6 @@ import SendBirdSDK
 /// - Since: 2.0.0
 @objcMembers
 open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
-    
     // MARK: - Public property
     public lazy var baseStackView: UIStackView = {
         let stackView = UIStackView()
@@ -205,7 +204,9 @@ open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
             userNameView.configure(username: username, isOverlay: self.isOverlay)
         }
         
-        self.messageTimeLabel.text = Date.sbu_from(message.createdAt).sbu_toString(format: .hhmma)
+        self.messageTimeLabel.text = Date
+            .sbu_from(message.createdAt)
+            .sbu_toString(dateFormat: SBUDateFormatSet.Message.sentTimeFormatInOpenChannel)
         self.messageTimeLabel.textAlignment = .left
         
         if let profileView = self.profileView as? SBUMessageProfileView {
@@ -218,7 +219,7 @@ open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
         self.setMessageGrouping()
     }
     
-    func configureStateImage() {
+    open func configureStateImage() {
         stateImageView.layer.removeAnimation(forKey: SBUAnimation.Key.spin.rawValue)
         let stateImage: UIImage?
         
