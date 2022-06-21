@@ -13,8 +13,15 @@ import SendBirdSDK
 open class SBUOpenChannelAdminMessageCell: SBUOpenChannelBaseMessageCell {
 
     // MARK: - Public property
+    
+    // MARK: Views
     public var baseView = UIView()
     public var messageLabel = UILabel()
+    
+    // MARK: Models
+    public var adminMessage: SBDAdminMessage? {
+        self.message as? SBDAdminMessage
+    }
 
     // MARK: - View Lifecycle
     open override func setupViews() {
@@ -90,10 +97,5 @@ open class SBUOpenChannelAdminMessageCell: SBUOpenChannelBaseMessageCell {
     // MARK: - Action
     open override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-    }
-
-    // MARK: - Private property
-    private var adminMessage: SBDAdminMessage? {
-        return self.message as? SBDAdminMessage
     }
 }

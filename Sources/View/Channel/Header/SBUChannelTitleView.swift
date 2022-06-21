@@ -9,7 +9,6 @@
 import UIKit
 import SendBirdSDK
 
-
 class SBUChannelTitleView: UIView {
     // MARK: - Public
     public var channel: SBDBaseChannel?

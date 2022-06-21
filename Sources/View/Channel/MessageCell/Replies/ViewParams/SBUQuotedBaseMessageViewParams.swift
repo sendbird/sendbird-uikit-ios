@@ -9,7 +9,6 @@
 import UIKit
 import SendBirdSDK
 
-
 public class SBUQuotedBaseMessageViewParams {
     // MARK: Public
     /// The ID of the quoted message.

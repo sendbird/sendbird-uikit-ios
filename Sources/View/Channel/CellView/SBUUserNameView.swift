@@ -8,21 +8,22 @@
 
 import UIKit
 
-public class SBUUserNameView: SBUView {
+open class SBUUserNameView: SBUView {
     public var usernameColor: UIColor?
     
     @SBUThemeWrapper(theme: SBUTheme.messageCellTheme)
-    var theme: SBUMessageCellTheme
+    public var theme: SBUMessageCellTheme
     @SBUThemeWrapper(theme: SBUTheme.overlayTheme.messageCellTheme, setToDefault: true)
-    var overlayTheme: SBUMessageCellTheme
+    public var overlayTheme: SBUMessageCellTheme
     
-    var button: UIButton = .init()
-    var username: String = ""
-    var leftMargin: CGFloat = 0
+    public var button: UIButton = .init()
+    public var username: String = ""
+    public var leftMargin: CGFloat = 0
     
     var isOverlay = false
     
-    private var buttonLeftConstraint: NSLayoutConstraint!
+    /// Set to `button.leftAnchor.constraint(equalTo:constant:)` from `updateLayouts()` function.
+    public private(set) var buttonLeftConstraint: NSLayoutConstraint!
     
     public override init() {
         super.init(frame: .zero)
@@ -39,17 +40,17 @@ public class SBUUserNameView: SBUView {
     }
     
     @available(*, unavailable, renamed: "UserNameView(username:)")
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         fatalError()
     }
     
-    public override func setupViews() {
+    open override func setupViews() {
         super.setupViews()
         
         self.addSubview(self.button)
     }
     
-    public override func setupLayouts() {
+    open override func setupLayouts() {
         super.setupLayouts()
         
         self.button
@@ -63,7 +64,7 @@ public class SBUUserNameView: SBUView {
         self.buttonLeftConstraint.isActive = true
     }
     
-    public override func updateLayouts() {
+    open override func updateLayouts() {
         super.updateLayouts()
         
         self.buttonLeftConstraint.isActive = false
@@ -74,7 +75,7 @@ public class SBUUserNameView: SBUView {
         self.buttonLeftConstraint.isActive = true
     }
     
-    public override func setupStyles() {
+    open override func setupStyles() {
         super.setupStyles()
         
         let theme = self.isOverlay ? self.overlayTheme : self.theme
@@ -91,13 +92,13 @@ public class SBUUserNameView: SBUView {
         }
     }
     
-    public override func updateStyles() {
+    open override func updateStyles() {
         super.updateStyles()
         
         self.setupStyles()
     }
 
-    func configure(username: String, isOverlay: Bool = false) {
+    open func configure(username: String, isOverlay: Bool = false) {
         self.isOverlay = isOverlay
         
         self.username = username
@@ -110,7 +111,7 @@ public class SBUUserNameView: SBUView {
         self.setNeedsLayout()
     }
     
-    func setUsernameColor(_ color: UIColor) {
+    public func setUsernameColor(_ color: UIColor) {
         self.usernameColor = color
     }
 }

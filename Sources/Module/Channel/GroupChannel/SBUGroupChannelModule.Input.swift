@@ -187,7 +187,7 @@ extension SBUGroupChannelModule {
                 self.delegate?.groupChannelModule(
                     self,
                     didPickFileData: imageData,
-                    fileName: "\(Date().sbu_toString(format: .yyyyMMddhhmmss, localizedFormat: false)).jpg",
+                    fileName: "\(Date().sbu_toString(dateFormat: SBUDateFormatSet.Message.fileNameFormat, localizedFormat: false)).jpg",
                     mimeType: "image/jpeg",
                     parentMessage: parentMessage
                 )
@@ -228,7 +228,7 @@ extension SBUGroupChannelModule {
                     self.delegate?.groupChannelModule(
                         self,
                         didPickFileData: imageData,
-                        fileName: "\(Date().sbu_toString(format: .yyyyMMddhhmmss, localizedFormat: false)).jpg",
+                        fileName: "\(Date().sbu_toString(dateFormat: SBUDateFormatSet.Message.fileNameFormat, localizedFormat: false)).jpg",
                         mimeType: "image/jpeg",
                         parentMessage: parentMessage
                     )
@@ -279,7 +279,7 @@ extension SBUGroupChannelModule {
                             self.delegate?.groupChannelModule(
                                 self,
                                 didPickFileData: imageData,
-                                fileName: "\(Date().sbu_toString(format: .yyyyMMddhhmmss, localizedFormat: false)).jpg",
+                                fileName: "\(Date().sbu_toString(dateFormat: SBUDateFormatSet.Message.fileNameFormat, localizedFormat: false)).jpg",
                                 mimeType: "image/jpeg",
                                 parentMessage: parentMessage
                             )
@@ -366,7 +366,7 @@ extension SBUGroupChannelModule {
             self.delegate?.groupChannelModule(
                 self,
                 didPickFileData: data,
-                fileName: "\(Date().sbu_toString(format: .yyyyMMddhhmmss, localizedFormat: false)).jpg",
+                fileName: "\(Date().sbu_toString(dateFormat: SBUDateFormatSet.Message.fileNameFormat, localizedFormat: false)).jpg",
                 mimeType: "image/jpeg",
                 parentMessage: parentMessage
             )

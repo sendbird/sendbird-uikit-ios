@@ -137,7 +137,7 @@ open class SBUCommonContentView: SBUBaseFileContentView {
         self.layoutIfNeeded()
     }
     
-    func addHighlight(keyword: String, toAttributedString attributedString: NSMutableAttributedString, highlightTextColor: UIColor) {
+    public func addHighlight(keyword: String, toAttributedString attributedString: NSMutableAttributedString, highlightTextColor: UIColor) {
         let highlightAll = keyword.isEmpty
         if highlightAll {
             let range = NSRange(location: 0, length: attributedString.length)

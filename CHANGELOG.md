@@ -1,5 +1,27 @@
 # Changelog
 
+### v3.0.0-beta.4 (Jun 21, 2022)
+* Modified some view to be able to change its date format
+  * Opened `SBUMessageDateView`
+  * Opened `SBUChannelCell`
+  * Added `SBUMessageDateView.dateFormat`
+  * Added `SBUOpenChannelContentBaseMessageCell.dateFormat`
+  * Added `SBUMessageSearchResultCell.dateFormat`
+  * Added parameters to `SBUChannelCell buildLastUpdatedDate()`: `dateFormat`, `timeFormat`
+* Added public classes and interfaces regarding message cells
+  * Added open/public interfaces in message cells.
+  * Added `SBULinkClickableTextView`  
+  * Added `SBUMessageWebView` , `SBUMessageWebViewModel` and `SBUOpenChannelMessageWebView`
+  * Added `SBUUserMessageTextViewDelegate` , `SBUUserMessageTextViewModel` and `SBUUserMessageTextView`
+  * Added `SBUUserNameView`
+  * Added `SBUFileViewerDelegate` and `SBUFileViewer`
+  * Added `QuotedFileCommonContentView` and `QuotedFileImageContentView`
+  * Added `SBUMessageReactionView`
+* Added `SBUDateFormatSet`
+* Added `Date.sbu_toString(dateFormat:localizedFormat)`
+* Changed `Date.lastUpdatedTime` function in `Data+SBUIKit` access level to public
+* Fixed not called completion handler on unregister pushToken
+
 ### v3.0.0-beta.3 (Jun 2, 2022)
 * Added channel push settings feature.
   * Added `SBUGroupChannelPushSettingsViewController` class.

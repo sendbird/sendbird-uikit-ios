@@ -35,11 +35,13 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol {
     // + ------------------ +
     // | messageContentView |
     // + ------------------ +
-    private lazy var stackView: UIStackView = {
+    /// A stack view that contains `dateView` and `messageContentView`
+    /// The default value is `SBUStackView` with `.vertical` axis and spacing value `16`.
+    public private(set) lazy var stackView: UIStackView = {
         return SBUStackView(axis: .vertical, spacing: 16)
     }()
     
-    var stackViewTopConstraint: NSLayoutConstraint?
+    public var stackViewTopConstraint: NSLayoutConstraint?
 
     
     // MARK: - Action
@@ -93,7 +95,7 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol {
         }
     }
     
-    func updateTopAnchorConstraint() {
+    open func updateTopAnchorConstraint() {
         let isGrouped = SBUGlobals.isMessageGroupingEnabled
             && self.groupPosition != .none
             && self.groupPosition != .top

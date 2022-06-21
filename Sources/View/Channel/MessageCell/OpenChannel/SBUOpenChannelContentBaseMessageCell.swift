@@ -12,7 +12,6 @@ import SendBirdSDK
 
 /// It is a base class used in message cell with contents.
 /// - Since: 2.0.0
-
 open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
     
     // MARK: - Public property
@@ -205,7 +204,9 @@ open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
             userNameView.configure(username: username, isOverlay: self.isOverlay)
         }
         
-        self.messageTimeLabel.text = Date.sbu_from(message.createdAt).sbu_toString(format: .hhmma)
+        self.messageTimeLabel.text = Date
+            .sbu_from(message.createdAt)
+            .sbu_toString(dateFormat: SBUDateFormatSet.Message.sentTimeFormatInOpenChannel)
         self.messageTimeLabel.textAlignment = .left
         
         if let profileView = self.profileView as? SBUMessageProfileView {
@@ -218,7 +219,7 @@ open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
         self.setMessageGrouping()
     }
     
-    func configureStateImage() {
+    open func configureStateImage() {
         stateImageView.layer.removeAnimation(forKey: SBUAnimation.Key.spin.identifier)
         let stateImage: UIImage?
         
@@ -253,7 +254,7 @@ open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
         self.updateConstraints()
     }
     
-    public func setMessageGrouping() {
+    open func setMessageGrouping() {
         let isMessageGroupingEnabled = SBUGlobals.isMessageGroupingEnabled
         let profileImageView = (self.profileView as? SBUMessageProfileView)?.imageView
         
@@ -279,7 +280,7 @@ open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
         self.updateTopAnchorConstraint()
     }
     
-    public func setUsernameColor(_ color: UIColor) {
+    open func setUsernameColor(_ color: UIColor) {
         if let userNameView = self.userNameView as? SBUUserNameView {
             userNameView.setUsernameColor(color)
             userNameView.updateStyles()

@@ -9,7 +9,6 @@
 import UIKit
 import SendBirdSDK
 
-
 open class SBUMessageStateViewParams {
     /// The timestamp of message.
     public let timestamp: Int64
@@ -74,7 +73,8 @@ open class SBUMessageStateView: SBUView {
     /// The data format for `timeLabel`.
     /// e.g. "hh:mm", "hh:mm a", ...
     /// - Since: 2.1.13
-    public var timeFormat: String = Date.SBUDateFormat.hhmma.rawValue
+    @available(*, deprecated, renamed: "SBUDateFormatSet.Message.sentTimeFormat")
+    public var timeFormat: String { SBUDateFormatSet.Message.sentTimeFormat }
 
     /// Custom size for `timeLabel`
     /// - Since: 2.1.13
@@ -169,7 +169,9 @@ open class SBUMessageStateView: SBUView {
         self.sendingState = configuration.sendingState
         self.position = configuration.position
         self.timestamp = configuration.timestamp
-        self.timeLabel.text = Date.sbu_from(timestamp).sbu_toString(formatString: timeFormat)
+        self.timeLabel.text = Date
+            .sbu_from(timestamp)
+            .sbu_toString(dateFormat: SBUDateFormatSet.Message.sentTimeFormat)
         
         NotificationCenter.default.addObserver(self, selector: #selector(willEnterForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
         

@@ -397,7 +397,10 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
         }
         
         guard let lastSeenTiemString = Date.lastUpdatedTime(
-            baseTimestamp: lastUpdatedAt) else { return nil }
+            baseTimestamp: lastUpdatedAt,
+            dateFormat: SBUDateFormatSet.Channel.lastUpdatedDateFormat,
+            timeFormat: SBUDateFormatSet.Channel.lastUpdatedTimeFormat
+        ) else { return nil }
         
         return lastSeenTiemString
     }

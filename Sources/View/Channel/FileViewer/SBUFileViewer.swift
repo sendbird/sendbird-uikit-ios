@@ -10,12 +10,12 @@ import UIKit
 import SendBirdSDK
 import AssetsLibrary
 
-protocol SBUFileViewerDelegate: NSObjectProtocol {
+public protocol SBUFileViewerDelegate: AnyObject {
     func didSelectDeleteImage(message: SBDFileMessage)
 }
 
 
-class SBUFileViewer: SBUBaseViewController, UIScrollViewDelegate {
+open class SBUFileViewer: SBUBaseViewController, UIScrollViewDelegate {
     
     // MARK: - Public property
     public var leftBarButton: UIBarButtonItem? = nil {
@@ -104,7 +104,9 @@ class SBUFileViewer: SBUBaseViewController, UIScrollViewDelegate {
                 titleView.titleLabel.text = SBUStringSet.User_No_Name
             }
             if let timestamp = fileMessage?.createdAt {
-                titleView.dateTimeLabel.text = Date.sbu_from(timestamp).sbu_toString(format: .hhmma)
+                titleView.dateTimeLabel.text = Date
+                    .sbu_from(timestamp)
+                    .sbu_toString(dateFormat: SBUDateFormatSet.Message.fileViewerTimeFormat)
             } else {
                 titleView.dateTimeLabel.text = ""
             }
@@ -161,7 +163,7 @@ class SBUFileViewer: SBUBaseViewController, UIScrollViewDelegate {
     
     
     // MARK: - Sendbird UIKit Life cycle
-    override func setupViews() {
+    open override func setupViews() {
         if self.titleView == nil {
             self.titleView = self.defaultTitleView
         }
@@ -186,7 +188,7 @@ class SBUFileViewer: SBUBaseViewController, UIScrollViewDelegate {
         self.scrollView.maximumZoomScale = 6.0
     }
 
-    override func setupLayouts() {
+    open override func setupLayouts() {
         self.bottomView.translatesAutoresizingMaskIntoConstraints = false
         self.bottomViewHeightAnchor = self.bottomView.heightAnchor.constraint(equalToConstant: 56)
         
@@ -200,13 +202,13 @@ class SBUFileViewer: SBUBaseViewController, UIScrollViewDelegate {
         NSLayoutConstraint.activate(constraints)
     }
     
-    override func updateLayouts() {
+    open override func updateLayouts() {
         self.scrollView.frame = self.view.bounds
         self.scrollView.setZoomScale(1, animated: true)
         self.imageView.frame = self.scrollView.bounds
     }
 
-    override func setupStyles() {
+    open override func setupStyles() {
         self.view.backgroundColor = SBUColorSet.background600
         
         self.navigationController?.navigationBar.backgroundColor = .clear
@@ -221,12 +223,12 @@ class SBUFileViewer: SBUBaseViewController, UIScrollViewDelegate {
     }
     
     // MARK: - Actions
-    override func onClickBack() {
+    open override func onClickBack() {
         self.dismiss(animated: true)
     }
     
     @objc
-    func onClickDelete(sender: UIButton) {
+    open func onClickDelete(sender: UIButton) {
         let deleteButton = SBUAlertButtonItem(title: SBUStringSet.Delete,
                                               color: SBUColorSet.error300) { [weak self] _ in
             guard let self = self else { return }
@@ -242,7 +244,7 @@ class SBUFileViewer: SBUBaseViewController, UIScrollViewDelegate {
     }
     
     @objc
-    func onClickDownload(sender: UIButton) {
+    open func onClickDownload(sender: UIButton) {
         guard let fileMessage = self.fileMessage,
               let url = URL(string: fileMessage.url) else { return }
         
@@ -250,12 +252,12 @@ class SBUFileViewer: SBUBaseViewController, UIScrollViewDelegate {
     }
     
     @objc
-    func onClickImage(sender : UITapGestureRecognizer) {
+    open func onClickImage(sender : UITapGestureRecognizer) {
 
         self.showBar(self.bottomView.isHidden)
     }
 
-    func showBar(_ shouldShow: Bool) {
+    open func showBar(_ shouldShow: Bool) {
         if shouldShow {
             self.bottomView.isHidden = false
             UIView.animate(withDuration: 0.2, animations: {
@@ -276,7 +278,7 @@ class SBUFileViewer: SBUBaseViewController, UIScrollViewDelegate {
     }
     
     @objc
-    func onSaveImage(_ image: UIImage,
+    open func onSaveImage(_ image: UIImage,
                            didFinishSavingWithError error: NSError?,
                            contextInfo: UnsafeRawPointer) {
         if let error = error {

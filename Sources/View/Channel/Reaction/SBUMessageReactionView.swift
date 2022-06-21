@@ -11,46 +11,46 @@ import SendBirdSDK
 
 
 /// Emoji reaction box
-class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
 
-    lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-    let layout: UICollectionViewFlowLayout = SBUCollectionViewFlowLayout()
+    public lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+    public let layout: UICollectionViewFlowLayout = SBUCollectionViewFlowLayout()
 
-    var emojiList: [SBDEmoji] = []
-    var reactions: [SBDReaction] = []
-    var maxWidth: CGFloat = SBUConstant.messageCellMaxWidth
+    public var emojiList: [SBDEmoji] = []
+    public var reactions: [SBDReaction] = []
+    public var maxWidth: CGFloat = SBUConstant.messageCellMaxWidth
 
     @SBUThemeWrapper(theme: SBUTheme.componentTheme)
-    var theme: SBUComponentTheme
+    public var theme: SBUComponentTheme
 
     var emojiTapHandler: ((_ emojiKey: String) -> Void)? = nil
     var moreEmojiTapHandler: (() -> Void)? = nil
     var emojiLongPressHandler: ((_ emojiKey: String) -> Void)? = nil
 
-    private var collectionViewHeightConstraint: NSLayoutConstraint!
-    private var collectionViewMinWidthContraint: NSLayoutConstraint!
+    public private(set) var collectionViewHeightConstraint: NSLayoutConstraint!
+    public private(set) var collectionViewMinWidthContraint: NSLayoutConstraint!
 
-    private let collectionViewInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+    public let collectionViewInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
     
     lazy var moreEmojiTapRecognizer = UITapGestureRecognizer(
         target: self,
         action: #selector(self.onTapMoreEmoji(sender:))
     )
         
-    override init() {
+    public override init() {
         super.init(frame: .zero)
     }
 
-    override init(frame: CGRect) {
+    public override init(frame: CGRect) {
         super.init(frame: frame)
     }
 
     @available(*, unavailable, renamed: "MessageReactionView()")
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         fatalError()
     }
 
-    override func setupViews() {
+    open override func setupViews() {
         super.setupViews()
         
         self.layout.sectionInset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 4)
@@ -73,7 +73,7 @@ class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollectionVie
         self.addSubview(self.collectionView)
     }
 
-    override func setupLayouts() {
+    open override func setupLayouts() {
         super.setupLayouts()
         
         self.collectionView.setConstraint(from: self, left: 0, right: 0, top: 0, bottom: 0)
@@ -87,7 +87,7 @@ class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollectionVie
         self.collectionViewMinWidthContraint.isActive = true
     }
 
-    override func setupStyles() {
+    open override func setupStyles() {
         super.setupStyles()
         
         self.clipsToBounds = true
@@ -97,12 +97,12 @@ class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollectionVie
         self.layer.borderColor = theme.reactionBoxBorderLineColor.cgColor
     }
 
-    func hasMoreEmoji(at indexPath: IndexPath) -> Bool {
+    public func hasMoreEmoji(at indexPath: IndexPath) -> Bool {
         return self.reactions.count < emojiList.count &&
             self.reactions.count == indexPath.row
     }
     
-    func configure(maxWidth: CGFloat, useReaction: Bool, reactions: [SBDReaction]) {
+    open func configure(maxWidth: CGFloat, useReaction: Bool, reactions: [SBDReaction]) {
         guard useReaction, !reactions.isEmpty else {
             self.collectionViewMinWidthContraint.isActive = false
             self.isHidden = true
@@ -135,14 +135,15 @@ class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollectionVie
         self.setNeedsLayout()
     }
 
-    private func getCellSize(count: Int) -> CGSize {
+    /// The default value is `CGSize(width: 54, height: 30)`; if `count` is zero, the width is 36.
+    open func getCellSize(count: Int) -> CGSize {
         return CGSize(width: count > 0 ? 54 : 36, height: 30)
     }
 
     // MARK: - Action
 
     @objc
-    func onTapMoreEmoji(sender: UITapGestureRecognizer) {
+    open func onTapMoreEmoji(sender: UITapGestureRecognizer) {
         let indexPath = IndexPath(row: reactions.count, section: 0)
         collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .init())
         collectionView.deselectItem(at: indexPath, animated: true)
@@ -151,11 +152,11 @@ class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollectionVie
 
 
     // MARK: - UICollectionView relations
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
+    open func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
 
-    func collectionView(_ collectionView: UICollectionView,
+    open func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
         guard !reactions.isEmpty else { return 0 }
 
@@ -166,7 +167,7 @@ class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollectionVie
         }
     }
 
-    func collectionView(_ collectionView: UICollectionView,
+    open func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         guard let cell = collectionView.dequeueReusableCell(
@@ -207,7 +208,7 @@ class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollectionVie
         return cell
     }
 
-    func collectionView(_ collectionView: UICollectionView,
+    open func collectionView(_ collectionView: UICollectionView,
                         didSelectItemAt indexPath: IndexPath) {
         
         guard !self.hasMoreEmoji(at: indexPath) else { return }
@@ -216,7 +217,7 @@ class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollectionVie
         self.emojiTapHandler?(reaction.key)
     }
 
-    func collectionView(_ collectionView: UICollectionView,
+    open func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
         

@@ -9,7 +9,7 @@
 import UIKit
 import SendBirdSDK
 
-struct SBUUserMessageTextViewModel {
+public struct SBUUserMessageTextViewModel {
     var message: SBDBaseMessage?
     var text: String
     var attributedText: NSMutableAttributedString?
@@ -17,17 +17,17 @@ struct SBUUserMessageTextViewModel {
     var theme: SBUMessageCellTheme
     var font: UIFont
     
-    var editTextColor: UIColor?
-    var edited = false
+    let editTextColor: UIColor?
+    let edited: Bool
     
     var highlight: Bool { highlightKeyword != nil }
-    var highlightKeyword: String?
-    var highlightTextColor: UIColor
+    let highlightKeyword: String?
+    let highlightTextColor: UIColor
     
-    var paragraphStyle: NSMutableParagraphStyle
+    let paragraphStyle: NSMutableParagraphStyle
     
-    var mentionTextColor: UIColor
-    var mentionTextBackgroundColor: UIColor
+    let mentionTextColor: UIColor
+    let mentionTextBackgroundColor: UIColor
     
     var defaultAttributes: [NSAttributedString.Key: Any] = [:]
     
@@ -44,7 +44,7 @@ struct SBUUserMessageTextViewModel {
         return mentionAttributes
     }
     
-    init(
+    public init(
         message: SBDBaseMessage?,
         position: MessagePosition = .right,
         text: String? = nil,
@@ -113,12 +113,12 @@ struct SBUUserMessageTextViewModel {
         self.attributedText = attributedString
     }
     
-    func haveMentionedMessage() -> Bool {
+    public func haveMentionedMessage() -> Bool {
         guard let message = message else { return false }
         return message.mentionedMessageTemplate != nil && message.mentionedMessageTemplate != ""
     }
     
-    func addhighlightIfNeeded(with attributedString: NSMutableAttributedString) {
+    public func addhighlightIfNeeded(with attributedString: NSMutableAttributedString) {
         guard let highlightKeyword = highlightKeyword else { return }
         
         let highlightAll = highlightKeyword == ""
@@ -164,7 +164,7 @@ struct SBUUserMessageTextViewModel {
         }
     }
     
-    func addMentionedUserHighlightIfNeeded(with attributedString: NSMutableAttributedString, mentionedList: [SBUMention]?) {
+    public func addMentionedUserHighlightIfNeeded(with attributedString: NSMutableAttributedString, mentionedList: [SBUMention]?) {
         guard let mentionedList = mentionedList,
               let currentUser = SBUGlobals.currentUser else { return }
         
@@ -183,7 +183,7 @@ struct SBUUserMessageTextViewModel {
         }
     }
     
-    func addEditedStateIfNeeded(with attributedString: NSMutableAttributedString) {
+    public func addEditedStateIfNeeded(with attributedString: NSMutableAttributedString) {
         if let editTextColor = editTextColor, edited {
             let editedAttributedString = NSMutableAttributedString(
                 string: " " + SBUStringSet.Message_Edited,

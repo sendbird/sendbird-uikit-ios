@@ -9,33 +9,33 @@
 import UIKit
 import SendBirdSDK
 
-class QuotedFileCommonContentView: SBUView {
-    var theme: SBUMessageCellTheme = SBUTheme.messageCellTheme
-    var position: MessagePosition = .center
-    var fileURL: String = ""
+open class QuotedFileCommonContentView: SBUView {
+    public var theme: SBUMessageCellTheme = SBUTheme.messageCellTheme
+    public var position: MessagePosition = .center
+    public internal(set) var fileURL: String = ""
     
     // + ------------- + ------------- +
     // | fileImageView | fileNameLabel |
     // + ------------- + ------------- +
-    var stackView: SBUStackView = SBUStackView(
+    public var stackView: SBUStackView = SBUStackView(
         axis: .horizontal,
         alignment: .center,
         spacing: 8
     )
     
-    var fileImageView: UIImageView = {
+    public var fileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .center
         return imageView
     }()
     
-    var fileNameLabel: UILabel = {
+    public var fileNameLabel: UILabel = {
         let label = UILabel()
         label.lineBreakMode = .byTruncatingMiddle
         return label
     }()
     
-    override func setupViews() {
+    open override func setupViews() {
         super.setupViews()
         
         self.addSubview(self.stackView)
@@ -50,7 +50,7 @@ class QuotedFileCommonContentView: SBUView {
         ])
     }
     
-    override func setupLayouts() {
+    open override func setupLayouts() {
         super.setupLayouts()
         
         self.sbu_constraint(height: 34)
@@ -62,7 +62,7 @@ class QuotedFileCommonContentView: SBUView {
             .setConstraint(width: 16, height: 16)
     }
     
-    override func setupStyles() {
+    open override func setupStyles() {
         self.layer.cornerRadius = 8
         self.layer.borderColor = UIColor.clear.cgColor
         self.layer.borderWidth = 1
@@ -82,7 +82,7 @@ class QuotedFileCommonContentView: SBUView {
         self.fileImageView.backgroundColor = .clear
     }
     
-    func configure(
+    open func configure(
         with fileType: String,
         fileName: String,
         position: MessagePosition,
@@ -138,7 +138,7 @@ class QuotedFileCommonContentView: SBUView {
         self.layoutIfNeeded()
     }
     
-    func addHighlight(keyword: String, toAttributedString attributedString: NSMutableAttributedString, highlightTextColor: UIColor) {
+    open func addHighlight(keyword: String, toAttributedString attributedString: NSMutableAttributedString, highlightTextColor: UIColor) {
         let highlightAll = keyword.isEmpty
         if highlightAll {
             let range = NSRange(location: 0, length: attributedString.length)

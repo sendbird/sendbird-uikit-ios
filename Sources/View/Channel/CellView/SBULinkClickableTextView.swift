@@ -8,8 +8,8 @@
 
 import UIKit
 
-class SBULinkClickableTextView: UITextView {
-    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+public class SBULinkClickableTextView: UITextView {
+    public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         guard self.bounds.contains(point) else { return nil }
         guard let pos = closestPosition(to: point) else { return nil }
         guard let range = tokenizer.rangeEnclosingPosition(
@@ -21,7 +21,7 @@ class SBULinkClickableTextView: UITextView {
     }
     
     //make it not selectable
-    override var selectedTextRange: UITextRange? {
+    public override var selectedTextRange: UITextRange? {
         get { return nil }
         set {}
     }

@@ -9,18 +9,6 @@
 import UIKit
 
 extension Date {
-    /// Default date formats.
-    /// - Since: 2.1.13
-    public enum SBUDateFormat: String {
-        case EMMMyyyy = "E, MMM yyyy"
-        case MMMddyyyy = "MMM dd, yyyy"
-        case EMMMdd = "E, MMM dd"
-        case MMMdd = "MMM dd"
-        case hhmma = "hh:mm a"
-        case hhmm = "hh:mm"
-        case yyyyMMddhhmm = "yyyyMMddhhmm"
-        case yyyyMMddhhmmss = "yyyyMMddhhmmss"
-    }
     
     /// The `Date` value represents the time interval since 1970 with the time stamp
     /// - Parameter baseTimestamp: The `Int64` value representing the base timestamp.
@@ -33,28 +21,19 @@ extension Date {
         return Date(timeIntervalSince1970: timeInterval)
     }
     
-    /// Gets string value with `SBUDateFormat`.
+    /// Gets string value with own date format string. It recommends that use ``SBUDateFormatSet``
     /// - Parameters:
-    ///    - format: The `SBUDateFormat` value.
-    ///    - localizedFormat: If `true`, it sets localized date format.
-    /// - Note: If you want to use your own date format, please see `sbu_toString(formatString:localizedFormat:)`.
-    /// - Since: 2.1.13
-    public func sbu_toString(format: SBUDateFormat, localizedFormat: Bool = true) -> String {
-        self.sbu_toString(formatString: format.rawValue, localizedFormat: localizedFormat)
-    }
-    
-    /// Gets string value with own date format string.
-    /// - Parameters:
-    ///   - formatString: The string value representing the date format.
+    ///   - dateFormat: The string value from representing the date format.
     ///   - localizedFormat: If `true`, it sets localized date format.
-    /// - Since: 2.1.13
-    public func sbu_toString(formatString: String, localizedFormat: Bool = true) -> String {
+    /// - Note: If you want to use your own date format, please see ``SBUDateFormatSet``
+    /// - Since: 3.0.0
+    public func sbu_toString(dateFormat: String, localizedFormat: Bool = true) -> String {
         let formatter = DateFormatter()
 
         if localizedFormat {
-            formatter.setLocalizedDateFormatFromTemplate(formatString)
+            formatter.setLocalizedDateFormatFromTemplate(dateFormat)
         } else {
-            formatter.dateFormat = formatString
+            formatter.dateFormat = dateFormat
         }
         return formatter.string(from: self)
     }
@@ -92,7 +71,11 @@ extension Date {
         }
     }
     
-    static func lastUpdatedTime(baseTimestamp: Int64) -> String? {
+    public static func lastUpdatedTime(
+        baseTimestamp: Int64,
+        dateFormat: String = SBUDateFormatSet.MMMdd,
+        timeFormat: String = SBUDateFormatSet.hhmm
+    ) -> String? {
         let baseDate = Date.sbu_from(baseTimestamp)
         let currDate = Date()
          
@@ -114,10 +97,10 @@ extension Date {
                 }
             }
             
-            return baseDate.sbu_toString(format: .MMMdd)
+            return baseDate.sbu_toString(dateFormat: dateFormat)
         }
         else {
-            return baseDate.sbu_toString(format: .hhmma)
+            return baseDate.sbu_toString(dateFormat: timeFormat)
         }
     }
     
@@ -136,7 +119,9 @@ extension Date {
             baseDateComponents.month != currDateComponents.month {
             return SBUStringSet.Channel_Header_LastSeen
                 + " " + SBUStringSet.Date_On
-                + " " + baseDate.sbu_toString(format: .MMMddyyyy)
+                + " " + baseDate.sbu_toString(
+                    dateFormat: SBUDateFormatSet.Channel.lastSeenDateFormat
+                )
         } else if baseDateComponents.day != currDateComponents.day {
             let interval = (currDateComponents.day ?? 0) - (baseDateComponents.day ?? 0)
             lastSeenString = SBUStringSet.Date_Day(interval)
@@ -177,5 +162,63 @@ extension Date {
         else {
             return false
         }
+    }
+}
+
+extension Date {
+    /// Default date formats.
+    /// - Since: 2.1.13
+    @available(*, deprecated, renamed: "SBUDateFormatSet") // 3.0.0
+    public enum SBUDateFormat {
+        case EMMMyyyy
+        case MMMddyyyy
+        case EMMMdd
+        case MMMdd
+        case hhmma
+        case hhmm
+        case yyyyMMddhhmm
+        case yyyyMMddhhmmss
+        
+        public var rawValue: String {
+            switch self {
+            case .EMMMyyyy:
+                return SBUDateFormatSet.EMMMyyyy
+            case .MMMddyyyy:
+                return SBUDateFormatSet.MMMddyyyy
+            case .EMMMdd:
+                return SBUDateFormatSet.EMMMdd
+            case .MMMdd:
+                return SBUDateFormatSet.MMMdd
+            case .hhmma:
+                return SBUDateFormatSet.hhmma
+            case .hhmm:
+                return SBUDateFormatSet.hhmm
+            case .yyyyMMddhhmm:
+                return SBUDateFormatSet.yyyyMMddhhmm
+            case .yyyyMMddhhmmss:
+                return SBUDateFormatSet.yyyyMMddhhmmss
+            }
+        }
+    }
+    
+    /// Gets string value with `SBUDateFormat`.
+    /// - Parameters:
+    ///    - format: The `SBUDateFormat` value.
+    ///    - localizedFormat: If `true`, it sets localized date format.
+    /// - Note: If you want to use your own date format, please see `sbu_toString(formatString:localizedFormat:)`.
+    /// - Since: 2.1.13
+    @available(*, deprecated, renamed: "sbu_toString(formatString:localizedFormat:)") // 3.0.0
+    public func sbu_toString(format: SBUDateFormat, localizedFormat: Bool = true) -> String {
+        self.sbu_toString(dateFormat: format.rawValue, localizedFormat: localizedFormat)
+    }
+    
+    /// Gets string value with own date format string.
+    /// - Parameters:
+    ///   - formatString: The string value representing the date format.
+    ///   - localizedFormat: If `true`, it sets localized date format.
+    /// - Since: 2.1.13
+    @available(*, deprecated, renamed: "sbu_toString(dateFormat:localizedFormat:)") // 3.0.0
+    public func sbu_toString(formatString: String, localizedFormat: Bool = true) -> String {
+        self.sbu_toString(dateFormat: formatString, localizedFormat: localizedFormat)
     }
 }

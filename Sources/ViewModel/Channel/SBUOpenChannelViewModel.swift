@@ -50,7 +50,6 @@ extension SBUOpenChannelViewModelDelegate {
     ) {}
 }
 
-
 open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
     // MARK: - Constant
     private let changelogFetchLimit: Int = 100

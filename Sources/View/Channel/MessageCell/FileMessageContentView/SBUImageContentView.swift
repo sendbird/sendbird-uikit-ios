@@ -27,6 +27,7 @@ open class SBUImageContentView: SBUBaseFileContentView {
     public var widthConstraint: NSLayoutConstraint!
     public var heightConstraint: NSLayoutConstraint!
     
+    // TODO: Unused?
     public var text: String = ""
     
     // MARK: - Properties (Private)

@@ -8,24 +8,24 @@
 
 import UIKit
 
-class SBUMessageDateView: SBUView {
+open class SBUMessageDateView: SBUView {
      
     @SBUThemeWrapper(theme: SBUTheme.messageCellTheme)
-    var theme: SBUMessageCellTheme
+    public var theme: SBUMessageCellTheme
     
-    lazy var dateLabel: UILabel = {
+    public lazy var dateLabel: UILabel = {
         let view = UILabel()
         view.layer.cornerRadius = 10
         view.clipsToBounds = true
         return view
     }()
 
-    override func setupViews() {
+    open override func setupViews() {
         self.dateLabel.textAlignment = .center
         self.addSubview(self.dateLabel)
     }
     
-    override func setupLayouts() {
+    open override func setupLayouts() {
         self.dateLabel
             .setConstraint(from: self, centerX: true, centerY: true)
             .setConstraint(width: 91, height: 20)
@@ -33,7 +33,7 @@ class SBUMessageDateView: SBUView {
         self.setConstraint(height: 20, priority: .defaultLow)
     }
     
-    override func setupStyles() {
+    open override func setupStyles() {
         self.backgroundColor = .clear
         
         self.dateLabel.font = theme.dateFont
@@ -41,7 +41,9 @@ class SBUMessageDateView: SBUView {
         self.dateLabel.backgroundColor = theme.dateBackgroundColor
     }
     
-    func configure(timestamp: Int64) {
-        self.dateLabel.text = Date.sbu_from(timestamp).sbu_toString(format: .EMMMdd)
+    open func configure(timestamp: Int64) {
+        self.dateLabel.text = Date
+            .sbu_from(timestamp)
+            .sbu_toString(dateFormat: SBUDateFormatSet.Message.sentDateFormat)
     }
 }

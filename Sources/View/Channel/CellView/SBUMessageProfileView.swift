@@ -8,9 +8,8 @@
 
 import UIKit
 
-@objcMembers
 open class SBUMessageProfileView: SBUView {
-    private static let imageSize: CGFloat = 26
+    public static let imageSize: CGFloat = 26
     
     @SBUThemeWrapper(theme: SBUTheme.messageCellTheme)
     public var theme: SBUMessageCellTheme
@@ -28,7 +27,14 @@ open class SBUMessageProfileView: SBUView {
     public init(urlString: String = "") {
         self.urlString = urlString
 
-        super.init(frame: .init(x: 0, y: 0, width: 26, height: 26))
+        super.init(
+            frame: .init(
+                x: 0,
+                y: 0,
+                width: SBUMessageProfileView.imageSize,
+                height: SBUMessageProfileView.imageSize
+            )
+        )
 
         self.configure(urlString: urlString)
     }

@@ -11,11 +11,12 @@ import SendBirdSDK
 
 
 open class SBUOpenChannelUnknownMessageCell: SBUOpenChannelUserMessageCell {
-    open override func configure(_ message: SBDBaseMessage,
-                                   hideDateView: Bool,
-                                   groupPosition: MessageGroupPosition,
-                                   isOverlay: Bool = false) {
-        
+    open override func configure(
+        _ message: SBDBaseMessage,
+        hideDateView: Bool,
+        groupPosition: MessageGroupPosition,
+        isOverlay: Bool = false
+    ) {        
         self.configure(
             message,
             hideDateView: hideDateView,
@@ -28,8 +29,8 @@ open class SBUOpenChannelUnknownMessageCell: SBUOpenChannelUserMessageCell {
         
         if let messageTextView = self.messageTextView as? SBUUserMessageTextView {
             let text = SBUStringSet.Message_Unknown_Title
-                + "\n"
-                + SBUStringSet.Message_Unknown_Description
+            + "\n"
+            + SBUStringSet.Message_Unknown_Description
             let model = SBUUserMessageTextViewModel(
                 message: message,
                 text: text,

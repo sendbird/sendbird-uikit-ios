@@ -9,7 +9,7 @@
 import UIKit
 import SendBirdSDK
 
- @IBDesignable
+@IBDesignable
 open class SBUOpenChannelFileMessageCell: SBUOpenChannelContentBaseMessageCell {
     
     // MARK: - Public property
@@ -17,9 +17,7 @@ open class SBUOpenChannelFileMessageCell: SBUOpenChannelContentBaseMessageCell {
         return self.message as? SBDFileMessage
     }
     
-    
-    // MARK: - Private property
-    private lazy var baseFileContentView: SBUBaseFileContentView = {
+    public lazy var baseFileContentView: SBUBaseFileContentView = {
         let fileView = SBUBaseFileContentView()
         return fileView
     }()

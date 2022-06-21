@@ -20,18 +20,18 @@ open class SBUQuotedFileMessageView: SBUQuotedBaseMessageView {
         SBUUtils.getFileType(by: urlString!)
     }
     
-    private lazy var messageFileView: UIView = {
+    public private(set) lazy var messageFileView: UIView = {
         return UIView()
     }()
     
-    private var imageView: UIImageView = {
+    public var imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
         return imageView
     }()
     
-    private var iconImageView: UIImageView = {
+    public var iconImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.clipsToBounds = true
         imageView.contentMode = .center

@@ -9,7 +9,7 @@
 import UIKit
 import SendBirdSDK
 
- @IBDesignable
+@IBDesignable
 open class SBUOpenChannelBaseMessageCell: SBUTableViewCell {
     // MARK: - Public
     public var message: SBDBaseMessage = .init()
@@ -27,15 +27,19 @@ open class SBUOpenChannelBaseMessageCell: SBUTableViewCell {
     @SBUThemeWrapper(theme: SBUTheme.overlayTheme.messageCellTheme, setToDefault: true)
     public var overlayTheme: SBUMessageCellTheme
     
-    // MARK: - Private
-    private lazy var stackView: UIStackView = {
+    /// A vertical stack view that contains `dateView` and `messageContentView` as defaults.
+    ///
+    /// As a default, it has following  configuration:
+    /// - axis: `.vertical`
+    /// - spacing: `16`
+    public lazy var stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.spacing = 16
         stackView.axis = .vertical
         return stackView
     }()
     
-    var stackViewTopConstraint: NSLayoutConstraint?
+    public var stackViewTopConstraint: NSLayoutConstraint?
     
     var isOverlay = false
 
@@ -82,7 +86,7 @@ open class SBUOpenChannelBaseMessageCell: SBUTableViewCell {
         }
     }
     
-    func updateTopAnchorConstraint() {
+    open func updateTopAnchorConstraint() {
         let isGrouped = SBUGlobals.isMessageGroupingEnabled
             && self.groupPosition != .none
             && self.groupPosition != .top

@@ -9,15 +9,15 @@
 import UIKit
 import SendBirdSDK
 
-class QuotedFileImageContentView: SBUView {
-    var theme: SBUMessageCellTheme = SBUTheme.messageCellTheme
-    var position: MessagePosition = .center
+open class QuotedFileImageContentView: SBUView {
+    public var theme: SBUMessageCellTheme = SBUTheme.messageCellTheme
+    public var position: MessagePosition = .center
     
-    var text: String = ""
-    var fileURL: String = ""
-    var fileType: String = ""
+    public internal(set) var text: String = ""
+    public internal(set) var fileURL: String = ""
+    public internal(set) var fileType: String = ""
     
-    var imageView: UIImageView = {
+    public var imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.layer.opacity = 0.4
         imageView.clipsToBounds = true
@@ -25,7 +25,7 @@ class QuotedFileImageContentView: SBUView {
         return imageView
     }()
     
-    var iconImageView: UIImageView = {
+    public var iconImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.clipsToBounds = true
         imageView.contentMode = .center
@@ -43,14 +43,14 @@ class QuotedFileImageContentView: SBUView {
     }
     
     // MARK: - SBUViewLifeCycle
-    override func setupViews() {
+    open override func setupViews() {
         super.setupViews()
         
         self.addSubview(self.imageView)
         self.addSubview(self.iconImageView)
     }
     
-    override func setupLayouts() {
+    open override func setupLayouts() {
         super.setupLayouts()
         
         self.imageView
@@ -68,7 +68,7 @@ class QuotedFileImageContentView: SBUView {
             .layoutIfNeeded()
     }
     
-    func setupSizeContraint() {
+    open func setupSizeContraint() {
         self.widthConstraint = self.imageView.widthAnchor.constraint(
             equalToConstant: SBUConstant.quotedMessageThumbnailSize.width
         )
@@ -82,7 +82,7 @@ class QuotedFileImageContentView: SBUView {
         ])
     }
     
-    override func setupStyles() {
+    open override func setupStyles() {
         self.layer.cornerRadius = 12
         self.layer.borderColor = UIColor.clear.cgColor
         self.layer.borderWidth = 1
@@ -94,7 +94,7 @@ class QuotedFileImageContentView: SBUView {
     }
     
     // MARK: - Configuration
-    func configure(with configuration: SBUQuotedBaseMessageViewParams) {
+    open func configure(with configuration: SBUQuotedBaseMessageViewParams) {
         let imageOption: UIImageView.ImageOption
         guard let fileType = configuration.fileType else { return }
         guard let fileURL = configuration.urlString else { return }
@@ -124,7 +124,7 @@ class QuotedFileImageContentView: SBUView {
         self.setFileIcon()
     }
     
-    func setImage(_ image: UIImage?, size: CGSize? = nil) {
+    open func setImage(_ image: UIImage?, size: CGSize? = nil) {
         if let size = size {
             self.resizeImageView(by: size)
         }
@@ -132,7 +132,7 @@ class QuotedFileImageContentView: SBUView {
         self.setFileIcon()
     }
     
-    func setFileIcon() {
+    open func setFileIcon() {
         guard !self.fileType.isEmpty else { return }
         
         switch SBUUtils.getFileType(by: self.fileType) {
@@ -165,7 +165,7 @@ class QuotedFileImageContentView: SBUView {
         }
     }
     
-    func resizeImageView(by size: CGSize) {
+    open func resizeImageView(by size: CGSize) {
         self.widthConstraint.constant = min(
             size.width,
             SBUConstant.quotedMessageThumbnailSize.width

@@ -93,7 +93,7 @@ extension SBUOpenChannelModule {
                 self.delegate?.openChannelModule(
                     self,
                     didPickFileData: imageData,
-                    fileName: "\(Date().sbu_toString(format: .yyyyMMddhhmmss, localizedFormat: false)).jpg",
+                    fileName: "\(Date().sbu_toString(dateFormat: SBUDateFormatSet.Message.fileNameFormat, localizedFormat: false)).jpg",
                     mimeType: "image/jpeg"
                 )
                 return
@@ -127,7 +127,7 @@ extension SBUOpenChannelModule {
                     self.delegate?.openChannelModule(
                         self,
                         didPickFileData: imageData,
-                        fileName: "\(Date().sbu_toString(format: .yyyyMMddhhmmss, localizedFormat: false)).jpg",
+                        fileName: "\(Date().sbu_toString(dateFormat: SBUDateFormatSet.Message.fileNameFormat, localizedFormat: false)).jpg",
                         mimeType: "image/jpeg"
                     )
             }
@@ -171,7 +171,7 @@ extension SBUOpenChannelModule {
                             self.delegate?.openChannelModule(
                                 self,
                                 didPickFileData: imageData,
-                                fileName: "\(Date().sbu_toString(format: .yyyyMMddhhmmss, localizedFormat: false)).jpg",
+                                fileName: "\(Date().sbu_toString(dateFormat: SBUDateFormatSet.Message.fileNameFormat, localizedFormat: false)).jpg",
                                 mimeType: "image/jpeg"
                             )
                         }
@@ -246,7 +246,7 @@ extension SBUOpenChannelModule {
             self.delegate?.openChannelModule(
                 self,
                 didPickFileData: data,
-                fileName: "\(Date().sbu_toString(format: .yyyyMMddhhmmss, localizedFormat: false)).jpg",
+                fileName: "\(Date().sbu_toString(dateFormat: SBUDateFormatSet.Message.fileNameFormat, localizedFormat: false)).jpg",
                 mimeType: "image/jpeg"
             )
         }

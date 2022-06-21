@@ -8,24 +8,28 @@
 
 import UIKit
 
-protocol SBUUserMessageTextViewDelegate: AnyObject {
+public protocol SBUUserMessageTextViewDelegate: AnyObject {
+    /// Called when the mention in message has been tapped.
+    /// - Parameters:
+    ///     textView: `SBUUserMessageTextView` object that contains the message text.
+    ///     user: The user corresponding to tapped mention.
     func userMessageTextView(_ textView: SBUUserMessageTextView, didTapMention user: SBUUser)
 }
 
-class SBUUserMessageTextView: SBUView {
-    struct Metric {
-        static let textLeftRightMargin = 12.f
-        static let textTopDownMargin = 7.f
-        static let textMaxWidth = SBUConstant.messageCellMaxWidth
-        static let textMinHeight = 16.f
-        static let textMinWidth = 10.f
-        static let viewCornerRadius = 16.f
-        static let viewBorderWidth = 1.f
+open class SBUUserMessageTextView: SBUView {
+    public struct Metric {
+        public static var textLeftRightMargin = 12.f
+        public static var textTopDownMargin = 7.f
+        public static var textMaxWidth = SBUConstant.messageCellMaxWidth
+        public static var textMinHeight = 16.f
+        public static var textMinWidth = 10.f
+        public static var viewCornerRadius = 16.f
+        public static var viewBorderWidth = 1.f
     }
     
-    var text: String = ""
+    public internal(set) var text: String = ""
     
-    var textView: SBULinkClickableTextView = {
+    public var textView: SBULinkClickableTextView = {
         var textView = SBULinkClickableTextView()
         textView.backgroundColor = .clear
         textView.textAlignment = .left
@@ -42,23 +46,23 @@ class SBUUserMessageTextView: SBUView {
         return textView
     }()
     
-    var channelType: ChannelCreationType = .group
-    var isWebType = false
+    public var channelType: ChannelCreationType = .group
+    public var isWebType = false
     
     var longPressHandler: ((URL) -> ())? = nil
     
-    var textLeftConstraint: NSLayoutConstraint!
-    var textRightConstraint: NSLayoutConstraint!
+    public var textLeftConstraint: NSLayoutConstraint!
+    public var textRightConstraint: NSLayoutConstraint!
     
-    var mentionManager: SBUMentionManager?
+    public var mentionManager: SBUMentionManager?
     
-    weak var delegate: SBUUserMessageTextViewDelegate?
+    public weak var delegate: SBUUserMessageTextViewDelegate?
     
-    override init() {
+    public override init() {
         super.init()
     }
     
-    override init(frame: CGRect) {
+    public override init(frame: CGRect) {
         super.init(frame: frame)
     }
     
@@ -68,13 +72,13 @@ class SBUUserMessageTextView: SBUView {
         super.init()
     }
     
-    override func setupViews() {
+    open override func setupViews() {
         self.textView.delegate = self
         
         self.addSubview(self.textView)
     }
     
-    override func setupLayouts() {
+    open override func setupLayouts() {
         self.translatesAutoresizingMaskIntoConstraints = false
         
         if self.channelType != .open {
@@ -120,7 +124,7 @@ class SBUUserMessageTextView: SBUView {
         ])
     }
     
-    func updateSideConstraint() {
+    open func updateSideConstraint() {
         NSLayoutConstraint.deactivate([
             self.textLeftConstraint,
             self.textRightConstraint
@@ -141,9 +145,9 @@ class SBUUserMessageTextView: SBUView {
         self.updateConstraintsIfNeeded()
     }
     
-    override func setupStyles() { }
+    open override func setupStyles() { }
     
-    func configure(model: SBUUserMessageTextViewModel) {
+    open func configure(model: SBUUserMessageTextViewModel) {
         self.text = model.text
         self.textView.attributedText = model.attributedText
         self.textView.linkTextAttributes = [
@@ -175,7 +179,7 @@ class SBUUserMessageTextView: SBUView {
 }
 
 extension SBUUserMessageTextView: UITextViewDelegate {
-    func textView(_ textView: UITextView,
+    open func textView(_ textView: UITextView,
                   shouldInteractWith URL: URL,
                   in characterRange: NSRange,
                   interaction: UITextItemInteraction) -> Bool {

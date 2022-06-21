@@ -21,7 +21,7 @@ public protocol SBUQuotedMessageViewDelegate: AnyObject {
     func didTapQuotedMessageView(_ quotedMessageView: SBUQuotedBaseMessageView)
 }
 
- @IBDesignable
+@IBDesignable
 open class SBUQuotedBaseMessageView: SBUView, SBUQuotedMessageViewProtocol {
     // MARK: - Properties
     public var theme: SBUMessageCellTheme = SBUTheme.messageCellTheme
