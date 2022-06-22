@@ -13,8 +13,6 @@ import MobileCoreServices
 import AVKit
 import SafariServices
 
-private let kEdsonBlock = "89600"
-
 @objcMembers
 open class SBUChannelViewController: SBUBaseChannelViewController {
 
@@ -1269,7 +1267,7 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
     public func showMenuViewController(_ cell: UITableViewCell,
                                        message: SBDBaseMessage,
                                        types: [MessageMenuItem]) {
-        let useReaction = SBUEmojiManager.useReaction(channel: self.channel) && self.channelUrl?.contains(kEdsonBlock) == false
+        let useReaction = SBUEmojiManager.useReaction(channel: self.channel)
         
         let menuVC = SBUMenuViewController(message: message, itemTypes: types, useReaction: useReaction)
         menuVC.modalPresentationStyle = .custom
@@ -1409,7 +1407,7 @@ open class SBUChannelViewController: SBUBaseChannelViewController {
         
         let isSameDay = self.checkSameDayAsNextMessage(currentIndex: indexPath.row)
         let receiptState = SBUUtils.getReceiptStateIfExists(for: channel, message: message)
-        let useReaction = SBUEmojiManager.useReaction(channel: self.channel) && self.channelUrl?.contains(kEdsonBlock) == false
+        let useReaction = SBUEmojiManager.useReaction(channel: self.channel)
         
         switch (message, messageCell) {
             
