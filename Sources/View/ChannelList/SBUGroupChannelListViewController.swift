@@ -281,7 +281,8 @@ open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, 
     // MARK: - SBUGroupChannelListModuleListDelegate
     open func channelListModule(_ listComponent: SBUGroupChannelListModule.List,
                                 didSelectRowAt indexPath: IndexPath) {
-        guard let channel = self.viewModel?.channelList[indexPath.row] else { return }
+        guard indexPath.row < self.channelList.count, 
+              let channel = self.viewModel?.channelList[indexPath.row] else { return }
         self.showChannel(channelUrl: channel.channelUrl)
     }
     
