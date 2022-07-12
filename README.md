@@ -7,7 +7,7 @@
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-green.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![Commercial License](https://img.shields.io/badge/license-Commercial-green.svg)](https://github.com/sendbird/sendbird-uikit-ios/blob/master/LICENSE.md)
 
-The new version of the Sendbird UIKit is now available as the beta. Compared to UIKit v2, UIKit v3 beta features a new modular architecture with more granular components that give you enhanced flexibility to customize your web and mobile apps. Check out our [migration guides](https://github.com/sendbird/sendbird-uikit-ios/blob/main-beta/changelogs/MIGRATION_GUIDE_V3.md) and go visit the [v3 branch](https://github.com/sendbird/sendbird-uikit-ios/tree/main-beta) here.
+The new version of the Sendbird UIKit is now available as the beta. Compared to UIKit v2, UIKit v3 beta features a new modular architecture with more granular components that give you enhanced flexibility to customize your web and mobile apps. Check out our [migration guides](https://github.com/sendbird/sendbird-uikit-ios/blob/main/changelogs/MIGRATION_GUIDE_V3.md) and go visit the [v3 branch](https://github.com/sendbird/sendbird-uikit-ios/tree/main) here.
 
 ## Table of contents
 
