@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 class CustomChannelListCell: SBUBaseChannelCell {
 
@@ -103,7 +103,7 @@ class CustomChannelListCell: SBUBaseChannelCell {
         self.separatorLine.backgroundColor = SBUTheme.channelCellTheme.separatorLineColor
     }
 
-    override func configure(channel: SBDBaseChannel) {
+    override func configure(channel: BaseChannel) {
         super.configure(channel: channel)
         
         self.titleLabel.text = channel.name.count > 0 ? channel.name : "Empty channel"

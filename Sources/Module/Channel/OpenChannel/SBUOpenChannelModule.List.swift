@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 
 /// Event methods for the views updates and performing actions from the list component in a open channel.
@@ -30,19 +30,19 @@ extension SBUOpenChannelModule {
         
         // MARK: - UI
         
-        /// The message cell for `SBDAdminMessage` object. Use `register(adminMessageCell:nib:)` to update.
+        /// The message cell for `AdminMessage` object. Use `register(adminMessageCell:nib:)` to update.
         public var adminMessageCell: SBUOpenChannelBaseMessageCell?
         
-        /// The message cell for `SBDUserMessage` object. Use `register(userMessageCell:nib:)` to update.
+        /// The message cell for `UserMessage` object. Use `register(userMessageCell:nib:)` to update.
         public var userMessageCell: SBUOpenChannelBaseMessageCell?
         
-        /// The message cell for `SBDFileMessage` object. Use `register(fileMessageCell:nib:)` to update.
+        /// The message cell for `FileMessage` object. Use `register(fileMessageCell:nib:)` to update.
         public var fileMessageCell: SBUOpenChannelBaseMessageCell?
         
-        /// The message cell for some unknown message which is not a type of `SBDAdminMessage` | `SBDUserMessage` | ` SBDFileMessage`. Use `register(unknownMessageCell:nib:)` to update.
+        /// The message cell for some unknown message which is not a type of `AdminMessage` | `UserMessage` | ` FileMessage`. Use `register(unknownMessageCell:nib:)` to update.
         public var unknownMessageCell: SBUOpenChannelBaseMessageCell?
         
-        /// The custom message cell for some `SBDBaseMessage`. Use `register(customMessageCell:nib:)` to update.
+        /// The custom message cell for some `BaseMessage`. Use `register(customMessageCell:nib:)` to update.
         public var customMessageCell: SBUOpenChannelBaseMessageCell?
         
         // MARK: - Logic
@@ -59,8 +59,8 @@ extension SBUOpenChannelModule {
         }
         
         /// The current *open* channel object casted from `baseChannel`
-        public var channel: SBDOpenChannel? {
-            self.baseChannel as? SBDOpenChannel
+        public var channel: OpenChannel? {
+            self.baseChannel as? OpenChannel
         }
         
         /// The boolean value that indicates overlaying state of the list component. The value is returned by `openChannelModuleIsOverlaid(_:)`
@@ -239,7 +239,7 @@ extension SBUOpenChannelModule {
         ///   - cell: The message cell
         ///   - message: message object
         ///   - indexPath: Cell's indexPath
-        open func setMessageCellGestures(_ cell: SBUOpenChannelBaseMessageCell, message: SBDBaseMessage, indexPath: IndexPath) {
+        open func setMessageCellGestures(_ cell: SBUOpenChannelBaseMessageCell, message: BaseMessage, indexPath: IndexPath) {
             cell.tapHandlerToContent = { [weak self, weak cell] in
                 guard let self = self, let cell = cell else { return }
                 self.setTapGesture(cell, message: message, indexPath: indexPath)
@@ -279,7 +279,7 @@ extension SBUOpenChannelModule {
         ///    - messageCell: `SBUOpenChannelBaseMessageCell` object.
         ///    - message: The message for `messageCell`.
         ///    - indexPath: An index path representing the `messageCell`
-        open func configureCell(_ messageCell: SBUOpenChannelBaseMessageCell, message: SBDBaseMessage, forRowAt indexPath: IndexPath) {
+        open func configureCell(_ messageCell: SBUOpenChannelBaseMessageCell, message: BaseMessage, forRowAt indexPath: IndexPath) {
             //NOTE: to disable unwanted animation while configuring cells
             UIView.setAnimationsEnabled(false)
             
@@ -291,7 +291,7 @@ extension SBUOpenChannelModule {
             
             switch (message, messageCell) {
                     // Admin message
-                case let (adminMessage, adminMessageCell) as (SBDAdminMessage, SBUOpenChannelAdminMessageCell):
+                case let (adminMessage, adminMessageCell) as (AdminMessage, SBUOpenChannelAdminMessageCell):
                     adminMessageCell.configure(
                         adminMessage,
                         hideDateView: isSameDay,
@@ -304,7 +304,7 @@ extension SBUOpenChannelModule {
                     )
                     
                     // Unknown Message
-                case let (unknownMessage, unknownMessageCell) as (SBDBaseMessage, SBUOpenChannelUnknownMessageCell):
+                case let (unknownMessage, unknownMessageCell) as (BaseMessage, SBUOpenChannelUnknownMessageCell):
                     unknownMessageCell.configure(
                         unknownMessage,
                         hideDateView: isSameDay,
@@ -319,7 +319,7 @@ extension SBUOpenChannelModule {
                     )
                     
                     // User Message
-                case let (userMessage, userMessageCell) as (SBDUserMessage, SBUOpenChannelUserMessageCell):
+                case let (userMessage, userMessageCell) as (UserMessage, SBUOpenChannelUserMessageCell):
                     userMessageCell.configure(
                         userMessage,
                         hideDateView: isSameDay,
@@ -334,7 +334,7 @@ extension SBUOpenChannelModule {
                     )
                     
                     // File Message
-                case let (fileMessage, fileMessageCell) as (SBDFileMessage, SBUOpenChannelFileMessageCell):
+                case let (fileMessage, fileMessageCell) as (FileMessage, SBUOpenChannelFileMessageCell):
                     fileMessageCell.configure(
                         fileMessage,
                         hideDateView: isSameDay,
@@ -364,7 +364,7 @@ extension SBUOpenChannelModule {
             messageCell.userProfileTapHandler = { [weak messageCell, weak self] in
                 guard let self = self else { return }
                 guard let cell = messageCell else { return }
-                guard let sender = cell.message.sender else { return }
+                guard let sender = cell.message?.sender else { return }
                 self.setUserProfileTapGesture(SBUUser(sender: sender))
             }
         }
@@ -385,13 +385,13 @@ extension SBUOpenChannelModule {
         /// Generates identifier of message cell.
         /// - Parameter message: Message object
         /// - Returns: The identifier of message cell.
-        open func generateCellIdentifier(by message: SBDBaseMessage) -> String {
+        open func generateCellIdentifier(by message: BaseMessage) -> String {
             switch message {
-                case is SBDFileMessage:
+                case is FileMessage:
                     return fileMessageCell?.sbu_className ?? SBUOpenChannelFileMessageCell.sbu_className
-                case is SBDUserMessage:
+                case is UserMessage:
                     return userMessageCell?.sbu_className ?? SBUOpenChannelUserMessageCell.sbu_className
-                case is SBDAdminMessage:
+                case is AdminMessage:
                     return adminMessageCell?.sbu_className ?? SBUOpenChannelAdminMessageCell.sbu_className
                 default:
                     return unknownMessageCell?.sbu_className ?? SBUOpenChannelUnknownMessageCell.sbu_className

@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <SendBirdSDK/SendBirdSDK.h>
+#import <SendbirdChatSDK/SendbirdChatSDK.h>
 
 //! Project version number for SendbirdUIKit.
 FOUNDATION_EXPORT double SendbirdUIKitVersionNumber;

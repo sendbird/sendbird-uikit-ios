@@ -6,17 +6,17 @@
 //  Copyright © 2021 Sendbird, Inc. All rights reserved.
 //
 
-import SendBirdSDK
+import SendbirdChatSDK
 
 
 public class SBUUnknownMessageCellParams: SBUBaseMessageCellParams {
-    public var unknownMessage: SBDBaseMessage {
+    public var unknownMessage: BaseMessage {
         self.message
     }
     public let useReaction: Bool
     public let withTextView: Bool = false
     
-    public init(message: SBDBaseMessage, hideDateView: Bool, groupPosition: MessageGroupPosition = .none, receiptState: SBUMessageReceiptState = .none, useReaction: Bool) {
+    public init(message: BaseMessage, hideDateView: Bool, groupPosition: MessageGroupPosition = .none, receiptState: SBUMessageReceiptState = .none, useReaction: Bool) {
         self.useReaction = useReaction
         
         var messagePosition: MessagePosition = .left

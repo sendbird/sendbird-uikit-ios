@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 
 public protocol SBUCreateChannelModuleListDelegate: SBUBaseSelectUserModuleListDelegate {

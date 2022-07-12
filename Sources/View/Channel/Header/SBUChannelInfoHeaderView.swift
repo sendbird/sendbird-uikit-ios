@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 /// This delegate is used in the class to handle the action.
 public protocol SBUChannelInfoHeaderViewDelegate: AnyObject {
@@ -40,7 +40,7 @@ public class SBUChannelInfoHeaderView: SBUView {
     public lazy var infoButton: UIButton? = UIButton()
     
     /// The channel object.
-    public private(set) var channel: SBDBaseChannel?
+    public private(set) var channel: BaseChannel?
     
     weak var delegate: SBUChannelInfoHeaderViewDelegate? = nil
     
@@ -155,9 +155,9 @@ public class SBUChannelInfoHeaderView: SBUView {
     func setupInfoButtonStyle() {
         let theme = self.isOverlay ? self.overlayTheme : self.theme
         
-        if let channel = self.channel as? SBDOpenChannel {
+        if let channel = self.channel as? OpenChannel {
             guard let userId = SBUGlobals.currentUser?.userId else { return }
-            let isOperator = channel.isOperator(withUserId: userId)
+            let isOperator = channel.isOperator(userId: userId)
             let iconImage = isOperator
                 ? SBUIconSetType.iconInfo.image(
                     with: theme.barItemTintColor,
@@ -169,7 +169,7 @@ public class SBUChannelInfoHeaderView: SBUView {
                 )
             
             self.infoButton?.setImage(iconImage, for: .normal)
-        } else if let channel = self.channel as? SBDGroupChannel {
+        } else if let channel = self.channel as? GroupChannel {
             let isOperator = channel.myRole == .operator
             let iconImage = isOperator
                 ? SBUIconSetType.iconInfo.image(
@@ -194,7 +194,7 @@ public class SBUChannelInfoHeaderView: SBUView {
     }
 
     // MARK: - Common
-    public func configure(channel: SBDBaseChannel?, description: String?) {
+    public func configure(channel: BaseChannel?, description: String?) {
         self.channel = channel
         guard let channel = self.channel else { return }
         
@@ -203,7 +203,7 @@ public class SBUChannelInfoHeaderView: SBUView {
         if SBUUtils.isValid(channelName: channel.name) {
             self.titleLabel.text = channel.name
         } else {
-            if let groupChannel = channel as? SBDGroupChannel {
+            if let groupChannel = channel as? GroupChannel {
                 self.titleLabel.text = SBUUtils.generateChannelName(channel: groupChannel)
             } else {
                 self.titleLabel.text = SBUStringSet.Open_Channel_Name_Default
@@ -214,9 +214,9 @@ public class SBUChannelInfoHeaderView: SBUView {
         self.descriptionLabel.isHidden = description == nil
         
         self.setupInfoButtonStyle()
-        if let channel = self.channel as? SBDOpenChannel {
+        if let channel = self.channel as? OpenChannel {
             guard let userId = SBUGlobals.currentUser?.userId else { return }
-            let isOperator = channel.isOperator(withUserId: userId)
+            let isOperator = channel.isOperator(userId: userId)
             self.infoButton?.addTarget(
                 self,
                 action: isOperator
@@ -224,7 +224,7 @@ public class SBUChannelInfoHeaderView: SBUView {
                     : #selector(onClickChannelParticipants),
                 for: .touchUpInside
             )
-        } else if let channel = self.channel as? SBDGroupChannel {
+        } else if let channel = self.channel as? GroupChannel {
             let isOperator = channel.myRole == .operator
             self.infoButton?.addTarget(
                 self,
@@ -239,14 +239,14 @@ public class SBUChannelInfoHeaderView: SBUView {
     func loadCoverImage() {
         guard let channel = self.channel else { return }
         
-        if let url = channel.coverUrl {
-            self.coverImage.setImage(withCoverUrl: url)
-        } else if let groupChannel = channel as? SBDGroupChannel {
+        if let url = channel.coverURL {
+            self.coverImage.setImage(withCoverURL: url)
+        } else if let groupChannel = channel as? GroupChannel {
             if groupChannel.isBroadcast {
                 self.coverImage.setBroadcastIcon()
             } else {
-                if let members = groupChannel.members as? [SBDUser] {
-                    self.coverImage.setImage(withUsers: members)
+                if !groupChannel.members.isEmpty {
+                    self.coverImage.setImage(withUsers: groupChannel.members)
                 } else {
                     self.coverImage.setPlaceholderImage(
                         iconSize: .init(width: coverImageSize,height: coverImageSize)

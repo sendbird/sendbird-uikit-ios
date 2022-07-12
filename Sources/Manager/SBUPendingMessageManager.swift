@@ -1,5 +1,5 @@
 //
-//  SBDMessageManager.swift
+//  MessageManager.swift
 //  SendbirdUIKit
 //
 //  Created by Wooyoung Chung on 12/5/20.
@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import SendBirdSDK
+import SendbirdChatSDK
 
 
 public class SBUPendingMessageManager {
@@ -16,44 +16,44 @@ public class SBUPendingMessageManager {
     private init() { }
     
     /// channel url : array of pending
-    private var pendingMessages: [String:[String:SBDBaseMessage]] = [:]
+    private var pendingMessages: [String:[String:BaseMessage]] = [:]
     /// message requestId : file params
-    private var pendingFileInfos: [String: SBDFileMessageParams] = [:]
+    private var pendingFileInfos: [String: FileMessageCreateParams] = [:]
     
-    public func addFileInfo(requestId:String?, params: SBDFileMessageParams?) {
+    public func addFileInfo(requestId:String?, params: FileMessageCreateParams?) {
         guard let requestId = requestId, let params = params else { return }
         self.pendingFileInfos[requestId] = params
     }
     
-    public func getFileInfo(requestId: String?) -> SBDFileMessageParams? {
+    public func getFileInfo(requestId: String?) -> FileMessageCreateParams? {
         guard let requestId = requestId else { return nil }
         return self.pendingFileInfos[requestId]
     }
     
-    func upsertPendingMessage(channelUrl: String?, message: SBDBaseMessage?) {
-        guard let channelUrl = channelUrl, let message = message else { return }
+    func upsertPendingMessage(channelURL: String?, message: BaseMessage?) {
+        guard let channelURL = channelURL, let message = message else { return }
         guard !message.requestId.isEmpty else { return }
         
-        var pendingDict = self.pendingMessages[channelUrl] ?? [:]
+        var pendingDict = self.pendingMessages[channelURL] ?? [:]
         pendingDict[message.requestId] = message
-        self.pendingMessages[channelUrl] = pendingDict
+        self.pendingMessages[channelURL] = pendingDict
     }
     
-    func getPendingMessages(channelUrl: String?) -> [SBDBaseMessage] {
-        guard let channelUrl = channelUrl else { return [] }
-        let pendingDict = self.pendingMessages[channelUrl] ?? [:]
+    func getPendingMessages(channelURL: String?) -> [BaseMessage] {
+        guard let channelURL = channelURL else { return [] }
+        let pendingDict = self.pendingMessages[channelURL] ?? [:]
         return pendingDict.map { $1 }.sorted { $0.createdAt < $1.createdAt };
     }
     
-    func removePendingMessage(channelUrl: String?, requestId: String?) {
-        guard let channelUrl = channelUrl,
+    func removePendingMessage(channelURL: String?, requestId: String?) {
+        guard let channelURL = channelURL,
               let requestId = requestId,
-              var pendingDict = self.pendingMessages[channelUrl] else {
+              var pendingDict = self.pendingMessages[channelURL] else {
             return
         }
         
         pendingDict.removeValue(forKey: requestId)
         self.pendingFileInfos.removeValue(forKey: requestId)
-        self.pendingMessages[channelUrl] = pendingDict
+        self.pendingMessages[channelURL] = pendingDict
     }
 }

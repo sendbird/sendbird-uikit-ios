@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import SendBirdSDK
+import SendbirdChatSDK
 
 protocol SBUViewModelDelegate: AnyObject {
     func dispose()
@@ -25,7 +25,7 @@ public protocol SBUCommonViewModelDelegate: SBUCommonDelegate {
 extension SBUCommonViewModelDelegate {
     public func connectionStateDidChange(_ isConnected: Bool) { }
     
-    public func didReceiveError(_ error: SBDError?) {
+    public func didReceiveError(_ error: SBError?) {
         self.didReceiveError(error, isBlocker: false)
     }
 }

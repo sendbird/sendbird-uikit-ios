@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 protocol SBUQuoteMessageInputViewDelegate: AnyObject {
     func didTapClose()
@@ -209,7 +209,7 @@ open class SBUQuoteMessageInputView: SBUView, SBUQuoteMessageInputViewProtocol {
     }
     
     func setupFilePreview(with configuration: SBUQuoteMessageInputViewParams) {
-        guard let fileMessage = configuration.message as? SBDFileMessage else { return }
+        guard let fileMessage = configuration.message as? FileMessage else { return }
         guard configuration.isFileType,
               let name = configuration.fileName,
               let type = configuration.fileType
@@ -225,7 +225,7 @@ open class SBUQuoteMessageInputView: SBUView, SBUQuoteMessageInputViewProtocol {
             case .image:
                 imageOption = .imageToThumbnail
             case .video:
-                imageOption = .videoUrlToImage
+                imageOption = .videoURLToImage
             case .audio:
                 fileIcon = SBUIconSetType.iconFileAudio.image(
                     with: theme.quotedFileMessageThumbnailTintColor,

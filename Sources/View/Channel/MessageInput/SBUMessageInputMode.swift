@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import SendBirdSDK
+import SendbirdChatSDK
 
 @objc public enum SBUMessageInputMode: Int {
     /// The default mode
@@ -20,8 +20,8 @@ import SendBirdSDK
 
 enum MessageInputMode {
     case none
-    case edit(_ message: SBDUserMessage)
-    case quoteReply(_ message: SBDBaseMessage)
+    case edit(_ message: UserMessage)
+    case quoteReply(_ message: BaseMessage)
     
     var value: SBUMessageInputMode {
         switch self {

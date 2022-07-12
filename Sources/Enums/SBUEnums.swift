@@ -5,7 +5,7 @@
 //  Created by Tez Park on 05/02/2020.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
 //
-import SendBirdSDK
+import SendbirdChatSDK
 
 
 /// This is an enumeration for channel type.
@@ -73,13 +73,17 @@ import SendBirdSDK
 @objc public enum ModerationItemType: Int {
     case operators
     case mutedMembers
-    case bannedMembers
+    case bannedUsers
     case freezeChannel
+    case mutedParticipants
     
-    static func allTypes(isBroadcast: Bool) -> [ModerationItemType] {
+    @available(*, unavailable, renamed: "bannedUsers") // 3.0.0
+    case bannedMembers
+    
+    static func allTypes(isBroadcast: Bool, channelType: ChannelType = .group) -> [ModerationItemType] {
         return isBroadcast
-        ? [.operators, .bannedMembers]
-        : [.operators, .mutedMembers, .bannedMembers, .freezeChannel]
+        ? [.operators, .bannedUsers]
+        : [.operators, (channelType == .group) ? .mutedMembers : .mutedParticipants, .bannedUsers, .freezeChannel]
     }
 }
 
@@ -88,25 +92,44 @@ import SendBirdSDK
 public enum UserListType: Hashable {
     case none
     case createChannel
-    case channelMembers
-    case inviteUser
+    case members
+    case invite
     case reaction
     case operators
-    case mutedMembers
-    case bannedMembers
+    case muted
+    case banned
     case participants
     case suggestedMention(_ withUserId: Bool)
+    
+    
+    @available(*, unavailable, renamed: "members") // 3.0.0
+    case channelMembers
+    @available(*, unavailable, renamed: "invite") // 3.0.0
+    case inviteUser
+    
+    @available(*, unavailable, renamed: "muted") // 3.0.0
+    case mutedMembers
+    @available(*, unavailable, renamed: "banned") // 3.0.0
+    case bannedMembers
 }
 
-/// This is an enumeration used in `MemberListViewController` to load member list by type.
+/// This is an enumeration used in `UserListViewController` to load user list by type.
 /// - Since: 1.2.0
-@objc public enum ChannelMemberListType: Int {
+@objc public enum ChannelUserListType: Int {
     case none
-    case channelMembers
+    case members
     case operators
-    case mutedMembers
-    case bannedMembers
+    case muted
+    case banned
     case participants
+    
+    
+    @available(*, unavailable, renamed: "members") // 3.0.0
+    case channelMembers
+    @available(*, unavailable, renamed: "muted") // 3.0.0
+    case mutedMembers
+    @available(*, unavailable, renamed: "banned") // 3.0.0
+    case bannedMembers
 }
 
 /// This is an enumeration used in `InviteUserViewController` to load user list by type.
@@ -131,9 +154,12 @@ public enum ChannelPushSettingsSubType: Int, CaseIterable {
     case noMessages
     case noMembers
     case noMutedMembers
-    case noBannedMembers
+    case noBannedUsers
     case noSearchResults
     case error
+    
+    @available(*, unavailable, renamed: "noBannedUsers") // 3.0.0
+    case noBannedMembers
 }
 
 /// This is an enumeration used to select a media resource type.

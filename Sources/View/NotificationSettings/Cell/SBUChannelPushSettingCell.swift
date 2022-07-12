@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 class SBUChannelPushSettingCell: SBUTableViewCell {
     lazy var baseStackView = SBUStackView(axis: .vertical, alignment: .fill, spacing: 16)
@@ -128,7 +128,7 @@ class SBUChannelPushSettingCell: SBUTableViewCell {
         self.separateView.backgroundColor = theme.cellSeparateColor
     }
     
-    open func configure(pushTriggerOption: SBDGroupChannelPushTriggerOption,
+    open func configure(pushTriggerOption: GroupChannelPushTriggerOption,
                         subType: ChannelPushSettingsSubType? = nil) {
         if let subType = subType {
             self.isSubType = true

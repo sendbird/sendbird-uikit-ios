@@ -8,7 +8,7 @@
 
 import UIKit
 import PhotosUI
-import SendBirdSDK
+import SendbirdChatSDK
 
 
 /// Event methods for the views updates and performing actions from the input component in the open channel.
@@ -29,8 +29,8 @@ extension SBUOpenChannelModule {
     @objcMembers open class Input: SBUBaseChannelModule.Input {
         
         /// The open channel object casted from `baseChannel`.
-        public var channel: SBDOpenChannel? {
-            self.baseChannel as? SBDOpenChannel
+        public var channel: OpenChannel? {
+            self.baseChannel as? OpenChannel
         }
         
         /// The object that acts as the delegate of the input component. The delegate must adopt the `SBUOpenChannelModuleInputDelegate`.
@@ -72,13 +72,13 @@ extension SBUOpenChannelModule {
         }
         
         open override func pickImageFile(info: [UIImagePickerController.InfoKey : Any]) {
-            var tempImageUrl: URL? = nil
-            if let imageUrl = info[.imageURL] as? URL {
+            var tempImageURL: URL? = nil
+            if let imageURL = info[.imageURL] as? URL {
                 // file:///~~~
-                tempImageUrl = imageUrl
+                tempImageURL = imageURL
             }
             
-            guard let imageUrl = tempImageUrl else {
+            guard let imageURL = tempImageURL else {
                 let originalImage = info[.originalImage] as? UIImage
                 // for Camera capture
                 guard let image = originalImage?
@@ -99,12 +99,12 @@ extension SBUOpenChannelModule {
                 return
             }
             
-            let imageName = imageUrl.lastPathComponent
-            guard let mimeType = SBUUtils.getMimeType(url: imageUrl) else { return }
+            let imageName = imageURL.lastPathComponent
+            guard let mimeType = SBUUtils.getMimeType(url: imageURL) else { return }
             
             switch mimeType {
                 case "image/gif":
-                    let gifData = try? Data(contentsOf: imageUrl)
+                    let gifData = try? Data(contentsOf: imageURL)
                     
                     self.delegate?.openChannelModule(
                         self,
@@ -135,10 +135,10 @@ extension SBUOpenChannelModule {
         
         open override func pickVideoFile(info: [UIImagePickerController.InfoKey : Any]) {
             do {
-                guard let videoUrl = info[.mediaURL] as? URL else { return }
-                let videoFileData = try Data(contentsOf: videoUrl)
-                let videoName = videoUrl.lastPathComponent
-                guard let mimeType = SBUUtils.getMimeType(url: videoUrl) else { return }
+                guard let videoURL = info[.mediaURL] as? URL else { return }
+                let videoFileData = try Data(contentsOf: videoURL)
+                let videoName = videoURL.lastPathComponent
+                guard let mimeType = SBUUtils.getMimeType(url: videoURL) else { return }
                 
                 self.delegate?.openChannelModule(
                     self,
@@ -147,7 +147,8 @@ extension SBUOpenChannelModule {
                     mimeType: mimeType
                 )
             } catch {
-                self.delegate?.didReceiveError(SBDError(nsError: error), isBlocker: false)
+                let sbError = SBError(domain: (error as NSError).domain, code: (error as NSError).code)
+                self.delegate?.didReceiveError(sbError, isBlocker: false)
             }
         }
         
@@ -223,12 +224,12 @@ extension SBUOpenChannelModule {
             }
         }
         
-        open override func pickDocumentFile(documentUrls: [URL]) {
+        open override func pickDocumentFile(documentURLs: [URL]) {
             do {
-                guard let documentUrl = documentUrls.first else { return }
-                let documentData = try Data(contentsOf: documentUrl)
-                let documentName = documentUrl.lastPathComponent
-                guard let mimeType = SBUUtils.getMimeType(url: documentUrl) else { return }
+                guard let documentURL = documentURLs.first else { return }
+                let documentData = try Data(contentsOf: documentURL)
+                let documentName = documentURL.lastPathComponent
+                guard let mimeType = SBUUtils.getMimeType(url: documentURL) else { return }
                 
                 self.delegate?.openChannelModule(
                     self,
@@ -238,7 +239,8 @@ extension SBUOpenChannelModule {
                 )
             } catch {
                 SBULog.error(error.localizedDescription)
-                self.delegate?.didReceiveError(SBDError(nsError: error), isBlocker: false)
+                let sbError = SBError(domain: (error as NSError).domain, code: (error as NSError).code)
+                self.delegate?.didReceiveError(sbError, isBlocker: false)
             }
         }
         
@@ -265,7 +267,8 @@ extension SBUOpenChannelModule {
                 )
             } catch {
                 SBULog.error(error.localizedDescription)
-                self.delegate?.didReceiveError(SBDError(nsError: error), isBlocker: false)
+                let sbError = SBError(domain: (error as NSError).domain, code: (error as NSError).code)
+                self.delegate?.didReceiveError(sbError, isBlocker: false)
             }
         }
         
@@ -273,6 +276,7 @@ extension SBUOpenChannelModule {
         open override func updateMessageInputModeState() {
             if self.channel != nil {
                 self.updateFrozenModeState()
+                self.updateMutedModeState()
             } else {
                 if let messageInputView = self.messageInputView as? SBUMessageInputView {
                     messageInputView.setErrorState()
@@ -283,12 +287,28 @@ extension SBUOpenChannelModule {
         /// This is used to update frozen mode of `messageInputView`. This will call `SBUBaseChannelModuleInputDelegate baseChannelModule(_:didUpdateFrozenState:)`
         open override func updateFrozenModeState() {
             guard let userId = SBUGlobals.currentUser?.userId else { return }
-            let isOperator = self.channel?.isOperator(withUserId: userId) ?? false
+            let isOperator = self.channel?.isOperator(userId: userId) ?? false
             let isFrozen = self.channel?.isFrozen ?? false
             if let messageInputView = self.messageInputView as? SBUMessageInputView {
                 messageInputView.setFrozenModeState(!isOperator && isFrozen)
             }
             self.delegate?.baseChannelModule(self, didUpdateFrozenState: isFrozen)
+        }
+        
+        /// Updates the mode of `messageInputView` according to frozen and muted state of the channel.
+        open func updateMutedModeState() {
+            guard let userId = SBUGlobals.currentUser?.userId else { return }
+            let isOperator = self.channel?.isOperator(userId: userId) ?? false
+            let isFrozen = self.channel?.isFrozen ?? false
+            self.channel?.getMyMutedInfo(completionHandler: {
+                [weak self] isMuted, description, startAt, endAt, remainingDuration, error in
+                guard let self = self else { return }
+                if !isFrozen || (isFrozen && isOperator) {
+                    if let messageInputView = self.messageInputView as? SBUMessageInputView {
+                        messageInputView.setMutedModeState(isMuted)
+                    }
+                }
+            })
         }
     }
 }

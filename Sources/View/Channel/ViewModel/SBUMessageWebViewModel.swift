@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 public class SBUMessageWebViewModel {
     public var imageURL: String?
@@ -17,7 +17,7 @@ public class SBUMessageWebViewModel {
     public var placeHolderImage: UIImage?
     public var errorImage: UIImage?
     
-    public init(metaData: SBDOGMetaData?, isOverlay: Bool = false) {
+    public init(metaData: OGMetaData?, isOverlay: Bool = false) {
         let theme = isOverlay ? SBUTheme.overlayTheme.messageCellTheme : SBUTheme.messageCellTheme
         let imageData = metaData?.defaultImage
         

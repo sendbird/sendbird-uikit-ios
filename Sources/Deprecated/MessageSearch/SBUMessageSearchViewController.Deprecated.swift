@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 extension SBUMessageSearchViewController {
     // MARK: - 3.0.0
@@ -24,14 +24,17 @@ extension SBUMessageSearchViewController {
     public var emptyView: UIView? { get { nil } set { } }
     
     @available(*, deprecated, message: "This property has been moved to the `SBUMessageSearchViewModel`.", renamed: "viewModel.messageListParams")
-    public var messageListParams: SBDMessageListParams? { get {self.viewModel?.messageListParams} set {} }
+    public var messageListParams: MessageListParams? { get {self.viewModel?.messageListParams} set {} }
+    
+    @available(*, unavailable, message: "This property has been removed. If you want to customization, you can use `customMessageSearchQueryParams`.")
+    public var customMessageSearchQueryBuilder: ((MessageSearchQueryBuilder) -> Void)? { get { nil } set {} }
 
     @available(*, deprecated, message: "This function has been moved to the `SBUMessageSearchModule.Header`.", renamed: "headerComponent.updateSearchBarStyle(with:)")
     public func setupSearchBarStyle(searchBar: UISearchBar) { self.headerComponent?.updateSearchBarStyle(with: searchBar)
     }
     
     @available(*, deprecated, message: "This property has been moved to the `SBUMessageSearchViewModel`.", renamed: "listComponent.message(at:)")
-    open func message(at indexPath: IndexPath) -> SBDBaseMessage? {
+    open func message(at indexPath: IndexPath) -> BaseMessage? {
         return self.listComponent?.message(at: indexPath)
     }
     
@@ -55,3 +58,5 @@ extension SBUMessageSearchViewController {
     }
 }
 
+
+public class MessageSearchQueryBuilder {}

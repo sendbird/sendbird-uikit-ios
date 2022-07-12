@@ -7,25 +7,25 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 extension SBUOpenChannelViewController {
     // MARK: 3.0.0    
     @available(*, unavailable, message: "This function has been moved to `SBUOpenChannelModule.List` and replaced to `setMessageCellGestures(_:)`.")
     open func setUserMessageCellGestures(_ cell: SBUOpenChannelUserMessageCell,
-                                         userMessage: SBDUserMessage,
+                                         userMessage: UserMessage,
                                          indexPath: IndexPath) { }
     
     
     @available(*, unavailable, message: "This function has been moved to `SBUOpenChannelModule.List` and replaced to `setMessageCellGestures(_:)`.")
     open func setFileMessageCellGestures(_ cell: SBUOpenChannelFileMessageCell,
-                                         fileMessage: SBDFileMessage,
+                                         fileMessage: FileMessage,
                                          indexPath: IndexPath) { }
     
     
     @available(*, unavailable, message: "This function has been moved to `SBUOpenChannelModule.List` and replaced to `setMessageCellGestures(_:)`.")
     open func setUnkownMessageCellGestures(_ cell: SBUOpenChannelUnknownMessageCell,
-                                           unknownMessage: SBDBaseMessage,
+                                           unknownMessage: BaseMessage,
                                            indexPath: IndexPath) { }
     
     

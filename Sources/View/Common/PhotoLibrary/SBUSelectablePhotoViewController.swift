@@ -23,6 +23,12 @@ public protocol SBUSelectablePhotoViewDelegate: AnyObject {
     func didTapSendVideoURL(_ url: URL)
 }
 
+public extension SBUSelectablePhotoViewDelegate {
+    func didTapSendImageData(_ data: Data) { }
+    
+    func didTapSendVideoURL(_ url: URL) { }
+}
+
 /// The view controller that shows the selected accessible photos and videos.
 /// - Since: 2.2.6
 open class SBUSelectablePhotoViewController: SBUBaseViewController {
@@ -105,6 +111,22 @@ open class SBUSelectablePhotoViewController: SBUBaseViewController {
         return CGSize(
             value: isPortrait ? (view.frame.width - 2) / 3 : (view.frame.height - 2) / 3
         )
+    }
+    
+    public required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
+    
+    /// Initializes `SBUSelectablePhotoViewController`.
+    /// - Parameter mediaType: A general type of an asset, such as image or video. If it's `nil`, it fetches all types.
+    /// - Since: 3.0.0
+    public init(mediaType: PHAssetMediaType? = nil) {
+        if let mediaType = mediaType {
+            self.fetchResult = PHAsset.fetchAssets(with: mediaType, options: nil)
+        } else {
+            self.fetchResult = PHAsset.fetchAssets(with: nil)
+        }
+        super.init(nibName: nil, bundle: nil)
     }
 
     open override func loadView() {

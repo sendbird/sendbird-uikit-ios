@@ -7,13 +7,13 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 
 public class SBUQuoteMessageInputViewParams {
     /// The message that is going to be replied.
     /// - Since: 2.2.0
-    public let message: SBDBaseMessage
+    public let message: BaseMessage
     
     /// The sender nickname of the message.
     /// - Since: 2.2.0
@@ -24,13 +24,13 @@ public class SBUQuoteMessageInputViewParams {
     public var replyToText: String {
         SBUStringSet.MessageInput_Reply_To(self.quotedMessageNickname)
     }
-    /// if `true`, `message` is type of `SBDFileMessage`.
+    /// if `true`, `message` is type of `FileMessage`.
     /// - Since: 2.2.0
-    public var isFileType: Bool { message is SBDFileMessage }
+    public var isFileType: Bool { message is FileMessage }
     
     /// The file type of `message`.
     /// - Since: 2.2.0
-    public var fileType: String? { (message as? SBDFileMessage)?.type }
+    public var fileType: String? { (message as? FileMessage)?.type }
     
     /// The file name preview of `message`.
     /// - Since: 2.2.0
@@ -44,15 +44,15 @@ public class SBUQuoteMessageInputViewParams {
         case .video:
             return SBUStringSet.MessageInput_Quote_Message_Video
         case .audio, .pdf, .etc:
-            return (message as? SBDFileMessage)?.name
+            return (message as? FileMessage)?.name
         }
     }
     
     /// The original file name of `message`.
     /// - Since: 2.2.0
-    public var originalFileNAme: String? { (message as? SBDFileMessage)?.name }
+    public var originalFileNAme: String? { (message as? FileMessage)?.name }
     
-    public init(message: SBDBaseMessage) {
+    public init(message: BaseMessage) {
         self.message = message
         self.quotedMessageNickname = SBUUser(user: message.sender!).refinedNickname()
     }

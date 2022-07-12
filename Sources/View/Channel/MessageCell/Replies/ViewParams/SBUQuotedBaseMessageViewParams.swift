@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 public class SBUQuotedBaseMessageViewParams {
     // MARK: Public
@@ -62,7 +62,7 @@ public class SBUQuotedBaseMessageViewParams {
         }
     }
     
-    /// if `true`, the quoted message is type of `SBDFileMessage`.
+    /// if `true`, the quoted message is type of `FileMessage`.
     /// - Since: 2.2.0
     public var isFileType: Bool {
         switch messageType {
@@ -74,10 +74,10 @@ public class SBUQuotedBaseMessageViewParams {
     // MARK: - Internal (only for Swift)
     let messageType: QuotedMessageType
     
-    public init(message: SBDBaseMessage, position: MessagePosition, usingQuotedMessage: Bool) {
+    public init(message: BaseMessage, position: MessagePosition, usingQuotedMessage: Bool) {
         self.messageId = message.parentMessageId
-        self.text = message.parent?.message ?? ""
-        if let quotedMessageSender = message.parent?.sender {
+        self.text = message.parentMessage?.message ?? ""
+        if let quotedMessageSender = message.parentMessage?.sender {
             let isRepliedToMe = quotedMessageSender.userId == SBUGlobals.currentUser?.userId
             self.quotedMessageNickname = isRepliedToMe
             ? SBUStringSet.Message_You
@@ -95,7 +95,7 @@ public class SBUQuotedBaseMessageViewParams {
             self.replierNickname = SBUStringSet.User_No_Name
         }
         
-        if let fileMessage = message.parent as? SBDFileMessage {
+        if let fileMessage = message.parentMessage as? FileMessage {
             let urlString = fileMessage.url
             let type = fileMessage.type
             let name = fileMessage.name

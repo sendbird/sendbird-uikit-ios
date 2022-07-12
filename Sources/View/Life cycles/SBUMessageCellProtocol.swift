@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import SendBirdSDK
+import SendbirdChatSDK
 
 /// The protocol to configure message cells. It conforms to `SBUViewLifeCycle`
 ///

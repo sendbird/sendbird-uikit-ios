@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 class SBUChannelSettingCell: UITableViewCell {
     // MARK: - property
@@ -146,7 +146,7 @@ class SBUChannelSettingCell: UITableViewCell {
     /// This function configure a cell using channel information.
     /// - Parameter channel: cell object
     open func configure(type: ChannelSettingItemType,
-                        channel: SBDGroupChannel?,
+                        channel: GroupChannel?,
                         title: String? = nil,
                         icon: UIImage? = nil) {
         

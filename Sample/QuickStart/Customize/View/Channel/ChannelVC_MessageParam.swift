@@ -7,13 +7,13 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 class ChannelVC_MessageParam: SBUGroupChannelViewController {
-    override func baseChannelModule(_ inputComponent: SBUBaseChannelModule.Input, didTapSend text: String, parentMessage: SBDBaseMessage?) {
+    override func baseChannelModule(_ inputComponent: SBUBaseChannelModule.Input, didTapSend text: String, parentMessage: BaseMessage?) {
         guard text.count > 0 else { return }
         let text = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard let messageParam = SBDUserMessageParams(message: text) else { return }
+        let messageParam = UserMessageCreateParams(message: text)
         
         let alert = UIAlertController(title: "Highlight message", message: "Would you like to send it as a Highlight message?", preferredStyle: .alert)
         let sendAction = UIAlertAction(title: "No", style: .default) { [weak self] action in

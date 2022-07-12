@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 
 /// Event methods for the views updates and performing actions from the list component in the message search.
@@ -36,8 +36,8 @@ public protocol SBUMessageSearchModuleListDataSource: AnyObject {
     /// - Parameters:
     ///    - listComponent: `SBUMessageSearchModule.List` object.
     ///    - tableView: `UITableView` object from list component.
-    /// - Returns: The array of `SBDBaseMessage` object.
-    func messageSearchModule(_ listComponent: SBUMessageSearchModule.List, searchResultsInTableView tableView: UITableView) -> [SBDBaseMessage]
+    /// - Returns: The array of `BaseMessage` object.
+    func messageSearchModule(_ listComponent: SBUMessageSearchModule.List, searchResultsInTableView tableView: UITableView) -> [BaseMessage]
 }
 
 
@@ -83,7 +83,7 @@ extension SBUMessageSearchModule {
         public weak var dataSource: SBUMessageSearchModuleListDataSource? = nil
         
         /// The search result list object from `messageSearchModule(_:searchResultsInTableView:)` data source method.
-        public var resultList: [SBDBaseMessage] {
+        public var resultList: [BaseMessage] {
             self.dataSource?.messageSearchModule(self, searchResultsInTableView: self.tableView) ?? []
         }
         
@@ -212,10 +212,10 @@ extension SBUMessageSearchModule {
         
         // MARK: - Common
         
-        /// Retrives the `SBDBaseMessage` object from the given `IndexPath` of the tableView.
-        /// - Parameter indexPath: `IndexPath` of which you want to retrieve the `SBDMessage` object.
-        /// - Returns: `SBDBaseMessage` object of the corresponding `IndexPath`, or `nil` if the message can't be found.
-        open func message(at indexPath: IndexPath) -> SBDBaseMessage? {
+        /// Retrives the `BaseMessage` object from the given `IndexPath` of the tableView.
+        /// - Parameter indexPath: `IndexPath` of which you want to retrieve the `Message` object.
+        /// - Returns: `BaseMessage` object of the corresponding `IndexPath`, or `nil` if the message can't be found.
+        open func message(at indexPath: IndexPath) -> BaseMessage? {
             let row = indexPath.row
             guard row >= 0 && row < self.resultList.count else { return nil }
             

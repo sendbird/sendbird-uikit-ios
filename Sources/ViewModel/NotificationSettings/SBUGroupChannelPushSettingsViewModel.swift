@@ -7,21 +7,21 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 public protocol SBUGroupChannelPushSettingsViewModelDelegate: SBUBaseChannelSettingsViewModelDelegate {
     /// Called when changed push notification option
     /// - Parameters:
     ///   - viewModel: `SBUGroupChannelPushSettingsViewModel` object.
-    ///   - pushTriggerOption: `SBDGroupChannelPushTriggerOption` object to change.
+    ///   - pushTriggerOption: `GroupChannelPushTriggerOption` object to change.
     func groupChannelPushSettingsViewModel(
         _ viewModel: SBUGroupChannelPushSettingsViewModel,
-        didChangeNotification pushTriggerOption: SBDGroupChannelPushTriggerOption
+        didChangeNotification pushTriggerOption: GroupChannelPushTriggerOption
     )
 }
 
 open class SBUGroupChannelPushSettingsViewModel: SBUBaseChannelSettingsViewModel {
-    public private(set) var currentTriggerOption: SBDGroupChannelPushTriggerOption = .off
+    public private(set) var currentTriggerOption: GroupChannelPushTriggerOption = .off
 
     public weak var delegate: SBUGroupChannelPushSettingsViewModelDelegate? {
         get { self.baseDelegate as? SBUGroupChannelPushSettingsViewModelDelegate }
@@ -29,8 +29,8 @@ open class SBUGroupChannelPushSettingsViewModel: SBUBaseChannelSettingsViewModel
     }
     
     public init(
-        channel: SBDBaseChannel? = nil,
-        channelUrl: String? = nil,
+        channel: BaseChannel? = nil,
+        channelURL: String? = nil,
         delegate: SBUGroupChannelPushSettingsViewModelDelegate? = nil
     ) {
         super.init()
@@ -39,17 +39,17 @@ open class SBUGroupChannelPushSettingsViewModel: SBUBaseChannelSettingsViewModel
 
         if let channel = channel {
             self.channel = channel
-            self.channelUrl = channel.channelUrl
-        } else if let channelUrl = channelUrl {
-            self.channelUrl = channelUrl
+            self.channelURL = channel.channelURL
+        } else if let channelURL = channelURL {
+            self.channelURL = channelURL
         }
         
         self.updateChannelPushTriggerOption()
     }
     
     
-    open func changeNotification(_ pushTriggerOption: SBDGroupChannelPushTriggerOption) {
-        guard let groupChannel = self.channel as? SBDGroupChannel else { return }
+    open func changeNotification(_ pushTriggerOption: GroupChannelPushTriggerOption) {
+        guard let groupChannel = self.channel as? GroupChannel else { return }
         guard self.currentTriggerOption != pushTriggerOption else { return }
         
         self.delegate?.shouldUpdateLoadingState(true)
@@ -63,8 +63,7 @@ open class SBUGroupChannelPushSettingsViewModel: SBUBaseChannelSettingsViewModel
             }
             
             if let channel = self.channel {
-                let context = SBDMessageContext()
-                context.source = .eventChannelChanged
+                let context = MessageContext(source: .eventChannelChanged, sendingStatus: .succeeded)
                 self.delegate?.baseChannelSettingsViewModel(
                     self,
                     didChangeChannel: channel,
@@ -76,9 +75,9 @@ open class SBUGroupChannelPushSettingsViewModel: SBUBaseChannelSettingsViewModel
     }
     
     public func updateChannelPushTriggerOption() {
-        guard let channel = self.channel as? SBDGroupChannel else { return }
+        guard let channel = self.channel as? GroupChannel else { return }
         if channel.myPushTriggerOption == .default {
-            SBDMain.getPushTriggerOption { [weak self] pushTriggerOption, error in
+            SendbirdChat.getPushTriggerOption { [weak self] pushTriggerOption, error in
                 guard let self = self else { return }
                 guard error == nil else {
                     SBULog.error(error?.description)

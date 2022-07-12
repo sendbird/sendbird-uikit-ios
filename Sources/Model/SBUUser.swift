@@ -7,13 +7,16 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 
 public class SBUUser: NSObject {
     public private(set) var userId: String
     public private(set) var nickname: String?
-    public private(set) var profileUrl: String?
+    public private(set) var profileURL: String?
+    
+    @available(*, deprecated, renamed: "profileURL") // 3.0.0
+    public var profileUrl: String? { self.profileURL }
     
     /// This is an operator state property.
     /// - Since: 1.2.0
@@ -25,23 +28,23 @@ public class SBUUser: NSObject {
     
     
     // MARK: - User
-    /// This function initializes using the userId, nickname, and profileUrl.
+    /// This function initializes using the userId, nickname, and profileURL.
     /// - Parameters:
     ///   - userId: userId
     ///   - nickname: nickname (default: nil), If not set this value, sets with userId.
-    ///   - profileUrl: profileUrl (default: nil)
-    public init(userId: String, nickname: String? = nil, profileUrl: String? = nil) {
+    ///   - profileURL: profileURL (default: nil)
+    public init(userId: String, nickname: String? = nil, profileURL: String? = nil) {
         self.userId = userId
         self.nickname = nickname
-        self.profileUrl = profileUrl
+        self.profileURL = profileURL
     }
     
     /// This function initializes using the user object.
     /// - Parameter user: User obejct
-    public init(user: SBDUser) {
+    public init(user: User) {
         self.userId = user.userId
         self.nickname = user.nickname
-        self.profileUrl = user.profileUrl
+        self.profileURL = user.profileURL
     }
     
     /// This function initializes using the user object, operator state, and muted state.
@@ -52,7 +55,7 @@ public class SBUUser: NSObject {
     public init(user: SBUUser, isOperator: Bool = false, isMuted: Bool = false) {
         self.userId = user.userId
         self.nickname = user.nickname
-        self.profileUrl = user.profileUrl
+        self.profileURL = user.profileURL
         self.isOperator = isOperator
         self.isMuted = isMuted
     }
@@ -60,22 +63,22 @@ public class SBUUser: NSObject {
     
     // MARK: - Member
     /// This function initializes using the member object.
-    /// - Parameter member: `SBDMember` obejct
-    public init(member: SBDMember) {
+    /// - Parameter member: `Member` obejct
+    public init(member: Member) {
         self.userId = member.userId
         self.nickname = member.nickname
-        self.profileUrl = member.profileUrl
+        self.profileURL = member.profileURL
         self.isOperator = member.role == .operator
         self.isMuted = member.isMuted
     }
     
     // MARK: - Sender
     /// This function initializes using the sender object.
-    /// - Parameter sender: `SBDSender` obejct
-    public init(sender: SBDSender) {
+    /// - Parameter sender: `Sender` obejct
+    public init(sender: Sender) {
         self.userId = sender.userId
         self.nickname = sender.nickname
-        self.profileUrl = sender.profileUrl
+        self.profileURL = sender.profileURL
         self.isOperator = sender.role == .operator
     }
     
@@ -102,10 +105,10 @@ public class SBUUser: NSObject {
     
     public override var description: String {
         return String(
-            format: "UserId:%@, Nickname:%@, ProfileUrl:%@, Operator:%d Muted:%d",
+            format: "UserId:%@, Nickname:%@, ProfileURL:%@, Operator:%d Muted:%d",
             self.userId,
             self.nickname ?? "",
-            self.profileUrl ?? "",
+            self.profileURL ?? "",
             self.isOperator,
             self.isMuted
         )
@@ -115,7 +118,7 @@ public class SBUUser: NSObject {
     /// - Parameter users: CoreSDK's user list
     /// - Returns: UIKit's user list
     /// - Since: 3.0.0
-    public static func convertUsers(_ users: [SBDUser]?) -> [SBUUser] {
+    public static func convertUsers(_ users: [User]?) -> [SBUUser] {
         var sbuUsers: [SBUUser] = []
         
         if let users = users {

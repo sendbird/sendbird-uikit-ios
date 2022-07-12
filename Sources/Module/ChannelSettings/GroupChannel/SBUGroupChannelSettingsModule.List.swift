@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 
 public protocol SBUGroupChannelSettingsModuleListDelegate: SBUBaseChannelSettingsModuleListDelegate {
@@ -39,7 +39,7 @@ extension SBUGroupChannelSettingsModule {
             set { self.baseDataSource = newValue }
         }
 
-        public weak var channel: SBDGroupChannel? { self.baseChannel as? SBDGroupChannel }
+        public weak var channel: GroupChannel? { self.baseChannel as? GroupChannel }
 
         
         // MARK: - LifeCycle

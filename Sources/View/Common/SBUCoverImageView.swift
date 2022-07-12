@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 public class SBUCoverImageView: UIView {
 
@@ -48,9 +48,9 @@ public class SBUCoverImageView: UIView {
     // MARK: - Setter
     
     /// This function sets the image using the cover image URL.
-    /// - Parameter coverUrl: Cover image url string
-    public func setImage(withCoverUrl coverUrl: String){
-        self.setImage(with: coverUrl)
+    /// - Parameter coverURL: Cover image url string
+    public func setImage(withCoverURL coverURL: String){
+        self.setImage(with: coverURL)
     }
     
     /// This function sets the image using the cover image URL.
@@ -181,7 +181,7 @@ public class SBUCoverImageView: UIView {
     ///
     /// The image is created using up to four user objects.
     /// - Parameter users: `SBUUser` object array
-    public func setImage(withUsers users: [SBDUser]) {
+    public func setImage(withUsers users: [User]) {
         let filteredUsers = users.filter { $0.userId != SBUGlobals.currentUser?.userId }
         let index = (filteredUsers.count > 3) ? 4 : filteredUsers.count
         let newUsers = Array(filteredUsers[0..<index])
@@ -200,7 +200,7 @@ public class SBUCoverImageView: UIView {
         self.makeCircularWithSpacing(spacing: 0)
     }
     
-    private func setupImageStack(users: [SBDUser]) -> UIStackView {
+    private func setupImageStack(users: [User]) -> UIStackView {
         let mainStackView = UIStackView(
             frame: CGRect(x: 0, y: 0, width: self.frame.width, height: self.frame.height)
         )
@@ -265,7 +265,7 @@ public class SBUCoverImageView: UIView {
 }
 
 extension UIImageView {
-    public func sbu_setProfileImageView(for user: SBDUser, defaultImage: UIImage) {
+    public func sbu_setProfileImageView(for user: User, defaultImage: UIImage) {
         guard URL(string: ImageUtil.transformUserProfileImage(user: user)) != nil else {
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
@@ -282,13 +282,13 @@ extension UIImageView {
 }
 
 class ImageUtil {
-    static func transformUserProfileImage(user: SBDUser) -> String {
-        guard let profileUrl = user.profileUrl else { return "" }
+    static func transformUserProfileImage(user: User) -> String {
+        guard let profileURL = user.profileURL else { return "" }
 
-        if profileUrl.hasPrefix("https://sendbird.com/main/img/profiles") {
+        if profileURL.hasPrefix("https://sendbird.com/main/img/profiles") {
             return ""
         } else {
-            return profileUrl
+            return profileURL
         }
     }
 }

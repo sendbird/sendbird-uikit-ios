@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 open class SBUCommonContentView: SBUBaseFileContentView {
     public var stackView: UIStackView = {
@@ -67,7 +67,7 @@ open class SBUCommonContentView: SBUBaseFileContentView {
     }
     
     open func configure(
-        message: SBDFileMessage,
+        message: FileMessage,
         position: MessagePosition,
         highlightKeyword: String?
     ) {

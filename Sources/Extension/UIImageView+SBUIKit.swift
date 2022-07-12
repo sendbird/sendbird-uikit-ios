@@ -13,7 +13,7 @@ public extension UIImageView {
     enum ImageOption {
         case imageToThumbnail
         case original
-        case videoUrlToImage
+        case videoURLToImage
     }
 
     @discardableResult
@@ -46,7 +46,7 @@ public extension UIImageView {
                 thumbnailSize: thumbnailSize,
                 completion: completion
             )
-        case .videoUrlToImage:
+        case .videoURLToImage:
             return self.loadVideoThumbnailImage(
                 urlString: urlString,
                 errorImage: errorImage,

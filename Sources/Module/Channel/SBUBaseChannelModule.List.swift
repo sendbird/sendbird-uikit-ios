@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 
 /// Event methods for the views updates and performing actions from the list component.
@@ -30,7 +30,7 @@ public protocol SBUBaseChannelModuleListDelegate: SBUCommonDelegate {
     ///    - indexPath: An index path locating the row in table view of `listComponent
     func baseChannelModule(
         _ listComponent: SBUBaseChannelModule.List,
-        didTapMessage message: SBDBaseMessage,
+        didTapMessage message: BaseMessage,
         forRowAt indexPath: IndexPath
     )
     
@@ -41,7 +41,7 @@ public protocol SBUBaseChannelModuleListDelegate: SBUCommonDelegate {
     ///    - indexPath: An index path locating the row in table view of `listComponent
     func baseChannelModule(
         _ listComponent: SBUBaseChannelModule.List,
-        didLongTapMessage message: SBDBaseMessage,
+        didLongTapMessage message: BaseMessage,
         forRowAt indexPath: IndexPath
     )
     
@@ -79,26 +79,26 @@ public protocol SBUBaseChannelModuleListDelegate: SBUCommonDelegate {
 
 /// Methods to get data source for the list component.
 public protocol SBUBaseChannelModuleListDataSource: AnyObject {
-    /// Ask the data source to return the `SBDBaseChannel` object.
+    /// Ask the data source to return the `BaseChannel` object.
     /// - Parameters:
     ///    - listComponent: `SBUBaseChannelModule.List` object.
     ///    - tableView: `UITableView` object from list component.
-    /// - Returns: `SBDBaseChannel` object.
-    func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, channelForTableView tableView: UITableView) -> SBDBaseChannel?
+    /// - Returns: `BaseChannel` object.
+    func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, channelForTableView tableView: UITableView) -> BaseChannel?
     
     /// Ask the data source to return the message list sent successfully.
     /// - Parameters:
     ///    - listComponent: `SBUBaseChannelModule.List` object.
     ///    - tableView: `UITableView` object from list component.
-    /// - Returns: The array of `SBDBaseMessage` object that are sent successfully.
-    func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, sentMessagesInTableView tableView: UITableView) -> [SBDBaseMessage]
+    /// - Returns: The array of `BaseMessage` object that are sent successfully.
+    func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, sentMessagesInTableView tableView: UITableView) -> [BaseMessage]
     
     /// Ask the data source to return the message list includes the sent, the failed and the pending.
     /// - Parameters:
     ///    - listComponent: `SBUBaseChannelModule.List` object.
     ///    - tableView: `UITableView` object from list component.
-    /// - Returns: The array of `SBDBaseMessage` object including the sent, the failed and the pending.
-    func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, fullMessagesInTableView tableView: UITableView) -> [SBDBaseMessage]
+    /// - Returns: The array of `BaseMessage` object including the sent, the failed and the pending.
+    func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, fullMessagesInTableView tableView: UITableView) -> [BaseMessage]
     
     /// Ask the data source to return whether the `tableView` has next data.
     /// - Parameters:
@@ -224,17 +224,17 @@ extension SBUBaseChannelModule {
         // MARK: - Logic properties (Public)
         
         /// The current channel object from `baseChannelModule(_:channelForTableView:)` data source method.
-        public var baseChannel: SBDBaseChannel? {
+        public var baseChannel: BaseChannel? {
             self.baseDataSource?.baseChannelModule(self, channelForTableView: self.tableView)
         }
         
         /// The array of sent messages in the channel. The value is returned by `baseChannelModule(_:sentMessagesInTableView:)` data source method.
-        public var sentMessages: [SBDBaseMessage] {
+        public var sentMessages: [BaseMessage] {
             self.baseDataSource?.baseChannelModule(self, sentMessagesInTableView: self.tableView) ?? []
         }
         
         /// The array of all messages includes the sent, the failed and the pending. The value is returned by `baseChannelModule(_:fullMessagesInTableView:)` data source method.
-        public var fullMessageList: [SBDBaseMessage] {
+        public var fullMessageList: [BaseMessage] {
             self.baseDataSource?.baseChannelModule(self, fullMessagesInTableView: self.tableView) ?? []
         }
         
@@ -399,7 +399,7 @@ extension SBUBaseChannelModule {
         ///   - cell: Message cell object
         ///   - message: Message object
         ///   - indexPath: indexpath of cell
-        open func setTapGesture(_ cell: UITableViewCell, message: SBDBaseMessage, indexPath: IndexPath) {
+        open func setTapGesture(_ cell: UITableViewCell, message: BaseMessage, indexPath: IndexPath) {
             self.baseDelegate?.baseChannelModule(self, didTapMessage: message, forRowAt: indexPath)
         }
         
@@ -408,7 +408,7 @@ extension SBUBaseChannelModule {
         ///   - cell: Message cell object
         ///   - message: Message object
         ///   - indexPath: indexpath of cell
-        open func setLongTapGesture(_ cell: UITableViewCell, message: SBDBaseMessage, indexPath: IndexPath) {
+        open func setLongTapGesture(_ cell: UITableViewCell, message: BaseMessage, indexPath: IndexPath) {
             self.baseDelegate?.baseChannelModule(self, didLongTapMessage: message, forRowAt: indexPath)
         }
         
@@ -458,7 +458,7 @@ extension SBUBaseChannelModule {
         /// - Parameters:
         ///   - cell: File message cell
         ///   - fileMessage: File message object
-        open func setFileMessageCellImage(_ cell: UITableViewCell, fileMessage: SBDFileMessage) {
+        open func setFileMessageCellImage(_ cell: UITableViewCell, fileMessage: FileMessage) {
             switch fileMessage.sendingStatus {
                 case .canceled, .pending, .failed, .none:
                     guard let fileInfo = SBUPendingMessageManager.shared.getFileInfo(requestId: fileMessage.requestId),
@@ -480,6 +480,8 @@ extension SBUBaseChannelModule {
                         )
                     }
                 case .succeeded:
+                    break
+                case .scheduled:
                     break
                 @unknown default:
                     SBULog.error("unknown Type")
@@ -558,7 +560,7 @@ extension SBUBaseChannelModule.List {
     /// This function keeps the current scroll position with upserted messages.
     /// - Note: Only newly added messages are used for processing.
     /// - Parameter upsertedMessages: upserted messages
-    func keepCurrentScroll(for upsertedMessages: [SBDBaseMessage]) -> IndexPath {
+    func keepCurrentScroll(for upsertedMessages: [BaseMessage]) -> IndexPath {
         let firstVisibleIndexPath = tableView
             .indexPathsForVisibleRows?.first ?? IndexPath(row: 0, section: 0)
         var nextInsertedCount = 0
@@ -595,7 +597,7 @@ extension SBUBaseChannelModule.List {
     ///   - currentIndex: Current message index
     ///   - fullMessageList: The full message list including failed/pending messages as well as sent messages
     /// - Returns: If `true`, the messages date is same day.
-    public func checkSameDayAsNextMessage(currentIndex: Int, fullMessageList: [SBDBaseMessage]) -> Bool {
+    public func checkSameDayAsNextMessage(currentIndex: Int, fullMessageList: [BaseMessage]) -> Bool {
         guard currentIndex < fullMessageList.count-1 else { return false }
         
         let currentMessage = fullMessageList[currentIndex]

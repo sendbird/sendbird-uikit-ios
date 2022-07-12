@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 
 /// ViewController handling a message search.
@@ -27,15 +27,11 @@ open class SBUMessageSearchViewController: SBUBaseViewController, SBUMessageSear
     
     // MARK: - Logic properties (Public)
     public var viewModel: SBUMessageSearchViewModel?
-    public var channel: SBDBaseChannel? { self.viewModel?.channel }
-    public var searchResultList: [SBDBaseMessage] { self.viewModel?.searchResultList ?? [] }
+    public var channel: BaseChannel? { self.viewModel?.channel }
+    public var searchResultList: [BaseMessage] { self.viewModel?.searchResultList ?? [] }
     
     /// You can set custom query params for message search.
-    ///
-    /// - `keyword`, `channelUrl`, `order` is reserved in SDK. (The SDK value will override the custom values)
-    /// - `messageFromTs` is set to user's channel joined ts as a default. You can set this value to `0` to search for all previous messages as well.
-    /// - `limit` will be set to default value in case if it's set to 0 or smaller value.
-    public var customMessageSearchQueryBuilder: ((SBDMessageSearchQueryBuilder) -> Void)? = nil
+    public var customMessageSearchQueryParams: MessageSearchQueryParams? = nil
     
     
     // MARK: - Lifecycle
@@ -53,7 +49,7 @@ open class SBUMessageSearchViewController: SBUBaseViewController, SBUMessageSear
     
     /// Initializer
     /// - Parameter channel: The object of the channel to search for
-    required public init(channel: SBDBaseChannel) {
+    required public init(channel: BaseChannel) {
         super.init(nibName: nil, bundle: nil)
         SBULog.info("")
         
@@ -97,10 +93,10 @@ open class SBUMessageSearchViewController: SBUBaseViewController, SBUMessageSear
     
     
     // MARK: - ViewModel
-    open func createViewModel(channel: SBDBaseChannel) {
+    open func createViewModel(channel: BaseChannel) {
         self.viewModel = SBUMessageSearchViewModel(
             channel: channel,
-            messageSearchQueryBuilder: self.customMessageSearchQueryBuilder,
+            params: self.customMessageSearchQueryParams,
             delegate: self
         )
     }
@@ -157,7 +153,7 @@ open class SBUMessageSearchViewController: SBUBaseViewController, SBUMessageSear
     /// Performs keyword search
     ///
     /// - Parameters: keyword: A keyword to search for.
-    /// - Returns: A `SBDMessageSearchQuery` with the params set.
+    /// - Returns: A `MessageSearchQuery` with the params set.
     public func search(keyword: String) {
         self.viewModel?.search(keyword: keyword)
     }
@@ -167,20 +163,20 @@ open class SBUMessageSearchViewController: SBUBaseViewController, SBUMessageSear
     
     /// Enters a `SBUGroupChannelViewController` with the selected message.
     /// - Parameters:
-    ///   - message: A `SBDBaseMessage` object to load channel from.
+    ///   - message: A `BaseMessage` object to load channel from.
     ///   - highlightInfo: An  optional`SBUHighlightInfo` class to have message highlighted.
-    ///   - messageListParams:An optional `SBDMessageListParams` params to be used in loading messages.
-    public func enterChannel(with message: SBDBaseMessage,
+    ///   - messageListParams:An optional `MessageListParams` params to be used in loading messages.
+    public func enterChannel(with message: BaseMessage,
                              highlightInfo: SBUHighlightMessageInfo?,
-                             messageListParams: SBDMessageListParams? = nil) {
+                             messageListParams: MessageListParams? = nil) {
         // result only has group channel for now.
-        guard message.channelType == CHANNEL_TYPE_GROUP else {
+        guard message.channelType == .group else {
             SBULog.warning("Not a group channel.")
             return
         }
         
         let channelVC = SBUViewControllerSet.GroupChannelViewController.init(
-            channelUrl: message.channelUrl,
+            channelURL: message.channelURL,
             startingPoint: message.createdAt,
             messageListParams: messageListParams
         )
@@ -192,7 +188,7 @@ open class SBUMessageSearchViewController: SBUBaseViewController, SBUMessageSear
     
     
     // MARK: - Error handling
-    private func errorHandler(_ error: SBDError) {
+    private func errorHandler(_ error: SBError) {
         self.errorHandler(error.localizedDescription, error.code)
     }
     
@@ -242,8 +238,7 @@ open class SBUMessageSearchViewController: SBUBaseViewController, SBUMessageSear
         
         self.enterChannel(
             with: message,
-            highlightInfo: highlightInfo,
-            messageListParams: self.viewModel?.messageListParams
+            highlightInfo: highlightInfo
         )
     }
     
@@ -259,7 +254,7 @@ open class SBUMessageSearchViewController: SBUBaseViewController, SBUMessageSear
     
     // MARK: - SBUMessageSearchModuleListDataSource
     open func messageSearchModule(_ listComponent: SBUMessageSearchModule.List,
-                                    searchResultsInTableView tableView: UITableView) -> [SBDBaseMessage] {
+                                    searchResultsInTableView tableView: UITableView) -> [BaseMessage] {
         return self.searchResultList
     }
     
@@ -269,7 +264,7 @@ open class SBUMessageSearchViewController: SBUBaseViewController, SBUMessageSear
         self.showLoading(isLoading)
     }
     
-    open func didReceiveError(_ error: SBDError?, isBlocker: Bool) {
+    open func didReceiveError(_ error: SBError?, isBlocker: Bool) {
         self.showLoading(false)
         self.errorHandler(error?.description ?? "")
         
@@ -289,7 +284,7 @@ open class SBUMessageSearchViewController: SBUBaseViewController, SBUMessageSear
     
     // MARK: - SBUMessageSearchViewModelDelegate
     open func searchViewModel(_ viewModel: SBUMessageSearchViewModel,
-                              didChangeSearchResults results: [SBDBaseMessage],
+                              didChangeSearchResults results: [BaseMessage],
                               needsToReload: Bool) {
         let emptyType: EmptyViewType = results.isEmpty ? .noSearchResults : .none
         self.listComponent?.updateEmptyView(type: emptyType)

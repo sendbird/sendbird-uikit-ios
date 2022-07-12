@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 import Photos
 import MobileCoreServices
 
@@ -173,15 +173,15 @@ open class MySettingsViewController: UIViewController, UINavigationControllerDel
     
     // MARK: - SDK related
     func loadDisturbSetting(_ completionHandler: @escaping (() -> Void)) {
-        SBDMain.getDoNotDisturb { [weak self] (isDoNotDisturbOn, _, _, _, _, _, error) in
+        SendbirdChat.getDoNotDisturb { [weak self] (isDoNotDisturbOn, _, _, _, _, _, error) in
             self?.isDoNotDisturbOn = error == nil ? isDoNotDisturbOn : false
             completionHandler()
         }
     }
     
     func changeDisturb(isOn: Bool, _ completionHandler: ((Bool) -> Void)? = nil) {
-        SBDMain.setDoNotDisturbWithEnable(
-            isOn,
+        SendbirdChat.setDoNotDisturb(
+            enable: isOn,
             startHour: 0,
             startMin: 0,
             endHour: 23,
@@ -230,7 +230,7 @@ open class MySettingsViewController: UIViewController, UINavigationControllerDel
                 nickname.trimmingCharacters(in: .whitespacesAndNewlines).count > 0
                 else { return }
             
-            SendbirdUI.updateUserInfo(nickname: nickname, profileUrl: nil) { (error) in
+            SendbirdUI.updateUserInfo(nickname: nickname, profileURL: nil) { (error) in
                 guard error == nil, let user = SBUGlobals.currentUser else { return }
                 UserDefaults.saveNickname(nickname)
                 DispatchQueue.main.async { [weak self] in

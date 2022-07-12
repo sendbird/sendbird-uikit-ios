@@ -7,13 +7,13 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
-class CommunityChannelListViewController: SBUBaseChannelListViewController, SBUEmptyViewDelegate, SBDChannelDelegate, UITableViewDataSource, UITableViewDelegate {
+class CommunityChannelListViewController: SBUBaseChannelListViewController, SBUEmptyViewDelegate, OpenChannelDelegate, UITableViewDataSource, UITableViewDelegate {
     var theme: SBUChannelListTheme = SBUTheme.channelListTheme
     
-    @SBUAtomic var channelList: [SBDOpenChannel] = []
-    var channelListQuery: SBDOpenChannelListQuery?
+    @SBUAtomic var channelList: [OpenChannel] = []
+    var channelListQuery: OpenChannelListQuery?
     
     var tableView = UITableView()
     var channelCell: SBUBaseChannelCell = CommunityChannelCell()
@@ -84,7 +84,7 @@ class CommunityChannelListViewController: SBUBaseChannelListViewController, SBUE
         SendbirdUI.connectIfNeeded { [weak self] user, error in
             guard let self = self else { return }
             
-            SBDMain.add(self as SBDChannelDelegate, identifier: self.description)
+            SendbirdChat.add(self as OpenChannelDelegate, identifier: self.description)
             self.loadNextChannelList(reset: true)
         }
     }
@@ -151,8 +151,8 @@ class CommunityChannelListViewController: SBUBaseChannelListViewController, SBUE
     }
     
     /// Shows channel based channel URL
-    override func showChannel(channelUrl: String, messageListParams: SBDMessageListParams? = nil) {
-        let channelVC = SBUOpenChannelViewController(channelUrl: channelUrl, messageListParams: messageListParams)
+    override func showChannel(channelURL: String, messageListParams: MessageListParams? = nil) {
+        let channelVC = SBUOpenChannelViewController(channelURL: channelURL, messageListParams: messageListParams)
         
         self.navigationController?.pushViewController(channelVC, animated: true)
     }
@@ -171,9 +171,10 @@ class CommunityChannelListViewController: SBUBaseChannelListViewController, SBUE
         }
         
         if self.channelListQuery == nil {
-            self.channelListQuery = SBDOpenChannel.createOpenChannelListQuery()
-            self.channelListQuery?.limit = self.limit
-            self.channelListQuery?.customTypeFilter = "SB_COMMUNITY_TYPE"
+            let params = OpenChannelListQueryParams()
+            params.limit = self.limit
+            params.customTypeFilter = "SB_COMMUNITY_TYPE"
+            self.channelListQuery = OpenChannel.createOpenChannelListQuery(params: params)
         }
         
         guard self.channelListQuery?.hasNext == true else {
@@ -198,7 +199,7 @@ class CommunityChannelListViewController: SBUBaseChannelListViewController, SBUE
     /// Sorts channel list
     func sortChannelList(needReload: Bool) {
         let sortedChannelList = self.channelList
-            .sorted(by: { (lhs: SBDOpenChannel, rhs: SBDOpenChannel) -> Bool in
+            .sorted(by: { (lhs: OpenChannel, rhs: OpenChannel) -> Bool in
                 let createdAt1 = lhs.createdAt
                 let createdAt2 = rhs.createdAt
                 return createdAt1 > createdAt2
@@ -215,11 +216,11 @@ class CommunityChannelListViewController: SBUBaseChannelListViewController, SBUE
     }
     
     /// Upserts the channels.
-    func upsertChannels(_ channels: [SBDOpenChannel]?, needReload: Bool) {
+    func upsertChannels(_ channels: [OpenChannel]?, needReload: Bool) {
         guard let channels = channels else { return }
         
         for channel in channels {
-            guard let index = self.channelList.firstIndex(of: channel) else {
+            guard let index = self.channelList.firstIndex(where: {$0.channelURL == channel.channelURL}) else {
                 self.channelList.append(channel)
                 continue
             }
@@ -228,14 +229,14 @@ class CommunityChannelListViewController: SBUBaseChannelListViewController, SBUE
         self.sortChannelList(needReload: needReload)
     }
     
-    /// Deletes the channels using the channel urls.
-    func deleteChannels(channelUrls: [String]?, needReload: Bool) {
-        guard let channelUrls = channelUrls else { return }
+    /// Deletes the channels using the channel URLs.
+    func deleteChannels(channelURLs: [String]?, needReload: Bool) {
+        guard let channelURLs = channelURLs else { return }
         
         var toBeDeleteIndexes: [Int] = []
         
-        for channelUrl in channelUrls {
-            if let index = self.channelList.firstIndex(where: { $0.channelUrl == channelUrl }) {
+        for channelURL in channelURLs {
+            if let index = self.channelList.firstIndex(where: { $0.channelURL == channelURL }) {
                 toBeDeleteIndexes.append(index)
             }
         }
@@ -250,12 +251,12 @@ class CommunityChannelListViewController: SBUBaseChannelListViewController, SBUE
         self.sortChannelList(needReload: needReload)
     }
     
-    func isOperator(with channelUrl: String) -> Bool {
+    func isOperator(with channelURL: String) -> Bool {
         let channel = self.channelList.first { channel in
-            channel.channelUrl == channelUrl
+            channel.channelURL == channelURL
         }
         guard let userId = SBUGlobals.currentUser?.userId,
-              let isOperator = channel?.isOperator(withUserId: userId) else {
+              let isOperator = channel?.isOperator(userId: userId) else {
                   return false
               }
         
@@ -303,7 +304,7 @@ class CommunityChannelListViewController: SBUBaseChannelListViewController, SBUE
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let channel = self.channelList[indexPath.row]
-        self.showChannel(channelUrl: channel.channelUrl)
+        self.showChannel(channelURL: channel.channelURL)
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -345,28 +346,32 @@ class CommunityChannelListViewController: SBUBaseChannelListViewController, SBUE
         }
     }
 
-    // MARK: - SBDChannelDelegate
-    
-    func channel(_ sender: SBDOpenChannel, userDidExit user: SBDUser) {
-        self.upsertChannels([sender], needReload: true)
+    // MARK: - ChannelDelegate
+    func channelWasChanged(_ channel: BaseChannel) {
+        guard let channel = channel as? OpenChannel else { return }
+        self.upsertChannels([channel], needReload: true)
     }
-    
-    func channel(_ sender: SBDOpenChannel, userDidEnter user: SBDUser) {
-        self.upsertChannels([sender], needReload: true)
-    }
-    // when delete channel
-    func channelWasDeleted(_ channelUrl: String, channelType: SBDChannelType) {
-        guard channelType == .open else { return }
-        self.deleteChannels(channelUrls: [channelUrl], needReload: true)
-    }
-    
-    func channelWasFrozen(_ sender: SBDBaseChannel) {
-        guard let channel = sender as? SBDOpenChannel else { return }
+
+    func channel(_ channel: OpenChannel, userDidExit user: User) {
         self.upsertChannels([channel], needReload: true)
     }
     
-    func channelWasUnfrozen(_ sender: SBDBaseChannel) {
-        guard let channel = sender as? SBDOpenChannel else { return }
+    func channel(_ channel: OpenChannel, userDidEnter user: User) {
+        self.upsertChannels([channel], needReload: true)
+    }
+    // when delete channel
+    func channelWasDeleted(_ channelURL: String, channelType: ChannelType) {
+        guard channelType == .open else { return }
+        self.deleteChannels(channelURLs: [channelURL], needReload: true)
+    }
+    
+    func channelWasFrozen(_ channel: BaseChannel) {
+        guard let channel = channel as? OpenChannel else { return }
+        self.upsertChannels([channel], needReload: true)
+    }
+    
+    func channelWasUnfrozen(_ channel: BaseChannel) {
+        guard let channel = channel as? OpenChannel else { return }
         self.upsertChannels([channel], needReload: true)
     }
 }

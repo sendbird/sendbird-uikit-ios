@@ -8,13 +8,13 @@
 
 import Foundation
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 public protocol SBUGroupChannelSettingsViewModelDelegate: SBUBaseChannelSettingsViewModelDelegate {
     /// Called when the current user has left the channel
     func groupChannelSettingsViewModel(
         _ viewModel: SBUGroupChannelSettingsViewModel,
-        didLeaveChannel channel: SBDGroupChannel
+        didLeaveChannel channel: GroupChannel
     )
 }
 
@@ -31,39 +31,44 @@ open class SBUGroupChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
 
     
     // MARK: - LifeCycle
-    public init(channel: SBDBaseChannel? = nil,
-                channelUrl: String? = nil,
+    public init(channel: BaseChannel? = nil,
+                channelURL: String? = nil,
                 delegate: SBUGroupChannelSettingsViewModelDelegate? = nil) {
         super.init()
         
         self.delegate = delegate
         
+        SendbirdChat.add(
+            self as GroupChannelDelegate,
+            identifier: "\(SBUConstant.channelDelegateIdentifier).\(self.description)"
+        )
+        
         if let channel = channel {
             self.channel = channel
-            self.channelUrl = channel.channelUrl
-        } else if let channelUrl = channelUrl {
-            self.channelUrl = channelUrl
+            self.channelURL = channel.channelURL
+        } else if let channelURL = channelURL {
+            self.channelURL = channelURL
         }
      
-        self.loadChannel(channelUrl: self.channelUrl)
+        self.loadChannel(channelURL: self.channelURL)
     }
 
     
     // MARK: - Channel related
-    public override func loadChannel(channelUrl: String?) {
-        guard let channelUrl = channelUrl else { return }
-        self.loadChannel(channelUrl: channelUrl, type: .group)
+    public override func loadChannel(channelURL: String?) {
+        guard let channelURL = channelURL else { return }
+        self.loadChannel(channelURL: channelURL, type: .group)
     }
     
     public override func updateChannel(channelName: String? = nil, coverImage: UIImage? = nil) {
-        let channelParams = SBDGroupChannelParams()
+        let channelParams = GroupChannelUpdateParams()
         
         channelParams.name = channelName
         
         if let coverImage = coverImage {
             channelParams.coverImage = coverImage.jpegData(compressionQuality: 0.5)
         } else {
-            channelParams.coverUrl = self.channel?.coverUrl
+            channelParams.coverURL = self.channel?.coverURL
         }
         
         SBUGlobalCustomParams.groupChannelParamsUpdateBuilder?(channelParams)
@@ -75,14 +80,14 @@ open class SBUGroupChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
     ///
     /// You can update a channel by setting various properties of ChannelParams.
     /// - Parameters:
-    ///   - params: `SBDGroupChannelParams` class object
-    public func updateChannel(params: SBDGroupChannelParams) {
-        guard let groupChannel = self.channel as? SBDGroupChannel else { return }
+    ///   - params: `GroupChannelParams` class object
+    public func updateChannel(params: GroupChannelUpdateParams) {
+        guard let groupChannel = self.channel as? GroupChannel else { return }
         
         SBULog.info("[Request] Channel update")
         self.delegate?.shouldUpdateLoadingState(true)
         
-        groupChannel.update(with: params) { [weak self] channel, error in
+        groupChannel.update(params: params) { [weak self] channel, error in
             defer { self?.delegate?.shouldUpdateLoadingState(false) }
             guard let self = self else { return }
             
@@ -92,8 +97,7 @@ open class SBUGroupChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
             } else if let channel = channel {
                 self.channel = channel
                 
-                let context = SBDMessageContext()
-                context.source = .eventChannelChanged
+                let context = MessageContext(source: .eventChannelChanged, sendingStatus: .succeeded)
                 self.delegate?.baseChannelSettingsViewModel(
                     self,
                     didChangeChannel: channel,
@@ -105,7 +109,7 @@ open class SBUGroupChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
     
     /// Leaves the channel.
     public func leaveChannel() {
-        guard let groupChannel = self.channel as? SBDGroupChannel else { return }
+        guard let groupChannel = self.channel as? GroupChannel else { return }
         
         self.delegate?.shouldUpdateLoadingState(true)
         
@@ -126,5 +130,27 @@ open class SBUGroupChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
                 didLeaveChannel: groupChannel
             )
         }
+    }
+}
+
+
+// MARK: GroupChannelDelegate
+extension SBUGroupChannelSettingsViewModel: GroupChannelDelegate {
+    open func channel(_ channel: GroupChannel, userDidJoin user: User) {
+        let context =  MessageContext(source: .eventUserJoined, sendingStatus: .succeeded)
+        self.baseDelegate?.baseChannelSettingsViewModel(
+            self,
+            didChangeChannel: channel,
+            withContext: context
+        )
+    }
+    
+    open func channel(_ channel: GroupChannel, userDidLeave user: User) {
+        let context =  MessageContext(source: .eventUserLeft, sendingStatus: .succeeded)
+        self.baseDelegate?.baseChannelSettingsViewModel(
+            self,
+            didChangeChannel: channel,
+            withContext: context
+        )
     }
 }

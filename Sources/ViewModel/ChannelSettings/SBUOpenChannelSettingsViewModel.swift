@@ -8,13 +8,13 @@
 
 import Foundation
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 public protocol SBUOpenChannelSettingsViewModelDelegate: SBUBaseChannelSettingsViewModelDelegate {
     /// Called when the current user delete the channel.
     func openChannelSettingsViewModel(
         _ viewModel: SBUOpenChannelSettingsViewModel,
-        didDeleteChannel channel: SBDOpenChannel
+        didDeleteChannel channel: OpenChannel
     )
 }
 
@@ -29,39 +29,44 @@ open class SBUOpenChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
 
     
     // MARK: - LifeCycle
-    public init(channel: SBDBaseChannel? = nil,
-         channelUrl: String? = nil,
+    public init(channel: BaseChannel? = nil,
+         channelURL: String? = nil,
          delegate: SBUOpenChannelSettingsViewModelDelegate? = nil) {
         super.init()
         
         self.delegate = delegate
         
+        SendbirdChat.add(
+            self as OpenChannelDelegate,
+            identifier: "\(SBUConstant.channelDelegateIdentifier).\(self.description)"
+        )
+        
         if let channel = channel {
             self.channel = channel
-            self.channelUrl = channel.channelUrl
-        } else if let channelUrl = channelUrl {
-            self.channelUrl = channelUrl
+            self.channelURL = channel.channelURL
+        } else if let channelURL = channelURL {
+            self.channelURL = channelURL
         }
 
-        self.loadChannel(channelUrl: self.channelUrl)
+        self.loadChannel(channelURL: self.channelURL)
     }
 
     
     // MARK: - Channel related
-    public override func loadChannel(channelUrl: String?) {
-        guard let channelUrl = channelUrl else { return }
-        self.loadChannel(channelUrl: channelUrl, type: .open)
+    public override func loadChannel(channelURL: String?) {
+        guard let channelURL = channelURL else { return }
+        self.loadChannel(channelURL: channelURL, type: .open)
     }
     
     public override func updateChannel(channelName: String? = nil, coverImage: UIImage? = nil) {
-        let channelParams = SBDOpenChannelParams()
+        let channelParams = OpenChannelUpdateParams()
         
         channelParams.name = channelName
         
         if let coverImage = coverImage {
             channelParams.coverImage = coverImage.jpegData(compressionQuality: 0.5)
         } else {
-            channelParams.coverUrl = self.channel?.coverUrl
+            channelParams.coverURL = self.channel?.coverURL
         }
         
         SBUGlobalCustomParams.openChannelParamsUpdateBuilder?(channelParams)
@@ -73,14 +78,14 @@ open class SBUOpenChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
     ///
     /// You can update a channel by setting various properties of ChannelParams.
     /// - Parameters:
-    ///   - params: `SBDOpenChannelParams` class object
-    public func updateChannel(params: SBDOpenChannelParams) {
-        guard let openChannel = self.channel as? SBDOpenChannel else { return }
+    ///   - params: `OpenChannelParams` class object
+    public func updateChannel(params: OpenChannelUpdateParams) {
+        guard let openChannel = self.channel as? OpenChannel else { return }
         
         SBULog.info("[Request] Channel update")
         self.delegate?.shouldUpdateLoadingState(true)
         
-        openChannel.update(with: params) { [weak self] channel, error in
+        openChannel.update(params: params) { [weak self] channel, error in
             defer { self?.delegate?.shouldUpdateLoadingState(false) }
             guard let self = self else { return }
             
@@ -90,8 +95,7 @@ open class SBUOpenChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
             } else if let channel = channel {
                 self.channel = channel
                 
-                let context = SBDMessageContext()
-                context.source = .eventChannelChanged
+                let context = MessageContext(source: .eventChannelChanged, sendingStatus: .succeeded)
                 self.delegate?.baseChannelSettingsViewModel(
                     self,
                     didChangeChannel: channel,
@@ -103,7 +107,7 @@ open class SBUOpenChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
     
     /// Deletes the channel.
     public func deleteChannel() {
-        guard let openChannel = self.channel as? SBDOpenChannel else { return }
+        guard let openChannel = self.channel as? OpenChannel else { return }
         
         self.delegate?.shouldUpdateLoadingState(true)
         
@@ -121,5 +125,27 @@ open class SBUOpenChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
             
             self.delegate?.openChannelSettingsViewModel(self, didDeleteChannel: openChannel)
         }
+    }
+}
+
+
+// MARK: OpenChannelDelegate
+extension SBUOpenChannelSettingsViewModel: OpenChannelDelegate {
+    open func channel(_ channel: OpenChannel, userDidEnter user: User) {
+        let context =  MessageContext(source: .eventChannelChanged, sendingStatus: .succeeded)
+        self.baseDelegate?.baseChannelSettingsViewModel(
+            self,
+            didChangeChannel: channel,
+            withContext: context
+        )
+    }
+    
+    open func channel(_ channel: OpenChannel, userDidExit user: User) {
+        let context =  MessageContext(source: .eventChannelChanged, sendingStatus: .succeeded)
+        self.baseDelegate?.baseChannelSettingsViewModel(
+            self,
+            didChangeChannel: channel,
+            withContext: context
+        )
     }
 }

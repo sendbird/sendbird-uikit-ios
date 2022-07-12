@@ -7,13 +7,13 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 class SBUModerationCell: SBUChannelSettingCell {
     /// This function configure a cell using moderation list information.
     /// - Parameter channel: cell object
     func configure(type: ModerationItemType,
-                   channel: SBDGroupChannel?,
+                   channel: GroupChannel?,
                    title: String? = nil,
                    icon: UIImage? = nil) {
 
@@ -38,12 +38,12 @@ class SBUModerationCell: SBUChannelSettingCell {
             self.titleLabel.text = title ?? SBUStringSet.ChannelSettings_Muted_Members
             self.rightButton.isHidden = false
             
-        case .bannedMembers:
+        case .bannedUsers:
             self.typeIcon.image = icon ?? SBUIconSetType.iconBan.image(
                 with: theme.cellTypeIconTintColor,
                 to: SBUIconSetType.Metric.defaultIconSize
             )
-            self.titleLabel.text = title ?? SBUStringSet.ChannelSettings_Banned_Members
+            self.titleLabel.text = title ?? SBUStringSet.ChannelSettings_Banned_Users
             self.rightButton.isHidden = false
             
         case .freezeChannel:
@@ -54,6 +54,9 @@ class SBUModerationCell: SBUChannelSettingCell {
             self.titleLabel.text = title ?? SBUStringSet.ChannelSettings_Freeze_Channel
             self.rightSwitch.isHidden = false
             self.rightSwitch.setOn(channel?.isFrozen ?? false, animated: false)
+            
+        default:
+            break
         }
     }
 }

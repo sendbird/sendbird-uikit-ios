@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 
 /// Event methods for the views updates and performing actions from the media component in the open channel.

@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 
 public protocol SBUOpenChannelSettingsModuleListDelegate: SBUBaseChannelSettingsModuleListDelegate {
@@ -39,7 +39,7 @@ extension SBUOpenChannelSettingsModule {
             set { self.baseDataSource = newValue }
         }
         
-        public weak var channel: SBDOpenChannel? { self.baseChannel as? SBDOpenChannel }
+        public weak var channel: OpenChannel? { self.baseChannel as? OpenChannel }
 
 
         

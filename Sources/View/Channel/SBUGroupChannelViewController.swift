@@ -7,9 +7,9 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 import Photos
-// Using these?
+// TODO: Using these?
 import MobileCoreServices
 import AVKit
 import SafariServices
@@ -40,7 +40,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         set { self.baseViewModel = newValue }
     }
     
-    public override var channel: SBDGroupChannel? { self.viewModel?.channel as? SBDGroupChannel }
+    public override var channel: GroupChannel? { self.viewModel?.channel as? GroupChannel }
     
     public private(set) var newMessagesCount: Int = 0
     
@@ -54,16 +54,16 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     ///
     /// See the example below for params generation.
     /// ```
-    ///     let params = SBDMessageListParams()
+    ///     let params = MessageListParams()
     ///     params.includeMetaArray = true
     ///     params.includeReactions = true
     ///     params.includeThreadInfo = true
     ///     ...
     /// ```
-    /// - note: The `reverse` and the `previousResultSize` properties in the `SBDMessageListParams` are set in the UIKit. Even though you set that property it will be ignored.
+    /// - note: The `reverse` and the `previousResultSize` properties in the `MessageListParams` are set in the UIKit. Even though you set that property it will be ignored.
     /// - Parameter channel: Channel object
     /// - Since: 1.0.11
-    required public init(channel: SBDGroupChannel, messageListParams: SBDMessageListParams? = nil) {
+    required public init(channel: GroupChannel, messageListParams: MessageListParams? = nil) {
         super.init(baseChannel: channel, messageListParams: messageListParams)
         
         self.headerComponent = SBUModuleSet.groupChannelModule.headerComponent
@@ -72,12 +72,12 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     }
     
     required public init(
-        channelUrl: String,
-        startingPoint: Int64 = .max,
-        messageListParams: SBDMessageListParams? = nil
+        channelURL: String,
+        startingPoint: Int64? = nil,
+        messageListParams: MessageListParams? = nil
     ) {
         super.init(
-            channelUrl: channelUrl,
+            channelURL: channelURL,
             startingPoint: startingPoint,
             messageListParams: messageListParams
         )
@@ -110,20 +110,20 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     
     // MARK: - ViewModel
     open override func createViewModel(
-        channel: SBDBaseChannel? = nil,
-        channelUrl: String? = nil,
-        messageListParams: SBDMessageListParams? = nil,
+        channel: BaseChannel? = nil,
+        channelURL: String? = nil,
+        messageListParams: MessageListParams? = nil,
         startingPoint: Int64? = LLONG_MAX,
         showIndicator: Bool = true
     ) {
-        guard channel != nil || channelUrl != nil else {
-            SBULog.error("Either the channel or the channelUrl parameter must be set.")
+        guard channel != nil || channelURL != nil else {
+            SBULog.error("Either the channel or the channelURL parameter must be set.")
             return
         }
         
         self.baseViewModel = SBUGroupChannelViewModel(
             channel: channel,
-            channelUrl: channelUrl,
+            channelURL: channelURL,
             messageListParams: messageListParams,
             startingPoint: startingPoint,
             delegate: self,
@@ -253,7 +253,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     
     public override func showMenuModal(_ cell: UITableViewCell,
                                        indexPath: IndexPath,
-                                       message: SBDBaseMessage,
+                                       message: BaseMessage,
                                        types: [MessageMenuItem]?) {
         guard let cell = cell as? SBUBaseMessageCell,
               let types = types else { return }
@@ -281,8 +281,8 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     // MARK: - SBUGroupChannelViewModelDelegate
     open override func baseChannelViewModel(
         _ viewModel: SBUBaseChannelViewModel,
-        didChangeChannel channel: SBDBaseChannel?,
-        withContext context: SBDMessageContext
+        didChangeChannel channel: BaseChannel?,
+        withContext context: MessageContext
     ) {
         guard channel != nil else {
             // channel deleted
@@ -295,8 +295,8 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         
         // channel changed
         switch context.source {
-            case .eventReadReceiptUpdated, .eventDeliveryReceiptUpdated:
-                if context.source == .eventReadReceiptUpdated {
+            case .eventReadStatusUpdated, .eventDeliveryStatusUpdated:
+                if context.source == .eventReadStatusUpdated {
                     self.updateChannelStatus()
                 }
                 self.listComponent?.reloadTableView()
@@ -325,9 +325,9 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     
     open func groupChannelViewModel(
         _ viewModel: SBUGroupChannelViewModel,
-        didReceiveSuggestedMentions users: [SBUUser]?)
+        didReceiveSuggestedMentions members: [SBUUser]?)
     {
-        let members = users ?? []
+        let members = members ?? []
         self.inputComponent?.handlePendingMentionSuggestion(with: members)
     }
     
@@ -342,30 +342,34 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     
     // MARK: - SBUGroupChannelModuleListDelegate
     open func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didTapEmoji emojiKey: String, messageCell: SBUBaseMessageCell) {
-        guard let currentUser = SBUGlobals.currentUser else { return }
-        let message = messageCell.message
+        guard let currentUser = SBUGlobals.currentUser,
+              let message = messageCell.message else { return }
+        
         let shouldSelect = message.reactions.first { $0.key == emojiKey }?
             .userIds.contains(currentUser.userId) == false
         self.viewModel?.setReaction(message: message, emojiKey: emojiKey, didSelect: shouldSelect)
     }
     
     open func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didLongTapEmoji emojiKey: String, messageCell: SBUBaseMessageCell) {
-        guard let channel = self.channel else { return }
-        let message = messageCell.message
-        let reaction = message.reactions.first { $0.key == emojiKey } ?? SBDReaction()
+        guard let channel = self.channel,
+              let message = messageCell.message else { return }
+        
+        let reaction = message.reactions.first { $0.key == emojiKey }
         let reactionsVC = SBUReactionsViewController(
             channel: channel,
             message: message,
             selectedReaction: reaction
         )
-        reactionsVC.modalPresentationStyle = .custom
+        reactionsVC.modalPresentationStyle = UIModalPresentationStyle.custom
         reactionsVC.transitioningDelegate = self
         self.present(reactionsVC, animated: true)
     }
     
     open func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didTapMoreEmojiForCell messageCell: SBUBaseMessageCell) {
         self.dismissKeyboard()
-        self.showEmojiListModal(message: messageCell.message)
+        
+        guard let message = messageCell.message else { return }
+        self.showEmojiListModal(message: message)
     }
     
     open func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didTapQuotedMessageView quotedMessageView: SBUQuotedBaseMessageView) {
@@ -433,7 +437,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         self.listComponent?.channelStateBanner?.isHidden = !isFrozen
     }
     
-    open func groupChannelModule(_ inputComponent: SBUGroupChannelModule.Input, didPickFileData fileData: Data?, fileName: String, mimeType: String, parentMessage: SBDBaseMessage?) {
+    open func groupChannelModule(_ inputComponent: SBUGroupChannelModule.Input, didPickFileData fileData: Data?, fileName: String, mimeType: String, parentMessage: BaseMessage?) {
         self.viewModel?.sendFileMessage(
             fileData: fileData,
             fileName: fileName,
@@ -447,7 +451,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         didTapSend text: String,
         mentionedMessageTemplate: String,
         mentionedUserIds: [String],
-        parentMessage: SBDBaseMessage?
+        parentMessage: BaseMessage?
     ) {
         self.viewModel?.sendUserMessage(
             text: text,
@@ -472,6 +476,14 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         )
     }
     
+    open func groupChannelModule(
+        _ inputComponent: SBUGroupChannelModule.Input,
+        willChangeMode mode: SBUMessageInputMode,
+        message: BaseMessage?,
+        mentionedMessageTemplate: String,
+        mentionedUserIds: [String]
+    ) { }
+    
     open func groupChannelModule(_ inputComponent: SBUGroupChannelModule.Input, shouldLoadSuggestedMentions filterText: String) {
         self.viewModel?.loadSuggestedMentions(with: filterText)
     }
@@ -491,7 +503,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     
     // MARK: - SBUGroupChannelViewModelDataSource
     open func groupChannelViewModel(_ viewModel: SBUGroupChannelViewModel,
-                                    startingPointIndexPathsForChannel channel: SBDGroupChannel?) -> [IndexPath]? {
+                                    startingPointIndexPathsForChannel channel: GroupChannel?) -> [IndexPath]? {
         return self.listComponent?.tableView.indexPathsForVisibleRows
     }
     

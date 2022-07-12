@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 
 /// Event methods for the views updates and performing actions from the input component.
@@ -28,7 +28,7 @@ public protocol SBUBaseChannelModuleInputDelegate: SBUCommonDelegate {
     func baseChannelModule(
         _ inputComponent: SBUBaseChannelModule.Input,
         didTapSend text: String,
-        parentMessage: SBDBaseMessage?
+        parentMessage: BaseMessage?
     )
     
     /// Called when the media resource button was tapped.
@@ -62,22 +62,22 @@ public protocol SBUBaseChannelModuleInputDelegate: SBUCommonDelegate {
     /// - Parameters:
     ///    - inputComponent: `SBUBaseChannelModule.Input` object.
     ///    - mode: `SBUMessageInputMode` value. It represents the current mode of `messageInputView`.
-    ///    - message: `SBDBaseMessage` object. It's `nil` when the `mode` is `none`.
+    ///    - message: `BaseMessage` object. It's `nil` when the `mode` is `none`.
     func baseChannelModule(
         _ inputComponent: SBUBaseChannelModule.Input,
         willChangeMode mode: SBUMessageInputMode,
-        message: SBDBaseMessage?
+        message: BaseMessage?
     )
     
     /// Called when the message input mode will be changed via `setMode(_:message:)` method.
     /// - Parameters:
     ///    - inputComponent: `SBUBaseChannelModule.Input` object.
     ///    - mode: `SBUMessageInputMode` value. The `messageInputView` changes its mode to this value.
-    ///    - message: `SBDBaseMessage` object. It's `nil` when the `mode` is `none`.
+    ///    - message: `BaseMessage` object. It's `nil` when the `mode` is `none`.
     func baseChannelModule(
         _ inputComponent: SBUBaseChannelModule.Input,
         didChangeMode mode: SBUMessageInputMode,
-        message: SBDBaseMessage?
+        message: BaseMessage?
     )
     
     /// Called when the frozen state has been updated.
@@ -92,12 +92,12 @@ public protocol SBUBaseChannelModuleInputDelegate: SBUCommonDelegate {
 
 /// Methods to get data source for the input component.
 public protocol SBUBaseChannelModuleInputDataSource: AnyObject {
-    /// Ask the data source to return the `SBDBaseChannel` object.
+    /// Ask the data source to return the `BaseChannel` object.
     /// - Parameters:
     ///    - inputComponent: `SBUBaseChannelModule.Input` object.
     ///    - messageInputView: `UIView` object representing `messageInputView` from input component.
-    /// - Returns: `SBDBaseChannel` object.
-    func baseChannelModule(_ inputComponent: SBUBaseChannelModule.Input, channelForInputView messageInputView: UIView?) -> SBDBaseChannel?
+    /// - Returns: `BaseChannel` object.
+    func baseChannelModule(_ inputComponent: SBUBaseChannelModule.Input, channelForInputView messageInputView: UIView?) -> BaseChannel?
 }
 
 extension SBUBaseChannelModule {
@@ -125,7 +125,7 @@ extension SBUBaseChannelModule {
         // MARK: - Logic properties (Public)
         /// (Read only) The channel object.
         /// - NOTE: See `baseChannelModule(_:channelForInputView:)`, a data source function.
-        public var baseChannel: SBDBaseChannel? {
+        public var baseChannel: BaseChannel? {
             self.baseDataSource?.baseChannelModule(self, channelForInputView: self.messageInputView)
         }
         
@@ -166,8 +166,8 @@ extension SBUBaseChannelModule {
         /// Updates mode of `messageInputView`.
         /// - Parameters:
         ///   - mode: `SBUMessageInputMode` value.
-        ///   - message: `SBDBaseMessage` value for some specific modes such as `.edit` or `.quoteReply`
-        open func updateMessageInputMode(_ mode: SBUMessageInputMode, message: SBDBaseMessage? = nil) {
+        ///   - message: `BaseMessage` value for some specific modes such as `.edit` or `.quoteReply`
+        open func updateMessageInputMode(_ mode: SBUMessageInputMode, message: BaseMessage? = nil) {
             if let messageInputView = self.messageInputView as? SBUMessageInputView {
                 messageInputView.setMode(mode, message: message)
             }
@@ -234,8 +234,8 @@ extension SBUBaseChannelModule {
         }
         
         ///  Call this function when a video file has been picked from `UIDocumentPickerViewController`. This function will invoke corresponding delegate method such as `SBUGroupChannelModuleInputDelegate groupChannelModule(_:didPickFileData:fileName:mimeType:parentMessage:)`
-        /// - Parameter documentUrls: Document information selected in `UIDocumentPickerViewController`
-        open func pickDocumentFile(documentUrls: [URL]) {
+        /// - Parameter documentURLs: Document information selected in `UIDocumentPickerViewController`
+        open func pickDocumentFile(documentURLs: [URL]) {
             
         }
         
@@ -251,7 +251,7 @@ extension SBUBaseChannelModule {
         public func messageInputView(_ messageInputView: SBUMessageInputView, didSelectSend text: String) {
             guard text.count > 0 else { return }
             
-            var parentMessage: SBDBaseMessage?
+            var parentMessage: BaseMessage?
             switch messageInputView.option {
                 case .quoteReply(let message):
                     parentMessage = message
@@ -275,11 +275,11 @@ extension SBUBaseChannelModule {
             self.baseDelegate?.baseChannelModule(self, didChangeText: text)
         }
         
-        public func messageInputView(_ messageInputView: SBUMessageInputView, willChangeMode mode: SBUMessageInputMode, message: SBDBaseMessage?) {
+        public func messageInputView(_ messageInputView: SBUMessageInputView, willChangeMode mode: SBUMessageInputMode, message: BaseMessage?) {
             self.baseDelegate?.baseChannelModule(self, willChangeMode: mode, message: message)
         }
         
-        public func messageInputView(_ messageInputView: SBUMessageInputView, didChangeMode mode: SBUMessageInputMode, message: SBDBaseMessage?) {
+        public func messageInputView(_ messageInputView: SBUMessageInputView, didChangeMode mode: SBUMessageInputMode, message: BaseMessage?) {
             self.baseDelegate?.baseChannelModule(self, didChangeMode: mode, message: message)
         }
         

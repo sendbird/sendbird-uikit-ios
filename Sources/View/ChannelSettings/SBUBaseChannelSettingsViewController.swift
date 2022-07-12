@@ -7,12 +7,12 @@
 //
 
 import UIKit
-import SendBirdSDK
-import Photos
+import SendbirdChatSDK
+import PhotosUI
 import MobileCoreServices
 
 
-open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActionSheetDelegate, UIImagePickerControllerDelegate, SBUCommonViewModelDelegate, SBUBaseChannelSettingsViewModelDelegate {
+open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActionSheetDelegate, PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, SBUSelectablePhotoViewDelegate, SBUCommonViewModelDelegate, SBUBaseChannelSettingsViewModelDelegate {
     
     // MARK: - UI Properties (Public)
     public var baseHeaderComponent: SBUBaseChannelSettingsModule.Header?
@@ -28,8 +28,8 @@ open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActio
     
     public var channelName: String? = nil
     
-    public var channel: SBDBaseChannel? { baseViewModel?.channel }
-    public var channelUrl: String? { baseViewModel?.channelUrl }
+    public var channel: BaseChannel? { baseViewModel?.channel }
+    public var channelURL: String? { baseViewModel?.channelURL }
     
     public var isOperator: Bool { baseViewModel?.isOperator ?? false }
     
@@ -93,21 +93,21 @@ open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActio
     /// - Note: If you want to customize the viewModel, override this function
     /// - Parameters:
     ///     - channel: (opt) channel object
-    ///     - channelUrl: (opt) channel url
+    ///     - channelURL: (opt) channel url
     /// - Since: 3.0.0
-    open func createViewModel(channel: SBDBaseChannel? = nil,
-                              channelUrl: String? = nil) { }
+    open func createViewModel(channel: BaseChannel? = nil,
+                              channelURL: String? = nil) { }
     
     
     // MARK: - Common
     /// This function sets right bar button when enable to set.
     /// - Since: 3.0.0
     public func updateRightBarButton() {
-        if let groupChannel = self.channel as? SBDGroupChannel {
+        if let groupChannel = self.channel as? GroupChannel {
             if !groupChannel.isBroadcast || groupChannel.myRole == .operator {
                 self.navigationItem.rightBarButtonItem = self.baseHeaderComponent?.rightBarButton
             }
-        } else if let _ = self.channel as? SBDOpenChannel {
+        } else if let _ = self.channel as? OpenChannel {
             if self.isOperator {
                 self.navigationItem.rightBarButtonItem = self.baseHeaderComponent?.rightBarButton
             }
@@ -204,46 +204,119 @@ open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActio
     /// - Parameter type: Media resource type (`MediaResourceType`)
     /// - Since: 3.0.0
     open func showChannelImagePicker(with type: MediaResourceType) {
-        var sourceType: UIImagePickerController.SourceType = .photoLibrary
-        let mediaType: [String] = [String(kUTTypeImage)]
-        
         switch type {
-        case .camera: sourceType = .camera
-        case .library: sourceType = .photoLibrary
-        case .document: break
-        default: break
-        }
-        
-        if type != .document {
-            if UIImagePickerController.isSourceTypeAvailable(sourceType) {
-                let imagePickerController = UIImagePickerController()
-                imagePickerController.delegate = self
-                imagePickerController.sourceType = sourceType
-                imagePickerController.mediaTypes = mediaType
-                self.present(imagePickerController, animated: true, completion: nil)
+        case .camera:
+            SBUPermissionManager.shared.requestDeviceAccessIfNeeded(for: .video) { isGranted in
+                if isGranted {
+                    DispatchQueue.main.async { [weak self] in
+                        guard let self = self else { return }
+                        self.showCamera()
+                    }
+                } else {
+                    if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+                        UIApplication.shared.open(
+                            settingsURL,
+                            options: [:],
+                            completionHandler: nil
+                        )
+                    }
+                }
             }
+        case .library:
+            SBUPermissionManager.shared.requestPhotoAccessIfNeeded { status in
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+                    switch status {
+                    case .all:
+                        self.showPhotoLibraryPicker()
+                    case .limited:
+                        self.showLimitedPhotoLibraryPicker()
+                    default:
+                        self.showPermissionAlert()
+                    }
+                }
+            }
+        default: break
         }
     }
     
+    /// Presents `UIImagePickerController` for using camera.
+    /// - Since: 3.0.0
+    open func showCamera() {
+        let sourceType: UIImagePickerController.SourceType = .camera
+        let mediaType: [String] = [
+            String(kUTTypeImage)
+        ]
+        
+        if UIImagePickerController.isSourceTypeAvailable(sourceType) {
+            let imagePickerController = UIImagePickerController()
+            imagePickerController.delegate = self
+            imagePickerController.sourceType = sourceType
+            imagePickerController.mediaTypes = mediaType
+            self.present(imagePickerController, animated: true, completion: nil)
+        }
+    }
+    
+    /// Presents `UIImagePickerController`. If `SBUGlobals.UsingPHPicker`is `true`, it presents `PHPickerViewController` in iOS 14 or later.
+    /// - NOTE: If you want to use customized `PHPickerConfiguration`, please override this method.
+    /// - Since: 3.0.0
+    open func showPhotoLibraryPicker() {
+        if #available(iOS 14, *), SBUGlobals.isPHPickerEnabled {
+            var configuration = PHPickerConfiguration()
+            configuration.filter = .any(of: [.images])
+            let picker = PHPickerViewController(configuration: configuration)
+            picker.delegate = self
+            self.present(picker, animated: true, completion: nil)
+            return
+        }
+        
+        let sourceType: UIImagePickerController.SourceType = .photoLibrary
+        let mediaType: [String] = [
+            String(kUTTypeImage),
+        ]
+        
+        if UIImagePickerController.isSourceTypeAvailable(sourceType) {
+            let imagePickerController = UIImagePickerController()
+            imagePickerController.delegate = self
+            imagePickerController.sourceType = sourceType
+            imagePickerController.mediaTypes = mediaType
+            self.present(imagePickerController, animated: true, completion: nil)
+        }
+    }
+    
+    open func showLimitedPhotoLibraryPicker() {
+        let selectablePhotoVC = SBUSelectablePhotoViewController(mediaType: .image)
+        selectablePhotoVC.delegate = self
+        let nav = UINavigationController(rootViewController: selectablePhotoVC)
+        self.present(nav, animated: true, completion: nil)
+    }
+    
+    open func showPermissionAlert() {
+        let settingButton = SBUAlertButtonItem(title: SBUStringSet.Settings) { info in
+            if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+                UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
+            }
+        }
+        
+        let cancelButton = SBUAlertButtonItem(title: SBUStringSet.Cancel) {_ in }
+        
+        SBUAlertView.show(
+            title: SBUStringSet.Alert_Allow_PhotoLibrary_Access,
+            message: SBUStringSet.Alert_Allow_PhotoLibrary_Access_Message,
+            oneTimetheme: SBUTheme.componentTheme,
+            confirmButtonItem: settingButton,
+            cancelButtonItem: cancelButton
+        )
+    }
     
     // MARK: - Actions
     
     open func showNotifications() {
         guard let channel = self.channel else { return }
-        if channel is SBDGroupChannel {
+        if channel is GroupChannel {
             let pushSettingsVC = SBUViewControllerSet.groupChannelPushSettingsViewController.init(channel: channel)
             self.navigationController?.pushViewController(pushSettingsVC, animated: true)
         }
-    }
-    
-    /// If you want to use a custom memberListViewController, override it and implement it.
-    open func showMemberList() {
-        guard let channel = self.channel else { return }
-        let memberListVC = SBUViewControllerSet.MemberListViewController.init(
-            channel: channel,
-            memberListType: .channelMembers
-        )
-        self.navigationController?.pushViewController(memberListVC, animated: true)
     }
     
     /// If you want to use a custom MessageSearchViewController, override it and implement it.
@@ -257,16 +330,14 @@ open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActio
         self.present(nav, animated: true, completion: nil)
     }
     
-    /// (Group channel only) If you want to use a custom moderationsViewController, override it and implement it.
+    /// If you want to use a custom moderationsViewController, override it and implement it.
     /// - Since: 1.2.0
     open func showModerationList() { }
     
-    /// (Open channel only) If you want to use a custom memberListViewController, override it and implement it.
-    open func showParticipantsList() { }
     
     
     // MARK: - Error handling
-    private func errorHandler(_ error: SBDError) {
+    private func errorHandler(_ error: SBError) {
         self.errorHandler(error.localizedDescription, error.code)
     }
     
@@ -306,13 +377,45 @@ open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActio
             }
         }
     
+    // MARK: - PHPickerViewControllerDelegate
+    /// Override this method to handle the `results` from `PHPickerViewController`.
+    /// As defaults, it doesn't support multi-selection and live photo.
+    /// - Important: To use this method, please assign self as delegate to `PHPickerViewController` object.
+    @available(iOS 14, *)
+    open func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        picker.dismiss(animated: true)
+        
+        results.forEach {
+            let itemProvider = $0.itemProvider
+            // image
+            if itemProvider.hasItemConformingToTypeIdentifier(UTType.image.identifier) {
+                itemProvider.loadItem(forTypeIdentifier: UTType.image.identifier, options: [:]) { url, error in
+                    if itemProvider.canLoadObject(ofClass: UIImage.self) {
+                        itemProvider.loadObject(ofClass: UIImage.self) { [weak self] imageItem, error in
+                            guard let self = self else { return }
+                            guard let originalImage = imageItem as? UIImage else { return }
+                            self.baseListComponent?.updateChannelInfoView(coverImage: originalImage)
+                            self.baseViewModel?.updateChannel(coverImage: originalImage)
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    // MARK: - SBUSelectablePhotoViewDelegate
+    open func didTapSendImageData(_ data: Data) {
+        guard let image = UIImage(data: data) else { return }
+        self.baseListComponent?.updateChannelInfoView(coverImage: image)
+        self.baseViewModel?.updateChannel(coverImage: image)
+    }
     
     // MARK: - SBUCommonViewModelDelegate
     open func shouldUpdateLoadingState(_ isLoading: Bool) {
         self.showLoading(isLoading)
     }
     
-    open func didReceiveError(_ error: SBDError?, isBlocker: Bool) {
+    open func didReceiveError(_ error: SBError?, isBlocker: Bool) {
         self.showLoading(false)
     }
     
@@ -320,7 +423,7 @@ open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActio
     // MARK: - SBUBaseChannelSettingsViewModelDelegate
     open func baseChannelSettingsViewModel(
         _ viewModel: SBUBaseChannelSettingsViewModel,
-        didChangeChannel channel: SBDBaseChannel?,
-        withContext context: SBDMessageContext
+        didChangeChannel channel: BaseChannel?,
+        withContext context: MessageContext
     ) { }
 }

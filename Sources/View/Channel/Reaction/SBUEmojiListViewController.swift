@@ -7,15 +7,15 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 /// Emoji List
 class SBUEmojiListViewController: SBUBaseViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, SBUBottomSheetControllerDelegate, UIGestureRecognizerDelegate {
 
     lazy var collectionView = UICollectionView(frame: self.view.bounds, collectionViewLayout: layout)
     let layout: UICollectionViewFlowLayout = SBUCollectionViewFlowLayout()
-    let emojiList: [SBDEmoji] = SBUEmojiManager.getAllEmojis()
-    let message: SBDBaseMessage
+    let emojiList: [Emoji] = SBUEmojiManager.getAllEmojis()
+    let message: BaseMessage?
     
     @SBUThemeWrapper(theme: SBUTheme.componentTheme)
     var theme: SBUComponentTheme
@@ -39,13 +39,13 @@ class SBUEmojiListViewController: SBUBaseViewController, UICollectionViewDelegat
     // MARK: - Lifecycle
     @available(*, unavailable, renamed: "SBUEmojiListViewController.init(message:)")
     required init?(coder: NSCoder) {
-        self.message = SBDBaseMessage()
+        self.message = nil
         super.init(coder: coder)
     }
 
     /// Use this function when initialize.
-    /// - Parameter message: SBDBaseMessage
-    init(message: SBDBaseMessage) {
+    /// - Parameter message: BaseMessage
+    init(message: BaseMessage) {
         self.message = message
         super.init(nibName: nil, bundle: nil)
     }
@@ -172,7 +172,7 @@ class SBUEmojiListViewController: SBUBaseViewController, UICollectionViewDelegat
         cell.configure(type: .messageMenu, url: emoji.url)
 
         guard let currentUesr = SBUGlobals.currentUser else { return cell }
-        let didSelect = self.message.reactions.first {
+        let didSelect = self.message?.reactions.first {
             $0.key == emoji.key
             }?.userIds.contains(currentUesr.userId) ?? false
         cell.isSelected = didSelect
@@ -184,7 +184,7 @@ class SBUEmojiListViewController: SBUBaseViewController, UICollectionViewDelegat
 
         let emoji = emojiList[indexPath.row]
 
-        let wasSelected = message.reactions
+        let wasSelected = message?.reactions
             .first { $0.key == emoji.key }?.userIds
             .contains(currentUesr.userId) ?? false
 

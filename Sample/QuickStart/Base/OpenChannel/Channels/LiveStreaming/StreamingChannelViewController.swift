@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 @objcMembers
 class StreamingChannelViewController: SBUOpenChannelViewController {
@@ -50,21 +50,21 @@ class StreamingChannelViewController: SBUOpenChannelViewController {
     let activeIndicatorSize: CGFloat = 10
     var prevNewMessageInfoViewHidden: Bool = true
     
-    init(channel: SBDOpenChannel, streamingData: StreamingChannel) {
+    init(channel: OpenChannel, streamingData: StreamingChannel) {
         self.streamingData = streamingData
         super.init(channel: channel, messageListParams: nil)
     }
     
-    required init(channel: SBDOpenChannel, messageListParams: SBDMessageListParams? = nil) {
+    required init(channel: OpenChannel, messageListParams: MessageListParams? = nil) {
         fatalError("init(channel:messageListParams:) has not been implemented")
     }
     
-    required init(channelUrl: String, startingPoint: Int64 = .max, messageListParams: SBDMessageListParams? = nil) {
-        fatalError("init(channelUrl:startingPoint:messageListParams:) has not been implemented")
+    required init(channelURL: String, startingPoint: Int64 = .max, messageListParams: MessageListParams? = nil) {
+        fatalError("init(channelURL:startingPoint:messageListParams:) has not been implemented")
     }
     
-    required init(channelUrl: String, messageListParams: SBDMessageListParams? = nil) {
-        fatalError("init(channelUrl:messageListParams:) has not been implemented")
+    required public init(channelURL: String, startingPoint: Int64? = nil, messageListParams: MessageListParams? = nil) {
+        fatalError("init(channelURL:startingPoint:messageListParams:) has not been implemented")
     }
     
     
@@ -331,15 +331,15 @@ class StreamingChannelViewController: SBUOpenChannelViewController {
     /// - Parameters:
     ///   - channel: Channel to exit
     ///   - completionHandler: Completion handler
-    func exitChannel(_ channel: SBDOpenChannel,
+    func exitChannel(_ channel: OpenChannel,
                      completionHandler: ((Bool)-> Void)? = nil) {
         
-        channel.exitChannel { error in
+        channel.exit(completionHandler: { error in
             guard error == nil else {
                 completionHandler?(false)
                 return
             }
             completionHandler?(true)
-        }
+        })
     }
 }

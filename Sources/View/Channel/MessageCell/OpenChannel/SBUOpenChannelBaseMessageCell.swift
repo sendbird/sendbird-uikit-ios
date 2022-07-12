@@ -7,12 +7,12 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 @IBDesignable
 open class SBUOpenChannelBaseMessageCell: SBUTableViewCell {
     // MARK: - Public
-    public var message: SBDBaseMessage = .init()
+    public var message: BaseMessage?
     public var groupPosition: MessageGroupPosition = .none
 
     public lazy var dateView: UIView = SBUMessageDateView()
@@ -108,7 +108,7 @@ open class SBUOpenChannelBaseMessageCell: SBUTableViewCell {
     ///   - message: Message object
     ///   - hideDateView: Hide or expose date information
     ///   - isOverlay: Whether to use in overlay
-    open func configure(message: SBDBaseMessage,
+    open func configure(message: BaseMessage,
                         hideDateView: Bool,
                         groupPosition: MessageGroupPosition = .none,
                         isOverlay: Bool = false) {
@@ -118,7 +118,7 @@ open class SBUOpenChannelBaseMessageCell: SBUTableViewCell {
         self.isOverlay = isOverlay
         
         if let dateView = self.dateView as? SBUMessageDateView {
-            dateView.configure(timestamp: self.message.createdAt)
+            dateView.configure(timestamp: message.createdAt)
         }
     }
     

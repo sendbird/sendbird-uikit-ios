@@ -7,10 +7,10 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 public struct SBUUserMessageTextViewModel {
-    var message: SBDBaseMessage?
+    var message: BaseMessage?
     var text: String
     var attributedText: NSMutableAttributedString?
     var textColor: UIColor
@@ -45,7 +45,7 @@ public struct SBUUserMessageTextViewModel {
     }
     
     public init(
-        message: SBDBaseMessage?,
+        message: BaseMessage?,
         position: MessagePosition = .right,
         text: String? = nil,
         font: UIFont? = nil,

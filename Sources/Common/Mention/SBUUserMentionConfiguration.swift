@@ -27,8 +27,8 @@ public class SBUUserMentionConfiguration: SBUMentionConfiguration {
     public var suggestionLimit: Int = 15
     
     /// The flag whether to use a custom suggested mention list.
-    /// - Note: If you want to use a custom list, set this flag to `true` and use your member list after override `mentionManager(_:suggestedMentionUsersWith:)` delegate in `SBUGroupChannelViewController` class.
-    public var isCustomMemberListUsed: Bool = false
+    /// - Note: If you want to use a custom list, set this flag to `true` and use your user list after override `mentionManager(_:suggestedMentionUsersWith:)` dataSource in `SBUGroupChannelViewController` class.
+    public var isCustomUserListUsed: Bool = false
     
     public override init() {
         super.init()

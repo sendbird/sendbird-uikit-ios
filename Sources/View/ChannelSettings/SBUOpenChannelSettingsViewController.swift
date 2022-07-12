@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 
 open class SBUOpenChannelSettingsViewController: SBUBaseChannelSettingsViewController, SBUOpenChannelSettingsModuleHeaderDelegate, SBUOpenChannelSettingsModuleListDelegate, SBUOpenChannelSettingsModuleListDataSource, SBUOpenChannelSettingsViewModelDelegate {
@@ -29,17 +29,17 @@ open class SBUOpenChannelSettingsViewController: SBUBaseChannelSettingsViewContr
         set { self.baseViewModel = newValue }
     }
     
-    public override var channel: SBDOpenChannel? { self.viewModel?.channel as? SBDOpenChannel }
+    public override var channel: OpenChannel? { self.viewModel?.channel as? OpenChannel }
     
     
     // MARK: - Lifecycle
-    @available(*, unavailable, renamed: "SBUOpenChannelSettingsViewController(channelUrl:)")
+    @available(*, unavailable, renamed: "SBUOpenChannelSettingsViewController(channelURL:)")
     required public init?(coder: NSCoder) {
         super.init(coder: coder)
         fatalError()
     }
     
-    @available(*, unavailable, renamed: "SBUOpenChannelSettingsViewController(channelUrl:)")
+    @available(*, unavailable, renamed: "SBUOpenChannelSettingsViewController(channelURL:)")
     public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         fatalError()
@@ -47,7 +47,7 @@ open class SBUOpenChannelSettingsViewController: SBUBaseChannelSettingsViewContr
     
     /// If you have channel object, use this initialize function.
     /// - Parameter channel: Channel object
-    required public init(channel: SBDOpenChannel) {
+    required public init(channel: OpenChannel) {
         super.init(nibName: nil, bundle: nil)
         SBULog.info("")
         
@@ -56,13 +56,13 @@ open class SBUOpenChannelSettingsViewController: SBUBaseChannelSettingsViewContr
         self.listComponent = SBUModuleSet.openChannelSettingsModule.listComponent
     }
     
-    /// If you don't have channel object and have channelUrl, use this initialize function.
-    /// - Parameter channelUrl: Channel url string
-    required public init(channelUrl: String) {
+    /// If you don't have channel object and have channelURL, use this initialize function.
+    /// - Parameter channelURL: Channel url string
+    required public init(channelURL: String) {
         super.init(nibName: nil, bundle: nil)
         SBULog.info("")
         
-        self.createViewModel(channelUrl: channelUrl)
+        self.createViewModel(channelURL: channelURL)
         self.headerComponent = SBUModuleSet.openChannelSettingsModule.headerComponent
         self.listComponent = SBUModuleSet.openChannelSettingsModule.listComponent
     }
@@ -75,10 +75,10 @@ open class SBUOpenChannelSettingsViewController: SBUBaseChannelSettingsViewContr
     
     
     // MARK: - ViewModel
-    open override func createViewModel(channel: SBDBaseChannel? = nil, channelUrl: String? = nil) {
+    open override func createViewModel(channel: BaseChannel? = nil, channelURL: String? = nil) {
         self.baseViewModel = SBUOpenChannelSettingsViewModel(
             channel: channel,
-            channelUrl: channelUrl,
+            channelURL: channelURL,
             delegate: self
         )
     }
@@ -107,14 +107,13 @@ open class SBUOpenChannelSettingsViewController: SBUBaseChannelSettingsViewContr
 
     
     // MARK: - Actions
-    /// If you want to use a custom memberListViewController, override it and implement it.
-    open override func showParticipantsList() {
+    /// If you want to use a custom userListViewController, override it and implement it.
+    open func showParticipantsList() {
         guard let channel = self.channel else { return }
         
-        let memberListVC = SBUViewControllerSet.MemberListViewController.init(channel: channel, memberListType: .participants)
-        self.navigationController?.pushViewController(memberListVC, animated: true)
+        let participantListVC = SBUViewControllerSet.UserListViewController.init(channel: channel, userListType: .participants)
+        self.navigationController?.pushViewController(participantListVC, animated: true)
     }
-    
     
     
     // MARK: - SBUOpenChannelSettingsModuleHeaderDelegate
@@ -160,7 +159,7 @@ open class SBUOpenChannelSettingsViewController: SBUBaseChannelSettingsViewContr
     
     // MARK: - SBUOpenChannelSettingsModuleListDataSource
     open func baseChannelSettingsModule(_ listComponent: SBUBaseChannelSettingsModule.List,
-                                        channelForTableView tableView: UITableView) -> SBDBaseChannel? {
+                                        channelForTableView tableView: UITableView) -> BaseChannel? {
         return self.channel
     }
     
@@ -171,7 +170,7 @@ open class SBUOpenChannelSettingsViewController: SBUBaseChannelSettingsViewContr
     
     // MARK: - SBUOpenChannelSettingsViewModelDelegate
     open func openChannelSettingsViewModel(_ viewModel: SBUOpenChannelSettingsViewModel,
-                                           didDeleteChannel channel: SBDOpenChannel) {
+                                           didDeleteChannel channel: OpenChannel) {
         guard let navigationController = self.navigationController,
               navigationController.viewControllers.count > 1 else {
                   self.dismiss(animated: true, completion: nil)
@@ -188,8 +187,8 @@ open class SBUOpenChannelSettingsViewController: SBUBaseChannelSettingsViewContr
     
     open override func baseChannelSettingsViewModel(
         _ viewModel: SBUBaseChannelSettingsViewModel,
-        didChangeChannel channel: SBDBaseChannel?,
-        withContext context: SBDMessageContext
+        didChangeChannel channel: BaseChannel?,
+        withContext context: MessageContext
     ) {
         super.baseChannelSettingsViewModel(viewModel, didChangeChannel: channel, withContext: context)
         

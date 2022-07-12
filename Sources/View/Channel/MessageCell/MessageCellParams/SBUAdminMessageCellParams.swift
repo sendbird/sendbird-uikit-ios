@@ -6,15 +6,15 @@
 //  Copyright © 2021 Sendbird, Inc. All rights reserved.
 //
 
-import SendBirdSDK
+import SendbirdChatSDK
 
 
 public class SBUAdminMessageCellParams: SBUBaseMessageCellParams {
-    public var adminMessage: SBDAdminMessage? {
-        self.message as? SBDAdminMessage
+    public var adminMessage: AdminMessage? {
+        self.message as? AdminMessage
     }
     
-    public init(message: SBDAdminMessage, hideDateView: Bool) {
+    public init(message: AdminMessage, hideDateView: Bool) {
         super.init(
             message: message,
             hideDateView: hideDateView,

@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 // This function handles alertController to be used in the sample app.
 class AlertManager: NSObject {
@@ -31,19 +31,19 @@ class AlertManager: NSObject {
 
 // This function handles channel object to be used in the sample app.
 class ChannelManager: NSObject {
-    static func getSampleChannel(completionHandler: @escaping (_ channel: SBDGroupChannel) -> Void) {
-        let channelListQuery = SBDGroupChannel.createMyGroupChannelListQuery()
-        channelListQuery?.order = .latestLastMessage
-        channelListQuery?.limit = 10
-        channelListQuery?.includeEmptyChannel = true
-        
-        channelListQuery?.loadNextPage(completionHandler: { channels, error in
+    static func getSampleChannel(completionHandler: @escaping (_ channel: GroupChannel) -> Void) {
+        let params = GroupChannelListQueryParams()
+        params.order = .latestLastMessage
+        params.limit = 10
+        params.includeEmptyChannel = true
+        let channelListQuery = GroupChannel.createMyGroupChannelListQuery(params: params)
+        channelListQuery.loadNextPage { channels, error in
             guard let channel = channels?.first else {
                 AlertManager.show(title: "No channel", message: "Create a channel and proceed.")
                 return
             }
             
             completionHandler(channel)
-        })
+        }
     }
 }

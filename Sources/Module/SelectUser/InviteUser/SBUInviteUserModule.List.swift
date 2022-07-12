@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 public protocol SBUInviteUserModuleListDelegate: SBUBaseSelectUserModuleListDelegate {
     /// Called when the user cell was selected in the `listComponent`.
@@ -84,7 +84,7 @@ extension SBUInviteUserModule {
             guard let user = self.userList?[indexPath.row],
                   let defaultCell = cell as? SBUUserCell else { return }
             defaultCell.configure(
-                type: .inviteUser,
+                type: .invite,
                 user: user,
                 isChecked: self.isSelectedUser(user)
             )

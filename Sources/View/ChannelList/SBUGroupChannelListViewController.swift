@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 @objcMembers
 open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, SBUGroupChannelListModuleHeaderDelegate, SBUGroupChannelListModuleListDelegate, SBUGroupChannelListModuleListDataSource, SBUCreateChannelTypeSelectorDelegate, SBUCommonViewModelDelegate, SBUGroupChannelListViewModelDelegate {
@@ -34,7 +34,7 @@ open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, 
     public var viewModel: SBUGroupChannelListViewModel?
     
     /// This object has a list of all channels.
-    public var channelList: [SBDGroupChannel] { self.viewModel?.channelList ?? [] }
+    public var channelList: [GroupChannel] { self.viewModel?.channelList ?? [] }
     
     /// This is a property that allows you to show the channel type selector when creating a channel. (default: `true`)
     /// - Since: 3.0.0
@@ -68,14 +68,15 @@ open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, 
     ///
     /// See the example below for query generation.
     /// ```
-    ///     let query = SBDGroupChannel.createMyGroupChannelListQuery()
-    ///     query?.includeEmptyChannel = false
-    ///     query?.includeFrozenChannel = true
+    ///     let params = GroupChannelListQueryParams()
+    ///     params.includeEmptyChannel = false
+    ///     params.includeFrozenChannel = true
+    ///     let query = GroupChannel.createMyGroupChannelListQuery(params: params)
     ///     ...
     /// ```
-    /// - Parameter channelListQuery: Your own `SBDGroupChannelListQuery` object
+    /// - Parameter channelListQuery: Your own `GroupChannelListQuery` object
     /// - Since: 1.0.11
-    required public init(channelListQuery: SBDGroupChannelListQuery? = nil) {
+    required public init(channelListQuery: GroupChannelListQuery? = nil) {
         super.init(nibName: nil, bundle: nil)
         SBULog.info("")
         
@@ -109,9 +110,9 @@ open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, 
     
     // MARK: - ViewModel
     /// Creates the view model.
-    /// - Parameter channelListQuery: Customer's own `SBDGroupChannelListQuery` object
+    /// - Parameter channelListQuery: Customer's own `GroupChannelListQuery` object
     /// - Since: 3.0.0
-    open func createViewModel(channelListQuery: SBDGroupChannelListQuery?) {
+    open func createViewModel(channelListQuery: GroupChannelListQuery?) {
         self.viewModel = SBUGroupChannelListViewModel(
             delegate: self,
             channelListQuery: channelListQuery
@@ -197,11 +198,11 @@ open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, 
     ///
     /// If you want to use a custom channelViewController, override it and implement it.
     /// - Parameters:
-    ///   - channelUrl: channel url for use in channelViewController.
+    ///   - channelURL: channel url for use in channelViewController.
     ///   - messageListParams: If there is a messageListParams set directly for use in Channel, set it up here
-    open override func showChannel(channelUrl: String, messageListParams: SBDMessageListParams? = nil) {
+    open override func showChannel(channelURL: String, messageListParams: MessageListParams? = nil) {
         let channelVC = SBUViewControllerSet.GroupChannelViewController.init(
-            channelUrl: channelUrl,
+            channelURL: channelURL,
             messageListParams: messageListParams
         )
         self.navigationController?.pushViewController(channelVC, animated: true)
@@ -242,7 +243,7 @@ open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, 
     
     
     // MARK: - Error handling
-    private func errorHandler(_ error: SBDError) {
+    private func errorHandler(_ error: SBError) {
         self.errorHandler(error.localizedDescription, error.code)
     }
     
@@ -282,17 +283,17 @@ open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, 
     open func channelListModule(_ listComponent: SBUGroupChannelListModule.List,
                                 didSelectRowAt indexPath: IndexPath) {
         guard let channel = self.viewModel?.channelList[indexPath.row] else { return }
-        self.showChannel(channelUrl: channel.channelUrl)
+        self.showChannel(channelURL: channel.channelURL)
     }
     
     open func channelListModule(_ listComponent: SBUGroupChannelListModule.List,
-                                didSelectLeave channel: SBDGroupChannel) {
+                                didSelectLeave channel: GroupChannel) {
         self.viewModel?.leaveChannel(channel)
     }
     
     open func channelListModule(_ listComponent: SBUGroupChannelListModule.List,
-                                didChangePushTriggerOption option: SBDGroupChannelPushTriggerOption,
-                                channel: SBDGroupChannel) {
+                                didChangePushTriggerOption option: GroupChannelPushTriggerOption,
+                                channel: GroupChannel) {
         self.viewModel?.changePushTriggerOption(option: option, channel: channel)
     }
     
@@ -308,7 +309,7 @@ open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, 
     
     // MARK: - SBUGroupChannelListModuleListDataSource
     open func channelListModule(_ listComponent: SBUGroupChannelListModule.List,
-                                channelsInTableView tableView: UITableView) -> [SBDGroupChannel]? {
+                                channelsInTableView tableView: UITableView) -> [GroupChannel]? {
         return self.viewModel?.channelList
     }
     
@@ -357,7 +358,7 @@ open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, 
         self.showLoading(isLoading)
     }
     
-    open func didReceiveError(_ error: SBDError?, isBlocker: Bool) {
+    open func didReceiveError(_ error: SBError?, isBlocker: Bool) {
         self.showLoading(false)
         self.errorHandler(error?.description ?? "")
         
@@ -372,7 +373,7 @@ open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, 
     
     // MARK: - SBUGroupChannelListViewModelDelegate
     open func groupChannelListViewModel(_ viewModel: SBUGroupChannelListViewModel,
-                                        didChangeChannelList channels: [SBDGroupChannel]?,
+                                        didChangeChannelList channels: [GroupChannel]?,
                                         needsToReload: Bool) {
         if let channelList = channels {
             self.listComponent?.updateEmptyView(type: (channelList.count == 0) ? .noChannels : .none)
@@ -384,8 +385,8 @@ open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, 
     }
     
     open func groupChannelListViewModel(_ viewModel: SBUGroupChannelListViewModel,
-                                        didUpdateChannel channel: SBDGroupChannel) { }
+                                        didUpdateChannel channel: GroupChannel) { }
     
     open func groupChannelListViewModel(_ viewModel: SBUGroupChannelListViewModel,
-                                        didLeaveChannel channel: SBDGroupChannel) { }
+                                        didLeaveChannel channel: GroupChannel) { }
 }

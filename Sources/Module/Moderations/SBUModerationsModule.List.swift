@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 
 public protocol SBUModerationsModuleListDelegate: SBUCommonDelegate {
@@ -26,12 +26,12 @@ public protocol SBUModerationsModuleListDelegate: SBUCommonDelegate {
 
 
 public protocol SBUModerationsModuleListDataSource: AnyObject {
-    /// Ask the data source to return the `SBDBaseChannel` object.
+    /// Ask the data source to return the `BaseChannel` object.
     /// - Parameters:
     ///    - listComponent: `SBUModerationsModule.List` object.
     ///    - tableView: `UITableView` object from list component.
-    /// - Returns: `SBDBaseChannel` object.
-    func moderationsModule(_ listComponent: SBUModerationsModule.List, channelForTableView tableView: UITableView) -> SBDBaseChannel?
+    /// - Returns: `BaseChannel` object.
+    func moderationsModule(_ listComponent: SBUModerationsModule.List, channelForTableView tableView: UITableView) -> BaseChannel?
 }
 
 
@@ -55,7 +55,7 @@ extension SBUModerationsModule {
         public weak var delegate: SBUModerationsModuleListDelegate? = nil
         public weak var dataSource: SBUModerationsModuleListDataSource? = nil
         
-        public var channel: SBDBaseChannel? {
+        public var channel: BaseChannel? {
             self.dataSource?.moderationsModule(self, channelForTableView: self.tableView)
         }
         
@@ -149,7 +149,7 @@ extension SBUModerationsModule {
         ///   - indexPath: indexPath
         open func configureCell(_ cell: UITableViewCell?, indexPath: IndexPath) {
             guard let defaultCell = cell as? SBUModerationCell,
-                  let channel = self.channel as? SBDGroupChannel else { return }
+                  let channel = self.channel as? GroupChannel else { return }
             
             let isBroadcast = channel.isBroadcast
             let type = ModerationItemType.allTypes(isBroadcast: isBroadcast)[indexPath.row]
@@ -177,7 +177,7 @@ extension SBUModerationsModule {
 extension SBUModerationsModule.List: UITableViewDataSource, UITableViewDelegate {
     open func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         var isBroadcast = false
-        if let channel = self.channel as? SBDGroupChannel {
+        if let channel = self.channel as? GroupChannel {
             isBroadcast = channel.isBroadcast
         }
         return ModerationItemType.allTypes(isBroadcast: isBroadcast).count

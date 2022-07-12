@@ -1,5 +1,5 @@
 //
-//  SBUMemberListViewController.Deprecated.swift
+//  SBUUserListViewController.Deprecated.swift
 //  SendbirdUIKit
 //
 //  Created by Tez Park on 2022/01/18.
@@ -7,130 +7,143 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
-extension SBUMemberListViewController {
+@available(*, deprecated, renamed: "SBUUserListViewController") // 3.0.0
+public typealias SBUMemberListViewController = SBUUserListViewController
+
+extension SBUUserListViewController {
     // MARK: - 3.0.0
-    @available(*, deprecated, message: "This property has been moved to the `SBUMemberListModule.Header`.", renamed: "headerComponent.titleView")
+    @available(*, deprecated, renamed: "channelURL")
+    public var channelUrl: String? { self.channelURL }
+    
+    @available(*, deprecated, message: "This property has been moved to the `SBUUserListModule.Header`.", renamed: "headerComponent.titleView")
     public var titleView: UIView? {
         get { headerComponent?.titleView }
         set { headerComponent?.titleView = newValue }
     }
     
-    @available(*, deprecated, message: "This property has been moved to the `SBUMemberListModule.Header`.", renamed: "headerComponent.leftBarButton")
+    @available(*, deprecated, message: "This property has been moved to the `SBUUserListModule.Header`.", renamed: "headerComponent.leftBarButton")
     public var leftBarButton: UIBarButtonItem? {
         get { headerComponent?.leftBarButton }
         set { headerComponent?.leftBarButton = newValue }
     }
     
-    @available(*, deprecated, message: "This property has been moved to the `SBUMemberListModule.Header`.", renamed: "headerComponent.rightBarButton")
+    @available(*, deprecated, message: "This property has been moved to the `SBUUserListModule.Header`.", renamed: "headerComponent.rightBarButton")
     public var rightBarButton: UIBarButtonItem? {
         get { headerComponent?.rightBarButton }
         set { headerComponent?.rightBarButton = newValue }
     }
 
-    @available(*, deprecated, message: "This property has been moved to the `SBUMemberListModule.List`.", renamed: "listComponent.tableView")
+    @available(*, deprecated, message: "This property has been moved to the `SBUUserListModule.List`.", renamed: "listComponent.tableView")
     public var tableView: UITableView? { listComponent?.tableView}
     
-    @available(*, deprecated, message: "This property has been moved to the `SBUMemberListModule.List`.", renamed: "listComponent.memberCell")
-    public var userCell: UITableViewCell? { listComponent?.memberCell }
+    @available(*, deprecated, message: "This property has been moved to the `SBUUserListModule.List`.", renamed: "listComponent.userCell")
+    public var userCell: UITableViewCell? { listComponent?.userCell }
     
-    @available(*, deprecated, message: "This property has been moved to the `SBUMemberListModule.List`.", renamed: "listComponent.emptyView")
+    @available(*, deprecated, message: "This property has been moved to the `SBUUserListModule.List`.", renamed: "listComponent.emptyView")
     public var emptyView: UIView? {
         get { listComponent?.emptyView }
         set { listComponent?.emptyView = newValue }
     }
     
-    @available(*, deprecated, message: "This property has been moved to the `SBUMemberListViewModel`.", renamed: "viewModel.memberListQuery")
-    public var memberListQuery: SBDGroupChannelMemberListQuery? { viewModel?.memberListQuery }
+    @available(*, deprecated, message: "This property has been moved to the `SBUUserListViewModel`.", renamed: "viewModel.memberListQuery")
+    public var memberListQuery: MemberListQuery? { viewModel?.memberListQuery }
     
-    @available(*, deprecated, message: "This property has been moved to the `SBUMemberListViewModel`.", renamed: "viewModel.operatorListQuery")
-    public var operatorListQuery: SBDOperatorListQuery? { viewModel?.operatorListQuery }
+    @available(*, deprecated, message: "This property has been moved to the `SBUUserListViewModel`.", renamed: "viewModel.operatorListQuery")
+    public var operatorListQuery: OperatorListQuery? { viewModel?.operatorListQuery }
     
-    @available(*, deprecated, message: "This property has been moved to the `SBUMemberListViewModel`.", renamed: "viewModel.mutedMemberListQuery")
-    public var mutedMemberListQuery: SBDGroupChannelMemberListQuery? { viewModel?.mutedMemberListQuery }
+    @available(*, deprecated, message: "This property has been moved to the `SBUUserListViewModel`.", renamed: "viewModel.mutedMemberListQuery")
+    public var mutedMemberListQuery: MemberListQuery? { viewModel?.mutedMemberListQuery }
     
-    @available(*, deprecated, message: "This property has been moved to the `SBUMemberListViewModel`.", renamed: "viewModel.bannedMemberListQuery")
-    public var bannedMemberListQuery: SBDBannedUserListQuery? { viewModel?.bannedMemberListQuery }
+    @available(*, deprecated, message: "This property has been moved to the `SBUUserListViewModel`.", renamed: "viewModel.bannedUserListQuery")
+    public var bannedMemberListQuery: BannedUserListQuery? { viewModel?.bannedUserListQuery }
     
-    @available(*, deprecated, message: "This property has been moved to the `SBUMemberListViewModel`.", renamed: "viewModel.participantListQuery")
-    public var participantListQuery: SBDParticipantListQuery? { viewModel?.participantListQuery }
+    @available(*, deprecated, message: "This property has been moved to the `SBUUserListViewModel`.", renamed: "viewModel.participantListQuery")
+    public var participantListQuery: ParticipantListQuery? { viewModel?.participantListQuery }
     
-    @available(*, deprecated, renamed: "init(channel:memberListType:)")
-    public convenience init(channel: SBDBaseChannel, type: ChannelMemberListType) {
-        self.init(channel: channel, memberListType: type)
+    @available(*, deprecated, renamed: "userList")
+    public var memberList: [SBUUser] { self.userList }
+    
+    @available(*, deprecated, renamed: "userListType")
+    public var memberListType: ChannelUserListType { self.userListType }
+    
+    
+    @available(*, deprecated, renamed: "init(channel:userListType:)")
+    public convenience init(channel: BaseChannel, type: ChannelMemberListType) {
+        let type = ChannelUserListType(rawValue: type.rawValue) ?? .none
+        self.init(channel: channel, userListType: type)
     }
 
-    @available(*, deprecated, renamed: "init(channel:members:memberListType:)")
-    public convenience init(channel: SBDBaseChannel,
+    @available(*, deprecated, renamed: "init(channel:users:userListType:)")
+    public convenience init(channel: BaseChannel,
                             members: [SBUUser],
                             type: ChannelMemberListType) {
-        self.init(channel: channel, members: members, memberListType: type)
+        let type = ChannelUserListType(rawValue: type.rawValue) ?? .none
+        self.init(channel: channel, users: members, userListType: type)
     }
     
-    @available(*, deprecated, message: "This function has been moved to the `SBUMemberListViewModel`.", renamed: "viewModel.loadChannel(channelUrl:type:)")
+    @available(*, deprecated, message: "This function has been moved to the `SBUUserListViewModel`.", renamed: "viewModel.loadChannel(channelURL:type:)")
     public func loadChannel(channelUrl: String?) {
-        guard let channelUrl = channelUrl else { return }
-        viewModel?.loadChannel(channelUrl: channelUrl, type: .group)
+        guard let channelURL = channelUrl else { return }
+        viewModel?.loadChannel(channelURL: channelURL, type: .group)
     }
     
-    @available(*, deprecated, message: "This function has been moved to the `SBUMemberListViewModel`.", renamed: "viewModel.loadNextMemberList(reset:members:)")
+    @available(*, deprecated, message: "This function has been moved to the `SBUUserListViewModel`.", renamed: "viewModel.loadNextUserList(reset:users:)")
     public func loadNextMemberList(reset: Bool, members: [SBUUser]? = nil) {
-        viewModel?.loadNextMemberList(reset: reset, members: members)
+        viewModel?.loadNextUserList(reset: reset, users: members)
     }
     
-    @available(*, deprecated, message: "This function has been moved to the `SBUMemberListViewModel`.", renamed: "viewModel.loadNextMemberList(reset:)")
+    @available(*, deprecated, message: "This function has been moved to the `SBUUserListViewModel`.", renamed: "viewModel.loadNextUserList(reset:)")
     public func loadMembers() {
-        guard let channel = self.channel as? SBDGroupChannel else { return }
-        if let members = channel.members as? [SBDMember] {
-            viewModel?.loadNextMemberList(reset: true, members: members.sbu_convertUserList())
-        }
+        guard let channel = self.channel as? GroupChannel else { return }
+        viewModel?.loadNextUserList(reset: true, users: channel.members.sbu_convertUserList())
     }
     
-    @available(*, unavailable, message: "This function has been moved to the `SBUMemberListViewModelDataSource`.", renamed: "memberListViewModel(_:nextMemberListForChannel:)")
+    @available(*, unavailable, message: "This function has been moved to the `SBUUserListViewModelDataSource`.", renamed: "userListViewModel(_:nextUserListForChannel:)")
     open func nextMemberList() -> [SBUUser]? {
         return nil
     }
     
-    @available(*, deprecated, message: "This function has been moved to the `SBUMemberListViewModel`.", renamed: "viewModel.promoteToOperator(member:)")
+    @available(*, deprecated, message: "This function has been moved to the `SBUUserListViewModel`.", renamed: "viewModel.registerAsOperator(user:)")
     public func promoteToOperator(member: SBUUser) {
-        viewModel?.promoteToOperator(member: member)
+        viewModel?.registerAsOperator(user: member)
     }
     
-    @available(*, deprecated, message: "This function has been moved to the `SBUMemberListViewModel`.", renamed: "viewModel.dismissOperator(member:)")
+    @available(*, deprecated, message: "This function has been moved to the `SBUUserListViewModel`.", renamed: "viewModel.unregisterOperator(user:)")
     public func dismissOperator(member: SBUUser) {
-        viewModel?.dismissOperator(member: member)
+        viewModel?.unregisterOperator(user: member)
     }
     
-    @available(*, deprecated, message: "This function has been moved to the `SBUMemberListViewModel`.", renamed: "viewModel.mute(member:)")
+    @available(*, deprecated, message: "This function has been moved to the `SBUUserListViewModel`.", renamed: "viewModel.mute(user:)")
     public func mute(member: SBUUser) {
-        viewModel?.mute(member: member)
+        viewModel?.mute(user: member)
     }
     
-    @available(*, deprecated, message: "This function has been moved to the `SBUMemberListViewModel`.", renamed: "viewModel.unmute(member:)")
+    @available(*, deprecated, message: "This function has been moved to the `SBUUserListViewModel`.", renamed: "viewModel.unmute(user:)")
     public func unmute(member: SBUUser) {
-        viewModel?.unmute(member: member)
+        viewModel?.unmute(user: member)
     }
     
-    @available(*, deprecated, message: "This function has been moved to the `SBUMemberListViewModel`.", renamed: "viewModel.ban(member:)")
+    @available(*, deprecated, message: "This function has been moved to the `SBUUserListViewModel`.", renamed: "viewModel.ban(user:)")
     public func ban(member: SBUUser) {
-        viewModel?.ban(member: member)
+        viewModel?.ban(user: member)
     }
     
-    @available(*, deprecated, message: "This function has been moved to the `SBUMemberListViewModel`.", renamed: "viewModel.unban(member:)")
+    @available(*, deprecated, message: "This function has been moved to the `SBUUserListViewModel`.", renamed: "viewModel.unban(user:)")
     public func unban(member: SBUUser) {
-        viewModel?.unban(member: member)
+        viewModel?.unban(user: member)
     }
     
-    @available(*, deprecated, message: "This function has been moved to the `SBUMemberListViewModel`.", renamed: "viewModel.resetMemberList()")
-    public func resetMemberList() { viewModel?.resetMemberList() }
+    @available(*, deprecated, message: "This function has been moved to the `SBUUserListViewModel`.", renamed: "viewModel.resetUserList()")
+    public func resetMemberList() { viewModel?.resetUserList() }
     
-    @available(*, deprecated, message: "This function has been moved to the `SBUMemberListModule.List`.`", renamed: "listComponent.register(memberCell:nib:)")
+    @available(*, deprecated, message: "This function has been moved to the `SBUUserListModule.List`.`", renamed: "listComponent.register(userCell:nib:)")
     public func register(userCell: UITableViewCell, nib: UINib? = nil) {
-        self.listComponent?.register(memberCell: userCell, nib: nil)
+        self.listComponent?.register(userCell: userCell, nib: nil)
     }
     
-    @available(*, deprecated, message: "This function has been moved to the `SBUMemberListModule.List`.", renamed: "listComponent.reloadTableView()")
+    @available(*, deprecated, message: "This function has been moved to the `SBUUserListModule.List`.", renamed: "listComponent.reloadTableView()")
     public func reloadData() { listComponent?.reloadTableView() }
     
     @available(*, unavailable, renamed: "showInviteUser()")
@@ -142,48 +155,50 @@ extension SBUMemberListViewController {
     @available(*, unavailable, renamed: "shouldUpdateLoadingState(_:)")
     open func shouldDismissLoadingIndicator() {}
     
-    @available(*, unavailable, message: "This function has been moved to the `SBUMemberListModule.List` and replaced to `setMoreMenuTapAction(_:)`")
+    @available(*, unavailable, message: "This function has been moved to the `SBUUserListModule.List` and replaced to `setMoreMenuTapAction(_:)`")
     open func setMoreMenuActionHandler(_ member: SBUUser) {}
     
-    @available(*, unavailable, message: "This function has been moved to the `SBUMemberListModule.List`. and replaced to `setUserProfileTapAction(_:)`")
+    @available(*, unavailable, message: "This function has been moved to the `SBUUserListModule.List`. and replaced to `setUserProfileTapAction(_:)`")
     open func setUserProfileTapGestureHandler(_ user: SBUUser) {}
     
-    @available(*, unavailable, message: "This function has been moved to the `SBUMemberListModule.List`.")
+    @available(*, unavailable, message: "This function has been moved to the `SBUUserListModule.List`.")
     open func didSelectRetry() {}
     
-    @available(*, unavailable, message: "This function has been moved to the `SBUMemberListViewModel`.")
-    open func channelDidUpdateOperators(_ sender: SBDBaseChannel) { }
+    @available(*, unavailable, message: "This function has been moved to the `SBUUserListViewModel`.")
+    open func channelDidUpdateOperators(_ sender: BaseChannel) { }
     
-    @available(*, unavailable, message: "This function has been moved to the `SBUMemberListViewModel`.")
-    open func channel(_ sender: SBDGroupChannel, userDidJoin user: SBDUser) { }
+    @available(*, unavailable, message: "This function has been moved to the `SBUUserListViewModel`.")
+    open func channel(_ sender: GroupChannel, userDidJoin user: User) { }
     
-    @available(*, unavailable, message: "This function has been moved to the `SBUMemberListViewModel`.")
-    open func channel(_ sender: SBDGroupChannel, userDidLeave user: SBDUser) { }
+    @available(*, unavailable, message: "This function has been moved to the `SBUUserListViewModel`.")
+    open func channel(_ sender: GroupChannel, userDidLeave user: User) { }
     
-    @available(*, unavailable, message: "This function has been moved to the `SBUMemberListViewModel`.")
-    open func channel(_ sender: SBDOpenChannel, userDidExit user: SBDUser) { }
+    @available(*, unavailable, message: "This function has been moved to the `SBUUserListViewModel`.")
+    open func channel(_ sender: OpenChannel, userDidExit user: User) { }
     
-    @available(*, unavailable, message: "This function has been moved to the `SBUMemberListViewModel`.")
-    open func channel(_ sender: SBDOpenChannel, userDidEnter user: SBDUser) { }
+    @available(*, unavailable, message: "This function has been moved to the `SBUUserListViewModel`.")
+    open func channel(_ sender: OpenChannel, userDidEnter user: User) { }
     
     
     
     
     /** ~ v.2.2.2 */
-    @available(*, deprecated, renamed: "init(channelUrl:channelType:memberListType:)")
-    public convenience init(channelUrl: String, type: ChannelMemberListType = .channelMembers) {
-        self.init(channelUrl:channelUrl, channelType: .group, memberListType: type)
+    @available(*, deprecated, renamed: "init(channelURL:channelType:userListType:)")
+    public convenience init(channelUrl: String, type: ChannelMemberListType = .members) {
+        let type = ChannelUserListType(rawValue: type.rawValue) ?? .members
+        self.init(channelURL:channelUrl, channelType: .group, userListType: type)
     }
     
-    @available(*, deprecated, renamed: "init(channelUrl:channelType:members:memberListType:)")
+    @available(*, deprecated, renamed: "init(channelURL:channelType:users:userListType:)")
     public convenience init(channelUrl: String,
                             members: [SBUUser],
-                            type: ChannelMemberListType = .channelMembers) {
-        self.init(channelUrl: channelUrl, channelType: .group, members: members, memberListType: type)
+                            type: ChannelMemberListType = .members) {
+        let type = ChannelUserListType(rawValue: type.rawValue) ?? .members
+        self.init(channelURL: channelUrl, channelType: .group, users: members, userListType: type)
     }
     
-    @available(*, deprecated, renamed: "resetMemberList()")
-    public func reloadMemberList() { viewModel?.resetMemberList() }
+    @available(*, deprecated, renamed: "resetUserList()")
+    public func reloadMemberList() { viewModel?.resetUserList() }
     
     @available(*, unavailable, renamed: "errorHandler(_:_:)")
     open func didReceiveError(_ message: String?, _ code: NSInteger? = nil) {

@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 @IBDesignable
 open class SBUOpenChannelUserMessageCell: SBUOpenChannelContentBaseMessageCell {
@@ -15,8 +15,8 @@ open class SBUOpenChannelUserMessageCell: SBUOpenChannelContentBaseMessageCell {
     // MARK: - Public property
     public lazy var messageTextView: UIView = SBUUserMessageTextView(channelType: .open)
     
-    public var userMessage: SBDUserMessage? {
-        return self.message as? SBDUserMessage
+    public var userMessage: UserMessage? {
+        return self.message as? UserMessage
     }
     
     // MARK: - Private property
@@ -110,7 +110,7 @@ open class SBUOpenChannelUserMessageCell: SBUOpenChannelContentBaseMessageCell {
     
     
     // MARK: - Common
-    open func configure(_ message: SBDBaseMessage,
+    open func configure(_ message: BaseMessage,
                           hideDateView: Bool,
                           groupPosition: MessageGroupPosition,
                           withTextView: Bool,

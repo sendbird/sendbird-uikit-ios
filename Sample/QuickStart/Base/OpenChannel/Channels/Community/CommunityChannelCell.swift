@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 class CommunityChannelCell: SBUBaseChannelCell {
     
@@ -117,13 +117,13 @@ class CommunityChannelCell: SBUBaseChannelCell {
     
     /// This function configure a cell using channel information.
     /// - Parameter channel: cell object
-    public override func configure(channel: SBDBaseChannel) {
+    public override func configure(channel: BaseChannel) {
         super.configure(channel: channel)
         
-        guard let channel = channel as? SBDOpenChannel else { return }
+        guard let channel = channel as? OpenChannel else { return }
         
         // Cover image
-        if let coverURL = channel.coverUrl {
+        if let coverURL = channel.coverURL {
             self.channelImage.setImage(with: coverURL)
         } else {
             self.channelImage.setPlaceholderImage(iconSize: CGSize(width: 40, height: 40))

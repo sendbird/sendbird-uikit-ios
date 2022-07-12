@@ -7,22 +7,22 @@
 //
 
 import Foundation
-import SendBirdSDK
+import SendbirdChatSDK
 
 class SBUMessageCache {
     
     private let fetchLimit: Int = 100
-    private let channel: SBDBaseChannel
+    private let channel: BaseChannel
     
-    @SBUAtomic private(set) var cachedMessageList: [SBDBaseMessage] = []
-    private let messageListParam: SBDMessageListParams
+    @SBUAtomic private(set) var cachedMessageList: [BaseMessage] = []
+    private let messageListParam: MessageListParams
     private var latestUpdatedAt: Int64 = 0
     
-    init(channel: SBDBaseChannel,
-         messageListParam: SBDMessageListParams) {
+    init(channel: BaseChannel,
+         messageListParam: MessageListParams) {
         self.channel = channel
         
-        self.messageListParam = messageListParam.copy() as? SBDMessageListParams ?? SBDMessageListParams()
+        self.messageListParam = messageListParam.copy() as? MessageListParams ?? MessageListParams()
         self.messageListParam.previousResultSize = self.fetchLimit
         self.messageListParam.nextResultSize = self.fetchLimit
     }
@@ -31,7 +31,7 @@ class SBUMessageCache {
     
     func loadInitial() {
         SBULog.info("loadInitial")
-        let param: SBDMessageListParams = self.messageListParam.copy() as? SBDMessageListParams ?? SBDMessageListParams()
+        let param: MessageListParams = self.messageListParam.copy() as? MessageListParams ?? MessageListParams()
         param.isInclusive = true
         param.nextResultSize = 0
         
@@ -56,10 +56,10 @@ class SBUMessageCache {
             return
         }
         
-        let params: SBDMessageListParams = self.messageListParam.copy() as? SBDMessageListParams ?? SBDMessageListParams()
+        let params: MessageListParams = self.messageListParam.copy() as? MessageListParams ?? MessageListParams()
         params.previousResultSize = 0
         
-        var completion: (([SBDBaseMessage]?, SBDError?) -> Void)!
+        var completion: (([BaseMessage]?, SBError?) -> Void)!
         completion = { [weak self] (messages, error) in
             guard let self = self else { return }
             
@@ -96,7 +96,7 @@ class SBUMessageCache {
     
     // MARK: - Upsert messages
     
-    func add(messages: [SBDBaseMessage]) {
+    func add(messages: [BaseMessage]) {
         SBULog.info("add : \(messages.count)")
         guard !messages.isEmpty else { return }
         
@@ -105,7 +105,7 @@ class SBUMessageCache {
         self.cachedMessageList.sort(by: { $0.createdAt > $1.createdAt })
     }
     
-    func applyChangeLog(updated: [SBDBaseMessage]?, deleted: [Int64]?) {
+    func applyChangeLog(updated: [BaseMessage]?, deleted: [Int64]?) {
         SBULog.info("applyChangeLog. updated : \(String(describing: updated)), deleted : \(String(describing: deleted)) \(self)")
         guard !self.cachedMessageList.isEmpty else { return }
         
@@ -124,11 +124,11 @@ class SBUMessageCache {
         }
     }
     
-    func flush(with messages: [SBDBaseMessage]) -> [SBDBaseMessage] {
+    func flush(with messages: [BaseMessage]) -> [BaseMessage] {
         SBULog.info("flushing cache with : \(messages.count)")
         guard !self.cachedMessageList.isEmpty else { return messages }
         
-        let mergedList: [SBDBaseMessage] =
+        let mergedList: [BaseMessage] =
             (self.cachedMessageList
                 .filter { !SBUUtils.contains(messageId: $0.messageId, in: messages) }
                 + messages)

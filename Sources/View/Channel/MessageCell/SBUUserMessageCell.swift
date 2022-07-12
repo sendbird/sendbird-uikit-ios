@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 @IBDesignable
 open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextViewDelegate {
@@ -15,8 +15,8 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
     // MARK: - Public property
     public lazy var messageTextView: UIView = SBUUserMessageTextView()
     
-    public var userMessage: SBDUserMessage? {
-        return self.message as? SBDUserMessage
+    public var userMessage: UserMessage? {
+        return self.message as? UserMessage
     }
     
     // + ------------ +
@@ -141,7 +141,7 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
     }
     
     @available(*, deprecated, renamed: "configure(with:)") // 2.2.0
-    open func configure(_ message: SBDUserMessage,
+    open func configure(_ message: UserMessage,
                         hideDateView: Bool,
                         groupPosition: MessageGroupPosition,
                         receiptState: SBUMessageReceiptState?,
@@ -159,13 +159,13 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
     }
     
     @available(*, deprecated, renamed: "configure(with:)") // 2.2.0
-    open func configure(_ message: SBDBaseMessage,
+    open func configure(_ message: BaseMessage,
                         hideDateView: Bool,
                         receiptState: SBUMessageReceiptState?,
                         groupPosition: MessageGroupPosition,
                         withTextView: Bool) {
-        guard let userMessage = message as? SBDUserMessage else {
-            SBULog.error("The message is not a type of SBDUserMessage")
+        guard let userMessage = message as? UserMessage else {
+            SBULog.error("The message is not a type of UserMessage")
             return
         }
 
@@ -184,8 +184,9 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
     /// Adds highlight attribute to the message
     open override func configure(highlightInfo: SBUHighlightMessageInfo?) {
         // Only apply highlight for the given message, that's not edited (updatedAt didn't change)
-        guard self.message.messageId == highlightInfo?.messageId,
-              self.message.updatedAt == highlightInfo?.updatedAt else { return }
+        guard let message = self.message,
+              message.messageId == highlightInfo?.messageId,
+              message.updatedAt == highlightInfo?.updatedAt else { return }
 
         guard let messageTextView = messageTextView as? SBUUserMessageTextView else { return }
 

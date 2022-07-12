@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 extension SBUBaseChannelViewController {
     // MARK: - Unavailable 3.0.0
@@ -18,26 +18,26 @@ extension SBUBaseChannelViewController {
     open func isScrollNearBottom() -> Bool { return false }
     
     @available(*, unavailable, message: "This function has been moved to `SBUBaseChannelViewModelDelegate`. Use `baseChannelViewModel(_:didChangeChannel:withContext:)` of `SBUBaseChannelViewModelDelegate` instead.")
-    open func channelDidChange(_ channel: SBDBaseChannel?, context: SBDMessageContext) { }
+    open func channelDidChange(_ channel: BaseChannel?, context: MessageContext) { }
     
     @available(*, unavailable, message: "This function has been moved to `SBUBaseChannelViewModelDelegate`. Use `baseChannelViewModel(_:didReceiveNewMessage:forChannel:)` of `SBUBaseChannelViewModelDelegate` instead.")
-    open func channelDidReceiveNewMessage(_ channel: SBDBaseChannel, message: SBDBaseMessage) { }
+    open func channelDidReceiveNewMessage(_ channel: BaseChannel, message: BaseMessage) { }
     
     @available(*, unavailable, message: "This function has been moved to `SBUBaseChannelViewModelDelegate`. Use `baseChannelViewModel(_:shouldFinishEditModeForChannel:)` of `SBUBaseChannelViewModelDelegate` instead.")
-    open func channelShouldFinishEditMode(_ channel: SBDBaseChannel) { }
+    open func channelShouldFinishEditMode(_ channel: BaseChannel) { }
     
     @available(*, unavailable, message: "This function has been moved to `SBUBaseChannelViewModelDelegate`. Use `baseChannelViewModel(_:shouldDismissForChannel:)` of `SBUBaseChannelViewModelDelegate` instead.")
-    open func channelShouldDismiss(_ channel: SBDBaseChannel?) { }
+    open func channelShouldDismiss(_ channel: BaseChannel?) { }
     
     
     @available(*, unavailable, message: "This function has been moved to `SBUBaseChannelViewModelDelegate`. Use `baseChannelViewModel(_:didChangeMessageList:needsToReload:initialLoad:)` of `SBUBaseChannelViewModelDelegate` instead.")
-    open func messageListDidChange(_ messages: [SBDBaseMessage], needToReload: Bool, isInitialLoad: Bool) { }
+    open func messageListDidChange(_ messages: [BaseMessage], needToReload: Bool, isInitialLoad: Bool) { }
     
     @available(*, unavailable, message: "This function has been moved to `SBUBaseChannelViewModelDelegate`. Use `baseChannelViewModel(_:shouldUpdateScrollInMessageList:forContext:keepsScroll:)` of `SBUBaseChannelViewModelDelegate` instead.")
-    open func messageListShouldUpdateScroll(_ messages: [SBDBaseMessage], context: SBDMessageContext?, keepScroll: Bool) { }
+    open func messageListShouldUpdateScroll(_ messages: [BaseMessage], context: MessageContext?, keepScroll: Bool) { }
     
     @available(*, unavailable, message: "This function has been moved to `SBUBaseChannelViewModelDelegate`. Use `baseChannelViewModel(_:didUpdateReaction:forMessage:)` of `SBUBaseChannelViewModelDelegate` instead.")
-    open func message(_ message: SBDBaseMessage, didUpdateReaction reaction: SBDReactionEvent) { }
+    open func message(_ message: BaseMessage, didUpdateReaction reaction: ReactionEvent) { }
     
     @available(*, unavailable, message: "This function has been moved to `SBUGroupChannelModule.List` (or `SBUOpenChannelModule.List`).")
     public func getMessageGroupingPosition(currentIndex: Int) -> MessageGroupPosition {
@@ -45,12 +45,12 @@ extension SBUBaseChannelViewController {
     }
     
     @available(*, unavailable, message: "This function has been moved to `SBUBaseChannelModuleListDelegate`. Use `channelModule(_:didTapMessage:forRowAt:)` of `SBUBaseChannelModuleListDelegate` instead.")
-    open func setTapGestureHandler(_ cell: UITableViewCell, message: SBDBaseMessage) { }
+    open func setTapGestureHandler(_ cell: UITableViewCell, message: BaseMessage) { }
     
     @available(*, unavailable, message: "This function has been moved to `SBUBaseChannelModuleListDelegate`. Use `channelModule(_:didLongTapMessage:forRowAt:)` of `SBUBaseChannelModuleListDelegate` instead.")
     open func setLongTapGestureHandler(
         _ cell: UITableViewCell,
-        message: SBDBaseMessage,
+        message: BaseMessage,
         indexPath: IndexPath
     ) { }
     
@@ -68,7 +68,7 @@ extension SBUBaseChannelViewController {
         
     }
     
-    @available(*, unavailable, message: "This function has been moved to `SBUChannelModule.Input`. Use `pickDocumentFile(documentUrls:)` of `SBUChannelModule.Input` instead.")
+    @available(*, unavailable, message: "This function has been moved to `SBUChannelModule.Input`. Use `pickDocumentFile(documentURLs:)` of `SBUChannelModule.Input` instead.")
     public func sendDocumentFileMessage(documentUrls: [URL]) {
         
     }
@@ -119,14 +119,14 @@ extension SBUBaseChannelViewController {
     @available(*, unavailable, message: "This function has been moved to `SBUBaseChannelModuleInputDelegate` and replaced to `baseChannelModule(_:willChangeMode:message:)`.")
     open func messageInputView(_ messageInputView: SBUMessageInputView,
                                willChangeMode mode: SBUMessageInputMode,
-                               message: SBDBaseMessage?) {
+                               message: BaseMessage?) {
     }
     
     
     @available(*, unavailable, message: "This function has been moved to `SBUBaseChannelModuleInputDelegate` and replaced to `baseChannelModule(_:didChangeMode:)`.")
     open func messageInputView(_ messageInputView: SBUMessageInputView,
                                didChangeMode mode: SBUMessageInputMode,
-                               message: SBDBaseMessage?) { }
+                               message: BaseMessage?) { }
     
     
     @available(*, unavailable, message: "This function has been moved to `SBUBaseChannelModuleInputDelegate` and replaced to `baseChannelModuleDidStartTyping(_:)`.")
@@ -137,46 +137,46 @@ extension SBUBaseChannelViewController {
     open func messageInputViewDidEndTyping() { }
     
     @available(*, unavailable, message: "This function has been moved to `SBUBaseChannelViewModel`.")
-    open func channel(_ sender: SBDBaseChannel, didReceive message: SBDBaseMessage) {}
+    open func channel(_ sender: BaseChannel, didReceive message: BaseMessage) {}
     
     @available(*, unavailable, message: "This function has been moved to `SBUOpenChannelViewModel`.")
-    open func channel(_ sender: SBDBaseChannel, didUpdate message: SBDBaseMessage) {}
+    open func channel(_ sender: BaseChannel, didUpdate message: BaseMessage) {}
     
     
     @available(*, unavailable, message: "This function has been moved to `SBUBaseChannelViewModel`.")
-    open func channel(_ sender: SBDBaseChannel, messageWasDeleted messageId: Int64) {}
+    open func channel(_ sender: BaseChannel, messageWasDeleted messageId: Int64) {}
     
     
     @available(*, unavailable, message: "This function has been moved to `SBUBaseChannelViewModelDelegate` and replaced to `baseChannelViewModel(_:didChangeChannel:withContext:)`.")
-    open func channelWasChanged(_ sender: SBDBaseChannel) {}
+    open func channelWasChanged(_ sender: BaseChannel) {}
     
     @available(*, unavailable, message: "This function has been moved to `SBUBaseChannelViewModelDelegate` and replaced to `baseChannelViewModel(_:didChangeChannel:withContext:)`.")
-    open func channelWasFrozen(_ sender: SBDBaseChannel) {}
-    
-    
-    @available(*, unavailable, message: "This function has been moved to `SBUBaseChannelViewModelDelegate` and replaced to `baseChannelViewModel(_:didChangeChannel:withContext:)`.")
-    open func channelWasUnfrozen(_ sender: SBDBaseChannel) {}
+    open func channelWasFrozen(_ sender: BaseChannel) {}
     
     
     @available(*, unavailable, message: "This function has been moved to `SBUBaseChannelViewModelDelegate` and replaced to `baseChannelViewModel(_:didChangeChannel:withContext:)`.")
-    open func channel(_ sender: SBDBaseChannel, userWasMuted user: SBDUser) {}
+    open func channelWasUnfrozen(_ sender: BaseChannel) {}
+    
     
     @available(*, unavailable, message: "This function has been moved to `SBUBaseChannelViewModelDelegate` and replaced to `baseChannelViewModel(_:didChangeChannel:withContext:)`.")
-    open func channel(_ sender: SBDBaseChannel, userWasUnmuted user: SBDUser) {}
+    open func channel(_ sender: BaseChannel, userWasMuted user: User) {}
     
     @available(*, unavailable, message: "This function has been moved to `SBUBaseChannelViewModelDelegate` and replaced to `baseChannelViewModel(_:didChangeChannel:withContext:)`.")
-    open func channelDidUpdateOperators(_ sender: SBDBaseChannel) {}
+    open func channel(_ sender: BaseChannel, userWasUnmuted user: User) {}
     
     @available(*, unavailable, message: "This function has been moved to `SBUBaseChannelViewModelDelegate` and replaced to `baseChannelViewModel(_:didChangeChannel:withContext:)`.")
-    open func channel(_ sender: SBDBaseChannel, userWasBanned user: SBDUser) {}
+    open func channelDidUpdateOperators(_ sender: BaseChannel) {}
     
     @available(*, unavailable, message: "This function has been moved to `SBUBaseChannelViewModelDelegate` and replaced to `baseChannelViewModel(_:didChangeChannel:withContext:)`.")
-    open func channel(_ sender: SBDOpenChannel, userDidEnter user: SBDUser) { }
+    open func channel(_ sender: BaseChannel, userWasBanned user: User) {}
     
     @available(*, unavailable, message: "This function has been moved to `SBUBaseChannelViewModelDelegate` and replaced to `baseChannelViewModel(_:didChangeChannel:withContext:)`.")
-    open func channel(_ sender: SBDOpenChannel, userDidExit user: SBDUser) { }
+    open func channel(_ sender: OpenChannel, userDidEnter user: User) { }
     
     @available(*, unavailable, message: "This function has been moved to `SBUBaseChannelViewModelDelegate` and replaced to `baseChannelViewModel(_:didChangeChannel:withContext:)`.")
-    open func channelWasDeleted(_ channelUrl: String, channelType: SBDChannelType) {}
+    open func channel(_ sender: OpenChannel, userDidExit user: User) { }
+    
+    @available(*, unavailable, message: "This function has been moved to `SBUBaseChannelViewModelDelegate` and replaced to `baseChannelViewModel(_:didChangeChannel:withContext:)`.")
+    open func channelWasDeleted(_ channelUrl: String, channelType: ChannelType) {}
 
 }

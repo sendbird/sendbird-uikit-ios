@@ -9,7 +9,7 @@
 import UIKit
 import Photos
 import MobileCoreServices
-import SendBirdSDK
+import SendbirdChatSDK
 
 open class CreateCommunityChannelViewController: UIViewController, UINavigationControllerDelegate {
     
@@ -187,7 +187,7 @@ open class CreateCommunityChannelViewController: UIViewController, UINavigationC
     
     /// Creates the channel.
     public func createChannel() {
-        if SBDMain.getConnectState() == .closed {
+        if SendbirdChat.getConnectState() == .closed {
             self.showError("The Internet connection appears to be offline.")
             return
         }
@@ -206,15 +206,16 @@ open class CreateCommunityChannelViewController: UIViewController, UINavigationC
         self.rightBarButton.isEnabled = false
         SBULoading.start()
         
-        SBDOpenChannel.createChannel(
-            withName: channelName,
-            channelUrl: nil,
-            coverImage: coverImage,
-            coverImageName: "cover_image",
-            data: nil,
-            operatorUserIds: [SBUGlobals.currentUser?.userId ?? ""],
-            customType: customType,
-            progressHandler: nil) { [weak self] (channel, error) in
+        let params = OpenChannelCreateParams()
+        params.name = channelName
+        params.channelURL = nil
+        params.coverImage = coverImage
+        params.coverImageName = "cover_image"
+        params.data = nil
+        params.operatorUserIds = [SBUGlobals.currentUser?.userId ?? ""]
+        params.customType = customType
+        
+        OpenChannel.createChannel(params: params) { [weak self] channel, error in
                 guard let self = self else { return }
                 self.rightBarButton.isEnabled = true
                 SBULoading.stop()
@@ -223,7 +224,7 @@ open class CreateCommunityChannelViewController: UIViewController, UINavigationC
                 
                 guard let channel = channel else { return }
                 SendbirdUI.moveToChannel(
-                    channelUrl: channel.channelUrl,
+                    channelURL: channel.channelURL,
                     basedOnChannelList: false,
                     channelType: .open
                 )

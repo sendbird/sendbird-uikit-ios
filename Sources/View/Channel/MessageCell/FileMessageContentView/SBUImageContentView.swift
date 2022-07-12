@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 open class SBUImageContentView: SBUBaseFileContentView {
     public var imageView: UIImageView = {
@@ -79,7 +79,7 @@ open class SBUImageContentView: SBUBaseFileContentView {
         ])
     }
     
-    open override func configure(message: SBDFileMessage, position: MessagePosition) {
+    open override func configure(message: FileMessage, position: MessagePosition) {
         if self.message?.requestId != message.requestId ||
             self.message?.updatedAt != message.updatedAt {
             self.imageView.image = nil
@@ -91,9 +91,9 @@ open class SBUImageContentView: SBUBaseFileContentView {
         let imageOption: UIImageView.ImageOption
         let urlString: String
         
-        if let thumbnailUrl = thumbnail?.url {
+        if let thumbnailURL = thumbnail?.url {
             imageOption = .original
-            urlString = thumbnailUrl
+            urlString = thumbnailURL
         } else {
             switch SBUUtils.getFileType(by: message) {
             case .image where message.sendingStatus == .succeeded:
@@ -102,7 +102,7 @@ open class SBUImageContentView: SBUBaseFileContentView {
 
             case .video where message.sendingStatus == .succeeded:
                 urlString = message.url
-                imageOption = .videoUrlToImage
+                imageOption = .videoURLToImage
 
             default:
                 imageOption = .imageToThumbnail
@@ -110,7 +110,7 @@ open class SBUImageContentView: SBUBaseFileContentView {
             }
         }
         
-        let thumbnailSize = message.channelType == CHANNEL_TYPE_GROUP ?
+        let thumbnailSize = message.channelType == .group ?
             SBUConstant.thumbnailSize : SBUConstant.openChannelThumbnailSize
 
         self.resizeImageView(by: thumbnailSize)

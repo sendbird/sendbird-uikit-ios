@@ -5,10 +5,15 @@
 [![CocoaPods](https://img.shields.io/badge/CocoaPods-compatible-green.svg)](https://cocoapods.org/pods/SendBirdUIKit)
 [![Swift Package Manager](https://img.shields.io/badge/SPM-compatible-green.svg)](https://github.com/sendbird/sendbird-uikit-ios-spm)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-green.svg?style=flat)](https://github.com/Carthage/Carthage)
-[![Commercial License](https://img.shields.io/badge/license-Commercial-green.svg)](https://github.com/sendbird/sendbird-uikit-ios/blob/master/LICENSE.md)
-[![Version](https://img.shields.io/badge/version-3.0.0--beta-informational)](https://cocoapods.org/pods/SendBirdUIKit)
+[![Commercial License](https://img.shields.io/badge/license-Commercial-green.svg)](https://github.com/sendbird/sendbird-uikit-ios/blob/main/LICENSE.md)
 
 We are introducing a new version of the Sendbird UIKit. Version 3 features a new modular architecture with more granular components that give you enhanced flexibility to customize your web and mobile apps. Check out our [migration guides](changelogs/MIGRATION_GUIDE_V3.md) and download our [samples](/Sample)
+
+
+With the official release of the v3 version, the name of the `master` branch was changed to the `main` branch, and the `main` branch was changed to the contents of the v3. If you have to keep using v2, please use the `main-v2` branch.
+* v3: `main`
+* v2: `main-v2`
+
 
 ## Table of contents
 
@@ -29,7 +34,7 @@ We are introducing a new version of the Sendbird UIKit. Version 3 features a new
 ![ThemeLight](https://static.sendbird.com/docs/uikit/ios/theme-light_20200416.png)
 
 This repository houses the UIKit source code and UIKit sample in addition to a UIKit Framework.
-- **Sources** is where you can find the open source code. Check out [UIKit Open Source Guidelines](https://github.com/sendbird/sendbird-uikit-ios/blob/master/OPENSOURCE_GUIDELINES.md) for more information regarding our stance on open source.
+- **Sources** is where you can find the open source code. Check out [UIKit Open Source Guidelines](/OPENSOURCE_GUIDELINES.md) for more information regarding our stance on open source.
 - **Sample** is a chat app which contains custom sample code for various key features written in `Swift`. 
 
 ### Benefits
@@ -55,7 +60,7 @@ The minimum requirements for Sendbird UIKit for iOS are:
 
 - iOS 11+
 - Swift 5.0+
-- Sendbird Chat SDK for iOS 3.1.13+
+- Sendbird Chat SDK for iOS 4.0.5+
 
 <br />
 
@@ -67,7 +72,7 @@ This section gives you information you need to get started with Sendbird UIKit f
 
 Our sample app has all the core features of Sendbird UIKit for iOS. Download the app from our GitHub repository to get an idea of what you can build with the actual UIKit before building your own project.
 
-- https://github.com/sendbird/sendbird-uikit-ios/tree/master/Sample
+- [Samples](/Sample)
 
 
 ### Create a project
@@ -81,7 +86,7 @@ You can get started by creating a project. Sendbird UIKit support `Swift`, so yo
 
 UIKit for iOS can be installed through either [`CocoaPods`](https://cocoapods.org/), [`Carthage`](https://github.com/Carthage/Carthage) or [`Swift Package Manager`](https://swift.org/package-manager/): 
 
-> Note: Sendbird UIKit for iOS is Sendbird Chat SDK-dependent. The minimum requirement of the Chat SDK for iOS is 3.1.13 or higher.
+> Note: Sendbird UIKit for iOS is Sendbird Chat SDK-dependent. The minimum requirement of the Chat SDK for iOS is 4.0.5 or higher.
 
 
 #### - Swift Packages
@@ -94,18 +99,18 @@ UIKit for iOS can be installed through either [`CocoaPods`](https://cocoapods.or
 https://github.com/sendbird/sendbird-uikit-ios-spm.git
 ```
 
-3. To add the package, select **Branch Rules**, input `main-beta` and click **Next**.
+3. To add the package, select **Branch Rules**, input `main` and click **Next**.
 
 #### - CocoaPods
 
-1. Add `SendbirdUIKit` into your `Podfile` in Xcode as below:
+1. Add `SendBirdUIKit` into your `Podfile` in Xcode as below:
 
 ```bash
 platform :ios, '11.0'
 use_frameworks!
 
 target YOUR_PROJECT_TARGET do
-	pod 'SendbirdUIKit', '~> 3.0.0-beta.2' // Add this line.
+    pod 'SendBirdUIKit'
 end
 ```
 
@@ -121,13 +126,15 @@ $ pod install
 $ pod update
 ```
 
+> Note: Cocoapod uses the name of Send**B**irdUIKit, not Send**b**irdUIKit.
+
 #### - Carthage
 
 1. Add `SendbirdUIKit` and `SendBirdSDK` into your `Cartfile` as below:
 
 ```bash
 github "sendbird/sendbird-uikit-ios"
-github "sendbird/sendbird-ios-framework" == 3.1.13
+github "sendbird/sendbird-chat-sdk-ios"
 ```
 
 2. Install the `SendbirdUIKit` framework through `Carthage`.
@@ -142,39 +149,6 @@ $ carthage update --use-xcframeworks
 
 >__Note__: Errors may occur if you're building your project with Xcode 11.3 or earlier versions. To fix these errors, refer to [Handle errors caused by unknown attributes](https://github.com/sendbird/sendbird-uikit-ios#--handle-errors-caused-by-unknown-attributes).
 
-#### - Handle errors caused by unknown attributes
-
-If you are building with Xcode 11.3 or earlier version, you may face two following errors caused by `Swift`'s new annotation processing applied on `Swift` 5.2 which is used in Xcode 11.4.
-
-```bash
-- Unknown attribute '_inheritsConvenienceInitializers'
-- Unknown attribute '_hasMissingDesignatedInitializers'
-```
-
-When these errors happen, follow the steps below which remove the annotations by executing the necessary script in the build steps in advance.
-
-1. Open the **edit scheme** menu of the project target.
-![EditScheme](https://static.sendbird.com/docs/uikit/ios/getting-started-handling-errors-01_20200623.png)
-2. Select the **Build** > **Pre-actions** menu and add **new run script action**.
-![NewRunScriptAction](https://static.sendbird.com/docs/uikit/ios/getting-started-handling-errors-02_20200623.png)
-3. After adding the script below, select the target to apply the script.
-![ApplyScript](https://static.sendbird.com/docs/uikit/ios/getting-started-handling-errors-03_20200623.png)
-```bash
-# Cocoapods
-if [ -d "${PROJECT_DIR}/Pods/SendbirdUIKit" ]; then
-    find ${PROJECT_DIR}/Pods/SendbirdUIKit/SendbirdUIKit.framework/Modules/SendbirdUIKit.swiftmodule/ -type f -name '*.swiftinterface' -exec sed -i '' s/'@_inheritsConvenienceInitializers '// {} +
-    find ${PROJECT_DIR}/Pods/SendbirdUIKit/SendbirdUIKit.framework/Modules/SendbirdUIKit.swiftmodule/ -type f -name '*.swiftinterface' -exec sed -i '' s/'@_hasMissingDesignatedInitializers '// {} +
-fi
-
-# Carthage
-if [ -d "${PROJECT_DIR}/Carthage/Build/iOS/SendbirdUIKit.framework" ]; then
-    find ${PROJECT_DIR}/Carthage/Build/iOS/SendbirdUIKit.framework/Modules/SendbirdUIKit.swiftmodule/ -type f -name '*.swiftinterface' -exec sed -i '' s/'@_inheritsConvenienceInitializers '// {} +
-    find ${PROJECT_DIR}/Carthage/Build/iOS/SendbirdUIKit.framework/Modules/SendbirdUIKit.swiftmodule/ -type f -name '*.swiftinterface' -exec sed -i '' s/'@_hasMissingDesignatedInitializers '// {} +
-fi
-```
-
-4. Try to build and run.
-
 ### Get attachment permission
 
 Sendbird UIKit offers features to attach or save files such as photos, videos, and documents. To use those features, you need to request permission from end users.
@@ -186,11 +160,11 @@ Applications must acquire permission from end users to use their photo assets or
 ```xml
 ...
 <key>NSPhotoLibraryUsageDescription</key>
-	<string>$(PRODUCT_NAME) would like access to your photo library</string>
+    <string>$(PRODUCT_NAME) would like access to your photo library</string>
 <key>NSCameraUsageDescription</key>
-	<string>$(PRODUCT_NAME) would like to use your camera</string>
+    <string>$(PRODUCT_NAME) would like to use your camera</string>
 <key>NSMicrophoneUsageDescription</key>
-	<string>$(PRODUCT_NAME) would like to use your microphone (for videos)</string>
+    <string>$(PRODUCT_NAME) would like to use your microphone (for videos)</string>
 <key>NSPhotoLibraryAddUsageDescription</key>
     <string>$(PRODUCT_NAME) would like to save photos to your photo library</string>
 ...
@@ -221,15 +195,18 @@ Initialize the `SendbirdUIKit` instance through `AppDelegate` as below:
 // AppDelegate.swift
 
 import SendbirdUIKit
-...
 
 func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-    ...
     
-    let APP_ID = "2D7B4CDB-932F-4082-9B09-A1153792DC8D"	// The ID of the Sendbird application which UIKit sample app uses.
-    SBUMain.initialize(applicationId: APP_ID)
-    ...
-
+    let APP_ID = "2D7B4CDB-932F-4082-9B09-A1153792DC8D"    // The ID of the Sendbird application which UIKit sample app uses.
+    SendbirdUI.initialize(applicationId: APP_ID) {
+        // Do something to display the start of the SendbirdUIKit initialization.
+    } migrationHandler: {
+        // Do something to display the progress of the DB migration.
+    } completionHandler: { error in
+        // Do something to display the completion of the SendbirdChat initialization.
+    }
+    
 }
 ```
 
@@ -237,9 +214,9 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
 
 ### Set the current user
 
-User information must be set as `CurrentUser` in the `SBUGlobal` prior to launching Sendbird UIKit. This information will be used within the kit for various tasks. The `userId` field must be specified whereas other fields such as `nickname` and  `profileUrl` are optional and filled with default values if not specified.  
+User information must be set as `currentUser` in the `SBUGlobal` prior to launching Sendbird UIKit. This information will be used within the kit for various tasks. The `userId` field must be specified whereas other fields such as `nickname` and  `profileURL` are optional and filled with default values if not specified.  
 
-Set the `CurrentUser` for UIKit through the `AppDelegate` as below:
+Set the `currentUser` for UIKit through the `AppDelegate` as below:
 
 > **Note**: Even if you don’t use the `AppDelegate`, you should register user information before launching a chat service.
  
@@ -247,18 +224,15 @@ Set the `CurrentUser` for UIKit through the `AppDelegate` as below:
 // AppDelegate.swift
 
 import SendbirdUIKit
-...
 
 func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-    ...
     
     // Case 1: USER_ID only
     SBUGlobals.currentUser = SBUUser(userId: {USER_ID})
     
     // Case 2: Specify all fields
-    SBUGlobals.currentUser = SBUUser(userId: {USER_ID}, nickname:{(opt)NICKNAME} profileUrl:{(opt)PROFILE_URL})
-    ...
-	
+    SBUGlobals.currentUser = SBUUser(userId: {USER_ID}, nickname:{(opt)NICKNAME} profileURL:{(opt)PROFILE_URL})
+    
 }
 ```
 
@@ -266,19 +240,17 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
 
 ### Channel list
 
-UIKit allows you to create a channel specifically for 1-on-1 chat and to list 1-on-1 chat channels so that you can easily view and manage them. With the `SBUChannelListViewController` class, you can provide end users a complete chat service featuring a [channel list](https://sendbird.com/docs/uikit/v1/ios/guides/key-functions#2-list-channels). 
+UIKit allows you to create a channel specifically for 1-on-1 chat and to list 1-on-1 chat channels so that you can easily view and manage them. With the `SBUChannelListViewController` class, you can provide end users a complete chat service featuring a [List channels](https://sendbird.com/docs/uikit/v3/ios/key-functions/list-channels). 
 
 Implement the code below wherever you want to start UIKit.
 
 ```swift
 import SendbirdUIKit
-...
 
-let channelListVC = SBUChannelListViewController()
-let naviVC = UINavigationController(rootViewController: channelListVC)
+let groupChannelListVC = SBUGroupChannelListViewController()
+let naviVC = UINavigationController(rootViewController: groupChannelListVC)
 self.present(naviVC, animated: true)
 
-...
 ```
 
 >__Note__: If you are already using a navigation controller, you can use `pushViewController` function.
@@ -287,19 +259,19 @@ self.present(naviVC, animated: true)
 
 ### Channel
 
-With the `SBUChannelViewController` class, you can build a channel-based chat service instead of a channel list-based one.
+With the `SBUGroupChannelViewController` class, you can build a channel-based chat service instead of a channel list-based one.
 
-> **Note**: You should have either a `SBDChannel` object or a `ChannelUrl` in order to run a channel-based chat service. 
+> **Note**: You should have either a `Channel` object or a `ChannelURL` in order to run a channel-based chat service. 
 
 Use the following code to implement the chat service.
 
 ```swift
 import SendbirdUIKit
-...
 
-let vc = SBUChannelViewController(channelUrl: {CHANNEL_URL})
-let naviVC = UINavigationController(rootViewController: vc)
+let channelVC = SBUGroupChannelViewController(channelURL: {CHANNEL_URL})
+let naviVC = UINavigationController(rootViewController: channelVC)
 present(naviVC, animated: true)
+
 ```
 
 ### Distribution setting 
@@ -346,14 +318,19 @@ UIKit for iOS manages the lifecycle of its `ViewController` along with various v
 
 |Component|Description|
 |---|---|
-|SBUChannelListViewController|A `ViewController` that manages a channel list.|
-|SBUChannelViewController|A `ViewController` that manages a 1-on-1 chat channel.|
-|SBUChannelSettingViewController|A `ViewController` that manages the channel settings.|
+|SBUGroupChannelListViewController|A `ViewController` that manages a group channel list.|
+|SBUGroupChannelViewController|A `ViewController` that manages a 1-on-n group chat channel.|
+|SBUOpenChannelViewController|A `ViewController` that manages a open chat channel.|
 |SBUCreateChannelViewController|A `ViewController` that creates a channel.|
 |SBUInviteUserViewController|A `ViewController` that invites a user to a channel.|
-|SBUMemberListViewController|A `ViewController` that shows a list of members in a channel.|
+|SBURegisterOperatorViewController|A `ViewController` that registers as operator in a channel.|
+|SBUUserListViewController|A `ViewController` that shows a list of members or participants in a channel.|
+|SBUGroupChannelSettingsViewController|A `ViewController` that configures a group channel.|
+|SBUOpenChannelSettingsViewController|A `ViewController` that configures a open channel.|
+|SBUModerationsViewController|A `ViewController` that moderates a channel.|
+|SBUMessageSearchViewController|A `ViewController` that searches messages in a channel.|
 |SBUTheme|A singleton that manages themes.|
 |SBUColorSet|A singleton that manages color sets.|
 |SBUFontSet|A singleton that manages font sets.|
-|SBUMain|A class that contains static functions required when using Sendbird UIKit.|
+|SendbirdUI|A class that contains static functions required when using Sendbird UIKit.|
 |SBUGlobalSet|A class that contains static attributes required when using Sendbird UIKit.|

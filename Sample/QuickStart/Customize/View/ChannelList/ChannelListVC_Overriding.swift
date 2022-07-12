@@ -7,11 +7,11 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 class ChannelListVC_Overriding: SBUGroupChannelListViewController {
     // MARK: - Show relations
-    override func showChannel(channelUrl: String, messageListParams: SBDMessageListParams? = nil) {
+    override func showChannel(channelURL: String, messageListParams: MessageListParams? = nil) {
         // If you want to use your own ChannelViewController, you can override and customize it here.
         AlertManager.showCustomInfo(#function)
     }

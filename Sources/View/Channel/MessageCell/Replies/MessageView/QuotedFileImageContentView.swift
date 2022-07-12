@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 open class QuotedFileImageContentView: SBUView {
     public var theme: SBUMessageCellTheme = SBUTheme.messageCellTheme
@@ -103,7 +103,7 @@ open class QuotedFileImageContentView: SBUView {
             case .image:
                 imageOption = .imageToThumbnail
             case .video:
-                imageOption = .videoUrlToImage
+                imageOption = .videoURLToImage
             default:
                 imageOption = .imageToThumbnail
         }

@@ -7,16 +7,16 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 open class SBUBaseFileContentView: SBUView {
     @SBUThemeWrapper(theme: SBUTheme.messageCellTheme)
     public var theme: SBUMessageCellTheme
     
-    public var message: SBDFileMessage!
+    public var message: FileMessage!
     public var position: MessagePosition = .center
     
-    open func configure(message: SBDFileMessage, position: MessagePosition) {
+    open func configure(message: FileMessage, position: MessagePosition) {
         self.message = message
         self.position = position
     }

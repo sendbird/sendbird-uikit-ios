@@ -174,8 +174,8 @@ open class SBUEmptyView: SBUView {
                 to: SBUIconSetType.Metric.iconEmptyView,
                 tintAndResize: false
             )
-        case .noBannedMembers:
-            self.statusLabel.text = SBUStringSet.Empty_No_Banned_Members
+        case .noBannedUsers:
+            self.statusLabel.text = SBUStringSet.Empty_No_Banned_Users
             self.statusImageView.image = SBUIconSetType.iconBan.image(
                 with: theme.emptyViewStatusTintColor,
                 to: SBUIconSetType.Metric.iconEmptyView,

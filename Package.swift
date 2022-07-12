@@ -13,9 +13,9 @@ let package = Package(
     ],
     dependencies: [
         .package(
-            name: "SendBirdSDK",
-            url: "https://github.com/sendbird/sendbird-chat-ios-spm",
-            from: "3.1.13"
+            name: "SendbirdChatSDK",
+            url: "https://github.com/sendbird/sendbird-chat-sdk-ios",
+            from: "4.0.5"
         ),
     ],
     targets: [
@@ -27,7 +27,7 @@ let package = Package(
             name: "SendbirdUIKitTarget",
             dependencies: [
                 .target(name: "SendbirdUIKit"),
-                .product(name: "SendBirdSDK", package: "SendBirdSDK")
+                .product(name: "SendbirdChatSDK", package: "SendbirdChatSDK")
             ],
             path: "Framework/Dependency",
             exclude: ["../../Sample", "../../Sources"]

@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import SendBirdSDK
+import SendbirdChatSDK
 
 
 public class SBUEmojiManager {
@@ -16,7 +16,7 @@ public class SBUEmojiManager {
     
     // MARK: - Private property
     static let shared = SBUEmojiManager()
-    private var container: SBDEmojiContainer? {
+    private var container: EmojiContainer? {
         didSet { self.didSetContainer() }
     }
     private var emojiHash: String? {
@@ -27,14 +27,14 @@ public class SBUEmojiManager {
     // MARK: - Public function
     
     /// This function gets a list of the emoji categories.
-    /// - Returns: `SBDEmojiCategory` type array
-    public static func getEmojiCategories() -> [SBDEmojiCategory] {
+    /// - Returns: `EmojiCategory` type array
+    public static func getEmojiCategories() -> [EmojiCategory] {
         guard let container = shared.container else {
             SBULog.error("[Failed] Emoji Categories: load emoji")
             return []
         }
 
-        guard let appInfo = SBDMain.getAppInfo() else {
+        guard let appInfo = SendbirdChat.getAppInfo() else {
             SBULog.error("[Failed] Emoji Categories: appInfo is nil")
             return []
         }
@@ -54,14 +54,14 @@ public class SBUEmojiManager {
     }
 
     /// This function gets a list of all emojis.
-    /// - Returns: `SBDEmoji` type array
-    public static func getAllEmojis() -> [SBDEmoji] {
+    /// - Returns: `Emoji` type array
+    public static func getAllEmojis() -> [Emoji] {
         guard let container = shared.container else {
             SBULog.error("[Failed] Emoji List: load emoji")
             return []
         }
 
-        guard let appInfo = SBDMain.getAppInfo() else {
+        guard let appInfo = SendbirdChat.getAppInfo() else {
             SBULog.error("[Failed] Emoji List: appInfo is nil")
             return []
         }
@@ -81,14 +81,14 @@ public class SBUEmojiManager {
     }
 
     /// This function gets a list of emojis corresponding to category id.
-    /// - Returns: `SBDEmoji` type array
-    public static func getEmojis(emojiCategoryId: Int64) -> [SBDEmoji] {
+    /// - Returns: `Emoji` type array
+    public static func getEmojis(emojiCategoryId: Int64) -> [Emoji] {
         guard let container = shared.container else {
             SBULog.error("[Failed] Emojis with category id: load emoji")
             return []
         }
 
-        guard let appInfo = SBDMain.getAppInfo() else {
+        guard let appInfo = SendbirdChat.getAppInfo() else {
             SBULog.error("[Failed] Emojis with category id: appInfo is nil")
             return []
         }
@@ -114,10 +114,10 @@ public class SBUEmojiManager {
 
     
     // MARK: - private function
-    static func useReaction(channel: SBDBaseChannel?) -> Bool {
-        guard let groupChannel = channel as? SBDGroupChannel else { return false }
+    static func useReaction(channel: BaseChannel?) -> Bool {
+        guard let groupChannel = channel as? GroupChannel else { return false }
         
-        if let appInfo = SBDMain.getAppInfo(),
+        if let appInfo = SendbirdChat.getAppInfo(),
            appInfo.useReaction, !groupChannel.isSuper, !groupChannel.isBroadcast  {
             return true
         } else {
@@ -126,11 +126,11 @@ public class SBUEmojiManager {
     }
 
     static func loadAllEmojis(completionHandler: @escaping (
-        _ container: SBDEmojiContainer?,
-        _ error: SBDError?) -> Void
+        _ container: EmojiContainer?,
+        _ error: SBError?) -> Void
     ) {
-        guard let appInfo = SBDMain.getAppInfo(),
-              self.shared.emojiHash == nil || appInfo.isEmojiUpdateNeeded(shared.emojiHash ?? "")
+        guard let appInfo = SendbirdChat.getAppInfo(),
+              self.shared.emojiHash == nil || appInfo.isEmojiUpdateNeeded(prevEmojiHash: shared.emojiHash ?? "")
         else {
             completionHandler(shared.container, nil)
             return
@@ -140,11 +140,11 @@ public class SBUEmojiManager {
         
         // Load from cached data first.
         if let cachedContainer = UserDefaults.standard.data(forKey: SBUEmojiManager.kEmojiCacheKey) {
-            let container = SBDEmojiContainer.build(fromSerializedData: cachedContainer)
+            let container = EmojiContainer.build(fromSerializedData: cachedContainer)
             shared.container = container
         }
         
-        SBDMain.getAllEmojis { container, error in
+        SendbirdChat.getAllEmojis { container, error in
             if let error = error {
                 if let cachedContainer = shared.container, container == nil {
                     SBULog.error("[Succeed] Load all emojis from cache")

@@ -17,9 +17,9 @@ public class SBUViewControllerSet {
     
     public static var CreateChannelViewController: SBUCreateChannelViewController.Type = SBUCreateChannelViewController.self
     public static var InviteUserViewContoller: SBUInviteUserViewController.Type = SBUInviteUserViewController.self
-    public static var PromoteMemberViewController: SBUPromoteMemberViewController.Type = SBUPromoteMemberViewController.self
+    public static var RegisterOperatorViewController: SBURegisterOperatorViewController.Type = SBURegisterOperatorViewController.self
     
-    public static var MemberListViewController: SBUMemberListViewController.Type = SBUMemberListViewController.self
+    public static var UserListViewController: SBUUserListViewController.Type = SBUUserListViewController.self
     
     public static var groupChannelPushSettingsViewController: SBUGroupChannelPushSettingsViewController.Type = SBUGroupChannelPushSettingsViewController.self
     

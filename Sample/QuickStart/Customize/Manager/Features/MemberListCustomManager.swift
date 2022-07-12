@@ -31,7 +31,7 @@ class MemberListCustomManager: BaseCustomManager {
 extension MemberListCustomManager {
     func uiComponentCustom() {
         ChannelManager.getSampleChannel { channel in
-            let memberListVC = SBUMemberListViewController(channel: channel)
+            let memberListVC = SBUUserListViewController(channel: channel)
             
             // This part changes the default titleView to a custom view.
             memberListVC.headerComponent?.titleView = self.createHighlightedTitleLabel()
@@ -47,7 +47,7 @@ extension MemberListCustomManager {
     
     func cellCustom() {
         ChannelManager.getSampleChannel { channel in
-            let memberListVC = SBUMemberListViewController(channel: channel)
+            let memberListVC = SBUUserListViewController(channel: channel)
             memberListVC.listComponent = MemberListModule_List_CustomCell()
             
             self.navigationController?.pushViewController(memberListVC, animated: true)

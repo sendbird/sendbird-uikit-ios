@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 open class SBUOpenChannelCommonContentView: SBUCommonContentView {
     
@@ -29,7 +29,7 @@ open class SBUOpenChannelCommonContentView: SBUCommonContentView {
     }
     
     open override func configure(
-        message: SBDFileMessage,
+        message: FileMessage,
         position: MessagePosition,
         highlightKeyword: String?
     ) {

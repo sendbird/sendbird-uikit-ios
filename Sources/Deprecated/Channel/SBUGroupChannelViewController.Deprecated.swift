@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 @available(*, deprecated, renamed: "SBUGroupChannelViewController") // 3.0.0
 public typealias SBUChannelViewController = SBUGroupChannelViewController
@@ -60,7 +60,7 @@ extension SBUGroupChannelViewController {
     }
     
     @available(*, deprecated, message: "This function has been moved to `SBUGroupChannelModule.List`.", renamed: "listComponent.generateCellIdentifier(by:)")
-    open func generateCellIdentifier(by message: SBDBaseMessage) -> String {
+    open func generateCellIdentifier(by message: BaseMessage) -> String {
         self.listComponent?.generateCellIdentifier(by: message) ?? "\(type(of: message))Cell"
         
     }
@@ -79,21 +79,21 @@ extension SBUGroupChannelViewController {
     
     @available(*, deprecated, message: "This function has been moved to `SBUGroupChannelModule.List` and replaced to `setMessageCellGestures(_:message:indexPath:)`.", renamed: "listComponent.setMessageCellGestures(_:message:indexPath:)")
     open func setUserMessageCellGestures(_ cell: SBUUserMessageCell,
-                                         userMessage: SBDUserMessage,
+                                         userMessage: UserMessage,
                                          indexPath: IndexPath) {
         self.listComponent?.setMessageCellGestures(cell, message: userMessage, indexPath: indexPath)
     }
     
     @available(*, deprecated, message: "This function has been moved to `SBUGroupChannelModule.List` and replaced to `setMessageCellGestures(_:message:indexPath:)`.", renamed: "listComponent.setMessageCellGestures(_:message:indexPath:)")
     open func setFileMessageCellGestures(_ cell: SBUFileMessageCell,
-                                         fileMessage: SBDFileMessage,
+                                         fileMessage: FileMessage,
                                          indexPath: IndexPath) {
         self.listComponent?.setMessageCellGestures(cell, message: fileMessage, indexPath: indexPath)
     }
     
     @available(*, deprecated, message: "This function has been moved to `SBUGroupChannelModule.List` and replaced to `setMessageCellGestures(_:message:indexPath:)`.", renamed: "listComponent.setMessageCellGestures(_:message:indexPath:)")
     open func setUnkownMessageCellGestures(_ cell: SBUUnknownMessageCell,
-                                           unknownMessage: SBDBaseMessage,
+                                           unknownMessage: BaseMessage,
                                            indexPath: IndexPath) {
         self.listComponent?.setMessageCellGestures(cell, message: unknownMessage, indexPath: indexPath)
     }

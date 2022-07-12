@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import SendBirdSDK
+import SendbirdChatSDK
 
 public enum SBUReplyType: Int {
     /// Doesn’t display any replies.
@@ -19,7 +19,7 @@ public enum SBUReplyType: Int {
     @available(*, unavailable, renamed: "quoteReply")
     case thread
     
-    public var filterValue: SBDReplyType {
+    public var filterValue: ReplyType {
         switch self {
         case .none: return .none
         default: return .all

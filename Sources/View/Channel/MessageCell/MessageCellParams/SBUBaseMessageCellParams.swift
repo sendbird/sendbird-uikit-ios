@@ -6,12 +6,12 @@
 //  Copyright © 2021 Sendbird, Inc. All rights reserved.
 //
 
-import SendBirdSDK
+import SendbirdChatSDK
 
 
 public class SBUBaseMessageCellParams {
     /// The message.
-    public let message: SBDBaseMessage
+    public let message: BaseMessage
     
     /// Hide or expose date information
     public let hideDateView: Bool
@@ -27,7 +27,7 @@ public class SBUBaseMessageCellParams {
     
     /// If `true` when `SBUGloabls.ReplyTypeToUse` is `.quoteReply` and the message has the parent message.
     public var usingQuotedMessage: Bool {
-        SBUGlobals.replyType == .quoteReply && message.parent != nil
+        SBUGlobals.replyType == .quoteReply && message.parentMessage != nil
     }
     
     /**
@@ -36,13 +36,13 @@ public class SBUBaseMessageCellParams {
         - hideDateView: Hide or expose date information
         - receiptState: ReadReceipt state
      */
-    public init(message: SBDBaseMessage, hideDateView: Bool, messagePosition: MessagePosition = .center, groupPosition: MessageGroupPosition = .none, receiptState: SBUMessageReceiptState = .none) {
+    public init(message: BaseMessage, hideDateView: Bool, messagePosition: MessagePosition = .center, groupPosition: MessageGroupPosition = .none, receiptState: SBUMessageReceiptState = .none) {
         self.message = message
         self.hideDateView = hideDateView
         self.messagePosition = messagePosition
         self.receiptState = receiptState
         
-        self.groupPosition = SBUGlobals.replyType == .quoteReply && message.parent != nil
+        self.groupPosition = SBUGlobals.replyType == .quoteReply && message.parentMessage != nil
             ? .none
             : groupPosition
     }

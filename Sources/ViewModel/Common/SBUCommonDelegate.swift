@@ -5,9 +5,9 @@
 //  Created by Tez Park on 2021/09/02.
 //  Copyright © 2021 Sendbird, Inc. All rights reserved.
 //
-import SendBirdSDK
+import SendbirdChatSDK
 
 public protocol SBUCommonDelegate: AnyObject {
     // Error
-    func didReceiveError(_ error: SBDError?, isBlocker: Bool)
+    func didReceiveError(_ error: SBError?, isBlocker: Bool)
 }

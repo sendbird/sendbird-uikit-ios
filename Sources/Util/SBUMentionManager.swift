@@ -399,7 +399,7 @@ public class SBUMentionManager: NSObject {
                     filterText = String(mentionString.dropFirst())
                 }
 
-                if SBUGlobals.userMentionConfig?.isCustomMemberListUsed == true {
+                if SBUGlobals.userMentionConfig?.isCustomUserListUsed == true {
                     if self.suggestedMentionUsers(with: filterText).count > 0 {
                         self.handlePendingMentionSuggestion()
                         return
@@ -543,6 +543,7 @@ public class SBUMentionManager: NSObject {
             let textToReplace = "@{" + mention.user.userId + "}"
             
             let mutableAttributedText = NSMutableAttributedString(attributedString: attributedText)
+            if mention.range.location + mention.range.length > mutableAttributedText.length { continue }
             mutableAttributedText.replaceCharacters(in: mention.range, with: textToReplace)
             attributedText = mutableAttributedText
             

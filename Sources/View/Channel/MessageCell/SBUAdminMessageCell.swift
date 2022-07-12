@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
  @IBDesignable
 open class SBUAdminMessageCell: SBUBaseMessageCell {
@@ -69,7 +69,7 @@ open class SBUAdminMessageCell: SBUBaseMessageCell {
     }
     
     @available(*, deprecated, renamed: "configure(with:)") // 2.2.0
-    open func configure(_ message: SBDAdminMessage, hideDateView: Bool) {
+    open func configure(_ message: AdminMessage, hideDateView: Bool) {
         let configuration = SBUAdminMessageCellParams(
             message: message,
             hideDateView: hideDateView

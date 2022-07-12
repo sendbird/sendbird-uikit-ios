@@ -11,24 +11,24 @@ import UIKit
 /// ------------------------------------------------------
 /// This section is related to using the custom user cell.
 /// ------------------------------------------------------
-class MemberListModule_List_CustomCell: SBUMemberListModule.List {
-    override func configure(delegate: SBUMemberListModuleListDelegate,
-                            dataSource: SBUMemberListModuleListDataSource,
-                            memberListType: ChannelMemberListType,
+class MemberListModule_List_CustomCell: SBUUserListModule.List {
+    override func configure(delegate: SBUUserListModuleListDelegate,
+                            dataSource: SBUUserListModuleListDataSource,
+                            userListType: ChannelUserListType,
                             theme: SBUUserListTheme,
                             componentTheme: SBUComponentTheme) {
         super.configure(
             delegate: delegate,
             dataSource: dataSource,
-            memberListType: memberListType,
+            userListType: userListType,
             theme: theme,
             componentTheme: componentTheme
         )
-        self.register(memberCell: CustomUserCell())
+        self.register(userCell: CustomUserCell())
         
     }
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let member = memberList[indexPath.row]
+        let member = userList[indexPath.row]
 
         if let cell: CustomUserCell = tableView.dequeueReusableCell(
             withIdentifier: "CustomUserCell"

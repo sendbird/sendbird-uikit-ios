@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 extension SBUBaseChannelViewController {
     // MARK: - (Deprecated) UI Properties
@@ -43,7 +43,7 @@ extension SBUBaseChannelViewController {
     }
     
     @available(*, unavailable, message: "This property has been moved to `SBUGroupChannelModule.Input`", renamed: "inputComponent.currentQuotedMessage")
-    public var currentQuotedMessage: SBDBaseMessage? {
+    public var currentQuotedMessage: BaseMessage? {
         get {
             guard let inputComponent = self.baseInputComponent as? SBUGroupChannelModule.Input else { return nil }
             return inputComponent.currentQuotedMessage
@@ -92,7 +92,7 @@ extension SBUBaseChannelViewController {
     }
     
     @available(*, deprecated, renamed: "setMessageInputViewMode(_:message:)")
-    public func setEditMode(for userMessage: SBDUserMessage?) {
+    public func setEditMode(for userMessage: UserMessage?) {
         self.setMessageInputViewMode(
             userMessage != nil ? .edit : .none,
             message: userMessage
@@ -101,7 +101,7 @@ extension SBUBaseChannelViewController {
     
     // MARK: - Input mode
     /// This is used to messageInputView state update.
-    @available(*, deprecated, message: "This function has been moved to `SBDBaseChannelModule.List`.", renamed: "inputComponent.updateMessageInputModeState()")
+    @available(*, deprecated, message: "This function has been moved to `SBUBaseChannelModule.List`.", renamed: "inputComponent.updateMessageInputModeState()")
     public func updateMessageInputModeState() {
         if let inputComponent = self.baseInputComponent {
             inputComponent.updateMessageInputModeState()
@@ -111,28 +111,28 @@ extension SBUBaseChannelViewController {
     @available(*, deprecated, message: "This property has been moved to `SBUBaseChannelViewModel`", renamed: "viewModel.channel")
     /// This object is used to import a list of messages, send messages, modify messages, and so on, and is created during initialization.
     @objc
-    public var channel: SBDBaseChannel? { baseViewModel?.channel }
+    public var channel: BaseChannel? { baseViewModel?.channel }
     
-    @available(*, deprecated, message: "This property has been moved to `SBUBaseChannelViewModel`", renamed: "viewModel.channelUrl")
-    public var channelUrl: String? { baseViewModel?.channelUrl }
+    @available(*, deprecated, message: "This property has been moved to `SBUBaseChannelViewModel`", renamed: "viewModel.channelURL")
+    public var channelUrl: String? { baseViewModel?.channelURL }
     
     @available(*, deprecated, message: "This property has been moved to `SBUBaseChannelViewModel`", renamed: "viewModel.startingPoint")
     public var startingPoint: Int64? { baseViewModel?.startingPoint }
     
     @available(*, deprecated, message: "This property has been moved to `SBUBaseChannelViewModel`", renamed: "viewModel.inEditingMessage")
-    public var inEditingMessage: SBDUserMessage? { baseViewModel?.inEditingMessage }
+    public var inEditingMessage: UserMessage? { baseViewModel?.inEditingMessage }
     
     @available(*, deprecated, message: "This property has been moved to `SBUBaseChannelViewModel`", renamed: "viewModel.messageListParams")
-    public var messageListParams: SBDMessageListParams { baseViewModel?.messageListParams ?? SBDMessageListParams() }
+    public var messageListParams: MessageListParams { baseViewModel?.messageListParams ?? MessageListParams() }
     
     @available(*, deprecated, message: "This property has been moved to `SBUBaseChannelViewModel`", renamed: "viewModel.customizedMessageListParams")
-    public var customizedMessageListParams: SBDMessageListParams? { baseViewModel?.customizedMessageListParams ?? SBDMessageListParams() }
+    public var customizedMessageListParams: MessageListParams? { baseViewModel?.customizedMessageListParams ?? MessageListParams() }
     
     @available(*, deprecated, message: "This property has been moved to `SBUBaseChannelViewModel`", renamed: "viewModel.messageList")
-    public var messageList: [SBDBaseMessage] { baseViewModel?.messageList ?? [] }
+    public var messageList: [BaseMessage] { baseViewModel?.messageList ?? [] }
     
     @available(*, deprecated, message: "This property has been moved to `SBUBaseChannelViewModel`", renamed: "viewModel.fullMessageList")
-    public var fullMessageList: [SBDBaseMessage] { baseViewModel?.fullMessageList ?? [] }
+    public var fullMessageList: [BaseMessage] { baseViewModel?.fullMessageList ?? [] }
     
     // MARK: - Channel
     
@@ -140,10 +140,10 @@ extension SBUBaseChannelViewController {
     /// - Parameters:
     ///   - channelUrl: channel url
     ///   - messageListParams: (Optional) The parameter to be used when getting channel information.
-    @available(*, deprecated, message: "This function has been moved to `SBUBaseChannelViewModel`.", renamed: "viewModel.loadChannel(channelUrl:messageListParams:)")
-    public func loadChannel(channelUrl: String, messageListParams: SBDMessageListParams? = nil) {
+    @available(*, unavailable, message: "This function has been moved to `SBUBaseChannelViewModel`.", renamed: "viewModel.loadChannel(channelURL:messageListParams:)")
+    public func loadChannel(channelUrl: String, messageListParams: MessageListParams? = nil) {
         self.baseViewModel?.loadChannel(
-            channelUrl: channelUrl,
+            channelURL: channelUrl,
             messageListParams: messageListParams
         )
     }
@@ -156,7 +156,7 @@ extension SBUBaseChannelViewController {
     }
     
     @available(*, deprecated, message: "This function has been moved to `SBUBaseChannelViewModel`.", renamed: "viewModel.setReaction(message:emojiKey:didSelect:)")
-    public func setReaction(message: SBDBaseMessage, emojiKey: String, didSelect: Bool) {
+    public func setReaction(message: BaseMessage, emojiKey: String, didSelect: Bool) {
         self.baseViewModel?.setReaction(message: message, emojiKey: emojiKey, didSelect: didSelect)
     }
     
@@ -164,13 +164,13 @@ extension SBUBaseChannelViewController {
     // MARK: List
     
     @available(*, deprecated, message: "This function has been moved to `SBUBaseChannelViewModel`.", renamed: "viewModel.updateMessagesInList(messages:needReload:)")
-    public func updateMessagesInList(messages: [SBDBaseMessage]?, needReload: Bool) {
+    public func updateMessagesInList(messages: [BaseMessage]?, needReload: Bool) {
         self.baseViewModel?.updateMessagesInList(messages: messages, needReload: true)
     }
     
     
     @available(*, deprecated, message: "This function has been moved to `SBUBaseChannelViewModel`.", renamed: "viewModel.upsertMessagesInList(messages:needUpdateNewMessage:needReload:)")
-    public func upsertMessagesInList(messages: [SBDBaseMessage]?,
+    public func upsertMessagesInList(messages: [BaseMessage]?,
                                      needUpdateNewMessage: Bool = false,
                                      needReload: Bool) {
         self.baseViewModel?.upsertMessagesInList(
@@ -204,7 +204,7 @@ extension SBUBaseChannelViewController {
     
     
     @available(*, deprecated, message: "This function has been moved to `SBUBaseChannelViewModel`.", renamed: "viewModel.deleteResendableMessage(_:needReload:)")
-    public func deleteResendableMessage(_ message: SBDBaseMessage, needReload: Bool) {
+    public func deleteResendableMessage(_ message: BaseMessage, needReload: Bool) {
         self.baseViewModel?.deleteResendableMessage(message, needReload: needReload)
     }
     
@@ -226,12 +226,12 @@ extension SBUBaseChannelViewController {
     }
     
     @available(*, deprecated, message: "This function has been moved to `SBUBaseChannelViewModel`.")
-    open func sendUserMessage(text: String, parentMessage: SBDBaseMessage? = nil) {
+    open func sendUserMessage(text: String, parentMessage: BaseMessage? = nil) {
         self.baseViewModel?.sendUserMessage(text: text, parentMessage: parentMessage)
     }
     
     @available(*, deprecated, message: "This function has been moved to `SBUBaseChannelViewModel`.")
-    open func sendUserMessage(messageParams: SBDUserMessageParams, parentMessage: SBDBaseMessage? = nil) {
+    open func sendUserMessage(messageParams: UserMessageCreateParams, parentMessage: BaseMessage? = nil) {
         self.baseViewModel?.sendUserMessage(messageParams: messageParams, parentMessage: parentMessage)
     }
     
@@ -241,37 +241,37 @@ extension SBUBaseChannelViewController {
     }
     
     @available(*, deprecated, message: "This function has been moved to `SBUBaseChannelViewModel`.")
-    open func sendFileMessage(fileData: Data?, fileName: String, mimeType: String, parentMessage: SBDBaseMessage? = nil) {
+    open func sendFileMessage(fileData: Data?, fileName: String, mimeType: String, parentMessage: BaseMessage? = nil) {
         self.baseViewModel?.sendFileMessage(fileData: fileData, fileName: fileName, mimeType: mimeType, parentMessage: parentMessage)
     }
     
     @available(*, deprecated, message: "This function has been moved to `SBUBaseChannelViewModel`. Use `sendFileMessage(messageParams:parentMessage:)` of `SBUBaseChannelViewModel` instead.")
-    open func sendFileMessage(messageParams: SBDFileMessageParams, parentMessage: SBDBaseMessage? = nil) {
+    open func sendFileMessage(messageParams: FileMessageCreateParams, parentMessage: BaseMessage? = nil) {
         self.baseViewModel?.sendFileMessage(messageParams: messageParams, parentMessage: parentMessage)
     }
     
     @available(*, deprecated, message: "This function has been moved to `SBUBaseChannelViewModel`.", renamed: "viewModel.updateUserMessage(message:text:)")
-    public func updateUserMessage(message: SBDUserMessage, text: String) {
+    public func updateUserMessage(message: UserMessage, text: String) {
         self.baseViewModel?.updateUserMessage(message: message, text: text)
     }
     
     @available(*, deprecated, message: "This function has been moved to `SBUBaseChannelViewModel`.", renamed: "viewModel.updateUserMessage(message:messageParams:)")
-    public func updateUserMessage(message: SBDUserMessage, messageParams: SBDUserMessageParams) {
+    public func updateUserMessage(message: UserMessage, messageParams: UserMessageUpdateParams) {
         self.baseViewModel?.updateUserMessage(message: message, messageParams: messageParams)
     }
     
     @available(*, deprecated, message: "This function has been moved to `SBUBaseChannelViewModel`.", renamed: "viewModel.resendMessage(failedMessage:)")
-    public func resendMessage(failedMessage: SBDBaseMessage) {
+    public func resendMessage(failedMessage: BaseMessage) {
         self.baseViewModel?.resendMessage(failedMessage: failedMessage)
         self.scrollToBottom(animated: true)
     }
     
     
     /// Deletes a message with message object.
-    /// - Parameter message: `SBDBaseMessage` based class object
+    /// - Parameter message: `BaseMessage` based class object
     /// - Since: 1.0.9
     @available(*, deprecated, renamed: "showDeleteMessageMenu(message:)")
-    public func deleteMessage(message: SBDBaseMessage) {
+    public func deleteMessage(message: BaseMessage) {
         self.showDeleteMessageMenu(message: message)
     }
     

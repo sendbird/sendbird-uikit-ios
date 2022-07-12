@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 
 /// Emoji reaction box
@@ -16,8 +16,8 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
     public lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
     public let layout: UICollectionViewFlowLayout = SBUCollectionViewFlowLayout()
 
-    public var emojiList: [SBDEmoji] = []
-    public var reactions: [SBDReaction] = []
+    public var emojiList: [Emoji] = []
+    public var reactions: [Reaction] = []
     public var maxWidth: CGFloat = SBUConstant.messageCellMaxWidth
 
     @SBUThemeWrapper(theme: SBUTheme.componentTheme)
@@ -102,7 +102,7 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
             self.reactions.count == indexPath.row
     }
     
-    open func configure(maxWidth: CGFloat, useReaction: Bool, reactions: [SBDReaction]) {
+    open func configure(maxWidth: CGFloat, useReaction: Bool, reactions: [Reaction]) {
         guard useReaction, !reactions.isEmpty else {
             self.collectionViewMinWidthContraint.isActive = false
             self.isHidden = true

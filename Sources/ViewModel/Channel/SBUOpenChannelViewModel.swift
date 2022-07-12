@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import SendBirdSDK
+import SendbirdChatSDK
 
 public protocol SBUOpenChannelViewModelDataSource: SBUBaseChannelViewModelDataSource {
 }
@@ -20,8 +20,8 @@ public protocol SBUOpenChannelViewModelDelegate: SBUBaseChannelViewModelDelegate
     ///  - channel: The channel object.
     func openChannelViewModel(
         _ viewModel: SBUOpenChannelViewModel,
-        userDidEnter user: SBDUser,
-        forChannel channel: SBDOpenChannel
+        userDidEnter user: User,
+        forChannel channel: OpenChannel
     )
     
     /// Called when the user exited at the channel
@@ -31,22 +31,22 @@ public protocol SBUOpenChannelViewModelDelegate: SBUBaseChannelViewModelDelegate
     ///  - channel: The channel object.
     func openChannelViewModel(
         _ viewModel: SBUOpenChannelViewModel,
-        userDidExit user: SBDUser,
-        forChannel channel: SBDOpenChannel
+        userDidExit user: User,
+        forChannel channel: OpenChannel
     )
 }
 
 extension SBUOpenChannelViewModelDelegate {
     public func openChannelViewModel(
         _ viewModel: SBUOpenChannelViewModel,
-        userDidEnter user: SBDUser,
-        forChannel channel: SBDOpenChannel
+        userDidEnter user: User,
+        forChannel channel: OpenChannel
     ) {}
     
     public func openChannelViewModel(
         _ viewModel: SBUOpenChannelViewModel,
-        userDidExit user: SBDUser,
-        forChannel channel: SBDOpenChannel
+        userDidExit user: User,
+        forChannel channel: OpenChannel
     ) {}
 }
 
@@ -82,10 +82,10 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
 
     
     // MARK: - LifeCycle
-    public init(channel: SBDBaseChannel? = nil,
-                channelUrl: String? = nil,
-                messageListParams: SBDMessageListParams? = nil,
-                startingPoint: Int64? = LLONG_MAX,
+    public init(channel: BaseChannel? = nil,
+                channelURL: String? = nil,
+                messageListParams: MessageListParams? = nil,
+                startingPoint: Int64? = nil,
                 delegate: SBUOpenChannelViewModelDelegate? = nil,
                 dataSource: SBUOpenChannelViewModelDataSource? = nil)
     {
@@ -94,19 +94,24 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
         self.delegate = delegate
         self.dataSource = dataSource
         
+        SendbirdChat.add(
+            self as OpenChannelDelegate,
+            identifier: "\(SBUConstant.channelDelegateIdentifier).\(self.description)"
+        )
+        
         if let channel = channel {
             self.channel = channel
-            self.channelUrl = channel.channelUrl
-        } else if let channelUrl = channelUrl {
-            self.channelUrl = channelUrl
+            self.channelURL = channel.channelURL
+        } else if let channelURL = channelURL {
+            self.channelURL = channelURL
         }
         
         self.customizedMessageListParams = messageListParams
         self.startingPoint = startingPoint
         
-        guard let channelUrl = self.channelUrl else { return }
+        guard let channelURL = self.channelURL else { return }
         self.loadChannel(
-            channelUrl: channelUrl,
+            channelURL: channelURL,
             messageListParams: self.customizedMessageListParams
         )
     }
@@ -117,11 +122,11 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
     
     
     // MARK: - Channel related
-    public override func loadChannel(channelUrl: String, messageListParams: SBDMessageListParams? = nil) {
+    public override func loadChannel(channelURL: String, messageListParams: MessageListParams? = nil) {
         if let messageListParams = messageListParams {
             self.customizedMessageListParams = messageListParams
         } else if self.customizedMessageListParams == nil {
-            let messageListParams = SBDMessageListParams()
+            let messageListParams = MessageListParams()
             SBUGlobalCustomParams.messageListParamsBuilder?(messageListParams)
             self.customizedMessageListParams = messageListParams
         }
@@ -135,8 +140,8 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
                 return
             }
             
-            SBULog.info("[Request] Load channel: \(String(channelUrl))")
-            SBDOpenChannel.getWithUrl(channelUrl) { [weak self] channel, error in
+            SBULog.info("[Request] Load channel: \(String(channelURL))")
+            OpenChannel.getChannel(url: channelURL) { [weak self] channel, error in
                 guard let self = self else { return }
                 if let error = error {
                     SBULog.error("[Failed] Load channel request: \(error.localizedDescription)")
@@ -169,13 +174,13 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
     }
     
     public override func refreshChannel() {
-        if let channel = self.channel as? SBDOpenChannel {
+        if let channel = self.channel as? OpenChannel {
             channel.refresh { [weak self] error in
                 guard let self = self else { return }
                 if let error = error {
                     SBULog.error("[Failed] Load channel request: \(error.localizedDescription)")
                     
-                    if error.code != SBDErrorCode.networkError.rawValue {
+                    if error.code != CoreError.networkError.rawValue {
                         self.delegate?.baseChannelViewModel(self, shouldDismissForChannel: nil)
                     } else {
                         self.delegate?.didReceiveError(error, isBlocker: true)
@@ -183,14 +188,13 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
                 }
                 
                 SBULog.info("[Succeed] Refresh channel request")
-                let context = SBDMessageContext()
-                context.source = .eventChannelChanged
+                let context = MessageContext(source: .eventChannelChanged, sendingStatus: .succeeded)
                 self.delegate?.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
 
                 self.loadMessageChangeLogs()
             }
-        }  else if let channelUrl = self.channelUrl {
-            self.loadChannel(channelUrl: channelUrl)
+        }  else if let channelURL = self.channelURL {
+            self.loadChannel(channelURL: channelURL)
         }
     }
     
@@ -198,7 +202,7 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
     // MARK: - Load Messages
     public override func loadInitialMessages(startingPoint: Int64?,
                                       showIndicator: Bool,
-                                      initialMessages: [SBDBaseMessage]?) {
+                                      initialMessages: [BaseMessage]?) {
         SBULog.info("""
             loadInitialMessages,
             startingPoint : \(String(describing: startingPoint)),
@@ -237,7 +241,7 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
         
         SBULog.info("[Request] Prev message list from : \(String(describing: timestamp))")
         
-        let params = self.messageListParams.copy() as? SBDMessageListParams ?? SBDMessageListParams()
+        let params = self.messageListParams.copy() as? MessageListParams ?? MessageListParams()
         params.nextResultSize = 0
         
         if params.previousResultSize == 0 {
@@ -288,7 +292,7 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
         
         SBULog.info("[Request] Next message list from : \(self.lastUpdatedTimestamp)")
 
-        let params: SBDMessageListParams = self.messageListParams.copy() as? SBDMessageListParams ?? SBDMessageListParams()
+        let params: MessageListParams = self.messageListParams.copy() as? MessageListParams ?? MessageListParams()
         params.previousResultSize = 0
         if params.nextResultSize == 0 {
             params.nextResultSize = self.defaultFetchLimit
@@ -315,7 +319,7 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
             let prevHasNext = self.hasNext()
             self.hasMoreNext = messages.count >= params.nextResultSize
             
-            var mergedList: [SBDBaseMessage]? = nil
+            var mergedList: [BaseMessage]? = nil
             if !self.hasNext() && (self.hasNext() != prevHasNext) {
                 mergedList = self.flushCache(with: messages)
             }
@@ -345,7 +349,7 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
         
         self.delegate?.shouldUpdateLoadingState(showIndicator)
         
-        let params = self.messageListParams.copy() as? SBDMessageListParams ?? SBDMessageListParams()
+        let params = self.messageListParams.copy() as? MessageListParams ?? MessageListParams()
         params.isInclusive = true
         
         let shouldFetchBoth: Bool = timestamp != nil
@@ -400,12 +404,12 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
     
     /// Handles response from initial loading request of messages (see `loadInitialMessages(startingPoint:showIndicator:initialMessages:)`).
     /// - Parameters:
-    ///   - usedParam: `SBDMessageListParams` used in `loadInitialMessages`, or `nil` if it was called from custom message list.
+    ///   - usedParam: `MessageListParams` used in `loadInitialMessages`, or `nil` if it was called from custom message list.
     ///   - messages: Messages loaded.
-    ///   - error: `SBDError` from loading messages.
-    private func handleInitialResponse(usedParam: SBDMessageListParams?,
-                                       messages: [SBDBaseMessage]?,
-                                       error: SBDError?) {
+    ///   - error: `SBError` from loading messages.
+    private func handleInitialResponse(usedParam: MessageListParams?,
+                                       messages: [BaseMessage]?,
+                                       error: SBError?) {
         self.initSucceeded = error == nil
         
         guard self.isValidResponse(messages: messages, error: error),
@@ -452,7 +456,7 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
     
     
     // MARK: - Last Updated timestamp
-    private func updateLastUpdatedTimestamp(messages: [SBDBaseMessage]) {
+    private func updateLastUpdatedTimestamp(messages: [BaseMessage]) {
         SBULog.info("hasNext : \(String(describing: self.hasNext)). first : \(String(describing: messages.first)), last : \(String(describing: messages.last))")
         
         let currentTime = self.currentTimeMillis
@@ -463,9 +467,9 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
                 newTimestamp = latestMessage.createdAt
             }
         } else {
-            if let groupChannel = self.channel as? SBDGroupChannel {
+            if let groupChannel = self.channel as? GroupChannel {
                 newTimestamp = groupChannel.lastMessage?.createdAt ?? currentTime
-            } else if self.channel is SBDOpenChannel {
+            } else if self.channel is OpenChannel {
                 if let latestMessage = messages.first {
                     newTimestamp = latestMessage.createdAt
                 }
@@ -501,13 +505,13 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
         /// Prevent loadNext being called if changelog is called
         guard self.nextLock.try() else { return }
         
-        let changeLogsParams = SBDMessageChangeLogsParams.create(with: self.messageListParams)
+        let changeLogsParams = MessageChangeLogsParams.create(with: self.messageListParams)
         
         if self.hasNext() {
             self.messageCache?.loadNext()
         }
 
-        var completion: (([SBDBaseMessage]?, [NSNumber]?, Bool, String?, SBDError?) -> ())!
+        var completion: (([BaseMessage]?, [Int64]?, Bool, String?, SBError?) -> ())!
         completion = { [weak self] updatedMessages, deletedMessageIds, hasMore, nextToken, error in
             self?.handleChangelogResponse(
                 updatedMessages: updatedMessages,
@@ -521,14 +525,14 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
         if let token = self.changelogToken {
             SBULog.info("[Request] Message change logs with token")
             self.channel?.getMessageChangeLogs(
-                sinceToken: token,
+                token: token,
                 params: changeLogsParams,
                 completionHandler: completion
             )
         } else {
             SBULog.info("[Request] Message change logs with last updated timestamp")
             self.channel?.getMessageChangeLogs(
-                sinceTimestamp: self.lastUpdatedTimestamp,
+                timestamp: self.lastUpdatedTimestamp,
                 params: changeLogsParams,
                 completionHandler: completion
             )
@@ -537,10 +541,10 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
     
     /// Separated loadNext for changelog and normal loading on scroll.
     /// Difference on limit + handling response (setting hasNext, updatedAt, etc)
-    private func loadNextMessagesForChangelog(completion: @escaping ([SBDBaseMessage]) -> Void) {
+    private func loadNextMessagesForChangelog(completion: @escaping ([BaseMessage]) -> Void) {
         SBULog.info("[Request] Changelog added message list from : \(self.lastUpdatedTimestamp)")
         
-        let params: SBDMessageListParams = messageListParams.copy() as? SBDMessageListParams ?? SBDMessageListParams()
+        let params: MessageListParams = messageListParams.copy() as? MessageListParams ?? MessageListParams()
         params.previousResultSize = 0
         params.nextResultSize = self.changelogFetchLimit
         
@@ -561,11 +565,11 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
     
     /// Handling response for Messaging SDK's `getMessageChangeLogs`
     /// Loads SDK's changelog (updated + deleted) fully + new added messages (fully || once depending on `hasNext`)
-    private func handleChangelogResponse(updatedMessages: [SBDBaseMessage]?,
-                                         deletedMessageIds: [NSNumber]?,
+    private func handleChangelogResponse(updatedMessages: [BaseMessage]?,
+                                         deletedMessageIds: [Int64]?,
                                          hasMore: Bool,
                                          nextToken: String?,
-                                         error: SBDError?) {
+                                         error: SBError?) {
         if let error = error {
             SBULog.error("""
                 [Failed] Message change logs request:
@@ -587,7 +591,7 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
         
         self.handleChangelogResponse(
             updatedMessages: updatedMessages,
-            deletedMessageIds: deletedMessageIds as? [Int64]
+            deletedMessageIds: deletedMessageIds
         )
         
         if hasMore {
@@ -595,7 +599,7 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
         } else {
             isLoadingNext = true
             
-            var loadNextCompletion: (([SBDBaseMessage]) -> Void)!
+            var loadNextCompletion: (([BaseMessage]) -> Void)!
             loadNextCompletion = { [weak self] messages in
                 guard let self = self else { return }
                 
@@ -618,7 +622,7 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
     }
     
     /// Handling updated & deleted messages
-    private func handleChangelogResponse(updatedMessages: [SBDBaseMessage]?, deletedMessageIds: [Int64]?) {
+    private func handleChangelogResponse(updatedMessages: [BaseMessage]?, deletedMessageIds: [Int64]?) {
         if let updatedMessages = updatedMessages,
            !updatedMessages.isEmpty {
             self.delegate?.baseChannelViewModel(
@@ -642,8 +646,8 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
     /// Handling added messages
     ///
     /// - Returns: Whether there's more messages to fetch or not.
-    private func handleChangelogResponse(addedMessages: [SBDBaseMessage]) -> Bool {
-        var mergedList: [SBDBaseMessage]? = nil
+    private func handleChangelogResponse(addedMessages: [BaseMessage]) -> Bool {
+        var mergedList: [BaseMessage]? = nil
         let hasMore = addedMessages.count >= self.changelogFetchLimit
         
         if !hasMore, self.hasNext() {
@@ -670,9 +674,9 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
     /// Checks if the response of loading message is valid.
     /// - Parameters:
     ///   - messages: Messages loaded.
-    ///   - error: `SBDError` from loading messages.
+    ///   - error: `SBError` from loading messages.
     /// - Returns: `true` if response is valid.
-    private func isValidResponse(messages: [SBDBaseMessage]?, error: SBDError?) -> Bool {
+    private func isValidResponse(messages: [BaseMessage]?, error: SBError?) -> Bool {
         if let error = error {
             SBULog.error("[Failed] Message list request: \(error)")
             self.isLoadingNext = false
@@ -697,7 +701,7 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
         return self.hasMorePrevious
     }
     
-    override func getStartingPoint() -> Int64? {
+    public override func getStartingPoint() -> Int64? {
         return self.startingPoint
     }
     
@@ -711,9 +715,9 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
 }
 
 
-// MARK: - SBDConnectionDelegate
+// MARK: - ConnectionDelegate
 extension SBUOpenChannelViewModel {
-    // MARK: SBDConnectionDelegate
+    // MARK: ConnectionDelegate
     open override func didSucceedReconnection() {
         super.didSucceedReconnection()
         
@@ -722,24 +726,21 @@ extension SBUOpenChannelViewModel {
 }
 
 
-// MARK: - SBDChannelDelegate
-extension SBUOpenChannelViewModel {
+// MARK: - OpenChannelDelegate
+extension SBUOpenChannelViewModel: OpenChannelDelegate {
     // Received message
-    open override func channel(_ sender: SBDBaseChannel, didReceive message: SBDBaseMessage) {
-        guard self.channel?.channelUrl == sender.channelUrl else { return }
-        guard self.messageListParams.belongs(to: message) else { return }
+    open override func channel(_ channel: BaseChannel, didReceive message: BaseMessage) {
+        guard self.channel?.channelURL == channel.channelURL else { return }
+        guard self.messageListParams.belongsTo(message) else { return }
 
-        super.channel(sender, didReceive: message)
+        super.channel(channel, didReceive: message)
         
         let isScrollNearBottom = self.dataSource?.baseChannelViewModel(self, isScrollNearBottomInChannel: self.channel)
         if (self.hasNext() == true || isScrollNearBottom == false)
         {
             self.messageCache?.add(messages: [message])
 
-            guard (message is SBDUserMessage || message is SBDFileMessage) else { return }
-            
-            let context = SBDMessageContext()
-            context.source = .eventMessageReceived
+            guard (message is UserMessage || message is FileMessage) else { return }
             
             if let channel = self.channel {
                 self.delegate?.baseChannelViewModel(self, didReceiveNewMessage: message, forChannel: channel)
@@ -752,115 +753,105 @@ extension SBUOpenChannelViewModel {
     }
     
     // Updated message
-    open override func channel(_ sender: SBDBaseChannel, didUpdate message: SBDBaseMessage) {
-        guard self.channel?.channelUrl == sender.channelUrl else { return }
+    open override func channel(_ channel: BaseChannel, didUpdate message: BaseMessage) {
+        guard self.channel?.channelURL == channel.channelURL else { return }
         SBULog.info("Did update message: \(message)")
         self.updateMessagesInList(messages: [message], needReload: true)
     }
     
     // Deleted message
-    open override func channel(_ sender: SBDBaseChannel, messageWasDeleted messageId: Int64) {
-        guard self.channel?.channelUrl == sender.channelUrl else { return }
+    open override func channel(_ channel: BaseChannel, messageWasDeleted messageId: Int64) {
+        guard self.channel?.channelURL == channel.channelURL else { return }
         SBULog.info("Message was deleted: \(messageId)")
         self.deleteMessagesInList(messageIds: [messageId], needReload: true)
     }
       
-    open override func channelWasChanged(_ sender: SBDBaseChannel) {
-        guard self.channel?.channelUrl == sender.channelUrl else { return }
-        guard let channel = sender as? SBDOpenChannel else { return }
-        SBULog.info("Channel was changed, ChannelUrl:\(channel.channelUrl)")
+    open override func channelWasChanged(_ channel: BaseChannel) {
+        guard self.channel?.channelURL == channel.channelURL else { return }
+        guard let channel = channel as? OpenChannel else { return }
+        SBULog.info("Channel was changed, ChannelURL:\(channel.channelURL)")
 
-        let context = SBDMessageContext()
-        context.source = .eventChannelChanged
+        let context = MessageContext(source: .eventChannelChanged, sendingStatus: .succeeded)
         self.delegate?.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
     }
     
-    open override func channelWasFrozen(_ sender: SBDBaseChannel) {
-        guard self.channel?.channelUrl == sender.channelUrl else { return }
-        guard let channel = sender as? SBDOpenChannel else { return }
-        SBULog.info("Channel was frozen, ChannelUrl:\(channel.channelUrl)")
+    open override func channelWasFrozen(_ channel: BaseChannel) {
+        guard self.channel?.channelURL == channel.channelURL else { return }
+        guard let channel = channel as? OpenChannel else { return }
+        SBULog.info("Channel was frozen, ChannelURL:\(channel.channelURL)")
         
-        let context = SBDMessageContext()
-        context.source = .eventChannelFrozen
+        let context = MessageContext(source: .eventChannelFrozen, sendingStatus: .succeeded)
         self.delegate?.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
     }
     
-    open override func channelWasUnfrozen(_ sender: SBDBaseChannel) {
-        guard self.channel?.channelUrl == sender.channelUrl else { return }
-        guard let channel = sender as? SBDOpenChannel else { return }
-        SBULog.info("Channel was unfrozen, ChannelUrl:\(channel.channelUrl)")
+    open override func channelWasUnfrozen(_ channel: BaseChannel) {
+        guard self.channel?.channelURL == channel.channelURL else { return }
+        guard let channel = channel as? OpenChannel else { return }
+        SBULog.info("Channel was unfrozen, ChannelURL:\(channel.channelURL)")
         
-        let context = SBDMessageContext()
-        context.source = .eventChannelUnfrozen
+        let context = MessageContext(source: .eventChannelUnfrozen, sendingStatus: .succeeded)
         self.delegate?.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
     }
     
-    open override func channel(_ sender: SBDBaseChannel, userWasMuted user: SBDUser) {
-        guard self.channel?.channelUrl == sender.channelUrl else { return }
+    open override func channel(_ channel: BaseChannel, userWasMuted user: RestrictedUser) {
+        guard self.channel?.channelURL == channel.channelURL else { return }
         
         if user.userId == SBUGlobals.currentUser?.userId {
             SBULog.info("You are muted.")
-            let context = SBDMessageContext()
-            context.source = .eventUserMuted
-            self.delegate?.baseChannelViewModel(self, didChangeChannel: sender, withContext: context)
+            let context = MessageContext(source: .eventUserMuted, sendingStatus: .succeeded)
+            self.delegate?.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
         }
     }
     
-    open override func channel(_ sender: SBDBaseChannel, userWasUnmuted user: SBDUser) {
-        guard self.channel?.channelUrl == sender.channelUrl else { return }
+    open override func channel(_ channel: BaseChannel, userWasUnmuted user: User) {
+        guard self.channel?.channelURL == channel.channelURL else { return }
         
         if user.userId == SBUGlobals.currentUser?.userId {
             SBULog.info("You are unmuted.")
-            let context = SBDMessageContext()
-            context.source = .eventUserUnmuted
-            self.delegate?.baseChannelViewModel(self, didChangeChannel: sender, withContext: context)
+            let context = MessageContext(source: .eventUserUnmuted, sendingStatus: .succeeded)
+            self.delegate?.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
         }
     }
     
-    open override func channelDidUpdateOperators(_ sender: SBDBaseChannel) {
-        guard self.channel?.channelUrl == sender.channelUrl else { return }
+    open override func channelDidUpdateOperators(_ channel: BaseChannel) {
+        guard self.channel?.channelURL == channel.channelURL else { return }
         
-        let context = SBDMessageContext()
-        context.source = .eventOperatorUpdated
-        self.delegate?.baseChannelViewModel(self, didChangeChannel: sender, withContext: context)
+        let context = MessageContext(source: .eventOperatorUpdated, sendingStatus: .succeeded)
+        self.delegate?.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
     }
 
-    open override func channel(_ sender: SBDBaseChannel, userWasBanned user: SBDUser) {
-        guard self.channel?.channelUrl == sender.channelUrl else { return }
+    open override func channel(_ channel: BaseChannel, userWasBanned user: RestrictedUser) {
+        guard self.channel?.channelURL == channel.channelURL else { return }
         
         if user.userId == SBUGlobals.currentUser?.userId {
             SBULog.info("You are banned.")
-            self.delegate?.baseChannelViewModel(self, shouldDismissForChannel: sender)
+            self.delegate?.baseChannelViewModel(self, shouldDismissForChannel: channel)
         } else {
-            let context = SBDMessageContext()
-            context.source = .eventUserBanned
-            self.delegate?.baseChannelViewModel(self, didChangeChannel: sender, withContext: context)
+            let context = MessageContext(source: .eventUserBanned, sendingStatus: .succeeded)
+            self.delegate?.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
         }
     }
     
-    open func channel(_ sender: SBDOpenChannel, userDidEnter user: SBDUser) {
-        guard self.channel?.channelUrl == sender.channelUrl else { return }
+    open func channel(_ channel: OpenChannel, userDidEnter user: User) {
+        guard self.channel?.channelURL == channel.channelURL else { return }
 
-        let context = SBDMessageContext()
-        context.source = .eventChannelChanged
-        self.delegate?.baseChannelViewModel(self, didChangeChannel: sender, withContext: context)
-        self.delegate?.openChannelViewModel(self, userDidEnter: user, forChannel: sender)
+        let context = MessageContext(source: .eventChannelChanged, sendingStatus: .succeeded)
+        self.delegate?.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
+        self.delegate?.openChannelViewModel(self, userDidEnter: user, forChannel: channel)
     }
     
-    open func channel(_ sender: SBDOpenChannel, userDidExit user: SBDUser) {
-        guard self.channel?.channelUrl == sender.channelUrl else { return }
+    open func channel(_ channel: OpenChannel, userDidExit user: User) {
+        guard self.channel?.channelURL == channel.channelURL else { return }
         
-        let context = SBDMessageContext()
-        context.source = .eventChannelChanged
-        self.delegate?.baseChannelViewModel(self, didChangeChannel: sender, withContext: context)
-        self.delegate?.openChannelViewModel(self, userDidExit: user, forChannel: sender)
+        let context = MessageContext(source: .eventChannelChanged, sendingStatus: .succeeded)
+        self.delegate?.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
+        self.delegate?.openChannelViewModel(self, userDidExit: user, forChannel: channel)
     }
     
-    open override func channelWasDeleted(_ channelUrl: String, channelType: SBDChannelType) {
-        guard self.channel?.channelUrl == channelUrl else { return }
+    open override func channelWasDeleted(_ channelURL: String, channelType: ChannelType) {
+        guard self.channel?.channelURL == channelURL else { return }
         
-        let context = SBDMessageContext()
-        context.source = .eventChannelDeleted
+        let context = MessageContext(source: .eventChannelDeleted, sendingStatus: .succeeded)
         self.delegate?.baseChannelViewModel(self, didChangeChannel: nil, withContext: context)
     }
 }

@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 public class SBUStringSet {
     // MARK: - Common
@@ -69,19 +69,19 @@ public class SBUStringSet {
     public static var Channel_Header_LastSeen = "Last seen"
     
     @available(*, deprecated, renamed: "Channel_Typing") // 3.0.0
-    public static var Channel_Header_Typing: ([SBDUser]) -> String {
+    public static var Channel_Header_Typing: ([User]) -> String {
         { Channel_Typing($0) }
     }
     
-    public static var Channel_Typing: ([SBDUser]) -> String = { members in
+    public static var Channel_Typing: ([User]) -> String = { members in
         switch members.count {
         case 1:
-            return String(format: "%@ is typing...",
-                          members[0].nickname ?? "Member")
+            let nickname = !members[0].nickname.isEmpty ? members[0].nickname : "Member"
+            return String(format: "%@ is typing...", nickname)
         case 2:
-            return String(format: "%@ and %@ are typing...",
-                          members[0].nickname ?? "Member",
-                          members[1].nickname ?? "Member")
+            let nickname1 = !members[0].nickname.isEmpty ? members[0].nickname : "Member"
+            let nickname2 = !members[1].nickname.isEmpty ? members[1].nickname : "Member"
+            return String(format: "%@ and %@ are typing...", nickname1, nickname2)
         default:
             return "Several people are typing..."
         }
@@ -142,7 +142,8 @@ public class SBUStringSet {
     public static var ChannelSettings_Moderations = "Moderations"
     public static var ChannelSettings_Operators = "Operators"
     public static var ChannelSettings_Muted_Members = "Muted members"
-    public static var ChannelSettings_Banned_Members = "Banned members"
+    public static var ChannelSettings_Muted_Participants = "Muted participants" // 3.0.0
+    public static var ChannelSettings_Banned_Users = "Banned users"
     public static var ChannelSettings_Freeze_Channel = "Freeze channel"
     
     public static var ChannelSettings_URL = "URL"
@@ -185,7 +186,8 @@ public class SBUStringSet {
     public static var Empty_No_Messages = "No messages"
     public static var Empty_No_Users = "No users"
     public static var Empty_No_Muted_Members = "No muted members"
-    public static var Empty_No_Banned_Members = "No banned members"
+    public static var Empty_No_Muted_Participants = "No muted participants"
+    public static var Empty_No_Banned_Users = "No banned users"
     public static var Empty_Search_Result = "No results found"
     public static var Empty_Wrong = "Something went wrong"
 
@@ -196,7 +198,7 @@ public class SBUStringSet {
         case 0:
             return "Create"
         default:
-            return "\(count) Create"
+            return "Create \(count)"
         }
     }
     public static var CreateChannel_Header_Title = "New Channel"
@@ -205,41 +207,40 @@ public class SBUStringSet {
 
     // MARK: - Invite Channel
     public static var InviteChannel_Header_Title = "Invite users"
-    public static var InviteChannel_Header_Select_Members = "Select members"
+    public static var InviteChannel_Header_Select_Users = "Select users"
     public static var InviteChannel_Invite: (Int) -> String = { count in
         switch count {
         case 0:
             return "Invite"
         default:
-            return "\(count) Invite"
+            return "Invite \(count)"
         }
     }
-    public static var InviteChannel_Add: (Int) -> String = { count in
+    public static var InviteChannel_Register: (Int) -> String = { count in
         switch count {
         case 0:
-            return "Add"
+            return "Register"
         default:
-            return "\(count) Add"
+            return "Register \(count)"
         }
     }
 
 
-    // MARK: - Member List
-    public static var MemberList_Header_Title = "Members"
-    public static var MemberList_Me = "(You)"
-    
-    public static var MemberList_Ban = "Ban"
-    public static var MemberList_Unban = "Unban"
-    public static var MemberList_Mute = "Mute"
-    public static var MemberList_Unmute = "Unmute"
-    public static var MemberList_Dismiss_Operator = "Dismiss operator"
-    public static var MemberList_Promote_Operator = "Promote to operator"
-    
-    public static var MemberList_Title_Members = "Members"
-    public static var MemberList_Title_Operators = "Operators"
-    public static var MemberList_Title_Muted_Members = "Muted members"
-    public static var MemberList_Title_Banned_Members = "Banned members"
-    public static var MemberList_Title_Participants = "Participants"
+    // MARK: - User List
+    public static var UserList_Me = "(You)"
+    public static var UserList_Ban = "Ban"
+    public static var UserList_Unban = "Unban"
+    public static var UserList_Mute = "Mute"
+    public static var UserList_Unmute = "Unmute"
+    public static var UserList_Unregister_Operator = "Unregister operator"
+    public static var UserList_Register_Operator = "Register operator"
+    public static var UserList_Title_Members = "Members"
+    public static var UserList_Title_Operators = "Operators"
+    public static var UserList_Title_Muted_Members = "Muted members"
+    public static var UserList_Title_Muted_Participants = "Muted Participants" // 3.0.0
+    public static var UserList_Title_Banned_Users = "Banned users"
+    public static var UserList_Title_Participants = "Participants"
+
     
     // MARK: - User
     public static var User_No_Name = "(No name)"
@@ -251,8 +252,8 @@ public class SBUStringSet {
     public static var UserProfile_Role_Member = "Member"
     public static var UserProfile_UserID = "User ID"
     public static var UserProfile_Message = "Message"
-    public static var UserProfile_Promote = "Promote"
-    public static var UserProfile_Dismiss = "Dismiss"
+    public static var UserProfile_Register = "Register"
+    public static var UserProfile_Unregister = "Unregister"
     public static var UserProfile_Mute = "Mute"
     public static var UserProfile_Unmute = "Unmute"
     public static var UserProfile_Ban = "Ban"
@@ -270,4 +271,12 @@ public class SBUStringSet {
         /// e.g., "You can mention up to 10 times at a time."
         public static var Limit_Guide = "You can mention up to \(SBUGlobals.userMentionConfig?.mentionLimit ?? 10) times per message. "
     }
+}
+
+extension SBUStringSet {
+    @available(*, deprecated, renamed: "InviteChannel_Register")
+    public static var InviteChannel_Add: (Int) -> String = { count in
+        InviteChannel_Register(count)
+    }
+    
 }

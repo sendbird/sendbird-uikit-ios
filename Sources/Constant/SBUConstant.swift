@@ -27,7 +27,7 @@ class SBUConstant {
 
     static let coverImagePrefix = "https://static.sendbird.com/sample/cover"
     
-    static let sbdExtensionKeyUIKit = "sb_uikit"
+    static let extensionKeyUIKit = "sb_uikit"
     
     static let bundleIdentifier = "com.sendbird.uikit"
     

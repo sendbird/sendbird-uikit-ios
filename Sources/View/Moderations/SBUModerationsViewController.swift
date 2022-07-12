@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 
 open class SBUModerationsViewController: SBUBaseViewController, SBUModerationsModuleHeaderDelegate, SBUModerationsModuleListDelegate, SBUModerationsModuleListDataSource, SBUCommonViewModelDelegate, SBUModerationsViewModelDelegate {
@@ -24,8 +24,8 @@ open class SBUModerationsViewController: SBUBaseViewController, SBUModerationsMo
     // MARK: - Logic properties (Public)
     public var viewModel: SBUModerationsViewModel?
     
-    public var channel: SBDGroupChannel? { viewModel?.channel }
-    public var channelUrl: String? { viewModel?.channelUrl }
+    public var channel: GroupChannel? { viewModel?.channel }
+    public var channelURL: String? { viewModel?.channelURL }
     
     
     // MARK: - Lifecycle
@@ -43,7 +43,7 @@ open class SBUModerationsViewController: SBUBaseViewController, SBUModerationsMo
     
     /// If you have channel object, use this initialize function.
     /// - Parameter channel: Channel object
-    required public init(channel: SBDGroupChannel) {
+    required public init(channel: GroupChannel) {
         super.init(nibName: nil, bundle: nil)
         SBULog.info("")
         
@@ -52,13 +52,13 @@ open class SBUModerationsViewController: SBUBaseViewController, SBUModerationsMo
         self.listComponent = SBUModuleSet.moderationsModule.listComponent
     }
     
-    /// If you don't have channel object and have channelUrl, use this initialize function.
-    /// - Parameter channelUrl: Channel url string
-    required public init(channelUrl: String) {
+    /// If you don't have channel object and have channelURL, use this initialize function.
+    /// - Parameter channelURL: Channel url string
+    required public init(channelURL: String) {
         super.init(nibName: nil, bundle: nil)
         SBULog.info("")
         
-        self.createViewModel(channelUrl: channelUrl)
+        self.createViewModel(channelURL: channelURL)
         self.headerComponent = SBUModuleSet.moderationsModule.headerComponent
         self.listComponent = SBUModuleSet.moderationsModule.listComponent
     }
@@ -86,11 +86,11 @@ open class SBUModerationsViewController: SBUBaseViewController, SBUModerationsMo
     
     
     // MARK: - ViewModel
-    open func createViewModel(channel: SBDGroupChannel? = nil,
-                              channelUrl: String? = nil) {
+    open func createViewModel(channel: GroupChannel? = nil,
+                              channelURL: String? = nil) {
         self.viewModel = SBUModerationsViewModel(
             channel: channel,
-            channelUrl: channelUrl,
+            channelURL: channelURL,
             delegate: self
         )
     }
@@ -154,53 +154,53 @@ open class SBUModerationsViewController: SBUBaseViewController, SBUModerationsMo
     }
     
     /// This is a function that shows the operator List.
-    /// If you want to use a custom MemberListViewController, override it and implement it.
+    /// If you want to use a custom UserListViewController, override it and implement it.
     open func showOperatorList() {
         guard let channel = self.channel else {
             SBULog.error("[Failed] Channel object is nil")
             return
         }
         
-        let memberListVC = SBUViewControllerSet.MemberListViewController.init(
+        let operatorListVC = SBUViewControllerSet.UserListViewController.init(
             channel: channel,
-            memberListType: .operators
+            userListType: .operators
         )
-        self.navigationController?.pushViewController(memberListVC, animated: true)
+        self.navigationController?.pushViewController(operatorListVC, animated: true)
     }
     
     /// This is a function that shows the muted member List.
-    /// If you want to use a custom MemberListViewController, override it and implement it.
+    /// If you want to use a custom UserListViewController, override it and implement it.
     open func showMutedMemberList() {
         guard let channel = self.channel else {
             SBULog.error("[Failed] Channel object is nil")
             return
         }
         
-        let memberListVC = SBUViewControllerSet.MemberListViewController.init(
+        let mutedMemberListVC = SBUViewControllerSet.UserListViewController.init(
             channel: channel,
-            memberListType: .mutedMembers
+            userListType: .muted
         )
-        self.navigationController?.pushViewController(memberListVC, animated: true)
+        self.navigationController?.pushViewController(mutedMemberListVC, animated: true)
     }
     
     /// This is a function that shows the banned member List.
-    /// If you want to use a custom MemberListViewController, override it and implement it.
-    open func showBannedMemberList() {
+    /// If you want to use a custom UserListViewController, override it and implement it.
+    open func showBannedUserList() {
         guard let channel = self.channel else {
             SBULog.error("[Failed] Channel object is nil")
             return
         }
         
-        let memberListVC = SBUViewControllerSet.MemberListViewController.init(
+        let bannedUserListVC = SBUViewControllerSet.UserListViewController.init(
             channel: channel,
-            memberListType: .bannedMembers
+            userListType: .banned
         )
-        self.navigationController?.pushViewController(memberListVC, animated: true)
+        self.navigationController?.pushViewController(bannedUserListVC, animated: true)
     }
     
     
     // MARK: - Error handling
-    private func errorHandler(_ error: SBDError) {
+    private func errorHandler(_ error: SBError) {
         self.errorHandler(error.localizedDescription, error.code)
     }
     
@@ -247,8 +247,8 @@ open class SBUModerationsViewController: SBUBaseViewController, SBUModerationsMo
             self.showOperatorList()
         case .mutedMembers:
             self.showMutedMemberList()
-        case .bannedMembers:
-            self.showBannedMemberList()
+        case .bannedUsers:
+            self.showBannedUserList()
         case .freezeChannel:
             break
         default:
@@ -259,7 +259,7 @@ open class SBUModerationsViewController: SBUBaseViewController, SBUModerationsMo
     
     // MARK: SBUModerationsModuleListDataSource
     open func moderationsModule(_ listComponent: SBUModerationsModule.List,
-                                  channelForTableView tableView: UITableView) -> SBDBaseChannel? {
+                                  channelForTableView tableView: UITableView) -> BaseChannel? {
         return self.viewModel?.channel
     }
     
@@ -269,7 +269,7 @@ open class SBUModerationsViewController: SBUBaseViewController, SBUModerationsMo
         self.showLoading(isLoading)
     }
     
-    open func didReceiveError(_ error: SBDError?, isBlocker: Bool) {
+    open func didReceiveError(_ error: SBError?, isBlocker: Bool) {
         self.showLoading(false)
         self.errorHandler(error?.description ?? "")
     }
@@ -277,8 +277,8 @@ open class SBUModerationsViewController: SBUBaseViewController, SBUModerationsMo
     
     // MARK: - SBUModerationsViewModelDelegate
     open func moderationsViewModel(_ viewModel: SBUModerationsViewModel,
-                                   didChangeChannel channel: SBDBaseChannel?,
-                                   withContext context: SBDMessageContext) {
+                                   didChangeChannel channel: BaseChannel?,
+                                   withContext context: MessageContext) {
         self.updateStyles()
     }
 }

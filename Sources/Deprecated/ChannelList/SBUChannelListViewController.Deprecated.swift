@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 @available(*, deprecated, renamed: "SBUGroupChannelListViewController") // 3.0.0
 public typealias SBUChannelListViewController = SBUGroupChannelListViewController
@@ -48,7 +48,7 @@ extension SBUGroupChannelListViewController {
     }
     
     @available(*, deprecated, message: "This property has been moved to the `SBUGroupChannelListViewModel`.", renamed: "viewModel.channelListQuery")
-    public var channelListQuery: SBDGroupChannelListQuery? { viewModel?.channelListQuery }
+    public var channelListQuery: GroupChannelListQuery? { viewModel?.channelListQuery }
     
     @available(*, unavailable, message: "Since it automatically manages internally, it is no longer necessary.")
     public var isLoading: Bool { false }
@@ -69,14 +69,14 @@ extension SBUGroupChannelListViewController {
     public func initChannelList() { viewModel?.initChannelList() }
     
     @available(*, deprecated, message: "This function has been moved to the `SBUGroupChannelListViewModel`.", renamed: "viewModel.changePushTriggerOption(option:channel:completionHandler:)")
-    public func changePushTriggerOption(option: SBDGroupChannelPushTriggerOption,
-                                        channel: SBDGroupChannel,
+    public func changePushTriggerOption(option: GroupChannelPushTriggerOption,
+                                        channel: GroupChannel,
                                         completionHandler: ((Bool)-> Void)? = nil) {
         viewModel?.changePushTriggerOption(option: option, channel: channel)
     }
     
     @available(*, deprecated, message: "This function has been moved to the `SBUGroupChannelListViewModel`.", renamed: "viewModel.leaveChannel(_:completionHandler:)")
-    public func leaveChannel(_ channel: SBDGroupChannel, completionHandler: ((Bool)-> Void)? = nil) {
+    public func leaveChannel(_ channel: GroupChannel, completionHandler: ((Bool)-> Void)? = nil) {
         viewModel?.leaveChannel(channel)
     }
 
@@ -90,18 +90,18 @@ extension SBUGroupChannelListViewController {
     public func sortChannelList(needReload: Bool) { viewModel?.sortChannelList(needReload: needReload) }
     
     @available(*, deprecated, message: "This function has been moved to the `SBUGroupChannelListViewModel`.", renamed: "viewModel.updateChannels(_:needReload:)")
-    public func updateChannels(_ channels: [SBDGroupChannel]?, needReload: Bool) {
+    public func updateChannels(_ channels: [GroupChannel]?, needReload: Bool) {
         viewModel?.updateChannels(channels, needReload: needReload)
     }
     
     @available(*, deprecated, message: "This function has been moved to the `SBUGroupChannelListViewModel`.", renamed: "viewModel.upsertChannels(_:needReload:)")
-    public func upsertChannels(_ channels: [SBDGroupChannel]?, needReload: Bool) {
+    public func upsertChannels(_ channels: [GroupChannel]?, needReload: Bool) {
         viewModel?.upsertChannels(channels, needReload: needReload)
     }
     
-    @available(*, deprecated, message: "This function has been moved to the `SBUGroupChannelListViewModel`.", renamed: "viewModel.deleteChannels(_:needReload:)")
+    @available(*, deprecated, message: "This function has been moved to the `SBUGroupChannelListViewModel`.", renamed: "viewModel.deleteChannels(channelURLs:needReload:)")
     public func deleteChannels(channelUrls: [String]?, needReload: Bool) {
-        viewModel?.deleteChannels(channelUrls: channelUrls, needReload: needReload)
+        viewModel?.deleteChannels(channelURLs: channelUrls, needReload: needReload)
     }
 
     @available(*, deprecated, message: "This function has been moved to the `SBUGroupChannelListModule.List`.`", renamed: "listComponent.register(channelCell:nib:)")
@@ -130,30 +130,30 @@ extension SBUGroupChannelListViewController {
     open func didSelectRetry() {}
     
     @available(*, unavailable, message: "Since it automatically detects channel changes internally, it is no longer necessary to use this function.")
-    open func channel(_ sender: SBDGroupChannel, userDidJoin user: SBDUser) {}
+    open func channel(_ sender: GroupChannel, userDidJoin user: User) {}
     @available(*, unavailable, message: "Since it automatically detects channel changes internally, it is no longer necessary to use this function.")
-    open func channel(_ sender: SBDGroupChannel, userDidLeave user: SBDUser) {}
+    open func channel(_ sender: GroupChannel, userDidLeave user: User) {}
     @available(*, unavailable, message: "Since it automatically detects channel changes internally, it is no longer necessary to use this function.")
-    open func channelWasChanged(_ sender: SBDBaseChannel) {}
+    open func channelWasChanged(_ sender: BaseChannel) {}
     @available(*, unavailable, message: "Since it automatically detects channel changes internally, it is no longer necessary to use this function.")
-    open func channel(_ sender: SBDBaseChannel, messageWasDeleted messageId: Int64) {}
+    open func channel(_ sender: BaseChannel, messageWasDeleted messageId: Int64) {}
     @available(*, unavailable, message: "Since it automatically detects channel changes internally, it is no longer necessary to use this function.")
-    open func channelWasFrozen(_ sender: SBDBaseChannel) {}
+    open func channelWasFrozen(_ sender: BaseChannel) {}
     @available(*, unavailable, message: "Since it automatically detects channel changes internally, it is no longer necessary to use this function.")
-    open func channelWasUnfrozen(_ sender: SBDBaseChannel) {}
+    open func channelWasUnfrozen(_ sender: BaseChannel) {}
     @available(*, unavailable, message: "Since it automatically detects channel changes internally, it is no longer necessary to use this function.")
-    open func channel(_ sender: SBDBaseChannel, userWasBanned user: SBDUser) {}
+    open func channel(_ sender: BaseChannel, userWasBanned user: User) {}
     @available(*, unavailable, message: "Since it automatically detects channel changes internally, it is no longer necessary to use this function.")
     open func didSucceedReconnection() {}
 
     @available(*, unavailable, message: "Use `SBUGroupChannelListViewModel groupChannelListViewModel(_:didChangeChannelList:needsToReload:)` instead.")
-    public func channelListDidChange(_ channels: [SBDGroupChannel]?, needToReload: Bool) { }
+    public func channelListDidChange(_ channels: [GroupChannel]?, needToReload: Bool) { }
     
     @available(*, unavailable, message: "Use `SBUGroupChannelListViewModel groupChannelListViewModel(_:didUpdateChannel:)` instead.")
-    public func channelDidUpdate(_ channel: SBDGroupChannel) { }
+    public func channelDidUpdate(_ channel: GroupChannel) { }
     
     @available(*, unavailable, message: "Use `SBUGroupChannelListViewModel groupChannelListViewModel(_:didLeaveChannel:)` instead.")
-    public func channelDidLeave(_ channel: SBDGroupChannel) { }
+    public func channelDidLeave(_ channel: GroupChannel) { }
     
 
     

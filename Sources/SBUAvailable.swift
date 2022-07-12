@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 
 public class SBUAvailable {
@@ -29,12 +29,10 @@ public class SBUAvailable {
     static let MESSAGE_SEARCH = "message_search_v3"
 
     private static func isAvailable(key: String) -> Bool {
-        guard let appInfo = SBDMain.getAppInfo(),
-              let applicationAttributes = appInfo.applicationAttributes,
-              let premiumFeatureList = appInfo.premiumFeatureList else { return false }
+        guard let appInfo = SendbirdChat.getAppInfo(),
+              let applicationAttributes = appInfo.applicationAttributes else { return false }
         
-        return applicationAttributes.contains(key) ||
-            premiumFeatureList.contains(key)
+        return applicationAttributes.contains(key)
     }
     
     

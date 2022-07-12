@@ -1,7 +1,31 @@
 # Changelog V2
 
+### v2.2.8 (Jun 21, 2022)
+- Modified some view to be able to change its date format
+  - Opened `SBUMessageDateView`
+  - Opened `SBUChannelCell`
+  - Added `SBUMessageDateView.dateFormat`
+  - Added `SBUOpenChannelContentBaseMessageCell.dateFormat`
+  - Added `SBUMessageSearchResultCell.dateFormat`
+  - Added parameters to `SBUChannelCell buildLastUpdatedDate()`: `dateFormat`, `timeFormat`
+- Added public classes and interfaces regarding message cells
+  - Added open/public interfaces in message cells.
+  - Added `SBUMessageWebView`, `SBUMessageWebViewModel` and `SBUOpenChannelMessageWebView`
+  - Added `SBUMessageReactionView`
+- Added `SBUDateFormatSet`
+- Added `Date.sbu_toString(dateFormat:localizedFormat)`
+- Changed `Date.lastUpdatedTime` function in `Data+SBUIKit` access level to public
+- Fixed not called completion handler on unregister pushToken
+
+### v2.2.7 (Jun 2, 2022)
+* Updated chat SDK minor version to **v3.1.13**
+* Added `leftBarButton` to `SBUSelectablePhotoViewController`
+  * Added `leftBarButton`
+  * Added `didTapLeftBarButton()`
+* Improved stability
+
 ### v2.2.6 (Mar 28, 2022)
-* Updated chat SDK minor version to **v3.1.17**
+* Updated chat SDK minor version to **v3.1.7**
 * Added new classes to support limited photo access level.
   * Added `SBUSelectablePhotoViewController` class.
   * Added `SBUPhotoCollectionViewCell` class.

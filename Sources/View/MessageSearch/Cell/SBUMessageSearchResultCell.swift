@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 
 open class SBUMessageSearchResultCell: SBUTableViewCell {
@@ -66,7 +66,7 @@ open class SBUMessageSearchResultCell: SBUTableViewCell {
 
     private let coverImageSize: CGSize = CGSize(value: 56)
     private let fileIconSize: CGSize = CGSize(value: 26)
-    private var message: SBDBaseMessage? = nil
+    private var message: BaseMessage? = nil
     
     // MARK: - View Lifecycle
     public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -123,7 +123,6 @@ open class SBUMessageSearchResultCell: SBUTableViewCell {
         NSLayoutConstraint.activate([
             self.titleLabel.leadingAnchor.constraint(equalTo: self.coverImage.trailingAnchor, constant: 16),
             self.titleLabel.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 10),
-            self.titleLabel.trailingAnchor.constraint(equalTo: self.createdAtLabel.leadingAnchor, constant: -4),
             self.titleLabel.bottomAnchor.constraint(equalTo: self.messageLabel.topAnchor, constant: -2)
         ])
         
@@ -153,7 +152,8 @@ open class SBUMessageSearchResultCell: SBUTableViewCell {
         NSLayoutConstraint.activate([
             self.createdAtLabel.leadingAnchor.constraint(greaterThanOrEqualTo: self.titleLabel.trailingAnchor, constant: 4),
             self.createdAtLabel.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 12),
-            self.createdAtLabel.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -16)
+            self.createdAtLabel.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -16),
+            self.createdAtLabel.widthAnchor.constraint(greaterThanOrEqualToConstant: 30)
         ])
         
         self.separatorLine.translatesAutoresizingMaskIntoConstraints = false
@@ -164,12 +164,11 @@ open class SBUMessageSearchResultCell: SBUTableViewCell {
             self.separatorLine.heightAnchor.constraint(equalToConstant: 0.5)
         ])
         
-        self.titleLabel.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
-        self.titleLabel.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        self.titleLabel.setContentHuggingPriority(UILayoutPriority(249), for: .horizontal)
         self.titleLabel.setContentHuggingPriority(.defaultHigh, for: .vertical)
         
         self.messageLabel.setContentHuggingPriority(.defaultLow, for: .vertical)
-        self.createdAtLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        self.createdAtLabel.setContentCompressionResistancePriority(UILayoutPriority(751), for: .horizontal)
     }
     
     /// This function handles the initialization of styles.
@@ -197,15 +196,15 @@ open class SBUMessageSearchResultCell: SBUTableViewCell {
         SBULog.info("")
     }
     
-    /// This function configure a cell using `SBDBaseMessage` information.
-    /// - Parameter message: `SBDBaseMessage` object
-    open func configure(message: SBDBaseMessage) {
+    /// This function configure a cell using `BaseMessage` information.
+    /// - Parameter message: `BaseMessage` object
+    open func configure(message: BaseMessage) {
         self.message = message
         
         self.selectionStyle = .none
         
-        if let profileUrl = self.message?.sender?.profileUrl {
-            self.coverImage.setImage(with: profileUrl, makeCircle: true)
+        if let profileURL = self.message?.sender?.profileURL {
+            self.coverImage.setImage(with: profileURL, makeCircle: true)
         } else {
             self.coverImage.setPlaceholderImage(iconSize: SBUIconSetType.Metric.defaultIconSizeLarge)
         }
@@ -221,7 +220,7 @@ open class SBUMessageSearchResultCell: SBUTableViewCell {
         self.fileStackView.isHidden = true
         
         switch message {
-        case let fileMessage as SBDFileMessage:
+        case let fileMessage as FileMessage:
             self.fileStackView.isHidden = false
             
             self.fileMessageLabel.text = fileMessage.name
@@ -265,7 +264,7 @@ open class SBUMessageSearchResultCell: SBUTableViewCell {
     
     /// Sets file message icon depending on the message's file type using `SBUUtils.getFileType(by: fileMessage)`.
     public func setupFileIcon() {
-        guard let fileMessage = self.message as? SBDFileMessage else { return }
+        guard let fileMessage = self.message as? FileMessage else { return }
         let iconType: SBUIconSetType
         
         switch SBUUtils.getFileType(by: fileMessage) {

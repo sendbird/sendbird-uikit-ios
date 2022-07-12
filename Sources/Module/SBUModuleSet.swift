@@ -47,16 +47,16 @@ public class SBUModuleSet {
         set { shared.inviteUserModule = newValue }
     }
     /// The module for promoting members
-    public static var promoteMemberModule: SBUPromoteMemberModule {
-        get { shared.promoteMemberModule }
-        set { shared.promoteMemberModule = newValue }
+    public static var registerOperatorModule: SBURegisterOperatorModule {
+        get { shared.registerOperatorModule }
+        set { shared.registerOperatorModule = newValue }
     }
     
-    // Member list
-    /// The module for the list of members
-    public static var memberListModule: SBUMemberListModule {
-        get { shared.memberListModule }
-        set { shared.memberListModule = newValue }
+    // User list
+    /// The module for the list of users
+    public static var userListModule: SBUUserListModule {
+        get { shared.userListModule }
+        set { shared.userListModule = newValue }
     }
     
     // Group Channel Push Settings
@@ -106,8 +106,8 @@ public class SBUModuleSet {
                 groupChannelModule: SBUGroupChannelModule = SBUGroupChannelModule(),
                 openChannelModule: SBUOpenChannelModule = SBUOpenChannelModule(),
                 inviteUserModule: SBUInviteUserModule = SBUInviteUserModule(),
-                promoteMemberModule: SBUPromoteMemberModule = SBUPromoteMemberModule(),
-                memberListModule: SBUMemberListModule = SBUMemberListModule(),
+                registerOperatorModule: SBURegisterOperatorModule = SBURegisterOperatorModule(),
+                userListModule: SBUUserListModule = SBUUserListModule(),
                 groupChannelPushSettingsModule: SBUGroupChannelPushSettingsModule = SBUGroupChannelPushSettingsModule(),
                 createChannelModule: SBUCreateChannelModule = SBUCreateChannelModule(),
                 groupChannelSettingsModule: SBUGroupChannelSettingsModule = SBUGroupChannelSettingsModule(),
@@ -121,9 +121,9 @@ public class SBUModuleSet {
         self.openChannelModule = openChannelModule
         
         self.inviteUserModule = inviteUserModule
-        self.promoteMemberModule = promoteMemberModule
+        self.registerOperatorModule = registerOperatorModule
         
-        self.memberListModule = memberListModule
+        self.userListModule = userListModule
 
         self.groupChannelPushSettingsModule = groupChannelPushSettingsModule
         
@@ -146,9 +146,9 @@ public class SBUModuleSet {
     private var openChannelModule: SBUOpenChannelModule
     
     private var inviteUserModule: SBUInviteUserModule
-    private var promoteMemberModule: SBUPromoteMemberModule
+    private var registerOperatorModule: SBURegisterOperatorModule
     
-    private var memberListModule: SBUMemberListModule
+    private var userListModule: SBUUserListModule
 
     private var groupChannelPushSettingsModule: SBUGroupChannelPushSettingsModule
     

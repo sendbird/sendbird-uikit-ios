@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 @available(*, deprecated, renamed: "SBUGroupChannelCell")
 public typealias SBUChannelCell = SBUGroupChannelCell
@@ -245,22 +245,22 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
         SBULog.info("")
     }
     
-    /// This function configure a cell using `SBDGroupChannel` information.
-    /// - Note: If you use `SBDOpenChannel`, your cell class must inherit `SBUBaseChannelCell` and override `configure(channel:)` method.
-    /// - Parameter channel: `SBDGroupChannel` object
-    open override func configure(channel: SBDBaseChannel) {
+    /// This function configure a cell using `GroupChannel` information.
+    /// - Note: If you use `OpenChannel`, your cell class must inherit `SBUBaseChannelCell` and override `configure(channel:)` method.
+    /// - Parameter channel: `GroupChannel` object
+    open override func configure(channel: BaseChannel) {
         super.configure(channel: channel)
         
-        guard let channel = channel as? SBDGroupChannel else { return }
+        guard let channel = channel as? GroupChannel else { return }
 
         // Cover image
-        if let url = channel.coverUrl, SBUUtils.isValid(coverUrl: url) {
-            self.coverImage.setImage(withCoverUrl: url)
+        if let url = channel.coverURL, SBUUtils.isValid(coverURL: url) {
+            self.coverImage.setImage(withCoverURL: url)
         } else if channel.isBroadcast {
             self.coverImage.setBroadcastIcon()
         } else {
-            if let members = channel.members as? [SBDUser] {
-                self.coverImage.setImage(withUsers: members)
+            if !channel.members.isEmpty {
+                self.coverImage.setImage(withUsers: channel.members)
             } else {
                 self.coverImage.setPlaceholderImage(iconSize: .init(width: 40, height: 40))
             }
@@ -295,11 +295,11 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
         
         // Last message
         switch channel.lastMessage {
-        case let userMessage as SBDUserMessage:
+        case let userMessage as UserMessage:
             self.messageLabel.lineBreakMode = .byTruncatingTail
             self.messageLabel.text = userMessage.message
             
-        case let fileMessage as SBDFileMessage:
+        case let fileMessage as FileMessage:
             self.messageLabel.lineBreakMode = .byTruncatingMiddle
             self.messageLabel.text = fileMessage.name
             
@@ -331,18 +331,18 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
     /// Updates message label when someone is typing. To show typing indicator, set `SBUGlobals.isChannelListTypingIndicatorEnabled` to `true`.
     open func updateMessageLabel() {
         guard SBUGlobals.isChannelListTypingIndicatorEnabled else { return }
-        guard let groupChannel = channel as? SBDGroupChannel else { return }
+        guard let groupChannel = channel as? GroupChannel else { return }
         
         if let typingMembers = groupChannel.getTypingUsers(), !typingMembers.isEmpty {
             messageLabel.lineBreakMode = .byTruncatingTail
             messageLabel.text = SBUStringSet.Channel_Typing(typingMembers)
         } else {
             switch groupChannel.lastMessage {
-            case let userMessage as SBDUserMessage:
+            case let userMessage as UserMessage:
                 messageLabel.lineBreakMode = .byTruncatingTail
                 messageLabel.text = userMessage.message
                 messageLabel.numberOfLines = 2
-            case let fileMessage as SBDFileMessage:
+            case let fileMessage as FileMessage:
                 messageLabel.lineBreakMode = .byTruncatingMiddle
                 messageLabel.text = fileMessage.name
             default:
@@ -356,7 +356,7 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
     /// - NOTE: As a default, the *super* and the *broadcast* group channel are not supported.
     open func updateStateImageView() {
         guard SBUGlobals.isChannelListMessageReceiptStateEnabled else { return }
-        guard let groupChannel = channel as? SBDGroupChannel else { return }
+        guard let groupChannel = channel as? GroupChannel else { return }
         guard !groupChannel.isSuper, !groupChannel.isBroadcast else { return }
         guard let lastMessage = groupChannel.lastMessage else { return }
         guard lastMessage.sender?.userId == SBUGlobals.currentUser?.userId else { return }
@@ -387,7 +387,7 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
     /// This function builds last message updated date.
     /// - Returns: last updated date string
     public func buildLastUpdatedDate() -> String? {
-        guard let channel = self.channel as? SBDGroupChannel else { return nil }
+        guard let channel = self.channel as? GroupChannel else { return nil }
         var lastUpdatedAt: Int64
         
         if let lastMessage = channel.lastMessage {

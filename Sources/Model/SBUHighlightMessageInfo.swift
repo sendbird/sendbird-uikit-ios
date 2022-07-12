@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import SendBirdSDK
+import SendbirdChatSDK
 
 /// The structure that cotains the highlight information
 public struct SBUHighlightMessageInfo {

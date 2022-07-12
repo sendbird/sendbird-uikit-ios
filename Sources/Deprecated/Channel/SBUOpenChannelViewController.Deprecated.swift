@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 extension SBUOpenChannelViewController {
     // MARK: 3.0.0
@@ -74,7 +74,7 @@ extension SBUOpenChannelViewController {
     }
 
     @available(*, deprecated, message: "This function has been moved to `SBUOpenChannelModule.List`.", renamed: "listComponent.generateCellIdentifier(by:)")
-    open func generateCellIdentifier(by message: SBDBaseMessage) -> String {
+    open func generateCellIdentifier(by message: BaseMessage) -> String {
         self.listComponent?.generateCellIdentifier(by: message) ?? "\(type(of: message))Cell"
         
     }

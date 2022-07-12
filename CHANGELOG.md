@@ -1,5 +1,59 @@
 # Changelog
 
+### v3.0.0 (Jul 12, 2022) with Chat SDK **v4.0.5**
+* UIKit v3.0.0 officially version
+    * Support `modules` and `components` in the UIKit
+    * See more details and breaking changes. [[details](/changelogs/BREAKING_CHANGES_V3.md)]
+    * See the Migration Guide for Converting V2 to V3. [[details](/changelogs/MIGRATION_GUIDE_V3.md)]
+---
+* Applied `SBUSelectablePhotoViewDelegate` and `PHPickerViewControllerDelegate` to `SBUBaseChannelSettingViewController`
+  * Added `showCamera()`, `showPhotoLibraryPicker()`, `showLimitedPhotoLibraryPicker()` and `showPermissionAlert()` to `SBUBaseChannelSettingViewController`
+* Added `init(mediaType:)` to `SBUSelectablePhotoViewController`
+* Added `startHandler` to `SendbirdUI` initializer
+  * Renamed to `initialize(applicationId:startHandler:migrationHandler:completionHandler:)`
+* Set `setMemberInfoInMessage` option to `true`
+* Added muted mode feature in OpenChannel
+* Fixed quoted message long name layout issue
+* Modified access level of message cell interfaces
+* Added `messageInputView(_:willChangeMode:message:mentionManager:)` to `SBUGroupChannelModule.Input`
+* Changed `SBUMessageInputView option` to read-only
+* Renamed `SBUStringSet`
+	* `ChannelSettings_Banned_Members` to `ChannelSettings_Banned_Users`
+	* `Empty_No_Banned_Members` to `Empty_No_Banned_Users`
+	* `InviteChannel_Header_Select_Members` to `InviteChannel_Header_Select_Users`
+	* `InviteChannel_Add` to `InviteChannel_Register`
+	* `MemberList_Me` to `UserList_Me`
+	* `MemberList_Ban` to `UserList_Ban`
+	* `MemberList_Unban` to `UserList_Unban`
+	* `MemberList_Mute` to `UserList_Mute`
+	* `MemberList_Unmute` to `UserList_Unmute`
+	* `MemberList_Dismiss_Operator` to `UserList_Unregister_Operator`
+	* `MemberList_Promote_Operator` to `UserList_Register_Operator`
+	* `MemberList_Title_Members` to `UserList_Title_Members`
+	* `MemberList_Title_Operators` to `UserList_Title_Operators`
+	* `MemberList_Title_Muted_Members` to `UserList_Title_Muted_Members`
+	* `MemberList_Title_Banned_Members` to `UserList_Title_Banned_Users`
+	* `MemberList_Title_Participants` to `UserList_Title_Participants`
+	* `UserProfile_Promote` to `UserProfile_Register`
+	* `UserProfile_Dismiss` to `UserProfile_Unregister`
+* Added new `SBUStringSet`
+	* `UserList_Title_Muted_Participants`
+	* `Empty_No_Muted_Participants`
+* Removed unused `SBUStringSet`
+	* `MemberList_Header_Title`
+* Renamed `SBUEnums`
+	* `ChannelMemberListType` to `ChannelUserListType`
+	* `channelMembers`, `mutedMembers`, `bannedMembers` to `members`, `muted`, `banned` in `ChannelMemberListType`
+	* `bannedMembers` to `bannedUsers` in `ModerationItemType`
+	* `channelMembers`, `inviteUser`, `mutedMembers`, `bannedMembers` to `members`, `invite`, `muted`, `banned` in `UserListType`
+	* `noBannedMembers` to `noBannedUsers` in `EmptyViewType`
+* Renamed `SBUMemberListViewController` to `SBUUserListViewController`
+* Renamed properties, functions in `SBUMemberListViewController`
+	* `memberList`, `memberListType` to `userList`, `userListType`
+	* `init(channel:memberListType:)` to `init(channel:userListType:)`
+	* `init(channel:members:type:)` to `init(channel:users:userListType:)`
+	* `init(channelURL:channelType:members:memberListType:)` to `init(channelURL:channelType:users:userListType:)`
+
 ### v3.0.0-beta.4 (Jun 21, 2022)
 * Modified some view to be able to change its date format
   * Opened `SBUMessageDateView`

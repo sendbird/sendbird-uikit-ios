@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 class ChannelVC_Overriding: SBUGroupChannelViewController {
     // MARK: - Show relations
@@ -19,12 +19,12 @@ class ChannelVC_Overriding: SBUGroupChannelViewController {
     // TODO: modularization 적용한걸로 수정
 //    // MARK: - Cell TapHandler
 //    /// This function sets the cell's tap gesture handling.
-//    override func setTapGestureHandler(_ cell: SBUBaseMessageCell, message: SBDBaseMessage) {
+//    override func setTapGestureHandler(_ cell: SBUBaseMessageCell, message: BaseMessage) {
 //        AlertManager.showCustomInfo(#function)
 //    }
 //
 //    /// This function sets the cell's long tap gesture handling.
-//    override func setLongTapGestureHandler(_ cell: SBUBaseMessageCell, message: SBDBaseMessage, indexPath: IndexPath) {
+//    override func setLongTapGestureHandler(_ cell: SBUBaseMessageCell, message: BaseMessage, indexPath: IndexPath) {
 //        AlertManager.showCustomInfo(#function)
 //    }
 //
@@ -52,12 +52,12 @@ class ChannelVC_Overriding: SBUGroupChannelViewController {
 //
 //
 //    // MARK: - SBUFileViewerDelegate
-//    override func didSelectDeleteImage(message: SBDFileMessage) {
+//    override func didSelectDeleteImage(message: FileMessage) {
 //        AlertManager.showCustomInfo(#function)
 //    }
 //
 //
-//    // MARK: SBDConnectionDelegate
+//    // MARK: ConnectionDelegate
 //    override func didSucceedReconnection() {
 //        // If you override and customize this function, you can handle it when reconnected.
 //        super.didSucceedReconnection()

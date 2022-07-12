@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 /// It is a base class used in message cell with contents.
 /// - Since: 1.2.1
@@ -247,11 +247,13 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         // MARK: Configure base message cell
         super.configure(with: configuration)
         
+        guard let message = self.message else { return }
+        
         // MARK: Configure reaction view
         self.reactionView.configure(
             maxWidth: SBUConstant.imageSize.width,
             useReaction: self.useReaction,
-            reactions: self.message.reactions
+            reactions: message.reactions
         )
         
         // MARK: update UI with message position
@@ -266,7 +268,7 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         // MARK: Set up SBU user name view
         if let userNameView = self.userNameView as? SBUUserNameView {
             var username = ""
-            if let sender = self.message.sender {
+            if let sender = message.sender {
                 username = SBUUser(user: sender).refinedNickname()
             }
             userNameView.configure(username: username)
@@ -282,17 +284,17 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         
         if configuration.messagePosition != .right, usingProfileView {
             if let profileView = self.profileView as? SBUMessageProfileView {
-                let urlString = self.message.sender?.profileUrl ?? ""
+                let urlString = message.sender?.profileURL ?? ""
                 profileView.configure(urlString: urlString)
             }
         }
         
         // MARK: Set up SBU message state view
         if self.stateView is SBUMessageStateView {
-            let isQuotedReplyMessage = self.message.parent != nil
+            let isQuotedReplyMessage = message.parentMessage != nil
             let configuration = SBUMessageStateViewParams(
-                timestamp: self.message.createdAt,
-                sendingState: self.message.sendingStatus,
+                timestamp: message.createdAt,
+                sendingState: message.sendingStatus,
                 receiptState: self.receiptState,
                 position: self.position,
                 isQuotedReplyMessage: usingQuotedMessage ? isQuotedReplyMessage : false
@@ -324,10 +326,11 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
     }
     
     public func setupQuotedMessageView() {
-        guard self.quotedMessageView != nil else { return }
-        guard let quotedMessage = self.message.parent else { return }
+        guard self.quotedMessageView != nil,
+              let message = self.message,
+              let quotedMessage = self.message?.parentMessage else { return }
         let configuration = SBUQuotedBaseMessageViewParams(
-            message: self.message,
+            message: message,
             position: self.position,
             usingQuotedMessage: self.usingQuotedMessage
         )
@@ -338,7 +341,7 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         }
         
         switch quotedMessage {
-        case is SBDUserMessage :
+        case is UserMessage :
             if !(self.quotedMessageView is SBUQuotedUserMessageView) {
                 self.contentVStackView.arrangedSubviews.forEach {
                     $0.removeFromSuperview()
@@ -350,7 +353,7 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
                 ])
             }
             (self.quotedMessageView as? SBUQuotedUserMessageView)?.configure(with: configuration)
-        case is SBDFileMessage:
+        case is FileMessage:
             if !(self.quotedMessageView is SBUQuotedFileMessageView) {
                 self.contentVStackView.arrangedSubviews.forEach {
                     $0.removeFromSuperview()
@@ -484,7 +487,7 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
     
     
     @available(*, deprecated, renamed: "configure(message:configuration:)") // 2.2.0
-    open func configure(_ message: SBDBaseMessage,
+    open func configure(_ message: BaseMessage,
                         hideDateView: Bool,
                         position: MessagePosition,
                         groupPosition: MessageGroupPosition,

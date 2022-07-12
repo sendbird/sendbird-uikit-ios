@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SendbirdChatSDK
 
 public protocol SBUUserMessageTextViewDelegate: AnyObject {
     /// Called when the mention in message has been tapped.
@@ -46,7 +47,7 @@ open class SBUUserMessageTextView: SBUView {
         return textView
     }()
     
-    public var channelType: ChannelCreationType = .group
+    public var channelType: ChannelType = .group
     public var isWebType = false
     
     var longPressHandler: ((URL) -> ())? = nil
@@ -66,7 +67,7 @@ open class SBUUserMessageTextView: SBUView {
         super.init(frame: frame)
     }
     
-    public init(channelType: ChannelCreationType) {
+    public init(channelType: ChannelType) {
         self.channelType = channelType
 
         super.init()

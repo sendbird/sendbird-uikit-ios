@@ -7,14 +7,14 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 public protocol SBUBaseChannelSettingsViewModelDelegate: SBUCommonViewModelDelegate {
     /// Called when the context of channel has been changed.
     func baseChannelSettingsViewModel(
         _ viewModel: SBUBaseChannelSettingsViewModel,
-        didChangeChannel channel: SBDBaseChannel?,
-        withContext context: SBDMessageContext
+        didChangeChannel channel: BaseChannel?,
+        withContext context: MessageContext
     )
 }
 
@@ -23,15 +23,15 @@ public protocol SBUBaseChannelSettingsViewModelDelegate: SBUCommonViewModelDeleg
 open class SBUBaseChannelSettingsViewModel: NSObject {
     
     // MARK: - Logic properties (Public)
-    public internal(set) var channel: SBDBaseChannel?
-    public internal(set) var channelUrl: String?
+    public internal(set) var channel: BaseChannel?
+    public internal(set) var channelURL: String?
     
     public var isOperator: Bool {
-        if let groupChannel = self.channel as? SBDGroupChannel {
+        if let groupChannel = self.channel as? GroupChannel {
             return groupChannel.myRole == .operator
-        } else if let openChannel = self.channel as? SBDOpenChannel {
+        } else if let openChannel = self.channel as? OpenChannel {
             guard let userId = SBUGlobals.currentUser?.userId else { return false }
-            return openChannel.isOperator(withUserId: userId)
+            return openChannel.isOperator(userId: userId)
         }
         return false
     }
@@ -44,16 +44,11 @@ open class SBUBaseChannelSettingsViewModel: NSObject {
     // MARK: - LifeCycle
     public override init() {
         super.init()
-        
-        SBDMain.add(
-            self as SBDChannelDelegate,
-            identifier: "\(SBUConstant.channelDelegateIdentifier).\(self.description)"
-        )
     }
     
     deinit {
         self.baseDelegate = nil
-        SBDMain.removeChannelDelegate(
+        SendbirdChat.removeChannelDelegate(
             forIdentifier: "\(SBUConstant.channelDelegateIdentifier).\(self.description)"
         )
     }
@@ -62,14 +57,14 @@ open class SBUBaseChannelSettingsViewModel: NSObject {
     // MARK: - Channel related
     
     /// This function loads channel information.
-    /// - Parameter channelUrl: channel url
-    public func loadChannel(channelUrl: String) { }
+    /// - Parameter channelURL: channel url
+    public func loadChannel(channelURL: String) { }
     
     /// This function loads channel information.
     /// - Parameters:
-    ///   - channelUrl: channel url
+    ///   - channelURL: channel url
     ///   - type: channel type
-    public func loadChannel(channelUrl: String, type: SBDChannelType) {
+    public func loadChannel(channelURL: String, type: ChannelType) {
         self.baseDelegate?.shouldUpdateLoadingState(true)
         
         SendbirdUI.connectIfNeeded { [weak self] user, error in
@@ -79,7 +74,7 @@ open class SBUBaseChannelSettingsViewModel: NSObject {
             if let error = error {
                 self.baseDelegate?.didReceiveError(error, isBlocker: false)
             } else {
-                let completionHandler: ((SBDBaseChannel?, SBDError?) -> Void) = {
+                let completionHandler: ((BaseChannel?, SBError?) -> Void) = {
                     [weak self] channel, error in
                     
                     guard let self = self else { return }
@@ -89,8 +84,7 @@ open class SBUBaseChannelSettingsViewModel: NSObject {
                     } else if let channel = channel {
                         self.channel = channel
                         
-                        let context = SBDMessageContext()
-                        context.source = .eventChannelChanged
+                        let context = MessageContext(source: .eventChannelChanged, sendingStatus: .succeeded)
                         self.baseDelegate?.baseChannelSettingsViewModel(
                             self,
                             didChangeChannel: channel,
@@ -101,9 +95,9 @@ open class SBUBaseChannelSettingsViewModel: NSObject {
                 
                 switch type {
                 case .group:
-                    SBDGroupChannel.getWithUrl(channelUrl, completionHandler: completionHandler)
+                    GroupChannel.getChannel(url: channelURL, completionHandler: completionHandler)
                 case .open:
-                    SBDOpenChannel.getWithUrl(channelUrl, completionHandler: completionHandler)
+                    OpenChannel.getChannel(url: channelURL, completionHandler: completionHandler)
                 default:
                     break
                 }
@@ -119,45 +113,5 @@ open class SBUBaseChannelSettingsViewModel: NSObject {
 }
 
 
-// MARK: - SBDChannelDelegate
-extension SBUBaseChannelSettingsViewModel: SBDChannelDelegate {
-    open func channel(_ sender: SBDOpenChannel, userDidEnter user: SBDUser) {
-        let context =  SBDMessageContext()
-        context.source = .eventChannelChanged
-        self.baseDelegate?.baseChannelSettingsViewModel(
-            self,
-            didChangeChannel: sender,
-            withContext: context
-        )
-    }
-    
-    open func channel(_ sender: SBDOpenChannel, userDidExit user: SBDUser) {
-        let context =  SBDMessageContext()
-        context.source = .eventChannelChanged
-        self.baseDelegate?.baseChannelSettingsViewModel(
-            self,
-            didChangeChannel: sender,
-            withContext: context
-        )
-    }
-    
-    open func channel(_ sender: SBDGroupChannel, userDidJoin user: SBDUser) {
-        let context =  SBDMessageContext()
-        context.source = .eventUserJoined
-        self.baseDelegate?.baseChannelSettingsViewModel(
-            self,
-            didChangeChannel: sender,
-            withContext: context
-        )
-    }
-    
-    open func channel(_ sender: SBDGroupChannel, userDidLeave user: SBDUser) {
-        let context =  SBDMessageContext()
-        context.source = .eventUserLeft
-        self.baseDelegate?.baseChannelSettingsViewModel(
-            self,
-            didChangeChannel: channel,
-            withContext: context
-        )
-    }
-}
+// MARK: - BaseChannelDelegate
+extension SBUBaseChannelSettingsViewModel: BaseChannelDelegate { }

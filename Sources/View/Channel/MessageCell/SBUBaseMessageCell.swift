@@ -7,12 +7,12 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
  @IBDesignable
 open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol {
     // MARK: - Public
-    public var message: SBDBaseMessage = .init()
+    public var message: BaseMessage? = nil
     public var position: MessagePosition = .center
     public var groupPosition: MessageGroupPosition = .none
     public var receiptState: SBUMessageReceiptState = .none
@@ -124,8 +124,9 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol {
         self.dateView.isHidden = configuration.hideDateView
         self.receiptState = configuration.receiptState
         
-        if let dateView = self.dateView as? SBUMessageDateView {
-            dateView.configure(timestamp: self.message.createdAt)
+        if let dateView = self.dateView as? SBUMessageDateView,
+           let message = self.message {
+            dateView.configure(timestamp: message.createdAt)
         }
     }
     
@@ -140,7 +141,7 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol {
     ///   - hideDateView: Hide or expose date information
     ///   - receiptState: ReadReceipt state
     @available(*, deprecated, renamed: "configure(message:configuration:)") // 2.2.0
-    open func configure(message: SBDBaseMessage,
+    open func configure(message: BaseMessage,
                         position: MessagePosition,
                         hideDateView: Bool,
                         groupPosition: MessageGroupPosition = .none,

@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 
 /// Event methods for the views updates and performing actions from the list component in a group channel.
@@ -59,19 +59,19 @@ extension SBUGroupChannelModule {
 
         // MARK: - UI properties (Public)
         
-        /// The message cell for `SBDAdminMessage` object. Use `register(adminMessageCell:nib:)` to update.
+        /// The message cell for `AdminMessage` object. Use `register(adminMessageCell:nib:)` to update.
         public private(set) var adminMessageCell: SBUBaseMessageCell?
         
-        /// The message cell for `SBDUserMessage` object. Use `register(userMessageCell:nib:)` to update.
+        /// The message cell for `UserMessage` object. Use `register(userMessageCell:nib:)` to update.
         public private(set) var userMessageCell: SBUBaseMessageCell?
         
-        /// The message cell for `SBDFileMessage` object. Use `register(fileMessageCell:nib:)` to update.
+        /// The message cell for `FileMessage` object. Use `register(fileMessageCell:nib:)` to update.
         public private(set) var fileMessageCell: SBUBaseMessageCell?
         
-        /// The message cell for some unknown message which is not a type of `SBDAdminMessage` | `SBDUserMessage` | ` SBDFileMessage`. Use `register(unknownMessageCell:nib:)` to update.
+        /// The message cell for some unknown message which is not a type of `AdminMessage` | `UserMessage` | ` FileMessage`. Use `register(unknownMessageCell:nib:)` to update.
         public private(set) var unknownMessageCell: SBUBaseMessageCell?
         
-        /// The custom message cell for some `SBDBaseMessage`. Use `register(customMessageCell:nib:)` to update.
+        /// The custom message cell for some `BaseMessage`. Use `register(customMessageCell:nib:)` to update.
         public private(set) var customMessageCell: SBUBaseMessageCell?
         
         /// A high light information of the message with ID and updated time.
@@ -93,8 +93,8 @@ extension SBUGroupChannelModule {
         }
         
         /// The current *group* channel object casted from `baseChannel`
-        public var channel: SBDGroupChannel? {
-            self.baseChannel as? SBDGroupChannel
+        public var channel: GroupChannel? {
+            self.baseChannel as? GroupChannel
         }
 
         /// Configures component with parameters.
@@ -224,7 +224,7 @@ extension SBUGroupChannelModule {
         ///   - cell: The message cell
         ///   - message: message object
         ///   - indexPath: Cell's indexPath
-        open func setMessageCellGestures(_ cell: SBUBaseMessageCell, message: SBDBaseMessage, indexPath: IndexPath) {
+        open func setMessageCellGestures(_ cell: SBUBaseMessageCell, message: BaseMessage, indexPath: IndexPath) {
             cell.tapHandlerToContent = { [weak self, weak cell] in
                 guard let self = self, let cell = cell else { return }
                 self.setTapGesture(cell, message: message, indexPath: indexPath)
@@ -313,7 +313,7 @@ extension SBUGroupChannelModule {
         ///    - messageCell: `SBUBaseMessageCell` object.
         ///    - message: The message for `messageCell`.
         ///    - indexPath: An index path representing the `messageCell`
-        open func configureCell(_ messageCell: SBUBaseMessageCell, message: SBDBaseMessage, forRowAt indexPath: IndexPath) {
+        open func configureCell(_ messageCell: SBUBaseMessageCell, message: BaseMessage, forRowAt indexPath: IndexPath) {
             guard let channel = self.channel else {
                 SBULog.error("Channel must exist!")
                 return
@@ -331,7 +331,7 @@ extension SBUGroupChannelModule {
             
             switch (message, messageCell) {
                     // Admin message
-                case let (adminMessage, adminMessageCell) as (SBDAdminMessage, SBUAdminMessageCell):
+                case let (adminMessage, adminMessageCell) as (AdminMessage, SBUAdminMessageCell):
                     let configuration = SBUAdminMessageCellParams(
                         message: adminMessage,
                         hideDateView: isSameDay
@@ -341,7 +341,7 @@ extension SBUGroupChannelModule {
                     self.setMessageCellGestures(adminMessageCell, message: adminMessage, indexPath: indexPath)
                     
                     // Unknown message
-                case let (unknownMessage, unknownMessageCell) as (SBDBaseMessage, SBUUnknownMessageCell):
+                case let (unknownMessage, unknownMessageCell) as (BaseMessage, SBUUnknownMessageCell):
                     let configuration = SBUUnknownMessageCellParams(
                         message: unknownMessage,
                         hideDateView: isSameDay,
@@ -354,7 +354,7 @@ extension SBUGroupChannelModule {
                     self.setMessageCellGestures(unknownMessageCell, message: unknownMessage, indexPath: indexPath)
                     
                     // User message
-                case let (userMessage, userMessageCell) as (SBDUserMessage, SBUUserMessageCell):
+                case let (userMessage, userMessageCell) as (UserMessage, SBUUserMessageCell):
                     let configuration = SBUUserMessageCellParams(
                         message: userMessage,
                         hideDateView: isSameDay,
@@ -371,7 +371,7 @@ extension SBUGroupChannelModule {
                     self.setMessageCellGestures(userMessageCell, message: userMessage, indexPath: indexPath)
                     
                     // File message
-                case let (fileMessage, fileMessageCell) as (SBDFileMessage, SBUFileMessageCell):
+                case let (fileMessage, fileMessageCell) as (FileMessage, SBUFileMessageCell):
                     let configuration = SBUFileMessageCellParams(
                         message: fileMessage,
                         hideDateView: isSameDay,
@@ -403,7 +403,7 @@ extension SBUGroupChannelModule {
             messageCell.userProfileTapHandler = { [weak messageCell, weak self] in
                 guard let self = self else { return }
                 guard let cell = messageCell else { return }
-                guard let sender = cell.message.sender else { return }
+                guard let sender = cell.message?.sender else { return }
                 self.setUserProfileTapGesture(SBUUser(sender: sender))
             }
             
@@ -470,13 +470,13 @@ extension SBUGroupChannelModule {
         /// Generates identifier of message cell.
         /// - Parameter message: Message object
         /// - Returns: The identifier of message cell.
-        open func generateCellIdentifier(by message: SBDBaseMessage) -> String {
+        open func generateCellIdentifier(by message: BaseMessage) -> String {
             switch message {
-                case is SBDFileMessage:
+                case is FileMessage:
                     return fileMessageCell?.sbu_className ?? SBUFileMessageCell.sbu_className
-                case is SBDUserMessage:
+                case is UserMessage:
                     return userMessageCell?.sbu_className ?? SBUUserMessageCell.sbu_className
-                case is SBDAdminMessage:
+                case is AdminMessage:
                     return adminMessageCell?.sbu_className ?? SBUAdminMessageCell.sbu_className
                 default:
                     return unknownMessageCell?.sbu_className ?? SBUUnknownMessageCell.sbu_className
@@ -556,7 +556,7 @@ extension SBUGroupChannelModule {
         ///   - cell: The message cell
         ///   - message: message object
         ///   - indexPath: Cell's indexPath
-        open func setMessageCellAnimation(_ messageCell: SBUBaseMessageCell, message: SBDBaseMessage, indexPath: IndexPath) {
+        open func setMessageCellAnimation(_ messageCell: SBUBaseMessageCell, message: BaseMessage, indexPath: IndexPath) {
             if message.messageId == highlightInfo?.messageId,
                message.updatedAt == highlightInfo?.updatedAt,
                self.highlightInfo?.animated == true

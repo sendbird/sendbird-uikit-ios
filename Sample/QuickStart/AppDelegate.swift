@@ -21,6 +21,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         // TODO: Change to your AppId
         SendbirdUI.initialize(applicationId: "2D7B4CDB-932F-4082-9B09-A1153792DC8D") { // origin
             //
+        } migrationHandler: {
+            //
         } completionHandler: { error in
             //
         }
@@ -38,7 +40,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         // User Mention
         SBUGlobals.isUserMentionEnabled = true
         
-        initializeRemoteNotification()
+        self.initializeRemoteNotification()
         
         return true
     }
@@ -89,16 +91,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             self.pendingNotificationPayload = payload
         } else {
             guard let channel: NSDictionary = payload["channel"] as? NSDictionary,
-                  let channelUrl: String = channel["channel_url"] as? String else { return }
+                  let channelURL: String = channel["channel_url"] as? String else { return }
             
             if havePresentedVC {
-                SendbirdUI.moveToChannel(channelUrl: channelUrl, basedOnChannelList: true)
+                SendbirdUI.moveToChannel(channelURL: channelURL, basedOnChannelList: true)
             } else {
                 let mainVC = SBUGroupChannelListViewController()
                 let naviVC = UINavigationController(rootViewController: mainVC)
                 naviVC.modalPresentationStyle = .fullScreen
                 UIApplication.shared.currentWindow?.rootViewController?.present(naviVC, animated: true) {
-                    SendbirdUI.moveToChannel(channelUrl: channelUrl)
+                    SendbirdUI.moveToChannel(channelURL: channelURL)
                 }
             }
         }

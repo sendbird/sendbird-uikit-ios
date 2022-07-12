@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 
 @available(*, deprecated, renamed: "SendbirdUI") // 3.0.0
@@ -17,11 +17,9 @@ public class SendbirdUI {
     // MARK: - Initialize
     /// This function is used to initializes SDK with applicationId.
     /// - Parameter applicationId: Application ID
-    @available(*, unavailable, message: "Using the `initialize(applicationId:migrationStartHandler:completionHandler:)` function, and in the CompletionHandler, please proceed with the following procedure.", renamed: "initialize(applicationId:migrationStartHandler:completionHandler:)") // 2.2.0
+    @available(*, unavailable, message: "Using the `initialize(applicationId:startHandler:migrationStartHandler:completionHandler:)` function, and in the CompletionHandler, please proceed with the following procedure.", renamed: "initialize(applicationId:startHandler:migrationStartHandler:completionHandler:)") // 2.2.0
     public static func initialize(applicationId: String) {
-        SendbirdUI.initialize(applicationId: applicationId) {
-            
-        } completionHandler: { error in
+        SendbirdUI.initialize(applicationId: applicationId, startHandler: nil, migrationHandler: nil) { error in
             
         }
     }
@@ -36,28 +34,64 @@ public class SendbirdUI {
     ///   - completionHandler: Do something to display the completion of the DB migration.
     ///
     /// - Since: 2.2.0
+    @available(*, deprecated, renamed: "initialize(applicationId:startHandler:migrationHandler:completionHandler:)") // 3.0.0
     public static func initialize(applicationId: String,
                                   migrationStartHandler: @escaping (() -> Void),
-                                  completionHandler: @escaping ((_ error: SBDError?) -> ())) {
+                                  completionHandler: @escaping ((_ error: SBError?) -> ())) {
+        self.initialize(
+            applicationId: applicationId,
+            startHandler: nil,
+            migrationHandler: migrationStartHandler,
+            completionHandler: completionHandler
+        )
+    }
+    
+    /// This function is used to initializes SDK with applicationId.
+    ///
+    /// When the completion handler is called, please proceed with the next operation.
+    ///
+    /// - Parameters:
+    ///   - applicationId: Application ID
+    ///   - startHandler: Do something to display the start of the SendbirdUIKit initialization.
+    ///   - migrationHandler: Do something to display the progress of the DB migration.
+    ///   - completionHandler: Do something to display the completion of the SendbirdChat initialization.
+    ///
+    /// - Since: 3.0.0
+    public static func initialize(applicationId: String,
+                                  startHandler: (() -> Void)? = nil,
+                                  migrationHandler: (() -> Void)? = nil,
+                                  completionHandler: @escaping ((_ error: SBError?) -> ())) {
         SBUGlobals.applicationId = applicationId
         
-        SBDMain.addExtension(SBUConstant.sbdExtensionKeyUIKit, version: SendbirdUI.shortVersion)
-    
-        SBDMain.initWithApplicationId(
-            applicationId,
-            useCaching: true,
-            migrationStartHandler: {
-                SBULog.info("[Init] Migration start")
-                migrationStartHandler()
-            }, completionHandler: { error in
-                if let _ = error {
-                    SBULog.info("[Init] Failed initialized with id: \(applicationId)")
-                } else {
-                    SBULog.info("[Init] Finish initialized with id: \(applicationId)")
-                }
-                
-                completionHandler(error)
-            })
+        DispatchQueue.main.async {
+            startHandler?()
+        }
+        let semaphore = DispatchSemaphore(value: 0)
+        
+        let params = InitParams(
+            applicationId: applicationId,
+            isLocalCachingEnabled: true,
+            logLevel: .debug
+        )
+        
+        SendbirdChat.initialize(params: params) {
+            SBULog.info("[Init] Migration start")
+            migrationHandler?()
+        } completionHandler: { error in
+            if let _ = error {
+                SBULog.info("[Init] Failed initialized with id: \(applicationId)")
+            } else {
+                SBULog.info("[Init] Finish initialized with id: \(applicationId)")
+            }
+            
+            semaphore.signal()
+            completionHandler(error)
+        }
+        semaphore.wait()
+
+        // Call after initialization
+        SendbirdChat.addExtension(SBUConstant.extensionKeyUIKit, version: SendbirdUI.shortVersion)
+        SendbirdChatOptions.setMemberInfoInMessage(true)
     }
     
     
@@ -67,36 +101,36 @@ public class SendbirdUI {
     /// Before invoking this function, `currentUser` object of `SBUGlobals` claas must be set.
     /// - Parameter completionHandler: The handler block to execute.
     public static func connect(
-        completionHandler: @escaping (_ user: SBDUser?, _ error: SBDError?) -> Void
+        completionHandler: @escaping (_ user: User?, _ error: SBError?) -> Void
     ) {
         SendbirdUI.connectIfNeeded(completionHandler: completionHandler)
     }
     
     @available(*, deprecated, renamed: "connectIfNeeded(completionHandler:)") // 2.2.0
     public static func connectionCheck(
-        completionHandler: @escaping (_ user: SBDUser?, _ error: SBDError?) -> Void
+        completionHandler: @escaping (_ user: User?, _ error: SBError?) -> Void
     ) {
         self.connectIfNeeded(completionHandler: completionHandler)
     }
     
     
     /// This function is used to check the connection state.
-    ///  if connected, returns the SBDUser object, otherwise, call the connect function from the inside.
+    ///  if connected, returns the User object, otherwise, call the connect function from the inside.
     ///  If local caching is enabled, the currentUser object is delivered and the connect operation is performed.
     ///
     /// - Parameter completionHandler: The handler block to execute.
     public static func connectIfNeeded(
-        completionHandler: @escaping (_ user: SBDUser?, _ error: SBDError?) -> Void
+        completionHandler: @escaping (_ user: User?, _ error: SBError?) -> Void
     ) {
-        SBULog.info("[Check] Connection status : \(SBDMain.getConnectState().rawValue)")
+        SBULog.info("[Check] Connection status : \(SendbirdChat.getConnectState().rawValue)")
         
-        if SBDMain.getConnectState() == .open {
-            completionHandler(SBDMain.getCurrentUser(), nil)
+        if SendbirdChat.getConnectState() == .open {
+            completionHandler(SendbirdChat.getCurrentUser(), nil)
         } else {
-            SBULog.info("currentUser: \(String(describing: SBDMain.getCurrentUser()?.userId))")
-            if SBDMain.isUsingLocalCaching(),
-               let _ = SBDMain.getCurrentUser() {
-                completionHandler(SBDMain.getCurrentUser(), nil)
+            SBULog.info("currentUser: \(String(describing: SendbirdChat.getCurrentUser()?.userId))")
+            if SendbirdChat.isLocalCachingEnabled,
+               let _ = SendbirdChat.getCurrentUser() {
+                completionHandler(SendbirdChat.getCurrentUser(), nil)
                 SendbirdUI.connectAndUpdates { _, _ in }
             } else {
                 SendbirdUI.connectAndUpdates(completionHandler: completionHandler)
@@ -107,20 +141,19 @@ public class SendbirdUI {
     /// This function is used to check connection state and connect to the Sendbird server or local caching database.
     /// - Parameter completionHandler: The handler block to execute.
     static func connectAndUpdates(
-        completionHandler: @escaping (_ user: SBDUser?, _ error: SBDError?) -> Void
+        completionHandler: @escaping (_ user: User?, _ error: SBError?) -> Void
     ) {
         SBULog.info("[Request] Connection to Sendbird")
         
         guard let currentUser = SBUGlobals.currentUser else {
             SBULog.error("[Failed] Connection to Sendbird: CurrentUser value is not set")
-            completionHandler(SBDMain.getCurrentUser(), nil)
+            completionHandler(SendbirdChat.getCurrentUser(), nil)
             return
         }
         
         let userId = currentUser.userId.trimmingCharacters(in: .whitespacesAndNewlines)
         let nickname = currentUser.nickname?.trimmingCharacters(in: .whitespacesAndNewlines)
-        
-        SBDMain.connect(withUserId: userId, accessToken: SBUGlobals.accessToken) { [userId, nickname] user, error in
+        SendbirdChat.connect(userId: userId, authToken: SBUGlobals.accessToken) { [userId, nickname] user, error in
             defer {
                 SBUEmojiManager.loadAllEmojis { _, error in }
             }
@@ -134,7 +167,7 @@ public class SendbirdUI {
             if let error = error {
                 SBULog.warning("[Warning] Connection to Sendbird: Succeed but error was occurred: \(error.localizedDescription)")
                 
-                if !SBDMain.isUsingLocalCaching() {
+                if !SendbirdChat.isLocalCachingEnabled {
                     completionHandler(user, error)
                     return
                 }
@@ -145,7 +178,7 @@ public class SendbirdUI {
             var updatedNickname = nickname
             
             if updatedNickname == nil {
-                if let currentNickname = user.nickname, !currentNickname.isEmpty {
+                if !user.nickname.isEmpty {
                     updatedNickname = user.nickname
                 } else {
                     updatedNickname = userId
@@ -154,11 +187,11 @@ public class SendbirdUI {
             
             SendbirdUI.updateUserInfo(
                 nickname: updatedNickname,
-                profileUrl: currentUser.profileUrl ?? user.profileUrl
+                profileURL: currentUser.profileURL ?? user.profileURL
             ) { error in
                 
                 #if !targetEnvironment(simulator)
-                if let pendingPushToken = SBDMain.getPendingPushToken() {
+                if let pendingPushToken = SendbirdChat.getPendingPushToken() {
                     SBULog.info("[Request] Register pending push token to Sendbird server")
                     SendbirdUI.registerPush(deviceToken: pendingPushToken) { success in
                         if !success {
@@ -174,13 +207,13 @@ public class SendbirdUI {
         }
     }
     
-    public static func updateUserInfo(completionHandler: @escaping (_ error: SBDError?) ->Void) {
+    public static func updateUserInfo(completionHandler: @escaping (_ error: SBError?) ->Void) {
         guard let sbuUser = SBUGlobals.currentUser else {
             SBULog.error("[Failed] Connection to Sendbird: CurrentUser value is not set")
             completionHandler(nil)
             return
         }
-        guard let sbdUser = SBDMain.getCurrentUser() else {
+        guard let user = SendbirdChat.getCurrentUser() else {
             SBULog.error("[Failed] Connection to Sendbird")
             completionHandler(nil)
             return
@@ -192,8 +225,8 @@ public class SendbirdUI {
         var updatedNickname = nickname
         
         if updatedNickname == nil {
-            if let currentNickname = sbdUser.nickname, !currentNickname.isEmpty {
-                updatedNickname = sbdUser.nickname
+            if !user.nickname.isEmpty {
+                updatedNickname = user.nickname
             } else {
                 updatedNickname = userId
             }
@@ -201,11 +234,11 @@ public class SendbirdUI {
         
         SendbirdUI.updateUserInfo(
             nickname: updatedNickname,
-            profileUrl: sbuUser.profileUrl ?? sbdUser.profileUrl
+            profileURL: sbuUser.profileURL ?? user.profileURL
         ) { error in
             
             #if !targetEnvironment(simulator)
-            if let pendingPushToken = SBDMain.getPendingPushToken() {
+            if let pendingPushToken = SendbirdChat.getPendingPushToken() {
                 SBULog.info("[Request] Register pending push token to Sendbird server")
                 SendbirdUI.registerPush(deviceToken: pendingPushToken) { success in
                     if !success {
@@ -225,7 +258,7 @@ public class SendbirdUI {
     public static func disconnect(completionHandler: (() -> Void)?) {
         SBULog.info("[Request] Disconnection to Sendbird")
         
-        SBDMain.disconnect(completionHandler: {
+        SendbirdChat.disconnect(completionHandler: {
             SBULog.info("[Succeed] Disconnection to Sendbird")
             SBUGlobals.currentUser = nil
             completionHandler?()
@@ -237,18 +270,18 @@ public class SendbirdUI {
     /// This function is used to update user information.
     /// - Parameters:
     ///   - nickname: Nickname to use for update. If this value is nil, the nickname is not updated.
-    ///   - profileUrl: Profile URL to use for update. If this value is nil, the profile is not updated.
+    ///   - profileURL: Profile URL to use for update. If this value is nil, the profile is not updated.
     ///   - completionHandler: The handler block to execute.
     public static func updateUserInfo(nickname: String?,
-                                      profileUrl: String?,
-                                      completionHandler: ((_ error: SBDError?) -> Void)?) {
+                                      profileURL: String?,
+                                      completionHandler: ((_ error: SBError?) -> Void)?) {
         SBULog.info("[Request] Update user info")
-        SBDMain.updateCurrentUserInfo(
-            withNickname: nickname,
-            profileUrl: profileUrl
-        ) { error in
+        let params = UserUpdateParams()
+        params.nickname = nickname
+        params.profileImageURL = profileURL
+        SendbirdChat.updateCurrentUserInfo(params: params, completionHandler: { error in
             self.didFinishUpdateUserInfo(error: error, completionHandler: completionHandler)
-        }
+        })
     }
     
     /// This function is used to update user information.
@@ -258,23 +291,22 @@ public class SendbirdUI {
     ///   - completionHandler: The handler block to execute.
     public static func updateUserInfo(nickname: String?,
                                       profileImage: Data?,
-                                      completionHandler: ((_ error: SBDError?) -> Void)?) {
+                                      completionHandler: ((_ error: SBError?) -> Void)?) {
         SBULog.info("[Request] Update user info")
-        SBDMain.updateCurrentUserInfo(
-            withNickname: nickname,
-            profileImage: profileImage,
-            progressHandler: nil
-        ) { error in
+        let params = UserUpdateParams()
+        params.nickname = nickname
+        params.profileImageData = profileImage
+        SendbirdChat.updateCurrentUserInfo(params: params, completionHandler: { error in
             self.didFinishUpdateUserInfo(error: error, completionHandler: completionHandler)
-        }
+        })
     }
     
-    private static func didFinishUpdateUserInfo(error: SBDError?,
-                                                completionHandler: ((_ error: SBDError?) -> Void)?) {
+    private static func didFinishUpdateUserInfo(error: SBError?,
+                                                completionHandler: ((_ error: SBError?) -> Void)?) {
         if let error = error {
             SBULog.error("[Failed] Update user info: \(error.localizedDescription)")
             
-            if !SBDMain.isUsingLocalCaching() {
+            if !SendbirdChat.isLocalCachingEnabled {
                 completionHandler?(error)
                 return
             }
@@ -285,11 +317,11 @@ public class SendbirdUI {
             """)
         }
         
-        if let user = SBDMain.getCurrentUser() {
+        if let user = SendbirdChat.getCurrentUser() {
             SBUGlobals.currentUser = SBUUser(
                 userId: user.userId,
-                nickname: user.nickname ?? user.userId,
-                profileUrl: user.profileUrl
+                nickname: user.nickname,
+                profileURL: user.profileURL
             )
         }
         
@@ -342,7 +374,7 @@ public class SendbirdUI {
         SBULog.info("[Request] Register push token to Sendbird server")
         
         #if !targetEnvironment(simulator)
-        SBDMain.registerDevicePushToken(deviceToken, unique: true) { status, error in
+        SendbirdChat.registerDevicePushToken(deviceToken, unique: true) { status, error in
             switch status {
             case .success:
                 SBULog.info("[Succeed] APNs push token is registered.")
@@ -376,12 +408,12 @@ public class SendbirdUI {
         }
             
             #if !targetEnvironment(simulator)
-            guard let pendingPushToken = SBDMain.getPendingPushToken() else {
+            guard let pendingPushToken = SendbirdChat.getPendingPushToken() else {
                 completionHandler(false)
                 return
             }
             SBULog.info("[Request] Unregister push token to Sendbird server")
-            SBDMain.unregisterPushToken(pendingPushToken) { resonse, error in
+            SendbirdChat.unregisterPushToken(pendingPushToken) { resonse, error in
                 if let error = error {
                     SBULog.error("""
                         [Failed]
@@ -411,7 +443,7 @@ public class SendbirdUI {
             
             SBULog.info("[Request] Unregister all push token to Sendbird server")
             
-            SBDMain.unregisterAllPushToken { resonse, error in
+            SendbirdChat.unregisterAllPushToken { resonse, error in
                 if let error = error {
                     SBULog.error("[Failed] Push unregistration is fail: \(error.localizedDescription)")
                     completionHandler(false)
@@ -424,12 +456,12 @@ public class SendbirdUI {
         }
     }
     
-    @available(*, deprecated, renamed: "moveToChannel(channelUrl:basedOnChannelList:messageListParams:)") // 1.2.2
+    @available(*, deprecated, renamed: "moveToChannel(channelURL:basedOnChannelList:messageListParams:)") // 1.2.2
     public static func openChannel(channelUrl: String,
                                    basedOnChannelList: Bool = true,
-                                   messageListParams: SBDMessageListParams? = nil) {
+                                   messageListParams: MessageListParams? = nil) {
         moveToChannel(
-            channelUrl: channelUrl,
+            channelURL: channelUrl,
             basedOnChannelList: basedOnChannelList,
             messageListParams: messageListParams
         )
@@ -442,16 +474,16 @@ public class SendbirdUI {
     /// is present within the `UINavigationController.viewControllers` if you set the `basedOnChannelList` to `true`.
     ///
     /// - Parameters:
-    ///   - channelUrl: channel url for use in channel.
+    ///   - channelURL: channel url for use in channel.
     ///   - basedOnChannelList: `true` for services based on the channel list. Default value is `true`
     ///   - messageListParams: If there is a messageListParams set directly for use in Channel, set it up here
     ///   - channelType: channel type
     ///   - rootViewController: If you use a complex hierarchy structure, ㄴet your ChannelList or Channel ViewController here.
     /// - Since: 2.2.6
-    public static func moveToChannel(channelUrl: String,
+    public static func moveToChannel(channelURL: String,
                                      basedOnChannelList: Bool = true,
-                                     messageListParams: SBDMessageListParams? = nil,
-                                     channelType: SBDChannelType = .group,
+                                     messageListParams: MessageListParams? = nil,
+                                     channelType: ChannelType = .group,
                                      rootViewController: UIViewController? = nil) {
         guard SBUGlobals.currentUser != nil else { return }
         
@@ -474,7 +506,7 @@ public class SendbirdUI {
                     channelType: channelType
                 )
                 showChannelViewController(with: viewController ?? rootViewController,
-                                          channelUrl: channelUrl,
+                                          channelURL: channelURL,
                                           basedOnChannelList: basedOnChannelList,
                                           messageListParams: messageListParams,
                                           channelType: channelType)
@@ -485,7 +517,7 @@ public class SendbirdUI {
                 channelType: channelType
             )
             showChannelViewController(with: viewController ?? rootViewController,
-                                      channelUrl: channelUrl,
+                                      channelURL: channelURL,
                                       basedOnChannelList: basedOnChannelList,
                                       messageListParams: messageListParams,
                                       channelType: channelType)
@@ -494,10 +526,10 @@ public class SendbirdUI {
     
     /// Shows channel viewcontroller.
     private static func showChannelViewController(with viewController: UIViewController?,
-                                                  channelUrl: String,
+                                                  channelURL: String,
                                                   basedOnChannelList: Bool,
-                                                  messageListParams: SBDMessageListParams?,
-                                                  channelType: SBDChannelType) {
+                                                  messageListParams: MessageListParams?,
+                                                  channelType: ChannelType) {
         // Dismiss any presented view controllers before pushing other vc on top
         viewController?.presentedViewController?.dismiss(animated: false, completion: nil)
         
@@ -506,10 +538,10 @@ public class SendbirdUI {
                 .navigationController?
                 .popToViewController(channelListViewController, animated: false)
             
-            channelListViewController.showChannel(channelUrl: channelUrl)
+            channelListViewController.showChannel(channelURL: channelURL)
         } else if let channelViewController = viewController as? SBUBaseChannelViewController {
             channelViewController.baseViewModel?.loadChannel(
-                channelUrl: channelUrl,
+                channelURL: channelURL,
                 messageListParams: messageListParams
             )
         } else {
@@ -523,19 +555,19 @@ public class SendbirdUI {
                 : SBUBaseChannelListViewController()
                 let naviVC = UINavigationController(rootViewController: vc)
                 viewController?.present(naviVC, animated: true, completion: {
-                    vc.showChannel(channelUrl: channelUrl)
+                    vc.showChannel(channelURL: channelURL)
                 })
             } else {
                 // If based on channel
                 let vc: SBUBaseChannelViewController
                 if isGroupChannel {
                     vc = SBUViewControllerSet.GroupChannelViewController.init(
-                        channelUrl: channelUrl,
+                        channelURL: channelURL,
                         messageListParams: messageListParams
                     )
                 } else {
                     vc = SBUViewControllerSet.OpenChannelViewController.init(
-                        channelUrl: channelUrl,
+                        channelURL: channelURL,
                         messageListParams: messageListParams
                     )
                 }
@@ -550,7 +582,7 @@ public class SendbirdUI {
     /// - Returns: instance of `SBUBaseChannelListViewController` or `SBUBaseChannelViewController`, or
     ///            `nil` if none are fonud.
     private static func findChannelViewController(rootViewController: UIViewController?,
-                                                  channelType: SBDChannelType) -> UIViewController? {
+                                                  channelType: ChannelType) -> UIViewController? {
         guard let navigationController: UINavigationController =
                 rootViewController?.presentedViewController as? UINavigationController ??
                 rootViewController as? UINavigationController else { return nil }
@@ -600,15 +632,15 @@ public class SendbirdUI {
     ///   - messageListParams: If there is a messageListParams set directly for use in Channel, set it up here
     /// - Since: 1.2.2
     public static func createAndMoveToChannel(userIds: [String],
-                                              messageListParams: SBDMessageListParams? = nil) {
+                                              messageListParams: MessageListParams? = nil) {
         SBULog.info("""
             [Request] Create channel with users,
             User: \(userIds))
             """)
         
-        let params = SBDGroupChannelParams()
+        let params = GroupChannelCreateParams()
         params.name = ""
-        params.coverUrl = ""
+        params.coverURL = ""
         params.addUserIds(userIds)
         params.isDistinct = false
         
@@ -623,12 +655,12 @@ public class SendbirdUI {
     
     /// This is a function that creates and moves the channel that can be called anywhere.
     /// - Parameters:
-    ///   - params: `SBDGroupChannelParams` class object
+    ///   - params: `GroupChannelParams` class object
     ///   - messageListParams: If there is a messageListParams set directly for use in Channel, set it up here
     /// - Since: 1.2.2
-    public static func createAndMoveToChannel(params: SBDGroupChannelParams,
-                                              messageListParams: SBDMessageListParams? = nil) {
-        SBDGroupChannel.createChannel(with: params) { channel, error in
+    public static func createAndMoveToChannel(params: GroupChannelCreateParams,
+                                              messageListParams: MessageListParams? = nil) {
+        GroupChannel.createChannel(params: params) { channel, error in
             if let error = error {
                 SBULog.error("""
                     [Failed] Create channel request:
@@ -636,13 +668,13 @@ public class SendbirdUI {
                     """)
             }
             
-            guard let channelUrl = channel?.channelUrl else {
+            guard let channelURL = channel?.channelURL else {
                 SBULog.error("[Failed] Create channel request: There is no channel url.")
                 return
             }
             SBULog.info("[Succeed] Create channel: \(channel?.description ?? "")")
             
-            SendbirdUI.moveToChannel(channelUrl: channelUrl, messageListParams: messageListParams)
+            SendbirdUI.moveToChannel(channelURL: channelURL, messageListParams: messageListParams)
         }
     }
 

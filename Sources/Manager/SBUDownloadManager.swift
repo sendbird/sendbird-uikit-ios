@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 import Photos
 
 class SBUDownloadManager {
@@ -58,7 +58,7 @@ class SBUDownloadManager {
         }
     }
     
-    static func saveFile(with fileMessage: SBDFileMessage, parent: UIViewController?) {
+    static func saveFile(with fileMessage: FileMessage, parent: UIViewController?) {
         guard let parent = parent else {
             SBULog.error("[Failed] Save file")
             return
@@ -116,7 +116,7 @@ class SBUDownloadManager {
         }
     }
     
-    static func save(fileMessage: SBDFileMessage, parent: UIViewController?) {
+    static func save(fileMessage: FileMessage, parent: UIViewController?) {
         switch SBUUtils.getFileType(by: fileMessage) {
         case .image:
             guard let url = URL(string: fileMessage.url) else { return }

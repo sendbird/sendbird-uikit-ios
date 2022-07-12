@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 /**
  - Note: When you create channel list for open channels, please inherit `SBUBaseChannelListViewController`
@@ -25,8 +25,8 @@ open class SBUBaseChannelListViewController: SBUBaseViewController {
     ///
     /// If you want to use a custom channelViewController, override it and implement it.
     /// - Parameters:
-    ///   - channelUrl: channel url for use in channelViewController.
+    ///   - channelURL: channel url for use in channelViewController.
     ///   - messageListParams: If there is a messageListParams set directly for use in Channel, set it up here
-    open func showChannel(channelUrl: String, messageListParams: SBDMessageListParams? = nil) {
+    open func showChannel(channelURL: String, messageListParams: MessageListParams? = nil) {
     }
 }

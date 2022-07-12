@@ -9,7 +9,7 @@
 import UIKit
 import Photos
 import AVKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 
 public protocol SBUMessageInputViewDelegate: AnyObject {
@@ -46,17 +46,17 @@ public protocol SBUMessageInputViewDelegate: AnyObject {
     /// - Parameters:
     ///    - messageInputView: `SBUMessageinputView` object.
     ///    - mode: `SBUMessageInputMode` value. It represents the current mode of `messageInputView`.
-    ///    - message: `SBDBaseMessage` object. It's `nil` when the `mode` is `none`.
+    ///    - message: `BaseMessage` object. It's `nil` when the `mode` is `none`.
     /// - Since: 2.2.0
-    func messageInputView(_ messageInputView: SBUMessageInputView, didChangeMode mode: SBUMessageInputMode, message: SBDBaseMessage?)
+    func messageInputView(_ messageInputView: SBUMessageInputView, didChangeMode mode: SBUMessageInputMode, message: BaseMessage?)
     
     /// Called when the message input mode will be changed via `setMode(_:message:)` method.
     /// - Parameters:
     ///    - messageInputView: `SBUMessageinputView` object.
     ///    - mode: `SBUMessageInputMode` value. The `messageInputView` changes its mode to this value.
-    ///    - message: `SBDBaseMessage` object. It's `nil` when the `mode` is `none`.
+    ///    - message: `BaseMessage` object. It's `nil` when the `mode` is `none`.
     /// - Since: 2.2.0
-    func messageInputView(_ messageInputView: SBUMessageInputView, willChangeMode mode: SBUMessageInputMode, message: SBDBaseMessage?)
+    func messageInputView(_ messageInputView: SBUMessageInputView, willChangeMode mode: SBUMessageInputMode, message: BaseMessage?)
     
     
     /// Called when the message input view started to type.
@@ -102,9 +102,9 @@ public extension SBUMessageInputViewDelegate {
     
     func messageInputView(_ messageInputView: SBUMessageInputView, didChangeText text: String) { }
 
-    func messageInputView(_ messageInputView: SBUMessageInputView, didChangeMode mode: SBUMessageInputMode, message: SBDBaseMessage?) { }
+    func messageInputView(_ messageInputView: SBUMessageInputView, didChangeMode mode: SBUMessageInputMode, message: BaseMessage?) { }
     
-    func messageInputView(_ messageInputView: SBUMessageInputView, willChangeMode mode: SBUMessageInputMode, message: SBDBaseMessage?) { }
+    func messageInputView(_ messageInputView: SBUMessageInputView, willChangeMode mode: SBUMessageInputMode, message: BaseMessage?) { }
     
     func messageInputViewDidStartTyping() { }
     
@@ -392,7 +392,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     }
     
     // Only for Swift
-    var option: MessageInputMode = .none {
+    private(set) var option: MessageInputMode = .none {
         willSet {
             // End a previous mode
             switch self.option {
@@ -419,13 +419,13 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         }
     }
     
-    open func setMode(_ mode: SBUMessageInputMode, message: SBDBaseMessage? = nil) {
+    open func setMode(_ mode: SBUMessageInputMode, message: BaseMessage? = nil) {
         // Call delegate event: willChangeMode
         self.delegate?.messageInputView(self, willChangeMode: mode, message: message)
         
         switch mode {
         case .edit:
-            guard let message = message as? SBDUserMessage else { break }
+            guard let message = message as? UserMessage else { break }
             self.option = .edit(message)
         case .quoteReply:
             guard let message = message else { break }
@@ -441,10 +441,10 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     /**
      Starts to reply to message. It's called when `mode` is set to `.quoteReply`
      
-     - Parameter message: `SBDBaseMessage` that is replied to.
+     - Parameter message: `BaseMessage` that is replied to.
      - Since: 2.2.0
      */
-    public func startQuoteReplyMode(message: SBDBaseMessage) {
+    public func startQuoteReplyMode(message: BaseMessage) {
         self.quoteMessageView?.isHidden = false
         self.divider.isHidden = false
         let configuration = SBUQuoteMessageInputViewParams(
@@ -851,7 +851,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     }
     
     @objc open func onClickCancelButton(_ sender: Any) {
-        self.endEditMode()
+        self.setMode(.none)
     }
     
     @objc open func onClickSaveButton(_ sender: Any) {

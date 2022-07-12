@@ -7,11 +7,11 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 import AssetsLibrary
 
 public protocol SBUFileViewerDelegate: AnyObject {
-    func didSelectDeleteImage(message: SBDFileMessage)
+    func didSelectDeleteImage(message: FileMessage)
 }
 
 
@@ -70,11 +70,11 @@ open class SBUFileViewer: SBUBaseViewController, UIScrollViewDelegate {
     // for logic
     private var urlString: String?
     private weak var delegate: SBUFileViewerDelegate?
-    private var fileMessage: SBDFileMessage?
+    private var fileMessage: FileMessage?
   
     
     // MARK: - Lifecycle
-    public init(fileMessage: SBDFileMessage, delegate: SBUFileViewerDelegate?) {
+    public init(fileMessage: FileMessage, delegate: SBUFileViewerDelegate?) {
         self.fileMessage = fileMessage
         self.urlString = fileMessage.url
         self.delegate = delegate
@@ -294,7 +294,7 @@ open class SBUFileViewer: SBUBaseViewController, UIScrollViewDelegate {
     
     
     // MARK: - Error handling
-    private func errorHandler(_ error: SBDError) {
+    private func errorHandler(_ error: SBError) {
         self.errorHandler(error.localizedDescription, error.code)
     }
     

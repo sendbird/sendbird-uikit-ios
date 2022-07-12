@@ -7,14 +7,14 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 @IBDesignable
 open class SBUOpenChannelFileMessageCell: SBUOpenChannelContentBaseMessageCell {
     
     // MARK: - Public property
-    public var fileMessage: SBDFileMessage? {
-        return self.message as? SBDFileMessage
+    public var fileMessage: FileMessage? {
+        return self.message as? FileMessage
     }
     
     public lazy var baseFileContentView: SBUBaseFileContentView = {
@@ -59,7 +59,7 @@ open class SBUOpenChannelFileMessageCell: SBUOpenChannelContentBaseMessageCell {
     
     
     // MARK: - Common
-    open func configure(_ message: SBDFileMessage,
+    open func configure(_ message: FileMessage,
                           hideDateView: Bool,
                           groupPosition: MessageGroupPosition,
                           fileType: MessageFileType,

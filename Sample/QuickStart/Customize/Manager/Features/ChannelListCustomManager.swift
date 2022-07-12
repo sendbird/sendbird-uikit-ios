@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 class ChannelListCustomManager: BaseCustomManager {
     static var shared = ChannelListCustomManager()
@@ -75,10 +75,11 @@ extension ChannelListCustomManager {
     
     func listQueryCustom() {
         // You can customize the channel list using your own GroupChannelListQuery.
-        // For all query options, refer to the `SBDGroupChannelListQuery` class.
-        let listQuery = SBDGroupChannel.createMyGroupChannelListQuery()
-        listQuery?.includeEmptyChannel = true
-        listQuery?.includeFrozenChannel = true
+        // For all query options, refer to the `GroupChannelListQuery` class.
+        let params = GroupChannelListQueryParams()
+        params.includeEmptyChannel = true
+        params.includeFrozenChannel = true
+        let listQuery = GroupChannel.createMyGroupChannelListQuery(params: params)
         // ... You can set more query options
         
         // This part initialize the channel list with your own GroupChannelListQuery.

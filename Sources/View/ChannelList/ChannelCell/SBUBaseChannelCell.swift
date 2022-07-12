@@ -7,12 +7,12 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 open class SBUBaseChannelCell: SBUTableViewCell {
 
     // MARK: - Public property
-    public private(set) var channel: SBDBaseChannel?
+    public private(set) var channel: BaseChannel?
     
     @SBUThemeWrapper(theme: SBUTheme.channelCellTheme)
     public var theme: SBUChannelCellTheme
@@ -22,7 +22,7 @@ open class SBUBaseChannelCell: SBUTableViewCell {
  
     /// This function configure a cell using channel information.
     /// - Parameter channel: cell object
-    open func configure(channel: SBDBaseChannel) {
+    open func configure(channel: BaseChannel) {
         self.channel = channel
     }
 }

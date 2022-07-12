@@ -7,12 +7,12 @@
 //
 
 import Foundation
-import SendBirdSDK
+import SendbirdChatSDK
 
 
 public protocol SBUMessageSearchViewModelDelegate: SBUCommonViewModelDelegate {
     /// Called when the search results has been changed.
-    func searchViewModel(_ viewModel: SBUMessageSearchViewModel, didChangeSearchResults results: [SBDBaseMessage], needsToReload: Bool)
+    func searchViewModel(_ viewModel: SBUMessageSearchViewModel, didChangeSearchResults results: [BaseMessage], needsToReload: Bool)
 }
 
 
@@ -22,68 +22,71 @@ open class SBUMessageSearchViewModel {
     
     
     // MARK: - Property (Public)
-    public private(set) var channel: SBDBaseChannel?
+    public private(set) var channel: BaseChannel?
 
-    @SBUAtomic public private(set) var searchResultList: [SBDBaseMessage] = []
-
-    public var messageSearchQueryBuilder: ((SBDMessageSearchQueryBuilder) -> Void)? = nil
+    @SBUAtomic public private(set) var searchResultList: [BaseMessage] = []
 
     /// This param will be used on entering a channel from selecting an item from the search results.
-    public var messageListParams: SBDMessageListParams? = nil
+    public var messageListParams: MessageListParams? = nil
+    
+    public private(set) var messageSearchQuery: MessageSearchQuery?
     
     
     // MARK: - Property (Private)
     weak var delegate: SBUMessageSearchViewModelDelegate?
 
-    private var messageSearchQuery: SBDMessageSearchQuery?
+    var customMessageSearchQueryParams: MessageSearchQueryParams?
     
-    private(set) var keyword: String? = nil
+    var keyword: String? = nil
     
     
     // MARK: - Lifecycle
     public init(
-        channel: SBDBaseChannel,
-        messageSearchQueryBuilder: ((SBDMessageSearchQueryBuilder) -> Void)? = nil,
-        delegate:SBUMessageSearchViewModelDelegate? = nil
+        channel: BaseChannel,
+        params: MessageSearchQueryParams? = nil,
+        delegate: SBUMessageSearchViewModelDelegate? = nil
     ) {
-        
-        self.messageSearchQueryBuilder = messageSearchQueryBuilder
-        
         self.delegate = delegate
-        
+        self.customMessageSearchQueryParams = params
         self.channel = channel
-        
     }
     
     /// Performs keyword search
     ///
+    /// if you set the `customMessageSearchQueryParams` value, this method only use `customMessageSearchQueryParams`.
+    ///
     /// - Parameter keyword: keyword to search for.
-    public func search(keyword: String) {
-        let query = SBDMessageSearchQuery.create { builder in
+    open func search(keyword: String) {
+        if let params = self.customMessageSearchQueryParams {
+            params.keyword = keyword
+            let query = SendbirdChat.createMessageSearchQuery(params: params)
+            self.search(keyword: keyword, query: query)
+            return
+        }
+        
+        let query = SendbirdChat.createMessageSearchQuery { params in
             guard let channel = self.channel else {
-                let error = SBDError(domain: "Requires a channel object for message search", code: -1, userInfo: nil)
+                let error = SBError(domain: "Requires a channel object for message search", code: -1, userInfo: nil)
                 self.delegate?.didReceiveError(error)
                 return
             }
             
             /// Default search from ts.
             /// Only search for messages after a user has joined.
-            if let groupChannel = self.channel as? SBDGroupChannel {
+            if let groupChannel = self.channel as? GroupChannel {
                 // FIXME: - Change to joinedTs when core SDK is ready
-                builder.messageTimestampFrom = groupChannel.invitedAt
+                params.messageTimestampFrom = groupChannel.invitedAt
             }
             
-            self.messageSearchQueryBuilder?(builder)
-            
-            if builder.limit <= 0 {
+            if params.limit <= 0 {
                 /// Default limit
-                builder.limit = SBUMessageSearchViewModel.limit
+                params.limit = SBUMessageSearchViewModel.limit
             }
             
             /// Below are reserved params.
-            builder.channelUrl = channel.channelUrl
-            builder.keyword = keyword
-            builder.order = .timeStamp
+            params.channelURL = channel.channelURL
+            params.keyword = keyword
+            params.order = .timestamp
         }
         
         self.search(keyword: keyword, query: query)
@@ -93,8 +96,8 @@ open class SBUMessageSearchViewModel {
     ///
     /// - Parameters:
     ///   - keyword: keyword to search for.
-    ///   - query: `SBDMessageSearchQuery` object to search for
-    public func search(keyword: String, query: SBDMessageSearchQuery) {
+    ///   - query: `MessageSearchQuery` object to search for
+    public func search(keyword: String, query: MessageSearchQuery) {
         let trimmedKeyword = keyword.trimmingCharacters(in: .whitespacesAndNewlines)
         
         guard !trimmedKeyword.isEmpty else {
@@ -121,8 +124,8 @@ open class SBUMessageSearchViewModel {
     public func loadMore() {
         SBULog.info("query : \(String(describing: self.messageSearchQuery))")
         guard let messageSearchQuery = self.messageSearchQuery,
-              messageSearchQuery.hasNext() &&
-                !messageSearchQuery.isLoading()
+              messageSearchQuery.hasNext &&
+                !messageSearchQuery.isLoading
         else {
             self.delegate?.shouldUpdateLoadingState(false)
             return

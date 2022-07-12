@@ -6,17 +6,17 @@
 //  Copyright © 2021 Sendbird, Inc. All rights reserved.
 //
 
-import SendBirdSDK
+import SendbirdChatSDK
 
 
 public class SBUUserMessageCellParams: SBUBaseMessageCellParams {
-    public var userMessage: SBDUserMessage? {
-        self.message as? SBDUserMessage
+    public var userMessage: UserMessage? {
+        self.message as? UserMessage
     }
     public let useReaction: Bool
     public let withTextView: Bool
     
-    public init(message: SBDUserMessage, hideDateView: Bool, useMessagePosition: Bool, groupPosition: MessageGroupPosition = .none, receiptState: SBUMessageReceiptState = .none, useReaction: Bool = false, withTextView: Bool) {
+    public init(message: UserMessage, hideDateView: Bool, useMessagePosition: Bool, groupPosition: MessageGroupPosition = .none, receiptState: SBUMessageReceiptState = .none, useReaction: Bool = false, withTextView: Bool) {
         
         self.useReaction = useReaction
         self.withTextView = withTextView

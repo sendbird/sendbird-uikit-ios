@@ -12,8 +12,8 @@ extension SBUCacheManager {
     
     @discardableResult static func saveAndLoadFileToLocal(url: URL, fileName: String) -> URL? {
         // When open the file at first time (not cached file), this function return the original url and cache the file in background.
-        if let fileUrl = self.loadFileIfExist(url: url, fileName: fileName) {
-            return fileUrl
+        if let fileURL = self.loadFileIfExist(url: url, fileName: fileName) {
+            return fileURL
         } else {
             self.saveFileIfNeeded(url: url, fileName: fileName)
             return url

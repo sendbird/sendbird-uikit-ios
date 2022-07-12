@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 
 open class SBUUnknownMessageCell: SBUUserMessageCell {
@@ -39,12 +39,12 @@ open class SBUUnknownMessageCell: SBUUserMessageCell {
     }
     
     @available(*, deprecated, renamed: "configure(with:)") // 2.2.0
-    open override func configure(_ message: SBDBaseMessage,
+    open override func configure(_ message: BaseMessage,
                                  hideDateView: Bool,
                                  groupPosition: MessageGroupPosition,
                                  receiptState: SBUMessageReceiptState?,
                                  useReaction: Bool) {
-        guard let message = message as? SBDUserMessage else { return }
+        guard let message = message as? UserMessage else { return }
         let configuration = SBUUnknownMessageCellParams(
             message: message,
             hideDateView: hideDateView,

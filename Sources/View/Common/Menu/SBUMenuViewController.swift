@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 class SBUMenuViewController: SBUBaseViewController, UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
@@ -19,9 +19,9 @@ class SBUMenuViewController: SBUBaseViewController, UITableViewDelegate, UITable
     
     let layout: UICollectionViewFlowLayout = SBUCollectionViewFlowLayout()
     var tableView = UITableView()
-    let message: SBDBaseMessage
+    let message: BaseMessage?
     let itemTypes: [MessageMenuItem]
-    let emojiList: [SBDEmoji] = SBUEmojiManager.getAllEmojis()
+    let emojiList: [Emoji] = SBUEmojiManager.getAllEmojis()
     var useReaction: Bool
 
     let maxEmojiOneLine = 6
@@ -38,7 +38,7 @@ class SBUMenuViewController: SBUBaseViewController, UITableViewDelegate, UITable
     // MARK: - Lifecycle
     @available(*, unavailable, renamed: "SBUMenuViewController.init()")
     required public init?(coder: NSCoder) {
-        self.message = SBDBaseMessage()
+        self.message = nil
         self.itemTypes = []
         self.useReaction = false
         super.init(coder: coder)
@@ -46,7 +46,7 @@ class SBUMenuViewController: SBUBaseViewController, UITableViewDelegate, UITable
 
     /// Use this function when initialize.
     /// - Parameter itemTypes: Menu item types
-    init(message: SBDBaseMessage, itemTypes: [MessageMenuItem], useReaction: Bool) {
+    init(message: BaseMessage, itemTypes: [MessageMenuItem], useReaction: Bool) {
         self.message = message
         self.itemTypes = itemTypes
         self.useReaction = useReaction
@@ -167,9 +167,9 @@ class SBUMenuViewController: SBUBaseViewController, UITableViewDelegate, UITable
         let item = self.itemTypes[indexPath.row]
         switch item {
         case .delete:
-            cell.isEnabled = message.threadInfo.replyCount == 0
+            cell.isEnabled = message?.threadInfo.replyCount == 0
         case .reply:
-            cell.isEnabled = message.parent == nil
+            cell.isEnabled = message?.parentMessage == nil
         default: break
         }
         cell.configure(type: self.itemTypes[indexPath.row])
@@ -219,7 +219,7 @@ class SBUMenuViewController: SBUBaseViewController, UITableViewDelegate, UITable
         cell.configure(type: .messageMenu, url: emoji.url)
 
         guard let currentUesr = SBUGlobals.currentUser else { return cell }
-        let didSelect = message.reactions
+        let didSelect = message?.reactions
             .first { $0.key == emoji.key }?.userIds
             .contains(currentUesr.userId) ?? false
         cell.isSelected = didSelect
@@ -241,7 +241,7 @@ class SBUMenuViewController: SBUBaseViewController, UITableViewDelegate, UITable
         }
 
         let emoji = emojiList[indexPath.row]
-        if let reaction = message.reactions.first(where: { $0.key == emoji.key }) {
+        if let reaction = message?.reactions.first(where: { $0.key == emoji.key }) {
             let shouldSelect = reaction.userIds.contains(currentUesr.userId) == false
             self.emojiTapHandler?(emoji.key, shouldSelect)
         } else {

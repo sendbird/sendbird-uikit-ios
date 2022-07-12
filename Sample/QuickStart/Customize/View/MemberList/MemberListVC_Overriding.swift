@@ -11,7 +11,7 @@ import UIKit
 /// ------------------------------------------------------
 /// This section is related to overriding.
 /// ------------------------------------------------------
-class MemberListVC_Overriding: SBUMemberListViewController {
+class MemberListVC_Overriding: SBUUserListViewController {
     // MARK: - Show relations
     override func showInviteUser() {
         // If you want to use your own InviteUserViewController,
@@ -21,7 +21,7 @@ class MemberListVC_Overriding: SBUMemberListViewController {
     
     
     // MARK: - Action relations
-    override func memberListModule(_ headerComponent: SBUMemberListModule.Header,
+    override func userListModule(_ headerComponent: SBUUserListModule.Header,
                                    didTapRightItem rightItem: UIBarButtonItem) {
         // If you want to customize invite user button action,
         // you can override and customize it here.

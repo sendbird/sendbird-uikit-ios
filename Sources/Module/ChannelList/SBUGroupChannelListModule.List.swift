@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 
 /// Event methods for the views updates and performing actions from the list component in the group channel list.
@@ -28,13 +28,13 @@ public protocol SBUGroupChannelListModuleListDelegate: SBUCommonDelegate {
     /// - Parameters:
     ///    - listComponent: `SBUGroupChannelListModule.List` object.
     ///    - channel: The channel that was selected.
-    func channelListModule(_ listComponent: SBUGroupChannelListModule.List, didSelectLeave channel: SBDGroupChannel)
+    func channelListModule(_ listComponent: SBUGroupChannelListModule.List, didSelectLeave channel: GroupChannel)
     
     /// Called when selected alarm button in the swipped cell.
     /// - Parameters:
     ///    - listComponent: `SBUGroupChannelListModule.List` object.
     ///    - channel: The channel that was selected.
-    func channelListModule(_ listComponent: SBUGroupChannelListModule.List, didChangePushTriggerOption option: SBDGroupChannelPushTriggerOption, channel: SBDGroupChannel)
+    func channelListModule(_ listComponent: SBUGroupChannelListModule.List, didChangePushTriggerOption option: GroupChannelPushTriggerOption, channel: GroupChannel)
     
     /// Called when the retry button was selected from the `listComponent`.
     /// - Parameter listComponent: `SBUGroupChannelListModule.List` object.
@@ -47,8 +47,8 @@ public protocol SBUGroupChannelListModuleListDataSource: AnyObject {
     /// - Parameters:
     ///    - listComponent: `SBUGroupChannelListModule.List` object.
     ///    - tableView: `UITableView` object from list component.
-    /// - Returns: The array of `SBDGroupChannel` object.
-    func channelListModule(_ listComponent: SBUGroupChannelListModule.List, channelsInTableView tableView: UITableView) -> [SBDGroupChannel]?
+    /// - Returns: The array of `GroupChannel` object.
+    func channelListModule(_ listComponent: SBUGroupChannelListModule.List, channelsInTableView tableView: UITableView) -> [GroupChannel]?
 }
 
 
@@ -91,7 +91,7 @@ extension SBUGroupChannelListModule {
         public weak var dataSource: SBUGroupChannelListModuleListDataSource?
         
         /// The current channel list object from `channelListModule(_:channelsInTableView:)` data source method.
-        public var channelList: [SBDGroupChannel]? {
+        public var channelList: [GroupChannel]? {
             self.dataSource?.channelListModule(self, channelsInTableView: self.tableView)
         }
         
@@ -363,7 +363,7 @@ extension SBUGroupChannelListModule.List: UITableViewDataSource, UITableViewDele
     open func tableView(_ tableView: UITableView,
                         cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard indexPath.row < self.channelList?.count ?? 0 else {
-            let error = SBDError(domain: "The index is out of range.", code: -1, userInfo: nil)
+            let error = SBError(domain: "The index is out of range.", code: -1, userInfo: nil)
             self.delegate?.didReceiveError(error, isBlocker: false)
             return UITableViewCell()
         }

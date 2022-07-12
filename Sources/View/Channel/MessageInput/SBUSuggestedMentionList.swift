@@ -122,7 +122,7 @@ open class SBUSuggestedMentionList: SBUView, UITableViewDelegate, UITableViewDat
         return isLimitGuideEnabled ? 1 : filteredUsers.count
     }
     
-    /// Override `configureCell(_:forRowAt:)` to customize cell configuration with member object for each index path.
+    /// Override `configureCell(_:forRowAt:)` to customize cell configuration with user object for each index path.
     open func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: UITableViewCell?
         if isLimitGuideEnabled {
@@ -141,7 +141,7 @@ open class SBUSuggestedMentionList: SBUView, UITableViewDelegate, UITableViewDat
         return cell ?? UITableViewCell()
     }
     
-    /// Override `selectMember(_:)` to customize action when the member has been selected.
+    /// Override `selectUser(_:)` to customize action when the user has been selected.
     open func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if isLimitGuideEnabled { return }
         let user = self.filteredUsers[indexPath.row]
@@ -158,7 +158,7 @@ open class SBUSuggestedMentionList: SBUView, UITableViewDelegate, UITableViewDat
         }
     }
     
-    /// Calls `suggestedMentionList(_:didSelectMember:)` delegate method.
+    /// Calls `suggestedMentionList(_:didSelectUser:)` delegate method.
     open func selectUser(_ user: SBUUser) {
         self.delegate?.suggestedUserList(self, didSelectUser: user)
     }

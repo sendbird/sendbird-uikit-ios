@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 /// -------------------------------------------------------------------
 /// This section is related to using the custom user list. (Overriding)
@@ -66,15 +66,17 @@ extension InviteUserVC_UserList {
 /// This function gets dummy users for testing.
 extension InviteUserVC_UserList {
     public func loadDummyUsers(completionHandler: @escaping () -> Void) {
-        let userListQuery = SBDMain.createApplicationUserListQuery()
-        userListQuery?.limit = 100
-        userListQuery?.loadNextPage(completionHandler: { users, error in
+        let params = ApplicationUserListQueryParams()
+        params.limit = 100
+        let userListQuery = SendbirdChat.createApplicationUserListQuery(params: params)
+        userListQuery.loadNextPage { users, error in
+
             guard error == nil else { return }
             
             // This is a user list object used for testing.
             guard let users = users?.sbu_convertUserList() else { return }
             self.dummyUserList = users
             completionHandler()
-        })
+        }
     }
 }

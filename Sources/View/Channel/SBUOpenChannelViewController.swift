@@ -8,7 +8,7 @@
 
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 import Photos
 
 
@@ -66,7 +66,7 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
         
     }
     
-    public override var channel: SBDOpenChannel? { self.viewModel?.channel as? SBDOpenChannel }
+    public override var channel: OpenChannel? { self.viewModel?.channel as? OpenChannel }
     
     // Component
     /// If it's `true`, the navigation bar will be hidden.
@@ -115,13 +115,13 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
     ///
     /// See the example below for params generation.
     /// ```
-    ///     let params = SBDMessageListParams()
+    ///     let params = MessageListParams()
     ///     params.includeMetaArray = true
     ///     ...
     /// ```
-    /// - note: The `reverse` and the `previousResultSize` properties in the `SBDMessageListParams` are set in the UIKit. Even though you set that property it will be ignored.
+    /// - note: The `reverse` and the `previousResultSize` properties in the `MessageListParams` are set in the UIKit. Even though you set that property it will be ignored.
     /// - Parameter channel: Channel object
-    required public init(channel: SBDOpenChannel, messageListParams: SBDMessageListParams? = nil) {
+    required public init(channel: OpenChannel, messageListParams: MessageListParams? = nil) {
         super.init(baseChannel: channel, messageListParams: messageListParams)
         
         self.headerComponent = SBUModuleSet.openChannelModule.headerComponent
@@ -131,12 +131,12 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
     }
     
     required public init(
-        channelUrl: String,
-        startingPoint: Int64 = .max,
-        messageListParams: SBDMessageListParams? = nil
+        channelURL: String,
+        startingPoint: Int64? = nil,
+        messageListParams: MessageListParams? = nil
     ) {
         super.init(
-            channelUrl: channelUrl,
+            channelURL: channelURL,
             startingPoint: startingPoint,
             messageListParams: messageListParams
         )
@@ -182,20 +182,20 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
     
     // MARK: - ViewModel
     open override func createViewModel(
-        channel: SBDBaseChannel? = nil,
-        channelUrl: String? = nil,
-        messageListParams: SBDMessageListParams? = nil,
-        startingPoint: Int64? = LLONG_MAX,
+        channel: BaseChannel? = nil,
+        channelURL: String? = nil,
+        messageListParams: MessageListParams? = nil,
+        startingPoint: Int64? = nil,
         showIndicator: Bool = true
     ) {
-        guard channel != nil || channelUrl != nil else {
-            SBULog.error("Either the channel or the channelUrl parameter must be set.")
+        guard channel != nil || channelURL != nil else {
+            SBULog.error("Either the channel or the channelURL parameter must be set.")
             return
         }
         
         self.baseViewModel = SBUOpenChannelViewModel(
             channel: channel,
-            channelUrl: channelUrl,
+            channelURL: channelURL,
             messageListParams: messageListParams,
             startingPoint: startingPoint,
             delegate: self,
@@ -582,7 +582,7 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
     
     public override func showMenuModal(_ cell: UITableViewCell,
                                        indexPath: IndexPath,
-                                       message: SBDBaseMessage,
+                                       message: BaseMessage,
                                        types: [MessageMenuItem]?) {
         guard let cell = cell as? SBUOpenChannelBaseMessageCell,
               let types = types else { return }
@@ -603,7 +603,7 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
         }
     }
     
-    public override func showDeleteMessageMenu(message: SBDBaseMessage,
+    public override func showDeleteMessageMenu(message: BaseMessage,
                                                oneTimetheme: SBUComponentTheme? = nil) {
         super.showDeleteMessageMenu(
             message: message,
@@ -702,7 +702,7 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
     // MARK: - Navigation
     public func updateBarButton() {
         guard let userId = SBUGlobals.currentUser?.userId else { return }
-        let isOperator = self.channel?.isOperator(withUserId: userId) ?? false
+        let isOperator = self.channel?.isOperator(userId: userId) ?? false
         self.headerComponent?.updateBarButton(isOperator: isOperator)
         if let headerComponent = headerComponent {
             self.navigationItem.rightBarButtonItem = headerComponent.rightBarButton
@@ -714,7 +714,7 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
     
     /// This function actions to pop or dismiss.
     public override func onClickBack() {
-        self.channel?.exitChannel(completionHandler: { [weak self] (error) in
+        self.channel?.exit(completionHandler: { [weak self] (error) in
             guard let self = self else { return }
             if let error = error {
                 SBULog.error("[Failed] Exit channel request: \(error.localizedDescription)")
@@ -741,8 +741,8 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
     open func showParticipantsList() {
         guard let channel = self.channel else { return }
         
-        let memberListVC = SBUViewControllerSet.MemberListViewController.init(channel: channel, memberListType: .participants)
-        self.navigationController?.pushViewController(memberListVC, animated: true)
+        let participantListVC = SBUViewControllerSet.UserListViewController.init(channel: channel, userListType: .participants)
+        self.navigationController?.pushViewController(participantListVC, animated: true)
     }
     
     
@@ -778,7 +778,7 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
         
         guard let channel = self.channel else { return }
         guard let userId = SBUGlobals.currentUser?.userId else { return }
-        let isOperator = channel.isOperator(withUserId: userId)
+        let isOperator = channel.isOperator(userId: userId)
         
         if isOperator {
             // Channel settings
@@ -833,8 +833,8 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
     // MARK: - SBUOpenChannelViewModelDelegate
     open override func baseChannelViewModel(
         _ viewModel: SBUBaseChannelViewModel,
-        didChangeChannel channel: SBDBaseChannel?,
-        withContext context: SBDMessageContext
+        didChangeChannel channel: BaseChannel?,
+        withContext context: MessageContext
     ) {
         guard channel != nil else {
             if self.navigationController?.viewControllers.last == self {

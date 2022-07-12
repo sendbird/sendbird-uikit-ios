@@ -7,10 +7,13 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 extension SBUBaseSelectUserViewController {
     // MARK: - 3.0.0
+    @available(*, deprecated, renamed: "channelURL")
+    public var channelUrl: String? { self.channelURL }
+    
     @available(*, deprecated, message: "This property has been moved to the `SBUBaseSelectUserModule.Header`.", renamed: "headerComponent.titleView")
     public var titleView: UIView? {
         get { baseHeaderComponent?.titleView }
@@ -45,37 +48,37 @@ extension SBUBaseSelectUserViewController {
     public var joinedUserIds: Set<String> { baseViewModel?.joinedUserIds ?? [] }
     
     @available(*, deprecated, message: "This property has been moved to the `SBUBaseSelectUserViewModel`.", renamed: "viewModel.userListQuery")
-    public var userListQuery: SBDApplicationUserListQuery? { baseViewModel?.userListQuery }
+    public var userListQuery: ApplicationUserListQuery? { baseViewModel?.userListQuery }
     
     @available(*, deprecated, message: "This property has been moved to the `SBUBaseSelectUserViewModel`.", renamed: "viewModel.memberListQuery")
-    public var memberListQuery: SBDGroupChannelMemberListQuery? { baseViewModel?.memberListQuery }
+    public var memberListQuery: MemberListQuery? { baseViewModel?.memberListQuery }
 
     @available(*, deprecated, message: "This property has been moved to the `SBUBaseSelectUserViewModel`.", renamed: "viewModel.inviteListType")
     public var inviteListType: ChannelInviteListType { baseViewModel?.inviteListType ?? .users }
 
     
-    @available(*, unavailable, message: "If you want to invite a user, use `init(channel:)` on `SBUInviteUserViewController` class, \nor if you want to promote a member, use `init(channel:)` on `SBUPromoteMemberViewController` class.")
-    public convenience init(channel: SBDGroupChannel, type: ChannelInviteListType) {
+    @available(*, unavailable, message: "If you want to invite a user, use `init(channel:)` on `SBUInviteUserViewController` class, \nor if you want to register as operator a member, use `init(channel:)` on `SBURegisterOperatorViewController` class.")
+    public convenience init(channel: GroupChannel, type: ChannelInviteListType) {
         self.init(nibName: nil, bundle: nil)
     }
 
-    @available(*, unavailable, message: "If you want to invite a user, use `init(channelUrl:)` on `SBUInviteUserViewController` class,\nor if you want to promote a member, use `init(channelUrl:)` on `SBUPromoteMemberViewController` class.")
+    @available(*, unavailable, message: "If you want to invite a user, use `init(channelURL:)` on `SBUInviteUserViewController` class,\nor if you want to register as operator a member, use `init(channelURL:)` on `SBURegisterOperatorViewController` class.")
     public convenience init(channelUrl: String, type: ChannelInviteListType) {
         self.init(nibName: nil, bundle: nil)
     }
     
-    @available(*, unavailable, message: "If you want to invite a user, use `init(channel:users:)` on `SBUInviteUserViewController` class,\nor if you want to promote a member, use `init(channel:users:)` on `SBUPromoteMemberViewController` class.")
-    public convenience init(channel: SBDGroupChannel, users: [SBUUser], type: ChannelInviteListType) {
+    @available(*, unavailable, message: "If you want to invite a user, use `init(channel:users:)` on `SBUInviteUserViewController` class,\nor if you want to register as operator a member, use `init(channel:users:)` on `SBURegisterOperatorViewController` class.")
+    public convenience init(channel: GroupChannel, users: [SBUUser], type: ChannelInviteListType) {
         self.init(nibName: nil, bundle: nil)
     }
 
-    @available(*, unavailable, message: "If you want to invite a user, use `init(channelUrl:users:)` on `SBUInviteUserViewController` class,\nor if you want to promote a member, use `init(channelUrl:users:)` on `SBUPromoteMemberViewController` class.")
+    @available(*, unavailable, message: "If you want to invite a user, use `init(channelURL:users:)` on `SBUInviteUserViewController` class,\nor if you want to register as operator a member, use `init(channelURL:users:)` on `SBURegisterOperatorViewController` class.")
     public convenience init(channelUrl: String, users: [SBUUser], type: ChannelInviteListType) {
         self.init(nibName: nil, bundle: nil)
     }
     
     
-    @available(*, unavailable, message: "If you want to invite a user, use `inviteSelectedUsers()` on `SBUInviteUserViewController` class,\nor if you want to promote a member, use `promoteSelectedMembers()` on `SBUPromoteMemberViewController` class.")
+    @available(*, unavailable, message: "If you want to invite a user, use `inviteSelectedUsers()` on `SBUInviteUserViewController` class,\nor if you want to register as operator a member, use `registerSelectedUsers()` on `SBURegisterOperatorViewController` class.")
     public func onClickInviteOrPromote() { }
     
     
@@ -84,10 +87,10 @@ extension SBUBaseSelectUserViewController {
         self.baseViewModel?.resetUserList()
     }
     
-    @available(*, deprecated, message: "This function has been moved to the `SBUBaseSelectUserViewModel`.", renamed: "viewModel.loadChannel(channelUrl:type:)")
+    @available(*, deprecated, message: "This function has been moved to the `SBUBaseSelectUserViewModel`.", renamed: "viewModel.loadChannel(channelURL:type:)")
     public func loadChannel(channelUrl: String?) {
-        guard let channelUrl = channelUrl else { return }
-        self.baseViewModel?.loadChannel(channelUrl: channelUrl, type: .group)
+        guard let channelURL = channelUrl else { return }
+        self.baseViewModel?.loadChannel(channelURL: channelURL, type: .group)
     }
     
     @available(*, deprecated, message: "This function has been moved to the `SBUBaseSelectUserViewModel`.", renamed: "viewModel.loadNextUserList(reset:users:)")
@@ -101,10 +104,10 @@ extension SBUBaseSelectUserViewController {
     @available(*, unavailable, message: "This function has been moved to the `SBUInviteUserViewModel` class.", renamed: "viewModel.invite(userIds:)")
     public func inviteUsers(userIds: [String]) { }
     
-    @available(*, unavailable, message: "This function set and renamed on `SBUPromoteMemberViewController` class.", renamed: "promoteSelectedMembers()")
+    @available(*, unavailable, message: "This function set and renamed on `SBURegisterOperatorViewController` class.", renamed: "registerSelectedUsers()")
     public func promoteToOperators() { }
     
-    @available(*, unavailable, message: "This function has been moved to the `SBUPromoteMemberViewModel` class.", renamed: "viewModel.promoteToOperators(memberIds:)")
+    @available(*, unavailable, message: "This function has been moved to the `SBURegisterOperatorViewModel` class.", renamed: "viewModel.registerAsOperators(userIds:)")
     public func promoteToOperators(memberIds: [String]) { }
     
     @available(*, deprecated, message: "This function has been moved to the `SBUBaseSelectUserViewModel`.", renamed: "viewModel.selectUser(user:)")

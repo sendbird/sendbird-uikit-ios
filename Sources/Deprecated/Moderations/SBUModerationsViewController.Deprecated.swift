@@ -7,10 +7,13 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 extension SBUModerationsViewController {
     // MARK: - 3.0.0
+    @available(*, deprecated, renamed: "channelURL")
+    public var channelUrl: String? { self.channelURL }
+    
     @available(*, deprecated, message: "This property has been moved to the `SBUModerationsModule.Header`.", renamed: "headerComponent.titleView")
     public var titleView: UIView? {
         get { headerComponent?.titleView }
@@ -32,10 +35,10 @@ extension SBUModerationsViewController {
     @available(*, deprecated, message: "This property has been moved to the SBUModerationsModule.List.", renamed: "listComponent.tableView")
     public var tableView: UITableView? { listComponent?.tableView }
 
-    @available(*, deprecated, message: "This function has been moved to the `SBUModerationsViewModel`.", renamed: "viewModel.loadChannel(channelUrl:)")
+    @available(*, deprecated, message: "This function has been moved to the `SBUModerationsViewModel`.", renamed: "viewModel.loadChannel(channelURL:)")
     public func loadChannel(channelUrl: String?) {
-        guard let channelUrl = channelUrl else { return }
-        self.viewModel?.loadChannel(channelUrl: channelUrl)
+        guard let channelURL = channelUrl else { return }
+        self.viewModel?.loadChannel(channelURL: channelURL)
     }
     
     @available(*, deprecated, message: "This function has been moved to the `SBUModerationsViewModel`.", renamed: "viewModel.freezeChannel(_:)")
@@ -64,8 +67,8 @@ extension SBUModerationsViewController {
     @available(*, deprecated, renamed: "showMutedMemberList()")
     open func showMutedMeberList() { self.showMutedMemberList() }
     
-    @available(*, deprecated, renamed: "showMutedMemberList()")
-    open func showBannedMeberList() { self.showBannedMemberList() }
+    @available(*, deprecated, renamed: "showBannedUserList()")
+    open func showBannedMeberList() { self.showBannedUserList() }
     
     @available(*, unavailable, renamed: "errorHandler(_:_:)")
     open func didReceiveError(_ message: String?, _ code: NSInteger? = nil) {

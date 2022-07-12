@@ -262,11 +262,11 @@ open class SBUUserCell: SBUTableViewCell {
         let isMe = (user.userId == SBUGlobals.currentUser?.userId)
         self.userIdLabel.text = user.userId
         self.nicknameLabel.text = user.refinedNickname()
-            + (isMe ? " \(SBUStringSet.MemberList_Me)" : "")
+            + (isMe ? " \(SBUStringSet.UserList_Me)" : "")
         self.hasNickname = user.nickname != nil && user.nickname?.isEmpty == false
         
         self.loadImageSession = self.userImageView.loadImage(
-            urlString: user.profileUrl ?? "",
+            urlString: user.profileURL ?? "",
             placeholder: SBUIconSetType.iconUser.image(
                 with: self.theme.userPlaceholderTintColor,
                 to: SBUIconSetType.Metric.defaultIconSize
@@ -285,20 +285,20 @@ open class SBUUserCell: SBUTableViewCell {
         self.moreButton.isEnabled = true
         
         switch type {
-        case .createChannel, .inviteUser:
+        case .createChannel, .invite:
             self.checkboxButton.isHidden = false
             self.checkboxButton.isSelected = self.isChecked
             
-        case .channelMembers:
+        case .members:
             if operatorMode {
                 self.moreButton.isHidden = false
                 self.moreButton.isEnabled = !isMe
             }
 
         case .reaction:
-            let profileImageUrl = user.profileUrl ?? ""
+            let profileImageURL = user.profileURL ?? ""
             self.userImageView.loadImage(
-                urlString: profileImageUrl,
+                urlString: profileImageURL,
                 placeholder: SBUIconSetType.iconUser.image(
                     with: self.theme.userPlaceholderTintColor,
                     to: SBUIconSetType.Metric.defaultIconSize
@@ -311,7 +311,7 @@ open class SBUUserCell: SBUTableViewCell {
             self.moreButton.isHidden = false
             self.moreButton.isEnabled = !isMe
             
-        case .mutedMembers, .bannedMembers:
+        case .muted, .banned:
             self.moreButton.isHidden = false
             self.moreButton.isEnabled = !isMe
 

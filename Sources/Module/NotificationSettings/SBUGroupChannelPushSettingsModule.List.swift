@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 
 /// Event methods for the views updates and performing actions from the list component in the channel push settings..
@@ -15,10 +15,10 @@ public protocol SBUGroupChannelPushSettingsModuleListDelegate: SBUCommonDelegate
     /// Called when changed push notification option
     /// - Parameters:
     ///   - listComponent: `SBUGroupChannelPushSettingsModule.List` object.
-    ///   - pushTriggerOption: `SBDGroupChannelPushTriggerOption` object to change.
+    ///   - pushTriggerOption: `GroupChannelPushTriggerOption` object to change.
     func groupChannelPushSettingsModule(
         _ listComponent: SBUGroupChannelPushSettingsModule.List,
-        didChangeNotification pushTriggerOption: SBDGroupChannelPushTriggerOption
+        didChangeNotification pushTriggerOption: GroupChannelPushTriggerOption
     )
 }
 
@@ -29,11 +29,11 @@ public protocol SBUGroupChannelPushSettingsModuleListDataSource: AnyObject {
     /// - Parameters:
     ///   - listComponent: `SBUGroupChannelPushSettingsModule.List` object.
     ///   - tableView: `UITableView` object from list component.
-    /// - Returns: The object of `SBDGroupChannelPushTriggerOption` object
+    /// - Returns: The object of `GroupChannelPushTriggerOption` object
     func groupChannelPushSettingsModule(
         _ listComponent: SBUGroupChannelPushSettingsModule.List,
         pushTriggerOptionForTableView tableView: UITableView
-    ) -> SBDGroupChannelPushTriggerOption?
+    ) -> GroupChannelPushTriggerOption?
 }
 
 
@@ -52,7 +52,7 @@ extension SBUGroupChannelPushSettingsModule {
         
         // MARK: - Logic properties (Public)
         /// The object that is group channel's push trigger option. If the value is nil, the default value set to off.
-        public var pushTriggerOption: SBDGroupChannelPushTriggerOption {
+        public var pushTriggerOption: GroupChannelPushTriggerOption {
             self.dataSource?.groupChannelPushSettingsModule(
                 self,
                 pushTriggerOptionForTableView: self.tableView

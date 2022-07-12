@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 class CreateChannelCustomManager: BaseCustomManager {
     static var shared = CreateChannelCustomManager()
@@ -54,9 +54,10 @@ extension CreateChannelCustomManager {
     }
     
     func userListCustom() {
-        let userListQuery = SBDMain.createApplicationUserListQuery()
-        userListQuery?.limit = 20
-        userListQuery?.loadNextPage(completionHandler: { users, error in
+        let params = ApplicationUserListQueryParams()
+        params.limit = 20
+        let userListQuery = SendbirdChat.createApplicationUserListQuery(params: params)
+        userListQuery.loadNextPage { users, error in
             guard error == nil else { return }
             
             // This is a user list object used for testing.
@@ -70,6 +71,6 @@ extension CreateChannelCustomManager {
             createChannelVC.loadDummyUsers {
                 self.navigationController?.pushViewController(createChannelVC, animated: true)
             }
-        })
+        }
     }
 }

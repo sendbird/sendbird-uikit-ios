@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 open class QuotedFileCommonContentView: SBUView {
     public var theme: SBUMessageCellTheme = SBUTheme.messageCellTheme

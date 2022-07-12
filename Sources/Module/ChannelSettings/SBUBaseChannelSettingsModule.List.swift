@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 
 public protocol SBUBaseChannelSettingsModuleListDelegate: SBUCommonDelegate { }
@@ -18,8 +18,8 @@ public protocol SBUBaseChannelSettingsModuleListDataSource: AnyObject {
     /// - Parameters:
     ///    - listComponent: `SBUBaseChannelSettingsModule.List` object.
     ///    - tableView: `UITableView` object from list component.
-    /// - Returns: The array of `SBDBaseChannel` object.
-    func baseChannelSettingsModule(_ listComponent: SBUBaseChannelSettingsModule.List, channelForTableView tableView: UITableView) -> SBDBaseChannel?
+    /// - Returns: The array of `BaseChannel` object.
+    func baseChannelSettingsModule(_ listComponent: SBUBaseChannelSettingsModule.List, channelForTableView tableView: UITableView) -> BaseChannel?
     
     /// Ask the data source to return the operator status
     /// - Parameters:
@@ -50,7 +50,7 @@ extension SBUBaseChannelSettingsModule {
         public weak var baseDelegate: SBUBaseChannelSettingsModuleListDelegate?
         public weak var baseDataSource: SBUBaseChannelSettingsModuleListDataSource?
 
-        public var baseChannel: SBDBaseChannel? {
+        public var baseChannel: BaseChannel? {
             self.baseDataSource?.baseChannelSettingsModule(self, channelForTableView: self.tableView)
         }
         public var isOperator: Bool {

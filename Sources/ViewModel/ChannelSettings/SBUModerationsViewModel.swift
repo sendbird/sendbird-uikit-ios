@@ -7,15 +7,15 @@
 //
 
 import Foundation
-import SendBirdSDK
+import SendbirdChatSDK
 
 
 public protocol SBUModerationsViewModelDelegate: SBUCommonViewModelDelegate {
     /// Called when the channel has been changed.
     func moderationsViewModel(
         _ viewModel: SBUModerationsViewModel,
-        didChangeChannel channel: SBDBaseChannel?,
-        withContext context: SBDMessageContext
+        didChangeChannel channel: BaseChannel?,
+        withContext context: MessageContext
     )
 }
 
@@ -23,8 +23,8 @@ public protocol SBUModerationsViewModelDelegate: SBUCommonViewModelDelegate {
 open class SBUModerationsViewModel {
     
     // MARK: - Property (Public)
-    public private(set) var channel: SBDGroupChannel?
-    public private(set) var channelUrl: String?
+    public private(set) var channel: GroupChannel?
+    public private(set) var channelURL: String?
     
     
     // MARK: - Property (Private)
@@ -33,8 +33,8 @@ open class SBUModerationsViewModel {
     
     // MARK: - Lifecycle
     init(
-        channel: SBDGroupChannel? = nil,
-        channelUrl: String? = nil,
+        channel: GroupChannel? = nil,
+        channelURL: String? = nil,
         delegate:SBUModerationsViewModelDelegate? = nil
     ) {
         
@@ -42,13 +42,13 @@ open class SBUModerationsViewModel {
         
         if let channel = channel {
             self.channel = channel
-            self.channelUrl = channel.channelUrl
-        } else if let channelUrl = channelUrl {
-            self.channelUrl = channelUrl
+            self.channelURL = channel.channelURL
+        } else if let channelURL = channelURL {
+            self.channelURL = channelURL
         }
         
-        guard let channelUrl = channelUrl else { return }
-        self.loadChannel(channelUrl: channelUrl)
+        guard let channelURL = channelURL else { return }
+        self.loadChannel(channelURL: channelURL)
     }
     
     
@@ -56,8 +56,8 @@ open class SBUModerationsViewModel {
     
     /// This function is used to load channel.
     /// - Parameters:
-    ///   - channelUrl: channel url
-    public func loadChannel(channelUrl: String) {
+    ///   - channelURL: channel url
+    public func loadChannel(channelURL: String) {
         self.delegate?.shouldUpdateLoadingState(true)
         
         SendbirdUI.connectIfNeeded { [weak self] user, error in
@@ -67,7 +67,7 @@ open class SBUModerationsViewModel {
                 self.delegate?.shouldUpdateLoadingState(false)
                 self.delegate?.didReceiveError(error, isBlocker: false)
             } else {
-                let completionHandler: ((SBDGroupChannel?, SBDError?) -> Void) = {
+                let completionHandler: ((GroupChannel?, SBError?) -> Void) = {
                     [weak self] channel, error in
                     
                     guard let self = self else { return }
@@ -77,8 +77,7 @@ open class SBUModerationsViewModel {
                     } else if let channel = channel {
                         self.channel = channel
                         
-                        let context = SBDMessageContext()
-                        context.source = .eventChannelChanged
+                        let context = MessageContext(source: .eventChannelChanged, sendingStatus: .succeeded)
                         self.delegate?.moderationsViewModel(
                             self,
                             didChangeChannel: channel,
@@ -87,7 +86,7 @@ open class SBUModerationsViewModel {
                     }
                 }
                 
-                SBDGroupChannel.getWithUrl(channelUrl, completionHandler: completionHandler)
+                GroupChannel.getChannel(url: channelURL, completionHandler: completionHandler)
             }
         }
     }
@@ -115,8 +114,7 @@ open class SBUModerationsViewModel {
             }
             
             if let channel = self.channel {
-                let context = SBDMessageContext()
-                context.source = .eventChannelFrozen
+                let context = MessageContext(source: .eventChannelFrozen, sendingStatus: .succeeded)
                 self.delegate?.moderationsViewModel(
                     self,
                     didChangeChannel: channel,
@@ -148,8 +146,7 @@ open class SBUModerationsViewModel {
             }
             
             if let channel = self.channel {
-                let context = SBDMessageContext()
-                context.source = .eventChannelUnfrozen
+                let context = MessageContext(source: .eventChannelUnfrozen, sendingStatus: .succeeded)
                 self.delegate?.moderationsViewModel(
                     self,
                     didChangeChannel: channel,

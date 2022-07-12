@@ -156,7 +156,7 @@ class SBUUserProfileView: UIView, SBUUserProfileViewProtocol {
         self.baseView.addSubview(self)
         
         self.profileImageView.loadImage(
-            urlString: self.user?.profileUrl ?? "",
+            urlString: self.user?.profileURL ?? "",
             placeholder: SBUIconSetType.iconUser.image(
                 with: self.theme.userPlaceholderTintColor,
                 to: SBUIconSetType.Metric.iconUserProfile

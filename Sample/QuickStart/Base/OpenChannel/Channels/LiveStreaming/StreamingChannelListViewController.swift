@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 class StreamingChannelListViewController: SBUBaseChannelListViewController, SBUEmptyViewDelegate, UITableViewDataSource, UITableViewDelegate {
     // MARK: - UI properties (Public)
@@ -62,11 +62,11 @@ class StreamingChannelListViewController: SBUBaseChannelListViewController, SBUE
     // MARK: - Logic properties (Public)
     
     /// This object has a list of all channels.
-    @SBUAtomic public private(set) var channelList: [SBDOpenChannel] = []
+    @SBUAtomic public private(set) var channelList: [OpenChannel] = []
     
     /// This is a query used to get a list of channels. Only getter is provided, please use initialization function to set query directly.
-    /// - note: For query properties, see `SBDOpenChannelListQuery` class.
-    public private(set) var channelListQuery: SBDOpenChannelListQuery?
+    /// - note: For query properties, see `OpenChannelListQuery` class.
+    public private(set) var channelListQuery: OpenChannelListQuery?
     
     public private(set) var isLoading = false
     public private(set) var limit: UInt = 20
@@ -219,9 +219,10 @@ class StreamingChannelListViewController: SBUBaseChannelListViewController, SBUE
         }
         
         if self.channelListQuery == nil {
-            self.channelListQuery = SBDOpenChannel.createOpenChannelListQuery()
-            self.channelListQuery?.limit = self.limit
-            self.channelListQuery?.customTypeFilter = "SB_LIVE_TYPE"
+            let params = OpenChannelListQueryParams()
+            params.limit = self.limit
+            params.customTypeFilter = "SB_LIVE_TYPE"
+            self.channelListQuery = OpenChannel.createOpenChannelListQuery(params: params)
         }
         
         guard self.channelListQuery?.hasNext == true else {
@@ -246,7 +247,7 @@ class StreamingChannelListViewController: SBUBaseChannelListViewController, SBUE
     /// Sorts the channel lists.
     func sortChannelList(needReload: Bool) {
         let sortedChannelList = self.channelList
-            .sorted(by: { (lhs: SBDOpenChannel, rhs: SBDOpenChannel) -> Bool in
+            .sorted(by: { (lhs: OpenChannel, rhs: OpenChannel) -> Bool in
                 let createdAt1 = lhs.createdAt
                 let createdAt2 = rhs.createdAt
                 return createdAt1 > createdAt2
@@ -274,10 +275,10 @@ class StreamingChannelListViewController: SBUBaseChannelListViewController, SBUE
     ///
     /// If you want to use a custom channelViewController, override it and implement it.
     /// - Parameters:
-    ///   - channelUrl: channel url for use in channelViewController.
+    ///   - channelURL: channel url for use in channelViewController.
     ///   - messageListParams: If there is a messageListParams set directly for use in Channel, set it up here
     ///   - streamingData:custom parameter for streaming channel.
-    func showChannel(_ openChannel: SBDOpenChannel) {
+    func showChannel(_ openChannel: OpenChannel) {
         guard let streamingData = openChannel.toStreamChannel() else { return }
         let channelVC = StreamingChannelViewController(channel: openChannel, streamingData: streamingData)
         channelVC.hideChannelInfoView = false

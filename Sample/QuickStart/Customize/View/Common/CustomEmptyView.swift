@@ -26,8 +26,8 @@ class CustomEmptyView: SBUEmptyView {
         case .noMutedMembers:
             self.statusLabel.text = "[Custom] No muted members"
             self.statusImageView.image = UIImage(named: "logoSendbird")
-        case .noBannedMembers:
-            self.statusLabel.text = "[Custom] No banned members"
+        case .noBannedUsers:
+            self.statusLabel.text = "[Custom] No banned users"
             self.statusImageView.image = UIImage(named: "logoSendbird")
         case .error:
             self.statusLabel.text = "[Custom] Something went wrong"

@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 enum TabType {
     case channels, mySettings
@@ -43,7 +43,7 @@ class MainChannelTabbarController: UITabBarController {
         
         self.setupStyles()
         
-        SBDMain.add(self, identifier: self.sbu_className)
+        SendbirdChat.add(self, identifier: self.sbu_className)
         
         self.loadTotalUnreadMessageCount()
     }
@@ -53,7 +53,7 @@ class MainChannelTabbarController: UITabBarController {
     }
     
     deinit {
-        SBDMain.removeUserEventDelegate(forIdentifier: self.sbu_className)
+        SendbirdChat.removeUserEventDelegate(forIdentifier: self.sbu_className)
     }
     
     public func setupStyles() {
@@ -86,7 +86,7 @@ class MainChannelTabbarController: UITabBarController {
     
     // MARK: - SDK related
     func loadTotalUnreadMessageCount() {
-        SBDMain.getTotalUnreadMessageCount { (totalCount, error) in
+        SendbirdChat.getTotalUnreadMessageCount { (totalCount, error) in
             self.setUnreadMessagesCount(totalCount)
         }
     }
@@ -152,10 +152,8 @@ class MainChannelTabbarController: UITabBarController {
     }
 }
 
-extension MainChannelTabbarController: SBDUserEventDelegate {
-    func didUpdateTotalUnreadMessageCount(_ totalCount: Int32,
-                                          totalCountByCustomType: [String : NSNumber]?)
-    {
+extension MainChannelTabbarController: UserEventDelegate {
+    func didUpdateTotalUnreadMessageCount(_ totalCount: Int32, totalCountByCustomType: [String : Int]?) {
         self.setUnreadMessagesCount(UInt(totalCount))
     }
 }

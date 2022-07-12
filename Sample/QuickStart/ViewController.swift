@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 enum ButtonType: Int {
     case signIn
@@ -150,7 +150,7 @@ class ViewController: UIViewController {
  
         UserDefaults.saveIsLightTheme(true)
         
-        let coreVersion: String = SBDMain.getSDKVersion()
+        let coreVersion: String = SendbirdChat.getSDKVersion()
         var uikitVersion: String {
             if SendbirdUI.shortVersion == "[NEXT_VERSION]" {
                 let bundle = Bundle(identifier: "com.sendbird.uikit.sample")
@@ -164,8 +164,8 @@ class ViewController: UIViewController {
         userIdTextField.text = UserDefaults.loadUserID()
         nicknameTextField.text = UserDefaults.loadNickname()
         
-        SBDMain.add(self as SBDUserEventDelegate, identifier: self.description)
-        SBDMain.add(self as SBDConnectionDelegate, identifier: self.description)
+        SendbirdChat.add(self as UserEventDelegate, identifier: self.description)
+        SendbirdChat.add(self as ConnectionDelegate, identifier: self.description)
         
         guard userIdTextField.text != nil,
               nicknameTextField.text != nil else { return }
@@ -173,8 +173,8 @@ class ViewController: UIViewController {
     }
     
     deinit {
-        SBDMain.removeUserEventDelegate(forIdentifier: self.description)
-        SBDMain.removeConnectionDelegate(forIdentifier: self.description)
+        SendbirdChat.removeUserEventDelegate(forIdentifier: self.description)
+        SendbirdChat.removeConnectionDelegate(forIdentifier: self.description)
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -186,7 +186,7 @@ class ViewController: UIViewController {
     }
     
     func updateUnreadCount() {
-        SBDMain.getTotalUnreadMessageCount { [weak self] totalCount, error in
+        SendbirdChat.getTotalUnreadMessageCount { [weak self] totalCount, error in
             guard let self = self else { return }
             self.setUnreadMessageCount(unreadCount: Int32(totalCount))
         }
@@ -302,13 +302,13 @@ class ViewController: UIViewController {
     
     func startChatAction(with payload: NSDictionary) {
         guard let channel: NSDictionary = payload["channel"] as? NSDictionary,
-              let channelUrl: String = channel["channel_url"] as? String else { return }
+              let channelURL: String = channel["channel_url"] as? String else { return }
         
         let mainVC = SBUGroupChannelListViewController()
         let naviVC = UINavigationController(rootViewController: mainVC)
         naviVC.modalPresentationStyle = .fullScreen
         self.present(naviVC, animated: true) {
-            SendbirdUI.moveToChannel(channelUrl: channelUrl)
+            SendbirdUI.moveToChannel(channelURL: channelURL)
         }
     }
     
@@ -347,13 +347,13 @@ extension ViewController: UITextFieldDelegate {
     }
 }
 
-extension ViewController: SBDUserEventDelegate {
-    func didUpdateTotalUnreadMessageCount(_ totalCount: Int32, totalCountByCustomType: [String : NSNumber]?) {
+extension ViewController: UserEventDelegate {
+    func didUpdateTotalUnreadMessageCount(_ totalCount: Int32, totalCountByCustomType: [String : Int]?) {
         self.setUnreadMessageCount(unreadCount: Int32(totalCount))
     }
 }
 
-extension ViewController: SBDConnectionDelegate {
+extension ViewController: ConnectionDelegate {
     func didSucceedReconnection() {
         self.updateUnreadCount()
     }

@@ -7,13 +7,13 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 open class SBUMessageStateViewParams {
     /// The timestamp of message.
     public let timestamp: Int64
     /// The sending state of message.
-    public let sendingState: SBDMessageSendingStatus
+    public let sendingState: MessageSendingStatus
     /// The receipt state of message.
     public let receiptState: SBUMessageReceiptState
     /// The position of message.
@@ -32,7 +32,7 @@ open class SBUMessageStateViewParams {
     ///
     public init(
         timestamp: Int64,
-        sendingState: SBDMessageSendingStatus,
+        sendingState: MessageSendingStatus,
         receiptState: SBUMessageReceiptState,
         position: MessagePosition,
         isQuotedReplyMessage: Bool = false
@@ -85,7 +85,7 @@ open class SBUMessageStateView: SBUView {
     
     // MARK: Internal Properties (View models)
     var timestamp: Int64 = 0
-    var sendingState: SBDMessageSendingStatus = .none
+    var sendingState: MessageSendingStatus = .none
     var receiptState: SBUMessageReceiptState = .notUsed
     var position: MessagePosition = .center
     var isQuotedReplyMessage: Bool = false
@@ -93,12 +93,12 @@ open class SBUMessageStateView: SBUView {
     /// Initializes `SBUMessageStateView`
     ///
     /// - Parameters:
-    ///   - sendingState: `SBDMessageSendingStatus`.
+    ///   - sendingState: `MessageSendingStatus`.
     ///   - receiptState: `SBUMessageReceiptState`.
     ///   - isQuotedMessage: If `true`, the message is the reply message.
     ///
     /// - Since: 2.1.13
-    public init(sendingState: SBDMessageSendingStatus, receiptState: SBUMessageReceiptState, isQuotedReplyMessage: Bool = false) {
+    public init(sendingState: MessageSendingStatus, receiptState: SBUMessageReceiptState, isQuotedReplyMessage: Bool = false) {
         self.receiptState = receiptState
         self.sendingState = sendingState
         self.isQuotedReplyMessage = isQuotedReplyMessage
@@ -264,6 +264,8 @@ open class SBUMessageStateView: SBUView {
                             to: SBUIconSetType.Metric.defaultIconSizeSmall
                         )
                 }
+            case .scheduled:
+                stateImage = nil
             @unknown default:
                 stateImage = nil
         }
@@ -299,7 +301,7 @@ open class SBUMessageStateView: SBUView {
     /// - Since: 2.1.13
     @available(*, deprecated, renamed: "configure(with:)") // 2.2.0
     open func configure(timestamp: Int64,
-                        sendingState: SBDMessageSendingStatus,
+                        sendingState: MessageSendingStatus,
                         receiptState: SBUMessageReceiptState?,
                         position: MessagePosition) {
         

@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 /// Reacted user list
 class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate, SBUBottomSheetControllerDelegate {
@@ -19,10 +19,10 @@ class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegate, UI
     let tableView = UITableView()
     let emojiList = SBUEmojiManager.getAllEmojis()
 
-    var channel: SBDGroupChannel!
-    var selectedReaction: SBDReaction = SBDReaction()
-    var memberList: [SBDMember] = []
-    var reactionList: [SBDReaction] = []
+    var channel: GroupChannel!
+    var selectedReaction: Reaction?
+    var memberList: [Member] = []
+    var reactionList: [Reaction] = []
 
     var collectionViewConstraintWidth: NSLayoutConstraint!
     var collectionViewConstraintMaxWidth: NSLayoutConstraint!
@@ -36,14 +36,14 @@ class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegate, UI
     }
 
     /// Use this function when initialize.
-    /// - Parameter message: SBDBaseMessage types
-    init(channel: SBDGroupChannel, message: SBDBaseMessage, selectedReaction: SBDReaction) {
+    /// - Parameter message: BaseMessage types
+    init(channel: GroupChannel, message: BaseMessage, selectedReaction: Reaction?) {
         super.init(nibName: nil, bundle: nil)
         self.channel = channel
         self.reactionList = message.reactions
         self.selectedReaction = selectedReaction
 
-        let members = self.channel?.members as? [SBDMember] ?? []
+        let members = self.channel?.members as? [Member] ?? []
         self.memberList = members
     }
 
@@ -154,7 +154,8 @@ class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegate, UI
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
-        guard self.selectedReaction.userIds.count > 0 else { return }
+        guard let selectedReaction = self.selectedReaction,
+              selectedReaction.userIds.count > 0 else { return }
         self.tableView.scrollToRow(at: .init(row: 0, section: 0), at: .top, animated: true)
     }
 
@@ -174,7 +175,9 @@ class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegate, UI
 
     // MARK: - Private func
     private func getSelectedIndexPath() -> IndexPath? {
-        self.reactionList.enumerated().compactMap {
+        guard let selectedReaction = self.selectedReaction else { return nil }
+        
+        return self.reactionList.enumerated().compactMap {
             $0.element.key == selectedReaction.key
                 ? IndexPath(item: $0.offset, section: 0)
                 : nil
@@ -194,7 +197,9 @@ class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegate, UI
 
     // MARK: - UITableView relations
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.selectedReaction.userIds.count
+        guard let selectedReaction = self.selectedReaction else { return 0 }
+        
+        return selectedReaction.userIds.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -202,14 +207,15 @@ class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegate, UI
             withIdentifier: SBUUserCell.sbu_className
             ) as? SBUUserCell else { return .init() }
 
-        guard indexPath.row < self.selectedReaction.userIds.count else { return .init() }
+        guard let selectedReaction = self.selectedReaction,
+              indexPath.row < selectedReaction.userIds.count else { return .init() }
 
-        let userId = self.selectedReaction.userIds[indexPath.row]
+        let userId = selectedReaction.userIds[indexPath.row]
         let user = memberList.first { $0.userId == userId }.map { SBUUser(user: $0) }
             ?? SBUUser(
                 userId: userId,
                 nickname: SBUStringSet.User_No_Name,
-                profileUrl: nil)
+                profileURL: nil)
         cell.configure(type: .reaction, user: user)
         return cell
     }
@@ -243,7 +249,8 @@ class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegate, UI
         var deleteAnimation: UITableView.RowAnimation = .none
         var insertAnimation: UITableView.RowAnimation = .none
 
-        guard let index = self.reactionList.firstIndex(of: selectedReaction) else { return }
+        guard let selectedReaction = self.selectedReaction,
+              let index = self.reactionList.firstIndex(of: selectedReaction) else { return }
         if index < indexPath.row {
             deleteAnimation = .left
             insertAnimation = .right
@@ -259,7 +266,7 @@ class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegate, UI
         self.tableView.deleteRows(at: oldIndexPaths, with: deleteAnimation)
         self.selectedReaction = self.reactionList[indexPath.row]
         self.tableView.insertRows(
-            at: self.selectedReaction.userIds.enumerated().map {
+            at: selectedReaction.userIds.enumerated().map {
                 IndexPath(row: $0.offset, section: 0)
             },
             with: insertAnimation

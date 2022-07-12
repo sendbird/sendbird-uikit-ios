@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 class StreamingChannelCell: SBUBaseChannelCell {
     
@@ -195,10 +195,10 @@ class StreamingChannelCell: SBUBaseChannelCell {
     }
     
     /// This function configure a cell using channel information.
-    override func configure(channel: SBDBaseChannel) {
+    override func configure(channel: BaseChannel) {
         super.configure(channel: channel)
         
-        guard let channel = channel as? SBDOpenChannel else { return }
+        guard let channel = channel as? OpenChannel else { return }
         guard let streaming = channel.toStreamChannel() else { return }
         
         // Cover image

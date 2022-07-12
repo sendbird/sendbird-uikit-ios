@@ -225,7 +225,7 @@ class UserInfoTitleView: UIView {
     }
     
     func configure(user: SBUUser) {
-        if let urlString = user.profileUrl {
+        if let urlString = user.profileURL {
             self.coverImage.loadImage(urlString: urlString)
         }
         self.userNicknameLabel.text = user.nickname ?? user.userId

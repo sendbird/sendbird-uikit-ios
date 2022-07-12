@@ -7,11 +7,11 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 class SBUChannelTitleView: UIView {
     // MARK: - Public
-    public var channel: SBDBaseChannel?
+    public var channel: BaseChannel?
     
     @SBUThemeWrapper(theme: SBUTheme.componentTheme)
     var theme: SBUComponentTheme
@@ -143,7 +143,7 @@ class SBUChannelTitleView: UIView {
     }
 
     // MARK: - Common
-    public func configure(channel: SBDBaseChannel?, title: String?) {
+    public func configure(channel: BaseChannel?, title: String?) {
         self.channel = channel
         self.titleLabel.text = ""
 
@@ -159,9 +159,9 @@ class SBUChannelTitleView: UIView {
            SBUUtils.isValid(channelName: channelName) {
             self.titleLabel.text = channelName
         } else {
-            if let groupChannel = channel as? SBDGroupChannel {
+            if let groupChannel = channel as? GroupChannel {
                 self.titleLabel.text = SBUUtils.generateChannelName(channel: groupChannel)
-            } else if let _ = channel as? SBDOpenChannel {
+            } else if let _ = channel as? OpenChannel {
                 self.titleLabel.text = SBUStringSet.Open_Channel_Name_Default
             } else {
                 self.titleLabel.text = ""
@@ -177,30 +177,30 @@ class SBUChannelTitleView: UIView {
             return
         }
         
-        if channel is SBDOpenChannel {
-            if let coverUrl = channel.coverUrl {
-                self.coverImage.setImage(withCoverUrl: coverUrl)
+        if channel is OpenChannel {
+            if let coverURL = channel.coverURL {
+                self.coverImage.setImage(withCoverURL: coverURL)
             } else {
                 self.coverImage.setPlaceholderImage(iconSize: CGSize(width: 40, height: 40))
             }
-        } else if let channel = channel as? SBDGroupChannel {
-            if let coverUrl = channel.coverUrl,
-               SBUUtils.isValid(coverUrl: coverUrl) {
-                self.coverImage.setImage(withCoverUrl: coverUrl)
+        } else if let channel = channel as? GroupChannel {
+            if let coverURL = channel.coverURL,
+               SBUUtils.isValid(coverURL: coverURL) {
+                self.coverImage.setImage(withCoverURL: coverURL)
             } else if channel.isBroadcast == true {
                 self.coverImage.setBroadcastIcon()
-            } else if let members = channel.members as? [SBDUser] {
-                self.coverImage.setImage(withUsers: members)
+            } else if channel.members.count > 0 {
+                self.coverImage.setImage(withUsers: channel.members)
             } else {
                 self.coverImage.setPlaceholderImage(iconSize: CGSize(width: 40, height: 40))
             }
         }
     }
     
-    public func updateChannelStatus(channel: SBDBaseChannel?) {
+    public func updateChannelStatus(channel: BaseChannel?) {
         self.statusField.leftViewMode = .never
         
-        if let channel = channel as? SBDGroupChannel {
+        if let channel = channel as? GroupChannel {
             if let typingIndicatorString = self.buildTypingIndicatorString(channel: channel) {
                 DispatchQueue.main.async { [weak self] in
                     guard let self = self else { return }
@@ -218,7 +218,7 @@ class SBUChannelTitleView: UIView {
                     self.layoutIfNeeded()
                 }
             }
-        } else if let channel = channel as? SBDOpenChannel {
+        } else if let channel = channel as? OpenChannel {
             let count = channel.participantCount
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
@@ -231,7 +231,7 @@ class SBUChannelTitleView: UIView {
     }
     
     // MARK: - Util
-    private func buildTypingIndicatorString(channel: SBDGroupChannel) -> String? {
+    private func buildTypingIndicatorString(channel: GroupChannel) -> String? {
         guard let typingMembers = channel.getTypingUsers(),
             !typingMembers.isEmpty else { return nil }
         return SBUStringSet.Channel_Typing(typingMembers)

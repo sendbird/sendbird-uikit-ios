@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import SendBirdSDK
+import SendbirdChatSDK
 import simd
 
 @available(*, deprecated, renamed: "SBUGroupChannelViewModelDataSource") // 3.0.0
@@ -23,11 +23,11 @@ public protocol SBUGroupChannelViewModelDataSource: SBUBaseChannelViewModelDataS
     /// Asks to data source to return the array of index path that represents starting point of channel.
     /// - Parameters:
     ///    - viewModel: `SBUGroupChannelViewModel` object.
-    ///    - channel: `SBDGroupChannel` object from `viewModel`
+    ///    - channel: `GroupChannel` object from `viewModel`
     /// - Returns: The array of `IndexPath` object representing starting point.
     func groupChannelViewModel(
         _ viewModel: SBUGroupChannelViewModel,
-        startingPointIndexPathsForChannel channel: SBDGroupChannel?
+        startingPointIndexPathsForChannel channel: GroupChannel?
     ) -> [IndexPath]?
 }
 
@@ -35,10 +35,10 @@ public protocol SBUGroupChannelViewModelDelegate: SBUBaseChannelViewModelDelegat
     /// Called when the channel has received mentional member list. Please refer to `loadSuggestedMentions(with:)` in `SBUGroupChannelViewModel`.
     /// - Parameters:
     ///   - viewModel: `SBUGroupChannelViewModel` object.
-    ///   - users: Mentional members
+    ///   - members: Mentional members
     func groupChannelViewModel(
         _ viewModel: SBUGroupChannelViewModel,
-        didReceiveSuggestedMentions users: [SBUUser]?
+        didReceiveSuggestedMentions members: [SBUUser]?
     )
 }
 
@@ -56,15 +56,16 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
 
     
     // MARK: - Logic properties (private)
-    var messageCollection: SBDMessageCollection?
+    var messageCollection: MessageCollection?
     var debouncer: SBUDebouncer?
     var suggestedMemberList: [SBUUser]?
+    var query: MemberListQuery?
 
     
     // MARK: - LifeCycle
-    public init(channel: SBDBaseChannel? = nil,
-                channelUrl: String? = nil,
-                messageListParams: SBDMessageListParams? = nil,
+    public init(channel: BaseChannel? = nil,
+                channelURL: String? = nil,
+                messageListParams: MessageListParams? = nil,
                 startingPoint: Int64? = LLONG_MAX,
                 delegate: SBUGroupChannelViewModelDelegate? = nil,
                 dataSource: SBUGroupChannelViewModelDataSource? = nil)
@@ -74,11 +75,16 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
         self.delegate = delegate
         self.dataSource = dataSource
         
+        SendbirdChat.add(
+            self as GroupChannelDelegate,
+            identifier: "\(SBUConstant.channelDelegateIdentifier).\(self.description)"
+        )
+        
         if let channel = channel {
             self.channel = channel
-            self.channelUrl = channel.channelUrl
-        } else if let channelUrl = channelUrl {
-            self.channelUrl = channelUrl
+            self.channelURL = channel.channelURL
+        } else if let channelURL = channelURL {
+            self.channelURL = channelURL
         }
         
         self.customizedMessageListParams = messageListParams
@@ -88,9 +94,9 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
             debounceTime: SBUGlobals.userMentionConfig?.debounceTime ?? SBUDebouncer.defaultTime
         )
         
-        guard let channelUrl = self.channelUrl else { return }
+        guard let channelURL = self.channelURL else { return }
         self.loadChannel(
-            channelUrl: channelUrl,
+            channelURL: channelURL,
             messageListParams: self.customizedMessageListParams
         )
     }
@@ -101,11 +107,11 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
 
     
     // MARK: - Channel related
-    public override func loadChannel(channelUrl: String, messageListParams: SBDMessageListParams? = nil) {
+    public override func loadChannel(channelURL: String, messageListParams: MessageListParams? = nil) {
         if let messageListParams = messageListParams {
             self.customizedMessageListParams = messageListParams
         } else if self.customizedMessageListParams == nil {
-            let messageListParams = SBDMessageListParams()
+            let messageListParams = MessageListParams()
             SBUGlobalCustomParams.messageListParamsBuilder?(messageListParams)
             self.customizedMessageListParams = messageListParams
         }
@@ -119,8 +125,8 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
                 return
             }
             
-            SBULog.info("[Request] Load channel: \(String(channelUrl))")
-            SBDGroupChannel.getWithUrl(channelUrl) { [weak self] channel, error in
+            SBULog.info("[Request] Load channel: \(String(channelURL))")
+            GroupChannel.getChannel(url: channelURL) { [weak self] channel, error in
                 guard let self = self else { return }
 
                 SBULog.info("[Succeed] Load channel request: \(String(describing: self.channel))")
@@ -132,9 +138,8 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
                 self.refreshChannel()
 
                 // for updating channel information when the connection state is closed at the time of initial load.
-                if SBDMain.getConnectState() == .closed {
-                    let context = SBDMessageContext()
-                    context.source = .eventChannelChanged
+                if SendbirdChat.getConnectState() == .closed {
+                    let context = MessageContext(source: .eventChannelChanged, sendingStatus: .succeeded)
                     self.delegate?.baseChannelViewModel(
                         self,
                         didChangeChannel: channel,
@@ -153,25 +158,24 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
     }
     
     public override func refreshChannel() {
-        if let channel = self.channel as? SBDGroupChannel {
+        if let channel = self.channel as? GroupChannel {
             channel.refresh { [weak self] error in
                 guard let self = self else { return }
                 guard self.canProceed(with: channel, error: error) == true else { return }
                 
-                let context = SBDMessageContext()
-                context.source = .eventChannelChanged
+                let context = MessageContext(source: .eventChannelChanged, sendingStatus: .succeeded)
                 self.delegate?.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
             }
-        } else if let channelUrl = self.channelUrl {
-            self.loadChannel(channelUrl: channelUrl)
+        } else if let channelURL = self.channelURL {
+            self.loadChannel(channelURL: channelURL)
         }
     }
     
-    private func canProceed(with channel: SBDGroupChannel?, error: SBDError?) -> Bool {
+    private func canProceed(with channel: GroupChannel?, error: SBError?) -> Bool {
         if let error = error {
             SBULog.error("[Failed] Load channel request: \(error.localizedDescription)")
             
-            if error.code == SBDErrorCode.nonAuthorized.rawValue {
+            if error.code == ChatError.nonAuthorized.rawValue {
                 self.delegate?.baseChannelViewModel(self, shouldDismissForChannel: nil)
             } else {
                 self.delegate?.didReceiveError(error, isBlocker: true)
@@ -189,15 +193,15 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
         return true
     }
     
-    private func belongsToChannel(error: SBDError) -> Bool {
-        return error.code != SBDErrorCode.nonAuthorized.rawValue
+    private func belongsToChannel(error: SBError) -> Bool {
+        return error.code != ChatError.nonAuthorized.rawValue
     }
     
     
     // MARK: - Load Messages
     public override func loadInitialMessages(startingPoint: Int64?,
                                       showIndicator: Bool,
-                                      initialMessages: [SBDBaseMessage]?) {
+                                      initialMessages: [BaseMessage]?) {
         SBULog.info("""
             loadInitialMessages,
             startingPoint : \(String(describing: startingPoint)),
@@ -208,9 +212,7 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
         // Caution in function call order
         self.reset()
         self.createCollectionIfNeeded(startingPoint: startingPoint ?? LLONG_MAX)
-        if self.initPolicy == .cacheAndReplaceByApi {
-            self.clearMessageList()
-        }
+        self.clearMessageList()
         
         if self.hasNext() {
             // Hold on to most recent messages in cache for smooth scrolling.
@@ -219,8 +221,8 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
         
         self.delegate?.shouldUpdateLoadingState(showIndicator)
         
-        self.messageCollection?.start(
-            with: initPolicy,
+        self.messageCollection?.startCollection(
+            initPolicy: initPolicy,
             cacheResultHandler: { [weak self] cacheResult, error in
                 guard let self = self else { return }
                 if let error = error {
@@ -243,10 +245,16 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
                     self.delegate?.shouldUpdateLoadingState(false)
                     
                     // ignore error if using local caching
-                    if !SBDMain.isUsingLocalCaching() {
+                    if !SendbirdChat.isLocalCachingEnabled {
                         self.delegate?.didReceiveError(error, isBlocker: false)
                     }
+                    
+                    self.isInitialLoading = false
                     return
+                }
+        
+                if self.initPolicy == .cacheAndReplaceByApi {
+                    self.clearMessageList()
                 }
                 
                 self.upsertMessagesInList(messages: apiResult, needReload: true)
@@ -255,13 +263,13 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
     }
     
     func loadInitialPendingMessages() {
-        let pendingMessages = self.messageCollection?.getPendingMessages() ?? []
-        let failedMessages = self.messageCollection?.getFailedMessages() ?? []
+        let pendingMessages = self.messageCollection?.pendingMessages ?? []
+        let failedMessages = self.messageCollection?.failedMessages ?? []
         let cachedTempMessages = pendingMessages + failedMessages
         for message in cachedTempMessages {
-            SBUPendingMessageManager.shared.upsertPendingMessage(channelUrl: self.channel?.channelUrl, message: message)
-            if let fileMessage = message as? SBDFileMessage,
-               let fileMessageParams = fileMessage.messageParams as? SBDFileMessageParams {
+            SBUPendingMessageManager.shared.upsertPendingMessage(channelURL: self.channel?.channelURL, message: message)
+            if let fileMessage = message as? FileMessage,
+               let fileMessageParams = fileMessage.messageParams as? FileMessageCreateParams {
                 SBUPendingMessageManager.shared.addFileInfo(requestId: fileMessage.requestId, params: fileMessageParams)
             }
         }
@@ -337,16 +345,16 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
 
     // MARK: - Resend
     
-    override public func deleteResendableMessage(_ message: SBDBaseMessage, needReload: Bool) {
-        if self.channel is SBDGroupChannel {
-            self.messageCollection?.removeFailedMessages([message], completionHandler: nil)
+    override public func deleteResendableMessage(_ message: BaseMessage, needReload: Bool) {
+        if self.channel is GroupChannel {
+            self.messageCollection?.removeFailed(messages: [message], completionHandler: nil)
         }
         super.deleteResendableMessage(message, needReload: needReload)
     }
     
     // MARK: - Message related
     public func markAsRead() {
-        if let channel = self.channel as? SBDGroupChannel {
+        if let channel = self.channel as? GroupChannel {
             channel.markAsRead(completionHandler: nil)
         }
     }
@@ -354,14 +362,14 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
     
     // MARK: - Typing
     public func startTypingMessage() {
-        guard let channel = self.channel as? SBDGroupChannel else { return }
+        guard let channel = self.channel as? GroupChannel else { return }
 
-        SBULog.info("[Request] End typing")
+        SBULog.info("[Request] Start typing")
         channel.startTyping()
     }
     
     public func endTypingMessage() {
-        guard let channel = self.channel as? SBDGroupChannel else { return }
+        guard let channel = self.channel as? GroupChannel else { return }
 
         SBULog.info("[Request] End typing")
         channel.endTyping()
@@ -377,13 +385,15 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
         self.debouncer?.add { [weak self] in
             guard let self = self else { return }
             
-            if let channel = self.channel as? SBDGroupChannel {
+            if let channel = self.channel as? GroupChannel {
                 if channel.isSuper {
-                    let query = channel.createMemberListQuery()
-                    query?.limit = UInt(SBUGlobals.userMentionConfig?.suggestionLimit ?? 0)
-                    query?.nicknameStartsWithFilter = filterText
+                    let params = MemberListQueryParams()
+                    params.nicknameStartsWithFilter = filterText
+                    // +1 is buffer for when the current user is included in the search results
+                    params.limit = UInt(SBUGlobals.userMentionConfig?.suggestionLimit ?? 0) + 1
+                    self.query = channel.createMemberListQuery(params: params)
                     
-                    query?.loadNextPage { [weak self] members, error in
+                    self.query?.loadNextPage { [weak self] members, error in
                         guard let self = self else { return }
                         self.suggestedMemberList = SBUUser.convertUsers(members)
                         self.delegate?.groupChannelViewModel(
@@ -392,18 +402,19 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
                         )
                     }
                 } else {
-                    guard let members = channel.members as? [SBDMember] else {
+                    guard channel.members.count > 0 else {
                         self.suggestedMemberList = nil
                         self.delegate?.groupChannelViewModel(self, didReceiveSuggestedMentions: nil)
                         return
                     }
                     
-                    let sortedMembers = members.sorted { $0.nickname?.lowercased() ?? "" < $1.nickname?.lowercased() ?? "" }
+                    let sortedMembers = channel.members.sorted { $0.nickname.lowercased() < $1.nickname.lowercased() }
                     let matchedMembers = sortedMembers.filter {
-                        return $0.nickname?.lowercased().hasPrefix(filterText.lowercased()) ?? false
+                        return $0.nickname.lowercased().hasPrefix(filterText.lowercased())
                     }
                     let memberCount = matchedMembers.count
-                    let limit = SBUGlobals.userMentionConfig?.suggestionLimit ?? 0
+                    // +1 is buffer for when the current user is included in the search results
+                    let limit = (SBUGlobals.userMentionConfig?.suggestionLimit ?? 0) + 1
                     let splitCount = min(memberCount, Int(limit))
                     
                     let resultMembers = Array(matchedMembers[0..<splitCount])
@@ -426,9 +437,8 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
     // MARK: - Common
     private func createCollectionIfNeeded(startingPoint: Int64) {
         // GroupChannel only
-        guard let channel = self.channel as? SBDGroupChannel else { return }
-        
-        self.messageCollection = SBDMessageCollection(
+        guard let channel = self.channel as? GroupChannel else { return }
+        self.messageCollection = SendbirdChat.createMessageCollection(
             channel: channel,
             startingPoint: startingPoint,
             params: self.messageListParams
@@ -444,7 +454,7 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
         return self.messageCollection?.hasPrevious ?? true
     }
     
-    override func getStartingPoint() -> Int64? {
+    public override func getStartingPoint() -> Int64? {
         return self.messageCollection?.startingPoint
     }
     
@@ -456,11 +466,11 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
 }
 
 
-extension SBUGroupChannelViewModel: SBDMessageCollectionDelegate {
-    open func messageCollection(_ collection: SBDMessageCollection,
-                                context: SBDMessageContext,
-                                channel: SBDGroupChannel,
-                                addedMessages messages: [SBDBaseMessage])
+extension SBUGroupChannelViewModel: MessageCollectionDelegate {
+    open func messageCollection(_ collection: MessageCollection,
+                                context: MessageContext,
+                                channel: GroupChannel,
+                                addedMessages messages: [BaseMessage])
     {
         // -> pending, -> receive new message
         SBULog.info("messageCollection addedMessages : \(messages.count)")
@@ -479,10 +489,10 @@ extension SBUGroupChannelViewModel: SBDMessageCollectionDelegate {
         self.upsertMessagesInList(messages: messages, needReload: true)
     }
     
-    open func messageCollection(_ collection: SBDMessageCollection,
-                           context: SBDMessageContext,
-                           channel: SBDGroupChannel,
-                           updatedMessages messages: [SBDBaseMessage])
+    open func messageCollection(_ collection: MessageCollection,
+                           context: MessageContext,
+                           channel: GroupChannel,
+                           updatedMessages messages: [BaseMessage])
     {
         // pending -> failed, pending -> succeded, failed -> Pending
         SBULog.info("messageCollection updatedMessages : \(messages.count)")
@@ -499,37 +509,37 @@ extension SBUGroupChannelViewModel: SBDMessageCollectionDelegate {
         )
     }
     
-    open func messageCollection(_ collection: SBDMessageCollection,
-                           context: SBDMessageContext,
-                           channel: SBDGroupChannel,
-                           deletedMessages messages: [SBDBaseMessage])
+    open func messageCollection(_ collection: MessageCollection,
+                           context: MessageContext,
+                           channel: GroupChannel,
+                           deletedMessages messages: [BaseMessage])
     {
         SBULog.info("messageCollection deletedMessages : \(messages.count)")
         self.deleteMessagesInList(messageIds: messages.compactMap({ $0.messageId }), needReload: true)
     }
     
-    open func messageCollection(_ collection: SBDMessageCollection,
-                           context: SBDMessageContext,
-                           updatedChannel channel: SBDGroupChannel)
+    open func messageCollection(_ collection: MessageCollection,
+                           context: MessageContext,
+                           updatedChannel channel: GroupChannel)
     {
         SBULog.info("messageCollection changedChannel")
         self.delegate?.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
     }
     
-    open func messageCollection(_ collection: SBDMessageCollection,
-                           context: SBDMessageContext,
-                           deletedChannel channelUrl: String)
+    open func messageCollection(_ collection: MessageCollection,
+                           context: MessageContext,
+                           deletedChannel channelURL: String)
     {
         SBULog.info("messageCollection deletedChannel")
         self.delegate?.baseChannelViewModel(self, didChangeChannel: nil, withContext: context)
     }
     
-    open func didDetectHugeGap(_ collection: SBDMessageCollection) {
+    open func didDetectHugeGap(_ collection: MessageCollection) {
         SBULog.info("messageCollection didDetectHugeGap")
         self.messageCollection?.dispose()
         
         var startingPoint: Int64?
-        let indexPathsForStartingPoint = self.dataSource?.groupChannelViewModel(self, startingPointIndexPathsForChannel: self.channel as? SBDGroupChannel)
+        let indexPathsForStartingPoint = self.dataSource?.groupChannelViewModel(self, startingPointIndexPathsForChannel: self.channel as? GroupChannel)
         let visibleRowCount = indexPathsForStartingPoint?.count ?? 0
         let visibleCenterIdx = indexPathsForStartingPoint?[visibleRowCount / 2].row ?? 0
         if visibleCenterIdx < self.fullMessageList.count {
@@ -545,7 +555,7 @@ extension SBUGroupChannelViewModel: SBDMessageCollectionDelegate {
 }
 
 
-// MARK: - SBDConnectionDelegate
+// MARK: - ConnectionDelegate
 extension SBUGroupChannelViewModel {
     open override func didSucceedReconnection() {
         super.didSucceedReconnection()
@@ -561,22 +571,20 @@ extension SBUGroupChannelViewModel {
 }
 
 
-// MARK: - SBDChannelDelegate
-extension SBUGroupChannelViewModel {
+// MARK: - GroupChannelDelegate
+extension SBUGroupChannelViewModel: GroupChannelDelegate {
     // Received message
-    open override func channel(_ sender: SBDBaseChannel, didReceive message: SBDBaseMessage) {
-        guard self.channel?.channelUrl == sender.channelUrl else { return }
-        guard self.messageListParams.belongs(to: message) else { return }
+    open override func channel(_ channel: BaseChannel, didReceive message: BaseMessage) {
+        guard self.channel?.channelURL == channel.channelURL else { return }
+        guard self.messageListParams.belongsTo(message) else { return }
 
-        super.channel(sender, didReceive: message)
+        super.channel(channel, didReceive: message)
         
         let isScrollBottom = self.dataSource?.baseChannelViewModel(self, isScrollNearBottomInChannel: self.channel)
         if (self.hasNext() == true || isScrollBottom == false) &&
-            (message is SBDUserMessage || message is SBDFileMessage)
+            (message is UserMessage || message is FileMessage)
         {
-            let context = SBDMessageContext()
-            context.source = .eventMessageReceived
-
+//            let context = MessageContext(source: .eventMessageReceived, sendingStatus: .succeeded)
             if let channel = self.channel {
                 self.delegate?.baseChannelViewModel(self, didReceiveNewMessage: message, forChannel: channel)
             }

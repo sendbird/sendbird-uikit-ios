@@ -7,7 +7,7 @@
 //
 
 import UserNotifications
-import SendBirdSDK
+import SendbirdChatSDK
 
 class NotificationService: UNNotificationServiceExtension {
 
@@ -21,7 +21,7 @@ class NotificationService: UNNotificationServiceExtension {
         if let bestAttemptContent = bestAttemptContent {
             // Modify the notification content here...
             bestAttemptContent.title = "\(bestAttemptContent.title) [modified]"
-            SBDMain.markAsDelivered(withRemoteNotificationPayload: bestAttemptContent.userInfo) { (error) in
+            SendbirdChat.markAsDelivered(remoteNotificationPayload: bestAttemptContent.userInfo) { (error) in
                 
             }
             contentHandler(bestAttemptContent)

@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 class ChannelCustomManager: BaseCustomManager {
     static var shared = ChannelCustomManager()
@@ -75,14 +75,14 @@ extension ChannelCustomManager {
     func messageListParamsCustom() {
         ChannelManager.getSampleChannel { channel in
             // You can customize the message list using your own MessageListParams.
-            // For all params options, refer to the `SBDMessageListParams` class.
-            let params = SBDMessageListParams()
+            // For all params options, refer to the `MessageListParams` class.
+            let params = MessageListParams()
             params.includeMetaArray = true
             params.includeReactions = true
             params.includeThreadInfo = true
             params.includeParentMessageInfo = SBUGlobals.replyType != .none
             params.replyType = SBUGlobals.replyType.filterValue
-            params.messageType = .user
+            params.messageTypeFilter = .user
             // ... You can set more query options
             
             // This part initialize the message list with your own MessageListParams.

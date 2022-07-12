@@ -6,16 +6,16 @@
 //  Copyright © 2021 Sendbird, Inc. All rights reserved.
 //
 
-import SendBirdSDK
+import SendbirdChatSDK
 
 
 public class SBUFileMessageCellParams: SBUBaseMessageCellParams {
-    public var fileMessage: SBDFileMessage? {
-        self.message as? SBDFileMessage
+    public var fileMessage: FileMessage? {
+        self.message as? FileMessage
     }
     public let useReaction: Bool
     
-    public init(message: SBDFileMessage, hideDateView: Bool, useMessagePosition: Bool, groupPosition: MessageGroupPosition = .none, receiptState: SBUMessageReceiptState = .none, useReaction: Bool = false) {
+    public init(message: FileMessage, hideDateView: Bool, useMessagePosition: Bool, groupPosition: MessageGroupPosition = .none, receiptState: SBUMessageReceiptState = .none, useReaction: Bool = false) {
         self.useReaction = useReaction
         
         var messagePosition: MessagePosition = .left

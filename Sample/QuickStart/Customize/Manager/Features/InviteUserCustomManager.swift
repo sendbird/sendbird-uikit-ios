@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 class InviteUserCustomManager: BaseCustomManager {
     static var shared = InviteUserCustomManager()
@@ -59,9 +59,10 @@ extension InviteUserCustomManager {
     }
     
     func userListCustom() {
-        let userListQuery = SBDMain.createApplicationUserListQuery()
-        userListQuery?.limit = 20
-        userListQuery?.loadNextPage(completionHandler: { users, error in
+        let params = ApplicationUserListQueryParams()
+        params.limit = 20
+        let userListQuery = SendbirdChat.createApplicationUserListQuery(params: params)
+        userListQuery.loadNextPage { users, error in
             guard error == nil else { return }
             
             // This is a user list object used for testing.
@@ -77,6 +78,6 @@ extension InviteUserCustomManager {
                     self.navigationController?.pushViewController(inviteUserVC, animated: true)
                 }
             }
-        })
+        }
     }
 }

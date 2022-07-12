@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 
 /// It is a base class used in message cell with contents.
@@ -171,7 +171,7 @@ open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
     
     
     // MARK: - Common
-    open func configure(_ message: SBDBaseMessage,
+    open func configure(_ message: BaseMessage,
                           hideDateView: Bool,
                           groupPosition: MessageGroupPosition,
                           isOverlay: Bool = false) {
@@ -210,7 +210,7 @@ open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
         self.messageTimeLabel.textAlignment = .left
         
         if let profileView = self.profileView as? SBUMessageProfileView {
-            let urlString = message.sender?.profileUrl ?? ""
+            let urlString = message.sender?.profileURL ?? ""
             profileView.configure(urlString: urlString)
         }
         
@@ -221,6 +221,12 @@ open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
     
     open func configureStateImage() {
         stateImageView.layer.removeAnimation(forKey: SBUAnimation.Key.spin.identifier)
+        
+        guard let message = self.message else {
+            SBULog.error("Failed state image configuration")
+            return
+        }
+        
         let stateImage: UIImage?
         
         switch message.sendingStatus {
@@ -243,6 +249,8 @@ open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
                     with: theme.failedStateColor,
                     to: SBUIconSetType.Metric.defaultIconSizeSmall
                 )
+            case .scheduled:
+                stateImage = nil
             @unknown default:
                 stateImage = nil
         }

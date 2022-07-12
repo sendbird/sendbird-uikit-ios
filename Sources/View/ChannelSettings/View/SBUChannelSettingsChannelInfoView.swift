@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 // TODO: Need improvement
 public class SBUChannelSettingsChannelInfoView: SBUView {
@@ -22,7 +22,7 @@ public class SBUChannelSettingsChannelInfoView: SBUView {
     @SBUThemeWrapper(theme: SBUTheme.channelSettingsTheme)
     var theme: SBUChannelSettingsTheme
     
-    var channel: SBDBaseChannel?
+    var channel: BaseChannel?
     
     let kCoverImageSize: CGFloat = 64.0
     
@@ -140,7 +140,7 @@ public class SBUChannelSettingsChannelInfoView: SBUView {
         self.coverImage.layer.borderWidth = 1
     }
     
-    open func configure(channel: SBDBaseChannel?) {
+    open func configure(channel: BaseChannel?) {
         self.channel = channel
         
         guard let channel = self.channel else {
@@ -150,20 +150,20 @@ public class SBUChannelSettingsChannelInfoView: SBUView {
         
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
-            if channel is SBDOpenChannel {
-                if let coverUrl = channel.coverUrl {
-                    self.coverImage.setImage(withCoverUrl: coverUrl)
+            if channel is OpenChannel {
+                if let coverURL = channel.coverURL {
+                    self.coverImage.setImage(withCoverURL: coverURL)
                 } else {
                     self.coverImage.setPlaceholderImage(iconSize: CGSize(width: 46, height: 46))
                 }
-            } else if let channel = channel as? SBDGroupChannel {
-                if let coverUrl = channel.coverUrl,
-                   SBUUtils.isValid(coverUrl: coverUrl) {
-                    self.coverImage.setImage(withCoverUrl: coverUrl)
+            } else if let channel = channel as? GroupChannel {
+                if let coverURL = channel.coverURL,
+                   SBUUtils.isValid(coverURL: coverURL) {
+                    self.coverImage.setImage(withCoverURL: coverURL)
                 } else if channel.isBroadcast == true {
                     self.coverImage.setBroadcastIcon()
-                } else if let members = channel.members as? [SBDUser] {
-                    self.coverImage.setImage(withUsers: members)
+                } else if channel.members.count > 0 {
+                    self.coverImage.setImage(withUsers: channel.members)
                 } else {
                     self.coverImage.setPlaceholderImage(iconSize: CGSize(width: 46, height: 46))
                 }
@@ -173,7 +173,7 @@ public class SBUChannelSettingsChannelInfoView: SBUView {
         if SBUUtils.isValid(channelName: channel.name) {
             self.channelNameField.text = channel.name
         } else {
-            if let channel = channel as? SBDGroupChannel {
+            if let channel = channel as? GroupChannel {
                 self.channelNameField.text = SBUUtils.generateChannelName(channel: channel)
             } else {
                 self.channelNameField.text = SBUStringSet.Open_Channel_Name_Default
@@ -181,9 +181,9 @@ public class SBUChannelSettingsChannelInfoView: SBUView {
         }
         
         self.urlTitleLabel.text = SBUStringSet.ChannelSettings_URL
-        self.urlLabel.text = channel.channelUrl + "\n"
+        self.urlLabel.text = channel.channelURL + "\n"
         
-        let isOpenChannel =  self.channel is SBDOpenChannel
+        let isOpenChannel =  self.channel is OpenChannel
         self.urlTitleLabel.isHidden = !isOpenChannel
         self.urlLabel.isHidden = !isOpenChannel
         self.urlLineView.isHidden = !isOpenChannel

@@ -2,12 +2,12 @@
   "object": {
     "pins": [
       {
-        "package": "SendBirdSDK",
-        "repositoryURL": "https://github.com/sendbird/sendbird-chat-ios-spm",
+        "package": "SendbirdChatSDK",
+        "repositoryURL": "https://github.com/sendbird/sendbird-chat-sdk-ios",
         "state": {
           "branch": null,
-          "revision": "dddd2f1e5475067e8c7d9e8555339ef40d03e683",
-          "version": "3.1.13"
+          "revision": "9025d6dc5668df19f3316431d92eed7faaddd1bb",
+          "version": "4.0.5"
         }
       }
     ]

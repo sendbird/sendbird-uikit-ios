@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 open class SBUGroupChannelPushSettingsViewController: SBUBaseViewController, SBUGroupChannelPushSettingsViewModelDelegate, SBUGroupChannelPushSettingsModuleHeaderDelegate, SBUGroupChannelPushSettingsModuleListDelegate, SBUGroupChannelPushSettingsModuleListDataSource {
     
@@ -25,26 +25,26 @@ open class SBUGroupChannelPushSettingsViewController: SBUBaseViewController, SBU
     // MARK: - Logic properties (Public)
     public var viewModel: SBUGroupChannelPushSettingsViewModel?
     
-    public var channel: SBDBaseChannel? { viewModel?.channel }
-    public var channelUrl: String? { viewModel?.channelUrl }
+    public var channel: BaseChannel? { viewModel?.channel }
+    public var channelURL: String? { viewModel?.channelURL }
     
     
     // MARK: - Lifecycle
-    @available(*, unavailable, renamed: "SBUGroupChannelPushSettingsViewController(channelUrl:type:)")
+    @available(*, unavailable, renamed: "SBUGroupChannelPushSettingsViewController(channelURL:type:)")
     required public init?(coder: NSCoder) {
         super.init(coder: coder)
         SBULog.info("")
         fatalError()
     }
     
-    @available(*, unavailable, renamed: "SBUGroupChannelPushSettingsViewController.init(channelUrl:)")
+    @available(*, unavailable, renamed: "SBUGroupChannelPushSettingsViewController.init(channelURL:)")
     public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         SBULog.info("")
         fatalError()
     }
     
-    required public init(channel: SBDBaseChannel) {
+    required public init(channel: BaseChannel) {
         super.init(nibName: nil, bundle: nil)
         SBULog.info("")
         
@@ -54,11 +54,11 @@ open class SBUGroupChannelPushSettingsViewController: SBUBaseViewController, SBU
         self.listComponent = SBUModuleSet.groupChannelPushSettingsModule.listComponent
     }
     
-    required public init(channelUrl: String) {
+    required public init(channelURL: String) {
         super.init(nibName: nil, bundle: nil)
         SBULog.info("")
         
-        self.createViewModel(channelUrl: channelUrl)
+        self.createViewModel(channelURL: channelURL)
         
         self.headerComponent = SBUModuleSet.groupChannelPushSettingsModule.headerComponent
         self.listComponent = SBUModuleSet.groupChannelPushSettingsModule.listComponent
@@ -86,12 +86,12 @@ open class SBUGroupChannelPushSettingsViewController: SBUBaseViewController, SBU
     
     // MARK: - ViewModel
     open func createViewModel(
-        channel: SBDBaseChannel? = nil,
-        channelUrl: String? = nil
+        channel: BaseChannel? = nil,
+        channelURL: String? = nil
     ) {
         self.viewModel = .init(
             channel: channel,
-            channelUrl: channelUrl,
+            channelURL: channelURL,
             delegate: self
         )
     }
@@ -151,11 +151,11 @@ open class SBUGroupChannelPushSettingsViewController: SBUBaseViewController, SBU
     
     
     // MARK: - ViewModel Delegate
-    open func groupChannelPushSettingsViewModel(_ viewModel: SBUGroupChannelPushSettingsViewModel, didChangeNotification pushTriggerOption: SBDGroupChannelPushTriggerOption) {
+    open func groupChannelPushSettingsViewModel(_ viewModel: SBUGroupChannelPushSettingsViewModel, didChangeNotification pushTriggerOption: GroupChannelPushTriggerOption) {
         self.listComponent?.reloadTableView()
     }
     
-    open func baseChannelSettingsViewModel(_ viewModel: SBUBaseChannelSettingsViewModel, didChangeChannel channel: SBDBaseChannel?, withContext context: SBDMessageContext) {
+    open func baseChannelSettingsViewModel(_ viewModel: SBUBaseChannelSettingsViewModel, didChangeChannel channel: BaseChannel?, withContext context: MessageContext) {
     }
     
     // MARK: - SBUGroupChannelPushSettingsModuleHeaderDelegate
@@ -182,7 +182,7 @@ open class SBUGroupChannelPushSettingsViewController: SBUBaseViewController, SBU
     // MARK: - SBUGroupChannelPushSettingsModuleListDelegate
     open func groupChannelPushSettingsModule(
         _ listComponent: SBUGroupChannelPushSettingsModule.List,
-        didChangeNotification pushTriggerOption: SBDGroupChannelPushTriggerOption
+        didChangeNotification pushTriggerOption: GroupChannelPushTriggerOption
     ) {
         self.viewModel?.changeNotification(pushTriggerOption)
     }
@@ -191,7 +191,7 @@ open class SBUGroupChannelPushSettingsViewController: SBUBaseViewController, SBU
     open func groupChannelPushSettingsModule(
         _ listComponent: SBUGroupChannelPushSettingsModule.List,
         pushTriggerOptionForTableView tableView: UITableView
-    ) -> SBDGroupChannelPushTriggerOption? {
+    ) -> GroupChannelPushTriggerOption? {
         return self.viewModel?.currentTriggerOption
     }
     
@@ -200,7 +200,7 @@ open class SBUGroupChannelPushSettingsViewController: SBUBaseViewController, SBU
         self.showLoading(isLoading)
     }
     
-    open func didReceiveError(_ error: SBDError?, isBlocker: Bool) {
+    open func didReceiveError(_ error: SBError?, isBlocker: Bool) {
         self.showLoading(false)
         self.errorHandler(error?.description ?? "")
     }

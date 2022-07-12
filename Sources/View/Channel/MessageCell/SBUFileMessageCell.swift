@@ -7,15 +7,15 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 
 @IBDesignable
 open class SBUFileMessageCell: SBUContentBaseMessageCell {
     
     // MARK: - Public property
-    public var fileMessage: SBDFileMessage? {
-        return self.message as? SBDFileMessage
+    public var fileMessage: FileMessage? {
+        return self.message as? FileMessage
     }
     
     public lazy var baseFileContentView: SBUBaseFileContentView = {
@@ -37,6 +37,13 @@ open class SBUFileMessageCell: SBUContentBaseMessageCell {
             self.baseFileContentView,
             self.reactionView
         ])
+    }
+    
+    open override func setupLayouts() {
+        super.setupLayouts()
+        
+        self.mainContainerView
+            .sbu_constraint_lessThan(width: SBUConstant.thumbnailSize.width)
     }
     
     open override func setupStyles() {
@@ -92,8 +99,9 @@ open class SBUFileMessageCell: SBUContentBaseMessageCell {
     
     open override func configure(highlightInfo: SBUHighlightMessageInfo?) {
         // Only apply highlight for the given message, that's not edited (updatedAt didn't change)
-        guard self.message.messageId == highlightInfo?.messageId,
-              self.message.updatedAt == highlightInfo?.updatedAt else { return }
+        guard let message = self.message,
+              message.messageId == highlightInfo?.messageId,
+              message.updatedAt == highlightInfo?.updatedAt else { return }
         
         guard let commonContentView = self.baseFileContentView as? SBUCommonContentView,
               let fileMessage = self.fileMessage else { return }
@@ -113,7 +121,7 @@ open class SBUFileMessageCell: SBUContentBaseMessageCell {
     }
     
     @available(*, deprecated, renamed: "configure(with:)") // 2.2.0
-    open func configure(_ message: SBDFileMessage,
+    open func configure(_ message: FileMessage,
                         hideDateView: Bool,
                         groupPosition: MessageGroupPosition,
                         receiptState: SBUMessageReceiptState?,

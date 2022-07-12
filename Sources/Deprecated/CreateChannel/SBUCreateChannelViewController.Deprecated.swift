@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 extension SBUCreateChannelViewController {
     // MARK: - 3.0.0
@@ -42,7 +42,7 @@ extension SBUCreateChannelViewController {
     }
     
     @available(*, deprecated, message: "This property has been moved to the `SBUCreateChannelViewModel`.", renamed: "viewModel.userListQuery")
-    public var userListQuery: SBDApplicationUserListQuery? { viewModel?.userListQuery }
+    public var userListQuery: ApplicationUserListQuery? { viewModel?.userListQuery }
 
     @available(*, deprecated, message: "This function has been moved to the SBUCreateChannelModule.List.", renamed: "listComponent.reloadTableView()")
     public func reloadData() {
@@ -65,8 +65,8 @@ extension SBUCreateChannelViewController {
     }
 
     @available(*, deprecated, message: "This function has been moved to the `SBUCreateChannelViewModel`.", renamed: "viewModel.createChannel(params:messageListParams:)")
-    public func createChannel(params: SBDGroupChannelParams,
-                              messageListParams: SBDMessageListParams? = nil) {
+    public func createChannel(params: GroupChannelCreateParams,
+                              messageListParams: MessageListParams? = nil) {
         viewModel?.createChannel(params: params, messageListParams: messageListParams)
     }
     

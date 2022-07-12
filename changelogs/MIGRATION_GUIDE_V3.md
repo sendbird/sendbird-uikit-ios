@@ -1,8 +1,10 @@
 # Migration guide
 
-UIKit for iOS has newly released v3 beta. The biggest change from v2 to v3 is modularization, which allows you to build and customize views at a component level. You can execute [key functions](https://sendbird.com/docs/uikit/v3/ios/key-functions/overview) of UIKit using a view controller, which is composed of a module and a view model. In each key function, the module is used to create and display everything UI-related while the view model is in charge of managing data from Chat SDK to apply to each view. This new architecture allows for easier and more detailed customization.
+> __Note__: UIKit v3 has dependency on chat v4. Before customizing or migrating UIKit v2 to v3, refer to the [migration guide of Chat SDK v4 for iOS](https://sendbird.com/docs/chat/v4/ios/getting-started/migration-guide) for any breaking changes. The Chat SDK must be updated first before proceeding with the latest version of UIKit.
 
-When migration from v2 to v3, there are several breaking changes you need to be aware of. Since modules and view models are one of the main parts of the new architecture, you need to make changes to the existing codes in your client app. Refer to the breaking changes below in each key function.
+UIKit v3 for iOS is now available. The biggest change from v2 to v3 is modularization, which allows you to build and customize views at a component level. You can execute [key functions](https://sendbird.com/docs/uikit/v3/ios/key-functions/overview) of UIKit using a view controller, which is composed of a module and a view model. In each key function, the module is used to create and display everything UI-related while the view model is in charge of managing data from Chat SDK to apply to each view. This new architecture allows for easier and more detailed customization.
+
+When migrating from v2 to v3, there are several breaking changes you need to remember. Since modules and view models are one of the main parts of the new architecture, you need to make changes to the existing codes in your client app. Refer to the [breaking changes](https://sendbird.com/docs/uikit/v3/ios/introduction/migration-guide#2-breaking-changes) below in each key function.
 
 ---
 
@@ -24,12 +26,12 @@ All components use a delegate to send events that occur in the view to the view 
 |[Chat in a group channel](https://sendbird.com/docs/uikit/v3/ios/key-functions/chatting-in-a-channel/chat-in-group-channel)|SBUGroupChannelModule|Header, List, Input|SBUGroupChannelViewController|
 |[Chat in an open channel](https://sendbird.com/docs/uikit/v3/ios/key-functions/chatting-in-a-channel/chat-in-open-channel)|SBUOpenChannelModule|Header, List, Input, Media|SBUOpenChannelViewController|
 |[Create a group channel](https://sendbird.com/docs/uikit/v3/ios/key-functions/creating-a-channel/create-group-channel)|SBUCreateChannelModule|Header, List|SBUCreateChannelViewController|
-|[Invite users](https://sendbird.com/docs/uikit/v3/ios/key-functions/invite-users-or-promote-to-operator)|SBUInviteUserModule|Header, List|SBUInviteUserViewController|
-|[Promote members to operator](https://sendbird.com/docs/uikit/v3/ios/key-functions/invite-users-or-promote-to-operator)|SBUPromoteMemberModule|Header, List|SBUPromoteMemberViewController|
-|[List channel members or participants](https://sendbird.com/docs/uikit/v3/ios/key-functions/list-channel-members-or-participants)|SBUMemberListModule|Header, List|SBUMemberListViewController|
+|[Invite users](https://sendbird.com/docs/uikit/v3/ios/key-functions/invite-users-or-register-as-operator)|SBUInviteUserModule|Header, List|SBUInviteUserViewController|
+|[Register users to operator](https://sendbird.com/docs/uikit/v3/ios/key-functions/invite-users-or-register-as-operator)|SBURegisterOperatorModule|Header, List|SBURegisterOperatorViewController|
+|[List channel members or participants](https://sendbird.com/docs/uikit/v3/ios/key-functions/list-channel-members-or-participants)|SBUUserListModule|Header, List|SBUUserListViewController|
 |[Configure group channel settings](https://sendbird.com/docs/uikit/v3/ios/key-functions/configuring-channel-settings/configure-group-channel-settings)|SBUGroupChannelSettingsModule|Header, List|SBUGroupChannelSettingsViewController|
 |[Configure open channel settings](https://sendbird.com/docs/uikit/v3/ios/key-functions/configuring-channel-settings/configure-open-channel-settings)|SBUOpenChannelSettingsModule|Header, List|SBUOpenChannelSettingsViewController|
-|[Moderate channels and members](https://sendbird.com/docs/uikit/v3/ios/key-functions/moderate-channels-and-members)|SBUModerationsModule|Header, List|SBUModerationsViewController|
+|[Moderate channels and members](https://sendbird.com/docs/uikit/v3/ios/key-functions/moderate-channels-and-users)|SBUModerationsModule|Header, List|SBUModerationsViewController|
 |[Search messages](https://sendbird.com/docs/uikit/v3/ios/key-functions/search-messages)|SBUMessageSearchModule|Header, List|SBUMessageSearchViewController|
 
 </div>
@@ -53,11 +55,11 @@ Refer to the table below to learn about the relationship between key function, v
 |Chat in an open channel|SBUOpenChannelViewModel|SBUOpenChannelViewController|
 |Create a group channel|SBUCreateChannelViewModel|SBUCreateChannelViewController|
 |Invite users|SBUInviteUserViewModel|SBUInviteUserViewController|
-|Promote members to operator|SBUPromoteMemberViewModel|SBUPromoteMemberViewController|
-|List channel members or participants|SBUMemberListViewModel|SBUMemberListViewController|
+|Register users as operator|SBURegisterOperatorViewModel|SBURegisterOperatorViewController|
+|List channel members or participants|SBUUserListViewModel|SBUUserListViewController|
 |Configure group channel settings|SBUGroupChannelSettingsViewModel|SBUGroupChannelSettingsViewController|
 |Configure open channel settings|SBUOpenChannelSettingsViewModel|SBUOpenChannelSettingsViewController|
-|Moderate channels and members|SBUModerationsViewModel|SBUModerationsViewController|
+|Moderate channels and users|SBUModerationsViewModel|SBUModerationsViewController|
 |Search messages|SBUMessageSearchViewModel|SBUMessageSearchViewController|
 
 </div>
@@ -137,9 +139,9 @@ See the breaking changes below in each key function.
 
 > __Note__ : You'll be notified of changes in the code through warning and error messages in the build phase of Xcode.
 
-### All key functions
+### SendbirdUIKit Initialization
 
-The following tables show what changes were made from v2 to v3.
+Because no job is proceed during initialization of the Sendbird UIKit, we recommend showing something like a loading indicator in `startHandler` and hide it when `completionHandler` is called to indicate that other jobs should wait. Please refer to `initialize(applicationId:startHandler:migrationHandler:completionHandler:)` in `SendbirdUI`.
 
 #### Changed UIKit SDK name
 
@@ -160,6 +162,20 @@ The following tables show what changes were made from v2 to v3.
 |SBUMain|SendbirdUI|
 
 </div>
+
+#### Changed function name
+
+<div component="AdvancedTable" type="2B">
+
+|v2|v3|
+|---|---|
+|initialize(applicationId:migrationStartHandler:completionHandler:)|initialize(applicationId:startHandler:migrationHandler:completionHandler:)|
+
+</div>
+
+### All key functions
+
+The following tables show what changes were made from v2 to v3.
 
 #### Changed method and event delegate names in all view controllers
 
@@ -191,6 +207,79 @@ The following tables show what changes were made from v2 to v3.
 |UsingImageCompression|isImageCompressionEnabled|
 
 </div>
+
+
+### Enumerate
+
+#### Changed enumerate name in SBUEnums
+
+<div component="AdvancedTable" type="2B">
+
+|v2|v3|
+|---|---|
+|ChannelMemberListType|ChannelUserListType|
+
+</div>
+
+#### Changed enumerate case names in SBUEnums
+
+<div component="AdvancedTable" type="3B">
+
+|v2|v3|Enum|
+|---|---|---|
+|channelMembers|members|ChannelUserListType|
+|mutedMembers|muted|ChannelUserListType|
+|bannedMembers|banned|ChannelUserListType|
+|bannedMembers|bannedUsers|ModerationItemType|
+|channelMembers|members|UserListType|
+|inviteUser|invite|UserListType|
+|mutedMembers|muted|UserListType|
+|bannedMembers|banned|UserListType|
+|noBannedMembers|noBannedUsers|EmptyViewType|
+
+</div>
+
+### Strings
+
+The following tables show what changes were made in `SBUStringSet` from v2 to v3.
+
+#### Added new StringSet
+
+The following objects have been added to `SBUStringSet` in v3:
+
+* `UserList_Title_Muted_Participants`
+* `Empty_No_Muted_Participants`
+
+#### Changed StringSet names
+
+<div component="AdvancedTable" type="2B">
+
+|v2|v3|
+|---|---|
+|ChannelSettings_Banned_Members|ChannelSettings_Banned_Users|
+|Empty_No_Banned_Members|Empty_No_Banned_Users|
+|InviteChannel_Header_Select_Members|InviteChannel_Header_Select_Users|
+|MemberList_Me|UserList_Me|
+|MemberList_Ban|UserList_Ban|
+|MemberList_Unban|UserList_Unban|
+|MemberList_Mute|UserList_Mute|
+|MemberList_Unmute|UserList_Unmute|
+|MemberList_Dismiss_Operator|UserList_Unregister_Operator|
+|MemberList_Promote_Operator|UserList_Register_Operator|
+|MemberList_Title_Members|UserList_Title_Members|
+|MemberList_Title_Operators|UserList_Title_Operators|
+|MemberList_Title_Muted_Members|UserList_Title_Muted_Members|
+|MemberList_Title_Banned_Members|UserList_Title_Banned_Users|
+|MemberList_Title_Participants|UserList_Title_Participants|
+|UserProfile_Promote|UserProfile_Register|
+|UserProfile_Dismiss|UserProfile_Unregister|
+
+</div>
+
+#### Removed StringSet
+
+* `MemberList_Header_Title`
+
 
 ### List channels
 
@@ -255,7 +344,7 @@ To learn more, go to the [Usage](https://sendbird.com/docs/uikit/v3/ios/key-func
 
 #### Deprecated properties
 
-Due to the addition of [local caching](/docs/chat/v3/ios/guides/local-caching), the following properties have been deprecated in v3:
+Due to the addition of [local caching](https://sendbird.com/docs/chat/v4/ios/guides/local-caching), the following properties have been deprecated in v3:
 
 * `isLoading`
 * `lastUpdatedTimestamp`
@@ -308,7 +397,7 @@ The following methods have been moved to the view model in v3:
 
 #### Deprecated methods
 
-Due to the addition of [local caching](/docs/chat/v3/ios/guides/local-caching), the following methods have been deprecated in v3:
+Due to the addition of [local caching](https://sendbird.com/docs/chat/v4/ios/guides/local-caching), the following methods have been deprecated in v3:
 
 * `channel(_:userDidJoin user:)`
 * `channel(_:userDidLeave user:)`
@@ -767,27 +856,27 @@ The following methods have been moved to the view model in v3:
 
 </div>
 
-### Invite users or promote members to operator
+### Invite users or register users as operator
 
-In v3, the `SBUInviteUserViewController` class has separated into `SBUInviteUserViewController` and `SBUPromoteMemberViewController` and `SBUBaseSelectUserViewController` was added to include shared properties and methods between the two features. The following tables show what changes were made in `SBUInviteUserViewController` from v2 to v3.
+In v3, the `SBUInviteUserViewController` class has separated into `SBUInviteUserViewController` and `SBURegisterOperatorViewController` and `SBUBaseSelectUserViewController` was added to include shared properties and methods between the two features. The following tables show what changes were made in `SBUInviteUserViewController` from v2 to v3.
 
 #### Added new components and view model
 
-The following objects have been added to `SBUInviteUserViewController` and `SBUPromoteMemberViewController` in v3:
+The following objects have been added to `SBUInviteUserViewController` and `SBURegisterOperatorViewController` in v3:
 
 * `headerComponent`
 * `listComponent`
 * `viewModel`
 
-To learn more, go to the [Usage](https://sendbird.com/docs/uikit/v3/ios/key-functions/invite-users-or-promote-to-operator#2-usage) section of the view controller page.
+To learn more, go to the [Usage](https://sendbird.com/docs/uikit/v3/ios/key-functions/invite-users-or-register-as--operator#2-usage) section of the view controller page.
 
 #### Divided SBUInviteUserViewController class
 
 <div component="AdvancedTable" type="2B">
 
-|Invite users|Promote users|
+|Invite users|Register as operator|
 |---|---|
-|SBUInviteUserViewController|SBUPromoteMemberViewController|
+|SBUInviteUserViewController|SBURegisterOperatorViewController|
 
 </div>
 
@@ -860,9 +949,18 @@ The following methods have been moved to the view model in v3:
 * `loadChannel(channelUrl:)`
 * `loadNextUserList(reset:users:)`
 * `inviteUsers(userIds:)`
-* `promoteToOperators(memberIds:)`
 * `resetUserList()`
 * `selectUser(user:)`
+
+#### Moved method to component and changed name
+
+<div component="AdvancedTable" type="3B">
+
+|v2|v3|Component|
+|---|---|---|
+|`promoteToOperators(memberIds:)`|`registerAsOperators(userIds:)`|`SBURegisterOperatorViewModel`|
+
+</div>
 
 #### Changed method names
 
@@ -871,8 +969,8 @@ The following methods have been moved to the view model in v3:
 |v2|v3|Class|
 |---|---|---|
 |inviteUsers()|inviteSelectedUsers()|SBUInviteUserViewController|
-|promoteToOperators()|promoteSelectedMembers()|SBUPromoteMemberViewController|
-|onClickInviteOrPromote()|inviteSelectedUsers()<br /><br />promoteSelectedMembers()|SBUInviteUserViewController<br /><br />SBUPromoteMemberViewController|
+|promoteToOperators()|registerSelectedUsers()|SBURegisterOperatorViewController|
+|onClickInviteOrPromote()|inviteSelectedUsers()<br /><br />registerSelectedUsers()|SBUInviteUserViewController<br /><br />SBURegisterOperatorViewController|
 
 </div>
 
@@ -880,9 +978,19 @@ The following methods have been moved to the view model in v3:
 
 The following tables show what changes were made in `SBUMemberListViewController` from v2 to v3.
 
+#### Changed view controller name
+
+<div component="AdvancedTable" type="2B">
+
+|v2|v3|
+|---|---|
+|SBUMemberListViewController|SBUUserListViewController|
+
+</div>
+
 #### Added new components and view model
 
-The following objects have been added to `SBUMemberListViewController` in v3:
+The following objects have been added to `SBUUserListViewController` in v3:
 
 * `headerComponent`
 * `listComponent`
@@ -892,16 +1000,16 @@ To learn more, go to the [Usage](https://sendbird.com/docs/uikit/v3/ios/key-func
 
 #### Changed initializers
 
-The `type` parameter name has been changed to `memberListType`.
+The `type` parameter name has been changed to `userListType`.
 
 <div component="AdvancedTable" type="2B">
 
 |v2|v3|
 |---|---|
-|init(channel:type:)|init(channel:memberListType:)|
-|init(channel:members:type:)|init(channel:members:memberListType:)|
-|init(channelUrl:type:)|init(channelUrl:channelType:memberListType:)|
-|init(channelUrl:members:type:)|init(channelUrl:channelType:members:memberListType:)|
+|init(channel:type:)|init(channel:userListType:)|
+|init(channel:members:type:)|init(channel:users:userListType:)|
+|init(channelUrl:type:)|init(channelUrl:channelType:userListType:)|
+|init(channelUrl:members:type:)|init(channelUrl:channelType:users:userListType:)|
 
 </div>
 
@@ -929,7 +1037,7 @@ The `type` parameter name has been changed to `memberListType`.
 |memberListQuery|viewModel.memberListQuery|
 |operatorListQuery|viewModel.operatorListQuery|
 |mutedMemberListQuery|viewModel.mutedMemberListQuery|
-|bannedMemberListQuery|viewModel.bannedMemberListQuery|
+|bannedMemberListQuery|viewModel.bannedUserListQuery|
 |participantListQuery|viewModel.participantListQuery|
 
 </div>
@@ -951,9 +1059,10 @@ The `type` parameter name has been changed to `memberListType`.
 
 |v2|v3|Component|
 |---|---|---|
-|reloadData()|listComponent.reloadTableView()|List|
+|reloadData()|reloadTableView()|List|
 |setMoreMenuActionHandler(_:)|setMoreMenuTapAction(_:)|List|
 |setUserProfileTapGestureHandler(_:)|setUserProfileTapAction(_:)|List|
+|register(userCell:nib:)|register(userCell:nib:)|List|
 
 </div>
 
@@ -961,14 +1070,6 @@ The `type` parameter name has been changed to `memberListType`.
 
 The following methods have been moved to the view model in v3:
 
-* `loadNextMemberList(reset:members:)`
-* `promoteToOperator(member:)`
-* `dismissOperator(member:)`
-* `mute(member:)`
-* `unmute(member:)`
-* `ban(member:)`
-* `unban(member:)`
-* `resetMemberList()`
 * `channelDidUpdateOperators(_:)`
 * `channel(_:userDidJoin:)`
 * `channel(_:userDidLeave:)`
@@ -982,18 +1083,24 @@ The following methods have been moved to the view model in v3:
 |v2|v3|
 |---|---|
 |loadChannel(channelUrl:)|loadChannel(channelUrl:type:)|
-|loadMembers()|loadNextMemberList(reset:)|
-|reloadMemberList()|resetMemberList()|
+|loadNextMemberList(reset:members:)|loadNextUserList(reset:users:)|
+|loadMembers()|loadUsers()|
+|preLoadNextMemberList(indexPath:)|preLoadNextUserList(indexPath)|
+|promoteToOperator(member:)|registerAsOperator(user:)|
+|dismissOperator(member:)|unregisterOperator(user:)|
+|mute(member:)|mute(user:)|
+|unmute(member:)|unmute(user:)|
+|ban(member:)|ban(user:)|
+|unban(member:)|unban(user:)|
+|resetMemberList(), reloadMemberList()|resetUserList()|
 
 </div>
 
-#### Moved method to view model's data source
-
-<div component="AdvancedTable" type="2B">
+#### Moved methods to view model's data source and change names
 
 |v2|v3|
 |---|---|
-|nextMemberList()|memberListViewModel(_:nextMemberListForChannel:)|
+|nextMemberList()|userListViewModel(_:nextUserListForChannel:)|
 
 </div>
 
@@ -1142,7 +1249,7 @@ The following methods have been moved to the view model in v3:
 * `updateChannel(params:)`
 * `deleteChannel()`
 
-### Moderate channels and members
+### Moderate channels and users
 
 The following tables show what changes were made in `SBUModerationsViewController` from v2 to v3.
 
@@ -1154,7 +1261,7 @@ The following objects have been added to `SBUModerationsViewController` in v3:
 * `listComponent`
 * `viewModel`
 
-To learn more, go to the [Usage](https://sendbird.com/docs/uikit/v3/ios/key-functions/moderate-channels-and-members#2-usage) section of the view controller page.
+To learn more, go to the [Usage](https://sendbird.com/docs/uikit/v3/ios/key-functions/moderate-channels-and-users#2-usage) section of the view controller page.
 
 #### Moved view properties to component
 
@@ -1183,6 +1290,16 @@ The following method has been moved to the view model in v3:
 |---|---|
 |freezeChannel(completionHandler:)|freezeChannel(_:)|
 |unfreezeChannel(completionHandler:)|unfreezeChannel(_:)|
+
+</div>
+
+#### Changed method names
+
+<div component="AdvancedTable" type="2B">
+
+|v2|v3|
+|---|---|
+|showBannedMeberList()|showBannedUserList()|
 
 </div>
 

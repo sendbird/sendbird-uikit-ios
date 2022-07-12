@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 
 public extension Array where Element: SBUUser {
@@ -26,8 +26,8 @@ public extension Array where Element: SBUUser {
     }
 }
 
-public extension Array where Element: SBDUser {
-    /// This is a function that extracts the `SBUUser` array using the `SBDUser` type array.
+public extension Array where Element: User {
+    /// This is a function that extracts the `SBUUser` array using the `User` type array.
     /// - Returns: `SBUUser`  type array
     func sbu_convertUserList() -> [SBUUser] {
         let userList = self.map { SBUUser(user: $0) }
@@ -35,8 +35,8 @@ public extension Array where Element: SBDUser {
     }
 }
 
-public extension Array where Element: SBDMember {
-    /// This is a function that extracts the `SBUUser` array using the `SBDMember` type array.
+public extension Array where Element: Member {
+    /// This is a function that extracts the `SBUUser` array using the `Member` type array.
     /// - Returns: `SBUUser`  type array
     func sbu_convertUserList() -> [SBUUser] {
         let userList = self.map { SBUUser(member: $0) }
@@ -62,11 +62,11 @@ public extension NSArray {
         return users.sbu_getUserNicknames()
     }
     
-    /// This is a function that extracts the `SBUUser` array using the `SBDUser` type array.
+    /// This is a function that extracts the `SBUUser` array using the `User` type array.
     /// This is a function used in Objective-C.
     /// - Returns: `SBUUser`  type array
     func sbu_convertUserList() -> [SBUUser] {
-        guard let users = self as? [SBDUser] else { return [] }
+        guard let users = self as? [User] else { return [] }
         return users.sbu_convertUserList()
     }
 }

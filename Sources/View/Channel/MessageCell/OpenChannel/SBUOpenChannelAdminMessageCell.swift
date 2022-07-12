@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SendBirdSDK
+import SendbirdChatSDK
 
 
 open class SBUOpenChannelAdminMessageCell: SBUOpenChannelBaseMessageCell {
@@ -19,8 +19,8 @@ open class SBUOpenChannelAdminMessageCell: SBUOpenChannelBaseMessageCell {
     public var messageLabel = UILabel()
     
     // MARK: Models
-    public var adminMessage: SBDAdminMessage? {
-        self.message as? SBDAdminMessage
+    public var adminMessage: AdminMessage? {
+        self.message as? AdminMessage
     }
 
     // MARK: - View Lifecycle
@@ -84,7 +84,7 @@ open class SBUOpenChannelAdminMessageCell: SBUOpenChannelBaseMessageCell {
     }
     
     // MARK: - Common
-    open func configure(_ message: SBDAdminMessage, hideDateView: Bool, isOverlay: Bool = false) {
+    open func configure(_ message: AdminMessage, hideDateView: Bool, isOverlay: Bool = false) {
         super.configure(
             message: message,
             hideDateView: hideDateView,
