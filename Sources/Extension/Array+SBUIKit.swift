@@ -24,6 +24,16 @@ public extension Array where Element: SBUUser {
         let userNicknames: [String] = self.map ({ $0.refinedNickname() })
         return userNicknames
     }
+    
+    func sbu_updateOperatorStatus(channel: BaseChannel) -> [SBUUser] {
+        if let channel = channel as? OpenChannel {
+            for user in self {
+                let isOperator = channel.isOperator(userId: user.userId)
+                user.isOperator = isOperator
+            }
+        }
+        return self
+    }
 }
 
 public extension Array where Element: User {

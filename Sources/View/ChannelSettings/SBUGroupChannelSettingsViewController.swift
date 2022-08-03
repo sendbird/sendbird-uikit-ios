@@ -104,7 +104,7 @@ open class SBUGroupChannelSettingsViewController: SBUBaseChannelSettingsViewCont
     /// If you want to use a custom userListViewController, override it and implement it.
     open func showMemberList() {
         guard let channel = self.channel else { return }
-        let memberListVC = SBUViewControllerSet.UserListViewController.init(
+        let memberListVC = SBUViewControllerSet.GroupUserListViewController.init(
             channel: channel,
             userListType: .members
         )
@@ -117,7 +117,7 @@ open class SBUGroupChannelSettingsViewController: SBUBaseChannelSettingsViewCont
     open override func showModerationList() {
         guard let channel = self.channel else { return }
         
-        let moderationsVC = SBUViewControllerSet.ModerationsViewController.init(channel: channel)
+        let moderationsVC = SBUViewControllerSet.GroupModerationsViewController.init(channel: channel)
         self.navigationController?.pushViewController(moderationsVC, animated: true)
     }
     
@@ -159,17 +159,26 @@ open class SBUGroupChannelSettingsViewController: SBUBaseChannelSettingsViewCont
     // MARK: - SBUGroupChannelSettingsModuleListDelegate
     open func groupChannelSettingsModule(_ listComponent: SBUGroupChannelSettingsModule.List,
                                          didSelectRowAt indexPath: IndexPath) {
-        let rowValue = indexPath.row + (self.isOperator ? 0 : 1)
-        guard let type = ChannelSettingItemType.from(row: rowValue) else { return }
-        
-        switch type {
-        case .moderations: self.showModerationList()
-        case .notifications: self.showNotifications()
-        case .members: self.showMemberList()
-        case .leave: self.viewModel?.leaveChannel()
-        case .search: self.showSearch()
-        default: break
-        }
+    }
+    
+    open func groupChannelSettingsModuleDidSelectModerations(_ listComponent: SBUGroupChannelSettingsModule.List) {
+        self.showModerationList()
+    }
+    
+    open func groupChannelSettingsModuleDidSelectNotifications(_ listComponent: SBUGroupChannelSettingsModule.List) {
+        self.showNotifications()
+    }
+    
+    open func groupChannelSettingsModuleDidSelectMembers(_ listComponent: SBUGroupChannelSettingsModule.List) {
+        self.showMemberList()
+    }
+    
+    open func groupChannelSettingsModuleDidSelectSearch(_ listComponent: SBUGroupChannelSettingsModule.List) {
+        self.showSearch()
+    }
+    
+    open func groupChannelSettingsModuleDidSelectLeave(_ listComponent: SBUGroupChannelSettingsModule.List) {
+        self.viewModel?.leaveChannel()
     }
     
     

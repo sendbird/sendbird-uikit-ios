@@ -118,7 +118,7 @@ public class SBUQuotedBaseMessageViewParams {
         self.usingQuotedMessage = usingQuotedMessage
     }
     
-    init(messageId: Int64, messagePosition: MessagePosition, quotedMessageNickname: String, replierNickname: String, name: String, type: String, urlString: String, usingQuotedMessage: Bool = true) {
+    public init(messageId: Int64, messagePosition: MessagePosition, quotedMessageNickname: String, replierNickname: String, name: String, type: String, urlString: String, usingQuotedMessage: Bool = true) {
         self.messageId = messageId
         self.messagePosition = messagePosition
         self.quotedMessageNickname = quotedMessageNickname

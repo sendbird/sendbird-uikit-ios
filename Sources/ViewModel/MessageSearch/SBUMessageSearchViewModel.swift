@@ -51,43 +51,47 @@ open class SBUMessageSearchViewModel {
         self.channel = channel
     }
     
-    /// Performs keyword search
+    /// Performs keyword search in the channel
     ///
-    /// if you set the `customMessageSearchQueryParams` value, this method only use `customMessageSearchQueryParams`.
+    /// if you set the ``customMessageSearchQueryParams`` value, this method only use ``customMessageSearchQueryParams``.
     ///
     /// - Parameter keyword: keyword to search for.
     open func search(keyword: String) {
-        if let params = self.customMessageSearchQueryParams {
-            params.keyword = keyword
-            let query = SendbirdChat.createMessageSearchQuery(params: params)
-            self.search(keyword: keyword, query: query)
+        guard let channel = self.channel else {
+            let error = SBError(domain: "Requires a channel object for message search", code: -1, userInfo: nil)
+            self.delegate?.didReceiveError(error)
             return
         }
         
-        let query = SendbirdChat.createMessageSearchQuery { params in
-            guard let channel = self.channel else {
-                let error = SBError(domain: "Requires a channel object for message search", code: -1, userInfo: nil)
-                self.delegate?.didReceiveError(error)
-                return
+        let params: MessageSearchQueryParams
+        
+        if let customMessageSearchQueryParams = customMessageSearchQueryParams {
+            // Customized
+            params = customMessageSearchQueryParams
+        } else {
+            // Defaults
+            params = MessageSearchQueryParams { params in
+                // Default search from ts.
+                // Only search for messages after a user has joined.
+                if let groupChannel = self.channel as? GroupChannel {
+                    // FIXME: - Change to joinedTs when core SDK is ready
+                    params.messageTimestampFrom = groupChannel.invitedAt
+                }
+                
+                if params.limit <= 0 {
+                    // Default limit
+                    params.limit = SBUMessageSearchViewModel.limit
+                }
+                // Below are reserved params.
+                params.order = .timestamp
             }
-            
-            /// Default search from ts.
-            /// Only search for messages after a user has joined.
-            if let groupChannel = self.channel as? GroupChannel {
-                // FIXME: - Change to joinedTs when core SDK is ready
-                params.messageTimestampFrom = groupChannel.invitedAt
-            }
-            
-            if params.limit <= 0 {
-                /// Default limit
-                params.limit = SBUMessageSearchViewModel.limit
-            }
-            
-            /// Below are reserved params.
-            params.channelURL = channel.channelURL
-            params.keyword = keyword
-            params.order = .timestamp
         }
+        
+        // Common settings
+        params.channelURL = channel.channelURL
+        params.keyword = keyword
+        
+        let query = SendbirdChat.createMessageSearchQuery(params: params)
         
         self.search(keyword: keyword, query: query)
     }
@@ -96,7 +100,7 @@ open class SBUMessageSearchViewModel {
     ///
     /// - Parameters:
     ///   - keyword: keyword to search for.
-    ///   - query: `MessageSearchQuery` object to search for
+    ///   - query: ``messageSearchQuery`` object to search for
     public func search(keyword: String, query: MessageSearchQuery) {
         let trimmedKeyword = keyword.trimmingCharacters(in: .whitespacesAndNewlines)
         

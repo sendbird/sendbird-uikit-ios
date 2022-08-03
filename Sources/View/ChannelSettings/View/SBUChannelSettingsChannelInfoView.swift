@@ -88,28 +88,45 @@ public class SBUChannelSettingsChannelInfoView: SBUView {
         
         self.coverImage
             .sbu_constraint(width: kCoverImageSize, height: kCoverImageSize)
-
+        
         self.stackView
-            .sbu_constraint(equalTo: self, left: 0, right: 0, top: 20)
+            .sbu_constraint_equalTo(
+                leftAnchor: self.safeAreaLayoutGuide.leftAnchor, left: 0,
+                rightAnchor: self.safeAreaLayoutGuide.rightAnchor, right: 0,
+                topAnchor: self.topAnchor, top: 20
+            )
         
         self.lineView
+            .sbu_constraint_equalTo(
+                leftAnchor: self.safeAreaLayoutGuide.leftAnchor, left: 16,
+                rightAnchor: self.safeAreaLayoutGuide.rightAnchor, right: 16,
+                topAnchor: self.stackView.bottomAnchor, top: 20
+            )
             .sbu_constraint(height: 0.5)
-            .sbu_constraint(equalTo: self, left: 16, right: 16)
-            .sbu_constraint_equalTo(topAnchor: self.stackView.bottomAnchor, top: 20)
         self.lineViewBottomConstraint = self.lineView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0)
         
         self.urlTitleLabel
-            .sbu_constraint(equalTo: self, left: 24, right: 24)
-            .sbu_constraint_equalTo(topAnchor: self.lineView.bottomAnchor, top: 15)
+            .sbu_constraint_equalTo(
+                leftAnchor: self.safeAreaLayoutGuide.leftAnchor, left: 24,
+                rightAnchor: self.safeAreaLayoutGuide.rightAnchor, right: 24,
+                topAnchor: self.lineView.bottomAnchor, top: 15
+            )
         
         self.urlLabel
-            .sbu_constraint(equalTo: self, left: 24, right: 24)
-            .sbu_constraint_equalTo(topAnchor: self.urlTitleLabel.bottomAnchor, top: 2)
+            .sbu_constraint_equalTo(
+                leftAnchor: self.safeAreaLayoutGuide.leftAnchor, left: 24,
+                rightAnchor: self.safeAreaLayoutGuide.rightAnchor, right: 24,
+                topAnchor: self.urlTitleLabel.bottomAnchor, top: 2
+            )
         
         self.urlLineView
+            .sbu_constraint_equalTo(
+                leftAnchor: self.safeAreaLayoutGuide.leftAnchor, left: 16,
+                rightAnchor: self.safeAreaLayoutGuide.rightAnchor, right: 16,
+                topAnchor: self.urlLabel.bottomAnchor, top: 16
+            )
             .sbu_constraint(height: 0.5)
-            .sbu_constraint(equalTo: self, left: 16, right: 16)
-            .sbu_constraint_equalTo(topAnchor: self.urlLabel.bottomAnchor, top: 20)
+        
         self.urlLineViewBottomConstraint = self.urlLineView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0)
     }
     
@@ -181,7 +198,7 @@ public class SBUChannelSettingsChannelInfoView: SBUView {
         }
         
         self.urlTitleLabel.text = SBUStringSet.ChannelSettings_URL
-        self.urlLabel.text = channel.channelURL + "\n"
+        self.urlLabel.text = channel.channelURL
         
         let isOpenChannel =  self.channel is OpenChannel
         self.urlTitleLabel.isHidden = !isOpenChannel

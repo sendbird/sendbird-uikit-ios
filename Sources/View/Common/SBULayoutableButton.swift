@@ -10,31 +10,31 @@ import UIKit
 
 // https://gist.github.com/gbitaudeau/6540847de8f5ee9f2e0393a00d2cb11e
 public class SBULayoutableButton: UIButton {
-    enum LabelAlignment : Int {
+    public enum LabelAlignment : Int {
         case right, left, under, top
     }
     
-    enum VerticalAlignment : String {
+    public enum VerticalAlignment : String {
         case center, top, bottom, unset
     }
     
-    enum HorizontalAlignment : String {
+    public enum HorizontalAlignment : String {
         case center, left, right, unset
     }
     
-    var imageToTitleSpacing: CGFloat = 8.0 {
+    public var imageToTitleSpacing: CGFloat = 8.0 {
         didSet { setNeedsLayout() }
     }
     
-    var labelAlignment: LabelAlignment = .right {
+    public var labelAlignment: LabelAlignment = .right {
         didSet { setNeedsLayout() }
     }
     
-    var imageVerticalAlignment: VerticalAlignment = .unset {
+    public var imageVerticalAlignment: VerticalAlignment = .unset {
         didSet { setNeedsLayout() }
     }
     
-    var imageHorizontalAlignment: HorizontalAlignment = .unset {
+    public var imageHorizontalAlignment: HorizontalAlignment = .unset {
         didSet { setNeedsLayout() }
     }
     
@@ -78,7 +78,7 @@ public class SBULayoutableButton: UIButton {
         super.init(frame: frame)
     }
     
-    init(gap: CGFloat, labelAlignment: LabelAlignment) {
+    public init(gap: CGFloat, labelAlignment: LabelAlignment) {
         self.imageToTitleSpacing = gap
         self.labelAlignment = labelAlignment
         
@@ -100,7 +100,7 @@ public class SBULayoutableButton: UIButton {
         super.init(frame: .zero)
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         
         self.imageEdgeInsets = super.imageEdgeInsets

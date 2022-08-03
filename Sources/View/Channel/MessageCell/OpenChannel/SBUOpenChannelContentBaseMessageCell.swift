@@ -109,6 +109,8 @@ open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
         
         self.baseStackView
             .setConstraint(from: self.messageContentView, leading: 12, trailing: 12, top: 0, bottom: 0)
+        
+        self.messageTimeLabel.setContentCompressionResistancePriority(UILayoutPriority(751), for: .horizontal)
     }
     
     open override func setupActions() {

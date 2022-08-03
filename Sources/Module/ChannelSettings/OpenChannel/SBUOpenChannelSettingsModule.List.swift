@@ -16,6 +16,18 @@ public protocol SBUOpenChannelSettingsModuleListDelegate: SBUBaseChannelSettings
     ///    - listComponent: `SBUOpenChannelSettingsModule.List` object.
     ///    - indexPath: An index path locating the row in table view of `listComponent
     func openChannelSettingsModule(_ listComponent: SBUOpenChannelSettingsModule.List, didSelectRowAt indexPath: IndexPath)
+    
+    /// Called when the moderations item cell was selected in the `listComponent`.
+    /// - Parameter listComponent: `SBUOpenChannelSettingsModule.List` object.
+    func openChannelSettingsModuleDidSelectModerations(_ listComponent: SBUOpenChannelSettingsModule.List)
+    
+    /// Called when the participants item cell was selected in the `listComponent`.
+    /// - Parameter listComponent: `SBUOpenChannelSettingsModule.List` object.
+    func openChannelSettingsModuleDidSelectParticipants(_ listComponent: SBUOpenChannelSettingsModule.List)
+    
+    /// Called when the delete item cell was selected in the `listComponent`.
+    /// - Parameter listComponent: `SBUOpenChannelSettingsModule.List` object.
+    func openChannelSettingsModuleDidSelectDelete(_ listComponent: SBUOpenChannelSettingsModule.List)
 }
 
 
@@ -40,7 +52,6 @@ extension SBUOpenChannelSettingsModule {
         }
         
         public weak var channel: OpenChannel? { self.baseChannel as? OpenChannel }
-
 
         
         // MARK: - LifeCycle
@@ -70,6 +81,8 @@ extension SBUOpenChannelSettingsModule {
             
             self.theme = theme
             
+            self.setupItems()
+            
             self.setupViews()
             self.setupLayouts()
             self.setupStyles()
@@ -84,15 +97,70 @@ extension SBUOpenChannelSettingsModule {
             )
         }
         
+        open override func setupItems() {
+            let moderationsItem = self.createModerationsItem()
+            let participantsItem = self.createParticipantsItem()
+            let deleteItem = self.createDeleteItem()
+            
+            var items = [moderationsItem, participantsItem]
+            items += self.isOperator ? [deleteItem] : []
+            
+            self.items = items
+        }
+        
+        open func createModerationsItem() -> SBUChannelSettingItem {
+            let moderationsItem = SBUChannelSettingItem(
+                title: SBUStringSet.ChannelSettings_Moderations,
+                icon: SBUIconSetType.iconModerations.image(
+                    with: theme?.cellTypeIconTintColor,
+                    to: SBUIconSetType.Metric.defaultIconSize
+                ),
+                isRightButtonHidden: false) { [weak self] in
+                    guard let self = self else { return }
+                    self.delegate?.openChannelSettingsModuleDidSelectModerations(self)
+                }
+
+            return moderationsItem
+        }
+        
+        open func createParticipantsItem() -> SBUChannelSettingItem {
+            let participantsItem = SBUChannelSettingItem(
+                title: SBUStringSet.ChannelSettings_Participants_Title,
+                subTitle: channel?.participantCount.unitFormattedString,
+                icon: SBUIconSetType.iconMembers.image(
+                    with: theme?.cellTypeIconTintColor,
+                    to: SBUIconSetType.Metric.defaultIconSize
+                ),
+                isRightButtonHidden: false) { [weak self] in
+                    guard let self = self else { return }
+                    self.delegate?.openChannelSettingsModuleDidSelectParticipants(self)
+                }
+
+            return participantsItem
+        }
+        
+        open func createDeleteItem() -> SBUChannelSettingItem {
+            let deleteItem = SBUChannelSettingItem(
+                title: SBUStringSet.ChannelSettings_Delete,
+                icon: SBUIconSetType.iconDelete.image(
+                    with: theme?.cellDeleteIconColor,
+                    to: SBUIconSetType.Metric.defaultIconSize
+                ),
+                isRightButtonHidden: true) { [weak self] in
+                    guard let self = self else { return }
+                    self.delegate?.openChannelSettingsModuleDidSelectDelete(self)
+                }
+
+            return deleteItem
+        }
+        
         
         // MARK: - TableView: Cell
         open override func configureCell(_ cell: UITableViewCell?, indexPath: IndexPath) {
             guard let defaultCell = cell as? SBUOpenChannelSettingCell else { return }
             
-            let rowValue = indexPath.row + (self.isOperator ? 0 : 1)
-            if let type = OpenChannelSettingItemType(rawValue: rowValue) {
-                defaultCell.configure(type: type, channel: self.channel)
-            }
+            let item = self.items[indexPath.row]
+            defaultCell.configure(with: item)
         }
     }
 }
@@ -113,12 +181,15 @@ extension SBUOpenChannelSettingsModule.List {
     }
     
     open override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return OpenChannelSettingItemType.allTypes(isOperator: self.isOperator).count
+        return self.items.count
     }
     
     open override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.endEditingChannelInfoView()
         
         self.delegate?.openChannelSettingsModule(self, didSelectRowAt: indexPath)
+        
+        let item = self.items[indexPath.row]
+        item.tapHandler?()
     }
 }

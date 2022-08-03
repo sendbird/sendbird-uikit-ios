@@ -69,10 +69,10 @@ open class SBUCreateChannelViewModel {
 
     
     // MARK: - Life Cycle
-    init(channelType: ChannelCreationType = .group,
-         users: [SBUUser]? = nil,
-         delegate: SBUCreateChannelViewModelDelegate? = nil,
-         dataSource: SBUCreateChannelViewModelDataSource? = nil) {
+    public init(channelType: ChannelCreationType = .group,
+                users: [SBUUser]? = nil,
+                delegate: SBUCreateChannelViewModelDelegate? = nil,
+                dataSource: SBUCreateChannelViewModelDataSource? = nil) {
         
         self.delegate = delegate
         self.dataSource = dataSource

@@ -57,6 +57,8 @@ extension SBUBaseChannelSettingsModule {
             self.baseDataSource?.baseChannelSettingsModuleIsOperator(self) ?? false
         }
         
+        public var items: [SBUChannelSettingItem] = []
+        
         
         // MARK: - LifeCycle
         open func setupViews() {
@@ -71,6 +73,9 @@ extension SBUBaseChannelSettingsModule {
             self.tableView.estimatedRowHeight = 44.0
             self.addSubview(self.tableView)
         }
+        
+        /// Sets up items for tableView cell configuration.
+        open func setupItems() { }
         
         
         // MARK: - Style
@@ -136,6 +141,7 @@ extension SBUBaseChannelSettingsModule {
         
         /// This function reloads the table view.
         public func reloadTableView() {
+            self.setupItems()
             DispatchQueue.main.async { [weak self] in
                 self?.tableView.reloadData()
             }

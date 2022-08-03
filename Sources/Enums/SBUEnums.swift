@@ -83,7 +83,24 @@ import SendbirdChatSDK
     static func allTypes(isBroadcast: Bool, channelType: ChannelType = .group) -> [ModerationItemType] {
         return isBroadcast
         ? [.operators, .bannedUsers]
-        : [.operators, (channelType == .group) ? .mutedMembers : .mutedParticipants, .bannedUsers, .freezeChannel]
+        : ((channelType == .group)
+           ? [.operators, .mutedMembers, .bannedUsers, .freezeChannel]
+           : [.operators, .mutedParticipants, .bannedUsers])
+    }
+    
+    static func allTypes(channel: BaseChannel) -> [ModerationItemType] {
+        var isBroadcast = false
+        let channelType: ChannelType = (channel is GroupChannel) ? .group : .open
+        
+        if channelType == .group, let groupChannel = channel as? GroupChannel {
+            isBroadcast = groupChannel.isBroadcast
+        }
+        
+        return isBroadcast
+        ? [.operators, .bannedUsers]
+        : ((channelType == .group)
+           ? [.operators, .mutedMembers, .bannedUsers, .freezeChannel]
+           : [.operators, .mutedParticipants, .bannedUsers])
     }
 }
 
@@ -154,6 +171,7 @@ public enum ChannelPushSettingsSubType: Int, CaseIterable {
     case noMessages
     case noMembers
     case noMutedMembers
+    case noMutedParticipants
     case noBannedUsers
     case noSearchResults
     case error

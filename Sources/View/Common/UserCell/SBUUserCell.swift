@@ -156,6 +156,8 @@ open class SBUUserCell: SBUTableViewCell {
         }
         self.baseStackView.setCustomSpacing(8.0, after: self.operatorLabel)
         
+        self.operatorLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
+        
         self.contentView.addSubview(self.baseStackView)
         self.contentView.addSubview(self.separateView)
     }
@@ -276,7 +278,7 @@ open class SBUUserCell: SBUTableViewCell {
         self.userImageView.backgroundColor = theme.userPlaceholderBackgroundColor
         self.userImageView.contentMode = .scaleAspectFill
         
-        self.mutedStateImageView.isHidden = !user.isMuted
+        self.mutedStateImageView.isHidden = (type != .muted) ? !user.isMuted : false
         self.operatorLabel.isHidden = type == .operators || !user.isOperator
 
         self.separateView.isHidden = false
@@ -289,7 +291,7 @@ open class SBUUserCell: SBUTableViewCell {
             self.checkboxButton.isHidden = false
             self.checkboxButton.isSelected = self.isChecked
             
-        case .members:
+        case .members, .participants:
             if operatorMode {
                 self.moreButton.isHidden = false
                 self.moreButton.isEnabled = !isMe

@@ -332,7 +332,7 @@ public class SendbirdUI {
     // MARK: - Common
     /// This function gets UIKit SDK's short version string. (e.g. 1.0.0)
     /// - Since: 2.2.0
-    public static let shortVersion: String = "3.0.0" // NEXT_VERSION here
+    public static let shortVersion: String = "3.1.0" // NEXT_VERSION here
     
     /// This function gets UIKit SDK's version string.
     /// - Returns: version string
@@ -342,23 +342,6 @@ public class SendbirdUI {
             return "\(build)"
         }
         
-        return nil
-    }
-    
-    @available(*, unavailable, renamed: "shortVersion") // 2.2.0
-    public static func getUIKitVersion() -> String {
-        SendbirdUI.shortVersion
-    }
-    
-    /// This function gets UIKit SDK's short version string.
-    /// - Returns: short version string
-    @available(*, unavailable, renamed: "shortVersion") // 2.2.0
-    public static func shortVersionString() -> String? {
-        let bundle = Bundle(identifier: SBUConstant.bundleIdentifier)
-        if let shortVersion = bundle?.infoDictionary?["CFBundleShortVersionString"] {
-            return "\(shortVersion)"
-        }
-
         return nil
     }
 
@@ -501,7 +484,7 @@ public class SendbirdUI {
             searchViewController.presentedViewController?.dismiss(animated: false, completion: nil)
             
             searchViewController.dismiss(animated: false) {
-                let viewController: UIViewController? = findChannelViewController(
+                let viewController: UIViewController? = findChannelListViewController(
                     rootViewController: rootViewController,
                     channelType: channelType
                 )
@@ -512,7 +495,7 @@ public class SendbirdUI {
                                           channelType: channelType)
             }
         } else {
-            let viewController: UIViewController? = findChannelViewController(
+            let viewController: UIViewController? = findChannelListViewController(
                 rootViewController: rootViewController,
                 channelType: channelType
             )
@@ -577,12 +560,13 @@ public class SendbirdUI {
         }
     }
     
-    /// Finds instance of channel list or channel viewcontroller from the navigation controller's viewcontrollers.
+    /// Finds channel list or channel viewcontroller from the navigation controller's viewcontrollers.
     ///
-    /// - Returns: instance of `SBUBaseChannelListViewController` or `SBUBaseChannelViewController`, or
-    ///            `nil` if none are fonud.
-    private static func findChannelViewController(rootViewController: UIViewController?,
-                                                  channelType: ChannelType) -> UIViewController? {
+    /// - Returns: The `SBUBaseChannelListViewController` or `SBUBaseChannelViewController` instance , or `nil` if nothing was found.
+    ///
+    /// - Since: 3.1.0
+    public static func findChannelListViewController(rootViewController: UIViewController?,
+                                                     channelType: ChannelType) -> UIViewController? {
         guard let navigationController: UINavigationController =
                 rootViewController?.presentedViewController as? UINavigationController ??
                 rootViewController as? UINavigationController else { return nil }
@@ -611,11 +595,31 @@ public class SendbirdUI {
         }
     }
     
+    /// Finds channel view controller from the navigation controller's view controllers.
+    ///
+    /// - Returns: The `SBUBaseChannelViewController` instance , or `nil` if nothing was found.
+    ///
+    /// - Since: 3.1.0
+    public static func findChannelViewController(rootViewController: UIViewController?) -> UIViewController? {
+        guard let navigationController: UINavigationController =
+                rootViewController?.presentedViewController as? UINavigationController ??
+                rootViewController as? UINavigationController else { return nil }
+        
+        let filteredVC = navigationController.viewControllers.filter {
+            $0 is SBUBaseChannelViewController
+        }
+        guard !filteredVC.isEmpty else { return nil }
+        
+        return filteredVC.first
+    }
+    
     
     /// Finds instance of message shearch viewcontroller from the navigation controller's viewcontrollers.
     ///
     /// - Returns: instance of `SBUMessageSearchViewController`or `nil` if none are fonud.
-    private static func findSearchViewController(rootViewController: UIViewController?) -> UIViewController? {
+    ///
+    /// - Since: 3.1.0
+    public static func findSearchViewController(rootViewController: UIViewController?) -> UIViewController? {
         guard let navigationController: UINavigationController =
                 rootViewController?.presentedViewController as? UINavigationController ??
                 rootViewController as? UINavigationController else { return nil }

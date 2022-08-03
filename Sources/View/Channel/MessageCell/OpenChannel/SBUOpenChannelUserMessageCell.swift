@@ -146,11 +146,17 @@ open class SBUOpenChannelUserMessageCell: SBUOpenChannelContentBaseMessageCell {
 
         if let messageTextView = messageTextView as? SBUUserMessageTextView, withTextView {
             let theme = self.isOverlay ? self.overlayTheme : self.theme
-            let textColor = theme.linkColor
             
             messageTextView.configure(
-                model: SBUUserMessageTextViewModel(message: message, position: position, textColor: isWebType ? textColor : nil, isOverlay: isOverlay)
+                model: SBUUserMessageTextViewModel(message: message, position: position, isOverlay: isOverlay)
             )
+            if self.isWebType { // Open channel only
+                let linkColor = theme.linkColor
+                messageTextView.textView.linkTextAttributes = [
+                    .foregroundColor: linkColor,
+                    .underlineStyle: NSUnderlineStyle.single.rawValue
+                ]
+            }
             messageTextView.updateSideConstraint()
             messageTextView.sizeToFit()
         }

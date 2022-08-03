@@ -10,6 +10,18 @@ import UIKit
 import SendbirdChatSDK
 
 extension SBUModerationsViewController {
+    // MARK: - 3.1.0
+    @available(*, unavailable, message: "This function has been removed. Use `init(channelURL:channelType:)` instead.")
+    public convenience init(channelURL: String) {
+        self.init(channelURL: channelURL, channelType: .group)
+    }
+    
+    @available(*, unavailable, message: "This function has been seperated. If you have channel object, use `createViewModel(channel:)` instead. or if you have channelUrl, use `createViewModel(channelURL:channelType:) instead.")
+    open func createViewModel(channel: GroupChannel? = nil,
+                              channelURL: String? = nil) {
+    }
+    
+    
     // MARK: - 3.0.0
     @available(*, deprecated, renamed: "channelURL")
     public var channelUrl: String? { self.channelURL }

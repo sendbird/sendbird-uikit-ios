@@ -714,7 +714,11 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
     
     /// This function actions to pop or dismiss.
     public override func onClickBack() {
-        self.channel?.exit(completionHandler: { [weak self] (error) in
+        guard let channel = channel else {
+            super.onClickBack()
+            return
+        }
+        channel.exit(completionHandler: { [weak self] (error) in
             guard let self = self else { return }
             if let error = error {
                 SBULog.error("[Failed] Exit channel request: \(error.localizedDescription)")
@@ -741,7 +745,7 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
     open func showParticipantsList() {
         guard let channel = self.channel else { return }
         
-        let participantListVC = SBUViewControllerSet.UserListViewController.init(channel: channel, userListType: .participants)
+        let participantListVC = SBUViewControllerSet.OpenUserListViewController.init(channel: channel, userListType: .participants)
         self.navigationController?.pushViewController(participantListVC, animated: true)
     }
     
@@ -865,8 +869,14 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
                     .eventUserMuted, .eventUserUnmuted,
                     .eventOperatorUpdated,
                     .eventUserBanned: // Other User Banned
+                self.updateChannelTitle()
+                self.updateBarButton()
                 self.inputComponent?.updateMessageInputModeState()
                 
+        case .eventChannelMemberCountChanged:
+            self.updateChannelTitle()
+            self.listComponent?.reloadTableView()
+            
             default: break
         }
     }

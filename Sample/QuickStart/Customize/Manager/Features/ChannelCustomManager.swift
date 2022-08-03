@@ -26,6 +26,8 @@ class ChannelCustomManager: BaseCustomManager {
             messageParamsCustom()
         case .functionOverriding:
             functionOverridingCustom()
+        case .headerComponentCustom:
+            headerComponentCustom()
         default:
             break
         }
@@ -117,6 +119,16 @@ extension ChannelCustomManager {
         ChannelManager.getSampleChannel { channel in
             // If you inherit `SBUChannelViewController`, you can customize it by overriding some functions.
             let channelVC = ChannelVC_Overriding(channel: channel)
+            self.navigationController?.pushViewController(channelVC, animated: true)
+        }
+    }
+    
+    func headerComponentCustom() {
+        SBUModuleSet.groupChannelModule.headerComponent = CustomChannelHeaderComponent()
+        
+        ChannelManager.getSampleChannel { channel in
+            // If you inherit `SBUChannelViewController`, you can customize it by overriding some functions.
+            let channelVC = ChannelVC_CustomHeader(channel: channel)
             self.navigationController?.pushViewController(channelVC, animated: true)
         }
     }

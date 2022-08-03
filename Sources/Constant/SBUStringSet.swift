@@ -125,6 +125,10 @@ public class SBUStringSet {
     public static var ChannelSettings_Enter_New_Name = "Enter name"
     public static var ChannelSettings_Enter_New_Channel_Name = "Enter channel name"
     public static var ChannelSettings_Notifications = "Notifications"
+    public static var ChannelSettings_Notifications_On = "On"
+    public static var ChannelSettings_Notifications_Off = "Off"
+    public static var ChannelSettings_Notifications_Mentiones_Only = "Mentions only"
+    
     public static var ChannelSettings_Members_Title = "Members"
     public static var ChannelSettings_Participants_Title = "Participants"
     public static var ChannelSettings_Members: (UInt) -> String = { count in
@@ -137,6 +141,8 @@ public class SBUStringSet {
     }
     public static var ChannelSettings_Leave = "Leave channel"
     public static var ChannelSettings_Delete = "Delete channel"
+    public static var ChannelSettings_Delete_Question_Mark = "Delete channel?"
+    public static var ChannelSettings_Delete_Description = "Once deleted, this channel can't be restored."
     public static var ChannelSettings_Search = "Search in channel"
     
     public static var ChannelSettings_Moderations = "Moderations"
@@ -233,7 +239,7 @@ public class SBUStringSet {
     public static var UserList_Mute = "Mute"
     public static var UserList_Unmute = "Unmute"
     public static var UserList_Unregister_Operator = "Unregister operator"
-    public static var UserList_Register_Operator = "Register operator"
+    public static var UserList_Register_Operator = "Register as operator"
     public static var UserList_Title_Members = "Members"
     public static var UserList_Title_Operators = "Operators"
     public static var UserList_Title_Muted_Members = "Muted members"

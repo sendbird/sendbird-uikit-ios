@@ -1,5 +1,50 @@
 # Changelog
 
+### v3.1.0 (Aug 3, 2022) with Chat SDK **v4.0.8**
+* Support moderation in OpenChannel
+    * `SBUModuleSet`
+        * Deprecated `moderationsModule` property, use `groupModerationsModule` or `openModerationsModule` instead
+        * Deprecated `registerOperatorModule` property, use `groupRegisterOperatorModule` or `openRegisterOperatorModule` instead
+        * Deprecated `userListModule` property, use `groupUserListModule` or `openUserListModule` instead
+        * Deprecated `init(channelListModule:baseChannelModule:groupChannelModule:openChannelModule:inviteUserModule:registerOperatorModule:userListModule:groupChannelPushSettingsModule:createChannelModule:groupChannelSettingsModule:openChannelSettingsModule:moderationsModule:messageSearchModule:)` function, use `init(channelListModule:baseChannelModule:groupChannelModule:openChannelModule:inviteUserModule:groupRegisterOperatorModule:openRegisterOperatorModule:groupUserListModule:openUserListModule:groupChannelPushSettingsModule:createChannelModule:groupChannelSettingsModule:openChannelSettingsModule:groupModerationsModule:openModerationsModule:messageSearchModule:)` instead
+    * `SBUViewControllerSet`
+        * Renmaed `groupChannelPushSettingsViewController` to `GroupChannelPushSettingsViewController`
+        * Deprecated `RegisterOperatorViewController`, use `GroupChannelRegisterOperatorViewController` or `OpenChannelRegisterOperatorViewController` instead
+        * Deprecated `UserListViewController`, use `GroupUserListViewController` or `OpenUserListViewController` instead
+        * Deprecated `ModerationsViewController`, use `GroupModerationsViewController` or `OpenModerationsViewController` instead
+    * `SBUEnums`
+        * Added `allTypes(channel:)` function in `ModerationItemType` enum
+        * Added `noMutedParticipants` case in `EmptyViewType`
+    * `SBUModerationsViewController`
+      * Deprecated `init(channelURL:)`, use `init(channelURL:channelType:)` instead
+      * Deprecated `createViewModel(channel:channelURL:)`, use `createViewModel(channel:)` or `createViewModel(channelURL:channelType:)` instead
+    * Added functions in `SBUOpenChannelSettingsViewController` class
+        * `showModerationList()`
+        * `showDeleteChannelAlert()`
+    * Deprecated function in `SBUModerationsViewModel` class
+      * `init(channe:channelURL:delegate:)` -> Use `init(channel:delegate:)` or `init(channelURL:channelType:delegate:)` instead
+    * Added `channelType` parameter in configuration function of `SBUUserListModule.Header`
+    * Added `channelType` parameter in initialization function of `SBURegisterOperatorViewController`
+    * Added `participantListQuery` parameter in initialization function of `SBUBaseSelectUserViewModel`
+    * Added `mutedParticipantListQuery` parameter in initialization function of `SBUUserListViewModel`
+    * Added `sbu_updateOperatorStatus(channel:)`
+    * Improved list item customization of Group/OpenChannelSettings
+      * Added `SBUChannelSettingItem`
+      * Added `SBUBaseChannelSettingCell`, `SBUGroupChannelSettingCell` and `SBUOpenChannelSettingCell`
+      * Added did select related delegates in `SBUGroupChannelSettingsModule.List` and `SBUOpenChannelSettingsModule.List`
+      * Modified `configureCell` of `SBUGroupChannelSettingsModule.List` and `SBUOpenChannelSettingsModule.List` to use `SBUChannelSettingItem`
+    * Added moderations menu in OpenChannelSettings
+      * Added `itemDeleteTextColor` property in `SBUChannelSettingsTheme`
+      * Added strings
+        * `ChannelSettings_Delete_Question_Mark`
+        * `ChannelSettings_Delete_Description`
+* Added ChannelSetting item's notification strings
+  * `ChannelSettings_Notifications_On`
+  * `ChannelSettings_Notifications_Off`
+  * `ChannelSettings_Notifications_Mentiones_Only`
+* Modified `loadAllEmojis(completionHandler:)` function access level to `public` in `SBUEmojiManager` class
+* Improved stability
+
 ### v3.0.0 (Jul 12, 2022) with Chat SDK **v4.0.5**
 * UIKit v3.0.0 officially version
     * Support `modules` and `components` in the UIKit

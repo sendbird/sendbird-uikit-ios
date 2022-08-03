@@ -68,25 +68,6 @@ extension SBUGroupChannelSettingsModule {
             return titleView
         }
         
-        override func defaultLeftButton() -> UIBarButtonItem {
-            let backButton = SBUBarButtonItem.backButton(
-                vc: self,
-                selector: #selector(onTapLeftBarButton)
-            )
-            return backButton
-        }
-        
-        override func defaultRightButton() -> UIBarButtonItem {
-            let editButton =  UIBarButtonItem(
-                title: SBUStringSet.Edit,
-                style: .plain,
-                target: self,
-                action: #selector(onTapRightBarButton)
-            )
-            editButton.setTitleTextAttributes([.font : SBUFontSet.button2], for: .normal)
-            return editButton
-        }
-        
         
         // MARK: - Logic properties (Public)
         /// The object that acts as the delegate of the header component. The delegate must adopt the `SBUGroupChannelSettingsModuleHeaderDelegate` protocol

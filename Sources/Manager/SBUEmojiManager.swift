@@ -124,8 +124,10 @@ public class SBUEmojiManager {
             return false
         }
     }
-
-    static func loadAllEmojis(completionHandler: @escaping (
+    
+    /// Loads all Emojis from ChatSDK.
+    /// - Parameter completionHandler: The callback that includes either `EmojiContainer` or `SBError`.
+    public static func loadAllEmojis(completionHandler: @escaping (
         _ container: EmojiContainer?,
         _ error: SBError?) -> Void
     ) {

@@ -125,9 +125,6 @@ class ViewController: UIViewController {
                 $0?.layer.cornerRadius = CornerRadius.large.rawValue
             }
         
-        // TODO: Activation after custom sample implementation with modularization version
-        customSampleShadowView.isHidden = true
-        
         [groupChannelShadowView,
          openChannelShadowView,
          customSampleShadowView].forEach {

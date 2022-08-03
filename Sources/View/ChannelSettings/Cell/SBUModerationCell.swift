@@ -9,11 +9,12 @@
 import UIKit
 import SendbirdChatSDK
 
-class SBUModerationCell: SBUChannelSettingCell {
+// TODO: Need to Improve. setupItems
+class SBUModerationCell: SBUBaseChannelSettingCell {
     /// This function configure a cell using moderation list information.
-    /// - Parameter channel: cell object
+    /// - Parameter channel: channel object
     func configure(type: ModerationItemType,
-                   channel: GroupChannel?,
+                   channel: BaseChannel?,
                    title: String? = nil,
                    icon: UIImage? = nil) {
 
@@ -36,6 +37,14 @@ class SBUModerationCell: SBUChannelSettingCell {
                 to: SBUIconSetType.Metric.defaultIconSize
             )
             self.titleLabel.text = title ?? SBUStringSet.ChannelSettings_Muted_Members
+            self.rightButton.isHidden = false
+            
+        case .mutedParticipants:
+            self.typeIcon.image = icon ?? SBUIconSetType.iconMute.image(
+                with: theme.cellTypeIconTintColor,
+                to: SBUIconSetType.Metric.defaultIconSize
+            )
+            self.titleLabel.text = title ?? SBUStringSet.ChannelSettings_Muted_Participants
             self.rightButton.isHidden = false
             
         case .bannedUsers:

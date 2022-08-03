@@ -87,7 +87,9 @@ extension SBUUserListModule {
             case .operators:
                 titleView.text = SBUStringSet.UserList_Title_Operators
             case .muted:
-                titleView.text = SBUStringSet.UserList_Title_Muted_Members
+                titleView.text = (channelType == .group)
+                ? SBUStringSet.UserList_Title_Muted_Members
+                : SBUStringSet.UserList_Title_Muted_Participants
             case .banned:
                 titleView.text = SBUStringSet.UserList_Title_Banned_Users
             case .participants:
@@ -129,6 +131,9 @@ extension SBUUserListModule {
         /// The delegate must adopt the `SBUUserListModuleHeaderDelegate`.
         public weak var delegate: SBUUserListModuleHeaderDelegate? = nil
         
+        /// - Since: 3.1.0
+        public var channelType: ChannelType = .group
+        
         /// The object that the type of user list.
         public private(set) var userListType: ChannelUserListType = .none
         
@@ -148,15 +153,18 @@ extension SBUUserListModule {
         /// - Parameters:
         ///   - delegate: `SBUUserListModuleHeaderDelegate` type listener
         ///   - userListType: UserList Type
+        ///   - channelType: Channel type
         ///   - theme: `SBUUserListTheme` object
         ///   - componentTheme: `SBUComponentTheme` object
         open func configure(delegate: SBUUserListModuleHeaderDelegate,
                             userListType: ChannelUserListType,
+                            channelType: ChannelType = .group,
                             theme: SBUUserListTheme,
                             componentTheme: SBUComponentTheme) {
             self.delegate = delegate
             
             self.userListType = userListType
+            self.channelType = channelType
             
             self.theme = theme
             self.componentTheme = componentTheme

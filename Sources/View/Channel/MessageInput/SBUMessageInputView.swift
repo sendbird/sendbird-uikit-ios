@@ -345,7 +345,9 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     
     var textViewHeightConstraint: NSLayoutConstraint?
 
-    weak var delegate: SBUMessageInputViewDelegate?
+    /// The delegate that is type of `SBUMessageInputViewDelegate`.
+    /// - NOTE: `SBUMessageInputViewDelegate` notifies events that occur in the message input field. To receive such events, you need to set a delegate to an object that conforms to the `SBUMessageInputViewDelegate` protocol.
+    public weak var delegate: SBUMessageInputViewDelegate?
 
     var basedText: String = ""
     
@@ -370,7 +372,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         super.init(frame: frame)
     }
     
-    init(isOverlay: Bool) {
+    public init(isOverlay: Bool) {
         self.isOverlay = isOverlay
 
         super.init(frame: .zero)

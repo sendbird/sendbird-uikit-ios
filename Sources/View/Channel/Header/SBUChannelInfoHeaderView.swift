@@ -65,7 +65,7 @@ public class SBUChannelInfoHeaderView: SBUView {
     
     /// Initializes `SBUChannelInfoHeaderView` with the `delegate`.
     /// - Parameter delegate: The object that acts as the delegate of the channel info header view. The delegate must adopt the `SBUChannelInfoHeaderViewDelegate` protocol.
-    init(delegate: SBUChannelInfoHeaderViewDelegate?) {
+    public init(delegate: SBUChannelInfoHeaderViewDelegate?) {
         self.delegate = delegate
 
         super.init(frame: .zero)

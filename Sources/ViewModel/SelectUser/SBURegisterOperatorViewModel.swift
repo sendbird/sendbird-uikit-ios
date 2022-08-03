@@ -35,15 +35,15 @@ open class SBURegisterOperatorViewModel: SBUBaseSelectUserViewModel {
     
     
     // MARK: - Life Cycle
-    init(channel: BaseChannel? = nil,
-         channelURL: String? = nil,
-         channelType: ChannelType = .group,
-         users: [SBUUser]? = nil,
-         userListQuery: ApplicationUserListQuery? = nil,
-         memberListQuery: MemberListQuery? = nil,
-         delegate: SBURegisterOperatorViewModelDelegate? = nil,
-         dataSource: SBURegisterOperatorViewModelDataSource? = nil) {
-
+    public init(channel: BaseChannel? = nil,
+                channelURL: String? = nil,
+                channelType: ChannelType = .group,
+                users: [SBUUser]? = nil,
+                userListQuery: ApplicationUserListQuery? = nil,
+                memberListQuery: MemberListQuery? = nil,
+                delegate: SBURegisterOperatorViewModelDelegate? = nil,
+                dataSource: SBURegisterOperatorViewModelDataSource? = nil) {
+        
         super.init(
             channel: channel,
             channelURL: channelURL,

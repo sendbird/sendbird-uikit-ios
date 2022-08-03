@@ -48,8 +48,8 @@ open class SBUBaseSelectUserViewModel: NSObject {
     @SBUAtomic public internal(set) var selectedUserList: Set<SBUUser> = []
     
     public var userListQuery: ApplicationUserListQuery?
-    
     public var memberListQuery: MemberListQuery?
+    public var participantListQuery: ParticipantListQuery?
     
     public internal(set) var inviteListType: ChannelInviteListType = .users
     
@@ -60,6 +60,7 @@ open class SBUBaseSelectUserViewModel: NSObject {
     
     internal var customUserListQuery: ApplicationUserListQuery?
     internal var customMemberListQuery: MemberListQuery?
+    internal var customParticipantListQuery: ParticipantListQuery?
     
     @SBUAtomic private(set) var customizedUsers: [SBUUser]?
     internal var useCustomizedUsers = false
@@ -70,7 +71,7 @@ open class SBUBaseSelectUserViewModel: NSObject {
 
     
     // MARK: - Life Cycle
-    init(
+    public init(
         channel: BaseChannel? = nil,
         channelURL: String? = nil,
         channelType: ChannelType = .group,
@@ -78,6 +79,7 @@ open class SBUBaseSelectUserViewModel: NSObject {
         inviteListType: ChannelInviteListType,
         userListQuery: ApplicationUserListQuery? = nil,
         memberListQuery: MemberListQuery? = nil,
+        participantListQuery: ParticipantListQuery? = nil,
         delegate: SBUBaseSelectUserViewModelDelegate? = nil,
         dataSource: SBUBaseSelectUserViewModelDataSource? = nil
     ) {
@@ -99,6 +101,7 @@ open class SBUBaseSelectUserViewModel: NSObject {
         
         self.customUserListQuery = userListQuery
         self.customMemberListQuery = memberListQuery
+        self.customParticipantListQuery = participantListQuery
         
         self.customizedUsers = users
         self.useCustomizedUsers = (users?.count ?? 0) > 0
@@ -178,6 +181,7 @@ open class SBUBaseSelectUserViewModel: NSObject {
         if reset {
             self.userListQuery = nil
             self.memberListQuery = nil
+            self.participantListQuery = nil
             self.userList = []
             
             self.prepareDatas()
@@ -199,7 +203,11 @@ open class SBUBaseSelectUserViewModel: NSObject {
             case .users:
                 self.loadNextApplicationUserList()
             case .operators:
-                self.loadNextChannelMemberList()
+                if self.channelType == .group {
+                    self.loadNextChannelMemberList()
+                } else if self.channelType == .open {
+                    self.loadNextChannelParticipantList()
+                }
             default:
                 break
             }
@@ -313,6 +321,7 @@ open class SBUBaseSelectUserViewModel: NSObject {
                     let error = SBError(domain: "Cannot create the memberListQuery.", code: -1, userInfo: nil)
                     self.baseDelegate?.shouldUpdateLoadingState(false)
                     self.baseDelegate?.didReceiveError(error)
+                    return
                 }
             }
         }
@@ -350,6 +359,61 @@ open class SBUBaseSelectUserViewModel: NSObject {
         })
     }
     
+    /// This function loads channel participant list.
+    ///
+    /// If you want to call a list of users, use the `loadNextUserList(reset:users:)` function.
+    /// - Warning: Use this function only when you need to call `MemberList` alone.
+    private func loadNextChannelParticipantList() {
+        if self.participantListQuery == nil {
+            if self.customParticipantListQuery != nil {
+                self.participantListQuery = self.customParticipantListQuery
+            } else {
+                if let channel = self.channel as? OpenChannel {
+                    let params = ParticipantListQueryParams()
+                    params.limit = SBUBaseSelectUserViewModel.limit
+                    self.participantListQuery = channel.createParticipantListQuery(params: params)
+                }
+                else {
+                    let error = SBError(domain: "Cannot create the participantListQuery.", code: -1, userInfo: nil)
+                    self.baseDelegate?.shouldUpdateLoadingState(false)
+                    self.baseDelegate?.didReceiveError(error)
+                    return
+                }
+            }
+        }
+        
+        guard self.participantListQuery?.hasNext == true else {
+            self.isLoading = false
+            self.baseDelegate?.shouldUpdateLoadingState(false)
+            SBULog.info("All participants have been loaded.")
+            return
+        }
+        
+        self.participantListQuery?.loadNextPage(completionHandler: { [weak self, weak channel] users, error in
+            guard let self = self, let channel = channel else { return }
+            defer {
+                self.isLoading = false
+                self.baseDelegate?.shouldUpdateLoadingState(false)
+            }
+            
+            if let error = error {
+                self.baseDelegate?.didReceiveError(error, isBlocker: false)
+                return
+            }
+        
+            guard let users = users?.sbu_convertUserList() else { return }
+            
+            SBULog.info("[Response] \(users.count) participants")
+            
+            self.userList += users.sbu_updateOperatorStatus(channel: channel)
+            self.baseDelegate?.baseSelectedUserViewModel(
+                self,
+                didChangeUserList: self.userList,
+                needsToReload: true
+            )
+        })
+    }
+    
     /// This function pre-loads user list.
     ///
     /// When a part of the Tableview is displayed, then this function is load the next user list.
@@ -361,7 +425,11 @@ open class SBUBaseSelectUserViewModel: NSObject {
         case .users:
             queryCheck = (self.userListQuery?.hasNext == true && self.userListQuery != nil)
         case .operators:
-            queryCheck = (self.memberListQuery?.hasNext == true && self.memberListQuery != nil)
+            if self.channelType == .group {
+                queryCheck = (self.memberListQuery?.hasNext == true && self.memberListQuery != nil)
+            } else if self.channelType == .open {
+                queryCheck = (self.participantListQuery?.hasNext == true && self.participantListQuery != nil)
+            }
         default:
             break
         }

@@ -143,7 +143,7 @@ open class CreateCommunityChannelViewController: UIViewController, UINavigationC
         )
         
         self.leftBarButton.tintColor = theme.leftBarButtonTintColor
-        self.rightBarButton.tintColor = theme.barButtonDisabledTintColor
+        self.updateRightBarButton()
         
         self.channelNameField.attributedPlaceholder = NSAttributedString(
             string: SBUStringSet.ChannelSettings_Enter_New_Channel_Name,
@@ -161,6 +161,15 @@ open class CreateCommunityChannelViewController: UIViewController, UINavigationC
         self.setupStyles()
         
         self.titleView.setupStyles()
+    }
+    
+    func updateRightBarButton() {
+        let enabled = !(self.channelNameField.text?.isEmpty ?? true)
+        
+        self.rightBarButton.isEnabled = enabled
+        self.rightBarButton.tintColor = enabled
+        ? theme.barButtonTintColor
+        : theme.barButtonDisabledTintColor
     }
     
     open override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -283,10 +292,7 @@ open class CreateCommunityChannelViewController: UIViewController, UINavigationC
     }
     
     @objc func onEditingChangeTextField(_ sender: UITextField) {
-        self.rightBarButton.isEnabled = !(sender.text?.isEmpty == true)
-        self.rightBarButton.tintColor = sender.text?.isEmpty == true
-            ? theme.barButtonDisabledTintColor
-            : theme.barButtonTintColor
+        self.updateRightBarButton()
     }
     
     

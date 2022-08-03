@@ -104,8 +104,16 @@ extension SBUBaseChannelModule {
     /// The `SBUBaseChannelModule`'s component class that represents input
     @objcMembers open class Input: UIView, SBUMessageInputViewDelegate {
         
-        /// The input view to send/edit a message. The default value is `SBUMessageInputView` object.
-        public var messageInputView: UIView?
+        /// The `messageInputView` displays an input field where users can send or edit a message. Its default value is set to `SBUMessageInputView` object.
+        /// - NOTE: If this value is updated, an event delegate for `messageInputView` will be internally set as `self`. *However*, if you wish to use a custom object that does *NOT* override `SBUMessageInputView`, you need to manually set an event delegate.
+        public var messageInputView: UIView? {
+            willSet {
+                (messageInputView as? SBUMessageInputView)?.delegate = nil
+            }
+            didSet {
+                (messageInputView as? SBUMessageInputView)?.delegate = self
+            }
+        }
 
         /// The object that is used as the theme of the input component. The theme must adopt the `SBUChannelTheme` class.
         public var theme: SBUChannelTheme? = nil

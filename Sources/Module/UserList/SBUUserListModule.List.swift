@@ -194,7 +194,7 @@ extension SBUUserListModule {
                 } else {
                     self.updateEmptyView(
                         type: self.userListType == .muted
-                        ? .noMutedMembers
+                        ? (self.channel is GroupChannel) ? .noMutedMembers : .noMutedParticipants
                         : .noBannedUsers
                     )
                 }
@@ -253,12 +253,16 @@ extension SBUUserListModule {
                 break
             }
             
+            let user = self.userList[indexPath.row]
+            
             var operatorMode = false
             if let channel = self.channel as? GroupChannel {
                 operatorMode = channel.myRole == .operator
+            } else if let channel = self.channel as? OpenChannel {
+                let currentUserId = SBUGlobals.currentUser?.userId ?? ""
+                operatorMode = channel.isOperator(userId: currentUserId)
             }
             
-            let user = self.userList[indexPath.row]
             if let defaultCell = cell as? SBUUserCell {
                 defaultCell.configure(
                     type: userListType,
@@ -266,12 +270,11 @@ extension SBUUserListModule {
                     operatorMode: operatorMode
                 )
                 
-                if self.channel is GroupChannel {
-                    defaultCell.moreMenuHandler = { [weak self] in
-                        guard let self = self else { return }
-                        self.setMoreMenuTapAction(user)
-                    }
+                defaultCell.moreMenuHandler = { [weak self] in
+                    guard let self = self else { return }
+                    self.setMoreMenuTapAction(user)
                 }
+                
                 defaultCell.userProfileTapHandler = { [weak self] in
                     guard let self = self else { return }
                     self.setUserProfileTapAction(user)

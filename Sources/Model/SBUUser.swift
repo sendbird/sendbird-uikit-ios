@@ -20,11 +20,11 @@ public class SBUUser: NSObject {
     
     /// This is an operator state property.
     /// - Since: 1.2.0
-    public private(set) var isOperator: Bool = false
+    public internal(set) var isOperator: Bool = false
     
     /// This is a muted state property.
     /// - Since: 1.2.0
-    public private(set) var isMuted: Bool = false
+    public internal(set) var isMuted: Bool = false
     
     
     // MARK: - User

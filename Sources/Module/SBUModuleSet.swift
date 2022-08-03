@@ -46,17 +46,29 @@ public class SBUModuleSet {
         get { shared.inviteUserModule }
         set { shared.inviteUserModule = newValue }
     }
+    
+    // Register operator
     /// The module for promoting members
-    public static var registerOperatorModule: SBURegisterOperatorModule {
-        get { shared.registerOperatorModule }
-        set { shared.registerOperatorModule = newValue }
+    public static var groupRegisterOperatorModule: SBURegisterOperatorModule {
+        get { shared.groupRegisterOperatorModule }
+        set { shared.groupRegisterOperatorModule = newValue }
+    }
+    /// The module for promoting members
+    public static var openRegisterOperatorModule: SBURegisterOperatorModule {
+        get { shared.openRegisterOperatorModule }
+        set { shared.openRegisterOperatorModule = newValue }
     }
     
     // User list
     /// The module for the list of users
-    public static var userListModule: SBUUserListModule {
-        get { shared.userListModule }
-        set { shared.userListModule = newValue }
+    public static var groupUserListModule: SBUUserListModule {
+        get { shared.groupUserListModule }
+        set { shared.groupUserListModule = newValue }
+    }
+    /// The module for the list of users
+    public static var openUserListModule: SBUUserListModule {
+        get { shared.openUserListModule }
+        set { shared.openUserListModule = newValue }
     }
     
     // Group Channel Push Settings
@@ -87,9 +99,14 @@ public class SBUModuleSet {
     
     // Moderations
     /// The module for the moderations.
-    public static var moderationsModule: SBUModerationsModule {
-        get { shared.moderationsModule }
-        set { shared.moderationsModule = newValue }
+    public static var groupModerationsModule: SBUModerationsModule {
+        get { shared.groupModerationsModule }
+        set { shared.groupModerationsModule = newValue }
+    }
+    
+    public static var openModerationsModule: SBUModerationsModule {
+        get { shared.openModerationsModule }
+        set { shared.openModerationsModule = newValue }
     }
     
     // Message search
@@ -106,13 +123,16 @@ public class SBUModuleSet {
                 groupChannelModule: SBUGroupChannelModule = SBUGroupChannelModule(),
                 openChannelModule: SBUOpenChannelModule = SBUOpenChannelModule(),
                 inviteUserModule: SBUInviteUserModule = SBUInviteUserModule(),
-                registerOperatorModule: SBURegisterOperatorModule = SBURegisterOperatorModule(),
-                userListModule: SBUUserListModule = SBUUserListModule(),
+                groupRegisterOperatorModule: SBURegisterOperatorModule = SBURegisterOperatorModule(),
+                openRegisterOperatorModule: SBURegisterOperatorModule = SBURegisterOperatorModule(),
+                groupUserListModule: SBUUserListModule = SBUUserListModule(),
+                openUserListModule: SBUUserListModule = SBUUserListModule(),
                 groupChannelPushSettingsModule: SBUGroupChannelPushSettingsModule = SBUGroupChannelPushSettingsModule(),
                 createChannelModule: SBUCreateChannelModule = SBUCreateChannelModule(),
                 groupChannelSettingsModule: SBUGroupChannelSettingsModule = SBUGroupChannelSettingsModule(),
                 openChannelSettingsModule: SBUOpenChannelSettingsModule = SBUOpenChannelSettingsModule(),
-                moderationsModule: SBUModerationsModule = SBUModerationsModule(),
+                groupModerationsModule: SBUModerationsModule = SBUModerationsModule(),
+                openModerationsModule: SBUModerationsModule = SBUModerationsModule(),
                 messageSearchModule: SBUMessageSearchModule = SBUMessageSearchModule()) {
         self.channelListModule = channelListModule
         
@@ -121,9 +141,12 @@ public class SBUModuleSet {
         self.openChannelModule = openChannelModule
         
         self.inviteUserModule = inviteUserModule
-        self.registerOperatorModule = registerOperatorModule
         
-        self.userListModule = userListModule
+        self.groupRegisterOperatorModule = groupRegisterOperatorModule
+        self.openRegisterOperatorModule = openRegisterOperatorModule
+        
+        self.groupUserListModule = groupUserListModule
+        self.openUserListModule = openUserListModule
 
         self.groupChannelPushSettingsModule = groupChannelPushSettingsModule
         
@@ -132,7 +155,8 @@ public class SBUModuleSet {
         self.groupChannelSettingsModule = groupChannelSettingsModule
         self.openChannelSettingsModule = openChannelSettingsModule
         
-        self.moderationsModule = moderationsModule
+        self.groupModerationsModule = groupModerationsModule
+        self.openModerationsModule = openModerationsModule
         
         self.messageSearchModule = messageSearchModule
     }
@@ -146,9 +170,12 @@ public class SBUModuleSet {
     private var openChannelModule: SBUOpenChannelModule
     
     private var inviteUserModule: SBUInviteUserModule
-    private var registerOperatorModule: SBURegisterOperatorModule
     
-    private var userListModule: SBUUserListModule
+    private var groupRegisterOperatorModule: SBURegisterOperatorModule
+    private var openRegisterOperatorModule: SBURegisterOperatorModule
+    
+    private var groupUserListModule: SBUUserListModule
+    private var openUserListModule: SBUUserListModule
 
     private var groupChannelPushSettingsModule: SBUGroupChannelPushSettingsModule
     
@@ -157,7 +184,78 @@ public class SBUModuleSet {
     private var groupChannelSettingsModule: SBUGroupChannelSettingsModule
     private var openChannelSettingsModule: SBUOpenChannelSettingsModule
     
-    private var moderationsModule: SBUModerationsModule
+    private var groupModerationsModule: SBUModerationsModule
+    private var openModerationsModule: SBUModerationsModule
     
     private var messageSearchModule: SBUMessageSearchModule
+}
+
+
+extension SBUModuleSet {
+    @available(*, unavailable, renamed: "init(channelListModule:baseChannelModule:groupChannelModule:openChannelModule:inviteUserModule:groupRegisterOperatorModule:openRegisterOperatorModule:groupUserListModule:openUserListModule:groupChannelPushSettingsModule:createChannelModule:groupChannelSettingsModule:openChannelSettingsModule:groupModerationsModule:openModerationsModule:messageSearchModule:)") // 3.1.0
+    public convenience init(channelListModule: SBUGroupChannelListModule = SBUGroupChannelListModule(),
+                baseChannelModule: SBUBaseChannelModule = SBUBaseChannelModule(),
+                groupChannelModule: SBUGroupChannelModule = SBUGroupChannelModule(),
+                openChannelModule: SBUOpenChannelModule = SBUOpenChannelModule(),
+                inviteUserModule: SBUInviteUserModule = SBUInviteUserModule(),
+                registerOperatorModule: SBURegisterOperatorModule = SBURegisterOperatorModule(),
+                userListModule: SBUUserListModule = SBUUserListModule(),
+                groupChannelPushSettingsModule: SBUGroupChannelPushSettingsModule = SBUGroupChannelPushSettingsModule(),
+                createChannelModule: SBUCreateChannelModule = SBUCreateChannelModule(),
+                groupChannelSettingsModule: SBUGroupChannelSettingsModule = SBUGroupChannelSettingsModule(),
+                openChannelSettingsModule: SBUOpenChannelSettingsModule = SBUOpenChannelSettingsModule(),
+                moderationsModule: SBUModerationsModule = SBUModerationsModule(),
+                messageSearchModule: SBUMessageSearchModule = SBUMessageSearchModule()) {
+        
+        self.init(
+            channelListModule: SBUGroupChannelListModule(),
+            baseChannelModule: SBUBaseChannelModule(),
+            groupChannelModule: SBUGroupChannelModule(),
+            openChannelModule: SBUOpenChannelModule(),
+            inviteUserModule: SBUInviteUserModule(),
+            groupRegisterOperatorModule: SBURegisterOperatorModule(),
+            openRegisterOperatorModule: SBURegisterOperatorModule(),
+            groupUserListModule: SBUUserListModule(),
+            openUserListModule: SBUUserListModule(),
+            groupChannelPushSettingsModule: SBUGroupChannelPushSettingsModule(),
+            createChannelModule: SBUCreateChannelModule(),
+            groupChannelSettingsModule: SBUGroupChannelSettingsModule(),
+            openChannelSettingsModule: SBUOpenChannelSettingsModule(),
+            groupModerationsModule: SBUModerationsModule(),
+            openModerationsModule: SBUModerationsModule(),
+            messageSearchModule: SBUMessageSearchModule()
+        )
+    }
+    
+    @available(*, deprecated, renamed: "groupRegisterOperatorModule") // 3.1.0
+    public static var registerOperatorModule: SBURegisterOperatorModule {
+        get { shared.groupRegisterOperatorModule }
+        set { shared.groupRegisterOperatorModule = newValue }
+    }
+
+    @available(*, deprecated, message: "This property had been seperated to `groupRegisterOperatorModule` and `openRegisterOperatorModule`") // 3.1.0
+    private var registerOperatorModule: SBURegisterOperatorModule {
+        get { self.groupRegisterOperatorModule }
+        set { self.groupRegisterOperatorModule = newValue }
+    }
+
+   
+    @available(*, unavailable, message: "This property had been seperated to `groupUserListModule` and `openUserListModule`") // 3.1.0
+    public static var userListModule: SBUUserListModule { SBUUserListModule() }
+    
+    @available(*, unavailable, message: "This property had been seperated to `groupUserListModule` and `openUserListModule`") // 3.1.0
+    private var userListModule: SBUUserListModule { SBUUserListModule() }
+
+    
+    @available(*, deprecated, renamed: "groupModerationsModule") // 3.1.0
+    public static var moderationsModule: SBUModerationsModule {
+        get { shared.groupModerationsModule }
+        set { shared.groupModerationsModule = newValue }
+    }
+    
+    @available(*, deprecated, message: "This property had been seperated to `groupModerationsModule` and `openModerationsModule`") // 3.1.0
+    private var moderationsModule: SBUModerationsModule {
+        get { self.groupModerationsModule }
+        set { self.groupModerationsModule = newValue }
+    }
 }

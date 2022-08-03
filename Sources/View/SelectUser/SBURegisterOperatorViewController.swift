@@ -46,24 +46,38 @@ open class SBURegisterOperatorViewController: SBUBaseSelectUserViewController, S
     /// - Parameters:
     ///   - channel: Channel object
     ///   - users: `SBUUser` object
-    required public init(channel: GroupChannel, users: [SBUUser]? = nil) {
+    required public init(channel: BaseChannel, users: [SBUUser]? = nil) {
         super.init(nibName: nil, bundle: nil)
         SBULog.info("")
+        
         self.createViewModel(channel: channel, users: users)
-        self.headerComponent = SBUModuleSet.registerOperatorModule.headerComponent
-        self.listComponent = SBUModuleSet.registerOperatorModule.listComponent
+        
+        if self.channelType == .group {
+            self.headerComponent = SBUModuleSet.groupRegisterOperatorModule.headerComponent
+            self.listComponent = SBUModuleSet.groupRegisterOperatorModule.listComponent
+        } else if self.channelType == .open {
+            self.headerComponent = SBUModuleSet.openRegisterOperatorModule.headerComponent
+            self.listComponent = SBUModuleSet.openRegisterOperatorModule.listComponent
+        }
     }
 
     /// If you have channelURL and users objects, use this initialize function.
     /// - Parameters:
     ///   - channelURL: Channel url string
+    ///   - channelType: Channel type
     ///   - users: `SBUUser` object
-    required public init(channelURL: String, users: [SBUUser]? = nil) {
+    required public init(channelURL: String, channelType: ChannelType = .group, users: [SBUUser]? = nil) {
         super.init(nibName: nil, bundle: nil)
         SBULog.info("")
         self.createViewModel(channelURL: channelURL, users: users)
-        self.headerComponent = SBUModuleSet.registerOperatorModule.headerComponent
-        self.listComponent = SBUModuleSet.registerOperatorModule.listComponent
+        
+        if channelType == .group {
+            self.headerComponent = SBUModuleSet.groupRegisterOperatorModule.headerComponent
+            self.listComponent = SBUModuleSet.groupRegisterOperatorModule.listComponent
+        } else if channelType == .open {
+            self.headerComponent = SBUModuleSet.openRegisterOperatorModule.headerComponent
+            self.listComponent = SBUModuleSet.openRegisterOperatorModule.listComponent
+        }
     }
 
     open override func viewDidLoad() {
@@ -91,6 +105,11 @@ open class SBURegisterOperatorViewController: SBUBaseSelectUserViewController, S
         guard channel != nil || channelURL != nil else {
             SBULog.error("Either the channel or the channelURL parameter must be set.")
             return
+        }
+        
+        var channelType = channelType
+        if let channel = channel {
+            channelType = (channel is GroupChannel) ? .group : .open
         }
         
         self.baseViewModel = SBURegisterOperatorViewModel (

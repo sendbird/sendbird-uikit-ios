@@ -67,12 +67,6 @@ open class SBUOpenChannelSettingsViewController: SBUBaseChannelSettingsViewContr
         self.listComponent = SBUModuleSet.openChannelSettingsModule.listComponent
     }
     
-    open override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        self.updateStyles()
-    }
-    
     
     // MARK: - ViewModel
     open override func createViewModel(channel: BaseChannel? = nil, channelURL: String? = nil) {
@@ -111,8 +105,37 @@ open class SBUOpenChannelSettingsViewController: SBUBaseChannelSettingsViewContr
     open func showParticipantsList() {
         guard let channel = self.channel else { return }
         
-        let participantListVC = SBUViewControllerSet.UserListViewController.init(channel: channel, userListType: .participants)
+        let participantListVC = SBUViewControllerSet.OpenUserListViewController.init(channel: channel, userListType: .participants)
         self.navigationController?.pushViewController(participantListVC, animated: true)
+    }
+    
+    /// If you want to use a custom moderationsViewController, override it and implement it.
+    /// - Since: 3.1.0
+    open override func showModerationList() {
+        guard let channel = self.channel else { return }
+        
+        let moderationsVC = SBUViewControllerSet.OpenModerationsViewController.init(channel: channel)
+        self.navigationController?.pushViewController(moderationsVC, animated: true)
+    }
+
+    /// Shows deletes channel confirm alert.
+    /// - Since: 3.1.0
+    open func showDeleteChannelAlert() {
+        let deleteButton = SBUAlertButtonItem(
+            title: SBUStringSet.Delete,
+            color: self.theme.itemDeleteTextColor) { [weak self] info in
+                guard let self = self else { return }
+                self.viewModel?.deleteChannel()
+            }
+        let cancelButton = SBUAlertButtonItem(title: SBUStringSet.Cancel) { _ in }
+        
+        SBUAlertView.show(
+            title: SBUStringSet.ChannelSettings_Delete_Question_Mark,
+            message: SBUStringSet.ChannelSettings_Delete_Description,
+            needInputField: false,
+            confirmButtonItem: deleteButton,
+            cancelButtonItem: cancelButton
+        )
     }
     
     
@@ -146,14 +169,18 @@ open class SBUOpenChannelSettingsViewController: SBUBaseChannelSettingsViewContr
     // MARK: - SBUOpenChannelSettingsModuleListDelegate
     open func openChannelSettingsModule(_ listComponent: SBUOpenChannelSettingsModule.List,
                                         didSelectRowAt indexPath: IndexPath) {
-        let rowValue = indexPath.row + (self.isOperator ? 0 : 1)
-        guard let type = OpenChannelSettingItemType(rawValue: rowValue) else { return }
-        
-        switch type {
-        case .participants: self.showParticipantsList()
-        case .delete: self.viewModel?.deleteChannel()
-        default: break
-        }
+    }
+    
+    open func openChannelSettingsModuleDidSelectModerations(_ listComponent: SBUOpenChannelSettingsModule.List) {
+        self.showModerationList()
+    }
+    
+    open func openChannelSettingsModuleDidSelectParticipants(_ listComponent: SBUOpenChannelSettingsModule.List) {
+        self.showParticipantsList()
+    }
+    
+    open func openChannelSettingsModuleDidSelectDelete(_ listComponent: SBUOpenChannelSettingsModule.List) {
+        self.showDeleteChannelAlert()
     }
     
     

@@ -174,6 +174,13 @@ open class SBUEmptyView: SBUView {
                 to: SBUIconSetType.Metric.iconEmptyView,
                 tintAndResize: false
             )
+        case .noMutedParticipants:
+            self.statusLabel.text = SBUStringSet.Empty_No_Muted_Participants
+            self.statusImageView.image = SBUIconSetType.iconMute.image(
+                with: theme.emptyViewStatusTintColor,
+                to: SBUIconSetType.Metric.iconEmptyView,
+                tintAndResize: false
+            )
         case .noBannedUsers:
             self.statusLabel.text = SBUStringSet.Empty_No_Banned_Users
             self.statusImageView.image = SBUIconSetType.iconBan.image(

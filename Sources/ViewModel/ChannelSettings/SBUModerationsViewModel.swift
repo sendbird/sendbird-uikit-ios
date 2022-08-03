@@ -23,8 +23,9 @@ public protocol SBUModerationsViewModelDelegate: SBUCommonViewModelDelegate {
 open class SBUModerationsViewModel {
     
     // MARK: - Property (Public)
-    public private(set) var channel: GroupChannel?
+    public private(set) var channel: BaseChannel?
     public private(set) var channelURL: String?
+    public private(set) var channelType: ChannelType = .group
     
     
     // MARK: - Property (Private)
@@ -32,22 +33,23 @@ open class SBUModerationsViewModel {
     
     
     // MARK: - Lifecycle
-    init(
-        channel: GroupChannel? = nil,
-        channelURL: String? = nil,
-        delegate:SBUModerationsViewModelDelegate? = nil
-    ) {
-        
+    public init(channel: BaseChannel, delegate:SBUModerationsViewModelDelegate? = nil) {
         self.delegate = delegate
         
-        if let channel = channel {
-            self.channel = channel
-            self.channelURL = channel.channelURL
-        } else if let channelURL = channelURL {
-            self.channelURL = channelURL
-        }
+        self.channelType = (channel is GroupChannel) ? .group : .open
+        self.channel = channel
+        self.channelURL = channel.channelURL
         
-        guard let channelURL = channelURL else { return }
+        guard let channelURL = self.channelURL else { return }
+        self.loadChannel(channelURL: channelURL)
+    }
+    
+    public init(channelURL: String, channelType: ChannelType, delegate:SBUModerationsViewModelDelegate? = nil) {
+        self.delegate = delegate
+        
+        self.channelType = channelType
+        self.channelURL = channelURL
+        
         self.loadChannel(channelURL: channelURL)
     }
     
@@ -67,36 +69,67 @@ open class SBUModerationsViewModel {
                 self.delegate?.shouldUpdateLoadingState(false)
                 self.delegate?.didReceiveError(error, isBlocker: false)
             } else {
-                let completionHandler: ((GroupChannel?, SBError?) -> Void) = {
-                    [weak self] channel, error in
-                    
-                    guard let self = self else { return }
-                    
-                    if let error = error {
-                        self.delegate?.didReceiveError(error, isBlocker: false)
-                    } else if let channel = channel {
-                        self.channel = channel
-                        
-                        let context = MessageContext(source: .eventChannelChanged, sendingStatus: .succeeded)
-                        self.delegate?.moderationsViewModel(
-                            self,
-                            didChangeChannel: channel,
-                            withContext: context
-                        )
-                    }
+                if self.channelType == .group {
+                    self.loadGroupChannel(channelURL: channelURL)
+                } else if self.channelType == .open {
+                    self.loadOpenChannel(channelURL: channelURL)
                 }
-                
-                GroupChannel.getChannel(url: channelURL, completionHandler: completionHandler)
             }
         }
     }
     
+    private func loadGroupChannel(channelURL: String) {
+        let completionHandler: ((GroupChannel?, SBError?) -> Void) = { [weak self] channel, error in
+            guard let self = self else { return }
+            
+            defer { self.delegate?.shouldUpdateLoadingState(false) }
+            
+            if let error = error {
+                self.delegate?.didReceiveError(error, isBlocker: false)
+            } else if let channel = channel {
+                self.channel = channel
+                
+                let context = MessageContext(source: .eventChannelChanged, sendingStatus: .succeeded)
+                self.delegate?.moderationsViewModel(
+                    self,
+                    didChangeChannel: channel,
+                    withContext: context
+                )
+            }
+        }
+        
+        GroupChannel.getChannel(url: channelURL, completionHandler: completionHandler)
+    }
+    
+    private func loadOpenChannel(channelURL: String) {
+        let completionHandler: ((OpenChannel?, SBError?) -> Void) = { [weak self] channel, error in
+            guard let self = self else { return }
+            
+            defer { self.delegate?.shouldUpdateLoadingState(false) }
+            
+            if let error = error {
+                self.delegate?.didReceiveError(error, isBlocker: false)
+            } else if let channel = channel {
+                self.channel = channel
+                
+                let context = MessageContext(source: .eventChannelChanged, sendingStatus: .succeeded)
+                self.delegate?.moderationsViewModel(
+                    self,
+                    didChangeChannel: channel,
+                    withContext: context
+                )
+            }
+        }
+        
+        OpenChannel.getChannel(url: channelURL, completionHandler: completionHandler)
+    }
+
     
     // MARK: - Channel actions
-    /// This function freezes the channel.
+    /// This function freezes the channel. (Group channel)
     /// - Parameter completionHandler: completion handler of freeze status change
     public func freezeChannel(_ completionHandler: ((Bool) -> Void)? = nil) {
-        guard let groupChannel = self.channel else { return }
+        guard let groupChannel = self.channel as? GroupChannel else { return }
         
         self.delegate?.shouldUpdateLoadingState(true)
         
@@ -125,10 +158,10 @@ open class SBUModerationsViewModel {
         }
     }
     
-    /// This function unfreezes the channel.
+    /// This function unfreezes the channel. (Group channel)
     /// - Parameter completionHandler: completion handler of freeze status change
     public func unfreezeChannel(_ completionHandler: ((Bool) -> Void)? = nil) {
-        guard let groupChannel = self.channel else { return }
+        guard let groupChannel = self.channel as? GroupChannel else { return }
         
         self.delegate?.shouldUpdateLoadingState(true)
         

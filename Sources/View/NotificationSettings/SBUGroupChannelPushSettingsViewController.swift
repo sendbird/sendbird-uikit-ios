@@ -158,6 +158,14 @@ open class SBUGroupChannelPushSettingsViewController: SBUBaseViewController, SBU
     open func baseChannelSettingsViewModel(_ viewModel: SBUBaseChannelSettingsViewModel, didChangeChannel channel: BaseChannel?, withContext context: MessageContext) {
     }
     
+    open func baseChannelSettingsViewModel(_ viewModel: SBUBaseChannelSettingsViewModel, shouldDismissForChannelSettings channel: BaseChannel?) {
+        guard let channelVC = SendbirdUI.findChannelViewController(
+            rootViewController: self.navigationController
+        ) else { return }
+        
+        self.navigationController?.popToViewController(channelVC, animated: false)
+    }
+    
     // MARK: - SBUGroupChannelPushSettingsModuleHeaderDelegate
     open func groupChannelPushSettingsModule(_ headerComponent: SBUGroupChannelPushSettingsModule.Header, didUpdateTitleView titleView: UIView?) {
         self.navigationItem.titleView = titleView

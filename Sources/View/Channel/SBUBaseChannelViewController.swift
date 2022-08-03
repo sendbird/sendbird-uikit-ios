@@ -72,7 +72,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     /// - note: The `reverse` and the `previousResultSize` properties in the `MessageListParams` are set in the UIKit. Even though you set that property it will be ignored.
     /// - Parameter baseChannel: Channel object
     /// - Since: 1.0.11
-    init(baseChannel: BaseChannel, messageListParams: MessageListParams? = nil) {
+    public init(baseChannel: BaseChannel, messageListParams: MessageListParams? = nil) {
         super.init(nibName: nil, bundle: nil)
         SBULog.info(#function)
         
@@ -734,8 +734,11 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         _ viewModel: SBUBaseChannelViewModel,
         shouldDismissForChannel channel: BaseChannel?
     ) {
-        if let baseHeaderComponent = self.baseHeaderComponent {
-            baseHeaderComponent.onTapLeftBarButton()
+        if let navigationController = self.navigationController,
+            navigationController.viewControllers.count > 1 {
+            navigationController.popToRootViewController(animated: true)
+        } else {
+            self.dismiss(animated: true, completion: nil)
         }
     }
     
@@ -746,7 +749,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         initialLoad: Bool
     ) {
         guard let baseListComponent = baseListComponent else { return }
-        let emptyViewType: EmptyViewType = (!initialLoad && viewModel.messageList.isEmpty) ? .noMessages : .none
+        let emptyViewType: EmptyViewType = (!initialLoad && viewModel.fullMessageList.isEmpty) ? .noMessages : .none
         baseListComponent.updateEmptyView(type: emptyViewType)
         
         defer {

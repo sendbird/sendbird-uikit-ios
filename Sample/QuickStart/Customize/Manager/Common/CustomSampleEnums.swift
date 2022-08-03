@@ -30,6 +30,7 @@ enum ChannelCustomType: Int {
     case messageListParams
     case messageParams
     case functionOverriding
+    case headerComponentCustom
 }
 
 enum ChannelSettingsCustomType: Int {
@@ -91,7 +92,8 @@ enum CustomSection: Int, CaseIterable {
                     "Custom cell",
                     "MessageListParams",
                     "MessageParams",
-                    "Function Overriding"]
+                    "Function Overriding",
+                    "Custom Header component"]
         case .ChannelSettings:
             return ["UI Component",
                     "Function Overriding"]
@@ -133,7 +135,8 @@ enum CustomSection: Int, CaseIterable {
                     "[ChannelCustomManager cellCustom()]",
                     "[ChannelCustomManager messageListParamsCustom()]",
                     "[ChannelCustomManager messageParamsCustom()]",
-                    "ChannelVC_MessageParam.swift"]
+                    "ChannelVC_MessageParam.swift",
+                    "ChannelVC_CustomHeader.swift"]
         case .ChannelSettings:
             return ["[ChannelSettingsCustomManager uiComponentCustom()]",
                     "ChannelSettingsVC_Overriding.swift"]

@@ -24,8 +24,9 @@ open class SBUModerationsViewController: SBUBaseViewController, SBUModerationsMo
     // MARK: - Logic properties (Public)
     public var viewModel: SBUModerationsViewModel?
     
-    public var channel: GroupChannel? { viewModel?.channel }
+    public var channel: BaseChannel? { viewModel?.channel }
     public var channelURL: String? { viewModel?.channelURL }
+    public var channelType: ChannelType { viewModel?.channelType ?? .group }
     
     
     // MARK: - Lifecycle
@@ -43,24 +44,20 @@ open class SBUModerationsViewController: SBUBaseViewController, SBUModerationsMo
     
     /// If you have channel object, use this initialize function.
     /// - Parameter channel: Channel object
-    required public init(channel: GroupChannel) {
+    required public init(channel: BaseChannel) {
         super.init(nibName: nil, bundle: nil)
         SBULog.info("")
         
         self.createViewModel(channel: channel)
-        self.headerComponent = SBUModuleSet.moderationsModule.headerComponent
-        self.listComponent = SBUModuleSet.moderationsModule.listComponent
     }
     
     /// If you don't have channel object and have channelURL, use this initialize function.
     /// - Parameter channelURL: Channel url string
-    required public init(channelURL: String) {
+    required public init(channelURL: String, channelType: ChannelType) {
         super.init(nibName: nil, bundle: nil)
         SBULog.info("")
         
-        self.createViewModel(channelURL: channelURL)
-        self.headerComponent = SBUModuleSet.moderationsModule.headerComponent
-        self.listComponent = SBUModuleSet.moderationsModule.listComponent
+        self.createViewModel(channelURL: channelURL, channelType: channelType)
     }
     
     open override func viewDidLoad() {
@@ -86,18 +83,33 @@ open class SBUModerationsViewController: SBUBaseViewController, SBUModerationsMo
     
     
     // MARK: - ViewModel
-    open func createViewModel(channel: GroupChannel? = nil,
-                              channelURL: String? = nil) {
+    open func createViewModel(channel: BaseChannel) {
         self.viewModel = SBUModerationsViewModel(
             channel: channel,
-            channelURL: channelURL,
             delegate: self
         )
     }
     
+    open func createViewModel(channelURL: String, channelType: ChannelType) {
+        self.viewModel = SBUModerationsViewModel(
+            channelURL: channelURL,
+            channelType: channelType,
+            delegate: self
+        )
+    }
+
+    
     
     // MARK: - Sendbird UIKit Life cycle
     open override func setupViews() {
+        if channelType == .group {
+            self.headerComponent = SBUModuleSet.groupModerationsModule.headerComponent
+            self.listComponent = SBUModuleSet.groupModerationsModule.listComponent
+        } else if channelType == .open {
+            self.headerComponent = SBUModuleSet.openModerationsModule.headerComponent
+            self.listComponent = SBUModuleSet.openModerationsModule.listComponent
+        }
+        
         // Header component
         self.headerComponent?.configure(delegate: self, theme: self.theme)
         
@@ -156,46 +168,45 @@ open class SBUModerationsViewController: SBUBaseViewController, SBUModerationsMo
     /// This is a function that shows the operator List.
     /// If you want to use a custom UserListViewController, override it and implement it.
     open func showOperatorList() {
-        guard let channel = self.channel else {
-            SBULog.error("[Failed] Channel object is nil")
-            return
-        }
-        
-        let operatorListVC = SBUViewControllerSet.UserListViewController.init(
-            channel: channel,
-            userListType: .operators
-        )
-        self.navigationController?.pushViewController(operatorListVC, animated: true)
+        self.showUserList(userListType: .operators)
     }
     
     /// This is a function that shows the muted member List.
     /// If you want to use a custom UserListViewController, override it and implement it.
     open func showMutedMemberList() {
-        guard let channel = self.channel else {
-            SBULog.error("[Failed] Channel object is nil")
-            return
-        }
-        
-        let mutedMemberListVC = SBUViewControllerSet.UserListViewController.init(
-            channel: channel,
-            userListType: .muted
-        )
-        self.navigationController?.pushViewController(mutedMemberListVC, animated: true)
+        self.showUserList(userListType: .muted)
+    }
+    
+    open func showMutedParticipantList() {
+        self.showUserList(userListType: .muted)
     }
     
     /// This is a function that shows the banned member List.
     /// If you want to use a custom UserListViewController, override it and implement it.
     open func showBannedUserList() {
+        self.showUserList(userListType: .banned)
+    }
+    
+    open func showUserList(userListType: ChannelUserListType) {
         guard let channel = self.channel else {
             SBULog.error("[Failed] Channel object is nil")
             return
         }
         
-        let bannedUserListVC = SBUViewControllerSet.UserListViewController.init(
-            channel: channel,
-            userListType: .banned
-        )
-        self.navigationController?.pushViewController(bannedUserListVC, animated: true)
+        var listVC: UIViewController
+        if channelType == .open {
+            listVC = SBUViewControllerSet.OpenUserListViewController.init(
+                channel: channel,
+                userListType: userListType
+            )
+        } else {
+            listVC = SBUViewControllerSet.GroupUserListViewController.init(
+                channel: channel,
+                userListType: userListType
+            )
+        }
+        
+        self.navigationController?.pushViewController(listVC, animated: true)
     }
     
     
@@ -240,13 +251,16 @@ open class SBUModerationsViewController: SBUBaseViewController, SBUModerationsMo
     
     open func moderationsModule(_ listComponent: SBUModerationsModule.List,
                                 didSelectRowAt indexPath: IndexPath) {
-        let isBroadcast = self.channel?.isBroadcast ?? false
-        let type = ModerationItemType.allTypes(isBroadcast: isBroadcast)[indexPath.row]
+        guard let channel = self.channel else { return }
+        let type = ModerationItemType.allTypes(channel: channel)[indexPath.row]
+        
         switch type {
         case .operators:
             self.showOperatorList()
         case .mutedMembers:
             self.showMutedMemberList()
+        case .mutedParticipants:
+            self.showMutedParticipantList()
         case .bannedUsers:
             self.showBannedUserList()
         case .freezeChannel:

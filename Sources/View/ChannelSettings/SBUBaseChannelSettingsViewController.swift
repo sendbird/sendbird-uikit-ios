@@ -314,7 +314,7 @@ open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActio
     open func showNotifications() {
         guard let channel = self.channel else { return }
         if channel is GroupChannel {
-            let pushSettingsVC = SBUViewControllerSet.groupChannelPushSettingsViewController.init(channel: channel)
+            let pushSettingsVC = SBUViewControllerSet.GroupChannelPushSettingsViewController.init(channel: channel)
             self.navigationController?.pushViewController(pushSettingsVC, animated: true)
         }
     }
@@ -426,4 +426,21 @@ open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActio
         didChangeChannel channel: BaseChannel?,
         withContext context: MessageContext
     ) { }
+    
+    open func baseChannelSettingsViewModel(_ viewModel: SBUBaseChannelSettingsViewModel, shouldDismissForChannelSettings channel: BaseChannel?) {
+        if channel != nil {
+            guard let channelVC = SendbirdUI.findChannelViewController(
+                rootViewController: self.navigationController
+            ) else { return }
+            
+            self.navigationController?.popToViewController(channelVC, animated: false)
+        } else {
+            guard let channelListVC = SendbirdUI.findChannelListViewController(
+                rootViewController: self.navigationController,
+                channelType: (self.channel is OpenChannel) ? .open : .group
+            ) else { return }
+            
+            self.navigationController?.popToViewController(channelListVC, animated: false)
+        }
+    }
 }

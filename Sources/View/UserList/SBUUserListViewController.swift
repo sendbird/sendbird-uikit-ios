@@ -35,6 +35,7 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
     
     public var channel: BaseChannel? { viewModel?.channel }
     public var channelURL: String? { viewModel?.channelURL }
+    public var channelType: ChannelType { viewModel?.channelType ?? .group }
     
     public var userList: [SBUUser] { viewModel?.userList ?? [] }
     public var userListType: ChannelUserListType { viewModel?.userListType ?? .none }
@@ -79,8 +80,13 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
             type: userListType
         )
         
-        self.headerComponent = SBUModuleSet.userListModule.headerComponent
-        self.listComponent = SBUModuleSet.userListModule.listComponent
+        if channelType == .group {
+            self.headerComponent = SBUModuleSet.groupUserListModule.headerComponent
+            self.listComponent = SBUModuleSet.groupUserListModule.listComponent
+        } else if channelType == .open {
+            self.headerComponent = SBUModuleSet.openUserListModule.headerComponent
+            self.listComponent = SBUModuleSet.openUserListModule.listComponent
+        }
     }
     
     /// If you have channelURL and users objects, use this initialize function.
@@ -103,8 +109,13 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
             type: userListType
         )
         
-        self.headerComponent = SBUModuleSet.userListModule.headerComponent
-        self.listComponent = SBUModuleSet.userListModule.listComponent
+        if channelType == .group {
+            self.headerComponent = SBUModuleSet.groupUserListModule.headerComponent
+            self.listComponent = SBUModuleSet.groupUserListModule.listComponent
+        } else if channelType == .open {
+            self.headerComponent = SBUModuleSet.openUserListModule.headerComponent
+            self.listComponent = SBUModuleSet.openUserListModule.listComponent
+        }
     }
     
     open override func viewDidLoad() {
@@ -160,6 +171,7 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
         self.headerComponent?.configure(
             delegate: self,
             userListType: self.userListType,
+            channelType: self.channelType,
             theme: self.theme,
             componentTheme: self.componentTheme
         )
@@ -212,18 +224,21 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
     
     /// If you want to use a custom inviteChannelViewController, override it and implement it.
     open func showInviteUser() {
-        guard let channel = self.channel as? GroupChannel else { return }
-        
-        let type: ChannelInviteListType = self.userListType == .operators ? .operators : .users
-        switch type {
-        case .users:
-            let inviteUserVC = SBUViewControllerSet.InviteUserViewContoller.init(channel: channel)
-            self.navigationController?.pushViewController(inviteUserVC, animated: true)
-        case .operators:
-            let registerOperatorVC = SBUViewControllerSet.RegisterOperatorViewController.init(channel: channel)
+        if let groupChannel = self.channel as? GroupChannel {
+            let type: ChannelInviteListType = self.userListType == .operators ? .operators : .users
+            switch type {
+            case .users:
+                let inviteUserVC = SBUViewControllerSet.InviteUserViewContoller.init(channel: groupChannel)
+                self.navigationController?.pushViewController(inviteUserVC, animated: true)
+            case .operators:
+                let registerOperatorVC = SBUViewControllerSet.GroupChannelRegisterOperatorViewController.init(channel: groupChannel)
+                self.navigationController?.pushViewController(registerOperatorVC, animated: true)
+            default:
+                break
+            }
+        } else if let openChannel = self.channel as? OpenChannel {
+            let registerOperatorVC = SBUViewControllerSet.OpenChannelRegisterOperatorViewController.init(channel: openChannel)
             self.navigationController?.pushViewController(registerOperatorVC, animated: true)
-        default:
-            break
         }
     }
     
@@ -297,8 +312,6 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
     
     open func userListModule(_ listComponent: SBUUserListModule.List,
                                didTapMoreMenuFor user: SBUUser) {
-        guard let channel = self.channel as? GroupChannel else { return }
-        
         let userNameItem = SBUActionSheetItem(
             title: user.nickname ?? user.userId,
             color: self.componentTheme.actionSheetSubTextColor,
@@ -306,29 +319,34 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
             completionHandler: nil
         )
         
+        var isOperator = user.isOperator
+        if let channel = self.channel as? OpenChannel {
+            isOperator = channel.isOperator(userId: user.userId)
+        }
+        
         let operatorItem = SBUActionSheetItem(
-            title: user.isOperator || self.userListType == .operators
+            title: isOperator || self.userListType == .operators
             ? SBUStringSet.UserList_Unregister_Operator
             : SBUStringSet.UserList_Register_Operator,
             color: self.componentTheme.actionSheetTextColor,
             textAlignment: .center
         ) { [weak self] in
             guard let self = self else { return }
-            if user.isOperator || self.userListType == .operators {
+            if isOperator || self.userListType == .operators {
                 self.viewModel?.unregisterOperator(user: user)
             } else {
                 self.viewModel?.registerAsOperator(user: user)
             }
         }
         let muteItem = SBUActionSheetItem(
-            title: user.isMuted
+            title: user.isMuted || self.userListType == .muted
             ? SBUStringSet.UserList_Unmute
             : SBUStringSet.UserList_Mute,
             color: self.componentTheme.actionSheetTextColor,
             textAlignment: .center
         ) { [weak self] in
             guard let self = self else { return }
-            if user.isMuted {
+            if user.isMuted || self.userListType == .muted {
                 self.viewModel?.unmute(user: user)
             } else {
                 self.viewModel?.mute(user: user)
@@ -359,10 +377,16 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
         
         var items: [SBUActionSheetItem] = [userNameItem]
         
+        var isBroadcast = false
+        if let channel = self.channel as? GroupChannel {
+            isBroadcast = channel.isBroadcast
+        }
+        
         switch self.userListType {
         case .members:
-            let isBroadcast = channel.isBroadcast
             items += isBroadcast ? [operatorItem, banItem] : [operatorItem, muteItem, banItem]
+        case .participants:
+            items += [operatorItem, muteItem, banItem]
         case .operators:
             items += [operatorItem]
         case .muted:
@@ -441,6 +465,24 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
                                   didChangeChannel channel: BaseChannel?,
                                   withContext context: MessageContext) {
         self.listComponent?.reloadTableView()
+    }
+    
+    open func userListViewModel(_ viewModel: SBUUserListViewModel,
+                                shouldDismissForUserList channel: BaseChannel?) {
+        if channel != nil {
+            guard let channelVC = SendbirdUI.findChannelViewController(
+                rootViewController: self.navigationController
+            ) else { return }
+            
+            self.navigationController?.popToViewController(channelVC, animated: false)
+        } else {
+            guard let channelListVC = SendbirdUI.findChannelListViewController(
+                rootViewController: self.navigationController,
+                channelType: (self.channel is OpenChannel) ? .open : .group
+            ) else { return }
+            
+            self.navigationController?.popToViewController(channelListVC, animated: false)
+        }
     }
     
     

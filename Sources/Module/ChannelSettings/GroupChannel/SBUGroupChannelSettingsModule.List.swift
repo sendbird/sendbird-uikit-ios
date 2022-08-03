@@ -16,6 +16,26 @@ public protocol SBUGroupChannelSettingsModuleListDelegate: SBUBaseChannelSetting
     ///    - listComponent: `SBUGroupChannelSettingsModule.List` object.
     ///    - indexPath: An index path locating the row in table view of `listComponent
     func groupChannelSettingsModule(_ listComponent: SBUGroupChannelSettingsModule.List, didSelectRowAt indexPath: IndexPath)
+    
+    /// Called when the moderations item cell was selected in the `listComponent`.
+    /// - Parameter listComponent: `SBUGroupChannelSettingsModule.List` object.
+    func groupChannelSettingsModuleDidSelectModerations(_ listComponent: SBUGroupChannelSettingsModule.List)
+    
+    /// Called when the notifications item cell was selected in the `listComponent`.
+    /// - Parameter listComponent: `SBUGroupChannelSettingsModule.List` object.
+    func groupChannelSettingsModuleDidSelectNotifications(_ listComponent: SBUGroupChannelSettingsModule.List)
+    
+    /// Called when the members item cell was selected in the `listComponent`.
+    /// - Parameter listComponent: `SBUGroupChannelSettingsModule.List` object.
+    func groupChannelSettingsModuleDidSelectMembers(_ listComponent: SBUGroupChannelSettingsModule.List)
+    
+    /// Called when the search item cell was selected in the `listComponent`.
+    /// - Parameter listComponent: `SBUGroupChannelSettingsModule.List` object.
+    func groupChannelSettingsModuleDidSelectSearch(_ listComponent: SBUGroupChannelSettingsModule.List)
+    
+    /// Called when the leave item cell was selected in the `listComponent`.
+    /// - Parameter listComponent: `SBUGroupChannelSettingsModule.List` object.
+    func groupChannelSettingsModuleDidSelectLeave(_ listComponent: SBUGroupChannelSettingsModule.List)
 }
 
 
@@ -40,7 +60,7 @@ extension SBUGroupChannelSettingsModule {
         }
 
         public weak var channel: GroupChannel? { self.baseChannel as? GroupChannel }
-
+        
         
         // MARK: - LifeCycle
         @available(*, unavailable, renamed: "SBUGroupChannelSettingsModule.List()")
@@ -66,6 +86,8 @@ extension SBUGroupChannelSettingsModule {
             
             self.theme = theme
             
+            self.setupItems()
+            
             self.setupViews()
             self.setupLayouts()
             self.setupStyles()
@@ -75,22 +97,121 @@ extension SBUGroupChannelSettingsModule {
             super.setupViews()
             
             self.tableView.register(
-                type(of: SBUChannelSettingCell()),
-                forCellReuseIdentifier: SBUChannelSettingCell.sbu_className
+                type(of: SBUGroupChannelSettingCell()),
+                forCellReuseIdentifier: SBUGroupChannelSettingCell.sbu_className
             )
+        }
+        
+        /// Sets up items for tableView cell configuration.
+        open override func setupItems() {
+            let moderationsItem = self.createModerationsItem()
+            let notificationsItem = self.createNotificationItem()
+            let membersItem = self.createMembersItem()
+            let searchItem = self.createSearchItem()
+            let leaveItem = self.createLeaveItem()
+
+            var items = self.isOperator ? [moderationsItem] : []
+            items += [notificationsItem, membersItem]
+            if SBUAvailable.isSupportMessageSearch() {
+                items += [searchItem]
+            }
+            items += [leaveItem]
+            
+            self.items = items
+        }
+        
+        open func createModerationsItem() -> SBUChannelSettingItem {
+            let moderationsItem = SBUChannelSettingItem(
+                title: SBUStringSet.ChannelSettings_Moderations,
+                icon: SBUIconSetType.iconModerations.image(
+                    with: theme?.cellTypeIconTintColor,
+                    to: SBUIconSetType.Metric.defaultIconSize
+                ),
+                isRightButtonHidden: false) { [weak self] in
+                    guard let self = self else { return }
+                    self.delegate?.groupChannelSettingsModuleDidSelectModerations(self)
+                }
+
+            return moderationsItem
+        }
+        
+        open func createNotificationItem() -> SBUChannelSettingItem {
+            var notificationSubTitle = ""
+            switch channel?.myPushTriggerOption {
+            case .off:
+                notificationSubTitle = SBUStringSet.ChannelSettings_Notifications_Off
+            case .mentionOnly:
+                notificationSubTitle = SBUStringSet.ChannelSettings_Notifications_Mentiones_Only
+            default:
+                notificationSubTitle = SBUStringSet.ChannelSettings_Notifications_On
+            }
+            
+            let notificationsItem = SBUChannelSettingItem(
+                title: SBUStringSet.ChannelSettings_Notifications,
+                subTitle: notificationSubTitle,
+                icon: SBUIconSetType.iconNotifications.image(
+                    with: theme?.cellTypeIconTintColor,
+                    to: SBUIconSetType.Metric.defaultIconSize
+                ),
+                isRightButtonHidden: false) { [weak self] in
+                    guard let self = self else { return }
+                    self.delegate?.groupChannelSettingsModuleDidSelectNotifications(self)
+                }
+            
+            return notificationsItem
+        }
+        
+        open func createMembersItem() -> SBUChannelSettingItem {
+            let membersItem = SBUChannelSettingItem(
+                title: SBUStringSet.ChannelSettings_Members_Title,
+                subTitle: channel?.memberCount.unitFormattedString,
+                icon: SBUIconSetType.iconMembers.image(
+                    with: theme?.cellTypeIconTintColor,
+                    to: SBUIconSetType.Metric.defaultIconSize
+                ),
+                isRightButtonHidden: false) { [weak self] in
+                    guard let self = self else { return }
+                    self.delegate?.groupChannelSettingsModuleDidSelectMembers(self)
+                }
+            
+            return membersItem
+        }
+        
+        open func createSearchItem() -> SBUChannelSettingItem {
+            let searchItem = SBUChannelSettingItem(
+                title: SBUStringSet.ChannelSettings_Search,
+                icon: SBUIconSetType.iconSearch.image(
+                    with: theme?.cellTypeIconTintColor,
+                    to: SBUIconSetType.Metric.defaultIconSize
+                )) { [weak self] in
+                    guard let self = self else { return }
+                    self.delegate?.groupChannelSettingsModuleDidSelectSearch(self)
+                }
+            
+            return searchItem
+        }
+        
+        open func createLeaveItem() -> SBUChannelSettingItem {
+            let leaveItem = SBUChannelSettingItem(
+                title: SBUStringSet.ChannelSettings_Leave,
+                icon: SBUIconSetType.iconLeave.image(
+                    with: theme?.cellLeaveIconColor,
+                    to: SBUIconSetType.Metric.defaultIconSize
+                )) { [weak self] in
+                    guard let self = self else { return }
+                    self.delegate?.groupChannelSettingsModuleDidSelectLeave(self)
+                }
+            
+            return leaveItem
         }
         
         
         // MARK: - TableView: Cell
         open override func configureCell(_ cell: UITableViewCell?, indexPath: IndexPath) {
-            guard let defaultCell = cell as? SBUChannelSettingCell else { return }
+            guard let defaultCell = cell as? SBUGroupChannelSettingCell else { return }
             
-            let rowValue = indexPath.row + (self.isOperator ? 0 : 1)
-            guard let type = ChannelSettingItemType.from(row: rowValue) else { return }
-            
-            if let channel = self.channel {
-                defaultCell.configure(type: type, channel: channel)
-            }
+            let item = self.items[indexPath.row]
+            defaultCell.configure(with: item)
         }
     }
 }
@@ -101,7 +222,7 @@ extension SBUGroupChannelSettingsModule.List {
     open override func tableView(_ tableView: UITableView,
                         cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: UITableViewCell? = tableView.dequeueReusableCell(
-            withIdentifier: SBUChannelSettingCell.sbu_className)
+            withIdentifier: SBUGroupChannelSettingCell.sbu_className)
         
         cell?.selectionStyle = .none
         
@@ -111,12 +232,15 @@ extension SBUGroupChannelSettingsModule.List {
     }
     
     open override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return ChannelSettingItemType.allTypes(isOperator: self.isOperator).count
+        return self.items.count
     }
     
     open override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.endEditingChannelInfoView()
         
         self.delegate?.groupChannelSettingsModule(self, didSelectRowAt: indexPath)
+        
+        let item = self.items[indexPath.row]
+        item.tapHandler?()
     }
 }

@@ -23,6 +23,15 @@ public protocol SBUUserListViewModelDelegate: SBUCommonViewModelDelegate {
         didChangeChannel channel: BaseChannel?,
         withContext context: MessageContext
     )
+    
+    /// Called when the user list should dismiss
+    /// - Parameters:
+    ///   - viewModel: `SBUUserListViewModel` object
+    ///   - channel: channel object. If you want to move to the channel view, put the channel object or empty the channel object to go to the channel list.
+    func userListViewModel(
+        _ viewModel: SBUUserListViewModel,
+        shouldDismissForUserList channel: BaseChannel?
+    )
 }
 
 
@@ -52,7 +61,8 @@ open class SBUUserListViewModel: NSObject  {
     
     public var memberListQuery: MemberListQuery? // Group
     public var operatorListQuery: OperatorListQuery? // Group/Open
-    public var mutedMemberListQuery: MemberListQuery? // Group/Open
+    public var mutedMemberListQuery: MemberListQuery? // Group
+    public var mutedParticipantListQuery: MutedUserListQuery? // Open
     public var bannedUserListQuery: BannedUserListQuery? // Group/Open
     public var participantListQuery: ParticipantListQuery? // Open
     
@@ -81,6 +91,7 @@ open class SBUUserListViewModel: NSObject  {
         memberListQuery: MemberListQuery? = nil,
         operatorListQuery: OperatorListQuery? = nil,
         mutedMemberListQuery: MemberListQuery? = nil,
+        mutedParticipantListQuery: MutedUserListQuery? = nil,
         bannedUserListQuery: BannedUserListQuery? = nil,
         participantListQuery: ParticipantListQuery? = nil,
         delegate: SBUUserListViewModelDelegate? = nil,
@@ -104,6 +115,7 @@ open class SBUUserListViewModel: NSObject  {
         self.memberListQuery = memberListQuery
         self.operatorListQuery = operatorListQuery
         self.mutedMemberListQuery = mutedMemberListQuery
+        self.mutedParticipantListQuery = mutedParticipantListQuery
         self.bannedUserListQuery = bannedUserListQuery
         self.participantListQuery = participantListQuery
         
@@ -229,7 +241,11 @@ open class SBUUserListViewModel: NSObject  {
             case .operators:
                 self.loadNextOperatorList()
             case .muted:
-                self.loadNextMutedMemberList()
+                if self.channel is GroupChannel {
+                    self.loadNextMutedMemberList()
+                } else if self.channel is OpenChannel {
+                    self.loadNextMutedParticipantList()
+                }
             case .banned:
                 self.loadNextBannedUserList()
             case .participants:
@@ -350,13 +366,51 @@ open class SBUUserListViewModel: NSObject  {
         })
     }
     
+    /// This function loads muted participant list. (Open channel)
+    ///
+    /// If you want to call a list of muted participants, use the `loadNextUserList(reset:users:)` function.
+    /// - Warning: Use this function only when you need to call `MutedParticipantList` alone.
+    ///
+    /// - Since: 3.1.0
+    private func loadNextMutedParticipantList() {
+        if self.mutedParticipantListQuery == nil, let channel = self.channel as? OpenChannel {
+            let params = MutedUserListQueryParams()
+            params.limit = SBUUserListViewModel.limit
+            self.mutedParticipantListQuery = channel.createMutedUserListQuery(params: params)
+        }
+        
+        guard self.mutedParticipantListQuery?.hasNext == true else {
+            self.isLoading = false
+            self.delegate?.shouldUpdateLoadingState(false)
+            SBULog.info("All muted participants have been loaded.")
+            return
+        }
+        
+        self.mutedParticipantListQuery?.loadNextPage(completionHandler: {
+            [weak self, weak channel] members, error in
+            guard let self = self, let channel = channel else { return }
+            defer {
+                self.isLoading = false
+                self.delegate?.shouldUpdateLoadingState(false)
+            }
+            
+            if let error = error {
+                self.delegate?.didReceiveError(error)
+                return
+            }
+            guard let members = members?.sbu_convertUserList() else { return }
+            self.userList += members.sbu_updateOperatorStatus(channel: channel)
+            self.delegate?.userListViewModel(self, didChangeUsers: self.userList, needsToReload: true)
+        })
+    }
+    
     
     /// This function loads banned user list.
     ///
     /// If you want to call a list of banned users, use the `loadNextUserList(reset:users:)` function.
     /// - Warning: Use this function only when you need to call `BannedUserList` alone.
     private func loadNextBannedUserList() {
-        if self.bannedUserListQuery == nil, let channel = self.channel as? GroupChannel {
+        if self.bannedUserListQuery == nil, let channel = self.channel {
             let params = BannedUserListQueryParams()
             params.limit = SBUUserListViewModel.limit
             self.bannedUserListQuery = channel.createBannedUserListQuery(params: params)
@@ -365,7 +419,7 @@ open class SBUUserListViewModel: NSObject  {
         guard self.bannedUserListQuery?.hasNext == true else {
             self.isLoading = false
             self.delegate?.shouldUpdateLoadingState(false)
-            SBULog.info("All muted users have been loaded.")
+            SBULog.info("All banned users have been loaded.")
             return
         }
         
@@ -408,8 +462,8 @@ open class SBUUserListViewModel: NSObject  {
         }
         
         self.participantListQuery?.loadNextPage(completionHandler: {
-            [weak self] participants, error in
-            guard let self = self else { return }
+            [weak self, weak channel] participants, error in
+            guard let self = self, let channel = channel else { return }
             defer {
                 self.isLoading = false
                 self.delegate?.shouldUpdateLoadingState(false)
@@ -420,7 +474,7 @@ open class SBUUserListViewModel: NSObject  {
                 return
             }
             guard let participants = participants?.sbu_convertUserList() else { return }
-            self.userList += participants
+            self.userList += participants.sbu_updateOperatorStatus(channel: channel)
             self.delegate?.userListViewModel(self, didChangeUsers: self.userList, needsToReload: true)
         })
     }
@@ -464,7 +518,11 @@ open class SBUUserListViewModel: NSObject  {
         case .operators:
             hasNext = self.operatorListQuery?.hasNext ?? false
         case .muted:
-            hasNext = self.mutedMemberListQuery?.hasNext ?? false
+            if self.channel is GroupChannel {
+                hasNext = self.mutedMemberListQuery?.hasNext ?? false
+            } else if self.channel is OpenChannel {
+                hasNext = self.mutedParticipantListQuery?.hasNext ?? false
+            }
         case .banned:
             hasNext = self.bannedUserListQuery?.hasNext ?? false
         case .participants:
@@ -480,6 +538,7 @@ open class SBUUserListViewModel: NSObject  {
         self.memberListQuery = nil
         self.operatorListQuery = nil
         self.mutedMemberListQuery = nil
+        self.mutedParticipantListQuery = nil
         self.bannedUserListQuery = nil
         self.participantListQuery = nil
         self.userList = []
@@ -578,6 +637,38 @@ open class SBUUserListViewModel: NSObject  {
 
 
 // MARK: - GroupChannelDelegate
+extension SBUUserListViewModel: BaseChannelDelegate {
+    public func channel(_ channel: BaseChannel, userWasMuted user: RestrictedUser) {
+        guard self.userListType != .members,
+              self.userListType != .participants else { return }
+        self.resetUserList()
+    }
+    public func channel(_ channel: BaseChannel, userWasUnmuted user: User) {
+        guard self.userListType != .members,
+              self.userListType != .participants else { return }
+        self.resetUserList()
+    }
+    public func channelDidUpdateOperators(_ channel: BaseChannel) {
+        guard self.userListType != .members,
+              self.userListType != .participants else { return }
+        self.resetUserList()
+    }
+    public func channel(_ channel: BaseChannel, userWasBanned user: RestrictedUser) {
+        guard self.userListType != .members,
+              self.userListType != .participants else { return }
+        self.resetUserList()
+    }
+    public func channel(_ channel: BaseChannel, userWasUnbanned user: User) {
+        guard self.userListType != .members,
+              self.userListType != .participants else { return }
+        self.resetUserList()
+    }
+    
+    public func channelWasDeleted(_ channelURL: String, channelType: ChannelType) {
+        self.delegate?.userListViewModel(self, shouldDismissForUserList: nil)
+    }
+}
+
 extension SBUUserListViewModel: GroupChannelDelegate {
     open func channel(_ channel: GroupChannel, userDidJoin user: User) {
         self.resetUserList()
@@ -591,10 +682,10 @@ extension SBUUserListViewModel: GroupChannelDelegate {
 // MARK: - OpenChannelDelegate
 extension SBUUserListViewModel: OpenChannelDelegate {
     open func channel(_ channel: OpenChannel, userDidExit user: User) {
-        self.resetUserList()
+//        self.resetUserList()
     }
 
     open func channel(_ channel: OpenChannel, userDidEnter user: User) {
-        self.resetUserList()
+//        self.resetUserList()
     }
 }

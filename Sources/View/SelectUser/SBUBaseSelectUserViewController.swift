@@ -23,8 +23,9 @@ open class SBUBaseSelectUserViewController: SBUBaseViewController, SBUBaseSelect
     // MARK: - Logic properties (Public)
     public var baseViewModel: SBUBaseSelectUserViewModel?
     
-    public var channel: GroupChannel? { baseViewModel?.channel as? GroupChannel }
+    public var channel: BaseChannel? { baseViewModel?.channel }
     public var channelURL: String? { baseViewModel?.channelURL }
+    public var channelType: ChannelType { baseViewModel?.channelType ?? .group }
     
     public var userList: [SBUUser] { baseViewModel?.userList ?? [] }
     public var selectedUserList: Set<SBUUser> { baseViewModel?.selectedUserList ?? [] }

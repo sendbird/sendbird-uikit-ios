@@ -89,6 +89,12 @@ extension SBURegisterOperatorModule {
                 user: user,
                 isChecked: self.isSelectedUser(user)
             )
+            
+            if user.isOperator {
+                defaultCell.operatorLabel.isHidden = false
+                defaultCell.checkboxButton.isEnabled = false
+                defaultCell.isUserInteractionEnabled = false
+            }
         }
     }
 }

@@ -149,10 +149,9 @@ extension SBUModerationsModule {
         ///   - indexPath: indexPath
         open func configureCell(_ cell: UITableViewCell?, indexPath: IndexPath) {
             guard let defaultCell = cell as? SBUModerationCell,
-                  let channel = self.channel as? GroupChannel else { return }
+                  let channel = self.channel else { return }
             
-            let isBroadcast = channel.isBroadcast
-            let type = ModerationItemType.allTypes(isBroadcast: isBroadcast)[indexPath.row]
+            let type = ModerationItemType.allTypes(channel: channel)[indexPath.row]
             defaultCell.configure(type: type, channel: channel)
             
             if type == .freezeChannel {
@@ -176,11 +175,8 @@ extension SBUModerationsModule {
 // MARK: - UITableView relations
 extension SBUModerationsModule.List: UITableViewDataSource, UITableViewDelegate {
     open func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        var isBroadcast = false
-        if let channel = self.channel as? GroupChannel {
-            isBroadcast = channel.isBroadcast
-        }
-        return ModerationItemType.allTypes(isBroadcast: isBroadcast).count
+        guard let channel = self.channel else { return 0 }
+        return ModerationItemType.allTypes(channel: channel).count
     }
     
     open func tableView(_ tableView: UITableView,

@@ -720,8 +720,6 @@ extension SBUOpenChannelViewModel {
     // MARK: ConnectionDelegate
     open override func didSucceedReconnection() {
         super.didSucceedReconnection()
-        
-        self.refreshChannel()
     }
 }
 
@@ -769,6 +767,8 @@ extension SBUOpenChannelViewModel: OpenChannelDelegate {
     open override func channelWasChanged(_ channel: BaseChannel) {
         guard self.channel?.channelURL == channel.channelURL else { return }
         guard let channel = channel as? OpenChannel else { return }
+        self.channel = channel
+        
         SBULog.info("Channel was changed, ChannelURL:\(channel.channelURL)")
 
         let context = MessageContext(source: .eventChannelChanged, sendingStatus: .succeeded)
@@ -835,7 +835,7 @@ extension SBUOpenChannelViewModel: OpenChannelDelegate {
     open func channel(_ channel: OpenChannel, userDidEnter user: User) {
         guard self.channel?.channelURL == channel.channelURL else { return }
 
-        let context = MessageContext(source: .eventChannelChanged, sendingStatus: .succeeded)
+        let context = MessageContext(source: .eventChannelMemberCountChanged, sendingStatus: .succeeded)
         self.delegate?.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
         self.delegate?.openChannelViewModel(self, userDidEnter: user, forChannel: channel)
     }
@@ -843,7 +843,7 @@ extension SBUOpenChannelViewModel: OpenChannelDelegate {
     open func channel(_ channel: OpenChannel, userDidExit user: User) {
         guard self.channel?.channelURL == channel.channelURL else { return }
         
-        let context = MessageContext(source: .eventChannelChanged, sendingStatus: .succeeded)
+        let context = MessageContext(source: .eventChannelMemberCountChanged, sendingStatus: .succeeded)
         self.delegate?.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
         self.delegate?.openChannelViewModel(self, userDidExit: user, forChannel: channel)
     }

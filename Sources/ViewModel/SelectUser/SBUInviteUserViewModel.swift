@@ -37,14 +37,14 @@ open class SBUInviteUserViewModel: SBUBaseSelectUserViewModel {
     
     
     // MARK: - Life Cycle
-    init(channel: BaseChannel? = nil,
-         channelURL: String? = nil,
-         channelType: ChannelType = .group,
-         users: [SBUUser]? = nil,
-         userListQuery: ApplicationUserListQuery? = nil,
-         memberListQuery: MemberListQuery? = nil,
-         delegate: SBUInviteUserViewModelDelegate? = nil,
-         dataSource: SBUInviteUserViewModelDataSource? = nil) {
+    public init(channel: BaseChannel? = nil,
+                channelURL: String? = nil,
+                channelType: ChannelType = .group,
+                users: [SBUUser]? = nil,
+                userListQuery: ApplicationUserListQuery? = nil,
+                memberListQuery: MemberListQuery? = nil,
+                delegate: SBUInviteUserViewModelDelegate? = nil,
+                dataSource: SBUInviteUserViewModelDataSource? = nil) {
 
         super.init(
             channel: channel,

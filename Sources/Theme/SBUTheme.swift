@@ -1693,6 +1693,9 @@ public class SBUChannelSettingsTheme {
         theme.itemTextColor = SBUColorSet.onlight01
         theme.itemColor = SBUColorSet.primary300
         
+        // Alert
+        theme.itemDeleteTextColor = SBUColorSet.error300
+        
         // Url Info
         theme.urlTitleFont = SBUFontSet.body2
         theme.urlTitleColor = SBUColorSet.onlight02
@@ -1736,6 +1739,9 @@ public class SBUChannelSettingsTheme {
         theme.itemTextColor = SBUColorSet.ondark01
         theme.itemColor = SBUColorSet.primary200
         
+        // Alert
+        theme.itemDeleteTextColor = SBUColorSet.error300
+        
         // Url Info
         theme.urlTitleFont = SBUFontSet.body2
         theme.urlTitleColor = SBUColorSet.ondark02
@@ -1769,6 +1775,7 @@ public class SBUChannelSettingsTheme {
                 userNameTextColor: UIColor = SBUColorSet.onlight01,
                 itemTextColor: UIColor = SBUColorSet.onlight01,
                 itemColor: UIColor = SBUColorSet.primary300,
+                itemDeleteTextColor: UIColor = SBUColorSet.error300,
                 urlTitleFont: UIFont = SBUFontSet.body2,
                 urlTitleColor: UIColor = SBUColorSet.onlight02,
                 urlFont: UIFont = SBUFontSet.body3,
@@ -1799,6 +1806,7 @@ public class SBUChannelSettingsTheme {
         self.userNameTextColor = userNameTextColor
         self.itemTextColor = itemTextColor
         self.itemColor = itemColor
+        self.itemDeleteTextColor = itemDeleteTextColor
         self.urlTitleFont = urlTitleFont
         self.urlTitleColor = urlTitleColor
         self.urlFont = urlFont
@@ -1846,6 +1854,9 @@ public class SBUChannelSettingsTheme {
     // ActionSheet
     public var itemTextColor: UIColor
     public var itemColor: UIColor
+    
+    // Alert
+    public var itemDeleteTextColor: UIColor
     
     // Url info
     public var urlTitleFont: UIFont

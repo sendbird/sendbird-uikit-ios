@@ -16,6 +16,15 @@ public protocol SBUBaseChannelSettingsViewModelDelegate: SBUCommonViewModelDeleg
         didChangeChannel channel: BaseChannel?,
         withContext context: MessageContext
     )
+    
+    /// Called when the channel settings should dismiss
+    /// - Parameters:
+    ///   - viewModel: `SBUBaseChannelSettingsViewModel` object
+    ///   - channel: channel object. If you want to move to the channel view, put the channel object or empty the channel object to go to the channel list.
+    func baseChannelSettingsViewModel(
+        _ viewModel: SBUBaseChannelSettingsViewModel,
+        shouldDismissForChannelSettings channel: BaseChannel?
+    )
 }
 
 
@@ -114,4 +123,40 @@ open class SBUBaseChannelSettingsViewModel: NSObject {
 
 
 // MARK: - BaseChannelDelegate
-extension SBUBaseChannelSettingsViewModel: BaseChannelDelegate { }
+extension SBUBaseChannelSettingsViewModel: BaseChannelDelegate {
+    public func channelWasChanged(_ channel: BaseChannel) {
+        self.channel = channel
+        
+        let context = MessageContext(source: .eventChannelChanged, sendingStatus: .succeeded)
+        self.baseDelegate?.baseChannelSettingsViewModel(
+            self,
+            didChangeChannel: channel,
+            withContext: context
+        )
+    }
+    open func channelDidUpdateOperators(_ channel: BaseChannel) {
+        if let channel = self.channel as? GroupChannel {
+            if channel.myRole != .operator {
+                self.baseDelegate?.baseChannelSettingsViewModel(self, shouldDismissForChannelSettings: channel)
+                return
+            }
+        } else if let channel = self.channel as? OpenChannel {
+            let userId = SBUGlobals.currentUser?.userId ?? ""
+            if !channel.isOperator(userId: userId) {
+                self.baseDelegate?.baseChannelSettingsViewModel(self, shouldDismissForChannelSettings: channel)
+                return
+            }
+        }
+    }
+    
+    public func channel(_ channel: BaseChannel, userWasBanned user: RestrictedUser) {
+        guard let userId = SBUGlobals.currentUser?.userId,
+              user.userId == userId else { return }
+        
+        self.baseDelegate?.baseChannelSettingsViewModel(self, shouldDismissForChannelSettings: nil)
+    }
+    
+    public func channelWasDeleted(_ channelURL: String, channelType: ChannelType) {
+        self.baseDelegate?.baseChannelSettingsViewModel(self, shouldDismissForChannelSettings: nil)
+    }
+}

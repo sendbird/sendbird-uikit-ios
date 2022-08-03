@@ -16,7 +16,7 @@ public class SBUMention: Equatable {
     /// A mentioned user.
     public private(set) var user: SBUUser
     
-    init(range: NSRange, user: SBUUser) {
+    public init(range: NSRange, user: SBUUser) {
         self.range = range
         self.user = user
     }
