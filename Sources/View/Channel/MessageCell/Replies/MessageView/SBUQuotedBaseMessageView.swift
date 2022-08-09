@@ -90,7 +90,12 @@ open class SBUQuotedBaseMessageView: SBUView, SBUQuotedMessageViewProtocol {
     /// The UILabel displaying whom user replies to.
     /// e.g. “You replied to Jasmine”
     /// - Since: 2.2.0
-    public private(set) lazy var repliedToLabel: UILabel = UILabel()
+    public private(set) lazy var repliedToLabel: UILabel = {
+        let label = UILabel()
+        label.lineBreakMode = .byTruncatingMiddle
+        label.numberOfLines = 1
+        return label
+    }()
     
     /// The UIImageView displaying `iconReplied`.
     /// - Since: 2.2.0

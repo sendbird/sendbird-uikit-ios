@@ -16,12 +16,12 @@ public protocol SBUSelectablePhotoViewDelegate: AnyObject {
     /// Called when an image is picked from `SBUSelectablePhotoViewController`
     /// - Parameter data: The JPEG data of selected image. Its `compressionQuality` follows `SBUGlobals.imageCompressionRate` when `SBUGlobals.UsingImageCompression` is `true`
     /// - Since: 2.2.6
-    @objc func didTapSendImageData(_ data: Data)
+    @objc optional func didTapSendImageData(_ data: Data)
     
     /// Called when tap a video is picked from `SBUSelectablePhotoViewController`
     /// - Parameter url: The URL of selected video.
     /// - Since: 2.2.6
-    @objc func didTapSendVideoURL(_ url: URL)
+    @objc optional func didTapSendVideoURL(_ url: URL)
 }
 
 /// The view controller that shows the selected accessible photos and videos.
@@ -104,6 +104,22 @@ open class SBUSelectablePhotoViewController: UIViewController, SBUViewLifeCycle 
         return CGSize(
             value: isPortrait ? (view.frame.width - 2) / 3 : (view.frame.height - 2) / 3
         )
+    }
+    
+    public required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
+    
+    /// Initializes `SBUSelectablePhotoViewController`.
+    /// - Parameter mediaType: A general type of an asset, such as image or video. If it's `nil`, it fetches all types.
+    /// - Since: 2.2.9
+    public init(mediaType: PHAssetMediaType? = nil) {
+        if let mediaType = mediaType {
+            self.fetchResult = PHAsset.fetchAssets(with: mediaType, options: nil)
+        } else {
+            self.fetchResult = PHAsset.fetchAssets(with: nil)
+        }
+        super.init(nibName: nil, bundle: nil)
     }
     
     open override func loadView() {
@@ -237,7 +253,7 @@ extension SBUSelectablePhotoViewController: UICollectionViewDelegate, UICollecti
                 }
                 DispatchQueue.main.async { [weak self] in
                     guard let self = self else { return }
-                    self.delegate?.didTapSendImageData(data)
+                    self.delegate?.didTapSendImageData?(data)
                     self.dismiss(animated: true, completion: nil)
                 }
             }
@@ -248,7 +264,7 @@ extension SBUSelectablePhotoViewController: UICollectionViewDelegate, UICollecti
                 let videoURL = urlAsset.url as URL
                 DispatchQueue.main.async { [weak self] in
                     guard let self = self else { return }
-                    self.delegate?.didTapSendVideoURL(videoURL)
+                    self.delegate?.didTapSendVideoURL?(videoURL)
                     self.dismiss(animated: true, completion: nil)
                 }
             }

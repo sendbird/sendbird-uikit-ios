@@ -1,5 +1,5 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.6.1 (swiftlang-5.6.0.323.66 clang-1316.0.20.12)
+// swift-compiler-version: Apple Swift version 5.6 (swiftlang-5.6.0.323.62 clang-1316.0.20.8)
 // swift-module-flags: -target x86_64-apple-ios11.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name SendBirdUIKit
 import AVFoundation
 import AVKit
@@ -1834,10 +1834,10 @@ extension UIKit.UIImageView {
   @objc deinit
 }
 @objc public protocol SBUSelectablePhotoViewDelegate {
-  @objc func didTapSendImageData(_ data: Foundation.Data)
-  @objc func didTapSendVideoURL(_ url: Foundation.URL)
+  @objc optional func didTapSendImageData(_ data: Foundation.Data)
+  @objc optional func didTapSendVideoURL(_ url: Foundation.URL)
 }
-@objc @_inheritsConvenienceInitializers @objcMembers @_Concurrency.MainActor(unsafe) open class SBUSelectablePhotoViewController : UIKit.UIViewController, SendBirdUIKit.SBUViewLifeCycle {
+@objc @objcMembers @_Concurrency.MainActor(unsafe) open class SBUSelectablePhotoViewController : UIKit.UIViewController, SendBirdUIKit.SBUViewLifeCycle {
   @objc @_Concurrency.MainActor(unsafe) public var collectionView: UIKit.UICollectionView {
     @objc get
   }
@@ -1859,6 +1859,8 @@ extension UIKit.UIImageView {
   @objc @_Concurrency.MainActor(unsafe) public var columnSize: CoreGraphics.CGSize {
     @objc get
   }
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @_Concurrency.MainActor(unsafe) public init(mediaType: Photos.PHAssetMediaType? = nil)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func loadView()
   @objc deinit
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewDidLayoutSubviews()
@@ -1869,8 +1871,6 @@ extension UIKit.UIImageView {
   @objc @_Concurrency.MainActor(unsafe) public func register(photoCell: SendBirdUIKit.SBUPhotoCollectionViewCell, nib: UIKit.UINib? = nil)
   @objc @_Concurrency.MainActor(unsafe) open func didTapRightBarButton()
   @objc @_Concurrency.MainActor(unsafe) open func didTapLeftBarButton()
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
-  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
 }
 extension SendBirdUIKit.SBUSelectablePhotoViewController : UIKit.UICollectionViewDelegate, UIKit.UICollectionViewDataSource, UIKit.UICollectionViewDelegateFlowLayout {
   @_Concurrency.MainActor(unsafe) @objc dynamic open func collectionView(_ collectionView: UIKit.UICollectionView, numberOfItemsInSection section: Swift.Int) -> Swift.Int
@@ -2360,7 +2360,7 @@ public typealias AlertButtonHandler = (_ info: Any?) -> Swift.Void
   @objc public static var InviteChannel_Header_Title: Swift.String
   @objc public static var InviteChannel_Header_Select_Members: Swift.String
   @objc public static var InviteChannel_Invite: (_ count: Swift.Int) -> Swift.String
-  @objc public static var InviteChannel_Add: (_ count: Swift.Int) -> Swift.String
+  @objc public static var InviteChannel_Register: (_ count: Swift.Int) -> Swift.String
   @objc public static var MemberList_Header_Title: Swift.String
   @objc public static var MemberList_Me: Swift.String
   @objc public static var MemberList_Ban: Swift.String
@@ -2390,6 +2390,10 @@ public typealias AlertButtonHandler = (_ info: Any?) -> Swift.Void
   @objc public static var ChannelType_Broadcast: Swift.String
   @objc override dynamic public init()
   @objc deinit
+}
+extension SendBirdUIKit.SBUStringSet {
+  @objc @available(*, deprecated, renamed: "InviteChannel_Register")
+  public static var InviteChannel_Add: (_ count: Swift.Int) -> Swift.String
 }
 @objc @_inheritsConvenienceInitializers @objcMembers @_Concurrency.MainActor(unsafe) open class SBUUnknownMessageCell : SendBirdUIKit.SBUUserMessageCell {
   @_Concurrency.MainActor(unsafe) @objc override open func configure(with configuration: SendBirdUIKit.SBUBaseMessageCellParams)
@@ -2470,9 +2474,20 @@ extension SendBirdUIKit.SBUBaseChannelSettingViewController : SendBirdSDK.SBDCha
 }
 extension SendBirdUIKit.SBUBaseChannelSettingViewController : SendBirdUIKit.SBUActionSheetDelegate {
   @_Concurrency.MainActor(unsafe) @objc dynamic open func didSelectActionSheetItem(index: Swift.Int, identifier: Swift.Int)
+  @objc @_Concurrency.MainActor(unsafe) dynamic open func showCamera()
+  @objc @_Concurrency.MainActor(unsafe) dynamic open func showPhotoLibraryPicker()
+  @objc @_Concurrency.MainActor(unsafe) dynamic open func showLimitedPhotoLibraryPicker()
+  @objc @_Concurrency.MainActor(unsafe) dynamic open func showPermissionAlert()
+}
+@available(iOS 14, *)
+extension SendBirdUIKit.SBUBaseChannelSettingViewController : PhotosUI.PHPickerViewControllerDelegate {
+  @_Concurrency.MainActor(unsafe) open func picker(_ picker: PhotosUI.PHPickerViewController, didFinishPicking results: [PhotosUI.PHPickerResult])
 }
 extension SendBirdUIKit.SBUBaseChannelSettingViewController : UIKit.UIImagePickerControllerDelegate {
   @_Concurrency.MainActor(unsafe) @objc dynamic open func imagePickerController(_ picker: UIKit.UIImagePickerController, didFinishPickingMediaWithInfo info: [UIKit.UIImagePickerController.InfoKey : Any])
+}
+extension SendBirdUIKit.SBUBaseChannelSettingViewController : SendBirdUIKit.SBUSelectablePhotoViewDelegate {
+  @_Concurrency.MainActor(unsafe) @objc dynamic open func didTapSendImageData(_ data: Foundation.Data)
 }
 extension SendBirdUIKit.SBUBaseChannelSettingViewController {
   @objc @discardableResult
@@ -2905,9 +2920,11 @@ extension Foundation.NSArray {
   @objc deinit
 }
 @objc @_inheritsConvenienceInitializers @objcMembers public class SBUMain : ObjectiveC.NSObject {
-  @objc @available(*, unavailable, renamed: "initialize(applicationId:migrationStartHandler:completionHandler:)", message: "Using the `initialize(applicationId:migrationStartHandler:completionHandler:)` function, and in the CompletionHandler, please proceed with the following procedure.")
+  @objc @available(*, unavailable, renamed: "initialize(applicationId:startHandler:migrationHandler:completionHandler:)", message: "Using the `initialize(applicationId:startHandler:migrationHandler:completionHandler:)` function, and in the CompletionHandler, please proceed with the following procedure.")
   public static func initialize(applicationId: Swift.String)
-  @objc public static func initialize(applicationId: Swift.String, migrationStartHandler: @escaping (() -> Swift.Void), completionHandler: @escaping ((_ error: SendBirdSDK.SBDError?) -> ()))
+  @objc @available(*, deprecated, renamed: "initialize(applicationId:startHandler:migrationHandler:completionHandler:)")
+  public static func initialize(applicationId: Swift.String, migrationStartHandler: @escaping (() -> Swift.Void), completionHandler: @escaping ((_ error: SendBirdSDK.SBDError?) -> ()))
+  @objc public static func initialize(applicationId: Swift.String, startHandler: (() -> Swift.Void)? = nil, migrationHandler: (() -> Swift.Void)? = nil, completionHandler: @escaping ((_ error: SendBirdSDK.SBDError?) -> ()))
   @objc public static func connect(completionHandler: @escaping (_ user: SendBirdSDK.SBDUser?, _ error: SendBirdSDK.SBDError?) -> Swift.Void)
   @objc @available(*, deprecated, renamed: "connectIfNeeded(completionHandler:)")
   public static func connectionCheck(completionHandler: @escaping (_ user: SendBirdSDK.SBDUser?, _ error: SendBirdSDK.SBDError?) -> Swift.Void)
@@ -3739,6 +3756,7 @@ extension UIKit.UIColor {
     @objc set
   }
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupViews()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupAutolayout()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupStyles()
   @_Concurrency.MainActor(unsafe) @objc override open func configure(with configuration: SendBirdUIKit.SBUBaseMessageCellParams)
   @_Concurrency.MainActor(unsafe) @objc override open func configure(highlightInfo: SendBirdUIKit.SBUHighlightMessageInfo?)

@@ -328,7 +328,7 @@ open class SBUInviteUserViewController: SBUBaseViewController {
             case .users:
                 self?.rightBarButton?.title = SBUStringSet.InviteChannel_Invite(selectedUserList.count)
             case .operators:
-                self?.rightBarButton?.title = SBUStringSet.InviteChannel_Add(selectedUserList.count)
+                self?.rightBarButton?.title = SBUStringSet.InviteChannel_Register(selectedUserList.count)
             default:
                 self?.rightBarButton?.title = ""
             }

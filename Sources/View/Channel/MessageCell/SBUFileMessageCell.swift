@@ -38,6 +38,12 @@ open class SBUFileMessageCell: SBUContentBaseMessageCell {
             self.reactionView
         ])
     }
+    open override func setupAutolayout() {
+        super.setupAutolayout()
+        
+        self.mainContainerView
+            .sbu_constraint_lessThan(width: SBUConstant.thumbnailSize.width)
+    }
     
     open override func setupStyles() {
         super.setupStyles()

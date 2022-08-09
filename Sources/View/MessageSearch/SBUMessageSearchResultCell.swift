@@ -122,7 +122,6 @@ open class SBUMessageSearchResultCell: UITableViewCell {
         NSLayoutConstraint.activate([
             self.titleLabel.leadingAnchor.constraint(equalTo: self.coverImage.trailingAnchor, constant: 16),
             self.titleLabel.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 10),
-            self.titleLabel.trailingAnchor.constraint(equalTo: self.createdAtLabel.leadingAnchor, constant: -4),
             self.titleLabel.bottomAnchor.constraint(equalTo: self.messageLabel.topAnchor, constant: -2)
         ])
         
@@ -152,7 +151,8 @@ open class SBUMessageSearchResultCell: UITableViewCell {
         NSLayoutConstraint.activate([
             self.createdAtLabel.leadingAnchor.constraint(greaterThanOrEqualTo: self.titleLabel.trailingAnchor, constant: 4),
             self.createdAtLabel.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 12),
-            self.createdAtLabel.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -16)
+            self.createdAtLabel.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -16),
+            self.createdAtLabel.widthAnchor.constraint(greaterThanOrEqualToConstant: 30)
         ])
         
         self.separatorLine.translatesAutoresizingMaskIntoConstraints = false
@@ -163,12 +163,11 @@ open class SBUMessageSearchResultCell: UITableViewCell {
             self.separatorLine.heightAnchor.constraint(equalToConstant: 0.5)
         ])
         
-        self.titleLabel.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
-        self.titleLabel.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        self.titleLabel.setContentHuggingPriority(UILayoutPriority(249), for: .horizontal)
         self.titleLabel.setContentHuggingPriority(.defaultHigh, for: .vertical)
         
         self.messageLabel.setContentHuggingPriority(.defaultLow, for: .vertical)
-        self.createdAtLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        self.createdAtLabel.setContentCompressionResistancePriority(UILayoutPriority(751), for: .horizontal)
     }
     
     /// This function handles the initialization of styles.

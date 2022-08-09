@@ -8,7 +8,7 @@
 
 import UIKit
 import SendBirdSDK
-import Photos
+import PhotosUI
 import MobileCoreServices
 
 @objcMembers
@@ -506,23 +506,136 @@ extension SBUBaseChannelSettingViewController: SBUActionSheetDelegate {
         }
         else {
             let type = MediaResourceType.init(rawValue: index)
-            var sourceType: UIImagePickerController.SourceType = .photoLibrary
-            let mediaType: [String] = [String(kUTTypeImage)]
-            
             switch type {
-            case .camera: sourceType = .camera
-            case .library: sourceType = .photoLibrary
-            case .document: break
+            case .camera:
+                SBUPermissionManager.shared.requestDeviceAccessIfNeeded(for: .video) { isGranted in
+                    if isGranted {
+                        DispatchQueue.main.async { [weak self] in
+                            guard let self = self else { return }
+                            self.showCamera()
+                        }
+                    } else {
+                        if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+                            UIApplication.shared.open(
+                                settingsURL,
+                                options: [:],
+                                completionHandler: nil
+                            )
+                        }
+                    }
+                }
+            case .library:
+                SBUPermissionManager.shared.requestPhotoAccessIfNeeded { status in
+                    DispatchQueue.main.async { [weak self] in
+                        guard let self = self else { return }
+                        switch status {
+                        case .all:
+                            self.showPhotoLibraryPicker()
+                        case .limited:
+                            self.showLimitedPhotoLibraryPicker()
+                        default:
+                            self.showPermissionAlert()
+                        }
+                    }
+                }
             default: break
             }
-            
-            if type != .document {
-                if UIImagePickerController.isSourceTypeAvailable(sourceType) {
-                    let imagePickerController = UIImagePickerController()
-                    imagePickerController.delegate = self
-                    imagePickerController.sourceType = sourceType
-                    imagePickerController.mediaTypes = mediaType
-                    self.present(imagePickerController, animated: true, completion: nil)
+        }
+    }
+    
+    /// Presents `UIImagePickerController` for using camera.
+    /// - Since: 2.2.9
+    open func showCamera() {
+        let sourceType: UIImagePickerController.SourceType = .camera
+        let mediaType: [String] = [
+            String(kUTTypeImage)
+        ]
+        
+        if UIImagePickerController.isSourceTypeAvailable(sourceType) {
+            let imagePickerController = UIImagePickerController()
+            imagePickerController.delegate = self
+            imagePickerController.sourceType = sourceType
+            imagePickerController.mediaTypes = mediaType
+            self.present(imagePickerController, animated: true, completion: nil)
+        }
+    }
+    
+    /// Presents `UIImagePickerController`. If `SBUGlobals.UsingPHPicker`is `true`, it presents `PHPickerViewController` in iOS 14 or later.
+    /// - NOTE: If you want to use customized `PHPickerConfiguration`, please override this method.
+    /// - Since: 2.2.9
+    open func showPhotoLibraryPicker() {
+        if #available(iOS 14, *), SBUGlobals.UsingPHPicker {
+            var configuration = PHPickerConfiguration()
+            configuration.filter = .any(of: [.images])
+            let picker = PHPickerViewController(configuration: configuration)
+            picker.delegate = self
+            self.present(picker, animated: true, completion: nil)
+            return
+        }
+        
+        let sourceType: UIImagePickerController.SourceType = .photoLibrary
+        let mediaType: [String] = [
+            String(kUTTypeImage)
+        ]
+        
+        if UIImagePickerController.isSourceTypeAvailable(sourceType) {
+            let imagePickerController = UIImagePickerController()
+            imagePickerController.delegate = self
+            imagePickerController.sourceType = sourceType
+            imagePickerController.mediaTypes = mediaType
+            self.present(imagePickerController, animated: true, completion: nil)
+        }
+    }
+    
+    open func showLimitedPhotoLibraryPicker() {
+        let selectablePhotoVC = SBUSelectablePhotoViewController(mediaType: .image)
+        selectablePhotoVC.delegate = self
+        let nav = UINavigationController(rootViewController: selectablePhotoVC)
+        self.present(nav, animated: true, completion: nil)
+    }
+    
+    open func showPermissionAlert() {
+        let settingButton = SBUAlertButtonItem(title: SBUStringSet.Settings) { info in
+            if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+                UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
+            }
+        }
+        
+        let cancelButton = SBUAlertButtonItem(title: SBUStringSet.Cancel) {_ in }
+        
+        SBUAlertView.show(
+            title: SBUStringSet.Alert_Allow_PhotoLibrary_Access,
+            message: SBUStringSet.Alert_Allow_PhotoLibrary_Access_Message,
+            oneTimetheme: SBUTheme.componentTheme,
+            confirmButtonItem: settingButton,
+            cancelButtonItem: cancelButton
+        )
+    }
+}
+
+// MARK: - PHPickerViewControllerDelegate
+@available(iOS 14, *)
+extension SBUBaseChannelSettingViewController: PHPickerViewControllerDelegate {
+    /// Override this method to handle the `results` from `PHPickerViewController`.
+    /// As defaults, it doesn't support multi-selection and live photo.
+    /// - Important: To use this method, please assign self as delegate to `PHPickerViewController` object.
+    open func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        picker.dismiss(animated: true)
+        
+        results.forEach {
+            let itemProvider = $0.itemProvider
+            // image
+            if itemProvider.hasItemConformingToTypeIdentifier(UTType.image.identifier) {
+                itemProvider.loadItem(forTypeIdentifier: UTType.image.identifier, options: [:]) { url, error in
+                    if itemProvider.canLoadObject(ofClass: UIImage.self) {
+                        itemProvider.loadObject(ofClass: UIImage.self) { [weak self] imageItem, error in
+                            guard let self = self else { return }
+                            guard let originalImage = imageItem as? UIImage else { return }
+                            guard let userInfoView = self.userInfoView as? SBUChannelSettingsUserInfoView else { return }
+                            userInfoView.coverImage.setImage(withImage: originalImage)
+                            self.updateChannel(coverImage: originalImage)
+                        }
+                    }
                 }
             }
         }
@@ -544,6 +657,16 @@ extension SBUBaseChannelSettingViewController: UIImagePickerControllerDelegate {
             
             self.updateChannel(coverImage: originalImage)
         }
+    }
+}
+
+// MARK: - SBUSelectablePhotoViewDelegate
+extension SBUBaseChannelSettingViewController: SBUSelectablePhotoViewDelegate {
+    open func didTapSendImageData(_ data: Data) {
+        guard let image = UIImage(data: data) else { return }
+        guard let userInfoView = self.userInfoView as? SBUChannelSettingsUserInfoView else { return }
+        userInfoView.coverImage.setImage(withImage: image)
+        self.updateChannel(coverImage: image)
     }
 }
 

@@ -183,7 +183,7 @@ public class SBUStringSet: NSObject {
         case 0:
             return "Create"
         default:
-            return "\(count) Create"
+            return "Create \(count)"
         }
     }
     public static var CreateChannel_Header_Title = "New Channel"
@@ -198,15 +198,15 @@ public class SBUStringSet: NSObject {
         case 0:
             return "Invite"
         default:
-            return "\(count) Invite"
+            return "Invite \(count)"
         }
     }
-    public static var InviteChannel_Add: (Int) -> String = { count in
+    public static var InviteChannel_Register: (Int) -> String = { count in
         switch count {
         case 0:
-            return "Add"
+            return "Register"
         default:
-            return "\(count) Add"
+            return "Register \(count)"
         }
     }
 
@@ -249,4 +249,11 @@ public class SBUStringSet: NSObject {
     public static var ChannelType_Group = "Group"
     public static var ChannelType_SuperGroup = "Super group"
     public static var ChannelType_Broadcast = "Broadcast"
+}
+
+extension SBUStringSet {
+    @available(*, deprecated, renamed: "InviteChannel_Register")
+    public static var InviteChannel_Add: (Int) -> String = { count in
+        InviteChannel_Register(count)
+    }
 }

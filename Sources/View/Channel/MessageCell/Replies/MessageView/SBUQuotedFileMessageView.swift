@@ -38,9 +38,6 @@ open class SBUQuotedFileMessageView: SBUQuotedBaseMessageView {
         return imageView
     }()
     
-    private var widthConstraint: NSLayoutConstraint!
-    private var heightConstraint: NSLayoutConstraint!
-    
     open override func setupViews() {
         
         // + --------------- +
@@ -56,6 +53,9 @@ open class SBUQuotedFileMessageView: SBUQuotedBaseMessageView {
     
     open override func setupAutolayout() {
         super.setupAutolayout()
+        
+        self.mainContainerView
+            .sbu_constraint_lessThan(width: SBUConstant.thumbnailSize.width)
     }
     
     open override func configure(with configuration: SBUQuotedBaseMessageViewParams) {
@@ -70,28 +70,28 @@ open class SBUQuotedFileMessageView: SBUQuotedBaseMessageView {
         super.configure(with: configuration)
         
         switch SBUUtils.getFileType(by: type) {
-            case .image, .video:
-                if !(self.messageFileView is QuotedFileImageContentView) {
-                    self.messageFileView.removeFromSuperview()
-                    self.messageFileView = QuotedFileImageContentView()
-                    self.mainContainerView.insertArrangedSubview(self.messageFileView, at: 0)
-                }
-                self.mainContainerView
-                    .roundCorners(corners: .allCorners, radius: 8)
-                (self.messageFileView as? QuotedFileImageContentView)?.configure(with: configuration)
-            case .audio, .pdf, .etc:
-                if !(self.messageFileView is QuotedFileCommonContentView) {
-                    self.messageFileView.removeFromSuperview()
-                    self.messageFileView = QuotedFileCommonContentView()
-                    self.mainContainerView.insertArrangedSubview(self.messageFileView, at: 0)
-                }
-                (self.messageFileView as? QuotedFileCommonContentView)?
-                    .configure(
-                        with: type,
-                        fileName: name,
-                        position: configuration.messagePosition,
-                        highlight: false
-                    )
+        case .image, .video:
+            if !(self.messageFileView is QuotedFileImageContentView) {
+                self.messageFileView.removeFromSuperview()
+                self.messageFileView = QuotedFileImageContentView()
+                self.mainContainerView.insertArrangedSubview(self.messageFileView, at: 0)
+            }
+            self.mainContainerView
+                .roundCorners(corners: .allCorners, radius: 8)
+            (self.messageFileView as? QuotedFileImageContentView)?.configure(with: configuration)
+        case .audio, .pdf, .etc:
+            if !(self.messageFileView is QuotedFileCommonContentView) {
+                self.messageFileView.removeFromSuperview()
+                self.messageFileView = QuotedFileCommonContentView()
+                self.mainContainerView.insertArrangedSubview(self.messageFileView, at: 0)
+            }
+            (self.messageFileView as? QuotedFileCommonContentView)?
+                .configure(
+                    with: type,
+                    fileName: name,
+                    position: configuration.messagePosition,
+                    highlight: false
+                )
         }
         self.updateConstraintsIfNeeded()
     }

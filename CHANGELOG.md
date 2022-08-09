@@ -1,5 +1,13 @@
 # Change Log
 
+### v2.2.9 (Aug 9, 2022)
+- Applied `SBUSelectablePhotoViewDelegate` and `PHPickerViewControllerDelegate` to `SBUBaseChannelSettingViewController`
+  - Added `showCamera()`, `showPhotoLibraryPicker()`, `showLimitedPhotoLibraryPicker()` and `showPermissionAlert()` to `SBUBaseChannelSettingViewController`
+- Added `init(mediaType:)` to `SBUSelectablePhotoViewController`
+- Added `startHandler` to `SendbirdUI` initializer
+  - Renamed to `initialize(applicationId:startHandler:migrationHandler:completionHandler:)`
+- Fixed quoted message long name layout issue
+
 ### v2.2.8 (Jun 21, 2022)
 - Modified some view to be able to change its date format
   - Opened `SBUMessageDateView`

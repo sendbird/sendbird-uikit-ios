@@ -27,167 +27,6 @@
 		9C777D62241B9022006FFE25 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9C777D60241B9022006FFE25 /* Main.storyboard */; };
 		9C777D64241B9024006FFE25 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9C777D63241B9024006FFE25 /* Assets.xcassets */; };
 		9C777D67241B9024006FFE25 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9C777D65241B9024006FFE25 /* LaunchScreen.storyboard */; };
-		9CC2B6C72861BA92005CDE86 /* UIStackView.SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B5FB2861BA91005CDE86 /* UIStackView.SBUIKit.swift */; };
-		9CC2B6C82861BA92005CDE86 /* URL+SBUKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B5FC2861BA91005CDE86 /* URL+SBUKit.swift */; };
-		9CC2B6C92861BA92005CDE86 /* Array+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B5FD2861BA91005CDE86 /* Array+SBUIKit.swift */; };
-		9CC2B6CA2861BA92005CDE86 /* UIColor+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B5FE2861BA91005CDE86 /* UIColor+SBUIKit.swift */; };
-		9CC2B6CB2861BA92005CDE86 /* Formatter+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B5FF2861BA91005CDE86 /* Formatter+SBUIKit.swift */; };
-		9CC2B6CC2861BA92005CDE86 /* UIImage+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6002861BA91005CDE86 /* UIImage+SBUIKit.swift */; };
-		9CC2B6CD2861BA92005CDE86 /* UINavigationController+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6012861BA91005CDE86 /* UINavigationController+SBUIKit.swift */; };
-		9CC2B6CE2861BA92005CDE86 /* String+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6022861BA92005CDE86 /* String+SBUIKit.swift */; };
-		9CC2B6CF2861BA92005CDE86 /* CGSize+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6032861BA92005CDE86 /* CGSize+SBUIKit.swift */; };
-		9CC2B6D02861BA92005CDE86 /* Float+SBUKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6042861BA92005CDE86 /* Float+SBUKit.swift */; };
-		9CC2B6D12861BA92005CDE86 /* Data+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6052861BA92005CDE86 /* Data+SBUIKit.swift */; };
-		9CC2B6D22861BA92005CDE86 /* UIViewController+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6062861BA92005CDE86 /* UIViewController+SBUIKit.swift */; };
-		9CC2B6D32861BA92005CDE86 /* Date+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6072861BA92005CDE86 /* Date+SBUIKit.swift */; };
-		9CC2B6D42861BA92005CDE86 /* UIApplication+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6082861BA92005CDE86 /* UIApplication+SBUIKit.swift */; };
-		9CC2B6D52861BA92005CDE86 /* UIView+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6092861BA92005CDE86 /* UIView+SBUIKit.swift */; };
-		9CC2B6D62861BA92005CDE86 /* Sequence+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B60A2861BA92005CDE86 /* Sequence+SBUIKit.swift */; };
-		9CC2B6D72861BA92005CDE86 /* UIImageView+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B60B2861BA92005CDE86 /* UIImageView+SBUIKit.swift */; };
-		9CC2B6D82861BA92005CDE86 /* NSObject+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B60C2861BA92005CDE86 /* NSObject+SBUIKit.swift */; };
-		9CC2B6D92861BA92005CDE86 /* SBUPropertyWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B60E2861BA92005CDE86 /* SBUPropertyWrapper.swift */; };
-		9CC2B6DA2861BA92005CDE86 /* SBUUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B60F2861BA92005CDE86 /* SBUUtils.swift */; };
-		9CC2B6DB2861BA92005CDE86 /* SBULogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6102861BA92005CDE86 /* SBULogger.swift */; };
-		9CC2B6DC2861BA92005CDE86 /* SBUMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6112861BA92005CDE86 /* SBUMain.swift */; };
-		9CC2B6DD2861BA92005CDE86 /* SBUAvailable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6122861BA92005CDE86 /* SBUAvailable.swift */; };
-		9CC2B6DE2861BA92005CDE86 /* SBUIconSetType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6142861BA92005CDE86 /* SBUIconSetType.swift */; };
-		9CC2B6DF2861BA92005CDE86 /* SBUEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6152861BA92005CDE86 /* SBUEnums.swift */; };
-		9CC2B6E02861BA92005CDE86 /* CommonProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6172861BA92005CDE86 /* CommonProtocols.swift */; };
-		9CC2B6E12861BA92005CDE86 /* SBUEmojiManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6192861BA92005CDE86 /* SBUEmojiManager.swift */; };
-		9CC2B6E22861BA92005CDE86 /* SBUCacheManager.File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B61A2861BA92005CDE86 /* SBUCacheManager.File.swift */; };
-		9CC2B6E32861BA92005CDE86 /* SBUPendingMessageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B61B2861BA92005CDE86 /* SBUPendingMessageManager.swift */; };
-		9CC2B6E42861BA92005CDE86 /* SBUDownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B61C2861BA92005CDE86 /* SBUDownloadManager.swift */; };
-		9CC2B6E52861BA92005CDE86 /* SBUPermissionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B61D2861BA92005CDE86 /* SBUPermissionManager.swift */; };
-		9CC2B6E62861BA92005CDE86 /* SBUCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B61E2861BA92005CDE86 /* SBUCacheManager.swift */; };
-		9CC2B6E72861BA92005CDE86 /* SBUToastManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B61F2861BA92005CDE86 /* SBUToastManager.swift */; };
-		9CC2B6E82861BA92005CDE86 /* SBUGlobalCustomParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6202861BA92005CDE86 /* SBUGlobalCustomParams.swift */; };
-		9CC2B6E92861BA92005CDE86 /* SBUDateFormatSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6222861BA92005CDE86 /* SBUDateFormatSet.swift */; };
-		9CC2B6EA2861BA92005CDE86 /* SBUConstant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6232861BA92005CDE86 /* SBUConstant.swift */; };
-		9CC2B6EB2861BA92005CDE86 /* SBUStringSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6242861BA92005CDE86 /* SBUStringSet.swift */; };
-		9CC2B6EC2861BA92005CDE86 /* SBUCommonViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6252861BA92005CDE86 /* SBUCommonViews.swift */; };
-		9CC2B6ED2861BA92005CDE86 /* SBUIconSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6272861BA92005CDE86 /* SBUIconSet.swift */; };
-		9CC2B6EE2861BA92005CDE86 /* SBUColorSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6282861BA92005CDE86 /* SBUColorSet.swift */; };
-		9CC2B6EF2861BA92005CDE86 /* SBUTheme+Type.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6292861BA92005CDE86 /* SBUTheme+Type.swift */; };
-		9CC2B6F02861BA92005CDE86 /* SBUFontSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B62A2861BA92005CDE86 /* SBUFontSet.swift */; };
-		9CC2B6F12861BA92005CDE86 /* SBUTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B62B2861BA92005CDE86 /* SBUTheme.swift */; };
-		9CC2B6F22861BA92005CDE86 /* SBUMessageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B62D2861BA92005CDE86 /* SBUMessageCache.swift */; };
-		9CC2B6F32861BA92005CDE86 /* SBUUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B62E2861BA92005CDE86 /* SBUUser.swift */; };
-		9CC2B6F42861BA92005CDE86 /* SBUHighlightMessageInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B62F2861BA92005CDE86 /* SBUHighlightMessageInfo.swift */; };
-		9CC2B6F52861BA92005CDE86 /* SBUBaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6322861BA92005CDE86 /* SBUBaseViewController.swift */; };
-		9CC2B6F62861BA92005CDE86 /* SBUOpenChannelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6332861BA92005CDE86 /* SBUOpenChannelViewModel.swift */; };
-		9CC2B6F72861BA92005CDE86 /* SBUMessageSearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6342861BA92005CDE86 /* SBUMessageSearchViewModel.swift */; };
-		9CC2B6F82861BA92005CDE86 /* SBUMemberListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6352861BA92005CDE86 /* SBUMemberListViewModel.swift */; };
-		9CC2B6F92861BA92005CDE86 /* SBUInviteUserListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6362861BA92005CDE86 /* SBUInviteUserListViewModel.swift */; };
-		9CC2B6FA2861BA92005CDE86 /* SBUViewModelDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6382861BA92005CDE86 /* SBUViewModelDelegate.swift */; };
-		9CC2B6FB2861BA92005CDE86 /* SBULoadableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6392861BA92005CDE86 /* SBULoadableViewModel.swift */; };
-		9CC2B6FC2861BA92005CDE86 /* SBUChannelActionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B63A2861BA92005CDE86 /* SBUChannelActionViewModel.swift */; };
-		9CC2B6FD2861BA92005CDE86 /* SBUChannelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B63B2861BA92005CDE86 /* SBUChannelViewModel.swift */; };
-		9CC2B6FE2861BA92005CDE86 /* SBUObservable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B63C2861BA92005CDE86 /* SBUObservable.swift */; };
-		9CC2B6FF2861BA92005CDE86 /* SBUChannelListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B63D2861BA92005CDE86 /* SBUChannelListViewModel.swift */; };
-		9CC2B7002861BA92005CDE86 /* SBUChannelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6402861BA92005CDE86 /* SBUChannelCell.swift */; };
-		9CC2B7012861BA92005CDE86 /* SBUBaseChannelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6412861BA92005CDE86 /* SBUBaseChannelCell.swift */; };
-		9CC2B7022861BA92005CDE86 /* SBUChannelListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6422861BA92005CDE86 /* SBUChannelListViewController.swift */; };
-		9CC2B7032861BA92005CDE86 /* SBUBaseChannelListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6432861BA92005CDE86 /* SBUBaseChannelListViewController.swift */; };
-		9CC2B7042861BA92005CDE86 /* SBUUserProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6452861BA92005CDE86 /* SBUUserProfileView.swift */; };
-		9CC2B7052861BA92005CDE86 /* SBUUserMessageTextViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6482861BA92005CDE86 /* SBUUserMessageTextViewModel.swift */; };
-		9CC2B7062861BA92005CDE86 /* SBUMessageWebViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6492861BA92005CDE86 /* SBUMessageWebViewModel.swift */; };
-		9CC2B7072861BA92005CDE86 /* SBUReactionCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B64B2861BA92005CDE86 /* SBUReactionCollectionViewCell.swift */; };
-		9CC2B7082861BA92005CDE86 /* SBUReactionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B64C2861BA92005CDE86 /* SBUReactionsViewController.swift */; };
-		9CC2B7092861BA92005CDE86 /* SBUMessageReactionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B64D2861BA92005CDE86 /* SBUMessageReactionView.swift */; };
-		9CC2B70A2861BA92005CDE86 /* SBUReactionCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9CC2B64E2861BA92005CDE86 /* SBUReactionCollectionViewCell.xib */; };
-		9CC2B70B2861BA92005CDE86 /* SBUEmojiListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B64F2861BA92005CDE86 /* SBUEmojiListViewController.swift */; };
-		9CC2B70C2861BA92005CDE86 /* SBUBaseChannelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6502861BA92005CDE86 /* SBUBaseChannelViewController.swift */; };
-		9CC2B70D2861BA92005CDE86 /* SBUUserMessageCellParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6532861BA92005CDE86 /* SBUUserMessageCellParams.swift */; };
-		9CC2B70E2861BA92005CDE86 /* SBUUnknownMessageCellParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6542861BA92005CDE86 /* SBUUnknownMessageCellParams.swift */; };
-		9CC2B70F2861BA92005CDE86 /* SBUAdminMessageCellParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6552861BA92005CDE86 /* SBUAdminMessageCellParams.swift */; };
-		9CC2B7102861BA92005CDE86 /* SBUBaseMessageCellParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6562861BA92005CDE86 /* SBUBaseMessageCellParams.swift */; };
-		9CC2B7112861BA92005CDE86 /* SBUFileMessageCellParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6572861BA92005CDE86 /* SBUFileMessageCellParams.swift */; };
-		9CC2B7122861BA92005CDE86 /* OpenChannelCommonContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6592861BA92005CDE86 /* OpenChannelCommonContentView.swift */; };
-		9CC2B7132861BA92005CDE86 /* BaseFileContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B65A2861BA92005CDE86 /* BaseFileContentView.swift */; };
-		9CC2B7142861BA92005CDE86 /* ImageContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B65B2861BA92005CDE86 /* ImageContentView.swift */; };
-		9CC2B7152861BA92005CDE86 /* CommonContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B65C2861BA92005CDE86 /* CommonContentView.swift */; };
-		9CC2B7162861BA92005CDE86 /* OpenChannelImageContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B65D2861BA92005CDE86 /* OpenChannelImageContentView.swift */; };
-		9CC2B7172861BA92005CDE86 /* QuotedFileCommonContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6602861BA92005CDE86 /* QuotedFileCommonContentView.swift */; };
-		9CC2B7182861BA92005CDE86 /* SBUQuotedBaseMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6612861BA92005CDE86 /* SBUQuotedBaseMessageView.swift */; };
-		9CC2B7192861BA92005CDE86 /* QuotedFileImageContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6622861BA92005CDE86 /* QuotedFileImageContentView.swift */; };
-		9CC2B71A2861BA92005CDE86 /* SBUQuotedFileMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6632861BA92005CDE86 /* SBUQuotedFileMessageView.swift */; };
-		9CC2B71B2861BA92005CDE86 /* SBUQuotedUserMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6642861BA92005CDE86 /* SBUQuotedUserMessageView.swift */; };
-		9CC2B71C2861BA92005CDE86 /* SBUQuotedBaseMessageViewParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6662861BA92005CDE86 /* SBUQuotedBaseMessageViewParams.swift */; };
-		9CC2B71D2861BA92005CDE86 /* SBUBaseMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6672861BA92005CDE86 /* SBUBaseMessageCell.swift */; };
-		9CC2B71E2861BA92005CDE86 /* SBUOpenChannelFileMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6692861BA92005CDE86 /* SBUOpenChannelFileMessageCell.swift */; };
-		9CC2B71F2861BA92005CDE86 /* SBUOpenChannelAdminMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B66A2861BA92005CDE86 /* SBUOpenChannelAdminMessageCell.swift */; };
-		9CC2B7202861BA92005CDE86 /* SBUOpenChannelContentBaseMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B66B2861BA92005CDE86 /* SBUOpenChannelContentBaseMessageCell.swift */; };
-		9CC2B7212861BA92005CDE86 /* SBUOpenChannelUserMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B66C2861BA92005CDE86 /* SBUOpenChannelUserMessageCell.swift */; };
-		9CC2B7222861BA92005CDE86 /* SBUOpenChannelUnknownMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B66D2861BA92005CDE86 /* SBUOpenChannelUnknownMessageCell.swift */; };
-		9CC2B7232861BA92005CDE86 /* SBUOpenChannelBaseMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B66E2861BA92005CDE86 /* SBUOpenChannelBaseMessageCell.swift */; };
-		9CC2B7242861BA92005CDE86 /* SBUFileMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B66F2861BA92005CDE86 /* SBUFileMessageCell.swift */; };
-		9CC2B7252861BA92005CDE86 /* SBUAdminMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6702861BA92005CDE86 /* SBUAdminMessageCell.swift */; };
-		9CC2B7262861BA92005CDE86 /* SBUContentBaseMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6712861BA92005CDE86 /* SBUContentBaseMessageCell.swift */; };
-		9CC2B7272861BA92005CDE86 /* SBUUnknownMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6722861BA92005CDE86 /* SBUUnknownMessageCell.swift */; };
-		9CC2B7282861BA92005CDE86 /* SBUUserMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6732861BA92005CDE86 /* SBUUserMessageCell.swift */; };
-		9CC2B7292861BA92005CDE86 /* SBUQuoteMessageInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6752861BA92005CDE86 /* SBUQuoteMessageInputView.swift */; };
-		9CC2B72A2861BA92005CDE86 /* SBUMessageInputMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6762861BA92005CDE86 /* SBUMessageInputMode.swift */; };
-		9CC2B72B2861BA92005CDE86 /* SBUQuoteMessageInputViewParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6782861BA92005CDE86 /* SBUQuoteMessageInputViewParams.swift */; };
-		9CC2B72C2861BA92005CDE86 /* SBUMessageInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6792861BA92005CDE86 /* SBUMessageInputView.swift */; };
-		9CC2B72D2861BA92005CDE86 /* SBUChannelViewController.ParentMessageViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B67A2861BA92005CDE86 /* SBUChannelViewController.ParentMessageViewDelegate.swift */; };
-		9CC2B72E2861BA92005CDE86 /* SBUMessageStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B67C2861BA92005CDE86 /* SBUMessageStateView.swift */; };
-		9CC2B72F2861BA92005CDE86 /* SBUMessageProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B67D2861BA92005CDE86 /* SBUMessageProfileView.swift */; };
-		9CC2B7302861BA92005CDE86 /* SBUUserMessageTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B67E2861BA92005CDE86 /* SBUUserMessageTextView.swift */; };
-		9CC2B7312861BA92005CDE86 /* SBUUserNameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B67F2861BA92005CDE86 /* SBUUserNameView.swift */; };
-		9CC2B7322861BA92005CDE86 /* SBUMessageWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6802861BA92005CDE86 /* SBUMessageWebView.swift */; };
-		9CC2B7332861BA92005CDE86 /* SBUMessageDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6812861BA92005CDE86 /* SBUMessageDateView.swift */; };
-		9CC2B7342861BA92005CDE86 /* SBULinkClickableTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6822861BA92005CDE86 /* SBULinkClickableTextView.swift */; };
-		9CC2B7352861BA92005CDE86 /* SBUOpenChannelMessageWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6832861BA92005CDE86 /* SBUOpenChannelMessageWebView.swift */; };
-		9CC2B7362861BA92005CDE86 /* SBUSelectableStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6842861BA92005CDE86 /* SBUSelectableStackView.swift */; };
-		9CC2B7372861BA92005CDE86 /* SBUFileViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6862861BA92005CDE86 /* SBUFileViewer.swift */; };
-		9CC2B7382861BA92005CDE86 /* SBUChannelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6872861BA92005CDE86 /* SBUChannelViewController.swift */; };
-		9CC2B7392861BA92005CDE86 /* SBUNewMessageInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6892861BA92005CDE86 /* SBUNewMessageInfo.swift */; };
-		9CC2B73A2861BA92005CDE86 /* SBUOpenChannelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B68A2861BA92005CDE86 /* SBUOpenChannelViewController.swift */; };
-		9CC2B73B2861BA92005CDE86 /* SBUChannelInfoHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B68C2861BA92005CDE86 /* SBUChannelInfoHeaderView.swift */; };
-		9CC2B73C2861BA92005CDE86 /* SBUChannelTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B68D2861BA92005CDE86 /* SBUChannelTitleView.swift */; };
-		9CC2B73D2861BA92005CDE86 /* SBUStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B68F2861BA92005CDE86 /* SBUStackView.swift */; };
-		9CC2B73E2861BA92005CDE86 /* SBUAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6902861BA92005CDE86 /* SBUAnimation.swift */; };
-		9CC2B73F2861BA92005CDE86 /* SBUEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6912861BA92005CDE86 /* SBUEmptyView.swift */; };
-		9CC2B7402861BA92005CDE86 /* SBUCoverImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6922861BA92005CDE86 /* SBUCoverImageView.swift */; };
-		9CC2B7412861BA92005CDE86 /* SBUPhotoAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6932861BA92005CDE86 /* SBUPhotoAccess.swift */; };
-		9CC2B7422861BA92005CDE86 /* SBUPhotoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6952861BA92005CDE86 /* SBUPhotoCollectionViewCell.swift */; };
-		9CC2B7432861BA92005CDE86 /* SBUSelectablePhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6962861BA92005CDE86 /* SBUSelectablePhotoViewController.swift */; };
-		9CC2B7442861BA92005CDE86 /* SBUReplyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6982861BA92005CDE86 /* SBUReplyType.swift */; };
-		9CC2B7452861BA92005CDE86 /* SBUCommonItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6992861BA92005CDE86 /* SBUCommonItem.swift */; };
-		9CC2B7462861BA92005CDE86 /* SBULayoutableButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B69A2861BA92005CDE86 /* SBULayoutableButton.swift */; };
-		9CC2B7472861BA92005CDE86 /* SBUNavigationTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B69B2861BA92005CDE86 /* SBUNavigationTitleView.swift */; };
-		9CC2B7482861BA92005CDE86 /* SBUActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B69C2861BA92005CDE86 /* SBUActionSheet.swift */; };
-		9CC2B7492861BA92005CDE86 /* SBUAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B69D2861BA92005CDE86 /* SBUAlertView.swift */; };
-		9CC2B74A2861BA92005CDE86 /* SBUMenuCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9CC2B69F2861BA92005CDE86 /* SBUMenuCell.xib */; };
-		9CC2B74B2861BA92005CDE86 /* SBUMenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6A02861BA92005CDE86 /* SBUMenuCell.swift */; };
-		9CC2B74C2861BA92005CDE86 /* SBUMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6A12861BA92005CDE86 /* SBUMenuView.swift */; };
-		9CC2B74D2861BA92005CDE86 /* SBUBottomSheetController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6A22861BA92005CDE86 /* SBUBottomSheetController.swift */; };
-		9CC2B74E2861BA92005CDE86 /* SBUMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6A32861BA92005CDE86 /* SBUMenuViewController.swift */; };
-		9CC2B74F2861BA92005CDE86 /* SBUUserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6A52861BA92005CDE86 /* SBUUserCell.swift */; };
-		9CC2B7502861BA92005CDE86 /* SBULoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6A62861BA92005CDE86 /* SBULoading.swift */; };
-		9CC2B7512861BA92005CDE86 /* SBUCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6A72861BA92005CDE86 /* SBUCollectionViewFlowLayout.swift */; };
-		9CC2B7522861BA92005CDE86 /* SBUMemberListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6A92861BA92005CDE86 /* SBUMemberListViewController.swift */; };
-		9CC2B7532861BA92005CDE86 /* SBUInviteUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6AA2861BA92005CDE86 /* SBUInviteUserViewController.swift */; };
-		9CC2B7542861BA92005CDE86 /* SBUMessageSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6AC2861BA92005CDE86 /* SBUMessageSearchViewController.swift */; };
-		9CC2B7552861BA92005CDE86 /* SBUMessageSearchResultCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6AD2861BA92005CDE86 /* SBUMessageSearchResultCell.swift */; };
-		9CC2B7562861BA92005CDE86 /* SBUTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6AF2861BA92005CDE86 /* SBUTableViewCell.swift */; };
-		9CC2B7572861BA92005CDE86 /* SBUQuoteMessageInputViewProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6B02861BA92005CDE86 /* SBUQuoteMessageInputViewProtocol.swift */; };
-		9CC2B7582861BA92005CDE86 /* SBUMessageCellProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6B12861BA92005CDE86 /* SBUMessageCellProtocol.swift */; };
-		9CC2B7592861BA92005CDE86 /* SBUViewLifeCycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6B22861BA92005CDE86 /* SBUViewLifeCycle.swift */; };
-		9CC2B75A2861BA92005CDE86 /* SBUQuotedMessageViewProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6B32861BA92005CDE86 /* SBUQuotedMessageViewProtocol.swift */; };
-		9CC2B75B2861BA92005CDE86 /* SBUView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6B42861BA92005CDE86 /* SBUView.swift */; };
-		9CC2B75C2861BA92005CDE86 /* SBUOpenChannelSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6B62861BA92005CDE86 /* SBUOpenChannelSettingsViewController.swift */; };
-		9CC2B75D2861BA92005CDE86 /* SBUOpenChannelSettingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6B82861BA92005CDE86 /* SBUOpenChannelSettingCell.swift */; };
-		9CC2B75E2861BA92005CDE86 /* SBUModerationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6B92861BA92005CDE86 /* SBUModerationCell.swift */; };
-		9CC2B75F2861BA92005CDE86 /* SBUChannelSettingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6BA2861BA92005CDE86 /* SBUChannelSettingCell.swift */; };
-		9CC2B7602861BA92005CDE86 /* SBUModerationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6BB2861BA92005CDE86 /* SBUModerationsViewController.swift */; };
-		9CC2B7612861BA92005CDE86 /* SBUChannelSettingsUserInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6BD2861BA92005CDE86 /* SBUChannelSettingsUserInfoView.swift */; };
-		9CC2B7622861BA92005CDE86 /* SBUBaseChannelSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6BE2861BA92005CDE86 /* SBUBaseChannelSettingViewController.swift */; };
-		9CC2B7632861BA92005CDE86 /* SBUChannelSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6BF2861BA92005CDE86 /* SBUChannelSettingsViewController.swift */; };
-		9CC2B7642861BA92005CDE86 /* SBUCreateChannelTypeSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6C12861BA92005CDE86 /* SBUCreateChannelTypeSelector.swift */; };
-		9CC2B7652861BA92005CDE86 /* SBUCreateChannelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6C22861BA92005CDE86 /* SBUCreateChannelViewController.swift */; };
-		9CC2B7662861BA92005CDE86 /* SBUGlobals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC2B6C42861BA92005CDE86 /* SBUGlobals.swift */; };
-		9CC2B7672861BA92005CDE86 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9CC2B6C62861BA92005CDE86 /* Assets.xcassets */; };
 		9CC8E2F52510C53A00C038A5 /* MySettingsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC8E2F42510C53A00C038A5 /* MySettingsCell.swift */; };
 		9CDDA30324B47FF200F77A59 /* CustomUserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDDA30224B47FF200F77A59 /* CustomUserCell.swift */; };
 		9CDDA30524B4DA8600F77A59 /* MemberListVC_Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDDA30424B4DA8600F77A59 /* MemberListVC_Cell.swift */; };
@@ -217,6 +56,167 @@
 		9CED4D1924ADE42A00D81B10 /* MemberListCustomManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CED4D1824ADE42A00D81B10 /* MemberListCustomManager.swift */; };
 		9CED4D1C24ADE69900D81B10 /* CustomChannelListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CED4D1B24ADE69900D81B10 /* CustomChannelListCell.swift */; };
 		9CED4D1F24AF02D800D81B10 /* SampleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CED4D1E24AF02D800D81B10 /* SampleManager.swift */; };
+		A927C9C828A2263500687419 /* UIStackView.SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C8FC28A2263500687419 /* UIStackView.SBUIKit.swift */; };
+		A927C9C928A2263500687419 /* URL+SBUKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C8FD28A2263500687419 /* URL+SBUKit.swift */; };
+		A927C9CA28A2263500687419 /* Array+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C8FE28A2263500687419 /* Array+SBUIKit.swift */; };
+		A927C9CB28A2263500687419 /* UIColor+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C8FF28A2263500687419 /* UIColor+SBUIKit.swift */; };
+		A927C9CC28A2263500687419 /* Formatter+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C90028A2263500687419 /* Formatter+SBUIKit.swift */; };
+		A927C9CD28A2263500687419 /* UIImage+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C90128A2263500687419 /* UIImage+SBUIKit.swift */; };
+		A927C9CE28A2263500687419 /* UINavigationController+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C90228A2263500687419 /* UINavigationController+SBUIKit.swift */; };
+		A927C9CF28A2263500687419 /* String+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C90328A2263500687419 /* String+SBUIKit.swift */; };
+		A927C9D028A2263500687419 /* CGSize+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C90428A2263500687419 /* CGSize+SBUIKit.swift */; };
+		A927C9D128A2263500687419 /* Float+SBUKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C90528A2263500687419 /* Float+SBUKit.swift */; };
+		A927C9D228A2263500687419 /* Data+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C90628A2263500687419 /* Data+SBUIKit.swift */; };
+		A927C9D328A2263500687419 /* UIViewController+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C90728A2263500687419 /* UIViewController+SBUIKit.swift */; };
+		A927C9D428A2263500687419 /* Date+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C90828A2263500687419 /* Date+SBUIKit.swift */; };
+		A927C9D528A2263500687419 /* UIApplication+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C90928A2263500687419 /* UIApplication+SBUIKit.swift */; };
+		A927C9D628A2263500687419 /* UIView+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C90A28A2263500687419 /* UIView+SBUIKit.swift */; };
+		A927C9D728A2263500687419 /* Sequence+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C90B28A2263500687419 /* Sequence+SBUIKit.swift */; };
+		A927C9D828A2263500687419 /* UIImageView+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C90C28A2263500687419 /* UIImageView+SBUIKit.swift */; };
+		A927C9D928A2263500687419 /* NSObject+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C90D28A2263500687419 /* NSObject+SBUIKit.swift */; };
+		A927C9DA28A2263500687419 /* SBUPropertyWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C90F28A2263500687419 /* SBUPropertyWrapper.swift */; };
+		A927C9DB28A2263500687419 /* SBUUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C91028A2263500687419 /* SBUUtils.swift */; };
+		A927C9DC28A2263500687419 /* SBULogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C91128A2263500687419 /* SBULogger.swift */; };
+		A927C9DD28A2263500687419 /* SBUMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C91228A2263500687419 /* SBUMain.swift */; };
+		A927C9DE28A2263500687419 /* SBUAvailable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C91328A2263500687419 /* SBUAvailable.swift */; };
+		A927C9DF28A2263500687419 /* SBUIconSetType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C91528A2263500687419 /* SBUIconSetType.swift */; };
+		A927C9E028A2263500687419 /* SBUEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C91628A2263500687419 /* SBUEnums.swift */; };
+		A927C9E128A2263500687419 /* CommonProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C91828A2263500687419 /* CommonProtocols.swift */; };
+		A927C9E228A2263500687419 /* SBUEmojiManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C91A28A2263500687419 /* SBUEmojiManager.swift */; };
+		A927C9E328A2263500687419 /* SBUCacheManager.File.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C91B28A2263500687419 /* SBUCacheManager.File.swift */; };
+		A927C9E428A2263500687419 /* SBUPendingMessageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C91C28A2263500687419 /* SBUPendingMessageManager.swift */; };
+		A927C9E528A2263500687419 /* SBUDownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C91D28A2263500687419 /* SBUDownloadManager.swift */; };
+		A927C9E628A2263500687419 /* SBUPermissionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C91E28A2263500687419 /* SBUPermissionManager.swift */; };
+		A927C9E728A2263500687419 /* SBUCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C91F28A2263500687419 /* SBUCacheManager.swift */; };
+		A927C9E828A2263500687419 /* SBUToastManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C92028A2263500687419 /* SBUToastManager.swift */; };
+		A927C9E928A2263500687419 /* SBUGlobalCustomParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C92128A2263500687419 /* SBUGlobalCustomParams.swift */; };
+		A927C9EA28A2263500687419 /* SBUDateFormatSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C92328A2263500687419 /* SBUDateFormatSet.swift */; };
+		A927C9EB28A2263500687419 /* SBUConstant.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C92428A2263500687419 /* SBUConstant.swift */; };
+		A927C9EC28A2263500687419 /* SBUStringSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C92528A2263500687419 /* SBUStringSet.swift */; };
+		A927C9ED28A2263500687419 /* SBUCommonViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C92628A2263500687419 /* SBUCommonViews.swift */; };
+		A927C9EE28A2263500687419 /* SBUIconSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C92828A2263500687419 /* SBUIconSet.swift */; };
+		A927C9EF28A2263500687419 /* SBUColorSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C92928A2263500687419 /* SBUColorSet.swift */; };
+		A927C9F028A2263500687419 /* SBUTheme+Type.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C92A28A2263500687419 /* SBUTheme+Type.swift */; };
+		A927C9F128A2263500687419 /* SBUFontSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C92B28A2263500687419 /* SBUFontSet.swift */; };
+		A927C9F228A2263500687419 /* SBUTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C92C28A2263500687419 /* SBUTheme.swift */; };
+		A927C9F328A2263500687419 /* SBUMessageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C92E28A2263500687419 /* SBUMessageCache.swift */; };
+		A927C9F428A2263500687419 /* SBUUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C92F28A2263500687419 /* SBUUser.swift */; };
+		A927C9F528A2263500687419 /* SBUHighlightMessageInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C93028A2263500687419 /* SBUHighlightMessageInfo.swift */; };
+		A927C9F628A2263500687419 /* SBUBaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C93328A2263500687419 /* SBUBaseViewController.swift */; };
+		A927C9F728A2263500687419 /* SBUOpenChannelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C93428A2263500687419 /* SBUOpenChannelViewModel.swift */; };
+		A927C9F828A2263500687419 /* SBUMessageSearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C93528A2263500687419 /* SBUMessageSearchViewModel.swift */; };
+		A927C9F928A2263500687419 /* SBUMemberListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C93628A2263500687419 /* SBUMemberListViewModel.swift */; };
+		A927C9FA28A2263500687419 /* SBUInviteUserListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C93728A2263500687419 /* SBUInviteUserListViewModel.swift */; };
+		A927C9FB28A2263500687419 /* SBUViewModelDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C93928A2263500687419 /* SBUViewModelDelegate.swift */; };
+		A927C9FC28A2263500687419 /* SBULoadableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C93A28A2263500687419 /* SBULoadableViewModel.swift */; };
+		A927C9FD28A2263500687419 /* SBUChannelActionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C93B28A2263500687419 /* SBUChannelActionViewModel.swift */; };
+		A927C9FE28A2263500687419 /* SBUChannelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C93C28A2263500687419 /* SBUChannelViewModel.swift */; };
+		A927C9FF28A2263500687419 /* SBUObservable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C93D28A2263500687419 /* SBUObservable.swift */; };
+		A927CA0028A2263500687419 /* SBUChannelListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C93E28A2263500687419 /* SBUChannelListViewModel.swift */; };
+		A927CA0128A2263500687419 /* SBUChannelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C94128A2263500687419 /* SBUChannelCell.swift */; };
+		A927CA0228A2263500687419 /* SBUBaseChannelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C94228A2263500687419 /* SBUBaseChannelCell.swift */; };
+		A927CA0328A2263500687419 /* SBUChannelListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C94328A2263500687419 /* SBUChannelListViewController.swift */; };
+		A927CA0428A2263500687419 /* SBUBaseChannelListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C94428A2263500687419 /* SBUBaseChannelListViewController.swift */; };
+		A927CA0528A2263500687419 /* SBUUserProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C94628A2263500687419 /* SBUUserProfileView.swift */; };
+		A927CA0628A2263500687419 /* SBUUserMessageTextViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C94928A2263500687419 /* SBUUserMessageTextViewModel.swift */; };
+		A927CA0728A2263500687419 /* SBUMessageWebViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C94A28A2263500687419 /* SBUMessageWebViewModel.swift */; };
+		A927CA0828A2263500687419 /* SBUReactionCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C94C28A2263500687419 /* SBUReactionCollectionViewCell.swift */; };
+		A927CA0928A2263500687419 /* SBUReactionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C94D28A2263500687419 /* SBUReactionsViewController.swift */; };
+		A927CA0A28A2263500687419 /* SBUMessageReactionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C94E28A2263500687419 /* SBUMessageReactionView.swift */; };
+		A927CA0B28A2263500687419 /* SBUReactionCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A927C94F28A2263500687419 /* SBUReactionCollectionViewCell.xib */; };
+		A927CA0C28A2263500687419 /* SBUEmojiListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C95028A2263500687419 /* SBUEmojiListViewController.swift */; };
+		A927CA0D28A2263500687419 /* SBUBaseChannelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C95128A2263500687419 /* SBUBaseChannelViewController.swift */; };
+		A927CA0E28A2263500687419 /* SBUUserMessageCellParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C95428A2263500687419 /* SBUUserMessageCellParams.swift */; };
+		A927CA0F28A2263500687419 /* SBUUnknownMessageCellParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C95528A2263500687419 /* SBUUnknownMessageCellParams.swift */; };
+		A927CA1028A2263500687419 /* SBUAdminMessageCellParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C95628A2263500687419 /* SBUAdminMessageCellParams.swift */; };
+		A927CA1128A2263500687419 /* SBUBaseMessageCellParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C95728A2263500687419 /* SBUBaseMessageCellParams.swift */; };
+		A927CA1228A2263500687419 /* SBUFileMessageCellParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C95828A2263500687419 /* SBUFileMessageCellParams.swift */; };
+		A927CA1328A2263500687419 /* OpenChannelCommonContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C95A28A2263500687419 /* OpenChannelCommonContentView.swift */; };
+		A927CA1428A2263500687419 /* BaseFileContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C95B28A2263500687419 /* BaseFileContentView.swift */; };
+		A927CA1528A2263500687419 /* ImageContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C95C28A2263500687419 /* ImageContentView.swift */; };
+		A927CA1628A2263500687419 /* CommonContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C95D28A2263500687419 /* CommonContentView.swift */; };
+		A927CA1728A2263500687419 /* OpenChannelImageContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C95E28A2263500687419 /* OpenChannelImageContentView.swift */; };
+		A927CA1828A2263500687419 /* QuotedFileCommonContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C96128A2263500687419 /* QuotedFileCommonContentView.swift */; };
+		A927CA1928A2263500687419 /* SBUQuotedBaseMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C96228A2263500687419 /* SBUQuotedBaseMessageView.swift */; };
+		A927CA1A28A2263500687419 /* QuotedFileImageContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C96328A2263500687419 /* QuotedFileImageContentView.swift */; };
+		A927CA1B28A2263500687419 /* SBUQuotedFileMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C96428A2263500687419 /* SBUQuotedFileMessageView.swift */; };
+		A927CA1C28A2263500687419 /* SBUQuotedUserMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C96528A2263500687419 /* SBUQuotedUserMessageView.swift */; };
+		A927CA1D28A2263500687419 /* SBUQuotedBaseMessageViewParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C96728A2263500687419 /* SBUQuotedBaseMessageViewParams.swift */; };
+		A927CA1E28A2263500687419 /* SBUBaseMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C96828A2263500687419 /* SBUBaseMessageCell.swift */; };
+		A927CA1F28A2263500687419 /* SBUOpenChannelFileMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C96A28A2263500687419 /* SBUOpenChannelFileMessageCell.swift */; };
+		A927CA2028A2263500687419 /* SBUOpenChannelAdminMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C96B28A2263500687419 /* SBUOpenChannelAdminMessageCell.swift */; };
+		A927CA2128A2263500687419 /* SBUOpenChannelContentBaseMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C96C28A2263500687419 /* SBUOpenChannelContentBaseMessageCell.swift */; };
+		A927CA2228A2263500687419 /* SBUOpenChannelUserMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C96D28A2263500687419 /* SBUOpenChannelUserMessageCell.swift */; };
+		A927CA2328A2263500687419 /* SBUOpenChannelUnknownMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C96E28A2263500687419 /* SBUOpenChannelUnknownMessageCell.swift */; };
+		A927CA2428A2263500687419 /* SBUOpenChannelBaseMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C96F28A2263500687419 /* SBUOpenChannelBaseMessageCell.swift */; };
+		A927CA2528A2263500687419 /* SBUFileMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C97028A2263500687419 /* SBUFileMessageCell.swift */; };
+		A927CA2628A2263500687419 /* SBUAdminMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C97128A2263500687419 /* SBUAdminMessageCell.swift */; };
+		A927CA2728A2263500687419 /* SBUContentBaseMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C97228A2263500687419 /* SBUContentBaseMessageCell.swift */; };
+		A927CA2828A2263500687419 /* SBUUnknownMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C97328A2263500687419 /* SBUUnknownMessageCell.swift */; };
+		A927CA2928A2263500687419 /* SBUUserMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C97428A2263500687419 /* SBUUserMessageCell.swift */; };
+		A927CA2A28A2263500687419 /* SBUQuoteMessageInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C97628A2263500687419 /* SBUQuoteMessageInputView.swift */; };
+		A927CA2B28A2263500687419 /* SBUMessageInputMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C97728A2263500687419 /* SBUMessageInputMode.swift */; };
+		A927CA2C28A2263500687419 /* SBUQuoteMessageInputViewParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C97928A2263500687419 /* SBUQuoteMessageInputViewParams.swift */; };
+		A927CA2D28A2263500687419 /* SBUMessageInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C97A28A2263500687419 /* SBUMessageInputView.swift */; };
+		A927CA2E28A2263500687419 /* SBUChannelViewController.ParentMessageViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C97B28A2263500687419 /* SBUChannelViewController.ParentMessageViewDelegate.swift */; };
+		A927CA2F28A2263500687419 /* SBUMessageStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C97D28A2263500687419 /* SBUMessageStateView.swift */; };
+		A927CA3028A2263500687419 /* SBUMessageProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C97E28A2263500687419 /* SBUMessageProfileView.swift */; };
+		A927CA3128A2263500687419 /* SBUUserMessageTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C97F28A2263500687419 /* SBUUserMessageTextView.swift */; };
+		A927CA3228A2263500687419 /* SBUUserNameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C98028A2263500687419 /* SBUUserNameView.swift */; };
+		A927CA3328A2263500687419 /* SBUMessageWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C98128A2263500687419 /* SBUMessageWebView.swift */; };
+		A927CA3428A2263500687419 /* SBUMessageDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C98228A2263500687419 /* SBUMessageDateView.swift */; };
+		A927CA3528A2263500687419 /* SBULinkClickableTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C98328A2263500687419 /* SBULinkClickableTextView.swift */; };
+		A927CA3628A2263500687419 /* SBUOpenChannelMessageWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C98428A2263500687419 /* SBUOpenChannelMessageWebView.swift */; };
+		A927CA3728A2263500687419 /* SBUSelectableStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C98528A2263500687419 /* SBUSelectableStackView.swift */; };
+		A927CA3828A2263500687419 /* SBUFileViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C98728A2263500687419 /* SBUFileViewer.swift */; };
+		A927CA3928A2263500687419 /* SBUChannelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C98828A2263500687419 /* SBUChannelViewController.swift */; };
+		A927CA3A28A2263500687419 /* SBUNewMessageInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C98A28A2263500687419 /* SBUNewMessageInfo.swift */; };
+		A927CA3B28A2263500687419 /* SBUOpenChannelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C98B28A2263500687419 /* SBUOpenChannelViewController.swift */; };
+		A927CA3C28A2263500687419 /* SBUChannelInfoHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C98D28A2263500687419 /* SBUChannelInfoHeaderView.swift */; };
+		A927CA3D28A2263500687419 /* SBUChannelTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C98E28A2263500687419 /* SBUChannelTitleView.swift */; };
+		A927CA3E28A2263500687419 /* SBUStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C99028A2263500687419 /* SBUStackView.swift */; };
+		A927CA3F28A2263500687419 /* SBUAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C99128A2263500687419 /* SBUAnimation.swift */; };
+		A927CA4028A2263500687419 /* SBUEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C99228A2263500687419 /* SBUEmptyView.swift */; };
+		A927CA4128A2263500687419 /* SBUCoverImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C99328A2263500687419 /* SBUCoverImageView.swift */; };
+		A927CA4228A2263500687419 /* SBUPhotoAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C99428A2263500687419 /* SBUPhotoAccess.swift */; };
+		A927CA4328A2263500687419 /* SBUPhotoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C99628A2263500687419 /* SBUPhotoCollectionViewCell.swift */; };
+		A927CA4428A2263500687419 /* SBUSelectablePhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C99728A2263500687419 /* SBUSelectablePhotoViewController.swift */; };
+		A927CA4528A2263500687419 /* SBUReplyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C99928A2263500687419 /* SBUReplyType.swift */; };
+		A927CA4628A2263500687419 /* SBUCommonItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C99A28A2263500687419 /* SBUCommonItem.swift */; };
+		A927CA4728A2263500687419 /* SBULayoutableButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C99B28A2263500687419 /* SBULayoutableButton.swift */; };
+		A927CA4828A2263500687419 /* SBUNavigationTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C99C28A2263500687419 /* SBUNavigationTitleView.swift */; };
+		A927CA4928A2263500687419 /* SBUActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C99D28A2263500687419 /* SBUActionSheet.swift */; };
+		A927CA4A28A2263500687419 /* SBUAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C99E28A2263500687419 /* SBUAlertView.swift */; };
+		A927CA4B28A2263500687419 /* SBUMenuCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A927C9A028A2263500687419 /* SBUMenuCell.xib */; };
+		A927CA4C28A2263500687419 /* SBUMenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C9A128A2263500687419 /* SBUMenuCell.swift */; };
+		A927CA4D28A2263500687419 /* SBUMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C9A228A2263500687419 /* SBUMenuView.swift */; };
+		A927CA4E28A2263500687419 /* SBUBottomSheetController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C9A328A2263500687419 /* SBUBottomSheetController.swift */; };
+		A927CA4F28A2263500687419 /* SBUMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C9A428A2263500687419 /* SBUMenuViewController.swift */; };
+		A927CA5028A2263500687419 /* SBUUserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C9A628A2263500687419 /* SBUUserCell.swift */; };
+		A927CA5128A2263500687419 /* SBULoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C9A728A2263500687419 /* SBULoading.swift */; };
+		A927CA5228A2263500687419 /* SBUCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C9A828A2263500687419 /* SBUCollectionViewFlowLayout.swift */; };
+		A927CA5328A2263500687419 /* SBUMemberListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C9AA28A2263500687419 /* SBUMemberListViewController.swift */; };
+		A927CA5428A2263500687419 /* SBUInviteUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C9AB28A2263500687419 /* SBUInviteUserViewController.swift */; };
+		A927CA5528A2263500687419 /* SBUMessageSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C9AD28A2263500687419 /* SBUMessageSearchViewController.swift */; };
+		A927CA5628A2263500687419 /* SBUMessageSearchResultCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C9AE28A2263500687419 /* SBUMessageSearchResultCell.swift */; };
+		A927CA5728A2263500687419 /* SBUTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C9B028A2263500687419 /* SBUTableViewCell.swift */; };
+		A927CA5828A2263500687419 /* SBUQuoteMessageInputViewProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C9B128A2263500687419 /* SBUQuoteMessageInputViewProtocol.swift */; };
+		A927CA5928A2263500687419 /* SBUMessageCellProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C9B228A2263500687419 /* SBUMessageCellProtocol.swift */; };
+		A927CA5A28A2263500687419 /* SBUViewLifeCycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C9B328A2263500687419 /* SBUViewLifeCycle.swift */; };
+		A927CA5B28A2263500687419 /* SBUQuotedMessageViewProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C9B428A2263500687419 /* SBUQuotedMessageViewProtocol.swift */; };
+		A927CA5C28A2263500687419 /* SBUView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C9B528A2263500687419 /* SBUView.swift */; };
+		A927CA5D28A2263500687419 /* SBUOpenChannelSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C9B728A2263500687419 /* SBUOpenChannelSettingsViewController.swift */; };
+		A927CA5E28A2263500687419 /* SBUOpenChannelSettingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C9B928A2263500687419 /* SBUOpenChannelSettingCell.swift */; };
+		A927CA5F28A2263500687419 /* SBUModerationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C9BA28A2263500687419 /* SBUModerationCell.swift */; };
+		A927CA6028A2263500687419 /* SBUChannelSettingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C9BB28A2263500687419 /* SBUChannelSettingCell.swift */; };
+		A927CA6128A2263500687419 /* SBUModerationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C9BC28A2263500687419 /* SBUModerationsViewController.swift */; };
+		A927CA6228A2263500687419 /* SBUChannelSettingsUserInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C9BE28A2263500687419 /* SBUChannelSettingsUserInfoView.swift */; };
+		A927CA6328A2263500687419 /* SBUBaseChannelSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C9BF28A2263500687419 /* SBUBaseChannelSettingViewController.swift */; };
+		A927CA6428A2263500687419 /* SBUChannelSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C9C028A2263500687419 /* SBUChannelSettingsViewController.swift */; };
+		A927CA6528A2263500687419 /* SBUCreateChannelTypeSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C9C228A2263500687419 /* SBUCreateChannelTypeSelector.swift */; };
+		A927CA6628A2263500687419 /* SBUCreateChannelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C9C328A2263500687419 /* SBUCreateChannelViewController.swift */; };
+		A927CA6728A2263500687419 /* SBUGlobals.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927C9C528A2263500687419 /* SBUGlobals.swift */; };
+		A927CA6828A2263500687419 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A927C9C728A2263500687419 /* Assets.xcassets */; };
 		A9A3AEAA256A44A700007FC2 /* PaddingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9A3AEA9256A44A700007FC2 /* PaddingLabel.swift */; };
 		A9A3AEAC256A532700007FC2 /* SBDOpenChannel+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9A3AEAB256A532700007FC2 /* SBDOpenChannel+Ext.swift */; };
 		A9A3AECE256B786E00007FC2 /* UIImageView+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9A3AECD256B786E00007FC2 /* UIImageView+Ext.swift */; };
@@ -283,168 +283,6 @@
 		9C777D66241B9024006FFE25 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9C777D68241B9024006FFE25 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9C777D77241B9078006FFE25 /* SendBirdUIKit-Sample.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "SendBirdUIKit-Sample.entitlements"; sourceTree = "<group>"; };
-		9CC2B5FB2861BA91005CDE86 /* UIStackView.SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIStackView.SBUIKit.swift; sourceTree = "<group>"; };
-		9CC2B5FC2861BA91005CDE86 /* URL+SBUKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL+SBUKit.swift"; sourceTree = "<group>"; };
-		9CC2B5FD2861BA91005CDE86 /* Array+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+SBUIKit.swift"; sourceTree = "<group>"; };
-		9CC2B5FE2861BA91005CDE86 /* UIColor+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+SBUIKit.swift"; sourceTree = "<group>"; };
-		9CC2B5FF2861BA91005CDE86 /* Formatter+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Formatter+SBUIKit.swift"; sourceTree = "<group>"; };
-		9CC2B6002861BA91005CDE86 /* UIImage+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+SBUIKit.swift"; sourceTree = "<group>"; };
-		9CC2B6012861BA91005CDE86 /* UINavigationController+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UINavigationController+SBUIKit.swift"; sourceTree = "<group>"; };
-		9CC2B6022861BA92005CDE86 /* String+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+SBUIKit.swift"; sourceTree = "<group>"; };
-		9CC2B6032861BA92005CDE86 /* CGSize+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGSize+SBUIKit.swift"; sourceTree = "<group>"; };
-		9CC2B6042861BA92005CDE86 /* Float+SBUKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Float+SBUKit.swift"; sourceTree = "<group>"; };
-		9CC2B6052861BA92005CDE86 /* Data+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Data+SBUIKit.swift"; sourceTree = "<group>"; };
-		9CC2B6062861BA92005CDE86 /* UIViewController+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+SBUIKit.swift"; sourceTree = "<group>"; };
-		9CC2B6072861BA92005CDE86 /* Date+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Date+SBUIKit.swift"; sourceTree = "<group>"; };
-		9CC2B6082861BA92005CDE86 /* UIApplication+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIApplication+SBUIKit.swift"; sourceTree = "<group>"; };
-		9CC2B6092861BA92005CDE86 /* UIView+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+SBUIKit.swift"; sourceTree = "<group>"; };
-		9CC2B60A2861BA92005CDE86 /* Sequence+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Sequence+SBUIKit.swift"; sourceTree = "<group>"; };
-		9CC2B60B2861BA92005CDE86 /* UIImageView+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImageView+SBUIKit.swift"; sourceTree = "<group>"; };
-		9CC2B60C2861BA92005CDE86 /* NSObject+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSObject+SBUIKit.swift"; sourceTree = "<group>"; };
-		9CC2B60E2861BA92005CDE86 /* SBUPropertyWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUPropertyWrapper.swift; sourceTree = "<group>"; };
-		9CC2B60F2861BA92005CDE86 /* SBUUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUtils.swift; sourceTree = "<group>"; };
-		9CC2B6102861BA92005CDE86 /* SBULogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBULogger.swift; sourceTree = "<group>"; };
-		9CC2B6112861BA92005CDE86 /* SBUMain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMain.swift; sourceTree = "<group>"; };
-		9CC2B6122861BA92005CDE86 /* SBUAvailable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUAvailable.swift; sourceTree = "<group>"; };
-		9CC2B6142861BA92005CDE86 /* SBUIconSetType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUIconSetType.swift; sourceTree = "<group>"; };
-		9CC2B6152861BA92005CDE86 /* SBUEnums.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUEnums.swift; sourceTree = "<group>"; };
-		9CC2B6172861BA92005CDE86 /* CommonProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonProtocols.swift; sourceTree = "<group>"; };
-		9CC2B6192861BA92005CDE86 /* SBUEmojiManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUEmojiManager.swift; sourceTree = "<group>"; };
-		9CC2B61A2861BA92005CDE86 /* SBUCacheManager.File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUCacheManager.File.swift; sourceTree = "<group>"; };
-		9CC2B61B2861BA92005CDE86 /* SBUPendingMessageManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUPendingMessageManager.swift; sourceTree = "<group>"; };
-		9CC2B61C2861BA92005CDE86 /* SBUDownloadManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUDownloadManager.swift; sourceTree = "<group>"; };
-		9CC2B61D2861BA92005CDE86 /* SBUPermissionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUPermissionManager.swift; sourceTree = "<group>"; };
-		9CC2B61E2861BA92005CDE86 /* SBUCacheManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUCacheManager.swift; sourceTree = "<group>"; };
-		9CC2B61F2861BA92005CDE86 /* SBUToastManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUToastManager.swift; sourceTree = "<group>"; };
-		9CC2B6202861BA92005CDE86 /* SBUGlobalCustomParams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUGlobalCustomParams.swift; sourceTree = "<group>"; };
-		9CC2B6222861BA92005CDE86 /* SBUDateFormatSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUDateFormatSet.swift; sourceTree = "<group>"; };
-		9CC2B6232861BA92005CDE86 /* SBUConstant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUConstant.swift; sourceTree = "<group>"; };
-		9CC2B6242861BA92005CDE86 /* SBUStringSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUStringSet.swift; sourceTree = "<group>"; };
-		9CC2B6252861BA92005CDE86 /* SBUCommonViews.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUCommonViews.swift; sourceTree = "<group>"; };
-		9CC2B6272861BA92005CDE86 /* SBUIconSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUIconSet.swift; sourceTree = "<group>"; };
-		9CC2B6282861BA92005CDE86 /* SBUColorSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUColorSet.swift; sourceTree = "<group>"; };
-		9CC2B6292861BA92005CDE86 /* SBUTheme+Type.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SBUTheme+Type.swift"; sourceTree = "<group>"; };
-		9CC2B62A2861BA92005CDE86 /* SBUFontSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUFontSet.swift; sourceTree = "<group>"; };
-		9CC2B62B2861BA92005CDE86 /* SBUTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUTheme.swift; sourceTree = "<group>"; };
-		9CC2B62D2861BA92005CDE86 /* SBUMessageCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageCache.swift; sourceTree = "<group>"; };
-		9CC2B62E2861BA92005CDE86 /* SBUUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUser.swift; sourceTree = "<group>"; };
-		9CC2B62F2861BA92005CDE86 /* SBUHighlightMessageInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUHighlightMessageInfo.swift; sourceTree = "<group>"; };
-		9CC2B6322861BA92005CDE86 /* SBUBaseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUBaseViewController.swift; sourceTree = "<group>"; };
-		9CC2B6332861BA92005CDE86 /* SBUOpenChannelViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelViewModel.swift; sourceTree = "<group>"; };
-		9CC2B6342861BA92005CDE86 /* SBUMessageSearchViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageSearchViewModel.swift; sourceTree = "<group>"; };
-		9CC2B6352861BA92005CDE86 /* SBUMemberListViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMemberListViewModel.swift; sourceTree = "<group>"; };
-		9CC2B6362861BA92005CDE86 /* SBUInviteUserListViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUInviteUserListViewModel.swift; sourceTree = "<group>"; };
-		9CC2B6382861BA92005CDE86 /* SBUViewModelDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUViewModelDelegate.swift; sourceTree = "<group>"; };
-		9CC2B6392861BA92005CDE86 /* SBULoadableViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBULoadableViewModel.swift; sourceTree = "<group>"; };
-		9CC2B63A2861BA92005CDE86 /* SBUChannelActionViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelActionViewModel.swift; sourceTree = "<group>"; };
-		9CC2B63B2861BA92005CDE86 /* SBUChannelViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelViewModel.swift; sourceTree = "<group>"; };
-		9CC2B63C2861BA92005CDE86 /* SBUObservable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUObservable.swift; sourceTree = "<group>"; };
-		9CC2B63D2861BA92005CDE86 /* SBUChannelListViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelListViewModel.swift; sourceTree = "<group>"; };
-		9CC2B6402861BA92005CDE86 /* SBUChannelCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelCell.swift; sourceTree = "<group>"; };
-		9CC2B6412861BA92005CDE86 /* SBUBaseChannelCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUBaseChannelCell.swift; sourceTree = "<group>"; };
-		9CC2B6422861BA92005CDE86 /* SBUChannelListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelListViewController.swift; sourceTree = "<group>"; };
-		9CC2B6432861BA92005CDE86 /* SBUBaseChannelListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUBaseChannelListViewController.swift; sourceTree = "<group>"; };
-		9CC2B6452861BA92005CDE86 /* SBUUserProfileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUserProfileView.swift; sourceTree = "<group>"; };
-		9CC2B6482861BA92005CDE86 /* SBUUserMessageTextViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUserMessageTextViewModel.swift; sourceTree = "<group>"; };
-		9CC2B6492861BA92005CDE86 /* SBUMessageWebViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageWebViewModel.swift; sourceTree = "<group>"; };
-		9CC2B64B2861BA92005CDE86 /* SBUReactionCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUReactionCollectionViewCell.swift; sourceTree = "<group>"; };
-		9CC2B64C2861BA92005CDE86 /* SBUReactionsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUReactionsViewController.swift; sourceTree = "<group>"; };
-		9CC2B64D2861BA92005CDE86 /* SBUMessageReactionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageReactionView.swift; sourceTree = "<group>"; };
-		9CC2B64E2861BA92005CDE86 /* SBUReactionCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SBUReactionCollectionViewCell.xib; sourceTree = "<group>"; };
-		9CC2B64F2861BA92005CDE86 /* SBUEmojiListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUEmojiListViewController.swift; sourceTree = "<group>"; };
-		9CC2B6502861BA92005CDE86 /* SBUBaseChannelViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUBaseChannelViewController.swift; sourceTree = "<group>"; };
-		9CC2B6532861BA92005CDE86 /* SBUUserMessageCellParams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUserMessageCellParams.swift; sourceTree = "<group>"; };
-		9CC2B6542861BA92005CDE86 /* SBUUnknownMessageCellParams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUnknownMessageCellParams.swift; sourceTree = "<group>"; };
-		9CC2B6552861BA92005CDE86 /* SBUAdminMessageCellParams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUAdminMessageCellParams.swift; sourceTree = "<group>"; };
-		9CC2B6562861BA92005CDE86 /* SBUBaseMessageCellParams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUBaseMessageCellParams.swift; sourceTree = "<group>"; };
-		9CC2B6572861BA92005CDE86 /* SBUFileMessageCellParams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUFileMessageCellParams.swift; sourceTree = "<group>"; };
-		9CC2B6592861BA92005CDE86 /* OpenChannelCommonContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenChannelCommonContentView.swift; sourceTree = "<group>"; };
-		9CC2B65A2861BA92005CDE86 /* BaseFileContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseFileContentView.swift; sourceTree = "<group>"; };
-		9CC2B65B2861BA92005CDE86 /* ImageContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageContentView.swift; sourceTree = "<group>"; };
-		9CC2B65C2861BA92005CDE86 /* CommonContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonContentView.swift; sourceTree = "<group>"; };
-		9CC2B65D2861BA92005CDE86 /* OpenChannelImageContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenChannelImageContentView.swift; sourceTree = "<group>"; };
-		9CC2B6602861BA92005CDE86 /* QuotedFileCommonContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuotedFileCommonContentView.swift; sourceTree = "<group>"; };
-		9CC2B6612861BA92005CDE86 /* SBUQuotedBaseMessageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUQuotedBaseMessageView.swift; sourceTree = "<group>"; };
-		9CC2B6622861BA92005CDE86 /* QuotedFileImageContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuotedFileImageContentView.swift; sourceTree = "<group>"; };
-		9CC2B6632861BA92005CDE86 /* SBUQuotedFileMessageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUQuotedFileMessageView.swift; sourceTree = "<group>"; };
-		9CC2B6642861BA92005CDE86 /* SBUQuotedUserMessageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUQuotedUserMessageView.swift; sourceTree = "<group>"; };
-		9CC2B6662861BA92005CDE86 /* SBUQuotedBaseMessageViewParams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUQuotedBaseMessageViewParams.swift; sourceTree = "<group>"; };
-		9CC2B6672861BA92005CDE86 /* SBUBaseMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUBaseMessageCell.swift; sourceTree = "<group>"; };
-		9CC2B6692861BA92005CDE86 /* SBUOpenChannelFileMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelFileMessageCell.swift; sourceTree = "<group>"; };
-		9CC2B66A2861BA92005CDE86 /* SBUOpenChannelAdminMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelAdminMessageCell.swift; sourceTree = "<group>"; };
-		9CC2B66B2861BA92005CDE86 /* SBUOpenChannelContentBaseMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelContentBaseMessageCell.swift; sourceTree = "<group>"; };
-		9CC2B66C2861BA92005CDE86 /* SBUOpenChannelUserMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelUserMessageCell.swift; sourceTree = "<group>"; };
-		9CC2B66D2861BA92005CDE86 /* SBUOpenChannelUnknownMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelUnknownMessageCell.swift; sourceTree = "<group>"; };
-		9CC2B66E2861BA92005CDE86 /* SBUOpenChannelBaseMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelBaseMessageCell.swift; sourceTree = "<group>"; };
-		9CC2B66F2861BA92005CDE86 /* SBUFileMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUFileMessageCell.swift; sourceTree = "<group>"; };
-		9CC2B6702861BA92005CDE86 /* SBUAdminMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUAdminMessageCell.swift; sourceTree = "<group>"; };
-		9CC2B6712861BA92005CDE86 /* SBUContentBaseMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUContentBaseMessageCell.swift; sourceTree = "<group>"; };
-		9CC2B6722861BA92005CDE86 /* SBUUnknownMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUnknownMessageCell.swift; sourceTree = "<group>"; };
-		9CC2B6732861BA92005CDE86 /* SBUUserMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUserMessageCell.swift; sourceTree = "<group>"; };
-		9CC2B6752861BA92005CDE86 /* SBUQuoteMessageInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUQuoteMessageInputView.swift; sourceTree = "<group>"; };
-		9CC2B6762861BA92005CDE86 /* SBUMessageInputMode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageInputMode.swift; sourceTree = "<group>"; };
-		9CC2B6782861BA92005CDE86 /* SBUQuoteMessageInputViewParams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUQuoteMessageInputViewParams.swift; sourceTree = "<group>"; };
-		9CC2B6792861BA92005CDE86 /* SBUMessageInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageInputView.swift; sourceTree = "<group>"; };
-		9CC2B67A2861BA92005CDE86 /* SBUChannelViewController.ParentMessageViewDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelViewController.ParentMessageViewDelegate.swift; sourceTree = "<group>"; };
-		9CC2B67C2861BA92005CDE86 /* SBUMessageStateView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageStateView.swift; sourceTree = "<group>"; };
-		9CC2B67D2861BA92005CDE86 /* SBUMessageProfileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageProfileView.swift; sourceTree = "<group>"; };
-		9CC2B67E2861BA92005CDE86 /* SBUUserMessageTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUserMessageTextView.swift; sourceTree = "<group>"; };
-		9CC2B67F2861BA92005CDE86 /* SBUUserNameView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUserNameView.swift; sourceTree = "<group>"; };
-		9CC2B6802861BA92005CDE86 /* SBUMessageWebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageWebView.swift; sourceTree = "<group>"; };
-		9CC2B6812861BA92005CDE86 /* SBUMessageDateView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageDateView.swift; sourceTree = "<group>"; };
-		9CC2B6822861BA92005CDE86 /* SBULinkClickableTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBULinkClickableTextView.swift; sourceTree = "<group>"; };
-		9CC2B6832861BA92005CDE86 /* SBUOpenChannelMessageWebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelMessageWebView.swift; sourceTree = "<group>"; };
-		9CC2B6842861BA92005CDE86 /* SBUSelectableStackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUSelectableStackView.swift; sourceTree = "<group>"; };
-		9CC2B6862861BA92005CDE86 /* SBUFileViewer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUFileViewer.swift; sourceTree = "<group>"; };
-		9CC2B6872861BA92005CDE86 /* SBUChannelViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelViewController.swift; sourceTree = "<group>"; };
-		9CC2B6892861BA92005CDE86 /* SBUNewMessageInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUNewMessageInfo.swift; sourceTree = "<group>"; };
-		9CC2B68A2861BA92005CDE86 /* SBUOpenChannelViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelViewController.swift; sourceTree = "<group>"; };
-		9CC2B68C2861BA92005CDE86 /* SBUChannelInfoHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelInfoHeaderView.swift; sourceTree = "<group>"; };
-		9CC2B68D2861BA92005CDE86 /* SBUChannelTitleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelTitleView.swift; sourceTree = "<group>"; };
-		9CC2B68F2861BA92005CDE86 /* SBUStackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUStackView.swift; sourceTree = "<group>"; };
-		9CC2B6902861BA92005CDE86 /* SBUAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUAnimation.swift; sourceTree = "<group>"; };
-		9CC2B6912861BA92005CDE86 /* SBUEmptyView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUEmptyView.swift; sourceTree = "<group>"; };
-		9CC2B6922861BA92005CDE86 /* SBUCoverImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUCoverImageView.swift; sourceTree = "<group>"; };
-		9CC2B6932861BA92005CDE86 /* SBUPhotoAccess.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUPhotoAccess.swift; sourceTree = "<group>"; };
-		9CC2B6952861BA92005CDE86 /* SBUPhotoCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUPhotoCollectionViewCell.swift; sourceTree = "<group>"; };
-		9CC2B6962861BA92005CDE86 /* SBUSelectablePhotoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUSelectablePhotoViewController.swift; sourceTree = "<group>"; };
-		9CC2B6982861BA92005CDE86 /* SBUReplyType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUReplyType.swift; sourceTree = "<group>"; };
-		9CC2B6992861BA92005CDE86 /* SBUCommonItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUCommonItem.swift; sourceTree = "<group>"; };
-		9CC2B69A2861BA92005CDE86 /* SBULayoutableButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBULayoutableButton.swift; sourceTree = "<group>"; };
-		9CC2B69B2861BA92005CDE86 /* SBUNavigationTitleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUNavigationTitleView.swift; sourceTree = "<group>"; };
-		9CC2B69C2861BA92005CDE86 /* SBUActionSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUActionSheet.swift; sourceTree = "<group>"; };
-		9CC2B69D2861BA92005CDE86 /* SBUAlertView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUAlertView.swift; sourceTree = "<group>"; };
-		9CC2B69F2861BA92005CDE86 /* SBUMenuCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SBUMenuCell.xib; sourceTree = "<group>"; };
-		9CC2B6A02861BA92005CDE86 /* SBUMenuCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMenuCell.swift; sourceTree = "<group>"; };
-		9CC2B6A12861BA92005CDE86 /* SBUMenuView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMenuView.swift; sourceTree = "<group>"; };
-		9CC2B6A22861BA92005CDE86 /* SBUBottomSheetController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUBottomSheetController.swift; sourceTree = "<group>"; };
-		9CC2B6A32861BA92005CDE86 /* SBUMenuViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMenuViewController.swift; sourceTree = "<group>"; };
-		9CC2B6A52861BA92005CDE86 /* SBUUserCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUserCell.swift; sourceTree = "<group>"; };
-		9CC2B6A62861BA92005CDE86 /* SBULoading.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBULoading.swift; sourceTree = "<group>"; };
-		9CC2B6A72861BA92005CDE86 /* SBUCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
-		9CC2B6A92861BA92005CDE86 /* SBUMemberListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMemberListViewController.swift; sourceTree = "<group>"; };
-		9CC2B6AA2861BA92005CDE86 /* SBUInviteUserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUInviteUserViewController.swift; sourceTree = "<group>"; };
-		9CC2B6AC2861BA92005CDE86 /* SBUMessageSearchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageSearchViewController.swift; sourceTree = "<group>"; };
-		9CC2B6AD2861BA92005CDE86 /* SBUMessageSearchResultCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageSearchResultCell.swift; sourceTree = "<group>"; };
-		9CC2B6AF2861BA92005CDE86 /* SBUTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUTableViewCell.swift; sourceTree = "<group>"; };
-		9CC2B6B02861BA92005CDE86 /* SBUQuoteMessageInputViewProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUQuoteMessageInputViewProtocol.swift; sourceTree = "<group>"; };
-		9CC2B6B12861BA92005CDE86 /* SBUMessageCellProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageCellProtocol.swift; sourceTree = "<group>"; };
-		9CC2B6B22861BA92005CDE86 /* SBUViewLifeCycle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUViewLifeCycle.swift; sourceTree = "<group>"; };
-		9CC2B6B32861BA92005CDE86 /* SBUQuotedMessageViewProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUQuotedMessageViewProtocol.swift; sourceTree = "<group>"; };
-		9CC2B6B42861BA92005CDE86 /* SBUView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUView.swift; sourceTree = "<group>"; };
-		9CC2B6B62861BA92005CDE86 /* SBUOpenChannelSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelSettingsViewController.swift; sourceTree = "<group>"; };
-		9CC2B6B82861BA92005CDE86 /* SBUOpenChannelSettingCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelSettingCell.swift; sourceTree = "<group>"; };
-		9CC2B6B92861BA92005CDE86 /* SBUModerationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUModerationCell.swift; sourceTree = "<group>"; };
-		9CC2B6BA2861BA92005CDE86 /* SBUChannelSettingCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelSettingCell.swift; sourceTree = "<group>"; };
-		9CC2B6BB2861BA92005CDE86 /* SBUModerationsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUModerationsViewController.swift; sourceTree = "<group>"; };
-		9CC2B6BD2861BA92005CDE86 /* SBUChannelSettingsUserInfoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelSettingsUserInfoView.swift; sourceTree = "<group>"; };
-		9CC2B6BE2861BA92005CDE86 /* SBUBaseChannelSettingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUBaseChannelSettingViewController.swift; sourceTree = "<group>"; };
-		9CC2B6BF2861BA92005CDE86 /* SBUChannelSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelSettingsViewController.swift; sourceTree = "<group>"; };
-		9CC2B6C12861BA92005CDE86 /* SBUCreateChannelTypeSelector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUCreateChannelTypeSelector.swift; sourceTree = "<group>"; };
-		9CC2B6C22861BA92005CDE86 /* SBUCreateChannelViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUCreateChannelViewController.swift; sourceTree = "<group>"; };
-		9CC2B6C32861BA92005CDE86 /* SendBirdUIKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SendBirdUIKit.h; sourceTree = "<group>"; };
-		9CC2B6C42861BA92005CDE86 /* SBUGlobals.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUGlobals.swift; sourceTree = "<group>"; };
-		9CC2B6C62861BA92005CDE86 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9CC8E2F42510C53A00C038A5 /* MySettingsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MySettingsCell.swift; sourceTree = "<group>"; };
 		9CDDA30224B47FF200F77A59 /* CustomUserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomUserCell.swift; sourceTree = "<group>"; };
 		9CDDA30424B4DA8600F77A59 /* MemberListVC_Cell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberListVC_Cell.swift; sourceTree = "<group>"; };
@@ -474,6 +312,168 @@
 		9CED4D1824ADE42A00D81B10 /* MemberListCustomManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberListCustomManager.swift; sourceTree = "<group>"; };
 		9CED4D1B24ADE69900D81B10 /* CustomChannelListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomChannelListCell.swift; sourceTree = "<group>"; };
 		9CED4D1E24AF02D800D81B10 /* SampleManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleManager.swift; sourceTree = "<group>"; };
+		A927C8FC28A2263500687419 /* UIStackView.SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIStackView.SBUIKit.swift; sourceTree = "<group>"; };
+		A927C8FD28A2263500687419 /* URL+SBUKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL+SBUKit.swift"; sourceTree = "<group>"; };
+		A927C8FE28A2263500687419 /* Array+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+SBUIKit.swift"; sourceTree = "<group>"; };
+		A927C8FF28A2263500687419 /* UIColor+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+SBUIKit.swift"; sourceTree = "<group>"; };
+		A927C90028A2263500687419 /* Formatter+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Formatter+SBUIKit.swift"; sourceTree = "<group>"; };
+		A927C90128A2263500687419 /* UIImage+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+SBUIKit.swift"; sourceTree = "<group>"; };
+		A927C90228A2263500687419 /* UINavigationController+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UINavigationController+SBUIKit.swift"; sourceTree = "<group>"; };
+		A927C90328A2263500687419 /* String+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+SBUIKit.swift"; sourceTree = "<group>"; };
+		A927C90428A2263500687419 /* CGSize+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGSize+SBUIKit.swift"; sourceTree = "<group>"; };
+		A927C90528A2263500687419 /* Float+SBUKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Float+SBUKit.swift"; sourceTree = "<group>"; };
+		A927C90628A2263500687419 /* Data+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Data+SBUIKit.swift"; sourceTree = "<group>"; };
+		A927C90728A2263500687419 /* UIViewController+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+SBUIKit.swift"; sourceTree = "<group>"; };
+		A927C90828A2263500687419 /* Date+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Date+SBUIKit.swift"; sourceTree = "<group>"; };
+		A927C90928A2263500687419 /* UIApplication+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIApplication+SBUIKit.swift"; sourceTree = "<group>"; };
+		A927C90A28A2263500687419 /* UIView+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+SBUIKit.swift"; sourceTree = "<group>"; };
+		A927C90B28A2263500687419 /* Sequence+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Sequence+SBUIKit.swift"; sourceTree = "<group>"; };
+		A927C90C28A2263500687419 /* UIImageView+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImageView+SBUIKit.swift"; sourceTree = "<group>"; };
+		A927C90D28A2263500687419 /* NSObject+SBUIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSObject+SBUIKit.swift"; sourceTree = "<group>"; };
+		A927C90F28A2263500687419 /* SBUPropertyWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUPropertyWrapper.swift; sourceTree = "<group>"; };
+		A927C91028A2263500687419 /* SBUUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUtils.swift; sourceTree = "<group>"; };
+		A927C91128A2263500687419 /* SBULogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBULogger.swift; sourceTree = "<group>"; };
+		A927C91228A2263500687419 /* SBUMain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMain.swift; sourceTree = "<group>"; };
+		A927C91328A2263500687419 /* SBUAvailable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUAvailable.swift; sourceTree = "<group>"; };
+		A927C91528A2263500687419 /* SBUIconSetType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUIconSetType.swift; sourceTree = "<group>"; };
+		A927C91628A2263500687419 /* SBUEnums.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUEnums.swift; sourceTree = "<group>"; };
+		A927C91828A2263500687419 /* CommonProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonProtocols.swift; sourceTree = "<group>"; };
+		A927C91A28A2263500687419 /* SBUEmojiManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUEmojiManager.swift; sourceTree = "<group>"; };
+		A927C91B28A2263500687419 /* SBUCacheManager.File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUCacheManager.File.swift; sourceTree = "<group>"; };
+		A927C91C28A2263500687419 /* SBUPendingMessageManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUPendingMessageManager.swift; sourceTree = "<group>"; };
+		A927C91D28A2263500687419 /* SBUDownloadManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUDownloadManager.swift; sourceTree = "<group>"; };
+		A927C91E28A2263500687419 /* SBUPermissionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUPermissionManager.swift; sourceTree = "<group>"; };
+		A927C91F28A2263500687419 /* SBUCacheManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUCacheManager.swift; sourceTree = "<group>"; };
+		A927C92028A2263500687419 /* SBUToastManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUToastManager.swift; sourceTree = "<group>"; };
+		A927C92128A2263500687419 /* SBUGlobalCustomParams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUGlobalCustomParams.swift; sourceTree = "<group>"; };
+		A927C92328A2263500687419 /* SBUDateFormatSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUDateFormatSet.swift; sourceTree = "<group>"; };
+		A927C92428A2263500687419 /* SBUConstant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUConstant.swift; sourceTree = "<group>"; };
+		A927C92528A2263500687419 /* SBUStringSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUStringSet.swift; sourceTree = "<group>"; };
+		A927C92628A2263500687419 /* SBUCommonViews.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUCommonViews.swift; sourceTree = "<group>"; };
+		A927C92828A2263500687419 /* SBUIconSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUIconSet.swift; sourceTree = "<group>"; };
+		A927C92928A2263500687419 /* SBUColorSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUColorSet.swift; sourceTree = "<group>"; };
+		A927C92A28A2263500687419 /* SBUTheme+Type.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SBUTheme+Type.swift"; sourceTree = "<group>"; };
+		A927C92B28A2263500687419 /* SBUFontSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUFontSet.swift; sourceTree = "<group>"; };
+		A927C92C28A2263500687419 /* SBUTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUTheme.swift; sourceTree = "<group>"; };
+		A927C92E28A2263500687419 /* SBUMessageCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageCache.swift; sourceTree = "<group>"; };
+		A927C92F28A2263500687419 /* SBUUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUser.swift; sourceTree = "<group>"; };
+		A927C93028A2263500687419 /* SBUHighlightMessageInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUHighlightMessageInfo.swift; sourceTree = "<group>"; };
+		A927C93328A2263500687419 /* SBUBaseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUBaseViewController.swift; sourceTree = "<group>"; };
+		A927C93428A2263500687419 /* SBUOpenChannelViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelViewModel.swift; sourceTree = "<group>"; };
+		A927C93528A2263500687419 /* SBUMessageSearchViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageSearchViewModel.swift; sourceTree = "<group>"; };
+		A927C93628A2263500687419 /* SBUMemberListViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMemberListViewModel.swift; sourceTree = "<group>"; };
+		A927C93728A2263500687419 /* SBUInviteUserListViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUInviteUserListViewModel.swift; sourceTree = "<group>"; };
+		A927C93928A2263500687419 /* SBUViewModelDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUViewModelDelegate.swift; sourceTree = "<group>"; };
+		A927C93A28A2263500687419 /* SBULoadableViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBULoadableViewModel.swift; sourceTree = "<group>"; };
+		A927C93B28A2263500687419 /* SBUChannelActionViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelActionViewModel.swift; sourceTree = "<group>"; };
+		A927C93C28A2263500687419 /* SBUChannelViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelViewModel.swift; sourceTree = "<group>"; };
+		A927C93D28A2263500687419 /* SBUObservable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUObservable.swift; sourceTree = "<group>"; };
+		A927C93E28A2263500687419 /* SBUChannelListViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelListViewModel.swift; sourceTree = "<group>"; };
+		A927C94128A2263500687419 /* SBUChannelCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelCell.swift; sourceTree = "<group>"; };
+		A927C94228A2263500687419 /* SBUBaseChannelCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUBaseChannelCell.swift; sourceTree = "<group>"; };
+		A927C94328A2263500687419 /* SBUChannelListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelListViewController.swift; sourceTree = "<group>"; };
+		A927C94428A2263500687419 /* SBUBaseChannelListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUBaseChannelListViewController.swift; sourceTree = "<group>"; };
+		A927C94628A2263500687419 /* SBUUserProfileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUserProfileView.swift; sourceTree = "<group>"; };
+		A927C94928A2263500687419 /* SBUUserMessageTextViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUserMessageTextViewModel.swift; sourceTree = "<group>"; };
+		A927C94A28A2263500687419 /* SBUMessageWebViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageWebViewModel.swift; sourceTree = "<group>"; };
+		A927C94C28A2263500687419 /* SBUReactionCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUReactionCollectionViewCell.swift; sourceTree = "<group>"; };
+		A927C94D28A2263500687419 /* SBUReactionsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUReactionsViewController.swift; sourceTree = "<group>"; };
+		A927C94E28A2263500687419 /* SBUMessageReactionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageReactionView.swift; sourceTree = "<group>"; };
+		A927C94F28A2263500687419 /* SBUReactionCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SBUReactionCollectionViewCell.xib; sourceTree = "<group>"; };
+		A927C95028A2263500687419 /* SBUEmojiListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUEmojiListViewController.swift; sourceTree = "<group>"; };
+		A927C95128A2263500687419 /* SBUBaseChannelViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUBaseChannelViewController.swift; sourceTree = "<group>"; };
+		A927C95428A2263500687419 /* SBUUserMessageCellParams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUserMessageCellParams.swift; sourceTree = "<group>"; };
+		A927C95528A2263500687419 /* SBUUnknownMessageCellParams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUnknownMessageCellParams.swift; sourceTree = "<group>"; };
+		A927C95628A2263500687419 /* SBUAdminMessageCellParams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUAdminMessageCellParams.swift; sourceTree = "<group>"; };
+		A927C95728A2263500687419 /* SBUBaseMessageCellParams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUBaseMessageCellParams.swift; sourceTree = "<group>"; };
+		A927C95828A2263500687419 /* SBUFileMessageCellParams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUFileMessageCellParams.swift; sourceTree = "<group>"; };
+		A927C95A28A2263500687419 /* OpenChannelCommonContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenChannelCommonContentView.swift; sourceTree = "<group>"; };
+		A927C95B28A2263500687419 /* BaseFileContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseFileContentView.swift; sourceTree = "<group>"; };
+		A927C95C28A2263500687419 /* ImageContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageContentView.swift; sourceTree = "<group>"; };
+		A927C95D28A2263500687419 /* CommonContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonContentView.swift; sourceTree = "<group>"; };
+		A927C95E28A2263500687419 /* OpenChannelImageContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenChannelImageContentView.swift; sourceTree = "<group>"; };
+		A927C96128A2263500687419 /* QuotedFileCommonContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuotedFileCommonContentView.swift; sourceTree = "<group>"; };
+		A927C96228A2263500687419 /* SBUQuotedBaseMessageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUQuotedBaseMessageView.swift; sourceTree = "<group>"; };
+		A927C96328A2263500687419 /* QuotedFileImageContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuotedFileImageContentView.swift; sourceTree = "<group>"; };
+		A927C96428A2263500687419 /* SBUQuotedFileMessageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUQuotedFileMessageView.swift; sourceTree = "<group>"; };
+		A927C96528A2263500687419 /* SBUQuotedUserMessageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUQuotedUserMessageView.swift; sourceTree = "<group>"; };
+		A927C96728A2263500687419 /* SBUQuotedBaseMessageViewParams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUQuotedBaseMessageViewParams.swift; sourceTree = "<group>"; };
+		A927C96828A2263500687419 /* SBUBaseMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUBaseMessageCell.swift; sourceTree = "<group>"; };
+		A927C96A28A2263500687419 /* SBUOpenChannelFileMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelFileMessageCell.swift; sourceTree = "<group>"; };
+		A927C96B28A2263500687419 /* SBUOpenChannelAdminMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelAdminMessageCell.swift; sourceTree = "<group>"; };
+		A927C96C28A2263500687419 /* SBUOpenChannelContentBaseMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelContentBaseMessageCell.swift; sourceTree = "<group>"; };
+		A927C96D28A2263500687419 /* SBUOpenChannelUserMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelUserMessageCell.swift; sourceTree = "<group>"; };
+		A927C96E28A2263500687419 /* SBUOpenChannelUnknownMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelUnknownMessageCell.swift; sourceTree = "<group>"; };
+		A927C96F28A2263500687419 /* SBUOpenChannelBaseMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelBaseMessageCell.swift; sourceTree = "<group>"; };
+		A927C97028A2263500687419 /* SBUFileMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUFileMessageCell.swift; sourceTree = "<group>"; };
+		A927C97128A2263500687419 /* SBUAdminMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUAdminMessageCell.swift; sourceTree = "<group>"; };
+		A927C97228A2263500687419 /* SBUContentBaseMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUContentBaseMessageCell.swift; sourceTree = "<group>"; };
+		A927C97328A2263500687419 /* SBUUnknownMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUnknownMessageCell.swift; sourceTree = "<group>"; };
+		A927C97428A2263500687419 /* SBUUserMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUserMessageCell.swift; sourceTree = "<group>"; };
+		A927C97628A2263500687419 /* SBUQuoteMessageInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUQuoteMessageInputView.swift; sourceTree = "<group>"; };
+		A927C97728A2263500687419 /* SBUMessageInputMode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageInputMode.swift; sourceTree = "<group>"; };
+		A927C97928A2263500687419 /* SBUQuoteMessageInputViewParams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUQuoteMessageInputViewParams.swift; sourceTree = "<group>"; };
+		A927C97A28A2263500687419 /* SBUMessageInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageInputView.swift; sourceTree = "<group>"; };
+		A927C97B28A2263500687419 /* SBUChannelViewController.ParentMessageViewDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelViewController.ParentMessageViewDelegate.swift; sourceTree = "<group>"; };
+		A927C97D28A2263500687419 /* SBUMessageStateView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageStateView.swift; sourceTree = "<group>"; };
+		A927C97E28A2263500687419 /* SBUMessageProfileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageProfileView.swift; sourceTree = "<group>"; };
+		A927C97F28A2263500687419 /* SBUUserMessageTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUserMessageTextView.swift; sourceTree = "<group>"; };
+		A927C98028A2263500687419 /* SBUUserNameView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUserNameView.swift; sourceTree = "<group>"; };
+		A927C98128A2263500687419 /* SBUMessageWebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageWebView.swift; sourceTree = "<group>"; };
+		A927C98228A2263500687419 /* SBUMessageDateView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageDateView.swift; sourceTree = "<group>"; };
+		A927C98328A2263500687419 /* SBULinkClickableTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBULinkClickableTextView.swift; sourceTree = "<group>"; };
+		A927C98428A2263500687419 /* SBUOpenChannelMessageWebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelMessageWebView.swift; sourceTree = "<group>"; };
+		A927C98528A2263500687419 /* SBUSelectableStackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUSelectableStackView.swift; sourceTree = "<group>"; };
+		A927C98728A2263500687419 /* SBUFileViewer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUFileViewer.swift; sourceTree = "<group>"; };
+		A927C98828A2263500687419 /* SBUChannelViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelViewController.swift; sourceTree = "<group>"; };
+		A927C98A28A2263500687419 /* SBUNewMessageInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUNewMessageInfo.swift; sourceTree = "<group>"; };
+		A927C98B28A2263500687419 /* SBUOpenChannelViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelViewController.swift; sourceTree = "<group>"; };
+		A927C98D28A2263500687419 /* SBUChannelInfoHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelInfoHeaderView.swift; sourceTree = "<group>"; };
+		A927C98E28A2263500687419 /* SBUChannelTitleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelTitleView.swift; sourceTree = "<group>"; };
+		A927C99028A2263500687419 /* SBUStackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUStackView.swift; sourceTree = "<group>"; };
+		A927C99128A2263500687419 /* SBUAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUAnimation.swift; sourceTree = "<group>"; };
+		A927C99228A2263500687419 /* SBUEmptyView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUEmptyView.swift; sourceTree = "<group>"; };
+		A927C99328A2263500687419 /* SBUCoverImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUCoverImageView.swift; sourceTree = "<group>"; };
+		A927C99428A2263500687419 /* SBUPhotoAccess.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUPhotoAccess.swift; sourceTree = "<group>"; };
+		A927C99628A2263500687419 /* SBUPhotoCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUPhotoCollectionViewCell.swift; sourceTree = "<group>"; };
+		A927C99728A2263500687419 /* SBUSelectablePhotoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUSelectablePhotoViewController.swift; sourceTree = "<group>"; };
+		A927C99928A2263500687419 /* SBUReplyType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUReplyType.swift; sourceTree = "<group>"; };
+		A927C99A28A2263500687419 /* SBUCommonItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUCommonItem.swift; sourceTree = "<group>"; };
+		A927C99B28A2263500687419 /* SBULayoutableButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBULayoutableButton.swift; sourceTree = "<group>"; };
+		A927C99C28A2263500687419 /* SBUNavigationTitleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUNavigationTitleView.swift; sourceTree = "<group>"; };
+		A927C99D28A2263500687419 /* SBUActionSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUActionSheet.swift; sourceTree = "<group>"; };
+		A927C99E28A2263500687419 /* SBUAlertView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUAlertView.swift; sourceTree = "<group>"; };
+		A927C9A028A2263500687419 /* SBUMenuCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SBUMenuCell.xib; sourceTree = "<group>"; };
+		A927C9A128A2263500687419 /* SBUMenuCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMenuCell.swift; sourceTree = "<group>"; };
+		A927C9A228A2263500687419 /* SBUMenuView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMenuView.swift; sourceTree = "<group>"; };
+		A927C9A328A2263500687419 /* SBUBottomSheetController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUBottomSheetController.swift; sourceTree = "<group>"; };
+		A927C9A428A2263500687419 /* SBUMenuViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMenuViewController.swift; sourceTree = "<group>"; };
+		A927C9A628A2263500687419 /* SBUUserCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUUserCell.swift; sourceTree = "<group>"; };
+		A927C9A728A2263500687419 /* SBULoading.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBULoading.swift; sourceTree = "<group>"; };
+		A927C9A828A2263500687419 /* SBUCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
+		A927C9AA28A2263500687419 /* SBUMemberListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMemberListViewController.swift; sourceTree = "<group>"; };
+		A927C9AB28A2263500687419 /* SBUInviteUserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUInviteUserViewController.swift; sourceTree = "<group>"; };
+		A927C9AD28A2263500687419 /* SBUMessageSearchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageSearchViewController.swift; sourceTree = "<group>"; };
+		A927C9AE28A2263500687419 /* SBUMessageSearchResultCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageSearchResultCell.swift; sourceTree = "<group>"; };
+		A927C9B028A2263500687419 /* SBUTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUTableViewCell.swift; sourceTree = "<group>"; };
+		A927C9B128A2263500687419 /* SBUQuoteMessageInputViewProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUQuoteMessageInputViewProtocol.swift; sourceTree = "<group>"; };
+		A927C9B228A2263500687419 /* SBUMessageCellProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUMessageCellProtocol.swift; sourceTree = "<group>"; };
+		A927C9B328A2263500687419 /* SBUViewLifeCycle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUViewLifeCycle.swift; sourceTree = "<group>"; };
+		A927C9B428A2263500687419 /* SBUQuotedMessageViewProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUQuotedMessageViewProtocol.swift; sourceTree = "<group>"; };
+		A927C9B528A2263500687419 /* SBUView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUView.swift; sourceTree = "<group>"; };
+		A927C9B728A2263500687419 /* SBUOpenChannelSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelSettingsViewController.swift; sourceTree = "<group>"; };
+		A927C9B928A2263500687419 /* SBUOpenChannelSettingCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelSettingCell.swift; sourceTree = "<group>"; };
+		A927C9BA28A2263500687419 /* SBUModerationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUModerationCell.swift; sourceTree = "<group>"; };
+		A927C9BB28A2263500687419 /* SBUChannelSettingCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelSettingCell.swift; sourceTree = "<group>"; };
+		A927C9BC28A2263500687419 /* SBUModerationsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUModerationsViewController.swift; sourceTree = "<group>"; };
+		A927C9BE28A2263500687419 /* SBUChannelSettingsUserInfoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelSettingsUserInfoView.swift; sourceTree = "<group>"; };
+		A927C9BF28A2263500687419 /* SBUBaseChannelSettingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUBaseChannelSettingViewController.swift; sourceTree = "<group>"; };
+		A927C9C028A2263500687419 /* SBUChannelSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUChannelSettingsViewController.swift; sourceTree = "<group>"; };
+		A927C9C228A2263500687419 /* SBUCreateChannelTypeSelector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUCreateChannelTypeSelector.swift; sourceTree = "<group>"; };
+		A927C9C328A2263500687419 /* SBUCreateChannelViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUCreateChannelViewController.swift; sourceTree = "<group>"; };
+		A927C9C428A2263500687419 /* SendBirdUIKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SendBirdUIKit.h; sourceTree = "<group>"; };
+		A927C9C528A2263500687419 /* SBUGlobals.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBUGlobals.swift; sourceTree = "<group>"; };
+		A927C9C728A2263500687419 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A9A3AEA9256A44A700007FC2 /* PaddingLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddingLabel.swift; sourceTree = "<group>"; };
 		A9A3AEAB256A532700007FC2 /* SBDOpenChannel+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SBDOpenChannel+Ext.swift"; sourceTree = "<group>"; };
 		A9A3AECD256B786E00007FC2 /* UIImageView+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Ext.swift"; sourceTree = "<group>"; };
@@ -625,7 +625,7 @@
 		9C777D4E241B9022006FFE25 = {
 			isa = PBXGroup;
 			children = (
-				9CC2B5F92861BA91005CDE86 /* Sources */,
+				A927C8FA28A2263500687419 /* Sources */,
 				9C777D59241B9022006FFE25 /* SendBirdUIKit-Sample */,
 				9C060B1B280888E800759164 /* NotificationService */,
 				9C777D58241B9022006FFE25 /* Products */,
@@ -658,520 +658,6 @@
 				9C777D68241B9024006FFE25 /* Info.plist */,
 			);
 			path = "SendBirdUIKit-Sample";
-			sourceTree = "<group>";
-		};
-		9CC2B5F92861BA91005CDE86 /* Sources */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B5FA2861BA91005CDE86 /* Extension */,
-				9CC2B60D2861BA92005CDE86 /* Util */,
-				9CC2B6112861BA92005CDE86 /* SBUMain.swift */,
-				9CC2B6122861BA92005CDE86 /* SBUAvailable.swift */,
-				9CC2B6132861BA92005CDE86 /* Enums */,
-				9CC2B6162861BA92005CDE86 /* Protocol */,
-				9CC2B6182861BA92005CDE86 /* Manager */,
-				9CC2B6202861BA92005CDE86 /* SBUGlobalCustomParams.swift */,
-				9CC2B6212861BA92005CDE86 /* Constant */,
-				9CC2B6262861BA92005CDE86 /* Theme */,
-				9CC2B62C2861BA92005CDE86 /* Model */,
-				9CC2B6302861BA92005CDE86 /* View */,
-				9CC2B6C32861BA92005CDE86 /* SendBirdUIKit.h */,
-				9CC2B6C42861BA92005CDE86 /* SBUGlobals.swift */,
-				9CC2B6C52861BA92005CDE86 /* Resource */,
-			);
-			name = Sources;
-			path = ../Sources;
-			sourceTree = "<group>";
-		};
-		9CC2B5FA2861BA91005CDE86 /* Extension */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B5FB2861BA91005CDE86 /* UIStackView.SBUIKit.swift */,
-				9CC2B5FC2861BA91005CDE86 /* URL+SBUKit.swift */,
-				9CC2B5FD2861BA91005CDE86 /* Array+SBUIKit.swift */,
-				9CC2B5FE2861BA91005CDE86 /* UIColor+SBUIKit.swift */,
-				9CC2B5FF2861BA91005CDE86 /* Formatter+SBUIKit.swift */,
-				9CC2B6002861BA91005CDE86 /* UIImage+SBUIKit.swift */,
-				9CC2B6012861BA91005CDE86 /* UINavigationController+SBUIKit.swift */,
-				9CC2B6022861BA92005CDE86 /* String+SBUIKit.swift */,
-				9CC2B6032861BA92005CDE86 /* CGSize+SBUIKit.swift */,
-				9CC2B6042861BA92005CDE86 /* Float+SBUKit.swift */,
-				9CC2B6052861BA92005CDE86 /* Data+SBUIKit.swift */,
-				9CC2B6062861BA92005CDE86 /* UIViewController+SBUIKit.swift */,
-				9CC2B6072861BA92005CDE86 /* Date+SBUIKit.swift */,
-				9CC2B6082861BA92005CDE86 /* UIApplication+SBUIKit.swift */,
-				9CC2B6092861BA92005CDE86 /* UIView+SBUIKit.swift */,
-				9CC2B60A2861BA92005CDE86 /* Sequence+SBUIKit.swift */,
-				9CC2B60B2861BA92005CDE86 /* UIImageView+SBUIKit.swift */,
-				9CC2B60C2861BA92005CDE86 /* NSObject+SBUIKit.swift */,
-			);
-			path = Extension;
-			sourceTree = "<group>";
-		};
-		9CC2B60D2861BA92005CDE86 /* Util */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B60E2861BA92005CDE86 /* SBUPropertyWrapper.swift */,
-				9CC2B60F2861BA92005CDE86 /* SBUUtils.swift */,
-				9CC2B6102861BA92005CDE86 /* SBULogger.swift */,
-			);
-			path = Util;
-			sourceTree = "<group>";
-		};
-		9CC2B6132861BA92005CDE86 /* Enums */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B6142861BA92005CDE86 /* SBUIconSetType.swift */,
-				9CC2B6152861BA92005CDE86 /* SBUEnums.swift */,
-			);
-			path = Enums;
-			sourceTree = "<group>";
-		};
-		9CC2B6162861BA92005CDE86 /* Protocol */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B6172861BA92005CDE86 /* CommonProtocols.swift */,
-			);
-			path = Protocol;
-			sourceTree = "<group>";
-		};
-		9CC2B6182861BA92005CDE86 /* Manager */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B6192861BA92005CDE86 /* SBUEmojiManager.swift */,
-				9CC2B61A2861BA92005CDE86 /* SBUCacheManager.File.swift */,
-				9CC2B61B2861BA92005CDE86 /* SBUPendingMessageManager.swift */,
-				9CC2B61C2861BA92005CDE86 /* SBUDownloadManager.swift */,
-				9CC2B61D2861BA92005CDE86 /* SBUPermissionManager.swift */,
-				9CC2B61E2861BA92005CDE86 /* SBUCacheManager.swift */,
-				9CC2B61F2861BA92005CDE86 /* SBUToastManager.swift */,
-			);
-			path = Manager;
-			sourceTree = "<group>";
-		};
-		9CC2B6212861BA92005CDE86 /* Constant */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B6222861BA92005CDE86 /* SBUDateFormatSet.swift */,
-				9CC2B6232861BA92005CDE86 /* SBUConstant.swift */,
-				9CC2B6242861BA92005CDE86 /* SBUStringSet.swift */,
-				9CC2B6252861BA92005CDE86 /* SBUCommonViews.swift */,
-			);
-			path = Constant;
-			sourceTree = "<group>";
-		};
-		9CC2B6262861BA92005CDE86 /* Theme */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B6272861BA92005CDE86 /* SBUIconSet.swift */,
-				9CC2B6282861BA92005CDE86 /* SBUColorSet.swift */,
-				9CC2B6292861BA92005CDE86 /* SBUTheme+Type.swift */,
-				9CC2B62A2861BA92005CDE86 /* SBUFontSet.swift */,
-				9CC2B62B2861BA92005CDE86 /* SBUTheme.swift */,
-			);
-			path = Theme;
-			sourceTree = "<group>";
-		};
-		9CC2B62C2861BA92005CDE86 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B62D2861BA92005CDE86 /* SBUMessageCache.swift */,
-				9CC2B62E2861BA92005CDE86 /* SBUUser.swift */,
-				9CC2B62F2861BA92005CDE86 /* SBUHighlightMessageInfo.swift */,
-			);
-			path = Model;
-			sourceTree = "<group>";
-		};
-		9CC2B6302861BA92005CDE86 /* View */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B6312861BA92005CDE86 /* ViewModel */,
-				9CC2B63E2861BA92005CDE86 /* ChannelList */,
-				9CC2B6442861BA92005CDE86 /* User */,
-				9CC2B6462861BA92005CDE86 /* Channel */,
-				9CC2B68E2861BA92005CDE86 /* Common */,
-				9CC2B6A82861BA92005CDE86 /* UserList */,
-				9CC2B6AB2861BA92005CDE86 /* MessageSearch */,
-				9CC2B6AE2861BA92005CDE86 /* Life cycles */,
-				9CC2B6B52861BA92005CDE86 /* Setting */,
-				9CC2B6C02861BA92005CDE86 /* CreateChannel */,
-			);
-			path = View;
-			sourceTree = "<group>";
-		};
-		9CC2B6312861BA92005CDE86 /* ViewModel */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B6322861BA92005CDE86 /* SBUBaseViewController.swift */,
-				9CC2B6332861BA92005CDE86 /* SBUOpenChannelViewModel.swift */,
-				9CC2B6342861BA92005CDE86 /* SBUMessageSearchViewModel.swift */,
-				9CC2B6352861BA92005CDE86 /* SBUMemberListViewModel.swift */,
-				9CC2B6362861BA92005CDE86 /* SBUInviteUserListViewModel.swift */,
-				9CC2B6372861BA92005CDE86 /* Common */,
-				9CC2B63B2861BA92005CDE86 /* SBUChannelViewModel.swift */,
-				9CC2B63C2861BA92005CDE86 /* SBUObservable.swift */,
-				9CC2B63D2861BA92005CDE86 /* SBUChannelListViewModel.swift */,
-			);
-			path = ViewModel;
-			sourceTree = "<group>";
-		};
-		9CC2B6372861BA92005CDE86 /* Common */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B6382861BA92005CDE86 /* SBUViewModelDelegate.swift */,
-				9CC2B6392861BA92005CDE86 /* SBULoadableViewModel.swift */,
-				9CC2B63A2861BA92005CDE86 /* SBUChannelActionViewModel.swift */,
-			);
-			path = Common;
-			sourceTree = "<group>";
-		};
-		9CC2B63E2861BA92005CDE86 /* ChannelList */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B63F2861BA92005CDE86 /* ChannelCell */,
-				9CC2B6422861BA92005CDE86 /* SBUChannelListViewController.swift */,
-				9CC2B6432861BA92005CDE86 /* SBUBaseChannelListViewController.swift */,
-			);
-			path = ChannelList;
-			sourceTree = "<group>";
-		};
-		9CC2B63F2861BA92005CDE86 /* ChannelCell */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B6402861BA92005CDE86 /* SBUChannelCell.swift */,
-				9CC2B6412861BA92005CDE86 /* SBUBaseChannelCell.swift */,
-			);
-			path = ChannelCell;
-			sourceTree = "<group>";
-		};
-		9CC2B6442861BA92005CDE86 /* User */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B6452861BA92005CDE86 /* SBUUserProfileView.swift */,
-			);
-			path = User;
-			sourceTree = "<group>";
-		};
-		9CC2B6462861BA92005CDE86 /* Channel */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B6472861BA92005CDE86 /* ViewModel */,
-				9CC2B64A2861BA92005CDE86 /* Reaction */,
-				9CC2B6502861BA92005CDE86 /* SBUBaseChannelViewController.swift */,
-				9CC2B6512861BA92005CDE86 /* MessageCell */,
-				9CC2B6742861BA92005CDE86 /* MessageInput */,
-				9CC2B67A2861BA92005CDE86 /* SBUChannelViewController.ParentMessageViewDelegate.swift */,
-				9CC2B67B2861BA92005CDE86 /* CellView */,
-				9CC2B6852861BA92005CDE86 /* FileViewer */,
-				9CC2B6872861BA92005CDE86 /* SBUChannelViewController.swift */,
-				9CC2B6882861BA92005CDE86 /* NewMessageInfo */,
-				9CC2B68A2861BA92005CDE86 /* SBUOpenChannelViewController.swift */,
-				9CC2B68B2861BA92005CDE86 /* Header */,
-			);
-			path = Channel;
-			sourceTree = "<group>";
-		};
-		9CC2B6472861BA92005CDE86 /* ViewModel */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B6482861BA92005CDE86 /* SBUUserMessageTextViewModel.swift */,
-				9CC2B6492861BA92005CDE86 /* SBUMessageWebViewModel.swift */,
-			);
-			path = ViewModel;
-			sourceTree = "<group>";
-		};
-		9CC2B64A2861BA92005CDE86 /* Reaction */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B64B2861BA92005CDE86 /* SBUReactionCollectionViewCell.swift */,
-				9CC2B64C2861BA92005CDE86 /* SBUReactionsViewController.swift */,
-				9CC2B64D2861BA92005CDE86 /* SBUMessageReactionView.swift */,
-				9CC2B64E2861BA92005CDE86 /* SBUReactionCollectionViewCell.xib */,
-				9CC2B64F2861BA92005CDE86 /* SBUEmojiListViewController.swift */,
-			);
-			path = Reaction;
-			sourceTree = "<group>";
-		};
-		9CC2B6512861BA92005CDE86 /* MessageCell */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B6522861BA92005CDE86 /* MessageCellParams */,
-				9CC2B6582861BA92005CDE86 /* FileMessageContentView */,
-				9CC2B65E2861BA92005CDE86 /* Replies */,
-				9CC2B6672861BA92005CDE86 /* SBUBaseMessageCell.swift */,
-				9CC2B6682861BA92005CDE86 /* OpenChannel */,
-				9CC2B66F2861BA92005CDE86 /* SBUFileMessageCell.swift */,
-				9CC2B6702861BA92005CDE86 /* SBUAdminMessageCell.swift */,
-				9CC2B6712861BA92005CDE86 /* SBUContentBaseMessageCell.swift */,
-				9CC2B6722861BA92005CDE86 /* SBUUnknownMessageCell.swift */,
-				9CC2B6732861BA92005CDE86 /* SBUUserMessageCell.swift */,
-			);
-			path = MessageCell;
-			sourceTree = "<group>";
-		};
-		9CC2B6522861BA92005CDE86 /* MessageCellParams */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B6532861BA92005CDE86 /* SBUUserMessageCellParams.swift */,
-				9CC2B6542861BA92005CDE86 /* SBUUnknownMessageCellParams.swift */,
-				9CC2B6552861BA92005CDE86 /* SBUAdminMessageCellParams.swift */,
-				9CC2B6562861BA92005CDE86 /* SBUBaseMessageCellParams.swift */,
-				9CC2B6572861BA92005CDE86 /* SBUFileMessageCellParams.swift */,
-			);
-			path = MessageCellParams;
-			sourceTree = "<group>";
-		};
-		9CC2B6582861BA92005CDE86 /* FileMessageContentView */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B6592861BA92005CDE86 /* OpenChannelCommonContentView.swift */,
-				9CC2B65A2861BA92005CDE86 /* BaseFileContentView.swift */,
-				9CC2B65B2861BA92005CDE86 /* ImageContentView.swift */,
-				9CC2B65C2861BA92005CDE86 /* CommonContentView.swift */,
-				9CC2B65D2861BA92005CDE86 /* OpenChannelImageContentView.swift */,
-			);
-			path = FileMessageContentView;
-			sourceTree = "<group>";
-		};
-		9CC2B65E2861BA92005CDE86 /* Replies */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B65F2861BA92005CDE86 /* MessageView */,
-				9CC2B6652861BA92005CDE86 /* ViewParams */,
-			);
-			path = Replies;
-			sourceTree = "<group>";
-		};
-		9CC2B65F2861BA92005CDE86 /* MessageView */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B6602861BA92005CDE86 /* QuotedFileCommonContentView.swift */,
-				9CC2B6612861BA92005CDE86 /* SBUQuotedBaseMessageView.swift */,
-				9CC2B6622861BA92005CDE86 /* QuotedFileImageContentView.swift */,
-				9CC2B6632861BA92005CDE86 /* SBUQuotedFileMessageView.swift */,
-				9CC2B6642861BA92005CDE86 /* SBUQuotedUserMessageView.swift */,
-			);
-			path = MessageView;
-			sourceTree = "<group>";
-		};
-		9CC2B6652861BA92005CDE86 /* ViewParams */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B6662861BA92005CDE86 /* SBUQuotedBaseMessageViewParams.swift */,
-			);
-			path = ViewParams;
-			sourceTree = "<group>";
-		};
-		9CC2B6682861BA92005CDE86 /* OpenChannel */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B6692861BA92005CDE86 /* SBUOpenChannelFileMessageCell.swift */,
-				9CC2B66A2861BA92005CDE86 /* SBUOpenChannelAdminMessageCell.swift */,
-				9CC2B66B2861BA92005CDE86 /* SBUOpenChannelContentBaseMessageCell.swift */,
-				9CC2B66C2861BA92005CDE86 /* SBUOpenChannelUserMessageCell.swift */,
-				9CC2B66D2861BA92005CDE86 /* SBUOpenChannelUnknownMessageCell.swift */,
-				9CC2B66E2861BA92005CDE86 /* SBUOpenChannelBaseMessageCell.swift */,
-			);
-			path = OpenChannel;
-			sourceTree = "<group>";
-		};
-		9CC2B6742861BA92005CDE86 /* MessageInput */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B6752861BA92005CDE86 /* SBUQuoteMessageInputView.swift */,
-				9CC2B6762861BA92005CDE86 /* SBUMessageInputMode.swift */,
-				9CC2B6772861BA92005CDE86 /* ViewParams */,
-				9CC2B6792861BA92005CDE86 /* SBUMessageInputView.swift */,
-			);
-			path = MessageInput;
-			sourceTree = "<group>";
-		};
-		9CC2B6772861BA92005CDE86 /* ViewParams */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B6782861BA92005CDE86 /* SBUQuoteMessageInputViewParams.swift */,
-			);
-			path = ViewParams;
-			sourceTree = "<group>";
-		};
-		9CC2B67B2861BA92005CDE86 /* CellView */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B67C2861BA92005CDE86 /* SBUMessageStateView.swift */,
-				9CC2B67D2861BA92005CDE86 /* SBUMessageProfileView.swift */,
-				9CC2B67E2861BA92005CDE86 /* SBUUserMessageTextView.swift */,
-				9CC2B67F2861BA92005CDE86 /* SBUUserNameView.swift */,
-				9CC2B6802861BA92005CDE86 /* SBUMessageWebView.swift */,
-				9CC2B6812861BA92005CDE86 /* SBUMessageDateView.swift */,
-				9CC2B6822861BA92005CDE86 /* SBULinkClickableTextView.swift */,
-				9CC2B6832861BA92005CDE86 /* SBUOpenChannelMessageWebView.swift */,
-				9CC2B6842861BA92005CDE86 /* SBUSelectableStackView.swift */,
-			);
-			path = CellView;
-			sourceTree = "<group>";
-		};
-		9CC2B6852861BA92005CDE86 /* FileViewer */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B6862861BA92005CDE86 /* SBUFileViewer.swift */,
-			);
-			path = FileViewer;
-			sourceTree = "<group>";
-		};
-		9CC2B6882861BA92005CDE86 /* NewMessageInfo */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B6892861BA92005CDE86 /* SBUNewMessageInfo.swift */,
-			);
-			path = NewMessageInfo;
-			sourceTree = "<group>";
-		};
-		9CC2B68B2861BA92005CDE86 /* Header */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B68C2861BA92005CDE86 /* SBUChannelInfoHeaderView.swift */,
-				9CC2B68D2861BA92005CDE86 /* SBUChannelTitleView.swift */,
-			);
-			path = Header;
-			sourceTree = "<group>";
-		};
-		9CC2B68E2861BA92005CDE86 /* Common */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B68F2861BA92005CDE86 /* SBUStackView.swift */,
-				9CC2B6902861BA92005CDE86 /* SBUAnimation.swift */,
-				9CC2B6912861BA92005CDE86 /* SBUEmptyView.swift */,
-				9CC2B6922861BA92005CDE86 /* SBUCoverImageView.swift */,
-				9CC2B6932861BA92005CDE86 /* SBUPhotoAccess.swift */,
-				9CC2B6942861BA92005CDE86 /* PhotoLibrary */,
-				9CC2B6972861BA92005CDE86 /* Replies */,
-				9CC2B6992861BA92005CDE86 /* SBUCommonItem.swift */,
-				9CC2B69A2861BA92005CDE86 /* SBULayoutableButton.swift */,
-				9CC2B69B2861BA92005CDE86 /* SBUNavigationTitleView.swift */,
-				9CC2B69C2861BA92005CDE86 /* SBUActionSheet.swift */,
-				9CC2B69D2861BA92005CDE86 /* SBUAlertView.swift */,
-				9CC2B69E2861BA92005CDE86 /* Menu */,
-				9CC2B6A42861BA92005CDE86 /* UserCell */,
-				9CC2B6A62861BA92005CDE86 /* SBULoading.swift */,
-				9CC2B6A72861BA92005CDE86 /* SBUCollectionViewFlowLayout.swift */,
-			);
-			path = Common;
-			sourceTree = "<group>";
-		};
-		9CC2B6942861BA92005CDE86 /* PhotoLibrary */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B6952861BA92005CDE86 /* SBUPhotoCollectionViewCell.swift */,
-				9CC2B6962861BA92005CDE86 /* SBUSelectablePhotoViewController.swift */,
-			);
-			path = PhotoLibrary;
-			sourceTree = "<group>";
-		};
-		9CC2B6972861BA92005CDE86 /* Replies */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B6982861BA92005CDE86 /* SBUReplyType.swift */,
-			);
-			path = Replies;
-			sourceTree = "<group>";
-		};
-		9CC2B69E2861BA92005CDE86 /* Menu */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B69F2861BA92005CDE86 /* SBUMenuCell.xib */,
-				9CC2B6A02861BA92005CDE86 /* SBUMenuCell.swift */,
-				9CC2B6A12861BA92005CDE86 /* SBUMenuView.swift */,
-				9CC2B6A22861BA92005CDE86 /* SBUBottomSheetController.swift */,
-				9CC2B6A32861BA92005CDE86 /* SBUMenuViewController.swift */,
-			);
-			path = Menu;
-			sourceTree = "<group>";
-		};
-		9CC2B6A42861BA92005CDE86 /* UserCell */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B6A52861BA92005CDE86 /* SBUUserCell.swift */,
-			);
-			path = UserCell;
-			sourceTree = "<group>";
-		};
-		9CC2B6A82861BA92005CDE86 /* UserList */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B6A92861BA92005CDE86 /* SBUMemberListViewController.swift */,
-				9CC2B6AA2861BA92005CDE86 /* SBUInviteUserViewController.swift */,
-			);
-			path = UserList;
-			sourceTree = "<group>";
-		};
-		9CC2B6AB2861BA92005CDE86 /* MessageSearch */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B6AC2861BA92005CDE86 /* SBUMessageSearchViewController.swift */,
-				9CC2B6AD2861BA92005CDE86 /* SBUMessageSearchResultCell.swift */,
-			);
-			path = MessageSearch;
-			sourceTree = "<group>";
-		};
-		9CC2B6AE2861BA92005CDE86 /* Life cycles */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B6AF2861BA92005CDE86 /* SBUTableViewCell.swift */,
-				9CC2B6B02861BA92005CDE86 /* SBUQuoteMessageInputViewProtocol.swift */,
-				9CC2B6B12861BA92005CDE86 /* SBUMessageCellProtocol.swift */,
-				9CC2B6B22861BA92005CDE86 /* SBUViewLifeCycle.swift */,
-				9CC2B6B32861BA92005CDE86 /* SBUQuotedMessageViewProtocol.swift */,
-				9CC2B6B42861BA92005CDE86 /* SBUView.swift */,
-			);
-			path = "Life cycles";
-			sourceTree = "<group>";
-		};
-		9CC2B6B52861BA92005CDE86 /* Setting */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B6B62861BA92005CDE86 /* SBUOpenChannelSettingsViewController.swift */,
-				9CC2B6B72861BA92005CDE86 /* Cell */,
-				9CC2B6BB2861BA92005CDE86 /* SBUModerationsViewController.swift */,
-				9CC2B6BC2861BA92005CDE86 /* View */,
-				9CC2B6BE2861BA92005CDE86 /* SBUBaseChannelSettingViewController.swift */,
-				9CC2B6BF2861BA92005CDE86 /* SBUChannelSettingsViewController.swift */,
-			);
-			path = Setting;
-			sourceTree = "<group>";
-		};
-		9CC2B6B72861BA92005CDE86 /* Cell */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B6B82861BA92005CDE86 /* SBUOpenChannelSettingCell.swift */,
-				9CC2B6B92861BA92005CDE86 /* SBUModerationCell.swift */,
-				9CC2B6BA2861BA92005CDE86 /* SBUChannelSettingCell.swift */,
-			);
-			path = Cell;
-			sourceTree = "<group>";
-		};
-		9CC2B6BC2861BA92005CDE86 /* View */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B6BD2861BA92005CDE86 /* SBUChannelSettingsUserInfoView.swift */,
-			);
-			path = View;
-			sourceTree = "<group>";
-		};
-		9CC2B6C02861BA92005CDE86 /* CreateChannel */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B6C12861BA92005CDE86 /* SBUCreateChannelTypeSelector.swift */,
-				9CC2B6C22861BA92005CDE86 /* SBUCreateChannelViewController.swift */,
-			);
-			path = CreateChannel;
-			sourceTree = "<group>";
-		};
-		9CC2B6C52861BA92005CDE86 /* Resource */ = {
-			isa = PBXGroup;
-			children = (
-				9CC2B6C62861BA92005CDE86 /* Assets.xcassets */,
-			);
-			path = Resource;
 			sourceTree = "<group>";
 		};
 		9CCCF00A25625D7B001D0851 /* Channels */ = {
@@ -1309,6 +795,520 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		A927C8FA28A2263500687419 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				A927C8FB28A2263500687419 /* Extension */,
+				A927C90E28A2263500687419 /* Util */,
+				A927C91228A2263500687419 /* SBUMain.swift */,
+				A927C91328A2263500687419 /* SBUAvailable.swift */,
+				A927C91428A2263500687419 /* Enums */,
+				A927C91728A2263500687419 /* Protocol */,
+				A927C91928A2263500687419 /* Manager */,
+				A927C92128A2263500687419 /* SBUGlobalCustomParams.swift */,
+				A927C92228A2263500687419 /* Constant */,
+				A927C92728A2263500687419 /* Theme */,
+				A927C92D28A2263500687419 /* Model */,
+				A927C93128A2263500687419 /* View */,
+				A927C9C428A2263500687419 /* SendBirdUIKit.h */,
+				A927C9C528A2263500687419 /* SBUGlobals.swift */,
+				A927C9C628A2263500687419 /* Resource */,
+			);
+			name = Sources;
+			path = ../Sources;
+			sourceTree = "<group>";
+		};
+		A927C8FB28A2263500687419 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				A927C8FC28A2263500687419 /* UIStackView.SBUIKit.swift */,
+				A927C8FD28A2263500687419 /* URL+SBUKit.swift */,
+				A927C8FE28A2263500687419 /* Array+SBUIKit.swift */,
+				A927C8FF28A2263500687419 /* UIColor+SBUIKit.swift */,
+				A927C90028A2263500687419 /* Formatter+SBUIKit.swift */,
+				A927C90128A2263500687419 /* UIImage+SBUIKit.swift */,
+				A927C90228A2263500687419 /* UINavigationController+SBUIKit.swift */,
+				A927C90328A2263500687419 /* String+SBUIKit.swift */,
+				A927C90428A2263500687419 /* CGSize+SBUIKit.swift */,
+				A927C90528A2263500687419 /* Float+SBUKit.swift */,
+				A927C90628A2263500687419 /* Data+SBUIKit.swift */,
+				A927C90728A2263500687419 /* UIViewController+SBUIKit.swift */,
+				A927C90828A2263500687419 /* Date+SBUIKit.swift */,
+				A927C90928A2263500687419 /* UIApplication+SBUIKit.swift */,
+				A927C90A28A2263500687419 /* UIView+SBUIKit.swift */,
+				A927C90B28A2263500687419 /* Sequence+SBUIKit.swift */,
+				A927C90C28A2263500687419 /* UIImageView+SBUIKit.swift */,
+				A927C90D28A2263500687419 /* NSObject+SBUIKit.swift */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
+		A927C90E28A2263500687419 /* Util */ = {
+			isa = PBXGroup;
+			children = (
+				A927C90F28A2263500687419 /* SBUPropertyWrapper.swift */,
+				A927C91028A2263500687419 /* SBUUtils.swift */,
+				A927C91128A2263500687419 /* SBULogger.swift */,
+			);
+			path = Util;
+			sourceTree = "<group>";
+		};
+		A927C91428A2263500687419 /* Enums */ = {
+			isa = PBXGroup;
+			children = (
+				A927C91528A2263500687419 /* SBUIconSetType.swift */,
+				A927C91628A2263500687419 /* SBUEnums.swift */,
+			);
+			path = Enums;
+			sourceTree = "<group>";
+		};
+		A927C91728A2263500687419 /* Protocol */ = {
+			isa = PBXGroup;
+			children = (
+				A927C91828A2263500687419 /* CommonProtocols.swift */,
+			);
+			path = Protocol;
+			sourceTree = "<group>";
+		};
+		A927C91928A2263500687419 /* Manager */ = {
+			isa = PBXGroup;
+			children = (
+				A927C91A28A2263500687419 /* SBUEmojiManager.swift */,
+				A927C91B28A2263500687419 /* SBUCacheManager.File.swift */,
+				A927C91C28A2263500687419 /* SBUPendingMessageManager.swift */,
+				A927C91D28A2263500687419 /* SBUDownloadManager.swift */,
+				A927C91E28A2263500687419 /* SBUPermissionManager.swift */,
+				A927C91F28A2263500687419 /* SBUCacheManager.swift */,
+				A927C92028A2263500687419 /* SBUToastManager.swift */,
+			);
+			path = Manager;
+			sourceTree = "<group>";
+		};
+		A927C92228A2263500687419 /* Constant */ = {
+			isa = PBXGroup;
+			children = (
+				A927C92328A2263500687419 /* SBUDateFormatSet.swift */,
+				A927C92428A2263500687419 /* SBUConstant.swift */,
+				A927C92528A2263500687419 /* SBUStringSet.swift */,
+				A927C92628A2263500687419 /* SBUCommonViews.swift */,
+			);
+			path = Constant;
+			sourceTree = "<group>";
+		};
+		A927C92728A2263500687419 /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				A927C92828A2263500687419 /* SBUIconSet.swift */,
+				A927C92928A2263500687419 /* SBUColorSet.swift */,
+				A927C92A28A2263500687419 /* SBUTheme+Type.swift */,
+				A927C92B28A2263500687419 /* SBUFontSet.swift */,
+				A927C92C28A2263500687419 /* SBUTheme.swift */,
+			);
+			path = Theme;
+			sourceTree = "<group>";
+		};
+		A927C92D28A2263500687419 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				A927C92E28A2263500687419 /* SBUMessageCache.swift */,
+				A927C92F28A2263500687419 /* SBUUser.swift */,
+				A927C93028A2263500687419 /* SBUHighlightMessageInfo.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		A927C93128A2263500687419 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				A927C93228A2263500687419 /* ViewModel */,
+				A927C93F28A2263500687419 /* ChannelList */,
+				A927C94528A2263500687419 /* User */,
+				A927C94728A2263500687419 /* Channel */,
+				A927C98F28A2263500687419 /* Common */,
+				A927C9A928A2263500687419 /* UserList */,
+				A927C9AC28A2263500687419 /* MessageSearch */,
+				A927C9AF28A2263500687419 /* Life cycles */,
+				A927C9B628A2263500687419 /* Setting */,
+				A927C9C128A2263500687419 /* CreateChannel */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		A927C93228A2263500687419 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				A927C93328A2263500687419 /* SBUBaseViewController.swift */,
+				A927C93428A2263500687419 /* SBUOpenChannelViewModel.swift */,
+				A927C93528A2263500687419 /* SBUMessageSearchViewModel.swift */,
+				A927C93628A2263500687419 /* SBUMemberListViewModel.swift */,
+				A927C93728A2263500687419 /* SBUInviteUserListViewModel.swift */,
+				A927C93828A2263500687419 /* Common */,
+				A927C93C28A2263500687419 /* SBUChannelViewModel.swift */,
+				A927C93D28A2263500687419 /* SBUObservable.swift */,
+				A927C93E28A2263500687419 /* SBUChannelListViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		A927C93828A2263500687419 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				A927C93928A2263500687419 /* SBUViewModelDelegate.swift */,
+				A927C93A28A2263500687419 /* SBULoadableViewModel.swift */,
+				A927C93B28A2263500687419 /* SBUChannelActionViewModel.swift */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		A927C93F28A2263500687419 /* ChannelList */ = {
+			isa = PBXGroup;
+			children = (
+				A927C94028A2263500687419 /* ChannelCell */,
+				A927C94328A2263500687419 /* SBUChannelListViewController.swift */,
+				A927C94428A2263500687419 /* SBUBaseChannelListViewController.swift */,
+			);
+			path = ChannelList;
+			sourceTree = "<group>";
+		};
+		A927C94028A2263500687419 /* ChannelCell */ = {
+			isa = PBXGroup;
+			children = (
+				A927C94128A2263500687419 /* SBUChannelCell.swift */,
+				A927C94228A2263500687419 /* SBUBaseChannelCell.swift */,
+			);
+			path = ChannelCell;
+			sourceTree = "<group>";
+		};
+		A927C94528A2263500687419 /* User */ = {
+			isa = PBXGroup;
+			children = (
+				A927C94628A2263500687419 /* SBUUserProfileView.swift */,
+			);
+			path = User;
+			sourceTree = "<group>";
+		};
+		A927C94728A2263500687419 /* Channel */ = {
+			isa = PBXGroup;
+			children = (
+				A927C94828A2263500687419 /* ViewModel */,
+				A927C94B28A2263500687419 /* Reaction */,
+				A927C95128A2263500687419 /* SBUBaseChannelViewController.swift */,
+				A927C95228A2263500687419 /* MessageCell */,
+				A927C97528A2263500687419 /* MessageInput */,
+				A927C97B28A2263500687419 /* SBUChannelViewController.ParentMessageViewDelegate.swift */,
+				A927C97C28A2263500687419 /* CellView */,
+				A927C98628A2263500687419 /* FileViewer */,
+				A927C98828A2263500687419 /* SBUChannelViewController.swift */,
+				A927C98928A2263500687419 /* NewMessageInfo */,
+				A927C98B28A2263500687419 /* SBUOpenChannelViewController.swift */,
+				A927C98C28A2263500687419 /* Header */,
+			);
+			path = Channel;
+			sourceTree = "<group>";
+		};
+		A927C94828A2263500687419 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				A927C94928A2263500687419 /* SBUUserMessageTextViewModel.swift */,
+				A927C94A28A2263500687419 /* SBUMessageWebViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		A927C94B28A2263500687419 /* Reaction */ = {
+			isa = PBXGroup;
+			children = (
+				A927C94C28A2263500687419 /* SBUReactionCollectionViewCell.swift */,
+				A927C94D28A2263500687419 /* SBUReactionsViewController.swift */,
+				A927C94E28A2263500687419 /* SBUMessageReactionView.swift */,
+				A927C94F28A2263500687419 /* SBUReactionCollectionViewCell.xib */,
+				A927C95028A2263500687419 /* SBUEmojiListViewController.swift */,
+			);
+			path = Reaction;
+			sourceTree = "<group>";
+		};
+		A927C95228A2263500687419 /* MessageCell */ = {
+			isa = PBXGroup;
+			children = (
+				A927C95328A2263500687419 /* MessageCellParams */,
+				A927C95928A2263500687419 /* FileMessageContentView */,
+				A927C95F28A2263500687419 /* Replies */,
+				A927C96828A2263500687419 /* SBUBaseMessageCell.swift */,
+				A927C96928A2263500687419 /* OpenChannel */,
+				A927C97028A2263500687419 /* SBUFileMessageCell.swift */,
+				A927C97128A2263500687419 /* SBUAdminMessageCell.swift */,
+				A927C97228A2263500687419 /* SBUContentBaseMessageCell.swift */,
+				A927C97328A2263500687419 /* SBUUnknownMessageCell.swift */,
+				A927C97428A2263500687419 /* SBUUserMessageCell.swift */,
+			);
+			path = MessageCell;
+			sourceTree = "<group>";
+		};
+		A927C95328A2263500687419 /* MessageCellParams */ = {
+			isa = PBXGroup;
+			children = (
+				A927C95428A2263500687419 /* SBUUserMessageCellParams.swift */,
+				A927C95528A2263500687419 /* SBUUnknownMessageCellParams.swift */,
+				A927C95628A2263500687419 /* SBUAdminMessageCellParams.swift */,
+				A927C95728A2263500687419 /* SBUBaseMessageCellParams.swift */,
+				A927C95828A2263500687419 /* SBUFileMessageCellParams.swift */,
+			);
+			path = MessageCellParams;
+			sourceTree = "<group>";
+		};
+		A927C95928A2263500687419 /* FileMessageContentView */ = {
+			isa = PBXGroup;
+			children = (
+				A927C95A28A2263500687419 /* OpenChannelCommonContentView.swift */,
+				A927C95B28A2263500687419 /* BaseFileContentView.swift */,
+				A927C95C28A2263500687419 /* ImageContentView.swift */,
+				A927C95D28A2263500687419 /* CommonContentView.swift */,
+				A927C95E28A2263500687419 /* OpenChannelImageContentView.swift */,
+			);
+			path = FileMessageContentView;
+			sourceTree = "<group>";
+		};
+		A927C95F28A2263500687419 /* Replies */ = {
+			isa = PBXGroup;
+			children = (
+				A927C96028A2263500687419 /* MessageView */,
+				A927C96628A2263500687419 /* ViewParams */,
+			);
+			path = Replies;
+			sourceTree = "<group>";
+		};
+		A927C96028A2263500687419 /* MessageView */ = {
+			isa = PBXGroup;
+			children = (
+				A927C96128A2263500687419 /* QuotedFileCommonContentView.swift */,
+				A927C96228A2263500687419 /* SBUQuotedBaseMessageView.swift */,
+				A927C96328A2263500687419 /* QuotedFileImageContentView.swift */,
+				A927C96428A2263500687419 /* SBUQuotedFileMessageView.swift */,
+				A927C96528A2263500687419 /* SBUQuotedUserMessageView.swift */,
+			);
+			path = MessageView;
+			sourceTree = "<group>";
+		};
+		A927C96628A2263500687419 /* ViewParams */ = {
+			isa = PBXGroup;
+			children = (
+				A927C96728A2263500687419 /* SBUQuotedBaseMessageViewParams.swift */,
+			);
+			path = ViewParams;
+			sourceTree = "<group>";
+		};
+		A927C96928A2263500687419 /* OpenChannel */ = {
+			isa = PBXGroup;
+			children = (
+				A927C96A28A2263500687419 /* SBUOpenChannelFileMessageCell.swift */,
+				A927C96B28A2263500687419 /* SBUOpenChannelAdminMessageCell.swift */,
+				A927C96C28A2263500687419 /* SBUOpenChannelContentBaseMessageCell.swift */,
+				A927C96D28A2263500687419 /* SBUOpenChannelUserMessageCell.swift */,
+				A927C96E28A2263500687419 /* SBUOpenChannelUnknownMessageCell.swift */,
+				A927C96F28A2263500687419 /* SBUOpenChannelBaseMessageCell.swift */,
+			);
+			path = OpenChannel;
+			sourceTree = "<group>";
+		};
+		A927C97528A2263500687419 /* MessageInput */ = {
+			isa = PBXGroup;
+			children = (
+				A927C97628A2263500687419 /* SBUQuoteMessageInputView.swift */,
+				A927C97728A2263500687419 /* SBUMessageInputMode.swift */,
+				A927C97828A2263500687419 /* ViewParams */,
+				A927C97A28A2263500687419 /* SBUMessageInputView.swift */,
+			);
+			path = MessageInput;
+			sourceTree = "<group>";
+		};
+		A927C97828A2263500687419 /* ViewParams */ = {
+			isa = PBXGroup;
+			children = (
+				A927C97928A2263500687419 /* SBUQuoteMessageInputViewParams.swift */,
+			);
+			path = ViewParams;
+			sourceTree = "<group>";
+		};
+		A927C97C28A2263500687419 /* CellView */ = {
+			isa = PBXGroup;
+			children = (
+				A927C97D28A2263500687419 /* SBUMessageStateView.swift */,
+				A927C97E28A2263500687419 /* SBUMessageProfileView.swift */,
+				A927C97F28A2263500687419 /* SBUUserMessageTextView.swift */,
+				A927C98028A2263500687419 /* SBUUserNameView.swift */,
+				A927C98128A2263500687419 /* SBUMessageWebView.swift */,
+				A927C98228A2263500687419 /* SBUMessageDateView.swift */,
+				A927C98328A2263500687419 /* SBULinkClickableTextView.swift */,
+				A927C98428A2263500687419 /* SBUOpenChannelMessageWebView.swift */,
+				A927C98528A2263500687419 /* SBUSelectableStackView.swift */,
+			);
+			path = CellView;
+			sourceTree = "<group>";
+		};
+		A927C98628A2263500687419 /* FileViewer */ = {
+			isa = PBXGroup;
+			children = (
+				A927C98728A2263500687419 /* SBUFileViewer.swift */,
+			);
+			path = FileViewer;
+			sourceTree = "<group>";
+		};
+		A927C98928A2263500687419 /* NewMessageInfo */ = {
+			isa = PBXGroup;
+			children = (
+				A927C98A28A2263500687419 /* SBUNewMessageInfo.swift */,
+			);
+			path = NewMessageInfo;
+			sourceTree = "<group>";
+		};
+		A927C98C28A2263500687419 /* Header */ = {
+			isa = PBXGroup;
+			children = (
+				A927C98D28A2263500687419 /* SBUChannelInfoHeaderView.swift */,
+				A927C98E28A2263500687419 /* SBUChannelTitleView.swift */,
+			);
+			path = Header;
+			sourceTree = "<group>";
+		};
+		A927C98F28A2263500687419 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				A927C99028A2263500687419 /* SBUStackView.swift */,
+				A927C99128A2263500687419 /* SBUAnimation.swift */,
+				A927C99228A2263500687419 /* SBUEmptyView.swift */,
+				A927C99328A2263500687419 /* SBUCoverImageView.swift */,
+				A927C99428A2263500687419 /* SBUPhotoAccess.swift */,
+				A927C99528A2263500687419 /* PhotoLibrary */,
+				A927C99828A2263500687419 /* Replies */,
+				A927C99A28A2263500687419 /* SBUCommonItem.swift */,
+				A927C99B28A2263500687419 /* SBULayoutableButton.swift */,
+				A927C99C28A2263500687419 /* SBUNavigationTitleView.swift */,
+				A927C99D28A2263500687419 /* SBUActionSheet.swift */,
+				A927C99E28A2263500687419 /* SBUAlertView.swift */,
+				A927C99F28A2263500687419 /* Menu */,
+				A927C9A528A2263500687419 /* UserCell */,
+				A927C9A728A2263500687419 /* SBULoading.swift */,
+				A927C9A828A2263500687419 /* SBUCollectionViewFlowLayout.swift */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		A927C99528A2263500687419 /* PhotoLibrary */ = {
+			isa = PBXGroup;
+			children = (
+				A927C99628A2263500687419 /* SBUPhotoCollectionViewCell.swift */,
+				A927C99728A2263500687419 /* SBUSelectablePhotoViewController.swift */,
+			);
+			path = PhotoLibrary;
+			sourceTree = "<group>";
+		};
+		A927C99828A2263500687419 /* Replies */ = {
+			isa = PBXGroup;
+			children = (
+				A927C99928A2263500687419 /* SBUReplyType.swift */,
+			);
+			path = Replies;
+			sourceTree = "<group>";
+		};
+		A927C99F28A2263500687419 /* Menu */ = {
+			isa = PBXGroup;
+			children = (
+				A927C9A028A2263500687419 /* SBUMenuCell.xib */,
+				A927C9A128A2263500687419 /* SBUMenuCell.swift */,
+				A927C9A228A2263500687419 /* SBUMenuView.swift */,
+				A927C9A328A2263500687419 /* SBUBottomSheetController.swift */,
+				A927C9A428A2263500687419 /* SBUMenuViewController.swift */,
+			);
+			path = Menu;
+			sourceTree = "<group>";
+		};
+		A927C9A528A2263500687419 /* UserCell */ = {
+			isa = PBXGroup;
+			children = (
+				A927C9A628A2263500687419 /* SBUUserCell.swift */,
+			);
+			path = UserCell;
+			sourceTree = "<group>";
+		};
+		A927C9A928A2263500687419 /* UserList */ = {
+			isa = PBXGroup;
+			children = (
+				A927C9AA28A2263500687419 /* SBUMemberListViewController.swift */,
+				A927C9AB28A2263500687419 /* SBUInviteUserViewController.swift */,
+			);
+			path = UserList;
+			sourceTree = "<group>";
+		};
+		A927C9AC28A2263500687419 /* MessageSearch */ = {
+			isa = PBXGroup;
+			children = (
+				A927C9AD28A2263500687419 /* SBUMessageSearchViewController.swift */,
+				A927C9AE28A2263500687419 /* SBUMessageSearchResultCell.swift */,
+			);
+			path = MessageSearch;
+			sourceTree = "<group>";
+		};
+		A927C9AF28A2263500687419 /* Life cycles */ = {
+			isa = PBXGroup;
+			children = (
+				A927C9B028A2263500687419 /* SBUTableViewCell.swift */,
+				A927C9B128A2263500687419 /* SBUQuoteMessageInputViewProtocol.swift */,
+				A927C9B228A2263500687419 /* SBUMessageCellProtocol.swift */,
+				A927C9B328A2263500687419 /* SBUViewLifeCycle.swift */,
+				A927C9B428A2263500687419 /* SBUQuotedMessageViewProtocol.swift */,
+				A927C9B528A2263500687419 /* SBUView.swift */,
+			);
+			path = "Life cycles";
+			sourceTree = "<group>";
+		};
+		A927C9B628A2263500687419 /* Setting */ = {
+			isa = PBXGroup;
+			children = (
+				A927C9B728A2263500687419 /* SBUOpenChannelSettingsViewController.swift */,
+				A927C9B828A2263500687419 /* Cell */,
+				A927C9BC28A2263500687419 /* SBUModerationsViewController.swift */,
+				A927C9BD28A2263500687419 /* View */,
+				A927C9BF28A2263500687419 /* SBUBaseChannelSettingViewController.swift */,
+				A927C9C028A2263500687419 /* SBUChannelSettingsViewController.swift */,
+			);
+			path = Setting;
+			sourceTree = "<group>";
+		};
+		A927C9B828A2263500687419 /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				A927C9B928A2263500687419 /* SBUOpenChannelSettingCell.swift */,
+				A927C9BA28A2263500687419 /* SBUModerationCell.swift */,
+				A927C9BB28A2263500687419 /* SBUChannelSettingCell.swift */,
+			);
+			path = Cell;
+			sourceTree = "<group>";
+		};
+		A927C9BD28A2263500687419 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				A927C9BE28A2263500687419 /* SBUChannelSettingsUserInfoView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		A927C9C128A2263500687419 /* CreateChannel */ = {
+			isa = PBXGroup;
+			children = (
+				A927C9C228A2263500687419 /* SBUCreateChannelTypeSelector.swift */,
+				A927C9C328A2263500687419 /* SBUCreateChannelViewController.swift */,
+			);
+			path = CreateChannel;
+			sourceTree = "<group>";
+		};
+		A927C9C628A2263500687419 /* Resource */ = {
+			isa = PBXGroup;
+			children = (
+				A927C9C728A2263500687419 /* Assets.xcassets */,
+			);
+			path = Resource;
+			sourceTree = "<group>";
+		};
 		A9C29B342564FEE8007248F5 /* LiveStreaming */ = {
 			isa = PBXGroup;
 			children = (
@@ -1422,11 +1422,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9CC2B70A2861BA92005CDE86 /* SBUReactionCollectionViewCell.xib in Resources */,
-				9CC2B74A2861BA92005CDE86 /* SBUMenuCell.xib in Resources */,
+				A927CA0B28A2263500687419 /* SBUReactionCollectionViewCell.xib in Resources */,
+				A927CA4B28A2263500687419 /* SBUMenuCell.xib in Resources */,
 				9C777D67241B9024006FFE25 /* LaunchScreen.storyboard in Resources */,
 				9C777D64241B9024006FFE25 /* Assets.xcassets in Resources */,
-				9CC2B7672861BA92005CDE86 /* Assets.xcassets in Resources */,
+				A927CA6828A2263500687419 /* Assets.xcassets in Resources */,
 				9C777D62241B9022006FFE25 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1527,213 +1527,213 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9CC2B7082861BA92005CDE86 /* SBUReactionsViewController.swift in Sources */,
+				A927CA0928A2263500687419 /* SBUReactionsViewController.swift in Sources */,
 				9CEB7797250F4A42004AC1D6 /* MainChannelTabbarController.swift in Sources */,
-				9CC2B6D12861BA92005CDE86 /* Data+SBUIKit.swift in Sources */,
-				9CC2B7522861BA92005CDE86 /* SBUMemberListViewController.swift in Sources */,
-				9CC2B6E72861BA92005CDE86 /* SBUToastManager.swift in Sources */,
-				9CC2B75B2861BA92005CDE86 /* SBUView.swift in Sources */,
-				9CC2B6CA2861BA92005CDE86 /* UIColor+SBUIKit.swift in Sources */,
+				A927C9D228A2263500687419 /* Data+SBUIKit.swift in Sources */,
+				A927CA5328A2263500687419 /* SBUMemberListViewController.swift in Sources */,
+				A927C9E828A2263500687419 /* SBUToastManager.swift in Sources */,
+				A927CA5C28A2263500687419 /* SBUView.swift in Sources */,
+				A927C9CB28A2263500687419 /* UIColor+SBUIKit.swift in Sources */,
 				9CDDA30324B47FF200F77A59 /* CustomUserCell.swift in Sources */,
 				9C777D5F241B9022006FFE25 /* ViewController.swift in Sources */,
-				9CC2B73E2861BA92005CDE86 /* SBUAnimation.swift in Sources */,
+				A927CA3F28A2263500687419 /* SBUAnimation.swift in Sources */,
 				9CED4D1324ADE41200D81B10 /* ChannelSettingsCustomManager.swift in Sources */,
-				9CC2B6CC2861BA92005CDE86 /* UIImage+SBUIKit.swift in Sources */,
-				9CC2B7432861BA92005CDE86 /* SBUSelectablePhotoViewController.swift in Sources */,
-				9CC2B72B2861BA92005CDE86 /* SBUQuoteMessageInputViewParams.swift in Sources */,
+				A927C9CD28A2263500687419 /* UIImage+SBUIKit.swift in Sources */,
+				A927CA4428A2263500687419 /* SBUSelectablePhotoViewController.swift in Sources */,
+				A927CA2C28A2263500687419 /* SBUQuoteMessageInputViewParams.swift in Sources */,
 				9CC8E2F52510C53A00C038A5 /* MySettingsCell.swift in Sources */,
-				9CC2B7372861BA92005CDE86 /* SBUFileViewer.swift in Sources */,
-				9CC2B6DE2861BA92005CDE86 /* SBUIconSetType.swift in Sources */,
-				9CC2B7282861BA92005CDE86 /* SBUUserMessageCell.swift in Sources */,
-				9CC2B7562861BA92005CDE86 /* SBUTableViewCell.swift in Sources */,
-				9CC2B7532861BA92005CDE86 /* SBUInviteUserViewController.swift in Sources */,
-				9CC2B6DF2861BA92005CDE86 /* SBUEnums.swift in Sources */,
-				9CC2B6FD2861BA92005CDE86 /* SBUChannelViewModel.swift in Sources */,
-				9CC2B6FB2861BA92005CDE86 /* SBULoadableViewModel.swift in Sources */,
-				9CC2B7512861BA92005CDE86 /* SBUCollectionViewFlowLayout.swift in Sources */,
+				A927CA3828A2263500687419 /* SBUFileViewer.swift in Sources */,
+				A927C9DF28A2263500687419 /* SBUIconSetType.swift in Sources */,
+				A927CA2928A2263500687419 /* SBUUserMessageCell.swift in Sources */,
+				A927CA5728A2263500687419 /* SBUTableViewCell.swift in Sources */,
+				A927CA5428A2263500687419 /* SBUInviteUserViewController.swift in Sources */,
+				A927C9E028A2263500687419 /* SBUEnums.swift in Sources */,
+				A927C9FE28A2263500687419 /* SBUChannelViewModel.swift in Sources */,
+				A927C9FC28A2263500687419 /* SBULoadableViewModel.swift in Sources */,
+				A927CA5228A2263500687419 /* SBUCollectionViewFlowLayout.swift in Sources */,
 				9CED4D0524ADA20B00D81B10 /* GlobalSetCustomManager.swift in Sources */,
-				9CC2B7482861BA92005CDE86 /* SBUActionSheet.swift in Sources */,
-				9CC2B73B2861BA92005CDE86 /* SBUChannelInfoHeaderView.swift in Sources */,
-				9CC2B6EF2861BA92005CDE86 /* SBUTheme+Type.swift in Sources */,
-				9CC2B7382861BA92005CDE86 /* SBUChannelViewController.swift in Sources */,
-				9CC2B6EB2861BA92005CDE86 /* SBUStringSet.swift in Sources */,
-				9CC2B7132861BA92005CDE86 /* BaseFileContentView.swift in Sources */,
-				9CC2B73F2861BA92005CDE86 /* SBUEmptyView.swift in Sources */,
+				A927CA4928A2263500687419 /* SBUActionSheet.swift in Sources */,
+				A927CA3C28A2263500687419 /* SBUChannelInfoHeaderView.swift in Sources */,
+				A927C9F028A2263500687419 /* SBUTheme+Type.swift in Sources */,
+				A927CA3928A2263500687419 /* SBUChannelViewController.swift in Sources */,
+				A927C9EC28A2263500687419 /* SBUStringSet.swift in Sources */,
+				A927CA1428A2263500687419 /* BaseFileContentView.swift in Sources */,
+				A927CA4028A2263500687419 /* SBUEmptyView.swift in Sources */,
 				9CED4D0B24ADE36100D81B10 /* ChannelListVC_Overriding.swift in Sources */,
-				9CC2B6F72861BA92005CDE86 /* SBUMessageSearchViewModel.swift in Sources */,
-				9CC2B7142861BA92005CDE86 /* ImageContentView.swift in Sources */,
-				9CC2B7442861BA92005CDE86 /* SBUReplyType.swift in Sources */,
-				9CC2B6FC2861BA92005CDE86 /* SBUChannelActionViewModel.swift in Sources */,
-				9CC2B71C2861BA92005CDE86 /* SBUQuotedBaseMessageViewParams.swift in Sources */,
-				9CC2B7542861BA92005CDE86 /* SBUMessageSearchViewController.swift in Sources */,
-				9CC2B71B2861BA92005CDE86 /* SBUQuotedUserMessageView.swift in Sources */,
-				9CC2B7002861BA92005CDE86 /* SBUChannelCell.swift in Sources */,
-				9CC2B73C2861BA92005CDE86 /* SBUChannelTitleView.swift in Sources */,
-				9CC2B70E2861BA92005CDE86 /* SBUUnknownMessageCellParams.swift in Sources */,
+				A927C9F828A2263500687419 /* SBUMessageSearchViewModel.swift in Sources */,
+				A927CA1528A2263500687419 /* ImageContentView.swift in Sources */,
+				A927CA4528A2263500687419 /* SBUReplyType.swift in Sources */,
+				A927C9FD28A2263500687419 /* SBUChannelActionViewModel.swift in Sources */,
+				A927CA1D28A2263500687419 /* SBUQuotedBaseMessageViewParams.swift in Sources */,
+				A927CA5528A2263500687419 /* SBUMessageSearchViewController.swift in Sources */,
+				A927CA1C28A2263500687419 /* SBUQuotedUserMessageView.swift in Sources */,
+				A927CA0128A2263500687419 /* SBUChannelCell.swift in Sources */,
+				A927CA3D28A2263500687419 /* SBUChannelTitleView.swift in Sources */,
+				A927CA0F28A2263500687419 /* SBUUnknownMessageCellParams.swift in Sources */,
 				9CDDA31D24BEF1A300F77A59 /* UIcolor+Ext.swift in Sources */,
-				9CC2B71A2861BA92005CDE86 /* SBUQuotedFileMessageView.swift in Sources */,
-				9CC2B74E2861BA92005CDE86 /* SBUMenuViewController.swift in Sources */,
-				9CC2B6DC2861BA92005CDE86 /* SBUMain.swift in Sources */,
-				9CC2B6D92861BA92005CDE86 /* SBUPropertyWrapper.swift in Sources */,
-				9CC2B75E2861BA92005CDE86 /* SBUModerationCell.swift in Sources */,
-				9CC2B7392861BA92005CDE86 /* SBUNewMessageInfo.swift in Sources */,
-				9CC2B6E42861BA92005CDE86 /* SBUDownloadManager.swift in Sources */,
-				9CC2B74B2861BA92005CDE86 /* SBUMenuCell.swift in Sources */,
-				9CC2B7632861BA92005CDE86 /* SBUChannelSettingsViewController.swift in Sources */,
-				9CC2B74F2861BA92005CDE86 /* SBUUserCell.swift in Sources */,
-				9CC2B6ED2861BA92005CDE86 /* SBUIconSet.swift in Sources */,
-				9CC2B7322861BA92005CDE86 /* SBUMessageWebView.swift in Sources */,
-				9CC2B7462861BA92005CDE86 /* SBULayoutableButton.swift in Sources */,
-				9CC2B71F2861BA92005CDE86 /* SBUOpenChannelAdminMessageCell.swift in Sources */,
-				9CC2B7202861BA92005CDE86 /* SBUOpenChannelContentBaseMessageCell.swift in Sources */,
-				9CC2B72D2861BA92005CDE86 /* SBUChannelViewController.ParentMessageViewDelegate.swift in Sources */,
+				A927CA1B28A2263500687419 /* SBUQuotedFileMessageView.swift in Sources */,
+				A927CA4F28A2263500687419 /* SBUMenuViewController.swift in Sources */,
+				A927C9DD28A2263500687419 /* SBUMain.swift in Sources */,
+				A927C9DA28A2263500687419 /* SBUPropertyWrapper.swift in Sources */,
+				A927CA5F28A2263500687419 /* SBUModerationCell.swift in Sources */,
+				A927CA3A28A2263500687419 /* SBUNewMessageInfo.swift in Sources */,
+				A927C9E528A2263500687419 /* SBUDownloadManager.swift in Sources */,
+				A927CA4C28A2263500687419 /* SBUMenuCell.swift in Sources */,
+				A927CA6428A2263500687419 /* SBUChannelSettingsViewController.swift in Sources */,
+				A927CA5028A2263500687419 /* SBUUserCell.swift in Sources */,
+				A927C9EE28A2263500687419 /* SBUIconSet.swift in Sources */,
+				A927CA3328A2263500687419 /* SBUMessageWebView.swift in Sources */,
+				A927CA4728A2263500687419 /* SBULayoutableButton.swift in Sources */,
+				A927CA2028A2263500687419 /* SBUOpenChannelAdminMessageCell.swift in Sources */,
+				A927CA2128A2263500687419 /* SBUOpenChannelContentBaseMessageCell.swift in Sources */,
+				A927CA2E28A2263500687419 /* SBUChannelViewController.ParentMessageViewDelegate.swift in Sources */,
 				9CED4D1524ADE41B00D81B10 /* CreateChannelCustomManager.swift in Sources */,
-				9CC2B74C2861BA92005CDE86 /* SBUMenuView.swift in Sources */,
-				9CC2B6D02861BA92005CDE86 /* Float+SBUKit.swift in Sources */,
-				9CC2B7332861BA92005CDE86 /* SBUMessageDateView.swift in Sources */,
-				9CC2B7602861BA92005CDE86 /* SBUModerationsViewController.swift in Sources */,
-				9CC2B6CB2861BA92005CDE86 /* Formatter+SBUIKit.swift in Sources */,
-				9CC2B6E52861BA92005CDE86 /* SBUPermissionManager.swift in Sources */,
+				A927CA4D28A2263500687419 /* SBUMenuView.swift in Sources */,
+				A927C9D128A2263500687419 /* Float+SBUKit.swift in Sources */,
+				A927CA3428A2263500687419 /* SBUMessageDateView.swift in Sources */,
+				A927CA6128A2263500687419 /* SBUModerationsViewController.swift in Sources */,
+				A927C9CC28A2263500687419 /* Formatter+SBUIKit.swift in Sources */,
+				A927C9E628A2263500687419 /* SBUPermissionManager.swift in Sources */,
 				9C2AA7E82561255800C6F6CB /* StreamingChannelListViewController.swift in Sources */,
 				9CDDA31B24B720A300F77A59 /* ChannelVC_Overriding.swift in Sources */,
 				9CED4D1C24ADE69900D81B10 /* CustomChannelListCell.swift in Sources */,
-				9CC2B7032861BA92005CDE86 /* SBUBaseChannelListViewController.swift in Sources */,
-				9CC2B6E12861BA92005CDE86 /* SBUEmojiManager.swift in Sources */,
-				9CC2B7072861BA92005CDE86 /* SBUReactionCollectionViewCell.swift in Sources */,
+				A927CA0428A2263500687419 /* SBUBaseChannelListViewController.swift in Sources */,
+				A927C9E228A2263500687419 /* SBUEmojiManager.swift in Sources */,
+				A927CA0828A2263500687419 /* SBUReactionCollectionViewCell.swift in Sources */,
 				9C2AA7E325611A8200C6F6CB /* MainOpenChannelTabbarController.swift in Sources */,
-				9CC2B7352861BA92005CDE86 /* SBUOpenChannelMessageWebView.swift in Sources */,
-				9CC2B6E92861BA92005CDE86 /* SBUDateFormatSet.swift in Sources */,
-				9CC2B7022861BA92005CDE86 /* SBUChannelListViewController.swift in Sources */,
-				9CC2B6EC2861BA92005CDE86 /* SBUCommonViews.swift in Sources */,
-				9CC2B7472861BA92005CDE86 /* SBUNavigationTitleView.swift in Sources */,
-				9CC2B7552861BA92005CDE86 /* SBUMessageSearchResultCell.swift in Sources */,
-				9CC2B7662861BA92005CDE86 /* SBUGlobals.swift in Sources */,
-				9CC2B7152861BA92005CDE86 /* CommonContentView.swift in Sources */,
+				A927CA3628A2263500687419 /* SBUOpenChannelMessageWebView.swift in Sources */,
+				A927C9EA28A2263500687419 /* SBUDateFormatSet.swift in Sources */,
+				A927CA0328A2263500687419 /* SBUChannelListViewController.swift in Sources */,
+				A927C9ED28A2263500687419 /* SBUCommonViews.swift in Sources */,
+				A927CA4828A2263500687419 /* SBUNavigationTitleView.swift in Sources */,
+				A927CA5628A2263500687419 /* SBUMessageSearchResultCell.swift in Sources */,
+				A927CA6728A2263500687419 /* SBUGlobals.swift in Sources */,
+				A927CA1628A2263500687419 /* CommonContentView.swift in Sources */,
 				9C56414C24AF29C00057B529 /* CustomSampleEnums.swift in Sources */,
-				9CC2B71E2861BA92005CDE86 /* SBUOpenChannelFileMessageCell.swift in Sources */,
-				9CC2B7222861BA92005CDE86 /* SBUOpenChannelUnknownMessageCell.swift in Sources */,
+				A927CA1F28A2263500687419 /* SBUOpenChannelFileMessageCell.swift in Sources */,
+				A927CA2328A2263500687419 /* SBUOpenChannelUnknownMessageCell.swift in Sources */,
 				9C56415424AF99E70057B529 /* ChannelVC_MessageParam.swift in Sources */,
 				9CEB7796250F4A42004AC1D6 /* MySettingsViewController.swift in Sources */,
 				9CEB77A0250F7948004AC1D6 /* UserInfoTitleView.swift in Sources */,
-				9CC2B72A2861BA92005CDE86 /* SBUMessageInputMode.swift in Sources */,
-				9CC2B6F22861BA92005CDE86 /* SBUMessageCache.swift in Sources */,
+				A927CA2B28A2263500687419 /* SBUMessageInputMode.swift in Sources */,
+				A927C9F328A2263500687419 /* SBUMessageCache.swift in Sources */,
 				A9C29B332564C65E007248F5 /* CommunityChannelListViewController.swift in Sources */,
 				9C32648724B39090000F8313 /* InviteUserVC_UserList.swift in Sources */,
-				9CC2B70B2861BA92005CDE86 /* SBUEmojiListViewController.swift in Sources */,
-				9CC2B71D2861BA92005CDE86 /* SBUBaseMessageCell.swift in Sources */,
-				9CC2B70C2861BA92005CDE86 /* SBUBaseChannelViewController.swift in Sources */,
-				9CC2B6F82861BA92005CDE86 /* SBUMemberListViewModel.swift in Sources */,
-				9CC2B7102861BA92005CDE86 /* SBUBaseMessageCellParams.swift in Sources */,
-				9CC2B7362861BA92005CDE86 /* SBUSelectableStackView.swift in Sources */,
-				9CC2B6C92861BA92005CDE86 /* Array+SBUIKit.swift in Sources */,
-				9CC2B6DA2861BA92005CDE86 /* SBUUtils.swift in Sources */,
-				9CC2B7232861BA92005CDE86 /* SBUOpenChannelBaseMessageCell.swift in Sources */,
-				9CC2B72F2861BA92005CDE86 /* SBUMessageProfileView.swift in Sources */,
+				A927CA0C28A2263500687419 /* SBUEmojiListViewController.swift in Sources */,
+				A927CA1E28A2263500687419 /* SBUBaseMessageCell.swift in Sources */,
+				A927CA0D28A2263500687419 /* SBUBaseChannelViewController.swift in Sources */,
+				A927C9F928A2263500687419 /* SBUMemberListViewModel.swift in Sources */,
+				A927CA1128A2263500687419 /* SBUBaseMessageCellParams.swift in Sources */,
+				A927CA3728A2263500687419 /* SBUSelectableStackView.swift in Sources */,
+				A927C9CA28A2263500687419 /* Array+SBUIKit.swift in Sources */,
+				A927C9DB28A2263500687419 /* SBUUtils.swift in Sources */,
+				A927CA2428A2263500687419 /* SBUOpenChannelBaseMessageCell.swift in Sources */,
+				A927CA3028A2263500687419 /* SBUMessageProfileView.swift in Sources */,
 				A9A3AEAC256A532700007FC2 /* SBDOpenChannel+Ext.swift in Sources */,
 				9C32648324B38FAF000F8313 /* ChannelSettingsVC_Overriding.swift in Sources */,
 				9C32648124B37DD2000F8313 /* CustomUserMessageCell.swift in Sources */,
-				9CC2B73A2861BA92005CDE86 /* SBUOpenChannelViewController.swift in Sources */,
-				9CC2B7182861BA92005CDE86 /* SBUQuotedBaseMessageView.swift in Sources */,
-				9CC2B7012861BA92005CDE86 /* SBUBaseChannelCell.swift in Sources */,
-				9CC2B6D62861BA92005CDE86 /* Sequence+SBUIKit.swift in Sources */,
-				9CC2B7402861BA92005CDE86 /* SBUCoverImageView.swift in Sources */,
-				9CC2B70F2861BA92005CDE86 /* SBUAdminMessageCellParams.swift in Sources */,
-				9CC2B6DD2861BA92005CDE86 /* SBUAvailable.swift in Sources */,
-				9CC2B70D2861BA92005CDE86 /* SBUUserMessageCellParams.swift in Sources */,
+				A927CA3B28A2263500687419 /* SBUOpenChannelViewController.swift in Sources */,
+				A927CA1928A2263500687419 /* SBUQuotedBaseMessageView.swift in Sources */,
+				A927CA0228A2263500687419 /* SBUBaseChannelCell.swift in Sources */,
+				A927C9D728A2263500687419 /* Sequence+SBUIKit.swift in Sources */,
+				A927CA4128A2263500687419 /* SBUCoverImageView.swift in Sources */,
+				A927CA1028A2263500687419 /* SBUAdminMessageCellParams.swift in Sources */,
+				A927C9DE28A2263500687419 /* SBUAvailable.swift in Sources */,
+				A927CA0E28A2263500687419 /* SBUUserMessageCellParams.swift in Sources */,
 				9CEB7799250F5E2F004AC1D6 /* ChannelListViewController.swift in Sources */,
-				9CC2B7192861BA92005CDE86 /* QuotedFileImageContentView.swift in Sources */,
+				A927CA1A28A2263500687419 /* QuotedFileImageContentView.swift in Sources */,
 				9CDDA30924B4DCF500F77A59 /* InviteUserVC_Cell.swift in Sources */,
-				9CC2B6CE2861BA92005CDE86 /* String+SBUIKit.swift in Sources */,
-				9CC2B6C72861BA92005CDE86 /* UIStackView.SBUIKit.swift in Sources */,
-				9CC2B7302861BA92005CDE86 /* SBUUserMessageTextView.swift in Sources */,
-				9CC2B7292861BA92005CDE86 /* SBUQuoteMessageInputView.swift in Sources */,
-				9CC2B7422861BA92005CDE86 /* SBUPhotoCollectionViewCell.swift in Sources */,
+				A927C9CF28A2263500687419 /* String+SBUIKit.swift in Sources */,
+				A927C9C828A2263500687419 /* UIStackView.SBUIKit.swift in Sources */,
+				A927CA3128A2263500687419 /* SBUUserMessageTextView.swift in Sources */,
+				A927CA2A28A2263500687419 /* SBUQuoteMessageInputView.swift in Sources */,
+				A927CA4328A2263500687419 /* SBUPhotoCollectionViewCell.swift in Sources */,
 				9C2AA7E625611EB100C6F6CB /* MyOpenChannelSettingsViewController.swift in Sources */,
-				9CC2B6EE2861BA92005CDE86 /* SBUColorSet.swift in Sources */,
+				A927C9EF28A2263500687419 /* SBUColorSet.swift in Sources */,
 				9C32648524B3907E000F8313 /* CreateChannelVC_UserList.swift in Sources */,
-				9CC2B74D2861BA92005CDE86 /* SBUBottomSheetController.swift in Sources */,
+				A927CA4E28A2263500687419 /* SBUBottomSheetController.swift in Sources */,
 				9CED4D1124ADE40700D81B10 /* ChannelCustomManager.swift in Sources */,
-				9CC2B7042861BA92005CDE86 /* SBUUserProfileView.swift in Sources */,
+				A927CA0528A2263500687419 /* SBUUserProfileView.swift in Sources */,
 				9CDDA30524B4DA8600F77A59 /* MemberListVC_Cell.swift in Sources */,
-				9CC2B7572861BA92005CDE86 /* SBUQuoteMessageInputViewProtocol.swift in Sources */,
+				A927CA5828A2263500687419 /* SBUQuoteMessageInputViewProtocol.swift in Sources */,
 				9C777D5B241B9022006FFE25 /* AppDelegate.swift in Sources */,
 				9CDDA31724B6F39700F77A59 /* CustomNewMessageInfo.swift in Sources */,
 				A9C29B382564FF63007248F5 /* CommunityChannelCell.swift in Sources */,
-				9CC2B7452861BA92005CDE86 /* SBUCommonItem.swift in Sources */,
-				9CC2B7312861BA92005CDE86 /* SBUUserNameView.swift in Sources */,
+				A927CA4628A2263500687419 /* SBUCommonItem.swift in Sources */,
+				A927CA3228A2263500687419 /* SBUUserNameView.swift in Sources */,
 				A9A3AEAA256A44A700007FC2 /* PaddingLabel.swift in Sources */,
-				9CC2B6D82861BA92005CDE86 /* NSObject+SBUIKit.swift in Sources */,
+				A927C9D928A2263500687419 /* NSObject+SBUIKit.swift in Sources */,
 				9C2AA7EA256125FA00C6F6CB /* StreamingChannelCell.swift in Sources */,
 				9CED4D0724ADA66200D81B10 /* UserDefaults+Ext.swift in Sources */,
-				9CC2B75F2861BA92005CDE86 /* SBUChannelSettingCell.swift in Sources */,
-				9CC2B7062861BA92005CDE86 /* SBUMessageWebViewModel.swift in Sources */,
-				9CC2B75D2861BA92005CDE86 /* SBUOpenChannelSettingCell.swift in Sources */,
-				9CC2B7252861BA92005CDE86 /* SBUAdminMessageCell.swift in Sources */,
+				A927CA6028A2263500687419 /* SBUChannelSettingCell.swift in Sources */,
+				A927CA0728A2263500687419 /* SBUMessageWebViewModel.swift in Sources */,
+				A927CA5E28A2263500687419 /* SBUOpenChannelSettingCell.swift in Sources */,
+				A927CA2628A2263500687419 /* SBUAdminMessageCell.swift in Sources */,
 				A9A3AECE256B786E00007FC2 /* UIImageView+Ext.swift in Sources */,
-				9CC2B7212861BA92005CDE86 /* SBUOpenChannelUserMessageCell.swift in Sources */,
-				9CC2B7582861BA92005CDE86 /* SBUMessageCellProtocol.swift in Sources */,
-				9CC2B7412861BA92005CDE86 /* SBUPhotoAccess.swift in Sources */,
+				A927CA2228A2263500687419 /* SBUOpenChannelUserMessageCell.swift in Sources */,
+				A927CA5928A2263500687419 /* SBUMessageCellProtocol.swift in Sources */,
+				A927CA4228A2263500687419 /* SBUPhotoAccess.swift in Sources */,
 				9CED4CF024AC817400D81B10 /* UIView+Ext.swift in Sources */,
-				9CC2B6FA2861BA92005CDE86 /* SBUViewModelDelegate.swift in Sources */,
+				A927C9FB28A2263500687419 /* SBUViewModelDelegate.swift in Sources */,
 				9CED4CF424AC86BB00D81B10 /* CustomBaseViewController.swift in Sources */,
 				9CDDA30724B4DA9000F77A59 /* MemberListVC_Overriding.swift in Sources */,
-				9CC2B6D52861BA92005CDE86 /* UIView+SBUIKit.swift in Sources */,
-				9CC2B75A2861BA92005CDE86 /* SBUQuotedMessageViewProtocol.swift in Sources */,
+				A927C9D628A2263500687419 /* UIView+SBUIKit.swift in Sources */,
+				A927CA5B28A2263500687419 /* SBUQuotedMessageViewProtocol.swift in Sources */,
 				A9F1B1B62579F28B008DEB11 /* CreateCommunityChannelViewController.swift in Sources */,
-				9CC2B6FF2861BA92005CDE86 /* SBUChannelListViewModel.swift in Sources */,
-				9CC2B6F12861BA92005CDE86 /* SBUTheme.swift in Sources */,
-				9CC2B6F62861BA92005CDE86 /* SBUOpenChannelViewModel.swift in Sources */,
-				9CC2B7502861BA92005CDE86 /* SBULoading.swift in Sources */,
-				9CC2B72E2861BA92005CDE86 /* SBUMessageStateView.swift in Sources */,
-				9CC2B7642861BA92005CDE86 /* SBUCreateChannelTypeSelector.swift in Sources */,
+				A927CA0028A2263500687419 /* SBUChannelListViewModel.swift in Sources */,
+				A927C9F228A2263500687419 /* SBUTheme.swift in Sources */,
+				A927C9F728A2263500687419 /* SBUOpenChannelViewModel.swift in Sources */,
+				A927CA5128A2263500687419 /* SBULoading.swift in Sources */,
+				A927CA2F28A2263500687419 /* SBUMessageStateView.swift in Sources */,
+				A927CA6528A2263500687419 /* SBUCreateChannelTypeSelector.swift in Sources */,
 				9CED4D1F24AF02D800D81B10 /* SampleManager.swift in Sources */,
 				9CED4D1724ADE42200D81B10 /* InviteUserCustomManager.swift in Sources */,
-				9CC2B6F42861BA92005CDE86 /* SBUHighlightMessageInfo.swift in Sources */,
-				9CC2B7162861BA92005CDE86 /* OpenChannelImageContentView.swift in Sources */,
-				9CC2B6F92861BA92005CDE86 /* SBUInviteUserListViewModel.swift in Sources */,
-				9CC2B6D22861BA92005CDE86 /* UIViewController+SBUIKit.swift in Sources */,
-				9CC2B6D42861BA92005CDE86 /* UIApplication+SBUIKit.swift in Sources */,
+				A927C9F528A2263500687419 /* SBUHighlightMessageInfo.swift in Sources */,
+				A927CA1728A2263500687419 /* OpenChannelImageContentView.swift in Sources */,
+				A927C9FA28A2263500687419 /* SBUInviteUserListViewModel.swift in Sources */,
+				A927C9D328A2263500687419 /* UIViewController+SBUIKit.swift in Sources */,
+				A927C9D528A2263500687419 /* UIApplication+SBUIKit.swift in Sources */,
 				A9B0703D2563D01E006C5BBA /* StreamingChannel.swift in Sources */,
-				9CC2B72C2861BA92005CDE86 /* SBUMessageInputView.swift in Sources */,
-				9CC2B6D72861BA92005CDE86 /* UIImageView+SBUIKit.swift in Sources */,
+				A927CA2D28A2263500687419 /* SBUMessageInputView.swift in Sources */,
+				A927C9D828A2263500687419 /* UIImageView+SBUIKit.swift in Sources */,
 				9CED4D1924ADE42A00D81B10 /* MemberListCustomManager.swift in Sources */,
-				9CC2B6EA2861BA92005CDE86 /* SBUConstant.swift in Sources */,
-				9CC2B7592861BA92005CDE86 /* SBUViewLifeCycle.swift in Sources */,
-				9CC2B7272861BA92005CDE86 /* SBUUnknownMessageCell.swift in Sources */,
-				9CC2B6C82861BA92005CDE86 /* URL+SBUKit.swift in Sources */,
-				9CC2B6F32861BA92005CDE86 /* SBUUser.swift in Sources */,
-				9CC2B6F02861BA92005CDE86 /* SBUFontSet.swift in Sources */,
-				9CC2B6E02861BA92005CDE86 /* CommonProtocols.swift in Sources */,
-				9CC2B7092861BA92005CDE86 /* SBUMessageReactionView.swift in Sources */,
-				9CC2B6E62861BA92005CDE86 /* SBUCacheManager.swift in Sources */,
+				A927C9EB28A2263500687419 /* SBUConstant.swift in Sources */,
+				A927CA5A28A2263500687419 /* SBUViewLifeCycle.swift in Sources */,
+				A927CA2828A2263500687419 /* SBUUnknownMessageCell.swift in Sources */,
+				A927C9C928A2263500687419 /* URL+SBUKit.swift in Sources */,
+				A927C9F428A2263500687419 /* SBUUser.swift in Sources */,
+				A927C9F128A2263500687419 /* SBUFontSet.swift in Sources */,
+				A927C9E128A2263500687419 /* CommonProtocols.swift in Sources */,
+				A927CA0A28A2263500687419 /* SBUMessageReactionView.swift in Sources */,
+				A927C9E728A2263500687419 /* SBUCacheManager.swift in Sources */,
 				A9B0703F2563F05D006C5BBA /* StreamingChannelViewController.swift in Sources */,
-				9CC2B7052861BA92005CDE86 /* SBUUserMessageTextViewModel.swift in Sources */,
-				9CC2B75C2861BA92005CDE86 /* SBUOpenChannelSettingsViewController.swift in Sources */,
+				A927CA0628A2263500687419 /* SBUUserMessageTextViewModel.swift in Sources */,
+				A927CA5D28A2263500687419 /* SBUOpenChannelSettingsViewController.swift in Sources */,
 				9CED4D0F24ADE3F800D81B10 /* ChannelListCustomManager.swift in Sources */,
-				9CC2B6D32861BA92005CDE86 /* Date+SBUIKit.swift in Sources */,
-				9CC2B7112861BA92005CDE86 /* SBUFileMessageCellParams.swift in Sources */,
-				9CC2B7622861BA92005CDE86 /* SBUBaseChannelSettingViewController.swift in Sources */,
-				9CC2B7652861BA92005CDE86 /* SBUCreateChannelViewController.swift in Sources */,
-				9CC2B7122861BA92005CDE86 /* OpenChannelCommonContentView.swift in Sources */,
+				A927C9D428A2263500687419 /* Date+SBUIKit.swift in Sources */,
+				A927CA1228A2263500687419 /* SBUFileMessageCellParams.swift in Sources */,
+				A927CA6328A2263500687419 /* SBUBaseChannelSettingViewController.swift in Sources */,
+				A927CA6628A2263500687419 /* SBUCreateChannelViewController.swift in Sources */,
+				A927CA1328A2263500687419 /* OpenChannelCommonContentView.swift in Sources */,
 				9CDDA30D24B555E500F77A59 /* CustomEmptyView.swift in Sources */,
 				9CDDA31924B714A700F77A59 /* BaseCustomManager.swift in Sources */,
 				9CDDA30B24B4DE0600F77A59 /* CreateChannelVC_Cell.swift in Sources */,
 				9CED4CF224AC81E200D81B10 /* UILabel+Ext.swift in Sources */,
-				9CC2B6CF2861BA92005CDE86 /* CGSize+SBUIKit.swift in Sources */,
-				9CC2B6F52861BA92005CDE86 /* SBUBaseViewController.swift in Sources */,
-				9CC2B6E22861BA92005CDE86 /* SBUCacheManager.File.swift in Sources */,
-				9CC2B7342861BA92005CDE86 /* SBULinkClickableTextView.swift in Sources */,
-				9CC2B6FE2861BA92005CDE86 /* SBUObservable.swift in Sources */,
-				9CC2B6E82861BA92005CDE86 /* SBUGlobalCustomParams.swift in Sources */,
-				9CC2B73D2861BA92005CDE86 /* SBUStackView.swift in Sources */,
-				9CC2B6DB2861BA92005CDE86 /* SBULogger.swift in Sources */,
-				9CC2B7172861BA92005CDE86 /* QuotedFileCommonContentView.swift in Sources */,
-				9CC2B7492861BA92005CDE86 /* SBUAlertView.swift in Sources */,
-				9CC2B6E32861BA92005CDE86 /* SBUPendingMessageManager.swift in Sources */,
-				9CC2B7242861BA92005CDE86 /* SBUFileMessageCell.swift in Sources */,
-				9CC2B6CD2861BA92005CDE86 /* UINavigationController+SBUIKit.swift in Sources */,
-				9CC2B7262861BA92005CDE86 /* SBUContentBaseMessageCell.swift in Sources */,
-				9CC2B7612861BA92005CDE86 /* SBUChannelSettingsUserInfoView.swift in Sources */,
+				A927C9D028A2263500687419 /* CGSize+SBUIKit.swift in Sources */,
+				A927C9F628A2263500687419 /* SBUBaseViewController.swift in Sources */,
+				A927C9E328A2263500687419 /* SBUCacheManager.File.swift in Sources */,
+				A927CA3528A2263500687419 /* SBULinkClickableTextView.swift in Sources */,
+				A927C9FF28A2263500687419 /* SBUObservable.swift in Sources */,
+				A927C9E928A2263500687419 /* SBUGlobalCustomParams.swift in Sources */,
+				A927CA3E28A2263500687419 /* SBUStackView.swift in Sources */,
+				A927C9DC28A2263500687419 /* SBULogger.swift in Sources */,
+				A927CA1828A2263500687419 /* QuotedFileCommonContentView.swift in Sources */,
+				A927CA4A28A2263500687419 /* SBUAlertView.swift in Sources */,
+				A927C9E428A2263500687419 /* SBUPendingMessageManager.swift in Sources */,
+				A927CA2528A2263500687419 /* SBUFileMessageCell.swift in Sources */,
+				A927C9CE28A2263500687419 /* UINavigationController+SBUIKit.swift in Sources */,
+				A927CA2728A2263500687419 /* SBUContentBaseMessageCell.swift in Sources */,
+				A927CA6228A2263500687419 /* SBUChannelSettingsUserInfoView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1965,7 +1965,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.2.8;
+				MARKETING_VERSION = 2.2.9;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sendbird.uikit.sample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -1997,7 +1997,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.2.8;
+				MARKETING_VERSION = 2.2.9;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sendbird.uikit.sample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;

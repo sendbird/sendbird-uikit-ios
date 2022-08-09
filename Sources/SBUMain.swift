@@ -14,15 +14,14 @@ public class SBUMain: NSObject {
     // MARK: - Initialize
     /// This function is used to initializes SDK with applicationId.
     /// - Parameter applicationId: Application ID
-    @available(*, unavailable, message: "Using the `initialize(applicationId:migrationStartHandler:completionHandler:)` function, and in the CompletionHandler, please proceed with the following procedure.", renamed: "initialize(applicationId:migrationStartHandler:completionHandler:)") // 2.2.0
+    @available(*, unavailable, message: "Using the `initialize(applicationId:startHandler:migrationHandler:completionHandler:)` function, and in the CompletionHandler, please proceed with the following procedure.", renamed: "initialize(applicationId:startHandler:migrationHandler:completionHandler:)") // 2.2.0
     public static func initialize(applicationId: String) {
-        SBUMain.initialize(applicationId: applicationId) {
-            
-        } completionHandler: { error in
+        SBUMain.initialize(applicationId: applicationId, startHandler: nil, migrationHandler: nil) { error in
             
         }
     }
     
+    @available(*, deprecated, renamed: "initialize(applicationId:startHandler:migrationHandler:completionHandler:)") // 2.2.0
     /// This function is used to initializes SDK with applicationId.
     ///
     /// When the completion handler is called, please proceed with the next operation.
@@ -36,25 +35,56 @@ public class SBUMain: NSObject {
     public static func initialize(applicationId: String,
                                   migrationStartHandler: @escaping (() -> Void),
                                   completionHandler: @escaping ((_ error: SBDError?) -> ())) {
+        self.initialize(
+            applicationId: applicationId,
+            startHandler: nil,
+            migrationHandler: migrationStartHandler,
+            completionHandler: completionHandler
+        )
+    }
+    
+    /// This function is used to initializes SDK with applicationId.
+    ///
+    /// When the completion handler is called, please proceed with the next operation.
+    ///
+    /// - Parameters:
+    ///   - applicationId: Application ID
+    ///   - startHandler: Do something to display the start of the SendbirdChat initialization.
+    ///   - migrationHandler: Do something to display the progress of the DB migration.
+    ///   - completionHandler: Do something to display the completion of the DB migration.
+    ///
+    /// - Since: 2.2.0
+    public static func initialize(applicationId: String,
+                                  startHandler: (() -> Void)? = nil,
+                                  migrationHandler: (() -> Void)? = nil,
+                                  completionHandler: @escaping ((_ error: SBDError?) -> ())) {
         SBUGlobals.ApplicationId = applicationId
         
-        SBDMain.addExtension(SBUConstant.sbdExtensionKeyUIKit, version: SBUMain.shortVersion)
-    
+        DispatchQueue.main.async {
+            startHandler?()
+        }
+        
+        let semaphore = DispatchSemaphore(value: 0)
+        
         SBDMain.initWithApplicationId(
             applicationId,
             useCaching: true,
             migrationStartHandler: {
                 SBULog.info("[Init] Migration start")
-                migrationStartHandler()
+                migrationHandler?()
             }, completionHandler: { error in
                 if let _ = error {
                     SBULog.info("[Init] Failed initialized with id: \(applicationId)")
                 } else {
                     SBULog.info("[Init] Finish initialized with id: \(applicationId)")
                 }
-                
+                semaphore.signal()
                 completionHandler(error)
-            })
+            }
+        )
+        semaphore.wait()
+        
+        SBDMain.addExtension(SBUConstant.sbdExtensionKeyUIKit, version: SBUMain.shortVersion)
     }
     
     
@@ -297,7 +327,7 @@ public class SBUMain: NSObject {
     // MARK: - Common
     /// This function gets UIKit SDK's short version string. (e.g. 1.0.0)
     /// - Since: 2.2.0
-    public static let shortVersion: String = "2.2.8"
+    public static let shortVersion: String = "2.2.9"
     
     /// This function gets UIKit SDK's version string.
     /// - Returns: version string
