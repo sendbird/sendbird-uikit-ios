@@ -89,10 +89,10 @@ public struct DiskCache {
         let filePath = URL(fileURLWithPath: self.pathForKey(key))
         
         do {
-            let data = try Data(contentsOf: filePath)//6
+            let data = try Data(contentsOf: filePath)
             return data as NSData
         } catch {
-            SBULog.error(error.localizedDescription)
+            SBULog.info(error.localizedDescription)
         }
         return nil
     }

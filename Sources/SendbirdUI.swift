@@ -332,17 +332,19 @@ public class SendbirdUI {
     // MARK: - Common
     /// This function gets UIKit SDK's short version string. (e.g. 1.0.0)
     /// - Since: 2.2.0
-    public static let shortVersion: String = "3.1.0" // NEXT_VERSION here
+    public static var shortVersion: String {
+        let bundle = Bundle(identifier: SBUConstant.bundleIdentifier)
+        if let build = bundle?.infoDictionary?[SBUConstant.sbuAppVersion] {
+            return "\(build)"
+        }
+        
+        return "0.0.0"
+    }
     
     /// This function gets UIKit SDK's version string.
     /// - Returns: version string
     public static func versionString() -> String? {
-        let bundle = Bundle(identifier: SBUConstant.bundleIdentifier)
-        if let build = bundle?.infoDictionary?[kCFBundleVersionKey as String] {
-            return "\(build)"
-        }
-        
-        return nil
+        SendbirdUI.shortVersion
     }
 
     

@@ -412,11 +412,12 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
                                        error: SBError?) {
         self.initSucceeded = error == nil
         
+        defer { self.isLoadingNext = false }
+        
         guard self.isValidResponse(messages: messages, error: error),
               let messages = messages else {
             SBULog.warning("Initial message list request is not valid")
             self.delegate?.shouldUpdateLoadingState(false)
-            self.isLoadingNext = false
             return
         }
         

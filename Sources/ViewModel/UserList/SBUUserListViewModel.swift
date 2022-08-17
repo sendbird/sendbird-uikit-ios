@@ -287,6 +287,9 @@ open class SBUUserListViewModel: NSObject  {
                 return
             }
             guard let members = members?.sbu_convertUserList() else { return }
+            SBULog.info("[Response] \(members.count) members")
+            guard !members.isEmpty else { return }
+
             self.userList += members
             self.delegate?.userListViewModel(self, didChangeUsers: self.userList, needsToReload: true)
         })
@@ -324,6 +327,9 @@ open class SBUUserListViewModel: NSObject  {
                 return
             }
             guard let operators = operators?.sbu_convertUserList() else { return }
+            SBULog.info("[Response] \(operators.count) operators")
+            guard !operators.isEmpty else { return }
+
             self.userList += operators
             self.delegate?.userListViewModel(self, didChangeUsers: self.userList, needsToReload: true)
         })
@@ -361,6 +367,9 @@ open class SBUUserListViewModel: NSObject  {
                 return
             }
             guard let members = members?.sbu_convertUserList() else { return }
+            SBULog.info("[Response] \(members.count) members")
+            guard !members.isEmpty else { return }
+
             self.userList += members
             self.delegate?.userListViewModel(self, didChangeUsers: self.userList, needsToReload: true)
         })
@@ -399,6 +408,9 @@ open class SBUUserListViewModel: NSObject  {
                 return
             }
             guard let members = members?.sbu_convertUserList() else { return }
+            SBULog.info("[Response] \(members.count) members")
+            guard !members.isEmpty else { return }
+
             self.userList += members.sbu_updateOperatorStatus(channel: channel)
             self.delegate?.userListViewModel(self, didChangeUsers: self.userList, needsToReload: true)
         })
@@ -437,6 +449,9 @@ open class SBUUserListViewModel: NSObject  {
                 return
             }
             guard let users = users?.sbu_convertUserList() else { return }
+            SBULog.info("[Response] \(users.count) users")
+            guard !users.isEmpty else { return }
+
             self.userList += users
             self.delegate?.userListViewModel(self, didChangeUsers: self.userList, needsToReload: true)
         })
@@ -474,6 +489,9 @@ open class SBUUserListViewModel: NSObject  {
                 return
             }
             guard let participants = participants?.sbu_convertUserList() else { return }
+            SBULog.info("[Response] \(participants.count) participants")
+            guard !participants.isEmpty else { return }
+
             self.userList += participants.sbu_updateOperatorStatus(channel: channel)
             self.delegate?.userListViewModel(self, didChangeUsers: self.userList, needsToReload: true)
         })

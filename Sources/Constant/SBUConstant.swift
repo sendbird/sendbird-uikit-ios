@@ -34,4 +34,6 @@ class SBUConstant {
     static let channelDelegateIdentifier = "\(bundleIdentifier).delegate.channel"
     
     static let connectionDelegateIdentifier = "\(bundleIdentifier).delegate.connection"
+    
+    static let sbuAppVersion = "SBUAppVersion"
 }

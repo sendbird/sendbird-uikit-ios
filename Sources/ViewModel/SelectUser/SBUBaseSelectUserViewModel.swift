@@ -248,8 +248,8 @@ open class SBUBaseSelectUserViewModel: NSObject {
                 return
             }
             guard let users = users?.sbu_convertUserList() else { return }
-            
             SBULog.info("[Response] \(users.count) users")
+            guard !users.isEmpty else { return }
             
             self.appendUsersWithFiltering(users: users)
         })
@@ -347,8 +347,8 @@ open class SBUBaseSelectUserViewModel: NSObject {
             }
         
             guard let members = members?.sbu_convertUserList() else { return }
-            
             SBULog.info("[Response] \(members.count) members")
+            guard !members.isEmpty else { return }
             
             self.userList += members
             self.baseDelegate?.baseSelectedUserViewModel(
@@ -402,8 +402,8 @@ open class SBUBaseSelectUserViewModel: NSObject {
             }
         
             guard let users = users?.sbu_convertUserList() else { return }
-            
             SBULog.info("[Response] \(users.count) participants")
+            guard !users.isEmpty else { return }
             
             self.userList += users.sbu_updateOperatorStatus(channel: channel)
             self.baseDelegate?.baseSelectedUserViewModel(

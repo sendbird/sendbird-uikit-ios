@@ -8,6 +8,10 @@
 		<data>
 		Y8BEPaDGGZLN3DkjDzBd4aM9pC0=
 		</data>
+		<key>Base.xcconfig</key>
+		<data>
+		gbbJqPwzgHpczNsJLVwGrnBladU=
+		</data>
 		<key>Headers/SendbirdUIKit-Swift.h</key>
 		<data>
 		WYshQNCJPy5qe7q/OACxiGbxq8w=
@@ -18,7 +22,7 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		S7sxVEU18fEqMOtFY7v8iN1hiMs=
+		VGDFqYRzLFTxoFbKpLSebmpWOMs=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios.swiftdoc</key>
 		<data>
@@ -26,11 +30,11 @@
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios.swiftinterface</key>
 		<data>
-		yFlBXSAxpCbdDtS/ceRYi6M0r28=
+		nWm4Z3lNYmz8jAHO1L/qsSRPD44=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios.swiftmodule</key>
 		<data>
-		ldewaXtUy9h01hWHFcVrW6qkYD0=
+		rP22mdAmhaR9sPPJuRLnAqecxnU=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -58,6 +62,13 @@
 			0ixJvjgzP01ZYffNsDl3IulPCYomFwnT8iowt+7B0WI=
 			</data>
 		</dict>
+		<key>Base.xcconfig</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			5yJXvTN5heVrGoXkE8ZnMLft8acdrN6d6/koL6bFxds=
+			</data>
+		</dict>
 		<key>Headers/SendbirdUIKit-Swift.h</key>
 		<dict>
 			<key>hash2</key>
@@ -83,14 +94,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			0ZPv/fWm14P6AFBTnqhHFagGHT0TIBw5GJM5EJa3cKg=
+			i2xBtXMsQniFXXMU155KZjtq2xdpxJucECSCuGr064I=
 			</data>
 		</dict>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			5NQQFnhUknyvjHsq0KPvAYLK1aunzRcIV1nw//acCXc=
+			9pJbVy4M/j5plw/+VSUpTrNiAlUo3TCJ8nTXhg6tOWk=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

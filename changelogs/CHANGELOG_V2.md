@@ -1,5 +1,7 @@
 # Changelog V2
 
+> **IMPORTANT:** Refer to [Changelog V2](https://github.com/sendbird/sendbird-uikit-ios/blob/main-v2/CHANGELOG.md) for newer updates since the 2.2.8 release on June 21, 2022
+
 ### v2.2.8 (Jun 21, 2022)
 - Modified some view to be able to change its date format
   - Opened `SBUMessageDateView`

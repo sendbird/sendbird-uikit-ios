@@ -1,5 +1,8 @@
 # Changelog
 
+### v3.1.1 (Aug 17, 2022)
+* Improved stability
+
 ### v3.1.0 (Aug 3, 2022) with Chat SDK **v4.0.8**
 * Support moderation in OpenChannel
     * `SBUModuleSet`

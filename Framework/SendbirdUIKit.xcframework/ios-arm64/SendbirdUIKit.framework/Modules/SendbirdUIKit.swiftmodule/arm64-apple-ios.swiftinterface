@@ -5587,7 +5587,9 @@ public typealias SBUMain = SendbirdUIKit.SendbirdUI
   public static func disconnect(completionHandler: (() -> Swift.Void)?)
   public static func updateUserInfo(nickname: Swift.String?, profileURL: Swift.String?, completionHandler: ((_ error: SendbirdChatSDK.SBError?) -> Swift.Void)?)
   public static func updateUserInfo(nickname: Swift.String?, profileImage: Foundation.Data?, completionHandler: ((_ error: SendbirdChatSDK.SBError?) -> Swift.Void)?)
-  public static let shortVersion: Swift.String
+  public static var shortVersion: Swift.String {
+    get
+  }
   public static func versionString() -> Swift.String?
   public static func registerPush(deviceToken: Foundation.Data, completionHandler: @escaping (_ success: Swift.Bool) -> Swift.Void)
   public static func unregisterPushToken(completionHandler: @escaping (_ success: Swift.Bool) -> Swift.Void)

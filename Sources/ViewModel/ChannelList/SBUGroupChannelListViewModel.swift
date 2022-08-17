@@ -171,6 +171,7 @@ open class SBUGroupChannelListViewModel: NSObject {
             
             guard let channels = channels else { return }
             SBULog.info("[Response] \(channels.count) channels")
+            guard !channels.isEmpty else { return }
             
             self.upsertChannels(channels, needReload: true)
         }

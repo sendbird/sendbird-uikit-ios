@@ -194,7 +194,6 @@ open class SBUBaseChannelViewModel: NSObject {
     
     /// This function resets list and reloads message lists.
     public func reloadMessageList() {
-        self.reset()
         self.loadInitialMessages(
             startingPoint: nil,
             showIndicator: false,

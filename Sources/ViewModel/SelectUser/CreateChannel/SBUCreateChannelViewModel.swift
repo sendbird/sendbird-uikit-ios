@@ -161,6 +161,8 @@ open class SBUCreateChannelViewModel {
                 
                 SBULog.info("[Response] \(users.count) users")
                 
+                guard !users.isEmpty else { return }
+                
                 self.userList += users
                 self.delegate?.createChannelViewModel(self, didChangeUsers: self.userList, needsToReload: true)
             }
