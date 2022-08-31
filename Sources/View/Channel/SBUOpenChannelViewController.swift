@@ -571,43 +571,29 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
     /// - Parameters:
     ///   - indexPath: IndexPath
     /// - Returns: `CGPoint` value
+    @available(*, deprecated, message: "Please use `calculateMessageMenuCGPoint(indexPath:)` in `SBUOpenChannelModule.List`") // 3.1.2
     public func calculatorMenuPoint(indexPath: IndexPath) -> CGPoint {
         guard let listComponent = listComponent else {
             SBULog.error("listComponent is not set up.")
             return .zero
         }
-        
-        return listComponent.calculatorMenuPoint(indexPath: indexPath)
+        return listComponent.calculateMessageMenuCGPoint(indexPath: indexPath)
     }
     
+    @available(*, deprecated, message: "Please use `showMessageContextMenu(for:cell:forRowAt:)` in `SBUOpenChannelModule.List`") // 3.1.2
     public override func showMenuModal(_ cell: UITableViewCell,
                                        indexPath: IndexPath,
                                        message: BaseMessage,
                                        types: [MessageMenuItem]?) {
-        guard let cell = cell as? SBUOpenChannelBaseMessageCell,
-              let types = types else { return }
-        
-        let menuItems = self.createMenuItems(
-            message: message,
-            types: types,
-            isMediaViewOverlaying: isMediaViewOverlaying
-        )
-        
-        let menuPoint = self.calculatorMenuPoint(indexPath: indexPath)
-        SBUMenuView.show(
-            items: menuItems,
-            point: menuPoint,
-            oneTimetheme: isMediaViewOverlaying ? SBUComponentTheme.dark : nil
-        ) {
-            cell.isSelected = false
-        }
+        self.listComponent?.showMessageContextMenu(for: message, cell: cell, forRowAt: indexPath)
     }
     
+    @available(*, deprecated, message: "Please use `showDeleteMessageAlert(on:oneTimeTheme:)` in `SBUOpenChannelModule.List` instead.") // 3.1.2
     public override func showDeleteMessageMenu(message: BaseMessage,
                                                oneTimetheme: SBUComponentTheme? = nil) {
-        super.showDeleteMessageMenu(
-            message: message,
-            oneTimetheme: isMediaViewOverlaying ? SBUComponentTheme.dark : nil
+        self.listComponent?.showDeleteMessageAlert(
+            on: message,
+            oneTimeTheme: isMediaViewOverlaying ? SBUComponentTheme.dark : nil
         )
     }
     

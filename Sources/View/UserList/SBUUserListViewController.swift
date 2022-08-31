@@ -224,11 +224,12 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
     
     /// If you want to use a custom inviteChannelViewController, override it and implement it.
     open func showInviteUser() {
+        let type: ChannelInviteListType = self.userListType == .operators ? .operators : .users
+        
         if let groupChannel = self.channel as? GroupChannel {
-            let type: ChannelInviteListType = self.userListType == .operators ? .operators : .users
             switch type {
             case .users:
-                let inviteUserVC = SBUViewControllerSet.InviteUserViewContoller.init(channel: groupChannel)
+                let inviteUserVC = SBUViewControllerSet.InviteUserViewController.init(channel: groupChannel)
                 self.navigationController?.pushViewController(inviteUserVC, animated: true)
             case .operators:
                 let registerOperatorVC = SBUViewControllerSet.GroupChannelRegisterOperatorViewController.init(channel: groupChannel)
@@ -237,8 +238,14 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
                 break
             }
         } else if let openChannel = self.channel as? OpenChannel {
-            let registerOperatorVC = SBUViewControllerSet.OpenChannelRegisterOperatorViewController.init(channel: openChannel)
-            self.navigationController?.pushViewController(registerOperatorVC, animated: true)
+            switch type {
+            case .operators:
+                let registerOperatorVC = SBUViewControllerSet.OpenChannelRegisterOperatorViewController.init(channel: openChannel)
+                self.navigationController?.pushViewController(registerOperatorVC, animated: true)
+            default:
+                break
+            }
+            
         }
     }
     

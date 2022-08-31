@@ -734,7 +734,7 @@ extension SBUOpenChannelViewModel: OpenChannelDelegate {
 
         super.channel(channel, didReceive: message)
         
-        let isScrollNearBottom = self.dataSource?.baseChannelViewModel(self, isScrollNearBottomInChannel: self.channel)
+        let isScrollNearBottom = self.dataSource?.baseChannelViewModel(self, isScrollNearBottomInChannel: self.channel) ?? true
         if (self.hasNext() == true || isScrollNearBottom == false)
         {
             self.messageCache?.add(messages: [message])
@@ -747,6 +747,13 @@ extension SBUOpenChannelViewModel: OpenChannelDelegate {
         }
         
         if self.hasNext() == false {
+            self.delegate?.baseChannelViewModel(
+                self,
+                shouldUpdateScrollInMessageList: [message],
+                forContext: nil,
+                keepsScroll: !isScrollNearBottom
+            )
+            
             self.upsertMessagesInList(messages: [message], needReload: true)
         }
     }

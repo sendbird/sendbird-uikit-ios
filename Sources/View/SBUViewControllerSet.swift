@@ -16,7 +16,7 @@ public class SBUViewControllerSet {
     public static var OpenChannelViewController: SBUOpenChannelViewController.Type = SBUOpenChannelViewController.self
     
     public static var CreateChannelViewController: SBUCreateChannelViewController.Type = SBUCreateChannelViewController.self
-    public static var InviteUserViewContoller: SBUInviteUserViewController.Type = SBUInviteUserViewController.self
+    public static var InviteUserViewController: SBUInviteUserViewController.Type = SBUInviteUserViewController.self
     
     public static var GroupChannelRegisterOperatorViewController: SBURegisterOperatorViewController.Type = SBURegisterOperatorViewController.self
     public static var OpenChannelRegisterOperatorViewController: SBURegisterOperatorViewController.Type = SBURegisterOperatorViewController.self
@@ -46,4 +46,7 @@ extension SBUViewControllerSet {
     
     @available(*, unavailable, message: "This property had been seperated to `GroupModerationsViewController` and `OpenModerationsViewController`") // 3.1.0
     public static var ModerationsViewController: SBUModerationsViewController.Type = SBUModerationsViewController.self
+    
+    @available(*, unavailable, message: "This property had renamed `InviteUserViewController`") // 3.1.2
+    public static var InviteUserViewContoller: SBUInviteUserViewController.Type = SBUInviteUserViewController.self
 }

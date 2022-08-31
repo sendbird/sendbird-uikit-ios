@@ -1,5 +1,36 @@
 # Changelog
 
+### v3.1.2 (Aug 31, 2022) with Chat SDK **v4.0.9**
+* Added message menu interfaces and events to `BaseChannelModuleList`
+  * List
+    * `showMessageMenu(on:forRowAt:)`
+    * `showFailedMessageMenu(on:)`
+    * `showDeleteMessageAlert(on:oneTimeTheme:)`
+    * `showMessageMenuSheet(for:cell:)`
+    * `showMessageContextMenu(for:cell:forRowAt:)`
+    * `createMessageMenuItems(for:) -> [SBUMenuItem]`
+    * `createCopyMenuItem(for:) -> SBUMenuItem`
+    * `createDeleteMenuItem(for:) -> SBUMenuItem`
+    * `createEditMenuItem(for:) -> SBUMenuItem`
+    * `createSaveMenuItem(for:) -> SBUMenuItem`
+    * `createReplyMenuItem(for:) -> SBUMenuItem`
+  * Delegate
+    * `baseChannelModule(_:didTapRetryFailedMessage:)`
+    * `baseChannelModule(_:didTapDeleteFailedMessage:)`
+    * `baseChannelModule(_:didTapCopyMessage:)`
+    * `baseChannelModule(_:didTapDeleteMessage:)`
+    * `baseChannelModule(_:didTapEditMessage:)`
+    * `baseChannelModule(_:didTapSaveMessage:)`
+    * `baseChannelModule(_:didTapReplyMessage:)`
+    * `baseChannelModule(_:didReactToMessage:withEmoji:selected:)`
+    * `baseChannelModule(_:didTapMoreEmojisOnMessage:)`
+    * `baseChannelModule(_:didDismissMenuForCell:)`
+  * DataSource
+    * `baseChannelModule(_:parentViewControllerDisplayMenuItems:) -> UIViewController?`
+* Improved stability
+  * Improved logic in `SBUUserListViewController`
+  * Fixed typo in `SBUViewControllerSet`
+
 ### v3.1.1 (Aug 17, 2022)
 * Improved stability
 
@@ -47,6 +78,7 @@
   * `ChannelSettings_Notifications_Mentiones_Only`
 * Modified `loadAllEmojis(completionHandler:)` function access level to `public` in `SBUEmojiManager` class
 * Improved stability
+
 
 ### v3.0.0 (Jul 12, 2022) with Chat SDK **v4.0.5**
 * UIKit v3.0.0 officially version

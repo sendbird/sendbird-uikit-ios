@@ -233,7 +233,8 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     
     // MARK: - Message: Menu
     
-    /// This function calculates the point at which to draw the menu.
+    @available(*, deprecated, message: "Please use `calculateMessageMenuCGPoint(indexPath:position:)` in `SBUGroupChannelModule.List`") // 3.1.2
+    /// Calculates the `CGPoint` value that indicates where to draw the message menu in the group channel screen.
     /// - Parameters:
     ///   - indexPath: IndexPath
     ///   - position: Message position
@@ -248,26 +249,20 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
             return .zero
         }
         
-        return listComponent.calculatorMenuPoint(indexPath: indexPath, position: position)
+        return listComponent.calculateMessageMenuCGPoint(indexPath: indexPath, position: position)
     }
     
+    @available(*, deprecated, message: "Please use `showMessageContextMenu(message:cell:forRowAt:)` in `SBUGroupChannelModule.List`") // 3.1.2
+    open override func showMenuModal(_ cell: UITableViewCell, indexPath: IndexPath, message: BaseMessage) {
+        self.listComponent?.showMessageContextMenu(for: message, cell: cell, forRowAt: indexPath)
+    }
+    
+    @available(*, deprecated, message: "Please use `showMessageContextMenu(message:cell:forRowAt:)` in `SBUGroupChannelModule.List`") // 3.1.2
     public override func showMenuModal(_ cell: UITableViewCell,
                                        indexPath: IndexPath,
                                        message: BaseMessage,
                                        types: [MessageMenuItem]?) {
-        guard let cell = cell as? SBUBaseMessageCell,
-              let types = types else { return }
-        
-        let menuItems = self.createMenuItems(
-            message: message,
-            types: types,
-            isMediaViewOverlaying: false
-        )
-
-        let menuPoint = self.calculatorMenuPoint(indexPath: indexPath, position: cell.position)
-        SBUMenuView.show(items: menuItems, point: menuPoint) {
-            cell.isSelected = false
-        }
+        self.listComponent?.showMessageContextMenu(for: message, cell: cell, forRowAt: indexPath)
     }
     
     open override func showChannelSettings() {

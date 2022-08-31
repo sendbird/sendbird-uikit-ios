@@ -195,13 +195,13 @@ extension SBUUtils {
     // To dismiss presented views which should be dismissed on view disappear.
     // - `SBUEmojiListViewController`
     // - `SBUReactionsViewController`
-    // - `SBUMenuViewController`
+    // - `SBUMenuSheetViewController`
     static func dismissPresentedOnDisappear(presentedViewController: UIViewController?) {
         guard let presented = presentedViewController else { return }
         
         if presented is SBUEmojiListViewController ||
             presented is SBUReactionsViewController ||
-            presented is SBUMenuViewController {
+            presented is SBUMenuSheetViewController {
             presented.dismiss(animated: false, completion: nil)
         }
     }

@@ -59,6 +59,7 @@ extension InviteUserCustomManager {
     }
     
     func userListCustom() {
+        // In order to use the API, the option must be turned on in the dashboard.
         let params = ApplicationUserListQueryParams()
         params.limit = 20
         let userListQuery = SendbirdChat.createApplicationUserListQuery(params: params)

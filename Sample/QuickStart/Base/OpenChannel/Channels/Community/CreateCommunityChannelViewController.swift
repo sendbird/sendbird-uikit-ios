@@ -224,6 +224,7 @@ open class CreateCommunityChannelViewController: UIViewController, UINavigationC
         params.operatorUserIds = [SBUGlobals.currentUser?.userId ?? ""]
         params.customType = customType
         
+        // In order to use the API, the option must be turned on in the dashboard.
         OpenChannel.createChannel(params: params) { [weak self] channel, error in
                 guard let self = self else { return }
                 self.rightBarButton.isEnabled = true

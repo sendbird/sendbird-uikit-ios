@@ -9,7 +9,7 @@
 import UIKit
 
 extension UIApplication {
-    open var currentWindow: UIWindow? {
+    public var currentWindow: UIWindow? {
         if #available(iOS 13.0, *) {
             let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene
             let window = windowScene?.windows.first { $0.isKeyWindow }

@@ -36,6 +36,8 @@ class ChannelManager: NSObject {
         params.order = .latestLastMessage
         params.limit = 10
         params.includeEmptyChannel = true
+        
+        // In order to use the API, the option must be turned on in the dashboard.
         let channelListQuery = GroupChannel.createMyGroupChannelListQuery(params: params)
         channelListQuery.loadNextPage { channels, error in
             guard let channel = channels?.first else {

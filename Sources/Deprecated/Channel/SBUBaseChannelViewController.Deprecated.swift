@@ -266,16 +266,6 @@ extension SBUBaseChannelViewController {
         self.scrollToBottom(animated: true)
     }
     
-    
-    /// Deletes a message with message object.
-    /// - Parameter message: `BaseMessage` based class object
-    /// - Since: 1.0.9
-    @available(*, deprecated, renamed: "showDeleteMessageMenu(message:)")
-    public func deleteMessage(message: BaseMessage) {
-        self.showDeleteMessageMenu(message: message)
-    }
-    
-    
     // MARK: Common
     @available(*, deprecated, message: "This function has been moved to `SBUBaseChannelModule.List` and replaced to `checkSameDayAsNextMessage(currentIndex:fullMessageList:)`.", renamed: "listComponent.checkSameDayAsNextMessage(currentIndex:fullMessageList:)")
     public func checkSameDayAsNextMessage(currentIndex: Int) -> Bool {

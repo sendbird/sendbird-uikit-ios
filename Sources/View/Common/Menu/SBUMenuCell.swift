@@ -14,8 +14,8 @@ class SBUMenuCell: UITableViewCell {
     @IBOutlet weak var iconImageView: UIImageView!
     @IBOutlet weak var lineView: UIView!
 
-    var type: MessageMenuItem? = nil
     var isEnabled: Bool = true
+    var tapHandler: (() -> Void)?
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -27,51 +27,17 @@ class SBUMenuCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
-
-    func configure(type: MessageMenuItem) {
-
-        self.type = type
+    
+    func configure(with item: SBUMenuItem) {
         let theme = SBUTheme.componentTheme
-
+        
         self.titleLabel.font = theme.menuTitleFont
         self.titleLabel.textColor = self.isEnabled
-            ? theme.actionSheetTextColor
-            : theme.actionSheetDisabledColor
-        let iconTintColor = self.isEnabled
-            ? theme.actionSheetItemColor
-            : theme.actionSheetDisabledColor
-
-        switch type {
-        case .save:
-            self.titleLabel?.text = SBUStringSet.Save
-            self.iconImageView.image = SBUIconSetType.iconDownload.image(
-                with: iconTintColor,
-                to: SBUIconSetType.Metric.iconActionSheetItem
-            )
-        case .copy:
-            self.titleLabel?.text = SBUStringSet.Copy
-            self.iconImageView.image = SBUIconSetType.iconCopy.image(
-                with: iconTintColor,
-                to: SBUIconSetType.Metric.iconActionSheetItem
-            )
-        case .edit:
-            self.titleLabel?.text = SBUStringSet.Edit
-            self.iconImageView.image = SBUIconSetType.iconEdit.image(
-                with: iconTintColor,
-                to: SBUIconSetType.Metric.iconActionSheetItem
-            )
-        case .delete:
-            self.titleLabel?.text = SBUStringSet.Delete
-            self.iconImageView.image = SBUIconSetType.iconDelete.image(
-                with: iconTintColor,
-                to: SBUIconSetType.Metric.iconActionSheetItem
-            )
-        case .reply:
-            self.titleLabel?.text = SBUStringSet.Reply
-            self.iconImageView.image = SBUIconSetType.iconReply.image(
-                with: iconTintColor,
-                to: SBUIconSetType.Metric.iconActionSheetItem
-            )
-        }
+        ? theme.actionSheetTextColor
+        : theme.actionSheetDisabledColor
+        
+        self.titleLabel.text = item.title
+        self.iconImageView.image = item.image
+        self.tapHandler = item.completionHandler
     }
 }

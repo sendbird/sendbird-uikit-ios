@@ -8,18 +8,19 @@
 
 import UIKit
 
-typealias SBUMenunHandler = () -> Void
+public typealias SBUMenunHandler = () -> Void
 
-class SBUMenuItem: SBUCommonItem {
+public class SBUMenuItem: SBUCommonItem {
     var completionHandler: SBUMenunHandler?
-    var isEnabled: Bool = true {
+    
+    public var isEnabled: Bool = true {
         didSet {
             guard isEnabled == false else { return }
             completionHandler = nil
         }
     }
     
-    init(title: String? = nil,
+    public init(title: String? = nil,
          color: UIColor? = SBUColorSet.onlight01,
          image: UIImage? = nil,
          tintColor: UIColor? = nil,

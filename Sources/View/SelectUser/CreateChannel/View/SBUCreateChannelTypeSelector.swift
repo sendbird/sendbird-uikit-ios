@@ -229,10 +229,7 @@ open class SBUCreateChannelTypeSelector: SBUView, SBUCreateChannelTypeSelectorPr
     @objc open func onClickCreateBroadcastChannel() {
         self.delegate?.didSelectCreateBroadcastChannel()
     }
-}
-
-
-extension SBUCreateChannelTypeSelector {
+    
     open func createButton(type: ChannelCreationType) -> SBULayoutableButton {
         let button = SBULayoutableButton(gap: 4, labelAlignment: .under)
         let tintColor = theme.channelTypeSelectorItemTintColor

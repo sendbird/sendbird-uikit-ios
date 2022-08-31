@@ -1,5 +1,5 @@
 //
-//  SBUMenuViewController.swift
+//  SBUMenuSheetViewController.swift
 //  SendbirdUIKit
 //
 //  Created by Harry Kim on 2020/04/26.
@@ -9,7 +9,7 @@
 import UIKit
 import SendbirdChatSDK
 
-class SBUMenuViewController: SBUBaseViewController, UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+public class SBUMenuSheetViewController: SBUBaseViewController, UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     /// Emoji reaction bar (in Message menu)
     lazy var collectionView = UICollectionView(
@@ -20,7 +20,7 @@ class SBUMenuViewController: SBUBaseViewController, UITableViewDelegate, UITable
     let layout: UICollectionViewFlowLayout = SBUCollectionViewFlowLayout()
     var tableView = UITableView()
     let message: BaseMessage?
-    let itemTypes: [MessageMenuItem]
+    let items: [SBUMenuItem]
     let emojiList: [Emoji] = SBUEmojiManager.getAllEmojis()
     var useReaction: Bool
 
@@ -30,35 +30,34 @@ class SBUMenuViewController: SBUBaseViewController, UITableViewDelegate, UITable
     var theme: SBUComponentTheme
 
     // MARK: - Action
-    var tapHandlerToMenu: ((MessageMenuItem) -> Void)? = nil
-    var emojiTapHandler: ((_ emojiKey: String, _ setSelect: Bool) -> Void)? = nil
-    var moreEmojiTapHandler: (() -> Void)? = nil
-    var dismissHandler: (() -> Void)? = nil
+    public var emojiTapHandler: ((_ emojiKey: String, _ setSelect: Bool) -> Void)? = nil
+    public var moreEmojiTapHandler: (() -> Void)? = nil
+    public var dismissHandler: (() -> Void)? = nil
 
     // MARK: - Lifecycle
     @available(*, unavailable, renamed: "SBUMenuViewController.init()")
     required public init?(coder: NSCoder) {
         self.message = nil
-        self.itemTypes = []
+        self.items = []
         self.useReaction = false
         super.init(coder: coder)
     }
 
     /// Use this function when initialize.
-    /// - Parameter itemTypes: Menu item types
-    init(message: BaseMessage, itemTypes: [MessageMenuItem], useReaction: Bool) {
+    /// - Parameter items: Menu item types
+    public init(message: BaseMessage, items: [SBUMenuItem], useReaction: Bool) {
         self.message = message
-        self.itemTypes = itemTypes
+        self.items = items
         self.useReaction = useReaction
         super.init(nibName: nil, bundle: nil)
     }
 
-    override func viewDidLayoutSubviews() {
+    public override func viewDidLayoutSubviews() {
         self.updateLayouts()
         super.viewDidLayoutSubviews()
     }
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         if let bottomSheet = self.presentationController as? SBUBottomSheetController {
 
@@ -69,14 +68,14 @@ class SBUMenuViewController: SBUBaseViewController, UITableViewDelegate, UITable
         }
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
+    public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.dismissHandler?()
     }
     
     
     // MARK: - Sendbird UIKit Life cycle
-    override func setupViews() {
+    public override func setupViews() {
         self.view.addSubview(self.tableView)
 
         // tableView
@@ -114,7 +113,7 @@ class SBUMenuViewController: SBUBaseViewController, UITableViewDelegate, UITable
         }
     }
 
-    override func setupLayouts() {
+    public override func setupLayouts() {
         self.tableView.setConstraint(from: self.view, left: 0, right: 0, top: 0, bottom: 0)
         self.tableView.layoutIfNeeded()
 
@@ -129,7 +128,7 @@ class SBUMenuViewController: SBUBaseViewController, UITableViewDelegate, UITable
         }
     }
     
-    override func updateLayouts() {
+    public override func updateLayouts() {
         super.viewDidLayoutSubviews()
         let itemCount: CGFloat = CGFloat(
             emojiList.count < maxEmojiOneLine
@@ -148,56 +147,53 @@ class SBUMenuViewController: SBUBaseViewController, UITableViewDelegate, UITable
     }
     
 
-    override func setupStyles() {
+    public override func setupStyles() {
         self.view.backgroundColor = theme.backgroundColor
     }
     
 
     // MARK: - UITableView relations
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.itemTypes.count
+    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.items.count
     }
 
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = self.tableView.dequeueReusableCell(
             withIdentifier: SBUMenuCell.sbu_className,
             for: indexPath
             ) as? SBUMenuCell else { return .init() }
         
-        let item = self.itemTypes[indexPath.row]
-        switch item {
-        case .delete:
-            cell.isEnabled = message?.threadInfo.replyCount == 0
-        case .reply:
-            cell.isEnabled = message?.parentMessage == nil
-        default: break
-        }
-        cell.configure(type: self.itemTypes[indexPath.row])
+        let item = self.items[indexPath.row]
+        cell.isEnabled = item.isEnabled
+        cell.configure(with: item)
         return cell
     }
 
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let cell = tableView.cellForRow(at: indexPath) as? SBUMenuCell {
-            if cell.isEnabled == false {
+            if cell.isEnabled {
+                self.dismiss(animated: true) {
+                    cell.tapHandler?()
+                }
+            } else {
                 tableView.deselectRow(at: indexPath, animated: true)
                 return
             }
-        }
-        self.dismiss(animated: true) {
-            self.tapHandlerToMenu?(self.itemTypes[indexPath.row])
+        } else {
+            tableView.deselectRow(at: indexPath, animated: true)
         }
     }
 
     // MARK: - UICollectionView relations
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
+    public func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
 
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return emojiList.count < 6 ? emojiList.count : 6
     }
 
-    func collectionView(_ collectionView: UICollectionView,
+    public func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         guard let cell = collectionView.dequeueReusableCell(
@@ -227,7 +223,7 @@ class SBUMenuViewController: SBUBaseViewController, UITableViewDelegate, UITable
         return cell
     }
 
-    func collectionView(_ collectionView: UICollectionView,
+    public func collectionView(_ collectionView: UICollectionView,
                         didSelectItemAt indexPath: IndexPath) {
         
         if indexPath.row == 5, self.emojiList.count > 6 {

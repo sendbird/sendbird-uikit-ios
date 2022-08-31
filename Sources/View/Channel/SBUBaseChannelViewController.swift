@@ -279,9 +279,10 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     ///   - cell: Message cell
     ///   - message: Message object
     /// - Since: 3.0.0
+    @available(*, deprecated, message: "Please use `showMessageMenuSheet(for:cell:)` in `SBUBaseChannelModule.List` instead.") // 3.1.2
     public func showMenuViewController(_ cell: UITableViewCell, message: BaseMessage) {
-        let types = self.createMessageMenuTypes(cell, message: message)
-        self.showMenuViewController(cell, message: message, types: types)
+        guard let listComponent = self.baseListComponent else { return }
+        listComponent.showMessageMenuSheet(for: message, cell: cell)
     }
     
     // TODO: UItableViewCell -> SBUBaseMessageCell
@@ -291,64 +292,14 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     ///   - message: Message object
     ///   - types: Type array of menu items to use
     /// - Since: 1.2.5
+    @available(*, unavailable, message: "Please use `showMessageMenuSheet(for:cell:)` and `createMessageMenuItems(for:)` in `SBUBaseChannelModule.List` instead.") // 3.1.2
     public func showMenuViewController(
         _ cell: UITableViewCell,
         message: BaseMessage,
         types: [MessageMenuItem]?
     ) {
-        guard let types = types else { return }
-        
-        let useReaction = SBUEmojiManager.useReaction(channel: self.baseViewModel?.channel)
-        
-        let menuVC = SBUMenuViewController(message: message, itemTypes: types, useReaction: useReaction)
-        menuVC.modalPresentationStyle = .custom
-        menuVC.transitioningDelegate = self
-        self.present(menuVC, animated: true)
-        
-        menuVC.tapHandlerToMenu = { [weak self] item in
-            guard let self = self else { return }
-            switch item {
-            case .copy:
-                guard let userMessage = message as? UserMessage else { return }
-                let pasteboard = UIPasteboard.general
-                pasteboard.string = userMessage.message
-                
-            case .delete:
-                self.showDeleteMessageMenu(message: message)
-                
-            case .edit:
-                guard let userMessage = message as? UserMessage else { return }
-                if self.baseViewModel?.channel?.isFrozen == false ||
-                    self.baseViewModel?.isOperator == true {
-                    self.setMessageInputViewMode(.edit, message: userMessage)
-                } else {
-                    SBULog.info("This channel is frozen")
-                }
-                
-            case .save:
-                guard let fileMessage = message as? FileMessage else { return }
-                SBUDownloadManager.save(fileMessage: fileMessage, parent: self)
-                
-            case .reply:
-                self.setMessageInputViewMode(.quoteReply, message: message)
-            }
-        }
-        
-        menuVC.dismissHandler = {
-            cell.isSelected = false
-        }
-        
-        menuVC.emojiTapHandler = { [weak self] emojiKey, setSelect in
-            guard let self = self else { return }
-            self.baseViewModel?.setReaction(message: message, emojiKey: emojiKey, didSelect: setSelect)
-        }
-        
-        menuVC.moreEmojiTapHandler = { [weak self] in
-            DispatchQueue.main.async {
-                guard let self = self else { return }
-                self.showEmojiListModal(message: message)
-            }
-        }
+        guard let listComponent = self.baseListComponent else { return }
+        listComponent.showMessageMenuSheet(for: message, cell: cell)
     }
     
     // TODO: UItableViewCell -> SBUBaseMessageCell
@@ -361,13 +312,13 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     ///   - indexPath: IndexPath
     ///   - message: Message object
     /// - Since: 3.0.0
-    public func showMenuModal(
+    @available(*, deprecated, message: "Please use  `showMessageContextMenu(for:cell:forRowAt:)` in `SBUBaseChannelModule.List` instead.") // 3.1.2
+    open func showMenuModal(
         _ cell: UITableViewCell,
         indexPath: IndexPath,
         message: BaseMessage
     ) {
-        let types = self.createMessageMenuTypes(cell, message: message)
-        self.showMenuModal(cell, indexPath: indexPath, message: message, types: types)
+        self.baseListComponent?.showMessageContextMenu(for: message, cell: cell, forRowAt: indexPath)
     }
     
     // TODO: UItableViewCell -> SBUBaseMessageCell
@@ -378,18 +329,20 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     ///   - message: Message object
     ///   - types: Type array of menu items to use
     /// - Since: 1.2.5
+    @available(*, deprecated, message: "Please use  `showMessageContextMenu(for:cell:forRowAt:)` in `SBUBaseChannelModule.List` instead.") // 3.1.2
     public func showMenuModal(
         _ cell: UITableViewCell,
         indexPath: IndexPath,
         message: BaseMessage,
         types: [MessageMenuItem]?
-    ) { }
+    ) { self.baseListComponent?.showMessageContextMenu(for: message, cell: cell, forRowAt: indexPath) }
     
     /// This function shows cell's menu: retry, delete, cancel.
     ///
     /// This is used when selected failed message.
     /// - Parameter message: Message object
     /// - Since: 2.1.12
+    @available(*, deprecated, message: "Please use `showFailedMessageMenu(on:)` in `SBUBaseChannelModule.List`") // 3.1.2
     public func showFailedMessageMenu(message: BaseMessage) {
         let retryItem = SBUActionSheetItem(
             title: SBUStringSet.Retry,
@@ -423,32 +376,14 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     ///   - message: message object to delete
     ///   - oneTimetheme: One-time theme
     /// - Since: 3.0.0
+    @available(*, deprecated, message: "Please use `showDeleteMessageAlert(on:oneTimeTheme:)` in `SBUBaseChannelModule.List`") // 3.1.2
     public func showDeleteMessageMenu(message: BaseMessage,
                                       oneTimetheme: SBUComponentTheme? = nil) {
-        let deleteButton = SBUAlertButtonItem(
-            title: SBUStringSet.Delete,
-            color: self.theme.alertRemoveColor
-        ) { [weak self] info in
-            guard let self = self else { return }
-            SBULog.info("[Request] Delete message: \(message.description)")
-            
-            self.baseViewModel?.deleteMessage(message: message)
-        }
-        
-        let cancelButton = SBUAlertButtonItem(title: SBUStringSet.Cancel) {_ in }
-        
-        SBUAlertView.show(
-            title: SBUStringSet.Alert_Delete,
-            oneTimetheme: oneTimetheme,
-            confirmButtonItem: deleteButton,
-            cancelButtonItem: cancelButton
-        )
+        self.baseListComponent?.showDeleteMessageAlert(on: message, oneTimeTheme: oneTimetheme)
     }
     
     /// Shows channel settings view controller such as `SBUChannelSettingsViewController`
-    open func showChannelSettings() {
-        
-    }
+    open func showChannelSettings() { }
     
     /// This function presents `SBUEmojiListViewController`
     /// - Parameter message: `BaseMessage` object
@@ -474,135 +409,10 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     ///   - cell: Sendbird's messageCell object
     ///   - message: `BaseMessage` object
     /// - Returns: message menu type array
+    @available(*, unavailable, message: "Please use `SBUMenuItem` and  `createMessageMenuItems(for:)` in `SBUBaseChannelModule.List` instead.") // 3.1.2
     public func createMessageMenuTypes(_ cell: UITableViewCell,
                                        message: BaseMessage) -> [MessageMenuItem]? {
-        var isGroupChannel = false
-        
-        switch cell {
-        case is SBUBaseMessageCell:  isGroupChannel = true
-        case is SBUOpenChannelBaseMessageCell:  isGroupChannel = false
-        default:
-            SBULog.error("Not supported cell type.")
-            return nil
-        }
-        
-        let isCurrentUser = message.sender?.userId == SBUGlobals.currentUser?.userId
-        
-        var types: [MessageMenuItem] = []
-        let replyTypeToUse = SBUGlobals.replyType != .none
-        
-        if message is UserMessage {
-            types = isCurrentUser
-            ? ((replyTypeToUse && isGroupChannel) ? [.copy, .edit, .delete, .reply] : [.copy, .edit, .delete])
-            : ((replyTypeToUse && isGroupChannel) ? [.copy, .reply] : [.copy])
-        } else if message is FileMessage {
-            types = isCurrentUser
-            ? ((replyTypeToUse && isGroupChannel) ? [.save, .delete, .reply] : [.save, .delete])
-            : ((replyTypeToUse && isGroupChannel) ? [.save, .reply] : [.save])
-        } else {
-            // Unknown Message
-            guard !isCurrentUser else { return nil }
-            types = [.delete]
-        }
-        
-        return types
-    }
-    
-    internal func createMenuItems(message: BaseMessage,
-                                  types: [MessageMenuItem],
-                                  isMediaViewOverlaying: Bool) -> [SBUMenuItem] {
-        let items: [SBUMenuItem] = types.map {
-            switch $0 {
-            case .copy:
-                return SBUMenuItem(
-                    title: SBUStringSet.Copy,
-                    color: self.theme.menuTextColor,
-                    image: SBUIconSetType.iconCopy.image(
-                        with: SBUTheme.componentTheme.alertButtonColor,
-                        to: SBUIconSetType.Metric.iconActionSheetItem
-                    )
-                ) {
-                    guard let userMessage = message as? UserMessage else { return }
-                    
-                    let pasteboard = UIPasteboard.general
-                    pasteboard.string = userMessage.message
-                }
-            case .edit:
-                return SBUMenuItem(
-                    title: SBUStringSet.Edit,
-                    color: self.theme.menuTextColor,
-                    image: SBUIconSetType.iconEdit.image(
-                        with: SBUTheme.componentTheme.alertButtonColor,
-                        to: SBUIconSetType.Metric.iconActionSheetItem
-                    )
-                ) { [weak self] in
-                    guard let self = self else { return }
-                    guard let channel = self.baseViewModel?.channel else { return }
-                    guard let userMessage = message as? UserMessage else { return }
-                    
-                    if channel.isFrozen == false ||
-                        self.baseViewModel?.isOperator == true {
-                        self.setMessageInputViewMode(.edit, message: userMessage)
-                    } else {
-                        SBULog.info("This channel is frozen")
-                    }
-                }
-            case .delete:
-                let item = SBUMenuItem(
-                    title: SBUStringSet.Delete,
-                    color: message.threadInfo.replyCount == 0
-                    ? self.theme.menuTextColor
-                    : SBUTheme.componentTheme.actionSheetDisabledColor,
-                    image: SBUIconSetType.iconDelete.image(
-                        with: message.threadInfo.replyCount == 0
-                        ? SBUTheme.componentTheme.alertButtonColor
-                        : SBUTheme.componentTheme.actionSheetDisabledColor,
-                        to: SBUIconSetType.Metric.iconActionSheetItem
-                    )
-                ) { [weak self] in
-                    guard let self = self else { return }
-                    guard message.threadInfo.replyCount == 0 else { return }
-                    self.showDeleteMessageMenu(message: message)
-                }
-                item.isEnabled = message.threadInfo.replyCount == 0
-                return item
-            case .save:
-                return SBUMenuItem(
-                    title: SBUStringSet.Save,
-                    color: self.theme.menuTextColor,
-                    image: SBUIconSetType.iconDownload.image(
-                        with: SBUTheme.componentTheme.alertButtonColor,
-                        to: SBUIconSetType.Metric.iconActionSheetItem
-                    )
-                ) { [weak self] in
-                    guard let self = self else { return }
-                    guard let fileMessage = message as? FileMessage else { return }
-                    
-                    SBUDownloadManager.save(fileMessage: fileMessage, parent: self)
-                }
-            case .reply:
-                let item = SBUMenuItem(
-                    title: SBUStringSet.Reply,
-                    color: message.parentMessage == nil
-                    ? self.theme.menuTextColor
-                    : SBUTheme.componentTheme.actionSheetDisabledColor,
-                    image: SBUIconSetType.iconReply.image(
-                        with: message.parentMessage == nil
-                        ? SBUTheme.componentTheme.alertButtonColor
-                        : SBUTheme.componentTheme.actionSheetDisabledColor,
-                        to: SBUIconSetType.Metric.iconActionSheetItem
-                    )
-                ) { [weak self] in
-                    guard let self = self else { return }
-                    guard message.parentMessage == nil else { return }
-                    self.setMessageInputViewMode(.quoteReply, message: message)
-                }
-                item.isEnabled = message.parentMessage == nil
-                return item
-            }
-        }
-        
-        return items
+        return nil
     }
     
     // MARK: - TableView
@@ -904,25 +714,68 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     }
     
     open func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didLongTapMessage message: BaseMessage, forRowAt indexPath: IndexPath) {
-        self.dismissKeyboard()
-        switch message.sendingStatus {
-        case .none, .canceled, .pending:
-            break
-        case .failed:
-            self.showFailedMessageMenu(message: message)
-        default:
-            // Succeeded, Unknown
-            guard let cell = listComponent.tableView.cellForRow(at: indexPath) else {
-                SBULog.error("Couldn't find cell for row at \(indexPath)")
-                return
-            }
-            cell.isSelected = true
-            if SBUEmojiManager.useReaction(channel: self.baseViewModel?.channel) {
-                self.showMenuViewController(cell, message: message)
-            } else {
-                self.showMenuModal(cell, indexPath: indexPath, message: message)
-            }
+        self.view.endEditing(true)
+        listComponent.showMessageMenu(on: message, forRowAt: indexPath)
+    }
+    
+    open func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didTapSaveMessage message: BaseMessage) {
+        guard let fileMessage = message as? FileMessage else { return }
+        SBUDownloadManager.save(fileMessage: fileMessage, parent: self)
+    }
+    
+    open func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didTapCopyMessage message: BaseMessage) {
+        guard let userMessage = message as? UserMessage else { return }
+        let pasteboard = UIPasteboard.general
+        pasteboard.string = userMessage.message
+    }
+    
+    open func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didTapEditMessage message: BaseMessage) {
+        guard let channel = self.baseViewModel?.channel else { return }
+        guard let userMessage = message as? UserMessage else { return }
+        
+        if channel.isFrozen == false ||
+            self.baseViewModel?.isOperator == true {
+            self.setMessageInputViewMode(.edit, message: userMessage)
+        } else {
+            SBULog.info("This channel is frozen")
         }
+    }
+    
+    open func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didTapDeleteMessage message: BaseMessage) {
+        guard message.threadInfo.replyCount == 0 else { return }
+        self.baseViewModel?.deleteMessage(message: message)
+    }
+    
+    open func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didTapReplyMessage message: BaseMessage) {
+        guard message.parentMessage == nil else { return }
+        self.setMessageInputViewMode(.quoteReply, message: message)
+    }
+    
+    open func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didDismissMenuForCell cell: UITableViewCell) {
+        cell.isSelected = false
+    }
+    
+    open func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didTapMoreEmojisOnMessage message: BaseMessage) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            self.showEmojiListModal(message: message)
+        }
+    }
+    
+    open func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didReactToMessage message: BaseMessage, withEmoji key: String, selected: Bool) {
+        self.baseViewModel?.setReaction(
+            message: message,
+            emojiKey: key,
+            didSelect: selected
+        )
+    }
+    
+    open func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didTapRetryFailedMessage failedMessage: BaseMessage) {
+        self.baseViewModel?.resendMessage(failedMessage: failedMessage)
+    }
+    
+    open func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didTapDeleteFailedMessage failedMessage: BaseMessage) {
+        self.baseViewModel?.deleteResendableMessage(failedMessage, needReload: true)
     }
     
     open func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didTapUserProfile user: SBUUser) {
@@ -1014,7 +867,11 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         _ listComponent: SBUBaseChannelModule.List,
         startingPointIn tableView: UITableView
     ) -> Int64? {
-        self.baseViewModel?.getStartingPoint()
+        return self.baseViewModel?.getStartingPoint()
+    }
+    
+    open func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, parentViewControllerDisplayMenuItems menuItems: [SBUMenuItem]) -> UIViewController? {
+        return self
     }
     
     

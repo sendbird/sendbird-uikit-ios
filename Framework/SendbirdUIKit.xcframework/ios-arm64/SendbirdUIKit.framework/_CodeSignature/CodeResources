@@ -10,11 +10,11 @@
 		</data>
 		<key>Base.xcconfig</key>
 		<data>
-		gbbJqPwzgHpczNsJLVwGrnBladU=
+		MFgV3pU2+uVogUU3ZrdOj5pGIFs=
 		</data>
 		<key>Headers/SendbirdUIKit-Swift.h</key>
 		<data>
-		WYshQNCJPy5qe7q/OACxiGbxq8w=
+		VqAaEfqBrGOG85HpA17/NKBaz68=
 		</data>
 		<key>Headers/SendbirdUIKit.h</key>
 		<data>
@@ -22,19 +22,19 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		VGDFqYRzLFTxoFbKpLSebmpWOMs=
+		t5ylraD1uoFUuH4HEJmCIgf0e50=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios.swiftdoc</key>
 		<data>
-		XB03an1jwQhZn6KaYYsxCUeh6CM=
+		ZmTboHGw3+gdhmnB3Epl8VtKgg8=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios.swiftinterface</key>
 		<data>
-		nWm4Z3lNYmz8jAHO1L/qsSRPD44=
+		fj4qIjNWwVmQm2/RBmn0hiyVGZo=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios.swiftmodule</key>
 		<data>
-		rP22mdAmhaR9sPPJuRLnAqecxnU=
+		c+UuJ56zLHFrEJ66SJ8yCAUEFNE=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -66,14 +66,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			5yJXvTN5heVrGoXkE8ZnMLft8acdrN6d6/koL6bFxds=
+			UCV/zH9ZBF/glMpyPjRuTht49DoPQYg3mkjcU8/eo1A=
 			</data>
 		</dict>
 		<key>Headers/SendbirdUIKit-Swift.h</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			r22O1mTZURsPaZprsEhIzpTfA45NXjTb9Gxl+DcTHkE=
+			aedFvbmYLPWj4140AimRJxJayQgd20n9+Wjtyga4zLU=
 			</data>
 		</dict>
 		<key>Headers/SendbirdUIKit.h</key>
@@ -87,21 +87,21 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			XBYm5nnja3ckTkCtvhKwPto1GYTX3Od+J8UK1ZbINhY=
+			ZwBR1+LNI7B1jsexAy64wR2qFxMGWKPpay7S+GLHuYk=
 			</data>
 		</dict>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			i2xBtXMsQniFXXMU155KZjtq2xdpxJucECSCuGr064I=
+			jkV299wPoH5gGHeENYgdkLZ3gin8UForxGMVIGlKNB4=
 			</data>
 		</dict>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			9pJbVy4M/j5plw/+VSUpTrNiAlUo3TCJ8nTXhg6tOWk=
+			9/ta3ay7DN+G4yhhRU834NSGjve4SLp/X9FW+M8DGVQ=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

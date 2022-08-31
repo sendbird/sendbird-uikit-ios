@@ -35,6 +35,7 @@ public protocol SBUBaseChannelModuleListDelegate: SBUCommonDelegate {
     )
     
     /// Called when the message cell was long tapped in the `listComponent`.
+    /// - Note: As a default, it shows menu items for `message`. Please refer to ``SBUBaseChannelModule/List/showMessageMenu(on:forRowAt:)``
     /// - Parameters:
     ///    - listComponent: `SBUBaseChannelModule.List` object.
     ///    - message: The message that was long tapped.
@@ -75,6 +76,91 @@ public protocol SBUBaseChannelModuleListDelegate: SBUCommonDelegate {
     /// Called when the retry button was selected from the `listComponent`.
     /// - Parameter listComponent: `SBUBaseChannelModule.List` object.
     func baseChannelModuleDidSelectRetry(_ listComponent: SBUBaseChannelModule.List)
+    
+    // MARK: Menu
+    
+    /// Ccalled when a user selects the *retry* menu item of a `failedMessage` in the `listComponent`
+    /// - Parameters:
+    ///    - listComponent: A ``SBUBaseChannelModule/List`` object.
+    ///    - failedMessage: The failed message that the selected menu item belongs to.
+    func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didTapRetryFailedMessage failedMessage: BaseMessage)
+    
+    /// Called when a user selects the *delete* menu item of a `failedMessage` in the `listComponent`.
+    /// - Parameters:
+    ///    - listComponent: A ``SBUBaseChannelModule/List`` object.
+    ///    - failedMessage: The failed message that the selected menu item belongs to.
+    func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didTapDeleteFailedMessage failedMessage: BaseMessage)
+    
+    /// Called when a user selects the *copy* menu item of a `message` in the `listComponent`.
+    /// - Parameters:
+    ///    - listComponent: A ``SBUBaseChannelModule/List`` object.
+    ///    - message: The message that the selected menu item belongs to.
+    func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didTapCopyMessage message: BaseMessage)
+ 
+    /// Called when a user selects the *delete* menu item of a `message` in the `listComponent`.
+    /// - Parameters:
+    ///    - listComponent: A ``SBUBaseChannelModule/List`` object.
+    ///    - message: The message that the selected menu item belongs to.
+    func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didTapDeleteMessage message: BaseMessage)
+    
+    /// Called when a user selects the *edit* menu item of a `message` in the `listComponent`.
+    /// - Parameters:
+    ///    - listComponent: A ``SBUBaseChannelModule/List`` object.
+    ///    - message: The message that the selected menu item belongs to.
+    func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didTapEditMessage message: BaseMessage)
+    
+    /// Called when a user selects the *save* menu item of a `message` in the `listComponent`.
+    /// - Parameters:
+    ///    - listComponent: A ``SBUBaseChannelModule/List`` object.
+    ///    - message: The message that the selected menu item belongs to.
+    func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didTapSaveMessage message: BaseMessage)
+    
+    /// Called when a user selects the *reply* menu item of a `message` in the `listComponent`.
+    /// - Parameters:
+    ///    - listComponent: A ``SBUBaseChannelModule/List`` object.
+    ///    - message: The message that the selected menu item belongs to.
+    func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didTapReplyMessage message: BaseMessage)
+    
+    /// Called when a user *reacts* to a `message` in the `listComponent` with an emoji.
+    /// - Parameters:
+    ///    - listComponent: An object of ``SBUBaseChannelModule/List``.
+    ///    - message: The message that the user reacted with an emoji to.
+    ///    - key: The key value of the emoji.
+    ///    - selected: Determines whether the emoji has already been used for the message.
+    func baseChannelModule(
+        _ listComponent: SBUBaseChannelModule.List,
+        didReactToMessage message: BaseMessage,
+        withEmoji key: String,
+        selected: Bool
+    )
+    
+    /// Called when the user selects the *more emoji* button on a message in the `listComponent`.
+    /// - Parameters:
+    ///    - listComponent: An object of ``SBUBaseChannelModule/List``.
+    ///    - message: The message that the user wants to react with more emojis.
+    func baseChannelModule(
+        _ listComponent: SBUBaseChannelModule.List,
+        didTapMoreEmojisOnMessage message: BaseMessage
+    )
+    
+    /// Called when the ``SBUMenuSheetViewController`` instance is dismissed.
+    /// - Parameters:
+    ///    - listComponent: An object of ``SBUBaseChannelModule/List``.
+    ///    - cell: The `UITableViewCell` object that includes the message displayed through ``SBUMenuSheetViewController``.
+    func baseChannelModule(
+        _ listComponent: SBUBaseChannelModule.List,
+        didDismissMenuForCell cell: UITableViewCell
+    )
+}
+
+extension SBUBaseChannelModuleListDelegate {
+    func baseChannelModule(
+        _ listComponent: SBUBaseChannelModule.List,
+        didLongTapMessage message: BaseMessage,
+        forRowAt indexPath: IndexPath
+    ) {
+        listComponent.showMessageMenu(on: message, forRowAt: indexPath)
+    }
 }
 
 /// Methods to get data source for the list component.
@@ -120,6 +206,15 @@ public protocol SBUBaseChannelModuleListDataSource: AnyObject {
     ///    - tableView: `UITableView` object from list component.
     /// - Returns: The starting point.
     func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, startingPointIn tableView: UITableView) -> Int64?
+    
+    /// A data source function that returns the parent view controller, which displays the `menuItems` through ``SBUMenuSheetViewController``.
+    /// - Parameters:
+    ///    - listComponent: An object of ``SBUBaseChannelModule/List``.
+    ///    - menuItems: The objects of ``SBUMenuItem`` that are used in ``SBUMenuSheetViewController``.
+    func baseChannelModule(
+        _ listComponent: SBUBaseChannelModule.List,
+        parentViewControllerDisplayMenuItems menuItems: [SBUMenuItem]
+    ) -> UIViewController?
 }
 
 
@@ -390,6 +485,282 @@ extension SBUBaseChannelModule {
         }
         
         // MARK: - Menu
+        /// Displays the menu of the message located on the given `indexPath` value.
+        /// It internally decides whether to show a *context menu*, a menu for *a failed message*, or a *sheet menu*.
+        /// - Parameters:
+        ///    - message: The `BaseMessage` object that corresponds to the message of the menu to show.
+        ///    - indexPath: The value of the `UITableViewCell` where the `message` is located.
+        open func showMessageMenu(on message: BaseMessage, forRowAt indexPath: IndexPath) {
+            switch message.sendingStatus {
+            case .none, .canceled, .pending:
+                break
+            case .failed:
+                // shows failed message menu
+                showFailedMessageMenu(on: message)
+            default:
+                // succeed, unknown
+                guard let cell = self.tableView.cellForRow(at: indexPath) else {
+                    SBULog.error("Couldn't find cell for row at \(indexPath)")
+                    return
+                }
+                cell.isSelected = true
+                if SBUEmojiManager.useReaction(channel: self.baseChannel) {
+                    // shows menu sheet view controller
+                    self.showMessageMenuSheet(for: message, cell: cell)
+                } else {
+                    self.showMessageContextMenu(for: message, cell: cell, forRowAt: indexPath)
+                }
+            }
+        }
+        
+        /// Displays the menu of a message that failed to send.
+        /// - NOTE: The event delegate methods, ``SBUBaseChannelModuleListDelegate/baseChannelModule(_:didTapRetryFailedMessage:)`` and ``SBUBaseChannelModuleListDelegate/baseChannelModule(_:didTapDeleteFailedMessage:)`` , are called when the items in the menu are tapped.
+        /// - Parameter message: The `BaseMessage` object that corresponds to the message of the menu to show.
+        open func showFailedMessageMenu(on message: BaseMessage) {
+            let retryItem = SBUActionSheetItem(
+                title: SBUStringSet.Retry,
+                color: self.theme?.menuItemTintColor
+            ) { [weak self, message] in
+                guard let self = self else { return }
+                self.baseDelegate?.baseChannelModule(self, didTapRetryFailedMessage: message)
+                self.baseDelegate?.baseChannelModuleDidTapScrollToButton(self, animated: true)
+            }
+            let deleteItem = SBUActionSheetItem(
+                title: SBUStringSet.Delete,
+                color: self.theme?.deleteItemColor
+            ) { [weak self, message] in
+                guard let self = self else { return }
+                self.baseDelegate?.baseChannelModule(self, didTapDeleteFailedMessage: message)
+            }
+            let cancelItem = SBUActionSheetItem(
+                title: SBUStringSet.Cancel,
+                color: self.theme?.cancelItemColor,
+                completionHandler: nil
+            )
+            
+            SBUActionSheet.show(
+                items: [retryItem, deleteItem],
+                cancelItem: cancelItem
+            )
+        }
+        
+        /// Displays an alert for deleting a message.
+        /// - NOTE: The event delegate method, ``SBUBaseChannelModuleListDelegate/baseChannelModule(_:didTapDeleteMessage:)``, is called when an item in the menu is tapped.
+        /// - Parameters:
+        ///    - message: The message that is to be deleted.
+        ///    - oneTimeTheme: The theme applied to the alert. If there's no set theme, the default theme in Sendbird UIKit is used.
+        open func showDeleteMessageAlert(on message: BaseMessage, oneTimeTheme: SBUComponentTheme? = nil) {
+            let deleteButton = SBUAlertButtonItem(
+                title: SBUStringSet.Delete,
+                color: self.theme?.alertRemoveColor
+            ) { [weak self, message] info in
+                guard let self = self else { return }
+                SBULog.info("[Request] Delete message: \(message.description)")
+                self.baseDelegate?.baseChannelModule(self, didTapDeleteMessage: message)
+            }
+            
+            let cancelButton = SBUAlertButtonItem(title: SBUStringSet.Cancel) { _ in }
+            
+            SBUAlertView.show(
+                title: SBUStringSet.Alert_Delete,
+                oneTimetheme: oneTimeTheme,
+                confirmButtonItem: deleteButton,
+                cancelButtonItem: cancelButton
+            )
+        }
+        
+        /// Calls the ``SBUMenuSheetViewController`` instance in ``UIViewController``, which is returned after ``SBUBaseChannelModuleListDataSource/baseChannelModule(_:parentViewControllerDisplayMenuItems:)`` is called.
+        /// - NOTE: To learn about the event delegates in this instance, refer to the event delegate methods in ``SBUBaseChannelModuleListDelegate``.
+        /// - Parameters:
+        ///    - message: The `BaseMessage` object  that refers to the message of the menu to display.
+        ///    - cell: The `UITableViewCell` object that shows the message.
+        open func showMessageMenuSheet(for message: BaseMessage, cell: UITableViewCell) {
+            let messageMenuItems = self.createMessageMenuItems(for: message)
+            guard !messageMenuItems.isEmpty else { return }
+            
+            guard let parentViewController = self.baseDataSource?.baseChannelModule(
+                self,
+                parentViewControllerDisplayMenuItems: messageMenuItems
+            ) else { return }
+            
+            let useReaction = SBUEmojiManager.useReaction(channel: self.baseChannel)
+            let menuSheetVC = SBUMenuSheetViewController(message: message, items: messageMenuItems, useReaction: useReaction)
+            menuSheetVC.modalPresentationStyle = .custom
+            menuSheetVC.transitioningDelegate = parentViewController as? UIViewControllerTransitioningDelegate
+            parentViewController.present(menuSheetVC, animated: true)
+            menuSheetVC.dismissHandler = { [weak self, cell] in
+                guard let self = self else { return }
+                self.baseDelegate?.baseChannelModule(self, didDismissMenuForCell: cell)
+            }
+            menuSheetVC.emojiTapHandler = { [weak self, message] emojiKey, setSelect in
+                guard let self = self else { return }
+                self.baseDelegate?.baseChannelModule(
+                    self,
+                    didReactToMessage: message,
+                    withEmoji: emojiKey,
+                    selected: setSelect
+                )
+            }
+            menuSheetVC.moreEmojiTapHandler = { [weak self, message] in
+                guard let self = self else { return }
+                self.baseDelegate?.baseChannelModule(
+                    self,
+                    didTapMoreEmojisOnMessage: message
+                )
+            }
+        }
+        
+        /// Displays ``SBUMenuView`` in the form of a context menu.
+        /// - NOTE: To learn about the event delegates in ``SBUMenuView``, refer to the even delegate method of each menu item in ``SBUBaseChannelModuleListDelegate``.
+        /// - Parameters:
+        ///    - message: The `BaseMessage` object  that refers to the message of the menu to display.
+        ///    - cell: The `UITableViewCell` object that shows the message.
+        ///    - indexPath: The `IndexPath` value of the `cell`.
+        open func showMessageContextMenu(for message: BaseMessage, cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+            let messageMenuItems = self.createMessageMenuItems(for: message)
+            guard !messageMenuItems.isEmpty else { return }
+            
+            let rowRect = self.tableView.rectForRow(at: indexPath)
+            let rowRectInSuperview = self.tableView.convert(
+                rowRect,
+                to: UIApplication.shared.currentWindow
+            )
+            SBUMenuView.show(items: messageMenuItems, point: rowRectInSuperview.origin) {
+                cell.isSelected = false
+            }
+        }
+        
+        /// Creates an array of ``SBUMenuItem`` objects for a `message`.
+        /// - Parameter message: The `BaseMessage` object  that refers to the message of the menu to display.
+        /// - Returns: The array of ``SBUMenuItem`` objects for a `message`
+        open func createMessageMenuItems(for message: BaseMessage) -> [SBUMenuItem] {
+            let isSentByMe = message.sender?.userId == SBUGlobals.currentUser?.userId
+            var items: [SBUMenuItem] = []
+            
+            switch message {
+            case is UserMessage:
+                // UserMessage: copy, (edit), (delete)
+                let copy = self.createCopyMenuItem(for: message)
+                items.append(copy)
+                if isSentByMe {
+                    let edit = self.createEditMenuItem(for: message)
+                    let delete = self.createDeleteMenuItem(for: message)
+                    items.append(edit)
+                    items.append(delete)
+                }
+            case is FileMessage:
+                // FileMessage: save, (delete)
+                let save = self.createSaveMenuItem(for: message)
+                items.append(save)
+                if isSentByMe {
+                    let delete = self.createDeleteMenuItem(for: message)
+                    items.append(delete)
+                }
+            default:
+                // UnknownMessage: (delete)
+                if !isSentByMe {
+                    let delete = self.createDeleteMenuItem(for: message)
+                    items.append(delete)
+                }
+            }
+            return items
+        }
+        
+        /// Creates a ``SBUMenuItem`` object that allows users to *copy* the `message`.
+        /// - Parameter message: The `BaseMessage` object  that corresponds to the message of the menu item to show.
+        /// - Returns: The ``SBUMenuItem`` object for a `message`
+        open func createCopyMenuItem(for message: BaseMessage) -> SBUMenuItem {
+            let menuItem = SBUMenuItem(
+                title: SBUStringSet.Copy,
+                color: theme?.menuTextColor,
+                image: SBUIconSetType.iconCopy.image(
+                    with: SBUTheme.componentTheme.alertButtonColor,
+                    to: SBUIconSetType.Metric.iconActionSheetItem
+                )
+            ) { [weak self, message] in
+                guard let self = self else { return }
+                self.baseDelegate?.baseChannelModule(self, didTapCopyMessage: message)
+            }
+            return menuItem
+        }
+        
+        /// Creates a ``SBUMenuItem`` object that allows users to *delete* the `message`.
+        /// - Parameter message: The `BaseMessage` object  that corresponds to the message of the menu item to show.
+        /// - Returns: The ``SBUMenuItem`` object for a `message`
+        open func createDeleteMenuItem(for message: BaseMessage) -> SBUMenuItem {
+            let menuItem = SBUMenuItem(
+                title: SBUStringSet.Delete,
+                color: theme?.menuTextColor,
+                image: SBUIconSetType.iconDelete.image(
+                    with: SBUTheme.componentTheme.alertButtonColor,
+                    to: SBUIconSetType.Metric.iconActionSheetItem
+                )
+            ) { [weak self, message] in
+                guard let self = self else { return }
+                self.showDeleteMessageAlert(on: message)
+            }
+            menuItem.isEnabled = message.threadInfo.replyCount == 0
+            return menuItem
+        }
+        
+        /// Creates a ``SBUMenuItem`` object that allows users to *edit* the `message`.
+        /// - Parameter message: The `BaseMessage` object  that corresponds to the message of the menu item to show.
+        /// - Returns: The ``SBUMenuItem`` object for a `message`
+        open func createEditMenuItem(for message: BaseMessage) -> SBUMenuItem {
+            let menuItem = SBUMenuItem(
+                title: SBUStringSet.Edit,
+                color: theme?.menuTextColor,
+                image: SBUIconSetType.iconEdit.image(
+                    with: SBUTheme.componentTheme.alertButtonColor,
+                    to: SBUIconSetType.Metric.iconActionSheetItem
+                )
+            ) { [weak self, message] in
+                guard let self = self else { return }
+                self.baseDelegate?.baseChannelModule(self, didTapEditMessage: message)
+            }
+            return menuItem
+        }
+        
+        /// Creates a ``SBUMenuItem`` object that allows users to *save* the `message` when it's a *file message*.
+        /// - Parameter message: The `BaseMessage` object  that corresponds to the message of the menu item to show.
+        /// - Returns: The ``SBUMenuItem`` object for a `message`
+        open func createSaveMenuItem(for message: BaseMessage) -> SBUMenuItem {
+            let menuItem = SBUMenuItem(
+                title: SBUStringSet.Save,
+                color: theme?.menuTextColor,
+                image: SBUIconSetType.iconDownload.image(
+                    with: SBUTheme.componentTheme.alertButtonColor,
+                    to: SBUIconSetType.Metric.iconActionSheetItem
+                )
+            ) { [weak self, message] in
+                guard let self = self else { return }
+                self.baseDelegate?.baseChannelModule(self, didTapSaveMessage: message)
+            }
+            return menuItem
+        }
+        
+        /// Creates a ``SBUMenuItem`` object that allows users to *reply* to a `message`.
+        /// - Parameter message: The `BaseMessage` object  that corresponds to the message of the menu item to show.
+        /// - Returns: The ``SBUMenuItem`` object for a `message`
+        open func createReplyMenuItem(for message: BaseMessage) -> SBUMenuItem {
+            let menuItem = SBUMenuItem(
+                title: SBUStringSet.Reply,
+                color: message.parentMessage == nil
+                ? self.theme?.menuTextColor
+                : SBUTheme.componentTheme.actionSheetDisabledColor,
+                image: SBUIconSetType.iconReply.image(
+                    with: message.parentMessage == nil
+                    ? SBUTheme.componentTheme.alertButtonColor
+                    : SBUTheme.componentTheme.actionSheetDisabledColor,
+                    to: SBUIconSetType.Metric.iconActionSheetItem
+                )
+            ) { [weak self, message] in
+                guard let self = self else { return }
+                self.baseDelegate?.baseChannelModule(self, didTapReplyMessage: message)
+            }
+            menuItem.isEnabled = message.parentMessage == nil
+            return menuItem
+        }
         
         
         // MARK: - Actions

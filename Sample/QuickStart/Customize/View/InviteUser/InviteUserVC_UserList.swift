@@ -66,6 +66,7 @@ extension InviteUserVC_UserList {
 /// This function gets dummy users for testing.
 extension InviteUserVC_UserList {
     public func loadDummyUsers(completionHandler: @escaping () -> Void) {
+        // In order to use the API, the option must be turned on in the dashboard.
         let params = ApplicationUserListQueryParams()
         params.limit = 100
         let userListQuery = SendbirdChat.createApplicationUserListQuery(params: params)

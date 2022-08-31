@@ -218,11 +218,18 @@ extension SBUOpenChannelModule {
         
         
         // MARK: - Menu
-        /// Calculates the point at which to draw the menu.
+        @available(*, deprecated, renamed: "calculateMessageMenuCGPoint(indexPath:)")
+        public func calculatorMenuPoint(
+            indexPath: IndexPath
+        ) -> CGPoint {
+            self.calculateMessageMenuCGPoint(indexPath: indexPath)
+        }
+        
+        /// Calculates the `CGPoint` value that indicates where to draw the message menu in the open channel screen.
         /// - Parameters:
         ///   - indexPath: The index path of the selected message cell
         /// - Returns: `CGPoint` value
-        public func calculatorMenuPoint(indexPath: IndexPath) -> CGPoint {
+        open func calculateMessageMenuCGPoint(indexPath: IndexPath) -> CGPoint {
             let rowRect = self.tableView.rectForRow(at: indexPath)
             let rowRectInSuperview = self.tableView.convert(
                 rowRect,
@@ -230,6 +237,25 @@ extension SBUOpenChannelModule {
             )
             
             return rowRectInSuperview.origin
+        }
+        
+        open override func createMessageMenuItems(for message: BaseMessage) -> [SBUMenuItem] {
+            return super.createMessageMenuItems(for: message)
+        }
+        
+        open override func showMessageContextMenu(for message: BaseMessage, cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+            let messageMenuItems = self.createMessageMenuItems(for: message)
+            guard !messageMenuItems.isEmpty else { return }
+            
+            guard let cell = cell as? SBUOpenChannelBaseMessageCell else { return }
+            let menuPoint = self.calculateMessageMenuCGPoint(indexPath: indexPath)
+            SBUMenuView.show(
+                items: messageMenuItems,
+                point: menuPoint,
+                oneTimetheme: self.isOverlaid ? SBUComponentTheme.dark : nil
+            ) {
+                cell.isSelected = false
+            }
         }
         
         

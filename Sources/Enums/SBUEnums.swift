@@ -6,11 +6,11 @@
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
 //
 import SendbirdChatSDK
-
+import UIKit
 
 /// This is an enumeration for channel type.
 /// - Since: 3.0.0
-@objc public enum ChannelCreationType: Int {
+public enum ChannelCreationType: Int {
     case open
     case group
     case supergroup
@@ -19,7 +19,7 @@ import SendbirdChatSDK
 
 /// This is an enumeration used to handling action and display by type in `ChannelSettingsViewController` and `ChannelSettingCell`.
 /// - Since: 1.2.0
-@objc public enum ChannelSettingItemType: Int {
+public enum ChannelSettingItemType: Int {
     case moderations
     case notifications
     case members
@@ -56,7 +56,7 @@ import SendbirdChatSDK
 
 /// This is an enumeration used to handling action and display by type in `OpenChannelSettingsViewController` and `ChannelSettingCell`.
 /// - Since: 2.0.0
-@objc public enum OpenChannelSettingItemType: Int {
+public enum OpenChannelSettingItemType: Int {
     case participants
     case delete
     
@@ -70,7 +70,7 @@ import SendbirdChatSDK
 
 /// This is an enumeration used to handling action and display by type in `MederationsViewController` and `ModerationCell`.
 /// - Since: 1.2.0
-@objc public enum ModerationItemType: Int {
+public enum ModerationItemType: Int {
     case operators
     case mutedMembers
     case bannedUsers
@@ -132,7 +132,7 @@ public enum UserListType: Hashable {
 
 /// This is an enumeration used in `UserListViewController` to load user list by type.
 /// - Since: 1.2.0
-@objc public enum ChannelUserListType: Int {
+public enum ChannelUserListType: Int {
     case none
     case members
     case operators
@@ -151,7 +151,7 @@ public enum UserListType: Hashable {
 
 /// This is an enumeration used in `InviteUserViewController` to load user list by type.
 /// - Since: 1.2.0
-@objc public enum ChannelInviteListType: Int {
+public enum ChannelInviteListType: Int {
     case none
     case users
     case operators
@@ -165,7 +165,7 @@ public enum ChannelPushSettingsSubType: Int, CaseIterable {
 }
 
 /// This is an enumeration used to display `EmptyView` by type.
-@objc public enum EmptyViewType: Int {
+public enum EmptyViewType: Int {
     case none
     case noChannels
     case noMessages
@@ -237,6 +237,7 @@ public enum ChannelPushSettingsSubType: Int, CaseIterable {
 }
 
 /// This is an enumeration used to the message edit type.
+@available(*, deprecated, message: "Please refer to `setupMenuItems()` function in `SBUBaseChannelModule.List` or `SBUMenuSheetViewController`") // 3.1.2
 @objc public enum MessageEditItem: Int {
     case copy
     case edit
@@ -245,7 +246,8 @@ public enum ChannelPushSettingsSubType: Int, CaseIterable {
 
 /// This is an enumeration for cell's menu item type.
 /// - Since: 1.2.5
-@objc public enum MessageMenuItem: Int {
+@available(*, deprecated, message: "Please refer to `setupMenuItems()` function in `SBUBaseChannelModule.List` or `SBUMenuSheetViewController`") // 3.1.2
+public enum MessageMenuItem {
     case save
     case copy
     case edit

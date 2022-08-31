@@ -482,7 +482,7 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
         
         self.delegate?.baseChannelViewModel(
             self,
-            shouldUpdateScrollInMessageList: messageList,
+            shouldUpdateScrollInMessageList: messages,
             forContext: context,
             keepsScroll: true
         )

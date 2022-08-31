@@ -196,12 +196,20 @@ extension SBUGroupChannelModule {
         // MARK: - EmptyView
         
         // MARK: - Menu
-        /// Calculates the point at which to draw the menu.
+        @available(*, deprecated, renamed: "calculateMessageMenuCGPoint(indexPath:position:)")
+        public func calculatorMenuPoint(
+            indexPath: IndexPath,
+            position: MessagePosition
+        ) -> CGPoint {
+            self.calculateMessageMenuCGPoint(indexPath: indexPath, position: position)
+        }
+        
+        /// Calculates the `CGPoint` value that indicates where to draw the message menu in the group channel screen.
         /// - Parameters:
         ///   - indexPath: The index path of the selected message cell
         ///   - position: Message position
         /// - Returns: `CGPoint` value
-        public func calculatorMenuPoint(
+        open func calculateMessageMenuCGPoint(
             indexPath: IndexPath,
             position: MessagePosition
         ) -> CGPoint {
@@ -215,6 +223,32 @@ extension SBUGroupChannelModule {
             let menuPoint = CGPoint(x: originX, y: rowRectInSuperview.origin.y)
             
             return menuPoint
+        }
+        
+        open override func createMessageMenuItems(for message: BaseMessage) -> [SBUMenuItem] {
+            var items = super.createMessageMenuItems(for: message)
+            
+            switch message {
+            case is UserMessage, is FileMessage:
+                if SBUGlobals.replyType != .none {
+                    let reply = self.createReplyMenuItem(for: message)
+                    items.append(reply)
+                }
+            default: break
+            }
+            
+            return items
+        }
+        
+        open override func showMessageContextMenu(for message: BaseMessage, cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+            let messageMenuItems = self.createMessageMenuItems(for: message)
+            guard !messageMenuItems.isEmpty else { return }
+            
+            guard let cell = cell as? SBUBaseMessageCell else { return }
+            let menuPoint = self.calculateMessageMenuCGPoint(indexPath: indexPath, position: cell.position)
+            SBUMenuView.show(items: messageMenuItems, point: menuPoint) {
+                cell.isSelected = false
+            }
         }
         
         // MARK: - Actions
