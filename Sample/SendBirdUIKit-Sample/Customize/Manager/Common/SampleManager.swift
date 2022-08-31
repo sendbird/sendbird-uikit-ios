@@ -32,6 +32,7 @@ class AlertManager: NSObject {
 // This function handles channel object to be used in the sample app.
 class ChannelManager: NSObject {
     static func getSampleChannel(completionHandler: @escaping (_ channel: SBDGroupChannel) -> Void) {
+        // In order to use the API, the option must be turned on in the dashboard.
         let channelListQuery = SBDGroupChannel.createMyGroupChannelListQuery()
         channelListQuery?.order = .latestLastMessage
         channelListQuery?.limit = 10

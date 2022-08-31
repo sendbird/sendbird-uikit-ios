@@ -65,6 +65,7 @@ extension InviteUserVC_UserList {
 /// This function gets dummy users for testing.
 extension InviteUserVC_UserList {
     public func loadDummyUsers(completionHandler: @escaping () -> Void) {
+        // In order to use the API, the option must be turned on in the dashboard.
         let userListQuery = SBDMain.createApplicationUserListQuery()
         userListQuery?.limit = 100
         userListQuery?.loadNextPage(completionHandler: { users, error in

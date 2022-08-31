@@ -206,6 +206,7 @@ open class CreateCommunityChannelViewController: UIViewController, UINavigationC
         self.rightBarButton.isEnabled = false
         SBULoading.start()
         
+        // In order to use the API, the option must be turned on in the dashboard.
         SBDOpenChannel.createChannel(
             withName: channelName,
             channelUrl: nil,

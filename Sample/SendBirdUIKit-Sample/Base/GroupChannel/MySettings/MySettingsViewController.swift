@@ -230,6 +230,7 @@ open class MySettingsViewController: UIViewController, UINavigationControllerDel
                 nickname.trimmingCharacters(in: .whitespacesAndNewlines).count > 0
                 else { return }
             
+            // In order to use the API, the option must be turned on in the dashboard.
             SBUMain.updateUserInfo(nickname: nickname, profileUrl: nil) { (error) in
                 guard error == nil, let user = SBUGlobals.CurrentUser else { return }
                 UserDefaults.saveNickname(nickname)
@@ -404,6 +405,7 @@ extension MySettingsViewController: UIImagePickerControllerDelegate {
             
             self?.userInfoView.coverImage.image = originalImage
             
+            // In order to use the API, the option must be turned on in the dashboard.
             SBUMain.updateUserInfo(
                 nickname: nil,
                 profileImage: originalImage.jpegData(compressionQuality: 0.5)

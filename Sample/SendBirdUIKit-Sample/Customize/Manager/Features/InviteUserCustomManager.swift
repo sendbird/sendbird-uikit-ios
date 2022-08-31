@@ -58,6 +58,7 @@ extension InviteUserCustomManager {
     }
     
     func userListCustom() {
+        // In order to use the API, the option must be turned on in the dashboard.
         let userListQuery = SBDMain.createApplicationUserListQuery()
         userListQuery?.limit = 20
         userListQuery?.loadNextPage(completionHandler: { users, error in

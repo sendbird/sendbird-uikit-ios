@@ -74,6 +74,7 @@ extension ChannelListCustomManager {
     }
     
     func listQueryCustom() {
+        // In order to use the API, the option must be turned on in the dashboard.
         // You can customize the channel list using your own GroupChannelListQuery.
         // For all query options, refer to the `SBDGroupChannelListQuery` class.
         let listQuery = SBDGroupChannel.createMyGroupChannelListQuery()
