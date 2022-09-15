@@ -1,5 +1,8 @@
 # Changelog
 
+### v3.1.3 (Sep 15, 2022) with Chat SDK **v4.0.12**
+* Improved stability
+
 ### v3.1.2 (Aug 31, 2022) with Chat SDK **v4.0.9**
 * Added message menu interfaces and events to `BaseChannelModuleList`
   * List
