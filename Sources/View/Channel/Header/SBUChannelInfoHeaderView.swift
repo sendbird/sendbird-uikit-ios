@@ -248,14 +248,16 @@ public class SBUChannelInfoHeaderView: SBUView {
                 if !groupChannel.members.isEmpty {
                     self.coverImage.setImage(withUsers: groupChannel.members)
                 } else {
-                    self.coverImage.setPlaceholderImage(
+                    self.coverImage.setPlaceholder(
+                        type: .iconUser,
                         iconSize: .init(width: coverImageSize,height: coverImageSize)
                     )
                 }
             }
         } else {
-            self.coverImage.setPlaceholderImage(
-                iconSize: .init(width: coverImageSize, height: coverImageSize)
+            self.coverImage.setPlaceholder(
+                type: .iconUser,
+                iconSize: .init(width: coverImageSize,height: coverImageSize)
             )
         }
     }

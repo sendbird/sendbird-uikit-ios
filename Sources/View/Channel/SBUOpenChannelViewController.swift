@@ -47,11 +47,11 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
     private var headerHeightConstraint: NSLayoutConstraint!
     
     // for top content area in portrait mode
-    private var listTopMarginView = UIView()
+    private var listTopMarginView = SBUMarginView()
     private var listTopMarginConstraints: [NSLayoutConstraint] = []
     
     // for right content area in landscape mode
-    private var listLeftMarginView = UIView()
+    private var listLeftMarginView = SBUMarginView()
     private var listLeftMarginConstraints: [NSLayoutConstraint] = []
     
     // constant
@@ -231,6 +231,7 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
         mediaComponent?
             .configure(delegate: self, theme: theme)
         
+        // This view is above `mediaView`
         self.view.addSubview(self.listTopMarginView)
         self.view.addSubview(self.listLeftMarginView)
         
@@ -240,10 +241,6 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
             headerComponent.hidesChannelInfoView = self.hideChannelInfoView
             headerComponent.overlaysChannelInfoView = self.isMediaViewOverlaying
         }
-        
-        // This view is above `mediaView`
-        self.listTopMarginView.isUserInteractionEnabled = false
-        self.listLeftMarginView.isUserInteractionEnabled = false
         
         if let inputComponent = inputComponent {
             (inputComponent.messageInputView as? SBUMessageInputView)?.isOverlay = self.isMediaViewOverlaying
@@ -819,6 +816,10 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
         }
     }
     
+    // MARK: - SBUOpenChannelModuleMediaDelegate
+    open func openChannelModule(_ mediaComponent: SBUOpenChannelModule.Media, didTapMediaView mediaView: UIView) {
+        
+    }
     
     // MARK: - SBUOpenChannelViewModelDelegate
     open override func baseChannelViewModel(

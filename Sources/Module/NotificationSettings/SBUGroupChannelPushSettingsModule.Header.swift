@@ -117,7 +117,7 @@ extension SBUGroupChannelPushSettingsModule {
             return titleView
         }
         
-        private var defaultLeftButton: UIBarButtonItem {
+        private var defaultLeftBarButton: UIBarButtonItem {
             let backButton = SBUBarButtonItem.backButton(
                 vc: self,
                 selector: #selector(onTapLeftBarButton)
@@ -179,7 +179,7 @@ extension SBUGroupChannelPushSettingsModule {
                 self.titleView = self.defaultTitleView
             }
             if self.leftBarButton == nil {
-                self.leftBarButton = self.defaultLeftButton
+                self.leftBarButton = self.defaultLeftBarButton
             }
         }
         

@@ -12,6 +12,32 @@ import SendbirdChatSDK
 @available(*, deprecated, renamed: "SBUGroupChannelListViewController") // 3.0.0
 public typealias SBUChannelListViewController = SBUGroupChannelListViewController
 
+extension SBUGroupChannelListModuleListDelegate {
+    // MARK: - 3.2.0
+    @available(*, unavailable, renamed: "groupChannelListModule(_:didSelectRowAt:)")
+    func channelListModule(_ listComponent: SBUGroupChannelListModule.List, didSelectRowAt indexPath: IndexPath) {}
+    
+    @available(*, unavailable, renamed: "groupChannelListModule(_:didDetectPreloadingPosition:)")
+    func channelListModule(_ listComponent: SBUGroupChannelListModule.List, didDetectPreloadingPosition indexPath: IndexPath) {}
+    
+    @available(*, unavailable, renamed: "groupChannelListModule(_:didSelectLeave:)")
+    func channelListModule(_ listComponent: SBUGroupChannelListModule.List, didSelectLeave channel: GroupChannel) {}
+    
+    @available(*, unavailable, renamed: "groupChannelListModule(_:didChangePushTriggerOption:channel:)")
+    func channelListModule(_ listComponent: SBUGroupChannelListModule.List, didChangePushTriggerOption option: GroupChannelPushTriggerOption, channel: GroupChannel) {}
+    
+    @available(*, unavailable, renamed: "groupChannelListModuleDidSelectRetry(_:)")
+    func channelListModuleDidSelectRetry(_ listComponent: SBUGroupChannelListModule.List) {}
+
+}
+
+extension SBUGroupChannelListModuleListDataSource {
+    // MARK: - 3.2.0
+    @available(*, unavailable, renamed: "groupChannelListModule(_:channelsInTableView:)")
+    func channelListModule(_ listComponent: SBUGroupChannelListModule.List, channelsInTableView tableView: UITableView) -> [GroupChannel]? { return nil }
+}
+
+
 extension SBUGroupChannelListViewController {
     // MARK: - 3.0.0
     @available(*, deprecated, message: "This property has been moved to the `SBUGroupChannelListModule.Header`.", renamed: "headerComponent.titleView")

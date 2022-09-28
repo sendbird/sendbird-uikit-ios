@@ -14,9 +14,6 @@ open class SBUBaseChannelCell: SBUTableViewCell {
     // MARK: - Public property
     public private(set) var channel: BaseChannel?
     
-    @SBUThemeWrapper(theme: SBUTheme.channelCellTheme)
-    public var theme: SBUChannelCellTheme
-
 
     // MARK: - View Lifecycle
  
@@ -24,5 +21,14 @@ open class SBUBaseChannelCell: SBUTableViewCell {
     /// - Parameter channel: cell object
     open func configure(channel: BaseChannel) {
         self.channel = channel
+    }
+    
+    // MARK: -
+    open override func setSelected(_ selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
+    }
+
+    open override func prepareForReuse() {
+        super.prepareForReuse()
     }
 }

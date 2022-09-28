@@ -206,7 +206,10 @@ open class SBUMessageSearchResultCell: SBUTableViewCell {
         if let profileURL = self.message?.sender?.profileURL {
             self.coverImage.setImage(with: profileURL, makeCircle: true)
         } else {
-            self.coverImage.setPlaceholderImage(iconSize: SBUIconSetType.Metric.defaultIconSizeLarge)
+            self.coverImage.setPlaceholder(
+                type: .iconUser,
+                iconSize: SBUIconSetType.Metric.defaultIconSizeLarge
+            )
         }
         
         if let sender = message.sender {

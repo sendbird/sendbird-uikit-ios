@@ -11,7 +11,7 @@ import UIKit
 // MARK: SBUCreateChannelModule
 
 /// The class that represents the module for creating a new channel.
-public class SBUCreateChannelModule {
+open class SBUCreateChannelModule {
     // MARK: Properties (Public)
     
     /// The module component that contains `titleView`, `leftBarButton`, and `rightBarButton`

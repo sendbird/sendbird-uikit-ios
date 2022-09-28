@@ -11,11 +11,14 @@ import UIKit
 public class SBUViewControllerSet {
     
     public static var GroupChannelListViewController: SBUGroupChannelListViewController.Type = SBUGroupChannelListViewController.self
+    public static var OpenChannelListViewController: SBUOpenChannelListViewController.Type = SBUOpenChannelListViewController.self
     
     public static var GroupChannelViewController: SBUGroupChannelViewController.Type = SBUGroupChannelViewController.self
     public static var OpenChannelViewController: SBUOpenChannelViewController.Type = SBUOpenChannelViewController.self
     
     public static var CreateChannelViewController: SBUCreateChannelViewController.Type = SBUCreateChannelViewController.self
+    public static var CreateOpenChannelViewController: SBUCreateOpenChannelViewController.Type = SBUCreateOpenChannelViewController.self
+    
     public static var InviteUserViewController: SBUInviteUserViewController.Type = SBUInviteUserViewController.self
     
     public static var GroupChannelRegisterOperatorViewController: SBURegisterOperatorViewController.Type = SBURegisterOperatorViewController.self

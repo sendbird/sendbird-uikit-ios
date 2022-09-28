@@ -102,7 +102,7 @@ extension SBUUserListModule {
             return titleView
         }
         
-        private func defaultLeftButton() -> UIBarButtonItem {
+        private func defaultLeftBarButton() -> UIBarButtonItem {
             let backButton = SBUBarButtonItem.backButton(
                 vc: self,
                 selector: #selector(onTapLeftBarButton)
@@ -110,7 +110,7 @@ extension SBUUserListModule {
             return backButton
         }
         
-        private func defaultRightButton() -> UIBarButtonItem {
+        private func defaultRightBarButton() -> UIBarButtonItem {
             guard self.userListType == .members ||
                     self.userListType == .operators else { return UIBarButtonItem() }
             
@@ -180,10 +180,10 @@ extension SBUUserListModule {
                 self.titleView = self.defaultTitleView()
             }
             if self.leftBarButton == nil {
-                self.leftBarButton = self.defaultLeftButton()
+                self.leftBarButton = self.defaultLeftBarButton()
             }
             if self.rightBarButton == nil {
-                self.rightBarButton = self.defaultRightButton()
+                self.rightBarButton = self.defaultRightBarButton()
             }
         }
         

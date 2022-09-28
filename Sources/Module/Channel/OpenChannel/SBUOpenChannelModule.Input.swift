@@ -66,6 +66,11 @@ extension SBUOpenChannelModule {
             if let messageInputView = self.messageInputView as? SBUMessageInputView {
                 messageInputView.isOverlay = overlaid
                 messageInputView.setupStyles()
+                
+                if let text = messageInputView.textView?.text {
+                    messageInputView.textView?.text = text
+                    messageInputView.basedText = text
+                }
             }
             
             self.setupStyles(theme: nil)

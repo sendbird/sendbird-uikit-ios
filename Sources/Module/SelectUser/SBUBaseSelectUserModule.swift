@@ -11,6 +11,6 @@ import UIKit
 // MARK: SBUBaseSelectUserModule
 
 /// The class that represents the user selection module
-public class SBUBaseSelectUserModule {
+open class SBUBaseSelectUserModule {
 }
 

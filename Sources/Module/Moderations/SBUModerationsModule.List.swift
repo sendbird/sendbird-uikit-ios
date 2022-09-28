@@ -68,8 +68,8 @@ extension SBUModerationsModule {
         ///   - dataSource: The data source that is type of `SBUModerationsModuleListDataSource`
         ///   - theme: `SBUChannelSettingsTheme` object
         open func configure(delegate: SBUModerationsModuleListDelegate,
-                              dataSource: SBUModerationsModuleListDataSource,
-                              theme: SBUChannelSettingsTheme) {
+                            dataSource: SBUModerationsModuleListDataSource,
+                            theme: SBUChannelSettingsTheme) {
             
             self.delegate = delegate
             self.dataSource = dataSource

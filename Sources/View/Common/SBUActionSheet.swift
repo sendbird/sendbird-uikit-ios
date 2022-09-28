@@ -24,13 +24,17 @@ public class SBUActionSheetItem: SBUCommonItem {
                          image: UIImage? = nil,
                          font: UIFont? = nil,
                          tintColor: UIColor? = nil,
-                         textAlignment: NSTextAlignment = .left) {
-        super.init(title: title,
-                   color: color,
-                   image: image,
-                   font: font,
-                   tintColor: tintColor,
-                   textAlignment: textAlignment)
+                         textAlignment: NSTextAlignment = .left,
+                         tag: Int? = nil) {
+        super.init(
+            title: title,
+            color: color,
+            image: image,
+            font: font,
+            tintColor: tintColor,
+            textAlignment: textAlignment,
+            tag: tag
+        )
         self.completionHandler = nil
     }
     
@@ -41,19 +45,22 @@ public class SBUActionSheetItem: SBUCommonItem {
     ///   - image: Item image
     ///   - font: Title font
     ///   - textAlignment: Title alignment
+    ///   - tag: Item tag
     ///   - completionHandler: Item's completion handler
     public init(title: String? = nil,
                 color: UIColor? = nil,
                 image: UIImage? = nil,
                 font: UIFont? = nil,
                 textAlignment: NSTextAlignment = .left,
+                tag: Int? = nil,
                 completionHandler: SBUActionSheetHandler?) {
         super.init(
             title: title,
             color: color,
             image: image,
             font: font,
-            textAlignment: textAlignment
+            textAlignment: textAlignment,
+            tag: tag
         )
         self.completionHandler = completionHandler
     }
@@ -183,7 +190,12 @@ public class SBUActionSheet {
                 isTop: (index == 0),
                 isBottom: (index == items.count-1)
             )
-            button.tag = index
+            if let tag = items[index].tag {
+                button.tag = tag
+            } else {
+                items[index].tag = index
+                button.tag = index
+            }
             var buttonFrame = button.frame
             buttonFrame.origin = CGPoint(x: 0, y: itemOriginY)
             button.frame = buttonFrame
@@ -374,9 +386,8 @@ public class SBUActionSheet {
             identifier: self.identifier
         )
         
-        let index = sender.tag
-        let item = self.items[index]
-        item.completionHandler?()
+        let item = self.items.filter { $0.tag == sender.tag }.first
+        item?.completionHandler?()
     }
     
     // MARK: Orientation

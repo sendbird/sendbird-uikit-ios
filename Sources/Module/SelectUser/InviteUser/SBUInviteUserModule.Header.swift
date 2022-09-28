@@ -60,7 +60,7 @@ extension SBUInviteUserModule {
             return titleView
         }
         
-        override func defaultLeftButton() -> UIBarButtonItem {
+        override func defaultLeftBarButton() -> UIBarButtonItem {
             let leftItem =  UIBarButtonItem(
                 title: SBUStringSet.Cancel,
                 style: .plain,
@@ -71,7 +71,7 @@ extension SBUInviteUserModule {
             return leftItem
         }
         
-        override func defaultRightButton() -> UIBarButtonItem {
+        override func defaultRightBarButton() -> UIBarButtonItem {
             let rightItem =  UIBarButtonItem(
                 title: SBUStringSet.InviteChannel_Invite(0),
                 style: .plain,

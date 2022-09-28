@@ -10,10 +10,10 @@ import Foundation
 import AVFoundation
 import Photos
 
-class SBUPermissionManager {
-    static let shared = SBUPermissionManager()
+public class SBUPermissionManager {
+    public static let shared = SBUPermissionManager()
     
-    var currentStatus: SBUPhotoAccessibleStatus {
+    public var currentStatus: SBUPhotoAccessibleStatus {
         var granted: PHAuthorizationStatus
         if #available(iOS 14, *) {
             granted = PHPhotoLibrary.authorizationStatus(
@@ -27,7 +27,7 @@ class SBUPermissionManager {
     
     private init() {}
     
-    func requestPhotoAccessIfNeeded(completion: @escaping (SBUPhotoAccessibleStatus) -> Void) {
+    public func requestPhotoAccessIfNeeded(completion: @escaping (SBUPhotoAccessibleStatus) -> Void) {
         // authorizationStatus
         var granted: PHAuthorizationStatus
         if #available(iOS 14, *) {
@@ -64,7 +64,7 @@ class SBUPermissionManager {
         }
     }
     
-    func requestDeviceAccessIfNeeded(for type: AVMediaType, completion: @escaping (Bool) -> ()) {
+    public func requestDeviceAccessIfNeeded(for type: AVMediaType, completion: @escaping (Bool) -> ()) {
         let granted = AVCaptureDevice.authorizationStatus(for: type)
         if (granted != .authorized) {
             AVCaptureDevice.requestAccess(for: type) { success in

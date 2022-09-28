@@ -11,7 +11,7 @@ import UIKit
 // MARK: SBUModerationsModule
 
 /// The class that represents the moderation module.
-public class SBUModerationsModule {
+open class SBUModerationsModule {
     // MARK: Properties (Public)
     
     /// The module component that contains `titleView`, `leftBarButton`, and `rightBarButton`.

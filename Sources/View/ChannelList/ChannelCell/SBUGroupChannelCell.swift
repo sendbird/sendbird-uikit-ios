@@ -74,6 +74,10 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
     /// A horizontal stack view to configure layouts of the `messageLabel` and the `unreadCount`.
     public lazy var messageStackView = SBUStackView(axis: .horizontal, alignment: .top, spacing: 4)
     
+    @SBUThemeWrapper(theme: SBUTheme.channelCellTheme)
+    public var theme: SBUChannelCellTheme
+
+    
     // MARK: - View Lifecycle
     open override func awakeFromNib() {
         super.awakeFromNib()
@@ -237,8 +241,6 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
         self.unreadCount.contentEdgeInsets.left = 6.0
         self.unreadCount.contentEdgeInsets.right = 6.0
         self.unreadCount.layer.cornerRadius = unreadCountSize / 2
-        
-        self.setupStyles()
     }
     
     deinit {
@@ -246,7 +248,6 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
     }
     
     /// This function configure a cell using `GroupChannel` information.
-    /// - Note: If you use `OpenChannel`, your cell class must inherit `SBUBaseChannelCell` and override `configure(channel:)` method.
     /// - Parameter channel: `GroupChannel` object
     open override func configure(channel: BaseChannel) {
         super.configure(channel: channel)
@@ -262,7 +263,7 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
             if !channel.members.isEmpty {
                 self.coverImage.setImage(withUsers: channel.members)
             } else {
-                self.coverImage.setPlaceholderImage(iconSize: .init(width: 40, height: 40))
+                self.coverImage.setPlaceholder(type: .iconUser, iconSize: .init(width: 40, height: 40))
             }
         }
         
@@ -273,7 +274,7 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
             self.titleLabel.text = SBUUtils.generateChannelName(channel: channel)
         }
         
-        // Member cound. If 1:1 channel, not set
+        // Member count. If 1:1 channel, not set
         if channel.memberCount > 2 {
             self.memberCountLabel.text = channel.memberCount.unitFormattedString
         }
@@ -382,6 +383,7 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
         stateImageView.image = stateImage
     }
     
+    
     // MARK: - Common
     
     /// This function builds last message updated date.
@@ -407,10 +409,6 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
 
     
     // MARK: -
-    open override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-    }
-
     open override func prepareForReuse() {
         super.prepareForReuse()
         

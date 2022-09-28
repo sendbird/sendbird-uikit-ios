@@ -16,6 +16,12 @@ extension SBUTheme {
         else if type(of: currentClass) == type(of: SBUChannelCellTheme.self) {
             return SBUTheme.channelCellTheme
         }
+        else if type(of: currentClass) == type(of: SBUOpenChannelListTheme.self) {
+            return SBUTheme.openChannelListTheme
+        }
+        else if type(of: currentClass) == type(of: SBUOpenChannelCellTheme.self) {
+            return SBUTheme.openChannelCellTheme
+        }
         else if type(of: currentClass) == type(of: SBUChannelTheme.self) {
             return SBUTheme.channelTheme
         }
@@ -48,6 +54,9 @@ extension SBUTheme {
         }
         else if type(of: currentClass) == type(of: SBUMessageSearchResultCellTheme.self) {
             return SBUTheme.messageSearchResultCellTheme
+        }
+        else if type(of: currentClass) == type(of: SBUCreateOpenChannelTheme.self) {
+            return SBUTheme.createOpenChannelTheme
         }
         else {
             return SBUTheme.light

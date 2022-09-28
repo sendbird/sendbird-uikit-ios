@@ -10,15 +10,6 @@ import Foundation
 import SendbirdChatSDK
 import simd
 
-@available(*, deprecated, renamed: "SBUGroupChannelViewModelDataSource") // 3.0.0
-public typealias SBUChannelViewModelDataSource = SBUGroupChannelViewModelDataSource
-
-@available(*, deprecated, renamed: "SBUGroupChannelViewModelDelegate") // 3.0.0
-public typealias SBUChannelViewModelDelegate = SBUGroupChannelViewModelDelegate
-
-@available(*, deprecated, renamed: "SBUGroupChannelViewModel") // 3.0.0
-public typealias SBUChannelViewModel = SBUGroupChannelViewModel
-
 public protocol SBUGroupChannelViewModelDataSource: SBUBaseChannelViewModelDataSource {
     /// Asks to data source to return the array of index path that represents starting point of channel.
     /// - Parameters:
@@ -75,9 +66,9 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
         self.delegate = delegate
         self.dataSource = dataSource
         
-        SendbirdChat.add(
-            self as GroupChannelDelegate,
-            identifier: "\(SBUConstant.channelDelegateIdentifier).\(self.description)"
+        SendbirdChat.addChannelDelegate(
+            self,
+            identifier: "\(SBUConstant.groupChannelDelegateIdentifier).\(self.description)"
         )
         
         if let channel = channel {

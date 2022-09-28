@@ -523,6 +523,10 @@ public class SendbirdUI {
                 .navigationController?
                 .popToViewController(channelListViewController, animated: false)
             
+            if let openChannelListVC = channelListViewController as? SBUOpenChannelListViewController  {
+                openChannelListVC.reloadChannelList()
+            }
+            
             channelListViewController.showChannel(channelURL: channelURL)
         } else if let channelViewController = viewController as? SBUBaseChannelViewController {
             channelViewController.baseViewModel?.loadChannel(
@@ -530,33 +534,33 @@ public class SendbirdUI {
                 messageListParams: messageListParams
             )
         } else {
-            let isGroupChannel = channelType == .group
             if basedOnChannelList {
                 // If based on channelList.
-                // FIXME: - Needs a way to get user's open channel list vc?? (not in SDK)
-                let channelListVC = SBUViewControllerSet.GroupChannelListViewController.init()
-                let vc: SBUBaseChannelListViewController = isGroupChannel
-                ? channelListVC
-                : SBUBaseChannelListViewController()
-                let naviVC = UINavigationController(rootViewController: vc)
+                let channelListVC: SBUBaseChannelListViewController
+                if channelType == .group {
+                    channelListVC = SBUViewControllerSet.GroupChannelListViewController.init()
+                } else {
+                    channelListVC = SBUViewControllerSet.OpenChannelListViewController.init()
+                }
+                let naviVC = UINavigationController(rootViewController: channelListVC)
                 viewController?.present(naviVC, animated: true, completion: {
-                    vc.showChannel(channelURL: channelURL)
+                    channelListVC.showChannel(channelURL: channelURL)
                 })
             } else {
                 // If based on channel
-                let vc: SBUBaseChannelViewController
-                if isGroupChannel {
-                    vc = SBUViewControllerSet.GroupChannelViewController.init(
+                let channelVC: SBUBaseChannelViewController
+                if channelType == .group {
+                    channelVC = SBUViewControllerSet.GroupChannelViewController.init(
                         channelURL: channelURL,
                         messageListParams: messageListParams
                     )
                 } else {
-                    vc = SBUViewControllerSet.OpenChannelViewController.init(
+                    channelVC = SBUViewControllerSet.OpenChannelViewController.init(
                         channelURL: channelURL,
                         messageListParams: messageListParams
                     )
                 }
-                let naviVC = UINavigationController(rootViewController: vc)
+                let naviVC = UINavigationController(rootViewController: channelVC)
                 viewController?.present(naviVC, animated: true)
             }
         }

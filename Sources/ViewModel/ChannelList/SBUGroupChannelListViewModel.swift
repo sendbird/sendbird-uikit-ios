@@ -9,7 +9,7 @@
 import Foundation
 import SendbirdChatSDK
 
-public protocol SBUGroupChannelListViewModelDelegate: SBUCommonViewModelDelegate {
+public protocol SBUGroupChannelListViewModelDelegate: SBUBaseChannelListViewModelDelegate {
     /// Called when the channe list has been changed.
     /// - Parameters:
     ///    - viewModel: `SBUGroupChannelListViewModel` object.
@@ -41,7 +41,7 @@ public protocol SBUGroupChannelListViewModelDelegate: SBUCommonViewModelDelegate
 }
 
 
-open class SBUGroupChannelListViewModel: NSObject {
+open class SBUGroupChannelListViewModel: SBUBaseChannelListViewModel {
     // MARK: - Constants
     static let channelLoadLimit: UInt = 20
     
@@ -58,9 +58,11 @@ open class SBUGroupChannelListViewModel: NSObject {
     
     
     // MARK: - Property (private)
-    private weak var delegate: SBUGroupChannelListViewModelDelegate?
+    private weak var delegate: SBUGroupChannelListViewModelDelegate? {
+        get { self.baseDelegate as? SBUGroupChannelListViewModelDelegate }
+        set { self.baseDelegate = newValue }
+    }
     private var customizedChannelListQuery: GroupChannelListQuery?
-    private(set) var isLoading = false
     
     
     // MARK: - Life Cycle
@@ -70,35 +72,18 @@ open class SBUGroupChannelListViewModel: NSObject {
     ///   - delegate: This is used to receive events that occur in the view model
     ///   - channelListQuery: This is used to use customized channelListQuery.
     public init(
-        delegate: SBUGroupChannelListViewModelDelegate?,
-        channelListQuery: GroupChannelListQuery?
+        delegate: SBUGroupChannelListViewModelDelegate? = nil,
+        channelListQuery: GroupChannelListQuery? = nil
     ) {
-        self.delegate = delegate
+        super.init(delegate: delegate)
+
         self.customizedChannelListQuery = channelListQuery
-        
-        super.init()
-        
-        // TODO: OpenChannel 작업할때 사용 후 제거
-//        SendbirdChat.add(
-//            self as BaseChannelDelegate,
-//            identifier: "\(SBUConstant.channelDelegateIdentifier).\(self.description)"
-//        )
-        SendbirdChat.add(
-            self as ConnectionDelegate,
-            identifier: "\(SBUConstant.connectionDelegateIdentifier).\(self.description)"
-        )
         
         self.initChannelList()
     }
     
     deinit {
         self.reset()
-        SendbirdChat.removeChannelDelegate(
-            forIdentifier: "\(SBUConstant.channelDelegateIdentifier).\(self.description)"
-        )
-        SendbirdChat.removeConnectionDelegate(
-            forIdentifier: "\(SBUConstant.connectionDelegateIdentifier).\(self.description)"
-        )
     }
     
     private func createCollectionIfNeeded() {
@@ -124,24 +109,14 @@ open class SBUGroupChannelListViewModel: NSObject {
     // MARK: - List handling
     
     /// This function initialize the channel list. the channel list will reset.
-    public func initChannelList() {
-        SBULog.info("[Request] Next channel List")
-        SendbirdUI.connectIfNeeded { [weak self] user, error in
-            if let error = error {
-                self?.delegate?.didReceiveError(error, isBlocker: true)
-                return
-            }
-            
-            self?.delegate?.connectionStateDidChange(true)
-            
-            self?.loadNextChannelList(reset: true)
-        }
+    public override func initChannelList() {
+        super.initChannelList()
     }
     
     /// This function loads the channel list. If the reset value is `true`, the channel list will reset.
     /// - Parameter reset: To reset the channel list
-    public func loadNextChannelList(reset: Bool) {
-        SBULog.info("[Request] Next channel List")
+    public override func loadNextChannelList(reset: Bool) {
+        super.loadNextChannelList(reset: reset)
         
         guard !self.isLoading else { return }
         
@@ -270,7 +245,9 @@ open class SBUGroupChannelListViewModel: NSObject {
     }
     
     /// This function resets channelList
-    public func reset() {
+    public override func reset() {
+        super.reset()
+        
         self.channelList = []
         self.channelListQuery = nil
         self.channelCollection?.dispose()
@@ -389,23 +366,6 @@ extension SBUGroupChannelListViewModel: GroupChannelCollectionDelegate {
         self.upsertChannels(channels, needReload: true)
     }
 }
-
-
-// MARK: ConnectionDelegate
-extension SBUGroupChannelListViewModel: ConnectionDelegate {
-    open func didSucceedReconnection() {
-        SBULog.info("Did succeed reconnection")
-        
-        SendbirdUI.updateUserInfo { error in
-            if let error = error {
-                SBULog.error("[Failed] Update user info: \(error.localizedDescription)")
-            }
-        }
-        
-        self.delegate?.connectionStateDidChange(true)
-    }
-}
-
 
 
 

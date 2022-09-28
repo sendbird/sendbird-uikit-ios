@@ -11,7 +11,7 @@ import UIKit
 // MARK: SBUGroupChannelSettingsModule
 
 /// The class that represents the group channel setting module.
-public class SBUGroupChannelSettingsModule {
+open class SBUGroupChannelSettingsModule {
     // MARK: Properties (Public)
     
     /// The module component that contains `titleView`, `leftBarButton`, and `rightBarButton`.

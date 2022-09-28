@@ -16,13 +16,15 @@ public class SBUCommonItem {
     var font: UIFont?
     var tintColor: UIColor?
     var textAlignment: NSTextAlignment
+    var tag: Int?
     
     public init(title: String? = nil,
                 color: UIColor? = SBUColorSet.onlight01,
                 image: UIImage? = nil,
                 font: UIFont? = nil,
                 tintColor: UIColor? = nil,
-                textAlignment: NSTextAlignment = .left) {
+                textAlignment: NSTextAlignment = .left,
+                tag: Int? = nil) {
         
         self.title = title
         self.color = color
@@ -30,5 +32,6 @@ public class SBUCommonItem {
         self.font = font
         self.tintColor = tintColor
         self.textAlignment = textAlignment
+        self.tag = tag
     }
 }

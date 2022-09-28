@@ -13,6 +13,8 @@ import UIKit
 public class SBUTheme {
     public init(channelListTheme: SBUChannelListTheme = .light,
                 channelCellTheme: SBUChannelCellTheme = .light,
+                openChannelListTheme: SBUOpenChannelListTheme = .light,
+                openChannelCellTheme: SBUOpenChannelCellTheme = .light,
                 channelTheme: SBUChannelTheme = .light,
                 messageInputTheme: SBUMessageInputTheme = .light,
                 messageCellTheme: SBUMessageCellTheme = .light,
@@ -23,11 +25,14 @@ public class SBUTheme {
                 componentTheme: SBUComponentTheme = .light,
                 overlayTheme: SBUOverlayTheme = .init(),
                 messageSearchTheme: SBUMessageSearchTheme = .light,
-                messageSearchResultCellTheme: SBUMessageSearchResultCellTheme = .light
+                messageSearchResultCellTheme: SBUMessageSearchResultCellTheme = .light,
+                createOpenChannelTheme: SBUCreateOpenChannelTheme = .light
                 ) {
         
         self.channelListTheme = channelListTheme
         self.channelCellTheme = channelCellTheme
+        self.openChannelListTheme = openChannelListTheme
+        self.openChannelCellTheme = openChannelCellTheme
         self.channelTheme = channelTheme
         self.messageInputTheme = messageInputTheme
         self.messageCellTheme = messageCellTheme
@@ -39,6 +44,8 @@ public class SBUTheme {
         self.overlayTheme = overlayTheme
         self.messageSearchTheme = messageSearchTheme
         self.messageSearchResultCellTheme = messageSearchResultCellTheme
+        self.createOpenChannelTheme = createOpenChannelTheme
+        
     }
     
     public static func set(theme: SBUTheme) {
@@ -49,6 +56,12 @@ public class SBUTheme {
                                       channelCellTheme: SBUChannelCellTheme) {
         self.channelListTheme = channelListTheme
         self.channelCellTheme = channelCellTheme
+    }
+    
+    public static func setOpenChannelList(channelListTheme: SBUOpenChannelListTheme,
+                                          channelCellTheme: SBUOpenChannelCellTheme) {
+        self.openChannelListTheme = openChannelListTheme
+        self.openChannelCellTheme = openChannelCellTheme
     }
     
     public static func setChannel(channelTheme: SBUChannelTheme,
@@ -77,9 +90,15 @@ public class SBUTheme {
         self.userProfileTheme = userProfileTheme
     }
     
+    public static func setCreateOpenChannel(createOpenChannelTheme: SBUCreateOpenChannelTheme) {
+        self.createOpenChannelTheme = createOpenChannelTheme
+    }
+    
     public static var dark: SBUTheme {
         return SBUTheme( channelListTheme: .dark,
                          channelCellTheme: .dark,
+                         openChannelListTheme: .dark,
+                         openChannelCellTheme: .dark,
                          channelTheme: .dark,
                          messageInputTheme: .dark,
                          messageCellTheme: .dark,
@@ -90,13 +109,16 @@ public class SBUTheme {
                          componentTheme: .dark,
                          overlayTheme: .init(),
                          messageSearchTheme: .dark,
-                         messageSearchResultCellTheme: .dark)
+                         messageSearchResultCellTheme: .dark,
+                         createOpenChannelTheme: .dark)
         
     }
     
     public static var light: SBUTheme {
         return SBUTheme(channelListTheme: .light,
                         channelCellTheme: .light,
+                        openChannelListTheme: .light,
+                        openChannelCellTheme: .light,
                         channelTheme: .light,
                         messageInputTheme: .light,
                         messageCellTheme: .light,
@@ -107,7 +129,8 @@ public class SBUTheme {
                         componentTheme: .light,
                         overlayTheme: .init(),
                         messageSearchTheme: .light,
-                        messageSearchResultCellTheme: .light)
+                        messageSearchResultCellTheme: .light,
+                        createOpenChannelTheme: .light)
     }
     
     
@@ -122,6 +145,16 @@ public class SBUTheme {
     public static var channelCellTheme: SBUChannelCellTheme {
         set { shared.channelCellTheme = newValue }
         get { return shared.channelCellTheme }
+    }
+    
+    public static var openChannelListTheme: SBUOpenChannelListTheme {
+        set { shared.openChannelListTheme = newValue }
+        get { return shared.openChannelListTheme }
+    }
+    
+    public static var openChannelCellTheme: SBUOpenChannelCellTheme {
+        set { shared.openChannelCellTheme = newValue }
+        get { return shared.openChannelCellTheme }
     }
     
     // Channel & Message
@@ -175,6 +208,7 @@ public class SBUTheme {
         get { return shared.overlayTheme }
     }
     
+    // Message search
     public static var messageSearchTheme: SBUMessageSearchTheme {
         set { shared.messageSearchTheme = newValue }
         get { return shared.messageSearchTheme }
@@ -185,6 +219,13 @@ public class SBUTheme {
         get { return shared.messageSearchResultCellTheme }
     }
     
+    // Create open channel
+    public static var createOpenChannelTheme: SBUCreateOpenChannelTheme {
+        set { shared.createOpenChannelTheme = newValue }
+        get { return shared.createOpenChannelTheme }
+    }
+
+    
     // MARK: - Private property
     
     private static var shared: SBUTheme = SBUTheme()
@@ -192,6 +233,9 @@ public class SBUTheme {
     // Channel List
     private var channelListTheme: SBUChannelListTheme
     private var channelCellTheme: SBUChannelCellTheme
+    
+    private var openChannelListTheme: SBUOpenChannelListTheme
+    private var openChannelCellTheme: SBUOpenChannelCellTheme
     
     // Channel & Message
     private var channelTheme: SBUChannelTheme
@@ -217,6 +261,9 @@ public class SBUTheme {
     // Message Search
     private var messageSearchTheme: SBUMessageSearchTheme
     private var messageSearchResultCellTheme: SBUMessageSearchResultCellTheme
+    
+    // Create open channel
+    private var createOpenChannelTheme: SBUCreateOpenChannelTheme
 }
 
 // MARK: - Overlay Theme
@@ -330,9 +377,7 @@ public class SBUChannelListTheme {
     public var statusBarStyle: UIStatusBarStyle
     
     public var leftBarButtonTintColor: UIColor
-    
     public var rightBarButtonTintColor: UIColor
-    
     public var navigationBarTintColor: UIColor
     public var navigationBarShadowColor: UIColor
     
@@ -497,8 +542,168 @@ public class SBUChannelCellTheme {
     public var unreadMentionTextColor: UIColor
     
     public var separatorLineColor: UIColor
-    
 }
+
+
+// MARK: - Open Channel List Theme
+public class SBUOpenChannelListTheme {
+    
+    public static var light: SBUOpenChannelListTheme {
+        let theme = SBUOpenChannelListTheme()
+        
+        if #available(iOS 13.0, *) {
+            theme.statusBarStyle = .darkContent
+        } else {
+            theme.statusBarStyle = .default
+        }
+        theme.leftBarButtonTintColor = SBUColorSet.primary300
+        theme.rightBarButtonTintColor = SBUColorSet.primary300
+        theme.navigationBarTintColor = SBUColorSet.background50
+        theme.navigationBarShadowColor = SBUColorSet.onlight04
+        
+        theme.backgroundColor = SBUColorSet.background50
+        
+        theme.refreshIndicatorColor = SBUColorSet.primary300
+        theme.refreshBackgroundColor = SBUColorSet.background100
+        
+        return theme
+    }
+    
+    public static var dark: SBUOpenChannelListTheme {
+        let theme = SBUOpenChannelListTheme()
+        
+        theme.statusBarStyle = .lightContent
+        
+        theme.leftBarButtonTintColor = SBUColorSet.primary200
+        theme.rightBarButtonTintColor = SBUColorSet.primary200
+        theme.navigationBarTintColor = SBUColorSet.background500
+        theme.navigationBarShadowColor = SBUColorSet.background500
+        
+        theme.backgroundColor = SBUColorSet.background600
+        
+        theme.refreshIndicatorColor = SBUColorSet.primary200
+        theme.refreshBackgroundColor = SBUColorSet.background700
+        
+        return theme
+    }
+    
+    public init(statusBarStyle: UIStatusBarStyle = .default,
+                leftBarButtonTintColor: UIColor = SBUColorSet.primary300,
+                rightBarButtonTintColor: UIColor = SBUColorSet.primary300,
+                navigationBarTintColor: UIColor = SBUColorSet.background50,
+                navigationBarShadowColor: UIColor = SBUColorSet.onlight04,
+                backgroundColor: UIColor = SBUColorSet.background50,
+                refreshIndicatorColor: UIColor = SBUColorSet.primary300,
+                refreshBackgroundColor: UIColor = SBUColorSet.background100) {
+        
+        self.statusBarStyle = statusBarStyle
+        self.leftBarButtonTintColor = leftBarButtonTintColor
+        self.rightBarButtonTintColor = rightBarButtonTintColor
+        self.navigationBarTintColor = navigationBarTintColor
+        self.navigationBarShadowColor = navigationBarShadowColor
+        self.backgroundColor = backgroundColor
+        self.refreshIndicatorColor = refreshIndicatorColor
+        self.refreshBackgroundColor = refreshBackgroundColor
+    }
+    
+    public var statusBarStyle: UIStatusBarStyle
+    
+    public var leftBarButtonTintColor: UIColor
+    public var rightBarButtonTintColor: UIColor
+    public var navigationBarTintColor: UIColor
+    public var navigationBarShadowColor: UIColor
+    
+    public var backgroundColor: UIColor
+    
+    public var refreshIndicatorColor: UIColor
+    public var refreshBackgroundColor: UIColor
+}
+
+// MARK: - Open Channel Cell Theme
+
+public class SBUOpenChannelCellTheme {
+    public static var light: SBUOpenChannelCellTheme {
+        let theme = SBUOpenChannelCellTheme()
+        theme.backgroundColor = SBUColorSet.background50
+        
+        theme.channelPlaceholderBackgroundColor = SBUColorSet.background300
+        theme.channelPlaceholderTintColor = SBUColorSet.ondark01
+        
+        theme.titleFont = SBUFontSet.subtitle1
+        theme.titleTextColor = SBUColorSet.onlight01
+        
+        theme.participantMarkTint = SBUColorSet.onlight02
+        theme.participantCountFont = SBUFontSet.caption1
+        theme.participantCountTextColor = SBUColorSet.onlight02
+        
+        theme.freezeStateTintColor = SBUColorSet.primary300
+        
+        theme.separatorLineColor = SBUColorSet.onlight04
+        
+        return theme
+    }
+    
+    public static var dark: SBUOpenChannelCellTheme {
+        let theme = SBUOpenChannelCellTheme()
+        theme.backgroundColor = SBUColorSet.background600
+        
+        theme.channelPlaceholderBackgroundColor = SBUColorSet.background300
+        theme.channelPlaceholderTintColor = SBUColorSet.onlight01
+        
+        theme.titleFont = SBUFontSet.subtitle1
+        theme.titleTextColor = SBUColorSet.ondark01
+        
+        theme.participantMarkTint = SBUColorSet.ondark02
+        theme.participantCountFont = SBUFontSet.caption1
+        theme.participantCountTextColor = SBUColorSet.ondark02
+        
+        theme.freezeStateTintColor = SBUColorSet.primary200
+        
+        theme.separatorLineColor = SBUColorSet.ondark04
+        
+        return theme
+    }
+    
+    public init(backgroundColor: UIColor = SBUColorSet.background50,
+                channelPlaceholderBackgroundColor: UIColor = SBUColorSet.background300,
+                channelPlaceholderTintColor: UIColor = SBUColorSet.onlight01,
+                titleFont: UIFont = SBUFontSet.subtitle1,
+                titleTextColor: UIColor = SBUColorSet.onlight01,
+                participantMarkTint: UIColor = SBUColorSet.onlight02,
+                participantCountFont: UIFont = SBUFontSet.caption1,
+                participantCountTextColor: UIColor = SBUColorSet.onlight02,
+                freezeStateTintColor: UIColor = SBUColorSet.primary300,
+                separatorLineColor: UIColor = SBUColorSet.onlight04) {
+        
+        self.backgroundColor = backgroundColor
+        self.channelPlaceholderBackgroundColor = channelPlaceholderBackgroundColor
+        self.channelPlaceholderTintColor = channelPlaceholderTintColor
+        self.titleFont = titleFont
+        self.titleTextColor = titleTextColor
+        self.participantMarkTint = participantMarkTint
+        self.participantCountFont = participantCountFont
+        self.participantCountTextColor = participantCountTextColor
+        self.freezeStateTintColor = freezeStateTintColor
+        self.separatorLineColor = separatorLineColor
+    }
+    
+    public var backgroundColor: UIColor
+    
+    public var channelPlaceholderBackgroundColor: UIColor
+    public var channelPlaceholderTintColor: UIColor
+    
+    public var titleFont: UIFont
+    public var titleTextColor: UIColor
+    
+    public var participantMarkTint: UIColor
+    public var participantCountFont: UIFont
+    public var participantCountTextColor: UIColor
+    
+    public var freezeStateTintColor: UIColor
+    
+    public var separatorLineColor: UIColor
+}
+
 
 // MARK: - Channel Theme
 
@@ -599,7 +804,7 @@ public class SBUChannelTheme {
         theme.deleteItemColor = SBUColorSet.error300
         theme.cancelItemColor = SBUColorSet.primary200
         
-        theme.alertRemoveColor = SBUColorSet.ondark01
+        theme.alertRemoveColor = SBUColorSet.error300
         theme.alertCancelColor = SBUColorSet.primary200
         
         // Menu
@@ -2084,6 +2289,9 @@ public class SBUComponentTheme {
         theme.userPlaceholderBackgroundColor = SBUColorSet.background300
         theme.userPlaceholderTintColor = SBUColorSet.ondark01
         
+        theme.placeholderBackgroundColor = SBUColorSet.background300
+        theme.placeholderTintColor = SBUColorSet.ondark01
+        
         // Reaction
         theme.reactionBoxBackgroundColor = SBUColorSet.background50
         theme.reactionBoxBorderLineColor = SBUColorSet.background100
@@ -2190,6 +2398,9 @@ public class SBUComponentTheme {
         
         theme.userPlaceholderBackgroundColor = SBUColorSet.background400
         theme.userPlaceholderTintColor = SBUColorSet.onlight01
+        
+        theme.placeholderBackgroundColor = SBUColorSet.background400
+        theme.placeholderTintColor = SBUColorSet.onlight01
         
         // Reaction
         theme.reactionBoxBackgroundColor = SBUColorSet.background600
@@ -2298,6 +2509,9 @@ public class SBUComponentTheme {
         theme.userPlaceholderBackgroundColor = SBUColorSet.background400
         theme.userPlaceholderTintColor = SBUColorSet.onlight01
         
+        theme.placeholderBackgroundColor = SBUColorSet.background400
+        theme.placeholderTintColor = SBUColorSet.onlight01
+        
         // Reaction
         theme.reactionBoxBackgroundColor = SBUColorSet.background600
         theme.reactionBoxBorderLineColor = SBUColorSet.background400
@@ -2385,6 +2599,8 @@ public class SBUComponentTheme {
                 menuTitleFont: UIFont = SBUFontSet.subtitle2,
                 userPlaceholderBackgroundColor: UIColor = SBUColorSet.background300,
                 userPlaceholderTintColor: UIColor = SBUColorSet.ondark01,
+                placeholderBackgroundColor: UIColor = SBUColorSet.background300,
+                placeholderTintColor: UIColor = SBUColorSet.ondark01,
                 reactionBoxBackgroundColor: UIColor = SBUColorSet.background50,
                 reactionBoxBorderLineColor: UIColor = SBUColorSet.background100,
                 reactionBoxEmojiCountColor: UIColor = SBUColorSet.onlight01,
@@ -2459,6 +2675,8 @@ public class SBUComponentTheme {
         self.menuTitleFont = menuTitleFont
         self.userPlaceholderTintColor = userPlaceholderTintColor
         self.userPlaceholderBackgroundColor = userPlaceholderBackgroundColor
+        self.placeholderTintColor = placeholderTintColor
+        self.placeholderBackgroundColor = placeholderBackgroundColor
         
         // Reaction
         self.reactionBoxBackgroundColor = reactionBoxBackgroundColor
@@ -2559,6 +2777,9 @@ public class SBUComponentTheme {
     // placeholder
     public var userPlaceholderBackgroundColor: UIColor
     public var userPlaceholderTintColor: UIColor
+    
+    public var placeholderBackgroundColor: UIColor
+    public var placeholderTintColor: UIColor
     
     
     // Emoji reaction box
@@ -2776,4 +2997,115 @@ public class SBUMessageSearchResultCellTheme {
         self.fileMessageIconTintColor = fileMessageIconTinkColor
         self.separatorLineColor = separatorLineColor
     }
+}
+
+
+// MARK: - Create open channel Theme
+
+public class SBUCreateOpenChannelTheme {
+    
+    public static var light: SBUCreateOpenChannelTheme {
+        let theme = SBUCreateOpenChannelTheme()
+        
+        if #available(iOS 13.0, *) {
+            theme.statusBarStyle = .darkContent
+        } else {
+            theme.statusBarStyle = .default
+        }
+        
+        theme.leftBarButtonTintColor = SBUColorSet.primary300
+        theme.rightBarButtonTintColor = SBUColorSet.primary300
+        theme.rightBarButtonDisabledTintColor = SBUColorSet.onlight04
+        theme.navigationBarTintColor = SBUColorSet.background50
+        theme.navigationBarShadowColor = SBUColorSet.onlight04
+        
+        theme.backgroundColor = SBUColorSet.background50
+        theme.textFieldPlaceholderColor = SBUColorSet.onlight03
+        theme.textFieldTextColor = SBUColorSet.onlight01
+        theme.textFieldFont = SBUFontSet.body3
+        theme.textFieldUnderlineColor = SBUColorSet.onlight04
+        
+        theme.actionSheetItemColor = SBUColorSet.primary300
+        theme.actionSheetTextColor = SBUColorSet.onlight01
+        theme.actionSheetRemoveTextColor = SBUColorSet.error300
+        theme.actionSheetCancelTextColor = SBUColorSet.primary300
+        
+        return theme
+    }
+    public static var dark: SBUCreateOpenChannelTheme {
+        let theme = SBUCreateOpenChannelTheme()
+        
+        theme.statusBarStyle = .lightContent
+        
+        theme.leftBarButtonTintColor = SBUColorSet.primary200
+        theme.rightBarButtonTintColor = SBUColorSet.primary200
+        theme.rightBarButtonDisabledTintColor = SBUColorSet.ondark04
+        theme.navigationBarTintColor = SBUColorSet.background500
+        theme.navigationBarShadowColor = SBUColorSet.background500
+        
+        theme.backgroundColor = SBUColorSet.background600
+        theme.textFieldPlaceholderColor = SBUColorSet.ondark03
+        theme.textFieldTextColor = SBUColorSet.ondark01
+        theme.textFieldFont = SBUFontSet.body3
+        theme.textFieldUnderlineColor = SBUColorSet.onlight04
+        
+        theme.actionSheetItemColor = SBUColorSet.primary200
+        theme.actionSheetTextColor = SBUColorSet.ondark01
+        theme.actionSheetRemoveTextColor = SBUColorSet.error200
+        theme.actionSheetCancelTextColor = SBUColorSet.primary200
+        
+        return theme
+    }
+    
+    public init(statusBarStyle: UIStatusBarStyle = .default,
+                leftBarButtonTintColor: UIColor = SBUColorSet.primary300,
+                rightBarButtonTintColor: UIColor = SBUColorSet.primary300,
+                rightBarButtonDisabledTintColor: UIColor = SBUColorSet.onlight04,
+                navigationBarTintColor: UIColor = SBUColorSet.background50,
+                navigationBarShadowColor: UIColor = SBUColorSet.onlight04,
+                backgroundColor: UIColor = SBUColorSet.background50,
+                textFieldPlaceholderColor: UIColor = SBUColorSet.onlight03,
+                textFieldTextColor: UIColor = SBUColorSet.onlight01,
+                textFieldFont: UIFont = SBUFontSet.body3,
+                textFieldUnderlineColor: UIColor = SBUColorSet.onlight04,
+                actionSheetItemColor: UIColor = SBUColorSet.primary300,
+                actionSheetTextColor: UIColor = SBUColorSet.onlight01,
+                actionSheetRemoveTextColor: UIColor = SBUColorSet.error300,
+                actionSheetCancelTextColor: UIColor = SBUColorSet.primary300
+    ) {
+        self.statusBarStyle = statusBarStyle
+        self.leftBarButtonTintColor = leftBarButtonTintColor
+        self.rightBarButtonTintColor = rightBarButtonTintColor
+        self.rightBarButtonDisabledTintColor = rightBarButtonDisabledTintColor
+        self.navigationBarTintColor = navigationBarTintColor
+        self.navigationBarShadowColor = navigationBarShadowColor
+        self.backgroundColor = backgroundColor
+        self.textFieldPlaceholderColor = textFieldPlaceholderColor
+        self.textFieldTextColor = textFieldTextColor
+        self.textFieldFont = textFieldFont
+        self.textFieldUnderlineColor = textFieldUnderlineColor
+        self.actionSheetItemColor = actionSheetItemColor
+        self.actionSheetTextColor = actionSheetTextColor
+        self.actionSheetRemoveTextColor = actionSheetRemoveTextColor
+        self.actionSheetCancelTextColor = actionSheetCancelTextColor
+    }
+    
+    public var statusBarStyle: UIStatusBarStyle
+    
+    public var leftBarButtonTintColor: UIColor
+    public var rightBarButtonTintColor: UIColor
+    public var rightBarButtonDisabledTintColor: UIColor
+    public var navigationBarTintColor: UIColor
+    public var navigationBarShadowColor: UIColor
+
+    public var backgroundColor: UIColor
+    public var textFieldPlaceholderColor: UIColor
+    public var textFieldTextColor: UIColor
+    public var textFieldFont: UIFont
+    public var textFieldUnderlineColor: UIColor
+    
+    public var actionSheetItemColor: UIColor
+    public var actionSheetTextColor: UIColor
+    public var actionSheetRemoveTextColor: UIColor
+    public var actionSheetCancelTextColor: UIColor
 }

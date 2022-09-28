@@ -136,14 +136,14 @@ open class SBUUserListViewModel: NSObject  {
         }
         
         if self.channelType == .group {
-            SendbirdChat.add(
-                self as GroupChannelDelegate,
-                identifier: "\(SBUConstant.channelDelegateIdentifier).\(self.description)"
+            SendbirdChat.addChannelDelegate(
+                self,
+                identifier: "\(SBUConstant.groupChannelDelegateIdentifier).\(self.description)"
             )
         } else if self.channelType == .open {
-            SendbirdChat.add(
-                self as OpenChannelDelegate,
-                identifier: "\(SBUConstant.channelDelegateIdentifier).\(self.description)"
+            SendbirdChat.addChannelDelegate(
+                self,
+                identifier: "\(SBUConstant.groupChannelDelegateIdentifier).\(self.description)"
             )
         }
         
@@ -153,7 +153,7 @@ open class SBUUserListViewModel: NSObject  {
     
     deinit {
         SendbirdChat.removeChannelDelegate(
-            forIdentifier: "\(SBUConstant.channelDelegateIdentifier).\(self.description)"
+            forIdentifier: "\(SBUConstant.groupChannelDelegateIdentifier).\(self.description)"
         )
     }
     
@@ -288,7 +288,6 @@ open class SBUUserListViewModel: NSObject  {
             }
             guard let members = members?.sbu_convertUserList() else { return }
             SBULog.info("[Response] \(members.count) members")
-            guard !members.isEmpty else { return }
 
             self.userList += members
             self.delegate?.userListViewModel(self, didChangeUsers: self.userList, needsToReload: true)
@@ -328,7 +327,6 @@ open class SBUUserListViewModel: NSObject  {
             }
             guard let operators = operators?.sbu_convertUserList() else { return }
             SBULog.info("[Response] \(operators.count) operators")
-            guard !operators.isEmpty else { return }
 
             self.userList += operators
             self.delegate?.userListViewModel(self, didChangeUsers: self.userList, needsToReload: true)
@@ -368,7 +366,6 @@ open class SBUUserListViewModel: NSObject  {
             }
             guard let members = members?.sbu_convertUserList() else { return }
             SBULog.info("[Response] \(members.count) members")
-            guard !members.isEmpty else { return }
 
             self.userList += members
             self.delegate?.userListViewModel(self, didChangeUsers: self.userList, needsToReload: true)
@@ -409,7 +406,6 @@ open class SBUUserListViewModel: NSObject  {
             }
             guard let members = members?.sbu_convertUserList() else { return }
             SBULog.info("[Response] \(members.count) members")
-            guard !members.isEmpty else { return }
 
             self.userList += members.sbu_updateOperatorStatus(channel: channel)
             self.delegate?.userListViewModel(self, didChangeUsers: self.userList, needsToReload: true)
@@ -450,7 +446,6 @@ open class SBUUserListViewModel: NSObject  {
             }
             guard let users = users?.sbu_convertUserList() else { return }
             SBULog.info("[Response] \(users.count) users")
-            guard !users.isEmpty else { return }
 
             self.userList += users
             self.delegate?.userListViewModel(self, didChangeUsers: self.userList, needsToReload: true)
@@ -490,7 +485,6 @@ open class SBUUserListViewModel: NSObject  {
             }
             guard let participants = participants?.sbu_convertUserList() else { return }
             SBULog.info("[Response] \(participants.count) participants")
-            guard !participants.isEmpty else { return }
 
             self.userList += participants.sbu_updateOperatorStatus(channel: channel)
             self.delegate?.userListViewModel(self, didChangeUsers: self.userList, needsToReload: true)
@@ -517,7 +511,10 @@ open class SBUUserListViewModel: NSObject  {
     }
     
     /// This function resets the user list.
-    public func resetUserList() {
+    public func resetUserList(channel: BaseChannel? = nil) {
+        if let channel = channel {
+            self.channel = channel
+        }
         self.loadNextUserList(reset: true, users: self.customizedUsers)
     }
     
@@ -659,27 +656,27 @@ extension SBUUserListViewModel: BaseChannelDelegate {
     public func channel(_ channel: BaseChannel, userWasMuted user: RestrictedUser) {
         guard self.userListType != .members,
               self.userListType != .participants else { return }
-        self.resetUserList()
+        self.resetUserList(channel: channel)
     }
     public func channel(_ channel: BaseChannel, userWasUnmuted user: User) {
         guard self.userListType != .members,
               self.userListType != .participants else { return }
-        self.resetUserList()
+        self.resetUserList(channel: channel)
     }
     public func channelDidUpdateOperators(_ channel: BaseChannel) {
         guard self.userListType != .members,
               self.userListType != .participants else { return }
-        self.resetUserList()
+        self.resetUserList(channel: channel)
     }
     public func channel(_ channel: BaseChannel, userWasBanned user: RestrictedUser) {
         guard self.userListType != .members,
               self.userListType != .participants else { return }
-        self.resetUserList()
+        self.resetUserList(channel: channel)
     }
     public func channel(_ channel: BaseChannel, userWasUnbanned user: User) {
         guard self.userListType != .members,
               self.userListType != .participants else { return }
-        self.resetUserList()
+        self.resetUserList(channel: channel)
     }
     
     public func channelWasDeleted(_ channelURL: String, channelType: ChannelType) {
@@ -689,11 +686,11 @@ extension SBUUserListViewModel: BaseChannelDelegate {
 
 extension SBUUserListViewModel: GroupChannelDelegate {
     open func channel(_ channel: GroupChannel, userDidJoin user: User) {
-        self.resetUserList()
+        self.resetUserList(channel: channel)
     }
     
     open func channel(_ channel: GroupChannel, userDidLeave user: User) {
-        self.resetUserList()
+        self.resetUserList(channel: channel)
     }
 }
 

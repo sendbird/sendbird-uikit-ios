@@ -40,9 +40,11 @@ open class SBUEmptyView: SBUView {
          retryButton.addTarget(self, action: #selector(onClickRetry), for: .touchUpInside)
          return retryButton
      }()
+    
+    public var isOverlay = false
+    
 
     // MARK: - Properties (Private)
-    var isOverlay = false
     
     lazy var stackView: UIStackView = {
         let stackView = UIStackView()

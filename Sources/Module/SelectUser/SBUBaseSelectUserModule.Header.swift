@@ -51,8 +51,8 @@ extension SBUBaseSelectUserModule {
         
         // MARK: - UI properties (Private)
         func defaultTitleView() -> SBUNavigationTitleView? { return nil }
-        func defaultLeftButton() -> UIBarButtonItem? { return nil }
-        func defaultRightButton() -> UIBarButtonItem? { return nil }
+        func defaultLeftBarButton() -> UIBarButtonItem? { return nil }
+        func defaultRightBarButton() -> UIBarButtonItem? { return nil }
         
         
         // MARK: - Logic properties (Public)
@@ -77,10 +77,10 @@ extension SBUBaseSelectUserModule {
                 self.titleView = self.defaultTitleView()
             }
             if self.leftBarButton == nil {
-                self.leftBarButton = self.defaultLeftButton()
+                self.leftBarButton = self.defaultLeftBarButton()
             }
             if self.rightBarButton == nil {
-                self.rightBarButton = self.defaultRightButton()
+                self.rightBarButton = self.defaultRightBarButton()
             }
         }
         

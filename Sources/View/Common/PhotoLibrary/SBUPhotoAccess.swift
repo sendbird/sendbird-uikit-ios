@@ -35,7 +35,7 @@ public enum SBUPhotoAccessibleStatus: Int, Hashable {
     case denied
     case none
 
-    static func from(_ authorization: PHAuthorizationStatus) -> Self {
+    public static func from(_ authorization: PHAuthorizationStatus) -> Self {
         switch authorization {
         case .notDetermined: return .notDetermined
         case .restricted: return .restricted

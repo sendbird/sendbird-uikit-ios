@@ -12,6 +12,16 @@ import SendbirdChatSDK
 @available(*, deprecated, renamed: "SBUGroupChannelViewController") // 3.0.0
 public typealias SBUChannelViewController = SBUGroupChannelViewController
 
+@available(*, deprecated, renamed: "SBUGroupChannelViewModelDataSource") // 3.0.0
+public typealias SBUChannelViewModelDataSource = SBUGroupChannelViewModelDataSource
+
+@available(*, deprecated, renamed: "SBUGroupChannelViewModelDelegate") // 3.0.0
+public typealias SBUChannelViewModelDelegate = SBUGroupChannelViewModelDelegate
+
+@available(*, deprecated, renamed: "SBUGroupChannelViewModel") // 3.0.0
+public typealias SBUChannelViewModel = SBUGroupChannelViewModel
+
+
 extension SBUGroupChannelViewController {
     @available(*, deprecated, message: "This property has been moved to `SBUGroupChannelModule.List`.", renamed: "listComponent.adminMessageCell")
     public var adminMessageCell: SBUBaseMessageCell? {

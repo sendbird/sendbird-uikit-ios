@@ -10,7 +10,7 @@ import UIKit
 
 // MARK: SBUInviteUserModule
 
-public class SBUInviteUserModule {
+open class SBUInviteUserModule {
     // MARK: Properties (Public)
     public var headerComponent: SBUInviteUserModule.Header? {
         get { _headerComponent ?? SBUInviteUserModule.Header() }

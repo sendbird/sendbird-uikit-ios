@@ -18,10 +18,17 @@ public class SBUModuleSet {
     
     // Channel list
     /// The module for the list of group channels.
-    public static var channelListModule: SBUGroupChannelListModule {
-        get { return shared.channelListModule }
-        set { shared.channelListModule = newValue }
+    public static var groupChannelListModule: SBUGroupChannelListModule {
+        get { return shared.groupChannelListModule }
+        set { shared.groupChannelListModule = newValue }
     }
+    /// The module for the list of open channels.
+    public static var openChannelListModule: SBUOpenChannelListModule {
+        get { return shared.openChannelListModule }
+        set { shared.openChannelListModule = newValue }
+    }
+    
+    
     
     // Channel
     /// The module for base channel.
@@ -85,6 +92,11 @@ public class SBUModuleSet {
         set { shared.createChannelModule = newValue }
     }
     
+    public static var createOpenChannelModule: SBUCreateOpenChannelModule {
+        get { shared.createOpenChannelModule }
+        set { shared.createOpenChannelModule = newValue }
+    }
+    
     // Channel settings
     /// The module for a group channel settings
     public static var groupChannelSettingsModule: SBUGroupChannelSettingsModule {
@@ -118,7 +130,8 @@ public class SBUModuleSet {
     
     
     // MARK: - Initialize
-    public init(channelListModule: SBUGroupChannelListModule = SBUGroupChannelListModule(),
+    public init(groupChannelListModule: SBUGroupChannelListModule = SBUGroupChannelListModule(),
+                openChannelListModule: SBUOpenChannelListModule = SBUOpenChannelListModule(),
                 baseChannelModule: SBUBaseChannelModule = SBUBaseChannelModule(),
                 groupChannelModule: SBUGroupChannelModule = SBUGroupChannelModule(),
                 openChannelModule: SBUOpenChannelModule = SBUOpenChannelModule(),
@@ -129,12 +142,14 @@ public class SBUModuleSet {
                 openUserListModule: SBUUserListModule = SBUUserListModule(),
                 groupChannelPushSettingsModule: SBUGroupChannelPushSettingsModule = SBUGroupChannelPushSettingsModule(),
                 createChannelModule: SBUCreateChannelModule = SBUCreateChannelModule(),
+                createOpenChannelModule: SBUCreateOpenChannelModule = SBUCreateOpenChannelModule(),
                 groupChannelSettingsModule: SBUGroupChannelSettingsModule = SBUGroupChannelSettingsModule(),
                 openChannelSettingsModule: SBUOpenChannelSettingsModule = SBUOpenChannelSettingsModule(),
                 groupModerationsModule: SBUModerationsModule = SBUModerationsModule(),
                 openModerationsModule: SBUModerationsModule = SBUModerationsModule(),
                 messageSearchModule: SBUMessageSearchModule = SBUMessageSearchModule()) {
-        self.channelListModule = channelListModule
+        self.groupChannelListModule = groupChannelListModule
+        self.openChannelListModule = openChannelListModule
         
         self.baseChannelModule = baseChannelModule
         self.groupChannelModule = groupChannelModule
@@ -151,6 +166,7 @@ public class SBUModuleSet {
         self.groupChannelPushSettingsModule = groupChannelPushSettingsModule
         
         self.createChannelModule = createChannelModule
+        self.createOpenChannelModule = createOpenChannelModule
         
         self.groupChannelSettingsModule = groupChannelSettingsModule
         self.openChannelSettingsModule = openChannelSettingsModule
@@ -163,7 +179,8 @@ public class SBUModuleSet {
     
     
     // MARK: - Category
-    private var channelListModule: SBUGroupChannelListModule
+    private var groupChannelListModule: SBUGroupChannelListModule
+    private var openChannelListModule: SBUOpenChannelListModule
     
     private var baseChannelModule: SBUBaseChannelModule
     private var groupChannelModule: SBUGroupChannelModule
@@ -180,6 +197,7 @@ public class SBUModuleSet {
     private var groupChannelPushSettingsModule: SBUGroupChannelPushSettingsModule
     
     private var createChannelModule: SBUCreateChannelModule
+    private var createOpenChannelModule: SBUCreateOpenChannelModule
     
     private var groupChannelSettingsModule: SBUGroupChannelSettingsModule
     private var openChannelSettingsModule: SBUOpenChannelSettingsModule
@@ -192,7 +210,7 @@ public class SBUModuleSet {
 
 
 extension SBUModuleSet {
-    @available(*, unavailable, renamed: "init(channelListModule:baseChannelModule:groupChannelModule:openChannelModule:inviteUserModule:groupRegisterOperatorModule:openRegisterOperatorModule:groupUserListModule:openUserListModule:groupChannelPushSettingsModule:createChannelModule:groupChannelSettingsModule:openChannelSettingsModule:groupModerationsModule:openModerationsModule:messageSearchModule:)") // 3.1.0
+    @available(*, unavailable, renamed: "init(groupChannelListModule:openChannelListModule:baseChannelModule:groupChannelModule:openChannelModule:inviteUserModule:groupRegisterOperatorModule:openRegisterOperatorModule:groupUserListModule:openUserListModule:groupChannelPushSettingsModule:createChannelModule:groupChannelSettingsModule:openChannelSettingsModule:groupModerationsModule:openModerationsModule:messageSearchModule:)") // 3.1.0
     public convenience init(channelListModule: SBUGroupChannelListModule = SBUGroupChannelListModule(),
                 baseChannelModule: SBUBaseChannelModule = SBUBaseChannelModule(),
                 groupChannelModule: SBUGroupChannelModule = SBUGroupChannelModule(),
@@ -208,7 +226,8 @@ extension SBUModuleSet {
                 messageSearchModule: SBUMessageSearchModule = SBUMessageSearchModule()) {
         
         self.init(
-            channelListModule: SBUGroupChannelListModule(),
+            groupChannelListModule: SBUGroupChannelListModule(),
+            openChannelListModule: SBUOpenChannelListModule(),
             baseChannelModule: SBUBaseChannelModule(),
             groupChannelModule: SBUGroupChannelModule(),
             openChannelModule: SBUOpenChannelModule(),
@@ -219,6 +238,7 @@ extension SBUModuleSet {
             openUserListModule: SBUUserListModule(),
             groupChannelPushSettingsModule: SBUGroupChannelPushSettingsModule(),
             createChannelModule: SBUCreateChannelModule(),
+            createOpenChannelModule: SBUCreateOpenChannelModule(),
             groupChannelSettingsModule: SBUGroupChannelSettingsModule(),
             openChannelSettingsModule: SBUOpenChannelSettingsModule(),
             groupModerationsModule: SBUModerationsModule(),

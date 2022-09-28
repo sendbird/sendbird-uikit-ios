@@ -10,7 +10,7 @@ import UIKit
 import SendbirdChatSDK
 
 
-/// Event methods for the views updates and performing actions from the list component in the channel push settings..
+/// Event methods for the views updates and performing actions from the list component in the channel push settings.
 public protocol SBUGroupChannelPushSettingsModuleListDelegate: SBUCommonDelegate {
     /// Called when changed push notification option
     /// - Parameters:

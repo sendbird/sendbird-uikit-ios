@@ -11,7 +11,7 @@ import UIKit
 // MARK: SBUMessageSearchModule
 
 /// The class that represents the message search module.
-public class SBUMessageSearchModule {
+open class SBUMessageSearchModule {
     // MARK: Properties (Public)
     
     /// The module component that contains `titleView`, `leftBarButton`, and `rightBarButton`.

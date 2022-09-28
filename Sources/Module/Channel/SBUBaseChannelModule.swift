@@ -11,7 +11,7 @@ import UIKit
 // MARK: SBUBaseChannelModule
 
 /// The class that represents the base of the channel module
-public class SBUBaseChannelModule {
+open class SBUBaseChannelModule {
     // MARK: Properties (Public)
     
     /// The module component that contains `titleView`, `leftBarButton`, and `rightBarButton`

@@ -11,6 +11,6 @@ import UIKit
 // MARK: SBUBaseChannelSettingsModule
 
 /// The class that represents the base of channel setting module.
-public class SBUBaseChannelSettingsModule {
+open class SBUBaseChannelSettingsModule {
 }
 

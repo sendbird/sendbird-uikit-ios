@@ -31,6 +31,9 @@ public class SBUIconSet {
     public static var iconChat: UIImage = SBUIconSetType.iconChat.load() {
         didSet { SBUIconSetType.iconChat.markCustomized() }
     }
+    public static var iconChannels: UIImage = SBUIconSetType.iconChannels.load() {
+        didSet { SBUIconSetType.iconChannels.markCustomized() }
+    }
     public static var iconCheckboxChecked: UIImage = SBUIconSetType.iconCheckboxChecked.load() {
         didSet { SBUIconSetType.iconCheckboxChecked.markCustomized() }
     }

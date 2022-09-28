@@ -31,7 +31,8 @@ class SBUConstant {
     
     static let bundleIdentifier = "com.sendbird.uikit"
     
-    static let channelDelegateIdentifier = "\(bundleIdentifier).delegate.channel"
+    static let groupChannelDelegateIdentifier = "\(bundleIdentifier).delegate.channel.group"
+    static let openChannelDelegateIdentifier = "\(bundleIdentifier).delegate.channel.open"
     
     static let connectionDelegateIdentifier = "\(bundleIdentifier).delegate.connection"
     

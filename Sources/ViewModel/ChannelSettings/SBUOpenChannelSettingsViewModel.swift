@@ -36,9 +36,9 @@ open class SBUOpenChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
         
         self.delegate = delegate
         
-        SendbirdChat.add(
-            self as OpenChannelDelegate,
-            identifier: "\(SBUConstant.channelDelegateIdentifier).\(self.description)"
+        SendbirdChat.addChannelDelegate(
+            self,
+            identifier: "\(SBUConstant.groupChannelDelegateIdentifier).\(self.description)"
         )
         
         if let channel = channel {

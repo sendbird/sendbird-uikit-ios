@@ -1,5 +1,54 @@
 # Changelog
 
+### v3.2.0 (Sep 21, 2022) with Chat SDK **v4.0.13**
+* Support **Open channel list** features
+    * Added classes
+        * `SBUOpenChannelListViewController`
+        * `SBUOpenChannelCell`
+        * `SBUOpenChannelListViewModel`
+        * `SBUOpenChannelListModule`, `SBUOpenChannelListModule.Header` and `SBUOpenChannelListModule.List`
+    * Added `OpenChannelListViewController` in `SBUViewControllerSet`
+    * Added `openChannelListModule` in `SBUModuleSet`    
+    * Added `openChannelListTheme` and `openChannelCellTheme` in `SBUTheme`
+    * Added `isPullToRefreshEnabled` property in `SBUBaseChannelListModule.List`
+    * Added `pullToRefresh(_:)` function in `SBUBaseChannelListModule.List`
+    * Added `baseChannelListModuleDidSelectRefresh(_:)` protocol in `SBUBaseChannelListModuleListDelegate`
+    * Added `iconChannels` in `SBUIconSetType`
+    * Supported openChannelList feature on `moveToChannel` function in `SendbirdUI`
+* Support **Create open channel** features
+    * Added classes
+        * `SBUCreateOpenChannelViewController`
+        * `SBUCreateOpenChannelViewModel`
+        * `SBUCreateOpenChannelModule`, `SBUCreateOpenChannelModule.Header` and `SBUCreateOpenChannelModule.ProfileInput`
+    * Added `CreateOpenChannelViewController` in `SBUViewControllerSet`
+    * Added `createOpenChannelModule` in `SBUModuleSet`
+    * Added `createOpenChannelTheme` in `SBUTheme`
+    * Added `openChannelParamsCreateBuilder` in `SBUGlobalCustomParams`
+    * Added create open channel related Strings in `SBUStringSet` 
+        * `CreateOpenChannel_Create`, `CreateOpenChannel_Header_Title`, `CreateOpenChannel_ProfileInput_Placeholder`
+    * Added `user` object in `SBUUser` for accessing ChatSDK's user 
+* Added  `openChannelModule(_:didTapMediaView:)` in `OpenChannelModuleMediaDelegate` method.
+* Added `UITextField` related classes 
+    * `UITextField+SBUIKit`
+    * `SBUUnderLineTextField`
+* Added `tag` parameter in `SBUCommonItem`
+* Added `delete` case in `MediaResourceType`
+* Added `SBUBaseChannelListViewModel`
+* Added `SBUBaseChannelListModule`, `SBUBaseChannelListModule.Header`, `SBUBaseChannelListModule.List` classes
+* Renamed `SBUGroupChannelListModuleListDelegate` functions
+    * `channelListModule(_:didSelectRowAt:)` to `groupChannelListModule(_:didSelectRowAt:)`
+    * `channelListModule(_:didDetectPreloadingPosition:)` to `groupChannelListModule(_:didDetectPreloadingPosition:)`
+    * `channelListModule(_:didSelectLeave:)` to `groupChannelListModule(_:didSelectLeave:)`
+    * `channelListModule(_:didChangePushTriggerOption:channel:)` to `groupChannelListModule(_:didChangePushTriggerOption:channel:)`
+    * `channelListModuleDidSelectRetry(_:)` to `groupChannelListModuleDidSelectRetry(_:)`
+* Renamed `SBUGroupChannelListModuleListDataSource` function
+    * `channelListModule(_:channelsInTableView:)` to `groupChannelListModule(_:channelsInTableView:)`
+* Renamed `channelListModule` in `SBUModuleSet` to `groupChannelListModule`
+* Renmaed `defaultLeftButton`, `defaultRightButton` to `defaultLeftBarButton`, `defaultRightBarButton`
+* Replaced `setPlaceholderImage(iconSize:)` to `setPlaceholder(type:iconSize:)` in `SBUCoverImageView`
+    * Added `setPlaceholder(type:iconSize:)`
+    * Deprecated `setPlaceholderImage(iconSize:)`
+
 ### v3.1.3 (Sep 15, 2022) with Chat SDK **v4.0.12**
 * Improved stability
 

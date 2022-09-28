@@ -62,7 +62,7 @@ extension SBUCreateChannelModule {
             return titleView
         }
         
-        override func defaultLeftButton() -> UIBarButtonItem {
+        override func defaultLeftBarButton() -> UIBarButtonItem {
             let backButton = SBUBarButtonItem.backButton(
                 vc: self,
                 selector: #selector(onTapLeftBarButton)
@@ -70,7 +70,7 @@ extension SBUCreateChannelModule {
             return backButton
         }
         
-        override func defaultRightButton() -> UIBarButtonItem {
+        override func defaultRightBarButton() -> UIBarButtonItem {
             let createChannelButton =  UIBarButtonItem(
                 title: SBUStringSet.CreateChannel_Create(0),
                 style: .plain,

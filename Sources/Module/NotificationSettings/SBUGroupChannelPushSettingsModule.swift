@@ -8,7 +8,7 @@
 
 import UIKit
 
-public class SBUGroupChannelPushSettingsModule {
+open class SBUGroupChannelPushSettingsModule {
     // MARK: Properties (Public)
     
     public var headerComponent: SBUGroupChannelPushSettingsModule.Header? {

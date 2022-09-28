@@ -210,6 +210,13 @@ public class SBUStringSet {
     public static var CreateChannel_Header_Title = "New Channel"
     public static var CreateChannel_Header_Select_Members = "Select members"
     public static var CreateChannel_Header_Title_Profile = "New channel profile"
+    
+    
+    // MARK: - Create Open Channel
+    public static var CreateOpenChannel_Create = "Create"
+    public static var CreateOpenChannel_Header_Title = "New channel"
+    public static var CreateOpenChannel_ProfileInput_Placeholder = "Enter channel name"
+    
 
     // MARK: - Invite Channel
     public static var InviteChannel_Header_Title = "Invite users"

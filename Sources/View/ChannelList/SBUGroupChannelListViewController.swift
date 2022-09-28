@@ -9,17 +9,24 @@
 import UIKit
 import SendbirdChatSDK
 
+
 @objcMembers
 open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, SBUGroupChannelListModuleHeaderDelegate, SBUGroupChannelListModuleListDelegate, SBUGroupChannelListModuleListDataSource, SBUCreateChannelTypeSelectorDelegate, SBUCommonViewModelDelegate, SBUGroupChannelListViewModelDelegate {
     
-    // MARK: - UI properties (Public)
-    public var headerComponent: SBUGroupChannelListModule.Header?
-    public var listComponent: SBUGroupChannelListModule.List?
-    public lazy var createChannelTypeSelector: UIView? = nil
+    // MARK: - UI Properties (Public)
+    public var headerComponent: SBUGroupChannelListModule.Header? {
+        get { self.baseHeaderComponent as? SBUGroupChannelListModule.Header }
+        set { self.baseHeaderComponent = newValue }
+    }
+    public var listComponent: SBUGroupChannelListModule.List? {
+        get { self.baseListComponent as? SBUGroupChannelListModule.List }
+        set { self.baseListComponent = newValue }
+    }
     
-    // Theme
     @SBUThemeWrapper(theme: SBUTheme.channelListTheme)
     public var theme: SBUChannelListTheme
+
+    public lazy var createChannelTypeSelector: UIView? = nil
     
     
     // MARK: - UI properties (Private)
@@ -31,7 +38,10 @@ open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, 
     
     
     // MARK: - Logic properties (Public)
-    public var viewModel: SBUGroupChannelListViewModel?
+    public var viewModel: SBUGroupChannelListViewModel? {
+        get { self.baseViewModel as? SBUGroupChannelListViewModel }
+        set { self.baseViewModel = newValue }
+    }
     
     /// This object has a list of all channels.
     public var channelList: [GroupChannel] { self.viewModel?.channelList ?? [] }
@@ -59,8 +69,8 @@ open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, 
         super.init(nibName: nil, bundle: nil)
         
         self.createViewModel(channelListQuery: nil)
-        self.headerComponent = SBUModuleSet.channelListModule.headerComponent
-        self.listComponent = SBUModuleSet.channelListModule.listComponent
+        self.headerComponent = SBUModuleSet.groupChannelListModule.headerComponent
+        self.listComponent = SBUModuleSet.groupChannelListModule.listComponent
     }
     
     /// You can initialize the class through this function.
@@ -81,8 +91,8 @@ open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, 
         SBULog.info("")
         
         self.createViewModel(channelListQuery: channelListQuery)
-        self.headerComponent = SBUModuleSet.channelListModule.headerComponent
-        self.listComponent = SBUModuleSet.channelListModule.listComponent
+        self.headerComponent = SBUModuleSet.groupChannelListModule.headerComponent
+        self.listComponent = SBUModuleSet.groupChannelListModule.listComponent
     }
     
     open override func viewDidLoad() {
@@ -125,23 +135,17 @@ open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, 
         // Header component
         self.headerComponent?.configure(delegate: self, theme: self.theme)
         
-        self.navigationItem.titleView = self.headerComponent?.titleView
-        self.navigationItem.leftBarButtonItem = self.headerComponent?.leftBarButton
-        self.navigationItem.rightBarButtonItem = self.headerComponent?.rightBarButton
-        
         // List component
         self.listComponent?.configure(delegate: self, dataSource: self, theme: self.theme)
         
-        if let listComponent = self.listComponent {
-            self.view.addSubview(listComponent)
-        }
-        
         // Channel type selector
         self.loadChannelTypeSelector()
+        
+        super.setupViews()
     }
     
     open override func setupLayouts() {
-        self.listComponent?.sbu_constraint(equalTo: self.view, left: 0, right: 0, top: 0, bottom: 0)
+        super.setupLayouts()
         
         if let view = self.navigationController?.view,
            let createChannelTypeSelector = self.createChannelTypeSelector {
@@ -172,9 +176,7 @@ open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, 
     }
     
     open override func updateStyles() {
-        self.setupStyles()
-        
-        self.listComponent?.reloadTableView()
+        super.updateStyles()
     }
 
     
@@ -253,63 +255,67 @@ open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, 
     
 
     // MARK: - SBUGroupChannelListModuleHeaderDelegate
-    open func channelListModule(_ headerComponent: SBUGroupChannelListModule.Header,
+    open func baseChannelListModule(_ headerComponent: SBUBaseChannelListModule.Header,
                                 didUpdateTitleView titleView: UIView?) {
         self.navigationItem.titleView = titleView
     }
     
-    open func channelListModule(_ headerComponent: SBUGroupChannelListModule.Header,
+    open func baseChannelListModule(_ headerComponent: SBUBaseChannelListModule.Header,
                                 didUpdateLeftItem leftItem: UIBarButtonItem?) {
         self.navigationItem.leftBarButtonItem = leftItem
     }
     
-    open func channelListModule(_ headerComponent: SBUGroupChannelListModule.Header,
+    open func baseChannelListModule(_ headerComponent: SBUBaseChannelListModule.Header,
                                 didUpdateRightItem rightItem: UIBarButtonItem?) {
         self.navigationItem.rightBarButtonItem = rightItem
     }
     
-    open func channelListModule(_ headerComponent: SBUGroupChannelListModule.Header,
+    open func baseChannelListModule(_ headerComponent: SBUBaseChannelListModule.Header,
                                 didTapLeftItem leftItem: UIBarButtonItem) {
         self.onClickBack()
     }
     
-    open func channelListModule(_ headerComponent: SBUGroupChannelListModule.Header,
+    open func baseChannelListModule(_ headerComponent: SBUBaseChannelListModule.Header,
                                 didTapRightItem rightItem: UIBarButtonItem) {
         self.showCreateChannelOrTypeSelector()
     }
     
     
     // MARK: - SBUGroupChannelListModuleListDelegate
-    open func channelListModule(_ listComponent: SBUGroupChannelListModule.List,
+    open func baseChannelListModule(_ listComponent: SBUBaseChannelListModule.List,
                                 didSelectRowAt indexPath: IndexPath) {
         guard let channel = self.viewModel?.channelList[indexPath.row] else { return }
         self.showChannel(channelURL: channel.channelURL)
     }
     
-    open func channelListModule(_ listComponent: SBUGroupChannelListModule.List,
+    open func baseChannelListModule(_ listComponent: SBUBaseChannelListModule.List,
+                                didDetectPreloadingPosition indexPath: IndexPath) {
+        self.viewModel?.loadNextChannelList(reset: false)
+    }
+    
+    open func baseChannelListModuleDidSelectRetry(_ listComponent: SBUBaseChannelListModule.List) {
+        self.viewModel?.initChannelList()
+    }
+    
+    public func baseChannelListModuleDidSelectRefresh(_ listComponent: SBUBaseChannelListModule.List) {
+        self.viewModel?.loadNextChannelList(reset: true)
+    }
+    
+    open func groupChannelListModule(_ listComponent: SBUGroupChannelListModule.List,
                                 didSelectLeave channel: GroupChannel) {
         self.viewModel?.leaveChannel(channel)
     }
     
-    open func channelListModule(_ listComponent: SBUGroupChannelListModule.List,
+    open func groupChannelListModule(_ listComponent: SBUGroupChannelListModule.List,
                                 didChangePushTriggerOption option: GroupChannelPushTriggerOption,
                                 channel: GroupChannel) {
         self.viewModel?.changePushTriggerOption(option: option, channel: channel)
     }
     
-    open func channelListModule(_ listComponent: SBUGroupChannelListModule.List,
-                                didDetectPreloadingPosition indexPath: IndexPath) {
-        self.viewModel?.loadNextChannelList(reset: false)
-    }
-    
-    open func channelListModuleDidSelectRetry(_ listComponent: SBUGroupChannelListModule.List) {
-        self.viewModel?.initChannelList()
-    }
-    
     
     // MARK: - SBUGroupChannelListModuleListDataSource
-    open func channelListModule(_ listComponent: SBUGroupChannelListModule.List,
-                                channelsInTableView tableView: UITableView) -> [GroupChannel]? {
+    open func baseChannelListModule(_ listComponent: SBUBaseChannelListModule.List,
+                                channelsInTableView tableView: UITableView) -> [BaseChannel]? {
         return self.viewModel?.channelList
     }
     

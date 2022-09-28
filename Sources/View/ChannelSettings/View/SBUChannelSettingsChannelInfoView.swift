@@ -161,17 +161,17 @@ public class SBUChannelSettingsChannelInfoView: SBUView {
         self.channel = channel
         
         guard let channel = self.channel else {
-            self.coverImage.setPlaceholderImage(iconSize: CGSize(width: 46, height: 46))
+            self.coverImage.setPlaceholder(type: .iconUser)
             return
         }
         
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             if channel is OpenChannel {
-                if let coverURL = channel.coverURL {
-                    self.coverImage.setImage(withCoverURL: coverURL)
+                if let url = channel.coverURL, SBUUtils.isValid(coverURL: url) {
+                    self.coverImage.setImage(withCoverURL: url)
                 } else {
-                    self.coverImage.setPlaceholderImage(iconSize: CGSize(width: 46, height: 46))
+                    self.coverImage.setPlaceholder(type: .iconChannels)
                 }
             } else if let channel = channel as? GroupChannel {
                 if let coverURL = channel.coverURL,
@@ -182,7 +182,7 @@ public class SBUChannelSettingsChannelInfoView: SBUView {
                 } else if channel.members.count > 0 {
                     self.coverImage.setImage(withUsers: channel.members)
                 } else {
-                    self.coverImage.setPlaceholderImage(iconSize: CGSize(width: 46, height: 46))
+                    self.coverImage.setPlaceholder(type: .iconUser)
                 }
             }
         }

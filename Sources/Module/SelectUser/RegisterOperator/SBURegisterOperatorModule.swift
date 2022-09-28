@@ -10,7 +10,7 @@ import UIKit
 
 // MARK: SBURegisterOperatorModule
 
-public class SBURegisterOperatorModule {
+open class SBURegisterOperatorModule {
     // MARK: Properties (Public)
     public var headerComponent: SBURegisterOperatorModule.Header? {
         get { _headerComponent ?? SBURegisterOperatorModule.Header() }

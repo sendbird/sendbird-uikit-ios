@@ -11,7 +11,16 @@ import SendbirdChatSDK
 
 
 /// Event methods for the views updates and performing actions from the media component in the open channel.
-public protocol SBUOpenChannelModuleMediaDelegate: AnyObject { }
+public protocol SBUOpenChannelModuleMediaDelegate: AnyObject {
+    /// Called when `mediaView` was tapped.
+    /// - Parameters:
+    ///   - mediaComponent: ``SBUOpenChannelModule/Media`` object in ``SBUOpenChannelModule``
+    ///   - mediaView: Tapped `mediaView` object.
+    func openChannelModule(
+        _ mediaComponent: SBUOpenChannelModule.Media,
+        didTapMediaView mediaView: UIView
+    )
+}
 
 extension SBUOpenChannelModule {
     /// The `SBUOpenChannelModule`'s component class that represents media.
@@ -37,11 +46,18 @@ extension SBUOpenChannelModule {
             setupViews()
             setupLayouts()
             setupStyles()
-            
         }
         
         /// Set values of the views in the input component when it needs.
         open func setupViews() {
+            let tap = UITapGestureRecognizer(
+                target: self,
+                action: #selector(self.onTapMediaView(_:))
+            )
+            self.mediaView.addGestureRecognizer(tap)
+            self.mediaView.isUserInteractionEnabled = true
+            
+            self.isUserInteractionEnabled = true
             self.addSubview(mediaView)
         }
         
@@ -57,6 +73,13 @@ extension SBUOpenChannelModule {
             if let theme = theme {
                 self.theme = theme
             }
+        }
+        
+        // MARK: - Actions
+        
+        /// The action of ``SBUOpenChannelModule/Media/mediaView``. It calls ``SBUOpenChannelModuleMediaDelegate/openChannelModule(_:didTapMediaView:)`` when it's tapped.
+        @objc open func onTapMediaView(_ sender: UITapGestureRecognizer? = nil) {
+            self.delegate?.openChannelModule(self, didTapMediaView: self.mediaView)
         }
     }
 }

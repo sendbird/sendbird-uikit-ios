@@ -11,7 +11,7 @@ import UIKit
 // MARK: SBUUserListModule
 
 /// The class that represents the module for multiple types of the user list.
-public class SBUUserListModule {
+open class SBUUserListModule {
     // MARK: Properties (Public)
     
     /// The module component that contains `titleView`, `leftBarButton`, and `rightBarButton`.

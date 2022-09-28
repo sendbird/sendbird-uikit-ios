@@ -76,37 +76,11 @@ open class SBUGroupChannelPushSettingsViewModel: SBUBaseChannelSettingsViewModel
     
     public func updateChannelPushTriggerOption() {
         guard let channel = self.channel as? GroupChannel else { return }
-        if channel.myPushTriggerOption == .default {
-            SendbirdChat.getPushTriggerOption { [weak self] pushTriggerOption, error in
-                guard let self = self else { return }
-                guard error == nil else {
-                    SBULog.error(error?.description)
-                    return
-                }
-                
-                switch pushTriggerOption {
-                case .all:
-                    self.currentTriggerOption = .all
-                case .mentionOnly:
-                    self.currentTriggerOption = .mentionOnly
-                case .off:
-                    self.currentTriggerOption = .off
-                default:
-                    self.currentTriggerOption = .off
-                }
-
-                self.delegate?.groupChannelPushSettingsViewModel(
-                    self,
-                    didChangeNotification: self.currentTriggerOption
-                )
-            }
-        } else {
-            self.currentTriggerOption = channel.myPushTriggerOption
-            self.delegate?.groupChannelPushSettingsViewModel(
-                self,
-                didChangeNotification: self.currentTriggerOption
-            )
-        }
+        self.currentTriggerOption = channel.myPushTriggerOption
+        self.delegate?.groupChannelPushSettingsViewModel(
+            self,
+            didChangeNotification: self.currentTriggerOption
+        )
     }
 }
 

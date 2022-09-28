@@ -15,6 +15,8 @@ public class SBUUser: NSObject {
     public private(set) var nickname: String?
     public private(set) var profileURL: String?
     
+    public private(set) var user: User? // Chat object
+    
     @available(*, deprecated, renamed: "profileURL") // 3.0.0
     public var profileUrl: String? { self.profileURL }
     
@@ -45,6 +47,7 @@ public class SBUUser: NSObject {
         self.userId = user.userId
         self.nickname = user.nickname
         self.profileURL = user.profileURL
+        self.user = user
     }
     
     /// This function initializes using the user object, operator state, and muted state.
@@ -70,6 +73,8 @@ public class SBUUser: NSObject {
         self.profileURL = member.profileURL
         self.isOperator = member.role == .operator
         self.isMuted = member.isMuted
+        
+        self.user = member
     }
     
     // MARK: - Sender
@@ -80,6 +85,8 @@ public class SBUUser: NSObject {
         self.nickname = sender.nickname
         self.profileURL = sender.profileURL
         self.isOperator = sender.role == .operator
+        
+        self.user = sender
     }
     
     

@@ -440,6 +440,10 @@ open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActio
                 channelType: (self.channel is OpenChannel) ? .open : .group
             ) else { return }
             
+            if let openChannelListVC = channelListVC as? SBUOpenChannelListViewController  {
+                openChannelListVC.reloadChannelList()
+            }
+            
             self.navigationController?.popToViewController(channelListVC, animated: false)
         }
     }

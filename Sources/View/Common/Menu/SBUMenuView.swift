@@ -99,10 +99,6 @@ class SBUMenuView {
             object: nil
         )
         
-        if let oneTimetheme = oneTimetheme {
-            self.theme = oneTimetheme
-        }
-        
         self.window = UIApplication.shared.currentWindow
         guard let window = self.window else { return }
         
@@ -142,20 +138,21 @@ class SBUMenuView {
                 item: items[index],
                 separator: (index != items.count-1),
                 isTop: (index == 0),
-                isBottom: (index == items.count-1)
+                isBottom: (index == items.count-1),
+                theme: oneTimetheme ?? self.theme
             )
             button.tag = index
             var buttonFrame = button.frame
             buttonFrame.origin = CGPoint(x: 0, y: itemOriginY)
             button.frame = buttonFrame
-            button.backgroundColor = theme.backgroundColor
+            button.backgroundColor = oneTimetheme?.backgroundColor ?? theme.backgroundColor
             
             self.baseView.addSubview(button)
             
             itemOriginY += button.frame.height
         }
         
-        self.addShadow()
+        self.addShadow(theme: oneTimetheme ?? theme)
 
         window.addSubview(self.backgroundView)
         window.addSubview(self.baseView)
@@ -188,10 +185,13 @@ class SBUMenuView {
     }
     
     // MARK: Make Buttons
-    private func makeItems(item: SBUMenuItem,
-                           separator: Bool,
-                           isTop: Bool,
-                           isBottom: Bool) -> UIButton {
+    private func makeItems(
+        item: SBUMenuItem,
+        separator: Bool,
+        isTop: Bool,
+        isBottom: Bool,
+        theme: SBUComponentTheme
+    ) -> UIButton {
         
         let itemButton = UIButton(
             frame: CGRect(
@@ -202,7 +202,7 @@ class SBUMenuView {
         
         itemButton.setBackgroundImage(UIImage.from(color: theme.backgroundColor), for: .normal)
         itemButton.setBackgroundImage(UIImage.from(color: theme.highlightedColor), for: .highlighted)
-        itemButton.addTarget(self, action: #selector(onClickMenuButton), for: .touchUpInside) 
+        itemButton.addTarget(self, action: #selector(onClickMenuButton), for: .touchUpInside)
         let imageSize: CGFloat = 24.0
         
         let titleLabel = UILabel()
@@ -261,7 +261,7 @@ class SBUMenuView {
     }
     
     // MARK: Shadow
-    private func addShadow() {
+    private func addShadow(theme: SBUComponentTheme) {
         self.baseView.layer.shadowPath = UIBezierPath(
             roundedRect: self.baseView.bounds,
             cornerRadius: self.baseView.layer.cornerRadius

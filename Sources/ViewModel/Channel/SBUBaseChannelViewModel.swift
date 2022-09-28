@@ -135,8 +135,8 @@ open class SBUBaseChannelViewModel: NSObject {
     public override init() {
         super.init()
         
-        SendbirdChat.add(
-            self as ConnectionDelegate,
+        SendbirdChat.addConnectionDelegate(
+            self,
             identifier: "\(SBUConstant.connectionDelegateIdentifier).\(self.description)"
         )
     }
@@ -151,7 +151,7 @@ open class SBUBaseChannelViewModel: NSObject {
         self.baseDataSource = nil
         
         SendbirdChat.removeChannelDelegate(
-            forIdentifier: "\(SBUConstant.channelDelegateIdentifier).\(self.description)"
+            forIdentifier: "\(SBUConstant.groupChannelDelegateIdentifier).\(self.description)"
         )
         SendbirdChat.removeConnectionDelegate(
             forIdentifier: "\(SBUConstant.connectionDelegateIdentifier).\(self.description)"

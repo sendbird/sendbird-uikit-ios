@@ -152,6 +152,11 @@ class ViewController: UIViewController {
             if SendbirdUI.shortVersion == "[NEXT_VERSION]" {
                 let bundle = Bundle(identifier: "com.sendbird.uikit.sample")
                 return "\(bundle?.infoDictionary?["CFBundleShortVersionString"] ?? "")"
+            } else if SendbirdUI.shortVersion == "0.0.0" {
+                guard let dictionary = Bundle.main.infoDictionary,
+                      let appVersion = dictionary["CFBundleShortVersionString"] as? String,
+                      let build = dictionary["CFBundleVersion"] as? String else {return ""}
+                return "\(appVersion)(\(build))"
             } else {
                 return SendbirdUI.shortVersion
             }
@@ -161,8 +166,8 @@ class ViewController: UIViewController {
         userIdTextField.text = UserDefaults.loadUserID()
         nicknameTextField.text = UserDefaults.loadNickname()
         
-        SendbirdChat.add(self as UserEventDelegate, identifier: self.description)
-        SendbirdChat.add(self as ConnectionDelegate, identifier: self.description)
+        SendbirdChat.addUserEventDelegate(self, identifier: self.description)
+        SendbirdChat.addConnectionDelegate(self, identifier: self.description)
         
         guard userIdTextField.text != nil,
               nicknameTextField.text != nil else { return }

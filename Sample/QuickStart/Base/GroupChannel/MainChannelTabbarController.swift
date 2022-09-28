@@ -43,7 +43,7 @@ class MainChannelTabbarController: UITabBarController {
         
         self.setupStyles()
         
-        SendbirdChat.add(self, identifier: self.sbu_className)
+        SendbirdChat.addUserEventDelegate(self, identifier: self.sbu_className)
         
         self.loadTotalUnreadMessageCount()
     }

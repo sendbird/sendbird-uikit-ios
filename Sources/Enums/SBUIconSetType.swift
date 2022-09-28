@@ -8,13 +8,17 @@
 
 import UIKit
 
-enum SBUIconSetType: String, Hashable {
+
+/// Sendbird's icon set type enumerate.
+/// - Since: 3.2.0
+public enum SBUIconSetType: String, Hashable {
     case iconAdd
     case iconBack
     case iconBan
     case iconBroadcast
     case iconCamera
     case iconChat
+    case iconChannels
     case iconCheckboxChecked
     case iconCheckboxUnchecked
     case iconChevronDown
@@ -88,7 +92,9 @@ enum SBUIconSetType: String, Hashable {
     private static let bundle = Bundle(identifier: SBUConstant.bundleIdentifier)
     
     func load(tintColor: UIColor? = nil) -> UIImage {
-        let image = UIImage(named: self.rawValue, in: SBUIconSetType.bundle, compatibleWith: nil)!
+        guard let image = UIImage(named: self.rawValue, in: SBUIconSetType.bundle, compatibleWith: nil) else {
+            return UIImage()
+        }
         guard let tintColor = tintColor else { return image }
         
         return image.sbu_with(tintColor: tintColor)
@@ -133,6 +139,7 @@ enum SBUIconSetType: String, Hashable {
         case .iconBroadcast: SBUIconSet.iconBroadcast = SBUIconSetType.iconBroadcast.load()
         case .iconCamera: SBUIconSet.iconCamera = SBUIconSetType.iconCamera.load()
         case .iconChat: SBUIconSet.iconChat = SBUIconSetType.iconChat.load()
+        case .iconChannels: SBUIconSet.iconChannels = SBUIconSetType.iconChannels.load()
         case .iconCheckboxChecked: SBUIconSet.iconCheckboxChecked = SBUIconSetType.iconCheckboxChecked.load()
         case .iconCheckboxUnchecked: SBUIconSet.iconCheckboxUnchecked = SBUIconSetType.iconCheckboxUnchecked.load()
         case .iconChevronDown: SBUIconSet.iconChevronDown = SBUIconSetType.iconChevronDown.load()
@@ -199,6 +206,7 @@ enum SBUIconSetType: String, Hashable {
         case .iconBroadcast: return SBUIconSet.iconBroadcast
         case .iconCamera: return SBUIconSet.iconCamera
         case .iconChat: return SBUIconSet.iconChat
+        case .iconChannels: return SBUIconSet.iconChannels
         case .iconCheckboxUnchecked: return SBUIconSet.iconCheckboxUnchecked
         case .iconCheckboxChecked: return SBUIconSet.iconCheckboxChecked
         case .iconChevronDown: return SBUIconSet.iconChevronDown

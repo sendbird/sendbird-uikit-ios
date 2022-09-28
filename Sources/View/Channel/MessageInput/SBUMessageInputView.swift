@@ -239,7 +239,9 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         return [
             .font: theme.textFieldFont,
             .backgroundColor: UIColor.clear,
-            .foregroundColor: theme.textFieldTextColor
+            .foregroundColor: self.isOverlay
+            ? self.overlayTheme.textFieldTextColor
+            : self.theme.textFieldTextColor
         ]
     }
     
@@ -247,8 +249,8 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     public var mentionedAttributes: [NSAttributedString.Key: Any] {
         let mentionAttributes: [NSAttributedString.Key: Any] = [
             .font: theme.mentionTextFont,
-            .backgroundColor: theme.mentionTextBackgroundColor,
-            .foregroundColor: theme.mentionTextColor,
+            .backgroundColor: self.theme.mentionTextBackgroundColor,
+            .foregroundColor: self.theme.mentionTextColor,
             .link: "",
             .underlineColor: UIColor.clear
         ]
@@ -658,10 +660,10 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         }
 
         // textView
-        self.textView?.typingAttributes = defaultAttributes
         self.textView?.backgroundColor = theme.textFieldBackgroundColor
         self.textView?.tintColor = theme.textFieldTintColor
         self.textView?.layer.borderColor = theme.textFieldBorderColor.cgColor
+        self.textView?.typingAttributes = defaultAttributes
         
         // addButton
         let iconAdd = SBUIconSetType.iconAdd

@@ -16,9 +16,33 @@ enum OpenChannelTabType: String {
 
 
 class MainOpenChannelTabbarController: UITabBarController {
-    let liveStreamingListViewController = StreamingChannelListViewController()
-    let communityChannelListViewController = CommunityChannelListViewController()
-    let settingsViewController = MyOpenChannelSettingsViewController()
+    lazy var liveStreamingListVC: LiveStreamChannelListViewController = {
+        let vc = LiveStreamChannelListViewController()
+        vc.headerComponent?.titleView = UIView()
+        vc.headerComponent?.leftBarButton = self.createLeftTitleItem(type: .liveStreaming)
+        vc.headerComponent?.rightBarButton = .init()
+        vc.listComponent = LiveStreamChannelListModule.List()
+        vc.viewModel = LiveStreamChannelListViewModel(
+            delegate: vc,
+            channelListQuery: nil
+        )
+        vc.tabBarItem = self.createTabItem(type: .liveStreaming)
+        return vc
+    }()
+    
+    lazy var communityChannelListVC: CommunityChannelListViewController = {
+        let vc = CommunityChannelListViewController()
+        vc.headerComponent?.titleView = UIView()
+        vc.headerComponent?.leftBarButton = self.createLeftTitleItem(type: .community)
+        vc.tabBarItem = self.createTabItem(type: .community)
+        return vc
+    }()
+    lazy var settingsVC: MyOpenChannelSettingsViewController = {
+        let vc = MyOpenChannelSettingsViewController()
+        vc.navigationItem.leftBarButtonItem = self.createLeftTitleItem(type: .mySettings)
+        vc.tabBarItem = self.createTabItem(type: .mySettings)
+        return vc
+    }()
     
     var liveStreamingChannelsNavigationController = UINavigationController()
     var communityChannelsNavigationController = UINavigationController()
@@ -31,16 +55,15 @@ class MainOpenChannelTabbarController: UITabBarController {
     // MARK: - Life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        liveStreamingListViewController.titleView = UIView()
         
         self.liveStreamingChannelsNavigationController = UINavigationController(
-            rootViewController: liveStreamingListViewController
+            rootViewController: liveStreamingListVC
         )
         self.communityChannelsNavigationController = UINavigationController(
-            rootViewController: communityChannelListViewController
+            rootViewController: communityChannelListVC
         )
         self.mySettingsNavigationController = UINavigationController(
-            rootViewController: settingsViewController
+            rootViewController: settingsVC
         )
         
         let tabbarItems = [
@@ -66,39 +89,23 @@ class MainOpenChannelTabbarController: UITabBarController {
         self.tabBar.tintColor = self.isDarkMode
             ? SBUColorSet.primary200
             : SBUColorSet.primary300
-        
-        liveStreamingListViewController.navigationItem.leftBarButtonItem = self.createLeftTitleItem(
-            text: OpenChannelTabType.liveStreaming.rawValue
-        )
-        liveStreamingListViewController.tabBarItem = self.createTabItem(type: .liveStreaming)
-        
-        communityChannelListViewController.navigationItem.leftBarButtonItem = self.createLeftTitleItem(
-            text: OpenChannelTabType.community.rawValue
-        )
-        communityChannelListViewController.tabBarItem = self.createTabItem(type: .community)
-        
-        settingsViewController.navigationItem.leftBarButtonItem = self.createLeftTitleItem(
-            text: OpenChannelTabType.mySettings.rawValue
-        )
-        settingsViewController.tabBarItem = self.createTabItem(type: .mySettings)
-        
-        self.liveStreamingChannelsNavigationController.navigationBar.barStyle = self.isDarkMode
-            ? .black
-            : .default
-        self.communityChannelsNavigationController.navigationBar.barStyle = self.isDarkMode
-            ? .black
-            : .default
-        self.mySettingsNavigationController.navigationBar.barStyle = self.isDarkMode
-            ? .black
-            : .default
+        [
+            self.liveStreamingChannelsNavigationController,
+            self.communityChannelsNavigationController,
+            self.mySettingsNavigationController
+        ]
+            .forEach { $0.navigationBar.barStyle = self.isDarkMode ? .black : .default }
+        self.liveStreamingListVC.navigationItem.leftBarButtonItem = self.createLeftTitleItem(type: .liveStreaming)
+        self.communityChannelListVC.navigationItem.leftBarButtonItem = self.createLeftTitleItem(type: .community)
+        self.settingsVC.navigationItem.leftBarButtonItem = self.createLeftTitleItem(type: .mySettings)
     }
     
     
     // MARK: - Create items
-    func createLeftTitleItem(text: String) -> UIBarButtonItem {
+    func createLeftTitleItem(type: OpenChannelTabType) -> UIBarButtonItem {
         let titleLabel = UILabel()
-        titleLabel.text = text
-        titleLabel.font = UIFont.systemFont(ofSize: 18.0, weight: .bold)
+        titleLabel.text = type.rawValue
+        titleLabel.font = SBUFontSet.h1
         titleLabel.textColor = theme.titleColor
         return UIBarButtonItem.init(customView: titleLabel)
     }
@@ -134,12 +141,10 @@ class MainOpenChannelTabbarController: UITabBarController {
     func updateTheme(isDarkMode: Bool) {
         self.isDarkMode = isDarkMode
         
+        self.liveStreamingListVC.updateStyles()
+        self.communityChannelListVC.updateStyles()
+        self.settingsVC.setupStyles()
+        
         self.setupStyles()
-        self.liveStreamingListViewController.setupStyles()
-        self.communityChannelListViewController.setupStyles()
-        self.settingsViewController.setupStyles()
-
-        self.liveStreamingListViewController.reloadTableView()
-        self.communityChannelListViewController.reloadTableView()
     }
 }

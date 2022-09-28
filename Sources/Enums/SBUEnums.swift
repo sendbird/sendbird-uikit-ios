@@ -186,6 +186,7 @@ public enum EmptyViewType: Int {
     case library
     case document
     case unknown
+    case delete
 }
 
 /// This is an enumeration used to select the channel editing type.

@@ -43,6 +43,21 @@ public class SBUGlobalCustomParams {
     public static var groupChannelParamsUpdateBuilder:((_ params: GroupChannelUpdateParams?) -> Void)? = nil
     
     
+    /// This is a builder that allows you to predefined the global `OpenChannelCreateParams` processing to be used when creating a channel.
+    ///
+    /// - Important:
+    /// This value is ignored if you set the parameter value directly through functions that receive the parameter inside the class.
+    ///
+    /// See the example below for builder setting.
+    /// ```
+    /// SBUGlobalCustomParams.openChannelParamsCreateBuilder = { params in
+    ///     params?.name = newValue
+    ///     ...
+    /// }
+    /// ```
+    /// - Since: 3.2.0
+    public static var openChannelParamsCreateBuilder:((_ params: OpenChannelCreateParams?) -> Void)? = nil
+    
     /// This is a builder that allows you to predefined the global `OpenChannelUpdateParams` processing to be used when updating a channel.
     ///
     /// - Important:

@@ -49,7 +49,7 @@ extension SBUBaseChannelSettingsModule {
         // MARK: - UI properties (Private)
         func defaultTitleView() -> SBUNavigationTitleView? { return nil }
         
-        func defaultLeftButton() -> UIBarButtonItem {
+        func defaultLeftBarButton() -> UIBarButtonItem {
             let backButton = SBUBarButtonItem.backButton(
                 vc: self,
                 selector: #selector(onTapLeftBarButton)
@@ -57,7 +57,7 @@ extension SBUBaseChannelSettingsModule {
             return backButton
         }
         
-        func defaultRightButton() -> UIBarButtonItem {
+        func defaultRightBarButton() -> UIBarButtonItem {
             let editButton =  UIBarButtonItem(
                 title: SBUStringSet.Edit,
                 style: .plain,
@@ -83,10 +83,10 @@ extension SBUBaseChannelSettingsModule {
                 self.titleView = self.defaultTitleView()
             }
             if self.leftBarButton == nil {
-                self.leftBarButton = self.defaultLeftButton()
+                self.leftBarButton = self.defaultLeftBarButton()
             }
             if self.rightBarButton == nil {
-                self.rightBarButton = self.defaultRightButton()
+                self.rightBarButton = self.defaultRightBarButton()
             }
         }
         

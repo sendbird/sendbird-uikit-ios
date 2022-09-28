@@ -34,13 +34,20 @@ public class SBULoading {
     
     /// This static function starts the loading indicator.
     public static func start() {
-        guard !SBULoading.shared.isShowing() else { return }
+        guard !SBULoading.shared.isShowing else { return }
         SBULoading.shared.show()
     }
     
     /// This static function stops the loading indicator.
     public static func stop() {
         SBULoading.shared.dismiss()
+    }
+    
+    /// This static function checks loading view showing status.
+    ///
+    /// - Since: [NEXT_VERSION]
+    public static var isShowing: Bool {
+        return SBULoading.shared.isShowing
     }
     
     private func setupStyles() {
@@ -91,7 +98,7 @@ public class SBULoading {
         })
     }
     
-    private func isShowing() -> Bool {
+    private var isShowing: Bool {
         return self.baseView.superview != nil
     }
     
