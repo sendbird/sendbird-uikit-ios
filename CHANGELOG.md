@@ -1,6 +1,7 @@
 # Change Log
 
 ### v2.2.10 (Oct 5, 2022)
+* Updated chat SDK minor version to **v3.1.28**
 - Modified SendbirdUIKit initializer to synchronously
 
 ### v2.2.9 (Aug 9, 2022)
