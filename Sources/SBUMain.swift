@@ -60,29 +60,12 @@ public class SBUMain: NSObject {
                                   completionHandler: @escaping ((_ error: SBDError?) -> ())) {
         SBUGlobals.ApplicationId = applicationId
         
-        DispatchQueue.main.async {
-            startHandler?()
-        }
+        startHandler?()
+        migrationHandler?()
+        SBDMain.initSynchronously(withApplicationId: applicationId, useCaching: true)
+        completionHandler(nil)
         
-        let semaphore = DispatchSemaphore(value: 0)
         
-        SBDMain.initWithApplicationId(
-            applicationId,
-            useCaching: true,
-            migrationStartHandler: {
-                SBULog.info("[Init] Migration start")
-                migrationHandler?()
-            }, completionHandler: { error in
-                if let _ = error {
-                    SBULog.info("[Init] Failed initialized with id: \(applicationId)")
-                } else {
-                    SBULog.info("[Init] Finish initialized with id: \(applicationId)")
-                }
-                semaphore.signal()
-                completionHandler(error)
-            }
-        )
-        semaphore.wait()
         
         SBDMain.addExtension(SBUConstant.sbdExtensionKeyUIKit, version: SBUMain.shortVersion)
     }
@@ -327,7 +310,7 @@ public class SBUMain: NSObject {
     // MARK: - Common
     /// This function gets UIKit SDK's short version string. (e.g. 1.0.0)
     /// - Since: 2.2.0
-    public static let shortVersion: String = "2.2.9"
+    public static let shortVersion: String = "2.2.10"
     
     /// This function gets UIKit SDK's version string.
     /// - Returns: version string

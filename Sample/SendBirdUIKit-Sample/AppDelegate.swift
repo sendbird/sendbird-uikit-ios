@@ -20,11 +20,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         // TODO: Change to your AppId
         SBUMain.initialize(applicationId: "2D7B4CDB-932F-4082-9B09-A1153792DC8D") { // origin
-            //
+        } migrationHandler: {
         } completionHandler: { error in
-            //
         }
-        
+
         SBUGlobals.AccessToken = ""
         SBUGlobals.UsingUserProfile = true
         SBUGlobals.UsingUserProfileInOpenChannel = true
