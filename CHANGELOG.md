@@ -1,5 +1,8 @@
 # Change Log
 
+### v2.2.10 (Oct 5, 2022)
+- Modified SendbirdUIKit initializer to synchronously
+
 ### v2.2.9 (Aug 9, 2022)
 - Applied `SBUSelectablePhotoViewDelegate` and `PHPickerViewControllerDelegate` to `SBUBaseChannelSettingViewController`
   - Added `showCamera()`, `showPhotoLibraryPicker()`, `showLimitedPhotoLibraryPicker()` and `showPermissionAlert()` to `SBUBaseChannelSettingViewController`
