@@ -14,6 +14,8 @@ With the official release of the v3 version, the name of the `master` branch was
 * v3: `main`
 * v2: `main-v2`
 
+> __Note__: Sometimes, when using the Xcode's package, a strange build error occurs due to the cache problem. In this case, reset of the Xcode Package Cache will help. <br />  To reset the package cache, open the `File` menu, navigate to `Packages`, and click `Reset Package Caches`. This will delete all local package data and redownload each package from its source online.
+
 
 ## Table of contents
 
@@ -88,20 +90,21 @@ UIKit for iOS can be installed through either [`CocoaPods`](https://cocoapods.or
 
 > Note: Sendbird UIKit for iOS is Sendbird Chat SDK-dependent. The minimum requirement of the Chat SDK for iOS is 4.0.13 or higher.
 
+#### Swift Packages
 
-#### - Swift Packages
+1. In Xcode, select **File** > **Add Packages**.
 
-1. Go to your Swift Package Manager's **File** tab and select **Swift Packages**. Then choose **Add package dependency...**.
-
-2. Add `SendbirdUIKit` into your `Package Repository` as below:
+2. Search for `SendbirdUIKit spm repository` and add it to your `Package repository`. You can also choose the `dependency rule` that you want to use in the repository and keep the latest version by selecting the `main` branch.
 
 ```bash
-https://github.com/sendbird/sendbird-uikit-ios-spm.git
+https://github.com/sendbird/sendbird-uikit-ios-spm
 ```
 
-3. To add the package, select **Branch Rules**, input `main` and click **Next**.
+3. When finished, Xcode automatically begins resolving and downloading your dependencies to the repository in the background.
 
-#### - CocoaPods
+> __Note__: Sometimes, when using the Xcode's package, a strange build error occurs due to the cache problem. In this case, reset of the Xcode Package Cache will help. <br />  To reset the package cache, open the `File` menu, navigate to `Packages`, and click `Reset Package Caches`. This will delete all local package data and redownload each package from its source online.
+
+#### CocoaPods
 
 1. Add `SendBirdUIKit` into your `Podfile` in Xcode as below:
 
@@ -110,27 +113,25 @@ platform :ios, '11.0'
 use_frameworks!
 
 target YOUR_PROJECT_TARGET do
-    pod 'SendBirdUIKit'
+    pod 'SendBirdUIKit' # Add this line.
 end
 ```
 
-2. Install the `SendbirdUIKit` framework through `CocoaPods`.
+2. Install the `SendBirdUIKit` framework through `CocoaPods`.
 
 ```bash
 $ pod install
 ```
 
-3. Update the `SendbirdUIKit` framework through `CocoaPods`.
+3. Update the `SendBirdUIKit` framework through `CocoaPods`.
 
 ```bash
 $ pod update
 ```
 
-> Note: Cocoapod uses the name of Send**B**irdUIKit, not Send**b**irdUIKit.
+#### Carthage
 
-#### - Carthage
-
-1. Add `SendbirdUIKit` and `SendBirdSDK` into your `Cartfile` as below:
+1. Add `SendbirdUIKit` and `SendbirdChatSDK` into your `Cartfile` as below:
 
 ```bash
 github "sendbird/sendbird-uikit-ios"
@@ -145,9 +146,10 @@ $ carthage update --use-xcframeworks
 
 > __Note__: Building or creating the `SendbirdUIKit` framework with `Carthage` can only be done using the latest `Swift`. If your `Swift` is not the most recent version, the framework should be copied into your project manually.
 
-3. Go to your Xcode project target's **General settings** tab in the `Frameworks and Libraries` section. Then drag and drop `SendbirdUIKit.framework` from the `<YOUR_XCODE_PROJECT_DIRECTORY>/Carthage/Build` folder.
+3. Go to your Xcode project target's **General settings** tab in the `Frameworks and Libraries` section. Then drag and drop `SendbirdUIKit.xcframework` and `SendbirdChatSDK.xcframework` from the `<YOUR_XCODE_PROJECT_DIRECTORY>/Carthage/Build` folder.
 
 >__Note__: Errors may occur if you're building your project with Xcode 11.3 or earlier versions. To fix these errors, refer to [Handle errors caused by unknown attributes](https://github.com/sendbird/sendbird-uikit-ios#--handle-errors-caused-by-unknown-attributes).
+
 
 ### Get attachment permission
 
