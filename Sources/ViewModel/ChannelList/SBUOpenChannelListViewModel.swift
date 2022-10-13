@@ -126,9 +126,7 @@ open class SBUOpenChannelListViewModel: SBUBaseChannelListViewModel {
                 return
             }
             
-            guard let channels = channels else { return }
-            SBULog.info("[Response] \(channels.count) channels")
-            guard !channels.isEmpty else { return }
+            SBULog.info("[Response] \(channels?.count ?? 0) channels")
             
             self.upsertChannels(channels, needReload: true)
         })
@@ -160,14 +158,12 @@ open class SBUOpenChannelListViewModel: SBUBaseChannelListViewModel {
     ///   - channels: Channel array to upsert
     ///   - needReload: If set to `true`, the tableview will be call reloadData.
     public func upsertChannels(_ channels: [OpenChannel]?, needReload: Bool) {
-        guard let channels = channels else { return }
-        
-        for channel in channels {
+        channels?.forEach { channel in
             guard let index = self.channelList.firstIndex(
-                    where: { $0.channelURL == channel.channelURL }
+                where: { $0.channelURL == channel.channelURL }
             ) else {
                 self.channelList.append(channel)
-                continue
+                return
             }
             
             self.channelList.append(self.channelList.remove(at: index))

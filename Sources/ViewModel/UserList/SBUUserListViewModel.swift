@@ -53,6 +53,9 @@ open class SBUUserListViewModel: NSObject  {
     
     
     // MARK: - Property (Public)
+    public weak var delegate: SBUUserListViewModelDelegate?
+    public weak var dataSource: SBUUserListViewModelDataSource?
+    
     public private(set) var channel: BaseChannel?
     public private(set) var channelURL: String?
     public private(set) var channelType: ChannelType = .group
@@ -70,9 +73,6 @@ open class SBUUserListViewModel: NSObject  {
     
     
     // MARK: - Property (Private)
-    weak var delegate: SBUUserListViewModelDelegate?
-    weak var dataSource: SBUUserListViewModelDataSource?
-    
     @SBUAtomic private var customizedUsers: [SBUUser]?
     private var useCustomizedUsers = false
 
@@ -143,7 +143,7 @@ open class SBUUserListViewModel: NSObject  {
         } else if self.channelType == .open {
             SendbirdChat.addChannelDelegate(
                 self,
-                identifier: "\(SBUConstant.groupChannelDelegateIdentifier).\(self.description)"
+                identifier: "\(SBUConstant.openChannelDelegateIdentifier).\(self.description)"
             )
         }
         
@@ -154,6 +154,10 @@ open class SBUUserListViewModel: NSObject  {
     deinit {
         SendbirdChat.removeChannelDelegate(
             forIdentifier: "\(SBUConstant.groupChannelDelegateIdentifier).\(self.description)"
+        )
+        
+        SendbirdChat.removeChannelDelegate(
+            forIdentifier: "\(SBUConstant.openChannelDelegateIdentifier).\(self.description)"
         )
     }
     

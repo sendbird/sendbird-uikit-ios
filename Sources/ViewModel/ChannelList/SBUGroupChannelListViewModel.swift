@@ -47,7 +47,7 @@ open class SBUGroupChannelListViewModel: SBUBaseChannelListViewModel {
     
     
     // MARK: - Property (Public)
-    @SBUAtomic public private(set) var channelList: [GroupChannel] = []
+    public var channelList: [GroupChannel] { self.channelCollection?.channelList ?? [] }
     
     public private(set) var channelCollection: GroupChannelCollection?
 
@@ -58,7 +58,7 @@ open class SBUGroupChannelListViewModel: SBUBaseChannelListViewModel {
     
     
     // MARK: - Property (private)
-    private weak var delegate: SBUGroupChannelListViewModelDelegate? {
+    weak var delegate: SBUGroupChannelListViewModelDelegate? {
         get { self.baseDelegate as? SBUGroupChannelListViewModelDelegate }
         set { self.baseDelegate = newValue }
     }
@@ -144,111 +144,20 @@ open class SBUGroupChannelListViewModel: SBUBaseChannelListViewModel {
                 return
             }
             
-            guard let channels = channels else { return }
-            SBULog.info("[Response] \(channels.count) channels")
-            guard !channels.isEmpty else { return }
+            SBULog.info("[Response] \(channels?.count ?? 0) channels")
             
-            self.upsertChannels(channels, needReload: true)
+            self.delegate?.groupChannelListViewModel(
+                self,
+                didChangeChannelList: self.channelList,
+                needsToReload: true
+            )
         }
-    }
-    
-    /// This function updates the channels.
-    ///
-    /// It is updated only if the channels already exist in the list, and if not, it is ignored.
-    /// And, after updating the channels, a function to sort the channel list is called.
-    /// - Parameters:
-    ///   - channels: Channel array to update
-    ///   - needReload: If set to `true`, the tableview will be call reloadData.
-    public func updateChannels(_ channels: [GroupChannel]?, needReload: Bool) {
-        guard let channels = channels else { return }
-        
-        for channel in channels {
-            guard self.channelListQuery?.belongsTo(channel: channel) == true else { continue }
-            guard let index = self.channelList.firstIndex(of: channel) else { continue }
-            self.channelList.append(self.channelList.remove(at: index))
-        }
-        
-        self.sortChannelList(needReload: needReload)
-    }
-    
-    /// This function upserts the channels.
-    ///
-    /// If the channels are already in the list, it is updated, otherwise it is inserted.
-    /// And, after upserting the channels, a function to sort the channel list is called.
-    /// - Parameters:
-    ///   - channels: Channel array to upsert
-    ///   - needReload: If set to `true`, the tableview will be call reloadData.
-    public func upsertChannels(_ channels: [GroupChannel]?, needReload: Bool) {
-        guard let channels = channels else { return }
-        
-        let includeEmptyChannel = self.channelListQuery?.includeEmptyChannel ?? false
-        for channel in channels {
-            guard self.channelListQuery?.belongsTo(channel: channel) == true else { continue }
-            guard (channel.lastMessage != nil || includeEmptyChannel) else { continue }
-            guard let index = self.channelList.firstIndex(
-                    where: { $0.channelURL == channel.channelURL }
-            ) else {
-                self.channelList.append(channel)
-                continue
-            }
-            
-            self.channelList.append(self.channelList.remove(at: index))
-        }
-        
-        self.sortChannelList(needReload: needReload)
-    }
-    
-    /// This function deletes the channels using the channel urls.
-    /// - Parameters:
-    ///   - channelURLs: Channel url array to delete
-    ///   - needReload: If set to `true`, the tableview will be call reloadData.
-    public func deleteChannels(channelURLs: [String]?, needReload: Bool) {
-        guard let channelURLs = channelURLs else { return }
-        
-        var toBeDeleteIndexes: [Int] = []
-        
-        for channelURL in channelURLs {
-            if let index = self.channelList.firstIndex(where: { $0.channelURL == channelURL }) {
-                toBeDeleteIndexes.append(index)
-            }
-        }
-        
-        // for remove from last
-        let sortedIndexes = toBeDeleteIndexes.sorted().reversed()
-        
-        for toBeDeleteIdx in sortedIndexes {
-            self.channelList.remove(at: toBeDeleteIdx)
-        }
-        
-        self.sortChannelList(needReload: needReload)
-    }
-    
-    /// This function sorts the channel lists.
-    /// - Parameter needReload: If set to `true`, the tableview will be call reloadData.
-    public func sortChannelList(needReload: Bool) {
-        let sortedChannelList = self.channelList
-            .sorted(by: { (lhs: GroupChannel, rhs: GroupChannel) -> Bool in
-                return GroupChannel.compare(
-                    channelA: lhs,
-                    channelB: rhs,
-                    order: channelListQuery?.order ?? .latestLastMessage
-                )
-            })
-        
-        self.channelList = sortedChannelList.sbu_unique()
-        
-        self.delegate?.groupChannelListViewModel(
-            self,
-            didChangeChannelList: self.channelList,
-            needsToReload: needReload
-        )
     }
     
     /// This function resets channelList
     public override func reset() {
         super.reset()
         
-        self.channelList = []
         self.channelListQuery = nil
         self.channelCollection?.dispose()
         self.channelCollection = nil
@@ -340,7 +249,12 @@ extension SBUGroupChannelListViewModel: GroupChannelCollectionDelegate {
             fromEvent: \(context.fromEvent),
             delete size : \(deletedChannelURLs.count)
             """)
-        self.deleteChannels(channelURLs: deletedChannelURLs, needReload: true)
+        
+        self.delegate?.groupChannelListViewModel(
+            self,
+            didChangeChannelList: self.channelList,
+            needsToReload: true
+        )
     }
     
     open func channelCollection(_ collection: GroupChannelCollection,
@@ -351,7 +265,11 @@ extension SBUGroupChannelListViewModel: GroupChannelCollectionDelegate {
             fromEvent: \(context.fromEvent),
             channel size : \(channels.count)
             """)
-        self.upsertChannels(channels, needReload: true)
+        self.delegate?.groupChannelListViewModel(
+            self,
+            didChangeChannelList: self.channelList,
+            needsToReload: true
+        )
     }
     
     
@@ -363,7 +281,11 @@ extension SBUGroupChannelListViewModel: GroupChannelCollectionDelegate {
             fromEvent: \(context.fromEvent),
             channel size : \(channels.count)
             """)
-        self.upsertChannels(channels, needReload: true)
+        self.delegate?.groupChannelListViewModel(
+            self,
+            didChangeChannelList: self.channelList,
+            needsToReload: true
+        )
     }
 }
 

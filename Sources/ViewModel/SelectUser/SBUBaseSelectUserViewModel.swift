@@ -52,6 +52,8 @@ open class SBUBaseSelectUserViewModel: NSObject {
     public var participantListQuery: ParticipantListQuery?
     
     public internal(set) var inviteListType: ChannelInviteListType = .users
+
+    public private(set) var joinedUserIds: Set<String> = []
     
     
     // MARK: - Property (Private)
@@ -65,8 +67,6 @@ open class SBUBaseSelectUserViewModel: NSObject {
     @SBUAtomic private(set) var customizedUsers: [SBUUser]?
     internal var useCustomizedUsers = false
 
-    private(set) var joinedUserIds: Set<String> = []
-    
     @SBUAtomic private var isLoading = false
 
     

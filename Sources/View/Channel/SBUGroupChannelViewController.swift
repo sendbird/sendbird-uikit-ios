@@ -111,7 +111,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         channel: BaseChannel? = nil,
         channelURL: String? = nil,
         messageListParams: MessageListParams? = nil,
-        startingPoint: Int64? = LLONG_MAX,
+        startingPoint: Int64? = .max,
         showIndicator: Bool = true
     ) {
         guard channel != nil || channelURL != nil else {

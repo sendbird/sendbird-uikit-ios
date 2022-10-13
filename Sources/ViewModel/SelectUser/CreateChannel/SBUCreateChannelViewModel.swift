@@ -50,6 +50,9 @@ open class SBUCreateChannelViewModel {
     
     
     // MARK: - Property (Public)
+    public weak var delegate: SBUCreateChannelViewModelDelegate? = nil
+    public weak var dataSource: SBUCreateChannelViewModelDataSource? = nil
+
     public private(set) var channelType: ChannelCreationType = .group
     
     @SBUAtomic public private(set) var userList: [SBUUser] = []
@@ -59,9 +62,6 @@ open class SBUCreateChannelViewModel {
     
     
     // MARK: - Property (Private)
-    weak var delegate: SBUCreateChannelViewModelDelegate?
-    weak var dataSource: SBUCreateChannelViewModelDataSource?
-
     @SBUAtomic private(set) var customizedUsers: [SBUUser]?
     private var useCustomizedUsers = false
 

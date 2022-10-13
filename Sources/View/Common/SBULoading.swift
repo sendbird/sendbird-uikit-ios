@@ -45,7 +45,7 @@ public class SBULoading {
     
     /// This static function checks loading view showing status.
     ///
-    /// - Since: [NEXT_VERSION]
+    /// - Since: 3.2.1
     public static var isShowing: Bool {
         return SBULoading.shared.isShowing
     }

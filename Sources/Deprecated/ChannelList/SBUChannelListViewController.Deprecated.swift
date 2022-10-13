@@ -192,3 +192,44 @@ extension SBUGroupChannelListViewController {
         self.errorHandler(message, code)
     }
 }
+
+
+extension SBUGroupChannelListViewModel {
+    // MARK: - 3.2.1
+    
+    @available(*, deprecated, message: "Since it automatically manages channel list changes internally, it is no longer necessary to use this function.")
+    public func updateChannels(_ channels: [GroupChannel]?, needReload: Bool) {
+        self.delegate?.groupChannelListViewModel(
+            self,
+            didChangeChannelList: self.channelCollection?.channelList,
+            needsToReload: needReload
+        )
+    }
+
+    @available(*, deprecated, message: "Since it automatically manages channel list changes internally, it is no longer necessary to use this function.")
+    public func upsertChannels(_ channels: [GroupChannel]?, needReload: Bool) {
+        self.delegate?.groupChannelListViewModel(
+            self,
+            didChangeChannelList: self.channelCollection?.channelList,
+            needsToReload: needReload
+        )
+    }
+
+    @available(*, deprecated, message: "Since it automatically manages channel list changes internally, it is no longer necessary to use this function.")
+    public func deleteChannels(channelURLs: [String]?, needReload: Bool) {
+        self.delegate?.groupChannelListViewModel(
+            self,
+            didChangeChannelList: self.channelCollection?.channelList,
+            needsToReload: needReload
+        )
+    }
+
+    @available(*, deprecated, message: "Since it automatically manages channel list changes internally, it is no longer necessary to use this function.")
+    public func sortChannelList(needReload: Bool) {
+        self.delegate?.groupChannelListViewModel(
+            self,
+            didChangeChannelList: self.channelCollection?.channelList,
+            needsToReload: needReload
+        )
+    }
+}

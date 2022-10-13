@@ -10,5 +10,18 @@
 			<integer>0</integer>
 		</dict>
 	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>SendbirdUIKit</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>SendbirdUIKitTarget</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+	</dict>
 </dict>
 </plist>

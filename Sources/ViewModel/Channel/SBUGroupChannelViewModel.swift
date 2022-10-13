@@ -57,7 +57,7 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
     public init(channel: BaseChannel? = nil,
                 channelURL: String? = nil,
                 messageListParams: MessageListParams? = nil,
-                startingPoint: Int64? = LLONG_MAX,
+                startingPoint: Int64? = .max,
                 delegate: SBUGroupChannelViewModelDelegate? = nil,
                 dataSource: SBUGroupChannelViewModelDataSource? = nil)
     {

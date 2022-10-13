@@ -284,7 +284,8 @@ open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, 
     // MARK: - SBUGroupChannelListModuleListDelegate
     open func baseChannelListModule(_ listComponent: SBUBaseChannelListModule.List,
                                 didSelectRowAt indexPath: IndexPath) {
-        guard let channel = self.viewModel?.channelList[indexPath.row] else { return }
+        guard self.channelList.count > indexPath.row else { return }
+        let channel = self.channelList[indexPath.row]
         self.showChannel(channelURL: channel.channelURL)
     }
     
@@ -316,7 +317,7 @@ open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, 
     // MARK: - SBUGroupChannelListModuleListDataSource
     open func baseChannelListModule(_ listComponent: SBUBaseChannelListModule.List,
                                 channelsInTableView tableView: UITableView) -> [BaseChannel]? {
-        return self.viewModel?.channelList
+        return self.channelList
     }
     
     

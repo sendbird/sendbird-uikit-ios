@@ -608,7 +608,7 @@ extension SBUGroupChannelModule {
 }
 
 extension SBUGroupChannelModule.List: SBUQuotedMessageViewDelegate {
-    public func didTapQuotedMessageView(_ quotedMessageView: SBUQuotedBaseMessageView) {
+    open func didTapQuotedMessageView(_ quotedMessageView: SBUQuotedBaseMessageView) {
         self.delegate?.groupChannelModule(self, didTapQuotedMessageView: quotedMessageView)
     }
 }

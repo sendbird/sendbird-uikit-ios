@@ -1,5 +1,15 @@
 # Changelog
 
+### v3.2.1 (Oct 13, 2022) with Chat SDK **v4.0.15**
+* Added `contentMode` parameter to `setImage(withImage:backgroundColor:makeCircle:)` in `SBUCoverImageView`
+* Modified SendbirdUIKit initializer to synchronously
+* Deprecated functions in `SBUGroupChannelListViewModel`
+    * `updateChannels(_:needReload:)`
+    * `upsertChannels(_:needReload:)`
+    * `deleteChannels(_:needReload:)`
+    * `sortChannelList(needReload:)`
+* Improved stability
+
 ### v3.2.0 (Sep 21, 2022) with Chat SDK **v4.0.13**
 * Support **Open channel list** features
     * Added classes

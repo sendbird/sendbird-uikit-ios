@@ -40,7 +40,7 @@ extension SBUOpenChannelViewController {
     open func didSelectChannelParticipants() { }
     
     /// This function shows channel settings.
-    @available(*, unavailable, message: "This function has been moved to `SBUBaseChannelModuleHeaderDelegate` and replaced to `openChannelModuleDidTapParticipantList(_:)`.")
+    @available(*, unavailable, message: "This function has been moved to `SBUBaseChannelModule.Header` and replaced to `didSelectChannelParticipants()`.")
     @objc
     public func onClickParticipantsList() { }
     

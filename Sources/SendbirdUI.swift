@@ -63,32 +63,26 @@ public class SendbirdUI {
                                   completionHandler: @escaping ((_ error: SBError?) -> ())) {
         SBUGlobals.applicationId = applicationId
         
-        DispatchQueue.main.async {
-            startHandler?()
-        }
-        let semaphore = DispatchSemaphore(value: 0)
+        startHandler?()
+        migrationHandler?()
         
+        var chatLogLevel: SendbirdChatSDK.LogLevel = .none
+        if (SBULog.logType & LogType.info.rawValue) > 0 {  // info, all
+            chatLogLevel = .debug
+        } else if (SBULog.logType & LogType.warning.rawValue) > 0 {
+            chatLogLevel = .warning
+        } else if (SBULog.logType & LogType.error.rawValue) > 0 {
+            chatLogLevel = .error
+        }
         let params = InitParams(
             applicationId: applicationId,
             isLocalCachingEnabled: true,
-            logLevel: .debug
+            logLevel: chatLogLevel
         )
+        SendbirdChat.initializeSynchronously(params: params)
         
-        SendbirdChat.initialize(params: params) {
-            SBULog.info("[Init] Migration start")
-            migrationHandler?()
-        } completionHandler: { error in
-            if let _ = error {
-                SBULog.info("[Init] Failed initialized with id: \(applicationId)")
-            } else {
-                SBULog.info("[Init] Finish initialized with id: \(applicationId)")
-            }
-            
-            semaphore.signal()
-            completionHandler(error)
-        }
-        semaphore.wait()
-
+        completionHandler(nil)
+        
         // Call after initialization
         SendbirdChat.addExtension(SBUConstant.extensionKeyUIKit, version: SendbirdUI.shortVersion)
         SendbirdChatOptions.setMemberInfoInMessage(true)
@@ -333,9 +327,15 @@ public class SendbirdUI {
     /// This function gets UIKit SDK's short version string. (e.g. 1.0.0)
     /// - Since: 2.2.0
     public static var shortVersion: String {
-        let bundle = Bundle(identifier: SBUConstant.bundleIdentifier)
-        if let build = bundle?.infoDictionary?[SBUConstant.sbuAppVersion] {
+        
+        if let bundle = Bundle(identifier: SBUConstant.bundleIdentifier),
+            let build = bundle.infoDictionary?[SBUConstant.sbuAppVersion] {
             return "\(build)"
+        } else {
+            let bundle = Bundle(for: SendbirdUI.self)
+            if let build = bundle.infoDictionary?["CFBundleShortVersionString"] {
+                return "\(build)"
+            }
         }
         
         return "0.0.0"
