@@ -1,5 +1,5 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.6 (swiftlang-5.6.0.323.62 clang-1316.0.20.8)
+// swift-compiler-version: Apple Swift version 5.6.1 (swiftlang-5.6.0.323.66 clang-1316.0.20.12)
 // swift-module-flags: -target arm64-apple-ios11.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name SendbirdUIKit
 import AVFoundation
 import AVKit
@@ -250,11 +250,9 @@ public class SBUCommonItem {
   @objc dynamic public init()
   @_Concurrency.MainActor(unsafe) public func setImage(withCoverURL coverURL: Swift.String)
   @_Concurrency.MainActor(unsafe) public func setImage(with coverURL: Swift.String, makeCircle: Swift.Bool = true)
-  @available(*, deprecated, renamed: "setPlaceholder(type:iconSize:)", message: "renamed to 'setPlaceholder(type: .iconUSer)'")
-  @_Concurrency.MainActor(unsafe) public func setPlaceholderImage(iconSize: CoreGraphics.CGSize)
   @_Concurrency.MainActor(unsafe) public func setBroadcastIcon()
   @_Concurrency.MainActor(unsafe) public func setPlaceholder(type: SendbirdUIKit.SBUIconSetType, iconSize: CoreGraphics.CGSize? = nil)
-  @_Concurrency.MainActor(unsafe) public func setImage(withImage image: UIKit.UIImage, backgroundColor: UIKit.UIColor? = nil, makeCircle: Swift.Bool = false)
+  @_Concurrency.MainActor(unsafe) public func setImage(withImage image: UIKit.UIImage, backgroundColor: UIKit.UIColor? = nil, makeCircle: Swift.Bool = false, contentMode: UIKit.UIView.ContentMode = .center)
   @_Concurrency.MainActor(unsafe) public func setImage(withUsers users: [SendbirdChatSDK.User])
   @objc deinit
 }
@@ -8052,6 +8050,10 @@ open class SBURegisterOperatorModule {
   }
   public init(headerComponent: SendbirdUIKit.SBURegisterOperatorModule.Header? = nil, listComponent: SendbirdUIKit.SBURegisterOperatorModule.List? = nil)
   @objc deinit
+}
+extension SendbirdUIKit.SBUCoverImageView {
+  @available(*, deprecated, renamed: "setPlaceholder(type:iconSize:)", message: "renamed to 'setPlaceholder(type: .iconUSer)'")
+  @_Concurrency.MainActor(unsafe) public func setPlaceholderImage(iconSize: CoreGraphics.CGSize)
 }
 public protocol SBUGroupChannelSettingsViewModelDelegate : SendbirdUIKit.SBUBaseChannelSettingsViewModelDelegate {
   func groupChannelSettingsViewModel(_ viewModel: SendbirdUIKit.SBUGroupChannelSettingsViewModel, didLeaveChannel channel: SendbirdChatSDK.GroupChannel)
