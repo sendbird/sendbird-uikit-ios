@@ -206,7 +206,7 @@ open class CreateCommunityChannelViewController: UIViewController, UINavigationC
         self.rightBarButton.isEnabled = false
         SBULoading.start()
         
-        // In order to use the API, the option must be turned on in the dashboard.
+        // An error occurred because you don't have access to the user list in your application. In order to gain access, you can turn on this attribute in the Access Control List settings on Sendbird Dashboard.
         SBDOpenChannel.createChannel(
             withName: channelName,
             channelUrl: nil,
@@ -216,6 +216,11 @@ open class CreateCommunityChannelViewController: UIViewController, UINavigationC
             operatorUserIds: [SBUGlobals.CurrentUser?.userId ?? ""],
             customType: customType,
             progressHandler: nil) { [weak self] (channel, error) in
+                guard error == nil else {
+                    SBULog.error(error?.localizedDescription)
+                    return
+                }
+                
                 guard let self = self else { return }
                 self.rightBarButton.isEnabled = true
                 SBULoading.stop()

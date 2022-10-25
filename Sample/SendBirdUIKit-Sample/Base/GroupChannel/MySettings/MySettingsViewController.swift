@@ -230,9 +230,13 @@ open class MySettingsViewController: UIViewController, UINavigationControllerDel
                 nickname.trimmingCharacters(in: .whitespacesAndNewlines).count > 0
                 else { return }
             
-            // In order to use the API, the option must be turned on in the dashboard.
+            // An error occurred because you don't have access to the user list in your application. In order to gain access, you can turn on this attribute in the Access Control List settings on Sendbird Dashboard.
             SBUMain.updateUserInfo(nickname: nickname, profileUrl: nil) { (error) in
-                guard error == nil, let user = SBUGlobals.CurrentUser else { return }
+                guard error == nil else {
+                    SBULog.error(error?.localizedDescription)
+                    return
+                }
+                guard let user = SBUGlobals.CurrentUser else { return }
                 UserDefaults.saveNickname(nickname)
                 DispatchQueue.main.async { [weak self] in
                     guard let self = self else { return }
@@ -405,12 +409,16 @@ extension MySettingsViewController: UIImagePickerControllerDelegate {
             
             self?.userInfoView.coverImage.image = originalImage
             
-            // In order to use the API, the option must be turned on in the dashboard.
+            // An error occurred because you don't have access to the user list in your application. In order to gain access, you can turn on this attribute in the Access Control List settings on Sendbird Dashboard.
             SBUMain.updateUserInfo(
                 nickname: nil,
                 profileImage: originalImage.jpegData(compressionQuality: 0.5)
             ) { error in
-                guard error == nil, let user = SBUGlobals.CurrentUser else { return }
+                guard error == nil else {
+                    SBULog.error(error?.localizedDescription)
+                    return
+                }
+                guard let user = SBUGlobals.CurrentUser else { return }
                 self?.userInfoView.configure(user: user)
             }
         }

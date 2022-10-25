@@ -32,13 +32,18 @@ class AlertManager: NSObject {
 // This function handles channel object to be used in the sample app.
 class ChannelManager: NSObject {
     static func getSampleChannel(completionHandler: @escaping (_ channel: SBDGroupChannel) -> Void) {
-        // In order to use the API, the option must be turned on in the dashboard.
+        // An error occurred because you don't have access to the user list in your application. In order to gain access, you can turn on this attribute in the Access Control List settings on Sendbird Dashboard.
         let channelListQuery = SBDGroupChannel.createMyGroupChannelListQuery()
         channelListQuery?.order = .latestLastMessage
         channelListQuery?.limit = 10
         channelListQuery?.includeEmptyChannel = true
         
         channelListQuery?.loadNextPage(completionHandler: { channels, error in
+            guard error == nil else {
+                SBULog.error(error?.localizedDescription)
+                return
+            }
+            
             guard let channel = channels?.first else {
                 AlertManager.show(title: "No channel", message: "Create a channel and proceed.")
                 return

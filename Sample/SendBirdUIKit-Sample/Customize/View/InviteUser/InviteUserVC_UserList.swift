@@ -65,11 +65,14 @@ extension InviteUserVC_UserList {
 /// This function gets dummy users for testing.
 extension InviteUserVC_UserList {
     public func loadDummyUsers(completionHandler: @escaping () -> Void) {
-        // In order to use the API, the option must be turned on in the dashboard.
+        // An error occurred because you don't have access to the user list in your application. In order to gain access, you can turn on this attribute in the Access Control List settings on Sendbird Dashboard.
         let userListQuery = SBDMain.createApplicationUserListQuery()
         userListQuery?.limit = 100
         userListQuery?.loadNextPage(completionHandler: { users, error in
-            guard error == nil else { return }
+            guard error == nil else {
+                SBULog.error(error?.localizedDescription)
+                return
+            }
             
             // This is a user list object used for testing.
             guard let users = users?.sbu_convertUserList() else { return }

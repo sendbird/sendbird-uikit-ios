@@ -74,7 +74,7 @@ extension ChannelListCustomManager {
     }
     
     func listQueryCustom() {
-        // In order to use the API, the option must be turned on in the dashboard.
+        // An error occurred because you don't have access to the user list in your application. In order to gain access, you can turn on this attribute in the Access Control List settings on Sendbird Dashboard.
         // You can customize the channel list using your own GroupChannelListQuery.
         // For all query options, refer to the `SBDGroupChannelListQuery` class.
         let listQuery = SBDGroupChannel.createMyGroupChannelListQuery()
