@@ -54,7 +54,7 @@ The minimum requirements for Sendbird UIKit for iOS are:
 
 - iOS 11+
 - Swift 5.0+ / Objective-C
-- Sendbird Chat SDK for iOS 3.1.28+
+- Sendbird Chat SDK for iOS 3.1.33+
 
 <br />
 
@@ -80,7 +80,7 @@ You can get started by creating a project. Sendbird UIKit supports both `Objecti
 
 UIKit for iOS can be installed through either [`CocoaPods`](https://cocoapods.org/), [`Carthage`](https://github.com/Carthage/Carthage) or [`Swift Package Manager`](https://swift.org/package-manager/): 
 
-> Note: Sendbird UIKit for iOS is Sendbird Chat SDK-dependent. The minimum requirement of the Chat SDK for iOS is 3.1.28 or higher.
+> Note: Sendbird UIKit for iOS is Sendbird Chat SDK-dependent. The minimum requirement of the Chat SDK for iOS is 3.1.33 or higher.
 
 
 #### - CocoaPods
@@ -91,7 +91,7 @@ platform :ios, '11'
 use_frameworks! 
 
 target YOUR_PROJECT_TARGET do
-    pod 'SendBirdUIKit'
+    pod 'SendBirdUIKit', `~> 2.2.11`
 end
 ```
 
@@ -110,8 +110,8 @@ $ pod update
 1. Add `SendBirdUIKit` and `SendBirdSDK` into your `Cartfile` as below:
 
 ```bash
-github "sendbird/sendbird-uikit-ios"
-github "sendbird/sendbird-ios-framework" == 3.1.28
+github "sendbird/sendbird-uikit-ios" == 2.2.11
+github "sendbird/sendbird-ios-framework" == 3.1.33
 ```
 
 2. Install the `SendBirdUIKit` framework through `Carthage`.
@@ -126,15 +126,17 @@ $ carthage update --use-xcframeworks
 
 >__Note__: Errors may occur if you're building your project with Xcode 11.3 or earlier versions. To fix these errors, refer to [Handle errors caused by unknown attributes](https://github.com/sendbird/sendbird-uikit-ios-sources#handling-errors-caused-by-unknown-attributes) in the sample app.
 
-#### - Swift Package Manager
-1. File -> Swift Packages -> Add package dependency...
+#### - Swift Packages
 
-2. Choose Package Repository as the Sendbird UIKit repository with below link:
+1. Go to your Swift Package Manager's **File** tab and select **Swift Packages**. Then choose **Add package dependency...**.
+
+2. Add `SendbirdUIKit` into your `Package Repository` as below:
+
 ```bash
 https://github.com/sendbird/sendbird-uikit-ios-spm.git
 ```
 
-3. Select Up to Next Major rules and click the Next button to add the package.
+3. To add the package, select **Branch Rules**, input `main-v2` and click **Next**.
 
 #### - Handle errors caused by unknown attributes
 

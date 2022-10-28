@@ -1,5 +1,9 @@
 # Change Log
 
+### v2.2.11 (Oct 28, 2022)
+* Updated chat SDK minor version to **v3.1.33**
+* Fixed `loadPrevMessages` function in `SBUOpenChannelViewController` class not working issue
+
 ### v2.2.10 (Oct 5, 2022)
 * Updated chat SDK minor version to **v3.1.28**
 - Modified SendbirdUIKit initializer to synchronously
