@@ -149,7 +149,7 @@ public class SBUEmojiManager {
         SendbirdChat.getAllEmojis { container, error in
             if let error = error {
                 if let cachedContainer = shared.container, container == nil {
-                    SBULog.error("[Succeed] Load all emojis from cache")
+                    SBULog.info("[Succeed] Load all emojis from cache")
                     completionHandler(cachedContainer, nil)
                 } else {
                     SBULog.error("[Failed] Load all emojis: \(error.localizedDescription)")
@@ -160,7 +160,7 @@ public class SBUEmojiManager {
             
             guard let container = container else {
                 if let cachedContainer = shared.container {
-                    SBULog.error("[Succeed] Load all emojis from cache")
+                    SBULog.info("[Succeed] Load all emojis from cache")
                     completionHandler(cachedContainer, nil)
                 } else {
                     SBULog.error("[Failed] Load all emojis: EmojiContainer is not set")

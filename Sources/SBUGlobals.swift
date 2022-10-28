@@ -104,4 +104,8 @@ public class SBUGlobals {
             }
         }
     }
+    
+    /// The configuration for message cell.
+    /// - Since: 3.2.2
+    public static var messageCellConfiguration = SBUMessageCellConfiguration()
 }

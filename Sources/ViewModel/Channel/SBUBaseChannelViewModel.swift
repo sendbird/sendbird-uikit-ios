@@ -411,8 +411,11 @@ open class SBUBaseChannelViewModel: NSObject {
             }
         )
         
-        if let preSendMessage = preSendMessage,
-           self.messageListParams.belongsTo(preSendMessage)
+        if let preSendMessage = preSendMessage {
+            SBUCacheManager.preSaveImage(fileMessage: preSendMessage)
+        }
+        
+        if let preSendMessage = preSendMessage, self.messageListParams.belongsTo(preSendMessage)
         {
             preSendMessage.parentMessage = parentMessage
             SBUPendingMessageManager.shared.upsertPendingMessage(
@@ -795,7 +798,7 @@ open class SBUBaseChannelViewModel: NSObject {
         self.baseDelegate?.baseChannelViewModel(
             self,
             didChangeMessageList: self.fullMessageList,
-            needsToReload: true,
+            needsToReload: needReload,
             initialLoad: self.isInitialLoading
         )
     }

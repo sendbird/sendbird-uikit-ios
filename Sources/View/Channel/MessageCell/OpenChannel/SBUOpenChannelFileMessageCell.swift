@@ -37,7 +37,9 @@ open class SBUOpenChannelFileMessageCell: SBUOpenChannelContentBaseMessageCell {
     open override func setupLayouts() {
         super.setupLayouts()
         
-        self.mainContainerView.sbu_constraint_lessThan(width: SBUConstant.openChannelThumbnailSize.width)
+        self.mainContainerView.sbu_constraint_lessThan(
+            width: SBUGlobals.messageCellConfiguration.openChannel.thumbnailSize.width
+        )
         
         self.ratioConstraint = self.mainContainerView.heightAnchor.constraint(
             equalTo: self.mainContainerView.widthAnchor,

@@ -123,6 +123,8 @@ extension SBUBaseSelectUserModule {
             if let theme = theme {
                 self.theme = theme
             }
+            
+            self.emptyView?.backgroundColor = self.theme?.backgroundColor
             self.tableView.backgroundColor = self.theme?.backgroundColor
         }
 
@@ -133,7 +135,8 @@ extension SBUBaseSelectUserModule {
         /// - Parameter user: `SBUUser` object
         /// - Returns: `true`: selected
         public func isSelectedUser(_ user: SBUUser) -> Bool {
-            return self.selectedUserList?.contains(user) ?? false
+            return self.selectedUserList?.contains(where: { $0.userId == user.userId }) ?? false
+//            return self.selectedUserList?.contains(user) ?? false
         }
         
         
@@ -215,7 +218,11 @@ extension SBUBaseSelectUserModule.List: UITableViewDataSource, UITableViewDelega
         } else {
             cell = tableView.dequeueReusableCell(withIdentifier: SBUUserCell.sbu_className)
         }
-
+        
+        if let theme = (self.userCell as? SBUUserCell)?.theme {
+            (cell as? SBUUserCell)?.theme = theme
+        }
+        
         cell?.selectionStyle = .none
 
         self.configureCell(cell, indexPath: indexPath)

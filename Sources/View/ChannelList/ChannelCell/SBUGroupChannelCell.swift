@@ -74,8 +74,8 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
     /// A horizontal stack view to configure layouts of the `messageLabel` and the `unreadCount`.
     public lazy var messageStackView = SBUStackView(axis: .horizontal, alignment: .top, spacing: 4)
     
-    @SBUThemeWrapper(theme: SBUTheme.channelCellTheme)
-    public var theme: SBUChannelCellTheme
+    @SBUThemeWrapper(theme: SBUTheme.groupChannelCellTheme)
+    public var theme: SBUGroupChannelCellTheme
 
     
     // MARK: - View Lifecycle

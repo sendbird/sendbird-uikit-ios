@@ -32,7 +32,9 @@ open class SBUUnknownMessageCell: SBUUserMessageCell {
             position: self.position,
             text: text,
             font: theme.unknownMessageDescFont,
-            textColor: theme.unknownMessageDescTextColor,
+            textColor: self.position == .right
+            ? theme.unknownMessageDescRightTextColor
+            : theme.unknownMessageDescLeftTextColor,
             isEdited: false
         )
         messageTextView.configure(model: model)

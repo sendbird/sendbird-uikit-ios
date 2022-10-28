@@ -48,6 +48,7 @@ extension SBUBaseSelectUserModule {
         /// The object that is used as the theme of the header component. The theme must adopt the `SBUUserListTheme` class.
         public var theme: SBUUserListTheme? = nil
         
+        public var componentTheme: SBUComponentTheme? = nil
         
         // MARK: - UI properties (Private)
         func defaultTitleView() -> SBUNavigationTitleView? { return nil }
@@ -89,12 +90,19 @@ extension SBUBaseSelectUserModule {
         
         /// Sets styles of the views in the header component with the `theme`.
         /// - Parameter theme: The object that is used as the theme of the header component. The theme must adopt the `SBUUserListTheme` class.
-        open func setupStyles(theme: SBUUserListTheme? = nil) {
+        open func setupStyles(theme: SBUUserListTheme? = nil, componentTheme: SBUComponentTheme? = nil) {
             if let theme = theme {
                 self.theme = theme
             }
             
+            if let componentTheme = componentTheme {
+                self.componentTheme = componentTheme
+            }
+            
             if let titleView = self.titleView as? SBUNavigationTitleView {
+                if let componentTheme = self.componentTheme {
+                    titleView.theme = componentTheme
+                }
                 titleView.setupStyles()
             }
             

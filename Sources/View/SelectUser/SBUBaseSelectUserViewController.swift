@@ -19,6 +19,9 @@ open class SBUBaseSelectUserViewController: SBUBaseViewController, SBUBaseSelect
     @SBUThemeWrapper(theme: SBUTheme.userListTheme)
     public var theme: SBUUserListTheme
     
+    // Theme
+    @SBUThemeWrapper(theme: SBUTheme.componentTheme)
+    public var componentTheme: SBUComponentTheme
     
     // MARK: - Logic properties (Public)
     public var baseViewModel: SBUBaseSelectUserViewModel?
@@ -80,7 +83,7 @@ open class SBUBaseSelectUserViewController: SBUBaseViewController, SBUBaseSelect
             shadowColor: self.theme.navigationShadowColor
         )
         
-        self.baseHeaderComponent?.setupStyles(theme: self.theme)
+        self.baseHeaderComponent?.setupStyles(theme: self.theme, componentTheme: self.componentTheme)
         self.baseListComponent?.setupStyles(theme: self.theme)
         
         self.view.backgroundColor = theme.backgroundColor

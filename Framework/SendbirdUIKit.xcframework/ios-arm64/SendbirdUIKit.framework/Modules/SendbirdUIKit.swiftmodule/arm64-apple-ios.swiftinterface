@@ -283,7 +283,7 @@ public protocol SBUGroupChannelListModuleHeaderDelegate : SendbirdUIKit.SBUBaseC
 }
 extension SendbirdUIKit.SBUGroupChannelListModule {
   @objc @_inheritsConvenienceInitializers @objcMembers @_Concurrency.MainActor(unsafe) open class Header : SendbirdUIKit.SBUBaseChannelListModule.Header {
-    @_Concurrency.MainActor(unsafe) public var theme: SendbirdUIKit.SBUChannelListTheme?
+    @_Concurrency.MainActor(unsafe) public var theme: SendbirdUIKit.SBUGroupChannelListTheme?
     @_Concurrency.MainActor(unsafe) weak public var delegate: SendbirdUIKit.SBUGroupChannelListModuleHeaderDelegate? {
       get
       set
@@ -293,8 +293,8 @@ extension SendbirdUIKit.SBUGroupChannelListModule {
     @available(*, unavailable, renamed: "SBUGroupChannelListModule.Header()")
     @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
     @objc deinit
-    @_Concurrency.MainActor(unsafe) open func configure(delegate: SendbirdUIKit.SBUGroupChannelListModuleHeaderDelegate, theme: SendbirdUIKit.SBUChannelListTheme)
-    @_Concurrency.MainActor(unsafe) open func setupStyles(theme: SendbirdUIKit.SBUChannelListTheme? = nil)
+    @_Concurrency.MainActor(unsafe) open func configure(delegate: SendbirdUIKit.SBUGroupChannelListModuleHeaderDelegate, theme: SendbirdUIKit.SBUGroupChannelListTheme)
+    @_Concurrency.MainActor(unsafe) open func setupStyles(theme: SendbirdUIKit.SBUGroupChannelListTheme? = nil)
   }
 }
 @objc @_inheritsConvenienceInitializers @IBDesignable @_Concurrency.MainActor(unsafe) open class SBUOpenChannelBaseMessageCell : SendbirdUIKit.SBUTableViewCell {
@@ -694,7 +694,7 @@ open class SBUGroupChannelListModule {
     @objc get
     @objc set
   }
-  @SendbirdUIKit.SBUThemeWrapper @_Concurrency.MainActor(unsafe) public var theme: SendbirdUIKit.SBUChannelListTheme {
+  @SendbirdUIKit.SBUThemeWrapper @_Concurrency.MainActor(unsafe) public var theme: SendbirdUIKit.SBUGroupChannelListTheme {
     get
     set
     _modify
@@ -777,6 +777,34 @@ open class SBUGroupChannelListModule {
   @_Concurrency.MainActor(unsafe) @objc open func updateStyles()
   @objc deinit
 }
+@available(*, deprecated, renamed: "SBUGroupChannelListTheme")
+public typealias SBUChannelListTheme = SendbirdUIKit.SBUGroupChannelListTheme
+@available(*, deprecated, renamed: "SBUGroupChannelCellTheme")
+public typealias SBUChannelCellTheme = SendbirdUIKit.SBUGroupChannelCellTheme
+extension SendbirdUIKit.SBUTheme {
+  @available(*, deprecated, renamed: "init(groupChannelListTheme:groupChannelCellTheme:openChannelListTheme:openChannelCellTheme:channelTheme:messageInputTheme:messageCellTheme:userListTheme:userCellTheme:channelSettingsTheme:userProfileTheme:componentTheme:overlayTheme:messageSearchTheme:messageSearchResultCellTheme:createOpenChannelTheme:)")
+  convenience public init(channelListTheme: SendbirdUIKit.SBUGroupChannelListTheme = .light, channelCellTheme: SendbirdUIKit.SBUGroupChannelCellTheme = .light, openChannelListTheme: SendbirdUIKit.SBUOpenChannelListTheme = .light, openChannelCellTheme: SendbirdUIKit.SBUOpenChannelCellTheme = .light, channelTheme: SendbirdUIKit.SBUChannelTheme = .light, messageInputTheme: SendbirdUIKit.SBUMessageInputTheme = .light, messageCellTheme: SendbirdUIKit.SBUMessageCellTheme = .light, userListTheme: SendbirdUIKit.SBUUserListTheme = .light, userCellTheme: SendbirdUIKit.SBUUserCellTheme = .light, channelSettingsTheme: SendbirdUIKit.SBUChannelSettingsTheme = .light, userProfileTheme: SendbirdUIKit.SBUUserProfileTheme = .light, componentTheme: SendbirdUIKit.SBUComponentTheme = .light, overlayTheme: SendbirdUIKit.SBUOverlayTheme = .init(), messageSearchTheme: SendbirdUIKit.SBUMessageSearchTheme = .light, messageSearchResultCellTheme: SendbirdUIKit.SBUMessageSearchResultCellTheme = .light, createOpenChannelTheme: SendbirdUIKit.SBUCreateOpenChannelTheme = .light)
+  @available(*, deprecated, renamed: "setGroupChannelList(channelListTheme:channelCellTheme:)")
+  public static func setChannelList(channelListTheme: SendbirdUIKit.SBUGroupChannelListTheme, channelCellTheme: SendbirdUIKit.SBUGroupChannelCellTheme)
+  @available(*, deprecated, renamed: "groupChannelListTheme")
+  public static var channelListTheme: SendbirdUIKit.SBUGroupChannelListTheme {
+    get
+    set
+  }
+  @available(*, deprecated, renamed: "groupChannelCellTheme")
+  public static var channelCellTheme: SendbirdUIKit.SBUGroupChannelCellTheme {
+    get
+    set
+  }
+}
+extension SendbirdUIKit.SBUMessageCellTheme {
+  @available(*, deprecated, renamed: "unknownMessageDescLeftTextColor")
+  public var unknownMessageDescTextColor: UIKit.UIColor {
+    get
+  }
+  @available(*, deprecated, renamed: "init(backgroundColor:leftBackgroundColor:leftPressedBackgroundColor:rightBackgroundColor:rightPressedBackgroundColor:openChannelBackgroundColor:openChannelPressedBackgroundColor:dateFont:dateTextColor:dateBackgroundColor:userPlaceholderBackgroundColor:userPlaceholderTintColor:userNameFont:userNameTextColor:currentUserNameTextColor:timeFont:timeTextColor:pendingStateColor:failedStateColor:succeededStateColor:readReceiptStateColor:deliveryReceiptStateColor:userMessageFont:userMessageLeftTextColor:userMessageLeftEditTextColor:userMessageLeftHighlightTextColor:userMessageRightTextColor:userMessageRightEditTextColor:userMessageRightHighlightTextColor:fileIconBackgroundColor:fileImageBackgroundColor:fileImageIconColor:fileIconColor:fileMessageNameFont:fileMessageLeftTextColor:fileMessageRightTextColor:fileMessagePlaceholderColor:adminMessageFont:adminMessageTextColor:unknownMessageDescFont:unknownMessageDescTextColor:unknownMessageDescRightTextColor:ogTitleFont:ogTitleColor:ogDescriptionFont:ogDescriptionColor:ogURLAddressFont:ogURLAddressColor:openChannelOGTitleColor:linkColor:contentBackgroundColor:pressedContentBackgroundColor:quotedMessageBackgroundColor:quotedFileMessageThumbnailColor:quotedMessageTextColor:quotedMessageTextFont:repliedIconColor:repliedToTextColor:repliedToTextFont:mentionTextFont:mentionLeftTextColor:mentionRightTextColor:mentionLeftTextBackgroundColor:mentionRightTextBackgroundColor:buttonBackgroundColor:buttonTitleColor:sideButtonIconColor:newMessageBadgeColor:)")
+  convenience public init(backgroundColor: UIKit.UIColor = SBUColorSet.background50, leftBackgroundColor: UIKit.UIColor = SBUColorSet.background100, leftPressedBackgroundColor: UIKit.UIColor = SBUColorSet.primary100, rightBackgroundColor: UIKit.UIColor = SBUColorSet.primary300, rightPressedBackgroundColor: UIKit.UIColor = SBUColorSet.primary400, openChannelBackgroundColor: UIKit.UIColor = .clear, openChannelPressedBackgroundColor: UIKit.UIColor = SBUColorSet.background100, dateFont: UIKit.UIFont = SBUFontSet.caption1, dateTextColor: UIKit.UIColor = SBUColorSet.ondark01, dateBackgroundColor: UIKit.UIColor = SBUColorSet.overlay02, userPlaceholderBackgroundColor: UIKit.UIColor = SBUColorSet.background300, userPlaceholderTintColor: UIKit.UIColor = SBUColorSet.ondark01, userNameFont: UIKit.UIFont = SBUFontSet.caption1, userNameTextColor: UIKit.UIColor = SBUColorSet.onlight02, currentUserNameTextColor: UIKit.UIColor = SBUColorSet.secondary300, timeFont: UIKit.UIFont = SBUFontSet.caption4, timeTextColor: UIKit.UIColor = SBUColorSet.onlight03, pendingStateColor: UIKit.UIColor = SBUColorSet.primary300, failedStateColor: UIKit.UIColor = SBUColorSet.error300, succeededStateColor: UIKit.UIColor = SBUColorSet.onlight03, readReceiptStateColor: UIKit.UIColor = SBUColorSet.secondary300, deliveryReceiptStateColor: UIKit.UIColor = SBUColorSet.onlight03, userMessageFont: UIKit.UIFont = SBUFontSet.body3, userMessageLeftTextColor: UIKit.UIColor = SBUColorSet.onlight01, userMessageLeftEditTextColor: UIKit.UIColor = SBUColorSet.onlight02, userMessageLeftHighlightTextColor: UIKit.UIColor = SBUColorSet.onlight01, userMessageRightTextColor: UIKit.UIColor = SBUColorSet.ondark01, userMessageRightEditTextColor: UIKit.UIColor = SBUColorSet.ondark02, userMessageRightHighlightTextColor: UIKit.UIColor = SBUColorSet.onlight01, fileIconBackgroundColor: UIKit.UIColor = SBUColorSet.background50, fileImageBackgroundColor: UIKit.UIColor = SBUColorSet.ondark01, fileImageIconColor: UIKit.UIColor = SBUColorSet.onlight02, fileIconColor: UIKit.UIColor = SBUColorSet.primary300, fileMessageNameFont: UIKit.UIFont = SBUFontSet.body3, fileMessageLeftTextColor: UIKit.UIColor = SBUColorSet.onlight01, fileMessageRightTextColor: UIKit.UIColor = SBUColorSet.ondark01, fileMessagePlaceholderColor: UIKit.UIColor = SBUColorSet.onlight02, adminMessageFont: UIKit.UIFont = SBUFontSet.caption2, adminMessageTextColor: UIKit.UIColor = SBUColorSet.onlight02, unknownMessageDescFont: UIKit.UIFont = SBUFontSet.body3, unknownMessageDescTextColor: UIKit.UIColor = SBUColorSet.onlight02, unknownMessageDescRightTextColor: UIKit.UIColor = SBUColorSet.ondark02, ogTitleFont: UIKit.UIFont = SBUFontSet.body2, ogTitleColor: UIKit.UIColor = SBUColorSet.onlight01, ogDescriptionFont: UIKit.UIFont = SBUFontSet.caption2, ogDescriptionColor: UIKit.UIColor = SBUColorSet.onlight01, ogURLAddressFont: UIKit.UIFont = SBUFontSet.caption2, ogURLAddressColor: UIKit.UIColor = SBUColorSet.onlight02, openChannelOGTitleColor: UIKit.UIColor = SBUColorSet.primary300, linkColor: UIKit.UIColor = SBUColorSet.primary300, contentBackgroundColor: UIKit.UIColor = SBUColorSet.background100, pressedContentBackgroundColor: UIKit.UIColor = SBUColorSet.background300, quotedMessageBackgroundColor: UIKit.UIColor = SBUColorSet.background100, quotedFileMessageThumbnailColor: UIKit.UIColor = SBUColorSet.onlight02, quotedMessageTextColor: UIKit.UIColor = SBUColorSet.onlight03, quotedMessageTextFont: UIKit.UIFont = SBUFontSet.body3, repliedIconColor: UIKit.UIColor = SBUColorSet.onlight03, repliedToTextColor: UIKit.UIColor = SBUColorSet.onlight03, repliedToTextFont: UIKit.UIFont = SBUFontSet.caption1, mentionTextFont: UIKit.UIFont = SBUFontSet.body4, mentionLeftTextColor: UIKit.UIColor = SBUColorSet.onlight01, mentionRightTextColor: UIKit.UIColor = SBUColorSet.ondark01, mentionLeftTextBackgroundColor: UIKit.UIColor = .clear, mentionRightTextBackgroundColor: UIKit.UIColor = .clear, buttonBackgroundColor: UIKit.UIColor = SBUColorSet.background200, buttonTitleColor: UIKit.UIColor = SBUColorSet.primary300, sideButtonIconColor: UIKit.UIColor = SBUColorSet.onlight03, newMessageBadgeColor: UIKit.UIColor = SBUColorSet.secondary300)
+}
 public protocol SBUGroupChannelPushSettingsModuleHeaderDelegate : SendbirdUIKit.SBUCommonDelegate {
   func groupChannelPushSettingsModule(_ headerComponent: SendbirdUIKit.SBUGroupChannelPushSettingsModule.Header, didUpdateTitleView titleView: UIKit.UIView?)
   func groupChannelPushSettingsModule(_ headerComponent: SendbirdUIKit.SBUGroupChannelPushSettingsModule.Header, didUpdateLeftItem leftItem: UIKit.UIBarButtonItem?)
@@ -837,7 +865,7 @@ public class SBUMessageWebViewModel {
   public var urlAttributedText: Foundation.NSAttributedString?
   public var placeHolderImage: UIKit.UIImage?
   public var errorImage: UIKit.UIImage?
-  public init(metaData: SendbirdChatSDK.OGMetaData?, isOverlay: Swift.Bool = false)
+  public init(metaData: SendbirdChatSDK.OGMetaData?, isOverlay: Swift.Bool = false, isOpenChannel: Swift.Bool = false)
   @objc deinit
 }
 @_hasMissingDesignatedInitializers public class SBUGlobalCustomParams {
@@ -2833,7 +2861,7 @@ extension UIKit.UIImageView {
     }
   }
   @discardableResult
-  @_Concurrency.MainActor(unsafe) public func loadImage(urlString: Swift.String, placeholder: UIKit.UIImage? = nil, errorImage: UIKit.UIImage? = nil, option: UIKit.UIImageView.ImageOption = .original, thumbnailSize: CoreGraphics.CGSize? = nil, completion: ((Swift.Bool) -> Swift.Void)? = nil) -> Foundation.URLSessionTask?
+  @_Concurrency.MainActor(unsafe) public func loadImage(urlString: Swift.String, placeholder: UIKit.UIImage? = nil, errorImage: UIKit.UIImage? = nil, option: UIKit.UIImageView.ImageOption = .original, thumbnailSize: CoreGraphics.CGSize? = nil, cacheKey: Swift.String? = nil, completion: ((Swift.Bool) -> Swift.Void)? = nil) -> Foundation.URLSessionTask?
 }
 @objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUBaseChannelCell : SendbirdUIKit.SBUTableViewCell {
   @objc @_Concurrency.MainActor(unsafe) public var channel: SendbirdChatSDK.BaseChannel? {
@@ -3541,7 +3569,7 @@ public typealias SBUChannelCell = SendbirdUIKit.SBUGroupChannelCell
     @objc get
     @objc set
   }
-  @SendbirdUIKit.SBUThemeWrapper @_Concurrency.MainActor(unsafe) public var theme: SendbirdUIKit.SBUChannelCellTheme {
+  @SendbirdUIKit.SBUThemeWrapper @_Concurrency.MainActor(unsafe) public var theme: SendbirdUIKit.SBUGroupChannelCellTheme {
     get
     set
     _modify
@@ -4064,6 +4092,11 @@ public enum SBUReplyType : Swift.Int {
     set
     _modify
   }
+  @SendbirdUIKit.SBUThemeWrapper @_Concurrency.MainActor(unsafe) public var componentTheme: SendbirdUIKit.SBUComponentTheme {
+    get
+    set
+    _modify
+  }
   @objc @_Concurrency.MainActor(unsafe) public var baseViewModel: SendbirdUIKit.SBUBaseSelectUserViewModel?
   @objc @_Concurrency.MainActor(unsafe) public var channel: SendbirdChatSDK.BaseChannel? {
     @objc get
@@ -4169,7 +4202,7 @@ public protocol SBUGroupChannelListModuleListDataSource : SendbirdUIKit.SBUBaseC
 }
 extension SendbirdUIKit.SBUGroupChannelListModule {
   @_inheritsConvenienceInitializers @objc(SBUGroupChannelListModuleList) @objcMembers @_Concurrency.MainActor(unsafe) open class List : SendbirdUIKit.SBUBaseChannelListModule.List {
-    @_Concurrency.MainActor(unsafe) public var theme: SendbirdUIKit.SBUChannelListTheme?
+    @_Concurrency.MainActor(unsafe) public var theme: SendbirdUIKit.SBUGroupChannelListTheme?
     @_Concurrency.MainActor(unsafe) weak public var delegate: SendbirdUIKit.SBUGroupChannelListModuleListDelegate? {
       get
       set
@@ -4186,9 +4219,9 @@ extension SendbirdUIKit.SBUGroupChannelListModule {
     @available(*, unavailable, renamed: "SBUGroupChannelListModule.List()")
     @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
     @objc deinit
-    @_Concurrency.MainActor(unsafe) open func configure(delegate: SendbirdUIKit.SBUGroupChannelListModuleListDelegate, dataSource: SendbirdUIKit.SBUGroupChannelListModuleListDataSource, theme: SendbirdUIKit.SBUChannelListTheme)
+    @_Concurrency.MainActor(unsafe) open func configure(delegate: SendbirdUIKit.SBUGroupChannelListModuleListDelegate, dataSource: SendbirdUIKit.SBUGroupChannelListModuleListDataSource, theme: SendbirdUIKit.SBUGroupChannelListTheme)
     @_Concurrency.MainActor(unsafe) @objc override open func setupViews()
-    @_Concurrency.MainActor(unsafe) open func setupStyles(theme: SendbirdUIKit.SBUChannelListTheme? = nil)
+    @_Concurrency.MainActor(unsafe) open func setupStyles(theme: SendbirdUIKit.SBUGroupChannelListTheme? = nil)
     @objc @_Concurrency.MainActor(unsafe) public func leaveContextualAction(with indexPath: Foundation.IndexPath) -> UIKit.UIContextualAction?
     @objc @_Concurrency.MainActor(unsafe) public func alarmContextualAction(with indexPath: Foundation.IndexPath) -> UIKit.UIContextualAction?
   }
@@ -4564,6 +4597,7 @@ extension SendbirdUIKit.SBUGroupChannelSettingsModule {
     get
     set
   }
+  public static var messageCellConfiguration: SendbirdUIKit.SBUMessageCellConfiguration
   @objc deinit
 }
 public typealias AlertButtonHandler = (_ info: Any?) -> Swift.Void
@@ -6569,6 +6603,23 @@ public class SBUUserMessageCellParams : SendbirdUIKit.SBUBaseMessageCellParams {
   public func requestDeviceAccessIfNeeded(for type: AVFoundation.AVMediaType, completion: @escaping (Swift.Bool) -> ())
   @objc deinit
 }
+@_hasMissingDesignatedInitializers public class SBUMessageCellConfiguration {
+  public var groupChannel: SendbirdUIKit.SBUMessageCellConfiguration.GroupChannel
+  public var openChannel: SendbirdUIKit.SBUMessageCellConfiguration.OpenChannel
+  @_hasMissingDesignatedInitializers public class BaseChannel {
+    public var messageCellMaxWidth: CoreGraphics.CGFloat
+    @objc deinit
+  }
+  @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class GroupChannel : SendbirdUIKit.SBUMessageCellConfiguration.BaseChannel {
+    public var thumbnailSize: CoreGraphics.CGSize
+    @objc deinit
+  }
+  @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class OpenChannel : SendbirdUIKit.SBUMessageCellConfiguration.BaseChannel {
+    public var thumbnailSize: CoreGraphics.CGSize
+    @objc deinit
+  }
+  @objc deinit
+}
 @objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUOpenChannelImageContentView : SendbirdUIKit.SBUImageContentView {
   @_Concurrency.MainActor(unsafe) override open func setupSizeContraint()
   @_Concurrency.MainActor(unsafe) override open func resizeImageView(by size: CoreGraphics.CGSize)
@@ -6938,9 +6989,9 @@ extension SendbirdUIKit.SBUBaseChannelViewController {
   @_Concurrency.MainActor(unsafe) dynamic public func scrollToBottom(animated: Swift.Bool)
 }
 public class SBUTheme {
-  public init(channelListTheme: SendbirdUIKit.SBUChannelListTheme = .light, channelCellTheme: SendbirdUIKit.SBUChannelCellTheme = .light, openChannelListTheme: SendbirdUIKit.SBUOpenChannelListTheme = .light, openChannelCellTheme: SendbirdUIKit.SBUOpenChannelCellTheme = .light, channelTheme: SendbirdUIKit.SBUChannelTheme = .light, messageInputTheme: SendbirdUIKit.SBUMessageInputTheme = .light, messageCellTheme: SendbirdUIKit.SBUMessageCellTheme = .light, userListTheme: SendbirdUIKit.SBUUserListTheme = .light, userCellTheme: SendbirdUIKit.SBUUserCellTheme = .light, channelSettingsTheme: SendbirdUIKit.SBUChannelSettingsTheme = .light, userProfileTheme: SendbirdUIKit.SBUUserProfileTheme = .light, componentTheme: SendbirdUIKit.SBUComponentTheme = .light, overlayTheme: SendbirdUIKit.SBUOverlayTheme = .init(), messageSearchTheme: SendbirdUIKit.SBUMessageSearchTheme = .light, messageSearchResultCellTheme: SendbirdUIKit.SBUMessageSearchResultCellTheme = .light, createOpenChannelTheme: SendbirdUIKit.SBUCreateOpenChannelTheme = .light)
+  public init(groupChannelListTheme: SendbirdUIKit.SBUGroupChannelListTheme = .light, groupChannelCellTheme: SendbirdUIKit.SBUGroupChannelCellTheme = .light, openChannelListTheme: SendbirdUIKit.SBUOpenChannelListTheme = .light, openChannelCellTheme: SendbirdUIKit.SBUOpenChannelCellTheme = .light, channelTheme: SendbirdUIKit.SBUChannelTheme = .light, messageInputTheme: SendbirdUIKit.SBUMessageInputTheme = .light, messageCellTheme: SendbirdUIKit.SBUMessageCellTheme = .light, userListTheme: SendbirdUIKit.SBUUserListTheme = .light, userCellTheme: SendbirdUIKit.SBUUserCellTheme = .light, channelSettingsTheme: SendbirdUIKit.SBUChannelSettingsTheme = .light, userProfileTheme: SendbirdUIKit.SBUUserProfileTheme = .light, componentTheme: SendbirdUIKit.SBUComponentTheme = .light, overlayTheme: SendbirdUIKit.SBUOverlayTheme = .init(), messageSearchTheme: SendbirdUIKit.SBUMessageSearchTheme = .light, messageSearchResultCellTheme: SendbirdUIKit.SBUMessageSearchResultCellTheme = .light, createOpenChannelTheme: SendbirdUIKit.SBUCreateOpenChannelTheme = .light)
   public static func set(theme: SendbirdUIKit.SBUTheme)
-  public static func setChannelList(channelListTheme: SendbirdUIKit.SBUChannelListTheme, channelCellTheme: SendbirdUIKit.SBUChannelCellTheme)
+  public static func setGroupChannelList(channelListTheme: SendbirdUIKit.SBUGroupChannelListTheme, channelCellTheme: SendbirdUIKit.SBUGroupChannelCellTheme)
   public static func setOpenChannelList(channelListTheme: SendbirdUIKit.SBUOpenChannelListTheme, channelCellTheme: SendbirdUIKit.SBUOpenChannelCellTheme)
   public static func setChannel(channelTheme: SendbirdUIKit.SBUChannelTheme, messageCellTheme: SendbirdUIKit.SBUMessageCellTheme, messageInputTheme: SendbirdUIKit.SBUMessageInputTheme, componentTheme: SendbirdUIKit.SBUComponentTheme)
   public static func setUserList(userListTheme: SendbirdUIKit.SBUUserListTheme, userCellTheme: SendbirdUIKit.SBUUserCellTheme)
@@ -6953,11 +7004,11 @@ public class SBUTheme {
   public static var light: SendbirdUIKit.SBUTheme {
     get
   }
-  public static var channelListTheme: SendbirdUIKit.SBUChannelListTheme {
+  public static var groupChannelListTheme: SendbirdUIKit.SBUGroupChannelListTheme {
     get
     set
   }
-  public static var channelCellTheme: SendbirdUIKit.SBUChannelCellTheme {
+  public static var groupChannelCellTheme: SendbirdUIKit.SBUGroupChannelCellTheme {
     get
     set
   }
@@ -7027,14 +7078,14 @@ public class SBUOverlayTheme {
   public var componentTheme: SendbirdUIKit.SBUComponentTheme
   @objc deinit
 }
-public class SBUChannelListTheme {
-  public static var light: SendbirdUIKit.SBUChannelListTheme {
+public class SBUGroupChannelListTheme {
+  public static var light: SendbirdUIKit.SBUGroupChannelListTheme {
     get
   }
-  public static var dark: SendbirdUIKit.SBUChannelListTheme {
+  public static var dark: SendbirdUIKit.SBUGroupChannelListTheme {
     get
   }
-  public init(statusBarStyle: UIKit.UIStatusBarStyle = .default, leftBarButtonTintColor: UIKit.UIColor = SBUColorSet.primary300, rightBarButtonTintColor: UIKit.UIColor = SBUColorSet.primary300, navigationBarTintColor: UIKit.UIColor = SBUColorSet.background50, navigationBarShadowColor: UIKit.UIColor = SBUColorSet.onlight04, backgroundColor: UIKit.UIColor = SBUColorSet.background50, notificationOnBackgroundColor: UIKit.UIColor = SBUColorSet.primary300, notificationOnTintColor: UIKit.UIColor = SBUColorSet.background50, notificationOffBackgroundColor: UIKit.UIColor = SBUColorSet.background100, notificationOffTintColor: UIKit.UIColor = SBUColorSet.onlight01, leaveBackgroundColor: UIKit.UIColor = SBUColorSet.error300, leaveTintColor: UIKit.UIColor = SBUColorSet.background50, alertBackgroundColor: UIKit.UIColor = SBUColorSet.background50)
+  public init(statusBarStyle: UIKit.UIStatusBarStyle = .default, leftBarButtonTintColor: UIKit.UIColor = SBUColorSet.primary300, rightBarButtonTintColor: UIKit.UIColor = SBUColorSet.primary300, navigationBarTintColor: UIKit.UIColor = SBUColorSet.background50, navigationBarShadowColor: UIKit.UIColor = SBUColorSet.onlight04, backgroundColor: UIKit.UIColor = SBUColorSet.background50, notificationOnBackgroundColor: UIKit.UIColor = SBUColorSet.primary300, notificationOnTintColor: UIKit.UIColor = SBUColorSet.ondark01, notificationOffBackgroundColor: UIKit.UIColor = SBUColorSet.background200, notificationOffTintColor: UIKit.UIColor = SBUColorSet.onlight01, leaveBackgroundColor: UIKit.UIColor = SBUColorSet.error300, leaveTintColor: UIKit.UIColor = SBUColorSet.ondark01, alertBackgroundColor: UIKit.UIColor = SBUColorSet.background50)
   public var statusBarStyle: UIKit.UIStatusBarStyle
   public var leftBarButtonTintColor: UIKit.UIColor
   public var rightBarButtonTintColor: UIKit.UIColor
@@ -7050,14 +7101,14 @@ public class SBUChannelListTheme {
   public var alertBackgroundColor: UIKit.UIColor
   @objc deinit
 }
-public class SBUChannelCellTheme {
-  public static var light: SendbirdUIKit.SBUChannelCellTheme {
+public class SBUGroupChannelCellTheme {
+  public static var light: SendbirdUIKit.SBUGroupChannelCellTheme {
     get
   }
-  public static var dark: SendbirdUIKit.SBUChannelCellTheme {
+  public static var dark: SendbirdUIKit.SBUGroupChannelCellTheme {
     get
   }
-  public init(backgroundColor: UIKit.UIColor = SBUColorSet.background50, titleFont: UIKit.UIFont = SBUFontSet.subtitle1, titleTextColor: UIKit.UIColor = SBUColorSet.onlight01, memberCountFont: UIKit.UIFont = SBUFontSet.caption1, memberCountTextColor: UIKit.UIColor = SBUColorSet.onlight02, lastUpdatedTimeFont: UIKit.UIFont = SBUFontSet.caption2, lastUpdatedTimeTextColor: UIKit.UIColor = SBUColorSet.onlight02, messageFont: UIKit.UIFont = SBUFontSet.body3, messageTextColor: UIKit.UIColor = SBUColorSet.onlight03, broadcastMarkTintColor: UIKit.UIColor = SBUColorSet.secondary300, freezeStateTintColor: UIKit.UIColor = SBUColorSet.primary300, unreadCountBackgroundColor: UIKit.UIColor = SBUColorSet.primary300, unreadCountTextColor: UIKit.UIColor = SBUColorSet.ondark01, unreadCountFont: UIKit.UIFont = SBUFontSet.caption1, unreadMentionFont: UIKit.UIFont = SBUFontSet.h3, succeededStateColor: UIKit.UIColor = SBUColorSet.onlight03, deliveryReceiptStateColor: UIKit.UIColor = SBUColorSet.onlight03, readReceiptStateColor: UIKit.UIColor = SBUColorSet.secondary300, unreadMentionColor: UIKit.UIColor = SBUColorSet.primary300, separatorLineColor: UIKit.UIColor = SBUColorSet.onlight04)
+  public init(backgroundColor: UIKit.UIColor = SBUColorSet.background50, titleFont: UIKit.UIFont = SBUFontSet.subtitle1, titleTextColor: UIKit.UIColor = SBUColorSet.onlight01, memberCountFont: UIKit.UIFont = SBUFontSet.caption1, memberCountTextColor: UIKit.UIColor = SBUColorSet.onlight02, lastUpdatedTimeFont: UIKit.UIFont = SBUFontSet.caption2, lastUpdatedTimeTextColor: UIKit.UIColor = SBUColorSet.onlight02, messageFont: UIKit.UIFont = SBUFontSet.body3, messageTextColor: UIKit.UIColor = SBUColorSet.onlight03, fileIconBackgroundColor: UIKit.UIColor = SBUColorSet.background100, fileIconTintColor: UIKit.UIColor = SBUColorSet.onlight02, broadcastMarkTintColor: UIKit.UIColor = SBUColorSet.secondary300, freezeStateTintColor: UIKit.UIColor = SBUColorSet.primary300, unreadCountBackgroundColor: UIKit.UIColor = SBUColorSet.primary300, unreadCountTextColor: UIKit.UIColor = SBUColorSet.ondark01, unreadCountFont: UIKit.UIFont = SBUFontSet.caption1, unreadMentionFont: UIKit.UIFont = SBUFontSet.h3, unreadMentionColor: UIKit.UIColor = SBUColorSet.primary300, succeededStateColor: UIKit.UIColor = SBUColorSet.onlight03, deliveryReceiptStateColor: UIKit.UIColor = SBUColorSet.onlight03, readReceiptStateColor: UIKit.UIColor = SBUColorSet.secondary300, separatorLineColor: UIKit.UIColor = SBUColorSet.onlight04)
   public var backgroundColor: UIKit.UIColor
   public var titleFont: UIKit.UIFont
   public var titleTextColor: UIKit.UIColor
@@ -7067,6 +7118,8 @@ public class SBUChannelCellTheme {
   public var lastUpdatedTimeTextColor: UIKit.UIColor
   public var messageFont: UIKit.UIFont
   public var messageTextColor: UIKit.UIColor
+  public var fileIconBackgroundColor: UIKit.UIColor
+  public var fileIconTintColor: UIKit.UIColor
   public var broadcastMarkTintColor: UIKit.UIColor
   public var freezeStateTintColor: UIKit.UIColor
   public var unreadCountBackgroundColor: UIKit.UIColor
@@ -7105,10 +7158,8 @@ public class SBUOpenChannelCellTheme {
   public static var dark: SendbirdUIKit.SBUOpenChannelCellTheme {
     get
   }
-  public init(backgroundColor: UIKit.UIColor = SBUColorSet.background50, channelPlaceholderBackgroundColor: UIKit.UIColor = SBUColorSet.background300, channelPlaceholderTintColor: UIKit.UIColor = SBUColorSet.onlight01, titleFont: UIKit.UIFont = SBUFontSet.subtitle1, titleTextColor: UIKit.UIColor = SBUColorSet.onlight01, participantMarkTint: UIKit.UIColor = SBUColorSet.onlight02, participantCountFont: UIKit.UIFont = SBUFontSet.caption1, participantCountTextColor: UIKit.UIColor = SBUColorSet.onlight02, freezeStateTintColor: UIKit.UIColor = SBUColorSet.primary300, separatorLineColor: UIKit.UIColor = SBUColorSet.onlight04)
+  public init(backgroundColor: UIKit.UIColor = SBUColorSet.background50, channelPlaceholderBackgroundColor: UIKit.UIColor = SBUColorSet.background300, channelPlaceholderTintColor: UIKit.UIColor = SBUColorSet.onlight01, titleFont: UIKit.UIFont = SBUFontSet.subtitle1, titleTextColor: UIKit.UIColor = SBUColorSet.onlight01, participantMarkTint: UIKit.UIColor = SBUColorSet.onlight02, participantCountFont: UIKit.UIFont = SBUFontSet.caption2, participantCountTextColor: UIKit.UIColor = SBUColorSet.onlight02, freezeStateTintColor: UIKit.UIColor = SBUColorSet.primary300, separatorLineColor: UIKit.UIColor = SBUColorSet.onlight04)
   public var backgroundColor: UIKit.UIColor
-  public var channelPlaceholderBackgroundColor: UIKit.UIColor
-  public var channelPlaceholderTintColor: UIKit.UIColor
   public var titleFont: UIKit.UIFont
   public var titleTextColor: UIKit.UIColor
   public var participantMarkTint: UIKit.UIColor
@@ -7116,6 +7167,8 @@ public class SBUOpenChannelCellTheme {
   public var participantCountTextColor: UIKit.UIColor
   public var freezeStateTintColor: UIKit.UIColor
   public var separatorLineColor: UIKit.UIColor
+  public var channelPlaceholderBackgroundColor: UIKit.UIColor
+  public var channelPlaceholderTintColor: UIKit.UIColor
   @objc deinit
 }
 public class SBUChannelTheme {
@@ -7128,7 +7181,7 @@ public class SBUChannelTheme {
   public static var overlay: SendbirdUIKit.SBUChannelTheme {
     get
   }
-  public init(statusBarStyle: UIKit.UIStatusBarStyle = .default, navigationBarTintColor: UIKit.UIColor = SBUColorSet.background50, navigationBarShadowColor: UIKit.UIColor = SBUColorSet.onlight04, leftBarButtonTintColor: UIKit.UIColor = SBUColorSet.primary300, rightBarButtonTintColor: UIKit.UIColor = SBUColorSet.primary300, backgroundColor: UIKit.UIColor = SBUColorSet.background50, removeItemColor: UIKit.UIColor = SBUColorSet.error300, deleteItemColor: UIKit.UIColor = SBUColorSet.error300, cancelItemColor: UIKit.UIColor = SBUColorSet.primary300, alertRemoveColor: UIKit.UIColor = SBUColorSet.error300, alertCancelColor: UIKit.UIColor = SBUColorSet.primary300, menuTextColor: UIKit.UIColor = SBUColorSet.onlight01, menuItemTintColor: UIKit.UIColor = SBUColorSet.onlight01, menuItemDisabledColor: UIKit.UIColor = SBUColorSet.ondark04, channelStateBannerFont: UIKit.UIFont = SBUFontSet.caption2, channelStateBannerTextColor: UIKit.UIColor = SBUColorSet.onlight01, channelStateBannerBackgroundColor: UIKit.UIColor = SBUColorSet.information, mentionLimitGuideTextFont: UIKit.UIFont = SBUFontSet.body1, mentionLimitGuideTextColor: UIKit.UIColor = SBUColorSet.onlight02, separatorColor: UIKit.UIColor = SBUColorSet.onlight04)
+  public init(statusBarStyle: UIKit.UIStatusBarStyle = .default, navigationBarTintColor: UIKit.UIColor = SBUColorSet.background50, navigationBarShadowColor: UIKit.UIColor = SBUColorSet.onlight04, leftBarButtonTintColor: UIKit.UIColor = SBUColorSet.primary300, rightBarButtonTintColor: UIKit.UIColor = SBUColorSet.primary300, backgroundColor: UIKit.UIColor = SBUColorSet.background50, removeItemColor: UIKit.UIColor = SBUColorSet.error300, deleteItemColor: UIKit.UIColor = SBUColorSet.error300, cancelItemColor: UIKit.UIColor = SBUColorSet.primary300, alertRemoveColor: UIKit.UIColor = SBUColorSet.error300, alertCancelColor: UIKit.UIColor = SBUColorSet.primary300, menuTextColor: UIKit.UIColor = SBUColorSet.onlight01, menuItemTintColor: UIKit.UIColor = SBUColorSet.onlight01, menuItemDisabledColor: UIKit.UIColor = SBUColorSet.onlight04, channelStateBannerFont: UIKit.UIFont = SBUFontSet.caption2, channelStateBannerTextColor: UIKit.UIColor = SBUColorSet.onlight01, channelStateBannerBackgroundColor: UIKit.UIColor = SBUColorSet.information, mentionLimitGuideTextFont: UIKit.UIFont = SBUFontSet.body3, mentionLimitGuideTextColor: UIKit.UIColor = SBUColorSet.onlight02, separatorColor: UIKit.UIColor = SBUColorSet.onlight04)
   public var statusBarStyle: UIKit.UIStatusBarStyle
   public var navigationBarTintColor: UIKit.UIColor
   public var navigationBarShadowColor: UIKit.UIColor
@@ -7161,7 +7214,7 @@ public class SBUMessageInputTheme {
   public static var overlay: SendbirdUIKit.SBUMessageInputTheme {
     get
   }
-  public init(backgroundColor: UIKit.UIColor = SBUColorSet.background50, textFieldBackgroundColor: UIKit.UIColor = SBUColorSet.background100, textFieldPlaceholderColor: UIKit.UIColor = SBUColorSet.onlight03, textFieldPlaceholderFont: UIKit.UIFont = SBUFontSet.body3, textFieldDisabledColor: UIKit.UIColor = SBUColorSet.onlight04, textFieldTintColor: UIKit.UIColor = SBUColorSet.primary300, textFieldTextColor: UIKit.UIColor = SBUColorSet.onlight01, textFieldBorderColor: UIKit.UIColor = SBUColorSet.background100, textFieldFont: UIKit.UIFont = SBUFontSet.body3, buttonTintColor: UIKit.UIColor = SBUColorSet.primary300, buttonDisabledTintColor: UIKit.UIColor = SBUColorSet.onlight04, cancelButtonFont: UIKit.UIFont = SBUFontSet.button2, saveButtonFont: UIKit.UIFont = SBUFontSet.button2, saveButtonTextColor: UIKit.UIColor = SBUColorSet.ondark01, channelViewDividerColor: UIKit.UIColor = SBUColorSet.onlight04, quotedFileMessageThumbnailBackgroundColor: UIKit.UIColor = SBUColorSet.background100, quotedFileMessageThumbnailTintColor: UIKit.UIColor = SBUColorSet.onlight02, replyToTextColor: UIKit.UIColor = SBUColorSet.onlight01, replyToTextFont: UIKit.UIFont = SBUFontSet.caption1, quotedMessageTextColor: UIKit.UIColor = SBUColorSet.onlight03, quotedMessageTextFont: UIKit.UIFont = SBUFontSet.caption2, closeReplyButtonColor: UIKit.UIColor = SBUColorSet.onlight02, mentionTextFont: UIKit.UIFont = SBUFontSet.body2, mentionTextColor: UIKit.UIColor = SBUColorSet.onlight01, mentionTextBackgroundColor: UIKit.UIColor = .clear)
+  public init(backgroundColor: UIKit.UIColor = SBUColorSet.background50, textFieldBackgroundColor: UIKit.UIColor = SBUColorSet.background100, textFieldPlaceholderColor: UIKit.UIColor = SBUColorSet.onlight03, textFieldPlaceholderFont: UIKit.UIFont = SBUFontSet.body3, textFieldDisabledColor: UIKit.UIColor = SBUColorSet.onlight04, textFieldTintColor: UIKit.UIColor = SBUColorSet.primary300, textFieldTextColor: UIKit.UIColor = SBUColorSet.onlight01, textFieldBorderColor: UIKit.UIColor = SBUColorSet.background100, textFieldFont: UIKit.UIFont = SBUFontSet.body3, buttonTintColor: UIKit.UIColor = SBUColorSet.primary300, buttonDisabledTintColor: UIKit.UIColor = SBUColorSet.onlight04, cancelButtonFont: UIKit.UIFont = SBUFontSet.button2, saveButtonFont: UIKit.UIFont = SBUFontSet.button2, saveButtonTextColor: UIKit.UIColor = SBUColorSet.ondark01, channelViewDividerColor: UIKit.UIColor = SBUColorSet.onlight04, quotedFileMessageThumbnailBackgroundColor: UIKit.UIColor = SBUColorSet.background200, quotedFileMessageThumbnailTintColor: UIKit.UIColor = SBUColorSet.onlight02, replyToTextColor: UIKit.UIColor = SBUColorSet.onlight01, replyToTextFont: UIKit.UIFont = SBUFontSet.caption1, quotedMessageTextColor: UIKit.UIColor = SBUColorSet.onlight03, quotedMessageTextFont: UIKit.UIFont = SBUFontSet.caption2, closeReplyButtonColor: UIKit.UIColor = SBUColorSet.onlight01, mentionTextFont: UIKit.UIFont = SBUFontSet.body2, mentionTextColor: UIKit.UIColor = SBUColorSet.onlight01, mentionTextBackgroundColor: UIKit.UIColor = .clear)
   public var backgroundColor: UIKit.UIColor
   public var textFieldBackgroundColor: UIKit.UIColor
   public var textFieldPlaceholderColor: UIKit.UIColor
@@ -7199,7 +7252,7 @@ public class SBUMessageCellTheme {
   public static var overlay: SendbirdUIKit.SBUMessageCellTheme {
     get
   }
-  public init(backgroundColor: UIKit.UIColor = SBUColorSet.background50, leftBackgroundColor: UIKit.UIColor = SBUColorSet.background100, leftPressedBackgroundColor: UIKit.UIColor = SBUColorSet.primary100, rightBackgroundColor: UIKit.UIColor = SBUColorSet.primary300, rightPressedBackgroundColor: UIKit.UIColor = SBUColorSet.primary400, openChannelBackgroundColor: UIKit.UIColor = .clear, openChannelPressedBackgroundColor: UIKit.UIColor = SBUColorSet.background100, dateFont: UIKit.UIFont = SBUFontSet.caption1, dateTextColor: UIKit.UIColor = SBUColorSet.ondark01, dateBackgroundColor: UIKit.UIColor = SBUColorSet.overlay02, userPlaceholderBackgroundColor: UIKit.UIColor = SBUColorSet.background300, userPlaceholderTintColor: UIKit.UIColor = SBUColorSet.ondark01, userNameFont: UIKit.UIFont = SBUFontSet.caption1, userNameTextColor: UIKit.UIColor = SBUColorSet.onlight02, currentUserNameTextColor: UIKit.UIColor = SBUColorSet.secondary300, timeFont: UIKit.UIFont = SBUFontSet.caption4, timeTextColor: UIKit.UIColor = SBUColorSet.onlight03, pendingStateColor: UIKit.UIColor = SBUColorSet.primary300, failedStateColor: UIKit.UIColor = SBUColorSet.error300, succeededStateColor: UIKit.UIColor = SBUColorSet.onlight03, readReceiptStateColor: UIKit.UIColor = SBUColorSet.secondary300, deliveryReceiptStateColor: UIKit.UIColor = SBUColorSet.onlight03, userMessageFont: UIKit.UIFont = SBUFontSet.body3, userMessageLeftTextColor: UIKit.UIColor = SBUColorSet.onlight01, userMessageLeftEditTextColor: UIKit.UIColor = SBUColorSet.onlight02, userMessageLeftHighlightTextColor: UIKit.UIColor = SBUColorSet.onlight01, userMessageRightTextColor: UIKit.UIColor = SBUColorSet.ondark01, userMessageRightEditTextColor: UIKit.UIColor = SBUColorSet.ondark02, userMessageRightHighlightTextColor: UIKit.UIColor = SBUColorSet.onlight01, fileIconBackgroundColor: UIKit.UIColor = SBUColorSet.background50, fileImageBackgroundColor: UIKit.UIColor = SBUColorSet.ondark01, fileImageIconColor: UIKit.UIColor = SBUColorSet.onlight02, fileIconColor: UIKit.UIColor = SBUColorSet.primary300, fileMessageNameFont: UIKit.UIFont = SBUFontSet.body3, fileMessageLeftTextColor: UIKit.UIColor = SBUColorSet.onlight01, fileMessageRightTextColor: UIKit.UIColor = SBUColorSet.ondark01, fileMessagePlaceholderColor: UIKit.UIColor = SBUColorSet.onlight02, adminMessageFont: UIKit.UIFont = SBUFontSet.caption2, adminMessageTextColor: UIKit.UIColor = SBUColorSet.onlight02, unknownMessageDescFont: UIKit.UIFont = SBUFontSet.body3, unknownMessageDescTextColor: UIKit.UIColor = SBUColorSet.onlight03, ogTitleFont: UIKit.UIFont = SBUFontSet.body2, ogTitleColor: UIKit.UIColor = SBUColorSet.onlight01, ogDescriptionFont: UIKit.UIFont = SBUFontSet.caption2, ogDescriptionColor: UIKit.UIColor = SBUColorSet.onlight01, ogURLAddressFont: UIKit.UIFont = SBUFontSet.caption2, ogURLAddressColor: UIKit.UIColor = SBUColorSet.onlight02, linkColor: UIKit.UIColor = SBUColorSet.primary300, contentBackgroundColor: UIKit.UIColor = SBUColorSet.background100, pressedContentBackgroundColor: UIKit.UIColor = SBUColorSet.background300, quotedMessageBackgroundColor: UIKit.UIColor = SBUColorSet.background100.withAlphaComponent(0.5), quotedFileMessageThumbnailColor: UIKit.UIColor = SBUColorSet.onlight02, quotedMessageTextColor: UIKit.UIColor = SBUColorSet.onlight03, quotedMessageTextFont: UIKit.UIFont = SBUFontSet.body3, repliedIconColor: UIKit.UIColor = SBUColorSet.onlight03, repliedToTextColor: UIKit.UIColor = SBUColorSet.onlight03, repliedToTextFont: UIKit.UIFont = SBUFontSet.caption1, mentionTextFont: UIKit.UIFont = SBUFontSet.body4, mentionLeftTextColor: UIKit.UIColor = SBUColorSet.onlight01, mentionRightTextColor: UIKit.UIColor = SBUColorSet.ondark01, mentionLeftTextBackgroundColor: UIKit.UIColor = .clear, mentionRightTextBackgroundColor: UIKit.UIColor = .clear)
+  public init(backgroundColor: UIKit.UIColor = SBUColorSet.background50, leftBackgroundColor: UIKit.UIColor = SBUColorSet.background100, leftPressedBackgroundColor: UIKit.UIColor = SBUColorSet.primary100, rightBackgroundColor: UIKit.UIColor = SBUColorSet.primary300, rightPressedBackgroundColor: UIKit.UIColor = SBUColorSet.primary400, openChannelBackgroundColor: UIKit.UIColor = .clear, openChannelPressedBackgroundColor: UIKit.UIColor = SBUColorSet.background100, dateFont: UIKit.UIFont = SBUFontSet.caption1, dateTextColor: UIKit.UIColor = SBUColorSet.ondark01, dateBackgroundColor: UIKit.UIColor = SBUColorSet.overlay02, userPlaceholderBackgroundColor: UIKit.UIColor = SBUColorSet.background300, userPlaceholderTintColor: UIKit.UIColor = SBUColorSet.ondark01, userNameFont: UIKit.UIFont = SBUFontSet.caption1, userNameTextColor: UIKit.UIColor = SBUColorSet.onlight02, currentUserNameTextColor: UIKit.UIColor = SBUColorSet.secondary300, timeFont: UIKit.UIFont = SBUFontSet.caption4, timeTextColor: UIKit.UIColor = SBUColorSet.onlight03, pendingStateColor: UIKit.UIColor = SBUColorSet.primary300, failedStateColor: UIKit.UIColor = SBUColorSet.error300, succeededStateColor: UIKit.UIColor = SBUColorSet.onlight03, readReceiptStateColor: UIKit.UIColor = SBUColorSet.secondary300, deliveryReceiptStateColor: UIKit.UIColor = SBUColorSet.onlight03, userMessageFont: UIKit.UIFont = SBUFontSet.body3, userMessageLeftTextColor: UIKit.UIColor = SBUColorSet.onlight01, userMessageLeftEditTextColor: UIKit.UIColor = SBUColorSet.onlight02, userMessageLeftHighlightTextColor: UIKit.UIColor = SBUColorSet.onlight01, userMessageRightTextColor: UIKit.UIColor = SBUColorSet.ondark01, userMessageRightEditTextColor: UIKit.UIColor = SBUColorSet.ondark02, userMessageRightHighlightTextColor: UIKit.UIColor = SBUColorSet.onlight01, fileIconBackgroundColor: UIKit.UIColor = SBUColorSet.background50, fileImageBackgroundColor: UIKit.UIColor = SBUColorSet.ondark01, fileImageIconColor: UIKit.UIColor = SBUColorSet.onlight02, fileIconColor: UIKit.UIColor = SBUColorSet.primary300, fileMessageNameFont: UIKit.UIFont = SBUFontSet.body3, fileMessageLeftTextColor: UIKit.UIColor = SBUColorSet.onlight01, fileMessageRightTextColor: UIKit.UIColor = SBUColorSet.ondark01, fileMessagePlaceholderColor: UIKit.UIColor = SBUColorSet.onlight02, adminMessageFont: UIKit.UIFont = SBUFontSet.caption2, adminMessageTextColor: UIKit.UIColor = SBUColorSet.onlight02, unknownMessageDescFont: UIKit.UIFont = SBUFontSet.body3, unknownMessageDescLeftTextColor: UIKit.UIColor = SBUColorSet.onlight02, unknownMessageDescRightTextColor: UIKit.UIColor = SBUColorSet.ondark02, ogTitleFont: UIKit.UIFont = SBUFontSet.body2, ogTitleColor: UIKit.UIColor = SBUColorSet.onlight01, ogDescriptionFont: UIKit.UIFont = SBUFontSet.caption2, ogDescriptionColor: UIKit.UIColor = SBUColorSet.onlight01, ogURLAddressFont: UIKit.UIFont = SBUFontSet.caption2, ogURLAddressColor: UIKit.UIColor = SBUColorSet.onlight02, openChannelOGTitleColor: UIKit.UIColor = SBUColorSet.primary300, linkColor: UIKit.UIColor = SBUColorSet.primary300, contentBackgroundColor: UIKit.UIColor = SBUColorSet.background100, pressedContentBackgroundColor: UIKit.UIColor = SBUColorSet.background300, quotedMessageBackgroundColor: UIKit.UIColor = SBUColorSet.background100, quotedFileMessageThumbnailColor: UIKit.UIColor = SBUColorSet.onlight02, quotedMessageTextColor: UIKit.UIColor = SBUColorSet.onlight03, quotedMessageTextFont: UIKit.UIFont = SBUFontSet.body3, repliedIconColor: UIKit.UIColor = SBUColorSet.onlight03, repliedToTextColor: UIKit.UIColor = SBUColorSet.onlight03, repliedToTextFont: UIKit.UIFont = SBUFontSet.caption1, mentionTextFont: UIKit.UIFont = SBUFontSet.body4, mentionLeftTextColor: UIKit.UIColor = SBUColorSet.onlight01, mentionRightTextColor: UIKit.UIColor = SBUColorSet.ondark01, mentionLeftTextBackgroundColor: UIKit.UIColor = .clear, mentionRightTextBackgroundColor: UIKit.UIColor = .clear, buttonBackgroundColor: UIKit.UIColor = SBUColorSet.background200, buttonTitleColor: UIKit.UIColor = SBUColorSet.primary300, sideButtonIconColor: UIKit.UIColor = SBUColorSet.onlight03, newMessageBadgeColor: UIKit.UIColor = SBUColorSet.secondary300)
   public var backgroundColor: UIKit.UIColor
   public var leftBackgroundColor: UIKit.UIColor
   public var leftPressedBackgroundColor: UIKit.UIColor
@@ -7240,7 +7293,8 @@ public class SBUMessageCellTheme {
   public var adminMessageFont: UIKit.UIFont
   public var adminMessageTextColor: UIKit.UIColor
   public var unknownMessageDescFont: UIKit.UIFont
-  public var unknownMessageDescTextColor: UIKit.UIColor
+  public var unknownMessageDescLeftTextColor: UIKit.UIColor
+  public var unknownMessageDescRightTextColor: UIKit.UIColor
   public var messageLeftHighlightTextColor: UIKit.UIColor
   public var messageRightHighlightTextColor: UIKit.UIColor
   public var ogTitleFont: UIKit.UIFont
@@ -7249,6 +7303,7 @@ public class SBUMessageCellTheme {
   public var ogDescriptionColor: UIKit.UIColor
   public var ogURLAddressFont: UIKit.UIFont
   public var ogURLAddressColor: UIKit.UIColor
+  public var openChannelOGTitleColor: UIKit.UIColor
   public var linkColor: UIKit.UIColor
   public var quotedMessageTextFont: UIKit.UIFont
   public var repliedToTextFont: UIKit.UIFont
@@ -7262,6 +7317,10 @@ public class SBUMessageCellTheme {
   public var mentionRightTextColor: UIKit.UIColor
   public var mentionLeftTextBackgroundColor: UIKit.UIColor
   public var mentionRightTextBackgroundColor: UIKit.UIColor
+  public var buttonBackgroundColor: UIKit.UIColor
+  public var buttonTitleColor: UIKit.UIColor
+  public var sideButtonIconColor: UIKit.UIColor
+  public var newMessageBadgeColor: UIKit.UIColor
   @objc deinit
 }
 public class SBUUserListTheme {
@@ -7283,11 +7342,11 @@ public class SBUUserListTheme {
   public var backgroundColor: UIKit.UIColor
   public var coverImageTintColor: UIKit.UIColor
   public var coverImageBackgroundColor: UIKit.UIColor
+  public var placeholderTintColor: UIKit.UIColor
+  public var textfieldTextColor: UIKit.UIColor
   public var itemTextColor: UIKit.UIColor
   public var itemColor: UIKit.UIColor
   public var removeColor: UIKit.UIColor
-  public var placeholderTintColor: UIKit.UIColor
-  public var textfieldTextColor: UIKit.UIColor
   @objc deinit
 }
 public class SBUUserCellTheme {
@@ -7297,7 +7356,7 @@ public class SBUUserCellTheme {
   public static var dark: SendbirdUIKit.SBUUserCellTheme {
     get
   }
-  public init(backgroundColor: UIKit.UIColor = SBUColorSet.background50, checkboxOnColor: UIKit.UIColor = SBUColorSet.primary300, checkboxOffColor: UIKit.UIColor = SBUColorSet.background300, nicknameTextColor: UIKit.UIColor = SBUColorSet.onlight01, nicknameFont: UIKit.UIFont = SBUFontSet.subtitle2, nonameTextColor: UIKit.UIColor = SBUColorSet.onlight03, userIdTextColor: UIKit.UIColor = SBUColorSet.onlight02, userIdFont: UIKit.UIFont = SBUFontSet.body3, userPlaceholderBackgroundColor: UIKit.UIColor = SBUColorSet.background300, userPlaceholderTintColor: UIKit.UIColor = SBUColorSet.ondark01, mutedStateBackgroundColor: UIKit.UIColor = SBUColorSet.primary300.withAlphaComponent(0.6), mutedStateIconColor: UIKit.UIColor = SBUColorSet.ondark01, subInfoTextColor: UIKit.UIColor = SBUColorSet.onlight02, subInfoFont: UIKit.UIFont = SBUFontSet.body2, moreButtonColor: UIKit.UIColor = SBUColorSet.onlight01, moreButtonDisabledColor: UIKit.UIColor = SBUColorSet.onlight04, separateColor: UIKit.UIColor = SBUColorSet.onlight04)
+  public init(backgroundColor: UIKit.UIColor = SBUColorSet.background50, checkboxOnColor: UIKit.UIColor = SBUColorSet.primary300, checkboxOffColor: UIKit.UIColor = SBUColorSet.onlight03, nicknameTextColor: UIKit.UIColor = SBUColorSet.onlight01, nicknameFont: UIKit.UIFont = SBUFontSet.subtitle2, nonameTextColor: UIKit.UIColor = SBUColorSet.onlight04, userIdTextColor: UIKit.UIColor = SBUColorSet.onlight03, userIdFont: UIKit.UIFont = SBUFontSet.body3, userPlaceholderBackgroundColor: UIKit.UIColor = SBUColorSet.background300, userPlaceholderTintColor: UIKit.UIColor = SBUColorSet.ondark01, mutedStateBackgroundColor: UIKit.UIColor = SBUColorSet.primary300.withAlphaComponent(0.5), mutedStateIconColor: UIKit.UIColor = SBUColorSet.ondark01, subInfoTextColor: UIKit.UIColor = SBUColorSet.onlight03, subInfoFont: UIKit.UIFont = SBUFontSet.body2, moreButtonColor: UIKit.UIColor = SBUColorSet.onlight01, moreButtonDisabledColor: UIKit.UIColor = SBUColorSet.onlight04, separateColor: UIKit.UIColor = SBUColorSet.onlight04)
   public var backgroundColor: UIKit.UIColor
   public var checkboxOnColor: UIKit.UIColor
   public var checkboxOffColor: UIKit.UIColor
@@ -7332,7 +7391,7 @@ public class SBUChannelSettingsTheme {
   public static var dark: SendbirdUIKit.SBUChannelSettingsTheme {
     get
   }
-  public init(statusBarStyle: UIKit.UIStatusBarStyle = .default, navigationBarTintColor: UIKit.UIColor = SBUColorSet.background50, navigationShadowColor: UIKit.UIColor = SBUColorSet.onlight04, leftBarButtonTintColor: UIKit.UIColor = SBUColorSet.primary300, rightBarButtonTintColor: UIKit.UIColor = SBUColorSet.primary300, backgroundColor: UIKit.UIColor = SBUColorSet.background50, cellTextFont: UIKit.UIFont = SBUFontSet.subtitle2, cellTextColor: UIKit.UIColor = SBUColorSet.onlight01, cellSubTextFont: UIKit.UIFont = SBUFontSet.subtitle2, cellSubTextColor: UIKit.UIColor = SBUColorSet.onlight02, cellDescriptionTextFont: UIKit.UIFont = SBUFontSet.subtitle3, cellDescriptionTextColor: UIKit.UIColor = SBUColorSet.onlight02, cellSwitchColor: UIKit.UIColor = SBUColorSet.primary300, cellSeparateColor: UIKit.UIColor = SBUColorSet.onlight04, cellRadioButtonSelectedColor: UIKit.UIColor = SBUColorSet.primary300, cellRadioButtonDeselectedColor: UIKit.UIColor = SBUColorSet.onlight03, cellTypeIconTintColor: UIKit.UIColor = SBUColorSet.primary300, cellArrowIconTintColor: UIKit.UIColor = SBUColorSet.onlight01, cellLeaveIconColor: UIKit.UIColor = SBUColorSet.error300, cellDeleteIconColor: UIKit.UIColor = SBUColorSet.error300, userNameFont: UIKit.UIFont = SBUFontSet.subtitle1, userNameTextColor: UIKit.UIColor = SBUColorSet.onlight01, itemTextColor: UIKit.UIColor = SBUColorSet.onlight01, itemColor: UIKit.UIColor = SBUColorSet.primary300, itemDeleteTextColor: UIKit.UIColor = SBUColorSet.error300, urlTitleFont: UIKit.UIFont = SBUFontSet.body2, urlTitleColor: UIKit.UIColor = SBUColorSet.onlight02, urlFont: UIKit.UIFont = SBUFontSet.body3, urlColor: UIKit.UIColor = SBUColorSet.onlight01)
+  public init(statusBarStyle: UIKit.UIStatusBarStyle = .default, navigationBarTintColor: UIKit.UIColor = SBUColorSet.background50, navigationShadowColor: UIKit.UIColor = SBUColorSet.onlight04, leftBarButtonTintColor: UIKit.UIColor = SBUColorSet.primary300, rightBarButtonTintColor: UIKit.UIColor = SBUColorSet.primary300, backgroundColor: UIKit.UIColor = SBUColorSet.background50, cellTextFont: UIKit.UIFont = SBUFontSet.subtitle2, cellTextColor: UIKit.UIColor = SBUColorSet.onlight01, cellSubTextFont: UIKit.UIFont = SBUFontSet.subtitle2, cellSubTextColor: UIKit.UIColor = SBUColorSet.onlight02, cellDescriptionTextFont: UIKit.UIFont = SBUFontSet.body3, cellDescriptionTextColor: UIKit.UIColor = SBUColorSet.onlight02, cellSwitchColor: UIKit.UIColor = SBUColorSet.primary300, cellSeparateColor: UIKit.UIColor = SBUColorSet.onlight04, cellRadioButtonSelectedColor: UIKit.UIColor = SBUColorSet.primary300, cellRadioButtonDeselectedColor: UIKit.UIColor = SBUColorSet.onlight03, cellTypeIconTintColor: UIKit.UIColor = SBUColorSet.primary300, cellArrowIconTintColor: UIKit.UIColor = SBUColorSet.onlight01, cellLeaveIconColor: UIKit.UIColor = SBUColorSet.error300, cellDeleteIconColor: UIKit.UIColor = SBUColorSet.error300, userNameFont: UIKit.UIFont = SBUFontSet.h1, userNameTextColor: UIKit.UIColor = SBUColorSet.onlight01, itemTextColor: UIKit.UIColor = SBUColorSet.onlight01, itemColor: UIKit.UIColor = SBUColorSet.primary300, itemDeleteTextColor: UIKit.UIColor = SBUColorSet.error300, urlTitleFont: UIKit.UIFont = SBUFontSet.body2, urlTitleColor: UIKit.UIColor = SBUColorSet.onlight02, urlFont: UIKit.UIFont = SBUFontSet.body1, urlColor: UIKit.UIColor = SBUColorSet.onlight01)
   public var statusBarStyle: UIKit.UIStatusBarStyle
   public var navigationBarTintColor: UIKit.UIColor
   public var navigationShadowColor: UIKit.UIColor
@@ -7353,21 +7412,6 @@ public class SBUChannelSettingsTheme {
   public var cellArrowIconTintColor: UIKit.UIColor
   public var cellLeaveIconColor: UIKit.UIColor
   public var cellDeleteIconColor: UIKit.UIColor
-  @available(*, deprecated, renamed: "cellTypeIconTintColor")
-  public var cellNotificationIconColor: UIKit.UIColor {
-    get
-    set
-  }
-  @available(*, deprecated, renamed: "cellTypeIconTintColor")
-  public var cellMemberIconColor: UIKit.UIColor {
-    get
-    set
-  }
-  @available(*, deprecated, renamed: "cellArrowIconTintColor")
-  public var cellMemberButtonColor: UIKit.UIColor {
-    get
-    set
-  }
   public var userNameFont: UIKit.UIFont
   public var userNameTextColor: UIKit.UIColor
   public var itemTextColor: UIKit.UIColor
@@ -7394,23 +7438,23 @@ public class SBUUserProfileTheme {
   public var userPlaceholderTintColor: UIKit.UIColor
   public var usernameTextColor: UIKit.UIColor
   public var usernameFont: UIKit.UIFont
-  public var userRoleTextColor: UIKit.UIColor
-  public var userRoleFont: UIKit.UIFont
   public var largeItemTintColor: UIKit.UIColor
   public var largeItemFont: UIKit.UIFont
   public var largeItemBackgroundColor: UIKit.UIColor
   public var largeItemHighlightedColor: UIKit.UIColor
+  public var separatorColor: UIKit.UIColor
+  public var informationTitleColor: UIKit.UIColor
+  public var informationTitleFont: UIKit.UIFont
+  public var informationDesctiptionColor: UIKit.UIColor
+  public var informationDesctiptionFont: UIKit.UIFont
+  public var userRoleTextColor: UIKit.UIColor
+  public var userRoleFont: UIKit.UIFont
   public var itemFont: UIKit.UIFont
   public var itemBackgroundColor: UIKit.UIColor
   public var itemSelectedBackgroundColor: UIKit.UIColor
   public var itemTintColor: UIKit.UIColor
   public var itemSelectedTintColor: UIKit.UIColor
   public var itemHighlightedTintColor: UIKit.UIColor
-  public var separatorColor: UIKit.UIColor
-  public var informationTitleColor: UIKit.UIColor
-  public var informationTitleFont: UIKit.UIFont
-  public var informationDesctiptionColor: UIKit.UIColor
-  public var informationDesctiptionFont: UIKit.UIFont
   @objc deinit
 }
 public class SBUComponentTheme {
@@ -7423,7 +7467,7 @@ public class SBUComponentTheme {
   public static var overlay: SendbirdUIKit.SBUComponentTheme {
     get
   }
-  public init(emptyViewBackgroundColor: UIKit.UIColor = SBUColorSet.background50, emptyViewStatusFont: UIKit.UIFont = SBUFontSet.body3, emptyViewStatusTintColor: UIKit.UIColor = SBUColorSet.onlight03, emptyViewRetryButtonTintColor: UIKit.UIColor = SBUColorSet.primary300, emptyViewRetryButtonFont: UIKit.UIFont = SBUFontSet.button2, overlayColor: UIKit.UIColor = SBUColorSet.overlay02, backgroundColor: UIKit.UIColor = SBUColorSet.background50, highlightedColor: UIKit.UIColor = SBUColorSet.background100, buttonTextColor: UIKit.UIColor = SBUColorSet.primary300, separatorColor: UIKit.UIColor = SBUColorSet.onlight04, shadowColor: UIKit.UIColor = SBUColorSet.background700, closeBarButtonTintColor: UIKit.UIColor = SBUColorSet.onlight01, alertTitleColor: UIKit.UIColor = SBUColorSet.onlight01, alertTitleFont: UIKit.UIFont = SBUFontSet.h3, alertDetailColor: UIKit.UIColor = SBUColorSet.onlight02, alertDetailFont: UIKit.UIFont = SBUFontSet.body3, alertPlaceholderColor: UIKit.UIColor = SBUColorSet.onlight03, alertButtonColor: UIKit.UIColor = SBUColorSet.primary300, alertErrorColor: UIKit.UIColor = SBUColorSet.error300, alertButtonFont: UIKit.UIFont = SBUFontSet.button2, alertTextFieldBackgroundColor: UIKit.UIColor = SBUColorSet.background100, alertTextFieldTintColor: UIKit.UIColor = SBUColorSet.primary300, alertTextFieldFont: UIKit.UIFont = SBUFontSet.body3, actionSheetTextFont: UIKit.UIFont = SBUFontSet.subtitle1, actionSheetTextColor: UIKit.UIColor = SBUColorSet.onlight01, actionSheetSubTextFont: UIKit.UIFont = SBUFontSet.body2, actionSheetSubTextColor: UIKit.UIColor = SBUColorSet.onlight02, actionSheetItemColor: UIKit.UIColor = SBUColorSet.primary300, actionSheetErrorColor: UIKit.UIColor = SBUColorSet.error300, actionSheetButtonFont: UIKit.UIFont = SBUFontSet.button1, actionSheetDisabledColor: UIKit.UIColor = SBUColorSet.onlight04, newMessageFont: UIKit.UIFont = SBUFontSet.caption1, newMessageTintColor: UIKit.UIColor = SBUColorSet.primary300, newMessageBackground: UIKit.UIColor = SBUColorSet.background50.withAlphaComponent(0.96), newMessageHighlighted: UIKit.UIColor = SBUColorSet.background100.withAlphaComponent(0.96), newMessageButtonTintColor: UIKit.UIColor = SBUColorSet.ondark01, newMessageButtonBackground: UIKit.UIColor = SBUColorSet.primary300, newMessageButtonHighlighted: UIKit.UIColor = SBUColorSet.primary400, scrollBottomButtonIconColor: UIKit.UIColor = SBUColorSet.primary300, scrollBottomButtonBackground: UIKit.UIColor = SBUColorSet.background50.withAlphaComponent(0.96), scrollBottomButtonHighlighted: UIKit.UIColor = SBUColorSet.background100.withAlphaComponent(0.96), titleOnlineStateColor: UIKit.UIColor = SBUColorSet.secondary300, titleColor: UIKit.UIColor = SBUColorSet.onlight01, titleFont: UIKit.UIFont = SBUFontSet.h2, titleStatusColor: UIKit.UIColor = SBUColorSet.onlight03, titleStatusFont: UIKit.UIFont = SBUFontSet.caption2, menuTitleFont: UIKit.UIFont = SBUFontSet.subtitle2, userPlaceholderBackgroundColor: UIKit.UIColor = SBUColorSet.background300, userPlaceholderTintColor: UIKit.UIColor = SBUColorSet.ondark01, placeholderBackgroundColor: UIKit.UIColor = SBUColorSet.background300, placeholderTintColor: UIKit.UIColor = SBUColorSet.ondark01, reactionBoxBackgroundColor: UIKit.UIColor = SBUColorSet.background50, reactionBoxBorderLineColor: UIKit.UIColor = SBUColorSet.background100, reactionBoxEmojiCountColor: UIKit.UIColor = SBUColorSet.onlight01, reactionBoxEmojiBackgroundColor: UIKit.UIColor = SBUColorSet.background100, reactionBoxSelectedEmojiBackgroundColor: UIKit.UIColor = SBUColorSet.primary100, reactionBoxEmojiCountFont: UIKit.UIFont = SBUFontSet.caption4, emojiCountColor: UIKit.UIColor = SBUColorSet.onlight02, emojiSelectedCountColor: UIKit.UIColor = SBUColorSet.primary300, emojiSelectedUnderlineColor: UIKit.UIColor = SBUColorSet.primary300, emojiCountFont: UIKit.UIFont = SBUFontSet.button3, reactionMenuLineColor: UIKit.UIColor = SBUColorSet.ondark04, emojiListSelectedBackgroundColor: UIKit.UIColor = SBUColorSet.primary100, addReactionTintColor: UIKit.UIColor = SBUColorSet.onlight03, channelTypeSelectorItemTintColor: UIKit.UIColor = SBUColorSet.primary300, channelTypeSelectorItemTextColor: UIKit.UIColor = SBUColorSet.onlight01, channelTypeSelectorItemFont: UIKit.UIFont = SBUFontSet.caption2, broadcastIconBackgroundColor: UIKit.UIColor = SBUColorSet.secondary300, broadcastIconTintColor: UIKit.UIColor = SBUColorSet.ondark01, barItemTintColor: UIKit.UIColor = SBUColorSet.primary300, loadingBackgroundColor: UIKit.UIColor = .clear, loadingPopupBackgroundColor: UIKit.UIColor = .clear, loadingFont: UIKit.UIFont = SBUFontSet.subtitle2, loadingTextColor: UIKit.UIColor = SBUColorSet.ondark01, loadingSpinnerColor: UIKit.UIColor = SBUColorSet.primary300)
+  public init(emptyViewBackgroundColor: UIKit.UIColor = SBUColorSet.background50, emptyViewStatusFont: UIKit.UIFont = SBUFontSet.body3, emptyViewStatusTintColor: UIKit.UIColor = SBUColorSet.onlight03, emptyViewRetryButtonTintColor: UIKit.UIColor = SBUColorSet.primary300, emptyViewRetryButtonFont: UIKit.UIFont = SBUFontSet.button2, overlayColor: UIKit.UIColor = SBUColorSet.overlay01, backgroundColor: UIKit.UIColor = SBUColorSet.background50, highlightedColor: UIKit.UIColor = SBUColorSet.background100, buttonTextColor: UIKit.UIColor = SBUColorSet.primary300, separatorColor: UIKit.UIColor = SBUColorSet.onlight04, shadowColor: UIKit.UIColor = SBUColorSet.background700.withAlphaComponent(0.12), closeBarButtonTintColor: UIKit.UIColor = SBUColorSet.onlight01, alertTitleColor: UIKit.UIColor = SBUColorSet.onlight01, alertTitleFont: UIKit.UIFont = SBUFontSet.h3, alertDetailColor: UIKit.UIColor = SBUColorSet.onlight02, alertDetailFont: UIKit.UIFont = SBUFontSet.body3, alertPlaceholderColor: UIKit.UIColor = SBUColorSet.onlight03, alertButtonColor: UIKit.UIColor = SBUColorSet.primary300, alertErrorColor: UIKit.UIColor = SBUColorSet.error300, alertButtonFont: UIKit.UIFont = SBUFontSet.button2, alertTextFieldBackgroundColor: UIKit.UIColor = SBUColorSet.background100, alertTextFieldTintColor: UIKit.UIColor = SBUColorSet.primary300, alertTextFieldFont: UIKit.UIFont = SBUFontSet.body3, actionSheetTextFont: UIKit.UIFont = SBUFontSet.subtitle1, actionSheetTextColor: UIKit.UIColor = SBUColorSet.onlight01, actionSheetSubTextFont: UIKit.UIFont = SBUFontSet.body2, actionSheetSubTextColor: UIKit.UIColor = SBUColorSet.onlight02, actionSheetItemColor: UIKit.UIColor = SBUColorSet.primary300, actionSheetErrorColor: UIKit.UIColor = SBUColorSet.error300, actionSheetButtonFont: UIKit.UIFont = SBUFontSet.button1, actionSheetDisabledColor: UIKit.UIColor = SBUColorSet.onlight04, newMessageFont: UIKit.UIFont = SBUFontSet.body2, newMessageTintColor: UIKit.UIColor = SBUColorSet.primary300, newMessageBackground: UIKit.UIColor = SBUColorSet.background50, newMessageHighlighted: UIKit.UIColor = SBUColorSet.background100, newMessageButtonTintColor: UIKit.UIColor = SBUColorSet.ondark01, newMessageButtonBackground: UIKit.UIColor = SBUColorSet.primary300, newMessageButtonHighlighted: UIKit.UIColor = SBUColorSet.primary400, scrollBottomButtonIconColor: UIKit.UIColor = SBUColorSet.primary300, scrollBottomButtonBackground: UIKit.UIColor = SBUColorSet.background50, scrollBottomButtonHighlighted: UIKit.UIColor = SBUColorSet.background100, titleOnlineStateColor: UIKit.UIColor = SBUColorSet.secondary300, titleColor: UIKit.UIColor = SBUColorSet.onlight01, titleFont: UIKit.UIFont = SBUFontSet.h3, titleStatusColor: UIKit.UIColor = SBUColorSet.onlight03, titleStatusFont: UIKit.UIFont = SBUFontSet.caption2, menuTitleFont: UIKit.UIFont = SBUFontSet.subtitle2, userPlaceholderBackgroundColor: UIKit.UIColor = SBUColorSet.background300, userPlaceholderTintColor: UIKit.UIColor = SBUColorSet.ondark01, placeholderBackgroundColor: UIKit.UIColor = SBUColorSet.background300, placeholderTintColor: UIKit.UIColor = SBUColorSet.ondark01, reactionBoxBackgroundColor: UIKit.UIColor = SBUColorSet.background50, reactionBoxBorderLineColor: UIKit.UIColor = SBUColorSet.background100, reactionBoxEmojiCountColor: UIKit.UIColor = SBUColorSet.onlight01, reactionBoxEmojiBackgroundColor: UIKit.UIColor = SBUColorSet.background100, reactionBoxSelectedEmojiBackgroundColor: UIKit.UIColor = SBUColorSet.primary100, reactionBoxEmojiCountFont: UIKit.UIFont = SBUFontSet.caption4, emojiCountColor: UIKit.UIColor = SBUColorSet.onlight03, emojiSelectedCountColor: UIKit.UIColor = SBUColorSet.primary300, emojiSelectedUnderlineColor: UIKit.UIColor = SBUColorSet.primary300, emojiCountFont: UIKit.UIFont = SBUFontSet.button3, reactionMenuLineColor: UIKit.UIColor = SBUColorSet.ondark04, emojiListSelectedBackgroundColor: UIKit.UIColor = SBUColorSet.primary100, addReactionTintColor: UIKit.UIColor = SBUColorSet.onlight03, channelTypeSelectorItemTintColor: UIKit.UIColor = SBUColorSet.primary300, channelTypeSelectorItemTextColor: UIKit.UIColor = SBUColorSet.onlight01, channelTypeSelectorItemFont: UIKit.UIFont = SBUFontSet.caption2, broadcastIconBackgroundColor: UIKit.UIColor = SBUColorSet.secondary300, broadcastIconTintColor: UIKit.UIColor = SBUColorSet.ondark01, barItemTintColor: UIKit.UIColor = SBUColorSet.primary300, loadingBackgroundColor: UIKit.UIColor = .clear, loadingPopupBackgroundColor: UIKit.UIColor = .clear, loadingFont: UIKit.UIFont = SBUFontSet.subtitle2, loadingTextColor: UIKit.UIColor = SBUColorSet.ondark01, loadingSpinnerColor: UIKit.UIColor = SBUColorSet.primary300)
   public var emptyViewBackgroundColor: UIKit.UIColor
   public var emptyViewStatusFont: UIKit.UIFont
   public var emptyViewStatusTintColor: UIKit.UIColor
@@ -7520,7 +7564,7 @@ public class SBUMessageSearchTheme {
   public var searchIconTintColor: UIKit.UIColor
   public var clearIconTintColor: UIKit.UIColor
   public var cancelButtonTintColor: UIKit.UIColor
-  public init(statusBarStyle: UIKit.UIStatusBarStyle = .default, navigationBarStyle: UIKit.UIBarStyle = .default, navigationBarTintColor: UIKit.UIColor = SBUColorSet.background50, navigationBarShadowColor: UIKit.UIColor = SBUColorSet.onlight04, backgroundColor: UIKit.UIColor = SBUColorSet.background50, searchTextColor: UIKit.UIColor = SBUColorSet.onlight01, searchTextFont: UIKit.UIFont = SBUFontSet.body3, searchTextBackgroundColor: UIKit.UIColor = SBUColorSet.background100, searchPlaceholderColor: UIKit.UIColor = SBUColorSet.onlight03, searchIconTintColor: UIKit.UIColor = SBUColorSet.onlight03, clearIconTintColor: UIKit.UIColor = SBUColorSet.onlight03, cancelButtonTintColor: UIKit.UIColor = SBUColorSet.primary300)
+  public init(statusBarStyle: UIKit.UIStatusBarStyle = .default, navigationBarStyle: UIKit.UIBarStyle = .default, navigationBarTintColor: UIKit.UIColor = SBUColorSet.background50, navigationBarShadowColor: UIKit.UIColor = SBUColorSet.onlight04, backgroundColor: UIKit.UIColor = SBUColorSet.background50, searchTextColor: UIKit.UIColor = SBUColorSet.onlight01, searchTextFont: UIKit.UIFont = SBUFontSet.body3, searchTextBackgroundColor: UIKit.UIColor = SBUColorSet.background100, searchPlaceholderColor: UIKit.UIColor = SBUColorSet.onlight03, searchIconTintColor: UIKit.UIColor = SBUColorSet.onlight03, clearIconTintColor: UIKit.UIColor = SBUColorSet.onlight03, cancelButtonTintColor: UIKit.UIColor = SBUColorSet.primary400)
   @objc deinit
 }
 public class SBUMessageSearchResultCellTheme {
@@ -7542,7 +7586,7 @@ public class SBUMessageSearchResultCellTheme {
   public var fileMessageIconBackgroundColor: UIKit.UIColor
   public var fileMessageIconTintColor: UIKit.UIColor
   public var separatorLineColor: UIKit.UIColor
-  public init(backgroundColor: UIKit.UIColor = SBUColorSet.background50, titleFont: UIKit.UIFont = SBUFontSet.subtitle1, titleTextColor: UIKit.UIColor = SBUColorSet.onlight01, descriptionFont: UIKit.UIFont = SBUFontSet.body3, descriptionTextColor: UIKit.UIColor = SBUColorSet.onlight03, updatedAtFont: UIKit.UIFont = SBUFontSet.caption2, updatedAtTextColor: UIKit.UIColor = SBUColorSet.onlight02, fileMessageFont: UIKit.UIFont = SBUFontSet.body3, fileMessageTextColor: UIKit.UIColor = SBUColorSet.onlight01, fileMessageIconBackgroundColor: UIKit.UIColor = SBUColorSet.background100, fileMessageIconTinkColor: UIKit.UIColor = SBUColorSet.primary300, separatorLineColor: UIKit.UIColor = SBUColorSet.onlight04)
+  public init(backgroundColor: UIKit.UIColor = SBUColorSet.background50, titleFont: UIKit.UIFont = SBUFontSet.subtitle1, titleTextColor: UIKit.UIColor = SBUColorSet.onlight01, descriptionFont: UIKit.UIFont = SBUFontSet.body3, descriptionTextColor: UIKit.UIColor = SBUColorSet.onlight03, updatedAtFont: UIKit.UIFont = SBUFontSet.caption2, updatedAtTextColor: UIKit.UIColor = SBUColorSet.onlight02, fileMessageFont: UIKit.UIFont = SBUFontSet.body3, fileMessageTextColor: UIKit.UIColor = SBUColorSet.onlight01, fileMessageIconBackgroundColor: UIKit.UIColor = SBUColorSet.background100, fileMessageIconTintColor: UIKit.UIColor = SBUColorSet.onlight02, separatorLineColor: UIKit.UIColor = SBUColorSet.onlight04)
   @objc deinit
 }
 public class SBUCreateOpenChannelTheme {
@@ -7552,7 +7596,7 @@ public class SBUCreateOpenChannelTheme {
   public static var dark: SendbirdUIKit.SBUCreateOpenChannelTheme {
     get
   }
-  public init(statusBarStyle: UIKit.UIStatusBarStyle = .default, leftBarButtonTintColor: UIKit.UIColor = SBUColorSet.primary300, rightBarButtonTintColor: UIKit.UIColor = SBUColorSet.primary300, rightBarButtonDisabledTintColor: UIKit.UIColor = SBUColorSet.onlight04, navigationBarTintColor: UIKit.UIColor = SBUColorSet.background50, navigationBarShadowColor: UIKit.UIColor = SBUColorSet.onlight04, backgroundColor: UIKit.UIColor = SBUColorSet.background50, textFieldPlaceholderColor: UIKit.UIColor = SBUColorSet.onlight03, textFieldTextColor: UIKit.UIColor = SBUColorSet.onlight01, textFieldFont: UIKit.UIFont = SBUFontSet.body3, textFieldUnderlineColor: UIKit.UIColor = SBUColorSet.onlight04, actionSheetItemColor: UIKit.UIColor = SBUColorSet.primary300, actionSheetTextColor: UIKit.UIColor = SBUColorSet.onlight01, actionSheetRemoveTextColor: UIKit.UIColor = SBUColorSet.error300, actionSheetCancelTextColor: UIKit.UIColor = SBUColorSet.primary300)
+  public init(statusBarStyle: UIKit.UIStatusBarStyle = .default, leftBarButtonTintColor: UIKit.UIColor = SBUColorSet.primary300, rightBarButtonTintColor: UIKit.UIColor = SBUColorSet.primary300, rightBarButtonDisabledTintColor: UIKit.UIColor = SBUColorSet.onlight04, navigationBarTintColor: UIKit.UIColor = SBUColorSet.background50, navigationBarShadowColor: UIKit.UIColor = SBUColorSet.onlight04, backgroundColor: UIKit.UIColor = SBUColorSet.background50, textFieldPlaceholderColor: UIKit.UIColor = SBUColorSet.onlight03, textFieldTextColor: UIKit.UIColor = SBUColorSet.onlight01, textFieldFont: UIKit.UIFont = SBUFontSet.subtitle1, textFieldUnderlineColor: UIKit.UIColor = SBUColorSet.onlight04, actionSheetItemColor: UIKit.UIColor = SBUColorSet.primary300, actionSheetTextColor: UIKit.UIColor = SBUColorSet.onlight01, actionSheetRemoveTextColor: UIKit.UIColor = SBUColorSet.error300, actionSheetCancelTextColor: UIKit.UIColor = SBUColorSet.primary300)
   public var statusBarStyle: UIKit.UIStatusBarStyle
   public var leftBarButtonTintColor: UIKit.UIColor
   public var rightBarButtonTintColor: UIKit.UIColor
@@ -7812,13 +7856,14 @@ extension SendbirdUIKit.SBUBaseSelectUserModule {
       @objc set
     }
     @_Concurrency.MainActor(unsafe) public var theme: SendbirdUIKit.SBUUserListTheme?
+    @_Concurrency.MainActor(unsafe) public var componentTheme: SendbirdUIKit.SBUComponentTheme?
     @objc @_Concurrency.MainActor(unsafe) public var selectedUserList: Swift.Set<SendbirdUIKit.SBUUser>? {
       @objc get
     }
     @objc deinit
     @objc @_Concurrency.MainActor(unsafe) open func setupViews()
     @objc @_Concurrency.MainActor(unsafe) open func setupLayouts()
-    @_Concurrency.MainActor(unsafe) open func setupStyles(theme: SendbirdUIKit.SBUUserListTheme? = nil)
+    @_Concurrency.MainActor(unsafe) open func setupStyles(theme: SendbirdUIKit.SBUUserListTheme? = nil, componentTheme: SendbirdUIKit.SBUComponentTheme? = nil)
     @objc @_Concurrency.MainActor(unsafe) open func updateRightBarButton()
     @objc @_Concurrency.MainActor(unsafe) open func onTapLeftBarButton()
     @objc @_Concurrency.MainActor(unsafe) open func onTapRightBarButton()
@@ -8478,6 +8523,7 @@ public struct DiskCache {
   public func hasImage(key: Swift.String) -> Swift.Bool
   public func get(key: Swift.String) -> Foundation.NSData?
   public func set(key: Swift.String, data: Foundation.NSData)
+  public func rename(key: Swift.String, newKey: Swift.String)
   public func remove(key: Swift.String)
   public func removeAll()
 }

@@ -76,8 +76,8 @@ class CustomUserCell: UITableViewCell {
     }
 
     func setupStyles() {
-        self.titleLabel.font = SBUTheme.channelCellTheme.titleFont
-        self.titleLabel.textColor = SBUTheme.channelCellTheme.titleTextColor
+        self.titleLabel.font = SBUTheme.groupChannelCellTheme.titleFont
+        self.titleLabel.textColor = SBUTheme.groupChannelCellTheme.titleTextColor
     }
 
     func selectCheck() {

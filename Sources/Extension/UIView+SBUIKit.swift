@@ -129,7 +129,7 @@ extension UIView {
         }
         
         if let priority = priority {
-            constraints.forEach { $0.priority = priority }
+            layoutConstraints.forEach { $0.priority = priority }
         }
         
         NSLayoutConstraint.activate(layoutConstraints)
@@ -260,7 +260,7 @@ extension UIView {
         }
         
         if let priority = priority {
-            constraints.forEach { $0.priority = priority }
+            layoutConstraints.forEach { $0.priority = priority }
         }
         
         NSLayoutConstraint.activate(layoutConstraints)
@@ -391,7 +391,7 @@ extension UIView {
         }
         
         if let priority = priority {
-            constraints.forEach { $0.priority = priority }
+            layoutConstraints.forEach { $0.priority = priority }
         }
         
         NSLayoutConstraint.activate(layoutConstraints)
@@ -446,7 +446,7 @@ extension UIView {
         
         
         if let priority = priority {
-            constraints.forEach { $0.priority = priority }
+            layoutConstraints.forEach { $0.priority = priority }
         }
         
         NSLayoutConstraint.activate(layoutConstraints)
@@ -488,7 +488,7 @@ extension UIView {
         
         
         if let priority = priority {
-            constraints.forEach { $0.priority = priority }
+            layoutConstraints.forEach { $0.priority = priority }
         }
         
         NSLayoutConstraint.activate(layoutConstraints)
@@ -530,7 +530,7 @@ extension UIView {
         
         
         if let priority = priority {
-            constraints.forEach { $0.priority = priority }
+            layoutConstraints.forEach { $0.priority = priority }
         }
         
         NSLayoutConstraint.activate(layoutConstraints)
@@ -557,46 +557,46 @@ extension UIView {
         
         self.translatesAutoresizingMaskIntoConstraints = false
         
-        var constraints: [NSLayoutConstraint] = []
+        var layoutConstraints: [NSLayoutConstraint] = []
         
         if let leading = leading {
-            constraints += [
+            layoutConstraints += [
                 self.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: leading)
             ]
         }
         
         if let trailing = trailing {
-            constraints += [
+            layoutConstraints += [
                 self.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: trailing)
             ]
         }
         
         if let left = left {
-            constraints += [
+            layoutConstraints += [
                 self.leftAnchor.constraint(equalTo: view.leftAnchor, constant: left)
             ]
         }
         if let right = right {
-            constraints += [
+            layoutConstraints += [
                 self.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -right)
             ]
         }
         if let top = top {
-            constraints += [
+            layoutConstraints += [
                 self.topAnchor.constraint(equalTo: view.topAnchor, constant: top)
             ]
         }
         if let bottom = bottom {
-            constraints += [
+            layoutConstraints += [
                 self.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -bottom)
             ]
         }
         
         if let priority = priority {
-            constraints.forEach { $0.priority = priority }
+            layoutConstraints.forEach { $0.priority = priority }
         }
         
-        NSLayoutConstraint.activate(constraints)
+        NSLayoutConstraint.activate(layoutConstraints)
         
         return self
     }
@@ -609,21 +609,21 @@ extension UIView {
         
         self.translatesAutoresizingMaskIntoConstraints = false
         
-        var constraints: [NSLayoutConstraint] = []
+        var layoutConstraints: [NSLayoutConstraint] = []
         
         if let width = width {
-            constraints += [self.widthAnchor.constraint(equalToConstant: width)]
+            layoutConstraints += [self.widthAnchor.constraint(equalToConstant: width)]
         }
         
         if let height = height {
-            constraints += [self.heightAnchor.constraint(equalToConstant: height)]
+            layoutConstraints += [self.heightAnchor.constraint(equalToConstant: height)]
         }
         
         if let priority = priority {
-            constraints.forEach { $0.priority = priority }
+            layoutConstraints.forEach { $0.priority = priority }
         }
         
-        NSLayoutConstraint.activate(constraints)
+        NSLayoutConstraint.activate(layoutConstraints)
         
         return self
     }
@@ -637,21 +637,21 @@ extension UIView {
         
         self.translatesAutoresizingMaskIntoConstraints = false
         
-        var constraints: [NSLayoutConstraint] = []
+        var layoutConstraints: [NSLayoutConstraint] = []
         
         if centerX {
-            constraints += [self.centerXAnchor.constraint(equalTo: view.centerXAnchor)]
+            layoutConstraints += [self.centerXAnchor.constraint(equalTo: view.centerXAnchor)]
         }
         
         if centerY {
-            constraints += [self.centerYAnchor.constraint(equalTo: view.centerYAnchor)]
+            layoutConstraints += [self.centerYAnchor.constraint(equalTo: view.centerYAnchor)]
         }
         
         if let priority = priority {
-            constraints.forEach { $0.priority = priority }
+            layoutConstraints.forEach { $0.priority = priority }
         }
         
-        NSLayoutConstraint.activate(constraints)
+        NSLayoutConstraint.activate(layoutConstraints)
         
         return self
     }

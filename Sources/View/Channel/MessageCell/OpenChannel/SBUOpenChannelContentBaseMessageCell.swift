@@ -150,6 +150,8 @@ open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
         }
         
         if let userNameView = self.userNameView as? SBUUserNameView {
+            userNameView.theme = self.theme
+            userNameView.overlayTheme = self.overlayTheme
             userNameView.setupStyles()
         }
         
@@ -157,6 +159,7 @@ open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
         self.messageTimeLabel.textColor = theme.timeTextColor
         
         if let profileView = self.profileView as? SBUMessageProfileView {
+            profileView.theme = self.theme
             profileView.setupStyles()
         }
     }

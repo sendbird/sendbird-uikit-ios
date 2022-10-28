@@ -135,7 +135,7 @@ extension SBUUserListModule {
             
             self.setupViews()
             self.setupLayouts()
-            self.setupStyles()
+            self.setupStyles(theme: theme, componentTheme: componentTheme)
         }
         
         open func setupViews() {
@@ -179,6 +179,7 @@ extension SBUUserListModule {
             }
             
             self.tableView.backgroundColor = self.theme?.backgroundColor
+            self.emptyView?.backgroundColor = self.theme?.backgroundColor
         }
         
         
@@ -341,6 +342,9 @@ extension SBUUserListModule.List: UITableViewDataSource, UITableViewDelegate {
             cell = tableView.dequeueReusableCell(withIdentifier: SBUUserCell.sbu_className)
         }
 
+        if let theme = (self.userCell as? SBUUserCell)?.theme {
+            (cell as? SBUUserCell)?.theme = theme
+        }
         cell?.selectionStyle = .none
         
         self.configureCell(cell, indexPath: indexPath)

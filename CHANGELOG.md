@@ -1,5 +1,35 @@
 # Changelog
 
+### v3.2.2 (Oct 28, 2022) with Chat SDK **v4.1.2**
+* Fixed `scrollToBottom` button flickers when send a message
+* Improved fileMessage related processing
+* Added `messageCellConfiguration` in `SBUGlobals`
+* Modified fonts and colors in `SBUTheme`
+  * Renamed `ChannelListTheme` to `SBUGroupChannelListTheme` (also `SBUTheme.groupChannelListTheme`)
+  * Renamed `ChannelCellTheme` to `SBUGroupChannelCellTheme` (also `SBUTheme.groupChannelCellTheme`)
+  * Renamed `SBUTheme.setChannelList(channelListTheme:channelCellTheme:)` to `SBUTheme.setGroupChannelList(channelListTheme:channelCellTheme:)`
+  * `SBUGroupChannelListTheme`
+    * `notificationOnTintColor`: light (`SBUColorSet.background50` -> `SBUColorSet.ondark01`)
+  * `SBUGroupChannelCellTheme`
+    * Added `fileIconBackgroundColor`, `fileIconTintColor`
+  * `SBUOpenChannelCellTheme`
+    * `participantCountFont`: light(`SBUColorSet.caption1` -> `SBUColorSet.caption2`)
+  * `SBUChannelTheme`
+    * Added `openChannelOGTitleColor`, `buttonBackgroundColor`, `buttonTitleColor`, `sideButtonIconColor`, `newMessageBadgeColor`
+    * `menuItemDisabledColor`: light(`SBUColorSet.ondark04` -> `SBUColorSet.onlight04`) 
+    * `mentionLimitGuideTextFont`: (`SBUFontSet.body1` -> `SBUFontSet.body3`)
+    * `quotedMessageBackgroundColor`: light(removed alpha value 0.5)
+  * `SBUMessageCellTheme`
+    * Renamed `unknownMessageDescTextColor` to `unknownMessageDescLeftTextColor`
+    * Added `unknownMessageDescRightTextColor`
+  * `SBUChannelSettingsTheme`
+    * `userNameFont` (subtitle1 -> h1)
+    * `urlFont` (body3 -> body1)
+    * `cellDescriptionTextFont` (subtitle3 -> body3)
+  * `SBUCreateOpenChannelTheme`
+    * `textFieldFont` (body3 -> subtitle1)
+* Fixed bcsymbolmap issue for SPM
+
 ### v3.2.1 (Oct 13, 2022) with Chat SDK **v4.0.15**
 * Added `contentMode` parameter to `setImage(withImage:backgroundColor:makeCircle:)` in `SBUCoverImageView`
 * Modified SendbirdUIKit initializer to synchronously

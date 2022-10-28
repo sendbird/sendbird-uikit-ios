@@ -404,7 +404,7 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
             break
         }
         
-        SBUActionSheet.show(items: items, cancelItem: cancelItem)
+        SBUActionSheet.show(items: items, cancelItem: cancelItem, oneTimetheme: componentTheme)
     }
     
     open func userListModule(_ listComponent: SBUUserListModule.List,

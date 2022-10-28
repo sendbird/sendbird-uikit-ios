@@ -23,8 +23,8 @@ open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, 
         set { self.baseListComponent = newValue }
     }
     
-    @SBUThemeWrapper(theme: SBUTheme.channelListTheme)
-    public var theme: SBUChannelListTheme
+    @SBUThemeWrapper(theme: SBUTheme.groupChannelListTheme)
+    public var theme: SBUGroupChannelListTheme
 
     public lazy var createChannelTypeSelector: UIView? = nil
     

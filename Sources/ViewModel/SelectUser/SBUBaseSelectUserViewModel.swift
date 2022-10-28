@@ -457,7 +457,7 @@ open class SBUBaseSelectUserViewModel: NSObject {
     /// This function selects or deselects user.
     /// - Parameter user: `SBUUser` object
     public func selectUser(user: SBUUser) {
-        if let index = self.selectedUserList.firstIndex(of: user) {
+        if let index = self.selectedUserList.firstIndex(where: { $0.userId == user.userId }) {
             self.selectedUserList.remove(at: index)
         } else {
             self.selectedUserList.insert(user)

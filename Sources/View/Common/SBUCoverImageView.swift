@@ -31,6 +31,24 @@ public class SBUCoverImageView: UIView {
     }
 
     
+    private var iconSize: CGSize {
+        let frameWidth = self.frame.size.width
+        let marginsBetweenIconAndView: CGFloat = 8 * 2
+        
+        if frameWidth > SBUIconSetType.Metric.defaultIconSizeVeryLarge.width + marginsBetweenIconAndView {
+            return SBUIconSetType.Metric.defaultIconSizeVeryLarge
+        } else if frameWidth > SBUIconSetType.Metric.defaultIconSizeLarge.width + marginsBetweenIconAndView {
+            return SBUIconSetType.Metric.defaultIconSizeLarge
+        } else if frameWidth > SBUIconSetType.Metric.defaultIconSize.width + marginsBetweenIconAndView {
+            return SBUIconSetType.Metric.defaultIconSize
+        } else if frameWidth > SBUIconSetType.Metric.defaultIconSizeMedium.width + marginsBetweenIconAndView {
+            return SBUIconSetType.Metric.defaultIconSizeMedium
+        } else {
+            return SBUIconSetType.Metric.defaultIconSizeSmall
+        }
+    }
+    
+    
     // MARK: - Life cycle
     
     public init() {
@@ -65,7 +83,7 @@ public class SBUCoverImageView: UIView {
             urlString: coverURL,
             placeholder: SBUIconSetType.iconUser.image(
                 with: self.theme.userPlaceholderTintColor,
-                to: self.iconSize()
+                to: self.iconSize
             )
         )
         imageView.backgroundColor = self.theme.userPlaceholderBackgroundColor
@@ -83,17 +101,6 @@ public class SBUCoverImageView: UIView {
         if makeCircle {
             self.makeCircularWithSpacing(spacing: 0)
         }
-    }
-    
-    /// This function sets placeholder image with icon size.
-    /// - Parameter iconSize: icon size
-    @available(*, deprecated, message: "renamed to 'setPlaceholder(type: .iconUSer)'", renamed: "setPlaceholder(type:iconSize:)") // 3.2.0
-    public func setPlaceholderImage(iconSize: CGSize) {
-        self.setIconImage(
-            type: .iconUser,
-            tintColor: theme.userPlaceholderTintColor,
-            backgroundColor: theme.userPlaceholderBackgroundColor
-        )
     }
     
     /// This function sets the broadcast icon
@@ -123,15 +130,21 @@ public class SBUCoverImageView: UIView {
     ///   - image: Image object
     ///   - backgroundColor: background color
     ///   - makeCircle: If this value set to `true`, image will be circle.
-    public func setImage(withImage image: UIImage,
-                         backgroundColor: UIColor? = nil,
-                         makeCircle: Bool = false) {
-        let imageView = self.createImageView(withImage: image,
-                                             backgroundColor: backgroundColor,
-                                             makeCircle: makeCircle,
-                                             contentMode: .scaleAspectFill)
+    ///   - contentMode: The `ContentMode` value of `UIImageView`. The default value is `.center`
+    public func setImage(
+        withImage image: UIImage,
+        backgroundColor: UIColor? = nil,
+        makeCircle: Bool = false,
+        contentMode: ContentMode = .center
+    ) {
+        let imageView = self.createImageView(
+            withImage: image,
+            backgroundColor: backgroundColor,
+            makeCircle: makeCircle,
+            contentMode: contentMode
+        )
         self.addSubview(imageView)
-
+        
         let subviews = self.subviews
         for subView in subviews {
             if subView != imageView {
@@ -142,15 +155,18 @@ public class SBUCoverImageView: UIView {
         self.makeCircularWithSpacing(spacing: 0)
     }
     
-    private func setIconImage(type: SBUIconSetType,
+    // MARK: - Internal
+    func setIconImage(type: SBUIconSetType,
                               tintColor: UIColor?,
                               backgroundColor: UIColor? = nil,
                               iconSize: CGSize? = nil) {
-        let iconSize = iconSize ?? self.iconSize()
-        let imageView = self.createImageView(withImage: type.image(with: tintColor, to: iconSize),
-                                             backgroundColor: backgroundColor,
-                                             makeCircle: true,
-                                             contentMode: .center)
+        let iconSize = iconSize ?? self.iconSize
+        let imageView = self.createImageView(
+            withImage: type.image(with: tintColor, to: iconSize),
+            backgroundColor: backgroundColor,
+            makeCircle: true,
+            contentMode: .center
+        )
         self.addSubview(imageView)
         
         let subviews = self.subviews
@@ -162,24 +178,7 @@ public class SBUCoverImageView: UIView {
         
         self.makeCircularWithSpacing(spacing: 0)
     }
-    
-    private func iconSize() -> CGSize {
-        let frameWidth = self.frame.size.width
-        let marginsBetweenIconAndView: CGFloat = 8 * 2
-        
-        if frameWidth > SBUIconSetType.Metric.defaultIconSizeVeryLarge.width + marginsBetweenIconAndView {
-            return SBUIconSetType.Metric.defaultIconSizeVeryLarge
-        } else if frameWidth > SBUIconSetType.Metric.defaultIconSizeLarge.width + marginsBetweenIconAndView {
-            return SBUIconSetType.Metric.defaultIconSizeLarge
-        } else if frameWidth > SBUIconSetType.Metric.defaultIconSize.width + marginsBetweenIconAndView {
-            return SBUIconSetType.Metric.defaultIconSize
-        }else if frameWidth > SBUIconSetType.Metric.defaultIconSizeMedium.width + marginsBetweenIconAndView {
-            return SBUIconSetType.Metric.defaultIconSizeMedium
-        } else {
-            return SBUIconSetType.Metric.defaultIconSizeSmall
-        }
-    }
-    
+
     private func createImageView(withImage image: UIImage,
                                  backgroundColor: UIColor? = nil,
                                  makeCircle: Bool = false,
@@ -236,7 +235,7 @@ public class SBUCoverImageView: UIView {
             let imageView = UIImageView(frame: self.frame)
             imageView.image = SBUIconSetType.iconUser.image(
                 with: theme.userPlaceholderTintColor,
-                to: iconSize()
+                to: self.iconSize
             )
             imageView.backgroundColor = theme.userPlaceholderBackgroundColor
             imageView.contentMode = .center
@@ -252,7 +251,7 @@ public class SBUCoverImageView: UIView {
                     for: user,
                     defaultImage: SBUIconSetType.iconUser.image(
                         with: theme.userPlaceholderTintColor,
-                        to: iconSize()
+                        to: self.iconSize
                     )
                 )
                 imageView.backgroundColor = theme.userPlaceholderBackgroundColor

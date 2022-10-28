@@ -18,14 +18,14 @@ class LiveStreamChannelListModule {
             let cell = UITableViewCell()
             cell.textLabel?.text = "Preset channels developed by UIKit"
             cell.textLabel?.font = SBUFontSet.body2
-            cell.textLabel?.textColor = SBUTheme.channelCellTheme.memberCountTextColor
+            cell.textLabel?.textColor = SBUTheme.groupChannelCellTheme.memberCountTextColor
             cell.textLabel?.sbu_constraint(
                 equalTo: cell.contentView,
                 left: 16,
                 top: 16,
                 bottom: 8
             )
-            cell.contentView.backgroundColor = SBUTheme.channelCellTheme.backgroundColor
+            cell.contentView.backgroundColor = SBUTheme.groupChannelCellTheme.backgroundColor
             cell.isUserInteractionEnabled = false
             
             return cell
@@ -76,8 +76,8 @@ class LiveStreamChannelListModule {
             switch indexPath.section {
             case SectionType.guideline.rawValue:
                 let cell = guidelineCell
-                cell.textLabel?.textColor = SBUTheme.channelCellTheme.memberCountTextColor
-                cell.contentView.backgroundColor = SBUTheme.channelCellTheme.backgroundColor
+                cell.textLabel?.textColor = SBUTheme.groupChannelCellTheme.memberCountTextColor
+                cell.contentView.backgroundColor = SBUTheme.groupChannelCellTheme.backgroundColor
                 
                 return cell
             default:

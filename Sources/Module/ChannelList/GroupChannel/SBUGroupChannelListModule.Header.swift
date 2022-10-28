@@ -19,8 +19,8 @@ extension SBUGroupChannelListModule {
     @objcMembers open class Header: SBUBaseChannelListModule.Header {
         
         // MARK: - UI properties (Public)
-        /// The object that is used as the theme of the header  component. The theme must adopt the `SBUChannelListTheme` class.
-        public var theme: SBUChannelListTheme? = nil
+        /// The object that is used as the theme of the header  component. The theme must adopt the `SBUGroupChannelListTheme` class.
+        public var theme: SBUGroupChannelListTheme? = nil
         
         
         // MARK: - Logic properties (Public)
@@ -45,9 +45,9 @@ extension SBUGroupChannelListModule {
         /// Configures header component.
         /// - Parameters:
         ///   - delegate: `SBUGroupChannelListModuleHeaderDelegate` type listener
-        ///   - theme: `SBUChannelListTheme` object
+        ///   - theme: `SBUGroupChannelListTheme` object
         open func configure(delegate: SBUGroupChannelListModuleHeaderDelegate,
-                            theme: SBUChannelListTheme) {
+                            theme: SBUGroupChannelListTheme) {
             self.delegate = delegate
             self.theme = theme
             
@@ -57,8 +57,8 @@ extension SBUGroupChannelListModule {
         }
         
         /// Sets up style with theme. If the `theme` is `nil`, it uses the stored theme.
-        /// - Parameter theme: `SBUChannelListTheme` object
-        open func setupStyles(theme: SBUChannelListTheme? = nil) {
+        /// - Parameter theme: `SBUGroupChannelListTheme` object
+        open func setupStyles(theme: SBUGroupChannelListTheme? = nil) {
             if let theme = theme {
                 self.theme = theme
             }

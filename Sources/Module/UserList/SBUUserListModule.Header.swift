@@ -171,7 +171,7 @@ extension SBUUserListModule {
             
             self.setupViews()
             self.setupLayouts()
-            self.setupStyles()
+            self.setupStyles(theme: theme, componentTheme: componentTheme)
         }
         
         /// Set values of the views in the header component when it needs.
@@ -204,6 +204,9 @@ extension SBUUserListModule {
             }
             
             if let titleView = self.titleView as? SBUNavigationTitleView {
+                if let componentTheme = componentTheme {
+                    titleView.theme = componentTheme
+                }
                 titleView.setupStyles()
             }
             

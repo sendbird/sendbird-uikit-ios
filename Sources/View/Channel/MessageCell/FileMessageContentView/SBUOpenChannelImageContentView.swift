@@ -12,10 +12,10 @@ open class SBUOpenChannelImageContentView: SBUImageContentView {
     
     open override func setupSizeContraint() {
         self.widthConstraint = self.imageView.widthAnchor.constraint(
-            equalToConstant: SBUConstant.openChannelThumbnailSize.width
+            equalToConstant: SBUGlobals.messageCellConfiguration.openChannel.thumbnailSize.width
         )
         self.heightConstraint = self.imageView.heightAnchor.constraint(
-            equalToConstant: SBUConstant.openChannelThumbnailSize.height
+            equalToConstant: SBUGlobals.messageCellConfiguration.openChannel.thumbnailSize.height
         )
 
         NSLayoutConstraint.activate([
@@ -27,11 +27,11 @@ open class SBUOpenChannelImageContentView: SBUImageContentView {
     open override func resizeImageView(by size: CGSize) {
         self.widthConstraint.constant = min(
             size.width,
-            SBUConstant.openChannelThumbnailSize.width
+            SBUGlobals.messageCellConfiguration.openChannel.thumbnailSize.width
         )
         self.heightConstraint.constant = min(
             size.height,
-            SBUConstant.openChannelThumbnailSize.height
+            SBUGlobals.messageCellConfiguration.openChannel.thumbnailSize.height
         )
     }
 }

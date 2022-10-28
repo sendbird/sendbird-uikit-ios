@@ -36,8 +36,8 @@ extension SBUGroupChannelListModule {
     @objcMembers open class List: SBUBaseChannelListModule.List {
         
         // MARK: - UI properties (Public)
-        /// The object that is used as the theme of the list component. The theme must adopt the `SBUChannelListTheme` class.
-        public var theme: SBUChannelListTheme?
+        /// The object that is used as the theme of the list component. The theme must adopt the `SBUGroupChannelListTheme` class.
+        public var theme: SBUGroupChannelListTheme?
         
         
         // MARK: - Logic properties (Public)
@@ -74,10 +74,10 @@ extension SBUGroupChannelListModule {
         /// - Parameters:
         ///   - delegate: `SBUGroupChannelListModuleListDelegate` type listener
         ///   - dataSource: The data source that is type of `SBUGroupChannelListModuleListDataSource`
-        ///   - theme: `SBUChannelListTheme` object
+        ///   - theme: `SBUGroupChannelListTheme` object
         open func configure(delegate: SBUGroupChannelListModuleListDelegate,
                             dataSource: SBUGroupChannelListModuleListDataSource,
-                            theme: SBUChannelListTheme) {
+                            theme: SBUGroupChannelListTheme) {
             
             self.delegate = delegate
             self.dataSource = dataSource
@@ -99,8 +99,8 @@ extension SBUGroupChannelListModule {
         }
         
         /// Sets up style with theme. If set theme parameter is nil value, using the stored theme.
-        /// - Parameter theme: `SBUChannelListTheme` object
-        open func setupStyles(theme: SBUChannelListTheme? = nil) {
+        /// - Parameter theme: `SBUGroupChannelListTheme` object
+        open func setupStyles(theme: SBUGroupChannelListTheme? = nil) {
             if let theme = theme {
                 self.theme = theme
             }

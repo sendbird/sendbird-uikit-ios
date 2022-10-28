@@ -100,13 +100,13 @@ extension GlobalSetCustomManager {
         
         let customBaseColor = UIColor(hex: "#0091FF")
         
-        let channelListTheme = SBUChannelListTheme()
+        let channelListTheme = SBUGroupChannelListTheme()
         channelListTheme.leftBarButtonTintColor = customBaseColor
         channelListTheme.rightBarButtonTintColor = customBaseColor
         channelListTheme.notificationOnBackgroundColor = customBaseColor
         // ... In this way, you can add theme attributes.
         
-        let channelCellTheme = SBUChannelCellTheme()
+        let channelCellTheme = SBUGroupChannelCellTheme()
         channelCellTheme.unreadCountBackgroundColor = UIColor(hex: "#E53157")
         channelCellTheme.titleFont = UIFont.init(
             name: "AmericanTypewriter",
@@ -133,8 +133,8 @@ extension GlobalSetCustomManager {
             ) ?? UIFont()
         // ... In this way, you can add theme attributes.
         
-        let customTheme = SBUTheme(channelListTheme: channelListTheme,
-                                   channelCellTheme: channelCellTheme,
+        let customTheme = SBUTheme(groupChannelListTheme: channelListTheme,
+                                   groupChannelCellTheme: channelCellTheme,
                                    componentTheme: componentTheme)
         SBUTheme.set(theme: customTheme)
     }

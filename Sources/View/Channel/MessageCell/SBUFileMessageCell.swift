@@ -43,7 +43,7 @@ open class SBUFileMessageCell: SBUContentBaseMessageCell {
         super.setupLayouts()
         
         self.mainContainerView
-            .sbu_constraint_lessThan(width: SBUConstant.thumbnailSize.width)
+            .sbu_constraint_lessThan(width: SBUGlobals.messageCellConfiguration.groupChannel.thumbnailSize.width)
     }
     
     open override func setupStyles() {

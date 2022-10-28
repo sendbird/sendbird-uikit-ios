@@ -33,15 +33,6 @@ open class SBUUserCell: SBUTableViewCell {
         let imageView = UIImageView()
         imageView.isHidden = true
         imageView.contentMode = .center
-        
-        let image = SBUIconSetType.iconMute.image(
-            with: self.theme.mutedStateIconColor,
-            to: SBUIconSetType.Metric.defaultIconSize
-        ).resize(
-            with: .init(width: 24, height: 24)
-        )
-        
-        imageView.image = image
         return imageView
     }()
     
@@ -64,20 +55,6 @@ open class SBUUserCell: SBUTableViewCell {
     
     public lazy var checkboxButton: UIButton = {
         let button = UIButton()
-        button.setImage(
-            SBUIconSetType.iconCheckboxUnchecked.image(
-                with: self.theme.checkboxOffColor,
-                to: SBUIconSetType.Metric.defaultIconSize
-            ),
-            for: .normal
-        )
-        button.setImage(
-            SBUIconSetType.iconCheckboxChecked.image(
-                with: self.theme.checkboxOnColor,
-                to: SBUIconSetType.Metric.defaultIconSize
-            ),
-            for: .selected
-        )
         button.isHidden = true
         button.isUserInteractionEnabled = false
         return button
@@ -85,20 +62,6 @@ open class SBUUserCell: SBUTableViewCell {
     
     public lazy var moreButton: UIButton = {
         let button = UIButton()
-        button.setImage(
-            SBUIconSetType.iconMore.image(
-                with: self.theme.moreButtonColor,
-                to: SBUIconSetType.Metric.defaultIconSize
-            ),
-            for: .normal
-        )
-        button.setImage(
-            SBUIconSetType.iconMore.image(
-                with: self.theme.moreButtonDisabledColor,
-                to: SBUIconSetType.Metric.defaultIconSize
-            ),
-            for: .disabled
-        )
         button.isHidden = true
         button.addTarget(self, action: #selector(onClickMoreMenu), for: .touchUpInside)
         return button
@@ -227,6 +190,10 @@ open class SBUUserCell: SBUTableViewCell {
         self.userImageView.layer.cornerRadius = userImageSize/2
         self.userImageView.backgroundColor = theme.userPlaceholderBackgroundColor
         
+        self.mutedStateImageView.image = SBUIconSetType.iconMute.image(
+            with: self.theme.mutedStateIconColor,
+            to: SBUIconSetType.Metric.defaultIconSize
+        ).resize(with: .init(width: 24, height: 24))
         self.mutedStateImageView.layer.cornerRadius = userImageSize/2
         self.mutedStateImageView.backgroundColor = self.theme.mutedStateBackgroundColor
         
@@ -244,6 +211,36 @@ open class SBUUserCell: SBUTableViewCell {
         self.operatorLabel.textColor = theme.subInfoTextColor
         
         self.separateView.backgroundColor = theme.separateColor
+        
+        self.checkboxButton.setImage(
+            SBUIconSetType.iconCheckboxUnchecked.image(
+                with: theme.checkboxOffColor,
+                to: SBUIconSetType.Metric.defaultIconSize
+            ),
+            for: .normal
+        )
+        self.checkboxButton.setImage(
+            SBUIconSetType.iconCheckboxChecked.image(
+                with: theme.checkboxOnColor,
+                to: SBUIconSetType.Metric.defaultIconSize
+            ),
+            for: .selected
+        )
+        
+        self.moreButton.setImage(
+            SBUIconSetType.iconMore.image(
+                with: theme.moreButtonColor,
+                to: SBUIconSetType.Metric.defaultIconSize
+            ),
+            for: .normal
+        )
+        self.moreButton.setImage(
+            SBUIconSetType.iconMore.image(
+                with: theme.moreButtonDisabledColor,
+                to: SBUIconSetType.Metric.defaultIconSize
+            ),
+            for: .disabled
+        )
         
         if self.type == .reaction {
             self.backgroundColor = .clear
@@ -276,7 +273,6 @@ open class SBUUserCell: SBUTableViewCell {
         )
         
         self.userImageView.backgroundColor = theme.userPlaceholderBackgroundColor
-        self.userImageView.contentMode = .scaleAspectFill
         
         self.mutedStateImageView.isHidden = (type != .muted) ? !user.isMuted : false
         self.operatorLabel.isHidden = type == .operators || !user.isOperator

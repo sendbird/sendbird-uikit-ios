@@ -18,17 +18,19 @@ public extension UIImageView {
 
     @discardableResult
     func loadImage(urlString: String,
-                          placeholder: UIImage? = nil,
-                          errorImage: UIImage? = nil,
-                          option: ImageOption = .original,
-                          thumbnailSize: CGSize? = nil,
-                          completion: ((Bool) -> Void)? = nil) -> URLSessionTask? {
-        self.setImage(placeholder)
+                   placeholder: UIImage? = nil,
+                   errorImage: UIImage? = nil,
+                   option: ImageOption = .original,
+                   thumbnailSize: CGSize? = nil,
+                   cacheKey: String? = nil,
+                   completion: ((Bool) -> Void)? = nil) -> URLSessionTask? {
+        self.setImage(placeholder, contentMode: .center)
         
         if urlString.isEmpty {
             if let errorImage = errorImage {
                 self.image = errorImage
             }
+            completion?(false)
             return nil
         }
         
@@ -37,6 +39,7 @@ public extension UIImageView {
             return self.loadOriginalImage(
                 urlString: urlString,
                 errorImage: errorImage,
+                cacheKey: cacheKey,
                 completion: completion
             )
         case .imageToThumbnail:
@@ -44,12 +47,14 @@ public extension UIImageView {
                 urlString: urlString,
                 errorImage: errorImage,
                 thumbnailSize: thumbnailSize,
+                cacheKey: cacheKey,
                 completion: completion
             )
         case .videoURLToImage:
             return self.loadVideoThumbnailImage(
                 urlString: urlString,
                 errorImage: errorImage,
+                cacheKey: cacheKey,
                 completion: completion
             )
         }
@@ -66,9 +71,15 @@ internal extension UIImageView {
 
     func loadOriginalImage(urlString: String,
                            errorImage: UIImage? = nil,
+                           cacheKey: String? = nil,
                            completion: ((Bool) -> Void)? = nil) -> URLSessionTask? {
         
-        let fileName = SBUCacheManager.createHashName(urlString: urlString)
+        var fileName = SBUCacheManager.createHashName(urlString: urlString)
+        if let cacheKey = cacheKey {
+            SBUCacheManager.renameIfNeeded(key: fileName, newKey: cacheKey)
+            fileName = cacheKey
+        }
+        
         if let image = SBUCacheManager.getImage(fileName: fileName) {
             self.setImage(image, completion: completion)
             return nil
@@ -103,8 +114,14 @@ internal extension UIImageView {
     
     func loadVideoThumbnailImage(urlString: String,
                                  errorImage: UIImage? = nil,
+                                 cacheKey: String? = nil,
                                  completion: ((Bool) -> Void)? = nil) -> URLSessionTask? {
-        let fileName = SBUCacheManager.createHashName(urlString: urlString)
+        var fileName = SBUCacheManager.createHashName(urlString: urlString)
+        if let cacheKey = cacheKey {
+            SBUCacheManager.renameIfNeeded(key: fileName, newKey: cacheKey)
+            fileName = cacheKey
+        }
+        
         if let image = SBUCacheManager.getImage(fileName: fileName) {
             self.setImage(image, completion: completion)
             return nil
@@ -146,10 +163,15 @@ internal extension UIImageView {
     
     func loadThumbnailImage(urlString: String,
                             errorImage: UIImage? = nil,
-                            thumbnailSize: CGSize? = SBUConstant.thumbnailSize,
+                            thumbnailSize: CGSize? = SBUGlobals.messageCellConfiguration.groupChannel.thumbnailSize,
+                            cacheKey: String? = nil,
                             completion: ((Bool) -> Void)? = nil) -> URLSessionTask? {
         
-        let fileName = SBUCacheManager.createHashName(urlString: urlString)
+        var fileName = SBUCacheManager.createHashName(urlString: urlString)
+        if let cacheKey = cacheKey {
+            SBUCacheManager.renameIfNeeded(key: fileName, newKey: cacheKey)
+            fileName = cacheKey
+        }
         let thumbnailFileName = "thumb_" + fileName
         
         // Load thumbnail cacheImage
@@ -180,7 +202,7 @@ internal extension UIImageView {
                 
                 self.setImage(image.images?.first ?? image, completion: completion)
             } else {
-                let thumbnailSize: CGSize = thumbnailSize ?? SBUConstant.thumbnailSize
+                let thumbnailSize: CGSize = thumbnailSize ?? SBUGlobals.messageCellConfiguration.groupChannel.thumbnailSize
                 let thumbnailImage = image.resize(with: thumbnailSize)
                 SBUCacheManager.savedImage(fileName: fileName, image: image)
                 SBUCacheManager.savedImage(fileName: thumbnailFileName, image: thumbnailImage)
@@ -191,13 +213,15 @@ internal extension UIImageView {
         task.resume()
         return task
     }
-
-    private func setImage(_ image: UIImage?, completion: ((Bool) -> Void)? = nil) {
+    
+    private func setImage(_ image: UIImage?, contentMode: ContentMode = .scaleAspectFill, completion: ((Bool) -> Void)? = nil) {
         if let image = image {
             if Thread.isMainThread {
+                self.contentMode = contentMode
                 self.image = image
             } else {
                 DispatchQueue.main.async {
+                    self.contentMode = contentMode
                     self.image = image
                 }
             }

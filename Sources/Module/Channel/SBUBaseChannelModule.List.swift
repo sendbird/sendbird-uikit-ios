@@ -842,12 +842,12 @@ extension SBUBaseChannelModule {
                     if let cell = cell as? SBUFileMessageCell {
                         cell.setImage(
                             isAnimatedImage ? image?.images?.first : image,
-                            size: SBUConstant.thumbnailSize
+                            size: SBUGlobals.messageCellConfiguration.groupChannel.thumbnailSize
                         )
                     } else if let cell = cell as? SBUOpenChannelFileMessageCell {
                         cell.setImage(
                             isAnimatedImage ? image?.images?.first : image,
-                            size: SBUConstant.openChannelThumbnailSize
+                            size: SBUGlobals.messageCellConfiguration.openChannel.thumbnailSize
                         )
                     }
                 case .succeeded:
@@ -909,6 +909,10 @@ extension SBUBaseChannelModule.List {
         at position: UITableView.ScrollPosition = .top,
         animated: Bool = false
     ) {
+        if self.tableView.numberOfRows(inSection: 0) <= row {
+            return
+        }
+        
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             let isScrollable = !self.fullMessageList.isEmpty

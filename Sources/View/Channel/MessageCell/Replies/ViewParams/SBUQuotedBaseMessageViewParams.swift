@@ -74,6 +74,8 @@ public class SBUQuotedBaseMessageViewParams {
     // MARK: - Internal (only for Swift)
     let messageType: QuotedMessageType
     
+    let requestId: String?
+    
     public init(message: BaseMessage, position: MessagePosition, usingQuotedMessage: Bool) {
         self.messageId = message.parentMessageId
         self.text = message.parentMessage?.message ?? ""
@@ -105,6 +107,7 @@ public class SBUQuotedBaseMessageViewParams {
         }
         self.messagePosition = position
         self.usingQuotedMessage = usingQuotedMessage
+        self.requestId = message.requestId
     }
     
     // MARK: Test model
@@ -116,6 +119,7 @@ public class SBUQuotedBaseMessageViewParams {
         self.text = text
         self.messageType = .userMessage
         self.usingQuotedMessage = usingQuotedMessage
+        self.requestId = nil
     }
     
     public init(messageId: Int64, messagePosition: MessagePosition, quotedMessageNickname: String, replierNickname: String, name: String, type: String, urlString: String, usingQuotedMessage: Bool = true) {
@@ -126,5 +130,6 @@ public class SBUQuotedBaseMessageViewParams {
         self.text = nil
         self.messageType = .fileMessage(name, type, urlString)
         self.usingQuotedMessage = usingQuotedMessage
+        self.requestId = nil
     }
 }

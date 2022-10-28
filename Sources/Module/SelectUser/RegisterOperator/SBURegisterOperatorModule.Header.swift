@@ -120,7 +120,7 @@ extension SBURegisterOperatorModule {
             
             self.setupViews()
             self.setupLayouts()
-            self.setupStyles()
+            self.setupStyles(theme: theme)
         }
         
         

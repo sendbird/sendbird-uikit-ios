@@ -17,13 +17,15 @@ public class SBUMessageWebViewModel {
     public var placeHolderImage: UIImage?
     public var errorImage: UIImage?
     
-    public init(metaData: OGMetaData?, isOverlay: Bool = false) {
+    public init(metaData: OGMetaData?, isOverlay: Bool = false, isOpenChannel: Bool = false) {
         let theme = isOverlay ? SBUTheme.overlayTheme.messageCellTheme : SBUTheme.messageCellTheme
         let imageData = metaData?.defaultImage
         
         if let title = metaData?.title {
             var attributes = self.applyLinebreak(SBUFontSet.body2Attributes)
-            attributes[.foregroundColor] = theme.ogTitleColor
+            attributes[.foregroundColor] = isOpenChannel
+            ? theme.openChannelOGTitleColor
+            : theme.ogTitleColor
             attributes[.font] = theme.ogTitleFont
             let attributedString = NSMutableAttributedString(
                 string: title,

@@ -65,10 +65,10 @@ open class SBUImageContentView: SBUBaseFileContentView {
     
     open func setupSizeContraint() {
         self.widthConstraint = self.imageView.widthAnchor.constraint(
-            equalToConstant: SBUConstant.thumbnailSize.width
+            equalToConstant: SBUGlobals.messageCellConfiguration.groupChannel.thumbnailSize.width
         )
         self.heightConstraint = self.imageView.heightAnchor.constraint(
-            equalToConstant: SBUConstant.thumbnailSize.height
+            equalToConstant: SBUGlobals.messageCellConfiguration.groupChannel.thumbnailSize.height
         )
 
         NSLayoutConstraint.activate([
@@ -108,14 +108,16 @@ open class SBUImageContentView: SBUBaseFileContentView {
             }
         }
         
-        let thumbnailSize = message.channelType == .group ?
-            SBUConstant.thumbnailSize : SBUConstant.openChannelThumbnailSize
+        let thumbnailSize = message.channelType == .group
+        ? SBUGlobals.messageCellConfiguration.groupChannel.thumbnailSize
+        : SBUGlobals.messageCellConfiguration.openChannel.thumbnailSize
 
         self.resizeImageView(by: thumbnailSize)
         self.loadImageSession = self.imageView.loadImage(
             urlString: urlString,
             option: imageOption,
-            thumbnailSize: thumbnailSize
+            thumbnailSize: thumbnailSize,
+            cacheKey: message.requestId
         ) { [weak self] _ in
             DispatchQueue.main.async {
                 self?.setFileIcon()
@@ -175,11 +177,11 @@ open class SBUImageContentView: SBUBaseFileContentView {
     open func resizeImageView(by size: CGSize) {
         self.widthConstraint.constant = min(
             size.width,
-            SBUConstant.thumbnailSize.width
+            SBUGlobals.messageCellConfiguration.groupChannel.thumbnailSize.width
         )
         self.heightConstraint.constant = min(
             size.height,
-            SBUConstant.thumbnailSize.height
+            SBUGlobals.messageCellConfiguration.groupChannel.thumbnailSize.height
         )
     }
 }

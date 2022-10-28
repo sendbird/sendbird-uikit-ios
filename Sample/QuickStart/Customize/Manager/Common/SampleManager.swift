@@ -37,9 +37,14 @@ class ChannelManager: NSObject {
         params.limit = 10
         params.includeEmptyChannel = true
         
-        // In order to use the API, the option must be turned on in the dashboard.
+        // Sendbird provides various access control options when using the Chat SDK. By default, the Allow retrieving user list attribute is turned on to facilitate creating sample apps. However, this may grant access to unwanted data or operations, leading to potential security concerns. To manage your access control settings, you can turn on or off each setting on Sendbird Dashboard.
         let channelListQuery = GroupChannel.createMyGroupChannelListQuery(params: params)
         channelListQuery.loadNextPage { channels, error in
+            guard error == nil else {
+                SBULog.error(error?.localizedDescription)
+                return
+            }
+            
             guard let channel = channels?.first else {
                 AlertManager.show(title: "No channel", message: "Create a channel and proceed.")
                 return

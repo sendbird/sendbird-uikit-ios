@@ -33,7 +33,7 @@ open class SBUOpenChannelUnknownMessageCell: SBUOpenChannelUserMessageCell {
                 message: message,
                 text: text,
                 font: theme.unknownMessageDescFont,
-                textColor: theme.unknownMessageDescTextColor,
+                textColor: theme.unknownMessageDescLeftTextColor,
                 isEdited: false
             )
             messageTextView.configure(model: model)

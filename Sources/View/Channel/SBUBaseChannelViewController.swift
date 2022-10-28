@@ -605,7 +605,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
             }
         } else if context?.source != .eventMessageReceived {
             // follow keepScroll flag if context is not `eventMessageReceived`.
-            if keepsScroll {
+            if keepsScroll, !baseChannelViewModel(viewModel, isScrollNearBottomInChannel: viewModel.channel) {
                 self.lastSeenIndexPath = baseListComponent.keepCurrentScroll(for: messages)
             }
         } else {

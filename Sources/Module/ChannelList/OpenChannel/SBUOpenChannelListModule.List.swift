@@ -88,7 +88,7 @@ extension SBUOpenChannelListModule {
         }
         
         /// Sets up style with theme. If set theme parameter is nil value, using the stored theme.
-        /// - Parameter theme: `SBUChannelListTheme` object
+        /// - Parameter theme: `SBUOpenChannelListTheme` object
         open func setupStyles(theme: SBUOpenChannelListTheme? = nil) {
             if let theme = theme {
                 self.theme = theme

@@ -131,7 +131,7 @@ open class SBUOpenChannelUserMessageCell: SBUOpenChannelContentBaseMessageCell {
         if let ogMetaData = message.ogMetaData {
             self.additionContainerView.insertArrangedSubview(self.webView, at: 0)
             self.webView.isHidden = false
-            let model = SBUMessageWebViewModel(metaData: ogMetaData, isOverlay: isOverlay)
+            let model = SBUMessageWebViewModel(metaData: ogMetaData, isOverlay: isOverlay, isOpenChannel: true)
             self.webView.configure(model: model)
             self.messageTypeConstraint.isActive = false
             self.webTypeConstraints.forEach { $0.isActive = true }

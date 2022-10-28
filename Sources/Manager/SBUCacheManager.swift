@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import AVFoundation
+import SendbirdChatSDK
 
 class SBUCacheManager {
     
@@ -34,6 +36,32 @@ class SBUCacheManager {
         self.diskCache.set(key: fileName, data: data)
         return image
     }
+    
+    static func preSaveImage(fileMessage: FileMessage) {
+        if let messageParams = fileMessage.messageParams as? FileMessageCreateParams {
+            switch SBUUtils.getFileType(by: fileMessage) {
+            case .image:
+                SBUCacheManager.savedImage(fileName: fileMessage.requestId, data: messageParams.file)
+            case .video:
+                guard let asset = messageParams.file?.getAVAsset() else { break }
+                
+                let avAssetImageGenerator = AVAssetImageGenerator(asset: asset)
+                avAssetImageGenerator.appliesPreferredTrackTransform = true
+                let cmTime = CMTimeMake(value: 2, timescale: 1)
+                guard let cgImage = try? avAssetImageGenerator
+                    .copyCGImage(at: cmTime, actualTime: nil) else {
+                    break
+                }
+                
+                let image = UIImage(cgImage: cgImage)
+                if let data = image.pngData() {
+                    SBUCacheManager.savedImage(fileName: fileMessage.requestId, data: data)
+                }
+            default:
+                break
+            }
+        }
+    }
 
     static func getImage(fileName: String) -> UIImage? {
         if let memoryImage = self.memoryCache.getImage(key: fileName) {
@@ -43,6 +71,18 @@ class SBUCacheManager {
             return UIImage.createImage(from: diskData as Data)
         } else {
             return nil
+        }
+    }
+    
+    static func renameIfNeeded(key: String, newKey: String) {
+        if SBUCacheManager.hasImage(fileName: key),
+            !SBUCacheManager.hasImage(fileName: newKey) {
+            
+            self.diskCache.rename(key: key, newKey: newKey)
+
+            if let image = self.memoryCache.getImage(key: key) {
+                self.memoryCache.set(key: key, image: image)
+            }
         }
     }
 
@@ -105,6 +145,15 @@ public struct DiskCache {
             } catch {
                 SBULog.error(error.localizedDescription)
             }
+        }
+    }
+    
+    public func rename(key: String, newKey: String) {
+        diskQueue.async {
+            let fileManager = self.fileManager
+            let atPath = self.pathForKey(key)
+            let toPath = self.pathForKey(newKey)
+            try? fileManager.moveItem(atPath: atPath, toPath: toPath)
         }
     }
     

@@ -98,9 +98,9 @@ class CustomChannelListCell: SBUBaseChannelCell {
     override func setupStyles() {
         super.setupStyles()
         
-        self.titleLabel.font = SBUTheme.channelCellTheme.titleFont
-        self.titleLabel.textColor = SBUTheme.channelCellTheme.titleTextColor
-        self.separatorLine.backgroundColor = SBUTheme.channelCellTheme.separatorLineColor
+        self.titleLabel.font = SBUTheme.groupChannelCellTheme.titleFont
+        self.titleLabel.textColor = SBUTheme.groupChannelCellTheme.titleTextColor
+        self.separatorLine.backgroundColor = SBUTheme.groupChannelCellTheme.separatorLineColor
     }
 
     override func configure(channel: BaseChannel) {

@@ -10,11 +10,11 @@ import UIKit
 
 extension SBUTheme {
     static func defaultTheme(currentClass: Any) -> AnyObject {
-        if type(of: currentClass) == type(of: SBUChannelListTheme.self) {
-            return SBUTheme.channelListTheme
+        if type(of: currentClass) == type(of: SBUGroupChannelListTheme.self) {
+            return SBUTheme.groupChannelListTheme
         }
-        else if type(of: currentClass) == type(of: SBUChannelCellTheme.self) {
-            return SBUTheme.channelCellTheme
+        else if type(of: currentClass) == type(of: SBUGroupChannelCellTheme.self) {
+            return SBUTheme.groupChannelCellTheme
         }
         else if type(of: currentClass) == type(of: SBUOpenChannelListTheme.self) {
             return SBUTheme.openChannelListTheme
