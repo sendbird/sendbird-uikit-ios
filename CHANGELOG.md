@@ -13,7 +13,7 @@
   * `SBUGroupChannelCellTheme`
     * Added `fileIconBackgroundColor`, `fileIconTintColor`
   * `SBUOpenChannelCellTheme`
-    * `participantCountFont`: light(`SBUColorSet.caption1` -> `SBUColorSet.caption2`)
+    * `participantCountFont`: light(`SBUFontSet.caption1` -> `SBUFontSet.caption2`)
   * `SBUChannelTheme`
     * Added `openChannelOGTitleColor`, `buttonBackgroundColor`, `buttonTitleColor`, `sideButtonIconColor`, `newMessageBadgeColor`
     * `menuItemDisabledColor`: light(`SBUColorSet.ondark04` -> `SBUColorSet.onlight04`) 
@@ -28,6 +28,17 @@
     * `cellDescriptionTextFont` (subtitle3 -> body3)
   * `SBUCreateOpenChannelTheme`
     * `textFieldFont` (body3 -> subtitle1)
+  * Please add the code below in `AppDelegate` or `SceneDelegate` to use the values before the change.
+	```
+	SBUTheme.groupChannelListTheme.notificationOnTintColor = SBUColorSet.background50
+	SBUTheme.openChannelCellTheme.participantCountFont = SBUFontSet.caption1
+	SBUTheme.channelTheme.menuItemDisabledColor = SBUColorSet.ondark04
+	SBUTheme.channelTheme.mentionLimitGuideTextFont = SBUFontSet.body1
+	SBUTheme.channelSettingsTheme.userNameFont = SBUFontSet.subtitle1
+	SBUTheme.channelSettingsTheme.urlFont = SBUFontSet.body3
+	SBUTheme.channelSettingsTheme.cellDescriptionTextFont = SBUFontSet.subtitle3
+	SBUTheme.createOpenChannelTheme.textFieldFont = SBUFontSet.body3
+	```
 * Fixed bcsymbolmap issue for SPM
 
 ### v3.2.1 (Oct 13, 2022) with Chat SDK **v4.0.15**
