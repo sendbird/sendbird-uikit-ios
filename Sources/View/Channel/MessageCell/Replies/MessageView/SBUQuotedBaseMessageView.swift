@@ -74,6 +74,11 @@ open class SBUQuotedBaseMessageView: SBUView, SBUQuotedMessageViewProtocol {
         }
     }
     
+    /// The creation time of the quoted message
+    /// - Since: 3.2.3
+    public private(set) var quotedMessageCreatedAt: Int64?
+    
+    
     // MARK: Internal (only for Swift)
     var messageType: QuotedMessageType = .none {
         didSet {
@@ -244,6 +249,7 @@ open class SBUQuotedBaseMessageView: SBUView, SBUQuotedMessageViewProtocol {
         self.quotedMessageNickname = configuration.quotedMessageNickname
         self.replierNickname = configuration.replierNickname
         self.repliedToLabel.text = repliedToText
+        self.quotedMessageCreatedAt = configuration.quotedMessageCreatedAt
         
         self.messageType = configuration.messageType
     }

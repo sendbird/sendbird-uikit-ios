@@ -67,13 +67,11 @@ public class SBUActionSheetItem: SBUCommonItem {
 }
 
 
-public class SBUActionSheet {
+public class SBUActionSheet: NSObject {
     @SBUThemeWrapper(theme: SBUTheme.componentTheme)
     var theme: SBUComponentTheme
     
     static private let shared = SBUActionSheet()
-    
-    private init() {}
     
     weak var delegate: SBUActionSheetDelegate?
     
@@ -94,6 +92,10 @@ public class SBUActionSheet {
     let insideMargin: CGFloat = 16.0
 
     var prevOrientation: UIDeviceOrientation = .unknown
+    
+    private override init() {
+        super.init()
+    }
     
     
     /// This static function shows the actionSheet.

@@ -42,63 +42,6 @@ extension SBUBaseChannelViewController {
         self.baseListComponent?.tableView.addGestureRecognizer(pan)
     }
     
-    /// This function changes the messageInputView bottom constraint using keyboard height.
-    /// - Parameter notification: Notification object with keyboardFrame information
-    /// - Since: 1.2.5
-    @objc
-    public func keyboardWillShow(_ notification: Notification) {
-        guard let keyboardFrame = notification.userInfo?[
-            UIResponder.keyboardFrameEndUserInfoKey
-        ] as? NSValue else { return }
-        
-        let userInfo = notification.userInfo!
-        let beginFrameValue = (userInfo[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)!
-        let beginFrame = beginFrameValue.cgRectValue
-        let endFrameValue = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)!
-        let endFrame = endFrameValue.cgRectValue
-        
-        // iOS 14 bug, keyboardWillShow is called instead of keyboardWillHide.
-        if endFrame.origin.y >= UIScreen.main.bounds.height {
-            self.keyboardWillHide(notification)
-            return
-        }
-        
-        if (beginFrame.origin.equalTo(endFrame.origin) && beginFrame.height != endFrame.height) {
-            return
-        }
-        
-        self.isKeyboardShowing = true
-        
-        //NOTE: needs this on show as well to prevent bug on switching orientation as show&hide will be called simultaneously.
-        setKeyboardWindowFrame(origin: .zero)
-        
-        let keyboardRectangle = keyboardFrame.cgRectValue
-        let keyboardHeight = keyboardRectangle.height
-        
-        // If the `isTranslucent=false` option is used, the tabbar’s height is calculated unnecessarily, which is problematic.
-        var tabBarHeight: CGFloat = 0.0
-        if self.tabBarController?.tabBar.isTranslucent == false {
-            tabBarHeight = tabBarController?.tabBar.frame.height ?? 0.0
-        }
-        
-        self.messageInputViewBottomConstraint.constant = -(keyboardHeight-tabBarHeight)
-        self.view.layoutIfNeeded()
-    }
-    
-    /// This function changes the messageInputView bottom constraint using keyboard height.
-    /// - Parameter notification: Notification object with keyboardFrame information
-    /// - Since: 1.2.5
-    @objc
-    public func keyboardWillHide(_ notification: Notification) {
-        self.isKeyboardShowing = false
-        
-        setKeyboardWindowFrame(origin: CGPoint(x: 0, y: 50))
-        
-        if let messageInputViewBottomConstraint = self.messageInputViewBottomConstraint {
-            messageInputViewBottomConstraint.constant = 0
-        }
-        self.view.layoutIfNeeded()
-    }
     
     /// This function dismisses the keyboard.
     /// - Since: 1.2.5
@@ -109,7 +52,8 @@ extension SBUBaseChannelViewController {
     
     // To hide autocorrection view on keyboard hidden.
     // https://stackoverflow.com/questions/59278526/keyboard-dismiss-very-buggy-on-tableview-interactive
-    private func setKeyboardWindowFrame(origin: CGPoint, size: CGSize = UIScreen.main.bounds.size) {
+    public func setKeyboardWindowFrame(origin: CGPoint, size: CGSize? = nil) {
+        let screenSize: CGSize = size ?? UIScreen.main.bounds.size
         var keyboardWindow: UIWindow? = nil
         for window in UIApplication.shared.windows {
             if (NSStringFromClass(type(of: window).self) == "UIRemoteKeyboardWindow") {
@@ -117,7 +61,61 @@ extension SBUBaseChannelViewController {
             }
         }
         
-        keyboardWindow?.frame = CGRect(origin: origin, size: size)
+        keyboardWindow?.frame = CGRect(origin: origin, size: screenSize)
+    }
+    
+    /// Updates layouts of ``baseInputComponent`` bottom anchor with keyboard height from notifications: ``keyboardWillShow(_:)``, ``keyboardWillShow(_:)``
+    /// - Since: 3.2.3
+    public func updateLayoutsWithKeyboard(isHidden: Bool, notification: Notification) {
+        switch isHidden {
+        case true:
+            // When the keyboard will hide
+            self.isKeyboardShowing = false
+            
+            self.setKeyboardWindowFrame(origin: CGPoint(x: 0, y: 50))
+            
+            if let messageInputViewBottomConstraint = self.messageInputViewBottomConstraint {
+                messageInputViewBottomConstraint.constant = 0
+            }
+        case false:
+            // When the keyboard will show
+            guard let keyboardFrame = notification.userInfo?[
+                UIResponder.keyboardFrameEndUserInfoKey
+            ] as? NSValue else { return }
+            
+            let userInfo = notification.userInfo!
+            let beginFrameValue = (userInfo[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)!
+            let beginFrame = beginFrameValue.cgRectValue
+            let endFrameValue = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)!
+            let endFrame = endFrameValue.cgRectValue
+            
+            // iOS 14 bug, keyboardWillShow is called instead of keyboardWillHide.
+            if endFrame.origin.y >= UIScreen.main.bounds.height {
+                self.keyboardWillHide(notification)
+                return
+            }
+            
+            if (beginFrame.origin.equalTo(endFrame.origin) && beginFrame.height != endFrame.height) {
+                return
+            }
+            
+            self.isKeyboardShowing = true
+            
+            // NOTE: needs this on show as well to prevent bug on switching orientation as show&hide will be called simultaneously.
+            self.setKeyboardWindowFrame(origin: .zero)
+            
+            let keyboardRectangle = keyboardFrame.cgRectValue
+            let keyboardHeight = keyboardRectangle.height
+            
+            // If the `isTranslucent=false` option is used, the tabbar’s height is calculated unnecessarily, which is problematic.
+            var tabBarHeight: CGFloat = 0.0
+            if self.tabBarController?.tabBar.isTranslucent == false {
+                tabBarHeight = tabBarController?.tabBar.frame.height ?? 0.0
+            }
+            
+            self.messageInputViewBottomConstraint.constant = -(keyboardHeight-tabBarHeight)
+        }
+        self.view.layoutIfNeeded()
     }
     
     @objc

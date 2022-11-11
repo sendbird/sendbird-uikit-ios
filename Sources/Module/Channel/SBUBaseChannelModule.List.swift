@@ -909,12 +909,13 @@ extension SBUBaseChannelModule.List {
         at position: UITableView.ScrollPosition = .top,
         animated: Bool = false
     ) {
-        if self.tableView.numberOfRows(inSection: 0) <= row {
-            return
-        }
-        
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
+            if self.tableView.numberOfRows(inSection: 0) <= row ||
+                row < 0 {
+                return
+            }
+            
             let isScrollable = !self.fullMessageList.isEmpty
                 && row >= 0
                 && row < self.fullMessageList.count

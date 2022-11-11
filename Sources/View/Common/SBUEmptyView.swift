@@ -78,6 +78,7 @@ open class SBUEmptyView: SBUView {
         self.stackView.addArrangedSubview(self.retryButton)
         self.retryButton.isHidden = true
         self.addSubview(stackView)
+        self.isHidden = true
     }
     
     open override func setupLayouts() {
@@ -140,14 +141,13 @@ open class SBUEmptyView: SBUView {
     
     /// Override this function to apply a custom type.
     open func updateViews() {
-        self.isHidden = false
         let theme = self.isOverlay ? self.overlayTheme : self.theme
-        
+        var needToHidden = false
         switch self.type {
         case .none:
             self.statusLabel.text = ""
             self.statusImageView.image = nil
-            self.isHidden = true
+            needToHidden = true
         case .noChannels:
             self.statusLabel.text = SBUStringSet.Empty_No_Channels
             self.statusImageView.image = SBUIconSetType.iconChat.image(
@@ -205,6 +205,7 @@ open class SBUEmptyView: SBUView {
                 tintAndResize: false
             )
         }
+        self.isHidden = needToHidden
     }
     
     

@@ -369,8 +369,12 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         guard let row = self.baseViewModel?.fullMessageList.firstIndex(
             where: { $0.messageId == quotedMessageView.messageId }
         ) else {
-            // error
-            SBULog.error("Couldn't find a linked message.")
+            SBULog.info("There is no cached linked message. Reloads messages based on linked messages.")
+            self.viewModel?.loadInitialMessages(
+                startingPoint: quotedMessageView.quotedMessageCreatedAt,
+                showIndicator: true,
+                initialMessages: nil
+            )
             return
         }
         

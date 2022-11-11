@@ -31,13 +31,11 @@ public class SBUAlertButtonItem {
 }
 
 
-public class SBUAlertView {
+public class SBUAlertView: NSObject {
     static private let shared = SBUAlertView()
     
     @SBUThemeWrapper(theme: SBUTheme.componentTheme)
     var theme: SBUComponentTheme
-    
-    private init() {}
     
     var window: UIWindow? = nil
     var baseView = UIView()
@@ -66,6 +64,9 @@ public class SBUAlertView {
     
     var prevOrientation: UIDeviceOrientation = .unknown
 
+    private override init() {
+        super.init()
+    }
     
     /// This static function shows the alertView.
     /// - Parameters:

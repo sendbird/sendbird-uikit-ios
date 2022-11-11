@@ -71,6 +71,11 @@ public class SBUQuotedBaseMessageViewParams {
         }
     }
     
+    /// The creation time of the quoted message
+    /// - Since: 3.2.3
+    public var quotedMessageCreatedAt: Int64?
+    
+    
     // MARK: - Internal (only for Swift)
     let messageType: QuotedMessageType
     
@@ -108,10 +113,14 @@ public class SBUQuotedBaseMessageViewParams {
         self.messagePosition = position
         self.usingQuotedMessage = usingQuotedMessage
         self.requestId = message.requestId
+        
+        if let parentMessage = message.parentMessage {
+            self.quotedMessageCreatedAt = parentMessage.createdAt
+        }
     }
     
     // MARK: Test model
-    public init(messageId: Int64, messagePosition: MessagePosition, quotedMessageNickname: String, replierNickname: String, text: String, usingQuotedMessage: Bool = true) {
+    public init(messageId: Int64, messagePosition: MessagePosition, quotedMessageNickname: String, replierNickname: String, text: String, usingQuotedMessage: Bool = true, quotedMessageCreatedAt: Int64) {
         self.messageId = messageId
         self.messagePosition = messagePosition
         self.quotedMessageNickname = quotedMessageNickname
@@ -120,9 +129,10 @@ public class SBUQuotedBaseMessageViewParams {
         self.messageType = .userMessage
         self.usingQuotedMessage = usingQuotedMessage
         self.requestId = nil
+        self.quotedMessageCreatedAt = quotedMessageCreatedAt
     }
     
-    public init(messageId: Int64, messagePosition: MessagePosition, quotedMessageNickname: String, replierNickname: String, name: String, type: String, urlString: String, usingQuotedMessage: Bool = true) {
+    public init(messageId: Int64, messagePosition: MessagePosition, quotedMessageNickname: String, replierNickname: String, name: String, type: String, urlString: String, usingQuotedMessage: Bool = true, quotedMessageCreatedAt: Int64) {
         self.messageId = messageId
         self.messagePosition = messagePosition
         self.quotedMessageNickname = quotedMessageNickname
@@ -131,5 +141,6 @@ public class SBUQuotedBaseMessageViewParams {
         self.messageType = .fileMessage(name, type, urlString)
         self.usingQuotedMessage = usingQuotedMessage
         self.requestId = nil
+        self.quotedMessageCreatedAt = quotedMessageCreatedAt
     }
 }

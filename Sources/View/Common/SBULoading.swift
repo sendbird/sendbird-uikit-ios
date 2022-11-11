@@ -8,10 +8,8 @@
 
 import UIKit
 
-public class SBULoading {
+public class SBULoading: NSObject {
     static private let shared = SBULoading()
-    
-    private init() { }
     
     var window: UIWindow? = nil
     var baseView = UIView()
@@ -31,6 +29,9 @@ public class SBULoading {
     let itemSize: CGFloat = 100.0
     let spinnerSize: CGFloat = 64.0
     
+    private override init() {
+        super.init()
+    }
     
     /// This static function starts the loading indicator.
     public static func start() {

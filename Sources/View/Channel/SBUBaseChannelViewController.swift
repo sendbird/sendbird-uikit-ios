@@ -38,14 +38,21 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     
     public var channelName: String? = nil
     
+    /// The state property to indicate whether it's showing the keyboard or not. It's `false` when ``keyboardWillHide(_:)`` is called and `true` when ``keyboardWillShow(_:)`` is called. The default value is `false`
+    /// - Since: 3.2.3
+    public var isKeyboardShowing: Bool = false
+    /// The `NSLayoutConstraint` value used in ``baseInputComponent``'s bottom anchor constraint. The value is updated when either ``keyboardWillHide(_:)`` or ``keyboardWillShow(_:)`` is called.
+    /// - Since: 3.2.3
+    public var messageInputViewBottomConstraint: NSLayoutConstraint!
+    
     // MARK: - Logic Properties (Private)
-    var isKeyboardShowing: Bool = false
     var initialMessageInputBottomConstraint: CGFloat = 0
     var initialMessageInputOrigin: CGPoint = .zero
     
-    var messageInputViewBottomConstraint: NSLayoutConstraint!
     var tableViewTopConstraint: NSLayoutConstraint!
     var lastSeenIndexPath: IndexPath?
+    
+    var scrollToInitialPositionHandler: (() -> Void)?
     
     
     // MARK: - Lifecycle
@@ -210,6 +217,18 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         // Input
         if let baseInputComponent = baseInputComponent {
             self.view.addSubview(baseInputComponent)
+        }
+        
+        self.scrollToInitialPositionHandler = { [weak self] in
+            if Thread.isMainThread {
+                self?.baseListComponent?.tableView.layoutIfNeeded()
+                self?.baseListComponent?.scrollToInitialPosition()
+            } else {
+                DispatchQueue.main.async {
+                    self?.baseListComponent?.tableView.layoutIfNeeded()
+                    self?.baseListComponent?.scrollToInitialPosition()
+                }
+            }
         }
     }
     
@@ -563,9 +582,9 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         baseListComponent.updateEmptyView(type: emptyViewType)
         
         defer {
-            if initialLoad {
-                baseListComponent.tableView.layoutIfNeeded()
-                baseListComponent.scrollToInitialPosition()
+            if !initialLoad {
+                self.scrollToInitialPositionHandler?()
+                self.scrollToInitialPositionHandler = nil
             }
         }
         
@@ -1026,6 +1045,26 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         baseViewModel?.channel
     }
     
+    
+    // MARK: - Input Keyboard events
+    /// This function calls ``updateLayoutsWithKeyboard(isHidden:notification:)`` that changes the ``baseInputComponent`` bottom constraint using keyboard height.
+    /// - Parameter notification: Notification object with keyboardFrame information
+    /// - Important: When override this method, please refer to ``updateLayoutsWithKeyboard(isHidden:notification:)`` to update ``baseInputComponent`` bottom constraint with keyboard height.
+    /// - Since: 1.2.5
+    @objc
+    open func keyboardWillShow(_ notification: Notification) {
+        self.updateLayoutsWithKeyboard(isHidden: false, notification: notification)
+        
+    }
+    
+    /// This function calls ``updateLayoutsWithKeyboard(isHidden:notification:)`` changes the ``baseInputComponent`` bottom constraint using keyboard height.
+    /// - Parameter notification: Notification object with keyboardFrame information
+    /// - Important: When override this method, please refer to ``updateLayoutsWithKeyboard(isHidden:notification:)`` to update ``baseInputComponent`` bottom constraint with keyboard height.
+    /// - Since: 1.2.5
+    @objc
+    open func keyboardWillHide(_ notification: Notification) {
+        self.updateLayoutsWithKeyboard(isHidden: true, notification: notification)
+    }
     
     
     // MARK: - SBUBaseChannelViewModelDataSource

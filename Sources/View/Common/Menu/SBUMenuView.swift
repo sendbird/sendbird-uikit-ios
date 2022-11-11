@@ -31,13 +31,12 @@ public class SBUMenuItem: SBUCommonItem {
     }
 }
 
-class SBUMenuView {
+class SBUMenuView: NSObject {
     static private let shared = SBUMenuView()
     
     @SBUThemeWrapper(theme: SBUTheme.componentTheme)
     var theme: SBUComponentTheme
     
-    private init() {}
     private var items: [SBUMenuItem] = []
     
     var window: UIWindow? = nil
@@ -57,6 +56,12 @@ class SBUMenuView {
     var dismissHandler: (() -> Void)? = nil
     
     var prevOrientation: UIDeviceOrientation = .unknown
+    
+    
+    private override init() {
+        super.init()
+    }
+    
     
     /**
      [Order]

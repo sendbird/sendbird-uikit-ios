@@ -1,5 +1,17 @@
 # Changelog
 
+### v3.2.3 (Nov 15, 2022)
+
+> **IMPORTANT** If you use Swift Package Manager, Please *reset package cache* before download the current version.
+
+* Opened keyboard events: `keyboardWillShow(_:)` and  `keyboardWillHide(_:)`
+* Updated `navigationBar` shadowColor
+* Modified the type of class that includes the `UIControl` type object to `NSObject`
+* Improved logic to update the 'startPoint' in the channel
+* Improved logic moving to the original message of a quoted message
+* Improved channel initialization process.
+* Improved stability
+
 ### v3.2.2 (Oct 28, 2022) with Chat SDK **v4.1.2**
 * Fixed `scrollToBottom` button flickers when send a message
 * Improved fileMessage related processing
@@ -52,6 +64,9 @@
 * Improved stability
 
 ### v3.2.0 (Sep 21, 2022) with Chat SDK **v4.0.13**
+
+> **IMPORTANT** If you use Swift Package Manager, Please *reset package cache* before download the current version.
+
 * Support **Open channel list** features
     * Added classes
         * `SBUOpenChannelListViewController`

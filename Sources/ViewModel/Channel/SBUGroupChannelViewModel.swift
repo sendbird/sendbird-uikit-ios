@@ -248,8 +248,8 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
                     self.clearMessageList()
                 }
                 
-                self.upsertMessagesInList(messages: apiResult, needReload: true)
                 self.isInitialLoading = false
+                self.upsertMessagesInList(messages: apiResult, needReload: true)
             })
     }
     

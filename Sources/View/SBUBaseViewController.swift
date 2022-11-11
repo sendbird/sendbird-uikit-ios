@@ -76,9 +76,10 @@ open class SBUBaseViewController: UIViewController, UINavigationControllerDelega
             color: shadowColor
         )
         
-        // For iOS 15
+        // For iOS 13
         self.navigationController?.sbu_setupNavigationBarAppearance(
-            tintColor: backgroundColor
+            tintColor: backgroundColor,
+            shadowColor: shadowColor
         )
     }
     

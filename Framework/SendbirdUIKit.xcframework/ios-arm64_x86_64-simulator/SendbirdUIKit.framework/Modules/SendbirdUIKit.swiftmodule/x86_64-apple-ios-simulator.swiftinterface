@@ -1,5 +1,5 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.6.1 (swiftlang-5.6.0.323.66 clang-1316.0.20.12)
+// swift-compiler-version: Apple Swift version 5.6 (swiftlang-5.6.0.323.62 clang-1316.0.20.8)
 // swift-module-flags: -target x86_64-apple-ios11.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name SendbirdUIKit
 import AVFoundation
 import AVKit
@@ -1583,7 +1583,7 @@ public protocol SBUActionSheetDelegate : ObjectiveC.NSObjectProtocol {
   public init(title: Swift.String? = nil, color: UIKit.UIColor? = nil, image: UIKit.UIImage? = nil, font: UIKit.UIFont? = nil, textAlignment: UIKit.NSTextAlignment = .left, tag: Swift.Int? = nil, completionHandler: SendbirdUIKit.SBUActionSheetHandler?)
   @objc deinit
 }
-@_hasMissingDesignatedInitializers public class SBUActionSheet {
+@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class SBUActionSheet : ObjectiveC.NSObject {
   public static func show(items: [SendbirdUIKit.SBUActionSheetItem], cancelItem: SendbirdUIKit.SBUActionSheetItem, identifier: Swift.Int = -1, oneTimetheme: SendbirdUIKit.SBUComponentTheme? = nil, delegate: SendbirdUIKit.SBUActionSheetDelegate? = nil)
   public static func dismiss()
   @objc deinit
@@ -1748,6 +1748,9 @@ extension SendbirdUIKit.SBUView : SendbirdUIKit.SBUViewLifeCycle {
   @_Concurrency.MainActor(unsafe) public var isFileType: Swift.Bool {
     get
   }
+  @_Concurrency.MainActor(unsafe) public var quotedMessageCreatedAt: Swift.Int64? {
+    get
+  }
   @_Concurrency.MainActor(unsafe) public var repliedToLabel: UIKit.UILabel {
     get
   }
@@ -1812,6 +1815,8 @@ public typealias SBUNewMessageInfoHandler = () -> Swift.Void
   }
   @objc @_Concurrency.MainActor(unsafe) public var baseViewModel: SendbirdUIKit.SBUBaseChannelViewModel?
   @objc @_Concurrency.MainActor(unsafe) public var channelName: Swift.String?
+  @objc @_Concurrency.MainActor(unsafe) public var isKeyboardShowing: Swift.Bool
+  @objc @_Concurrency.MainActor(unsafe) public var messageInputViewBottomConstraint: UIKit.NSLayoutConstraint!
   @available(*, unavailable)
   @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
   @available(*, unavailable)
@@ -1905,6 +1910,8 @@ public typealias SBUNewMessageInfoHandler = () -> Swift.Void
   @objc @_Concurrency.MainActor(unsafe) open func baseChannelModule(_ inputComponent: SendbirdUIKit.SBUBaseChannelModule.Input, willChangeMode mode: SendbirdUIKit.SBUMessageInputMode, message: SendbirdChatSDK.BaseMessage?)
   @objc @_Concurrency.MainActor(unsafe) open func baseChannelModule(_ inputComponent: SendbirdUIKit.SBUBaseChannelModule.Input, didChangeMode mode: SendbirdUIKit.SBUMessageInputMode, message: SendbirdChatSDK.BaseMessage?)
   @objc @_Concurrency.MainActor(unsafe) open func baseChannelModule(_ inputComponent: SendbirdUIKit.SBUBaseChannelModule.Input, channelForInputView messageInputView: UIKit.UIView?) -> SendbirdChatSDK.BaseChannel?
+  @objc @_Concurrency.MainActor(unsafe) open func keyboardWillShow(_ notification: Foundation.Notification)
+  @objc @_Concurrency.MainActor(unsafe) open func keyboardWillHide(_ notification: Foundation.Notification)
   @objc @_Concurrency.MainActor(unsafe) open func baseChannelViewModel(_ viewModel: SendbirdUIKit.SBUBaseChannelViewModel, isScrollNearBottomInChannel channel: SendbirdChatSDK.BaseChannel?) -> Swift.Bool
   @_Concurrency.MainActor(unsafe) @objc open func gestureRecognizer(_ gestureRecognizer: UIKit.UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIKit.UIGestureRecognizer) -> Swift.Bool
   @_Concurrency.MainActor(unsafe) @objc open func presentationController(forPresented presented: UIKit.UIViewController, presenting: UIKit.UIViewController?, source: UIKit.UIViewController) -> UIKit.UIPresentationController?
@@ -1923,9 +1930,9 @@ public typealias SBUNewMessageInfoHandler = () -> Swift.Void
 extension SendbirdUIKit.SBUBaseChannelViewController {
   @objc @_Concurrency.MainActor(unsafe) dynamic public func registerKeyboardNotifications()
   @objc @_Concurrency.MainActor(unsafe) dynamic public func addGestureHideKeyboard()
-  @objc @_Concurrency.MainActor(unsafe) dynamic public func keyboardWillShow(_ notification: Foundation.Notification)
-  @objc @_Concurrency.MainActor(unsafe) dynamic public func keyboardWillHide(_ notification: Foundation.Notification)
   @objc @_Concurrency.MainActor(unsafe) dynamic public func dismissKeyboard()
+  @_Concurrency.MainActor(unsafe) public func setKeyboardWindowFrame(origin: CoreGraphics.CGPoint, size: CoreGraphics.CGSize? = nil)
+  @objc @_Concurrency.MainActor(unsafe) dynamic public func updateLayoutsWithKeyboard(isHidden: Swift.Bool, notification: Foundation.Notification)
 }
 @objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUModerationsViewController : SendbirdUIKit.SBUBaseViewController, SendbirdUIKit.SBUModerationsModuleHeaderDelegate, SendbirdUIKit.SBUModerationsModuleListDelegate, SendbirdUIKit.SBUModerationsModuleListDataSource, SendbirdUIKit.SBUCommonViewModelDelegate, SendbirdUIKit.SBUModerationsViewModelDelegate {
   @objc @_Concurrency.MainActor(unsafe) public var headerComponent: SendbirdUIKit.SBUModerationsModule.Header?
@@ -2431,7 +2438,7 @@ extension SendbirdUIKit.SBUGroupChannelListViewModel : SendbirdChatSDK.BaseChann
   @objc dynamic open func channelWasUnfrozen(_ channel: SendbirdChatSDK.BaseChannel)
   @objc dynamic open func channel(_ channel: SendbirdChatSDK.BaseChannel, userWasBanned user: SendbirdChatSDK.RestrictedUser)
 }
-@_hasMissingDesignatedInitializers public class SBULoading {
+@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class SBULoading : ObjectiveC.NSObject {
   public static func start()
   public static func stop()
   public static var isShowing: Swift.Bool {
@@ -4605,7 +4612,7 @@ public class SBUAlertButtonItem {
   public init(title: Swift.String, color: UIKit.UIColor? = nil, completionHandler: @escaping SendbirdUIKit.AlertButtonHandler)
   @objc deinit
 }
-@_hasMissingDesignatedInitializers public class SBUAlertView {
+@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class SBUAlertView : ObjectiveC.NSObject {
   public static func show(title: Swift.String, message: Swift.String? = nil, needInputField: Swift.Bool = false, placeHolder: Swift.String? = "", centerYRatio: CoreGraphics.CGFloat? = 1.0, oneTimetheme: SendbirdUIKit.SBUComponentTheme? = nil, confirmButtonItem: SendbirdUIKit.SBUAlertButtonItem, cancelButtonItem: SendbirdUIKit.SBUAlertButtonItem?)
   public static func dismiss()
   @objc deinit
@@ -5579,7 +5586,7 @@ extension UIKit.UINavigationController {
   @_Concurrency.MainActor(unsafe) @objc override dynamic open var preferredStatusBarStyle: UIKit.UIStatusBarStyle {
     @_Concurrency.MainActor(unsafe) @objc get
   }
-  @objc @_Concurrency.MainActor(unsafe) dynamic open func sbu_setupNavigationBarAppearance(tintColor: UIKit.UIColor)
+  @objc @_Concurrency.MainActor(unsafe) dynamic open func sbu_setupNavigationBarAppearance(tintColor: UIKit.UIColor, shadowColor: UIKit.UIColor? = nil)
 }
 @objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUOpenChannelListViewController : SendbirdUIKit.SBUBaseChannelListViewController, SendbirdUIKit.SBUOpenChannelListModuleHeaderDelegate, SendbirdUIKit.SBUOpenChannelListModuleListDelegate, SendbirdUIKit.SBUOpenChannelListModuleListDataSource, SendbirdUIKit.SBUCommonViewModelDelegate, SendbirdUIKit.SBUOpenChannelListViewModelDelegate {
   @objc @_Concurrency.MainActor(unsafe) public var headerComponent: SendbirdUIKit.SBUOpenChannelListModule.Header? {
@@ -7988,9 +7995,10 @@ public class SBUQuotedBaseMessageViewParams {
   public var isFileType: Swift.Bool {
     get
   }
+  public var quotedMessageCreatedAt: Swift.Int64?
   public init(message: SendbirdChatSDK.BaseMessage, position: SendbirdUIKit.MessagePosition, usingQuotedMessage: Swift.Bool)
-  public init(messageId: Swift.Int64, messagePosition: SendbirdUIKit.MessagePosition, quotedMessageNickname: Swift.String, replierNickname: Swift.String, text: Swift.String, usingQuotedMessage: Swift.Bool = true)
-  public init(messageId: Swift.Int64, messagePosition: SendbirdUIKit.MessagePosition, quotedMessageNickname: Swift.String, replierNickname: Swift.String, name: Swift.String, type: Swift.String, urlString: Swift.String, usingQuotedMessage: Swift.Bool = true)
+  public init(messageId: Swift.Int64, messagePosition: SendbirdUIKit.MessagePosition, quotedMessageNickname: Swift.String, replierNickname: Swift.String, text: Swift.String, usingQuotedMessage: Swift.Bool = true, quotedMessageCreatedAt: Swift.Int64)
+  public init(messageId: Swift.Int64, messagePosition: SendbirdUIKit.MessagePosition, quotedMessageNickname: Swift.String, replierNickname: Swift.String, name: Swift.String, type: Swift.String, urlString: Swift.String, usingQuotedMessage: Swift.Bool = true, quotedMessageCreatedAt: Swift.Int64)
   @objc deinit
 }
 @objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUGroupChannelPushSettingsViewController : SendbirdUIKit.SBUBaseViewController, SendbirdUIKit.SBUGroupChannelPushSettingsViewModelDelegate, SendbirdUIKit.SBUGroupChannelPushSettingsModuleHeaderDelegate, SendbirdUIKit.SBUGroupChannelPushSettingsModuleListDelegate, SendbirdUIKit.SBUGroupChannelPushSettingsModuleListDataSource {
