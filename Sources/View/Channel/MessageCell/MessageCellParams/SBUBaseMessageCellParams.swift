@@ -25,10 +25,14 @@ public class SBUBaseMessageCellParams {
     /// ReadReceipt state
     public let receiptState: SBUMessageReceiptState
     
-    /// If `true` when `SBUGloabls.ReplyTypeToUse` is `.quoteReply` and the message has the parent message.
-    public var usingQuotedMessage: Bool {
-        SBUGlobals.replyType == .quoteReply && message.parentMessage != nil
-    }
+    /// If `true` when `SBUGloabls.reply.replyType` is `.quoteReply` or `.thread` and  message is not for message thread and the message has the parent message.
+    public internal(set) var useQuotedMessage: Bool
+    
+    /// If `true` when `SBUGlobals.reply.replyType` is `.thread` and replier of message is is at least 1.
+    public internal(set) var useThreadInfo: Bool = false
+    
+    /// Time the current user joined the channel.
+    public internal(set) var joinedAt: Int64 = 0
     
     /**
      - Parameters:
@@ -36,14 +40,34 @@ public class SBUBaseMessageCellParams {
         - hideDateView: Hide or expose date information
         - receiptState: ReadReceipt state
      */
-    public init(message: BaseMessage, hideDateView: Bool, messagePosition: MessagePosition = .center, groupPosition: MessageGroupPosition = .none, receiptState: SBUMessageReceiptState = .none) {
+    public init(message: BaseMessage,
+                hideDateView: Bool,
+                messagePosition: MessagePosition = .center,
+                groupPosition: MessageGroupPosition = .none,
+                receiptState: SBUMessageReceiptState = .none,
+                isThreadMessage: Bool = false,
+                joinedAt: Int64 = 0) {
         self.message = message
         self.hideDateView = hideDateView
         self.messagePosition = messagePosition
         self.receiptState = receiptState
         
-        self.groupPosition = SBUGlobals.replyType == .quoteReply && message.parentMessage != nil
+        self.useQuotedMessage =
+            (SBUGlobals.reply.replyType == .quoteReply || SBUGlobals.reply.replyType == .thread)
+            && !isThreadMessage
+            && message.parentMessage != nil
+        self.useThreadInfo = SBUGlobals.reply.replyType == .thread && message.threadInfo.replyCount > 0
+        
+        let filterTypes: [SBUReplyType] = [.quoteReply, .thread]
+        
+        if isThreadMessage {
+            self.groupPosition = groupPosition
+        } else {
+            self.groupPosition = filterTypes.contains(SBUGlobals.reply.replyType) && message.parentMessage != nil
             ? .none
             : groupPosition
+        }
+        
+        self.joinedAt = joinedAt
     }
 }

@@ -154,8 +154,8 @@ public class SBUFontSet {
             .paragraphStyle: style
         ]
     }()
-    /// Medium, 11pt
-    public static var caption3 = UIFont.systemFont(ofSize: 11.0, weight: .medium)
+    /// Bold, 11pt
+    public static var caption3 = UIFont.systemFont(ofSize: 11.0, weight: .bold)
     static var caption3Attributes: [NSAttributedString.Key: Any] = {
         let style = NSMutableParagraphStyle()
         let pointSize = SBUFontSet.caption3.pointSize

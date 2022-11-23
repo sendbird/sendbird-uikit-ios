@@ -57,6 +57,14 @@ open class SBUUserMessageTextView: SBUView {
     
     public var mentionManager: SBUMentionManager?
     
+    public var removeMargin: Bool = false
+    
+    /// Check that margin should be removed. If `true`, it needs to margin
+    /// - Since: 3.3.0
+    public var needsToRemoveMargin: Bool {
+        self.channelType == .open || self.removeMargin
+    }
+    
     public weak var delegate: SBUUserMessageTextViewDelegate?
     
     public override init() {
@@ -67,8 +75,9 @@ open class SBUUserMessageTextView: SBUView {
         super.init(frame: frame)
     }
     
-    public init(channelType: ChannelType) {
+    public init(channelType: ChannelType = .group, removeMargin: Bool = false) {
         self.channelType = channelType
+        self.removeMargin = removeMargin
 
         super.init()
     }
@@ -82,7 +91,7 @@ open class SBUUserMessageTextView: SBUView {
     open override func setupLayouts() {
         self.translatesAutoresizingMaskIntoConstraints = false
         
-        if self.channelType != .open {
+        if self.needsToRemoveMargin {
             self.widthAnchor.constraint(
                 lessThanOrEqualToConstant: Metric.textMaxWidth
             ).isActive = true
@@ -103,19 +112,19 @@ open class SBUUserMessageTextView: SBUView {
         self.textView.translatesAutoresizingMaskIntoConstraints = false
         let textTopConstraint = self.textView.topAnchor.constraint(
             equalTo: self.topAnchor,
-            constant: Metric.textTopDownMargin
+            constant: self.removeMargin ? 0 : Metric.textTopDownMargin
         )
         self.textLeftConstraint = self.textView.leftAnchor.constraint(
             equalTo: self.leftAnchor,
-            constant: (self.channelType == .open && !self.isWebType) ? 0 : Metric.textLeftRightMargin
+            constant: (self.needsToRemoveMargin && !self.isWebType) ? 0 : Metric.textLeftRightMargin
         )
         let textBottomConstraint = self.textView.bottomAnchor.constraint(
             equalTo: self.bottomAnchor,
-            constant: -Metric.textTopDownMargin
+            constant: self.removeMargin ? 0 : -Metric.textTopDownMargin
         )
         self.textRightConstraint = self.textView.rightAnchor.constraint(
             lessThanOrEqualTo: self.rightAnchor,
-            constant: (self.channelType == .open && !self.isWebType) ? 0 : -Metric.textLeftRightMargin
+            constant: (self.needsToRemoveMargin && !self.isWebType) ? 0 : -Metric.textLeftRightMargin
         )
         NSLayoutConstraint.activate([
             textTopConstraint,
@@ -132,11 +141,11 @@ open class SBUUserMessageTextView: SBUView {
         ])
         self.textLeftConstraint = self.textView.leftAnchor.constraint(
             equalTo: self.leftAnchor,
-            constant: (self.channelType == .open && !self.isWebType) ? 0 : Metric.textLeftRightMargin
+            constant: (self.needsToRemoveMargin && !self.isWebType) ? 0 : Metric.textLeftRightMargin
         )
         self.textRightConstraint = self.textView.rightAnchor.constraint(
             lessThanOrEqualTo: self.rightAnchor,
-            constant: (self.channelType == .open && !self.isWebType) ? 0 : -Metric.textLeftRightMargin
+            constant: (self.needsToRemoveMargin && !self.isWebType) ? 0 : -Metric.textLeftRightMargin
         )
         NSLayoutConstraint.activate([
             self.textLeftConstraint,
@@ -156,7 +165,7 @@ open class SBUUserMessageTextView: SBUView {
             .underlineStyle: NSUnderlineStyle.single.rawValue
         ]
         
-        if model.haveMentionedMessage(), SBUGlobals.isUserMentionEnabled {
+        if model.hasMentionedMessage, SBUGlobals.isUserMentionEnabled {
             guard let mentionedMessageTemplate = model.message?.mentionedMessageTemplate,
                   let mentionedUsers = model.message?.mentionedUsers,
                   !mentionedUsers.isEmpty else { return }

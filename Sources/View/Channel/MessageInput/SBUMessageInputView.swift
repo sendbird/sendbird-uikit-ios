@@ -355,6 +355,11 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     
     var isFrozen: Bool = false
     var isMuted: Bool = false
+    
+    /// The Flag to check if it is the first thread message input. (This flag's priority is higher than `isThreadMessage`)
+    var isThreadFirstMessage: Bool = false
+    /// The Flag to check if it is the thread message input
+    var isThreadMessage: Bool = false
 
     let cameraItem = SBUActionSheetItem(title: SBUStringSet.Camera, completionHandler: nil)
     let libraryItem = SBUActionSheetItem(title: SBUStringSet.PhotoVideoLibrary, completionHandler: nil)
@@ -650,6 +655,14 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
             self.placeholderLabel.text = SBUStringSet.MessageInput_Text_Muted
             self.placeholderLabel.textColor = theme.textFieldDisabledColor
         }
+        else if self.isThreadFirstMessage {
+            self.placeholderLabel.text = SBUStringSet.MessageThread.MessageInput.replyInThread
+            self.placeholderLabel.textColor = theme.textFieldPlaceholderColor
+        }
+        else if self.isThreadMessage {
+            self.placeholderLabel.text = SBUStringSet.MessageThread.MessageInput.replyToThread
+            self.placeholderLabel.textColor = theme.textFieldPlaceholderColor
+        }
         else if self.mode == .quoteReply {
             self.placeholderLabel.text = SBUStringSet.MessageInput_Text_Reply
             self.placeholderLabel.textColor = theme.textFieldPlaceholderColor
@@ -831,6 +844,29 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         }
     }
     
+    /// Updates textview's placeholder text depending on the status.
+    /// - Since: 3.3.0
+    public func updatePlaceholderText() {
+        if self.isFrozen {
+            self.placeholderLabel.text = SBUStringSet.MessageInput_Text_Unavailable
+        }
+        else if self.isMuted {
+            self.placeholderLabel.text = SBUStringSet.MessageInput_Text_Muted
+        }
+        else if self.isThreadFirstMessage {
+            self.placeholderLabel.text = SBUStringSet.MessageThread.MessageInput.replyInThread
+        }
+        else if self.isThreadMessage {
+            self.placeholderLabel.text = SBUStringSet.MessageThread.MessageInput.replyToThread
+        }
+        else if self.mode == .quoteReply {
+            self.placeholderLabel.text = SBUStringSet.MessageInput_Text_Reply
+        }
+        else {
+            self.placeholderLabel.text = SBUStringSet.MessageInput_Text_Placeholder
+        }
+    }
+    
 
     // MARK: - Action
     @objc open func onClickAddButton(_ sender: Any) {
@@ -952,7 +988,8 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
             }
         }
     }
-
+    
+    open func didDismissActionSheet() { }
 }
 
 extension SBUMessageInputView: SBUQuoteMessageInputViewDelegate {

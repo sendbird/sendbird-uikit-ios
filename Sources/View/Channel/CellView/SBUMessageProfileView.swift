@@ -16,9 +16,6 @@ open class SBUMessageProfileView: SBUView {
     
     public lazy var imageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.layer.cornerRadius = SBUMessageProfileView.imageSize / 2
-        imageView.layer.borderColor = UIColor.clear.cgColor
-        imageView.layer.borderWidth = 1
         imageView.clipsToBounds = true
         return imageView
     }()
@@ -31,8 +28,8 @@ open class SBUMessageProfileView: SBUView {
             frame: .init(
                 x: 0,
                 y: 0,
-                width: SBUMessageProfileView.imageSize,
-                height: SBUMessageProfileView.imageSize
+                width: self.imageSize,
+                height: self.imageSize
             )
         )
 
@@ -40,6 +37,8 @@ open class SBUMessageProfileView: SBUView {
     }
     
     public var imageDownloadTask: URLSessionTask? = nil
+    
+    var imageSize: CGFloat = SBUMessageProfileView.imageSize
     
     public override init() {
         self.urlString = ""
@@ -63,8 +62,8 @@ open class SBUMessageProfileView: SBUView {
      
     open override func setupLayouts() {
         self.imageView
-            .setConstraint(width: SBUMessageProfileView.imageSize,
-                           height: SBUMessageProfileView.imageSize)
+            .setConstraint(width: self.imageSize,
+                           height: self.imageSize)
             .setConstraint(from: self, left: 0, right: 0, top: 0, bottom: 0)
     }
     
@@ -72,8 +71,16 @@ open class SBUMessageProfileView: SBUView {
         self.backgroundColor = .clear
     }
     
-    open func configure(urlString: String) {
+    open func configure(urlString: String,
+                        imageSize: CGFloat? = SBUMessageProfileView.imageSize)
+    {
         self.urlString = urlString
+        if let imageSize = imageSize {
+            self.imageSize = imageSize
+        }
+        imageView.layer.cornerRadius = self.imageSize / 2
+        imageView.layer.borderColor = UIColor.clear.cgColor
+        imageView.layer.borderWidth = 1
         
         self.imageDownloadTask = self.imageView.loadImage(
             urlString: urlString,

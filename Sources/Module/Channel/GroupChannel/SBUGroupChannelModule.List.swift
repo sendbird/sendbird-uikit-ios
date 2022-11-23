@@ -39,6 +39,11 @@ public protocol SBUGroupChannelModuleListDelegate: SBUBaseChannelModuleListDeleg
     /// - Parameters:
     ///    - user: The`SBUUser` object from the tapped mention.
     func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didTapMentionUser user: SBUUser)
+    
+    /// Called when tapped the thread info in the cell
+    /// - Parameter threadInfoView: The `SBUThreadInfoView` object from the tapped thread info.
+    /// - Since: 3.3.0
+    func groupChannelModuleDidTapThreadInfoView(_ threadInfoView: SBUThreadInfoView)
 }
 
 /// Methods to get data source for list component in a group channel.
@@ -230,7 +235,7 @@ extension SBUGroupChannelModule {
             
             switch message {
             case is UserMessage, is FileMessage:
-                if SBUGlobals.replyType != .none {
+                if SBUGlobals.reply.replyType != .none {
                     let reply = self.createReplyMenuItem(for: message)
                     items.append(reply)
                 }
@@ -259,13 +264,13 @@ extension SBUGroupChannelModule {
         ///   - message: message object
         ///   - indexPath: Cell's indexPath
         open func setMessageCellGestures(_ cell: SBUBaseMessageCell, message: BaseMessage, indexPath: IndexPath) {
-            cell.tapHandlerToContent = { [weak self, weak cell] in
-                guard let self = self, let cell = cell else { return }
+            cell.tapHandlerToContent = { [weak self] in
+                guard let self = self else { return }
                 self.setTapGesture(cell, message: message, indexPath: indexPath)
             }
             
-            cell.longPressHandlerToContent = { [weak self, weak cell] in
-                guard let self = self, let cell = cell else { return }
+            cell.longPressHandlerToContent = { [weak self] in
+                guard let self = self else { return }
                 self.setLongTapGesture(cell, message: message, indexPath: indexPath)
             }
         }
@@ -381,7 +386,8 @@ extension SBUGroupChannelModule {
                         hideDateView: isSameDay,
                         groupPosition: self.getMessageGroupingPosition(currentIndex: indexPath.row),
                         receiptState: receiptState,
-                        useReaction: useReaction
+                        useReaction: useReaction,
+                        joinedAt: self.channel?.joinedAt ?? 0
                     )
                     unknownMessageCell.configure(with: configuration)
                     self.setMessageCellAnimation(unknownMessageCell, message: unknownMessage, indexPath: indexPath)
@@ -396,11 +402,13 @@ extension SBUGroupChannelModule {
                         groupPosition: self.getMessageGroupingPosition(currentIndex: indexPath.row),
                         receiptState: receiptState,
                         useReaction: useReaction,
-                        withTextView: true
+                        withTextView: true,
+                        joinedAt: self.channel?.joinedAt ?? 0
                     )
                     userMessageCell.configure(with: configuration)
                     userMessageCell.configure(highlightInfo: self.highlightInfo)
                     (userMessageCell.quotedMessageView as? SBUQuotedBaseMessageView)?.delegate = self
+                    (userMessageCell.threadInfoView as? SBUThreadInfoView)?.delegate = self
                     self.setMessageCellAnimation(userMessageCell, message: userMessage, indexPath: indexPath)
                     self.setMessageCellGestures(userMessageCell, message: userMessage, indexPath: indexPath)
                     
@@ -412,11 +420,13 @@ extension SBUGroupChannelModule {
                         useMessagePosition: true,
                         groupPosition: self.getMessageGroupingPosition(currentIndex: indexPath.row),
                         receiptState: receiptState,
-                        useReaction: useReaction
+                        useReaction: useReaction,
+                        joinedAt: self.channel?.joinedAt ?? 0
                     )
                     fileMessageCell.configure(with: configuration)
                     fileMessageCell.configure(highlightInfo: self.highlightInfo)
                     (fileMessageCell.quotedMessageView as? SBUQuotedBaseMessageView)?.delegate = self
+                    (fileMessageCell.threadInfoView as? SBUThreadInfoView)?.delegate = self
                     self.setMessageCellAnimation(fileMessageCell, message: fileMessage, indexPath: indexPath)
                     self.setMessageCellGestures(fileMessageCell, message: fileMessage, indexPath: indexPath)
                     self.setFileMessageCellImage(fileMessageCell, fileMessage: fileMessage)
@@ -426,7 +436,8 @@ extension SBUGroupChannelModule {
                         hideDateView: isSameDay,
                         messagePosition: .center,
                         groupPosition: .none,
-                        receiptState: receiptState
+                        receiptState: receiptState,
+                        joinedAt: self.channel?.joinedAt ?? 0
                     )
                     messageCell.configure(with: configuration)
             }
@@ -517,74 +528,6 @@ extension SBUGroupChannelModule {
             }
         }
         
-        /// Gets the position of the message to be grouped.
-        ///
-        /// Only successful messages can be grouped.
-        /// - Parameter currentIndex: Index of current message in the message list
-        /// - Returns: Position of a message when grouped
-        public func getMessageGroupingPosition(currentIndex: Int) -> MessageGroupPosition {
-            
-            guard currentIndex < self.fullMessageList.count else { return .none }
-            
-            let prevMessage = self.fullMessageList.count - 1 != currentIndex
-            ? self.fullMessageList[currentIndex+1]
-            : nil
-            let currentMessage = self.fullMessageList[currentIndex]
-            let nextMessage = currentIndex != 0
-            ? self.fullMessageList[currentIndex-1]
-            : nil
-            
-            let succeededPrevMsg = prevMessage?.sendingStatus != .failed
-            ? prevMessage
-            : nil
-            let succeededCurrentMsg = currentMessage.sendingStatus != .failed
-            ? currentMessage
-            : nil
-            let succeededNextMsg = nextMessage?.sendingStatus != .failed
-            ? nextMessage
-            : nil
-            
-            let prevSender = succeededPrevMsg?.sender?.userId ?? nil
-            let currentSender = succeededCurrentMsg?.sender?.userId ?? nil
-            let nextSender = succeededNextMsg?.sender?.userId ?? nil
-            
-            // Unit : milliseconds
-            let prevTimestamp = Date
-                .sbu_from(succeededPrevMsg?.createdAt ?? -1)
-                .sbu_toString(dateFormat: SBUDateFormatSet.yyyyMMddhhmm)
-            
-            let currentTimestamp = Date
-                .sbu_from(succeededCurrentMsg?.createdAt ?? -1)
-                .sbu_toString(dateFormat: SBUDateFormatSet.yyyyMMddhhmm)
-            
-            let nextTimestamp = Date
-                .sbu_from(succeededNextMsg?.createdAt ?? -1)
-                .sbu_toString(dateFormat: SBUDateFormatSet.yyyyMMddhhmm)
-            
-            if prevSender != currentSender && nextSender != currentSender {
-                return .none
-            }
-            else if prevSender == currentSender && nextSender == currentSender {
-                if prevTimestamp == nextTimestamp {
-                    return .middle
-                }
-                else if prevTimestamp == currentTimestamp {
-                    return .bottom
-                }
-                else if currentTimestamp == nextTimestamp {
-                    return .top
-                }
-            }
-            else if prevSender == currentSender && nextSender != currentSender {
-                return prevTimestamp == currentTimestamp ? .bottom : .none
-            }
-            else if prevSender != currentSender && nextSender == currentSender {
-                return currentTimestamp == nextTimestamp ? .top : .none
-            }
-            
-            return .none
-        }
-        
         /// Sets animation in message cell.
         /// - Parameters:
         ///   - cell: The message cell
@@ -610,5 +553,11 @@ extension SBUGroupChannelModule {
 extension SBUGroupChannelModule.List: SBUQuotedMessageViewDelegate {
     open func didTapQuotedMessageView(_ quotedMessageView: SBUQuotedBaseMessageView) {
         self.delegate?.groupChannelModule(self, didTapQuotedMessageView: quotedMessageView)
+    }
+}
+
+extension SBUGroupChannelModule.List: SBUThreadInfoViewDelegate {
+    open func threadInfoViewDidTap(_ threadInfoView: SBUThreadInfoView) {
+        self.delegate?.groupChannelModuleDidTapThreadInfoView(threadInfoView)
     }
 }

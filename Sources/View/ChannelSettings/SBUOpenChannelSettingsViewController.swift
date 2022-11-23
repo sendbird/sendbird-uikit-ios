@@ -134,7 +134,8 @@ open class SBUOpenChannelSettingsViewController: SBUBaseChannelSettingsViewContr
             message: SBUStringSet.ChannelSettings_Delete_Description,
             needInputField: false,
             confirmButtonItem: deleteButton,
-            cancelButtonItem: cancelButton
+            cancelButtonItem: cancelButton,
+            delegate: self
         )
     }
     
@@ -223,4 +224,6 @@ open class SBUOpenChannelSettingsViewController: SBUBaseChannelSettingsViewContr
         self.listComponent?.reloadTableView()
     }
     
+    // MARK: - SBUAlertViewDelegate
+    open override func didDismissAlertView() { }
 }

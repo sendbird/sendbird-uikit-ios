@@ -43,6 +43,12 @@ extension SBUGlobals {
         set { SBUGlobals.replyType = newValue }
     }
     
+    @available(*, deprecated, renamed: "reply.replyType")   // 3.3.0
+    public static var replyType: SBUReplyType {
+        get { SBUGlobals.reply.replyType }
+        set { SBUGlobals.reply.replyType = newValue }
+    }
+    
     @available(*, deprecated, renamed: "isPHPickerEnabled")   // 3.0.0
     public static var UsingPHPicker: Bool {
         get {

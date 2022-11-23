@@ -1,5 +1,98 @@
 # Changelog
 
+### v3.3.0 (Nov 23, 2022) with Chat SDK **v4.1.6**
+* Improved image caching and gif handling process
+* Improved file data handling process
+    * File name and mime type will set based on original file if possible
+* Added classes
+    * `SBUMessageThreadModule`
+    * `SBUMessageThreadModule.Header`, `SBUMessageThreadModuleHeaderDelegate`
+    * `SBUMessageThreadModule.List`, `SBUMessageThreadModuleListDelegate`, `SBUMessageThreadModuleListDataSource`
+    * `SBUMessageThreadModule.Input`, `SBUMessageThreadModuleInputDelegate`, `SBUMessageThreadModuleInputDataSource`
+    * `SBUThreadInfoView`, `SBUThreadInfoViewDelegate`
+    * `SBUParentMessageInfoReactionView`
+    * `SBUMessageThreadTitleView`, `SBUMessageThreadTitleViewDelegate`
+    * `SBUMessageThreadViewController`, `SBUMessageThreadViewControllerDelegate`
+    * `SBUParentMessageInfoView`, `SBUParentMessageInfoViewDelegate`
+    * `SBUMessageThreadViewModel`, `SBUMessageThreadViewModelDelegate`, `SBUMessageThreadViewModelDataSource`
+* Added module `SBUModuleSet`
+    * `messageThreadModule`
+* Added viewController in `SBUViewControllerSet`
+    * `MessageThreadViewController`
+* Added properties
+    * `useQuotedMessage`, `useThreadInfo`, `joinedAt` in `SBUBaseMessageCellParams` class
+    * `quotedMessageCreatedAt`, `messageCreatedAt`, `joinedAt` in `SBUQuotedBaseMessageViewParams` class
+    * `useQuotedMessage`, `useThreadInfo`, `threadHStackView`, `threadInfoSpacing`, `threadInfoView` in `SBUContentBaseMessageCell` class
+    * `emptyViewTopConstraint` in `SBUEmptyView`
+    * `params` property in `SBUQuotedBaseMessageView` class
+    * `sendFileMessageCompletionHandler`, `sendUserMessageCompletionHandler`, `pendingMessageManager` in `SBUBaseChannelViewModel`
+* Added functions
+    * `setupThreadInfoView()` function in `SBUContentBaseMessageCell` class
+    * `updatePlaceholderText()` function in `SBUMessageInputView` class
+    * `showMessageThread(channelURL:parentMessageId:parentMessageCreatedAt:startingPoint:)` function in `SBUBaseChannelViewController` class
+    * `updateTopAnchorConstraint(constant:)` function in `SBUEmptyView` class
+    * `SBUMessageThreadViewControllerDelegate` functions in `SBUGroupChannelViewController` class
+    * `groupChannelModuleDidTapThreadInfoView(_:)` delegate function in `SBUGroupChannelModuleListDelegate`
+    * `baseChannelModule(_:didTapTitleView:)` delegate function in `SBUBaseChannelModuleHeaderDelegate`
+    * `baseChannelModule(_:pendingMessageManagerForCell:)` datasource function in `SBUBaseChannelModuleListDataSource`
+    * `MessageThread()` class function in `SBUDateFormatSet`
+    * `needsToRemoveMargin()` function in `SBUUserMessageTextView` class
+    * `setupSendUserMessageCompletionHandlers()`, `setupSendFileMessageCompletionHandlers()` functions in `SBUOpenChannelViewModel` class
+* Added parameters in function
+    * `forMessageThread` parameter in functions of `SBUPendingMessageManager` class
+    * `fileName` and `mimeType` parameters in `pickImageData` function of `SBUBaseChannelModule.Input` class
+    * `fileName` and `mimeType` parameters in `didTapSendImageData` function of `SBUSelectablePhotoViewDelegate`
+    * `imageSize` parameter in `configure` function of `SBUMessageProfileView` class
+    * `removeMargin` parameter in initialize function of `SBUUserMessageTextView` class
+    * `isThreadMessage` and `joinedAt` parameters in initialize function of `SBUBaseMessageCellParams`, `SBUUserMessageCellParams`, `SBUFileMessageCellParams`, and `SBUUnknownMessageCellParams` classes
+    * `joinedAt` parameter in initialize function of `SBUQuotedBaseMessageViewParams` class
+    * `joinedAt` parameter in `setupQuotedMessageView` function of `SBUContentBaseMessageCell` class
+    * `completionHandler` parameter in `loadChannel` function of `SBUBaseChannelViewModel` class
+* Added theme properties
+    * in `SBUChannelTheme`
+        * `messageThreadTitleColor`
+        * `messageThreadTitleFont`
+        * `messageThreadTitleChannelNameColor`
+        * `messageThreadTitleChannelNameFont`
+    * in `SBUMessageCellTheme`
+        * `repliedCountTextColor`
+        * `repliedCountTextFont`
+        * `repliedUsersMoreIconBackgroundColor`
+        * `repliedUsersMoreIconTintColor`
+        * `parentInfoBackgroundColor`
+        * `parentInfoUserNameTextFont`
+        * `parentInfoUserNameTextColor`
+        * `parentInfoDateFont`
+        * `parentInfoDateTextColor`
+        * `parentInfoMoreButtonTintColor`
+        * `parentInfoSeparateBarColor`
+        * `parentInfoReplyCountTextColor`
+        * `parentInfoReplyCountTextFont`
+* Added strings in `SBUStringSet`
+    * `Message_Replied_Users_Count: (Int, Bool)`
+    * `Message_Reply_Cannot_Found_Original`
+    * `Message_Unavailable`
+    * `MessageThread.Menu.replyInThread`
+    * `MessageThread.MessageInput.replyInThread`
+    * `MessageThread.MessageInput.replyToThread`
+    * `MessageThread.Header.title`
+* Added icons in `SBUIconSet`
+    * `iconEmpty`
+    * `iconThread`
+* Added `SBUReplyConfiguration`
+* Added `thread` type in `SBUReplyType` enumeration
+* Added `SBUThreadReplySelectType` enumeration
+* Added `dismissHandler` in `SBUAlertView`, `SBUActionSheet`
+* Modified `caption3` font weight `.medium` to `.bold`
+* Renamed `usingQuotedMessage` to `useQuotedMessage` in `SBUBaseMessageCellParams`, `SBUContentBaseMessageCell`, and `SBUQuotedBaseMessageViewParams` classes
+* Deprecated
+    * `SBUGlobals` class
+        Deprecated `replyType` property, use `reply.replyType` instead
+    * `SBUQuotedBaseMessageViewParams` class
+        * Deprecated `init(message:position:usingQuotedMessage:joinedAt:)` function, use `init(message:position:useQuotedMessage:joinedAt:)` instead
+        * Deprecated `init(messageId:messagePosition:quotedMessageNickname:replierNickname:text:usingQuotedMessage:quotedMessageCreatedAt:)` function, use `init(messageId:messagePosition:quotedMessageNickname:replierNickname:text:useQuotedMessage:quotedMessageCreatedAt:)` instead
+        * Deprecated `init(messageId:messagePosition:quotedMessageNickname:replierNickname:name:type:urlString:usingQuotedMessage:quotedMessageCreatedAt:)` function, use `init(messageId:messagePosition:quotedMessageNickname:replierNickname:name:type:urlString:useQuotedMessage:quotedMessageCreatedAt:)` instead
+
 ### v3.2.3 (Nov 15, 2022)
 
 > **IMPORTANT** If you use Swift Package Manager, Please *reset package cache* before download the current version.

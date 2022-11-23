@@ -33,6 +33,7 @@ public enum SBUIconSetType: String, Hashable {
     case iconDownload
     case iconEdit
     case iconEmojiMore
+    case iconEmpty
     case iconError
     case iconFileAudio
     case iconFileDocument
@@ -65,6 +66,7 @@ public enum SBUIconSetType: String, Hashable {
     case iconUser
     case iconRadioButtonOn
     case iconRadioButtonOff
+    case iconThread
     
     // MARK: - Metric
     
@@ -154,6 +156,7 @@ public enum SBUIconSetType: String, Hashable {
         case .iconDownload: SBUIconSet.iconDownload = SBUIconSetType.iconDownload.load()
         case .iconEdit: SBUIconSet.iconEdit = SBUIconSetType.iconEdit.load()
         case .iconEmojiMore: SBUIconSet.iconEmojiMore = SBUIconSetType.iconEmojiMore.load()
+        case .iconEmpty: SBUIconSet.iconEmpty = SBUIconSetType.iconEmpty.load()
         case .iconError: SBUIconSet.iconError = SBUIconSetType.iconError.load()
         case .iconFileAudio: SBUIconSet.iconFileAudio = SBUIconSetType.iconFileAudio.load()
         case .iconFileDocument: SBUIconSet.iconFileDocument = SBUIconSetType.iconFileDocument.load()
@@ -186,6 +189,7 @@ public enum SBUIconSetType: String, Hashable {
         case .iconUser: SBUIconSet.iconUser = SBUIconSetType.iconUser.load()
         case .iconRadioButtonOn: SBUIconSet.iconRadioButtonOn = SBUIconSetType.iconRadioButtonOn.load()
         case .iconRadioButtonOff: SBUIconSet.iconRadioButtonOff = SBUIconSetType.iconRadioButtonOff.load()
+        case .iconThread: SBUIconSet.iconThread = SBUIconSetType.iconThread.load()
         }
         
         SBUIconSetType.customizedIcons.remove(self)
@@ -221,6 +225,7 @@ public enum SBUIconSetType: String, Hashable {
         case .iconDownload: return SBUIconSet.iconDownload
         case .iconEdit: return SBUIconSet.iconEdit
         case .iconEmojiMore: return SBUIconSet.iconEmojiMore
+        case .iconEmpty: return SBUIconSet.iconEmpty
         case .iconError: return SBUIconSet.iconError
         case .iconFileAudio: return SBUIconSet.iconFileAudio
         case .iconFileDocument: return SBUIconSet.iconFileDocument
@@ -251,6 +256,7 @@ public enum SBUIconSetType: String, Hashable {
         case .iconUser: return SBUIconSet.iconUser
         case .iconRadioButtonOn: return SBUIconSet.iconRadioButtonOn
         case .iconRadioButtonOff: return SBUIconSet.iconRadioButtonOff
+        case .iconThread: return SBUIconSet.iconThread
         }
     }
 }

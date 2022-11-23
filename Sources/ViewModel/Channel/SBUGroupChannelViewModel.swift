@@ -98,7 +98,10 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
 
     
     // MARK: - Channel related
-    public override func loadChannel(channelURL: String, messageListParams: MessageListParams? = nil) {
+    public override func loadChannel(channelURL: String,
+                                     messageListParams: MessageListParams? = nil,
+                                     completionHandler: ((BaseChannel?, SBError?) -> Void)? = nil)
+    {
         if let messageListParams = messageListParams {
             self.customizedMessageListParams = messageListParams
         } else if self.customizedMessageListParams == nil {
@@ -113,17 +116,25 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
         SendbirdUI.connectIfNeeded { [weak self] user, error in
             if let error = error {
                 self?.delegate?.didReceiveError(error, isBlocker: true)
+                completionHandler?(nil, error)
                 return
             }
             
             SBULog.info("[Request] Load channel: \(String(channelURL))")
             GroupChannel.getChannel(url: channelURL) { [weak self] channel, error in
-                guard let self = self else { return }
+                guard let self = self else {
+                    completionHandler?(nil, error)
+                    return
+                }
 
-                SBULog.info("[Succeed] Load channel request: \(String(describing: self.channel))")
-                self.channel = channel
+                guard self.canProceed(with: channel, error: error) else {
+                    completionHandler?(nil, error)
+                    return
+                }
                 
-                guard self.canProceed(with: channel, error: error) else { return }
+                self.channel = channel
+                SBULog.info("[Succeed] Load channel request: \(String(describing: self.channel))")
+
                 
                 // background refresh to check if user is banned or not.
                 self.refreshChannel()
@@ -136,6 +147,7 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
                         didChangeChannel: channel,
                         withContext: context
                     )
+                    completionHandler?(channel, nil)
                 }
                 
                 let cachedMessages = self.flushCache(with: [])
@@ -152,7 +164,11 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
         if let channel = self.channel as? GroupChannel {
             channel.refresh { [weak self] error in
                 guard let self = self else { return }
-                guard self.canProceed(with: channel, error: error) == true else { return }
+                guard self.canProceed(with: channel, error: error) == true else {
+                    let context = MessageContext(source: .eventChannelChanged, sendingStatus: .failed)
+                    self.delegate?.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
+                    return
+                }
                 
                 let context = MessageContext(source: .eventChannelChanged, sendingStatus: .succeeded)
                 self.delegate?.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
@@ -225,6 +241,7 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
                 if cacheResult == nil, cacheResult?.isEmpty == true { return }
                 
                 self.isInitialLoading = true
+                
                 self.upsertMessagesInList(messages: cacheResult, needReload: false)
                 
             }, apiResultHandler: { [weak self] apiResult, error in
@@ -238,9 +255,11 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
                     // ignore error if using local caching
                     if !SendbirdChat.isLocalCachingEnabled {
                         self.delegate?.didReceiveError(error, isBlocker: false)
+                    } else {
+                        self.isInitialLoading = false
+                        self.upsertMessagesInList(messages: nil, needReload: true)
                     }
                     
-                    self.isInitialLoading = false
                     return
                 }
         
@@ -258,10 +277,10 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
         let failedMessages = self.messageCollection?.failedMessages ?? []
         let cachedTempMessages = pendingMessages + failedMessages
         for message in cachedTempMessages {
-            SBUPendingMessageManager.shared.upsertPendingMessage(channelURL: self.channel?.channelURL, message: message)
+            self.pendingMessageManager.upsertPendingMessage(channelURL: self.channel?.channelURL, message: message)
             if let fileMessage = message as? FileMessage,
                let fileMessageParams = fileMessage.messageParams as? FileMessageCreateParams {
-                SBUPendingMessageManager.shared.addFileInfo(requestId: fileMessage.requestId, params: fileMessageParams)
+                self.pendingMessageManager.addFileInfo(requestId: fileMessage.requestId, params: fileMessageParams)
             }
         }
     }
@@ -464,6 +483,22 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
                                 addedMessages messages: [BaseMessage])
     {
         // -> pending, -> receive new message
+        
+        // message thread case exception
+        var existInPendingMessage = false
+        for addedMessage in messages {
+            if addedMessage.sendingStatus == .succeeded { continue }
+            let filteredMessages = self.pendingMessageManager.getPendingMessages(
+                channelURL: self.channelURL,
+                forMessageThread: true
+            ).filter { $0.messageId == addedMessage.messageId }
+            if !filteredMessages.isEmpty {
+                existInPendingMessage = true
+            }
+        }
+        if existInPendingMessage { return }
+        
+
         SBULog.info("messageCollection addedMessages : \(messages.count)")
         switch context.source {
         case .eventMessageReceived:
@@ -486,6 +521,22 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
                            updatedMessages messages: [BaseMessage])
     {
         // pending -> failed, pending -> succeded, failed -> Pending
+        
+        // message thread case exception
+        var existInPendingMessage = false
+        for addedMessage in messages {
+            if addedMessage.sendingStatus == .succeeded { continue }
+            let filteredMessages = self.pendingMessageManager.getPendingMessages(
+                channelURL: self.channelURL,
+                forMessageThread: true
+            ).filter { $0.messageId == addedMessage.messageId }
+            if !filteredMessages.isEmpty {
+                existInPendingMessage = true
+            }
+        }
+        if existInPendingMessage { return }
+        
+        
         SBULog.info("messageCollection updatedMessages : \(messages.count)")
         self.delegate?.baseChannelViewModel(
             self,

@@ -15,7 +15,7 @@ public protocol SBUFileViewerDelegate: AnyObject {
 }
 
 
-open class SBUFileViewer: SBUBaseViewController, UIScrollViewDelegate {
+open class SBUFileViewer: SBUBaseViewController, UIScrollViewDelegate, SBUAlertViewDelegate {
     
     // MARK: - Public property
     public var leftBarButton: UIBarButtonItem? = nil {
@@ -238,9 +238,12 @@ open class SBUFileViewer: SBUBaseViewController, UIScrollViewDelegate {
         }
         let cancelButton = SBUAlertButtonItem(title: SBUStringSet.Cancel) { _ in }
         
-        SBUAlertView.show(title: SBUStringSet.Alert_Delete,
-                          confirmButtonItem: deleteButton,
-                          cancelButtonItem: cancelButton)
+        SBUAlertView.show(
+            title: SBUStringSet.Alert_Delete,
+            confirmButtonItem: deleteButton,
+            cancelButtonItem: cancelButton,
+            delegate: self
+        )
     }
     
     @objc
@@ -292,6 +295,8 @@ open class SBUFileViewer: SBUBaseViewController, UIScrollViewDelegate {
         return self.imageView
     }
     
+    // MARK: - SBUAlertViewDelegate
+    open func didDismissAlertView() { }
     
     // MARK: - Error handling
     private func errorHandler(_ error: SBError) {

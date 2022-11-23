@@ -18,4 +18,13 @@ class SBUBarButtonItem {
             action: selector
         )
     }
+    
+    static func emptyButton(vc: Any, selector: Selector?) -> UIBarButtonItem {
+        return UIBarButtonItem(
+            image: SBUIconSetType.iconBack.image(with: .clear, to: SBUIconSetType.Metric.defaultIconSize),
+            style: .plain,
+            target: vc,
+            action: selector
+        )
+    }
 }

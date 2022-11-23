@@ -13,8 +13,12 @@ public typealias SBUActionSheetHandler = () -> Void
 
 public protocol SBUActionSheetDelegate: NSObjectProtocol {
     func didSelectActionSheetItem(index: Int, identifier: Int)
+    func didDismissActionSheet()
 }
 
+extension SBUActionSheetDelegate {
+    public func didDismissActionSheet() {}
+}
 
 public class SBUActionSheetItem: SBUCommonItem {
     var completionHandler: SBUActionSheetHandler?
@@ -76,6 +80,7 @@ public class SBUActionSheet: NSObject {
     weak var delegate: SBUActionSheetDelegate?
     
     private var items: [SBUActionSheetItem] = []
+    private var dismissHandler: (() -> Void)?
     
     private var safeAreaInset: UIEdgeInsets {
         return self.window?.safeAreaInsets ?? .zero
@@ -126,13 +131,15 @@ public class SBUActionSheet: NSObject {
                             cancelItem: SBUActionSheetItem,
                             identifier: Int = -1,
                             oneTimetheme: SBUComponentTheme? = nil,
-                            delegate: SBUActionSheetDelegate? = nil) {
+                            delegate: SBUActionSheetDelegate? = nil,
+                            dismissHandler: (() -> Void)? = nil) {
         self.shared.show(
             items: items,
             cancelItem: cancelItem,
             identifier: identifier,
             oneTimetheme: oneTimetheme,
-            delegate: delegate
+            delegate: delegate,
+            dismissHandler: dismissHandler
         )
     }
     
@@ -145,9 +152,10 @@ public class SBUActionSheet: NSObject {
                       cancelItem: SBUActionSheetItem,
                       identifier: Int = -1,
                       oneTimetheme: SBUComponentTheme? = nil,
-                      delegate: SBUActionSheetDelegate?) {
+                      delegate: SBUActionSheetDelegate?,
+                      dismissHandler: (() -> Void)?) {
         
-        self.dismiss()
+        self.handleDismiss(isUserInitiated: false)
         
         self.prevOrientation = UIDevice.current.orientation
         
@@ -167,6 +175,7 @@ public class SBUActionSheet: NSObject {
         self.identifier = identifier
         self.delegate = delegate
         self.items = items
+        self.dismissHandler = dismissHandler
         
         baseView = UIView()
         backgroundView = UIButton()
@@ -238,6 +247,10 @@ public class SBUActionSheet: NSObject {
     }
     
     @objc private func dismiss() {
+        self.handleDismiss(isUserInitiated: true)
+    }
+    
+    @objc private func handleDismiss(isUserInitiated: Bool = true) {
         for subView in self.baseView.subviews {
             subView.removeFromSuperview()
         }
@@ -245,10 +258,18 @@ public class SBUActionSheet: NSObject {
         self.backgroundView.removeFromSuperview()
         self.baseView.removeFromSuperview()
         
+        
         NotificationCenter.default.removeObserver(
             self,
             name: UIDevice.orientationDidChangeNotification,
             object: nil)
+        
+        if isUserInitiated {
+            self.delegate?.didDismissActionSheet()
+            let handler = self.dismissHandler
+            self.dismissHandler = nil
+            handler?()
+        }
     }
     
     // MARK: Make Buttons

@@ -76,6 +76,9 @@ public class SBUIconSet {
     public static var iconEmojiMore: UIImage = SBUIconSetType.iconEmojiMore.load() {
         didSet { SBUIconSetType.iconEmojiMore.markCustomized() }
     }
+    public static var iconEmpty: UIImage = SBUIconSetType.iconEmpty.load() {
+        didSet { SBUIconSetType.iconEmpty.markCustomized() }
+    }
     public static var iconError: UIImage = SBUIconSetType.iconError.load() {
         didSet { SBUIconSetType.iconError.markCustomized() }
     }
@@ -169,18 +172,23 @@ public class SBUIconSet {
         didSet { SBUIconSetType.iconReplied.markCustomized() }
     }
     
+    public static var iconThread: UIImage = SBUIconSetType.iconThread.load() {
+        didSet { SBUIconSetType.iconThread.markCustomized() }
+    }
+    
+    public static var iconRadioButtonOn = SBUIconSetType.iconRadioButtonOn.load() {
+        didSet { SBUIconSetType.iconRadioButtonOn.markCustomized() }
+    }
+    
+    public static var iconRadioButtonOff = SBUIconSetType.iconRadioButtonOff.load() {
+        didSet { SBUIconSetType.iconRadioButtonOff.markCustomized() }
+    }
+    
+    
     /// Restore all customized icons to SDK's default icons.
     ///
     /// - Since: 2.1.0
     public static func restoreDefaultIcons() {
         SBUIconSetType.resetCustomized()
-    }
-    
-    
-    public static var iconRadioButtonOn = SBUIconSetType.iconRadioButtonOn.load() {
-        didSet { SBUIconSetType.iconRadioButtonOn.markCustomized() }
-    }
-    public static var iconRadioButtonOff = SBUIconSetType.iconRadioButtonOff.load() {
-        didSet { SBUIconSetType.iconRadioButtonOff.markCustomized() }
     }
 }

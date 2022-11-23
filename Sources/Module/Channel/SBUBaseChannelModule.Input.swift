@@ -230,7 +230,9 @@ extension SBUBaseChannelModule {
         /// Called when the image is picked from `SBUSelectablePhotoViewController`
         /// This function will invoke corresponding delegate method such as `SBUGroupChannelModuleInputDelegate groupChannelModule(_:didPickFileData:fileName:mimeType:parentMessage:)`
         /// - Parameter data: The image data.
-        open func pickImageData(_ data: Data) {
+        /// - Parameter fileName: The file name.
+        /// - Parameter mimeType: The mime type of file.
+        open func pickImageData(_ data: Data, fileName: String?, mimeType: String?) {
             
         }
         

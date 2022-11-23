@@ -29,7 +29,6 @@ public class SBUModuleSet {
     }
     
     
-    
     // Channel
     /// The module for base channel.
     public static var baseChannelModule: SBUBaseChannelModule {
@@ -47,6 +46,7 @@ public class SBUModuleSet {
         set { shared.openChannelModule = newValue }
     }
     
+    
     // Select user
     /// The module for inviting users.
     public static var inviteUserModule: SBUInviteUserModule {
@@ -54,36 +54,40 @@ public class SBUModuleSet {
         set { shared.inviteUserModule = newValue }
     }
     
+    
     // Register operator
-    /// The module for promoting members
+    /// The module for promoting members.
     public static var groupRegisterOperatorModule: SBURegisterOperatorModule {
         get { shared.groupRegisterOperatorModule }
         set { shared.groupRegisterOperatorModule = newValue }
     }
-    /// The module for promoting members
+    /// The module for promoting members.
     public static var openRegisterOperatorModule: SBURegisterOperatorModule {
         get { shared.openRegisterOperatorModule }
         set { shared.openRegisterOperatorModule = newValue }
     }
     
+    
     // User list
-    /// The module for the list of users
+    /// The module for the list of users.
     public static var groupUserListModule: SBUUserListModule {
         get { shared.groupUserListModule }
         set { shared.groupUserListModule = newValue }
     }
-    /// The module for the list of users
+    /// The module for the list of users.
     public static var openUserListModule: SBUUserListModule {
         get { shared.openUserListModule }
         set { shared.openUserListModule = newValue }
     }
     
+    
     // Group Channel Push Settings
-    /// The module for the notification settings
+    /// The module for the notification settings.
     public static var groupChannelPushSettingsModule: SBUGroupChannelPushSettingsModule {
         get { shared.groupChannelPushSettingsModule }
         set { shared.groupChannelPushSettingsModule = newValue }
     }
+    
     
     // Create channel
     /// The module for creating a new channel.
@@ -97,17 +101,19 @@ public class SBUModuleSet {
         set { shared.createOpenChannelModule = newValue }
     }
     
+    
     // Channel settings
-    /// The module for a group channel settings
+    /// The module for a group channel settings.
     public static var groupChannelSettingsModule: SBUGroupChannelSettingsModule {
         get { shared.groupChannelSettingsModule }
         set { shared.groupChannelSettingsModule = newValue }
     }
-    /// The module for an open channel settings
+    /// The module for an open channel settings.
     public static var openChannelSettingsModule: SBUOpenChannelSettingsModule {
         get { shared.openChannelSettingsModule }
         set { shared.openChannelSettingsModule = newValue }
     }
+    
     
     // Moderations
     /// The module for the moderations.
@@ -121,11 +127,20 @@ public class SBUModuleSet {
         set { shared.openModerationsModule = newValue }
     }
     
+    
     // Message search
-    /// The module for searching the messages
+    /// The module for searching the messages.
     public static var messageSearchModule: SBUMessageSearchModule {
         get { shared.messageSearchModule }
         set { shared.messageSearchModule = newValue }
+    }
+    
+    
+    // Message Thread
+    /// The module for the message thread list.
+    public static var messageThreadModule: SBUMessageThreadModule {
+        get { shared.messageThreadModule }
+        set { shared.messageThreadModule = newValue }
     }
     
     
@@ -147,7 +162,8 @@ public class SBUModuleSet {
                 openChannelSettingsModule: SBUOpenChannelSettingsModule = SBUOpenChannelSettingsModule(),
                 groupModerationsModule: SBUModerationsModule = SBUModerationsModule(),
                 openModerationsModule: SBUModerationsModule = SBUModerationsModule(),
-                messageSearchModule: SBUMessageSearchModule = SBUMessageSearchModule()) {
+                messageSearchModule: SBUMessageSearchModule = SBUMessageSearchModule(),
+                messageThreadModule: SBUMessageThreadModule = SBUMessageThreadModule()) {
         self.groupChannelListModule = groupChannelListModule
         self.openChannelListModule = openChannelListModule
         
@@ -175,6 +191,8 @@ public class SBUModuleSet {
         self.openModerationsModule = openModerationsModule
         
         self.messageSearchModule = messageSearchModule
+        
+        self.messageThreadModule = messageThreadModule
     }
     
     
@@ -206,6 +224,8 @@ public class SBUModuleSet {
     private var openModerationsModule: SBUModerationsModule
     
     private var messageSearchModule: SBUMessageSearchModule
+    
+    private var messageThreadModule: SBUMessageThreadModule
 }
 
 

@@ -13,13 +13,13 @@ import SendbirdChatSDK
 /// - Since: 1.2.1
 
 open class SBUContentBaseMessageCell: SBUBaseMessageCell {
-    // MARK: - Quoted Reply
-    public lazy var quotedMessageView: (UIView & SBUQuotedMessageViewProtocol)? = SBUQuotedBaseMessageView()
-    
     // MARK: - Public property
+    public var useReaction = false
+    public var useQuotedMessage = false
+    public var useThreadInfo = false
 
-    // MARK: Views: Controls
     
+    // MARK: Views: Controls
     public lazy var userNameView: UIView = {
         let userNameView = SBUUserNameView()
         userNameView.leftMargin = 50
@@ -28,6 +28,7 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
     
     public lazy var profileView: UIView = SBUMessageProfileView()
     public lazy var stateView: UIView = SBUMessageStateView()
+
     
     // MARK: Views: Layouts
     
@@ -58,14 +59,6 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         return SBUStackView(axis: .horizontal, alignment: .bottom, spacing: 4)
     }()
     
-    // MARK: Properties
-
-    public var useReaction = false
-    
-    public var usingQuotedMessage = false
-
-    // MARK: - Private property
-    
     // + ----------------- +
     // | quotedMessageView |
     // + ----------------- +
@@ -84,6 +77,25 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
             spacing: -6
         )
     }()
+    
+    public lazy var quotedMessageView: (UIView & SBUQuotedMessageViewProtocol)? = SBUQuotedBaseMessageView()
+    
+    // + ------------------+----------------+
+    // | threadInfoSpacing | threadInfoView |
+    // + ------------------+----------------+
+    /// A horizontal stack view that contains `threadInfoSpacing` and `threadInfoView` as defaults.
+    ///
+    /// As a default, it has following configuration:
+    /// - axis: `.horizontal`
+    /// - alignment: `.center`
+    /// - spacing: `0`
+    public lazy var threadHStackView: UIStackView = {
+        return SBUStackView(axis: .horizontal, alignment: .center, spacing: 0)
+    }()
+    
+    public private(set) lazy var threadInfoSpacing: UIView = UIView()
+    public lazy var threadInfoView: (UIView & SBUThreadInfoViewProtocol)? = SBUThreadInfoView()
+
     
     // + ----------------- + --------- +
     // | mainContainerView | stateView |
@@ -135,14 +147,17 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         self.userNameView.isHidden = true
         self.profileView.isHidden = true
         self.quotedMessageView?.isHidden = true
+        self.threadHStackView.isHidden = true
         
-        // + ---------------------------------------------------------+
-        // | userNameView                                             |
-        // + -------------+-----------------------+-------------------+
-        // | profileView  | profileContentSpacing | quotedMessageView |
-        // |              |                       +-------------------+
-        // |              |                       | messageHStackView |
-        // + -------------+-----------------------+-------------------+
+        // + --------------------------------------------------------------+
+        // | userNameView                                                  |
+        // + ------------------+-----------------------+-------------------+
+        // | profileView       | profileContentSpacing | quotedMessageView |
+        // |                   |                       +-------------------+
+        // |                   |                       | messageHStackView |
+        // + ------------------+-----------------------+-------------------+
+        // | threadInfoSpacing                         | threadInfoView    |
+        // + ------------------------------------------+-------------------+
         
         self.userNameStackView.setVStack([
             self.userNameView,
@@ -157,6 +172,10 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
                         self.messageSpacing
                     ])
                 ])
+            ]),
+            self.threadHStackView.setHStack([
+                self.threadInfoSpacing,
+                self.threadInfoView
             ])
         ])
 
@@ -175,6 +194,8 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         self.userNameStackView
             .setConstraint(from: self.messageContentView, left: 12, right: 12, bottom: 0)
             .setConstraint(from: self.messageContentView, top: 0, priority: .defaultLow)
+        
+        self.threadInfoSpacing.sbu_constraint(width: 4 + 20 + 4)
     }
     
     open override func setupActions() {
@@ -227,6 +248,10 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         
         if let stateView = self.stateView as? SBUMessageStateView {
             stateView.setupStyles()
+        }
+        
+        if let threadInfoView = self.threadInfoView as? SBUThreadInfoView {
+            threadInfoView.setupStyles(theme: self.theme)
         }
     }
     
@@ -297,13 +322,13 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
                 sendingState: message.sendingStatus,
                 receiptState: self.receiptState,
                 position: self.position,
-                isQuotedReplyMessage: usingQuotedMessage ? isQuotedReplyMessage : false
+                isQuotedReplyMessage: self.useQuotedMessage ? isQuotedReplyMessage : false
             )
             self.messageHStackView.arrangedSubviews.forEach {
                 $0.removeFromSuperview()
             }
             self.stateView = SBUMessageStateView(
-                isQuotedReplyMessage: usingQuotedMessage
+                isQuotedReplyMessage: self.useQuotedMessage
                 ? isQuotedReplyMessage
                 : false
             )
@@ -315,24 +340,32 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
             (self.stateView as? SBUMessageStateView)?.configure(with: configuration)
         }
         
-        if self.usingQuotedMessage {
-            self.setupQuotedMessageView()
+        if self.useQuotedMessage {
+            self.setupQuotedMessageView(joinedAt: configuration.joinedAt)
         } else {
             self.quotedMessageView?.isHidden = true
+        }
+        
+        if self.useThreadInfo {
+            self.setupThreadInfoView()
+            self.threadHStackView.isHidden = false
+        } else {
+            self.threadHStackView.isHidden = true
         }
         
         // MARK: Group messages
         self.setMessageGrouping()
     }
     
-    public func setupQuotedMessageView() {
+    public func setupQuotedMessageView(joinedAt: Int64 = 0) {
         guard self.quotedMessageView != nil,
               let message = self.message,
               let quotedMessage = self.message?.parentMessage else { return }
         let configuration = SBUQuotedBaseMessageViewParams(
             message: message,
             position: self.position,
-            usingQuotedMessage: self.usingQuotedMessage
+            useQuotedMessage: self.useQuotedMessage,
+            joinedAt: joinedAt
         )
         guard self.quotedMessageView is SBUQuotedBaseMessageView else {
             // For customized parent message view.
@@ -340,20 +373,32 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
             return
         }
         
-        switch quotedMessage {
-        case is UserMessage :
+        let isMessageUnavailable = (
+            (message.parentMessage?.createdAt ?? 0) < (joinedAt * 1000)
+            && SBUGlobals.reply.replyType == .thread
+        )
+
+        let userMessageBlock = {
             if !(self.quotedMessageView is SBUQuotedUserMessageView) {
                 self.contentVStackView.arrangedSubviews.forEach {
                     $0.removeFromSuperview()
                 }
                 self.quotedMessageView = SBUQuotedUserMessageView()
                 self.contentVStackView.setVStack([
-                    quotedMessageView,
-                    messageHStackView
+                    self.quotedMessageView,
+                    self.messageHStackView
                 ])
             }
             (self.quotedMessageView as? SBUQuotedUserMessageView)?.configure(with: configuration)
+        }
+        
+        switch quotedMessage {
+        case is UserMessage :
+            userMessageBlock()
         case is FileMessage:
+            if isMessageUnavailable {
+                userMessageBlock()
+            }
             if !(self.quotedMessageView is SBUQuotedFileMessageView) {
                 self.contentVStackView.arrangedSubviews.forEach {
                     $0.removeFromSuperview()
@@ -369,6 +414,15 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
             self.quotedMessageView?.removeFromSuperview()
         }
         self.updateContentsPosition()
+    }
+    
+    /// Set up the thread info view.
+    /// - Since: 3.3.0
+    public func setupThreadInfoView() {
+        guard self.threadInfoView != nil,
+              let message = self.message else { return }
+        
+        self.threadInfoView?.configure(with: message, messagePosition: self.position)
     }
     
     public func setMessageGrouping() {
@@ -416,6 +470,10 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
             $0.removeFromSuperview()
         }
         
+        self.threadHStackView.arrangedSubviews.forEach {
+            $0.removeFromSuperview()
+        }
+        
         switch self.position {
             case .left:
                 self.userNameStackView.alignment = .leading
@@ -433,7 +491,11 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
                     self.profileContentSpacing,
                     self.contentVStackView
                 ])
-                
+                self.threadHStackView.setHStack([
+                    self.threadInfoSpacing,
+                    self.threadInfoView
+                ])
+                    
             case .right:
                 self.userNameStackView.alignment = .trailing
                 self.messageHStackView.setHStack([
@@ -449,12 +511,15 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
                     self.contentVStackView,
                     self.profileContentSpacing
                 ])
+                self.threadHStackView.setHStack([
+                    self.threadInfoView
+                ])
                 
             case .center:
                 break
         }
         
-        if usingQuotedMessage {
+        if self.useQuotedMessage {
             self.userNameView.isHidden = true
         }
         

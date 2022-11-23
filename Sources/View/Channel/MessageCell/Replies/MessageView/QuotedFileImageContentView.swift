@@ -110,12 +110,14 @@ open class QuotedFileImageContentView: SBUView {
         
         let thumbnailSize = SBUGlobals.messageCellConfiguration.groupChannel.thumbnailSize
         
+        let cacheKey: String? = "quoted_\(configuration.messageId)"
+        
         self.resizeImageView(by: thumbnailSize)
         self.loadImageSession = self.imageView.loadImage(
             urlString: fileURL,
             option: imageOption,
             thumbnailSize: thumbnailSize,
-            cacheKey: configuration.requestId
+            cacheKey: cacheKey
         ) { _ in
             DispatchQueue.main.async { [weak self] in
                 self?.setFileIcon()

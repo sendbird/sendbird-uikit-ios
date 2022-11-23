@@ -10,6 +10,10 @@ import UIKit
 
 public typealias AlertButtonHandler = (_ info: Any?) -> Void
 
+public protocol SBUAlertViewDelegate: AnyObject {
+    /// Called when `SBUAlertView` is dismiss
+    func didDismissAlertView()
+}
 
 public class SBUAlertButtonItem {
     var title: String
@@ -41,9 +45,11 @@ public class SBUAlertView: NSObject {
     var baseView = UIView()
     var backgroundView = UIButton()
     var inputField = UITextField()
+    var centerYRatio: CGFloat = 1.0
     
     var confirmItem: SBUAlertButtonItem?
     var cancelItem: SBUAlertButtonItem?
+    var dismissHandler: (() -> Void)?
     
     let itemWidth: CGFloat = 270.0
     let textInsideMargin: CGFloat = 3.0
@@ -63,6 +69,8 @@ public class SBUAlertView: NSObject {
     let bufferMargin: CGFloat = 8.0
     
     var prevOrientation: UIDeviceOrientation = .unknown
+    
+    weak var delegate: SBUAlertViewDelegate?
 
     private override init() {
         super.init()
@@ -78,6 +86,7 @@ public class SBUAlertView: NSObject {
     ///   - oneTimetheme: One-time theme setting
     ///   - confirmButtonItem: Confirm button item
     ///   - cancelButtonItem: Cancel button item (nullable)
+    ///   - delegate: AlertView delegate
     public static func show(title: String,
                             message: String? = nil,
                             needInputField: Bool = false,
@@ -85,7 +94,9 @@ public class SBUAlertView: NSObject {
                             centerYRatio: CGFloat? = 1.0,
                             oneTimetheme: SBUComponentTheme? = nil,
                             confirmButtonItem: SBUAlertButtonItem,
-                            cancelButtonItem: SBUAlertButtonItem?) {
+                            cancelButtonItem: SBUAlertButtonItem?,
+                            delegate: SBUAlertViewDelegate? = nil,
+                            dismissHandler: (() -> Void)? = nil) {
         self.shared.show(
             title: title,
             message: message,
@@ -94,7 +105,9 @@ public class SBUAlertView: NSObject {
             centerYRatio: centerYRatio,
             oneTimetheme: oneTimetheme,
             confirmButtonItem: confirmButtonItem,
-            cancelButtonItem: cancelButtonItem
+            cancelButtonItem: cancelButtonItem,
+            delegate: delegate,
+            dismissHandler: dismissHandler
         )
     }
     
@@ -110,9 +123,13 @@ public class SBUAlertView: NSObject {
                       centerYRatio: CGFloat? = 1.0,
                       oneTimetheme: SBUComponentTheme? = nil,
                       confirmButtonItem: SBUAlertButtonItem,
-                      cancelButtonItem: SBUAlertButtonItem?) {
+                      cancelButtonItem: SBUAlertButtonItem?,
+                      delegate: SBUAlertViewDelegate?,
+                      dismissHandler: (() -> Void)? = nil) {
         
-        self.dismiss()
+        self.delegate = delegate
+        
+        self.handleDismiss(isUserInitiated: false)
         
         self.prevOrientation = UIDevice.current.orientation
         
@@ -122,9 +139,25 @@ public class SBUAlertView: NSObject {
             name: UIDevice.orientationDidChangeNotification,
             object: nil
         )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillShow),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillHide),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
         
         if let oneTimetheme = oneTimetheme {
             self.theme = oneTimetheme
+        }
+        
+        if let centerYRatio = centerYRatio {
+            self.centerYRatio = centerYRatio
         }
         
         self.window = UIApplication.shared.currentWindow
@@ -132,6 +165,7 @@ public class SBUAlertView: NSObject {
         
         self.confirmItem = confirmButtonItem
         self.cancelItem = cancelButtonItem
+        self.dismissHandler = dismissHandler
         
         // Set backgroundView
         self.backgroundView.frame = self.window?.bounds ?? .zero
@@ -311,7 +345,7 @@ public class SBUAlertView: NSObject {
         window.addSubview(self.backgroundView)
         self.baseView.center = CGPoint(
             x: window.center.x,
-            y: window.center.y * (centerYRatio ?? 1.0)
+            y: window.center.y * self.centerYRatio
         )
         window.addSubview(self.baseView)
         
@@ -334,12 +368,17 @@ public class SBUAlertView: NSObject {
     }
     
     @objc private func dismiss() {
+        handleDismiss(isUserInitiated: true)
+    }
+    
+    @objc private func handleDismiss(isUserInitiated: Bool) {
         for subView in self.baseView.subviews {
             subView.removeFromSuperview()
         }
         
         self.confirmItem = nil
         self.cancelItem = nil
+        
         self.inputField = UITextField()
         self.backgroundView.removeFromSuperview()
         self.baseView.removeFromSuperview()
@@ -349,6 +388,41 @@ public class SBUAlertView: NSObject {
             name: UIDevice.orientationDidChangeNotification,
             object: nil
         )
+        NotificationCenter.default.removeObserver(
+            self,
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        NotificationCenter.default.removeObserver(
+            self,
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
+        
+        if isUserInitiated {
+            self.delegate?.didDismissAlertView()
+            let handler = self.dismissHandler
+            self.dismissHandler = nil
+            handler?()
+        }
+    }
+    
+    @objc private func keyboardWillShow(_ notification: Notification) {
+        guard  let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
+
+        UIView.animate(withDuration: 0.1, animations: {
+            guard let window = self.window else { return }
+            
+            self.baseView.center.y = ((window.frame.height - keyboardFrame.cgRectValue.height) / 2) * self.centerYRatio
+        })
+    }
+    
+    @objc private func keyboardWillHide() {
+        UIView.animate(withDuration: 0.1, animations: {
+            guard let window = self.window else { return }
+            
+            self.baseView.center.y = window.center.y * self.centerYRatio
+        })
     }
     
     // MARK: Common

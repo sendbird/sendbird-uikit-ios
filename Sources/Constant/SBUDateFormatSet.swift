@@ -17,6 +17,7 @@ public struct SBUDateFormatSet {
     public static var hhmm = "hh:mm"
     public static var yyyyMMddhhmm = "yyyyMMddhhmm"
     public static var yyyyMMddhhmmss = "yyyyMMddhhmmss"
+    public static var MMMddAthhmma = "MMM dd 'at' hh:mm a"
     
     public class Channel {
         /// Used in `SBUChannelCell`
@@ -48,5 +49,9 @@ public struct SBUDateFormatSet {
     public class MessageSearch {
         /// Used in `SBUMessageSearchResultCell`
         public static var sentTimeFormat = SBUDateFormatSet.hhmm
+    }
+    
+    public class MessageThread {
+        public static var sentDateTimeFormat = SBUDateFormatSet.MMMddAthhmma
     }
 }

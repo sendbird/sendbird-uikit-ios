@@ -185,6 +185,28 @@ public class SBUStringSet {
         return "\(replierNickname) replied to \(quotedMessageNickname)"
     }
     public static var Message_You = "You"
+    
+    /// - Since: 3.3.0
+    public static var Message_Replied_Users_Count: (Int, Bool) -> String = { repliedUsersCount, countLimit in
+        switch repliedUsersCount {
+        case 1:
+            return "1 reply"
+        case 2...99:
+            return "\(repliedUsersCount) replies"
+        case 100...:
+            return countLimit ? "99+ replies" : "\(repliedUsersCount) replies"
+        default:
+            return ""
+        }
+    }
+    
+    /// - Since: 3.3.0
+    public static var Message_Reply_Cannot_Found_Original = "Couldn't find the original message for this reply."
+    
+    /// - Since: 3.3.0
+    public static var Message_Unavailable = "Message unavailable"
+    
+    
 
 
     // MARK: - Empty
@@ -284,6 +306,25 @@ public class SBUStringSet {
         /// e.g., "You can mention up to 10 times at a time."
         public static var Limit_Guide = "You can mention up to \(SBUGlobals.userMentionConfig?.mentionLimit ?? 10) times per message. "
     }
+    
+    
+    // MARK: - MessageThreading
+    /// - Since: 3.3.0
+    public struct MessageThread {
+        public struct Menu {
+            public static var replyInThread = "Reply in thread"
+        }
+        
+        public struct MessageInput {
+            public static var replyInThread = "Reply in thread"
+            public static var replyToThread = "Reply to thread"
+        }
+        
+        public struct Header {
+            public static var title = "Thread"
+        }
+    }
+    
 }
 
 extension SBUStringSet {

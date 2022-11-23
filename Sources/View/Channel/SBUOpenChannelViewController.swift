@@ -38,6 +38,8 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
     public var prevOrientation: UIDeviceOrientation = .unknown
     public var currentOrientation: UIDeviceOrientation = .unknown
     
+    public var weakHeaderComponentBottomConstraint: NSLayoutConstraint = .init()
+    
     
     // MARK: - UI properties (Private)
     // for constraint
@@ -338,15 +340,19 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
                 if let headerComponent = self.headerComponent {
                     // Channel info
                     headerComponent.translatesAutoresizingMaskIntoConstraints = false
+                    
+                    self.weakHeaderComponentBottomConstraint = headerComponent.topAnchor.constraint(
+                        equalTo: self.isMediaViewOverlaying
+                        ? self.listTopMarginView.bottomAnchor
+                        : self.mediaComponent?.bottomAnchor ?? self.listTopMarginView.bottomAnchor,
+                        constant: 0
+                    )
+                    self.weakHeaderComponentBottomConstraint.priority = .defaultHigh
+                    
                     self.headerComponentConstraints = [
                         headerComponent.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
                         headerComponent.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
-                        headerComponent.topAnchor.constraint(
-                            equalTo: self.isMediaViewOverlaying
-                            ? self.listTopMarginView.bottomAnchor
-                            : self.mediaComponent?.bottomAnchor ?? self.listTopMarginView.bottomAnchor,
-                            constant: 0
-                        )
+                        self.weakHeaderComponentBottomConstraint
                     ]
                 }
         }
@@ -527,7 +533,7 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
     
     open override func setupStyles() {
         let theme = self.isMediaViewOverlaying ? self.overlayTheme : self.theme
-        self.setupStyle(theme: theme)
+        self.setupStyles(theme: theme)
     }
     
     open override func updateStyles() {

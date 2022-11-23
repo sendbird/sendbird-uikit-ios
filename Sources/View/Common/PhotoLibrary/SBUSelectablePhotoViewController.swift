@@ -13,9 +13,11 @@ import Photos
 /// - Since: 2.2.6
 public protocol SBUSelectablePhotoViewDelegate: AnyObject {
     /// Called when an image is picked from `SBUSelectablePhotoViewController`
-    /// - Parameter data: The JPEG data of selected image. Its `compressionQuality` follows `SBUGlobals.imageCompressionRate` when `SBUGlobals.UsingImageCompression` is `true`
+    /// - Parameter data: The data of selected image. Its `compressionQuality` follows `SBUGlobals.imageCompressionRate` when `SBUGlobals.UsingImageCompression` is `true`
+    /// - Parameter fileName: The file name.
+    /// - Parameter mimeType: The mime type of file.
     /// - Since: 2.2.6
-    func didTapSendImageData(_ data: Data)
+    func didTapSendImageData(_ data: Data, fileName: String?, mimeType: String?)
 
     /// Called when tap a video is picked from `SBUSelectablePhotoViewController`
     /// - Parameter url: The URL of selected video.
@@ -24,7 +26,7 @@ public protocol SBUSelectablePhotoViewDelegate: AnyObject {
 }
 
 public extension SBUSelectablePhotoViewDelegate {
-    func didTapSendImageData(_ data: Data) { }
+    func didTapSendImageData(_ data: Data, fileName: String? = nil, mimeType: String? = nil) { }
     
     func didTapSendVideoURL(_ url: URL) { }
 }
@@ -252,42 +254,60 @@ extension SBUSelectablePhotoViewController: UICollectionViewDelegate, UICollecti
 
     open func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let asset = self.fetchResult[indexPath.item]
-
-        switch asset.mediaType {
-        case .image:
-            // send data with media type
-            let requestOptions = PHImageRequestOptions()
-            PHImageManager().requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: .aspectFill, options: requestOptions) { image, _ in
-                guard let data = image?.jpegData(
-                    compressionQuality: SBUGlobals.isImageCompressionEnabled
-                    ? SBUGlobals.imageCompressionRate
-                    : 1.0
-                ) else {
-                    SBULog.error("No image data")
-                    return
+        asset.requestContentEditingInput(with: PHContentEditingInputRequestOptions()) { input, info in
+            switch asset.mediaType {
+            case .image:
+                // send data with media type
+                let requestOptions = PHImageRequestOptions()
+                let extensionType = input?.fullSizeImageURL?.pathExtension ?? "jpg"
+                let fileName = "\(Date().sbu_toString(dateFormat: SBUDateFormatSet.Message.fileNameFormat, localizedFormat: false)).\(extensionType)"
+                guard let url = URL(string: fileName) else { return }
+                let mimeType = SBUUtils.getMimeType(url: url)
+                
+                if #available(iOS 13, *) {
+                    PHImageManager().requestImageDataAndOrientation(for: asset, options: requestOptions) { data, _, _, _ in
+                        DispatchQueue.main.async { [weak self] in
+                            guard let self = self else { return }
+                            guard let data = data else { return }
+                            self.delegate?.didTapSendImageData(data, fileName: fileName, mimeType: mimeType)
+                            self.dismiss(animated: true, completion: nil)
+                        }
+                    }
+                } else {
+                    PHImageManager().requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: .aspectFill, options: requestOptions) { image, _ in
+                        guard let data = image?.jpegData(
+                            compressionQuality: SBUGlobals.isImageCompressionEnabled
+                            ? SBUGlobals.imageCompressionRate
+                            : 1.0
+                        ) else {
+                            SBULog.error("No image data")
+                            return
+                        }
+                        DispatchQueue.main.async { [weak self] in
+                            guard let self = self else { return }
+                            self.delegate?.didTapSendImageData(data, fileName: fileName, mimeType: mimeType)
+                            self.dismiss(animated: true, completion: nil)
+                        }
+                    }
                 }
-                DispatchQueue.main.async { [weak self] in
-                    guard let self = self else { return }
-                    self.delegate?.didTapSendImageData(data)
-                    self.dismiss(animated: true, completion: nil)
+                
+            case .video:
+                // send url or data with media type
+                PHImageManager.default().requestAVAsset(forVideo: asset, options: nil) { (asset, audioMix, info) in
+                    guard let urlAsset = asset as? AVURLAsset else { return }
+                    let videoURL = urlAsset.url as URL
+                    DispatchQueue.main.async { [weak self] in
+                        guard let self = self else { return }
+                        self.delegate?.didTapSendVideoURL(videoURL)
+                        self.dismiss(animated: true, completion: nil)
+                    }
                 }
+            default:
+                // not supported
+                print("not supported")
+                self.dismiss(animated: true, completion: nil)
+                return
             }
-        case .video:
-            // send url or data with media type
-            PHImageManager.default().requestAVAsset(forVideo: asset, options: nil) { (asset, audioMix, info) in
-                guard let urlAsset = asset as? AVURLAsset else { return }
-                let videoURL = urlAsset.url as URL
-                DispatchQueue.main.async { [weak self] in
-                    guard let self = self else { return }
-                    self.delegate?.didTapSendVideoURL(videoURL)
-                    self.dismiss(animated: true, completion: nil)
-                }
-            }
-        default:
-            // not supported
-            print("not supported")
-            self.dismiss(animated: true, completion: nil)
-            return
         }
     }
 }

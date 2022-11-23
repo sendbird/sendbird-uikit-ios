@@ -37,11 +37,14 @@ class SBUCacheManager {
         return image
     }
     
-    static func preSaveImage(fileMessage: FileMessage) {
+    static func preSaveImage(fileMessage: FileMessage, isQuotedImage: Bool? = false) {
         if let messageParams = fileMessage.messageParams as? FileMessageCreateParams {
+            var cacheKey = fileMessage.requestId
+            if isQuotedImage == true { cacheKey = "quoted_\(fileMessage.requestId)" }
+            
             switch SBUUtils.getFileType(by: fileMessage) {
             case .image:
-                SBUCacheManager.savedImage(fileName: fileMessage.requestId, data: messageParams.file)
+                SBUCacheManager.savedImage(fileName: cacheKey, data: messageParams.file)
             case .video:
                 guard let asset = messageParams.file?.getAVAsset() else { break }
                 
@@ -55,7 +58,7 @@ class SBUCacheManager {
                 
                 let image = UIImage(cgImage: cgImage)
                 if let data = image.pngData() {
-                    SBUCacheManager.savedImage(fileName: fileMessage.requestId, data: data)
+                    SBUCacheManager.savedImage(fileName: cacheKey, data: data)
                 }
             default:
                 break
@@ -70,6 +73,24 @@ class SBUCacheManager {
             self.memoryCache.set(key: fileName, data: diskData)
             return UIImage.createImage(from: diskData as Data)
         } else {
+            /**
+             2022.11.15 - 3.3.0
+             Added internal processing logic to fix image cache issue caused by using same key value when caching original message image and quoted message image.
+             */
+            if fileName.contains("quoted_") {
+                let removedPrefix = fileName.replacingOccurrences(of: "quoted_", with: "")
+                let removedThumbnailPrefix = removedPrefix.replacingOccurrences(of: "thumb_", with: "")
+                let original = self.diskCache.get(key: removedPrefix)
+                let quoted = self.diskCache.get(key: fileName)
+                if quoted == nil {
+                    if original != nil {
+                        self.diskCache.remove(key: removedPrefix)
+                        self.diskCache.remove(key: removedThumbnailPrefix)
+                        return nil
+                    }
+                }
+            }
+            
             return nil
         }
     }
@@ -162,9 +183,13 @@ public struct DiskCache {
             let path = self.pathForKey(key)
             let fileManager = self.fileManager
             
-            if fileManager.fileExists(atPath: path) {
-                try? fileManager.removeItem(atPath: path)
+            do {
+                try fileManager.removeItem(atPath: path)
+            } catch {
+                SBULog.error("Could not remove file: \(error)")
             }
+
+            
         }
     }
 
@@ -172,10 +197,13 @@ public struct DiskCache {
         diskQueue.async {
             let fileManager = self.fileManager
             let imageCachePath = self.imageCacheURL().path
-            
-            try? fileManager
-                .contentsOfDirectory(atPath: imageCachePath)
-                .forEach { try? fileManager.removeItem(atPath: $0) }
+
+            do {
+                try fileManager.removeItem(atPath: imageCachePath)
+            }
+            catch {
+                SBULog.error("Could not remove image cache path: \(error)")
+            }
         }
     }
 

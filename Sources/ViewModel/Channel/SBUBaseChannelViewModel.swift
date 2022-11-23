@@ -115,6 +115,12 @@ open class SBUBaseChannelViewModel: NSObject {
     public internal(set) var messageListParams = MessageListParams()
 
     
+    public var sendFileMessageCompletionHandler: SendbirdChatSDK.FileMessageHandler?
+    public var sendUserMessageCompletionHandler: SendbirdChatSDK.UserMessageHandler?
+    
+    public var pendingMessageManager = SBUPendingMessageManager.shared
+    
+    
     // MARK: - Logic properties (Private)
     weak var baseDataSource: SBUBaseChannelViewModelDataSource?
     weak var baseDelegate: SBUBaseChannelViewModelDelegate?
@@ -124,11 +130,16 @@ open class SBUBaseChannelViewModel: NSObject {
     let initialLock = NSLock()
     
     var isInitialLoading = false
+    var isScrollToInitialPositionFinish = false
     
     @SBUAtomic var isLoadingNext = false
+    @SBUAtomic var isLoadingPrev = false
 
     /// Memory cache of newest messages to be used when message has loaded from specific timestamp.
     var messageCache: SBUMessageCache?
+    
+    var isTransformedList: Bool = true
+    var isThreadMessageMode: Bool = false
     
     
     // MARK: - LifeCycle
@@ -144,6 +155,7 @@ open class SBUBaseChannelViewModel: NSObject {
     func reset() {
         self.messageCache = nil
         self.resetMessageListParams()
+        self.isScrollToInitialPositionFinish = false
     }
     
     deinit {
@@ -165,7 +177,8 @@ open class SBUBaseChannelViewModel: NSObject {
     /// - Parameters:
     ///   - channelURL: channel url
     ///   - messageListParams: (Optional) The parameter to be used when getting channel information.
-    public func loadChannel(channelURL: String, messageListParams: MessageListParams? = nil) {}
+    public func loadChannel(channelURL: String, messageListParams: MessageListParams? = nil, completionHandler: ((BaseChannel?, SBError?) -> Void)? = nil)
+    {}
     
     
     /// This function refreshes channel.
@@ -214,7 +227,7 @@ open class SBUBaseChannelViewModel: NSObject {
         
         SBUGlobalCustomParams.userMessageParamsSendBuilder?(messageParams)
         
-        if let parentMessage = parentMessage, SBUGlobals.replyType != .none {
+        if let parentMessage = parentMessage, SBUGlobals.reply.replyType != .none {
             messageParams.parentMessageId = parentMessage.messageId
             messageParams.isReplyToChannel = true
         }
@@ -238,7 +251,7 @@ open class SBUBaseChannelViewModel: NSObject {
         
         SBUGlobalCustomParams.userMessageParamsSendBuilder?(messageParams)
         
-        if let parentMessage = parentMessage, SBUGlobals.replyType != .none {
+        if let parentMessage = parentMessage, SBUGlobals.reply.replyType != .none {
             messageParams.parentMessageId = parentMessage.messageId
             messageParams.isReplyToChannel = true
         }
@@ -259,40 +272,17 @@ open class SBUBaseChannelViewModel: NSObject {
         
         let preSendMessage = self.channel?.sendUserMessage(params: messageParams)
         { [weak self] userMessage, error in
-            // For open channel
-            guard let self = self else { return }
-            guard self.channel is OpenChannel else { return }
-            
-            if let error = error {
-                SBUPendingMessageManager.shared.upsertPendingMessage(
-                    channelURL: userMessage?.channelURL,
-                    message: userMessage
-                )
-                
-                self.sortAllMessageList(needReload: true)
-                
-                self.baseDelegate?.didReceiveError(error)
-                SBULog.error("[Failed] Send user message request: \(error.localizedDescription)")
-                return
-            }
-            
-            SBUPendingMessageManager.shared.removePendingMessage(
-                channelURL: userMessage?.channelURL,
-                requestId: userMessage?.requestId
-            )
-            
-            guard let userMessage = userMessage else { return }
-            SBULog.info("[Succeed] Send user message: \(userMessage.description)")
-            self.upsertMessagesInList(messages: [userMessage], needReload: true)
+            self?.sendUserMessageCompletionHandler?(userMessage, error)
         }
                
         if let preSendMessage = preSendMessage,
            self.messageListParams.belongsTo(preSendMessage)
         {
             preSendMessage.parentMessage = parentMessage
-            SBUPendingMessageManager.shared.upsertPendingMessage(
+            self.pendingMessageManager.upsertPendingMessage(
                 channelURL: self.channel?.channelURL,
-                message: preSendMessage
+                message: preSendMessage,
+                forMessageThread: self.isThreadMessageMode
             )
         } else {
             SBULog.info("A filtered user message has been sent.")
@@ -346,7 +336,7 @@ open class SBUBaseChannelViewModel: NSObject {
         
         SBUGlobalCustomParams.fileMessageParamsSendBuilder?(messageParams)
         
-        if let parentMessage = parentMessage, SBUGlobals.replyType != .none {
+        if let parentMessage = parentMessage, SBUGlobals.reply.replyType != .none {
             messageParams.parentMessageId = parentMessage.messageId
             messageParams.isReplyToChannel = true
         }
@@ -374,58 +364,29 @@ open class SBUBaseChannelViewModel: NSObject {
                 SBULog.info("File message transfer progress: \(requestId) - \(fileTransferProgress)")
             },
             completionHandler: { [weak self] fileMessage, error in
-                // For Open channel
-                guard let self = self else { return }
-                guard self.channel is OpenChannel else { return }
-                
-                if let error = error {
-                    if let fileMessage = fileMessage, self.messageListParams.belongsTo(fileMessage) {
-                        SBUPendingMessageManager.shared.upsertPendingMessage(
-                            channelURL: fileMessage.channelURL,
-                            message: fileMessage
-                        )
-                    }
-                    
-                    self.sortAllMessageList(needReload: true)
-
-                    self.baseDelegate?.didReceiveError(error)
-                    SBULog.error(
-                        """
-                        [Failed] Send file message request:
-                        \(error.localizedDescription)
-                        """
-                    )
-                    return
-                }
-                
-                SBUPendingMessageManager.shared.removePendingMessage(
-                    channelURL: fileMessage?.channelURL,
-                    requestId: fileMessage?.requestId
-                )
-                
-                guard let message = fileMessage else { return }
-                
-                SBULog.info("[Succeed] Send file message: \(message.description)")
-                
-                self.upsertMessagesInList(messages: [message], needReload: true)
+                self?.sendFileMessageCompletionHandler?(fileMessage, error)
             }
         )
         
         if let preSendMessage = preSendMessage {
-            SBUCacheManager.preSaveImage(fileMessage: preSendMessage)
+            SBUCacheManager.preSaveImage(
+                fileMessage: preSendMessage
+            )
         }
         
         if let preSendMessage = preSendMessage, self.messageListParams.belongsTo(preSendMessage)
         {
             preSendMessage.parentMessage = parentMessage
-            SBUPendingMessageManager.shared.upsertPendingMessage(
+            self.pendingMessageManager.upsertPendingMessage(
                 channelURL: self.channel?.channelURL,
-                message: preSendMessage
+                message: preSendMessage,
+                forMessageThread: self.isThreadMessageMode
             )
             
-            SBUPendingMessageManager.shared.addFileInfo(
+            self.pendingMessageManager.addFileInfo(
                 requestId: preSendMessage.requestId,
-                params: messageParams
+                params: messageParams,
+                forMessageThread: self.isThreadMessageMode
             )
         } else {
             SBULog.info("A filtered file message has been sent.")
@@ -498,34 +459,7 @@ open class SBUBaseChannelViewModel: NSObject {
         }
     }
     
-    func handlePendingResendableMessage<Message: BaseMessage>(_ message: Message?, _ error: SBError?) {
-        guard self.channel is OpenChannel else { return }
-        if let error = error {
-            SBUPendingMessageManager.shared.upsertPendingMessage(
-                channelURL: message?.channelURL,
-                message: message
-            )
-            
-            self.sortAllMessageList(needReload: true)
-            
-            self.baseDelegate?.didReceiveError(error, isBlocker: false)
-            
-            SBULog.error("[Failed] Resend failed user message request: \(error.localizedDescription)")
-            return
-            
-        } else {
-            SBUPendingMessageManager.shared.removePendingMessage(
-                channelURL: message?.channelURL,
-                requestId: message?.requestId
-            )
-            
-            guard let message = message else { return }
-            
-            SBULog.info("[Succeed] Resend failed file message: \(message.description)")
-            
-            self.upsertMessagesInList(messages: [message], needReload: true)
-        }
-    }
+    func handlePendingResendableMessage<Message: BaseMessage>(_ message: Message?, _ error: SBError?) { }
     
     /// Resends a message with failedMessage object.
     /// - Parameter failedMessage: `BaseMessage` class based failed object
@@ -541,9 +475,10 @@ open class SBUBaseChannelViewModel: NSObject {
                 self.handlePendingResendableMessage(message, error)
             }
             
-            SBUPendingMessageManager.shared.upsertPendingMessage(
+            self.pendingMessageManager.upsertPendingMessage(
                 channelURL: self.channel?.channelURL,
-                message: pendingMessage
+                message: pendingMessage,
+                forMessageThread: self.isThreadMessageMode
             )
             
             if let failedMessage = pendingMessage {
@@ -557,8 +492,10 @@ open class SBUBaseChannelViewModel: NSObject {
         } else if let failedMessage = failedMessage as? FileMessage {
             var data: Data? = nil
 
-            if let fileInfo = SBUPendingMessageManager.shared.getFileInfo(
-                requestId: failedMessage.requestId) {
+            if let fileInfo = self.pendingMessageManager.getFileInfo(
+                requestId: failedMessage.requestId,
+                forMessageThread: self.isThreadMessageMode
+            ) {
                 data = fileInfo.file
             }
 
@@ -575,9 +512,10 @@ open class SBUBaseChannelViewModel: NSObject {
                 self.handlePendingResendableMessage(message, error)
             }
             
-            SBUPendingMessageManager.shared.upsertPendingMessage(
+            self.pendingMessageManager.upsertPendingMessage(
                 channelURL: self.channel?.channelURL,
-                message: pendingMessage
+                message: pendingMessage,
+                forMessageThread: self.isThreadMessageMode
             )
             
             if let failedMessage = pendingMessage {
@@ -623,6 +561,24 @@ open class SBUBaseChannelViewModel: NSObject {
         self.sortAllMessageList(needReload: needReload)
     }
     
+    
+    func filteredForThreadMessageView(messages: [BaseMessage]?) -> [BaseMessage]? {
+        let pendingMessages = self.pendingMessageManager.getPendingMessages(
+            channelURL: self.channelURL,
+            forMessageThread: true
+        )
+        let refinedResult = messages?.filter { message in
+            var existInPendingThreadMessage = false
+            pendingMessages.forEach {
+                if $0.requestId == message.requestId {
+                    existInPendingThreadMessage = true
+                }
+            }
+            return !existInPendingThreadMessage
+        }
+        return refinedResult
+    }
+    
     /// This function upserts the messages in the list.
     /// - Parameters:
     ///   - messages: Message array to upsert
@@ -633,6 +589,7 @@ open class SBUBaseChannelViewModel: NSObject {
                                       needUpdateNewMessage: Bool = false,
                                       needReload: Bool) {
         SBULog.info("First : \(String(describing: messages?.first)), Last : \(String(describing: messages?.last))")
+        
         var needMarkAsRead = false
         
         messages?.forEach { message in
@@ -660,7 +617,7 @@ open class SBUBaseChannelViewModel: NSObject {
             if message.sendingStatus == .succeeded {
                 self.messageList.append(message)
 
-                SBUPendingMessageManager.shared.removePendingMessage(
+                self.pendingMessageManager.removePendingMessageAllTypes(
                     channelURL: channelURL,
                     requestId: message.requestId
                 )
@@ -669,9 +626,10 @@ open class SBUBaseChannelViewModel: NSObject {
                 
             } else if message.sendingStatus == .failed ||
                         message.sendingStatus == .pending {
-                SBUPendingMessageManager.shared.upsertPendingMessage(
+                self.pendingMessageManager.upsertPendingMessage(
                     channelURL: channelURL,
-                    message: message
+                    message: message,
+                    forMessageThread: self.isThreadMessageMode
                 )
             }
         }
@@ -771,7 +729,7 @@ open class SBUBaseChannelViewModel: NSObject {
     /// - Since: 1.2.5
     public func deleteResendableMessages(requestIds: [String], needReload: Bool) {
         for requestId in requestIds {
-            SBUPendingMessageManager.shared.removePendingMessage(
+            self.pendingMessageManager.removePendingMessageAllTypes(
                 channelURL: self.channel?.channelURL,
                 requestId: requestId
             )
@@ -785,14 +743,31 @@ open class SBUBaseChannelViewModel: NSObject {
     /// - Since: 1.2.5
     public func sortAllMessageList(needReload: Bool) {
         // Generate full list for draw
-        let pendingMessages = SBUPendingMessageManager.shared.getPendingMessages(
-            channelURL: self.channel?.channelURL
+        let pendingMessages = self.pendingMessageManager.getPendingMessages(
+            channelURL: self.channel?.channelURL,
+            forMessageThread: self.isThreadMessageMode
         )
         
-        self.messageList.sort { $0.createdAt > $1.createdAt }
-        self.fullMessageList = pendingMessages
-            .sorted { $0.createdAt > $1.createdAt }
-            + self.messageList
+        let refinedPendingMessages = pendingMessages.filter { pendingMessage in
+            var isInMessageList = false
+            self.messageList.forEach { message in
+                if message.requestId == pendingMessage.requestId {
+                    isInMessageList = true
+                    return
+                }
+            }
+            return !isInMessageList
+        }
+        
+        if isTransformedList {
+            self.messageList.sort { $0.createdAt > $1.createdAt }
+            self.fullMessageList = refinedPendingMessages.sorted { $0.createdAt > $1.createdAt }
+                                    + self.messageList
+        } else {
+            self.messageList.sort { $0.createdAt < $1.createdAt }
+            self.fullMessageList = self.messageList
+                                    + refinedPendingMessages.sorted { $0.createdAt < $1.createdAt }
+        }
         
         self.baseDelegate?.shouldUpdateLoadingState(false)
         self.baseDelegate?.baseChannelViewModel(
@@ -827,9 +802,9 @@ open class SBUBaseChannelViewModel: NSObject {
         self.messageListParams.reverse = true
         self.messageListParams.includeReactions = SBUEmojiManager.useReaction(channel: channel)
         
-        self.messageListParams.includeThreadInfo = SBUGlobals.replyType.includesThreadInfo
-        self.messageListParams.includeParentMessageInfo = SBUGlobals.replyType.includesParentMessageInfo
-        self.messageListParams.replyType = SBUGlobals.replyType.filterValue
+        self.messageListParams.includeThreadInfo = SBUGlobals.reply.includesThreadInfo
+        self.messageListParams.includeParentMessageInfo = SBUGlobals.reply.includesParentMessageInfo
+        self.messageListParams.replyType = SBUGlobals.reply.replyType.filterValue
     }
     
     
@@ -850,6 +825,9 @@ open class SBUBaseChannelViewModel: NSObject {
                 
                 SBULog.info("[Response] \(reactionEvent?.key ?? "") reaction")
                 guard let reactionEvent = reactionEvent else { return }
+                if reactionEvent.messageId == message.messageId {
+                    message.apply(reactionEvent)
+                }
                 self.baseDelegate?.baseChannelViewModel(self, didUpdateReaction: reactionEvent, forMessage: message)
             }
         } else {
@@ -861,10 +839,14 @@ open class SBUBaseChannelViewModel: NSObject {
 
                 SBULog.info("[Response] \(reactionEvent?.key ?? "") reaction")
                 guard let reactionEvent = reactionEvent else { return }
+                if reactionEvent.messageId == message.messageId {
+                    message.apply(reactionEvent)
+                }
                 self.baseDelegate?.baseChannelViewModel(self, didUpdateReaction: reactionEvent, forMessage: message)
             }
         }
     }
+
 
     
     // MARK: - Common
@@ -940,6 +922,7 @@ extension SBUBaseChannelViewModel: BaseChannelDelegate {
     // If channel type is Group, please do not use belows any more.
     open func channel(_ channel: BaseChannel, didUpdate message: BaseMessage) {}
     open func channel(_ channel: BaseChannel, messageWasDeleted messageId: Int64) {}
+    open func channel(_ channel: BaseChannel, didUpdateThreadInfo threadInfoUpdateEvent: ThreadInfoUpdateEvent) {}
     open func channel(_ channel: BaseChannel, updatedReaction reactionEvent: ReactionEvent) {}
     open func channelDidUpdateReadReceipt(_ channel: GroupChannel) {}
 //    open func channelDidUpdateDeliveryReceipt(_ channel: GroupChannel) {}

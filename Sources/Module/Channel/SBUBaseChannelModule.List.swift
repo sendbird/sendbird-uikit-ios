@@ -215,6 +215,14 @@ public protocol SBUBaseChannelModuleListDataSource: AnyObject {
         _ listComponent: SBUBaseChannelModule.List,
         parentViewControllerDisplayMenuItems menuItems: [SBUMenuItem]
     ) -> UIViewController?
+    
+    /// Ask the data source to return the `SBUPendingMessageManager` object.
+    /// - Parameters:
+    ///    - listComponent: `SBUBaseChannelModule.List` object.
+    ///    - cell: `UITableViewCell` object from list component.
+    /// - Returns: (`SBUPendingMessageManager` object, `isThreadMessageMode` object of view model)
+    /// - Since: 3.3.0
+    func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, pendingMessageManagerForCell cell: UITableViewCell) -> (SBUPendingMessageManager?, Bool?)
 }
 
 
@@ -339,14 +347,14 @@ extension SBUBaseChannelModule {
         /// The object that is used as the cell animation debouncer.
         lazy var cellAnimationDebouncer: SBUDebouncer = SBUDebouncer()
         
+        var isTransformedList: Bool = true
+        
         
         // MARK: - LifeCycle
-        @available(*, unavailable, renamed: "SBUBaseChannelModule.List()")
         required public init?(coder: NSCoder) {
             super.init(coder: coder)
         }
         
-        @available(*, unavailable, renamed: "SBUBaseChannelModule.List()")
         public override init(frame: CGRect) {
             super.init(frame: frame)
         }
@@ -471,6 +479,7 @@ extension SBUBaseChannelModule {
         public func reloadTableView() {
             DispatchQueue.main.async { [weak self] in
                 self?.tableView.reloadData()
+                self?.tableView.layoutIfNeeded()
             }
         }
         
@@ -743,12 +752,19 @@ extension SBUBaseChannelModule {
         /// - Parameter message: The `BaseMessage` object  that corresponds to the message of the menu item to show.
         /// - Returns: The ``SBUMenuItem`` object for a `message`
         open func createReplyMenuItem(for message: BaseMessage) -> SBUMenuItem {
+            let replyMenuTitle = SBUGlobals.reply.replyType == .thread
+            ? SBUStringSet.MessageThread.Menu.replyInThread
+            : SBUStringSet.Reply
+            let iconSet = SBUGlobals.reply.replyType == .thread
+            ? SBUIconSetType.iconThread
+            : SBUIconSetType.iconReply
+            
             let menuItem = SBUMenuItem(
-                title: SBUStringSet.Reply,
+                title: replyMenuTitle,
                 color: message.parentMessage == nil
                 ? self.theme?.menuTextColor
                 : SBUTheme.componentTheme.actionSheetDisabledColor,
-                image: SBUIconSetType.iconReply.image(
+                image: iconSet.image(
                     with: message.parentMessage == nil
                     ? SBUTheme.componentTheme.alertButtonColor
                     : SBUTheme.componentTheme.actionSheetDisabledColor,
@@ -832,7 +848,11 @@ extension SBUBaseChannelModule {
         open func setFileMessageCellImage(_ cell: UITableViewCell, fileMessage: FileMessage) {
             switch fileMessage.sendingStatus {
                 case .canceled, .pending, .failed, .none:
-                    guard let fileInfo = SBUPendingMessageManager.shared.getFileInfo(requestId: fileMessage.requestId),
+                    guard let (pendingMessageManager, isThreadMessage) = self.baseDataSource?.baseChannelModule(self, pendingMessageManagerForCell: cell),
+                          let fileInfo = pendingMessageManager?.getFileInfo(
+                            requestId: fileMessage.requestId,
+                            forMessageThread: isThreadMessage ?? false
+                          ),
                           let type = fileInfo.mimeType, let fileData = fileInfo.file,
                           SBUUtils.getFileType(by: type) == .image else { return }
                     
@@ -858,6 +878,103 @@ extension SBUBaseChannelModule {
                     SBULog.error("unknown Type")
                     break
             }
+        }
+        
+        /// Gets the position of the message to be grouped.
+        ///
+        /// Only successful messages can be grouped.
+        /// - Parameter currentIndex: Index of current message in the message list
+        /// - Returns: Position of a message when grouped
+        public func getMessageGroupingPosition(currentIndex: Int) -> MessageGroupPosition {
+            
+            guard currentIndex < self.fullMessageList.count else { return .none }
+            
+            var prevMessage = self.fullMessageList.count - 1 != currentIndex
+            ? self.fullMessageList[currentIndex+1]
+            : nil
+            var currentMessage = self.fullMessageList[currentIndex]
+            var nextMessage = currentIndex != 0
+            ? self.fullMessageList[currentIndex-1]
+            : nil
+            
+            if !self.isTransformedList {
+                prevMessage = currentIndex != 0
+                ? self.fullMessageList[currentIndex-1]
+                : nil
+                currentMessage = self.fullMessageList[currentIndex]
+                nextMessage = self.fullMessageList.count - 1 != currentIndex
+                ? self.fullMessageList[currentIndex+1]
+                : nil
+            }
+            
+            
+            let succeededPrevMsg = prevMessage?.sendingStatus != .failed
+            ? prevMessage
+            : nil
+            let succeededCurrentMsg = currentMessage.sendingStatus != .failed
+            ? currentMessage
+            : nil
+            let succeededNextMsg = nextMessage?.sendingStatus != .failed
+            ? nextMessage
+            : nil
+            
+            // Unit : milliseconds
+            let prevTimestamp = Date
+                .sbu_from(succeededPrevMsg?.createdAt ?? -1)
+                .sbu_toString(dateFormat: SBUDateFormatSet.yyyyMMddhhmm)
+            
+            let currentTimestamp = Date
+                .sbu_from(succeededCurrentMsg?.createdAt ?? -1)
+                .sbu_toString(dateFormat: SBUDateFormatSet.yyyyMMddhhmm)
+            
+            let nextTimestamp = Date
+                .sbu_from(succeededNextMsg?.createdAt ?? -1)
+                .sbu_toString(dateFormat: SBUDateFormatSet.yyyyMMddhhmm)
+            
+            // Check sender
+            var prevSender = succeededPrevMsg?.sender?.userId ?? nil
+            var currentSender = succeededCurrentMsg?.sender?.userId ?? nil
+            var nextSender = succeededNextMsg?.sender?.userId ?? nil
+            
+            // Check thread info
+            if SBUGlobals.reply.replyType == .thread {
+                let prevThreadReplycount = succeededPrevMsg?.threadInfo.replyCount ?? 0
+                let currentThreadReplycount = succeededCurrentMsg?.threadInfo.replyCount ?? 0
+                let nextThreadReplycount = succeededNextMsg?.threadInfo.replyCount ?? 0
+                
+                if prevThreadReplycount > 0 {
+                    prevSender = nil
+                }
+                if currentThreadReplycount > 0 {
+                    currentSender = nil
+                }
+                if nextThreadReplycount > 0 {
+                    nextSender = nil
+                }
+            }
+            
+            if (prevSender != currentSender && nextSender != currentSender) || currentSender == nil {
+                return .none
+            }
+            else if prevSender == currentSender && nextSender == currentSender {
+                if prevTimestamp == nextTimestamp {
+                    return .middle
+                }
+                else if prevTimestamp == currentTimestamp {
+                    return .bottom
+                }
+                else if currentTimestamp == nextTimestamp {
+                    return .top
+                }
+            }
+            else if prevSender == currentSender && nextSender != currentSender {
+                return prevTimestamp == currentTimestamp ? .bottom : .none
+            }
+            else if prevSender != currentSender && nextSender == currentSender {
+                return currentTimestamp == nextTimestamp ? .top : .none
+            }
+            
+            return .none
         }
     }
 }
@@ -980,7 +1097,20 @@ extension SBUBaseChannelModule.List {
         let nextMessage = fullMessageList[currentIndex+1]
         
         let curCreatedAt = currentMessage.createdAt
-        let prevCreatedAt = nextMessage.createdAt
+        let nextCreatedAt = nextMessage.createdAt
+        
+        return Date.sbu_from(nextCreatedAt).isSameDay(as: Date.sbu_from(curCreatedAt))
+    }
+    
+    public func checkSameDayAsPrevMessage(currentIndex: Int, fullMessageList: [BaseMessage]) -> Bool {
+        guard currentIndex < fullMessageList.count,
+              currentIndex > 0 else { return false }
+        
+        let currentMessage = fullMessageList[currentIndex]
+        let prevMessage = fullMessageList[currentIndex-1]
+        
+        let curCreatedAt = currentMessage.createdAt
+        let prevCreatedAt = prevMessage.createdAt
         
         return Date.sbu_from(prevCreatedAt).isSameDay(as: Date.sbu_from(curCreatedAt))
     }

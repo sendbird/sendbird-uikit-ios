@@ -114,6 +114,9 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
             channelURL: channelURL,
             messageListParams: self.customizedMessageListParams
         )
+        
+        self.setupSendUserMessageCompletionHandlers()
+        self.setupSendFileMessageCompletionHandlers()
     }
     
     deinit {
@@ -122,7 +125,11 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
     
     
     // MARK: - Channel related
-    public override func loadChannel(channelURL: String, messageListParams: MessageListParams? = nil) {
+    
+    public override func loadChannel(channelURL: String,
+                                     messageListParams: MessageListParams? = nil,
+                                     completionHandler: ((BaseChannel?, SBError?) -> Void)? = nil)
+    {
         if let messageListParams = messageListParams {
             self.customizedMessageListParams = messageListParams
         } else if self.customizedMessageListParams == nil {
@@ -137,23 +144,32 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
         SendbirdUI.connectIfNeeded { user, error in
             if let error = error {
                 self.delegate?.didReceiveError(error, isBlocker: true)
+                completionHandler?(nil, error)
                 return
             }
             
             SBULog.info("[Request] Load channel: \(String(channelURL))")
             OpenChannel.getChannel(url: channelURL) { [weak self] channel, error in
-                guard let self = self else { return }
+                guard let self = self else {
+                    completionHandler?(nil, error)
+                    return
+                }
                 if let error = error {
                     SBULog.error("[Failed] Load channel request: \(error.localizedDescription)")
                     self.delegate?.didReceiveError(error, isBlocker: true)
+                    completionHandler?(nil, error)
                     return
                 }
                 
                 channel?.enter { [weak self] (error) in
-                    guard let self = self else { return }
+                    guard let self = self else {
+                        completionHandler?(nil, error)
+                        return
+                    }
                     if let error = error {
                         SBULog.error("[Failed] Enter channel request: \(error.localizedDescription)")
                         self.delegate?.baseChannelViewModel(self, shouldDismissForChannel: nil)
+                        completionHandler?(nil, error)
                         return
                     }
                     
@@ -161,6 +177,8 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
                     self.channel = channel
                     
                     self.refreshChannel()
+                    
+                    completionHandler?(channel, nil)
                     
                     let cachedMessages = self.flushCache(with: [])
                     self.loadInitialMessages(
@@ -271,7 +289,6 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
             SBULog.info("[Prev message response] \(messages.count) messages")
             
             self.hasMorePrevious = messages.count >= params.previousResultSize
-            self.updateLastUpdatedTimestamp(messages: messages)
             
             self.delegate?.baseChannelViewModel(
                 self,
@@ -279,6 +296,9 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
                 forContext: nil,
                 keepsScroll: false
             )
+            
+            self.updateLastUpdatedTimestamp(messages: messages)
+            
             self.upsertMessagesInList(messages: messages, needReload: true)
         }
     }
@@ -455,6 +475,33 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
         self.upsertMessagesInList(messages: messages, needReload: true)
     }
     
+    override func handlePendingResendableMessage<Message: BaseMessage>(_ message: Message?, _ error: SBError?) {
+        if let error = error {
+            self.pendingMessageManager.upsertPendingMessage(
+                channelURL: message?.channelURL,
+                message: message
+            )
+            
+            self.sortAllMessageList(needReload: true)
+            
+            self.baseDelegate?.didReceiveError(error, isBlocker: false)
+            
+            SBULog.error("[Failed] Resend failed user message request: \(error.localizedDescription)")
+            return
+            
+        } else {
+            self.pendingMessageManager.removePendingMessage(
+                channelURL: message?.channelURL,
+                requestId: message?.requestId
+            )
+            
+            guard let message = message else { return }
+            
+            SBULog.info("[Succeed] Resend failed file message: \(message.description)")
+            
+            self.upsertMessagesInList(messages: [message], needReload: true)
+        }
+    }
     
     // MARK: - Last Updated timestamp
     private func updateLastUpdatedTimestamp(messages: [BaseMessage]) {
@@ -464,16 +511,13 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
         var newTimestamp: Int64 = 0
         
         if self.hasNext() {
-            if let latestMessage = messages.first {
+            if let latestMessage = messages.last {
                 newTimestamp = latestMessage.createdAt
             }
         } else {
-            if let groupChannel = self.channel as? GroupChannel {
-                newTimestamp = groupChannel.lastMessage?.createdAt ?? currentTime
-            } else if self.channel is OpenChannel {
-                if let latestMessage = messages.first {
-                    newTimestamp = latestMessage.createdAt
-                }
+            // TODO: Remove after confirmation
+            if let latestMessage = messages.last {
+                newTimestamp = latestMessage.createdAt
             }
         }
         
@@ -667,6 +711,75 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
         SBULog.info("Loaded added messages : \(addedMessages.count), hasNext : \(String(describing: self.hasNext))")
         
         return hasMore
+    }
+    
+    
+    // MARK: - Message
+    open func setupSendUserMessageCompletionHandlers() {
+        self.sendUserMessageCompletionHandler = { [weak self] userMessage, error in
+            guard let self = self else { return }
+            guard self.channel is OpenChannel else { return }
+            
+            if let error = error {
+                self.pendingMessageManager.upsertPendingMessage(
+                    channelURL: userMessage?.channelURL,
+                    message: userMessage
+                )
+                
+                self.sortAllMessageList(needReload: true)
+                
+                self.baseDelegate?.didReceiveError(error)
+                SBULog.error("[Failed] Send user message request: \(error.localizedDescription)")
+                return
+            }
+            
+            self.pendingMessageManager.removePendingMessage(
+                channelURL: userMessage?.channelURL,
+                requestId: userMessage?.requestId
+            )
+            
+            guard let userMessage = userMessage else { return }
+            SBULog.info("[Succeed] Send user message: \(userMessage.description)")
+            self.upsertMessagesInList(messages: [userMessage], needReload: true)
+        }
+    }
+
+    open func setupSendFileMessageCompletionHandlers() {
+        self.sendFileMessageCompletionHandler = { [weak self] fileMessage, error in
+            guard let self = self else { return }
+            guard self.channel is OpenChannel else { return }
+            
+            if let error = error {
+                if let fileMessage = fileMessage, self.messageListParams.belongsTo(fileMessage) {
+                    self.pendingMessageManager.upsertPendingMessage(
+                        channelURL: fileMessage.channelURL,
+                        message: fileMessage
+                    )
+                }
+                
+                self.sortAllMessageList(needReload: true)
+
+                self.baseDelegate?.didReceiveError(error)
+                SBULog.error(
+                    """
+                    [Failed] Send file message request:
+                    \(error.localizedDescription)
+                    """
+                )
+                return
+            }
+            
+            self.pendingMessageManager.removePendingMessage(
+                channelURL: fileMessage?.channelURL,
+                requestId: fileMessage?.requestId
+            )
+            
+            guard let message = fileMessage else { return }
+            
+            SBULog.info("[Succeed] Send file message: \(message.description)")
+            
+            self.upsertMessagesInList(messages: [message], needReload: true)
+        }
     }
     
     

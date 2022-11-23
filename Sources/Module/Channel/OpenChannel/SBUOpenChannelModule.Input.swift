@@ -105,7 +105,10 @@ extension SBUOpenChannelModule {
             }
             
             let imageName = imageURL.lastPathComponent
-            guard let mimeType = SBUUtils.getMimeType(url: imageURL) else { return }
+            guard let mimeType = SBUUtils.getMimeType(url: imageURL) else {
+                SBULog.error("Failed to get mimeType")
+                return
+            }
             
             switch mimeType {
                 case "image/gif":
@@ -132,8 +135,8 @@ extension SBUOpenChannelModule {
                     self.delegate?.openChannelModule(
                         self,
                         didPickFileData: imageData,
-                        fileName: "\(Date().sbu_toString(dateFormat: SBUDateFormatSet.Message.fileNameFormat, localizedFormat: false)).jpg",
-                        mimeType: "image/jpeg"
+                        fileName: imageName,
+                        mimeType: mimeType
                     )
             }
         }
@@ -159,11 +162,14 @@ extension SBUOpenChannelModule {
         
         @available(iOS 14.0, *)
         open override func pickImageFile(itemProvider: NSItemProvider) {
-            itemProvider.loadItem(forTypeIdentifier: UTType.image.identifier, options: [:]) { url, error in
+            itemProvider.loadItem(forTypeIdentifier: UTType.image.identifier, options: [:]) { [weak self] url, error in
                 if itemProvider.canLoadObject(ofClass: UIImage.self) {
-                    itemProvider.loadObject(ofClass: UIImage.self) { [weak self] imageItem, error in
+                    itemProvider.loadObject(ofClass: UIImage.self) { imageItem, error in
                         guard let self = self else { return }
                         guard let originalImage = imageItem as? UIImage else { return }
+                        guard let imageURL = url as? URL else { return }
+                        guard let mimeType = SBUUtils.getMimeType(url: imageURL) else { return }
+                        
                         let image = originalImage
                             .fixedOrientation()
                             .resize(with: SBUGlobals.imageResizingSize)
@@ -173,12 +179,15 @@ extension SBUOpenChannelModule {
                             : 1.0
                         )
                         
-                        DispatchQueue.main.async { [self, imageData] in
+                        let fileExtension = imageURL.pathExtension
+                        let fileName = "\(Date().sbu_toString(dateFormat: SBUDateFormatSet.Message.fileNameFormat, localizedFormat: false)).\(fileExtension)"
+                        
+                        DispatchQueue.main.async { [self, imageData, mimeType, fileName] in
                             self.delegate?.openChannelModule(
                                 self,
                                 didPickFileData: imageData,
-                                fileName: "\(Date().sbu_toString(dateFormat: SBUDateFormatSet.Message.fileNameFormat, localizedFormat: false)).jpg",
-                                mimeType: "image/jpeg"
+                                fileName: fileName,
+                                mimeType: mimeType
                             )
                         }
                     }
@@ -189,17 +198,20 @@ extension SBUOpenChannelModule {
         @available(iOS 14.0, *)
         open override func pickGIFFile(itemProvider: NSItemProvider) {
             itemProvider.loadItem(forTypeIdentifier: UTType.gif.identifier, options: [:]) { [weak self] url, error in
-                guard let imageURL = url as? URL else { return }
                 guard let self = self else { return }
-                let imageName = imageURL.lastPathComponent
-                let gifData = try? Data(contentsOf: imageURL)
+                guard let imageURL = url as? URL else { return }
+                guard let mimeType = SBUUtils.getMimeType(url: imageURL) else { return }
                 
-                DispatchQueue.main.async { [self, gifData, imageName] in
+                let gifData = try? Data(contentsOf: imageURL)
+                let fileExtension = imageURL.pathExtension
+                let fileName = "\(Date().sbu_toString(dateFormat: SBUDateFormatSet.Message.fileNameFormat, localizedFormat: false)).\(fileExtension)"
+                
+                DispatchQueue.main.async { [self, gifData, mimeType, fileName] in
                     self.delegate?.openChannelModule(
                         self,
                         didPickFileData: gifData,
-                        fileName: imageName,
-                        mimeType: "image/gif"
+                        fileName: fileName,
+                        mimeType: mimeType
                     )
                 }
             }
@@ -249,12 +261,14 @@ extension SBUOpenChannelModule {
             }
         }
         
-        open override func pickImageData(_ data: Data) {
+        open override func pickImageData(_ data: Data, fileName: String? = nil, mimeType: String? = nil) {
+            let tempFileName = "\(Date().sbu_toString(dateFormat: SBUDateFormatSet.Message.fileNameFormat, localizedFormat: false)).jpg"
+            
             self.delegate?.openChannelModule(
                 self,
                 didPickFileData: data,
-                fileName: "\(Date().sbu_toString(dateFormat: SBUDateFormatSet.Message.fileNameFormat, localizedFormat: false)).jpg",
-                mimeType: "image/jpeg"
+                fileName: fileName ?? tempFileName,
+                mimeType: mimeType ?? "image/jpeg"
             )
         }
         

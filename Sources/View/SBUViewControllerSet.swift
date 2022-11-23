@@ -36,6 +36,8 @@ public class SBUViewControllerSet {
     public static var OpenModerationsViewController: SBUModerationsViewController.Type = SBUModerationsViewController.self
     
     public static var MessageSearchViewController: SBUMessageSearchViewController.Type = SBUMessageSearchViewController.self
+    
+    public static var MessageThreadViewController: SBUMessageThreadViewController.Type = SBUMessageThreadViewController.self
 }
 
 

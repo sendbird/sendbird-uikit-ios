@@ -78,11 +78,12 @@ class SBUDownloadManager {
                     activityVC.completionWithItemsHandler = { [weak parent] type, completed, _, _ in
                         // For iOS 13 issue
                         transparentVC.dismiss(animated: true, completion: nil)
-                        parent?.presentedViewController?.dismiss(animated: true, completion: nil)
-                        if completed {
-                            SBULog.info("[Succeed] File is saved.")
-                            SBUToastManager.showToast(parentVC: parent, type: .fileDownloadSuccess)
-                        }
+                        parent?.presentedViewController?.dismiss(animated: true, completion: {
+                            if completed {
+                                SBULog.info("[Succeed] File is saved.")
+                                SBUToastManager.showToast(parentVC: parent, type: .fileDownloadSuccess)
+                            }
+                        })
                     }
                     
                     if #available(iOS 13.0, *) {

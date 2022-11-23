@@ -110,7 +110,9 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
         // Set using reaction
         self.useReaction = configuration.useReaction
         
-        self.usingQuotedMessage = configuration.usingQuotedMessage
+        self.useQuotedMessage = configuration.useQuotedMessage
+        
+        self.useThreadInfo = configuration.useThreadInfo
         
         // Configure Content base message cell
         super.configure(with: configuration)

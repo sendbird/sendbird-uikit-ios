@@ -30,6 +30,12 @@ public protocol SBUBaseChannelModuleHeaderDelegate: SBUCommonDelegate {
     ///   - rightItem: Updated `rightBarButton` object.
     func baseChannelModule(_ headerComponent: SBUBaseChannelModule.Header, didUpdateRightItem rightItem: UIBarButtonItem?)
     
+    /// Called when `titleView` was selected.
+    /// - Parameters:
+    ///   - headerComponent: `SBUBaseChannelModule.Header` object
+    ///   - titleView: Selected `titleView` object.
+    func baseChannelModule(_ headerComponent: SBUBaseChannelModule.Header, didTapTitleView titleView: UIView?)
+    
     /// Called when `leftBarButton` was selected.
     /// - Parameters:
     ///   - headerComponent: `SBUBaseChannelModule.Header` object
@@ -38,7 +44,7 @@ public protocol SBUBaseChannelModuleHeaderDelegate: SBUCommonDelegate {
     
     /// Called when `rightBarButton` was selected.
     /// - Parameters:
-    ///   - headerComponent: `SBUGroupChannelListModule.Header` object
+    ///   - headerComponent: `SBUBaseChannelModule.Header` object
     ///   - rightItem: Selected `rightBarButton` object.
     func baseChannelModule(_ headerComponent: SBUBaseChannelModule.Header, didTapRightItem rightItem: UIBarButtonItem)
 }
@@ -104,6 +110,18 @@ extension SBUBaseChannelModule {
                 action: #selector(onTapRightBarButton)
             )
             return settingsButton
+        }()
+        
+        lazy var defaultEmptyBarButton: UIBarButtonItem = {
+            let backButton = UIBarButtonItem(
+                image: SBUIconSetType.iconEmpty.image(
+                    to: SBUIconSetType.Metric.defaultIconSize
+                ),
+                style: .plain,
+                target: self,
+                action: nil
+            )
+            return backButton
         }()
         
         

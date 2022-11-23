@@ -15,7 +15,7 @@ import PhotosUI
 
 
 @objcMembers
-open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelViewModelDelegate, SBUBaseChannelModuleHeaderDelegate, SBUBaseChannelModuleListDelegate, SBUBaseChannelModuleListDataSource, SBUBaseChannelModuleInputDelegate, SBUBaseChannelModuleInputDataSource, SBUBaseChannelViewModelDataSource, UIGestureRecognizerDelegate, UIViewControllerTransitioningDelegate, PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, UIDocumentPickerDelegate, UIDocumentInteractionControllerDelegate, SBUSelectablePhotoViewDelegate, SBUFileViewerDelegate, SBUCommonViewModelDelegate {
+open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelViewModelDelegate, SBUBaseChannelModuleHeaderDelegate, SBUBaseChannelModuleListDelegate, SBUBaseChannelModuleListDataSource, SBUBaseChannelModuleInputDelegate, SBUBaseChannelModuleInputDataSource, SBUBaseChannelViewModelDataSource, UIGestureRecognizerDelegate, UIViewControllerTransitioningDelegate, PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, UIDocumentPickerDelegate, UIDocumentInteractionControllerDelegate, SBUSelectablePhotoViewDelegate, SBUFileViewerDelegate, SBUCommonViewModelDelegate, SBUAlertViewDelegate {
     
     // MARK: - UI Properties (Public)
     public var baseHeaderComponent: SBUBaseChannelModule.Header?
@@ -54,6 +54,8 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     
     var scrollToInitialPositionHandler: (() -> Void)?
     
+    var isTransformedList: Bool = true
+    
     
     // MARK: - Lifecycle
     @available(*, unavailable)
@@ -61,9 +63,8 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         fatalError("Cannot use `init(coder:)`")
     }
     
-    @available(*, unavailable)
     public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        fatalError("Cannot use `init(nibName:bundle:)`")
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
     
     /// If you have channel object, use this initializer. If you have own message list params, please set it. If not set, it is used as the default value.
@@ -233,10 +234,10 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     }
     
     open override func setupStyles() {
-        self.setupStyle(theme: self.theme)
+        self.setupStyles(theme: self.theme)
     }
     
-    func setupStyle(theme: SBUChannelTheme) {
+    func setupStyles(theme: SBUChannelTheme) {
         self.setupNavigationBar(
             backgroundColor: self.theme.navigationBarTintColor,
             shadowColor: self.theme.navigationBarShadowColor
@@ -288,121 +289,17 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     
     // MARK: - Message: Menu
     
-    // TODO: UItableViewCell -> SBUBaseMessageCell
-    /// This function shows cell's menu.
-    ///
-    /// This is used when the reaction feature is activated.
-    /// This function configures the menu items using the `message` object.
-    ///
-    /// - Parameters:
-    ///   - cell: Message cell
-    ///   - message: Message object
-    /// - Since: 3.0.0
-    @available(*, deprecated, message: "Please use `showMessageMenuSheet(for:cell:)` in `SBUBaseChannelModule.List` instead.") // 3.1.2
-    public func showMenuViewController(_ cell: UITableViewCell, message: BaseMessage) {
-        guard let listComponent = self.baseListComponent else { return }
-        listComponent.showMessageMenuSheet(for: message, cell: cell)
-    }
-    
-    // TODO: UItableViewCell -> SBUBaseMessageCell
-    /// This function shows cell's menu. This is used when the reaction feature is activated.
-    /// - Parameters:
-    ///   - cell: Message cell
-    ///   - message: Message object
-    ///   - types: Type array of menu items to use
-    /// - Since: 1.2.5
-    @available(*, unavailable, message: "Please use `showMessageMenuSheet(for:cell:)` and `createMessageMenuItems(for:)` in `SBUBaseChannelModule.List` instead.") // 3.1.2
-    public func showMenuViewController(
-        _ cell: UITableViewCell,
-        message: BaseMessage,
-        types: [MessageMenuItem]?
-    ) {
-        guard let listComponent = self.baseListComponent else { return }
-        listComponent.showMessageMenuSheet(for: message, cell: cell)
-    }
-    
-    // TODO: UItableViewCell -> SBUBaseMessageCell
-    /// This function shows cell's menu.
-    ///
-    /// This is used when the reaction feature is inactivated.
-    /// This function configures the menu items using the `message` object.
-    /// - Parameters:
-    ///   - cell: Message cell
-    ///   - indexPath: IndexPath
-    ///   - message: Message object
-    /// - Since: 3.0.0
-    @available(*, deprecated, message: "Please use  `showMessageContextMenu(for:cell:forRowAt:)` in `SBUBaseChannelModule.List` instead.") // 3.1.2
-    open func showMenuModal(
-        _ cell: UITableViewCell,
-        indexPath: IndexPath,
-        message: BaseMessage
-    ) {
-        self.baseListComponent?.showMessageContextMenu(for: message, cell: cell, forRowAt: indexPath)
-    }
-    
-    // TODO: UItableViewCell -> SBUBaseMessageCell
-    /// This function shows cell's menu. This is used when the reaction feature is inactivated.
-    /// - Parameters:
-    ///   - cell: Message cell
-    ///   - indexPath: IndexPath
-    ///   - message: Message object
-    ///   - types: Type array of menu items to use
-    /// - Since: 1.2.5
-    @available(*, deprecated, message: "Please use  `showMessageContextMenu(for:cell:forRowAt:)` in `SBUBaseChannelModule.List` instead.") // 3.1.2
-    public func showMenuModal(
-        _ cell: UITableViewCell,
-        indexPath: IndexPath,
-        message: BaseMessage,
-        types: [MessageMenuItem]?
-    ) { self.baseListComponent?.showMessageContextMenu(for: message, cell: cell, forRowAt: indexPath) }
-    
-    /// This function shows cell's menu: retry, delete, cancel.
-    ///
-    /// This is used when selected failed message.
-    /// - Parameter message: Message object
-    /// - Since: 2.1.12
-    @available(*, deprecated, message: "Please use `showFailedMessageMenu(on:)` in `SBUBaseChannelModule.List`") // 3.1.2
-    public func showFailedMessageMenu(message: BaseMessage) {
-        let retryItem = SBUActionSheetItem(
-            title: SBUStringSet.Retry,
-            color: self.theme.menuItemTintColor
-        ) { [weak self] in
-            self?.baseViewModel?.resendMessage(failedMessage: message)
-            if let baseListComponent = self?.baseListComponent {
-                self?.baseChannelModuleDidTapScrollToButton(baseListComponent, animated: true)
-            }
-        }
-        let deleteItem = SBUActionSheetItem(
-            title: SBUStringSet.Delete,
-            color: self.theme.deleteItemColor
-        ) { [weak self] in
-            self?.baseViewModel?.deleteResendableMessage(message, needReload: true)
-        }
-        let cancelItem = SBUActionSheetItem(
-            title: SBUStringSet.Cancel,
-            color: self.theme.cancelItemColor,
-            completionHandler: nil
-        )
-        
-        SBUActionSheet.show(
-            items: [retryItem, deleteItem],
-            cancelItem: cancelItem
-        )
-    }
-    
-    /// This function shows delete message alert.
-    /// - Parameters:
-    ///   - message: message object to delete
-    ///   - oneTimetheme: One-time theme
-    /// - Since: 3.0.0
-    @available(*, deprecated, message: "Please use `showDeleteMessageAlert(on:oneTimeTheme:)` in `SBUBaseChannelModule.List`") // 3.1.2
-    public func showDeleteMessageMenu(message: BaseMessage,
-                                      oneTimetheme: SBUComponentTheme? = nil) {
-        self.baseListComponent?.showDeleteMessageAlert(on: message, oneTimeTheme: oneTimetheme)
-    }
-    
-    /// Shows channel settings view controller such as `SBUChannelSettingsViewController`
+    /// Shows channel settings view controller such as `SBUGroupChannelSettingsViewController`
     open func showChannelSettings() { }
+    
+    /// This function shows message thread view controller.
+    /// - Parameters:
+    ///   - channelURL: Channel url string
+    ///   - parentMessageId: Parent message's Id
+    ///   - parentMessageCreatedAt: Parent message's created time
+    ///   - startingPoint: If not set this value, message thread list will be exposed from the first message. If you want to  expose the most recent messages first, use the `.max` value.
+    /// - Since: 3.3.0
+    open func showMessageThread(channelURL: String, parentMessageId: Int64, parentMessageCreatedAt: Int64? = 0, startingPoint: Int64? = 0) { }
     
     /// This function presents `SBUEmojiListViewController`
     /// - Parameter message: `BaseMessage` object
@@ -422,17 +319,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         }
         self.present(emojiListVC, animated: true)
     }
-    
-    /// This function creates message menu items with cell and message.
-    /// - Parameters:
-    ///   - cell: Sendbird's messageCell object
-    ///   - message: `BaseMessage` object
-    /// - Returns: message menu type array
-    @available(*, unavailable, message: "Please use `SBUMenuItem` and  `createMessageMenuItems(for:)` in `SBUBaseChannelModule.List` instead.") // 3.1.2
-    public func createMessageMenuTypes(_ cell: UITableViewCell,
-                                       message: BaseMessage) -> [MessageMenuItem]? {
-        return nil
-    }
+
     
     // MARK: - TableView
     
@@ -582,9 +469,9 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         baseListComponent.updateEmptyView(type: emptyViewType)
         
         defer {
-            if !initialLoad {
+            if !initialLoad && !(self.baseViewModel?.isScrollToInitialPositionFinish ?? false) {
                 self.scrollToInitialPositionHandler?()
-                self.scrollToInitialPositionHandler = nil
+                self.baseViewModel?.isScrollToInitialPositionFinish = true
             }
         }
         
@@ -596,6 +483,13 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         guard let lastSeenIndexPath = self.lastSeenIndexPath else {
             let hidden = baseListComponent.isScrollNearByBottom
             baseListComponent.setScrollBottomView(hidden: hidden)
+            
+            if baseListComponent.isScrollNearByBottom,
+                let fullMessageList = self.baseViewModel?.fullMessageList,
+               !self.isTransformedList {
+                self.baseListComponent?.scrollTableView(to: fullMessageList.count - 1)
+            }
+            
             return
         }
         
@@ -657,6 +551,9 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         self.navigationItem.titleView = titleStackView
     }
     
+    open func baseChannelModule(_ headerComponent: SBUBaseChannelModule.Header, didTapTitleView titleView: UIView?) {
+    }
+    
     open func baseChannelModule(_ headerComponent: SBUBaseChannelModule.Header, didUpdateLeftItem leftItem: UIBarButtonItem?) {
         self.navigationItem.leftBarButtonItem = leftItem
     }
@@ -688,7 +585,10 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
            baseViewModel.hasPrevious() {
             if let openChannelViewModel = baseViewModel as? SBUOpenChannelViewModel {
                 openChannelViewModel.loadPrevMessages(timestamp: sentMessageList.last?.createdAt)
-            } else {
+            } else if let messageThreadViewModel = baseViewModel as? SBUMessageThreadViewModel {
+                messageThreadViewModel.loadPrevMessages(timestamp: sentMessageList.last?.createdAt)
+            }
+                else {
                 baseViewModel.loadPrevMessages()
             }
         } else if indexPath.row < 5,
@@ -767,7 +667,24 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     
     open func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didTapReplyMessage message: BaseMessage) {
         guard message.parentMessage == nil else { return }
-        self.setMessageInputViewMode(.quoteReply, message: message)
+        
+        switch SBUGlobals.reply.replyType {
+        case .quoteReply:
+            self.setMessageInputViewMode(.quoteReply, message: message)
+        case .thread:
+            if let channelURL = self.baseViewModel?.channelURL {
+                // If it is the parent message itself, use `messageId` rather than `parentMessageId`.
+                self.showMessageThread(
+                    channelURL: channelURL,
+                    parentMessageId: message.messageId,
+                    parentMessageCreatedAt: message.createdAt,
+                    startingPoint: .max
+                )
+            }
+            break
+        default:
+            break
+        }
     }
     
     open func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didDismissMenuForCell cell: UITableViewCell) {
@@ -832,7 +749,15 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
                 self.baseViewModel?.reloadMessageList()
                 self.baseListComponent?.scrollTableView(to: 0)
             } else {
-                let indexPath = IndexPath(row: 0, section: 0)
+                var indexPath = IndexPath(row: 0, section: 0)
+                
+                if !self.isTransformedList,
+                    let fullMessageCount = self.baseViewModel?.fullMessageList.count {
+                    indexPath = IndexPath(item: fullMessageCount - 1, section: 0)
+                    
+                    self.baseViewModel?.reloadMessageList()
+                }
+                
                 self.baseListComponent?.scrollTableView(to: indexPath.row, animated: animated)
                 self.updateNewMessageInfo(hidden: true)
                 self.baseListComponent?.setScrollBottomView(hidden: true)
@@ -891,6 +816,10 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     
     open func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, parentViewControllerDisplayMenuItems menuItems: [SBUMenuItem]) -> UIViewController? {
         return self
+    }
+    
+    open func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, pendingMessageManagerForCell cell: UITableViewCell) -> (SBUPendingMessageManager?, Bool?) {
+        return (self.baseViewModel?.pendingMessageManager, self.baseViewModel?.isThreadMessageMode)
     }
     
     
@@ -1013,7 +942,8 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
             message: SBUStringSet.Alert_Allow_PhotoLibrary_Access_Message,
             oneTimetheme: SBUTheme.componentTheme,
             confirmButtonItem: settingButton,
-            cancelButtonItem: cancelButton
+            cancelButtonItem: cancelButton,
+            delegate: self
         )
     }
     
@@ -1104,20 +1034,12 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
                 
                 switch mediaType {
                 case kUTTypeImage:
-                    if let inputComponent = self.baseInputComponent as? SBUGroupChannelModule.Input {
-                        inputComponent.pickImageFile(info: info)
-                        return
-                    }
-                    if let inputComponent = self.baseInputComponent as? SBUOpenChannelModule.Input {
+                    if let inputComponent = self.baseInputComponent {
                         inputComponent.pickImageFile(info: info)
                         return
                     }
                 case kUTTypeMovie:
-                    if let inputComponent = self.baseInputComponent as? SBUGroupChannelModule.Input {
-                        inputComponent.pickVideoFile(info: info)
-                        return
-                    }
-                    if let inputComponent = self.baseInputComponent as? SBUOpenChannelModule.Input {
+                    if let inputComponent = self.baseInputComponent {
                         inputComponent.pickVideoFile(info: info)
                         return
                     }
@@ -1143,37 +1065,29 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         
         results.forEach {
             let itemProvider = $0.itemProvider
-            // image
-            if itemProvider.hasItemConformingToTypeIdentifier(UTType.image.identifier) {
-                if let inputComponent = self.baseInputComponent as? SBUGroupChannelModule.Input {
-                    inputComponent.pickImageFile(itemProvider: itemProvider)
-                    return
-                }
-                if let inputComponent = self.baseInputComponent as? SBUOpenChannelModule.Input {
-                    inputComponent.pickImageFile(itemProvider: itemProvider)
+            
+            /// !! Warining !!
+            /// Since the image identifier includes the gif identifier, the check of the gif type should take precedence over the image type comparison.
+            
+            // GIF
+            if itemProvider.hasItemConformingToTypeIdentifier(UTType.gif.identifier) {
+                if let inputComponent = self.baseInputComponent {
+                    inputComponent.pickGIFFile(itemProvider: itemProvider)
                     return
                 }
             }
             
-            // GIF
-            else if itemProvider.hasItemConformingToTypeIdentifier(UTType.gif.identifier) {
-                if let inputComponent = self.baseInputComponent as? SBUGroupChannelModule.Input {
-                    inputComponent.pickGIFFile(itemProvider: itemProvider)
-                    return
-                }
-                if let inputComponent = self.baseInputComponent as? SBUOpenChannelModule.Input {
-                    inputComponent.pickGIFFile(itemProvider: itemProvider)
+            // image
+            else if itemProvider.hasItemConformingToTypeIdentifier(UTType.image.identifier) {
+                if let inputComponent = self.baseInputComponent {
+                    inputComponent.pickImageFile(itemProvider: itemProvider)
                     return
                 }
             }
             
             // video
             else if itemProvider.hasItemConformingToTypeIdentifier(UTType.movie.identifier) {
-                if let inputComponent = self.baseInputComponent as? SBUGroupChannelModule.Input {
-                    inputComponent.pickVideoFile(itemProvider: itemProvider)
-                    return
-                }
-                if let inputComponent = self.baseInputComponent as? SBUOpenChannelModule.Input {
+                if let inputComponent = self.baseInputComponent {
                     inputComponent.pickVideoFile(itemProvider: itemProvider)
                     return
                 }
@@ -1185,11 +1099,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     // MARK: - UIDocumentPickerDelegate
     open func documentPicker(_ controller: UIDocumentPickerViewController,
                              didPickDocumentsAt urls: [URL]) {
-        if let inputComponent = self.baseInputComponent as? SBUGroupChannelModule.Input {
-            inputComponent.pickDocumentFile(documentURLs: urls)
-            return
-        }
-        if let inputComponent = self.baseInputComponent as? SBUOpenChannelModule.Input {
+        if let inputComponent = self.baseInputComponent {
             inputComponent.pickDocumentFile(documentURLs: urls)
             return
         }
@@ -1204,25 +1114,20 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     // MARK: - SBUSelectablePhotoViewDelegate
     /// Called when the image is picked from `SBUSelectablePhotoViewController`.
     /// - Parameter data: The image data.
-    open func didTapSendImageData(_ data: Data) {
-        if let inputComponent = self.baseInputComponent as? SBUGroupChannelModule.Input {
-            inputComponent.pickImageData(data)
+    /// - Parameter fileName: The file name.
+    open func didTapSendImageData(_ data: Data, fileName: String? = nil, mimeType: String? = nil) {
+        if let inputComponent = self.baseInputComponent {
+            inputComponent.pickImageData(data, fileName: fileName, mimeType: mimeType)
             return
-        }
-        if let inputComponent = self.baseInputComponent as? SBUOpenChannelModule.Input {
-            inputComponent.pickImageData(data)
         }
     }
     
     /// Called when the video is picked from `SBUSelectablePhotoViewController`
     /// - Parameter url: The URL of the video
     open func didTapSendVideoURL(_ url: URL) {
-        if let inputComponent = self.baseInputComponent as? SBUGroupChannelModule.Input {
+        if let inputComponent = self.baseInputComponent {
             inputComponent.pickVideoURL(url)
             return
-        }
-        if let inputComponent = self.baseInputComponent as? SBUOpenChannelModule.Input {
-            inputComponent.pickVideoURL(url)
         }
     }
     
@@ -1234,6 +1139,8 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         self.baseViewModel?.deleteMessage(message: message)
     }
     
+    // MARK: - SBUAlertViewDelegate
+    open func didDismissAlertView() { }
     
     // MARK: - SBUCommonViewModelDelegate
     open func shouldUpdateLoadingState(_ isLoading: Bool) {
@@ -1248,5 +1155,132 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         }
         
         self.errorHandler(error?.localizedDescription)
+    }
+    
+    
+    // MARK: - Deprecated, Unavailable
+    
+    /// This function creates message menu items with cell and message.
+    /// - Parameters:
+    ///   - cell: Sendbird's messageCell object
+    ///   - message: `BaseMessage` object
+    /// - Returns: message menu type array
+    @available(*, unavailable, message: "Please use `SBUMenuItem` and  `createMessageMenuItems(for:)` in `SBUBaseChannelModule.List` instead.") // 3.1.2
+    public func createMessageMenuTypes(_ cell: UITableViewCell,
+                                       message: BaseMessage) -> [MessageMenuItem]? {
+        return nil
+    }
+    
+    // TODO: UItableViewCell -> SBUBaseMessageCell
+    /// This function shows cell's menu.
+    ///
+    /// This is used when the reaction feature is activated.
+    /// This function configures the menu items using the `message` object.
+    ///
+    /// - Parameters:
+    ///   - cell: Message cell
+    ///   - message: Message object
+    /// - Since: 3.0.0
+    @available(*, deprecated, message: "Please use `showMessageMenuSheet(for:cell:)` in `SBUBaseChannelModule.List` instead.") // 3.1.2
+    public func showMenuViewController(_ cell: UITableViewCell, message: BaseMessage) {
+        guard let listComponent = self.baseListComponent else { return }
+        listComponent.showMessageMenuSheet(for: message, cell: cell)
+    }
+    
+    // TODO: UItableViewCell -> SBUBaseMessageCell
+    /// This function shows cell's menu. This is used when the reaction feature is activated.
+    /// - Parameters:
+    ///   - cell: Message cell
+    ///   - message: Message object
+    ///   - types: Type array of menu items to use
+    /// - Since: 1.2.5
+    @available(*, unavailable, message: "Please use `showMessageMenuSheet(for:cell:)` and `createMessageMenuItems(for:)` in `SBUBaseChannelModule.List` instead.") // 3.1.2
+    public func showMenuViewController(
+        _ cell: UITableViewCell,
+        message: BaseMessage,
+        types: [MessageMenuItem]?
+    ) {
+        guard let listComponent = self.baseListComponent else { return }
+        listComponent.showMessageMenuSheet(for: message, cell: cell)
+    }
+    
+    // TODO: UItableViewCell -> SBUBaseMessageCell
+    /// This function shows cell's menu.
+    ///
+    /// This is used when the reaction feature is inactivated.
+    /// This function configures the menu items using the `message` object.
+    /// - Parameters:
+    ///   - cell: Message cell
+    ///   - indexPath: IndexPath
+    ///   - message: Message object
+    /// - Since: 3.0.0
+    @available(*, deprecated, message: "Please use  `showMessageContextMenu(for:cell:forRowAt:)` in `SBUBaseChannelModule.List` instead.") // 3.1.2
+    open func showMenuModal(
+        _ cell: UITableViewCell,
+        indexPath: IndexPath,
+        message: BaseMessage
+    ) {
+        self.baseListComponent?.showMessageContextMenu(for: message, cell: cell, forRowAt: indexPath)
+    }
+    
+    // TODO: UItableViewCell -> SBUBaseMessageCell
+    /// This function shows cell's menu. This is used when the reaction feature is inactivated.
+    /// - Parameters:
+    ///   - cell: Message cell
+    ///   - indexPath: IndexPath
+    ///   - message: Message object
+    ///   - types: Type array of menu items to use
+    /// - Since: 1.2.5
+    @available(*, deprecated, message: "Please use  `showMessageContextMenu(for:cell:forRowAt:)` in `SBUBaseChannelModule.List` instead.") // 3.1.2
+    public func showMenuModal(
+        _ cell: UITableViewCell,
+        indexPath: IndexPath,
+        message: BaseMessage,
+        types: [MessageMenuItem]?
+    ) { self.baseListComponent?.showMessageContextMenu(for: message, cell: cell, forRowAt: indexPath) }
+    
+    /// This function shows cell's menu: retry, delete, cancel.
+    ///
+    /// This is used when selected failed message.
+    /// - Parameter message: Message object
+    /// - Since: 2.1.12
+    @available(*, deprecated, message: "Please use `showFailedMessageMenu(on:)` in `SBUBaseChannelModule.List`") // 3.1.2
+    public func showFailedMessageMenu(message: BaseMessage) {
+        let retryItem = SBUActionSheetItem(
+            title: SBUStringSet.Retry,
+            color: self.theme.menuItemTintColor
+        ) { [weak self] in
+            self?.baseViewModel?.resendMessage(failedMessage: message)
+            if let baseListComponent = self?.baseListComponent {
+                self?.baseChannelModuleDidTapScrollToButton(baseListComponent, animated: true)
+            }
+        }
+        let deleteItem = SBUActionSheetItem(
+            title: SBUStringSet.Delete,
+            color: self.theme.deleteItemColor
+        ) { [weak self] in
+            self?.baseViewModel?.deleteResendableMessage(message, needReload: true)
+        }
+        let cancelItem = SBUActionSheetItem(
+            title: SBUStringSet.Cancel,
+            color: self.theme.cancelItemColor,
+            completionHandler: nil
+        )
+        
+        SBUActionSheet.show(
+            items: [retryItem, deleteItem],
+            cancelItem: cancelItem
+        )
+    }
+    
+    /// This function shows delete message alert.
+    /// - Parameters:
+    ///   - message: message object to delete
+    ///   - oneTimetheme: One-time theme
+    /// - Since: 3.0.0
+    @available(*, deprecated, message: "Please use `showDeleteMessageAlert(on:oneTimeTheme:)` in `SBUBaseChannelModule.List`") // 3.1.2
+    public func showDeleteMessageMenu(message: BaseMessage,
+                                      oneTimetheme: SBUComponentTheme? = nil) {
+        self.baseListComponent?.showDeleteMessageAlert(on: message, oneTimeTheme: oneTimetheme)
     }
 }

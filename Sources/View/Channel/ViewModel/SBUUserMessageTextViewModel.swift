@@ -44,6 +44,11 @@ public struct SBUUserMessageTextViewModel {
         return mentionAttributes
     }
     
+    public var hasMentionedMessage: Bool {
+        guard let message = message else { return false }
+        return message.mentionedMessageTemplate != nil && message.mentionedMessageTemplate != ""
+    }
+    
     public init(
         message: BaseMessage?,
         position: MessagePosition = .right,
@@ -113,9 +118,9 @@ public struct SBUUserMessageTextViewModel {
         self.attributedText = attributedString
     }
     
+    @available(*, deprecated, renamed: "hasMentionedMessage") // 3.3.0
     public func haveMentionedMessage() -> Bool {
-        guard let message = message else { return false }
-        return message.mentionedMessageTemplate != nil && message.mentionedMessageTemplate != ""
+        return hasMentionedMessage
     }
     
     public func addhighlightIfNeeded(with attributedString: NSMutableAttributedString) {

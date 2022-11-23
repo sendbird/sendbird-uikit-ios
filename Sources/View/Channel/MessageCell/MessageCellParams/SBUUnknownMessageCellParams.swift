@@ -16,7 +16,7 @@ public class SBUUnknownMessageCellParams: SBUBaseMessageCellParams {
     public let useReaction: Bool
     public let withTextView: Bool = false
     
-    public init(message: BaseMessage, hideDateView: Bool, groupPosition: MessageGroupPosition = .none, receiptState: SBUMessageReceiptState = .none, useReaction: Bool) {
+    public init(message: BaseMessage, hideDateView: Bool, groupPosition: MessageGroupPosition = .none, receiptState: SBUMessageReceiptState = .none, useReaction: Bool, isThreadMessage: Bool = false, joinedAt: Int64 = 0) {
         self.useReaction = useReaction
         
         var messagePosition: MessagePosition = .left
@@ -28,7 +28,9 @@ public class SBUUnknownMessageCellParams: SBUBaseMessageCellParams {
             hideDateView: hideDateView,
             messagePosition: messagePosition,
             groupPosition: groupPosition,
-            receiptState: receiptState
+            receiptState: receiptState,
+            isThreadMessage: isThreadMessage,
+            joinedAt: joinedAt
         )
     }
 }

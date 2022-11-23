@@ -31,7 +31,8 @@ public class SBUQuotedBaseMessageViewParams {
     public let text: String?
     
     /// If `true`, the message cell shows its quoted message view.
-    public let usingQuotedMessage: Bool
+    public let useQuotedMessage: Bool
+    
     
     // MARK: Read-only properties for file message
     
@@ -73,17 +74,24 @@ public class SBUQuotedBaseMessageViewParams {
     
     /// The creation time of the quoted message
     /// - Since: 3.2.3
-    public var quotedMessageCreatedAt: Int64?
+    public private(set) var quotedMessageCreatedAt: Int64?
     
+    /// The creation time of the message.
+    /// - Since: 3.3.0
+    public private(set) var messageCreatedAt: Int64?
+    
+    /// Time the current user joined the channel.
+    /// - Since: 3.3.0
+    public private(set) var joinedAt: Int64 = 0
+
     
     // MARK: - Internal (only for Swift)
     let messageType: QuotedMessageType
     
     let requestId: String?
     
-    public init(message: BaseMessage, position: MessagePosition, usingQuotedMessage: Bool) {
+    public init(message: BaseMessage, position: MessagePosition, useQuotedMessage: Bool, joinedAt: Int64 = 0) {
         self.messageId = message.parentMessageId
-        self.text = message.parentMessage?.message ?? ""
         if let quotedMessageSender = message.parentMessage?.sender {
             let isRepliedToMe = quotedMessageSender.userId == SBUGlobals.currentUser?.userId
             self.quotedMessageNickname = isRepliedToMe
@@ -111,35 +119,47 @@ public class SBUQuotedBaseMessageViewParams {
             self.messageType = .userMessage
         }
         self.messagePosition = position
-        self.usingQuotedMessage = usingQuotedMessage
+        self.useQuotedMessage = useQuotedMessage
         self.requestId = message.requestId
         
         if let parentMessage = message.parentMessage {
             self.quotedMessageCreatedAt = parentMessage.createdAt
         }
+        
+        self.messageCreatedAt = message.createdAt
+        
+        self.joinedAt = joinedAt
+        
+        if (message.parentMessage?.createdAt ?? 0) < (joinedAt * 1000)
+            && SBUGlobals.reply.replyType == .thread
+        {
+            self.text = SBUStringSet.Message_Unavailable
+        } else {
+            self.text = message.parentMessage?.message ?? ""
+        }
     }
     
     // MARK: Test model
-    public init(messageId: Int64, messagePosition: MessagePosition, quotedMessageNickname: String, replierNickname: String, text: String, usingQuotedMessage: Bool = true, quotedMessageCreatedAt: Int64) {
+    public init(messageId: Int64, messagePosition: MessagePosition, quotedMessageNickname: String, replierNickname: String, text: String, useQuotedMessage: Bool = true, quotedMessageCreatedAt: Int64) {
         self.messageId = messageId
         self.messagePosition = messagePosition
         self.quotedMessageNickname = quotedMessageNickname
         self.replierNickname = replierNickname
         self.text = text
         self.messageType = .userMessage
-        self.usingQuotedMessage = usingQuotedMessage
+        self.useQuotedMessage = useQuotedMessage
         self.requestId = nil
         self.quotedMessageCreatedAt = quotedMessageCreatedAt
     }
     
-    public init(messageId: Int64, messagePosition: MessagePosition, quotedMessageNickname: String, replierNickname: String, name: String, type: String, urlString: String, usingQuotedMessage: Bool = true, quotedMessageCreatedAt: Int64) {
+    public init(messageId: Int64, messagePosition: MessagePosition, quotedMessageNickname: String, replierNickname: String, name: String, type: String, urlString: String, useQuotedMessage: Bool = true, quotedMessageCreatedAt: Int64) {
         self.messageId = messageId
         self.messagePosition = messagePosition
         self.quotedMessageNickname = quotedMessageNickname
         self.replierNickname = replierNickname
         self.text = nil
         self.messageType = .fileMessage(name, type, urlString)
-        self.usingQuotedMessage = usingQuotedMessage
+        self.useQuotedMessage = useQuotedMessage
         self.requestId = nil
         self.quotedMessageCreatedAt = quotedMessageCreatedAt
     }

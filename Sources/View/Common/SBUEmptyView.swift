@@ -43,6 +43,8 @@ open class SBUEmptyView: SBUView {
     
     public var isOverlay = false
     
+    public var emptyViewTopConstraint: NSLayoutConstraint?
+    
 
     // MARK: - Properties (Private)
     
@@ -53,6 +55,9 @@ open class SBUEmptyView: SBUView {
         stackView.alignment = .center
         return stackView
     }()
+    
+    var topMargin = UIView()
+    var bottomMargin = UIView()
     
     
     // MARK: - Lifecycle
@@ -72,10 +77,13 @@ open class SBUEmptyView: SBUView {
     open override func setupViews() {
         super.setupViews()
         
-        self.stackView.alignment = .center
-        self.stackView.addArrangedSubview(self.statusImageView)
-        self.stackView.addArrangedSubview(self.statusLabel)
-        self.stackView.addArrangedSubview(self.retryButton)
+        self.stackView.setVStack([
+            self.topMargin,
+            self.statusImageView,
+            self.statusLabel,
+            self.retryButton,
+            self.bottomMargin
+        ])
         self.retryButton.isHidden = true
         self.addSubview(stackView)
         self.isHidden = true
@@ -84,18 +92,27 @@ open class SBUEmptyView: SBUView {
     open override func setupLayouts() {
         super.setupLayouts()
         
-        self.stackView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            self.stackView.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: 0),
-            self.stackView.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: 0)
-        ])
+        self.topMargin.translatesAutoresizingMaskIntoConstraints = false
+        self.bottomMargin.translatesAutoresizingMaskIntoConstraints = false
+        self.topMargin.heightAnchor.constraint(equalTo: self.bottomMargin.heightAnchor, multiplier: 1.0).isActive = true
+        self.topMargin.sbu_constraint_greaterThan(height: 0)
+        self.topMargin.sbu_constraint(width: self.frame.width)
+        self.bottomMargin.sbu_constraint(width: self.frame.width)
         
-        NSLayoutConstraint.activate([
-            self.stackView.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 0),
-            self.stackView.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: 0)
-        ])
+        self.stackView.sbu_constraint(equalTo: self, leading: 0, trailing: 0, bottom: 0)
         
         self.statusImageView.setConstraint(width: 60.0, height: 60.0)
+        
+        self.updateTopAnchorConstraint(constant: 0)
+    }
+    
+    open func updateTopAnchorConstraint(constant: CGFloat) {
+        self.emptyViewTopConstraint?.isActive = false
+        self.emptyViewTopConstraint = self.stackView.topAnchor.constraint(
+            equalTo: self.topAnchor,
+            constant: constant
+        )
+        self.emptyViewTopConstraint?.isActive = true
     }
     
     open override func setupStyles() {

@@ -186,6 +186,7 @@ extension SBUGroupChannelModule {
             
             guard let imageURL = tempImageURL else {
                 let originalImage = info[.originalImage] as? UIImage
+                // TODO: need to improved. (mimetype)
                 // for Camera capture
                 guard let image = originalImage?
                         .fixedOrientation()
@@ -196,21 +197,19 @@ extension SBUGroupChannelModule {
                     SBUGlobals.imageCompressionRate : 1.0
                 )
                 
-                let parentMessage = self.currentQuotedMessage
-                
                 self.delegate?.groupChannelModule(
                     self,
                     didPickFileData: imageData,
                     fileName: "\(Date().sbu_toString(dateFormat: SBUDateFormatSet.Message.fileNameFormat, localizedFormat: false)).jpg",
                     mimeType: "image/jpeg",
-                    parentMessage: parentMessage
+                    parentMessage: self.currentQuotedMessage
                 )
                 return
             }
             
             let imageName = imageURL.lastPathComponent
             guard let mimeType = SBUUtils.getMimeType(url: imageURL) else {
-                SBULog.error("Failed to get mimeType from `SBUUtils.getMimeType(url:)`")
+                SBULog.error("Failed to get mimeType")
                 return
             }
             
@@ -218,14 +217,12 @@ extension SBUGroupChannelModule {
                 case "image/gif":
                     let gifData = try? Data(contentsOf: imageURL)
                     
-                    let parentMessage = self.currentQuotedMessage
-                    
                     self.delegate?.groupChannelModule(
                         self,
                         didPickFileData: gifData,
                         fileName: imageName,
                         mimeType: mimeType,
-                        parentMessage: parentMessage
+                        parentMessage: self.currentQuotedMessage
                     )
                 default:
                     let originalImage = info[.originalImage] as? UIImage
@@ -238,13 +235,12 @@ extension SBUGroupChannelModule {
                         SBUGlobals.imageCompressionRate : 1.0
                     )
                     
-                    let parentMessage = self.currentQuotedMessage
                     self.delegate?.groupChannelModule(
                         self,
                         didPickFileData: imageData,
-                        fileName: "\(Date().sbu_toString(dateFormat: SBUDateFormatSet.Message.fileNameFormat, localizedFormat: false)).jpg",
-                        mimeType: "image/jpeg",
-                        parentMessage: parentMessage
+                        fileName: imageName,
+                        mimeType: mimeType,
+                        parentMessage: self.currentQuotedMessage
                     )
             }
         }
@@ -274,11 +270,14 @@ extension SBUGroupChannelModule {
         
         @available(iOS 14.0, *)
         open override func pickImageFile(itemProvider: NSItemProvider) {
-            itemProvider.loadItem(forTypeIdentifier: UTType.image.identifier, options: [:]) { url, error in
+            itemProvider.loadItem(forTypeIdentifier: UTType.image.identifier, options: [:]) { [weak self] url, error in
                 if itemProvider.canLoadObject(ofClass: UIImage.self) {
-                    itemProvider.loadObject(ofClass: UIImage.self) { [weak self] imageItem, error in
+                    itemProvider.loadObject(ofClass: UIImage.self) { imageItem, error in
                         guard let self = self else { return }
                         guard let originalImage = imageItem as? UIImage else { return }
+                        guard let imageURL = url as? URL else { return }
+                        guard let mimeType = SBUUtils.getMimeType(url: imageURL) else { return }
+                        
                         let image = originalImage
                             .fixedOrientation()
                             .resize(with: SBUGlobals.imageResizingSize)
@@ -288,15 +287,16 @@ extension SBUGroupChannelModule {
                             : 1.0
                         )
                         
-                        let parentMessage = self.currentQuotedMessage
+                        let fileExtension = imageURL.pathExtension
+                        let fileName = "\(Date().sbu_toString(dateFormat: SBUDateFormatSet.Message.fileNameFormat, localizedFormat: false)).\(fileExtension)"
                         
-                        DispatchQueue.main.async { [self, imageData, parentMessage] in
+                        DispatchQueue.main.async { [self, imageData, mimeType, fileName] in
                             self.delegate?.groupChannelModule(
                                 self,
                                 didPickFileData: imageData,
-                                fileName: "\(Date().sbu_toString(dateFormat: SBUDateFormatSet.Message.fileNameFormat, localizedFormat: false)).jpg",
-                                mimeType: "image/jpeg",
-                                parentMessage: parentMessage
+                                fileName: fileName,
+                                mimeType: mimeType,
+                                parentMessage: self.currentQuotedMessage
                             )
                         }
                     }
@@ -307,20 +307,21 @@ extension SBUGroupChannelModule {
         @available(iOS 14.0, *)
         open override func pickGIFFile(itemProvider: NSItemProvider) {
             itemProvider.loadItem(forTypeIdentifier: UTType.gif.identifier, options: [:]) { [weak self] url, error in
-                guard let imageURL = url as? URL else { return }
                 guard let self = self else { return }
-                let imageName = imageURL.lastPathComponent
+                guard let imageURL = url as? URL else { return }
+                guard let mimeType = SBUUtils.getMimeType(url: imageURL) else { return }
+                
                 let gifData = try? Data(contentsOf: imageURL)
+                let fileExtension = imageURL.pathExtension
+                let fileName = "\(Date().sbu_toString(dateFormat: SBUDateFormatSet.Message.fileNameFormat, localizedFormat: false)).\(fileExtension)"
                 
-                let parentMessage = self.currentQuotedMessage
-                
-                DispatchQueue.main.async { [self, gifData, parentMessage] in
+                DispatchQueue.main.async { [self, gifData, mimeType, fileName] in
                     self.delegate?.groupChannelModule(
                         self,
                         didPickFileData: gifData,
-                        fileName: imageName,
-                        mimeType: "image/gif",
-                        parentMessage: parentMessage
+                        fileName: fileName,
+                        mimeType: mimeType,
+                        parentMessage: self.currentQuotedMessage
                     )
                 }
             }
@@ -336,15 +337,13 @@ extension SBUGroupChannelModule {
                     let videoName = videoURL.lastPathComponent
                     guard let mimeType = SBUUtils.getMimeType(url: videoURL) else { return }
                     
-                    let parentMessage = self.currentQuotedMessage
-                    
-                    DispatchQueue.main.async { [self, videoFileData, videoName, mimeType, parentMessage] in
+                    DispatchQueue.main.async { [self, videoFileData, videoName, mimeType] in
                         self.delegate?.groupChannelModule(
                             self,
                             didPickFileData: videoFileData,
                             fileName: videoName,
                             mimeType: mimeType,
-                            parentMessage: parentMessage
+                            parentMessage: self.currentQuotedMessage
                         )
                     }
                 } catch {
@@ -376,15 +375,15 @@ extension SBUGroupChannelModule {
             }
         }
         
-        open override func pickImageData(_ data: Data) {
-            let parentMessage = self.currentQuotedMessage
+        open override func pickImageData(_ data: Data, fileName: String? = nil, mimeType: String? = nil) {
+            let tempFileName = "\(Date().sbu_toString(dateFormat: SBUDateFormatSet.Message.fileNameFormat, localizedFormat: false)).jpg"
             
             self.delegate?.groupChannelModule(
                 self,
                 didPickFileData: data,
-                fileName: "\(Date().sbu_toString(dateFormat: SBUDateFormatSet.Message.fileNameFormat, localizedFormat: false)).jpg",
-                mimeType: "image/jpeg",
-                parentMessage: parentMessage
+                fileName: fileName ?? tempFileName,
+                mimeType: mimeType ?? "image/jpeg",
+                parentMessage: self.currentQuotedMessage
             )
         }
         

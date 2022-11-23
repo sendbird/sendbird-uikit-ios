@@ -17,21 +17,21 @@ public typealias SBUChannelCellTheme = SBUGroupChannelCellTheme
 extension SBUTheme {
     @available(*, deprecated, renamed: "init(groupChannelListTheme:groupChannelCellTheme:openChannelListTheme:openChannelCellTheme:channelTheme:messageInputTheme:messageCellTheme:userListTheme:userCellTheme:channelSettingsTheme:userProfileTheme:componentTheme:overlayTheme:messageSearchTheme:messageSearchResultCellTheme:createOpenChannelTheme:)") // 3.2.2
     public convenience init(channelListTheme: SBUGroupChannelListTheme = .light,
-                channelCellTheme: SBUGroupChannelCellTheme = .light,
-                openChannelListTheme: SBUOpenChannelListTheme = .light,
-                openChannelCellTheme: SBUOpenChannelCellTheme = .light,
-                channelTheme: SBUChannelTheme = .light,
-                messageInputTheme: SBUMessageInputTheme = .light,
-                messageCellTheme: SBUMessageCellTheme = .light,
-                userListTheme: SBUUserListTheme = .light,
-                userCellTheme: SBUUserCellTheme = .light,
-                channelSettingsTheme: SBUChannelSettingsTheme = .light,
-                userProfileTheme: SBUUserProfileTheme = .light,
-                componentTheme: SBUComponentTheme = .light,
-                overlayTheme: SBUOverlayTheme = .init(),
-                messageSearchTheme: SBUMessageSearchTheme = .light,
-                messageSearchResultCellTheme: SBUMessageSearchResultCellTheme = .light,
-                createOpenChannelTheme: SBUCreateOpenChannelTheme = .light
+                            channelCellTheme: SBUGroupChannelCellTheme = .light,
+                            openChannelListTheme: SBUOpenChannelListTheme = .light,
+                            openChannelCellTheme: SBUOpenChannelCellTheme = .light,
+                            channelTheme: SBUChannelTheme = .light,
+                            messageInputTheme: SBUMessageInputTheme = .light,
+                            messageCellTheme: SBUMessageCellTheme = .light,
+                            userListTheme: SBUUserListTheme = .light,
+                            userCellTheme: SBUUserCellTheme = .light,
+                            channelSettingsTheme: SBUChannelSettingsTheme = .light,
+                            userProfileTheme: SBUUserProfileTheme = .light,
+                            componentTheme: SBUComponentTheme = .light,
+                            overlayTheme: SBUOverlayTheme = .init(),
+                            messageSearchTheme: SBUMessageSearchTheme = .light,
+                            messageSearchResultCellTheme: SBUMessageSearchResultCellTheme = .light,
+                            createOpenChannelTheme: SBUCreateOpenChannelTheme = .light
     ) {
         self.init(
             groupChannelListTheme: channelListTheme,

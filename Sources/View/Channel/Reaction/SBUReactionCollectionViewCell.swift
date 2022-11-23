@@ -19,7 +19,9 @@ class SBUReactionCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var emojiImageView: UIImageView!
     @IBOutlet weak var countLabel: UILabel!
     @IBOutlet weak var lineView: UIView!
-
+    @IBOutlet weak var leftMarginView: UIView!
+    @IBOutlet weak var rightMarginView: UIView!
+    
     @IBOutlet weak var stackViewTopConstraint: NSLayoutConstraint!
     @IBOutlet weak var stackViewLeadingConstraint: NSLayoutConstraint!
     @IBOutlet weak var stackViewTrailingConstraint: NSLayoutConstraint!
@@ -29,6 +31,10 @@ class SBUReactionCollectionViewCell: UICollectionViewCell {
 
     @SBUThemeWrapper(theme: SBUTheme.componentTheme)
     var theme: SBUComponentTheme
+    
+    var needsSideMargin: Bool = false
+    
+    var count: Int? = nil
 
     override var isSelected: Bool {
         didSet {
@@ -114,9 +120,11 @@ class SBUReactionCollectionViewCell: UICollectionViewCell {
         }
     }
 
-    func configure(type: SBUReactionCellType, url: String?, count: Int? = nil) {
+    func configure(type: SBUReactionCellType, url: String?, count: Int? = nil, needsSideMargin: Bool? = false) {
         self.type = type
         self.setCount(count)
+        
+        self.needsSideMargin = needsSideMargin ?? false
 
         if let urlString = url, !urlString.isEmpty {
             self.emojiImageView.loadImage(
@@ -135,9 +143,21 @@ class SBUReactionCollectionViewCell: UICollectionViewCell {
     }
 
     func setCount(_ count: Int?) {
-        guard let count = count else { self.countLabel.isHidden = true; return }
-
+        self.count = count
+        
+        guard let count = count else {
+            self.countLabel.isHidden = true
+            if needsSideMargin {
+                self.leftMarginView.isHidden = false
+                self.rightMarginView.isHidden = false
+            }
+            return
+        }
+        
         self.countLabel.isHidden = false
+        self.leftMarginView.isHidden = true
+        self.rightMarginView.isHidden = true
+
         if type == .messageReaction {
             self.countLabel.text = count > 99 ? "99"  : String(count)
         } else {
@@ -148,7 +168,7 @@ class SBUReactionCollectionViewCell: UICollectionViewCell {
     private func setSelected() {
         switch type {
         case .messageReaction:
-            self.backgroundColor = isSelected
+            self.backgroundColor = isSelected && (count != nil)
                 ? theme.reactionBoxSelectedEmojiBackgroundColor
                 : theme.reactionBoxEmojiBackgroundColor
         case .messageMenu:

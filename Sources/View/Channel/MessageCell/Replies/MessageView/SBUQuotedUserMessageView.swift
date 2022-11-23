@@ -52,7 +52,7 @@ open class SBUQuotedUserMessageView: SBUQuotedBaseMessageView {
     }
     
     open override func configure(with configuration: SBUQuotedBaseMessageViewParams) {
-        guard configuration.usingQuotedMessage else { return }
+        guard configuration.useQuotedMessage else { return }
         self.quotedMessageLabel.text = configuration.text
         super.configure(with: configuration)
         self.updateConstraintsIfNeeded()

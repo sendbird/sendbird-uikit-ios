@@ -12,7 +12,7 @@ import PhotosUI
 import MobileCoreServices
 
 
-open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActionSheetDelegate, PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, SBUSelectablePhotoViewDelegate, SBUCommonViewModelDelegate, SBUBaseChannelSettingsViewModelDelegate {
+open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActionSheetDelegate, PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, SBUSelectablePhotoViewDelegate, SBUCommonViewModelDelegate, SBUBaseChannelSettingsViewModelDelegate, SBUAlertViewDelegate {
     
     // MARK: - UI Properties (Public)
     public var baseHeaderComponent: SBUBaseChannelSettingsModule.Header?
@@ -196,7 +196,8 @@ open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActio
             placeHolder: SBUStringSet.ChannelSettings_Enter_New_Name,
             centerYRatio: 0.75,
             confirmButtonItem: okButton,
-            cancelButtonItem: cancelButton
+            cancelButtonItem: cancelButton,
+            delegate: self
         )
     }
     
@@ -305,7 +306,8 @@ open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActio
             message: SBUStringSet.Alert_Allow_PhotoLibrary_Access_Message,
             oneTimetheme: SBUTheme.componentTheme,
             confirmButtonItem: settingButton,
-            cancelButtonItem: cancelButton
+            cancelButtonItem: cancelButton,
+            delegate: self
         )
     }
     
@@ -362,6 +364,11 @@ open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActio
         }
     }
     
+    open func didDismissActionSheet() { }
+    
+    // MARK: - SBUAlertViewDelegate
+    open func didDismissAlertView() { }
+    
     // MARK: - UIImagePickerViewControllerDelegate
     open func imagePickerController(
         _ picker: UIImagePickerController,
@@ -404,7 +411,7 @@ open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActio
     }
     
     // MARK: - SBUSelectablePhotoViewDelegate
-    open func didTapSendImageData(_ data: Data) {
+    open func didTapSendImageData(_ data: Data, fileName: String? = nil, mimeType: String? = nil) {
         guard let image = UIImage(data: data) else { return }
         self.baseListComponent?.updateChannelInfoView(coverImage: image)
         self.baseViewModel?.updateChannel(coverImage: image)

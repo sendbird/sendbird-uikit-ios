@@ -12,7 +12,7 @@ import PhotosUI
 import MobileCoreServices
 
 
-open class SBUCreateOpenChannelViewController: SBUBaseViewController, SBUActionSheetDelegate, PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, SBUSelectablePhotoViewDelegate, SBUCreateOpenChannelModuleHeaderDelegate, SBUCreateOpenChannelModuleProfileInputDelegate, SBUCommonViewModelDelegate, SBUCreateOpenChannelViewModelDelegate {
+open class SBUCreateOpenChannelViewController: SBUBaseViewController, SBUActionSheetDelegate, PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, SBUSelectablePhotoViewDelegate, SBUCreateOpenChannelModuleHeaderDelegate, SBUCreateOpenChannelModuleProfileInputDelegate, SBUCommonViewModelDelegate, SBUCreateOpenChannelViewModelDelegate, SBUAlertViewDelegate {
 
     // MARK: - UI properties (Public)
     public var headerComponent: SBUCreateOpenChannelModule.Header?
@@ -288,7 +288,8 @@ open class SBUCreateOpenChannelViewController: SBUBaseViewController, SBUActionS
             message: SBUStringSet.Alert_Allow_PhotoLibrary_Access_Message,
             oneTimetheme: SBUTheme.componentTheme,
             confirmButtonItem: settingButton,
-            cancelButtonItem: cancelButton
+            cancelButtonItem: cancelButton,
+            delegate: self
         )
     }
     
@@ -399,9 +400,13 @@ open class SBUCreateOpenChannelViewController: SBUBaseViewController, SBUActionS
         }
     }
     
+    open func didDismissActionSheet() { }
+    
+    // MARK: - SBUAlertViewDelegate
+    open func didDismissAlertView() { }
     
     // MARK: - SBUSelectablePhotoViewDelegate
-    open func didTapSendImageData(_ data: Data) {
+    open func didTapSendImageData(_ data: Data, fileName: String? = nil, mimeType: String? = nil) {
         guard let image = UIImage(data: data) else { return }
         self.profileInputComponent?.updateChannelImage(image)
     }

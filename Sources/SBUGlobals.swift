@@ -40,11 +40,11 @@ public class SBUGlobals {
     public static var isMessageGroupingEnabled: Bool = true
     
     
-    // MARK: - Reply Type
+    // MARK: - Reply
     
-    /// If this value is not `.none`, replying features will be activated. The default value is `.none`
-    /// - Since: 3.0.0
-    public static var replyType: SBUReplyType = .none
+    /// The configuration for reply.
+    /// - Since: 3.3.0
+    public static var reply: SBUReplyConfiguration = SBUReplyConfiguration()
     
     
     // MARK: - PHPickerViewController
@@ -107,5 +107,10 @@ public class SBUGlobals {
     
     /// The configuration for message cell.
     /// - Since: 3.2.2
+    ///
+    /// See the example below for configuration setting.
+    /// ```
+    /// SBUGlobals.messageCellConfiguration.groupChannel.thumbnailSize = {SIZE}
+    /// ```
     public static var messageCellConfiguration = SBUMessageCellConfiguration()
 }

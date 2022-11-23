@@ -14,7 +14,7 @@ import SafariServices
 
 
 @objcMembers
-open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroupChannelViewModelDelegate, SBUGroupChannelModuleHeaderDelegate, SBUGroupChannelModuleListDelegate, SBUGroupChannelModuleListDataSource, SBUGroupChannelModuleInputDelegate, SBUGroupChannelModuleInputDataSource, SBUGroupChannelViewModelDataSource, SBUMentionManagerDataSource {
+open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroupChannelViewModelDelegate, SBUGroupChannelModuleHeaderDelegate, SBUGroupChannelModuleListDelegate, SBUGroupChannelModuleListDataSource, SBUGroupChannelModuleInputDelegate, SBUGroupChannelModuleInputDataSource, SBUGroupChannelViewModelDataSource, SBUMentionManagerDataSource, SBUMessageThreadViewControllerDelegate {
 
     // MARK: - UI properties (Public)
     public var headerComponent: SBUGroupChannelModule.Header? {
@@ -270,6 +270,28 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         self.navigationController?.pushViewController(channelSettingsVC, animated: true)
     }
     
+    open override func showMessageThread(channelURL: String, parentMessageId: Int64, parentMessageCreatedAt: Int64? = 0, startingPoint: Int64? = 0) {
+        if (parentMessageCreatedAt ?? 0) < (self.channel?.joinedAt ?? 0) * 1000 {
+            SBULog.warning(SBUStringSet.Message_Reply_Cannot_Found_Original)
+            return
+        }
+        
+        var parentMessage: BaseMessage? = nil
+        if let fullMessageList = self.viewModel?.fullMessageList {
+            parentMessage = fullMessageList.filter { $0.messageId == parentMessageId }.first
+        }
+           
+        
+        let messageThreadVC = SBUViewControllerSet.MessageThreadViewController.init(
+            channelURL: channelURL,
+            parentMessage: parentMessage,
+            parentMessageId: parentMessageId,
+            delegate: self,
+            startingPoint: startingPoint
+        )
+        self.navigationController?.pushViewController(messageThreadVC, animated: true)
+    }
+    
     
     // MARK: - SBUGroupChannelViewModelDelegate
     open override func baseChannelViewModel(
@@ -366,12 +388,29 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     }
     
     open func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didTapQuotedMessageView quotedMessageView: SBUQuotedBaseMessageView) {
+        if SBUGlobals.reply.threadReplySelectType == .thread {
+            if let channelURL = self.baseViewModel?.channelURL {
+                self.showMessageThread(
+                    channelURL: channelURL,
+                    parentMessageId: quotedMessageView.messageId,
+                    parentMessageCreatedAt: quotedMessageView.params?.quotedMessageCreatedAt,
+                    startingPoint: quotedMessageView.params?.messageCreatedAt
+                )
+            }
+            return
+        }
+        
+        if (quotedMessageView.params?.quotedMessageCreatedAt ?? 0) < (self.channel?.joinedAt ?? 0) * 1000 {
+            SBULog.warning(SBUStringSet.Message_Reply_Cannot_Found_Original)
+            return
+        }
+        
         guard let row = self.baseViewModel?.fullMessageList.firstIndex(
             where: { $0.messageId == quotedMessageView.messageId }
         ) else {
             SBULog.info("There is no cached linked message. Reloads messages based on linked messages.")
             self.viewModel?.loadInitialMessages(
-                startingPoint: quotedMessageView.quotedMessageCreatedAt,
+                startingPoint: quotedMessageView.params?.quotedMessageCreatedAt,
                 showIndicator: true,
                 initialMessages: nil
             )
@@ -400,6 +439,18 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
                 user: user
             )
         }
+    }
+    
+    open func groupChannelModuleDidTapThreadInfoView(_ threadInfoView: SBUThreadInfoView) {
+        guard let message = threadInfoView.message,
+              let channelURL = self.channel?.channelURL else { return }
+        
+        // If it is the parent message itself, use `messageId` rather than `parentMessageId`.
+        self.showMessageThread(
+            channelURL: channelURL,
+            parentMessageId: message.messageId,
+            parentMessageCreatedAt: message.createdAt
+        )
     }
     
     open override func baseChannelModuleDidTapScrollToButton(_ listComponent: SBUBaseChannelModule.List, animated: Bool) {
@@ -505,8 +556,31 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     }
     
     
-    // MARK: SBUMentionManagerDataSource
+    // MARK: - SBUMentionManagerDataSource
     open func mentionManager(_ manager: SBUMentionManager, suggestedMentionUsersWith filterText: String) -> [SBUUser] {
         return self.viewModel?.suggestedMemberList ?? []
+    }
+    
+    
+    // MARK: - SBUMessageThreadViewControllerDelegate
+    open func messageThreadViewController(
+        _ viewController: SBUMessageThreadViewController,
+        shouldMoveToParentMessage parentMessage: BaseMessage
+    ) {
+        
+        guard let row = self.baseViewModel?.fullMessageList.firstIndex(
+            where: { $0.messageId == parentMessage.messageId }
+        ) else {
+            SBULog.info("There is no cached linked message. Reloads messages based on linked messages.")
+            self.viewModel?.loadInitialMessages(
+                startingPoint: parentMessage.createdAt,
+                showIndicator: true,
+                initialMessages: self.viewModel?.fullMessageList
+            )
+            return
+        }
+        
+        let indexPath = IndexPath(row: row, section: 0)
+        self.listComponent?.tableView.scrollToRow(at: indexPath, at: .middle, animated: false)
     }
 }

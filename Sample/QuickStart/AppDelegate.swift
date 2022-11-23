@@ -32,7 +32,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         SBUGlobals.isOpenChannelUserProfileEnabled = true
         
         // Reply
-        SBUGlobals.replyType = .quoteReply
+        SBUGlobals.reply.replyType = .thread
         // Channel List - Typing indicator
         SBUGlobals.isChannelListTypingIndicatorEnabled = true
         // Channel List - Message receipt state

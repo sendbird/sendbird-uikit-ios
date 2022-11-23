@@ -228,7 +228,7 @@ public class SBUTheme {
         set { shared.createOpenChannelTheme = newValue }
         get { shared.createOpenChannelTheme }
     }
-
+    
     
     // MARK: - Private property
     
@@ -770,6 +770,12 @@ public class SBUChannelTheme {
         
         theme.separatorColor = SBUColorSet.onlight04
         
+        // Message Thread Header
+        theme.messageThreadTitleColor = SBUColorSet.onlight01
+        theme.messageThreadTitleFont = SBUFontSet.h3
+        theme.messageThreadTitleChannelNameColor = SBUColorSet.primary300
+        theme.messageThreadTitleChannelNameFont = SBUFontSet.caption2
+        
         return theme
     }
     
@@ -807,6 +813,12 @@ public class SBUChannelTheme {
         theme.mentionLimitGuideTextColor = SBUColorSet.ondark02
         
         theme.separatorColor = SBUColorSet.background500
+        
+        // Message Thread Header
+        theme.messageThreadTitleColor = SBUColorSet.ondark01
+        theme.messageThreadTitleFont = SBUFontSet.h3
+        theme.messageThreadTitleChannelNameColor = SBUColorSet.primary200
+        theme.messageThreadTitleChannelNameFont = SBUFontSet.caption2
         
         return theme
     }
@@ -846,6 +858,12 @@ public class SBUChannelTheme {
         
         theme.separatorColor = SBUColorSet.background500
         
+        // Message Thread Header
+        theme.messageThreadTitleColor = SBUColorSet.ondark01
+        theme.messageThreadTitleFont = SBUFontSet.h3
+        theme.messageThreadTitleChannelNameColor = SBUColorSet.primary200
+        theme.messageThreadTitleChannelNameFont = SBUFontSet.caption2
+        
         return theme
     }
     
@@ -868,7 +886,11 @@ public class SBUChannelTheme {
                 channelStateBannerBackgroundColor: UIColor = SBUColorSet.information,
                 mentionLimitGuideTextFont: UIFont = SBUFontSet.body3,
                 mentionLimitGuideTextColor: UIColor = SBUColorSet.onlight02,
-                separatorColor: UIColor = SBUColorSet.onlight04
+                separatorColor: UIColor = SBUColorSet.onlight04,
+                messageThreadTitleColor: UIColor = SBUColorSet.onlight01,
+                messageThreadTitleFont: UIFont = SBUFontSet.h3,
+                messageThreadTitleChannelNameColor: UIColor = SBUColorSet.primary300,
+                messageThreadTitleChannelNameFont: UIFont = SBUFontSet.caption2
     ) {
         
         self.statusBarStyle = statusBarStyle
@@ -891,6 +913,12 @@ public class SBUChannelTheme {
         self.mentionLimitGuideTextFont = mentionLimitGuideTextFont
         self.mentionLimitGuideTextColor = mentionLimitGuideTextColor
         self.separatorColor = separatorColor
+        
+        // Message Thread Header
+        self.messageThreadTitleColor = messageThreadTitleColor
+        self.messageThreadTitleFont = messageThreadTitleFont
+        self.messageThreadTitleChannelNameColor = messageThreadTitleChannelNameColor
+        self.messageThreadTitleChannelNameFont = messageThreadTitleChannelNameFont
     }
     
     public var statusBarStyle: UIStatusBarStyle
@@ -924,6 +952,12 @@ public class SBUChannelTheme {
     public var mentionLimitGuideTextColor: UIColor
     
     public var separatorColor: UIColor
+    
+    // Message Thread Header
+    public var messageThreadTitleColor: UIColor
+    public var messageThreadTitleFont: UIFont
+    public var messageThreadTitleChannelNameColor: UIColor
+    public var messageThreadTitleChannelNameFont: UIFont
 }
 
 // MARK: - Message Input Theme
@@ -1220,6 +1254,12 @@ public class SBUMessageCellTheme {
         theme.repliedToTextColor = SBUColorSet.onlight03
         theme.repliedToTextFont = SBUFontSet.caption1
         
+        // Thread info
+        theme.repliedCountTextColor = SBUColorSet.primary300
+        theme.repliedCountTextFont = SBUFontSet.caption3
+        theme.repliedUsersMoreIconBackgroundColor = SBUColorSet.background700.withAlphaComponent(0.64)
+        theme.repliedUsersMoreIconTintColor = SBUColorSet.ondark01
+        
         // Mention
         theme.mentionTextFont = SBUFontSet.body4
         theme.mentionLeftTextColor = SBUColorSet.onlight01
@@ -1232,6 +1272,21 @@ public class SBUMessageCellTheme {
         theme.buttonTitleColor = SBUColorSet.primary300
         theme.sideButtonIconColor = SBUColorSet.onlight03
         theme.newMessageBadgeColor = SBUColorSet.secondary300
+        
+        // Parent info
+        theme.parentInfoBackgroundColor = SBUColorSet.background50
+        
+        theme.parentInfoUserNameTextFont = SBUFontSet.h3
+        theme.parentInfoUserNameTextColor = SBUColorSet.onlight01
+        
+        theme.parentInfoDateFont = SBUFontSet.caption2
+        theme.parentInfoDateTextColor = SBUColorSet.onlight03
+        
+        theme.parentInfoMoreButtonTintColor = SBUColorSet.onlight02
+        theme.parentInfoSeparateBarColor = SBUColorSet.onlight04
+
+        theme.parentInfoReplyCountTextColor = SBUColorSet.onlight03
+        theme.parentInfoReplyCountTextFont = SBUFontSet.body3
         
         return theme
     }
@@ -1314,7 +1369,7 @@ public class SBUMessageCellTheme {
         
         theme.linkColor = SBUColorSet.primary200
         
-        // Thread Message
+        // Quoted Message
         theme.quotedMessageBackgroundColor = SBUColorSet.background500
         theme.quotedFileMessageThumbnailColor = SBUColorSet.ondark02
         theme.quotedMessageTextColor = SBUColorSet.ondark03
@@ -1322,6 +1377,12 @@ public class SBUMessageCellTheme {
         theme.repliedIconColor = SBUColorSet.ondark03
         theme.repliedToTextColor = SBUColorSet.ondark03
         theme.repliedToTextFont = SBUFontSet.caption1
+        
+        // Thread info
+        theme.repliedCountTextColor = SBUColorSet.primary200
+        theme.repliedCountTextFont = SBUFontSet.caption3
+        theme.repliedUsersMoreIconBackgroundColor = SBUColorSet.background700.withAlphaComponent(0.64)
+        theme.repliedUsersMoreIconTintColor = SBUColorSet.ondark01
         
         // Mention
         theme.mentionTextFont = SBUFontSet.body4
@@ -1335,6 +1396,21 @@ public class SBUMessageCellTheme {
         theme.buttonTitleColor = SBUColorSet.primary200
         theme.sideButtonIconColor = SBUColorSet.ondark03
         theme.newMessageBadgeColor = SBUColorSet.secondary200
+        
+        // Parent info
+        theme.parentInfoBackgroundColor = SBUColorSet.background600
+        
+        theme.parentInfoUserNameTextFont = SBUFontSet.h3
+        theme.parentInfoUserNameTextColor = SBUColorSet.ondark01
+        
+        theme.parentInfoDateFont = SBUFontSet.caption2
+        theme.parentInfoDateTextColor = SBUColorSet.ondark03
+        
+        theme.parentInfoMoreButtonTintColor = SBUColorSet.ondark02
+        theme.parentInfoSeparateBarColor = SBUColorSet.ondark04
+
+        theme.parentInfoReplyCountTextColor = SBUColorSet.ondark03
+        theme.parentInfoReplyCountTextFont = SBUFontSet.body3
         
         return theme
     }
@@ -1417,7 +1493,7 @@ public class SBUMessageCellTheme {
         
         theme.linkColor = SBUColorSet.primary200
         
-        // Thread Message
+        // Quoted Message
         theme.quotedMessageBackgroundColor = SBUColorSet.background500
         theme.quotedFileMessageThumbnailColor = SBUColorSet.ondark02
         theme.quotedMessageTextColor = SBUColorSet.ondark03
@@ -1425,6 +1501,12 @@ public class SBUMessageCellTheme {
         theme.repliedIconColor = SBUColorSet.ondark03
         theme.repliedToTextColor = SBUColorSet.ondark03
         theme.repliedToTextFont = SBUFontSet.caption1
+        
+        // Thread info
+        theme.repliedCountTextColor = SBUColorSet.primary200
+        theme.repliedCountTextFont = SBUFontSet.caption3
+        theme.repliedUsersMoreIconBackgroundColor = SBUColorSet.background700.withAlphaComponent(0.64)
+        theme.repliedUsersMoreIconTintColor = SBUColorSet.ondark01
         
         // Mention
         theme.mentionTextFont = SBUFontSet.body4
@@ -1438,6 +1520,21 @@ public class SBUMessageCellTheme {
         theme.buttonTitleColor = SBUColorSet.primary200
         theme.sideButtonIconColor = SBUColorSet.ondark03
         theme.newMessageBadgeColor = SBUColorSet.secondary200
+        
+        // Parent info
+        theme.parentInfoBackgroundColor = SBUColorSet.background600
+        
+        theme.parentInfoUserNameTextFont = SBUFontSet.h3
+        theme.parentInfoUserNameTextColor = SBUColorSet.ondark01
+        
+        theme.parentInfoDateFont = SBUFontSet.caption2
+        theme.parentInfoDateTextColor = SBUColorSet.ondark03
+        
+        theme.parentInfoMoreButtonTintColor = SBUColorSet.ondark02
+        theme.parentInfoSeparateBarColor = SBUColorSet.ondark04
+
+        theme.parentInfoReplyCountTextColor = SBUColorSet.ondark03
+        theme.parentInfoReplyCountTextFont = SBUFontSet.body3
         
         return theme
     }
@@ -1501,6 +1598,10 @@ public class SBUMessageCellTheme {
                 repliedIconColor: UIColor = SBUColorSet.onlight03,
                 repliedToTextColor: UIColor = SBUColorSet.onlight03,
                 repliedToTextFont: UIFont = SBUFontSet.caption1,
+                repliedCountTextColor: UIColor = SBUColorSet.primary300,
+                repliedCountTextFont: UIFont = SBUFontSet.caption3,
+                repliedUsersMoreIconBackgroundColor: UIColor = SBUColorSet.background700.withAlphaComponent(0.64),
+                repliedUsersMoreIconTintColor: UIColor = SBUColorSet.ondark01,
                 mentionTextFont: UIFont = SBUFontSet.body4,
                 mentionLeftTextColor: UIColor = SBUColorSet.onlight01,
                 mentionRightTextColor: UIColor = SBUColorSet.ondark01,
@@ -1509,7 +1610,16 @@ public class SBUMessageCellTheme {
                 buttonBackgroundColor: UIColor = SBUColorSet.background200,
                 buttonTitleColor: UIColor = SBUColorSet.primary300,
                 sideButtonIconColor: UIColor = SBUColorSet.onlight03,
-                newMessageBadgeColor: UIColor = SBUColorSet.secondary300
+                newMessageBadgeColor: UIColor = SBUColorSet.secondary300,
+                parentInfoBackgroundColor: UIColor = SBUColorSet.background50,
+                parentInfoUserNameTextFont: UIFont = SBUFontSet.h3,
+                parentInfoUserNameTextColor: UIColor = SBUColorSet.onlight01,
+                parentInfoDateFont: UIFont = SBUFontSet.caption2,
+                parentInfoDateTextColor: UIColor = SBUColorSet.onlight03,
+                parentInfoMoreButtonTintColor: UIColor = SBUColorSet.onlight02,
+                parentInfoSeparateBarColor: UIColor = SBUColorSet.onlight04,
+                parentInfoReplyCountTextColor: UIColor = SBUColorSet.onlight03,
+                parentInfoReplyCountTextFont: UIFont = SBUFontSet.body3
     ) {
         
         self.backgroundColor = backgroundColor
@@ -1576,6 +1686,11 @@ public class SBUMessageCellTheme {
         self.repliedToTextColor = repliedToTextColor
         self.repliedToTextFont = repliedToTextFont
         
+        self.repliedCountTextColor = repliedCountTextColor
+        self.repliedCountTextFont = repliedCountTextFont
+        self.repliedUsersMoreIconBackgroundColor = repliedUsersMoreIconBackgroundColor
+        self.repliedUsersMoreIconTintColor = repliedUsersMoreIconTintColor
+        
         self.mentionTextFont = mentionTextFont
         self.mentionLeftTextColor = mentionLeftTextColor
         self.mentionRightTextColor = mentionRightTextColor
@@ -1586,6 +1701,16 @@ public class SBUMessageCellTheme {
         self.buttonTitleColor = buttonTitleColor
         self.sideButtonIconColor = sideButtonIconColor
         self.newMessageBadgeColor = newMessageBadgeColor
+        
+        self.parentInfoBackgroundColor = parentInfoBackgroundColor
+        self.parentInfoUserNameTextFont = parentInfoUserNameTextFont
+        self.parentInfoUserNameTextColor = parentInfoUserNameTextColor
+        self.parentInfoDateFont = parentInfoDateFont
+        self.parentInfoDateTextColor = parentInfoDateTextColor
+        self.parentInfoMoreButtonTintColor = parentInfoMoreButtonTintColor
+        self.parentInfoSeparateBarColor = parentInfoSeparateBarColor
+        self.parentInfoReplyCountTextColor = parentInfoReplyCountTextColor
+        self.parentInfoReplyCountTextFont = parentInfoReplyCountTextFont
     }
     
     public var backgroundColor: UIColor
@@ -1686,6 +1811,19 @@ public class SBUMessageCellTheme {
     /// The text color of `repliedToLabel` of the quoted message view.
     public var repliedToTextColor: UIColor
     
+    // MARK: Thread info
+    // Font
+    /// The text font of the replied users count label in thread info view.
+    public var repliedCountTextFont: UIFont
+    // Color
+    /// The text color of the replied users count label in thread info view.
+    public var repliedCountTextColor: UIColor
+    /// The background color of the replied users more icon.
+    public var repliedUsersMoreIconBackgroundColor: UIColor
+    /// The tint color of the replied users more icon.
+    public var repliedUsersMoreIconTintColor: UIColor
+    
+    
     // MARK: Mention
     /// The text font of the mention.
     public var mentionTextFont: UIFont
@@ -1709,6 +1847,16 @@ public class SBUMessageCellTheme {
     // MARK: New Message badge
     /// The tint color of new message badge.
     public var newMessageBadgeColor: UIColor
+    
+    public var parentInfoBackgroundColor: UIColor
+    public var parentInfoUserNameTextFont: UIFont
+    public var parentInfoUserNameTextColor: UIColor
+    public var parentInfoDateFont: UIFont
+    public var parentInfoDateTextColor: UIColor
+    public var parentInfoMoreButtonTintColor: UIColor
+    public var parentInfoSeparateBarColor: UIColor
+    public var parentInfoReplyCountTextColor: UIColor
+    public var parentInfoReplyCountTextFont: UIFont
 }
 
 

@@ -59,7 +59,7 @@ open class SBUQuotedFileMessageView: SBUQuotedBaseMessageView {
     }
     
     open override func configure(with configuration: SBUQuotedBaseMessageViewParams) {
-        guard configuration.usingQuotedMessage else { return }
+        guard configuration.useQuotedMessage else { return }
         guard configuration.isFileType,
                 let urlString = configuration.urlString,
                 let name = configuration.fileName,

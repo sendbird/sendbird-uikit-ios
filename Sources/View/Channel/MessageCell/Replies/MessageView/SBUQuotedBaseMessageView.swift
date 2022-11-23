@@ -73,6 +73,11 @@ open class SBUQuotedBaseMessageView: SBUView, SBUQuotedMessageViewProtocol {
             default: return false
         }
     }
+
+    /// The params of quoted message
+    /// - Since: 3.3.0
+    public private(set) var params: SBUQuotedBaseMessageViewParams?
+    
     
     /// The creation time of the quoted message
     /// - Since: 3.2.3
@@ -244,6 +249,8 @@ open class SBUQuotedBaseMessageView: SBUView, SBUQuotedMessageViewProtocol {
     
     public func configure(with configuration: SBUQuotedBaseMessageViewParams) {
         self.isHidden = false
+        self.params = configuration
+        
         self.messageId = configuration.messageId
         self.messagePosition = configuration.messagePosition
         self.quotedMessageNickname = configuration.quotedMessageNickname

@@ -20,39 +20,90 @@ public class SBUPendingMessageManager {
     /// message requestId : file params
     private var pendingFileInfos: [String: FileMessageCreateParams] = [:]
     
-    public func addFileInfo(requestId:String?, params: FileMessageCreateParams?) {
+    /// channel url : array of pending
+    private var pendingThreadMessages: [String:[String:BaseMessage]] = [:]
+    /// message requestId : file params
+    private var pendingThreadFileInfos: [String: FileMessageCreateParams] = [:]
+    
+    
+    public func addFileInfo(requestId:String?, params: FileMessageCreateParams?, forMessageThread: Bool = false) {
         guard let requestId = requestId, let params = params else { return }
-        self.pendingFileInfos[requestId] = params
+        if forMessageThread {
+            self.pendingThreadFileInfos[requestId] = params
+        } else {
+            self.pendingFileInfos[requestId] = params
+        }
     }
     
-    public func getFileInfo(requestId: String?) -> FileMessageCreateParams? {
+    public func getFileInfo(requestId: String?, forMessageThread: Bool = false) -> FileMessageCreateParams? {
         guard let requestId = requestId else { return nil }
-        return self.pendingFileInfos[requestId]
+        if forMessageThread{
+            return self.pendingThreadFileInfos[requestId]
+        } else {
+            return self.pendingFileInfos[requestId]
+        }
     }
     
-    func upsertPendingMessage(channelURL: String?, message: BaseMessage?) {
+    func upsertPendingMessage(channelURL: String?, message: BaseMessage?, forMessageThread: Bool = false) {
         guard let channelURL = channelURL, let message = message else { return }
         guard !message.requestId.isEmpty else { return }
         
-        var pendingDict = self.pendingMessages[channelURL] ?? [:]
-        pendingDict[message.requestId] = message
-        self.pendingMessages[channelURL] = pendingDict
+        if forMessageThread {
+            var pendingDict = self.pendingThreadMessages[channelURL] ?? [:]
+            pendingDict[message.requestId] = message
+            self.pendingThreadMessages[channelURL] = pendingDict
+        } else {
+            var pendingDict = self.pendingMessages[channelURL] ?? [:]
+            pendingDict[message.requestId] = message
+            self.pendingMessages[channelURL] = pendingDict
+        }
     }
     
-    func getPendingMessages(channelURL: String?) -> [BaseMessage] {
+    func getPendingMessages(channelURL: String?, forMessageThread: Bool = false) -> [BaseMessage] {
         guard let channelURL = channelURL else { return [] }
-        let pendingDict = self.pendingMessages[channelURL] ?? [:]
-        return pendingDict.map { $1 }.sorted { $0.createdAt < $1.createdAt };
+        if forMessageThread {
+            let pendingDict = self.pendingThreadMessages[channelURL] ?? [:]
+            return pendingDict.map { $1 }.sorted { $0.createdAt < $1.createdAt };
+        } else {
+            let pendingDict = self.pendingMessages[channelURL] ?? [:]
+            return pendingDict.map { $1 }.sorted { $0.createdAt < $1.createdAt };
+        }
     }
     
-    func removePendingMessage(channelURL: String?, requestId: String?) {
+    func removePendingMessage(channelURL: String?, requestId: String?, forMessageThread: Bool = false) {
         guard let channelURL = channelURL,
               let requestId = requestId,
-              var pendingDict = self.pendingMessages[channelURL] else {
+              var pendingDict = (forMessageThread == true)
+                ? self.pendingThreadMessages[channelURL]
+                : self.pendingMessages[channelURL] else {
             return
         }
         
-        pendingDict.removeValue(forKey: requestId)
+        if forMessageThread {
+            pendingDict.removeValue(forKey: requestId)
+            self.pendingThreadFileInfos.removeValue(forKey: requestId)
+            self.pendingThreadMessages[channelURL] = pendingDict
+        } else {
+            pendingDict.removeValue(forKey: requestId)
+            self.pendingFileInfos.removeValue(forKey: requestId)
+            self.pendingMessages[channelURL] = pendingDict
+
+        }
+    }
+    
+    func removePendingMessageAllTypes(channelURL: String?, requestId: String?) {
+        guard let channelURL = channelURL,
+              let requestId = requestId else {
+            return
+        }
+        
+        var pendingDictForThread = self.pendingThreadMessages[channelURL]
+        pendingDictForThread?.removeValue(forKey: requestId)
+        self.pendingThreadFileInfos.removeValue(forKey: requestId)
+        self.pendingThreadMessages[channelURL] = pendingDictForThread
+
+        var pendingDict = self.pendingMessages[channelURL]
+        pendingDict?.removeValue(forKey: requestId)
         self.pendingFileInfos.removeValue(forKey: requestId)
         self.pendingMessages[channelURL] = pendingDict
     }

@@ -36,6 +36,8 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
         target: self,
         action: #selector(self.onTapMoreEmoji(sender:))
     )
+    
+    var sameCellWidth = false
         
     public override init() {
         super.init(frame: .zero)
@@ -181,7 +183,7 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
                 with: theme.addReactionTintColor,
                 to: SBUIconSetType.Metric.iconEmojiSmall
             )
-            cell.configure(type: .messageReaction, url: nil)
+            cell.configure(type: .messageReaction, url: nil, needsSideMargin: self.sameCellWidth)
             cell.emojiImageView.image = moreEmoji
             cell.isSelected = false
             cell.addGestureRecognizer(moreEmojiTapRecognizer)
@@ -194,7 +196,7 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
         let selectedEmoji = emojiList.first (where: { $0.key == reaction.key })
         cell.configure(type: .messageReaction,
                        url: selectedEmoji?.url,
-                       count: reaction.userIds.count)
+                       count: reaction.userIds.count, needsSideMargin: self.sameCellWidth)
         
         cell.emojiLongPressHandler = { [weak self] in
             guard let self = self else { return }

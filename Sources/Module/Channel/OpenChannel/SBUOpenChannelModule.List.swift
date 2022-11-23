@@ -266,13 +266,13 @@ extension SBUOpenChannelModule {
         ///   - message: message object
         ///   - indexPath: Cell's indexPath
         open func setMessageCellGestures(_ cell: SBUOpenChannelBaseMessageCell, message: BaseMessage, indexPath: IndexPath) {
-            cell.tapHandlerToContent = { [weak self, weak cell] in
-                guard let self = self, let cell = cell else { return }
+            cell.tapHandlerToContent = { [weak self] in
+                guard let self = self else { return }
                 self.setTapGesture(cell, message: message, indexPath: indexPath)
             }
             
-            cell.longPressHandlerToContent = { [weak self, weak cell] in
-                guard let self = self, let cell = cell else { return }
+            cell.longPressHandlerToContent = { [weak self] in
+                guard let self = self else { return }
                 self.setLongTapGesture(cell, message: message, indexPath: indexPath)
             }
         }
@@ -422,73 +422,6 @@ extension SBUOpenChannelModule {
                 default:
                     return unknownMessageCell?.sbu_className ?? SBUOpenChannelUnknownMessageCell.sbu_className
             }
-        }
-        
-        /// Gets the position of the message to be grouped for open channel.
-        ///
-        /// Only successful messages can be grouped.
-        /// - Parameter currentIndex: Index of current message in the message list
-        /// - Returns: Position of a message when grouped
-        public func getMessageGroupingPosition(currentIndex: Int) -> MessageGroupPosition {
-            
-            guard currentIndex < self.fullMessageList.count - 1 else { return .none }
-            let prevMessage = self.fullMessageList.count+2 > currentIndex
-            ? fullMessageList[currentIndex+1]
-            : nil
-            let currentMessage = fullMessageList[currentIndex]
-            let nextMessage = currentIndex != 0
-            ? fullMessageList[currentIndex-1]
-            : nil
-            
-            let succeededPrevMsg = prevMessage?.sendingStatus != .failed
-            ? prevMessage
-            : nil
-            let succeededCurrentMsg = currentMessage.sendingStatus != .failed
-            ? currentMessage
-            : nil
-            let succeededNextMsg = nextMessage?.sendingStatus != .failed
-            ? nextMessage
-            : nil
-            
-            let prevSender = succeededPrevMsg?.sender?.userId ?? nil
-            let currentSender = succeededCurrentMsg?.sender?.userId ?? nil
-            let nextSender = succeededNextMsg?.sender?.userId ?? nil
-            
-            // Unit : milliseconds
-            let prevTimestamp = Date
-                .sbu_from(succeededPrevMsg?.createdAt ?? -1)
-                .sbu_toString(dateFormat: SBUDateFormatSet.yyyyMMddhhmm)
-            
-            let currentTimestamp = Date
-                .sbu_from(succeededCurrentMsg?.createdAt ?? -1)
-                .sbu_toString(dateFormat: SBUDateFormatSet.yyyyMMddhhmm)
-            
-            let nextTimestamp = Date
-                .sbu_from(succeededNextMsg?.createdAt ?? -1)
-                .sbu_toString(dateFormat: SBUDateFormatSet.yyyyMMddhhmm)
-            
-            if prevSender != currentSender && nextSender != currentSender {
-                return .none
-            }
-            else if prevSender == currentSender && nextSender == currentSender {
-                if prevTimestamp == nextTimestamp {
-                    return .middle
-                }
-                else if prevTimestamp == currentTimestamp {
-                    return .bottom
-                }
-                else if currentTimestamp == nextTimestamp {
-                    return .top
-                }
-            }
-            else if prevSender == currentSender && nextSender != currentSender {
-                return prevTimestamp == currentTimestamp ? .bottom : .none
-            }
-            else if prevSender != currentSender && nextSender == currentSender {
-                return currentTimestamp == nextTimestamp ? .top : .none
-            }
-            
-            return .none
         }
     }
 }
