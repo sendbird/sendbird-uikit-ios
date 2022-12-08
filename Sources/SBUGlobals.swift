@@ -23,6 +23,7 @@ public class SBUGlobals {
     /// - Since: 3.0.0
     public static var currentUser: SBUUser?
     
+    
     // MARK: - Channel List
     /// If this value is enabled, the channel list shows the typing indicator. The defaut value is `false`.
     /// - Since: 3.0.0
@@ -34,21 +35,18 @@ public class SBUGlobals {
     
 
     // MARK: - Message Grouping
-    
     /// If this value is enabled, messages sent at similar times are grouped.
     /// - Since: 3.0.0
     public static var isMessageGroupingEnabled: Bool = true
     
     
     // MARK: - Reply
-    
     /// The configuration for reply.
     /// - Since: 3.3.0
     public static var reply: SBUReplyConfiguration = SBUReplyConfiguration()
     
     
     // MARK: - PHPickerViewController
-    
     /// If it's `true`, uses `PHPickerViewController` instead of `UIImagePickerController` when access to the photo library for sending file message.
     /// - Since: 3.0.0
     @available(iOS 14, *)
@@ -69,19 +67,26 @@ public class SBUGlobals {
     /// - Since: 3.0.0
     public static var isOpenChannelUserProfileEnabled: Bool = false
 
+    
+    // MARK: - Image Process
     /// if this value is enabled, image compression and resizing will be applied when sending a file message
+    ///
+    /// - Note: If this option is enabled, use `imageResizingSize` to resize the image, then compress it based on the`imageCompressionRate` value.
     /// - Since: 3.0.0
     public static var isImageCompressionEnabled: Bool = false
     
-    /// Image compression rate value that will be used when sending image. Default value is 0.85.
-    /// Typically this value will be used in `jpegData(compressionQuality:)`
+    /// Image compression rate value that will be used when sending image. Default value is `0.7`.
+    ///  - NOTE: Typically this value will be used in `jpegData(compressionQuality:)`
+    ///  - NOTE: You can set a value between `0.0` and `1.0`.
     /// - Since: 2.0.0
-    public static var imageCompressionRate: CGFloat = 0.25
+    public static var imageCompressionRate: CGFloat = 0.7
     
     /// Image resizing size value that will be used when sending image. Default value is a device screen size.
     /// - Since: 2.0.0
     public static var imageResizingSize: CGSize = UIScreen.main.bounds.size;
     
+    
+    // MARK: - Mention
     /// The configuration for user mention.
     /// - NOTE: If `userMentionConfig` is set to `SBUUserMentionConfiguration` instance, user mention feature is enabled.
     /// - NOTE: If `userMentionConfig` is set to `nil` instance, user mention feature is disabled.
@@ -105,6 +110,9 @@ public class SBUGlobals {
         }
     }
     
+    
+    // MARK: - Message configuration
+    
     /// The configuration for message cell.
     /// - Since: 3.2.2
     ///
@@ -113,4 +121,11 @@ public class SBUGlobals {
     /// SBUGlobals.messageCellConfiguration.groupChannel.thumbnailSize = {SIZE}
     /// ```
     public static var messageCellConfiguration = SBUMessageCellConfiguration()
+    
+    
+    /// Sets whether a nickname uses a user ID when there is no user nickname based on the user ID.
+    ///
+    /// - Note: If this value will set to `true`, nickname uses a user ID when nickname is empty.
+    /// - Since: 3.3.1
+    public static var isUserIdUsedForNickname: Bool = true
 }

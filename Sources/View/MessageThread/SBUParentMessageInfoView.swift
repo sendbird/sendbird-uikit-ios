@@ -338,9 +338,7 @@ public class SBUParentMessageInfoView: UITableViewHeaderFooterView, SBUUserMessa
             username = SBUUser(user: sender).refinedNickname()
         }
         self.userNameLabel.text = username
-        self.dateLabel.text = Date
-            .sbu_from(message.createdAt)
-            .sbu_toString(dateFormat: SBUDateFormatSet.MessageThread.sentDateTimeFormat)
+        self.dateLabel.text = Date.messageCreatedTimeForParentInfo(baseTimestamp: message.createdAt)
         
         self.moreButton?.setImage(
             SBUIconSetType.iconMore.image(

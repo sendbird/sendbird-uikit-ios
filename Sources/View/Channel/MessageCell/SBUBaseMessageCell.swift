@@ -22,6 +22,7 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol {
         return view
     }()
     
+    // Used to display the date separator in the message list.
     public lazy var dateView: UIView = SBUMessageDateView()
 
     @SBUThemeWrapper(theme: SBUTheme.messageCellTheme)

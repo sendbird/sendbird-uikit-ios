@@ -193,7 +193,7 @@ open class SBUUserCell: SBUTableViewCell {
         self.mutedStateImageView.image = SBUIconSetType.iconMute.image(
             with: self.theme.mutedStateIconColor,
             to: SBUIconSetType.Metric.defaultIconSize
-        ).resize(with: .init(width: 24, height: 24))
+        )
         self.mutedStateImageView.layer.cornerRadius = userImageSize/2
         self.mutedStateImageView.backgroundColor = self.theme.mutedStateBackgroundColor
         

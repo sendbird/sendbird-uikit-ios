@@ -41,6 +41,32 @@ public extension UIImage {
             return newImage
         }
     }
+    
+    
+    /// Converts image to data.
+    ///
+    /// - Note: If the `SBUGlobals.isImageCompressionEnabled` is `true`, the image will be resized with `SBUGlobals.imageResizingSize` and compressed with `SBUGlobals.imageCompressionRate`.
+    /// - Returns: Image Data
+    ///
+    /// - Since: 3.3.1
+    func sbu_convertToData() -> Data? {
+        var image = self
+        if SBUGlobals.isImageCompressionEnabled {
+            image = self.resize(with: SBUGlobals.imageResizingSize)
+        }
+        
+        let data = image.jpegData(
+            compressionQuality: SBUGlobals.isImageCompressionEnabled
+            ? SBUGlobals.imageCompressionRate
+            : 1.0
+        )
+        
+        if data == nil {
+            SBULog.error("No image data")
+        }
+        
+        return data
+    }
 }
 
 
@@ -59,9 +85,19 @@ extension UIImage {
     
     func resize(with targetSize: CGSize) -> UIImage {
         let size = self.size
-        let widthRatio  = targetSize.width  / size.width
-        let heightRatio = targetSize.height / size.height
-        let scale = max(widthRatio, heightRatio)
+        var scale = 1.0
+        
+        if size.width <= targetSize.width && size.height <= targetSize.height {
+            
+        } else if size.width > targetSize.width && size.height <= targetSize.height {
+            scale = targetSize.width / size.width
+        } else if size.width <= targetSize.width && size.height > targetSize.height {
+            scale = targetSize.height / size.height
+        } else if size.width > targetSize.width && size.height > targetSize.height {
+            let widthRatio = targetSize.width / size.width
+            let heightRatio = targetSize.height / size.height
+            scale = min(widthRatio, heightRatio)
+        }
         
         let scaledImageSize = CGSize(
             width: size.width * scale,

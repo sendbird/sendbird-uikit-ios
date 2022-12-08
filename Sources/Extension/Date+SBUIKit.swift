@@ -71,10 +71,59 @@ extension Date {
         }
     }
     
+    public static func lastUpdatedTimeForChannelCell(baseTimestamp: Int64) -> String? {
+        self.lastUpdatedTime(
+            baseTimestamp: baseTimestamp,
+            dateFormat: SBUDateFormatSet.Channel.lastUpdatedDateFormat,
+            pastYearFormat: SBUDateFormatSet.Channel.lastUpdatedPastYearFormat,
+            timeFormat: SBUDateFormatSet.Channel.lastUpdatedTimeFormat
+        )
+    }
+    
+    public static func lastUpdatedTimeForMessageSearchResultCell(baseTimestamp: Int64) -> String? {
+        self.lastUpdatedTime(
+            baseTimestamp: baseTimestamp,
+            dateFormat: SBUDateFormatSet.MessageSearch.lastUpdatedDateFormat,
+            pastYearFormat: SBUDateFormatSet.MessageSearch.lastUpdatedPastYearFormat,
+            timeFormat: SBUDateFormatSet.MessageSearch.lastUpdatedTimeFormat
+        )
+    }
+    
+    public static func messageCreatedTimeForParentInfo(baseTimestamp: Int64) -> String? {
+        self.lastUpdatedTime(
+            baseTimestamp: baseTimestamp,
+            dateFormat: SBUDateFormatSet.MessageThread.sentDateDateFormat,
+            pastYearFormat: SBUDateFormatSet.MessageThread.sentDatePastYearFormat,
+            timeFormat: SBUDateFormatSet.MessageThread.sentDateTimeFormat,
+            yesterdayFormat: SBUDateFormatSet.MessageThread.sentDateYesterdayFormat
+        )
+    }
+    
+    public static func dateSeparatedTime(baseTimestamp: Int64) -> String? {
+        self.lastUpdatedTime(
+            baseTimestamp: baseTimestamp,
+            dateFormat: SBUDateFormatSet.Message.dateSeparatorDateFormat,
+            pastYearFormat: SBUDateFormatSet.Message.dateSeparatorPastYearFormat,
+            timeFormat: SBUDateFormatSet.Message.dateSeparatorTimeFormat,
+            yesterdayFormat: SBUDateFormatSet.Message.dateSeparatorYesterdayFormat
+        )
+    }
+    
+    
+    /// Create a string with a format based on the timestamp.
+    /// - Parameters:
+    ///   - baseTimestamp: Timestamp to apply formatting.
+    ///   - dateFormat: Format used to display date.
+    ///   - pastYearFormat: Format used to display date for past year.
+    ///   - timeFormat: Format used to display today's time.
+    ///   - yesterdayFormat: If this value is `nil`, return the `"Yesterday"` when updated time is yesterday.
+    /// - Returns: Date formatted string
     public static func lastUpdatedTime(
         baseTimestamp: Int64,
         dateFormat: String = SBUDateFormatSet.MMMdd,
-        timeFormat: String = SBUDateFormatSet.hhmm
+        pastYearFormat: String? = nil,
+        timeFormat: String = SBUDateFormatSet.hhmm,
+        yesterdayFormat: String? = nil
     ) -> String? {
         let baseDate = Date.sbu_from(baseTimestamp)
         let currDate = Date()
@@ -91,16 +140,26 @@ extension Date {
             if baseDateComponents.year == currDateComponents.year &&
                 baseDateComponents.month == currDateComponents.month &&
                 baseDateComponents.day != currDateComponents.day {
+                
+                if let yesterdayFormat = yesterdayFormat {
+                    return baseDate.sbu_toString(dateFormat: yesterdayFormat, localizedFormat: false)
+                }
+                
                 let interval = (currDateComponents.day ?? 0) - (baseDateComponents.day ?? 0)
                 if interval == 1 {
                     return SBUStringSet.Date_Yesterday
                 }
             }
             
-            return baseDate.sbu_toString(dateFormat: dateFormat)
+            if (baseDateComponents.year != currDateComponents.year),
+                let pastYearFormat = pastYearFormat {
+                return baseDate.sbu_toString(dateFormat: pastYearFormat, localizedFormat: false)
+            }
+            
+            return baseDate.sbu_toString(dateFormat: dateFormat, localizedFormat: false)
         }
         else {
-            return baseDate.sbu_toString(dateFormat: timeFormat)
+            return baseDate.sbu_toString(dateFormat: timeFormat, localizedFormat: false)
         }
     }
     

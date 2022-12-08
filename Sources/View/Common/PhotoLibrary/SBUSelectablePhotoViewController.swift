@@ -275,17 +275,13 @@ extension SBUSelectablePhotoViewController: UICollectionViewDelegate, UICollecti
                     }
                 } else {
                     PHImageManager().requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: .aspectFill, options: requestOptions) { image, _ in
-                        guard let data = image?.jpegData(
-                            compressionQuality: SBUGlobals.isImageCompressionEnabled
-                            ? SBUGlobals.imageCompressionRate
-                            : 1.0
-                        ) else {
-                            SBULog.error("No image data")
-                            return
-                        }
+                        
+                        guard let image = image?.fixedOrientation(),
+                              let imageData = image.sbu_convertToData() else { return }
+                        
                         DispatchQueue.main.async { [weak self] in
                             guard let self = self else { return }
-                            self.delegate?.didTapSendImageData(data, fileName: fileName, mimeType: mimeType)
+                            self.delegate?.didTapSendImageData(imageData, fileName: fileName, mimeType: mimeType)
                             self.dismiss(animated: true, completion: nil)
                         }
                     }

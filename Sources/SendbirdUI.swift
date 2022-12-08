@@ -174,7 +174,7 @@ public class SendbirdUI {
             if updatedNickname == nil {
                 if !user.nickname.isEmpty {
                     updatedNickname = user.nickname
-                } else {
+                } else if SBUGlobals.isUserIdUsedForNickname {
                     updatedNickname = userId
                 }
             }
@@ -271,7 +271,9 @@ public class SendbirdUI {
                                       completionHandler: ((_ error: SBError?) -> Void)?) {
         SBULog.info("[Request] Update user info")
         let params = UserUpdateParams()
-        params.nickname = nickname
+        if let nickname = nickname {
+            params.nickname = nickname
+        }
         params.profileImageURL = profileURL
         SendbirdChat.updateCurrentUserInfo(params: params, completionHandler: { error in
             self.didFinishUpdateUserInfo(error: error, completionHandler: completionHandler)

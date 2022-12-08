@@ -1,5 +1,5 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.6.1 (swiftlang-5.6.0.323.66 clang-1316.0.20.12)
+// swift-compiler-version: Apple Swift version 5.6 (swiftlang-5.6.0.323.62 clang-1316.0.20.8)
 // swift-module-flags: -target arm64-apple-ios11.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name SendbirdUIKit
 import AVFoundation
 import AVKit
@@ -375,11 +375,14 @@ public struct SBUDateFormatSet {
   public static var MMMdd: Swift.String
   public static var hhmma: Swift.String
   public static var hhmm: Swift.String
+  public static var yyyyMMdd: Swift.String
   public static var yyyyMMddhhmm: Swift.String
   public static var yyyyMMddhhmmss: Swift.String
-  public static var MMMddAthhmma: Swift.String
+  public static var MMMddhhmma: Swift.String
+  public static var MMMddyyyyhhmma: Swift.String
   @_hasMissingDesignatedInitializers public class Channel {
     public static var lastUpdatedDateFormat: Swift.String
+    public static var lastUpdatedPastYearFormat: Swift.String
     public static var lastUpdatedTimeFormat: Swift.String
     public static var lastSeenDateFormat: Swift.String
     @objc deinit
@@ -387,17 +390,32 @@ public struct SBUDateFormatSet {
   @_hasMissingDesignatedInitializers public class Message {
     public static var fileNameFormat: Swift.String
     public static var fileViewerTimeFormat: Swift.String
-    public static var sentDateFormat: Swift.String
     public static var sentTimeFormat: Swift.String
     public static var sentTimeFormatInOpenChannel: Swift.String
+    public static var dateSeparatorDateFormat: Swift.String
+    public static var dateSeparatorPastYearFormat: Swift.String
+    public static var dateSeparatorTimeFormat: Swift.String
+    public static var dateSeparatorYesterdayFormat: Swift.String
+    @available(*, deprecated, renamed: "dateSeparatorDateFormat")
+    public static var sentDateFormat: Swift.String {
+      get
+      set
+    }
     @objc deinit
   }
   @_hasMissingDesignatedInitializers public class MessageSearch {
+    public static var lastUpdatedDateFormat: Swift.String
+    public static var lastUpdatedPastYearFormat: Swift.String
+    public static var lastUpdatedTimeFormat: Swift.String
+    @available(*, unavailable, message: "Use `Date.lastUpdatedTimeForMessageSearchResultCell(baseTimestamp:)` instead")
     public static var sentTimeFormat: Swift.String
     @objc deinit
   }
   @_hasMissingDesignatedInitializers public class MessageThread {
+    public static var sentDateDateFormat: Swift.String
+    public static var sentDatePastYearFormat: Swift.String
     public static var sentDateTimeFormat: Swift.String
+    public static var sentDateYesterdayFormat: Swift.String
     @objc deinit
   }
 }
@@ -4946,6 +4964,7 @@ extension SendbirdUIKit.SBUGroupChannelSettingsModule {
     set
   }
   public static var messageCellConfiguration: SendbirdUIKit.SBUMessageCellConfiguration
+  public static var isUserIdUsedForNickname: Swift.Bool
   @objc deinit
 }
 public typealias AlertButtonHandler = (_ info: Any?) -> Swift.Void
@@ -6376,7 +6395,11 @@ extension SendbirdUIKit.SBUOpenChannelListModule {
 extension Foundation.Date {
   public static func sbu_from(_ baseTimestamp: Swift.Int64) -> Foundation.Date
   public func sbu_toString(dateFormat: Swift.String, localizedFormat: Swift.Bool = true) -> Swift.String
-  public static func lastUpdatedTime(baseTimestamp: Swift.Int64, dateFormat: Swift.String = SBUDateFormatSet.MMMdd, timeFormat: Swift.String = SBUDateFormatSet.hhmm) -> Swift.String?
+  public static func lastUpdatedTimeForChannelCell(baseTimestamp: Swift.Int64) -> Swift.String?
+  public static func lastUpdatedTimeForMessageSearchResultCell(baseTimestamp: Swift.Int64) -> Swift.String?
+  public static func messageCreatedTimeForParentInfo(baseTimestamp: Swift.Int64) -> Swift.String?
+  public static func dateSeparatedTime(baseTimestamp: Swift.Int64) -> Swift.String?
+  public static func lastUpdatedTime(baseTimestamp: Swift.Int64, dateFormat: Swift.String = SBUDateFormatSet.MMMdd, pastYearFormat: Swift.String? = nil, timeFormat: Swift.String = SBUDateFormatSet.hhmm, yesterdayFormat: Swift.String? = nil) -> Swift.String?
 }
 extension Foundation.Date {
   @available(*, deprecated, renamed: "SBUDateFormatSet")
@@ -8704,6 +8727,7 @@ public class SBUFileMessageCellParams : SendbirdUIKit.SBUBaseMessageCellParams {
 }
 extension UIKit.UIImage {
   public func sbu_with(tintColor: UIKit.UIColor?) -> UIKit.UIImage
+  public func sbu_convertToData() -> Foundation.Data?
 }
 @_hasMissingDesignatedInitializers public class SBUViewControllerSet {
   public static var GroupChannelListViewController: SendbirdUIKit.SBUGroupChannelListViewController.Type

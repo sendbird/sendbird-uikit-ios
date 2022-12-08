@@ -188,14 +188,8 @@ extension SBUMessageThreadModule {
             guard let imageURL = tempImageURL else {
                 let originalImage = info[.originalImage] as? UIImage
                 // for Camera capture
-                guard let image = originalImage?
-                        .fixedOrientation()
-                        .resize(with: SBUGlobals.imageResizingSize) else { return }
-                
-                let imageData = image.jpegData(
-                    compressionQuality: SBUGlobals.isImageCompressionEnabled ?
-                    SBUGlobals.imageCompressionRate : 1.0
-                )
+                guard let image = originalImage?.fixedOrientation(),
+                      let imageData = image.sbu_convertToData() else { return }
                 
                 self.delegate?.messageThreadModule(
                     self,
@@ -226,14 +220,8 @@ extension SBUMessageThreadModule {
                     )
                 default:
                     let originalImage = info[.originalImage] as? UIImage
-                    guard let image = originalImage?
-                            .fixedOrientation()
-                            .resize(with: SBUGlobals.imageResizingSize) else { return }
-                    
-                    let imageData = image.jpegData(
-                        compressionQuality: SBUGlobals.isImageCompressionEnabled ?
-                        SBUGlobals.imageCompressionRate : 1.0
-                    )
+                    guard let image = originalImage?.fixedOrientation(),
+                          let imageData = image.sbu_convertToData() else { return }
                     
                     self.delegate?.messageThreadModule(
                         self,
@@ -276,14 +264,9 @@ extension SBUMessageThreadModule {
                         guard let imageURL = url as? URL else { return }
                         guard let mimeType = SBUUtils.getMimeType(url: imageURL) else { return }
                         
-                        let image = originalImage
+                        guard let imageData = originalImage
                             .fixedOrientation()
-                            .resize(with: SBUGlobals.imageResizingSize)
-                        let imageData = image.jpegData(
-                            compressionQuality: SBUGlobals.isImageCompressionEnabled
-                            ? SBUGlobals.imageCompressionRate
-                            : 1.0
-                        )
+                            .sbu_convertToData() else { return }
                         
                         let fileExtension = imageURL.pathExtension
                         let fileName = "\(Date().sbu_toString(dateFormat: SBUDateFormatSet.Message.fileNameFormat, localizedFormat: false)).\(fileExtension)"

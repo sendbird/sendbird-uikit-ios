@@ -8,6 +8,7 @@
 
 import UIKit
 
+/// This class used to display the date separator in the message list.
 open class SBUMessageDateView: SBUView {
      
     @SBUThemeWrapper(theme: SBUTheme.messageCellTheme)
@@ -42,8 +43,6 @@ open class SBUMessageDateView: SBUView {
     }
     
     open func configure(timestamp: Int64) {
-        self.dateLabel.text = Date
-            .sbu_from(timestamp)
-            .sbu_toString(dateFormat: SBUDateFormatSet.Message.sentDateFormat)
+        self.dateLabel.text = Date.dateSeparatedTime(baseTimestamp: timestamp)
     }
 }

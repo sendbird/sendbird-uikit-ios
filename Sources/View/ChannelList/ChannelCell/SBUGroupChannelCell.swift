@@ -398,13 +398,11 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
             lastUpdatedAt = Int64(channel.createdAt)
         }
         
-        guard let lastSeenTiemString = Date.lastUpdatedTime(
-            baseTimestamp: lastUpdatedAt,
-            dateFormat: SBUDateFormatSet.Channel.lastUpdatedDateFormat,
-            timeFormat: SBUDateFormatSet.Channel.lastUpdatedTimeFormat
+        guard let lastSeenTimeString = Date.lastUpdatedTimeForChannelCell(
+            baseTimestamp: lastUpdatedAt
         ) else { return nil }
         
-        return lastSeenTiemString
+        return lastSeenTimeString
     }
 
     

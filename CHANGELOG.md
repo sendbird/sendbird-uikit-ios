@@ -1,5 +1,30 @@
 # Changelog
 
+### v3.3.1 (Dec 8, 2022)
+* Added `isUserIdUsedForNickname` in `SBUGlobals`
+* Improved image compression process
+* Improved date formats for past year's format
+  * `SBUGroupChannelCell`
+  * `SBUMessageSearchResultCell`
+  * `SBUMessageDateView`
+  * `SBUParentMessageInfoView`
+* Added formatted date getter functions in Date extension class
+  * `lastUpdatedTimeForChannelCell(baseTimestamp:)`
+  * `lastUpdatedTimeForMessageSearchResultCell(baseTimestamp:)`
+  * `messageCreatedTimeForParentInfo(baseTimestamp:)`
+  * `dateSeparatedTime(baseTimestamp:)`
+* Added static properties in `SBUDateFormatSet`
+  * `yyyyMMdd`
+  * `MMMddhhmma`
+  * `MMMddyyyyhhmma`
+  * Channel
+    * `lastUpdatedPastYearFormat`
+  * Message * `dateSeparatorDateFormat` * `dateSeparatorPastYearFormat` * `dateSeparatorTimeFormat` * `dateSeparatorYesterdayFormat`
+  * MessageSearch
+    * `lastUpdatedDateFormat`
+    * `lastUpdatedPastYearFormat` * `lastUpdatedTimeFormat`
+  * MessageThread * `sentDateDateFormat` * `sentDatePastYearFormat` * `sentDateTimeFormat` * `sentDateYesterdayFormat`
+
 ### v3.3.0 (Nov 23, 2022) with Chat SDK **v4.1.6**
 * Improved image caching and gif handling process
 * Improved file data handling process

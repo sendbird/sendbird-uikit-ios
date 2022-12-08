@@ -256,13 +256,9 @@ open class SBUMessageSearchResultCell: SBUTableViewCell {
             self.messageLabel.text = message.message
         }
         
-        let createdAt = Date.lastUpdatedTime(
-            baseTimestamp: message.createdAt,
-            timeFormat: SBUDateFormatSet.MessageSearch.sentTimeFormat
+        self.createdAtLabel.text = Date.lastUpdatedTimeForMessageSearchResultCell(
+            baseTimestamp: message.createdAt
         )
-        self.createdAtLabel.text = createdAt ?? Date
-            .sbu_from(message.createdAt)
-            .sbu_toString(dateFormat: SBUDateFormatSet.MessageSearch.sentTimeFormat)
     }
     
     /// Sets file message icon depending on the message's file type using `SBUUtils.getFileType(by: fileMessage)`.

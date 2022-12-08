@@ -15,17 +15,21 @@ public struct SBUDateFormatSet {
     public static var MMMdd = "MMM dd"
     public static var hhmma = "hh:mm a"
     public static var hhmm = "hh:mm"
+    public static var yyyyMMdd = "yyyy/MM/dd"
     public static var yyyyMMddhhmm = "yyyyMMddhhmm"
     public static var yyyyMMddhhmmss = "yyyyMMddhhmmss"
-    public static var MMMddAthhmma = "MMM dd 'at' hh:mm a"
+    public static var MMMddhhmma = "MMM dd hh:mm a"
+    public static var MMMddyyyyhhmma = "MMM dd, yyyy hh:mm a"
     
     public class Channel {
         /// Used in `SBUChannelCell`
         public static var lastUpdatedDateFormat = SBUDateFormatSet.MMMdd
-        
         /// Used in `SBUChannelCell`
-        public static var lastUpdatedTimeFormat = SBUDateFormatSet.hhmm
+        public static var lastUpdatedPastYearFormat = SBUDateFormatSet.yyyyMMdd
+        /// Used in `SBUChannelCell`
+        public static var lastUpdatedTimeFormat = SBUDateFormatSet.hhmma
         
+        /// Not used now
         public static var lastSeenDateFormat = SBUDateFormatSet.MMMddyyyy
     }
     
@@ -36,22 +40,52 @@ public struct SBUDateFormatSet {
         /// Used `SBUFileViewer titleView.dateTimeLabel`
         public static var fileViewerTimeFormat = SBUDateFormatSet.hhmma
         
-        /// Used in `SBUMessageDateView`
-        public static var sentDateFormat = SBUDateFormatSet.EMMMdd
-        
         /// Used in `SBUMessageStateView timeLabel`
         public static var sentTimeFormat = SBUDateFormatSet.hhmm
         
         /// Used in `SBUOpenChannelContentBaseMessageCell`
         public static var sentTimeFormatInOpenChannel = SBUDateFormatSet.hhmm
+        
+        
+        /// Used to show date separates in the message list.
+        
+        /// Used in `SBUMessageDateView`
+        public static var dateSeparatorDateFormat = SBUDateFormatSet.EMMMdd
+        /// Used in `SBUMessageDateView`
+        public static var dateSeparatorPastYearFormat = SBUDateFormatSet.MMMddyyyy
+        /// Used in `SBUMessageDateView`
+        public static var dateSeparatorTimeFormat = SBUDateFormatSet.EMMMdd
+        /// Used in `SBUMessageDateView`
+        public static var dateSeparatorYesterdayFormat = SBUDateFormatSet.EMMMdd
+        
+        /// Used in `SBUMessageDateView`
+        @available(*, deprecated, renamed: "dateSeparatorDateFormat") // 3.3.1
+        public static var sentDateFormat: String {
+            get { SBUDateFormatSet.Message.dateSeparatorDateFormat }
+            set { SBUDateFormatSet.Message.dateSeparatorDateFormat = newValue }
+        }
     }
     
     public class MessageSearch {
         /// Used in `SBUMessageSearchResultCell`
+        public static var lastUpdatedDateFormat = SBUDateFormatSet.MMMdd
+        /// Used in `SBUMessageSearchResultCell`
+        public static var lastUpdatedPastYearFormat = SBUDateFormatSet.yyyyMMdd
+        /// Used in `SBUMessageSearchResultCell`
+        public static var lastUpdatedTimeFormat = SBUDateFormatSet.hhmma
+
+        @available(*, unavailable, message: "Use `Date.lastUpdatedTimeForMessageSearchResultCell(baseTimestamp:)` instead") // 3.3.1
         public static var sentTimeFormat = SBUDateFormatSet.hhmm
     }
     
     public class MessageThread {
-        public static var sentDateTimeFormat = SBUDateFormatSet.MMMddAthhmma
+        /// Used in `SBUParentMessageInfoView`
+        public static var sentDateDateFormat = SBUDateFormatSet.MMMddhhmma
+        /// Used in `SBUParentMessageInfoView`
+        public static var sentDatePastYearFormat = SBUDateFormatSet.MMMddyyyyhhmma
+        /// Used in `SBUParentMessageInfoView`
+        public static var sentDateTimeFormat = SBUDateFormatSet.MMMddhhmma
+        /// Used in `SBUParentMessageInfoView`
+        public static var sentDateYesterdayFormat = SBUDateFormatSet.MMMddhhmma
     }
 }
