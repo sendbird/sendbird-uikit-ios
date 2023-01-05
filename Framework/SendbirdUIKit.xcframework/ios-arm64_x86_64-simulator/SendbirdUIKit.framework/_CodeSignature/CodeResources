@@ -10,11 +10,11 @@
 		</data>
 		<key>Base.xcconfig</key>
 		<data>
-		WdsG2YGereLCl00JdN2sqIzukJc=
+		tC1cp5CQrNE/z58laEm9N4fdRM8=
 		</data>
 		<key>Headers/SendbirdUIKit-Swift.h</key>
 		<data>
-		sD6zdwK9ngMnH6DsmC2nbUr36yo=
+		cXaCbTDtU47TL86/dlht1xVkZRw=
 		</data>
 		<key>Headers/SendbirdUIKit.h</key>
 		<data>
@@ -22,31 +22,31 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		5TOFZRXRl+cvjwiWglrEkpUPlJs=
+		lq5AjuK9GXtKBfgN3Zf3270J2UU=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
 		<data>
-		mGQG/G/+o65N5vl8OWSOdeLF/UQ=
+		e/AQN6HiGWIHxTNDEeJJN43tqRY=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		DaZ1jI+1ET8ZDRzEd3HtzzVI0jQ=
+		f/Z6Wra9E5O3cBmh/U7DdMOciXE=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		HFG0h1xP3L9OQMMrTIEkPMucIjY=
+		aJUtyW3KltMASPsOV+mqZo/N8RA=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<data>
-		H6/wTbMG2fB5a0VeU39Sbw6cHyk=
+		P17XzSlyQ8ZSxYzz6EZj9CyF2xs=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		HSJRXr4cZ2vLE0dWgcWe/J520W8=
+		g7wsCSOO+mZwAMvXnwpIAS4AaiI=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		4HH1oSvc6/mLgrhX2IKC0QhXIgg=
+		9SszjiSdWKviwaTqfWBpDFSv9V8=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -58,11 +58,11 @@
 		</data>
 		<key>SBUReactionCollectionViewCell.nib/objects-12.3+.nib</key>
 		<data>
-		Pc6lx3ao0oJiiEm6pmPfIuIArdE=
+		DwlCqeGdFv4ibQEm5uTsJplctK8=
 		</data>
 		<key>SBUReactionCollectionViewCell.nib/runtime.nib</key>
 		<data>
-		CaQe/9v33Ou2i5lKEbX2e78cREY=
+		3cwgkMfm9c8gwzZ8EU0z0cqpXlY=
 		</data>
 	</dict>
 	<key>files2</key>
@@ -78,14 +78,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			WxDcOsmwMCVgmdzBByAaXDxIQl0GhGrr8JOoUg3KfR8=
+			8pC8LN1FnJpRonUMTDi2JccCDZ/SxxyddA8Eb6Dcmqg=
 			</data>
 		</dict>
 		<key>Headers/SendbirdUIKit-Swift.h</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			ZN6JR/8Y5sWbYM124ivLtdNgOIybDlW6Bi9TxS8UYYE=
+			PoNRYwno2ES9pJ3PDpUS27m73LhDO8yc94LoLeCfTqc=
 			</data>
 		</dict>
 		<key>Headers/SendbirdUIKit.h</key>
@@ -99,42 +99,42 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			2eg2cS/bW0p7vmBI0zXU+KVl1VdBeuie5luHYrp3XdM=
+			2Rd8S/gecDpcPXw7YSTJz7e2N+ych/JMaBWreNcvNmU=
 			</data>
 		</dict>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			c3yoaOFues9HVwp2vcJjyUCzxktgVYHNdr0ztzkjxmU=
+			G/ki12elavVV8tqF3i6JRVrl7qf0QUGYnifpCPJX21Y=
 			</data>
 		</dict>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			XalDR7vFMVDQfnKKgZvauumkQf5AQQva7/+dGT5xxuk=
+			vH4NGrjdIDpKzDCQE3WrJKVzsuAUofnknKURUpYgQoI=
 			</data>
 		</dict>
 		<key>Modules/SendbirdUIKit.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			gnP48ZRJLJ1Cretg2r6Pz2qDLme1UN5ABN//K+KlnkQ=
+			kxNjEaDAAWZuOWbN5eSranFmisyKJS0R/89lczPu2bM=
 			</data>
 		</dict>
 		<key>Modules/SendbirdUIKit.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			BYlliPrIio8JEKMegBDote3I4OLPLD63sSfEQjig9+w=
+			K0431SDoadeqz6NGDQsWyMiBWq+kwR0KoWT+Jm9eWzs=
 			</data>
 		</dict>
 		<key>Modules/SendbirdUIKit.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			u1KgDbuJWP1DZLbzsGaPUzTAJxNFVo9PhyYrFFNZ1m0=
+			kin3Z0SiEcb3wfP3UizmA6tARxFDZjaXJRnngdywLks=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
@@ -155,14 +155,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			XaVpkxcb65CLz622f6o12eEO9miCVGM2RC5W3rMDY6o=
+			Z2Gag1X3JqfMbXoGL66wEM5rsyNBaBfTa6WZZa5b20E=
 			</data>
 		</dict>
 		<key>SBUReactionCollectionViewCell.nib/runtime.nib</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			veZ0nE4R1bjBf/SeL9y0xQuQsgsGlBc//zdhO0O6R4Q=
+			oysAkIyIyZ8bcf5SECrZEC8STGXrvbzXZHIhpgtiCaU=
 			</data>
 		</dict>
 	</dict>

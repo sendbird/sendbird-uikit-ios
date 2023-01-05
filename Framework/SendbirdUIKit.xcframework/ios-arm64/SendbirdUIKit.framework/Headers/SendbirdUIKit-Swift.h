@@ -4272,7 +4272,7 @@ SWIFT_CLASS("_TtC13SendbirdUIKit24SBUParentMessageInfoView")
 @property (nonatomic) CGRect bounds;
 @property (nonatomic) CGRect frame;
 - (nonnull instancetype)initWithReuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER;
-- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder SWIFT_UNAVAILABLE;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUParentMessageInfoView(frame:)'");
 /// Calls the <code>userProfileTapHandler()</code> when the user profile is tapped.
 /// \param sender tapGestureRecognizer
 ///

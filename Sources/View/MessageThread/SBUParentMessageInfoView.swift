@@ -16,7 +16,7 @@ public protocol SBUParentMessageInfoViewDelegate: AnyObject {
 }
 
 
-public class SBUParentMessageInfoView: UITableViewHeaderFooterView, SBUUserMessageTextViewDelegate {
+open class SBUParentMessageInfoView: UITableViewHeaderFooterView, SBUUserMessageTextViewDelegate {
     
     // MARK: - UI properties (Public)
 
@@ -89,6 +89,17 @@ public class SBUParentMessageInfoView: UITableViewHeaderFooterView, SBUUserMessa
     var baseFileContentViewWidthConstraint: NSLayoutConstraint?
 
     
+    // MARK: - State properties (Public)
+    /// If is`true`, enables reaction feature and it's available. The defaults value is `true`
+    /// - NOTE: if it's `false`, ``reactionView`` doesn't appear on ``SBUMessageThreadViewController``and its ``SBUMessageThreadModule/List`` component even the channel uses reaction.
+    /// ```swift
+    /// // Disable reactionView in Message thread module
+    /// let listCompnonent = SBUModuleSet.messageThreadModule.listComponent
+    /// listCompnonent?.parentMessageInfoView.enablesReaction = false
+    /// SBUModuleSet.messageThreadModule.listComponent = listCompnonent
+    /// ```
+    public var enablesReaction: Bool = true
+    
     // MARK: - Logic properties (Private)
     weak var delegate: SBUParentMessageInfoViewDelegate?
     var message: BaseMessage?
@@ -98,7 +109,7 @@ public class SBUParentMessageInfoView: UITableViewHeaderFooterView, SBUUserMessa
     
     var configured: Bool = false
     
-    var useReaction = false
+    var isReactionAvailable = false
     
     
     // MARK: - Action
@@ -128,7 +139,7 @@ public class SBUParentMessageInfoView: UITableViewHeaderFooterView, SBUUserMessa
     }
     
     @available(*, unavailable, renamed: "SBUParentMessageInfoView(frame:)")
-    required convenience init?(coder: NSCoder) {
+    required convenience public init?(coder: NSCoder) {
         fatalError()
     }
     
@@ -316,7 +327,7 @@ public class SBUParentMessageInfoView: UITableViewHeaderFooterView, SBUUserMessa
         self.delegate = delegate
         
         self.message = message
-        self.useReaction = useReaction
+        self.isReactionAvailable = useReaction
         
         guard let message = self.message else { return }
 
@@ -409,9 +420,10 @@ public class SBUParentMessageInfoView: UITableViewHeaderFooterView, SBUUserMessa
         }
         
         // MARK: Configure reaction view
+        let isReactionEnabled = self.isReactionAvailable && self.enablesReaction
         self.reactionView.configure(
             maxWidth: SBUConstant.imageSize.width,
-            useReaction: self.useReaction,
+            useReaction: isReactionEnabled,
             reactions: message.reactions
         )
         

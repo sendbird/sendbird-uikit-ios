@@ -1,5 +1,10 @@
 # Changelog
 
+### v3.3.2 (Jan 5, 2023) with Chat SDK **v4.2.2**
+* Added `enablesReaction` in `SBUParentMessageInfoView`
+* Fixed `contentMode` issue while loading image
+* Improved stability
+
 ### v3.3.1 (Dec 8, 2022)
 * Added `isUserIdUsedForNickname` in `SBUGlobals`
 * Improved image compression process

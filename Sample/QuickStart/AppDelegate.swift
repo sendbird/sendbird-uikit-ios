@@ -16,7 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        SendbirdUI.setLogLevel(.all)
+        SendbirdUI.setLogLevel(.none)
         
         // TODO: Change to your AppId
         SendbirdUI.initialize(applicationId: "2D7B4CDB-932F-4082-9B09-A1153792DC8D") { // origin

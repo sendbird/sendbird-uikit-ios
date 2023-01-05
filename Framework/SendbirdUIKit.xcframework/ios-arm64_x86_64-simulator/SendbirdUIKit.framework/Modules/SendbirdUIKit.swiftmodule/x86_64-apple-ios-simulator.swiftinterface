@@ -6318,7 +6318,7 @@ public protocol SBUParentMessageInfoViewDelegate : AnyObject {
   func parentMessageInfoViewBoundsWillChanged(_ view: SendbirdUIKit.SBUParentMessageInfoView)
   func parentMessageInfoViewBoundsDidChanged(_ view: SendbirdUIKit.SBUParentMessageInfoView)
 }
-@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) public class SBUParentMessageInfoView : UIKit.UITableViewHeaderFooterView, SendbirdUIKit.SBUUserMessageTextViewDelegate {
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUParentMessageInfoView : UIKit.UITableViewHeaderFooterView, SendbirdUIKit.SBUUserMessageTextViewDelegate {
   @_Concurrency.MainActor(unsafe) public var profileView: SendbirdUIKit.SBUMessageProfileView
   @_Concurrency.MainActor(unsafe) public var userNameLabel: UIKit.UILabel
   @_Concurrency.MainActor(unsafe) public var dateLabel: UIKit.UILabel
@@ -6353,6 +6353,7 @@ public protocol SBUParentMessageInfoViewDelegate : AnyObject {
     @_Concurrency.MainActor(unsafe) @objc get
     @_Concurrency.MainActor(unsafe) @objc set
   }
+  @_Concurrency.MainActor(unsafe) public var enablesReaction: Swift.Bool
   @_Concurrency.MainActor(unsafe) public var userProfileTapHandler: (() -> Swift.Void)?
   @_Concurrency.MainActor(unsafe) public var tapHandlerToContent: (() -> Swift.Void)?
   @_Concurrency.MainActor(unsafe) public var moreButtonTapHandlerToContent: (() -> Swift.Void)?
@@ -6361,6 +6362,8 @@ public protocol SBUParentMessageInfoViewDelegate : AnyObject {
   @_Concurrency.MainActor(unsafe) public var emojiLongPressHandler: ((_ emojiKey: Swift.String) -> Swift.Void)?
   @_Concurrency.MainActor(unsafe) public var mentionTapHandler: ((_ user: SendbirdUIKit.SBUUser) -> Swift.Void)?
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init(reuseIdentifier: Swift.String?)
+  @available(*, unavailable, renamed: "SBUParentMessageInfoView(frame:)")
+  @_Concurrency.MainActor(unsafe) @objc required convenience dynamic public init?(coder: Foundation.NSCoder)
   @_Concurrency.MainActor(unsafe) open func setupViews()
   @_Concurrency.MainActor(unsafe) open func setupLayouts()
   @_Concurrency.MainActor(unsafe) open func updateLayouts()
