@@ -3,10 +3,10 @@
 
 target 'SendBirdUIKit-Sample' do
   use_modular_headers!
-  pod 'SendBirdSDK', '~> 3.1.28'
+  pod 'SendBirdSDK', '~> 3.1.39'
 end
 
 target 'NotificationService' do
   use_modular_headers!
-  pod 'SendBirdSDK', '~> 3.1.28'
+  pod 'SendBirdSDK', '~> 3.1.39'
 end

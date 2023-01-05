@@ -1,5 +1,9 @@
 # Change Log
 
+### v2.2.12 (Jan 5, 2023)
+* Updated chat SDK minor version to **v3.1.39**
+* Improved stability
+
 ### v2.2.11 (Oct 28, 2022)
 * Updated chat SDK minor version to **v3.1.33**
 * Fixed `loadPrevMessages` function in `SBUOpenChannelViewController` class not working issue

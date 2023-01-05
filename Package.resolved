@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/sendbird/sendbird-chat-ios-spm",
         "state": {
           "branch": null,
-          "revision": "0743d1abd32d214c7512e36df50b4d2434d1c116",
-          "version": "3.1.33"
+          "revision": "66704770ed43b23c9d120aa97a09709b89db353a",
+          "version": "3.1.39"
         }
       }
     ]
