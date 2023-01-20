@@ -234,6 +234,8 @@ class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegate, UI
             withReuseIdentifier: SBUReactionCollectionViewCell.sbu_className,
             for: indexPath) as? SBUReactionCollectionViewCell else { return .init() }
 
+        guard reactionList.count > indexPath.row else { return .init() }
+        
         let reaction = self.reactionList[indexPath.row]
         let emoji = self.emojiList.first (where: { $0.key == reaction.key })
         cell.configure(type: .reactions, url: emoji?.url, count: reaction.userIds.count)
@@ -245,7 +247,8 @@ class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegate, UI
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-
+        guard reactionList.count > indexPath.row else { return }
+        
         var deleteAnimation: UITableView.RowAnimation = .none
         var insertAnimation: UITableView.RowAnimation = .none
 
@@ -272,9 +275,11 @@ class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegate, UI
             with: insertAnimation
         )
         self.tableView.endUpdates()
-
-        guard let cell = collectionView.cellForItem(at: indexPath)
-            as? SBUReactionCollectionViewCell else { return }
+        
+        guard collectionView.numberOfSections > 0,
+              collectionView.numberOfItems(inSection: 0) > indexPath.row,
+              let cell = collectionView.cellForItem(at: indexPath)
+                as? SBUReactionCollectionViewCell else { return }
         
         cell.setCount(self.reactionList[indexPath.row].userIds.count)
     }

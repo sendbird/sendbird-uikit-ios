@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/sendbird/sendbird-chat-sdk-ios",
         "state": {
           "branch": null,
-          "revision": "749a1bdb953d32c0d98df3f20cc8cd145a20c1bc",
-          "version": "4.2.2"
+          "revision": "2d7d80cc31442a2e142caef6794dafbeaac81401",
+          "version": "4.2.4"
         }
       }
     ]

@@ -277,6 +277,7 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
         let failedMessages = self.messageCollection?.failedMessages ?? []
         let cachedTempMessages = pendingMessages + failedMessages
         for message in cachedTempMessages {
+            if message.channelURL != self.channelURL { continue }
             self.pendingMessageManager.upsertPendingMessage(channelURL: self.channel?.channelURL, message: message)
             if let fileMessage = message as? FileMessage,
                let fileMessageParams = fileMessage.messageParams as? FileMessageCreateParams {

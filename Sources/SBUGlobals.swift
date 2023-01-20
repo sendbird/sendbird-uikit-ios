@@ -73,7 +73,7 @@ public class SBUGlobals {
     ///
     /// - Note: If this option is enabled, use `imageResizingSize` to resize the image, then compress it based on the`imageCompressionRate` value.
     /// - Since: 3.0.0
-    public static var isImageCompressionEnabled: Bool = false
+    public static var isImageCompressionEnabled: Bool = true
     
     /// Image compression rate value that will be used when sending image. Default value is `0.7`.
     ///  - NOTE: Typically this value will be used in `jpegData(compressionQuality:)`

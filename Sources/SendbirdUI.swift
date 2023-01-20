@@ -79,13 +79,17 @@ public class SendbirdUI {
             isLocalCachingEnabled: true,
             logLevel: chatLogLevel
         )
-        SendbirdChat.initializeSynchronously(params: params)
         
-        completionHandler(nil)
-        
-        // Call after initialization
-        SendbirdChat.addExtension(SBUConstant.extensionKeyUIKit, version: SendbirdUI.shortVersion)
-        SendbirdChatOptions.setMemberInfoInMessage(true)
+        if let error = SendbirdChat.initializeSynchronously(params: params) {
+            SBULog.error("[Failed] SendbirdChat initialize failed.: \(error.debugDescription)")
+            completionHandler(error)
+        } else {
+            completionHandler(nil)
+
+            // Call after initialization
+            SendbirdChat.addExtension(SBUConstant.extensionKeyUIKit, version: SendbirdUI.shortVersion)
+            SendbirdChatOptions.setMemberInfoInMessage(true)
+        }
     }
     
     
