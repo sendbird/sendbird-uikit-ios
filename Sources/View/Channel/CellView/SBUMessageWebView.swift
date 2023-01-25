@@ -92,6 +92,10 @@ open class SBUMessageWebView: UIStackView, SBUViewLifeCycle {
             .constraint(equalToConstant: Metric.imageHeight)
         imageHeightConstraint.isActive = true
         self.imageHeightConstraint = imageHeightConstraint
+        
+        self.imageView.widthAnchor
+            .constraint(lessThanOrEqualToConstant: Metric.maxWidth).isActive = true
+        
         self.detailStackView.translatesAutoresizingMaskIntoConstraints = false
         self.detailStackView.isLayoutMarginsRelativeArrangement = true
         

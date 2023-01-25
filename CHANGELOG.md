@@ -1,5 +1,8 @@
 # Changelog
 
+### v3.3.4 (Jan 25, 2023)
+* Added web preview image width restriction
+
 ### v3.3.3 (Jan 20, 2023) with Chat SDK **v4.2.4** 
 * Changed image compression option's default value to `true`
 * Added processing for `SendbirdChat` initializer errors in `SendbirdUI` Initializer.

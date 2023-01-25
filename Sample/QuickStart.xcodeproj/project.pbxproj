@@ -2699,7 +2699,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = "$(inherited)";
+				MARKETING_VERSION = 3.3.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sendbird.uikit.sample.NotificationService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -2729,7 +2729,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = "$(inherited)";
+				MARKETING_VERSION = 3.3.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sendbird.uikit.sample.NotificationService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
