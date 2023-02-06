@@ -169,6 +169,7 @@ public enum EmptyViewType: Int {
     case none
     case noChannels
     case noMessages
+    case noNotifications
     case noMembers
     case noMutedMembers
     case noMutedParticipants

@@ -188,13 +188,15 @@ class ViewController: UIViewController {
     }
     
     func updateUnreadCount() {
-        SendbirdChat.getTotalUnreadMessageCount { [weak self] totalCount, error in
-            guard let self = self else { return }
-            self.setUnreadMessageCount(unreadCount: Int32(totalCount))
+        let params = GroupChannelTotalUnreadChannelCountParams()
+        // set notification channel custom type
+        params.customTypesFilter = [""]
+        SendbirdChat.getTotalUnreadChannelCount(params: params) { totalCount, error in
+            self.setUnreadMessageCount(unreadCount: totalCount)
         }
     }
     
-    func setUnreadMessageCount(unreadCount: Int32) {
+    func setUnreadMessageCount(unreadCount: UInt) {
         guard self.isSignedIn else { return }
         
         var badgeValue: String?
@@ -239,10 +241,10 @@ class ViewController: UIViewController {
         loadingIndicator.startAnimating()
         view.isUserInteractionEnabled = false
         
-        let userID = userIdTextField.text ?? ""
+        let userId = userIdTextField.text ?? ""
         let nickname = nicknameTextField.text ?? ""
         
-        guard !userID.isEmpty else {
+        guard !userId.isEmpty else {
             userIdTextField.shake()
             userIdTextField.becomeFirstResponder()
             loadingIndicator.stopAnimating()
@@ -256,24 +258,56 @@ class ViewController: UIViewController {
             view.isUserInteractionEnabled = true
             return
         }
-        
-        SBUGlobals.currentUser = SBUUser(userId: userID, nickname: nickname)
+        SBUGlobals.currentUser = SBUUser(userId: userId, nickname: nickname)
         SendbirdUI.connect { [weak self] user, error in
-            self?.loadingIndicator.stopAnimating()
-            self?.view.isUserInteractionEnabled = true
             
-            if let user = user {
-                UserDefaults.saveUserID(userID)
-                UserDefaults.saveNickname(nickname)
+            guard let user = user else {
+                self?.loadingIndicator.stopAnimating()
+                self?.view.isUserInteractionEnabled = true
+                return
+            }
+            UserDefaults.saveUserID(userId)
+            UserDefaults.saveNickname(nickname)
+            print("SendbirdUIKit.connect: \(user)")
+            
+            /// **NOTIFICATION CHANNEL**
+            /// Create Notification Channel
+            /// - IMPORTANT: Because channel URL contains user ID, the user ID *should* follow the channel URL naming rule: "Only alphanumeric characters, hyphens, and underscores are allowed in a channel URL."
+            /// Please refer to [creating channel guideline](https://docs.google.com/document/d/18vZ2SrYG-zs9jXsV53hJM_qmVJD0_Je0n2VPpY6gjVs/edit#heading=h.iksdvfo9fi87)
+            let params = GroupChannelCreateParams()
+            params.customType = SBUStringSet.Notification_Channel_CustomType
+            params.channelURL = SBUStringSet.Notification_Channel_URL(user.userId)
+            params.name = SBUStringSet.Notification_Channel_Name_Default
+            params.isDistinct = true
+            params.isStrict = true
+            params.operatorUserIds = [userId]
+            GroupChannel.createChannel(params: params) { channel, error in
+                DispatchQueue.main.async {
+                    self?.loadingIndicator.stopAnimating()
+                    self?.view.isUserInteractionEnabled = true
+                }
                 
-                print("SendbirdUIKit.connect: \(user)")
-                self?.isSignedIn = true
-                self?.updateUnreadCount()
-                
-                if let appDelegate = UIApplication.shared.delegate as? AppDelegate,
-                    let payload = appDelegate.pendingNotificationPayload {
-                    self?.startChatAction(with: payload)
-                    appDelegate.pendingNotificationPayload = nil
+                if let error = error {
+                    print(error.localizedDescription)
+                    DispatchQueue.main.async {
+                        let actionOK = UIAlertAction(title: "OK", style: .cancel)
+                        let alert = UIAlertController(title: "Failed to create notification channel", message: error.localizedDescription, preferredStyle: .alert)
+                        alert.addAction(actionOK)
+                        self?.present(alert, animated: true)
+                    }
+                    return
+                }
+
+                DispatchQueue.main.async {
+                    
+                    self?.isSignedIn = true
+                    self?.updateUnreadCount()
+                    
+                    if let appDelegate = UIApplication.shared.delegate as? AppDelegate,
+                       let payload = appDelegate.pendingNotificationPayload {
+                        self?.startChatAction(with: payload)
+                        appDelegate.pendingNotificationPayload = nil
+                    }
                 }
             }
         }
@@ -306,6 +340,13 @@ class ViewController: UIViewController {
         guard let channel: NSDictionary = payload["channel"] as? NSDictionary,
               let channelURL: String = channel["channel_url"] as? String else { return }
         
+        /// **NOTIFICATION CHANNEL**
+        /// Handle Push Notifications - Moves to notification channel
+        if channelURL.contains(SBUStringSet.Notification_Channel_CustomType) {
+            self.moveToNotificationChannel()
+            return
+        }
+        
         let mainVC = SBUGroupChannelListViewController()
         let naviVC = UINavigationController(rootViewController: mainVC)
         naviVC.modalPresentationStyle = .fullScreen
@@ -329,6 +370,16 @@ class ViewController: UIViewController {
         naviVC.modalPresentationStyle = .fullScreen
         present(naviVC, animated: true)
     }
+    
+    /// **NOTIFICATION CHANNEL**
+    /// Handle Push Notifications - Moves to notification channel
+    private func moveToNotificationChannel() {
+        let tabBarController = MainChannelTabbarController()
+        tabBarController.modalPresentationStyle = .fullScreen
+        UIApplication.shared.currentWindow?.rootViewController?.present(tabBarController, animated: true) {
+            tabBarController.selectedIndex = 1
+        }
+    }
 }
 
 
@@ -351,7 +402,9 @@ extension ViewController: UITextFieldDelegate {
 
 extension ViewController: UserEventDelegate {
     func didUpdateTotalUnreadMessageCount(_ totalCount: Int32, totalCountByCustomType: [String : Int]?) {
-        self.setUnreadMessageCount(unreadCount: Int32(totalCount))
+        let notificationChannelCount = totalCountByCustomType?[SBUStringSet.Notification_Channel_CustomType] ?? 0
+        let chatCount = Int(totalCount) - notificationChannelCount
+        self.setUnreadMessageCount(unreadCount: UInt(chatCount))
     }
 }
 

@@ -11,7 +11,7 @@ import UIKit
 enum OpenChannelTabType: String {
     case liveStreaming = "Live streams"
     case community = "Community"
-    case mySettings = "My settings"
+    case mySettings = "Settings"
 }
 
 

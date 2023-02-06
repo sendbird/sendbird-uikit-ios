@@ -112,6 +112,20 @@ extension UIImage {
         return scaledImage
     }
     
+    
+    convenience init(url: URL) {
+        self.init()
+        DispatchQueue.global().async { [weak self] in
+            if let data = try? Data(contentsOf: url) {
+                if let image = UIImage(data: data) {
+                    DispatchQueue.main.async {
+                        self = image as? Self
+                    }
+                }
+            }
+        }
+    }
+    
     func isAnimatedImage() -> Bool {
         return self.images?.count ?? 0 > 1
     }
@@ -176,31 +190,34 @@ extension UIImage {
 // MARK: - GIF image handling (figuring out gif delays)
 /// Note: https://github.com/kiritmodi2702/GIF-Swift/blob/master/GIF-Swift/iOSDevCenters%2BGIF.swift
 extension UIImage {
-    internal class func delayForImageAtIndex(_ index: Int, source: CGImageSource!) -> Double {
-        var delay = 0.0
+    internal class func delayForImageAtIndex(_ index: Int, source: CGImageSource?) -> Float {
+        guard let source = source else { return 0 }
         
         // Get dictionaries
         let cfProperties = CGImageSourceCopyPropertiesAtIndex(source, index, nil)
-        let gifPropertiesPointer = UnsafeMutablePointer<UnsafeRawPointer?>.allocate(capacity: 0)
-        if CFDictionaryGetValueIfPresent(cfProperties, Unmanaged.passUnretained(kCGImagePropertyGIFDictionary).toOpaque(), gifPropertiesPointer) == false {
-            return delay
+        let gifKey = Unmanaged.passUnretained(kCGImagePropertyGIFDictionary).toOpaque()
+        guard let gifPropertiesUnsafePointer = CFDictionaryGetValue(cfProperties, gifKey) else {
+            return 0
+        }
+        let gifProperties = unsafeBitCast(gifPropertiesUnsafePointer, to: CFDictionary.self)
+        
+        // case kCGImagePropertyGIFUnclampedDelayTime
+        let unclampedKey = Unmanaged.passUnretained(kCGImagePropertyGIFUnclampedDelayTime).toOpaque()
+        if let unclampedPointer:UnsafeRawPointer = CFDictionaryGetValue(gifProperties, unclampedKey) {
+            if let delayTime = unsafeBitCast(unclampedPointer, to:AnyObject.self).floatValue, delayTime > 0 {
+                return delayTime
+            }
         }
         
-        let gifProperties:CFDictionary = unsafeBitCast(gifPropertiesPointer.pointee, to: CFDictionary.self)
-        
-        // Get delay time
-        var delayObject: AnyObject = unsafeBitCast(
-            CFDictionaryGetValue(gifProperties,
-                                 Unmanaged.passUnretained(kCGImagePropertyGIFUnclampedDelayTime).toOpaque()),
-            to: AnyObject.self)
-        if delayObject.doubleValue == 0 {
-            delayObject = unsafeBitCast(CFDictionaryGetValue(gifProperties,
-                                                             Unmanaged.passUnretained(kCGImagePropertyGIFDelayTime).toOpaque()), to: AnyObject.self)
+        // case kCGImagePropertyGIFDelayTime
+        let clampedKey = Unmanaged.passUnretained(kCGImagePropertyGIFDelayTime).toOpaque()
+        if let clampedPointer:UnsafeRawPointer = CFDictionaryGetValue(gifProperties, clampedKey) {
+            if let delayTime = unsafeBitCast(clampedPointer, to:AnyObject.self).floatValue, delayTime > 0 {
+                return delayTime
+            }
         }
         
-        delay = delayObject as? Double ?? 0
-        
-        return delay
+        return 0
     }
     
     internal class func gcdForPair(_ a: Int?, _ b: Int?) -> Int {

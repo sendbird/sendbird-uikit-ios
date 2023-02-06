@@ -62,7 +62,7 @@ public class SBUFontSet {
     static var body3Attributes: [NSAttributedString.Key: Any] = {
         let style = NSMutableParagraphStyle()
         let pointSize = SBUFontSet.body3.pointSize
-        let defaultLineHeight = 16.f
+        let defaultLineHeight = 20.f
         let defaultFontSize = 14.f
         style.minimumLineHeight = defaultLineHeight * pointSize / defaultFontSize
         return [
@@ -116,6 +116,19 @@ public class SBUFontSet {
     /// Medium, 14pt
     public static var button3 = UIFont.systemFont(ofSize: 14.0, weight: .medium)
     static var button3Attributes: [NSAttributedString.Key: Any] = {
+        let style = NSMutableParagraphStyle()
+        let pointSize = SBUFontSet.button3.pointSize
+        let defaultLineHeight = 16.f
+        let defaultFontSize = 14.f
+        style.minimumLineHeight = defaultLineHeight * pointSize / defaultFontSize
+        return [
+            .font: SBUFontSet.button3,
+            .paragraphStyle: style
+        ]
+    }()
+    /// Bold, 14pt
+    public static var button4 = UIFont.systemFont(ofSize: 14.0, weight: .bold)
+    static var button4Attributes: [NSAttributedString.Key: Any] = {
         let style = NSMutableParagraphStyle()
         let pointSize = SBUFontSet.button3.pointSize
         let defaultLineHeight = 16.f

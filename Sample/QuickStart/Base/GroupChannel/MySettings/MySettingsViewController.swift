@@ -230,13 +230,9 @@ open class MySettingsViewController: UIViewController, UINavigationControllerDel
                 nickname.trimmingCharacters(in: .whitespacesAndNewlines).count > 0
                 else { return }
             
-            // Sendbird provides various access control options when using the Chat SDK. By default, the Allow retrieving user list attribute is turned on to facilitate creating sample apps. However, this may grant access to unwanted data or operations, leading to potential security concerns. To manage your access control settings, you can turn on or off each setting on Sendbird Dashboard.
+            // In order to use the API, the option must be turned on in the dashboard.
             SendbirdUI.updateUserInfo(nickname: nickname, profileURL: nil) { (error) in
-                guard error == nil else {
-                    SBULog.error(error?.localizedDescription)
-                    return
-                }
-                guard let user = SBUGlobals.currentUser else { return }
+                guard error == nil, let user = SBUGlobals.currentUser else { return }
                 UserDefaults.saveNickname(nickname)
                 DispatchQueue.main.async { [weak self] in
                     guard let self = self else { return }
@@ -409,16 +405,12 @@ extension MySettingsViewController: UIImagePickerControllerDelegate {
             
             self?.userInfoView.coverImage.image = originalImage
             
-            // Sendbird provides various access control options when using the Chat SDK. By default, the Allow retrieving user list attribute is turned on to facilitate creating sample apps. However, this may grant access to unwanted data or operations, leading to potential security concerns. To manage your access control settings, you can turn on or off each setting on Sendbird Dashboard.
+            // In order to use the API, the option must be turned on in the dashboard.
             SendbirdUI.updateUserInfo(
                 nickname: nil,
                 profileImage: originalImage.jpegData(compressionQuality: 0.5)
             ) { error in
-                guard error == nil else {
-                    SBULog.error(error?.localizedDescription)
-                    return
-                }
-                guard let user = SBUGlobals.currentUser else { return }
+                guard error == nil, let user = SBUGlobals.currentUser else { return }
                 self?.userInfoView.configure(user: user)
             }
         }

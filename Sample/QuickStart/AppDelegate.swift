@@ -16,10 +16,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        SendbirdUI.setLogLevel(.none)
+        SendbirdUI.setLogLevel(.all)
         
         // TODO: Change to your AppId
-        SendbirdUI.initialize(applicationId: "2D7B4CDB-932F-4082-9B09-A1153792DC8D") { // origin
+        SendbirdUI.initialize(applicationId: "60E22A13-CC2E-4E83-98BE-578E72FC92F3") { // origin
             //
         } migrationHandler: {
             //
@@ -32,7 +32,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         SBUGlobals.isOpenChannelUserProfileEnabled = true
         
         // Reply
-        SBUGlobals.reply.replyType = .thread
+        SBUGlobals.reply.replyType = .quoteReply
         // Channel List - Typing indicator
         SBUGlobals.isChannelListTypingIndicatorEnabled = true
         // Channel List - Message receipt state
@@ -76,16 +76,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         //        completionHandler( [.alert, .badge, .sound])
     }
     
+    /// **Notification Center - Push Notification Guide:**
+    /// Image is not supported officially by Sendbird.
+    /// However, You can get the image URL from the payload that contains the data of the message.
+    /// For more information on message data, please refer to `MessageBlock.swift` or ``SendbirdMessage``
     public func userNotificationCenter(_ center: UNUserNotificationCenter,
                                        didReceive response: UNNotificationResponse,
                                        withCompletionHandler completionHandler: @escaping () -> Swift.Void) {
         let userInfo = response.notification.request.content.userInfo
         guard let payload: NSDictionary = userInfo["sendbird"] as? NSDictionary else { return }
         
-        
-        let havePresentedVC = UIApplication.shared.currentWindow?.rootViewController?.presentedViewController != nil
+        let hasPresentedVC = UIApplication.shared.currentWindow?.rootViewController?.presentedViewController != nil
         let isSignedIn = (UIApplication.shared.currentWindow?.rootViewController as? ViewController)?.isSignedIn ?? false
-        let needToPedning = !(isSignedIn || havePresentedVC)
+        let needToPedning = !(isSignedIn || hasPresentedVC)
         
         if needToPedning {
             self.pendingNotificationPayload = payload
@@ -93,15 +96,39 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             guard let channel: NSDictionary = payload["channel"] as? NSDictionary,
                   let channelURL: String = channel["channel_url"] as? String else { return }
             
-            if havePresentedVC {
-                SendbirdUI.moveToChannel(channelURL: channelURL, basedOnChannelList: true)
-            } else {
-                let mainVC = SBUGroupChannelListViewController()
-                let naviVC = UINavigationController(rootViewController: mainVC)
-                naviVC.modalPresentationStyle = .fullScreen
-                UIApplication.shared.currentWindow?.rootViewController?.present(naviVC, animated: true) {
-                    SendbirdUI.moveToChannel(channelURL: channelURL)
+            /// **NOTIFICATION CHANNEL**
+            /// Handle Push Notifications - Moves to notification channel
+            if channelURL.contains(SBUStringSet.Notification_Channel_CustomType) {
+                self.moveToNotificationChannel()
+                return
+            }
+            
+            else {
+                if hasPresentedVC {
+                    SendbirdUI.moveToChannel(channelURL: channelURL, basedOnChannelList: true)
+                } else {
+                    let channelListViewController = SBUGroupChannelListViewController()
+                    let navigationController = UINavigationController(rootViewController: channelListViewController)
+                    navigationController.modalPresentationStyle = .fullScreen
+                    UIApplication.shared.currentWindow?.rootViewController?.present(navigationController, animated: true) {
+                        SendbirdUI.moveToChannel(channelURL: channelURL)
+                    }
                 }
+            }
+        }
+    }
+    
+    /// **NOTIFICATION CHANNEL**
+    /// Handle Push Notifications - Moves to notification channel
+    private func moveToNotificationChannel() {
+        let rootViewController = UIApplication.shared.currentWindow?.rootViewController
+        if let tabBarController = rootViewController?.presentedViewController as? MainChannelTabbarController {
+            tabBarController.selectedIndex = 1
+        } else {
+            let tabBarController = MainChannelTabbarController()
+            tabBarController.modalPresentationStyle = .fullScreen
+            UIApplication.shared.currentWindow?.rootViewController?.present(tabBarController, animated: true) {
+                tabBarController.selectedIndex = 1
             }
         }
     }

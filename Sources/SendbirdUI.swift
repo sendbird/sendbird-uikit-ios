@@ -359,13 +359,17 @@ public class SendbirdUI {
     /// This function is used to register push token for using push service on the Sendbird server.
     /// - Parameters:
     ///   - deviceToken: Device token
+    ///   - unique: The default is `false`. If `true`, register device token after removing exsiting all device tokens of the current user. If false, just add the device token.
     ///   - completionHandler: The handler block to execute.
-    public static func registerPush(deviceToken: Data,
-                                    completionHandler: @escaping (_ success: Bool) -> Void) {
+    public static func registerPush(
+        deviceToken: Data,
+        unique: Bool = false,
+        completionHandler: @escaping (_ success: Bool) -> Void
+    ) {
         SBULog.info("[Request] Register push token to Sendbird server")
         
         #if !targetEnvironment(simulator)
-        SendbirdChat.registerDevicePushToken(deviceToken, unique: true) { status, error in
+        SendbirdChat.registerDevicePushToken(deviceToken, unique: unique) { status, error in
             switch status {
             case .success:
                 SBULog.info("[Succeed] APNs push token is registered.")

@@ -8,7 +8,7 @@
 
 import UIKit
 
-// MARK: - Channel List Theme 
+// MARK: - Channel List Theme
 
 public class SBUTheme {
     public init(groupChannelListTheme: SBUGroupChannelListTheme = .light,
@@ -18,6 +18,7 @@ public class SBUTheme {
                 channelTheme: SBUChannelTheme = .light,
                 messageInputTheme: SBUMessageInputTheme = .light,
                 messageCellTheme: SBUMessageCellTheme = .light,
+                messageTemplateTheme: SBUMessageTemplateTheme = .light,
                 userListTheme: SBUUserListTheme = .light,
                 userCellTheme: SBUUserCellTheme = .light,
                 channelSettingsTheme: SBUChannelSettingsTheme = .light,
@@ -36,6 +37,7 @@ public class SBUTheme {
         self.channelTheme = channelTheme
         self.messageInputTheme = messageInputTheme
         self.messageCellTheme = messageCellTheme
+        self.messageTemplateTheme = messageTemplateTheme
         self.userListTheme = userListTheme
         self.userCellTheme = userCellTheme
         self.channelSettingsTheme = channelSettingsTheme
@@ -45,7 +47,6 @@ public class SBUTheme {
         self.messageSearchTheme = messageSearchTheme
         self.messageSearchResultCellTheme = messageSearchResultCellTheme
         self.createOpenChannelTheme = createOpenChannelTheme
-        
     }
     
     public static func set(theme: SBUTheme) {
@@ -67,12 +68,15 @@ public class SBUTheme {
     public static func setChannel(channelTheme: SBUChannelTheme,
                                   messageCellTheme: SBUMessageCellTheme,
                                   messageInputTheme: SBUMessageInputTheme,
-                                  componentTheme: SBUComponentTheme) {
+                                  componentTheme: SBUComponentTheme,
+                                  messageTemplateTheme: SBUMessageTemplateTheme
+    ) {
         
         self.channelTheme = channelTheme
         self.messageCellTheme = messageCellTheme
         self.messageInputTheme = messageInputTheme
         self.componentTheme = componentTheme
+        self.messageTemplateTheme = messageTemplateTheme
     }
     
     public static func setUserList(userListTheme: SBUUserListTheme,
@@ -103,6 +107,7 @@ public class SBUTheme {
             channelTheme: .dark,
             messageInputTheme: .dark,
             messageCellTheme: .dark,
+            messageTemplateTheme: .dark,
             userListTheme: .dark,
             userCellTheme: .dark,
             channelSettingsTheme: .dark,
@@ -125,6 +130,7 @@ public class SBUTheme {
             channelTheme: .light,
             messageInputTheme: .light,
             messageCellTheme: .light,
+            messageTemplateTheme: .light,
             userListTheme: .light,
             userCellTheme: .light,
             channelSettingsTheme: .light,
@@ -229,6 +235,12 @@ public class SBUTheme {
         get { shared.createOpenChannelTheme }
     }
     
+    // Message template
+    public static var messageTemplateTheme: SBUMessageTemplateTheme {
+        set { shared.messageTemplateTheme = newValue }
+        get { shared.messageTemplateTheme }
+    }
+
     
     // MARK: - Private property
     
@@ -268,7 +280,12 @@ public class SBUTheme {
     
     // Create open channel
     private var createOpenChannelTheme: SBUCreateOpenChannelTheme
+    
+    // Message Template
+    private var messageTemplateTheme: SBUMessageTemplateTheme = SBUMessageTemplateTheme()
+    
 }
+
 
 // MARK: - Overlay Theme
 
@@ -3336,4 +3353,58 @@ public class SBUCreateOpenChannelTheme {
     public var actionSheetTextColor: UIColor
     public var actionSheetRemoveTextColor: UIColor
     public var actionSheetCancelTextColor: UIColor
+}
+
+
+// MARK: - Message template theme
+public class SBUMessageTemplateTheme {
+    
+    public var textFont: UIFont = SBUFontSet.body3
+    public var textColor: UIColor = SBUColorSet.onlight01 // SBUColorSet.onDark03
+    public var textButtonFont: UIFont = SBUFontSet.button4
+    public var textButtonTitleColor: UIColor = SBUColorSet.primary300 // SBUColorSet.primary200
+    public var textButtonBackgroundColor: UIColor = SBUColorSet.background200 // SBUColorSet.background400
+    public var viewBackgroundColor: UIColor = SBUColorSet.background100 // SBUColorSet.background500
+
+    public static var light: SBUMessageTemplateTheme {
+        let theme = SBUMessageTemplateTheme()
+        
+        theme.textFont = SBUFontSet.body3
+        theme.textColor = SBUColorSet.onlight01
+        theme.textButtonFont = SBUFontSet.button4
+        theme.textButtonTitleColor = SBUColorSet.primary300
+        theme.textButtonBackgroundColor = SBUColorSet.background200
+        theme.viewBackgroundColor = SBUColorSet.background100
+        
+        return theme
+    }
+    
+    public static var dark: SBUMessageTemplateTheme {
+        let theme = SBUMessageTemplateTheme()
+        
+        theme.textFont = SBUFontSet.body3
+        theme.textColor = SBUColorSet.ondark01
+        theme.textButtonFont = SBUFontSet.button4
+        theme.textButtonTitleColor = SBUColorSet.primary200
+        theme.textButtonBackgroundColor = SBUColorSet.background400
+        theme.viewBackgroundColor = SBUColorSet.background500
+        
+        return theme
+    }
+    
+    public init(
+        textFont: UIFont = SBUFontSet.body3,
+        textColor: UIColor = SBUColorSet.onlight01,
+        textButtonFont: UIFont = SBUFontSet.button4,
+        textButtonTitleColor: UIColor = SBUColorSet.primary300,
+        textButtonBackgroundColor: UIColor = SBUColorSet.background200,
+        viewBackgroundColor: UIColor = SBUColorSet.background100
+    ) {
+        self.textFont = textFont
+        self.textColor = textColor
+        self.textButtonFont = textButtonFont
+        self.textButtonTitleColor = textButtonTitleColor
+        self.textButtonBackgroundColor = textButtonBackgroundColor
+        self.viewBackgroundColor = viewBackgroundColor
+    }
 }

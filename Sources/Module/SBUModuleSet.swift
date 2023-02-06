@@ -45,6 +45,11 @@ public class SBUModuleSet {
         get { return shared.openChannelModule }
         set { shared.openChannelModule = newValue }
     }
+    /// The module for notification channel.
+    public static var notificationChannelModule: SBUNotificationChannelModule {
+        get { shared.notificationChannelModule }
+        set { shared.notificationChannelModule = newValue }
+    }
     
     
     // Select user
@@ -150,6 +155,7 @@ public class SBUModuleSet {
                 baseChannelModule: SBUBaseChannelModule = SBUBaseChannelModule(),
                 groupChannelModule: SBUGroupChannelModule = SBUGroupChannelModule(),
                 openChannelModule: SBUOpenChannelModule = SBUOpenChannelModule(),
+                notificationChannelModule: SBUNotificationChannelModule = SBUNotificationChannelModule(),
                 inviteUserModule: SBUInviteUserModule = SBUInviteUserModule(),
                 groupRegisterOperatorModule: SBURegisterOperatorModule = SBURegisterOperatorModule(),
                 openRegisterOperatorModule: SBURegisterOperatorModule = SBURegisterOperatorModule(),
@@ -170,6 +176,7 @@ public class SBUModuleSet {
         self.baseChannelModule = baseChannelModule
         self.groupChannelModule = groupChannelModule
         self.openChannelModule = openChannelModule
+        self.notificationChannelModule = notificationChannelModule
         
         self.inviteUserModule = inviteUserModule
         
@@ -203,6 +210,7 @@ public class SBUModuleSet {
     private var baseChannelModule: SBUBaseChannelModule
     private var groupChannelModule: SBUGroupChannelModule
     private var openChannelModule: SBUOpenChannelModule
+    private var notificationChannelModule: SBUNotificationChannelModule
     
     private var inviteUserModule: SBUInviteUserModule
     

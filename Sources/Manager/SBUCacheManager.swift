@@ -153,7 +153,7 @@ public struct DiskCache {
             let data = try Data(contentsOf: filePath)
             return data as NSData
         } catch {
-            SBULog.info(error.localizedDescription)
+//            SBULog.info(error.localizedDescription)
         }
         return nil
     }

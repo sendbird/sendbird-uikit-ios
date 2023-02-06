@@ -117,6 +117,17 @@ public class SBUStringSet {
         }
     }
 
+    // MARK: - Notification Channel
+    /// Custom type of the notification channel: `"SENDBIRD_NOTIFICATION_CHANNEL_NOTIFICATION"`
+    public static let Notification_Channel_CustomType = "SENDBIRD_NOTIFICATION_CHANNEL_NOTIFICATION"
+    
+    /// Specifies the URL of the notification channel in a string form that belongs to the user with the specified `userId`: `"SENDBIRD_NOTIFICATION_CHANNEL_NOTIFICATION_{userId}"`
+    public static var Notification_Channel_URL: (_ userId: String) -> String = { userId in
+        return "\(SBUStringSet.Notification_Channel_CustomType)_\(userId)"
+    }
+    
+    /// The default name of the notification channel: `"Notifications"`
+    public static var Notification_Channel_Name_Default = "Notifications"
 
     // MARK: - Channel Setting
     public static var ChannelSettings_Header_Title = "Channel information"
@@ -180,7 +191,7 @@ public class SBUStringSet {
     public static var Message_Edited = "(edited)"
     public static var Message_System = "System message"
     public static var Message_Unknown_Title = "(Unknown message type)"
-    public static var Message_Unknown_Description = "Cannot read this message."
+    public static var Message_Unknown_Description = "Can't read this message."
     public static var Message_Replied_To: (String, String) -> String = { replierNickname, quotedMessageNickname in
         return "\(replierNickname) replied to \(quotedMessageNickname)"
     }
@@ -206,12 +217,14 @@ public class SBUStringSet {
     /// - Since: 3.3.0
     public static var Message_Unavailable = "Message unavailable"
     
-    
+    /// - Since: [NEXT_VERSION]
+    public static var Message_Template_Error = "(Message template error)\nCan’t read this message."
 
 
     // MARK: - Empty
     public static var Empty_No_Channels = "No channels"
     public static var Empty_No_Messages = "No messages"
+    public static var Empty_No_Notifications = "No notifications"
     public static var Empty_No_Users = "No users"
     public static var Empty_No_Muted_Members = "No muted members"
     public static var Empty_No_Muted_Participants = "No muted participants"

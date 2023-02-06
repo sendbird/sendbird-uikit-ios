@@ -9,15 +9,18 @@
 import UIKit
 import SendbirdChatSDK
 
+// TODO: mysettings -> settings
 enum TabType {
-    case channels, mySettings
+    case channels, notifications, settings
 }
 
 class MainChannelTabbarController: UITabBarController {
     let channelsViewController = ChannelListViewController()
+    let notificationChannelViewController = NotificationChannelViewController()
     let settingsViewController = MySettingsViewController()
     
     var channelsNavigationController = UINavigationController()
+    var notificationChannelNavigationController = UINavigationController()
     var mySettingsNavigationController = UINavigationController()
     
     var theme: SBUComponentTheme = SBUTheme.componentTheme
@@ -34,11 +37,14 @@ class MainChannelTabbarController: UITabBarController {
         self.channelsNavigationController = UINavigationController(
             rootViewController: channelsViewController
         )
+        self.notificationChannelNavigationController = UINavigationController(
+            rootViewController: notificationChannelViewController
+        )
         self.mySettingsNavigationController = UINavigationController(
             rootViewController: settingsViewController
         )
         
-        let tabbarItems = [self.channelsNavigationController, self.mySettingsNavigationController]
+        let tabbarItems = [self.channelsNavigationController, self.notificationChannelNavigationController, self.mySettingsNavigationController]
         self.viewControllers = tabbarItems
         
         self.setupStyles()
@@ -70,12 +76,17 @@ class MainChannelTabbarController: UITabBarController {
         )
         channelsViewController.tabBarItem = self.createTabItem(type: .channels)
         
+        notificationChannelViewController.tabBarItem = self.createTabItem(type: .notifications)
+        
         settingsViewController.navigationItem.leftBarButtonItem = self.createLeftTitleItem(
-            text: "My settings"
+            text: "Settings"
         )
-        settingsViewController.tabBarItem = self.createTabItem(type: .mySettings)
+        settingsViewController.tabBarItem = self.createTabItem(type: .settings)
         
         self.channelsNavigationController.navigationBar.barStyle = self.isDarkMode
+            ? .black
+            : .default
+        self.notificationChannelNavigationController.navigationBar.barStyle = self.isDarkMode
             ? .black
             : .default
         self.mySettingsNavigationController.navigationBar.barStyle = self.isDarkMode
@@ -85,8 +96,14 @@ class MainChannelTabbarController: UITabBarController {
     
     
     // MARK: - SDK related
+    
+    /// **NOTIFICATION CHANNEL**
+    /// Total unread message count
     func loadTotalUnreadMessageCount() {
-        SendbirdChat.getTotalUnreadMessageCount { (totalCount, error) in
+        let params = GroupChannelTotalUnreadChannelCountParams()
+        // set notification channel custom type
+        params.customTypesFilter = [""]
+        SendbirdChat.getTotalUnreadChannelCount(params: params) { totalCount, error in
             self.setUnreadMessagesCount(totalCount)
         }
     }
@@ -102,13 +119,25 @@ class MainChannelTabbarController: UITabBarController {
     
     func createTabItem(type: TabType) -> UITabBarItem {
         let iconSize = CGSize(width: 24, height: 24)
-        let title = type == .channels ? "Channels" : "My settings"
-        let icon = type == .channels
-            ? UIImage(named: "iconChatFilled")?.resize(with: iconSize)
-            : UIImage(named: "iconSettingsFilled")?.resize(with: iconSize)
-        let tag = type == .channels ? 0 : 1
+        let title: String
+        let icon: UIImage?
+        let tag: Int
+        switch type {
+        case .channels:
+            title = "Channels"
+            icon = UIImage(named: "iconChatFilled")
+            tag = 0
+        case .notifications:
+            title = "Notifications"
+            icon = UIImage(named: "iconNotificationsFilled")
+            tag = 1
+        case .settings:
+            title = "Settings"
+            icon = UIImage(named: "iconSettingsFilled")
+            tag = 2
+        }
         
-        let item = UITabBarItem(title: title, image: icon, tag: tag)
+        let item = UITabBarItem(title: title, image: icon?.resize(with: iconSize), tag: tag)
         return item
     }
     
@@ -145,6 +174,7 @@ class MainChannelTabbarController: UITabBarController {
         self.setupStyles()
         self.channelsViewController.setupStyles()
         self.settingsViewController.setupStyles()
+        self.notificationChannelViewController.updateStyles()
 
         self.channelsViewController.listComponent?.reloadTableView()
         
@@ -153,7 +183,11 @@ class MainChannelTabbarController: UITabBarController {
 }
 
 extension MainChannelTabbarController: UserEventDelegate {
+    /// **NOTIFICATION CHANNEL**
+    /// Total unread message count
     func didUpdateTotalUnreadMessageCount(_ totalCount: Int32, totalCountByCustomType: [String : Int]?) {
-        self.setUnreadMessagesCount(UInt(totalCount))
+        let notificationChannelCount = totalCountByCustomType?[SBUStringSet.Notification_Channel_CustomType] ?? 0
+        let chatCount = Int(totalCount) - notificationChannelCount
+        self.setUnreadMessagesCount(UInt(chatCount))
     }
 }
