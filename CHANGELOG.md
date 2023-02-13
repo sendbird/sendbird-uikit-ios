@@ -1,5 +1,8 @@
 # Changelog
 
+### v3.3.5 (Feb 13, 2023)
+* Modify the channel initialization logic to draw first with cached messages
+
 ### v3.3.4 (Jan 25, 2023)
 * Added web preview image width restriction
 

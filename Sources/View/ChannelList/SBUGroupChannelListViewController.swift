@@ -205,7 +205,8 @@ open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, 
     open override func showChannel(channelURL: String, messageListParams: MessageListParams? = nil) {
         let channelVC = SBUViewControllerSet.GroupChannelViewController.init(
             channelURL: channelURL,
-            messageListParams: messageListParams
+            messageListParams: messageListParams,
+            displaysLocalCachedListFirst: true
         )
         self.navigationController?.pushViewController(channelVC, animated: true)
     }

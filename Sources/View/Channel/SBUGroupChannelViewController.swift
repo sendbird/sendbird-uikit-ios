@@ -69,6 +69,14 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         self.inputComponent = SBUModuleSet.groupChannelModule.inputComponent
     }
     
+    public init(channel: GroupChannel, messageListParams: MessageListParams? = nil, displaysLocalCachedListFirst: Bool) {
+        super.init(baseChannel: channel, messageListParams: messageListParams, displaysLocalCachedListFirst: displaysLocalCachedListFirst)
+        
+        self.headerComponent = SBUModuleSet.groupChannelModule.headerComponent
+        self.listComponent = SBUModuleSet.groupChannelModule.listComponent
+        self.inputComponent = SBUModuleSet.groupChannelModule.inputComponent
+    }
+    
     required public init(
         channelURL: String,
         startingPoint: Int64? = nil,
@@ -78,6 +86,24 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
             channelURL: channelURL,
             startingPoint: startingPoint,
             messageListParams: messageListParams
+        )
+        
+        self.headerComponent = SBUModuleSet.groupChannelModule.headerComponent
+        self.listComponent = SBUModuleSet.groupChannelModule.listComponent
+        self.inputComponent = SBUModuleSet.groupChannelModule.inputComponent
+    }
+    
+    required public override init(
+        channelURL: String,
+        startingPoint: Int64? = nil,
+        messageListParams: MessageListParams? = nil,
+        displaysLocalCachedListFirst: Bool
+    ) {
+        super.init(
+            channelURL: channelURL,
+            startingPoint: startingPoint,
+            messageListParams: messageListParams,
+            displaysLocalCachedListFirst: displaysLocalCachedListFirst
         )
         
         self.headerComponent = SBUModuleSet.groupChannelModule.headerComponent
@@ -114,6 +140,24 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         startingPoint: Int64? = .max,
         showIndicator: Bool = true
     ) {
+        self.createViewModel(
+            channel: channel,
+            channelURL: channelURL,
+            messageListParams: messageListParams,
+            startingPoint: startingPoint,
+            showIndicator: showIndicator,
+            displaysLocalCachedListFirst: false
+        )
+    }
+
+    open override func createViewModel(
+        channel: BaseChannel? = nil,
+        channelURL: String? = nil,
+        messageListParams: MessageListParams? = nil,
+        startingPoint: Int64? = .max,
+        showIndicator: Bool = true,
+        displaysLocalCachedListFirst: Bool = false
+    ) {
         guard channel != nil || channelURL != nil else {
             SBULog.error("Either the channel or the channelURL parameter must be set.")
             return
@@ -125,7 +169,8 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
             messageListParams: messageListParams,
             startingPoint: startingPoint,
             delegate: self,
-            dataSource: self
+            dataSource: self,
+            displaysLocalCachedListFirst: displaysLocalCachedListFirst
         )
         
         if let messageInputView = self.baseInputComponent?.messageInputView as? SBUMessageInputView {

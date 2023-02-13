@@ -558,7 +558,8 @@ public class SendbirdUI {
                 if channelType == .group {
                     channelVC = SBUViewControllerSet.GroupChannelViewController.init(
                         channelURL: channelURL,
-                        messageListParams: messageListParams
+                        messageListParams: messageListParams,
+                        displaysLocalCachedListFirst: true
                     )
                 } else {
                     channelVC = SBUViewControllerSet.OpenChannelViewController.init(

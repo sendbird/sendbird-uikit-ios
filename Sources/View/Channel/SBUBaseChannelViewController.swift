@@ -78,15 +78,19 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     ///     ...
     /// ```
     /// - note: The `reverse` and the `previousResultSize` properties in the `MessageListParams` are set in the UIKit. Even though you set that property it will be ignored.
-    /// - Parameter baseChannel: Channel object
+    /// - Parameters:
+    ///   - baseChannel: Channel object
+    ///   - messageListParams: `MessageListParams` object to be used when loading messages.
+    ///   - displaysLocalCachedListFirst: (GroupChannel only) If this option is `true`, when a list is received through the local cache during initialization, it is displayed first.
     /// - Since: 1.0.11
-    public init(baseChannel: BaseChannel, messageListParams: MessageListParams? = nil) {
+    public init(baseChannel: BaseChannel, messageListParams: MessageListParams? = nil, displaysLocalCachedListFirst: Bool = false) {
         super.init(nibName: nil, bundle: nil)
         SBULog.info(#function)
         
         self.createViewModel(
             channel: baseChannel,
-            messageListParams: messageListParams
+            messageListParams: messageListParams,
+            displaysLocalCachedListFirst: displaysLocalCachedListFirst
         )
     }
     
@@ -104,10 +108,9 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     /// - note: The `reverse` and the `previousResultSize` properties in the `MessageListParams` are set in the UIKit. Even though you set that property it will be ignored.
     ///
     /// - Parameters:
-    ///     - channelURL: Channel's URL
-    ///     - startingPoint: A starting point timestamp to start the message list from.
-    ///     - messageListParams: `MessageListParams` object to be used when loading messages.
-    ///
+    ///   - channelURL: Channel's URL
+    ///   - startingPoint: A starting point timestamp to start the message list from.
+    ///   - messageListParams: `MessageListParams` object to be used when loading messages.
     /// - Since: 2.1.0
     required public init(
         channelURL: String,
@@ -122,6 +125,43 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
             channelURL: channelURL,
             messageListParams: messageListParams,
             startingPoint: startingPoint
+        )
+    }
+    
+    /// Initiates view controller to enter a channel with its URL, message list params and a specific timestamp representing a starting potint.
+    ///
+    /// See the example below for params generation.
+    /// ```
+    ///     let params = MessageListParams()
+    ///     params.includeMetaArray = true
+    ///     params.includeReactions = true
+    ///     params.includeThreadInfo = true
+    ///     ...
+    /// ```
+    ///
+    /// - note: The `reverse` and the `previousResultSize` properties in the `MessageListParams` are set in the UIKit. Even though you set that property it will be ignored.
+    ///
+    /// - Parameters:
+    ///   - channelURL: Channel's URL
+    ///   - startingPoint: A starting point timestamp to start the message list from.
+    ///   - messageListParams: `MessageListParams` object to be used when loading messages.
+    ///   - displaysLocalCachedListFirst: (GroupChannel only) If this option is `true`, when a list is received through the local cache during initialization, it is displayed first.
+    /// - Since: 3.3.5
+    public init(
+        channelURL: String,
+        startingPoint: Int64? = nil,
+        messageListParams: MessageListParams? = nil,
+        displaysLocalCachedListFirst: Bool
+    ) {
+        super.init(nibName: nil, bundle: nil)
+        
+        SBULog.info(#function)
+        
+        self.createViewModel(
+            channelURL: channelURL,
+            messageListParams: messageListParams,
+            startingPoint: startingPoint,
+            displaysLocalCachedListFirst: displaysLocalCachedListFirst
         )
     }
     
@@ -178,8 +218,11 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     /// Creates the view model, loading initial messages from given starting point.
     /// - Note: If you want to customize the viewModel, override this function
     /// - Parameters:
-    ///     - startingPoint: The starting point timestamp of the messages. `nil` to start from the latest.
-    ///     - showIndicator: Whether to show loading indicator on loading the initial messages.
+    ///   - baseChannel: Channel object
+    ///   - channelURL: Channel's URL
+    ///   - messageListParams: `MessageListParams` object to be used when loading messages.
+    ///   - startingPoint: The starting point timestamp of the messages. `nil` to start from the latest.
+    ///   - showIndicator: Whether to show loading indicator on loading the initial messages.
     /// - Since: 3.0.0
     open func createViewModel(
         channel: BaseChannel? = nil,
@@ -187,6 +230,25 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         messageListParams: MessageListParams? = nil,
         startingPoint: Int64? = nil,
         showIndicator: Bool = true
+    ) { }
+    
+    /// Creates the view model, loading initial messages from given starting point.
+    /// - Note: If you want to customize the viewModel, override this function
+    /// - Parameters:
+    ///   - baseChannel: Channel object
+    ///   - channelURL: Channel's URL
+    ///   - messageListParams: `MessageListParams` object to be used when loading messages.
+    ///   - startingPoint: The starting point timestamp of the messages. `nil` to start from the latest.
+    ///   - showIndicator: Whether to show loading indicator on loading the initial messages.
+    ///   - displaysLocalCachedListFirst: (GroupChannel only) If this option is `true`, when a list is received through the local cache during initialization, it is displayed first.
+    /// - Since: 3.3.5
+    open func createViewModel(
+        channel: BaseChannel? = nil,
+        channelURL: String? = nil,
+        messageListParams: MessageListParams? = nil,
+        startingPoint: Int64? = nil,
+        showIndicator: Bool = true,
+        displaysLocalCachedListFirst: Bool
     ) { }
     
     

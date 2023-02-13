@@ -52,6 +52,10 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
     var suggestedMemberList: [SBUUser]?
     var query: MemberListQuery?
 
+    /// (GroupChannel only) If this option is `true`, when a list is received through the local cache during initialization, it is displayed first.
+    /// - Since: 3.3.5
+    var displaysLocalCachedListFirst: Bool = false
+
     
     // MARK: - LifeCycle
     public init(channel: BaseChannel? = nil,
@@ -59,12 +63,15 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
                 messageListParams: MessageListParams? = nil,
                 startingPoint: Int64? = .max,
                 delegate: SBUGroupChannelViewModelDelegate? = nil,
-                dataSource: SBUGroupChannelViewModelDataSource? = nil)
+                dataSource: SBUGroupChannelViewModelDataSource? = nil,
+                displaysLocalCachedListFirst: Bool = false)
     {
         super.init()
     
         self.delegate = delegate
         self.dataSource = dataSource
+        
+        self.displaysLocalCachedListFirst = displaysLocalCachedListFirst
         
         SendbirdChat.addChannelDelegate(
             self,
@@ -232,17 +239,24 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
             initPolicy: initPolicy,
             cacheResultHandler: { [weak self] cacheResult, error in
                 guard let self = self else { return }
+                defer {
+                    self.displaysLocalCachedListFirst = false
+                    
+                }
                 if let error = error {
                     self.delegate?.didReceiveError(error, isBlocker: false)
                     return
                 }
                 
                 // prevent empty view showing
-                if cacheResult == nil, cacheResult?.isEmpty == true { return }
+                if cacheResult == nil || cacheResult?.isEmpty == true { return }
                 
                 self.isInitialLoading = true
                 
-                self.upsertMessagesInList(messages: cacheResult, needReload: false)
+                self.upsertMessagesInList(
+                    messages: cacheResult,
+                    needReload: self.displaysLocalCachedListFirst
+                )
                 
             }, apiResultHandler: { [weak self] apiResult, error in
                 guard let self = self else { return }
