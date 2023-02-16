@@ -1,5 +1,8 @@
 # Changelog
 
+### v3.3.6 (Feb 16, 2023)
+* Improved stability
+
 ### v3.3.5 (Feb 13, 2023)
 * Modify the channel initialization logic to draw first with cached messages
 

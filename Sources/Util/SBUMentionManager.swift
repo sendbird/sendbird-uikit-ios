@@ -743,9 +743,25 @@ extension SBUMentionManager {
                 range: NSRange(location: 0, length: triggerRange.location)
             )
             
+            let newLineRange = baseString.range(
+                of: "\n",
+                options: options,
+                range: NSRange(location: 0, length: triggerRange.location)
+            )
+            
             let triggerLocation = triggerRange.location - (nicknameStartWithTrigger ? 1 : 0)
             
-            if  (spaceRange.location != NSNotFound && spaceRange.location + 1 == triggerLocation)
+            /// The valid location of last delimiter
+            let delimitedLocation: Int
+            if spaceRange.location == NSNotFound {
+                delimitedLocation = newLineRange.location
+            } else if newLineRange.location == NSNotFound {
+                delimitedLocation = spaceRange.location
+            } else {
+                delimitedLocation = max(spaceRange.location, newLineRange.location)
+            }
+            
+            if  (delimitedLocation != NSNotFound && delimitedLocation + 1 == triggerLocation)
                     || triggerRange.location == 0
                     || nicknameStartWithTrigger && triggerRange.location == 1
             {
