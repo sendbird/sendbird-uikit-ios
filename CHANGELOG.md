@@ -1,5 +1,11 @@
 # Changelog
 
+### v3.3.7 (Feb 28, 2023) with Chat SDK **v4.4.0**
+* Opened `popToChannel()` in `SBUBaseSelectUserViewController`
+* Added `UITableView` header interfaces to the list components
+  * Opened `tableView(_:viewForHeaderInSection:)`
+  * Opened `tableView(_:heightForHeaderInSection:)`
+
 ### v3.3.6 (Feb 16, 2023)
 * Improved stability
 

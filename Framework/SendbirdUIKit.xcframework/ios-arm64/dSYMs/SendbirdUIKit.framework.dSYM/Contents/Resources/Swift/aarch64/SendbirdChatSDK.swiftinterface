@@ -379,6 +379,7 @@ extension SendbirdChatSDK.MessageCollection : SendbirdChatSDK.GroupChannelDelega
   @objc public var logLevel: SendbirdChatSDK.LogLevel
   @objc public var appVersion: Swift.String?
   @objc public init(applicationId: Swift.String, isLocalCachingEnabled: Swift.Bool = false, logLevel: SendbirdChatSDK.LogLevel = .none, appVersion: Swift.String? = nil)
+  @objc override dynamic public func isEqual(_ object: Any?) -> Swift.Bool
   @objc deinit
 }
 @_inheritsConvenienceInitializers @objc(SBDUserUpdateParams) public class UserUpdateParams : ObjectiveC.NSObject, Swift.Encodable {
@@ -2869,6 +2870,7 @@ extension SendbirdChatSDK.MutedUserListQuery {
   @objc public class func connect(userId: Swift.String, authToken: Swift.String?, completionHandler: SendbirdChatSDK.UserHandler? = nil)
   @objc public class func connect(userId: Swift.String, authToken: Swift.String?, apiHost: Swift.String?, wsHost: Swift.String?, completionHandler: SendbirdChatSDK.UserHandler? = nil)
   @objc public class func disconnect(completionHandler: SendbirdChatSDK.VoidHandler? = nil)
+  @objc public class func disconnectWebSocket(completionHandler: SendbirdChatSDK.VoidHandler? = nil)
   @discardableResult
   @objc public class func reconnect() -> Swift.Bool
   @objc public static var backgroundSessionCompletionHandler: SendbirdChatSDK.VoidHandler? {

@@ -96,6 +96,7 @@ extension SBUGroupChannelPushSettingsModule {
             self.tableView.separatorStyle = .none
             self.tableView.rowHeight = UITableView.automaticDimension
             self.tableView.estimatedRowHeight = 44.0
+            self.tableView.sectionHeaderHeight = 0
             self.addSubview(self.tableView)
             
             self.tableView.register(
@@ -172,6 +173,14 @@ extension SBUGroupChannelPushSettingsModule {
 
 // MARK: - UITableView relations
 extension SBUGroupChannelPushSettingsModule.List: UITableViewDelegate, UITableViewDataSource {
+    open func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        nil
+    }
+
+    open func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        0
+    }
+    
     open func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: UITableViewCell? = tableView.dequeueReusableCell(
             withIdentifier: SBUChannelPushSettingCell.sbu_className

@@ -386,6 +386,8 @@ extension SBUBaseChannelModule {
             
             self.tableView.rowHeight = UITableView.automaticDimension
             self.tableView.estimatedRowHeight = 44.0
+            self.tableView.sectionHeaderHeight = 0
+            
             self.addSubview(self.tableView)
             
             // channel state & common
@@ -818,6 +820,14 @@ extension SBUBaseChannelModule {
         open func scrollViewDidScroll(_ scrollView: UIScrollView) {
             guard scrollView == self.tableView else { return }
             self.baseDelegate?.baseChannelModule(self, didScroll: scrollView)
+        }
+        
+        open func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+            nil
+        }
+
+        open func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+            0
         }
 
         open func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

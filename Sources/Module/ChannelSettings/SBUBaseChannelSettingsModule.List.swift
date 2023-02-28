@@ -71,6 +71,7 @@ extension SBUBaseChannelSettingsModule {
             self.tableView.tableHeaderView = self.channelInfoView
             self.tableView.rowHeight = UITableView.automaticDimension
             self.tableView.estimatedRowHeight = 44.0
+            self.tableView.sectionHeaderHeight = 0
             self.addSubview(self.tableView)
         }
         
@@ -152,6 +153,14 @@ extension SBUBaseChannelSettingsModule {
 
 // MARK: - UITableView relations
 extension SBUBaseChannelSettingsModule.List: UITableViewDataSource, UITableViewDelegate {
+    open func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        nil
+    }
+
+    open func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        0
+    }
+    
     open func tableView(_ tableView: UITableView,
                         cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         return UITableViewCell()

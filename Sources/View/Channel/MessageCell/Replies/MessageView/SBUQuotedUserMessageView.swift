@@ -54,6 +54,7 @@ open class SBUQuotedUserMessageView: SBUQuotedBaseMessageView {
     open override func configure(with configuration: SBUQuotedBaseMessageViewParams) {
         guard configuration.useQuotedMessage else { return }
         self.quotedMessageLabel.text = configuration.text
+        self.quotedMessageLabel.isAccessibilityElement = true
         super.configure(with: configuration)
         self.updateConstraintsIfNeeded()
     }

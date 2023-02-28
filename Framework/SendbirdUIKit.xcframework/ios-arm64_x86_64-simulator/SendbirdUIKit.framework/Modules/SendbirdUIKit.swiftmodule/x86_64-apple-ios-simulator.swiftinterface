@@ -1,7 +1,6 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.7 (swiftlang-5.7.0.127.4 clang-1400.0.29.50)
+// swift-compiler-version: Apple Swift version 5.6 (swiftlang-5.6.0.323.62 clang-1316.0.20.8)
 // swift-module-flags: -target x86_64-apple-ios11.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name SendbirdUIKit
-// swift-module-flags-ignorable: -enable-bare-slash-regex
 import AVFoundation
 import AVKit
 import AssetsLibrary
@@ -17,7 +16,6 @@ import SendbirdChatSDK
 import Swift
 import UIKit
 import _Concurrency
-import _StringProcessing
 import simd
 open class SBUModerationsModule {
   public var headerComponent: SendbirdUIKit.SBUModerationsModule.Header? {
@@ -129,7 +127,7 @@ extension SendbirdUIKit.SBUModerationsModule {
     @available(*, unavailable, renamed: "SBUModerationsModule.Header()")
     @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
     @available(*, unavailable, renamed: "SBUModerationsModule.Header()")
-    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
     @objc deinit
     @_Concurrency.MainActor(unsafe) open func configure(delegate: SendbirdUIKit.SBUModerationsModuleHeaderDelegate, theme: SendbirdUIKit.SBUChannelSettingsTheme)
     @objc @_Concurrency.MainActor(unsafe) open func setupViews()
@@ -147,11 +145,11 @@ extension SendbirdUIKit.SBUModerationsModule {
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupLayouts()
   @_Concurrency.MainActor(unsafe) open func setupSizeContraint()
   @_Concurrency.MainActor(unsafe) override open func configure(message: SendbirdChatSDK.FileMessage, position: SendbirdUIKit.MessagePosition)
-  @_Concurrency.MainActor(unsafe) public func setImage(_ image: UIKit.UIImage?, size: CoreFoundation.CGSize? = nil)
+  @_Concurrency.MainActor(unsafe) public func setImage(_ image: UIKit.UIImage?, size: CoreGraphics.CGSize? = nil)
   @_Concurrency.MainActor(unsafe) public func setFileIcon()
-  @_Concurrency.MainActor(unsafe) open func resizeImageView(by size: CoreFoundation.CGSize)
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @_Concurrency.MainActor(unsafe) open func resizeImageView(by size: CoreGraphics.CGSize)
+  @objc override dynamic public init()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
   @objc deinit
 }
 public protocol SBUCreateChannelModuleListDelegate : SendbirdUIKit.SBUBaseSelectUserModuleListDelegate {
@@ -174,7 +172,7 @@ extension SendbirdUIKit.SBUCreateChannelModule {
     @available(*, unavailable, renamed: "SBUCreateChannelModule.List()")
     @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
     @available(*, unavailable, renamed: "SBUCreateChannelModule.List()")
-    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
     @objc deinit
     @_Concurrency.MainActor(unsafe) open func configure(delegate: SendbirdUIKit.SBUCreateChannelModuleListDelegate, dataSource: SendbirdUIKit.SBUCreateChannelModuleListDataSource, theme: SendbirdUIKit.SBUUserListTheme)
     @_Concurrency.MainActor(unsafe) @objc override open func configureCell(_ cell: UIKit.UITableViewCell?, indexPath: Foundation.IndexPath)
@@ -204,25 +202,25 @@ extension UIKit.UIView {
 }
 extension UIKit.UIView {
   @discardableResult
-  @_Concurrency.MainActor(unsafe) public func sbu_constraint(equalTo view: UIKit.UIView, leading: CoreFoundation.CGFloat? = nil, trailing: CoreFoundation.CGFloat? = nil, left: CoreFoundation.CGFloat? = nil, right: CoreFoundation.CGFloat? = nil, top: CoreFoundation.CGFloat? = nil, bottom: CoreFoundation.CGFloat? = nil, centerX: CoreFoundation.CGFloat? = nil, centerY: CoreFoundation.CGFloat? = nil, priority: UIKit.UILayoutPriority? = nil) -> UIKit.UIView
+  @_Concurrency.MainActor(unsafe) public func sbu_constraint(equalTo view: UIKit.UIView, leading: CoreGraphics.CGFloat? = nil, trailing: CoreGraphics.CGFloat? = nil, left: CoreGraphics.CGFloat? = nil, right: CoreGraphics.CGFloat? = nil, top: CoreGraphics.CGFloat? = nil, bottom: CoreGraphics.CGFloat? = nil, centerX: CoreGraphics.CGFloat? = nil, centerY: CoreGraphics.CGFloat? = nil, priority: UIKit.UILayoutPriority? = nil) -> UIKit.UIView
   @discardableResult
-  @_Concurrency.MainActor(unsafe) public func sbu_constraint_equalTo(leadingAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutXAxisAnchor>? = nil, leading: CoreFoundation.CGFloat? = nil, trailingAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutXAxisAnchor>? = nil, trailing: CoreFoundation.CGFloat? = nil, leftAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutXAxisAnchor>? = nil, left: CoreFoundation.CGFloat? = nil, rightAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutXAxisAnchor>? = nil, right: CoreFoundation.CGFloat? = nil, topAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutYAxisAnchor>? = nil, top: CoreFoundation.CGFloat? = nil, bottomAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutYAxisAnchor>? = nil, bottom: CoreFoundation.CGFloat? = nil, centerXAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutXAxisAnchor>? = nil, centerX: CoreFoundation.CGFloat? = nil, centerYAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutYAxisAnchor>? = nil, centerY: CoreFoundation.CGFloat? = nil, priority: UIKit.UILayoutPriority? = nil) -> UIKit.UIView
+  @_Concurrency.MainActor(unsafe) public func sbu_constraint_equalTo(leadingAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutXAxisAnchor>? = nil, leading: CoreGraphics.CGFloat? = nil, trailingAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutXAxisAnchor>? = nil, trailing: CoreGraphics.CGFloat? = nil, leftAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutXAxisAnchor>? = nil, left: CoreGraphics.CGFloat? = nil, rightAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutXAxisAnchor>? = nil, right: CoreGraphics.CGFloat? = nil, topAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutYAxisAnchor>? = nil, top: CoreGraphics.CGFloat? = nil, bottomAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutYAxisAnchor>? = nil, bottom: CoreGraphics.CGFloat? = nil, centerXAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutXAxisAnchor>? = nil, centerX: CoreGraphics.CGFloat? = nil, centerYAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutYAxisAnchor>? = nil, centerY: CoreGraphics.CGFloat? = nil, priority: UIKit.UILayoutPriority? = nil) -> UIKit.UIView
   @discardableResult
-  @_Concurrency.MainActor(unsafe) public func sbu_constraint(greaterThanOrEqualTo view: UIKit.UIView, leading: CoreFoundation.CGFloat? = nil, trailing: CoreFoundation.CGFloat? = nil, left: CoreFoundation.CGFloat? = nil, right: CoreFoundation.CGFloat? = nil, top: CoreFoundation.CGFloat? = nil, bottom: CoreFoundation.CGFloat? = nil, centerX: CoreFoundation.CGFloat? = nil, centerY: CoreFoundation.CGFloat? = nil, priority: UIKit.UILayoutPriority? = nil) -> UIKit.UIView
+  @_Concurrency.MainActor(unsafe) public func sbu_constraint(greaterThanOrEqualTo view: UIKit.UIView, leading: CoreGraphics.CGFloat? = nil, trailing: CoreGraphics.CGFloat? = nil, left: CoreGraphics.CGFloat? = nil, right: CoreGraphics.CGFloat? = nil, top: CoreGraphics.CGFloat? = nil, bottom: CoreGraphics.CGFloat? = nil, centerX: CoreGraphics.CGFloat? = nil, centerY: CoreGraphics.CGFloat? = nil, priority: UIKit.UILayoutPriority? = nil) -> UIKit.UIView
   @discardableResult
-  @_Concurrency.MainActor(unsafe) public func sbu_constraint_greater(leadingAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutXAxisAnchor>? = nil, leading: CoreFoundation.CGFloat? = nil, trailingAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutXAxisAnchor>? = nil, trailing: CoreFoundation.CGFloat? = nil, leftAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutXAxisAnchor>? = nil, left: CoreFoundation.CGFloat? = nil, rightAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutXAxisAnchor>? = nil, right: CoreFoundation.CGFloat? = nil, topAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutYAxisAnchor>? = nil, top: CoreFoundation.CGFloat? = nil, bottomAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutYAxisAnchor>? = nil, bottom: CoreFoundation.CGFloat? = nil, centerXAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutXAxisAnchor>? = nil, centerX: CoreFoundation.CGFloat? = nil, centerYAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutYAxisAnchor>? = nil, centerY: CoreFoundation.CGFloat? = nil, priority: UIKit.UILayoutPriority? = nil) -> UIKit.UIView
+  @_Concurrency.MainActor(unsafe) public func sbu_constraint_greater(leadingAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutXAxisAnchor>? = nil, leading: CoreGraphics.CGFloat? = nil, trailingAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutXAxisAnchor>? = nil, trailing: CoreGraphics.CGFloat? = nil, leftAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutXAxisAnchor>? = nil, left: CoreGraphics.CGFloat? = nil, rightAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutXAxisAnchor>? = nil, right: CoreGraphics.CGFloat? = nil, topAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutYAxisAnchor>? = nil, top: CoreGraphics.CGFloat? = nil, bottomAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutYAxisAnchor>? = nil, bottom: CoreGraphics.CGFloat? = nil, centerXAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutXAxisAnchor>? = nil, centerX: CoreGraphics.CGFloat? = nil, centerYAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutYAxisAnchor>? = nil, centerY: CoreGraphics.CGFloat? = nil, priority: UIKit.UILayoutPriority? = nil) -> UIKit.UIView
   @discardableResult
-  @_Concurrency.MainActor(unsafe) public func sbu_constraint(lessThanOrEqualTo view: UIKit.UIView, leading: CoreFoundation.CGFloat? = nil, trailing: CoreFoundation.CGFloat? = nil, left: CoreFoundation.CGFloat? = nil, right: CoreFoundation.CGFloat? = nil, top: CoreFoundation.CGFloat? = nil, bottom: CoreFoundation.CGFloat? = nil, centerX: CoreFoundation.CGFloat? = nil, centerY: CoreFoundation.CGFloat? = nil, priority: UIKit.UILayoutPriority? = nil) -> UIKit.UIView
+  @_Concurrency.MainActor(unsafe) public func sbu_constraint(lessThanOrEqualTo view: UIKit.UIView, leading: CoreGraphics.CGFloat? = nil, trailing: CoreGraphics.CGFloat? = nil, left: CoreGraphics.CGFloat? = nil, right: CoreGraphics.CGFloat? = nil, top: CoreGraphics.CGFloat? = nil, bottom: CoreGraphics.CGFloat? = nil, centerX: CoreGraphics.CGFloat? = nil, centerY: CoreGraphics.CGFloat? = nil, priority: UIKit.UILayoutPriority? = nil) -> UIKit.UIView
   @discardableResult
-  @_Concurrency.MainActor(unsafe) public func sbu_constraint_less(leadingAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutXAxisAnchor>? = nil, leading: CoreFoundation.CGFloat? = nil, trailingAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutXAxisAnchor>? = nil, trailing: CoreFoundation.CGFloat? = nil, leftAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutXAxisAnchor>? = nil, left: CoreFoundation.CGFloat? = nil, rightAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutXAxisAnchor>? = nil, right: CoreFoundation.CGFloat? = nil, topAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutYAxisAnchor>? = nil, top: CoreFoundation.CGFloat? = nil, bottomAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutYAxisAnchor>? = nil, bottom: CoreFoundation.CGFloat? = nil, centerXAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutXAxisAnchor>? = nil, centerX: CoreFoundation.CGFloat? = nil, centerYAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutYAxisAnchor>? = nil, centerY: CoreFoundation.CGFloat? = nil, priority: UIKit.UILayoutPriority? = nil) -> UIKit.UIView
+  @_Concurrency.MainActor(unsafe) public func sbu_constraint_less(leadingAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutXAxisAnchor>? = nil, leading: CoreGraphics.CGFloat? = nil, trailingAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutXAxisAnchor>? = nil, trailing: CoreGraphics.CGFloat? = nil, leftAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutXAxisAnchor>? = nil, left: CoreGraphics.CGFloat? = nil, rightAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutXAxisAnchor>? = nil, right: CoreGraphics.CGFloat? = nil, topAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutYAxisAnchor>? = nil, top: CoreGraphics.CGFloat? = nil, bottomAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutYAxisAnchor>? = nil, bottom: CoreGraphics.CGFloat? = nil, centerXAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutXAxisAnchor>? = nil, centerX: CoreGraphics.CGFloat? = nil, centerYAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutYAxisAnchor>? = nil, centerY: CoreGraphics.CGFloat? = nil, priority: UIKit.UILayoutPriority? = nil) -> UIKit.UIView
   @discardableResult
-  @_Concurrency.MainActor(unsafe) public func sbu_constraint(width: CoreFoundation.CGFloat? = nil, height: CoreFoundation.CGFloat? = nil, priority: UIKit.UILayoutPriority? = nil) -> UIKit.UIView
+  @_Concurrency.MainActor(unsafe) public func sbu_constraint(width: CoreGraphics.CGFloat? = nil, height: CoreGraphics.CGFloat? = nil, priority: UIKit.UILayoutPriority? = nil) -> UIKit.UIView
   @discardableResult
-  @_Concurrency.MainActor(unsafe) public func sbu_constraint(widthAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutDimension>? = nil, width: CoreFoundation.CGFloat? = nil, heightAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutDimension>? = nil, height: CoreFoundation.CGFloat? = nil, priority: UIKit.UILayoutPriority? = nil) -> UIKit.UIView
+  @_Concurrency.MainActor(unsafe) public func sbu_constraint(widthAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutDimension>? = nil, width: CoreGraphics.CGFloat? = nil, heightAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutDimension>? = nil, height: CoreGraphics.CGFloat? = nil, priority: UIKit.UILayoutPriority? = nil) -> UIKit.UIView
   @discardableResult
-  @_Concurrency.MainActor(unsafe) public func sbu_constraint_greaterThan(widthAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutDimension>? = nil, width: CoreFoundation.CGFloat? = nil, heightAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutDimension>? = nil, height: CoreFoundation.CGFloat? = nil, priority: UIKit.UILayoutPriority? = nil) -> UIKit.UIView
+  @_Concurrency.MainActor(unsafe) public func sbu_constraint_greaterThan(widthAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutDimension>? = nil, width: CoreGraphics.CGFloat? = nil, heightAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutDimension>? = nil, height: CoreGraphics.CGFloat? = nil, priority: UIKit.UILayoutPriority? = nil) -> UIKit.UIView
   @discardableResult
-  @_Concurrency.MainActor(unsafe) public func sbu_constraint_lessThan(widthAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutDimension>? = nil, width: CoreFoundation.CGFloat? = nil, heightAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutDimension>? = nil, height: CoreFoundation.CGFloat? = nil, priority: UIKit.UILayoutPriority? = nil) -> UIKit.UIView
+  @_Concurrency.MainActor(unsafe) public func sbu_constraint_lessThan(widthAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutDimension>? = nil, width: CoreGraphics.CGFloat? = nil, heightAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutDimension>? = nil, height: CoreGraphics.CGFloat? = nil, priority: UIKit.UILayoutPriority? = nil) -> UIKit.UIView
 }
 extension SendbirdUIKit.SBUView {
   @available(*, unavailable, renamed: "setupLayouts()")
@@ -246,7 +244,7 @@ public class SBUCommonItem {
   public static func getReceiptState(of message: SendbirdChatSDK.BaseMessage, in channel: SendbirdChatSDK.GroupChannel) -> SendbirdUIKit.SBUMessageReceiptState
   public static func isValid(coverURL: Swift.String) -> Swift.Bool
   public static func isValid(channelName: Swift.String, type: SendbirdChatSDK.ChannelType = .group) -> Swift.Bool
-  public static func emptyTitleForRowEditAction(for size: CoreFoundation.CGSize) -> Swift.String
+  public static func emptyTitleForRowEditAction(for size: CoreGraphics.CGSize) -> Swift.String
   @objc deinit
 }
 @objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) public class SBUCoverImageView : UIKit.UIView {
@@ -255,11 +253,11 @@ public class SBUCommonItem {
     set
     _modify
   }
-  @_Concurrency.MainActor(unsafe) @objc dynamic public init()
+  @objc dynamic public init()
   @_Concurrency.MainActor(unsafe) public func setImage(withCoverURL coverURL: Swift.String)
   @_Concurrency.MainActor(unsafe) public func setImage(with coverURL: Swift.String, makeCircle: Swift.Bool = true)
   @_Concurrency.MainActor(unsafe) public func setBroadcastIcon()
-  @_Concurrency.MainActor(unsafe) public func setPlaceholder(type: SendbirdUIKit.SBUIconSetType, iconSize: CoreFoundation.CGSize? = nil)
+  @_Concurrency.MainActor(unsafe) public func setPlaceholder(type: SendbirdUIKit.SBUIconSetType, iconSize: CoreGraphics.CGSize? = nil)
   @_Concurrency.MainActor(unsafe) public func setImage(withImage image: UIKit.UIImage, backgroundColor: UIKit.UIColor? = nil, makeCircle: Swift.Bool = false, contentMode: UIKit.UIView.ContentMode = .center)
   @_Concurrency.MainActor(unsafe) public func setImage(withUsers users: [SendbirdChatSDK.User])
   @objc deinit
@@ -275,7 +273,7 @@ extension SendbirdUIKit.SBUOpenChannelViewController {
   @objc @available(*, unavailable, message: "This function has been moved to `SBUOpenChannelModule.List` and replaced to `setMessageCellGestures(_:)`.")
   @_Concurrency.MainActor(unsafe) dynamic open func setUnkownMessageCellGestures(_ cell: SendbirdUIKit.SBUOpenChannelUnknownMessageCell, unknownMessage: SendbirdChatSDK.BaseMessage, indexPath: Foundation.IndexPath)
   @available(*, unavailable, renamed: "updateMessageListRatio(to:)")
-  @_Concurrency.MainActor(unsafe) public func updateRatio(mediaView: CoreFoundation.CGFloat?, messageList: CoreFoundation.CGFloat?)
+  @_Concurrency.MainActor(unsafe) public func updateRatio(mediaView: CoreGraphics.CGFloat?, messageList: CoreGraphics.CGFloat?)
   @objc @available(*, unavailable, message: "This function has been moved to `SBUBaseChannelModuleHeaderDelegate` and replaced to `channelModule(_:didTapRightItem:)`.")
   @_Concurrency.MainActor(unsafe) dynamic open func didSelectChannelInfo()
   @objc @available(*, unavailable, message: "This function has been moved to `SBUBaseChannelModuleHeaderDelegate` and replaced to `openChannelModuleDidTapParticipantList(_:)`.")
@@ -299,7 +297,7 @@ extension SendbirdUIKit.SBUGroupChannelListModule {
     @available(*, unavailable, renamed: "SBUGroupChannelListModule.Header()")
     @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
     @available(*, unavailable, renamed: "SBUGroupChannelListModule.Header()")
-    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
     @objc deinit
     @_Concurrency.MainActor(unsafe) open func configure(delegate: SendbirdUIKit.SBUGroupChannelListModuleHeaderDelegate, theme: SendbirdUIKit.SBUGroupChannelListTheme)
     @_Concurrency.MainActor(unsafe) open func setupStyles(theme: SendbirdUIKit.SBUGroupChannelListTheme? = nil)
@@ -706,8 +704,8 @@ extension SendbirdUIKit.SBUOpenChannelModule {
   }
   @objc @_Concurrency.MainActor(unsafe) final public let titleSpacer: UIKit.UIView
   @objc @_Concurrency.MainActor(unsafe) final public let participantSpacer: UIKit.UIView
-  @objc @_Concurrency.MainActor(unsafe) final public let coverImageSize: CoreFoundation.CGFloat
-  @objc @_Concurrency.MainActor(unsafe) final public let infoIconSize: CoreFoundation.CGFloat
+  @objc @_Concurrency.MainActor(unsafe) final public let coverImageSize: CoreGraphics.CGFloat
+  @objc @_Concurrency.MainActor(unsafe) final public let infoIconSize: CoreGraphics.CGFloat
   @objc @_Concurrency.MainActor(unsafe) public var contentStackView: SendbirdUIKit.SBUStackView {
     @objc get
     @objc set
@@ -729,7 +727,7 @@ extension SendbirdUIKit.SBUOpenChannelModule {
     set
     _modify
   }
-  @_Concurrency.MainActor(unsafe) @objc override dynamic open func awakeFromNib()
+  @objc override dynamic open func awakeFromNib()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupViews()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupActions()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupLayouts()
@@ -776,7 +774,7 @@ extension SendbirdUIKit.SBUChannelInfoHeaderViewDelegate {
     _modify
   }
   @_Concurrency.MainActor(unsafe) public init(delegate: SendbirdUIKit.SBUChannelInfoHeaderViewDelegate?)
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
   @_Concurrency.MainActor(unsafe) @objc override dynamic public func setupViews()
   @_Concurrency.MainActor(unsafe) @objc override dynamic public func setupLayouts()
   @_Concurrency.MainActor(unsafe) @objc override dynamic public func setupStyles()
@@ -841,12 +839,12 @@ open class SBUGroupChannelListModule {
   @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
   @available(*, unavailable, renamed: "SBUGroupChannelListViewController()")
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
-  @_Concurrency.MainActor(unsafe) @objc dynamic public init()
+  @objc dynamic public init()
   @objc @_Concurrency.MainActor(unsafe) required public init(channelListQuery: SendbirdChatSDK.GroupChannelListQuery? = nil)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewDidLoad()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewWillAppear(_ animated: Swift.Bool)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open var preferredStatusBarStyle: UIKit.UIStatusBarStyle {
-    @objc get
+    @_Concurrency.MainActor(unsafe) @objc get
   }
   @objc deinit
   @objc @_Concurrency.MainActor(unsafe) open func createViewModel(channelListQuery: SendbirdChatSDK.GroupChannelListQuery?)
@@ -891,7 +889,7 @@ open class SBUGroupChannelListModule {
     set
     _modify
   }
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
   @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func layoutSubviews()
   @_Concurrency.MainActor(unsafe) @objc open func setupViews()
@@ -970,7 +968,7 @@ extension SendbirdUIKit.SBUGroupChannelPushSettingsModule {
     @available(*, unavailable, renamed: "SBUGroupChannelPushSettingsModule.Header()")
     @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
     @available(*, unavailable, renamed: "SBUGroupChannelPushSettingsModule.Header()")
-    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
     @objc deinit
     @_Concurrency.MainActor(unsafe) open func configure(delegate: SendbirdUIKit.SBUGroupChannelPushSettingsModuleHeaderDelegate, theme: SendbirdUIKit.SBUChannelSettingsTheme, componentTheme: SendbirdUIKit.SBUComponentTheme)
     @objc @_Concurrency.MainActor(unsafe) open func setupViews()
@@ -1043,7 +1041,7 @@ public class SBUMessageWebViewModel {
     _modify
   }
   @objc @_Concurrency.MainActor(unsafe) public var switchAction: ((Swift.Bool) -> Swift.Void)?
-  @_Concurrency.MainActor(unsafe) @objc override dynamic open func awakeFromNib()
+  @objc override dynamic open func awakeFromNib()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupViews()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupActions()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupLayouts()
@@ -1107,7 +1105,7 @@ public protocol SBUCommonDelegate : AnyObject {
   @_Concurrency.MainActor(unsafe) public var type: SendbirdUIKit.UserListType {
     get
   }
-  @_Concurrency.MainActor(unsafe) @objc override dynamic open func awakeFromNib()
+  @objc override dynamic open func awakeFromNib()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupViews()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupActions()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupLayouts()
@@ -1156,7 +1154,7 @@ extension SendbirdUIKit.SBUMessageSearchModule {
     @available(*, unavailable, renamed: "SBUMessageSearchModule.List()")
     @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
     @available(*, unavailable, renamed: "SBUMessageSearchModule.List()")
-    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
     @objc deinit
     @_Concurrency.MainActor(unsafe) open func configure(delegate: SendbirdUIKit.SBUMessageSearchModuleListDelegate, dataSource: SendbirdUIKit.SBUMessageSearchModuleListDataSource, theme: SendbirdUIKit.SBUMessageSearchTheme)
     @objc @_Concurrency.MainActor(unsafe) open func setupViews()
@@ -1173,11 +1171,13 @@ extension SendbirdUIKit.SBUMessageSearchModule.List : SendbirdUIKit.SBUEmptyView
   @objc @_Concurrency.MainActor(unsafe) dynamic open func didSelectRetry()
 }
 extension SendbirdUIKit.SBUMessageSearchModule.List : UIKit.UITableViewDataSource, UIKit.UITableViewDelegate {
+  @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, viewForHeaderInSection section: Swift.Int) -> UIKit.UIView?
+  @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, heightForHeaderInSection section: Swift.Int) -> CoreGraphics.CGFloat
   @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, numberOfRowsInSection section: Swift.Int) -> Swift.Int
   @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, cellForRowAt indexPath: Foundation.IndexPath) -> UIKit.UITableViewCell
   @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, didSelectRowAt indexPath: Foundation.IndexPath)
   @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, willDisplay cell: UIKit.UITableViewCell, forRowAt indexPath: Foundation.IndexPath)
-  @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, heightForRowAt indexPath: Foundation.IndexPath) -> CoreFoundation.CGFloat
+  @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, heightForRowAt indexPath: Foundation.IndexPath) -> CoreGraphics.CGFloat
 }
 public protocol SBUBaseChannelListViewModelDelegate : SendbirdUIKit.SBUCommonViewModelDelegate {
 }
@@ -1215,7 +1215,7 @@ extension SendbirdUIKit.SBUBaseChannelSettingsModule {
     @_Concurrency.MainActor(unsafe) open func setupStyles(theme: SendbirdUIKit.SBUChannelSettingsTheme? = nil)
     @objc @_Concurrency.MainActor(unsafe) open func onTapLeftBarButton()
     @objc @_Concurrency.MainActor(unsafe) open func onTapRightBarButton()
-    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
     @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
     @objc deinit
   }
@@ -1244,8 +1244,8 @@ extension SendbirdUIKit.SBUBaseChannelSettingsModule {
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupLayouts()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupStyles()
   @_Concurrency.MainActor(unsafe) override open func configure(message: SendbirdChatSDK.FileMessage, position: SendbirdUIKit.MessagePosition, highlightKeyword: Swift.String?)
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @objc override dynamic public init()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
   @objc deinit
 }
 @objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUQuotedFileMessageView : SendbirdUIKit.SBUQuotedBaseMessageView {
@@ -1261,8 +1261,8 @@ extension SendbirdUIKit.SBUBaseChannelSettingsModule {
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupViews()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupLayouts()
   @_Concurrency.MainActor(unsafe) override open func configure(with configuration: SendbirdUIKit.SBUQuotedBaseMessageViewParams)
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @objc override dynamic public init()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
   @objc deinit
 }
 public protocol SBUOpenChannelSettingsModuleListDelegate : SendbirdUIKit.SBUBaseChannelSettingsModuleListDelegate {
@@ -1289,7 +1289,7 @@ extension SendbirdUIKit.SBUOpenChannelSettingsModule {
     @available(*, unavailable, renamed: "SBUOpenChannelSettingsModule.List()")
     @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
     @available(*, unavailable, renamed: "SBUOpenChannelSettingsModule.List()")
-    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
     @objc deinit
     @_Concurrency.MainActor(unsafe) open func configure(delegate: SendbirdUIKit.SBUOpenChannelSettingsModuleListDelegate, dataSource: SendbirdUIKit.SBUOpenChannelSettingsModuleListDataSource, theme: SendbirdUIKit.SBUChannelSettingsTheme)
     @_Concurrency.MainActor(unsafe) @objc override open func setupViews()
@@ -1394,7 +1394,7 @@ extension SendbirdUIKit.SBUUserListModule {
     @available(*, unavailable, renamed: "SBUUserListModule.Header()")
     @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
     @available(*, unavailable, renamed: "SBUUserListModule.Header()")
-    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
     @objc deinit
     @_Concurrency.MainActor(unsafe) open func configure(delegate: SendbirdUIKit.SBUUserListModuleHeaderDelegate, userListType: SendbirdUIKit.ChannelUserListType, channelType: SendbirdChatSDK.ChannelType = .group, theme: SendbirdUIKit.SBUUserListTheme, componentTheme: SendbirdUIKit.SBUComponentTheme)
     @objc @_Concurrency.MainActor(unsafe) open func setupViews()
@@ -1406,14 +1406,14 @@ extension SendbirdUIKit.SBUUserListModule {
 }
 @objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUMessageWebView : UIKit.UIStackView, SendbirdUIKit.SBUViewLifeCycle {
   public struct Metric {
-    public static var imageHeight: CoreFoundation.CGFloat
-    public static var textTopMargin: CoreFoundation.CGFloat
-    public static var textSideMargin: CoreFoundation.CGFloat
-    public static var titleBottomMargin: CoreFoundation.CGFloat
-    public static var descBottomMargin: CoreFoundation.CGFloat
-    public static var maxWidth: CoreFoundation.CGFloat
-    public static var stackSpacing: CoreFoundation.CGFloat
-    public static let textMaxPrefWidth: CoreFoundation.CGFloat
+    public static var imageHeight: CoreGraphics.CGFloat
+    public static var textTopMargin: CoreGraphics.CGFloat
+    public static var textSideMargin: CoreGraphics.CGFloat
+    public static var titleBottomMargin: CoreGraphics.CGFloat
+    public static var descBottomMargin: CoreGraphics.CGFloat
+    public static var maxWidth: CoreGraphics.CGFloat
+    public static var stackSpacing: CoreGraphics.CGFloat
+    public static let textMaxPrefWidth: CoreGraphics.CGFloat
   }
   @_Concurrency.MainActor(unsafe) final public let imageView: UIKit.UIImageView
   @_Concurrency.MainActor(unsafe) final public let detailStackView: SendbirdUIKit.SBUStackView
@@ -1421,7 +1421,7 @@ extension SendbirdUIKit.SBUUserListModule {
   @_Concurrency.MainActor(unsafe) final public let descriptionLabel: UIKit.UILabel
   @_Concurrency.MainActor(unsafe) final public let urlLabel: UIKit.UILabel
   @_Concurrency.MainActor(unsafe) public var imageHeightConstraint: UIKit.NSLayoutConstraint?
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
   @_Concurrency.MainActor(unsafe) @objc required dynamic public init(coder: Foundation.NSCoder)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func layoutSubviews()
   @_Concurrency.MainActor(unsafe) @objc open func setupViews()
@@ -1442,8 +1442,8 @@ extension SendbirdUIKit.SBUUserListModule {
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupStyles()
   @_Concurrency.MainActor(unsafe) open func configure(message: SendbirdChatSDK.FileMessage, position: SendbirdUIKit.MessagePosition, highlightKeyword: Swift.String?)
   @_Concurrency.MainActor(unsafe) public func addHighlight(keyword: Swift.String, toAttributedString attributedString: Foundation.NSMutableAttributedString, highlightTextColor: UIKit.UIColor)
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @objc override dynamic public init()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
   @objc deinit
 }
 @objc public class SBUDebouncer : ObjectiveC.NSObject {
@@ -1481,7 +1481,7 @@ extension SendbirdUIKit.SBUUserListModule {
     @objc set
   }
   @_Concurrency.MainActor(unsafe) @objc override dynamic public var channel: SendbirdChatSDK.OpenChannel? {
-    @objc get
+    @_Concurrency.MainActor(unsafe) @objc get
   }
   @objc @_Concurrency.MainActor(unsafe) public var hideNavigationBar: Swift.Bool
   @objc @_Concurrency.MainActor(unsafe) public var hideChannelInfoView: Swift.Bool
@@ -1489,10 +1489,10 @@ extension SendbirdUIKit.SBUUserListModule {
   @objc @_Concurrency.MainActor(unsafe) public var isMediaViewEnabled: Swift.Bool {
     get
   }
-  @objc @_Concurrency.MainActor(unsafe) public var mediaViewRatio: CoreFoundation.CGFloat {
+  @objc @_Concurrency.MainActor(unsafe) public var mediaViewRatio: CoreGraphics.CGFloat {
     get
   }
-  @objc @_Concurrency.MainActor(unsafe) public var messageListRatio: CoreFoundation.CGFloat {
+  @objc @_Concurrency.MainActor(unsafe) public var messageListRatio: CoreGraphics.CGFloat {
     get
   }
   @objc @_Concurrency.MainActor(unsafe) public var isMediaViewOverlaying: Swift.Bool {
@@ -1505,7 +1505,7 @@ extension SendbirdUIKit.SBUUserListModule {
   @_Concurrency.MainActor(unsafe) required public init(channelURL: Swift.String, startingPoint: Swift.Int64? = nil, messageListParams: SendbirdChatSDK.MessageListParams? = nil)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewWillAppear(_ animated: Swift.Bool)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewDidLoad()
-  @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewWillTransition(to size: CoreFoundation.CGSize, with coordinator: UIKit.UIViewControllerTransitionCoordinator)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewWillTransition(to size: CoreGraphics.CGSize, with coordinator: UIKit.UIViewControllerTransitionCoordinator)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewWillDisappear(_ animated: Swift.Bool)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewDidLayoutSubviews()
   @objc deinit
@@ -1517,14 +1517,14 @@ extension SendbirdUIKit.SBUUserListModule {
   @_Concurrency.MainActor(unsafe) @objc override open func updateStyles()
   @objc @_Concurrency.MainActor(unsafe) public func updateChannelInfoView()
   @objc @available(*, deprecated, message: "Please use `calculateMessageMenuCGPoint(indexPath:)` in `SBUOpenChannelModule.List`")
-  @_Concurrency.MainActor(unsafe) public func calculatorMenuPoint(indexPath: Foundation.IndexPath) -> CoreFoundation.CGPoint
+  @_Concurrency.MainActor(unsafe) public func calculatorMenuPoint(indexPath: Foundation.IndexPath) -> CoreGraphics.CGPoint
   @available(*, deprecated, message: "Please use `showMessageContextMenu(for:cell:forRowAt:)` in `SBUOpenChannelModule.List`")
   @_Concurrency.MainActor(unsafe) override public func showMenuModal(_ cell: UIKit.UITableViewCell, indexPath: Foundation.IndexPath, message: SendbirdChatSDK.BaseMessage, types: [SendbirdUIKit.MessageMenuItem]?)
   @available(*, deprecated, message: "Please use `showDeleteMessageAlert(on:oneTimeTheme:)` in `SBUOpenChannelModule.List` instead.")
   @_Concurrency.MainActor(unsafe) override public func showDeleteMessageMenu(message: SendbirdChatSDK.BaseMessage, oneTimetheme: SendbirdUIKit.SBUComponentTheme? = nil)
   @objc @_Concurrency.MainActor(unsafe) public func enableMediaView(_ enabled: Swift.Bool = true)
-  @objc @_Concurrency.MainActor(unsafe) public func updateMessageListRatio(to ratio: CoreFoundation.CGFloat)
-  @objc @_Concurrency.MainActor(unsafe) public func overlayMediaView(_ overlaying: Swift.Bool, messageListRatio: CoreFoundation.CGFloat)
+  @objc @_Concurrency.MainActor(unsafe) public func updateMessageListRatio(to ratio: CoreGraphics.CGFloat)
+  @objc @_Concurrency.MainActor(unsafe) public func overlayMediaView(_ overlaying: Swift.Bool, messageListRatio: CoreGraphics.CGFloat)
   @objc @_Concurrency.MainActor(unsafe) public func mediaViewIgnoringSafeArea(_ enabled: Swift.Bool = true)
   @objc @_Concurrency.MainActor(unsafe) public func configureOffset()
   @objc @_Concurrency.MainActor(unsafe) public func updateBarButton()
@@ -1701,7 +1701,7 @@ extension SendbirdUIKit.SBUMessageThreadModule {
     @objc @_Concurrency.MainActor(unsafe) open func updateSuggestedMentionList(with members: [SendbirdUIKit.SBUUser])
     @objc @_Concurrency.MainActor(unsafe) open func presentSuggestedMentionList()
     @objc @_Concurrency.MainActor(unsafe) open func dismissSuggestedMentionList()
-    @_Concurrency.MainActor(unsafe) @objc override dynamic open func point(inside point: CoreFoundation.CGPoint, with event: UIKit.UIEvent?) -> Swift.Bool
+    @_Concurrency.MainActor(unsafe) @objc override dynamic open func point(inside point: CoreGraphics.CGPoint, with event: UIKit.UIEvent?) -> Swift.Bool
     @_Concurrency.MainActor(unsafe) @objc override open func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, shouldChangeTextIn range: Foundation.NSRange, replacementText text: Swift.String) -> Swift.Bool
     @_Concurrency.MainActor(unsafe) @objc override open func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, shouldInteractWith url: Foundation.URL, in characterRange: Foundation.NSRange, interaction: UIKit.UITextItemInteraction) -> Swift.Bool
     @_Concurrency.MainActor(unsafe) @objc override open func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, didChangeSelection range: Foundation.NSRange)
@@ -1739,7 +1739,7 @@ public protocol SBUSuggestedMentionListDelegate : AnyObject {
     get
     set
   }
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
+  @objc override dynamic public init()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupViews()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupLayouts()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupStyles()
@@ -1781,7 +1781,7 @@ extension SendbirdUIKit.SBUBaseChannelModule {
     @available(*, unavailable, renamed: "SBUBaseChannelModule.Header()")
     @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
     @available(*, unavailable, renamed: "SBUBaseChannelModule.Header()")
-    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
     @objc deinit
     @objc @_Concurrency.MainActor(unsafe) open func setupViews()
     @objc @_Concurrency.MainActor(unsafe) open func setupLayouts()
@@ -1792,13 +1792,13 @@ extension SendbirdUIKit.SBUBaseChannelModule {
   }
 }
 @objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) public class SBULinkClickableTextView : UIKit.UITextView {
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public func hitTest(_ point: CoreFoundation.CGPoint, with event: UIKit.UIEvent?) -> UIKit.UIView?
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public func hitTest(_ point: CoreGraphics.CGPoint, with event: UIKit.UIEvent?) -> UIKit.UIView?
   @_Concurrency.MainActor(unsafe) @objc override dynamic public var selectedTextRange: UIKit.UITextRange? {
-    @objc get
-    @objc set
+    @_Concurrency.MainActor(unsafe) @objc get
+    @_Concurrency.MainActor(unsafe) @objc set
   }
   @available(iOS 7.0, *)
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect, textContainer: UIKit.NSTextContainer?)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect, textContainer: UIKit.NSTextContainer?)
   @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
   @objc deinit
 }
@@ -1850,8 +1850,8 @@ extension SendbirdUIKit.SBUActionSheetDelegate {
     get
     set
   }
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
+  @objc override dynamic public init()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupViews()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupLayouts()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupActions()
@@ -1895,7 +1895,7 @@ extension SendbirdUIKit.SBUBaseChannelListModule {
     @objc @_Concurrency.MainActor(unsafe) open func setupLayouts()
     @objc @_Concurrency.MainActor(unsafe) open func onTapLeftBarButton()
     @objc @_Concurrency.MainActor(unsafe) open func onTapRightBarButton()
-    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
     @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
     @objc deinit
   }
@@ -1950,8 +1950,8 @@ public struct SBUUserMessageTextViewModel {
   public func addEditedStateIfNeeded(with attributedString: Foundation.NSMutableAttributedString)
 }
 @objc @_inheritsConvenienceInitializers @IBDesignable @_Concurrency.MainActor(unsafe) open class SBUView : UIKit.UIView {
-  @_Concurrency.MainActor(unsafe) @objc dynamic public init()
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @objc dynamic public init()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
   @available(*, unavailable, renamed: "init(frame:)")
   @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func layoutSubviews()
@@ -2010,8 +2010,8 @@ extension SendbirdUIKit.SBUView : SendbirdUIKit.SBUViewLifeCycle {
   }
   @_Concurrency.MainActor(unsafe) public var mainContainerView: SendbirdUIKit.SBUSelectableStackView
   @_Concurrency.MainActor(unsafe) weak public var delegate: SendbirdUIKit.SBUQuotedMessageViewDelegate?
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @objc override dynamic public init()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupViews()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupLayouts()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupStyles()
@@ -2027,14 +2027,14 @@ public typealias SBUNewMessageInfoHandler = () -> Swift.Void
     set
   }
   @_Concurrency.MainActor(unsafe) public var actionHandler: SendbirdUIKit.SBUNewMessageInfoHandler?
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
   @_Concurrency.MainActor(unsafe) public init(type: SendbirdUIKit.NewMessageInfoItemType = .tooltip)
   @available(*, unavailable, renamed: "SBUNewMessageInfo.init(frame:)")
   @_Concurrency.MainActor(unsafe) required public init?(coder: Foundation.NSCoder)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupViews()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupLayouts()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupStyles()
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public func draw(_ rect: CoreFoundation.CGRect)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public func draw(_ rect: CoreGraphics.CGRect)
   @objc @_Concurrency.MainActor(unsafe) open func onClickNewMessageInfo()
   @_Concurrency.MainActor(unsafe) open func updateCount(count: Swift.Int, actionHandler: SendbirdUIKit.SBUNewMessageInfoHandler?)
   @objc deinit
@@ -2067,7 +2067,7 @@ public typealias SBUNewMessageInfoHandler = () -> Swift.Void
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewDidLoad()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewWillDisappear(_ animated: Swift.Bool)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open var preferredStatusBarStyle: UIKit.UIStatusBarStyle {
-    @objc get
+    @_Concurrency.MainActor(unsafe) @objc get
   }
   @objc deinit
   @_Concurrency.MainActor(unsafe) open func createViewModel(channel: SendbirdChatSDK.BaseChannel? = nil, channelURL: Swift.String? = nil, messageListParams: SendbirdChatSDK.MessageListParams? = nil, startingPoint: Swift.Int64? = nil, showIndicator: Swift.Bool = true)
@@ -2175,7 +2175,7 @@ extension SendbirdUIKit.SBUBaseChannelViewController {
   @objc @_Concurrency.MainActor(unsafe) dynamic public func registerKeyboardNotifications()
   @objc @_Concurrency.MainActor(unsafe) dynamic public func addGestureHideKeyboard()
   @objc @_Concurrency.MainActor(unsafe) dynamic public func dismissKeyboard()
-  @_Concurrency.MainActor(unsafe) public func setKeyboardWindowFrame(origin: CoreFoundation.CGPoint, size: CoreFoundation.CGSize? = nil)
+  @_Concurrency.MainActor(unsafe) public func setKeyboardWindowFrame(origin: CoreGraphics.CGPoint, size: CoreGraphics.CGSize? = nil)
   @objc @_Concurrency.MainActor(unsafe) dynamic public func updateLayoutsWithKeyboard(isHidden: Swift.Bool, notification: Foundation.Notification)
 }
 @objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUModerationsViewController : SendbirdUIKit.SBUBaseViewController, SendbirdUIKit.SBUModerationsModuleHeaderDelegate, SendbirdUIKit.SBUModerationsModuleListDelegate, SendbirdUIKit.SBUModerationsModuleListDataSource, SendbirdUIKit.SBUCommonViewModelDelegate, SendbirdUIKit.SBUModerationsViewModelDelegate {
@@ -2205,7 +2205,7 @@ extension SendbirdUIKit.SBUBaseChannelViewController {
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewDidLoad()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewWillAppear(_ animated: Swift.Bool)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open var preferredStatusBarStyle: UIKit.UIStatusBarStyle {
-    @objc get
+    @_Concurrency.MainActor(unsafe) @objc get
   }
   @objc deinit
   @objc @_Concurrency.MainActor(unsafe) open func createViewModel(channel: SendbirdChatSDK.BaseChannel)
@@ -2288,7 +2288,7 @@ extension SendbirdUIKit.SBUOpenChannelSettingsModule {
     @available(*, unavailable, renamed: "SBUOpenChannelSettingsModule.Header()")
     @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
     @available(*, unavailable, renamed: "SBUOpenChannelSettingsModule.Header()")
-    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
     @objc deinit
     @_Concurrency.MainActor(unsafe) open func configure(delegate: SendbirdUIKit.SBUOpenChannelSettingsModuleHeaderDelegate, theme: SendbirdUIKit.SBUChannelSettingsTheme)
     @_Concurrency.MainActor(unsafe) @objc public func didUpdateTitleView()
@@ -2353,7 +2353,7 @@ extension SendbirdUIKit.SBURegisterOperatorModule {
     @available(*, unavailable, renamed: "SBURegisterOperatorModule.List()")
     @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
     @available(*, unavailable, renamed: "SBURegisterOperatorModule.List()")
-    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
     @objc deinit
     @_Concurrency.MainActor(unsafe) open func configure(delegate: SendbirdUIKit.SBURegisterOperatorModuleListDelegate, dataSource: SendbirdUIKit.SBURegisterOperatorModuleListDataSource, theme: SendbirdUIKit.SBUUserListTheme)
     @_Concurrency.MainActor(unsafe) @objc override open func configureCell(_ cell: UIKit.UITableViewCell?, indexPath: Foundation.IndexPath)
@@ -2545,7 +2545,7 @@ extension SendbirdUIKit.SBUUserListViewController {
     @objc set
   }
   @_Concurrency.MainActor(unsafe) @objc override dynamic public var channel: SendbirdChatSDK.GroupChannel? {
-    @objc get
+    @_Concurrency.MainActor(unsafe) @objc get
   }
   @objc @_Concurrency.MainActor(unsafe) public var newMessagesCount: Swift.Int {
     get
@@ -2555,7 +2555,7 @@ extension SendbirdUIKit.SBUUserListViewController {
   @_Concurrency.MainActor(unsafe) required public init(channelURL: Swift.String, startingPoint: Swift.Int64? = nil, messageListParams: SendbirdChatSDK.MessageListParams? = nil)
   @_Concurrency.MainActor(unsafe) required override public init(channelURL: Swift.String, startingPoint: Swift.Int64? = nil, messageListParams: SendbirdChatSDK.MessageListParams? = nil, displaysLocalCachedListFirst: Swift.Bool)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open var preferredStatusBarStyle: UIKit.UIStatusBarStyle {
-    @objc get
+    @_Concurrency.MainActor(unsafe) @objc get
   }
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewWillAppear(_ animated: Swift.Bool)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewDidLoad()
@@ -2570,7 +2570,7 @@ extension SendbirdUIKit.SBUUserListViewController {
   @discardableResult
   @_Concurrency.MainActor(unsafe) @objc override public func increaseNewMessageCount() -> Swift.Bool
   @objc @available(*, deprecated, message: "Please use `calculateMessageMenuCGPoint(indexPath:position:)` in `SBUGroupChannelModule.List`")
-  @_Concurrency.MainActor(unsafe) public func calculatorMenuPoint(indexPath: Foundation.IndexPath, position: SendbirdUIKit.MessagePosition) -> CoreFoundation.CGPoint
+  @_Concurrency.MainActor(unsafe) public func calculatorMenuPoint(indexPath: Foundation.IndexPath, position: SendbirdUIKit.MessagePosition) -> CoreGraphics.CGPoint
   @available(*, deprecated, message: "Please use `showMessageContextMenu(message:cell:forRowAt:)` in `SBUGroupChannelModule.List`")
   @_Concurrency.MainActor(unsafe) @objc override open func showMenuModal(_ cell: UIKit.UITableViewCell, indexPath: Foundation.IndexPath, message: SendbirdChatSDK.BaseMessage)
   @available(*, deprecated, message: "Please use `showMessageContextMenu(message:cell:forRowAt:)` in `SBUGroupChannelModule.List`")
@@ -2629,10 +2629,10 @@ public protocol SBUThreadInfoViewProtocol : SendbirdUIKit.SBUViewLifeCycle {
     get
     set
   }
-  @_Concurrency.MainActor(unsafe) final public let userImageSize: CoreFoundation.CGFloat
+  @_Concurrency.MainActor(unsafe) final public let userImageSize: CoreGraphics.CGFloat
   @_Concurrency.MainActor(unsafe) final public let repliedUserLimit: Swift.Int
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @objc override dynamic public init()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupViews()
   @_Concurrency.MainActor(unsafe) open func setupStyles(theme: SendbirdUIKit.SBUMessageCellTheme)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupStyles()
@@ -2646,8 +2646,8 @@ public protocol SBUThreadInfoViewProtocol : SendbirdUIKit.SBUViewLifeCycle {
 @objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) public class SBUSelectableStackView : SendbirdUIKit.SBUView {
   @_Concurrency.MainActor(unsafe) final public let stackView: UIKit.UIStackView
   @_Concurrency.MainActor(unsafe) public var position: SendbirdUIKit.MessagePosition
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @objc override dynamic public init()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
   @_Concurrency.MainActor(unsafe) @objc override dynamic public func setupViews()
   @_Concurrency.MainActor(unsafe) @objc override dynamic public func setupLayouts()
   @_Concurrency.MainActor(unsafe) @objc override dynamic public func setupStyles()
@@ -2769,7 +2769,7 @@ extension SendbirdUIKit.SBUSelectablePhotoViewDelegate {
   }
   @_Concurrency.MainActor(unsafe) weak public var delegate: SendbirdUIKit.SBUSelectablePhotoViewDelegate?
   @objc @_Concurrency.MainActor(unsafe) public var fetchResult: Photos.PHFetchResult<Photos.PHAsset>
-  @objc @_Concurrency.MainActor(unsafe) public var columnSize: CoreFoundation.CGSize {
+  @objc @_Concurrency.MainActor(unsafe) public var columnSize: CoreGraphics.CGSize {
     @objc get
   }
   @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
@@ -2788,9 +2788,9 @@ extension SendbirdUIKit.SBUSelectablePhotoViewDelegate {
 extension SendbirdUIKit.SBUSelectablePhotoViewController : UIKit.UICollectionViewDelegate, UIKit.UICollectionViewDataSource, UIKit.UICollectionViewDelegateFlowLayout {
   @_Concurrency.MainActor(unsafe) @objc dynamic open func collectionView(_ collectionView: UIKit.UICollectionView, numberOfItemsInSection section: Swift.Int) -> Swift.Int
   @_Concurrency.MainActor(unsafe) @objc dynamic open func collectionView(_ collectionView: UIKit.UICollectionView, cellForItemAt indexPath: Foundation.IndexPath) -> UIKit.UICollectionViewCell
-  @_Concurrency.MainActor(unsafe) @objc dynamic open func collectionView(_ collectionView: UIKit.UICollectionView, layout collectionViewLayout: UIKit.UICollectionViewLayout, sizeForItemAt indexPath: Foundation.IndexPath) -> CoreFoundation.CGSize
-  @_Concurrency.MainActor(unsafe) @objc dynamic open func collectionView(_ collectionView: UIKit.UICollectionView, layout collectionViewLayout: UIKit.UICollectionViewLayout, minimumLineSpacingForSectionAt section: Swift.Int) -> CoreFoundation.CGFloat
-  @_Concurrency.MainActor(unsafe) @objc dynamic open func collectionView(_ collectionView: UIKit.UICollectionView, layout collectionViewLayout: UIKit.UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Swift.Int) -> CoreFoundation.CGFloat
+  @_Concurrency.MainActor(unsafe) @objc dynamic open func collectionView(_ collectionView: UIKit.UICollectionView, layout collectionViewLayout: UIKit.UICollectionViewLayout, sizeForItemAt indexPath: Foundation.IndexPath) -> CoreGraphics.CGSize
+  @_Concurrency.MainActor(unsafe) @objc dynamic open func collectionView(_ collectionView: UIKit.UICollectionView, layout collectionViewLayout: UIKit.UICollectionViewLayout, minimumLineSpacingForSectionAt section: Swift.Int) -> CoreGraphics.CGFloat
+  @_Concurrency.MainActor(unsafe) @objc dynamic open func collectionView(_ collectionView: UIKit.UICollectionView, layout collectionViewLayout: UIKit.UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Swift.Int) -> CoreGraphics.CGFloat
   @_Concurrency.MainActor(unsafe) @objc dynamic open func collectionView(_ collectionView: UIKit.UICollectionView, didSelectItemAt indexPath: Foundation.IndexPath)
 }
 extension SendbirdUIKit.SBUSelectablePhotoViewController : Photos.PHPhotoLibraryChangeObserver {
@@ -3084,7 +3084,7 @@ public protocol SBUCreateChannelTypeSelectorProtocol {
     set
   }
   @available(*, unavailable, renamed: "CreateChannelTypeSelectView.init(delegate:)")
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
   @available(*, unavailable, renamed: "CreateChannelTypeSelectView.init(delegate:)")
   @_Concurrency.MainActor(unsafe) required public init?(coder: Foundation.NSCoder)
   @_Concurrency.MainActor(unsafe) public init(delegate: SendbirdUIKit.SBUCreateChannelTypeSelectorDelegate?)
@@ -3110,7 +3110,7 @@ public protocol SBUCreateChannelTypeSelectorProtocol {
   @_Concurrency.MainActor(unsafe) final public let layout: UIKit.UICollectionViewFlowLayout
   @_Concurrency.MainActor(unsafe) public var emojiList: [SendbirdChatSDK.Emoji]
   @_Concurrency.MainActor(unsafe) public var reactions: [SendbirdChatSDK.Reaction]
-  @_Concurrency.MainActor(unsafe) public var maxWidth: CoreFoundation.CGFloat
+  @_Concurrency.MainActor(unsafe) public var maxWidth: CoreGraphics.CGFloat
   @SendbirdUIKit.SBUThemeWrapper @_Concurrency.MainActor(unsafe) public var theme: SendbirdUIKit.SBUComponentTheme {
     get
     set
@@ -3123,22 +3123,22 @@ public protocol SBUCreateChannelTypeSelectorProtocol {
     get
   }
   @_Concurrency.MainActor(unsafe) final public let collectionViewInsets: UIKit.UIEdgeInsets
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @objc override dynamic public init()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
   @available(*, unavailable, renamed: "MessageReactionView()")
   @_Concurrency.MainActor(unsafe) required public init?(coder: Foundation.NSCoder)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupViews()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupLayouts()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupStyles()
   @_Concurrency.MainActor(unsafe) public func hasMoreEmoji(at indexPath: Foundation.IndexPath) -> Swift.Bool
-  @_Concurrency.MainActor(unsafe) open func configure(maxWidth: CoreFoundation.CGFloat, useReaction: Swift.Bool, reactions: [SendbirdChatSDK.Reaction])
-  @_Concurrency.MainActor(unsafe) open func getCellSize(count: Swift.Int) -> CoreFoundation.CGSize
+  @_Concurrency.MainActor(unsafe) open func configure(maxWidth: CoreGraphics.CGFloat, useReaction: Swift.Bool, reactions: [SendbirdChatSDK.Reaction])
+  @_Concurrency.MainActor(unsafe) open func getCellSize(count: Swift.Int) -> CoreGraphics.CGSize
   @objc @_Concurrency.MainActor(unsafe) open func onTapMoreEmoji(sender: UIKit.UITapGestureRecognizer)
   @_Concurrency.MainActor(unsafe) @objc open func numberOfSections(in collectionView: UIKit.UICollectionView) -> Swift.Int
   @_Concurrency.MainActor(unsafe) @objc open func collectionView(_ collectionView: UIKit.UICollectionView, numberOfItemsInSection section: Swift.Int) -> Swift.Int
   @_Concurrency.MainActor(unsafe) @objc open func collectionView(_ collectionView: UIKit.UICollectionView, cellForItemAt indexPath: Foundation.IndexPath) -> UIKit.UICollectionViewCell
   @_Concurrency.MainActor(unsafe) @objc open func collectionView(_ collectionView: UIKit.UICollectionView, didSelectItemAt indexPath: Foundation.IndexPath)
-  @_Concurrency.MainActor(unsafe) @objc open func collectionView(_ collectionView: UIKit.UICollectionView, layout collectionViewLayout: UIKit.UICollectionViewLayout, sizeForItemAt indexPath: Foundation.IndexPath) -> CoreFoundation.CGSize
+  @_Concurrency.MainActor(unsafe) @objc open func collectionView(_ collectionView: UIKit.UICollectionView, layout collectionViewLayout: UIKit.UICollectionViewLayout, sizeForItemAt indexPath: Foundation.IndexPath) -> CoreGraphics.CGSize
   @objc deinit
 }
 @objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUQuotedUserMessageView : SendbirdUIKit.SBUQuotedBaseMessageView {
@@ -3150,8 +3150,8 @@ public protocol SBUCreateChannelTypeSelectorProtocol {
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupLayouts()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupStyles()
   @_Concurrency.MainActor(unsafe) override open func configure(with configuration: SendbirdUIKit.SBUQuotedBaseMessageViewParams)
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @objc override dynamic public init()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
   @objc deinit
 }
 extension UIKit.UIImageView {
@@ -3166,7 +3166,7 @@ extension UIKit.UIImageView {
     }
   }
   @discardableResult
-  @_Concurrency.MainActor(unsafe) public func loadImage(urlString: Swift.String, placeholder: UIKit.UIImage? = nil, errorImage: UIKit.UIImage? = nil, option: UIKit.UIImageView.ImageOption = .original, thumbnailSize: CoreFoundation.CGSize? = nil, cacheKey: Swift.String? = nil, completion: ((Swift.Bool) -> Swift.Void)? = nil) -> Foundation.URLSessionTask?
+  @_Concurrency.MainActor(unsafe) public func loadImage(urlString: Swift.String, placeholder: UIKit.UIImage? = nil, errorImage: UIKit.UIImage? = nil, option: UIKit.UIImageView.ImageOption = .original, thumbnailSize: CoreGraphics.CGSize? = nil, cacheKey: Swift.String? = nil, completion: ((Swift.Bool) -> Swift.Void)? = nil) -> Foundation.URLSessionTask?
 }
 @objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUBaseChannelCell : SendbirdUIKit.SBUTableViewCell {
   @objc @_Concurrency.MainActor(unsafe) public var channel: SendbirdChatSDK.BaseChannel? {
@@ -3218,8 +3218,8 @@ extension SendbirdUIKit.SBUOpenChannelModule {
     @objc @_Concurrency.MainActor(unsafe) open func register(unknownMessageCell: SendbirdUIKit.SBUOpenChannelBaseMessageCell, nib: UIKit.UINib? = nil)
     @objc @_Concurrency.MainActor(unsafe) open func register(customMessageCell: SendbirdUIKit.SBUOpenChannelBaseMessageCell, nib: UIKit.UINib? = nil)
     @objc @available(*, deprecated, renamed: "calculateMessageMenuCGPoint(indexPath:)")
-    @_Concurrency.MainActor(unsafe) public func calculatorMenuPoint(indexPath: Foundation.IndexPath) -> CoreFoundation.CGPoint
-    @objc @_Concurrency.MainActor(unsafe) open func calculateMessageMenuCGPoint(indexPath: Foundation.IndexPath) -> CoreFoundation.CGPoint
+    @_Concurrency.MainActor(unsafe) public func calculatorMenuPoint(indexPath: Foundation.IndexPath) -> CoreGraphics.CGPoint
+    @objc @_Concurrency.MainActor(unsafe) open func calculateMessageMenuCGPoint(indexPath: Foundation.IndexPath) -> CoreGraphics.CGPoint
     @_Concurrency.MainActor(unsafe) override open func createMessageMenuItems(for message: SendbirdChatSDK.BaseMessage) -> [SendbirdUIKit.SBUMenuItem]
     @_Concurrency.MainActor(unsafe) @objc override open func showMessageContextMenu(for message: SendbirdChatSDK.BaseMessage, cell: UIKit.UITableViewCell, forRowAt indexPath: Foundation.IndexPath)
     @objc @_Concurrency.MainActor(unsafe) open func setMessageCellGestures(_ cell: SendbirdUIKit.SBUOpenChannelBaseMessageCell, message: SendbirdChatSDK.BaseMessage, indexPath: Foundation.IndexPath)
@@ -3228,7 +3228,7 @@ extension SendbirdUIKit.SBUOpenChannelModule {
     @objc @_Concurrency.MainActor(unsafe) public func register(messageCell: SendbirdUIKit.SBUOpenChannelBaseMessageCell, nib: UIKit.UINib? = nil)
     @objc @_Concurrency.MainActor(unsafe) open func generateCellIdentifier(by message: SendbirdChatSDK.BaseMessage) -> Swift.String
     @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
-    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
     @objc deinit
   }
 }
@@ -3426,7 +3426,7 @@ open class SBUCreateChannelModule {
   }
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init(style: UIKit.UITableViewCell.CellStyle, reuseIdentifier: Swift.String?)
   @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
-  @_Concurrency.MainActor(unsafe) @objc override dynamic open func awakeFromNib()
+  @objc override dynamic open func awakeFromNib()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupViews()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupActions()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupLayouts()
@@ -3484,7 +3484,7 @@ extension SendbirdUIKit.SBUBaseChannelModule {
     @available(*, unavailable, renamed: "SBUBaseChannelModule.Input()")
     @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
     @available(*, unavailable, renamed: "SBUBaseChannelModule.Input()")
-    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
     @objc @_Concurrency.MainActor(unsafe) open func setupViews()
     @objc @_Concurrency.MainActor(unsafe) open func setupLayouts()
     @_Concurrency.MainActor(unsafe) open func setupStyles(theme: SendbirdUIKit.SBUChannelTheme? = nil)
@@ -3530,7 +3530,7 @@ extension SendbirdUIKit.SBUBaseChannelModule {
     @objc set
   }
   @_Concurrency.MainActor(unsafe) @objc override public var channel: SendbirdChatSDK.OpenChannel? {
-    @objc get
+    @_Concurrency.MainActor(unsafe) @objc get
   }
   @available(*, unavailable, renamed: "SBUOpenChannelSettingsViewController(channelURL:)")
   @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
@@ -3704,11 +3704,11 @@ extension SendbirdUIKit.SBUMessageThreadModule {
   @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
   @available(*, unavailable, renamed: "SBUCreateOpenChannelViewController(channel:)")
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
-  @_Concurrency.MainActor(unsafe) @objc required dynamic public init()
+  @objc required dynamic public init()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewDidLoad()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewWillAppear(_ animated: Swift.Bool)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open var preferredStatusBarStyle: UIKit.UIStatusBarStyle {
-    @objc get
+    @_Concurrency.MainActor(unsafe) @objc get
   }
   @objc deinit
   @objc @_Concurrency.MainActor(unsafe) open func createViewModel()
@@ -3870,23 +3870,23 @@ public typealias SBUChannelCell = SendbirdUIKit.SBUGroupChannelCell
   }
   @objc @_Concurrency.MainActor(unsafe) final public let titleSpacer: UIKit.UIView
   @objc @_Concurrency.MainActor(unsafe) final public let messageSpacer: UIKit.UIView
-  @objc @_Concurrency.MainActor(unsafe) final public let coverImageSize: CoreFoundation.CGFloat
-  @objc @_Concurrency.MainActor(unsafe) final public let unreadCountSize: CoreFoundation.CGFloat
-  @objc @_Concurrency.MainActor(unsafe) final public let infoIconSize: CoreFoundation.CGFloat
+  @objc @_Concurrency.MainActor(unsafe) final public let coverImageSize: CoreGraphics.CGFloat
+  @objc @_Concurrency.MainActor(unsafe) final public let unreadCountSize: CoreGraphics.CGFloat
+  @objc @_Concurrency.MainActor(unsafe) final public let infoIconSize: CoreGraphics.CGFloat
   @objc @available(*, deprecated, renamed: "coverImageSize")
-  @_Concurrency.MainActor(unsafe) public var kCoverImageSize: CoreFoundation.CGFloat {
+  @_Concurrency.MainActor(unsafe) public var kCoverImageSize: CoreGraphics.CGFloat {
     @objc get
   }
   @objc @available(*, deprecated, renamed: "unreadCountSize")
-  @_Concurrency.MainActor(unsafe) public var kUnreadCountSize: CoreFoundation.CGFloat {
+  @_Concurrency.MainActor(unsafe) public var kUnreadCountSize: CoreGraphics.CGFloat {
     @objc get
   }
   @objc @available(*, deprecated, renamed: "infoIconSize")
-  @_Concurrency.MainActor(unsafe) public var kInfoIconSize: CoreFoundation.CGFloat {
+  @_Concurrency.MainActor(unsafe) public var kInfoIconSize: CoreGraphics.CGFloat {
     @objc get
   }
   @objc @available(*, unavailable, renamed: "sideMarging")
-  @_Concurrency.MainActor(unsafe) public var kSideMarging: CoreFoundation.CGFloat {
+  @_Concurrency.MainActor(unsafe) public var kSideMarging: CoreGraphics.CGFloat {
     @objc get
   }
   @objc @_Concurrency.MainActor(unsafe) public var contentStackView: SendbirdUIKit.SBUStackView {
@@ -3910,7 +3910,7 @@ public typealias SBUChannelCell = SendbirdUIKit.SBUGroupChannelCell
     set
     _modify
   }
-  @_Concurrency.MainActor(unsafe) @objc override dynamic open func awakeFromNib()
+  @objc override dynamic open func awakeFromNib()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupViews()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupActions()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupLayouts()
@@ -3951,7 +3951,7 @@ extension SendbirdUIKit.SBUGroupChannelSettingsModule {
     @available(*, unavailable, renamed: "SBUGroupChannelSettingsModule.List()")
     @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
     @available(*, unavailable, renamed: "SBUGroupChannelSettingsModule.List()")
-    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
     @objc deinit
     @_Concurrency.MainActor(unsafe) open func configure(delegate: SendbirdUIKit.SBUGroupChannelSettingsModuleListDelegate, dataSource: SendbirdUIKit.SBUGroupChannelSettingsModuleListDataSource, theme: SendbirdUIKit.SBUChannelSettingsTheme)
     @_Concurrency.MainActor(unsafe) @objc override open func setupViews()
@@ -4048,7 +4048,7 @@ extension SendbirdUIKit.SBUBaseChannelModule {
       @objc get
     }
     @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
-    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
     @objc deinit
     @objc @_Concurrency.MainActor(unsafe) open func setupViews()
     @objc @_Concurrency.MainActor(unsafe) open func setupLayouts()
@@ -4074,10 +4074,12 @@ extension SendbirdUIKit.SBUBaseChannelModule {
     @objc @_Concurrency.MainActor(unsafe) open func setUserProfileTapGesture(_ user: SendbirdUIKit.SBUUser)
     @objc @_Concurrency.MainActor(unsafe) open func onTapScrollToBottom()
     @_Concurrency.MainActor(unsafe) @objc open func scrollViewDidScroll(_ scrollView: UIKit.UIScrollView)
+    @_Concurrency.MainActor(unsafe) @objc open func tableView(_ tableView: UIKit.UITableView, viewForHeaderInSection section: Swift.Int) -> UIKit.UIView?
+    @_Concurrency.MainActor(unsafe) @objc open func tableView(_ tableView: UIKit.UITableView, heightForHeaderInSection section: Swift.Int) -> CoreGraphics.CGFloat
     @_Concurrency.MainActor(unsafe) @objc open func tableView(_ tableView: UIKit.UITableView, numberOfRowsInSection section: Swift.Int) -> Swift.Int
     @_Concurrency.MainActor(unsafe) @objc open func tableView(_ tableView: UIKit.UITableView, cellForRowAt indexPath: Foundation.IndexPath) -> UIKit.UITableViewCell
     @_Concurrency.MainActor(unsafe) @objc open func tableView(_ tableView: UIKit.UITableView, willDisplay cell: UIKit.UITableViewCell, forRowAt indexPath: Foundation.IndexPath)
-    @_Concurrency.MainActor(unsafe) @objc open func tableView(_ tableView: UIKit.UITableView, heightForRowAt indexPath: Foundation.IndexPath) -> CoreFoundation.CGFloat
+    @_Concurrency.MainActor(unsafe) @objc open func tableView(_ tableView: UIKit.UITableView, heightForRowAt indexPath: Foundation.IndexPath) -> CoreGraphics.CGFloat
     @objc @_Concurrency.MainActor(unsafe) open func setFileMessageCellImage(_ cell: UIKit.UITableViewCell, fileMessage: SendbirdChatSDK.FileMessage)
     @objc @_Concurrency.MainActor(unsafe) public func getMessageGroupingPosition(currentIndex: Swift.Int) -> SendbirdUIKit.MessageGroupPosition
   }
@@ -4159,13 +4161,13 @@ extension SendbirdUIKit.SBUMessageInputViewDelegate {
     get
     set
   }
-  @_Concurrency.MainActor(unsafe) public var leadingSpacing: CoreFoundation.CGFloat
-  @_Concurrency.MainActor(unsafe) public var trailingSpacing: CoreFoundation.CGFloat
-  @_Concurrency.MainActor(unsafe) public var textViewMinHeight: CoreFoundation.CGFloat
-  @_Concurrency.MainActor(unsafe) public var textViewMaxHeight: CoreFoundation.CGFloat
+  @_Concurrency.MainActor(unsafe) public var leadingSpacing: CoreGraphics.CGFloat
+  @_Concurrency.MainActor(unsafe) public var trailingSpacing: CoreGraphics.CGFloat
+  @_Concurrency.MainActor(unsafe) public var textViewMinHeight: CoreGraphics.CGFloat
+  @_Concurrency.MainActor(unsafe) public var textViewMaxHeight: CoreGraphics.CGFloat
   @_Concurrency.MainActor(unsafe) public var showsSendButton: Swift.Bool
-  @_Concurrency.MainActor(unsafe) public var textViewLeadingSpacing: CoreFoundation.CGFloat
-  @_Concurrency.MainActor(unsafe) public var textViewTrailingSpacing: CoreFoundation.CGFloat
+  @_Concurrency.MainActor(unsafe) public var textViewLeadingSpacing: CoreGraphics.CGFloat
+  @_Concurrency.MainActor(unsafe) public var textViewTrailingSpacing: CoreGraphics.CGFloat
   @_Concurrency.MainActor(unsafe) public var layoutInsets: UIKit.UIEdgeInsets
   @_Concurrency.MainActor(unsafe) public var defaultAttributes: [Foundation.NSAttributedString.Key : Any] {
     get
@@ -4179,9 +4181,9 @@ extension SendbirdUIKit.SBUMessageInputViewDelegate {
     set
     _modify
   }
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
   @_Concurrency.MainActor(unsafe) public init(isOverlay: Swift.Bool)
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
+  @objc override dynamic public init()
   @available(*, unavailable, renamed: "SBUMessageInputView()")
   @_Concurrency.MainActor(unsafe) required public init?(coder: Foundation.NSCoder)
   @_Concurrency.MainActor(unsafe) public var mode: SendbirdUIKit.SBUMessageInputMode {
@@ -4482,14 +4484,14 @@ public enum SBUThreadReplySelectType : Swift.Int {
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewDidLoad()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewWillAppear(_ animated: Swift.Bool)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open var preferredStatusBarStyle: UIKit.UIStatusBarStyle {
-    @objc get
+    @_Concurrency.MainActor(unsafe) @objc get
   }
   @objc deinit
   @objc @_Concurrency.MainActor(unsafe) open func createViewModel(channel: SendbirdChatSDK.BaseChannel? = nil, channelURL: Swift.String? = nil, channelType: SendbirdChatSDK.ChannelType = .group, users: [SendbirdUIKit.SBUUser]? = nil)
   @_Concurrency.MainActor(unsafe) @objc override open func setupLayouts()
   @_Concurrency.MainActor(unsafe) @objc override open func setupStyles()
   @_Concurrency.MainActor(unsafe) @objc override open func updateStyles()
-  @objc @_Concurrency.MainActor(unsafe) public func popToChannel()
+  @objc @_Concurrency.MainActor(unsafe) open func popToChannel()
   @objc @_Concurrency.MainActor(unsafe) public func popToPrevious()
   @_Concurrency.MainActor(unsafe) override open func errorHandler(_ message: Swift.String?, _ code: ObjectiveC.NSInteger? = nil)
   @objc @_Concurrency.MainActor(unsafe) open func selectedUsersForBaseSelectUserModule(_ headerComponent: SendbirdUIKit.SBUBaseSelectUserModule.Header) -> Swift.Set<SendbirdUIKit.SBUUser>?
@@ -4525,12 +4527,12 @@ public enum SBUThreadReplySelectType : Swift.Int {
   @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
   @available(*, unavailable, renamed: "SBUCreateChannelViewController(type:)")
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
-  @_Concurrency.MainActor(unsafe) @objc dynamic public init()
+  @objc dynamic public init()
   @_Concurrency.MainActor(unsafe) required public init(users: [SendbirdUIKit.SBUUser]? = nil, type: SendbirdUIKit.ChannelCreationType = .group)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewDidLoad()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewWillAppear(_ animated: Swift.Bool)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open var preferredStatusBarStyle: UIKit.UIStatusBarStyle {
-    @objc get
+    @_Concurrency.MainActor(unsafe) @objc get
   }
   @objc deinit
   @_Concurrency.MainActor(unsafe) open func createViewModel(users: [SendbirdUIKit.SBUUser]? = nil, type: SendbirdUIKit.ChannelCreationType = .group)
@@ -4583,7 +4585,7 @@ extension SendbirdUIKit.SBUGroupChannelListModule {
     @available(*, unavailable, renamed: "SBUGroupChannelListModule.List()")
     @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
     @available(*, unavailable, renamed: "SBUGroupChannelListModule.List()")
-    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
     @objc deinit
     @_Concurrency.MainActor(unsafe) open func configure(delegate: SendbirdUIKit.SBUGroupChannelListModuleListDelegate, dataSource: SendbirdUIKit.SBUGroupChannelListModuleListDataSource, theme: SendbirdUIKit.SBUGroupChannelListTheme)
     @_Concurrency.MainActor(unsafe) @objc override open func setupViews()
@@ -4619,7 +4621,7 @@ public class SBUBaseMessageCellParams {
   @objc deinit
 }
 @objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) public class SBUStackView : UIKit.UIStackView {
-  @_Concurrency.MainActor(unsafe) public init(axis: UIKit.NSLayoutConstraint.Axis = .horizontal, alignment: UIKit.UIStackView.Alignment = .fill, spacing: CoreFoundation.CGFloat = 0.0)
+  @_Concurrency.MainActor(unsafe) public init(axis: UIKit.NSLayoutConstraint.Axis = .horizontal, alignment: UIKit.UIStackView.Alignment = .fill, spacing: CoreGraphics.CGFloat = 0.0)
   @objc deinit
 }
 @objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class QuotedFileImageContentView : SendbirdUIKit.SBUView {
@@ -4641,11 +4643,11 @@ public class SBUBaseMessageCellParams {
   @_Concurrency.MainActor(unsafe) open func setupSizeContraint()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupStyles()
   @_Concurrency.MainActor(unsafe) open func configure(with configuration: SendbirdUIKit.SBUQuotedBaseMessageViewParams)
-  @_Concurrency.MainActor(unsafe) open func setImage(_ image: UIKit.UIImage?, size: CoreFoundation.CGSize? = nil)
+  @_Concurrency.MainActor(unsafe) open func setImage(_ image: UIKit.UIImage?, size: CoreGraphics.CGSize? = nil)
   @_Concurrency.MainActor(unsafe) open func setFileIcon()
-  @_Concurrency.MainActor(unsafe) open func resizeImageView(by size: CoreFoundation.CGSize)
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @_Concurrency.MainActor(unsafe) open func resizeImageView(by size: CoreGraphics.CGSize)
+  @objc override dynamic public init()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
   @objc deinit
 }
 extension SendbirdUIKit.SBUCreateChannelViewController {
@@ -4901,7 +4903,7 @@ extension SendbirdUIKit.SBUGroupChannelSettingsModule {
     @available(*, unavailable, renamed: "SBUGroupChannelSettingsModule.Header()")
     @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
     @available(*, unavailable, renamed: "SBUGroupChannelSettingsModule.Header()")
-    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
     @objc deinit
     @_Concurrency.MainActor(unsafe) open func configure(delegate: SendbirdUIKit.SBUGroupChannelSettingsModuleHeaderDelegate, dataSource: SendbirdUIKit.SBUGroupChannelSettingsModuleHeaderDataSource, theme: SendbirdUIKit.SBUChannelSettingsTheme)
     @_Concurrency.MainActor(unsafe) @objc override open func setupViews()
@@ -4963,8 +4965,8 @@ extension SendbirdUIKit.SBUGroupChannelSettingsModule {
   public static var isUserProfileEnabled: Swift.Bool
   public static var isOpenChannelUserProfileEnabled: Swift.Bool
   public static var isImageCompressionEnabled: Swift.Bool
-  public static var imageCompressionRate: CoreFoundation.CGFloat
-  public static var imageResizingSize: CoreFoundation.CGSize
+  public static var imageCompressionRate: CoreGraphics.CGFloat
+  public static var imageResizingSize: CoreGraphics.CGSize
   public static var userMentionConfig: SendbirdUIKit.SBUUserMentionConfiguration?
   public static var isUserMentionEnabled: Swift.Bool {
     get
@@ -4983,7 +4985,7 @@ public class SBUAlertButtonItem {
   @objc deinit
 }
 @objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class SBUAlertView : ObjectiveC.NSObject {
-  public static func show(title: Swift.String, message: Swift.String? = nil, needInputField: Swift.Bool = false, placeHolder: Swift.String? = "", centerYRatio: CoreFoundation.CGFloat? = 1.0, oneTimetheme: SendbirdUIKit.SBUComponentTheme? = nil, confirmButtonItem: SendbirdUIKit.SBUAlertButtonItem, cancelButtonItem: SendbirdUIKit.SBUAlertButtonItem?, delegate: SendbirdUIKit.SBUAlertViewDelegate? = nil, dismissHandler: (() -> Swift.Void)? = nil)
+  public static func show(title: Swift.String, message: Swift.String? = nil, needInputField: Swift.Bool = false, placeHolder: Swift.String? = "", centerYRatio: CoreGraphics.CGFloat? = 1.0, oneTimetheme: SendbirdUIKit.SBUComponentTheme? = nil, confirmButtonItem: SendbirdUIKit.SBUAlertButtonItem, cancelButtonItem: SendbirdUIKit.SBUAlertButtonItem?, delegate: SendbirdUIKit.SBUAlertViewDelegate? = nil, dismissHandler: (() -> Swift.Void)? = nil)
   public static func dismiss()
   @objc deinit
 }
@@ -5236,7 +5238,7 @@ public protocol SBUMessageThreadViewControllerDelegate : AnyObject {
   }
   @_Concurrency.MainActor(unsafe) weak public var delegate: SendbirdUIKit.SBUMessageThreadViewControllerDelegate?
   @_Concurrency.MainActor(unsafe) @objc override dynamic public var channel: SendbirdChatSDK.GroupChannel? {
-    @objc get
+    @_Concurrency.MainActor(unsafe) @objc get
   }
   @objc @_Concurrency.MainActor(unsafe) public var parentMessage: SendbirdChatSDK.BaseMessage? {
     @objc get
@@ -5245,7 +5247,7 @@ public protocol SBUMessageThreadViewControllerDelegate : AnyObject {
   @_Concurrency.MainActor(unsafe) required public init(channelURL: Swift.String, startingPoint: Swift.Int64? = nil, messageListParams: SendbirdChatSDK.MessageListParams? = nil)
   @_Concurrency.MainActor(unsafe) required public init(channel: SendbirdChatSDK.GroupChannel? = nil, channelURL: Swift.String? = nil, parentMessage: SendbirdChatSDK.BaseMessage? = nil, parentMessageId: Swift.Int64? = nil, delegate: SendbirdUIKit.SBUMessageThreadViewControllerDelegate? = nil, threadedMessageListParams: SendbirdChatSDK.ThreadedMessageListParams? = nil, startingPoint: Swift.Int64? = 0)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open var preferredStatusBarStyle: UIKit.UIStatusBarStyle {
-    @objc get
+    @_Concurrency.MainActor(unsafe) @objc get
   }
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewWillAppear(_ animated: Swift.Bool)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewDidLoad()
@@ -5311,7 +5313,7 @@ public protocol SBUMessageThreadViewControllerDelegate : AnyObject {
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewWillAppear(_ animated: Swift.Bool)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewDidLoad()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open var preferredStatusBarStyle: UIKit.UIStatusBarStyle {
-    @objc get
+    @_Concurrency.MainActor(unsafe) @objc get
   }
   @objc deinit
   @_Concurrency.MainActor(unsafe) @objc override open func setupLayouts()
@@ -5371,7 +5373,7 @@ extension SendbirdUIKit.SBUMessageSearchModule {
     @available(*, unavailable, renamed: "SBUMessageSearchModule.Header()")
     @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
     @available(*, unavailable, renamed: "SBUMessageSearchModule.Header()")
-    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
     @objc deinit
     @_Concurrency.MainActor(unsafe) open func configure(delegate: SendbirdUIKit.SBUMessageSearchModuleHeaderDelegate, theme: SendbirdUIKit.SBUMessageSearchTheme)
     @objc @_Concurrency.MainActor(unsafe) open func setupViews()
@@ -5455,12 +5457,14 @@ extension SendbirdUIKit.SBUBaseChannelSettingsModule {
     @objc @_Concurrency.MainActor(unsafe) open func endEditingChannelInfoView()
     @objc @_Concurrency.MainActor(unsafe) open func reloadChannelInfoView()
     @objc @_Concurrency.MainActor(unsafe) public func reloadTableView()
-    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
     @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
     @objc deinit
   }
 }
 extension SendbirdUIKit.SBUBaseChannelSettingsModule.List : UIKit.UITableViewDataSource, UIKit.UITableViewDelegate {
+  @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, viewForHeaderInSection section: Swift.Int) -> UIKit.UIView?
+  @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, heightForHeaderInSection section: Swift.Int) -> CoreGraphics.CGFloat
   @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, cellForRowAt indexPath: Foundation.IndexPath) -> UIKit.UITableViewCell
   @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, numberOfRowsInSection section: Swift.Int) -> Swift.Int
   @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, didSelectRowAt indexPath: Foundation.IndexPath)
@@ -5490,11 +5494,13 @@ extension SendbirdUIKit.SBUModerationsModule {
     @objc @_Concurrency.MainActor(unsafe) public func register(moderationCell: UIKit.UITableViewCell, nib: UIKit.UINib? = nil)
     @objc @_Concurrency.MainActor(unsafe) open func configureCell(_ cell: UIKit.UITableViewCell?, indexPath: Foundation.IndexPath)
     @objc @_Concurrency.MainActor(unsafe) public func reloadTableView()
-    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
     @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
   }
 }
 extension SendbirdUIKit.SBUModerationsModule.List : UIKit.UITableViewDataSource, UIKit.UITableViewDelegate {
+  @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, viewForHeaderInSection section: Swift.Int) -> UIKit.UIView?
+  @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, heightForHeaderInSection section: Swift.Int) -> CoreGraphics.CGFloat
   @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, numberOfRowsInSection section: Swift.Int) -> Swift.Int
   @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, cellForRowAt indexPath: Foundation.IndexPath) -> UIKit.UITableViewCell
   @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, didSelectRowAt indexPath: Foundation.IndexPath)
@@ -5520,7 +5526,7 @@ extension SendbirdUIKit.SBUOpenChannelListModule {
     @available(*, unavailable, renamed: "SBUOpenChannelListModule.List()")
     @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
     @available(*, unavailable, renamed: "SBUOpenChannelListModule.List()")
-    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
     @objc deinit
     @_Concurrency.MainActor(unsafe) open func configure(delegate: SendbirdUIKit.SBUOpenChannelListModuleListDelegate, dataSource: SendbirdUIKit.SBUOpenChannelListModuleListDataSource, theme: SendbirdUIKit.SBUOpenChannelListTheme)
     @_Concurrency.MainActor(unsafe) @objc override open func setupViews()
@@ -5564,7 +5570,7 @@ extension SendbirdUIKit.SBUGroupChannelViewController {
     @objc get
   }
   @objc @available(*, unavailable, message: "deprecated in 1.2.10")
-  @_Concurrency.MainActor(unsafe) dynamic public var fileTransferProgress: [Swift.String : CoreFoundation.CGFloat] {
+  @_Concurrency.MainActor(unsafe) dynamic public var fileTransferProgress: [Swift.String : CoreGraphics.CGFloat] {
     @objc get
   }
   @objc @available(*, unavailable, renamed: "setEmojiTapGestureHandler(_:emojiKey:)", message: "deprecated in 1.2.2")
@@ -5596,7 +5602,7 @@ extension SendbirdUIKit.SBUInviteUserModule {
     @available(*, unavailable, renamed: "SBUInviteUserModule.List()")
     @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
     @available(*, unavailable, renamed: "SBUInviteUserModule.List()")
-    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
     @objc deinit
     @_Concurrency.MainActor(unsafe) open func configure(delegate: SendbirdUIKit.SBUInviteUserModuleListDelegate, dataSource: SendbirdUIKit.SBUInviteUserModuleListDataSource, theme: SendbirdUIKit.SBUUserListTheme)
     @_Concurrency.MainActor(unsafe) @objc override open func configureCell(_ cell: UIKit.UITableViewCell?, indexPath: Foundation.IndexPath)
@@ -5614,13 +5620,13 @@ public protocol SBUUserMessageTextViewDelegate : AnyObject {
 }
 @objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUUserMessageTextView : SendbirdUIKit.SBUView {
   public struct Metric {
-    public static var textLeftRightMargin: CoreFoundation.CGFloat
-    public static var textTopDownMargin: CoreFoundation.CGFloat
-    public static var textMaxWidth: CoreFoundation.CGFloat
-    public static var textMinHeight: CoreFoundation.CGFloat
-    public static var textMinWidth: CoreFoundation.CGFloat
-    public static var viewCornerRadius: CoreFoundation.CGFloat
-    public static var viewBorderWidth: CoreFoundation.CGFloat
+    public static var textLeftRightMargin: CoreGraphics.CGFloat
+    public static var textTopDownMargin: CoreGraphics.CGFloat
+    public static var textMaxWidth: CoreGraphics.CGFloat
+    public static var textMinHeight: CoreGraphics.CGFloat
+    public static var textMinWidth: CoreGraphics.CGFloat
+    public static var viewCornerRadius: CoreGraphics.CGFloat
+    public static var viewBorderWidth: CoreGraphics.CGFloat
   }
   @_Concurrency.MainActor(unsafe) public var text: Swift.String {
     get
@@ -5636,8 +5642,8 @@ public protocol SBUUserMessageTextViewDelegate : AnyObject {
     get
   }
   @_Concurrency.MainActor(unsafe) weak public var delegate: SendbirdUIKit.SBUUserMessageTextViewDelegate?
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @objc override dynamic public init()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
   @_Concurrency.MainActor(unsafe) public init(channelType: SendbirdChatSDK.ChannelType = .group, removeMargin: Swift.Bool = false)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupViews()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupLayouts()
@@ -5664,14 +5670,14 @@ open class SBUUserListModule {
 @objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) public class SBUNavigationTitleView : SendbirdUIKit.SBUView {
   @_Concurrency.MainActor(unsafe) public var text: Swift.String?
   @_Concurrency.MainActor(unsafe) public var textAlignment: UIKit.NSTextAlignment
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @objc override dynamic public init()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
   @available(*, unavailable, renamed: "SBUNavigationTitleView.init(frame:)")
   @_Concurrency.MainActor(unsafe) required public init?(coder: Foundation.NSCoder)
   @_Concurrency.MainActor(unsafe) @objc override dynamic public func setupViews()
   @_Concurrency.MainActor(unsafe) @objc override dynamic public func setupLayouts()
   @_Concurrency.MainActor(unsafe) @objc override dynamic public func setupStyles()
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public func draw(_ rect: CoreFoundation.CGRect)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public func draw(_ rect: CoreGraphics.CGRect)
   @_Concurrency.MainActor(unsafe) @objc override dynamic public func layoutSubviews()
   @objc deinit
 }
@@ -5749,8 +5755,8 @@ public enum UserListType : Swift.Hashable {
   case mutedMembers
   @available(*, unavailable, renamed: "banned")
   case bannedMembers
-  public func hash(into hasher: inout Swift.Hasher)
   public static func == (a: SendbirdUIKit.UserListType, b: SendbirdUIKit.UserListType) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
   public var hashValue: Swift.Int {
     get
   }
@@ -6025,8 +6031,8 @@ extension SendbirdUIKit.SBUGroupChannelModule {
     @_Concurrency.MainActor(unsafe) @objc override open func setScrollBottomView(hidden: Swift.Bool)
     @_Concurrency.MainActor(unsafe) @objc override open func scrollViewDidScroll(_ scrollView: UIKit.UIScrollView)
     @objc @available(*, deprecated, renamed: "calculateMessageMenuCGPoint(indexPath:position:)")
-    @_Concurrency.MainActor(unsafe) public func calculatorMenuPoint(indexPath: Foundation.IndexPath, position: SendbirdUIKit.MessagePosition) -> CoreFoundation.CGPoint
-    @objc @_Concurrency.MainActor(unsafe) open func calculateMessageMenuCGPoint(indexPath: Foundation.IndexPath, position: SendbirdUIKit.MessagePosition) -> CoreFoundation.CGPoint
+    @_Concurrency.MainActor(unsafe) public func calculatorMenuPoint(indexPath: Foundation.IndexPath, position: SendbirdUIKit.MessagePosition) -> CoreGraphics.CGPoint
+    @objc @_Concurrency.MainActor(unsafe) open func calculateMessageMenuCGPoint(indexPath: Foundation.IndexPath, position: SendbirdUIKit.MessagePosition) -> CoreGraphics.CGPoint
     @_Concurrency.MainActor(unsafe) override open func createMessageMenuItems(for message: SendbirdChatSDK.BaseMessage) -> [SendbirdUIKit.SBUMenuItem]
     @_Concurrency.MainActor(unsafe) @objc override open func showMessageContextMenu(for message: SendbirdChatSDK.BaseMessage, cell: UIKit.UITableViewCell, forRowAt indexPath: Foundation.IndexPath)
     @objc @_Concurrency.MainActor(unsafe) open func setMessageCellGestures(_ cell: SendbirdUIKit.SBUBaseMessageCell, message: SendbirdChatSDK.BaseMessage, indexPath: Foundation.IndexPath)
@@ -6041,7 +6047,7 @@ extension SendbirdUIKit.SBUGroupChannelModule {
     @objc @_Concurrency.MainActor(unsafe) open func generateCellIdentifier(by message: SendbirdChatSDK.BaseMessage) -> Swift.String
     @objc @_Concurrency.MainActor(unsafe) open func setMessageCellAnimation(_ messageCell: SendbirdUIKit.SBUBaseMessageCell, message: SendbirdChatSDK.BaseMessage, indexPath: Foundation.IndexPath)
     @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
-    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
     @objc deinit
   }
 }
@@ -6053,7 +6059,7 @@ extension SendbirdUIKit.SBUGroupChannelModule.List : SendbirdUIKit.SBUThreadInfo
 }
 extension UIKit.UINavigationController {
   @_Concurrency.MainActor(unsafe) @objc override dynamic open var preferredStatusBarStyle: UIKit.UIStatusBarStyle {
-    @objc get
+    @_Concurrency.MainActor(unsafe) @objc get
   }
   @objc @_Concurrency.MainActor(unsafe) dynamic open func sbu_setupNavigationBarAppearance(tintColor: UIKit.UIColor, shadowColor: UIKit.UIColor? = nil)
 }
@@ -6082,12 +6088,12 @@ extension UIKit.UINavigationController {
   @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
   @available(*, unavailable, renamed: "SBUOpenChannelListViewController()")
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
-  @_Concurrency.MainActor(unsafe) @objc dynamic public init()
+  @objc dynamic public init()
   @objc @_Concurrency.MainActor(unsafe) required public init(channelListQuery: SendbirdChatSDK.OpenChannelListQuery? = nil)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewDidLoad()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewWillAppear(_ animated: Swift.Bool)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open var preferredStatusBarStyle: UIKit.UIStatusBarStyle {
-    @objc get
+    @_Concurrency.MainActor(unsafe) @objc get
   }
   @objc deinit
   @objc @_Concurrency.MainActor(unsafe) open func createViewModel(channelListQuery: SendbirdChatSDK.OpenChannelListQuery?)
@@ -6131,7 +6137,7 @@ public protocol SBUMessageThreadTitleViewDelegate : AnyObject {
   @_Concurrency.MainActor(unsafe) public var channelName: Swift.String {
     get
   }
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
+  @objc override dynamic public init()
   @_Concurrency.MainActor(unsafe) public init(delegate: SendbirdUIKit.SBUMessageThreadTitleViewDelegate? = nil)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupViews()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupLayouts()
@@ -6194,7 +6200,7 @@ extension SendbirdUIKit.SBUGroupChannelModule {
     @objc @_Concurrency.MainActor(unsafe) open func updateSuggestedMentionList(with members: [SendbirdUIKit.SBUUser])
     @objc @_Concurrency.MainActor(unsafe) open func presentSuggestedMentionList()
     @objc @_Concurrency.MainActor(unsafe) open func dismissSuggestedMentionList()
-    @_Concurrency.MainActor(unsafe) @objc override dynamic open func point(inside point: CoreFoundation.CGPoint, with event: UIKit.UIEvent?) -> Swift.Bool
+    @_Concurrency.MainActor(unsafe) @objc override dynamic open func point(inside point: CoreGraphics.CGPoint, with event: UIKit.UIEvent?) -> Swift.Bool
     @_Concurrency.MainActor(unsafe) @objc override open func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, shouldChangeTextIn range: Foundation.NSRange, replacementText text: Swift.String) -> Swift.Bool
     @_Concurrency.MainActor(unsafe) @objc override open func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, shouldInteractWith url: Foundation.URL, in characterRange: Foundation.NSRange, interaction: UIKit.UITextItemInteraction) -> Swift.Bool
     @_Concurrency.MainActor(unsafe) @objc override open func messageInputView(_ messageInputView: SendbirdUIKit.SBUMessageInputView, didChangeSelection range: Foundation.NSRange)
@@ -6236,7 +6242,7 @@ open class SBUMessageStateViewParams {
   @_Concurrency.MainActor(unsafe) public var timeFormat: Swift.String {
     get
   }
-  @_Concurrency.MainActor(unsafe) public var timeLabelCustomSize: CoreFoundation.CGSize?
+  @_Concurrency.MainActor(unsafe) public var timeLabelCustomSize: CoreGraphics.CGSize?
   @_Concurrency.MainActor(unsafe) public init(sendingState: SendbirdChatSDK.MessageSendingStatus, receiptState: SendbirdUIKit.SBUMessageReceiptState, isQuotedReplyMessage: Swift.Bool = false)
   @_Concurrency.MainActor(unsafe) public init(isQuotedReplyMessage: Swift.Bool = false)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupViews()
@@ -6273,8 +6279,8 @@ open class SBUInviteUserModule {
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupStyles()
   @_Concurrency.MainActor(unsafe) open func configure(with fileType: Swift.String, fileName: Swift.String, position: SendbirdUIKit.MessagePosition, highlightKeyword: Swift.String?)
   @_Concurrency.MainActor(unsafe) open func addHighlight(keyword: Swift.String, toAttributedString attributedString: Foundation.NSMutableAttributedString, highlightTextColor: UIKit.UIColor)
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @objc override dynamic public init()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
   @objc deinit
 }
 public protocol SBUOpenChannelModuleHeaderDelegate : SendbirdUIKit.SBUBaseChannelModuleHeaderDelegate {
@@ -6313,12 +6319,12 @@ extension SendbirdUIKit.SBUOpenChannelModule {
 }
 @objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUParentMessageInfoReactionView : SendbirdUIKit.SBUMessageReactionView {
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupStyles()
-  @_Concurrency.MainActor(unsafe) override open func configure(maxWidth: CoreFoundation.CGFloat, useReaction: Swift.Bool, reactions: [SendbirdChatSDK.Reaction])
-  @_Concurrency.MainActor(unsafe) override open func getCellSize(count: Swift.Int) -> CoreFoundation.CGSize
+  @_Concurrency.MainActor(unsafe) override open func configure(maxWidth: CoreGraphics.CGFloat, useReaction: Swift.Bool, reactions: [SendbirdChatSDK.Reaction])
+  @_Concurrency.MainActor(unsafe) override open func getCellSize(count: Swift.Int) -> CoreGraphics.CGSize
   @_Concurrency.MainActor(unsafe) @objc override open func collectionView(_ collectionView: UIKit.UICollectionView, numberOfItemsInSection section: Swift.Int) -> Swift.Int
-  @_Concurrency.MainActor(unsafe) @objc override open func collectionView(_ collectionView: UIKit.UICollectionView, layout collectionViewLayout: UIKit.UICollectionViewLayout, sizeForItemAt indexPath: Foundation.IndexPath) -> CoreFoundation.CGSize
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @_Concurrency.MainActor(unsafe) @objc override open func collectionView(_ collectionView: UIKit.UICollectionView, layout collectionViewLayout: UIKit.UICollectionViewLayout, sizeForItemAt indexPath: Foundation.IndexPath) -> CoreGraphics.CGSize
+  @objc override dynamic public init()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
   @objc deinit
 }
 public protocol SBUParentMessageInfoViewDelegate : AnyObject {
@@ -6352,13 +6358,13 @@ public protocol SBUParentMessageInfoViewDelegate : AnyObject {
     get
     set
   }
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public var bounds: CoreFoundation.CGRect {
-    @objc get
-    @objc set
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public var bounds: CoreGraphics.CGRect {
+    @_Concurrency.MainActor(unsafe) @objc get
+    @_Concurrency.MainActor(unsafe) @objc set
   }
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public var frame: CoreFoundation.CGRect {
-    @objc get
-    @objc set
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public var frame: CoreGraphics.CGRect {
+    @_Concurrency.MainActor(unsafe) @objc get
+    @_Concurrency.MainActor(unsafe) @objc set
   }
   @_Concurrency.MainActor(unsafe) public var enablesReaction: Swift.Bool
   @_Concurrency.MainActor(unsafe) public var userProfileTapHandler: (() -> Swift.Void)?
@@ -6396,7 +6402,7 @@ extension SendbirdUIKit.SBUOpenChannelListModule {
     @available(*, unavailable, renamed: "SBUOpenChannelListModule.Header()")
     @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
     @available(*, unavailable, renamed: "SBUOpenChannelListModule.Header()")
-    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
     @objc deinit
     @_Concurrency.MainActor(unsafe) open func configure(delegate: SendbirdUIKit.SBUOpenChannelListModuleHeaderDelegate, theme: SendbirdUIKit.SBUOpenChannelListTheme)
     @_Concurrency.MainActor(unsafe) open func setupStyles(theme: SendbirdUIKit.SBUOpenChannelListTheme? = nil)
@@ -6516,19 +6522,19 @@ extension SendbirdUIKit.SBUGroupChannelViewController {
 }
 @objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUOpenChannelMessageWebView : SendbirdUIKit.SBUMessageWebView {
   public struct OpenChannelMetric {
-    public static var imageHeight: CoreFoundation.CGFloat
-    public static var imageTopMargin: CoreFoundation.CGFloat
-    public static var imageSideMargin: CoreFoundation.CGFloat
-    public static var textSideMargin: CoreFoundation.CGFloat
-    public static var titleBottomMargin: CoreFoundation.CGFloat
-    public static var descBottomMargin: CoreFoundation.CGFloat
-    public static var stackSpacing: CoreFoundation.CGFloat
+    public static var imageHeight: CoreGraphics.CGFloat
+    public static var imageTopMargin: CoreGraphics.CGFloat
+    public static var imageSideMargin: CoreGraphics.CGFloat
+    public static var textSideMargin: CoreGraphics.CGFloat
+    public static var titleBottomMargin: CoreGraphics.CGFloat
+    public static var descBottomMargin: CoreGraphics.CGFloat
+    public static var stackSpacing: CoreGraphics.CGFloat
   }
   @_Concurrency.MainActor(unsafe) @objc override open func setupViews()
   @_Concurrency.MainActor(unsafe) @objc override open func setupStyles()
   @_Concurrency.MainActor(unsafe) @objc override open func setupLayouts()
   @_Concurrency.MainActor(unsafe) override open func configure(model: SendbirdUIKit.SBUMessageWebViewModel)
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
   @_Concurrency.MainActor(unsafe) @objc required dynamic public init(coder: Foundation.NSCoder)
   @objc deinit
 }
@@ -6629,7 +6635,7 @@ extension SendbirdUIKit.SBUMessageThreadModule {
     }
     @objc @_Concurrency.MainActor(unsafe) public var parentMessage: SendbirdChatSDK.BaseMessage?
     @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
-    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
     @_Concurrency.MainActor(unsafe) open func configure(delegate: SendbirdUIKit.SBUMessageThreadModuleListDelegate, dataSource: SendbirdUIKit.SBUMessageThreadModuleListDataSource, theme: SendbirdUIKit.SBUChannelTheme)
     @_Concurrency.MainActor(unsafe) @objc override open func setupViews()
     @_Concurrency.MainActor(unsafe) @objc override open func setupLayouts()
@@ -6638,7 +6644,7 @@ extension SendbirdUIKit.SBUMessageThreadModule {
     @objc @_Concurrency.MainActor(unsafe) public func updateParentInfoView()
     @objc @_Concurrency.MainActor(unsafe) public func updateParentInfoView(parentMessage: SendbirdChatSDK.BaseMessage?)
     @objc @_Concurrency.MainActor(unsafe) open func setParentMessageInfoViewGestures(message: SendbirdChatSDK.BaseMessage)
-    @objc @_Concurrency.MainActor(unsafe) open func calculateMessageMenuCGPoint(indexPath: Foundation.IndexPath, position: SendbirdUIKit.MessagePosition) -> CoreFoundation.CGPoint
+    @objc @_Concurrency.MainActor(unsafe) open func calculateMessageMenuCGPoint(indexPath: Foundation.IndexPath, position: SendbirdUIKit.MessagePosition) -> CoreGraphics.CGPoint
     @_Concurrency.MainActor(unsafe) override open func createMessageMenuItems(for message: SendbirdChatSDK.BaseMessage) -> [SendbirdUIKit.SBUMenuItem]
     @_Concurrency.MainActor(unsafe) @objc override open func showMessageContextMenu(for message: SendbirdChatSDK.BaseMessage, cell: UIKit.UITableViewCell, forRowAt indexPath: Foundation.IndexPath)
     @objc @_Concurrency.MainActor(unsafe) open func setMessageCellGestures(_ cell: SendbirdUIKit.SBUBaseMessageCell, message: SendbirdChatSDK.BaseMessage, indexPath: Foundation.IndexPath)
@@ -6650,9 +6656,10 @@ extension SendbirdUIKit.SBUMessageThreadModule {
     @objc @_Concurrency.MainActor(unsafe) open func register(unknownMessageCell: SendbirdUIKit.SBUBaseMessageCell, nib: UIKit.UINib? = nil)
     @objc @_Concurrency.MainActor(unsafe) open func register(customMessageCell: SendbirdUIKit.SBUBaseMessageCell, nib: UIKit.UINib? = nil)
     @objc @_Concurrency.MainActor(unsafe) open func configureCell(_ messageCell: SendbirdUIKit.SBUBaseMessageCell, message: SendbirdChatSDK.BaseMessage, forRowAt indexPath: Foundation.IndexPath)
-    @_Concurrency.MainActor(unsafe) @objc open func tableView(_ tableView: UIKit.UITableView, viewForHeaderInSection section: Swift.Int) -> UIKit.UIView?
+    @_Concurrency.MainActor(unsafe) @objc override open func tableView(_ tableView: UIKit.UITableView, viewForHeaderInSection section: Swift.Int) -> UIKit.UIView?
+    @_Concurrency.MainActor(unsafe) @objc override open func tableView(_ tableView: UIKit.UITableView, heightForHeaderInSection section: Swift.Int) -> CoreGraphics.CGFloat
     @_Concurrency.MainActor(unsafe) @objc open func tableView(_ tableView: UIKit.UITableView, viewForFooterInSection section: Swift.Int) -> UIKit.UIView?
-    @_Concurrency.MainActor(unsafe) @objc open func tableView(_ tableView: UIKit.UITableView, heightForFooterInSection section: Swift.Int) -> CoreFoundation.CGFloat
+    @_Concurrency.MainActor(unsafe) @objc open func tableView(_ tableView: UIKit.UITableView, heightForFooterInSection section: Swift.Int) -> CoreGraphics.CGFloat
     @_Concurrency.MainActor(unsafe) @objc override open func tableView(_ tableView: UIKit.UITableView, cellForRowAt indexPath: Foundation.IndexPath) -> UIKit.UITableViewCell
     @objc @_Concurrency.MainActor(unsafe) open func generateCellIdentifier(by message: SendbirdChatSDK.BaseMessage) -> Swift.String
     @_Concurrency.MainActor(unsafe) @objc override open func scrollViewDidScroll(_ scrollView: UIKit.UIScrollView)
@@ -6663,7 +6670,7 @@ extension SendbirdUIKit.SBUMessageThreadModule {
 }
 extension SendbirdUIKit.SBUMessageThreadModule.List {
   @_Concurrency.MainActor(unsafe) @objc override dynamic public var isScrollNearByBottom: Swift.Bool {
-    @objc get
+    @_Concurrency.MainActor(unsafe) @objc get
   }
 }
 @objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUBaseFileContentView : SendbirdUIKit.SBUView {
@@ -6675,12 +6682,12 @@ extension SendbirdUIKit.SBUMessageThreadModule.List {
   @_Concurrency.MainActor(unsafe) public var message: SendbirdChatSDK.FileMessage!
   @_Concurrency.MainActor(unsafe) public var position: SendbirdUIKit.MessagePosition
   @_Concurrency.MainActor(unsafe) open func configure(message: SendbirdChatSDK.FileMessage, position: SendbirdUIKit.MessagePosition)
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @objc override dynamic public init()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
   @objc deinit
 }
 @objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUMessageProfileView : SendbirdUIKit.SBUView {
-  @_Concurrency.MainActor(unsafe) public static let imageSize: CoreFoundation.CGFloat
+  @_Concurrency.MainActor(unsafe) public static let imageSize: CoreGraphics.CGFloat
   @SendbirdUIKit.SBUThemeWrapper @_Concurrency.MainActor(unsafe) public var theme: SendbirdUIKit.SBUMessageCellTheme {
     get
     set
@@ -6693,12 +6700,12 @@ extension SendbirdUIKit.SBUMessageThreadModule.List {
   @_Concurrency.MainActor(unsafe) public var urlString: Swift.String
   @_Concurrency.MainActor(unsafe) public init(urlString: Swift.String = "")
   @_Concurrency.MainActor(unsafe) public var imageDownloadTask: Foundation.URLSessionTask?
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @objc override dynamic public init()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupViews()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupLayouts()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupStyles()
-  @_Concurrency.MainActor(unsafe) open func configure(urlString: Swift.String, imageSize: CoreFoundation.CGFloat? = SBUMessageProfileView.imageSize)
+  @_Concurrency.MainActor(unsafe) open func configure(urlString: Swift.String, imageSize: CoreGraphics.CGFloat? = SBUMessageProfileView.imageSize)
   @objc deinit
 }
 @available(*, deprecated, renamed: "SendbirdUI")
@@ -6721,7 +6728,7 @@ public typealias SBUMain = SendbirdUIKit.SendbirdUI
     get
   }
   public static func versionString() -> Swift.String?
-  public static func registerPush(deviceToken: Foundation.Data, completionHandler: @escaping (_ success: Swift.Bool) -> Swift.Void)
+  public static func registerPush(deviceToken: Foundation.Data, unique: Swift.Bool = false, completionHandler: @escaping (_ success: Swift.Bool) -> Swift.Void)
   public static func unregisterPushToken(completionHandler: @escaping (_ success: Swift.Bool) -> Swift.Void)
   public static func unregisterAllPushToken(completionHandler: @escaping (_ success: Swift.Bool) -> Swift.Void)
   @available(*, deprecated, renamed: "moveToChannel(channelURL:basedOnChannelList:messageListParams:)")
@@ -6769,7 +6776,7 @@ extension SendbirdUIKit.SBUBaseChannelListModule {
     @objc @_Concurrency.MainActor(unsafe) open func pullToRefresh(_ sender: Any)
     @objc @_Concurrency.MainActor(unsafe) public func reloadTableView()
     @_Concurrency.MainActor(unsafe) public func updateEmptyView(type: SendbirdUIKit.EmptyViewType)
-    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
     @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
     @objc deinit
   }
@@ -6779,6 +6786,8 @@ extension SendbirdUIKit.SBUBaseChannelListModule.List : SendbirdUIKit.SBUEmptyVi
 }
 extension SendbirdUIKit.SBUBaseChannelListModule.List : UIKit.UITableViewDataSource, UIKit.UITableViewDelegate {
   @_Concurrency.MainActor(unsafe) @objc dynamic open func numberOfSections(in tableView: UIKit.UITableView) -> Swift.Int
+  @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, viewForHeaderInSection section: Swift.Int) -> UIKit.UIView?
+  @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, heightForHeaderInSection section: Swift.Int) -> CoreGraphics.CGFloat
   @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, didSelectRowAt indexPath: Foundation.IndexPath)
   @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, cellForRowAt indexPath: Foundation.IndexPath) -> UIKit.UITableViewCell
   @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, willDisplay cell: UIKit.UITableViewCell, forRowAt indexPath: Foundation.IndexPath)
@@ -6798,7 +6807,7 @@ extension SendbirdUIKit.SBUOpenChannelModule {
     @_Concurrency.MainActor(unsafe) open func setupLayouts()
     @_Concurrency.MainActor(unsafe) open func setupStyles(theme: SendbirdUIKit.SBUChannelTheme? = nil)
     @objc @_Concurrency.MainActor(unsafe) open func onTapMediaView(_ sender: UIKit.UITapGestureRecognizer? = nil)
-    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
     @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
     @objc deinit
   }
@@ -6817,13 +6826,13 @@ extension SendbirdUIKit.SBUOpenChannelModule {
   }
   @_Concurrency.MainActor(unsafe) public var button: UIKit.UIButton
   @_Concurrency.MainActor(unsafe) public var username: Swift.String
-  @_Concurrency.MainActor(unsafe) public var leftMargin: CoreFoundation.CGFloat
+  @_Concurrency.MainActor(unsafe) public var leftMargin: CoreGraphics.CGFloat
   @_Concurrency.MainActor(unsafe) public var buttonLeftConstraint: UIKit.NSLayoutConstraint! {
     get
   }
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
+  @objc override dynamic public init()
   @_Concurrency.MainActor(unsafe) public init(username: Swift.String)
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
   @available(*, unavailable, renamed: "UserNameView(username:)")
   @_Concurrency.MainActor(unsafe) required public init?(coder: Foundation.NSCoder)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupViews()
@@ -6849,7 +6858,7 @@ extension SendbirdUIKit.SBUOpenChannelModule {
     @objc set
   }
   @_Concurrency.MainActor(unsafe) @objc override public var channel: SendbirdChatSDK.GroupChannel? {
-    @objc get
+    @_Concurrency.MainActor(unsafe) @objc get
   }
   @available(*, unavailable, renamed: "SBUGroupChannelSettingsViewController(channelURL:)")
   @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
@@ -6960,13 +6969,13 @@ public protocol SBUEmptyViewDelegate : ObjectiveC.NSObjectProtocol {
   }
   @_Concurrency.MainActor(unsafe) public var isOverlay: Swift.Bool
   @_Concurrency.MainActor(unsafe) public var emptyViewTopConstraint: UIKit.NSLayoutConstraint?
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
   @available(*, unavailable, renamed: "SBUEmptyView.init(frame:)")
   @_Concurrency.MainActor(unsafe) required public init?(coder: Foundation.NSCoder)
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
+  @objc override dynamic public init()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupViews()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupLayouts()
-  @_Concurrency.MainActor(unsafe) open func updateTopAnchorConstraint(constant: CoreFoundation.CGFloat)
+  @_Concurrency.MainActor(unsafe) open func updateTopAnchorConstraint(constant: CoreGraphics.CGFloat)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupStyles()
   @_Concurrency.MainActor(unsafe) public func reloadData(_ type: SendbirdUIKit.EmptyViewType)
   @_Concurrency.MainActor(unsafe) open func updateViews()
@@ -6998,7 +7007,7 @@ public protocol SBUEmptyViewDelegate : ObjectiveC.NSObjectProtocol {
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewWillAppear(_ animated: Swift.Bool)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewWillDisappear(_ animated: Swift.Bool)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open var preferredStatusBarStyle: UIKit.UIStatusBarStyle {
-    @objc get
+    @_Concurrency.MainActor(unsafe) @objc get
   }
   @objc deinit
   @objc @_Concurrency.MainActor(unsafe) open func createViewModel(channel: SendbirdChatSDK.BaseChannel)
@@ -7045,7 +7054,7 @@ extension SendbirdUIKit.SBUCreateChannelModule {
     @available(*, unavailable, renamed: "SBUCreateChannelModule.Header()")
     @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
     @available(*, unavailable, renamed: "SBUCreateChannelModule.Header()")
-    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
     @objc deinit
     @_Concurrency.MainActor(unsafe) open func configure(delegate: SendbirdUIKit.SBUCreateChannelModuleHeaderDelegate, dataSource: SendbirdUIKit.SBUCreateChannelModuleHeaderDataSource, theme: SendbirdUIKit.SBUUserListTheme)
     @_Concurrency.MainActor(unsafe) @objc override open func updateRightBarButton()
@@ -7150,12 +7159,14 @@ extension SendbirdUIKit.SBUGroupChannelPushSettingsModule {
     @_Concurrency.MainActor(unsafe) open func setupStyles(theme: SendbirdUIKit.SBUChannelSettingsTheme? = nil)
     @_Concurrency.MainActor(unsafe) open func configureCell(_ cell: UIKit.UITableViewCell?, indexPath: Foundation.IndexPath)
     @_Concurrency.MainActor(unsafe) public func reloadTableView()
-    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
     @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
     @objc deinit
   }
 }
 extension SendbirdUIKit.SBUGroupChannelPushSettingsModule.List : UIKit.UITableViewDelegate, UIKit.UITableViewDataSource {
+  @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, viewForHeaderInSection section: Swift.Int) -> UIKit.UIView?
+  @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, heightForHeaderInSection section: Swift.Int) -> CoreGraphics.CGFloat
   @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, cellForRowAt indexPath: Foundation.IndexPath) -> UIKit.UITableViewCell
   @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, numberOfRowsInSection section: Swift.Int) -> Swift.Int
   @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, didSelectRowAt indexPath: Foundation.IndexPath)
@@ -7265,24 +7276,24 @@ public class SBUUserMessageCellParams : SendbirdUIKit.SBUBaseMessageCellParams {
   public var groupChannel: SendbirdUIKit.SBUMessageCellConfiguration.GroupChannel
   public var openChannel: SendbirdUIKit.SBUMessageCellConfiguration.OpenChannel
   @_hasMissingDesignatedInitializers public class BaseChannel {
-    public var messageCellMaxWidth: CoreFoundation.CGFloat
+    public var messageCellMaxWidth: CoreGraphics.CGFloat
     @objc deinit
   }
   @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class GroupChannel : SendbirdUIKit.SBUMessageCellConfiguration.BaseChannel {
-    public var thumbnailSize: CoreFoundation.CGSize
+    public var thumbnailSize: CoreGraphics.CGSize
     @objc deinit
   }
   @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class OpenChannel : SendbirdUIKit.SBUMessageCellConfiguration.BaseChannel {
-    public var thumbnailSize: CoreFoundation.CGSize
+    public var thumbnailSize: CoreGraphics.CGSize
     @objc deinit
   }
   @objc deinit
 }
 @objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUOpenChannelImageContentView : SendbirdUIKit.SBUImageContentView {
   @_Concurrency.MainActor(unsafe) override open func setupSizeContraint()
-  @_Concurrency.MainActor(unsafe) override open func resizeImageView(by size: CoreFoundation.CGSize)
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @_Concurrency.MainActor(unsafe) override open func resizeImageView(by size: CoreGraphics.CGSize)
+  @objc override dynamic public init()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
   @objc deinit
 }
 public struct SBUHighlightMessageInfo {
@@ -7316,7 +7327,7 @@ extension SendbirdUIKit.SBURegisterOperatorModule {
     @available(*, unavailable, renamed: "SBURegisterOperatorModule.Header()")
     @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
     @available(*, unavailable, renamed: "SBURegisterOperatorModule.Header()")
-    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
     @objc deinit
     @_Concurrency.MainActor(unsafe) open func configure(delegate: SendbirdUIKit.SBURegisterOperatorModuleHeaderDelegate, dataSource: SendbirdUIKit.SBURegisterOperatorModuleHeaderDataSource, theme: SendbirdUIKit.SBUUserListTheme)
     @_Concurrency.MainActor(unsafe) @objc override open func updateRightBarButton()
@@ -7360,7 +7371,7 @@ extension SendbirdUIKit.SBUUserListModule {
     @available(*, unavailable, renamed: "SBUUserListModule.List()")
     @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
     @available(*, unavailable, renamed: "SBUUserListModule.List()")
-    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
     @objc deinit
     @_Concurrency.MainActor(unsafe) open func configure(delegate: SendbirdUIKit.SBUUserListModuleListDelegate, dataSource: SendbirdUIKit.SBUUserListModuleListDataSource, userListType: SendbirdUIKit.ChannelUserListType, theme: SendbirdUIKit.SBUUserListTheme, componentTheme: SendbirdUIKit.SBUComponentTheme)
     @objc @_Concurrency.MainActor(unsafe) open func setupViews()
@@ -7378,13 +7389,15 @@ extension SendbirdUIKit.SBUUserListModule.List : SendbirdUIKit.SBUEmptyViewDeleg
   @objc @_Concurrency.MainActor(unsafe) dynamic open func didSelectRetry()
 }
 extension SendbirdUIKit.SBUUserListModule.List : UIKit.UITableViewDataSource, UIKit.UITableViewDelegate {
+  @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, viewForHeaderInSection section: Swift.Int) -> UIKit.UIView?
+  @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, heightForHeaderInSection section: Swift.Int) -> CoreGraphics.CGFloat
   @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, numberOfRowsInSection section: Swift.Int) -> Swift.Int
   @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, cellForRowAt indexPath: Foundation.IndexPath) -> UIKit.UITableViewCell
   @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, willDisplay cell: UIKit.UITableViewCell, forRowAt indexPath: Foundation.IndexPath)
   @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, didSelectRowAt indexPath: Foundation.IndexPath)
 }
 extension UIKit.UIColor {
-  public static func sbu_from(image: UIKit.UIImage, imageView: UIKit.UIImageView? = nil, size: CoreFoundation.CGFloat, backgroundColor: UIKit.UIColor) -> UIKit.UIColor
+  public static func sbu_from(image: UIKit.UIImage, imageView: UIKit.UIImageView? = nil, size: CoreGraphics.CGFloat, backgroundColor: UIKit.UIColor) -> UIKit.UIColor
 }
 extension SendbirdUIKit.SBUStringSet {
   @available(*, deprecated, renamed: "ChannelSettings_Banned_Users")
@@ -8335,7 +8348,7 @@ extension SendbirdUIKit.SBUCreateOpenChannelModule {
     @available(*, unavailable, renamed: "SBUCreateOpenChannelModule.Header()")
     @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
     @available(*, unavailable, renamed: "SBUCreateOpenChannelModule.Header()")
-    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
     @objc deinit
     @_Concurrency.MainActor(unsafe) open func configure(delegate: SendbirdUIKit.SBUCreateOpenChannelModuleHeaderDelegate, theme: SendbirdUIKit.SBUCreateOpenChannelTheme)
     @objc @_Concurrency.MainActor(unsafe) open func setupViews()
@@ -8542,7 +8555,7 @@ extension SendbirdUIKit.SBUBaseSelectUserModule {
     @objc @_Concurrency.MainActor(unsafe) open func updateRightBarButton()
     @objc @_Concurrency.MainActor(unsafe) open func onTapLeftBarButton()
     @objc @_Concurrency.MainActor(unsafe) open func onTapRightBarButton()
-    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
     @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
   }
 }
@@ -8636,7 +8649,7 @@ open class SBUMessageSearchModule {
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupStyles()
   @_Concurrency.MainActor(unsafe) override open func configure(with configuration: SendbirdUIKit.SBUBaseMessageCellParams)
   @_Concurrency.MainActor(unsafe) override open func configure(highlightInfo: SendbirdUIKit.SBUHighlightMessageInfo?)
-  @_Concurrency.MainActor(unsafe) public func setImage(_ image: UIKit.UIImage?, size: CoreFoundation.CGSize? = nil)
+  @_Concurrency.MainActor(unsafe) public func setImage(_ image: UIKit.UIImage?, size: CoreGraphics.CGSize? = nil)
   @available(*, deprecated, renamed: "configure(with:)")
   @_Concurrency.MainActor(unsafe) open func configure(_ message: SendbirdChatSDK.FileMessage, hideDateView: Swift.Bool, groupPosition: SendbirdUIKit.MessageGroupPosition, receiptState: SendbirdUIKit.SBUMessageReceiptState?, useReaction: Swift.Bool)
   @_Concurrency.MainActor(unsafe) @objc override dynamic public func setSelected(_ selected: Swift.Bool, animated: Swift.Bool)
@@ -8706,7 +8719,7 @@ public class SBUQuotedBaseMessageViewParams {
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewDidLoad()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewWillAppear(_ animated: Swift.Bool)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open var preferredStatusBarStyle: UIKit.UIStatusBarStyle {
-    @objc get
+    @_Concurrency.MainActor(unsafe) @objc get
   }
   @objc deinit
   @objc @_Concurrency.MainActor(unsafe) open func createViewModel(channel: SendbirdChatSDK.BaseChannel? = nil, channelURL: Swift.String? = nil)
@@ -8784,7 +8797,7 @@ open class SBURegisterOperatorModule {
 }
 extension SendbirdUIKit.SBUCoverImageView {
   @available(*, deprecated, renamed: "setPlaceholder(type:iconSize:)", message: "renamed to 'setPlaceholder(type: .iconUSer)'")
-  @_Concurrency.MainActor(unsafe) public func setPlaceholderImage(iconSize: CoreFoundation.CGSize)
+  @_Concurrency.MainActor(unsafe) public func setPlaceholderImage(iconSize: CoreGraphics.CGSize)
 }
 public protocol SBUGroupChannelSettingsViewModelDelegate : SendbirdUIKit.SBUBaseChannelSettingsViewModelDelegate {
   func groupChannelSettingsViewModel(_ viewModel: SendbirdUIKit.SBUGroupChannelSettingsViewModel, didLeaveChannel channel: SendbirdChatSDK.GroupChannel)
@@ -8829,7 +8842,7 @@ extension SendbirdUIKit.SBUInviteUserModule {
     @available(*, unavailable, renamed: "SBUInviteUserModule.Header()")
     @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
     @available(*, unavailable, renamed: "SBUInviteUserModule.Header()")
-    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
     @objc deinit
     @_Concurrency.MainActor(unsafe) open func configure(delegate: SendbirdUIKit.SBUInviteUserModuleHeaderDelegate, dataSource: SendbirdUIKit.SBUInviteUserModuleHeaderDataSource, theme: SendbirdUIKit.SBUUserListTheme)
     @_Concurrency.MainActor(unsafe) @objc override open func updateRightBarButton()
@@ -8857,8 +8870,8 @@ extension SendbirdUIKit.SBUInviteUserModule {
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupLayouts()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupStyles()
   @_Concurrency.MainActor(unsafe) open func configure(timestamp: Swift.Int64)
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @objc override dynamic public init()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
   @objc deinit
 }
 public protocol SBUBaseSelectUserModuleListDelegate : SendbirdUIKit.SBUCommonDelegate {
@@ -8893,7 +8906,7 @@ extension SendbirdUIKit.SBUBaseSelectUserModule {
     @objc @_Concurrency.MainActor(unsafe) open func configureCell(_ cell: UIKit.UITableViewCell?, indexPath: Foundation.IndexPath)
     @objc @_Concurrency.MainActor(unsafe) public func reloadTableView()
     @_Concurrency.MainActor(unsafe) public func updateEmptyView(type: SendbirdUIKit.EmptyViewType)
-    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
     @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
   }
 }
@@ -8901,6 +8914,8 @@ extension SendbirdUIKit.SBUBaseSelectUserModule.List : SendbirdUIKit.SBUEmptyVie
   @objc @_Concurrency.MainActor(unsafe) dynamic open func didSelectRetry()
 }
 extension SendbirdUIKit.SBUBaseSelectUserModule.List : UIKit.UITableViewDataSource, UIKit.UITableViewDelegate {
+  @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, viewForHeaderInSection section: Swift.Int) -> UIKit.UIView?
+  @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, heightForHeaderInSection section: Swift.Int) -> CoreGraphics.CGFloat
   @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, numberOfRowsInSection section: Swift.Int) -> Swift.Int
   @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, cellForRowAt indexPath: Foundation.IndexPath) -> UIKit.UITableViewCell
 }
@@ -8947,7 +8962,7 @@ extension SendbirdUIKit.SBUBaseSelectUserModule.List : UIKit.UITableViewDataSour
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewWillAppear(_ animated: Swift.Bool)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewWillDisappear(_ animated: Swift.Bool)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open var preferredStatusBarStyle: UIKit.UIStatusBarStyle {
-    @objc get
+    @_Concurrency.MainActor(unsafe) @objc get
   }
   @objc deinit
   @_Concurrency.MainActor(unsafe) open func createViewModel(channel: SendbirdChatSDK.BaseChannel? = nil, channelURL: Swift.String? = nil, channelType: SendbirdChatSDK.ChannelType = .group, users: [SendbirdUIKit.SBUUser]? = nil, type: SendbirdUIKit.ChannelUserListType)
@@ -9006,7 +9021,7 @@ extension SendbirdUIKit.SBUCreateOpenChannelModule {
     @_Concurrency.MainActor(unsafe) open func updateChannelImage(_ image: UIKit.UIImage?)
     @objc @_Concurrency.MainActor(unsafe) open func showImagePicker(sender: UIKit.UITapGestureRecognizer)
     @_Concurrency.MainActor(unsafe) @objc open func textField(_ textField: UIKit.UITextField, shouldChangeCharactersIn range: Foundation.NSRange, replacementString string: Swift.String) -> Swift.Bool
-    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreGraphics.CGRect)
     @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
     @objc deinit
   }
@@ -9146,7 +9161,7 @@ extension SendbirdUIKit.SBUModuleSet {
       get
     }
   }
-  @_Concurrency.MainActor(unsafe) public var imageToTitleSpacing: CoreFoundation.CGFloat {
+  @_Concurrency.MainActor(unsafe) public var imageToTitleSpacing: CoreGraphics.CGFloat {
     get
     set
   }
@@ -9163,18 +9178,18 @@ extension SendbirdUIKit.SBUModuleSet {
     set
   }
   @_Concurrency.MainActor(unsafe) @objc override dynamic public var contentEdgeInsets: UIKit.UIEdgeInsets {
-    @objc get
-    @objc set
+    @_Concurrency.MainActor(unsafe) @objc get
+    @_Concurrency.MainActor(unsafe) @objc set
   }
   @_Concurrency.MainActor(unsafe) @objc override dynamic public var imageEdgeInsets: UIKit.UIEdgeInsets {
-    @objc get
-    @objc set
+    @_Concurrency.MainActor(unsafe) @objc get
+    @_Concurrency.MainActor(unsafe) @objc set
   }
   @_Concurrency.MainActor(unsafe) @objc override dynamic public var titleEdgeInsets: UIKit.UIEdgeInsets {
-    @objc get
-    @objc set
+    @_Concurrency.MainActor(unsafe) @objc get
+    @_Concurrency.MainActor(unsafe) @objc set
   }
-  @_Concurrency.MainActor(unsafe) public init(gap: CoreFoundation.CGFloat, labelAlignment: SendbirdUIKit.SBULayoutableButton.LabelAlignment)
+  @_Concurrency.MainActor(unsafe) public init(gap: CoreGraphics.CGFloat, labelAlignment: SendbirdUIKit.SBULayoutableButton.LabelAlignment)
   @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
   @_Concurrency.MainActor(unsafe) @objc override dynamic public func layoutSubviews()
   @objc deinit
@@ -9196,7 +9211,7 @@ public protocol SBUMessageCellProtocol {
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupActions()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupStyles()
   @objc @_Concurrency.MainActor(unsafe) open func configure(_ message: SendbirdChatSDK.FileMessage, hideDateView: Swift.Bool, groupPosition: SendbirdUIKit.MessageGroupPosition, fileType: SendbirdUIKit.MessageFileType, isOverlay: Swift.Bool = false)
-  @_Concurrency.MainActor(unsafe) public func setImage(_ image: UIKit.UIImage?, size: CoreFoundation.CGSize? = nil)
+  @_Concurrency.MainActor(unsafe) public func setImage(_ image: UIKit.UIImage?, size: CoreGraphics.CGSize? = nil)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func prepareForReuse()
   @_Concurrency.MainActor(unsafe) @objc override dynamic public func setSelected(_ selected: Swift.Bool, animated: Swift.Bool)
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init(style: UIKit.UITableViewCell.CellStyle, reuseIdentifier: Swift.String?)

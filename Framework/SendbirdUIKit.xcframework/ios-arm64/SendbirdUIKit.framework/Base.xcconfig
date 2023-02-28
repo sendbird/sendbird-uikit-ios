@@ -7,6 +7,6 @@
 //
 
 // Configuration settings file format documentation can be found at:
-// https://help.apple.com/xcode/#/dev745c5c974
+// https://help.apple.com/xcode/#/dev745c5c974\ 
 
-SBU_APP_VERSION = 3.3.6
+SBU_APP_VERSION = 3.3.7

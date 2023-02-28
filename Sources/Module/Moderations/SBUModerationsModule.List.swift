@@ -90,6 +90,7 @@ extension SBUModerationsModule {
             self.tableView.separatorStyle = .none
             self.tableView.rowHeight = UITableView.automaticDimension
             self.tableView.estimatedRowHeight = 44.0
+            self.tableView.sectionHeaderHeight = 0
             self.addSubview(self.tableView)
             
             if self.moderationCell == nil {
@@ -174,6 +175,14 @@ extension SBUModerationsModule {
 
 // MARK: - UITableView relations
 extension SBUModerationsModule.List: UITableViewDataSource, UITableViewDelegate {
+    open func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        nil
+    }
+
+    open func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        0
+    }
+    
     open func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard let channel = self.channel else { return 0 }
         return ModerationItemType.allTypes(channel: channel).count

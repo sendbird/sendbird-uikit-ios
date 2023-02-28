@@ -106,6 +106,7 @@ open class SBUQuotedBaseMessageView: SBUView, SBUQuotedMessageViewProtocol {
         let label = UILabel()
         label.lineBreakMode = .byTruncatingMiddle
         label.numberOfLines = 1
+        label.isAccessibilityElement = true
         return label
     }()
     

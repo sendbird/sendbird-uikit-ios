@@ -542,7 +542,11 @@ extension SBUMessageThreadModule {
         
         
         // MARK: - UITableViewDelegate, UITableViewDataSource
-        open func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        open override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+            return self.parentMessageInfoView
+        }
+        
+        open override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
             let headerView = self.parentMessageInfoView
             
             let height = headerView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
@@ -554,8 +558,7 @@ extension SBUMessageThreadModule {
                 headerView.frame = headerFrame
                 self.parentMessageInfoView = headerView
             }
-
-            return self.parentMessageInfoView
+            return headerFrame.height
         }
         
         open func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {

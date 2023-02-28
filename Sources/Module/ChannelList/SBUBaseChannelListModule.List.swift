@@ -111,6 +111,8 @@ extension SBUBaseChannelListModule {
             
             self.tableView.rowHeight = UITableView.automaticDimension
             self.tableView.estimatedRowHeight = 44.0
+            self.tableView.sectionHeaderHeight = 0
+            
             self.addSubview(self.tableView)
             
             self.setupPullToRefresh()
@@ -242,6 +244,14 @@ extension SBUBaseChannelListModule.List: SBUEmptyViewDelegate {
 extension SBUBaseChannelListModule.List: UITableViewDataSource, UITableViewDelegate {
     open func numberOfSections(in tableView: UITableView) -> Int {
         return 1
+    }
+    
+    open func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        nil
+    }
+
+    open func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        0
     }
     
     open func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
