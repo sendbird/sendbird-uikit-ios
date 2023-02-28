@@ -1,5 +1,5 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.6.1 (swiftlang-5.6.0.323.66 clang-1316.0.20.12)
+// swift-compiler-version: Apple Swift version 5.6 (swiftlang-5.6.0.323.62 clang-1316.0.20.8)
 // swift-module-flags: -target arm64-apple-ios11.0 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name SendBirdUIKit
 import AVFoundation
 import AVKit
@@ -2456,6 +2456,7 @@ extension SendBirdUIKit.SBUStringSet {
   @objc @_Concurrency.MainActor(unsafe) public func onClickEdit()
   @objc @_Concurrency.MainActor(unsafe) public func selectChannelImage()
   @objc @_Concurrency.MainActor(unsafe) public func changeChannelName()
+  @objc @_Concurrency.MainActor(unsafe) open func popChannel()
   @_Concurrency.MainActor(unsafe) open func errorHandler(_ message: Swift.String?, _ code: ObjectiveC.NSInteger? = nil)
   @available(*, deprecated, renamed: "errorHandler")
   @_Concurrency.MainActor(unsafe) open func didReceiveError(_ message: Swift.String?, _ code: ObjectiveC.NSInteger? = nil)

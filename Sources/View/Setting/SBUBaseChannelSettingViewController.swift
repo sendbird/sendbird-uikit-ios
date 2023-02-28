@@ -277,27 +277,13 @@ open class SBUBaseChannelSettingViewController: SBUBaseViewController {
         self.channelActionViewModel.channelDeletedObservable.observe { [weak self] _ in
             guard let self = self else { return }
         
-            guard let navigationController = self.navigationController,
-                  navigationController.viewControllers.count > 1 else {
-                self.dismiss(animated: true, completion: nil)
-                return
-            }
-            
-            for vc in navigationController.viewControllers {
-                if vc is SBUBaseChannelListViewController {
-                    navigationController.popToViewController(vc, animated: true)
-                    return
-                }
-            }
-            
-            navigationController.popToRootViewController(animated: true)
+            self.popChannel()
         }
     }
     
     private func disposeViewModel() {
         self.channelActionViewModel.dispose()
     }
-    
     
     // MARK: - SDK relations
     
@@ -440,6 +426,25 @@ open class SBUBaseChannelSettingViewController: SBUBaseViewController {
             confirmButtonItem: okButton,
             cancelButtonItem: cancelButton
         )
+    }
+    
+    /// Dismiss current view controller or pops to `SBUBaseChannelListViewController` or the root view controller of the current `UINavigationController`.
+    /// - Since: 2.2.13
+    open func popChannel() {
+        guard let navigationController = self.navigationController,
+              navigationController.viewControllers.count > 1 else {
+            self.dismiss(animated: true, completion: nil)
+            return
+        }
+        
+        for vc in navigationController.viewControllers {
+            if vc is SBUBaseChannelListViewController {
+                navigationController.popToViewController(vc, animated: true)
+                return
+            }
+        }
+        
+        navigationController.popToRootViewController(animated: true)
     }
     
     // MARK: - Error handling

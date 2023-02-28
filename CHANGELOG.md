@@ -1,5 +1,8 @@
 # Change Log
 
+### v2.2.13 (Feb 28, 2023)
+* Added `popChannel()` in `SBUBaseChannelSettingViewController`
+
 ### v2.2.12 (Jan 5, 2023)
 * Updated chat SDK minor version to **v3.1.39**
 * Improved stability
