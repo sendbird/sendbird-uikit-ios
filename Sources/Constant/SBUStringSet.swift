@@ -34,8 +34,12 @@ public class SBUStringSet {
     
     // MARK: - Alert
     public static var Alert_Delete = "Are you sure you want to delete?"
+    public static var Alert_Allow_Camera_Access = "Please allow camera usage from settings"
     public static var Alert_Allow_PhotoLibrary_Access = "Please Allow PhotoLibrary Access"
     public static var Alert_Allow_PhotoLibrary_Access_Message = "PhotoLibrary access required to get your photos and videos"
+    /// A text used to ask the user permission for microphone usage.
+    public static var Alert_Allow_Microphone_Access = "Please allow microphone usage from settings"
+    
 
     // MARK: - Date Format
     public static var Date_Yesterday = "Yesterday"
@@ -323,6 +327,33 @@ public class SBUStringSet {
         public struct Header {
             public static var title = "Thread"
         }
+    }
+    
+    
+    // MARK: - Voice
+    public struct VoiceMessage {
+        public struct Input {
+            /// A text for the cancel button in ``SBUVoiceMessageInputView``.
+            public static var cancel = "Cancel"
+        }
+        
+        public struct Alert {
+            /// A text for an alert dialog that's displayed when a channel freezes while a user plays a voice message. The default text is `Channel is frozen.`.
+            public static var frozen = "Channel is frozen."
+            /// A text for an alert dialog that's displayed when a user is muted while playing a voice message. The default text is `You're muted by the operator.`.
+            public static var muted = "You're muted by the operator."
+        }
+        
+        public struct Preview {
+            /// A text that indicates that a quoted message is a voice message. The default text is `Voice message`.
+            public static var quotedMessage = "Voice message"
+            /// A text that's used in `SBUMessageSearchResultCell` to indicate that a search result is a voice message. The default text is `Voice message`.
+            public static var channelList = "Voice message"
+            /// A text that indicates that a voice message was sent to a group channel and appears in ``SBUGroupChannelCell`` in the group channel list view. The default text is `Voice message`.
+            public static var searchResult = "Voice message"
+        }
+        /// A text that's used in a name of the voice message file.
+        public static var fileName = "Voice_message"
     }
     
 }

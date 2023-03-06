@@ -120,7 +120,7 @@ public class SBUGlobals {
     /// ```
     /// SBUGlobals.messageCellConfiguration.groupChannel.thumbnailSize = {SIZE}
     /// ```
-    public static var messageCellConfiguration = SBUMessageCellConfiguration()
+    public internal(set) static var messageCellConfiguration = SBUMessageCellConfiguration()
     
     
     /// Sets whether a nickname uses a user ID when there is no user nickname based on the user ID.
@@ -128,4 +128,25 @@ public class SBUGlobals {
     /// - Note: If this value will set to `true`, nickname uses a user ID when nickname is empty.
     /// - Since: 3.3.1
     public static var isUserIdUsedForNickname: Bool = true
+    
+    
+    // MARK: - Voice Message
+    
+    /// The configuration for voice message.
+    ///
+    /// See the example below for configuration setting.
+    /// ```
+    /// SBUGlobals.voiceMessageConfig.isVoiceMessageEnabled = true // Turn on the voice message feature
+    /// SBUGlobals.voiceMessageConfig.recorder.maxRecordingTime = 30000 // ms
+    /// ```
+    /// - Since: 3.4.0
+    public internal(set) static var voiceMessageConfig = SBUVoiceMessageConfiguration()
+    
+    /// The default value is `false`. If it's `true`,`AVPlayerViewController` is presented when it needs to play the audio/video of file message. If it's `false`, `UIDocumentInteractionController` is presented.
+    ///
+    /// ```
+    /// SBUGlobals.isAVPlayerAlwaysEnabled = false // shows `UIDocumentInteractionController` when plays audio/video message.
+    /// SBUGlobals.isAVPlayerAlwaysEnabled = trye // shows `AVPlayerViewController` when plays audio/video message.
+    /// ```
+    public static var isAVPlayerAlwaysEnabled: Bool = false
 }

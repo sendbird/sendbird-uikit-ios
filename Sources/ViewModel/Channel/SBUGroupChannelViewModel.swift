@@ -572,6 +572,7 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
                            deletedMessages messages: [BaseMessage])
     {
         SBULog.info("messageCollection deletedMessages : \(messages.count)")
+        self.delegate?.baseChannelViewModel(self, deletedMessages: messages)
         self.deleteMessagesInList(messageIds: messages.compactMap({ $0.messageId }), needReload: true)
     }
     

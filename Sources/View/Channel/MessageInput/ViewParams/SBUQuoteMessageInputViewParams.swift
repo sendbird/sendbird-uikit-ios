@@ -43,9 +43,31 @@ public class SBUQuoteMessageInputViewParams {
                 : SBUStringSet.MessageInput_Quote_Message_Photo
         case .video:
             return SBUStringSet.MessageInput_Quote_Message_Video
-        case .audio, .pdf, .etc:
+        case .audio, .voice, .pdf, .etc:
             return (message as? FileMessage)?.name
         }
+    }
+    
+    /// Gets messageFileType with message.
+    ///
+    /// Checking step:
+    /// 1. message.type
+    /// 2. message.metaArrays
+    ///
+    /// - Since: 3.4.0
+    public var messageFileType: SBUMessageFileType? {
+        guard let fileMessage = message as? FileMessage else {
+            return nil
+        }
+        
+        let type = SBUUtils.getFileType(by: fileMessage.type)
+        if type == .audio,
+           let metaArray = fileMessage.metaArrays?.filter({ $0.key == SBUConstant.internalMessageTypeKey }),
+           let internalType = metaArray.first?.value.first {
+            return SBUUtils.getFileType(by: internalType)
+        }
+
+        return type
     }
     
     /// The original file name of `message`.

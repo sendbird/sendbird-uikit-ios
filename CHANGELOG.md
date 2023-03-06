@@ -1,5 +1,35 @@
 # Changelog
 
+### v3.4.0 (Mar 6, 2023) with Chat SDK **v4.5.0**
+* Support **voice message** features in Group Channel
+  * Added views
+    * Added `SBUVoiceMessageInputView`
+    * Added `SBUVoiceContentView`
+    * Added voice message features to `SBUMessageInputView`
+      * Added `voiceMessageButton`
+      * Added `showsVoiceMessageButton` 
+  * Added delegates
+    * Added `messageInputViewDidTapVoiceMessage(_:)` to `SBUMessageInputViewDelegate`
+  * Added classes
+    * Added `SBUVoiceRecorder`
+    * Added `SBUVoicePlayer`
+    * Added `SBUVoiceFileInfo`
+  * Added static properties in `SBUGlobals`
+    * Added `SBUVoiceMessageConfiguration` class
+      * Added `isVoiceMessageEnabled` in `SBUVoiceMessageConfiguration`
+      * Added `minRecordingTime` in `SBUVoiceMessageConfiguration/Recorder`
+      * Added `maxRecordingTime` in `SBUVoiceMessageConfiguration/Recorder` 
+    * Added `voiceMessageConfig` in `SBUGlobals`
+    * Added `isAVPlayerAlwaysEnabled` in `SBUGlobals`
+  * Added new strings in `SBUStringSet`
+    * Added `SBUStringSet/VoiceMessage` class
+      * Added `Input` nested string set class in `VoiceMessage` 
+      * Added `Alert` nested string set class in `VoiceMessage` 
+      * Added `Preview` nested string set class in `VoiceMessage` 
+      * Added `fileName` string in `VoiceMessage`
+* Opened `SBUChannelInfoHeaderView`
+* Improved stability
+
 ### v3.3.7 (Feb 28, 2023) with Chat SDK **v4.4.0**
 * Opened `popToChannel()` in `SBUBaseSelectUserViewController`
 * Added `UITableView` header interfaces to the list components

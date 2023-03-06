@@ -20,11 +20,13 @@ public class SBUMenuItem: SBUCommonItem {
         }
     }
     
-    public init(title: String? = nil,
-         color: UIColor? = SBUColorSet.onlight01,
-         image: UIImage? = nil,
-         tintColor: UIColor? = nil,
-         completionHandler: SBUMenunHandler? = nil) {
+    public init(
+        title: String? = nil,
+        color: UIColor? = SBUColorSet.onlight01,
+        image: UIImage? = nil,
+        tintColor: UIColor? = nil,
+        completionHandler: SBUMenunHandler? = nil
+    ) {
         
         super.init(title: title, color: color, image: image, tintColor: tintColor)
         self.completionHandler = completionHandler
@@ -230,6 +232,8 @@ class SBUMenuView: NSObject {
             )
             imageView.image = image
         }
+        
+        itemButton.isEnabled = item.isEnabled
         
         itemButton.addSubview(imageView)
         itemButton.addSubview(titleLabel)

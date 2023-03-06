@@ -13,6 +13,12 @@ import SendbirdChatSDK
 
 
 public protocol SBUMessageInputViewDelegate: AnyObject {
+    /// Called when the add button was selected.
+    /// - Parameters:
+    ///    - messageInputView: `SBUMessageinputView` object.
+    /// - Since: 3.4.0
+    func messageInputViewDidSelectAdd(_ messageInputView: SBUMessageInputView)
+    
     /// Called when the send button was selected.
     /// - Parameters:
     ///    - messageInputView: `SBUMessageinputView` object.
@@ -91,6 +97,14 @@ public protocol SBUMessageInputViewDelegate: AnyObject {
     ///   - messageInputView: `SBUMessageInputView` object.
     ///   - range: The selected range of the text view in `SBUMessageInputView`
     func messageInputView(_ messageInputView: SBUMessageInputView, didChangeSelection range: NSRange)
+    
+    
+    // MARK: Voice message
+    /// Called when the voice message button was selected.
+    /// - Parameters:
+    ///    - messageInputView: `SBUMessageinputView` object.
+    /// - Since: 3.4.0
+    func messageInputViewDidTapVoiceMessage(_ messageInputView: SBUMessageInputView)
 }
 
 public extension SBUMessageInputViewDelegate {
@@ -122,7 +136,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     // MARK: - Properties (Public)
     public lazy var addButton: UIButton? = {
         let button = UIButton(type: .custom)
-        button.addTarget(self, action: #selector(onClickAddButton(_:)), for: .touchUpInside)
+        button.addTarget(self, action: #selector(onTapAddButton(_:)), for: .touchUpInside)
         button.isHidden = false
         button.alpha = 1
         return button
@@ -142,8 +156,18 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     public lazy var sendButton: UIButton? = {
         let button = UIButton()
         button.layer.cornerRadius = 4
-        button.addTarget(self, action: #selector(onClickSendButton(_:)), for: .touchUpInside)
+        button.addTarget(self, action: #selector(onTapSendButton(_:)), for: .touchUpInside)
         button.isHidden = !showsSendButton
+        return button
+    }()
+    
+    /// Voice message button
+    /// - Since: 3.4.0
+    public lazy var voiceMessageButton: UIButton? = {
+        let button = UIButton()
+        button.layer.cornerRadius = 4
+        button.addTarget(self, action: #selector(onTapVoiceMessageButton(_:)), for: .touchUpInside)
+        button.isHidden = !showsVoiceMessageButton
         return button
     }()
 
@@ -158,7 +182,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         let button = UIButton()
         button.setTitle(SBUStringSet.Cancel, for: .normal)
         button.layer.cornerRadius = 4
-        button.addTarget(self, action: #selector(onClickCancelButton(_:)), for: .touchUpInside)
+        button.addTarget(self, action: #selector(onTapCancelButton(_:)), for: .touchUpInside)
         return button
     }()
     
@@ -166,13 +190,13 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         let button = UIButton()
         button.setTitle(SBUStringSet.Save, for: .normal)
         button.layer.cornerRadius = 4
-        button.addTarget(self, action: #selector(onClickSaveButton(_:)), for: .touchUpInside)
+        button.addTarget(self, action: #selector(onTapSaveButton(_:)), for: .touchUpInside)
         return button
     }()
     
-    // + --------- + ------- + ---------------- + ------- + ---------- +
-    // | addButton | tvLP(*) | inputContentView | tvTP(*) | sendButton |
-    // + --------- + ------- + ---------------- + ------- + ---------- +
+    // + --------- + ------- + ---------------- + ------- + -----------+---------------- +
+    // | addButton | tvLP(*) | inputContentView | tvTP(*) | sendButton | voiceMessageButton |
+    // + --------- + ------- + ---------------- + ------- + -----------+---------------- +
     // * tvLP: textViewLeadingPaddingView
     // * tvTP: textViewTrailingPaddinView
     
@@ -217,12 +241,15 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     public var textViewMaxHeight: CGFloat = 87
     /// Whether to always show the send button. Default is `false`.
     public var showsSendButton: Bool = false
+    /// Whether to always show the voice message button. Default value follows the `SBUGlobals.voiceMessageConfig.isVoiceMessageEnabled`.
+    /// - Since: 3.4.0
+    public var showsVoiceMessageButton: Bool = SBUGlobals.voiceMessageConfig.isVoiceMessageEnabled
     
     /// Leading spacing value for `textView`.
     /// If `addButton` is available, this will be spacing between the `addButton` and the `textView`.
     public var textViewLeadingSpacing: CGFloat = 12
     /// Trailing spacing value for `textView`.
-    /// If `sendButton` is available, this will be spacing between the `textView` and the `sendButton`.
+    /// If `sendButton` or `voiceMessageButton` is available, this will be spacing between the `textView` and the `sendButton` or `voiceMessageButton`.
     public var textViewTrailingSpacing: CGFloat = 12
     
     /// The padding values for the input view.
@@ -320,7 +347,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     
     lazy var textViewTrailingPaddingView: UIView = {
         let view = UIView()
-        view.isHidden = !showsSendButton
+        view.isHidden = (!showsSendButton && !showsVoiceMessageButton)
         return view
     }()
     
@@ -493,9 +520,9 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         // + ------------------ + --------------------- + ------------------- +
         
         // inputHStacView
-        // + --------- + ------- + ---------------- + ------- + ---------- +
-        // | addButton | tvLP(*) | inputContentView | tvTP(*) | sendButton |
-        // + --------- + ------- + ---------------- + ------- + ---------- +
+        // + --------- + ------- + ---------------- + ------- + ---------- + ----------------- +
+        // | addButton | tvLP(*) | inputContentView | tvTP(*) | sendButton | voiceRecordButton |
+        // + --------- + ------- + ---------------- + ------- + ---------- + ----------------- +
         // * tvLP: textViewLeadingPaddingView
         // * tvTP: textViewTrailingPaddinView
         
@@ -532,6 +559,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
                             self.inputContentView,
                             self.textViewTrailingPaddingView,
                             self.sendButton,
+                            self.voiceMessageButton,
                         ]),
                         self.editView,
                         self.inputViewBottomSpacer
@@ -615,6 +643,9 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         self.sendButton?
             .sbu_constraint(width: 32, height: 38)
         
+        self.voiceMessageButton?
+            .sbu_constraint(width: 32, height: 38)
+        
         // Subivews in InputContentView
         self.textView?
             .sbu_constraint(equalTo: self.inputContentView, leading: 0, trailing: 0, top: 0, bottom: 0)
@@ -680,10 +711,9 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         
         // addButton
         let iconAdd = SBUIconSetType.iconAdd
-            .image(with:
-                    (self.isFrozen || self.isMuted)
-                    ? theme.buttonDisabledTintColor
-                    : theme.buttonTintColor,
+            .image(with: (self.isFrozen || self.isMuted)
+                   ? theme.buttonDisabledTintColor
+                   : theme.buttonTintColor,
                    to: SBUIconSetType.Metric.defaultIconSize)
         self.addButton?.setImage(iconAdd, for: .normal)
         
@@ -691,6 +721,16 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         self.sendButton?.setImage(
             SBUIconSetType.iconSend.image(
                 with: theme.buttonTintColor,
+                to: SBUIconSetType.Metric.defaultIconSize
+            ),
+            for: .normal)
+        
+        // IconVoiceMessage
+        self.voiceMessageButton?.setImage(
+            SBUIconSetType.iconVoiceMessageOn.image(
+                with: (self.isFrozen || self.isMuted)
+                ? theme.buttonDisabledTintColor
+                : theme.buttonTintColor,
                 to: SBUIconSetType.Metric.defaultIconSize
             ),
             for: .normal)
@@ -737,6 +777,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         self.addButton?.alpha = 0
         
         self.sendButton?.isHidden = !showsSendButton
+        self.voiceMessageButton?.isHidden = true
         self.textViewTrailingPaddingView.isHidden = !showsSendButton
         
         self.editView.isHidden = false
@@ -759,6 +800,9 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         self.addButton?.isHidden = false
         self.addButton?.alpha = 1
         
+        self.textViewTrailingPaddingView.isHidden = (!showsSendButton && !showsVoiceMessageButton)
+        self.voiceMessageButton?.isHidden = !showsVoiceMessageButton
+        
         self.editView.isHidden = true
         self.editView.alpha = 0
 
@@ -777,6 +821,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         self.textView?.isEditable = !self.isFrozen
         self.textView?.isUserInteractionEnabled = !self.isFrozen
         self.addButton?.isEnabled = !self.isFrozen
+        self.voiceMessageButton?.isEnabled = !self.isFrozen
         
         if self.isFrozen {
             self.endTypingMode()
@@ -792,6 +837,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         self.textView?.isEditable = !self.isMuted
         self.textView?.isUserInteractionEnabled = !self.isMuted
         self.addButton?.isEnabled = !self.isMuted
+        self.voiceMessageButton?.isEnabled = !self.isMuted
         
         if self.isMuted {
             self.endTypingMode()
@@ -813,7 +859,8 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     public func endTypingMode() {
         self.textView?.text = ""
         self.sendButton?.isHidden = !showsSendButton
-        self.textViewTrailingPaddingView.isHidden = !showsSendButton
+        self.voiceMessageButton?.isHidden = !showsVoiceMessageButton
+        self.textViewTrailingPaddingView.isHidden = (!showsSendButton && !showsVoiceMessageButton)
         self.setMode(.none)
         self.layoutIfNeeded()
     }
@@ -869,7 +916,8 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     
 
     // MARK: - Action
-    @objc open func onClickAddButton(_ sender: Any) {
+    
+    @objc open func onTapAddButton(_ sender: Any) {
         self.endEditing(true)
         let itmes = [self.cameraItem, self.libraryItem, self.documentItem]
         SBUActionSheet.show(
@@ -878,9 +926,10 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
             oneTimetheme: isOverlay ? SBUComponentTheme.dark : nil,
             delegate: self
         )
+        self.delegate?.messageInputViewDidSelectAdd(self)
     }
     
-    @objc open func onClickSendButton(_ sender: Any) {
+    @objc open func onTapSendButton(_ sender: Any) {
         self.delegate?.messageInputView(
             self,
             didSelectSend: self.textView?.text.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
@@ -890,11 +939,19 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         self.updateTextViewHeight()
     }
     
-    @objc open func onClickCancelButton(_ sender: Any) {
+    /// Shows voice message input view
+    /// - Parameter sender: Button
+    /// - Since: 3.4.0
+    @objc open func onTapVoiceMessageButton(_ sender: Any) {
+        self.delegate?.messageInputViewDidTapVoiceMessage(self)
+        self.endEditing(true)
+    }
+        
+    @objc open func onTapCancelButton(_ sender: Any) {
         self.setMode(.none)
     }
     
-    @objc open func onClickSaveButton(_ sender: Any) {
+    @objc open func onTapSaveButton(_ sender: Any) {
         let editedText = self.textView?.text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard basedText != editedText else {
             self.endEditMode()
@@ -913,9 +970,11 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         
         let text = textView.text ?? ""
         if self.editView.isHidden {
-            self.sendButton?.isHidden = !showsSendButton &&
-                text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-            self.textViewTrailingPaddingView.isHidden = self.sendButton?.isHidden == true
+            
+            self.sendButton?.isHidden = (!showsSendButton &&
+                text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+            self.voiceMessageButton?.isHidden = !(showsVoiceMessageButton && (self.sendButton?.isHidden ?? false))
+            self.textViewTrailingPaddingView.isHidden = (self.sendButton?.isHidden == true) && (self.voiceMessageButton?.isHidden == true)
             self.layoutIfNeeded()
         }
         
@@ -960,24 +1019,17 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         let type = MediaResourceType.init(rawValue: index) ?? .unknown
         switch type {
         case .camera:
-            SBUPermissionManager.shared.requestDeviceAccessIfNeeded(for: .video) { (granted) in
-                if (granted) {
-                    DispatchQueue.main.async { [weak self] in
-                        guard let self = self else { return }
-                        self.delegate?.messageInputView(self, didSelectResource: type)
-                    }
-                } else {
-                    //show alert view to go to settings
-                    if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
-                        UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
-                    }
-                }
+            SBUPermissionManager.shared.requestCameraAccess(for: .video) { [weak self] in
+                guard let self = self else { return }
+                self.delegate?.messageInputView(self, didSelectResource: type)
+            } onDenied: { [weak self] in
+                guard let self = self else { return }
+                self.delegate?.messageInputView(self, didSelectResource: type)
             }
         case .library:
             SBUPermissionManager.shared.requestPhotoAccessIfNeeded { status in
                 DispatchQueue.main.async { [weak self] in
                     guard let self = self else { return }
-                    
                     self.delegate?.messageInputView(self, didSelectResource: type)
                 }
             }
@@ -990,6 +1042,28 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     }
     
     open func didDismissActionSheet() { }
+    
+    // MARK: - Deprecated
+    @available(*, deprecated, renamed: "onTapAddButton")
+    @objc open func onClickAddButton(_ sender: Any) {
+        self.onTapAddButton(sender)
+    }
+    
+    @available(*, deprecated, renamed: "onTapSendButton")
+    @objc open func onClickSendButton(_ sender: Any) {
+        self.onTapSendButton(sender)
+    }
+    
+    @available(*, deprecated, renamed: "onTapCancelButton")
+    @objc open func onClickCancelButton(_ sender: Any) {
+        self.onTapCancelButton(sender)
+    }
+    
+    @available(*, deprecated, renamed: "onTapSaveButton")
+    @objc open func onClickSaveButton(_ sender: Any) {
+        self.onTapSaveButton(sender)
+    }
+
 }
 
 extension SBUMessageInputView: SBUQuoteMessageInputViewDelegate {
@@ -997,3 +1071,4 @@ extension SBUMessageInputView: SBUQuoteMessageInputViewDelegate {
         self.setMode(.none)
     }
 }
+

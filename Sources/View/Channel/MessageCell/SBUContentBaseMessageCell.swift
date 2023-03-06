@@ -111,12 +111,13 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
     }()
     
     /// A ``SBUSelectableStackView`` that represents a message bubble.
-    public var mainContainerView: SBUSelectableStackView = {
+    public lazy var mainContainerView: SBUSelectableStackView = {
         let mainView = SBUSelectableStackView()
         mainView.layer.cornerRadius = 16
         mainView.layer.borderColor = UIColor.clear.cgColor
         mainView.layer.borderWidth = 1
         mainView.clipsToBounds = true
+        mainView.position = self.position
         return mainView
     }()
     
@@ -352,6 +353,7 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         } else {
             self.threadHStackView.isHidden = true
         }
+        
         
         // MARK: Group messages
         self.setMessageGrouping()

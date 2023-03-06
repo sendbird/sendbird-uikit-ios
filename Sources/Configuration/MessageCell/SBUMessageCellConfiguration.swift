@@ -22,6 +22,7 @@ public class SBUMessageCellConfiguration {
     public class GroupChannel: BaseChannel {
         /// The thumbnail size for the file message.
         public var thumbnailSize: CGSize = SBUConstant.thumbnailSize
+        public var voiceMessageSize: CGSize = SBUConstant.voiceMessageBaseSize
     }
     
     public class OpenChannel: BaseChannel {

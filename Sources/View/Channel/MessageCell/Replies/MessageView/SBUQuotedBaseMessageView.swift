@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import SendbirdChatSDK
+
 
 enum QuotedMessageType {
     case none
@@ -94,6 +96,8 @@ open class SBUQuotedBaseMessageView: SBUView, SBUQuotedMessageViewProtocol {
             }
         }
     }
+    
+    var metaArrays: [MessageMetaArray]? = nil
     
     private let repliedToPaddingWidth: CGFloat = 8
     
@@ -229,7 +233,8 @@ open class SBUQuotedBaseMessageView: SBUView, SBUQuotedMessageViewProtocol {
     open override func setupStyles() {
         self.theme = SBUTheme.messageCellTheme
         
-        self.mainContainerView.leftBackgroundColor = self.theme.quotedMessageBackgroundColor
+        self.mainContainerView.position = self.messagePosition
+        self.mainContainerView.leftBackgroundColor = self.theme.quotedMessageBackgroundColor.withAlphaComponent(0.5)
         self.mainContainerView.rightBackgroundColor = self.theme.quotedMessageBackgroundColor
         
         self.repliedToLabel.textColor = self.theme.repliedToTextColor
@@ -260,6 +265,8 @@ open class SBUQuotedBaseMessageView: SBUView, SBUQuotedMessageViewProtocol {
         self.quotedMessageCreatedAt = configuration.quotedMessageCreatedAt
         
         self.messageType = configuration.messageType
+        
+        self.metaArrays = configuration.metaArrays
     }
     
     // MARK: - Actions

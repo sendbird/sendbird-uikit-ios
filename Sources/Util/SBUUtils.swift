@@ -10,24 +10,29 @@ import UIKit
 import SendbirdChatSDK
 import MobileCoreServices
 
-private let kDefaultCoverURL = "static.sendbird.com/sample/cover"
 private let kDefaultGroupChannelName = "Group Channel"
 private let kDefaultOpenChannelName = "Open Channel"
-
 
 public class SBUUtils {
     
     /// This function gets the message file type of the file message.
     /// - Parameter fileMessage: `FileMessage` object
-    /// - Returns: `MessageFileType`
-    public static func getFileType(by fileMessage: FileMessage) -> MessageFileType {
-        return getFileType(by: fileMessage.type)
+    /// - Returns: `SBUMessageFileType`
+    public static func getFileType(by fileMessage: FileMessage) -> SBUMessageFileType {
+        let type = SBUUtils.getFileType(by: fileMessage.type)
+        if type == .audio,
+           let metaArray = fileMessage.metaArrays?.filter({ $0.key == SBUConstant.internalMessageTypeKey }),
+           let internalType = metaArray.first?.value.first {
+            return SBUUtils.getFileType(by: internalType)
+        }
+
+        return type
     }
     
     /// This function gets the message file type string as the type.
     /// - Parameter type: File type string
-    /// - Returns: `MessageFileType`
-    public static func getFileType(by type: String) -> MessageFileType {
+    /// - Returns: `SBUMessageFileType`
+    public static func getFileType(by type: String) -> SBUMessageFileType {
         let type = type.lowercased()
         
         if type.hasPrefix("image") {
@@ -35,11 +40,28 @@ public class SBUUtils {
             else { return .image }
         }
         if type.hasPrefix("video") { return .video }
-        if type.hasPrefix("audio") { return .audio }
+        if type.hasPrefix("audio") {
+            if let parameterType = self.getFileTypeParameter(by: type),
+               parameterType.hasPrefix("voice") {
+                return .voice
+            }
+            return .audio
+        }
         if type.hasPrefix("pdf")   { return .pdf }
         
         return .etc
     }
+    
+    static func getFileTypeParameter(by type: String) -> String? {
+        // e,g. audio/m4a;sub_type=voice
+        let parameter = type.components(separatedBy: ";")
+        if parameter.count > 0,
+           let type = parameter.last?.components(separatedBy: "=").last {
+            return type
+        }
+        return nil
+    }
+    
     
     /// This is a function that creates a channel name.
     ///
@@ -213,4 +235,17 @@ extension SBUUtils {
     static func contains(messageId: Int64, in messageList: [BaseMessage]) -> Bool {
         return messageList.contains(where: { $0.messageId == messageId })
     }
+}
+
+
+// MARK: - TIME
+extension SBUUtils {
+    static func convertToPlayTime(_ time: TimeInterval) -> String {
+        // time -> ms | return format -> 00:00
+        let min = Int(time / 1000 / 60)
+        let sec = Int(time / 1000) % 60
+        let strTime = String(format: "%02d:%02d", min, sec)
+        return strTime
+    }
+
 }

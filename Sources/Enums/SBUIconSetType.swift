@@ -67,6 +67,11 @@ public enum SBUIconSetType: String, Hashable {
     case iconRadioButtonOn
     case iconRadioButtonOff
     case iconThread
+    case iconVoiceMessageOn
+    case iconPause
+    case iconRecording
+    case iconStop
+    
     
     // MARK: - Metric
     
@@ -87,6 +92,7 @@ public enum SBUIconSetType: String, Hashable {
         static let iconUserProfile = CGSize(value: 40)
         static let iconUserProfileInChat = CGSize(value: 15)
         static let iconChevronDown = CGSize(value: 22)
+        static let iconVoiceMessageSize = CGSize(value: 20)
     }
     
     // MARK: - Image handling
@@ -190,6 +196,10 @@ public enum SBUIconSetType: String, Hashable {
         case .iconRadioButtonOn: SBUIconSet.iconRadioButtonOn = SBUIconSetType.iconRadioButtonOn.load()
         case .iconRadioButtonOff: SBUIconSet.iconRadioButtonOff = SBUIconSetType.iconRadioButtonOff.load()
         case .iconThread: SBUIconSet.iconThread = SBUIconSetType.iconThread.load()
+        case .iconVoiceMessageOn: SBUIconSet.iconVoiceMessageOn = SBUIconSetType.iconVoiceMessageOn.load()
+        case .iconPause: SBUIconSet.iconPause = SBUIconSetType.iconPause.load()
+        case .iconRecording: SBUIconSet.iconRecording = SBUIconSetType.iconRecording.load()
+        case .iconStop: SBUIconSet.iconStop = SBUIconSetType.iconStop.load()
         }
         
         SBUIconSetType.customizedIcons.remove(self)
@@ -257,6 +267,10 @@ public enum SBUIconSetType: String, Hashable {
         case .iconRadioButtonOn: return SBUIconSet.iconRadioButtonOn
         case .iconRadioButtonOff: return SBUIconSet.iconRadioButtonOff
         case .iconThread: return SBUIconSet.iconThread
+        case .iconVoiceMessageOn: return SBUIconSet.iconVoiceMessageOn
+        case .iconPause: return SBUIconSet.iconPause
+        case .iconRecording: return SBUIconSet.iconRecording
+        case .iconStop: return SBUIconSet.iconStop
         }
     }
 }

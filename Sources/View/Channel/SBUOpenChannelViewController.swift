@@ -347,7 +347,7 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
                         : self.mediaComponent?.bottomAnchor ?? self.listTopMarginView.bottomAnchor,
                         constant: 0
                     )
-                    self.weakHeaderComponentBottomConstraint.priority = .defaultHigh
+                    self.weakHeaderComponentBottomConstraint.priority = .defaultHigh - 50
                     
                     self.headerComponentConstraints = [
                         headerComponent.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),

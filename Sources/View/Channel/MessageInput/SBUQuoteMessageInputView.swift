@@ -200,8 +200,13 @@ open class SBUQuoteMessageInputView: SBUView, SBUQuoteMessageInputViewProtocol {
 
     open func configure(with configuration: SBUQuoteMessageInputViewParams) {
         self.fileMessagePreview.isHidden = !configuration.isFileType
+        if configuration.messageFileType == .voice {
+            self.fileMessagePreview.isHidden = true
+            self.userMessagePreview.text = SBUStringSet.VoiceMessage.Preview.quotedMessage
+        } else {
+            self.userMessagePreview.text = configuration.message.message
+        }
         
-        self.userMessagePreview.text = configuration.message.message
         self.replyToLabel.text = configuration.replyToText
         
         self.setupFilePreview(with: configuration)
@@ -212,7 +217,7 @@ open class SBUQuoteMessageInputView: SBUView, SBUQuoteMessageInputViewProtocol {
         guard let fileMessage = configuration.message as? FileMessage else { return }
         guard configuration.isFileType,
               let name = configuration.fileName,
-              let type = configuration.fileType
+              let messageFileType = configuration.messageFileType
         else { return }
         
         // Set up with file name
@@ -221,7 +226,7 @@ open class SBUQuoteMessageInputView: SBUView, SBUQuoteMessageInputViewProtocol {
         var imageOption: UIImageView.ImageOption = .imageToThumbnail
         var fileIcon: UIImage?
         
-        switch SBUUtils.getFileType(by: type) {
+        switch messageFileType {
             case .image:
                 imageOption = .imageToThumbnail
             case .video:
@@ -231,6 +236,10 @@ open class SBUQuoteMessageInputView: SBUView, SBUQuoteMessageInputViewProtocol {
                     with: theme.quotedFileMessageThumbnailTintColor,
                     to: SBUIconSetType.Metric.quotedMessageIconSize
                 )
+            case .voice:
+                self.userMessagePreview.text = SBUStringSet.VoiceMessage.Preview.quotedMessage
+                break
+                
             case .pdf, .etc:
                 fileIcon = SBUIconSetType.iconFileDocument.image(
                     with: theme.quotedFileMessageThumbnailTintColor,

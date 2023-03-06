@@ -88,4 +88,11 @@ public struct SBUDateFormatSet {
         /// Used in `SBUParentMessageInfoView`
         public static var sentDateYesterdayFormat = SBUDateFormatSet.MMMddhhmma
     }
+    
+    
+    public class VoiceMessage {
+        /// Used in `SBUVoiceRecorder`
+        /// - Since: 3.4.0
+        public static var fileNameFormat = SBUDateFormatSet.yyyyMMddhhmmss
+    }
 }

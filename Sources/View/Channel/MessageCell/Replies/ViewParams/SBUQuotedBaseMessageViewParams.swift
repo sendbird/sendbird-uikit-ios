@@ -58,8 +58,8 @@ public class SBUQuotedBaseMessageViewParams {
     /// - Since: 2.2.0
     public var fileType: String? {
         switch messageType {
-            case .fileMessage(_, let type, _): return type
-            default: return nil
+        case .fileMessage(_, let type, _): return type
+        default: return nil
         }
     }
     
@@ -83,12 +83,36 @@ public class SBUQuotedBaseMessageViewParams {
     /// Time the current user joined the channel.
     /// - Since: 3.3.0
     public private(set) var joinedAt: Int64 = 0
+    
+    /// Gets messageFileType with message.
+    ///
+    /// Checking step:
+    /// 1. message.type
+    /// 2. message.metaArrays
+    ///
+    /// - Since: 3.4.0
+    public var messageFileType: SBUMessageFileType? {
+        guard let fileType = fileType else { return nil }
+        
+        let type = SBUUtils.getFileType(by: fileType)
+        if type == .audio,
+           let metaArray = self.metaArrays?.filter({ $0.key == SBUConstant.internalMessageTypeKey }),
+           let internalType = metaArray.first?.value.first {
+            return SBUUtils.getFileType(by: internalType)
+        }
+
+        return type
+    }
 
     
     // MARK: - Internal (only for Swift)
     let messageType: QuotedMessageType
     
     let requestId: String?
+    
+    var metaArrays: [MessageMetaArray]? = nil
+    
+    
     
     public init(message: BaseMessage, position: MessagePosition, useQuotedMessage: Bool, joinedAt: Int64 = 0) {
         self.messageId = message.parentMessageId
@@ -137,6 +161,8 @@ public class SBUQuotedBaseMessageViewParams {
         } else {
             self.text = message.parentMessage?.message ?? ""
         }
+        
+        self.metaArrays = message.parentMessage?.metaArrays
     }
     
     // MARK: Test model

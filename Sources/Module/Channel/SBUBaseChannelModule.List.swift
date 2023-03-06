@@ -55,6 +55,21 @@ public protocol SBUBaseChannelModuleListDelegate: SBUCommonDelegate {
         didTapUserProfile user: SBUUser
     )
     
+    /// Called when the message cell was tapped in the `listComponent`.
+    /// - Parameters:
+    ///    - listComponent: `SBUBaseChannelModule.List` object.
+    ///    - fileMessage: The message that was tapped.
+    ///    - cell: The table view cell that the selected cell.
+    ///    - indexPath: An index path locating the row in table view of `listComponent
+    ///
+    /// - Since: 3.4.0
+    func baseChannelModule(
+        _ listComponent: SBUBaseChannelModule.List,
+        didTapVoiceMessage fileMessage: FileMessage,
+        cell: UITableViewCell,
+        forRowAt indexPath: IndexPath
+    )
+    
     /// Called when the `scrollView` was scrolled.
     /// - Parameters:
     ///    - listComponent: `SBUBaseChannelModule.List` object.
@@ -348,6 +363,7 @@ extension SBUBaseChannelModule {
         lazy var cellAnimationDebouncer: SBUDebouncer = SBUDebouncer()
         
         var isTransformedList: Bool = true
+        var isTableViewReloading = false
         
         
         // MARK: - LifeCycle
@@ -476,12 +492,23 @@ extension SBUBaseChannelModule {
             self.scrollBottomView?.isHidden = hidden
         }
         
+        
         // MARK: - TableView
         /// Reloads table view. This method corresponds to `UITableView reloadData()`.
         public func reloadTableView() {
-            DispatchQueue.main.async { [weak self] in
-                self?.tableView.reloadData()
-                self?.tableView.layoutIfNeeded()
+            if Thread.isMainThread {
+                self.isTableViewReloading = true
+                self.tableView.reloadData()
+                self.tableView.layoutIfNeeded()
+                self.isTableViewReloading = false
+
+            } else {
+                DispatchQueue.main.async { [weak self] in
+                    self?.isTableViewReloading = true
+                    self?.tableView.reloadData()
+                    self?.tableView.layoutIfNeeded()
+                    self?.isTableViewReloading = false
+                }
             }
         }
         
@@ -587,7 +614,6 @@ extension SBUBaseChannelModule {
         ///    - cell: The `UITableViewCell` object that shows the message.
         open func showMessageMenuSheet(for message: BaseMessage, cell: UITableViewCell) {
             let messageMenuItems = self.createMessageMenuItems(for: message)
-            guard !messageMenuItems.isEmpty else { return }
             
             guard let parentViewController = self.baseDataSource?.baseChannelModule(
                 self,
@@ -659,10 +685,12 @@ extension SBUBaseChannelModule {
                     items.append(edit)
                     items.append(delete)
                 }
-            case is FileMessage:
+            case let fileMessage as FileMessage:
                 // FileMessage: save, (delete)
                 let save = self.createSaveMenuItem(for: message)
-                items.append(save)
+                if SBUUtils.getFileType(by: fileMessage) != .voice {
+                    items.append(save)
+                }
                 if isSentByMe {
                     let delete = self.createDeleteMenuItem(for: message)
                     items.append(delete)
@@ -699,11 +727,14 @@ extension SBUBaseChannelModule {
         /// - Parameter message: The `BaseMessage` object  that corresponds to the message of the menu item to show.
         /// - Returns: The ``SBUMenuItem`` object for a `message`
         open func createDeleteMenuItem(for message: BaseMessage) -> SBUMenuItem {
+            let isEnabled = message.threadInfo.replyCount == 0
             let menuItem = SBUMenuItem(
                 title: SBUStringSet.Delete,
-                color: theme?.menuTextColor,
+                color: isEnabled ? theme?.menuTextColor : theme?.menuItemDisabledColor,
                 image: SBUIconSetType.iconDelete.image(
-                    with: SBUTheme.componentTheme.alertButtonColor,
+                    with: isEnabled
+                    ? SBUTheme.componentTheme.alertButtonColor
+                    : SBUTheme.componentTheme.actionSheetDisabledColor,
                     to: SBUIconSetType.Metric.iconActionSheetItem
                 )
             ) { [weak self, message] in
@@ -761,13 +792,15 @@ extension SBUBaseChannelModule {
             ? SBUIconSetType.iconThread
             : SBUIconSetType.iconReply
             
+            let isEnabled = message.parentMessage == nil
+            
             let menuItem = SBUMenuItem(
                 title: replyMenuTitle,
-                color: message.parentMessage == nil
+                color: isEnabled
                 ? self.theme?.menuTextColor
                 : SBUTheme.componentTheme.actionSheetDisabledColor,
                 image: iconSet.image(
-                    with: message.parentMessage == nil
+                    with: isEnabled
                     ? SBUTheme.componentTheme.alertButtonColor
                     : SBUTheme.componentTheme.actionSheetDisabledColor,
                     to: SBUIconSetType.Metric.iconActionSheetItem
@@ -776,7 +809,7 @@ extension SBUBaseChannelModule {
                 guard let self = self else { return }
                 self.baseDelegate?.baseChannelModule(self, didTapReplyMessage: message)
             }
-            menuItem.isEnabled = message.parentMessage == nil
+            menuItem.isEnabled = isEnabled
             return menuItem
         }
         
@@ -789,7 +822,21 @@ extension SBUBaseChannelModule {
         ///   - message: Message object
         ///   - indexPath: indexpath of cell
         open func setTapGesture(_ cell: UITableViewCell, message: BaseMessage, indexPath: IndexPath) {
-            self.baseDelegate?.baseChannelModule(self, didTapMessage: message, forRowAt: indexPath)
+            if let fileMessage = message as? FileMessage,
+               SBUUtils.getFileType(by: fileMessage) == .voice {
+                self.baseDelegate?.baseChannelModule(
+                    self,
+                    didTapVoiceMessage: fileMessage,
+                    cell: cell,
+                    forRowAt: indexPath
+                )
+            } else {
+                self.baseDelegate?.baseChannelModule(
+                    self,
+                    didTapMessage: message,
+                    forRowAt: indexPath
+                )
+            }
         }
         
         /// This function sets the cell's long tap gesture handling.
@@ -850,6 +897,9 @@ extension SBUBaseChannelModule {
             return UITableView.automaticDimension
         }
         
+        open func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+            
+        }
         
         /// Sets images in file message cell.
         /// - Parameters:

@@ -210,11 +210,15 @@ public enum EmptyViewType: Int {
     case bottom
 }
 
+@available(*, deprecated, renamed: "SBUMessageFileType")
+public typealias MessageFileType = SBUMessageFileType
+
 /// This is an enumeration to file type in the message.
-@objc public enum MessageFileType: Int {
+@objc public enum SBUMessageFileType: Int {
     case image
     case video
     case audio
+    case voice
     case pdf
     case etc
 }

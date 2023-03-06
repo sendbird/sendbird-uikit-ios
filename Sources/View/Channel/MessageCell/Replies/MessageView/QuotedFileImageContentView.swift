@@ -17,6 +17,10 @@ open class QuotedFileImageContentView: SBUView {
     public internal(set) var fileURL: String = ""
     public internal(set) var fileType: String = ""
     
+    /// The messageFileType enum value of message.
+    /// - Since: 3.4.0
+    public internal(set) var messageFileType: SBUMessageFileType? = nil
+    
     public var imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.layer.opacity = 0.4
@@ -96,10 +100,14 @@ open class QuotedFileImageContentView: SBUView {
     // MARK: - Configuration
     open func configure(with configuration: SBUQuotedBaseMessageViewParams) {
         let imageOption: UIImageView.ImageOption
-        guard let fileType = configuration.fileType else { return }
+        guard let messageFileType = configuration.messageFileType,
+              let fileType = configuration.fileType else { return }
         guard let fileURL = configuration.urlString else { return }
         self.fileType = fileType
-        switch SBUUtils.getFileType(by: fileType) {
+        self.messageFileType = messageFileType
+        self.position = configuration.messagePosition
+        
+        switch messageFileType {
             case .image:
                 imageOption = .imageToThumbnail
             case .video:
@@ -136,9 +144,9 @@ open class QuotedFileImageContentView: SBUView {
     }
     
     open func setFileIcon() {
-        guard !self.fileType.isEmpty else { return }
+        guard let messageFileType = self.messageFileType else { return }
         
-        switch SBUUtils.getFileType(by: self.fileType) {
+        switch messageFileType {
             case .video:
                 self.iconImageView.image = SBUIconSetType.iconPlay.image(
                     with: theme.fileImageIconColor,

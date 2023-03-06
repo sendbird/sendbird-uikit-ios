@@ -58,6 +58,9 @@ extension SBUTheme {
         else if type(of: currentClass) == type(of: SBUCreateOpenChannelTheme.self) {
             return SBUTheme.createOpenChannelTheme
         }
+        else if type(of: currentClass) == type(of: SBUVoiceMessageInputTheme.self) {
+            return SBUTheme.voiceMessageInputTheme
+        }
         else {
             return SBUTheme.light
         }

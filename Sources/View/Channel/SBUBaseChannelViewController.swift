@@ -87,11 +87,18 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         super.init(nibName: nil, bundle: nil)
         SBULog.info(#function)
         
-        self.createViewModel(
-            channel: baseChannel,
-            messageListParams: messageListParams,
-            displaysLocalCachedListFirst: displaysLocalCachedListFirst
-        )
+        if displaysLocalCachedListFirst {
+            self.createViewModel(
+                channel: baseChannel,
+                messageListParams: messageListParams,
+                displaysLocalCachedListFirst: displaysLocalCachedListFirst
+            )
+        } else {
+            self.createViewModel(
+                channel: baseChannel,
+                messageListParams: messageListParams
+            )
+        }
     }
     
     /// Initiates view controller to enter a channel with its URL, message list params and a specific timestamp representing a starting potint.
@@ -157,12 +164,20 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         
         SBULog.info(#function)
         
-        self.createViewModel(
-            channelURL: channelURL,
-            messageListParams: messageListParams,
-            startingPoint: startingPoint,
-            displaysLocalCachedListFirst: displaysLocalCachedListFirst
-        )
+        if displaysLocalCachedListFirst {
+            self.createViewModel(
+                channelURL: channelURL,
+                messageListParams: messageListParams,
+                startingPoint: startingPoint,
+                displaysLocalCachedListFirst: displaysLocalCachedListFirst
+            )
+        } else {
+            self.createViewModel(
+                channelURL: channelURL,
+                messageListParams: messageListParams,
+                startingPoint: startingPoint
+            )
+        }
     }
     
     open override func loadView() {
@@ -182,6 +197,8 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         
         self.updateChannelStatus()
         self.updateStyles()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(applicationWillResignActivity), name: UIApplication.willResignActiveNotification, object: nil)
     }
     
     open override func viewDidLoad() {
@@ -199,8 +216,16 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         
         self.view.endEditing(true)
         
+        NotificationCenter.default.removeObserver(self, name: UIApplication.willResignActiveNotification, object: nil)
         NotificationCenter.default.removeObserver(self)
     }
+    
+    
+    /// Called when the application will resign activity.
+    open func applicationWillResignActivity() { }
+    
+    /// Called when the subview will present.
+    open func willPresentSubview() {}
     
     open override var preferredStatusBarStyle: UIStatusBarStyle {
         return self.theme.statusBarStyle
@@ -212,6 +237,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         self.baseListComponent = nil
         NotificationCenter.default.removeObserver(self)
     }
+    
     
     
     // MARK: - ViewModel
@@ -406,41 +432,62 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     /// - Parameter fileMessage: fileMessage object
     /// - Since: 3.0.0
     open func openFile(fileMessage: FileMessage) {
-        guard let url = URL(string: fileMessage.url),
-              let fileURL = SBUCacheManager
-                .saveAndLoadFileToLocal(url: url, fileName: fileMessage.name)  else {
-                    SBUToastManager.showToast(parentVC: self, type: .fileOpenFailed)
-                    return
-                }
+        self.willPresentSubview()
         
-        switch SBUUtils.getFileType(by: fileMessage) {
+        SBULoading.start()
+        let fileType = SBUUtils.getFileType(by: fileMessage)
+        switch fileType {
         case .image:
             let viewer = SBUFileViewer(fileMessage: fileMessage, delegate: self)
             let naviVC = UINavigationController(rootViewController: viewer)
             self.present(naviVC, animated: true)
             
-        case .etc, .pdf:
-            if let messageInputView = self.baseInputComponent?.messageInputView as? SBUMessageInputView {
-                if messageInputView.mode != .quoteReply {
-                    self.setMessageInputViewMode(.none)
+        case .etc, .pdf, .video, .audio:
+            SBUCacheManager.File.loadFile(
+                urlString: fileMessage.url,
+                cacheKey: fileMessage.requestId,
+                fileName: fileMessage.name
+            ) { fileURL, fileData in
+                SBULoading.stop()
+                
+                guard let fileURL = fileURL else {
+                    SBUToastManager.showToast(parentVC: self, type: .fileOpenFailed)
+                    return
+                }
+                
+                switch fileType {
+                case .audio, .video:
+                    if SBUGlobals.isAVPlayerAlwaysEnabled {
+                        let vc = AVPlayerViewController()
+                        vc.player = AVPlayer(url: fileURL)
+                        self.present(vc, animated: true) { vc.player?.play() }
+                    } else {
+                        let dc = UIDocumentInteractionController(url: fileURL)
+                        dc.name = fileMessage.name
+                        dc.delegate = self
+                        dc.presentPreview(animated: true)
+                    }
+                default:
+                    if let messageInputView = self.baseInputComponent?.messageInputView as? SBUMessageInputView {
+                        if messageInputView.mode != .quoteReply {
+                            self.setMessageInputViewMode(.none)
+                        }
+                    }
+                    
+                    if fileURL.scheme == "file" {
+                        let dc = UIDocumentInteractionController(url: fileURL)
+                        dc.name = fileMessage.name
+                        dc.delegate = self
+                        dc.presentPreview(animated: true)
+                    } else {
+                        let safariVC = SFSafariViewController(url: fileURL)
+                        self.present(safariVC, animated: true, completion: nil)
+                    }
                 }
             }
-            
-            if fileURL.scheme == "file" {
-                let dc = UIDocumentInteractionController(url: fileURL)
-                dc.name = fileMessage.name
-                dc.delegate = self
-                dc.presentPreview(animated: true)
-            } else {
-                let safariVC = SFSafariViewController(url: fileURL)
-                self.present(safariVC, animated: true, completion: nil)
-            }
-            
-        case .video, .audio:
-            let vc = AVPlayerViewController()
-            vc.player = AVPlayer(url: fileURL)
-            self.present(vc, animated: true) { vc.player?.play() }
-            
+        case .voice:
+            SBULoading.stop()
+            break
         default:
             break
         }
@@ -469,6 +516,14 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     open func setMessageInputViewMode(_ mode: SBUMessageInputMode, message: BaseMessage? = nil) {
         self.baseInputComponent?.updateMessageInputMode(mode, message: message)
     }
+    
+    
+    // MARK: - VoiceMessageInput
+    open func showVoiceMessageInput() {}
+    
+    open func dismissVoiceMessageInput() {}
+    
+    open func resetVoiceMessageInput(for resignActivity: Bool = false) {}
     
     
     // MARK: - Error handling
@@ -562,6 +617,11 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     
     open func baseChannelViewModel(
         _ viewModel: SBUBaseChannelViewModel,
+        deletedMessages messages: [BaseMessage]
+    ) { }
+    
+    open func baseChannelViewModel(
+        _ viewModel: SBUBaseChannelViewModel,
         shouldUpdateScrollInMessageList messages: [BaseMessage],
         forContext context: MessageContext?,
         keepsScroll: Bool
@@ -631,7 +691,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     }
     
     open func baseChannelModule(_ headerComponent: SBUBaseChannelModule.Header, didTapRightItem rightItem: UIBarButtonItem) {
-        
+        self.willPresentSubview()
     }
     
     // MARK: - SBUBaseChannelModuleListDelegate
@@ -698,6 +758,8 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         self.view.endEditing(true)
         listComponent.showMessageMenu(on: message, forRowAt: indexPath)
     }
+    
+    open func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didTapVoiceMessage fileMessage: FileMessage, cell: UITableViewCell, forRowAt indexPath: IndexPath) {}
     
     open func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didTapSaveMessage message: BaseMessage) {
         guard let fileMessage = message as? FileMessage else { return }
@@ -897,6 +959,10 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         guard self.baseViewModel?.channel is GroupChannel else { return }
     }
     
+    open func baseChannelModuleDidTapAdd(_ inputComponent: SBUBaseChannelModule.Input) {
+        self.willPresentSubview()
+    }
+    
     open func baseChannelModule(_ inputComponent: SBUBaseChannelModule.Input,
                                 didTapSend text: String,
                                 parentMessage: BaseMessage?) {
@@ -908,7 +974,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         switch type {
         case .document: self.showDocumentPicker()
         case .library:
-            switch SBUPermissionManager.shared.currentStatus {
+            switch SBUPermissionManager.shared.currentPhotoAccessStatus {
             case .all:
                 self.showPhotoLibraryPicker()
             case .limited:
@@ -916,8 +982,15 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
             default:
                 self.showPermissionAlert()
             }
-        case .camera: self.showCamera()
-        default: self.showPhotoLibraryPicker()
+        case .camera:
+            switch SBUPermissionManager.shared.currentCameraAccessStatus {
+            case .authorized:
+                self.showCamera()
+            default:
+                self.showPermissionAlert(forType: .camera)
+            }
+        default:
+            self.showPhotoLibraryPicker()
         }
     }
     
@@ -990,22 +1063,12 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     
     // Shows permission request alert.
     /// - Since: 3.0.0
-    open func showPermissionAlert() {
-        let settingButton = SBUAlertButtonItem(title: SBUStringSet.Settings) { info in
-            if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
-                UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
-            }
-        }
+    open func showPermissionAlert(forType permissionType: SBUPermissionManager.PermissionType = .photoLibrary) {
+        self.willPresentSubview()
         
-        let cancelButton = SBUAlertButtonItem(title: SBUStringSet.Cancel) {_ in }
-        
-        SBUAlertView.show(
-            title: SBUStringSet.Alert_Allow_PhotoLibrary_Access,
-            message: SBUStringSet.Alert_Allow_PhotoLibrary_Access_Message,
-            oneTimetheme: SBUTheme.componentTheme,
-            confirmButtonItem: settingButton,
-            cancelButtonItem: cancelButton,
-            delegate: self
+        SBUPermissionManager.shared.showPermissionAlert(
+            forType: permissionType,
+            alertViewDelegate: self
         )
     }
     

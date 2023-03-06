@@ -14,8 +14,21 @@ public class SBUFileMessageCellParams: SBUBaseMessageCellParams {
         self.message as? FileMessage
     }
     public let useReaction: Bool
+    /// ``SBUVoiceFileInfo`` object that has voice file informations.
+    public var voiceFileInfo: SBUVoiceFileInfo?
     
-    public init(message: FileMessage, hideDateView: Bool, useMessagePosition: Bool, groupPosition: MessageGroupPosition = .none, receiptState: SBUMessageReceiptState = .none, useReaction: Bool = false, isThreadMessage: Bool = false, joinedAt: Int64 = 0) {
+    
+    public init(
+        message: FileMessage,
+        hideDateView: Bool,
+        useMessagePosition: Bool,
+        groupPosition: MessageGroupPosition = .none,
+        receiptState: SBUMessageReceiptState = .none,
+        useReaction: Bool = false,
+        isThreadMessage: Bool = false,
+        joinedAt: Int64 = 0,
+        voiceFileInfo: SBUVoiceFileInfo? = nil
+    ) {
         self.useReaction = useReaction
         
         var messagePosition: MessagePosition = .left
@@ -33,5 +46,7 @@ public class SBUFileMessageCellParams: SBUBaseMessageCellParams {
             isThreadMessage: isThreadMessage,
             joinedAt: joinedAt
         )
+        
+        self.voiceFileInfo = voiceFileInfo ?? SBUVoiceFileInfo.createVoiceFileInfo(with: message)
     }
 }

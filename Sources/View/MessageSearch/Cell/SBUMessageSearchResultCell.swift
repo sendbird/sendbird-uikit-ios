@@ -225,8 +225,13 @@ open class SBUMessageSearchResultCell: SBUTableViewCell {
         switch message {
         case let fileMessage as FileMessage:
             self.fileStackView.isHidden = false
+            self.fileMessageIcon.isHidden = false
             
-            self.fileMessageLabel.text = fileMessage.name
+            if SBUUtils.getFileType(by: fileMessage) == .voice {
+                self.fileMessageLabel.text = SBUStringSet.VoiceMessage.Preview.searchResult
+            } else {
+                self.fileMessageLabel.text = fileMessage.name
+            }
             
             let iconType: SBUIconSetType
             switch SBUUtils.getFileType(by: fileMessage) {
@@ -240,6 +245,9 @@ open class SBUMessageSearchResultCell: SBUTableViewCell {
                 iconType = SBUIconSetType.iconPlay
             case .audio:
                 iconType = SBUIconSetType.iconFileAudio
+            case .voice:
+                iconType = SBUIconSetType.iconEmpty
+                self.fileMessageIcon.isHidden = true
             case .pdf:
                 iconType = SBUIconSetType.iconPhoto
             case .etc:
@@ -263,6 +271,7 @@ open class SBUMessageSearchResultCell: SBUTableViewCell {
     
     /// Sets file message icon depending on the message's file type using `SBUUtils.getFileType(by: fileMessage)`.
     public func setupFileIcon() {
+        // TODO: File icon will be removed.
         guard let fileMessage = self.message as? FileMessage else { return }
         let iconType: SBUIconSetType
         
@@ -277,6 +286,8 @@ open class SBUMessageSearchResultCell: SBUTableViewCell {
             iconType = SBUIconSetType.iconPlay
         case .audio:
             iconType = SBUIconSetType.iconFileAudio
+        case .voice:
+            iconType = SBUIconSetType.iconEmpty
         case .pdf:
             iconType = SBUIconSetType.iconPhoto
         case .etc:

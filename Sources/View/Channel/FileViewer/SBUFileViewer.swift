@@ -136,8 +136,8 @@ open class SBUFileViewer: SBUBaseViewController, UIScrollViewDelegate, SBUAlertV
         guard let urlString = urlString else { return }
         self.imageView.loadImage(urlString: urlString, cacheKey: self.fileMessage?.requestId)
         
-        if let url = URL(string: urlString), let fileMessage = fileMessage {
-            SBUCacheManager.saveFileIfNeeded(url: url, fileName: fileMessage.name)
+        if let fileMessage = fileMessage {
+            SBUCacheManager.Image.preSave(fileMessage: fileMessage)
         }
     }
     
@@ -251,7 +251,7 @@ open class SBUFileViewer: SBUBaseViewController, UIScrollViewDelegate, SBUAlertV
         guard let fileMessage = self.fileMessage,
               let url = URL(string: fileMessage.url) else { return }
         
-        SBUDownloadManager.saveImage(parent: self, url: url, fileName: fileMessage.name)
+        SBUDownloadManager.saveImage(parent: self, url: url, fileName: fileMessage.requestId)
     }
     
     @objc

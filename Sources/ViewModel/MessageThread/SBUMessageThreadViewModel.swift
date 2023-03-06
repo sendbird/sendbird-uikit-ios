@@ -269,7 +269,11 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
         if let channel = self.channel as? GroupChannel {
             channel.refresh { [weak self] error in
                 guard let self = self else { return }
-                guard self.canProceed(with: channel, error: error) == true else { return }
+                guard self.canProceed(with: channel, error: error) == true else {
+                    let context = MessageContext(source: .eventChannelChanged, sendingStatus: .failed)
+                    self.delegate?.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
+                    return
+                }
                 
                 let context = MessageContext(
                     source: .eventChannelChanged,
@@ -324,6 +328,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
         if let parentMessage = self.parentMessage, !isInitialLoading {
             // TODO: collection 붙이면 collection 에서 가져오는거 먼저 처리
             completionHandler?(parentMessage, nil)
+            return
         }
         
         let params = MessageRetrievalParams()
@@ -332,6 +337,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
         params.channelURL = channelURL
         params.includeThreadInfo = true
         params.includeReactions = true
+        params.includeMetaArray = true
         
         BaseMessage.getMessage(params: params) { (message, error) in
             guard error == nil else {
@@ -795,10 +801,8 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
         guard self.nextLock.try() else { return }
         
         let changeLogsParams = MessageChangeLogsParams(
-            //            includeReactions: true,
-            //            includeThreadInfo: true,
-            //            includeParentMessageInfo: true,
-            //            replyType: .all
+            includeThreadInfo: true,
+            replyType: .all
         )
         
         var completion: (([BaseMessage]?, [Int64]?, Bool, String?, SBError?) -> ())!
@@ -1094,6 +1098,8 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
         
         self.threadedMessageListParams.includeReactions = SBUEmojiManager.useReaction(channel: channel)
         self.threadedMessageListParams.includeParentMessageInfo = SBUGlobals.reply.includesParentMessageInfo
+        
+        self.threadedMessageListParams.includeMetaArray = true
     }
 }
 
@@ -1229,6 +1235,13 @@ extension SBUMessageThreadViewModel: GroupChannelDelegate {
             self.delegate?.messageThreadViewModelShouldDismissMessageThread(self)
         } else {
             SBULog.info("Message was deleted: \(messageId)")
+            
+            for message in self.messageList {
+                if message.messageId == messageId {
+                    self.delegate?.baseChannelViewModel(self, deletedMessages: [message])
+                }
+            }
+            
             self.deleteMessagesInList(messageIds: [messageId], needReload: true)
         }
     }

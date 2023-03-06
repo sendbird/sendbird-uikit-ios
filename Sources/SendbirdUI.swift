@@ -408,7 +408,7 @@ public class SendbirdUI {
                 return
             }
             SBULog.info("[Request] Unregister push token to Sendbird server")
-            SendbirdChat.unregisterPushToken(pendingPushToken) { resonse, error in
+            SendbirdChat.unregisterPushToken(pendingPushToken) { error in
                 if let error = error {
                     SBULog.error("""
                         [Failed]
@@ -438,7 +438,7 @@ public class SendbirdUI {
             
             SBULog.info("[Request] Unregister all push token to Sendbird server")
             
-            SendbirdChat.unregisterAllPushToken { resonse, error in
+            SendbirdChat.unregisterAllPushToken { error in
                 if let error = error {
                     SBULog.error("[Failed] Push unregistration is fail: \(error.localizedDescription)")
                     completionHandler(false)

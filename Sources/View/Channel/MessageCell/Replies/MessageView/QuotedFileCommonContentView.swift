@@ -74,11 +74,6 @@ open class QuotedFileCommonContentView: SBUView {
         
         super.setupStyles()
         
-        switch position {
-            case .left: self.backgroundColor = theme.leftBackgroundColor
-            case .right: self.backgroundColor = theme.rightBackgroundColor
-            default: break
-        }
         self.fileImageView.backgroundColor = .clear
     }
     
@@ -88,21 +83,53 @@ open class QuotedFileCommonContentView: SBUView {
         position: MessagePosition,
         highlightKeyword: String?
     ) {
-        let image: UIImage
         let fileType = SBUUtils.getFileType(by: fileType)
         
+        self.configure(
+            with: fileType,
+            fileName: fileName,
+            position: position,
+            highlightKeyword: highlightKeyword
+        )
+    }
+    
+    /// Configures quoted file common content view with parameters.
+    /// - Parameters:
+    ///   - messageFileType: `SBUMessageFileType`enum
+    ///   - fileName: File name
+    ///   - position:`MessagePosition` enum
+    ///   - highlightKeyword: (opt) highlight keyword
+    ///
+    /// - Since: 3.4.0
+    open func configure(
+        with messageFileType: SBUMessageFileType,
+        fileName: String,
+        position: MessagePosition,
+        highlightKeyword: String?
+    ) {
+        let image: UIImage
+        var fileName = fileName
+        
+        self.position = position
+        
+        self.fileImageView.isHidden = false
+        
         // Icon image
-        switch fileType {
-            case .audio:
-                image = SBUIconSetType.iconFileAudio.image(
-                    with: theme.quotedFileMessageThumbnailColor,
-                    to: SBUIconSetType.Metric.defaultIconSizeSmall
-                )
-            case .image, .video, .pdf, .etc:
-                image = SBUIconSetType.iconFileDocument.image(
-                    with: theme.quotedFileMessageThumbnailColor,
-                    to: SBUIconSetType.Metric.defaultIconSizeSmall
-                )
+        switch messageFileType {
+        case .audio:
+            image = SBUIconSetType.iconFileAudio.image(
+                with: theme.quotedFileMessageThumbnailColor,
+                to: SBUIconSetType.Metric.defaultIconSizeSmall
+            )
+        case .image, .video, .pdf, .etc:
+            image = SBUIconSetType.iconFileDocument.image(
+                with: theme.quotedFileMessageThumbnailColor,
+                to: SBUIconSetType.Metric.defaultIconSizeSmall
+            )
+        case .voice:
+            image = UIImage()
+            self.fileImageView.isHidden = true
+            fileName = SBUStringSet.VoiceMessage.Preview.quotedMessage
         }
         
         self.fileImageView.image = image
@@ -111,12 +138,19 @@ open class QuotedFileCommonContentView: SBUView {
         var attributes: [NSAttributedString.Key : Any]
         var highlightTextColor: UIColor
         
-        attributes = [
-            .underlineStyle: NSUnderlineStyle.single.rawValue,
-            .font: theme.quotedMessageTextFont,
-            .underlineColor: theme.quotedMessageTextColor,
-            .foregroundColor: theme.quotedMessageTextColor
-        ]
+        if messageFileType == .voice {
+            attributes = [
+                .font: theme.quotedMessageTextFont,
+                .foregroundColor: theme.quotedMessageTextColor
+            ]
+        } else {
+            attributes = [
+                .underlineStyle: NSUnderlineStyle.single.rawValue,
+                .font: theme.quotedMessageTextFont,
+                .underlineColor: theme.quotedMessageTextColor,
+                .foregroundColor: theme.quotedMessageTextColor
+            ]
+        }
         highlightTextColor = theme.messageLeftHighlightTextColor
         
         let attributedText = NSMutableAttributedString(

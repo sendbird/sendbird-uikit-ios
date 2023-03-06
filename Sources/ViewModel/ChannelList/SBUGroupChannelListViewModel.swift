@@ -96,6 +96,7 @@ open class SBUGroupChannelListViewModel: SBUBaseChannelListViewModel {
             params.order = .latestLastMessage
             params.limit = SBUGroupChannelListViewModel.channelLoadLimit
             params.includeEmptyChannel = false
+            params.includeMetaData = true
             self.channelListQuery = GroupChannel.createMyGroupChannelListQuery(params: params)
         }
         

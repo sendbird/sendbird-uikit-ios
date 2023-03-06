@@ -92,13 +92,12 @@ internal extension UIImageView {
                            cacheKey: String? = nil,
                            completion: ((Bool) -> Void)? = nil) -> URLSessionTask? {
         
-        var fileName = SBUCacheManager.createHashName(urlString: urlString)
-        if let cacheKey = cacheKey {
-            SBUCacheManager.renameIfNeeded(key: fileName, newKey: cacheKey)
-            fileName = cacheKey
-        }
+        let fileName = SBUCacheManager.Image.createCacheFileName(
+            urlString: urlString,
+            cacheKey: cacheKey
+        )
         
-        if let image = SBUCacheManager.getImage(fileName: fileName) {
+        if let image = SBUCacheManager.Image.get(fileName: fileName) {
             self.setImage(image, completion: completion)
             return nil
         }
@@ -123,7 +122,7 @@ internal extension UIImageView {
                 return
             }
             
-            let image = SBUCacheManager.savedImage(fileName: fileName, data: data)
+            let image = SBUCacheManager.Image.save(data: data, fileName: fileName)
             self.setImage(image, completion: completion)
         }
         task.resume()
@@ -134,13 +133,13 @@ internal extension UIImageView {
                                  errorImage: UIImage? = nil,
                                  cacheKey: String? = nil,
                                  completion: ((Bool) -> Void)? = nil) -> URLSessionTask? {
-        var fileName = SBUCacheManager.createHashName(urlString: urlString)
-        if let cacheKey = cacheKey {
-            SBUCacheManager.renameIfNeeded(key: fileName, newKey: cacheKey)
-            fileName = cacheKey
-        }
+        let fileName = SBUCacheManager.Image.createCacheFileName(
+            urlString: urlString,
+            cacheKey: cacheKey,
+            needPathExtension: false
+        )
         
-        if let image = SBUCacheManager.getImage(fileName: fileName) {
+        if let image = SBUCacheManager.Image.get(fileName: fileName) {
             self.setImage(image, completion: completion)
             return nil
         }
@@ -168,9 +167,7 @@ internal extension UIImageView {
             }
             
             let image = UIImage(cgImage: cgImage)
-            if let data = image.pngData() {
-                SBUCacheManager.savedImage(fileName: fileName, data: data)
-            }
+            SBUCacheManager.Image.save(image: image, fileName: fileName)
             self.setImage(image, completion: completion)
         }
         
@@ -185,15 +182,14 @@ internal extension UIImageView {
                             cacheKey: String? = nil,
                             completion: ((Bool) -> Void)? = nil) -> URLSessionTask? {
         
-        var fileName = SBUCacheManager.createHashName(urlString: urlString)
-        if let cacheKey = cacheKey {
-            SBUCacheManager.renameIfNeeded(key: fileName, newKey: cacheKey)
-            fileName = cacheKey
-        }
+        let fileName = SBUCacheManager.Image.createCacheFileName(
+            urlString: urlString,
+            cacheKey: cacheKey
+        )
         let thumbnailFileName = "thumb_" + fileName
         
         // Load thumbnail cacheImage
-        if let thumbnailImage = SBUCacheManager.getImage(fileName: thumbnailFileName) {
+        if let thumbnailImage = SBUCacheManager.Image.get(fileName: thumbnailFileName) {
             let image = thumbnailImage.isAnimatedImage() ? thumbnailImage.images?.first : thumbnailImage
             self.setImage(image, completion: completion)
             return nil
@@ -215,15 +211,15 @@ internal extension UIImageView {
             }
             
             if image.isAnimatedImage() {
-                SBUCacheManager.savedImage(fileName: fileName, data: data)
-                SBUCacheManager.savedImage(fileName: thumbnailFileName, data: data)
+                SBUCacheManager.Image.save(data: data, fileName: fileName)
+                SBUCacheManager.Image.save(data: data, fileName: thumbnailFileName)
                 
                 self.setImage(image.images?.first ?? image, completion: completion)
             } else {
                 let thumbnailSize: CGSize = thumbnailSize ?? SBUGlobals.messageCellConfiguration.groupChannel.thumbnailSize
                 let thumbnailImage = image.resize(with: thumbnailSize)
-                SBUCacheManager.savedImage(fileName: fileName, image: image)
-                SBUCacheManager.savedImage(fileName: thumbnailFileName, image: thumbnailImage)
+                SBUCacheManager.Image.save(image: image, fileName: fileName)
+                SBUCacheManager.Image.save(image: thumbnailImage, fileName: thumbnailFileName)
                 
                 self.setImage(thumbnailImage, completion: completion)
             }

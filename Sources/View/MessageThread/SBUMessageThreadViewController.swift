@@ -25,11 +25,21 @@ public protocol SBUMessageThreadViewControllerDelegate: AnyObject {
         _ viewController: SBUMessageThreadViewController,
         shouldMoveToParentMessage parentMessage: BaseMessage
     )
+    
+    /// Called when need to sync voice file informations.
+    /// - Parameters:
+    ///   - viewController: `SBUMessageThreadViewController` object
+    ///   - voiceFileInfos: VoiceFileInfos dictionary
+    /// - Since: 3.4.0
+    func messageThreadViewController(
+        _ viewController: SBUMessageThreadViewController,
+        shouldSyncVoiceFileInfos voiceFileInfos: [String : SBUVoiceFileInfo]?
+    )
 }
 
 
 @objcMembers
-open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMessageThreadViewModelDelegate, SBUMessageThreadViewModelDataSource, SBUMessageThreadModuleHeaderDelegate, SBUMessageThreadModuleListDelegate, SBUMessageThreadModuleListDataSource, SBUMessageThreadModuleInputDelegate, SBUMessageThreadModuleInputDataSource, SBUMentionManagerDataSource {
+open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMessageThreadViewModelDelegate, SBUMessageThreadViewModelDataSource, SBUMessageThreadModuleHeaderDelegate, SBUMessageThreadModuleListDelegate, SBUMessageThreadModuleListDataSource, SBUMessageThreadModuleInputDelegate, SBUMessageThreadModuleInputDataSource, SBUMentionManagerDataSource, SBUVoiceMessageInputViewDelegate {
     
 
     // MARK: - UI properties (Public)
@@ -45,6 +55,8 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
         get { self.baseInputComponent as? SBUMessageThreadModule.Input }
         set { self.baseInputComponent = newValue }
     }
+    /// The input view that is used to record voice message
+    public var voiceMessageInputView = SBUVoiceMessageInputView()
     
     
     // MARK: - Logic properties (Public)
@@ -58,6 +70,9 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
     public override var channel: GroupChannel? { self.viewModel?.channel as? GroupChannel }
     public var parentMessage: BaseMessage? { self.viewModel?.parentMessage }
     
+    
+    // MARK: - Logic properties (Private)
+    var voiceFileInfos: [String : SBUVoiceFileInfo]? = nil
     
     
     // MARK: - Lifecycle
@@ -74,18 +89,22 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
     ///   - parentMessageId: Parent message Id
     ///   - delegate: The object that acts as the delegate of the view controller. The delegate must adopt the `SBUMessageThreadViewControllerDelegate` protocol.
     ///   - threadedMessageListParams: Thread message list params
-    ///   - startingPoint: If you want to  expose the most recent messages first, use the `.max` value  (default is `0`).
+    ///   - startingPoint: If you want to expose the most recent messages first, use the `.max` value  (default is `0`).
+    ///   - voiceFileInfos: If you have voiceFileInfos, set this value. so the default value of Voice Messages are applied based on the voiceFileInfos.
     required public init(channel: GroupChannel? = nil,
                          channelURL: String? = nil,
                          parentMessage: BaseMessage? = nil,
                          parentMessageId: Int64? = nil,
                          delegate: SBUMessageThreadViewControllerDelegate? = nil,
                          threadedMessageListParams: ThreadedMessageListParams? = nil,
-                         startingPoint: Int64? = 0) {
+                         startingPoint: Int64? = 0,
+                         voiceFileInfos: [String : SBUVoiceFileInfo]? = nil) {
         super.init(nibName: nil, bundle: nil)
         SBULog.info(#function)
         
         self.delegate = delegate
+        
+        self.voiceFileInfos = voiceFileInfos
 
         self.createViewModel(
             channel: channel,
@@ -115,6 +134,23 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
     }
     open override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        
+        self.listComponent?.pauseAllVoicePlayer()
+        
+        self.delegate?.messageThreadViewController(
+            self,
+            shouldSyncVoiceFileInfos: self.listComponent?.voiceFileInfos
+        )
+    }
+    
+    open override func applicationWillResignActivity() {
+        self.resetVoiceMessageInput(for: true)
+        self.dismissVoiceMessageInput()
+        self.listComponent?.pauseAllVoicePlayer()
+    }
+    
+    open override func willPresentSubview() {
+        self.listComponent?.pauseAllVoicePlayer()
     }
     
     deinit {
@@ -171,7 +207,12 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
             theme: self.theme
         )
         
-        self.listComponent?.configure(delegate: self, dataSource: self, theme: self.theme)
+        self.listComponent?.configure(
+            delegate: self,
+            dataSource: self,
+            theme: self.theme,
+            voiceFileInfos: self.voiceFileInfos
+        )
         
         self.inputComponent?.configure(
             delegate: self,
@@ -282,6 +323,28 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
                 title: self.viewModel?.channel?.name ?? ""
             )
         }
+    }
+    
+    
+    // MARK: - VoiceMessageInput
+    open override func showVoiceMessageInput() {
+        super.showVoiceMessageInput()
+        
+        self.voiceMessageInputView.show(delegate: self, canvasView: self.navigationController?.view)
+        self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+    }
+    
+    open override func dismissVoiceMessageInput() {
+        super.dismissVoiceMessageInput()
+        
+        self.voiceMessageInputView.dismiss()
+        self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+    }
+    
+    open override func resetVoiceMessageInput(for resignActivity: Bool = false) {
+        super.resetVoiceMessageInput(for: resignActivity)
+        
+        self.voiceMessageInputView.reset(for: resignActivity)
     }
 
     
@@ -413,6 +476,17 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
         self.lastSeenIndexPath = nil
     }
     
+    open override func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didTapVoiceMessage fileMessage: FileMessage, cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        super.baseChannelModule(listComponent, didTapVoiceMessage: fileMessage, cell: cell, forRowAt: indexPath)
+        
+        if let cell = cell as? SBUBaseMessageCell {
+            self.listComponent?.updateVoiceMessage(cell, message: fileMessage, indexPath: indexPath)
+        } else if indexPath.count == 0 { // Called in ParentInfoView 
+            self.listComponent?.updateParentInfoVoiceMessage(fileMessage)
+        }
+    }
+    
+    
     open override func baseChannelModule(
         _ listComponent: SBUBaseChannelModule.List,
         willDisplay cell: UITableViewCell,
@@ -507,6 +581,11 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
         self.viewModel?.cancelLoadingSuggestedMentions()
     }
     
+    open func messageThreadModuleDidTapVoiceMessage(_ inputComponent: SBUMessageThreadModule.Input) {
+        self.willPresentSubview()
+        self.showVoiceMessageInput()
+    }
+    
     open override func baseChannelModuleDidStartTyping(_ inputComponent: SBUBaseChannelModule.Input) {
         self.viewModel?.startTypingMessage()
     }
@@ -547,11 +626,14 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
                 self.updateChannelStatus()
                 self.inputComponent?.updateMessageInputModeState()
                 self.listComponent?.reloadTableView()
+                self.updateVoiceMessageInputMode()
                 
             case .eventChannelChanged:
                 self.updateChannelTitle()
                 self.updateChannelStatus()
                 self.inputComponent?.updateMessageInputModeState()
+                self.updateVoiceMessageInputMode()
+            
             case .eventUserLeft, .eventUserJoined:
                 self.updateChannelTitle()
                 
@@ -560,9 +642,47 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
                     .eventOperatorUpdated,
                     .eventUserBanned: // Other User Banned
                 self.inputComponent?.updateMessageInputModeState()
+            self.updateVoiceMessageInputMode()
             break
                 
             default: break
+        }
+    }
+    
+    func updateVoiceMessageInputMode() {
+        let showAlertCompletionHandler: ((String) -> Void) = { title in
+            self.resetVoiceMessageInput()
+            
+            SBUAlertView.show(
+                title: title,
+                confirmButtonItem: SBUAlertButtonItem(
+                    title: SBUStringSet.OK,
+                    completionHandler: { info in
+                        self.dismissVoiceMessageInput()
+                    }
+                ), cancelButtonItem: nil
+            ) {
+                self.dismissVoiceMessageInput()
+            }
+        }
+        
+        var title = ""
+        
+        // Frozen
+        let isOperator = self.channel?.myRole == .operator
+        let isBroadcast = self.channel?.isBroadcast ?? false
+        let isFrozen = self.channel?.isFrozen ?? false
+        if !isBroadcast, !isOperator && isFrozen, self.voiceMessageInputView.isShowing {
+            title = SBUStringSet.VoiceMessage.Alert.frozen
+        }
+        
+        let isMuted = self.channel?.myMutedState == .muted
+        if (!isFrozen || (isFrozen && isOperator)), isMuted, self.voiceMessageInputView.isShowing {
+            title = SBUStringSet.VoiceMessage.Alert.muted
+        }
+
+        if title.count > 0 {
+            showAlertCompletionHandler(title)
         }
     }
     
@@ -611,6 +731,15 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
     
     open override func baseChannelViewModel(
         _ viewModel: SBUBaseChannelViewModel,
+        deletedMessages messages: [BaseMessage]
+    ) {
+        for message in messages {
+            self.listComponent?.pauseVoicePlayer(requestId: message.requestId)
+        }
+    }
+    
+    open override func baseChannelViewModel(
+        _ viewModel: SBUBaseChannelViewModel,
         didUpdateReaction reaction: ReactionEvent,
         forMessage message: BaseMessage
     ) {
@@ -620,5 +749,22 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
         self.inputComponent?.updatePlaceholder()
         
         self.listComponent?.updateParentInfoView(parentMessage: message)
+    }
+    
+    
+    // MARK: - SBUVoiceMessageInputViewDelegate
+    public func voiceMessageInputViewDidTapCacel(_ inputView: SBUVoiceMessageInputView) {
+        self.dismissVoiceMessageInput()
+    }
+    
+    public func voiceMessageInputView(_ inputView: SBUVoiceMessageInputView, didTapSend voiceFileInfo: SBUVoiceFileInfo) {
+        self.dismissVoiceMessageInput()
+
+        let parentMessage = self.parentMessage
+        self.viewModel?.sendVoiceMessage(voiceFileInfo: voiceFileInfo, parentMessage: parentMessage)
+    }
+    
+    public func voiceMessageInputView(_ inputView: SBUVoiceMessageInputView, willStartToRecord voiceFileInfo: SBUVoiceFileInfo) {
+        // ...
     }
 }

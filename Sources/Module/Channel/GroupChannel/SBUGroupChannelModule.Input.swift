@@ -94,7 +94,13 @@ public protocol SBUGroupChannelModuleInputDelegate: SBUBaseChannelModuleInputDel
     func groupChannelModuleShouldStopSuggestingMention(
         _ inputComponent: SBUGroupChannelModule.Input
     )
+    
+    /// Called when it the voice message button tabbed.
+    /// - Parameter inputComponent: `SBUGroupChannelModule.Input` object.
+    /// - Since: 3.4.0
+    func groupChannelModuleDidTapVoiceMessage(_ inputComponent: SBUGroupChannelModule.Input)
 }
+
 
 /// Methods to get data source for the input component in the group channel.
 public protocol SBUGroupChannelModuleInputDataSource: SBUBaseChannelModuleInputDataSource { }
@@ -714,6 +720,11 @@ extension SBUGroupChannelModule {
             )
             mentionManager.reset()
         }
+        
+        open override func messageInputViewDidTapVoiceMessage(_ messageInputView: SBUMessageInputView) {
+            self.delegate?.groupChannelModuleDidTapVoiceMessage(self)
+        }
+        
         
         // MARK: SBUMentionManagerDelegate
         open func mentionManager(_ manager: SBUMentionManager,

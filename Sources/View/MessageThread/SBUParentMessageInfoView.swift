@@ -108,7 +108,7 @@ open class SBUParentMessageInfoView: UITableViewHeaderFooterView, SBUUserMessage
     var theme: SBUMessageCellTheme
     
     var configured: Bool = false
-    
+    var voiceFileInfo: SBUVoiceFileInfo? = nil
     var isReactionAvailable = false
     
     
@@ -218,7 +218,7 @@ open class SBUParentMessageInfoView: UITableViewHeaderFooterView, SBUUserMessage
     open func setupLayouts() {
         self.contentVStackViewTrailingAnchorConstraint?.isActive = false
         switch message {
-        case let userMessage as UserMessage:
+        case let _ as UserMessage:
             self.contentVStackViewTrailingAnchorConstraint = self.contentVStackView.trailingAnchor.constraint(
                 lessThanOrEqualTo: self.contentView.trailingAnchor,
                 constant: -16
@@ -322,11 +322,13 @@ open class SBUParentMessageInfoView: UITableViewHeaderFooterView, SBUUserMessage
     open func configure(
         message: BaseMessage?,
         delegate: SBUParentMessageInfoViewDelegate?,
-        useReaction: Bool = false
+        useReaction: Bool = false,
+        voiceFileInfo: SBUVoiceFileInfo?
     ) {
         self.delegate = delegate
         
         self.message = message
+        self.voiceFileInfo = voiceFileInfo
         self.isReactionAvailable = useReaction
         
         guard let message = self.message else { return }
@@ -413,6 +415,22 @@ open class SBUParentMessageInfoView: UITableViewHeaderFooterView, SBUUserMessage
                         highlightKeyword: nil
                     )
                 }
+            case .voice:
+                if !(self.baseFileContentView is SBUVoiceContentView) {
+                    self.baseFileContentView.removeFromSuperview()
+                    self.baseFileContentView = SBUVoiceContentView()
+                    contentVStackView.insertArrangedSubview(self.baseFileContentView, at: 0)
+                }
+                if let voiceContentView = self.baseFileContentView as? SBUVoiceContentView {
+                    let voiceFileInfo = self.voiceFileInfo ?? SBUVoiceFileInfo.createVoiceFileInfo(with: fileMessage)
+                    voiceContentView.configure(
+                        message: fileMessage,
+                        position: .left,
+                        voiceFileInfo: voiceFileInfo
+                    )
+                    voiceContentView.needSetBackgroundColor = true
+                }
+                break
             }
             
         default:

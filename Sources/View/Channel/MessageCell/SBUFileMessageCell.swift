@@ -23,6 +23,7 @@ open class SBUFileMessageCell: SBUContentBaseMessageCell {
         return fileView
     }()
     
+    
     // MARK: - View Lifecycle
     open override func setupViews() {
         super.setupViews()
@@ -96,6 +97,24 @@ open class SBUFileMessageCell: SBUContentBaseMessageCell {
                     highlightKeyword: nil
                 )
             }
+            
+        case .voice:
+            if !(self.baseFileContentView is SBUVoiceContentView) {
+                self.baseFileContentView.removeFromSuperview()
+                self.baseFileContentView = SBUVoiceContentView()
+                self.baseFileContentView.addGestureRecognizer(self.contentLongPressRecognizer)
+                self.baseFileContentView.addGestureRecognizer(self.contentTapRecognizer)
+                self.mainContainerView.insertArrangedSubview(self.baseFileContentView, at: 0)
+            }
+            if let voiceContentView = self.baseFileContentView as? SBUVoiceContentView {
+                voiceContentView.configure(
+                    message: message,
+                    position: configuration.messagePosition,
+                    voiceFileInfo: configuration.voiceFileInfo
+                )
+            }
+
+            break
         }
     }
     
@@ -121,6 +140,7 @@ open class SBUFileMessageCell: SBUContentBaseMessageCell {
         imageContentView.setImage(image, size: size)
         imageContentView.setNeedsLayout()
     }
+    
     
     @available(*, deprecated, renamed: "configure(with:)") // 2.2.0
     open func configure(_ message: FileMessage,

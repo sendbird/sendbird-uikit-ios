@@ -20,6 +20,12 @@ public protocol SBUBaseChannelModuleInputDelegate: SBUCommonDelegate {
     /// - Parameter inputComponent: `SBUBaseChannelModule.Input`
     func baseChannelModuleDidEndTyping(_ inputComponent: SBUBaseChannelModule.Input)
     
+    /// Called when the add button was tapped.
+    /// - Parameters:
+    ///    - inputComponent: `SBUBaseChannelModule.Input` object.
+    /// - Since: 3.4.0
+    func baseChannelModuleDidTapAdd(_ inputComponent: SBUBaseChannelModule.Input)
+    
     /// Called when the send button was tapped.
     /// - Parameters:
     ///    - inputComponent: `SBUBaseChannelModule.Input` object.
@@ -258,6 +264,10 @@ extension SBUBaseChannelModule {
             self.baseDelegate?.baseChannelModuleDidEndTyping(self)
         }
         
+        public func messageInputViewDidSelectAdd(_ messageInputView: SBUMessageInputView) {
+            self.baseDelegate?.baseChannelModuleDidTapAdd(self)
+        }
+        
         public func messageInputView(_ messageInputView: SBUMessageInputView, didSelectSend text: String) {
             guard text.count > 0 else { return }
             
@@ -303,5 +313,9 @@ extension SBUBaseChannelModule {
         }
         
         public func messageInputView(_ messageInputView: SBUMessageInputView, didChangeSelection range: NSRange) { }
+        
+        public func messageInputViewDidTapVoiceMessage(_ messageInputView: SBUMessageInputView) {
+            // TODO:  Voice
+        }
     }
 }

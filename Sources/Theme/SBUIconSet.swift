@@ -130,6 +130,7 @@ public class SBUIconSet {
     public static var iconPhoto: UIImage = SBUIconSetType.iconPhoto.load() {
         didSet { SBUIconSetType.iconPhoto.markCustomized() }
     }
+    
     public static var iconPlay: UIImage = SBUIconSetType.iconPlay.load() {
         didSet { SBUIconSetType.iconPlay.markCustomized() }
     }
@@ -183,6 +184,27 @@ public class SBUIconSet {
     public static var iconRadioButtonOff = SBUIconSetType.iconRadioButtonOff.load() {
         didSet { SBUIconSetType.iconRadioButtonOff.markCustomized() }
     }
+    
+    /// An icon used as a button to show the voice message recording view in the input component.
+    public static var iconVoiceMessageOn = SBUIconSetType.iconVoiceMessageOn.load() {
+        didSet { SBUIconSetType.iconVoiceMessageOn.markCustomized() }
+    }
+
+    /// An icon used as a pause button to pause a voice message recording from playing in the input component.
+    public static var iconPause = SBUIconSetType.iconPause.load() {
+        didSet { SBUIconSetType.iconPause.markCustomized() }
+    }
+
+    /// An icon used as a record button start recording a voice message in the input component.
+    public static var iconRecording = SBUIconSetType.iconRecording.load() {
+        didSet { SBUIconSetType.iconRecording.markCustomized() }
+    }
+
+    /// An icon used as a stop button to stop recording a voice message in the input component.
+    public static var iconStop = SBUIconSetType.iconStop.load() {
+        didSet { SBUIconSetType.iconStop.markCustomized() }
+    }
+    
     
     
     /// Restore all customized icons to SDK's default icons.

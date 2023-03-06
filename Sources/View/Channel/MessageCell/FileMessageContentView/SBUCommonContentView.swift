@@ -92,6 +92,10 @@ open class SBUCommonContentView: SBUBaseFileContentView {
                 with: theme.fileIconColor,
                 to: SBUIconSetType.Metric.defaultIconSize
             )
+        case .voice:
+            // The flow does not come here. (will be handled on `SBUVoiceContentView` class)
+            image = UIImage()
+            break
         }
         
         self.fileImageView.image = image

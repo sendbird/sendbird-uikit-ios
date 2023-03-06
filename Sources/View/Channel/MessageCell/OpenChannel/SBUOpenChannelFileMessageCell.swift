@@ -64,7 +64,7 @@ open class SBUOpenChannelFileMessageCell: SBUOpenChannelContentBaseMessageCell {
     open func configure(_ message: FileMessage,
                           hideDateView: Bool,
                           groupPosition: MessageGroupPosition,
-                          fileType: MessageFileType,
+                          fileType: SBUMessageFileType,
                           isOverlay: Bool = false) {
 
         self.configure(
@@ -108,6 +108,10 @@ open class SBUOpenChannelFileMessageCell: SBUOpenChannelContentBaseMessageCell {
                     highlightKeyword: nil
                 )
             }
+            
+        case .voice:
+            // new message info view (OpenChannel)
+            break
         }
 
         // Remove ArrangedSubviews

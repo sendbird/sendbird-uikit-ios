@@ -14,7 +14,7 @@ import SafariServices
 
 
 @objcMembers
-open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroupChannelViewModelDelegate, SBUGroupChannelModuleHeaderDelegate, SBUGroupChannelModuleListDelegate, SBUGroupChannelModuleListDataSource, SBUGroupChannelModuleInputDelegate, SBUGroupChannelModuleInputDataSource, SBUGroupChannelViewModelDataSource, SBUMentionManagerDataSource, SBUMessageThreadViewControllerDelegate {
+open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroupChannelViewModelDelegate, SBUGroupChannelModuleHeaderDelegate, SBUGroupChannelModuleListDelegate, SBUGroupChannelModuleListDataSource, SBUGroupChannelModuleInputDelegate, SBUGroupChannelModuleInputDataSource, SBUGroupChannelViewModelDataSource, SBUMentionManagerDataSource, SBUMessageThreadViewControllerDelegate, SBUVoiceMessageInputViewDelegate {
 
     // MARK: - UI properties (Public)
     public var headerComponent: SBUGroupChannelModule.Header? {
@@ -29,6 +29,8 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         get { self.baseInputComponent as? SBUGroupChannelModule.Input }
         set { self.baseInputComponent = newValue }
     }
+    
+    public var voiceMessageInputView = SBUVoiceMessageInputView()
     
     public var highlightInfo: SBUHighlightMessageInfo?
     
@@ -125,6 +127,18 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     }
     open override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        
+        self.listComponent?.pauseAllVoicePlayer()
+    }
+    
+    open override func applicationWillResignActivity() {
+        self.resetVoiceMessageInput(for: true)
+        self.listComponent?.pauseAllVoicePlayer()
+    }
+    
+    open override func willPresentSubview() {
+        // TODO: Voice Message - Unify policy
+        self.listComponent?.pauseAllVoicePlayer()
     }
     
     deinit {
@@ -315,7 +329,12 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         self.navigationController?.pushViewController(channelSettingsVC, animated: true)
     }
     
-    open override func showMessageThread(channelURL: String, parentMessageId: Int64, parentMessageCreatedAt: Int64? = 0, startingPoint: Int64? = 0) {
+    open override func showMessageThread(
+        channelURL: String,
+        parentMessageId: Int64,
+        parentMessageCreatedAt: Int64? = 0,
+        startingPoint: Int64? = 0
+    ) {
         if (parentMessageCreatedAt ?? 0) < (self.channel?.joinedAt ?? 0) * 1000 {
             SBULog.warning(SBUStringSet.Message_Reply_Cannot_Found_Original)
             return
@@ -326,17 +345,77 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
             parentMessage = fullMessageList.filter { $0.messageId == parentMessageId }.first
         }
            
-        
         let messageThreadVC = SBUViewControllerSet.MessageThreadViewController.init(
             channelURL: channelURL,
             parentMessage: parentMessage,
             parentMessageId: parentMessageId,
             delegate: self,
-            startingPoint: startingPoint
+            startingPoint: startingPoint,
+            voiceFileInfos: self.listComponent?.voiceFileInfos
         )
         self.navigationController?.pushViewController(messageThreadVC, animated: true)
     }
     
+    
+    // MARK: - VoiceMessageInput
+    open override func showVoiceMessageInput() {
+        super.showVoiceMessageInput()
+        
+        let canvasView = self.navigationController?.view ?? self.view
+        
+        self.voiceMessageInputView.show(delegate: self, canvasView: canvasView)
+        self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+    }
+    
+    open override func dismissVoiceMessageInput() {
+        super.dismissVoiceMessageInput()
+        
+        self.voiceMessageInputView.dismiss()
+        self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+    }
+    
+    func updateVoiceMessageInputMode() {
+        let showAlertCompletionHandler: ((String) -> Void) = { title in
+            self.resetVoiceMessageInput()
+            
+            SBUAlertView.show(
+                title: title,
+                confirmButtonItem: SBUAlertButtonItem(
+                    title: SBUStringSet.OK,
+                    completionHandler: { info in
+                        self.dismissVoiceMessageInput()
+                    }
+                ), cancelButtonItem: nil
+            ) {
+                self.dismissVoiceMessageInput()
+            }
+        }
+        
+        var title = ""
+        
+        // Frozen
+        let isOperator = self.channel?.myRole == .operator
+        let isBroadcast = self.channel?.isBroadcast ?? false
+        let isFrozen = self.channel?.isFrozen ?? false
+        if !isBroadcast, !isOperator && isFrozen, self.voiceMessageInputView.isShowing {
+            title = SBUStringSet.VoiceMessage.Alert.frozen
+        }
+        
+        let isMuted = self.channel?.myMutedState == .muted
+        if (!isFrozen || (isFrozen && isOperator)), isMuted, self.voiceMessageInputView.isShowing {
+            title = SBUStringSet.VoiceMessage.Alert.muted
+        }
+
+        if title.count > 0 {
+            showAlertCompletionHandler(title)
+        }
+    }
+    
+    open override func resetVoiceMessageInput(for resignActivity: Bool = false) {
+        super.resetVoiceMessageInput(for: resignActivity)
+        
+        self.voiceMessageInputView.reset(for: resignActivity)
+    }
     
     // MARK: - SBUGroupChannelViewModelDelegate
     open override func baseChannelViewModel(
@@ -368,18 +447,30 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
                 self.updateChannelTitle()
                 self.inputComponent?.updateMessageInputModeState()
                 self.listComponent?.reloadTableView()
+                self.updateVoiceMessageInputMode()
                 
             case .eventChannelChanged:
                 self.updateChannelTitle()
                 self.inputComponent?.updateMessageInputModeState()
+                self.updateVoiceMessageInputMode()
                 
             case .eventChannelFrozen, .eventChannelUnfrozen,
                     .eventUserMuted, .eventUserUnmuted,
                     .eventOperatorUpdated,
                     .eventUserBanned: // Other User Banned
                 self.inputComponent?.updateMessageInputModeState()
+                self.updateVoiceMessageInputMode()
                 
             default: break
+        }
+    }
+    
+    open override func baseChannelViewModel(
+        _ viewModel: SBUBaseChannelViewModel,
+        deletedMessages messages: [BaseMessage]
+    ) {
+        for message in messages {
+            self.listComponent?.pauseVoicePlayer(requestId: message.requestId)
         }
     }
     
@@ -397,6 +488,8 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     }
     
     open override func baseChannelModule(_ headerComponent: SBUBaseChannelModule.Header, didTapRightItem rightItem: UIBarButtonItem) {
+        super.baseChannelModule(headerComponent, didTapRightItem: rightItem)
+        
         self.showChannelSettings()
     }
     
@@ -498,6 +591,14 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         )
     }
     
+    open override func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didTapVoiceMessage fileMessage: FileMessage, cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        super.baseChannelModule(listComponent, didTapVoiceMessage: fileMessage, cell: cell, forRowAt: indexPath)
+        
+        if let cell = cell as? SBUBaseMessageCell {
+            self.listComponent?.updateVoiceMessage(cell, message: fileMessage, indexPath: indexPath)
+        }
+    }
+    
     open override func baseChannelModuleDidTapScrollToButton(_ listComponent: SBUBaseChannelModule.List, animated: Bool) {
         guard self.baseViewModel?.fullMessageList.isEmpty == false else { return }
         self.newMessagesCount = 0
@@ -585,6 +686,17 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         self.viewModel?.cancelLoadingSuggestedMentions()
     }
     
+    open func groupChannelModuleDidTapVoiceMessage(_ inputComponent: SBUGroupChannelModule.Input) {
+        SBUPermissionManager.shared.requestRecordAcess { [weak self] in
+            guard let self = self else { return }
+            self.showVoiceMessageInput()
+        } onDenied: {
+            SBULog.info("Record permission was denied")
+            self.showPermissionAlert(forType: .record)
+            return
+        }
+    }
+    
     open override func baseChannelModuleDidStartTyping(_ inputComponent: SBUBaseChannelModule.Input) {
         self.viewModel?.startTypingMessage()
     }
@@ -627,5 +739,43 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         
         let indexPath = IndexPath(row: row, section: 0)
         self.listComponent?.tableView.scrollToRow(at: indexPath, at: .middle, animated: false)
+    }
+    
+    open func messageThreadViewController(_ viewController: SBUMessageThreadViewController, shouldSyncVoiceFileInfos voiceFileInfos: [String : SBUVoiceFileInfo]?) {
+        if let voiceFileInfos = voiceFileInfos {
+            self.listComponent?.voiceFileInfos = voiceFileInfos
+        }
+    }
+    
+    
+    // MARK: - SBUVoiceMessageInputViewDelegate
+    open func voiceMessageInputViewDidTapCacel(_ inputView: SBUVoiceMessageInputView) {
+        self.dismissVoiceMessageInput()
+    }
+    
+    open func voiceMessageInputView(
+        _ inputView: SBUVoiceMessageInputView,
+        willStartToRecord voiceFileInfo: SBUVoiceFileInfo
+    ) {
+        self.willPresentSubview()
+    }
+    
+    open func voiceMessageInputView(
+        _ inputView: SBUVoiceMessageInputView,
+        didTapSend voiceFileInfo: SBUVoiceFileInfo
+    ) {
+        var parentMessage: BaseMessage?
+        if let messageInputView = self.baseInputComponent?.messageInputView as? SBUMessageInputView {
+            switch messageInputView.option {
+            case .quoteReply(let message):
+                parentMessage = message
+            default:
+                break
+            }
+            messageInputView.setMode(.none)
+        }
+        
+        self.dismissVoiceMessageInput()
+        self.viewModel?.sendVoiceMessage(voiceFileInfo: voiceFileInfo, parentMessage: parentMessage)
     }
 }

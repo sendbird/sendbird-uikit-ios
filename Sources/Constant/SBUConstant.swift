@@ -14,6 +14,8 @@ class SBUConstant {
     static let imageSize: CGSize = .init(width: 240, height: 160)
     static let quotedMessageThumbnailSize: CGSize = .init(width: 156, height: 104)
     
+    static let voiceMessageBaseSize: CGSize = .init(width: 136, height: 44)
+    
     static let openChannelThumbnailSize: CGSize = .init(width: 311, height: 207)
     static let openChannelImageSize: CGSize = .init(width: 311, height: 207)
     
@@ -37,4 +39,9 @@ class SBUConstant {
     static let connectionDelegateIdentifier = "\(bundleIdentifier).delegate.connection"
     
     static let sbuAppVersion = "SBUAppVersion"
+    
+    static let voiceMessageType = "audio/m4a"
+    static let voiceMessageTypeVoiceParameter = "sbu_type=voice"
+    static let voiceMessageDurationKey = "KEY_VOICE_MESSAGE_DURATION"
+    static let internalMessageTypeKey = "KEY_INTERNAL_MESSAGE_TYPE"
 }

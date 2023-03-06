@@ -59,6 +59,13 @@ public protocol SBUBaseChannelViewModelDelegate: SBUCommonViewModelDelegate {
         initialLoad: Bool
     )
     
+    /// Called when the messages has been deleted.
+    /// - Since: 3.4.0
+    func baseChannelViewModel(
+        _ viewModel: SBUBaseChannelViewModel,
+        deletedMessages messages: [BaseMessage]
+    )
+    
     /// Called when it should be updated scroll status for messages.
     func baseChannelViewModel(
         _ viewModel: SBUBaseChannelViewModel,
@@ -233,6 +240,7 @@ open class SBUBaseChannelViewModel: NSObject {
         }
         messageParams.mentionedMessageTemplate = ""
         messageParams.mentionedUserIds = []
+        
         self.sendUserMessage(messageParams: messageParams, parentMessage: parentMessage)
     }
     
@@ -343,6 +351,34 @@ open class SBUBaseChannelViewModel: NSObject {
         self.sendFileMessage(messageParams: messageParams, parentMessage: parentMessage)
     }
     
+    /// Sends a voice message with ``SBUVoiceFileInfo`` object that contains essential information of a voice message.
+    /// - Parameters:
+    ///   - voiceFileInfo: ``SBUVoiceFileInfo`` class object
+    ///   - parentMessage: The parent message. The default value is `nil` when there's no parent message.
+    open func sendVoiceMessage(voiceFileInfo: SBUVoiceFileInfo, parentMessage: BaseMessage? = nil) {
+        guard let filePath = voiceFileInfo.filePath,
+              let fileName = voiceFileInfo.fileName,
+              let fileData = SBUCacheManager.File.diskCache.get(fullPath: filePath) else { return }
+        let playtime = String(Int(voiceFileInfo.playtime ?? 0))
+        let durationMetaArray = MessageMetaArray(key: SBUConstant.voiceMessageDurationKey, value: [playtime])
+        let typeMetaArray = MessageMetaArray(key: SBUConstant.internalMessageTypeKey, value: [SBUConstant.voiceMessageType])
+        
+        let messageParams = FileMessageCreateParams(file: fileData)
+        messageParams.fileName = fileName // Maintain the file name used for recording to erase the recording file cache
+        messageParams.mimeType = "\(SBUConstant.voiceMessageType);\(SBUConstant.voiceMessageTypeVoiceParameter)"
+        messageParams.fileSize = UInt(fileData.count)
+        messageParams.metaArrays = [durationMetaArray, typeMetaArray]
+
+        SBUGlobalCustomParams.voiceFileMessageParamsSendBuilder?(messageParams)
+        
+        if let parentMessage = parentMessage, SBUGlobals.reply.replyType != .none {
+            messageParams.parentMessageId = parentMessage.messageId
+            messageParams.isReplyToChannel = true
+        }
+        
+        self.sendFileMessage(messageParams: messageParams, parentMessage: parentMessage)
+    }
+    
     /// Sends a file message with messageParams.
     ///
     /// You can send a file message by setting various properties of MessageParams.
@@ -354,6 +390,19 @@ open class SBUBaseChannelViewModel: NSObject {
         guard let channel = self.channel else { return }
         
         SBULog.info("[Request] Send file message")
+        
+        // for voice message
+        let fileName = messageParams.fileName ?? ""
+        
+        if SBUUtils.getFileType(by: messageParams.mimeType ?? "") == .voice {
+            let extensiontype = URL(fileURLWithPath: fileName).pathExtension
+            if extensiontype.count > 0 {
+                messageParams.fileName = "\(SBUStringSet.VoiceMessage.fileName).\(extensiontype)"
+            } else {
+                messageParams.fileName = "\(SBUStringSet.VoiceMessage.fileName)"
+            }
+        }
+        
         var preSendMessage: FileMessage?
         preSendMessage = channel.sendFileMessage(
             params: messageParams,
@@ -364,14 +413,31 @@ open class SBUBaseChannelViewModel: NSObject {
                 SBULog.info("File message transfer progress: \(requestId) - \(fileTransferProgress)")
             },
             completionHandler: { [weak self] fileMessage, error in
+                if let error = error {
+                    SBULog.error(error.localizedDescription)
+                }
                 self?.sendFileMessageCompletionHandler?(fileMessage, error)
             }
         )
         
         if let preSendMessage = preSendMessage {
-            SBUCacheManager.preSaveImage(
-                fileMessage: preSendMessage
-            )
+            switch SBUUtils.getFileType(by: preSendMessage) {
+            case .image:
+                SBUCacheManager.Image.preSave(fileMessage: preSendMessage)
+            case .video:
+                SBUCacheManager.Image.preSave(fileMessage: preSendMessage) // for Thumbnail
+                SBUCacheManager.File.preSave(fileMessage: preSendMessage, fileName: messageParams.fileName)
+            case .voice:
+                // voice file's fileName is "Voice message". not have path extension.
+                let extensiontype = URL(fileURLWithPath: fileName).pathExtension
+                let voiceFileName = "\(SBUStringSet.VoiceMessage.fileName).\(extensiontype)"
+                let tempFileName = "\(fileName).\(extensiontype)"
+                
+                SBUCacheManager.File.preSave(fileMessage: preSendMessage, fileName: voiceFileName)
+                SBUCacheManager.File.removeVoiceTemp(fileName: tempFileName)
+            default:
+                SBUCacheManager.File.preSave(fileMessage: preSendMessage, fileName: messageParams.fileName)
+            }
         }
         
         if let preSendMessage = preSendMessage, self.messageListParams.belongsTo(preSendMessage)
@@ -805,6 +871,8 @@ open class SBUBaseChannelViewModel: NSObject {
         self.messageListParams.includeThreadInfo = SBUGlobals.reply.includesThreadInfo
         self.messageListParams.includeParentMessageInfo = SBUGlobals.reply.includesParentMessageInfo
         self.messageListParams.replyType = SBUGlobals.reply.replyType.filterValue
+        
+        self.messageListParams.includeMetaArray = true
     }
     
     

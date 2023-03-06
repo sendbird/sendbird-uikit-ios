@@ -26,7 +26,8 @@ public class SBUTheme {
                 overlayTheme: SBUOverlayTheme = .init(),
                 messageSearchTheme: SBUMessageSearchTheme = .light,
                 messageSearchResultCellTheme: SBUMessageSearchResultCellTheme = .light,
-                createOpenChannelTheme: SBUCreateOpenChannelTheme = .light
+                createOpenChannelTheme: SBUCreateOpenChannelTheme = .light,
+                voiceMessageInputTheme: SBUVoiceMessageInputTheme = .light
                 ) {
         
         self.groupChannelListTheme = groupChannelListTheme
@@ -45,6 +46,7 @@ public class SBUTheme {
         self.messageSearchTheme = messageSearchTheme
         self.messageSearchResultCellTheme = messageSearchResultCellTheme
         self.createOpenChannelTheme = createOpenChannelTheme
+        self.voiceMessageInputTheme = voiceMessageInputTheme
         
     }
     
@@ -111,7 +113,8 @@ public class SBUTheme {
             overlayTheme: .init(),
             messageSearchTheme: .dark,
             messageSearchResultCellTheme: .dark,
-            createOpenChannelTheme: .dark
+            createOpenChannelTheme: .dark,
+            voiceMessageInputTheme: .dark
         )
         
     }
@@ -133,7 +136,8 @@ public class SBUTheme {
             overlayTheme: .init(),
             messageSearchTheme: .light,
             messageSearchResultCellTheme: .light,
-            createOpenChannelTheme: .light
+            createOpenChannelTheme: .light,
+            voiceMessageInputTheme: .light
         )
     }
     
@@ -229,6 +233,12 @@ public class SBUTheme {
         get { shared.createOpenChannelTheme }
     }
     
+    // Voice message input
+    public static var voiceMessageInputTheme: SBUVoiceMessageInputTheme {
+        set { shared.voiceMessageInputTheme = newValue }
+        get { shared.voiceMessageInputTheme }
+    }
+    
     
     // MARK: - Private property
     
@@ -268,6 +278,9 @@ public class SBUTheme {
     
     // Create open channel
     private var createOpenChannelTheme: SBUCreateOpenChannelTheme
+    
+    // Voice message input
+    private var voiceMessageInputTheme: SBUVoiceMessageInputTheme
 }
 
 // MARK: - Overlay Theme
@@ -1288,6 +1301,19 @@ public class SBUMessageCellTheme {
         theme.parentInfoReplyCountTextColor = SBUColorSet.onlight03
         theme.parentInfoReplyCountTextFont = SBUFontSet.body3
         
+        theme.parentInfoProgressBackgroundColor = SBUColorSet.background100
+        
+        // Voice note
+        theme.progressTrackTintColor = SBUColorSet.onlight03
+        theme.progressTimeFont = SBUFontSet.body3
+        theme.progressTimeRightTextColor = SBUColorSet.ondark01
+        theme.progressTimeLeftTextColor = SBUColorSet.onlight01
+        
+        theme.playerStatusButtonBackgroundColor = SBUColorSet.background50
+        theme.playerLoadingButtonTintColor = SBUColorSet.primary200
+        theme.playerPlayButtonTintColor = SBUColorSet.primary300
+        theme.playerPauseButtonTintColor = SBUColorSet.primary300
+        
         return theme
     }
     
@@ -1411,6 +1437,19 @@ public class SBUMessageCellTheme {
 
         theme.parentInfoReplyCountTextColor = SBUColorSet.ondark03
         theme.parentInfoReplyCountTextFont = SBUFontSet.body3
+        
+        theme.parentInfoProgressBackgroundColor = SBUColorSet.background400
+        
+        // Voice note
+        theme.progressTrackTintColor = SBUColorSet.ondark03
+        theme.progressTimeFont = SBUFontSet.body3
+        theme.progressTimeRightTextColor = SBUColorSet.onlight01
+        theme.progressTimeLeftTextColor = SBUColorSet.ondark01
+        
+        theme.playerStatusButtonBackgroundColor = SBUColorSet.background600
+        theme.playerLoadingButtonTintColor = SBUColorSet.primary300
+        theme.playerPlayButtonTintColor = SBUColorSet.primary200
+        theme.playerPauseButtonTintColor = SBUColorSet.primary200
         
         return theme
     }
@@ -1536,6 +1575,19 @@ public class SBUMessageCellTheme {
         theme.parentInfoReplyCountTextColor = SBUColorSet.ondark03
         theme.parentInfoReplyCountTextFont = SBUFontSet.body3
         
+        theme.parentInfoProgressBackgroundColor = SBUColorSet.background400
+        
+        // Voice note
+        theme.progressTrackTintColor = SBUColorSet.ondark03
+        theme.progressTimeFont = SBUFontSet.body3
+        theme.progressTimeRightTextColor = SBUColorSet.onlight01
+        theme.progressTimeLeftTextColor = SBUColorSet.ondark01
+        
+        theme.playerStatusButtonBackgroundColor = SBUColorSet.background600
+        theme.playerLoadingButtonTintColor = SBUColorSet.primary300
+        theme.playerPlayButtonTintColor = SBUColorSet.primary200
+        theme.playerPauseButtonTintColor = SBUColorSet.primary200
+        
         return theme
     }
     
@@ -1619,7 +1671,16 @@ public class SBUMessageCellTheme {
                 parentInfoMoreButtonTintColor: UIColor = SBUColorSet.onlight02,
                 parentInfoSeparateBarColor: UIColor = SBUColorSet.onlight04,
                 parentInfoReplyCountTextColor: UIColor = SBUColorSet.onlight03,
-                parentInfoReplyCountTextFont: UIFont = SBUFontSet.body3
+                parentInfoReplyCountTextFont: UIFont = SBUFontSet.body3,
+                parentInfoProgressBackgroundColor: UIColor = SBUColorSet.background100,
+                progressTrackTintColor: UIColor = SBUColorSet.onlight03,
+                progressTimeFont: UIFont = SBUFontSet.body3,
+                progressTimeRightTextColor: UIColor = SBUColorSet.ondark01,
+                progressTimeLeftTextColor: UIColor = SBUColorSet.onlight01,
+                statusButtonBackgroundColor: UIColor = SBUColorSet.background50,
+                loadingButtonTintColor: UIColor = SBUColorSet.primary200,
+                playButtonTintColor: UIColor = SBUColorSet.primary300,
+                pauseButtonTintColor: UIColor = SBUColorSet.primary300
     ) {
         
         self.backgroundColor = backgroundColor
@@ -1711,6 +1772,19 @@ public class SBUMessageCellTheme {
         self.parentInfoSeparateBarColor = parentInfoSeparateBarColor
         self.parentInfoReplyCountTextColor = parentInfoReplyCountTextColor
         self.parentInfoReplyCountTextFont = parentInfoReplyCountTextFont
+        
+        self.parentInfoProgressBackgroundColor = parentInfoProgressBackgroundColor
+        
+        // MARK: Voice message
+        self.progressTrackTintColor = progressTrackTintColor
+        self.progressTimeFont = progressTimeFont
+        self.progressTimeRightTextColor = progressTimeRightTextColor
+        self.progressTimeLeftTextColor = progressTimeLeftTextColor
+        
+        self.playerStatusButtonBackgroundColor = statusButtonBackgroundColor
+        self.playerLoadingButtonTintColor = loadingButtonTintColor
+        self.playerPlayButtonTintColor = playButtonTintColor
+        self.playerPauseButtonTintColor = pauseButtonTintColor
     }
     
     public var backgroundColor: UIColor
@@ -1848,6 +1922,7 @@ public class SBUMessageCellTheme {
     /// The tint color of new message badge.
     public var newMessageBadgeColor: UIColor
     
+    // MARK: Parent info
     public var parentInfoBackgroundColor: UIColor
     public var parentInfoUserNameTextFont: UIFont
     public var parentInfoUserNameTextColor: UIColor
@@ -1857,6 +1932,19 @@ public class SBUMessageCellTheme {
     public var parentInfoSeparateBarColor: UIColor
     public var parentInfoReplyCountTextColor: UIColor
     public var parentInfoReplyCountTextFont: UIFont
+    
+    public var parentInfoProgressBackgroundColor: UIColor
+    
+    // MARK: Voice message
+    public var progressTrackTintColor: UIColor
+    public var progressTimeFont: UIFont
+    public var progressTimeRightTextColor: UIColor
+    public var progressTimeLeftTextColor: UIColor
+    
+    public var playerStatusButtonBackgroundColor: UIColor
+    public var playerLoadingButtonTintColor: UIColor
+    public var playerPlayButtonTintColor: UIColor
+    public var playerPauseButtonTintColor: UIColor
 }
 
 
@@ -3336,4 +3424,147 @@ public class SBUCreateOpenChannelTheme {
     public var actionSheetTextColor: UIColor
     public var actionSheetRemoveTextColor: UIColor
     public var actionSheetCancelTextColor: UIColor
+}
+
+
+// MARK: - VoiceMessageInputTheme
+
+public class SBUVoiceMessageInputTheme {
+    
+    public static var light: SBUVoiceMessageInputTheme {
+        let theme = SBUVoiceMessageInputTheme()
+        
+        theme.backgroundColor = SBUColorSet.background50
+        theme.overlayColor = SBUColorSet.overlay01
+        
+        theme.cancelTitleColor = SBUColorSet.primary300
+        theme.cancelTitleFont = SBUFontSet.button2
+        
+        theme.progressTintColor = SBUColorSet.onlight03
+        theme.progressTrackTintColor = SBUColorSet.primary300
+        theme.progressTrackDeactivatedTintColor = SBUColorSet.background100
+        theme.progressTimeFont = SBUFontSet.caption1
+        theme.progressTimeColor = SBUColorSet.ondark01
+        theme.progressDeactivatedTimeColor = SBUColorSet.onlight03
+        theme.progressRecordingIconTintColor = SBUColorSet.error300
+        
+        theme.statusButtonBackgroundColor = SBUColorSet.background100
+        theme.recordingButtonTintColor = SBUColorSet.error300
+        theme.stopButtonTintColor = SBUColorSet.onlight01
+        theme.playButtonTintColor = SBUColorSet.onlight01
+        theme.pauseButtonTintColor = SBUColorSet.onlight01
+        
+        theme.sendButtonBackgroundColor = SBUColorSet.primary300
+        theme.sendButtonDisabledBackgroundColor = SBUColorSet.background100
+        theme.sendButtonTintColor = SBUColorSet.ondark01
+        theme.sendButtonDisabledTintColor = SBUColorSet.onlight04
+        
+        return theme
+    }
+    
+    public static var dark: SBUVoiceMessageInputTheme {
+        let theme = SBUVoiceMessageInputTheme()
+        
+        theme.backgroundColor = SBUColorSet.background600
+        theme.overlayColor = SBUColorSet.overlay01
+        
+        theme.cancelTitleColor = SBUColorSet.primary200
+        theme.cancelTitleFont = SBUFontSet.button2
+        
+        theme.progressTintColor = SBUColorSet.ondark03
+        theme.progressTrackTintColor = SBUColorSet.primary200
+        theme.progressTrackDeactivatedTintColor = SBUColorSet.background400
+        theme.progressTimeFont = SBUFontSet.caption1
+        theme.progressTimeColor = SBUColorSet.onlight01
+        theme.progressDeactivatedTimeColor = SBUColorSet.ondark03
+        theme.progressRecordingIconTintColor = SBUColorSet.error200
+
+        theme.statusButtonBackgroundColor = SBUColorSet.background500
+        theme.recordingButtonTintColor = SBUColorSet.error200
+        theme.stopButtonTintColor = SBUColorSet.ondark01
+        theme.playButtonTintColor = SBUColorSet.ondark01
+        theme.pauseButtonTintColor = SBUColorSet.ondark01
+        
+        theme.sendButtonBackgroundColor = SBUColorSet.primary200
+        theme.sendButtonDisabledBackgroundColor = SBUColorSet.background500
+        theme.sendButtonTintColor = SBUColorSet.onlight01
+        theme.sendButtonDisabledTintColor = SBUColorSet.ondark04
+
+        return theme
+    }
+    
+    
+    public var backgroundColor: UIColor
+    public var overlayColor: UIColor
+
+    public var cancelTitleColor: UIColor
+    public var cancelTitleFont: UIFont
+    
+    public var progressTintColor: UIColor
+    public var progressTrackTintColor: UIColor
+    public var progressTrackDeactivatedTintColor: UIColor
+    public var progressTimeFont: UIFont
+    public var progressTimeColor: UIColor
+    public var progressDeactivatedTimeColor: UIColor
+    public var progressRecordingIconTintColor: UIColor
+    
+    public var statusButtonBackgroundColor: UIColor
+    public var recordingButtonTintColor: UIColor
+    public var stopButtonTintColor: UIColor
+    public var playButtonTintColor: UIColor
+    public var pauseButtonTintColor: UIColor
+    
+    public var sendButtonBackgroundColor: UIColor
+    public var sendButtonDisabledBackgroundColor: UIColor
+    public var sendButtonTintColor: UIColor
+    public var sendButtonDisabledTintColor: UIColor
+    
+    public init(
+        backgroundColor: UIColor = SBUColorSet.background50,
+        overlayColor: UIColor = SBUColorSet.overlay01,
+        cancelTitleColor: UIColor = SBUColorSet.primary300,
+        cancelTitleFont: UIFont = SBUFontSet.button2,
+        progressTintColor: UIColor = SBUColorSet.onlight03,
+        progressTrackTintColor: UIColor = SBUColorSet.primary300,
+        progressTrackDeactivatedTintColor: UIColor = SBUColorSet.background100,
+        progressTimeFont: UIFont = SBUFontSet.caption1,
+        progressTimeColor: UIColor = SBUColorSet.ondark01,
+        progressDeactivatedTimeColor: UIColor = SBUColorSet.onlight03,
+        progressRecordingIconTintColor: UIColor = SBUColorSet.error300,
+        statusButtonBackgroundColor: UIColor = SBUColorSet.background100,
+        recordingButtonTintColor: UIColor = SBUColorSet.error300,
+        stopButtonTintColor: UIColor = SBUColorSet.onlight01,
+        playButtonTintColor: UIColor = SBUColorSet.onlight01,
+        pauseButtonTintColor: UIColor = SBUColorSet.onlight01,
+        sendButtonBackgroundColor: UIColor = SBUColorSet.primary300,
+        sendButtonDisabledBackgroundColor: UIColor = SBUColorSet.background100,
+        sendButtonTintColor: UIColor = SBUColorSet.ondark01,
+        sendButtonDisabledTintColor: UIColor = SBUColorSet.onlight04
+    ) {
+        
+        self.backgroundColor = backgroundColor
+        self.overlayColor = overlayColor
+        
+        self.cancelTitleColor = cancelTitleColor
+        self.cancelTitleFont = cancelTitleFont
+        
+        self.progressTintColor = progressTintColor
+        self.progressTrackTintColor = progressTrackTintColor
+        self.progressTrackDeactivatedTintColor = progressTrackDeactivatedTintColor
+        self.progressTimeFont = progressTimeFont
+        self.progressTimeColor = progressTimeColor
+        self.progressDeactivatedTimeColor = progressDeactivatedTimeColor
+        self.progressRecordingIconTintColor = progressRecordingIconTintColor
+        
+        self.statusButtonBackgroundColor = statusButtonBackgroundColor
+        self.recordingButtonTintColor = recordingButtonTintColor
+        self.stopButtonTintColor = stopButtonTintColor
+        self.playButtonTintColor = playButtonTintColor
+        self.pauseButtonTintColor = pauseButtonTintColor
+        
+        self.sendButtonBackgroundColor = sendButtonBackgroundColor
+        self.sendButtonDisabledBackgroundColor = sendButtonDisabledBackgroundColor
+        self.sendButtonTintColor = sendButtonTintColor
+        self.sendButtonDisabledTintColor = sendButtonDisabledTintColor
+    }
 }

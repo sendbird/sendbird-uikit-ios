@@ -302,8 +302,12 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
             
         case let fileMessage as FileMessage:
             self.messageLabel.lineBreakMode = .byTruncatingMiddle
-            self.messageLabel.text = fileMessage.name
-            
+            if SBUUtils.getFileType(by: fileMessage) == .voice {
+                self.messageLabel.text = SBUStringSet.VoiceMessage.Preview.channelList
+            } else {
+                self.messageLabel.text = fileMessage.name
+            }
+
         default:
             self.messageLabel.text = ""
         }
@@ -345,7 +349,11 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
                 messageLabel.numberOfLines = 2
             case let fileMessage as FileMessage:
                 messageLabel.lineBreakMode = .byTruncatingMiddle
-                messageLabel.text = fileMessage.name
+                if SBUUtils.getFileType(by: fileMessage) == .voice {
+                    self.messageLabel.text = SBUStringSet.VoiceMessage.Preview.channelList
+                } else {
+                    self.messageLabel.text = fileMessage.name
+                }
             default:
                 messageLabel.text = ""
             }

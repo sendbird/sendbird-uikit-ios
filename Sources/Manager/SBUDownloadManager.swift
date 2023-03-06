@@ -43,15 +43,21 @@ class SBUDownloadManager {
             
             DispatchQueue.main.async { SBULoading.start() }
             
-            if let fileURL = SBUCacheManager.loadFileIfExist(url: url, fileName: fileName) {
-                downloadHandler(fileURL)
+            let fileName = "\(fileName).\(url.pathExtension)"
+            if SBUCacheManager.Image.diskCache.cacheExists(key: fileName) {
+                let filePath = URL(string: SBUCacheManager.Image.diskCache.pathForKey(fileName))
+                    ?? URL(fileURLWithPath: SBUCacheManager.Image.diskCache.pathForKey(fileName))
+                downloadHandler(filePath)
             } else {
-                SBUCacheManager.saveFileIfNeeded(url: url, fileName: fileName) { filePath in
-                    if let filePath = filePath {
-                        let fileURL = URL(fileURLWithPath: filePath)
-                        downloadHandler(fileURL)
-                    } else {
-                        DispatchQueue.main.async { SBULoading.stop() }
+                DispatchQueue.main.async {
+                    let _ = UIImageView().loadOriginalImage(urlString: url.absoluteString, errorImage: nil, cacheKey: fileName) { success in
+                        if success {
+                            let filePath = URL(string: SBUCacheManager.Image.diskCache.pathForKey(fileName))
+                                ?? URL(fileURLWithPath: SBUCacheManager.Image.diskCache.pathForKey(fileName))
+                            downloadHandler(filePath)
+                        } else {
+                            DispatchQueue.main.async { SBULoading.stop() }
+                        }
                     }
                 }
             }
@@ -101,17 +107,15 @@ class SBUDownloadManager {
             
             DispatchQueue.main.async { SBULoading.start() }
             
-            guard let url = URL(string: fileMessage.url) else { return }
-            if let fileURL = SBUCacheManager.loadFileIfExist(url: url, fileName: fileMessage.name) {
-                downloadHandler(fileURL)
-            } else {
-                SBUCacheManager.saveFileIfNeeded(url: url, fileName: fileMessage.name) { filePath in
-                    if let filePath = filePath {
-                        let fileURL = URL(fileURLWithPath: filePath)
-                        downloadHandler(fileURL)
-                    } else {
-                        DispatchQueue.main.async { SBULoading.stop() }
-                    }
+            SBUCacheManager.File.loadFile(
+                urlString: fileMessage.url,
+                cacheKey: fileMessage.requestId,
+                fileName: fileMessage.name
+            ) { fileURL, fileData in
+                if let fileURL = fileURL {
+                    downloadHandler(fileURL)
+                } else {
+                    DispatchQueue.main.async { SBULoading.stop() }
                 }
             }
         }
@@ -121,7 +125,7 @@ class SBUDownloadManager {
         switch SBUUtils.getFileType(by: fileMessage) {
         case .image:
             guard let url = URL(string: fileMessage.url) else { return }
-            SBUDownloadManager.saveImage(parent: parent, url: url, fileName: fileMessage.name)
+            SBUDownloadManager.saveImage(parent: parent, url: url, fileName: fileMessage.requestId)
         default:
             SBUDownloadManager.saveFile(with: fileMessage, parent: parent)
         }

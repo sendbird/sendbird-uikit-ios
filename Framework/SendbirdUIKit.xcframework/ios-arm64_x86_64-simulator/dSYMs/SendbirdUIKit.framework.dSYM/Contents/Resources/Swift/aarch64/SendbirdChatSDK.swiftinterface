@@ -517,15 +517,6 @@ extension SendbirdChatSDK.User : SendbirdChatSDK.Serializable {
   @objc dynamic public func serialize() -> Foundation.Data?
   @objc dynamic public class func build(fromSerializedData data: Foundation.Data?) -> Self?
 }
-extension SendbirdChatSDK.GroupChannel {
-  @objc dynamic open func updatePoll(pollId: Swift.Int64, params: SendbirdChatSDK.PollUpdateParams, completionHandler: SendbirdChatSDK.PollHandler?)
-  @objc dynamic open func deletePoll(pollId: Swift.Int64, completionHandler: SendbirdChatSDK.SBErrorHandler?)
-  @objc dynamic open func closePoll(pollId: Swift.Int64, completionHandler: SendbirdChatSDK.PollHandler?)
-  @objc dynamic open func addPollOption(pollId: Swift.Int64, optionText: Swift.String, completionHandler: SendbirdChatSDK.PollHandler?)
-  @objc dynamic open func updatePollOption(pollId: Swift.Int64, pollOptionId: Swift.Int64, optionText: Swift.String, completionHandler: SendbirdChatSDK.PollHandler?)
-  @objc dynamic open func deletePollOption(pollId: Swift.Int64, pollOptionId: Swift.Int64, completionHandler: SendbirdChatSDK.SBErrorHandler?)
-  @objc dynamic open func votePoll(pollId: Swift.Int64, pollOptionIds: [Swift.Int64], completionHandler: SendbirdChatSDK.PollVoteEventHandler)
-}
 extension SendbirdChatSDK.BaseChannel {
   @available(*, unavailable, renamed: "getMessageChangeLogs(token:params:completionHandler:)")
   public func getMessageChangeLogs(withToken: Swift.String?, completionHandler: SendbirdChatSDK.MessageChangeLogHandler?)
@@ -974,9 +965,6 @@ extension SendbirdChatSDK.GroupChannel {
   @objc dynamic open func createMemberListQuery() -> SendbirdChatSDK.MemberListQuery?
   @objc dynamic open func createMemberListQuery(paramsBuilder: (SendbirdChatSDK.MemberListQueryParams) -> Swift.Void) -> SendbirdChatSDK.MemberListQuery?
   @objc dynamic open func createMemberListQuery(params: SendbirdChatSDK.MemberListQueryParams) -> SendbirdChatSDK.MemberListQuery?
-  @objc dynamic open func createPollListQuery(limit: Swift.UInt = 20) -> SendbirdChatSDK.PollListQuery?
-  @objc dynamic open func createPollVoterListQuery(pollId: Swift.Int64, pollOptionId: Swift.Int64, limit: Swift.UInt = 20) -> SendbirdChatSDK.PollVoterListQuery
-  @objc dynamic open func createPollVoterListQuery(pollId: Swift.Int64, pollOptionId: Swift.Int64) -> SendbirdChatSDK.PollVoterListQuery
 }
 extension SendbirdChatSDK.GroupChannel {
   @discardableResult
@@ -1070,6 +1058,9 @@ extension SendbirdChatSDK.MemberListQuery {
   @objc optional func channelDidChangeParticipantCount(_ channels: [SendbirdChatSDK.OpenChannel])
   @objc optional func channel(_ channel: SendbirdChatSDK.OpenChannel, userDidEnter user: SendbirdChatSDK.User)
   @objc optional func channel(_ channel: SendbirdChatSDK.OpenChannel, userDidExit user: SendbirdChatSDK.User)
+  @objc optional func channel(_ channel: SendbirdChatSDK.OpenChannel, didUpdatePoll event: SendbirdChatSDK.PollUpdateEvent)
+  @objc optional func channel(_ channel: SendbirdChatSDK.OpenChannel, didVotePoll event: SendbirdChatSDK.PollVoteEvent)
+  @objc optional func channel(_ channel: SendbirdChatSDK.OpenChannel, pollWasDeleted pollId: Swift.Int64)
 }
 @objc(SBDEmoji) public class Emoji : ObjectiveC.NSObject, Swift.Codable {
   @objc public var key: Swift.String {
@@ -1551,6 +1542,10 @@ extension SendbirdChatSDK.ApplicationUserListQueryParams : Foundation.NSCopying 
 }
 extension SendbirdChatSDK.Poll {
   @objc override dynamic public func isEqual(_ object: Any?) -> Swift.Bool
+}
+extension SendbirdChatSDK.Poll : SendbirdChatSDK.Serializable {
+  @objc dynamic public func serialize() -> Foundation.Data?
+  @objc public static func build(fromSerializedData data: Foundation.Data?) -> Self?
 }
 @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc(SBDOperatorListQuery) public class OperatorListQuery : ObjectiveC.NSObject, SendbirdChatSDK.UserListQuery {
   @objc public var hasNext: Swift.Bool {
@@ -2251,6 +2246,9 @@ extension SendbirdChatSDK.BaseChannel {
   @objc dynamic open class func createOperatorListQuery(channelType: SendbirdChatSDK.ChannelType, channelURL: Swift.String) -> SendbirdChatSDK.OperatorListQuery
   @objc dynamic open class func createOperatorListQuery(channelType: SendbirdChatSDK.ChannelType, channelURL: Swift.String, paramsBuilder: (SendbirdChatSDK.OperatorListQueryParams) -> Swift.Void) -> SendbirdChatSDK.OperatorListQuery
   @objc dynamic open class func createOperatorListQuery(channelType: SendbirdChatSDK.ChannelType, channelURL: Swift.String, params: SendbirdChatSDK.OperatorListQueryParams) -> SendbirdChatSDK.OperatorListQuery
+  @objc dynamic open func createPollListQuery(limit: Swift.UInt = 20) -> SendbirdChatSDK.PollListQuery?
+  @objc dynamic open func createPollVoterListQuery(pollId: Swift.Int64, pollOptionId: Swift.Int64, limit: Swift.UInt = 20) -> SendbirdChatSDK.PollVoterListQuery
+  @objc dynamic open func createPollVoterListQuery(pollId: Swift.Int64, pollOptionId: Swift.Int64) -> SendbirdChatSDK.PollVoterListQuery
 }
 extension SendbirdChatSDK.PublicGroupChannelListQuery {
   @available(*, unavailable, message: "Use `PublicGroupChannelListQueryParams`'s `setMetaDataFilter(withKey:values)`")
@@ -3235,6 +3233,15 @@ extension SendbirdChatSDK.MessageSearchQuery {
     @objc get
   }
 }
+extension SendbirdChatSDK.BaseChannel {
+  @objc dynamic open func updatePoll(pollId: Swift.Int64, params: SendbirdChatSDK.PollUpdateParams, completionHandler: SendbirdChatSDK.PollHandler?)
+  @objc dynamic open func deletePoll(pollId: Swift.Int64, completionHandler: SendbirdChatSDK.SBErrorHandler?)
+  @objc dynamic open func closePoll(pollId: Swift.Int64, completionHandler: SendbirdChatSDK.PollHandler?)
+  @objc dynamic open func addPollOption(pollId: Swift.Int64, optionText: Swift.String, completionHandler: SendbirdChatSDK.PollHandler?)
+  @objc dynamic open func updatePollOption(pollId: Swift.Int64, pollOptionId: Swift.Int64, optionText: Swift.String, completionHandler: SendbirdChatSDK.PollHandler?)
+  @objc dynamic open func deletePollOption(pollId: Swift.Int64, pollOptionId: Swift.Int64, completionHandler: SendbirdChatSDK.SBErrorHandler?)
+  @objc dynamic open func votePoll(pollId: Swift.Int64, pollOptionIds: [Swift.Int64], completionHandler: SendbirdChatSDK.PollVoteEventHandler)
+}
 @objc extension SendbirdChatSDK.GroupChannel {
   @objc dynamic open func startTyping()
   @objc dynamic open func endTyping()
@@ -3569,6 +3576,8 @@ extension SendbirdChatSDK.GroupChannel {
 @objc extension SendbirdChatSDK.BaseChannel {
   @objc(getMessageChangeLogsSinceToken:params:completionHandler:) dynamic open func getMessageChangeLogs(token: Swift.String?, params: SendbirdChatSDK.MessageChangeLogsParams = MessageChangeLogsParams(), completionHandler: SendbirdChatSDK.MessageChangeLogHandler?)
   @objc(getMessageChangeLogsSinceTimestamp:params:completionHandler:) dynamic open func getMessageChangeLogs(timestamp: Swift.Int64, params: SendbirdChatSDK.MessageChangeLogsParams = MessageChangeLogsParams(), completionHandler: SendbirdChatSDK.MessageChangeLogHandler?)
+  @objc dynamic open func getPollChangeLogs(token: Swift.String?, completionHandler: SendbirdChatSDK.PollChangeLogsHandler?)
+  @objc dynamic open func getPollChangeLogs(timestamp: Swift.Int64, completionHandler: SendbirdChatSDK.PollChangeLogsHandler?)
 }
 @_hasMissingDesignatedInitializers @objc(SBDRestrictedUser) public class RestrictedUser : SendbirdChatSDK.User {
   @objc public var restrictionInfo: SendbirdChatSDK.RestrictionInfo? {
@@ -3929,10 +3938,6 @@ extension SendbirdChatSDK.GroupChannel {
   @objc(copyUserMessage:toTargetChannel:completionHandler:) dynamic open func copyUserMessage(_ message: SendbirdChatSDK.UserMessage, toTargetChannel targetChannel: SendbirdChatSDK.BaseChannel, completionHandler: SendbirdChatSDK.UserMessageHandler?) -> SendbirdChatSDK.UserMessage?
   @objc dynamic open func updateUserMessage(messageId: Swift.Int64, params: SendbirdChatSDK.UserMessageUpdateParams, completionHandler: SendbirdChatSDK.UserMessageHandler?)
   @objc dynamic open func translateUserMessage(_ message: SendbirdChatSDK.UserMessage, targetLanguages: [Swift.String], completionHandler: SendbirdChatSDK.UserMessageHandler?)
-}
-extension SendbirdChatSDK.GroupChannel {
-  @objc dynamic open func getPollChangeLogs(token: Swift.String?, completionHandler: SendbirdChatSDK.PollChangeLogsHandler?)
-  @objc dynamic open func getPollChangeLogs(timestamp: Swift.Int64, completionHandler: SendbirdChatSDK.PollChangeLogsHandler?)
 }
 @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc(SBDFriendListQuery) public class FriendListQuery : ObjectiveC.NSObject, SendbirdChatSDK.UserListQuery {
   @objc public var hasNext: Swift.Bool {

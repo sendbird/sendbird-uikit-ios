@@ -93,6 +93,10 @@ public protocol SBUMessageThreadModuleInputDelegate: SBUBaseChannelModuleInputDe
     func messageThreadModuleShouldStopSuggestingMention(
         _ inputComponent: SBUMessageThreadModule.Input
     )
+    
+    /// Called when it the voice message button tabbed.
+    /// - Parameter inputComponent: `SBUMessageThreadModule.Input` object.
+    func messageThreadModuleDidTapVoiceMessage(_ inputComponent: SBUMessageThreadModule.Input)
 }
 
 
@@ -763,6 +767,9 @@ extension SBUMessageThreadModule {
             mentionManager.reset()
         }
 
+        open override func messageInputViewDidTapVoiceMessage(_ messageInputView: SBUMessageInputView) {
+            self.delegate?.messageThreadModuleDidTapVoiceMessage(self)
+        }
         
         // MARK: - SBUMentionManagerDelegate
         open func mentionManager(_ manager: SBUMentionManager,

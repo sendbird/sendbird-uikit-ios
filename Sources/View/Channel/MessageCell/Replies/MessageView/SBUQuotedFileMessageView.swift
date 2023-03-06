@@ -16,7 +16,7 @@ open class SBUQuotedFileMessageView: SBUQuotedBaseMessageView {
     
     /// The value of `MessageFileType`.
     /// - Since: 2.2.0
-    public var fileType: MessageFileType {
+    public var fileType: SBUMessageFileType {
         SBUUtils.getFileType(by: urlString!)
     }
     
@@ -63,23 +63,21 @@ open class SBUQuotedFileMessageView: SBUQuotedBaseMessageView {
         guard configuration.isFileType,
                 let urlString = configuration.urlString,
                 let name = configuration.fileName,
-                let type = configuration.fileType
+                let messageFileType = configuration.messageFileType
         else { return }
         
         self.urlString = urlString
         super.configure(with: configuration)
         
-        switch SBUUtils.getFileType(by: type) {
+        switch messageFileType {
         case .image, .video:
             if !(self.messageFileView is QuotedFileImageContentView) {
                 self.messageFileView.removeFromSuperview()
                 self.messageFileView = QuotedFileImageContentView()
                 self.mainContainerView.insertArrangedSubview(self.messageFileView, at: 0)
             }
-            self.mainContainerView
-                .roundCorners(corners: .allCorners, radius: 8)
             (self.messageFileView as? QuotedFileImageContentView)?.configure(with: configuration)
-        case .audio, .pdf, .etc:
+        case .audio, .voice, .pdf, .etc:
             if !(self.messageFileView is QuotedFileCommonContentView) {
                 self.messageFileView.removeFromSuperview()
                 self.messageFileView = QuotedFileCommonContentView()
@@ -87,12 +85,14 @@ open class SBUQuotedFileMessageView: SBUQuotedBaseMessageView {
             }
             (self.messageFileView as? QuotedFileCommonContentView)?
                 .configure(
-                    with: type,
+                    with: messageFileType,
                     fileName: name,
                     position: configuration.messagePosition,
                     highlightKeyword: nil
                 )
         }
+        self.mainContainerView
+            .roundCorners(corners: .allCorners, radius: 16)
         self.updateConstraintsIfNeeded()
     }
 }

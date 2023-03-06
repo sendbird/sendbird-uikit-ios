@@ -189,21 +189,12 @@ open class SBUCreateOpenChannelViewController: SBUBaseViewController, SBUActionS
     open func showChannelImagePicker(with type: MediaResourceType) {
         switch type {
         case .camera:
-            SBUPermissionManager.shared.requestDeviceAccessIfNeeded(for: .video) { isGranted in
-                if isGranted {
-                    DispatchQueue.main.async { [weak self] in
-                        guard let self = self else { return }
-                        self.showCamera()
-                    }
-                } else {
-                    if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
-                        UIApplication.shared.open(
-                            settingsURL,
-                            options: [:],
-                            completionHandler: nil
-                        )
-                    }
-                }
+            SBUPermissionManager.shared.requestCameraAccess(for: .video) { [weak self] in
+                guard let self = self else { return }
+                self.showCamera()
+            } onDenied: { [weak self] in
+                guard let self = self else { return }
+                self.showPermissionAlert(forType: .camera)
             }
         case .library:
             SBUPermissionManager.shared.requestPhotoAccessIfNeeded { status in
@@ -274,22 +265,10 @@ open class SBUCreateOpenChannelViewController: SBUBaseViewController, SBUActionS
         self.present(nav, animated: true, completion: nil)
     }
     
-    open func showPermissionAlert() {
-        let settingButton = SBUAlertButtonItem(title: SBUStringSet.Settings) { info in
-            if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
-                UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
-            }
-        }
-        
-        let cancelButton = SBUAlertButtonItem(title: SBUStringSet.Cancel) {_ in }
-        
-        SBUAlertView.show(
-            title: SBUStringSet.Alert_Allow_PhotoLibrary_Access,
-            message: SBUStringSet.Alert_Allow_PhotoLibrary_Access_Message,
-            oneTimetheme: SBUTheme.componentTheme,
-            confirmButtonItem: settingButton,
-            cancelButtonItem: cancelButton,
-            delegate: self
+    open func showPermissionAlert(forType permissionType: SBUPermissionManager.PermissionType = .photoLibrary) {
+        SBUPermissionManager.shared.showPermissionAlert(
+            forType: permissionType,
+            alertViewDelegate: self
         )
     }
     

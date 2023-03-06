@@ -23,7 +23,7 @@ extension SBUChannelInfoHeaderViewDelegate {
 }
 
 /// A view contains a channel information such as cover image, channel name and info button.
-public class SBUChannelInfoHeaderView: SBUView {
+open class SBUChannelInfoHeaderView: SBUView {
     // MARK: - Public
     
     /// The channel cover image view.
@@ -76,11 +76,11 @@ public class SBUChannelInfoHeaderView: SBUView {
     }
 
     @available(*, unavailable, renamed: "SBUChannelInfoHeaderView()")
-    required init?(coder: NSCoder) {
+    required public init?(coder: NSCoder) {
         fatalError()
     }
 
-    public override func setupViews() {
+    open override func setupViews() {
         super.setupViews()
         
         self.coverImage.clipsToBounds = true
@@ -104,7 +104,7 @@ public class SBUChannelInfoHeaderView: SBUView {
         self.addSubview(self.lineView)
     }
     
-    public override func setupLayouts() {
+    open override func setupLayouts() {
         super.setupLayouts()
         
         self.coverImage.sbu_constraint(equalTo: self, leading: 12)
@@ -134,7 +134,7 @@ public class SBUChannelInfoHeaderView: SBUView {
         self.lineView.sbu_constraint(height: 0.5)
     }
     
-    public override func setupStyles() {
+    open override func setupStyles() {
         super.setupStyles()
         
         let theme = self.isOverlay ? self.overlayTheme : self.theme
@@ -152,7 +152,7 @@ public class SBUChannelInfoHeaderView: SBUView {
         self.setupInfoButtonStyle()
     }
     
-    func setupInfoButtonStyle() {
+    public func setupInfoButtonStyle() {
         let theme = self.isOverlay ? self.overlayTheme : self.theme
         
         if let channel = self.channel as? OpenChannel {
@@ -185,7 +185,7 @@ public class SBUChannelInfoHeaderView: SBUView {
         }
     }
     
-    public override func layoutSubviews() {
+    open override func layoutSubviews() {
         super.layoutSubviews()
 
         self.coverImage.layer.cornerRadius = coverImageSize/2
@@ -194,7 +194,7 @@ public class SBUChannelInfoHeaderView: SBUView {
     }
 
     // MARK: - Common
-    public func configure(channel: BaseChannel?, description: String?) {
+    open func configure(channel: BaseChannel?, description: String?) {
         self.channel = channel
         guard let channel = self.channel else { return }
         
@@ -236,7 +236,7 @@ public class SBUChannelInfoHeaderView: SBUView {
         }
     }
     
-    func loadCoverImage() {
+    public func loadCoverImage() {
         guard let channel = self.channel else { return }
         
         if let url = channel.coverURL {

@@ -8,6 +8,8 @@
 
 import UIKit
 import SendbirdChatSDK
+import AVFAudio
+
 
 /// Event methods for the views updates and performing actions from the list component in a message thread.
 public protocol SBUMessageThreadModuleListDelegate: SBUBaseChannelModuleListDelegate {
@@ -44,7 +46,7 @@ extension SBUMessageThreadModule {
     /// A module component that represent the list of `SBUMessageThreadModule`.
     /// - Since: 3.3.0
     @objc(SBUMessageThreadModuleList)
-    @objcMembers open class List: SBUBaseChannelModule.List, SBUParentMessageInfoViewDelegate {
+    @objcMembers open class List: SBUBaseChannelModule.List, SBUParentMessageInfoViewDelegate, SBUVoicePlayerDelegate {
 
         // MARK: - UI properties (Public)
         
@@ -88,6 +90,13 @@ extension SBUMessageThreadModule {
         }
         
         public var parentMessage: BaseMessage?
+        
+        var voicePlayer: SBUVoicePlayer?
+        var voiceFileInfos: [String : SBUVoiceFileInfo] = [:]
+        var currentVoiceFileInfo: SBUVoiceFileInfo? = nil
+        var currentVoiceContentView: SBUVoiceContentView? = nil
+        var currentVoiceContentIndexPath: IndexPath? = nil
+
 
         
         // MARK: - LifeCycle
@@ -100,16 +109,22 @@ extension SBUMessageThreadModule {
         ///   - delegate: `SBUMessageThreadModuleListDelegate` type listener
         ///   - dataSource: The data source that is type of `SBUMessageThreadModuleListDataSource`
         ///   - theme: `SBUChannelTheme` object
+        ///   - voiceFileInfos: If you have voiceFileInfos, set this value. so the default value of Voice Messages are applied based on the voiceFileInfos.
+        /// - Since: 3.4.0
         open func configure(
             delegate: SBUMessageThreadModuleListDelegate,
             dataSource: SBUMessageThreadModuleListDataSource,
-            theme: SBUChannelTheme
-        ) {
+            theme: SBUChannelTheme,
+            voiceFileInfos: [String : SBUVoiceFileInfo]? = nil)
+        {
             self.delegate = delegate
             self.dataSource = dataSource
             self.theme = theme
             
             self.isTransformedList = false
+            if let voiceFileInfos = voiceFileInfos {
+                self.voiceFileInfos = voiceFileInfos
+            }
             
             self.setupViews()
             self.setupLayouts()
@@ -148,6 +163,8 @@ extension SBUMessageThreadModule {
             
             self.newMessageInfoView = nil
             self.scrollBottomView = nil
+            
+            self.voicePlayer = SBUVoicePlayer(delegate: self)
         }
         
         open override func setupLayouts() {
@@ -199,10 +216,16 @@ extension SBUMessageThreadModule {
             }
             
             let useReaction = SBUEmojiManager.useReaction(channel: self.channel)
+            
+            var voiceFileInfo: SBUVoiceFileInfo? = nil
+            if let requestId = parentMessage?.requestId {
+                voiceFileInfo = self.voiceFileInfos[requestId]
+            }
             self.parentMessageInfoView.configure(
                 message: self.parentMessage,
                 delegate: self,
-                useReaction: useReaction
+                useReaction: useReaction,
+                voiceFileInfo: voiceFileInfo
             )
             
             self.reloadTableView()
@@ -293,9 +316,13 @@ extension SBUMessageThreadModule {
         
         open override func showMessageContextMenu(for message: BaseMessage, cell: UITableViewCell, forRowAt indexPath: IndexPath) {
             let messageMenuItems = self.createMessageMenuItems(for: message)
-            guard !messageMenuItems.isEmpty else { return }
+            guard !messageMenuItems.isEmpty,
+                  let cell = cell as? SBUBaseMessageCell else
+            {
+                cell.isSelected = false
+                return
+            }
             
-            guard let cell = cell as? SBUBaseMessageCell else { return }
             let menuPoint = self.calculateMessageMenuCGPoint(indexPath: indexPath, position: cell.position)
             SBUMenuView.show(items: messageMenuItems, point: menuPoint) {
                 cell.isSelected = false
@@ -513,6 +540,7 @@ extension SBUMessageThreadModule {
                     
                     // File message
                 case let (fileMessage, fileMessageCell) as (FileMessage, SBUFileMessageCell):
+                    let voiceFileInfo = self.voiceFileInfos[fileMessage.requestId] ?? nil
                     let configuration = SBUFileMessageCellParams(
                         message: fileMessage,
                         hideDateView: isSameDay,
@@ -520,11 +548,29 @@ extension SBUMessageThreadModule {
                         groupPosition: self.getMessageGroupingPosition(currentIndex: indexPath.row),
                         receiptState: .notUsed,
                         useReaction: useReaction,
-                        isThreadMessage: true
+                        isThreadMessage: true,
+                        voiceFileInfo: voiceFileInfo
                     )
+                    
+                if voiceFileInfo != nil,
+                   self.parentMessageInfoView.baseFileContentView != self.currentVoiceContentView {
+                    self.currentVoiceFileInfo = nil
+                    self.currentVoiceContentView = nil
+                }
+                
                     fileMessageCell.configure(with: configuration)
                     self.setMessageCellGestures(fileMessageCell, message: fileMessage, indexPath: indexPath)
                     self.setFileMessageCellImage(fileMessageCell, fileMessage: fileMessage)
+                
+                    if let voiceFileInfo = voiceFileInfo,
+                       voiceFileInfo.isPlaying == true,
+                       let voiceContentView = fileMessageCell.baseFileContentView as? SBUVoiceContentView {
+                        
+                        self.currentVoiceContentIndexPath = indexPath
+                        self.currentVoiceFileInfo = voiceFileInfo
+                        self.currentVoiceContentView = voiceContentView
+                    }
+                
                 default:
                     let configuration = SBUBaseMessageCellParams(
                         message: message,
@@ -592,6 +638,11 @@ extension SBUMessageThreadModule {
             self.configureCell(messageCell, message: message, forRowAt: indexPath)
             
             return cell
+        }
+        
+        open override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+            guard let fileMessageCell = cell as? SBUFileMessageCell,
+                  let _ = fileMessageCell.baseFileContentView as? SBUVoiceContentView else { return }
         }
         
         /// Generates identifier of message cell.
@@ -714,5 +765,275 @@ extension SBUMessageThreadModule.List {
             // from send message
             self.scrollTableView(to: self.fullMessageList.count - 1)
         }
+    }
+}
+
+
+// MARK: - Voice message
+extension SBUMessageThreadModule.List {
+    func pauseVoicePlayer() {
+        self.currentVoiceFileInfo?.isPlaying = false
+        self.voicePlayer?.pause()
+    }
+    
+    func pauseVoicePlayer(requestId: String) {
+        if let voiceFileInfo = self.voiceFileInfos[requestId],
+           voiceFileInfo.isPlaying == true
+        {
+            voiceFileInfo.isPlaying = false
+            self.voicePlayer?.pause()
+        }
+    }
+    
+    func pauseAllVoicePlayer() {
+        self.currentVoiceFileInfo?.isPlaying = false
+        self.voicePlayer?.pause()
+        
+        for (_, value) in self.voiceFileInfos {
+            value.isPlaying = false
+        }
+    }
+    
+    /// Updates voice message
+    /// - Note: As a default, it's called from `baseChannelModule(_:didTapVoiceMessage:cell:forRowAt:)` delegate method.
+    /// - Parameters:
+    ///   - cell: The message cell
+    ///   - message: message object
+    ///   - indexPath: Cell's indexPath
+    ///
+    /// - Since: 3.4.0
+    func updateVoiceMessage(_ cell: SBUBaseMessageCell, message: BaseMessage, indexPath: IndexPath) {
+        guard let fileMessageCell = cell as? SBUFileMessageCell,
+              let fileMessage = message as? FileMessage,
+              let voiceContentView = fileMessageCell.baseFileContentView as? SBUVoiceContentView,
+              SBUUtils.getFileType(by: fileMessage) == .voice else { return }
+
+        if self.voiceFileInfos[fileMessage.requestId] == nil {
+            voiceContentView.updateVoiceContentStatus(.loading)
+        }
+        
+        SBUCacheManager.File.loadFile(
+            urlString: fileMessage.url,
+            cacheKey: fileMessage.requestId,
+            fileName: fileMessage.name
+        ) { [weak self] filePath, fileData in
+            if voiceContentView.status == .loading || voiceContentView.status == .none {
+                voiceContentView.updateVoiceContentStatus(.prepared)
+            }
+            
+            var voicefileInfo: SBUVoiceFileInfo? = nil
+            if self?.voiceFileInfos[fileMessage.requestId] == nil {
+                var playtime: Double = 0
+                let metaArrays = message.metaArrays(keys: [SBUConstant.voiceMessageDurationKey])
+                if metaArrays.count > 0 {
+                    let value = metaArrays[0].value[0]
+                    playtime = Double(value) ?? 0
+                }
+                
+                voicefileInfo = SBUVoiceFileInfo(
+                    fileName: fileMessage.name,
+                    filePath: filePath,
+                    playtime: playtime,
+                    currentPlayTime: 0
+                )
+                
+                self?.voiceFileInfos[fileMessage.requestId] = voicefileInfo
+            } else {
+                voicefileInfo = self?.voiceFileInfos[fileMessage.requestId]
+            }
+            
+            var actionInSameView = false
+            if let voicefileInfo = voicefileInfo {
+                if self?.currentVoiceFileInfo?.isPlaying == true {
+                    // updated status of previously contentView
+                    let currentPlayTime = self?.currentVoiceFileInfo?.currentPlayTime ?? 0
+                    self?.currentVoiceFileInfo?.isPlaying = false
+                    self?.currentVoiceContentView?.updateVoiceContentStatus(.pause, time: currentPlayTime)
+                    
+                    if self?.currentVoiceContentView == voiceContentView {
+                        actionInSameView = true
+                    }
+                }
+                
+                self?.voicePlayer?.configure(voiceFileInfo: voicefileInfo)
+            }
+            
+            if let voicefileInfo = voicefileInfo {
+                self?.voicePlayer?.configure(voiceFileInfo: voicefileInfo)
+                self?.currentVoiceContentIndexPath = indexPath
+            }
+            
+            if self?.currentVoiceFileInfo != voicefileInfo {
+                self?.pauseAllVoicePlayer()
+            }
+            
+            self?.currentVoiceFileInfo = voicefileInfo
+            self?.currentVoiceContentView = voiceContentView
+            
+            switch voiceContentView.status {
+            case .none:
+                break
+            case .loading:
+                break
+            case .prepared:
+                self?.voicePlayer?.play()
+            case .playing:
+                self?.voicePlayer?.pause()
+            case .pause:
+                if actionInSameView == true { break }
+
+                let currentPlayTime = self?.currentVoiceFileInfo?.currentPlayTime ?? 0
+                self?.voicePlayer?.play(fromTime: currentPlayTime)
+            case .finishPlaying:
+                self?.voicePlayer?.play()
+            }
+        }
+    }
+    
+    func updateParentInfoVoiceMessage(_ fileMessage: FileMessage) {
+        guard let voiceContentView = self.parentMessageInfoView.baseFileContentView as? SBUVoiceContentView,
+              SBUUtils.getFileType(by: fileMessage) == .voice else { return }
+        
+        SBUCacheManager.File.loadFile(
+            urlString: fileMessage.url,
+            cacheKey: fileMessage.requestId,
+            fileName: fileMessage.name
+        ) { [weak self] filePath, fileData in
+            if voiceContentView.status == .loading || voiceContentView.status == .none {
+                voiceContentView.updateVoiceContentStatus(.prepared)
+            }
+            
+            var voicefileInfo: SBUVoiceFileInfo? = nil
+            if self?.voiceFileInfos[fileMessage.requestId] == nil {
+                var playtime: Double = 0
+                let metaArrays = fileMessage.metaArrays(keys: [SBUConstant.voiceMessageDurationKey])
+                if metaArrays.count > 0 {
+                    let value = metaArrays[0].value[0]
+                    playtime = Double(value) ?? 0
+                }
+                
+                voicefileInfo = SBUVoiceFileInfo(
+                    fileName: fileMessage.name,
+                    filePath: filePath,
+                    playtime: playtime,
+                    currentPlayTime: 0
+                )
+                
+                self?.voiceFileInfos[fileMessage.requestId] = voicefileInfo
+            } else {
+                voicefileInfo = self?.voiceFileInfos[fileMessage.requestId]
+            }
+            
+            var actionInSameView = false
+            if let voicefileInfo = voicefileInfo {
+                if self?.currentVoiceFileInfo?.isPlaying == true {
+                    // updated status of previously contentView
+                    let currentPlayTime = self?.currentVoiceFileInfo?.currentPlayTime ?? 0
+                    self?.currentVoiceFileInfo?.isPlaying = false
+                    self?.currentVoiceContentView?.updateVoiceContentStatus(.pause, time: currentPlayTime)
+                    
+                    if self?.currentVoiceContentView == voiceContentView {
+                        actionInSameView = true
+                    }
+                }
+                
+                self?.voicePlayer?.configure(voiceFileInfo: voicefileInfo)
+            }
+            
+            if let voicefileInfo = voicefileInfo {
+                self?.voicePlayer?.configure(voiceFileInfo: voicefileInfo)
+                self?.currentVoiceContentIndexPath = nil
+            }
+            
+            if self?.currentVoiceFileInfo != voicefileInfo {
+                self?.pauseAllVoicePlayer()
+            }
+            
+            self?.currentVoiceFileInfo = voicefileInfo
+            self?.currentVoiceContentView = voiceContentView
+            
+            switch voiceContentView.status {
+            case .none:
+                break
+            case .loading:
+                break
+            case .prepared:
+                self?.voicePlayer?.play()
+            case .playing:
+                self?.voicePlayer?.pause()
+            case .pause:
+                if actionInSameView == true { break }
+
+                let currentPlayTime = self?.currentVoiceFileInfo?.currentPlayTime ?? 0
+                self?.voicePlayer?.play(fromTime: currentPlayTime)
+            case .finishPlaying:
+                self?.voicePlayer?.play()
+            }
+        }
+    }
+    
+    // MARK: - SBUVoicePlayerDelegate
+    public func voicePlayerDidReceiveError(_ player: SBUVoicePlayer, errorStatus: SBUVoicePlayerErrorStatus) {}
+    
+    public func voicePlayerDidStart(_ player: SBUVoicePlayer) {
+        let currentPlayTime = self.currentVoiceFileInfo?.currentPlayTime ?? 0
+        self.currentVoiceFileInfo?.isPlaying = true
+        
+        var voiceContentView: SBUVoiceContentView? = nil
+        if let indexPath = self.currentVoiceContentIndexPath,
+           let cell = self.tableView.cellForRow(at: indexPath) as? SBUFileMessageCell {
+            voiceContentView = cell.baseFileContentView as? SBUVoiceContentView
+        } else if parentMessageInfoView.baseFileContentView == self.currentVoiceContentView {
+            voiceContentView = parentMessageInfoView.baseFileContentView as? SBUVoiceContentView
+        }
+        
+        voiceContentView?.updateVoiceContentStatus(.playing, time: currentPlayTime)
+    }
+    
+    public func voicePlayerDidPause(_ player: SBUVoicePlayer, voiceFileInfo: SBUVoiceFileInfo?) {
+        let currentPlayTime = self.currentVoiceFileInfo?.currentPlayTime ?? 0
+        self.currentVoiceFileInfo?.isPlaying = false
+        
+        var voiceContentView: SBUVoiceContentView? = nil
+        if let indexPath = self.currentVoiceContentIndexPath,
+           let cell = self.tableView.cellForRow(at: indexPath) as? SBUFileMessageCell {
+            voiceContentView = cell.baseFileContentView as? SBUVoiceContentView
+        } else if parentMessageInfoView.baseFileContentView == self.currentVoiceContentView {
+            voiceContentView = parentMessageInfoView.baseFileContentView as? SBUVoiceContentView
+        }
+        
+        voiceContentView?.updateVoiceContentStatus(.pause, time: currentPlayTime)
+    }
+    
+    public func voicePlayerDidStop(_ player: SBUVoicePlayer) {
+        let time = self.currentVoiceFileInfo?.playtime ?? 0
+        self.currentVoiceFileInfo?.isPlaying = false
+        
+        var voiceContentView: SBUVoiceContentView? = nil
+        if let indexPath = self.currentVoiceContentIndexPath,
+           let cell = self.tableView.cellForRow(at: indexPath) as? SBUFileMessageCell {
+            voiceContentView = cell.baseFileContentView as? SBUVoiceContentView
+        } else if parentMessageInfoView.baseFileContentView == self.currentVoiceContentView {
+            voiceContentView = parentMessageInfoView.baseFileContentView as? SBUVoiceContentView
+        }
+        
+        voiceContentView?.updateVoiceContentStatus(.finishPlaying, time: time)
+    }
+    
+    public func voicePlayerDidReset(_ player: SBUVoicePlayer) {}
+    
+    public func voicePlayerDidUpdatePlayTime(_ player: SBUVoicePlayer, time: TimeInterval) {
+        self.currentVoiceFileInfo?.currentPlayTime = time
+        self.currentVoiceFileInfo?.isPlaying = true
+        
+        var voiceContentView: SBUVoiceContentView? = nil
+        if let indexPath = self.currentVoiceContentIndexPath,
+           let cell = self.tableView.cellForRow(at: indexPath) as? SBUFileMessageCell {
+            voiceContentView = cell.baseFileContentView as? SBUVoiceContentView
+        } else if parentMessageInfoView.baseFileContentView == self.currentVoiceContentView {
+            voiceContentView = parentMessageInfoView.baseFileContentView as? SBUVoiceContentView
+        }
+        
+        voiceContentView?.updateVoiceContentStatus(.playing, time: time)
     }
 }

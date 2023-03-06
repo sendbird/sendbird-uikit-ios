@@ -23,13 +23,15 @@ extension SBUActionSheetDelegate {
 public class SBUActionSheetItem: SBUCommonItem {
     var completionHandler: SBUActionSheetHandler?
     
-    public override init(title: String? = nil,
-                         color: UIColor? = SBUColorSet.onlight01,
-                         image: UIImage? = nil,
-                         font: UIFont? = nil,
-                         tintColor: UIColor? = nil,
-                         textAlignment: NSTextAlignment = .left,
-                         tag: Int? = nil) {
+    public override init(
+        title: String? = nil,
+        color: UIColor? = SBUColorSet.onlight01,
+        image: UIImage? = nil,
+        font: UIFont? = nil,
+        tintColor: UIColor? = nil,
+        textAlignment: NSTextAlignment = .left,
+        tag: Int? = nil
+    ) {
         super.init(
             title: title,
             color: color,

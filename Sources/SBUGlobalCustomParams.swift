@@ -117,6 +117,22 @@ public class SBUGlobalCustomParams {
     /// ```
     /// - Since: 1.2.2
     public static var fileMessageParamsSendBuilder:((_ params: FileMessageCreateParams?) -> Void)? = nil
+    
+    /// This is a builder that allows you to predefined the global `FileMessageCreateParams` processing to be used when sending a voice message.
+    ///
+    /// - Important:
+    /// * This value is ignored if you set the parameter value directly through functions that receive the parameter inside the class.
+    /// * If you change the `fileName`, `mimeType`, `fileSize` and `metaArrays` values, you cannot guarantee the processing of Voice Message.
+    /// * If you want to set `metaArrays`, please add `metaArray` using the `append` method.
+    /// See the example below for builder setting.
+    /// ```
+    /// SBUGlobalCustomParams.fileMessageParamsSendBuilder = { params in
+    ///     params?.metaArrays?.append( <MetaArray> )
+    ///     ...
+    /// }
+    /// ```
+    /// - Since: 3.4.0
+    public static var voiceFileMessageParamsSendBuilder:((_ params: FileMessageCreateParams?) -> Void)? = nil
 
     
     /// This is a builder that allows you to predefined the global `MessageListParams` processing to be used when loading message list.
