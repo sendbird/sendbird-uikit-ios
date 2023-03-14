@@ -38,7 +38,7 @@ open class SBUOpenChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
         
         SendbirdChat.addChannelDelegate(
             self,
-            identifier: "\(SBUConstant.groupChannelDelegateIdentifier).\(self.description)"
+            identifier: "\(SBUConstant.openChannelDelegateIdentifier).\(self.description)"
         )
         
         if let channel = channel {
@@ -49,6 +49,12 @@ open class SBUOpenChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
         }
 
         self.loadChannel(channelURL: self.channelURL)
+    }
+    
+    deinit {
+        SendbirdChat.removeChannelDelegate(
+            forIdentifier: "\(SBUConstant.openChannelDelegateIdentifier).\(self.description)"
+        )
     }
 
     

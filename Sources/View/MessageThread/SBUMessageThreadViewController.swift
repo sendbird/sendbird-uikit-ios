@@ -592,6 +592,7 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
     
     open override func baseChannelModuleDidEndTyping(_ inputComponent: SBUBaseChannelModule.Input) {
         self.viewModel?.endTypingMessage()
+        self.inputComponent?.dismissSuggestedMentionList()
     }
     
     

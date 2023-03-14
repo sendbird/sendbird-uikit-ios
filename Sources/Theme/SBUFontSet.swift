@@ -62,7 +62,7 @@ public class SBUFontSet {
     static var body3Attributes: [NSAttributedString.Key: Any] = {
         let style = NSMutableParagraphStyle()
         let pointSize = SBUFontSet.body3.pointSize
-        let defaultLineHeight = 16.f
+        let defaultLineHeight = 20.f
         let defaultFontSize = 14.f
         style.minimumLineHeight = defaultLineHeight * pointSize / defaultFontSize
         return [
@@ -116,6 +116,19 @@ public class SBUFontSet {
     /// Medium, 14pt
     public static var button3 = UIFont.systemFont(ofSize: 14.0, weight: .medium)
     static var button3Attributes: [NSAttributedString.Key: Any] = {
+        let style = NSMutableParagraphStyle()
+        let pointSize = SBUFontSet.button3.pointSize
+        let defaultLineHeight = 16.f
+        let defaultFontSize = 14.f
+        style.minimumLineHeight = defaultLineHeight * pointSize / defaultFontSize
+        return [
+            .font: SBUFontSet.button3,
+            .paragraphStyle: style
+        ]
+    }()
+    /// Bold, 14pt
+    public static var button4 = UIFont.systemFont(ofSize: 14.0, weight: .bold)
+    static var button4Attributes: [NSAttributedString.Key: Any] = {
         let style = NSMutableParagraphStyle()
         let pointSize = SBUFontSet.button3.pointSize
         let defaultLineHeight = 16.f
@@ -224,6 +237,21 @@ public class SBUFontSet {
             .paragraphStyle: style
         ]
     }()
-     
+    
+    
+    /// Sets custom font with name and size
+    /// - Parameters:
+    ///   - name: font name string
+    ///   - size: font size
+    /// - Returns: UIFont object. If `name` is `nil`, it returns the system font.
+    /// - Since: 3.5.0
+    static func customFont(name: String? = nil, size: CGFloat) -> UIFont {
+        if let name = name,
+            let font = UIFont(name: name, size: size) {
+            return font
+        } else {
+            return UIFont.systemFont(ofSize: size)
+        }
+    }
 }
  

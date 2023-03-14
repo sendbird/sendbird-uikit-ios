@@ -101,6 +101,10 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
     
     deinit {
         self.messageCollection?.dispose()
+        
+        SendbirdChat.removeChannelDelegate(
+            forIdentifier: "\(SBUConstant.groupChannelDelegateIdentifier).\(self.description)"
+        )
     }
 
     
@@ -239,10 +243,9 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
             initPolicy: initPolicy,
             cacheResultHandler: { [weak self] cacheResult, error in
                 guard let self = self else { return }
-                defer {
-                    self.displaysLocalCachedListFirst = false
-                    
-                }
+                
+                defer { self.displaysLocalCachedListFirst = false }
+                
                 if let error = error {
                     self.delegate?.didReceiveError(error, isBlocker: false)
                     return

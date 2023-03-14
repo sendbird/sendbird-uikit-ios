@@ -39,7 +39,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         SBUGlobals.isChannelListMessageReceiptStateEnabled = true
         // User Mention
         SBUGlobals.isUserMentionEnabled = true
-        // GroupChannel - Voice MEssage
+        // GroupChannel - Voice Message
         SBUGlobals.voiceMessageConfig.isVoiceMessageEnabled = true
         
         self.initializeRemoteNotification()

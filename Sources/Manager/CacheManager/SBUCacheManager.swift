@@ -25,7 +25,7 @@ class SBUCacheManager {
     }
     
     static func fileExtension(urlString: String) -> String {
-        let pathExtension = URL(fileURLWithPath: urlString).pathExtension
+        let pathExtension = URL(fileURLWithPath: URLComponents(string: urlString)?.path ?? "").pathExtension
         return pathExtension
     }
     

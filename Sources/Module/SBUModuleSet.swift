@@ -46,6 +46,16 @@ public class SBUModuleSet {
         set { shared.openChannelModule = newValue }
     }
     
+    /// The module for feed notification channel.
+    public static var feedNotificationChannelModule: SBUFeedNotificationChannelModule {
+        get { shared.feedNotificationChannelModule }
+        set { shared.feedNotificationChannelModule = newValue }
+    }
+    /// The module for chat notification channel.
+    public static var chatNotificationChannelModule: SBUChatNotificationChannelModule {
+        get { shared.chatNotificationChannelModule }
+        set { shared.chatNotificationChannelModule = newValue }
+    }
     
     // Select user
     /// The module for inviting users.
@@ -150,6 +160,8 @@ public class SBUModuleSet {
                 baseChannelModule: SBUBaseChannelModule = SBUBaseChannelModule(),
                 groupChannelModule: SBUGroupChannelModule = SBUGroupChannelModule(),
                 openChannelModule: SBUOpenChannelModule = SBUOpenChannelModule(),
+                feedNotificationChannelModule: SBUFeedNotificationChannelModule = SBUFeedNotificationChannelModule(),
+                chatNotificationChannelModule: SBUChatNotificationChannelModule = SBUChatNotificationChannelModule(),
                 inviteUserModule: SBUInviteUserModule = SBUInviteUserModule(),
                 groupRegisterOperatorModule: SBURegisterOperatorModule = SBURegisterOperatorModule(),
                 openRegisterOperatorModule: SBURegisterOperatorModule = SBURegisterOperatorModule(),
@@ -170,6 +182,9 @@ public class SBUModuleSet {
         self.baseChannelModule = baseChannelModule
         self.groupChannelModule = groupChannelModule
         self.openChannelModule = openChannelModule
+        
+        self.feedNotificationChannelModule = feedNotificationChannelModule
+        self.chatNotificationChannelModule = chatNotificationChannelModule
         
         self.inviteUserModule = inviteUserModule
         
@@ -203,6 +218,9 @@ public class SBUModuleSet {
     private var baseChannelModule: SBUBaseChannelModule
     private var groupChannelModule: SBUGroupChannelModule
     private var openChannelModule: SBUOpenChannelModule
+    
+    private var feedNotificationChannelModule: SBUFeedNotificationChannelModule
+    private var chatNotificationChannelModule: SBUChatNotificationChannelModule
     
     private var inviteUserModule: SBUInviteUserModule
     

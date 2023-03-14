@@ -33,6 +33,9 @@ public class SBUBaseMessageCellParams {
     
     /// Time the current user joined the channel.
     public internal(set) var joinedAt: Int64 = 0
+
+    /// Profile image URL for chat notification channel.
+    var profileImageURL: String? = nil
     
     /**
      - Parameters:

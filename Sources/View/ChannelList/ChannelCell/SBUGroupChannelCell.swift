@@ -307,6 +307,12 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
             } else {
                 self.messageLabel.text = fileMessage.name
             }
+            
+        case let adminMessage as AdminMessage:
+            if (self.channel as? GroupChannel)?.isChatNotification ?? false {
+                self.messageLabel.lineBreakMode = .byTruncatingMiddle
+                self.messageLabel.text = adminMessage.message
+            }
 
         default:
             self.messageLabel.text = ""
@@ -353,6 +359,11 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
                     self.messageLabel.text = SBUStringSet.VoiceMessage.Preview.channelList
                 } else {
                     self.messageLabel.text = fileMessage.name
+                }
+            case let adminMessage as AdminMessage:
+                if groupChannel.isChatNotification {
+                    self.messageLabel.lineBreakMode = .byTruncatingMiddle
+                    self.messageLabel.text = adminMessage.message
                 }
             default:
                 messageLabel.text = ""

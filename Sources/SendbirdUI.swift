@@ -68,7 +68,7 @@ public class SendbirdUI {
         
         var chatLogLevel: SendbirdChatSDK.LogLevel = .none
         if (SBULog.logType & LogType.info.rawValue) > 0 {  // info, all
-            chatLogLevel = .debug
+            chatLogLevel = .verbose
         } else if (SBULog.logType & LogType.warning.rawValue) > 0 {
             chatLogLevel = .warning
         } else if (SBULog.logType & LogType.error.rawValue) > 0 {
@@ -200,7 +200,19 @@ public class SendbirdUI {
                 }
                 #endif
                 
-                completionHandler(user, error)
+                if SBUAvailable.isNotificationChannelEnabled == false {
+                    completionHandler(user, error)
+                    return
+                }
+
+                SBUNotificationChannelManager.loadGlobalNotificationChannelSettings { success in
+                    if !success { SBULog.error("[Failed] Load global notification channel settings") }
+                    
+                    SBUNotificationChannelManager.loadTemplateList { success in
+                        if !success { SBULog.error("[Failed] Load template list") }
+                        completionHandler(user, error)
+                    }
+                }
             }
         }
     }
@@ -591,11 +603,16 @@ public class SendbirdUI {
         if let channelListVc = navigationController
             .viewControllers
             .first(where: {
-                if channelType == .group {
-                    return $0 is SBUGroupChannelListViewController
-                } else {
+                switch channelType {
+                case .open:
                     // shouldn't be instance of SBUGroupChannelListViewController since this is for group channel.
                     return !($0 is SBUGroupChannelListViewController) && $0 is SBUBaseChannelListViewController
+                case .group:
+                    return $0 is SBUGroupChannelListViewController
+                case .feed:
+                    return $0 is SBUGroupChannelListViewController // Not used now
+                @unknown default:
+                    return false
                 }
             }) {
             return channelListVc
@@ -603,10 +620,15 @@ public class SendbirdUI {
             return navigationController
                 .viewControllers
                 .last(where: {
-                    if channelType == .group {
-                        return $0 is SBUGroupChannelViewController
-                    } else {
+                    switch channelType {
+                    case .open:
                         return $0 is SBUOpenChannelViewController
+                    case .group:
+                        return $0 is SBUGroupChannelViewController
+                    case .feed:
+                        return $0 is SBUFeedNotificationChannelViewController
+                    @unknown default:
+                        return false
                     }
                 })
         }

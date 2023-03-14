@@ -22,6 +22,8 @@ class SBUConstant {
     static let newMessageInfoSize = CGSize(width: 144.0, height: 38.0)
     static let newMessageButtonSize = CGSize(width: 40.0, height: 40.0)
     static let scrollBottomButtonSize = CGSize(width: 38.0, height: 38.0)
+    
+    static let newNotificationInfoSize = CGSize(width: 144.0, height: 38.0)
 
     static let bottomSheetMaxMiddleHeight: CGFloat = 244
 
@@ -35,6 +37,7 @@ class SBUConstant {
     
     static let groupChannelDelegateIdentifier = "\(bundleIdentifier).delegate.channel.group"
     static let openChannelDelegateIdentifier = "\(bundleIdentifier).delegate.channel.open"
+    static let feedChannelDelegateIdentifier = "\(bundleIdentifier).delegate.channel.feed"
     
     static let connectionDelegateIdentifier = "\(bundleIdentifier).delegate.connection"
     

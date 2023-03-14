@@ -95,6 +95,8 @@ extension SBUOpenChannelListModule {
             }
             self.tableView.backgroundColor = self.theme?.backgroundColor
             
+            (self.emptyView as? SBUEmptyView)?.setupStyles()
+            
             if isPullToRefreshEnabled {
                 self.tableView.refreshControl?.backgroundColor = self.theme?.refreshBackgroundColor
                 self.tableView.refreshControl?.tintColor = self.theme?.refreshIndicatorColor

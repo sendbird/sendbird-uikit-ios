@@ -147,9 +147,7 @@ extension SBUOpenChannelModule {
             }
             super.updateStyles(theme: theme, componentTheme: componentTheme)
             
-            if let emptyView = self.emptyView as? SBUEmptyView {
-                emptyView.setupStyles()
-            }
+            (self.emptyView as? SBUEmptyView)?.setupStyles()
         }
         
         // MARK: - Scroll Bottom View

@@ -149,6 +149,10 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
     
     deinit {
         self.messageCollection?.dispose()
+        
+        SendbirdChat.removeChannelDelegate(
+            forIdentifier: "\(SBUConstant.groupChannelDelegateIdentifier).\(self.description)"
+        )
     }
     
     /// Loads channel and messages

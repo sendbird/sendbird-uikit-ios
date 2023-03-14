@@ -8,7 +8,15 @@
 
 import UIKit
 
-// MARK: - Channel List Theme 
+// MARK: - Channel List Theme
+
+/// SBUTheme color scheme
+/// - Note: light, dark
+/// - Since: 3.5.0
+public enum SBUThemeColorScheme {
+    case light
+    case dark
+}
 
 public class SBUTheme {
     public init(groupChannelListTheme: SBUGroupChannelListTheme = .light,
@@ -18,6 +26,7 @@ public class SBUTheme {
                 channelTheme: SBUChannelTheme = .light,
                 messageInputTheme: SBUMessageInputTheme = .light,
                 messageCellTheme: SBUMessageCellTheme = .light,
+                messageTemplateTheme: SBUMessageTemplateTheme = .light,
                 userListTheme: SBUUserListTheme = .light,
                 userCellTheme: SBUUserCellTheme = .light,
                 channelSettingsTheme: SBUChannelSettingsTheme = .light,
@@ -37,6 +46,7 @@ public class SBUTheme {
         self.channelTheme = channelTheme
         self.messageInputTheme = messageInputTheme
         self.messageCellTheme = messageCellTheme
+        self.messageTemplateTheme = messageTemplateTheme
         self.userListTheme = userListTheme
         self.userCellTheme = userCellTheme
         self.channelSettingsTheme = channelSettingsTheme
@@ -47,11 +57,28 @@ public class SBUTheme {
         self.messageSearchResultCellTheme = messageSearchResultCellTheme
         self.createOpenChannelTheme = createOpenChannelTheme
         self.voiceMessageInputTheme = voiceMessageInputTheme
-        
+        self.notificationTheme = .light
     }
     
+    
     public static func set(theme: SBUTheme) {
+        self.colorScheme = theme.colorScheme
         self.shared = theme
+    }
+    
+    /// Sets color scheme of UIKit
+    /// - Parameter colorScheme: colorScheme type
+    ///
+    /// - Since: 3.5.0
+    public static func set(colorScheme: SBUThemeColorScheme) {
+        self.colorScheme = colorScheme
+        
+        switch colorScheme {
+        case .light:
+            self.shared = .light
+        case .dark:
+            self.shared = .dark
+        }
     }
     
     public static func setGroupChannelList(channelListTheme: SBUGroupChannelListTheme,
@@ -69,12 +96,15 @@ public class SBUTheme {
     public static func setChannel(channelTheme: SBUChannelTheme,
                                   messageCellTheme: SBUMessageCellTheme,
                                   messageInputTheme: SBUMessageInputTheme,
-                                  componentTheme: SBUComponentTheme) {
+                                  componentTheme: SBUComponentTheme,
+                                  messageTemplateTheme: SBUMessageTemplateTheme
+    ) {
         
         self.channelTheme = channelTheme
         self.messageCellTheme = messageCellTheme
         self.messageInputTheme = messageInputTheme
         self.componentTheme = componentTheme
+        self.messageTemplateTheme = messageTemplateTheme
     }
     
     public static func setUserList(userListTheme: SBUUserListTheme,
@@ -97,7 +127,7 @@ public class SBUTheme {
     }
     
     public static var dark: SBUTheme {
-        return SBUTheme(
+        let theme = SBUTheme(
             groupChannelListTheme: .dark,
             groupChannelCellTheme: .dark,
             openChannelListTheme: .dark,
@@ -105,6 +135,7 @@ public class SBUTheme {
             channelTheme: .dark,
             messageInputTheme: .dark,
             messageCellTheme: .dark,
+            messageTemplateTheme: .dark,
             userListTheme: .dark,
             userCellTheme: .dark,
             channelSettingsTheme: .dark,
@@ -117,10 +148,17 @@ public class SBUTheme {
             voiceMessageInputTheme: .dark
         )
         
+        theme.colorScheme = .dark
+        theme.notificationTheme = .dark
+        theme.notificationTheme.header = .dark
+        theme.notificationTheme.list = .dark
+        theme.notificationTheme.notificationCell = .dark
+        
+        return theme
     }
     
     public static var light: SBUTheme {
-        return SBUTheme(
+        let theme = SBUTheme(
             groupChannelListTheme: .light,
             groupChannelCellTheme: .light,
             openChannelListTheme: .light,
@@ -128,6 +166,7 @@ public class SBUTheme {
             channelTheme: .light,
             messageInputTheme: .light,
             messageCellTheme: .light,
+            messageTemplateTheme: .light,
             userListTheme: .light,
             userCellTheme: .light,
             channelSettingsTheme: .light,
@@ -139,6 +178,14 @@ public class SBUTheme {
             createOpenChannelTheme: .light,
             voiceMessageInputTheme: .light
         )
+        
+        theme.colorScheme = .light
+        theme.notificationTheme = .light
+        theme.notificationTheme.header = .light
+        theme.notificationTheme.list = .light
+        theme.notificationTheme.notificationCell = .light
+        
+        return theme
     }
     
     
@@ -233,16 +280,40 @@ public class SBUTheme {
         get { shared.createOpenChannelTheme }
     }
     
+    // Message template
+    public static var messageTemplateTheme: SBUMessageTemplateTheme {
+        set { shared.messageTemplateTheme = newValue }
+        get { shared.messageTemplateTheme }
+    }
+    
     // Voice message input
     public static var voiceMessageInputTheme: SBUVoiceMessageInputTheme {
         set { shared.voiceMessageInputTheme = newValue }
         get { shared.voiceMessageInputTheme }
     }
     
+    // Notification template
+    static var notificationTheme: SBUNotificationTheme {
+        set { shared.notificationTheme = newValue }
+        get { shared.notificationTheme }
+    }
+
     
     // MARK: - Private property
     
     private static var shared: SBUTheme = SBUTheme()
+    
+    /// Color scheme of Sendbird UIKit (read-only class property)
+    /// To update, use `set(colorScheme:)`.
+    /// ```swift
+    /// SBUTheme.set(colorScheme: .dark)
+    /// print(SBUTheme.colorScheme) // "SBUThemeColorScheme.dark"
+    /// ```
+    /// - Since: 3.5.0
+    public internal(set) static var colorScheme: SBUThemeColorScheme = .light
+    
+    /// Color scheme of Sendbird UIKit (internal property)
+    var colorScheme: SBUThemeColorScheme = .light
     
     // Channel List
     private var groupChannelListTheme: SBUGroupChannelListTheme
@@ -279,9 +350,16 @@ public class SBUTheme {
     // Create open channel
     private var createOpenChannelTheme: SBUCreateOpenChannelTheme
     
+    // Message Template
+    private var messageTemplateTheme: SBUMessageTemplateTheme = SBUMessageTemplateTheme()
+
     // Voice message input
     private var voiceMessageInputTheme: SBUVoiceMessageInputTheme
+
+    // Notification
+    private var notificationTheme: SBUNotificationTheme = SBUNotificationTheme()
 }
+
 
 // MARK: - Overlay Theme
 
@@ -2205,6 +2283,8 @@ public class SBUChannelSettingsTheme {
         // User Info View // TODO: userName -> channelName
         theme.userNameFont = SBUFontSet.h1
         theme.userNameTextColor = SBUColorSet.onlight01
+        theme.userPlaceholderTintColor = SBUColorSet.ondark01
+        theme.userPlaceholderBackgroundColor = SBUColorSet.background300
         
         // ActionSheet
         theme.itemTextColor = SBUColorSet.onlight01
@@ -2251,6 +2331,8 @@ public class SBUChannelSettingsTheme {
         // User Info View // TODO: userName -> channelName
         theme.userNameFont = SBUFontSet.h1
         theme.userNameTextColor = SBUColorSet.ondark01
+        theme.userPlaceholderTintColor = SBUColorSet.onlight01
+        theme.userPlaceholderBackgroundColor = SBUColorSet.background400
         
         // ActionSheet
         theme.itemTextColor = SBUColorSet.ondark01
@@ -2290,6 +2372,8 @@ public class SBUChannelSettingsTheme {
                 cellDeleteIconColor: UIColor = SBUColorSet.error300,
                 userNameFont: UIFont = SBUFontSet.h1,
                 userNameTextColor: UIColor = SBUColorSet.onlight01,
+                userPlaceholderTintColor: UIColor = SBUColorSet.ondark01,
+                userPlaceholderBackgroundColor: UIColor = SBUColorSet.background300,
                 itemTextColor: UIColor = SBUColorSet.onlight01,
                 itemColor: UIColor = SBUColorSet.primary300,
                 itemDeleteTextColor: UIColor = SBUColorSet.error300,
@@ -2321,6 +2405,8 @@ public class SBUChannelSettingsTheme {
         self.cellDeleteIconColor = cellDeleteIconColor
         self.userNameFont = userNameFont
         self.userNameTextColor = userNameTextColor
+        self.userPlaceholderTintColor = userPlaceholderTintColor
+        self.userPlaceholderBackgroundColor = userPlaceholderBackgroundColor
         self.itemTextColor = itemTextColor
         self.itemColor = itemColor
         self.itemDeleteTextColor = itemDeleteTextColor
@@ -2360,6 +2446,8 @@ public class SBUChannelSettingsTheme {
     // User Info View
     public var userNameFont: UIFont
     public var userNameTextColor: UIColor
+    public var userPlaceholderTintColor: UIColor
+    public var userPlaceholderBackgroundColor: UIColor
     
     // ActionSheet
     public var itemTextColor: UIColor
@@ -3461,7 +3549,7 @@ public class SBUVoiceMessageInputTheme {
         
         return theme
     }
-    
+
     public static var dark: SBUVoiceMessageInputTheme {
         let theme = SBUVoiceMessageInputTheme()
         
@@ -3566,5 +3654,377 @@ public class SBUVoiceMessageInputTheme {
         self.sendButtonDisabledBackgroundColor = sendButtonDisabledBackgroundColor
         self.sendButtonTintColor = sendButtonTintColor
         self.sendButtonDisabledTintColor = sendButtonDisabledTintColor
+    }
+}
+    
+
+// MARK: - Message template theme
+public class SBUMessageTemplateTheme {
+    
+    /**
+     case1:
+         ```
+        SBUMessageTemplateTheme.light.textButtonBackgroundColor = .blue
+         ```
+     case2:
+         ```
+         SBUTheme.templateMessageTheme.setDefaultTheme(
+             light: SBUMessageTemplateTheme(
+                 textFont: .systemFont(ofSize: 12),
+                 textColor: .red,
+                 textButtonFont: .systemFont(ofSize: 25),
+                 textButtonTitleColor: .orange,
+                 textButtonBackgroundColor: .blue,
+                 viewBackgroundColor: .brown
+             ),
+             dark: nil
+         )
+         ```
+     */
+    
+    public static var light: SBUMessageTemplateTheme = SBUMessageTemplateTheme.defaultLight
+    public static var dark: SBUMessageTemplateTheme = SBUMessageTemplateTheme.defaultDark
+    
+    
+    static var defaultLight: SBUMessageTemplateTheme {
+        let theme = SBUMessageTemplateTheme()
+        
+        theme.textFont = SBUFontSet.body3
+        theme.textColor = SBUColorSet.onlight01
+        theme.textButtonFont = SBUFontSet.button4
+        theme.textButtonTitleColor = SBUColorSet.primary300
+        theme.textButtonBackgroundColor = SBUColorSet.background200
+        theme.viewBackgroundColor = SBUColorSet.background100
+        
+        return theme
+    }
+    
+    static var defaultDark: SBUMessageTemplateTheme {
+        let theme = SBUMessageTemplateTheme()
+        
+        theme.textFont = SBUFontSet.body3
+        theme.textColor = SBUColorSet.ondark01
+        theme.textButtonFont = SBUFontSet.button4
+        theme.textButtonTitleColor = SBUColorSet.primary200
+        theme.textButtonBackgroundColor = SBUColorSet.background400
+        theme.viewBackgroundColor = SBUColorSet.background500
+        
+        return theme
+    }
+    
+    public func setTheme(light: SBUMessageTemplateTheme?, dark: SBUMessageTemplateTheme?) {
+        if let light = light {
+            SBUMessageTemplateTheme.light = light
+        }
+        
+        if let dark = dark {
+            SBUMessageTemplateTheme.dark = dark
+        }
+    }
+    
+    public init(
+        textFont: UIFont = SBUFontSet.body3,
+        textColor: UIColor = SBUColorSet.onlight01,
+        textButtonFont: UIFont = SBUFontSet.button4,
+        textButtonTitleColor: UIColor = SBUColorSet.primary300,
+        textButtonBackgroundColor: UIColor = SBUColorSet.background200,
+        viewBackgroundColor: UIColor = SBUColorSet.background100
+    ) {
+        self.textFont = textFont
+        self.textColor = textColor
+        self.textButtonFont = textButtonFont
+        self.textButtonTitleColor = textButtonTitleColor
+        self.textButtonBackgroundColor = textButtonBackgroundColor
+        self.viewBackgroundColor = viewBackgroundColor
+    }
+    
+    public var textFont: UIFont = SBUFontSet.body3
+    public var textColor: UIColor = SBUColorSet.onlight01 // SBUColorSet.onDark03
+    public var textButtonFont: UIFont = SBUFontSet.button4
+    public var textButtonTitleColor: UIColor = SBUColorSet.primary300 // SBUColorSet.primary200
+    public var textButtonBackgroundColor: UIColor = SBUColorSet.background200 // SBUColorSet.background400
+    public var viewBackgroundColor: UIColor = SBUColorSet.background100 // SBUColorSet.background500
+
+    
+}
+
+
+/**
+    How to set with all sub theme?
+        case 1:
+            ```
+                SBUTheme.notificationTheme = .light
+            ```
+         case 2:
+             ```
+                SBUTheme.notificationTheme = SBUNotificationTheme()
+             ```
+        case 3:
+            ```
+                SBUTheme.notificationTheme = SBUNotificationTheme(notification: .light, header: .light, list: .light)
+            ```
+        case 4:
+             ```
+                SBUTheme.notificationTheme = SBUNotificationTheme(
+                    notification: SBUNotificationTheme.Notification(),
+                    header: SBUNotificationTheme.Header(),
+                    list: SBUNotificationTheme.List()
+                )
+             ```
+         case 5:
+              ```
+                  SBUTheme.notificationTheme.header = .light
+                  SBUTheme.notificationTheme.list = .light
+              ```
+ */
+/// - Since: 3.5.0
+class SBUNotificationTheme {
+    static var light: SBUNotificationTheme {
+        get { self.baseLight }
+        set {
+            self.baseLight = newValue
+            SBUNotificationTheme.Header.light = newValue.header
+            SBUNotificationTheme.List.light = newValue.list
+            SBUNotificationTheme.NotificationCell.light = newValue.notificationCell
+        }
+    }
+    static var dark: SBUNotificationTheme {
+        get { self.baseDark }
+        set {
+            self.baseDark = newValue
+            SBUNotificationTheme.Header.dark = newValue.header
+            SBUNotificationTheme.List.dark = newValue.list
+            SBUNotificationTheme.NotificationCell.dark = newValue.notificationCell
+        }
+    }
+    var header: SBUNotificationTheme.Header = .light
+    var list: SBUNotificationTheme.List = .light
+    var notificationCell: SBUNotificationTheme.NotificationCell = .light
+    
+    init(header: SBUNotificationTheme.Header = .light,
+         list: SBUNotificationTheme.List = .light,
+         notificationCell: SBUNotificationTheme.NotificationCell = .light
+    ) {
+        self.header = header
+        self.list = list
+        self.notificationCell = notificationCell
+    }
+
+    // INFO: default 는 유지하기 위해서
+    static var baseLight: SBUNotificationTheme = SBUNotificationTheme.defaultLight
+    static var baseDark: SBUNotificationTheme = SBUNotificationTheme.defaultDark
+
+    static var defaultLight: SBUNotificationTheme {
+        let theme = SBUNotificationTheme()
+        theme.header = SBUNotificationTheme.Header.defaultLight
+        theme.list = SBUNotificationTheme.List.defaultLight
+        theme.notificationCell = SBUNotificationTheme.NotificationCell.defaultLight
+        return theme
+    }
+    
+    static var defaultDark: SBUNotificationTheme {
+        let theme = SBUNotificationTheme()
+        theme.header = SBUNotificationTheme.Header.defaultDark
+        theme.list = SBUNotificationTheme.List.defaultDark
+        theme.notificationCell = SBUNotificationTheme.NotificationCell.defaultDark
+        return theme
+    }
+}
+
+extension SBUNotificationTheme {
+    // Global Notification Theme set
+    class Header {
+        static var light: SBUNotificationTheme.Header = SBUNotificationTheme.Header.defaultLight
+        static var dark: SBUNotificationTheme.Header = SBUNotificationTheme.Header.defaultDark
+        
+        static var defaultLight: SBUNotificationTheme.Header {
+            let theme = SBUNotificationTheme.Header()
+            
+            if #available(iOS 13.0, *) {
+                theme.statusBarStyle = .darkContent
+            } else {
+                theme.statusBarStyle = .default
+            }
+            
+            theme.buttonIconTintColor = SBUColorSet.primary300
+            theme.lineColor = SBUColorSet.onlight04
+            theme.backgroundColor = SBUColorSet.background50
+            theme.textColor = SBUColorSet.onlight01
+            
+            return theme
+        }
+        
+        static var defaultDark: SBUNotificationTheme.Header {
+            let theme = SBUNotificationTheme.Header()
+            
+            theme.statusBarStyle = .lightContent
+            
+            theme.buttonIconTintColor = SBUColorSet.primary200
+            theme.lineColor = SBUColorSet.background500
+            theme.backgroundColor = SBUColorSet.background500
+            theme.textColor = SBUColorSet.ondark01
+
+            return theme
+        }
+        
+        init(statusBarStyle: UIStatusBarStyle = .default,
+                    buttonIconTintColor: UIColor = SBUColorSet.primary300,
+                    lineColor: UIColor = SBUColorSet.onlight04,
+                    backgroundColor: UIColor = SBUColorSet.background50,
+                    textSize: CGFloat = 18,
+                    textColor: UIColor = SBUColorSet.onlight01
+        ) {
+            self.statusBarStyle = statusBarStyle
+            self.buttonIconTintColor = buttonIconTintColor
+            self.lineColor = lineColor
+            self.backgroundColor = backgroundColor
+            self.textSize = textSize
+            self.textColor = textColor
+        }
+        
+        var statusBarStyle: UIStatusBarStyle
+        var buttonIconTintColor: UIColor = SBUColorSet.primary300
+        var lineColor: UIColor = SBUColorSet.onlight04
+        var backgroundColor: UIColor = SBUColorSet.background50
+        var textSize: CGFloat = 18
+        var textColor: UIColor = SBUColorSet.onlight01
+        lazy var textFont: UIFont = UIFont.systemFont(ofSize: self.textSize, weight: .bold) // internal
+    }
+    
+    
+    class List {
+        static var light: SBUNotificationTheme.List = SBUNotificationTheme.List.defaultLight
+        static var dark: SBUNotificationTheme.List = SBUNotificationTheme.List.defaultDark
+        
+        static var defaultLight: SBUNotificationTheme.List {
+            let theme = SBUNotificationTheme.List(
+                backgroundColor : SBUColorSet.background50,
+                tooltipBackgroundColor : SBUColorSet.primary300,
+                tooltipFont: SBUFontSet.body2,
+                tooltipTextColor : SBUColorSet.ondark01,
+                timelineBackgroundColor : SBUColorSet.overlay02,
+                timelineTextColor : SBUColorSet.ondark01,
+                timelineFont: SBUFontSet.caption1
+            )
+            return theme
+        }
+        
+        static var defaultDark: SBUNotificationTheme.List {
+            let theme = SBUNotificationTheme.List(
+                backgroundColor : SBUColorSet.background500,
+                tooltipBackgroundColor : SBUColorSet.primary200,
+                tooltipFont: SBUFontSet.body2,
+                tooltipTextColor : SBUColorSet.onlight01,
+                timelineBackgroundColor : SBUColorSet.overlay01,
+                timelineTextColor : SBUColorSet.ondark02,
+                timelineFont: SBUFontSet.caption1
+            )
+            return theme
+        }
+        
+        init(
+            backgroundColor: UIColor = SBUColorSet.background50,
+            tooltipBackgroundColor: UIColor = SBUColorSet.primary300,
+            tooltipFont: UIFont = SBUFontSet.body2,
+            tooltipTextColor: UIColor = SBUColorSet.ondark01,
+            timelineBackgroundColor: UIColor = SBUColorSet.overlay02,
+            timelineTextColor: UIColor = SBUColorSet.ondark01,
+            timelineFont: UIFont = SBUFontSet.caption1
+        ) {
+            self.backgroundColor = backgroundColor
+            self.tooltipBackgroundColor = tooltipBackgroundColor
+            self.tooltipFont = tooltipFont
+            self.tooltipTextColor = tooltipTextColor
+            self.timelineBackgroundColor = timelineBackgroundColor
+            self.timelineTextColor = timelineTextColor
+            self.timelineFont = timelineFont
+        }
+        
+        
+        var backgroundColor: UIColor = SBUColorSet.background50
+        
+        var tooltipBackgroundColor: UIColor = SBUColorSet.primary300
+        var tooltipFont: UIFont = SBUFontSet.body2 // client only prop
+        var tooltipTextColor: UIColor = SBUColorSet.ondark01
+        
+        var timelineBackgroundColor: UIColor = SBUColorSet.overlay02
+        var timelineTextColor: UIColor = SBUColorSet.ondark01
+        var timelineFont: UIFont = SBUFontSet.caption1  // client only prop
+    }
+    
+    class NotificationCell {
+        static var light: SBUNotificationTheme.NotificationCell = SBUNotificationTheme.NotificationCell.defaultLight
+        static var dark: SBUNotificationTheme.NotificationCell = SBUNotificationTheme.NotificationCell.defaultDark
+        
+        static var defaultLight: SBUNotificationTheme.NotificationCell {
+            let theme = SBUNotificationTheme.NotificationCell(
+                backgroundColor: SBUColorSet.background100,
+                unreadIndicatorColor: SBUColorSet.secondary300,
+                categoryTextColor: SBUColorSet.onlight02,
+                sentAtTextColor: SBUColorSet.onlight03,
+                pressedColor: SBUColorSet.primary100,
+                fallbackMessageTitleHexColor: "#e0000000",
+                fallbackMessageSubtitleHexColor: "#70000000"
+            )
+            return theme
+        }
+        
+        static var defaultDark: SBUNotificationTheme.NotificationCell {
+            let theme = SBUNotificationTheme.NotificationCell(
+                backgroundColor: SBUColorSet.background500,
+                unreadIndicatorColor: SBUColorSet.secondary300,
+                categoryTextColor: SBUColorSet.ondark02,
+                sentAtTextColor: SBUColorSet.ondark03,
+                pressedColor: SBUColorSet.primary500,
+                fallbackMessageTitleHexColor: "#e0ffffff",
+                fallbackMessageSubtitleHexColor: "#70ffffff"
+            )
+
+            return theme
+        }
+        
+        init(
+            radius: CGFloat = 8,
+            backgroundColor: UIColor = SBUColorSet.background100,
+            unreadIndicatorColor: UIColor = SBUColorSet.secondary300,
+            categoryTextSize: CGFloat = 12,
+            categoryTextColor: UIColor = SBUColorSet.onlight02,
+            sentAtTextSize: CGFloat = 14,
+            sentAtTextColor: UIColor = SBUColorSet.onlight03,
+            pressedColor: UIColor = SBUColorSet.primary100,
+            fallbackMessageTitleHexColor: String = "#e0000000",
+            fallbackMessageSubtitleHexColor: String = "#70000000"
+        ) {
+            self.radius = radius
+            self.backgroundColor = backgroundColor
+            self.unreadIndicatorColor = unreadIndicatorColor
+            self.categoryTextSize = categoryTextSize
+            self.categoryTextColor = categoryTextColor
+            self.sentAtTextSize = sentAtTextSize
+            self.sentAtTextColor = sentAtTextColor
+            self.pressedColor = pressedColor
+            self.fallbackMessageTitleHexColor = fallbackMessageTitleHexColor
+            self.fallbackMessageSubtitleHexColor = fallbackMessageSubtitleHexColor
+        }
+        
+        var radius: CGFloat = 8
+        var backgroundColor: UIColor = SBUColorSet.background100
+        
+        var unreadIndicatorColor: UIColor = SBUColorSet.secondary300
+        
+        var categoryTextSize: CGFloat = 12
+        var categoryTextColor: UIColor = SBUColorSet.onlight02
+        lazy var categoryTextFont: UIFont = SBUFontSet.customFont(size: self.categoryTextSize) // internal
+        
+        var sentAtTextSize: CGFloat = 14
+        var sentAtTextColor: UIColor = SBUColorSet.onlight03
+        lazy var sentAtTextFont: UIFont = SBUFontSet.customFont(size: self.sentAtTextSize) // internal
+        
+        // TODO: notification - nice to have
+        var pressedColor: UIColor = SBUColorSet.primary100
+        
+        // Internal
+        var fallbackMessageTitleHexColor: String = "#e0000000"
+        var fallbackMessageSubtitleHexColor: String = "#70000000"
     }
 }

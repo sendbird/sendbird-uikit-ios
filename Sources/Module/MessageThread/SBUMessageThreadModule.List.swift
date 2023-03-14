@@ -188,6 +188,8 @@ extension SBUMessageThreadModule {
             }
             self.tableView.backgroundColor = self.theme?.backgroundColor
             
+            (self.emptyView as? SBUEmptyView)?.setupStyles()
+            
             self.parentMessageInfoView.setupStyles()
         }
         

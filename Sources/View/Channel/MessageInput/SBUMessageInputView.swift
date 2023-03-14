@@ -858,6 +858,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     // MARK: - Common
     public func endTypingMode() {
         self.textView?.text = ""
+        self.placeholderLabel.isHidden = false
         self.sendButton?.isHidden = !showsSendButton
         self.voiceMessageButton?.isHidden = !showsVoiceMessageButton
         self.textViewTrailingPaddingView.isHidden = (!showsSendButton && !showsVoiceMessageButton)
@@ -955,6 +956,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         let editedText = self.textView?.text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard basedText != editedText else {
             self.endEditMode()
+            self.delegate?.messageInputViewDidEndTyping()
             return
         }
         self.delegate?.messageInputView(

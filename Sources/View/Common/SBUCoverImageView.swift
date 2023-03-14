@@ -79,6 +79,9 @@ public class SBUCoverImageView: UIView {
         let imageView = UIImageView(
             frame: CGRect(x: 0, y: 0, width: self.frame.width, height: self.frame.height)
         )
+        imageView.backgroundColor = self.theme.userPlaceholderBackgroundColor
+        imageView.contentMode = coverURL.count > 0 ? .scaleAspectFill : .center
+
         imageView.loadImage(
             urlString: coverURL,
             placeholder: SBUIconSetType.iconUser.image(
@@ -86,9 +89,7 @@ public class SBUCoverImageView: UIView {
                 to: self.iconSize
             )
         )
-        imageView.backgroundColor = self.theme.userPlaceholderBackgroundColor
-        imageView.contentMode = .scaleAspectFill
-
+        
         self.addSubview(imageView)
 
         let subviews = self.subviews
@@ -254,8 +255,9 @@ public class SBUCoverImageView: UIView {
                         to: self.iconSize
                     )
                 )
+                let profileURL = user.profileURL ?? ""
                 imageView.backgroundColor = theme.userPlaceholderBackgroundColor
-                imageView.contentMode = .scaleAspectFill
+                imageView.contentMode = profileURL.count > 0 ? .scaleAspectFill : .center
                 imageView.clipsToBounds = true
 
                 let stackView = UIStackView(frame: self.bounds)

@@ -34,15 +34,23 @@ import UIKit
 }
 
 extension SBUTableViewCell: SBUViewLifeCycle {
+    /// This function handles the initialization of views.
+    /// - NOTE: It is called from intializer of ``SBUTableViewCell``
     open func setupViews() { }
     
+    /// This function handles the initialization of autolayouts.
+    /// - NOTE: It is called from intializer of ``SBUTableViewCell``
     open func setupLayouts() { }
     
     open func updateLayouts() { }
     
+    /// This function handles the initialization of styles.
+    /// - NOTE: It is called from ``layoutSubviews()``
     open func setupStyles() { }
     
     open func updateStyles() { }
     
+    /// This function handles the initialization of actions.
+    /// - NOTE: It is called from intializer of ``SBUTableViewCell``
     open func setupActions() { }
 }

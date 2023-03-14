@@ -57,7 +57,6 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol {
 
     // MARK: - View Lifecycle
     
-    /// This function handles the initialization of views.
     open override func setupViews() {
         self.dateView.isHidden = true
         
@@ -74,12 +73,10 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol {
         ])
     }
     
-    /// This function handles the initialization of actions.
     open override func setupActions() {
         
     }
     
-    /// This function handles the initialization of autolayouts.
     open override func setupLayouts() {
         self.stackView
             .setConstraint(from: self.contentView, left: 0, bottom: 0)

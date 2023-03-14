@@ -166,6 +166,7 @@ open class SBUThreadInfoView: SBUView, SBUThreadInfoViewProtocol {
                     to: SBUIconSetType.Metric.defaultIconSize
                 )
             )
+            userImageView.backgroundColor = theme.userPlaceholderBackgroundColor
             
             // If replied user count is more than 5, last image will be covered with more icon.
             if index == self.repliedUserLimit - 1 {

@@ -703,6 +703,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     
     open override func baseChannelModuleDidEndTyping(_ inputComponent: SBUBaseChannelModule.Input) {
         self.viewModel?.endTypingMessage()
+        self.inputComponent?.dismissSuggestedMentionList()
     }
     
     

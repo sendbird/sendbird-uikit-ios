@@ -72,4 +72,18 @@ public class SBUAvailable {
     public static func isSupportMessageSearch() -> Bool {
         return self.isAvailable(key: MESSAGE_SEARCH)
     }
+
+    /// This method gets notification info.
+    /// - Returns: `NotificationInfo` object
+    /// - Since: 3.5.0
+    static func notificationInfo() -> NotificationInfo? {
+        return SendbirdChat.getAppInfo()?.notificationInfo
+    }
+    
+    /// This method checks if the application enabled notification channel feature.
+    /// - Returns: `true` if the notification channel was enabled, `false` otherwise.
+    /// - Since: 3.5.0
+    static var isNotificationChannelEnabled: Bool {
+        return SendbirdChat.getAppInfo()?.notificationInfo?.isEnabled ?? false
+    }
 }

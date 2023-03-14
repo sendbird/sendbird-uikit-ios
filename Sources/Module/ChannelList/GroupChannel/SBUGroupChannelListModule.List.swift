@@ -105,6 +105,8 @@ extension SBUGroupChannelListModule {
                 self.theme = theme
             }
             self.tableView.backgroundColor = self.theme?.backgroundColor
+            
+            (self.emptyView as? SBUEmptyView)?.setupStyles()
         }
         
         
@@ -265,6 +267,14 @@ extension SBUGroupChannelListModule.List {
     open override func tableView(_ tableView: UITableView,
                         trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath)
     -> UISwipeActionsConfiguration? {
+        if self.channelList?.count ?? 0 > indexPath.row,
+           let channelList = channelList
+        {
+            let channel = channelList[indexPath.row]
+            if channel.isChatNotification {
+                return nil
+            }
+        }
         
         var actions: [UIContextualAction] = []
         if let leaveAction = leaveContextualAction(with: indexPath) {

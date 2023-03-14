@@ -1,0 +1,12 @@
+//
+//  Release.xcconfig
+//  SendbirdUIKit
+//
+//  Created by Tez Park on 2022/08/11.
+//  Copyright © 2022 Sendbird, Inc. All rights reserved.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+#include "Base.xcconfig"

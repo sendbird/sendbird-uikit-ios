@@ -43,7 +43,8 @@ class SBUDownloadManager {
             
             DispatchQueue.main.async { SBULoading.start() }
             
-            let fileName = "\(fileName).\(url.pathExtension)"
+            let pathExtension = SBUCacheManager.fileExtension(urlString: url.absoluteString)
+            let fileName = "\(fileName).\(pathExtension)"
             if SBUCacheManager.Image.diskCache.cacheExists(key: fileName) {
                 let filePath = URL(string: SBUCacheManager.Image.diskCache.pathForKey(fileName))
                     ?? URL(fileURLWithPath: SBUCacheManager.Image.diskCache.pathForKey(fileName))

@@ -180,7 +180,8 @@ extension SBUUserListModule {
             }
             
             self.tableView.backgroundColor = self.theme?.backgroundColor
-            self.emptyView?.backgroundColor = self.theme?.backgroundColor
+            
+            (self.emptyView as? SBUEmptyView)?.setupStyles()
         }
         
         

@@ -96,7 +96,7 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
         
         SendbirdChat.addChannelDelegate(
             self,
-            identifier: "\(SBUConstant.groupChannelDelegateIdentifier).\(self.description)"
+            identifier: "\(SBUConstant.openChannelDelegateIdentifier).\(self.description)"
         )
         
         if let channel = channel {
@@ -121,6 +121,10 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
     
     deinit {
         SBULog.info("")
+        
+        SendbirdChat.removeChannelDelegate(
+            forIdentifier: "\(SBUConstant.openChannelDelegateIdentifier).\(self.description)"
+        )
     }
     
     

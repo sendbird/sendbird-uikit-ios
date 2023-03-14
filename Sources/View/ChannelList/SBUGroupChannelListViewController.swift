@@ -203,12 +203,32 @@ open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, 
     ///   - channelURL: channel url for use in channelViewController.
     ///   - messageListParams: If there is a messageListParams set directly for use in Channel, set it up here
     open override func showChannel(channelURL: String, messageListParams: MessageListParams? = nil) {
-        let channelVC = SBUViewControllerSet.GroupChannelViewController.init(
-            channelURL: channelURL,
-            messageListParams: messageListParams,
-            displaysLocalCachedListFirst: true
-        )
-        self.navigationController?.pushViewController(channelVC, animated: true)
+        GroupChannel.getChannel(url: channelURL) { channel, error in
+            guard error == nil, let channel = channel else { return }
+            
+            if channel.isChatNotification {
+                let channelVC = SBUViewControllerSet.ChatNotificationChannelViewController.init(
+                    channel: channel,
+                    notificationListParams: messageListParams,
+                    displaysLocalCachedListFirst: true
+                )
+                self.navigationController?.pushViewController(channelVC, animated: true)
+            } else if channel.isFeedChannel() {
+                let channelVC = SBUViewControllerSet.FeedNotificationChannelViewController.init(
+                    channelURL: channelURL,
+                    notificationListParams: messageListParams,
+                    displaysLocalCachedListFirst: true
+                )
+                self.navigationController?.pushViewController(channelVC, animated: true)
+            } else {
+                let channelVC = SBUViewControllerSet.GroupChannelViewController.init(
+                    channelURL: channelURL,
+                    messageListParams: messageListParams,
+                    displaysLocalCachedListFirst: true
+                )
+                self.navigationController?.pushViewController(channelVC, animated: true)
+            }
+        }
     }
     
     /// This is a function that shows the channel type selector when a supergroup/broadcast channel can be set.

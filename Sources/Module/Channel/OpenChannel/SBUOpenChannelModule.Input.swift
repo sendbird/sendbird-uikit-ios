@@ -58,6 +58,12 @@ extension SBUOpenChannelModule {
             setupViews()
             setupLayouts()
             setupStyles()
+            
+            if let messageInputView = self.messageInputView as? SBUMessageInputView {
+                messageInputView.voiceMessageButton?.isHidden = true
+                messageInputView.textViewTrailingPaddingView.isHidden = true
+                messageInputView.showsVoiceMessageButton = false
+            }
         }
         
         /// Updates styles with overlaying state.

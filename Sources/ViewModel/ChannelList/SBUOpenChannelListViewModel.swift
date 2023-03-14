@@ -79,6 +79,10 @@ open class SBUOpenChannelListViewModel: SBUBaseChannelListViewModel {
     
     deinit {
         self.reset()
+        
+        SendbirdChat.removeChannelDelegate(
+            forIdentifier: "\(SBUConstant.openChannelDelegateIdentifier).\(self.description)"
+        )
     }
     
     

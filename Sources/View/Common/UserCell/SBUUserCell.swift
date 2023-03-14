@@ -264,13 +264,15 @@ open class SBUUserCell: SBUTableViewCell {
             + (isMe ? " \(SBUStringSet.UserList_Me)" : "")
         self.hasNickname = user.nickname != nil && user.nickname?.isEmpty == false
         
+        let profileURL = user.profileURL ?? ""
         self.loadImageSession = self.userImageView.loadImage(
-            urlString: user.profileURL ?? "",
+            urlString: profileURL,
             placeholder: SBUIconSetType.iconUser.image(
                 with: self.theme.userPlaceholderTintColor,
                 to: SBUIconSetType.Metric.defaultIconSize
             )
         )
+        self.userImageView.contentMode = profileURL.count > 0 ? .scaleAspectFill : .center
         
         self.userImageView.backgroundColor = theme.userPlaceholderBackgroundColor
         

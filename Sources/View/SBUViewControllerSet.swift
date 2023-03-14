@@ -16,6 +16,9 @@ public class SBUViewControllerSet {
     public static var GroupChannelViewController: SBUGroupChannelViewController.Type = SBUGroupChannelViewController.self
     public static var OpenChannelViewController: SBUOpenChannelViewController.Type = SBUOpenChannelViewController.self
     
+    public static var FeedNotificationChannelViewController: SBUFeedNotificationChannelViewController.Type = SBUFeedNotificationChannelViewController.self
+    public static var ChatNotificationChannelViewController: SBUChatNotificationChannelViewController.Type = SBUChatNotificationChannelViewController.self
+    
     public static var CreateChannelViewController: SBUCreateChannelViewController.Type = SBUCreateChannelViewController.self
     public static var CreateOpenChannelViewController: SBUCreateOpenChannelViewController.Type = SBUCreateOpenChannelViewController.self
     

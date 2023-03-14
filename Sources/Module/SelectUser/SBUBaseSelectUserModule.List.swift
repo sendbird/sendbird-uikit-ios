@@ -125,8 +125,9 @@ extension SBUBaseSelectUserModule {
                 self.theme = theme
             }
             
-            self.emptyView?.backgroundColor = self.theme?.backgroundColor
             self.tableView.backgroundColor = self.theme?.backgroundColor
+            
+            (self.emptyView as? SBUEmptyView)?.setupStyles()
         }
 
         

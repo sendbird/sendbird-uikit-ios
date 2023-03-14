@@ -434,6 +434,7 @@ extension SBUGroupChannelModule {
                 self.updateBroadcastModeState()
                 self.updateFrozenModeState()
                 self.updateMutedModeState()
+                self.updateNotificationModeState()
             } else {
                 if let messageInputView = self.messageInputView as? SBUMessageInputView {
                     messageInputView.setErrorState()
@@ -471,6 +472,13 @@ extension SBUGroupChannelModule {
                     messageInputView.setMutedModeState(isMuted)
                 }
             }
+        }
+        
+        /// Updates the mode of `messageInputView` according to notification state of the channel.
+        /// - Since: 3.5.0
+        open func updateNotificationModeState() {
+            let isChatNotification = self.channel?.isChatNotification ?? false
+            self.messageInputView?.isHidden = isChatNotification
         }
         
         

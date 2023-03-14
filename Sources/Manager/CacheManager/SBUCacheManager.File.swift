@@ -101,7 +101,7 @@ extension SBUCacheManager {
         
         static func createCacheFileName(urlString: String, cacheKey: String?, fileName: String?) -> String {
             var filePath = SBUCacheManager.createHashName(urlString: urlString)
-            let pathExtension = URL(string: urlString)?.pathExtension ?? ""
+            let pathExtension = SBUCacheManager.fileExtension(urlString: urlString)
             if let cacheKey = cacheKey {
                 self.renameIfNeeded(key: filePath, newKey: cacheKey)
                 filePath = cacheKey

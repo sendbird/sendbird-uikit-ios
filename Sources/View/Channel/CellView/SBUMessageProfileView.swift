@@ -82,6 +82,8 @@ open class SBUMessageProfileView: SBUView {
         imageView.layer.borderColor = UIColor.clear.cgColor
         imageView.layer.borderWidth = 1
         
+        imageView.contentMode = urlString.count > 0 ? .scaleAspectFill : .center
+        
         self.imageDownloadTask = self.imageView.loadImage(
             urlString: urlString,
             placeholder: SBUIconSetType.iconUser.image(

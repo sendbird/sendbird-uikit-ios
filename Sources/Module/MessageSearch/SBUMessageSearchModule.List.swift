@@ -154,6 +154,8 @@ extension SBUMessageSearchModule {
                 self.theme = theme
             }
             self.tableView.backgroundColor = self.theme?.backgroundColor
+            
+            (self.emptyView as? SBUEmptyView)?.setupStyles()
         }
         
 

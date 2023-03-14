@@ -169,6 +169,7 @@ public enum EmptyViewType: Int {
     case none
     case noChannels
     case noMessages
+    case noNotifications
     case noMembers
     case noMutedMembers
     case noMutedParticipants
@@ -273,4 +274,14 @@ public enum MessageMenuItem {
     case warning = 0b00000010
     case info    = 0b00000100
     case all     = 0b00000111
+}
+
+
+
+/// This is an enumeration for notification type.
+/// - Since: 3.5.0
+enum NotificationType: Int {
+    case none
+    case feed
+    case chat
 }

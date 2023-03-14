@@ -18,12 +18,12 @@ class SBUChannelTitleView: UIView {
     
     
     // MARK: - Private
-    private lazy var contentView = UIView()
-    private lazy var coverImage = SBUCoverImageView()
-    private lazy var stackView = UIStackView()
-    private lazy var titleLabel = UILabel()
-    private lazy var statusField = UITextField()
-    private lazy var onlineStateIcon = UIView()
+    lazy var contentView = UIView()
+    lazy var coverImage = SBUCoverImageView()
+    lazy var stackView = UIStackView()
+    lazy var titleLabel = UILabel()
+    lazy var statusField = UITextField()
+    lazy var onlineStateIcon = UIView()
 
     private let kCoverImageSize: CGFloat = 34.0
     
@@ -163,6 +163,8 @@ class SBUChannelTitleView: UIView {
                 self.titleLabel.text = SBUUtils.generateChannelName(channel: groupChannel)
             } else if let _ = channel as? OpenChannel {
                 self.titleLabel.text = SBUStringSet.Open_Channel_Name_Default
+            } else if let _ = channel as? FeedChannel {
+                self.titleLabel.text = SBUStringSet.Notification_Channel_Name_Default
             } else {
                 self.titleLabel.text = ""
             }
@@ -189,6 +191,11 @@ class SBUChannelTitleView: UIView {
                 self.coverImage.setImage(withCoverURL: coverURL)
             } else if channel.isBroadcast == true {
                 self.coverImage.setBroadcastIcon()
+            } else if channel.isChatNotification == true {
+                self.coverImage.setPlaceholder(type: .iconUser, iconSize: CGSize(width: 40, height: 40))
+            } else if channel.isFeedChannel() == true {
+                // Not used now
+                self.coverImage.setPlaceholder(type: .iconUser, iconSize: CGSize(width: 40, height: 40))
             } else if channel.members.count > 0 {
                 self.coverImage.setImage(withUsers: channel.members)
             } else {
@@ -201,7 +208,7 @@ class SBUChannelTitleView: UIView {
         self.statusField.leftViewMode = .never
         
         if let channel = channel as? GroupChannel {
-            if let typingIndicatorString = self.buildTypingIndicatorString(channel: channel) {
+            if let typingIndicatorString = self.buildTypingIndicatorString(channel: channel), !channel.isChatNotification {
                 DispatchQueue.main.async { [weak self] in
                     guard let self = self else { return }
                     self.statusField.isHidden = false

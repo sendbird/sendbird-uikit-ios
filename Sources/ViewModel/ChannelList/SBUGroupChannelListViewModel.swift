@@ -44,6 +44,7 @@ public protocol SBUGroupChannelListViewModelDelegate: SBUBaseChannelListViewMode
 open class SBUGroupChannelListViewModel: SBUBaseChannelListViewModel {
     // MARK: - Constants
     static let channelLoadLimit: UInt = 20
+    static let notificationChannelLoadLimit: UInt = 100
     
     
     // MARK: - Property (Public)
@@ -94,9 +95,16 @@ open class SBUGroupChannelListViewModel: SBUBaseChannelListViewModel {
         } else {
             let params = GroupChannelListQueryParams()
             params.order = .latestLastMessage
-            params.limit = SBUGroupChannelListViewModel.channelLoadLimit
+            
+            if SBUAvailable.isNotificationChannelEnabled {
+                params.limit = SBUGroupChannelListViewModel.notificationChannelLoadLimit
+                params.includeChatNotification = true
+            } else {
+                params.limit = SBUGroupChannelListViewModel.channelLoadLimit
+            }
             params.includeEmptyChannel = false
             params.includeMetaData = true
+            
             self.channelListQuery = GroupChannel.createMyGroupChannelListQuery(params: params)
         }
         

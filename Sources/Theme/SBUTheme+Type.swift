@@ -58,8 +58,24 @@ extension SBUTheme {
         else if type(of: currentClass) == type(of: SBUCreateOpenChannelTheme.self) {
             return SBUTheme.createOpenChannelTheme
         }
+        else if type(of: currentClass) == type(of: SBUMessageTemplateTheme.self) {
+            return SBUTheme.messageTemplateTheme
+        }
         else if type(of: currentClass) == type(of: SBUVoiceMessageInputTheme.self) {
             return SBUTheme.voiceMessageInputTheme
+        }
+        
+        else if type(of: currentClass) == type(of: SBUNotificationTheme.self) {
+            return SBUTheme.notificationTheme
+        }
+        else if type(of: currentClass) == type(of: SBUNotificationTheme.NotificationCell.self) {
+            return SBUTheme.notificationTheme.notificationCell
+        }
+        else if type(of: currentClass) == type(of: SBUNotificationTheme.Header.self) {
+            return SBUTheme.notificationTheme.header
+        }
+        else if type(of: currentClass) == type(of: SBUNotificationTheme.List.self) {
+            return SBUTheme.notificationTheme.list
         }
         else {
             return SBUTheme.light

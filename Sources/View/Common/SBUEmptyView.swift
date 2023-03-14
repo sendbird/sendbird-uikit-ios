@@ -127,9 +127,8 @@ open class SBUEmptyView: SBUView {
         self.statusLabel.contentMode = .center
         self.statusLabel.numberOfLines = 0
         self.statusLabel.lineBreakMode = .byWordWrapping
-        //NOTE: this will cause unexpected image when tint with not desirable
-        //image
-        //self.statusImageView.image = self.statusImageView.image?.sbu_with(tintColor: theme.emptyViewStatusTintColor)
+
+        self.statusImageView.image = self.statusImageView.image?.sbu_with(tintColor: theme.emptyViewStatusTintColor)
          
         self.retryButton.setTitleColor(theme.emptyViewRetryButtonTintColor, for: .normal)
         self.retryButton.titleLabel?.font = theme.emptyViewRetryButtonFont
@@ -174,6 +173,13 @@ open class SBUEmptyView: SBUView {
             )
         case .noMessages:
             self.statusLabel.text = SBUStringSet.Empty_No_Messages
+            self.statusImageView.image = SBUIconSetType.iconMessage.image(
+                with: theme.emptyViewStatusTintColor,
+                to: SBUIconSetType.Metric.iconEmptyView,
+                tintAndResize: false
+            )
+        case .noNotifications:
+            self.statusLabel.text = SBUStringSet.Empty_No_Notifications
             self.statusImageView.image = SBUIconSetType.iconMessage.image(
                 with: theme.emptyViewStatusTintColor,
                 to: SBUIconSetType.Metric.iconEmptyView,

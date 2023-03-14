@@ -16,7 +16,7 @@ public class SBUNavigationTitleView: SBUView {
     public var text: String? = ""
     public var textAlignment: NSTextAlignment = .center
     
-    private var titleLabel = UILabel()
+    var titleLabel = UILabel()
      
     public override init() {
         super.init()
@@ -52,6 +52,8 @@ public class SBUNavigationTitleView: SBUView {
     public override func setupStyles() {
         super.setupStyles()
         
+        self.backgroundColor = .clear
+        
         self.titleLabel.font = theme.titleFont
         self.titleLabel.textColor = theme.titleColor
     }
@@ -67,6 +69,13 @@ public class SBUNavigationTitleView: SBUView {
         
         self.titleLabel.text = self.text
         
-        self.backgroundColor = .clear
+        self.setupStyles()
+    }
+    
+    public func configure(title: String?) {
+        if let title = title {
+            self.text = title
+            self.titleLabel.text = title
+        }
     }
 }
