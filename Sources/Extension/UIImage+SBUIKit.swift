@@ -220,52 +220,23 @@ extension UIImage {
         return 0
     }
     
-    internal class func gcdForPair(_ a: Int?, _ b: Int?) -> Int {
+    internal class func gcdForPair(_ a: Int, _ b: Int) -> Int {
         var a = a
         var b = b
-        // Check if one of them is nil
-        if b == nil || a == nil {
-            if b != nil {
-                return b!
-            } else if a != nil {
-                return a!
-            } else {
-                return 0
-            }
-        }
         
-        // Swap for modulo
-        if a! < b! {
-            let c = a
-            a = b
-            b = c
-        }
-        
-        // Get greatest common divisor
-        var rest: Int
+        if a < b { swap(&a, &b) }
+        b = b != 0 ? b : 1
         while true {
-            rest = a! % b!
-            
-            if rest == 0 {
-                return b! // Found it
-            } else {
-                a = b
-                b = rest
-            }
+            guard b != 0 else { return a == 0 ? 1 : a }
+            guard a % b > 0 else { return b }
+            a = b
+            b = a % b
         }
     }
     
     internal class func gcdForArray(_ array: Array<Int>) -> Int {
-        if array.isEmpty {
-            return 1
-        }
-        
-        var gcd = array[0]
-        
-        for val in array {
-            gcd = UIImage.gcdForPair(val, gcd)
-        }
-        
+        guard var gcd = array.first else { return 1 }
+        array.forEach { gcd = UIImage.gcdForPair($0, gcd) }
         return gcd
     }
     
@@ -274,48 +245,27 @@ extension UIImage {
         var images = [CGImage]()
         var delays = [Int]()
         
-        // Fill arrays
-        for i in 0..<count {
-            // Add image
-            if let image = CGImageSourceCreateImageAtIndex(source, i, nil) {
+        (0..<count).forEach {
+            if let image = CGImageSourceCreateImageAtIndex(source, $0, nil) {
                 images.append(image)
             }
-            
-            // At it's delay in cs
-            let delaySeconds = UIImage.delayForImageAtIndex(Int(i),
-                                                            source: source)
+            let delaySeconds = UIImage.delayForImageAtIndex($0, source: source)
             delays.append(Int(delaySeconds * 1000.0)) // Seconds to ms
         }
         
-        // Calculate full duration
-        let duration: Int = {
-            var sum = 0
-            
-            for val: Int in delays {
-                sum += val
-            }
-            
-            return sum
-        }()
+        let duration = delays.reduce(into: 0) { $0 += $1 }
         
-        
-        // Get frames
         let gcd = gcdForArray(delays)
-        var frames = [UIImage]()
         
-        var frame: UIImage
-        var frameCount: Int
-        for i in 0..<count {
-            frame = UIImage(cgImage: images[Int(i)])
-            frameCount = Int(delays[Int(i)] / gcd)
-            
-            for _ in 0..<frameCount {
-                frames.append(frame)
-            }
+        var frames: [UIImage] = []
+        (0..<count).forEach {
+            let frame = UIImage(cgImage: images[$0])
+            let frameCount = gcd == 0 ? 0 : Int(delays[$0] / gcd)
+            frames.append(contentsOf: [UIImage](repeating: frame, count: frameCount))
         }
         
-        // Heyhey
-        let animation = UIImage.animatedImage(with: frames, duration: Double(duration) / 1000.0)
+        let animation = UIImage.animatedImage(with: frames,
+                                              duration: Double(duration) / 1000.0)
         
         return animation
     }

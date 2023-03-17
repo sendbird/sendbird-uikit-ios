@@ -1,5 +1,8 @@
 # Changelog
 
+### v3.5.1 (Mar 17, 2023)
+* Improved stability
+
 ### v3.5.0 (Mar 14, 2023) with Chat SDK **v4.6.0**
 * Added Support for Notification Channels
   * `SBUFeedNotificationChannelViewController` and `SBUFeedNotificationChannelModule` (`Header`, `List`) added

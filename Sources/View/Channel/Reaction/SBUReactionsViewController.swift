@@ -248,33 +248,9 @@ class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegate, UI
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard reactionList.count > indexPath.row else { return }
-        
-        var deleteAnimation: UITableView.RowAnimation = .none
-        var insertAnimation: UITableView.RowAnimation = .none
 
-        guard let selectedReaction = self.selectedReaction,
-              let index = self.reactionList.firstIndex(of: selectedReaction) else { return }
-        if index < indexPath.row {
-            deleteAnimation = .left
-            insertAnimation = .right
-        } else if index > indexPath.row {
-            deleteAnimation = .right
-            insertAnimation = .left
-        } 
-
-        self.tableView.beginUpdates()
-        let oldIndexPaths = (0..<self.tableView.numberOfRows(inSection: 0)).map {
-            IndexPath(row: $0, section: 0)
-        }
-        self.tableView.deleteRows(at: oldIndexPaths, with: deleteAnimation)
         self.selectedReaction = self.reactionList[indexPath.row]
-        self.tableView.insertRows(
-            at: selectedReaction.userIds.enumerated().map {
-                IndexPath(row: $0.offset, section: 0)
-            },
-            with: insertAnimation
-        )
-        self.tableView.endUpdates()
+        self.tableView.reloadData()
         
         guard collectionView.numberOfSections > 0,
               collectionView.numberOfItems(inSection: 0) > indexPath.row,

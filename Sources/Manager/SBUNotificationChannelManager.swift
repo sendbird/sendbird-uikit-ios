@@ -306,18 +306,20 @@ extension SBUNotificationChannelManager {
             colorVariablesForDark[key] = colorStrings[darkIdx]
         }
         
+        var uiTemplate = template.uiTemplate
+        uiTemplate = uiTemplate.replacingOccurrences(of: "\\n", with: "\n")
         
         // bind
         switch SBUTheme.colorScheme {
         case .light:
             return bind(
-                uiTemplate: template.uiTemplate,
+                uiTemplate: uiTemplate,
                 templateVariables: templateVariables,
                 colorVariable: colorVariablesForLight
             )
         case .dark:
             return bind(
-                uiTemplate: template.uiTemplate,
+                uiTemplate: uiTemplate,
                 templateVariables: templateVariables,
                 colorVariable: colorVariablesForDark
             )
