@@ -20,15 +20,27 @@ public class SBUMenuItem: SBUCommonItem {
         }
     }
     
+    /// - Parameters:
+    ///    - font: The default is `nil`.  If `nil`, the menu text label will set it's font to ``SBUComponentTheme/menuTitleFont``
     public init(
         title: String? = nil,
         color: UIColor? = SBUColorSet.onlight01,
         image: UIImage? = nil,
+        font: UIFont? = nil,
         tintColor: UIColor? = nil,
+        textAlignment: NSTextAlignment = .left,
+        tag: Int? = nil,
         completionHandler: SBUMenunHandler? = nil
     ) {
-        
-        super.init(title: title, color: color, image: image, tintColor: tintColor)
+        super.init(
+            title: title,
+            color: color,
+            image: image,
+            font: font,
+            tintColor: tintColor,
+            textAlignment: textAlignment,
+            tag: tag
+        )
         self.completionHandler = completionHandler
     }
 }
@@ -221,8 +233,9 @@ class SBUMenuView: NSObject {
             )
         )
         titleLabel.text = item.title
-        titleLabel.font = theme.menuTitleFont
+        titleLabel.font = item.font ?? theme.menuTitleFont
         titleLabel.textColor = item.color
+        titleLabel.textAlignment = item.textAlignment
         
         let imageView = UIImageView()
         if let image = item.image {
@@ -237,6 +250,10 @@ class SBUMenuView: NSObject {
         
         itemButton.addSubview(imageView)
         itemButton.addSubview(titleLabel)
+        
+        if let tag = item.tag {
+            itemButton.tag = tag
+        }
         
         if separator {
             let separatorLine = UIView(

@@ -108,24 +108,33 @@ public enum SBUIconSetType: String, Hashable {
         return image.sbu_with(tintColor: tintColor)
     }
     
-    /// Apply tint & resize to given values
+    /// Applies tint & resize to given values.
     /// - Parameters:
     ///     - tintColor: Tint color to apply to the icon. Tint is applied to default icons according to `tintAndResize` flag.
     ///     - size: Size for the icon to be resized to. Resizing is applied to default icons according to `tintAndResize` flag.
     ///     - tintAndResize: Whether to apply tint & resized icons for customized icons as well.
-    /// - Returns: `UIImage` with tint applied & resized if possible.
+    /// - Returns: `UIImage` with tint applied & resized if possible. When the icon is the customized image and ``SBUGlobals.isTintColorEnabledForCustomizedIcon`` is `false`, doesn't use `tintColor`. When the icon is the customized image and ``SBUGlobals.isCustomizedIconResizable`` is `false`, doesn't use `size`
     func image(with tintColor: UIColor? = nil, to size: CGSize, tintAndResize: Bool = true) -> UIImage {
+        // TODO: Update logic for better DX of `tintAndResize`
         // Prevents customized icons from being applied with tintColor.
         let isCustomized = SBUIconSetType.customizedIcons.contains(self)
         
-        // return unmodified (no tint & resize) image if it's a customized icon and doesn't allow effects.
-        guard !isCustomized || tintAndResize else { return self.image}
-        
-        // Apply tint.
-        let resultImage = self.image.sbu_with(tintColor: tintColor)
-
-        // Apply resize.
-        return resultImage.resize(with: size)
+        if isCustomized {
+            // Apply tint.
+            let resultImage = (SBUGlobals.isTintColorEnabledForCustomizedIcon && tintAndResize)
+            ? self.image.sbu_with(tintColor: tintColor)
+            : self.image
+            
+            // Apply resize.
+            return (SBUGlobals.isCustomizedIconResizable && tintAndResize)
+            ? resultImage.resize(with: size)
+            : resultImage
+        } else {
+            // Apply tint and resize
+            return tintAndResize
+            ? self.image.sbu_with(tintColor: tintColor).resize(with: size)
+            : self.image
+        }
     }
     
     func markCustomized() {

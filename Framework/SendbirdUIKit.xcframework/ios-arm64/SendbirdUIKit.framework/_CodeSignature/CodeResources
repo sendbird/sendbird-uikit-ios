@@ -10,7 +10,7 @@
 		</data>
 		<key>Base.xcconfig</key>
 		<data>
-		Fug26RfumsxSLZXkWuQbaMjrsag=
+		7pNz6OqxhPQoY5Q2R5o5RRaYqh4=
 		</data>
 		<key>Debug.xcconfig</key>
 		<data>
@@ -18,23 +18,23 @@
 		</data>
 		<key>Headers/SendbirdUIKit-Swift.h</key>
 		<data>
-		J1n9PfubMyfUEvSfbVqFEonKrBA=
+		KPaqWM7s/OV430+Dhu8Wwlucjos=
 		</data>
 		<key>Info.plist</key>
 		<data>
-		rZ3GEsbn4cXCIyRV3WZP4T90Xa0=
+		SmrNj8clV05vUrIb25i3nkplzj8=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios.swiftdoc</key>
 		<data>
-		Il0tsz/N1Nk3ZaiE3xVs5EQ3osc=
+		60MBn2cyCLLAxYEQbMmuglxTPGE=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios.swiftinterface</key>
 		<data>
-		eUpCNOKxMZVXytaVOQeVjYKJWXU=
+		RfjPmB5X5VddhdX7UjrLC/x82Kk=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios.swiftmodule</key>
 		<data>
-		+iidkRsyoMbd7msel0j4Ob060mw=
+		RgZMbalDwtKDY4JG0BSiD5HlQzw=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -70,7 +70,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			L8qXW6RrjQnGh8HI1AsVA7IUU94sUBnKAZqgxoIU53c=
+			gKJ6xL5WJA9RyxtGVO7jbHobCj/IqZyBeC9KsD6ME88=
 			</data>
 		</dict>
 		<key>Debug.xcconfig</key>
@@ -84,28 +84,28 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			5H3ueC/X/pZSxJrNaVhNmG4W7NtPAhzXmXiUc7/3MQc=
+			5/ZY0eeprkabEAWBJfUuOFyBm7+Ud+r2W2tEmWcccJA=
 			</data>
 		</dict>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			2tcfPi+jVgnOwSehz98vx6TG8g2aDCH2aYtvlaKGAZE=
+			ngXSpR7p6UmPe7v0QIyq+Xe/0BZNLcA9tsoqyftw+OY=
 			</data>
 		</dict>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			VZ2uUvsYCa+6coKduLsASFa9pu9+W+hhg64grTIUyVY=
+			6a48AZBbRccB6PgUMLBtRoItuJMuf/MwPq9K37k1ojE=
 			</data>
 		</dict>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			/PLqSvcSmaEwYS/n7SmFBUbbpz9BiwTUrBtdmpy8k1w=
+			8UqNuaOzoDZechx2QKHK8d/Ui8yZ1Kuu/F0ZX95aS6w=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

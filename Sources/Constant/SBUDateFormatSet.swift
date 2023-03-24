@@ -36,9 +36,12 @@ public struct SBUDateFormatSet {
     public class Message {
         /// Used when sending file message from `SBUBaseViewController`
         public static var fileNameFormat = SBUDateFormatSet.yyyyMMddhhmmss
-        
-        /// Used `SBUFileViewer titleView.dateTimeLabel`
+
+        @available(*, deprecated, renamed: "fileViewControllerTimeFormat")
         public static var fileViewerTimeFormat = SBUDateFormatSet.hhmma
+        
+        /// Used in `dateTimeLabel` in ``SBUFileViewController/titleView``
+        public static var fileViewControllerTimeFormat = SBUDateFormatSet.hhmma
         
         /// Used in `SBUMessageStateView timeLabel`
         public static var sentTimeFormat = SBUDateFormatSet.hhmm

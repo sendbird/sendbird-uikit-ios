@@ -220,6 +220,7 @@ extension UIImage {
         return 0
     }
     
+    /// Greatest common divisor
     internal class func gcdForPair(_ a: Int, _ b: Int) -> Int {
         var a = a
         var b = b
@@ -229,8 +230,9 @@ extension UIImage {
         while true {
             guard b != 0 else { return a == 0 ? 1 : a }
             guard a % b > 0 else { return b }
+            let temp = a
             a = b
-            b = a % b
+            b = temp % b
         }
     }
     

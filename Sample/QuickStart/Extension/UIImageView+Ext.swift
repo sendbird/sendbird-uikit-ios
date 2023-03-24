@@ -9,6 +9,11 @@
 import UIKit
 
 extension UIImageView {
+    open override var isAccessibilityElement: Bool {
+        get { true }
+        set { super.isAccessibilityElement = true }
+    }
+    
     func updateImage(urlString: String?) {
         guard let urlString = urlString, !urlString.isEmpty else {
             self.image = UIImage(named: "iconAvatar")

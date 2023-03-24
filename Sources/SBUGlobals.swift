@@ -149,4 +149,20 @@ public class SBUGlobals {
     /// SBUGlobals.isAVPlayerAlwaysEnabled = trye // shows `AVPlayerViewController` when plays audio/video message.
     /// ```
     public static var isAVPlayerAlwaysEnabled: Bool = false
+    
+    /// The default value is `true` that indicates Sendbird UIKit uses appropriate tint color options from themes to the customized icon image. If it's `false`, all customized icon images used in Sendbird UIKit will ignore tint color options.
+    /// ```swift
+    /// SBUGlobals.isTintColorEnabledForCustomizedIcon = true // Use tint color that managed by Sendbird UIKit
+    /// SBUGlobals.isTintColorEnabledForCustomizedIcon = false // Do not use tint color by Sendbird UIKit
+    /// ```
+    /// - Since: 3.5.2
+    public static var isTintColorEnabledForCustomizedIcon: Bool = true
+    
+    /// The default value is `true` that indicates Sendbird UIKit uses appropriate size options to the customized icon image. If it's `false`, all customized icon images are never resized.
+    /// ```swift
+    /// SBUGlobals.isCustomizedIconResizable = true // The size managed by Sendbird UIKit
+    /// SBUGlobals.isCustomizedIconResizable = false // Never resize
+    /// ```
+    /// - Since: 3.5.2
+    public static var isCustomizedIconResizable: Bool = true
 }

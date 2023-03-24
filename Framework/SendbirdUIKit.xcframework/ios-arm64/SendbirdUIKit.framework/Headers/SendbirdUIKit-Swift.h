@@ -2715,8 +2715,14 @@ SWIFT_CLASS("_TtC13SendbirdUIKit18SBUFileMessageCell")
 
 @class NSError;
 
-SWIFT_CLASS("_TtC13SendbirdUIKit13SBUFileViewer")
-@interface SBUFileViewer : SBUBaseViewController <UIScrollViewDelegate>
+/// The <code>SBUBaseViewController</code> that displays file content on <code>FileMessage</code>
+/// <em>Customization Guide</em>
+/// \code
+/// SBUCommonViewControllerSet.FileViewController = MyAppFileViewController.self
+///
+/// \endcode
+SWIFT_CLASS("_TtC13SendbirdUIKit21SBUFileViewController")
+@interface SBUFileViewController : SBUBaseViewController <UIScrollViewDelegate>
 @property (nonatomic, strong) UIBarButtonItem * _Nullable leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem * _Nullable rightBarButton;
 @property (nonatomic, strong) UIView * _Null_unspecified titleView;

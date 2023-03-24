@@ -1,5 +1,13 @@
 # Changelog
 
+### v3.5.2 (Mar 24, 2023)
+* Added `SBUCommonViewControllerSet`
+  * Added `FileViewController` to `SBUCommonViewControllerSet`
+  * Renamed `SBUFileViewer` to `SBUFileViewController`
+* Added new static properties in `SBUGlobals`
+  * Added `isTintColorEnabledForCustomizedIcon` and `isCustomizedIconResizable`
+* Improved stability
+
 ### v3.5.1 (Mar 17, 2023)
 * Improved stability
 

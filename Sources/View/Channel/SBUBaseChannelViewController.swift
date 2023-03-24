@@ -15,7 +15,7 @@ import PhotosUI
 
 
 @objcMembers
-open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelViewModelDelegate, SBUBaseChannelModuleHeaderDelegate, SBUBaseChannelModuleListDelegate, SBUBaseChannelModuleListDataSource, SBUBaseChannelModuleInputDelegate, SBUBaseChannelModuleInputDataSource, SBUBaseChannelViewModelDataSource, UIGestureRecognizerDelegate, UIViewControllerTransitioningDelegate, PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, UIDocumentPickerDelegate, UIDocumentInteractionControllerDelegate, SBUSelectablePhotoViewDelegate, SBUFileViewerDelegate, SBUCommonViewModelDelegate, SBUAlertViewDelegate {
+open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelViewModelDelegate, SBUBaseChannelModuleHeaderDelegate, SBUBaseChannelModuleListDelegate, SBUBaseChannelModuleListDataSource, SBUBaseChannelModuleInputDelegate, SBUBaseChannelModuleInputDataSource, SBUBaseChannelViewModelDataSource, UIGestureRecognizerDelegate, UIViewControllerTransitioningDelegate, PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, UIDocumentPickerDelegate, UIDocumentInteractionControllerDelegate, SBUSelectablePhotoViewDelegate, SBUFileViewControllerDelegate, SBUCommonViewModelDelegate, SBUAlertViewDelegate {
     
     // MARK: - UI Properties (Public)
     public var baseHeaderComponent: SBUBaseChannelModule.Header?
@@ -438,7 +438,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         let fileType = SBUUtils.getFileType(by: fileMessage)
         switch fileType {
         case .image:
-            let viewer = SBUFileViewer(fileMessage: fileMessage, delegate: self)
+            let viewer = SBUCommonViewControllerSet.FileViewController.init(fileMessage: fileMessage, delegate: self)
             let naviVC = UINavigationController(rootViewController: viewer)
             self.present(naviVC, animated: true)
             
@@ -1257,7 +1257,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     }
     
     
-    // MARK: - SBUFileViewerDelegate
+    // MARK: - SBUFileViewControllerDelegate
     open func didSelectDeleteImage(message: FileMessage) {
         SBULog.info("[Request] Delete message: \(message.description)")
         

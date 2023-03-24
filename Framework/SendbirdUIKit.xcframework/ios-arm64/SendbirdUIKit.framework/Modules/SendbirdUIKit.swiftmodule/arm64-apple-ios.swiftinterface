@@ -2435,7 +2435,7 @@ public class SBUMenuItem : SendbirdUIKit.SBUCommonItem {
     get
     set
   }
-  public init(title: Swift.String? = nil, color: UIKit.UIColor? = SBUColorSet.onlight01, image: UIKit.UIImage? = nil, tintColor: UIKit.UIColor? = nil, completionHandler: SendbirdUIKit.SBUMenunHandler? = nil)
+  public init(title: Swift.String? = nil, color: UIKit.UIColor? = SBUColorSet.onlight01, image: UIKit.UIImage? = nil, font: UIKit.UIFont? = nil, tintColor: UIKit.UIColor? = nil, textAlignment: UIKit.NSTextAlignment = .left, tag: Swift.Int? = nil, completionHandler: SendbirdUIKit.SBUMenunHandler? = nil)
   @objc deinit
 }
 public class SBUFeedNotificationChannelModule {
@@ -5482,6 +5482,10 @@ extension SendbirdUIKit.SBUGroupChannelPushSettingsModule.List : UIKit.UITableVi
   @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, numberOfRowsInSection section: Swift.Int) -> Swift.Int
   @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, didSelectRowAt indexPath: Foundation.IndexPath)
 }
+@_hasMissingDesignatedInitializers public class SBUCommonViewControllerSet {
+  public static var FileViewController: SendbirdUIKit.SBUFileViewController.Type
+  @objc deinit
+}
 @objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUUnknownMessageCell : SendbirdUIKit.SBUUserMessageCell {
   @_Concurrency.MainActor(unsafe) override open func configure(with configuration: SendbirdUIKit.SBUBaseMessageCellParams)
   @objc @_Concurrency.MainActor(unsafe) open func setupMessageTextView()
@@ -5877,7 +5881,7 @@ extension SendbirdUIKit.SBUMessageSearchViewController {
 @_hasMissingDesignatedInitializers public class MessageSearchQueryBuilder {
   @objc deinit
 }
-@objc @_inheritsConvenienceInitializers @objcMembers @_Concurrency.MainActor(unsafe) open class SBUBaseChannelViewController : SendbirdUIKit.SBUBaseViewController, SendbirdUIKit.SBUBaseChannelViewModelDelegate, SendbirdUIKit.SBUBaseChannelModuleHeaderDelegate, SendbirdUIKit.SBUBaseChannelModuleListDelegate, SendbirdUIKit.SBUBaseChannelModuleListDataSource, SendbirdUIKit.SBUBaseChannelModuleInputDelegate, SendbirdUIKit.SBUBaseChannelModuleInputDataSource, SendbirdUIKit.SBUBaseChannelViewModelDataSource, UIKit.UIGestureRecognizerDelegate, UIKit.UIViewControllerTransitioningDelegate, PhotosUI.PHPickerViewControllerDelegate, UIKit.UIImagePickerControllerDelegate, UIKit.UIDocumentPickerDelegate, UIKit.UIDocumentInteractionControllerDelegate, SendbirdUIKit.SBUSelectablePhotoViewDelegate, SendbirdUIKit.SBUFileViewerDelegate, SendbirdUIKit.SBUCommonViewModelDelegate, SendbirdUIKit.SBUAlertViewDelegate {
+@objc @_inheritsConvenienceInitializers @objcMembers @_Concurrency.MainActor(unsafe) open class SBUBaseChannelViewController : SendbirdUIKit.SBUBaseViewController, SendbirdUIKit.SBUBaseChannelViewModelDelegate, SendbirdUIKit.SBUBaseChannelModuleHeaderDelegate, SendbirdUIKit.SBUBaseChannelModuleListDelegate, SendbirdUIKit.SBUBaseChannelModuleListDataSource, SendbirdUIKit.SBUBaseChannelModuleInputDelegate, SendbirdUIKit.SBUBaseChannelModuleInputDataSource, SendbirdUIKit.SBUBaseChannelViewModelDataSource, UIKit.UIGestureRecognizerDelegate, UIKit.UIViewControllerTransitioningDelegate, PhotosUI.PHPickerViewControllerDelegate, UIKit.UIImagePickerControllerDelegate, UIKit.UIDocumentPickerDelegate, UIKit.UIDocumentInteractionControllerDelegate, SendbirdUIKit.SBUSelectablePhotoViewDelegate, SendbirdUIKit.SBUFileViewControllerDelegate, SendbirdUIKit.SBUCommonViewModelDelegate, SendbirdUIKit.SBUAlertViewDelegate {
   @objc @_Concurrency.MainActor(unsafe) public var baseHeaderComponent: SendbirdUIKit.SBUBaseChannelModule.Header?
   @objc @_Concurrency.MainActor(unsafe) public var baseListComponent: SendbirdUIKit.SBUBaseChannelModule.List?
   @objc @_Concurrency.MainActor(unsafe) public var baseInputComponent: SendbirdUIKit.SBUBaseChannelModule.Input?
@@ -7697,6 +7701,8 @@ public class SBUMention : Swift.Equatable {
     get
   }
   public static var isAVPlayerAlwaysEnabled: Swift.Bool
+  public static var isTintColorEnabledForCustomizedIcon: Swift.Bool
+  public static var isCustomizedIconResizable: Swift.Bool
   @objc deinit
 }
 public protocol SBUOpenChannelListModuleListDelegate : SendbirdUIKit.SBUBaseChannelListModuleListDelegate {
@@ -7881,10 +7887,14 @@ public protocol SBUMessageThreadViewControllerDelegate : AnyObject {
   @objc @_Concurrency.MainActor(unsafe) public func voiceMessageInputView(_ inputView: SendbirdUIKit.SBUVoiceMessageInputView, didTapSend voiceFileInfo: SendbirdUIKit.SBUVoiceFileInfo)
   @objc @_Concurrency.MainActor(unsafe) public func voiceMessageInputView(_ inputView: SendbirdUIKit.SBUVoiceMessageInputView, willStartToRecord voiceFileInfo: SendbirdUIKit.SBUVoiceFileInfo)
 }
-public protocol SBUFileViewerDelegate : AnyObject {
+@available(*, deprecated, renamed: "SBUFileViewController")
+public typealias SBUFileViewer = SendbirdUIKit.SBUFileViewController
+@available(*, deprecated, renamed: "SBUFileViewControllerDelegate")
+public typealias SBUFileViewerDelegate = SendbirdUIKit.SBUFileViewControllerDelegate
+public protocol SBUFileViewControllerDelegate : AnyObject {
   func didSelectDeleteImage(message: SendbirdChatSDK.FileMessage)
 }
-@objc @_Concurrency.MainActor(unsafe) open class SBUFileViewer : SendbirdUIKit.SBUBaseViewController, UIKit.UIScrollViewDelegate, SendbirdUIKit.SBUAlertViewDelegate {
+@objc @_Concurrency.MainActor(unsafe) open class SBUFileViewController : SendbirdUIKit.SBUBaseViewController, UIKit.UIScrollViewDelegate, SendbirdUIKit.SBUAlertViewDelegate {
   @objc @_Concurrency.MainActor(unsafe) public var leftBarButton: UIKit.UIBarButtonItem? {
     @objc get
     @objc set
@@ -7906,7 +7916,7 @@ public protocol SBUFileViewerDelegate : AnyObject {
     @objc set
   }
   @objc @_Concurrency.MainActor(unsafe) public var bottomView: UIKit.UIView
-  @_Concurrency.MainActor(unsafe) public init(fileMessage: SendbirdChatSDK.FileMessage, delegate: SendbirdUIKit.SBUFileViewerDelegate?)
+  @_Concurrency.MainActor(unsafe) required public init(fileMessage: SendbirdChatSDK.FileMessage, delegate: SendbirdUIKit.SBUFileViewControllerDelegate?)
   @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewDidLoad()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewWillAppear(_ animated: Swift.Bool)
@@ -9166,7 +9176,9 @@ public struct SBUDateFormatSet {
   }
   @_hasMissingDesignatedInitializers public class Message {
     public static var fileNameFormat: Swift.String
+    @available(*, deprecated, renamed: "fileViewControllerTimeFormat")
     public static var fileViewerTimeFormat: Swift.String
+    public static var fileViewControllerTimeFormat: Swift.String
     public static var sentTimeFormat: Swift.String
     public static var sentTimeFormatInOpenChannel: Swift.String
     public static var dateSeparatorDateFormat: Swift.String
@@ -9266,8 +9278,6 @@ public struct SBUDateFormatSet {
   }
   public var recorder: SendbirdUIKit.SBUVoiceMessageConfiguration.Recorder
   @_hasMissingDesignatedInitializers public class Recorder {
-    public var minRecordingTime: Swift.Double
-    public var maxRecordingTime: Swift.Double
     public var settings: [Swift.String : Swift.Int]
     @objc deinit
   }

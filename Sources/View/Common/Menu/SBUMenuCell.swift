@@ -31,13 +31,22 @@ class SBUMenuCell: UITableViewCell {
     func configure(with item: SBUMenuItem) {
         let theme = SBUTheme.componentTheme
         
-        self.titleLabel.font = theme.menuTitleFont
+        self.titleLabel.text = item.title
+        self.titleLabel.font = item.font ?? theme.menuTitleFont
+        self.titleLabel.textAlignment = item.textAlignment
         self.titleLabel.textColor = self.isEnabled
-        ? theme.actionSheetTextColor
+        ? item.color ?? theme.actionSheetTextColor
         : theme.actionSheetDisabledColor
         
-        self.titleLabel.text = item.title
         self.iconImageView.image = item.image
+        self.iconImageView.tintColor = self.isEnabled
+        ? item.tintColor ?? theme.actionSheetItemColor
+        : theme.actionSheetDisabledColor
+        
+        if let tag = item.tag {
+            self.tag = tag
+        }
+        
         self.tapHandler = item.completionHandler
     }
 }
