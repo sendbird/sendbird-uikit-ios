@@ -2651,8 +2651,9 @@ extension SendbirdChatSDK.PollDetails {
   @objc public var data: Swift.String?
   @objc public var operatorUserIds: [Swift.String]?
   @objc public var customType: Swift.String?
+  @objc public var isEphemeral: Swift.Bool
   @objc override convenience dynamic public init()
-  @objc public init(name: Swift.String? = nil, channelURL: Swift.String? = nil, coverURL: Swift.String? = nil, coverImage: Foundation.Data? = nil, coverImageName: Swift.String? = nil, data: Swift.String? = nil, operatorUserIds: [Swift.String]? = nil, customType: Swift.String? = nil)
+  @objc public init(name: Swift.String? = nil, channelURL: Swift.String? = nil, coverURL: Swift.String? = nil, coverImage: Foundation.Data? = nil, coverImageName: Swift.String? = nil, data: Swift.String? = nil, operatorUserIds: [Swift.String]? = nil, customType: Swift.String? = nil, isEphemeral: Swift.Bool = false)
   @objc public func setOperators(_ operators: [SendbirdChatSDK.User])
   @objc public func copy(with zone: ObjectiveC.NSZone? = nil) -> Any
   @objc deinit

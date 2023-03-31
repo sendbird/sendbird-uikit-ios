@@ -22,7 +22,7 @@ public class SBUVoiceMessageConfiguration {
     
     public class Recorder {
         let minRecordingTime: Double = 1000 // ms
-        let maxRecordingTime: Double = 60000 // ms
+        let maxRecordingTime: Double = 600000 // ms
         
         public var settings = [
             AVFormatIDKey: Int(kAudioFormatMPEG4AAC),

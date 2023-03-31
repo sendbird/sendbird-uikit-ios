@@ -1,5 +1,9 @@
 # Changelog
 
+### v3.5.3 (Mar 31, 2023)
+* Modified voice message maximum recording time from 1 min to 10 min
+* Improved stability
+
 ### v3.5.2 (Mar 24, 2023)
 * Added `SBUCommonViewControllerSet`
   * Added `FileViewController` to `SBUCommonViewControllerSet`

@@ -76,7 +76,6 @@ protocol SBUFeedNotificationChannelViewModelDelegate: SBUCommonViewModelDelegate
 }
 
 /// A view model for the notification channel.
-/// - Since: [NEXT_VERISON]
 class SBUFeedNotificationChannelViewModel: NSObject {
     // MARK: - Constant
     let defaultFetchLimit: Int = 30

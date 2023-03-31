@@ -77,7 +77,6 @@ protocol SBUChatNotificationChannelViewModelDelegate: SBUCommonViewModelDelegate
 
 
 /// A view model for the notification channel.
-/// - Since: [NEXT_VERISON]
 class SBUChatNotificationChannelViewModel: NSObject {
     // MARK: - Constant
     let defaultFetchLimit: Int = 30
