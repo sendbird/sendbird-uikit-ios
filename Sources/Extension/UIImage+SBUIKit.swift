@@ -42,6 +42,44 @@ public extension UIImage {
         }
     }
     
+    /// This applies the tint color to the `UIImage` with `forTemplate` option.
+    /// - Parameters:
+    ///   - tintColor: tint color
+    ///   - forTemplate: If this option is `true`, the Blend mode of tint color will be applied to `sourceAtop` after `colorBurn`.
+    /// - Returns: `UIImage` objects with tint color
+    /// - Since: 3.5.4
+    func sbu_with(tintColor: UIColor?, forTemplate: Bool) -> UIImage {
+        if !forTemplate {
+            return self.sbu_with(tintColor: tintColor)
+        }
+        
+        guard let tintColor = tintColor else { return self }
+        defer { UIGraphicsEndImageContext() }
+        
+        UIGraphicsBeginImageContextWithOptions(self.size, false, self.scale)
+        if let context = UIGraphicsGetCurrentContext() {
+            tintColor.setFill()
+            
+            context.translateBy(x: 0, y: self.size.height)
+            context.scaleBy(x: 1.0, y: -1.0)
+            
+            context.setBlendMode(CGBlendMode.colorBurn)
+            let rect = CGRect(x: 0, y: 0, width: self.size.width, height: self.size.height)
+            if let cgImage = self.cgImage {
+                context.draw(cgImage, in: rect)
+                
+                context.setBlendMode(CGBlendMode.sourceAtop)
+                context.addRect(rect)
+                context.drawPath(using: CGPathDrawingMode.fill)
+                
+                if let coloredImage = UIGraphicsGetImageFromCurrentImageContext() {
+                    return coloredImage
+                }
+            }
+        }
+        return self
+    }
+    
     
     /// Converts image to data.
     ///

@@ -234,8 +234,8 @@ open class SBUQuotedBaseMessageView: SBUView, SBUQuotedMessageViewProtocol {
         self.theme = SBUTheme.messageCellTheme
         
         self.mainContainerView.position = self.messagePosition
-        self.mainContainerView.leftBackgroundColor = self.theme.quotedMessageBackgroundColor.withAlphaComponent(0.5)
-        self.mainContainerView.rightBackgroundColor = self.theme.quotedMessageBackgroundColor
+        self.mainContainerView.leftBackgroundColor = self.theme.quotedMessageLeftBackgroundColor
+        self.mainContainerView.rightBackgroundColor = self.theme.quotedMessageRightBackgroundColor
         
         self.repliedToLabel.textColor = self.theme.repliedToTextColor
         self.repliedToLabel.font = self.theme.repliedToTextFont

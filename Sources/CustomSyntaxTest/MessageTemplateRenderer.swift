@@ -65,11 +65,13 @@ class MessageTemplateRenderer: UIView {
     }
     
     init?(with data: String,
+          delegate: MessageTemplateRendererDelegate? = nil,
           actionHandler: ((SBUMessageTemplate.Action) -> Void)?,
           reloadHandler: (() -> Void)? = nil)
     {
         super.init(frame: .zero)
         
+        self.delegate = delegate
         self.actionHandler = actionHandler
         self.reloadHandler = reloadHandler
         
@@ -257,6 +259,7 @@ class MessageTemplateRenderer: UIView {
         guard let items = item.items else { return }
         
         let parentBoxView = parentView.subviews[0]
+        // INFO: SideViews are placed at the top/bottom or left/right and used for align. According to Align, the area of the SideView is adjusted in the form of holding the position of the actual item.
         let sideView1 = UIView()
         let sideView2 = UIView()
         parentBoxView.addSubview(sideView1)
@@ -556,7 +559,7 @@ class MessageTemplateRenderer: UIView {
                      parentView: UIView,
                      prevView: UIView,
                      prevItem: SBUMessageTemplate.View? = nil,
-                     itemsAlign: SBUMessageTemplate.ItemsAlign? = .defaultAlign(),
+                     itemsAlign: SBUMessageTemplate.ItemsAlign = .defaultAlign(),
                      layout: SBUMessageTemplate.LayoutType = .column,
                      isLastItem: Bool = false) -> UIView {
         let baseView = MessageTemplateImageBaseView(item: item)
@@ -567,6 +570,37 @@ class MessageTemplateRenderer: UIView {
         let imageStyle = item.imageStyle
         let contentMode = imageStyle.contentMode
         imageView.contentMode = contentMode
+        
+        let needResizeImage =
+        (item.width.type == .fixed || (item.width.type == .flex && item.width.value == 0))
+        && (item.height.type == .flex && item.height.value == 1)
+        
+        if needResizeImage {
+            switch (itemsAlign.vertical, itemsAlign.horizontal) {
+            case (.top, .left):
+                imageView.contentMode = .topLeft
+            case (.top, .center):
+                imageView.contentMode = .top
+            case (.top, .right):
+                imageView.contentMode = .topRight
+            case (.center, .left):
+                imageView.contentMode = .left
+            case (.center, .center):
+                imageView.contentMode = .center
+            case (.center, .right):
+                imageView.contentMode = .right
+            case (.bottom, .left):
+                imageView.contentMode = .bottomLeft
+            case (.bottom, .center):
+                imageView.contentMode = .bottom
+            case (.bottom, .right):
+                imageView.contentMode = .bottomRight
+            default:
+                break
+            }
+        }
+        (imageView as? MessageTemplateImageView)?.needResizeImage = needResizeImage
+        
         var tintColor: UIColor? = nil
         if let tintColorHex = imageStyle.tintColor {
             tintColor = UIColor(hexString: tintColorHex)
@@ -626,21 +660,21 @@ class MessageTemplateRenderer: UIView {
                 switch item.imageStyle.contentMode {
                 case .scaleAspectFit: ratioConstraintsHandler()
                 case .scaleAspectFill: ratioConstraintsHandler()
-                case .scaleToFill: minimumConstraintsHandler()
+                case .scaleToFill: ratioConstraintsHandler()
                 default: break
                 }
             } else if item.height.type == .flex, item.height.value == 1 { // wrapContent
                 switch item.imageStyle.contentMode {
                 case .scaleAspectFit: ratioConstraintsHandler()
                 case .scaleAspectFill: ratioConstraintsHandler()
-                case .scaleToFill: minimumConstraintsHandler()
+                case .scaleToFill: ratioConstraintsHandler() // QM-2657
                 default: break
                 }
             }
             
         } else if item.width.type == .flex, item.width.value == 0 { // fillParent
             switch item.height.type {
-            case .fixed: minimumConstraintsHandler()
+            case .fixed: ratioConstraintsHandler()
             case .flex: ratioConstraintsHandler() // fillParent, wrapContent
             }
             
@@ -653,8 +687,14 @@ class MessageTemplateRenderer: UIView {
         
         placeholderConstraints.forEach { $0.isActive = true }
         
-        imageView.loadImage(urlString: item.imageUrl, tintColor: tintColor, completion: { [weak self, weak imageView] success in
+        imageView.loadImage(urlString: item.imageUrl, completion: { [weak self, weak imageView] success in
             guard let self = self else { return }
+            
+            let image = imageView?.image?.sbu_with(
+                tintColor: tintColor,
+                forTemplate: true
+            )
+            imageView?.image = image
             
             let constraintSettingHandler: (() -> Void) = {
                 if let imageView = imageView,
@@ -877,8 +917,14 @@ class MessageTemplateRenderer: UIView {
         
         placeholderConstraints.forEach { $0.isActive = true }
 
-        imageButton.loadImage(urlString: item.imageUrl, tintColor: tintColor, for: .normal, completion: { [weak self, weak imageButton] success in
+        imageButton.loadImage(urlString: item.imageUrl, for: .normal, completion: { [weak self, weak imageButton] success in
             guard let self = self else { return }
+            
+            let image = imageButton?.imageView?.image?.sbu_with(
+                tintColor: tintColor,
+                forTemplate: true
+            )
+            imageButton?.setImage(image, for: .normal)
             
             let constraintSettingHandler: (() -> Void) = {
                 if let imageButton = imageButton,
@@ -1277,7 +1323,20 @@ class MessageTemplateRenderer: UIView {
         }
     }
 
-    class MessageTemplateImageView: UIImageView {}
+    class MessageTemplateImageView: UIImageView {
+        var needResizeImage: Bool = false
+        
+        override func layoutSubviews() {
+            super.layoutSubviews()
+            if self.needResizeImage {
+                self.image = image?.resizeTopAlignedToFill(newWidth: self.frame.width)
+            }
+        }
+        
+        override func updateConstraints() {
+            super.updateConstraints()
+        }
+    }
 
     class MessageTemplateImageViewForAspect: UIImageView {
         override var intrinsicContentSize: CGSize {
@@ -1337,4 +1396,24 @@ class MessageTemplateRenderer: UIView {
     //    }
     //}
 
+}
+
+extension UIImage {
+    // https://stackoverflow.com/a/47884962
+    func resizeTopAlignedToFill(newWidth: CGFloat) -> UIImage? {
+        let newHeight = size.height * newWidth / size.width
+
+        let newSize = CGSize(width: newWidth, height: newHeight)
+
+        UIGraphicsBeginImageContextWithOptions(
+            newSize,
+            false,
+            UIApplication.shared.currentWindow?.screen.scale ?? 1.0
+        )
+        draw(in: CGRect(origin: .zero, size: newSize))
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
+        return newImage
+    }
 }

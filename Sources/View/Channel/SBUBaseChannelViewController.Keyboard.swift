@@ -53,7 +53,8 @@ extension SBUBaseChannelViewController {
     // To hide autocorrection view on keyboard hidden.
     // https://stackoverflow.com/questions/59278526/keyboard-dismiss-very-buggy-on-tableview-interactive
     public func setKeyboardWindowFrame(origin: CGPoint, size: CGSize? = nil) {
-        let screenSize: CGSize = size ?? UIScreen.main.bounds.size
+        let windowBounds = UIApplication.shared.currentWindow?.bounds ?? .zero
+        let screenSize: CGSize = size ?? windowBounds.size
         var keyboardWindow: UIWindow? = nil
         for window in UIApplication.shared.windows {
             if (NSStringFromClass(type(of: window).self) == "UIRemoteKeyboardWindow") {
@@ -90,7 +91,8 @@ extension SBUBaseChannelViewController {
             let endFrame = endFrameValue.cgRectValue
             
             // iOS 14 bug, keyboardWillShow is called instead of keyboardWillHide.
-            if endFrame.origin.y >= UIScreen.main.bounds.height {
+            let windowBounds = UIApplication.shared.currentWindow?.bounds ?? .zero
+            if endFrame.origin.y >= windowBounds.height {
                 self.keyboardWillHide(notification)
                 return
             }

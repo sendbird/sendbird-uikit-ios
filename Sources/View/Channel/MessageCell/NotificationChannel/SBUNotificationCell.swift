@@ -166,7 +166,8 @@ class SBUNotificationCell: SBUBaseMessageCell {
                 bottom: 0
             )
         
-        let screenWidth = min(UIScreen.main.bounds.width, UIScreen.main.bounds.height)
+        let windowBounds = UIApplication.shared.currentWindow?.bounds ?? .zero
+        let screenWidth = min(windowBounds.width, windowBounds.height)
         var maxTemplateWidth: CGFloat = 0.0
         var leftMargin = 0.0
         var rightMargin = 0.0
@@ -200,10 +201,17 @@ class SBUNotificationCell: SBUBaseMessageCell {
             //priority: availableWidthForTemplate > maxTemplateWidth ? .defaultLow : .defaultHigh
         )
         
-        self.contentStackView.sbu_constraint_lessThan(
-            width: min(availableWidthForTemplate, maxTemplateWidth),
-            priority: UILayoutPriority(1000)
-        )
+        if availableWidthForTemplate > maxTemplateWidth {
+            self.contentStackView.sbu_constraint_lessThan(
+                width: min(availableWidthForTemplate, maxTemplateWidth),
+                priority: UILayoutPriority(1000)
+            )
+        } else {
+            self.contentStackView.sbu_constraint(
+                width: min(availableWidthForTemplate, maxTemplateWidth),
+                priority: UILayoutPriority(1000)
+            )
+        }
 
         if self.type == .chat {
             self.dateLabel.sbu_constraint(width: 50, priority: .defaultLow)
@@ -261,9 +269,10 @@ class SBUNotificationCell: SBUBaseMessageCell {
         guard subType == 0 else { return } // subType: 0 is template type
         
         var subData = notification?.extendedMessage["sub_data"] as? String
-        var bindedTemplate = SBUNotificationChannelManager.generateTemplate(with: subData) {
-            // TODO: 실시간 갱신 하는걸로 결정나면 열기
-//            self.reloadCell()
+        var bindedTemplate = SBUNotificationChannelManager.generateTemplate(
+            with: subData
+        ) { [weak self] in
+            self?.reloadCell()
         }
         bindedTemplate = bindedTemplate?.replacingOccurrences(of: "\\n", with: "\\\\n")
         bindedTemplate = bindedTemplate?.replacingOccurrences(of: "\n", with: "\\n")
@@ -281,11 +290,11 @@ class SBUNotificationCell: SBUBaseMessageCell {
             showFallback = true
         }
         
-        self.notificationTemplateRenderer?.delegate = nil
         self.notificationTemplateRenderer = nil
         if let bindedTemplate = bindedTemplate, !showFallback {
             self.notificationTemplateRenderer = MessageTemplateRenderer(
                 with: bindedTemplate,
+                delegate: self,
                 actionHandler: self.notificationActionHandler
             ) ?? parsingErrorNotificationRenderer
         } else {

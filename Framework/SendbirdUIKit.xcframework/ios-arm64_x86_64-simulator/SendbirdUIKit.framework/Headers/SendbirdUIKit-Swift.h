@@ -5097,6 +5097,7 @@ SWIFT_CLASS("_TtC13SendbirdUIKit16SBUVoiceRecorder")
 
 
 
+
 @interface UINavigationController (SWIFT_EXTENSION(SendbirdUIKit))
 @property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
 /// Set up navigation bar with tint color. This method sets up <code>standardAppearance</code> and <code>scrollEdgeAppearance</code> with the tint color.
@@ -10222,6 +10223,7 @@ SWIFT_CLASS("_TtC13SendbirdUIKit16SBUVoiceRecorder")
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
+
 
 
 

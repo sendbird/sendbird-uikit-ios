@@ -354,7 +354,11 @@ class SBUChatNotificationChannelViewModel: NSObject {
             if error.code == ChatError.nonAuthorized.rawValue {
                 self.delegate?.chatNotificationChannelViewModel(self, shouldDismissForChannel: nil)
             } else {
-                self.delegate?.didReceiveError(error, isBlocker: true)
+                if SendbirdChat.isLocalCachingEnabled {
+                    return true
+                } else {
+                    self.delegate?.didReceiveError(error, isBlocker: true)
+                }
             }
             return false
         }

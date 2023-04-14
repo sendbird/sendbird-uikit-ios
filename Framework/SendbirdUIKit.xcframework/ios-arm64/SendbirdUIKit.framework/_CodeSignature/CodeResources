@@ -10,7 +10,7 @@
 		</data>
 		<key>Base.xcconfig</key>
 		<data>
-		oUr0jB7M5XqgK1VKuOeRdHISM38=
+		z99Ob9k0YcHGacNmZxYJdk6kDdY=
 		</data>
 		<key>Debug.xcconfig</key>
 		<data>
@@ -18,23 +18,23 @@
 		</data>
 		<key>Headers/SendbirdUIKit-Swift.h</key>
 		<data>
-		KPaqWM7s/OV430+Dhu8Wwlucjos=
+		Zf4PAUwe9zLgTKuktKHGxpu42P8=
 		</data>
 		<key>Info.plist</key>
 		<data>
-		4d1eJ2dggnl3ckw/zKid/ZK82Xc=
+		CqMa7aKCAX6NV/rUMpEhs73ZExs=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios.swiftdoc</key>
 		<data>
-		60MBn2cyCLLAxYEQbMmuglxTPGE=
+		dRWNaJnRL6ozPJztwKbG6FXWM4w=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios.swiftinterface</key>
 		<data>
-		RfjPmB5X5VddhdX7UjrLC/x82Kk=
+		upFkEjD9z5tp8QNd4HhMoou7z/k=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios.swiftmodule</key>
 		<data>
-		YH4sDmbXRwHeQnpVHiKuakLn33k=
+		mWgsRQaMG58OXF53zyP40xcYbsQ=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -70,7 +70,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			0msbCLAkg0uMGsRi24Xa2wAxDA8GFCdZPZlBOcUMIWI=
+			UpqllGRRq/eg8/I/6UJr5AcTflwKDDAUkECditbhYgU=
 			</data>
 		</dict>
 		<key>Debug.xcconfig</key>
@@ -84,28 +84,28 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			5/ZY0eeprkabEAWBJfUuOFyBm7+Ud+r2W2tEmWcccJA=
+			+U6gEb+UZZfx86lxi+U/7RYzK9odaYxsjRz1cUHz+cE=
 			</data>
 		</dict>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			ngXSpR7p6UmPe7v0QIyq+Xe/0BZNLcA9tsoqyftw+OY=
+			CrNwW7R3hXFeC/DRjGQsHfifoOIYpuVHbFbaVBD0lPs=
 			</data>
 		</dict>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			6a48AZBbRccB6PgUMLBtRoItuJMuf/MwPq9K37k1ojE=
+			WbbwzywR1Pbdw/1eW8fXZiV5Sr9F61SH3RupqgrxupM=
 			</data>
 		</dict>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			/dt7UaF6mFqHy67cTdwEVkwPa9cT5vOfXVy4V5kkJ98=
+			5KntillX3litdkZ6QqTQK0VE02m5fngH74B74dlpNeI=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

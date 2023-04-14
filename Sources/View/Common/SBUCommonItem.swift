@@ -10,13 +10,13 @@ import UIKit
 
 
 public class SBUCommonItem {
-    var title: String?
-    var color: UIColor?
-    var image: UIImage?
-    var font: UIFont?
-    var tintColor: UIColor?
-    var textAlignment: NSTextAlignment
-    var tag: Int?
+    public var title: String?
+    public var color: UIColor?
+    public var image: UIImage?
+    public var font: UIFont?
+    public var tintColor: UIColor?
+    public var textAlignment: NSTextAlignment
+    public var tag: Int?
     
     public init(title: String? = nil,
                 color: UIColor? = SBUColorSet.onlight01,

@@ -151,7 +151,8 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
         // title stack view
         self.titleStackView
             .sbu_constraint(equalTo: self.contentStackView, trailing: 0)
-            .sbu_constraint(height: 22)
+            .sbu_constraint(height: 22, priority: .defaultLow)
+            .sbu_constraint_greaterThan(height: 22)
         
         self.broadcastIcon
             .sbu_constraint(width: infoIconSize, height: infoIconSize)

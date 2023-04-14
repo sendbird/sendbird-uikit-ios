@@ -1,5 +1,13 @@
 # Changelog
 
+### v3.5.4 (Apr 14, 2023) with Chat SDK **v4.6.6**
+* Separated `quotedMessageBackgroundColor` as `quotedMessageLeftBackgroundColor` and `quotedMessageRightBackgroundColor` in `SBUMessageCellTheme`
+  * Deprecated `quotedMessageBackgroundColor` in `SBUMessageCellTheme`
+  * Added `quotedMessageLeftBackgroundColor` and `quotedMessageRightBackgroundColor` in `SBUMessageCellTheme`
+* Modified access level to the public of `SBUCommonItem` properties.
+* Supported multi-line title of channel cell
+* Improved stability
+
 ### v3.5.3 (Mar 31, 2023)
 * Modified voice message maximum recording time from 1 min to 10 min
 * Improved stability

@@ -337,7 +337,11 @@ class SBUFeedNotificationChannelViewModel: NSObject {
                     shouldDismissForChannel: nil
                 )
             } else {
-                self.delegate?.didReceiveError(error, isBlocker: true)
+                if SendbirdChat.isLocalCachingEnabled {
+                    return true
+                } else {
+                    self.delegate?.didReceiveError(error, isBlocker: true)
+                }
             }
             return false
         }

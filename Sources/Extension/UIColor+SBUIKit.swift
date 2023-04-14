@@ -20,7 +20,11 @@ extension UIColor {
         imageView.contentMode = .center
         view.addSubview(imageView)
         
-        UIGraphicsBeginImageContextWithOptions(view.frame.size, false, UIScreen.main.scale)
+        UIGraphicsBeginImageContextWithOptions(
+            view.frame.size,
+            false,
+            UIApplication.shared.currentWindow?.screen.scale ?? 1.0
+        )
         
         guard let context = UIGraphicsGetCurrentContext() else { return .clear }
         

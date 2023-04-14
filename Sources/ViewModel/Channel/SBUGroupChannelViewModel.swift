@@ -196,7 +196,11 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
             if error.code == ChatError.nonAuthorized.rawValue {
                 self.delegate?.baseChannelViewModel(self, shouldDismissForChannel: nil)
             } else {
-                self.delegate?.didReceiveError(error, isBlocker: true)
+                if SendbirdChat.isLocalCachingEnabled {
+                    return true
+                } else {
+                    self.delegate?.didReceiveError(error, isBlocker: true)
+                }
             }
             return false
         }

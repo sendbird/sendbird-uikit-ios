@@ -1338,6 +1338,8 @@ public class SBUMessageCellTheme {
         
         // Quoted Message
         theme.quotedMessageBackgroundColor = SBUColorSet.background100
+        theme.quotedMessageLeftBackgroundColor = SBUColorSet.background100.withAlphaComponent(0.5)
+        theme.quotedMessageRightBackgroundColor = SBUColorSet.background100
         theme.quotedFileMessageThumbnailColor = SBUColorSet.onlight02
         theme.quotedMessageTextColor = SBUColorSet.onlight03
         theme.quotedMessageTextFont = SBUFontSet.body3
@@ -1475,6 +1477,8 @@ public class SBUMessageCellTheme {
         
         // Quoted Message
         theme.quotedMessageBackgroundColor = SBUColorSet.background500
+        theme.quotedMessageLeftBackgroundColor = SBUColorSet.background500.withAlphaComponent(0.5)
+        theme.quotedMessageRightBackgroundColor = SBUColorSet.background500
         theme.quotedFileMessageThumbnailColor = SBUColorSet.ondark02
         theme.quotedMessageTextColor = SBUColorSet.ondark03
         theme.quotedMessageTextFont = SBUFontSet.body3
@@ -1612,6 +1616,8 @@ public class SBUMessageCellTheme {
         
         // Quoted Message
         theme.quotedMessageBackgroundColor = SBUColorSet.background500
+        theme.quotedMessageLeftBackgroundColor = SBUColorSet.background500.withAlphaComponent(0.5)
+        theme.quotedMessageRightBackgroundColor = SBUColorSet.background500
         theme.quotedFileMessageThumbnailColor = SBUColorSet.ondark02
         theme.quotedMessageTextColor = SBUColorSet.ondark03
         theme.quotedMessageTextFont = SBUFontSet.body3
@@ -1721,7 +1727,8 @@ public class SBUMessageCellTheme {
                 linkColor: UIColor = SBUColorSet.primary300,
                 contentBackgroundColor: UIColor = SBUColorSet.background100,
                 pressedContentBackgroundColor: UIColor = SBUColorSet.background300,
-                quotedMessageBackgroundColor: UIColor = SBUColorSet.background100,
+                quotedMessageLeftBackgroundColor: UIColor = SBUColorSet.background100.withAlphaComponent(0.5),
+                quotedMessageRightBackgroundColor: UIColor = SBUColorSet.background100,
                 quotedFileMessageThumbnailColor: UIColor = SBUColorSet.onlight02,
                 quotedMessageTextColor: UIColor = SBUColorSet.onlight03,
                 quotedMessageTextFont: UIFont = SBUFontSet.body3,
@@ -1817,7 +1824,8 @@ public class SBUMessageCellTheme {
         self.contentBackgroundColor = contentBackgroundColor
         self.pressedContentBackgroundColor = pressedContentBackgroundColor
         
-        self.quotedMessageBackgroundColor = quotedMessageBackgroundColor
+        self.quotedMessageLeftBackgroundColor = quotedMessageLeftBackgroundColor
+        self.quotedMessageRightBackgroundColor = quotedMessageRightBackgroundColor
         self.quotedFileMessageThumbnailColor = quotedFileMessageThumbnailColor
         self.quotedMessageTextColor = quotedMessageTextColor
         self.quotedMessageTextFont = quotedMessageTextFont
@@ -1951,9 +1959,26 @@ public class SBUMessageCellTheme {
     public var quotedMessageTextFont: UIFont
     /// The text font of `repliedToLabel` of the  quoted message view.
     public var repliedToTextFont: UIFont
+    
     // Color
     /// The background color of the quoted message view.
-    public var quotedMessageBackgroundColor: UIColor
+    @available(*, deprecated, message: "This property has been separated as the `quotedMessageLeftBackgroundColor` and `quotedMessageRightBackgroundColor`") // 3.5.4
+    public var quotedMessageBackgroundColor: UIColor {
+        get {
+            self.quotedMessageRightBackgroundColor
+        }
+        set {
+            self.quotedMessageLeftBackgroundColor = newValue.withAlphaComponent(0.5)
+            self.quotedMessageRightBackgroundColor = newValue
+        }
+    }
+    /// The background color of the left quoted message view.
+    /// - Since: 3.5.4
+    public var quotedMessageLeftBackgroundColor: UIColor
+    /// The background color of the right quoted message view.
+    /// - Since: 3.5.4
+    public var quotedMessageRightBackgroundColor: UIColor
+    
     /// The tint color of thumbnail image of the quoted file message.
     public var quotedFileMessageThumbnailColor: UIColor
     /// The text color of the quoted message view

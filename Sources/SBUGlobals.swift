@@ -83,7 +83,7 @@ public class SBUGlobals {
     
     /// Image resizing size value that will be used when sending image. Default value is a device screen size.
     /// - Since: 2.0.0
-    public static var imageResizingSize: CGSize = UIScreen.main.bounds.size;
+    public static var imageResizingSize: CGSize = UIApplication.shared.currentWindow?.bounds.size ?? UIScreen.main.bounds.size;
     
     
     // MARK: - Mention
