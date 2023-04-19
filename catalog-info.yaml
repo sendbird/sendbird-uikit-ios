@@ -1,10 +1,10 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: pre-sendbird-uikit-ios
+  name: sendbird-uikit-ios
   description: This is a private repository for iOS UIKit
   annotations:
-    github.com/project-slug: sendbird/pre-sendbird-uikit-ios
+    github.com/project-slug: sendbird/sendbird-uikit-ios
 spec:
   type: library
   lifecycle: production
