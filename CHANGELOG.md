@@ -1,5 +1,8 @@
 # Changelog
 
+### v3.5.5 (Apr 19, 2023)
+* Improved stability
+
 ### v3.5.4 (Apr 14, 2023) with Chat SDK **v4.6.6**
 * Separated `quotedMessageBackgroundColor` as `quotedMessageLeftBackgroundColor` and `quotedMessageRightBackgroundColor` in `SBUMessageCellTheme`
   * Deprecated `quotedMessageBackgroundColor` in `SBUMessageCellTheme`

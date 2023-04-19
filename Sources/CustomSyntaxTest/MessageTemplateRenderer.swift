@@ -571,6 +571,7 @@ class MessageTemplateRenderer: UIView {
         let contentMode = imageStyle.contentMode
         imageView.contentMode = contentMode
         
+        // INFO: Edge case - image height is wrap
         let needResizeImage =
         (item.width.type == .fixed || (item.width.type == .flex && item.width.value == 0))
         && (item.height.type == .flex && item.height.value == 1)
@@ -690,11 +691,22 @@ class MessageTemplateRenderer: UIView {
         imageView.loadImage(urlString: item.imageUrl, completion: { [weak self, weak imageView] success in
             guard let self = self else { return }
             
-            let image = imageView?.image?.sbu_with(
-                tintColor: tintColor,
-                forTemplate: true
-            )
-            imageView?.image = image
+            DispatchQueue.main.async {
+                let image = imageView?.image?.sbu_with(
+                    tintColor: tintColor,
+                    forTemplate: true
+                )
+
+                // INFO: Edge case - image height is wrap
+                imageView?.image = image
+                imageView?.layoutIfNeeded()
+                
+                if let imageView = imageView as? MessageTemplateImageView,
+                   imageView.needResizeImage {
+                    imageView.image = image?.resizeTopAlignedToFill(newWidth: imageView.frame.width)
+                    imageView.layoutIfNeeded()
+                }
+            }
             
             let constraintSettingHandler: (() -> Void) = {
                 if let imageView = imageView,
@@ -1328,8 +1340,12 @@ class MessageTemplateRenderer: UIView {
         
         override func layoutSubviews() {
             super.layoutSubviews()
-            if self.needResizeImage {
+            
+            // INFO: Edge case - image height is wrap
+            if self.needResizeImage,
+               (UIApplication.shared.currentWindow?.bounds.size.width ?? 0) < self.frame.width {
                 self.image = image?.resizeTopAlignedToFill(newWidth: self.frame.width)
+                self.layoutIfNeeded()
             }
         }
         
@@ -1400,6 +1416,7 @@ class MessageTemplateRenderer: UIView {
 
 extension UIImage {
     // https://stackoverflow.com/a/47884962
+    // INFO: Edge case - image height is wrap
     func resizeTopAlignedToFill(newWidth: CGFloat) -> UIImage? {
         let newHeight = size.height * newWidth / size.width
 
