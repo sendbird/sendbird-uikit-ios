@@ -271,7 +271,9 @@ class SBUNotificationCell: SBUBaseMessageCell {
         var subData = notification?.extendedMessage["sub_data"] as? String
         var bindedTemplate = SBUNotificationChannelManager.generateTemplate(
             with: subData
-        ) { [weak self] in
+        ) { [weak self, weak notification] success in
+            guard success else { return }
+            self?.setupNotificationTemplate(with: notification)
             self?.reloadCell()
         }
         bindedTemplate = bindedTemplate?.replacingOccurrences(of: "\\n", with: "\\\\n")

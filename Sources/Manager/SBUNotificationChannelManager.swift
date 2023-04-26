@@ -154,7 +154,7 @@ extension SBUNotificationChannelManager {
             }
             
             SendbirdChat.getNotificationTemplateList(
-                token: nil,
+                token: SBUCacheManager.Template.lastToken,
                 params: params
             ) { notificationTemplateList, hasMore, token, error in
                 let responseJson = notificationTemplateList?.jsonPayload ?? ""
@@ -182,7 +182,10 @@ extension SBUNotificationChannelManager {
         }
     }
     
-    static func template(with key: String, completionHandler: (() -> Void)? = nil) -> SBUNotificationChannelManager.TemplateList.Template? {
+    static func template(
+        with key: String,
+        newTemplateResponseHandler: ((_ success: Bool) -> Void)? = nil
+    ) -> SBUNotificationChannelManager.TemplateList.Template? {
         if let template = SBUCacheManager.Template.getTemplate(forKey: key) {
             return template
         } else {
@@ -194,9 +197,10 @@ extension SBUNotificationChannelManager {
                         {
                             SBUCacheManager.Template.save(templates: [template])
                             let _ = SBUCacheManager.Template.loadAllTemplates()
-                            completionHandler?()
+                            newTemplateResponseHandler?(true)
                         }
                     } catch {
+                        newTemplateResponseHandler?(false)
                         SBULog.error(error.localizedDescription)
                     }
                 }
@@ -235,7 +239,10 @@ extension SBUNotificationChannelManager {
         return nil
     }
     
-    static func generateTemplate(with subData: String?, completionHandler: (() -> Void)? = nil) -> String? {
+    static func generateTemplate(
+        with subData: String?,
+        newTemplateResponseHandler: ((_ success: Bool) -> Void)? = nil
+    ) -> String? {
         guard let subData = subData else { return nil }
         
         // data scheme
@@ -260,7 +267,10 @@ extension SBUNotificationChannelManager {
         }
         
         guard let templateKey = templateKey,
-              let template = SBUNotificationChannelManager.template(with: templateKey, completionHandler: completionHandler) else {
+              let template = SBUNotificationChannelManager.template(
+                with: templateKey,
+                newTemplateResponseHandler: newTemplateResponseHandler
+              ) else {
             return nil
         }
         

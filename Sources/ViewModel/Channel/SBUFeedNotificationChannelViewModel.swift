@@ -367,7 +367,7 @@ class SBUFeedNotificationChannelViewModel: NSObject {
     /// Loads initial notifications in channel.
     ///
     /// - Parameters:
-    ///   - startingPoint: Starting point to load notifications from, or `nil` to load from the latest. (`LLONG_MAX`)
+    ///   - startingPoint: Starting point to load notifications from, or `nil` to load from the latest. (`Int64.max`)
     ///   - showsIndicator: Whether to show indicator on load or not.
     func loadInitialNotifications(
         startingPoint: Int64?,

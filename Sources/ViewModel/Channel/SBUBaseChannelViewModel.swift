@@ -196,7 +196,7 @@ open class SBUBaseChannelViewModel: NSObject {
     /// Only used in `SBUOpenChannelViewModel` where `MessageCollection` is not suppoorted.
     ///
     /// - Parameters:
-    ///   - startingPoint: Starting point to load messages from, or `nil` to load from the latest. (`LLONG_MAX`)
+    ///   - startingPoint: Starting point to load messages from, or `nil` to load from the latest. (`Int64.max`)
     ///   - showIndicator: Whether to show indicator on load or not.
     ///   - initialMessages: Custom messages to start the messages from.
     public func loadInitialMessages(startingPoint: Int64?,
@@ -697,7 +697,7 @@ open class SBUBaseChannelViewModel: NSObject {
             }
         }
         
-        if needMarkAsRead, let channel = self.channel as? GroupChannel {
+        if needMarkAsRead, let channel = self.channel as? GroupChannel, !self.isThreadMessageMode {
             channel.markAsRead(completionHandler: nil)
         }
         
@@ -924,7 +924,7 @@ open class SBUBaseChannelViewModel: NSObject {
     /// - Returns: This function returns `true` if there is the previous list.
     public func hasPrevious() -> Bool { return false }
     
-    public func getStartingPoint() -> Int64? { return LLONG_MAX }
+    public func getStartingPoint() -> Int64? { return .max }
     
     
     // MARK: - Cache

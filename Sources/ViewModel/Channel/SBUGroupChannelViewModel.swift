@@ -233,7 +233,7 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
         
         // Caution in function call order
         self.reset()
-        self.createCollectionIfNeeded(startingPoint: startingPoint ?? LLONG_MAX)
+        self.createCollectionIfNeeded(startingPoint: startingPoint ?? .max)
         self.clearMessageList()
         
         if self.hasNext() {

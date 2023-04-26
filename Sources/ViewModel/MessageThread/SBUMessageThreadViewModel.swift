@@ -217,7 +217,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
                                   let channel = self.channel as? GroupChannel else { return }
                             self.messageCollection = SendbirdChat.createMessageCollection(
                                 channel: channel,
-                                startingPoint: self.startingPoint ?? .max,
+                                startingPoint: .max,
                                 params: self.messageListParams
                             )
                             self.messageCollection?.delegate = self
@@ -413,7 +413,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
         
         self.isLoadingPrev = true
         
-        let params = self.threadedMessageListParams
+        let params = (self.threadedMessageListParams.copy() as? ThreadedMessageListParams) ?? ThreadedMessageListParams()
         params.nextResultSize = 0
         if params.previousResultSize == 0 {
             params.previousResultSize = self.defaultFetchLimit
@@ -603,7 +603,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
         }
         
         SBULog.info("[Both message response] \(messages.count) messages")
-        let startingTimestamp: Int64 = self.startingPoint ?? LLONG_MAX
+        let startingTimestamp: Int64 = self.startingPoint ?? .max
         
         if let usedParam = usedParam {
             self.hasMorePrevious = messages
@@ -1409,6 +1409,8 @@ extension SBUMessageThreadViewModel: MessageCollectionDelegate {
         if let parentMessage = parentMessages.first {
             self.delegate?.messageThreadViewModel(self, didUpdateParentMessage: parentMessage)
         }
+        
+        self.loadMessageChangeLogs()
     }
     
     open func messageCollection(_ collection: MessageCollection,

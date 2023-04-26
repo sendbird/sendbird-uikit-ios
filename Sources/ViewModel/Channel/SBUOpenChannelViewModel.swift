@@ -250,11 +250,11 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
     }
     
     public override func loadPrevMessages() {
-        self.loadPrevMessages(timestamp: LLONG_MAX)
+        self.loadPrevMessages(timestamp: .max)
     }
     
     /// Loads previous messages from given timestamp.
-    /// - Parameter timestamp: Timestamp to load messages from to the `previous` direction, or `nil` to start from the latest (`LLONG_MAX`).
+    /// - Parameter timestamp: Timestamp to load messages from to the `previous` direction, or `nil` to start from the latest (`Int64.max`).
     public func loadPrevMessages(timestamp: Int64?) {
         guard self.prevLock.try() else {
             SBULog.info("Prev message already loading")
@@ -271,7 +271,7 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
         }
         
         channel?.getMessagesByTimestamp(
-            timestamp ?? LLONG_MAX,
+            timestamp ?? .max,
             params: params
         ) { [weak self] (messages, error) in
             guard let self = self else { return }
@@ -365,7 +365,7 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
     /// Loads messages to both direction from given timestamp.
     ///
     /// - Parameters:
-    ///   - startingPoint: Starting point to load messages from, or `nil` to load from the latest. (`LLONG_MAX`)
+    ///   - startingPoint: Starting point to load messages from, or `nil` to load from the latest. (`Int64.max`)
     ///   - showIndicator: Whether to show indicator on load or not.
     public func loadBothMessages(timestamp: Int64?, showIndicator: Bool) {
         SBULog.info("[Request] Both message list from : \(String(describing: timestamp))")
@@ -401,7 +401,7 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
             params.nextResultSize = 0
         }
         
-        let startingTimestamp: Int64 = timestamp ?? LLONG_MAX
+        let startingTimestamp: Int64 = timestamp ?? .max
         SBULog.info("Fetch from : \(startingTimestamp) limit: prev = \(params.previousResultSize), next = \(params.nextResultSize)")
         self.isLoadingNext = true
         
@@ -446,7 +446,7 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
         }
         
         SBULog.info("[Both message response] \(messages.count) messages")
-        let startingTimestamp: Int64 = self.startingPoint ?? LLONG_MAX
+        let startingTimestamp: Int64 = self.startingPoint ?? .max
         
         if let usedParam = usedParam {
             self.hasMorePrevious = messages

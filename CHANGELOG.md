@@ -1,5 +1,10 @@
 # Changelog
 
+### v3.5.6 (Apr 26, 2023) with Chat SDK **v4.6.7** 
+* Update iOS deployment target to 11.0 for Xcode 14.1+
+* Modified access level to the public of `SBUChannelTitleView` class and properties.
+* Improved pending message update logic in thread message list
+
 ### v3.5.5 (Apr 19, 2023)
 * Improved stability
 

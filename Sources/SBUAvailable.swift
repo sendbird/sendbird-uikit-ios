@@ -27,6 +27,9 @@ public class SBUAvailable {
     static let ALLOW_ONLY_OPERATOR_SDK_TO_UPDATE_GROUP_CHANNEL = "allow_only_operator_sdk_to_update_group_channel"
     static let ALLOW_BROADCAST_CHANNEL = "allow_broadcast_channel"
     static let MESSAGE_SEARCH = "message_search_v3"
+    
+    /// - Since: 3.5.6
+    static let ALLOW_USER_UPDATE_FROM_SDK = "allow_user_update_from_sdk"
 
     private static func isAvailable(key: String) -> Bool {
         guard let appInfo = SendbirdChat.getAppInfo(),
@@ -85,5 +88,13 @@ public class SBUAvailable {
     /// - Since: 3.5.0
     static var isNotificationChannelEnabled: Bool {
         return SendbirdChat.getAppInfo()?.notificationInfo?.isEnabled ?? false
+    }
+
+    /// This method checks if the application enabled notification channel feature.
+    /// - Returns: `true` if the user update was enabled, `false` otherwise.
+    /// - Since: 3.5.6
+    static func isSupportUserUpdate() -> Bool {
+        // #SBISSUE-12044
+        return self.isAvailable(key: ALLOW_USER_UPDATE_FROM_SDK)
     }
 }

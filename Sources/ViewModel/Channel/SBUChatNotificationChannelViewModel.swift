@@ -387,7 +387,7 @@ class SBUChatNotificationChannelViewModel: NSObject {
     /// Only used in `SBUOpenChannelViewModel` where `MessageCollection` is not suppoorted.
     ///
     /// - Parameters:
-    ///   - startingPoint: Starting point to load notifications from, or `nil` to load from the latest. (`LLONG_MAX`)
+    ///   - startingPoint: Starting point to load notifications from, or `nil` to load from the latest. (`Int64.max`)
     ///   - showsIndicator: Whether to show indicator on load or not.
     ///   - initialNotifications: Custom notifications to start the notifications from.
     func loadInitialNotifications(
@@ -402,7 +402,7 @@ class SBUChatNotificationChannelViewModel: NSObject {
         
         // Caution in function call order
         self.reset()
-        self.createCollectionIfNeeded(startingPoint: startingPoint ?? LLONG_MAX)
+        self.createCollectionIfNeeded(startingPoint: startingPoint ?? .max)
         self.clearNotificationList()
         
         self.notificationCollection?.startCollection(

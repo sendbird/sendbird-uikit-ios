@@ -35,7 +35,7 @@ class SBUMessageCache {
         param.isInclusive = true
         param.nextResultSize = 0
         
-        channel.getMessagesByTimestamp(LLONG_MAX, params: param) { [weak self] (messages, error) in
+        channel.getMessagesByTimestamp(.max, params: param) { [weak self] (messages, error) in
             guard let self = self else { return }
             
             guard error == nil,

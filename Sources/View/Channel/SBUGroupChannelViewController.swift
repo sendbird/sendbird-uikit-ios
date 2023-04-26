@@ -740,6 +740,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         
         let indexPath = IndexPath(row: row, section: 0)
         self.listComponent?.tableView.scrollToRow(at: indexPath, at: .middle, animated: false)
+        self.listComponent?.tableView.layoutIfNeeded()
     }
     
     open func messageThreadViewController(_ viewController: SBUMessageThreadViewController, shouldSyncVoiceFileInfos voiceFileInfos: [String : SBUVoiceFileInfo]?) {

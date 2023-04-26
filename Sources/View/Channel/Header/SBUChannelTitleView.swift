@@ -9,21 +9,21 @@
 import UIKit
 import SendbirdChatSDK
 
-class SBUChannelTitleView: UIView {
+public class SBUChannelTitleView: UIView {
     // MARK: - Public
     public var channel: BaseChannel?
     
     @SBUThemeWrapper(theme: SBUTheme.componentTheme)
-    var theme: SBUComponentTheme
+    public var theme: SBUComponentTheme
     
     
     // MARK: - Private
-    lazy var contentView = UIView()
-    lazy var coverImage = SBUCoverImageView()
-    lazy var stackView = UIStackView()
-    lazy var titleLabel = UILabel()
-    lazy var statusField = UITextField()
-    lazy var onlineStateIcon = UIView()
+    public lazy var contentView = UIView()
+    public lazy var coverImage = SBUCoverImageView()
+    public lazy var stackView = UIStackView()
+    public lazy var titleLabel = UILabel()
+    public lazy var statusField = UITextField()
+    public lazy var onlineStateIcon = UIView()
 
     private let kCoverImageSize: CGFloat = 34.0
     
@@ -244,7 +244,7 @@ class SBUChannelTitleView: UIView {
         return SBUStringSet.Channel_Typing(typingMembers)
     }
     
-    override var intrinsicContentSize: CGSize {
+    public override var intrinsicContentSize: CGSize {
         //NOTE: this is under assumption that this view is used in
         //navigation and / or stack view to shrink but keep max width
         return CGSize(width: 100000, height: self.frame.height)

@@ -285,15 +285,13 @@ public class SendbirdUI {
     public static func updateUserInfo(nickname: String?,
                                       profileURL: String?,
                                       completionHandler: ((_ error: SBError?) -> Void)?) {
-        SBULog.info("[Request] Update user info")
         let params = UserUpdateParams()
         if let nickname = nickname {
             params.nickname = nickname
         }
         params.profileImageURL = profileURL
-        SendbirdChat.updateCurrentUserInfo(params: params, completionHandler: { error in
-            self.didFinishUpdateUserInfo(error: error, completionHandler: completionHandler)
-        })
+        
+        self.updateUserInfo(params: params, completionHandler: completionHandler)
     }
     
     /// This function is used to update user information.
@@ -304,13 +302,36 @@ public class SendbirdUI {
     public static func updateUserInfo(nickname: String?,
                                       profileImage: Data?,
                                       completionHandler: ((_ error: SBError?) -> Void)?) {
-        SBULog.info("[Request] Update user info")
         let params = UserUpdateParams()
         params.nickname = nickname
         params.profileImageData = profileImage
-        SendbirdChat.updateCurrentUserInfo(params: params, completionHandler: { error in
-            self.didFinishUpdateUserInfo(error: error, completionHandler: completionHandler)
-        })
+        
+        self.updateUserInfo(params: params, completionHandler: completionHandler)
+    }
+    
+    /// This function is used to update user information.
+    /// - Parameters:
+    ///   - params: UserUpdateParams object for update.
+    ///   - completionHandler: The handler block to execute.
+    /// - Since: 3.5.6
+    public static func updateUserInfo(params: UserUpdateParams,
+                                      completionHandler: ((_ error: SBError?) -> Void)?) {
+        if SBUAvailable.isSupportUserUpdate() {
+            SBULog.info("[Request] Update user info")
+            SendbirdChat.updateCurrentUserInfo(params: params, completionHandler: { error in
+                self.didFinishUpdateUserInfo(error: error, completionHandler: completionHandler)
+            })
+        } else {
+            if let user = SendbirdChat.getCurrentUser() {
+                SBUGlobals.currentUser = SBUUser(
+                    userId: user.userId,
+                    nickname: user.nickname,
+                    profileURL: user.profileURL
+                )
+            }
+            
+            completionHandler?(nil)
+        }
     }
     
     private static func didFinishUpdateUserInfo(error: SBError?,

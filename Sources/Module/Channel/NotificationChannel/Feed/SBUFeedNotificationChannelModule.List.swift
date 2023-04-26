@@ -534,6 +534,7 @@ extension SBUFeedNotificationChannelModule.List: SBUNotificationCellDelegate {
         guard let visibleIndexPaths = tableView.indexPathsForVisibleRows else { return }
         guard visibleIndexPaths.contains(indexPath) else { return }
         self.tableView.reloadRows(at: [indexPath], with: .none)
+        self.tableView.layoutIfNeeded()
     }
 }
 

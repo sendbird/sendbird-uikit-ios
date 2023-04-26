@@ -81,6 +81,7 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
         fatalError("init(channelURL:startingPoint:messageListParams:) has not been implemented")
     }
     
+    
     /// If you have channel object, use this initialize function.
     /// - Parameters:
     ///   - channel: Channel object
@@ -89,15 +90,23 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
     ///   - parentMessageId: Parent message Id
     ///   - delegate: The object that acts as the delegate of the view controller. The delegate must adopt the `SBUMessageThreadViewControllerDelegate` protocol.
     ///   - threadedMessageListParams: Thread message list params
-    ///   - startingPoint: If you want to expose the most recent messages first, use the `.max` value  (default is `0`).
+    ///   - startingPoint: If you want to expose the most recent messages first, use the `.max` value and the last message first, use the `0`.  (default is `.max`).
     ///   - voiceFileInfos: If you have voiceFileInfos, set this value. so the default value of Voice Messages are applied based on the voiceFileInfos.
+    ///
+    /// - 3Cases of starting point
+    ///   - `starting point -> 0`
+    ///     - Click thread info in Parent message:
+    ///   - `starting point -> timestamp of a specific thread message
+    ///     - Click parent info of a specific thread message in channel:
+    ///   - `starting point -> .max`
+    ///     - Long-tap on the parent message and select the thread addition menu:
     required public init(channel: GroupChannel? = nil,
                          channelURL: String? = nil,
                          parentMessage: BaseMessage? = nil,
                          parentMessageId: Int64? = nil,
                          delegate: SBUMessageThreadViewControllerDelegate? = nil,
                          threadedMessageListParams: ThreadedMessageListParams? = nil,
-                         startingPoint: Int64? = 0,
+                         startingPoint: Int64? = .max,
                          voiceFileInfos: [String : SBUVoiceFileInfo]? = nil) {
         super.init(nibName: nil, bundle: nil)
         SBULog.info(#function)
