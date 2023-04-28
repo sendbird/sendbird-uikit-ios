@@ -1,5 +1,8 @@
 # Change Log
 
+### v2.2.14 (Apr 28, 2023) 
+* Update iOS deployment target to 11.0 for Xcode 14.1+
+
 ### v2.2.13 (Feb 28, 2023)
 * Added `popChannel()` in `SBUBaseChannelSettingViewController`
 

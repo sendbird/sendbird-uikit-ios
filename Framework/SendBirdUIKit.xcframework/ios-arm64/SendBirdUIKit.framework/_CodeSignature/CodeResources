@@ -6,11 +6,11 @@
 	<dict>
 		<key>Assets.car</key>
 		<data>
-		wLUG7mHprJb2l9peAWxlU1Lzdr8=
+		WKIYD02Abvbkie6c6hdIIIPTe3Q=
 		</data>
 		<key>Headers/SendBirdUIKit-Swift.h</key>
 		<data>
-		hZq1lYXx3Hbr4D9pJMdDKD/y3g0=
+		tbYr0fIYNaDhz5Wgo2yofMO6dpQ=
 		</data>
 		<key>Headers/SendBirdUIKit.h</key>
 		<data>
@@ -18,35 +18,43 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		gU0KSs0/55jSrBWeFSRxagpuTc0=
+		FUZ2tKWIomLA8+VagyHle+NaUcw=
+		</data>
+		<key>Modules/SendBirdUIKit.swiftmodule/arm64-apple-ios.abi.json</key>
+		<data>
+		Z6rzO4GfvJ7WR6BCOGwxKZrJg4k=
+		</data>
+		<key>Modules/SendBirdUIKit.swiftmodule/arm64-apple-ios.private.swiftinterface</key>
+		<data>
+		objAWSOf6x56ot0X5LF1OEROns4=
 		</data>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm64-apple-ios.swiftdoc</key>
 		<data>
-		CneQ5Vx8qoTvenqR/wZ6IRa1QZE=
+		ii/HwI6XnnxvI7CGdbgm6bOc+QY=
 		</data>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm64-apple-ios.swiftinterface</key>
 		<data>
-		aRGJ+C0pmn0uIkO9mQaGEGI+im8=
+		objAWSOf6x56ot0X5LF1OEROns4=
 		</data>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm64-apple-ios.swiftmodule</key>
 		<data>
-		O3fSIl7Zzgz/ImvcPxFrXeTreTE=
+		T0Y1v0G+TuHexFBQeegIpDgIv50=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
-		GoahHJitxb0j/T4bl74XMeNggMk=
+		3HSr6Wfcpsb94SuS4lgczaCvgTc=
 		</data>
 		<key>SBUMenuCell.nib</key>
 		<data>
-		ol8A35W7LBaOjaL1YK80Zvlj/fM=
+		IKeCQsVDd7HJdD4HH0eElhhZecY=
 		</data>
 		<key>SBUReactionCollectionViewCell.nib/objects-12.3+.nib</key>
 		<data>
-		HWZSnUo3eZcya251nAFbZlVk6CE=
+		aYCb+SsP8aO5QzSrlNyg/yu9Vys=
 		</data>
 		<key>SBUReactionCollectionViewCell.nib/runtime.nib</key>
 		<data>
-		q21sF4avNzy0PngcgDX4KYGbfBo=
+		rkO1LVmlSwo79HMKq8wY/WHZL5o=
 		</data>
 	</dict>
 	<key>files2</key>
@@ -55,14 +63,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			P6eGMfC3lIjRkNVl+k8bXTJObaor3pBrrzOaVGuWZA0=
+			Je4hGwLMK05jAnskQ4YmzC4nfZbVpfC4vC+R/2RDi7Q=
 			</data>
 		</dict>
 		<key>Headers/SendBirdUIKit-Swift.h</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			r48+el/pqh370goAjpBuL3yVOpjHEWBZ0OdZijtgW8I=
+			LeEPrNZ/seKus3ciEtWOqDtSSFyMfccXFjDQpgTcwYo=
 			</data>
 		</dict>
 		<key>Headers/SendBirdUIKit.h</key>
@@ -72,53 +80,67 @@
 			7x7u8GggsWeKftON89m94yK762noHTW57uZJ+hNgnC4=
 			</data>
 		</dict>
+		<key>Modules/SendBirdUIKit.swiftmodule/arm64-apple-ios.abi.json</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			SBP6DaT/eXuqqwweMbGoNodoLws1WDY3h892X2rMGPo=
+			</data>
+		</dict>
+		<key>Modules/SendBirdUIKit.swiftmodule/arm64-apple-ios.private.swiftinterface</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			D6R3YrVYuU14zOzmGNAF2xhLtVN54buZ8A50aAeF7g8=
+			</data>
+		</dict>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm64-apple-ios.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			KxdtUk2rfp+H0+pUlYKmNptlhN3EO2wDb8QlOLbQJKs=
+			QxwZKoZ73nz2AFswuchxyJ0DLl9SRoU7yQVJwUXlFi8=
 			</data>
 		</dict>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm64-apple-ios.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			5sKcqAgEopfjaxHoz5SeQpRQ9QgD6Kw+mrh9DRP12mc=
+			D6R3YrVYuU14zOzmGNAF2xhLtVN54buZ8A50aAeF7g8=
 			</data>
 		</dict>
 		<key>Modules/SendBirdUIKit.swiftmodule/arm64-apple-ios.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			J/mKOfgWxgl2EvOSdaniCUlrMMgbZTq5Aik+/rMJKQU=
+			K7b4ltRqLiHiOTWUXPsRx7RZ5xF8fdxf7EHHSTFQN6c=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			gRkdAT6LjfAiDEPWRnGeeYybhWXV6NgZFtfyG1GZZEM=
+			tZRzUK5dmBESr9Q3+87xOoUZFkVfOfmv84ylqdM7nCM=
 			</data>
 		</dict>
 		<key>SBUMenuCell.nib</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			HrpCY5Q5QVFuJrj3Pju7gUKkci4WQk1PWcr+HRl21uI=
+			GqAIYsMy0NzlfgjxSl5tMcxtn7cZVDqonYIacdnXsIo=
 			</data>
 		</dict>
 		<key>SBUReactionCollectionViewCell.nib/objects-12.3+.nib</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			Wzhf5YMojwqHI1rpNBMvmsVmlIPEFi4pILUz6ZEyn9g=
+			hz3+zGURBUYUG3WN5DaV4BV6Vzxm9z7JBqGLiz0UUv8=
 			</data>
 		</dict>
 		<key>SBUReactionCollectionViewCell.nib/runtime.nib</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			8fr/OaE7cUowxvESG8JbdQ1oPlXZcGIAeKg1I5sitOY=
+			iaAJfOGoDhPZXuu2PtoRYAUQl7rz9TFFvDVcrIZE/Q8=
 			</data>
 		</dict>
 	</dict>

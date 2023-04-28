@@ -6,6 +6,6 @@ framework module SendBirdUIKit {
 }
 
 module SendBirdUIKit.Swift {
-    header "SendBirdUIKit-Swift.h"
-    requires objc
+  header "SendBirdUIKit-Swift.h"
+  requires objc
 }
