@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
 	s.name         = "SendBirdUIKit"
-	s.version      = "3.5.6"
+	s.version      = "3.5.7"
 	s.summary      = "UIKit based on SendbirdChatSDK"
 	s.description  = "Sendbird UIKit is a framework composed of basic UI components based on SendbirdChatSDK."
 	s.homepage     = "https://sendbird.com"
@@ -15,6 +15,6 @@ Pod::Spec.new do |s|
 	s.ios.vendored_frameworks = 'Framework/SendbirdUIKit.xcframework'
 	s.ios.frameworks = ["UIKit", "Foundation", "CoreData", "SendbirdChatSDK"]
 	s.requires_arc = true
-	s.dependency "SendbirdChatSDK", ">= 4.6.7"
+	s.dependency "SendbirdChatSDK", ">= 4.8.3"
 	s.ios.library = "icucore"
 end

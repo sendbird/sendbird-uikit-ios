@@ -89,6 +89,7 @@ public enum SBUIconSetType: String, Hashable {
         static let iconEmptyView = CGSize(value: 60)
         static let iconGifPlay = CGSize(value: 28)
         static let iconSpinnerLarge = CGSize(value: 40)
+        static let iconSpinnerSizeForTemplate = CGSize(value: 36)
         static let iconUserProfile = CGSize(value: 40)
         static let iconUserProfileInChat = CGSize(value: 15)
         static let iconChevronDown = CGSize(value: 22)

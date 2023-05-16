@@ -296,6 +296,7 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
         self.lastUpdatedTimeLabel.text = self.buildLastUpdatedDate()
         
         // Last message
+        self.messageLabel.text = ""
         switch channel.lastMessage {
         case let userMessage as UserMessage:
             self.messageLabel.lineBreakMode = .byTruncatingTail
@@ -310,10 +311,8 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
             }
             
         case let adminMessage as AdminMessage:
-            if (self.channel as? GroupChannel)?.isChatNotification ?? false {
-                self.messageLabel.lineBreakMode = .byTruncatingMiddle
-                self.messageLabel.text = adminMessage.message
-            }
+            self.messageLabel.lineBreakMode = .byTruncatingMiddle
+            self.messageLabel.text = adminMessage.message
 
         default:
             self.messageLabel.text = ""

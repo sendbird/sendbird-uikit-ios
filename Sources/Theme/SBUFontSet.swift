@@ -239,6 +239,7 @@ public class SBUFontSet {
     }()
     
     
+    // MARK: - Custom font
     /// Sets custom font with name and size
     /// - Parameters:
     ///   - name: font name string
@@ -246,6 +247,7 @@ public class SBUFontSet {
     /// - Returns: UIFont object. If `name` is `nil`, it returns the system font.
     /// - Since: 3.5.0
     static func customFont(name: String? = nil, size: CGFloat) -> UIFont {
+        // Not used now
         if let name = name,
             let font = UIFont(name: name, size: size) {
             return font
@@ -253,5 +255,38 @@ public class SBUFontSet {
             return UIFont.systemFont(ofSize: size)
         }
     }
+    
+    
+    // MARK: - Notification font
+    /// Returns system font or custom font by checking if there is a set fontFamily value for Notification.
+    /// - Since: 3.5.7
+    static func notificationFont(size: CGFloat, weight: UIFont.Weight = .regular) -> UIFont {
+        guard let fontFamily = SBUFontSet.FontFamily.notification else {
+            return UIFont.systemFont(ofSize: size, weight: weight)
+        }
+        
+        let descriptor = UIFontDescriptor(
+            fontAttributes: [
+                .family: fontFamily,
+                .traits: [UIFontDescriptor.TraitKey.weight: weight]
+            ]
+        )
+        let font = UIFont(descriptor: descriptor, size: size)
+        return font
+    }
 }
- 
+
+
+extension SBUFontSet {
+
+    // MARK: - Font family
+    /// It is a class for font family.
+    /// - Since: 3.5.7
+    public class FontFamily {
+        
+        /// If this value is set, all of the fonts in Notification are use this fontFamily.
+        /// - Since: 3.5.7
+        public static var notification: String? = nil
+
+    }
+}

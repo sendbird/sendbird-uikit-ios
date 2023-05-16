@@ -14,5 +14,15 @@ class SBUNotificationEmptyView: SBUEmptyView {
         super.setupStyles()
         
         self.backgroundColor = .clear
+        
+        self.statusLabel.font = SBUFontSet.notificationFont(
+            size: 14.0,
+            weight: .regular
+        ) //body3
+        
+        self.retryButton.titleLabel?.font = SBUFontSet.notificationFont(
+            size: 16.0,
+            weight: .medium
+        ) //button2
     }
 }

@@ -242,8 +242,8 @@ extension SBUNotificationChannelManager {
     static func generateTemplate(
         with subData: String?,
         newTemplateResponseHandler: ((_ success: Bool) -> Void)? = nil
-    ) -> String? {
-        guard let subData = subData else { return nil }
+    ) -> (String?, Bool) { //bindedTemplate, isNewTemplate
+        guard let subData = subData else { return (nil, false) }
         
         // data scheme
         var templateVariables : [String: String] = [:]
@@ -271,7 +271,7 @@ extension SBUNotificationChannelManager {
                 with: templateKey,
                 newTemplateResponseHandler: newTemplateResponseHandler
               ) else {
-            return nil
+            return (nil, true) // request NewTemplate
         }
         
         
@@ -299,7 +299,7 @@ extension SBUNotificationChannelManager {
         for (key, value) in colorVariables {
             let colorStrings = value.components(separatedBy: ",")
             if colorStrings.count > 1, let first = colorStrings.first, first.isEmpty {
-                return nil
+                return (nil, false)
             }
             
             var lightIdx = 0
@@ -322,17 +322,17 @@ extension SBUNotificationChannelManager {
         // bind
         switch SBUTheme.colorScheme {
         case .light:
-            return bind(
+            return (bind(
                 uiTemplate: uiTemplate,
                 templateVariables: templateVariables,
                 colorVariable: colorVariablesForLight
-            )
+            ), false)
         case .dark:
-            return bind(
+            return (bind(
                 uiTemplate: uiTemplate,
                 templateVariables: templateVariables,
                 colorVariable: colorVariablesForDark
-            )
+            ), false)
         }
     }
     

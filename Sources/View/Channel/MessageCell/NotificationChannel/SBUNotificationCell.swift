@@ -23,6 +23,8 @@ class SBUNotificationCell: SBUBaseMessageCell {
     let feedNotificationMaxWidth: CGFloat = 380.0
     let chatNotificationMaxWidth: CGFloat = 276.0
 
+    let feedNotificationDownloadingHeight: CGFloat = 294.0
+    let chatNotificationDownloadingHeight: CGFloat = 274.0
     
     // MARK: - UI Views (Public)
     
@@ -46,12 +48,18 @@ class SBUNotificationCell: SBUBaseMessageCell {
     /// Shows `message.message`  or ``SBUStringSet/Notification_Template_Error_Title``, ``SBUStringSet/Notification_Template_Error_Subtitle``  if the `message.message` is `nil`
     private var parsingErrorNotificationRenderer: MessageTemplateRenderer {
         if let notification = self.message?.message, notification.count > 0 {
-            return MessageTemplateRenderer(body: .parsingError(text: notification))
+            return MessageTemplateRenderer(
+                body: .parsingError(text: notification),
+                fontFamily: SBUFontSet.FontFamily.notification
+            )
         } else {
-            return MessageTemplateRenderer(body: .parsingError(
-                text: SBUStringSet.Notification_Template_Error_Title,
-                subText: SBUStringSet.Notification_Template_Error_Subtitle
-            ))
+            return MessageTemplateRenderer(
+                body: .parsingError(
+                    text: SBUStringSet.Notification_Template_Error_Title,
+                    subText: SBUStringSet.Notification_Template_Error_Subtitle
+                ),
+                fontFamily: SBUFontSet.FontFamily.notification
+            )
         }
     }
     
@@ -70,6 +78,8 @@ class SBUNotificationCell: SBUBaseMessageCell {
         
         return iconView
     }()
+    
+    var availableTemplateWidth: CGFloat = 0.0
     
     
     // MARK: - Logic
@@ -105,6 +115,8 @@ class SBUNotificationCell: SBUBaseMessageCell {
                 profileView.configure(urlString: urlString)
             }
         }
+        
+        self.setupLayouts()
     }
     
     override func setupViews() {
@@ -171,55 +183,49 @@ class SBUNotificationCell: SBUBaseMessageCell {
         var maxTemplateWidth: CGFloat = 0.0
         var leftMargin = 0.0
         var rightMargin = 0.0
-        var availableWidthForTemplate: CGFloat = 0.0
+        
+        let dateLabelWidth = self.dateLabel.textWidth()
         
         switch type {
         case .none, .feed:
             maxTemplateWidth = feedNotificationMaxWidth
             leftMargin = 16
             rightMargin = 16
-            availableWidthForTemplate = screenWidth - (leftMargin + rightMargin)
+            self.availableTemplateWidth = screenWidth - (leftMargin + rightMargin)
         case .chat:
             maxTemplateWidth = chatNotificationMaxWidth
             leftMargin = 12
             rightMargin = 12
-            availableWidthForTemplate = screenWidth - (leftMargin + 26 + 12 + 4 + 50 + rightMargin)
+            self.availableTemplateWidth = screenWidth - (leftMargin + 26 + 12 + 4 + dateLabelWidth + rightMargin)
+            // leftMargin + (profile) + (caption) + (profile/caption margin) + dataLabel + rightMargin
         }
-        
         self.baseStackView
             .sbu_constraint(
                 equalTo: self.messageContentView,
                 leading: leftMargin,
                 top: 0,
-                bottom: 0
+                bottom: 0,
+                priority: .required
             )
 
         self.baseStackView.sbu_constraint(
             equalTo: self.messageContentView,
             trailing: -rightMargin,
             priority: .defaultHigh
-            //priority: availableWidthForTemplate > maxTemplateWidth ? .defaultLow : .defaultHigh
         )
         
-        if availableWidthForTemplate > maxTemplateWidth {
-            self.contentStackView.sbu_constraint_lessThan(
-                width: min(availableWidthForTemplate, maxTemplateWidth),
-                priority: UILayoutPriority(1000)
-            )
-        } else {
-            self.contentStackView.sbu_constraint(
-                width: min(availableWidthForTemplate, maxTemplateWidth),
-                priority: UILayoutPriority(1000)
-            )
-        }
+        self.contentStackView.sbu_constraint(
+            width: min(self.availableTemplateWidth, maxTemplateWidth),
+            priority: .required
+        )
 
         if self.type == .chat {
-            self.dateLabel.sbu_constraint(width: 50, priority: .defaultLow)
+            self.dateLabel.sbu_constraint(width: dateLabelWidth, priority: .defaultLow)
             self.dateLabel.setContentHuggingPriority(UILayoutPriority(251), for: .horizontal)
             
             self.profileView.sbu_constraint(width: 26, height: 26)
             self.profileMargin.sbu_constraint(width: 4)
-            self.categoryMargin.sbu_constraint(width: 8)
+            self.categoryMargin.sbu_constraint(width: 4)
         }
         
         // TODO: need to check
@@ -268,8 +274,8 @@ class SBUNotificationCell: SBUBaseMessageCell {
         
         guard subType == 0 else { return } // subType: 0 is template type
         
-        var subData = notification?.extendedMessage["sub_data"] as? String
-        var bindedTemplate = SBUNotificationChannelManager.generateTemplate(
+        let subData = notification?.extendedMessage["sub_data"] as? String
+        var (bindedTemplate, isNewTemplateDownloading) = SBUNotificationChannelManager.generateTemplate(
             with: subData
         ) { [weak self, weak notification] success in
             guard success else { return }
@@ -278,6 +284,7 @@ class SBUNotificationCell: SBUBaseMessageCell {
         }
         bindedTemplate = bindedTemplate?.replacingOccurrences(of: "\\n", with: "\\\\n")
         bindedTemplate = bindedTemplate?.replacingOccurrences(of: "\n", with: "\\n")
+        
         var template: MessageTemplateData?
         do {
             template = try JSONDecoder().decode(MessageTemplateData.self, from: Data((bindedTemplate ?? "").utf8))
@@ -293,11 +300,26 @@ class SBUNotificationCell: SBUBaseMessageCell {
         }
         
         self.notificationTemplateRenderer = nil
-        if let bindedTemplate = bindedTemplate, !showFallback {
+        if isNewTemplateDownloading {
+            self.notificationTemplateRenderer = MessageTemplateRenderer(
+                body: .downloadingTemplate(
+                    height: (type == .chat)
+                    ? chatNotificationDownloadingHeight
+                    : feedNotificationDownloadingHeight
+                ),
+                fontFamily: SBUFontSet.FontFamily.notification
+            )
+        }
+        else if let bindedTemplate = bindedTemplate, !showFallback {
             self.notificationTemplateRenderer = MessageTemplateRenderer(
                 with: bindedTemplate,
                 delegate: self,
-                actionHandler: self.notificationActionHandler
+                maxWidth: self.availableTemplateWidth,
+                fontFamily: SBUFontSet.FontFamily.notification,
+                actionHandler: { [weak self] action in
+                    self?.statisticsForAction(with: subData)
+                    self?.notificationActionHandler?(action)
+                }
             ) ?? parsingErrorNotificationRenderer
         } else {
             self.notificationTemplateRenderer = parsingErrorNotificationRenderer
@@ -371,12 +393,66 @@ class SBUNotificationCell: SBUBaseMessageCell {
             profileView.imageView.image = nil
         }
     }
+    
+    
+    // MARK: - Common
+    
+    /// Adds stat for action of notification to SendbirdStatistics.
+    /// - Parameter subData: for exporting templateKey and tags.
+    /// - Since: 3.5.7
+    @discardableResult func statisticsForAction(with subData: String?) -> Bool {
+        guard let subData = subData else { return false }
+        
+        // data scheme
+        var templateKey: String? = nil
+        var tags: [String] = []
+        do {
+            if let subDataDic = try JSONSerialization.jsonObject(
+                with: Data(subData.utf8),
+                options: []
+            ) as? [String: Any]
+            {
+                templateKey = subDataDic["template_key"] as? String
+                tags = subDataDic["tags"] as? [String] ?? []
+            }
+        } catch {
+            SBULog.error(error.localizedDescription)
+            return false
+        }
+        
+        guard let templateKey = templateKey,
+              let message = self.message else { return false }
+        
+        let type = "noti:stats"
+        let action = "clicked"
+        let source = "notification"
+
+        let isSucceed = __SendbirdStatistics.__appendStat(
+            type: type,
+            data: [
+                "action": action,
+                "template_key": templateKey,
+                "channel_url": message.channelURL,
+                "tags": tags,
+                "message_id": message.messageId,
+                "source": source,
+                "message_ts": message.createdAt
+            ]
+        )
+        
+        SBULog.info("[\(isSucceed ? "Succeed" : "Failed")] SendbirdStatistics - \(type), \(action)")
+        return isSucceed
+    }
 }
 
 
 // MARK: - MessageTemplateRendererDelegate
 extension SBUNotificationCell: MessageTemplateRendererDelegate {
     func messageTemplateRender(_ renderer: MessageTemplateRenderer, didFinishLoadingImage imageView: UIImageView) {
+        self.reloadCell()
+    }
+    
+    func messageTemplateNeedReloadCell() {
         self.reloadCell()
     }
 }

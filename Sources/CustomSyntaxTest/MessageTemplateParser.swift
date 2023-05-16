@@ -232,6 +232,8 @@ class MessageTemplateData: Decodable {
 // MARK: - Body
 public class SBUMessageTemplate {
     
+    static let urlForTemplateDownload = "TEMPLATE_DOWNLOAD"
+    
     class Body: Decodable {
         var items: [SBUMessageTemplate.Item]?
     }
@@ -404,6 +406,28 @@ public class SBUMessageTemplate {
             self.metaData = try container.decodeIfPresent(MetaData.self, forKey: .metaData)
             
             try super.init(from: decoder)
+        }
+        
+        init(
+            imageUrl: String,
+            imageStyle: ImageStyle,
+            metaData: MetaData?,
+            viewStyle: SBUMessageTemplate.ViewStyle? = nil,
+            width: SBUMessageTemplate.SizeSpec = .fillParent(),
+            height: SBUMessageTemplate.SizeSpec = .wrapContent(),
+            action: SBUMessageTemplate.Action? = nil
+        ) {
+            self.imageUrl = imageUrl
+            self.imageStyle = imageStyle
+            self.metaData = metaData
+            
+            super.init(
+                type: .image,
+                viewStyle: viewStyle,
+                width: width,
+                height: height,
+                action: action
+            )
         }
     }
     
@@ -600,6 +624,15 @@ public class SBUMessageTemplate {
                 self.contentMode = .scaleAspectFill
             }
             self.tintColor = try container.decodeIfPresent(String.self, forKey: .tintColor)
+        }
+        
+        init (
+            contentMode: UIView.ContentMode,
+            tintColor: String?
+        ) {
+            self.contentMode = contentMode
+            self.decodedContentMode = .aspectFit
+            self.tintColor = tintColor
         }
     }
     
@@ -954,4 +987,42 @@ extension SBUMessageTemplate.Body {
         ]
         return body
     }
+    
+    static func downloadingTemplate(height: CGFloat) -> SBUMessageTemplate.Body {
+        let spinnerItems: [SBUMessageTemplate.Item] = [
+            .image(.init(
+                imageUrl: SBUMessageTemplate.urlForTemplateDownload,
+                imageStyle: .init(
+                    contentMode: .center,
+                    tintColor: SBUTheme.notificationTheme.notificationCell.downloadingBackgroundHexColor
+                ),
+                metaData: nil
+            ))
+        ]
+        
+        let body = SBUMessageTemplate.Body()
+        body.items = [
+            .box(.init(
+                layout: .column,
+                align: SBUMessageTemplate.ItemsAlign(horizontal: .center, vertical: .center),
+                type: .box,
+                height: .init(type: .fixed, value: Int(height)),
+                items: [
+                    .box(.init(
+                        layout: .column,
+                        align: .init(horizontal: .center, vertical: .center),
+                        type: .box,
+                        viewStyle: .init(
+                            padding: .init(top: 0, bottom: 0, left: 0, right: 0)
+                        ),
+                        width: .init(type: .fixed, value: 36),
+                        height: .init(type: .fixed, value: 36),
+                        items: spinnerItems
+                    ))
+                ]
+            ))
+        ]
+        return body
+    }
+
 }

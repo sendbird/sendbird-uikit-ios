@@ -3913,7 +3913,7 @@ extension SBUNotificationTheme {
         var backgroundColor: UIColor = SBUColorSet.background50
         var textSize: CGFloat = 18
         var textColor: UIColor = SBUColorSet.onlight01
-        lazy var textFont: UIFont = UIFont.systemFont(ofSize: self.textSize, weight: .bold) // internal
+        lazy var textFont: UIFont = SBUFontSet.notificationFont(size: self.textSize, weight: .bold) // internal
     }
     
     
@@ -3925,11 +3925,9 @@ extension SBUNotificationTheme {
             let theme = SBUNotificationTheme.List(
                 backgroundColor : SBUColorSet.background50,
                 tooltipBackgroundColor : SBUColorSet.primary300,
-                tooltipFont: SBUFontSet.body2,
                 tooltipTextColor : SBUColorSet.ondark01,
                 timelineBackgroundColor : SBUColorSet.overlay02,
-                timelineTextColor : SBUColorSet.ondark01,
-                timelineFont: SBUFontSet.caption1
+                timelineTextColor : SBUColorSet.ondark01
             )
             return theme
         }
@@ -3938,11 +3936,9 @@ extension SBUNotificationTheme {
             let theme = SBUNotificationTheme.List(
                 backgroundColor : SBUColorSet.background500,
                 tooltipBackgroundColor : SBUColorSet.primary200,
-                tooltipFont: SBUFontSet.body2,
                 tooltipTextColor : SBUColorSet.onlight01,
                 timelineBackgroundColor : SBUColorSet.overlay01,
-                timelineTextColor : SBUColorSet.ondark02,
-                timelineFont: SBUFontSet.caption1
+                timelineTextColor : SBUColorSet.ondark02
             )
             return theme
         }
@@ -3950,31 +3946,27 @@ extension SBUNotificationTheme {
         init(
             backgroundColor: UIColor = SBUColorSet.background50,
             tooltipBackgroundColor: UIColor = SBUColorSet.primary300,
-            tooltipFont: UIFont = SBUFontSet.body2,
             tooltipTextColor: UIColor = SBUColorSet.ondark01,
             timelineBackgroundColor: UIColor = SBUColorSet.overlay02,
-            timelineTextColor: UIColor = SBUColorSet.ondark01,
-            timelineFont: UIFont = SBUFontSet.caption1
+            timelineTextColor: UIColor = SBUColorSet.ondark01
         ) {
             self.backgroundColor = backgroundColor
             self.tooltipBackgroundColor = tooltipBackgroundColor
-            self.tooltipFont = tooltipFont
             self.tooltipTextColor = tooltipTextColor
             self.timelineBackgroundColor = timelineBackgroundColor
             self.timelineTextColor = timelineTextColor
-            self.timelineFont = timelineFont
         }
         
         
         var backgroundColor: UIColor = SBUColorSet.background50
         
         var tooltipBackgroundColor: UIColor = SBUColorSet.primary300
-        var tooltipFont: UIFont = SBUFontSet.body2 // client only prop
+        lazy var tooltipFont: UIFont = SBUFontSet.notificationFont(size: 14.0, weight: .semibold) // body2, client only prop
         var tooltipTextColor: UIColor = SBUColorSet.ondark01
         
         var timelineBackgroundColor: UIColor = SBUColorSet.overlay02
         var timelineTextColor: UIColor = SBUColorSet.ondark01
-        var timelineFont: UIFont = SBUFontSet.caption1  // client only prop
+        lazy var timelineFont: UIFont = SBUFontSet.notificationFont(size: 12.0, weight: .bold) // caption1, client only prop
     }
     
     class NotificationCell {
@@ -3989,7 +3981,8 @@ extension SBUNotificationTheme {
                 sentAtTextColor: SBUColorSet.onlight03,
                 pressedColor: SBUColorSet.primary100,
                 fallbackMessageTitleHexColor: "#e0000000",
-                fallbackMessageSubtitleHexColor: "#70000000"
+                fallbackMessageSubtitleHexColor: "#70000000",
+                downloadingBackgroundHexColor: "#e0000000"
             )
             return theme
         }
@@ -4002,7 +3995,8 @@ extension SBUNotificationTheme {
                 sentAtTextColor: SBUColorSet.ondark03,
                 pressedColor: SBUColorSet.primary500,
                 fallbackMessageTitleHexColor: "#e0ffffff",
-                fallbackMessageSubtitleHexColor: "#70ffffff"
+                fallbackMessageSubtitleHexColor: "#70ffffff",
+                downloadingBackgroundHexColor: "#e0ffffff"
             )
 
             return theme
@@ -4018,7 +4012,8 @@ extension SBUNotificationTheme {
             sentAtTextColor: UIColor = SBUColorSet.onlight03,
             pressedColor: UIColor = SBUColorSet.primary100,
             fallbackMessageTitleHexColor: String = "#e0000000",
-            fallbackMessageSubtitleHexColor: String = "#70000000"
+            fallbackMessageSubtitleHexColor: String = "#70000000",
+            downloadingBackgroundHexColor: String = "#e0000000"
         ) {
             self.radius = radius
             self.backgroundColor = backgroundColor
@@ -4030,6 +4025,7 @@ extension SBUNotificationTheme {
             self.pressedColor = pressedColor
             self.fallbackMessageTitleHexColor = fallbackMessageTitleHexColor
             self.fallbackMessageSubtitleHexColor = fallbackMessageSubtitleHexColor
+            self.downloadingBackgroundHexColor = downloadingBackgroundHexColor
         }
         
         var radius: CGFloat = 8
@@ -4039,11 +4035,12 @@ extension SBUNotificationTheme {
         
         var categoryTextSize: CGFloat = 12
         var categoryTextColor: UIColor = SBUColorSet.onlight02
-        lazy var categoryTextFont: UIFont = SBUFontSet.customFont(size: self.categoryTextSize) // internal
+        lazy var categoryTextFont: UIFont = SBUFontSet.notificationFont(size: self.categoryTextSize) // internal
+        var notificationFontFamily: String = ""
         
         var sentAtTextSize: CGFloat = 14
         var sentAtTextColor: UIColor = SBUColorSet.onlight03
-        lazy var sentAtTextFont: UIFont = SBUFontSet.customFont(size: self.sentAtTextSize) // internal
+        lazy var sentAtTextFont: UIFont = SBUFontSet.notificationFont(size: self.sentAtTextSize) // internal
         
         // TODO: notification - nice to have
         var pressedColor: UIColor = SBUColorSet.primary100
@@ -4051,5 +4048,7 @@ extension SBUNotificationTheme {
         // Internal
         var fallbackMessageTitleHexColor: String = "#e0000000"
         var fallbackMessageSubtitleHexColor: String = "#70000000"
+        
+        var downloadingBackgroundHexColor: String = "#e0000000"
     }
 }

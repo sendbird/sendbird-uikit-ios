@@ -1396,6 +1396,11 @@ extension SBUMessageThreadViewModel: MessageCollectionDelegate {
         if let parentMessage = parentMessages.first {
             self.delegate?.messageThreadViewModel(self, didUpdateParentMessage: parentMessage)
         }
+        
+        // Edge case - Updates Thread message when resend finished
+        let threadMessages = messages.filter { $0.parentMessageId == self.parentMessageId }
+        if threadMessages.isEmpty { return }
+        self.upsertMessagesInList(messages: threadMessages, needReload: true)
     }
     
     open func messageCollection(_ collection: MessageCollection,

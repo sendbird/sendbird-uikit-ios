@@ -10,6 +10,7 @@ import UIKit
 
 protocol MessageTemplateRendererDelegate: AnyObject {
     func messageTemplateRender(_ renderer: MessageTemplateRenderer, didFinishLoadingImage imageView: UIImageView)
+    func messageTemplateNeedReloadCell()
 }
 
 /**
@@ -56,22 +57,57 @@ class MessageTemplateRenderer: UIView {
     var actionHandler: ((SBUMessageTemplate.Action) -> Void)?
     var reloadHandler: (() -> Void)?
     
+    var maxWidth: CGFloat = 0.0
+    
+    let flexTypeWrapValue = SBUMessageTemplate.FlexSizeType.wrapContent.rawValue
+    let flexTypeFillValue = SBUMessageTemplate.FlexSizeType.fillParent.rawValue
+    
     weak var delegate: MessageTemplateRendererDelegate?
     
     var rendererConstraints: [NSLayoutConstraint] = []
+    
+    /// If this value is set, all of the fonts in Template are use this fontFamily.
+    /// - Since: 3.5.7
+    var fontFamily: String? = nil
+    
+    /// Returns system font or custom font by checking if there is a set fontFamily value for Template.
+    /// - Since: 3.5.7
+    func templateFont(size: CGFloat, weight: UIFont.Weight = .regular) -> UIFont {
+        guard let fontFamily = self.fontFamily else {
+            return UIFont.systemFont(ofSize: size, weight: weight)
+        }
+        
+        let descriptor = UIFontDescriptor(
+            fontAttributes: [
+                .family: fontFamily,
+                .traits: [UIFontDescriptor.TraitKey.weight: weight]
+            ]
+        )
+        let font = UIFont(descriptor: descriptor, size: size)
+        return font
+    }
+    
+    let SideView1Tag = 10
+    let SideView2Tag = 20
+    
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // TODO: will be changed to use params (builder)
     init?(with data: String,
           delegate: MessageTemplateRendererDelegate? = nil,
+          maxWidth: CGFloat = UIApplication.shared.currentWindow?.bounds.width ?? 0.0,
+          fontFamily: String? = nil,
           actionHandler: ((SBUMessageTemplate.Action) -> Void)?,
           reloadHandler: (() -> Void)? = nil)
     {
         super.init(frame: .zero)
         
         self.delegate = delegate
+        self.maxWidth = maxWidth
+        self.fontFamily = fontFamily
         self.actionHandler = actionHandler
         self.reloadHandler = reloadHandler
         
@@ -87,16 +123,25 @@ class MessageTemplateRenderer: UIView {
     }
     
     init(body: SBUMessageTemplate.Body,
+         fontFamily: String? = nil,
          actionHandler: ((SBUMessageTemplate.Action) -> Void)? = nil,
          reloadHandler: (() -> Void)? = nil) {
         super.init(frame: .zero)
         
+        self.fontFamily = fontFamily
         self.actionHandler = actionHandler
         self.reloadHandler = reloadHandler
         
         // AutoLayout
         self.addSubview(self.contentView)
-        self.rendererConstraints += self.contentView.sbu_constraint_v2(equalTo: self, leading: 0, trailing: 0, top: 0, bottom: 0)
+        self.rendererConstraints += self.contentView.sbu_constraint_v2(
+            equalTo: self,
+            leading: 0,
+            trailing: 0,
+            top: 0,
+            bottom: 0,
+            priority: .required
+        )
         
         // Render subview
         self.contentView.addSubview(self.bodyView)
@@ -117,7 +162,13 @@ class MessageTemplateRenderer: UIView {
         
         // AutoLayout
         self.addSubview(self.contentView)
-        self.rendererConstraints += self.contentView.sbu_constraint_v2(equalTo: self, leading: 0, trailing: 0, top: 0, bottom: 0)
+        self.rendererConstraints += self.contentView.sbu_constraint_v2(
+            equalTo: self,
+            leading: 0,
+            trailing: 0,
+            top: 0,
+            bottom: 0
+        )
         
         // Render subview
         self.contentView.addSubview(self.bodyView)
@@ -143,10 +194,7 @@ class MessageTemplateRenderer: UIView {
         var prevItem: SBUMessageTemplate.View?
         var currentView: UIView = self.bodyView
         for (index, item) in items.enumerated() {
-            var isLastItem = false
-            if index == items.count - 1 {
-                isLastItem = true
-            }
+            let isLastItem = (index == items.count - 1)
             
             switch item {
             case .box(let boxItem):
@@ -223,8 +271,9 @@ class MessageTemplateRenderer: UIView {
                    itemsAlign: SBUMessageTemplate.ItemsAlign? = .defaultAlign(),
                    layout: SBUMessageTemplate.LayoutType = .column,
                    isLastItem: Bool = false) -> UIView {
-        let baseView = MessageTemplateBoxBaseView(item: item)
+        let baseView = MessageTemplateBoxBaseView(item: item, layout: layout)
         let boxView = MessageTemplateBoxView()
+        boxView.layout = layout
         baseView.clipsToBounds = true
         
         baseView.addSubview(boxView)
@@ -261,7 +310,9 @@ class MessageTemplateRenderer: UIView {
         let parentBoxView = parentView.subviews[0]
         // INFO: SideViews are placed at the top/bottom or left/right and used for align. According to Align, the area of the SideView is adjusted in the form of holding the position of the actual item.
         let sideView1 = UIView()
+        sideView1.tag = SideView1Tag
         let sideView2 = UIView()
+        sideView2.tag = SideView2Tag
         parentBoxView.addSubview(sideView1)
         
         var prevView: UIView = sideView1
@@ -270,16 +321,12 @@ class MessageTemplateRenderer: UIView {
         let itemsAlign = item.align
         let layout = item.layout
         
-        var widthFillParentCount = 0
         var haveWidthFillParent = false
         var heightFillParentCount = 0
         var haveHeightFillParent = false
         
         for (index, item) in items.enumerated() {
-            var isLastItem = false
-            if index == items.count - 1 {
-                isLastItem = true
-            }
+            let isLastItem = false// edge case (wrap contents separate issue)
             
             switch item {
             case .box(let boxItem):
@@ -289,7 +336,8 @@ class MessageTemplateRenderer: UIView {
                     prevView: prevView,
                     prevItem: prevItem,
                     itemsAlign: itemsAlign,
-                    layout: layout
+                    layout: layout,
+                    isLastItem: isLastItem
                 )
                 currentView = boxView
                 prevItem = boxItem
@@ -301,7 +349,8 @@ class MessageTemplateRenderer: UIView {
                     prevView: prevView,
                     prevItem: prevItem,
                     itemsAlign: itemsAlign,
-                    layout: layout
+                    layout: layout,
+                    isLastItem: isLastItem
                 )
                 currentView = textLabel
                 prevItem = textItem
@@ -313,7 +362,8 @@ class MessageTemplateRenderer: UIView {
                     prevView: prevView,
                     prevItem: prevItem,
                     itemsAlign: itemsAlign,
-                    layout: layout
+                    layout: layout,
+                    isLastItem: isLastItem
                 )
                 currentView = imageView
                 prevItem = imageItem
@@ -336,25 +386,26 @@ class MessageTemplateRenderer: UIView {
                     prevView: prevView,
                     prevItem: prevItem,
                     itemsAlign: itemsAlign,
-                    layout: layout
+                    layout: layout,
+                    isLastItem: isLastItem
                 )
                 currentView = imageButton
                 prevItem = imageButtonItem
             }
             
             if prevItem?.width.type == .flex,
-               prevItem?.width.value == SBUMessageTemplate.FlexSizeType.fillParent.rawValue {
-                widthFillParentCount += 1
+               prevItem?.width.value == flexTypeFillValue {
                 haveWidthFillParent = true
             }
             if prevItem?.height.type == .flex,
-               prevItem?.height.value == SBUMessageTemplate.FlexSizeType.fillParent.rawValue {
+               prevItem?.height.value == flexTypeFillValue {
                 heightFillParentCount += 1
                 haveHeightFillParent = true
             }
 
             parentBoxView.addSubview(currentView)
             prevView = currentView
+            currentView.setContentHuggingPriority(UILayoutPriority(Float(250 - index)), for: .horizontal)
         }
         
         parentBoxView.addSubview(sideView2)
@@ -367,18 +418,28 @@ class MessageTemplateRenderer: UIView {
             self.rendererConstraints += sideView2.sbu_constraint_v2(equalTo: parentBoxView, right: 0)
             
             if haveWidthFillParent || item.align.horizontal == .center {
-                sideView1.widthAnchor.constraint(equalTo: sideView2.widthAnchor, multiplier: 1.0).isActive = true
+                sideView1.widthAnchor.constraint(
+                    equalTo: sideView2.widthAnchor,
+                    multiplier: 1.0
+                ).isActive = true
             }
+            
             // INFO: When all items are fill type, the horizontal widths are the same
-            if widthFillParentCount == parentBoxView.subviews.count - 2 {
-                for (index, subview) in parentBoxView.subviews.enumerated() {
-                    if index == 0 || index == parentBoxView.subviews.count - 1 {
-                        continue
-                    }
-                    
-                    if index > 1 {
-                        subview.widthAnchor.constraint(equalTo: parentBoxView.subviews[index-1].widthAnchor, multiplier: 1.0).isActive = true
-                    }
+            let fillParentViews = parentBoxView
+                .subviews
+                .compactMap { $0 as? MessageTemplateBaseView}
+                .filter {
+                    ($0.width.type == .flex)
+                    && ($0.width.value == flexTypeFillValue)
+                }
+            let filleParentBaseWidthAnchor = fillParentViews.first?.widthAnchor
+
+            if let filleParentBaseWidthAnchor = filleParentBaseWidthAnchor {
+                for view in fillParentViews {
+                    view.widthAnchor.constraint(
+                        equalTo: filleParentBaseWidthAnchor,
+                        multiplier: 1.0
+                    ).isActive = true
                 }
             }
             
@@ -414,18 +475,28 @@ class MessageTemplateRenderer: UIView {
             self.rendererConstraints += sideView2.sbu_constraint_v2(equalTo: parentBoxView, bottom: 0)
             
             if haveHeightFillParent || item.align.vertical == .center {
-                sideView1.heightAnchor.constraint(equalTo: sideView2.heightAnchor, multiplier: 1.0).isActive = true
+                sideView1.heightAnchor.constraint(
+                    equalTo: sideView2.heightAnchor,
+                    multiplier: 1.0
+                ).isActive = true
             }
+            
             // INFO: When all items are fill type, the vertical heights are the same
-            if heightFillParentCount == parentBoxView.subviews.count - 2 {
-                for (index, subview) in parentBoxView.subviews.enumerated() {
-                    if index == 0 || index == parentBoxView.subviews.count - 1 {
-                        continue
-                    }
-                    
-                    if index > 1 {
-                        subview.heightAnchor.constraint(equalTo: parentBoxView.subviews[index-1].heightAnchor, multiplier: 1.0).isActive = true
-                    }
+            let fillParentViews = parentBoxView
+                .subviews
+                .compactMap { $0 as? MessageTemplateBaseView}
+                .filter {
+                    ($0.height.type == .flex)
+                    && ($0.height.value == flexTypeFillValue)
+                }
+            let filleParentBaseHeightAnchor = fillParentViews.first?.heightAnchor
+
+            if let filleParentBaseHeightAnchor = filleParentBaseHeightAnchor {
+                for view in fillParentViews {
+                    view.heightAnchor.constraint(
+                        equalTo: filleParentBaseHeightAnchor,
+                        multiplier: 1.0
+                    ).isActive = true
                 }
             }
             
@@ -464,17 +535,106 @@ class MessageTemplateRenderer: UIView {
                     itemsAlign: SBUMessageTemplate.ItemsAlign? = .defaultAlign(),
                     layout: SBUMessageTemplate.LayoutType = .column,
                     isLastItem: Bool = false) -> UIView {
-        let baseView = MessageTemplateTextBaseView(item: item)
+        return renderCommonText(
+            item: item,
+            parentView: parentView,
+            prevView: prevView,
+            prevItem: prevItem,
+            itemsAlign: itemsAlign,
+            layout: layout,
+            isLastItem: isLastItem
+        )
+    }
+    
+    
+    // MARK: - TextButton
+    func renderTextButton(item: SBUMessageTemplate.TextButton,
+                          parentView: UIView,
+                          prevView: UIView,
+                          prevItem: SBUMessageTemplate.View? = nil,
+                          itemsAlign: SBUMessageTemplate.ItemsAlign? = .defaultAlign(),
+                          layout: SBUMessageTemplate.LayoutType = .column,
+                          isLastItem: Bool = false) -> UIView {
+        return renderCommonText(
+            item: item,
+            parentView: parentView,
+            prevView: prevView,
+            prevItem: prevItem,
+            itemsAlign: itemsAlign,
+            layout: layout,
+            isLastItem: isLastItem
+        )
+    }
+    
+    
+    // MARK: - CommonText: Text, TextButton
+    func renderCommonText(item: SBUMessageTemplate.View,
+                          parentView: UIView,
+                          prevView: UIView,
+                          prevItem: SBUMessageTemplate.View? = nil,
+                          itemsAlign: SBUMessageTemplate.ItemsAlign? = .defaultAlign(),
+                          layout: SBUMessageTemplate.LayoutType = .column,
+                          isLastItem: Bool = false) -> UIView {
+
+        let isTextButton = (item is SBUMessageTemplate.TextButton)
+        
+        let baseView = isTextButton
+                        ? MessageTemplateTextButtonBaseView(item: item, layout: layout)
+                        : MessageTemplateTextBaseView(item: item, layout: layout)
         baseView.clipsToBounds = true
-        let label = MessageTemplateLabel()
-        label.text = item.text
-        label.numberOfLines = item.maxTextLines
+        
+
+        var text: String? = nil
+        var numberOfLines = 0
+        var textStyle: SBUMessageTemplate.TextStyle? = nil
+        var textAlign: SBUMessageTemplate.TextAlign? = nil
+        
+        switch item {
+        case let textItem as SBUMessageTemplate.Text:
+            text = textItem.text
+            numberOfLines = textItem.maxTextLines
+            textStyle = textItem.textStyle
+            textAlign = textItem.align
+        case let textButtonItem as SBUMessageTemplate.TextButton:
+            text = textButtonItem.text
+            numberOfLines = textButtonItem.maxTextLines
+            textStyle = textButtonItem.textStyle
+        default:
+            break
+        }
+        
+        let label = isTextButton ? MessageTemplateTextButton() : MessageTemplateLabel()
+        label.padding = item.viewStyle?.padding
+        label.updateLayoutHandler = { constraints, deactivatedConstraints in
+            self.rendererConstraints.forEach { $0.isActive = false }
+            self.rendererConstraints += constraints
+            self.rendererConstraints = self.rendererConstraints.filter { !deactivatedConstraints.contains($0) }
+            self.rendererConstraints.forEach { $0.isActive = true }
+        }
+        
+        label.text = text
+        label.numberOfLines = numberOfLines
         label.lineBreakMode = .byTruncatingTail
+        label.clipsToBounds = isTextButton
+        
+        // INFO: Edge case - text wrap issue
+        if baseView.layout == .row {
+            let totalTextWidth = parentView
+                .subviews
+                .compactMap { $0.subviews.first as? MessageTemplateLabel }
+                .filter { $0.isWrapTypeWidth }
+                .reduce(0) { $0 + $1.fullTextViewWidth }
+            
+            if totalTextWidth >= self.maxWidth {
+                label.numberOfLines = 1
+            }
+        }
+        
         baseView.addSubview(label)
         parentView.addSubview(baseView)
         
         // Text Style
-        if let textStyle = item.textStyle {
+        if let textStyle = textStyle {
             var fontSize = self.themeForDefault.textFont.pointSize
             if let size = textStyle.size {
                 fontSize = CGFloat(size)
@@ -482,9 +642,9 @@ class MessageTemplateRenderer: UIView {
             
             switch textStyle.weight {
             case .normal:
-                label.font = UIFont.systemFont(ofSize: fontSize, weight: .regular)
+                label.font = self.templateFont(size: fontSize)
             case .bold:
-                label.font = UIFont.systemFont(ofSize: fontSize, weight: .bold)
+                label.font = self.templateFont(size: fontSize, weight: .bold)
             case .none:
                 break
             }
@@ -496,36 +656,38 @@ class MessageTemplateRenderer: UIView {
             }
             
         } else {
-            label.font = UIFont.systemFont(
-                ofSize: self.themeForDefault.textFont.pointSize,
-                weight: .regular
-            )
+            label.font = self.templateFont(size: self.themeForDefault.textFont.pointSize)
             label.textColor = self.themeForDefault.textColor
             label.contentMode = .center // TODO: check
             label.textAlignment = .left
         }
         
-        let textAlign = item.align
-        switch textAlign.vertical {
-        case .top:
-            label.contentMode = .top
-        case .center:
+        if let textAlign = textAlign {
+            switch textAlign.vertical {
+            case .top:
+                label.contentMode = .top
+            case .center:
+                label.contentMode = .center
+            case .bottom:
+                label.contentMode = .bottom
+            case .none:
+                break
+            }
+            
+            switch textAlign.horizontal {
+            case .left:
+                label.textAlignment = .left
+            case .center:
+                label.textAlignment = .center
+            case .right:
+                label.textAlignment = .right
+            case .none:
+                break
+            }
+        } else {
+            // Text(no textAlign) | TextButton
             label.contentMode = .center
-        case .bottom:
-            label.contentMode = .bottom
-        case .none:
-            break
-        }
-        
-        switch textAlign.horizontal {
-        case .left:
-            label.textAlignment = .left
-        case .center:
             label.textAlignment = .center
-        case .right:
-            label.textAlignment = .right
-        case .none:
-            break
         }
         
         // View Style
@@ -543,8 +705,15 @@ class MessageTemplateRenderer: UIView {
             isLastItem: isLastItem
         )
         
-        if item.width.type == .flex, item.width.value == 1 {
-            label.setContentCompressionResistancePriority(UILayoutPriority(751), for: NSLayoutConstraint.Axis.horizontal)
+        if baseView.layout == .row {
+            if item.width.type == .flex, item.width.value == flexTypeWrapValue {
+                label.setContentCompressionResistancePriority(UILayoutPriority(751), for: NSLayoutConstraint.Axis.horizontal)
+            }
+        }
+        else {
+            if item.height.type == .flex, item.height.value == flexTypeWrapValue {
+                label.setContentCompressionResistancePriority(UILayoutPriority(751), for: NSLayoutConstraint.Axis.vertical)
+            }
         }
         
         // Action
@@ -562,9 +731,11 @@ class MessageTemplateRenderer: UIView {
                      itemsAlign: SBUMessageTemplate.ItemsAlign = .defaultAlign(),
                      layout: SBUMessageTemplate.LayoutType = .column,
                      isLastItem: Bool = false) -> UIView {
-        let baseView = MessageTemplateImageBaseView(item: item)
+        let baseView = MessageTemplateImageBaseView(item: item, layout: layout)
         baseView.clipsToBounds = true
         let imageView: UIImageView = MessageTemplateImageView()
+        
+        let isForDownloadingTemplate = (item.imageUrl == SBUMessageTemplate.urlForTemplateDownload)
         
         // Image Style
         let imageStyle = item.imageStyle
@@ -572,9 +743,14 @@ class MessageTemplateRenderer: UIView {
         imageView.contentMode = contentMode
         
         // INFO: Edge case - image height is wrap
-        let needResizeImage =
+        var needResizeImage =
         (item.width.type == .fixed || (item.width.type == .flex && item.width.value == 0))
         && (item.height.type == .flex && item.height.value == 1)
+        
+        if isForDownloadingTemplate {
+            needResizeImage = false
+            imageView.contentMode = .center
+        }
         
         if needResizeImage {
             switch (itemsAlign.vertical, itemsAlign.horizontal) {
@@ -688,6 +864,31 @@ class MessageTemplateRenderer: UIView {
         
         placeholderConstraints.forEach { $0.isActive = true }
         
+        // Action
+        self.setAction(on: baseView, item: item)
+
+        // Load image
+        if isForDownloadingTemplate {
+            imageView.layer.removeAnimation(forKey: SBUAnimation.Key.spin.identifier)
+            
+            let image = SBUIconSetType.iconSpinner
+                .image(
+                    to: SBUIconSetType.Metric.iconSpinnerSizeForTemplate
+                ).sbu_with(
+                    tintColor: tintColor,
+                    forTemplate: true
+                )
+            imageView.image = image
+            
+            let rotation = CABasicAnimation(keyPath: "transform.rotation")
+            rotation.fromValue = 0
+            rotation.toValue = 2 * Double.pi
+            rotation.duration = 1.1
+            rotation.repeatCount = Float.infinity
+            imageView.layer.add(rotation, forKey: SBUAnimation.Key.spin.identifier)
+            return baseView
+        }
+        
         imageView.loadImage(urlString: item.imageUrl, completion: { [weak self, weak imageView] success in
             guard let self = self else { return }
             
@@ -722,7 +923,7 @@ class MessageTemplateRenderer: UIView {
                             equalTo: imageView.widthAnchor,
                             multiplier: ratio
                         )
-                        heightConst.priority = UILayoutPriority(750)
+                        heightConst.priority = .defaultHigh
                         self.rendererConstraints.append(heightConst)
                     }
                     
@@ -743,82 +944,6 @@ class MessageTemplateRenderer: UIView {
             }
         })
         
-        // Action
-        self.setAction(on: baseView, item: item)
-        
-        return baseView
-    }
-    
-    
-    // MARK: - TextButton
-    func renderTextButton(item: SBUMessageTemplate.TextButton,
-                          parentView: UIView,
-                          prevView: UIView,
-                          prevItem: SBUMessageTemplate.View? = nil,
-                          itemsAlign: SBUMessageTemplate.ItemsAlign? = .defaultAlign(),
-                          layout: SBUMessageTemplate.LayoutType = .column,
-                          isLastItem: Bool = false) -> UIView {
-        let baseView = MessageTemplateTextButtonBaseView(item: item)
-        baseView.clipsToBounds = true
-        let textButton = MessageTemplateTextButton()
-        textButton.setTitle(item.text, for: .normal)
-        textButton.titleLabel?.numberOfLines = item.maxTextLines
-        textButton.titleLabel?.lineBreakMode = .byTruncatingTail
-        textButton.contentEdgeInsets = UIEdgeInsets(
-            top: .leastNormalMagnitude,
-            left: .leastNormalMagnitude,
-            bottom: .leastNormalMagnitude,
-            right: .leastNormalMagnitude
-        )
-        baseView.addSubview(textButton)
-        parentView.addSubview(baseView)
-        
-        // Text Style
-        if let textStyle = item.textStyle {
-            var fontSize = self.themeForDefault.textButtonFont.pointSize
-            if let size = textStyle.size {
-                fontSize = CGFloat(size)
-            }
-
-            switch textStyle.weight {
-            case .normal:
-                textButton.titleLabel?.font = UIFont.systemFont(ofSize: fontSize, weight: .regular)
-            case .bold:
-                textButton.titleLabel?.font = UIFont.systemFont(ofSize: fontSize, weight: .bold)
-            case .none:
-                break
-            }
-            
-            if let textColor = textStyle.color {
-                textButton.setTitleColor(UIColor(hexString: textColor), for: .normal)
-            } else {
-                textButton.setTitleColor(self.themeForDefault.textButtonTitleColor, for: .normal)
-            }
-        } else {
-            textButton.titleLabel?.font = self.themeForDefault.textButtonFont
-            textButton.setTitleColor(self.themeForDefault.textButtonTitleColor, for: .normal)
-        }
-        
-        // View Style
-        self.renderViewStyle(with: item, to: baseView)
-        
-        // Layout
-        self.renderViewLayout(
-            with: item,
-            to: baseView,
-            parentView: parentView,
-            prevView: prevView,
-            prevItem: prevItem,
-            itemsAlign: itemsAlign,
-            layout: layout,
-            isLastItem: isLastItem
-        )
-        
-        self.rendererConstraints += textButton.sbu_constraint_greaterThan_v2(height: textButton.titleLabel?.font.lineHeight ?? 1, priority: .defaultLow)
-        
-        // Action
-        self.setAction(on: baseView, item: item)
-        
         return baseView
     }
     
@@ -831,7 +956,7 @@ class MessageTemplateRenderer: UIView {
                            itemsAlign: SBUMessageTemplate.ItemsAlign? = .defaultAlign(),
                            layout: SBUMessageTemplate.LayoutType = .column,
                            isLastItem: Bool = false) -> UIView {
-        let baseView = MessageTemplateImageButtonBaseView(item: item)
+        let baseView = MessageTemplateImageButtonBaseView(item: item, layout: layout)
         baseView.clipsToBounds = true
         let imageButton = MessageTemplateImageButton()
         
@@ -952,7 +1077,7 @@ class MessageTemplateRenderer: UIView {
                             equalTo: imageButton.widthAnchor,
                             multiplier: ratio
                         )
-                        heightConst.priority = UILayoutPriority(750)
+                        heightConst.priority = .defaultHigh
                         self.rendererConstraints.append(heightConst)
                     }
                     
@@ -1069,7 +1194,7 @@ class MessageTemplateRenderer: UIView {
 
         // left/right
         if layout == .column { // default
-            if width.type == .flex, width.value == SBUMessageTemplate.FlexSizeType.fillParent.rawValue {
+            if width.type == .flex, width.value == flexTypeFillValue {
                 // default
                 self.rendererConstraints += baseView.sbu_constraint_v2(equalTo: parentView, centerX: 0)
                 self.rendererConstraints += baseView.sbu_constraint_v2(equalTo: parentView, left: marginInsets.left)
@@ -1118,23 +1243,26 @@ class MessageTemplateRenderer: UIView {
         // MARK: - Body
         
         // Size: height
+        let paddingHeight = (padding?.top ?? 0.0) + (padding?.bottom ?? 0.0)
+
         if height.type == .fixed {
-            let padding = item.viewStyle?.padding
-            let paddingHeight = (padding?.top ?? 0.0) + (padding?.bottom ?? 0.0)
             self.rendererConstraints += subView?.sbu_constraint_v2(height: CGFloat(height.value) - paddingHeight) ?? []
+        }
+        else {
+            self.rendererConstraints += subView?.sbu_constraint_lessThan_v2(heightAnchor: baseView.heightAnchor, height: -paddingHeight) ?? []
         }
         
         // top/bottom
         if layout == .column { // Default
             // top anchor
-            if let prevItem = prevItem {
-                let prevItemBottomMargin = prevItem.viewStyle?.margin?.bottom ?? 0.0
+            if prevItem == nil && prevView.tag != SideView1Tag {
+                self.rendererConstraints += baseView.sbu_constraint_v2(equalTo: parentView, top: marginInsets.top)
+            } else {
+                let prevItemBottomMargin = prevItem?.viewStyle?.margin?.bottom ?? 0.0
                 self.rendererConstraints += baseView.sbu_constraint_equalTo_v2(
                     topAnchor: prevView.bottomAnchor,
                     top: marginInsets.top + prevItemBottomMargin
                 )
-            } else {
-                self.rendererConstraints += baseView.sbu_constraint_v2(equalTo: parentView, top: marginInsets.top)
             }
             
             // bottom anchor
@@ -1152,7 +1280,7 @@ class MessageTemplateRenderer: UIView {
              --     --      --
              */
 
-            if height.type == .flex, height.value == SBUMessageTemplate.FlexSizeType.fillParent.rawValue {
+            if height.type == .flex, height.value == flexTypeFillValue {
                 // default
                 self.rendererConstraints += baseView.sbu_constraint_v2(equalTo: parentView, centerY: 0)
                 self.rendererConstraints += baseView.sbu_constraint_v2(equalTo: parentView, top: marginInsets.top)
@@ -1187,11 +1315,22 @@ class MessageTemplateRenderer: UIView {
             self.rendererConstraints += subView?.sbu_constraint_v2(
                 equalTo: baseView,
                 left: paddingInsets.left,
-                right: paddingInsets.right,
                 top: paddingInsets.top,
                 bottom: paddingInsets.bottom,
-                priority: UILayoutPriority(1000)
+                priority: .required
             ) ?? []
+
+            // INFO: Edge case - for right padding constraint adjustment
+            if let baseView = baseView as? MessageTemplateBaseView,
+               let rightPaddingConstraint = subView?.rightAnchor.constraint(equalTo: baseView.rightAnchor, constant: -paddingInsets.right)
+            {
+                baseView.rightPaddingConstraint = rightPaddingConstraint
+                baseView.rightPaddingConstraint?.priority = .required
+                
+                if let baseViewRightPaddingConstraint = baseView.rightPaddingConstraint {
+                    self.rendererConstraints += [baseViewRightPaddingConstraint]
+                }
+            }
         }
     }
     
@@ -1224,15 +1363,29 @@ class MessageTemplateRenderer: UIView {
     }
     
     
+    // MARK: - Common
+    func reloadCell() {
+        self.delegate?.messageTemplateNeedReloadCell()
+    }
+    
+    
     // MARK: - BaseView Wrapper class (for debugging, update each item)
-    class MessageTemplateContentView: UIView { }
-    class MessageTemplateBodyView: UIView { }
+    class MessageTemplateContentView: UIView {}
+    class MessageTemplateBodyView: UIView {}
 
-    class MessageTemplateBoxBaseView: UIView {
-        var item: SBUMessageTemplate.Box? = nil
+    class MessageTemplateBaseView: UIView {
+        var item: SBUMessageTemplate.View
+        var layout: SBUMessageTemplate.LayoutType
         
-        init(item: SBUMessageTemplate.Box?) {
+        var width: SBUMessageTemplate.SizeSpec { self.item.width }
+        var height: SBUMessageTemplate.SizeSpec { self.item.height }
+        
+        weak var rightPaddingConstraint: NSLayoutConstraint? = nil
+        
+        init(item: SBUMessageTemplate.View, layout: SBUMessageTemplate.LayoutType) {
             self.item = item
+            self.layout = layout
+        
             super.init(frame: .zero)
         }
         
@@ -1240,60 +1393,23 @@ class MessageTemplateRenderer: UIView {
             fatalError("init(coder:) has not been implemented")
         }
     }
-    class MessageTemplateTextBaseView: UIView {
-        var item: SBUMessageTemplate.Text? = nil
-        
-        init(item: SBUMessageTemplate.Text?) {
-            self.item = item
-            super.init(frame: .zero)
-        }
-        
-        required init?(coder: NSCoder) {
-            fatalError("init(coder:) has not been implemented")
-        }
+    
+    class MessageTemplateBoxBaseView: MessageTemplateBaseView {}
+    class MessageTemplateTextBaseView: MessageTemplateBaseView {}
+    class MessageTemplateImageBaseView: MessageTemplateBaseView {}
+    class MessageTemplateTextButtonBaseView: MessageTemplateTextBaseView {
+        // TODO: click effect animation
     }
-    class MessageTemplateImageBaseView: UIView {
-        var item: SBUMessageTemplate.Image? = nil
-        
-        init(item: SBUMessageTemplate.Image?) {
-            self.item = item
-            super.init(frame: .zero)
-        }
-        
-        required init?(coder: NSCoder) {
-            fatalError("init(coder:) has not been implemented")
-        }
-    }
-    class MessageTemplateTextButtonBaseView: UIView {
-        var item: SBUMessageTemplate.TextButton? = nil
-        
-        init(item: SBUMessageTemplate.TextButton?) {
-            self.item = item
-            super.init(frame: .zero)
-        }
-        
-        required init?(coder: NSCoder) {
-            fatalError("init(coder:) has not been implemented")
-        }
-    }
-    class MessageTemplateImageButtonBaseView: UIView {
-        var item: SBUMessageTemplate.ImageButton? = nil
-        
-        init(item: SBUMessageTemplate.ImageButton?) {
-            self.item = item
-            super.init(frame: .zero)
-        }
-        
-        required init?(coder: NSCoder) {
-            fatalError("init(coder:) has not been implemented")
-        }
-    }
+    class MessageTemplateImageButtonBaseView: MessageTemplateBaseView {}
 
 
     // MARK: - Item Wrapper class (for debugging, update each item)
 
-    class MessageTemplateBoxView: UIView { }
+    class MessageTemplateBoxView: UIView {
+        var layout: SBUMessageTemplate.LayoutType = .column
+    }
 
+    
     /// https://stackoverflow.com/a/32368958
 
     /// This class supports padding and 9 direction Align.
@@ -1304,7 +1420,43 @@ class MessageTemplateRenderer: UIView {
     ///     - horizontal: `label.textAlignment`
     ///     - vertical: `label.contentMode`
     class MessageTemplateLabel: UILabel {
-        var padding: UIEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        var padding: SBUMessageTemplate.Padding?
+        var updateLayoutHandler: (([NSLayoutConstraint], [NSLayoutConstraint]) -> ())?
+        
+        var fullTextViewWidth: CGFloat {
+            (self.padding?.left ?? 0)
+            + (self.padding?.right ?? 0)
+            + self.textWidth()
+        }
+        
+        var boxWidth: CGFloat = 0.0
+        var fullTextViewHeight: CGFloat {
+            (self.padding?.top ?? 0)
+            + (self.padding?.bottom ?? 0)
+            + self.textHeight(with: boxWidth, numberOfLines: self.numberOfLines)
+        }
+
+        var isWrapTypeWidth: Bool {
+            let width = (self.superview as? MessageTemplateTextBaseView)?.width
+            return (width?.type == .flex &&
+                    width?.value == SBUMessageTemplate.FlexSizeType.wrapContent.rawValue)
+        }
+        
+        var isWrapTypeHeight: Bool {
+            let height = (self.superview as? MessageTemplateTextBaseView)?.height
+            return (height?.type == .flex &&
+                    height?.value == SBUMessageTemplate.FlexSizeType.wrapContent.rawValue)
+        }
+
+        var isFixedTypeWidth: Bool {
+            let width = (self.superview as? MessageTemplateTextBaseView)?.width
+            return width?.type == .fixed
+        }
+        
+        var isFixedTypeHeight: Bool {
+            let height = (self.superview as? MessageTemplateTextBaseView)?.height
+            return height?.type == .fixed
+        }
         
         override func drawText(in rect: CGRect) {
             var newRect = rect
@@ -1319,22 +1471,142 @@ class MessageTemplateRenderer: UIView {
                 ()
             }
             
-            super.drawText(in: newRect.inset(by: padding))
+            super.drawText(in: newRect.inset(by: .zero))
+        }
+        
+        override func layoutSubviews() {
+            super.layoutSubviews()
+            
+            // INFO: Edge case - text wrap issue: width
+            guard let baseView = self.superview as? MessageTemplateTextBaseView,
+                  let boxView = baseView.superview as? MessageTemplateBoxView,
+                  let currentIndex = boxView.subviews.firstIndex(of: baseView) else { return }
+                  
+            if baseView.layout == .row {
+                if isWrapTypeWidth {
+                    var constraints: [NSLayoutConstraint] = []
+                    var deactivatedConstraints: [NSLayoutConstraint] = []
+                    
+                    boxWidth = boxView.frame.width
+                    let isOverSize = (baseView.frame.origin.x + fullTextViewWidth) > boxWidth
+                    
+                    constraints += self.sbu_constraint_v2(width: self.textWidth(), priority: .defaultLow)
+                    
+                    if isOverSize {
+                        constraints += baseView.sbu_constraint_v2(
+                            greaterThanOrEqualTo: boxView,
+                            right: 0,
+                            priority: .required
+                        )
+                        
+                        for (index, baseView) in boxView.subviews.enumerated() {
+                            if index <= currentIndex { continue }
+                            deactivatedConstraints += baseView.constraints
+                            baseView.isHidden = true
+                        }
+                        
+                        for (index, baseView) in boxView.subviews.enumerated() {
+                            if index >= currentIndex { continue }
+                            if let width = (baseView as? MessageTemplateBaseView)?.width,
+                               (width.type == .flex && width.value == SBUMessageTemplate.FlexSizeType.fillParent.rawValue) {
+                                deactivatedConstraints += baseView.constraints
+                                baseView.isHidden = true
+                            }
+                        }
+                    }
+                    
+                    updateLayoutHandler?(constraints, deactivatedConstraints)
+                } else if isFixedTypeWidth {
+                    // INFO: Edge case - If all items are fixed, the last fixed label should not pad the text when over the box area
+                    
+                    boxWidth = boxView.frame.width
+                    let isOverSize = (baseView.frame.origin.x + fullTextViewWidth) > boxWidth
+                    
+                    let itemCount: Int = boxView.subviews.count - 2
+                    if let index = boxView.subviews.firstIndex(of: baseView),
+                       index == (boxView.subviews.count - 2), // check last item
+                        isOverSize { // when only over size
+                    
+                        let fixedWidthItems = boxView
+                            .subviews
+                            .compactMap { $0.subviews.first as? MessageTemplateLabel }
+                            .filter { $0.isFixedTypeWidth }
+                        if fixedWidthItems.count == itemCount {
+                            baseView.rightPaddingConstraint?.priority = .defaultLow
+                        }
+                    }
+                }
+            }
+            else if baseView.layout == .column,
+                    let boxBaseView = boxView.superview as? MessageTemplateBoxBaseView,
+                    boxBaseView.height.type == .fixed {
+                // INFO: Edge case - text wrap/fixed issue: height
+                
+                if !isWrapTypeHeight { return }
+                var constraints: [NSLayoutConstraint] = []
+                var deactivatedConstraints: [NSLayoutConstraint] = []
+                
+                self.boxWidth = boxView.frame.width - ((self.padding?.left ?? 0)
+                                                      + (self.padding?.right ?? 0))
+                let boxHeight = boxView.frame.height - ((self.padding?.top ?? 0)
+                                                        + (self.padding?.bottom ?? 0))
+                
+                let isOverSize = (baseView.frame.origin.y + fullTextViewHeight) >= boxHeight
+                
+                let totalTextHeight = boxView
+                    .subviews
+                    .compactMap { $0.subviews.first as? MessageTemplateLabel }
+                    .filter { $0.isWrapTypeHeight || $0.isFixedTypeHeight }
+                    .reduce(0) { $0 + $1.fullTextViewHeight }
+                let needToRemoveFillTypes = totalTextHeight >= boxHeight
+
+                constraints += self.sbu_constraint_v2(height: self.textHeight(with: boxWidth, numberOfLines: self.numberOfLines), priority: .defaultLow)
+                
+                if isOverSize {
+                    constraints += baseView.sbu_constraint_v2(
+                        greaterThanOrEqualTo: boxView,
+                        bottom: 0,
+                        priority: .required
+                    )
+                    
+                    for (index, baseView) in boxView.subviews.enumerated() {
+                        if currentIndex >= index  { continue }
+                        deactivatedConstraints += baseView.constraints
+                        baseView.isHidden = true
+                    }
+                    
+                    if needToRemoveFillTypes {
+                        for (index, baseView) in boxView.subviews.enumerated() {
+                            if currentIndex <= index  { continue }
+                            if let height = (baseView as? MessageTemplateBaseView)?.height,
+                               (height.type == .flex && height.value == SBUMessageTemplate.FlexSizeType.fillParent.rawValue) {
+                                deactivatedConstraints += baseView.constraints
+                                baseView.isHidden = true
+                            }
+                        }
+                    }
+                }
+                
+                updateLayoutHandler?(constraints, deactivatedConstraints)
+            }
         }
         
         override var intrinsicContentSize: CGSize {
             let size = super.intrinsicContentSize
-            return CGSize(width: size.width + padding.left + padding.right,
-                          height: size.height + padding.top + padding.bottom)
+            return CGSize(width: size.width,
+                          height: size.height)
         }
         
         override var bounds: CGRect {
             didSet {
-                preferredMaxLayoutWidth = bounds.width - (padding.left + padding.right)
+                preferredMaxLayoutWidth = bounds.width
             }
         }
     }
 
+    class MessageTemplateTextButton: MessageTemplateLabel {}
+
+    
     class MessageTemplateImageView: UIImageView {
         var needResizeImage: Bool = false
         
@@ -1370,7 +1642,6 @@ class MessageTemplateRenderer: UIView {
         }
     }
 
-    class MessageTemplateTextButton: ActionItemButton {}
     class MessageTemplateImageButton: ActionItemButton {}
     class MessageTemplateImageButtonForAspectFit: MessageTemplateImageButton {
         override var intrinsicContentSize: CGSize {
@@ -1418,19 +1689,102 @@ extension UIImage {
     // https://stackoverflow.com/a/47884962
     // INFO: Edge case - image height is wrap
     func resizeTopAlignedToFill(newWidth: CGFloat) -> UIImage? {
-        let newHeight = size.height * newWidth / size.width
-
+        // Calculate ratio used for resizing the image
+        let scale = newWidth / size.width
+        let newHeight = size.height * scale
         let newSize = CGSize(width: newWidth, height: newHeight)
 
-        UIGraphicsBeginImageContextWithOptions(
-            newSize,
-            false,
-            UIApplication.shared.currentWindow?.screen.scale ?? 1.0
-        )
-        draw(in: CGRect(origin: .zero, size: newSize))
-        let newImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
+        // Array that stores image frames
+        var images: [UIImage] = []
 
-        return newImage
+        // If animated GIF image, resize all images in frames and append them to the array
+        if let animatedImages = self.images {
+            for animatedImage in animatedImages {
+                guard let cgImage = animatedImage.cgImage else { continue }
+                let image = UIImage(cgImage: cgImage)
+                UIGraphicsBeginImageContextWithOptions(newSize, false, image.scale)
+                let rect = CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height)
+                image.draw(in: rect)
+                let newImage = UIGraphicsGetImageFromCurrentImageContext()
+                UIGraphicsEndImageContext()
+                guard let newImage = newImage else { continue }
+                images.append(newImage)
+            }
+        } else {
+            // If not an animated GIF image, create a new image with resizing
+            UIGraphicsBeginImageContextWithOptions(newSize, false, UIApplication.shared.currentWindow?.screen.scale ?? 1.0)
+            draw(in: CGRect(origin: .zero, size: newSize))
+            let newImage = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
+            return newImage
+        }
+
+        // Create a new GIF image with modified images
+        return UIImage.animatedImage(with: images, duration: self.duration)
+    }
+}
+
+
+// TODO: will be separated by a file
+extension UILabel {
+    func textWidth() -> CGFloat {
+        return UILabel.textWidth(font: self.font, text: self.text ?? "")
+    }
+
+    class func textWidth(font: UIFont, text: String) -> CGFloat {
+        return textSize(font: font, text: text).width
+    }
+    
+    func textHeight(with width: CGFloat, numberOfLines: Int = 0) -> CGFloat {
+        return UILabel.textHeight(with: width, font: self.font, text: self.text ?? "", numberOfLines: numberOfLines)
+    }
+
+    class func textHeight(with width: CGFloat, font: UIFont, text: String, numberOfLines: Int = 0) -> CGFloat {
+        return textSize(font: font, text: text, numberOfLines: numberOfLines, width: width).height
+    }
+
+    class func textSize(font: UIFont, text: String, extra: CGSize) -> CGSize {
+        var size = textSize(font: font, text: text)
+        size.width = size.width + extra.width
+        size.height = size.height + extra.height
+        return size
+    }
+
+    class func textSize(
+        font: UIFont,
+        text: String,
+        numberOfLines: Int = 0,
+        width: CGFloat = .greatestFiniteMagnitude,
+        height: CGFloat = .greatestFiniteMagnitude
+    ) -> CGSize {
+        let label = UILabel(frame: CGRect(x: 0, y: 0, width: width, height: height))
+        label.numberOfLines = numberOfLines
+        label.font = font
+        label.text = text
+        label.sizeToFit()
+        return label.frame.size
+    }
+
+    class func countLines(font: UIFont, text: String, width: CGFloat, height: CGFloat = .greatestFiniteMagnitude) -> Int {
+        let myText = text as NSString
+
+        let rect = CGSize(width: width, height: height)
+        let labelSize = myText.boundingRect(with: rect, options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font: font], context: nil)
+
+        return Int(ceil(CGFloat(labelSize.height) / font.lineHeight))
+    }
+
+    func countLines(width: CGFloat = .greatestFiniteMagnitude, height: CGFloat = .greatestFiniteMagnitude) -> Int {
+        let myText = (self.text ?? "") as NSString
+
+        let rect = CGSize(width: width, height: height)
+        let labelSize = myText.boundingRect(
+            with: rect,
+            options: .usesLineFragmentOrigin,
+            attributes: [NSAttributedString.Key.font: self.font ?? UIFont()],
+            context: nil
+        )
+
+        return Int(ceil(CGFloat(labelSize.height) / self.font.lineHeight))
     }
 }
