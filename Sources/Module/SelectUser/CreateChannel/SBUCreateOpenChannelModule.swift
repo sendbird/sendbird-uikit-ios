@@ -34,7 +34,6 @@ open class SBUCreateOpenChannelModule {
     private var _headerComponent: SBUCreateOpenChannelModule.Header?
     private var _profileInputComponent: SBUCreateOpenChannelModule.ProfileInput?
     
-    
     // MARK: -
     public init(headerComponent: SBUCreateOpenChannelModule.Header? = nil,
                 profileInputComponent: SBUCreateOpenChannelModule.ProfileInput? = nil) {

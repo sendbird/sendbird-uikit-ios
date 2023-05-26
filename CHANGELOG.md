@@ -1,7 +1,10 @@
 # Changelog
 
+### v3.5.8 (May 26, 2023) with Chat SDK **v4.8.5**
+* Improved stability 
+
 ### v3.5.7 (May 16, 2023) with Chat SDK **v4.8.3**
-* Added `notification` property in `SBUFontSet.FontFamily` class
+* Added `notifications` property in `SBUFontSet.FontFamily` class
   * This property is for the Notification feature
 * Added statistics for the action of notification
 * Improved stability 

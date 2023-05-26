@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 public class SBUQuoteMessageInputViewParams {
     /// The message that is going to be replied.
     /// - Since: 2.2.0

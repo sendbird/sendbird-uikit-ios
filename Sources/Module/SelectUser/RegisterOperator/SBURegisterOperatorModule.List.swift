@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 public protocol SBURegisterOperatorModuleListDelegate: SBUBaseSelectUserModuleListDelegate {
     /// Called when the member cell was selected in the `listComponent`.
     /// - Parameters:
@@ -28,9 +27,7 @@ public protocol SBURegisterOperatorModuleListDelegate: SBUBaseSelectUserModuleLi
     func registerOperatorModuleDidSelectRetry(_ listComponent: SBURegisterOperatorModule.List)
 }
 
-
 public protocol SBURegisterOperatorModuleListDataSource: SBUBaseSelectUserModuleListDataSource { }
-
 
 extension SBURegisterOperatorModule {
     
@@ -47,7 +44,6 @@ extension SBURegisterOperatorModule {
             get { self.baseDataSource as? SBURegisterOperatorModuleListDataSource }
             set { self.baseDataSource = newValue }
         }
-        
         
         // MARK: - LifeCycle
         @available(*, unavailable, renamed: "SBURegisterOperatorModule.List()")
@@ -79,7 +75,6 @@ extension SBURegisterOperatorModule {
             self.setupStyles()
         }
         
-        
         // MARK: - TableView: Cell
         open override func configureCell(_ cell: UITableViewCell?, indexPath: IndexPath) {
             guard let user = self.userList?[indexPath.row],
@@ -99,7 +94,6 @@ extension SBURegisterOperatorModule {
     }
 }
 
-
 // MARK: - SBUEmptyViewDelegate
 extension SBURegisterOperatorModule.List {
     open override func didSelectRetry() {
@@ -108,7 +102,6 @@ extension SBURegisterOperatorModule.List {
         self.delegate?.registerOperatorModuleDidSelectRetry(self)
     }
 }
-
 
 // MARK: - UITableView relations
 extension SBURegisterOperatorModule.List {

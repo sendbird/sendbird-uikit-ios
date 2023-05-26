@@ -9,20 +9,18 @@
 import UIKit
 import SendbirdChatSDK
 
-
 @IBDesignable
 open class SBUFileMessageCell: SBUContentBaseMessageCell {
     
     // MARK: - Public property
     public var fileMessage: FileMessage? {
-        return self.message as? FileMessage
+        self.message as? FileMessage
     }
     
     public lazy var baseFileContentView: SBUBaseFileContentView = {
         let fileView = SBUBaseFileContentView()
         return fileView
     }()
-    
     
     // MARK: - View Lifecycle
     open override func setupViews() {
@@ -70,7 +68,7 @@ open class SBUFileMessageCell: SBUContentBaseMessageCell {
         // Set up base file content view
         switch SBUUtils.getFileType(by: message) {
             case .image, .video:
-            if !(self.baseFileContentView is SBUImageContentView){
+            if !(self.baseFileContentView is SBUImageContentView) {
                 self.baseFileContentView.removeFromSuperview()
                 self.baseFileContentView = SBUImageContentView()
                 self.baseFileContentView.addGestureRecognizer(self.contentLongPressRecognizer)
@@ -141,7 +139,6 @@ open class SBUFileMessageCell: SBUContentBaseMessageCell {
         imageContentView.setNeedsLayout()
     }
     
-    
     @available(*, deprecated, renamed: "configure(with:)") // 2.2.0
     open func configure(_ message: FileMessage,
                         hideDateView: Bool,
@@ -158,7 +155,6 @@ open class SBUFileMessageCell: SBUContentBaseMessageCell {
         )
         self.configure(with: configuration)
     }
-
     
     // MARK: - Action
     public override func setSelected(_ selected: Bool, animated: Bool) {

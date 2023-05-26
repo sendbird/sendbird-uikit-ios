@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 /// Event methods for the views updates and performing actions from the list component.
 public protocol SBUBaseChannelModuleListDelegate: SBUCommonDelegate {
     /// Called when the `listComponent` is about to draw a cell for a particular row.
@@ -240,7 +239,6 @@ public protocol SBUBaseChannelModuleListDataSource: AnyObject {
     func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, pendingMessageManagerForCell cell: UITableViewCell) -> (SBUPendingMessageManager?, Bool?)
 }
 
-
 extension SBUBaseChannelModule {
     /// A module component that represent the list of `SBUBaseChannelModule`.
     @objc(SBUBaseChannelModuleList)
@@ -279,7 +277,7 @@ extension SBUBaseChannelModule {
         public weak var baseDataSource: SBUBaseChannelModuleListDataSource?
         
         /// The object that is used as the theme of the list component. The theme must adopt the `SBUChannelTheme` class.
-        public var theme: SBUChannelTheme? = nil
+        public var theme: SBUChannelTheme?
         
         // MARK: - UI properties (Private)
         private lazy var defaultEmptyView: SBUEmptyView? = {
@@ -338,7 +336,6 @@ extension SBUBaseChannelModule {
             return view
         }()
         
-        
         // MARK: - Logic properties (Public)
         
         /// The current channel object from `baseChannelModule(_:channelForTableView:)` data source method.
@@ -356,7 +353,6 @@ extension SBUBaseChannelModule {
             self.baseDataSource?.baseChannelModule(self, fullMessagesInTableView: self.tableView) ?? []
         }
         
-        
         // MARK: - Logic properties (Private)
         
         /// The object that is used as the cell animation debouncer.
@@ -364,7 +360,6 @@ extension SBUBaseChannelModule {
         
         var isTransformedList: Bool = true
         var isTableViewReloading = false
-        
         
         // MARK: - LifeCycle
         required public init?(coder: NSCoder) {
@@ -491,7 +486,6 @@ extension SBUBaseChannelModule {
         open func setScrollBottomView(hidden: Bool) {
             self.scrollBottomView?.isHidden = hidden
         }
-        
         
         // MARK: - TableView
         /// Reloads table view. This method corresponds to `UITableView reloadData()`.
@@ -813,7 +807,6 @@ extension SBUBaseChannelModule {
             return menuItem
         }
         
-        
         // MARK: - Actions
         
         /// Sets up the cell's tap gesture for handling the message.
@@ -857,10 +850,9 @@ extension SBUBaseChannelModule {
         }
         
         /// Moves scroll to bottom.
-        @objc open func onTapScrollToBottom() {
+        open func onTapScrollToBottom() {
             self.baseDelegate?.baseChannelModuleDidTapScrollToButton(self, animated: false)
         }
-        
         
         // MARK: - UITableViewDelegate, UITableViewDataSource
         /// Called when the `scrollView` has been scrolled.
@@ -967,7 +959,6 @@ extension SBUBaseChannelModule {
                 : nil
             }
             
-            
             let succeededPrevMsg = prevMessage?.sendingStatus != .failed
             ? prevMessage
             : nil
@@ -1015,22 +1006,17 @@ extension SBUBaseChannelModule {
             
             if (prevSender != currentSender && nextSender != currentSender) || currentSender == nil {
                 return .none
-            }
-            else if prevSender == currentSender && nextSender == currentSender {
+            } else if prevSender == currentSender && nextSender == currentSender {
                 if prevTimestamp == nextTimestamp {
                     return .middle
-                }
-                else if prevTimestamp == currentTimestamp {
+                } else if prevTimestamp == currentTimestamp {
                     return .bottom
-                }
-                else if currentTimestamp == nextTimestamp {
+                } else if currentTimestamp == nextTimestamp {
                     return .top
                 }
-            }
-            else if prevSender == currentSender && nextSender != currentSender {
+            } else if prevSender == currentSender && nextSender != currentSender {
                 return prevTimestamp == currentTimestamp ? .bottom : .none
-            }
-            else if prevSender != currentSender && nextSender == currentSender {
+            } else if prevSender != currentSender && nextSender == currentSender {
                 return currentTimestamp == nextTimestamp ? .top : .none
             }
             
@@ -1051,7 +1037,6 @@ extension SBUBaseChannelModule.List: SBUEmptyViewDelegate {
         self.baseDelegate?.baseChannelModuleDidSelectRetry(self)
     }
 }
-
 
 // MARK: - SBUUserProfileViewDelegate
 extension SBUBaseChannelModule.List: SBUUserProfileViewDelegate {
@@ -1077,7 +1062,7 @@ extension SBUBaseChannelModule.List: SBUUserProfileViewDelegate {
 // MARK: - UITableViewCell
 extension SBUBaseChannelModule.List {
     public var isScrollNearByBottom: Bool {
-        return tableView.contentOffset.y < 10
+        tableView.contentOffset.y < 10
     }
     
     /// To keep track of which scrolls tableview.

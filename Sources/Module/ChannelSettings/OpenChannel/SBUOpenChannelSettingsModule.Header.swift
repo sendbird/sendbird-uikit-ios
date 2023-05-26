@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 /// Event methods for the views updates and performing actions from the header component in open channel settings module.
 public protocol SBUOpenChannelSettingsModuleHeaderDelegate: SBUBaseChannelSettingsModuleHeaderDelegate {
     /// Called when `titleView` value has been updated.
@@ -43,7 +42,6 @@ public protocol SBUOpenChannelSettingsModuleHeaderDelegate: SBUBaseChannelSettin
     func openChannelSettingsModule(_ headerComponent: SBUOpenChannelSettingsModule.Header, didTapRightItem rightItem: UIBarButtonItem)
 }
 
-
 extension SBUOpenChannelSettingsModule {
     
     /// A module component that represent the header of `SBUOpenChannelSettingsModule`.
@@ -58,7 +56,6 @@ extension SBUOpenChannelSettingsModule {
             
             return titleView
         }
-        
 
         // MARK: - Logic properties (Public)
         /// The object that acts as the delegate of the header component. The delegate must adopt the `SBUOpenChannelSettingsModuleHeaderDelegate` protocol
@@ -66,7 +63,6 @@ extension SBUOpenChannelSettingsModule {
             get { self.baseDelegate as? SBUOpenChannelSettingsModuleHeaderDelegate }
             set { self.baseDelegate = newValue }
         }
-        
         
         // MARK: - LifeCycle
         @available(*, unavailable, renamed: "SBUOpenChannelSettingsModule.Header()")
@@ -93,7 +89,6 @@ extension SBUOpenChannelSettingsModule {
             self.setupStyles()
         }
         
-        
         // MARK: - Attach update delegate on view
         public override func didUpdateTitleView() {
             self.delegate?.openChannelSettingsModule(self, didUpdateTitleView: self.titleView)
@@ -105,9 +100,8 @@ extension SBUOpenChannelSettingsModule {
             self.delegate?.openChannelSettingsModule(self, didUpdateRightItem: self.rightBarButton)
         }
         
-        
         // MARK: - Actions
-        @objc open override func onTapLeftBarButton() {
+        open override func onTapLeftBarButton() {
             super.onTapLeftBarButton()
             
             if let leftBarButton = self.leftBarButton {
@@ -115,7 +109,7 @@ extension SBUOpenChannelSettingsModule {
             }
         }
         
-        @objc open override func onTapRightBarButton() {
+        open override func onTapRightBarButton() {
             super.onTapRightBarButton()
             
             if let rightBarButton = self.rightBarButton {

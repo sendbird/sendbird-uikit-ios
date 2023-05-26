@@ -10,13 +10,11 @@ import UIKit
 import SendbirdChatSDK
 
 /// - Since: 3.5.0
-open class SBUFeedNotificationChannelViewController:
-    SBUBaseViewController,
+open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
     SBUFeedNotificationChannelViewModelDelegate, SBUFeedNotificationChannelViewModelDataSource,
     SBUFeedNotificationChannelModuleListDelegate, SBUFeedNotificationChannelModuleListDataSource,
     SBUFeedNotificationChannelModuleHeaderDelegate, SBUFeedNotificationChannelModuleHeaderDataSource,
     SBUCommonViewModelDelegate {
-    
     
     // MARK: - Module components (Public)
     public var headerComponent: SBUFeedNotificationChannelModule.Header?
@@ -51,17 +49,14 @@ open class SBUFeedNotificationChannelViewController:
         self.viewModel?.channel as? FeedChannel
     }
     
-    
     // MARK: - Logic properties (Public)
     public private(set) var newNotificationsCount: Int = 0
-    
     
     // MARK: - Logic properties (Private)
     var scrollToInitialPositionHandler: (() -> Void)?
     var lastSeenIndexPath: IndexPath?
     
-    var createViewModelHandler: (() -> Void)? = nil
-    
+    var createViewModelHandler: (() -> Void)?
     
     // MARK: - Lifecycle
     @available(*, unavailable)
@@ -114,7 +109,8 @@ open class SBUFeedNotificationChannelViewController:
     ) {
         SBULog.info(#function)
         
-        self.createViewModelHandler = {
+        self.createViewModelHandler = { [weak self] in
+            guard let self = self else { return }
             self.createViewModel(
                 channel: channel,
                 channelURL: channelURL,
@@ -147,7 +143,6 @@ open class SBUFeedNotificationChannelViewController:
         self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
         self.view.endEditing(true)
         
-        
     }
     
     open override func viewWillAppear(_ animated: Bool) {
@@ -177,7 +172,6 @@ open class SBUFeedNotificationChannelViewController:
         self.listComponent = nil
     }
     
-    
     // MARK: - Channel
     /// This function reloads channel information and notification list.
     /// - Parameter channelURL: ChannelURL String (Default: ChannelURL currently in use)
@@ -201,7 +195,6 @@ open class SBUFeedNotificationChannelViewController:
     open func didUpdateUnreadMessageCount(_ unreadMessageCount: UInt) {
         SBULog.info("Unread message count: \(unreadMessageCount)")
     }
-
     
     // MARK: - Header
     /// Updates channelTitle
@@ -213,7 +206,6 @@ open class SBUFeedNotificationChannelViewController:
         
         self.headerComponent?.updateStyles()
     }
-    
     
     // MARK: - Action handling
     /// Called when there’s a tap gesture on a notification that includes a web URL. e.g., `"https://www.sendbird.com"`
@@ -250,7 +242,6 @@ open class SBUFeedNotificationChannelViewController:
         }
     }
     
-    
     // MARK: - ViewModel
     /// Creates the view model, loading initial notifications.
     /// - Note: If you want to customize the view model, override this function
@@ -277,7 +268,6 @@ open class SBUFeedNotificationChannelViewController:
             displaysLocalCachedListFirst: displaysLocalCachedListFirst
         )
     }
-    
     
     // MARK: - Sendbird UIKit Life cycle
     open override func setupViews() {
@@ -359,7 +349,6 @@ open class SBUFeedNotificationChannelViewController:
         SBULog.error("Did receive error: \(message ?? "")")
     }
     
-    
     // MARK: - TableView
     
     // MARK: - New notification info
@@ -370,7 +359,6 @@ open class SBUFeedNotificationChannelViewController:
         
         newNotificationInfoView.isHidden = hidden && !viewModel.hasNext
     }
-    
     
     // MARK: - New notification count
     @discardableResult
@@ -402,7 +390,6 @@ open class SBUFeedNotificationChannelViewController:
         
         return true
     }
-    
     
     // MARK: - SBUFeedNotificationChannelViewModelDelegate
     func feedNotificationChannelViewModel(
@@ -531,7 +518,6 @@ open class SBUFeedNotificationChannelViewController:
         self.listComponent?.isScrollNearByBottom ?? true
     }
     
-    
     // MARK: - SBUNotificationchannelModuleHeaderDelegate
     func feedNotificationChannelModule(
         _ headerComponent: SBUFeedNotificationChannelModule.Header,
@@ -585,7 +571,6 @@ open class SBUFeedNotificationChannelViewController:
         // Nothing
     }
     
-    
     // MARK: - SBUFeedNotificationChannelModuleHeaderDataSource
     func feedNotificationChannelModule(
         _ headerComponent: SBUFeedNotificationChannelModule.Header,
@@ -593,7 +578,6 @@ open class SBUFeedNotificationChannelViewController:
     ) -> String? {
         return self.channel?.name
     }
-    
     
     // MARK: - SBUFeedNotificationChannelModuleListDelegate
     func feedNotificationChannelModule(
@@ -715,7 +699,6 @@ open class SBUFeedNotificationChannelViewController:
     ) -> Int64? {
         self.viewModel?.startingPoint
     }
-    
     
     // MARK: - SBUCommonViewModelDelegate
     open func shouldUpdateLoadingState(_ isLoading: Bool) {

@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 /// Event methods for the views updates and performing actions from the header component in group channel settings module.
 public protocol SBUGroupChannelSettingsModuleHeaderDelegate: SBUBaseChannelSettingsModuleHeaderDelegate {
     /// Called when `titleView` value has been updated.
@@ -43,7 +42,6 @@ public protocol SBUGroupChannelSettingsModuleHeaderDelegate: SBUBaseChannelSetti
     func groupChannelSettingsModule(_ headerComponent: SBUGroupChannelSettingsModule.Header, didTapRightItem rightItem: UIBarButtonItem)
 }
 
-
 /// Methods to get data source for header component in a group channel setting.
 public protocol SBUGroupChannelSettingsModuleHeaderDataSource: SBUBaseChannelSettingsModuleHeaderDataSource {
     /// Ask the data source to return the channel name.
@@ -53,7 +51,6 @@ public protocol SBUGroupChannelSettingsModuleHeaderDataSource: SBUBaseChannelSet
     /// - Returns: The `String` object.
     func groupChannelSettingsModule(_ headerComponent: SBUGroupChannelSettingsModule.Header, channelNameForTitleView titleView: UIView?) -> String?
 }
-
 
 extension SBUGroupChannelSettingsModule {
     
@@ -68,7 +65,6 @@ extension SBUGroupChannelSettingsModule {
             return titleView
         }
         
-        
         // MARK: - Logic properties (Public)
         /// The object that acts as the delegate of the header component. The delegate must adopt the `SBUGroupChannelSettingsModuleHeaderDelegate` protocol
         public weak var delegate: SBUGroupChannelSettingsModuleHeaderDelegate? {
@@ -82,12 +78,10 @@ extension SBUGroupChannelSettingsModule {
             set { self.baseDataSource = newValue }
         }
         
-        
         // MARK: - Logic properties (Private)
         private var channelName: String? {
             self.dataSource?.groupChannelSettingsModule(self, channelNameForTitleView: self.titleView)
         }
-
         
         // MARK: - LifeCycle
         @available(*, unavailable, renamed: "SBUGroupChannelSettingsModule.Header()")
@@ -126,7 +120,6 @@ extension SBUGroupChannelSettingsModule {
             }
         }
         
-        
         // MARK: - Attach update delegate on view
         public override func didUpdateTitleView() {
             self.delegate?.groupChannelSettingsModule(self, didUpdateTitleView: self.titleView)
@@ -138,9 +131,8 @@ extension SBUGroupChannelSettingsModule {
             self.delegate?.groupChannelSettingsModule(self, didUpdateRightItem: self.rightBarButton)
         }
         
-        
         // MARK: - Actions
-        @objc open override func onTapLeftBarButton() {
+        open override func onTapLeftBarButton() {
             super.onTapLeftBarButton()
             
             if let leftBarButton = self.leftBarButton {
@@ -148,7 +140,7 @@ extension SBUGroupChannelSettingsModule {
             }
         }
         
-        @objc open override func onTapRightBarButton() {
+        open override func onTapRightBarButton() {
             super.onTapRightBarButton()
             
             if let rightBarButton = self.rightBarButton {

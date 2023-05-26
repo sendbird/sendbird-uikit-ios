@@ -237,7 +237,7 @@ class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegate, UI
         guard reactionList.count > indexPath.row else { return .init() }
         
         let reaction = self.reactionList[indexPath.row]
-        let emoji = self.emojiList.first (where: { $0.key == reaction.key })
+        let emoji = self.emojiList.first(where: { $0.key == reaction.key })
         cell.configure(type: .reactions, url: emoji?.url, count: reaction.userIds.count)
         return cell
     }

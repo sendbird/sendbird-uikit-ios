@@ -69,6 +69,6 @@ open class SBUParentMessageInfoReactionView: SBUMessageReactionView {
         }
 
         let count = reactions[indexPath.row].userIds.count
-        return self.getCellSize(count:count)
+        return self.getCellSize(count: count)
     }
 }

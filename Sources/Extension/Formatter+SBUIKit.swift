@@ -28,18 +28,18 @@ extension Double {
 
 extension UInt {
     var unitFormattedString: String {
-        return Double(self).unitFormattedString
+        Double(self).unitFormattedString
     }
 }
 
 extension Int {
     var unitFormattedString: String {
-        return Double(self).unitFormattedString
+        Double(self).unitFormattedString
     }
 }
 
 extension Float {
     var unitFormattedString: String {
-        return Double(self).unitFormattedString
+        Double(self).unitFormattedString
     }
 }

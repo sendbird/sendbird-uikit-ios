@@ -21,13 +21,11 @@ open class SBUInviteUserViewController: SBUBaseSelectUserViewController, SBUInvi
         set { self.baseListComponent = newValue }
     }
     
-    
     // MARK: - Logic properties (Public)
     public var viewModel: SBUInviteUserViewModel? {
         get { self.baseViewModel as? SBUInviteUserViewModel }
         set { self.baseViewModel = newValue }
     }
-    
     
     // MARK: - Lifecycle
     @available(*, unavailable, renamed: "SBUInviteUserViewController(channel:)")
@@ -81,7 +79,6 @@ open class SBUInviteUserViewController: SBUBaseSelectUserViewController, SBUInvi
     deinit {
         SBULog.info("")
     }
-
     
     // MARK: - ViewModel
     open override func createViewModel(channel: BaseChannel? = nil,
@@ -93,7 +90,7 @@ open class SBUInviteUserViewController: SBUBaseSelectUserViewController, SBUInvi
             return
         }
         
-        self.baseViewModel = SBUInviteUserViewModel (
+        self.baseViewModel = SBUInviteUserViewModel(
             channel: channel,
             channelURL: channelURL,
             channelType: channelType,
@@ -102,7 +99,6 @@ open class SBUInviteUserViewController: SBUBaseSelectUserViewController, SBUInvi
             dataSource: self
         )
     }
-    
     
     // MARK: - Sendbird UIKit Life cycle
     open override func setupViews() {
@@ -123,7 +119,6 @@ open class SBUInviteUserViewController: SBUBaseSelectUserViewController, SBUInvi
         }
     }
     
-    
     // MARK: - Actions
     
     /// This function invites selected users.
@@ -134,7 +129,6 @@ open class SBUInviteUserViewController: SBUBaseSelectUserViewController, SBUInvi
         let selectedIds = Array(self.selectedUserList).sbu_getUserIds()
         self.viewModel?.invite(userIds: selectedIds)
     }
-    
     
     // MARK: - SBUInviteUserModuleHeaderDelegate
     open func inviteUserModule(_ headerComponent: SBUInviteUserModule.Header,
@@ -162,7 +156,6 @@ open class SBUInviteUserViewController: SBUBaseSelectUserViewController, SBUInvi
         self.inviteSelectedUsers()
     }
     
-    
     // MARK: - SBUInviteUserModuleListDelegate
     open func inviteUserModule(_ listComponent: SBUInviteUserModule.List,
                                didSelectRowAt indexPath: IndexPath) {
@@ -178,7 +171,6 @@ open class SBUInviteUserViewController: SBUBaseSelectUserViewController, SBUInvi
     open func inviteUserModuleDidSelectRetry(_ listComponent: SBUInviteUserModule.List) {
         
     }
-    
     
     // MARK: - SBUInviteUserViewModelDelegate
     open func inviteUserViewModel(_ viewModel: SBUInviteUserViewModel,

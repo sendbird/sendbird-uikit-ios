@@ -34,14 +34,13 @@ class SBUChannelPushSettingCell: SBUTableViewCell {
     
     var separateView = UIView()
     
-    var switchAction: ((Bool) -> Void)? = nil
-    var radioButtonAction: (() -> Void)? = nil
+    var switchAction: ((Bool) -> Void)?
+    var radioButtonAction: (() -> Void)?
     
     var isSubType: Bool = false
     
     @SBUThemeWrapper(theme: SBUTheme.channelSettingsTheme)
     var theme: SBUChannelSettingsTheme
-    
     
     // MARK: - View Lifecycle
     override func awakeFromNib() {
@@ -95,7 +94,7 @@ class SBUChannelPushSettingCell: SBUTableViewCell {
         self.baseStackView
             .sbu_constraint(
                 equalTo: self.contentView,
-                leading: 16, trailing: -16, top:13, bottom: 12
+                leading: 16, trailing: -16, top: 13, bottom: 12
             )
         
         self.titleStackView.sbu_constraint(height: 31)
@@ -160,7 +159,6 @@ class SBUChannelPushSettingCell: SBUTableViewCell {
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
     }
-
     
     // MARK: - Action
     @objc

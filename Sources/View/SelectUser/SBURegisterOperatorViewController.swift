@@ -20,14 +20,12 @@ open class SBURegisterOperatorViewController: SBUBaseSelectUserViewController, S
         get { self.baseListComponent as? SBURegisterOperatorModule.List }
         set { self.baseListComponent = newValue }
     }
-
     
     // MARK: - Logic properties (Public)
     public var viewModel: SBURegisterOperatorViewModel? {
         get { self.baseViewModel as? SBURegisterOperatorViewModel }
         set { self.baseViewModel = newValue }
     }
-    
     
     // MARK: - Lifecycle
     @available(*, unavailable, renamed: "SBURegisterOperatorViewController(channel:)")
@@ -96,7 +94,6 @@ open class SBURegisterOperatorViewController: SBUBaseSelectUserViewController, S
         SBULog.info("")
     }
     
-    
     // MARK: - ViewModel
     open override func createViewModel(channel: BaseChannel? = nil,
                                        channelURL: String? = nil,
@@ -112,7 +109,7 @@ open class SBURegisterOperatorViewController: SBUBaseSelectUserViewController, S
             channelType = (channel is GroupChannel) ? .group : .open
         }
         
-        self.baseViewModel = SBURegisterOperatorViewModel (
+        self.baseViewModel = SBURegisterOperatorViewModel(
             channel: channel,
             channelURL: channelURL,
             channelType: channelType,
@@ -121,7 +118,6 @@ open class SBURegisterOperatorViewController: SBUBaseSelectUserViewController, S
             dataSource: self
         )
     }
-    
     
     // MARK: - Sendbird UIKit Life cycle
     open override func setupViews() {
@@ -142,7 +138,6 @@ open class SBURegisterOperatorViewController: SBUBaseSelectUserViewController, S
         }
     }
     
-    
     // MARK: - Actions
     
     /// This function calls `registerAsOperators` function.
@@ -152,7 +147,6 @@ open class SBURegisterOperatorViewController: SBUBaseSelectUserViewController, S
         let selectedIds = Array(self.selectedUserList).sbu_getUserIds()
         self.viewModel?.registerAsOperators(userIds: selectedIds)
     }
-    
     
     // MARK: - SBURegisterOperatorModuleHeaderDelegate
     open func registerOperatorModule(_ headerComponent: SBURegisterOperatorModule.Header,
@@ -180,7 +174,6 @@ open class SBURegisterOperatorViewController: SBUBaseSelectUserViewController, S
         self.registerSelectedUsers()
     }
     
-    
     // MARK: - SBURegisterOperatorModuleHeaderDelegate
     open func registerOperatorModule(_ listComponent: SBURegisterOperatorModule.List,
                                   didSelectRowAt indexPath: IndexPath) {
@@ -196,7 +189,6 @@ open class SBURegisterOperatorViewController: SBUBaseSelectUserViewController, S
     open func registerOperatorModuleDidSelectRetry(_ listComponent: SBURegisterOperatorModule.List) {
         
     }
-    
     
     // MARK: - SBURegisterOperatorViewModelDelegate
     open func registerOperatorViewModel(_ viewModel: SBURegisterOperatorViewModel,

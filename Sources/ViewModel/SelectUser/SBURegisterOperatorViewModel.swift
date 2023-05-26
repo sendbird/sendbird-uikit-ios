@@ -17,9 +17,7 @@ public protocol SBURegisterOperatorViewModelDelegate: SBUBaseSelectUserViewModel
     )
 }
 
-
 public protocol SBURegisterOperatorViewModelDataSource: SBUBaseSelectUserViewModelDataSource { }
-
 
 open class SBURegisterOperatorViewModel: SBUBaseSelectUserViewModel {
     // MARK: - Logic properties (Public)
@@ -32,7 +30,6 @@ open class SBURegisterOperatorViewModel: SBUBaseSelectUserViewModel {
         get { self.baseDataSource as? SBURegisterOperatorViewModelDataSource }
         set { self.baseDataSource = newValue }
     }
-    
     
     // MARK: - Life Cycle
     public init(channel: BaseChannel? = nil,
@@ -56,7 +53,6 @@ open class SBURegisterOperatorViewModel: SBUBaseSelectUserViewModel {
             dataSource: dataSource
         )
     }
-    
     
     // MARK: - Channel actions
     /// Registers users as operator with selected users.

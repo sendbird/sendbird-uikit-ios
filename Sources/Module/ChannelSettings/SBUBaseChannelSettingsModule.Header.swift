@@ -9,14 +9,11 @@
 import UIKit
 import SendbirdChatSDK
 
-
 /// Event methods for the views updates and performing actions from the header component in channel settings module.
 public protocol SBUBaseChannelSettingsModuleHeaderDelegate: SBUCommonDelegate { }
 
-
 /// Methods to get data source for header component in a channel setting.
 public protocol SBUBaseChannelSettingsModuleHeaderDataSource: AnyObject { }
-
 
 extension SBUBaseChannelSettingsModule {
     
@@ -27,24 +24,23 @@ extension SBUBaseChannelSettingsModule {
         
         /// A view that represents a title in navigation bar.
         /// - NOTE: When the value is updated, `didUpdateTitleView`is called.
-        public var titleView: UIView? = nil {
+        public var titleView: UIView? {
             didSet { self.didUpdateTitleView() }
         }
         /// A view that represents a left `UIBarButtonItem` in navigation bar.
         /// - NOTE: When the value is updated, `didUpdateLeftItem`is called.
-        public var leftBarButton: UIBarButtonItem? = nil {
+        public var leftBarButton: UIBarButtonItem? {
             didSet { self.didUpdateLeftItem() }
         }
         
         /// A view that represents a right `UIBarButtonItem` in navigation bar.
         /// - NOTE: When the value is updated, `didUpdateRightItem`is called.
-        public var rightBarButton: UIBarButtonItem? = nil {
+        public var rightBarButton: UIBarButtonItem? {
             didSet { self.didUpdateRightItem() }
         }
 
         /// The object that is used as the theme of the header component. The theme must adopt the `SBUChannelSettingsTheme` class.
-        public var theme: SBUChannelSettingsTheme? = nil
-
+        public var theme: SBUChannelSettingsTheme?
         
         // MARK: - UI properties (Private)
         func defaultTitleView() -> SBUNavigationTitleView? { return nil }
@@ -64,16 +60,13 @@ extension SBUBaseChannelSettingsModule {
                 target: self,
                 action: #selector(onTapRightBarButton)
             )
-            editButton.setTitleTextAttributes([.font : SBUFontSet.button2], for: .normal)
+            editButton.setTitleTextAttributes([.font: SBUFontSet.button2], for: .normal)
             return editButton
         }
         
-        
-        
         // MARK: - Logic properties (Public)
-        weak var baseDelegate: SBUBaseChannelSettingsModuleHeaderDelegate? = nil
-        weak var baseDataSource: SBUBaseChannelSettingsModuleHeaderDataSource? = nil
-        
+        weak var baseDelegate: SBUBaseChannelSettingsModuleHeaderDelegate?
+        weak var baseDataSource: SBUBaseChannelSettingsModuleHeaderDataSource?
         
         // MARK: - LifeCycle
         
@@ -107,7 +100,6 @@ extension SBUBaseChannelSettingsModule {
             self.leftBarButton?.tintColor = theme?.leftBarButtonTintColor
             self.rightBarButton?.tintColor = theme?.rightBarButtonTintColor
         }
-
         
         // MARK: - Attach update delegate on view
         
@@ -118,11 +110,10 @@ extension SBUBaseChannelSettingsModule {
         /// Called when the `rightBarButton` was updated.
         func didUpdateRightItem() { }
         
-        
         // MARK: - Actions
         /// Called when the `leftBarButton` was tapped.
-        @objc open func onTapLeftBarButton() { }
+        open func onTapLeftBarButton() { }
         /// Called when the `rightBarButton` was tapped.
-        @objc open func onTapRightBarButton() { }
+        open func onTapRightBarButton() { }
     }
 }

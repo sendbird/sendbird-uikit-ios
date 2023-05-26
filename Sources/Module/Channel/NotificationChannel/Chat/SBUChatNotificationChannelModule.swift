@@ -43,4 +43,3 @@ public class SBUChatNotificationChannelModule {
         self.listComponent = listComponent
     }
 }
-

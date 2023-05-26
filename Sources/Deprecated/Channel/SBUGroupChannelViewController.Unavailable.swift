@@ -28,23 +28,21 @@ extension SBUGroupChannelViewController {
     @available(*, unavailable, message: "This function has been moved to `SBUGroupChannelViewModelDelegate` and replaced to  `baseChannelViewModel(_:didChangeChannel:withContext:)`")
     open func channelDidUpdateTypingStatus(_ sender: GroupChannel) {}
     
-    
-    
     // MARK: - ~2.2.0
     @available(*, unavailable, message: "deprecated in 1.2.10")
-    public var preSendMessages: [String:BaseMessage] { [:] }
+    public var preSendMessages: [String: BaseMessage] { [:] }
     
     @available(*, unavailable, message: "deprecated in 1.2.10")
-    public var resendableMessages: [String:BaseMessage] { [:] }
+    public var resendableMessages: [String: BaseMessage] { [:] }
     
     @available(*, unavailable, message: "deprecated in 1.2.10")
-    public var preSendFileData: [String:[String:AnyObject]] { [:] } // Key: requestId
+    public var preSendFileData: [String: [String: AnyObject]] { [:] } // Key: requestId
     
     @available(*, unavailable, message: "deprecated in 1.2.10")
-    public var resendableFileData: [String:[String:AnyObject]] { [:] } // Key: requestId
+    public var resendableFileData: [String: [String: AnyObject]] { [:] } // Key: requestId
     
     @available(*, unavailable, message: "deprecated in 1.2.10")
-    public var fileTransferProgress: [String:CGFloat] { [:] } // Key: requestId, If have value, file message status is sending
+    public var fileTransferProgress: [String: CGFloat] { [:] } // Key: requestId, If have value, file message status is sending
     
     @available(*, unavailable, message: "deprecated in 1.2.2", renamed: "setEmojiTapGestureHandler(_:emojiKey:)")
     open func setTapEmojiGestureHandler(_ cell: SBUBaseMessageCell, emojiKey: String) {

@@ -8,7 +8,6 @@
 
 import SendbirdChatSDK
 
-
 public class SBUFileMessageCellParams: SBUBaseMessageCellParams {
     public var fileMessage: FileMessage? {
         self.message as? FileMessage
@@ -16,7 +15,6 @@ public class SBUFileMessageCellParams: SBUBaseMessageCellParams {
     public let useReaction: Bool
     /// ``SBUVoiceFileInfo`` object that has voice file informations.
     public var voiceFileInfo: SBUVoiceFileInfo?
-    
     
     public init(
         message: FileMessage,

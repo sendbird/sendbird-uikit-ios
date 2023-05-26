@@ -38,7 +38,6 @@ open class SBUVoiceContentView: SBUBaseFileContentView {
         return rotation
     }()
     
-    
     // MARK: - Properties (Private)
     private var loadImageSession: URLSessionTask? {
         willSet {

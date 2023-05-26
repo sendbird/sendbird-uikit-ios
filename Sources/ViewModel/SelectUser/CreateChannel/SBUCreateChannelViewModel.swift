@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 public protocol SBUCreateChannelViewModelDelegate: SBUCommonViewModelDelegate {
     /// Called when the user list has been changed
     func createChannelViewModel(
@@ -32,7 +31,6 @@ public protocol SBUCreateChannelViewModelDelegate: SBUCommonViewModelDelegate {
     )
 }
 
-
 public protocol SBUCreateChannelViewModelDataSource: AnyObject {
     /// Asks to data source to return the next member list for the channel type. When create and use the member list directly, override this function.
     /// - Important: If you want to use this function, please set the `SBUCreateChannelViewModelDataSource` in your class.
@@ -43,30 +41,26 @@ public protocol SBUCreateChannelViewModelDataSource: AnyObject {
     ) -> [SBUUser]?
 }
 
-
 open class SBUCreateChannelViewModel {
     // MARK: - Constants
     static let limit: UInt = 20
     
-    
     // MARK: - Property (Public)
-    public weak var delegate: SBUCreateChannelViewModelDelegate? = nil
-    public weak var dataSource: SBUCreateChannelViewModelDataSource? = nil
+    public weak var delegate: SBUCreateChannelViewModelDelegate?
+    public weak var dataSource: SBUCreateChannelViewModelDataSource?
 
     public private(set) var channelType: ChannelCreationType = .group
     
     @SBUAtomic public private(set) var userList: [SBUUser] = []
     @SBUAtomic public private(set) var selectedUserList: Set<SBUUser> = []
 
-    public private(set) var userListQuery: ApplicationUserListQuery? = nil
-    
+    public private(set) var userListQuery: ApplicationUserListQuery?
     
     // MARK: - Property (Private)
     @SBUAtomic private(set) var customizedUsers: [SBUUser]?
     private var useCustomizedUsers = false
 
     @SBUAtomic private var isLoading = false
-
     
     // MARK: - Life Cycle
     public init(channelType: ChannelCreationType = .group,
@@ -81,13 +75,11 @@ open class SBUCreateChannelViewModel {
         
         self.customizedUsers = users
         self.useCustomizedUsers = (users?.count ?? 0) > 0
-
         
         // If want using your custom user list, filled users with your custom user list.
         self.loadNextUserList(reset: true, users: self.customizedUsers ?? nil)
 
     }
-    
     
     // MARK: - List handling
     
@@ -122,8 +114,7 @@ open class SBUCreateChannelViewModel {
                 didChangeUsers: self.userList,
                 needsToReload: true
             )
-        }
-        else if self.useCustomizedUsers, let customizedUsers = self.customizedUsers {
+        } else if self.useCustomizedUsers, let customizedUsers = self.customizedUsers {
             self.userList += customizedUsers
             self.isLoading = false
             self.delegate?.shouldUpdateLoadingState(false)
@@ -132,8 +123,7 @@ open class SBUCreateChannelViewModel {
                 didChangeUsers: self.userList,
                 needsToReload: true
             )
-        }
-        else if !self.useCustomizedUsers {
+        } else if !self.useCustomizedUsers {
             if self.userListQuery == nil {
                 let params = ApplicationUserListQueryParams()
                 params.limit = SBUCreateChannelViewModel.limit
@@ -197,7 +187,6 @@ open class SBUCreateChannelViewModel {
         self.loadNextUserList(reset: true, users: self.customizedUsers)
     }
     
-    
     // MARK: - Create Channel
     /// Creates the channel with userIds.
     /// - Parameter userIds: User Ids to include
@@ -257,7 +246,6 @@ open class SBUCreateChannelViewModel {
         }
     }
     
-    
     // MARK: - Select user
     public func selectUser(user: SBUUser) {
         if let index = self.selectedUserList.firstIndex(of: user) {
@@ -274,4 +262,3 @@ open class SBUCreateChannelViewModel {
         )
     }
 }
-

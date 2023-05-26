@@ -67,7 +67,6 @@ public enum OpenChannelSettingItemType: Int {
     }
 }
 
-
 /// This is an enumeration used to handling action and display by type in `MederationsViewController` and `ModerationCell`.
 /// - Since: 1.2.0
 public enum ModerationItemType: Int {
@@ -118,7 +117,6 @@ public enum UserListType: Hashable {
     case participants
     case suggestedMention(_ withUserId: Bool)
     
-    
     @available(*, unavailable, renamed: "members") // 3.0.0
     case channelMembers
     @available(*, unavailable, renamed: "invite") // 3.0.0
@@ -139,7 +137,6 @@ public enum ChannelUserListType: Int {
     case muted
     case banned
     case participants
-    
     
     @available(*, unavailable, renamed: "members") // 3.0.0
     case channelMembers
@@ -276,12 +273,29 @@ public enum MessageMenuItem {
     case all     = 0b00000111
 }
 
-
-
 /// This is an enumeration for notification type.
 /// - Since: 3.5.0
 enum NotificationType: Int {
     case none
     case feed
     case chat
+}
+
+/// This is an enumeration for Font weight
+/// - Since: 3.5.8
+enum SBUFontWeightType: String, Codable {
+    case normal, bold
+    
+    init(from decoder: Decoder) throws {
+        self = try SBUFontWeightType(rawValue: decoder.singleValueContainer().decode(RawValue.self)) ?? .normal
+    }
+    
+    var value: UIFont.Weight {
+        switch self {
+        case .normal:
+            return UIFont.Weight.regular
+        case .bold:
+            return UIFont.Weight.bold
+        }
+    }
 }

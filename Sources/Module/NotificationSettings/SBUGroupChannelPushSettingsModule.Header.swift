@@ -69,7 +69,7 @@ extension SBUGroupChannelPushSettingsModule {
         
         /// A view that represents a title in navigation bar.
         /// - NOTE: When the value is updated, `groupChannelPushSettingsModule(_:didUpdateTitleView:)` delegate function is called.
-        public var titleView: UIView? = nil {
+        public var titleView: UIView? {
             didSet {
                 self.delegate?.groupChannelPushSettingsModule(
                     self,
@@ -81,7 +81,7 @@ extension SBUGroupChannelPushSettingsModule {
         /// A view that represents a left `UIBarButtonItem` in navigation bar.
         /// - NOTE: When the value is updated, `groupChannelPushSettingsModule(_:didUpdateLeftItem:)` delegate function is called.
         /// and when the value is tapped, `groupChannelPushSettingsModule(_:didTapLeftItem:)` delegate function is called.
-        public var leftBarButton: UIBarButtonItem? = nil {
+        public var leftBarButton: UIBarButtonItem? {
             didSet {
                 self.delegate?.groupChannelPushSettingsModule(
                     self,
@@ -93,7 +93,7 @@ extension SBUGroupChannelPushSettingsModule {
         /// A view that represents a right `UIBarButtonItem` in navigation bar.
         /// - NOTE: When the value is updated, `groupChannelPushSettingsModule(_:didUpdateRightItem:)` delegate function is called.
         /// and when the value is tapped, `groupChannelPushSettingsModule(_:didTapRightItem:)` delegate function is called.
-        public var rightBarButton: UIBarButtonItem? = nil {
+        public var rightBarButton: UIBarButtonItem? {
             didSet {
                 self.delegate?.groupChannelPushSettingsModule(
                     self,
@@ -103,11 +103,10 @@ extension SBUGroupChannelPushSettingsModule {
         }
         
         /// The object that is used as the theme of the header component. The theme must adopt the `SBUChannelSettingsTheme` class.
-        public var theme: SBUChannelSettingsTheme? = nil
+        public var theme: SBUChannelSettingsTheme?
         
         /// The object that is used as the component theme of the header component. The theme must adopt the `SBUComponentTheme` class.
-        public var componentTheme: SBUComponentTheme? = nil
-        
+        public var componentTheme: SBUComponentTheme?
         
         // MARK: - UI properties (Private)
         private var defaultTitleView: SBUNavigationTitleView {
@@ -125,14 +124,12 @@ extension SBUGroupChannelPushSettingsModule {
             return backButton
         }
         
-        
         // MARK: - Logic properties (Public)
         
         /// The object that acts as the delegate of the header component.
         ///
         /// The delegate must adopt the `SBUGroupChannelPushSettingsModuleHeaderDelegate`.
-        public weak var delegate: SBUGroupChannelPushSettingsModuleHeaderDelegate? = nil
-        
+        public weak var delegate: SBUGroupChannelPushSettingsModuleHeaderDelegate?
         
         // MARK: - Life cycle
         @available(*, unavailable, renamed: "SBUGroupChannelPushSettingsModule.Header()")
@@ -210,12 +207,10 @@ extension SBUGroupChannelPushSettingsModule {
             self.leftBarButton?.tintColor = theme?.leftBarButtonTintColor
             self.rightBarButton?.tintColor = theme?.rightBarButtonTintColor
         }
-
         
         // MARK: - Actions
         
         /// The action of `leftBarButton`. It calls `groupChannelPushSettingsModule(_:didTapLeftItem:)` when it's tapped
-        @objc
         public func onTapLeftBarButton() {
             if let leftBarButton = leftBarButton {
                 self.delegate?.groupChannelPushSettingsModule(self, didTapLeftItem: leftBarButton)
@@ -223,7 +218,6 @@ extension SBUGroupChannelPushSettingsModule {
         }
         
         /// The action of `rightBarButton`. It calls `groupChannelPushSettingsModule(_:didTapRightItem:)` when it's tapped
-        @objc
         public func onTapRightBarButton() {
             if let rightBarButton = rightBarButton {
                 self.delegate?.groupChannelPushSettingsModule(self, didTapRightItem: rightBarButton)

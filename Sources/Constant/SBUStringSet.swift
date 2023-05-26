@@ -39,33 +39,30 @@ public class SBUStringSet {
     public static var Alert_Allow_PhotoLibrary_Access_Message = "PhotoLibrary access required to get your photos and videos"
     /// A text used to ask the user permission for microphone usage.
     public static var Alert_Allow_Microphone_Access = "Please allow microphone usage from settings"
-    
 
     // MARK: - Date Format
     public static var Date_Yesterday = "Yesterday"
     public static var Date_Year: (Int) -> String = { interval in
-        return String(format :"%lld%@", interval, (interval>1) ? "years" : "year")
+        return String(format: "%lld%@", interval, (interval>1) ? "years" : "year")
     }
     public static var Date_Day: (Int) -> String = { interval in
-        return String(format :"%lld%@", interval, (interval>1) ? "days" : "day")
+        return String(format: "%lld%@", interval, (interval>1) ? "days" : "day")
     }
     public static var Date_Month: (Int) -> String = { interval in
-        return String(format :"%lldmonth", interval)
+        return String(format: "%lldmonth", interval)
     }
     public static var Date_Hour: (Int) -> String = { interval in
-        return String(format :"%lldh", interval)
+        return String(format: "%lldh", interval)
     }
     public static var Date_Min: (Int) -> String = { interval in
-        return String(format :"%lldm", interval)
+        return String(format: "%lldm", interval)
     }
     public static var Date_Ago = "ago"
     public static var Date_On = "on"
 
-
     // MARK: - Channel List
     public static var ChannelList_Header_Title = "Channels"
     public static var ChannelList_Last_File_Message = "uploaded a file."
-
 
     // MARK: - Channel
     public static var Channel_Name_Default = "Group Channel"
@@ -107,7 +104,6 @@ public class SBUStringSet {
         }
     }
     public static var Channel_State_Banner_Frozen = "Channel frozen"
-    
     
     // MARK: - Open Channel
     public static var Open_Channel_Name_Default = "Open Channel"
@@ -168,7 +164,6 @@ public class SBUStringSet {
     public static var ChannelSettings_Freeze_Channel = "Freeze channel"
     
     public static var ChannelSettings_URL = "URL"
-
     
     // MARK: Channel push settings
     public static var ChannelPushSettings_Header_Title = "Notifications"
@@ -176,8 +171,6 @@ public class SBUStringSet {
     public static var ChannelPushSettings_Item_All = "All new messages"
     public static var ChannelPushSettings_Item_Mentions_Only = "Mentions only"
     public static var ChannelPushSettings_Notification_Description = "Turn on push notifications if you wish to be notified when messages are delivered to this channel."
-    
-    
 
     // MARK: - Message Input
     public static var MessageInput_Text_Placeholder = "Type a message"
@@ -225,7 +218,6 @@ public class SBUStringSet {
     public static var Notification_Template_Error_Title = "(Template error)"
     public static var Notification_Template_Error_Subtitle = "Can't read this notification."
 
-
     // MARK: - Empty
     public static var Empty_No_Channels = "No channels"
     public static var Empty_No_Messages = "No messages"
@@ -236,7 +228,6 @@ public class SBUStringSet {
     public static var Empty_No_Banned_Users = "No banned users"
     public static var Empty_Search_Result = "No results found"
     public static var Empty_Wrong = "Something went wrong"
-
 
     // MARK: - Create Channel
     public static var CreateChannel_Create: (Int) -> String = { count in
@@ -251,12 +242,10 @@ public class SBUStringSet {
     public static var CreateChannel_Header_Select_Members = "Select members"
     public static var CreateChannel_Header_Title_Profile = "New channel profile"
     
-    
     // MARK: - Create Open Channel
     public static var CreateOpenChannel_Create = "Create"
     public static var CreateOpenChannel_Header_Title = "New channel"
     public static var CreateOpenChannel_ProfileInput_Placeholder = "Enter channel name"
-    
 
     // MARK: - Invite Channel
     public static var InviteChannel_Header_Title = "Invite users"
@@ -278,7 +267,6 @@ public class SBUStringSet {
         }
     }
 
-
     // MARK: - User List
     public static var UserList_Me = "(You)"
     public static var UserList_Ban = "Ban"
@@ -293,14 +281,12 @@ public class SBUStringSet {
     public static var UserList_Title_Muted_Participants = "Muted Participants" // 3.0.0
     public static var UserList_Title_Banned_Users = "Banned users"
     public static var UserList_Title_Participants = "Participants"
-
     
     // MARK: - User
     public static var User_No_Name = "(No name)"
     public static var User_Operator = "Operator"
     
-    
-    // MARK - User profile
+    // MARK: - User profile
     public static var UserProfile_Role_Operator = "Operator"
     public static var UserProfile_Role_Member = "Member"
     public static var UserProfile_UserID = "User ID"
@@ -310,7 +296,6 @@ public class SBUStringSet {
     public static var UserProfile_Mute = "Mute"
     public static var UserProfile_Unmute = "Unmute"
     public static var UserProfile_Ban = "Ban"
-    
     
     // MARK: - Channel type
     public static var ChannelType_Group = "Group"
@@ -324,7 +309,6 @@ public class SBUStringSet {
         /// e.g., "You can mention up to 10 times at a time."
         public static var Limit_Guide = "You can mention up to \(SBUGlobals.userMentionConfig?.mentionLimit ?? 10) times per message. "
     }
-    
     
     // MARK: - MessageThreading
     /// - Since: 3.3.0
@@ -342,7 +326,6 @@ public class SBUStringSet {
             public static var title = "Thread"
         }
     }
-    
     
     // MARK: - Voice
     public struct VoiceMessage {

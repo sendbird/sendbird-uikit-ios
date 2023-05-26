@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 /// Event methods for the views updates and performing actions from the header component in channel list module.
 public protocol SBUBaseChannelListModuleHeaderDelegate: SBUCommonDelegate {
     /// Called when `titleView` value has been updated.
@@ -43,7 +42,6 @@ public protocol SBUBaseChannelListModuleHeaderDelegate: SBUCommonDelegate {
     func baseChannelListModule(_ headerComponent: SBUBaseChannelListModule.Header, didTapRightItem rightItem: UIBarButtonItem)
 }
 
-
 extension SBUBaseChannelListModule {
     /// A module component that represents the header of `SBUBaseChannelListModule`.
     @objcMembers open class Header: UIView {
@@ -52,22 +50,21 @@ extension SBUBaseChannelListModule {
         
         /// A view that represents a title in navigation bar.
         /// - NOTE: When the value is updated, `channelListModule(_:didUpdateTitleView:)` delegate function is called.
-        public var titleView: UIView? = nil {
+        public var titleView: UIView? {
             didSet { self.didUpdateTitleView() }
         }
         
         /// A view that represents a left `UIBarButtonItem` in navigation bar.
         /// - NOTE: When the value is updated, `channelListModule(_:didUpdateLeftItem:)` delegate function is called
-        public var leftBarButton: UIBarButtonItem? = nil {
+        public var leftBarButton: UIBarButtonItem? {
             didSet { self.didUpdateLeftItem() }
         }
         
         /// A view that represents a right `UIBarButtonItem` in navigation bar.
         /// - NOTE: When the value is updated, `channelListModule(_:didUpdateRightItem:)` delegate function is called.
-        public var rightBarButton: UIBarButtonItem? = nil {
+        public var rightBarButton: UIBarButtonItem? {
             didSet { self.didUpdateRightItem() }
         }
-        
         
         // MARK: - UI properties (Private)
         private func defaultTitleView() -> SBUNavigationTitleView {
@@ -95,11 +92,9 @@ extension SBUBaseChannelListModule {
             return createChannelButton
         }
         
-        
         // MARK: - Logic properties (Public)
         /// The object that acts as the delegate of the header component. The delegate must adopt the `SBUBaseChannelListModuleHeaderDelegate`.
-        public weak var baseDelegate: SBUBaseChannelListModuleHeaderDelegate? = nil
-        
+        public weak var baseDelegate: SBUBaseChannelListModuleHeaderDelegate?
         
         // MARK: - LifeCycle
         
@@ -119,7 +114,6 @@ extension SBUBaseChannelListModule {
         /// Sets layouts of the views in the header component.
         open func setupLayouts() { }
         
-        
         // MARK: - Attach update delegate on view
         
         /// Called when the `titleView` was updated.
@@ -135,16 +129,15 @@ extension SBUBaseChannelListModule {
             self.baseDelegate?.baseChannelListModule(self, didUpdateRightItem: self.rightBarButton)
         }
         
-        
         // MARK: - Actions
         /// Called when the `leftBarButton` was tapped.
-        @objc open func onTapLeftBarButton() {
+        open func onTapLeftBarButton() {
             if let leftBarButton = self.leftBarButton {
                 self.baseDelegate?.baseChannelListModule(self, didTapLeftItem: leftBarButton)
             }
         }
         /// Called when the `rightBarButton` was tapped.
-        @objc open func onTapRightBarButton() {
+        open func onTapRightBarButton() {
             if let rightBarButton = self.rightBarButton {
                 self.baseDelegate?.baseChannelListModule(self, didTapRightItem: rightBarButton)
             }

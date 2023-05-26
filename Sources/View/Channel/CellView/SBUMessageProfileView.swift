@@ -36,7 +36,7 @@ open class SBUMessageProfileView: SBUView {
         self.configure(urlString: urlString)
     }
     
-    public var imageDownloadTask: URLSessionTask? = nil
+    public var imageDownloadTask: URLSessionTask?
     
     var imageSize: CGFloat = SBUMessageProfileView.imageSize
     
@@ -72,8 +72,7 @@ open class SBUMessageProfileView: SBUView {
     }
     
     open func configure(urlString: String,
-                        imageSize: CGFloat? = SBUMessageProfileView.imageSize)
-    {
+                        imageSize: CGFloat? = SBUMessageProfileView.imageSize) {
         self.urlString = urlString
         if let imageSize = imageSize {
             self.imageSize = imageSize

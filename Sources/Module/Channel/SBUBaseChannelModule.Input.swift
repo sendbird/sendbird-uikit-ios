@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 /// Event methods for the views updates and performing actions from the input component.
 public protocol SBUBaseChannelModuleInputDelegate: SBUCommonDelegate {
     /// Called when the message input view started to type.
@@ -122,7 +121,7 @@ extension SBUBaseChannelModule {
         }
 
         /// The object that is used as the theme of the input component. The theme must adopt the `SBUChannelTheme` class.
-        public var theme: SBUChannelTheme? = nil
+        public var theme: SBUChannelTheme?
         
         /// The object that acts as the base delegate of the input component. The base delegate must adopt the `SBUBaseChannelModuleInputDelegate`.
         public weak var baseDelegate: SBUBaseChannelModuleInputDelegate?
@@ -199,13 +198,13 @@ extension SBUBaseChannelModule {
         
         ///  Call this function when an image file has been picked from `UIImagePickerController`. This function will invoke corresponding delegate method such as `SBUGroupChannelModuleInputDelegate groupChannelModule(_:didPickFileData:fileName:mimeType:parentMessage:)`
         /// - Parameter info: Image information selected in `UIImagePickerController`
-        open func pickImageFile(info: [UIImagePickerController.InfoKey : Any]) {
+        open func pickImageFile(info: [UIImagePickerController.InfoKey: Any]) {
             
         }
         
         ///  Call this function when a video file has been picked from `UIImagePickerController`. This function will invoke corresponding delegate method such as `SBUGroupChannelModuleInputDelegate groupChannelModule(_:didPickFileData:fileName:mimeType:parentMessage:)`
         /// - Parameter info: Video information selected in `UIImagePickerController`
-        open func pickVideoFile(info: [UIImagePickerController.InfoKey : Any]) {
+        open func pickVideoFile(info: [UIImagePickerController.InfoKey: Any]) {
             
         }
         

@@ -11,7 +11,7 @@ import UIKit
 public class SBULoading: NSObject {
     static private let shared = SBULoading()
     
-    var window: UIWindow? = nil
+    var window: UIWindow?
     var baseView = UIView()
     var backgroundView = UIButton()
     var spinner = UIImageView()
@@ -48,7 +48,7 @@ public class SBULoading: NSObject {
     ///
     /// - Since: 3.2.1
     public static var isShowing: Bool {
-        return SBULoading.shared.isShowing
+        SBULoading.shared.isShowing
     }
     
     private func setupStyles() {
@@ -100,7 +100,7 @@ public class SBULoading: NSObject {
     }
     
     private var isShowing: Bool {
-        return self.baseView.superview != nil
+        self.baseView.superview != nil
     }
     
     @objc private func dismiss() {

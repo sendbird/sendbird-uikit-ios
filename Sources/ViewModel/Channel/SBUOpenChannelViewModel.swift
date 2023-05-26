@@ -54,7 +54,6 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
     // MARK: - Constant
     private let changelogFetchLimit: Int = 100
     
-    
     // MARK: - Logic properties (Public)
     public weak var delegate: SBUOpenChannelViewModelDelegate? {
         get { self.baseDelegate as? SBUOpenChannelViewModelDelegate }
@@ -66,20 +65,18 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
         set { self.baseDataSource = newValue }
     }
     
-    
     // MARK: - Logic properties (Private)
     
     @SBUAtomic private var hasMorePrevious: Bool = true
     @SBUAtomic private var hasMoreNext: Bool = false
     
-    @SBUAtomic private var changelogToken: String? = nil
+    @SBUAtomic private var changelogToken: String?
     @SBUAtomic private var lastUpdatedTimestamp: Int64 = 0
     private var currentTimeMillis: Int64 {
-        return Int64(Date().timeIntervalSince1970 * 1000)
+        Int64(Date().timeIntervalSince1970 * 1000)
     }
     
     private var initSucceeded: Bool = false
-
     
     // MARK: - LifeCycle
     public init(channel: BaseChannel? = nil,
@@ -87,8 +84,7 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
                 messageListParams: MessageListParams? = nil,
                 startingPoint: Int64? = nil,
                 delegate: SBUOpenChannelViewModelDelegate? = nil,
-                dataSource: SBUOpenChannelViewModelDataSource? = nil)
-    {
+                dataSource: SBUOpenChannelViewModelDataSource? = nil) {
         super.init()
     
         self.delegate = delegate
@@ -127,13 +123,11 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
         )
     }
     
-    
     // MARK: - Channel related
     
     public override func loadChannel(channelURL: String,
                                      messageListParams: MessageListParams? = nil,
-                                     completionHandler: ((BaseChannel?, SBError?) -> Void)? = nil)
-    {
+                                     completionHandler: ((BaseChannel?, SBError?) -> Void)? = nil) {
         if let messageListParams = messageListParams {
             self.customizedMessageListParams = messageListParams
         } else if self.customizedMessageListParams == nil {
@@ -145,7 +139,7 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
         // TODO: loading
 //        self.delegate?.shouldUpdateLoadingState(true)
         
-        SendbirdUI.connectIfNeeded { user, error in
+        SendbirdUI.connectIfNeeded { _, error in
             if let error = error {
                 self.delegate?.didReceiveError(error, isBlocker: true)
                 completionHandler?(nil, error)
@@ -215,11 +209,10 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
 
                 self.loadMessageChangeLogs()
             }
-        }  else if let channelURL = self.channelURL {
+        } else if let channelURL = self.channelURL {
             self.loadChannel(channelURL: channelURL)
         }
     }
-    
     
     // MARK: - Load Messages
     public override func loadInitialMessages(startingPoint: Int64?,
@@ -343,7 +336,7 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
             let prevHasNext = self.hasNext()
             self.hasMoreNext = messages.count >= params.nextResultSize
             
-            var mergedList: [BaseMessage]? = nil
+            var mergedList: [BaseMessage]?
             if !self.hasNext() && (self.hasNext() != prevHasNext) {
                 mergedList = self.flushCache(with: messages)
             }
@@ -541,7 +534,6 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
         SBULog.info("reset timestamp to : \(self.lastUpdatedTimestamp), startingPoint : \(String(describing: self.startingPoint)) currentTime : \(currentTime)")
     }
     
-    
     // MARK: - Changelog
     
     /// Loads SDK's changelog (updated + deleted) fully + new added messages (fully || once depending on `hasNext`)
@@ -560,7 +552,7 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
             self.messageCache?.loadNext()
         }
 
-        var completion: (([BaseMessage]?, [Int64]?, Bool, String?, SBError?) -> ())!
+        var completion: (([BaseMessage]?, [Int64]?, Bool, String?, SBError?) -> Void)!
         completion = { [weak self] updatedMessages, deletedMessageIds, hasMore, nextToken, error in
             self?.handleChangelogResponse(
                 updatedMessages: updatedMessages,
@@ -696,7 +688,7 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
     ///
     /// - Returns: Whether there's more messages to fetch or not.
     private func handleChangelogResponse(addedMessages: [BaseMessage]) -> Bool {
-        var mergedList: [BaseMessage]? = nil
+        var mergedList: [BaseMessage]?
         let hasMore = addedMessages.count >= self.changelogFetchLimit
         
         if !hasMore, self.hasNext() {
@@ -716,7 +708,6 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
         
         return hasMore
     }
-    
     
     // MARK: - Message
     open func setupSendUserMessageCompletionHandlers() {
@@ -786,7 +777,6 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
         }
     }
     
-    
     // MARK: - Common
     
     /// Checks if the response of loading message is valid.
@@ -832,7 +822,6 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
     }
 }
 
-
 // MARK: - ConnectionDelegate
 extension SBUOpenChannelViewModel {
     // MARK: ConnectionDelegate
@@ -840,7 +829,6 @@ extension SBUOpenChannelViewModel {
         super.didSucceedReconnection()
     }
 }
-
 
 // MARK: - OpenChannelDelegate
 extension SBUOpenChannelViewModel: OpenChannelDelegate {
@@ -852,11 +840,10 @@ extension SBUOpenChannelViewModel: OpenChannelDelegate {
         super.channel(channel, didReceive: message)
         
         let isScrollNearBottom = self.dataSource?.baseChannelViewModel(self, isScrollNearBottomInChannel: self.channel) ?? true
-        if (self.hasNext() == true || isScrollNearBottom == false)
-        {
+        if self.hasNext() == true || isScrollNearBottom == false {
             self.messageCache?.add(messages: [message])
 
-            guard (message is UserMessage || message is FileMessage) else { return }
+            guard message is UserMessage || message is FileMessage else { return }
             
             if let channel = self.channel {
                 self.delegate?.baseChannelViewModel(self, didReceiveNewMessage: message, forChannel: channel)

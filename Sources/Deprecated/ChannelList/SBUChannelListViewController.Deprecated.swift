@@ -37,7 +37,6 @@ extension SBUGroupChannelListModuleListDataSource {
     func channelListModule(_ listComponent: SBUGroupChannelListModule.List, channelsInTableView tableView: UITableView) -> [GroupChannel]? { return nil }
 }
 
-
 extension SBUGroupChannelListViewController {
     // MARK: - 3.0.0
     @available(*, deprecated, message: "This property has been moved to the `SBUGroupChannelListModule.Header`.", renamed: "headerComponent.titleView")
@@ -97,12 +96,12 @@ extension SBUGroupChannelListViewController {
     @available(*, deprecated, message: "This function has been moved to the `SBUGroupChannelListViewModel`.", renamed: "viewModel.changePushTriggerOption(option:channel:completionHandler:)")
     public func changePushTriggerOption(option: GroupChannelPushTriggerOption,
                                         channel: GroupChannel,
-                                        completionHandler: ((Bool)-> Void)? = nil) {
+                                        completionHandler: ((Bool) -> Void)? = nil) {
         viewModel?.changePushTriggerOption(option: option, channel: channel)
     }
     
     @available(*, deprecated, message: "This function has been moved to the `SBUGroupChannelListViewModel`.", renamed: "viewModel.leaveChannel(_:completionHandler:)")
-    public func leaveChannel(_ channel: GroupChannel, completionHandler: ((Bool)-> Void)? = nil) {
+    public func leaveChannel(_ channel: GroupChannel, completionHandler: ((Bool) -> Void)? = nil) {
         viewModel?.leaveChannel(channel)
     }
 
@@ -181,18 +180,15 @@ extension SBUGroupChannelListViewController {
     @available(*, unavailable, message: "Use `SBUGroupChannelListViewModel groupChannelListViewModel(_:didLeaveChannel:)` instead.")
     public func channelDidLeave(_ channel: GroupChannel) { }
     
-
-    
     // MARK: - ~2.2.0
     @available(*, unavailable, message: "Since it automatically detects channel changes internally, it is no longer necessary to use this function.")
     public func loadChannelChangeLogs(hasMore: Bool, token: String?) { }
     
     @available(*, unavailable, renamed: "errorHandler(_:_:)")
-    open func didReceiveError(_ message: String?, _ code: NSInteger?) {
+    public func didReceiveError(_ message: String?, _ code: NSInteger?) {
         self.errorHandler(message, code)
     }
 }
-
 
 extension SBUGroupChannelListViewModel {
     // MARK: - 3.2.1

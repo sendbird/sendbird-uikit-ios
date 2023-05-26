@@ -43,11 +43,9 @@ public class SBUViewControllerSet {
     public static var MessageThreadViewController: SBUMessageThreadViewController.Type = SBUMessageThreadViewController.self
 }
 
-
 extension SBUViewControllerSet {
     @available(*, unavailable, message: "This property had been seperated to `GroupChannelRegisterOperatorViewController` and `OpenChannelRegisterOperatorViewController`") // 3.1.0
     public static var RegisterOperatorViewController: SBURegisterOperatorViewController.Type = SBURegisterOperatorViewController.self
-    
     
     @available(*, unavailable, message: "This property had been seperated to `GroupUserListViewController` and `OpenUserListViewController`") // 3.1.0
     public static var UserListViewController: SBUUserListViewController.Type = SBUUserListViewController.self

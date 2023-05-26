@@ -35,7 +35,6 @@ open class SBUUserListModule {
     private var _headerComponent: SBUUserListModule.Header?
     private var _listComponent: SBUUserListModule.List?
     
-    
     // MARK: -
     /// Initializes module with components.
     public init(headerComponent: SBUUserListModule.Header? = nil,
@@ -44,4 +43,3 @@ open class SBUUserListModule {
         self.listComponent = listComponent
     }
 }
-

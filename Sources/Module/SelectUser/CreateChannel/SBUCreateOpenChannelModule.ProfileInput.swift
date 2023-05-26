@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 /// Event methods for the views updates and performing actions from the profile input component.
 public protocol SBUCreateOpenChannelModuleProfileInputDelegate: SBUCommonDelegate {
     /// Called when the changed text in th `profileInputComponent`.
@@ -24,7 +23,6 @@ public protocol SBUCreateOpenChannelModuleProfileInputDelegate: SBUCommonDelegat
     ///   - needRemoveItem: If the image is already set, set the needRemoveItem to `true`and activate the deletion option.
     func createOpenChannelModuleDidSelectChannelImage(_ profileInputComponent: SBUCreateOpenChannelModule.ProfileInput, needRemoveItem: Bool)
 }
-
 
 extension SBUCreateOpenChannelModule {
     
@@ -62,8 +60,7 @@ extension SBUCreateOpenChannelModule {
         }()
         
         /// The object that is used as the theme of the profile input component. The theme must adopt the `SBUCreateOpenChannelTheme` class.
-        public var theme: SBUCreateOpenChannelTheme? = nil
-        
+        public var theme: SBUCreateOpenChannelTheme?
         
         // MARK: - Logic properties (Public)
 
@@ -112,7 +109,6 @@ extension SBUCreateOpenChannelModule {
             self.addSubview(self.baseStackView)
         }
         
-        
         // MARK: - Style
         open func setupLayouts() {
             self.baseStackView
@@ -145,7 +141,6 @@ extension SBUCreateOpenChannelModule {
             self.channelImageView.layer.cornerRadius = kCoverImageSize / 2
         }
         
-        
         // MARK: - Common
         
         /// Gets channel name string
@@ -173,7 +168,6 @@ extension SBUCreateOpenChannelModule {
                 self.channelImageView.setPlaceholder(type: .iconCamera, iconSize: placeholderIconSize)
             }
         }
-        
         
         // MARK: - Action
         @objc open func showImagePicker(sender: UITapGestureRecognizer) {

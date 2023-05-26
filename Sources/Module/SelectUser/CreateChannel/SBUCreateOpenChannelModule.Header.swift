@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 /// Event methods for the views updates and performing actions from the header component in channel creating module.
 public protocol SBUCreateOpenChannelModuleHeaderDelegate: SBUCommonDelegate {
     /// Called when `titleView` value has been updated.
@@ -43,7 +42,6 @@ public protocol SBUCreateOpenChannelModuleHeaderDelegate: SBUCommonDelegate {
     func createOpenChannelModule(_ headerComponent: SBUCreateOpenChannelModule.Header, didTapRightItem rightItem: UIBarButtonItem)
 }
 
-
 extension SBUCreateOpenChannelModule {
     
     /// A module component that represent the header of `SBUCreateOpenChannelModule`.
@@ -55,26 +53,25 @@ extension SBUCreateOpenChannelModule {
         
         /// A view that represents a title in navigation bar.
         /// - NOTE: When the value is updated, `createOpenChannelModule(_:didUpdateTitleView:)` delegate function is called.
-        public var titleView: UIView? = nil {
+        public var titleView: UIView? {
             didSet { self.delegate?.createOpenChannelModule(self, didUpdateTitleView: self.titleView) }
         }
         
         /// A view that represents a left `UIBarButtonItem` in navigation bar.
         /// - NOTE: When the value is updated, `createOpenChannelModule(_:didUpdateLeftItem:)` delegate function is called.
         /// and when the value is tapped, `createOpenChannelModule(_:didTapLeftItem:)` delegate function is called.
-        public var leftBarButton: UIBarButtonItem? = nil {
+        public var leftBarButton: UIBarButtonItem? {
             didSet { self.delegate?.createOpenChannelModule(self, didUpdateLeftItem: self.leftBarButton) }
         }
 
         /// A view that represents a right `UIBarButtonItem` in navigation bar.
         /// - NOTE: When the value is updated, `createOpenChannelModule(_:didUpdateRightItem:)` delegate function is called.
-        public var rightBarButton: UIBarButtonItem? = nil {
+        public var rightBarButton: UIBarButtonItem? {
             didSet { self.delegate?.createOpenChannelModule(self, didUpdateRightItem: self.rightBarButton) }
         }
         
         /// The object that is used as the theme of the header component. The theme must adopt the `SBUCreateOpenChannelTheme` class.
-        public var theme: SBUCreateOpenChannelTheme? = nil
-        
+        public var theme: SBUCreateOpenChannelTheme?
         
         // MARK: - UI properties (Private)
         func defaultTitleView() -> SBUNavigationTitleView {
@@ -99,16 +96,14 @@ extension SBUCreateOpenChannelModule {
                 target: self,
                 action: #selector(onTapRightBarButton)
             )
-            createChannelButton.setTitleTextAttributes([.font : SBUFontSet.button2], for: .normal)
+            createChannelButton.setTitleTextAttributes([.font: SBUFontSet.button2], for: .normal)
             return createChannelButton
         }
-        
         
         // MARK: - Logic properties (Public)
         /// The object that acts as the delegate of the header component.
         /// The delegate must adopt the `SBUCreateOpenChannelModuleHeaderDelegate` protocol.
-        public weak var delegate: SBUCreateOpenChannelModuleHeaderDelegate? = nil
-        
+        public weak var delegate: SBUCreateOpenChannelModuleHeaderDelegate?
         
         // MARK: - LifeCycle
         @available(*, unavailable, renamed: "SBUCreateOpenChannelModule.Header()")
@@ -169,24 +164,22 @@ extension SBUCreateOpenChannelModule {
             self.rightBarButton?.tintColor = theme?.rightBarButtonTintColor
         }
         
-        
         // MARK: - Common
         /// Updates right bar button. The defaults action is updating the title of the button and the tint color with `rightBarButtonTintColor` and `rightBarButtonDisabledTintColor` from the `theme`.
         open func enableRightBarButton(_ enabled: Bool) {
             self.rightBarButton?.isEnabled = enabled
         }
         
-        
         // MARK: - Actions
         /// The action of the leftBarButton. It calls `createOpenChannelModule(_:didTapLeftItem:)` delegate method.
-        @objc public func onTapLeftBarButton() {
+        public func onTapLeftBarButton() {
             if let leftBarButton = self.leftBarButton {
                 self.delegate?.createOpenChannelModule(self, didTapLeftItem: leftBarButton)
             }
         }
         
         /// The action of the rightBarButton. It calls `createOpenChannelModule(_:didTapRightItem:)` delegate method.
-        @objc public func onTapRightBarButton() {
+        public func onTapRightBarButton() {
             if let rightBarButton = self.rightBarButton {
                 self.delegate?.createOpenChannelModule(self, didTapRightItem: rightBarButton)
             }

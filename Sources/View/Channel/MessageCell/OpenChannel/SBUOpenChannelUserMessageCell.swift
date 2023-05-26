@@ -16,7 +16,7 @@ open class SBUOpenChannelUserMessageCell: SBUOpenChannelContentBaseMessageCell {
     public lazy var messageTextView: UIView = SBUUserMessageTextView(channelType: .open)
     
     public var userMessage: UserMessage? {
-        return self.message as? UserMessage
+        self.message as? UserMessage
     }
     
     // MARK: - Private property
@@ -37,7 +37,6 @@ open class SBUOpenChannelUserMessageCell: SBUOpenChannelContentBaseMessageCell {
     public private(set) var messageTypeConstraint: NSLayoutConstraint!
     /// Activated when the message has `ogMetaData`.
     public private(set) var webTypeConstraints: [NSLayoutConstraint] = []
-
     
     // MARK: - View Lifecycle
     open override func setupViews() {
@@ -73,7 +72,7 @@ open class SBUOpenChannelUserMessageCell: SBUOpenChannelContentBaseMessageCell {
         super.setupActions()
 
         if let messageTextView = self.messageTextView as? SBUUserMessageTextView {
-            messageTextView.longPressHandler = { [weak self] url in
+            messageTextView.longPressHandler = { [weak self] _ in
                 guard let self = self else { return }
                 self.onLongPressContentView(sender: nil)
             }
@@ -107,7 +106,6 @@ open class SBUOpenChannelUserMessageCell: SBUOpenChannelContentBaseMessageCell {
         
         self.additionContainerView.layer.cornerRadius = 8
     }
-    
     
     // MARK: - Common
     open func configure(_ message: BaseMessage,
@@ -173,7 +171,6 @@ open class SBUOpenChannelUserMessageCell: SBUOpenChannelContentBaseMessageCell {
         self.contentsStackView.addArrangedSubview(self.mainContainerView)
         self.contentsStackView.addArrangedSubview(self.stateImageView)
     }
-    
    
     // MARK: - Action
     public override func setSelected(_ selected: Bool, animated: Bool) {

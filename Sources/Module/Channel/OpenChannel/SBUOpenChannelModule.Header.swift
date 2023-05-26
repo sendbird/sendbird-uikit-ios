@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 /// Event methods for the views updates and performing actions from the header component in a open channel.
 public protocol SBUOpenChannelModuleHeaderDelegate: SBUBaseChannelModuleHeaderDelegate {
     
@@ -111,7 +110,6 @@ extension SBUOpenChannelModule {
             
             self.updateStyles(theme: nil)
         }
-        
         
         // MARK: - SBUChannelInfoHeaderViewDelegate
         open func didSelectChannelInfo() {

@@ -12,7 +12,6 @@ import Photos
 import AVKit
 import SafariServices
 
-
 @objcMembers
 open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroupChannelViewModelDelegate, SBUGroupChannelModuleHeaderDelegate, SBUGroupChannelModuleListDelegate, SBUGroupChannelModuleListDataSource, SBUGroupChannelModuleInputDelegate, SBUGroupChannelModuleInputDataSource, SBUGroupChannelViewModelDataSource, SBUMentionManagerDataSource, SBUMessageThreadViewControllerDelegate, SBUVoiceMessageInputViewDelegate {
 
@@ -44,9 +43,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     
     public private(set) var newMessagesCount: Int = 0
     
-    
     // MARK: - Logic properties (Private)
-    
     
     // MARK: - Lifecycle
     
@@ -114,7 +111,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     }
     
     open override var preferredStatusBarStyle: UIStatusBarStyle {
-        return theme.statusBarStyle
+        theme.statusBarStyle
     }
     
     open override func viewWillAppear(_ animated: Bool) {
@@ -144,7 +141,6 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     deinit {
         SBULog.info("")
     }
-    
     
     // MARK: - ViewModel
     open override func createViewModel(
@@ -191,7 +187,6 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
             messageInputView.setMode(.none)
         }
     }
-    
     
     // MARK: - Sendbird UIKit Life cycle
     open override func setupViews() {
@@ -263,7 +258,6 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         
         self.listComponent?.reloadTableView()
     }
-
 
     // MARK: - New message count
 
@@ -340,7 +334,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
             return
         }
         
-        var parentMessage: BaseMessage? = nil
+        var parentMessage: BaseMessage?
         if let fullMessageList = self.viewModel?.fullMessageList {
             parentMessage = fullMessageList.filter { $0.messageId == parentMessageId }.first
         }
@@ -355,7 +349,6 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         )
         self.navigationController?.pushViewController(messageThreadVC, animated: true)
     }
-    
     
     // MARK: - VoiceMessageInput
     open override func showVoiceMessageInput() {
@@ -382,7 +375,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
                 title: title,
                 confirmButtonItem: SBUAlertButtonItem(
                     title: SBUStringSet.OK,
-                    completionHandler: { info in
+                    completionHandler: { _ in
                         self.dismissVoiceMessageInput()
                     }
                 ), cancelButtonItem: nil
@@ -476,8 +469,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     
     open func groupChannelViewModel(
         _ viewModel: SBUGroupChannelViewModel,
-        didReceiveSuggestedMentions members: [SBUUser]?)
-    {
+        didReceiveSuggestedMentions members: [SBUUser]?) {
         let members = members ?? []
         self.inputComponent?.handlePendingMentionSuggestion(with: members)
     }
@@ -570,8 +562,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         
         if let userProfileView = self.baseListComponent?.userProfileView as? SBUUserProfileView,
            let baseView = self.navigationController?.view,
-           SBUGlobals.isUserProfileEnabled
-        {
+           SBUGlobals.isUserProfileEnabled {
             userProfileView.show(
                 baseView: baseView,
                 user: user
@@ -624,7 +615,6 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         
         return self.highlightInfo
     }
-    
     
     // MARK: - SBUGroupChannelModuleInputDelegate
     open override func baseChannelModule(_ inputComponent: SBUBaseChannelModule.Input, didUpdateFrozenState isFrozen: Bool) {
@@ -706,19 +696,16 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         self.inputComponent?.dismissSuggestedMentionList()
     }
     
-    
     // MARK: - SBUGroupChannelViewModelDataSource
     open func groupChannelViewModel(_ viewModel: SBUGroupChannelViewModel,
                                     startingPointIndexPathsForChannel channel: GroupChannel?) -> [IndexPath]? {
         return self.listComponent?.tableView.indexPathsForVisibleRows
     }
     
-    
     // MARK: - SBUMentionManagerDataSource
     open func mentionManager(_ manager: SBUMentionManager, suggestedMentionUsersWith filterText: String) -> [SBUUser] {
         return self.viewModel?.suggestedMemberList ?? []
     }
-    
     
     // MARK: - SBUMessageThreadViewControllerDelegate
     open func messageThreadViewController(
@@ -743,12 +730,11 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         self.listComponent?.tableView.layoutIfNeeded()
     }
     
-    open func messageThreadViewController(_ viewController: SBUMessageThreadViewController, shouldSyncVoiceFileInfos voiceFileInfos: [String : SBUVoiceFileInfo]?) {
+    open func messageThreadViewController(_ viewController: SBUMessageThreadViewController, shouldSyncVoiceFileInfos voiceFileInfos: [String: SBUVoiceFileInfo]?) {
         if let voiceFileInfos = voiceFileInfos {
             self.listComponent?.voiceFileInfos = voiceFileInfos
         }
     }
-    
     
     // MARK: - SBUVoiceMessageInputViewDelegate
     open func voiceMessageInputViewDidTapCacel(_ inputView: SBUVoiceMessageInputView) {

@@ -11,7 +11,6 @@ import Photos
 import AVKit
 import SendbirdChatSDK
 
-
 public protocol SBUMessageInputViewDelegate: AnyObject {
     /// Called when the add button was selected.
     /// - Parameters:
@@ -32,7 +31,6 @@ public protocol SBUMessageInputViewDelegate: AnyObject {
     ///    - type: `MediaResourceType` value.
     /// - Since: 2.2.0
     func messageInputView(_ messageInputView: SBUMessageInputView, didSelectResource type: MediaResourceType)
-    
     
     /// Called when the edit button was selected.
     /// - Parameters:
@@ -63,7 +61,6 @@ public protocol SBUMessageInputViewDelegate: AnyObject {
     ///    - message: `BaseMessage` object. It's `nil` when the `mode` is `none`.
     /// - Since: 2.2.0
     func messageInputView(_ messageInputView: SBUMessageInputView, willChangeMode mode: SBUMessageInputMode, message: BaseMessage?)
-    
     
     /// Called when the message input view started to type.
     /// - Since: 2.2.0
@@ -98,7 +95,6 @@ public protocol SBUMessageInputViewDelegate: AnyObject {
     ///   - range: The selected range of the text view in `SBUMessageInputView`
     func messageInputView(_ messageInputView: SBUMessageInputView, didChangeSelection range: NSRange)
     
-    
     // MARK: Voice message
     /// Called when the voice message button was selected.
     /// - Parameters:
@@ -130,7 +126,6 @@ public extension SBUMessageInputViewDelegate {
     
     func messageInputView(_ messageInputView: SBUMessageInputView, didChangeSelection range: NSRange) { }
 }
-
 
 open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDelegate {
     // MARK: - Properties (Public)
@@ -263,7 +258,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     
     /// The default attributes values for the input view
     public var defaultAttributes: [NSAttributedString.Key: Any] {
-        return [
+        [
             .font: theme.textFieldFont,
             .backgroundColor: UIColor.clear,
             .foregroundColor: self.isOverlay
@@ -284,7 +279,6 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         
         return mentionAttributes
     }
-
     
     // MARK: - Properties (Private)
     
@@ -399,7 +393,6 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     public var overlayTheme: SBUMessageInputTheme
     
     var isOverlay = false
-
     
     // MARK: - Life cycle
     override public init(frame: CGRect) {
@@ -438,7 +431,6 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
                 self.endQuoteReplyMode()
             default: break
             }
-            
             
             // Start a new mode
             switch newValue {
@@ -530,7 +522,6 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         // + ------------ + -------------- + ---------- +
         // | cancelButton | editMarginView | saveButton |
         // + ------------ + -------------- + ---------- +
-        
         
         // Add views
         if let textView = self.textView {
@@ -681,24 +672,19 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         if self.isFrozen {
             self.placeholderLabel.text = SBUStringSet.MessageInput_Text_Unavailable
             self.placeholderLabel.textColor = theme.textFieldDisabledColor
-        }
-        else if self.isMuted {
+        } else if self.isMuted {
             self.placeholderLabel.text = SBUStringSet.MessageInput_Text_Muted
             self.placeholderLabel.textColor = theme.textFieldDisabledColor
-        }
-        else if self.isThreadFirstMessage {
+        } else if self.isThreadFirstMessage {
             self.placeholderLabel.text = SBUStringSet.MessageThread.MessageInput.replyInThread
             self.placeholderLabel.textColor = theme.textFieldPlaceholderColor
-        }
-        else if self.isThreadMessage {
+        } else if self.isThreadMessage {
             self.placeholderLabel.text = SBUStringSet.MessageThread.MessageInput.replyToThread
             self.placeholderLabel.textColor = theme.textFieldPlaceholderColor
-        }
-        else if self.mode == .quoteReply {
+        } else if self.mode == .quoteReply {
             self.placeholderLabel.text = SBUStringSet.MessageInput_Text_Reply
             self.placeholderLabel.textColor = theme.textFieldPlaceholderColor
-        }
-        else {
+        } else {
             self.placeholderLabel.text = SBUStringSet.MessageInput_Text_Placeholder
             self.placeholderLabel.textColor = theme.textFieldPlaceholderColor
         }
@@ -765,7 +751,6 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     public override func layoutSubviews() {
         super.layoutSubviews()
     }
-
     
     // MARK: - Edit View
     public func startEditMode(text: String) {
@@ -784,7 +769,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         self.editView.alpha = 1
 
         self.updateTextViewHeight()
-        let bottom = NSMakeRange((self.textView?.text.count ?? 0) - 1, 1)
+        let bottom = NSRange(location: (self.textView?.text.count ?? 0) - 1, length: 1)
         self.textView?.scrollRangeToVisible(bottom)
         
         self.textView?.becomeFirstResponder()
@@ -897,24 +882,18 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     public func updatePlaceholderText() {
         if self.isFrozen {
             self.placeholderLabel.text = SBUStringSet.MessageInput_Text_Unavailable
-        }
-        else if self.isMuted {
+        } else if self.isMuted {
             self.placeholderLabel.text = SBUStringSet.MessageInput_Text_Muted
-        }
-        else if self.isThreadFirstMessage {
+        } else if self.isThreadFirstMessage {
             self.placeholderLabel.text = SBUStringSet.MessageThread.MessageInput.replyInThread
-        }
-        else if self.isThreadMessage {
+        } else if self.isThreadMessage {
             self.placeholderLabel.text = SBUStringSet.MessageThread.MessageInput.replyToThread
-        }
-        else if self.mode == .quoteReply {
+        } else if self.mode == .quoteReply {
             self.placeholderLabel.text = SBUStringSet.MessageInput_Text_Reply
-        }
-        else {
+        } else {
             self.placeholderLabel.text = SBUStringSet.MessageInput_Text_Placeholder
         }
     }
-    
 
     // MARK: - Action
     
@@ -1029,7 +1008,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
                 self.delegate?.messageInputView(self, didSelectResource: type)
             }
         case .library:
-            SBUPermissionManager.shared.requestPhotoAccessIfNeeded { status in
+            SBUPermissionManager.shared.requestPhotoAccessIfNeeded { _ in
                 DispatchQueue.main.async { [weak self] in
                     guard let self = self else { return }
                     self.delegate?.messageInputView(self, didSelectResource: type)
@@ -1073,4 +1052,3 @@ extension SBUMessageInputView: SBUQuoteMessageInputViewDelegate {
         self.setMode(.none)
     }
 }
-

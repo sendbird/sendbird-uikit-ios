@@ -51,8 +51,7 @@ open class SBUBaseChannelSettingCell: SBUTableViewCell {
     @SBUThemeWrapper(theme: SBUTheme.channelSettingsTheme)
     public var theme: SBUChannelSettingsTheme
     
-    public var switchAction: ((Bool) -> Void)? = nil
-    
+    public var switchAction: ((Bool) -> Void)?
     
     // MARK: - View Lifecycle
     open override func awakeFromNib() {
@@ -89,7 +88,7 @@ open class SBUBaseChannelSettingCell: SBUTableViewCell {
             .sbu_constraint(equalTo: self.contentView,
                             leading: 16,
                             trailing: -16,
-                            top:13,
+                            top: 13,
                             bottom: 12)
             .sbu_constraint(height: 31)
 
@@ -157,7 +156,6 @@ open class SBUBaseChannelSettingCell: SBUTableViewCell {
     open override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
     }
-
     
     // MARK: - Action
     @objc

@@ -36,8 +36,7 @@ public class SBUUtils {
         let type = type.lowercased()
         
         if type.hasPrefix("image") {
-            if type.contains("svg") { return .etc }
-            else { return .image }
+            if type.contains("svg") { return .etc } else { return .image }
         }
         if type.hasPrefix("video") { return .video }
         if type.hasPrefix("audio") {
@@ -47,7 +46,7 @@ public class SBUUtils {
             }
             return .audio
         }
-        if type.hasPrefix("pdf")   { return .pdf }
+        if type.hasPrefix("pdf") { return .pdf }
         
         return .etc
     }
@@ -61,7 +60,6 @@ public class SBUUtils {
         }
         return nil
     }
-    
     
     /// This is a function that creates a channel name.
     ///
@@ -79,13 +77,12 @@ public class SBUUtils {
             .sbu_convertUserList()
             .filter { $0.userId != SBUGlobals.currentUser?.userId }
 
-        guard !users.isEmpty else { return SBUStringSet.Channel_Name_No_Members}
+        guard !users.isEmpty else { return SBUStringSet.Channel_Name_No_Members }
         let userNicknames = users.sbu_getUserNicknames()
         let channelName = userNicknames.joined(separator: ", ")
 
         return channelName
     }
-    
     
     /// This function gets the MIME type from the URL.
     /// - Parameter url: url
@@ -196,7 +193,7 @@ public class SBUUtils {
         let flt_max = CGFloat.greatestFiniteMagnitude
         let maxSize = CGSize(width: flt_max, height: flt_max)
         let attributes = [
-            NSAttributedString.Key.font : UIFont.systemFont(ofSize: UIFont.systemFontSize)
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: UIFont.systemFontSize)
         ]
         let boundingRect = placeholderSymbol.boundingRect(
             with: maxSize,
@@ -236,7 +233,6 @@ extension SBUUtils {
         return messageList.contains(where: { $0.messageId == messageId })
     }
 }
-
 
 // MARK: - TIME
 extension SBUUtils {

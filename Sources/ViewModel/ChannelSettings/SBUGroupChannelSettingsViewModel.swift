@@ -18,7 +18,6 @@ public protocol SBUGroupChannelSettingsViewModelDelegate: SBUBaseChannelSettings
     )
 }
 
-
 @available(*, deprecated, renamed: "SBUGroupChannelSettingsViewModel") // 3.0.0
 public typealias SBUChannelSettingsViewModel = SBUGroupChannelSettingsViewModel
 
@@ -28,7 +27,6 @@ open class SBUGroupChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
         get { self.baseDelegate as? SBUGroupChannelSettingsViewModelDelegate }
         set { self.baseDelegate = newValue }
     }
-
     
     // MARK: - LifeCycle
     public init(channel: BaseChannel? = nil,
@@ -58,7 +56,6 @@ open class SBUGroupChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
             forIdentifier: "\(SBUConstant.groupChannelDelegateIdentifier).\(self.description)"
         )
     }
-
     
     // MARK: - Channel related
     public override func loadChannel(channelURL: String?) {
@@ -138,7 +135,6 @@ open class SBUGroupChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
         }
     }
 }
-
 
 // MARK: GroupChannelDelegate
 extension SBUGroupChannelSettingsViewModel: GroupChannelDelegate {

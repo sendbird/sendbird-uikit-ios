@@ -9,19 +9,18 @@
 import UIKit
 import SendbirdChatSDK
 
-
 public extension Array where Element: SBUUser {
     /// This is a function that extracts the userId array using the `SBUUser` type array.
     /// - Returns: userId `String` type array
     func sbu_getUserIds() -> [String] {
-        let userIds: [String] = self.map ({ $0.userId })
+        let userIds: [String] = self.map({ $0.userId })
         return userIds
     }
     
     /// This is a function that extracts the nickname array using the `SBUUser` type array.
     /// - Returns: nickname `String` type array
     func sbu_getUserNicknames() -> [String] {
-        let userNicknames: [String] = self.map ({ $0.refinedNickname() })
+        let userNicknames: [String] = self.map({ $0.refinedNickname() })
         return userNicknames
     }
     
@@ -53,7 +52,6 @@ public extension Array where Element: Member {
         return userList
     }
 }
-
 
 public extension NSArray {
     /// This is a function that extracts the userId array using the `SBUUser` type array.

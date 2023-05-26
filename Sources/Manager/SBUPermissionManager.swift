@@ -54,7 +54,7 @@ public class SBUPermissionManager {
     ///    - onDismiss: Called when the alert is dismissed. Refer to ``AlertButtonHandler``.
     /// - Since: 3.4.0
     public func showPermissionAlert(forType permissionType: SBUPermissionManager.PermissionType, alertViewDelegate: SBUAlertViewDelegate? = nil, onDismiss: AlertButtonHandler? = nil) {
-        let settingButton = SBUAlertButtonItem(title: SBUStringSet.Settings) { info in
+        let settingButton = SBUAlertButtonItem(title: SBUStringSet.Settings) { _ in
             if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
                 UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
             }
@@ -148,7 +148,6 @@ public class SBUPermissionManager {
             granted = PHPhotoLibrary.authorizationStatus()
         }
         
-        
         switch granted {
         case .authorized:
             DispatchQueue.main.async {
@@ -173,7 +172,6 @@ public class SBUPermissionManager {
             }
         }
     }
-    
     
     /// Checks camera permission. When you call this method, if the user previously granted or denied camera usage permission, the block executes *immediately* without displaying a camera permission alert.
     /// - Note: The blocks executes in the *main* thread.
@@ -210,7 +208,6 @@ public class SBUPermissionManager {
     }
 }
 
-
 extension SBUPermissionManager {
     
     @available(*, deprecated, renamed: "currentPhotoAccessStatus")
@@ -219,7 +216,7 @@ extension SBUPermissionManager {
     }
     
     @available(*, deprecated, renamed: "requestCameraAccessIfNeeded(for:onGranted:onDenied:)")
-    public func requestDeviceAccessIfNeeded(for type: AVMediaType, completion: @escaping (Bool) -> ()) {
+    public func requestDeviceAccessIfNeeded(for type: AVMediaType, completion: @escaping (Bool) -> Void) {
         self.requestCameraAccess(for: type) {
             completion(true)
         } onDenied: {

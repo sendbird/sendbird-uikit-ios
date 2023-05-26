@@ -100,7 +100,7 @@ open class SBUCommonContentView: SBUBaseFileContentView {
         
         self.fileImageView.image = image
         
-        var attributes: [NSAttributedString.Key : Any]
+        var attributes: [NSAttributedString.Key: Any]
         var highlightTextColor: UIColor
         
         switch position {
@@ -165,7 +165,7 @@ open class SBUCommonContentView: SBUBaseFileContentView {
                     )
                 ranges.append(baseRange)
                 
-                if (baseRange.location != NSNotFound) {
+                if baseRange.location != NSNotFound {
                     baseRange = NSRange(
                         location: NSMaxRange(baseRange),
                         length: attributedString.length - NSMaxRange(baseRange)

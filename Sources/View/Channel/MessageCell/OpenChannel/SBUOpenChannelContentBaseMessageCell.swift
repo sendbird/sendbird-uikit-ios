@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 /// It is a base class used in message cell with contents.
 /// - Since: 2.0.0
 open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
@@ -140,8 +139,7 @@ open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
                 
                 mainContainerView.layer.cornerRadius = 12
                 mainContainerView.clipsToBounds = true
-            }
-            else {
+            } else {
                 mainContainerView.leftBackgroundColor = .clear
                 mainContainerView.leftPressedBackgroundColor = .clear
             }
@@ -173,7 +171,6 @@ open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
             profileView.imageView.image = nil
         }
     }
-    
     
     // MARK: - Common
     open func configure(_ message: BaseMessage,

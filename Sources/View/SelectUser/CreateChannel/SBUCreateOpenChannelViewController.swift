@@ -11,7 +11,6 @@ import SendbirdChatSDK
 import PhotosUI
 import MobileCoreServices
 
-
 open class SBUCreateOpenChannelViewController: SBUBaseViewController, SBUActionSheetDelegate, PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, SBUSelectablePhotoViewDelegate, SBUCreateOpenChannelModuleHeaderDelegate, SBUCreateOpenChannelModuleProfileInputDelegate, SBUCommonViewModelDelegate, SBUCreateOpenChannelViewModelDelegate, SBUAlertViewDelegate {
 
     // MARK: - UI properties (Public)
@@ -22,14 +21,11 @@ open class SBUCreateOpenChannelViewController: SBUBaseViewController, SBUActionS
     @SBUThemeWrapper(theme: SBUTheme.createOpenChannelTheme)
     public var theme: SBUCreateOpenChannelTheme
     
-    
     // MARK: - Logic properties (Public)
     public var viewModel: SBUCreateOpenChannelViewModel?
     
-    
     // MARK: - Constant
     private let actionSheetIdPicker = 2
-    
     
     // MARK: - Lifecycle
     @available(*, unavailable, renamed: "SBUCreateOpenChannelViewController(channel:)")
@@ -63,7 +59,7 @@ open class SBUCreateOpenChannelViewController: SBUBaseViewController, SBUActionS
     }
     
     open override var preferredStatusBarStyle: UIStatusBarStyle {
-        return theme.statusBarStyle
+        theme.statusBarStyle
     }
     
     deinit {
@@ -73,12 +69,10 @@ open class SBUCreateOpenChannelViewController: SBUBaseViewController, SBUActionS
         self.profileInputComponent = nil
     }
     
-    
     // MARK: - ViewModel
     open func createViewModel() {
         self.viewModel = SBUCreateOpenChannelViewModel(delegate: self)
     }
-    
     
     // MARK: - Sendbird UIKit Life cycle
     open override func setupViews() {
@@ -119,7 +113,6 @@ open class SBUCreateOpenChannelViewController: SBUBaseViewController, SBUActionS
     open override func updateStyles() {
         self.setupStyles()
     }
-
     
     // MARK: - Actions
     
@@ -138,7 +131,6 @@ open class SBUCreateOpenChannelViewController: SBUBaseViewController, SBUActionS
     public func createChannel(channelName: String, coverImage: UIImage?) {
         self.viewModel?.createChannel(channelName: channelName, coverImage: coverImage)
     }
-    
     
     /// This function shows the channel image selection menu.
     public func selectChannelImage(needRemoveItem: Bool) {
@@ -299,8 +291,6 @@ open class SBUCreateOpenChannelViewController: SBUBaseViewController, SBUActionS
         SBULog.error("Did receive error: \(message ?? "")")
     }
     
-    
-    
     // MARK: - SBUCreateOpenChannelModuleHeaderDelegate
     open func createOpenChannelModule(_ headerComponent: SBUCreateOpenChannelModule.Header,
                                       didUpdateTitleView titleView: UIView?) {
@@ -327,7 +317,6 @@ open class SBUCreateOpenChannelViewController: SBUBaseViewController, SBUActionS
         self.createChannel()
     }
     
-    
     // MARK: - SBUCreateOpenChannelModuleProfileInputDelegate
     open func createOpenChannelModule(
         _ profileInputComponent: SBUCreateOpenChannelModule.ProfileInput,
@@ -345,7 +334,6 @@ open class SBUCreateOpenChannelViewController: SBUBaseViewController, SBUActionS
         self.selectChannelImage(needRemoveItem: needRemoveItem)
     }
     
-    
     // MARK: - SBUCommonViewModelDelegate
     open func shouldUpdateLoadingState(_ isLoading: Bool) {
         self.showLoading(isLoading)
@@ -355,7 +343,6 @@ open class SBUCreateOpenChannelViewController: SBUBaseViewController, SBUActionS
         self.showLoading(false)
         self.errorHandler(error?.localizedDescription)
     }
-    
     
     // MARK: - SBUCreateOpenChannelViewModelDelegate
     open func createOpenChannelViewModel(
@@ -369,7 +356,6 @@ open class SBUCreateOpenChannelViewController: SBUBaseViewController, SBUActionS
         
         SendbirdUI.moveToChannel(channelURL: channelURL, channelType: .open)
     }
-    
     
     // MARK: SBUActionSheetDelegate
     open func didSelectActionSheetItem(index: Int, identifier: Int) {
@@ -390,11 +376,10 @@ open class SBUCreateOpenChannelViewController: SBUBaseViewController, SBUActionS
         self.profileInputComponent?.updateChannelImage(image)
     }
     
-    
     // MARK: - UIImagePickerViewControllerDelegate
     open func imagePickerController(
         _ picker: UIImagePickerController,
-        didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
             
             picker.dismiss(animated: true) { [weak self] in
                 guard let self = self else { return }
@@ -416,9 +401,9 @@ open class SBUCreateOpenChannelViewController: SBUBaseViewController, SBUActionS
             let itemProvider = $0.itemProvider
             // image
             if itemProvider.hasItemConformingToTypeIdentifier(UTType.image.identifier) {
-                itemProvider.loadItem(forTypeIdentifier: UTType.image.identifier, options: [:]) { url, error in
+                itemProvider.loadItem(forTypeIdentifier: UTType.image.identifier, options: [:]) { _, _ in
                     if itemProvider.canLoadObject(ofClass: UIImage.self) {
-                        itemProvider.loadObject(ofClass: UIImage.self) { [weak self] imageItem, error in
+                        itemProvider.loadObject(ofClass: UIImage.self) { [weak self] imageItem, _ in
                             guard let self = self else { return }
                             guard let originalImage = imageItem as? UIImage else { return }
                             self.profileInputComponent?.updateChannelImage(originalImage)

@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 /// Event methods for the views updates and performing actions from the media component in the open channel.
 public protocol SBUOpenChannelModuleMediaDelegate: AnyObject {
     /// Called when `mediaView` was tapped.
@@ -30,7 +29,7 @@ extension SBUOpenChannelModule {
         public var mediaView: UIView = UIView()
         
         /// The object that is used as the theme of the media component. The theme must adopt the `SBUChannelTheme` class.
-        public var theme: SBUChannelTheme? = nil
+        public var theme: SBUChannelTheme?
         
         /// The object that acts as the delegate of the media component. The delegate must adopt the `SBUOpenChannelModuleMediaDelegate`.
         public weak var delegate: SBUOpenChannelModuleMediaDelegate?

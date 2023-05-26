@@ -40,12 +40,10 @@ public protocol SBUGroupChannelListViewModelDelegate: SBUBaseChannelListViewMode
     )
 }
 
-
 open class SBUGroupChannelListViewModel: SBUBaseChannelListViewModel {
     // MARK: - Constants
     static let channelLoadLimit: UInt = 20
     static let notificationChannelLoadLimit: UInt = 100
-    
     
     // MARK: - Property (Public)
     public var channelList: [GroupChannel] { self.channelCollection?.channelList ?? [] }
@@ -57,14 +55,12 @@ open class SBUGroupChannelListViewModel: SBUBaseChannelListViewModel {
     /// - Since: 1.0.11
     public private(set) var channelListQuery: GroupChannelListQuery?
     
-    
     // MARK: - Property (private)
     weak var delegate: SBUGroupChannelListViewModelDelegate? {
         get { self.baseDelegate as? SBUGroupChannelListViewModelDelegate }
         set { self.baseDelegate = newValue }
     }
     private var customizedChannelListQuery: GroupChannelListQuery?
-    
     
     // MARK: - Life Cycle
     
@@ -113,7 +109,6 @@ open class SBUGroupChannelListViewModel: SBUBaseChannelListViewModel {
         }
         self.channelCollection?.delegate = self
     }
-
     
     // MARK: - List handling
     
@@ -171,7 +166,6 @@ open class SBUGroupChannelListViewModel: SBUBaseChannelListViewModel {
         self.channelCollection?.dispose()
         self.channelCollection = nil
     }
-    
     
     // MARK: - SDK Relations
     
@@ -233,7 +227,6 @@ open class SBUGroupChannelListViewModel: SBUBaseChannelListViewModel {
         }
     }
     
-    
     // MARK: - Common
     
     /// This is used to check the loading status and control loading indicator.
@@ -246,7 +239,6 @@ open class SBUGroupChannelListViewModel: SBUBaseChannelListViewModel {
         self.delegate?.shouldUpdateLoadingState(showIndicator)
     }
 }
-
 
 // MARK: - GroupChannelCollectionDelegate
 extension SBUGroupChannelListViewModel: GroupChannelCollectionDelegate {
@@ -281,7 +273,6 @@ extension SBUGroupChannelListViewModel: GroupChannelCollectionDelegate {
         )
     }
     
-    
     open func channelCollection(_ collection: GroupChannelCollection,
                                 context: ChannelContext,
                                 updatedChannels channels: [GroupChannel]) {
@@ -298,11 +289,8 @@ extension SBUGroupChannelListViewModel: GroupChannelCollectionDelegate {
     }
 }
 
-
-
-
 // MARK: - ChannelDelegate : Please do not use it.
-extension SBUGroupChannelListViewModel: BaseChannelDelegate {
+extension SBUGroupChannelListViewModel: GroupChannelDelegate {
     open func channel(_ channel: GroupChannel, userDidJoin user: User) {}
     open func channel(_ channel: GroupChannel, userDidLeave user: User) {}
     open func channelWasChanged(_ channel: BaseChannel) {}

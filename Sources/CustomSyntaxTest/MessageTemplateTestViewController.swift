@@ -61,7 +61,6 @@ public class MessageTemplateTestViewController: SBUBaseViewController {
     
     public override func setupLayouts() {
         super.setupLayouts()
-
         
         // Must implement belows
         
@@ -70,7 +69,6 @@ public class MessageTemplateTestViewController: SBUBaseViewController {
             trailingAnchor: self.view.safeAreaLayoutGuide.trailingAnchor, trailing: -20
         )
         
-        
         self.baseView.sbu_constraint(equalTo: self.view, centerX: 0, centerY: 0)
         
         if let renderedView = self.renderedView {
@@ -78,7 +76,6 @@ public class MessageTemplateTestViewController: SBUBaseViewController {
 //            renderedView.sbu_constraint_greater(bottomAnchor: self.baseView.bottomAnchor, bottom: 0)
         }
     }
-    
 
     /*
     // MARK: - Navigation

@@ -45,7 +45,7 @@ extension SBUCacheManager {
                 return nil
             }
             
-            let task = URLSession(configuration: .default).dataTask(with: url) { data, response, error in
+            let task = URLSession(configuration: .default).dataTask(with: url) { data, _, error in
                 guard let data = data, error == nil else {
                     DispatchQueue.main.async {
                         completionHandler?(nil, nil)

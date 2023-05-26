@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 /// Event methods for the views updates and performing actions from the list component in a feed notification channel.
 protocol SBUFeedNotificationChannelModuleListDelegate: SBUCommonDelegate {
     /// Called when there’s a tap gesture on a notification that includes a web URL. e.g., `"https://www.sendbird.com"`
@@ -183,14 +182,12 @@ extension SBUFeedNotificationChannelModule {
             ) ?? []
         }
         
-        
         // MARK: - Logic properties (Private)
         private var lastSeenAt: Int64 {
             self.dataSource?.feedNotificationChannelModule(self, lastSeenForTableView: self.tableView) ?? 0
         }
         
         var isTableViewReloading = false
-        
         
         /// Configures component with parameters.
         /// - Parameters:
@@ -289,7 +286,6 @@ extension SBUFeedNotificationChannelModule {
             (self.emptyView as? SBUEmptyView)?.setupStyles()
         }
         
-        
         // MARK: - Actions
         
         /// Sets gestures in notification cell.
@@ -320,7 +316,6 @@ extension SBUFeedNotificationChannelModule {
         ) {
             // .. Implement long tap gesture here
         }
-        
         
         // MARK: - Notification cell
         
@@ -538,11 +533,10 @@ extension SBUFeedNotificationChannelModule.List: SBUNotificationCellDelegate {
     }
 }
 
-
 // MARK: - UITableViewCell
 extension SBUFeedNotificationChannelModule.List {
     var isScrollNearByBottom: Bool {
-        return tableView.contentOffset.y < 10
+        tableView.contentOffset.y < 10
     }
     
     /// To keep track of which scrolls tableview.

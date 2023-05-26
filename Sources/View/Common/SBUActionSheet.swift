@@ -1,4 +1,3 @@
-
 //
 //  SBUActionSheet.swift
 //  SendbirdUIKit
@@ -72,7 +71,6 @@ public class SBUActionSheetItem: SBUCommonItem {
     }
 }
 
-
 public class SBUActionSheet: NSObject {
     @SBUThemeWrapper(theme: SBUTheme.componentTheme)
     var theme: SBUComponentTheme
@@ -85,11 +83,11 @@ public class SBUActionSheet: NSObject {
     private var dismissHandler: (() -> Void)?
     
     private var safeAreaInset: UIEdgeInsets {
-        return self.window?.safeAreaInsets ?? .zero
+        self.window?.safeAreaInsets ?? .zero
     }
     
     var identifier: Int = -1
-    var window: UIWindow? = nil
+    var window: UIWindow?
     var baseView = UIView()
     var backgroundView = UIButton()
     
@@ -103,7 +101,6 @@ public class SBUActionSheet: NSObject {
     private override init() {
         super.init()
     }
-    
     
     /// This static function shows the actionSheet.
     ///
@@ -241,7 +238,7 @@ public class SBUActionSheet: NSObject {
         
         UIView.animate(withDuration: 0.1, animations: {
             self.backgroundView.alpha = 1.0
-        }) { completion in
+        }) { _ in
             UIView.animate(withDuration: 0.2, animations: {
                 self.baseView.frame = baseFrame
             })
@@ -259,7 +256,6 @@ public class SBUActionSheet: NSObject {
         
         self.backgroundView.removeFromSuperview()
         self.baseView.removeFromSuperview()
-        
         
         NotificationCenter.default.removeObserver(
             self,
@@ -280,7 +276,7 @@ public class SBUActionSheet: NSObject {
                            isTop: Bool,
                            isBottom: Bool) -> UIButton {
         
-        let width:CGFloat = (self.window?.bounds.width ?? self.baseView.frame.width)
+        let width: CGFloat = (self.window?.bounds.width ?? self.baseView.frame.width)
         let itemWidth: CGFloat = width - (self.sideMargin * 2) - (self.safeAreaInset.left + self.safeAreaInset.right)
         let itemButton = UIButton(
             frame: CGRect(
@@ -361,7 +357,7 @@ public class SBUActionSheet: NSObject {
     }
     
     private func makeCancelItem(item: SBUActionSheetItem) -> UIButton {
-        let width:CGFloat = (self.window?.bounds.width ?? self.baseView.frame.width)
+        let width: CGFloat = (self.window?.bounds.width ?? self.baseView.frame.width)
         let itemWidth: CGFloat = width - (self.sideMargin * 2) - (self.safeAreaInset.left + self.safeAreaInset.right)
         let itemButton = UIButton(
             frame: CGRect(
@@ -420,8 +416,8 @@ public class SBUActionSheet: NSObject {
     func orientationChanged(_ notification: NSNotification) {
         let currentOrientation = UIDevice.current.orientation
         
-        if (prevOrientation.isPortrait && currentOrientation.isLandscape ||
-            prevOrientation.isLandscape && currentOrientation.isPortrait) {
+        if prevOrientation.isPortrait && currentOrientation.isLandscape ||
+            prevOrientation.isLandscape && currentOrientation.isPortrait {
             dismiss()
         }
 

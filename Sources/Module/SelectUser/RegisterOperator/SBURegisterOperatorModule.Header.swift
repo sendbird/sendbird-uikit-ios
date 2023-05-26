@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 public protocol SBURegisterOperatorModuleHeaderDelegate: SBUBaseSelectUserModuleHeaderDelegate {
     /// Called when `titleView` value has been updated.
     /// - Parameters:
@@ -42,9 +41,7 @@ public protocol SBURegisterOperatorModuleHeaderDelegate: SBUBaseSelectUserModule
     func registerOperatorModule(_ headerComponent: SBURegisterOperatorModule.Header, didTapRightItem rightItem: UIBarButtonItem)
 }
 
-
 public protocol SBURegisterOperatorModuleHeaderDataSource: SBUBaseSelectUserModuleHeaderDataSource { }
-
 
 extension SBURegisterOperatorModule {
     
@@ -67,7 +64,7 @@ extension SBURegisterOperatorModule {
                 target: self,
                 action: #selector(onTapLeftBarButton)
             )
-            leftItem.setTitleTextAttributes([.font : SBUFontSet.button2], for: .normal)
+            leftItem.setTitleTextAttributes([.font: SBUFontSet.button2], for: .normal)
             return leftItem
         }
         
@@ -78,10 +75,9 @@ extension SBURegisterOperatorModule {
                 target: self,
                 action: #selector(onTapRightBarButton)
             )
-            rightItem.setTitleTextAttributes([.font : SBUFontSet.button2], for: .normal)
+            rightItem.setTitleTextAttributes([.font: SBUFontSet.button2], for: .normal)
             return rightItem
         }
-        
         
         // MARK: - Logic properties (Public)
         public weak var delegate: SBURegisterOperatorModuleHeaderDelegate? {
@@ -92,7 +88,6 @@ extension SBURegisterOperatorModule {
             get { self.baseDataSource as? SBURegisterOperatorModuleHeaderDataSource }
             set { self.baseDataSource = newValue }
         }
-        
         
         // MARK: - LifeCycle
         @available(*, unavailable, renamed: "SBURegisterOperatorModule.Header()")
@@ -123,14 +118,12 @@ extension SBURegisterOperatorModule {
             self.setupStyles(theme: theme)
         }
         
-        
         // MARK: - Common
         open override func updateRightBarButton() {
             super.updateRightBarButton()
             
             self.rightBarButton?.title = SBUStringSet.InviteChannel_Register(self.selectedUserList?.count ?? 0)
         }
-
         
         // MARK: - Attach update delegate on view
         public override func didUpdateTitleView() {
@@ -143,15 +136,14 @@ extension SBURegisterOperatorModule {
             self.delegate?.registerOperatorModule(self, didUpdateRightItem: self.rightBarButton)
         }
         
-        
         // MARK: - Actions
-        @objc public override func onTapLeftBarButton() {
+        public override func onTapLeftBarButton() {
             if let leftBarButton = self.leftBarButton {
                 self.delegate?.registerOperatorModule(self, didTapLeftItem: leftBarButton)
             }
         }
         
-        @objc public override func onTapRightBarButton() {
+        public override func onTapRightBarButton() {
             if let rightBarButton = self.rightBarButton {
                 self.delegate?.registerOperatorModule(self, didTapRightItem: rightBarButton)
             }

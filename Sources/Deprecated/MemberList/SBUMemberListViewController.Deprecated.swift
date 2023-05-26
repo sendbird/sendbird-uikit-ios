@@ -36,7 +36,7 @@ extension SBUUserListViewController {
     }
 
     @available(*, deprecated, message: "This property has been moved to the `SBUUserListModule.List`.", renamed: "listComponent.tableView")
-    public var tableView: UITableView? { listComponent?.tableView}
+    public var tableView: UITableView? { listComponent?.tableView }
     
     @available(*, deprecated, message: "This property has been moved to the `SBUUserListModule.List`.", renamed: "listComponent.userCell")
     public var userCell: UITableViewCell? { listComponent?.userCell }
@@ -67,7 +67,6 @@ extension SBUUserListViewController {
     
     @available(*, deprecated, renamed: "userListType")
     public var memberListType: ChannelUserListType { self.userListType }
-    
     
     @available(*, deprecated, renamed: "init(channel:userListType:)")
     public convenience init(channel: BaseChannel, type: ChannelMemberListType) {
@@ -179,14 +178,11 @@ extension SBUUserListViewController {
     @available(*, unavailable, message: "This function has been moved to the `SBUUserListViewModel`.")
     open func channel(_ sender: OpenChannel, userDidEnter user: User) { }
     
-    
-    
-    
     /** ~ v.2.2.2 */
     @available(*, deprecated, renamed: "init(channelURL:channelType:userListType:)")
     public convenience init(channelUrl: String, type: ChannelMemberListType = .members) {
         let type = ChannelUserListType(rawValue: type.rawValue) ?? .members
-        self.init(channelURL:channelUrl, channelType: .group, userListType: type)
+        self.init(channelURL: channelUrl, channelType: .group, userListType: type)
     }
     
     @available(*, deprecated, renamed: "init(channelURL:channelType:users:userListType:)")
@@ -201,7 +197,7 @@ extension SBUUserListViewController {
     public func reloadMemberList() { viewModel?.resetUserList() }
     
     @available(*, unavailable, renamed: "errorHandler(_:_:)")
-    open func didReceiveError(_ message: String?, _ code: NSInteger? = nil) {
+    public func didReceiveError(_ message: String?, _ code: NSInteger? = nil) {
         self.errorHandler(message, code)
     }
 }

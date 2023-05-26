@@ -13,4 +13,3 @@ import UIKit
 /// The class that represents the base of channel setting module.
 open class SBUBaseChannelSettingsModule {
 }
-

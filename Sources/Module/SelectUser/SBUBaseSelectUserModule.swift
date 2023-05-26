@@ -13,4 +13,3 @@ import UIKit
 /// The class that represents the user selection module
 open class SBUBaseSelectUserModule {
 }
-

@@ -16,7 +16,6 @@ public typealias SBUFileViewer = SBUFileViewController
 @available(*, deprecated, renamed: "SBUFileViewControllerDelegate")
 public typealias SBUFileViewerDelegate = SBUFileViewControllerDelegate
 
-
 public protocol SBUFileViewControllerDelegate: AnyObject {
     func didSelectDeleteImage(message: FileMessage)
 }
@@ -30,12 +29,12 @@ public protocol SBUFileViewControllerDelegate: AnyObject {
 open class SBUFileViewController: SBUBaseViewController, UIScrollViewDelegate, SBUAlertViewDelegate {
     
     // MARK: - Public property
-    public var leftBarButton: UIBarButtonItem? = nil {
+    public var leftBarButton: UIBarButtonItem? {
         didSet {
             self.navigationItem.leftBarButtonItem = self.leftBarButton
         }
     }
-    public var rightBarButton: UIBarButtonItem? = nil {
+    public var rightBarButton: UIBarButtonItem? {
         didSet {
             self.navigationItem.rightBarButtonItem = self.rightBarButton
         }
@@ -49,7 +48,6 @@ open class SBUFileViewController: SBUBaseViewController, UIScrollViewDelegate, S
     public lazy var scrollView: UIScrollView = UIScrollView(frame: view.bounds)
     
     public var bottomView: UIView = BottomView()
-    
     
     // MARK: - Private property
     private lazy var closeButton: UIBarButtonItem = {
@@ -83,7 +81,6 @@ open class SBUFileViewController: SBUBaseViewController, UIScrollViewDelegate, S
     private var urlString: String?
     private weak var delegate: SBUFileViewControllerDelegate?
     private var fileMessage: FileMessage?
-  
     
     // MARK: - Lifecycle
     required public init(fileMessage: FileMessage, delegate: SBUFileViewControllerDelegate?) {
@@ -172,7 +169,6 @@ open class SBUFileViewController: SBUBaseViewController, UIScrollViewDelegate, S
     open override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
     }
-    
     
     // MARK: - Sendbird UIKit Life cycle
     open override func setupViews() {
@@ -267,7 +263,7 @@ open class SBUFileViewController: SBUBaseViewController, UIScrollViewDelegate, S
     }
     
     @objc
-    open func onClickImage(sender : UITapGestureRecognizer) {
+    open func onClickImage(sender: UITapGestureRecognizer) {
 
         self.showBar(self.bottomView.isHidden)
     }

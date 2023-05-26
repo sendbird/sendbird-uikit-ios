@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 public class SBUUser: NSObject {
     public private(set) var userId: String
     public private(set) var nickname: String?
@@ -27,7 +26,6 @@ public class SBUUser: NSObject {
     /// This is a muted state property.
     /// - Since: 1.2.0
     public internal(set) var isMuted: Bool = false
-    
     
     // MARK: - User
     /// This function initializes using the userId, nickname, and profileURL.
@@ -63,7 +61,6 @@ public class SBUUser: NSObject {
         self.isMuted = isMuted
     }
     
-    
     // MARK: - Member
     /// This function initializes using the member object.
     /// - Parameter member: `Member` obejct
@@ -89,7 +86,6 @@ public class SBUUser: NSObject {
         self.user = sender
     }
     
-    
     // MARK: - Common
     /// This method returns the default value if there is no alias value.
     /// - since: 1.0.1
@@ -111,7 +107,7 @@ public class SBUUser: NSObject {
     }
     
     public override var description: String {
-        return String(
+        String(
             format: "UserId:%@, Nickname:%@, ProfileURL:%@, Operator:%d Muted:%d",
             self.userId,
             self.nickname ?? "",

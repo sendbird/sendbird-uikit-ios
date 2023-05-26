@@ -25,10 +25,8 @@ open class SBUBaseChannelListViewController: SBUBaseViewController {
     public var baseHeaderComponent: SBUBaseChannelListModule.Header?
     public var baseListComponent: SBUBaseChannelListModule.List?
     
-    
     // MARK: - Logic properties (Public)
     public var baseViewModel: SBUBaseChannelListViewModel?
-    
     
     // MARK: - Life cycle
     deinit {
@@ -37,7 +35,6 @@ open class SBUBaseChannelListViewController: SBUBaseViewController {
         self.baseHeaderComponent = nil
         self.baseListComponent = nil
     }
-    
     
     // MARK: - Sendbird UIKit Life cycle
     open override func setupViews() {

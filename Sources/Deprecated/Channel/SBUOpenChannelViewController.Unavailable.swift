@@ -16,22 +16,18 @@ extension SBUOpenChannelViewController {
                                          userMessage: UserMessage,
                                          indexPath: IndexPath) { }
     
-    
     @available(*, unavailable, message: "This function has been moved to `SBUOpenChannelModule.List` and replaced to `setMessageCellGestures(_:)`.")
     open func setFileMessageCellGestures(_ cell: SBUOpenChannelFileMessageCell,
                                          fileMessage: FileMessage,
                                          indexPath: IndexPath) { }
-    
     
     @available(*, unavailable, message: "This function has been moved to `SBUOpenChannelModule.List` and replaced to `setMessageCellGestures(_:)`.")
     open func setUnkownMessageCellGestures(_ cell: SBUOpenChannelUnknownMessageCell,
                                            unknownMessage: BaseMessage,
                                            indexPath: IndexPath) { }
     
-    
     @available(*, unavailable, renamed: "updateMessageListRatio(to:)")
     public func updateRatio(mediaView: CGFloat?, messageList: CGFloat?) { }
-    
     
     @available(*, unavailable, message: "This function has been moved to `SBUBaseChannelModuleHeaderDelegate` and replaced to `channelModule(_:didTapRightItem:)`.")
     open func didSelectChannelInfo() { }

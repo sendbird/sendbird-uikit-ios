@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 open class SBUOpenChannelCell: SBUBaseChannelCell {
     
     // MARK: - property
@@ -45,7 +44,6 @@ open class SBUOpenChannelCell: SBUBaseChannelCell {
     
     @SBUThemeWrapper(theme: SBUTheme.openChannelCellTheme)
     public var theme: SBUOpenChannelCellTheme
-
     
     // MARK: - View Lifecycle
     open override func awakeFromNib() {

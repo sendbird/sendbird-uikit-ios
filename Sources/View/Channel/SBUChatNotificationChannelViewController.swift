@@ -14,13 +14,11 @@ import SafariServices
 
 /// - Since: 3.5.0
 @objcMembers
-open class SBUChatNotificationChannelViewController:
-    SBUBaseViewController,
+open class SBUChatNotificationChannelViewController: SBUBaseViewController,
     SBUChatNotificationChannelViewModelDelegate, SBUChatNotificationChannelViewModelDataSource,
     SBUChatNotificationChannelModuleListDelegate, SBUChatNotificationChannelModuleListDataSource,
     SBUChatNotificationChannelModuleHeaderDelegate,
     SBUCommonViewModelDelegate {
-
     
     // MARK: - Module components (Public)
     public var headerComponent: SBUChatNotificationChannelModule.Header?
@@ -44,7 +42,6 @@ open class SBUChatNotificationChannelViewController:
         self.theme.header.statusBarStyle
     }
     
-    
     // MARK: - View model (Public)
     var viewModel: SBUChatNotificationChannelViewModel?
     
@@ -55,18 +52,15 @@ open class SBUChatNotificationChannelViewController:
     public var channel: GroupChannel? {
         self.viewModel?.channel as? GroupChannel
     }
-    
 
     // MARK: - Logic properties (Public)
     public private(set) var newNotificationsCount: Int = 0
-    
     
     // MARK: - Logic properties (Private)
     var scrollToInitialPositionHandler: (() -> Void)?
     var lastSeenIndexPath: IndexPath?
     
-    var createViewModelHandler: (() -> Void)? = nil
-    
+    var createViewModelHandler: (() -> Void)?
     
     // MARK: - Lifecycle
     @available(*, unavailable)
@@ -85,7 +79,8 @@ open class SBUChatNotificationChannelViewController:
         
         SBULog.info(#function)
         
-        self.createViewModelHandler = {
+        self.createViewModelHandler = { [weak self] in
+            guard let self = self else { return }
             self.createViewModel(
                 channel: channel,
                 notificationListParams: notificationListParams,
@@ -109,7 +104,8 @@ open class SBUChatNotificationChannelViewController:
         
         SBULog.info(#function)
         
-        self.createViewModelHandler = {
+        self.createViewModelHandler = { [weak self] in
+            guard let self = self else { return }
             self.createViewModel(
                 channelURL: channelURL,
                 notificationListParams: notificationListParams,
@@ -169,7 +165,6 @@ open class SBUChatNotificationChannelViewController:
         self.listComponent = nil
     }
     
-    
     // MARK: - Channel
     /// This function reloads channel information and notification list.
     /// - Parameter channelURL: ChannelURL String (Default: ChannelURL currently in use)
@@ -194,7 +189,6 @@ open class SBUChatNotificationChannelViewController:
         SBULog.info("Unread message count: \(unreadMessageCount)")
     }
     
-    
     // MARK: - Header
     
     /// Updates channelTitle with channel and channelName
@@ -209,7 +203,6 @@ open class SBUChatNotificationChannelViewController:
         
         self.headerComponent?.updateStyles()
     }
-    
     
     // MARK: - Action handling
     /// Called when there’s a tap gesture on a notification that includes a web URL. e.g., `"https://www.sendbird.com"`
@@ -246,7 +239,6 @@ open class SBUChatNotificationChannelViewController:
         }
     }
     
-    
     // MARK: - ViewModel
     func createViewModel(
         channel: GroupChannel? = nil,
@@ -271,7 +263,6 @@ open class SBUChatNotificationChannelViewController:
             displaysLocalCachedListFirst: displaysLocalCachedListFirst
         )
     }
-    
     
     // MARK: - Sendbird UIKit Life cycle
     open override func setupViews() {
@@ -339,7 +330,6 @@ open class SBUChatNotificationChannelViewController:
         self.listComponent?.reloadTableView()
     }
     
-    
     // MARK: - Error handling
     func errorHandler(_ error: SBError) {
         self.errorHandler(error.localizedDescription, error.code)
@@ -353,7 +343,6 @@ open class SBUChatNotificationChannelViewController:
     open override func errorHandler(_ message: String?, _ code: NSInteger? = nil) {
         SBULog.error("Did receive error: \(message ?? "")")
     }
-
     
     // MARK: - TableView
     
@@ -365,7 +354,6 @@ open class SBUChatNotificationChannelViewController:
         
         newNotificationInfoView.isHidden = hidden && !viewModel.hasNext
     }
-    
 
     // MARK: - New notification count
     @discardableResult
@@ -397,7 +385,6 @@ open class SBUChatNotificationChannelViewController:
 
         return true
     }
-    
     
     // MARK: - SBUChatNotificationChannelViewModelDelegate
     func chatNotificationChannelViewModel(
@@ -510,7 +497,6 @@ open class SBUChatNotificationChannelViewController:
         }
     }
     
-    
     // MARK: - SBUChatNotificationChannelViewModelDataSource
     func chatNotificationChannelViewModel(
         _ viewModel: SBUChatNotificationChannelViewModel,
@@ -525,7 +511,6 @@ open class SBUChatNotificationChannelViewController:
     ) -> Bool {
         self.listComponent?.isScrollNearByBottom ?? true
     }
-    
     
     // MARK: - SBUChatNotificationChannelModuleHeaderDelegate
     func chatNotificationChannelModule(
@@ -569,7 +554,6 @@ open class SBUChatNotificationChannelViewController:
     ) {
         // Nothing
     }
-    
     
     // MARK: - SBUChatNotificationChannelModuleListDelegate
     func chatNotificationChannelModule(
@@ -656,7 +640,6 @@ open class SBUChatNotificationChannelViewController:
         }
     }
     
-    
     // MARK: - SBUChatNotificationChannelModuleListDataSource
     func chatNotificationChannelModule(
         _ listComponent: SBUChatNotificationChannelModule.List,
@@ -692,7 +675,6 @@ open class SBUChatNotificationChannelViewController:
     ) -> Int64? {
         self.viewModel?.startingPoint
     }
-    
     
     // MARK: - SBUCommonViewModelDelegate
     open func shouldUpdateLoadingState(_ isLoading: Bool) {

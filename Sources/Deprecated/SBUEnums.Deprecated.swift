@@ -17,7 +17,6 @@ import UIKit
     case reaction
 }
 
-
 @available(*, deprecated, renamed: "ChannelUserListType") // 3.0.0
 @objc public enum ChannelMemberListType: Int {
     case none
@@ -26,7 +25,6 @@ import UIKit
     case muted
     case banned
     case participants
-    
     
     @available(*, unavailable, renamed: "members") // 3.0.0
     case channelMembers

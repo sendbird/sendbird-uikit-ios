@@ -8,7 +8,6 @@
 
 import UIKit
 
-
 public class SBUNavigationTitleView: SBUView {
     @SBUThemeWrapper(theme: SBUTheme.componentTheme)
     var theme: SBUComponentTheme

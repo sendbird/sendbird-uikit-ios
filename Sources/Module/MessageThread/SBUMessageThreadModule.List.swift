@@ -10,7 +10,6 @@ import UIKit
 import SendbirdChatSDK
 import AVFAudio
 
-
 /// Event methods for the views updates and performing actions from the list component in a message thread.
 public protocol SBUMessageThreadModuleListDelegate: SBUBaseChannelModuleListDelegate {
     
@@ -37,10 +36,8 @@ public protocol SBUMessageThreadModuleListDelegate: SBUBaseChannelModuleListDele
     func messageThreadModule(_ listComponent: SBUMessageThreadModule.List, didTapMentionUser user: SBUUser)
 }
 
-
 /// Methods to get data source for list component in a message thread.
 public protocol SBUMessageThreadModuleListDataSource: SBUBaseChannelModuleListDataSource { }
-
 
 extension SBUMessageThreadModule {
     /// A module component that represent the list of `SBUMessageThreadModule`.
@@ -70,7 +67,6 @@ extension SBUMessageThreadModule {
         /// The custom message cell for some `BaseMessage`. Use `register(customMessageCell:nib:)` to update.
         public private(set) var customMessageCell: SBUBaseMessageCell?
         
-        
         // MARK: - Logic properties (Public)
         /// The object that acts as the delegate of the list component. The delegate must adopt the `SBUMessageThreadModuleListDelegate`.
         public weak var delegate: SBUMessageThreadModuleListDelegate? {
@@ -92,12 +88,10 @@ extension SBUMessageThreadModule {
         public var parentMessage: BaseMessage?
         
         var voicePlayer: SBUVoicePlayer?
-        var voiceFileInfos: [String : SBUVoiceFileInfo] = [:]
-        var currentVoiceFileInfo: SBUVoiceFileInfo? = nil
-        var currentVoiceContentView: SBUVoiceContentView? = nil
-        var currentVoiceContentIndexPath: IndexPath? = nil
-
-
+        var voiceFileInfos: [String: SBUVoiceFileInfo] = [:]
+        var currentVoiceFileInfo: SBUVoiceFileInfo?
+        var currentVoiceContentView: SBUVoiceContentView?
+        var currentVoiceContentIndexPath: IndexPath?
         
         // MARK: - LifeCycle
         required public init?(coder: NSCoder) { super.init(coder: coder) }
@@ -115,8 +109,7 @@ extension SBUMessageThreadModule {
             delegate: SBUMessageThreadModuleListDelegate,
             dataSource: SBUMessageThreadModuleListDataSource,
             theme: SBUChannelTheme,
-            voiceFileInfos: [String : SBUVoiceFileInfo]? = nil)
-        {
+            voiceFileInfos: [String: SBUVoiceFileInfo]? = nil) {
             self.delegate = delegate
             self.dataSource = dataSource
             self.theme = theme
@@ -131,7 +124,6 @@ extension SBUMessageThreadModule {
             self.setupStyles()
         }
         
-        
         // MARK: - LifeCycle
         
         open override func setupViews() {
@@ -141,7 +133,7 @@ extension SBUMessageThreadModule {
             
             self.tableView.tableFooterView =
             UIView(frame: CGRect(origin: .zero,
-                                 size: CGSize(width:CGFloat.leastNormalMagnitude,
+                                 size: CGSize(width: CGFloat.leastNormalMagnitude,
                                               height: CGFloat.leastNormalMagnitude)))
             
             self.emptyView?.transform = CGAffineTransform(scaleX: 1, y: 1)
@@ -206,7 +198,6 @@ extension SBUMessageThreadModule {
             (self.emptyView as? SBUEmptyView)?.setupStyles()
         }
         
-        
         // MARK: - Parent info view
         public func updateParentInfoView() {
             self.updateParentInfoView(parentMessage: self.parentMessage)
@@ -219,7 +210,7 @@ extension SBUMessageThreadModule {
             
             let useReaction = SBUEmojiManager.useReaction(channel: self.channel)
             
-            var voiceFileInfo: SBUVoiceFileInfo? = nil
+            var voiceFileInfo: SBUVoiceFileInfo?
             if let requestId = parentMessage?.requestId {
                 voiceFileInfo = self.voiceFileInfos[requestId]
             }
@@ -282,10 +273,6 @@ extension SBUMessageThreadModule {
             }
         }
         
-        
-        
-        
-        
         // MARK: - EmptyView
         
         // MARK: - Menu
@@ -319,8 +306,7 @@ extension SBUMessageThreadModule {
         open override func showMessageContextMenu(for message: BaseMessage, cell: UITableViewCell, forRowAt indexPath: IndexPath) {
             let messageMenuItems = self.createMessageMenuItems(for: message)
             guard !messageMenuItems.isEmpty,
-                  let cell = cell as? SBUBaseMessageCell else
-            {
+                  let cell = cell as? SBUBaseMessageCell else {
                 cell.isSelected = false
                 return
             }
@@ -375,7 +361,6 @@ extension SBUMessageThreadModule {
                 self.delegate?.messageThreadModule(self, didTapMentionUser: user)
             }
         }
-        
         
         // MARK: - TableView
                 
@@ -588,7 +573,6 @@ extension SBUMessageThreadModule {
             UIView.setAnimationsEnabled(true)
         }
         
-        
         // MARK: - UITableViewDelegate, UITableViewDataSource
         open override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
             return self.parentMessageInfoView
@@ -600,7 +584,7 @@ extension SBUMessageThreadModule {
             let height = headerView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
             var headerFrame = headerView.frame
             
-            //Comparison necessary to avoid infinite loop
+            // Comparison necessary to avoid infinite loop
             if height != headerFrame.size.height {
                 headerFrame.size.height = height
                 headerView.frame = headerFrame
@@ -663,12 +647,10 @@ extension SBUMessageThreadModule {
             }
         }
         
-        
         // MARK: - Scroll View
         open override func scrollViewDidScroll(_ scrollView: UIScrollView) {
             super.scrollViewDidScroll(scrollView)
         }
-        
         
         // MARK: - SBUParentMessageInfoViewDelegate
         open func parentMessageInfoViewBoundsDidChanged(_ view: SBUParentMessageInfoView) {
@@ -688,19 +670,18 @@ extension SBUMessageThreadModule {
 // MARK: - Scroll related
 extension SBUMessageThreadModule.List {
     public override var isScrollNearByBottom: Bool {
-        return (tableView.contentOffset.y + (tableView.visibleCells.last?.frame.height ?? 0)) >= (tableView.contentSize.height - tableView.frame.size.height) - 20
+        (tableView.contentOffset.y + (tableView.visibleCells.last?.frame.height ?? 0)) >= (tableView.contentSize.height - tableView.frame.size.height) - 20
     }
     
     /// To keep track of which scrolls tableview.
     override func scrollTableView(
         to row: Int,
         at position: UITableView.ScrollPosition = .top,
-        animated: Bool = false)
-    {
+        animated: Bool = false) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             if self.tableView.numberOfRows(inSection: 0) <= row ||
-                row < 0{
+                row < 0 {
                 return
             }
             
@@ -770,7 +751,6 @@ extension SBUMessageThreadModule.List {
     }
 }
 
-
 // MARK: - Voice message
 extension SBUMessageThreadModule.List {
     func pauseVoicePlayer() {
@@ -780,8 +760,7 @@ extension SBUMessageThreadModule.List {
     
     func pauseVoicePlayer(requestId: String) {
         if let voiceFileInfo = self.voiceFileInfos[requestId],
-           voiceFileInfo.isPlaying == true
-        {
+           voiceFileInfo.isPlaying == true {
             voiceFileInfo.isPlaying = false
             self.voicePlayer?.pause()
         }
@@ -818,12 +797,12 @@ extension SBUMessageThreadModule.List {
             urlString: fileMessage.url,
             cacheKey: fileMessage.requestId,
             fileName: fileMessage.name
-        ) { [weak self] filePath, fileData in
+        ) { [weak self] filePath, _ in
             if voiceContentView.status == .loading || voiceContentView.status == .none {
                 voiceContentView.updateVoiceContentStatus(.prepared)
             }
             
-            var voicefileInfo: SBUVoiceFileInfo? = nil
+            var voicefileInfo: SBUVoiceFileInfo?
             if self?.voiceFileInfos[fileMessage.requestId] == nil {
                 var playtime: Double = 0
                 let metaArrays = message.metaArrays(keys: [SBUConstant.voiceMessageDurationKey])
@@ -900,12 +879,12 @@ extension SBUMessageThreadModule.List {
             urlString: fileMessage.url,
             cacheKey: fileMessage.requestId,
             fileName: fileMessage.name
-        ) { [weak self] filePath, fileData in
+        ) { [weak self] filePath, _ in
             if voiceContentView.status == .loading || voiceContentView.status == .none {
                 voiceContentView.updateVoiceContentStatus(.prepared)
             }
             
-            var voicefileInfo: SBUVoiceFileInfo? = nil
+            var voicefileInfo: SBUVoiceFileInfo?
             if self?.voiceFileInfos[fileMessage.requestId] == nil {
                 var playtime: Double = 0
                 let metaArrays = fileMessage.metaArrays(keys: [SBUConstant.voiceMessageDurationKey])
@@ -981,7 +960,7 @@ extension SBUMessageThreadModule.List {
         let currentPlayTime = self.currentVoiceFileInfo?.currentPlayTime ?? 0
         self.currentVoiceFileInfo?.isPlaying = true
         
-        var voiceContentView: SBUVoiceContentView? = nil
+        var voiceContentView: SBUVoiceContentView?
         if let indexPath = self.currentVoiceContentIndexPath,
            let cell = self.tableView.cellForRow(at: indexPath) as? SBUFileMessageCell {
             voiceContentView = cell.baseFileContentView as? SBUVoiceContentView
@@ -996,7 +975,7 @@ extension SBUMessageThreadModule.List {
         let currentPlayTime = self.currentVoiceFileInfo?.currentPlayTime ?? 0
         self.currentVoiceFileInfo?.isPlaying = false
         
-        var voiceContentView: SBUVoiceContentView? = nil
+        var voiceContentView: SBUVoiceContentView?
         if let indexPath = self.currentVoiceContentIndexPath,
            let cell = self.tableView.cellForRow(at: indexPath) as? SBUFileMessageCell {
             voiceContentView = cell.baseFileContentView as? SBUVoiceContentView
@@ -1011,7 +990,7 @@ extension SBUMessageThreadModule.List {
         let time = self.currentVoiceFileInfo?.playtime ?? 0
         self.currentVoiceFileInfo?.isPlaying = false
         
-        var voiceContentView: SBUVoiceContentView? = nil
+        var voiceContentView: SBUVoiceContentView?
         if let indexPath = self.currentVoiceContentIndexPath,
            let cell = self.tableView.cellForRow(at: indexPath) as? SBUFileMessageCell {
             voiceContentView = cell.baseFileContentView as? SBUVoiceContentView
@@ -1028,7 +1007,7 @@ extension SBUMessageThreadModule.List {
         self.currentVoiceFileInfo?.currentPlayTime = time
         self.currentVoiceFileInfo?.isPlaying = true
         
-        var voiceContentView: SBUVoiceContentView? = nil
+        var voiceContentView: SBUVoiceContentView?
         if let indexPath = self.currentVoiceContentIndexPath,
            let cell = self.tableView.cellForRow(at: indexPath) as? SBUFileMessageCell {
             voiceContentView = cell.baseFileContentView as? SBUVoiceContentView

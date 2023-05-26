@@ -27,8 +27,6 @@ public protocol SBUBaseChannelSettingsViewModelDelegate: SBUCommonViewModelDeleg
     )
 }
 
-
-
 open class SBUBaseChannelSettingsViewModel: NSObject {
     
     // MARK: - Logic properties (Public)
@@ -45,10 +43,8 @@ open class SBUBaseChannelSettingsViewModel: NSObject {
         return false
     }
     
-    
     // MARK: - Logic properties (Private)
     weak var baseDelegate: SBUBaseChannelSettingsViewModelDelegate?
-    
     
     // MARK: - LifeCycle
     public override init() {
@@ -58,7 +54,6 @@ open class SBUBaseChannelSettingsViewModel: NSObject {
     deinit {
         self.baseDelegate = nil
     }
-    
     
     // MARK: - Channel related
     
@@ -73,7 +68,7 @@ open class SBUBaseChannelSettingsViewModel: NSObject {
     public func loadChannel(channelURL: String, type: ChannelType) {
         self.baseDelegate?.shouldUpdateLoadingState(true)
         
-        SendbirdUI.connectIfNeeded { [weak self] user, error in
+        SendbirdUI.connectIfNeeded { [weak self] _, error in
             guard let self = self else { return }
             defer { self.baseDelegate?.shouldUpdateLoadingState(false) }
             
@@ -117,7 +112,6 @@ open class SBUBaseChannelSettingsViewModel: NSObject {
     ///   - coverImage: Cover image to update
     public func updateChannel(channelName: String? = nil, coverImage: UIImage? = nil) { }
 }
-
 
 // MARK: - BaseChannelDelegate
 extension SBUBaseChannelSettingsViewModel: BaseChannelDelegate {

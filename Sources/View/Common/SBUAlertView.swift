@@ -34,14 +34,13 @@ public class SBUAlertButtonItem {
     }
 }
 
-
 public class SBUAlertView: NSObject {
     static private let shared = SBUAlertView()
     
     @SBUThemeWrapper(theme: SBUTheme.componentTheme)
     var theme: SBUComponentTheme
     
-    var window: UIWindow? = nil
+    var window: UIWindow?
     var baseView = UIView()
     var backgroundView = UIButton()
     var inputField = UITextField()
@@ -196,8 +195,7 @@ public class SBUAlertView: NSObject {
         if needInputField {
              // top, text-input, input, input-button
             totalHeight += (inputAreaMargin + inputAreaMargin + inputAreaHeight + inputBottomMargin)
-        }
-        else {
+        } else {
              // top, text-button
             totalHeight += (textTopBottomMargin + textTopBottomMargin)
         }
@@ -262,8 +260,7 @@ public class SBUAlertView: NSObject {
             )
             self.baseView.addSubview(inputField)
             originY = inputField.frame.maxY + inputBottomMargin
-        }
-        else {
+        } else {
             originY += textTopBottomMargin
         }
         
@@ -317,7 +314,6 @@ public class SBUAlertView: NSObject {
         confirmButton.setBackgroundImage(UIImage.from(color: theme.highlightedColor), for: .highlighted)
         self.baseView.addSubview(confirmButton)
         
-        
         // RoundRect
         let rectShape = CAShapeLayer()
         rectShape.bounds = self.baseView.frame
@@ -358,7 +354,7 @@ public class SBUAlertView: NSObject {
         self.backgroundView.alpha = 0.0
         UIView.animate(withDuration: 0.1, animations: {
             self.backgroundView.alpha = 1.0
-        }) { completion in
+        }) { _ in
             self.baseView.frame = baseFrame
             
             if needInputField {
@@ -442,8 +438,7 @@ public class SBUAlertView: NSObject {
         if cancelItem != nil, index == 0 {
             self.cancelItem?.completionHandler?(nil)
             dismiss()
-        }
-        else {
+        } else {
             self.confirmItem?.completionHandler?(self.inputField.text)
             dismiss()
         }
@@ -454,8 +449,8 @@ public class SBUAlertView: NSObject {
     func orientationChanged(_ notification: NSNotification) {
         let currentOrientation = UIDevice.current.orientation
         
-        if (prevOrientation.isPortrait && currentOrientation.isLandscape ||
-            prevOrientation.isLandscape && currentOrientation.isPortrait) {
+        if prevOrientation.isPortrait && currentOrientation.isLandscape ||
+            prevOrientation.isLandscape && currentOrientation.isPortrait {
             dismiss()
         }
 

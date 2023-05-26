@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 open class SBUMessageSearchResultCell: SBUTableViewCell {
     
     // MARK: - Properties (View)
@@ -58,7 +57,6 @@ open class SBUMessageSearchResultCell: SBUTableViewCell {
     public private(set) lazy var createdAtLabel: UILabel = UILabel()
     public private(set) var separatorLine = UIView()
     
-    
     // MARK: - Properties
     
     @SBUThemeWrapper(theme: SBUTheme.messageSearchResultCellTheme)
@@ -66,7 +64,7 @@ open class SBUMessageSearchResultCell: SBUTableViewCell {
 
     private let coverImageSize: CGSize = CGSize(value: 56)
     private let fileIconSize: CGSize = CGSize(value: 26)
-    private var message: BaseMessage? = nil
+    private var message: BaseMessage?
     
     // MARK: - View Lifecycle
     public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -146,7 +144,6 @@ open class SBUMessageSearchResultCell: SBUTableViewCell {
             self.fileStackView.topAnchor.constraint(equalTo: self.titleLabel.bottomAnchor, constant: 6),
             self.fileStackView.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -16),
         ])
-        
         
         self.createdAtLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([

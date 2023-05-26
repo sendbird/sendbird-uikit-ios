@@ -33,7 +33,6 @@ public class SBUQuotedBaseMessageViewParams {
     /// If `true`, the message cell shows its quoted message view.
     public let useQuotedMessage: Bool
     
-    
     // MARK: Read-only properties for file message
     
     /// The file URL of the quoted message.
@@ -103,16 +102,13 @@ public class SBUQuotedBaseMessageViewParams {
 
         return type
     }
-
     
     // MARK: - Internal (only for Swift)
     let messageType: QuotedMessageType
     
     let requestId: String?
     
-    var metaArrays: [MessageMetaArray]? = nil
-    
-    
+    var metaArrays: [MessageMetaArray]?
     
     public init(message: BaseMessage, position: MessagePosition, useQuotedMessage: Bool, joinedAt: Int64 = 0) {
         self.messageId = message.parentMessageId
@@ -155,8 +151,7 @@ public class SBUQuotedBaseMessageViewParams {
         self.joinedAt = joinedAt
         
         if (message.parentMessage?.createdAt ?? 0) < (joinedAt * 1000)
-            && SBUGlobals.reply.replyType == .thread
-        {
+            && SBUGlobals.reply.replyType == .thread {
             self.text = SBUStringSet.Message_Unavailable
         } else {
             self.text = message.parentMessage?.message ?? ""

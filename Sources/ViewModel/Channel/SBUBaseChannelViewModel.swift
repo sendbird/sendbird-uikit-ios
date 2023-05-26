@@ -82,13 +82,10 @@ public protocol SBUBaseChannelViewModelDelegate: SBUCommonViewModelDelegate {
     )
 }
 
-
-
 open class SBUBaseChannelViewModel: NSObject {
     // MARK: - Constant
     let defaultFetchLimit: Int = 30
     let initPolicy: MessageCollectionInitPolicy = .cacheAndReplaceByApi
-
     
     // MARK: - Logic properties (Public)
     /// The current channel object. It's `BaseChannel` type.
@@ -99,7 +96,7 @@ open class SBUBaseChannelViewModel: NSObject {
     public internal(set) var startingPoint: Int64?
     
     /// This user message object that is being edited.
-    public internal(set) var inEditingMessage: UserMessage? = nil
+    public internal(set) var inEditingMessage: UserMessage?
     
     /// This object has a list of all success messages synchronized with the server.
     @SBUAtomic public internal(set) var messageList: [BaseMessage] = []
@@ -120,13 +117,11 @@ open class SBUBaseChannelViewModel: NSObject {
     /// Custom param set by user.
     public var customizedMessageListParams: MessageListParams?
     public internal(set) var messageListParams = MessageListParams()
-
     
     public var sendFileMessageCompletionHandler: SendbirdChatSDK.FileMessageHandler?
     public var sendUserMessageCompletionHandler: SendbirdChatSDK.UserMessageHandler?
     
     public var pendingMessageManager = SBUPendingMessageManager.shared
-    
     
     // MARK: - Logic properties (Private)
     weak var baseDataSource: SBUBaseChannelViewModelDataSource?
@@ -147,7 +142,6 @@ open class SBUBaseChannelViewModel: NSObject {
     
     var isTransformedList: Bool = true
     var isThreadMessageMode: Bool = false
-    
     
     // MARK: - LifeCycle
     public override init() {
@@ -174,20 +168,16 @@ open class SBUBaseChannelViewModel: NSObject {
         )
     }
     
-    
     // MARK: - Channel related
     
     /// This function loads channel information and message list.
     /// - Parameters:
     ///   - channelURL: channel url
     ///   - messageListParams: (Optional) The parameter to be used when getting channel information.
-    public func loadChannel(channelURL: String, messageListParams: MessageListParams? = nil, completionHandler: ((BaseChannel?, SBError?) -> Void)? = nil)
-    {}
-    
+    public func loadChannel(channelURL: String, messageListParams: MessageListParams? = nil, completionHandler: ((BaseChannel?, SBError?) -> Void)? = nil) {}
     
     /// This function refreshes channel.
     public func refreshChannel() {}
-    
     
     // MARK: - Load Messages
     
@@ -217,7 +207,6 @@ open class SBUBaseChannelViewModel: NSObject {
             initialMessages: []
         )
     }
-    
     
     // MARK: - Message
     
@@ -275,14 +264,12 @@ open class SBUBaseChannelViewModel: NSObject {
     open func sendUserMessage(messageParams: UserMessageCreateParams, parentMessage: BaseMessage? = nil) {
         SBULog.info("[Request] Send user message")
         
-        let preSendMessage = self.channel?.sendUserMessage(params: messageParams)
-        { [weak self] userMessage, error in
+        let preSendMessage = self.channel?.sendUserMessage(params: messageParams) { [weak self] userMessage, error in
             self?.sendUserMessageCompletionHandler?(userMessage, error)
         }
                
         if let preSendMessage = preSendMessage,
-           self.messageListParams.belongsTo(preSendMessage)
-        {
+           self.messageListParams.belongsTo(preSendMessage) {
             preSendMessage.parentMessage = parentMessage
             self.pendingMessageManager.upsertPendingMessage(
                 channelURL: self.channel?.channelURL,
@@ -403,7 +390,7 @@ open class SBUBaseChannelViewModel: NSObject {
         var preSendMessage: FileMessage?
         preSendMessage = channel.sendFileMessage(
             params: messageParams,
-            progressHandler: { requestId, bytesSent, totalBytesSent, totalBytesExpectedToSend in
+            progressHandler: { requestId, _, totalBytesSent, totalBytesExpectedToSend in
                 //// If need reload cell for progress, call reload action in here.
                 guard let requestId = requestId else { return }
                 let fileTransferProgress = CGFloat(totalBytesSent)/CGFloat(totalBytesExpectedToSend)
@@ -437,8 +424,7 @@ open class SBUBaseChannelViewModel: NSObject {
             }
         }
         
-        if let preSendMessage = preSendMessage, self.messageListParams.belongsTo(preSendMessage)
-        {
+        if let preSendMessage = preSendMessage, self.messageListParams.belongsTo(preSendMessage) {
             preSendMessage.parentMessage = parentMessage
             self.pendingMessageManager.upsertPendingMessage(
                 channelURL: self.channel?.channelURL,
@@ -515,7 +501,7 @@ open class SBUBaseChannelViewModel: NSObject {
         self.channel?.updateUserMessage(
             messageId: message.messageId,
             params: messageParams
-        ) { [weak self] updatedMessage, error in
+        ) { [weak self] _, _ in
             guard let self = self else { return }
             guard let channel = self.channel else { return }
             self.baseDelegate?.baseChannelViewModel(self, shouldFinishEditModeForChannel: channel)
@@ -553,7 +539,7 @@ open class SBUBaseChannelViewModel: NSObject {
             }
             
         } else if let failedMessage = failedMessage as? FileMessage {
-            var data: Data? = nil
+            var data: Data?
 
             if let fileInfo = self.pendingMessageManager.getFileInfo(
                 requestId: failedMessage.requestId,
@@ -567,7 +553,7 @@ open class SBUBaseChannelViewModel: NSObject {
             let pendingMessage = self.channel?.resendFileMessage(
                 failedMessage,
                 binaryData: data
-            ) { (requestId, bytesSent, totalBytesSent, totalBytesExpectedToSend) in
+            ) { (_, _, _, _) in
                 //// If need reload cell for progress, call reload action in here.
                 // self.tableView.reloadData()
             } completionHandler: { [weak self] message, error in
@@ -599,7 +585,6 @@ open class SBUBaseChannelViewModel: NSObject {
         self.channel?.deleteMessage(message, completionHandler: nil)
     }
     
-    
     // MARK: - List
     
     /// This function updates the messages in the list.
@@ -623,7 +608,6 @@ open class SBUBaseChannelViewModel: NSObject {
         
         self.sortAllMessageList(needReload: needReload)
     }
-    
     
     func filteredForThreadMessageView(messages: [BaseMessage]?) -> [BaseMessage]? {
         let pendingMessages = self.pendingMessageManager.getPendingMessages(
@@ -849,7 +833,6 @@ open class SBUBaseChannelViewModel: NSObject {
         self.messageList = []
     }
     
-    
     // MARK: - MessageListParams
     private func resetMessageListParams() {
         self.messageListParams = self.customizedMessageListParams?.copy() as? MessageListParams
@@ -871,7 +854,6 @@ open class SBUBaseChannelViewModel: NSObject {
         
         self.messageListParams.includeMetaArray = true
     }
-    
     
     // MARK: - Reactions
     /// This function is used to add or delete reactions.
@@ -911,8 +893,6 @@ open class SBUBaseChannelViewModel: NSObject {
             }
         }
     }
-
-
     
     // MARK: - Common
     
@@ -925,7 +905,6 @@ open class SBUBaseChannelViewModel: NSObject {
     public func hasPrevious() -> Bool { return false }
     
     public func getStartingPoint() -> Int64? { return .max }
-    
     
     // MARK: - Cache
     func setupCache() {
@@ -948,7 +927,6 @@ open class SBUBaseChannelViewModel: NSObject {
     }
 }
 
-
 // MARK: - ConnectionDelegate
 extension SBUBaseChannelViewModel: ConnectionDelegate {
     open func didSucceedReconnection() {
@@ -963,7 +941,6 @@ extension SBUBaseChannelViewModel: ConnectionDelegate {
         self.refreshChannel()
     }
 }
-
 
 // MARK: - ChannelDelegate
 extension SBUBaseChannelViewModel: BaseChannelDelegate {
@@ -982,14 +959,13 @@ extension SBUBaseChannelViewModel: BaseChannelDelegate {
             break
         }
     }
- 
     
     // If channel type is Group, please do not use belows any more.
     open func channel(_ channel: BaseChannel, didUpdate message: BaseMessage) {}
     open func channel(_ channel: BaseChannel, messageWasDeleted messageId: Int64) {}
     open func channel(_ channel: BaseChannel, didUpdateThreadInfo threadInfoUpdateEvent: ThreadInfoUpdateEvent) {}
     open func channel(_ channel: BaseChannel, updatedReaction reactionEvent: ReactionEvent) {}
-    open func channelDidUpdateReadReceipt(_ channel: GroupChannel) {}
+//    open func channelDidUpdateReadReceipt(_ channel: GroupChannel) {}
 //    open func channelDidUpdateDeliveryReceipt(_ channel: GroupChannel) {}
 //    open func channelDidUpdateTypingStatus(_ channel: GroupChannel) {}
     open func channelWasChanged(_ channel: BaseChannel) {}

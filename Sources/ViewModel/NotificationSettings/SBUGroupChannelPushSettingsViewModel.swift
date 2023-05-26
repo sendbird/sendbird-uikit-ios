@@ -47,7 +47,6 @@ open class SBUGroupChannelPushSettingsViewModel: SBUBaseChannelSettingsViewModel
         self.updateChannelPushTriggerOption()
     }
     
-    
     open func changeNotification(_ pushTriggerOption: GroupChannelPushTriggerOption) {
         guard let groupChannel = self.channel as? GroupChannel else { return }
         guard self.currentTriggerOption != pushTriggerOption else { return }
@@ -83,4 +82,3 @@ open class SBUGroupChannelPushSettingsViewModel: SBUBaseChannelSettingsViewModel
         )
     }
 }
-

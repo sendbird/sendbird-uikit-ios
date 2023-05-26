@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 /// Methods to get data source for the `SBUMessageThreadViewModel`.
 public protocol SBUMessageThreadViewModelDataSource: SBUBaseChannelViewModelDataSource { }
 
@@ -45,7 +44,6 @@ public protocol SBUMessageThreadViewModelDelegate: SBUBaseChannelViewModelDelega
     func messageThreadViewModelShouldDismissMessageThread(_ viewModel: SBUMessageThreadViewModel)
 }
 
-
 open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
     /**
      - Header: Channel delegate
@@ -56,7 +54,6 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
     
     // MARK: - Constant
     private let changelogFetchLimit: Int = 100
-    
     
     // MARK: - Logic properties (Public)
     public weak var delegate: SBUMessageThreadViewModelDelegate? {
@@ -72,16 +69,15 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
     public internal(set) var customizedThreadedMessageListParams: ThreadedMessageListParams?
     public internal(set) var threadedMessageListParams = ThreadedMessageListParams()
     
-    
     // MARK: - Logic properties (Private)
     
     @SBUAtomic private var hasMorePrevious: Bool = true
     @SBUAtomic private var hasMoreNext: Bool = false
     
-    @SBUAtomic private var changelogToken: String? = nil
+    @SBUAtomic private var changelogToken: String?
     @SBUAtomic private var lastUpdatedTimestamp: Int64 = 0
     private var currentTimeMillis: Int64 {
-        return Int64(Date().timeIntervalSince1970 * 1000)
+        Int64(Date().timeIntervalSince1970 * 1000)
     }
     
     private var initSucceeded: Bool = false
@@ -95,7 +91,6 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
     
     var messageCollection: MessageCollection? // for parent message's reply update
     
-    
     // MARK: - LifeCycle
     public init(channel: BaseChannel? = nil,
                 channelURL: String? = nil,
@@ -104,8 +99,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
                 threadedMessageListParams: ThreadedMessageListParams? = nil,
                 startingPoint: Int64? = .max,
                 delegate: SBUMessageThreadViewModelDelegate? = nil,
-                dataSource: SBUMessageThreadViewModelDataSource? = nil)
-    {
+                dataSource: SBUMessageThreadViewModelDataSource? = nil) {
         super.init()
         
         self.delegate = delegate
@@ -170,7 +164,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
         guard let channelURL = self.channelURL else { return }
         
         // 1. Connect
-        SendbirdUI.connectIfNeeded { [weak self] user, error in
+        SendbirdUI.connectIfNeeded { [weak self] _, error in
             if let error = error {
                 self?.delegate?.didReceiveError(error, isBlocker: true)
                 return
@@ -227,7 +221,6 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
             )
         }
     }
-    
     
     // MARK: - Channel
     public override func loadChannel(channelURL: String,
@@ -320,7 +313,6 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
         return true
     }
     
-    
     // MARK: - Parent Message
     
     /// Loads parent message.
@@ -373,7 +365,6 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
         }
     }
     
-    
     // MARK: - Load Threaded Messages
     public override func loadInitialMessages(startingPoint: Int64?,
                                              showIndicator: Bool,
@@ -424,7 +415,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
         self.parentMessage?.getThreadedMessages(
             timestamp: timestamp ?? .max,
             params: params,
-            completionHandler: { [weak self] parentMessage, messages, error in
+            completionHandler: { [weak self] _, messages, error in
                 guard let self = self else { return }
                 defer {
                     self.prevLock.unlock()
@@ -484,7 +475,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
         self.parentMessage?.getThreadedMessages(
             timestamp: self.lastUpdatedTimestamp,
             params: params,
-            completionHandler: { [weak self] parentMessage, messages, error in
+            completionHandler: { [weak self] _, messages, error in
                 guard let self = self else { return }
                 defer {
                     self.nextLock.unlock()
@@ -564,7 +555,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
         self.parentMessage?.getThreadedMessages(
             timestamp: startingTimestamp,
             params: params,
-            completionHandler: { [weak self] parentMessage, messages, error in
+            completionHandler: { [weak self] _, messages, error in
                 guard let self = self else { return }
                 defer { self.initialLock.unlock() }
                 
@@ -639,7 +630,6 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
         self.isInitialLoading = false
         self.upsertMessagesInList(messages: messages, needReload: true)
     }
-    
     
     // MARK: - Message
     
@@ -727,7 +717,6 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
         }
     }
     
-    
     // MARK: - List
     public override func sortAllMessageList(needReload: Bool) {
         // Generate full list for draw
@@ -748,7 +737,6 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
             initialLoad: self.isInitialLoading
         )
     }
-    
     
     // MARK: - Last Updated timestamp
     private func updateLastUpdatedTimestamp(messages: [BaseMessage]) {
@@ -791,7 +779,6 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
             """)
     }
     
-    
     // MARK: - Changelog
     
     /// Loads SDK's changelog (updated + deleted) fully + new added messages (fully || once depending on `hasNext`)
@@ -813,7 +800,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
             replyType: .all
         )
         
-        var completion: (([BaseMessage]?, [Int64]?, Bool, String?, SBError?) -> ())!
+        var completion: (([BaseMessage]?, [Int64]?, Bool, String?, SBError?) -> Void)!
         completion = { [weak self] updatedMessages, deletedMessageIds, hasMore, nextToken, error in
             guard let self = self else { return }
             
@@ -858,7 +845,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
         self.parentMessage?.getThreadedMessages(
             timestamp: self.lastUpdatedTimestamp,
             params: params,
-            completionHandler: { [weak self] parentMessage, messages, error in
+            completionHandler: { [weak self] _, messages, error in
                 
                 guard let self = self else { return }
                 
@@ -971,7 +958,6 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
         return hasMore
     }
     
-    
     // MARK: - Typing
     public func startTypingMessage() {
         guard let channel = self.channel as? GroupChannel else { return }
@@ -986,7 +972,6 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
         SBULog.info("[Request] End typing")
         channel.endTyping()
     }
-    
     
     // MARK: - Mention
     
@@ -1005,7 +990,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
                     params.limit = UInt(SBUGlobals.userMentionConfig?.suggestionLimit ?? 0) + 1
                     self.query = channel.createMemberListQuery(params: params)
                     
-                    self.query?.loadNextPage { [weak self] members, error in
+                    self.query?.loadNextPage { [weak self] members, _ in
                         guard let self = self else { return }
                         self.suggestedMemberList = SBUUser.convertUsers(members)
                         self.delegate?.messageThreadViewModel(
@@ -1046,7 +1031,6 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
     public func cancelLoadingSuggestedMentions() {
         self.debouncer?.cancel()
     }
-    
     
     // MARK: - Common
     
@@ -1111,7 +1095,6 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
     }
 }
 
-
 // MARK: - ConnectionDelegate
 extension SBUMessageThreadViewModel {
     open override func didSucceedReconnection() {
@@ -1140,7 +1123,6 @@ extension SBUMessageThreadViewModel {
     open func didFailReconnection() { }
 }
 
-
 // MARK: - GroupChannelDelegate (parent message, threaded message)
 extension SBUMessageThreadViewModel: GroupChannelDelegate {
     // Received message
@@ -1157,8 +1139,8 @@ extension SBUMessageThreadViewModel: GroupChannelDelegate {
             isScrollNearBottomInChannel: self.channel
         ) ?? true
         
-        if (self.hasNext() == true || isScrollNearBottom == false) {
-            guard (message is UserMessage || message is FileMessage) else { return }
+        if self.hasNext() == true || isScrollNearBottom == false {
+            guard message is UserMessage || message is FileMessage else { return }
             
             if let channel = self.channel {
                 self.delegate?.baseChannelViewModel(
@@ -1253,7 +1235,6 @@ extension SBUMessageThreadViewModel: GroupChannelDelegate {
             self.deleteMessagesInList(messageIds: [messageId], needReload: true)
         }
     }
-    
     
     // MARK: Channel related
     open override func channelWasChanged(_ channel: BaseChannel) {
@@ -1350,14 +1331,12 @@ extension SBUMessageThreadViewModel: GroupChannelDelegate {
     }
 }
 
-
 // MARK: - MessageCollectionDelegate
 extension SBUMessageThreadViewModel: MessageCollectionDelegate {
     open func messageCollection(_ collection: MessageCollection,
                                 context: MessageContext,
                                 channel: GroupChannel,
-                                addedMessages messages: [BaseMessage])
-    {
+                                addedMessages messages: [BaseMessage]) {
         // -> pending, -> receive new message
         SBULog.info("messageCollection addedMessages : \(messages.count)")
         
@@ -1388,8 +1367,7 @@ extension SBUMessageThreadViewModel: MessageCollectionDelegate {
     open func messageCollection(_ collection: MessageCollection,
                                 context: MessageContext,
                                 channel: GroupChannel,
-                                updatedMessages messages: [BaseMessage])
-    {
+                                updatedMessages messages: [BaseMessage]) {
         SBULog.info("messageCollection updatedMessages : \(messages.count)")
         
         let parentMessages = messages.filter { $0.messageId == self.parentMessageId }
@@ -1406,8 +1384,7 @@ extension SBUMessageThreadViewModel: MessageCollectionDelegate {
     open func messageCollection(_ collection: MessageCollection,
                                 context: MessageContext,
                                 channel: GroupChannel,
-                                deletedMessages messages: [BaseMessage])
-    {
+                                deletedMessages messages: [BaseMessage]) {
         SBULog.info("messageCollection deletedMessages : \(messages.count)")
         
         let parentMessages = messages.filter { $0.messageId == self.parentMessageId }
@@ -1420,15 +1397,13 @@ extension SBUMessageThreadViewModel: MessageCollectionDelegate {
     
     open func messageCollection(_ collection: MessageCollection,
                                 context: MessageContext,
-                                updatedChannel channel: GroupChannel)
-    {
+                                updatedChannel channel: GroupChannel) {
         SBULog.info("messageCollection changedChannel")
     }
     
     open func messageCollection(_ collection: MessageCollection,
                                 context: MessageContext,
-                                deletedChannel channelURL: String)
-    {
+                                deletedChannel channelURL: String) {
         SBULog.info("messageCollection deletedChannel")
     }
 }

@@ -67,7 +67,7 @@ public class SBUMessageWebViewModel {
         )
     }
     
-    private func applyLinebreak(_ attributes:[NSAttributedString.Key: Any]) -> [NSAttributedString.Key: Any] {
+    private func applyLinebreak(_ attributes: [NSAttributedString.Key: Any]) -> [NSAttributedString.Key: Any] {
         var newAttributes = attributes
         if let paragraphStyle = attributes[.paragraphStyle] as? NSMutableParagraphStyle {
             paragraphStyle.lineBreakMode = .byTruncatingTail

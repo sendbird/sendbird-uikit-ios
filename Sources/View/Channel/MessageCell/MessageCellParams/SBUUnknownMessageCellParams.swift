@@ -8,7 +8,6 @@
 
 import SendbirdChatSDK
 
-
 public class SBUUnknownMessageCellParams: SBUBaseMessageCellParams {
     public var unknownMessage: BaseMessage {
         self.message

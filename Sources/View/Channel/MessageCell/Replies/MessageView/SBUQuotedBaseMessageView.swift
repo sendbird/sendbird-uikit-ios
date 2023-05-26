@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 enum QuotedMessageType {
     case none
     case userMessage
@@ -80,11 +79,9 @@ open class SBUQuotedBaseMessageView: SBUView, SBUQuotedMessageViewProtocol {
     /// - Since: 3.3.0
     public private(set) var params: SBUQuotedBaseMessageViewParams?
     
-    
     /// The creation time of the quoted message
     /// - Since: 3.2.3
     public private(set) var quotedMessageCreatedAt: Int64?
-    
     
     // MARK: Internal (only for Swift)
     var messageType: QuotedMessageType = .none {
@@ -97,7 +94,7 @@ open class SBUQuotedBaseMessageView: SBUView, SBUQuotedMessageViewProtocol {
         }
     }
     
-    var metaArrays: [MessageMetaArray]? = nil
+    var metaArrays: [MessageMetaArray]?
     
     private let repliedToPaddingWidth: CGFloat = 8
     
@@ -153,7 +150,7 @@ open class SBUQuotedBaseMessageView: SBUView, SBUQuotedMessageViewProtocol {
     /// UIStackView containing `repliedToLabel` and `repliedIconView`.
     /// - Since: 2.2.0
     public lazy var repliedToStackView: UIStackView = {
-        return SBUStackView(axis: .horizontal , alignment: .center, spacing: 4)
+        return SBUStackView(axis: .horizontal, alignment: .center, spacing: 4)
     }()
     
     /// The selectable stack view that displays text or thumbnail image of the quoted message.

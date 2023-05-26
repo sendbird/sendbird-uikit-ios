@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 public protocol SBUInviteUserModuleHeaderDelegate: SBUBaseSelectUserModuleHeaderDelegate {
     /// Called when `titleView` value has been updated.
     /// - Parameters:
@@ -42,9 +41,7 @@ public protocol SBUInviteUserModuleHeaderDelegate: SBUBaseSelectUserModuleHeader
     func inviteUserModule(_ headerComponent: SBUInviteUserModule.Header, didTapRightItem rightItem: UIBarButtonItem)
 }
 
-
 public protocol SBUInviteUserModuleHeaderDataSource: SBUBaseSelectUserModuleHeaderDataSource { }
-
 
 extension SBUInviteUserModule {
     
@@ -67,7 +64,7 @@ extension SBUInviteUserModule {
                 target: self,
                 action: #selector(onTapLeftBarButton)
             )
-            leftItem.setTitleTextAttributes([.font : SBUFontSet.button2], for: .normal)
+            leftItem.setTitleTextAttributes([.font: SBUFontSet.button2], for: .normal)
             return leftItem
         }
         
@@ -78,10 +75,9 @@ extension SBUInviteUserModule {
                 target: self,
                 action: #selector(onTapRightBarButton)
             )
-            rightItem.setTitleTextAttributes([.font : SBUFontSet.button2], for: .normal)
+            rightItem.setTitleTextAttributes([.font: SBUFontSet.button2], for: .normal)
             return rightItem
         }
-        
         
         // MARK: - Logic properties (Public)
         public weak var delegate: SBUInviteUserModuleHeaderDelegate? {
@@ -92,7 +88,6 @@ extension SBUInviteUserModule {
             get { self.baseDataSource as? SBUInviteUserModuleHeaderDataSource }
             set { self.baseDataSource = newValue }
         }
-        
         
         // MARK: - LifeCycle
         @available(*, unavailable, renamed: "SBUInviteUserModule.Header()")
@@ -123,14 +118,12 @@ extension SBUInviteUserModule {
             self.setupStyles()
         }
         
-        
         // MARK: - Common
         open override func updateRightBarButton() {
             super.updateRightBarButton()
             
             self.rightBarButton?.title = SBUStringSet.InviteChannel_Invite(self.selectedUserList?.count ?? 0)
         }
-        
         
         // MARK: - Attach update delegate on view
         public override func didUpdateTitleView() {
@@ -143,15 +136,14 @@ extension SBUInviteUserModule {
             self.delegate?.inviteUserModule(self, didUpdateRightItem: self.rightBarButton)
         }
         
-        
         // MARK: - Actions
-        @objc open override func onTapLeftBarButton() {
+        open override func onTapLeftBarButton() {
             if let leftBarButton = self.leftBarButton {
                 self.delegate?.inviteUserModule(self, didTapLeftItem: leftBarButton)
             }
         }
         
-        @objc open override func onTapRightBarButton() {
+        open override func onTapRightBarButton() {
             if let rightBarButton = self.rightBarButton {
                 self.delegate?.inviteUserModule(self, didTapRightItem: rightBarButton)
             }

@@ -28,9 +28,8 @@ extension SBUStringSet {
         set { SBUStringSet.InviteChannel_Header_Select_Users = newValue }
     }
     
-    
     @available(*, unavailable) // 3.0.0
-    public static var MemberList_Header_Title: String {""}
+    public static var MemberList_Header_Title: String { "" }
     @available(*, deprecated, renamed: "UserList_Me") // 3.0.0
     public static var MemberList_Me: String {
         get { SBUStringSet.UserList_Me }
@@ -91,8 +90,6 @@ extension SBUStringSet {
         get { SBUStringSet.UserList_Title_Participants }
         set { SBUStringSet.UserList_Title_Participants = newValue }
     }
-
-    
     
     @available(*, deprecated, renamed: "UserProfile_Register") // 3.0.0
     public static var UserProfile_Promote: String {

@@ -9,10 +9,8 @@
 import UIKit
 import SendbirdChatSDK
 
-
 /// Event methods for the views updates and performing actions from the header component in group channel list module.
 public protocol SBUGroupChannelListModuleHeaderDelegate: SBUBaseChannelListModuleHeaderDelegate {}
-
 
 extension SBUGroupChannelListModule {
     /// A module component that represents the header of `SBUGroupChannelListModule`.
@@ -20,8 +18,7 @@ extension SBUGroupChannelListModule {
         
         // MARK: - UI properties (Public)
         /// The object that is used as the theme of the header  component. The theme must adopt the `SBUGroupChannelListTheme` class.
-        public var theme: SBUGroupChannelListTheme? = nil
-        
+        public var theme: SBUGroupChannelListTheme?
         
         // MARK: - Logic properties (Public)
         /// The object that acts as the delegate of the header component. The delegate must adopt the `SBUGroupChannelListModuleHeaderDelegate`.
@@ -29,7 +26,6 @@ extension SBUGroupChannelListModule {
             get { self.baseDelegate as? SBUGroupChannelListModuleHeaderDelegate }
             set { self.baseDelegate = newValue }
         }
-        
         
         // MARK: - LifeCycle
         @available(*, unavailable, renamed: "SBUGroupChannelListModule.Header()")

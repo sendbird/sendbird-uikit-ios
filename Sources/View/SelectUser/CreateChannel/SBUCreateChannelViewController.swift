@@ -19,15 +19,13 @@ open class SBUCreateChannelViewController: SBUBaseViewController, SBUCreateChann
     @SBUThemeWrapper(theme: SBUTheme.userListTheme)
     public var theme: SBUUserListTheme
     
-    
     // MARK: - Logic properties (Public)
     public var viewModel: SBUCreateChannelViewModel?
 
-    public var channelType: ChannelCreationType { viewModel?.channelType ?? .group}
+    public var channelType: ChannelCreationType { viewModel?.channelType ?? .group }
 
     public var userList: [SBUUser] { viewModel?.userList ?? [] }
     public var selectedUserList: Set<SBUUser> { viewModel?.selectedUserList ?? [] }
-    
     
     // MARK: - Lifecycle
     @available(*, unavailable, renamed: "SBUCreateChannelViewController(type:)")
@@ -74,7 +72,7 @@ open class SBUCreateChannelViewController: SBUBaseViewController, SBUCreateChann
     }
     
     open override var preferredStatusBarStyle: UIStatusBarStyle {
-        return theme.statusBarStyle
+        theme.statusBarStyle
     }
     
     deinit {
@@ -83,7 +81,6 @@ open class SBUCreateChannelViewController: SBUBaseViewController, SBUCreateChann
         self.headerComponent = nil
         self.listComponent = nil
     }
-    
     
     // MARK: - ViewModel
     /// Creates view model.
@@ -101,7 +98,6 @@ open class SBUCreateChannelViewController: SBUBaseViewController, SBUCreateChann
             dataSource: self
         )
     }
-    
 
     // MARK: - Sendbird UIKit Life cycle
     open override func setupViews() {
@@ -141,7 +137,6 @@ open class SBUCreateChannelViewController: SBUBaseViewController, SBUCreateChann
         
         self.listComponent?.reloadTableView()
     }
-
     
     // MARK: - Actions
     /// This function creates channel using the `selectedUserList`.
@@ -151,7 +146,6 @@ open class SBUCreateChannelViewController: SBUBaseViewController, SBUCreateChann
         let userIds = Array(self.selectedUserList).sbu_getUserIds()
         self.viewModel?.createChannel(userIds: userIds)
     }
-    
     
     // MARK: - Common
     /// This function dismisses `createViewController` and moves to created channel.
@@ -167,7 +161,6 @@ open class SBUCreateChannelViewController: SBUBaseViewController, SBUCreateChann
         )
     }
     
-    
     // MARK: - Error handling
     private func errorHandler(_ error: SBError) {
         self.errorHandler(error.localizedDescription, error.code)
@@ -176,7 +169,6 @@ open class SBUCreateChannelViewController: SBUBaseViewController, SBUCreateChann
     open override func errorHandler(_ message: String?, _ code: NSInteger? = nil) {
         SBULog.error("Did receive error: \(message ?? "")")
     }
-    
     
     // MARK: - SBUCreateChannelModuleHeaderDelegate
     open func createChannelModule(_ headerComponent: SBUCreateChannelModule.Header,
@@ -204,12 +196,10 @@ open class SBUCreateChannelViewController: SBUBaseViewController, SBUCreateChann
         self.createChannelWithSelectedUsers()
     }
     
-    
     // MARK: - SBUCreateChannelModuleHeaderDataSource
     open func selectedUsersForBaseSelectUserModule(_ headerComponent: SBUBaseSelectUserModule.Header) -> Set<SBUUser>? {
         return self.viewModel?.selectedUserList
     }
-    
     
     // MARK: - SBUCreateChannelModuleListDataSource
     open func baseSelectUserModule(_ listComponent: SBUBaseSelectUserModule.List, usersInTableView tableView: UITableView) -> [SBUUser]? {
@@ -219,7 +209,6 @@ open class SBUCreateChannelViewController: SBUBaseViewController, SBUCreateChann
     open func baseSelectUserModule(_ listComponent: SBUBaseSelectUserModule.List, selectedUsersInTableView tableView: UITableView) -> Set<SBUUser>? {
         return self.viewModel?.selectedUserList
     }
-    
     
     // MARK: - SBUCreateChannelModuleListDelegate
     open func createChannelModule(_ listComponent: SBUCreateChannelModule.List,
@@ -236,7 +225,6 @@ open class SBUCreateChannelViewController: SBUBaseViewController, SBUCreateChann
         
     }
     
-    
     // MARK: - SBUCommonViewModelDelegate
     open func shouldUpdateLoadingState(_ isLoading: Bool) {
         self.showLoading(isLoading)
@@ -251,7 +239,6 @@ open class SBUCreateChannelViewController: SBUBaseViewController, SBUCreateChann
             self.listComponent?.reloadTableView()
         }
     }
-    
     
     // MARK: - SBUCreateChannelViewModelDataSource
     open func createChannelViewModel(_ viewModel: SBUCreateChannelViewModel, nextUserListForChannelType channelType: ChannelCreationType) -> [SBUUser]? {

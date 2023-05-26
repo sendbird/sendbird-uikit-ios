@@ -12,7 +12,7 @@ import SendbirdChatSDK
  @IBDesignable
 open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol {
     // MARK: - Public
-    public var message: BaseMessage? = nil
+    public var message: BaseMessage?
     public var position: MessagePosition = .center
     public var groupPosition: MessageGroupPosition = .none
     public var receiptState: SBUMessageReceiptState = .none
@@ -27,7 +27,6 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol {
 
     @SBUThemeWrapper(theme: SBUTheme.messageCellTheme)
     public var theme: SBUMessageCellTheme
-
     
     // MARK: - Private
     
@@ -43,17 +42,15 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol {
     }()
     
     public var stackViewTopConstraint: NSLayoutConstraint?
-
     
     // MARK: - Action
-    var userProfileTapHandler: (() -> Void)? = nil
-    var tapHandlerToContent: (() -> Void)? = nil
-    var longPressHandlerToContent: (() -> Void)? = nil
-    var emojiTapHandler: ((_ emojiKey: String) -> Void)? = nil
-    var moreEmojiTapHandler: (() -> Void)? = nil
-    var emojiLongPressHandler: ((_ emojiKey: String) -> Void)? = nil
-    var mentionTapHandler: ((_ user: SBUUser) -> Void)? = nil
-
+    var userProfileTapHandler: (() -> Void)?
+    var tapHandlerToContent: (() -> Void)?
+    var longPressHandlerToContent: (() -> Void)?
+    var emojiTapHandler: ((_ emojiKey: String) -> Void)?
+    var moreEmojiTapHandler: (() -> Void)?
+    var emojiLongPressHandler: ((_ emojiKey: String) -> Void)?
+    var mentionTapHandler: ((_ user: SBUUser) -> Void)?
 
     // MARK: - View Lifecycle
     
@@ -107,7 +104,6 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol {
         self.stackViewTopConstraint?.isActive = true
     }
     
-    
     // MARK: - Common
     
     /**
@@ -153,7 +149,6 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol {
         )
         self.configure(with: configuration)
     }
-    
     
     // MARK: -
     open override func prepareForReuse() {

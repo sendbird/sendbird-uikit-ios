@@ -21,7 +21,6 @@ public typealias SBUChannelViewModelDelegate = SBUGroupChannelViewModelDelegate
 @available(*, deprecated, renamed: "SBUGroupChannelViewModel") // 3.0.0
 public typealias SBUChannelViewModel = SBUGroupChannelViewModel
 
-
 extension SBUGroupChannelViewController {
     @available(*, deprecated, message: "This property has been moved to `SBUGroupChannelModule.List`.", renamed: "listComponent.adminMessageCell")
     public var adminMessageCell: SBUBaseMessageCell? {
@@ -108,4 +107,3 @@ extension SBUGroupChannelViewController {
         self.listComponent?.setMessageCellGestures(cell, message: unknownMessage, indexPath: indexPath)
     }
 }
-

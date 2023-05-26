@@ -10,7 +10,6 @@ import UIKit
 import PhotosUI
 import SendbirdChatSDK
 
-
 /// Event methods for the views updates and performing actions from the input component in the group channel.
 public protocol SBUGroupChannelModuleInputDelegate: SBUBaseChannelModuleInputDelegate {
     
@@ -101,7 +100,6 @@ public protocol SBUGroupChannelModuleInputDelegate: SBUBaseChannelModuleInputDel
     func groupChannelModuleDidTapVoiceMessage(_ inputComponent: SBUGroupChannelModule.Input)
 }
 
-
 /// Methods to get data source for the input component in the group channel.
 public protocol SBUGroupChannelModuleInputDataSource: SBUBaseChannelModuleInputDataSource { }
 
@@ -114,7 +112,7 @@ extension SBUGroupChannelModule {
         /// A current quoted message in message input view. This value is only available when the `messageInputView` is type of `SBUMessageInputView` that supports the message replying feature.
         public var currentQuotedMessage: BaseMessage? {
             guard let messageInputView = messageInputView as? SBUMessageInputView else { return nil }
-            var parentMessage: BaseMessage? = nil
+            var parentMessage: BaseMessage?
             switch messageInputView.option {
                 case .quoteReply(let message):
                     parentMessage = message
@@ -183,8 +181,8 @@ extension SBUGroupChannelModule {
                 .sbu_constraint(equalTo: self, leading: 0, trailing: 0, top: 0, bottom: 0)
         }
         
-        open override func pickImageFile(info: [UIImagePickerController.InfoKey : Any]) {
-            var tempImageURL: URL? = nil
+        open override func pickImageFile(info: [UIImagePickerController.InfoKey: Any]) {
+            var tempImageURL: URL?
             if let imageURL = info[.imageURL] as? URL {
                 // file:///~~~
                 tempImageURL = imageURL
@@ -239,7 +237,7 @@ extension SBUGroupChannelModule {
             }
         }
         
-        open override func pickVideoFile(info: [UIImagePickerController.InfoKey : Any]) {
+        open override func pickVideoFile(info: [UIImagePickerController.InfoKey: Any]) {
             do {
                 guard let videoURL = info[.mediaURL] as? URL else { return }
                 let videoFileData = try Data(contentsOf: videoURL)
@@ -264,9 +262,9 @@ extension SBUGroupChannelModule {
         
         @available(iOS 14.0, *)
         open override func pickImageFile(itemProvider: NSItemProvider) {
-            itemProvider.loadItem(forTypeIdentifier: UTType.image.identifier, options: [:]) { [weak self] url, error in
+            itemProvider.loadItem(forTypeIdentifier: UTType.image.identifier, options: [:]) { [weak self] url, _ in
                 if itemProvider.canLoadObject(ofClass: UIImage.self) {
-                    itemProvider.loadObject(ofClass: UIImage.self) { imageItem, error in
+                    itemProvider.loadObject(ofClass: UIImage.self) { imageItem, _ in
                         guard let self = self else { return }
                         guard let originalImage = imageItem as? UIImage else { return }
                         guard let imageURL = url as? URL else { return }
@@ -295,7 +293,7 @@ extension SBUGroupChannelModule {
         
         @available(iOS 14.0, *)
         open override func pickGIFFile(itemProvider: NSItemProvider) {
-            itemProvider.loadItem(forTypeIdentifier: UTType.gif.identifier, options: [:]) { [weak self] url, error in
+            itemProvider.loadItem(forTypeIdentifier: UTType.gif.identifier, options: [:]) { [weak self] url, _ in
                 guard let self = self else { return }
                 guard let imageURL = url as? URL else { return }
                 guard let mimeType = SBUUtils.getMimeType(url: imageURL) else { return }
@@ -412,13 +410,12 @@ extension SBUGroupChannelModule {
                 } else {
                     self.mentionManager = SBUMentionManager()
                     self.mentionManager?.configure(
-                        delegate:self,
+                        delegate: self,
                         dataSource: self.mentionManagerDataSource,
                         defaultTextAttributes: messageInputView.defaultAttributes,
                         mentionTextAttributes: messageInputView.mentionedAttributes
                     )
                 }
-                
                 
                 let attributedText = self.mentionManager!.generateMentionedMessage(
                     with: mentionedMessageTemplate,
@@ -480,7 +477,6 @@ extension SBUGroupChannelModule {
             let isChatNotification = self.channel?.isChatNotification ?? false
             self.messageInputView?.isHidden = isChatNotification
         }
-        
         
         // MARK: Mention
         
@@ -626,6 +622,8 @@ extension SBUGroupChannelModule {
 
             guard !mentionManager.needToSkipSelection(textView) else { return }
             
+            guard self.channel?.isBroadcast == false else { return }
+            
             self.mentionManager?.handleMentionSuggestion(on: textView, range: range)
         }
         
@@ -732,7 +730,6 @@ extension SBUGroupChannelModule {
         open override func messageInputViewDidTapVoiceMessage(_ messageInputView: SBUMessageInputView) {
             self.delegate?.groupChannelModuleDidTapVoiceMessage(self)
         }
-        
         
         // MARK: SBUMentionManagerDelegate
         open func mentionManager(_ manager: SBUMentionManager,

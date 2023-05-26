@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 public protocol SBUCreateChannelModuleListDelegate: SBUBaseSelectUserModuleListDelegate {
     /// Called when the user cell was selected in the `listComponent`.
     /// - Parameters:
@@ -28,10 +27,8 @@ public protocol SBUCreateChannelModuleListDelegate: SBUBaseSelectUserModuleListD
     func createChannelModuleDidSelectRetry(_ listComponent: SBUCreateChannelModule.List)
 }
 
-
 /// Methods to get data source for list component in a channel creating.
 public protocol SBUCreateChannelModuleListDataSource: SBUBaseSelectUserModuleListDataSource { }
-
 
 extension SBUCreateChannelModule {
     
@@ -51,7 +48,6 @@ extension SBUCreateChannelModule {
             get { self.baseDataSource as? SBUCreateChannelModuleListDataSource }
             set { self.baseDataSource = newValue }
         }
-        
         
         // MARK: - LifeCycle
         @available(*, unavailable, renamed: "SBUCreateChannelModule.List()")
@@ -78,7 +74,6 @@ extension SBUCreateChannelModule {
             self.setupStyles()
         }
         
-        
         // MARK: - TableView: Cell
         
         /// Configures component with parameters.
@@ -98,7 +93,6 @@ extension SBUCreateChannelModule {
     }
 }
 
-
 // MARK: - SBUEmptyViewDelegate
 extension SBUCreateChannelModule.List {
     /// Called when the retry button on the empty view was tapped.
@@ -108,7 +102,6 @@ extension SBUCreateChannelModule.List {
         self.delegate?.createChannelModuleDidSelectRetry(self)
     }
 }
-
 
 // MARK: - UITableView relations
 extension SBUCreateChannelModule.List {

@@ -30,7 +30,7 @@ class SBUAnimation {
         case spin = "spin"
         
         var identifier: String {
-            return "\(SBUConstant.bundleIdentifier).animation.key.\(self.rawValue)"
+            "\(SBUConstant.bundleIdentifier).animation.key.\(self.rawValue)"
         }
     }
     /**
@@ -83,7 +83,7 @@ class SBUAnimation {
                 view.transform = count % 2 == 0
                 ? translatedTransform
                 : originalTransform
-            } completion: { completed in
+            } completion: { _ in
                 let nextCount = count + 1
                 guard nextCount < moveCount else { return }
                 self.shakeUpDown(nextCount)

@@ -18,15 +18,12 @@ public protocol SBUOpenChannelSettingsViewModelDelegate: SBUBaseChannelSettingsV
     )
 }
 
-
-
 open class SBUOpenChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
     // MARK: - Logic properties (Public)
     public weak var delegate: SBUOpenChannelSettingsViewModelDelegate? {
         get { self.baseDelegate as? SBUOpenChannelSettingsViewModelDelegate }
         set { self.baseDelegate = newValue }
     }
-
     
     // MARK: - LifeCycle
     public init(channel: BaseChannel? = nil,
@@ -56,7 +53,6 @@ open class SBUOpenChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
             forIdentifier: "\(SBUConstant.openChannelDelegateIdentifier).\(self.description)"
         )
     }
-
     
     // MARK: - Channel related
     public override func loadChannel(channelURL: String?) {
@@ -133,7 +129,6 @@ open class SBUOpenChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
         }
     }
 }
-
 
 // MARK: OpenChannelDelegate
 extension SBUOpenChannelSettingsViewModel: OpenChannelDelegate {

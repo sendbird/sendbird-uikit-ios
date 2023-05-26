@@ -9,12 +9,10 @@
 import UIKit
 import SendbirdChatSDK
 
-
 public protocol SBUParentMessageInfoViewDelegate: AnyObject {
     func parentMessageInfoViewBoundsWillChanged(_ view: SBUParentMessageInfoView)
     func parentMessageInfoViewBoundsDidChanged(_ view: SBUParentMessageInfoView)
 }
-
 
 open class SBUParentMessageInfoView: UITableViewHeaderFooterView, SBUUserMessageTextViewDelegate {
     
@@ -45,7 +43,6 @@ open class SBUParentMessageInfoView: UITableViewHeaderFooterView, SBUUserMessage
     public var webView = SBUMessageWebView()
     /// The view that displays the reactions.
     public var reactionView = SBUParentMessageInfoReactionView()
-
     
     /// ```
     /// + --------------------------------+------------+
@@ -80,14 +77,12 @@ open class SBUParentMessageInfoView: UITableViewHeaderFooterView, SBUUserMessage
         didSet { self.delegate?.parentMessageInfoViewBoundsDidChanged(self) }
     }
     
-    
     // MARK: - UI properties (Private)
     var replySeparateLineTopAnchorConstraint: NSLayoutConstraint?
     var replyLabelTopAnchorConstraint: NSLayoutConstraint?
     var contentVStackViewTrailingAnchorConstraint: NSLayoutConstraint?
     var bottomSeparateLineTopAnchorConstraint: NSLayoutConstraint?
     var baseFileContentViewWidthConstraint: NSLayoutConstraint?
-
     
     // MARK: - State properties (Public)
     /// If is`true`, enables reaction feature and it's available. The defaults value is `true`
@@ -108,26 +103,24 @@ open class SBUParentMessageInfoView: UITableViewHeaderFooterView, SBUUserMessage
     var theme: SBUMessageCellTheme
     
     var configured: Bool = false
-    var voiceFileInfo: SBUVoiceFileInfo? = nil
+    var voiceFileInfo: SBUVoiceFileInfo?
     var isReactionAvailable = false
-    
     
     // MARK: - Action
     /// The handler that set the logic to be called when a user profile is tapped.
-    public var userProfileTapHandler: (() -> Void)? = nil
+    public var userProfileTapHandler: (() -> Void)?
     /// The handler that set the logic to be called when a content area is tapped.
-    public var tapHandlerToContent: (() -> Void)? = nil
+    public var tapHandlerToContent: (() -> Void)?
     /// The handler that set the logic to be called when a more button is tapped.
-    public var moreButtonTapHandlerToContent: (() -> Void)? = nil
+    public var moreButtonTapHandlerToContent: (() -> Void)?
     /// The handler that set the logic to be called when emoji is tapped.
-    public var emojiTapHandler: ((_ emojiKey: String) -> Void)? = nil
+    public var emojiTapHandler: ((_ emojiKey: String) -> Void)?
     /// The handler that set the logic to be called when a more emoji is tapped.
-    public var moreEmojiTapHandler: (() -> Void)? = nil
+    public var moreEmojiTapHandler: (() -> Void)?
     /// The handler that set the logic to be called when a emoji is long tapped.
-    public var emojiLongPressHandler: ((_ emojiKey: String) -> Void)? = nil
+    public var emojiLongPressHandler: ((_ emojiKey: String) -> Void)?
     /// The handler that set the logic to be called when a mention is tapped.
-    public var mentionTapHandler: ((_ user: SBUUser) -> Void)? = nil
-
+    public var mentionTapHandler: ((_ user: SBUUser) -> Void)?
     
     // MARK: - LifeCycle
     public override init(reuseIdentifier: String?) {
@@ -142,7 +135,6 @@ open class SBUParentMessageInfoView: UITableViewHeaderFooterView, SBUUserMessage
     required convenience public init?(coder: NSCoder) {
         fatalError()
     }
-    
 
     open func setupViews() {
         // + -----------------------------+------------+
@@ -218,7 +210,7 @@ open class SBUParentMessageInfoView: UITableViewHeaderFooterView, SBUUserMessage
     open func setupLayouts() {
         self.contentVStackViewTrailingAnchorConstraint?.isActive = false
         switch message {
-        case let _ as UserMessage:
+        case _ as UserMessage:
             self.contentVStackViewTrailingAnchorConstraint = self.contentVStackView.trailingAnchor.constraint(
                 lessThanOrEqualTo: self.contentView.trailingAnchor,
                 constant: -16
@@ -395,7 +387,7 @@ open class SBUParentMessageInfoView: UITableViewHeaderFooterView, SBUUserMessage
             let fileType = SBUUtils.getFileType(by: fileMessage)
             switch fileType {
             case .image, .video:
-                if !(self.baseFileContentView is SBUOpenChannelImageContentView){
+                if !(self.baseFileContentView is SBUOpenChannelImageContentView) {
                     self.baseFileContentView.removeFromSuperview()
                     self.baseFileContentView = SBUOpenChannelImageContentView()
                     contentVStackView.insertArrangedSubview(self.baseFileContentView, at: 0)
@@ -454,7 +446,6 @@ open class SBUParentMessageInfoView: UITableViewHeaderFooterView, SBUUserMessage
         
         self.configured = true
     }
-    
     
     // MARK: - Action
     open func setupActions() {
@@ -527,4 +518,3 @@ open class SBUParentMessageInfoView: UITableViewHeaderFooterView, SBUUserMessage
         self.mentionTapHandler?(user)
     }
 }
-

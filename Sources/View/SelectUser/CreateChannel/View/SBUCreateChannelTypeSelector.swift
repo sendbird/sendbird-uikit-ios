@@ -23,7 +23,6 @@ public protocol SBUCreateChannelTypeSelectorDelegate: AnyObject {
     func didSelectCreateBroadcastChannel()
 }
 
-
 /// This protocol is used to create a custom `CreateChannelTypeSelector`.
 public protocol SBUCreateChannelTypeSelectorProtocol {
     /// This function shows selector view.
@@ -32,7 +31,6 @@ public protocol SBUCreateChannelTypeSelectorProtocol {
     /// This function dismisses selector view.
     func dismiss()
 }
-
 
 /// This class is used to select the channel type
 /// - Since: 3.0.0
@@ -81,10 +79,8 @@ open class SBUCreateChannelTypeSelector: SBUView, SBUCreateChannelTypeSelectorPr
         return self.createButton(type: .broadcast)
     }()
     
-    
     // MARK: - UI properties (Private)
-    private weak var delegate: SBUCreateChannelTypeSelectorDelegate? = nil
-    
+    private weak var delegate: SBUCreateChannelTypeSelectorDelegate?
 
     // MARK: - View Lifecycle
     @available(*, unavailable, renamed: "CreateChannelTypeSelectView.init(delegate:)")
@@ -192,7 +188,6 @@ open class SBUCreateChannelTypeSelector: SBUView, SBUCreateChannelTypeSelectorPr
         self.createSuperGroupChannelButton.sbu_constraint(height: 80)
         self.createBroadcastChannelButton.sbu_constraint(height: 80)
     }
-    
 
     // MARK: - SBUCreateChannelTypeSelectorProtocol
     open func show() {

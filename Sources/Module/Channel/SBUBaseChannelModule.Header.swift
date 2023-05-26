@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 /// Event methods for the views updates and performing actions from the header component.
 public protocol SBUBaseChannelModuleHeaderDelegate: SBUCommonDelegate {
     /// Called when `titleView` value has been updated.
@@ -49,7 +48,6 @@ public protocol SBUBaseChannelModuleHeaderDelegate: SBUCommonDelegate {
     func baseChannelModule(_ headerComponent: SBUBaseChannelModule.Header, didTapRightItem rightItem: UIBarButtonItem)
 }
 
-
 extension SBUBaseChannelModule {
     
     /// A module component that represent the header of `SBUBaseChannelModule`.
@@ -58,7 +56,7 @@ extension SBUBaseChannelModule {
         
         /// A view that represents a title in navigation bar.
         /// - NOTE: When the value is updated, `baseChannelModule(_:didUpdateTitleView:)` delegate function is called.
-        public var titleView: UIView? = nil {
+        public var titleView: UIView? {
             didSet {
                 self.baseDelegate?.baseChannelModule(self, didUpdateTitleView: self.titleView)
             }
@@ -66,7 +64,7 @@ extension SBUBaseChannelModule {
         
         /// A view that represents a left `UIBarButtonItem` in navigation bar.
         /// - NOTE: When the value is updated, `baseChannelModule(_:didUpdateLeftItem:)` delegate function is called.
-        public var leftBarButton: UIBarButtonItem? = nil {
+        public var leftBarButton: UIBarButtonItem? {
             didSet {
                 self.baseDelegate?.baseChannelModule(self, didUpdateLeftItem: self.leftBarButton)
             }
@@ -74,7 +72,7 @@ extension SBUBaseChannelModule {
         
         /// A view that represents a right `UIBarButtonItem` in navigation bar.
         /// - NOTE: When the value is updated, `baseChannelModule(_:didUpdateRightItem:)` delegate function is called.
-        public var rightBarButton: UIBarButtonItem? = nil {
+        public var rightBarButton: UIBarButtonItem? {
             didSet {
                 self.baseDelegate?.baseChannelModule(self, didUpdateRightItem: self.rightBarButton)
             }
@@ -83,8 +81,7 @@ extension SBUBaseChannelModule {
         public var titleSpacer = UIView()
         
         /// The object that is used as the theme of the header component. The theme must adopt the `SBUChannelTheme` class.
-        public var theme: SBUChannelTheme? = nil
-        
+        public var theme: SBUChannelTheme?
         
         // MARK: - UI properties (Private)
         lazy var defaultTitleView: SBUChannelTitleView = {
@@ -124,11 +121,9 @@ extension SBUBaseChannelModule {
             return backButton
         }()
         
-        
         // MARK: - Logic properties (Public)
         /// The object that acts as the base of delegate of the header component. The base delegate must adopt the `SBUBaseChannelModuleHeaderDelegate`.
-        public weak var baseDelegate: SBUBaseChannelModuleHeaderDelegate? = nil
-        
+        public weak var baseDelegate: SBUBaseChannelModuleHeaderDelegate?
         
         // MARK: - LifeCycle
         @available(*, unavailable, renamed: "SBUBaseChannelModule.Header()")
@@ -181,14 +176,13 @@ extension SBUBaseChannelModule {
             self.setupStyles(theme: theme)
         }
         
-        
         // MARK: - Actions
         
         /// The action of `leftBarButton`. It calls `baseChannelModule(_:didTapLeftItem:)` when it's tapped
-        @objc open func onTapLeftBarButton() { }
+        open func onTapLeftBarButton() { }
         
         /// The action of `rightBarButton`. It calls `baseChannelModule(_:didTapRightItem:)` when it's tapped
-        @objc open func onTapRightBarButton() { }
+        open func onTapRightBarButton() { }
         
     }
 }

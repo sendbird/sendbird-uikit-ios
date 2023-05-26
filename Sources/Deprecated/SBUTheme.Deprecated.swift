@@ -16,8 +16,8 @@ public typealias SBUChannelCellTheme = SBUGroupChannelCellTheme
 
 extension SBUTheme {
     @available(*, deprecated, renamed: "init(groupChannelListTheme:groupChannelCellTheme:openChannelListTheme:openChannelCellTheme:channelTheme:messageInputTheme:messageCellTheme:userListTheme:userCellTheme:channelSettingsTheme:userProfileTheme:componentTheme:overlayTheme:messageSearchTheme:messageSearchResultCellTheme:createOpenChannelTheme:)") // 3.2.2
-    public convenience init(channelListTheme: SBUGroupChannelListTheme = .light,
-                            channelCellTheme: SBUGroupChannelCellTheme = .light,
+    public convenience init(channelListTheme: SBUGroupChannelListTheme,
+                            channelCellTheme: SBUGroupChannelCellTheme,
                             openChannelListTheme: SBUOpenChannelListTheme = .light,
                             openChannelCellTheme: SBUOpenChannelCellTheme = .light,
                             channelTheme: SBUChannelTheme = .light,
@@ -127,9 +127,9 @@ extension SBUMessageCellTheme {
         unknownMessageDescFont: UIFont  = SBUFontSet.body3,
         unknownMessageDescTextColor: UIColor = SBUColorSet.onlight02,
         unknownMessageDescRightTextColor: UIColor = SBUColorSet.ondark02,
-        ogTitleFont:UIFont = SBUFontSet.body2,
-        ogTitleColor:UIColor = SBUColorSet.onlight01,
-        ogDescriptionFont:UIFont = SBUFontSet.caption2,
+        ogTitleFont: UIFont = SBUFontSet.body2,
+        ogTitleColor: UIColor = SBUColorSet.onlight01,
+        ogDescriptionFont: UIFont = SBUFontSet.caption2,
         ogDescriptionColor: UIColor  = SBUColorSet.onlight01,
         ogURLAddressFont: UIFont = SBUFontSet.caption2,
         ogURLAddressColor: UIColor = SBUColorSet.onlight02,
@@ -137,7 +137,7 @@ extension SBUMessageCellTheme {
         linkColor: UIColor = SBUColorSet.primary300,
         contentBackgroundColor: UIColor = SBUColorSet.background100,
         pressedContentBackgroundColor: UIColor = SBUColorSet.background300,
-        quotedMessageBackgroundColor: UIColor = SBUColorSet.background100,
+        quotedMessageBackgroundColor: UIColor,
         quotedFileMessageThumbnailColor: UIColor = SBUColorSet.onlight02,
         quotedMessageTextColor: UIColor = SBUColorSet.onlight03,
         quotedMessageTextFont: UIFont = SBUFontSet.body3,
@@ -280,7 +280,7 @@ extension SBUMessageCellTheme {
                 linkColor: UIColor = SBUColorSet.primary300,
                 contentBackgroundColor: UIColor = SBUColorSet.background100,
                 pressedContentBackgroundColor: UIColor = SBUColorSet.background300,
-                quotedMessageBackgroundColor: UIColor = SBUColorSet.background100,
+                quotedMessageBackgroundColor: UIColor,
                 quotedFileMessageThumbnailColor: UIColor = SBUColorSet.onlight02,
                 quotedMessageTextColor: UIColor = SBUColorSet.onlight03,
                 quotedMessageTextFont: UIFont = SBUFontSet.body3,
@@ -392,4 +392,3 @@ extension SBUMessageCellTheme {
         )
     }
 }
-

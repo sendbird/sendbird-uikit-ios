@@ -35,7 +35,6 @@ open class SBUModerationsModule {
     private var _headerComponent: SBUModerationsModule.Header?
     private var _listComponent: SBUModerationsModule.List?
     
-    
     // MARK: -
     
     /// Initializes module with components.
@@ -45,4 +44,3 @@ open class SBUModerationsModule {
         self.listComponent = listComponent
     }
 }
-

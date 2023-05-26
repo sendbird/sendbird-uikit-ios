@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 /// Event methods for the views updates and performing actions from the header component in channel creating module.
 public protocol SBUCreateChannelModuleHeaderDelegate: SBUBaseSelectUserModuleHeaderDelegate {
     /// Called when `titleView` value has been updated.
@@ -43,10 +42,8 @@ public protocol SBUCreateChannelModuleHeaderDelegate: SBUBaseSelectUserModuleHea
     func createChannelModule(_ headerComponent: SBUCreateChannelModule.Header, didTapRightItem rightItem: UIBarButtonItem)
 }
 
-
 /// Methods to get data source for the header component.
 public protocol SBUCreateChannelModuleHeaderDataSource: SBUBaseSelectUserModuleHeaderDataSource { }
-
 
 extension SBUCreateChannelModule {
     
@@ -77,10 +74,9 @@ extension SBUCreateChannelModule {
                 target: self,
                 action: #selector(onTapRightBarButton)
             )
-            createChannelButton.setTitleTextAttributes([.font : SBUFontSet.button2], for: .normal)
+            createChannelButton.setTitleTextAttributes([.font: SBUFontSet.button2], for: .normal)
             return createChannelButton
         }
-        
         
         // MARK: - Logic properties (Public)
         /// The object that acts as the delegate of the header component. The delegate must adopt the `SBUCreateChannelModuleHeaderDelegate` protocol.
@@ -93,7 +89,6 @@ extension SBUCreateChannelModule {
             get { self.baseDataSource as? SBUCreateChannelModuleHeaderDataSource }
             set { self.baseDataSource = newValue }
         }
-        
         
         // MARK: - LifeCycle
         @available(*, unavailable, renamed: "SBUCreateChannelModule.Header()")
@@ -124,14 +119,12 @@ extension SBUCreateChannelModule {
             self.setupStyles()
         }
         
-        
         // MARK: - Common
         open override func updateRightBarButton() {
             super.updateRightBarButton()
             
             self.rightBarButton?.title = SBUStringSet.CreateChannel_Create(self.selectedUserList?.count ?? 0)
         }
-        
         
         // MARK: - Attach update delegate on view
         public override func didUpdateTitleView() {
@@ -144,17 +137,16 @@ extension SBUCreateChannelModule {
             self.delegate?.createChannelModule(self, didUpdateRightItem: self.rightBarButton)
         }
         
-        
         // MARK: - Actions
         /// The action of the leftBarButton. It calls `createChannelModule(_:didTapLeftItem:)` delegate method.
-        @objc public override func onTapLeftBarButton() {
+        public override func onTapLeftBarButton() {
             if let leftBarButton = self.leftBarButton {
                 self.delegate?.createChannelModule(self, didTapLeftItem: leftBarButton)
             }
         }
         
         /// The action of the rightBarButton. It calls `createChannelModule(_:didTapRightItem:)` delegate method.
-        @objc public override func onTapRightBarButton() {
+        public override func onTapRightBarButton() {
             if let rightBarButton = self.rightBarButton {
                 self.delegate?.createChannelModule(self, didTapRightItem: rightBarButton)
             }

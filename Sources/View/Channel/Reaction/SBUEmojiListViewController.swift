@@ -30,11 +30,9 @@ class SBUEmojiListViewController: SBUBaseViewController, UICollectionViewDelegat
         let window = UIApplication.shared.currentWindow
         return window?.safeAreaInsets.bottom ?? 0
     }
-
     
     // MARK: - Action
-    var emojiTapHandler: ((_ emojiKey: String, _ setSelect: Bool) -> Void)? = nil
-
+    var emojiTapHandler: ((_ emojiKey: String, _ setSelect: Bool) -> Void)?
     
     // MARK: - Lifecycle
     @available(*, unavailable, renamed: "SBUEmojiListViewController.init(message:)")
@@ -79,7 +77,6 @@ class SBUEmojiListViewController: SBUBaseViewController, UICollectionViewDelegat
         guard emojiList.count > 0 else { return }
         self.collectionView.scrollToItem(at: .init(row: 0, section: 0), at: .top, animated: true)
     }
-    
     
     // MARK: - Sendbird UIKit Life cycle
     override func setupViews() {
@@ -140,7 +137,6 @@ class SBUEmojiListViewController: SBUBaseViewController, UICollectionViewDelegat
     override func setupStyles() {
         self.view.backgroundColor = theme.backgroundColor
     }
-    
 
     // MARK: - Common
     func calculateCollectionViewContentHieght() -> CGFloat {

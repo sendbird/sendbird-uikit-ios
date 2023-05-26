@@ -17,7 +17,6 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
     public var useReaction = false
     public var useQuotedMessage = false
     public var useThreadInfo = false
-
     
     // MARK: Views: Controls
     public lazy var userNameView: UIView = {
@@ -28,7 +27,6 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
     
     public lazy var profileView: UIView = SBUMessageProfileView()
     public lazy var stateView: UIView = SBUMessageStateView()
-
     
     // MARK: Views: Layouts
     
@@ -95,7 +93,6 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
     
     public private(set) lazy var threadInfoSpacing: UIView = UIView()
     public lazy var threadInfoView: (UIView & SBUThreadInfoViewProtocol)? = SBUThreadInfoView()
-
     
     // + ----------------- + --------- +
     // | mainContainerView | stateView |
@@ -128,7 +125,6 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
     
     /// A view that is a spacer in `messageHStackView`.
     public let messageSpacing = UIView()
-
     
     // MARK: - Gesture Recognizers
     
@@ -139,7 +135,6 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
     lazy var contentTapRecognizer: UITapGestureRecognizer = {
         return .init(target: self, action: #selector(self.onTapContentView(sender:)))
     }()
-
     
     // MARK: - View Lifecycle
     open override func setupViews() {
@@ -354,7 +349,6 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
             self.threadHStackView.isHidden = true
         }
         
-        
         // MARK: Group messages
         self.setMessageGrouping()
     }
@@ -551,7 +545,6 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
     @objc open func onTapUserProfileView(sender: UITapGestureRecognizer) {
         self.userProfileTapHandler?()
     }
-    
     
     @available(*, deprecated, renamed: "configure(message:configuration:)") // 2.2.0
     open func configure(_ message: BaseMessage,

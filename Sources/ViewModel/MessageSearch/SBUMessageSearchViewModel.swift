@@ -9,17 +9,14 @@
 import Foundation
 import SendbirdChatSDK
 
-
 public protocol SBUMessageSearchViewModelDelegate: SBUCommonViewModelDelegate {
     /// Called when the search results has been changed.
     func searchViewModel(_ viewModel: SBUMessageSearchViewModel, didChangeSearchResults results: [BaseMessage], needsToReload: Bool)
 }
 
-
 open class SBUMessageSearchViewModel {
     // MARK: - Constants
     static let limit: UInt = 20
-    
     
     // MARK: - Property (Public)
     public private(set) var channel: BaseChannel?
@@ -27,18 +24,16 @@ open class SBUMessageSearchViewModel {
     @SBUAtomic public private(set) var searchResultList: [BaseMessage] = []
 
     /// This param will be used on entering a channel from selecting an item from the search results.
-    public var messageListParams: MessageListParams? = nil
+    public var messageListParams: MessageListParams?
     
     public private(set) var messageSearchQuery: MessageSearchQuery?
-    
     
     // MARK: - Property (Private)
     weak var delegate: SBUMessageSearchViewModelDelegate?
 
     var customMessageSearchQueryParams: MessageSearchQueryParams?
     
-    var keyword: String? = nil
-    
+    var keyword: String?
     
     // MARK: - Lifecycle
     public init(

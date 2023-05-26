@@ -16,7 +16,6 @@ public class SBUChannelTitleView: UIView {
     @SBUThemeWrapper(theme: SBUTheme.componentTheme)
     public var theme: SBUComponentTheme
     
-    
     // MARK: - Private
     public lazy var contentView = UIView()
     public lazy var coverImage = SBUCoverImageView()
@@ -27,6 +26,8 @@ public class SBUChannelTitleView: UIView {
 
     private let kCoverImageSize: CGFloat = 34.0
     
+    /// - Since: 3.5.8
+    var isChatNotificationChannelUsed: Bool = false
     
     // MARK: - Life cycle
     override public init(frame: CGRect) {
@@ -53,7 +54,6 @@ public class SBUChannelTitleView: UIView {
         self.statusField.leftView = self.onlineStateIcon
         self.statusField.leftViewMode = .never
         self.statusField.isUserInteractionEnabled = false
-        
         
         self.stackView.alignment = .center
         self.stackView.axis = .vertical
@@ -123,8 +123,11 @@ public class SBUChannelTitleView: UIView {
     func setupStyles() {
         self.onlineStateIcon.backgroundColor = theme.titleOnlineStateColor
         
-        self.titleLabel.font = theme.titleFont
-        self.titleLabel.textColor = theme.titleColor
+        // When used in ChatNotification, set the style in headerComponent.
+        if !self.isChatNotificationChannelUsed {
+            self.titleLabel.font = theme.titleFont
+            self.titleLabel.textColor = theme.titleColor
+        }
 
         self.statusField.font = theme.titleStatusFont
         self.statusField.textColor = theme.titleStatusColor
@@ -245,8 +248,8 @@ public class SBUChannelTitleView: UIView {
     }
     
     public override var intrinsicContentSize: CGSize {
-        //NOTE: this is under assumption that this view is used in
-        //navigation and / or stack view to shrink but keep max width
+        // NOTE: this is under assumption that this view is used in
+        // navigation and / or stack view to shrink but keep max width
         return CGSize(width: 100000, height: self.frame.height)
     }
 }

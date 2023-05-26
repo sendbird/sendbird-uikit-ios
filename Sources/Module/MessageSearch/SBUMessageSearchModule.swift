@@ -35,7 +35,6 @@ open class SBUMessageSearchModule {
     private var _headerComponent: SBUMessageSearchModule.Header?
     private var _listComponent: SBUMessageSearchModule.List?
     
-    
     // MARK: -
     
     /// Initializes module with components.
@@ -45,4 +44,3 @@ open class SBUMessageSearchModule {
         self.listComponent = listComponent
     }
 }
-

@@ -48,7 +48,6 @@ open class SBUOpenChannelModule {
     private var _inputComponent: SBUOpenChannelModule.Input?
     private var _mediaComponent: SBUOpenChannelModule.Media?
     
-    
     // MARK: -
     public init(
         headerComponent: SBUOpenChannelModule.Header? = nil,
@@ -62,4 +61,3 @@ open class SBUOpenChannelModule {
         self.mediaComponent = mediaComponent
     }
 }
-

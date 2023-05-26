@@ -80,7 +80,6 @@ public extension UIImage {
         return self
     }
     
-    
     /// Converts image to data.
     ///
     /// - Note: If the `SBUGlobals.isImageCompressionEnabled` is `true`, the image will be resized with `SBUGlobals.imageResizingSize` and compressed with `SBUGlobals.imageCompressionRate`.
@@ -107,13 +106,12 @@ public extension UIImage {
     }
 }
 
-
 // MARK: - Private extension
 extension UIImage {
     static func from(color: UIColor) -> UIImage {
         let rect = CGRect(x: 0, y: 0, width: 1, height: 1)
         UIGraphicsBeginImageContext(rect.size)
-        guard let context = UIGraphicsGetCurrentContext() else { return UIImage()}
+        guard let context = UIGraphicsGetCurrentContext() else { return UIImage() }
         context.setFillColor(color.cgColor)
         context.fill(rect)
         guard let image = UIGraphicsGetImageFromCurrentImageContext() else { return UIImage() }
@@ -150,10 +148,10 @@ extension UIImage {
         return scaledImage
     }
     
-    
     convenience init(url: URL) {
         self.init()
         DispatchQueue.global().async { [weak self] in
+            if self == nil { return }
             if let data = try? Data(contentsOf: url) {
                 if let image = UIImage(data: data) {
                     DispatchQueue.main.async {
@@ -224,7 +222,6 @@ extension UIImage {
     }
 }
 
-
 // MARK: - GIF image handling (figuring out gif delays)
 /// Note: https://github.com/kiritmodi2702/GIF-Swift/blob/master/GIF-Swift/iOSDevCenters%2BGIF.swift
 extension UIImage {
@@ -241,16 +238,16 @@ extension UIImage {
         
         // case kCGImagePropertyGIFUnclampedDelayTime
         let unclampedKey = Unmanaged.passUnretained(kCGImagePropertyGIFUnclampedDelayTime).toOpaque()
-        if let unclampedPointer:UnsafeRawPointer = CFDictionaryGetValue(gifProperties, unclampedKey) {
-            if let delayTime = unsafeBitCast(unclampedPointer, to:AnyObject.self).floatValue, delayTime > 0 {
+        if let unclampedPointer: UnsafeRawPointer = CFDictionaryGetValue(gifProperties, unclampedKey) {
+            if let delayTime = unsafeBitCast(unclampedPointer, to: AnyObject.self).floatValue, delayTime > 0 {
                 return delayTime
             }
         }
         
         // case kCGImagePropertyGIFDelayTime
         let clampedKey = Unmanaged.passUnretained(kCGImagePropertyGIFDelayTime).toOpaque()
-        if let clampedPointer:UnsafeRawPointer = CFDictionaryGetValue(gifProperties, clampedKey) {
-            if let delayTime = unsafeBitCast(clampedPointer, to:AnyObject.self).floatValue, delayTime > 0 {
+        if let clampedPointer: UnsafeRawPointer = CFDictionaryGetValue(gifProperties, clampedKey) {
+            if let delayTime = unsafeBitCast(clampedPointer, to: AnyObject.self).floatValue, delayTime > 0 {
                 return delayTime
             }
         }
@@ -274,7 +271,7 @@ extension UIImage {
         }
     }
     
-    internal class func gcdForArray(_ array: Array<Int>) -> Int {
+    internal class func gcdForArray(_ array: [Int]) -> Int {
         guard var gcd = array.first else { return 1 }
         array.forEach { gcd = UIImage.gcdForPair($0, gcd) }
         return gcd

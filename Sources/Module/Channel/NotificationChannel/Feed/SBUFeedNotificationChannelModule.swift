@@ -38,4 +38,3 @@ public class SBUFeedNotificationChannelModule {
         self._listComponent = _listComponent
     }
 }
-

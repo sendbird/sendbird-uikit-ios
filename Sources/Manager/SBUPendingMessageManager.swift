@@ -9,24 +9,22 @@
 import Foundation
 import SendbirdChatSDK
 
-
 public class SBUPendingMessageManager {
     public static let shared = SBUPendingMessageManager()
     
     private init() { }
     
     /// channel url : array of pending
-    private var pendingMessages: [String:[String:BaseMessage]] = [:]
+    private var pendingMessages: [String: [String: BaseMessage]] = [:]
     /// message requestId : file params
     private var pendingFileInfos: [String: FileMessageCreateParams] = [:]
     
     /// channel url : array of pending
-    private var pendingThreadMessages: [String:[String:BaseMessage]] = [:]
+    private var pendingThreadMessages: [String: [String: BaseMessage]] = [:]
     /// message requestId : file params
     private var pendingThreadFileInfos: [String: FileMessageCreateParams] = [:]
     
-    
-    public func addFileInfo(requestId:String?, params: FileMessageCreateParams?, forMessageThread: Bool = false) {
+    public func addFileInfo(requestId: String?, params: FileMessageCreateParams?, forMessageThread: Bool = false) {
         guard let requestId = requestId, let params = params else { return }
         if forMessageThread {
             self.pendingThreadFileInfos[requestId] = params
@@ -37,7 +35,7 @@ public class SBUPendingMessageManager {
     
     public func getFileInfo(requestId: String?, forMessageThread: Bool = false) -> FileMessageCreateParams? {
         guard let requestId = requestId else { return nil }
-        if forMessageThread{
+        if forMessageThread {
             return self.pendingThreadFileInfos[requestId]
         } else {
             return self.pendingFileInfos[requestId]
@@ -63,10 +61,10 @@ public class SBUPendingMessageManager {
         guard let channelURL = channelURL else { return [] }
         if forMessageThread {
             let pendingDict = self.pendingThreadMessages[channelURL] ?? [:]
-            return pendingDict.map { $1 }.sorted { $0.createdAt < $1.createdAt };
+            return pendingDict.map { $1 }.sorted { $0.createdAt < $1.createdAt }
         } else {
             let pendingDict = self.pendingMessages[channelURL] ?? [:]
-            return pendingDict.map { $1 }.sorted { $0.createdAt < $1.createdAt };
+            return pendingDict.map { $1 }.sorted { $0.createdAt < $1.createdAt }
         }
     }
     

@@ -14,7 +14,7 @@ open class SBUOpenChannelFileMessageCell: SBUOpenChannelContentBaseMessageCell {
     
     // MARK: - Public property
     public var fileMessage: FileMessage? {
-        return self.message as? FileMessage
+        self.message as? FileMessage
     }
     
     public lazy var baseFileContentView: SBUBaseFileContentView = {
@@ -23,7 +23,6 @@ open class SBUOpenChannelFileMessageCell: SBUOpenChannelContentBaseMessageCell {
     }()
     
     private var ratioConstraint: NSLayoutConstraint!
-    
     
     // MARK: - View Lifecycle
     open override func setupViews() {
@@ -59,7 +58,6 @@ open class SBUOpenChannelFileMessageCell: SBUOpenChannelContentBaseMessageCell {
         self.baseFileContentView.setupStyles()
     }
     
-    
     // MARK: - Common
     open func configure(_ message: FileMessage,
                           hideDateView: Bool,
@@ -78,7 +76,7 @@ open class SBUOpenChannelFileMessageCell: SBUOpenChannelContentBaseMessageCell {
         
         switch fileType {
         case .image, .video:
-            if !(self.baseFileContentView is SBUOpenChannelImageContentView){
+            if !(self.baseFileContentView is SBUOpenChannelImageContentView) {
                 self.baseFileContentView.removeFromSuperview()
                 self.baseFileContentView = SBUOpenChannelImageContentView()
                 self.baseFileContentView.addGestureRecognizer(self.contentLongPressRecognizer)

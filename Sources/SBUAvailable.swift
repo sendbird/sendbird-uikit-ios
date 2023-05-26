@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 public class SBUAvailable {
     // MARK: - Private
     static let REACTIONS = "reactions"
@@ -37,7 +36,6 @@ public class SBUAvailable {
         
         return applicationAttributes.contains(key)
     }
-    
     
     // MARK: - Public
     
@@ -87,7 +85,7 @@ public class SBUAvailable {
     /// - Returns: `true` if the notification channel was enabled, `false` otherwise.
     /// - Since: 3.5.0
     static var isNotificationChannelEnabled: Bool {
-        return SendbirdChat.getAppInfo()?.notificationInfo?.isEnabled ?? false
+        SendbirdChat.getAppInfo()?.notificationInfo?.isEnabled ?? false
     }
 
     /// This method checks if the application enabled notification channel feature.

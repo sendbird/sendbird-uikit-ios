@@ -8,7 +8,6 @@
 
 import UIKit
 
-
 extension SBUGlobals {
     // Application Id
     @available(*, deprecated, renamed: "applicationId") // 3.0.0

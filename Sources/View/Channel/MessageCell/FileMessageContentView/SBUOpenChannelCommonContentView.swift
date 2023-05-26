@@ -62,7 +62,7 @@ open class SBUOpenChannelCommonContentView: SBUCommonContentView {
         
         self.fileImageView.image = image
         
-        let attributes: [NSAttributedString.Key : Any] = [
+        let attributes: [NSAttributedString.Key: Any] = [
             .underlineStyle: NSUnderlineStyle.single.rawValue,
             .font: theme.fileMessageNameFont,
             .underlineColor: theme.fileMessageLeftTextColor,

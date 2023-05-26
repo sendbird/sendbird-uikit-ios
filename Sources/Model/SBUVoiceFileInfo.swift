@@ -12,14 +12,13 @@ import SendbirdChatSDK
 /// This is a structure that has the essential information of a voice message such as file name, file path, play time and so on.
 public class SBUVoiceFileInfo: NSObject {
     // for send message
-    var fileName: String? = nil
-    var filePath: URL? = nil
+    var fileName: String?
+    var filePath: URL?
     
     // for play
-    var playtime: Double? = nil
+    var playtime: Double?
     var currentPlayTime: Double = 0 // ms
     var isPlaying: Bool = false
-    
     
     init(fileName: String? = nil,
          filePath: URL? = nil,
@@ -32,7 +31,6 @@ public class SBUVoiceFileInfo: NSObject {
         self.playtime = playtime
         self.currentPlayTime = currentPlayTime
     }
-    
     
     /// Creates voice file info with `FileMessage` object
     /// - Parameter message: `FileMessage` object

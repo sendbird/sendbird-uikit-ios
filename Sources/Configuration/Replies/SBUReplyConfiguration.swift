@@ -9,7 +9,6 @@
 import Foundation
 import SendbirdChatSDK
 
-
 /// The configuration for reply.
 /// - Since: 3.3.0
 public class SBUReplyConfiguration {
@@ -32,7 +31,7 @@ public class SBUReplyConfiguration {
     
     var includesThreadInfo: Bool = true
     var includesParentMessageInfo: Bool {
-        return self.replyType != .none
+        self.replyType != .none
     }
     
     /// Initilizes `replyType` and `selectedType`.

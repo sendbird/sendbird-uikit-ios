@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 open class SBUOpenChannelListViewController: SBUBaseChannelListViewController, SBUOpenChannelListModuleHeaderDelegate, SBUOpenChannelListModuleListDelegate, SBUOpenChannelListModuleListDataSource, SBUCommonViewModelDelegate, SBUOpenChannelListViewModelDelegate {
     
     // MARK: - UI Properties (Public)
@@ -25,17 +24,14 @@ open class SBUOpenChannelListViewController: SBUBaseChannelListViewController, S
     @SBUThemeWrapper(theme: SBUTheme.openChannelListTheme)
     public var theme: SBUOpenChannelListTheme
     
-    
     // MARK: - Logic properties (Public)
     public var viewModel: SBUOpenChannelListViewModel? {
         get { self.baseViewModel as? SBUOpenChannelListViewModel }
         set { self.baseViewModel = newValue }
     }
     
-    
     /// This object has a list of all channels.
     public var channelList: [OpenChannel] { self.viewModel?.channelList ?? [] }
-    
     
     // MARK: - Lifecycle
     @available(*, unavailable, renamed: "SBUOpenChannelListViewController()")
@@ -93,7 +89,7 @@ open class SBUOpenChannelListViewController: SBUBaseChannelListViewController, S
     }
     
     open override var preferredStatusBarStyle: UIStatusBarStyle {
-        return self.theme.statusBarStyle
+        self.theme.statusBarStyle
     }
     
     deinit {
@@ -102,7 +98,6 @@ open class SBUOpenChannelListViewController: SBUBaseChannelListViewController, S
         self.headerComponent = nil
         self.listComponent = nil
     }
-    
     
     // MARK: - ViewModel
     /// Creates the view model.
@@ -114,7 +109,6 @@ open class SBUOpenChannelListViewController: SBUBaseChannelListViewController, S
             channelListQuery: channelListQuery
         )
     }
-    
     
     // MARK: - Sendbird UIKit Life cycle
     open override func setupViews() {
@@ -146,7 +140,6 @@ open class SBUOpenChannelListViewController: SBUBaseChannelListViewController, S
     open override func updateStyles() {
         super.updateStyles()
     }
-
     
     // MARK: - Actions (Show)
     
@@ -176,7 +169,6 @@ open class SBUOpenChannelListViewController: SBUBaseChannelListViewController, S
         self.navigationController?.pushViewController(createOpenChannelVC, animated: true)
     }
     
-    
     // MARK: - Error handling
     private func errorHandler(_ error: SBError) {
         self.errorHandler(error.localizedDescription, error.code)
@@ -185,7 +177,6 @@ open class SBUOpenChannelListViewController: SBUBaseChannelListViewController, S
     open override func errorHandler(_ message: String?, _ code: NSInteger? = nil) {
         SBULog.error("Did receive error: \(message ?? "")")
     }
-    
 
     // MARK: - SBUOpenChannelListModuleHeaderDelegate
     open func baseChannelListModule(_ headerComponent: SBUBaseChannelListModule.Header,
@@ -213,7 +204,6 @@ open class SBUOpenChannelListViewController: SBUBaseChannelListViewController, S
         self.showCreateChannel()
     }
     
-    
     // MARK: - SBUOpenChannelListModuleListDelegate
     open func baseChannelListModule(_ listComponent: SBUBaseChannelListModule.List,
                                 didSelectRowAt indexPath: IndexPath) {
@@ -234,14 +224,11 @@ open class SBUOpenChannelListViewController: SBUBaseChannelListViewController, S
         self.viewModel?.loadNextChannelList(reset: true)
     }
     
-    
-    
     // MARK: - SBUOpenChannelListModuleListDataSource
     open func baseChannelListModule(_ listComponent: SBUBaseChannelListModule.List,
                                 channelsInTableView tableView: UITableView) -> [BaseChannel]? {
         return self.viewModel?.channelList
     }
-    
     
     // MARK: - SBUCommonViewModelDelegate
     open func connectionStateDidChange(_ isConnected: Bool) {
@@ -265,7 +252,6 @@ open class SBUOpenChannelListViewController: SBUBaseChannelListViewController, S
             self.listComponent?.reloadTableView()
         }
     }
-    
     
     // MARK: - SBUOpenChannelListViewModelDelegate
     open func openChannelListViewModel(_ viewModel: SBUOpenChannelListViewModel,

@@ -35,7 +35,6 @@ open class SBUGroupChannelSettingsModule {
     private var _headerComponent: SBUGroupChannelSettingsModule.Header?
     private var _listComponent: SBUGroupChannelSettingsModule.List?
     
-    
     // MARK: -
     /// Initializes module with components.
     public init(headerComponent: SBUGroupChannelSettingsModule.Header? = nil,
@@ -44,4 +43,3 @@ open class SBUGroupChannelSettingsModule {
         self.listComponent = listComponent
     }
 }
-

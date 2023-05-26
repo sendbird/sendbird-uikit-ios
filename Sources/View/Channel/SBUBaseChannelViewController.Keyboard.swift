@@ -42,7 +42,6 @@ extension SBUBaseChannelViewController {
         self.baseListComponent?.tableView.addGestureRecognizer(pan)
     }
     
-    
     /// This function dismisses the keyboard.
     /// - Since: 1.2.5
     @objc
@@ -55,9 +54,9 @@ extension SBUBaseChannelViewController {
     public func setKeyboardWindowFrame(origin: CGPoint, size: CGSize? = nil) {
         let windowBounds = UIApplication.shared.currentWindow?.bounds ?? .zero
         let screenSize: CGSize = size ?? windowBounds.size
-        var keyboardWindow: UIWindow? = nil
+        var keyboardWindow: UIWindow?
         for window in UIApplication.shared.windows {
-            if (NSStringFromClass(type(of: window).self) == "UIRemoteKeyboardWindow") {
+            if NSStringFromClass(type(of: window).self) == "UIRemoteKeyboardWindow" {
                 keyboardWindow = window
             }
         }
@@ -97,7 +96,7 @@ extension SBUBaseChannelViewController {
                 return
             }
             
-            if (beginFrame.origin.equalTo(endFrame.origin) && beginFrame.height != endFrame.height) {
+            if beginFrame.origin.equalTo(endFrame.origin) && beginFrame.height != endFrame.height {
                 return
             }
             

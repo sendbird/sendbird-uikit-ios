@@ -13,7 +13,6 @@ public protocol SBUEmptyViewDelegate: NSObjectProtocol {
     func didSelectRetry()
 }
 
-
 open class SBUEmptyView: SBUView {
     // MARK: - Properties (Public)
     public var type: EmptyViewType = .none
@@ -44,7 +43,6 @@ open class SBUEmptyView: SBUView {
     public var isOverlay = false
     
     public var emptyViewTopConstraint: NSLayoutConstraint?
-    
 
     // MARK: - Properties (Private)
     
@@ -58,7 +56,6 @@ open class SBUEmptyView: SBUView {
     
     var topMargin = UIView()
     var bottomMargin = UIView()
-    
     
     // MARK: - Lifecycle
     override public init(frame: CGRect) {
@@ -134,7 +131,6 @@ open class SBUEmptyView: SBUView {
         self.retryButton.titleLabel?.font = theme.emptyViewRetryButtonFont
         self.retryButton.tintColor = theme.emptyViewRetryButtonTintColor
     }
-    
     
     // MARK: - Common
     
@@ -230,7 +226,6 @@ open class SBUEmptyView: SBUView {
         }
         self.isHidden = needToHidden
     }
-    
     
     // MARK: - Action
     

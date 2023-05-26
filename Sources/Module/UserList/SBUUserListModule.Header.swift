@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 /// Event methods for the views updates and performing actions from the header component in user list module.
 public protocol SBUUserListModuleHeaderDelegate: SBUCommonDelegate {
     /// Called when `titleView` value has been updated.
@@ -43,7 +42,6 @@ public protocol SBUUserListModuleHeaderDelegate: SBUCommonDelegate {
     func userListModule(_ headerComponent: SBUUserListModule.Header, didTapRightItem rightItem: UIBarButtonItem)
 }
 
-
 extension SBUUserListModule {
     
     /// A module component that represent the header of `SBUUserListModule`.
@@ -53,30 +51,29 @@ extension SBUUserListModule {
         
         /// A view that represents a title in navigation bar.
         /// - NOTE: When the value is updated, `userListModule(_:didUpdateTitleView:)` delegate function is called.
-        public var titleView: UIView? = nil {
+        public var titleView: UIView? {
             didSet { self.delegate?.userListModule(self, didUpdateTitleView: self.titleView) }
         }
         
         /// A view that represents a left `UIBarButtonItem` in navigation bar.
         /// - NOTE: When the value is updated, `userListModule(_:didUpdateLeftItem:)` delegate function is called.
         /// and when the value is tapped, `userListModule(_:didTapLeftItem:)` delegate function is called.
-        public var leftBarButton: UIBarButtonItem? = nil {
+        public var leftBarButton: UIBarButtonItem? {
             didSet { self.delegate?.userListModule(self, didUpdateLeftItem: self.leftBarButton) }
         }
         
         /// A view that represents a right `UIBarButtonItem` in navigation bar.
         /// - NOTE: When the value is updated, `userListModule(_:didUpdateRightItem:)` delegate function is called.
         /// and when the value is tapped, `userListModule(_:didTapRightItem:)` delegate function is called.
-        public var rightBarButton: UIBarButtonItem? = nil {
+        public var rightBarButton: UIBarButtonItem? {
             didSet { self.delegate?.userListModule(self, didUpdateRightItem: self.rightBarButton) }
         }
         
         /// The object that is used as the theme of the header component. The theme must adopt the `SBUUserListTheme` class.
-        public var theme: SBUUserListTheme? = nil
+        public var theme: SBUUserListTheme?
         
         /// The object that is used as the component theme of the header component. The theme must adopt the `SBUUserListTheme` class.
-        public var componentTheme: SBUComponentTheme? = nil
-        
+        public var componentTheme: SBUComponentTheme?
         
         // MARK: - UI properties (Private)
         private func defaultTitleView() -> SBUNavigationTitleView {
@@ -123,20 +120,18 @@ extension SBUUserListModule {
             return addButton
         }
         
-        
         // MARK: - Logic properties (Public)
 
         /// The object that acts as the delegate of the header component.
         ///
         /// The delegate must adopt the `SBUUserListModuleHeaderDelegate`.
-        public weak var delegate: SBUUserListModuleHeaderDelegate? = nil
+        public weak var delegate: SBUUserListModuleHeaderDelegate?
         
         /// - Since: 3.1.0
         public var channelType: ChannelType = .group
         
         /// The object that the type of user list.
         public private(set) var userListType: ChannelUserListType = .none
-        
         
         // MARK: - LifeCycle
         @available(*, unavailable, renamed: "SBUUserListModule.Header()")
@@ -214,18 +209,17 @@ extension SBUUserListModule {
             self.rightBarButton?.tintColor = theme?.rightBarButtonSelectedTintColor
         }
         
-        
         // MARK: - Actions
         
         /// The action of `leftBarButton`. It calls `userListModule(_:didTapLeftItem:)` when it's tapped
-        @objc public func onTapLeftBarButton() {
+        public func onTapLeftBarButton() {
             if let leftBarButton = self.leftBarButton {
                 self.delegate?.userListModule(self, didTapLeftItem: leftBarButton)
             }
         }
         
         /// The action of `rightBarButton`. It calls `userListModule(_:didTapRightItem:)` when it's tapped
-        @objc public func onTapRightBarButton() {
+        public func onTapRightBarButton() {
             if let rightBarButton = self.rightBarButton {
                 self.delegate?.userListModule(self, didTapRightItem: rightBarButton)
             }

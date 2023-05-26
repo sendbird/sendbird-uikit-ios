@@ -41,7 +41,6 @@ class SBUNotificationCell: SBUBaseMessageCell {
         }
     }
     
-    
     // MARK: - UI Views (Private)
     private var notificationTemplateRenderer: MessageTemplateRenderer?
 
@@ -50,7 +49,7 @@ class SBUNotificationCell: SBUBaseMessageCell {
         if let notification = self.message?.message, notification.count > 0 {
             return MessageTemplateRenderer(
                 body: .parsingError(text: notification),
-                fontFamily: SBUFontSet.FontFamily.notification
+                fontFamily: SBUFontSet.FontFamily.notifications
             )
         } else {
             return MessageTemplateRenderer(
@@ -58,14 +57,13 @@ class SBUNotificationCell: SBUBaseMessageCell {
                     text: SBUStringSet.Notification_Template_Error_Title,
                     subText: SBUStringSet.Notification_Template_Error_Subtitle
                 ),
-                fontFamily: SBUFontSet.FontFamily.notification
+                fontFamily: SBUFontSet.FontFamily.notifications
             )
         }
     }
     
     private var categoryMargin = UIView()
     private var profileMargin = UIView()
-    
     
     /// The green dot icon
     private lazy var defaultNewNotificationBadge: UIView = {
@@ -81,14 +79,11 @@ class SBUNotificationCell: SBUBaseMessageCell {
     
     var availableTemplateWidth: CGFloat = 0.0
     
-    
     // MARK: - Logic
     var type: NotificationType = .none
     
-    
     // MARK: - Delegate properties
     weak var delegate: SBUNotificationCellDelegate?
-    
     
     // MARK: - Actions
     var notificationActionHandler: ((SBUMessageTemplate.Action) -> Void)?
@@ -117,10 +112,11 @@ class SBUNotificationCell: SBUBaseMessageCell {
         }
         
         self.setupLayouts()
+        self.layoutIfNeeded()
     }
     
     override func setupViews() {
-        self.dateView = SBUNotificationTimelineView()
+        self.dateView = SBUNotificationTimelineView() // timeline
         self.dateView.isHidden = true
         
         if self.newNotificationBadge == nil {
@@ -259,7 +255,7 @@ class SBUNotificationCell: SBUBaseMessageCell {
         self.categoryLabel.font = self.notificationCellTheme.categoryTextFont
         self.categoryLabel.textColor = self.notificationCellTheme.categoryTextColor
         
-        self.dateLabel.font = self.notificationCellTheme.sentAtTextFont //SBUFontSet.caption4
+        self.dateLabel.font = self.notificationCellTheme.sentAtTextFont // SBUFontSet.caption4
         self.dateLabel.textColor = self.notificationCellTheme.sentAtTextColor
         self.dateLabel.adjustsFontSizeToFitWidth = true
     }
@@ -288,7 +284,7 @@ class SBUNotificationCell: SBUBaseMessageCell {
         var template: MessageTemplateData?
         do {
             template = try JSONDecoder().decode(MessageTemplateData.self, from: Data((bindedTemplate ?? "").utf8))
-        } catch{
+        } catch {
             SBULog.error(error)
         }
 
@@ -307,15 +303,14 @@ class SBUNotificationCell: SBUBaseMessageCell {
                     ? chatNotificationDownloadingHeight
                     : feedNotificationDownloadingHeight
                 ),
-                fontFamily: SBUFontSet.FontFamily.notification
+                fontFamily: SBUFontSet.FontFamily.notifications
             )
-        }
-        else if let bindedTemplate = bindedTemplate, !showFallback {
+        } else if let bindedTemplate = bindedTemplate, !showFallback {
             self.notificationTemplateRenderer = MessageTemplateRenderer(
                 with: bindedTemplate,
                 delegate: self,
                 maxWidth: self.availableTemplateWidth,
-                fontFamily: SBUFontSet.FontFamily.notification,
+                fontFamily: SBUFontSet.FontFamily.notifications,
                 actionHandler: { [weak self] action in
                     self?.statisticsForAction(with: subData)
                     self?.notificationActionHandler?(action)
@@ -394,7 +389,6 @@ class SBUNotificationCell: SBUBaseMessageCell {
         }
     }
     
-    
     // MARK: - Common
     
     /// Adds stat for action of notification to SendbirdStatistics.
@@ -404,14 +398,13 @@ class SBUNotificationCell: SBUBaseMessageCell {
         guard let subData = subData else { return false }
         
         // data scheme
-        var templateKey: String? = nil
+        var templateKey: String?
         var tags: [String] = []
         do {
             if let subDataDic = try JSONSerialization.jsonObject(
                 with: Data(subData.utf8),
                 options: []
-            ) as? [String: Any]
-            {
+            ) as? [String: Any] {
                 templateKey = subDataDic["template_key"] as? String
                 tags = subDataDic["tags"] as? [String] ?? []
             }
@@ -444,7 +437,6 @@ class SBUNotificationCell: SBUBaseMessageCell {
         return isSucceed
     }
 }
-
 
 // MARK: - MessageTemplateRendererDelegate
 extension SBUNotificationCell: MessageTemplateRendererDelegate {

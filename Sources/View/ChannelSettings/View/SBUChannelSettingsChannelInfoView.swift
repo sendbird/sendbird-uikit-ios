@@ -209,4 +209,3 @@ public class SBUChannelSettingsChannelInfoView: SBUView {
         self.lineViewBottomConstraint.isActive = !isOpenChannel
     }
 }
-

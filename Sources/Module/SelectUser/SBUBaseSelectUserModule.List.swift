@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 /// Event methods for the views updates and performing actions from the list component.
 public protocol SBUBaseSelectUserModuleListDelegate: SBUCommonDelegate { }
 
@@ -30,7 +29,6 @@ public protocol SBUBaseSelectUserModuleListDataSource: AnyObject {
     func baseSelectUserModule(_ listComponent: SBUBaseSelectUserModule.List, selectedUsersInTableView tableView: UITableView) -> Set<SBUUser>?
 }
 
-
 extension SBUBaseSelectUserModule {
     
     /// A module component that represent the list of `SBUBaseSelectUserModule`.
@@ -43,16 +41,15 @@ extension SBUBaseSelectUserModule {
         public var tableView = UITableView()
         
         /// A view that shows when there is no message in the channel.
-        public var emptyView: UIView? = nil {
+        public var emptyView: UIView? {
             didSet { self.tableView.backgroundView = self.emptyView }
         }
         
         /// The user cell for `UITableViewCell` object. Use `register(userCell:nib:)` to update.
-        public var userCell: UITableViewCell? = nil
+        public var userCell: UITableViewCell?
         
         /// The object that is used as the theme of the list component. The theme must adopt the `SBUUserListTheme` class.
-        public var theme: SBUUserListTheme? = nil
-        
+        public var theme: SBUUserListTheme?
         
         // MARK: - UI properties (Private)
         private lazy var defaultEmptyView: SBUEmptyView? = {
@@ -62,13 +59,12 @@ extension SBUBaseSelectUserModule {
             return emptyView
         }()
         
-        
         // MARK: - Logic properties (Public)
         /// The object that acts as the base delegate of the list component. The base delegate must adopt the `SBUBaseSelectUserModuleListDelegate`.
-        public weak var baseDelegate: SBUBaseSelectUserModuleListDelegate? = nil
+        public weak var baseDelegate: SBUBaseSelectUserModuleListDelegate?
         
         /// The object that acts as the base data source of the list component. The base data source must adopt the `SBUBaseSelectUserModuleListDataSource`.
-        public weak var baseDataSource: SBUBaseSelectUserModuleListDataSource? = nil
+        public weak var baseDataSource: SBUBaseSelectUserModuleListDataSource?
         
         /// The list of all users shown
         public var userList: [SBUUser]? {
@@ -79,7 +75,6 @@ extension SBUBaseSelectUserModule {
         public var selectedUserList: Set<SBUUser>? {
             self.baseDataSource?.baseSelectUserModule(self, selectedUsersInTableView: self.tableView)
         }
-        
         
         // MARK: - LifeCycle
         deinit {
@@ -129,7 +124,6 @@ extension SBUBaseSelectUserModule {
             
             (self.emptyView as? SBUEmptyView)?.setupStyles()
         }
-
         
         // MARK: - Common
         
@@ -140,7 +134,6 @@ extension SBUBaseSelectUserModule {
             return self.selectedUserList?.contains(where: { $0.userId == user.userId }) ?? false
 //            return self.selectedUserList?.contains(user) ?? false
         }
-        
         
         // MARK: - TableView: Cell
         
@@ -204,7 +197,6 @@ extension SBUBaseSelectUserModule.List: SBUEmptyViewDelegate {
     }
 }
 
-
 // MARK: - UITableView relations
 extension SBUBaseSelectUserModule.List: UITableViewDataSource, UITableViewDelegate {
     open func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -222,7 +214,7 @@ extension SBUBaseSelectUserModule.List: UITableViewDataSource, UITableViewDelega
     open func tableView(_ tableView: UITableView,
                         cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
-        var cell: UITableViewCell? = nil
+        var cell: UITableViewCell?
         if let userCell = self.userCell {
             cell = tableView.dequeueReusableCell(withIdentifier: userCell.sbu_className)
         } else {

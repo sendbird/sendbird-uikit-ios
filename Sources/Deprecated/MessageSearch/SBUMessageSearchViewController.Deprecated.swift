@@ -15,7 +15,7 @@ extension SBUMessageSearchViewController {
     public var searchBar: UIView? { get { headerComponent?.titleView } set { } }
     
     @available(*, unavailable, message: "This property has been moved to the `SBUMessageSearchModule.List`.", renamed: "listComponent.tableView")
-    public var tableView: UITableView? { listComponent?.tableView}
+    public var tableView: UITableView? { listComponent?.tableView }
     
     @available(*, unavailable, message: "This property has been moved to the `SBUMessageSearchModule.List`.", renamed: "listComponent.messageSearchResultCell")
     public var messageSearchResultCell: SBUMessageSearchResultCell? { get { nil } set { } }
@@ -24,7 +24,7 @@ extension SBUMessageSearchViewController {
     public var emptyView: UIView? { get { nil } set { } }
     
     @available(*, deprecated, message: "This property has been moved to the `SBUMessageSearchViewModel`.", renamed: "viewModel.messageListParams")
-    public var messageListParams: MessageListParams? { get {self.viewModel?.messageListParams} set {} }
+    public var messageListParams: MessageListParams? { get { self.viewModel?.messageListParams } set {} }
     
     @available(*, unavailable, message: "This property has been removed. If you want to customization, you can use `customMessageSearchQueryParams`.")
     public var customMessageSearchQueryBuilder: ((MessageSearchQueryBuilder) -> Void)? { get { nil } set {} }
@@ -49,14 +49,11 @@ extension SBUMessageSearchViewController {
     @available(*, unavailable, renamed: "shouldUpdateLoadingState(_:)")
     open func shouldDismissLoadingIndicator() {}
     
-    
-    
     // MARK: - ~2.2.0
     @available(*, unavailable, renamed: "errorHandler(_:_:)")
-    open func didReceiveError(_ message: String?, _ code: NSInteger?) {
+    public func didReceiveError(_ message: String?, _ code: NSInteger?) {
         self.errorHandler(message, code)
     }
 }
-
 
 public class MessageSearchQueryBuilder {}

@@ -75,13 +75,11 @@ protocol SBUChatNotificationChannelViewModelDelegate: SBUCommonViewModelDelegate
     )
 }
 
-
 /// A view model for the notification channel.
 class SBUChatNotificationChannelViewModel: NSObject {
     // MARK: - Constant
     let defaultFetchLimit: Int = 30
     let initPolicy: MessageCollectionInitPolicy = .cacheAndReplaceByApi
-    
     
     // MARK: - Logic properties (Public)
     
@@ -119,7 +117,6 @@ class SBUChatNotificationChannelViewModel: NSObject {
     /// ```
     var allowsReadStatusUpdate = false
     
-    
     // MARK: - Common
     
     /// This function checks that have the following list.
@@ -138,7 +135,6 @@ class SBUChatNotificationChannelViewModel: NSObject {
         self.notificationCollection?.startingPoint
     }
     
-    
     // MARK: - Logic properties (Private)
     var notificationCollection: MessageCollection?
     
@@ -155,7 +151,6 @@ class SBUChatNotificationChannelViewModel: NSObject {
     /// If this option is `true`, when a list is received through the local cache during initialization, it is displayed first.
     var displaysLocalCachedListFirst: Bool = false
     
-    
     // MARK: - LifeCycle
     override init() {
         super.init()
@@ -170,7 +165,6 @@ class SBUChatNotificationChannelViewModel: NSObject {
             identifier: "\(SBUConstant.groupChannelDelegateIdentifier).\(self.description)"
         )
     }
-    
     
     init(
         channel: GroupChannel? = nil,
@@ -234,7 +228,6 @@ class SBUChatNotificationChannelViewModel: NSObject {
         self.notificationCollection?.dispose()
     }
     
-    
     // MARK: - Channel related
     
     /// This function loads channel information and notification list.
@@ -266,7 +259,7 @@ class SBUChatNotificationChannelViewModel: NSObject {
         //            self.customizedNotificationListParams = notificationListParams
         //        }
         
-        SendbirdUI.connectIfNeeded { [weak self] user, error in
+        SendbirdUI.connectIfNeeded { [weak self] _, error in
             if let error = error {
                 self?.delegate?.didReceiveError(error, isBlocker: true)
                 completionHandler?(nil, error)
@@ -371,14 +364,12 @@ class SBUChatNotificationChannelViewModel: NSObject {
         self.markAsRead()
     }
     
-    
     // MARK: - Notification related
     func markAsRead() {
         if let channel = self.channel, allowsReadStatusUpdate {
             channel.markAsRead(completionHandler: nil)
         }
     }
-    
     
     // MARK: - Load Notifications
     
@@ -526,7 +517,6 @@ class SBUChatNotificationChannelViewModel: NSObject {
         )
     }
     
-    
     // MARK: - List
     
     /// This function updates the notifications in the list.
@@ -660,7 +650,6 @@ class SBUChatNotificationChannelViewModel: NSObject {
         self.notifications = []
     }
     
-    
     // MARK: - NotificationListParams
     private func resetNotificationListParams() {
         self.notificationListParams = self.customizedNotificationListParams?.copy() as? MessageListParams
@@ -677,7 +666,6 @@ class SBUChatNotificationChannelViewModel: NSObject {
         self.notificationListParams.includeMetaArray = true
     }
     
-    
     // MARK: - Common
     private func createCollectionIfNeeded(startingPoint: Int64) {
         // GroupChannel only
@@ -690,7 +678,6 @@ class SBUChatNotificationChannelViewModel: NSObject {
         self.notificationCollection?.delegate = self
     }
 }
-
 
 // MARK: - ConnectionDelegate
 extension SBUChatNotificationChannelViewModel: ConnectionDelegate {
@@ -708,7 +695,6 @@ extension SBUChatNotificationChannelViewModel: ConnectionDelegate {
         self.refreshChannel()
     }
 }
-
 
 // MARK: - GroupChannelDelegate
 extension SBUChatNotificationChannelViewModel: GroupChannelDelegate {
@@ -732,7 +718,7 @@ extension SBUChatNotificationChannelViewModel: GroupChannelDelegate {
             self,
             isScrollNearBottomInChannel: self.channel
         )
-        if (self.hasNext == true || isScrollBottom == false) {
+        if self.hasNext == true || isScrollBottom == false {
             if let channel = self.channel {
                 self.delegate?.chatNotificationChannelViewModel(
                     self,

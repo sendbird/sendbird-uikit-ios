@@ -8,7 +8,6 @@
 
 import SendbirdChatSDK
 
-
 public class SBUBaseMessageCellParams {
     /// The message.
     public let message: BaseMessage
@@ -35,7 +34,7 @@ public class SBUBaseMessageCellParams {
     public internal(set) var joinedAt: Int64 = 0
 
     /// Profile image URL for chat notification channel.
-    var profileImageURL: String? = nil
+    var profileImageURL: String?
     
     /**
      - Parameters:

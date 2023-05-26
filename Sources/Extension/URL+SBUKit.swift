@@ -11,9 +11,9 @@ import UIKit
 internal extension URL {
     func open() {
         let refinedURL = self.sanitise
-        UIApplication.shared.open(refinedURL, options: [.universalLinksOnly : true]) { (success) in
+        UIApplication.shared.open(refinedURL, options: [.universalLinksOnly: true]) { (success) in
             if !success {
-                //open normally
+                // open normally
                 UIApplication.shared.open(refinedURL, options: [:], completionHandler: nil)
             }
         }

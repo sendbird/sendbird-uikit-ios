@@ -29,7 +29,6 @@ class SBUNewNotificationInfo: SBUView {
     @SBUThemeWrapper(theme: SBUTheme.notificationTheme.list)
     var theme: SBUNotificationTheme.List
     
-    
     // MARK: - Life cycle
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -51,7 +50,7 @@ class SBUNewNotificationInfo: SBUView {
         if let newNotificationInfoButton = self.newNotificationInfoButton {
             newNotificationInfoButton.addTarget(
                 self,
-                action:#selector(onTapNewNotificationInfo),
+                action: #selector(onTapNewNotificationInfo),
                 for: .touchUpInside
             )
             self.addSubview(newNotificationInfoButton)

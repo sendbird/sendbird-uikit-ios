@@ -28,12 +28,12 @@ import CoreGraphics
 
 internal extension IntegerLiteralType {
     var f: CGFloat {
-        return CGFloat(self)
+        CGFloat(self)
     }
 }
 
 internal extension FloatLiteralType {
     var f: CGFloat {
-        return CGFloat(self)
+        CGFloat(self)
     }
 }

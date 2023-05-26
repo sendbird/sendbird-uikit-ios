@@ -9,16 +9,13 @@
 import UIKit
 import SendbirdChatSDK
 
-
 public protocol SBUBaseChannelListViewModelDelegate: SBUCommonViewModelDelegate {}
-
 
 open class SBUBaseChannelListViewModel: NSObject {
     
     // MARK: - Property (private)
     weak var baseDelegate: SBUBaseChannelListViewModelDelegate?
     var isLoading = false
-    
     
     // MARK: - Life Cycle
     
@@ -51,7 +48,7 @@ open class SBUBaseChannelListViewModel: NSObject {
     /// This function initialize the channel list. the channel list will reset.
     public func initChannelList() {
         SBULog.info("[Request] Next channel List")
-        SendbirdUI.connectIfNeeded { [weak self] user, error in
+        SendbirdUI.connectIfNeeded { [weak self] _, error in
             if let error = error {
                 self?.baseDelegate?.didReceiveError(error, isBlocker: true)
                 return
@@ -72,9 +69,7 @@ open class SBUBaseChannelListViewModel: NSObject {
     /// This function resets channelList
     public func reset() {}
     
-    
     // MARK: - SDK Relations
-    
     
     // MARK: - Common
     
@@ -88,7 +83,6 @@ open class SBUBaseChannelListViewModel: NSObject {
         self.baseDelegate?.shouldUpdateLoadingState(showIndicator)
     }
 }
-
 
 // MARK: ConnectionDelegate
 extension SBUBaseChannelListViewModel: ConnectionDelegate {

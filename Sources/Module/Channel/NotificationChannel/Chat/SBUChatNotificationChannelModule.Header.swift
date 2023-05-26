@@ -66,7 +66,6 @@ protocol SBUChatNotificationChannelModuleHeaderDelegate: SBUCommonDelegate {
     )
 }
 
-
 extension SBUChatNotificationChannelModule {
     
     /// A module component that represent the header of `SBUChatNotificationChannelModule`.
@@ -79,7 +78,7 @@ extension SBUChatNotificationChannelModule {
         /// Specifies a custom view of the channel title in the center of the navigation bar of the header component.
         /// - NOTE: When the value is updated, ``SBUChatNotificationChannelModuleHeaderDelegate/chatNotificationChannelModule(_:didUpdateTitleView:)`` delegate function is called.
         /// - NOTE: To update title text when you using default title view, please calls ``SBUChatNotificationChannelViewController/updateChannelTitle(_:)`` in ``SBUChatNotificationChannelViewController``
-        var titleView: UIView? = nil {
+        var titleView: UIView? {
             didSet {
                 self.delegate?.chatNotificationChannelModule(
                     self,
@@ -90,7 +89,7 @@ extension SBUChatNotificationChannelModule {
         
         /// Specifies an array of  `UIBarButtonItem` that is used as a button on the left side of the navigation bar.
         /// - NOTE: When the value is updated, ``SBUChatNotificationChannelModuleHeaderDelegate/chatNotificationChannelModule(_:didUpdateLeftItems:)``  delegate function is called.
-        var leftBarButtons: [UIBarButtonItem]? = nil {
+        var leftBarButtons: [UIBarButtonItem]? {
             didSet {
                 self.delegate?.chatNotificationChannelModule(
                     self,
@@ -101,7 +100,7 @@ extension SBUChatNotificationChannelModule {
         
         /// Specifies an array of  `UIBarButtonItem` that is used as a button on the right side of the navigation bar.
         /// - NOTE: When the value is updated, ``SBUChatNotificationChannelModuleHeaderDelegate/chatNotificationChannelModule(_:didUpdateRightItems:)`` delegate function is called.
-        var rightBarButtons: [UIBarButtonItem]? = nil {
+        var rightBarButtons: [UIBarButtonItem]? {
             didSet {
                 self.delegate?.chatNotificationChannelModule(
                     self,
@@ -109,7 +108,6 @@ extension SBUChatNotificationChannelModule {
                 )
             }
         }
-        
         
         /// The object that is used as the theme of the header component. The theme must adopt the ``SBUNotificationTheme.Header`` class.
         var theme: SBUNotificationTheme.Header {
@@ -122,6 +120,7 @@ extension SBUChatNotificationChannelModule {
         // MARK: - UI properties (Private)
         private let defaultTitleView: SBUChannelTitleView = {
             var titleView = SBUChannelTitleView()
+            titleView.isChatNotificationChannelUsed = true
             return titleView
         }()
         
@@ -147,8 +146,7 @@ extension SBUChatNotificationChannelModule {
         }()
         
         /// The object that acts as the delegate of the header component. The delegate must adopt the ``SBUChatNotificationChannelModuleHeaderDelegate`` protocol.
-        weak var delegate: SBUChatNotificationChannelModuleHeaderDelegate? = nil
-        
+        weak var delegate: SBUChatNotificationChannelModuleHeaderDelegate?
         
         // MARK: - LifeCycle
         @available(*, unavailable, renamed: "SBUChatNotificationChannelModule.Header()")
@@ -206,7 +204,6 @@ extension SBUChatNotificationChannelModule {
         func updateStyles() {
             self.setupStyles()
         }
-        
         
         // MARK: - Actions
         /// The action of an item in ``leftBarButtons``. It calls ``SBUFeedNotificationChannelModuleHeaderDelegate/feedNotificationChannelModule(_:didTapLeftItem:)`` when it's tapped

@@ -10,7 +10,7 @@ import Foundation
 
 extension String {
     var persistantHash: Int {
-        return self.utf8.reduce(5381) {
+        self.utf8.reduce(5381) {
             ($0 << 5) &+ $0 &+ Int($1)
         }
     }
@@ -52,7 +52,7 @@ extension String {
     func unwrappingRegex(_ regex: String) -> String? {
         guard let regex = try? NSRegularExpression(pattern: regex, options: []) else { return nil }
         let nsString = self as NSString
-        let matches = regex.matches(in: self, options: [], range: NSMakeRange(0, nsString.length))
+        let matches = regex.matches(in: self, options: [], range: NSRange(location: 0, length: nsString.length))
         let results = matches.map { result in
             (0..<result.numberOfRanges).map {
                 result.range(at: $0).location != NSNotFound

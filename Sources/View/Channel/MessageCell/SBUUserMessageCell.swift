@@ -16,7 +16,7 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
     public lazy var messageTextView: UIView = SBUUserMessageTextView()
     
     public var userMessage: UserMessage? {
-        return self.message as? UserMessage
+        self.message as? UserMessage
     }
     
     // + ------------ +
@@ -33,7 +33,6 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
         let webView = SBUMessageWebView()
         return webView
     }()
-
     
     // MARK: - View Lifecycle
     open override func setupViews() {
@@ -63,7 +62,7 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
         super.setupActions()
 
         if let messageTextView = self.messageTextView as? SBUUserMessageTextView {
-            messageTextView.longPressHandler = { [weak self] url in
+            messageTextView.longPressHandler = { [weak self] _ in
                 guard let self = self else { return }
                 self.onLongPressContentView(sender: nil)
             }
@@ -101,7 +100,6 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
         
         self.additionContainerView.layer.cornerRadius = 8
     }
-    
     
     // MARK: - Common
     open override func configure(with configuration: SBUBaseMessageCellParams) {

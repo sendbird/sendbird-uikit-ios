@@ -9,13 +9,11 @@
 import UIKit
 import SendbirdChatSDK
 
-
 /// Event methods for the views updates and performing actions from the list component in the open channel list.
 public protocol SBUOpenChannelListModuleListDelegate: SBUBaseChannelListModuleListDelegate {}
 
 /// Methods to get data source for the list component in the open channel list.
 public protocol SBUOpenChannelListModuleListDataSource: SBUBaseChannelListModuleListDataSource {}
-
 
 extension SBUOpenChannelListModule {
     /// A module component that represent the list of `SBUOpenChannelListModule`.
@@ -25,7 +23,6 @@ extension SBUOpenChannelListModule {
         // MARK: - UI properties (Public)
         /// The object that is used as the theme of the list component. The theme must adopt the `SBUOpenChannelListTheme` class.
         public var theme: SBUOpenChannelListTheme?
-
         
         // MARK: - Logic properties (Public)
         /// The object that acts as the delegate of the list component. The delegate must adopt the `SBUOpenChannelListModuleListDelegate`.
@@ -44,7 +41,6 @@ extension SBUOpenChannelListModule {
         public var channelList: [OpenChannel]? {
             self.baseChannelList as? [OpenChannel]
         }
-        
 
         // MARK: - LifeCycle
         @available(*, unavailable, renamed: "SBUOpenChannelListModule.List()")
@@ -105,7 +101,6 @@ extension SBUOpenChannelListModule {
     }
 }
 
-
 // MARK: - UITableView relations
 extension SBUOpenChannelListModule.List {
     open override func numberOfSections(in tableView: UITableView) -> Int {
@@ -124,7 +119,7 @@ extension SBUOpenChannelListModule.List {
             return UITableViewCell()
         }
         
-        var cell: SBUBaseChannelCell? = nil
+        var cell: SBUBaseChannelCell?
         if let channelCell = self.channelCell {
             cell = tableView.dequeueReusableCell(
                 withIdentifier: channelCell.sbu_className

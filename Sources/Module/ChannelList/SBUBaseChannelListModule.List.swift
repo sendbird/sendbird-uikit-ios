@@ -46,7 +46,6 @@ public protocol SBUBaseChannelListModuleListDataSource: AnyObject {
     func baseChannelListModule(_ listComponent: SBUBaseChannelListModule.List, channelsInTableView tableView: UITableView) -> [BaseChannel]?
 }
 
-
 extension SBUBaseChannelListModule {
     /// A module component that represent the list of `SBUBaseChannelListModule`.
     @objc(SBUBaseChannelListModuleList)
@@ -65,7 +64,6 @@ extension SBUBaseChannelListModule {
         /// The custom channel cell for `SBUBaseChannelCell` object. Use `register(customCell:nib:)` to update.
         public var customCell: SBUBaseChannelCell?
         
-        
         // MARK: - UI properties (Private)
         private lazy var defaultEmptyView: SBUEmptyView? = {
             let emptyView = SBUEmptyView()
@@ -73,7 +71,6 @@ extension SBUBaseChannelListModule {
             emptyView.delegate = self
             return emptyView
         }()
-        
         
         // MARK: - Logic properties (Public)
         /// The object that acts as the delegate of the list component. The delegate must adopt the `SBUBaseChannelListModuleListDelegate`.
@@ -90,7 +87,6 @@ extension SBUBaseChannelListModule {
         /// If this value is enabled, pull to refresh feature is enabled.
         /// - Since: 3.2.0
         public var isPullToRefreshEnabled: Bool = false
-        
 
         // MARK: - LifeCycle
         
@@ -129,7 +125,6 @@ extension SBUBaseChannelListModule {
                 self.tableView.refreshControl?.addTarget(self, action: #selector(pullToRefresh(_:)), for: .valueChanged)
             }
         }
-        
         
         // MARK: - TableView: Cell
         
@@ -195,7 +190,6 @@ extension SBUBaseChannelListModule {
             }
         }
         
-        
         // MARK: - TableView
         
         /// Pulls to refresh.
@@ -214,7 +208,6 @@ extension SBUBaseChannelListModule {
                 self?.tableView.reloadData()
             }
         }
-
         
         // MARK: - EmptyView
         public func updateEmptyView(type: EmptyViewType) {
@@ -224,7 +217,6 @@ extension SBUBaseChannelListModule {
         }
     }
 }
-
 
 // MARK: - SBUEmptyViewDelegate
 extension SBUBaseChannelListModule.List: SBUEmptyViewDelegate {
@@ -237,8 +229,6 @@ extension SBUBaseChannelListModule.List: SBUEmptyViewDelegate {
         self.baseDelegate?.baseChannelListModuleDidSelectRetry(self)
     }
 }
-
-
 
 // MARK: - UITableView relations
 extension SBUBaseChannelListModule.List: UITableViewDataSource, UITableViewDelegate {

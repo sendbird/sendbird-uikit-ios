@@ -106,7 +106,6 @@ open class SBUPhotoCollectionViewCell: UICollectionViewCell, SBUViewLifeCycle {
     /// This function handles the initialization of actions.
     open func setupActions() { }
     
-    
     // MARK: - Sendbird Life cycle (Update)
 
     /// This function updates layouts.

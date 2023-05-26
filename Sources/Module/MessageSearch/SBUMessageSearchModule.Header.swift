@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 /// Event methods for the views updates and performing actions from the header component in message search module.
 public protocol SBUMessageSearchModuleHeaderDelegate: SBUCommonDelegate {
     /// Called when `titleView` value has been updated.
@@ -42,7 +41,6 @@ public protocol SBUMessageSearchModuleHeaderDelegate: SBUCommonDelegate {
     func messageSearchModuleDidTapCancel(_ headerComponent: SBUMessageSearchModule.Header)
 }
 
-
 extension SBUMessageSearchModule {
     
     /// A module component that represent the header of `SBUMessageSearchModule`.
@@ -55,7 +53,7 @@ extension SBUMessageSearchModule {
         ///
         /// The default value for this object is set with `UISearchBar`.
         /// - NOTE: When the value is updated, `messageSearchModule(_:didUpdateTitleView:)` delegate function is called.
-        public var titleView: UIView? = nil {
+        public var titleView: UIView? {
             didSet { self.delegate?.messageSearchModule(self, didUpdateTitleView: self.titleView) }
         }
         
@@ -63,7 +61,7 @@ extension SBUMessageSearchModule {
         ///
         /// The default value for this object is not set. If you want to set this object, you need to override `setupViews` function and implement.
         /// - NOTE: When the value is updated, `messageSearchModule(_:didUpdateLeftItem:)` delegate function is called
-        public var leftBarButton: UIBarButtonItem? = nil {
+        public var leftBarButton: UIBarButtonItem? {
             didSet { self.delegate?.messageSearchModule(self, didUpdateLeftItem: self.leftBarButton) }
         }
         
@@ -71,13 +69,12 @@ extension SBUMessageSearchModule {
         ///
         /// The default value for this object is not set. If you want to set this object, you need to override `setupViews` function and implement.
         /// - NOTE: When the value is updated, `messageSearchModule(_:didUpdateRightItem:)` delegate function is called.
-        public var rightBarButton: UIBarButtonItem? = nil {
+        public var rightBarButton: UIBarButtonItem? {
             didSet { self.delegate?.messageSearchModule(self, didUpdateRightItem: self.rightBarButton) }
         }
         
         /// The object that is used as the theme of the header component. The theme must adopt the `SBUMessageSearchTheme` class.
-        public var theme: SBUMessageSearchTheme? = nil
-        
+        public var theme: SBUMessageSearchTheme?
         
         // MARK: - UI properties (Private)
         private lazy var defaultSearchBar: UISearchBar = {
@@ -102,14 +99,12 @@ extension SBUMessageSearchModule {
             return searchBar
         }()
         
-        
         // MARK: - Logic properties (Public)
         
         /// The object that acts as the delegate of the header component.
         /// 
         /// The delegate must adopt the `SBUMessageSearchModuleHeaderDelegate`.
-        public weak var delegate: SBUMessageSearchModuleHeaderDelegate? = nil
-        
+        public weak var delegate: SBUMessageSearchModuleHeaderDelegate?
         
         // MARK: - LifeCycle
         @available(*, unavailable, renamed: "SBUMessageSearchModule.Header()")
@@ -161,7 +156,6 @@ extension SBUMessageSearchModule {
             
             self.enableCancelButton()
         }
-        
         
         /// Updates style of the searchBar in the header component with the `searchBar`.
         /// - Parameter searchBar: The object that is used as the searchBar of the header component.
@@ -215,18 +209,16 @@ extension SBUMessageSearchModule {
             }
         }
         
-        
         // MARK: - Common
         
         /// Chages enable status of the cancel button.
-        @objc public func enableCancelButton() {
+        public func enableCancelButton() {
             // Note: https://stackoverflow.com/a/43609059
             if let searchBar = self.titleView as? UISearchBar,
-               let cancelButton = searchBar.value(forKey: "cancelButton") as? UIButton{
+               let cancelButton = searchBar.value(forKey: "cancelButton") as? UIButton {
                 cancelButton.isEnabled = true
             }
         }
-        
         
         // MARK: - Keyboard
         

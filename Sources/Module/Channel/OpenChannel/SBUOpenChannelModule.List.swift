@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 /// Event methods for the views updates and performing actions from the list component in a open channel.
 public protocol SBUOpenChannelModuleListDelegate: SBUBaseChannelModuleListDelegate { }
 
@@ -21,7 +20,6 @@ public protocol SBUOpenChannelModuleListDataSource: SBUBaseChannelModuleListData
     /// - Returns: The boolean value representing the overlaying state of the list component.
     func openChannelModuleIsOverlaid(_ listComponent: SBUOpenChannelModule.List) -> Bool
 }
-
 
 extension SBUOpenChannelModule {
     /// A module component that represent the list of `SBUOpenChannelModule`.
@@ -214,7 +212,6 @@ extension SBUOpenChannelModule {
         
         // MARK: - EmptyView
         
-        
         // MARK: - Menu
         @available(*, deprecated, renamed: "calculateMessageMenuCGPoint(indexPath:)")
         public func calculatorMenuPoint(
@@ -255,7 +252,6 @@ extension SBUOpenChannelModule {
                 cell.isSelected = false
             }
         }
-        
         
         // MARK: - Actions
         /// Sets gestures in message cell.
@@ -304,7 +300,7 @@ extension SBUOpenChannelModule {
         ///    - message: The message for `messageCell`.
         ///    - indexPath: An index path representing the `messageCell`
         open func configureCell(_ messageCell: SBUOpenChannelBaseMessageCell, message: BaseMessage, forRowAt indexPath: IndexPath) {
-            //NOTE: to disable unwanted animation while configuring cells
+            // NOTE: to disable unwanted animation while configuring cells
             UIView.setAnimationsEnabled(false)
             
             let isSameDay = self.checkSameDayAsNextMessage(

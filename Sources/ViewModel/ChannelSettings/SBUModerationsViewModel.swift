@@ -9,7 +9,6 @@
 import Foundation
 import SendbirdChatSDK
 
-
 public protocol SBUModerationsViewModelDelegate: SBUCommonViewModelDelegate {
     /// Called when the channel has been changed.
     func moderationsViewModel(
@@ -19,7 +18,6 @@ public protocol SBUModerationsViewModelDelegate: SBUCommonViewModelDelegate {
     )
 }
 
-
 open class SBUModerationsViewModel {
     
     // MARK: - Property (Public)
@@ -27,13 +25,11 @@ open class SBUModerationsViewModel {
     public private(set) var channelURL: String?
     public private(set) var channelType: ChannelType = .group
     
-    
     // MARK: - Property (Private)
     weak var delegate: SBUModerationsViewModelDelegate?
     
-    
     // MARK: - Lifecycle
-    public init(channel: BaseChannel, delegate:SBUModerationsViewModelDelegate? = nil) {
+    public init(channel: BaseChannel, delegate: SBUModerationsViewModelDelegate? = nil) {
         self.delegate = delegate
         
         self.channelType = (channel is GroupChannel) ? .group : .open
@@ -44,7 +40,7 @@ open class SBUModerationsViewModel {
         self.loadChannel(channelURL: channelURL)
     }
     
-    public init(channelURL: String, channelType: ChannelType, delegate:SBUModerationsViewModelDelegate? = nil) {
+    public init(channelURL: String, channelType: ChannelType, delegate: SBUModerationsViewModelDelegate? = nil) {
         self.delegate = delegate
         
         self.channelType = channelType
@@ -52,7 +48,6 @@ open class SBUModerationsViewModel {
         
         self.loadChannel(channelURL: channelURL)
     }
-    
     
     // MARK: - Channel related
     
@@ -62,7 +57,7 @@ open class SBUModerationsViewModel {
     public func loadChannel(channelURL: String) {
         self.delegate?.shouldUpdateLoadingState(true)
         
-        SendbirdUI.connectIfNeeded { [weak self] user, error in
+        SendbirdUI.connectIfNeeded { [weak self] _, error in
             guard let self = self else { return }
             
             if let error = error {
@@ -123,7 +118,6 @@ open class SBUModerationsViewModel {
         
         OpenChannel.getChannel(url: channelURL, completionHandler: completionHandler)
     }
-
     
     // MARK: - Channel actions
     /// This function freezes the channel. (Group channel)

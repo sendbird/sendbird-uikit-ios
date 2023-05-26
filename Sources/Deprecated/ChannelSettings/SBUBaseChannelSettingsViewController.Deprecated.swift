@@ -79,14 +79,12 @@ extension SBUBaseChannelSettingsViewController {
     @available(*, unavailable, message: "This function has been moved to the `SBUBaseChannelSettingsViewModel`.")
     open func channel(_ sender: OpenChannel, userDidEnter user: User) { }
     
-    
     // MARK: - ~2.2.0
     @available(*, unavailable, renamed: "errorHandler(_:_:)")
-    open func didReceiveError(_ message: String?, _ code: NSInteger? = nil) {
+    public func didReceiveError(_ message: String?, _ code: NSInteger? = nil) {
         self.errorHandler(message, code)
     }
 }
-
 
 // MARK: - GroupChannelSettings
 
@@ -107,15 +105,12 @@ extension SBUGroupChannelSettingsViewController {
         self.viewModel?.leaveChannel()
     }
     
-    
-    
     // MARK: - ~2.2.0
     @available(*, deprecated, renamed: "updateChannel(channelName:coverImage:)")
     public func updateChannelInfo(channelName: String? = nil) {
         self.updateChannel(channelName: channelName)
     }
 }
-
 
 // MARK: - OpenChannelSettings
 extension SBUOpenChannelSettingsViewController {

@@ -15,7 +15,6 @@ public protocol SBUMessageThreadTitleViewDelegate: AnyObject {
     func messageThreadTitleViewDidTap(_ messageThreadTitleView: SBUMessageThreadTitleView)
 }
 
-
 open class SBUMessageThreadTitleView: SBUView {
     
     // MARK: - Logic properties (Public)
@@ -23,7 +22,7 @@ open class SBUMessageThreadTitleView: SBUView {
     public private(set) var channel: BaseChannel?
     
     /// The object that acts as the delegate of the titleView. The delegate must adopt the `SBUMessageThreadTitleViewDelegate` protocol.
-    public weak var delegate: SBUMessageThreadTitleViewDelegate? = nil
+    public weak var delegate: SBUMessageThreadTitleViewDelegate?
     
     @SBUThemeWrapper(theme: SBUTheme.channelTheme)
     public var theme: SBUChannelTheme
@@ -41,12 +40,10 @@ open class SBUMessageThreadTitleView: SBUView {
         return baseChannelName
     }
     
-    
     // MARK: - UI properties (Private)
     private lazy var stackView = UIStackView()
     private lazy var titleLabel = UILabel()
     private lazy var channelNameLabel = UILabel()
-
     
     // MARK: - Life cycle
     public override init() {
@@ -105,13 +102,11 @@ open class SBUMessageThreadTitleView: SBUView {
         self.setupStyles()
     }
     
-    
     // MARK: - Action
     @objc
     open func onTapChannelName(sender: UITapGestureRecognizer) {
         self.delegate?.messageThreadTitleViewDidTap(self)
     }
-
     
     // MARK: - Common
     open func configure(channel: BaseChannel?, title: String?) {

@@ -137,7 +137,7 @@ extension UIView {
         return self
     }
     
-    //GreaterThanOrEqualTo
+    // GreaterThanOrEqualTo
     @discardableResult
     public func sbu_constraint(greaterThanOrEqualTo view: UIView,
                         leading: CGFloat? = nil,
@@ -268,7 +268,7 @@ extension UIView {
         return self
     }
     
-    //LessThanOrEqualTo
+    // LessThanOrEqualTo
     @discardableResult
     public func sbu_constraint(lessThanOrEqualTo view: UIView,
                         leading: CGFloat? = nil,
@@ -444,7 +444,6 @@ extension UIView {
             }
         }
         
-        
         if let priority = priority {
             layoutConstraints.forEach { $0.priority = priority }
         }
@@ -485,7 +484,6 @@ extension UIView {
                     self.heightAnchor.constraint(greaterThanOrEqualToConstant: height))
             }
         }
-        
         
         if let priority = priority {
             layoutConstraints.forEach { $0.priority = priority }
@@ -528,7 +526,6 @@ extension UIView {
             }
         }
         
-        
         if let priority = priority {
             layoutConstraints.forEach { $0.priority = priority }
         }
@@ -537,7 +534,6 @@ extension UIView {
         
         return self
     }
-    
     
     // MARK: - v2: [NSLayoutConstraint] chaining version
     // EqualTo
@@ -646,7 +642,7 @@ extension UIView {
         return layoutConstraints
     }
     
-    //GreaterThanOrEqualTo
+    // GreaterThanOrEqualTo
     @discardableResult
     public func sbu_constraint_v2(greaterThanOrEqualTo view: UIView,
                                   leading: CGFloat? = nil,
@@ -776,7 +772,7 @@ extension UIView {
         return layoutConstraints
     }
     
-    //LessThanOrEqualTo
+    // LessThanOrEqualTo
     @discardableResult
     public func sbu_constraint_v2(lessThanOrEqualTo view: UIView,
                                   leading: CGFloat? = nil,
@@ -1038,8 +1034,6 @@ extension UIView {
         return layoutConstraints
     }
     
-    
-    
     //////////////////////////////////////////////////////
     /// vv Will be removed. vv
     //////////////////////////////////////////////////////
@@ -1183,4 +1177,3 @@ extension UIView {
         }
     }
 }
-

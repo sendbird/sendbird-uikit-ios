@@ -8,7 +8,6 @@
 
 import UIKit
 
-
 // MARK: SBUMessageThreadModule
 
 /// The class that represents the message thread module.
@@ -32,7 +31,6 @@ open class SBUMessageThreadModule {
         set { _listComponent = newValue }
     }
     
-    
     /// The module component that contains `messageInputView`.
     public var inputComponent: (SBUMessageThreadModule.Input)? {
         get { _inputComponent ?? SBUMessageThreadModule.Input() }
@@ -43,7 +41,6 @@ open class SBUMessageThreadModule {
     private var _headerComponent: SBUMessageThreadModule.Header?
     private var _listComponent: SBUMessageThreadModule.List?
     private var _inputComponent: (SBUMessageThreadModule.Input)?
-    
     
     // MARK: -
     

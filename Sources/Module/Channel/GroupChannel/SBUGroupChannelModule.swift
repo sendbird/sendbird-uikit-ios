@@ -52,4 +52,3 @@ open class SBUGroupChannelModule {
         self.inputComponent = inputComponent
     }
 }
-

@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 public protocol SBUUserListModuleListDelegate: SBUCommonDelegate {
     /// Called when the user cell was selected in the `listComponent`.
     /// - Parameters:
@@ -40,7 +39,6 @@ public protocol SBUUserListModuleListDelegate: SBUCommonDelegate {
     func userListModuleDidSelectRetry(_ listComponent: SBUUserListModule.List)
 }
 
-
 public protocol SBUUserListModuleListDataSource: AnyObject {
     /// Ask the data source to return the `BaseChannel` object.
     /// - Parameters:
@@ -57,7 +55,6 @@ public protocol SBUUserListModuleListDataSource: AnyObject {
     func userListModule(_ listComponent: SBUUserListModule.List, usersInTableView tableView: UITableView) -> [SBUUser]
 }
 
-
 extension SBUUserListModule {
     
     /// A module component that represent the list of `SBUUserListModule`.
@@ -69,16 +66,15 @@ extension SBUUserListModule {
         public var tableView = UITableView()
         
         /// A view that displays when the table view is empty.
-        public var emptyView: UIView? = nil {
+        public var emptyView: UIView? {
             didSet { self.tableView.backgroundView = self.emptyView }
         }
         
         /// The user cell for `UITableViewCell` object. Use `register(userCell:nib:)` to update.
-        public var userCell: UITableViewCell? = nil
+        public var userCell: UITableViewCell?
         
-        public var theme: SBUUserListTheme? = nil
-        public var componentTheme: SBUComponentTheme? = nil
-        
+        public var theme: SBUUserListTheme?
+        public var componentTheme: SBUComponentTheme?
         
         // MARK: - UI properties (Private)
         private lazy var defaultEmptyView: SBUEmptyView? = {
@@ -88,10 +84,9 @@ extension SBUUserListModule {
             return emptyView
         }()
         
-        
         // MARK: - Logic properties (Public)
-        public weak var delegate: SBUUserListModuleListDelegate? = nil
-        public weak var dataSource: SBUUserListModuleListDataSource? = nil
+        public weak var delegate: SBUUserListModuleListDelegate?
+        public weak var dataSource: SBUUserListModuleListDataSource?
 
         public var channel: BaseChannel? {
             self.dataSource?.userListModule(self, channelForTableView: self.tableView)
@@ -100,7 +95,6 @@ extension SBUUserListModule {
             self.dataSource?.userListModule(self, usersInTableView: self.tableView) ?? []
         }
         public var userListType: ChannelUserListType = .none
-        
         
         // MARK: - LifeCycle
         @available(*, unavailable, renamed: "SBUUserListModule.List()")
@@ -183,7 +177,6 @@ extension SBUUserListModule {
             
             (self.emptyView as? SBUEmptyView)?.setupStyles()
         }
-        
         
         // MARK: - TableView
         
@@ -285,7 +278,6 @@ extension SBUUserListModule {
             }
         }
         
-        
         // MARK: - EmptyView
         /// This function updates emptyView.
         /// - Parameter type: `EmptyViewType`
@@ -294,7 +286,6 @@ extension SBUUserListModule {
                 emptyView.reloadData(type)
             }
         }
-        
         
         // MARK: - Actions
         
@@ -314,7 +305,6 @@ extension SBUUserListModule {
     }
 }
 
-
 // MARK: - SBUEmptyViewDelegate
 extension SBUUserListModule.List: SBUEmptyViewDelegate {
     open func didSelectRetry() {
@@ -326,7 +316,6 @@ extension SBUUserListModule.List: SBUEmptyViewDelegate {
         self.delegate?.userListModuleDidSelectRetry(self)
     }
 }
-
 
 // MARK: - UITableView relations
 extension SBUUserListModule.List: UITableViewDataSource, UITableViewDelegate {
@@ -345,7 +334,7 @@ extension SBUUserListModule.List: UITableViewDataSource, UITableViewDelegate {
     open func tableView(_ tableView: UITableView,
                         cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        var cell: UITableViewCell? = nil
+        var cell: UITableViewCell?
         if let userCell = self.userCell {
             cell = tableView.dequeueReusableCell(withIdentifier: userCell.sbu_className)
         } else {

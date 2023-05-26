@@ -11,7 +11,6 @@ import SendbirdChatSDK
 import PhotosUI
 import MobileCoreServices
 
-
 open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActionSheetDelegate, PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, SBUSelectablePhotoViewDelegate, SBUCommonViewModelDelegate, SBUBaseChannelSettingsViewModelDelegate, SBUAlertViewDelegate {
     
     // MARK: - UI Properties (Public)
@@ -22,11 +21,10 @@ open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActio
     @SBUThemeWrapper(theme: SBUTheme.channelSettingsTheme)
     public var theme: SBUChannelSettingsTheme
     
-    
     // MARK: - Logic properties (Public)
     public var baseViewModel: SBUBaseChannelSettingsViewModel?
     
-    public var channelName: String? = nil
+    public var channelName: String?
     
     public var channel: BaseChannel? { baseViewModel?.channel }
     public var channelURL: String? { baseViewModel?.channelURL }
@@ -35,7 +33,6 @@ open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActio
     
     public let actionSheetIdEdit = 1
     public let actionSheetIdPicker = 2
-    
     
     // MARK: - Lifecycle
     open override func viewWillAppear(_ animated: Bool) {
@@ -49,7 +46,7 @@ open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActio
     }
     
     open override var preferredStatusBarStyle: UIStatusBarStyle {
-        return theme.statusBarStyle
+        theme.statusBarStyle
     }
     
     deinit {
@@ -58,7 +55,6 @@ open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActio
         self.baseHeaderComponent = nil
         self.baseListComponent = nil
     }
-    
     
     // MARK: - Sendbird UIKit Life cycle
     open override func setupLayouts() {
@@ -85,8 +81,6 @@ open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActio
         self.baseListComponent?.reloadChannelInfoView()
         self.baseListComponent?.reloadTableView()
     }
-
-    
     
     // MARK: - ViewModel
     /// Creates the view model, loading initial messages from given starting point.
@@ -97,7 +91,6 @@ open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActio
     /// - Since: 3.0.0
     open func createViewModel(channel: BaseChannel? = nil,
                               channelURL: String? = nil) { }
-    
     
     // MARK: - Common
     /// This function sets right bar button when enable to set.
@@ -113,7 +106,6 @@ open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActio
             }
         }
     }
-    
     
     // MARK: - Actions
     /// This function used to when edit button click.
@@ -315,8 +307,6 @@ open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActio
     /// - Since: 1.2.0
     open func showModerationList() { }
     
-    
-    
     // MARK: - Error handling
     private func errorHandler(_ error: SBError) {
         self.errorHandler(error.localizedDescription, error.code)
@@ -325,7 +315,6 @@ open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActio
     open override func errorHandler(_ message: String?, _ code: NSInteger? = nil) {
         SBULog.error("Did receive error: \(message ?? "")")
     }
-    
     
     // MARK: SBUActionSheetDelegate
     open func didSelectActionSheetItem(index: Int, identifier: Int) {
@@ -336,8 +325,7 @@ open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActio
             case .image: self.selectChannelImage()
             default: break
             }
-        }
-        else if identifier == actionSheetIdPicker {
+        } else if identifier == actionSheetIdPicker {
             let type = MediaResourceType.init(rawValue: index) ?? .unknown
             self.showChannelImagePicker(with: type)
         }
@@ -351,7 +339,7 @@ open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActio
     // MARK: - UIImagePickerViewControllerDelegate
     open func imagePickerController(
         _ picker: UIImagePickerController,
-        didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
             
             picker.dismiss(animated: true) { [weak self] in
                 guard let self = self else { return }
@@ -375,9 +363,9 @@ open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActio
             let itemProvider = $0.itemProvider
             // image
             if itemProvider.hasItemConformingToTypeIdentifier(UTType.image.identifier) {
-                itemProvider.loadItem(forTypeIdentifier: UTType.image.identifier, options: [:]) { url, error in
+                itemProvider.loadItem(forTypeIdentifier: UTType.image.identifier, options: [:]) { _, _ in
                     if itemProvider.canLoadObject(ofClass: UIImage.self) {
-                        itemProvider.loadObject(ofClass: UIImage.self) { [weak self] imageItem, error in
+                        itemProvider.loadObject(ofClass: UIImage.self) { [weak self] imageItem, _ in
                             guard let self = self else { return }
                             guard let originalImage = imageItem as? UIImage else { return }
                             self.baseListComponent?.updateChannelInfoView(coverImage: originalImage)
@@ -405,7 +393,6 @@ open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActio
         self.showLoading(false)
     }
     
-    
     // MARK: - SBUBaseChannelSettingsViewModelDelegate
     open func baseChannelSettingsViewModel(
         _ viewModel: SBUBaseChannelSettingsViewModel,
@@ -426,7 +413,7 @@ open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActio
                 channelType: (self.channel is OpenChannel) ? .open : .group
             ) else { return }
             
-            if let openChannelListVC = channelListVC as? SBUOpenChannelListViewController  {
+            if let openChannelListVC = channelListVC as? SBUOpenChannelListViewController {
                 openChannelListVC.reloadChannelList()
             }
             

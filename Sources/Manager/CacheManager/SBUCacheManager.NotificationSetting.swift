@@ -14,35 +14,24 @@ extension SBUCacheManager {
         static let diskCache = DiskCacheForNotificationSetting(cacheType: "notificationSetting")
         static let cachePath = diskCache.cachePathURL()
         static let cacheKey = "notificationSetting"
-
         
         // MARK: - TemplateList updated time
         static var lastUpdatedTime: Int64 {
-            get {
-                Int64(UserDefaults.standard.integer(forKey: "sbu_global_notification_settings_updated_at"))
-            }
-            set {
-                UserDefaults.standard.set(newValue, forKey: "sbu_global_notification_settings_updated_at")
-            }
+            get { self.loadLastUpdatedTime() }
+            set { self.saveLastUpdatedTime(newValue) }
         }
         
         // MARK: - TemplateList theme mode
         static var themeMode: String {
-            get {
-                UserDefaults.standard.string(forKey: "sbu_global_notification_settings_theme_mode") ?? "default"
-            }
-            set {
-                UserDefaults.standard.set(newValue, forKey: "sbu_global_notification_settings__theme_mode")
-            }
+            get { self.loadThemeMode() }
+            set { self.saveThemeMode(newValue) }
         }
-        
         
         // MARK: - Notification settings
         static func save(settings: SBUNotificationChannelManager.GlobalNotificationSettings) {
             self.themeMode = settings.themeMode
             self.save(themes: settings.themes)
         }
-        
         
         // MARK: - Theme list
         static func save(themes: [SBUNotificationChannelManager.GlobalNotificationSettings.Theme]) {
@@ -76,7 +65,6 @@ extension SBUCacheManager {
             self.save(themes: themes)
         }
         
-        
         // MARK: - Single theme
         static func save(theme: SBUNotificationChannelManager.GlobalNotificationSettings.Theme) {
             self.save(themes: [theme])
@@ -85,19 +73,44 @@ extension SBUCacheManager {
         static func getTheme(forKey key: String) -> SBUNotificationChannelManager.GlobalNotificationSettings.Theme? {
             if let memoryTheme = self.memoryCache.get(key: key) {
                 return memoryTheme
-            } else if let themes = loadAllThemes(),
-                      let memoryTheme = themes[key] {
-                return memoryTheme
-            }
-            else if let diskTheme = self.diskCache.get(key: key) {
+            } else if let diskTheme = self.diskCache.get(key: key) {
                 self.memoryCache.set(themes: [diskTheme])
                 return diskTheme
             }
             return nil
         }
         
-        static func upsert(theme: SBUNotificationChannelManager.GlobalNotificationSettings.Theme, forKey key: String) {
-            self.save(themes: [theme])
+        static func removeTheme(forKey key: String) {
+            self.memoryCache.remove(key: key)
+            self.diskCache.remove(key: key)
+        }
+        
+        // MARK: updated time
+        static func loadLastUpdatedTime() -> Int64 {
+            if let memoryCache = self.memoryCache.lastUpdatedTime {
+                return memoryCache
+            } else {
+                return self.diskCache.loadLastUpdatedTime()
+            }
+        }
+        
+        static func saveLastUpdatedTime(_ value: Int64) {
+            self.memoryCache.lastUpdatedTime = value
+            self.diskCache.saveLastUpdatedTime(value)
+        }
+        
+        // MARK: theme mode
+        static func loadThemeMode() -> String {
+            if let memoryCache = self.memoryCache.themeMode {
+                return memoryCache
+            } else {
+                return self.diskCache.loadThemeMode()
+            }
+        }
+        
+        static func saveThemeMode(_ value: String) {
+            self.memoryCache.themeMode = value
+            self.diskCache.saveThemeMode(value)
         }
     }
 }
@@ -105,9 +118,13 @@ extension SBUCacheManager {
 extension SBUCacheManager {
     struct DiskCacheForNotificationSetting {
         // MARK: - Properties
-        private let fileManager = FileManager.default
-        private let cacheType: String
-        private let diskQueue = DispatchQueue(label: "\(SBUConstant.bundleIdentifier).queue.diskcache.theme", qos: .background)
+        let fileManager = FileManager.default
+        let cacheType: String
+        let diskQueue = DispatchQueue(label: "\(SBUConstant.bundleIdentifier).queue.diskcache.theme", qos: .background)
+        var fileSemaphore = DispatchSemaphore(value: 1)
+        
+        let lastUpdatedTimeKey = "sbu_global_notification_settings_updated_at"
+        let themeModeKey = "sbu_global_notification_settings_theme_mode"
         
         // MARK: - Initializers
         init(cacheType: String) {
@@ -134,15 +151,28 @@ extension SBUCacheManager {
             return fileManager.fileExists(atPath: self.pathForKey(key))
         }
 
-        func get(fullPath: URL) -> SBUNotificationChannelManager.GlobalNotificationSettings.Theme? {
-            do {
-                let data = try Data(contentsOf: fullPath)
-                let theme = try JSONDecoder().decode(SBUNotificationChannelManager.GlobalNotificationSettings.Theme.self, from: data)
-                return theme as SBUNotificationChannelManager.GlobalNotificationSettings.Theme
-            } catch {
-                SBULog.info(error.localizedDescription)
+        func get(fullPath: URL, needToSync: Bool = true) -> SBUNotificationChannelManager.GlobalNotificationSettings.Theme? {
+            let theme: SBUNotificationChannelManager.GlobalNotificationSettings.Theme? = {
+                do {
+                    let data = try Data(contentsOf: fullPath)
+                    let theme = try JSONDecoder().decode(SBUNotificationChannelManager.GlobalNotificationSettings.Theme.self, from: data)
+                    return theme as SBUNotificationChannelManager.GlobalNotificationSettings.Theme
+                } catch {
+                    SBULog.info(error.localizedDescription)
+                }
+                return nil
+            }()
+            
+            if needToSync {
+                return self.diskQueue.sync {
+                    self.fileSemaphore.wait()
+                    defer { self.fileSemaphore.signal() }
+                    
+                    return theme
+                }
+            } else {
+                return theme
             }
-            return nil
         }
         
         func get(key: String) -> SBUNotificationChannelManager.GlobalNotificationSettings.Theme? {
@@ -153,23 +183,28 @@ extension SBUCacheManager {
         }
         
         func getAllThemes() -> [String: SBUNotificationChannelManager.GlobalNotificationSettings.Theme]? {
-            var themeList: [String: SBUNotificationChannelManager.GlobalNotificationSettings.Theme]? = nil
-            
-            do {
-                let items = try fileManager.contentsOfDirectory(at: cachePathURL(), includingPropertiesForKeys: nil)
-                if items.count > 0 {
-                    themeList = [:]
-                }
-                for item in items {
-                    if let theme = get(fullPath: item) {
-                        themeList?[theme.key] = theme
+            return self.diskQueue.sync {
+                self.fileSemaphore.wait()
+                defer { self.fileSemaphore.signal() }
+                
+                var themeList: [String: SBUNotificationChannelManager.GlobalNotificationSettings.Theme]?
+                
+                do {
+                    let items = try fileManager.contentsOfDirectory(at: cachePathURL(), includingPropertiesForKeys: nil)
+                    if items.count > 0 {
+                        themeList = [:]
                     }
+                    for item in items {
+                        if let theme = get(fullPath: item, needToSync: false) {
+                            themeList?[theme.key] = theme
+                        }
+                    }
+                } catch {
+                    SBULog.info(error.localizedDescription)
                 }
-            } catch {
-                SBULog.info(error.localizedDescription)
+                
+                return themeList
             }
-            
-            return themeList
         }
         
         func set(themes: [SBUNotificationChannelManager.GlobalNotificationSettings.Theme]) {
@@ -185,7 +220,10 @@ extension SBUCacheManager {
         }
         
         func set(key: String, data: NSData, completionHandler: SBUCacheCompletionHandler? = nil) {
-            diskQueue.async {
+            diskQueue.sync {
+                self.fileSemaphore.wait()
+                defer { self.fileSemaphore.signal() }
+                
                 let filePath = URL(fileURLWithPath: self.pathForKey(key))
                 
                 do {
@@ -211,14 +249,31 @@ extension SBUCacheManager {
         }
         
         func remove(key: String) {
-            diskQueue.async {
-                let path = self.pathForKey(key)
-                let fileManager = self.fileManager
+            diskQueue.sync {
+                self.fileSemaphore.wait()
+                defer { self.fileSemaphore.signal() }
                 
                 do {
+                    let path = self.pathForKey(key)
+                    let fileManager = self.fileManager
                     try fileManager.removeItem(atPath: path)
                 } catch {
                     SBULog.error("Could not remove file: \(error)")
+                }
+            }
+        }
+        
+        func removePath() {
+            diskQueue.sync {
+                self.fileSemaphore.wait()
+                defer { self.fileSemaphore.signal() }
+                
+                do {
+                    let path = self.cachePathURL()
+                    let fileManager = self.fileManager
+                    try fileManager.removeItem(at: path)
+                } catch {
+                    SBULog.error("Could not remove path: \(error)")
                 }
             }
         }
@@ -239,11 +294,88 @@ extension SBUCacheManager {
             let fullPath = cachePathURL.appendingPathComponent(key)
             return fullPath.path
         }
+        
+        // MARK: updated time
+        func loadLastUpdatedTime() -> Int64 {
+            return self.diskQueue.sync {
+                self.fileSemaphore.wait()
+                defer { self.fileSemaphore.signal() }
+                
+                let cachePathURL = cachePathURL()
+                let filePath = cachePathURL.appendingPathComponent(lastUpdatedTimeKey)
+                guard let retrievedString = try? String(contentsOf: filePath, encoding: .utf8),
+                      let retrievedInt = Int64(retrievedString) else {
+                    let storedValue = Int64(UserDefaults.standard.integer(forKey: lastUpdatedTimeKey))
+                    if storedValue != 0 {
+                        // for backward
+                        UserDefaults.standard.removeObject(forKey: lastUpdatedTimeKey)
+                        self.saveLastUpdatedTime(storedValue)
+                        return storedValue
+                    }
+                    return 0
+                }
+                return retrievedInt
+            }
+        }
+        
+        func saveLastUpdatedTime(_ value: Int64) {
+            diskQueue.sync {
+                self.fileSemaphore.wait()
+                defer { self.fileSemaphore.signal() }
+                
+                do {
+                    let cachePathURL = cachePathURL()
+                    let filePath = cachePathURL.appendingPathComponent(lastUpdatedTimeKey)
+                    let valueString = "\(value)"
+                    try valueString.write(to: filePath, atomically: true, encoding: .utf8)
+                } catch {
+                    SBULog.error("Error writing to file: lastUpdatedTimeKey value")
+                }
+            }
+        }
+        
+        // MARK: theme mode
+        func loadThemeMode() -> String {
+            return self.diskQueue.sync {
+                self.fileSemaphore.wait()
+                defer { self.fileSemaphore.signal() }
+                
+                let cachePathURL = cachePathURL()
+                let filePath = cachePathURL.appendingPathComponent(themeModeKey)
+                guard let retrievedString = try? String(contentsOf: filePath, encoding: .utf8) else {
+                    if let storedValue = UserDefaults.standard.string(forKey: themeModeKey) {
+                        // for backward
+                        UserDefaults.standard.removeObject(forKey: themeModeKey)
+                        self.saveThemeMode(storedValue)
+                        return storedValue
+                    }
+                    return "default"
+                }
+                return retrievedString
+            }
+        }
+        
+        func saveThemeMode(_ value: String) {
+            diskQueue.sync {
+                self.fileSemaphore.wait()
+                defer { self.fileSemaphore.signal() }
+                
+                do {
+                    let cachePathURL = cachePathURL()
+                    let filePath = cachePathURL.appendingPathComponent(themeModeKey)
+                    try value.write(to: filePath, atomically: true, encoding: .utf8)
+                } catch {
+                    SBULog.error("Error writing to file: themeModeKey value")
+                }
+            }
+        }
     }
     
     // MARK: - MemoryCache
     class MemoryCacheForNotificationSetting {
-        var themeList: [String: SBUNotificationChannelManager.GlobalNotificationSettings.Theme]? = nil
+        var lastUpdatedTime: Int64?
+        var themeMode: String?
+        var themeList: [String: SBUNotificationChannelManager.GlobalNotificationSettings.Theme]?
         
         // MARK: - Memory Cache
         func set(themes: [SBUNotificationChannelManager.GlobalNotificationSettings.Theme]) {
@@ -268,10 +400,6 @@ extension SBUCacheManager {
         
         func remove(key: String) {
             self.themeList?.removeValue(forKey: key)
-        }
-        
-        func cacheExists(key: String) -> Bool {
-            return self.themeList?[key] != nil
         }
     }
 }

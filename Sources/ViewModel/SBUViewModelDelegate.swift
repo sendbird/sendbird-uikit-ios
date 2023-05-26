@@ -13,7 +13,6 @@ protocol SBUViewModelDelegate: AnyObject {
     func dispose()
 }
 
-
 public protocol SBUCommonViewModelDelegate: SBUCommonDelegate {
     // Connection
     func connectionStateDidChange(_ isConnected: Bool)

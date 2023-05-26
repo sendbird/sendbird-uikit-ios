@@ -109,7 +109,6 @@ extension Date {
         )
     }
     
-    
     /// Create a string with a format based on the timestamp.
     /// - Parameters:
     ///   - baseTimestamp: Timestamp to apply formatting.
@@ -157,8 +156,7 @@ extension Date {
             }
             
             return baseDate.sbu_toString(dateFormat: dateFormat, localizedFormat: false)
-        }
-        else {
+        } else {
             return baseDate.sbu_toString(dateFormat: timeFormat, localizedFormat: false)
         }
     }
@@ -199,7 +197,6 @@ extension Date {
             + " " + SBUStringSet.Date_Ago
     }
     
-    
     func isSameDay(as otherDate: Date) -> Bool {
         let baseDate = self
         let otherDate = otherDate
@@ -217,8 +214,7 @@ extension Date {
             baseDateComponents.month == otherDateComponents.month,
             baseDateComponents.day == otherDateComponents.day {
             return true
-        }
-        else {
+        } else {
             return false
         }
     }

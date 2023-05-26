@@ -79,20 +79,17 @@ open class SBUUserCell: SBUTableViewCell {
         }
     }
     
-    
     // MARK: - Logic properties (Public)
     public private(set) var type: UserListType = .none
-    
     
     // MARK: - Logic properties (Private)
     var isChecked: Bool = false
     var hasNickname: Bool = true
     
-    var userProfileTapHandler: (() -> Void)? = nil
-    var moreMenuHandler: (() -> Void)? = nil
+    var userProfileTapHandler: (() -> Void)?
+    var moreMenuHandler: (() -> Void)?
     
     internal private(set) var userImageSize: CGFloat = 40
-  
     
     // MARK: - View Lifecycle
     open override func awakeFromNib() {
@@ -140,7 +137,7 @@ open class SBUUserCell: SBUTableViewCell {
                 equalTo: self.contentView,
                 leading: 16,
                 trailing: -16,
-                top:8,
+                top: 8,
                 bottom: 8
             )
             .sbu_constraint(height: userImageSize)
@@ -153,7 +150,7 @@ open class SBUUserCell: SBUTableViewCell {
         
         if !self.userIdLabel.isHidden {
             self.userIdLabel
-                .sbu_constraint(width:32, priority: .defaultLow)
+                .sbu_constraint(width: 32, priority: .defaultLow)
                 .sbu_constraint_greaterThan(width: 32, priority: .defaultLow)
         }
         
@@ -249,7 +246,6 @@ open class SBUUserCell: SBUTableViewCell {
         }
     }
     
-    
     // MARK: - Common
     open func configure(type: UserListType,
                         user: SBUUser,
@@ -330,7 +326,6 @@ open class SBUUserCell: SBUTableViewCell {
         self.isChecked = selected
         self.checkboxButton.isSelected = selected
     }
-    
     
     // MARK: - Action
     

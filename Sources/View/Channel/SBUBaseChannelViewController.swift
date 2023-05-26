@@ -13,7 +13,6 @@ import AVKit
 import SafariServices
 import PhotosUI
 
-
 @objcMembers
 open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelViewModelDelegate, SBUBaseChannelModuleHeaderDelegate, SBUBaseChannelModuleListDelegate, SBUBaseChannelModuleListDataSource, SBUBaseChannelModuleInputDelegate, SBUBaseChannelModuleInputDataSource, SBUBaseChannelViewModelDataSource, UIGestureRecognizerDelegate, UIViewControllerTransitioningDelegate, PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, UIDocumentPickerDelegate, UIDocumentInteractionControllerDelegate, SBUSelectablePhotoViewDelegate, SBUFileViewControllerDelegate, SBUCommonViewModelDelegate, SBUAlertViewDelegate {
     
@@ -21,7 +20,6 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     public var baseHeaderComponent: SBUBaseChannelModule.Header?
     public var baseListComponent: SBUBaseChannelModule.List?
     public var baseInputComponent: SBUBaseChannelModule.Input?
-    
     
     /// To decide whether to use right bar button item or not
     public var useRightBarButtonItem: Bool = true {
@@ -32,11 +30,10 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     @SBUThemeWrapper(theme: SBUTheme.channelTheme)
     public var theme: SBUChannelTheme
     
-    
     // MARK: - Logic Properties (Public)
     public var baseViewModel: SBUBaseChannelViewModel?
     
-    public var channelName: String? = nil
+    public var channelName: String?
     
     /// The state property to indicate whether it's showing the keyboard or not. It's `false` when ``keyboardWillHide(_:)`` is called and `true` when ``keyboardWillShow(_:)`` is called. The default value is `false`
     /// - Since: 3.2.3
@@ -55,7 +52,6 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     var scrollToInitialPositionHandler: (() -> Void)?
     
     var isTransformedList: Bool = true
-    
     
     // MARK: - Lifecycle
     @available(*, unavailable)
@@ -220,7 +216,6 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         NotificationCenter.default.removeObserver(self)
     }
     
-    
     /// Called when the application will resign activity.
     open func applicationWillResignActivity() { }
     
@@ -228,7 +223,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     open func willPresentSubview() {}
     
     open override var preferredStatusBarStyle: UIStatusBarStyle {
-        return self.theme.statusBarStyle
+        self.theme.statusBarStyle
     }
     
     deinit {
@@ -237,8 +232,6 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         self.baseListComponent = nil
         NotificationCenter.default.removeObserver(self)
     }
-    
-    
     
     // MARK: - ViewModel
     /// Creates the view model, loading initial messages from given starting point.
@@ -276,7 +269,6 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         showIndicator: Bool = true,
         displaysLocalCachedListFirst: Bool
     ) { }
-    
     
     // MARK: - Sendbird UIKit Life cycle
     
@@ -350,7 +342,6 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         }
     }
     
-    
     // MARK: - Channel
     
     /// Updates channelTitle with channel and channelName
@@ -373,7 +364,6 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
             titleView.updateChannelStatus(channel: channel)
         }
     }
-    
     
     // MARK: - Message: Menu
     
@@ -407,7 +397,6 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         }
         self.present(emojiListVC, animated: true)
     }
-
     
     // MARK: - TableView
     
@@ -424,9 +413,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         newMessageInfoView.isHidden = hidden && !viewModel.hasNext()
     }
     
-    
     // MARK: - Common
-    
     
     /// This function opens a file according to the file type.
     /// - Parameter fileMessage: fileMessage object
@@ -447,7 +434,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
                 urlString: fileMessage.url,
                 cacheKey: fileMessage.requestId,
                 fileName: fileMessage.name
-            ) { fileURL, fileData in
+            ) { fileURL, _ in
                 SBULoading.stop()
                 
                 guard let fileURL = fileURL else {
@@ -510,13 +497,11 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         return true
     }
     
-    
     // MARK: - MessageInputView
     
     open func setMessageInputViewMode(_ mode: SBUMessageInputMode, message: BaseMessage? = nil) {
         self.baseInputComponent?.updateMessageInputMode(mode, message: message)
     }
-    
     
     // MARK: - VoiceMessageInput
     open func showVoiceMessageInput() {}
@@ -524,7 +509,6 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     open func dismissVoiceMessageInput() {}
     
     open func resetVoiceMessageInput(for resignActivity: Bool = false) {}
-    
     
     // MARK: - Error handling
     func errorHandler(_ error: SBError) {
@@ -539,7 +523,6 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     open override func errorHandler(_ message: String?, _ code: NSInteger? = nil) {
         SBULog.error("Did receive error: \(message ?? "")")
     }
-    
     
     // MARK: - SBUBaseChannelViewModelDelegate
     open func baseChannelViewModel(
@@ -591,7 +574,6 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
                 self.baseViewModel?.isScrollToInitialPositionFinish = true
             }
         }
-        
         
         guard needsToReload else { return }
         
@@ -709,8 +691,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
                 openChannelViewModel.loadPrevMessages(timestamp: sentMessageList.last?.createdAt)
             } else if let messageThreadViewModel = baseViewModel as? SBUMessageThreadViewModel {
                 messageThreadViewModel.loadPrevMessages(timestamp: sentMessageList.last?.createdAt)
-            }
-                else {
+            } else {
                 baseViewModel.loadPrevMessages()
             }
         } else if indexPath.row < 5,
@@ -843,8 +824,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         
         if let userProfileView = self.baseListComponent?.userProfileView as? SBUUserProfileView,
            let baseView = self.navigationController?.view,
-           SBUGlobals.isUserProfileEnabled
-        {
+           SBUGlobals.isUserProfileEnabled {
             userProfileView.show(
                 baseView: baseView,
                 user: user
@@ -945,7 +925,6 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     open func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, pendingMessageManagerForCell cell: UITableViewCell) -> (SBUPendingMessageManager?, Bool?) {
         return (self.baseViewModel?.pendingMessageManager, self.baseViewModel?.isThreadMessageMode)
     }
-    
     
     // MARK: - SBUBaseChannelModuleInputDelegate
     open func baseChannelModule(_ inputComponent: SBUBaseChannelModule.Input,
@@ -1089,7 +1068,6 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         
     }
     
-    
     open func baseChannelModule(_ inputComponent: SBUBaseChannelModule.Input,
                                 didChangeMode mode: SBUMessageInputMode, message: BaseMessage?) {
         baseViewModel?.inEditingMessage = message as? UserMessage
@@ -1100,13 +1078,11 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         baseViewModel?.channel
     }
     
-    
     // MARK: - Input Keyboard events
     /// This function calls ``updateLayoutsWithKeyboard(isHidden:notification:)`` that changes the ``baseInputComponent`` bottom constraint using keyboard height.
     /// - Parameter notification: Notification object with keyboardFrame information
     /// - Important: When override this method, please refer to ``updateLayoutsWithKeyboard(isHidden:notification:)`` to update ``baseInputComponent`` bottom constraint with keyboard height.
     /// - Since: 1.2.5
-    @objc
     open func keyboardWillShow(_ notification: Notification) {
         self.updateLayoutsWithKeyboard(isHidden: false, notification: notification)
         
@@ -1116,11 +1092,9 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     /// - Parameter notification: Notification object with keyboardFrame information
     /// - Important: When override this method, please refer to ``updateLayoutsWithKeyboard(isHidden:notification:)`` to update ``baseInputComponent`` bottom constraint with keyboard height.
     /// - Since: 1.2.5
-    @objc
     open func keyboardWillHide(_ notification: Notification) {
         self.updateLayoutsWithKeyboard(isHidden: true, notification: notification)
     }
-    
     
     // MARK: - SBUBaseChannelViewModelDataSource
     open func baseChannelViewModel(_ viewModel: SBUBaseChannelViewModel,
@@ -1128,14 +1102,12 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         return self.baseListComponent?.isScrollNearByBottom ?? true
     }
     
-    
     // MARK: - UIGestureRecognizerDelegate
     open func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer,
                                 shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer)
     -> Bool {
         return true
     }
-    
     
     // MARK: - UIViewControllerTransitioningDelegate
     open func presentationController(forPresented presented: UIViewController,
@@ -1147,11 +1119,10 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         )
     }
     
-    
     // MARK: - UIImagePickerControllerDelegate
     open func imagePickerController(
         _ picker: UIImagePickerController,
-        didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
             picker.dismiss(animated: true) { [weak self] in
                 guard let self = self else { return }
                 guard info[.mediaType] != nil else { return }
@@ -1177,7 +1148,6 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     open func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true, completion: nil)
     }
-    
 
     // MARK: - PHPickerViewControllerDelegate
     
@@ -1220,7 +1190,6 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         }
     }
     
-    
     // MARK: - UIDocumentPickerDelegate
     open func documentPicker(_ controller: UIDocumentPickerViewController,
                              didPickDocumentsAt urls: [URL]) {
@@ -1230,10 +1199,9 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         }
     }
     
-    
     // MARK: - UIDocumentInteractionControllerDelegate
     open func documentInteractionControllerViewControllerForPreview(_ controller: UIDocumentInteractionController) -> UIViewController {
-        return self//or use return self.navigationController for fetching app navigation bar colour
+        return self// or use return self.navigationController for fetching app navigation bar colour
     }
     
     // MARK: - SBUSelectablePhotoViewDelegate
@@ -1255,7 +1223,6 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
             return
         }
     }
-    
     
     // MARK: - SBUFileViewControllerDelegate
     open func didSelectDeleteImage(message: FileMessage) {
@@ -1281,7 +1248,6 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         
         self.errorHandler(error?.localizedDescription)
     }
-    
     
     // MARK: - Deprecated, Unavailable
     

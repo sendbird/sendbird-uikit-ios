@@ -13,7 +13,6 @@ open class SBUBaseChannelCell: SBUTableViewCell {
 
     // MARK: - Public property
     public private(set) var channel: BaseChannel?
-    
 
     // MARK: - View Lifecycle
  

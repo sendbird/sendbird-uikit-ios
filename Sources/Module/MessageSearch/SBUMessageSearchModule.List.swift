@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 /// Event methods for the views updates and performing actions from the list component in the message search.
 public protocol SBUMessageSearchModuleListDelegate: SBUCommonDelegate {
     /// Called when the search result cell was selected in the `listComponent`.
@@ -29,7 +28,6 @@ public protocol SBUMessageSearchModuleListDelegate: SBUCommonDelegate {
     func messageSearchModuleDidSelectRetry(_ listComponent: SBUMessageSearchModule.List)
 }
 
-
 /// Methods to get data source for the list component in the message search.
 public protocol SBUMessageSearchModuleListDataSource: AnyObject {
     /// Ask the data source to return the search result list.
@@ -39,7 +37,6 @@ public protocol SBUMessageSearchModuleListDataSource: AnyObject {
     /// - Returns: The array of `BaseMessage` object.
     func messageSearchModule(_ listComponent: SBUMessageSearchModule.List, searchResultsInTableView tableView: UITableView) -> [BaseMessage]
 }
-
 
 extension SBUMessageSearchModule {
     
@@ -53,16 +50,15 @@ extension SBUMessageSearchModule {
         public var tableView = UITableView()
         
         /// A view that shows when there is no searched messages.
-        public var emptyView: UIView? = nil {
+        public var emptyView: UIView? {
             didSet { self.tableView.backgroundView = self.emptyView }
         }
         
         /// The search result cell for `SBUMessageSearchResultCell` object. Use `register(resultCell:nib:)` to update.
-        public var resultCell: SBUMessageSearchResultCell? = nil
+        public var resultCell: SBUMessageSearchResultCell?
 
         /// The object that is used as the theme of the list component. The theme must adopt the `SBUMessageSearchTheme` class.
-        public var theme: SBUMessageSearchTheme? = nil
-        
+        public var theme: SBUMessageSearchTheme?
         
         // MARK: - UI properties (Private)
         private lazy var defaultEmptyView: SBUEmptyView? = {
@@ -74,19 +70,17 @@ extension SBUMessageSearchModule {
         
         private let searchCellHeight: CGFloat = 76.0
         
-        
         // MARK: - Logic properties (Public)
         /// The object that acts as the delegate of the list component. The delegate must adopt the `SBUMessageSearchModuleListDelegate`.
-        public weak var delegate: SBUMessageSearchModuleListDelegate? = nil
+        public weak var delegate: SBUMessageSearchModuleListDelegate?
         
         /// The object that acts as the data source of the list component. The data source must adopt the `SBUMessageSearchModuleListDataSource`.
-        public weak var dataSource: SBUMessageSearchModuleListDataSource? = nil
+        public weak var dataSource: SBUMessageSearchModuleListDataSource?
         
         /// The search result list object from `messageSearchModule(_:searchResultsInTableView:)` data source method.
         public var resultList: [BaseMessage] {
             self.dataSource?.messageSearchModule(self, searchResultsInTableView: self.tableView) ?? []
         }
-        
         
         // MARK: - LifeCycle
         @available(*, unavailable, renamed: "SBUMessageSearchModule.List()")
@@ -157,7 +151,6 @@ extension SBUMessageSearchModule {
             
             (self.emptyView as? SBUEmptyView)?.setupStyles()
         }
-        
 
         // MARK: - TableView: Cell
         
@@ -212,7 +205,6 @@ extension SBUMessageSearchModule {
             }
         }
         
-        
         // MARK: - Common
         
         /// Retrives the `BaseMessage` object from the given `IndexPath` of the tableView.
@@ -227,7 +219,6 @@ extension SBUMessageSearchModule {
     }
 }
 
-
 // MARK: - SBUEmptyViewDelegate
 extension SBUMessageSearchModule.List: SBUEmptyViewDelegate {
     open func didSelectRetry() {
@@ -239,7 +230,6 @@ extension SBUMessageSearchModule.List: SBUEmptyViewDelegate {
         self.delegate?.messageSearchModuleDidSelectRetry(self)
     }
 }
-
 
 // MARK: - UITableView relations
 extension SBUMessageSearchModule.List: UITableViewDataSource, UITableViewDelegate {
@@ -256,7 +246,7 @@ extension SBUMessageSearchModule.List: UITableViewDataSource, UITableViewDelegat
     }
     
     open func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        var cell: UITableViewCell? = nil
+        var cell: UITableViewCell?
         if let resultCell = self.resultCell {
             cell = tableView.dequeueReusableCell(withIdentifier: resultCell.sbu_className)
         } else {

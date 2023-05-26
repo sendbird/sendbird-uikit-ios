@@ -10,15 +10,15 @@ import UIKit
 
 // https://gist.github.com/gbitaudeau/6540847de8f5ee9f2e0393a00d2cb11e
 public class SBULayoutableButton: UIButton {
-    public enum LabelAlignment : Int {
+    public enum LabelAlignment: Int {
         case right, left, under, top
     }
     
-    public enum VerticalAlignment : String {
+    public enum VerticalAlignment: String {
         case center, top, bottom, unset
     }
     
-    public enum HorizontalAlignment : String {
+    public enum HorizontalAlignment: String {
         case center, left, right, unset
     }
     
@@ -38,11 +38,11 @@ public class SBULayoutableButton: UIButton {
         didSet { setNeedsLayout() }
     }
     
-    var extraContentEdgeInsets:UIEdgeInsets = UIEdgeInsets.zero
+    var extraContentEdgeInsets: UIEdgeInsets = UIEdgeInsets.zero
     
     public override var contentEdgeInsets: UIEdgeInsets {
         get {
-            return super.contentEdgeInsets
+            super.contentEdgeInsets
         }
         set {
             super.contentEdgeInsets = newValue
@@ -50,11 +50,11 @@ public class SBULayoutableButton: UIButton {
         }
     }
     
-    var extraImageEdgeInsets:UIEdgeInsets = UIEdgeInsets.zero
+    var extraImageEdgeInsets: UIEdgeInsets = UIEdgeInsets.zero
     
     public override var imageEdgeInsets: UIEdgeInsets {
         get {
-            return super.imageEdgeInsets
+            super.imageEdgeInsets
         }
         set {
             super.imageEdgeInsets = newValue
@@ -62,11 +62,11 @@ public class SBULayoutableButton: UIButton {
         }
     }
     
-    var extraTitleEdgeInsets:UIEdgeInsets = UIEdgeInsets.zero
+    var extraTitleEdgeInsets: UIEdgeInsets = UIEdgeInsets.zero
     
     public override var titleEdgeInsets: UIEdgeInsets {
         get {
-            return super.titleEdgeInsets
+            super.titleEdgeInsets
         }
         set {
             super.titleEdgeInsets = newValue
@@ -128,16 +128,16 @@ public class SBULayoutableButton: UIButton {
                 newImageEdgeInsets.bottom = (-textSize.height - imageToTitleSpacing) / 2.0
                 newTitleEdgeInsets.top = (-imageSize.height - imageToTitleSpacing) / 2.0
                 newTitleEdgeInsets.bottom = (imageSize.height + imageToTitleSpacing) / 2.0
-                newContentEdgeInsets.top = (min (imageSize.height, textSize.height) + imageToTitleSpacing) / 2.0
-                newContentEdgeInsets.bottom = (min (imageSize.height, textSize.height) + imageToTitleSpacing) / 2.0
+                newContentEdgeInsets.top = (min(imageSize.height, textSize.height) + imageToTitleSpacing) / 2.0
+                newContentEdgeInsets.bottom = (min(imageSize.height, textSize.height) + imageToTitleSpacing) / 2.0
                 contentVerticalAlignment = .center
             case .top:
                 newImageEdgeInsets.top = (-textSize.height - imageToTitleSpacing) / 2.0
                 newImageEdgeInsets.bottom = (textSize.height + imageToTitleSpacing) / 2.0
                 newTitleEdgeInsets.top = (imageSize.height + imageToTitleSpacing) / 2.0
                 newTitleEdgeInsets.bottom = (-imageSize.height - imageToTitleSpacing) / 2.0
-                newContentEdgeInsets.top = (min (imageSize.height, textSize.height) + imageToTitleSpacing) / 2.0
-                newContentEdgeInsets.bottom = (min (imageSize.height, textSize.height) + imageToTitleSpacing) / 2.0
+                newContentEdgeInsets.top = (min(imageSize.height, textSize.height) + imageToTitleSpacing) / 2.0
+                newContentEdgeInsets.bottom = (min(imageSize.height, textSize.height) + imageToTitleSpacing) / 2.0
                 contentVerticalAlignment = .center
             case .center:
                 contentVerticalAlignment = .center
@@ -166,8 +166,8 @@ public class SBULayoutableButton: UIButton {
                 newImageEdgeInsets.right = -textSize.width / 2.0
                 newTitleEdgeInsets.left = -imageSize.width / 2.0
                 newTitleEdgeInsets.right = imageSize.width / 2.0
-                newContentEdgeInsets.left = -((imageSize.width + textSize.width) - max (imageSize.width, textSize.width)) / 2.0
-                newContentEdgeInsets.right = -((imageSize.width + textSize.width) - max (imageSize.width, textSize.width)) / 2.0
+                newContentEdgeInsets.left = -((imageSize.width + textSize.width) - max(imageSize.width, textSize.width)) / 2.0
+                newContentEdgeInsets.right = -((imageSize.width + textSize.width) - max(imageSize.width, textSize.width)) / 2.0
             case .unset:
                 break
             }

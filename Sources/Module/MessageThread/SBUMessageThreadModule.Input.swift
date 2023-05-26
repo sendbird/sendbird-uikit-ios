@@ -10,7 +10,6 @@ import UIKit
 import PhotosUI
 import SendbirdChatSDK
 
-
 /// Event methods for the views updates and performing actions from the input component in the message thread.
 public protocol SBUMessageThreadModuleInputDelegate: SBUBaseChannelModuleInputDelegate {
     /// Called when a file was picked to send a file message.
@@ -99,10 +98,8 @@ public protocol SBUMessageThreadModuleInputDelegate: SBUBaseChannelModuleInputDe
     func messageThreadModuleDidTapVoiceMessage(_ inputComponent: SBUMessageThreadModule.Input)
 }
 
-
 /// Methods to get data source for the input component in the group channel.
 public protocol SBUMessageThreadModuleInputDataSource: SBUBaseChannelModuleInputDataSource { }
-
 
 extension SBUMessageThreadModule {
     /// A module component that represent the list of `SBUMessageThreadModule`.
@@ -134,10 +131,9 @@ extension SBUMessageThreadModule {
         /// The object that acts as the data source of the mention manager. The data source must adopt the `SBUMentionManagerDataSource`.
         public weak var mentionManagerDataSource: SBUMentionManagerDataSource?
         
-        public var parentMessage: BaseMessage? = nil
+        public var parentMessage: BaseMessage?
         
         public var mentionManager: SBUMentionManager?
-
         
         // MARK: - LifeCycle
         
@@ -180,10 +176,9 @@ extension SBUMessageThreadModule {
                 .sbu_constraint(equalTo: self, leading: 0, trailing: 0, top: 0, bottom: 0)
         }
         
-        
         // MARK: - UIImagePickerController
-        open override func pickImageFile(info: [UIImagePickerController.InfoKey : Any]) {
-            var tempImageURL: URL? = nil
+        open override func pickImageFile(info: [UIImagePickerController.InfoKey: Any]) {
+            var tempImageURL: URL?
             if let imageURL = info[.imageURL] as? URL {
                 // file:///~~~
                 tempImageURL = imageURL
@@ -237,7 +232,7 @@ extension SBUMessageThreadModule {
             }
         }
         
-        open override func pickVideoFile(info: [UIImagePickerController.InfoKey : Any]) {
+        open override func pickVideoFile(info: [UIImagePickerController.InfoKey: Any]) {
             do {
                 guard let videoURL = info[.mediaURL] as? URL else { return }
                 let videoFileData = try Data(contentsOf: videoURL)
@@ -260,9 +255,9 @@ extension SBUMessageThreadModule {
         
         @available(iOS 14.0, *)
         open override func pickImageFile(itemProvider: NSItemProvider) {
-            itemProvider.loadItem(forTypeIdentifier: UTType.image.identifier, options: [:]) { [weak self] url, error in
+            itemProvider.loadItem(forTypeIdentifier: UTType.image.identifier, options: [:]) { [weak self] url, _ in
                 if itemProvider.canLoadObject(ofClass: UIImage.self) {
-                    itemProvider.loadObject(ofClass: UIImage.self) { imageItem, error in
+                    itemProvider.loadObject(ofClass: UIImage.self) { imageItem, _ in
                         guard let self = self else { return }
                         guard let originalImage = imageItem as? UIImage else { return }
                         guard let imageURL = url as? URL else { return }
@@ -291,7 +286,7 @@ extension SBUMessageThreadModule {
         
         @available(iOS 14.0, *)
         open override func pickGIFFile(itemProvider: NSItemProvider) {
-            itemProvider.loadItem(forTypeIdentifier: UTType.gif.identifier, options: [:]) { [weak self] url, error in
+            itemProvider.loadItem(forTypeIdentifier: UTType.gif.identifier, options: [:]) { [weak self] url, _ in
                 guard let self = self else { return }
                 guard let imageURL = url as? URL else { return }
                 guard let mimeType = SBUUtils.getMimeType(url: imageURL) else { return }
@@ -390,7 +385,6 @@ extension SBUMessageThreadModule {
             }
         }
         
-        
         // MARK: - Common: Update
         open override func updateMessageInputMode(_ mode: SBUMessageInputMode, message: BaseMessage? = nil) {
             self.updatePlaceholder()
@@ -411,13 +405,12 @@ extension SBUMessageThreadModule {
                 } else {
                     self.mentionManager = SBUMentionManager()
                     self.mentionManager?.configure(
-                        delegate:self,
+                        delegate: self,
                         dataSource: self.mentionManagerDataSource,
                         defaultTextAttributes: messageInputView.defaultAttributes,
                         mentionTextAttributes: messageInputView.mentionedAttributes
                     )
                 }
-                
                 
                 let attributedText = self.mentionManager!.generateMentionedMessage(
                     with: mentionedMessageTemplate,
@@ -476,7 +469,7 @@ extension SBUMessageThreadModule {
         /// Updates the placeholder text.
         open func updatePlaceholder() {
             let messageInputView = self.messageInputView as? SBUMessageInputView
-            if ((self.parentMessage?.threadInfo.replyCount ?? 0) > 0) {
+            if (self.parentMessage?.threadInfo.replyCount ?? 0) > 0 {
                 messageInputView?.isThreadMessage = true
                 messageInputView?.isThreadFirstMessage = false
             } else {
@@ -486,7 +479,6 @@ extension SBUMessageThreadModule {
             
             messageInputView?.updatePlaceholderText()
         }
-        
         
         // MARK: - Mention
         
@@ -612,7 +604,6 @@ extension SBUMessageThreadModule {
             return tounchedInside
         }
         
-        
         // MARK: - SBUMessageInputViewDelegate
         open override func messageInputView(_ messageInputView: SBUMessageInputView,
                                             shouldChangeTextIn range: NSRange,
@@ -639,6 +630,8 @@ extension SBUMessageThreadModule {
             guard let mentionManager = self.mentionManager else { return }
 
             guard !mentionManager.needToSkipSelection(textView) else { return }
+            
+            guard self.channel?.isBroadcast == false else { return }
             
             self.mentionManager?.handleMentionSuggestion(on: textView, range: range)
         }
@@ -795,7 +788,6 @@ extension SBUMessageThreadModule {
         open func mentionManager(_ manager: SBUMentionManager, shouldLoadSuggestedMentions keyword: String) {
             self.delegate?.messageThreadModule(self, shouldLoadSuggestedMentions: keyword)
         }
-        
         
         // MARK: - SBUSuggestedMentionListDelegate
         open func suggestedUserList(_ list: SBUSuggestedMentionList, didSelectUser user: SBUUser) {

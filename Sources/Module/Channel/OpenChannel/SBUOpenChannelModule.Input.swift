@@ -10,7 +10,6 @@ import UIKit
 import PhotosUI
 import SendbirdChatSDK
 
-
 /// Event methods for the views updates and performing actions from the input component in the open channel.
 public protocol SBUOpenChannelModuleInputDelegate: SBUBaseChannelModuleInputDelegate {
     func openChannelModule(
@@ -82,8 +81,8 @@ extension SBUOpenChannelModule {
             self.setupStyles(theme: nil)
         }
         
-        open override func pickImageFile(info: [UIImagePickerController.InfoKey : Any]) {
-            var tempImageURL: URL? = nil
+        open override func pickImageFile(info: [UIImagePickerController.InfoKey: Any]) {
+            var tempImageURL: URL?
             if let imageURL = info[.imageURL] as? URL {
                 // file:///~~~
                 tempImageURL = imageURL
@@ -135,7 +134,7 @@ extension SBUOpenChannelModule {
             }
         }
         
-        open override func pickVideoFile(info: [UIImagePickerController.InfoKey : Any]) {
+        open override func pickVideoFile(info: [UIImagePickerController.InfoKey: Any]) {
             do {
                 guard let videoURL = info[.mediaURL] as? URL else { return }
                 let videoFileData = try Data(contentsOf: videoURL)
@@ -156,9 +155,9 @@ extension SBUOpenChannelModule {
         
         @available(iOS 14.0, *)
         open override func pickImageFile(itemProvider: NSItemProvider) {
-            itemProvider.loadItem(forTypeIdentifier: UTType.image.identifier, options: [:]) { [weak self] url, error in
+            itemProvider.loadItem(forTypeIdentifier: UTType.image.identifier, options: [:]) { [weak self] url, _ in
                 if itemProvider.canLoadObject(ofClass: UIImage.self) {
-                    itemProvider.loadObject(ofClass: UIImage.self) { imageItem, error in
+                    itemProvider.loadObject(ofClass: UIImage.self) { imageItem, _ in
                         guard let self = self else { return }
                         guard let originalImage = imageItem as? UIImage else { return }
                         guard let imageURL = url as? URL else { return }
@@ -186,7 +185,7 @@ extension SBUOpenChannelModule {
         
         @available(iOS 14.0, *)
         open override func pickGIFFile(itemProvider: NSItemProvider) {
-            itemProvider.loadItem(forTypeIdentifier: UTType.gif.identifier, options: [:]) { [weak self] url, error in
+            itemProvider.loadItem(forTypeIdentifier: UTType.gif.identifier, options: [:]) { [weak self] url, _ in
                 guard let self = self else { return }
                 guard let imageURL = url as? URL else { return }
                 guard let mimeType = SBUUtils.getMimeType(url: imageURL) else { return }
@@ -309,7 +308,7 @@ extension SBUOpenChannelModule {
             let isOperator = self.channel?.isOperator(userId: userId) ?? false
             let isFrozen = self.channel?.isFrozen ?? false
             self.channel?.getMyMutedInfo(completionHandler: {
-                [weak self] isMuted, description, startAt, endAt, remainingDuration, error in
+                [weak self] isMuted, _, _, _, _, _ in
                 guard let self = self else { return }
                 if !isFrozen || (isFrozen && isOperator) {
                     if let messageInputView = self.messageInputView as? SBUMessageInputView {

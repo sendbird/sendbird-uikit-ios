@@ -8,7 +8,6 @@
 
 import UIKit
 
-
 open class SBUQuotedFileMessageView: SBUQuotedBaseMessageView {
     /// The string value of file URL.
     /// - Since: 2.2.0

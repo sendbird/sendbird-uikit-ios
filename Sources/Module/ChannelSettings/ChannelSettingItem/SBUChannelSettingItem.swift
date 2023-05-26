@@ -24,8 +24,7 @@ public struct SBUChannelSettingItem {
                 icon: UIImage,
                 isRightButtonHidden: Bool = true,
                 isRightSwitchHidden: Bool = true,
-                tapHandler: (() -> Void)? = nil)
-    {
+                tapHandler: (() -> Void)? = nil) {
         self.title = title
         self.icon = icon
         self.subTitle = subTitle

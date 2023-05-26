@@ -20,9 +20,9 @@ public class SBULinkClickableTextView: UITextView {
         return attributedText.attribute(.link, at: startIndex, effectiveRange: nil) != nil ? self : nil
     }
     
-    //make it not selectable
+    // make it not selectable
     public override var selectedTextRange: UITextRange? {
-        get { return nil }
+        get { nil }
         set {}
     }
 }

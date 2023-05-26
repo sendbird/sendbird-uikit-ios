@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 open class SBUOpenChannelSettingsViewController: SBUBaseChannelSettingsViewController, SBUOpenChannelSettingsModuleHeaderDelegate, SBUOpenChannelSettingsModuleListDelegate, SBUOpenChannelSettingsModuleListDataSource, SBUOpenChannelSettingsViewModelDelegate {
     
     // MARK: - UI Properties (Public)
@@ -22,7 +21,6 @@ open class SBUOpenChannelSettingsViewController: SBUBaseChannelSettingsViewContr
         set { self.baseListComponent = newValue }
     }
     
-    
     // MARK: - Logic properties (Public)
     public var viewModel: SBUOpenChannelSettingsViewModel? {
         get { self.baseViewModel as? SBUOpenChannelSettingsViewModel }
@@ -30,7 +28,6 @@ open class SBUOpenChannelSettingsViewController: SBUBaseChannelSettingsViewContr
     }
     
     public override var channel: OpenChannel? { self.viewModel?.channel as? OpenChannel }
-    
     
     // MARK: - Lifecycle
     @available(*, unavailable, renamed: "SBUOpenChannelSettingsViewController(channelURL:)")
@@ -67,7 +64,6 @@ open class SBUOpenChannelSettingsViewController: SBUBaseChannelSettingsViewContr
         self.listComponent = SBUModuleSet.openChannelSettingsModule.listComponent
     }
     
-    
     // MARK: - ViewModel
     open override func createViewModel(channel: BaseChannel? = nil, channelURL: String? = nil) {
         self.baseViewModel = SBUOpenChannelSettingsViewModel(
@@ -76,7 +72,6 @@ open class SBUOpenChannelSettingsViewController: SBUBaseChannelSettingsViewContr
             delegate: self
         )
     }
-    
     
     // MARK: - Sendbird UIKit Life cycle
     open override func setupViews() {
@@ -98,7 +93,6 @@ open class SBUOpenChannelSettingsViewController: SBUBaseChannelSettingsViewContr
             self.view.addSubview(listComponent)
         }
     }
-
     
     // MARK: - Actions
     /// If you want to use a custom userListViewController, override it and implement it.
@@ -123,7 +117,7 @@ open class SBUOpenChannelSettingsViewController: SBUBaseChannelSettingsViewContr
     open func showDeleteChannelAlert() {
         let deleteButton = SBUAlertButtonItem(
             title: SBUStringSet.Delete,
-            color: self.theme.itemDeleteTextColor) { [weak self] info in
+            color: self.theme.itemDeleteTextColor) { [weak self] _ in
                 guard let self = self else { return }
                 self.viewModel?.deleteChannel()
             }
@@ -138,7 +132,6 @@ open class SBUOpenChannelSettingsViewController: SBUBaseChannelSettingsViewContr
             delegate: self
         )
     }
-    
     
     // MARK: - SBUOpenChannelSettingsModuleHeaderDelegate
     open func openChannelSettingsModule(_ headerComponent: SBUOpenChannelSettingsModule.Header,
@@ -166,7 +159,6 @@ open class SBUOpenChannelSettingsViewController: SBUBaseChannelSettingsViewContr
         self.showChannelEditActionSheet()
     }
     
-    
     // MARK: - SBUOpenChannelSettingsModuleListDelegate
     open func openChannelSettingsModule(_ listComponent: SBUOpenChannelSettingsModule.List,
                                         didSelectRowAt indexPath: IndexPath) {
@@ -184,7 +176,6 @@ open class SBUOpenChannelSettingsViewController: SBUBaseChannelSettingsViewContr
         self.showDeleteChannelAlert()
     }
     
-    
     // MARK: - SBUOpenChannelSettingsModuleListDataSource
     open func baseChannelSettingsModule(_ listComponent: SBUBaseChannelSettingsModule.List,
                                         channelForTableView tableView: UITableView) -> BaseChannel? {
@@ -194,7 +185,6 @@ open class SBUOpenChannelSettingsViewController: SBUBaseChannelSettingsViewContr
     open func baseChannelSettingsModuleIsOperator(_ listComponent: SBUBaseChannelSettingsModule.List) -> Bool {
         return self.viewModel?.isOperator ?? false
     }
-    
     
     // MARK: - SBUOpenChannelSettingsViewModelDelegate
     open func openChannelSettingsViewModel(_ viewModel: SBUOpenChannelSettingsViewModel,

@@ -9,7 +9,6 @@
 import Foundation
 import SendbirdChatSDK
 
-
 public class SBUEmojiManager {
     // MARK: - Private keys
     static let kEmojiCacheKey = "LOCAL_CACHING_EMOJI_CONTAINER"
@@ -22,7 +21,6 @@ public class SBUEmojiManager {
     private var emojiHash: String? {
         container?.emojiHash
     }
-
     
     // MARK: - Public function
     
@@ -111,14 +109,13 @@ public class SBUEmojiManager {
 
         return category.emojis
     }
-
     
     // MARK: - private function
     static func useReaction(channel: BaseChannel?) -> Bool {
         guard let groupChannel = channel as? GroupChannel else { return false }
         
         if let appInfo = SendbirdChat.getAppInfo(),
-           appInfo.useReaction, !groupChannel.isSuper, !groupChannel.isBroadcast  {
+           appInfo.useReaction, !groupChannel.isSuper, !groupChannel.isBroadcast {
             return true
         } else {
             return false

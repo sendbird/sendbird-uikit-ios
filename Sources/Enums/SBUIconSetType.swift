@@ -8,7 +8,6 @@
 
 import UIKit
 
-
 /// Sendbird's icon set type enumerate.
 /// - Since: 3.2.0
 public enum SBUIconSetType: String, Hashable {
@@ -71,7 +70,6 @@ public enum SBUIconSetType: String, Hashable {
     case iconPause
     case iconRecording
     case iconStop
-    
     
     // MARK: - Metric
     

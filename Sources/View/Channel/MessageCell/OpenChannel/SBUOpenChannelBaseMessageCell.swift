@@ -42,13 +42,11 @@ open class SBUOpenChannelBaseMessageCell: SBUTableViewCell {
     public var stackViewTopConstraint: NSLayoutConstraint?
     
     var isOverlay = false
-
     
     // MARK: - Action
-    var userProfileTapHandler: (() -> Void)? = nil
-    var tapHandlerToContent: (() -> Void)? = nil
-    var longPressHandlerToContent: (() -> Void)? = nil
-
+    var userProfileTapHandler: (() -> Void)?
+    var tapHandlerToContent: (() -> Void)?
+    var longPressHandlerToContent: (() -> Void)?
 
     // MARK: - View Lifecycle
     
@@ -99,7 +97,6 @@ open class SBUOpenChannelBaseMessageCell: SBUTableViewCell {
         )
         self.stackViewTopConstraint?.isActive = true
     }
-    
     
     // MARK: - Common
     

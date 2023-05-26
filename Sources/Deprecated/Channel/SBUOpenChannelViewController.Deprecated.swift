@@ -13,59 +13,49 @@ extension SBUOpenChannelViewController {
     // MARK: 3.0.0
     @available(*, deprecated, message: "This property has been moved to `SBUOpenChannelModule.Header`.", renamed: "headerComponent.channelInfoView")
     public var channelInfoView: SBUChannelInfoHeaderView {
-        get { self.headerComponent?.channelInfoView as? SBUChannelInfoHeaderView ?? SBUChannelInfoHeaderView(delegate: nil)}
+        get { self.headerComponent?.channelInfoView as? SBUChannelInfoHeaderView ?? SBUChannelInfoHeaderView(delegate: nil) }
         set { self.headerComponent?.channelInfoView = newValue }
     }
-    
     
     @available(*, deprecated, message: "This property has been moved to `SBUOpenChannelModule.List`.", renamed: "listComponent.adminMessageCell")
     public var adminMessageCell: SBUOpenChannelBaseMessageCell? {
         self.listComponent?.adminMessageCell
     }
     
-    
     @available(*, deprecated, message: "This property has been moved to `SBUOpenChannelModule.List`.", renamed: "listComponent.userMessageCell")
     public var userMessageCell: SBUOpenChannelBaseMessageCell? {
         self.listComponent?.userMessageCell
     }
-    
     
     @available(*, deprecated, message: "This property has been moved to `SBUOpenChannelModule.List`.", renamed: "listComponent.fileMessageCell")
     public var fileMessageCell: SBUOpenChannelBaseMessageCell? {
         self.listComponent?.fileMessageCell
     }
     
-    
-    
     @available(*, deprecated, message: "This property has been moved to `SBUOpenChannelModule.List`.", renamed: "listComponent.customMessageCell")
     public var customMessageCell: SBUOpenChannelBaseMessageCell? {
         self.listComponent?.customMessageCell
     }
-    
     
     @available(*, deprecated, message: "This property has been moved to `SBUOpenChannelModule.List`.", renamed: "listComponent.unknownMessageCell")
     public var unknownMessageCell: SBUOpenChannelBaseMessageCell? {
         self.listComponent?.unknownMessageCell
     }
     
-    
     @available(*, deprecated, message: "This function has been moved to `SBUOpenChannelModule.List`.", renamed: "listComponent.register(adminMessageCell:nib:)")
     public func register(adminMessageCell: SBUOpenChannelBaseMessageCell, nib: UINib? = nil) {
         self.listComponent?.register(adminMessageCell: adminMessageCell, nib: nib)
     }
-    
     
     @available(*, deprecated, message: "This function has been moved to `SBUOpenChannelModule.List`.", renamed: "listComponent.register(userMessageCell:nib:)")
     public func register(userMessageCell: SBUOpenChannelBaseMessageCell, nib: UINib? = nil) {
         self.listComponent?.register(userMessageCell: userMessageCell, nib: nib)
     }
     
-    
     @available(*, deprecated, message: "This function has been moved to `SBUOpenChannelModule.List`.", renamed: "listComponent.register(fileMessageCell:nib:)")
     public func register(fileMessageCell: SBUOpenChannelBaseMessageCell, nib: UINib? = nil) {
         self.listComponent?.register(fileMessageCell: fileMessageCell, nib: nib)
     }
-    
     
     @available(*, deprecated, message: "This function has been moved to `SBUOpenChannelModule.List`.", renamed: "listComponent.register(customMessageCell:nib:)")
     public func register(customMessageCell: SBUOpenChannelBaseMessageCell?, nib: UINib? = nil) {
@@ -80,7 +70,6 @@ extension SBUOpenChannelViewController {
     }
     
     // MARK: - Message: Gestures
-    
     
     // MARK: - Media
     

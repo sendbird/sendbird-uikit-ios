@@ -33,7 +33,7 @@ open class SBUMessageWebView: UIStackView, SBUViewLifeCycle {
     public let detailStackView = SBUStackView(axis: .vertical)
     
     /// A label that represents a title of the web link
-    public let titleLabel:UILabel = {
+    public let titleLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 10
         label.preferredMaxLayoutWidth = Metric.textMaxPrefWidth
@@ -41,14 +41,14 @@ open class SBUMessageWebView: UIStackView, SBUViewLifeCycle {
     }()
     
     /// A label that shows a description of the web link
-    public let descriptionLabel:UILabel = {
+    public let descriptionLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 1
         return label
     }()
     
     /// A label that shows the URL
-    public let urlLabel:UILabel = {
+    public let urlLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 1
         return label

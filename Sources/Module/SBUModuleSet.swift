@@ -8,41 +8,38 @@
 
 import UIKit
 
-
 public class SBUModuleSet {
     // MARK: - Properties
     private static var shared: SBUModuleSet = SBUModuleSet()
-    
     
     // MARK: - Modules
     
     // Channel list
     /// The module for the list of group channels.
     public static var groupChannelListModule: SBUGroupChannelListModule {
-        get { return shared.groupChannelListModule }
+        get { shared.groupChannelListModule }
         set { shared.groupChannelListModule = newValue }
     }
     /// The module for the list of open channels.
     public static var openChannelListModule: SBUOpenChannelListModule {
-        get { return shared.openChannelListModule }
+        get { shared.openChannelListModule }
         set { shared.openChannelListModule = newValue }
     }
-    
     
     // Channel
     /// The module for base channel.
     public static var baseChannelModule: SBUBaseChannelModule {
-        get { return shared.baseChannelModule }
+        get { shared.baseChannelModule }
         set { shared.baseChannelModule = newValue }
     }
     /// The module for group channel.
     public static var groupChannelModule: SBUGroupChannelModule {
-        get { return shared.groupChannelModule }
+        get { shared.groupChannelModule }
         set { shared.groupChannelModule = newValue }
     }
     /// The module for open channel.
     public static var openChannelModule: SBUOpenChannelModule {
-        get { return shared.openChannelModule }
+        get { shared.openChannelModule }
         set { shared.openChannelModule = newValue }
     }
     
@@ -64,7 +61,6 @@ public class SBUModuleSet {
         set { shared.inviteUserModule = newValue }
     }
     
-    
     // Register operator
     /// The module for promoting members.
     public static var groupRegisterOperatorModule: SBURegisterOperatorModule {
@@ -76,7 +72,6 @@ public class SBUModuleSet {
         get { shared.openRegisterOperatorModule }
         set { shared.openRegisterOperatorModule = newValue }
     }
-    
     
     // User list
     /// The module for the list of users.
@@ -90,14 +85,12 @@ public class SBUModuleSet {
         set { shared.openUserListModule = newValue }
     }
     
-    
     // Group Channel Push Settings
     /// The module for the notification settings.
     public static var groupChannelPushSettingsModule: SBUGroupChannelPushSettingsModule {
         get { shared.groupChannelPushSettingsModule }
         set { shared.groupChannelPushSettingsModule = newValue }
     }
-    
     
     // Create channel
     /// The module for creating a new channel.
@@ -111,7 +104,6 @@ public class SBUModuleSet {
         set { shared.createOpenChannelModule = newValue }
     }
     
-    
     // Channel settings
     /// The module for a group channel settings.
     public static var groupChannelSettingsModule: SBUGroupChannelSettingsModule {
@@ -123,7 +115,6 @@ public class SBUModuleSet {
         get { shared.openChannelSettingsModule }
         set { shared.openChannelSettingsModule = newValue }
     }
-    
     
     // Moderations
     /// The module for the moderations.
@@ -137,7 +128,6 @@ public class SBUModuleSet {
         set { shared.openModerationsModule = newValue }
     }
     
-    
     // Message search
     /// The module for searching the messages.
     public static var messageSearchModule: SBUMessageSearchModule {
@@ -145,14 +135,12 @@ public class SBUModuleSet {
         set { shared.messageSearchModule = newValue }
     }
     
-    
     // Message Thread
     /// The module for the message thread list.
     public static var messageThreadModule: SBUMessageThreadModule {
         get { shared.messageThreadModule }
         set { shared.messageThreadModule = newValue }
     }
-    
     
     // MARK: - Initialize
     public init(groupChannelListModule: SBUGroupChannelListModule = SBUGroupChannelListModule(),
@@ -210,7 +198,6 @@ public class SBUModuleSet {
         self.messageThreadModule = messageThreadModule
     }
     
-    
     // MARK: - Category
     private var groupChannelListModule: SBUGroupChannelListModule
     private var openChannelListModule: SBUOpenChannelListModule
@@ -245,7 +232,6 @@ public class SBUModuleSet {
     
     private var messageThreadModule: SBUMessageThreadModule
 }
-
 
 extension SBUModuleSet {
     @available(*, unavailable, renamed: "init(groupChannelListModule:openChannelListModule:baseChannelModule:groupChannelModule:openChannelModule:inviteUserModule:groupRegisterOperatorModule:openRegisterOperatorModule:groupUserListModule:openUserListModule:groupChannelPushSettingsModule:createChannelModule:groupChannelSettingsModule:openChannelSettingsModule:groupModerationsModule:openModerationsModule:messageSearchModule:)") // 3.1.0
@@ -296,14 +282,12 @@ extension SBUModuleSet {
         get { self.groupRegisterOperatorModule }
         set { self.groupRegisterOperatorModule = newValue }
     }
-
    
     @available(*, unavailable, message: "This property had been seperated to `groupUserListModule` and `openUserListModule`") // 3.1.0
     public static var userListModule: SBUUserListModule { SBUUserListModule() }
     
     @available(*, unavailable, message: "This property had been seperated to `groupUserListModule` and `openUserListModule`") // 3.1.0
     private var userListModule: SBUUserListModule { SBUUserListModule() }
-
     
     @available(*, deprecated, renamed: "groupModerationsModule") // 3.1.0
     public static var moderationsModule: SBUModerationsModule {

@@ -34,7 +34,6 @@ open class SBUCreateChannelModule {
     private var _headerComponent: SBUCreateChannelModule.Header?
     private var _listComponent: SBUCreateChannelModule.List?
     
-    
     // MARK: -
     public init(headerComponent: SBUCreateChannelModule.Header? = nil,
                 listComponent: SBUCreateChannelModule.List? = nil) {
@@ -42,4 +41,3 @@ open class SBUCreateChannelModule {
         self.listComponent = listComponent
     }
 }
-

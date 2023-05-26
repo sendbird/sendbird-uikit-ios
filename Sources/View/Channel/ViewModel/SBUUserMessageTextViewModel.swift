@@ -86,7 +86,7 @@ public struct SBUUserMessageTextViewModel {
             highlightTextColor = theme.messageRightHighlightTextColor
             mentionTextColor = theme.mentionRightTextColor
             mentionTextBackgroundColor = theme.mentionRightTextBackgroundColor
-        } else { //default color
+        } else { // default color
             normalTextColor = theme.userMessageRightTextColor
             editTextColor = theme.userMessageRightEditTextColor
             highlightTextColor = theme.messageRightHighlightTextColor
@@ -150,7 +150,7 @@ public struct SBUUserMessageTextViewModel {
                     )
                 ranges.append(baseRange)
                 
-                if (baseRange.location != NSNotFound) {
+                if baseRange.location != NSNotFound {
                     baseRange = NSRange(
                         location: NSMaxRange(baseRange),
                         length: attributedString.length - NSMaxRange(baseRange)

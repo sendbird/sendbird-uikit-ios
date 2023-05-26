@@ -34,7 +34,6 @@ open class SBUGroupChannelListModule {
     private var _headerComponent: SBUGroupChannelListModule.Header?
     private var _listComponent: SBUGroupChannelListModule.List?
     
-    
     // MARK: - 
     public init(headerComponent: SBUGroupChannelListModule.Header? = nil,
                 listComponent: SBUGroupChannelListModule.List? = nil) {

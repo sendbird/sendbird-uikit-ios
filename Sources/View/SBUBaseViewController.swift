@@ -45,7 +45,6 @@ open class SBUBaseViewController: UIViewController, UINavigationControllerDelega
         self.setupStyles()
     }
     
-    
     // MARK: - Sendbird UIKit Life cycle
     
     /// This function setups views.
@@ -86,7 +85,6 @@ open class SBUBaseViewController: UIViewController, UINavigationControllerDelega
     // MARK: - Actions
     
     /// This is to pop or dismiss (depending on current view controller) the search view controller.
-    @objc
     open func onClickBack() {
         if let navigationController = self.navigationController,
             navigationController.viewControllers.count > 1 {
@@ -95,7 +93,6 @@ open class SBUBaseViewController: UIViewController, UINavigationControllerDelega
             self.dismiss(animated: true, completion: nil)
         }
     }
-    
     
     // MARK: - Error handling
     
@@ -108,17 +105,15 @@ open class SBUBaseViewController: UIViewController, UINavigationControllerDelega
         SBULog.error("Did receive error: \(message ?? "")")
     }
     
-    
     // MARK: - UINavigationControllerDelegate
     open func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
         // prevent swipe to pop if current vc is the first one. App freezes (https://sendbird.atlassian.net/browse/QU-234)
-        if (navigationController.viewControllers.count > 1) {
+        if navigationController.viewControllers.count > 1 {
             navigationController.interactivePopGestureRecognizer?.isEnabled = true
         } else {
             navigationController.interactivePopGestureRecognizer?.isEnabled = false
         }
     }
-
     
     // MARK: - SBULoadingIndicatorProtocol
     open func showLoading(_ isLoading: Bool) {

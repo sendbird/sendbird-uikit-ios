@@ -55,7 +55,6 @@ extension SBUBaseSelectUserViewController {
 
     @available(*, deprecated, message: "This property has been moved to the `SBUBaseSelectUserViewModel`.", renamed: "viewModel.inviteListType")
     public var inviteListType: ChannelInviteListType { baseViewModel?.inviteListType ?? .users }
-
     
     @available(*, unavailable, message: "If you want to invite a user, use `init(channel:)` on `SBUInviteUserViewController` class, \nor if you want to register as operator a member, use `init(channel:)` on `SBURegisterOperatorViewController` class.")
     public convenience init(channel: GroupChannel, type: ChannelInviteListType) {
@@ -77,10 +76,8 @@ extension SBUBaseSelectUserViewController {
         self.init(nibName: nil, bundle: nil)
     }
     
-    
     @available(*, unavailable, message: "If you want to invite a user, use `inviteSelectedUsers()` on `SBUInviteUserViewController` class,\nor if you want to register as operator a member, use `registerSelectedUsers()` on `SBURegisterOperatorViewController` class.")
     public func onClickInviteOrPromote() { }
-    
     
     @available(*, deprecated, message: "This function has been moved to the `SBUBaseSelectUserViewModel`.", renamed: "viewModel.resetUserList()")
     public func resetUserList() {
@@ -131,11 +128,9 @@ extension SBUBaseSelectUserViewController {
     @available(*, unavailable, renamed: "shouldUpdateLoadingState(_:)")
     open func shouldDismissLoadingIndicator() {}
     
-    
-    
     // MARK: - ~2.2.0
     @available(*, unavailable, renamed: "errorHandler(_:_:)")
-    open func didReceiveError(_ message: String?, _ code: NSInteger? = nil) {
+    public func didReceiveError(_ message: String?, _ code: NSInteger? = nil) {
         self.errorHandler(message, code)
     }
 }

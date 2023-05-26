@@ -91,7 +91,6 @@ open class SBUSuggestedMentionList: SBUView, UITableViewDelegate, UITableViewDat
 
     // MARK: Mention
     
-    
     // MARK: Table View
     
     public func register(userCell: UITableViewCell, nib: UINib? = nil) {
@@ -172,4 +171,3 @@ open class SBUSuggestedMentionList: SBUView, UITableViewDelegate, UITableViewDat
         }
     }
 }
-

@@ -11,8 +11,8 @@ import UIKit
 extension SBUView {
     // MARK: - Unavailable 3.0.0
     @available(*, unavailable, renamed: "setupLayouts()")
-    open func setupAutolayout() { }
+    public func setupAutolayout() { }
     
     @available(*, unavailable, renamed: "updateLayouts()")
-    open func updateAutolayout() { }
+    public func updateAutolayout() { }
 }

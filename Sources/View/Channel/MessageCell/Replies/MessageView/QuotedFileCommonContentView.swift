@@ -135,7 +135,7 @@ open class QuotedFileCommonContentView: SBUView {
         self.fileImageView.image = image
         
         // File name
-        var attributes: [NSAttributedString.Key : Any]
+        var attributes: [NSAttributedString.Key: Any]
         var highlightTextColor: UIColor
         
         if messageFileType == .voice {
@@ -196,7 +196,7 @@ open class QuotedFileCommonContentView: SBUView {
                     )
                 ranges.append(baseRange)
                 
-                if (baseRange.location != NSNotFound) {
+                if baseRange.location != NSNotFound {
                     baseRange = NSRange(
                         location: NSMaxRange(baseRange),
                         length: attributedString.length - NSMaxRange(baseRange)

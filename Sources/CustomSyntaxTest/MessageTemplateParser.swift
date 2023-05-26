@@ -168,8 +168,6 @@ public class MessageTemplateParser: NSObject {
      )
      */
     
-    
-    
     public func parserTest() {
         let data = Data(MessageTemplateParser.MockJson.utf8)
         let decoded = try? JSONDecoder().decode(MessageTemplateData.self, from: data)
@@ -194,7 +192,6 @@ public class MessageTemplateParser: NSObject {
     }
 }
 
-
 /**
     Root: `MessageTemplateData`
      ㄴ body
@@ -207,7 +204,6 @@ public class MessageTemplateParser: NSObject {
  
     All item of `SBUMessageTemplate.Item` inherited `SBUMessageTemplate.View`.
  */
-
 
 // MARK: - Root
 class MessageTemplateData: Decodable {
@@ -245,7 +241,6 @@ public class SBUMessageTemplate {
         case imageButton(ImageButton)
         case image(Image)
     }
-    
     
     // MARK: Base Item
     class View: Decodable {
@@ -295,7 +290,6 @@ public class SBUMessageTemplate {
             }
         }
     }
-    
     
     // MARK: Items
     class Box: View {
@@ -476,8 +470,6 @@ public class SBUMessageTemplate {
         }
     }
 
-
-
     // MARK: - Style
     class ViewStyle: Decodable {
         let backgroundColor: String?
@@ -595,7 +587,6 @@ public class SBUMessageTemplate {
             return align
         }
     }
-    
 
     class ImageStyle: Decodable {
         let contentMode: UIView.ContentMode
@@ -636,7 +627,6 @@ public class SBUMessageTemplate {
         }
     }
     
-    
     // MARK: - Action
     public class Action: Decodable {
         public let type: ActionType
@@ -654,7 +644,6 @@ public class SBUMessageTemplate {
             self.alterData = try container.decodeIfPresent(String.self, forKey: .alterData)
         }
     }
-    
     
     // MARK: - Size
     class SizeSpec: Decodable {
@@ -716,7 +705,6 @@ public class SBUMessageTemplate {
             )
         }
     }
-    
     
     // MARK: - Margin, Padding
     class Margin: Decodable {
@@ -788,7 +776,6 @@ public class SBUMessageTemplate {
         }
     }
     
-    
     // MARK: - Type
     enum LayoutType: String, Decodable {
         case row, column
@@ -828,7 +815,6 @@ public class SBUMessageTemplate {
     }
 }
 
-
 extension SBUMessageTemplate.Item: Decodable {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: TypeCodingKey.self)
@@ -865,7 +851,6 @@ extension SBUMessageTemplate.Item: Decodable {
         case imageButton
     }
 }
-
 
 // MARK: - Utils
 extension SBUMessageTemplate {
@@ -964,7 +949,6 @@ extension SBUMessageTemplate.Body {
                 ))
             )
         }
-        
         
         let body = SBUMessageTemplate.Body()
         body.items = [

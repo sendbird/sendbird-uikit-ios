@@ -34,7 +34,6 @@ public protocol SBUUserListViewModelDelegate: SBUCommonViewModelDelegate {
     )
 }
 
-
 public protocol SBUUserListViewModelDataSource: AnyObject {
     /// Asks to data source to return the next user list for the channel. When create and use the user list directly, override this function.
     /// - Important: If you want to use this function, please set the `SBUUserListViewModelDataSource` in your class.
@@ -45,12 +44,9 @@ public protocol SBUUserListViewModelDataSource: AnyObject {
     ) -> [SBUUser]?
 }
 
-
-
-open class SBUUserListViewModel: NSObject  {
+open class SBUUserListViewModel: NSObject {
     // MARK: - Constants
     static let limit: UInt = 20
-    
     
     // MARK: - Property (Public)
     public weak var delegate: SBUUserListViewModelDelegate?
@@ -71,7 +67,6 @@ open class SBUUserListViewModel: NSObject  {
     
     public private(set) var userListType: ChannelUserListType = .none
     
-    
     // MARK: - Property (Private)
     @SBUAtomic private var customizedUsers: [SBUUser]?
     private var useCustomizedUsers = false
@@ -79,7 +74,6 @@ open class SBUUserListViewModel: NSObject  {
     @SBUAtomic private var isLoading = false
     
     var userStateChangedHandler: ((SBError?) -> Void)?
-
     
     // MARK: - Life Cycle
     public init(
@@ -161,12 +155,11 @@ open class SBUUserListViewModel: NSObject  {
         )
     }
     
-    
     // MARK: - Channel related
     public func loadChannel(channelURL: String, type: ChannelType) {
         self.delegate?.shouldUpdateLoadingState(true)
         
-        SendbirdUI.connectIfNeeded { [weak self] user, error in
+        SendbirdUI.connectIfNeeded { [weak self] _, error in
             guard let self = self else { return }
             
             if let error = error {
@@ -203,7 +196,6 @@ open class SBUUserListViewModel: NSObject  {
         }
     }
     
-    
     // MARK: - List handling
     
     /// This function to load the user list.
@@ -231,14 +223,12 @@ open class SBUUserListViewModel: NSObject  {
             self.isLoading = false
             self.delegate?.shouldUpdateLoadingState(false)
             self.delegate?.userListViewModel(self, didChangeUsers: self.userList, needsToReload: true)
-        }
-        else if self.useCustomizedUsers, let customizedUsers = self.customizedUsers {
+        } else if self.useCustomizedUsers, let customizedUsers = self.customizedUsers {
             self.userList += customizedUsers
             self.isLoading = false
             self.delegate?.shouldUpdateLoadingState(false)
             self.delegate?.userListViewModel(self, didChangeUsers: self.userList, needsToReload: true)
-        }
-        else if !self.useCustomizedUsers {
+        } else if !self.useCustomizedUsers {
             switch userListType {
             case .members:
                 self.loadNextChannelMemberList()
@@ -416,7 +406,6 @@ open class SBUUserListViewModel: NSObject  {
         })
     }
     
-    
     /// This function loads banned user list.
     ///
     /// If you want to call a list of banned users, use the `loadNextUserList(reset:users:)` function.
@@ -522,7 +511,6 @@ open class SBUUserListViewModel: NSObject  {
         self.loadNextUserList(reset: true, users: self.customizedUsers)
     }
     
-    
     // MARK: - Query related
     public func hasNext() -> Bool {
         return (self.useCustomizedUsers || self.queryHasNext())
@@ -562,7 +550,6 @@ open class SBUUserListViewModel: NSObject  {
         self.participantListQuery = nil
         self.userList = []
     }
-    
     
     // MARK: - Channel actions
     
@@ -653,7 +640,6 @@ open class SBUUserListViewModel: NSObject  {
         }
     }
 }
-
 
 // MARK: - GroupChannelDelegate
 extension SBUUserListViewModel: BaseChannelDelegate {

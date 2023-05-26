@@ -19,7 +19,7 @@ open class QuotedFileImageContentView: SBUView {
     
     /// The messageFileType enum value of message.
     /// - Since: 3.4.0
-    public internal(set) var messageFileType: SBUMessageFileType? = nil
+    public internal(set) var messageFileType: SBUMessageFileType?
     
     public var imageView: UIImageView = {
         let imageView = UIImageView()

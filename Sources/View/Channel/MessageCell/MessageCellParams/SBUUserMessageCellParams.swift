@@ -8,7 +8,6 @@
 
 import SendbirdChatSDK
 
-
 public class SBUUserMessageCellParams: SBUBaseMessageCellParams {
     public var userMessage: UserMessage? {
         self.message as? UserMessage

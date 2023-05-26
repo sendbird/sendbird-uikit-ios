@@ -22,7 +22,7 @@ class SBUBottomSheetController: UIPresentationController {
 
     weak var bottomSheetDelegate: SBUBottomSheetControllerDelegate?
 
-    var blurEffectStyle: UIBlurEffect.Style? = nil
+    var blurEffectStyle: UIBlurEffect.Style?
 
     private let gap: CGFloat = 30
     private var topMargin: CGFloat {
@@ -100,9 +100,9 @@ class SBUBottomSheetController: UIPresentationController {
 
     override func dismissalTransitionWillBegin() {
         self.presentedViewController.transitionCoordinator?.animate(
-            alongsideTransition: { (UIViewControllerTransitionCoordinatorContext) in
+            alongsideTransition: { (_) in
                 self.blurEffectView.alpha = 0
-        }, completion: { (UIViewControllerTransitionCoordinatorContext) in
+        }, completion: { (_) in
             self.blurEffectView.removeFromSuperview()
         })
     }
@@ -129,9 +129,9 @@ class SBUBottomSheetController: UIPresentationController {
         presenterView.layer.shadowOffset = .init(width: 0, height: 2)
 
         self.presentedViewController.transitionCoordinator?.animate(
-            alongsideTransition: { (UIViewControllerTransitionCoordinatorContext) in
+            alongsideTransition: { (_) in
                 self.blurEffectView.alpha = 1
-        }, completion: { (UIViewControllerTransitionCoordinatorContext) in
+        }, completion: { (_) in
         })
     }
 
@@ -177,7 +177,7 @@ class SBUBottomSheetController: UIPresentationController {
     }
 
     @objc
-    func drag(_ gesture:UIPanGestureRecognizer) {
+    func drag(_ gesture: UIPanGestureRecognizer) {
 
         guard let presenterView = self.containerView else { return }
         guard let presentedView = self.presentedView else { return }

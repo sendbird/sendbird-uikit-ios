@@ -28,7 +28,6 @@ open class SBUGroupChannelPushSettingsViewController: SBUBaseViewController, SBU
     public var channel: BaseChannel? { viewModel?.channel }
     public var channelURL: String? { viewModel?.channelURL }
     
-    
     // MARK: - Lifecycle
     @available(*, unavailable, renamed: "SBUGroupChannelPushSettingsViewController(channelURL:type:)")
     required public init?(coder: NSCoder) {
@@ -148,7 +147,6 @@ open class SBUGroupChannelPushSettingsViewController: SBUBaseViewController, SBU
         
         self.listComponent?.reloadTableView()
     }
-    
     
     // MARK: - ViewModel Delegate
     open func groupChannelPushSettingsViewModel(_ viewModel: SBUGroupChannelPushSettingsViewModel, didChangeNotification pushTriggerOption: GroupChannelPushTriggerOption) {

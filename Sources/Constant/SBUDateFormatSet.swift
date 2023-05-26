@@ -49,7 +49,6 @@ public struct SBUDateFormatSet {
         /// Used in `SBUOpenChannelContentBaseMessageCell`
         public static var sentTimeFormatInOpenChannel = SBUDateFormatSet.hhmm
         
-        
         /// Used to show date separates in the message list.
         
         /// Used in `SBUMessageDateView`
@@ -91,7 +90,6 @@ public struct SBUDateFormatSet {
         /// Used in `SBUParentMessageInfoView`
         public static var sentDateYesterdayFormat = SBUDateFormatSet.MMMddhhmma
     }
-    
     
     public class VoiceMessage {
         /// Used in `SBUVoiceRecorder`

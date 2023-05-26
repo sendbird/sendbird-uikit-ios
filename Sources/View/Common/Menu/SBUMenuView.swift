@@ -53,7 +53,7 @@ class SBUMenuView: NSObject {
     
     private var items: [SBUMenuItem] = []
     
-    var window: UIWindow? = nil
+    var window: UIWindow?
     var baseView = UIView()
     var backgroundView = UIButton()
     
@@ -67,15 +67,13 @@ class SBUMenuView: NSObject {
     let bufferVerticalMargin: CGFloat = 15.0
     let bufferHorizontalMargin: CGFloat = 36.0
 
-    var dismissHandler: (() -> Void)? = nil
+    var dismissHandler: (() -> Void)?
     
     var prevOrientation: UIDeviceOrientation = .unknown
-    
     
     private override init() {
         super.init()
     }
-    
     
     /**
      [Order]
@@ -98,7 +96,6 @@ class SBUMenuView: NSObject {
     public static func dismiss() {
         SBUMenuView.shared.dismiss()
     }
-    
     
     private func show(items: [SBUMenuItem],
                       point: CGPoint,
@@ -312,8 +309,8 @@ class SBUMenuView: NSObject {
     func orientationChanged(_ notification: NSNotification) {
         let currentOrientation = UIDevice.current.orientation
         
-        if (prevOrientation.isPortrait && currentOrientation.isLandscape ||
-            prevOrientation.isLandscape && currentOrientation.isPortrait) {
+        if prevOrientation.isPortrait && currentOrientation.isLandscape ||
+            prevOrientation.isLandscape && currentOrientation.isPortrait {
             dismiss()
         }
 

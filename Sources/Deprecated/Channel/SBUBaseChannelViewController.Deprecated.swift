@@ -160,14 +160,12 @@ extension SBUBaseChannelViewController {
         self.baseViewModel?.setReaction(message: message, emojiKey: emojiKey, didSelect: didSelect)
     }
     
-    
     // MARK: List
     
     @available(*, deprecated, message: "This function has been moved to `SBUBaseChannelViewModel`.", renamed: "viewModel.updateMessagesInList(messages:needReload:)")
     public func updateMessagesInList(messages: [BaseMessage]?, needReload: Bool) {
         self.baseViewModel?.updateMessagesInList(messages: messages, needReload: true)
     }
-    
     
     @available(*, deprecated, message: "This function has been moved to `SBUBaseChannelViewModel`.", renamed: "viewModel.upsertMessagesInList(messages:needUpdateNewMessage:needReload:)")
     public func upsertMessagesInList(messages: [BaseMessage]?,
@@ -180,7 +178,6 @@ extension SBUBaseChannelViewController {
         )
     }
     
-    
     @available(*, deprecated, message: "This function has been moved to `SBUBaseChannelViewModel` and replaced to `deleteMessagesInList(messageIds:excludeResendableMessages:needReload:)`.")
     public func deleteMessagesInList(messageIds: [Int64]?, needReload: Bool) {
         self.baseViewModel?.deleteMessagesInList(
@@ -189,7 +186,6 @@ extension SBUBaseChannelViewController {
             needReload: needReload
         )
     }
-    
     
     @available(*, deprecated, message: "This function has been moved to `SBUBaseChannelViewModel`.", renamed: "viewModel.deleteMessagesInList(messageIds:excludeResendableMessages:needReload:)")
     public func deleteMessagesInList(messageIds: [Int64]?,
@@ -201,7 +197,6 @@ extension SBUBaseChannelViewController {
             needReload: needReload
         )
     }
-    
     
     @available(*, deprecated, message: "This function has been moved to `SBUBaseChannelViewModel`.", renamed: "viewModel.deleteResendableMessage(_:needReload:)")
     public func deleteResendableMessage(_ message: BaseMessage, needReload: Bool) {
@@ -217,7 +212,6 @@ extension SBUBaseChannelViewController {
     public func sortAllMessageList(needReload: Bool) {
         self.baseViewModel?.sortAllMessageList(needReload: needReload)
     }
-    
     
     // MARK: Sending messages
     @available(*, deprecated, message: "This function has been moved to `SBUBaseChannelViewModel` and replaced to `sendUserMessage(text:)`.")
@@ -288,7 +282,6 @@ extension SBUBaseChannelViewController {
         let isScrollNearByBottom = self.baseListComponent?.isScrollNearByBottom ?? true
         self.baseListComponent?.setScrollBottomView(hidden: hidden ?? isScrollNearByBottom)
     }
-    
     
     /// This function scrolls to bottom.
     /// - Parameter animated: Animated

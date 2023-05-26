@@ -21,7 +21,6 @@ open class SBUGroupChannelSettingsViewController: SBUBaseChannelSettingsViewCont
         set { self.baseListComponent = newValue }
     }
     
-    
     // MARK: - Logic properties (Public)
     public var viewModel: SBUGroupChannelSettingsViewModel? {
         get { self.baseViewModel as? SBUGroupChannelSettingsViewModel }
@@ -29,7 +28,6 @@ open class SBUGroupChannelSettingsViewController: SBUBaseChannelSettingsViewCont
     }
     
     public override var channel: GroupChannel? { self.viewModel?.channel as? GroupChannel }
-    
     
     // MARK: - Lifecycle
     @available(*, unavailable, renamed: "SBUGroupChannelSettingsViewController(channelURL:)")
@@ -66,7 +64,6 @@ open class SBUGroupChannelSettingsViewController: SBUBaseChannelSettingsViewCont
         self.listComponent = SBUModuleSet.groupChannelSettingsModule.listComponent
     }
     
-    
     // MARK: - ViewModel
     open override func createViewModel(channel: BaseChannel? = nil, channelURL: String? = nil) {
         self.baseViewModel = SBUGroupChannelSettingsViewModel(
@@ -75,7 +72,6 @@ open class SBUGroupChannelSettingsViewController: SBUBaseChannelSettingsViewCont
             delegate: self
         )
     }
-    
     
     // MARK: - Sendbird UIKit Life cycle
     open override func setupViews() {
@@ -98,7 +94,6 @@ open class SBUGroupChannelSettingsViewController: SBUBaseChannelSettingsViewCont
         }
     }
     
-    
     // MARK: - Actions
     
     /// If you want to use a custom userListViewController, override it and implement it.
@@ -111,7 +106,6 @@ open class SBUGroupChannelSettingsViewController: SBUBaseChannelSettingsViewCont
         self.navigationController?.pushViewController(memberListVC, animated: true)
     }
     
-    
     /// If you want to use a custom moderationsViewController, override it and implement it.
     /// - Since: 1.2.0
     open override func showModerationList() {
@@ -120,7 +114,6 @@ open class SBUGroupChannelSettingsViewController: SBUBaseChannelSettingsViewCont
         let moderationsVC = SBUViewControllerSet.GroupModerationsViewController.init(channel: channel)
         self.navigationController?.pushViewController(moderationsVC, animated: true)
     }
-    
     
     // MARK: - SBUGroupChannelSettingsModuleHeaderDelegate
     open func groupChannelSettingsModule(_ headerComponent: SBUGroupChannelSettingsModule.Header,
@@ -148,13 +141,11 @@ open class SBUGroupChannelSettingsViewController: SBUBaseChannelSettingsViewCont
         self.showChannelEditActionSheet()
     }
     
-    
     // MARK: - SBUGroupChannelSettingsModuleHeaderDataSource
     open func groupChannelSettingsModule(_ headerComponent: SBUGroupChannelSettingsModule.Header,
                                          channelNameForTitleView titleView: UIView?) -> String? {
         return self.channelName
     }
-    
     
     // MARK: - SBUGroupChannelSettingsModuleListDelegate
     open func groupChannelSettingsModule(_ listComponent: SBUGroupChannelSettingsModule.List,
@@ -181,7 +172,6 @@ open class SBUGroupChannelSettingsViewController: SBUBaseChannelSettingsViewCont
         self.viewModel?.leaveChannel()
     }
     
-    
     // MARK: - SBUGroupChannelSettingsModuleListDataSource
     open func baseChannelSettingsModule(_ listComponent: SBUBaseChannelSettingsModule.List,
                                         channelForTableView tableView: UITableView) -> BaseChannel? {
@@ -191,7 +181,6 @@ open class SBUGroupChannelSettingsViewController: SBUBaseChannelSettingsViewCont
     open func baseChannelSettingsModuleIsOperator(_ listComponent: SBUBaseChannelSettingsModule.List) -> Bool {
         return self.viewModel?.isOperator ?? false
     }
-    
     
     // MARK: - SBUGroupChannelSettingsViewModelDelegate
     open override func baseChannelSettingsViewModel(
@@ -221,4 +210,3 @@ open class SBUGroupChannelSettingsViewController: SBUBaseChannelSettingsViewCont
         navigationController.popToRootViewController(animated: true)
     }
 }
-

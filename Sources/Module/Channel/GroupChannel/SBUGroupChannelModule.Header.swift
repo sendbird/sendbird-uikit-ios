@@ -12,7 +12,6 @@ import SendbirdChatSDK
 /// Event methods for the views updates and performing actions from the header component in a group channel.
 public protocol SBUGroupChannelModuleHeaderDelegate: SBUBaseChannelModuleHeaderDelegate {}
 
-
 extension SBUGroupChannelModule {
     
     /// A module component that represent the header of `SBUGroupChannelModule`.
@@ -46,7 +45,6 @@ extension SBUGroupChannelModule {
                 self.rightBarButton = self.defaultRightBarButton
             }
         }
-        
         
         // MARK: - Actions
         

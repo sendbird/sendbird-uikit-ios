@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 public protocol SBUBaseSelectUserViewModelDelegate: SBUCommonViewModelDelegate {
     /// Called when the user list has been changed.
     func baseSelectedUserViewModel(
@@ -25,7 +24,6 @@ public protocol SBUBaseSelectUserViewModelDelegate: SBUCommonViewModelDelegate {
     )
 }
 
-
 public protocol SBUBaseSelectUserViewModelDataSource: AnyObject {
     /// When creating and using a user list directly, overriding this function and return the next user list.
     /// Make this function return the next list each time it is called.
@@ -33,11 +31,9 @@ public protocol SBUBaseSelectUserViewModelDataSource: AnyObject {
     func nextUserList() -> [SBUUser]?
 }
 
-
 open class SBUBaseSelectUserViewModel: NSObject {
     // MARK: - Constants
     static let limit: UInt = 20
-    
     
     // MARK: - Property (Public)
     public internal(set) var channel: BaseChannel?
@@ -55,7 +51,6 @@ open class SBUBaseSelectUserViewModel: NSObject {
 
     public private(set) var joinedUserIds: Set<String> = []
     
-    
     // MARK: - Property (Private)
     weak var baseDelegate: SBUBaseSelectUserViewModelDelegate?
     weak var baseDataSource: SBUBaseSelectUserViewModelDataSource?
@@ -68,7 +63,6 @@ open class SBUBaseSelectUserViewModel: NSObject {
     internal var useCustomizedUsers = false
 
     @SBUAtomic private var isLoading = false
-
     
     // MARK: - Life Cycle
     public init(
@@ -110,12 +104,11 @@ open class SBUBaseSelectUserViewModel: NSObject {
         self.loadChannel(channelURL: channelURL, type: channelType)
     }
     
-    
     // MARK: - Channel related
     public func loadChannel(channelURL: String, type: ChannelType) {
         self.baseDelegate?.shouldUpdateLoadingState(true)
         
-        SendbirdUI.connectIfNeeded { [weak self] user, error in
+        SendbirdUI.connectIfNeeded { [weak self] _, error in
             guard let self = self else { return }
             
             if let error = error {
@@ -148,7 +141,6 @@ open class SBUBaseSelectUserViewModel: NSObject {
         }
     }
     
-    
     // MARK: - Prepare datas
     func prepareDatas() {
         guard self.inviteListType == .users else { return }
@@ -163,7 +155,6 @@ open class SBUBaseSelectUserViewModel: NSObject {
             self.joinedUserIds = Set(joinedMemberList.sbu_getUserIds())
         }
     }
-    
     
     // MARK: - List handling
     
@@ -197,8 +188,7 @@ open class SBUBaseSelectUserViewModel: NSObject {
             
             self.isLoading = false
             self.appendUsersWithFiltering(users: users)
-        }
-        else if !self.useCustomizedUsers {
+        } else if !self.useCustomizedUsers {
             switch self.inviteListType {
             case .users:
                 self.loadNextApplicationUserList()
@@ -316,8 +306,7 @@ open class SBUBaseSelectUserViewModel: NSObject {
                     params.limit = SBUBaseSelectUserViewModel.limit
                     params.operatorFilter = .nonOperator
                     self.memberListQuery = channel.createMemberListQuery(params: params)
-                }
-                else {
+                } else {
                     let error = SBError(domain: "Cannot create the memberListQuery.", code: -1, userInfo: nil)
                     self.baseDelegate?.shouldUpdateLoadingState(false)
                     self.baseDelegate?.didReceiveError(error)
@@ -372,8 +361,7 @@ open class SBUBaseSelectUserViewModel: NSObject {
                     let params = ParticipantListQueryParams()
                     params.limit = SBUBaseSelectUserViewModel.limit
                     self.participantListQuery = channel.createParticipantListQuery(params: params)
-                }
-                else {
+                } else {
                     let error = SBError(domain: "Cannot create the participantListQuery.", code: -1, userInfo: nil)
                     self.baseDelegate?.shouldUpdateLoadingState(false)
                     self.baseDelegate?.didReceiveError(error)
@@ -450,7 +438,6 @@ open class SBUBaseSelectUserViewModel: NSObject {
     public func resetUserList() {
         self.loadNextUserList(reset: true, users: self.customizedUsers)
     }
-    
     
     // MARK: - Select user
     

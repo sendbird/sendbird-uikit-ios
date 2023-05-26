@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 public protocol SBUCreateOpenChannelViewModelDelegate: SBUCommonViewModelDelegate {
     /// Called when it has created channel
     func createOpenChannelViewModel(
@@ -18,19 +17,16 @@ public protocol SBUCreateOpenChannelViewModelDelegate: SBUCommonViewModelDelegat
     )
 }
 
-
 open class SBUCreateOpenChannelViewModel {
     
     // MARK: - Property (Private)
     weak var delegate: SBUCreateOpenChannelViewModelDelegate?
     @SBUAtomic private var isLoading = false
-
     
     // MARK: - Life Cycle
     public init(delegate: SBUCreateOpenChannelViewModelDelegate?) {
         self.delegate = delegate
     }
-    
     
     // MARK: - Create Channel
     
@@ -77,7 +73,6 @@ open class SBUCreateOpenChannelViewModel {
             self.delegate?.createOpenChannelViewModel(self, didCreateChannel: channel)
         }
     }
-    
 
     // MARK: - Common
 //    open func updateChannelInfoView(coverImage: UIImage) {

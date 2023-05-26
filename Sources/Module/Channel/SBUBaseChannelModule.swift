@@ -41,7 +41,6 @@ open class SBUBaseChannelModule {
     private var _listComponent: SBUBaseChannelModule.List?
     private var _inputComponent: SBUBaseChannelModule.Input?
     
-    
     // MARK: -
     public init(
         headerComponent: SBUBaseChannelModule.Header? = nil,

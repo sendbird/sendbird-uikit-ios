@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 public protocol SBUInviteUserViewModelDelegate: SBUBaseSelectUserViewModelDelegate {
     /// Called when it has invited users with their IDs.
     func inviteUserViewModel(
@@ -18,10 +17,8 @@ public protocol SBUInviteUserViewModelDelegate: SBUBaseSelectUserViewModelDelega
     )
 }
 
-
 public protocol SBUInviteUserViewModelDataSource: SBUBaseSelectUserViewModelDataSource {
 }
-
 
 open class SBUInviteUserViewModel: SBUBaseSelectUserViewModel {
     // MARK: - Logic properties (Public)
@@ -34,7 +31,6 @@ open class SBUInviteUserViewModel: SBUBaseSelectUserViewModel {
         get { self.baseDataSource as? SBUInviteUserViewModelDataSource }
         set { self.baseDataSource = newValue }
     }
-    
     
     // MARK: - Life Cycle
     public init(channel: BaseChannel? = nil,
@@ -58,7 +54,6 @@ open class SBUInviteUserViewModel: SBUBaseSelectUserViewModel {
             dataSource: dataSource
         )
     }
-
     
     // MARK: - Channel actions
     

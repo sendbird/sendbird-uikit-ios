@@ -9,7 +9,6 @@
 import UIKit
 import AVFoundation
 
-
 /// This is an enumeration for voice player error status.
 public enum SBUVoicePlayerErrorStatus: Int {
     case none
@@ -20,7 +19,6 @@ public enum SBUVoicePlayerErrorStatus: Int {
     case playerDecodeError
     case finishPlaying
 }
-
 
 public protocol SBUVoicePlayerDelegate: AnyObject {
     /// Called when the error was received.
@@ -43,7 +41,6 @@ public protocol SBUVoicePlayerDelegate: AnyObject {
     /// - Parameter recorder: ``SBUVoicePlayer`` object.
     func voicePlayerDidReset(_ player: SBUVoicePlayer)
     
-    
     /// Called when the play time was updated.
     /// - Parameters:
     ///   - recorder: ``SBUVoicePlayer`` object.
@@ -62,7 +59,6 @@ public class SBUVoicePlayer: NSObject, AVAudioPlayerDelegate {
         case stopped
     }
     
-    
     // MARK: Properties
     /// (Read only) The ``VoicePlayerStatus`` value. The default is ``VoicePlayerStatus/none``
     public private(set) var status: VoicePlayerStatus = .none
@@ -72,9 +68,8 @@ public class SBUVoicePlayer: NSObject, AVAudioPlayerDelegate {
     lazy var audioSession: AVAudioSession = AVAudioSession.sharedInstance()
     var audioPlayer: AVAudioPlayer?
     
-    var voiceFileInfo: SBUVoiceFileInfo? = nil
+    var voiceFileInfo: SBUVoiceFileInfo?
     weak var delegate: SBUVoicePlayerDelegate?
-    
     
     // MARK: - Initializer
     /// Initializes `SBUVoicePlayer` class with delegate and voiceFileInfo.
@@ -166,11 +161,9 @@ public class SBUVoicePlayer: NSObject, AVAudioPlayerDelegate {
         }
     }
     
-    
     // MARK: - Preparations
     func prepareToPlayer() -> Bool {
         guard let url = self.voiceFileInfo?.filePath else { return false }
-        
         
         do {
             if SBUGlobals.voiceMessageConfig.storedAudioSessionConfig == nil {
@@ -215,7 +208,6 @@ public class SBUVoicePlayer: NSObject, AVAudioPlayerDelegate {
         return true
     }
     
-    
     // MARK: - Timer
     func startProgressTimer() {
         self.stopProgressTimer()
@@ -245,7 +237,6 @@ public class SBUVoicePlayer: NSObject, AVAudioPlayerDelegate {
             }
         }
     }
-
     
     // MARK: - AVAudioPlayerDelegate
     public func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully success: Bool) {

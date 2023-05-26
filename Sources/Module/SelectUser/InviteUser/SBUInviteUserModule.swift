@@ -25,7 +25,6 @@ open class SBUInviteUserModule {
     private var _headerComponent: SBUInviteUserModule.Header?
     private var _listComponent: SBUInviteUserModule.List?
     
-    
     // MARK: -
     public init(headerComponent: SBUInviteUserModule.Header? = nil,
                 listComponent: SBUInviteUserModule.List? = nil) {

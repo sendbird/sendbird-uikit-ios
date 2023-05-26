@@ -50,7 +50,7 @@ open class SBUSelectablePhotoViewController: SBUBaseViewController {
     
     /// The left bar button item on the navigation bar. The default action is dismissing this view controller.
     /// - Since: 3.0.0
-    public var leftBarButton: UIBarButtonItem? = nil {
+    public var leftBarButton: UIBarButtonItem? {
         didSet {
             self.navigationItem.leftBarButtonItem = self.leftBarButton
         }
@@ -58,7 +58,7 @@ open class SBUSelectablePhotoViewController: SBUBaseViewController {
 
     /// The right bar button item on the navigation bar. The default action is showing up the limited library picker to select accessible photos and videos.
     /// - Since: 2.2.6
-    public var rightBarButton: UIBarButtonItem? = nil {
+    public var rightBarButton: UIBarButtonItem? {
         didSet {
             self.navigationItem.rightBarButtonItem = self.rightBarButton
         }
@@ -169,7 +169,6 @@ open class SBUSelectablePhotoViewController: SBUBaseViewController {
         self.navigationItem.leftBarButtonItem = self.leftBarButton
         self.navigationItem.rightBarButtonItem = self.rightBarButton
 
-
         self.register(photoCell: SBUPhotoCollectionViewCell(), nib: nil)
         self.view.addSubview(collectionView)
     }
@@ -222,7 +221,6 @@ open class SBUSelectablePhotoViewController: SBUBaseViewController {
     }
 }
 
-
 // MARK: - UICollectionView
 extension SBUSelectablePhotoViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     open func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -254,7 +252,7 @@ extension SBUSelectablePhotoViewController: UICollectionViewDelegate, UICollecti
 
     open func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let asset = self.fetchResult[indexPath.item]
-        asset.requestContentEditingInput(with: PHContentEditingInputRequestOptions()) { input, info in
+        asset.requestContentEditingInput(with: PHContentEditingInputRequestOptions()) { input, _ in
             switch asset.mediaType {
             case .image:
                 // send data with media type
@@ -289,7 +287,7 @@ extension SBUSelectablePhotoViewController: UICollectionViewDelegate, UICollecti
                 
             case .video:
                 // send url or data with media type
-                PHImageManager.default().requestAVAsset(forVideo: asset, options: nil) { (asset, audioMix, info) in
+                PHImageManager.default().requestAVAsset(forVideo: asset, options: nil) { (asset, _, _) in
                     guard let urlAsset = asset as? AVURLAsset else { return }
                     let videoURL = urlAsset.url as URL
                     DispatchQueue.main.async { [weak self] in

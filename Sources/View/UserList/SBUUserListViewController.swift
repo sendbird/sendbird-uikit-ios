@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 /// This class handling members,  operators,  muted/Participants,  banned,  participants,
 open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHeaderDelegate, SBUUserListModuleListDelegate, SBUUserListModuleListDataSource, SBUCommonViewModelDelegate, SBUUserProfileViewDelegate, SBUUserListViewModelDelegate, SBUUserListViewModelDataSource {
     
@@ -17,7 +16,7 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
     public var headerComponent: SBUUserListModule.Header?
     public var listComponent: SBUUserListModule.List?
     
-    //Common
+    // Common
     /// To use the custom user profile view, set this to the custom view created using `SBUUserProfileViewProtocol`.
     /// And, if you do not want to use the user profile feature, please set this value to nil.
     public lazy var userProfileView: UIView? = SBUUserProfileView(delegate: self)
@@ -29,7 +28,6 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
     @SBUThemeWrapper(theme: SBUTheme.componentTheme)
     public var componentTheme: SBUComponentTheme
     
-    
     // MARK: - Logic properties (Public)
     public var viewModel: SBUUserListViewModel?
     
@@ -39,7 +37,6 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
     
     public var userList: [SBUUser] { viewModel?.userList ?? [] }
     public var userListType: ChannelUserListType { viewModel?.userListType ?? .none }
-    
     
     // MARK: - Lifecycle
     @available(*, unavailable, renamed: "SBUUserListViewController(channelURL:type:)")
@@ -75,7 +72,7 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
         
         self.createViewModel(
             channel: channel,
-            channelType:channelType,
+            channelType: channelType,
             users: users,
             type: userListType
         )
@@ -104,7 +101,7 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
         
         self.createViewModel(
             channelURL: channelURL,
-            channelType:channelType,
+            channelType: channelType,
             users: users,
             type: userListType
         )
@@ -137,7 +134,7 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
     }
     
     open override var preferredStatusBarStyle: UIStatusBarStyle {
-        return theme.statusBarStyle
+        theme.statusBarStyle
     }
     
     deinit {
@@ -146,7 +143,6 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
         self.headerComponent = nil
         self.listComponent = nil
     }
-    
     
     // MARK: - ViewModel
     open func createViewModel(channel: BaseChannel? = nil,
@@ -163,7 +159,6 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
             delegate: self
         )
     }
-    
     
     // MARK: - Sendbird UIKit Life cycle
     open override func setupViews() {
@@ -219,7 +214,6 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
         }
     }
     
-    
     // MARK: - Actions
     
     /// If you want to use a custom inviteChannelViewController, override it and implement it.
@@ -270,7 +264,6 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
         }
     }
     
-    
     // MARK: - Error handling
     private func errorHandler(_ error: SBError) {
         self.errorHandler(error.localizedDescription, error.code)
@@ -279,7 +272,6 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
     open override func errorHandler(_ message: String?, _ code: NSInteger? = nil) {
         SBULog.error("Did receive error: \(message ?? "")")
     }
-    
     
     // MARK: - SBUUserListModuleHeaderDelegate
     open func userListModule(_ headerComponent: SBUUserListModule.Header,
@@ -306,7 +298,6 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
                                didTapRightItem rightItem: UIBarButtonItem) {
         self.showInviteUser()
     }
-    
     
     // MARK: - SBUUserListModuleListDelegate
     open func userListModule(_ listComponent: SBUUserListModule.List,
@@ -426,7 +417,6 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
         return self.viewModel?.channel
     }
     
-    
     // MARK: - SBUCommonViewModelDelegate
     open func shouldUpdateLoadingState(_ isLoading: Bool) {
         self.showLoading(isLoading)
@@ -441,7 +431,6 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
             self.listComponent?.reloadTableView()
         }
     }
-    
     
     // MARK: - SBUUserProfileViewDelegate
     open func didSelectMessage(userId: String?) {
@@ -458,7 +447,6 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
             userProfileView.dismiss()
         }
     }
-    
     
     // MARK: - SBUUserListViewModelDelegate
     open func userListViewModel(_ viewModel: SBUUserListViewModel,
@@ -491,7 +479,6 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
             self.navigationController?.popToViewController(channelListVC, animated: false)
         }
     }
-    
     
     // MARK: - SBUUSerListViewModelDataSource
     open func userListViewModel(_ viewModel: SBUUserListViewModel,

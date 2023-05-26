@@ -10,7 +10,7 @@ import UIKit
 
 extension UINavigationController {
     open override var preferredStatusBarStyle: UIStatusBarStyle {
-        return topViewController?.preferredStatusBarStyle ?? .default
+        topViewController?.preferredStatusBarStyle ?? .default
     }
     
     /// Set up navigation bar with tint color. This method sets up `standardAppearance` and `scrollEdgeAppearance` with the tint color.

@@ -45,7 +45,6 @@ open class SBUMessageStateViewParams {
     }
 }
 
-
 open class SBUMessageStateView: SBUView {
     // MARK: Public properties (UI)
     

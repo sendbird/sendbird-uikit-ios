@@ -33,7 +33,6 @@ open class SBUBaseSelectUserViewController: SBUBaseViewController, SBUBaseSelect
     public var userList: [SBUUser] { baseViewModel?.userList ?? [] }
     public var selectedUserList: Set<SBUUser> { baseViewModel?.selectedUserList ?? [] }
     
-    
     // MARK: - Lifecycle
     open override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,7 +45,7 @@ open class SBUBaseSelectUserViewController: SBUBaseViewController, SBUBaseSelect
     }
     
     open override var preferredStatusBarStyle: UIStatusBarStyle {
-        return self.theme.statusBarStyle
+        self.theme.statusBarStyle
     }
     
     deinit {
@@ -55,7 +54,6 @@ open class SBUBaseSelectUserViewController: SBUBaseViewController, SBUBaseSelect
         self.baseHeaderComponent = nil
         self.baseListComponent = nil
     }
-    
     
     // MARK: - ViewModel
     /// Creates view model.
@@ -70,7 +68,6 @@ open class SBUBaseSelectUserViewController: SBUBaseViewController, SBUBaseSelect
                               channelURL: String? = nil,
                               channelType: ChannelType = .group,
                               users: [SBUUser]? = nil) { }
-    
     
     // MARK: - Sendbird UIKit Life cycle
     open override func setupLayouts() {
@@ -94,7 +91,6 @@ open class SBUBaseSelectUserViewController: SBUBaseViewController, SBUBaseSelect
         
         self.baseListComponent?.reloadTableView()
     }
-    
     
     // MARK: - Actions
     
@@ -125,7 +121,6 @@ open class SBUBaseSelectUserViewController: SBUBaseViewController, SBUBaseSelect
         navigationController.popViewController(animated: true)
     }
     
-    
     // MARK: - Error handling
     private func errorHandler(_ error: SBError) {
         self.errorHandler(error.localizedDescription, error.code)
@@ -135,12 +130,10 @@ open class SBUBaseSelectUserViewController: SBUBaseViewController, SBUBaseSelect
         SBULog.error("Did receive error: \(message ?? "")")
     }
     
-    
     // MARK: - SBUBaseSelectUserModuleHeaderDataSource
     open func selectedUsersForBaseSelectUserModule(_ headerComponent: SBUBaseSelectUserModule.Header) -> Set<SBUUser>? {
         return self.baseViewModel?.selectedUserList
     }
-    
     
     // MARK: - SBUBaseSelectUserModuleListDataSource
     open func baseSelectUserModule(_ listComponent: SBUBaseSelectUserModule.List,
@@ -152,7 +145,6 @@ open class SBUBaseSelectUserViewController: SBUBaseViewController, SBUBaseSelect
                                    selectedUsersInTableView tableView: UITableView) -> Set<SBUUser>? {
         return self.baseViewModel?.selectedUserList
     }
-    
     
     // MARK: - SBUCommonViewModelDelegate
     open func shouldUpdateLoadingState(_ isLoading: Bool) {
@@ -169,7 +161,6 @@ open class SBUBaseSelectUserViewController: SBUBaseViewController, SBUBaseSelect
         }
     }
     
-    
     // MARK: - SBUBaseSelectUserViewModelDataSource
     /// When creating and using a user list directly, overriding this function and return the next user list.
     /// Make this function return the next list each time it is called.
@@ -180,7 +171,6 @@ open class SBUBaseSelectUserViewController: SBUBaseViewController, SBUBaseSelect
     open func nextUserList() -> [SBUUser]? {
         return nil
     }
-    
     
     // MARK: - SBUBaseSelectUserViewModelDelegate
     open func baseSelectedUserViewModel(_ viewModel: SBUBaseSelectUserViewModel,

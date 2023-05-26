@@ -8,7 +8,6 @@
 
 import UIKit
 
-
 public class SBUColorSet {
     // MARK: - Primary
     public static var primary100 = UIColor(red: 219.0 / 255.0, green: 209.0 / 255.0, blue: 1.0, alpha: 1.0)

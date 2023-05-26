@@ -8,7 +8,6 @@
 
 import UIKit
 
-
 open class SBUQuotedUserMessageView: SBUQuotedBaseMessageView {
     /// The label displaying quoted message text.
     /// The limit of lines is 2.
@@ -59,4 +58,3 @@ open class SBUQuotedUserMessageView: SBUQuotedBaseMessageView {
         self.updateConstraintsIfNeeded()
     }
 }
-

@@ -3066,7 +3066,9 @@ SWIFT_CLASS("_TtC13SendbirdUIKit28SBUGroupChannelListViewModel")
 
 
 
-@interface SBUGroupChannelListViewModel (SWIFT_EXTENSION(SendbirdUIKit)) <SBDBaseChannelDelegate>
+@interface SBUGroupChannelListViewModel (SWIFT_EXTENSION(SendbirdUIKit)) <SBDGroupChannelDelegate>
+- (void)channel:(SBDGroupChannel * _Nonnull)channel userDidJoin:(SBDUser * _Nonnull)user;
+- (void)channel:(SBDGroupChannel * _Nonnull)channel userDidLeave:(SBDUser * _Nonnull)user;
 - (void)channelWasChanged:(SBDBaseChannel * _Nonnull)channel;
 - (void)channel:(SBDBaseChannel * _Nonnull)channel messageWasDeleted:(int64_t)messageId;
 - (void)channelWasFrozen:(SBDBaseChannel * _Nonnull)channel;
@@ -4196,11 +4198,13 @@ SWIFT_CLASS("_TtC13SendbirdUIKit27SBUOpenChannelListViewModel")
 @end
 
 
-@interface SBUOpenChannelListViewModel (SWIFT_EXTENSION(SendbirdUIKit)) <SBDBaseChannelDelegate>
+@interface SBUOpenChannelListViewModel (SWIFT_EXTENSION(SendbirdUIKit)) <SBDOpenChannelDelegate>
 - (void)channelWasChanged:(SBDBaseChannel * _Nonnull)channel;
 - (void)channel:(SBDBaseChannel * _Nonnull)channel didUpdateMessage:(SBDBaseMessage * _Nonnull)message;
 - (void)channelWasFrozen:(SBDBaseChannel * _Nonnull)channel;
 - (void)channelWasUnfrozen:(SBDBaseChannel * _Nonnull)channel;
+- (void)channel:(SBDOpenChannel * _Nonnull)sender userDidExit:(SBDUser * _Nonnull)user;
+- (void)channel:(SBDOpenChannel * _Nonnull)sender userDidEnter:(SBDUser * _Nonnull)user;
 - (void)channelWasDeleted:(NSString * _Nonnull)channelURL channelType:(enum SBDChannelType)channelType;
 @end
 

@@ -8,7 +8,6 @@
 
 import UIKit
 
-
 public class SBUIconSet {
     
     // MARK: - Icons
@@ -204,8 +203,6 @@ public class SBUIconSet {
     public static var iconStop = SBUIconSetType.iconStop.load() {
         didSet { SBUIconSetType.iconStop.markCustomized() }
     }
-    
-    
     
     /// Restore all customized icons to SDK's default icons.
     ///

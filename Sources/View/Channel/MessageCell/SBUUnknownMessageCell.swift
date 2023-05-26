@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 open class SBUUnknownMessageCell: SBUUserMessageCell {
     open override func configure(with configuration: SBUBaseMessageCellParams) {
         guard let configuration = configuration as? SBUUnknownMessageCellParams else { return }

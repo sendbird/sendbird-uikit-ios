@@ -27,9 +27,7 @@ public protocol SBUInviteUserModuleListDelegate: SBUBaseSelectUserModuleListDele
     func inviteUserModuleDidSelectRetry(_ listComponent: SBUInviteUserModule.List)
 }
 
-
 public protocol SBUInviteUserModuleListDataSource: SBUBaseSelectUserModuleListDataSource { }
-
 
 extension SBUInviteUserModule {
     
@@ -46,7 +44,6 @@ extension SBUInviteUserModule {
             get { self.baseDataSource as? SBUInviteUserModuleListDataSource }
             set { self.baseDataSource = newValue }
         }
-        
         
         // MARK: - LifeCycle
         @available(*, unavailable, renamed: "SBUInviteUserModule.List()")
@@ -78,7 +75,6 @@ extension SBUInviteUserModule {
             self.setupStyles()
         }
         
-        
         // MARK: - TableView: Cell
         open override func configureCell(_ cell: UITableViewCell?, indexPath: IndexPath) {
             guard let user = self.userList?[indexPath.row],
@@ -92,7 +88,6 @@ extension SBUInviteUserModule {
     }
 }
 
-
 // MARK: - SBUEmptyViewDelegate
 extension SBUInviteUserModule.List {
     open override func didSelectRetry() {
@@ -101,7 +96,6 @@ extension SBUInviteUserModule.List {
         self.delegate?.inviteUserModuleDidSelectRetry(self)
     }
 }
-
 
 // MARK: - UITableView relations
 extension SBUInviteUserModule.List {

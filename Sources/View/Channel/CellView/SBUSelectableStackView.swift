@@ -34,7 +34,6 @@ public class SBUSelectableStackView: SBUView, Selectable {
         }
     }
     
-    
     var rightPressedBackgroundColor: UIColor?
     var rightBackgroundColor: UIColor?
     var leftPressedBackgroundColor: UIColor?
@@ -48,7 +47,6 @@ public class SBUSelectableStackView: SBUView, Selectable {
     public override init(frame: CGRect) {
         super.init(frame: frame)
     }
-    
 
     // MARK: SBUView Life Cycle
     public override func setupViews() {

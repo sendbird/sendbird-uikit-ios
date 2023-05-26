@@ -8,7 +8,7 @@
 
 import UIKit
 
-//📕📙📗📘📓📔
+// 📕📙📗📘📓📔
 
 class SBULog {
     static var logType: UInt8 = LogType.none.rawValue

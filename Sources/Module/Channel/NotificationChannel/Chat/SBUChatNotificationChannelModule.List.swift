@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 /// Event methods for the views updates and performing actions from the list component in a chat notification channel.
 protocol SBUChatNotificationChannelModuleListDelegate: SBUCommonDelegate {
     /// Called when there’s a tap gesture on a notification that includes a web URL. e.g., `"https://www.sendbird.com"`
@@ -118,7 +117,6 @@ protocol SBUChatNotificationChannelModuleListDataSource: AnyObject {
     ) -> Int64?
 }
 
-
 extension SBUChatNotificationChannelModule {
     /// A module component that represent the list of `SBUChatNotificationChannelModule`.
     ///  - Since: 3.5.0
@@ -162,7 +160,6 @@ extension SBUChatNotificationChannelModule {
             return emptyView
         }()
         
-        
         // MARK: - Logic properties (Public)
         /// The object that acts as the delegate of the list component. The delegate must adopt the ``SBUChatNotificationChannelModuleListDelegate``.
         weak var delegate: SBUChatNotificationChannelModuleListDelegate?
@@ -186,14 +183,12 @@ extension SBUChatNotificationChannelModule {
             ) ?? []
         }
         
-        
         // MARK: - Logic properties (Private)
         private var lastSeenAt: Int64 {
             self.dataSource?.chatNotificationChannelModule(self, lastSeenForTableView: self.tableView) ?? 0
         }
         
         var isTableViewReloading = false
-        
         
         /// Configures component with parameters.
         /// - Parameters:
@@ -210,7 +205,6 @@ extension SBUChatNotificationChannelModule {
             self.setupLayouts()
             self.setupStyles()
         }
-        
         
         // MARK: - LifeCycle
         @available(*, unavailable, renamed: "SBUChatNotificationChannelModule.List()")
@@ -295,7 +289,6 @@ extension SBUChatNotificationChannelModule {
             (self.emptyView as? SBUEmptyView)?.setupStyles()
         }
         
-        
         // MARK: - Actions
         
         /// Sets gestures in notification cell.
@@ -326,7 +319,6 @@ extension SBUChatNotificationChannelModule {
         ) {
             // .. Implement long tap gesture here
         }
-
         
         // MARK: - Notification cell
         
@@ -460,7 +452,6 @@ extension SBUChatNotificationChannelModule {
             notificationCell?.sbu_className ?? SBUNotificationCell.sbu_className
         }
         
-        
         // MARK: - TableView
         /// Reloads table view. This method corresponds to `UITableView reloadData()`.
         public func reloadTableView() {
@@ -517,14 +508,12 @@ extension SBUChatNotificationChannelModule {
             UITableView.automaticDimension
         }
         
-        
         // MARK: - ScrollView
         /// Called when the ``tableView`` has been scrolled.
         public func scrollViewDidScroll(_ scrollView: UIScrollView) {
             guard scrollView == self.tableView else { return }
             self.delegate?.chatNotificationChannelModule(self, didScroll: scrollView)
         }
-        
 
         // MARK: - EmptyView
         /// Update the ``emptyView`` according its type.
@@ -577,11 +566,10 @@ extension SBUChatNotificationChannelModule.List: SBUNotificationCellDelegate {
     }
 }
 
-
 // MARK: - UITableViewCell
 extension SBUChatNotificationChannelModule.List {
     var isScrollNearByBottom: Bool {
-        return tableView.contentOffset.y < 10
+        tableView.contentOffset.y < 10
     }
     
     /// To keep track of which scrolls tableview.

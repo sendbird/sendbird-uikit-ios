@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 public protocol SBUGroupChannelSettingsModuleListDelegate: SBUBaseChannelSettingsModuleListDelegate {
     /// Called when the setting item cell was selected in the `listComponent`.
     /// - Parameters:
@@ -38,9 +37,7 @@ public protocol SBUGroupChannelSettingsModuleListDelegate: SBUBaseChannelSetting
     func groupChannelSettingsModuleDidSelectLeave(_ listComponent: SBUGroupChannelSettingsModule.List)
 }
 
-
 public protocol SBUGroupChannelSettingsModuleListDataSource: SBUBaseChannelSettingsModuleListDataSource { }
-
 
 extension SBUGroupChannelSettingsModule {
     
@@ -60,7 +57,6 @@ extension SBUGroupChannelSettingsModule {
         }
 
         public weak var channel: GroupChannel? { self.baseChannel as? GroupChannel }
-        
         
         // MARK: - LifeCycle
         @available(*, unavailable, renamed: "SBUGroupChannelSettingsModule.List()")
@@ -205,7 +201,6 @@ extension SBUGroupChannelSettingsModule {
             return leaveItem
         }
         
-        
         // MARK: - TableView: Cell
         open override func configureCell(_ cell: UITableViewCell?, indexPath: IndexPath) {
             guard let defaultCell = cell as? SBUGroupChannelSettingCell else { return }
@@ -215,7 +210,6 @@ extension SBUGroupChannelSettingsModule {
         }
     }
 }
-
 
 // MARK: - UITableView relations
 extension SBUGroupChannelSettingsModule.List {

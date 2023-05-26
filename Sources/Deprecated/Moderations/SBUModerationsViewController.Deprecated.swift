@@ -21,7 +21,6 @@ extension SBUModerationsViewController {
                               channelURL: String? = nil) {
     }
     
-    
     // MARK: - 3.0.0
     @available(*, deprecated, renamed: "channelURL")
     public var channelUrl: String? { self.channelURL }
@@ -74,7 +73,6 @@ extension SBUModerationsViewController {
         self.listComponent?.register(moderationCell: moderationCell, nib: nib)
     }
     
-    
     // MARK: - ~2.2.0
     @available(*, deprecated, renamed: "showMutedMemberList()")
     open func showMutedMeberList() { self.showMutedMemberList() }
@@ -83,7 +81,7 @@ extension SBUModerationsViewController {
     open func showBannedMeberList() { self.showBannedUserList() }
     
     @available(*, unavailable, renamed: "errorHandler(_:_:)")
-    open func didReceiveError(_ message: String?, _ code: NSInteger? = nil) {
+    public func didReceiveError(_ message: String?, _ code: NSInteger? = nil) {
         self.errorHandler(message, code)
     }
 }

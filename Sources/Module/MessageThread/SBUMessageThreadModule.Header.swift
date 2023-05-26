@@ -17,7 +17,6 @@ extension SBUMessageThreadModuleHeaderDelegate {
     public func baseChannelModule(_ headerComponent: SBUBaseChannelModule.Header, didTapRightItem rightItem: UIBarButtonItem) {}
 }
 
-
 extension SBUMessageThreadModule {
     /// A module component that represent the header of `SBUMessageThreadModule`.
     @objcMembers open class Header: SBUBaseChannelModule.Header, SBUMessageThreadTitleViewDelegate {
@@ -28,7 +27,6 @@ extension SBUMessageThreadModule {
             return titleView
         }()
         
-        
         // MARK: - Logic properties (Public)
         /// The object that acts as the delegate of the header component. The delegate must adopt the `SBUMessageThreadModuleHeaderDelegate` protocol.
         public weak var delegate: SBUMessageThreadModuleHeaderDelegate? {
@@ -36,8 +34,7 @@ extension SBUMessageThreadModule {
             set { self.baseDelegate = newValue }
         }
         
-        public private(set) var parentMessage: BaseMessage? = nil
-        
+        public private(set) var parentMessage: BaseMessage?
         
         // MARK: - LifeCycle
         
@@ -90,7 +87,6 @@ extension SBUMessageThreadModule {
             self.leftBarButton?.tintColor = self.theme?.leftBarButtonTintColor
         }
         
-        
         // MARK: - Actions
         open func onTapTitleView() {
             if let titleView = self.titleView {
@@ -103,7 +99,6 @@ extension SBUMessageThreadModule {
                 self.delegate?.baseChannelModule(self, didTapLeftItem: leftBarButton)
             }
         }
-        
         
         // MARK: - SBUMessageThreadTitleViewDelegate
         open func messageThreadTitleViewDidTap(_ messageThreadTitleView: SBUMessageThreadTitleView) {

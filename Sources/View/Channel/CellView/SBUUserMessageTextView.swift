@@ -50,7 +50,7 @@ open class SBUUserMessageTextView: SBUView {
     public var channelType: ChannelType = .group
     public var isWebType = false
     
-    var longPressHandler: ((URL) -> ())? = nil
+    var longPressHandler: ((URL) -> Void)?
     
     public var textLeftConstraint: NSLayoutConstraint!
     public var textRightConstraint: NSLayoutConstraint!

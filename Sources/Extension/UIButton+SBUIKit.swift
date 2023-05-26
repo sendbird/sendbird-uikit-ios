@@ -64,7 +64,7 @@ internal extension UIButton {
             return nil
         }
         
-        let task = URLSession(configuration: .default).dataTask(with: url) { [weak self] data, response, error in
+        let task = URLSession(configuration: .default).dataTask(with: url) { [weak self] data, _, error in
             guard let self = self else {
                 completion?(false)
                 return
@@ -87,8 +87,7 @@ internal extension UIButton {
     private func setImage(_ image: UIImage?,
                           tintColor: UIColor? = nil,
                           for state: UIButton.State,
-                          completion: ((Bool) -> Void)?)
-    {
+                          completion: ((Bool) -> Void)?) {
         if let image = image {
             if Thread.isMainThread {
                 if tintColor != nil {

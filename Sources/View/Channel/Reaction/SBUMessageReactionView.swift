@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 /// Emoji reaction box
 open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
 
@@ -23,9 +22,9 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
     @SBUThemeWrapper(theme: SBUTheme.componentTheme)
     public var theme: SBUComponentTheme
 
-    var emojiTapHandler: ((_ emojiKey: String) -> Void)? = nil
-    var moreEmojiTapHandler: (() -> Void)? = nil
-    var emojiLongPressHandler: ((_ emojiKey: String) -> Void)? = nil
+    var emojiTapHandler: ((_ emojiKey: String) -> Void)?
+    var moreEmojiTapHandler: (() -> Void)?
+    var emojiLongPressHandler: ((_ emojiKey: String) -> Void)?
 
     public private(set) var collectionViewHeightConstraint: NSLayoutConstraint!
     public private(set) var collectionViewMinWidthContraint: NSLayoutConstraint!
@@ -152,7 +151,6 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
         self.moreEmojiTapHandler?()
     }
 
-
     // MARK: - UICollectionView relations
     open func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
@@ -193,7 +191,7 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
         let reaction = reactions[indexPath.row]
         let emojiKey = reaction.key
         
-        let selectedEmoji = emojiList.first (where: { $0.key == reaction.key })
+        let selectedEmoji = emojiList.first(where: { $0.key == reaction.key })
         cell.configure(type: .messageReaction,
                        url: selectedEmoji?.url,
                        count: reaction.userIds.count, needsSideMargin: self.sameCellWidth)
@@ -228,6 +226,6 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
         }
 
         let count = reactions[indexPath.row].userIds.count
-        return self.getCellSize(count:count)
+        return self.getCellSize(count: count)
     }
 }

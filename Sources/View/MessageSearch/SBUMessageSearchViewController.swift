@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 /// ViewController handling a message search.
 ///
 /// - Since: 2.1.0
@@ -24,15 +23,13 @@ open class SBUMessageSearchViewController: SBUBaseViewController, SBUMessageSear
     @SBUThemeWrapper(theme: SBUTheme.messageSearchTheme)
     public var theme: SBUMessageSearchTheme
     
-    
     // MARK: - Logic properties (Public)
     public var viewModel: SBUMessageSearchViewModel?
     public var channel: BaseChannel? { self.viewModel?.channel }
     public var searchResultList: [BaseMessage] { self.viewModel?.searchResultList ?? [] }
     
     /// You can set custom query params for message search.
-    public var customMessageSearchQueryParams: MessageSearchQueryParams? = nil
-    
+    public var customMessageSearchQueryParams: MessageSearchQueryParams?
     
     // MARK: - Lifecycle
     @available(*, unavailable, renamed: "SBUMessageSearchViewController(channel:)")
@@ -81,7 +78,7 @@ open class SBUMessageSearchViewController: SBUBaseViewController, SBUMessageSear
     }
     
     override open var preferredStatusBarStyle: UIStatusBarStyle {
-        return self.theme.statusBarStyle
+        self.theme.statusBarStyle
     }
     
     deinit {
@@ -90,7 +87,6 @@ open class SBUMessageSearchViewController: SBUBaseViewController, SBUMessageSear
         self.headerComponent = nil
         self.listComponent = nil
     }
-    
     
     // MARK: - ViewModel
     open func createViewModel(channel: BaseChannel) {
@@ -101,14 +97,12 @@ open class SBUMessageSearchViewController: SBUBaseViewController, SBUMessageSear
         )
     }
     
-    
     // MARK: - Sendbird UIKit Life cycle
     open override func setupViews() {
         // Header component
         self.headerComponent?.configure(delegate: self, theme: self.theme)
         
         self.navigationItem.titleView = self.headerComponent?.titleView
-        
         
         // List component
         self.listComponent?.configure(delegate: self, dataSource: self, theme: self.theme)
@@ -147,7 +141,6 @@ open class SBUMessageSearchViewController: SBUBaseViewController, SBUMessageSear
         
         self.listComponent?.reloadTableView()
     }
-
     
     // MARK: - Search
     /// Performs keyword search
@@ -157,7 +150,6 @@ open class SBUMessageSearchViewController: SBUBaseViewController, SBUMessageSear
     public func search(keyword: String) {
         self.viewModel?.search(keyword: keyword)
     }
-    
     
     // MARK: - Action
     
@@ -186,7 +178,6 @@ open class SBUMessageSearchViewController: SBUBaseViewController, SBUMessageSear
         self.navigationController?.pushViewController(channelVC, animated: true)
     }
     
-    
     // MARK: - Error handling
     private func errorHandler(_ error: SBError) {
         self.errorHandler(error.localizedDescription, error.code)
@@ -195,7 +186,6 @@ open class SBUMessageSearchViewController: SBUBaseViewController, SBUMessageSear
     open override func errorHandler(_ message: String?, _ code: NSInteger? = nil) {
         SBULog.error("Did receive error: \(message ?? "")")
     }
-    
     
     // MARK: - SBUMessageSearchModuleHeaderDelegate
     open func messageSearchModule(_ headerComponent: SBUMessageSearchModule.Header,
@@ -221,7 +211,6 @@ open class SBUMessageSearchViewController: SBUBaseViewController, SBUMessageSear
     open func messageSearchModuleDidTapCancel(_ headerComponent: SBUMessageSearchModule.Header) {
         self.onClickBack()
     }
-    
     
     // MARK: - SBUMessageSearchModuleListDelegate
     open func messageSearchModule(_ listComponent: SBUMessageSearchModule.List,
@@ -251,13 +240,11 @@ open class SBUMessageSearchViewController: SBUBaseViewController, SBUMessageSear
         self.viewModel?.loadMore()
     }
     
-    
     // MARK: - SBUMessageSearchModuleListDataSource
     open func messageSearchModule(_ listComponent: SBUMessageSearchModule.List,
                                     searchResultsInTableView tableView: UITableView) -> [BaseMessage] {
         return self.searchResultList
     }
-    
     
     // MARK: - SBUCommonViewModelDelegate
     open func shouldUpdateLoadingState(_ isLoading: Bool) {
@@ -274,13 +261,11 @@ open class SBUMessageSearchViewController: SBUBaseViewController, SBUMessageSear
         }
     }
     
-    
     // MARK: - SBUEmptyViewDelegate
     open func didSelectRetry() {
         self.listComponent?.updateEmptyView(type: .none)
         self.viewModel?.loadMore()
     }
-    
     
     // MARK: - SBUMessageSearchViewModelDelegate
     open func searchViewModel(_ viewModel: SBUMessageSearchViewModel,

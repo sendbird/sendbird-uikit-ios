@@ -6,15 +6,12 @@
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
 //
 
-
 import UIKit
 import SendbirdChatSDK
 import Photos
 
-
 @objcMembers
 open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenChannelViewModelDelegate, SBUOpenChannelModuleHeaderDelegate, SBUOpenChannelModuleListDelegate, SBUOpenChannelModuleInputDelegate, SBUOpenChannelModuleMediaDelegate, SBUOpenChannelModuleListDataSource, SBUOpenChannelModuleInputDataSource, SBUOpenChannelViewModelDataSource {
-    
     
     // MARK: - UI properties (Public)
     public var headerComponent: SBUOpenChannelModule.Header? {
@@ -40,7 +37,6 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
     
     public var weakHeaderComponentBottomConstraint: NSLayoutConstraint = .init()
     
-    
     // MARK: - UI properties (Private)
     // for constraint
     private var mediaComponentConstraint: [NSLayoutConstraint] = []
@@ -59,7 +55,6 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
     // constant
     private let headerHeight: CGFloat = 56
     private var currentWidth: CGFloat = 0
-    
     
     // MARK: - Logic properties (Public)
     public var viewModel: SBUOpenChannelViewModel? {
@@ -81,7 +76,6 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
     public var channelDescription: String?
     
     // Media
-    
     
     /// A boolean value whether the media view is enabled or not. The default value is `false`.
     /// - Note: Use `enableMediaView(_:)` to set value.
@@ -107,9 +101,7 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
     /// - Note: Use `mediaViewIgnoringSafeArea(_:)` to set value.
     public private(set) var isMediaViewIgnoringSafeArea: Bool = true
     
-    
     // MARK: - Logic properties (Private)
-    
     
     // MARK: - Lifecycle
     
@@ -181,7 +173,6 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
         SBULog.info("")
     }
     
-    
     // MARK: - ViewModel
     open override func createViewModel(
         channel: BaseChannel? = nil,
@@ -204,7 +195,6 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
             dataSource: self
         )
     }
-    
     
     // MARK: - Sendbird UIKit Life cycle
     open override func setupViews() {
@@ -455,7 +445,6 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
             self.mediaComponentConstraint.forEach { $0.isActive = true }
         }
         
-        
         self.headerComponentConstraints.forEach { $0.isActive = false }
         
         switch self.currentOrientation {
@@ -556,7 +545,6 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
         
         self.listComponent?.reloadTableView()
     }
-    
 
     // MARK: - Channel
 
@@ -641,7 +629,6 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
         self.mediaViewRatio = self.isMediaViewOverlaying ? 1 : (1 - ratio)
     }
     
-    
     /// Overlays the media view.
     ///
     /// - Parameters:
@@ -676,7 +663,6 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
         self.isMediaViewIgnoringSafeArea = enabled
     }
     
-    
     // MARK: - ScrollView
     public func configureOffset() {
         guard let tableView = self.listComponent?.tableView else { return }
@@ -687,7 +673,6 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
         self.tableViewTopConstraint.constant -= tempOffset
     }
     
-    
     // MARK: - Navigation
     public func updateBarButton() {
         guard let userId = SBUGlobals.currentUser?.userId else { return }
@@ -697,7 +682,6 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
             self.navigationItem.rightBarButtonItem = headerComponent.rightBarButton
         }
     }
-    
     
     // MARK: - Actions
     
@@ -737,7 +721,6 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
         let participantListVC = SBUViewControllerSet.OpenUserListViewController.init(channel: channel, userListType: .participants)
         self.navigationController?.pushViewController(participantListVC, animated: true)
     }
-    
     
     // MARK: - Orientation
     public func registerOrientationChangeNotification() {
@@ -788,8 +771,7 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
         
         if let userProfileView = listComponent.userProfileView as? SBUUserProfileView,
            let baseView = self.navigationController?.view,
-           SBUGlobals.isOpenChannelUserProfileEnabled
-        {
+           SBUGlobals.isOpenChannelUserProfileEnabled {
             userProfileView.show(baseView: baseView, user: user, isOpenChannel: true)
         }
     }

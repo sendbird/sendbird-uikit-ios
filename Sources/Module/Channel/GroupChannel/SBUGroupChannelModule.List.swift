@@ -10,7 +10,6 @@ import UIKit
 import SendbirdChatSDK
 import AVFAudio
 
-
 /// Event methods for the views updates and performing actions from the list component in a group channel.
 public protocol SBUGroupChannelModuleListDelegate: SBUBaseChannelModuleListDelegate {
     
@@ -56,7 +55,6 @@ public protocol SBUGroupChannelModuleListDataSource: SBUBaseChannelModuleListDat
     /// - Returns: `SBUHightlightMessageInfo` object.
     func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, highlightInfoInTableView tableView: UITableView) -> SBUHighlightMessageInfo?
 }
-
 
 extension SBUGroupChannelModule {
     /// A module component that represent the list of ``SBUGroupChannelModule``.
@@ -108,11 +106,10 @@ extension SBUGroupChannelModule {
         }
         
         var voicePlayer: SBUVoicePlayer?
-        var voiceFileInfos: [String : SBUVoiceFileInfo] = [:]
-        var currentVoiceFileInfo: SBUVoiceFileInfo? = nil
-        var currentVoiceContentView: SBUVoiceContentView? = nil
-        var currentVoiceContentIndexPath: IndexPath? = nil
-        
+        var voiceFileInfos: [String: SBUVoiceFileInfo] = [:]
+        var currentVoiceFileInfo: SBUVoiceFileInfo?
+        var currentVoiceContentView: SBUVoiceContentView?
+        var currentVoiceContentIndexPath: IndexPath?
 
         /// Configures component with parameters.
         /// - Parameters:
@@ -288,7 +285,6 @@ extension SBUGroupChannelModule {
                 self.setLongTapGesture(cell, message: message, indexPath: indexPath)
             }
         }
-        
         
         // MARK: - TableView: Cell
         
@@ -575,15 +571,13 @@ extension SBUGroupChannelModule {
             if message.messageId == highlightInfo?.messageId,
                message.updatedAt == highlightInfo?.updatedAt,
                self.highlightInfo?.animated == true,
-               self.isHighlightInfoAnimated == false
-            {
+               self.isHighlightInfoAnimated == false {
                 self.cellAnimationDebouncer.add {
                     messageCell.messageContentView.animate(.shakeUpDown)
                     self.isHighlightInfoAnimated = true
                 }
             }
         }
-        
         
         // MARK: - Menu
         
@@ -602,7 +596,6 @@ extension SBUGroupChannelModule.List: SBUThreadInfoViewDelegate {
     }
 }
 
-
 // MARK: - Voice message
 extension SBUGroupChannelModule.List {
     func pauseVoicePlayer() {
@@ -612,8 +605,7 @@ extension SBUGroupChannelModule.List {
 
     func pauseVoicePlayer(requestId: String) {
         if let voiceFileInfo = self.voiceFileInfos[requestId],
-           voiceFileInfo.isPlaying == true
-        {
+           voiceFileInfo.isPlaying == true {
             voiceFileInfo.isPlaying = false
             self.voicePlayer?.pause()
         }
@@ -652,7 +644,7 @@ extension SBUGroupChannelModule.List {
             urlString: fileMessage.url,
             cacheKey: fileMessage.requestId,
             fileName: fileMessage.name
-        ) { [weak self] filePath, fileData in
+        ) { [weak self] filePath, _ in
 
             var playtime: Double = 0
             let metaArrays = message.metaArrays(keys: [SBUConstant.voiceMessageDurationKey])
@@ -670,7 +662,7 @@ extension SBUGroupChannelModule.List {
                 voiceContentView.updateVoiceContentStatus(.prepared)
             }
             
-            var voicefileInfo: SBUVoiceFileInfo? = nil
+            var voicefileInfo: SBUVoiceFileInfo?
             if self?.voiceFileInfos[fileMessage.requestId] == nil {
                 voicefileInfo = SBUVoiceFileInfo(
                     fileName: fileMessage.name,

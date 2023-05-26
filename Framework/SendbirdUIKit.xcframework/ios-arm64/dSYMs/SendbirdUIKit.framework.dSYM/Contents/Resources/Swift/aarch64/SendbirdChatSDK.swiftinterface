@@ -653,6 +653,7 @@ public typealias NotificationTemplateHandler = (_ notificationTemplate: Sendbird
 public typealias NotificationTemplateListHandler = (_ notificationTemplateList: SendbirdChatSDK.NotificationTemplateList?, _ hasMore: Swift.Bool, _ token: Swift.String?, _ error: SendbirdChatSDK.SBError?) -> Swift.Void
 public typealias GlobalNotificationChannelSettingHandler = (_ globalNotificationChannelSetting: SendbirdChatSDK.GlobalNotificationChannelSetting?, _ error: SendbirdChatSDK.SBError?) -> Swift.Void
 public typealias PinnedMessageListHandler = (_ messages: [SendbirdChatSDK.PinnedMessage]?, _ error: SendbirdChatSDK.SBError?) -> Swift.Void
+public typealias UIKitConfigurationHandler = (_ uikitConfiguration: SendbirdChatSDK.UIKitConfiguration?, _ error: SendbirdChatSDK.SBError?) -> Swift.Void
 @objc(SBDPollUpdateEvent) public class PollUpdateEvent : ObjectiveC.NSObject {
   @objc final public let poll: SendbirdChatSDK.UpdatedPoll
   required public init(from decoder: Swift.Decoder) throws
@@ -1567,6 +1568,7 @@ extension SendbirdChatSDK.PollRetrievalParams : Swift.Encodable {
     get
   }
   @objc public var notificationInfo: SendbirdChatSDK.NotificationInfo?
+  final public let uikitConfigInfo: SendbirdChatSDK.UIKitConfigInfo
   @objc public func isEmojiUpdateNeeded(prevEmojiHash: Swift.String) -> Swift.Bool
   public func encode(to encoder: Swift.Encoder) throws
   required public init(from decoder: Swift.Decoder) throws
@@ -1730,6 +1732,14 @@ extension SendbirdChatSDK.MessageListParams {
   @objc override dynamic public var description: Swift.String {
     @objc get
   }
+}
+@_hasMissingDesignatedInitializers final public class UIKitConfigInfo : Swift.Codable {
+  final public var lastUpdatedAt: Swift.Int64 {
+    get
+  }
+  final public func encode(to encoder: Swift.Encoder) throws
+  required public init(from decoder: Swift.Decoder) throws
+  @objc deinit
 }
 @_hasMissingDesignatedInitializers @objc(SBDMember) public class Member : SendbirdChatSDK.User {
   @objc public var state: SendbirdChatSDK.MemberState {
@@ -1957,6 +1967,33 @@ extension SendbirdChatSDK.ReactionEventAction : Swift.RawRepresentable, Swift.Co
   public init?(rawValue: Swift.Int)
   public typealias RawValue = Swift.Int
   public var rawValue: Swift.Int {
+    get
+  }
+}
+public enum __SendbirdProduct : Swift.String {
+  case chat
+  case calls
+  case desk
+  case live
+  case uikitChat
+  case uikitLive
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+public enum __SendbirdPlatform : Swift.String {
+  case ios
+  case android
+  case javascript
+  case unreal
+  case unity
+  case reactNative
+  case flutter
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
     get
   }
 }
@@ -2285,6 +2322,11 @@ extension SendbirdChatSDK.MessageSendingStatus : Swift.Codable {
   public init(rawValue: Swift.Int)
   public init(from decoder: Swift.Decoder) throws
   public func encode(to encoder: Swift.Encoder) throws
+}
+extension SendbirdChatSDK.MessageSendingStatus : Swift.CustomDebugStringConvertible {
+  public var debugDescription: Swift.String {
+    get
+  }
 }
 @objc(SBDMessageSearchQueryOrder) public enum MessageSearchQueryOrder : Swift.Int {
   case score = 0
@@ -3196,6 +3238,7 @@ extension SendbirdChatSDK.MutedUserListQuery {
   @objc public class func getGlobalNotificationChannelSetting(completionHandler: @escaping SendbirdChatSDK.GlobalNotificationChannelSettingHandler)
   @objc public class func getNotificationTemplateList(token: Swift.String?, params: SendbirdChatSDK.NotificationTemplateListParams = NotificationTemplateListParams(), completionHandler: @escaping SendbirdChatSDK.NotificationTemplateListHandler)
   @objc public class func getNotificationTemplate(key: Swift.String, completionHandler: @escaping SendbirdChatSDK.NotificationTemplateHandler)
+  public class func __getUIKitConfiguration(completionhandler: @escaping SendbirdChatSDK.UIKitConfigurationHandler)
   @objc deinit
 }
 @objc(SBDGroupChannelListOrder) public enum GroupChannelListOrder : Swift.Int {
@@ -3487,6 +3530,7 @@ extension SendbirdChatSDK.SendbirdChat {
   @objc dynamic public class func __addExtension(_ key: Swift.String, version: Swift.String)
   @available(*, deprecated, renamed: "__addExtension(_:version:)", message: "This method is deprecated in 4.8.3")
   @objc dynamic public class func addExtension(_ key: Swift.String, version: Swift.String)
+  public class func __addSendbirdExtensions(extensions: [SendbirdChatSDK.__SendbirdSDKInfo], customData: [Swift.String : Swift.String]?) -> Swift.Bool
 }
 @objc extension SendbirdChatSDK.GroupChannel {
   @objc dynamic open func startTyping()
@@ -3734,11 +3778,20 @@ extension Swift.Decodable {
 extension SendbirdChatSDK.PollOptionRetrievalParams : Swift.Encodable {
   public func encode(to encoder: Swift.Encoder) throws
 }
+public struct __SendbirdSDKInfo {
+  public init(product: SendbirdChatSDK.__SendbirdProduct, platform: SendbirdChatSDK.__SendbirdPlatform, version: Swift.String)
+}
 @objc(SBDScheduledMessageRetrievalParams) public class ScheduledMessageRetrievalParams : ObjectiveC.NSObject {
   @objc final public let channelURL: Swift.String
   @objc final public let scheduledMessageId: Swift.Int64
   @objc public init(channelURL: Swift.String, scheduledMessageId: Swift.Int64)
   @objc deinit
+}
+@_hasMissingDesignatedInitializers @objc(SBDUIKitConfiguration) final public class UIKitConfiguration : ObjectiveC.NSObject, Swift.Codable {
+  @objc final public let jsonPayload: Swift.String
+  @objc deinit
+  final public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
 }
 @_inheritsConvenienceInitializers @objc(SBDGroupChannelCreateParams) public class GroupChannelCreateParams : ObjectiveC.NSObject, Swift.Codable {
   @available(*, unavailable, renamed: "channelURL")
@@ -4386,6 +4439,12 @@ extension SendbirdChatSDK.LogLevel : Swift.RawRepresentable {}
 extension SendbirdChatSDK.UserListQueryType : Swift.Equatable {}
 extension SendbirdChatSDK.UserListQueryType : Swift.Hashable {}
 extension SendbirdChatSDK.UserListQueryType : Swift.RawRepresentable {}
+extension SendbirdChatSDK.__SendbirdProduct : Swift.Equatable {}
+extension SendbirdChatSDK.__SendbirdProduct : Swift.Hashable {}
+extension SendbirdChatSDK.__SendbirdProduct : Swift.RawRepresentable {}
+extension SendbirdChatSDK.__SendbirdPlatform : Swift.Equatable {}
+extension SendbirdChatSDK.__SendbirdPlatform : Swift.Hashable {}
+extension SendbirdChatSDK.__SendbirdPlatform : Swift.RawRepresentable {}
 extension SendbirdChatSDK.CoreError : Swift.Equatable {}
 extension SendbirdChatSDK.CoreError : Swift.Hashable {}
 extension SendbirdChatSDK.CoreError : Swift.RawRepresentable {}

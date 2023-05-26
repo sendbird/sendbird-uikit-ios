@@ -9,9 +9,7 @@
 import UIKit
 import SendbirdChatSDK
 
-
 public protocol SBUBaseChannelSettingsModuleListDelegate: SBUCommonDelegate { }
-
 
 public protocol SBUBaseChannelSettingsModuleListDataSource: AnyObject {
     /// Ask the data source to return the channel.
@@ -28,7 +26,6 @@ public protocol SBUBaseChannelSettingsModuleListDataSource: AnyObject {
     func baseChannelSettingsModuleIsOperator(_ listComponent: SBUBaseChannelSettingsModule.List) -> Bool
 }
 
-
 extension SBUBaseChannelSettingsModule {
     
     /// A module component that represent the list of `SBUBaseChannelSettingsModule`.
@@ -43,8 +40,7 @@ extension SBUBaseChannelSettingsModule {
         public var channelInfoView: UIView? = SBUChannelSettingsChannelInfoView()
         
         /// The object that is used as the theme of the list component. The theme must adopt the `SBUChannelSettingsTheme` class.
-        public var theme: SBUChannelSettingsTheme? = nil
-        
+        public var theme: SBUChannelSettingsTheme?
         
         // MARK: - Logic properties (Public)
         public weak var baseDelegate: SBUBaseChannelSettingsModuleListDelegate?
@@ -58,7 +54,6 @@ extension SBUBaseChannelSettingsModule {
         }
         
         public var items: [SBUChannelSettingItem] = []
-        
         
         // MARK: - LifeCycle
         open func setupViews() {
@@ -77,7 +72,6 @@ extension SBUBaseChannelSettingsModule {
         
         /// Sets up items for tableView cell configuration.
         open func setupItems() { }
-        
         
         // MARK: - Style
         open func setupLayouts() {
@@ -102,7 +96,6 @@ extension SBUBaseChannelSettingsModule {
                 channelInfoView.setupStyles()
             }
         }
-
         
         // MARK: - TableView: Cell
         
@@ -111,7 +104,6 @@ extension SBUBaseChannelSettingsModule {
         ///   - cell: `UITableViewCell` object
         ///   - indexPath: An index path representing the `channelCell`
         open func configureCell(_ cell: UITableViewCell?, indexPath: IndexPath) {}
-        
         
         // MARK: - ChannelInfo
         
@@ -137,7 +129,6 @@ extension SBUBaseChannelSettingsModule {
             }
         }
         
-        
         // MARK: - Common
         
         /// This function reloads the table view.
@@ -149,7 +140,6 @@ extension SBUBaseChannelSettingsModule {
         }
     }
 }
-
 
 // MARK: - UITableView relations
 extension SBUBaseChannelSettingsModule.List: UITableViewDataSource, UITableViewDelegate {

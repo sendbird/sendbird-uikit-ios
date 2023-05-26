@@ -30,7 +30,6 @@ open class SBUNewMessageInfo: SBUView {
     @SBUThemeWrapper(theme: SBUTheme.componentTheme)
     var theme: SBUComponentTheme
     
-    
     // MARK: - Life cycle
     override public init(frame: CGRect) {
         super.init(frame: frame)
@@ -54,7 +53,7 @@ open class SBUNewMessageInfo: SBUView {
         if let messageInfoButton = self.messageInfoButton {
             messageInfoButton.addTarget(
                 self,
-                action:#selector(onClickNewMessageInfo),
+                action: #selector(onClickNewMessageInfo),
                 for: .touchUpInside
             )
             self.addSubview(messageInfoButton)

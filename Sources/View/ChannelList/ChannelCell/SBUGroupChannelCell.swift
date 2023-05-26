@@ -12,7 +12,6 @@ import SendbirdChatSDK
 @available(*, deprecated, renamed: "SBUGroupChannelCell")
 public typealias SBUChannelCell = SBUGroupChannelCell
 
-
 /// `UITableViewCell` of the table view that represents the list of group channels.
 open class SBUGroupChannelCell: SBUBaseChannelCell {
     
@@ -76,7 +75,6 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
     
     @SBUThemeWrapper(theme: SBUTheme.groupChannelCellTheme)
     public var theme: SBUGroupChannelCellTheme
-
     
     // MARK: - View Lifecycle
     open override func awakeFromNib() {
@@ -278,8 +276,7 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
         // Member count. If 1:1 channel, not set
         if channel.memberCount > 2 {
             self.memberCountLabel.text = channel.memberCount.unitFormattedString
-        }
-        else {
+        } else {
             self.memberCountLabel.text = nil
         }
         
@@ -402,7 +399,6 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
         stateImageView.image = stateImage
     }
     
-    
     // MARK: - Common
     
     /// This function builds last message updated date.
@@ -423,7 +419,6 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
         
         return lastSeenTimeString
     }
-
     
     // MARK: -
     open override func prepareForReuse() {

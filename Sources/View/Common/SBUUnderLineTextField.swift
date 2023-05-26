@@ -13,7 +13,6 @@ public class SBUUnderLineTextField: UITextField {
     // MARK: - UI (Private)
     private let border = CALayer()
     
-    
     // MARK: - Life cycle
     required init?(coder: NSCoder) {
         super.init(coder: coder)
@@ -22,7 +21,7 @@ public class SBUUnderLineTextField: UITextField {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        self.border.frame = CGRect(x: 0, y: self.frame.size.height - 1, width:  self.frame.size.width-10, height: self.frame.size.height)
+        self.border.frame = CGRect(x: 0, y: self.frame.size.height - 1, width: self.frame.size.width-10, height: self.frame.size.height)
         
         self.border.borderWidth = 1
         self.layer.addSublayer(border)
@@ -38,6 +37,6 @@ public class SBUUnderLineTextField: UITextField {
     public override func layoutSubviews() {
         super.layoutSubviews()
         
-        self.border.frame = CGRect(x: 0, y: self.frame.size.height - 1, width:  self.frame.size.width-10, height: self.frame.size.height)
+        self.border.frame = CGRect(x: 0, y: self.frame.size.height - 1, width: self.frame.size.width-10, height: self.frame.size.height)
     }
 }

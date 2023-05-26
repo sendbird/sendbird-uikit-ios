@@ -10,14 +10,11 @@ import UIKit
 import AVFoundation
 import SendbirdChatSDK
 
-
 typealias SBUCacheCompletionHandler = (URL?, NSData?) -> Void
-
 
 class SBUCacheManager {
     
     static internal let fileCacheQueue = DispatchQueue(label: "com.sendbird.cache.file", qos: .background)
-    
     
     // MARK: - Common
     static func createHashName(urlString: String) -> String {
@@ -28,7 +25,6 @@ class SBUCacheManager {
         let pathExtension = URL(fileURLWithPath: URLComponents(string: urlString)?.path ?? "").pathExtension
         return pathExtension
     }
-    
     
     // MARK: - DiskCache
     struct DiskCache {
@@ -156,8 +152,7 @@ class SBUCacheManager {
                 
                 do {
                     try fileManager.removeItem(atPath: cachePath)
-                }
-                catch {
+                } catch {
                     SBULog.error("Could not remove cache path: \(error)")
                 }
             }
@@ -217,7 +212,6 @@ class SBUCacheManager {
         }
     }
     
-    
     // MARK: - MemoryCache (for Image)
     struct MemoryCache {
         private let memoryQueue = DispatchQueue(label: "\(SBUConstant.bundleIdentifier).queue.memorycache", qos: .background)
@@ -256,8 +250,6 @@ class SBUCacheManager {
         }
     }
 }
-
-
 
 @available(*, deprecated, message: "We can't guarantee the problems that occur with direct access to DiskCache and handling data.")
 public struct DiskCache {

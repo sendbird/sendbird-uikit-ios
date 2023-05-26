@@ -25,7 +25,6 @@ open class SBURegisterOperatorModule {
     private var _headerComponent: SBURegisterOperatorModule.Header?
     private var _listComponent: SBURegisterOperatorModule.List?
     
-    
     // MARK: -
     public init(headerComponent: SBURegisterOperatorModule.Header? = nil,
                 listComponent: SBURegisterOperatorModule.List? = nil) {
@@ -33,4 +32,3 @@ open class SBURegisterOperatorModule {
         self.listComponent = listComponent
     }
 }
-

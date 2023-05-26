@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 /// Event methods for the views updates and performing actions from the list component in the channel push settings.
 public protocol SBUGroupChannelPushSettingsModuleListDelegate: SBUCommonDelegate {
     /// Called when changed push notification option
@@ -21,7 +20,6 @@ public protocol SBUGroupChannelPushSettingsModuleListDelegate: SBUCommonDelegate
         didChangeNotification pushTriggerOption: GroupChannelPushTriggerOption
     )
 }
-
 
 /// Methods to get data source for the list component in the channel push settings.
 public protocol SBUGroupChannelPushSettingsModuleListDataSource: AnyObject {
@@ -36,7 +34,6 @@ public protocol SBUGroupChannelPushSettingsModuleListDataSource: AnyObject {
     ) -> GroupChannelPushTriggerOption?
 }
 
-
 extension SBUGroupChannelPushSettingsModule {
     
     /// A module component that represent the list of `SBUGroupChannelPushSettingsModule`.
@@ -48,7 +45,7 @@ extension SBUGroupChannelPushSettingsModule {
         public var tableView = UITableView()
         
         /// The object that is used as the theme of the list component. The theme must adopt the `SBUChannelSettingsTheme` class.
-        public var theme: SBUChannelSettingsTheme? = nil
+        public var theme: SBUChannelSettingsTheme?
         
         // MARK: - Logic properties (Public)
         /// The object that is group channel's push trigger option. If the value is nil, the default value set to off.
@@ -64,7 +61,6 @@ extension SBUGroupChannelPushSettingsModule {
         
         /// The object that acts as the data source of the list component. The data source must adopt the `SBUGroupChannelPushSettingsModuleListDataSource`.
         public weak var dataSource: SBUGroupChannelPushSettingsModuleListDataSource?
-        
         
         // MARK: Lifecycle
         
@@ -105,7 +101,6 @@ extension SBUGroupChannelPushSettingsModule {
             )
         }
         
-        
         // MARK: - Style
         open func setupLayouts() {
             self.tableView
@@ -118,7 +113,6 @@ extension SBUGroupChannelPushSettingsModule {
             }
             self.tableView.backgroundColor = self.theme?.backgroundColor
         }
-        
         
         // MARK: - TableView
         
@@ -169,7 +163,6 @@ extension SBUGroupChannelPushSettingsModule {
         }
     }
 }
-
 
 // MARK: - UITableView relations
 extension SBUGroupChannelPushSettingsModule.List: UITableViewDelegate, UITableViewDataSource {

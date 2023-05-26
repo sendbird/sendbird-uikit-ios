@@ -81,7 +81,6 @@ class SBUFeedNotificationChannelViewModel: NSObject {
     let defaultFetchLimit: Int = 30
     let initPolicy: NotificationCollectionInitPolicy = .cacheAndReplaceByApi
     
-    
     // MARK: - Logic properties (Public)
     
     /// The current channel object. It's `FeedChannel` type.
@@ -118,7 +117,6 @@ class SBUFeedNotificationChannelViewModel: NSObject {
     /// ```
     var allowsReadStatusUpdate = false
     
-    
     // MARK: - Common
     
     /// This function checks that have the following list.
@@ -137,7 +135,6 @@ class SBUFeedNotificationChannelViewModel: NSObject {
         self.notificationCollection?.startingPoint
     }
     
-    
     // MARK: - Logic properties (Private)
     var notificationCollection: NotificationCollection?
     
@@ -153,7 +150,6 @@ class SBUFeedNotificationChannelViewModel: NSObject {
     
     /// If this option is `true`, when a list is received through the local cache during initialization, it is displayed first.
     var displaysLocalCachedListFirst: Bool = false
-    
     
     // MARK: - LifeCycle
     init(
@@ -219,7 +215,6 @@ class SBUFeedNotificationChannelViewModel: NSObject {
         self.notificationCollection?.dispose()
     }
     
-    
     // MARK: - Channel related
     
     /// This function loads channel information and notification list.
@@ -251,7 +246,7 @@ class SBUFeedNotificationChannelViewModel: NSObject {
         //            self.customizedNotificationListParams = notificationListParams
         //        }
         
-        SendbirdUI.connectIfNeeded { [channelURL] user, error in
+        SendbirdUI.connectIfNeeded { [channelURL] _, error in
             if let error = error {
                 self.delegate?.didReceiveError(error, isBlocker: true)
                 completionHandler?(nil, error)
@@ -299,7 +294,6 @@ class SBUFeedNotificationChannelViewModel: NSObject {
             FeedChannel.getChannel(url: channelURL, completionHandler: completionHandler)
         }
     }
-    
     
     /// This function refreshes channel.
     func refreshChannel() {
@@ -360,7 +354,6 @@ class SBUFeedNotificationChannelViewModel: NSObject {
             channel.markAsRead(completionHandler: nil)
         }
     }
-    
     
     // MARK: - Load Notifications
     
@@ -499,7 +492,6 @@ class SBUFeedNotificationChannelViewModel: NSObject {
         )
     }
     
-    
     // MARK: - List
     
     /// This function updates the notifications in the list.
@@ -626,7 +618,6 @@ class SBUFeedNotificationChannelViewModel: NSObject {
         self.notifications = []
     }
     
-    
     // MARK: - NotificationListParams
     private func resetNotificationListParams() {
         self.notificationListParams = self.customizedNotificationListParams?.copy() as? MessageListParams
@@ -643,7 +634,6 @@ class SBUFeedNotificationChannelViewModel: NSObject {
         self.notificationListParams.includeMetaArray = true
     }
     
-    
     // MARK: - Common
     private func createCollectionIfNeeded(startingPoint: Int64) {
         guard let channel = self.channel else { return }
@@ -655,7 +645,6 @@ class SBUFeedNotificationChannelViewModel: NSObject {
         )
     }
 }
-
 
 // MARK: - ConnectionDelegate
 extension SBUFeedNotificationChannelViewModel: ConnectionDelegate {
@@ -673,7 +662,6 @@ extension SBUFeedNotificationChannelViewModel: ConnectionDelegate {
         self.refreshChannel()
     }
 }
-
 
 // MARK: - ChannelDelegate
 extension SBUFeedNotificationChannelViewModel: FeedChannelDelegate {
@@ -697,7 +685,7 @@ extension SBUFeedNotificationChannelViewModel: FeedChannelDelegate {
             self,
             isScrollNearBottomInChannel: self.channel
         )
-        if (self.hasNext == true || isScrollBottom == false) {
+        if self.hasNext == true || isScrollBottom == false {
             if let channel = self.channel {
                 self.delegate?.feedNotificationChannelViewModel(
                     self,
@@ -708,7 +696,6 @@ extension SBUFeedNotificationChannelViewModel: FeedChannelDelegate {
         }
     }
 }
-
 
 extension SBUFeedNotificationChannelViewModel: NotificationCollectionDelegate {
     func notificationCollection(

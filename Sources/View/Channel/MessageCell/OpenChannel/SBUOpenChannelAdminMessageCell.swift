@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 open class SBUOpenChannelAdminMessageCell: SBUOpenChannelBaseMessageCell {
 
     // MARK: - Public property
@@ -65,9 +64,9 @@ open class SBUOpenChannelAdminMessageCell: SBUOpenChannelBaseMessageCell {
     open override func layoutSubviews() {
         super.layoutSubviews()
         let message = self.messageLabel.text ?? ""
-        let attributes: [NSAttributedString.Key : Any] = [
+        let attributes: [NSAttributedString.Key: Any] = [
             .font: theme.adminMessageFont,
-            .foregroundColor : theme.adminMessageTextColor
+            .foregroundColor: theme.adminMessageTextColor
         ]
         
         let attributedString = NSMutableAttributedString(string: message, attributes: attributes)
@@ -77,7 +76,7 @@ open class SBUOpenChannelAdminMessageCell: SBUOpenChannelBaseMessageCell {
         attributedString.addAttribute(
             .paragraphStyle,
             value: paragraphStyle,
-            range: NSMakeRange(0, attributedString.length)
+            range: NSRange(location: 0, length: attributedString.length)
         )
         
         self.messageLabel.attributedText = attributedString

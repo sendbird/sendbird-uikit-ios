@@ -33,7 +33,7 @@ public protocol SBUUserProfileViewProtocol {
 class SBUUserProfileView: UIView, SBUUserProfileViewProtocol {
     
     // MARK: - Property
-    weak var delegate: SBUUserProfileViewDelegate? = nil
+    weak var delegate: SBUUserProfileViewDelegate?
     var user: SBUUser?
     
     @SBUThemeWrapper(theme: SBUTheme.userProfileTheme)
@@ -112,7 +112,6 @@ class SBUUserProfileView: UIView, SBUUserProfileViewProtocol {
     let kProfileImageSize: CGFloat = 80
     let kLargeItemSize: CGFloat = 48
     let kItemSize: CGSize = .init(width: 64, height: 68)
-    
     
     // MARK: - View Lifecycle
     init(delegate: SBUUserProfileViewDelegate?) {
@@ -282,7 +281,6 @@ class SBUUserProfileView: UIView, SBUUserProfileViewProtocol {
         super.layoutSubviews()
     }
     
-    
     // MARK: - Actions
     @objc
     func onClickClose() {
@@ -293,7 +291,6 @@ class SBUUserProfileView: UIView, SBUUserProfileViewProtocol {
     func onClickMessage() {
         self.delegate?.didSelectMessage(userId: self.user?.userId)
     }
-    
     
     // MARK: SBUUserProfileViewProtocol
     func show(baseView: UIView, user: SBUUser?) {

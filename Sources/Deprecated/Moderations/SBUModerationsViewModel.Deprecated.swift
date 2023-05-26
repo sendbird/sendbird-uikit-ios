@@ -15,7 +15,7 @@ extension SBUModerationsViewModel {
     convenience init(
         channel: GroupChannel? = nil,
         channelURL: String? = nil,
-        delegate:SBUModerationsViewModelDelegate? = nil
+        delegate: SBUModerationsViewModelDelegate? = nil
     ) {
         self.init(channelURL: "", channelType: .group, delegate: delegate)
     }

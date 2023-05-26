@@ -14,14 +14,13 @@ public class SBUCoverImageView: UIView {
     // MARK: - UI properties (Public)
     @SBUThemeWrapper(theme: SBUTheme.componentTheme)
     public var theme: SBUComponentTheme
-
     
     // MARK: - UI properties (Private)
     var spacing: CGFloat = 0 {
         didSet {
-            for subView in self.subviews{
-                if let stack = subView as? UIStackView{
-                    for subStack in stack.arrangedSubviews{
+            for subView in self.subviews {
+                if let stack = subView as? UIStackView {
+                    for subStack in stack.arrangedSubviews {
                         (subStack as? UIStackView)?.spacing = spacing
                     }
                 }
@@ -29,7 +28,6 @@ public class SBUCoverImageView: UIView {
             }
         }
     }
-
     
     private var iconSize: CGSize {
         let frameWidth = self.frame.size.width
@@ -47,7 +45,6 @@ public class SBUCoverImageView: UIView {
             return SBUIconSetType.Metric.defaultIconSizeSmall
         }
     }
-    
     
     // MARK: - Life cycle
     
@@ -67,7 +64,7 @@ public class SBUCoverImageView: UIView {
     
     /// This function sets the image using the cover image URL.
     /// - Parameter coverURL: Cover image url string
-    public func setImage(withCoverURL coverURL: String){
+    public func setImage(withCoverURL coverURL: String) {
         self.setImage(with: coverURL)
     }
     
@@ -268,8 +265,7 @@ public class SBUCoverImageView: UIView {
                 
                 if mainStackView.arrangedSubviews.count < 2 {
                     mainStackView.addArrangedSubview(stackView)
-                }
-                else {
+                } else {
                     for subView in mainStackView.arrangedSubviews {
                         if (subView as? UIStackView)?.arrangedSubviews.count == 1 {
                             (subView as? UIStackView)?.addArrangedSubview(imageView)
@@ -282,7 +278,7 @@ public class SBUCoverImageView: UIView {
         return mainStackView
     }
     
-    func makeCircularWithSpacing(spacing: CGFloat){
+    func makeCircularWithSpacing(spacing: CGFloat) {
         self.layer.cornerRadius = self.frame.height/2
         self.spacing = spacing
     }

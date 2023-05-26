@@ -48,7 +48,6 @@ public struct SBUAutoLayout<T: UIView> {
     }
 }
 
-
 @propertyWrapper
 public struct SBUThemeWrapper<T> {
     private var theme: T?

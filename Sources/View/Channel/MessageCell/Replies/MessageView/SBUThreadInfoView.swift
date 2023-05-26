@@ -15,14 +15,12 @@ public protocol SBUThreadInfoViewDelegate: AnyObject {
     func threadInfoViewDidTap(_ threadInfoView: SBUThreadInfoView)
 }
 
-
 /// The protocol to configure the thread info view. It conforms to `SBUViewLifeCycle`
 ///
 /// - Since: 3.3.0
 public protocol SBUThreadInfoViewProtocol: SBUViewLifeCycle {
     func configure(with message: BaseMessage, messagePosition: MessagePosition)
 }
-
 
 open class SBUThreadInfoView: SBUView, SBUThreadInfoViewProtocol {
     
@@ -52,11 +50,10 @@ open class SBUThreadInfoView: SBUView, SBUThreadInfoViewProtocol {
     @SBUThemeWrapper(theme: SBUTheme.messageCellTheme)
     public var theme: SBUMessageCellTheme
     
-    
     // MARK: - Logic properties (Public)
     public weak var delegate: SBUThreadInfoViewDelegate?
-    public private(set) var threadInfo: ThreadInfo? = nil
-    public private(set) var message: BaseMessage? = nil {
+    public private(set) var threadInfo: ThreadInfo?
+    public private(set) var message: BaseMessage? {
         didSet { self.threadInfo = message?.threadInfo }
     }
     public var messagePosition: MessagePosition = .center {
@@ -77,7 +74,6 @@ open class SBUThreadInfoView: SBUView, SBUThreadInfoViewProtocol {
     
     public let userImageSize: CGFloat = 20
     public let repliedUserLimit: Int = 5
-    
     
     // MARK: - Initializer
     public override init() {
@@ -185,7 +181,6 @@ open class SBUThreadInfoView: SBUView, SBUThreadInfoViewProtocol {
             self.repliedUsersHStackView.addArrangedSubview(userImageView)
         }
     }
-    
     
     // MARK: - Action
     @objc

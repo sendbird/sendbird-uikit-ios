@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 /// Event methods for the views updates and performing actions from the list component in the group channel list.
 public protocol SBUGroupChannelListModuleListDelegate: SBUBaseChannelListModuleListDelegate {
     /// Called when selected leave button in the swipped cell.
@@ -25,10 +24,8 @@ public protocol SBUGroupChannelListModuleListDelegate: SBUBaseChannelListModuleL
     func groupChannelListModule(_ listComponent: SBUGroupChannelListModule.List, didChangePushTriggerOption option: GroupChannelPushTriggerOption, channel: GroupChannel)
 }
 
-
 /// Methods to get data source for the list component in the group channel list.
 public protocol SBUGroupChannelListModuleListDataSource: SBUBaseChannelListModuleListDataSource {}
-
 
 extension SBUGroupChannelListModule {
     /// A module component that represent the list of `SBUGroupChannelListModule`.
@@ -38,7 +35,6 @@ extension SBUGroupChannelListModule {
         // MARK: - UI properties (Public)
         /// The object that is used as the theme of the list component. The theme must adopt the `SBUGroupChannelListTheme` class.
         public var theme: SBUGroupChannelListTheme?
-        
         
         // MARK: - Logic properties (Public)
         /// The object that acts as the delegate of the list component. The delegate must adopt the `SBUGroupChannelListModuleListDelegate`.
@@ -57,7 +53,6 @@ extension SBUGroupChannelListModule {
         public var channelList: [GroupChannel]? {
             self.baseChannelList as? [GroupChannel]
         }
-        
 
         // MARK: - LifeCycle
         @available(*, unavailable, renamed: "SBUGroupChannelListModule.List()")
@@ -109,7 +104,6 @@ extension SBUGroupChannelListModule {
             (self.emptyView as? SBUEmptyView)?.setupStyles()
         }
         
-        
         // MARK: - TableView
         
         /// Creates leave contextual action for a particular swipped cell.
@@ -124,7 +118,7 @@ extension SBUGroupChannelListModule {
             let leaveAction = UIContextualAction(
                 style: .normal,
                 title: ""
-            ) { [weak self] action, view, actionHandler in
+            ) { [weak self] _, _, actionHandler in
                 guard let self = self else { return }
                 self.delegate?.groupChannelListModule(self, didSelectLeave: channel)
                 actionHandler(true)
@@ -164,7 +158,7 @@ extension SBUGroupChannelListModule {
             let alarmAction = UIContextualAction(
                 style: .normal,
                 title: ""
-            ) { [weak self] action, view, actionHandler in
+            ) { [weak self] _, _, actionHandler in
                 guard let self = self else { return }
                 self.delegate?.groupChannelListModule(
                     self,
@@ -208,7 +202,6 @@ extension SBUGroupChannelListModule {
     }
 }
 
-
 // MARK: - UITableView relations
 extension SBUGroupChannelListModule.List {
     open override func numberOfSections(in tableView: UITableView) -> Int {
@@ -227,7 +220,7 @@ extension SBUGroupChannelListModule.List {
             return UITableViewCell()
         }
         
-        var cell: SBUBaseChannelCell? = nil
+        var cell: SBUBaseChannelCell?
         if let channelCell = self.channelCell {
             cell = tableView.dequeueReusableCell(
                 withIdentifier: channelCell.sbu_className
@@ -268,8 +261,7 @@ extension SBUGroupChannelListModule.List {
                         trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath)
     -> UISwipeActionsConfiguration? {
         if self.channelList?.count ?? 0 > indexPath.row,
-           let channelList = channelList
-        {
+           let channelList = channelList {
             let channel = channelList[indexPath.row]
             if channel.isChatNotification {
                 return nil

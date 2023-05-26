@@ -30,9 +30,9 @@ public class SBUMenuSheetViewController: SBUBaseViewController, UITableViewDeleg
     var theme: SBUComponentTheme
 
     // MARK: - Action
-    public var emojiTapHandler: ((_ emojiKey: String, _ setSelect: Bool) -> Void)? = nil
-    public var moreEmojiTapHandler: (() -> Void)? = nil
-    public var dismissHandler: (() -> Void)? = nil
+    public var emojiTapHandler: ((_ emojiKey: String, _ setSelect: Bool) -> Void)?
+    public var moreEmojiTapHandler: (() -> Void)?
+    public var dismissHandler: (() -> Void)?
 
     // MARK: - Lifecycle
     @available(*, unavailable, renamed: "SBUMenuViewController.init()")
@@ -72,7 +72,6 @@ public class SBUMenuSheetViewController: SBUBaseViewController, UITableViewDeleg
         super.viewWillDisappear(animated)
         self.dismissHandler?()
     }
-    
     
     // MARK: - Sendbird UIKit Life cycle
     public override func setupViews() {
@@ -145,12 +144,10 @@ public class SBUMenuSheetViewController: SBUBaseViewController, UITableViewDeleg
             self.layout.minimumLineSpacing = space
         }
     }
-    
 
     public override func setupStyles() {
         self.view.backgroundColor = theme.backgroundColor
     }
-    
 
     // MARK: - UITableView relations
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

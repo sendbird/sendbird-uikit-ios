@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 public protocol SBUOpenChannelListViewModelDelegate: SBUBaseChannelListViewModelDelegate {
     /// Called when the channe list has been changed.
     /// - Parameters:
@@ -32,11 +31,9 @@ public protocol SBUOpenChannelListViewModelDelegate: SBUBaseChannelListViewModel
     )
 }
 
-
 open class SBUOpenChannelListViewModel: SBUBaseChannelListViewModel {
     // MARK: - Constants
     static let channelLoadLimit: UInt = 20
-    
     
     // MARK: - Property (Public)
     @SBUAtomic public private(set) var channelList: [OpenChannel] = []
@@ -46,14 +43,12 @@ open class SBUOpenChannelListViewModel: SBUBaseChannelListViewModel {
     /// - Since: 1.0.11
     public private(set) var channelListQuery: OpenChannelListQuery?
     
-    
     // MARK: - Property (private)
     private weak var delegate: SBUOpenChannelListViewModelDelegate? {
         get { self.baseDelegate as? SBUOpenChannelListViewModelDelegate }
         set { self.baseDelegate = newValue }
     }
     private var customizedChannelListQuery: OpenChannelListQuery?
-    
     
     // MARK: - Life Cycle
     
@@ -84,7 +79,6 @@ open class SBUOpenChannelListViewModel: SBUBaseChannelListViewModel {
             forIdentifier: "\(SBUConstant.openChannelDelegateIdentifier).\(self.description)"
         )
     }
-    
     
     // MARK: - List handling
     
@@ -226,7 +220,6 @@ open class SBUOpenChannelListViewModel: SBUBaseChannelListViewModel {
         self.channelListQuery = nil
     }
     
-    
     // MARK: - Common
     
     /// This is used to check the loading status and control loading indicator.
@@ -240,9 +233,8 @@ open class SBUOpenChannelListViewModel: SBUBaseChannelListViewModel {
     }
 }
 
-
 // MARK: - ChannelDelegate : Please do not use it.
-extension SBUOpenChannelListViewModel: BaseChannelDelegate {
+extension SBUOpenChannelListViewModel: OpenChannelDelegate {
     open func channelWasChanged(_ channel: BaseChannel) {
         guard let openChannel = channel as? OpenChannel else { return }
         self.upsertChannels([openChannel], needReload: true)

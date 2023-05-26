@@ -29,7 +29,6 @@ public enum VoiceRecorderErrorStatus: Int {
     case recorderEncodeError
 }
 
-
 public protocol SBUVoiceRecorderDelegate: AnyObject {
     /// Called when the error was received.
     /// - Parameters:
@@ -62,7 +61,6 @@ public protocol SBUVoiceRecorderDelegate: AnyObject {
     func voiceRecorderDidFinishRecord(_ recorder: SBUVoiceRecorder, voiceFileInfo: SBUVoiceFileInfo)
 }
 
-
 public class SBUVoiceRecorder: NSObject, AVAudioRecorderDelegate {
     
     // MARK: Properties
@@ -78,7 +76,6 @@ public class SBUVoiceRecorder: NSObject, AVAudioRecorderDelegate {
     var currentRecordingTime: Double = 0 // ms
     let minRecordingTime: Double = SBUGlobals.voiceMessageConfig.recorder.minRecordingTime // 1000 ms
     let maxRecordingTime: Double = SBUGlobals.voiceMessageConfig.recorder.maxRecordingTime // 60000 ms
-    
     
     // MARK: - Initializer
     /// Initializes `SBUVoiceRecorder` class with delegate and checkPermission.
@@ -102,10 +99,9 @@ public class SBUVoiceRecorder: NSObject, AVAudioRecorderDelegate {
         self.stopProgressTimer()
         self.delegate = nil
     }
-     
     
     func showPermissionAlert() {
-        let settingButton = SBUAlertButtonItem(title: SBUStringSet.Settings) { info in
+        let settingButton = SBUAlertButtonItem(title: SBUStringSet.Settings) { _ in
             if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
                 UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
             }
@@ -113,7 +109,7 @@ public class SBUVoiceRecorder: NSObject, AVAudioRecorderDelegate {
         
         let cancelButton = SBUAlertButtonItem(
             title: SBUStringSet.Cancel,
-            completionHandler: { [weak self] info in
+            completionHandler: { [weak self] _ in
                 guard let self = self else { return }
                 self.resetRecorder()
                 self.delegate?.voiceRecorderDidUpdateRecordPermission(self, granted: false)
@@ -198,7 +194,6 @@ public class SBUVoiceRecorder: NSObject, AVAudioRecorderDelegate {
         self.audioRecorder = nil
     }
     
-    
     // MARK: - Preparations
     /// Settings category and active option of `AVAudioSession` and prepares `AVAudioRecorder` settings.
     /// - Returns: `true` when preparation is successful.
@@ -220,7 +215,6 @@ public class SBUVoiceRecorder: NSObject, AVAudioRecorderDelegate {
             self.delegate?.voiceRecorderDidReceiveError(self, errorStatus: .audioSessionSetting)
             return false
         }
-
         
         // AVAudioPlayer
         let fileName = Date().sbu_toString(
@@ -259,7 +253,6 @@ public class SBUVoiceRecorder: NSObject, AVAudioRecorderDelegate {
         return true
     }
     
-    
     // MARK: - Timer
     func startProgressTimer() {
         self.stopProgressTimer()
@@ -289,7 +282,6 @@ public class SBUVoiceRecorder: NSObject, AVAudioRecorderDelegate {
             }
         }
     }
-    
     
     // MARK: - AVAudioRecorderDelegate
     public func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully success: Bool) {

@@ -8,7 +8,6 @@
 
 import UIKit
 
-
 public class SBUFontSet {
     // MARK: - H
     /// Bold, 18pt
@@ -238,7 +237,6 @@ public class SBUFontSet {
         ]
     }()
     
-    
     // MARK: - Custom font
     /// Sets custom font with name and size
     /// - Parameters:
@@ -256,12 +254,11 @@ public class SBUFontSet {
         }
     }
     
-    
-    // MARK: - Notification font
-    /// Returns system font or custom font by checking if there is a set fontFamily value for Notification.
+    // MARK: - Notifications font
+    /// Returns system font or custom font by checking if there is a set fontFamily value for Notifications.
     /// - Since: 3.5.7
-    static func notificationFont(size: CGFloat, weight: UIFont.Weight = .regular) -> UIFont {
-        guard let fontFamily = SBUFontSet.FontFamily.notification else {
+    static func notificationsFont(size: CGFloat, weight: UIFont.Weight = .regular) -> UIFont {
+        guard let fontFamily = SBUFontSet.FontFamily.notifications else {
             return UIFont.systemFont(ofSize: size, weight: weight)
         }
         
@@ -276,7 +273,6 @@ public class SBUFontSet {
     }
 }
 
-
 extension SBUFontSet {
 
     // MARK: - Font family
@@ -286,7 +282,6 @@ extension SBUFontSet {
         
         /// If this value is set, all of the fonts in Notification are use this fontFamily.
         /// - Since: 3.5.7
-        public static var notification: String? = nil
-
+        public static var notifications: String?
     }
 }

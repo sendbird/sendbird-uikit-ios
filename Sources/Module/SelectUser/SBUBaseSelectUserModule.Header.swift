@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 /// Event methods for the views updates and performing actions from the header component in user selection module.
 public protocol SBUBaseSelectUserModuleHeaderDelegate: SBUCommonDelegate { }
 
@@ -20,7 +19,6 @@ public protocol SBUBaseSelectUserModuleHeaderDataSource: AnyObject {
     func selectedUsersForBaseSelectUserModule(_ headerComponent: SBUBaseSelectUserModule.Header) -> Set<SBUUser>?
 }
 
-
 extension SBUBaseSelectUserModule {
     
     /// A module component that represent the header of `SBUBaseSelectUserModule`.
@@ -29,43 +27,40 @@ extension SBUBaseSelectUserModule {
         // MARK: - UI properties (Public)
         /// A view that represents a title in navigation bar.
         /// - NOTE: When the value is updated, `didUpdateTitleView`is called.
-        public var titleView: UIView? = nil {
+        public var titleView: UIView? {
             didSet { self.didUpdateTitleView() }
         }
         
         /// A view that represents a left `UIBarButtonItem` in navigation bar.
         /// - NOTE: When the value is updated, `didUpdateLeftItem`is called.
-        public var leftBarButton: UIBarButtonItem? = nil {
+        public var leftBarButton: UIBarButtonItem? {
             didSet { self.didUpdateLeftItem() }
         }
         
         /// A view that represents a right `UIBarButtonItem` in navigation bar.
         /// - NOTE: When the value is updated, `didUpdateRightItem`is called.
-        public var rightBarButton: UIBarButtonItem? = nil {
+        public var rightBarButton: UIBarButtonItem? {
             didSet { didUpdateRightItem() }
         }
         
         /// The object that is used as the theme of the header component. The theme must adopt the `SBUUserListTheme` class.
-        public var theme: SBUUserListTheme? = nil
+        public var theme: SBUUserListTheme?
         
-        public var componentTheme: SBUComponentTheme? = nil
+        public var componentTheme: SBUComponentTheme?
         
         // MARK: - UI properties (Private)
         func defaultTitleView() -> SBUNavigationTitleView? { return nil }
         func defaultLeftBarButton() -> UIBarButtonItem? { return nil }
         func defaultRightBarButton() -> UIBarButtonItem? { return nil }
         
-        
         // MARK: - Logic properties (Public)
         public var selectedUserList: Set<SBUUser>? {
             self.baseDataSource?.selectedUsersForBaseSelectUserModule(self)
         }
         
-        
         // MARK: - Logic properties (private)
-        weak var baseDelegate: SBUBaseSelectUserModuleHeaderDelegate? = nil
-        weak var baseDataSource: SBUBaseSelectUserModuleHeaderDataSource? = nil
-        
+        weak var baseDelegate: SBUBaseSelectUserModuleHeaderDelegate?
+        weak var baseDataSource: SBUBaseSelectUserModuleHeaderDataSource?
         
         // MARK: - Life cycle
         deinit {
@@ -110,7 +105,6 @@ extension SBUBaseSelectUserModule {
             
             self.updateRightBarButton()
         }
-        
 
         // MARK: - Common
         /// Updates right bar button based on `selectedUserList.count`. The defaults action is updating the title of the button and the tint color with `rightBarButtonTintColor` and `rightBarButtonSelectedTintColor` from the `theme`.
@@ -121,7 +115,6 @@ extension SBUBaseSelectUserModule {
             : self.theme?.rightBarButtonTintColor
         }
         
-        
         // MARK: - Attach update delegate on view
         /// Called when the `titleView` was updated.
         func didUpdateTitleView() { }
@@ -130,11 +123,10 @@ extension SBUBaseSelectUserModule {
         /// Called when the `rightBarButton` was updated.
         func didUpdateRightItem() { }
         
-        
         // MARK: - Actions
         /// The action of the `leftBarButton`.
-        @objc open func onTapLeftBarButton() { }
+        open func onTapLeftBarButton() { }
         /// The action of the `rightBarButton`.
-        @objc open func onTapRightBarButton() { }
+        open func onTapRightBarButton() { }
     }
 }

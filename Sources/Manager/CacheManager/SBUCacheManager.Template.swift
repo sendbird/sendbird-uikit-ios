@@ -14,18 +14,12 @@ extension SBUCacheManager {
         static let diskCache = DiskCacheForTemplate(cacheType: "templates")
         static let cachePath = diskCache.cachePathURL()
         static let cacheKey = "templates"
-
-
+        
         // MARK: - TemplateList token (updated time)
         static var lastToken: String {
-            get {
-                UserDefaults.standard.string(forKey: "sbu_template_list_updated_at") ?? ""
-            }
-            set {
-                UserDefaults.standard.set(newValue, forKey: "sbu_template_list_updated_at")
-            }
+            get { self.loadLastTokenKey() }
+            set { self.saveLastTokenKey(newValue) }
         }
-        
         
         // MARK: - Template list
         static func save(templates: [SBUNotificationChannelManager.TemplateList.Template]) {
@@ -33,6 +27,7 @@ extension SBUCacheManager {
             self.diskCache.set(templates: templates)
         }
         
+        @discardableResult
         static func loadAllTemplates() -> [String: SBUNotificationChannelManager.TemplateList.Template]? {
             if let templateList = memoryCache.getAllTemplates() {
 //                SBULog.info("Loaded templates from memory cache")
@@ -50,7 +45,6 @@ extension SBUCacheManager {
         static func upsert(templates: [SBUNotificationChannelManager.TemplateList.Template]) {
             self.save(templates: templates)
         }
-        
         
         // MARK: - Single template
         static func save(template: SBUNotificationChannelManager.TemplateList.Template) {
@@ -70,15 +64,23 @@ extension SBUCacheManager {
             return nil
         }
         
-        static func upsert(template: SBUNotificationChannelManager.TemplateList.Template, forKey key: String) {
-            self.save(templates: [template])
-//            var templates = getAllTemplates()
-//            if let index = templates.firstIndex(where: { $0.key == key }) {
-//                templates[index] = template
-//            } else {
-//                templates.append(template)
-//            }
-//            save(templates: templates)
+        static func removeTemplate(forKey key: String) {
+            self.memoryCache.remove(key: key)
+            self.diskCache.remove(key: key)
+        }
+        
+        // MARK: lastTokenKey
+        static func loadLastTokenKey() -> String {
+            if let memoryCache = self.memoryCache.lastToken {
+                return memoryCache
+            } else {
+                return self.diskCache.loadLastTokenKey()
+            }
+        }
+        
+        static func saveLastTokenKey(_ value: String) {
+            self.memoryCache.lastToken = value
+            self.diskCache.saveLastTokenKey(value)
         }
     }
 }
@@ -86,9 +88,12 @@ extension SBUCacheManager {
 extension SBUCacheManager {
     struct DiskCacheForTemplate {
         // MARK: - Properties
-        private let fileManager = FileManager.default
-        private let cacheType: String
-        private let diskQueue = DispatchQueue(label: "\(SBUConstant.bundleIdentifier).queue.diskcache.template", qos: .background)
+        let fileManager = FileManager.default
+        let cacheType: String
+        let diskQueue = DispatchQueue(label: "\(SBUConstant.bundleIdentifier).queue.diskcache.template", qos: .background)
+        var fileSemaphore = DispatchSemaphore(value: 1)
+        
+        let lastTokenKey = "sbu_template_list_updated_at"
         
         // MARK: - Initializers
         init(cacheType: String) {
@@ -115,50 +120,60 @@ extension SBUCacheManager {
             return fileManager.fileExists(atPath: self.pathForKey(key))
         }
 
-        func get(fullPath: URL) -> SBUNotificationChannelManager.TemplateList.Template? {
-            do {
-                let data = try Data(contentsOf: fullPath)
-                let template = try JSONDecoder().decode(SBUNotificationChannelManager.TemplateList.Template.self, from: data)
-                return template as SBUNotificationChannelManager.TemplateList.Template
-            } catch {
-                SBULog.info(error.localizedDescription)
+        func get(fullPath: URL, needToSync: Bool = true) -> SBUNotificationChannelManager.TemplateList.Template? {
+            let template: SBUNotificationChannelManager.TemplateList.Template? = {
+                do {
+                    let data = try Data(contentsOf: fullPath)
+                    let template = try JSONDecoder().decode(SBUNotificationChannelManager.TemplateList.Template.self, from: data)
+                    return template as SBUNotificationChannelManager.TemplateList.Template
+                } catch {
+                    SBULog.info(error.localizedDescription)
+                }
+                return nil
+            }()
+            
+            if needToSync {
+                return self.diskQueue.sync {
+                    self.fileSemaphore.wait()
+                    defer { self.fileSemaphore.signal() }
+                    
+                    return template
+                }
+            } else {
+                return template
             }
-            return nil
         }
         
         func get(key: String) -> SBUNotificationChannelManager.TemplateList.Template? {
             guard cacheExists(key: key) else { return nil }
             
             let filePath = URL(fileURLWithPath: self.pathForKey(key))
-            
-            do {
-                let data = try Data(contentsOf: filePath)
-                let template = try JSONDecoder().decode(SBUNotificationChannelManager.TemplateList.Template.self, from: data)
-                return template as SBUNotificationChannelManager.TemplateList.Template
-            } catch {
-                SBULog.info(error.localizedDescription)
-            }
-            return nil
+            return self.get(fullPath: filePath)
         }
         
         func getAllTemplates() -> [String: SBUNotificationChannelManager.TemplateList.Template]? {
-            var templateList: [String: SBUNotificationChannelManager.TemplateList.Template]? = nil
-            
-            do {
-                let items = try fileManager.contentsOfDirectory(at: cachePathURL(), includingPropertiesForKeys: nil)
-                if items.count > 0 {
-                    templateList = [:]
-                }
-                for item in items {
-                    if let template = get(fullPath: item) {
-                        templateList?[template.key] = template
+            return self.diskQueue.sync {
+                self.fileSemaphore.wait()
+                defer { self.fileSemaphore.signal() }
+                
+                var templateList: [String: SBUNotificationChannelManager.TemplateList.Template]?
+                
+                do {
+                    let items = try fileManager.contentsOfDirectory(at: cachePathURL(), includingPropertiesForKeys: nil)
+                    if items.count > 0 {
+                        templateList = [:]
                     }
+                    for item in items {
+                        if let template = get(fullPath: item, needToSync: false) {
+                            templateList?[template.key] = template
+                        }
+                    }
+                } catch {
+                    SBULog.info(error.localizedDescription)
                 }
-            } catch {
-                SBULog.info(error.localizedDescription)
+                
+                return templateList
             }
-            
-            return templateList
         }
         
         func set(templates: [SBUNotificationChannelManager.TemplateList.Template]) {
@@ -174,7 +189,10 @@ extension SBUCacheManager {
         }
         
         func set(key: String, data: NSData, completionHandler: SBUCacheCompletionHandler? = nil) {
-            diskQueue.async {
+            diskQueue.sync {
+                self.fileSemaphore.wait()
+                defer { self.fileSemaphore.signal() }
+                
                 let filePath = URL(fileURLWithPath: self.pathForKey(key))
                 
                 do {
@@ -200,14 +218,31 @@ extension SBUCacheManager {
         }
         
         func remove(key: String) {
-            diskQueue.async {
-                let path = self.pathForKey(key)
-                let fileManager = self.fileManager
+            diskQueue.sync {
+                self.fileSemaphore.wait()
+                defer { self.fileSemaphore.signal() }
                 
                 do {
+                    let path = self.pathForKey(key)
+                    let fileManager = self.fileManager
                     try fileManager.removeItem(atPath: path)
                 } catch {
                     SBULog.error("Could not remove file: \(error)")
+                }
+            }
+        }
+        
+        func removePath() {
+            diskQueue.sync {
+                self.fileSemaphore.wait()
+                defer { self.fileSemaphore.signal() }
+                
+                do {
+                    let path = self.cachePathURL()
+                    let fileManager = self.fileManager
+                    try fileManager.removeItem(at: path)
+                } catch {
+                    SBULog.error("Could not remove path: \(error)")
                 }
             }
         }
@@ -228,11 +263,38 @@ extension SBUCacheManager {
             let fullPath = cachePathURL.appendingPathComponent(key)
             return fullPath.path
         }
+        
+        // MARK: lastTokenKey
+        func loadLastTokenKey() -> String {
+            let cachePathURL = cachePathURL()
+            let filePath = cachePathURL.appendingPathComponent(lastTokenKey)
+            guard let retrievedString = try? String(contentsOf: filePath, encoding: .utf8) else {
+                if let storedValue = UserDefaults.standard.string(forKey: lastTokenKey) {
+                    // for backward
+                    UserDefaults.standard.removeObject(forKey: lastTokenKey)
+                    self.saveLastTokenKey(storedValue)
+                    return storedValue
+                }
+                return ""
+            }
+            return retrievedString
+        }
+        
+        func saveLastTokenKey(_ value: String) {
+            do {
+                let cachePathURL = cachePathURL()
+                let filePath = cachePathURL.appendingPathComponent(lastTokenKey)
+                try value.write(to: filePath, atomically: true, encoding: .utf8)
+            } catch {
+                SBULog.error("Error writing to file: lastTokenKey value")
+            }
+        }
     }
     
     // MARK: - MemoryCache
     class MemoryCacheForTemplate {
-        var templateList: [String: SBUNotificationChannelManager.TemplateList.Template]? = nil
+        var lastToken: String?
+        var templateList: [String: SBUNotificationChannelManager.TemplateList.Template]?
         
         // MARK: - Memory Cache
         func set(templates: [SBUNotificationChannelManager.TemplateList.Template]) {
@@ -259,8 +321,8 @@ extension SBUCacheManager {
             self.templateList?.removeValue(forKey: key)
         }
         
-        func cacheExists(key: String) -> Bool {
-            return self.templateList?[key] != nil
-        }
+//        func cacheExists(key: String) -> Bool {
+//            return self.templateList?[key] != nil
+//        }
     }
 }

@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 public protocol SBUModerationsModuleListDelegate: SBUCommonDelegate {
     /// Called when the moderation cell was selected in the `listComponent`.
     /// - Parameters:
@@ -24,7 +23,6 @@ public protocol SBUModerationsModuleListDelegate: SBUCommonDelegate {
     func moderationsModule(_ listComponent: SBUModerationsModule.List, didChangeFreezeMode state: Bool)
 }
 
-
 public protocol SBUModerationsModuleListDataSource: AnyObject {
     /// Ask the data source to return the `BaseChannel` object.
     /// - Parameters:
@@ -33,7 +31,6 @@ public protocol SBUModerationsModuleListDataSource: AnyObject {
     /// - Returns: `BaseChannel` object.
     func moderationsModule(_ listComponent: SBUModerationsModule.List, channelForTableView tableView: UITableView) -> BaseChannel?
 }
-
 
 extension SBUModerationsModule {
     
@@ -46,19 +43,17 @@ extension SBUModerationsModule {
         public var tableView = UITableView()
         
         /// The channel cell for `UITableViewCell` object. Use `register(moderationCell:nib:)` to update.
-        public var moderationCell: UITableViewCell? = nil
+        public var moderationCell: UITableViewCell?
         
-        public var theme: SBUChannelSettingsTheme? = nil
-        
+        public var theme: SBUChannelSettingsTheme?
         
         // MARK: - Logic properties (Public)
-        public weak var delegate: SBUModerationsModuleListDelegate? = nil
-        public weak var dataSource: SBUModerationsModuleListDataSource? = nil
+        public weak var delegate: SBUModerationsModuleListDelegate?
+        public weak var dataSource: SBUModerationsModuleListDataSource?
         
         public var channel: BaseChannel? {
             self.dataSource?.moderationsModule(self, channelForTableView: self.tableView)
         }
-        
         
         // MARK: - LifeCycle
         
@@ -102,7 +97,6 @@ extension SBUModerationsModule {
             SBULog.info("")
         }
         
-        
         // MARK: - Style
         open func setupLayouts() {
             self.tableView.sbu_constraint(equalTo: self, left: 0, right: 0, top: 0, bottom: 0)
@@ -116,7 +110,6 @@ extension SBUModerationsModule {
             }
             self.tableView.backgroundColor = self.theme?.backgroundColor
         }
-
         
         // MARK: - TableView: Cell
         
@@ -172,7 +165,6 @@ extension SBUModerationsModule {
     }
 }
 
-
 // MARK: - UITableView relations
 extension SBUModerationsModule.List: UITableViewDataSource, UITableViewDelegate {
     open func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -190,7 +182,7 @@ extension SBUModerationsModule.List: UITableViewDataSource, UITableViewDelegate 
     
     open func tableView(_ tableView: UITableView,
                         cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        var cell: UITableViewCell? = nil
+        var cell: UITableViewCell?
         if let moderationCell = self.moderationCell {
             cell = tableView.dequeueReusableCell(withIdentifier: moderationCell.sbu_className)
         } else {

@@ -65,7 +65,6 @@ protocol SBUFeedNotificationChannelModuleHeaderDelegate: SBUCommonDelegate {
     )
 }
 
-
 /// Methods to get data source for header component in a feed channel.
 protocol SBUFeedNotificationChannelModuleHeaderDataSource: AnyObject {
     /// Ask the data source to return the channel name.
@@ -79,7 +78,6 @@ protocol SBUFeedNotificationChannelModuleHeaderDataSource: AnyObject {
     ) -> String?
 }
 
-
 extension SBUFeedNotificationChannelModule {
     /// A module component that represent the header of ``SBUFeedNotificationChannelModule``
     /// - Since: 3.5.0
@@ -91,7 +89,7 @@ extension SBUFeedNotificationChannelModule {
         /// Specifies a custom view of the channel title in the center of the navigation bar of the header component.
         /// - NOTE: When the value is updated, ``SBUFeedNotificationChannelModuleHeaderDelegate/feedNotificationChannelModule(_:didUpdateTitleView:)`` delegate function is called.
         /// - NOTE: To update title text when you using default title view, please calls ``SBUFeedNotificationChannelViewController/updateChannelTitle(_:)`` in ``SBUFeedNotificationChannelViewController``
-        var titleView: UIView? = nil {
+        var titleView: UIView? {
             didSet {
                 self.delegate?.feedNotificationChannelModule(
                     self,
@@ -102,7 +100,7 @@ extension SBUFeedNotificationChannelModule {
         
         /// Specifies an array of  `UIBarButtonItem` that is used as a button on the left side of the navigation bar.
         /// - NOTE: When the value is updated, ``SBUFeedNotificationChannelModuleHeaderDelegate/feedNotificationChannelModule(_:didUpdateLeftItems:)``  delegate function is called.
-        var leftBarButtons: [UIBarButtonItem]? = nil {
+        var leftBarButtons: [UIBarButtonItem]? {
             didSet {
                 self.delegate?.feedNotificationChannelModule(
                     self,
@@ -113,7 +111,7 @@ extension SBUFeedNotificationChannelModule {
         
         /// Specifies an array of  `UIBarButtonItem` that is used as a button on the right side of the navigation bar.
         /// - NOTE: When the value is updated, ``SBUFeedNotificationChannelModuleHeaderDelegate/feedNotificationChannelModule(_:didUpdateRightItems:)`` delegate function is called.
-        var rightBarButtons: [UIBarButtonItem]? = nil {
+        var rightBarButtons: [UIBarButtonItem]? {
             didSet {
                 self.delegate?.feedNotificationChannelModule(
                     self,
@@ -161,10 +159,9 @@ extension SBUFeedNotificationChannelModule {
         }()
         
         /// The object that acts as the delegate of the header component. The delegate must adopt the ``SBUFeedNotificationChannelModuleHeaderDelegate`` protocol.
-        weak var delegate: SBUFeedNotificationChannelModuleHeaderDelegate? = nil
+        weak var delegate: SBUFeedNotificationChannelModuleHeaderDelegate?
         
-        weak var dataSource: SBUFeedNotificationChannelModuleHeaderDataSource? = nil
-        
+        weak var dataSource: SBUFeedNotificationChannelModuleHeaderDataSource?
         
         // MARK: - LifeCycle
         @available(*, unavailable, renamed: "SBUFeedNotificationChannelModule.Header()")

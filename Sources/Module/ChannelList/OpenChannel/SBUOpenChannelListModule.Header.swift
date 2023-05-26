@@ -9,10 +9,8 @@
 import UIKit
 import SendbirdChatSDK
 
-
 /// Event methods for the views updates and performing actions from the header component in open channel list module.
 public protocol SBUOpenChannelListModuleHeaderDelegate: SBUBaseChannelListModuleHeaderDelegate {}
-
 
 extension SBUOpenChannelListModule {
     /// A module component that represents the header of `SBUOpenChannelListModule`.
@@ -20,8 +18,7 @@ extension SBUOpenChannelListModule {
         
         // MARK: - UI properties (Public)
         /// The object that is used as the theme of the header  component. The theme must adopt the `SBUOpenChannelListTheme` class.
-        public var theme: SBUOpenChannelListTheme? = nil
-        
+        public var theme: SBUOpenChannelListTheme?
         
         // MARK: - Logic properties (Public)
         /// The object that acts as the delegate of the header component. The delegate must adopt the `SBUOpenChannelListModuleHeaderDelegate`.
@@ -29,7 +26,6 @@ extension SBUOpenChannelListModule {
             get { self.baseDelegate as? SBUOpenChannelListModuleHeaderDelegate }
             set { self.baseDelegate = newValue }
         }
-        
         
         // MARK: - LifeCycle
         @available(*, unavailable, renamed: "SBUOpenChannelListModule.Header()")

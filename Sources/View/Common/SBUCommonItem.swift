@@ -8,7 +8,6 @@
 
 import UIKit
 
-
 public class SBUCommonItem {
     public var title: String?
     public var color: UIColor?

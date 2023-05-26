@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 @available(*, deprecated, renamed: "SendbirdUI") // 3.0.0
 public typealias SBUMain = SendbirdUI
 
@@ -19,7 +18,7 @@ public class SendbirdUI {
     /// - Parameter applicationId: Application ID
     @available(*, unavailable, message: "Using the `initialize(applicationId:startHandler:migrationStartHandler:completionHandler:)` function, and in the CompletionHandler, please proceed with the following procedure.", renamed: "initialize(applicationId:startHandler:migrationStartHandler:completionHandler:)") // 2.2.0
     public static func initialize(applicationId: String) {
-        SendbirdUI.initialize(applicationId: applicationId, startHandler: nil, migrationHandler: nil) { error in
+        SendbirdUI.initialize(applicationId: applicationId, startHandler: nil, migrationHandler: nil) { _ in
             
         }
     }
@@ -37,7 +36,7 @@ public class SendbirdUI {
     @available(*, deprecated, renamed: "initialize(applicationId:startHandler:migrationHandler:completionHandler:)") // 3.0.0
     public static func initialize(applicationId: String,
                                   migrationStartHandler: @escaping (() -> Void),
-                                  completionHandler: @escaping ((_ error: SBError?) -> ())) {
+                                  completionHandler: @escaping ((_ error: SBError?) -> Void)) {
         self.initialize(
             applicationId: applicationId,
             startHandler: nil,
@@ -60,7 +59,7 @@ public class SendbirdUI {
     public static func initialize(applicationId: String,
                                   startHandler: (() -> Void)? = nil,
                                   migrationHandler: (() -> Void)? = nil,
-                                  completionHandler: @escaping ((_ error: SBError?) -> ())) {
+                                  completionHandler: @escaping ((_ error: SBError?) -> Void)) {
         SBUGlobals.applicationId = applicationId
         
         startHandler?()
@@ -87,11 +86,10 @@ public class SendbirdUI {
             completionHandler(nil)
 
             // Call after initialization
-            SendbirdChat.addExtension(SBUConstant.extensionKeyUIKit, version: SendbirdUI.shortVersion)
+            SendbirdChat.__addExtension(SBUConstant.extensionKeyUIKit, version: SendbirdUI.shortVersion)
             SendbirdChatOptions.setMemberInfoInMessage(true)
         }
     }
-    
     
     // MARK: - Connection
     /// This function is used to connect to the Sendbird server or local cahing database.
@@ -110,7 +108,6 @@ public class SendbirdUI {
     ) {
         self.connectIfNeeded(completionHandler: completionHandler)
     }
-    
     
     /// This function is used to check the connection state.
     ///  if connected, returns the User object, otherwise, call the connect function from the inside.
@@ -153,7 +150,7 @@ public class SendbirdUI {
         let nickname = currentUser.nickname?.trimmingCharacters(in: .whitespacesAndNewlines)
         SendbirdChat.connect(userId: userId, authToken: SBUGlobals.accessToken) { [userId, nickname] user, error in
             defer {
-                SBUEmojiManager.loadAllEmojis { _, error in }
+                SBUEmojiManager.loadAllEmojis { _, _ in }
             }
             
             guard let user = user else {
@@ -217,7 +214,7 @@ public class SendbirdUI {
         }
     }
     
-    public static func updateUserInfo(completionHandler: @escaping (_ error: SBError?) ->Void) {
+    public static func updateUserInfo(completionHandler: @escaping (_ error: SBError?) -> Void) {
         guard let sbuUser = SBUGlobals.currentUser else {
             SBULog.error("[Failed] Connection to Sendbird: CurrentUser value is not set")
             completionHandler(nil)
@@ -274,7 +271,6 @@ public class SendbirdUI {
             completionHandler?()
         })
     }
-    
     
     // MARK: - UserInfo
     /// This function is used to update user information.
@@ -361,7 +357,6 @@ public class SendbirdUI {
         completionHandler?(error)
     }
     
-    
     // MARK: - Common
     /// This function gets UIKit SDK's short version string. (e.g. 1.0.0)
     /// - Since: 2.2.0
@@ -385,7 +380,6 @@ public class SendbirdUI {
     public static func versionString() -> String? {
         SendbirdUI.shortVersion
     }
-
     
     // MARK: - Push Notification
     
@@ -429,7 +423,7 @@ public class SendbirdUI {
     /// This function is used to unregister push token on the Sendbird server.
     /// - Parameter completionHandler: The handler block to execute.
     public static func unregisterPushToken(completionHandler: @escaping (_ success: Bool) -> Void) {
-        SendbirdUI.connectIfNeeded { user, error in
+        SendbirdUI.connectIfNeeded { _, error in
         guard error == nil else {
             completionHandler(false)
             return
@@ -463,7 +457,7 @@ public class SendbirdUI {
     /// This function is used to unregister all push token on the Sendbird server.
     /// - Parameter completionHandler: The handler block to execute.
     public static func unregisterAllPushToken(completionHandler: @escaping (_ success: Bool) -> Void) {
-        SendbirdUI.connectIfNeeded { user, error in
+        SendbirdUI.connectIfNeeded { _, error in
             guard error == nil else {
                 completionHandler(false)
                 return
@@ -518,8 +512,7 @@ public class SendbirdUI {
         var rootViewController = rootViewController ?? UIApplication.shared.currentWindow?.rootViewController
         if let tabbarController: UITabBarController = rootViewController?.presentedViewController as? UITabBarController {
             rootViewController = tabbarController.selectedViewController
-        }
-        else if let tabbarController: UITabBarController = rootViewController as? UITabBarController {
+        } else if let tabbarController: UITabBarController = rootViewController as? UITabBarController {
             rootViewController = tabbarController.selectedViewController
         }
         
@@ -566,7 +559,7 @@ public class SendbirdUI {
                 .navigationController?
                 .popToViewController(channelListViewController, animated: false)
             
-            if let openChannelListVC = channelListViewController as? SBUOpenChannelListViewController  {
+            if let openChannelListVC = channelListViewController as? SBUOpenChannelListViewController {
                 openChannelListVC.reloadChannelList()
             }
             
@@ -673,7 +666,6 @@ public class SendbirdUI {
         return filteredVC.first
     }
     
-    
     /// Finds instance of message shearch viewcontroller from the navigation controller's viewcontrollers.
     ///
     /// - Returns: instance of `SBUMessageSearchViewController`or `nil` if none are fonud.
@@ -741,7 +733,6 @@ public class SendbirdUI {
             SendbirdUI.moveToChannel(channelURL: channelURL, messageListParams: messageListParams)
         }
     }
-
     
     // MARK: - Logger
     
@@ -761,8 +752,7 @@ public class SendbirdUI {
     /// - default type: .none
     /// - Parameter types: [LogType]
     public static func setLogLevel(_ types: [LogType]) {
-        let type = types.map {$0.rawValue}.reduce(0) {$0 + $1}
+        let type = types.map { $0.rawValue }.reduce(0) { $0 + $1 }
         SBULog.logType = type
     }
 }
-

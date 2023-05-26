@@ -58,7 +58,6 @@ public class SBUMentionManager: NSObject {
 
     /// Text attributes to be applied to the mentions
     public var mentionTextAttributes: [NSAttributedString.Key: Any] = [:]
-
     
     // MARK: - Private properties
     weak var delegate: SBUMentionManagerDelegate?
@@ -73,7 +72,6 @@ public class SBUMentionManager: NSObject {
 
     /// Whether or not a mention is currently being edited
     private var isMentionEnabled = false
-    
 
     // MARK: - Life cycle
     public override init() {
@@ -98,7 +96,6 @@ public class SBUMentionManager: NSObject {
         self.defaultTextAttributes = defaultTextAttributes ?? [:]
         self.mentionTextAttributes = mentionTextAttributes ?? [:]
     }
-    
     
     // MARK: - Mentions
     
@@ -130,7 +127,6 @@ public class SBUMentionManager: NSObject {
         )
         // INFO: 전체 mention 목록을 조정된 멘션 목록 + 새로운 멘션 정보로 교체
         mentionedList = adjustedMentions + [mentionToAdd]
-        
         
         // [Attributed text]
         
@@ -196,7 +192,6 @@ public class SBUMentionManager: NSObject {
         textView.attributedText = values.text
         textView.selectedRange = values.selectedRange
     }
-    
     
     // MARK: - TextView handling
     
@@ -362,7 +357,6 @@ public class SBUMentionManager: NSObject {
         )
         let stringToSelectedIndex = String(textView.text[startIndex ..< endIndex])
         
-        
         let searchRange = self.searchMentionableRange(
             with: stringToSelectedIndex,
             options: .backwards
@@ -404,8 +398,7 @@ public class SBUMentionManager: NSObject {
                         self.handlePendingMentionSuggestion()
                         return
                     }
-                }
-                else {
+                } else {
                     if (self.prevFilterText != filterText) || (mentionString == self.trigger) {
                         self.delegate?.mentionManager(
                             self,
@@ -426,7 +419,6 @@ public class SBUMentionManager: NSObject {
             isTriggered: false
         )
     }
-
     
     // MARK: - User
     
@@ -516,7 +508,6 @@ public class SBUMentionManager: NSObject {
         return attributedText
     }
     
-    
     /// Converts normal message to mentionedMessageTemplate with mentions.
     ///
     /// ```
@@ -567,7 +558,6 @@ public class SBUMentionManager: NSObject {
     }
 }
 
-
 // MARK: - MentionsArray
 extension SBUMentionManager {
     /// Adjusts the range values of the mentions in the existing mention list based on the range of the mention to be added.
@@ -617,7 +607,6 @@ extension SBUMentionManager {
         }
     }
 }
-
 
 // MARK: - NSAttributedString
 extension SBUMentionManager {
@@ -704,12 +693,10 @@ extension SBUMentionManager {
 
         let attributedText = NSMutableAttributedString(attributedString: attributedText)
         attributedText.addAttributes(textAttributes, range: range)
-        
 
         return (attributedText, NSRange(location: NSMaxRange(range), length: 0))
     }
 }
-
 
 // MARK: - String
 extension SBUMentionManager {
@@ -763,8 +750,7 @@ extension SBUMentionManager {
             
             if  (delimitedLocation != NSNotFound && delimitedLocation + 1 == triggerLocation)
                     || triggerRange.location == 0
-                    || nicknameStartWithTrigger && triggerRange.location == 1
-            {
+                    || nicknameStartWithTrigger && triggerRange.location == 1 {
                 foundRange = baseString.range(of: self.trigger, options: options)
                 if nicknameStartWithTrigger {
                     foundRange.location -= 1

@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 /// Event methods for the views updates and performing actions from the header component in moderation module.
 public protocol SBUModerationsModuleHeaderDelegate: SBUCommonDelegate {
     /// Called when `titleView` value has been updated.
@@ -37,7 +36,6 @@ public protocol SBUModerationsModuleHeaderDelegate: SBUCommonDelegate {
     func moderationsModule(_ headerComponent: SBUModerationsModule.Header, didTapLeftItem leftItem: UIBarButtonItem)
 }
 
-
 extension SBUModerationsModule {
     
     /// A module component that represent the header of `SBUModerationsModule`.
@@ -48,26 +46,25 @@ extension SBUModerationsModule {
         
         /// A view that represents a title in navigation bar.
         /// - NOTE: When the value is updated, `moderationsModule(_:didUpdateTitleView:)` delegate function is called.
-        public var titleView: UIView? = nil {
+        public var titleView: UIView? {
             didSet { self.delegate?.moderationsModule(self, didUpdateTitleView: self.titleView) }
         }
         
         /// A view that represents a left `UIBarButtonItem` in navigation bar.
         /// - NOTE: When the value is updated, `moderationsModule(_:didUpdateLeftItem:)` delegate function is called.
         /// and when the value is tapped, `moderationsModule(_:didTapLeftItem:)` delegate function is called.
-        public var leftBarButton: UIBarButtonItem? = nil {
+        public var leftBarButton: UIBarButtonItem? {
             didSet { self.delegate?.moderationsModule(self, didUpdateLeftItem: self.leftBarButton) }
         }
 
         /// A view that represents a right `UIBarButtonItem` in navigation bar.
         /// - NOTE: When the value is updated, `moderationsModule(_:didUpdateRightItem:)` delegate function is called.
-        public var rightBarButton: UIBarButtonItem? = nil {
+        public var rightBarButton: UIBarButtonItem? {
             didSet { self.delegate?.moderationsModule(self, didUpdateRightItem: self.rightBarButton) }
         }
         
         /// The object that is used as the theme of the header component. The theme must adopt the `SBUChannelSettingsTheme` class.
-        public var theme: SBUChannelSettingsTheme? = nil
-        
+        public var theme: SBUChannelSettingsTheme?
         
         // MARK: - UI properties (Private)
         private func defaultTitleView() -> SBUNavigationTitleView {
@@ -86,14 +83,12 @@ extension SBUModerationsModule {
             return backButton
         }
         
-        
         // MARK: - Logic properties (Public)
         
         /// The object that acts as the delegate of the header component.
         ///
         /// The delegate must adopt the `SBUModerationsModuleHeaderDelegate`.
-        public weak var delegate: SBUModerationsModuleHeaderDelegate? = nil
-        
+        public weak var delegate: SBUModerationsModuleHeaderDelegate?
         
         // MARK: - LifeCycle
         @available(*, unavailable, renamed: "SBUModerationsModule.Header()")
@@ -149,11 +144,9 @@ extension SBUModerationsModule {
             self.leftBarButton?.tintColor = theme?.leftBarButtonTintColor
         }
         
-        
         // MARK: - Actions
         
         /// The action of `leftBarButton`. It calls `moderationsModule(_:didTapLeftItem:)` when it's tapped
-        @objc
         public func onTapLeftBarButton() {
             if let leftBarButton = self.leftBarButton {
                 self.delegate?.moderationsModule(self, didTapLeftItem: leftBarButton)

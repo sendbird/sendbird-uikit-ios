@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 open class SBUModerationsViewController: SBUBaseViewController, SBUModerationsModuleHeaderDelegate, SBUModerationsModuleListDelegate, SBUModerationsModuleListDataSource, SBUCommonViewModelDelegate, SBUModerationsViewModelDelegate {
     
     // MARK: - UI properties (Public)
@@ -20,14 +19,12 @@ open class SBUModerationsViewController: SBUBaseViewController, SBUModerationsMo
     @SBUThemeWrapper(theme: SBUTheme.channelSettingsTheme)
     public var theme: SBUChannelSettingsTheme
     
-    
     // MARK: - Logic properties (Public)
     public var viewModel: SBUModerationsViewModel?
     
     public var channel: BaseChannel? { viewModel?.channel }
     public var channelURL: String? { viewModel?.channelURL }
     public var channelType: ChannelType { viewModel?.channelType ?? .group }
-    
     
     // MARK: - Lifecycle
     @available(*, unavailable, renamed: "SBUModerationsViewController(channel:)")
@@ -71,7 +68,7 @@ open class SBUModerationsViewController: SBUBaseViewController, SBUModerationsMo
     }
     
     open override var preferredStatusBarStyle: UIStatusBarStyle {
-        return theme.statusBarStyle
+        theme.statusBarStyle
     }
     
     deinit {
@@ -80,7 +77,6 @@ open class SBUModerationsViewController: SBUBaseViewController, SBUModerationsMo
         self.headerComponent = nil
         self.listComponent = nil
     }
-    
     
     // MARK: - ViewModel
     open func createViewModel(channel: BaseChannel) {
@@ -97,8 +93,6 @@ open class SBUModerationsViewController: SBUBaseViewController, SBUModerationsMo
             delegate: self
         )
     }
-
-    
     
     // MARK: - Sendbird UIKit Life cycle
     open override func setupViews() {
@@ -150,7 +144,6 @@ open class SBUModerationsViewController: SBUBaseViewController, SBUModerationsMo
         
         self.listComponent?.reloadTableView()
     }
-
     
     // MARK: - Actions
     
@@ -209,7 +202,6 @@ open class SBUModerationsViewController: SBUBaseViewController, SBUModerationsMo
         self.navigationController?.pushViewController(listVC, animated: true)
     }
     
-    
     // MARK: - Error handling
     private func errorHandler(_ error: SBError) {
         self.errorHandler(error.localizedDescription, error.code)
@@ -218,8 +210,6 @@ open class SBUModerationsViewController: SBUBaseViewController, SBUModerationsMo
     open override func errorHandler(_ message: String?, _ code: NSInteger? = nil) {
         SBULog.error("Did receive error: \(message ?? "")")
     }
-    
-    
     
     // MARK: SBUModerationsModuleHeaderDelegate
     open func moderationsModule(_ headerComponent: SBUModerationsModule.Header,
@@ -241,7 +231,6 @@ open class SBUModerationsViewController: SBUBaseViewController, SBUModerationsMo
                                 didTapLeftItem leftItem: UIBarButtonItem) {
         self.onClickBack()
     }
-    
     
     // MARK: SBUModerationsModuleListDelegate
     open func moderationsModule(_ listComponent: SBUModerationsModule.List,
@@ -270,13 +259,11 @@ open class SBUModerationsViewController: SBUBaseViewController, SBUModerationsMo
         }
     }
     
-    
     // MARK: SBUModerationsModuleListDataSource
     open func moderationsModule(_ listComponent: SBUModerationsModule.List,
                                   channelForTableView tableView: UITableView) -> BaseChannel? {
         return self.viewModel?.channel
     }
-    
     
     // MARK: - SBUCommonViewModelDelegate
     open func shouldUpdateLoadingState(_ isLoading: Bool) {
@@ -288,7 +275,6 @@ open class SBUModerationsViewController: SBUBaseViewController, SBUModerationsMo
         self.errorHandler(error?.description ?? "")
     }
     
-    
     // MARK: - SBUModerationsViewModelDelegate
     open func moderationsViewModel(_ viewModel: SBUModerationsViewModel,
                                    didChangeChannel channel: BaseChannel?,
@@ -296,4 +282,3 @@ open class SBUModerationsViewController: SBUBaseViewController, SBUModerationsMo
         self.updateStyles()
     }
 }
-

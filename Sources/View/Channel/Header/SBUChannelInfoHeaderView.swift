@@ -42,7 +42,7 @@ open class SBUChannelInfoHeaderView: SBUView {
     /// The channel object.
     public private(set) var channel: BaseChannel?
     
-    weak var delegate: SBUChannelInfoHeaderViewDelegate? = nil
+    weak var delegate: SBUChannelInfoHeaderViewDelegate?
     
     var isOverlay = false
     
@@ -59,7 +59,6 @@ open class SBUChannelInfoHeaderView: SBUView {
     
     private let coverImageSize: CGFloat = 34.0
     private let infoButtonSize: CGFloat = 24.0
-    
     
     // MARK: - Life cycle
     
@@ -250,18 +249,17 @@ open class SBUChannelInfoHeaderView: SBUView {
                 } else {
                     self.coverImage.setPlaceholder(
                         type: .iconUser,
-                        iconSize: .init(width: coverImageSize,height: coverImageSize)
+                        iconSize: .init(width: coverImageSize, height: coverImageSize)
                     )
                 }
             }
         } else {
             self.coverImage.setPlaceholder(
                 type: .iconUser,
-                iconSize: .init(width: coverImageSize,height: coverImageSize)
+                iconSize: .init(width: coverImageSize, height: coverImageSize)
             )
         }
     }
-    
     
     // MARK: - Action
     @objc

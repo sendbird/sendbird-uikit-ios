@@ -26,7 +26,6 @@ public protocol SBUVoiceMessageInputViewDelegate: AnyObject {
     func voiceMessageInputView(_ inputView: SBUVoiceMessageInputView, didTapSend voiceFileInfo: SBUVoiceFileInfo)
 }
 
-
 /// This class is used to record voice message
 /// - Since: 3.4.0
 public class SBUVoiceMessageInputView: NSObject, SBUViewLifeCycle {
@@ -57,17 +56,16 @@ public class SBUVoiceMessageInputView: NSObject, SBUViewLifeCycle {
     var cancelButton = UIButton()
     var statusButton = UIButton()
     var sendButton = UIButton()
-
     
     // MARK: - Logic properties (Private)
-    weak var delegate: SBUVoiceMessageInputViewDelegate? = nil
+    weak var delegate: SBUVoiceMessageInputViewDelegate?
 
     var isSendButtonEnabled = false
     var status: Status = .none
     
     var voiceRecorder: SBUVoiceRecorder?
     var voicePlayer: SBUVoicePlayer?
-    var voiceFileInfo: SBUVoiceFileInfo? = nil
+    var voiceFileInfo: SBUVoiceFileInfo?
     
     var recordingTime: TimeInterval = 0
     var currentPlayTime: TimeInterval = 0
@@ -75,7 +73,6 @@ public class SBUVoiceMessageInputView: NSObject, SBUViewLifeCycle {
     var prevOrientation: UIDeviceOrientation = .unknown
     
     var isShowing = false
-    
 
     // MARK: - UIKit View Lifecycle
     public override init() {
@@ -157,7 +154,7 @@ public class SBUVoiceMessageInputView: NSObject, SBUViewLifeCycle {
             .sbu_constraint(width: 12, height: 12)
             .sbu_constraint_equalTo(
                 trailingAnchor: self.progressTimeLabel.leadingAnchor, trailing: -6,
-                centerYAnchor:self.progressTimeLabel.centerYAnchor, centerY: 0
+                centerYAnchor: self.progressTimeLabel.centerYAnchor, centerY: 0
             )
         
         // Button
@@ -331,7 +328,6 @@ public class SBUVoiceMessageInputView: NSObject, SBUViewLifeCycle {
         
     }
     
-    
     // MARK: - Show/Dismiss
     
     func show(delegate: SBUVoiceMessageInputViewDelegate, canvasView: UIView?) {
@@ -406,7 +402,6 @@ public class SBUVoiceMessageInputView: NSObject, SBUViewLifeCycle {
             self.voicePlayer?.resetPlayer()
         }
     }
-    
 
     // MARK: - Actions
     
@@ -475,14 +470,13 @@ public class SBUVoiceMessageInputView: NSObject, SBUViewLifeCycle {
         self.reset()
     }
     
-    
     // MARK: - Orientation
     @objc
     func orientationChanged(_ notification: NSNotification) {
         let currentOrientation = UIDevice.current.orientation
         
-        if (prevOrientation.isPortrait && currentOrientation.isLandscape ||
-            prevOrientation.isLandscape && currentOrientation.isPortrait) {
+        if prevOrientation.isPortrait && currentOrientation.isLandscape ||
+            prevOrientation.isLandscape && currentOrientation.isPortrait {
         }
 
         self.prevOrientation = currentOrientation
@@ -490,7 +484,6 @@ public class SBUVoiceMessageInputView: NSObject, SBUViewLifeCycle {
         self.updateLayouts()
     }
 }
-
 
 // MARK: - SBUVoiceRecorderDelegate
 extension SBUVoiceMessageInputView: SBUVoiceRecorderDelegate {
@@ -520,7 +513,6 @@ extension SBUVoiceMessageInputView: SBUVoiceRecorderDelegate {
         self.updateVoiceMessageInputStatus(.finishRecording, time: time)
     }
 }
-
 
 // MARK: - SBUVoicePlayerDelegate
 extension SBUVoiceMessageInputView: SBUVoicePlayerDelegate {

@@ -51,7 +51,7 @@ class SBUDownloadManager {
                 downloadHandler(filePath)
             } else {
                 DispatchQueue.main.async {
-                    let _ = UIImageView().loadOriginalImage(urlString: url.absoluteString, errorImage: nil, cacheKey: fileName) { success in
+                    _ = UIImageView().loadOriginalImage(urlString: url.absoluteString, errorImage: nil, cacheKey: fileName) { success in
                         if success {
                             let filePath = URL(string: SBUCacheManager.Image.diskCache.pathForKey(fileName))
                                 ?? URL(fileURLWithPath: SBUCacheManager.Image.diskCache.pathForKey(fileName))
@@ -112,7 +112,7 @@ class SBUDownloadManager {
                 urlString: fileMessage.url,
                 cacheKey: fileMessage.requestId,
                 fileName: fileMessage.name
-            ) { fileURL, fileData in
+            ) { fileURL, _ in
                 if let fileURL = fileURL {
                     downloadHandler(fileURL)
                 } else {

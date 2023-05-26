@@ -34,7 +34,7 @@ class SBUReactionCollectionViewCell: UICollectionViewCell {
     
     var needsSideMargin: Bool = false
     
-    var count: Int? = nil
+    var count: Int?
 
     override var isSelected: Bool {
         didSet {
@@ -111,7 +111,7 @@ class SBUReactionCollectionViewCell: UICollectionViewCell {
     }
 
     // MARK: - Action
-    var emojiLongPressHandler: (() -> Void)? = nil
+    var emojiLongPressHandler: (() -> Void)?
 
     @objc
     func onLongPressEmoji(sender: UILongPressGestureRecognizer) {

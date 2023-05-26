@@ -12,7 +12,6 @@ import Photos
 import AVKit
 import SafariServices
 
-
 public protocol SBUMessageThreadViewControllerDelegate: AnyObject {
     /// Called when `SBUThreadInfoView` was tapped.
     /// - Parameter threadInfoView: The tapped thread info view.
@@ -33,14 +32,12 @@ public protocol SBUMessageThreadViewControllerDelegate: AnyObject {
     /// - Since: 3.4.0
     func messageThreadViewController(
         _ viewController: SBUMessageThreadViewController,
-        shouldSyncVoiceFileInfos voiceFileInfos: [String : SBUVoiceFileInfo]?
+        shouldSyncVoiceFileInfos voiceFileInfos: [String: SBUVoiceFileInfo]?
     )
 }
 
-
 @objcMembers
 open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMessageThreadViewModelDelegate, SBUMessageThreadViewModelDataSource, SBUMessageThreadModuleHeaderDelegate, SBUMessageThreadModuleListDelegate, SBUMessageThreadModuleListDataSource, SBUMessageThreadModuleInputDelegate, SBUMessageThreadModuleInputDataSource, SBUMentionManagerDataSource, SBUVoiceMessageInputViewDelegate {
-    
 
     // MARK: - UI properties (Public)
     public var headerComponent: SBUMessageThreadModule.Header? {
@@ -58,29 +55,25 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
     /// The input view that is used to record voice message
     public var voiceMessageInputView = SBUVoiceMessageInputView()
     
-    
     // MARK: - Logic properties (Public)
     public var viewModel: SBUMessageThreadViewModel? {
         get { self.baseViewModel as? SBUMessageThreadViewModel }
         set { self.baseViewModel = newValue }
     }
     
-    public weak var delegate: SBUMessageThreadViewControllerDelegate? = nil
+    public weak var delegate: SBUMessageThreadViewControllerDelegate?
     
     public override var channel: GroupChannel? { self.viewModel?.channel as? GroupChannel }
     public var parentMessage: BaseMessage? { self.viewModel?.parentMessage }
     
-    
     // MARK: - Logic properties (Private)
-    var voiceFileInfos: [String : SBUVoiceFileInfo]? = nil
-    
+    var voiceFileInfos: [String: SBUVoiceFileInfo]?
     
     // MARK: - Lifecycle
     @available(*, unavailable)
     required public init(channelURL: String, startingPoint: Int64? = nil, messageListParams: MessageListParams? = nil) {
         fatalError("init(channelURL:startingPoint:messageListParams:) has not been implemented")
     }
-    
     
     /// If you have channel object, use this initialize function.
     /// - Parameters:
@@ -107,7 +100,7 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
                          delegate: SBUMessageThreadViewControllerDelegate? = nil,
                          threadedMessageListParams: ThreadedMessageListParams? = nil,
                          startingPoint: Int64? = .max,
-                         voiceFileInfos: [String : SBUVoiceFileInfo]? = nil) {
+                         voiceFileInfos: [String: SBUVoiceFileInfo]? = nil) {
         super.init(nibName: nil, bundle: nil)
         SBULog.info(#function)
         
@@ -130,7 +123,7 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
     }
 
     open override var preferredStatusBarStyle: UIStatusBarStyle {
-        return theme.statusBarStyle
+        theme.statusBarStyle
     }
     
     open override func viewWillAppear(_ animated: Bool) {
@@ -165,7 +158,6 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
     deinit {
         SBULog.info("")
     }
-    
     
     // MARK: - ViewModel
     /// Creates view model.
@@ -204,7 +196,6 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
             messageInputView.setMode(.none)
         }
     }
-    
     
     // MARK: - Sendbird UIKit Life cycle
     open override func setupViews() {
@@ -291,7 +282,6 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
         self.listComponent?.reloadTableView()
     }
     
-    
     // MARK: - Action
     public func moveToParentMessage() {
         if let parentMessage = self.parentMessage {
@@ -305,7 +295,6 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
             }
         }
     }
-    
     
     // MARK: - Common
     @discardableResult
@@ -322,7 +311,6 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
         return true
     }
     
-    
     // MARK: - Channel title
     /// Updates channelTitle with channel and channelName
     public override func updateChannelTitle() {
@@ -333,7 +321,6 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
             )
         }
     }
-    
     
     // MARK: - VoiceMessageInput
     open override func showVoiceMessageInput() {
@@ -355,7 +342,6 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
         
         self.voiceMessageInputView.reset(for: resignActivity)
     }
-
     
     // MARK: - SBUMessageThreadViewModelDelegate
     open func messageThreadViewModel(
@@ -390,7 +376,6 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
         self.moveToParentMessage()
     }
     
-    
     // MARK: - SBUMessageThreadModuleHeaderDelegate
     open override func baseChannelModule(
         _ headerComponent: SBUBaseChannelModule.Header,
@@ -412,7 +397,6 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
     ) {
         self.onClickBack()
     }
-    
     
     // MARK: - SBUMessageThreadModuleListDelegate
     open func messageThreadModule(
@@ -465,15 +449,13 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
         
         if let userProfileView = self.baseListComponent?.userProfileView as? SBUUserProfileView,
            let baseView = self.navigationController?.view,
-           SBUGlobals.isUserProfileEnabled
-        {
+           SBUGlobals.isUserProfileEnabled {
             userProfileView.show(
                 baseView: baseView,
                 user: user
             )
         }
     }
-    
     
     // MARK: - SBUBaseChannelModuleListDelegate
     open override func baseChannelModule(
@@ -495,7 +477,6 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
         }
     }
     
-    
     open override func baseChannelModule(
         _ listComponent: SBUBaseChannelModule.List,
         willDisplay cell: UITableViewCell,
@@ -510,13 +491,11 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
         
         if indexPath.row < viewModel.defaultFetchLimit/2, viewModel.hasPrevious() {
             viewModel.loadPrevMessages(timestamp: sentMessageList.first?.createdAt)
-        }
-        else if indexPath.row >= (fullMessageList.count - viewModel.defaultFetchLimit/2),
+        } else if indexPath.row >= (fullMessageList.count - viewModel.defaultFetchLimit/2),
                 viewModel.hasNext() {
             viewModel.loadNextMessages()
         }
     }
-
     
     // MARK: - SBUMessageThreadModuleInputDelegate
     open override func baseChannelModule(
@@ -604,7 +583,6 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
         self.inputComponent?.dismissSuggestedMentionList()
     }
     
-    
     // MARK: - SBUMentionManagerDataSource
     open func mentionManager(
         _ manager: SBUMentionManager,
@@ -612,7 +590,6 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
     ) -> [SBUUser] {
         return self.viewModel?.suggestedMemberList ?? []
     }
-    
     
     // MARK: - SBUBaseChannelViewModelDelegate
     open override func baseChannelViewModel(
@@ -667,7 +644,7 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
                 title: title,
                 confirmButtonItem: SBUAlertButtonItem(
                     title: SBUStringSet.OK,
-                    completionHandler: { info in
+                    completionHandler: { _ in
                         self.dismissVoiceMessageInput()
                     }
                 ), cancelButtonItem: nil
@@ -760,7 +737,6 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
         
         self.listComponent?.updateParentInfoView(parentMessage: message)
     }
-    
     
     // MARK: - SBUVoiceMessageInputViewDelegate
     public func voiceMessageInputViewDidTapCacel(_ inputView: SBUVoiceMessageInputView) {

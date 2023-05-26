@@ -30,7 +30,7 @@ extension SBUCreateChannelViewController {
     }
 
     @available(*, deprecated, message: "This property has been moved to the SBUCreateChannelModule.List.", renamed: "listComponent.tableView")
-    public var tableView: UITableView? { listComponent?.tableView}
+    public var tableView: UITableView? { listComponent?.tableView }
     
     @available(*, deprecated, message: "This property has been moved to the SBUCreateChannelModule.List.", renamed: "listComponent.userCell")
     public var userCell: UITableViewCell? { listComponent?.userCell }
@@ -97,8 +97,6 @@ extension SBUCreateChannelViewController {
         self.listComponent?.register(userCell: userCell, nib: nib)
     }
     
-    
-    
     // MARK: - ~2.2.0
     @available(*, deprecated, message: "This function has been moved to the `SBUCreateChannelViewModel`.", renamed: "listComponent.reloadTableView()")
     public func reloadUserList() {
@@ -106,7 +104,7 @@ extension SBUCreateChannelViewController {
     }
     
     @available(*, unavailable, renamed: "errorHandler(_:_:)")
-    open func didReceiveError(_ message: String?, _ code: NSInteger? = nil) {
+    public func didReceiveError(_ message: String?, _ code: NSInteger? = nil) {
         errorHandler(message, code)
     }
 }

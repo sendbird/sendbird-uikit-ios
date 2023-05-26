@@ -9,7 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-
 public protocol SBUOpenChannelSettingsModuleListDelegate: SBUBaseChannelSettingsModuleListDelegate {
     /// Called when the setting item cell was selected in the `listComponent`.
     /// - Parameters:
@@ -30,9 +29,7 @@ public protocol SBUOpenChannelSettingsModuleListDelegate: SBUBaseChannelSettings
     func openChannelSettingsModuleDidSelectDelete(_ listComponent: SBUOpenChannelSettingsModule.List)
 }
 
-
 public protocol SBUOpenChannelSettingsModuleListDataSource: SBUBaseChannelSettingsModuleListDataSource { }
-
 
 extension SBUOpenChannelSettingsModule {
     
@@ -52,7 +49,6 @@ extension SBUOpenChannelSettingsModule {
         }
         
         public weak var channel: OpenChannel? { self.baseChannel as? OpenChannel }
-
         
         // MARK: - LifeCycle
         @available(*, unavailable, renamed: "SBUOpenChannelSettingsModule.List()")
@@ -154,7 +150,6 @@ extension SBUOpenChannelSettingsModule {
             return deleteItem
         }
         
-        
         // MARK: - TableView: Cell
         open override func configureCell(_ cell: UITableViewCell?, indexPath: IndexPath) {
             guard let defaultCell = cell as? SBUOpenChannelSettingCell else { return }
@@ -164,7 +159,6 @@ extension SBUOpenChannelSettingsModule {
         }
     }
 }
-
 
 // MARK: - UITableViewDelegate, UITableViewDataSource
 extension SBUOpenChannelSettingsModule.List {

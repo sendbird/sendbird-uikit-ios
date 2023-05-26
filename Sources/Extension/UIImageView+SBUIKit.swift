@@ -114,7 +114,7 @@ internal extension UIImageView {
             return nil
         }
         
-        let task = URLSession(configuration: .default).dataTask(with: url) { [weak self] data, response, error in
+        let task = URLSession(configuration: .default).dataTask(with: url) { [weak self] data, _, error in
             guard let self = self else {
                 completion?(false)
                 return
@@ -157,7 +157,7 @@ internal extension UIImageView {
             return nil
         }
         
-        let task = URLSession(configuration: .default).dataTask(with: url) { [weak self] data, response, error in
+        let task = URLSession(configuration: .default).dataTask(with: url) { [weak self] data, _, _ in
             guard let self = self, let asset = data?.getAVAsset() else {
                 completion?(false)
                 return
@@ -180,7 +180,6 @@ internal extension UIImageView {
         task.resume()
         return task
     }
-    
     
     func loadThumbnailImage(urlString: String,
                             errorImage: UIImage? = nil,
@@ -210,7 +209,7 @@ internal extension UIImageView {
             return nil
         }
         
-        let task = URLSession(configuration: .default).dataTask(with: url) { [weak self] data, response, error in
+        let task = URLSession(configuration: .default).dataTask(with: url) { [weak self] data, _, error in
             guard let self = self else { return }
             guard let data = data, error == nil, let image = UIImage.createImage(from: data) else {
                 self.setImage(errorImage, tintColor: tintColor) { _ in completion?(false) }
@@ -238,8 +237,7 @@ internal extension UIImageView {
     private func setImage(_ image: UIImage?,
                           tintColor: UIColor? = nil,
                           contentMode: ContentMode = .scaleAspectFill,
-                          completion: ((Bool) -> Void)? = nil)
-    {
+                          completion: ((Bool) -> Void)? = nil) {
         if let image = image {
             if Thread.isMainThread {
                 self.contentMode = contentMode

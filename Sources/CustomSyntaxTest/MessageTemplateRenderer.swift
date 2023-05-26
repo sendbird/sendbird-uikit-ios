@@ -68,7 +68,7 @@ class MessageTemplateRenderer: UIView {
     
     /// If this value is set, all of the fonts in Template are use this fontFamily.
     /// - Since: 3.5.7
-    var fontFamily: String? = nil
+    var fontFamily: String?
     
     /// Returns system font or custom font by checking if there is a set fontFamily value for Template.
     /// - Since: 3.5.7
@@ -90,7 +90,6 @@ class MessageTemplateRenderer: UIView {
     let SideView1Tag = 10
     let SideView2Tag = 20
     
-    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -101,8 +100,7 @@ class MessageTemplateRenderer: UIView {
           maxWidth: CGFloat = UIApplication.shared.currentWindow?.bounds.width ?? 0.0,
           fontFamily: String? = nil,
           actionHandler: ((SBUMessageTemplate.Action) -> Void)?,
-          reloadHandler: (() -> Void)? = nil)
-    {
+          reloadHandler: (() -> Void)? = nil) {
         super.init(frame: .zero)
         
         self.delegate = delegate
@@ -185,7 +183,6 @@ class MessageTemplateRenderer: UIView {
         return true
     }
     
-    
     // MARK: - Body
     func renderBody(_ body: SBUMessageTemplate.Body) {
         guard let items = body.items else { return }
@@ -261,7 +258,6 @@ class MessageTemplateRenderer: UIView {
             prevView = currentView
         }
     }
-    
     
     // MARK: - Box
     func renderBox(item: SBUMessageTemplate.Box,
@@ -427,7 +423,7 @@ class MessageTemplateRenderer: UIView {
             // INFO: When all items are fill type, the horizontal widths are the same
             let fillParentViews = parentBoxView
                 .subviews
-                .compactMap { $0 as? MessageTemplateBaseView}
+                .compactMap { $0 as? MessageTemplateBaseView }
                 .filter {
                     ($0.width.type == .flex)
                     && ($0.width.value == flexTypeFillValue)
@@ -466,8 +462,7 @@ class MessageTemplateRenderer: UIView {
                 leftAnchor: prevView.rightAnchor,
                 left: (item.viewStyle?.margin?.left ?? 0.0) + prevItemRightMargin
             )
-        }
-        else { // column
+        } else { // column
             self.rendererConstraints += sideView1.sbu_constraint_v2(equalTo: parentBoxView, left: 0, right: 0)
             self.rendererConstraints += sideView2.sbu_constraint_v2(equalTo: parentBoxView, left: 0, right: 0)
             
@@ -484,7 +479,7 @@ class MessageTemplateRenderer: UIView {
             // INFO: When all items are fill type, the vertical heights are the same
             let fillParentViews = parentBoxView
                 .subviews
-                .compactMap { $0 as? MessageTemplateBaseView}
+                .compactMap { $0 as? MessageTemplateBaseView }
                 .filter {
                     ($0.height.type == .flex)
                     && ($0.height.value == flexTypeFillValue)
@@ -526,7 +521,6 @@ class MessageTemplateRenderer: UIView {
         }
     }
     
-    
     // MARK: - Text
     func renderText(item: SBUMessageTemplate.Text,
                     parentView: UIView,
@@ -545,7 +539,6 @@ class MessageTemplateRenderer: UIView {
             isLastItem: isLastItem
         )
     }
-    
     
     // MARK: - TextButton
     func renderTextButton(item: SBUMessageTemplate.TextButton,
@@ -566,7 +559,6 @@ class MessageTemplateRenderer: UIView {
         )
     }
     
-    
     // MARK: - CommonText: Text, TextButton
     func renderCommonText(item: SBUMessageTemplate.View,
                           parentView: UIView,
@@ -582,12 +574,11 @@ class MessageTemplateRenderer: UIView {
                         ? MessageTemplateTextButtonBaseView(item: item, layout: layout)
                         : MessageTemplateTextBaseView(item: item, layout: layout)
         baseView.clipsToBounds = true
-        
 
-        var text: String? = nil
+        var text: String?
         var numberOfLines = 0
-        var textStyle: SBUMessageTemplate.TextStyle? = nil
-        var textAlign: SBUMessageTemplate.TextAlign? = nil
+        var textStyle: SBUMessageTemplate.TextStyle?
+        var textAlign: SBUMessageTemplate.TextAlign?
         
         switch item {
         case let textItem as SBUMessageTemplate.Text:
@@ -709,8 +700,7 @@ class MessageTemplateRenderer: UIView {
             if item.width.type == .flex, item.width.value == flexTypeWrapValue {
                 label.setContentCompressionResistancePriority(UILayoutPriority(751), for: NSLayoutConstraint.Axis.horizontal)
             }
-        }
-        else {
+        } else {
             if item.height.type == .flex, item.height.value == flexTypeWrapValue {
                 label.setContentCompressionResistancePriority(UILayoutPriority(751), for: NSLayoutConstraint.Axis.vertical)
             }
@@ -721,7 +711,6 @@ class MessageTemplateRenderer: UIView {
         
         return baseView
     }
-    
     
     // MARK: - Image
     func renderImage(item: SBUMessageTemplate.Image,
@@ -778,7 +767,7 @@ class MessageTemplateRenderer: UIView {
         }
         (imageView as? MessageTemplateImageView)?.needResizeImage = needResizeImage
         
-        var tintColor: UIColor? = nil
+        var tintColor: UIColor?
         if let tintColorHex = imageStyle.tintColor {
             tintColor = UIColor(hexString: tintColorHex)
         }
@@ -828,7 +817,6 @@ class MessageTemplateRenderer: UIView {
         let minimumConstraintsHandler: () -> Void = {
             placeholderConstraints = imageView.sbu_constraint_greaterThan_v2(width: 1, height: 1, priority: .defaultLow)
         }
-        
         
         if item.width.type == .fixed {
             if item.height.type == .fixed {
@@ -889,7 +877,7 @@ class MessageTemplateRenderer: UIView {
             return baseView
         }
         
-        imageView.loadImage(urlString: item.imageUrl, completion: { [weak self, weak imageView] success in
+        imageView.loadImage(urlString: item.imageUrl, completion: { [weak self, weak imageView] _ in
             guard let self = self else { return }
             
             DispatchQueue.main.async {
@@ -947,7 +935,6 @@ class MessageTemplateRenderer: UIView {
         return baseView
     }
     
-    
     // MARK: - ImageButton
     func renderImageButton(item: SBUMessageTemplate.ImageButton,
                            parentView: UIView,
@@ -965,7 +952,7 @@ class MessageTemplateRenderer: UIView {
         let contentMode = imageStyle.contentMode
         imageButton.contentMode = contentMode
         imageButton.imageView?.contentMode = contentMode
-        var tintColor: UIColor? = nil
+        var tintColor: UIColor?
         if let tintColorHex = imageStyle.tintColor {
             tintColor = UIColor(hexString: tintColorHex)
         }
@@ -1019,7 +1006,6 @@ class MessageTemplateRenderer: UIView {
             placeholderConstraints = imageButton.sbu_constraint_greaterThan_v2(width: 1, height: 1, priority: .defaultLow)
         }
         
-        
         if item.width.type == .fixed {
             if item.height.type == .fixed {
                 minimumConstraintsHandler()
@@ -1054,7 +1040,7 @@ class MessageTemplateRenderer: UIView {
         
         placeholderConstraints.forEach { $0.isActive = true }
 
-        imageButton.loadImage(urlString: item.imageUrl, for: .normal, completion: { [weak self, weak imageButton] success in
+        imageButton.loadImage(urlString: item.imageUrl, for: .normal, completion: { [weak self, weak imageButton] _ in
             guard let self = self else { return }
             
             let image = imageButton?.imageView?.image?.sbu_with(
@@ -1098,10 +1084,8 @@ class MessageTemplateRenderer: UIView {
             }
         })
         
-        
         return baseView
     }
-    
     
     // MARK: - ViewStyle
     func renderViewStyle(with item: SBUMessageTemplate.View, to view: UIView) {
@@ -1153,7 +1137,6 @@ class MessageTemplateRenderer: UIView {
             view.roundCorners(corners: .allCorners, radius: CGFloat(maxRadius))
         }
     }
-    
     
     // MARK: - ViewLayout
     func renderViewLayout(with item: SBUMessageTemplate.View,
@@ -1221,8 +1204,7 @@ class MessageTemplateRenderer: UIView {
                 }
             }
             
-        }
-        else { // row
+        } else { // row
             // left anchor
             if let prevItem = prevItem {
                 let prevItemRightMargin = prevItem.viewStyle?.margin?.right ?? 0.0
@@ -1247,8 +1229,7 @@ class MessageTemplateRenderer: UIView {
 
         if height.type == .fixed {
             self.rendererConstraints += subView?.sbu_constraint_v2(height: CGFloat(height.value) - paddingHeight) ?? []
-        }
-        else {
+        } else {
             self.rendererConstraints += subView?.sbu_constraint_lessThan_v2(heightAnchor: baseView.heightAnchor, height: -paddingHeight) ?? []
         }
         
@@ -1322,8 +1303,7 @@ class MessageTemplateRenderer: UIView {
 
             // INFO: Edge case - for right padding constraint adjustment
             if let baseView = baseView as? MessageTemplateBaseView,
-               let rightPaddingConstraint = subView?.rightAnchor.constraint(equalTo: baseView.rightAnchor, constant: -paddingInsets.right)
-            {
+               let rightPaddingConstraint = subView?.rightAnchor.constraint(equalTo: baseView.rightAnchor, constant: -paddingInsets.right) {
                 baseView.rightPaddingConstraint = rightPaddingConstraint
                 baseView.rightPaddingConstraint?.priority = .required
                 
@@ -1362,12 +1342,10 @@ class MessageTemplateRenderer: UIView {
         }
     }
     
-    
     // MARK: - Common
     func reloadCell() {
         self.delegate?.messageTemplateNeedReloadCell()
     }
-    
     
     // MARK: - BaseView Wrapper class (for debugging, update each item)
     class MessageTemplateContentView: UIView {}
@@ -1380,7 +1358,7 @@ class MessageTemplateRenderer: UIView {
         var width: SBUMessageTemplate.SizeSpec { self.item.width }
         var height: SBUMessageTemplate.SizeSpec { self.item.height }
         
-        weak var rightPaddingConstraint: NSLayoutConstraint? = nil
+        weak var rightPaddingConstraint: NSLayoutConstraint?
         
         init(item: SBUMessageTemplate.View, layout: SBUMessageTemplate.LayoutType) {
             self.item = item
@@ -1402,13 +1380,11 @@ class MessageTemplateRenderer: UIView {
     }
     class MessageTemplateImageButtonBaseView: MessageTemplateBaseView {}
 
-
     // MARK: - Item Wrapper class (for debugging, update each item)
 
     class MessageTemplateBoxView: UIView {
         var layout: SBUMessageTemplate.LayoutType = .column
     }
-
     
     /// https://stackoverflow.com/a/32368958
 
@@ -1421,7 +1397,7 @@ class MessageTemplateRenderer: UIView {
     ///     - vertical: `label.contentMode`
     class MessageTemplateLabel: UILabel {
         var padding: SBUMessageTemplate.Padding?
-        var updateLayoutHandler: (([NSLayoutConstraint], [NSLayoutConstraint]) -> ())?
+        var updateLayoutHandler: (([NSLayoutConstraint], [NSLayoutConstraint]) -> Void)?
         
         var fullTextViewWidth: CGFloat {
             (self.padding?.left ?? 0)
@@ -1536,8 +1512,7 @@ class MessageTemplateRenderer: UIView {
                         }
                     }
                 }
-            }
-            else if baseView.layout == .column,
+            } else if baseView.layout == .column,
                     let boxBaseView = boxView.superview as? MessageTemplateBoxBaseView,
                     boxBaseView.height.type == .fixed {
                 // INFO: Edge case - text wrap/fixed issue: height
@@ -1570,14 +1545,14 @@ class MessageTemplateRenderer: UIView {
                     )
                     
                     for (index, baseView) in boxView.subviews.enumerated() {
-                        if currentIndex >= index  { continue }
+                        if currentIndex >= index { continue }
                         deactivatedConstraints += baseView.constraints
                         baseView.isHidden = true
                     }
                     
                     if needToRemoveFillTypes {
                         for (index, baseView) in boxView.subviews.enumerated() {
-                            if currentIndex <= index  { continue }
+                            if currentIndex <= index { continue }
                             if let height = (baseView as? MessageTemplateBaseView)?.height,
                                (height.type == .flex && height.value == SBUMessageTemplate.FlexSizeType.fillParent.rawValue) {
                                 deactivatedConstraints += baseView.constraints
@@ -1605,7 +1580,6 @@ class MessageTemplateRenderer: UIView {
     }
 
     class MessageTemplateTextButton: MessageTemplateLabel {}
-
     
     class MessageTemplateImageView: UIImageView {
         var needResizeImage: Bool = false
@@ -1660,14 +1634,14 @@ class MessageTemplateRenderer: UIView {
     }
     
     class ActionItemButton: UIButton {
-        var action: SBUMessageTemplate.Action? = nil
+        var action: SBUMessageTemplate.Action?
     }
     
     class ActionTapGesture: UITapGestureRecognizer {
-        var action: SBUMessageTemplate.Action? = nil
+        var action: SBUMessageTemplate.Action?
     }
 
-    //func updateViewStyle(subview: UIView) {
+    // func updateViewStyle(subview: UIView) {
     //    for subview in subview.subviews {
     //        if subview is MessageTemplateBoxBaseView {
     //
@@ -1681,7 +1655,7 @@ class MessageTemplateRenderer: UIView {
     //
     //        }
     //    }
-    //}
+    // }
 
 }
 
@@ -1723,7 +1697,6 @@ extension UIImage {
         return UIImage.animatedImage(with: images, duration: self.duration)
     }
 }
-
 
 // TODO: will be separated by a file
 extension UILabel {
