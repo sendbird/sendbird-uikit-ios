@@ -1,5 +1,8 @@
 # Changelog
 
+### v3.5.9 (Jun 15, 2023) with Chat SDK **v4.9.1**
+* Improved stability 
+
 ### v3.5.8 (May 26, 2023) with Chat SDK **v4.8.5**
 * Improved stability 
 
