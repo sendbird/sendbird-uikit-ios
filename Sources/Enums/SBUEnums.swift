@@ -176,6 +176,13 @@ public enum EmptyViewType: Int {
     
     @available(*, unavailable, renamed: "noBannedUsers") // 3.0.0
     case noBannedMembers
+    
+    var isNone: Bool {
+        switch self {
+        case .none: return true
+        default: return false
+        }
+    }
 }
 
 /// This is an enumeration used to select a media resource type.
@@ -296,6 +303,26 @@ enum SBUFontWeightType: String, Codable {
             return UIFont.Weight.regular
         case .bold:
             return UIFont.Weight.bold
+        }
+    }
+}
+
+/// Enum to handle multiple types. (if other types are needed, expand and use)
+enum SBUFlexibleType: Decodable {
+    case string(String)
+    case int(Int)
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        if let value = try? container.decode(String.self) {
+            self = .string(value)
+        } else if let value = try? container.decode(Int.self) {
+            self = .int(value)
+        } else {
+            throw DecodingError.dataCorruptedError(
+                in: container,
+                debugDescription: "Data could not be decoded as `String` or `Int`."
+            )
         }
     }
 }

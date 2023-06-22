@@ -28,6 +28,10 @@ class ChannelCustomManager: BaseCustomManager {
             functionOverridingCustom()
         case .headerComponentCustom:
             headerComponentCustom()
+        case .listComponentcustom:
+            listComponentCustom()
+        case.inputComponentcustom:
+            inputComponentCustom()
         default:
             break
         }
@@ -82,8 +86,8 @@ extension ChannelCustomManager {
             params.includeMetaArray = true
             params.includeReactions = true
             params.includeThreadInfo = true
-            params.includeParentMessageInfo = SBUGlobals.replyType != .none
-            params.replyType = SBUGlobals.replyType.filterValue
+            params.includeParentMessageInfo = SendbirdUI.config.groupChannel.channel.replyType != .none
+            params.replyType = SendbirdUI.config.groupChannel.channel.replyType.filterValue
             params.messageTypeFilter = .user
             // ... You can set more query options
             
@@ -124,11 +128,31 @@ extension ChannelCustomManager {
     }
     
     func headerComponentCustom() {
-        SBUModuleSet.groupChannelModule.headerComponent = CustomChannelHeaderComponent()
+        SBUModuleSet.GroupChannelModule.HeaderComponent = CustomChannelModule.Header.self
         
         ChannelManager.getSampleChannel { channel in
             // If you inherit `SBUChannelViewController`, you can customize it by overriding some functions.
             let channelVC = ChannelVC_CustomHeader(channel: channel)
+            self.navigationController?.pushViewController(channelVC, animated: true)
+        }
+    }
+    
+    func listComponentCustom() {
+        SBUModuleSet.GroupChannelModule.ListComponent = CustomChannelModule.List.self
+        
+        ChannelManager.getSampleChannel { channel in
+            // If you inherit `SBUChannelViewController`, you can customize it by overriding some functions.
+            let channelVC = ChannelVC_CustomList(channel: channel)
+            self.navigationController?.pushViewController(channelVC, animated: true)
+        }
+    }
+    
+    func inputComponentCustom() {
+        SBUModuleSet.GroupChannelModule.InputComponent = CustomChannelModule.Input.self
+        
+        ChannelManager.getSampleChannel { channel in
+            // If you inherit `SBUChannelViewController`, you can customize it by overriding some functions.
+            let channelVC = ChannelVC_CustomInput(channel: channel)
             self.navigationController?.pushViewController(channelVC, animated: true)
         }
     }

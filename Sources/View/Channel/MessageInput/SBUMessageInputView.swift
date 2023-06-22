@@ -127,6 +127,14 @@ public extension SBUMessageInputViewDelegate {
     func messageInputView(_ messageInputView: SBUMessageInputView, didChangeSelection range: NSRange) { }
 }
 
+public protocol SBUMessageInputViewDataSource: AnyObject {
+    /// Ask the data source to return the `BaseChannel` object.
+    /// - Parameters:
+    ///    - messageInputView: `SBUMessageInputView` object.
+    /// - Returns: `BaseChannel` object.
+    func channelForMessageInputView(_ messageInputView: SBUMessageInputView) -> BaseChannel?
+}
+
 open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDelegate {
     // MARK: - Properties (Public)
     public lazy var addButton: UIButton? = {
@@ -236,9 +244,9 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     public var textViewMaxHeight: CGFloat = 87
     /// Whether to always show the send button. Default is `false`.
     public var showsSendButton: Bool = false
-    /// Whether to always show the voice message button. Default value follows the `SBUGlobals.voiceMessageConfig.isVoiceMessageEnabled`.
+    /// (Group channel only) Whether to always show the voice message button. Default value follows the `SendbirdUI.config.groupChannel.channel.enableVoiceMessage`.
     /// - Since: 3.4.0
-    public var showsVoiceMessageButton: Bool = SBUGlobals.voiceMessageConfig.isVoiceMessageEnabled
+    public var showsVoiceMessageButton: Bool = SendbirdUI.config.groupChannel.channel.isVoiceMessageEnabled
     
     /// Leading spacing value for `textView`.
     /// If `addButton` is available, this will be spacing between the `addButton` and the `textView`.
@@ -371,6 +379,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     /// The delegate that is type of `SBUMessageInputViewDelegate`.
     /// - NOTE: `SBUMessageInputViewDelegate` notifies events that occur in the message input field. To receive such events, you need to set a delegate to an object that conforms to the `SBUMessageInputViewDelegate` protocol.
     public weak var delegate: SBUMessageInputViewDelegate?
+    public weak var datasource: SBUMessageInputViewDataSource?
 
     var basedText: String = ""
     
@@ -382,9 +391,21 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     /// The Flag to check if it is the thread message input
     var isThreadMessage: Bool = false
 
-    let cameraItem = SBUActionSheetItem(title: SBUStringSet.Camera, completionHandler: nil)
-    let libraryItem = SBUActionSheetItem(title: SBUStringSet.PhotoVideoLibrary, completionHandler: nil)
-    let documentItem = SBUActionSheetItem(title: SBUStringSet.Document, completionHandler: nil)
+    let cameraItem = SBUActionSheetItem(
+        title: SBUStringSet.Camera,
+        tag: MediaResourceType.camera.rawValue,
+        completionHandler: nil
+    )
+    let libraryItem = SBUActionSheetItem(
+        title: SBUStringSet.PhotoVideoLibrary,
+        tag: MediaResourceType.library.rawValue,
+        completionHandler: nil
+    )
+    let documentItem = SBUActionSheetItem(
+        title: SBUStringSet.Document,
+        tag: MediaResourceType.document.rawValue,
+        completionHandler: nil
+    )
     let cancelItem = SBUActionSheetItem(title: SBUStringSet.Cancel, completionHandler: nil)
 
     @SBUThemeWrapper(theme: SBUTheme.messageInputTheme)
@@ -393,6 +414,10 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     public var overlayTheme: SBUMessageInputTheme
     
     var isOverlay = false
+    
+    var channelType: SendbirdChatSDK.ChannelType {
+        self.datasource?.channelForMessageInputView(self)?.channelType ?? .group
+    }
     
     // MARK: - Life cycle
     override public init(frame: CGRect) {
@@ -899,7 +924,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     
     @objc open func onTapAddButton(_ sender: Any) {
         self.endEditing(true)
-        let itmes = [self.cameraItem, self.libraryItem, self.documentItem]
+        let itmes = self.generateResourceItems()
         SBUActionSheet.show(
             items: itmes,
             cancelItem: self.cancelItem,
@@ -907,6 +932,35 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
             delegate: self
         )
         self.delegate?.messageInputViewDidSelectAdd(self)
+    }
+    
+    /// Generates resource items
+    /// - Returns: resource items
+    ///
+    /// - Since: 3.6.0
+    open func generateResourceItems() -> [SBUActionSheetItem] {
+        var items: [SBUActionSheetItem] = []
+        var inputConfig: SBUConfig.BaseInput?
+        
+        if self.channelType == .group {
+            inputConfig = SendbirdUI.config.groupChannel.channel.input
+        } else if self.channelType == .open {
+            inputConfig = SendbirdUI.config.openChannel.channel.input
+        }
+        
+        guard let inputConfig = inputConfig else { return items }
+        
+        if inputConfig.camera.isPhotoEnabled || inputConfig.camera.isVideoEnabled {
+            items.append(self.cameraItem)
+        }
+        if inputConfig.gallery.isPhotoEnabled || inputConfig.gallery.isVideoEnabled {
+            items.append(self.libraryItem)
+        }
+        if inputConfig.isDocumentEnabled {
+            items.append(self.documentItem)
+        }
+        
+        return items
     }
     
     @objc open func onTapSendButton(_ sender: Any) {

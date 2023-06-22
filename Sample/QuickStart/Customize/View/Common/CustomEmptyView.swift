@@ -38,7 +38,7 @@ class CustomEmptyView: SBUEmptyView {
         case .noSearchResults:
             self.statusLabel.text = "[Custom] No search results"
             self.statusImageView.image = UIImage(named: "logoSendbird")
-        @unknown default:
+        default:
             self.statusLabel.text = ""
             self.statusImageView.image = nil
         }

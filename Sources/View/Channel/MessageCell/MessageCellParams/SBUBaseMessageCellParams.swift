@@ -27,7 +27,7 @@ public class SBUBaseMessageCellParams {
     /// If `true` when `SBUGloabls.reply.replyType` is `.quoteReply` or `.thread` and  message is not for message thread and the message has the parent message.
     public internal(set) var useQuotedMessage: Bool
     
-    /// If `true` when `SBUGlobals.reply.replyType` is `.thread` and replier of message is is at least 1.
+    /// If `true` when `SendbirdUI.config.groupChannel.channel.replyType` is `.thread` and replier of message is is at least 1.
     public internal(set) var useThreadInfo: Bool = false
     
     /// Time the current user joined the channel.
@@ -55,17 +55,17 @@ public class SBUBaseMessageCellParams {
         self.receiptState = receiptState
         
         self.useQuotedMessage =
-            (SBUGlobals.reply.replyType == .quoteReply || SBUGlobals.reply.replyType == .thread)
+            (SendbirdUI.config.groupChannel.channel.replyType != .none)
             && !isThreadMessage
             && message.parentMessage != nil
-        self.useThreadInfo = SBUGlobals.reply.replyType == .thread && message.threadInfo.replyCount > 0
+        self.useThreadInfo = SendbirdUI.config.groupChannel.channel.replyType == .thread && message.threadInfo.replyCount > 0
         
         let filterTypes: [SBUReplyType] = [.quoteReply, .thread]
         
         if isThreadMessage {
             self.groupPosition = groupPosition
         } else {
-            self.groupPosition = filterTypes.contains(SBUGlobals.reply.replyType) && message.parentMessage != nil
+            self.groupPosition = filterTypes.contains(SendbirdUI.config.groupChannel.channel.replyType) && message.parentMessage != nil
             ? .none
             : groupPosition
         }

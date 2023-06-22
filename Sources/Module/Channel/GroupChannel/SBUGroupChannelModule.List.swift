@@ -246,7 +246,7 @@ extension SBUGroupChannelModule {
             
             switch message {
             case is UserMessage, is FileMessage:
-                if SBUGlobals.reply.replyType != .none {
+                if SendbirdUI.config.groupChannel.channel.replyType != .none {
                     let reply = self.createReplyMenuItem(for: message)
                     items.append(reply)
                 }
@@ -377,7 +377,7 @@ extension SBUGroupChannelModule {
                 fullMessageList: fullMessageList
             )
             let receiptState = SBUUtils.getReceiptState(of: message, in: channel)
-            let useReaction = SBUEmojiManager.useReaction(channel: self.channel)
+            let useReaction = SBUEmojiManager.isReactionEnabled(channel: self.channel)
             
             switch (message, messageCell) {
                     // Admin message

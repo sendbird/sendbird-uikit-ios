@@ -58,22 +58,28 @@ public class SBUAvailable {
     /// - Since: 1.2.0
     public static func isSupportReactions() -> Bool {
         return self.isAvailable(key: REACTIONS)
+        && SendbirdUI.config.groupChannel.channel.isReactionsEnabled
     }
     
     /// This method checks if the application support og metadata.
     /// - Returns: `true` if the og metadata can be usable, `false` otherwise.
     /// - Since: 1.2.0
-    public static func isSupportOgTag() -> Bool {
+    public static func isSupportOgTag(channelType: ChannelType = .group) -> Bool {
         return self.isAvailable(key: ENABLE_OG_TAG)
+        && (channelType == .group
+            ? SendbirdUI.config.groupChannel.channel.isOGTagEnabled
+            : SendbirdUI.config.openChannel.channel.isOGTagEnabled
+        )
     }
     
     /// This method checks if the application support message search.
     /// - Returns: `true` if the message search can be used, `false` otherwise.
     /// - Since: 2.1.0
     public static func isSupportMessageSearch() -> Bool {
-        return self.isAvailable(key: MESSAGE_SEARCH)
+        return  self.isAvailable(key: MESSAGE_SEARCH)
+        && SendbirdUI.config.groupChannel.setting.isMessageSearchEnabled
     }
-
+    
     /// This method gets notification info.
     /// - Returns: `NotificationInfo` object
     /// - Since: 3.5.0

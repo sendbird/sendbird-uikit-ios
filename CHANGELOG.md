@@ -1,5 +1,32 @@
 # Changelog
 
+### v3.6.0 (Jun 22, 2023) with Chat SDK **v4.9.2**
+* Support metatype interfaces in `SBUModuleSet`
+    * Added the new public static properties corresponding to the previous in `SBUModuleSet`
+    * Added the new public static properties corresponding to the previous in each SBU module classes.
+    * Deprecated all of the previous public static properties in `SBUModuleSet`
+    * Deprecated all of the previous public static properties in each SBU module classes.
+    ```swift
+    SBUModuleSet.GroupChannelListModule = CustomModule.self // Metatype Type
+    SBUModuleSet.GroupChannelListModule.HeaderComponent = CustomComponent.self // Metatype Type
+    ```
+* Support **feature configuration**
+    * Added `SBUConfig` class
+    * Added `config` property in `SendbirdUI` class
+    * Added `SBUPrioritizedConfig` propertyWrapper
+    * Applied decoder on `SBUReplyType`, `SBUThreadReplySelectType` enum
+    * Deprecated
+        * `replyType`, `threadReplySelectType` property in `SBUReplyType` class
+        * `init(type:threadReplySelectType:)` method in `SBUReplyType` class
+        * `isVoiceMessageEnabled` property in `SBUVoiceMessageConfiguration` class
+        * `isChannelListTypingIndicatorEnabled` property in `SBUGlobals` class
+        * `isChannelListMessageReceiptStateEnabled` property in `SBUGlobals` class
+        * `isOpenChannelUserProfileEnabled` property in `SBUGlobals` class
+        * `isUserMentionEnabled` property in `SBUGlobals` class
+        * `isVoiceMessageEnabled` property in `SBUGlobals` class
+* Fixed a problem that tintcolor is not applied properly in `SBUEmptyView` class
+* Fixed an issue of changing 'AVAudioSession' before using the player.
+
 ### v3.5.9 (Jun 15, 2023) with Chat SDK **v4.9.1**
 * Improved stability 
 

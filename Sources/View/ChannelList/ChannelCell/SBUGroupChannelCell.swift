@@ -329,7 +329,7 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
             break
         }
         
-        self.unreadMentionLabel.isHidden = !SBUGlobals.isUserMentionEnabled || channel.unreadMentionCount == 0
+        self.unreadMentionLabel.isHidden = !SendbirdUI.config.groupChannel.channel.isMentionEnabled || channel.unreadMentionCount == 0
         
         self.updateMessageLabel()
         self.updateStateImageView()
@@ -338,10 +338,12 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
     // MARK: - Type indicator
     /// Updates message label when someone is typing. To show typing indicator, set `SBUGlobals.isChannelListTypingIndicatorEnabled` to `true`.
     open func updateMessageLabel() {
-        guard SBUGlobals.isChannelListTypingIndicatorEnabled else { return }
+        guard SendbirdUI.config.groupChannel.channelList.isTypingIndicatorEnabled else { return }
         guard let groupChannel = channel as? GroupChannel else { return }
         
-        if let typingMembers = groupChannel.getTypingUsers(), !typingMembers.isEmpty {
+        if let typingMembers = groupChannel.getTypingUsers(),
+           !typingMembers.isEmpty,
+           SendbirdUI.config.groupChannel.channelList.isTypingIndicatorEnabled {
             messageLabel.lineBreakMode = .byTruncatingTail
             messageLabel.text = SBUStringSet.Channel_Typing(typingMembers)
         } else {
@@ -372,7 +374,7 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
     /// Updates the image view that represents read/delivery receipt state. The image view is displayed when the last message was sent by the current user. To show the state image view, set `SBUGlobals.isChannelListMessageReceiptStateEnabled` to `true`.
     /// - NOTE: As a default, the *super* and the *broadcast* group channel are not supported.
     open func updateStateImageView() {
-        guard SBUGlobals.isChannelListMessageReceiptStateEnabled else { return }
+        guard SendbirdUI.config.groupChannel.channelList.isMessageReceiptStatusEnabled else { return }
         guard let groupChannel = channel as? GroupChannel else { return }
         guard !groupChannel.isSuper, !groupChannel.isBroadcast else { return }
         guard let lastMessage = groupChannel.lastMessage else { return }

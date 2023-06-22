@@ -129,7 +129,7 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
             )
         }
         // Set up WebView with OG meta data
-        if let ogMetaData = configuration.message.ogMetaData {
+        if let ogMetaData = configuration.message.ogMetaData, SBUAvailable.isSupportOgTag() {
             self.additionContainerView.insertArrangedSubview(self.webView, at: 0)
             self.webView.isHidden = false
             let model = SBUMessageWebViewModel(metaData: ogMetaData)

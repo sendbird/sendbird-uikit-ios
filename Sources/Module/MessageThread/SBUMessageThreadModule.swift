@@ -13,6 +13,15 @@ import UIKit
 /// The class that represents the message thread module.
 open class SBUMessageThreadModule {
     // MARK: Properties (Public)
+    /// The module component that contains ``SBUBaseChannelModule/Header/title``, ``SBUBaseChannelModule/Header/leftBarButton``, and ``SBUBaseChannelModule/Header/rightBarButton``.
+    /// - Since: 3.6.0
+    public static var HeaderComponent: SBUMessageThreadModule.Header.Type = SBUMessageThreadModule.Header.self
+    /// The module component that shows the list of thread message in the channel.
+    /// - Since: 3.6.0
+    public static var ListComponent: SBUMessageThreadModule.List.Type = SBUMessageThreadModule.List.self
+    /// The module component that contains `messageInputView`.
+    /// - Since: 3.6.0
+    public static var InputComponent: SBUMessageThreadModule.Input.Type = SBUMessageThreadModule.Input.self
     
     /// The module component that contains `titleView`, `leftBarButton`, and `rightBarButton`.
     ///
@@ -20,20 +29,23 @@ open class SBUMessageThreadModule {
     /// - `title`: Shows the channel name. It uses ``SBUMessageThreadTitleView`` as a default.
     /// - `leftBarButton`: Not set.
     /// - `rightBarButton`: Not set.
+    @available(*, deprecated, message: "Use `SBUMessageThreadModule.HeaderComponent` instead.")
     public var headerComponent: SBUMessageThreadModule.Header? {
-        get { _headerComponent ?? SBUMessageThreadModule.Header() }
+        get { _headerComponent ?? Self.HeaderComponent.init() }
         set { _headerComponent = newValue }
     }
     
     /// The module component that shows the list of thread message in the channel.
+    @available(*, deprecated, message: "Use `SBUMessageThreadModule.ListComponent` instead.")
     public var listComponent: SBUMessageThreadModule.List? {
-        get { _listComponent ?? SBUMessageThreadModule.List() }
+        get { _listComponent ?? Self.ListComponent.init() }
         set { _listComponent = newValue }
     }
     
     /// The module component that contains `messageInputView`.
+    @available(*, deprecated, message: "Use `SBUMessageThreadModule.InputComponent` instead.")
     public var inputComponent: (SBUMessageThreadModule.Input)? {
-        get { _inputComponent ?? SBUMessageThreadModule.Input() }
+        get { _inputComponent ?? Self.InputComponent.init() }
         set { _inputComponent = newValue }
     }
     
@@ -45,7 +57,8 @@ open class SBUMessageThreadModule {
     // MARK: -
     
     /// Initializes module with components.
-    public init(headerComponent: SBUMessageThreadModule.Header? = nil,
+    @available(*, deprecated, message: "Use `SBUModuleSet.MessageThreadModule")
+    public required init(headerComponent: SBUMessageThreadModule.Header? = nil,
                 listComponent: SBUMessageThreadModule.List? = nil,
                 inputComponent: (SBUMessageThreadModule.Input)? = nil) {
         self.headerComponent = headerComponent

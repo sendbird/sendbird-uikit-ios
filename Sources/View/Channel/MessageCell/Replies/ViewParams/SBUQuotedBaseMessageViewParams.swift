@@ -151,7 +151,7 @@ public class SBUQuotedBaseMessageViewParams {
         self.joinedAt = joinedAt
         
         if (message.parentMessage?.createdAt ?? 0) < (joinedAt * 1000)
-            && SBUGlobals.reply.replyType == .thread {
+            && SendbirdUI.config.groupChannel.channel.replyType == .thread {
             self.text = SBUStringSet.Message_Unavailable
         } else {
             self.text = message.parentMessage?.message ?? ""

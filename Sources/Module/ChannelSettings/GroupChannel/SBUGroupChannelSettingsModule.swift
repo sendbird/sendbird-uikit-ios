@@ -12,22 +12,31 @@ import UIKit
 
 /// The class that represents the group channel setting module.
 open class SBUGroupChannelSettingsModule {
+    /// The module component that contains ``SBUBaseChannelSettingsModule/Header/titleView``, ``SBUBaseChannelSettingsModule/Header/leftBarButton``, and ``SBUBaseChannelSettingsModule/Header/rightBarButton``.
+    /// - Since: 3.6.0
+    public static var HeaderComponent: SBUGroupChannelSettingsModule.Header.Type = SBUGroupChannelSettingsModule.Header.self
+    /// The module component that shows the list of setting menus in the channel.
+    /// - Since: 3.6.0
+    public static var ListComponent: SBUGroupChannelSettingsModule.List.Type = SBUGroupChannelSettingsModule.List.self
+    
     // MARK: Properties (Public)
     
-    /// The module component that contains `titleView`, `leftBarButton`, and `rightBarButton`.
+    /// The module component that contains ``SBUBaseChannelSettingsModule/Header/titleView``, ``SBUBaseChannelSettingsModule/Header/leftBarButton``, and ``SBUBaseChannelSettingsModule/Header/rightBarButton``.
     ///
     /// The default function of each button is as below:
-    /// - `title`: Shows the title that uses `SBUStringSet.ChannelSettings_Header_Title`.
+    ///   - `title`: Shows the title that uses ``SBUStringSet/ChannelSettings_Header_Title`` in ``SBUStringSet``
     /// - `leftBarButton`: Goes back to the previous view.
-    /// - `rightBarButton`: Shows the channel edits menu and uses `SBUStringSet.Edit` as its title.
+    /// - `rightBarButton`: Shows the channel edits menu and uses ``SBUStringSet/Edit`` in ``SBUStringSet`` as its title.
+    @available(*, deprecated, message: "Use `SBUGroupChannelSettingsModule.HeaderComponent` instead.")
     public var headerComponent: SBUGroupChannelSettingsModule.Header? {
-        get { _headerComponent ?? SBUGroupChannelSettingsModule.Header() }
+        get { _headerComponent ?? Self.HeaderComponent.init() }
         set { _headerComponent = newValue }
     }
     
     /// The module component that shows the list of setting menus in the channel.
+    @available(*, deprecated, message: "Use `SBUGroupChannelSettingsModule.ListComponent` instead.")
     public var listComponent: SBUGroupChannelSettingsModule.List? {
-        get { _listComponent ?? SBUGroupChannelSettingsModule.List() }
+        get { _listComponent ?? Self.ListComponent.init() }
         set { _listComponent = newValue }
     }
     
@@ -37,7 +46,8 @@ open class SBUGroupChannelSettingsModule {
     
     // MARK: -
     /// Initializes module with components.
-    public init(headerComponent: SBUGroupChannelSettingsModule.Header? = nil,
+    @available(*, deprecated, message: "Use `SBUModuleSet.GroupChannelSettingsModule`")
+    public required init(headerComponent: SBUGroupChannelSettingsModule.Header? = nil,
                 listComponent: SBUGroupChannelSettingsModule.List? = nil) {
         self.headerComponent = headerComponent
         self.listComponent = listComponent

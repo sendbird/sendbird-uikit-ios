@@ -177,6 +177,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
                     guard error == nil,
                           let parentMessageId = self?.parentMessageId,
                           let channel = channel else {
+                        self?.delegate?.didReceiveError(error, isBlocker: true)
                         return
                     }
                     
@@ -189,6 +190,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
                         isInitilize: true,
                         completionHandler: { parentMessage, error in
                             guard error == nil, let parentMessage = parentMessage else {
+                                self?.delegate?.didReceiveError(error, isBlocker: true)
                                 return
                             }
                             
@@ -294,11 +296,9 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
             if error.code == ChatError.nonAuthorized.rawValue {
                 self.delegate?.baseChannelViewModel(self, shouldDismissForChannel: nil)
             } else {
-                if SendbirdChat.isLocalCachingEnabled {
-                    return true
-                } else {
-                    self.delegate?.didReceiveError(error, isBlocker: true)
-                }
+                // Currently thread messages do not support local caching.
+//                if SendbirdChat.isLocalCachingEnabled { return true }
+                self.delegate?.didReceiveError(error, isBlocker: true)
             }
             return false
         }
@@ -408,7 +408,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
         params.nextResultSize = 0
         if params.previousResultSize == 0 {
             params.previousResultSize = self.defaultFetchLimit
-            params.includeReactions = SBUEmojiManager.useReaction(channel: channel)
+            params.includeReactions = SBUEmojiManager.isReactionEnabled(channel: channel)
             params.includeParentMessageInfo = true
         }
         
@@ -468,7 +468,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
         params.previousResultSize = 0
         if params.nextResultSize == 0 {
             params.nextResultSize = self.defaultFetchLimit
-            params.includeReactions = SBUEmojiManager.useReaction(channel: channel)
+            params.includeReactions = SBUEmojiManager.isReactionEnabled(channel: channel)
             params.includeParentMessageInfo = true
         }
         
@@ -517,7 +517,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
         
         let params = (self.threadedMessageListParams.copy() as? ThreadedMessageListParams) ?? ThreadedMessageListParams()
         params.isInclusive = true
-        params.includeReactions = SBUEmojiManager.useReaction(channel: channel)
+        params.includeReactions = SBUEmojiManager.isReactionEnabled(channel: channel)
         params.includeParentMessageInfo = true
         
         let shouldFetchBoth: Bool = timestamp != nil
@@ -1088,7 +1088,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
             self.threadedMessageListParams.nextResultSize = self.defaultFetchLimit
         }
         
-        self.threadedMessageListParams.includeReactions = SBUEmojiManager.useReaction(channel: channel)
+        self.threadedMessageListParams.includeReactions = SBUEmojiManager.isReactionEnabled(channel: channel)
         self.threadedMessageListParams.includeParentMessageInfo = SBUGlobals.reply.includesParentMessageInfo
         
         self.threadedMessageListParams.includeMetaArray = true

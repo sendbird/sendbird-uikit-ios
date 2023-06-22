@@ -11,7 +11,12 @@ import AVFoundation
 
 public class SBUVoiceMessageConfiguration {
     /// To turn on the voice message feature, set as `true`
-    public var isVoiceMessageEnabled: Bool = false
+    @available(*, deprecated, renamed: "SendbirdUI.config.groupChannel.channel.isVoiceMessageEnabled") // 3.6.0
+    public var isVoiceMessageEnabled: Bool {
+        get { SendbirdUI.config.groupChannel.channel.isVoiceMessageEnabled }
+        set { SendbirdUI.config.groupChannel.channel.isVoiceMessageEnabled = newValue }
+    }
+    
     var storedAudioSessionConfig: AudioSessionConfiguration?
     
     public var player = Player()

@@ -449,7 +449,7 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
         
         if let userProfileView = self.baseListComponent?.userProfileView as? SBUUserProfileView,
            let baseView = self.navigationController?.view,
-           SBUGlobals.isUserProfileEnabled {
+           SendbirdUI.config.common.isUsingDefaultUserProfileEnabled {
             userProfileView.show(
                 baseView: baseView,
                 user: user

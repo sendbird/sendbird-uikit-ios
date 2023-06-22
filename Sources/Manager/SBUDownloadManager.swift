@@ -82,7 +82,7 @@ class SBUDownloadManager {
                     transparentVC.view.isOpaque = true
                     transparentVC.modalPresentationStyle = .overFullScreen
                     
-                    activityVC.completionWithItemsHandler = { [weak parent] type, completed, _, _ in
+                    activityVC.completionWithItemsHandler = { [weak parent] _, completed, _, _ in
                         // For iOS 13 issue
                         transparentVC.dismiss(animated: true, completion: nil)
                         parent?.presentedViewController?.dismiss(animated: true, completion: {

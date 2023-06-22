@@ -28,19 +28,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         }
         
         SBUGlobals.accessToken = ""
-        SBUGlobals.isUserProfileEnabled = true
-        SBUGlobals.isOpenChannelUserProfileEnabled = true
+        SendbirdUI.config.common.isUsingDefaultUserProfileEnabled = true
         
         // Reply
-        SBUGlobals.reply.replyType = .thread
+        SendbirdUI.config.groupChannel.channel.replyType = .thread
         // Channel List - Typing indicator
-        SBUGlobals.isChannelListTypingIndicatorEnabled = true
+        SendbirdUI.config.groupChannel.channelList.isTypingIndicatorEnabled = true
         // Channel List - Message receipt state
-        SBUGlobals.isChannelListMessageReceiptStateEnabled = true
+        SendbirdUI.config.groupChannel.channelList.isMessageReceiptStatusEnabled = true
         // User Mention
-        SBUGlobals.isUserMentionEnabled = true
+        SendbirdUI.config.groupChannel.channel.isMentionEnabled = true
         // GroupChannel - Voice Message
-        SBUGlobals.voiceMessageConfig.isVoiceMessageEnabled = true
+        SendbirdUI.config.groupChannel.channel.isVoiceMessageEnabled = true
         
         self.initializeRemoteNotification()
         

@@ -42,10 +42,10 @@ extension SBUGlobals {
         set { SBUGlobals.replyType = newValue }
     }
     
-    @available(*, deprecated, renamed: "reply.replyType")   // 3.3.0
+    @available(*, deprecated, renamed: "SendbirdUI.config.groupChannel.channel.replyType")   // 3.3.0
     public static var replyType: SBUReplyType {
-        get { SBUGlobals.reply.replyType }
-        set { SBUGlobals.reply.replyType = newValue }
+        get { SendbirdUI.config.groupChannel.channel.replyType }
+        set { SendbirdUI.config.groupChannel.channel.replyType = newValue }
     }
     
     @available(*, deprecated, renamed: "isPHPickerEnabled")   // 3.0.0
@@ -64,16 +64,16 @@ extension SBUGlobals {
         }
     }
     
-    @available(*, deprecated, renamed: "isUserProfileEnabled")   // 3.0.0
+    @available(*, deprecated, renamed: "SendbirdUI.config.common.isUsingDefaultUserProfileEnabled")   // 3.0.0
     public static var UsingUserProfile: Bool {
-        get { SBUGlobals.isUserProfileEnabled }
-        set { SBUGlobals.isUserProfileEnabled = newValue }
+        get { SendbirdUI.config.common.isUsingDefaultUserProfileEnabled }
+        set { SendbirdUI.config.common.isUsingDefaultUserProfileEnabled = newValue }
     }
     
-    @available(*, deprecated, renamed: "isOpenChannelUserProfileEnabled")   // 3.0.0
+    @available(*, deprecated, renamed: "SendbirdUI.config.common.isUsingDefaultUserProfileEnabled")   // 3.0.0
     public static var UsingUserProfileInOpenChannel: Bool {
-        get { SBUGlobals.isOpenChannelUserProfileEnabled }
-        set { SBUGlobals.isOpenChannelUserProfileEnabled = newValue }
+        get { SendbirdUI.config.common.isUsingDefaultUserProfileEnabled }
+        set { SendbirdUI.config.common.isUsingDefaultUserProfileEnabled = newValue }
     }
     
     @available(*, deprecated, renamed: "isImageCompressionEnabled")   // 3.0.0

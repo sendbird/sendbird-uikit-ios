@@ -112,6 +112,12 @@ extension SBUCacheManager {
             self.memoryCache.themeMode = value
             self.diskCache.saveThemeMode(value)
         }
+        
+        // MARK: Reset
+        static func resetCache() {
+            self.diskCache.resetCache()
+            self.memoryCache.resetCache()
+        }
     }
 }
 
@@ -129,22 +135,26 @@ extension SBUCacheManager {
         // MARK: - Initializers
         init(cacheType: String) {
             self.cacheType = cacheType
-            
+
+            do {
+                try self.createDirectoryIfNeeded()
+            } catch {
+                SBULog.error(error.localizedDescription)
+            }
+        }
+        
+        func createDirectoryIfNeeded() throws {
             let cachePath = self.cachePathURL().path
             
             if self.fileManager.fileExists(atPath: cachePath) {
                 return
             }
             
-            do {
-                try self.fileManager.createDirectory(
-                    atPath: cachePath,
-                    withIntermediateDirectories: true,
-                    attributes: nil
-                )
-            } catch {
-                SBULog.error(error.localizedDescription)
-            }
+            try self.fileManager.createDirectory(
+                atPath: cachePath,
+                withIntermediateDirectories: true,
+                attributes: nil
+            )
         }
         
         func cacheExists(key: String) -> Bool {
@@ -324,9 +334,11 @@ extension SBUCacheManager {
                 defer { self.fileSemaphore.signal() }
                 
                 do {
+                    try self.createDirectoryIfNeeded()
                     let cachePathURL = cachePathURL()
                     let filePath = cachePathURL.appendingPathComponent(lastUpdatedTimeKey)
                     let valueString = "\(value)"
+                    
                     try valueString.write(to: filePath, atomically: true, encoding: .utf8)
                 } catch {
                     SBULog.error("Error writing to file: lastUpdatedTimeKey value")
@@ -361,6 +373,7 @@ extension SBUCacheManager {
                 defer { self.fileSemaphore.signal() }
                 
                 do {
+                    try self.createDirectoryIfNeeded()
                     let cachePathURL = cachePathURL()
                     let filePath = cachePathURL.appendingPathComponent(themeModeKey)
                     try value.write(to: filePath, atomically: true, encoding: .utf8)
@@ -368,6 +381,11 @@ extension SBUCacheManager {
                     SBULog.error("Error writing to file: themeModeKey value")
                 }
             }
+        }
+        
+        // MARK: Reset
+        func resetCache() {
+            self.removePath()
         }
     }
     
@@ -400,6 +418,13 @@ extension SBUCacheManager {
         
         func remove(key: String) {
             self.themeList?.removeValue(forKey: key)
+        }
+        
+        // MARK: Reset
+        func resetCache() {
+            self.lastUpdatedTime = nil
+            self.themeMode = nil
+            self.themeList = nil
         }
     }
 }

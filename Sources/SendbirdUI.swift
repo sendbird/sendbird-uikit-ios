@@ -13,6 +13,14 @@ import SendbirdChatSDK
 public typealias SBUMain = SendbirdUI
 
 public class SendbirdUI {
+    
+    /// SendbirdUIKit configuration
+    /// - Since: 3.6.0
+    public static var config: SBUConfig = SBUConfig()
+    
+    /// Checks dashboard configuration load status
+    static var isDashboardConfigLoaded: Bool = false
+    
     // MARK: - Initialize
     /// This function is used to initializes SDK with applicationId.
     /// - Parameter applicationId: Application ID
@@ -197,20 +205,34 @@ public class SendbirdUI {
                 }
                 #endif
                 
-                if SBUAvailable.isNotificationChannelEnabled == false {
-                    completionHandler(user, error)
-                    return
-                }
-
-                SBUNotificationChannelManager.loadGlobalNotificationChannelSettings { success in
-                    if !success { SBULog.error("[Failed] Load global notification channel settings") }
-                    
-                    SBUNotificationChannelManager.loadTemplateList { success in
-                        if !success { SBULog.error("[Failed] Load template list") }
+                self.config.loadDashboardConfig { _ in
+                    self.loadNotificationChannelSettings { _ in
                         completionHandler(user, error)
                     }
                 }
             }
+        }
+    }
+    
+    static func loadNotificationChannelSettings(
+        completionHandler: @escaping (_ succeeded: Bool) -> Void
+    ) {
+        guard SBUAvailable.isNotificationChannelEnabled else {
+            completionHandler(false)
+            return
+        }
+
+        SBUNotificationChannelManager.loadGlobalNotificationChannelSettings { success in
+            if !success { SBULog.error("[Failed] Load global notification channel settings") }
+            
+            self.loadTemplateList(completionHandler: completionHandler)
+        }
+    }
+    
+    static func loadTemplateList(completionHandler: @escaping (_ succeeded: Bool) -> Void) {
+        SBUNotificationChannelManager.loadTemplateList { success in
+            if !success { SBULog.error("[Failed] Load template list") }
+            completionHandler(success)
         }
     }
     

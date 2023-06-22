@@ -46,6 +46,8 @@ open class SBUModerationsViewController: SBUBaseViewController, SBUModerationsMo
         SBULog.info("")
         
         self.createViewModel(channel: channel)
+        
+        self.setupComponents(channelType: channel.channelType)
     }
     
     /// If you don't have channel object and have channelURL, use this initialize function.
@@ -55,6 +57,18 @@ open class SBUModerationsViewController: SBUBaseViewController, SBUModerationsMo
         SBULog.info("")
         
         self.createViewModel(channelURL: channelURL, channelType: channelType)
+        
+        self.setupComponents(channelType: channelType)
+    }
+    
+    open func setupComponents(channelType: ChannelType) {
+        if channelType == .group {
+            self.headerComponent = SBUModuleSet.groupModerationsModule.headerComponent
+            self.listComponent = SBUModuleSet.groupModerationsModule.listComponent
+        } else if channelType == .open {
+            self.headerComponent = SBUModuleSet.openModerationsModule.headerComponent
+            self.listComponent = SBUModuleSet.openModerationsModule.listComponent
+        }
     }
     
     open override func viewDidLoad() {
@@ -96,14 +110,6 @@ open class SBUModerationsViewController: SBUBaseViewController, SBUModerationsMo
     
     // MARK: - Sendbird UIKit Life cycle
     open override func setupViews() {
-        if channelType == .group {
-            self.headerComponent = SBUModuleSet.groupModerationsModule.headerComponent
-            self.listComponent = SBUModuleSet.groupModerationsModule.listComponent
-        } else if channelType == .open {
-            self.headerComponent = SBUModuleSet.openModerationsModule.headerComponent
-            self.listComponent = SBUModuleSet.openModerationsModule.listComponent
-        }
-        
         // Header component
         self.headerComponent?.configure(delegate: self, theme: self.theme)
         

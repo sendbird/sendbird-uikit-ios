@@ -24,6 +24,8 @@ class GlobalSetCustomManager: NSObject {
         case .theme:
             setCustomGlobalTheme()
             isThemeChanged = true
+        case .moduleSet:
+            setDefaultModuleSet()
         default:
             break
         }
@@ -45,6 +47,7 @@ class GlobalSetCustomManager: NSObject {
         setDefaultGlobalIconSet()
         setDefaultGlobalStringSet()
         setDefaultGlobalTheme()
+        setDefaultModuleSet()
     }
 }
 
@@ -208,5 +211,14 @@ extension GlobalSetCustomManager {
     /// This is an function of changing the global theme to default.
     static func setDefaultGlobalTheme() {
         SBUTheme.set(theme: .light)
+    }
+    
+    static func setDefaultModuleSet() {
+        SBUModuleSet.GroupChannelListModule.HeaderComponent = SBUGroupChannelListModule.Header.self
+        SBUModuleSet.GroupChannelListModule.ListComponent = SBUGroupChannelListModule.List.self
+        
+        SBUModuleSet.GroupChannelModule.HeaderComponent = SBUGroupChannelModule.Header.self
+        SBUModuleSet.GroupChannelModule.ListComponent = SBUGroupChannelModule.List.self
+        SBUModuleSet.GroupChannelModule.InputComponent = SBUGroupChannelModule.Input.self
     }
 }

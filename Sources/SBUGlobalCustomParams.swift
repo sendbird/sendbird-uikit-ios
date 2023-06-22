@@ -24,7 +24,7 @@ public class SBUGlobalCustomParams {
     /// }
     /// ```
     /// - Since: 1.2.2
-    public static var groupChannelParamsCreateBuilder:((_ params: GroupChannelCreateParams?) -> Void)?
+    public static var groupChannelParamsCreateBuilder: ((_ params: GroupChannelCreateParams?) -> Void)?
     
     /// This is a builder that allows you to predefined the global `GroupChannelUpdateParams` processing to be used when updating a channel.
     ///
@@ -39,7 +39,7 @@ public class SBUGlobalCustomParams {
     /// }
     /// ```
     /// - Since: 1.2.2
-    public static var groupChannelParamsUpdateBuilder:((_ params: GroupChannelUpdateParams?) -> Void)?
+    public static var groupChannelParamsUpdateBuilder: ((_ params: GroupChannelUpdateParams?) -> Void)?
     
     /// This is a builder that allows you to predefined the global `OpenChannelCreateParams` processing to be used when creating a channel.
     ///
@@ -54,7 +54,7 @@ public class SBUGlobalCustomParams {
     /// }
     /// ```
     /// - Since: 3.2.0
-    public static var openChannelParamsCreateBuilder:((_ params: OpenChannelCreateParams?) -> Void)?
+    public static var openChannelParamsCreateBuilder: ((_ params: OpenChannelCreateParams?) -> Void)?
     
     /// This is a builder that allows you to predefined the global `OpenChannelUpdateParams` processing to be used when updating a channel.
     ///
@@ -69,7 +69,7 @@ public class SBUGlobalCustomParams {
     /// }
     /// ```
     /// - Since: 1.2.2
-    public static var openChannelParamsUpdateBuilder:((_ params: OpenChannelUpdateParams?) -> Void)?
+    public static var openChannelParamsUpdateBuilder: ((_ params: OpenChannelUpdateParams?) -> Void)?
     
     /// This is a builder that allows you to predefined the global `UserMessageCreateParams` processing to be used when sending a user message.
     ///
@@ -84,7 +84,7 @@ public class SBUGlobalCustomParams {
     /// }
     /// ```
     /// - Since: 1.2.2
-    public static var userMessageParamsSendBuilder:((_ params: UserMessageCreateParams?) -> Void)?
+    public static var userMessageParamsSendBuilder: ((_ params: UserMessageCreateParams?) -> Void)?
     
     /// This is a builder that allows you to predefined the global `UserMessageUpdateParams` processing to be used when updating a user message.
     ///
@@ -99,7 +99,7 @@ public class SBUGlobalCustomParams {
     /// }
     /// ```
     /// - Since: 1.2.2
-    public static var userMessageParamsUpdateBuilder:((_ params: UserMessageUpdateParams?) -> Void)?
+    public static var userMessageParamsUpdateBuilder: ((_ params: UserMessageUpdateParams?) -> Void)?
     
     /// This is a builder that allows you to predefined the global `FileMessageCreateParams` processing to be used when sending a file message.
     ///
@@ -114,7 +114,7 @@ public class SBUGlobalCustomParams {
     /// }
     /// ```
     /// - Since: 1.2.2
-    public static var fileMessageParamsSendBuilder:((_ params: FileMessageCreateParams?) -> Void)?
+    public static var fileMessageParamsSendBuilder: ((_ params: FileMessageCreateParams?) -> Void)?
     
     /// This is a builder that allows you to predefined the global `FileMessageCreateParams` processing to be used when sending a voice message.
     ///
@@ -130,7 +130,7 @@ public class SBUGlobalCustomParams {
     /// }
     /// ```
     /// - Since: 3.4.0
-    public static var voiceFileMessageParamsSendBuilder:((_ params: FileMessageCreateParams?) -> Void)?
+    public static var voiceFileMessageParamsSendBuilder: ((_ params: FileMessageCreateParams?) -> Void)?
     
     /// This is a builder that allows you to predefined the global `MessageListParams` processing to be used when loading message list.
     ///
@@ -146,5 +146,5 @@ public class SBUGlobalCustomParams {
     /// }
     /// ```
     /// - Since: 1.2.2
-    public static var messageListParamsBuilder:((_ params: MessageListParams?) -> Void)?
+    public static var messageListParamsBuilder: ((_ params: MessageListParams?) -> Void)?
 }

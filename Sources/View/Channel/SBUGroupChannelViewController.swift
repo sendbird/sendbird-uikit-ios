@@ -518,7 +518,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     }
     
     open func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didTapQuotedMessageView quotedMessageView: SBUQuotedBaseMessageView) {
-        if SBUGlobals.reply.threadReplySelectType == .thread {
+        if SendbirdUI.config.groupChannel.channel.replyType == .thread &&  SendbirdUI.config.groupChannel.channel.threadReplySelectType == .thread {
             if let channelURL = self.baseViewModel?.channelURL {
                 self.showMessageThread(
                     channelURL: channelURL,
@@ -562,7 +562,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         
         if let userProfileView = self.baseListComponent?.userProfileView as? SBUUserProfileView,
            let baseView = self.navigationController?.view,
-           SBUGlobals.isUserProfileEnabled {
+           SendbirdUI.config.common.isUsingDefaultUserProfileEnabled {
             userProfileView.show(
                 baseView: baseView,
                 user: user

@@ -24,6 +24,10 @@ class ChannelListCustomManager: BaseCustomManager {
             listQueryCustom()
         case .functionOverriding:
             functionOverridingCustom()
+        case .headerComponentCustom:
+            headerComponent()
+        case .listComponentcustom:
+            listCompponent()
         default:
             break
         }
@@ -92,6 +96,22 @@ extension ChannelListCustomManager {
     func functionOverridingCustom() {
         // If you inherit `SBUGroupChannelListViewController`, you can customize it by overriding some functions.
         let channelListVC = ChannelListVC_Overriding()
+        self.navigationController?.pushViewController(channelListVC, animated: true)
+    }
+    
+    // MARK: - Module Set
+    
+    func headerComponent() {
+        SBUModuleSet.GroupChannelListModule.HeaderComponent = CustomChannelListModule.Header.self
+        
+        let channelListVC = ChannelListVC_CustomHeader()
+        self.navigationController?.pushViewController(channelListVC, animated: true)
+    }
+    
+    func listCompponent() {
+        SBUModuleSet.GroupChannelListModule.ListComponent = CustomChannelListModule.List.self
+        
+        let channelListVC = ChannelListVC_CustomList()
         self.navigationController?.pushViewController(channelListVC, animated: true)
     }
 }

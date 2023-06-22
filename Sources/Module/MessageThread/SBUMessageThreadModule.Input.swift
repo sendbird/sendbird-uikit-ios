@@ -159,7 +159,7 @@ extension SBUMessageThreadModule {
             self.setupLayouts()
             self.setupStyles()
             
-            if SBUGlobals.isUserMentionEnabled {
+            if SendbirdUI.config.groupChannel.channel.isMentionEnabled {
                 self.setupMentionManager()
             }
         }
@@ -391,7 +391,7 @@ extension SBUMessageThreadModule {
                 
             super.updateMessageInputMode(mode, message: message)
             if mode == .edit {
-                guard SBUGlobals.isUserMentionEnabled else { return }
+                guard SendbirdUI.config.groupChannel.channel.isMentionEnabled else { return }
                 guard let messageInputView = self.messageInputView as? SBUMessageInputView else { return }
                 guard let mentionedUsers = message?.mentionedUsers else { return }
                 guard let mentionedMessageTemplate = message?.mentionedMessageTemplate,
@@ -485,7 +485,7 @@ extension SBUMessageThreadModule {
         /// Initializes `SBUMentionManager` instance and configure with attributes.
         /// The `messageInputView` updates to use its `defaultAttributes` and `mentionedAttributes`.
         open func setupMentionManager() {
-            guard SBUGlobals.isUserMentionEnabled else { return }
+            guard SendbirdUI.config.groupChannel.channel.isMentionEnabled else { return }
             
             if mentionManager == nil {
                 self.mentionManager = SBUMentionManager()

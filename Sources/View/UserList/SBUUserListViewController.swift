@@ -253,11 +253,11 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
         guard let baseView = self.navigationController?.view else { return }
         switch self.channel {
         case is GroupChannel:
-            guard SBUGlobals.isUserProfileEnabled else { return }
+            guard SendbirdUI.config.common.isUsingDefaultUserProfileEnabled else { return }
             userProfileView.show(baseView: baseView, user: user)
             
         case is OpenChannel:
-            guard SBUGlobals.isOpenChannelUserProfileEnabled else { return }
+            guard SendbirdUI.config.common.isUsingDefaultUserProfileEnabled else { return }
             userProfileView.show(baseView: baseView, user: user, isOpenChannel: true)
             
         default: return

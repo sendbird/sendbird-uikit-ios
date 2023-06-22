@@ -20,7 +20,6 @@ class CustomBaseViewController: UITableViewController {
         self.createBackButton()        
     }
     
-    
     // MARK: - Table view data source
     override func numberOfSections(in tableView: UITableView) -> Int {
         return CustomSection.allCases.count

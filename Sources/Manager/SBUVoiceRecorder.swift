@@ -166,17 +166,20 @@ public class SBUVoiceRecorder: NSObject, AVAudioRecorderDelegate {
     public func stop() {
         self.currentRecordingTime = (self.audioRecorder?.currentTime ?? 0.0) * 1000
         self.audioRecorder?.stop()
-        self.restoreCategory()
     }
     
     func restoreCategory() {
         if let storedConfig = SBUGlobals.voiceMessageConfig.storedAudioSessionConfig {
-            SBUGlobals.voiceMessageConfig.storedAudioSessionConfig = nil
             try? self.audioSession.setCategory(
                 storedConfig.category,
                 mode: storedConfig.mode,
                 options: storedConfig.categoryOptions
             )
+            SBUGlobals.voiceMessageConfig.storedAudioSessionConfig = nil
+        }
+        
+        // If application is using audio playback in the past, maintain the session Active True status
+        if self.audioSession.category == .playback {
             try? self.audioSession.setActive(true)
         } else {
             try? self.audioSession.setActive(false)

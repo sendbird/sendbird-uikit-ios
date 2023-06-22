@@ -14,25 +14,25 @@ import SendbirdChatSDK
 public class SBUReplyConfiguration {
     
     /// If this value is not `.none`, replying features will be activated. The default value is `.none`
-    public var replyType: SBUReplyType = .none {
-        didSet {
-            self.setupDefaultSelectType()
-        }
+    @available(*, deprecated, renamed: "SendbirdUI.config.groupChannel.channel.replyType") // 3.6.0
+    public var replyType: SBUReplyType {
+        get { SendbirdUI.config.groupChannel.channel.replyType }
+        set { SendbirdUI.config.groupChannel.channel.replyType = newValue }
     }
     
     /// This enum property allows you to direct your users to view either the parent message or the message thread when they tap on a reply in the group channel view.
-    public var threadReplySelectType: SBUThreadReplySelectType = .thread {
-        didSet {
-            if replyType == .quoteReply {
-                self.threadReplySelectType = .parent
-            }
-        }
+    @available(*, deprecated, renamed: "SendbirdUI.config.groupChannel.channel.threadReplySelectType") // 3.6.0
+    public var threadReplySelectType: SBUThreadReplySelectType {
+        get { SendbirdUI.config.groupChannel.channel.threadReplySelectType }
+        set { SendbirdUI.config.groupChannel.channel.threadReplySelectType = newValue }
     }
     
     var includesThreadInfo: Bool = true
     var includesParentMessageInfo: Bool {
-        self.replyType != .none
+        SendbirdUI.config.groupChannel.channel.replyType != .none
     }
+    
+    init() {}
     
     /// Initilizes `replyType` and `selectedType`.
     ///
@@ -44,8 +44,9 @@ public class SBUReplyConfiguration {
     /// - Parameters:
     ///   - replyType: Reply type
     ///   - threadReplySelectType: Action type when selecting a thread reply.
+    @available(*, deprecated, message: "Please set each configuration separately. `SendbirdUI.config.groupChannel.channel.replyType` and `SendbirdUI.config.groupChannel.channel.SBUThreadReplySelectType`") // 3.6.0
     public init(type replyType: SBUReplyType = .none, threadReplySelectType: SBUThreadReplySelectType? = nil) {
-        self.replyType = replyType
+        SendbirdUI.config.groupChannel.channel.replyType = replyType
 
         if threadReplySelectType == nil {
             self.setupDefaultSelectType()
@@ -53,25 +54,20 @@ public class SBUReplyConfiguration {
     }
     
     func setupDefaultSelectType() {
-        switch self.replyType {
+        switch SendbirdUI.config.groupChannel.channel.replyType {
         case .none:
-            self.threadReplySelectType = .none
+            SendbirdUI.config.groupChannel.channel.threadReplySelectType = .none
         case .quoteReply:
-            self.threadReplySelectType = .parent
+            SendbirdUI.config.groupChannel.channel.threadReplySelectType = .parent
         case .thread:
-            self.threadReplySelectType = .thread
+            SendbirdUI.config.groupChannel.channel.threadReplySelectType = .thread
         }
     }
 }
 
-public enum SBUReplyType: Int {
-    /// Doesn’t display any replies.
+public enum SBUReplyType: Int, Codable {
     case `none`
-    
-    /// Displays the replies on the message list
     case quoteReply
-    
-    /// Displays the replies on the message list and thread info in the parent messge.
     case thread
     
     // Get values for ChatSDK
@@ -81,11 +77,45 @@ public enum SBUReplyType: Int {
         default: return .all
         }
     }
+    
+    enum CodingKeys: String, CodingKey {
+        case `none`, quoteReply = "quote_reply", thread
+    }
+    
+    /// - Since: 3.6.0
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let type = try container.decode(SBUFlexibleType.self)
+        switch type {
+        case .string(let value):
+            switch value {
+            case CodingKeys.none.rawValue:
+                self = .none
+            case CodingKeys.quoteReply.rawValue:
+                self = .quoteReply
+            case CodingKeys.thread.rawValue:
+                self = .thread
+            default:
+                throw DecodingError.dataCorruptedError(in: container, debugDescription: "Cannot decode SBUReplyType")
+            }
+        case .int(let value):
+            switch value {
+            case SBUReplyType.none.rawValue:
+                self = .none
+            case SBUReplyType.quoteReply.rawValue:
+                self = .quoteReply
+            case SBUReplyType.thread.rawValue:
+                self = .thread
+            default:
+                throw DecodingError.dataCorruptedError(in: container, debugDescription: "Cannot decode SBUReplyType")
+            }
+        }
+    }
 }
 
 /// The action when a reply is selected.
 /// - Since: 3.3.0
-public enum SBUThreadReplySelectType: Int {
+public enum SBUThreadReplySelectType: Int, Codable {
     /// Doesn't move
     case `none`
     
@@ -94,4 +124,44 @@ public enum SBUThreadReplySelectType: Int {
     
     /// Move to thread list, when replying message is clicked
     case thread
+    
+    enum CodingKeys: String, CodingKey {
+        case `none`, parent, thread
+    }
+    
+    /// - Since: 3.6.0
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let type = try container.decode(SBUFlexibleType.self)
+        switch type {
+        case .string(let value):
+            switch value {
+            case CodingKeys.none.rawValue:
+                self = .none
+            case CodingKeys.parent.rawValue:
+                self = .parent
+            case CodingKeys.thread.rawValue:
+                self = .thread
+            default:
+                throw DecodingError.dataCorruptedError(
+                    in: container,
+                    debugDescription: "Cannot decode SBUThreadReplySelectType"
+                )
+            }
+        case .int(let value):
+            switch value {
+            case SBUThreadReplySelectType.none.rawValue:
+                self = .none
+            case SBUThreadReplySelectType.parent.rawValue:
+                self = .parent
+            case SBUThreadReplySelectType.thread.rawValue:
+                self = .thread
+            default:
+                throw DecodingError.dataCorruptedError(
+                    in: container,
+                    debugDescription: "Cannot decode SBUThreadReplySelectType"
+                )
+            }
+        }
+    }
 }

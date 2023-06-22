@@ -220,7 +220,8 @@ open class SBUBaseChannelViewModel: NSObject {
         
         SBUGlobalCustomParams.userMessageParamsSendBuilder?(messageParams)
         
-        if let parentMessage = parentMessage, SBUGlobals.reply.replyType != .none {
+        if let parentMessage = parentMessage,
+            SendbirdUI.config.groupChannel.channel.replyType != .none {
             messageParams.parentMessageId = parentMessage.messageId
             messageParams.isReplyToChannel = true
         }
@@ -245,7 +246,8 @@ open class SBUBaseChannelViewModel: NSObject {
         
         SBUGlobalCustomParams.userMessageParamsSendBuilder?(messageParams)
         
-        if let parentMessage = parentMessage, SBUGlobals.reply.replyType != .none {
+        if let parentMessage = parentMessage,
+           SendbirdUI.config.groupChannel.channel.replyType != .none {
             messageParams.parentMessageId = parentMessage.messageId
             messageParams.isReplyToChannel = true
         }
@@ -328,7 +330,8 @@ open class SBUBaseChannelViewModel: NSObject {
         
         SBUGlobalCustomParams.fileMessageParamsSendBuilder?(messageParams)
         
-        if let parentMessage = parentMessage, SBUGlobals.reply.replyType != .none {
+        if let parentMessage = parentMessage,
+           SendbirdUI.config.groupChannel.channel.replyType != .none {
             messageParams.parentMessageId = parentMessage.messageId
             messageParams.isReplyToChannel = true
         }
@@ -355,7 +358,8 @@ open class SBUBaseChannelViewModel: NSObject {
 
         SBUGlobalCustomParams.voiceFileMessageParamsSendBuilder?(messageParams)
         
-        if let parentMessage = parentMessage, SBUGlobals.reply.replyType != .none {
+        if let parentMessage = parentMessage,
+           SendbirdUI.config.groupChannel.channel.replyType != .none {
             messageParams.parentMessageId = parentMessage.messageId
             messageParams.isReplyToChannel = true
         }
@@ -846,11 +850,11 @@ open class SBUBaseChannelViewModel: NSObject {
         }
         
         self.messageListParams.reverse = true
-        self.messageListParams.includeReactions = SBUEmojiManager.useReaction(channel: channel)
+        self.messageListParams.includeReactions = SBUEmojiManager.isReactionEnabled(channel: channel)
         
         self.messageListParams.includeThreadInfo = SBUGlobals.reply.includesThreadInfo
         self.messageListParams.includeParentMessageInfo = SBUGlobals.reply.includesParentMessageInfo
-        self.messageListParams.replyType = SBUGlobals.reply.replyType.filterValue
+        self.messageListParams.replyType = SendbirdUI.config.groupChannel.channel.replyType.filterValue
         
         self.messageListParams.includeMetaArray = true
     }

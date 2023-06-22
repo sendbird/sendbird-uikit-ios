@@ -371,7 +371,7 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         
         let isMessageUnavailable = (
             (message.parentMessage?.createdAt ?? 0) < (joinedAt * 1000)
-            && SBUGlobals.reply.replyType == .thread
+            && SendbirdUI.config.groupChannel.channel.replyType == .thread
         )
 
         let userMessageBlock = {
@@ -389,7 +389,7 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         }
         
         switch quotedMessage {
-        case is UserMessage :
+        case is UserMessage: 
             userMessageBlock()
         case is FileMessage:
             if isMessageUnavailable {

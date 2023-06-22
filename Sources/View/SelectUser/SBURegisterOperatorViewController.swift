@@ -50,13 +50,7 @@ open class SBURegisterOperatorViewController: SBUBaseSelectUserViewController, S
         
         self.createViewModel(channel: channel, users: users)
         
-        if self.channelType == .group {
-            self.headerComponent = SBUModuleSet.groupRegisterOperatorModule.headerComponent
-            self.listComponent = SBUModuleSet.groupRegisterOperatorModule.listComponent
-        } else if self.channelType == .open {
-            self.headerComponent = SBUModuleSet.openRegisterOperatorModule.headerComponent
-            self.listComponent = SBUModuleSet.openRegisterOperatorModule.listComponent
-        }
+        self.setupComponents(channelType: channel.channelType)
     }
 
     /// If you have channelURL and users objects, use this initialize function.
@@ -69,6 +63,10 @@ open class SBURegisterOperatorViewController: SBUBaseSelectUserViewController, S
         SBULog.info("")
         self.createViewModel(channelURL: channelURL, users: users)
         
+        self.setupComponents(channelType: channelType)
+    }
+    
+    open func setupComponents(channelType: ChannelType) {
         if channelType == .group {
             self.headerComponent = SBUModuleSet.groupRegisterOperatorModule.headerComponent
             self.listComponent = SBUModuleSet.groupRegisterOperatorModule.listComponent

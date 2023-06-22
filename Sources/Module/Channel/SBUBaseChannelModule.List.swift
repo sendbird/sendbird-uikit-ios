@@ -536,7 +536,7 @@ extension SBUBaseChannelModule {
                     return
                 }
                 cell.isSelected = true
-                if SBUEmojiManager.useReaction(channel: self.baseChannel) {
+                if SBUEmojiManager.isReactionEnabled(channel: self.baseChannel) {
                     // shows menu sheet view controller
                     self.showMessageMenuSheet(for: message, cell: cell)
                 } else {
@@ -585,7 +585,7 @@ extension SBUBaseChannelModule {
             let deleteButton = SBUAlertButtonItem(
                 title: SBUStringSet.Delete,
                 color: self.theme?.alertRemoveColor
-            ) { [weak self, message] info in
+            ) { [weak self, message] _ in
                 guard let self = self else { return }
                 SBULog.info("[Request] Delete message: \(message.description)")
                 self.baseDelegate?.baseChannelModule(self, didTapDeleteMessage: message)
@@ -614,7 +614,7 @@ extension SBUBaseChannelModule {
                 parentViewControllerDisplayMenuItems: messageMenuItems
             ) else { return }
             
-            let useReaction = SBUEmojiManager.useReaction(channel: self.baseChannel)
+            let useReaction = SBUEmojiManager.isReactionEnabled(channel: self.baseChannel)
             let menuSheetVC = SBUMenuSheetViewController(message: message, items: messageMenuItems, useReaction: useReaction)
             menuSheetVC.modalPresentationStyle = .custom
             menuSheetVC.transitioningDelegate = parentViewController as? UIViewControllerTransitioningDelegate
@@ -779,10 +779,10 @@ extension SBUBaseChannelModule {
         /// - Parameter message: The `BaseMessage` object  that corresponds to the message of the menu item to show.
         /// - Returns: The ``SBUMenuItem`` object for a `message`
         open func createReplyMenuItem(for message: BaseMessage) -> SBUMenuItem {
-            let replyMenuTitle = SBUGlobals.reply.replyType == .thread
+            let replyMenuTitle = SendbirdUI.config.groupChannel.channel.replyType == .thread
             ? SBUStringSet.MessageThread.Menu.replyInThread
             : SBUStringSet.Reply
-            let iconSet = SBUGlobals.reply.replyType == .thread
+            let iconSet = SendbirdUI.config.groupChannel.channel.replyType == .thread
             ? SBUIconSetType.iconThread
             : SBUIconSetType.iconReply
             
@@ -988,7 +988,7 @@ extension SBUBaseChannelModule {
             var nextSender = succeededNextMsg?.sender?.userId ?? nil
             
             // Check thread info
-            if SBUGlobals.reply.replyType == .thread {
+            if SendbirdUI.config.groupChannel.channel.replyType == .thread {
                 let prevThreadReplycount = succeededPrevMsg?.threadInfo.replyCount ?? 0
                 let currentThreadReplycount = succeededCurrentMsg?.threadInfo.replyCount ?? 0
                 let nextThreadReplycount = succeededNextMsg?.threadInfo.replyCount ?? 0

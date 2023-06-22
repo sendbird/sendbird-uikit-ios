@@ -732,7 +732,7 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
         )
     }
     
-    @objc private func orientationChanged(_ notification: NSNotification) {
+    func orientationChanged(_ notification: NSNotification) {
         if UIDevice.current.orientation == .faceUp || UIDevice.current.orientation == .faceDown { return }
         self.currentOrientation = UIDevice.current.orientation
         
@@ -771,7 +771,7 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
         
         if let userProfileView = listComponent.userProfileView as? SBUUserProfileView,
            let baseView = self.navigationController?.view,
-           SBUGlobals.isOpenChannelUserProfileEnabled {
+           SendbirdUI.config.common.isUsingDefaultUserProfileEnabled {
             userProfileView.show(baseView: baseView, user: user, isOpenChannel: true)
         }
     }

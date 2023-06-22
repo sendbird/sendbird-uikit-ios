@@ -12,6 +12,13 @@ import UIKit
 
 /// The class that represents the message search module.
 open class SBUMessageSearchModule {
+    /// The module component that contains ``SBUMessageSearchModule/Header/titleView``, ``SBUMessageSearchModule/Header/leftBarButton``, and ``SBUMessageSearchModule/Header/rightBarButton``.
+    /// - Since: 3.6.0
+    public static var HeaderComponent: SBUMessageSearchModule.Header.Type = SBUMessageSearchModule.Header.self
+    /// The module component that shows the list of searched message in the channel.
+    /// - Since: 3.6.0
+    public static var ListComponent: SBUMessageSearchModule.List.Type = SBUMessageSearchModule.List.self
+    
     // MARK: Properties (Public)
     
     /// The module component that contains `titleView`, `leftBarButton`, and `rightBarButton`.
@@ -20,14 +27,16 @@ open class SBUMessageSearchModule {
     /// - `title`: Shows the search bar
     /// - `leftBarButton`: Not set.
     /// - `rightBarButton`: Not set.
+    @available(*, deprecated, message: "Use `SBUMessageSearchModule.HeaderComponent` instead.")
     public var headerComponent: SBUMessageSearchModule.Header? {
-        get { _headerComponent ?? SBUMessageSearchModule.Header() }
+        get { _headerComponent ?? Self.HeaderComponent.init() }
         set { _headerComponent = newValue }
     }
     
     /// The module component that shows the list of searched message in the channel.
+    @available(*, deprecated, message: "Use `SBUMessageSearchModule.ListComponent` instead.")
     public var listComponent: SBUMessageSearchModule.List? {
-        get { _listComponent ?? SBUMessageSearchModule.List() }
+        get { _listComponent ?? Self.ListComponent.init() }
         set { _listComponent = newValue }
     }
     
@@ -38,7 +47,8 @@ open class SBUMessageSearchModule {
     // MARK: -
     
     /// Initializes module with components.
-    public init(headerComponent: SBUMessageSearchModule.Header? = nil,
+    @available(*, deprecated, message: "Use `SBUModuleSet.MessageSearchModule")
+    public required init(headerComponent: SBUMessageSearchModule.Header? = nil,
                 listComponent: SBUMessageSearchModule.List? = nil) {
         self.headerComponent = headerComponent
         self.listComponent = listComponent

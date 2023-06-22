@@ -165,7 +165,7 @@ open class SBUUserMessageTextView: SBUView {
             .underlineStyle: NSUnderlineStyle.single.rawValue
         ]
         
-        if model.hasMentionedMessage, SBUGlobals.isUserMentionEnabled {
+        if model.hasMentionedMessage, SendbirdUI.config.groupChannel.channel.isMentionEnabled {
             guard let mentionedMessageTemplate = model.message?.mentionedMessageTemplate,
                   let mentionedUsers = model.message?.mentionedUsers,
                   !mentionedUsers.isEmpty else { return }

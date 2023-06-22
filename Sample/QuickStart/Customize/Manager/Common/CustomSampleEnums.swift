@@ -15,6 +15,7 @@ enum GlobalCustomType: Int {
     case iconSet
     case stringSet
     case theme
+    case moduleSet
 }
 
 enum ChannelListCustomType: Int {
@@ -22,6 +23,8 @@ enum ChannelListCustomType: Int {
     case customCell
     case listQuery
     case functionOverriding
+    case headerComponentCustom
+    case listComponentcustom
 }
 
 enum ChannelCustomType: Int {
@@ -31,6 +34,8 @@ enum ChannelCustomType: Int {
     case messageParams
     case functionOverriding
     case headerComponentCustom
+    case listComponentcustom
+    case inputComponentcustom
 }
 
 enum ChannelSettingsCustomType: Int {
@@ -83,17 +88,25 @@ enum CustomSection: Int, CaseIterable {
                     "String set",
                     "Theme"]
         case .ChannelList:
-            return ["UI Component",
-                    "Custom cell",
-                    "ChannelListQuery",
-                    "Function Overriding"]
+            return [
+                "UI Component",
+                "Custom cell",
+                "ChannelListQuery",
+                "Function Overriding",
+                "Custom Header component",
+                "Custom List component",
+            ]
         case .Channel:
-            return ["UI Component",
-                    "Custom cell",
-                    "MessageListParams",
-                    "MessageParams",
-                    "Function Overriding",
-                    "Custom Header component"]
+            return [
+                "UI Component",
+                "Custom cell",
+                "MessageListParams",
+                "MessageParams",
+                "Function Overriding",
+                "Custom Header component",
+                "Custom List component",
+                "Custom Input component",
+            ]
         case .ChannelSettings:
             return ["UI Component",
                     "Function Overriding"]
@@ -126,17 +139,25 @@ enum CustomSection: Int, CaseIterable {
                     "[GlobalSetCustomManager setCustomGlobalStringSet()]",
                     "[GlobalSetCustomManager setCustomGlobalTheme()]"]
         case .ChannelList:
-            return ["[ChannelListCustomManager uiComponentCustom()]",
-                    "[ChannelListCustomManager cellCustom()]",
-                    "[ChannelListCustomManager listQueryCustom()]",
-                    "ChannelListVC_Overriding.swift"]
+            return [
+                "[ChannelListCustomManager uiComponentCustom()]",
+                "[ChannelListCustomManager cellCustom()]",
+                "[ChannelListCustomManager listQueryCustom()]",
+                "ChannelListVC_Overriding.swift",
+                "ChannelListVC_CustomHeader.swift",
+                "ChannelListVC_CustomList.swift",
+            ]
         case .Channel:
-            return ["[ChannelCustomManager uiComponentCustom()]",
-                    "[ChannelCustomManager cellCustom()]",
-                    "[ChannelCustomManager messageListParamsCustom()]",
-                    "[ChannelCustomManager messageParamsCustom()]",
-                    "ChannelVC_MessageParam.swift",
-                    "ChannelVC_CustomHeader.swift"]
+            return [
+                "[ChannelCustomManager uiComponentCustom()]",
+                "[ChannelCustomManager cellCustom()]",
+                "[ChannelCustomManager messageListParamsCustom()]",
+                "[ChannelCustomManager messageParamsCustom()]",
+                "ChannelVC_MessageParam.swift",
+                "ChannelVC_CustomHeader.swift",
+                "ChannelVC_CustomList.swift",
+                "ChannelVC_CustomInput.swift",
+            ]
         case .ChannelSettings:
             return ["[ChannelSettingsCustomManager uiComponentCustom()]",
                     "ChannelSettingsVC_Overriding.swift"]

@@ -93,6 +93,9 @@ public class SBUVoicePlayer: NSObject, AVAudioPlayerDelegate {
     }
     
     deinit {
+        // Because it can affect other Player, Pause is only when `SBUVoicePlayer` is in use.
+        guard self.status != .none else { return }
+        
         self.audioPlayer?.stop()
         self.restoreCategory()
     }
@@ -123,6 +126,9 @@ public class SBUVoicePlayer: NSObject, AVAudioPlayerDelegate {
     
     /// Pauses voice
     public func pause() {
+        // Because it can affect other Player, Pause is only when `SBUVoicePlayer` is in use.
+        guard self.status != .none else { return }
+        
         self.audioPlayer?.pause()
         self.stopProgressTimer()
         self.status = .paused
@@ -133,7 +139,6 @@ public class SBUVoicePlayer: NSObject, AVAudioPlayerDelegate {
     /// Stops voice
     public func stop() {
         self.audioPlayer?.stop()
-        self.restoreCategory()
         self.status = .stopped
         self.delegate?.voicePlayerDidStop(self)
     }
@@ -149,12 +154,16 @@ public class SBUVoicePlayer: NSObject, AVAudioPlayerDelegate {
     
     func restoreCategory() {
         if let storedConfig = SBUGlobals.voiceMessageConfig.storedAudioSessionConfig {
-            SBUGlobals.voiceMessageConfig.storedAudioSessionConfig = nil
             try? self.audioSession.setCategory(
                 storedConfig.category,
                 mode: storedConfig.mode,
                 options: storedConfig.categoryOptions
             )
+            SBUGlobals.voiceMessageConfig.storedAudioSessionConfig = nil
+        }
+        
+        // If application is using audio playback in the past, maintain the session Active True status
+        if self.audioSession.category == .playback {
             try? self.audioSession.setActive(true)
         } else {
             try? self.audioSession.setActive(false)
@@ -175,17 +184,17 @@ public class SBUVoicePlayer: NSObject, AVAudioPlayerDelegate {
             }
             try self.audioSession.setCategory(.playback)
             try self.audioSession.overrideOutputAudioPort(.speaker)
-            print("AVAudioSession Category Playback OK")
+            SBULog.info("AVAudioSession Category Playback OK")
             do {
-                try AVAudioSession.sharedInstance().setActive(true)
+                try self.audioSession.setActive(true)
                 
-                print("AVAudioSession is Active")
+                SBULog.info("AVAudioSession is Active")
                 
             } catch let error as NSError {
-                print(error.localizedDescription)
+                SBULog.error(error.localizedDescription)
             }
         } catch let error as NSError {
-            print(error.localizedDescription)
+            SBULog.error(error.localizedDescription)
         }
         
         do {

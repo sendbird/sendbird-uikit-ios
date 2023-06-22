@@ -107,16 +107,18 @@ public protocol SBUBaseChannelModuleInputDataSource: AnyObject {
 
 extension SBUBaseChannelModule {
     /// The `SBUBaseChannelModule`'s component class that represents input
-    @objcMembers open class Input: UIView, SBUMessageInputViewDelegate {
+    @objcMembers open class Input: UIView, SBUMessageInputViewDelegate, SBUMessageInputViewDataSource {
         
         /// The `messageInputView` displays an input field where users can send or edit a message. Its default value is set to `SBUMessageInputView` object.
         /// - NOTE: If this value is updated, an event delegate for `messageInputView` will be internally set as `self`. *However*, if you wish to use a custom object that does *NOT* override `SBUMessageInputView`, you need to manually set an event delegate.
         public var messageInputView: UIView? {
             willSet {
                 (messageInputView as? SBUMessageInputView)?.delegate = nil
+                (messageInputView as? SBUMessageInputView)?.datasource = nil
             }
             didSet {
                 (messageInputView as? SBUMessageInputView)?.delegate = self
+                (messageInputView as? SBUMessageInputView)?.datasource = self
             }
         }
 
@@ -132,6 +134,7 @@ extension SBUBaseChannelModule {
         private lazy var defaultMessageInputView: SBUMessageInputView = {
             let messageInputView = SBUMessageInputView()
             messageInputView.delegate = self
+            messageInputView.datasource = self
             return messageInputView
         }()
         
@@ -315,6 +318,11 @@ extension SBUBaseChannelModule {
         
         public func messageInputViewDidTapVoiceMessage(_ messageInputView: SBUMessageInputView) {
             // TODO:  Voice
+        }
+        
+        // MARK: - SBUMessageInputViewDataSource
+        public func channelForMessageInputView(_ messageInputView: SBUMessageInputView) -> BaseChannel? {
+            self.baseChannel
         }
     }
 }

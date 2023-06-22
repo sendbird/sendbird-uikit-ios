@@ -371,7 +371,7 @@ open class SBUParentMessageInfoView: UITableViewHeaderFooterView, SBUUserMessage
             
             // Set up WebView with OG meta data
             // TODO: Check - not included in receive data
-            if let ogMetaData = userMessage.ogMetaData {
+            if let ogMetaData = userMessage.ogMetaData, SBUAvailable.isSupportOgTag() {
                 self.webView.isHidden = false
                 let model = SBUMessageWebViewModel(metaData: ogMetaData)
                 self.webView.configure(model: model)

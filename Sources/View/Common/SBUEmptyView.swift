@@ -153,78 +153,47 @@ open class SBUEmptyView: SBUView {
     
     /// Override this function to apply a custom type.
     open func updateViews() {
-        let theme = self.isOverlay ? self.overlayTheme : self.theme
-        var needToHidden = false
+        var iconSetType: SBUIconSetType?
         switch self.type {
         case .none:
             self.statusLabel.text = ""
             self.statusImageView.image = nil
-            needToHidden = true
         case .noChannels:
             self.statusLabel.text = SBUStringSet.Empty_No_Channels
-            self.statusImageView.image = SBUIconSetType.iconChat.image(
-                with: theme.emptyViewStatusTintColor,
-                to: SBUIconSetType.Metric.iconEmptyView,
-                tintAndResize: false
-            )
+            iconSetType = SBUIconSetType.iconChat
         case .noMessages:
             self.statusLabel.text = SBUStringSet.Empty_No_Messages
-            self.statusImageView.image = SBUIconSetType.iconMessage.image(
-                with: theme.emptyViewStatusTintColor,
-                to: SBUIconSetType.Metric.iconEmptyView,
-                tintAndResize: false
-            )
+            iconSetType = SBUIconSetType.iconMessage
         case .noNotifications:
             self.statusLabel.text = SBUStringSet.Empty_No_Notifications
-            self.statusImageView.image = SBUIconSetType.iconMessage.image(
-                with: theme.emptyViewStatusTintColor,
-                to: SBUIconSetType.Metric.iconEmptyView,
-                tintAndResize: false
-            )
+            iconSetType = SBUIconSetType.iconMessage
         case .noMembers:
             self.statusLabel.text = SBUStringSet.Empty_No_Users
-            self.statusImageView.image = SBUIconSetType.iconMembers.image(
-                with: theme.emptyViewStatusTintColor,
-                to: SBUIconSetType.Metric.iconEmptyView,
-                tintAndResize: false
-            )
+            iconSetType = SBUIconSetType.iconMembers
         case .noMutedMembers:
             self.statusLabel.text = SBUStringSet.Empty_No_Muted_Members
-            self.statusImageView.image = SBUIconSetType.iconMute.image(
-                with: theme.emptyViewStatusTintColor,
-                to: SBUIconSetType.Metric.iconEmptyView,
-                tintAndResize: false
-            )
+            iconSetType = SBUIconSetType.iconMute
         case .noMutedParticipants:
             self.statusLabel.text = SBUStringSet.Empty_No_Muted_Participants
-            self.statusImageView.image = SBUIconSetType.iconMute.image(
-                with: theme.emptyViewStatusTintColor,
-                to: SBUIconSetType.Metric.iconEmptyView,
-                tintAndResize: false
-            )
+            iconSetType = SBUIconSetType.iconMute
         case .noBannedUsers:
             self.statusLabel.text = SBUStringSet.Empty_No_Banned_Users
-            self.statusImageView.image = SBUIconSetType.iconBan.image(
-                with: theme.emptyViewStatusTintColor,
-                to: SBUIconSetType.Metric.iconEmptyView,
-                tintAndResize: false
-            )
+            iconSetType = SBUIconSetType.iconBan
         case .noSearchResults:
             self.statusLabel.text = SBUStringSet.Empty_Search_Result
-            self.statusImageView.image = SBUIconSetType.iconSearch.image(
-                with: theme.emptyViewStatusTintColor,
-                to: SBUIconSetType.Metric.iconEmptyView,
-                tintAndResize: false
-            )
+            iconSetType = SBUIconSetType.iconSearch
         case .error:
             self.statusLabel.text = SBUStringSet.Empty_Wrong
-            self.statusImageView.image = SBUIconSetType.iconError.image(
-                with: theme.emptyViewStatusTintColor,
-                to: SBUIconSetType.Metric.iconEmptyView,
-                tintAndResize: false
-            )
+            iconSetType = SBUIconSetType.iconError
         }
-        self.isHidden = needToHidden
+        
+        let theme = self.isOverlay ? self.overlayTheme : self.theme
+        self.statusImageView.image = type.isNone ? nil : iconSetType?.image(
+            with: theme.emptyViewStatusTintColor,
+            to: SBUIconSetType.Metric.iconEmptyView
+        )
+
+        self.isHidden = type.isNone
     }
     
     // MARK: - Action

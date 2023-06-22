@@ -208,7 +208,7 @@ extension SBUMessageThreadModule {
                 self.parentMessage = parentMessage
             }
             
-            let useReaction = SBUEmojiManager.useReaction(channel: self.channel)
+            let useReaction = SBUEmojiManager.isReactionEnabled(channel: self.channel)
             
             var voiceFileInfo: SBUVoiceFileInfo?
             if let requestId = parentMessage?.requestId {
@@ -485,7 +485,7 @@ extension SBUMessageThreadModule {
                 currentIndex: indexPath.row,
                 fullMessageList: fullMessageList
             )
-            let useReaction = SBUEmojiManager.useReaction(channel: self.channel)
+            let useReaction = SBUEmojiManager.isReactionEnabled(channel: self.channel)
             
             switch (message, messageCell) {
                     // Admin message

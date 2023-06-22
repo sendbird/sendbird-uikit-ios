@@ -773,7 +773,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     open func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didTapReplyMessage message: BaseMessage) {
         guard message.parentMessage == nil else { return }
         
-        switch SBUGlobals.reply.replyType {
+        switch SendbirdUI.config.groupChannel.channel.replyType {
         case .quoteReply:
             self.setMessageInputViewMode(.quoteReply, message: message)
         case .thread:
@@ -824,7 +824,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         
         if let userProfileView = self.baseListComponent?.userProfileView as? SBUUserProfileView,
            let baseView = self.navigationController?.view,
-           SBUGlobals.isUserProfileEnabled {
+           SendbirdUI.config.common.isUsingDefaultUserProfileEnabled {
             userProfileView.show(
                 baseView: baseView,
                 user: user
@@ -996,9 +996,23 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     /// - NOTE: If you want to use customized `PHPickerConfiguration`, please override this method.
     /// - Since: 2.2.3
     open func showPhotoLibraryPicker() {
+        let inputConfig: SBUConfig.BaseInput
+        switch self.baseViewModel?.channel?.channelType {
+        case .group:
+            inputConfig = SendbirdUI.config.groupChannel.channel.input
+        case .open:
+            inputConfig = SendbirdUI.config.openChannel.channel.input
+        default:
+            return
+        }
+        
         if #available(iOS 14, *), SBUGlobals.isPHPickerEnabled {
+            var pickerFilter: [PHPickerFilter] = []
+            if inputConfig.gallery.isPhotoEnabled { pickerFilter += [.images] }
+            if inputConfig.gallery.isVideoEnabled { pickerFilter += [.videos] }
+            
             var configuration = PHPickerConfiguration()
-            configuration.filter = .any(of: [.images, .videos])
+            configuration.filter = .any(of: pickerFilter)
             let picker = PHPickerViewController(configuration: configuration)
             picker.delegate = self
             self.present(picker, animated: true, completion: nil)
@@ -1006,11 +1020,10 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         }
         
         let sourceType: UIImagePickerController.SourceType = .photoLibrary
-        let mediaType: [String] = [
-            String(kUTTypeImage),
-            String(kUTTypeGIF),
-            String(kUTTypeMovie)
-        ]
+        var mediaType: [String] = []
+        
+        if inputConfig.gallery.isPhotoEnabled { mediaType += [String(kUTTypeImage), String(kUTTypeGIF)] }
+        if inputConfig.gallery.isVideoEnabled { mediaType += [String(kUTTypeMovie)] }
         
         if UIImagePickerController.isSourceTypeAvailable(sourceType) {
             let imagePickerController = UIImagePickerController()
@@ -1025,11 +1038,25 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     /// - Since: 2.2.3
     open func showCamera() {
         let sourceType: UIImagePickerController.SourceType = .camera
-        let mediaType: [String] = [
-            String(kUTTypeImage),
-            String(kUTTypeGIF),
-            String(kUTTypeMovie)
-        ]
+        var mediaType: [String] = []
+        
+        let inputConfig: SBUConfig.BaseInput
+        switch self.baseViewModel?.channel?.channelType {
+        case .group:
+            inputConfig = SendbirdUI.config.groupChannel.channel.input
+        case .open:
+            inputConfig = SendbirdUI.config.openChannel.channel.input
+        default:
+            return
+        }
+        
+        if inputConfig.camera.isPhotoEnabled {
+            mediaType += [String(kUTTypeImage), String(kUTTypeGIF)]
+        }
+        
+        if inputConfig.camera.isVideoEnabled {
+            mediaType += [String(kUTTypeMovie)]
+        }
         
         if UIImagePickerController.isSourceTypeAvailable(sourceType) {
             let imagePickerController = UIImagePickerController()

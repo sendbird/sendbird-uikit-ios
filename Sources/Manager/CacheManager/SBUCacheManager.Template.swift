@@ -82,6 +82,12 @@ extension SBUCacheManager {
             self.memoryCache.lastToken = value
             self.diskCache.saveLastTokenKey(value)
         }
+        
+        // MARK: Reset
+        static func resetCache() {
+            self.diskCache.resetCache()
+            self.memoryCache.resetCache()
+        }
     }
 }
 
@@ -99,21 +105,25 @@ extension SBUCacheManager {
         init(cacheType: String) {
             self.cacheType = cacheType
             
+            do {
+                try self.createDirectoryIfNeeded()
+            } catch {
+                SBULog.error(error.localizedDescription)
+            }
+        }
+        
+        func createDirectoryIfNeeded() throws {
             let cachePath = self.cachePathURL().path
             
             if self.fileManager.fileExists(atPath: cachePath) {
                 return
             }
             
-            do {
-                try self.fileManager.createDirectory(
-                    atPath: cachePath,
-                    withIntermediateDirectories: true,
-                    attributes: nil
-                )
-            } catch {
-                SBULog.error(error.localizedDescription)
-            }
+            try self.fileManager.createDirectory(
+                atPath: cachePath,
+                withIntermediateDirectories: true,
+                attributes: nil
+            )
         }
         
         func cacheExists(key: String) -> Bool {
@@ -282,12 +292,18 @@ extension SBUCacheManager {
         
         func saveLastTokenKey(_ value: String) {
             do {
+                try self.createDirectoryIfNeeded()
                 let cachePathURL = cachePathURL()
                 let filePath = cachePathURL.appendingPathComponent(lastTokenKey)
                 try value.write(to: filePath, atomically: true, encoding: .utf8)
             } catch {
                 SBULog.error("Error writing to file: lastTokenKey value")
             }
+        }
+        
+        // MARK: reset
+        func resetCache() {
+            self.removePath()
         }
     }
     
@@ -319,6 +335,11 @@ extension SBUCacheManager {
         
         func remove(key: String) {
             self.templateList?.removeValue(forKey: key)
+        }
+        
+        func resetCache() {
+            self.lastToken = nil
+            self.templateList = nil
         }
         
 //        func cacheExists(key: String) -> Bool {

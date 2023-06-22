@@ -90,7 +90,7 @@ open class SBUImageContentView: SBUBaseFileContentView {
         
         let isGifImage = message.type.hasPrefix("image/gif")
         
-        if let thumbnailURL = thumbnail?.url, !isGifImage {
+        if let thumbnailURL = thumbnail?.url, !thumbnailURL.isEmpty, !isGifImage {
             imageOption = .original
             urlString = thumbnailURL
         } else {

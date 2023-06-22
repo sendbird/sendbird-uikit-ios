@@ -32,13 +32,8 @@ public class SBUEmojiManager {
             return []
         }
 
-        guard let appInfo = SendbirdChat.getAppInfo() else {
-            SBULog.error("[Failed] Emoji Categories: appInfo is nil")
-            return []
-        }
-
-        guard appInfo.useReaction else {
-            SBULog.error("[Failed] Emoji Categories: useReaction is false")
+        guard SBUAvailable.isSupportReactions() else {
+            SBULog.error("[Failed] Emoji Categories: enableReactions is false")
             return []
         }
 
@@ -59,13 +54,8 @@ public class SBUEmojiManager {
             return []
         }
 
-        guard let appInfo = SendbirdChat.getAppInfo() else {
-            SBULog.error("[Failed] Emoji List: appInfo is nil")
-            return []
-        }
-
-        guard appInfo.useReaction else {
-            SBULog.error("[Failed] Emoji List: useReaction is false")
+        guard SBUAvailable.isSupportReactions() else {
+            SBULog.error("[Failed] Emoji List: enableReactions is false")
             return []
         }
 
@@ -86,13 +76,8 @@ public class SBUEmojiManager {
             return []
         }
 
-        guard let appInfo = SendbirdChat.getAppInfo() else {
-            SBULog.error("[Failed] Emojis with category id: appInfo is nil")
-            return []
-        }
-
-        guard appInfo.useReaction else {
-            SBULog.error("[Failed] Emojis with category id: useReaction is false")
+        guard SBUAvailable.isSupportReactions() else {
+            SBULog.error("[Failed] Emojis with category id: enableReactions is false")
             return []
         }
 
@@ -111,15 +96,12 @@ public class SBUEmojiManager {
     }
     
     // MARK: - private function
-    static func useReaction(channel: BaseChannel?) -> Bool {
+    static func isReactionEnabled(channel: BaseChannel?) -> Bool {
         guard let groupChannel = channel as? GroupChannel else { return false }
         
-        if let appInfo = SendbirdChat.getAppInfo(),
-           appInfo.useReaction, !groupChannel.isSuper, !groupChannel.isBroadcast {
-            return true
-        } else {
-            return false
-        }
+        return SBUAvailable.isSupportReactions()
+        && !groupChannel.isSuper
+        && !groupChannel.isBroadcast
     }
     
     /// Loads all Emojis from ChatSDK.

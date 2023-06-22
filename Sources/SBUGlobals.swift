@@ -26,11 +26,19 @@ public class SBUGlobals {
     // MARK: - Channel List
     /// If this value is enabled, the channel list shows the typing indicator. The defaut value is `false`.
     /// - Since: 3.0.0
-    public static var isChannelListTypingIndicatorEnabled: Bool = false
+    @available(*, deprecated, renamed: "SendbirdUI.config.groupChannel.channelList.isTypingIndicatorEnabled") // 3.6.0
+    public static var isChannelListTypingIndicatorEnabled: Bool {
+        get { SendbirdUI.config.groupChannel.channelList.isTypingIndicatorEnabled }
+        set { SendbirdUI.config.groupChannel.channelList.isTypingIndicatorEnabled = newValue }
+    }
     
     /// If this value is enabled, the channel list provides receipt state of the sent message. The defaut value is `false`.
     /// - Since: 3.0.0
-    public static var isChannelListMessageReceiptStateEnabled: Bool = false
+    @available(*, deprecated, renamed: "SendbirdUI.config.groupChannel.channelList.isMessageReceiptStatusEnabled") // 3.6.0
+    public static var isChannelListMessageReceiptStateEnabled: Bool {
+        get { SendbirdUI.config.groupChannel.channelList.isMessageReceiptStatusEnabled }
+        set { SendbirdUI.config.groupChannel.channelList.isMessageReceiptStatusEnabled = newValue }
+    }
 
     // MARK: - Message Grouping
     /// If this value is enabled, messages sent at similar times are grouped.
@@ -56,11 +64,19 @@ public class SBUGlobals {
     // MARK: - User Profile
     /// If this value is enabled, when you click on a user image, the user profile screen is displayed.
     /// - Since: 3.0.0
-    public static var isUserProfileEnabled: Bool = false
+    @available(*, deprecated, renamed: "SendbirdUI.config.common.isUsingDefaultUserProfileEnabled") // 3.6.0
+    public static var isUserProfileEnabled: Bool {
+        get { SendbirdUI.config.common.isUsingDefaultUserProfileEnabled }
+        set { SendbirdUI.config.common.isUsingDefaultUserProfileEnabled = newValue }
+    }
 
     /// If this value is enabled, when you click on a user image in open channel, the user profile screen is displayed.
     /// - Since: 3.0.0
-    public static var isOpenChannelUserProfileEnabled: Bool = false
+    @available(*, deprecated, renamed: "SendbirdUI.config.common.isUsingDefaultUserProfileEnabled") // 3.6.0
+    public static var isOpenChannelUserProfileEnabled: Bool {
+        get { SendbirdUI.config.common.isUsingDefaultUserProfileEnabled }
+        set { SendbirdUI.config.common.isUsingDefaultUserProfileEnabled = newValue }
+    }
     
     // MARK: - Image Process
     /// if this value is enabled, image compression and resizing will be applied when sending a file message
@@ -89,18 +105,10 @@ public class SBUGlobals {
     /// The boolean value that indicates whether the user mention feature is enabled or not.
     /// - NOTE: If set to `true`, it sets `userMentionConfig` to default value when it was `nil`.
     /// - Since: 3.0.0
+    @available(*, deprecated, renamed: "SendbirdUI.config.groupChannel.channel.isMentionEnabled") // 3.6.0
     public static var isUserMentionEnabled: Bool {
-        get { SBUGlobals.userMentionConfig != nil }
-        set {
-            switch newValue {
-            case true:
-                if userMentionConfig == nil {
-                    SBUGlobals.userMentionConfig = .init()
-                }
-            case false:
-                SBUGlobals.userMentionConfig = nil
-            }
-        }
+        get { SendbirdUI.config.groupChannel.channel.isMentionEnabled }
+        set { SendbirdUI.config.groupChannel.channel.isMentionEnabled = newValue }
     }
     
     // MARK: - Message configuration
@@ -124,9 +132,11 @@ public class SBUGlobals {
     
     /// The configuration for voice message.
     ///
+    /// - IMPORTANT: To enable voice message features, refer to ``SendbirdUI/config/groupChannel/channel/enableVoiceMessage``
+    ///
     /// See the example below for configuration setting.
     /// ```
-    /// SBUGlobals.voiceMessageConfig.isVoiceMessageEnabled = true // Turn on the voice message feature
+    /// SendbirdUI.config.groupChannel.channel.enableVoiceMessage = true // Turn on the voice message feature
     /// SBUGlobals.voiceMessageConfig.recorder.maxRecordingTime = 30000 // ms
     /// ```
     /// - Since: 3.4.0

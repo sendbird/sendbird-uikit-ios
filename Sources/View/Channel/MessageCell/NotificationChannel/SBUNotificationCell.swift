@@ -33,6 +33,8 @@ class SBUNotificationCell: SBUBaseMessageCell {
     var newNotificationBadge: UIView?
     var dateLabel = UILabel()
     
+    var isTemplateDownloadFailed = false
+    
     /// Specifies the theme object that’s used as the theme of the message template view. The theme must inherit the ``SBUNotificationTheme.NotificationCell`` class.
     var notificationCellTheme: SBUNotificationTheme.NotificationCell {
         switch SBUTheme.colorScheme {
@@ -99,7 +101,7 @@ class SBUNotificationCell: SBUBaseMessageCell {
         
         self.categoryLabel.text = configuration.message.customType ?? ""
         
-        self.setupNotificationTemplate(with: self.message)
+        self.setupNotificationTemplate()
         
         if type == .chat {
             if let profileView = self.profileView as? SBUMessageProfileView {
@@ -262,21 +264,25 @@ class SBUNotificationCell: SBUBaseMessageCell {
     
     /// Creates the message template view and updates the views hierarchy.
     /// If the `message.extendedMessage["sub_data"]` is invalid, the message template view shows `message.message`  or ``SBUStringSet/Notification_Template_Error_Title``, ``SBUStringSet/Notification_Template_Error_Subtitle`` if the `message.message` is `nil`
-    /// - Parameters:
-    ///    - notification: If it's `nil`, it uses message value in ``SBUNotificationCell``. The default value is `nil`.
-    func setupNotificationTemplate(with notification: BaseMessage? = nil) {
-        let notification = notification ?? self.message
+    func setupNotificationTemplate() {
+        let notification = self.message
         let subType = Int(notification?.extendedMessage["sub_type"] as? String ?? "0")
         
         guard subType == 0 else { return } // subType: 0 is template type
         
         let subData = notification?.extendedMessage["sub_data"] as? String
-        var (bindedTemplate, isNewTemplateDownloading) = SBUNotificationChannelManager.generateTemplate(
-            with: subData
-        ) { [weak self, weak notification] success in
-            guard success else { return }
-            self?.setupNotificationTemplate(with: notification)
-            self?.reloadCell()
+        var bindedTemplate: String?
+        var isNewTemplateDownloading: Bool = false
+        if !isTemplateDownloadFailed {
+            (bindedTemplate, isNewTemplateDownloading) = SBUNotificationChannelManager.generateTemplate(
+                with: subData
+            ) { [weak self, weak notification] success in
+                // This completionHandler is only called when a template download is requested.
+                self?.isTemplateDownloadFailed = !success
+                self?.setupNotificationTemplate()
+                self?.reloadCell()
+            }
+            
         }
         bindedTemplate = bindedTemplate?.replacingOccurrences(of: "\\n", with: "\\\\n")
         bindedTemplate = bindedTemplate?.replacingOccurrences(of: "\n", with: "\\n")

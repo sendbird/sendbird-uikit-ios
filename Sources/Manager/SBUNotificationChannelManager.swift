@@ -9,10 +9,22 @@
 import UIKit
 import SendbirdChatSDK
 
-class SBUNotificationChannelManager: NSObject {
+public class SBUNotificationChannelManager: NSObject {
     static var notificationChannelThemeMode: String = {
         SBUCacheManager.NotificationSetting.themeMode
     }()
+    
+    /// Resets template cache
+    /// - Since: 3.6.0
+    public static func resetTemplateCache() {
+        SBUCacheManager.Template.resetCache()
+    }
+    
+    /// Resets notification setting cache
+    /// - Since: 3.6.0
+    public static func resetNotificationSettingCache() {
+        SBUCacheManager.NotificationSetting.resetCache()
+    }
 }
 
 // MARK: - Notification Channel Global Settings
@@ -211,6 +223,8 @@ extension SBUNotificationChannelManager {
                         newTemplateResponseHandler?(false)
                         SBULog.error(error.localizedDescription)
                     }
+                } else {
+                    newTemplateResponseHandler?(false)
                 }
             }
             return nil
