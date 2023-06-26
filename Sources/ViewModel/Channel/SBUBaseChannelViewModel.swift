@@ -780,6 +780,8 @@ open class SBUBaseChannelViewModel: NSObject {
     /// - Since: 1.2.5
     public func deleteResendableMessages(requestIds: [String], needReload: Bool) {
         for requestId in requestIds {
+            if requestId.isEmpty { continue }
+            
             self.pendingMessageManager.removePendingMessageAllTypes(
                 channelURL: self.channel?.channelURL,
                 requestId: requestId

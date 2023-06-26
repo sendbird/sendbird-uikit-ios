@@ -1,5 +1,8 @@
 # Changelog
 
+### v3.6.1 (Jun 26, 2023)
+* Improved stability of file cache logic
+
 ### v3.6.0 (Jun 22, 2023) with Chat SDK **v4.9.2**
 * Support metatype interfaces in `SBUModuleSet`
     * Added the new public static properties corresponding to the previous in `SBUModuleSet`

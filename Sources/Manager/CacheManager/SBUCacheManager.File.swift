@@ -11,6 +11,11 @@ import SendbirdChatSDK
 
 // File cache path: {cachesDirectory}/file/{REQ_ID}/{FILENAME}.{EXT}
 
+/// cacheKey policy:
+///     - If there is a requestId, we use requestId as a key,
+///     - if there is no, we create hash with fileURL and use it as a key.
+///     - (In the case of a file, the key value is used as the path to keep the filename.)
+///     - File cache path: {cachesDirectory}/file/{REQ_ID}/{FILENAME}.{EXT}
 extension SBUCacheManager {
     class File {
         static let diskCache = DiskCache(cacheType: "file")
@@ -102,7 +107,7 @@ extension SBUCacheManager {
         static func createCacheFileName(urlString: String, cacheKey: String?, fileName: String?) -> String {
             var filePath = SBUCacheManager.createHashName(urlString: urlString)
             let pathExtension = SBUCacheManager.fileExtension(urlString: urlString)
-            if let cacheKey = cacheKey {
+            if let cacheKey = cacheKey, !cacheKey.isEmpty {
                 self.renameIfNeeded(key: filePath, newKey: cacheKey)
                 filePath = cacheKey
             }

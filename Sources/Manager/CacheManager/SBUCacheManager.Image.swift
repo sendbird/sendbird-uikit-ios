@@ -44,7 +44,7 @@ extension SBUCacheManager {
                     urlString: fileMessage.url,
                     cacheKey: fileMessage.requestId
                 )
-                if isQuotedImage == true { fileName = "quoted_\(fileMessage.requestId)" }
+                if isQuotedImage == true { fileName = "quoted_\(fileName)" }
                 
                 switch SBUUtils.getFileType(by: fileMessage) {
                 case .image:
@@ -100,7 +100,7 @@ extension SBUCacheManager {
         static func createCacheFileName(urlString: String, cacheKey: String?, needPathExtension: Bool = true) -> String {
             var fileName = SBUCacheManager.createHashName(urlString: urlString)
             let pathExtension = SBUCacheManager.fileExtension(urlString: urlString)
-            if let cacheKey = cacheKey {
+            if let cacheKey = cacheKey, !cacheKey.isEmpty {
                 self.renameIfNeeded(key: fileName, newKey: cacheKey)
                 fileName = cacheKey
             }

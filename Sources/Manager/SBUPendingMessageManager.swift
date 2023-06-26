@@ -25,7 +25,7 @@ public class SBUPendingMessageManager {
     private var pendingThreadFileInfos: [String: FileMessageCreateParams] = [:]
     
     public func addFileInfo(requestId: String?, params: FileMessageCreateParams?, forMessageThread: Bool = false) {
-        guard let requestId = requestId, let params = params else { return }
+        guard let requestId = requestId, !requestId.isEmpty, let params = params else { return }
         if forMessageThread {
             self.pendingThreadFileInfos[requestId] = params
         } else {
@@ -34,7 +34,7 @@ public class SBUPendingMessageManager {
     }
     
     public func getFileInfo(requestId: String?, forMessageThread: Bool = false) -> FileMessageCreateParams? {
-        guard let requestId = requestId else { return nil }
+        guard let requestId = requestId, !requestId.isEmpty else { return nil }
         if forMessageThread {
             return self.pendingThreadFileInfos[requestId]
         } else {
@@ -71,6 +71,7 @@ public class SBUPendingMessageManager {
     func removePendingMessage(channelURL: String?, requestId: String?, forMessageThread: Bool = false) {
         guard let channelURL = channelURL,
               let requestId = requestId,
+              !requestId.isEmpty,
               var pendingDict = (forMessageThread == true)
                 ? self.pendingThreadMessages[channelURL]
                 : self.pendingMessages[channelURL] else {
@@ -91,7 +92,8 @@ public class SBUPendingMessageManager {
     
     func removePendingMessageAllTypes(channelURL: String?, requestId: String?) {
         guard let channelURL = channelURL,
-              let requestId = requestId else {
+              let requestId = requestId,
+                !requestId.isEmpty else {
             return
         }
         
