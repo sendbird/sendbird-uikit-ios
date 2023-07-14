@@ -331,7 +331,9 @@ class SBUFeedNotificationChannelViewModel: NSObject {
                     shouldDismissForChannel: nil
                 )
             } else {
-                if SendbirdChat.isLocalCachingEnabled {
+                if SendbirdChat.isLocalCachingEnabled &&
+                    error.code == ChatError.networkError.rawValue &&
+                    channel != nil {
                     return true
                 } else {
                     self.delegate?.didReceiveError(error, isBlocker: true)
@@ -523,21 +525,12 @@ class SBUFeedNotificationChannelViewModel: NSObject {
         guard let notificationIds = notificationIds else { return }
         
         var toBeDeleteIndexes: [Int] = []
-        var toBeDeleteRequestIds: [String] = []
         
         for (index, notification) in self.notifications.enumerated() {
             for notificationId in notificationIds {
-                guard notification.messageId == notificationId else { continue }
+                guard notification.messageId == notificationId,
+                      notification.isMessageIdValid else { continue }
                 toBeDeleteIndexes.append(index)
-                
-                guard notification.requestId.count > 0 else { continue }
-                
-                switch notification {
-                case let adminMessage as AdminMessage:
-                    let requestId = adminMessage.requestId
-                    toBeDeleteRequestIds.append(requestId)
-                default: break
-                }
             }
         }
         

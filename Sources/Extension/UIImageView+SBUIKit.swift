@@ -24,6 +24,7 @@ public extension UIImageView {
                    thumbnailSize: CGSize? = nil,
                    tintColor: UIColor? = nil,
                    cacheKey: String? = nil,
+                   subPath: String = "",
                    completion: ((Bool) -> Void)? = nil) -> URLSessionTask? {
         let originalContentMode = self.contentMode
         let onCompletion: ((Bool) -> Void) = { [completion, originalContentMode] onSucceed in
@@ -60,6 +61,7 @@ public extension UIImageView {
                 errorImage: errorImage,
                 tintColor: tintColor,
                 cacheKey: cacheKey,
+                subPath: subPath,
                 completion: onCompletion
             )
         case .imageToThumbnail:
@@ -69,6 +71,7 @@ public extension UIImageView {
                 thumbnailSize: thumbnailSize,
                 tintColor: tintColor,
                 cacheKey: cacheKey,
+                subPath: subPath,
                 completion: onCompletion
             )
         case .videoURLToImage:
@@ -77,6 +80,7 @@ public extension UIImageView {
                 errorImage: errorImage,
                 tintColor: tintColor,
                 cacheKey: cacheKey,
+                subPath: subPath,
                 completion: onCompletion
             )
         }
@@ -95,6 +99,7 @@ internal extension UIImageView {
                            errorImage: UIImage? = nil,
                            tintColor: UIColor? = nil,
                            cacheKey: String? = nil,
+                           subPath: String,
                            completion: ((Bool) -> Void)? = nil) -> URLSessionTask? {
         
         let fileName = SBUCacheManager.Image.createCacheFileName(
@@ -102,7 +107,7 @@ internal extension UIImageView {
             cacheKey: cacheKey
         )
         
-        if let image = SBUCacheManager.Image.get(fileName: fileName) {
+        if let image = SBUCacheManager.Image.get(fileName: fileName, subPath: subPath) {
             self.setImage(image, tintColor: tintColor, completion: completion)
             return nil
         }
@@ -127,7 +132,7 @@ internal extension UIImageView {
                 return
             }
             
-            let image = SBUCacheManager.Image.save(data: data, fileName: fileName)
+            let image = SBUCacheManager.Image.save(data: data, fileName: fileName, subPath: subPath)
             self.setImage(image, tintColor: tintColor, completion: completion)
         }
         task.resume()
@@ -138,6 +143,7 @@ internal extension UIImageView {
                                  errorImage: UIImage? = nil,
                                  tintColor: UIColor? = nil,
                                  cacheKey: String? = nil,
+                                 subPath: String,
                                  completion: ((Bool) -> Void)? = nil) -> URLSessionTask? {
         let fileName = SBUCacheManager.Image.createCacheFileName(
             urlString: urlString,
@@ -145,7 +151,7 @@ internal extension UIImageView {
             needPathExtension: false
         )
         
-        if let image = SBUCacheManager.Image.get(fileName: fileName) {
+        if let image = SBUCacheManager.Image.get(fileName: fileName, subPath: subPath) {
             self.setImage(image, tintColor: tintColor, completion: completion)
             return nil
         }
@@ -173,7 +179,7 @@ internal extension UIImageView {
             }
             
             let image = UIImage(cgImage: cgImage)
-            SBUCacheManager.Image.save(image: image, fileName: fileName)
+            SBUCacheManager.Image.save(image: image, fileName: fileName, subPath: subPath)
             self.setImage(image, tintColor: tintColor, completion: completion)
         }
         
@@ -186,6 +192,7 @@ internal extension UIImageView {
                             thumbnailSize: CGSize? = SBUGlobals.messageCellConfiguration.groupChannel.thumbnailSize,
                             tintColor: UIColor? = nil,
                             cacheKey: String? = nil,
+                            subPath: String,
                             completion: ((Bool) -> Void)? = nil) -> URLSessionTask? {
         
         let fileName = SBUCacheManager.Image.createCacheFileName(
@@ -195,7 +202,7 @@ internal extension UIImageView {
         let thumbnailFileName = "thumb_" + fileName
         
         // Load thumbnail cacheImage
-        if let thumbnailImage = SBUCacheManager.Image.get(fileName: thumbnailFileName) {
+        if let thumbnailImage = SBUCacheManager.Image.get(fileName: thumbnailFileName, subPath: subPath) {
             let image = thumbnailImage.isAnimatedImage() ? thumbnailImage.images?.first : thumbnailImage
             self.setImage(image, tintColor: tintColor, completion: completion)
             return nil
@@ -217,15 +224,15 @@ internal extension UIImageView {
             }
             
             if image.isAnimatedImage() {
-                SBUCacheManager.Image.save(data: data, fileName: fileName)
-                SBUCacheManager.Image.save(data: data, fileName: thumbnailFileName)
+                SBUCacheManager.Image.save(data: data, fileName: fileName, subPath: subPath)
+                SBUCacheManager.Image.save(data: data, fileName: thumbnailFileName, subPath: subPath)
                 
                 self.setImage(image.images?.first ?? image, tintColor: tintColor, completion: completion)
             } else {
                 let thumbnailSize: CGSize = thumbnailSize ?? SBUGlobals.messageCellConfiguration.groupChannel.thumbnailSize
                 let thumbnailImage = image.resize(with: thumbnailSize)
-                SBUCacheManager.Image.save(image: image, fileName: fileName)
-                SBUCacheManager.Image.save(image: thumbnailImage, fileName: thumbnailFileName)
+                SBUCacheManager.Image.save(image: image, fileName: fileName, subPath: subPath)
+                SBUCacheManager.Image.save(image: thumbnailImage, fileName: thumbnailFileName, subPath: subPath)
                 
                 self.setImage(thumbnailImage, tintColor: tintColor, completion: completion)
             }

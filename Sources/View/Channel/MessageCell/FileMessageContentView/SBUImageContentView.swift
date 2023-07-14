@@ -78,6 +78,7 @@ open class SBUImageContentView: SBUBaseFileContentView {
     
     open override func configure(message: FileMessage, position: MessagePosition) {
         if self.message?.requestId != message.requestId ||
+            !message.isRequestIdValid ||
             self.message?.updatedAt != message.updatedAt {
             self.imageView.image = nil
         }
@@ -118,7 +119,8 @@ open class SBUImageContentView: SBUBaseFileContentView {
             urlString: urlString,
             option: imageOption,
             thumbnailSize: thumbnailSize,
-            cacheKey: message.requestId
+            cacheKey: message.cacheKey,
+            subPath: message.channelURL
         ) { [weak self] _ in
             DispatchQueue.main.async {
                 self?.setFileIcon()

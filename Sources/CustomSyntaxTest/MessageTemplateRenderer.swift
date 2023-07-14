@@ -877,60 +877,64 @@ class MessageTemplateRenderer: UIView {
             return baseView
         }
         
-        imageView.loadImage(urlString: item.imageUrl, completion: { [weak self, weak imageView] _ in
-            guard let self = self else { return }
-            
-            DispatchQueue.main.async {
-                let image = imageView?.image?.sbu_with(
-                    tintColor: tintColor,
-                    forTemplate: true
-                )
-
-                // INFO: Edge case - image height is wrap
-                imageView?.image = image
-                imageView?.layoutIfNeeded()
+        imageView.loadImage(
+            urlString: item.imageUrl,
+            subPath: SBUCacheManager.PathType.template,
+            completion: { [weak self, weak imageView] _ in
+                guard let self = self else { return }
                 
-                if let imageView = imageView as? MessageTemplateImageView,
-                   imageView.needResizeImage {
-                    imageView.image = image?.resizeTopAlignedToFill(newWidth: imageView.frame.width)
-                    imageView.layoutIfNeeded()
-                }
-            }
-            
-            let constraintSettingHandler: (() -> Void) = {
-                if let imageView = imageView,
-                   let imageSize = imageView.image?.size {
-                    
-                    self.rendererConstraints.forEach { $0.isActive = false }
-                    placeholderConstraints.forEach { $0.isActive = false }
-                    
-                    if isRatioUsed == true {
-                        let ratio = imageSize.height / imageSize.width
-                        
-                        let heightConst = imageView.heightAnchor.constraint(
-                            equalTo: imageView.widthAnchor,
-                            multiplier: ratio
-                        )
-                        heightConst.priority = .defaultHigh
-                        self.rendererConstraints.append(heightConst)
-                    }
-                    
-                    self.rendererConstraints.forEach { $0.isActive = true }
-                    
-                    if item.metaData == nil || !isRatioUsed {
-                        placeholderConstraints.forEach { $0.isActive = true }
-                        self.delegate?.messageTemplateRender(self, didFinishLoadingImage: imageView)
-                    }
-                }
-            }
-            if Thread.isMainThread {
-                constraintSettingHandler()
-            } else {
                 DispatchQueue.main.async {
+                    let image = imageView?.image?.sbu_with(
+                        tintColor: tintColor,
+                        forTemplate: true
+                    )
+                    
+                    // INFO: Edge case - image height is wrap
+                    imageView?.image = image
+                    imageView?.layoutIfNeeded()
+                    
+                    if let imageView = imageView as? MessageTemplateImageView,
+                       imageView.needResizeImage {
+                        imageView.image = image?.resizeTopAlignedToFill(newWidth: imageView.frame.width)
+                        imageView.layoutIfNeeded()
+                    }
+                }
+                
+                let constraintSettingHandler: (() -> Void) = {
+                    if let imageView = imageView,
+                       let imageSize = imageView.image?.size {
+                        
+                        self.rendererConstraints.forEach { $0.isActive = false }
+                        placeholderConstraints.forEach { $0.isActive = false }
+                        
+                        if isRatioUsed == true {
+                            let ratio = imageSize.height / imageSize.width
+                            
+                            let heightConst = imageView.heightAnchor.constraint(
+                                equalTo: imageView.widthAnchor,
+                                multiplier: ratio
+                            )
+                            heightConst.priority = .defaultHigh
+                            self.rendererConstraints.append(heightConst)
+                        }
+                        
+                        self.rendererConstraints.forEach { $0.isActive = true }
+                        
+                        if item.metaData == nil || !isRatioUsed {
+                            placeholderConstraints.forEach { $0.isActive = true }
+                            self.delegate?.messageTemplateRender(self, didFinishLoadingImage: imageView)
+                        }
+                    }
+                }
+                if Thread.isMainThread {
                     constraintSettingHandler()
+                } else {
+                    DispatchQueue.main.async {
+                        constraintSettingHandler()
+                    }
                 }
             }
-        })
+        )
         
         return baseView
     }
@@ -1040,49 +1044,54 @@ class MessageTemplateRenderer: UIView {
         
         placeholderConstraints.forEach { $0.isActive = true }
 
-        imageButton.loadImage(urlString: item.imageUrl, for: .normal, completion: { [weak self, weak imageButton] _ in
-            guard let self = self else { return }
-            
-            let image = imageButton?.imageView?.image?.sbu_with(
-                tintColor: tintColor,
-                forTemplate: true
-            )
-            imageButton?.setImage(image, for: .normal)
-            
-            let constraintSettingHandler: (() -> Void) = {
-                if let imageButton = imageButton,
-                   let imageSize = imageButton.imageView?.image?.size {
-                    
-                    self.rendererConstraints.forEach { $0.isActive = false }
-                    placeholderConstraints.forEach { $0.isActive = false }
-                    
-                    if isRatioUsed == true {
-                        let ratio = imageSize.height / imageSize.width
+        imageButton.loadImage(
+            urlString: item.imageUrl,
+            for: .normal,
+            subPath: SBUCacheManager.PathType.template,
+            completion: { [weak self, weak imageButton] _ in
+                guard let self = self else { return }
+                
+                let image = imageButton?.imageView?.image?.sbu_with(
+                    tintColor: tintColor,
+                    forTemplate: true
+                )
+                imageButton?.setImage(image, for: .normal)
+                
+                let constraintSettingHandler: (() -> Void) = {
+                    if let imageButton = imageButton,
+                       let imageSize = imageButton.imageView?.image?.size {
                         
-                        let heightConst = imageButton.heightAnchor.constraint(
-                            equalTo: imageButton.widthAnchor,
-                            multiplier: ratio
-                        )
-                        heightConst.priority = .defaultHigh
-                        self.rendererConstraints.append(heightConst)
-                    }
-                    
-                    self.rendererConstraints.forEach { $0.isActive = true }
-                    
-                    if let imageView = imageButton.imageView,
-                       (item.metaData == nil || !isRatioUsed) {
-                        self.delegate?.messageTemplateRender(self, didFinishLoadingImage: imageView)
+                        self.rendererConstraints.forEach { $0.isActive = false }
+                        placeholderConstraints.forEach { $0.isActive = false }
+                        
+                        if isRatioUsed == true {
+                            let ratio = imageSize.height / imageSize.width
+                            
+                            let heightConst = imageButton.heightAnchor.constraint(
+                                equalTo: imageButton.widthAnchor,
+                                multiplier: ratio
+                            )
+                            heightConst.priority = .defaultHigh
+                            self.rendererConstraints.append(heightConst)
+                        }
+                        
+                        self.rendererConstraints.forEach { $0.isActive = true }
+                        
+                        if let imageView = imageButton.imageView,
+                           (item.metaData == nil || !isRatioUsed) {
+                            self.delegate?.messageTemplateRender(self, didFinishLoadingImage: imageView)
+                        }
                     }
                 }
-            }
-            if Thread.isMainThread {
-                constraintSettingHandler()
-            } else {
-                DispatchQueue.main.async {
+                if Thread.isMainThread {
                     constraintSettingHandler()
+                } else {
+                    DispatchQueue.main.async {
+                        constraintSettingHandler()
+                    }
                 }
             }
-        })
+        )
         
         return baseView
     }

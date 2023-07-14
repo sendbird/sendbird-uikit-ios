@@ -12,7 +12,7 @@ import Photos
 
 class SBUDownloadManager {
     
-    static func saveImage(parent: UIViewController?, url: URL, fileName: String) {
+    static func saveImage(with fileMessage: FileMessage, parent: UIViewController?) {
         guard let parent = parent else {
             SBULog.error("[Failed] Save image")
             return
@@ -44,17 +44,24 @@ class SBUDownloadManager {
             DispatchQueue.main.async { SBULoading.start() }
             
             let fileName = SBUCacheManager.Image.createCacheFileName(
-                urlString: url.absoluteString,
-                cacheKey: fileName,
+                urlString: fileMessage.url,
+                cacheKey: fileMessage.cacheKey,
                 needPathExtension: true
             )
-            if SBUCacheManager.Image.diskCache.cacheExists(key: fileName) {
-                let filePath = URL(string: SBUCacheManager.Image.diskCache.pathForKey(fileName))
-                    ?? URL(fileURLWithPath: SBUCacheManager.Image.diskCache.pathForKey(fileName))
+            
+            let key = SBUCacheManager.Image.key(fileName: fileName, subPath: fileMessage.channelURL)
+            if SBUCacheManager.Image.diskCache.cacheExists(key: key) {
+                let filePath = URL(string: SBUCacheManager.Image.diskCache.pathForKey(key))
+                    ?? URL(fileURLWithPath: SBUCacheManager.Image.diskCache.pathForKey(key))
                 downloadHandler(filePath)
             } else {
                 DispatchQueue.main.async {
-                    _ = UIImageView().loadOriginalImage(urlString: url.absoluteString, errorImage: nil, cacheKey: fileName) { success in
+                    _ = UIImageView().loadOriginalImage(
+                        urlString: fileMessage.url,
+                        errorImage: nil,
+                        cacheKey: key,
+                        subPath: fileMessage.channelURL
+                    ) { success in
                         if success {
                             let filePath = URL(string: SBUCacheManager.Image.diskCache.pathForKey(fileName))
                                 ?? URL(fileURLWithPath: SBUCacheManager.Image.diskCache.pathForKey(fileName))
@@ -113,7 +120,7 @@ class SBUDownloadManager {
             
             SBUCacheManager.File.loadFile(
                 urlString: fileMessage.url,
-                cacheKey: fileMessage.requestId,
+                cacheKey: fileMessage.cacheKey,
                 fileName: fileMessage.name
             ) { fileURL, _ in
                 if let fileURL = fileURL {
@@ -128,8 +135,8 @@ class SBUDownloadManager {
     static func save(fileMessage: FileMessage, parent: UIViewController?) {
         switch SBUUtils.getFileType(by: fileMessage) {
         case .image:
-            guard let url = URL(string: fileMessage.url) else { return }
-            SBUDownloadManager.saveImage(parent: parent, url: url, fileName: fileMessage.requestId)
+            guard !fileMessage.url.isEmpty else { return }
+            SBUDownloadManager.saveImage(with: fileMessage, parent: parent)
         default:
             SBUDownloadManager.saveFile(with: fileMessage, parent: parent)
         }

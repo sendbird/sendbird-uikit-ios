@@ -463,7 +463,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         deletedMessages messages: [BaseMessage]
     ) {
         for message in messages {
-            self.listComponent?.pauseVoicePlayer(requestId: message.requestId)
+            self.listComponent?.pauseVoicePlayer(cacheKey: message.cacheKey)
         }
     }
     

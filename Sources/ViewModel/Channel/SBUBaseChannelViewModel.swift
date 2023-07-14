@@ -396,7 +396,7 @@ open class SBUBaseChannelViewModel: NSObject {
             params: messageParams,
             progressHandler: { requestId, _, totalBytesSent, totalBytesExpectedToSend in
                 //// If need reload cell for progress, call reload action in here.
-                guard let requestId = requestId else { return }
+                guard let requestId = requestId, !requestId.isEmpty else { return }
                 let fileTransferProgress = CGFloat(totalBytesSent)/CGFloat(totalBytesExpectedToSend)
                 SBULog.info("File message transfer progress: \(requestId) - \(fileTransferProgress)")
             },
@@ -613,6 +613,7 @@ open class SBUBaseChannelViewModel: NSObject {
         self.sortAllMessageList(needReload: needReload)
     }
     
+    // TODO: Not used
     func filteredForThreadMessageView(messages: [BaseMessage]?) -> [BaseMessage]? {
         let pendingMessages = self.pendingMessageManager.getPendingMessages(
             channelURL: self.channelURL,
@@ -677,6 +678,7 @@ open class SBUBaseChannelViewModel: NSObject {
                 
             } else if message.sendingStatus == .failed ||
                         message.sendingStatus == .pending {
+                if !self.isThreadMessageMode, message.parentMessageId > 0 { return }
                 self.pendingMessageManager.upsertPendingMessage(
                     channelURL: channelURL,
                     message: message,
@@ -729,10 +731,11 @@ open class SBUBaseChannelViewModel: NSObject {
         
         for (index, message) in self.messageList.enumerated() {
             for messageId in messageIds {
-                guard message.messageId == messageId else { continue }
+                guard message.messageId == messageId,
+                      message.isMessageIdValid else { continue }
                 toBeDeleteIndexes.append(index)
                 
-                guard message.requestId.count > 0 else { continue }
+                guard message.isRequestIdValid else { continue }
                 
                 switch message {
                 case let userMessage as UserMessage:

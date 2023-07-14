@@ -129,7 +129,8 @@ class SBUReactionCollectionViewCell: UICollectionViewCell {
         if let urlString = url, !urlString.isEmpty {
             self.emojiImageView.loadImage(
                 urlString: urlString,
-                errorImage: SBUIconSetType.iconQuestion.image(to: SBUIconSetType.Metric.iconEmojiSmall)
+                errorImage: SBUIconSetType.iconQuestion.image(to: SBUIconSetType.Metric.iconEmojiSmall),
+                subPath: SBUCacheManager.PathType.reaction
             )
         } else {
             self.emojiImageView.image = SBUIconSetType.iconQuestion.image(to: SBUIconSetType.Metric.iconEmojiSmall)

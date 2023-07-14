@@ -17,6 +17,8 @@ public extension UIButton {
                    errorImage: UIImage? = nil,
                    tintColor: UIColor? = nil,
                    for state: UIButton.State,
+                   cacheKey: String? = nil,
+                   subPath: String,
                    completion: ((Bool) -> Void)? = nil) -> URLSessionTask? {
         self.setImage(placeholder, tintColor: tintColor, for: .normal, completion: nil)
         
@@ -32,6 +34,8 @@ public extension UIButton {
             errorImage: errorImage,
             for: state,
             tintColor: tintColor,
+            cacheKey: cacheKey,
+            subPath: subPath,
             completion: completion
         )
     }
@@ -49,10 +53,16 @@ internal extension UIButton {
                            errorImage: UIImage? = nil,
                            for state: UIButton.State,
                            tintColor: UIColor? = nil,
+                           cacheKey: String? = nil,
+                           subPath: String,
                            completion: ((Bool) -> Void)? = nil) -> URLSessionTask? {
         
-        let fileName = SBUCacheManager.createHashName(urlString: urlString)
-        if let image = SBUCacheManager.Image.get(fileName: fileName) {
+        let fileName = SBUCacheManager.Image.createCacheFileName(
+            urlString: urlString,
+            cacheKey: cacheKey
+        )
+        
+        if let image = SBUCacheManager.Image.get(fileName: fileName, subPath: subPath) {
             self.setImage(image, tintColor: tintColor, for: state, completion: completion)
             return nil
         }
@@ -77,7 +87,7 @@ internal extension UIButton {
                 return
             }
             
-            let image = SBUCacheManager.Image.save(data: data, fileName: fileName)
+            let image = SBUCacheManager.Image.save(data: data, fileName: fileName, subPath: subPath)
             self.setImage(image, tintColor: tintColor, for: state, completion: completion)
         }
         task.resume()

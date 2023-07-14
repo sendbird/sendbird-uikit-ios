@@ -84,7 +84,8 @@ public class SBUCoverImageView: UIView {
             placeholder: SBUIconSetType.iconUser.image(
                 with: self.theme.userPlaceholderTintColor,
                 to: self.iconSize
-            )
+            ),
+            subPath: SBUCacheManager.PathType.userProfile
         )
         
         self.addSubview(imageView)
@@ -297,7 +298,8 @@ extension UIImageView {
         
         self.loadImage(
             urlString: ImageUtil.transformUserProfileImage(user: user),
-            placeholder: defaultImage
+            placeholder: defaultImage,
+            subPath: SBUCacheManager.PathType.userProfile
         )        
     }
 }

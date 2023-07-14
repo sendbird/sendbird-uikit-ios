@@ -643,14 +643,15 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
                 SBULog.error("[Failed] Send user message request: \(error.localizedDescription)")
                 return
             }
+
+            guard let userMessage = userMessage else { return }
             
             self.pendingMessageManager.removePendingMessage(
-                channelURL: userMessage?.channelURL,
-                requestId: userMessage?.requestId,
+                channelURL: userMessage.channelURL,
+                requestId: userMessage.requestId,
                 forMessageThread: self.isThreadMessageMode
             )
             
-            guard let userMessage = userMessage else { return }
             SBULog.info("[Succeed] Send user message: \(userMessage.description)")
             self.upsertMessagesInList(messages: [userMessage], needReload: true)
         }
@@ -671,18 +672,18 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
                 )
                 return
             }
+
+            guard let fileMessage = fileMessage else { return }
             
             self.pendingMessageManager.removePendingMessage(
-                channelURL: fileMessage?.channelURL,
-                requestId: fileMessage?.requestId,
+                channelURL: fileMessage.channelURL,
+                requestId: fileMessage.requestId,
                 forMessageThread: self.isThreadMessageMode
             )
             
-            guard let message = fileMessage else { return }
+            SBULog.info("[Succeed] Send file message: \(fileMessage.description)")
             
-            SBULog.info("[Succeed] Send file message: \(message.description)")
-            
-            self.upsertMessagesInList(messages: [message], needReload: true)
+            self.upsertMessagesInList(messages: [fileMessage], needReload: true)
         }
     }
     
@@ -703,13 +704,13 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
             return
             
         } else {
+            guard let message = message else { return }
+            
             self.pendingMessageManager.removePendingMessage(
-                channelURL: message?.channelURL,
-                requestId: message?.requestId,
+                channelURL: message.channelURL,
+                requestId: message.requestId,
                 forMessageThread: self.isThreadMessageMode
             )
-            
-            guard let message = message else { return }
             
             SBULog.info("[Succeed] Resend failed file message: \(message.description)")
             

@@ -130,7 +130,8 @@ open class SBUMessageWebView: UIStackView, SBUViewLifeCycle {
                 urlString: imageURL,
                 placeholder: model.placeHolderImage,
                 errorImage: model.errorImage,
-                option: .imageToThumbnail
+                option: .imageToThumbnail,
+                subPath: SBUCacheManager.PathType.web
             ) { success in
                 DispatchQueue.main.async { [weak self] in
                     self?.imageView.contentMode = !success ? .center : .scaleAspectFill

@@ -159,7 +159,8 @@ class SBUUserProfileView: UIView, SBUUserProfileViewProtocol {
             placeholder: SBUIconSetType.iconUser.image(
                 with: self.theme.userPlaceholderTintColor,
                 to: SBUIconSetType.Metric.iconUserProfile
-            )
+            ),
+            subPath: SBUCacheManager.PathType.userProfile
         )
         
         // Text

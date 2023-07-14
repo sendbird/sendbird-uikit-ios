@@ -266,7 +266,8 @@ open class SBUUserCell: SBUTableViewCell {
             placeholder: SBUIconSetType.iconUser.image(
                 with: self.theme.userPlaceholderTintColor,
                 to: SBUIconSetType.Metric.defaultIconSize
-            )
+            ),
+            subPath: SBUCacheManager.PathType.userProfile
         )
         self.userImageView.contentMode = profileURL.count > 0 ? .scaleAspectFill : .center
         
@@ -298,7 +299,8 @@ open class SBUUserCell: SBUTableViewCell {
                 placeholder: SBUIconSetType.iconUser.image(
                     with: self.theme.userPlaceholderTintColor,
                     to: SBUIconSetType.Metric.defaultIconSize
-                )
+                ),
+                subPath: SBUCacheManager.PathType.userProfile
             )
         
             self.separateView.isHidden = true

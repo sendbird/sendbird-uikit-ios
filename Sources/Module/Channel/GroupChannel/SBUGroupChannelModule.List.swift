@@ -425,7 +425,7 @@ extension SBUGroupChannelModule {
                     
                     // File message
                 case let (fileMessage, fileMessageCell) as (FileMessage, SBUFileMessageCell):
-                    let voiceFileInfo = self.voiceFileInfos[fileMessage.requestId] ?? nil
+                    let voiceFileInfo = self.voiceFileInfos[fileMessage.cacheKey] ?? nil
                     let configuration = SBUFileMessageCellParams(
                         message: fileMessage,
                         hideDateView: isSameDay,
@@ -603,8 +603,8 @@ extension SBUGroupChannelModule.List {
         self.voicePlayer?.pause()
     }
 
-    func pauseVoicePlayer(requestId: String) {
-        if let voiceFileInfo = self.voiceFileInfos[requestId],
+    func pauseVoicePlayer(cacheKey: String) {
+        if let voiceFileInfo = self.voiceFileInfos[cacheKey],
            voiceFileInfo.isPlaying == true {
             voiceFileInfo.isPlaying = false
             self.voicePlayer?.pause()
@@ -636,13 +636,13 @@ extension SBUGroupChannelModule.List {
               let voiceContentView = fileMessageCell.baseFileContentView as? SBUVoiceContentView,
               SBUUtils.getFileType(by: fileMessage) == .voice else { return }
 
-        if self.voiceFileInfos[fileMessage.requestId] == nil {
+        if self.voiceFileInfos[fileMessage.cacheKey] == nil {
             voiceContentView.updateVoiceContentStatus(.loading)
         }
         
         SBUCacheManager.File.loadFile(
             urlString: fileMessage.url,
-            cacheKey: fileMessage.requestId,
+            cacheKey: fileMessage.cacheKey,
             fileName: fileMessage.name
         ) { [weak self] filePath, _ in
 
@@ -663,7 +663,7 @@ extension SBUGroupChannelModule.List {
             }
             
             var voicefileInfo: SBUVoiceFileInfo?
-            if self?.voiceFileInfos[fileMessage.requestId] == nil {
+            if self?.voiceFileInfos[fileMessage.cacheKey] == nil {
                 voicefileInfo = SBUVoiceFileInfo(
                     fileName: fileMessage.name,
                     filePath: filePath,
@@ -671,9 +671,9 @@ extension SBUGroupChannelModule.List {
                     currentPlayTime: 0
                 )
                 
-                self?.voiceFileInfos[fileMessage.requestId] = voicefileInfo
+                self?.voiceFileInfos[fileMessage.cacheKey] = voicefileInfo
             } else {
-                voicefileInfo = self?.voiceFileInfos[fileMessage.requestId]
+                voicefileInfo = self?.voiceFileInfos[fileMessage.cacheKey]
             }
             
             var actionInSameView = false

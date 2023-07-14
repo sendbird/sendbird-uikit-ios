@@ -288,6 +288,20 @@ extension SendbirdChatSDK.ApplicationUserListQuery {
     @objc get
   }
 }
+@objc(SBDUploadedFileInfo) public class UploadedFileInfo : ObjectiveC.NSObject, Swift.Codable, Foundation.NSCopying {
+  @objc public var url: Swift.String {
+    @objc get
+  }
+  @objc final public let plainURL: Swift.String
+  @objc final public let fileName: Swift.String?
+  @objc final public let mimeType: Swift.String?
+  @objc final public let fileSize: Swift.UInt
+  @objc public var thumbnails: [SendbirdChatSDK.Thumbnail]?
+  required public init(from decoder: Swift.Decoder) throws
+  public func encode(to encoder: Swift.Encoder) throws
+  @objc public func copy(with zone: ObjectiveC.NSZone? = nil) -> Any
+  @objc deinit
+}
 @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc(SBDParticipantListQuery) public class ParticipantListQuery : ObjectiveC.NSObject, SendbirdChatSDK.UserListQuery {
   @objc public var hasNext: Swift.Bool {
     get
@@ -621,6 +635,8 @@ public typealias UserMessageHandler = ((_ message: SendbirdChatSDK.UserMessage?,
 public typealias FileMessageHandler = ((_ message: SendbirdChatSDK.FileMessage?, _ error: SendbirdChatSDK.SBError?) -> Swift.Void)
 public typealias ProgressHandler = ((_ bytesSent: Swift.Int64, _ totalBytesSent: Swift.Int64, _ totalBytesExpectedToSend: Swift.Int64) -> Swift.Void)
 public typealias MultiProgressHandler = ((_ requestId: Swift.String?, _ bytesSent: Swift.Int64, _ totalBytesSent: Swift.Int64, _ totalBytesExpectedToSend: Swift.Int64) -> Swift.Void)
+public typealias MultipleFilesMessageHandler = ((_ message: SendbirdChatSDK.MultipleFilesMessage?, _ error: SendbirdChatSDK.SBError?) -> Swift.Void)
+public typealias FileUploadHandler = ((_ requestId: Swift.String, _ index: Swift.Int, _ uploadbleFileInfo: SendbirdChatSDK.UploadableFileInfo, _ error: SendbirdChatSDK.SBError?) -> Swift.Void)
 public typealias MessageChangeLogHandler = ((_ updatedMessages: [SendbirdChatSDK.BaseMessage]?, _ deletedMessageIds: [Swift.Int64]?, _ hasMore: Swift.Bool, _ token: Swift.String?, _ error: SendbirdChatSDK.SBError?) -> Swift.Void)
 public typealias MessageListHandler = ((_ messages: [SendbirdChatSDK.BaseMessage]?, _ error: SendbirdChatSDK.SBError?) -> Swift.Void)
 public typealias MessageRequestIdsHandler = ((_ requestIds: [Swift.String]?, _ error: SendbirdChatSDK.SBError?) -> Swift.Void)
@@ -1260,7 +1276,7 @@ extension SendbirdChatSDK.MessageMetaArray : SendbirdChatSDK.Serializable {
   @objc dynamic public func serialize() -> Foundation.Data?
   @objc dynamic public class func build(fromSerializedData data: Foundation.Data?) -> Self?
 }
-@objc extension SendbirdChatSDK.GroupChannel {
+extension SendbirdChatSDK.GroupChannel {
   @objc dynamic open func refresh(completionHandler: SendbirdChatSDK.SBErrorHandler?)
   @objc(createChannelWithParams:completionHandler:) dynamic open class func createChannel(params: SendbirdChatSDK.GroupChannelCreateParams, completionHandler: SendbirdChatSDK.GroupChannelHandler?)
   @objc(createChannelWithParams:progressHandler:completionHandler:) dynamic open class func createChannel(params: SendbirdChatSDK.GroupChannelCreateParams, progressHandler: SendbirdChatSDK.ProgressHandler?, completionHandler: SendbirdChatSDK.GroupChannelHandler?)
@@ -1569,6 +1585,7 @@ extension SendbirdChatSDK.PollRetrievalParams : Swift.Encodable {
   }
   @objc public var notificationInfo: SendbirdChatSDK.NotificationInfo?
   final public let uikitConfigInfo: SendbirdChatSDK.UIKitConfigInfo
+  @objc final public let multipleFilesMessageFileCountLimit: Swift.Int
   @objc public func isEmojiUpdateNeeded(prevEmojiHash: Swift.String) -> Swift.Bool
   public func encode(to encoder: Swift.Encoder) throws
   required public init(from decoder: Swift.Decoder) throws
@@ -1674,6 +1691,28 @@ extension SendbirdChatSDK.Poll : SendbirdChatSDK.Serializable {
 }
 @_hasMissingDesignatedInitializers @objc(SBDGlobalNotificationChannelSetting) open class GlobalNotificationChannelSetting : ObjectiveC.NSObject {
   @objc final public let jsonPayload: Swift.String
+  @objc deinit
+}
+@objc(SBDUploadableFileInfo) public class UploadableFileInfo : ObjectiveC.NSObject, Swift.Codable {
+  @objc final public let fileURL: Swift.String?
+  @objc public var file: Foundation.Data?
+  @objc public var fileSize: Swift.UInt {
+    @objc get
+    @objc set
+  }
+  @objc public var thumbnailSizes: [SendbirdChatSDK.ThumbnailSize]?
+  @objc public var fileName: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc public var mimeType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc public init(file: Foundation.Data)
+  @objc public init(fileURL: Swift.String)
+  public func encode(to encoder: Swift.Encoder) throws
+  required public init(from decoder: Swift.Decoder) throws
   @objc deinit
 }
 @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc(SBDOperatorListQuery) public class OperatorListQuery : ObjectiveC.NSObject, SendbirdChatSDK.UserListQuery {
@@ -2189,6 +2228,14 @@ extension SendbirdChatSDK.GroupChannel {
   @objc public func belongsToMessageParams(_ params: SendbirdChatSDK.BaseMessageCreateParams) -> Swift.Bool
   @objc public func copy(with zone: ObjectiveC.NSZone? = nil) -> Any
   @objc override dynamic public func isEqual(_ object: Any?) -> Swift.Bool
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers @objc(SBDMultipleFilesMessageCreateParams) public class MultipleFilesMessageCreateParams : SendbirdChatSDK.BaseMessageCreateParams {
+  @objc public var uploadableFileInfoList: [SendbirdChatSDK.UploadableFileInfo]
+  @objc public init(uploadableFileInfoList: [SendbirdChatSDK.UploadableFileInfo])
+  override public func encode(to encoder: Swift.Encoder) throws
+  required public init(from decoder: Swift.Decoder) throws
+  @objc override public func copy(with zone: ObjectiveC.NSZone? = nil) -> Any
   @objc deinit
 }
 @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc(SBDBannedUserListQuery) public class BannedUserListQuery : ObjectiveC.NSObject, SendbirdChatSDK.RestrictedUserListQuery {
@@ -3100,6 +3147,7 @@ extension SendbirdChatSDK.MutedUserListQuery {
   @objc public class func getSDKVersion() -> Swift.String
   @objc public class func getApplicationId() -> Swift.String?
   @objc public class func setAppVersion(version: Swift.String?)
+  @objc public class func getMultipleFilesMessageFileCountLimit() -> Swift.Int
   @discardableResult
   @objc public class func initialize(params: SendbirdChatSDK.InitParams, migrationStartHandler: SendbirdChatSDK.VoidHandler? = nil, completionHandler: SendbirdChatSDK.SBErrorHandler? = nil) -> Swift.Bool
   @discardableResult
@@ -3591,9 +3639,9 @@ extension SendbirdChatSDK.ScheduledMessageListQueryParams : Foundation.NSCopying
   @objc(deleteMessage:completionHandler:) dynamic open func deleteMessage(_ message: SendbirdChatSDK.BaseMessage, completionHandler: SendbirdChatSDK.SBErrorHandler?)
   @objc dynamic open func deleteMessage(messageId: Swift.Int64, completionHandler: SendbirdChatSDK.SBErrorHandler?)
 }
-@objc extension SendbirdChatSDK.FeedChannel {
+extension SendbirdChatSDK.FeedChannel {
   @objc dynamic open func refresh(completionHandler: SendbirdChatSDK.SBErrorHandler?)
-  @objc dynamic open func markAsRead(completionHandler: SendbirdChatSDK.SBErrorHandler?)
+  @objc(markAsReadWithCompletionHandler:) dynamic open func markAsRead(completionHandler: SendbirdChatSDK.SBErrorHandler?)
   @objc(getChannelWithURL:completionHandler:) dynamic open class func getChannel(url: Swift.String, completionHandler: SendbirdChatSDK.FeedChannelHandler?)
 }
 @objc(SBDMemberStateFilter) public enum MemberStateFilter : Swift.Int {
@@ -3838,6 +3886,19 @@ public struct __SendbirdSDKInfo {
 }
 extension SendbirdChatSDK.GroupChannelCreateParams : Foundation.NSCopying {
   @objc dynamic public func copy(with zone: ObjectiveC.NSZone? = nil) -> Any
+}
+@_hasMissingDesignatedInitializers @objc(SBDMultipleFilesMessage) public class MultipleFilesMessage : SendbirdChatSDK.BaseMessage {
+  @objc public var files: [SendbirdChatSDK.UploadedFileInfo]
+  required public init(from decoder: Swift.Decoder) throws
+  override public func encode(to encoder: Swift.Encoder) throws
+  @objc public func copyWithFailedState(errorCode: Swift.Int, latestUploadableFileInfos: [SendbirdChatSDK.UploadableFileInfo]) -> Self
+  public func copyWithFailedState(errorCode: Swift.Int?, latestUploadableFileInfos: [SendbirdChatSDK.UploadableFileInfo]) -> Self
+  @objc public func getMultipleFilesMessageParams() -> SendbirdChatSDK.MultipleFilesMessageCreateParams?
+  @objc public func dispose()
+  @objc deinit
+}
+extension SendbirdChatSDK.MultipleFilesMessage {
+  @objc override dynamic public func copy(with zone: ObjectiveC.NSZone? = nil) -> Any
 }
 @_hasMissingDesignatedInitializers @objc(SBDReaction) public class Reaction : ObjectiveC.NSObject, Swift.Codable {
   @objc final public let key: Swift.String
@@ -4182,6 +4243,10 @@ extension SendbirdChatSDK.ChannelMetaCountersUpdateMode : Swift.RawRepresentable
   @objc public init(channelURL: Swift.String = "", channelType: SendbirdChatSDK.ChannelType = .group, messageId: Swift.Int64 = 0, includeMetaArray: Swift.Bool = false, includeReactions: Swift.Bool = false, includeThreadInfo: Swift.Bool = false, includeParentMessageInfo: Swift.Bool = false)
   @objc public func copy(with zone: ObjectiveC.NSZone? = nil) -> Any
   @objc deinit
+}
+extension SendbirdChatSDK.GroupChannel {
+  @discardableResult
+  @objc dynamic public func sendMultipleFilesMessage(params: SendbirdChatSDK.MultipleFilesMessageCreateParams, fileUploadHandler: SendbirdChatSDK.FileUploadHandler?, completionHandler: @escaping SendbirdChatSDK.MultipleFilesMessageHandler) -> SendbirdChatSDK.MultipleFilesMessage?
 }
 @objc extension SendbirdChatSDK.BaseChannel {
   @objc dynamic open func createMetaData(_ metaData: [Swift.String : Swift.String], completionHandler: SendbirdChatSDK.MetaDataHandler?)

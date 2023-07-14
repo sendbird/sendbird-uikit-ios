@@ -211,8 +211,8 @@ extension SBUMessageThreadModule {
             let useReaction = SBUEmojiManager.isReactionEnabled(channel: self.channel)
             
             var voiceFileInfo: SBUVoiceFileInfo?
-            if let requestId = parentMessage?.requestId {
-                voiceFileInfo = self.voiceFileInfos[requestId]
+            if let cacheKey = parentMessage?.cacheKey {
+                voiceFileInfo = self.voiceFileInfos[cacheKey]
             }
             self.parentMessageInfoView.configure(
                 message: self.parentMessage,
@@ -527,7 +527,7 @@ extension SBUMessageThreadModule {
                     
                     // File message
                 case let (fileMessage, fileMessageCell) as (FileMessage, SBUFileMessageCell):
-                    let voiceFileInfo = self.voiceFileInfos[fileMessage.requestId] ?? nil
+                    let voiceFileInfo = self.voiceFileInfos[fileMessage.cacheKey] ?? nil
                     let configuration = SBUFileMessageCellParams(
                         message: fileMessage,
                         hideDateView: isSameDay,
@@ -545,20 +545,20 @@ extension SBUMessageThreadModule {
                     self.currentVoiceContentView = nil
                 }
                 
-                    fileMessageCell.configure(with: configuration)
-                    self.setMessageCellGestures(fileMessageCell, message: fileMessage, indexPath: indexPath)
-                    self.setFileMessageCellImage(fileMessageCell, fileMessage: fileMessage)
+                fileMessageCell.configure(with: configuration)
+                self.setMessageCellGestures(fileMessageCell, message: fileMessage, indexPath: indexPath)
+                self.setFileMessageCellImage(fileMessageCell, fileMessage: fileMessage)
                 
-                    if let voiceFileInfo = voiceFileInfo,
-                       voiceFileInfo.isPlaying == true,
-                       let voiceContentView = fileMessageCell.baseFileContentView as? SBUVoiceContentView {
-                        
-                        self.currentVoiceContentIndexPath = indexPath
-                        self.currentVoiceFileInfo = voiceFileInfo
-                        self.currentVoiceContentView = voiceContentView
-                    }
+                if let voiceFileInfo = voiceFileInfo,
+                   voiceFileInfo.isPlaying == true,
+                   let voiceContentView = fileMessageCell.baseFileContentView as? SBUVoiceContentView {
+                    
+                    self.currentVoiceContentIndexPath = indexPath
+                    self.currentVoiceFileInfo = voiceFileInfo
+                    self.currentVoiceContentView = voiceContentView
+                }
                 
-                default:
+            default:
                     let configuration = SBUBaseMessageCellParams(
                         message: message,
                         hideDateView: isSameDay,
@@ -758,8 +758,8 @@ extension SBUMessageThreadModule.List {
         self.voicePlayer?.pause()
     }
     
-    func pauseVoicePlayer(requestId: String) {
-        if let voiceFileInfo = self.voiceFileInfos[requestId],
+    func pauseVoicePlayer(cacheKey: String) {
+        if let voiceFileInfo = self.voiceFileInfos[cacheKey],
            voiceFileInfo.isPlaying == true {
             voiceFileInfo.isPlaying = false
             self.voicePlayer?.pause()
@@ -789,13 +789,13 @@ extension SBUMessageThreadModule.List {
               let voiceContentView = fileMessageCell.baseFileContentView as? SBUVoiceContentView,
               SBUUtils.getFileType(by: fileMessage) == .voice else { return }
 
-        if self.voiceFileInfos[fileMessage.requestId] == nil {
+        if self.voiceFileInfos[fileMessage.cacheKey] == nil {
             voiceContentView.updateVoiceContentStatus(.loading)
         }
         
         SBUCacheManager.File.loadFile(
             urlString: fileMessage.url,
-            cacheKey: fileMessage.requestId,
+            cacheKey: fileMessage.cacheKey,
             fileName: fileMessage.name
         ) { [weak self] filePath, _ in
             if voiceContentView.status == .loading || voiceContentView.status == .none {
@@ -803,7 +803,7 @@ extension SBUMessageThreadModule.List {
             }
             
             var voicefileInfo: SBUVoiceFileInfo?
-            if self?.voiceFileInfos[fileMessage.requestId] == nil {
+            if self?.voiceFileInfos[fileMessage.cacheKey] == nil {
                 var playtime: Double = 0
                 let metaArrays = message.metaArrays(keys: [SBUConstant.voiceMessageDurationKey])
                 if metaArrays.count > 0 {
@@ -818,9 +818,9 @@ extension SBUMessageThreadModule.List {
                     currentPlayTime: 0
                 )
                 
-                self?.voiceFileInfos[fileMessage.requestId] = voicefileInfo
+                self?.voiceFileInfos[fileMessage.cacheKey] = voicefileInfo
             } else {
-                voicefileInfo = self?.voiceFileInfos[fileMessage.requestId]
+                voicefileInfo = self?.voiceFileInfos[fileMessage.cacheKey]
             }
             
             var actionInSameView = false
@@ -877,7 +877,7 @@ extension SBUMessageThreadModule.List {
         
         SBUCacheManager.File.loadFile(
             urlString: fileMessage.url,
-            cacheKey: fileMessage.requestId,
+            cacheKey: fileMessage.cacheKey,
             fileName: fileMessage.name
         ) { [weak self] filePath, _ in
             if voiceContentView.status == .loading || voiceContentView.status == .none {
@@ -885,7 +885,7 @@ extension SBUMessageThreadModule.List {
             }
             
             var voicefileInfo: SBUVoiceFileInfo?
-            if self?.voiceFileInfos[fileMessage.requestId] == nil {
+            if self?.voiceFileInfos[fileMessage.cacheKey] == nil {
                 var playtime: Double = 0
                 let metaArrays = fileMessage.metaArrays(keys: [SBUConstant.voiceMessageDurationKey])
                 if metaArrays.count > 0 {
@@ -900,9 +900,9 @@ extension SBUMessageThreadModule.List {
                     currentPlayTime: 0
                 )
                 
-                self?.voiceFileInfos[fileMessage.requestId] = voicefileInfo
+                self?.voiceFileInfos[fileMessage.cacheKey] = voicefileInfo
             } else {
-                voicefileInfo = self?.voiceFileInfos[fileMessage.requestId]
+                voicefileInfo = self?.voiceFileInfos[fileMessage.cacheKey]
             }
             
             var actionInSameView = false
