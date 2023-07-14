@@ -190,7 +190,9 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
             if error.code == ChatError.nonAuthorized.rawValue {
                 self.delegate?.baseChannelViewModel(self, shouldDismissForChannel: nil)
             } else {
-                if SendbirdChat.isLocalCachingEnabled {
+                if SendbirdChat.isLocalCachingEnabled &&
+                    error.code == ChatError.networkError.rawValue &&
+                    channel != nil {
                     return true
                 } else {
                     self.delegate?.didReceiveError(error, isBlocker: true)
@@ -292,7 +294,12 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
         let cachedTempMessages = pendingMessages + failedMessages
         for message in cachedTempMessages {
             if message.channelURL != self.channelURL { continue }
-            self.pendingMessageManager.upsertPendingMessage(channelURL: self.channel?.channelURL, message: message)
+            if message.parentMessageId > 0 { continue }
+            self.pendingMessageManager.upsertPendingMessage(
+                channelURL: self.channel?.channelURL,
+                message: message,
+                forMessageThread: self.isThreadMessageMode
+            )
             if let fileMessage = message as? FileMessage,
                let fileMessageParams = fileMessage.messageParams as? FileMessageCreateParams {
                 self.pendingMessageManager.addFileInfo(requestId: fileMessage.requestId, params: fileMessageParams)
@@ -498,10 +505,13 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
         var existInPendingMessage = false
         for addedMessage in messages {
             if addedMessage.sendingStatus == .succeeded { continue }
-            let filteredMessages = self.pendingMessageManager.getPendingMessages(
-                channelURL: self.channelURL,
-                forMessageThread: true
-            ).filter { $0.messageId == addedMessage.messageId }
+            let filteredMessages = self.pendingMessageManager
+                .getPendingMessages(
+                    channelURL: self.channelURL,
+                    forMessageThread: true
+                )
+                .filter { $0.requestId == addedMessage.requestId }
+                .filter { $0.isRequestIdValid }
             if !filteredMessages.isEmpty {
                 existInPendingMessage = true
             }
@@ -534,10 +544,13 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
         var existInPendingMessage = false
         for addedMessage in messages {
             if addedMessage.sendingStatus == .succeeded { continue }
-            let filteredMessages = self.pendingMessageManager.getPendingMessages(
-                channelURL: self.channelURL,
-                forMessageThread: true
-            ).filter { $0.messageId == addedMessage.messageId }
+            let filteredMessages = self.pendingMessageManager
+                .getPendingMessages(
+                    channelURL: self.channelURL,
+                    forMessageThread: true
+                )
+                .filter { $0.requestId == addedMessage.requestId }
+                .filter { $0.isRequestIdValid }
             if !filteredMessages.isEmpty {
                 existInPendingMessage = true
             }

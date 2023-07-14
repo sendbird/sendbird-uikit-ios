@@ -1,5 +1,15 @@
 # Changelog
 
+### v3.6.2 (Jul 14, 2023) with Chat SDK **v4.9.5**
+* Changed file cache key policy.
+* Improved the issue of exposing empty images when message status updating from pending to succeed.
+* Fixed infinite getChannel request issue when initializing `SBUGroupChannelViewController` with invalid `channelURL`
+* Applied thread message policy for pending or failed state
+* Modified sample rate and bit rate in recorder settings
+    * sample rate: 11025
+    * bit rate: 12000
+* Improved stability
+
 ### v3.6.1 (Jun 26, 2023)
 * Improved stability of file cache logic
 

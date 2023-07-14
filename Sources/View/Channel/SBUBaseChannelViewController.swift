@@ -432,7 +432,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         case .etc, .pdf, .video, .audio:
             SBUCacheManager.File.loadFile(
                 urlString: fileMessage.url,
-                cacheKey: fileMessage.requestId,
+                cacheKey: fileMessage.cacheKey,
                 fileName: fileMessage.name
             ) { fileURL, _ in
                 SBULoading.stop()

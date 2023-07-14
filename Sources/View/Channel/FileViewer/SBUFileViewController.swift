@@ -143,7 +143,11 @@ open class SBUFileViewController: SBUBaseViewController, UIScrollViewDelegate, S
         }
         
         guard let urlString = urlString else { return }
-        self.imageView.loadImage(urlString: urlString, cacheKey: self.fileMessage?.requestId)
+        self.imageView.loadImage(
+            urlString: urlString,
+            cacheKey: self.fileMessage?.cacheKey,
+            subPath: self.fileMessage?.channelURL ?? ""
+        )
         
         if let fileMessage = fileMessage {
             SBUCacheManager.Image.preSave(fileMessage: fileMessage)
@@ -256,10 +260,9 @@ open class SBUFileViewController: SBUBaseViewController, UIScrollViewDelegate, S
     
     @objc
     open func onClickDownload(sender: UIButton) {
-        guard let fileMessage = self.fileMessage,
-              let url = URL(string: fileMessage.url) else { return }
+        guard let fileMessage = self.fileMessage else { return }
         
-        SBUDownloadManager.saveImage(parent: self, url: url, fileName: fileMessage.requestId)
+        SBUDownloadManager.saveImage(with: fileMessage, parent: self)
     }
     
     @objc

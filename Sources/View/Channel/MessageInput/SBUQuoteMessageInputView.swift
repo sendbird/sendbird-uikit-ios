@@ -258,7 +258,9 @@ open class SBUQuoteMessageInputView: SBUView, SBUQuoteMessageInputViewProtocol {
         self.fileMessagePreview.loadImage(
             urlString: fileMessage.url,
             option: imageOption,
-            thumbnailSize: thumbnailSize
+            thumbnailSize: thumbnailSize,
+            cacheKey: fileMessage.cacheKey,
+            subPath: fileMessage.channelURL
         )
     }
     

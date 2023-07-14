@@ -1725,7 +1725,7 @@ extension UIKit.UIImageView {
     }
   }
   @discardableResult
-  @_Concurrency.MainActor(unsafe) public func loadImage(urlString: Swift.String, placeholder: UIKit.UIImage? = nil, errorImage: UIKit.UIImage? = nil, option: UIKit.UIImageView.ImageOption = .original, thumbnailSize: CoreFoundation.CGSize? = nil, tintColor: UIKit.UIColor? = nil, cacheKey: Swift.String? = nil, completion: ((Swift.Bool) -> Swift.Void)? = nil) -> Foundation.URLSessionTask?
+  @_Concurrency.MainActor(unsafe) public func loadImage(urlString: Swift.String, placeholder: UIKit.UIImage? = nil, errorImage: UIKit.UIImage? = nil, option: UIKit.UIImageView.ImageOption = .original, thumbnailSize: CoreFoundation.CGSize? = nil, tintColor: UIKit.UIColor? = nil, cacheKey: Swift.String? = nil, subPath: Swift.String = "", completion: ((Swift.Bool) -> Swift.Void)? = nil) -> Foundation.URLSessionTask?
 }
 @_hasMissingDesignatedInitializers public class SBUUtils {
   public static func getFileType(by fileMessage: SendbirdChatSDK.FileMessage) -> SendbirdUIKit.SBUMessageFileType
@@ -2536,8 +2536,8 @@ extension UIKit.UIImageView {
 }
 @_hasMissingDesignatedInitializers public class SBUPendingMessageManager {
   public static let shared: SendbirdUIKit.SBUPendingMessageManager
-  public func addFileInfo(requestId: Swift.String?, params: SendbirdChatSDK.FileMessageCreateParams?, forMessageThread: Swift.Bool = false)
-  public func getFileInfo(requestId: Swift.String?, forMessageThread: Swift.Bool = false) -> SendbirdChatSDK.FileMessageCreateParams?
+  public func addFileInfo(requestId: Swift.String, params: SendbirdChatSDK.FileMessageCreateParams?, forMessageThread: Swift.Bool = false)
+  public func getFileInfo(requestId: Swift.String, forMessageThread: Swift.Bool = false) -> SendbirdChatSDK.FileMessageCreateParams?
   @objc deinit
 }
 public protocol SBUOpenChannelSettingsModuleListDelegate : SendbirdUIKit.SBUBaseChannelSettingsModuleListDelegate {
@@ -8014,7 +8014,7 @@ extension SendbirdUIKit.SBUGroupChannelSettingsModule {
 }
 extension UIKit.UIButton {
   @discardableResult
-  @_Concurrency.MainActor(unsafe) public func loadImage(urlString: Swift.String, placeholder: UIKit.UIImage? = nil, errorImage: UIKit.UIImage? = nil, tintColor: UIKit.UIColor? = nil, for state: UIKit.UIControl.State, completion: ((Swift.Bool) -> Swift.Void)? = nil) -> Foundation.URLSessionTask?
+  @_Concurrency.MainActor(unsafe) public func loadImage(urlString: Swift.String, placeholder: UIKit.UIImage? = nil, errorImage: UIKit.UIImage? = nil, tintColor: UIKit.UIColor? = nil, for state: UIKit.UIControl.State, cacheKey: Swift.String? = nil, subPath: Swift.String, completion: ((Swift.Bool) -> Swift.Void)? = nil) -> Foundation.URLSessionTask?
 }
 @objc public enum SBUMessageInputMode : Swift.Int {
   case none

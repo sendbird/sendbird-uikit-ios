@@ -721,7 +721,7 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
         deletedMessages messages: [BaseMessage]
     ) {
         for message in messages {
-            self.listComponent?.pauseVoicePlayer(requestId: message.requestId)
+            self.listComponent?.pauseVoicePlayer(cacheKey: message.cacheKey)
         }
     }
     

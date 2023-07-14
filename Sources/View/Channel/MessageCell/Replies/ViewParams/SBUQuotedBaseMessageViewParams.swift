@@ -104,13 +104,16 @@ public class SBUQuotedBaseMessageViewParams {
     }
     
     // MARK: - Internal (only for Swift)
+    let message: BaseMessage
+    
     let messageType: QuotedMessageType
     
-    let requestId: String?
+    let requestId: String
     
     var metaArrays: [MessageMetaArray]?
     
     public init(message: BaseMessage, position: MessagePosition, useQuotedMessage: Bool, joinedAt: Int64 = 0) {
+        self.message = message
         self.messageId = message.parentMessageId
         if let quotedMessageSender = message.parentMessage?.sender {
             let isRepliedToMe = quotedMessageSender.userId == SBUGlobals.currentUser?.userId
@@ -162,6 +165,7 @@ public class SBUQuotedBaseMessageViewParams {
     
     // MARK: Test model
     public init(messageId: Int64, messagePosition: MessagePosition, quotedMessageNickname: String, replierNickname: String, text: String, useQuotedMessage: Bool = true, quotedMessageCreatedAt: Int64) {
+        self.message = BaseMessage.make(["message": "deprecated"])!
         self.messageId = messageId
         self.messagePosition = messagePosition
         self.quotedMessageNickname = quotedMessageNickname
@@ -169,11 +173,12 @@ public class SBUQuotedBaseMessageViewParams {
         self.text = text
         self.messageType = .userMessage
         self.useQuotedMessage = useQuotedMessage
-        self.requestId = nil
+        self.requestId = ""
         self.quotedMessageCreatedAt = quotedMessageCreatedAt
     }
     
     public init(messageId: Int64, messagePosition: MessagePosition, quotedMessageNickname: String, replierNickname: String, name: String, type: String, urlString: String, useQuotedMessage: Bool = true, quotedMessageCreatedAt: Int64) {
+        self.message = BaseMessage.make(["message": "deprecated"])!
         self.messageId = messageId
         self.messagePosition = messagePosition
         self.quotedMessageNickname = quotedMessageNickname
@@ -181,7 +186,7 @@ public class SBUQuotedBaseMessageViewParams {
         self.text = nil
         self.messageType = .fileMessage(name, type, urlString)
         self.useQuotedMessage = useQuotedMessage
-        self.requestId = nil
+        self.requestId = ""
         self.quotedMessageCreatedAt = quotedMessageCreatedAt
     }
 }

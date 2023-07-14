@@ -16,6 +16,14 @@ class SBUCacheManager {
     
     static internal let fileCacheQueue = DispatchQueue(label: "com.sendbird.cache.file", qos: .background)
     
+    // MARK: - SubPath
+    struct PathType {
+        static let template = "template"
+        static let userProfile = "user-profile"
+        static let reaction = "reaction"
+        static let web = "web"
+    }
+    
     // MARK: - Common
     static func createHashName(urlString: String) -> String {
         return "\(urlString.persistantHash)"
@@ -33,40 +41,29 @@ class SBUCacheManager {
         private let cacheType: String
         private let diskQueue = DispatchQueue(label: "\(SBUConstant.bundleIdentifier).queue.diskcache", qos: .background)
         
-//        lazy var urlCache: URLCache = {
-//            if #available(iOS 13.0, *) {
-//                return URLCache(memoryCapacity: 10000000, diskCapacity: 1000000000, directory: self.cachePathURL())
-//            } else {
-//                return URLCache(memoryCapacity: 10000000, diskCapacity: 1000000000, diskPath: self.cachePathURL().path)
-//            }
-//        }()
-//        
-//        lazy var session: URLSession = {
-//            let config = URLSessionConfiguration.default
-//            config.urlCache = self.urlCache
-//            return URLSession(configuration: config)
-//        }()
-//        
-        
         // MARK: - Initializers
         init(cacheType: String) {
             self.cacheType = cacheType
             
+            do {
+                try self.createDirectoryIfNeeded()
+            } catch {
+                SBULog.error(error.localizedDescription)
+            }
+        }
+        
+        func createDirectoryIfNeeded() throws {
             let cachePath = self.cachePathURL().path
             
             if self.fileManager.fileExists(atPath: cachePath) {
                 return
             }
             
-            do {
-                try self.fileManager.createDirectory(
-                    atPath: cachePath,
-                    withIntermediateDirectories: true,
-                    attributes: nil
-                )
-            } catch {
-                SBULog.error(error.localizedDescription)
-            }
+            try self.fileManager.createDirectory(
+                atPath: cachePath,
+                withIntermediateDirectories: true,
+                attributes: nil
+            )
         }
         
         func cacheExists(key: String) -> Bool {

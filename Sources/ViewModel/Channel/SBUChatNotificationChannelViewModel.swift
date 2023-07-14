@@ -347,7 +347,9 @@ class SBUChatNotificationChannelViewModel: NSObject {
             if error.code == ChatError.nonAuthorized.rawValue {
                 self.delegate?.chatNotificationChannelViewModel(self, shouldDismissForChannel: nil)
             } else {
-                if SendbirdChat.isLocalCachingEnabled {
+                if SendbirdChat.isLocalCachingEnabled &&
+                    error.code == ChatError.networkError.rawValue &&
+                    channel != nil {
                     return true
                 } else {
                     self.delegate?.didReceiveError(error, isBlocker: true)
@@ -552,10 +554,11 @@ class SBUChatNotificationChannelViewModel: NSObject {
         
         for (index, notification) in self.notifications.enumerated() {
             for notificationId in notificationIds {
-                guard notification.messageId == notificationId else { continue }
+                guard notification.messageId == notificationId,
+                      notification.isMessageIdValid else { continue }
                 toBeDeleteIndexes.append(index)
                 
-                guard notification.requestId.count > 0 else { continue }
+                guard notification.isRequestIdValid else { continue }
                 
                 switch notification {
                 case let adminMessage as AdminMessage:

@@ -36,6 +36,7 @@ open class SBUOpenChannelCommonContentView: SBUCommonContentView {
         super.configure(message: message, position: position)
         
         if self.message?.requestId != message.requestId ||
+            !message.isRequestIdValid || 
             self.message?.updatedAt != message.updatedAt {
             self.fileImageView.image = nil
         }

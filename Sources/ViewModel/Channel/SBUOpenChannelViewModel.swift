@@ -487,12 +487,12 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
             return
             
         } else {
-            self.pendingMessageManager.removePendingMessage(
-                channelURL: message?.channelURL,
-                requestId: message?.requestId
-            )
-            
             guard let message = message else { return }
+            
+            self.pendingMessageManager.removePendingMessage(
+                channelURL: message.channelURL,
+                requestId: message.requestId
+            )
             
             SBULog.info("[Succeed] Resend failed file message: \(message.description)")
             
@@ -727,13 +727,14 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
                 SBULog.error("[Failed] Send user message request: \(error.localizedDescription)")
                 return
             }
+
+            guard let userMessage = userMessage else { return }
             
             self.pendingMessageManager.removePendingMessage(
-                channelURL: userMessage?.channelURL,
-                requestId: userMessage?.requestId
+                channelURL: userMessage.channelURL,
+                requestId: userMessage.requestId
             )
             
-            guard let userMessage = userMessage else { return }
             SBULog.info("[Succeed] Send user message: \(userMessage.description)")
             self.upsertMessagesInList(messages: [userMessage], needReload: true)
         }
@@ -763,17 +764,17 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
                 )
                 return
             }
+
+            guard let fileMessage = fileMessage else { return }
             
             self.pendingMessageManager.removePendingMessage(
-                channelURL: fileMessage?.channelURL,
-                requestId: fileMessage?.requestId
+                channelURL: fileMessage.channelURL,
+                requestId: fileMessage.requestId
             )
             
-            guard let message = fileMessage else { return }
+            SBULog.info("[Succeed] Send file message: \(fileMessage.description)")
             
-            SBULog.info("[Succeed] Send file message: \(message.description)")
-            
-            self.upsertMessagesInList(messages: [message], needReload: true)
+            self.upsertMessagesInList(messages: [fileMessage], needReload: true)
         }
     }
     

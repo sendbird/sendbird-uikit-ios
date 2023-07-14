@@ -160,7 +160,8 @@ open class SBUThreadInfoView: SBUView, SBUThreadInfoViewProtocol {
                 placeholder: SBUIconSetType.iconUser.image(
                     with: self.theme.userPlaceholderTintColor,
                     to: SBUIconSetType.Metric.defaultIconSize
-                )
+                ),
+                subPath: SBUCacheManager.PathType.userProfile
             )
             userImageView.backgroundColor = theme.userPlaceholderBackgroundColor
             

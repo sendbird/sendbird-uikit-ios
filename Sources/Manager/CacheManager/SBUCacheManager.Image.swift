@@ -18,37 +18,71 @@ extension SBUCacheManager {
         static let memoryCache = MemoryCache()
         
         @discardableResult
-        static func save(image: UIImage, fileName: String, completionHandler: SBUCacheCompletionHandler? = nil) -> UIImage? {
+        static func save(
+            image: UIImage,
+            fileName: String,
+            subPath: String,
+            completionHandler: SBUCacheCompletionHandler? = nil
+        ) -> UIImage? {
             guard let data = image.jpegData(compressionQuality: 1.0) else { return image }
-            self.memoryCache.set(key: fileName, image: image)
-            self.diskCache.set(key: fileName, data: data as NSData, completionHandler: completionHandler)
+            
+            let key = key(fileName: fileName, subPath: subPath)
+            self.memoryCache.set(key: key, image: image)
+            self.diskCache.set(key: key, data: data as NSData, completionHandler: completionHandler)
             return image
         }
         
         @discardableResult
-        static func save(data: Data?, fileName: String, completionHandler: SBUCacheCompletionHandler? = nil) -> UIImage? {
-            return save(nsdata: data as NSData?, fileName: fileName, completionHandler: completionHandler)
+        static func save(
+            data: Data?,
+            fileName: String,
+            subPath: String,
+            completionHandler: SBUCacheCompletionHandler? = nil
+        ) -> UIImage? {
+            return save(
+                nsdata: data as NSData?,
+                fileName: fileName,
+                subPath: subPath,
+                completionHandler: completionHandler
+            )
         }
         
-        static func save(nsdata: NSData?, fileName: String, completionHandler: SBUCacheCompletionHandler? = nil) -> UIImage? {
+        static func save(
+            nsdata: NSData?,
+            fileName: String,
+            subPath: String,
+            completionHandler: SBUCacheCompletionHandler? = nil
+        ) -> UIImage? {
             guard let data = nsdata else { return nil }
             guard let image = UIImage.createImage(from: data as Data) else { return nil }
-            self.memoryCache.set(key: fileName, image: image)
-            self.diskCache.set(key: fileName, data: data, completionHandler: completionHandler)
+
+            let key = key(fileName: fileName, subPath: subPath)
+            self.memoryCache.set(key: key, image: image)
+            self.diskCache.set(key: key, data: data, completionHandler: completionHandler)
             return image
         }
         
-        static func preSave(fileMessage: FileMessage, isQuotedImage: Bool? = false, completionHandler: SBUCacheCompletionHandler? = nil) {
+        static func preSave(
+            fileMessage: FileMessage,
+            isQuotedImage: Bool? = false,
+            completionHandler: SBUCacheCompletionHandler? = nil
+        ) {
             if let messageParams = fileMessage.messageParams as? FileMessageCreateParams {
                 var fileName = self.createCacheFileName(
                     urlString: fileMessage.url,
-                    cacheKey: fileMessage.requestId
+                    cacheKey: fileMessage.cacheKey,
+                    fileNameForExtension: fileMessage.name
                 )
                 if isQuotedImage == true { fileName = "quoted_\(fileName)" }
                 
                 switch SBUUtils.getFileType(by: fileMessage) {
                 case .image:
-                    self.save(data: messageParams.file, fileName: fileName, completionHandler: completionHandler)
+                    self.save(
+                        data: messageParams.file,
+                        fileName: fileName,
+                        subPath: fileMessage.channelURL,
+                        completionHandler: completionHandler
+                    )
                 case .video:
                     guard let asset = messageParams.file?.getAVAsset() else { break }
                     
@@ -61,18 +95,24 @@ extension SBUCacheManager {
                     }
                     
                     let image = UIImage(cgImage: cgImage)
-                    self.save(image: image, fileName: fileName, completionHandler: completionHandler)
+                    self.save(
+                        image: image,
+                        fileName: fileName,
+                        subPath: fileMessage.channelURL,
+                        completionHandler: completionHandler
+                    )
                 default:
                     break
                 }
             }
         }
         
-        static func get(fileName: String) -> UIImage? {
-            if let memoryImage = self.memoryCache.get(key: fileName) {
+        static func get(fileName: String, subPath: String) -> UIImage? {
+            let key = key(fileName: fileName, subPath: subPath)
+            if let memoryImage = self.memoryCache.get(key: key) {
                 return memoryImage
-            } else if let diskData = self.diskCache.get(key: fileName) {
-                self.memoryCache.set(key: fileName, data: diskData)
+            } else if let diskData = self.diskCache.get(key: key) {
+                self.memoryCache.set(key: key, data: diskData)
                 return UIImage.createImage(from: diskData as Data)
             } else {
                 /**
@@ -97,9 +137,17 @@ extension SBUCacheManager {
             }
         }
         
-        static func createCacheFileName(urlString: String, cacheKey: String?, needPathExtension: Bool = true) -> String {
+        static func createCacheFileName(
+            urlString: String,
+            cacheKey: String?,
+            fileNameForExtension: String? = nil,
+            needPathExtension: Bool = true
+        ) -> String {
             var fileName = SBUCacheManager.createHashName(urlString: urlString)
-            let pathExtension = SBUCacheManager.fileExtension(urlString: urlString)
+            var pathExtension = SBUCacheManager.fileExtension(urlString: urlString)
+            if pathExtension.isEmpty {
+                pathExtension = SBUCacheManager.fileExtension(urlString: fileNameForExtension ?? "")
+            }
             if let cacheKey = cacheKey, !cacheKey.isEmpty {
                 self.renameIfNeeded(key: fileName, newKey: cacheKey)
                 fileName = cacheKey
@@ -129,6 +177,11 @@ extension SBUCacheManager {
             return self.memoryCache.cacheExists(key: fileName)
             ? true
             : self.diskCache.cacheExists(key: fileName)
+        }
+        
+        static func key(fileName: String, subPath: String) -> String {
+            let key = "\(subPath)\(!subPath.isEmpty ? "/" : "")\(fileName)"
+            return key
         }
     }
 }

@@ -893,7 +893,7 @@ extension SBUBaseChannelModule {
             
         }
         
-        /// Sets images in file message cell.
+        /// Sets images in file message cell. (for not succeeded message)
         /// - Parameters:
         ///   - cell: File message cell
         ///   - fileMessage: File message object

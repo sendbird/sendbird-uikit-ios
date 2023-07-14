@@ -24,8 +24,8 @@ public class SBUPendingMessageManager {
     /// message requestId : file params
     private var pendingThreadFileInfos: [String: FileMessageCreateParams] = [:]
     
-    public func addFileInfo(requestId: String?, params: FileMessageCreateParams?, forMessageThread: Bool = false) {
-        guard let requestId = requestId, !requestId.isEmpty, let params = params else { return }
+    public func addFileInfo(requestId: String, params: FileMessageCreateParams?, forMessageThread: Bool = false) {
+        guard !requestId.isEmpty, let params = params else { return }
         if forMessageThread {
             self.pendingThreadFileInfos[requestId] = params
         } else {
@@ -33,8 +33,8 @@ public class SBUPendingMessageManager {
         }
     }
     
-    public func getFileInfo(requestId: String?, forMessageThread: Bool = false) -> FileMessageCreateParams? {
-        guard let requestId = requestId, !requestId.isEmpty else { return nil }
+    public func getFileInfo(requestId: String, forMessageThread: Bool = false) -> FileMessageCreateParams? {
+        guard !requestId.isEmpty else { return nil }
         if forMessageThread {
             return self.pendingThreadFileInfos[requestId]
         } else {
@@ -43,8 +43,9 @@ public class SBUPendingMessageManager {
     }
     
     func upsertPendingMessage(channelURL: String?, message: BaseMessage?, forMessageThread: Bool = false) {
-        guard let channelURL = channelURL, let message = message else { return }
-        guard !message.requestId.isEmpty else { return }
+        guard let channelURL = channelURL,
+              let message = message,
+              message.isRequestIdValid else { return }
         
         if forMessageThread {
             var pendingDict = self.pendingThreadMessages[channelURL] ?? [:]
@@ -68,9 +69,8 @@ public class SBUPendingMessageManager {
         }
     }
     
-    func removePendingMessage(channelURL: String?, requestId: String?, forMessageThread: Bool = false) {
+    func removePendingMessage(channelURL: String?, requestId: String, forMessageThread: Bool = false) {
         guard let channelURL = channelURL,
-              let requestId = requestId,
               !requestId.isEmpty,
               var pendingDict = (forMessageThread == true)
                 ? self.pendingThreadMessages[channelURL]
@@ -90,9 +90,8 @@ public class SBUPendingMessageManager {
         }
     }
     
-    func removePendingMessageAllTypes(channelURL: String?, requestId: String?) {
+    func removePendingMessageAllTypes(channelURL: String?, requestId: String) {
         guard let channelURL = channelURL,
-              let requestId = requestId,
                 !requestId.isEmpty else {
             return
         }

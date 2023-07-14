@@ -94,7 +94,10 @@ public class SendbirdUI {
             completionHandler(nil)
 
             // Call after initialization
+            let sdkInfo = __SendbirdSDKInfo(product: .uikitChat, platform: .ios, version: SendbirdUI.shortVersion)
+            _ = SendbirdChat.__addSendbirdExtensions(extensions: [sdkInfo], customData: nil)
             SendbirdChat.__addExtension(SBUConstant.extensionKeyUIKit, version: SendbirdUI.shortVersion)
+
             SendbirdChatOptions.setMemberInfoInMessage(true)
         }
     }
