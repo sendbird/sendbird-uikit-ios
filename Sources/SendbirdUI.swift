@@ -159,7 +159,12 @@ public class SendbirdUI {
         
         let userId = currentUser.userId.trimmingCharacters(in: .whitespacesAndNewlines)
         let nickname = currentUser.nickname?.trimmingCharacters(in: .whitespacesAndNewlines)
-        SendbirdChat.connect(userId: userId, authToken: SBUGlobals.accessToken) { [userId, nickname] user, error in
+        
+        // TODO: Reset when the test server is no longer needed
+        SendbirdChat.connect(
+            userId: userId,
+            authToken: SBUGlobals.accessToken
+        ) { [userId, nickname] user, error in
             defer {
                 SBUEmojiManager.loadAllEmojis { _, _ in }
             }

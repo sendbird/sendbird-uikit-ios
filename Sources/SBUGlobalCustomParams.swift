@@ -147,4 +147,36 @@ public class SBUGlobalCustomParams {
     /// ```
     /// - Since: 1.2.2
     public static var messageListParamsBuilder: ((_ params: MessageListParams?) -> Void)?
+    
+    // MARK: - Card List
+    /// The closure that has `message.data` as a parameter named `messageData` and returns ``SBUCardViewParams`` array.
+    /// - Important: Use ``SBUCardListData`` to parse the value for `"recommends"` key in `messageData`. ``SBUCardListData`` uses generic type for ``SBUCardListData/recommends`` and the type should conform to `Codable`
+    /// - Note: When the message is sent by the chat bot, use `lowercased()` to `messageData` because the case-sensitive is not guaranteed.
+    /// - Parameter messageData: The string value that represents `message.data`. Use ``SBUCardListData`` to parse the value for `"recommends"` key in `messageData`.
+    /// - Returns: The array of ``SBUCardViewParams``.
+    /// ```swift
+    /// // `SBUCardListData` --> `[Event]` --> `[SBUCardViewParams]`
+    /// SBUGlobalCustomParams.cardViewParamsCollectionBuilder = { messageData in
+    ///     // Use `SBUCardListData` generic struct when parsing the `messageData`
+    ///     // When the message is sent by the chat bot, use `lowercased()` to `messageData` because the case-sensitive is not guaranteed.
+    ///     let cardListData = try JSONDecoder().decode(
+    ///         SBUCardListData<{DataType}>.self,
+    ///         from: messageData.data(using: .utf8)!
+    ///     )
+    ///     let recommends = cardListData.recommends // array of {DataType}
+    ///     let items = recommends.compactMap { recommend in // type of {DataType}
+    ///         SBUCardViewParams(
+    ///             imageURL: {imageURL},
+    ///             title: {title},
+    ///             subtitle: {subtitle},
+    ///             description: {description},
+    ///             link: {link}}
+    ///         )
+    ///     }
+    ///     return items
+    /// }
+    /// ```
+    /// - SeeAlso: ``SBUCardListData``
+    /// - Since: 3.7.0
+    public static var cardViewParamsCollectionBuilder: ((_ messageData: String) throws -> [SBUCardViewParams])?
 }

@@ -515,6 +515,7 @@ extension SendbirdChatSDK.PreviousMessageListQuery {
   @objc final public let isActive: Swift.Bool
   @objc final public let friendDiscoveryKey: Swift.String?
   @objc final public let friendName: Swift.String?
+  @objc final public let isBot: Swift.Bool
   @objc open var preferredLanguages: [Swift.String]? {
     get
   }
@@ -1563,7 +1564,7 @@ extension SendbirdChatSDK.PollRetrievalParams : Swift.Encodable {
     get
   }
   @objc public var uploadSizeLimit: Swift.Int64 {
-    get
+    @objc get
   }
   @objc public var premiumFeatureList: [Swift.String]? {
     get

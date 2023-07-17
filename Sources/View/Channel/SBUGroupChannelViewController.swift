@@ -582,6 +582,15 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         )
     }
     
+    /// Called when one of the quick reply options is tapped.
+    /// - Parameters:
+    ///    - text: The reply text that is selected by user
+    /// - Note: As a default, it sends user message with `text` by using ``viewModel``
+    /// - Since: 3.7.0
+    open func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didSelectQuickReplyOption text: String) {
+        self.viewModel?.sendUserMessage(text: text)
+    }
+    
     open override func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didTapVoiceMessage fileMessage: FileMessage, cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         super.baseChannelModule(listComponent, didTapVoiceMessage: fileMessage, cell: cell, forRowAt: indexPath)
         

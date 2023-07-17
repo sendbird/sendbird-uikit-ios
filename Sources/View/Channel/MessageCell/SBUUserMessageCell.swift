@@ -34,6 +34,28 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
         return webView
     }()
     
+    // MARK: - Quick Reply
+    
+    /// The boolean value whether the ``quickReplyView`` instance should appear or not. The default is `true`
+    /// - Important: If it's true, ``quickReplyView`` never appears even if the ``userMessage`` has quick reply options.
+    /// - Since: 3.7.0
+    public private(set) var shouldHideQuickReply: Bool = true
+    
+    /// ``SBUQuickReplyView`` instance.
+    /// - Since: 3.7.0
+    public private(set) var quickReplyView: SBUQuickReplyView?
+    
+    /// The action of ``SBUQuickReplyView`` that is called when a ``SBUQuickReplyOptionView`` is selected.
+    /// - Parameter selectedOptionView: The selected ``SBUQuickReplyOptionView`` object.
+    /// - Since: 3.7.0
+    public var quickReplySelectHandler: ((_ selectedOptionView: SBUQuickReplyOptionView) -> Void)?
+    
+    // MARK: - Card List
+    
+    /// ``SBUCardListView`` instance.
+    /// - Since: 3.7.0
+    public private(set) var cardListView: SBUCardListView?
+    
     // MARK: - View Lifecycle
     open override func setupViews() {
         super.setupViews()
@@ -111,9 +133,32 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
         self.useQuotedMessage = configuration.useQuotedMessage
         
         self.useThreadInfo = configuration.useThreadInfo
+        self.shouldHideQuickReply = configuration.shouldHideQuickReply
         
         // Configure Content base message cell
         super.configure(with: configuration)
+        
+        // MARK: Quick Reply
+        
+        if let quickReplyView = self.quickReplyView {
+            quickReplyView.removeFromSuperview()
+            self.quickReplyView = nil
+        }
+        
+        if let replyOptions = message.quickReply?.options, !replyOptions.isEmpty {
+            self.updateQuickReplyView(with: replyOptions)
+        }
+        
+        // MARK: Card List
+        if let cardListView = self.cardListView {
+            self.contentVStackView.removeArrangedSubview(cardListView)
+        }
+        
+        if let items = try? SBUGlobalCustomParams.cardViewParamsCollectionBuilder?(message.data) {
+            self.addCardListView(with: items)
+        } else {
+            self.cardListView = nil
+        }
         
         // Set up message position of additionContainerView(reactionView)
         self.additionContainerView.position = self.position
@@ -138,6 +183,8 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
             self.additionContainerView.removeArrangedSubview(self.webView)
             self.webView.isHidden = true
         }
+        
+        self.layoutIfNeeded()
     }
     
     @available(*, deprecated, renamed: "configure(with:)") // 2.2.0
@@ -218,9 +265,66 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
         url.open()
     }
     
+    // MARK: - Quick Reply
+    public func updateQuickReplyView(with options: [String]) {
+        if shouldHideQuickReply { return }
+        guard let messageId = self.message?.messageId else { return }
+        let quickReplyView = SBUQuickReplyView()
+        let configuration = SBUQuickReplyViewParams(
+            messageId: messageId,
+            replyOptions: options
+        )
+        quickReplyView.configure(with: configuration, delegate: self)
+        self.userNameStackView.addArrangedSubview(quickReplyView)
+        quickReplyView.sbu_constraint(equalTo: self.userNameStackView, leading: 0, trailing: 0)
+        
+        self.quickReplyView = quickReplyView
+        
+        self.layoutIfNeeded()
+    }
+    
+    // MARK: - Card List
+    public func addCardListView(with items: [SBUCardViewParams]) {
+        guard let messageId = self.message?.messageId else { return }
+        let cardListView = SBUCardListView()
+        let configuration = SBUCardListViewParams(
+            messageId: messageId,
+            items: items
+        )
+        cardListView.configure(with: configuration)
+        self.contentVStackView.addArrangedSubview(cardListView)
+        
+        if let constraints = self.cardListView?.constraints {
+            self.cardListView?.removeConstraints(constraints)            
+        }
+        switch self.position {
+        case .right:
+            cardListView.sbu_constraint(equalTo: self.mainContainerView, leading: 0)
+            cardListView.sbu_constraint(equalTo: self.contentVStackView, trailing: 0)
+        default:
+            cardListView.sbu_constraint(equalTo: self.contentVStackView, leading: 0)
+            cardListView.sbu_constraint(equalTo: self.mainContainerView, trailing: 0)
+        }
+        
+        self.cardListView = cardListView
+        
+        self.layoutIfNeeded()
+    }
+    
     // MARK: - Mention
     /// As a default, it calls `groupChannelModule(_:didTapMentionUser:)` in ``SBUGroupChannelModuleListDelegate``.
     open func userMessageTextView(_ textView: SBUUserMessageTextView, didTapMention user: SBUUser) {
         self.mentionTapHandler?(user)
+    }
+}
+
+extension SBUUserMessageCell: SBUQuickReplyViewDelegate {
+    public func quickReplyView(_ view: SBUQuickReplyView, didSelectOption optionView: SBUQuickReplyOptionView) {
+        self.quickReplyView?.removeFromSuperview()
+        self.quickReplyView = nil
+        
+        self.layoutIfNeeded()
+        
+        self.quickReplySelectHandler?(optionView)
     }
 }

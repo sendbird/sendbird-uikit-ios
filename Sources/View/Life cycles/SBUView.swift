@@ -12,7 +12,7 @@ import UIKit
 /// - Since: 2.2.0
 
 @IBDesignable
-open class SBUView: UIView {
+open class SBUView: UIView, SBUViewLifeCycle {
     /// Initializes `UIView` and set up subviews, auto layouts and actions for SendbirdUIKit.
     public init() {
         super.init(frame: .zero)
@@ -44,9 +44,8 @@ open class SBUView: UIView {
         super.layoutSubviews()
         self.setupStyles()
     }
-}
-
-extension SBUView: SBUViewLifeCycle {
+    
+    // MARK: - SBUViewLifeCycle
     open func setupViews() { }
     
     open func setupLayouts() { }

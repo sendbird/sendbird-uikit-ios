@@ -188,7 +188,10 @@ public struct SBUUserMessageTextViewModel {
         }
     }
     
+    /// Adds ``SBUStringSet/Message_Edited`` string to the end of the message.
+    /// - Important: If the message sender is a chat bot, it finishes immediately.
     public func addEditedStateIfNeeded(with attributedString: NSMutableAttributedString) {
+        if self.message?.sender?.isBot == true { return }
         if let editTextColor = editTextColor, edited {
             let editedAttributedString = NSMutableAttributedString(
                 string: " " + SBUStringSet.Message_Edited,

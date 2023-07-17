@@ -44,6 +44,12 @@ public protocol SBUGroupChannelModuleListDelegate: SBUBaseChannelModuleListDeleg
     /// - Parameter threadInfoView: The `SBUThreadInfoView` object from the tapped thread info.
     /// - Since: 3.3.0
     func groupChannelModuleDidTapThreadInfoView(_ threadInfoView: SBUThreadInfoView)
+    
+    /// Called when one of the quick reply options is tapped.
+    /// - Parameters:
+    ///    - text: The reply text that is selected by user
+    /// - Since: 3.7.0
+    func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didSelectQuickReplyOption text: String)
 }
 
 /// Methods to get data source for list component in a group channel.
@@ -406,6 +412,7 @@ extension SBUGroupChannelModule {
                     
                     // User message
                 case let (userMessage, userMessageCell) as (UserMessage, SBUUserMessageCell):
+                    let isLatestUserMessage = userMessage.messageId == fullMessageList.filter({ $0.sender != nil }).first?.messageId
                     let configuration = SBUUserMessageCellParams(
                         message: userMessage,
                         hideDateView: isSameDay,
@@ -414,12 +421,17 @@ extension SBUGroupChannelModule {
                         receiptState: receiptState,
                         useReaction: useReaction,
                         withTextView: true,
-                        joinedAt: self.channel?.joinedAt ?? 0
+                        joinedAt: self.channel?.joinedAt ?? 0,
+                        shouldHideQuickReply: !isLatestUserMessage
                     )
                     userMessageCell.configure(with: configuration)
                     userMessageCell.configure(highlightInfo: self.highlightInfo)
                     (userMessageCell.quotedMessageView as? SBUQuotedBaseMessageView)?.delegate = self
                     (userMessageCell.threadInfoView as? SBUThreadInfoView)?.delegate = self
+                    userMessageCell.quickReplySelectHandler = { optionView in
+                        guard let text = optionView.text else { return }
+                        self.delegate?.groupChannelModule(self, didSelectQuickReplyOption: text)
+                    }
                     self.setMessageCellAnimation(userMessageCell, message: userMessage, indexPath: indexPath)
                     self.setMessageCellGestures(userMessageCell, message: userMessage, indexPath: indexPath)
                     

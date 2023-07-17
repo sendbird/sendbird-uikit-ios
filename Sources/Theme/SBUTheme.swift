@@ -1386,6 +1386,9 @@ public class SBUMessageCellTheme {
         theme.playerPlayButtonTintColor = SBUColorSet.primary300
         theme.playerPauseButtonTintColor = SBUColorSet.primary300
         
+        // Card view
+        theme.selectableTitleFont = SBUFontSet.button2
+        
         return theme
     }
     
@@ -1523,6 +1526,9 @@ public class SBUMessageCellTheme {
         theme.playerLoadingButtonTintColor = SBUColorSet.primary300
         theme.playerPlayButtonTintColor = SBUColorSet.primary200
         theme.playerPauseButtonTintColor = SBUColorSet.primary200
+        
+        // Card view
+        theme.selectableTitleFont = SBUFontSet.button2
         
         return theme
     }
@@ -1662,6 +1668,9 @@ public class SBUMessageCellTheme {
         theme.playerPlayButtonTintColor = SBUColorSet.primary200
         theme.playerPauseButtonTintColor = SBUColorSet.primary200
         
+        // Card view
+        theme.selectableTitleFont = SBUFontSet.button2
+        
         return theme
     }
     
@@ -1755,7 +1764,8 @@ public class SBUMessageCellTheme {
                 statusButtonBackgroundColor: UIColor = SBUColorSet.background50,
                 loadingButtonTintColor: UIColor = SBUColorSet.primary200,
                 playButtonTintColor: UIColor = SBUColorSet.primary300,
-                pauseButtonTintColor: UIColor = SBUColorSet.primary300
+                pauseButtonTintColor: UIColor = SBUColorSet.primary300,
+                selectableTitleFont: UIFont = SBUFontSet.button2
     ) {
         
         self.backgroundColor = backgroundColor
@@ -1861,6 +1871,9 @@ public class SBUMessageCellTheme {
         self.playerLoadingButtonTintColor = loadingButtonTintColor
         self.playerPlayButtonTintColor = playButtonTintColor
         self.playerPauseButtonTintColor = pauseButtonTintColor
+        
+        // MARK: Card view
+        self.selectableTitleFont = selectableTitleFont
     }
     
     public var backgroundColor: UIColor
@@ -2037,6 +2050,9 @@ public class SBUMessageCellTheme {
     public var playerLoadingButtonTintColor: UIColor
     public var playerPlayButtonTintColor: UIColor
     public var playerPauseButtonTintColor: UIColor
+    
+    // MARK: - Card view
+    public var selectableTitleFont: UIFont
 }
 
 // MARK: - User List Theme

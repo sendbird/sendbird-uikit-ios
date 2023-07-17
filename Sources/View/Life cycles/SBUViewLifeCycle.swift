@@ -12,7 +12,6 @@ import Foundation
 ///
 /// - Since: 2.2.0
 
-@objc
 public protocol SBUViewLifeCycle {
     /// This function handles the initialization of views.
     func setupViews()
