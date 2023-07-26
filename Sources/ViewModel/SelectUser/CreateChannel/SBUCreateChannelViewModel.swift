@@ -218,6 +218,31 @@ open class SBUCreateChannelViewModel {
     ///   - messageListParams: If there is a messageListParams set directly for use in Channel, set it up here
     public func createChannel(params: GroupChannelCreateParams,
                               messageListParams: MessageListParams? = nil) {
+        
+        let data: [String: Any] = [
+            "first_message_data": [
+                [
+                    "data": [
+                        "options": [
+                            "Check the order",
+                            "Cancel the order",
+                            "Check order details"
+                        ]
+                    ],
+                    "message": "Hello! I'm E-Commer's chatbot. I'm still learning but I'm here 24/7 to answer your question or connect you with the right person to help."
+                ]
+            ]
+        ]
+                        
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: data, options: [])
+            if let jsonString = String(data: jsonData, encoding: .utf8) {
+                params.data = jsonString
+            }
+        } catch {
+            print("Error while converting to JSON: \(error)")
+        }
+        
         SBULog.info("""
             [Request] Create channel with users,
             Users: \(Array(self.selectedUserList))

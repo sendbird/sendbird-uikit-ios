@@ -205,6 +205,7 @@
 		96DEF3BF271E994351EEE328 /* SBUViewLifeCycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9782FEF03E2E566FD885B135 /* SBUViewLifeCycle.swift */; };
 		977953D54CBEF25B57973CF5 /* SBUQuickReplyOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2FA38DBE0FC75FDB570EF67 /* SBUQuickReplyOptions.swift */; };
 		978F38F55EAA1C272B2C5DB6 /* SBUChannelInfoHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE2D08C19AF668E9F2DB696A /* SBUChannelInfoHeaderView.swift */; };
+		97958E552A6FAA2D00C014C2 /* SwiftyJSON in Frameworks */ = {isa = PBXBuildFile; productRef = 97958E542A6FAA2D00C014C2 /* SwiftyJSON */; };
 		986AD031E568FF146ED73F5B /* SBUInviteUserModule.List.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F0361EDB6915AF2F627431D /* SBUInviteUserModule.List.swift */; };
 		9879CB67F52DE1D5CDA00067 /* SBUMessageThreadModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 830455C9D718DDAB13F02345 /* SBUMessageThreadModule.swift */; };
 		99FD78ED0C79BAA2D22E04C3 /* SBUEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29960A3C98ECF43AF2F1A6A3 /* SBUEmptyView.swift */; };
@@ -871,6 +872,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				97958E552A6FAA2D00C014C2 /* SwiftyJSON in Frameworks */,
 				9C2A3C5B28863A9E0052F71D /* SendbirdChatSDK in Frameworks */,
 				9C5DCD49242AFA7C00C41106 /* UserNotifications.framework in Frameworks */,
 			);
@@ -2481,6 +2483,7 @@
 			name = QuickStart;
 			packageProductDependencies = (
 				9C2A3C5A28863A9E0052F71D /* SendbirdChatSDK */,
+				97958E542A6FAA2D00C014C2 /* SwiftyJSON */,
 			);
 			productName = "SendBirdUIKit-Sample";
 			productReference = 9C777D57241B9022006FFE25 /* QuickStart.app */;
@@ -2515,6 +2518,7 @@
 			mainGroup = 9C777D4E241B9022006FFE25;
 			packageReferences = (
 				9C2A3C5928863A9E0052F71D /* XCRemoteSwiftPackageReference "sendbird-chat-sdk-ios" */,
+				97958E532A6FAA2D00C014C2 /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
 			);
 			productRefGroup = 9C777D58241B9022006FFE25 /* Products */;
 			projectDirPath = "";
@@ -3287,6 +3291,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		97958E532A6FAA2D00C014C2 /* XCRemoteSwiftPackageReference "SwiftyJSON" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SwiftyJSON/SwiftyJSON.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
 		9C2A3C5928863A9E0052F71D /* XCRemoteSwiftPackageReference "sendbird-chat-sdk-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sendbird/sendbird-chat-sdk-ios";
@@ -3298,6 +3310,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		97958E542A6FAA2D00C014C2 /* SwiftyJSON */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 97958E532A6FAA2D00C014C2 /* XCRemoteSwiftPackageReference "SwiftyJSON" */;
+			productName = SwiftyJSON;
+		};
 		9C2A3C5A28863A9E0052F71D /* SendbirdChatSDK */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 9C2A3C5928863A9E0052F71D /* XCRemoteSwiftPackageReference "sendbird-chat-sdk-ios" */;

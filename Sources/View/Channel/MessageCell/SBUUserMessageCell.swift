@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SwiftyJSON
 import SendbirdChatSDK
 
 @IBDesignable
@@ -124,9 +125,27 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
     }
     
     // MARK: - Common
+    fileprivate func filterMessage(_ message: UserMessage, _ customText: inout String?) {
+        let messageText = message.message
+        // Split the message into lines
+        var lines = messageText.split(separator: "\n")
+        
+        let regex = try! NSRegularExpression(pattern: #"^(\d+\.\s|\-)"#, options: [])
+        
+        // Filter out lines that match the regular expression
+        lines = lines.filter {
+            let range = NSRange(location: 0, length: $0.utf16.count)
+            return regex.firstMatch(in: String($0), options: [], range: range) == nil
+        }
+        
+        // Join the remaining lines back together
+        customText = lines.joined(separator: "\n")
+    }
+    
     open override func configure(with configuration: SBUBaseMessageCellParams) {
         guard let configuration = configuration as? SBUUserMessageCellParams else { return }
         guard let message = configuration.userMessage else { return }
+        var customText: String? = nil
         // Set using reaction
         self.useReaction = configuration.useReaction
         
@@ -154,12 +173,84 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
             self.contentVStackView.removeArrangedSubview(cardListView)
         }
         
-        if let items = try? SBUGlobalCustomParams.cardViewParamsCollectionBuilder?(message.data) {
-            self.addCardListView(with: items)
+        print("Message: \(message.message), Message data: \(message.data)")
+        // Parse JSON from received message data
+        let json = JSON(parseJSON: message.data)
+//        let metadatas = json["metadatas"].arrayObject as? [String]
+//        let respondMesgId = json["respond_mesg_id"].intValue
+//        let notValid = json["not_valid"].boolValue
+//        let options = json["options"].arrayObject as? [String]
+        let functionResponse = json["function_response"]
+
+//        print("function_response \(functionResponse)")
+        if functionResponse.type != .null {
+            let statusCode = functionResponse["status_code"].intValue
+            let endpoint = functionResponse["endpoint"].stringValue
+            let response = functionResponse["response"]
+
+            if statusCode == 200 {
+                filterMessage(message, &customText)
+
+                if endpoint.contains("get_order_list") {
+                    SBUGlobalCustomParams.cardViewParamsCollectionBuilder = { messageData in
+                        guard let json = try? JSON(parseJSON: messageData) else { return [] }
+
+                        return json.arrayValue.compactMap { order in
+                            let deliveryStatus = order["status"].stringValue
+                            var icon: String = ""
+
+                            switch deliveryStatus {
+                            case "delivered":
+                                icon = "✅"
+                            case "delivering":
+                                icon = "🚚"
+                            case "preparing":
+                                icon = "⏳"
+                            default:
+                                break
+                            }
+
+                            let titleWithIcon = icon.isEmpty ? "Order #\(order["id"].stringValue)" : "\(icon) Order #\(order["id"].stringValue)"
+
+                            return SBUCardViewParams(
+                                imageURL: nil,
+                                title: titleWithIcon,
+                                subtitle: "Your Order \(deliveryStatus)",
+                                description: "Items:" + ((order["items"].arrayObject as? [String])?.joined(separator: ", "))!,
+                                link: nil
+                            )
+                        }
+                    }
+                    if let items = try?SBUGlobalCustomParams.cardViewParamsCollectionBuilder?(response.rawString()!){
+                        self.addCardListView(with: items)
+                    }
+                } else if endpoint.contains("get_order_details") {
+                    SBUGlobalCustomParams.cardViewParamsCollectionBuilder = { messageData in
+                        guard let json = try? JSON(parseJSON: messageData) else { return [] }
+
+                        // Convert the single order object into a SBUCardViewParams object
+                        let orderParams = SBUCardViewParams(
+                            imageURL: nil,
+                            title: "Order #\(json["id"].stringValue) by \(json["customer_name"].stringValue)",
+                            subtitle: "- Status: \(json["status"].stringValue)\n- Estimated Delivery Date: \(json["estimatedDeliveryDate"].stringValue)",
+                            description: "- Items: " + ((json["items"].arrayObject as? [String])?.joined(separator: ", "))! + "\n- Total Price: $\(json["purchasePrice"].intValue)",
+                            link: nil
+                        )
+
+                        // Return the SBUCardViewParams object inside an array
+                        return [orderParams]
+                    }
+                    if let items = try?SBUGlobalCustomParams.cardViewParamsCollectionBuilder?(response.rawString()!){
+                        self.addCardListView(with: items)
+                    }
+                }
+            }
         } else {
             self.cardListView = nil
         }
         
+        print("Message: \(message.message), Message data: \(message.data)")
+
         // Set up message position of additionContainerView(reactionView)
         self.additionContainerView.position = self.position
         self.additionContainerView.isSelected = false
@@ -169,10 +260,12 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
             messageTextView.configure(
                 model: SBUUserMessageTextViewModel(
                     message: message,
-                    position: configuration.messagePosition
+                    position: configuration.messagePosition,
+                    customText: customText
                 )
             )
         }
+        
         // Set up WebView with OG meta data
         if let ogMetaData = configuration.message.ogMetaData, SBUAvailable.isSupportOgTag() {
             self.additionContainerView.insertArrangedSubview(self.webView, at: 0)

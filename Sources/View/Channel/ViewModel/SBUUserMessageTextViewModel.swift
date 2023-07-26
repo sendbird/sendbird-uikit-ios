@@ -52,6 +52,7 @@ public struct SBUUserMessageTextViewModel {
     public init(
         message: BaseMessage?,
         position: MessagePosition = .right,
+        customText: String? = nil,
         text: String? = nil,
         font: UIFont? = nil,
         textColor: UIColor? = nil,
@@ -59,7 +60,7 @@ public struct SBUUserMessageTextViewModel {
         isOverlay: Bool = false,
         highlightKeyword: String? = nil
     ) {
-        let text = message?.message ?? text ?? ""
+        let text = customText ?? message?.message ?? text ?? ""
         
         if let isEdited = isEdited {
             edited = isEdited
@@ -114,7 +115,7 @@ public struct SBUUserMessageTextViewModel {
         self.textColor = normalTextColor
         
         self.addhighlightIfNeeded(with: attributedString)
-        self.addEditedStateIfNeeded(with: attributedString)
+//        self.addEditedStateIfNeeded(with: attributedString)
         self.attributedText = attributedString
     }
     
