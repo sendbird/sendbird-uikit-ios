@@ -146,6 +146,7 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
         guard let configuration = configuration as? SBUUserMessageCellParams else { return }
         guard let message = configuration.userMessage else { return }
         var customText: String? = nil
+        var disableWebview = false
         // Set using reaction
         self.useReaction = configuration.useReaction
         
@@ -243,7 +244,26 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
                     if let items = try?SBUGlobalCustomParams.cardViewParamsCollectionBuilder?(response.rawString()!){
                         self.addCardListView(with: items)
                     }
+                } else if endpoint.contains("get_recommendation") {
+                    disableWebview = true
+                    SBUGlobalCustomParams.cardViewParamsCollectionBuilder = { messageData in
+                        guard let json = try? JSON(parseJSON: messageData) else { return [] }
+
+                        return json.arrayValue.compactMap { item in
+                            return SBUCardViewParams(
+                                    imageURL: item["image"].stringValue,
+                                    title: item["name"].stringValue,
+                                    subtitle: "$\(item["price"].intValue)",
+                                    description: nil,
+                                    link: nil
+                            )
+                        }
+                    }
+                    if let items = try?SBUGlobalCustomParams.cardViewParamsCollectionBuilder?(response.rawString()!){
+                        self.addCardListView(with: items)
+                    }
                 }
+
             }
         } else {
             self.cardListView = nil
@@ -264,10 +284,11 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
                     customText: customText
                 )
             )
+            messageTextView.updateHeightConstraint()
         }
-        
+
         // Set up WebView with OG meta data
-        if let ogMetaData = configuration.message.ogMetaData, SBUAvailable.isSupportOgTag() {
+        if let ogMetaData = configuration.message.ogMetaData, SBUAvailable.isSupportOgTag() && !disableWebview {
             self.additionContainerView.insertArrangedSubview(self.webView, at: 0)
             self.webView.isHidden = false
             let model = SBUMessageWebViewModel(metaData: ogMetaData)
@@ -276,7 +297,7 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
             self.additionContainerView.removeArrangedSubview(self.webView)
             self.webView.isHidden = true
         }
-        
+
         self.layoutIfNeeded()
     }
     

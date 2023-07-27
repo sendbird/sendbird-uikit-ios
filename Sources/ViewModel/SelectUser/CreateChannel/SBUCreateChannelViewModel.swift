@@ -224,9 +224,9 @@ open class SBUCreateChannelViewModel {
                 [
                     "data": [
                         "options": [
-                            "Check the order",
-                            "Cancel the order",
-                            "Check order details"
+                            "I want to check the order list",
+                            "I want to cancel my order",
+                            "Please recommend me items"
                         ]
                     ],
                     "message": "Hello! I'm E-Commer's chatbot. I'm still learning but I'm here 24/7 to answer your question or connect you with the right person to help."

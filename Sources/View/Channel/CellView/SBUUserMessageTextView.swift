@@ -54,7 +54,10 @@ open class SBUUserMessageTextView: SBUView {
     
     public var textLeftConstraint: NSLayoutConstraint!
     public var textRightConstraint: NSLayoutConstraint!
-    
+
+    // Create a variable to store text height constraint
+    public var textHeightConstraint: NSLayoutConstraint!
+
     public var mentionManager: SBUMentionManager?
     
     public var removeMargin: Bool = false
@@ -97,7 +100,7 @@ open class SBUUserMessageTextView: SBUView {
             ).isActive = true
         }
 
-        let textHeightConstraint = self.textView.heightAnchor.constraint(
+        self.textHeightConstraint = self.textView.heightAnchor.constraint(
             greaterThanOrEqualToConstant: Metric.textMinHeight
         )
         let textMinWidthConstraint = self.textView.widthAnchor.constraint(
@@ -105,7 +108,7 @@ open class SBUUserMessageTextView: SBUView {
         )
 
         NSLayoutConstraint.activate([
-            textHeightConstraint,
+            self.textHeightConstraint,
             textMinWidthConstraint
         ])
 
@@ -153,6 +156,21 @@ open class SBUUserMessageTextView: SBUView {
         ])
         
         self.updateConstraintsIfNeeded()
+    }
+
+    open func updateHeightConstraint() {
+        // calculate the height of the text
+        let textHeight = self.textView.sizeThatFits(CGSize(width: Metric.textMaxWidth, height: CGFloat.greatestFiniteMagnitude)).height
+
+        // Update the constraint constant to the new height, if it's greater than minimum height
+        if textHeight > Metric.textMinHeight {
+            self.textHeightConstraint.constant = textHeight
+        } else {
+            self.textHeightConstraint.constant = Metric.textMinHeight
+        }
+
+        // refresh the layout
+        self.layoutIfNeeded()
     }
     
     open override func setupStyles() { }

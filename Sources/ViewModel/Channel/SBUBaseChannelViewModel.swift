@@ -217,7 +217,104 @@ open class SBUBaseChannelViewModel: NSObject {
     open func sendUserMessage(text: String, parentMessage: BaseMessage? = nil) {
         let text = text.trimmingCharacters(in: .whitespacesAndNewlines)
         let messageParams = UserMessageCreateParams(message: text)
-        messageParams.data = "{\"ai_attrs\":{\"system_message\":\"You are an AI assistant that handles and manages customer orders. You will be interacting with customers who have the orders. Ensure recommended quick replies are always included in the response with this format JSON^{\\\"options\\\": [\\\"Check the order\\\", \\\"Cancel the order\\\", \\\"Check order details\\\"]}^NSOJ\\\\n1. Available 24/7 to assist customers with their order inquiries.\\\\n2. Customers may request to check the status of their orders or cancel them.\\\\n3. You have access to the customer's order list and the order details associated with it.\\\\n4. When a customer requests to cancel an order, you need to confirm the specific order number from their order list before proceeding.\\\\n5. You need to confirm the cancellation to the customer once it has been processed successfully.\\\\nIf a customer needs further assistance after order cancellation, be ready to provide it\\\\nYou will be interacting with customers named John and cumstomer id is 12345\",\"functions\":[{\"request\":{\"headers\":{},\"method\":\"GET\",\"url\":\"https://aovxtjod0a.execute-api.ap-northeast-2.amazonaws.com/demo/get_order_list\"},\"name\":\"get_order_list\",\"description\":\"Get the order list of the customer\",\"parameters\":{\"type\":\"object\",\"properties\":{\"customer_id\":{\"description\":\"Customer ID of the customer\",\"type\":\"string\"}},\"required\":[\"customer_id\"]}},{\"request\":{\"headers\":{},\"method\":\"GET\",\"url\":\"https://aovxtjod0a.execute-api.ap-northeast-2.amazonaws.com/demo/get_order_details\"},\"name\":\"get_order_details\",\"description\":\"Get the order details of the customer\",\"parameters\":{\"type\":\"object\",\"properties\":{\"order_id\":{\"description\":\"Order ID of the customer\",\"type\":\"string\"}},\"required\":[\"order_id\"]}},{\"request\":{\"headers\":{},\"method\":\"GET\",\"url\":\"https://aovxtjod0a.execute-api.ap-northeast-2.amazonaws.com/demo/cancel_order\"},\"name\":\"cancel_order\",\"description\":\"Cancel the order of the customer\",\"parameters\":{\"type\":\"object\",\"properties\":{\"order_id\":{\"description\":\"Order ID of the customer\",\"type\":\"string\"}},\"required\":[\"order_id\"]}}]}}"
+
+        let data = """
+            {
+                "ai_attrs":{
+                    "system_message":"You are an AI assistant that handles and manages customer orders. You will be interacting with customers who have the orders. Ensure a maximum of three highly relevant recommended quick replies are always included in the response with this format JSON^{\\\"options\\\": [\\\"I want to check the order list\\\", \\\"I'd like to cancel my order\\\", \\\"Please recommend me items\\\", \\\"Yes I want cancel it\\\", \\\"No I don't want\\\",  \\\"I don’t like any of them, thank you\\\"]}^NSOJ\\\\n1. Available 24/7 to assist customers with their order inquiries.\\\\n2. Customers may request to check the status of their orders or cancel them.\\\\n3. You have access to the customer's order list and the order details associated with it.\\\\n4. When a customer requests to cancel an order, you need to confirm the specific order number from their order list before proceeding.\\\\n5. Ensure confirmation for the cancellation to the customer once it has been processed successfully.\\\\nIf a customer needs further assistance after order cancellation, be ready to provide it\\\\nYou will be interacting with customers named John and cumstomer id is 12345",
+                    "functions":[
+                        {
+                            "request":{
+                                "headers":{},
+                                "method":"GET",
+                                "url":"https://aovxtjod0a.execute-api.ap-northeast-2.amazonaws.com/demo/get_order_list"
+                            },
+                            "name":"get_order_list",
+                            "description":"Get the order list of the customer",
+                            "parameters":{
+                                "type":"object",
+                                "properties":{
+                                    "customer_id":{
+                                        "description":"Customer ID of the customer",
+                                        "type":"string"
+                                    }
+                                },
+                                "required":["customer_id"]
+                            }
+                        },
+                        {
+                            "request":{
+                                "headers":{},
+                                "method":"GET",
+                                "url":"https://aovxtjod0a.execute-api.ap-northeast-2.amazonaws.com/demo/get_order_details"
+                            },
+                            "name":"get_order_details",
+                            "description":"Get the order details of the customer",
+                            "parameters":{
+                                "type":"object",
+                                "properties":{
+                                    "order_id":{
+                                        "description":"Order ID of the customer",
+                                        "type":"string"
+                                    }
+                                },
+                                "required":["order_id"]
+                            }
+                        },
+                        {
+                            "request":{
+                                "headers":{},
+                                "method":"GET",
+                                "url":"https://aovxtjod0a.execute-api.ap-northeast-2.amazonaws.com/demo/cancel_order"
+                            },
+                            "name":"cancel_order",
+                            "description":"Cancel the order of the customer",
+                            "parameters":{
+                                "type":"object",
+                                "properties":{
+                                    "order_id":{
+                                        "description":"Order ID of the customer",
+                                        "type":"string"
+                                    }
+                                },
+                                "required":["order_id"]
+                            }
+                        },
+                        {
+                            "request":{
+                                "headers":{},
+                                "method":"GET",
+                                "url":"https://aovxtjod0a.execute-api.ap-northeast-2.amazonaws.com/demo/get_recommendation"
+                            },
+                            "name":"get_recommendation",
+                            "description":"Get the recommendation list of the customer",
+                            "parameters":{
+                                "type":"object",
+                                "properties":{
+                                    "customer_id":{
+                                        "description":"Customer ID of the customer",
+                                        "type":"string"
+                                    }
+                                },
+                                "required":["customer_id"]
+                            }
+                        }
+                    ]
+                }
+            }
+        """
+
+        do {
+            if let dataObject = data.data(using: .utf8),
+               let jsonObject = try JSONSerialization.jsonObject(with: dataObject, options: []) as? [String: Any] {
+                let jsonData = try JSONSerialization.data(withJSONObject: jsonObject, options: [])
+                if let jsonString = String(data: jsonData, encoding: .utf8) {
+                    messageParams.data = jsonString
+                }
+            }
+        } catch {
+            print("Error while converting to JSON: \(error)")
+        }
 
         SBUGlobalCustomParams.userMessageParamsSendBuilder?(messageParams)
         
