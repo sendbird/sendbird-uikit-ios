@@ -6,7 +6,7 @@
 
 *Read this in other languages: [English](README.md)*
 
-이것은 Sendbird X ChatGPT E-Commerce AI ChatBot을 위한 데모 앱입니다. 이 앱은  [Sendbird UIKit iOS](https://github.com/sendbird/sendbird-uikit-ios)으로 구축되었습니다.
+이 프로젝트는 Sendbird X ChatGPT E-Commerce AI ChatBot을 위한 데모 앱입니다. 이 앱은  [Sendbird UIKit iOS](https://github.com/sendbird/sendbird-uikit-ios)으로 구축되었습니다.
 
 ## Table of Contents
 1. [Introduction](##introduction)
