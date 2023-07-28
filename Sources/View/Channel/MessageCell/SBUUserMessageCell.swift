@@ -158,8 +158,7 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
         // Configure Content base message cell
         super.configure(with: configuration)
         
-        // MARK: Quick Reply
-        
+        // MARK: Quick Reply        
         if let quickReplyView = self.quickReplyView {
             quickReplyView.removeFromSuperview()
             self.quickReplyView = nil
@@ -174,16 +173,11 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
             self.contentVStackView.removeArrangedSubview(cardListView)
         }
         
-        print("Message: \(message.message), Message data: \(message.data)")
+        // print("Message: \(message.message), Message data: \(message.data)")
         // Parse JSON from received message data
         let json = JSON(parseJSON: message.data)
-//        let metadatas = json["metadatas"].arrayObject as? [String]
-//        let respondMesgId = json["respond_mesg_id"].intValue
-//        let notValid = json["not_valid"].boolValue
-//        let options = json["options"].arrayObject as? [String]
         let functionResponse = json["function_response"]
 
-//        print("function_response \(functionResponse)")
         if functionResponse.type != .null {
             let statusCode = functionResponse["status_code"].intValue
             let endpoint = functionResponse["endpoint"].stringValue
@@ -269,8 +263,6 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
             self.cardListView = nil
         }
         
-        print("Message: \(message.message), Message data: \(message.data)")
-
         // Set up message position of additionContainerView(reactionView)
         self.additionContainerView.position = self.position
         self.additionContainerView.isSelected = false

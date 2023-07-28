@@ -1,336 +1,350 @@
-# [Sendbird](https://sendbird.com) UIKit for iOS
+# [Sendbird](https://sendbird.com) Sendbird X ChatGPT E-Commerce AI Chatbot Demo
 
 [![Platform](https://img.shields.io/badge/platform-iOS-orange.svg)](https://cocoapods.org/pods/SendBirdUIKit)
 [![Languages](https://img.shields.io/badge/language-Swift-orange.svg)](https://github.com/sendbird/sendbird-uikit-ios)
-[![CocoaPods](https://img.shields.io/badge/CocoaPods-compatible-green.svg)](https://cocoapods.org/pods/SendBirdUIKit)
-[![Swift Package Manager](https://img.shields.io/badge/SPM-compatible-green.svg)](https://github.com/sendbird/sendbird-uikit-ios-spm)
-[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-green.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![Commercial License](https://img.shields.io/badge/license-Commercial-green.svg)](https://github.com/sendbird/sendbird-uikit-ios/blob/main/LICENSE.md)
 
-We are introducing a new version of the Sendbird UIKit. Version 3 features a new modular architecture with more granular components that give you enhanced flexibility to customize your web and mobile apps. Check out our [migration guides](changelogs/MIGRATION_GUIDE_V3.md) and download our [samples](/Sample)
+This is a demo app for Sendbird X ChatGPT E-Commerce AI ChatBot. It is built with [Sendbird UIKit iOS](https://github.com/sendbird/sendbird-uikit-ios)
 
-
-With the official release of the v3 version, the name of the `master` branch was changed to the `main` branch, and the `main` branch was changed to the contents of the v3. If you have to keep using v2, please use the `main-v2` branch.
-* v3: `main`
-* v2: `main-v2`
-
-
-## Table of contents
-
-  1. [Introduction](#introduction)
-  1. [Before getting started](#before-getting-started)
-  1. [Getting started](#getting-started)
-  1. [Implementation guide](#implementation-guide) 
-  1. [UIKit at a glance](#uikit-at-a-glance)  
-  
-<br />
+## Table of Contents
+1. [Introduction](##introduction)
+2. [Customization](##customization)
 
 ## Introduction
+이 샘플에서는 Sendbird Chat과 GPT Function Calling기능이 통합된 E-Commerce AI Chatbot을 구현하였습니다.
+ChatGPT Function Calling기능을 통하여 기존의 ChatBot이 제공하지 못했던 3rd Party API를 호출하여 ChatBot의 기능을 확장할 수 있습니다.
 
-**Sendbird UIKit** for iOS is a development kit with an user interface that enables an easy and fast integration of standard chat features into new or existing client apps. From the overall theme to individual styles such as colors and fonts, components can be fully customized to create an in-app chat experience unique to your brand identity.
-
-> **Note**: Currently, UIKit for iOS now supports both group channels and open channels.
-
-![ThemeLight](https://static.sendbird.com/docs/uikit/ios/theme-light_20200416.png)
-
-This repository houses the UIKit source code and UIKit sample in addition to a UIKit Framework.
-- **Sources** is where you can find the open source code. Check out [UIKit Open Source Guidelines](/OPENSOURCE_GUIDELINES.md) for more information regarding our stance on open source.
-- **Sample** is a chat app which contains custom sample code for various key features written in `Swift`. 
-
-### Benefits
-
-- Easy installation
-- Fully-featured chat with a minimal amount of code
-- Customizable components, events, and views
-- Customizable user list to enable chat among specified users
-
-### More about Sendbird UIKit for iOS
-
-Find out more about Sendbird UIKit for iOS on [UIKit for iOS doc](https://sendbird.com/docs/uikit/v1/ios/getting-started/about-uikit). If you have any comments or questions regarding bugs and feature requests, visit [Sendbird community](https://community.sendbird.com). 
-
-<br />
-
-## Before getting started
-
-This section shows the prerequisites you need to check to use Sendbird UIKit for iOS.
-
-### Requirements
-
-The minimum requirements for Sendbird UIKit for iOS are:
-
-- iOS 11+
-- Swift 5.0+
-- Sendbird Chat SDK for iOS 4.9.5+
-
-<br />
-
-## Getting started
-
-This section gives you information you need to get started with Sendbird UIKit for iOS.
-
-### Try the sample app
-
-Our sample app has all the core features of Sendbird UIKit for iOS. Download the app from our GitHub repository to get an idea of what you can build with the actual UIKit before building your own project.
-
-- [Samples](/Sample)
-
-
-### Create a project
-
-You can get started by creating a project. Sendbird UIKit support `Swift`, so you can create and work on a project in the language you want to develop with.
-
-![Create a project](https://static.sendbird.com/docs/uikit/ios/getting-started-01_20200416.png)
-
-
-### Install UIKit for iOS 
-
-UIKit for iOS can be installed through either [`CocoaPods`](https://cocoapods.org/), [`Carthage`](https://github.com/Carthage/Carthage) or [`Swift Package Manager`](https://swift.org/package-manager/): 
-
-> Note: Sendbird UIKit for iOS is Sendbird Chat SDK-dependent.
-
-
-#### - Swift Packages
-
-1. Go to your Swift Package Manager's **File** tab and select **Swift Packages**. Then choose **Add package dependency...**.
-
-2. Add `SendbirdUIKit` into your `Package Repository` as below:
-
-```bash
-https://github.com/sendbird/sendbird-uikit-ios-spm.git
+### system_message
+ChatGPT에서는 system_message를 통해서 ChatBot이 수행해야하는 역할을 정의할수 있습니다.
+다음과 같이 system_message를 정의하여 E-commerce 시나리오를 구현하였습니다.
+```
+"system_mesasge": "You are an AI assistant that handles and manages customer orders. You will be interacting with customers who have the orders..."
 ```
 
-3. To add the package, select **Branch Rules**, input `main` and click **Next**.
+자세한 내용은 [System message: how to force ChatGPT API to follow it](https://community.openai.com/t/system-message-how-to-force-chatgpt-api-to-follow-it/82775)를 참고 하세요. 
 
-#### - CocoaPods
-
-1. Add `SendBirdUIKit` into your `Podfile` in Xcode as below:
-
-```bash
-platform :ios, '11.0'
-use_frameworks!
-
-target YOUR_PROJECT_TARGET do
-    pod 'SendBirdUIKit'
-end
+### function_calling
+ChatGPT에서 function_calling을 통해서 ChatGPT대화 중 외부 기능과 연동을 할 수 있습니다.
+function_calling에서 정의한 function의 description내용을 GPT가 사전에 인지하여,
+사용자와의 대화 중 function_calling에 정의된 function 호출을 요청합니다.
+```
+"functions": [
+  {
+    "name": "get_order_list",
+    "description": "Get the order list of the customer",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "customer_id": {
+          "type": "string",
+          "description": "Customer ID of the customer"
+        }
+      },
+      "required": ["customer_id"]
+    }
+  }
+]
 ```
 
-2. Install the `SendbirdUIKit` framework through `CocoaPods`.
+자세한 내용은 [Function Calling](https://openai.com/blog/function-calling-and-other-api-updates)을 참고하세요.
 
-```bash
-$ pod install
+## Customization
+### Application ID setting
+
+AppDelegate.swift
+```swift
+SendbirdUI.initialize(applicationId: "5367180A-FA3F-4262-876C-6607D93EDC74") 
 ```
 
-3. Update the `SendbirdUIKit` framework through `CocoaPods`.
+### Sendbird X GPT system_message and function_calling setting
+이번 Demo에서는 E-Commerce에 시나리오 중 Order list, Order Details, Order Cancel, Recommend Items
 
-```bash
-$ pod update
+SBUBaseChannelViewManger.swift
+```swift
+open func sendUserMessage(text: String, parentMessage: BaseMessage? = nil) {
+    let text = text.trimmingCharacters(in: .whitespacesAndNewlines)
+    let messageParams = UserMessageCreateParams(message: text)
+
+    let data = """
+        {
+            "ai_attrs":{
+                "system_message":"You are an AI assistant that handles and manages customer orders. You will be interacting with customers who have the orders. Ensure a maximum of three highly relevant recommended quick replies are always included in the response with this format JSON^{\\\"options\\\": [\\\"I want to check the order list\\\", \\\"I'd like to cancel my order\\\", \\\"Please recommend me items\\\", \\\"Yes I want cancel it\\\", \\\"No I don't want\\\",  \\\"I don’t like any of them, thank you\\\"]}^NSOJ\\\\n1. Available 24/7 to assist customers with their order inquiries.\\\\n2. Customers may request to check the status of their orders or cancel them.\\\\n3. You have access to the customer's order list and the order details associated with it.\\\\n4. When a customer requests to cancel an order, you need to confirm the specific order number from their order list before proceeding.\\\\n5. Ensure confirmation for the cancellation to the customer once it has been processed successfully.\\\\nIf a customer needs further assistance after order cancellation, be ready to provide it\\\\nYou will be interacting with customers named John and cumstomer id is 12345",
+                "functions":[
+                    {
+                        "request":{
+                            "headers":{},
+                            "method":"GET",
+                            "url":"https://aovxtjod0a.execute-api.ap-northeast-2.amazonaws.com/demo/get_order_list"
+                        },
+                        "name":"get_order_list",
+                        "description":"Get the order list of the customer",
+                        "parameters":{
+                            "type":"object",
+                            "properties":{
+                                "customer_id":{
+                                    "description":"Customer ID of the customer",
+                                    "type":"string"
+                                }
+                            },
+                            "required":["customer_id"]
+                        }
+                    },
+                    {
+                        "request":{
+                            "headers":{},
+                            "method":"GET",
+                            "url":"https://aovxtjod0a.execute-api.ap-northeast-2.amazonaws.com/demo/get_order_details"
+                        },
+                        "name":"get_order_details",
+                        "description":"Get the order details of the customer",
+                        "parameters":{
+                            "type":"object",
+                            "properties":{
+                                "order_id":{
+                                    "description":"Order ID of the customer",
+                                    "type":"string"
+                                }
+                            },
+                            "required":["order_id"]
+                        }
+                    },
+                    {
+                        "request":{
+                            "headers":{},
+                            "method":"GET",
+                            "url":"https://aovxtjod0a.execute-api.ap-northeast-2.amazonaws.com/demo/cancel_order"
+                        },
+                        "name":"cancel_order",
+                        "description":"Cancel the order of the customer",
+                        "parameters":{
+                            "type":"object",
+                            "properties":{
+                                "order_id":{
+                                    "description":"Order ID of the customer",
+                                    "type":"string"
+                                }
+                            },
+                            "required":["order_id"]
+                        }
+                    },
+                    {
+                        "request":{
+                            "headers":{},
+                            "method":"GET",
+                            "url":"https://aovxtjod0a.execute-api.ap-northeast-2.amazonaws.com/demo/get_recommendation"
+                        },
+                        "name":"get_recommendation",
+                        "description":"Get the recommendation list of the customer",
+                        "parameters":{
+                            "type":"object",
+                            "properties":{
+                                "customer_id":{
+                                    "description":"Customer ID of the customer",
+                                    "type":"string"
+                                }
+                            },
+                            "required":["customer_id"]
+                        }
+                    }
+                ]
+            }
+        }
+    """
+
+    do {
+        if let dataObject = data.data(using: .utf8),
+           let jsonObject = try JSONSerialization.jsonObject(with: dataObject, options: []) as? [String: Any] {
+            let jsonData = try JSONSerialization.data(withJSONObject: jsonObject, options: [])
+            if let jsonString = String(data: jsonData, encoding: .utf8) {
+                messageParams.data = jsonString
+            }
+        }
+    } catch {
+        print("Error while converting to JSON: \(error)")
+    }
+
+    SBUGlobalCustomParams.userMessageParamsSendBuilder?(messageParams)
+    
+    if let parentMessage = parentMessage,
+        SendbirdUI.config.groupChannel.channel.replyType != .none {
+        messageParams.parentMessageId = parentMessage.messageId
+        messageParams.isReplyToChannel = true
+    }
+    messageParams.mentionedMessageTemplate = ""
+    messageParams.mentionedUserIds = []
+    
+    self.sendUserMessage(messageParams: messageParams, parentMessage: parentMessage)
+}
 ```
 
-> Note: Cocoapod uses the name of Send**B**irdUIKit, not Send**b**irdUIKit.
-
-#### - Carthage
-
-1. Add `SendbirdUIKit` and `SendBirdSDK` into your `Cartfile` as below:
-
-```bash
-github "sendbird/sendbird-uikit-ios"
-github "sendbird/sendbird-chat-sdk-ios"
-```
-
-2. Install the `SendbirdUIKit` framework through `Carthage`.
-
-```bash
-$ carthage update --use-xcframeworks
-```
-
-> __Note__: Building or creating the `SendbirdUIKit` framework with `Carthage` can only be done using the latest `Swift`. If your `Swift` is not the most recent version, the framework should be copied into your project manually.
-
-3. Go to your Xcode project target's **General settings** tab in the `Frameworks and Libraries` section. Then drag and drop `SendbirdUIKit.framework` from the `<YOUR_XCODE_PROJECT_DIRECTORY>/Carthage/Build` folder.
-
->__Note__: Errors may occur if you're building your project with Xcode 11.3 or earlier versions. To fix these errors, refer to [Handle errors caused by unknown attributes](https://github.com/sendbird/sendbird-uikit-ios#--handle-errors-caused-by-unknown-attributes).
-
-### Get attachment permission
-
-Sendbird UIKit offers features to attach or save files such as photos, videos, and documents. To use those features, you need to request permission from end users.
-
-#### - Media attachment permission
-
-Applications must acquire permission from end users to use their photo assets or to save assets into their library. Once the permission is granted, users can send image or video messages and save media assets.
-
-```xml
-...
-<key>NSPhotoLibraryUsageDescription</key>
-    <string>$(PRODUCT_NAME) would like access to your photo library</string>
-<key>NSCameraUsageDescription</key>
-    <string>$(PRODUCT_NAME) would like to use your camera</string>
-<key>NSMicrophoneUsageDescription</key>
-    <string>$(PRODUCT_NAME) would like to use your microphone (for videos)</string>
-<key>NSPhotoLibraryAddUsageDescription</key>
-    <string>$(PRODUCT_NAME) would like to save photos to your photo library</string>
-...
-
-```
-
-![Media attachment permission](https://static.sendbird.com/docs/uikit/ios/getting-started-02_20200416.png)
-
-#### *(Optional)* Document attachment permission
-
-If you want to attach files from `iCloud`, you must activate the `iCloud` feature. Once it is activated, users can also send a message with files from `iCloud`. 
-
-Go to your Xcode project's **Signing & Capabilities** tab. Then, click **+ Capability** button and select **iCloud**. Check **iCloud Documents**.
-
-![Document attachment permission](https://static.sendbird.com/docs/uikit/ios/getting-started-03_20200416.png)
-
-<br />
-
-## Implementation guide
-
-### Initialize with APP_ID
-
-In order to use the Chat SDK's features, you must initialize the `SendbirdUIKit` instance with `APP_ID`. This step also initializes the Chat SDK for iOS. 
-
-Initialize the `SendbirdUIKit` instance through `AppDelegate` as below:
+### Welcome Message Setting
 
 ```swift
-// AppDelegate.swift
-
-import SendbirdUIKit
-
-func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-    
-    let APP_ID = "2D7B4CDB-932F-4082-9B09-A1153792DC8D"    // The ID of the Sendbird application which UIKit sample app uses.
-    SendbirdUI.initialize(applicationId: APP_ID) {
-        // Do something to display the start of the SendbirdUIKit initialization.
-    } migrationHandler: {
-        // Do something to display the progress of the DB migration.
-    } completionHandler: { error in
-        // Do something to display the completion of the SendbirdChat initialization.
+public func createChannel(params: GroupChannelCreateParams,
+                              messageListParams: MessageListParams? = nil) {
+        
+    let data: [String: Any] = [
+        "first_message_data": [
+            [
+                "data": [
+                    "options": [
+                        "I want to check the order list",
+                        "I want to cancel my order",
+                        "Please recommend me items"
+                    ]
+                ],
+                "message": "Hello! I'm E-Commer's chatbot. I'm still learning but I'm here 24/7 to answer your question or connect you with the right person to help."
+            ]
+        ]
+    ]
+                    
+    do {
+        let jsonData = try JSONSerialization.data(withJSONObject: data, options: [])
+        if let jsonString = String(data: jsonData, encoding: .utf8) {
+            params.data = jsonString
+        }
+    } catch {
+        print("Error while converting to JSON: \(error)")
     }
     
+    SBULog.info("""
+        [Request] Create channel with users,
+        Users: \(Array(self.selectedUserList))
+        """)
+    self.delegate?.shouldUpdateLoadingState(true)
+    
+    GroupChannel.createChannel(params: params) { [weak self] channel, error in
+        defer { self?.delegate?.shouldUpdateLoadingState(false) }
+        guard let self = self else { return }
+        
+        if let error = error {
+            SBULog.error("""
+                [Failed] Create channel request:
+                \(String(error.localizedDescription))
+                """)
+            self.delegate?.didReceiveError(error)
+            return
+        }
+        
+        SBULog.info("[Succeed] Create channel: \(channel?.description ?? "")")
+        self.delegate?.createChannelViewModel(
+            self,
+            didCreateChannel: channel,
+            withMessageListParams: messageListParams
+        )
+    }
 }
 ```
 
-> **Note**: In the above, you should specify the ID of your Sendbird application in place of the `APP_ID`.
-
-### Set the current user
-
-User information must be set as `currentUser` in the `SBUGlobal` prior to launching Sendbird UIKit. This information will be used within the kit for various tasks. The `userId` field must be specified whereas other fields such as `nickname` and  `profileURL` are optional and filled with default values if not specified.  
-
-Set the `currentUser` for UIKit through the `AppDelegate` as below:
-
-> **Note**: Even if you don’t use the `AppDelegate`, you should register user information before launching a chat service.
- 
+### CardView Customization
+SBUUserMessageCell.swift
 ```swift
-// AppDelegate.swift
+// MARK: Card List
+if let cardListView = self.cardListView {
+    self.contentVStackView.removeArrangedSubview(cardListView)
+}
 
-import SendbirdUIKit
+// Parse JSON from received message data
+let json = JSON(parseJSON: message.data)
+let functionResponse = json["function_response"]
 
-func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-    
-    // Case 1: USER_ID only
-    SBUGlobals.currentUser = SBUUser(userId: {USER_ID})
-    
-    // Case 2: Specify all fields
-    SBUGlobals.currentUser = SBUUser(userId: {USER_ID}, nickname:{(opt)NICKNAME} profileURL:{(opt)PROFILE_URL})
-    
+if functionResponse.type != .null {
+    let statusCode = functionResponse["status_code"].intValue
+    let endpoint = functionResponse["endpoint"].stringValue
+    let response = functionResponse["response"]
+
+    if statusCode == 200 {
+        filterMessage(message, &customText)
+
+        if endpoint.contains("get_order_list") {
+            SBUGlobalCustomParams.cardViewParamsCollectionBuilder = { messageData in
+                guard let json = try? JSON(parseJSON: messageData) else { return [] }
+
+                return json.arrayValue.compactMap { order in
+                    let deliveryStatus = order["status"].stringValue
+                    var icon: String = ""
+
+                    switch deliveryStatus {
+                    case "delivered":
+                        icon = "✅"
+                    case "delivering":
+                        icon = "🚚"
+                    case "preparing":
+                        icon = "⏳"
+                    default:
+                        break
+                    }
+
+                    let titleWithIcon = icon.isEmpty ? "Order #\(order["id"].stringValue)" : "\(icon) Order #\(order["id"].stringValue)"
+
+                    return SBUCardViewParams(
+                            imageURL: nil,
+                            title: titleWithIcon,
+                            subtitle: "Your Order \(deliveryStatus)",
+                            description: "Items:" + ((order["items"].arrayObject as? [String])?.joined(separator: ", "))!,
+                            link: nil
+                    )
+                }
+            }
+            if let items = try?SBUGlobalCustomParams.cardViewParamsCollectionBuilder?(response.rawString()!){
+                self.addCardListView(with: items)
+            }
+        } else if endpoint.contains("get_order_details") {
+            SBUGlobalCustomParams.cardViewParamsCollectionBuilder = { messageData in
+                guard let json = try? JSON(parseJSON: messageData) else { return [] }
+
+                // Convert the single order object into a SBUCardViewParams object
+                let orderParams = SBUCardViewParams(
+                        imageURL: nil,
+                        title: "Order #\(json["id"].stringValue) by \(json["customer_name"].stringValue)",
+                        subtitle: "- Status: \(json["status"].stringValue)\n- Estimated Delivery Date: \(json["estimatedDeliveryDate"].stringValue)",
+                        description: "- Items: " + ((json["items"].arrayObject as? [String])?.joined(separator: ", "))! + "\n- Total Price: $\(json["purchasePrice"].intValue)",
+                        link: nil
+                )
+
+                // Return the SBUCardViewParams object inside an array
+                return [orderParams]
+            }
+            if let items = try?SBUGlobalCustomParams.cardViewParamsCollectionBuilder?(response.rawString()!){
+                self.addCardListView(with: items)
+            }
+        } else if endpoint.contains("get_recommendation") {
+            disableWebview = true
+            SBUGlobalCustomParams.cardViewParamsCollectionBuilder = { messageData in
+                guard let json = try? JSON(parseJSON: messageData) else { return [] }
+
+                return json.arrayValue.compactMap { item in
+                    return SBUCardViewParams(
+                            imageURL: item["image"].stringValue,
+                            title: item["name"].stringValue,
+                            subtitle: "$\(item["price"].intValue)",
+                            description: nil,
+                            link: nil
+                    )
+                }
+            }
+            if let items = try?SBUGlobalCustomParams.cardViewParamsCollectionBuilder?(response.rawString()!){
+                self.addCardListView(with: items)
+            }
+        }
+
+    }
+} else {
+    self.cardListView = nil
+}
+
+```
+
+### Quick Reply Setting
+SBUUserMessageCell.swift
+```swift
+// MARK: Quick Reply        
+if let quickReplyView = self.quickReplyView {
+    quickReplyView.removeFromSuperview()
+    self.quickReplyView = nil
+}
+
+if let replyOptions = message.quickReply?.options, !replyOptions.isEmpty {
+    self.updateQuickReplyView(with: replyOptions)
 }
 ```
-
-> **Note**: If the `currentUser` is not set in advance, there will be restrictions to your usage of UIKit.
-
-### Channel list
-
-UIKit allows you to create a channel specifically for 1-on-1 chat and to list 1-on-1 chat channels so that you can easily view and manage them. With the `SBUChannelListViewController` class, you can provide end users a complete chat service featuring a [List channels](https://sendbird.com/docs/uikit/v3/ios/key-functions/list-channels). 
-
-Implement the code below wherever you want to start UIKit.
-
-```swift
-import SendbirdUIKit
-
-let groupChannelListVC = SBUGroupChannelListViewController()
-let naviVC = UINavigationController(rootViewController: groupChannelListVC)
-self.present(naviVC, animated: true)
-
-```
-
->__Note__: If you are already using a navigation controller, you can use `pushViewController` function.
-
-> **Note**: **At this point**, you can confirm if the service is working by running your client app.
-
-### Channel
-
-With the `SBUGroupChannelViewController` class, you can build a channel-based chat service instead of a channel list-based one.
-
-> **Note**: You should have either a `Channel` object or a `ChannelURL` in order to run a channel-based chat service. 
-
-Use the following code to implement the chat service.
-
-```swift
-import SendbirdUIKit
-
-let channelVC = SBUGroupChannelViewController(channelURL: {CHANNEL_URL})
-let naviVC = UINavigationController(rootViewController: channelVC)
-present(naviVC, animated: true)
-
-```
-
-### Distribution setting 
-
-UIKit is distributed in the form of a fat binary, which contains information on both **Simulator** and **Device** architectures. Add the script below if you are planning to distribute your application in the App Store and wish to remove unnecessary architectures in the application's build phase.
-
-Go to your Xcode project target's **Build Phases** tab. Then, click **+** and select **New Run Script Phase**. Append this script.
-
-```bash
-APP_PATH="${TARGET_BUILD_DIR}/${WRAPPER_NAME}"
-
-# This script loops through the frameworks embedded in the application and
-# removes unused architectures.
-find "$APP_PATH" -name '*.framework' -type d | while read -r FRAMEWORK
-do
-    FRAMEWORK_EXECUTABLE_NAME=$(defaults read "$FRAMEWORK/Info.plist" CFBundleExecutable)
-    FRAMEWORK_EXECUTABLE_PATH="$FRAMEWORK/$FRAMEWORK_EXECUTABLE_NAME"
-    echo "Executable is $FRAMEWORK_EXECUTABLE_PATH"
-    
-    EXTRACTED_ARCHS=()
-    
-    for ARCH in $ARCHS
-    do
-        echo "Extracting $ARCH from $FRAMEWORK_EXECUTABLE_NAME"
-        lipo -extract "$ARCH" "$FRAMEWORK_EXECUTABLE_PATH" -o "$FRAMEWORK_EXECUTABLE_PATH-$ARCH"
-        EXTRACTED_ARCHS+=("$FRAMEWORK_EXECUTABLE_PATH-$ARCH")
-    done
-    
-    echo "Merging extracted architectures: ${ARCHS}"
-    lipo -o "$FRAMEWORK_EXECUTABLE_PATH-merged" -create "${EXTRACTED_ARCHS[@]}"
-    rm "${EXTRACTED_ARCHS[@]}"
-    
-    echo "Replacing original executable with thinned version"
-    rm "$FRAMEWORK_EXECUTABLE_PATH"
-    mv "$FRAMEWORK_EXECUTABLE_PATH-merged" "$FRAMEWORK_EXECUTABLE_PATH"
-done
-```
-
-<br />
-
-## UIKit at a glance
-
-UIKit for iOS manages the lifecycle of its `ViewController` along with various views and data from the Chat SDK for iOS. UIKit Components are as follows:
-
-|Component|Description|
-|---|---|
-|SBUGroupChannelListViewController|A `ViewController` that manages a group channel list.|
-|SBUGroupChannelViewController|A `ViewController` that manages a 1-on-n group chat channel.|
-|SBUOpenChannelViewController|A `ViewController` that manages a open chat channel.|
-|SBUCreateChannelViewController|A `ViewController` that creates a channel.|
-|SBUInviteUserViewController|A `ViewController` that invites a user to a channel.|
-|SBURegisterOperatorViewController|A `ViewController` that registers as operator in a channel.|
-|SBUUserListViewController|A `ViewController` that shows a list of members or participants in a channel.|
-|SBUGroupChannelSettingsViewController|A `ViewController` that configures a group channel.|
-|SBUOpenChannelSettingsViewController|A `ViewController` that configures a open channel.|
-|SBUModerationsViewController|A `ViewController` that moderates a channel.|
-|SBUMessageSearchViewController|A `ViewController` that searches messages in a channel.|
-|SBUTheme|A singleton that manages themes.|
-|SBUColorSet|A singleton that manages color sets.|
-|SBUFontSet|A singleton that manages font sets.|
-|SendbirdUI|A class that contains static functions required when using Sendbird UIKit.|
-|SBUGlobalSet|A class that contains static attributes required when using Sendbird UIKit.|
