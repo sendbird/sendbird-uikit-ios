@@ -53,7 +53,7 @@ The following is a prompt sample of `system_message` and `functions` in `json` f
    - `parameter`: This contains a list of arguments required for the Function Calling.
 
 SBUBaseChannelViewManger.swift
-```
+```swift
 let data = """
 {
     "ai_attrs":{
