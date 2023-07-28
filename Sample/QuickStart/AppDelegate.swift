@@ -85,7 +85,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         
         let havePresentedVC = UIApplication.shared.currentWindow?.rootViewController?.presentedViewController != nil
-        let isSignedIn = (UIApplication.shared.currentWindow?.rootViewController as? ViewController)?.isSignedIn ?? false
+        let isSignedIn = false
         let needToPedning = !(isSignedIn || havePresentedVC)
         
         if needToPedning {

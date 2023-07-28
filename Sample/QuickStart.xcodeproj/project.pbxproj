@@ -214,26 +214,12 @@
 		9C037E2F280432DB00059696 /* UILabel+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C037DD7280432DB00059696 /* UILabel+Ext.swift */; };
 		9C037E30280432DB00059696 /* UIImageView+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C037DD8280432DB00059696 /* UIImageView+Ext.swift */; };
 		9C037E31280432DB00059696 /* UIcolor+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C037DD9280432DB00059696 /* UIcolor+Ext.swift */; };
-		9C037E32280432DB00059696 /* OpenChannel+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C037DDA280432DB00059696 /* OpenChannel+Ext.swift */; };
 		9C037E33280432DB00059696 /* UserDefaults+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C037DDB280432DB00059696 /* UserDefaults+Ext.swift */; };
 		9C037E34280432DB00059696 /* UIView+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C037DDC280432DB00059696 /* UIView+Ext.swift */; };
 		9C037E35280432DB00059696 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9C037DDD280432DB00059696 /* Assets.xcassets */; };
 		9C037E36280432DB00059696 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9C037DDE280432DB00059696 /* LaunchScreen.storyboard */; };
 		9C037E37280432DB00059696 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9C037DE0280432DB00059696 /* Main.storyboard */; };
 		9C037E38280432DB00059696 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C037DE2280432DB00059696 /* AppDelegate.swift */; };
-		9C037E3A280432DB00059696 /* MainChannelTabbarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C037DE6280432DB00059696 /* MainChannelTabbarController.swift */; };
-		9C037E3B280432DB00059696 /* UserInfoTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C037DE8280432DB00059696 /* UserInfoTitleView.swift */; };
-		9C037E3C280432DB00059696 /* MySettingsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C037DE9280432DB00059696 /* MySettingsCell.swift */; };
-		9C037E3D280432DB00059696 /* MySettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C037DEA280432DB00059696 /* MySettingsViewController.swift */; };
-		9C037E3E280432DB00059696 /* ChannelListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C037DEC280432DB00059696 /* ChannelListViewController.swift */; };
-		9C037E3F280432DB00059696 /* MainOpenChannelTabbarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C037DEE280432DB00059696 /* MainOpenChannelTabbarController.swift */; };
-		9C037E40280432DB00059696 /* MyOpenChannelSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C037DF0280432DB00059696 /* MyOpenChannelSettingsViewController.swift */; };
-		9C037E41280432DB00059696 /* LiveStreamData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C037DF3280432DB00059696 /* LiveStreamData.swift */; };
-		9C037E42280432DB00059696 /* LiveStreamChannelListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C037DF4280432DB00059696 /* LiveStreamChannelListViewController.swift */; };
-		9C037E43280432DC00059696 /* LiveStreamChannelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C037DF5280432DB00059696 /* LiveStreamChannelCell.swift */; };
-		9C037E44280432DC00059696 /* LiveStreamChannelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C037DF6280432DB00059696 /* LiveStreamChannelViewController.swift */; };
-		9C037E45280432DC00059696 /* CommunityChannelListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C037DF8280432DB00059696 /* CommunityChannelListViewController.swift */; };
-		9C037E47280432DC00059696 /* CreateCommunityChannelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C037DFA280432DB00059696 /* CreateCommunityChannelViewController.swift */; };
 		9C2A3C5B28863A9E0052F71D /* SendbirdChatSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 9C2A3C5A28863A9E0052F71D /* SendbirdChatSDK */; };
 		9C3EBE2328091D2A00B5366B /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C3EBE2228091D2A00B5366B /* NotificationService.swift */; };
 		9C3EBE2728091D2A00B5366B /* NotificationService.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 9C3EBE2028091D2A00B5366B /* NotificationService.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -257,43 +243,7 @@
 		A700689413C6A94E6851A772 /* SBUOpenChannelCommonContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4D825ADA8BB2A7CEBEAB90 /* SBUOpenChannelCommonContentView.swift */; };
 		A7CEC0069CF4635ED0F63B97 /* QuotedFileImageContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 957C656CFD0DBCD44FA988F8 /* QuotedFileImageContentView.swift */; };
 		A809E26409FD8039D8AA5A0C /* SBUCardListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 254AE3883C6081BD559CCBB4 /* SBUCardListView.swift */; };
-		A93AE87B2A383CAA00AFFF9C /* CustomBaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93AE84F2A383CAA00AFFF9C /* CustomBaseViewController.swift */; };
-		A93AE87C2A383CAA00AFFF9C /* ChannelListCustomManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93AE8522A383CAA00AFFF9C /* ChannelListCustomManager.swift */; };
-		A93AE87D2A383CAA00AFFF9C /* InviteUserCustomManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93AE8532A383CAA00AFFF9C /* InviteUserCustomManager.swift */; };
-		A93AE87E2A383CAA00AFFF9C /* MemberListCustomManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93AE8542A383CAA00AFFF9C /* MemberListCustomManager.swift */; };
-		A93AE87F2A383CAA00AFFF9C /* ChannelSettingsCustomManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93AE8552A383CAA00AFFF9C /* ChannelSettingsCustomManager.swift */; };
-		A93AE8802A383CAA00AFFF9C /* GlobalSetCustomManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93AE8562A383CAA00AFFF9C /* GlobalSetCustomManager.swift */; };
-		A93AE8812A383CAA00AFFF9C /* CreateChannelCustomManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93AE8572A383CAA00AFFF9C /* CreateChannelCustomManager.swift */; };
-		A93AE8822A383CAA00AFFF9C /* ChannelCustomManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93AE8582A383CAA00AFFF9C /* ChannelCustomManager.swift */; };
-		A93AE8832A383CAA00AFFF9C /* CustomSampleEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93AE85A2A383CAA00AFFF9C /* CustomSampleEnums.swift */; };
-		A93AE8842A383CAA00AFFF9C /* BaseCustomManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93AE85B2A383CAA00AFFF9C /* BaseCustomManager.swift */; };
-		A93AE8852A383CAA00AFFF9C /* SampleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93AE85C2A383CAA00AFFF9C /* SampleManager.swift */; };
-		A93AE8862A383CAA00AFFF9C /* PaddingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93AE85D2A383CAA00AFFF9C /* PaddingLabel.swift */; };
-		A93AE8872A383CAA00AFFF9C /* InviteUserVC_Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93AE8602A383CAA00AFFF9C /* InviteUserVC_Cell.swift */; };
-		A93AE8882A383CAA00AFFF9C /* InviteUserVC_UserList.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93AE8612A383CAA00AFFF9C /* InviteUserVC_UserList.swift */; };
-		A93AE8892A383CAA00AFFF9C /* ChannelListVC_Overriding.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93AE8632A383CAA00AFFF9C /* ChannelListVC_Overriding.swift */; };
-		A93AE88A2A383CAA00AFFF9C /* CustomChannelListModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93AE8642A383CAA00AFFF9C /* CustomChannelListModule.swift */; };
-		A93AE88B2A383CAA00AFFF9C /* CustomChannelListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93AE8662A383CAA00AFFF9C /* CustomChannelListCell.swift */; };
-		A93AE88C2A383CAA00AFFF9C /* ChannelVC_CustomInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93AE8682A383CAA00AFFF9C /* ChannelVC_CustomInput.swift */; };
-		A93AE88D2A383CAA00AFFF9C /* ChannelVC_CustomHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93AE8692A383CAA00AFFF9C /* ChannelVC_CustomHeader.swift */; };
-		A93AE88E2A383CAA00AFFF9C /* ChannelVC_Overriding.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93AE86A2A383CAA00AFFF9C /* ChannelVC_Overriding.swift */; };
-		A93AE88F2A383CAA00AFFF9C /* CustomNewMessageInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93AE86C2A383CAA00AFFF9C /* CustomNewMessageInfo.swift */; };
-		A93AE8902A383CAA00AFFF9C /* CustomUserMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93AE86D2A383CAA00AFFF9C /* CustomUserMessageCell.swift */; };
-		A93AE8912A383CAA00AFFF9C /* ChannelVC_CustomList.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93AE86E2A383CAA00AFFF9C /* ChannelVC_CustomList.swift */; };
-		A93AE8922A383CAA00AFFF9C /* ChannelVC_MessageParam.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93AE86F2A383CAA00AFFF9C /* ChannelVC_MessageParam.swift */; };
-		A93AE8932A383CAA00AFFF9C /* ChannelSettingsVC_Overriding.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93AE8712A383CAA00AFFF9C /* ChannelSettingsVC_Overriding.swift */; };
-		A93AE8942A383CAA00AFFF9C /* CustomUserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93AE8732A383CAA00AFFF9C /* CustomUserCell.swift */; };
-		A93AE8952A383CAA00AFFF9C /* CustomEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93AE8742A383CAA00AFFF9C /* CustomEmptyView.swift */; };
-		A93AE8962A383CAA00AFFF9C /* MemberListVC_Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93AE8762A383CAA00AFFF9C /* MemberListVC_Cell.swift */; };
-		A93AE8972A383CAA00AFFF9C /* MemberListVC_Overriding.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93AE8772A383CAA00AFFF9C /* MemberListVC_Overriding.swift */; };
-		A93AE8982A383CAA00AFFF9C /* CreateChannelVC_Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93AE8792A383CAA00AFFF9C /* CreateChannelVC_Cell.swift */; };
-		A93AE8992A383CAA00AFFF9C /* CreateChannelVC_UserList.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93AE87A2A383CAA00AFFF9C /* CreateChannelVC_UserList.swift */; };
-		A93AE89B2A38479400AFFF9C /* ChannelListVC_CustomHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93AE89A2A38479400AFFF9C /* ChannelListVC_CustomHeader.swift */; };
-		A93AE89D2A3847B600AFFF9C /* ChannelListVC_CustomList.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93AE89C2A3847B600AFFF9C /* ChannelListVC_CustomList.swift */; };
 		A944B2EB121743FB63FEB8E0 /* SBUCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F3D73E2831A61C3F1CD084 /* SBUCollectionViewFlowLayout.swift */; };
-		A968B36A28C86B5700271C60 /* LiveStreamChannelListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A968B36928C86B5700271C60 /* LiveStreamChannelListViewModel.swift */; };
-		A968B36C28C86B8600271C60 /* LiveStreamChannelListModule.List.swift in Sources */ = {isa = PBXBuildFile; fileRef = A968B36B28C86B8600271C60 /* LiveStreamChannelListModule.List.swift */; };
-		A968B36E28C9AB7F00271C60 /* LiveStreamChannelModule.Media.swift in Sources */ = {isa = PBXBuildFile; fileRef = A968B36D28C9AB7F00271C60 /* LiveStreamChannelModule.Media.swift */; };
 		AAA127F239BC9CC257344FE1 /* SBUEmojiListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A38753708F3E9B80EC608E /* SBUEmojiListViewController.swift */; };
 		AAED93AC2C6DAF63A5F1CDA0 /* SBUGroupChannelListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15894570D0B51B352FA0ED47 /* SBUGroupChannelListViewController.swift */; };
 		ABDD4B66F4BA70A752C86B1D /* SBUBaseSelectUserModule.List.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68C1908059940FF0C5E817FB /* SBUBaseSelectUserModule.List.swift */; };
@@ -668,26 +618,12 @@
 		9C037DD7280432DB00059696 /* UILabel+Ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UILabel+Ext.swift"; sourceTree = "<group>"; };
 		9C037DD8280432DB00059696 /* UIImageView+Ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImageView+Ext.swift"; sourceTree = "<group>"; };
 		9C037DD9280432DB00059696 /* UIcolor+Ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIcolor+Ext.swift"; sourceTree = "<group>"; };
-		9C037DDA280432DB00059696 /* OpenChannel+Ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OpenChannel+Ext.swift"; sourceTree = "<group>"; };
 		9C037DDB280432DB00059696 /* UserDefaults+Ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Ext.swift"; sourceTree = "<group>"; };
 		9C037DDC280432DB00059696 /* UIView+Ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Ext.swift"; sourceTree = "<group>"; };
 		9C037DDD280432DB00059696 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9C037DDF280432DB00059696 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9C037DE1280432DB00059696 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		9C037DE2280432DB00059696 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		9C037DE6280432DB00059696 /* MainChannelTabbarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainChannelTabbarController.swift; sourceTree = "<group>"; };
-		9C037DE8280432DB00059696 /* UserInfoTitleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserInfoTitleView.swift; sourceTree = "<group>"; };
-		9C037DE9280432DB00059696 /* MySettingsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MySettingsCell.swift; sourceTree = "<group>"; };
-		9C037DEA280432DB00059696 /* MySettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MySettingsViewController.swift; sourceTree = "<group>"; };
-		9C037DEC280432DB00059696 /* ChannelListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelListViewController.swift; sourceTree = "<group>"; };
-		9C037DEE280432DB00059696 /* MainOpenChannelTabbarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainOpenChannelTabbarController.swift; sourceTree = "<group>"; };
-		9C037DF0280432DB00059696 /* MyOpenChannelSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyOpenChannelSettingsViewController.swift; sourceTree = "<group>"; };
-		9C037DF3280432DB00059696 /* LiveStreamData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LiveStreamData.swift; sourceTree = "<group>"; };
-		9C037DF4280432DB00059696 /* LiveStreamChannelListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LiveStreamChannelListViewController.swift; sourceTree = "<group>"; };
-		9C037DF5280432DB00059696 /* LiveStreamChannelCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LiveStreamChannelCell.swift; sourceTree = "<group>"; };
-		9C037DF6280432DB00059696 /* LiveStreamChannelViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LiveStreamChannelViewController.swift; sourceTree = "<group>"; };
-		9C037DF8280432DB00059696 /* CommunityChannelListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommunityChannelListViewController.swift; sourceTree = "<group>"; };
-		9C037DFA280432DB00059696 /* CreateCommunityChannelViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateCommunityChannelViewController.swift; sourceTree = "<group>"; };
 		9C3EBE2028091D2A00B5366B /* NotificationService.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NotificationService.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C3EBE2228091D2A00B5366B /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		9C3EBE2428091D2A00B5366B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -711,42 +647,6 @@
 		A6D562DAC2263B035ABCC87F /* SBUBaseChannelSettingsModule.Header.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SBUBaseChannelSettingsModule.Header.swift; path = ../Sources/Module/ChannelSettings/SBUBaseChannelSettingsModule.Header.swift; sourceTree = "<group>"; };
 		A8738E119A036EA61AF4DDB3 /* CGSize+SBUIKit.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "CGSize+SBUIKit.swift"; path = "../Sources/Extension/CGSize+SBUIKit.swift"; sourceTree = "<group>"; };
 		A8BD827DDF658E347DD19C07 /* SBUOpenChannelViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SBUOpenChannelViewController.swift; path = ../Sources/View/Channel/SBUOpenChannelViewController.swift; sourceTree = "<group>"; };
-		A93AE84F2A383CAA00AFFF9C /* CustomBaseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomBaseViewController.swift; sourceTree = "<group>"; };
-		A93AE8522A383CAA00AFFF9C /* ChannelListCustomManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelListCustomManager.swift; sourceTree = "<group>"; };
-		A93AE8532A383CAA00AFFF9C /* InviteUserCustomManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InviteUserCustomManager.swift; sourceTree = "<group>"; };
-		A93AE8542A383CAA00AFFF9C /* MemberListCustomManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MemberListCustomManager.swift; sourceTree = "<group>"; };
-		A93AE8552A383CAA00AFFF9C /* ChannelSettingsCustomManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelSettingsCustomManager.swift; sourceTree = "<group>"; };
-		A93AE8562A383CAA00AFFF9C /* GlobalSetCustomManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlobalSetCustomManager.swift; sourceTree = "<group>"; };
-		A93AE8572A383CAA00AFFF9C /* CreateChannelCustomManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateChannelCustomManager.swift; sourceTree = "<group>"; };
-		A93AE8582A383CAA00AFFF9C /* ChannelCustomManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelCustomManager.swift; sourceTree = "<group>"; };
-		A93AE85A2A383CAA00AFFF9C /* CustomSampleEnums.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomSampleEnums.swift; sourceTree = "<group>"; };
-		A93AE85B2A383CAA00AFFF9C /* BaseCustomManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseCustomManager.swift; sourceTree = "<group>"; };
-		A93AE85C2A383CAA00AFFF9C /* SampleManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleManager.swift; sourceTree = "<group>"; };
-		A93AE85D2A383CAA00AFFF9C /* PaddingLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaddingLabel.swift; sourceTree = "<group>"; };
-		A93AE8602A383CAA00AFFF9C /* InviteUserVC_Cell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InviteUserVC_Cell.swift; sourceTree = "<group>"; };
-		A93AE8612A383CAA00AFFF9C /* InviteUserVC_UserList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InviteUserVC_UserList.swift; sourceTree = "<group>"; };
-		A93AE8632A383CAA00AFFF9C /* ChannelListVC_Overriding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelListVC_Overriding.swift; sourceTree = "<group>"; };
-		A93AE8642A383CAA00AFFF9C /* CustomChannelListModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomChannelListModule.swift; sourceTree = "<group>"; };
-		A93AE8662A383CAA00AFFF9C /* CustomChannelListCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomChannelListCell.swift; sourceTree = "<group>"; };
-		A93AE8682A383CAA00AFFF9C /* ChannelVC_CustomInput.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelVC_CustomInput.swift; sourceTree = "<group>"; };
-		A93AE8692A383CAA00AFFF9C /* ChannelVC_CustomHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelVC_CustomHeader.swift; sourceTree = "<group>"; };
-		A93AE86A2A383CAA00AFFF9C /* ChannelVC_Overriding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelVC_Overriding.swift; sourceTree = "<group>"; };
-		A93AE86C2A383CAA00AFFF9C /* CustomNewMessageInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomNewMessageInfo.swift; sourceTree = "<group>"; };
-		A93AE86D2A383CAA00AFFF9C /* CustomUserMessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomUserMessageCell.swift; sourceTree = "<group>"; };
-		A93AE86E2A383CAA00AFFF9C /* ChannelVC_CustomList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelVC_CustomList.swift; sourceTree = "<group>"; };
-		A93AE86F2A383CAA00AFFF9C /* ChannelVC_MessageParam.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelVC_MessageParam.swift; sourceTree = "<group>"; };
-		A93AE8712A383CAA00AFFF9C /* ChannelSettingsVC_Overriding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelSettingsVC_Overriding.swift; sourceTree = "<group>"; };
-		A93AE8732A383CAA00AFFF9C /* CustomUserCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomUserCell.swift; sourceTree = "<group>"; };
-		A93AE8742A383CAA00AFFF9C /* CustomEmptyView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomEmptyView.swift; sourceTree = "<group>"; };
-		A93AE8762A383CAA00AFFF9C /* MemberListVC_Cell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MemberListVC_Cell.swift; sourceTree = "<group>"; };
-		A93AE8772A383CAA00AFFF9C /* MemberListVC_Overriding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MemberListVC_Overriding.swift; sourceTree = "<group>"; };
-		A93AE8792A383CAA00AFFF9C /* CreateChannelVC_Cell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateChannelVC_Cell.swift; sourceTree = "<group>"; };
-		A93AE87A2A383CAA00AFFF9C /* CreateChannelVC_UserList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateChannelVC_UserList.swift; sourceTree = "<group>"; };
-		A93AE89A2A38479400AFFF9C /* ChannelListVC_CustomHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelListVC_CustomHeader.swift; sourceTree = "<group>"; };
-		A93AE89C2A3847B600AFFF9C /* ChannelListVC_CustomList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelListVC_CustomList.swift; sourceTree = "<group>"; };
-		A968B36928C86B5700271C60 /* LiveStreamChannelListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveStreamChannelListViewModel.swift; sourceTree = "<group>"; };
-		A968B36B28C86B8600271C60 /* LiveStreamChannelListModule.List.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveStreamChannelListModule.List.swift; sourceTree = "<group>"; };
-		A968B36D28C9AB7F00271C60 /* LiveStreamChannelModule.Media.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveStreamChannelModule.Media.swift; sourceTree = "<group>"; };
 		A9783CDA8931ACFBDD9CC963 /* SBUNotificationTimelineView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SBUNotificationTimelineView.swift; path = ../Sources/View/Channel/CellView/SBUNotificationTimelineView.swift; sourceTree = "<group>"; };
 		A9A98A78FE307A3244ED21E1 /* SBUCreateOpenChannelModule.ProfileInput.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SBUCreateOpenChannelModule.ProfileInput.swift; path = ../Sources/Module/SelectUser/CreateChannel/SBUCreateOpenChannelModule.ProfileInput.swift; sourceTree = "<group>"; };
 		AB34A3801FB204563305C2CF /* SBUOpenChannelSettingsModule.Header.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SBUOpenChannelSettingsModule.Header.swift; path = ../Sources/Module/ChannelSettings/OpenChannel/SBUOpenChannelSettingsModule.Header.swift; sourceTree = "<group>"; };
@@ -1659,8 +1559,6 @@
 				9C037DDE280432DB00059696 /* LaunchScreen.storyboard */,
 				9C037DE0280432DB00059696 /* Main.storyboard */,
 				9C037DE2280432DB00059696 /* AppDelegate.swift */,
-				A93AE84E2A383CAA00AFFF9C /* Customize */,
-				9C037DE4280432DB00059696 /* Base */,
 			);
 			path = QuickStart;
 			sourceTree = "<group>";
@@ -1671,94 +1569,10 @@
 				9C037DD7280432DB00059696 /* UILabel+Ext.swift */,
 				9C037DD8280432DB00059696 /* UIImageView+Ext.swift */,
 				9C037DD9280432DB00059696 /* UIcolor+Ext.swift */,
-				9C037DDA280432DB00059696 /* OpenChannel+Ext.swift */,
 				9C037DDB280432DB00059696 /* UserDefaults+Ext.swift */,
 				9C037DDC280432DB00059696 /* UIView+Ext.swift */,
 			);
 			path = Extension;
-			sourceTree = "<group>";
-		};
-		9C037DE4280432DB00059696 /* Base */ = {
-			isa = PBXGroup;
-			children = (
-				9C037DE5280432DB00059696 /* GroupChannel */,
-				9C037DED280432DB00059696 /* OpenChannel */,
-			);
-			path = Base;
-			sourceTree = "<group>";
-		};
-		9C037DE5280432DB00059696 /* GroupChannel */ = {
-			isa = PBXGroup;
-			children = (
-				9C037DE6280432DB00059696 /* MainChannelTabbarController.swift */,
-				9C037DE7280432DB00059696 /* MySettings */,
-				9C037DEB280432DB00059696 /* Channels */,
-			);
-			path = GroupChannel;
-			sourceTree = "<group>";
-		};
-		9C037DE7280432DB00059696 /* MySettings */ = {
-			isa = PBXGroup;
-			children = (
-				9C037DE8280432DB00059696 /* UserInfoTitleView.swift */,
-				9C037DE9280432DB00059696 /* MySettingsCell.swift */,
-				9C037DEA280432DB00059696 /* MySettingsViewController.swift */,
-			);
-			path = MySettings;
-			sourceTree = "<group>";
-		};
-		9C037DEB280432DB00059696 /* Channels */ = {
-			isa = PBXGroup;
-			children = (
-				9C037DEC280432DB00059696 /* ChannelListViewController.swift */,
-			);
-			path = Channels;
-			sourceTree = "<group>";
-		};
-		9C037DED280432DB00059696 /* OpenChannel */ = {
-			isa = PBXGroup;
-			children = (
-				9C037DEE280432DB00059696 /* MainOpenChannelTabbarController.swift */,
-				9C037DEF280432DB00059696 /* MySettings */,
-				9C037DF1280432DB00059696 /* Channels */,
-			);
-			path = OpenChannel;
-			sourceTree = "<group>";
-		};
-		9C037DEF280432DB00059696 /* MySettings */ = {
-			isa = PBXGroup;
-			children = (
-				9C037DF0280432DB00059696 /* MyOpenChannelSettingsViewController.swift */,
-			);
-			path = MySettings;
-			sourceTree = "<group>";
-		};
-		9C037DF1280432DB00059696 /* Channels */ = {
-			isa = PBXGroup;
-			children = (
-				9C037DF2280432DB00059696 /* LiveStream */,
-				9C037DF7280432DB00059696 /* Community */,
-			);
-			path = Channels;
-			sourceTree = "<group>";
-		};
-		9C037DF2280432DB00059696 /* LiveStream */ = {
-			isa = PBXGroup;
-			children = (
-				9C037DF3280432DB00059696 /* LiveStreamData.swift */,
-				A968B36528C86AE100271C60 /* ChannelList */,
-				A968B36828C86B2700271C60 /* Channel */,
-			);
-			path = LiveStream;
-			sourceTree = "<group>";
-		};
-		9C037DF7280432DB00059696 /* Community */ = {
-			isa = PBXGroup;
-			children = (
-				A968B36628C86AFA00271C60 /* ChannelList */,
-				A968B36728C86B0000271C60 /* CreateChannel */,
-			);
-			path = Community;
 			sourceTree = "<group>";
 		};
 		9C3EBE2128091D2A00B5366B /* NotificationService */ = {
@@ -1878,186 +1692,6 @@
 				10CBDC8B7F93CB027DDF6956 /* Base.xcconfig */,
 			);
 			name = Configurations;
-			sourceTree = "<group>";
-		};
-		A93AE84E2A383CAA00AFFF9C /* Customize */ = {
-			isa = PBXGroup;
-			children = (
-				A93AE84F2A383CAA00AFFF9C /* CustomBaseViewController.swift */,
-				A93AE8502A383CAA00AFFF9C /* Manager */,
-				A93AE85D2A383CAA00AFFF9C /* PaddingLabel.swift */,
-				A93AE85E2A383CAA00AFFF9C /* View */,
-			);
-			path = Customize;
-			sourceTree = "<group>";
-		};
-		A93AE8502A383CAA00AFFF9C /* Manager */ = {
-			isa = PBXGroup;
-			children = (
-				A93AE8512A383CAA00AFFF9C /* Features */,
-				A93AE8592A383CAA00AFFF9C /* Common */,
-			);
-			path = Manager;
-			sourceTree = "<group>";
-		};
-		A93AE8512A383CAA00AFFF9C /* Features */ = {
-			isa = PBXGroup;
-			children = (
-				A93AE8522A383CAA00AFFF9C /* ChannelListCustomManager.swift */,
-				A93AE8532A383CAA00AFFF9C /* InviteUserCustomManager.swift */,
-				A93AE8542A383CAA00AFFF9C /* MemberListCustomManager.swift */,
-				A93AE8552A383CAA00AFFF9C /* ChannelSettingsCustomManager.swift */,
-				A93AE8562A383CAA00AFFF9C /* GlobalSetCustomManager.swift */,
-				A93AE8572A383CAA00AFFF9C /* CreateChannelCustomManager.swift */,
-				A93AE8582A383CAA00AFFF9C /* ChannelCustomManager.swift */,
-			);
-			path = Features;
-			sourceTree = "<group>";
-		};
-		A93AE8592A383CAA00AFFF9C /* Common */ = {
-			isa = PBXGroup;
-			children = (
-				A93AE85A2A383CAA00AFFF9C /* CustomSampleEnums.swift */,
-				A93AE85B2A383CAA00AFFF9C /* BaseCustomManager.swift */,
-				A93AE85C2A383CAA00AFFF9C /* SampleManager.swift */,
-			);
-			path = Common;
-			sourceTree = "<group>";
-		};
-		A93AE85E2A383CAA00AFFF9C /* View */ = {
-			isa = PBXGroup;
-			children = (
-				A93AE85F2A383CAA00AFFF9C /* InviteUser */,
-				A93AE8622A383CAA00AFFF9C /* ChannelList */,
-				A93AE8672A383CAA00AFFF9C /* Channel */,
-				A93AE8702A383CAA00AFFF9C /* ChannelSettings */,
-				A93AE8722A383CAA00AFFF9C /* Common */,
-				A93AE8752A383CAA00AFFF9C /* MemberList */,
-				A93AE8782A383CAA00AFFF9C /* CreateChannel */,
-			);
-			path = View;
-			sourceTree = "<group>";
-		};
-		A93AE85F2A383CAA00AFFF9C /* InviteUser */ = {
-			isa = PBXGroup;
-			children = (
-				A93AE8602A383CAA00AFFF9C /* InviteUserVC_Cell.swift */,
-				A93AE8612A383CAA00AFFF9C /* InviteUserVC_UserList.swift */,
-			);
-			path = InviteUser;
-			sourceTree = "<group>";
-		};
-		A93AE8622A383CAA00AFFF9C /* ChannelList */ = {
-			isa = PBXGroup;
-			children = (
-				A93AE8632A383CAA00AFFF9C /* ChannelListVC_Overriding.swift */,
-				A93AE8642A383CAA00AFFF9C /* CustomChannelListModule.swift */,
-				A93AE89A2A38479400AFFF9C /* ChannelListVC_CustomHeader.swift */,
-				A93AE89C2A3847B600AFFF9C /* ChannelListVC_CustomList.swift */,
-				A93AE8652A383CAA00AFFF9C /* SubView */,
-			);
-			path = ChannelList;
-			sourceTree = "<group>";
-		};
-		A93AE8652A383CAA00AFFF9C /* SubView */ = {
-			isa = PBXGroup;
-			children = (
-				A93AE8662A383CAA00AFFF9C /* CustomChannelListCell.swift */,
-			);
-			path = SubView;
-			sourceTree = "<group>";
-		};
-		A93AE8672A383CAA00AFFF9C /* Channel */ = {
-			isa = PBXGroup;
-			children = (
-				A93AE8692A383CAA00AFFF9C /* ChannelVC_CustomHeader.swift */,
-				A93AE86E2A383CAA00AFFF9C /* ChannelVC_CustomList.swift */,
-				A93AE8682A383CAA00AFFF9C /* ChannelVC_CustomInput.swift */,
-				A93AE86A2A383CAA00AFFF9C /* ChannelVC_Overriding.swift */,
-				A93AE86B2A383CAA00AFFF9C /* SubView */,
-				A93AE86F2A383CAA00AFFF9C /* ChannelVC_MessageParam.swift */,
-			);
-			path = Channel;
-			sourceTree = "<group>";
-		};
-		A93AE86B2A383CAA00AFFF9C /* SubView */ = {
-			isa = PBXGroup;
-			children = (
-				A93AE86C2A383CAA00AFFF9C /* CustomNewMessageInfo.swift */,
-				A93AE86D2A383CAA00AFFF9C /* CustomUserMessageCell.swift */,
-			);
-			path = SubView;
-			sourceTree = "<group>";
-		};
-		A93AE8702A383CAA00AFFF9C /* ChannelSettings */ = {
-			isa = PBXGroup;
-			children = (
-				A93AE8712A383CAA00AFFF9C /* ChannelSettingsVC_Overriding.swift */,
-			);
-			path = ChannelSettings;
-			sourceTree = "<group>";
-		};
-		A93AE8722A383CAA00AFFF9C /* Common */ = {
-			isa = PBXGroup;
-			children = (
-				A93AE8732A383CAA00AFFF9C /* CustomUserCell.swift */,
-				A93AE8742A383CAA00AFFF9C /* CustomEmptyView.swift */,
-			);
-			path = Common;
-			sourceTree = "<group>";
-		};
-		A93AE8752A383CAA00AFFF9C /* MemberList */ = {
-			isa = PBXGroup;
-			children = (
-				A93AE8762A383CAA00AFFF9C /* MemberListVC_Cell.swift */,
-				A93AE8772A383CAA00AFFF9C /* MemberListVC_Overriding.swift */,
-			);
-			path = MemberList;
-			sourceTree = "<group>";
-		};
-		A93AE8782A383CAA00AFFF9C /* CreateChannel */ = {
-			isa = PBXGroup;
-			children = (
-				A93AE8792A383CAA00AFFF9C /* CreateChannelVC_Cell.swift */,
-				A93AE87A2A383CAA00AFFF9C /* CreateChannelVC_UserList.swift */,
-			);
-			path = CreateChannel;
-			sourceTree = "<group>";
-		};
-		A968B36528C86AE100271C60 /* ChannelList */ = {
-			isa = PBXGroup;
-			children = (
-				9C037DF4280432DB00059696 /* LiveStreamChannelListViewController.swift */,
-				A968B36928C86B5700271C60 /* LiveStreamChannelListViewModel.swift */,
-				A968B36B28C86B8600271C60 /* LiveStreamChannelListModule.List.swift */,
-				9C037DF5280432DB00059696 /* LiveStreamChannelCell.swift */,
-			);
-			path = ChannelList;
-			sourceTree = "<group>";
-		};
-		A968B36628C86AFA00271C60 /* ChannelList */ = {
-			isa = PBXGroup;
-			children = (
-				9C037DF8280432DB00059696 /* CommunityChannelListViewController.swift */,
-			);
-			path = ChannelList;
-			sourceTree = "<group>";
-		};
-		A968B36728C86B0000271C60 /* CreateChannel */ = {
-			isa = PBXGroup;
-			children = (
-				9C037DFA280432DB00059696 /* CreateCommunityChannelViewController.swift */,
-			);
-			path = CreateChannel;
-			sourceTree = "<group>";
-		};
-		A968B36828C86B2700271C60 /* Channel */ = {
-			isa = PBXGroup;
-			children = (
-				9C037DF6280432DB00059696 /* LiveStreamChannelViewController.swift */,
-				A968B36D28C9AB7F00271C60 /* LiveStreamChannelModule.Media.swift */,
-			);
-			path = Channel;
 			sourceTree = "<group>";
 		};
 		A9A417903E743623C21853B7 /* SelectUser */ = {
@@ -2589,63 +2223,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9C037E44280432DC00059696 /* LiveStreamChannelViewController.swift in Sources */,
-				9C037E45280432DC00059696 /* CommunityChannelListViewController.swift in Sources */,
-				9C037E3B280432DB00059696 /* UserInfoTitleView.swift in Sources */,
 				9C037E31280432DB00059696 /* UIcolor+Ext.swift in Sources */,
 				9C037E2F280432DB00059696 /* UILabel+Ext.swift in Sources */,
-				A968B36E28C9AB7F00271C60 /* LiveStreamChannelModule.Media.swift in Sources */,
 				9C037E33280432DB00059696 /* UserDefaults+Ext.swift in Sources */,
-				9C037E47280432DC00059696 /* CreateCommunityChannelViewController.swift in Sources */,
 				9C037E38280432DB00059696 /* AppDelegate.swift in Sources */,
-				9C037E32280432DB00059696 /* OpenChannel+Ext.swift in Sources */,
-				A93AE8822A383CAA00AFFF9C /* ChannelCustomManager.swift in Sources */,
-				A93AE88F2A383CAA00AFFF9C /* CustomNewMessageInfo.swift in Sources */,
-				9C037E3D280432DB00059696 /* MySettingsViewController.swift in Sources */,
 				9C037E2E280432DB00059696 /* ViewController.swift in Sources */,
 				9C037E34280432DB00059696 /* UIView+Ext.swift in Sources */,
-				9C037E40280432DB00059696 /* MyOpenChannelSettingsViewController.swift in Sources */,
-				A93AE87B2A383CAA00AFFF9C /* CustomBaseViewController.swift in Sources */,
 				9C037E30280432DB00059696 /* UIImageView+Ext.swift in Sources */,
-				9C037E43280432DC00059696 /* LiveStreamChannelCell.swift in Sources */,
-				A968B36C28C86B8600271C60 /* LiveStreamChannelListModule.List.swift in Sources */,
-				9C037E41280432DB00059696 /* LiveStreamData.swift in Sources */,
-				9C037E3C280432DB00059696 /* MySettingsCell.swift in Sources */,
-				9C037E42280432DB00059696 /* LiveStreamChannelListViewController.swift in Sources */,
-				9C037E3F280432DB00059696 /* MainOpenChannelTabbarController.swift in Sources */,
-				9C037E3E280432DB00059696 /* ChannelListViewController.swift in Sources */,
-				A968B36A28C86B5700271C60 /* LiveStreamChannelListViewModel.swift in Sources */,
-				9C037E3A280432DB00059696 /* MainChannelTabbarController.swift in Sources */,
-				A93AE89B2A38479400AFFF9C /* ChannelListVC_CustomHeader.swift in Sources */,
-				A93AE8982A383CAA00AFFF9C /* CreateChannelVC_Cell.swift in Sources */,
-				A93AE8912A383CAA00AFFF9C /* ChannelVC_CustomList.swift in Sources */,
-				A93AE8852A383CAA00AFFF9C /* SampleManager.swift in Sources */,
-				A93AE87F2A383CAA00AFFF9C /* ChannelSettingsCustomManager.swift in Sources */,
-				A93AE8882A383CAA00AFFF9C /* InviteUserVC_UserList.swift in Sources */,
-				A93AE8972A383CAA00AFFF9C /* MemberListVC_Overriding.swift in Sources */,
-				A93AE8952A383CAA00AFFF9C /* CustomEmptyView.swift in Sources */,
-				A93AE8992A383CAA00AFFF9C /* CreateChannelVC_UserList.swift in Sources */,
-				A93AE8892A383CAA00AFFF9C /* ChannelListVC_Overriding.swift in Sources */,
-				A93AE8922A383CAA00AFFF9C /* ChannelVC_MessageParam.swift in Sources */,
-				A93AE8872A383CAA00AFFF9C /* InviteUserVC_Cell.swift in Sources */,
-				A93AE8812A383CAA00AFFF9C /* CreateChannelCustomManager.swift in Sources */,
-				A93AE89D2A3847B600AFFF9C /* ChannelListVC_CustomList.swift in Sources */,
-				A93AE88A2A383CAA00AFFF9C /* CustomChannelListModule.swift in Sources */,
-				A93AE8942A383CAA00AFFF9C /* CustomUserCell.swift in Sources */,
-				A93AE87C2A383CAA00AFFF9C /* ChannelListCustomManager.swift in Sources */,
-				A93AE8902A383CAA00AFFF9C /* CustomUserMessageCell.swift in Sources */,
-				A93AE8832A383CAA00AFFF9C /* CustomSampleEnums.swift in Sources */,
-				A93AE8962A383CAA00AFFF9C /* MemberListVC_Cell.swift in Sources */,
-				A93AE8842A383CAA00AFFF9C /* BaseCustomManager.swift in Sources */,
-				A93AE88D2A383CAA00AFFF9C /* ChannelVC_CustomHeader.swift in Sources */,
-				A93AE87E2A383CAA00AFFF9C /* MemberListCustomManager.swift in Sources */,
-				A93AE88B2A383CAA00AFFF9C /* CustomChannelListCell.swift in Sources */,
-				A93AE87D2A383CAA00AFFF9C /* InviteUserCustomManager.swift in Sources */,
-				A93AE8862A383CAA00AFFF9C /* PaddingLabel.swift in Sources */,
-				A93AE8802A383CAA00AFFF9C /* GlobalSetCustomManager.swift in Sources */,
-				A93AE88C2A383CAA00AFFF9C /* ChannelVC_CustomInput.swift in Sources */,
-				A93AE88E2A383CAA00AFFF9C /* ChannelVC_Overriding.swift in Sources */,
-				A93AE8932A383CAA00AFFF9C /* ChannelSettingsVC_Overriding.swift in Sources */,
 				30392C85DEAF3CE88D548878 /* SBUViewModelDelegate.swift in Sources */,
 				83FE42EE9BC4C0A221701797 /* SBUGroupChannelListViewModel.swift in Sources */,
 				92FD51959EFB9735A3243541 /* SBUOpenChannelListViewModel.swift in Sources */,
