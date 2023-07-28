@@ -9,7 +9,7 @@ This demo app showcases what AI Chatbots with Sendbird can do to enhance the cus
 Utilizing OpenAI’s GPT3.5 and its Function Calling functionality, ***Sendbird helps you build a chatbot that can go extra miles: providing informative responses with the data source you feed to the bot, accommodating customer’s requests such as tracking and canceling their orders, and even recommending new products.*** Create your own next generation AI Chatbot by following the tutorial below.
 
 ## Table of Contents
-1. [Use case: E-commerce](##user-case:-e-commerce)
+1. [Use case: E-commerce](##use-case-e-commerce)
 2. [How it works](##how-it-works)
 3. [Demo app settings](##demo-app-settings)
 4. [System Message and Function Calling](##system-message-and-function-calling)
@@ -21,6 +21,8 @@ Utilizing OpenAI’s GPT3.5 and its Function Calling functionality, ***Sendbird 
 This demo app demonstrates the implementation of the AI Chatbot tailored for e-commerce. It includes functionalities such as ***retrieving the order list, showing order details, canceling orders, and providing recommendations.*** By leveraging ChatGPT’s new feature [Function Calling](https://openai.com/blog/function-calling-and-other-api-updates), the Chatbot now can make an API request to the 3rd party with a predefined Function Calling based on customer’s enquiry. Then it parses and presents the response in a conversational manner, enhancing overall customer experience.
 
 ## How it works
+<img width="2556" alt="image" src="https://github.com/sendbird/sendbird-uikit-ios/assets/104121286/12a8cb5f-8127-41cb-9570-3c979f977ad4">
+
 1. A customer sends a message containing a specific request on the client app to the Sendbird server.
 2. The Sendbird server then delivers the message to Chat GPT.
 3. Chat GPT then analyzes the message and determines that it needs to make a Function Calling request. In response, it delivers the relevant information to the Sendbird server.
@@ -142,6 +144,8 @@ let data = """
 ```
 
 ## Welcome Message and Quick Replies
+<img width="388" alt="image" src="https://github.com/sendbird/sendbird-uikit-ios/assets/104121286/bf10a5fc-13bf-44c7-9037-1c88e5cf29a6">
+
 The following is a prompt sample of `first_message_data` in `json` format. The object contains two pieces of information: `message` and `data`. The string value in message will act as a Welcome Message while values in `data` represent the Quick Replies that the customer can choose from. The keys and values in the prompt will be stored in the `channelCreateParams.data` property in `string`.
 
 `first_message_data`
