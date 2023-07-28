@@ -158,7 +158,7 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
         // Configure Content base message cell
         super.configure(with: configuration)
         
-        // MARK: Quick Reply        
+        // MARK: Quick Reply
         if let quickReplyView = self.quickReplyView {
             quickReplyView.removeFromSuperview()
             self.quickReplyView = nil

@@ -1,34 +1,34 @@
-
 # [Sendbird](https://sendbird.com) Sendbird X ChatGPT E-Commerce AI Chatbot Demo
 
 [![Platform](https://img.shields.io/badge/platform-iOS-orange.svg)](https://cocoapods.org/pods/SendBirdUIKit)
 [![Languages](https://img.shields.io/badge/language-Swift-orange.svg)](https://github.com/sendbird/sendbird-uikit-ios)
 [![Commercial License](https://img.shields.io/badge/license-Commercial-green.svg)](https://github.com/sendbird/sendbird-uikit-ios/blob/main/LICENSE.md)
 
-*Read this in other languages: [Korean](README.ko.md)*
+*Read this in other languages: [English](README.md)*
 
-This is a demo app for Sendbird X ChatGPT E-Commerce AI ChatBot. It is built with [Sendbird UIKit iOS](https://github.com/sendbird/sendbird-uikit-ios)
+이것은 Sendbird X ChatGPT E-Commerce AI ChatBot을 위한 데모 앱입니다. 이 앱은  [Sendbird UIKit iOS](https://github.com/sendbird/sendbird-uikit-ios)으로 구축되었습니다.
 
 ## Table of Contents
 1. [Introduction](##introduction)
 2. [Customization](##customization)
 
 ## Introduction
-In this sample, an E-Commerce AI Chatbot integrated with Sendbird Chat and GPT Function Calling functionality has been implemented. 
-Through the ChatGPT Function Calling feature, you can expand the capabilities of the ChatBot by calling 3rd Party APIs that the existing ChatBot could not provide.
+이 샘플에서는 Sendbird Chat과 GPT Function Calling기능이 통합된 E-Commerce AI Chatbot을 구현하였습니다.
+ChatGPT Function Calling기능을 통하여 기존의 ChatBot이 제공하지 못했던 3rd Party API를 호출하여 ChatBot의 기능을 확장할 수 있습니다.
 
 ### system_message
-In ChatGPT, you can define the role that the ChatBot should perform through system_message.
-The following system_message has been defined to implement the E-commerce scenario.
+ChatGPT에서는 system_message를 통해서 ChatBot이 수행해야하는 역할을 정의할수 있습니다.
+다음과 같이 system_message를 정의하여 E-commerce 시나리오를 구현하였습니다.
 ```
-"system_message": "You are an AI assistant that handles and manages customer orders. You will be interacting with customers who have the orders..."
+"system_mesasge": "You are an AI assistant that handles and manages customer orders. You will be interacting with customers who have the orders..."
 ```
-For more information, refer to [System message: how to force ChatGPT API to follow it](https://community.openai.com/t/system-message-how-to-force-chatgpt-api-to-follow-it/82775).
+
+자세한 내용은 [System message: how to force ChatGPT API to follow it](https://community.openai.com/t/system-message-how-to-force-chatgpt-api-to-follow-it/82775)를 참고 하세요. 
 
 ### function_calling
-In ChatGPT, you can interact with external functions during a conversation with ChatGPT through function_calling.
-In function_calling, the GPT recognizes the content of the function defined in the description in advance,
-During the conversation with the user, it requests to call the function defined in function_calling.
+ChatGPT에서 function_calling을 통해서 ChatGPT대화 중 외부 기능과 연동을 할 수 있습니다.
+function_calling에서 정의한 function의 description내용을 GPT가 사전에 인지하여,
+사용자와의 대화 중 function_calling에 정의된 function 호출을 요청합니다.
 ```
 "functions": [
   {
@@ -47,11 +47,12 @@ During the conversation with the user, it requests to call the function defined 
   }
 ]
 ```
-For more information, refer to [Function Calling](https://openai.com/blog/function-calling-and-other-api-updates).
+
+자세한 내용은 [Function Calling](https://openai.com/blog/function-calling-and-other-api-updates)을 참고하세요.
 
 ## Customization
 ### Application ID setting
-Set the Application ID created through the Sendbird Dashboard as follows through `SendbirdUI.initialize`.
+Sendbird Dashboard를 통해서 생성한 Application ID를 다음과 같이 `SendbirdUI.initialize`를 통해서 설정합니다.
 
 AppDelegate.swift
 ```swift
@@ -59,17 +60,22 @@ SendbirdUI.initialize(applicationId: "{Application ID}")
 ```
 
 ### Sendbird X GPT system_message and function_calling setting
-Currently, it is an experimental feature. To use Sendbird X GPT system_message and function_calling, you need to override the `createChannel` function of `SBUCreateChannelViewModel`, and define `data`.
+현재는 실험적인 기능으로, Sendbird X GPT system_message와 function_calling을 사용하기 위해서는 다음과 같이 `SBUCreateChannelViewModel`의 `createChannel`함수를 override하여,
+`data`를 정의합니다.
 
-`data` must be defined in JSON format, and `system_message` and `functions` must be defined. `system_message` defines the role to be performed by ChatGPT. To ensure that GPT generates recommended Quick Replies for each conversation, add the following content to `system_message`: 
-
+`data`는 JSON형태로 정의되어야 하며, `system_message`와 `functions`를 정의합니다.
+`system_message`는 ChatGPT가 수행해야하는 역할을 정의합니다. 이때 GPT가 매 대화마다 추천 Quick Reply를 생성하게 하기 위해서 `system_message`에 
 `Ensure a maximum of three highly relevant recommended quick replies are always included in the response with this format JSON^{"options": ["I want to check the order list", "I'd like to cancel my order", "Please recommend me items", "Yes I want cancel it", "No I don't want",  "I don’t like any of them, thank you"]}^NSOJ`
+내용을 추가합니다. 
+ChatGPT의 응답 내용 중 다음 Format의 문장 `JSON^{"option":["", "", "", "", "", ""]}^NSOJ`이 있을 경우 Sendbird Server에서는 내용을 파싱하여, `option`내용을 `quick_reply`로 전달합니다.
 
-If there is a sentence in the response content of ChatGPT with the following format `JSON^{"option":["", "", "", "", "", ""]}^NSOJ`, the Sendbird Server parses the content and delivers the `option` content as `quick_reply`.
 
-`functions` define the ability for ChatGPT to call external functions through function_calling. `functions` define `request`, `name`, `description`, `parameters`. `request` defines the information of the API to be called when calling an external function through function_calling. When GPT requests Function calling, the Sendbird Server checks the corresponding function and calls the API defined in `request` to generate `function_response`.
+`functions`는 ChatGPT가 function_calling을 통해서 외부 기능을 호출할 수 있도록 정의합니다.
+`functions`에는 `request`, `name`, `description`, `parameters`를 정의합니다.
+`request`는 function_calling을 통해서 외부 기능을 호출할 때, 호출할 API의 정보를 정의합니다.
+Sendbird Server에서는 GPT가 Function calling을 요청할때 그에 맞는 function을 확인해서 `request`에 정의된 API를 호출하여, `function_response`를 생성합니다.
 
-`name`, `description`, `parameters` are the contents needed when GPT requests function_calling. For more details, please refer to [Function Calling](https://openai.com/blog/function-calling-and-other-api-updates).
+`name`, `description`, `parameters`는 GPT가 function_calling을 요청시 필요한 내용으로 자세한 내용은 [Function Calling](https://openai.com/blog/function-calling-and-other-api-updates)을 참고하세요.
 
 SBUBaseChannelViewManger.swift
 ```swift
@@ -178,10 +184,12 @@ open func sendUserMessage(text: String, parentMessage: BaseMessage? = nil) {
 ```
 
 ### Welcome Message Setting
-You can send a Welcome Message when the user first starts a conversation with the Bot.
-To send a Welcome Message, define `first_message_data` by overriding the `createChannel` function of `SBUCreateChannelViewModel` as follows.
+사용자가 처음 Bot과 대화를 시작할 때, Welcome Message를 전송할 수 있습니다.
+Welcome Message를 전송하기 위해서는 다음과 같이 `SBUCreateChannelViewModel`의 `createChannel`함수를 override하여,
+`first_message_data`를 정의합니다.
 
-The first `message` of `first_message_data` defines the Welcome Message, and data defines Quick Reply.
+`first_message_data`의 첫번째 `message`는 Welcome Message를 정의하고,
+`data`는 Quick Reply를 정의합니다.
 
 SBUCreateChannelViewModel.swift
 ```swift
@@ -215,7 +223,11 @@ public func createChannel(params: GroupChannelCreateParams,
 ```
 
 ### CardView Customization
-During a conversation with ChatGPT, you can receive the response from a 3rd party API call via `function_response`. Based on this data, a CardView can be dynamically created. To create a CardView, define `SBUGlobalCustomParams.cardViewParamsCollectionBuilder` and define a closure that returns `SBUCardViewParams`.
+
+ChatGPT와의 대화 중 Function calling을 통해서 3rd party API 호출의 response내용을 `function_reponse`로 전달 받을 수 있습니다.
+이 Data를 기반으로 동적으로 CardView를 생성할 수 있습니다.
+CardView생성을 위해서 `SBUGlobalCustomParams.cardViewParamsCollectionBuilder`를 정의하고,
+`SBUCardViewParams`를 return하는 클로저를 정의합니다.
 
 SBUUserMessageCell.swift
 ```swift
@@ -316,7 +328,8 @@ if functionResponse.type != .null {
 ```
 
 ### Quick Reply Setting
-Quick Reply is created based on the `options` defined in the `system_message` during a conversation with ChatGPT. To use Quick Reply, you need to add the following content. (Note: The specific content needed to be added is not provided in the original text)
+Quick Reply는 ChatGPT와의 대화 중 `system_message`내용에 정의된 `options`를 기반으로 생성됩니다.
+Quick Reply사용을 위해서는 다음내용을 추가하여야 합니다.
 
 SBUUserMessageCell.swift
 ```swift
