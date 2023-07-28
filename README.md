@@ -50,6 +50,7 @@ function_calling에서 정의한 function의 description내용을 GPT가 사전�
 
 ## Customization
 ### Application ID setting
+Sendbird Dashboard를 통해서 생성한 Application ID를 다음과 같이 `SendbirdUI.initialize`를 통해서 설정합니다.
 
 AppDelegate.swift
 ```swift
@@ -57,7 +58,20 @@ SendbirdUI.initialize(applicationId: "5367180A-FA3F-4262-876C-6607D93EDC74")
 ```
 
 ### Sendbird X GPT system_message and function_calling setting
-이번 Demo에서는 E-Commerce에 시나리오 중 Order list, Order Details, Order Cancel, Recommend Items
+현재는 실험적인 기능으로, Sendbird X GPT system_message와 function_calling을 사용하기 위해서는 다음과 같이 `SBUCreateChannelViewModel`의 `createChannel`함수를 override하여,
+`data`를 정의합니다.
+
+`data`는 JSON형태로 정의되어야 하며, `system_message`와 `functions`를 정의합니다.
+`system_message`는 ChatGPT가 수행해야하는 역할을 정의합니다. 이때 GPT가 매 대화마다 추천 Quick Reply를 생성하게 하기 위해서 `system_message`에 
+`Ensure a maximum of three highly relevant recommended quick replies are always included in the response with this format JSON^{\\\"options\\\": [\\\"I want to check the order list\\\", \\\"I'd like to cancel my order\\\", \\\"Please recommend me items\\\", \\\"Yes I want cancel it\\\", \\\"No I don't want\\\",  \\\"I don’t like any of them, thank you\\\"]}^NSOJ`
+내용을 추가합니다.
+
+`functions`는 ChatGPT가 function_calling을 통해서 외부 기능을 호출할 수 있도록 정의합니다.
+`functions`에는 `request`, `name`, `description`, `parameters`를 정의합니다.
+`request`는 function_calling을 통해서 외부 기능을 호출할 때, 호출할 API의 정보를 정의합니다.
+Sendbird Server에서는 GPT가 Function calling을 요청할때 그에 맞는 function을 확인해서 `request`에 정의된 API를 호출하여, `function_response`를 생성합니다.
+
+`name`, `description`, `parameters`는 GPT가 function_calling을 요청시 필요한 내용으로 자세한 내용은 [Function Calling](https://openai.com/blog/function-calling-and-other-api-updates)을 참고하세요.
 
 SBUBaseChannelViewManger.swift
 ```swift
@@ -162,23 +176,18 @@ open func sendUserMessage(text: String, parentMessage: BaseMessage? = nil) {
     } catch {
         print("Error while converting to JSON: \(error)")
     }
-
-    SBUGlobalCustomParams.userMessageParamsSendBuilder?(messageParams)
-    
-    if let parentMessage = parentMessage,
-        SendbirdUI.config.groupChannel.channel.replyType != .none {
-        messageParams.parentMessageId = parentMessage.messageId
-        messageParams.isReplyToChannel = true
-    }
-    messageParams.mentionedMessageTemplate = ""
-    messageParams.mentionedUserIds = []
-    
-    self.sendUserMessage(messageParams: messageParams, parentMessage: parentMessage)
 }
 ```
 
 ### Welcome Message Setting
+사용자가 처음 Bot과 대화를 시작할 때, Welcome Message를 전송할 수 있습니다.
+Welcome Message를 전송하기 위해서는 다음과 같이 `SBUCreateChannelViewModel`의 `createChannel`함수를 override하여,
+`first_message_data`를 정의합니다.
 
+`first_message_data`의 첫번째 `message`는 Welcome Message를 정의하고,
+`data`는 Quick Reply를 정의합니다.
+
+SBUCreateChannelViewModel.swift
 ```swift
 public func createChannel(params: GroupChannelCreateParams,
                               messageListParams: MessageListParams? = nil) {
@@ -206,37 +215,16 @@ public func createChannel(params: GroupChannelCreateParams,
     } catch {
         print("Error while converting to JSON: \(error)")
     }
-    
-    SBULog.info("""
-        [Request] Create channel with users,
-        Users: \(Array(self.selectedUserList))
-        """)
-    self.delegate?.shouldUpdateLoadingState(true)
-    
-    GroupChannel.createChannel(params: params) { [weak self] channel, error in
-        defer { self?.delegate?.shouldUpdateLoadingState(false) }
-        guard let self = self else { return }
-        
-        if let error = error {
-            SBULog.error("""
-                [Failed] Create channel request:
-                \(String(error.localizedDescription))
-                """)
-            self.delegate?.didReceiveError(error)
-            return
-        }
-        
-        SBULog.info("[Succeed] Create channel: \(channel?.description ?? "")")
-        self.delegate?.createChannelViewModel(
-            self,
-            didCreateChannel: channel,
-            withMessageListParams: messageListParams
-        )
-    }
 }
 ```
 
 ### CardView Customization
+
+ChatGPT와의 대화 중 Function calling을 통해서 3rd party API 호출의 response내용을 `function_reponse`로 전달 받을 수 있습니다.
+이 Data를 기반으로 동적으로 CardView를 생성할 수 있습니다.
+CardView생성을 위해서 `SBUGlobalCustomParams.cardViewParamsCollectionBuilder`를 정의하고,
+`SBUCardViewParams`를 return하는 클로저를 정의합니다.
+
 SBUUserMessageCell.swift
 ```swift
 // MARK: Card List
@@ -336,6 +324,9 @@ if functionResponse.type != .null {
 ```
 
 ### Quick Reply Setting
+Quick Reply는 ChatGPT와의 대화 중 `system_message`내용에 정의된 `options`를 기반으로 생성됩니다.
+Quick Reply사용을 위해서는 다음내용을 추가하여야 합니다.
+
 SBUUserMessageCell.swift
 ```swift
 // MARK: Quick Reply        
