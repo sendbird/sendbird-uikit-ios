@@ -163,9 +163,7 @@ public class SendbirdUI {
         // TODO: Reset when the test server is no longer needed
         SendbirdChat.connect(
             userId: userId,
-            authToken: SBUGlobals.accessToken,
-            apiHost: "https://api-no1.sendbirdtest.com",
-            wsHost: "wss://ws-no1.sendbirdtest.com"
+            authToken: SBUGlobals.accessToken
         ) { [userId, nickname] user, error in
             defer {
                 SBUEmojiManager.loadAllEmojis { _, _ in }
