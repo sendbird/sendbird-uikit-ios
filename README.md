@@ -154,7 +154,8 @@ let data = """
 ```
 
 ## Welcome Message and Quick Replies
-<img width="388" alt="image" src="https://github.com/sendbird/sendbird-uikit-ios/assets/104121286/bf10a5fc-13bf-44c7-9037-1c88e5cf29a6">
+<img width="386" alt="image" src="https://github.com/sendbird/sendbird-uikit-ios/assets/104121286/b29f481f-8274-4a63-a4ca-a27bc642423d">
+
 
 The following is a prompt sample of `first_message_data` in `json` format. The object contains two pieces of information: `message` and `data`. The string value in message will act as a Welcome Message while values in `data` represent the Quick Replies that the customer can choose from. The keys and values in the prompt will be stored in the `channelCreateParams.data` property in `string`.
 
