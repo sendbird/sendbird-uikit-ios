@@ -8,6 +8,10 @@
 This demo app showcases what AI Chatbots with Sendbird can do to enhance the customer experience of your service with more personalized and comprehensive customer support.
 Utilizing OpenAI’s GPT3.5 and its Function Calling functionality, ***Sendbird helps you build a chatbot that can go extra miles: providing informative responses with the data source you feed to the bot, accommodating customer’s requests such as tracking and canceling their orders, and even recommending new products.*** Create your own next generation AI Chatbot by following the tutorial below.
 
+## Prerequisites
+1. [Sendbird Account](https://dashboard.sendbird.com/)
+2. Application ID and ChatBot: Please refer to [Step1 ~ Step4](https://sendbird.com/developer/tutorials/create-an-ai-chatbot)
+
 ## How to open the demo app
 1. Open Xcode Demo project
 ```shell
@@ -154,7 +158,8 @@ let data = """
 ```
 
 ## Welcome Message and Quick Replies
-<img width="388" alt="image" src="https://github.com/sendbird/sendbird-uikit-ios/assets/104121286/bf10a5fc-13bf-44c7-9037-1c88e5cf29a6">
+<img width="380" alt="image" src="https://github.com/sendbird/sendbird-uikit-ios/assets/104121286/a4c69ccc-a2f9-4c47-8f7a-16f452fc67d9">
+
 
 The following is a prompt sample of `first_message_data` in `json` format. The object contains two pieces of information: `message` and `data`. The string value in message will act as a Welcome Message while values in `data` represent the Quick Replies that the customer can choose from. The keys and values in the prompt will be stored in the `channelCreateParams.data` property in `string`.
 
