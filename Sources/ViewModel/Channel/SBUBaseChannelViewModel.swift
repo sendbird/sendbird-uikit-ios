@@ -227,7 +227,7 @@ open class SBUBaseChannelViewModel: NSObject {
                             "request":{
                                 "headers":{},
                                 "method":"GET",
-                                "url":"https://aovxtjod0a.execute-api.ap-northeast-2.amazonaws.com/demo/get_order_list"
+                                "url":"https://789b92fc-4055-4d3d-82e7-ccd83f6929c6.mock.pstmn.io/get_order_list"
                             },
                             "name":"get_order_list",
                             "description":"Get the order list of the customer",
@@ -246,7 +246,7 @@ open class SBUBaseChannelViewModel: NSObject {
                             "request":{
                                 "headers":{},
                                 "method":"GET",
-                                "url":"https://aovxtjod0a.execute-api.ap-northeast-2.amazonaws.com/demo/get_order_details"
+                                "url":"https://789b92fc-4055-4d3d-82e7-ccd83f6929c6.mock.pstmn.io/get_order_details"
                             },
                             "name":"get_order_details",
                             "description":"Get the order details of the customer",
@@ -264,8 +264,8 @@ open class SBUBaseChannelViewModel: NSObject {
                         {
                             "request":{
                                 "headers":{},
-                                "method":"GET",
-                                "url":"https://aovxtjod0a.execute-api.ap-northeast-2.amazonaws.com/demo/cancel_order"
+                                "method":"POST",
+                                "url":"https://789b92fc-4055-4d3d-82e7-ccd83f6929c6.mock.pstmn.io/cancel_order"
                             },
                             "name":"cancel_order",
                             "description":"Cancel the order of the customer",
@@ -284,7 +284,7 @@ open class SBUBaseChannelViewModel: NSObject {
                             "request":{
                                 "headers":{},
                                 "method":"GET",
-                                "url":"https://aovxtjod0a.execute-api.ap-northeast-2.amazonaws.com/demo/get_recommendation"
+                                "url":"https://789b92fc-4055-4d3d-82e7-ccd83f6929c6.mock.pstmn.io/get_recommendation"
                             },
                             "name":"get_recommendation",
                             "description":"Get the recommendation list of the customer",
