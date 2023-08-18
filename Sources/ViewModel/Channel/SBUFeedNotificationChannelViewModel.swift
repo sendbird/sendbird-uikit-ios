@@ -246,21 +246,19 @@ class SBUFeedNotificationChannelViewModel: NSObject {
         //            self.customizedNotificationListParams = notificationListParams
         //        }
         
-        SendbirdUI.connectIfNeeded { [channelURL] _, error in
+        SendbirdUI.authenticateFeedIfNeeded { [weak self, channelURL] _, error in
+            guard let self = self else {
+                completionHandler?(nil, error)
+                return
+            }
+            
             if let error = error {
                 self.delegate?.didReceiveError(error, isBlocker: true)
                 completionHandler?(nil, error)
                 return
             }
             
-            //            SBULog.info("[Request] Load channel: \(String(channelURL))")
-            
-            let completionHandler: SendbirdChatSDK.FeedChannelHandler? = { [weak self] channel, error in
-                guard let self = self else {
-                    completionHandler?(nil, error)
-                    return
-                }
-                
+            let completionHandler: SendbirdChatSDK.FeedChannelHandler? = { channel, error in
                 guard self.canProceed(with: channel, error: error) else {
                     self.delegate?.didReceiveError(error, isBlocker: true)
                     completionHandler?(nil, error)
@@ -637,6 +635,14 @@ class SBUFeedNotificationChannelViewModel: NSObject {
             delegate: self
         )
     }
+    
+    /// This function refreshes channel and checkes updated message.
+    /// - Parameter completionHandler: completion handler
+    ///
+    /// - Since: 3.8.0
+    func refresh(completionHandler: SBErrorHandler?) {
+        self.notificationCollection?.refresh(completionHandler: completionHandler)
+    }
 }
 
 // MARK: - ConnectionDelegate
@@ -731,7 +737,7 @@ extension SBUFeedNotificationChannelViewModel: NotificationCollectionDelegate {
         )
         
         self.upsertNotificationsInList(
-            notifications: notifications,
+            notifications: messages,
             needUpdateNewNotification: false,
             needReload: true
         )

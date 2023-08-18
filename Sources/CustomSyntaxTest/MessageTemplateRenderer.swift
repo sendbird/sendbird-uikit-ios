@@ -1131,20 +1131,6 @@ class MessageTemplateRenderer: UIView {
         if let borderColor = viewStyle.borderColor {
             view.layer.borderColor = UIColor(hexString: borderColor).cgColor
         }
-        if let borderRadius = viewStyle.radius {
-            let width = item.width
-            let height = item.height
-            
-            var maxRadius = borderRadius
-            if width.type == .fixed {
-                maxRadius = min(maxRadius, width.value / 2)
-            }
-            if height.type == .fixed {
-                maxRadius = min(maxRadius, height.value / 2)
-            }
-            
-            view.roundCorners(corners: .allCorners, radius: CGFloat(maxRadius))
-        }
     }
     
     // MARK: - ViewLayout
@@ -1367,6 +1353,8 @@ class MessageTemplateRenderer: UIView {
         var width: SBUMessageTemplate.SizeSpec { self.item.width }
         var height: SBUMessageTemplate.SizeSpec { self.item.height }
         
+        var viewStyle: SBUMessageTemplate.ViewStyle? { self.item.viewStyle }
+
         weak var rightPaddingConstraint: NSLayoutConstraint?
         
         init(item: SBUMessageTemplate.View, layout: SBUMessageTemplate.LayoutType) {
@@ -1378,6 +1366,33 @@ class MessageTemplateRenderer: UIView {
         
         required init?(coder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
+        }
+        
+        override func layoutSubviews() {
+            super.layoutSubviews()
+            self.applyRoundCorners()
+        }
+        
+        func applyRoundCorners() {
+            if let borderRadius = viewStyle?.radius {
+                let width = item.width
+                let height = item.height
+                
+                var maxRadius = borderRadius
+                if width.type == .fixed {
+                    maxRadius = min(maxRadius, width.value / 2)
+                } else {
+                    maxRadius = min(maxRadius, Int(self.frame.width / 2))
+                }
+                
+                if height.type == .fixed {
+                    maxRadius = min(maxRadius, height.value / 2)
+                } else {
+                    maxRadius = min(maxRadius, Int(self.frame.height / 2))
+                }
+                
+                self.roundCorners(corners: .allCorners, radius: CGFloat(maxRadius))
+            }
         }
     }
     

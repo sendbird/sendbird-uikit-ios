@@ -26,8 +26,12 @@ class SBUNewNotificationInfo: SBUView {
     // MARK: - Properties (Private)
     let DefaultInfoButtonTag = 10001
 
-    @SBUThemeWrapper(theme: SBUTheme.notificationTheme.list)
-    var theme: SBUNotificationTheme.List
+    var theme: SBUNotificationTheme.List {
+        switch SBUTheme.colorScheme {
+        case .light: return .light
+        case .dark: return .dark
+        }
+    }
     
     // MARK: - Life cycle
     override init(frame: CGRect) {

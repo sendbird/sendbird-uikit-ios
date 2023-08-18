@@ -236,9 +236,9 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
         forRowAt indexPath: IndexPath
     ) {
         if let urlScehem = URL(string: action.data) {
-            urlScehem.open()
+            urlScehem.open(needSanitise: false)
         } else if let urlString = action.alterData, let url = URL(string: urlString) {
-            url.open()
+            url.open(needSanitise: false)
         }
     }
     

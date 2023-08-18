@@ -299,9 +299,9 @@ SWIFT_CLASS("_TtCC13SendbirdUIKit9SBUConfig9BaseInput")
 @end
 
 
-
 @interface BaseInput (SWIFT_EXTENSION(SendbirdUIKit))
 @end
+
 
 
 
@@ -445,16 +445,16 @@ SWIFT_CLASS_NAMED("List")
 @end
 
 
-/// A module component that represent the list of <code>SBURegisterOperatorModule</code>.
+/// A module component that represent the list of <code>SBUInviteUserModule</code>.
 SWIFT_CLASS_NAMED("List")
-@interface SBURegisterOperatorModuleList : SBUBaseChannelSettingsModuleList
-- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBURegisterOperatorModule.List()'");
-- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBURegisterOperatorModule.List()'");
+@interface SBUInviteUserModuleList : SBUBaseChannelSettingsModuleList
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUInviteUserModule.List()'");
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUInviteUserModule.List()'");
 - (void)configureCell:(UITableViewCell * _Nullable)cell indexPath:(NSIndexPath * _Nonnull)indexPath;
 @end
 
 
-@interface SBURegisterOperatorModuleList (SWIFT_EXTENSION(SendbirdUIKit))
+@interface SBUInviteUserModuleList (SWIFT_EXTENSION(SendbirdUIKit))
 - (void)didSelectRetry;
 @end
 
@@ -481,17 +481,27 @@ SWIFT_CLASS_NAMED("List")
 @end
 
 
-/// A module component that represent the list of <code>SBUInviteUserModule</code>.
+/// A module component that represent the list of <code>SBURegisterOperatorModule</code>.
 SWIFT_CLASS_NAMED("List")
-@interface SBUInviteUserModuleList : SBUBaseChannelSettingsModuleList
-- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUInviteUserModule.List()'");
-- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBUInviteUserModule.List()'");
+@interface SBURegisterOperatorModuleList : SBUBaseChannelSettingsModuleList
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBURegisterOperatorModule.List()'");
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER SWIFT_UNAVAILABLE_MSG("'init' has been renamed to 'SBURegisterOperatorModule.List()'");
 - (void)configureCell:(UITableViewCell * _Nullable)cell indexPath:(NSIndexPath * _Nonnull)indexPath;
 @end
 
 
-@interface SBUInviteUserModuleList (SWIFT_EXTENSION(SendbirdUIKit))
+@interface SBURegisterOperatorModuleList (SWIFT_EXTENSION(SendbirdUIKit))
 - (void)didSelectRetry;
+@end
+
+@class SBUQuotedBaseMessageView;
+
+SWIFT_PROTOCOL("_TtP13SendbirdUIKit28SBUQuotedMessageViewDelegate_")
+@protocol SBUQuotedMessageViewDelegate
+/// Called when <code>SBUQuotedBaseMessageView</code> was tapped.
+/// \param quotedMessageView The tapped quoted message view
+///
+- (void)didTapQuotedMessageView:(SBUQuotedBaseMessageView * _Nonnull)quotedMessageView;
 @end
 
 @class SBDBaseChannel;
@@ -754,10 +764,9 @@ SWIFT_CLASS_NAMED("List")
 - (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
 @end
 
-@class SBUThreadInfoView;
 
-@interface SBUGroupChannelModuleList (SWIFT_EXTENSION(SendbirdUIKit))
-- (void)threadInfoViewDidTap:(SBUThreadInfoView * _Nonnull)threadInfoView;
+@interface SBUGroupChannelModuleList (SWIFT_EXTENSION(SendbirdUIKit)) <SBUQuotedMessageViewDelegate>
+- (void)didTapQuotedMessageView:(SBUQuotedBaseMessageView * _Nonnull)quotedMessageView;
 @end
 
 
@@ -766,19 +775,10 @@ SWIFT_CLASS_NAMED("List")
 - (void)didSelectRetry;
 @end
 
-@class SBUQuotedBaseMessageView;
+@class SBUThreadInfoView;
 
-SWIFT_PROTOCOL("_TtP13SendbirdUIKit28SBUQuotedMessageViewDelegate_")
-@protocol SBUQuotedMessageViewDelegate
-/// Called when <code>SBUQuotedBaseMessageView</code> was tapped.
-/// \param quotedMessageView The tapped quoted message view
-///
-- (void)didTapQuotedMessageView:(SBUQuotedBaseMessageView * _Nonnull)quotedMessageView;
-@end
-
-
-@interface SBUGroupChannelModuleList (SWIFT_EXTENSION(SendbirdUIKit)) <SBUQuotedMessageViewDelegate>
-- (void)didTapQuotedMessageView:(SBUQuotedBaseMessageView * _Nonnull)quotedMessageView;
+@interface SBUGroupChannelModuleList (SWIFT_EXTENSION(SendbirdUIKit))
+- (void)threadInfoViewDidTap:(SBUThreadInfoView * _Nonnull)threadInfoView;
 @end
 
 @class SBUMessageSearchResultCell;
@@ -839,6 +839,7 @@ SWIFT_CLASS_NAMED("List")
 @interface SBUBaseChannelSettingsModuleList (SWIFT_EXTENSION(SendbirdUIKit))
 - (void)didSelectRetry;
 @end
+
 
 @class SBUBaseChannelCell;
 
@@ -964,7 +965,6 @@ SWIFT_CLASS_NAMED("List")
 @interface SBUUserListModuleList (SWIFT_EXTENSION(SendbirdUIKit))
 - (void)didSelectRetry;
 @end
-
 
 
 @interface SBURegisterOperatorModuleList (SWIFT_EXTENSION(SendbirdUIKit))
@@ -1094,7 +1094,6 @@ SWIFT_CLASS_NAMED("List")
 - (void)tableView:(UITableView * _Nonnull)tableView willDisplayCell:(UITableViewCell * _Nonnull)cell forRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
 - (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
 @end
-
 
 @class SBUParentMessageInfoView;
 
@@ -1240,6 +1239,16 @@ SWIFT_CLASS_NAMED("List")
 @end
 
 
+
+@interface List (SWIFT_EXTENSION(SendbirdUIKit)) <UITableViewDataSource, UITableViewDelegate>
+- (UIView * _Nullable)tableView:(UITableView * _Nonnull)tableView viewForHeaderInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
+- (CGFloat)tableView:(UITableView * _Nonnull)tableView heightForHeaderInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
+- (UITableViewCell * _Nonnull)tableView:(UITableView * _Nonnull)tableView cellForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
+- (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
+- (void)tableView:(UITableView * _Nonnull)tableView didSelectRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
+@end
+
+
 /// A module component that represent the list of <code>SBUGroupChannelPushSettingsModule</code>.
 SWIFT_CLASS_NAMED("List")
 @interface SBUGroupChannelPushSettingsModuleList : UIView
@@ -1249,15 +1258,6 @@ SWIFT_CLASS_NAMED("List")
 
 
 @interface SBUGroupChannelPushSettingsModuleList (SWIFT_EXTENSION(SendbirdUIKit)) <UITableViewDataSource, UITableViewDelegate>
-- (UIView * _Nullable)tableView:(UITableView * _Nonnull)tableView viewForHeaderInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
-- (CGFloat)tableView:(UITableView * _Nonnull)tableView heightForHeaderInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
-- (UITableViewCell * _Nonnull)tableView:(UITableView * _Nonnull)tableView cellForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
-- (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
-- (void)tableView:(UITableView * _Nonnull)tableView didSelectRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
-@end
-
-
-@interface List (SWIFT_EXTENSION(SendbirdUIKit)) <UITableViewDataSource, UITableViewDelegate>
 - (UIView * _Nullable)tableView:(UITableView * _Nonnull)tableView viewForHeaderInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
 - (CGFloat)tableView:(UITableView * _Nonnull)tableView heightForHeaderInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
 - (UITableViewCell * _Nonnull)tableView:(UITableView * _Nonnull)tableView cellForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
@@ -1665,9 +1665,9 @@ SWIFT_CLASS("_TtC13SendbirdUIKit24SBUBaseChannelListModule")
 @end
 
 
-
 @interface SBUBaseChannelListModule (SWIFT_EXTENSION(SendbirdUIKit))
 @end
+
 
 @class Header;
 @class SBUBaseChannelListViewModel;
@@ -2364,6 +2364,7 @@ SWIFT_CLASS("_TtC13SendbirdUIKit26SBUBaseSelectUserViewModel")
 
 
 
+
 @interface SBUBaseViewController (SWIFT_EXTENSION(SendbirdUIKit))
 - (void)setupAutolayout SWIFT_UNAVAILABLE_MSG("'setupAutolayout' has been renamed to 'setupLayouts'");
 - (void)updateAutolayout SWIFT_UNAVAILABLE_MSG("'updateAutolayout' has been renamed to 'updateLayouts'");
@@ -2493,7 +2494,6 @@ SWIFT_CLASS("_TtC13SendbirdUIKit9SBUConfig")
 @end
 
 
-
 @interface SBUConfig (SWIFT_EXTENSION(SendbirdUIKit))
 @end
 
@@ -2501,6 +2501,7 @@ SWIFT_CLASS("_TtC13SendbirdUIKit9SBUConfig")
 
 @interface SBUConfig (SWIFT_EXTENSION(SendbirdUIKit))
 @end
+
 
 
 @class SBUSelectableStackView;

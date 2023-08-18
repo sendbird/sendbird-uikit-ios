@@ -276,28 +276,35 @@ extension SBUCacheManager {
         
         // MARK: lastTokenKey
         func loadLastTokenKey() -> String {
-            let cachePathURL = cachePathURL()
-            let filePath = cachePathURL.appendingPathComponent(lastTokenKey)
-            guard let retrievedString = try? String(contentsOf: filePath, encoding: .utf8) else {
-                if let storedValue = UserDefaults.standard.string(forKey: lastTokenKey) {
-                    // for backward
-                    UserDefaults.standard.removeObject(forKey: lastTokenKey)
-                    self.saveLastTokenKey(storedValue)
-                    return storedValue
+            return self.diskQueue.sync {
+                self.fileSemaphore.wait()
+                defer { self.fileSemaphore.signal() }
+                
+                let cachePathURL = cachePathURL()
+                let filePath = cachePathURL.appendingPathComponent(lastTokenKey)
+                guard let retrievedString = try? String(contentsOf: filePath, encoding: .utf8) else {
+                    if let storedValue = UserDefaults.standard.string(forKey: lastTokenKey) {
+                        // for backward
+                        UserDefaults.standard.removeObject(forKey: lastTokenKey)
+                        self.saveLastTokenKey(storedValue)
+                        return storedValue
+                    }
+                    return ""
                 }
-                return ""
+                return retrievedString
             }
-            return retrievedString
         }
         
         func saveLastTokenKey(_ value: String) {
-            do {
-                try self.createDirectoryIfNeeded()
-                let cachePathURL = cachePathURL()
-                let filePath = cachePathURL.appendingPathComponent(lastTokenKey)
-                try value.write(to: filePath, atomically: true, encoding: .utf8)
-            } catch {
-                SBULog.error("Error writing to file: lastTokenKey value")
+            self.diskQueue.async {
+                do {
+                    try self.createDirectoryIfNeeded()
+                    let cachePathURL = cachePathURL()
+                    let filePath = cachePathURL.appendingPathComponent(lastTokenKey)
+                    try value.write(to: filePath, atomically: true, encoding: .utf8)
+                } catch {
+                    SBULog.error("Error writing to file: lastTokenKey value")
+                }
             }
         }
         
