@@ -13,6 +13,9 @@ import UIKit
 @objcMembers
 open class SBUBaseViewController: UIViewController, UINavigationControllerDelegate, SBULoadingIndicatorProtocol {
     
+    /// - Since: 3.8.0
+    var prevNavigationBarSettings: SBUPrevNavigationBarSettings? = SBUPrevNavigationBarSettings()
+    
     // MARK: - Lifecycle
     open override func loadView() {
         super.loadView()
@@ -31,6 +34,9 @@ open class SBUBaseViewController: UIViewController, UINavigationControllerDelega
     open override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
+        if let navigationController = self.navigationController {
+            self.prevNavigationBarSettings?.rollback(to: navigationController)
+        }
         SBUUtils.dismissPresentedOnDisappear(presentedViewController: self.presentedViewController)
         
         SBULoading.stop()
@@ -67,6 +73,10 @@ open class SBUBaseViewController: UIViewController, UINavigationControllerDelega
     ///   - backgroundColor: background color
     ///   - shadowColor: shadow color
     open func setupNavigationBar(backgroundColor: UIColor, shadowColor: UIColor) {
+        if let navigationController = self.navigationController {
+            self.prevNavigationBarSettings?.save(with: navigationController)
+        }
+        
         self.navigationController?.navigationBar.setBackgroundImage(
             UIImage.from(color: backgroundColor),
             for: .default
@@ -122,6 +132,66 @@ open class SBUBaseViewController: UIViewController, UINavigationControllerDelega
                 SBULoading.start()
             } else {
                 SBULoading.stop()
+            }
+        }
+    }
+}
+
+extension SBUBaseViewController {
+    /// - Since: 3.8.0
+    struct SBUPrevNavigationBarSettings {
+        var isSet: Bool = false
+        
+        var backgroundImage: UIImage?
+        var shadowImage: UIImage?
+        
+        var standardAppearanceWrapper: Any?
+        var scrollEdgeAppearanceWrapper: Any?
+
+        @available(iOS 13.0, *)
+        var standardAppearance: UINavigationBarAppearance? {
+            get {
+                standardAppearanceWrapper as? UINavigationBarAppearance
+            }
+            set {
+                standardAppearanceWrapper = newValue
+            }
+        }
+        @available(iOS 13.0, *)
+        var scrollEdgeAppearance: UINavigationBarAppearance? {
+            get {
+                scrollEdgeAppearanceWrapper as? UINavigationBarAppearance
+            }
+            set {
+                scrollEdgeAppearanceWrapper = newValue
+            }
+        }
+        
+        mutating func save(with navigationController: UINavigationController) {
+            guard isSet == false else { return }
+            
+            self.backgroundImage = navigationController.navigationBar.backgroundImage(for: .default)
+            self.shadowImage = navigationController.navigationBar.shadowImage
+            
+            if #available(iOS 13.0, *) {
+                self.standardAppearance = navigationController.navigationBar.standardAppearance
+                self.scrollEdgeAppearance = navigationController.navigationBar.scrollEdgeAppearance
+            }
+            
+            self.isSet = true
+        }
+        
+        func rollback(to navigationController: UINavigationController) {
+            guard isSet else { return }
+            
+            navigationController.navigationBar.setBackgroundImage(self.backgroundImage, for: .default)
+            navigationController.navigationBar.shadowImage = self.shadowImage
+            
+            if #available(iOS 13.0, *) {
+                if let standardAppearance = self.standardAppearance {
+                    navigationController.navigationBar.standardAppearance = standardAppearance
+                }
+                navigationController.navigationBar.scrollEdgeAppearance = self.scrollEdgeAppearance
             }
         }
     }

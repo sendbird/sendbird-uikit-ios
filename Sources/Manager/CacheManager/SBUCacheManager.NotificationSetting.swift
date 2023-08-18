@@ -329,10 +329,7 @@ extension SBUCacheManager {
         }
         
         func saveLastUpdatedTime(_ value: Int64) {
-            diskQueue.sync {
-                self.fileSemaphore.wait()
-                defer { self.fileSemaphore.signal() }
-                
+            self.diskQueue.async {
                 do {
                     try self.createDirectoryIfNeeded()
                     let cachePathURL = cachePathURL()
@@ -368,10 +365,7 @@ extension SBUCacheManager {
         }
         
         func saveThemeMode(_ value: String) {
-            diskQueue.sync {
-                self.fileSemaphore.wait()
-                defer { self.fileSemaphore.signal() }
-                
+            self.diskQueue.async {
                 do {
                     try self.createDirectoryIfNeeded()
                     let cachePathURL = cachePathURL()

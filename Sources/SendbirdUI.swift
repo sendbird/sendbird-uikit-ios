@@ -126,6 +126,7 @@ public class SendbirdUI {
     ///
     /// - Parameter completionHandler: The handler block to execute.
     public static func connectIfNeeded(
+        needToUpdateExtraData: Bool = true,
         completionHandler: @escaping (_ user: User?, _ error: SBError?) -> Void
     ) {
         SBULog.info("[Check] Connection status : \(SendbirdChat.getConnectState().rawValue)")
@@ -135,11 +136,11 @@ public class SendbirdUI {
         } else {
             SBULog.info("currentUser: \(String(describing: SendbirdChat.getCurrentUser()?.userId))")
             if SendbirdChat.isLocalCachingEnabled,
-               let _ = SendbirdChat.getCurrentUser() {
-                completionHandler(SendbirdChat.getCurrentUser(), nil)
-                SendbirdUI.connectAndUpdates { _, _ in }
+               let currentUser = SendbirdChat.getCurrentUser() {
+                completionHandler(currentUser, nil)
+                SendbirdUI.connectAndUpdates(needToUpdateExtraData: needToUpdateExtraData) { _, _ in }
             } else {
-                SendbirdUI.connectAndUpdates(completionHandler: completionHandler)
+                SendbirdUI.connectAndUpdates(needToUpdateExtraData: needToUpdateExtraData, completionHandler: completionHandler)
             }
         }
     }
@@ -147,6 +148,7 @@ public class SendbirdUI {
     /// This function is used to check connection state and connect to the Sendbird server or local caching database.
     /// - Parameter completionHandler: The handler block to execute.
     static func connectAndUpdates(
+        needToUpdateExtraData: Bool = true,
         completionHandler: @escaping (_ user: User?, _ error: SBError?) -> Void
     ) {
         SBULog.info("[Request] Connection to Sendbird")
@@ -191,6 +193,11 @@ public class SendbirdUI {
                 }
             }
             
+            if !needToUpdateExtraData {
+                completionHandler(SendbirdChat.getCurrentUser(), nil)
+                return
+            }
+            
             SendbirdUI.updateUserInfo(
                 nickname: updatedNickname,
                 profileURL: currentUser.profileURL ?? user.profileURL
@@ -217,6 +224,119 @@ public class SendbirdUI {
         }
     }
     
+    // MARK: - AuthenticateFeed
+    /// This function is used to authenticate to the Sendbird server or local cahing database. (Feed channel only)
+    ///
+    /// Before invoking this function, `currentUser` object of `SBUGlobals` claas must be set.
+    /// - Parameter completionHandler: The handler block to execute.
+    ///
+    /// - Since: 3.8.0
+    public static func authenticateFeed(
+        completionHandler: @escaping (_ user: User?, _ error: SBError?) -> Void
+    ) {
+        SendbirdUI.authenticateFeedIfNeeded(completionHandler: completionHandler)
+    }
+    
+    /// This function is used to check the authentication state.
+    ///  if connected, returns the User object, otherwise, call the authenticateFeed function from the inside.
+    ///  If local caching is enabled, the currentUser object is delivered and the authenticateFeed operation is performed.
+    ///
+    /// - Parameter completionHandler: The handler block to execute.
+    ///
+    /// - Since: 3.8.0
+    public static func authenticateFeedIfNeeded(
+        needToUpdateExtraData: Bool = true,
+        completionHandler: @escaping (_ user: User?, _ error: SBError?) -> Void
+    ) {
+        if SendbirdChat.getConnectState() == .open {
+            completionHandler(SendbirdChat.getCurrentUser(), nil)
+        } else {
+            SBULog.info("currentUser: \(String(describing: SendbirdChat.getCurrentUser()?.userId))")
+            if SendbirdChat.isLocalCachingEnabled,
+               let currentUSer = SendbirdChat.getCurrentUser() {
+                completionHandler(currentUSer, nil)
+                SendbirdUI.authenticateFeedAndUpdates(needToUpdateExtraData: needToUpdateExtraData) { _, _ in }
+            } else {
+                SendbirdUI.authenticateFeedAndUpdates(needToUpdateExtraData: needToUpdateExtraData, completionHandler: completionHandler)
+            }
+        }
+    }
+    
+    /// This function is used to check authentication state and authenticate to the Sendbird server or local caching database.
+    /// - Parameter completionHandler: The handler block to execute.
+    static func authenticateFeedAndUpdates(needToUpdateExtraData: Bool = true,
+        completionHandler: @escaping (_ user: User?, _ error: SBError?) -> Void
+    ) {
+        SBULog.info("[Request] Authentication to Sendbird")
+        
+        guard let currentUser = SBUGlobals.currentUser else {
+            SBULog.error("[Failed] Authentication to Sendbird: CurrentUser value is not set")
+            completionHandler(SendbirdChat.getCurrentUser(), nil)
+            return
+        }
+        
+        let userId = currentUser.userId.trimmingCharacters(in: .whitespacesAndNewlines)
+        let nickname = currentUser.nickname?.trimmingCharacters(in: .whitespacesAndNewlines)
+        SendbirdChat.authenticateFeed(userId: userId, authToken: SBUGlobals.accessToken) { [userId, nickname] user, error in
+            guard let user = user else {
+                SBULog.error("[Failed] Authentication to Sendbird: \(error?.localizedDescription ?? "")")
+                completionHandler(nil, error)
+                return
+            }
+            
+            if let error = error {
+                SBULog.warning("[Warning] Authentication to Sendbird: Succeed but error was occurred: \(error.localizedDescription)")
+                
+                if !SendbirdChat.isLocalCachingEnabled {
+                    completionHandler(user, error)
+                    return
+                }
+            } else {
+                SBULog.info("[Succeed] Authentication to Sendbird")
+            }
+            
+            var updatedNickname = nickname
+            
+            if updatedNickname == nil {
+                if !user.nickname.isEmpty {
+                    updatedNickname = user.nickname
+                } else if SBUGlobals.isUserIdUsedForNickname {
+                    updatedNickname = userId
+                }
+            }
+            
+            if !needToUpdateExtraData {
+                completionHandler(SendbirdChat.getCurrentUser(), nil)
+                return
+            }
+            
+            SendbirdUI.updateUserInfo(
+                nickname: updatedNickname,
+                profileURL: currentUser.profileURL ?? user.profileURL
+            ) { error in
+                
+                #if !targetEnvironment(simulator)
+                if let pendingPushToken = SendbirdChat.getPendingPushToken() {
+                    SBULog.info("[Request] Register pending push token to Sendbird server")
+                    SendbirdUI.registerPush(deviceToken: pendingPushToken) { success in
+                        if !success {
+                            SBULog.error("[Failed] Register pending push token to Sendbird server")
+                        }
+                        SBULog.info("[Succeed] Register pending push token to Sendbird server")
+                    }
+                }
+                #endif
+                
+                self.config.loadDashboardConfig { _ in
+                    self.loadNotificationChannelSettings { _ in
+                        completionHandler(user, error)
+                    }
+                }
+            }
+        }
+    }
+    
+    // MARK: -
     static func loadNotificationChannelSettings(
         completionHandler: @escaping (_ succeeded: Bool) -> Void
     ) {
@@ -448,11 +568,11 @@ public class SendbirdUI {
     /// This function is used to unregister push token on the Sendbird server.
     /// - Parameter completionHandler: The handler block to execute.
     public static func unregisterPushToken(completionHandler: @escaping (_ success: Bool) -> Void) {
-        SendbirdUI.connectIfNeeded { _, error in
-        guard error == nil else {
-            completionHandler(false)
-            return
-        }
+        let unregisterHandler: ((User?, SBError?) -> Void) = { _, error in
+            guard error == nil else {
+                completionHandler(false)
+                return
+            }
             
             #if !targetEnvironment(simulator)
             guard let pendingPushToken = SendbirdChat.getPendingPushToken() else {
@@ -477,12 +597,18 @@ public class SendbirdUI {
             completionHandler(false)
             #endif
         }
+        
+        if SendbirdChat.getConnectState() == .open {
+            self.connectIfNeeded(needToUpdateExtraData: false, completionHandler: unregisterHandler)
+        } else {
+            self.authenticateFeedIfNeeded(needToUpdateExtraData: false, completionHandler: unregisterHandler)
+        }
     }
     
     /// This function is used to unregister all push token on the Sendbird server.
     /// - Parameter completionHandler: The handler block to execute.
     public static func unregisterAllPushToken(completionHandler: @escaping (_ success: Bool) -> Void) {
-        SendbirdUI.connectIfNeeded { _, error in
+        let unregisterHandler: ((User?, SBError?) -> Void) = { _, error in
             guard error == nil else {
                 completionHandler(false)
                 return
@@ -500,6 +626,12 @@ public class SendbirdUI {
                 SBULog.info("[Succeed] Push unregistration is success.")
                 completionHandler(true)
             }
+        }
+        
+        if SendbirdChat.getConnectState() == .open {
+            self.connectIfNeeded(completionHandler: unregisterHandler)
+        } else {
+            SendbirdUI.authenticateFeedIfNeeded(completionHandler: unregisterHandler)
         }
     }
     

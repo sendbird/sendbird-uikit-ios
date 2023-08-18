@@ -9,8 +9,8 @@
 import UIKit
 
 internal extension URL {
-    func open() {
-        let refinedURL = self.sanitise
+    func open(needSanitise: Bool = true) {
+        let refinedURL = needSanitise ? self.sanitise : self
         UIApplication.shared.open(refinedURL, options: [.universalLinksOnly: true]) { (success) in
             if !success {
                 // open normally

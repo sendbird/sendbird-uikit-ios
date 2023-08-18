@@ -1,5 +1,10 @@
 # Changelog
 
+### v3.8.0-beta (Aug 18, 2023) with Chat SDK **v4.10.0**
+* Change the default authentication method for FeedChannel from WebSocket connection to API.
+* Added `authenticatedFeed(completionHandler:)` in `SendbirdUI`
+* Improved stability
+
 ### v3.6.2 (Jul 14, 2023) with Chat SDK **v4.9.5**
 * Changed file cache key policy.
 * Improved the issue of exposing empty images when message status updating from pending to succeed.

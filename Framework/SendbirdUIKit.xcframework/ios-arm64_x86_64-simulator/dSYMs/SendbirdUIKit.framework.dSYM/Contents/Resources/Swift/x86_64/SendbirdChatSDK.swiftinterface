@@ -13,6 +13,7 @@ import SwiftUI
 import SystemConfiguration
 import UIKit.UIDevice
 import UIKit
+import UserNotifications
 import _Concurrency
 import _StringProcessing
 extension SendbirdChatSDK.GroupChannelListQuery {
@@ -515,6 +516,7 @@ extension SendbirdChatSDK.PreviousMessageListQuery {
   @objc final public let isActive: Swift.Bool
   @objc final public let friendDiscoveryKey: Swift.String?
   @objc final public let friendName: Swift.String?
+  @objc final public let isBot: Swift.Bool
   @objc open var preferredLanguages: [Swift.String]? {
     get
   }
@@ -636,7 +638,7 @@ public typealias FileMessageHandler = ((_ message: SendbirdChatSDK.FileMessage?,
 public typealias ProgressHandler = ((_ bytesSent: Swift.Int64, _ totalBytesSent: Swift.Int64, _ totalBytesExpectedToSend: Swift.Int64) -> Swift.Void)
 public typealias MultiProgressHandler = ((_ requestId: Swift.String?, _ bytesSent: Swift.Int64, _ totalBytesSent: Swift.Int64, _ totalBytesExpectedToSend: Swift.Int64) -> Swift.Void)
 public typealias MultipleFilesMessageHandler = ((_ message: SendbirdChatSDK.MultipleFilesMessage?, _ error: SendbirdChatSDK.SBError?) -> Swift.Void)
-public typealias FileUploadHandler = ((_ requestId: Swift.String, _ index: Swift.Int, _ uploadbleFileInfo: SendbirdChatSDK.UploadableFileInfo, _ error: SendbirdChatSDK.SBError?) -> Swift.Void)
+public typealias FileUploadHandler = ((_ requestId: Swift.String, _ index: Swift.Int, _ uploadableFileInfo: SendbirdChatSDK.UploadableFileInfo, _ error: SendbirdChatSDK.SBError?) -> Swift.Void)
 public typealias MessageChangeLogHandler = ((_ updatedMessages: [SendbirdChatSDK.BaseMessage]?, _ deletedMessageIds: [Swift.Int64]?, _ hasMore: Swift.Bool, _ token: Swift.String?, _ error: SendbirdChatSDK.SBError?) -> Swift.Void)
 public typealias MessageListHandler = ((_ messages: [SendbirdChatSDK.BaseMessage]?, _ error: SendbirdChatSDK.SBError?) -> Swift.Void)
 public typealias MessageRequestIdsHandler = ((_ requestIds: [Swift.String]?, _ error: SendbirdChatSDK.SBError?) -> Swift.Void)
@@ -1563,7 +1565,7 @@ extension SendbirdChatSDK.PollRetrievalParams : Swift.Encodable {
     get
   }
   @objc public var uploadSizeLimit: Swift.Int64 {
-    get
+    @objc get
   }
   @objc public var premiumFeatureList: [Swift.String]? {
     get
@@ -1693,7 +1695,7 @@ extension SendbirdChatSDK.Poll : SendbirdChatSDK.Serializable {
   @objc final public let jsonPayload: Swift.String
   @objc deinit
 }
-@objc(SBDUploadableFileInfo) public class UploadableFileInfo : ObjectiveC.NSObject, Swift.Codable {
+@_hasMissingDesignatedInitializers @objc(SBDUploadableFileInfo) public class UploadableFileInfo : ObjectiveC.NSObject, Swift.Codable {
   @objc final public let fileURL: Swift.String?
   @objc public var file: Foundation.Data?
   @objc public var fileSize: Swift.UInt {
@@ -2253,6 +2255,9 @@ extension SendbirdChatSDK.BannedUserListQuery {
   @objc dynamic public var limit: Swift.UInt {
     @objc get
   }
+}
+extension SendbirdChatSDK.NotificationCollection {
+  @objc dynamic public func refresh(completionHandler: SendbirdChatSDK.SBErrorHandler?)
 }
 @_inheritsConvenienceInitializers @objc(SBDDeliveryStatus) public class DeliveryStatus : ObjectiveC.NSObject, Swift.Codable {
   @available(*, unavailable, renamed: "channelURL")
@@ -3013,6 +3018,8 @@ extension SendbirdChatSDK.GroupChannelCollection : SendbirdChatSDK.GroupChannelD
   case authPlanQuotaExceeded = 400306
   case sessionKeyExpired = 400309
   case sessionTokenRevoked = 400310
+  case expiringSessionRequired = 400312
+  case authSessionNotAllowed = 400313
   case invalidApiToken = 400401
   case parameterMissing = 400402
   case invalidJsonBody = 400403
@@ -3155,6 +3162,8 @@ extension SendbirdChatSDK.MutedUserListQuery {
   @objc public class func connect(userId: Swift.String, completionHandler: SendbirdChatSDK.UserHandler? = nil)
   @objc public class func connect(userId: Swift.String, authToken: Swift.String?, completionHandler: SendbirdChatSDK.UserHandler? = nil)
   @objc public class func connect(userId: Swift.String, authToken: Swift.String?, apiHost: Swift.String?, wsHost: Swift.String?, completionHandler: SendbirdChatSDK.UserHandler? = nil)
+  @objc public class func authenticateFeed(userId: Swift.String, authToken: Swift.String?, completionHandler: SendbirdChatSDK.UserHandler? = nil)
+  @objc public class func authenticateFeed(userId: Swift.String, authToken: Swift.String?, apiHost: Swift.String?, completionHandler: SendbirdChatSDK.UserHandler? = nil)
   @objc public class func disconnect(completionHandler: SendbirdChatSDK.VoidHandler? = nil)
   @objc public class func disconnectWebSocket(completionHandler: SendbirdChatSDK.VoidHandler? = nil)
   @discardableResult
@@ -3240,6 +3249,7 @@ extension SendbirdChatSDK.MutedUserListQuery {
   @objc public class func markAsReadAll(completionHandler: SendbirdChatSDK.SBErrorHandler? = nil)
   @objc public class func markAsRead(channelURLs: [Swift.String], completionHandler: SendbirdChatSDK.SBErrorHandler? = nil)
   @objc public class func markAsDelivered(remoteNotificationPayload: [Swift.AnyHashable : Any], completionHandler: SendbirdChatSDK.SBErrorHandler? = nil)
+  @objc public class func markPushNotificationAsDelivered(remoteNotificationPayload: [Swift.AnyHashable : Any], completionHandler: SendbirdChatSDK.SBErrorHandler? = nil)
   @objc(getMyGroupChannelChangeLogsWithToken:params:completionHandler:) public class func getMyGroupChannelChangeLogs(token: Swift.String?, params: SendbirdChatSDK.GroupChannelChangeLogsParams = GroupChannelChangeLogsParams(), completionHandler: @escaping SendbirdChatSDK.ChannelChangeLogsHandler)
   @objc(getMyGroupChannelChangeLogsWithTimestamp:params:completionHandler:) public class func getMyGroupChannelChangeLogs(timestamp: Swift.Int64, params: SendbirdChatSDK.GroupChannelChangeLogsParams = GroupChannelChangeLogsParams(), completionHandler: @escaping SendbirdChatSDK.ChannelChangeLogsHandler)
   @objc public class func getLogLevel() -> SendbirdChatSDK.LogLevel
@@ -3287,6 +3297,7 @@ extension SendbirdChatSDK.MutedUserListQuery {
   @objc public class func getNotificationTemplateList(token: Swift.String?, params: SendbirdChatSDK.NotificationTemplateListParams = NotificationTemplateListParams(), completionHandler: @escaping SendbirdChatSDK.NotificationTemplateListHandler)
   @objc public class func getNotificationTemplate(key: Swift.String, completionHandler: @escaping SendbirdChatSDK.NotificationTemplateHandler)
   public class func __getUIKitConfiguration(completionhandler: @escaping SendbirdChatSDK.UIKitConfigurationHandler)
+  public class func refreshNotificationCollections()
   @objc deinit
 }
 @objc(SBDGroupChannelListOrder) public enum GroupChannelListOrder : Swift.Int {
@@ -4247,6 +4258,10 @@ extension SendbirdChatSDK.ChannelMetaCountersUpdateMode : Swift.RawRepresentable
 extension SendbirdChatSDK.GroupChannel {
   @discardableResult
   @objc dynamic public func sendMultipleFilesMessage(params: SendbirdChatSDK.MultipleFilesMessageCreateParams, fileUploadHandler: SendbirdChatSDK.FileUploadHandler?, completionHandler: @escaping SendbirdChatSDK.MultipleFilesMessageHandler) -> SendbirdChatSDK.MultipleFilesMessage?
+  @discardableResult
+  @objc(copyMultipleFilesMessageWithMessage:toTargetChannel:completionHandler:) dynamic public func copyMultipleFilesMessage(_ message: SendbirdChatSDK.MultipleFilesMessage, toTargetChannel targetChannel: SendbirdChatSDK.GroupChannel, completionHandler: SendbirdChatSDK.MultipleFilesMessageHandler?) -> SendbirdChatSDK.MultipleFilesMessage?
+  @discardableResult
+  @objc(resendMultipleFilesMessageWithMessage:fileUploadHandler:completionHandler:) dynamic public func resendMultipleFilesMessage(_ message: SendbirdChatSDK.MultipleFilesMessage, fileUploadHandler: SendbirdChatSDK.FileUploadHandler?, completionHandler: SendbirdChatSDK.MultipleFilesMessageHandler?) -> SendbirdChatSDK.MultipleFilesMessage?
 }
 @objc extension SendbirdChatSDK.BaseChannel {
   @objc dynamic open func createMetaData(_ metaData: [Swift.String : Swift.String], completionHandler: SendbirdChatSDK.MetaDataHandler?)
