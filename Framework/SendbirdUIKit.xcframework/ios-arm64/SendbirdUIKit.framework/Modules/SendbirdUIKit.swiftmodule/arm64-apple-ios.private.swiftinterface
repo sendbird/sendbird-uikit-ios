@@ -4958,7 +4958,7 @@ public protocol SBUCreateOpenChannelViewModelDelegate : SendbirdUIKit.SBUCommonV
 open class SBUCreateOpenChannelViewModel {
   public init(delegate: (any SendbirdUIKit.SBUCreateOpenChannelViewModelDelegate)?)
   public func createChannel(channelName: Swift.String, coverImage: UIKit.UIImage?)
-  public func createChannel(params: SendbirdChatSDK.OpenChannelCreateParams)
+  open func createChannel(params: SendbirdChatSDK.OpenChannelCreateParams)
   @objc deinit
 }
 extension SendbirdUIKit.SBUView {
@@ -6422,6 +6422,11 @@ public protocol SBUMessageInputViewDataSource : AnyObject {
   }
   @_Concurrency.MainActor(unsafe) weak public var delegate: (any SendbirdUIKit.SBUMessageInputViewDelegate)?
   @_Concurrency.MainActor(unsafe) weak public var datasource: (any SendbirdUIKit.SBUMessageInputViewDataSource)?
+  @SendbirdUIKit.SBUThemeWrapper @_Concurrency.MainActor(unsafe) public var theme: SendbirdUIKit.SBUMessageInputTheme {
+    get
+    set
+    _modify
+  }
   @SendbirdUIKit.SBUThemeWrapper @_Concurrency.MainActor(unsafe) public var overlayTheme: SendbirdUIKit.SBUMessageInputTheme {
     get
     set
@@ -9701,6 +9706,9 @@ public typealias SBUMain = SendbirdUIKit.SendbirdUI
   public static func updateUserInfo(nickname: Swift.String?, profileImage: Foundation.Data?, completionHandler: ((_ error: SendbirdChatSDK.SBError?) -> Swift.Void)?)
   public static func updateUserInfo(params: SendbirdChatSDK.UserUpdateParams, completionHandler: ((_ error: SendbirdChatSDK.SBError?) -> Swift.Void)?)
   public static var shortVersion: Swift.String {
+    get
+  }
+  public static var bundleShortVersion: Swift.String {
     get
   }
   public static func versionString() -> Swift.String?

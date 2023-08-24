@@ -1,5 +1,8 @@
 # Changelog
 
+### v3.8.0-beta.1 (Aug 24, 2023)
+* Removed beta information on `CFBundleShortVersionString`
+
 ### v3.8.0-beta (Aug 18, 2023) with Chat SDK **v4.10.0**
 * Change the default authentication method for FeedChannel from WebSocket connection to API.
 * Added `authenticatedFeed(completionHandler:)` in `SendbirdUI`

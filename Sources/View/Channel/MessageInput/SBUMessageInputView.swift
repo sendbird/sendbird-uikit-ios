@@ -409,7 +409,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     let cancelItem = SBUActionSheetItem(title: SBUStringSet.Cancel, completionHandler: nil)
 
     @SBUThemeWrapper(theme: SBUTheme.messageInputTheme)
-    var theme: SBUMessageInputTheme
+    public var theme: SBUMessageInputTheme
     @SBUThemeWrapper(theme: SBUTheme.overlayTheme.messageInputTheme, setToDefault: true)
     public var overlayTheme: SBUMessageInputTheme
     
