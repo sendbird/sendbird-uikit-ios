@@ -10,7 +10,7 @@
 		</data>
 		<key>Base.xcconfig</key>
 		<data>
-		myI149Objkg6XLW6fBUI2oFtN7E=
+		OtHSUqHl+3fxfi/c0TuT1IokNxU=
 		</data>
 		<key>Debug.xcconfig</key>
 		<data>
@@ -22,27 +22,27 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		M4H+eyFsNW288VNu3Vhj7JNiSUM=
+		aRyex9nocU4Lrsln3AAJa5ndzdo=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios.abi.json</key>
 		<data>
-		mjkxbyC4RWVz2UBX0BMyCZffvvM=
+		N9i+pUztA5SE0hVTrRbvUZIMnP0=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios.private.swiftinterface</key>
 		<data>
-		Ys95naX5CkqcxCFIrF/R7gTnBl8=
+		xFUfzl+pG6EWfQvQp0r+un9eia4=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios.swiftdoc</key>
 		<data>
-		LSHadB4Gs5rZu2djor9AEnPq1P0=
+		a/qSaMChNkMJ/nmPdqXk80/aUBI=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios.swiftinterface</key>
 		<data>
-		Ys95naX5CkqcxCFIrF/R7gTnBl8=
+		xFUfzl+pG6EWfQvQp0r+un9eia4=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios.swiftmodule</key>
 		<data>
-		rAVBtin16g+LoeRe3gTV11FKWnw=
+		eEoI/OUy/G8rdRCPY13JySEEqDY=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -78,7 +78,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			poABcyXWwgbGeqggqUGXpp7rVtS6j3cvp0S29K0XnrY=
+			gSb57oPHL1HZWuXgr+C/vYTJXyeIHbGKbYjrJvjBAFs=
 			</data>
 		</dict>
 		<key>Debug.xcconfig</key>
@@ -99,35 +99,35 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			FsMSYNSkzI7fvvEpwa/Y3vsGmroYhm/R7TblREM88/0=
+			bKpby92cAxvccdveGA+w59qYjnK1iniB7WT0u97jMb8=
 			</data>
 		</dict>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios.private.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			TwoFccL928jkPFY+qmqSOfEktHCJLaqR64P+T+K3EVc=
+			O+v7pdrwfLdY0RemOuOCvcfZ/wgGteEwUpoGNVbSDaE=
 			</data>
 		</dict>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			0W87aBRjH3uGK/MPjd41duYGpD7r6mewGW3dDdaRG/g=
+			uhkzGn/j4lOrQPABYW67GLOTW/XF291usY+8XtSEC30=
 			</data>
 		</dict>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			TwoFccL928jkPFY+qmqSOfEktHCJLaqR64P+T+K3EVc=
+			O+v7pdrwfLdY0RemOuOCvcfZ/wgGteEwUpoGNVbSDaE=
 			</data>
 		</dict>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			J2aM8JEKv1USLTf0G8fCXSW3H9Nh7hlqXoqyw5BjkO4=
+			RikynGrnFOEGSAeLKHojcXsgD571Rcrr9lG/5TD1W2k=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

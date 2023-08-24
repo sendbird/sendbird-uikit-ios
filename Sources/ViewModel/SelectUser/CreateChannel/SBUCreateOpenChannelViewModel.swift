@@ -51,7 +51,7 @@ open class SBUCreateOpenChannelViewModel {
     /// You can create a channel by setting various properties of ChannelParams.
     /// - Parameters:
     ///   - params: `OpenChannelCreateParams` class object
-    public func createChannel(params: OpenChannelCreateParams) {
+    open func createChannel(params: OpenChannelCreateParams) {
         SBULog.info("[Request] Create open channel")
         
         self.delegate?.shouldUpdateLoadingState(true)

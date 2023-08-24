@@ -639,10 +639,10 @@ class SBUFeedNotificationChannelViewModel: NSObject {
     /// This function refreshes channel and checkes updated message.
     /// - Parameter completionHandler: completion handler
     ///
-    /// - Since: 3.8.0
-    func refresh(completionHandler: SBErrorHandler?) {
-        self.notificationCollection?.refresh(completionHandler: completionHandler)
-    }
+    /// - Since: Not applied yet
+//    func refresh(completionHandler: SBErrorHandler?) {
+//        self.notificationCollection?.refresh(completionHandler: completionHandler)
+//    }
 }
 
 // MARK: - ConnectionDelegate
