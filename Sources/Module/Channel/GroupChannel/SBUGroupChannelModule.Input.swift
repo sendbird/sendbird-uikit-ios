@@ -510,12 +510,21 @@ extension SBUGroupChannelModule {
         
         /// Updates `suggestedMentionList` with `members`
         open func updateSuggestedMentionList(with members: [SBUUser]) {
+            guard let config = SBUGlobals.userMentionConfig else {
+                SBULog.error("`SBUGlobals.userMentionConfig` is `nil`")
+                return
+            }
+            
+            guard SendbirdUI.config.groupChannel.channel.isMentionEnabled else {
+                SBULog.error("User mention features are disabled. See `SBUGlobals.isMentionEnabled` for more information")
+                return
+            }
+            
             var filteredMembers = members.filter {
                 $0.userId != SBUGlobals.currentUser?.userId
             }
             
-            if let limit = SBUGlobals.userMentionConfig?.suggestionLimit,
-               filteredMembers.count > limit {
+            if filteredMembers.count > config.suggestionLimit {
                 // Remove buffer member
                 filteredMembers.removeLast()
             }

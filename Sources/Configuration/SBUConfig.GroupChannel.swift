@@ -51,7 +51,20 @@ extension SBUConfig.GroupChannel {
         @SBUPrioritizedConfig public var isReactionsEnabled: Bool = true
         
         /// Enable the feature to mention specific members in a message for notification.
-        @SBUPrioritizedConfig public var isMentionEnabled: Bool = false
+        ///
+        /// - NOTE: If it's `true`, it sets new ``SBUUserMentionConfiguration`` instance to ``SBUGlobals/userMentionConfig`` if needed. If it's `false`, ``SBUGlobals/userMentionConfig`` is set to `nil`
+        @SBUPrioritizedConfig public var isMentionEnabled: Bool = false {
+            didSet {
+                switch self.isMentionEnabled {
+                case true:
+                    if SBUGlobals.userMentionConfig == nil {
+                        SBUGlobals.userMentionConfig = .init()
+                    }
+                case false:
+                    SBUGlobals.userMentionConfig = nil
+                }
+            }
+        }
         
         /// Enable the Voice Message feature.
         @SBUPrioritizedConfig public var isVoiceMessageEnabled: Bool = false

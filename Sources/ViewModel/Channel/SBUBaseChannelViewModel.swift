@@ -688,10 +688,12 @@ open class SBUBaseChannelViewModel: NSObject {
         }
         
         if needMarkAsRead, let channel = self.channel as? GroupChannel, !self.isThreadMessageMode {
-            channel.markAsRead(completionHandler: nil)
+            channel.markAsRead { [weak self] _ in
+                self?.sortAllMessageList(needReload: needReload)
+            }
+        } else {
+            self.sortAllMessageList(needReload: needReload)
         }
-        
-        self.sortAllMessageList(needReload: needReload)
     }
     
     /// This function deletes the messages in the list using the message ids. (Resendable messages are also delete together.)

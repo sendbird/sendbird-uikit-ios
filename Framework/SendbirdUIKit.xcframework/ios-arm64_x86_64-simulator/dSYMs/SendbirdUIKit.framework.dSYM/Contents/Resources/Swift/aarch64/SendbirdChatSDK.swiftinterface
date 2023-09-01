@@ -174,6 +174,9 @@ extension SendbirdChatSDK.PollVoterListQueryParams : Swift.Encodable {
   @objc open var mentionedMessageTemplate: Swift.String? {
     get
   }
+  @objc open var notifiationData: SendbirdChatSDK.NotificationData? {
+    get
+  }
   @objc open var messageParams: SendbirdChatSDK.BaseMessageCreateParams? {
     get
   }
@@ -254,6 +257,29 @@ extension SendbirdChatSDK.PublicGroupChannelListQuery {
   @objc dynamic public var limit: Swift.UInt {
     @objc get
   }
+  @objc dynamic public var createdBefore: Swift.Int64 {
+    @objc get
+  }
+  @objc dynamic public var createdAfter: Swift.Int64 {
+    @objc get
+  }
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc(SBDNotificationCategory) open class NotificationCategory : ObjectiveC.NSObject, Swift.Codable {
+  @objc open var categoryId: Swift.Int64 {
+    get
+  }
+  @objc open var customType: Swift.String? {
+    @objc get
+  }
+  @objc open var name: Swift.String {
+    get
+  }
+  @objc open var isDefault: Swift.Bool {
+    get
+  }
+  required public init(from decoder: Swift.Decoder) throws
+  public func encode(to encoder: Swift.Encoder) throws
+  @objc deinit
 }
 @_hasMissingDesignatedInitializers @objc(SBDUnreadMessageCount) open class UnreadMessageCount : ObjectiveC.NSObject {
   final public let groupChannelCount: Swift.Int
@@ -840,6 +866,12 @@ extension SendbirdChatSDK.GroupChannelListQuery {
     @objc get
   }
   @objc dynamic public var includeChatNotification: Swift.Bool {
+    @objc get
+  }
+  @objc dynamic public var createdBefore: Swift.Int64 {
+    @objc get
+  }
+  @objc dynamic public var createdAfter: Swift.Int64 {
     @objc get
   }
 }
@@ -1688,7 +1720,11 @@ extension SendbirdChatSDK.Poll : SendbirdChatSDK.Serializable {
   @objc public var isEncryptionEnabled: Swift.Bool {
     get
   }
-  @objc public init(isEncryptionEnabled: Swift.Bool = false)
+  @objc public var enableAutoResend: Swift.Bool {
+    get
+  }
+  @objc convenience public init(isEncryptionEnabled: Swift.Bool)
+  @objc public init(isEncryptionEnabled: Swift.Bool = false, enableAutoResend: Swift.Bool = true)
   @objc deinit
 }
 @_hasMissingDesignatedInitializers @objc(SBDGlobalNotificationChannelSetting) open class GlobalNotificationChannelSetting : ObjectiveC.NSObject {
@@ -1833,8 +1869,17 @@ extension SendbirdChatSDK.Member {
     @objc get
     @objc set
   }
-  @objc override dynamic open func serialize() -> Foundation.Data?
+  @objc open var isCategoryFilterEnabled: Swift.Bool {
+    get
+  }
+  @objc open var isTemplateLabelEnabled: Swift.Bool {
+    get
+  }
+  @objc open var categories: [SendbirdChatSDK.NotificationCategory] {
+    get
+  }
   required public init(from decoder: Swift.Decoder) throws
+  override public func encode(to encoder: Swift.Encoder) throws
   @objc deinit
 }
 extension SendbirdChatSDK.FeedChannel {
@@ -1892,6 +1937,8 @@ extension SendbirdChatSDK.PollOption {
     get
   }
   @objc final public var limit: Swift.UInt
+  @objc final public var createdBefore: Swift.Int64
+  @objc final public var createdAfter: Swift.Int64
   @objc override dynamic public init()
   @objc public init(builder: (SendbirdChatSDK.PublicGroupChannelListQueryParams) -> Swift.Void)
   @objc(setMetaDataFilterWithKey:values:) final public func setMetaDataFilter(withKey key: Swift.String, values: [Swift.String])
@@ -2256,9 +2303,6 @@ extension SendbirdChatSDK.BannedUserListQuery {
     @objc get
   }
 }
-extension SendbirdChatSDK.NotificationCollection {
-  @objc dynamic public func refresh(completionHandler: SendbirdChatSDK.SBErrorHandler?)
-}
 @_inheritsConvenienceInitializers @objc(SBDDeliveryStatus) public class DeliveryStatus : ObjectiveC.NSObject, Swift.Codable {
   @available(*, unavailable, renamed: "channelURL")
   @objc public var channelUrl: Swift.String?
@@ -2572,6 +2616,8 @@ extension SendbirdChatSDK.PublicGroupChannelListQuery {
   }
   @objc final public var limit: Swift.UInt
   @objc final public var includeChatNotification: Swift.Bool
+  @objc final public var createdBefore: Swift.Int64
+  @objc final public var createdAfter: Swift.Int64
   @objc override dynamic public init()
   @objc public init(builder: (SendbirdChatSDK.GroupChannelListQueryParams) -> Swift.Void)
   @objc final public func setUserIdsIncludeFilter(_ userIds: [Swift.String], queryType: SendbirdChatSDK.GroupChannelListQueryType)
@@ -2627,6 +2673,23 @@ extension SendbirdChatSDK.MutedUserListQueryParams : Foundation.NSCopying {
   @objc public init(scheduledAt: Swift.Int64, fileURL: Swift.String)
   override public func encode(to encoder: Swift.Encoder) throws
   required public init(from decoder: Swift.Decoder) throws
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc(SBDNotificationData) open class NotificationData : ObjectiveC.NSObject, Swift.Codable {
+  @objc open var label: Swift.String {
+    get
+  }
+  @objc open var templateKey: Swift.String {
+    get
+  }
+  @objc open var tags: [Swift.String]? {
+    get
+  }
+  @objc open var templateVariables: [Swift.String : Any] {
+    get
+  }
+  required public init(from decoder: Swift.Decoder) throws
+  public func encode(to encoder: Swift.Encoder) throws
   @objc deinit
 }
 @_inheritsConvenienceInitializers @objc(SBDPollCreateParams) public class PollCreateParams : ObjectiveC.NSObject {

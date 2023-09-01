@@ -985,10 +985,21 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
             
             if let channel = self.channel as? GroupChannel {
                 if channel.isSuper {
+                    guard let config = SBUGlobals.userMentionConfig else {
+                        SBULog.error("`SBUGlobals.userMentionConfig` is `nil`")
+                        return
+                    }
+                    
+                    guard SendbirdUI.config.groupChannel.channel.isMentionEnabled else {
+                        SBULog.error("User mention features are disabled. See `SBUGlobals.isMentionEnabled` for more information")
+                        return
+                    }
+                    
                     let params = MemberListQueryParams()
                     params.nicknameStartsWithFilter = filterText
+                    
                     // +1 is buffer for when the current user is included in the search results
-                    params.limit = UInt(SBUGlobals.userMentionConfig?.suggestionLimit ?? 0) + 1
+                    params.limit = UInt(config.suggestionLimit) + 1
                     self.query = channel.createMemberListQuery(params: params)
                     
                     self.query?.loadNextPage { [weak self] members, _ in

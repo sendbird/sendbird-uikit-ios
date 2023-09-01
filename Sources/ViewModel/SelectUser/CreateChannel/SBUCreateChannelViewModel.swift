@@ -114,16 +114,13 @@ open class SBUCreateChannelViewModel {
                 didChangeUsers: self.userList,
                 needsToReload: true
             )
-        } else if self.useCustomizedUsers, let customizedUsers = self.customizedUsers {
-            self.userList += customizedUsers
-            self.isLoading = false
-            self.delegate?.shouldUpdateLoadingState(false)
-            self.delegate?.createChannelViewModel(
-                self,
-                didChangeUsers: self.userList,
-                needsToReload: true
-            )
-        } else if !self.useCustomizedUsers {
+        } else {
+            guard !self.useCustomizedUsers else {
+                self.delegate?.shouldUpdateLoadingState(false)
+                
+                return
+            }
+            
             if self.userListQuery == nil {
                 let params = ApplicationUserListQueryParams()
                 params.limit = SBUCreateChannelViewModel.limit

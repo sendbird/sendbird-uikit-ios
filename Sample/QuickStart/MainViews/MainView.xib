@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="MainView" customModule="QuickStart" customModuleProvider="target">
+            <connections>
+                <outlet property="chatBotItemView" destination="Uet-gO-Vc9" id="5u4-ja-1XQ"/>
+                <outlet property="customItemView" destination="5ZD-Ua-BWH" id="h6I-2F-bcJ"/>
+                <outlet property="groupChannelItemView" destination="O35-Wx-57z" id="cee-C3-3kE"/>
+                <outlet property="homeStackView" destination="TTc-Bv-If3" id="L3m-Fh-XdL"/>
+                <outlet property="openChannelItemView" destination="FbN-u6-0sT" id="Xst-n7-xxp"/>
+                <outlet property="signOutButton" destination="wWg-UY-XdF" id="F9h-iR-vkv"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="622"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <stackView hidden="YES" opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="TTc-Bv-If3">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="622"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Home" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ze8-A8-MZk">
+                            <rect key="frame" x="0.0" y="0.0" width="375" height="86"/>
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kwm-6f-jeq" userLabel="marginView">
+                            <rect key="frame" x="0.0" y="86" width="375" height="24"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="24" id="Ga9-WM-Yyu"/>
+                            </constraints>
+                        </view>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="O35-Wx-57z" customClass="MainItemView" customModule="QuickStart" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="110" width="375" height="96"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="height" priority="500" constant="96" id="ZgW-wO-yiK"/>
+                            </constraints>
+                        </view>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Llx-ez-RJk" userLabel="marginView">
+                            <rect key="frame" x="0.0" y="206" width="375" height="16"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="16" id="OgK-E3-C1z"/>
+                            </constraints>
+                        </view>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FbN-u6-0sT" customClass="MainItemView" customModule="QuickStart" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="222" width="375" height="96"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="height" priority="500" constant="96" id="err-Mm-e0N"/>
+                            </constraints>
+                        </view>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="69p-gT-x4z" userLabel="marginView">
+                            <rect key="frame" x="0.0" y="318" width="375" height="16"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="16" id="SJy-7i-MoF"/>
+                            </constraints>
+                        </view>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Uet-gO-Vc9" customClass="MainItemView" customModule="QuickStart" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="334" width="375" height="96"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="height" priority="500" constant="96" id="yIh-h6-vri"/>
+                            </constraints>
+                        </view>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rw2-8k-OPv" userLabel="marginView">
+                            <rect key="frame" x="0.0" y="430" width="375" height="16"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="16" id="HJ8-Ar-JX7"/>
+                            </constraints>
+                        </view>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5ZD-Ua-BWH" customClass="MainItemView" customModule="QuickStart" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="446" width="375" height="96"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="height" priority="500" constant="72" id="C1x-wc-79b"/>
+                            </constraints>
+                        </view>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="R3Z-Ey-RRm" userLabel="marginView">
+                            <rect key="frame" x="0.0" y="542" width="375" height="32"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="32" id="3ea-rh-m0r"/>
+                            </constraints>
+                        </view>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wWg-UY-XdF">
+                            <rect key="frame" x="0.0" y="574" width="375" height="48"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="48" id="RVK-Ep-xVR"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="20"/>
+                            <state key="normal" title="Sign out">
+                                <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="0.88" colorSpace="custom" customColorSpace="sRGB"/>
+                            </state>
+                        </button>
+                    </subviews>
+                </stackView>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="TTc-Bv-If3" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="91K-pV-RVj"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="TTc-Bv-If3" secondAttribute="trailing" id="DvQ-gE-AuS"/>
+                <constraint firstAttribute="bottom" secondItem="TTc-Bv-If3" secondAttribute="bottom" id="Pyi-3c-9JY"/>
+                <constraint firstItem="TTc-Bv-If3" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="jqs-lR-Ohd"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="125.95419847328243" y="-39.436619718309863"/>
+        </view>
+    </objects>
+</document>

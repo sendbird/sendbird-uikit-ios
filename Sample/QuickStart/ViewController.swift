@@ -14,35 +14,30 @@ enum ButtonType: Int {
     case startChatWithVC
     case startChatWithTC
     case startOpenChatWithTC
+    case startChatBotWithVC
     case signOut
     case customSamples
 }
 
 class ViewController: UIViewController {
     // MARK: - Properties
-    @IBOutlet weak var logoStackView: UIStackView!
-    @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var unreadCountLabel: UILabel!
+    @IBOutlet weak var connectView: ConnectView!
     
-    @IBOutlet weak var signInStackView: UIStackView!
-    @IBOutlet weak var userIdTextField: UITextField!
-    @IBOutlet weak var nicknameTextField: UITextField!
-    @IBOutlet weak var signInButton: UIButton!
+    var titleLabel: UILabel { connectView.titleLabel }
+    var userIdTextField: UITextField { connectView.userIdTextField }
+    var nicknameTextField: UITextField { connectView.nicknameTextField }
+    var signInButton: UIButton { connectView.signInButton }
     
+    @IBOutlet weak var mainView: MainView!
     
-    @IBOutlet weak var homeStackView: UIStackView!
-    @IBOutlet weak var startChatWithViewControllerButton: UIButton!
-    @IBOutlet weak var startChatWithTabbarControllerButton: UIButton!
-    @IBOutlet weak var startOpenChatWithTabbarControllerButton: UIButton!
-    @IBOutlet weak var customSamplesButton: UIButton!
-    @IBOutlet weak var signOutButton: UIButton!
-    
-    @IBOutlet weak var groupChannelShadowView: UIView!
-    @IBOutlet weak var groupChannelBaseView: UIView!
-    @IBOutlet weak var openChannelShadowView: UIView!
-    @IBOutlet weak var openChannelBaseView: UIView!
-    @IBOutlet weak var customSampleShadowView: UIView!
-    @IBOutlet weak var customSamplesBaseView: UIView!
+    var homeStackView: UIStackView { mainView.homeStackView }
+    var unreadCountLabel: UILabel { mainView.groupChannelItemView.unreadCountLabel }
+//    var startChatWithViewControllerButton: UIButton { mainView.groupChannelItemView.actionButton }
+    var startChatWithTabbarControllerButton: UIButton { mainView.groupChannelItemView.actionButton }
+    var startOpenChatWithTabbarControllerButton: UIButton { mainView.openChannelItemView.actionButton }
+    var startChatBotWithViewControllerButton: UIButton { mainView.chatBotItemView.actionButton }
+    var customSamplesButton: UIButton { mainView.customItemView.actionButton }
+    var signOutButton: UIButton { mainView.signOutButton }
     
     @IBOutlet weak var versionLabel: UILabel!
 
@@ -56,10 +51,8 @@ class ViewController: UIViewController {
     var isSignedIn = false {
         didSet {
             UIView.animate(withDuration: 0.4, delay: 0, options: .curveEaseOut, animations: {
-                self.signInStackView.isHidden = self.isSignedIn
-                self.signInStackView.alpha = self.isSignedIn ? 0 : 1
-                self.logoStackView.isHidden = self.isSignedIn
-                self.logoStackView.alpha = self.isSignedIn ? 0 : 1
+                self.connectView.isHidden = self.isSignedIn
+                self.connectView.alpha = self.isSignedIn ? 0 : 1
                 self.homeStackView.isHidden = !self.isSignedIn
                 self.homeStackView.alpha = !self.isSignedIn ? 0 : 1
             })
@@ -89,61 +82,19 @@ class ViewController: UIViewController {
         signInButton.tag = ButtonType.signIn.rawValue
         signOutButton.tag = ButtonType.signOut.rawValue
         
-        startChatWithViewControllerButton.tag = ButtonType.startChatWithVC.rawValue
+//        startChatWithViewControllerButton.tag = ButtonType.startChatWithVC.rawValue
         startChatWithTabbarControllerButton.tag = ButtonType.startChatWithTC.rawValue
         startOpenChatWithTabbarControllerButton.tag = ButtonType.startOpenChatWithTC.rawValue
+        startChatBotWithViewControllerButton.tag = ButtonType.startChatBotWithVC.rawValue
         customSamplesButton.tag = ButtonType.customSamples.rawValue
         
-        homeStackView.alpha = 0
-         
-        [userIdTextField, nicknameTextField].forEach {
-            guard let textField = $0 else { return }
-            let paddingView = UIView(frame: CGRect(
-                x: 0,
-                y: 0,
-                width: 16,
-                height: textField.frame.size.height)
-            )
-            textField.leftView = paddingView
-            textField.delegate = self
-            textField.leftViewMode = .always
-            textField.layer.borderWidth = 1
-            textField.layer.cornerRadius = CornerRadius.small.rawValue
-            textField.layer.borderColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
-            textField.tintColor = #colorLiteral(red: 0.4666666667, green: 0.337254902, blue: 0.8549019608, alpha: 1)
-        }
-        
-        [signInButton,
-         signOutButton].forEach {
-            $0?.layer.cornerRadius = CornerRadius.small.rawValue
-        }
-        
-        [groupChannelBaseView,
-         openChannelBaseView,
-         customSamplesBaseView]
-            .forEach {
-                $0?.layer.cornerRadius = CornerRadius.large.rawValue
-            }
-        
-        [groupChannelShadowView,
-         openChannelShadowView,
-         customSampleShadowView].forEach {
-            $0?.layer.cornerRadius = CornerRadius.large.rawValue
-            $0?.layer.shadowRadius = CornerRadius.large.rawValue
-            $0?.layer.shadowOffset.height = 8.0
-            $0?.layer.shadowOpacity = 0.12
-        }
-        
-        [signOutButton].forEach {
-            $0?.layer.borderColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0.88)
-            $0?.layer.borderWidth = 1
-        }
-        
-        unreadCountLabel.textColor = SBUColorSet.ondark01
-        unreadCountLabel.font = SBUFontSet.caption1
-        unreadCountLabel.backgroundColor = SBUColorSet.error300
-        unreadCountLabel.layer.cornerRadius = unreadCountLabel.frame.height / 2
-        unreadCountLabel.layer.masksToBounds = true
+        signInButton.addTarget(self, action: #selector(onTapButton(_:)), for: .touchUpInside)
+        signOutButton.addTarget(self, action: #selector(onTapButton(_:)), for: .touchUpInside)
+//        startChatWithViewControllerButton.addTarget(self, action: #selector(onTapButton(_:)), for: .touchUpInside)
+        startChatWithTabbarControllerButton.addTarget(self, action: #selector(onTapButton(_:)), for: .touchUpInside)
+        startChatBotWithViewControllerButton.addTarget(self, action: #selector(onTapButton(_:)), for: .touchUpInside)
+        startOpenChatWithTabbarControllerButton.addTarget(self, action: #selector(onTapButton(_:)), for: .touchUpInside)
+        customSamplesButton.addTarget(self, action: #selector(onTapButton(_:)), for: .touchUpInside)
  
         UserDefaults.saveIsLightTheme(true)
         
@@ -161,7 +112,7 @@ class ViewController: UIViewController {
                 return SendbirdUI.shortVersion
             }
         }
-        versionLabel.text = "UIKit v\(uikitVersion)\t|\tSDK v\(coreVersion)"
+        versionLabel.text = "UIKit v\(uikitVersion)\tSDK v\(coreVersion)"
          
         userIdTextField.text = UserDefaults.loadUserID()
         nicknameTextField.text = UserDefaults.loadNickname()
@@ -226,6 +177,8 @@ class ViewController: UIViewController {
             self.startChatAction(type: type ?? .startChatWithVC)
         case .startOpenChatWithTC:
             self.startOpenChatAction(type: .startOpenChatWithTC)
+        case .startChatBotWithVC:
+            self.startChatBotAction(type: .startChatBotWithVC)
         case .signOut:
             self.signOutAction()
         case .customSamples:
@@ -315,11 +268,17 @@ class ViewController: UIViewController {
     }
     
     func startOpenChatAction(type: ButtonType) {
-        if type == .startOpenChatWithTC {
-            let mainVC = MainOpenChannelTabbarController()
-            mainVC.modalPresentationStyle = .fullScreen
-            present(mainVC, animated: true)
-        }
+        guard type == .startOpenChatWithTC else { return }
+        
+        let mainVC = MainOpenChannelTabbarController()
+        mainVC.modalPresentationStyle = .fullScreen
+        present(mainVC, animated: true)
+    }
+    
+    func startChatBotAction(type: ButtonType) {
+        guard type == .startChatBotWithVC else { return }
+        
+        SendbirdUI.startChatWithAIBot(botId: "client_bot", isDistinct: true)
     }
     
     func moveToCustomSamples() {
@@ -338,14 +297,9 @@ extension ViewController: UINavigationControllerDelegate {
     }
 }
 
-extension ViewController: UITextFieldDelegate {
+extension ViewController {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
-    }
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        return true
     }
 }
 
