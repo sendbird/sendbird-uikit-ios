@@ -367,9 +367,9 @@ class SBUChatNotificationChannelViewModel: NSObject {
     }
     
     // MARK: - Notification related
-    func markAsRead() {
+    func markAsRead(completionHandler: SendbirdChatSDK.SBErrorHandler? = nil) {
         if let channel = self.channel, allowsReadStatusUpdate {
-            channel.markAsRead(completionHandler: nil)
+            channel.markAsRead(completionHandler: completionHandler)
         }
     }
     
@@ -598,7 +598,7 @@ class SBUChatNotificationChannelViewModel: NSObject {
     ) {
         SBULog.info("First : \(String(describing: notifications?.first)), Last : \(String(describing: notifications?.last))")
         
-        var needMarkAsRead = false
+        var needsToMarkAsRead = false
         
         notifications?.forEach { notification in
             if let index = SBUUtils.findIndex(of: notification, in: self.notifications) {
@@ -622,15 +622,17 @@ class SBUChatNotificationChannelViewModel: NSObject {
             if notification.sendingStatus == .succeeded {
                 self.notifications.append(notification)
                 
-                needMarkAsRead = true
+                needsToMarkAsRead = true
             }
         }
         
-        if needMarkAsRead {
-            self.markAsRead()
+        if needsToMarkAsRead {
+            self.markAsRead { [weak self] _ in
+                self?.sortAllNotificationList(needReload: needReload)
+            }
+        } else {
+            self.sortAllNotificationList(needReload: needReload)
         }
-        
-        self.sortAllNotificationList(needReload: needReload)
     }
     
     /// This function sorts the all notification list. (Included `presendNotifications`, `notificationList` and `resendableNotifications`.)
@@ -693,9 +695,9 @@ extension SBUChatNotificationChannelViewModel: ConnectionDelegate {
             }
         }
         
-        self.markAsRead()
-        
-        self.refreshChannel()
+        self.markAsRead { [weak self] _ in
+            self?.refreshChannel()
+        }
     }
 }
 

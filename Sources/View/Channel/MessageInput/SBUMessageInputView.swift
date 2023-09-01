@@ -873,6 +873,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         self.voiceMessageButton?.isHidden = !showsVoiceMessageButton
         self.textViewTrailingPaddingView.isHidden = (!showsSendButton && !showsVoiceMessageButton)
         self.setMode(.none)
+        self.updateTextViewHeight()
         self.layoutIfNeeded()
     }
     

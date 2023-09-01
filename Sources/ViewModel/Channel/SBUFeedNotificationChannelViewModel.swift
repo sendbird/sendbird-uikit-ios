@@ -349,9 +349,9 @@ class SBUFeedNotificationChannelViewModel: NSObject {
     }
     
     // MARK: - Notification related
-    func markAsRead() {
+    func markAsRead(completionHandler: SendbirdChatSDK.SBErrorHandler? = nil) {
         if let channel = self.channel, allowsReadStatusUpdate {
-            channel.markAsRead(completionHandler: nil)
+            channel.markAsRead(completionHandler: completionHandler)
         }
     }
     
@@ -583,10 +583,12 @@ class SBUFeedNotificationChannelViewModel: NSObject {
         }
         
         if needsToMarkAsRead {
-            self.markAsRead()
+            self.markAsRead { [weak self] _ in
+                self?.sortAllNotificationList(needReload: needReload)
+            }
+        } else {
+            self.sortAllNotificationList(needReload: needReload)
         }
-        
-        self.sortAllNotificationList(needReload: needReload)
     }
     
     /// This function sorts the all notification list. (Included `presendNotifications`, `notificationList` and `resendableNotifications`.)
@@ -639,7 +641,7 @@ class SBUFeedNotificationChannelViewModel: NSObject {
     /// This function refreshes channel and checkes updated message.
     /// - Parameter completionHandler: completion handler
     ///
-    /// - Since: Not applied yet
+    /// - Since: Not public access level yet
 //    func refresh(completionHandler: SBErrorHandler?) {
 //        self.notificationCollection?.refresh(completionHandler: completionHandler)
 //    }
@@ -656,9 +658,9 @@ extension SBUFeedNotificationChannelViewModel: ConnectionDelegate {
             }
         }
         
-        self.markAsRead()
-        
-        self.refreshChannel()
+        self.markAsRead { [weak self] _ in
+            self?.refreshChannel()
+        }
     }
 }
 

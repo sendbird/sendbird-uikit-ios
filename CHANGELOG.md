@@ -1,5 +1,14 @@
 # Changelog
 
+### v3.8.0 (Sep 1, 2023)
+
+* Improved timing of `markAsRead` calls
+* Fixed an issue where pending messages were not processed when changing channels in the same view controller
+* Fixed text view height not resetting on state change
+* Fixed an issue when using customized userList where the first list would continue to be added after the last was loaded
+* Added chatbot start interface `startChatWithAIBot(id:distinct:errorHandler:)` in `SendbirdUI`
+* Improved stability
+
 ### v3.8.0-beta.1 (Aug 24, 2023)
 * Removed beta information on `CFBundleShortVersionString`
 

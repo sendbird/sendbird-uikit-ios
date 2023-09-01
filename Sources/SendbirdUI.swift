@@ -924,3 +924,74 @@ public class SendbirdUI {
         SBULog.logType = type
     }
 }
+
+extension SendbirdUI {
+    private static var botUserListQuery: ApplicationUserListQuery?
+    
+    /// this is a function that brings up a screen to chat with the bot.
+    ///
+    /// - Parameters:
+    ///   - botId: bot ID to join the channel.
+    ///   - isDistinct: If `true`, an existing channel that exists will be used.
+    ///   - errorHandler: The handler block that is executed when an error occurs.
+    /// - Since: 3.8.0
+    public static func startChatWithAIBot(
+        botId: String,
+        isDistinct: Bool,
+        errorHandler: ((_ error: SBError?) -> Void)? = nil
+    ) {
+        guard SendbirdChat.isInitialized == true else {
+            SBULog.error("[Failed] start chat with bot: need to be initialized.")
+            errorHandler?(ChatError.invalidInitialization.asSBError)
+            return
+        }
+        
+        guard SBUGlobals.currentUser != nil else {
+            SBULog.error("[Failed] start chat with bot: no current user.")
+            errorHandler?(ChatError.invalidParameter.asSBError)
+            return
+        }
+        
+        Self.botUserListQuery = SendbirdChat.createApplicationUserListQuery(params: .init(builder: { params in
+            params.userIdsFilter = [botId]
+        }))
+        
+        Self.botUserListQuery?.loadNextPage { users, error in
+            if let error = error {
+                SBULog.error("[Failed] start chat with bot: \(error.description)")
+                errorHandler?(ChatError.invalidParameter.asSBError)
+                return
+            }
+            
+            guard let users = users, users.count > 0 else {
+                SBULog.error("[Failed] start chat with bot: no exist the bot.")
+                errorHandler?(ChatError.invalidParameter.asSBError)
+                return
+            }
+            
+            let params = GroupChannelCreateParams()
+            params.userIds = [botId]
+            params.isDistinct = isDistinct
+            
+            GroupChannel.createChannel(params: params) { channel, error in
+                if let error = error {
+                    SBULog.error("[Failed] start chat with bot: \(error.description)")
+                    errorHandler?(error)
+                    return
+                }
+                
+                guard let channel = channel else {
+                    SBULog.error("[Failed] start chat with aibot: no exist the channel.")
+                    errorHandler?(ChatError.internalServerError.asSBError)
+                    return
+                }
+                
+                SBULog.info("[Succeed] Create channel: \(channel.description)")
+                
+                SendbirdUI.moveToChannel(channelURL: channel.channelURL,
+                                         basedOnChannelList: false)
+            } // end create channel.
+            
+        } // end query load.
+    }
+}
