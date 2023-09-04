@@ -7,6 +7,12 @@
 * Fixed text view height not resetting on state change
 * Fixed an issue when using customized userList where the first list would continue to be added after the last was loaded
 * Added chatbot start interface `startChatWithAIBot(id:distinct:errorHandler:)` in `SendbirdUI`
+  ```swift
+  // Before using it, need to call app initialize and connect.
+  SendbirdUI.startChatWithAIBot(botId: "BOT_ID_GOES_HERE", isDistinct: true) { error in
+      // This code block will be invoked when there's an error
+  }
+  ```
 * Improved stability
 
 ### v3.8.0-beta.1 (Aug 24, 2023)
