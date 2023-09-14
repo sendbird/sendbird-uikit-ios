@@ -3787,6 +3787,7 @@ class SBUNotificationTheme {
             SBUNotificationTheme.Header.light = newValue.header
             SBUNotificationTheme.List.light = newValue.list
             SBUNotificationTheme.NotificationCell.light = newValue.notificationCell
+            SBUNotificationTheme.CategoryFilter.light = newValue.categoryFilter
         }
     }
     static var dark: SBUNotificationTheme {
@@ -3796,19 +3797,23 @@ class SBUNotificationTheme {
             SBUNotificationTheme.Header.dark = newValue.header
             SBUNotificationTheme.List.dark = newValue.list
             SBUNotificationTheme.NotificationCell.dark = newValue.notificationCell
+            SBUNotificationTheme.CategoryFilter.dark = newValue.categoryFilter
         }
     }
     var header: SBUNotificationTheme.Header = .light
     var list: SBUNotificationTheme.List = .light
     var notificationCell: SBUNotificationTheme.NotificationCell = .light
+    var categoryFilter: SBUNotificationTheme.CategoryFilter = .light
     
     init(header: SBUNotificationTheme.Header = .light,
          list: SBUNotificationTheme.List = .light,
-         notificationCell: SBUNotificationTheme.NotificationCell = .light
+         notificationCell: SBUNotificationTheme.NotificationCell = .light,
+         categoryFilter: SBUNotificationTheme.CategoryFilter = .light
     ) {
         self.header = header
         self.list = list
         self.notificationCell = notificationCell
+        self.categoryFilter = categoryFilter
     }
 
     // INFO: default 는 유지하기 위해서
@@ -3820,6 +3825,7 @@ class SBUNotificationTheme {
         theme.header = SBUNotificationTheme.Header.defaultLight
         theme.list = SBUNotificationTheme.List.defaultLight
         theme.notificationCell = SBUNotificationTheme.NotificationCell.defaultLight
+        theme.categoryFilter = SBUNotificationTheme.CategoryFilter.defaultLight
         return theme
     }
     
@@ -3828,6 +3834,7 @@ class SBUNotificationTheme {
         theme.header = SBUNotificationTheme.Header.defaultDark
         theme.list = SBUNotificationTheme.List.defaultDark
         theme.notificationCell = SBUNotificationTheme.NotificationCell.defaultDark
+        theme.categoryFilter = SBUNotificationTheme.CategoryFilter.defaultDark
         return theme
     }
 }
@@ -4059,5 +4066,62 @@ extension SBUNotificationTheme {
         var fallbackMessageSubtitleHexColor: String = "#70000000"
         
         var downloadingBackgroundHexColor: String = "#e0000000"
+    }
+
+    class CategoryFilter {
+        static var light: SBUNotificationTheme.CategoryFilter = SBUNotificationTheme.CategoryFilter.defaultLight
+        static var dark: SBUNotificationTheme.CategoryFilter = SBUNotificationTheme.CategoryFilter.defaultDark
+
+        static var defaultLight: SBUNotificationTheme.CategoryFilter {
+            let theme = SBUNotificationTheme.CategoryFilter(
+                backgroundColor: SBUColorSet.background50,
+                unselectedTextColor: SBUColorSet.onlight01,
+                selectedCellBackgroundColor: SBUColorSet.primary300,
+                unselectedBackgroundColor: SBUColorSet.background100,
+                selectedTextColor: SBUColorSet.ondark01
+            )
+            return theme
+        }
+
+        static var defaultDark: SBUNotificationTheme.CategoryFilter {
+            let theme = SBUNotificationTheme.CategoryFilter(
+                backgroundColor: SBUColorSet.onlight01,
+                unselectedTextColor: SBUColorSet.ondark01,
+                selectedCellBackgroundColor: SBUColorSet.primary200,
+                unselectedBackgroundColor: SBUColorSet.background500,
+                selectedTextColor: SBUColorSet.onlight01
+            )
+
+            return theme
+        }
+        
+        init(
+            radius: CGFloat = 15,
+            backgroundColor: UIColor = SBUColorSet.background50,
+            unselectedTextColor: UIColor = SBUColorSet.onlight01,
+            fontWeight: SBUFontWeightType = .normal,
+            selectedCellBackgroundColor: UIColor = SBUColorSet.primary300,
+            textSize: CGFloat = 12,
+            unselectedBackgroundColor: UIColor = SBUColorSet.background100,
+            selectedTextColor: UIColor = SBUColorSet.ondark01
+        ) {
+            self.radius = radius
+            self.backgroundColor = backgroundColor
+            self.unselectedTextColor = unselectedTextColor
+            self.fontWeight = fontWeight
+            self.selectedCellBackgroundColor = selectedCellBackgroundColor
+            self.textSize = textSize
+            self.unselectedBackgroundColor = unselectedBackgroundColor
+            self.selectedTextColor = selectedTextColor
+        }
+        
+        var radius: CGFloat
+        var unselectedTextColor: UIColor
+        var fontWeight: SBUFontWeightType
+        var selectedCellBackgroundColor: UIColor
+        var textSize: CGFloat
+        var unselectedBackgroundColor: UIColor
+        var selectedTextColor: UIColor
+        var backgroundColor: UIColor
     }
 }

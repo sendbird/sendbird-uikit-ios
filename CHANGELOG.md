@@ -1,5 +1,10 @@
 # Changelog
 
+### v3.9.0 (Sep 14, 2023)
+
+- Added `scrollToMessage(id:enablesScrollAnimation:enablesMessageAnimation:)` to `SBUBaseChannelModule.List` and `SBUBaseChannelViewController` 
+- Supports category filtering in a feed channel. Categories by which messages can be filtered can be created and edited in the dashboard
+
 ### v3.8.0 (Sep 1, 2023)
 
 * Improved timing of `markAsRead` calls

@@ -35,6 +35,9 @@ class SBUNotificationCell: SBUBaseMessageCell {
     
     var isTemplateDownloadFailed = false
     
+    var topMarginConstraint: NSLayoutConstraint?
+    var bottomMarginConstraint: NSLayoutConstraint?
+    
     /// Specifies the theme object that’s used as the theme of the message template view. The theme must inherit the ``SBUNotificationTheme.NotificationCell`` class.
     var notificationCellTheme: SBUNotificationTheme.NotificationCell {
         switch SBUTheme.colorScheme {
@@ -81,6 +84,12 @@ class SBUNotificationCell: SBUBaseMessageCell {
     
     var availableTemplateWidth: CGFloat = 0.0
     
+    /// The top margin of the cell.
+    var topMargin: CGFloat = 0.0
+    
+    /// The bottom margin of the cell.
+    var bottomMargin: CGFloat = 0.0
+    
     // MARK: - Logic
     var type: NotificationType = .none
     
@@ -94,12 +103,20 @@ class SBUNotificationCell: SBUBaseMessageCell {
     /// Configures a cell with ``SBUBaseMessageCellParams`` object.
     override func configure(with configuration: SBUBaseMessageCellParams) {
         super.configure(with: configuration)
-        
+         
         self.dateLabel.text = Date
             .sbu_from(configuration.message.createdAt)
             .sbu_toString(dateFormat: SBUDateFormatSet.Message.sentTimeFormat)
-        
-        self.categoryLabel.text = configuration.message.customType ?? ""
+
+        if let configuration = configuration as? SBUFeedNotificationCellParams {
+            if let isTemplateLabelEnabled = configuration.isTemplateLabelEnabled, isTemplateLabelEnabled {
+                self.categoryLabel.text = configuration.message.notifiationData?.label ?? (configuration.message.customType ?? "")
+            } else {
+                self.categoryLabel.text = ""
+            }
+        } else {
+            self.categoryLabel.text = configuration.message.customType
+        }
         
         self.setupNotificationTemplate()
         
@@ -171,11 +188,9 @@ class SBUNotificationCell: SBUBaseMessageCell {
             .sbu_constraint(
                 equalTo: self.contentView,
                 left: 0,
-                right: 0,
-                top: 16,
-                bottom: 0
+                right: 0 // The top and the bottom have to be set in the subclasses of the SBUNotificationCell.
             )
-        
+
         let windowBounds = UIApplication.shared.currentWindow?.bounds ?? .zero
         let screenWidth = min(windowBounds.width, windowBounds.height)
         var maxTemplateWidth: CGFloat = 0.0

@@ -400,6 +400,28 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     
     // MARK: - TableView
     
+    /// Scrolls to the message that is found by `id`. When it scrolls successfully, ``SBUBaseChannelModuleListDelegate/baseChannelModule(_:didScroll:)`` delegate method is called.
+    /// - Parameters:
+    ///    - id: The identifier of the message that is wanted to find
+    ///    - enablesScrollAnimation: The boolean value whether scrolls to the message with animation or not. If `false`, it *jumps* to the message.
+    ///    - enablesMessageAnimation: The boolean value whether animate the message after the scrolling. If `true`, the message is shaked up and down.
+    /// - SeeAlso: ``SBUBaseChannelModule/List/scrollToMessage(id:enablesScrollAnimation:enablesMessageAnimation:)``
+    public func scrollToMessage(
+        id messageId: Int64,
+        enablesScrollAnimation: Bool = false,
+        enablesMessageAnimation: Bool = false
+    ) {
+        let isScrolled = self.baseListComponent?.scrollToMessage(
+            id: messageId,
+            enablesScrollAnimation: enablesScrollAnimation,
+            enablesMessageAnimation: enablesMessageAnimation
+        )
+        
+        if let isScrolled = isScrolled, !isScrolled {
+            self.errorHandler("Couldn't find the message with id: \(messageId)")
+        }
+    }
+    
     // MARK: - New message info
     
     /// This function updates new message info view's hidden status.

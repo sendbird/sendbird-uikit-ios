@@ -34,7 +34,7 @@ open class SBUCreateOpenChannelViewModel {
     /// - Parameters:
     ///   - channelName: Channel name
     ///   - coverImage: Cover image
-    public func createChannel(channelName: String, coverImage: UIImage?) {
+    open func createChannel(channelName: String, coverImage: UIImage?) {
         let params = OpenChannelCreateParams()
         params.name = channelName
         params.coverImage = coverImage?.jpegData(compressionQuality: 0.5)

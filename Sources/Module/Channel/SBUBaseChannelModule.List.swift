@@ -1130,6 +1130,43 @@ extension SBUBaseChannelModule.List {
         }
     }
     
+    /// Scrolls to the message that is found by `id`.
+    /// - Parameters:
+    ///    -  id: The identifier of the message that is wanted to find
+    ///    - enablesScrollAnimation: The boolean value whether scrolls to the message with animation or not. If `false`, it *jumps* to the message.
+    ///    - enablesMessageAnimation: The boolean value whether animate the message after the scrolling. If `true`, the message is shaked up and down.
+    /// - Returns: `false` when it couldn't find message with `id`. If it returns `true`, ``SBUBaseChannelModuleListDelegate/baseChannelModule(_:didScroll:)`` is called.
+    @discardableResult
+    public func scrollToMessage(
+        id messageId: Int64,
+        enablesScrollAnimation scrollAnimated: Bool = false,
+        enablesMessageAnimation messageAnimated: Bool = false
+    ) -> Bool {
+        guard let row = self.fullMessageList.firstIndex(
+            where: { $0.messageId == messageId }
+        ) else {
+            SBULog.error("Couldn't find message with ID: \(messageId)")
+            return false
+        }
+        let indexPath = IndexPath(row: row, section: 0)
+        self.tableView.scrollToRow(
+            at: indexPath,
+            at: .middle,
+            animated: scrollAnimated
+        )
+        defer {
+            self.baseDelegate?.baseChannelModule(self, didScroll: self.tableView)
+        }
+        if messageAnimated {
+            guard let cell = self.tableView.cellForRow(at: indexPath) as? SBUBaseMessageCell else {
+                SBULog.error("The cell for row at \(indexPath) is not `SBUBaseMessageCell`")
+                return true
+            }
+            cell.messageContentView.animate(.shakeUpDown)
+        }
+        return true
+    }
+    
     /// This function checks if the current message and the next message date have the same day.
     /// - Parameters:
     ///   - currentIndex: Current message index

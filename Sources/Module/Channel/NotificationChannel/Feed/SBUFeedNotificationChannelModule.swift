@@ -16,6 +16,10 @@ public class SBUFeedNotificationChannelModule {
     /// The module component that represents navigation bar title and bar buttons.
     /// - Since: 3.6.0
     public static var HeaderComponent: SBUFeedNotificationChannelModule.Header.Type = SBUFeedNotificationChannelModule.Header.self
+    
+    /// - Since: 3.9.0
+    public static var CategoryFilterComponent: SBUFeedNotificationChannelModule.CategoryFilter.Type = SBUFeedNotificationChannelModule.CategoryFilter.self
+    
     /// The module component that shows the list of notifications in the channel.
     /// - Since: 3.6.0
     public static var ListComponent: SBUFeedNotificationChannelModule.List.Type = SBUFeedNotificationChannelModule.List.self
