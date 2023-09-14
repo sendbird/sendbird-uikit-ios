@@ -14,17 +14,28 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
     SBUFeedNotificationChannelViewModelDelegate, SBUFeedNotificationChannelViewModelDataSource,
     SBUFeedNotificationChannelModuleListDelegate, SBUFeedNotificationChannelModuleListDataSource,
     SBUFeedNotificationChannelModuleHeaderDelegate, SBUFeedNotificationChannelModuleHeaderDataSource,
+    SBUFeedNotificationChannelModuleCategoryFilterDelegate, SBUFeedNotificationChannelModuleCategoryFilterDataSource,
     SBUCommonViewModelDelegate {
     
     // MARK: - Module components (Public)
     public var headerComponent: SBUFeedNotificationChannelModule.Header?
+    public var categoryFilterComponent: SBUFeedNotificationChannelModule.CategoryFilter?
     public var listComponent: SBUFeedNotificationChannelModule.List?
+    
+    // MARK: - Layout constraints
+    var listComponentTopConstraint: NSLayoutConstraint?
+    
+    var didRenderView: Bool = false
     
     var theme: SBUNotificationTheme {
         switch SBUTheme.colorScheme {
         case .light: return .light
         case .dark: return .dark
         }
+    }
+    
+    struct Constants {
+        static let categoryFilterHeight: CGFloat = 46
     }
     
     /// The boolean value that allows to update the read status of ``channel``. If it's `false`, ``channel`` doesn't update the read status of a new notification.
@@ -74,7 +85,7 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
         super.init(nibName: nil, bundle: nil)
         
         SBULog.info(#function)
-        
+
         self.initialize(
             channel: channel,
             notificationListParams: notificationListParams,
@@ -119,9 +130,10 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
                 displaysLocalCachedListFirst: displaysLocalCachedListFirst
             )
         }
-        
-        self.headerComponent = SBUModuleSet.feedNotificationChannelModule.headerComponent
-        self.listComponent = SBUModuleSet.feedNotificationChannelModule.listComponent
+
+        self.headerComponent = SBUModuleSet.FeedNotificationChannelModule.HeaderComponent.init()
+        self.categoryFilterComponent = SBUModuleSet.FeedNotificationChannelModule.CategoryFilterComponent.init()
+        self.listComponent = SBUModuleSet.FeedNotificationChannelModule.ListComponent.init()
     }
     
     open override func loadView() {
@@ -169,6 +181,7 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
         
         self.viewModel = nil
         self.headerComponent = nil
+        self.categoryFilterComponent = nil
         self.listComponent = nil
     }
     
@@ -272,46 +285,46 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
     // MARK: - Sendbird UIKit Life cycle
     open override func setupViews() {
         super.setupViews()
-        
-        // Header
-        self.navigationItem.titleView = self.headerComponent?.titleView
-        self.navigationItem.leftBarButtonItems = self.headerComponent?.leftBarButtons
-        self.navigationItem.rightBarButtonItems = self.headerComponent?.rightBarButtons
-        self.headerComponent?.configure(delegate: self, dataSource: self)
-        
-        // List
-        if let listComponent = listComponent {
-            self.view.addSubview(listComponent)
-            listComponent.configure(delegate: self, dataSource: self)
-        }
-        
-        self.scrollToInitialPositionHandler = { [weak self] in
-            if Thread.isMainThread {
-                self?.listComponent?.tableView.layoutIfNeeded()
-                self?.listComponent?.scrollToInitialPosition()
-            } else {
-                DispatchQueue.main.async {
-                    self?.listComponent?.tableView.layoutIfNeeded()
-                    self?.listComponent?.scrollToInitialPosition()
-                }
-            }
-        }
+
+        self.setupHeaderComponent()
+        self.setupListComponent()
+        self.setupCategoryFilterComponent()
     }
     
     open override func setupLayouts() {
         super.setupLayouts()
         
-        self.listComponent?
+        self.categoryFilterComponent?
             .sbu_constraint(
                 equalTo: self.view,
                 left: 0,
                 right: 0,
                 top: 0
             )
+            .sbu_constraint(height: Constants.categoryFilterHeight)
+
+        self.listComponent?
+            .sbu_constraint(
+                equalTo: self.view,
+                left: 0,
+                right: 0
+            )
             .sbu_constraint_equalTo(
                 bottomAnchor: self.view.safeAreaLayoutGuide.bottomAnchor,
                 bottom: 0
             )
+        
+        if let listComponent = self.listComponent {
+
+            self.listComponentTopConstraint = listComponent.topAnchor.constraint(
+                equalTo: self.view.safeAreaLayoutGuide.topAnchor,
+                constant: Constants.categoryFilterHeight
+            )
+            
+            if let listComponentTopConstraint = self.listComponentTopConstraint {
+                NSLayoutConstraint.activate([listComponentTopConstraint])
+            }
+        }
     }
     
     open override func setupStyles() {
@@ -330,9 +343,61 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
         super.updateStyles()
         
         self.headerComponent?.updateStyles()
+        self.categoryFilterComponent?.updateStyles()
         self.listComponent?.updateStyles()
         
+        self.categoryFilterComponent?.reloadCollectionView()
         self.listComponent?.reloadTableView()
+    }
+
+    open override func updateLayouts() {
+        super.updateLayouts()
+        
+        if let isCategoryFilterEnabled = self.viewModel?.isCategoryFilterEnabled, isCategoryFilterEnabled {
+            self.listComponentTopConstraint?.constant = Constants.categoryFilterHeight
+        } else {
+            self.listComponentTopConstraint?.constant = 0
+        }
+    }
+    
+    func setupHeaderComponent() {
+        // Header
+        self.navigationItem.titleView = self.headerComponent?.titleView
+        self.navigationItem.leftBarButtonItems = self.headerComponent?.leftBarButtons
+        self.navigationItem.rightBarButtonItems = self.headerComponent?.rightBarButtons
+        self.headerComponent?.configure(delegate: self, dataSource: self)
+    }
+    
+    func setupCategoryFilterComponent() {
+        // Category filter
+        if let categoryFilterComponent = categoryFilterComponent {
+            self.view.addSubview(categoryFilterComponent)
+            categoryFilterComponent.configure(delegate: self, dataSource: self)
+        }
+    }
+    
+    func setupListComponent() {
+        // List
+        if let listComponent = listComponent {
+            self.view.addSubview(listComponent)
+            listComponent.configure(
+                isCategoryFilterEnabled: self.viewModel?.isCategoryFilterEnabled,
+                delegate: self,
+                dataSource: self
+            )
+        }
+        
+        self.scrollToInitialPositionHandler = { [weak self] in
+            if Thread.isMainThread {
+                self?.listComponent?.tableView.layoutIfNeeded()
+                self?.listComponent?.scrollToInitialPosition()
+            } else {
+                DispatchQueue.main.async {
+                    self?.listComponent?.tableView.layoutIfNeeded()
+                    self?.listComponent?.scrollToInitialPosition()
+                }
+            }
+        }
     }
     
     // MARK: - Error handling
@@ -415,6 +480,18 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
             self.listComponent?.reloadTableView()
         case .eventChannelChanged:
             self.updateChannelTitle()
+            
+            if viewModel.shouldRefreshCategoryFilter {
+                self.categoryFilterComponent?.isHidden = !viewModel.isCategoryFilterEnabled
+                
+                if viewModel.isCategoryFilterEnabled {
+                    self.categoryFilterComponent?.reloadCollectionView()
+                }
+
+                self.updateLayouts()
+            }
+            self.listComponent?.updateViews(isCategoryFilterEnabled: viewModel.isCategoryFilterEnabled)
+            self.listComponent?.reloadTableView()
         default: break
         }
         
@@ -455,6 +532,7 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
         
         guard needsToReload else { return }
         
+        self.categoryFilterComponent?.reloadCollectionView()
         listComponent.reloadTableView()
         
         guard let lastSeenIndexPath = self.lastSeenIndexPath else { return }
@@ -712,5 +790,18 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
         }
         
         self.errorHandler(error?.localizedDescription)
+    }
+    
+    // MARK: - SBUFeedNotificationChannelModuleCategoryFilterDataSource
+    func categoriesForFeedNotificationChannelModule(
+        _ categoryFilterComponent: SBUFeedNotificationChannelModule.CategoryFilter
+    ) -> [NotificationCategory]? {
+        return self.viewModel?.channel?.categories
+    }
+    
+    // MARK: - SBUFeedNotificationChannelModuleCategoryFilterDelegate
+    func feedNotificationChannelModule(_ categoryFilterComponent: SBUFeedNotificationChannelModule.CategoryFilter, didSelectCategory: NotificationCategory) {
+        self.viewModel?.selectedCategory = didSelectCategory
+        self.viewModel?.loadInitialNotifications(startingPoint: self.viewModel?.startingPoint, showsIndicator: true)
     }
 }

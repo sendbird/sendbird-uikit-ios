@@ -156,6 +156,32 @@ extension SBUNotificationChannelManager {
                 pressedColor: color(with: globalTheme.notification.pressedColor, themeMode: globalThemeMode, for: colorScheme),
                 fallbackMessageTitleHexColor: fallbackMessageDefaultTheme.fallbackMessageTitleHexColor,
                 fallbackMessageSubtitleHexColor: fallbackMessageDefaultTheme.fallbackMessageSubtitleHexColor
+            ),
+            categoryFilter: SBUNotificationTheme.CategoryFilter(
+                radius: globalTheme.list.category.radius,
+                backgroundColor: color(with: globalTheme.list.backgroundColor, themeMode: globalThemeMode, for: colorScheme),
+                unselectedTextColor: color(
+                    with: globalTheme.list.category.textColor,
+                    themeMode: globalThemeMode,
+                    for: colorScheme
+                ),
+                fontWeight: globalTheme.list.category.fontWeight ?? .normal,
+                selectedCellBackgroundColor: color(
+                    with: globalTheme.list.category.selectedBackgroundColor,
+                    themeMode: globalThemeMode,
+                    for: colorScheme
+                ),
+                textSize: globalTheme.list.category.textSize,
+                unselectedBackgroundColor: color(
+                    with: globalTheme.list.category.backgroundColor,
+                    themeMode: globalThemeMode,
+                    for: colorScheme
+                ),
+                selectedTextColor: color(
+                    with: globalTheme.list.category.selectedTextColor,
+                    themeMode: globalThemeMode,
+                    for: colorScheme
+                )
             )
         )
         return theme
@@ -452,6 +478,12 @@ extension SBUNotificationChannelManager {
                     let textSize: CGFloat
                     let fontWeight: SBUFontWeightType? // 3.5.8
                 }
+                
+                struct Label: Codable { // 3.9.0
+                    let textSize: CGFloat
+                    let fontWeight: SBUFontWeightType?
+                    let textColor: String
+                }
 
                 let radius: CGFloat
                 let backgroundColor: String
@@ -475,10 +507,21 @@ extension SBUNotificationChannelManager {
                     let textSize: CGFloat? // 3.5.8
                     let fontWeight: SBUFontWeightType? // 3.5.8
                 }
+                
+                struct CategoryFilter: Codable { // 3.9.0
+                    let radius: CGFloat
+                    let textColor: String
+                    let fontWeight: SBUFontWeightType?
+                    let selectedBackgroundColor: String
+                    let textSize: CGFloat
+                    let backgroundColor: String
+                    let selectedTextColor: String
+                }
 
                 let backgroundColor: String
                 let tooltip: Tooltip
                 let timeline: Timeline
+                let category: CategoryFilter // 3.9.0
             }
 
             struct Header: Codable {

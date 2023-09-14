@@ -117,7 +117,7 @@ protocol SBUFeedNotificationChannelModuleListDataSource: AnyObject {
 }
 
 extension SBUFeedNotificationChannelModule {
-    /// A module component that represent the list of ``SBUFeedNotificationChannelModule``
+    /// A module component that represents the list of ``SBUFeedNotificationChannelModule``
     /// - Since: 3.5.0
     @objc(SBUFeedNotificationChannelModuleList)
     @objcMembers
@@ -191,9 +191,11 @@ extension SBUFeedNotificationChannelModule {
         
         /// Configures component with parameters.
         /// - Parameters:
+        ///    - isCategoryFilterEnabled: Represents whether the category filter is enabled.
         ///    - delegate: ``SBUFeedNotificationChannelModuleListDelegate`` type event delegate.
         ///    - dataSource: The data source that is type of ``SBUFeedNotificationChannelModuleListDataSource``
         func configure(
+            isCategoryFilterEnabled: Bool?,
             delegate: SBUFeedNotificationChannelModuleListDelegate,
             dataSource: SBUFeedNotificationChannelModuleListDataSource
         ) {
@@ -267,7 +269,7 @@ extension SBUFeedNotificationChannelModule {
             (self.newNotificationInfoView as? SBUNewNotificationInfo)?
                 .sbu_constraint(equalTo: self, centerX: 0)
                 .sbu_constraint_equalTo(
-                    topAnchor: self.safeAreaLayoutGuide.topAnchor, top: 8
+                    topAnchor: self.safeAreaLayoutGuide.topAnchor, top: 0
                 )
         }
         
@@ -284,6 +286,15 @@ extension SBUFeedNotificationChannelModule {
             
             (self.newNotificationInfoView as? SBUNewNotificationInfo)?.setupStyles()
             (self.emptyView as? SBUEmptyView)?.setupStyles()
+        }
+
+        func updateViews(isCategoryFilterEnabled: Bool) {
+            self.tableView.contentInset = UIEdgeInsets(
+                top: 0,
+                left: 0,
+                bottom: 0,
+                right: 0
+            )
         }
         
         // MARK: - Actions
@@ -374,14 +385,15 @@ extension SBUFeedNotificationChannelModule {
             UIView.setAnimationsEnabled(false)
             
             switch (notification, notificationCell) {
-            case let (notification, notificationCell) as (BaseMessage, SBUNotificationCell):
-                let configuration = SBUBaseMessageCellParams(
+            case let (notification, notificationCell) as (AdminMessage, SBUNotificationCell):
+                let configuration = SBUFeedNotificationCellParams(
                     message: notification,
                     hideDateView: true,
-                    receiptState: .notUsed
+                    isTemplateLabelEnabled: self.channel?.isTemplateLabelEnabled,
+                    isCategoryFilterEnabled: self.channel?.isCategoryFilterEnabled
                 )
                 notificationCell.delegate = self
-                
+
                 // Read status
                 let hasRead = notification.createdAt <= self.lastSeenAt
                 notificationCell.updateReadStatus(hasRead)
@@ -479,6 +491,8 @@ extension SBUFeedNotificationChannelModule {
             }
             
             self.configureCell(notificationCell, notification: notification, forRowAt: indexPath)
+            
+            cell.layoutIfNeeded()
             
             return cell
         }

@@ -1,5 +1,5 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.7.2 (swiftlang-5.7.2.135.5 clang-1400.0.29.51)
+// swift-compiler-version: Apple Swift version 5.7.1 (swiftlang-5.7.1.135.3 clang-1400.0.29.51)
 // swift-module-flags: -target arm64-apple-ios11.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name SendbirdUIKit
 // swift-module-flags-ignorable: -enable-bare-slash-regex
 import AVFAudio
@@ -195,6 +195,8 @@ extension SendbirdUIKit.SBUBaseChannelModule.List {
   @objc @_Concurrency.MainActor(unsafe) dynamic public var isScrollNearByBottom: Swift.Bool {
     @objc get
   }
+  @objc @discardableResult
+  @_Concurrency.MainActor(unsafe) dynamic public func scrollToMessage(id messageId: Swift.Int64, enablesScrollAnimation scrollAnimated: Swift.Bool = false, enablesMessageAnimation messageAnimated: Swift.Bool = false) -> Swift.Bool
   @objc @_Concurrency.MainActor(unsafe) dynamic public func checkSameDayAsNextMessage(currentIndex: Swift.Int, fullMessageList: [SendbirdChatSDK.BaseMessage]) -> Swift.Bool
   @objc @_Concurrency.MainActor(unsafe) dynamic public func checkSameDayAsPrevMessage(currentIndex: Swift.Int, fullMessageList: [SendbirdChatSDK.BaseMessage]) -> Swift.Bool
 }
@@ -2594,6 +2596,7 @@ public class SBUMenuItem : SendbirdUIKit.SBUCommonItem {
 }
 public class SBUFeedNotificationChannelModule {
   public static var HeaderComponent: SendbirdUIKit.SBUFeedNotificationChannelModule.Header.Type
+  public static var CategoryFilterComponent: SendbirdUIKit.SBUFeedNotificationChannelModule.CategoryFilter.Type
   public static var ListComponent: SendbirdUIKit.SBUFeedNotificationChannelModule.List.Type
   @available(*, deprecated, message: "Use `SBUFeedNotificationChannelModule.HeaderComponent` instead.")
   public var headerComponent: SendbirdUIKit.SBUFeedNotificationChannelModule.Header? {
@@ -3828,6 +3831,26 @@ extension SendbirdUIKit.SBUMessageThreadModule.List {
   @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
   @objc deinit
 }
+extension SendbirdUIKit.SBUFeedNotificationChannelModule {
+  @objc @_inheritsConvenienceInitializers @objcMembers @_Concurrency.MainActor(unsafe) public class CategoryFilter : UIKit.UIView {
+    @objc @_Concurrency.MainActor(unsafe) public func reloadCollectionView()
+    @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+    @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
+    @objc deinit
+  }
+}
+extension SendbirdUIKit.SBUFeedNotificationChannelModule.CategoryFilter : UIKit.UICollectionViewDataSource {
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func collectionView(_ collectionView: UIKit.UICollectionView, numberOfItemsInSection section: Swift.Int) -> Swift.Int
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func collectionView(_ collectionView: UIKit.UICollectionView, cellForItemAt indexPath: Foundation.IndexPath) -> UIKit.UICollectionViewCell
+}
+extension SendbirdUIKit.SBUFeedNotificationChannelModule.CategoryFilter : UIKit.UICollectionViewDelegate {
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func collectionView(_ collectionView: UIKit.UICollectionView, didSelectItemAt indexPath: Foundation.IndexPath)
+}
+extension SendbirdUIKit.SBUFeedNotificationChannelModule.CategoryFilter : UIKit.UICollectionViewDelegateFlowLayout {
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func collectionView(_ collectionView: UIKit.UICollectionView, layout collectionViewLayout: UIKit.UICollectionViewLayout, minimumLineSpacingForSectionAt section: Swift.Int) -> CoreFoundation.CGFloat
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func collectionView(_ collectionView: UIKit.UICollectionView, layout collectionViewLayout: UIKit.UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Swift.Int) -> CoreFoundation.CGFloat
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func collectionView(_ collectionView: UIKit.UICollectionView, layout collectionViewLayout: UIKit.UICollectionViewLayout, sizeForItemAt indexPath: Foundation.IndexPath) -> CoreFoundation.CGSize
+}
 public protocol SBUInviteUserModuleHeaderDelegate : SendbirdUIKit.SBUBaseSelectUserModuleHeaderDelegate {
   func inviteUserModule(_ headerComponent: SendbirdUIKit.SBUInviteUserModule.Header, didUpdateTitleView titleView: UIKit.UIView?)
   func inviteUserModule(_ headerComponent: SendbirdUIKit.SBUInviteUserModule.Header, didUpdateLeftItem leftItem: UIKit.UIBarButtonItem?)
@@ -4387,6 +4410,7 @@ public protocol SBUMessageThreadTitleViewDelegate : AnyObject {
 }
 @objc @_Concurrency.MainActor(unsafe) open class SBUFeedNotificationChannelViewController : SendbirdUIKit.SBUBaseViewController, SendbirdUIKit.SBUCommonViewModelDelegate {
   @objc @_Concurrency.MainActor(unsafe) public var headerComponent: SendbirdUIKit.SBUFeedNotificationChannelModule.Header?
+  @objc @_Concurrency.MainActor(unsafe) public var categoryFilterComponent: SendbirdUIKit.SBUFeedNotificationChannelModule.CategoryFilter?
   @objc @_Concurrency.MainActor(unsafe) public var listComponent: SendbirdUIKit.SBUFeedNotificationChannelModule.List?
   @objc @_Concurrency.MainActor(unsafe) public var allowsReadStatusUpdate: Swift.Bool {
     @objc get
@@ -4423,6 +4447,7 @@ public protocol SBUMessageThreadTitleViewDelegate : AnyObject {
   @_Concurrency.MainActor(unsafe) @objc override open func setupLayouts()
   @_Concurrency.MainActor(unsafe) @objc override open func setupStyles()
   @_Concurrency.MainActor(unsafe) @objc override open func updateStyles()
+  @_Concurrency.MainActor(unsafe) @objc override open func updateLayouts()
   @_Concurrency.MainActor(unsafe) override open func errorHandler(_ message: Swift.String?, _ code: ObjectiveC.NSInteger? = nil)
   @objc @_Concurrency.MainActor(unsafe) open func shouldUpdateLoadingState(_ isLoading: Swift.Bool)
   @objc @_Concurrency.MainActor(unsafe) open func didReceiveError(_ error: SendbirdChatSDK.SBError?, isBlocker: Swift.Bool)
@@ -4956,7 +4981,7 @@ public protocol SBUCreateOpenChannelViewModelDelegate : SendbirdUIKit.SBUCommonV
 }
 open class SBUCreateOpenChannelViewModel {
   public init(delegate: SendbirdUIKit.SBUCreateOpenChannelViewModelDelegate?)
-  public func createChannel(channelName: Swift.String, coverImage: UIKit.UIImage?)
+  open func createChannel(channelName: Swift.String, coverImage: UIKit.UIImage?)
   open func createChannel(params: SendbirdChatSDK.OpenChannelCreateParams)
   @objc deinit
 }
@@ -5403,6 +5428,17 @@ extension UIKit.UIStackView {
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func updateStyles()
   @_Concurrency.MainActor(unsafe) open func configure(username: Swift.String, isOverlay: Swift.Bool = false)
   @_Concurrency.MainActor(unsafe) public func setUsernameColor(_ color: UIKit.UIColor)
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUCategoryFilterCell : UIKit.UICollectionViewCell, SendbirdUIKit.SBUViewLifeCycle {
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @_Concurrency.MainActor(unsafe) @objc public func setupViews()
+  @_Concurrency.MainActor(unsafe) @objc public func setupStyles()
+  @_Concurrency.MainActor(unsafe) @objc public func updateStyles()
+  @_Concurrency.MainActor(unsafe) @objc public func setupLayouts()
+  @_Concurrency.MainActor(unsafe) @objc public func updateLayouts()
+  @_Concurrency.MainActor(unsafe) @objc public func setupActions()
   @objc deinit
 }
 extension SendbirdUIKit.SBUModerationsViewController {
@@ -6235,6 +6271,7 @@ extension SendbirdUIKit.SBUMessageSearchViewController {
   @objc @_Concurrency.MainActor(unsafe) open func showChannelSettings()
   @_Concurrency.MainActor(unsafe) open func showMessageThread(channelURL: Swift.String, parentMessageId: Swift.Int64, parentMessageCreatedAt: Swift.Int64? = 0, startingPoint: Swift.Int64? = 0)
   @objc @_Concurrency.MainActor(unsafe) open func showEmojiListModal(message: SendbirdChatSDK.BaseMessage)
+  @objc @_Concurrency.MainActor(unsafe) public func scrollToMessage(id messageId: Swift.Int64, enablesScrollAnimation: Swift.Bool = false, enablesMessageAnimation: Swift.Bool = false)
   @objc @_Concurrency.MainActor(unsafe) public func updateNewMessageInfo(hidden: Swift.Bool)
   @objc @_Concurrency.MainActor(unsafe) open func openFile(fileMessage: SendbirdChatSDK.FileMessage)
   @objc @discardableResult
@@ -6864,6 +6901,19 @@ extension SendbirdUIKit.SBUCreateChannelViewController {
   @_Concurrency.MainActor(unsafe) dynamic public func reloadUserList()
   @available(*, unavailable, renamed: "errorHandler(_:_:)")
   @_Concurrency.MainActor(unsafe) public func didReceiveError(_ message: Swift.String?, _ code: ObjectiveC.NSInteger? = nil)
+}
+public class SBUFeedNotificationCellParams : SendbirdUIKit.SBUBaseMessageCellParams {
+  public var adminMessage: SendbirdChatSDK.AdminMessage? {
+    get
+  }
+  public var isTemplateLabelEnabled: Swift.Bool? {
+    get
+  }
+  public var isCategoryFilterEnabled: Swift.Bool? {
+    get
+  }
+  public init(message: SendbirdChatSDK.AdminMessage, hideDateView: Swift.Bool, isTemplateLabelEnabled: Swift.Bool?, isCategoryFilterEnabled: Swift.Bool?)
+  @objc deinit
 }
 @_hasMissingDesignatedInitializers public class SBUAvailable {
   public static func isSupportSuperGroupChannel() -> Swift.Bool

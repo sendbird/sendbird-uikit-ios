@@ -151,6 +151,29 @@ class SBUFeedNotificationChannelViewModel: NSObject {
     /// If this option is `true`, when a list is received through the local cache during initialization, it is displayed first.
     var displaysLocalCachedListFirst: Bool = false
     
+    var isCategoryFilterEnabled: Bool { // 3.9.0
+        get {
+            self.channel?.isCategoryFilterEnabled ?? false
+        }
+    }
+    
+    var categories: [NotificationCategory] { // 3.9.0
+        get {
+            self.channel?.categories ?? []
+        }
+    }
+    
+    var isTemplateLabelEnabled: Bool { // 3.9.0
+        get {
+            self.channel?.isTemplateLabelEnabled ?? false
+        }
+    }
+    
+    var selectedCategory: NotificationCategory? // 3.9.0
+    
+    /// The flag that represents the channel was refreshed.
+    var shouldRefreshCategoryFilter: Bool = false // 3.9.0
+    
     // MARK: - LifeCycle
     init(
         channel: FeedChannel? = nil,
@@ -267,7 +290,7 @@ class SBUFeedNotificationChannelViewModel: NSObject {
                 
                 self.channel = channel
                 SBULog.info("[Succeed] Load channel request: \(String(describing: self.channel))")
-                
+
                 self.updateLastSeenAt() // will mark as read
                 
                 // background refresh to update channel header.
@@ -295,9 +318,12 @@ class SBUFeedNotificationChannelViewModel: NSObject {
     
     /// This function refreshes channel.
     func refreshChannel() {
+        self.shouldRefreshCategoryFilter = false
         if let channel = self.channel {
             channel.refresh { [weak self] error in
                 guard let self = self else { return }
+                self.shouldRefreshCategoryFilter = true
+                defer { self.shouldRefreshCategoryFilter = false }
                 guard self.canProceed(with: channel, error: error) == true else {
                     let context = FeedChannelContext(source: .eventChannelChanged)
                     self.delegate?.feedNotificationChannelViewModel(
@@ -307,6 +333,7 @@ class SBUFeedNotificationChannelViewModel: NSObject {
                     )
                     return
                 }
+                
                 let context = FeedChannelContext(source: .eventChannelChanged)
                 self.delegate?.feedNotificationChannelViewModel(
                     self,
@@ -625,6 +652,7 @@ class SBUFeedNotificationChannelViewModel: NSObject {
         
         self.notificationListParams.reverse = true
         self.notificationListParams.includeMetaArray = true
+        self.notificationListParams.customType = self.selectedCategory?.customType
     }
     
     // MARK: - Common
