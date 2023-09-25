@@ -109,6 +109,11 @@ extension SBUBaseChannelModule {
     /// The `SBUBaseChannelModule`'s component class that represents input
     @objcMembers open class Input: UIView, SBUMessageInputViewDelegate, SBUMessageInputViewDataSource {
         
+         /// `inputVStackView` is a vertical stackview to make it easier to add new views at the same level as `messageInputView`.
+         /// - NOTE: It's not recommended that modify the properties of inputVStackView's axis, alignment, etc.
+         /// - IMPORTANT: It does *NOT* guarantee that the layout of messageInputView will look correct.
+         public var inputVStackView = SBUStackView(axis: .vertical, alignment: .fill, spacing: 0)
+        
         /// The `messageInputView` displays an input field where users can send or edit a message. Its default value is set to `SBUMessageInputView` object.
         /// - NOTE: If this value is updated, an event delegate for `messageInputView` will be internally set as `self`. *However*, if you wish to use a custom object that does *NOT* override `SBUMessageInputView`, you need to manually set an event delegate.
         public var messageInputView: UIView? {
@@ -161,13 +166,16 @@ extension SBUBaseChannelModule {
                 self.messageInputView = defaultMessageInputView
             }
             if let messageInputView = messageInputView {
-                self.addSubview(messageInputView)
+                inputVStackView.setVStack([
+                    messageInputView
+                ])
+                self.addSubview(inputVStackView)
             }
         }
         
         /// Sets layouts of the views in the input component.
         open func setupLayouts() {
-            self.messageInputView?
+            self.inputVStackView
                 .sbu_constraint(equalTo: self, leading: 0, trailing: 0, top: 0, bottom: 0)
         }
         

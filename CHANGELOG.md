@@ -1,5 +1,8 @@
 # Changelog
 
+### v3.7.0-beta.1 (Sep 25, 2023)
+* Added a `inputVStackView` that wraps the `messageInputView` at `SBUBaseChannelModule.Input`
+
 ### v3.7.0-beta.0 (Jul 17, 2023)
 * Added quick reply features
     * Added `SBUQuickReplyView`, `SBUQuickRepViewParams` and `SBUQuickReplyViewDelegate`
@@ -12,7 +15,7 @@
     * Added `SBUCardListView` and `SBUCardListViewParams`
     * Added `SBUCardView` and `SBUCardViewParams`
     * Added `cardListView` to `SBUUserMessageCell`
-
+    
 ### v3.6.2 (Jul 14, 2023) with Chat SDK **v4.9.5**
 * Changed file cache key policy.
 * Improved the issue of exposing empty images when message status updating from pending to succeed.

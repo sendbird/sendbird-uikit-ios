@@ -105,18 +105,34 @@ extension SBUBaseChannelViewController {
             // NOTE: needs this on show as well to prevent bug on switching orientation as show&hide will be called simultaneously.
             self.setKeyboardWindowFrame(origin: .zero)
             
-            let keyboardRectangle = keyboardFrame.cgRectValue
-            let keyboardHeight = keyboardRectangle.height
-            
-            // If the `isTranslucent=false` option is used, the tabbar’s height is calculated unnecessarily, which is problematic.
-            var tabBarHeight: CGFloat = 0.0
-            if self.tabBarController?.tabBar.isTranslucent == false {
-                tabBarHeight = tabBarController?.tabBar.frame.height ?? 0.0
-            }
+            let keyboardHeight = getAdjustedKeyboardHeight(with: keyboardFrame)
+            let tabBarHeight = getTabBarHeight()
             
             self.messageInputViewBottomConstraint.constant = -(keyboardHeight-tabBarHeight)
         }
         self.view.layoutIfNeeded()
+    }
+    
+    private func getAdjustedKeyboardHeight(with keyboardFrame: NSValue) -> CGFloat {
+        guard
+            let constraint = self.messageInputViewBottomConstraint,
+            let item = constraint.secondItem as? UILayoutGuide,
+            item === view.safeAreaLayoutGuide
+        else {
+            return keyboardFrame.cgRectValue.height
+        }
+
+        // Check SafeAreaInsets.bottom
+        return keyboardFrame.cgRectValue.height - view.safeAreaInsets.bottom
+    }
+
+    private func getTabBarHeight() -> CGFloat {
+        // If the `isTranslucent=false` option is used, the tabbar's height is calculated unnecessarily, which is problematic.
+        if self.tabBarController?.tabBar.isTranslucent == false {
+            return tabBarController?.tabBar.frame.height ?? 0.0
+        } else {
+            return 0
+        }
     }
     
     @objc
