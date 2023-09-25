@@ -183,5 +183,11 @@ extension SBUCacheManager {
             let key = "\(subPath)\(!subPath.isEmpty ? "/" : "")\(fileName)"
             return key
         }
+        
+        // MARK: - Reset
+        static func resetCache() {
+            self.memoryCache.resetCache()
+            self.diskCache.resetCache()
+        }
     }
 }

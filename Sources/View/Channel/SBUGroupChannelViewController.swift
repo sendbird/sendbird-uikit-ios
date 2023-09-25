@@ -329,7 +329,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         parentMessageCreatedAt: Int64? = 0,
         startingPoint: Int64? = 0
     ) {
-        if (parentMessageCreatedAt ?? 0) < (self.channel?.joinedAt ?? 0) * 1000 {
+        if (parentMessageCreatedAt ?? 0) < (self.channel?.messageOffsetTimestamp ?? 0) {
             SBULog.warning(SBUStringSet.Message_Reply_Cannot_Found_Original)
             return
         }
@@ -530,7 +530,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
             return
         }
         
-        if (quotedMessageView.params?.quotedMessageCreatedAt ?? 0) < (self.channel?.joinedAt ?? 0) * 1000 {
+        if (quotedMessageView.params?.quotedMessageCreatedAt ?? 0) < (self.channel?.messageOffsetTimestamp ?? 0) {
             SBULog.warning(SBUStringSet.Message_Reply_Cannot_Found_Original)
             return
         }

@@ -896,7 +896,10 @@ public class SBUBaseMessageCellParams {
   public var joinedAt: Swift.Int64 {
     get
   }
-  public init(message: SendbirdChatSDK.BaseMessage, hideDateView: Swift.Bool, messagePosition: SendbirdUIKit.MessagePosition = .center, groupPosition: SendbirdUIKit.MessageGroupPosition = .none, receiptState: SendbirdUIKit.SBUMessageReceiptState = .none, isThreadMessage: Swift.Bool = false, joinedAt: Swift.Int64 = 0)
+  public var messageOffsetTimestamp: Swift.Int64 {
+    get
+  }
+  public init(message: SendbirdChatSDK.BaseMessage, hideDateView: Swift.Bool, messagePosition: SendbirdUIKit.MessagePosition = .center, groupPosition: SendbirdUIKit.MessageGroupPosition = .none, receiptState: SendbirdUIKit.SBUMessageReceiptState = .none, isThreadMessage: Swift.Bool = false, joinedAt: Swift.Int64 = 0, messageOffsetTimestamp: Swift.Int64 = 0)
   @objc deinit
 }
 open class SBUUserListModule {
@@ -2591,6 +2594,7 @@ public class SBUMenuItem : SendbirdUIKit.SBUCommonItem {
     get
     set
   }
+  public var transitionsWhenSelected: Swift.Bool
   public init(title: Swift.String? = nil, color: UIKit.UIColor? = SBUColorSet.onlight01, image: UIKit.UIImage? = nil, font: UIKit.UIFont? = nil, tintColor: UIKit.UIColor? = nil, textAlignment: UIKit.NSTextAlignment = .left, tag: Swift.Int? = nil, completionHandler: SendbirdUIKit.SBUMenunHandler? = nil)
   @objc deinit
 }
@@ -5124,7 +5128,7 @@ extension UIKit.UIImage {
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupStyles()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func prepareForReuse()
   @_Concurrency.MainActor(unsafe) override open func configure(with configuration: SendbirdUIKit.SBUBaseMessageCellParams)
-  @objc @_Concurrency.MainActor(unsafe) public func setupQuotedMessageView(joinedAt: Swift.Int64 = 0)
+  @objc @_Concurrency.MainActor(unsafe) public func setupQuotedMessageView(joinedAt: Swift.Int64 = 0, messageOffsetTimestamp: Swift.Int64 = 0)
   @objc @_Concurrency.MainActor(unsafe) public func setupThreadInfoView()
   @objc @_Concurrency.MainActor(unsafe) public func setMessageGrouping()
   @objc @_Concurrency.MainActor(unsafe) open func updateContentsPosition()
@@ -6069,7 +6073,7 @@ public class SBUUserMessageCellParams : SendbirdUIKit.SBUBaseMessageCellParams {
   }
   final public let useReaction: Swift.Bool
   final public let withTextView: Swift.Bool
-  public init(message: SendbirdChatSDK.UserMessage, hideDateView: Swift.Bool, useMessagePosition: Swift.Bool, groupPosition: SendbirdUIKit.MessageGroupPosition = .none, receiptState: SendbirdUIKit.SBUMessageReceiptState = .none, useReaction: Swift.Bool = false, withTextView: Swift.Bool, isThreadMessage: Swift.Bool = false, joinedAt: Swift.Int64 = 0)
+  public init(message: SendbirdChatSDK.UserMessage, hideDateView: Swift.Bool, useMessagePosition: Swift.Bool, groupPosition: SendbirdUIKit.MessageGroupPosition = .none, receiptState: SendbirdUIKit.SBUMessageReceiptState = .none, useReaction: Swift.Bool = false, withTextView: Swift.Bool, isThreadMessage: Swift.Bool = false, joinedAt: Swift.Int64 = 0, messageOffsetTimestamp: Swift.Int64 = 0)
   @objc deinit
 }
 @objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUMessageSearchResultCell : SendbirdUIKit.SBUTableViewCell {
@@ -7025,7 +7029,7 @@ public class SBUUnknownMessageCellParams : SendbirdUIKit.SBUBaseMessageCellParam
   }
   final public let useReaction: Swift.Bool
   final public let withTextView: Swift.Bool
-  public init(message: SendbirdChatSDK.BaseMessage, hideDateView: Swift.Bool, groupPosition: SendbirdUIKit.MessageGroupPosition = .none, receiptState: SendbirdUIKit.SBUMessageReceiptState = .none, useReaction: Swift.Bool, isThreadMessage: Swift.Bool = false, joinedAt: Swift.Int64 = 0)
+  public init(message: SendbirdChatSDK.BaseMessage, hideDateView: Swift.Bool, groupPosition: SendbirdUIKit.MessageGroupPosition = .none, receiptState: SendbirdUIKit.SBUMessageReceiptState = .none, useReaction: Swift.Bool, isThreadMessage: Swift.Bool = false, joinedAt: Swift.Int64 = 0, messageOffsetTimestamp: Swift.Int64 = 0)
   @objc deinit
 }
 @objc @_inheritsConvenienceInitializers public class SBUNotificationChannelManager : ObjectiveC.NSObject {
@@ -7790,10 +7794,13 @@ public class SBUQuotedBaseMessageViewParams {
   public var joinedAt: Swift.Int64 {
     get
   }
+  public var messageOffsetTimestamp: Swift.Int64 {
+    get
+  }
   public var messageFileType: SendbirdUIKit.SBUMessageFileType? {
     get
   }
-  public init(message: SendbirdChatSDK.BaseMessage, position: SendbirdUIKit.MessagePosition, useQuotedMessage: Swift.Bool, joinedAt: Swift.Int64 = 0)
+  public init(message: SendbirdChatSDK.BaseMessage, position: SendbirdUIKit.MessagePosition, useQuotedMessage: Swift.Bool, joinedAt: Swift.Int64 = 0, messageOffsetTimestamp: Swift.Int64 = 0)
   public init(messageId: Swift.Int64, messagePosition: SendbirdUIKit.MessagePosition, quotedMessageNickname: Swift.String, replierNickname: Swift.String, text: Swift.String, useQuotedMessage: Swift.Bool = true, quotedMessageCreatedAt: Swift.Int64)
   public init(messageId: Swift.Int64, messagePosition: SendbirdUIKit.MessagePosition, quotedMessageNickname: Swift.String, replierNickname: Swift.String, name: Swift.String, type: Swift.String, urlString: Swift.String, useQuotedMessage: Swift.Bool = true, quotedMessageCreatedAt: Swift.Int64)
   @objc deinit
@@ -8469,7 +8476,7 @@ public class SBUFileMessageCellParams : SendbirdUIKit.SBUBaseMessageCellParams {
   }
   final public let useReaction: Swift.Bool
   public var voiceFileInfo: SendbirdUIKit.SBUVoiceFileInfo?
-  public init(message: SendbirdChatSDK.FileMessage, hideDateView: Swift.Bool, useMessagePosition: Swift.Bool, groupPosition: SendbirdUIKit.MessageGroupPosition = .none, receiptState: SendbirdUIKit.SBUMessageReceiptState = .none, useReaction: Swift.Bool = false, isThreadMessage: Swift.Bool = false, joinedAt: Swift.Int64 = 0, voiceFileInfo: SendbirdUIKit.SBUVoiceFileInfo? = nil)
+  public init(message: SendbirdChatSDK.FileMessage, hideDateView: Swift.Bool, useMessagePosition: Swift.Bool, groupPosition: SendbirdUIKit.MessageGroupPosition = .none, receiptState: SendbirdUIKit.SBUMessageReceiptState = .none, useReaction: Swift.Bool = false, isThreadMessage: Swift.Bool = false, joinedAt: Swift.Int64 = 0, messageOffsetTimestamp: Swift.Int64 = 0, voiceFileInfo: SendbirdUIKit.SBUVoiceFileInfo? = nil)
   @objc deinit
 }
 @available(*, deprecated, renamed: "SBUGroupChannelListTheme")

@@ -207,6 +207,11 @@ class SBUCacheManager {
                 }
             }
         }
+        
+        // MARK: - Reset
+        func resetCache() {
+            self.removeAll()
+        }
     }
     
     // MARK: - MemoryCache (for Image)
@@ -244,6 +249,11 @@ class SBUCacheManager {
         
         func cacheExists(key: String) -> Bool {
             return self.memoryCache.object(forKey: key as NSString) != nil
+        }
+        
+        // MARK: - Reset
+        func resetCache() {
+            self.memoryCache.removeAllObjects()
         }
     }
 }

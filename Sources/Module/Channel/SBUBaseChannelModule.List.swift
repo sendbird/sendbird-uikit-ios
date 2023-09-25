@@ -779,10 +779,11 @@ extension SBUBaseChannelModule {
         /// - Parameter message: The `BaseMessage` object  that corresponds to the message of the menu item to show.
         /// - Returns: The ``SBUMenuItem`` object for a `message`
         open func createReplyMenuItem(for message: BaseMessage) -> SBUMenuItem {
-            let replyMenuTitle = SendbirdUI.config.groupChannel.channel.replyType == .thread
+            let isThreadType = SendbirdUI.config.groupChannel.channel.replyType == .thread
+            let replyMenuTitle = isThreadType
             ? SBUStringSet.MessageThread.Menu.replyInThread
             : SBUStringSet.Reply
-            let iconSet = SendbirdUI.config.groupChannel.channel.replyType == .thread
+            let iconSet = isThreadType
             ? SBUIconSetType.iconThread
             : SBUIconSetType.iconReply
             
@@ -804,6 +805,7 @@ extension SBUBaseChannelModule {
                 self.baseDelegate?.baseChannelModule(self, didTapReplyMessage: message)
             }
             menuItem.isEnabled = isEnabled
+            menuItem.transitionsWhenSelected = isThreadType
             return menuItem
         }
         

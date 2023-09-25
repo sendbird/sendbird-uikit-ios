@@ -15,7 +15,7 @@ class SBUMenuCell: UITableViewCell {
     @IBOutlet weak var lineView: UIView!
 
     var isEnabled: Bool = true
-    var tapHandler: (() -> Void)?
+    var tapHandler: ((@escaping (Bool) -> Void) -> Void)?
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -47,6 +47,10 @@ class SBUMenuCell: UITableViewCell {
             self.tag = tag
         }
         
-        self.tapHandler = item.completionHandler
+        self.tapHandler = { [weak item] completion in
+            item?.completionHandler?()
+            
+            completion(item?.transitionsWhenSelected ?? false)
+        }
     }
 }

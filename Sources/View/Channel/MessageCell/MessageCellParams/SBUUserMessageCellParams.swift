@@ -15,7 +15,7 @@ public class SBUUserMessageCellParams: SBUBaseMessageCellParams {
     public let useReaction: Bool
     public let withTextView: Bool
     
-    public init(message: UserMessage, hideDateView: Bool, useMessagePosition: Bool, groupPosition: MessageGroupPosition = .none, receiptState: SBUMessageReceiptState = .none, useReaction: Bool = false, withTextView: Bool, isThreadMessage: Bool = false, joinedAt: Int64 = 0) {
+    public init(message: UserMessage, hideDateView: Bool, useMessagePosition: Bool, groupPosition: MessageGroupPosition = .none, receiptState: SBUMessageReceiptState = .none, useReaction: Bool = false, withTextView: Bool, isThreadMessage: Bool = false, joinedAt: Int64 = 0, messageOffsetTimestamp: Int64 = 0) {
         
         self.useReaction = useReaction
         self.withTextView = withTextView
@@ -33,7 +33,8 @@ public class SBUUserMessageCellParams: SBUBaseMessageCellParams {
             groupPosition: groupPosition,
             receiptState: receiptState,
             isThreadMessage: isThreadMessage,
-            joinedAt: joinedAt
+            joinedAt: joinedAt,
+            messageOffsetTimestamp: messageOffsetTimestamp
         )
     }
 }

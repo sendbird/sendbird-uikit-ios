@@ -1,5 +1,12 @@
 # Changelog
 
+### v3.9.1 (Sep 25, 2023)
+
+- Improved image cache stability
+- Improved unavailable message display condition check logic
+- Improved reactions related logic stability
+- Modified menu item action and menu sheet dismiss timing
+
 ### v3.9.0 (Sep 14, 2023)
 
 - Added `scrollToMessage(id:enablesScrollAnimation:enablesMessageAnimation:)` to `SBUBaseChannelModule.List` and `SBUBaseChannelViewController` 

@@ -11,7 +11,7 @@ import SendbirdChatSDK
 import Photos
 
 class SBUDownloadManager {
-    
+    fileprivate static var imageView = UIImageView()
     static func saveImage(with fileMessage: FileMessage, parent: UIViewController?) {
         guard let parent = parent else {
             SBULog.error("[Failed] Save image")
@@ -49,22 +49,23 @@ class SBUDownloadManager {
                 needPathExtension: true
             )
             
-            let key = SBUCacheManager.Image.key(fileName: fileName, subPath: fileMessage.channelURL)
-            if SBUCacheManager.Image.diskCache.cacheExists(key: key) {
-                let filePath = URL(string: SBUCacheManager.Image.diskCache.pathForKey(key))
-                    ?? URL(fileURLWithPath: SBUCacheManager.Image.diskCache.pathForKey(key))
+            let fullPath = SBUCacheManager.Image.key(fileName: fileName, subPath: fileMessage.channelURL)
+            if SBUCacheManager.Image.diskCache.cacheExists(key: fullPath) {
+                let filePath = URL(string: SBUCacheManager.Image.diskCache.pathForKey(fullPath))
+                    ?? URL(fileURLWithPath: SBUCacheManager.Image.diskCache.pathForKey(fullPath))
                 downloadHandler(filePath)
             } else {
                 DispatchQueue.main.async {
-                    _ = UIImageView().loadOriginalImage(
+                    Self.imageView.image = nil
+                    let result = Self.imageView.loadOriginalImage(
                         urlString: fileMessage.url,
                         errorImage: nil,
-                        cacheKey: key,
+                        cacheKey: fileMessage.cacheKey,
                         subPath: fileMessage.channelURL
                     ) { success in
                         if success {
-                            let filePath = URL(string: SBUCacheManager.Image.diskCache.pathForKey(fileName))
-                                ?? URL(fileURLWithPath: SBUCacheManager.Image.diskCache.pathForKey(fileName))
+                            let filePath = URL(string: SBUCacheManager.Image.diskCache.pathForKey(fullPath))
+                                ?? URL(fileURLWithPath: SBUCacheManager.Image.diskCache.pathForKey(fullPath))
                             downloadHandler(filePath)
                         } else {
                             DispatchQueue.main.async { SBULoading.stop() }

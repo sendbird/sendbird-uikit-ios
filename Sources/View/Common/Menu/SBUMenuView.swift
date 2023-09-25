@@ -20,6 +20,13 @@ public class SBUMenuItem: SBUCommonItem {
         }
     }
     
+    /// Indicates whether selecting this item will trigger a transition to another view controller.
+    ///
+    /// Set to `true` if the menu's actions will cause the ViewController that uses the `SBUMenuSheetController` to disappear
+    ///
+    /// - Since: 3.9.1
+    public var transitionsWhenSelected: Bool = false
+    
     /// - Parameters:
     ///    - font: The default is `nil`.  If `nil`, the menu text label will set it's font to ``SBUComponentTheme/menuTitleFont``
     public init(
