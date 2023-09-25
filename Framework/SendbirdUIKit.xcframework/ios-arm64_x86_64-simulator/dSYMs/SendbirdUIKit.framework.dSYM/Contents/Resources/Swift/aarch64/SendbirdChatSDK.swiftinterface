@@ -655,6 +655,7 @@ public typealias GetPushTokensHandler = ((_ pushTokens: [Swift.String], _ pushTo
 public typealias ChannelChangeLogsHandler = ((_ updatedChannel: [SendbirdChatSDK.GroupChannel]?, _ deletedChannelURLs: [Swift.String]?, _ hasMore: Swift.Bool, _ token: Swift.String?, _ error: SendbirdChatSDK.SBError?) -> Swift.Void)
 public typealias FeedChannelChangeLogsHandler = ((_ updatedChannel: [SendbirdChatSDK.FeedChannel]?, _ deletedChannelURLs: [Swift.String]?, _ hasMore: Swift.Bool, _ token: Swift.String?, _ error: SendbirdChatSDK.SBError?) -> Swift.Void)
 public typealias ChannelChangeLogsPagerHandler = ((_ updatedChannels: [SendbirdChatSDK.GroupChannel], _ deletedChannelURLs: [Swift.String], _ token: Swift.String?, _ error: SendbirdChatSDK.SBError?) -> Swift.Void)
+public typealias MembersChangeLogsHandler = ((_ result: SendbirdChatSDK.MembersChangeLogsResult?, _ error: SendbirdChatSDK.SBError?) -> Swift.Void)
 public typealias SnoozePeriodHandler = ((_ enabled: Swift.Bool, _ startTimestamp: Swift.Int64, _ endTimestamp: Swift.Int64, _ error: SendbirdChatSDK.SBError?) -> Swift.Void)
 public typealias PushTriggerOptionHandler = ((_ pushTriggerOption: SendbirdChatSDK.PushTriggerOption, _ error: SendbirdChatSDK.SBError?) -> Swift.Void)
 public typealias ReactionEventHandler = ((_ event: SendbirdChatSDK.ReactionEvent?, _ error: SendbirdChatSDK.SBError?) -> Swift.Void)
@@ -1809,6 +1810,14 @@ extension SendbirdChatSDK.MessageListParams {
   @objc override dynamic public var description: Swift.String {
     @objc get
   }
+}
+@objc open class MembersChangeLogsResult : ObjectiveC.NSObject {
+  @objc final public let userList: [SendbirdChatSDK.User]
+  @objc final public let remainingTimeUntilNextRequest: Swift.Int64
+  @objc final public let hasMore: Swift.Bool
+  @objc final public let token: Swift.String?
+  public init(userList: [SendbirdChatSDK.User], remainingTimeUntilNextRequest: Swift.Int64, hasMore: Swift.Bool, token: Swift.String?)
+  @objc deinit
 }
 @_hasMissingDesignatedInitializers final public class UIKitConfigInfo : Swift.Codable {
   final public var lastUpdatedAt: Swift.Int64 {
@@ -3315,6 +3324,8 @@ extension SendbirdChatSDK.MutedUserListQuery {
   @objc public class func markPushNotificationAsDelivered(remoteNotificationPayload: [Swift.AnyHashable : Any], completionHandler: SendbirdChatSDK.SBErrorHandler? = nil)
   @objc(getMyGroupChannelChangeLogsWithToken:params:completionHandler:) public class func getMyGroupChannelChangeLogs(token: Swift.String?, params: SendbirdChatSDK.GroupChannelChangeLogsParams = GroupChannelChangeLogsParams(), completionHandler: @escaping SendbirdChatSDK.ChannelChangeLogsHandler)
   @objc(getMyGroupChannelChangeLogsWithTimestamp:params:completionHandler:) public class func getMyGroupChannelChangeLogs(timestamp: Swift.Int64, params: SendbirdChatSDK.GroupChannelChangeLogsParams = GroupChannelChangeLogsParams(), completionHandler: @escaping SendbirdChatSDK.ChannelChangeLogsHandler)
+  @objc(getMembersChangeLogsWithToken:completionHandler:) public class func getMembersChangeLogs(token: Swift.String, completionHandler: @escaping SendbirdChatSDK.MembersChangeLogsHandler)
+  @objc(getMembersChangeLogsWithTimestamp:completionHandler:) public class func getMembersChangeLogs(timestamp: Swift.Int64, completionHandler: @escaping SendbirdChatSDK.MembersChangeLogsHandler)
   @objc public class func getLogLevel() -> SendbirdChatSDK.LogLevel
   @objc public class func setLogLevel(_ logLevel: SendbirdChatSDK.LogLevel)
   @objc public class func getMimeType(_ file: Foundation.Data?) -> Swift.String?

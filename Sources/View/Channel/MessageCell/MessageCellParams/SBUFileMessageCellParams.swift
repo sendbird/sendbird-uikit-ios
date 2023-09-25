@@ -25,6 +25,7 @@ public class SBUFileMessageCellParams: SBUBaseMessageCellParams {
         useReaction: Bool = false,
         isThreadMessage: Bool = false,
         joinedAt: Int64 = 0,
+        messageOffsetTimestamp: Int64 = 0,
         voiceFileInfo: SBUVoiceFileInfo? = nil
     ) {
         self.useReaction = useReaction
@@ -42,7 +43,8 @@ public class SBUFileMessageCellParams: SBUBaseMessageCellParams {
             groupPosition: groupPosition,
             receiptState: receiptState,
             isThreadMessage: isThreadMessage,
-            joinedAt: joinedAt
+            joinedAt: joinedAt,
+            messageOffsetTimestamp: messageOffsetTimestamp
         )
         
         self.voiceFileInfo = voiceFileInfo ?? SBUVoiceFileInfo.createVoiceFileInfo(with: message)

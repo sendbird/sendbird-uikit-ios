@@ -224,14 +224,12 @@ internal extension UIImageView {
             }
             
             if image.isAnimatedImage() {
-                SBUCacheManager.Image.save(data: data, fileName: fileName, subPath: subPath)
                 SBUCacheManager.Image.save(data: data, fileName: thumbnailFileName, subPath: subPath)
                 
                 self.setImage(image.images?.first ?? image, tintColor: tintColor, completion: completion)
             } else {
                 let thumbnailSize: CGSize = thumbnailSize ?? SBUGlobals.messageCellConfiguration.groupChannel.thumbnailSize
                 let thumbnailImage = image.resize(with: thumbnailSize)
-                SBUCacheManager.Image.save(image: image, fileName: fileName, subPath: subPath)
                 SBUCacheManager.Image.save(image: thumbnailImage, fileName: thumbnailFileName, subPath: subPath)
                 
                 self.setImage(thumbnailImage, tintColor: tintColor, completion: completion)

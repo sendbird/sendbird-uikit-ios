@@ -2653,7 +2653,7 @@ SWIFT_CLASS("_TtC13SendbirdUIKit25SBUContentBaseMessageCell")
 - (void)setupActions;
 - (void)setupStyles;
 - (void)prepareForReuse;
-- (void)setupQuotedMessageViewWithJoinedAt:(int64_t)joinedAt;
+- (void)setupQuotedMessageViewWithJoinedAt:(int64_t)joinedAt messageOffsetTimestamp:(int64_t)messageOffsetTimestamp;
 /// Set up the thread info view.
 /// since:
 /// 3.3.0

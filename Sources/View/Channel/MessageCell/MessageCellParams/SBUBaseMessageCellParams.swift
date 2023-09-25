@@ -32,6 +32,10 @@ public class SBUBaseMessageCellParams {
     
     /// Time the current user joined the channel.
     public internal(set) var joinedAt: Int64 = 0
+    
+    /// Message offset of a channel. User can only see messages after this offset.
+    /// - Since: 3.9.1
+    public internal(set) var messageOffsetTimestamp: Int64 = 0
 
     /// Profile image URL for chat notification channel.
     var profileImageURL: String?
@@ -48,7 +52,8 @@ public class SBUBaseMessageCellParams {
                 groupPosition: MessageGroupPosition = .none,
                 receiptState: SBUMessageReceiptState = .none,
                 isThreadMessage: Bool = false,
-                joinedAt: Int64 = 0) {
+                joinedAt: Int64 = 0,
+                messageOffsetTimestamp: Int64 = 0) {
         self.message = message
         self.hideDateView = hideDateView
         self.messagePosition = messagePosition
@@ -71,5 +76,6 @@ public class SBUBaseMessageCellParams {
         }
         
         self.joinedAt = joinedAt
+        self.messageOffsetTimestamp = messageOffsetTimestamp
     }
 }

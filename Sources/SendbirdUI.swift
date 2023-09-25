@@ -87,6 +87,8 @@ public class SendbirdUI {
             logLevel: chatLogLevel
         )
         
+        SBUCacheManager.Version.checkAndClearOutdatedCache()
+        
         if let error = SendbirdChat.initializeSynchronously(params: params) {
             SBULog.error("[Failed] SendbirdChat initialize failed.: \(error.debugDescription)")
             completionHandler(error)

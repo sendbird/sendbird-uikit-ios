@@ -398,7 +398,8 @@ extension SBUGroupChannelModule {
                         groupPosition: self.getMessageGroupingPosition(currentIndex: indexPath.row),
                         receiptState: receiptState,
                         useReaction: useReaction,
-                        joinedAt: self.channel?.joinedAt ?? 0
+                        joinedAt: self.channel?.joinedAt ?? 0,
+                        messageOffsetTimestamp: self.channel?.messageOffsetTimestamp ?? 0
                     )
                     unknownMessageCell.configure(with: configuration)
                     self.setMessageCellAnimation(unknownMessageCell, message: unknownMessage, indexPath: indexPath)
@@ -414,7 +415,8 @@ extension SBUGroupChannelModule {
                         receiptState: receiptState,
                         useReaction: useReaction,
                         withTextView: true,
-                        joinedAt: self.channel?.joinedAt ?? 0
+                        joinedAt: self.channel?.joinedAt ?? 0,
+                        messageOffsetTimestamp: self.channel?.messageOffsetTimestamp ?? 0
                     )
                     userMessageCell.configure(with: configuration)
                     userMessageCell.configure(highlightInfo: self.highlightInfo)
@@ -434,6 +436,7 @@ extension SBUGroupChannelModule {
                         receiptState: receiptState,
                         useReaction: useReaction,
                         joinedAt: self.channel?.joinedAt ?? 0,
+                        messageOffsetTimestamp: self.channel?.messageOffsetTimestamp ?? 0,
                         voiceFileInfo: voiceFileInfo
                     )
                     
@@ -466,7 +469,8 @@ extension SBUGroupChannelModule {
                         messagePosition: .center,
                         groupPosition: .none,
                         receiptState: receiptState,
-                        joinedAt: self.channel?.joinedAt ?? 0
+                        joinedAt: self.channel?.joinedAt ?? 0,
+                        messageOffsetTimestamp: self.channel?.messageOffsetTimestamp ?? 0
                     )
                     messageCell.configure(with: configuration)
             }

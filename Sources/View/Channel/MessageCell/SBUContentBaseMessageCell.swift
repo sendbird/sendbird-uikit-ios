@@ -337,7 +337,10 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         }
         
         if self.useQuotedMessage {
-            self.setupQuotedMessageView(joinedAt: configuration.joinedAt)
+            self.setupQuotedMessageView(
+                joinedAt: configuration.joinedAt,
+                messageOffsetTimestamp: configuration.messageOffsetTimestamp
+            )
         } else {
             self.quotedMessageView?.isHidden = true
         }
@@ -353,7 +356,7 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         self.setMessageGrouping()
     }
     
-    public func setupQuotedMessageView(joinedAt: Int64 = 0) {
+    public func setupQuotedMessageView(joinedAt: Int64 = 0, messageOffsetTimestamp: Int64 = 0) {
         guard self.quotedMessageView != nil,
               let message = self.message,
               let quotedMessage = self.message?.parentMessage else { return }
@@ -361,7 +364,8 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
             message: message,
             position: self.position,
             useQuotedMessage: self.useQuotedMessage,
-            joinedAt: joinedAt
+            joinedAt: joinedAt,
+            messageOffsetTimestamp: messageOffsetTimestamp
         )
         guard self.quotedMessageView is SBUQuotedBaseMessageView else {
             // For customized parent message view.
@@ -370,7 +374,7 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         }
         
         let isMessageUnavailable = (
-            (message.parentMessage?.createdAt ?? 0) < (joinedAt * 1000)
+            (message.parentMessage?.createdAt ?? 0) < messageOffsetTimestamp
             && SendbirdUI.config.groupChannel.channel.replyType == .thread
         )
 

@@ -169,8 +169,13 @@ public class SBUMenuSheetViewController: SBUBaseViewController, UITableViewDeleg
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let cell = tableView.cellForRow(at: indexPath) as? SBUMenuCell {
             if cell.isEnabled {
-                self.dismiss(animated: true) {
-                    cell.tapHandler?()
+                cell.tapHandler? { [weak self] transitionsWhenSelected in
+                    guard !transitionsWhenSelected else {
+                        // automatically dismisses the viewController in viewWillDisappear
+                        return
+                    }
+                    
+                    self?.dismiss(animated: true)
                 }
             } else {
                 tableView.deselectRow(at: indexPath, animated: true)

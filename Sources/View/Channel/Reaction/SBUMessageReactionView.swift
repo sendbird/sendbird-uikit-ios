@@ -188,6 +188,8 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
             return cell
         }
         
+        guard !reactions.isEmpty else { return .init() }
+        
         let reaction = reactions[indexPath.row]
         let emojiKey = reaction.key
         
@@ -212,7 +214,8 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
                         didSelectItemAt indexPath: IndexPath) {
         
         guard !self.hasMoreEmoji(at: indexPath) else { return }
-
+        guard !reactions.isEmpty else { return }
+        
         let reaction = reactions[indexPath.row]
         self.emojiTapHandler?(reaction.key)
     }
@@ -221,9 +224,8 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        if self.hasMoreEmoji(at: indexPath) {
-            return self.getCellSize(count: 0)
-        }
+        guard !self.hasMoreEmoji(at: indexPath) else { return self.getCellSize(count: 0) }
+        guard !reactions.isEmpty else { return self.getCellSize(count: 0) }
 
         let count = reactions[indexPath.row].userIds.count
         return self.getCellSize(count: count)

@@ -436,7 +436,8 @@ extension SBUChatNotificationChannelModule {
                     groupPosition: .none,
                     receiptState: .notUsed,
                     isThreadMessage: false,
-                    joinedAt: channel.joinedAt
+                    joinedAt: channel.joinedAt,
+                    messageOffsetTimestamp: channel.messageOffsetTimestamp
                 )
                 notificationCell.configure(with: configuration)
             }

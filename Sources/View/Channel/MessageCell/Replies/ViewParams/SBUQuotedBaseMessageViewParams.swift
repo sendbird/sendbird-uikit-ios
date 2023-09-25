@@ -83,6 +83,10 @@ public class SBUQuotedBaseMessageViewParams {
     /// - Since: 3.3.0
     public private(set) var joinedAt: Int64 = 0
     
+    /// Message offset of a channel. User can only see messages after this offset.
+    /// - Since: 3.9.1
+    public internal(set) var messageOffsetTimestamp: Int64 = 0
+    
     /// Gets messageFileType with message.
     ///
     /// Checking step:
@@ -112,7 +116,7 @@ public class SBUQuotedBaseMessageViewParams {
     
     var metaArrays: [MessageMetaArray]?
     
-    public init(message: BaseMessage, position: MessagePosition, useQuotedMessage: Bool, joinedAt: Int64 = 0) {
+    public init(message: BaseMessage, position: MessagePosition, useQuotedMessage: Bool, joinedAt: Int64 = 0, messageOffsetTimestamp: Int64 = 0) {
         self.message = message
         self.messageId = message.parentMessageId
         if let quotedMessageSender = message.parentMessage?.sender {
@@ -152,8 +156,9 @@ public class SBUQuotedBaseMessageViewParams {
         self.messageCreatedAt = message.createdAt
         
         self.joinedAt = joinedAt
+        self.messageOffsetTimestamp = messageOffsetTimestamp
         
-        if (message.parentMessage?.createdAt ?? 0) < (joinedAt * 1000)
+        if (message.parentMessage?.createdAt ?? 0) < self.messageOffsetTimestamp
             && SendbirdUI.config.groupChannel.channel.replyType == .thread {
             self.text = SBUStringSet.Message_Unavailable
         } else {

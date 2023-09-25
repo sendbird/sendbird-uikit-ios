@@ -231,9 +231,9 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
         notification: BaseMessage,
         forRowAt indexPath: IndexPath
     ) {
-        if let url = URL(string: action.data) {
+        if let url = URL(string: action.data.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "") {
             url.open()
-        } else if let urlString = action.alterData, let url = URL(string: urlString) {
+        } else if let urlString = action.alterData, let url = URL(string: urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "") {
             url.open()
         }
     }
@@ -248,9 +248,9 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
         notification: BaseMessage,
         forRowAt indexPath: IndexPath
     ) {
-        if let urlScehem = URL(string: action.data) {
-            urlScehem.open(needSanitise: false)
-        } else if let urlString = action.alterData, let url = URL(string: urlString) {
+        if let url = URL(string: action.data.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "") {
+            url.open(needSanitise: false)
+        } else if let urlString = action.alterData, let url = URL(string: urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "") {
             url.open(needSanitise: false)
         }
     }
