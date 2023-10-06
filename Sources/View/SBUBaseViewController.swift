@@ -39,10 +39,12 @@ open class SBUBaseViewController: UIViewController, UINavigationControllerDelega
         }
         SBUUtils.dismissPresentedOnDisappear(presentedViewController: self.presentedViewController)
         
-        SBULoading.stop()
-        SBUMenuView.dismiss()
-        SBUAlertView.dismiss()
-        SBUActionSheet.dismiss()
+        if self is SBUMenuSheetViewController == false {
+            SBULoading.stop()
+            SBUMenuView.dismiss()
+            SBUAlertView.dismiss()
+            SBUActionSheet.dismiss()
+        }
     }
     
     open override func viewDidLayoutSubviews() {

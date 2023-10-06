@@ -1,5 +1,11 @@
 # Changelog
 
+### v3.9.2 (Oct 06, 2023)
+
+- Fixed an issue where deleting a message didn't work
+- Fixed a problem with truncated reaction counts
+- Improved stability
+
 ### v3.9.1 (Sep 25, 2023)
 
 - Improved image cache stability

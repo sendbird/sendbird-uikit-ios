@@ -22,11 +22,13 @@ class SBUReactionCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var leftMarginView: UIView!
     @IBOutlet weak var rightMarginView: UIView!
     
-    @IBOutlet weak var stackViewTopConstraint: NSLayoutConstraint!
-    @IBOutlet weak var stackViewLeadingConstraint: NSLayoutConstraint!
-    @IBOutlet weak var stackViewTrailingConstraint: NSLayoutConstraint!
-    @IBOutlet weak var stackViewHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var stackViewTopConstraint: NSLayoutConstraint?
+    @IBOutlet weak var stackViewLeadingConstraint: NSLayoutConstraint?
+    @IBOutlet weak var stackViewTrailingConstraint: NSLayoutConstraint?
+    @IBOutlet weak var stackViewHeightConstraint: NSLayoutConstraint?
 
+    @IBOutlet weak var emojiImageViewRatioConstraint: NSLayoutConstraint?
+    
     var type: SBUReactionCellType = .messageMenu
 
     @SBUThemeWrapper(theme: SBUTheme.componentTheme)
@@ -185,10 +187,10 @@ class SBUReactionCollectionViewCell: UICollectionViewCell {
     }
 
     func setStackConstraints(top: CGFloat, leading: CGFloat, trailing: CGFloat, height: CGFloat) {
-        self.stackViewTopConstraint.constant = top
-        self.stackViewLeadingConstraint.constant = leading
-        self.stackViewTrailingConstraint.constant = trailing
-        self.stackViewHeightConstraint.constant = height
+        self.stackViewTopConstraint?.constant = top
+        self.stackViewLeadingConstraint?.constant = leading
+        self.stackViewTrailingConstraint?.constant = trailing
+        self.stackViewHeightConstraint?.constant = height
     }
 
 }
