@@ -279,7 +279,6 @@ public protocol SBUCommonDelegate : AnyObject {
   @_Concurrency.MainActor(unsafe) override open func configure(maxWidth: CoreFoundation.CGFloat, useReaction: Swift.Bool, reactions: [SendbirdChatSDK.Reaction])
   @_Concurrency.MainActor(unsafe) override open func getCellSize(count: Swift.Int) -> CoreFoundation.CGSize
   @_Concurrency.MainActor(unsafe) @objc override open func collectionView(_ collectionView: UIKit.UICollectionView, numberOfItemsInSection section: Swift.Int) -> Swift.Int
-  @_Concurrency.MainActor(unsafe) @objc override open func collectionView(_ collectionView: UIKit.UICollectionView, layout collectionViewLayout: UIKit.UICollectionViewLayout, sizeForItemAt indexPath: Foundation.IndexPath) -> CoreFoundation.CGSize
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
   @objc deinit

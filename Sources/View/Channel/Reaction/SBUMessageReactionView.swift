@@ -181,8 +181,12 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
                 with: theme.addReactionTintColor,
                 to: SBUIconSetType.Metric.iconEmojiSmall
             )
+            cell.emojiImageViewRatioConstraint?.isActive = false
             cell.configure(type: .messageReaction, url: nil, needsSideMargin: self.sameCellWidth)
+            
             cell.emojiImageView.image = moreEmoji
+            cell.emojiImageViewRatioConstraint?.isActive = true
+
             cell.isSelected = false
             cell.addGestureRecognizer(moreEmojiTapRecognizer)
             return cell
@@ -194,10 +198,12 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
         let emojiKey = reaction.key
         
         let selectedEmoji = emojiList.first(where: { $0.key == reaction.key })
+        cell.emojiImageViewRatioConstraint?.isActive = false
         cell.configure(type: .messageReaction,
                        url: selectedEmoji?.url,
                        count: reaction.userIds.count, needsSideMargin: self.sameCellWidth)
         
+        cell.emojiImageViewRatioConstraint?.isActive = true
         cell.emojiLongPressHandler = { [weak self] in
             guard let self = self else { return }
             self.emojiLongPressHandler?(emojiKey)

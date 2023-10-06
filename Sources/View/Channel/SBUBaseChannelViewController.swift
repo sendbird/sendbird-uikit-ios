@@ -449,6 +449,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         case .image:
             let viewer = SBUCommonViewControllerSet.FileViewController.init(fileMessage: fileMessage, delegate: self)
             let naviVC = UINavigationController(rootViewController: viewer)
+            SBULoading.stop()
             self.present(naviVC, animated: true)
             
         case .etc, .pdf, .video, .audio:

@@ -345,6 +345,20 @@ extension SendbirdChatSDK.ParticipantListQuery {
     @objc get
   }
 }
+@objc(SBDMessageReviewStatus) public enum MessageReviewStatus : Swift.Int {
+  case none = 0
+  case inReview = 1
+  case approved = 2
+}
+extension SendbirdChatSDK.MessageReviewStatus : Swift.RawRepresentable, Swift.Codable {
+  public typealias RawValue = Swift.String
+  public init(rawValue: Swift.String)
+  public var rawValue: Swift.String {
+    get
+  }
+  public init(from decoder: Swift.Decoder) throws
+  public func encode(to encoder: Swift.Encoder) throws
+}
 @objc(SBDPushTokenRegistrationStatus) public enum PushTokenRegistrationStatus : Swift.Int {
   case success = 0
   case pending = 1
@@ -963,6 +977,9 @@ extension SendbirdChatSDK.BlockedUserListQueryParams : Foundation.NSCopying {
   }
   @available(*, unavailable, message: "This property has been removed.")
   @objc public var requestState: SendbirdChatSDK.MessageRequestState?
+  @objc public var messageReviewInfo: SendbirdChatSDK.MessageReviewInfo? {
+    get
+  }
   override public func encode(to encoder: Swift.Encoder) throws
   required public init(from decoder: Swift.Decoder) throws
   @discardableResult
@@ -1018,6 +1035,7 @@ extension SendbirdChatSDK.UserMessage {
   @objc(getMessageWithParams:completionHandler:) dynamic open class func getMessage(params: SendbirdChatSDK.MessageRetrievalParams, completionHandler: SendbirdChatSDK.BaseMessageHandler?)
   @objc(getThreadedMessagesWithTimestamp:params:completionHandler:) dynamic open func getThreadedMessages(timestamp: Swift.Int64, params: SendbirdChatSDK.ThreadedMessageListParams, completionHandler: SendbirdChatSDK.ThreadedMessageListHandler?)
   @objc(getScheduledMessageWithParams:completionHandler:) dynamic open class func getScheduledMessage(params: SendbirdChatSDK.ScheduledMessageRetrievalParams, completionHandler: SendbirdChatSDK.BaseMessageHandler?)
+  @objc(submitFormWithFormKey:answers:completionHandler:) dynamic open func submitForm(formKey: Swift.String, answers: [Swift.String : Swift.String], completionHandler: SendbirdChatSDK.SBErrorHandler?)
 }
 @objc(SBDOGImage) public class OGImage : ObjectiveC.NSObject, Swift.Codable {
   @objc final public let url: Swift.String?
@@ -2532,6 +2550,13 @@ extension SendbirdChatSDK.ReplyType : Swift.RawRepresentable, Swift.Codable {
   @objc open func dispose()
   @objc deinit
 }
+@_hasMissingDesignatedInitializers @objc(SBDMessageReviewInfo) public class MessageReviewInfo : ObjectiveC.NSObject, Swift.Codable {
+  @objc final public let status: SendbirdChatSDK.MessageReviewStatus
+  @objc final public let originalMessageInfo: SendbirdChatSDK.OriginalMessageInfo?
+  public func encode(to encoder: Swift.Encoder) throws
+  required public init(from decoder: Swift.Decoder) throws
+  @objc deinit
+}
 @_inheritsConvenienceInitializers @objc(SBDOpenChannelListQueryParams) final public class OpenChannelListQueryParams : ObjectiveC.NSObject {
   @objc final public var includeFrozenChannel: Swift.Bool
   @objc final public var includeMetaData: Swift.Bool
@@ -3372,6 +3397,7 @@ extension SendbirdChatSDK.MutedUserListQuery {
   @objc public class func getNotificationTemplate(key: Swift.String, completionHandler: @escaping SendbirdChatSDK.NotificationTemplateHandler)
   public class func __getUIKitConfiguration(completionhandler: @escaping SendbirdChatSDK.UIKitConfigurationHandler)
   public class func refreshNotificationCollections()
+  @objc public class func sendUserMessage(channelType: SendbirdChatSDK.ChannelType, channelURL: Swift.String, params: SendbirdChatSDK.UserMessageCreateParams, completionHandler: SendbirdChatSDK.UserMessageHandler?)
   @objc deinit
 }
 @objc(SBDGroupChannelListOrder) public enum GroupChannelListOrder : Swift.Int {
@@ -3649,6 +3675,13 @@ extension SendbirdChatSDK.MessageSearchQuery {
   @objc dynamic public var channelUrl: Swift.String? {
     @objc get
   }
+}
+@_hasMissingDesignatedInitializers @objc(SBDOriginalMessageInfo) public class OriginalMessageInfo : ObjectiveC.NSObject, Swift.Codable {
+  @objc final public let createdAt: Swift.Int64
+  @objc final public let messageId: Swift.Int64
+  public func encode(to encoder: Swift.Encoder) throws
+  required public init(from decoder: Swift.Decoder) throws
+  @objc deinit
 }
 extension SendbirdChatSDK.BaseChannel {
   @objc dynamic open func updatePoll(pollId: Swift.Int64, params: SendbirdChatSDK.PollUpdateParams, completionHandler: SendbirdChatSDK.PollHandler?)
@@ -4554,6 +4587,8 @@ extension SendbirdChatSDK.GroupChannelListQuery : Foundation.NSCopying {}
 extension SendbirdChatSDK.PublicGroupChannelListQuery : Foundation.NSCopying {}
 extension SendbirdChatSDK.ApplicationUserListQuery : Foundation.NSCopying {}
 extension SendbirdChatSDK.ParticipantListQuery : Foundation.NSCopying {}
+extension SendbirdChatSDK.MessageReviewStatus : Swift.Equatable {}
+extension SendbirdChatSDK.MessageReviewStatus : Swift.Hashable {}
 extension SendbirdChatSDK.PushTokenRegistrationStatus : Swift.Equatable {}
 extension SendbirdChatSDK.PushTokenRegistrationStatus : Swift.Hashable {}
 extension SendbirdChatSDK.PushTokenRegistrationStatus : Swift.RawRepresentable {}
