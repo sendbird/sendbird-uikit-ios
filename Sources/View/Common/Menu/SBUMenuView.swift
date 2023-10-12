@@ -78,6 +78,8 @@ class SBUMenuView: NSObject {
     
     var prevOrientation: UIDeviceOrientation = .unknown
     
+    var isShowing: Bool = false
+    
     private override init() {
         super.init()
     }
@@ -181,12 +183,16 @@ class SBUMenuView: NSObject {
         window.addSubview(self.baseView)
         
         self.baseView.alpha = 0.0
+        self.isShowing = true
         UIView.animate(withDuration: 0.2, animations: {
             self.baseView.alpha = 1.0
+            self.isShowing = false
         })
     }
     
     @objc private func dismiss() {
+        guard !isShowing else { return }
+
         for subView in self.baseView.subviews {
             subView.removeFromSuperview()
         }

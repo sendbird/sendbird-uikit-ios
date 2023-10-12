@@ -69,6 +69,8 @@ public class SBUAlertView: NSObject {
     
     var prevOrientation: UIDeviceOrientation = .unknown
     
+    var isShowing: Bool = false
+    
     weak var delegate: SBUAlertViewDelegate?
 
     private override init() {
@@ -352,6 +354,7 @@ public class SBUAlertView: NSObject {
             size: baseFrame.size
         )
         self.backgroundView.alpha = 0.0
+        self.isShowing = true
         UIView.animate(withDuration: 0.1, animations: {
             self.backgroundView.alpha = 1.0
         }) { _ in
@@ -360,10 +363,13 @@ public class SBUAlertView: NSObject {
             if needInputField {
                 self.inputField.becomeFirstResponder()
             }
+            self.isShowing = false
         }
     }
     
     @objc private func dismiss() {
+        guard !isShowing else { return }
+
         handleDismiss(isUserInitiated: true)
     }
     

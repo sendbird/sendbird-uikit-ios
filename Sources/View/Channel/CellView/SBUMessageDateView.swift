@@ -14,24 +14,21 @@ open class SBUMessageDateView: SBUView {
     @SBUThemeWrapper(theme: SBUTheme.messageCellTheme)
     public var theme: SBUMessageCellTheme
     
-    public lazy var dateLabel: UILabel = {
-        let view = UILabel()
-        view.layer.cornerRadius = 10
-        view.clipsToBounds = true
-        return view
-    }()
+    public lazy var dateLabel: UILabel = UILabel()
+    public var padding: UIEdgeInsets = UIEdgeInsets(top: 8, left: 4, bottom: 8, right: 4)
 
     open override func setupViews() {
+        self.dateLabel = SBUPaddingLabel(padding.top, padding.bottom, padding.left, padding.right)
         self.dateLabel.textAlignment = .center
+        self.dateLabel.layer.cornerRadius = 10
+        self.dateLabel.clipsToBounds = true
         self.addSubview(self.dateLabel)
     }
     
     open override func setupLayouts() {
         self.dateLabel
             .setConstraint(from: self, centerX: true, centerY: true)
-            .setConstraint(width: 91, height: 20)
-        
-        self.setConstraint(height: 20, priority: .defaultLow)
+            .sbu_constraint(equalTo: self, top: 0, bottom: 0)
     }
     
     open override func setupStyles() {
@@ -40,6 +37,13 @@ open class SBUMessageDateView: SBUView {
         self.dateLabel.font = theme.dateFont
         self.dateLabel.textColor = theme.dateTextColor
         self.dateLabel.backgroundColor = theme.dateBackgroundColor
+    }
+    
+    open override func layoutSubviews() {
+        super.layoutSubviews()
+
+        let height = self.dateLabel.frame.height
+        self.dateLabel.layer.cornerRadius = height / 2
     }
     
     open func configure(timestamp: Int64) {

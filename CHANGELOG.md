@@ -1,5 +1,11 @@
 # Changelog
 
+### v3.9.3 (Oct 12, 2023)
+
+- Supported enlarged font size on dateLabel of group channel list and message cell
+- Added a `inputVStackView` that wraps the `messageInputView` at `SBUBaseChannelModule.Input`
+- Improved stability
+
 ### v3.9.2 (Oct 06, 2023)
 
 - Fixed an issue where deleting a message didn't work

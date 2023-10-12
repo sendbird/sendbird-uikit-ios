@@ -98,6 +98,8 @@ public class SBUActionSheet: NSObject {
 
     var prevOrientation: UIDeviceOrientation = .unknown
     
+    var isShowing: Bool = false
+    
     private override init() {
         super.init()
     }
@@ -235,17 +237,20 @@ public class SBUActionSheet: NSObject {
             size: baseFrame.size
         )
         self.backgroundView.alpha = 0.0
-        
+        self.isShowing = true
         UIView.animate(withDuration: 0.1, animations: {
             self.backgroundView.alpha = 1.0
         }) { _ in
             UIView.animate(withDuration: 0.2, animations: {
                 self.baseView.frame = baseFrame
+                self.isShowing = false
             })
         }
     }
     
     @objc private func dismiss() {
+        guard !isShowing else { return }
+
         self.handleDismiss(isUserInitiated: true)
     }
     
