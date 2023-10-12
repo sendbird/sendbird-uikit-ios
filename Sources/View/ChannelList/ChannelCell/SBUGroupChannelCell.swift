@@ -167,9 +167,6 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
         self.stateImageView
             .sbu_constraint(width: infoIconSize, height: infoIconSize)
         
-        self.lastUpdatedTimeLabel
-            .sbu_constraint(height: 14)
-        
         // message stack view
         self.messageStackView
             .sbu_constraint(equalTo: self.contentStackView, trailing: 0)

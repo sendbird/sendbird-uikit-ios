@@ -738,9 +738,11 @@ public protocol SBUInviteUserViewModelDataSource : SendbirdUIKit.SBUBaseSelectUs
     get
     set
   }
+  @_Concurrency.MainActor(unsafe) public var padding: UIKit.UIEdgeInsets
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupViews()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupLayouts()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupStyles()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func layoutSubviews()
   @_Concurrency.MainActor(unsafe) open func configure(timestamp: Swift.Int64)
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
@@ -3297,6 +3299,7 @@ public protocol SBUBaseChannelModuleInputDataSource : AnyObject {
 }
 extension SendbirdUIKit.SBUBaseChannelModule {
   @objc @_inheritsConvenienceInitializers @objcMembers @_Concurrency.MainActor(unsafe) open class Input : UIKit.UIView, SendbirdUIKit.SBUMessageInputViewDelegate, SendbirdUIKit.SBUMessageInputViewDataSource {
+    @objc @_Concurrency.MainActor(unsafe) public var inputVStackView: SendbirdUIKit.SBUStackView
     @objc @_Concurrency.MainActor(unsafe) public var messageInputView: UIKit.UIView? {
       @objc get
       @objc set
@@ -7929,6 +7932,28 @@ open class SBUInviteUserModule {
   }
   @available(*, deprecated, message: "Use `SBUModuleSet.InviteUserModule")
   required public init(headerComponent: SendbirdUIKit.SBUInviteUserModule.Header? = nil, listComponent: SendbirdUIKit.SBUInviteUserModule.List? = nil)
+  @objc deinit
+}
+@objc @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) public class SBUPaddingLabel : UIKit.UILabel {
+  @_Concurrency.MainActor(unsafe) public var top: CoreFoundation.CGFloat {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public var bottom: CoreFoundation.CGFloat {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public var leading: CoreFoundation.CGFloat {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public var trailing: CoreFoundation.CGFloat {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) convenience public init(_ all: CoreFoundation.CGFloat)
+  @_Concurrency.MainActor(unsafe) convenience public init(_ vertical: CoreFoundation.CGFloat, _ horizontal: CoreFoundation.CGFloat)
+  @_Concurrency.MainActor(unsafe) public init(_ top: CoreFoundation.CGFloat = 0, _ bottom: CoreFoundation.CGFloat = 0, _ leading: CoreFoundation.CGFloat = 0, _ trailing: CoreFoundation.CGFloat = 0)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public func drawText(in rect: CoreFoundation.CGRect)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public var intrinsicContentSize: CoreFoundation.CGSize {
+    @objc get
+  }
   @objc deinit
 }
 @objc @_inheritsConvenienceInitializers @IBDesignable @_Concurrency.MainActor(unsafe) open class SBUUserMessageCell : SendbirdUIKit.SBUContentBaseMessageCell, SendbirdUIKit.SBUUserMessageTextViewDelegate {

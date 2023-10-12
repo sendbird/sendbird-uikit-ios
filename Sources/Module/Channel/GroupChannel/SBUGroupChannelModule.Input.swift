@@ -176,9 +176,6 @@ extension SBUGroupChannelModule {
         
         open override func setupLayouts() {
             super.setupLayouts()
-            
-            self.messageInputView?
-                .sbu_constraint(equalTo: self, leading: 0, trailing: 0, top: 0, bottom: 0)
         }
         
         open override func pickImageFile(info: [UIImagePickerController.InfoKey: Any]) {
