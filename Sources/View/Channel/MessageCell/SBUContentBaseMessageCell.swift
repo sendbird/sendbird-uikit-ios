@@ -108,7 +108,7 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
     }()
     
     /// A ``SBUSelectableStackView`` that represents a message bubble.
-    public lazy var mainContainerView: SBUSelectableStackView = {
+    open lazy var mainContainerView: SBUSelectableStackView = {
         let mainView = SBUSelectableStackView()
         mainView.layer.cornerRadius = 16
         mainView.layer.borderColor = UIColor.clear.cgColor
@@ -180,18 +180,15 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
     }
     
     open override func setupLayouts() {
-        super.setupLayouts()
-
-        NSLayoutConstraint.activate([
-            self.profileContentSpacing.widthAnchor.constraint(equalToConstant: 4),
-            self.profileContentSpacing.heightAnchor.constraint(equalToConstant: 4)
-        ])
-        
-        self.userNameStackView
-            .setConstraint(from: self.messageContentView, left: 12, right: 12, bottom: 0)
-            .setConstraint(from: self.messageContentView, top: 0, priority: .defaultLow)
+        self.profileContentSpacing.sbu_constraint(width: 4, height: 4)
         
         self.threadInfoSpacing.sbu_constraint(width: 4 + 20 + 4)
+
+        self.userNameStackView
+            .sbu_constraint(equalTo: self.messageContentView, left: 12, right: 12, bottom: 0)
+            .sbu_constraint(equalTo: self.messageContentView, top: 0, priority: .defaultLow)
+        
+        super.setupLayouts()
     }
     
     open override func setupActions() {
@@ -225,7 +222,6 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
     
     open override func setupStyles() {
         super.setupStyles()
-        
         self.mainContainerView.leftBackgroundColor = self.theme.leftBackgroundColor
         self.mainContainerView.leftPressedBackgroundColor = self.theme.leftPressedBackgroundColor
         self.mainContainerView.rightBackgroundColor = self.theme.rightBackgroundColor
@@ -239,6 +235,7 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         }
         
         if let profileView = self.profileView as? SBUMessageProfileView {
+            profileView.theme = self.theme
             profileView.setupStyles()
         }
         
@@ -303,7 +300,7 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
             (configuration.groupPosition == .top || configuration.groupPosition == .middle)
         )
         
-        if configuration.messagePosition != .right, usingProfileView {
+        if configuration.messagePosition != .right {
             if let profileView = self.profileView as? SBUMessageProfileView {
                 let urlString = message.sender?.profileURL ?? ""
                 profileView.configure(urlString: urlString)
@@ -395,7 +392,7 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         switch quotedMessage {
         case is UserMessage: 
             userMessageBlock()
-        case is FileMessage:
+        case is FileMessage, is MultipleFilesMessage: 
             if isMessageUnavailable {
                 userMessageBlock()
             }

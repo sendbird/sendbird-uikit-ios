@@ -31,6 +31,12 @@ public protocol SBUGroupChannelViewModelDelegate: SBUBaseChannelViewModelDelegat
         _ viewModel: SBUGroupChannelViewModel,
         didReceiveSuggestedMentions members: [SBUUser]?
     )
+    
+    func groupChannelViewModel(
+        _ viewModel: SBUGroupChannelViewModel,
+        didFinishUploadingFileAt index: Int,
+        multipleFilesMessageRequestId requestId: String
+    )
 }
 
 open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
@@ -44,6 +50,10 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
         get { self.baseDataSource as? SBUGroupChannelViewModelDataSource }
         set { self.baseDataSource = newValue }
     }
+    
+    /// A completion handler that is called after sending a multiple files message is completed.
+    /// - Since: 3.10.0
+    public var sendMultipleFilesMessageCompletionHandler: SendbirdChatSDK.MultipleFilesMessageHandler?
     
     // MARK: - Logic properties (private)
     var messageCollection: MessageCollection?
@@ -214,6 +224,83 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
     
     private func belongsToChannel(error: SBError) -> Bool {
         return error.code != ChatError.nonAuthorized.rawValue
+    }
+    
+    // MARK: - Message
+    /// Sends a multiple files message.
+    /// - Parameters:
+    ///    - fileInfoList: A list of `UploadableFileInfo` that contains information about the files to be included in the multiple files message.
+    /// - Since: 3.10.0
+    open func sendMultipleFilesMessage(fileInfoList: [UploadableFileInfo]) {
+        if let channel = self.channel as? GroupChannel {
+            let param = MultipleFilesMessageCreateParams(uploadableFileInfoList: fileInfoList)
+            SBUGlobalCustomParams.multipleFilesMessageParamsSendBuilder?(param)
+            
+            let preSendMessage: MultipleFilesMessage?
+            preSendMessage = channel.sendMultipleFilesMessage(
+                params: param,
+                fileUploadHandler: { requestId, index, _, error in
+                    if let error = error {
+                        SBULog.error("Multiple files message - failed to upload file at index [\(index)]. \(error.localizedDescription)")
+                    } else {
+                        SBULog.info("Multiple files message - file at index [\(index)] upload completed.")
+                    }
+                    
+                    // Update the multipleFilesMessage collection view cell
+                    // when the upload is complete.
+                    self.updateMultipleFilesMessageCell(requestId: requestId, index: index)
+                },
+                completionHandler: { [weak self] multipleFilesMessage, error in
+                    if let error = error {
+                        SBULog.error(error.localizedDescription)
+                    }
+                    self?.sendMultipleFilesMessageCompletionHandler?(multipleFilesMessage, error)
+                })
+            
+            // Save each file data to cache.
+            if let preSendMessage = preSendMessage {
+                for (index, fileInfo) in param.uploadableFileInfoList.enumerated() {
+                    SBUCacheManager.Image.preSave(
+                        multipleFilesMessage: preSendMessage,
+                        uploadableFileInfo: fileInfo,
+                        index: index
+                    )
+                }
+            }
+            
+            // Upsert pending message to fullMessageList.
+            if let preSendMessage = preSendMessage, self.messageListParams.belongsTo(preSendMessage) {
+              // Upsert pendingMessage.
+              self.pendingMessageManager.upsertPendingMessage(
+                  channelURL: channel.channelURL,
+                  message: preSendMessage
+              )
+            } else {
+                SBULog.info("A filtered file message has been sent.")
+            }
+          
+            self.sortAllMessageList(needReload: true)
+            let context = MessageContext(source: .eventMessageSent, sendingStatus: .succeeded)
+            self.baseDelegate?.baseChannelViewModel(
+                self,
+                shouldUpdateScrollInMessageList: self.fullMessageList,
+                forContext: context,
+                keepsScroll: false
+            )
+        }
+    }
+    
+    /// Updates a multiple files message cell of the given index of a multiple files message.
+    /// - Parameters:
+    ///    - requestId: the requestId of the multiple files message.
+    ///    - index: the index of the cell of a multiple files message to update.
+    /// - Since: 3.10.0
+    open func updateMultipleFilesMessageCell(requestId: String, index: Int) {
+        self.delegate?.groupChannelViewModel(
+            self,
+            didFinishUploadingFileAt: index,
+            multipleFilesMessageRequestId: requestId
+        )
     }
     
     // MARK: - Load Messages

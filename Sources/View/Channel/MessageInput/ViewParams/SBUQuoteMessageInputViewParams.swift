@@ -27,6 +27,10 @@ public class SBUQuoteMessageInputViewParams {
     /// - Since: 2.2.0
     public var isFileType: Bool { message is FileMessage }
     
+    /// Returns `true` if `message` type is `MultipleFilesMessage`.
+    /// - Since: 3.10.0
+    public var isMultipleFilesMessage: Bool { message is MultipleFilesMessage}
+    
     /// The file type of `message`.
     /// - Since: 2.2.0
     public var fileType: String? { (message as? FileMessage)?.type }

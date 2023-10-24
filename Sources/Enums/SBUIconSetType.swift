@@ -73,25 +73,25 @@ public enum SBUIconSetType: String, Hashable {
     
     // MARK: - Metric
     
-    struct Metric {
-        static let defaultIconSizeVerySmall = CGSize(value: 12)
-        static let defaultIconSizeSmall = CGSize(value: 16)
-        static let defaultIconSizeMedium = CGSize(value: 18)
-        static let defaultIconSize = CGSize(value: 24)
-        static let defaultIconSizeLarge = CGSize(value: 32)
-        static let defaultIconSizeVeryLarge = CGSize(value: 48)
-        static let quotedMessageIconSize = CGSize(value: 20)
-        static let iconActionSheetItem = defaultIconSize
-        static let iconEmojiSmall = CGSize(value: 20)
-        static let iconEmojiLarge = CGSize(value: 38)
-        static let iconEmptyView = CGSize(value: 60)
-        static let iconGifPlay = CGSize(value: 28)
-        static let iconSpinnerLarge = CGSize(value: 40)
-        static let iconSpinnerSizeForTemplate = CGSize(value: 36)
-        static let iconUserProfile = CGSize(value: 40)
-        static let iconUserProfileInChat = CGSize(value: 15)
-        static let iconChevronDown = CGSize(value: 22)
-        static let iconVoiceMessageSize = CGSize(value: 20)
+    public struct Metric {
+        public static let defaultIconSizeVerySmall = CGSize(value: 12)
+        public static let defaultIconSizeSmall = CGSize(value: 16)
+        public static let defaultIconSizeMedium = CGSize(value: 18)
+        public static let defaultIconSize = CGSize(value: 24)
+        public static let defaultIconSizeLarge = CGSize(value: 32)
+        public static let defaultIconSizeVeryLarge = CGSize(value: 48)
+        public static let quotedMessageIconSize = CGSize(value: 20)
+        public static let iconActionSheetItem = defaultIconSize
+        public static let iconEmojiSmall = CGSize(value: 20)
+        public static let iconEmojiLarge = CGSize(value: 38)
+        public static let iconEmptyView = CGSize(value: 60)
+        public static let iconGifPlay = CGSize(value: 28)
+        public static let iconSpinnerLarge = CGSize(value: 40)
+        public static let iconSpinnerSizeForTemplate = CGSize(value: 36)
+        public static let iconUserProfile = CGSize(value: 40)
+        public static let iconUserProfileInChat = CGSize(value: 15)
+        public static let iconChevronDown = CGSize(value: 22)
+        public static let iconVoiceMessageSize = CGSize(value: 20)
     }
     
     // MARK: - Image handling
@@ -113,7 +113,7 @@ public enum SBUIconSetType: String, Hashable {
     ///     - size: Size for the icon to be resized to. Resizing is applied to default icons according to `tintAndResize` flag.
     ///     - tintAndResize: Whether to apply tint & resized icons for customized icons as well.
     /// - Returns: `UIImage` with tint applied & resized if possible. When the icon is the customized image and ``SBUGlobals.isTintColorEnabledForCustomizedIcon`` is `false`, doesn't use `tintColor`. When the icon is the customized image and ``SBUGlobals.isCustomizedIconResizable`` is `false`, doesn't use `size`
-    func image(with tintColor: UIColor? = nil, to size: CGSize, tintAndResize: Bool = true) -> UIImage {
+    public func image(with tintColor: UIColor? = nil, to size: CGSize, tintAndResize: Bool = true) -> UIImage {
         // TODO: Update logic for better DX of `tintAndResize`
         // Prevents customized icons from being applied with tintColor.
         let isCustomized = SBUIconSetType.customizedIcons.contains(self)

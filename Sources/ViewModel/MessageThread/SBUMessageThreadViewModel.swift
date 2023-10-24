@@ -42,6 +42,12 @@ public protocol SBUMessageThreadViewModelDelegate: SBUBaseChannelViewModelDelega
     
     /// Called when the message thread should be dismissed.
     func messageThreadViewModelShouldDismissMessageThread(_ viewModel: SBUMessageThreadViewModel)
+    
+    func messageThreadViewModel(
+        _ viewModel: SBUMessageThreadViewModel,
+        didFinishUploadingFileAt index: Int,
+        multipleFilesMessageRequestId requestId: String
+    )
 }
 
 open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
@@ -68,6 +74,11 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
     
     public internal(set) var customizedThreadedMessageListParams: ThreadedMessageListParams?
     public internal(set) var threadedMessageListParams = ThreadedMessageListParams()
+    
+    /// A completion handler that is called after sending a multiple files message is completed.
+    /// - Note: This interface is beta. We do not gaurantee this interface to work properly yet.
+    /// - Since: [NEXT_VERSION_MFM_THREAD]
+    public var sendMultipleFilesMessageCompletionHandler: SendbirdChatSDK.MultipleFilesMessageHandler?
     
     // MARK: - Logic properties (Private)
     
@@ -632,6 +643,85 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
     }
     
     // MARK: - Message
+    
+    /// Sends a multiple files message.
+    /// - Parameters:
+    ///    - fileInfoList: A list of `UploadableFileInfo` that contains information about the files to be included in the multiple files message.
+    /// - Note: This interface is beta. We do not gaurantee this interface to work properly yet.
+    /// - Since: [NEXT_VERSION_MFM_THREAD]
+    public func sendMultipleFilesMessage(
+        fileInfoList: [UploadableFileInfo],
+        parentMessageId: Int64
+    ) {
+        if let channel = self.channel as? GroupChannel {
+            let param = MultipleFilesMessageCreateParams(uploadableFileInfoList: fileInfoList)
+            param.parentMessageId = parentMessageId
+            
+            SBUGlobalCustomParams.multipleFilesMessageParamsSendBuilder?(param)
+            
+            let preSendMessage: MultipleFilesMessage?
+            preSendMessage = channel.sendMultipleFilesMessage(
+                params: param,
+                fileUploadHandler: { requestId, index, _, error in
+                    if let error = error {
+                        SBULog.error("Multiple files message - failed to upload file at index [\(index)]. \(error.localizedDescription)")
+                    } else {
+                        SBULog.info("Multiple files message - file at index [\(index)] upload completed.")
+                    }
+                    
+                    // Update the multipleFilesMessage collection view cell
+                    // when the upload is complete.
+                    self.updateMultipleFilesMessageCell(requestId: requestId, index: index)
+                },
+                completionHandler: { [weak self] multipleFilesMessage, error in
+                    if let error = error {
+                        SBULog.error(error.localizedDescription)
+                    }
+                    self?.sendMultipleFilesMessageCompletionHandler?(multipleFilesMessage, error)
+                })
+            
+            // Save each file data to cache.
+            if let preSendMessage = preSendMessage {
+                for (index, fileInfo) in param.uploadableFileInfoList.enumerated() {
+                    SBUCacheManager.Image.preSave(
+                        multipleFilesMessage: preSendMessage,
+                        uploadableFileInfo: fileInfo,
+                        index: index
+                    )
+                }
+            }
+            
+            // Upsert pending message to fullMessageList.
+            if let preSendMessage = preSendMessage, self.messageListParams.belongsTo(preSendMessage) {
+              // Upsert pendingMessage.
+              self.pendingMessageManager.upsertPendingMessage(
+                  channelURL: channel.channelURL,
+                  message: preSendMessage
+              )
+            } else {
+                SBULog.info("A filtered file message has been sent.")
+            }
+          
+            self.sortAllMessageList(needReload: true)
+            let context = MessageContext(source: .eventMessageSent, sendingStatus: .succeeded)
+            self.baseDelegate?.baseChannelViewModel(
+                self,
+                shouldUpdateScrollInMessageList: self.fullMessageList,
+                forContext: context,
+                keepsScroll: false
+            )
+        }
+    }
+    
+    /// - Note: This interface is beta. We do not gaurantee this interface to work properly yet.
+    /// - Since: [NEXT_VERSION_MFM_THREAD]
+    public func updateMultipleFilesMessageCell(requestId: String, index: Int) {
+        self.delegate?.messageThreadViewModel(
+            self,
+            didFinishUploadingFileAt: index,
+            multipleFilesMessageRequestId: requestId
+        )
+    }
     
     /// Sets up  completion handlers of send user message.
     open func setupSendUserMessageCompletionHandlers() {

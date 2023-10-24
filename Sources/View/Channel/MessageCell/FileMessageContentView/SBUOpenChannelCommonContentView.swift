@@ -13,12 +13,14 @@ open class SBUOpenChannelCommonContentView: SBUCommonContentView {
     
     open override func setupLayouts() {
         self.sbu_constraint(height: 56)
-        self.stackView.setConstraint(from: self,
-                                     left: 12,
-                                     right: 12,
-                                     top: 8,
-                                     bottom: 8)
-        self.fileImageView.setConstraint(width: 40, height: 40)
+        self.stackView.sbu_constraint(
+            equalTo: self,
+            left: 12,
+            right: 12,
+            top: 8,
+            bottom: 8
+        )
+        self.fileImageView.sbu_constraint(width: 40, height: 40)
     }
     
     open override func setupStyles() {

@@ -65,9 +65,6 @@ open class SBUVoiceContentView: SBUBaseFileContentView {
     }
     
     open override func setupLayouts() {
-        self.sbu_constraint(height: 44)
-        self.sbu_constraint(width: 136, priority: .defaultLow)
-        
         self.progressView.sbu_constraint(
             equalTo: self,
             leading: 0,
@@ -85,6 +82,10 @@ open class SBUVoiceContentView: SBUBaseFileContentView {
         self.statusButton
             .sbu_constraint(equalTo: self.progressView, leading: 12, centerY: 0)
             .sbu_constraint(width: 28, height: 28)
+        
+        self.sbu_constraint(height: 44)
+        self.sbu_constraint(width: 136, priority: .defaultHigh)
+        
     }
     
     open override func setupStyles() {

@@ -1,5 +1,61 @@
 # Changelog
 
+### v3.10.0 (Oct 24, 2023)
+
+#### Multiple Files Message
+  * We are now supporting **Multiple Files Message** feature!
+  * You can select **multiple images and videos** in the message inputs, and send **multiple images** in a single message.
+  * You can learn more about the feature in our [Multiple Files Message docs page](https://sendbird.com/docs/chat/uikit/v3/ios/features/file-sharing#2-group-channel-3-multiple-file-message).
+* Added classes, structs, and enum
+    * `SBUCollectionViewCell` class
+    * `SBUMultipleFilesMessageCellParams` class
+    * `SBUMultipleFilesMessageCell` class
+    * `SBUMultipleFilesMessageCollectionView` class
+    * `SBUMultipleFilesMessageCollectionViewCell` class
+    * `GroupChannel.Preview` struct in `SBUStringSet` class
+    * `FileUpload.Error` struct in `SBUStringSet` class
+    * `SBUFileType` enum
+* Added methods
+    * `getFileTypeString(by:)` in `SBUUtils` class
+    * `openFile(_:)` in `SBUBaseChannelViewController` class
+    * `multipleFilesMessageFileSizeErrorHandler(_:)` in `SBUGroupChannelViewController` class
+    * `sendMultipleFilesMessageCompletionHandler` in `SBUGroupChannelViewController` class 
+    * `sendMultipleFilesMessage(fileInfoList:)` in `SBUGroupChannelViewModel` class
+    * `updateMultipleFilesMessageCell(requestId:index:)` in `SBUGroupChannelViewModel` class
+    * `pickMultipleImageFiles(itemProviders:)` in `SBUGroupChannelModule.Input` class (>= iOS14.0)
+    * `register(multipleFilesMessageCell:nib:)` in `SBUGroupChannelModule.List` class
+    * `onSelectFile(sender:)` in `SBUParentMessageInfoView` class
+    * `register(multipleFilesMessageCell:nib:) in `SBUMessageThreadMoudle.List` class
+    * `messageThreadModule(_:didSelectFileAt:multipleFilesMessageCell:forRowAt) in `SBUMessageThreadMoudle.List` class
+    * `save(fileData:viewController:) in `SBUDownloadManager` class
+    * `save(fileMessage:parent:) in `SBUDownloadManager` class
+* Added properties
+    * `filesCount` in `MultipleFilesMessage` class extension
+    * `multipleFilesMessageFileCountLimit` in `SBUAvailable` class
+    * `uploadSizeLimitBytes` in `SBUAvailable` class
+    * `uploadSizeLimitMB` in `SBUAvailable` class
+    * `isMultipleFilesMessageEnabled` in `SBUConfig.GroupChannel.Channel` class
+    * `multipleFilesMessageParamsSendBuilder` in `SBUGlobalCustomParams` class
+    * `showPhotoLibraryPicker` in `SBUGroupChannelViewController` class
+    * `multipleFilesMessageCell` in `SBUGroupChannelModule.List` class
+    * `isMultipleFilesMessage` in `SBUQuoteMessageInputViewParams` class
+    * `fileCollectionView` in `SBUParentMessageInfoView` class
+    * `fileSelectHandler` in `SBUParentMessageInfoView` class
+    * `onSelectFile(sender:)` in `SBUParentMessageInfoView` class
+    * `multipleFilesMessageCell` in `SBUMessageThreadMoudle.List` class
+* Added delegate methods
+    * `groupChannelModule(_:didPickMultipleFiles:parentMessage:)` in `SBUGroupChannelModuleInputDelegate`
+    * `groupChannelModule(_:didSelectFileAt:multipleFilesMessageCell:forRowAt:)` in `SBUGroupChannelModuleListDelegate`
+    
+#### Common
+* Fixed autolayout warnings that occur during runtime and cleaned up the entire autolayout-related logic
+  * Added `sbu_activate(baseView:constraints:)` function on `NSLayoutConstraint` class extension
+  * Added `Constants` struct on `SBUParentMessageInfoView` class
+  * Added `updateMessageTextWidth(with:)` function on `SBUParentMessageInfoView` class
+* Fixed layout issue with message time labels appearing oversized horizontally
+* Fixed incorrect date separator padding size
+* Modified condition to check user's `isActive` property when filtering mentionable users
+
 ### v3.9.3 (Oct 12, 2023)
 
 - Supported enlarged font size on dateLabel of group channel list and message cell

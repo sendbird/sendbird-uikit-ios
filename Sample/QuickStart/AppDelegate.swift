@@ -31,7 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         SendbirdUI.config.common.isUsingDefaultUserProfileEnabled = true
         
         // Reply
-        SendbirdUI.config.groupChannel.channel.replyType = .thread
+        SendbirdUI.config.groupChannel.channel.replyType = .quoteReply
         // Channel List - Typing indicator
         SendbirdUI.config.groupChannel.channelList.isTypingIndicatorEnabled = true
         // Channel List - Message receipt state

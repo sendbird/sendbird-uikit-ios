@@ -39,10 +39,27 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
     
     // MARK: - UI properties (Private)
     // for constraint
-    private var mediaComponentConstraint: [NSLayoutConstraint] = []
-    private var headerComponentConstraint: NSLayoutConstraint!
-    private var headerComponentConstraints: [NSLayoutConstraint] = []
-    private var headerHeightConstraint: NSLayoutConstraint!
+    private var mediaComponentLeadingConstraintForPortrait: NSLayoutConstraint?
+    private var mediaComponentLeadingConstraintForLandscape: NSLayoutConstraint?
+    private var mediaComponentTrailingConstraintForPortrait: NSLayoutConstraint?
+    private var mediaComponentTopConstraintForPortrait: NSLayoutConstraint?
+    private var mediaComponentTopConstraintForLandscape: NSLayoutConstraint?
+    private var mediaComponentBottomConstraint: NSLayoutConstraint?
+    
+    private var mediaComponentWidthConstraint: NSLayoutConstraint?
+    private var mediaComponentHeightConstraint: NSLayoutConstraint?
+    
+    private var listLeftMarginLeadingConstraint: NSLayoutConstraint?
+    private var listLeftMarginTrailingConstraint: NSLayoutConstraint?
+    private var listLeftMarginTopConstraint: NSLayoutConstraint?
+    private var listLeftMarginBottomConstraint: NSLayoutConstraint?
+    
+    private var headerLeadingConstraintForPortrait: NSLayoutConstraint?
+    private var headerLeadingConstraintForLandscape: NSLayoutConstraint?
+    private var headerTrailingConstraint: NSLayoutConstraint?
+    private var headerTopConstraintForPortrait: NSLayoutConstraint?
+    private var headerTopConstraintForLandscape: NSLayoutConstraint?
+    private var headerHeightConstraint: NSLayoutConstraint?
     
     // for top content area in portrait mode
     private var listTopMarginView = SBUMarginView()
@@ -60,7 +77,6 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
     public var viewModel: SBUOpenChannelViewModel? {
         get { self.baseViewModel as? SBUOpenChannelViewModel }
         set { self.baseViewModel = newValue }
-        
     }
     
     public override var channel: OpenChannel? { self.viewModel?.channel as? OpenChannel }
@@ -198,6 +214,8 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
     
     // MARK: - Sendbird UIKit Life cycle
     open override func setupViews() {
+        listTopMarginView.tag = 1122
+        listLeftMarginView.tag = 2233
         let theme = self.isMediaViewOverlaying ? self.overlayTheme : self.theme
         
         // media view (OpenChannel)
@@ -249,269 +267,266 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
         super.setupLayouts()
         
         // Media component layout
-        if let mediaComponent = self.mediaComponent {
-            mediaComponent.translatesAutoresizingMaskIntoConstraints = false
-            switch self.currentOrientation {
-                case .landscapeLeft, .landscapeRight:
-                    self.mediaComponentConstraint = [
-                        mediaComponent.leadingAnchor.constraint(
-                            equalTo: self.isMediaViewIgnoringSafeArea
-                            ? self.view.leadingAnchor
-                            : self.view.layoutMarginsGuide.leadingAnchor
-                        ),
-                        mediaComponent.topAnchor.constraint(equalTo: self.view.topAnchor),
-                        mediaComponent.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
-                        self.isMediaViewEnabled
-                        ? mediaComponent.widthAnchor.constraint(
-                            equalTo: self.view.widthAnchor,
-                            multiplier: self.mediaViewRatio
-                        )
-                        : mediaComponent.widthAnchor.constraint(equalToConstant: 0)
-                    ]
-                default:
-                    self.mediaComponentConstraint = [
-                        mediaComponent.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-                        mediaComponent.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
-                        mediaComponent.topAnchor.constraint(
-                            equalTo: self.isMediaViewIgnoringSafeArea
-                            ? self.view.topAnchor
-                            : self.view.layoutMarginsGuide.topAnchor
-                        ),
-                        self.isMediaViewEnabled
-                        ? mediaComponent.heightAnchor.constraint(
-                            equalTo: self.view.heightAnchor,
-                            multiplier: self.mediaViewRatio
-                        )
-                        : mediaComponent.heightAnchor.constraint(equalToConstant: 0)
-                    ]
-            }
-            self.mediaComponentConstraint.forEach { $0.isActive = true }
-        }
+        self.mediaComponent?.translatesAutoresizingMaskIntoConstraints = false
+        
+        // for portrait
+        self.mediaComponentLeadingConstraintForPortrait = self.mediaComponent?.leadingAnchor.constraint(equalTo: self.view.leadingAnchor)
+        self.mediaComponentTrailingConstraintForPortrait = self.mediaComponent?.trailingAnchor.constraint(equalTo: self.view.trailingAnchor)
+        self.mediaComponentTopConstraintForPortrait = self.mediaComponent?.topAnchor.constraint(
+            equalTo: self.isMediaViewIgnoringSafeArea
+            ? self.view.topAnchor
+            : self.view.layoutMarginsGuide.topAnchor
+            )
+        self.mediaComponentHeightConstraint = self.isMediaViewEnabled
+        ? self.mediaComponent?.heightAnchor.constraint(
+            equalTo: self.view.heightAnchor,
+            multiplier: self.mediaViewRatio
+        )
+        : self.mediaComponent?.heightAnchor.constraint(equalToConstant: 0)
+        
+        // for landscape
+        self.mediaComponentLeadingConstraintForLandscape = self.mediaComponent?.leadingAnchor.constraint(
+            equalTo: self.isMediaViewIgnoringSafeArea
+            ? self.view.leadingAnchor
+            : self.view.layoutMarginsGuide.leadingAnchor
+        )
+        self.mediaComponentTopConstraintForLandscape = self.mediaComponent?.topAnchor.constraint(equalTo: self.view.topAnchor)
+        self.mediaComponentBottomConstraint = self.mediaComponent?.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
+        self.mediaComponentWidthConstraint = self.isMediaViewEnabled
+        ? self.mediaComponent?.widthAnchor.constraint(
+            equalTo: self.view.widthAnchor,
+            multiplier: self.mediaViewRatio
+        )
+        : self.mediaComponent?.widthAnchor.constraint(equalToConstant: 0)
         
         switch self.currentOrientation {
-            case .landscapeRight, .landscapeLeft:
-                self.listLeftMarginView.translatesAutoresizingMaskIntoConstraints = false
-                self.listLeftMarginConstraints = [
-                    self.listLeftMarginView.leadingAnchor.constraint(
-                        equalTo: self.view.leadingAnchor,
-                        constant: self.currentWidth*(1-self.messageListRatio)
-                    ),
-                    self.listLeftMarginView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
-                    self.listLeftMarginView.topAnchor.constraint(equalTo: self.view.topAnchor),
-                    self.listLeftMarginView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
-                ]
-                self.listLeftMarginConstraints.forEach { $0.isActive = true }
-                
-                if let headerComponent = self.headerComponent {
-                    headerComponent.translatesAutoresizingMaskIntoConstraints = false
-                    self.headerComponentConstraints = [
-                        headerComponent.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
-                        headerComponent.topAnchor.constraint(equalTo: self.view.topAnchor),
-                        headerComponent.leadingAnchor.constraint(
-                            equalTo: self.listLeftMarginView.leadingAnchor,
-                            constant: 0
-                        )
-                    ]
-                }
-            default:
-                // Top (for portrait)
-                self.listTopMarginView.translatesAutoresizingMaskIntoConstraints = false
-                self.listTopMarginConstraints = [
-                    self.listTopMarginView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-                    self.listTopMarginView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
-                    self.listTopMarginView.topAnchor.constraint(equalTo: self.view.topAnchor),
-                    self.listTopMarginView.heightAnchor.constraint(
-                        equalTo: self.view.heightAnchor,
-                        multiplier: (1-self.messageListRatio)
-                    )
-                ]
-                self.listTopMarginConstraints.forEach { $0.isActive = true }
-                
-                if let headerComponent = self.headerComponent {
-                    // Channel info
-                    headerComponent.translatesAutoresizingMaskIntoConstraints = false
-                    
-                    self.weakHeaderComponentBottomConstraint = headerComponent.topAnchor.constraint(
-                        equalTo: self.isMediaViewOverlaying
-                        ? self.listTopMarginView.bottomAnchor
-                        : self.mediaComponent?.bottomAnchor ?? self.listTopMarginView.bottomAnchor,
-                        constant: 0
-                    )
-                    self.weakHeaderComponentBottomConstraint.priority = .defaultHigh - 50
-                    
-                    self.headerComponentConstraints = [
-                        headerComponent.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-                        headerComponent.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
-                        self.weakHeaderComponentBottomConstraint
-                    ]
-                }
+        case .landscapeLeft, .landscapeRight:
+            self.mediaComponentLeadingConstraintForLandscape?.isActive = true
+            self.mediaComponentTopConstraintForLandscape?.isActive = true
+            self.mediaComponentBottomConstraint?.isActive = true
+            self.mediaComponentWidthConstraint?.isActive = true
+            
+        default:
+            self.mediaComponentLeadingConstraintForPortrait?.isActive = true
+            self.mediaComponentTrailingConstraintForPortrait?.isActive = true
+            self.mediaComponentTopConstraintForPortrait?.isActive = true
+            self.mediaComponentHeightConstraint?.isActive = true
         }
         
-        self.headerComponentConstraints.forEach { $0.isActive = true }
+        // Header component layout
+        self.headerComponent?.translatesAutoresizingMaskIntoConstraints = false
         
-        if let headerComponent = headerComponent {
-            let infoViewHeight: CGFloat = self.hideChannelInfoView ? 0 : headerHeight
-            self.headerHeightConstraint = headerComponent.heightAnchor.constraint(
-                equalToConstant: infoViewHeight
-            )
-            self.headerHeightConstraint.isActive = true
+        // for Landscape
+        self.headerLeadingConstraintForLandscape = headerComponent?.leadingAnchor.constraint(
+            equalTo: self.listLeftMarginView.leadingAnchor,
+            constant: 0
+        )
+        self.headerTopConstraintForLandscape = headerComponent?.topAnchor.constraint(equalTo: self.view.topAnchor)
+        
+        // for portrait
+        self.headerLeadingConstraintForPortrait = headerComponent?.leadingAnchor.constraint(
+            equalTo: self.view.leadingAnchor,
+            constant: 0
+        )
+        self.headerTopConstraintForPortrait = headerComponent?.topAnchor.constraint(
+            equalTo: self.isMediaViewOverlaying
+            ? self.listTopMarginView.bottomAnchor
+            : self.mediaComponent?.bottomAnchor ?? self.listTopMarginView.bottomAnchor,
+            constant: 0
+        )
+        self.headerTopConstraintForPortrait?.priority = .defaultHigh - 50
+
+        // common
+        self.headerTrailingConstraint = headerComponent?.trailingAnchor.constraint(equalTo: self.view.trailingAnchor)
+        self.headerTrailingConstraint?.priority = .defaultHigh
+        
+        let infoViewHeight: CGFloat = self.hideChannelInfoView ? 0 : headerHeight
+        self.headerHeightConstraint = headerComponent?.heightAnchor.constraint(
+            equalToConstant: infoViewHeight
+        )
+        
+        switch self.currentOrientation {
+        case .landscapeRight, .landscapeLeft:
+            self.headerLeadingConstraintForLandscape?.isActive = true
+            self.headerTopConstraintForLandscape?.isActive = true
+        default:
+            // Top (for portrait)
+            self.headerLeadingConstraintForPortrait?.isActive = true
+            self.headerTopConstraintForPortrait?.isActive = true
+        }
+
+        self.headerTrailingConstraint?.isActive = true
+        self.headerHeightConstraint?.isActive = true
+        
+        // list left/top margin
+        switch self.currentOrientation {
+        case .landscapeRight, .landscapeLeft:
+            self.listLeftMarginView.translatesAutoresizingMaskIntoConstraints = false
+            self.listLeftMarginConstraints = [
+                self.listLeftMarginView.leadingAnchor.constraint(
+                    equalTo: self.view.leadingAnchor,
+                    constant: self.currentWidth*(1-self.messageListRatio)
+                ),
+                self.listLeftMarginView.topAnchor.constraint(equalTo: self.view.topAnchor),
+                self.listLeftMarginView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
+            ]
+            self.listLeftMarginConstraints.forEach { $0.isActive = true }
+
+        default:
+            // Top (for portrait)
+            self.listTopMarginView.translatesAutoresizingMaskIntoConstraints = false
+            self.listTopMarginConstraints = [
+                self.listTopMarginView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+                self.listTopMarginView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+                self.listTopMarginView.topAnchor.constraint(equalTo: self.view.topAnchor),
+                self.listTopMarginView.heightAnchor.constraint(
+                    equalTo: self.view.heightAnchor,
+                    multiplier: (1-self.messageListRatio)
+                )
+            ]
+            self.listTopMarginConstraints.forEach { $0.isActive = true }
         }
         
         if let listComponent = listComponent {
             listComponent.translatesAutoresizingMaskIntoConstraints = false
+            
+            tableViewTopConstraint?.isActive = false
+            tableViewLeftConstraint?.isActive = false
+            tableViewRightConstraint?.isActive = false
+            tableViewBottomConstraint?.isActive = false
+            
             self.tableViewTopConstraint = listComponent.topAnchor.constraint(
                 equalTo: self.headerComponent?.bottomAnchor ?? self.view.topAnchor,
                 constant: 0
             )
-            NSLayoutConstraint.activate([
-                self.tableViewTopConstraint,
-                listComponent.leftAnchor.constraint(
-                    equalTo: self.headerComponent?.leftAnchor ?? self.view.leftAnchor,
-                    constant: 0
-                ),
-                listComponent.rightAnchor.constraint(
-                    equalTo: self.headerComponent?.rightAnchor ?? self.view.rightAnchor,
-                    constant: 0
-                ),
-                listComponent.bottomAnchor.constraint(
-                    equalTo: self.inputComponent?.topAnchor ?? self.view.bottomAnchor,
-                    constant: 0
-                )
-            ])
+            self.tableViewBottomConstraint = listComponent.bottomAnchor.constraint(
+                equalTo: self.inputComponent?.topAnchor ?? self.view.bottomAnchor,
+                constant: 0
+            )
+            self.tableViewLeftConstraint = listComponent.leftAnchor.constraint(
+                equalTo: self.headerComponent?.leftAnchor ?? self.view.leftAnchor,
+                constant: 0
+            )
+            self.tableViewRightConstraint = listComponent.rightAnchor.constraint(
+                equalTo: self.headerComponent?.rightAnchor ?? self.view.rightAnchor,
+                constant: 0
+            )
+            
+            tableViewTopConstraint?.isActive = true
+            tableViewLeftConstraint?.isActive = true
+            tableViewRightConstraint?.isActive = true
+            tableViewBottomConstraint?.isActive = true
         }
         
         if let inputComponent = inputComponent {
             inputComponent
                 .sbu_constraint(equalTo: self.listComponent ?? self.view, left: 0, right: 0)
             
-            inputComponent.translatesAutoresizingMaskIntoConstraints = false
+            self.messageInputViewTopConstraint?.isActive = false
+            self.messageInputViewBottomConstraint?.isActive = false
+            
+            self.messageInputViewTopConstraint = inputComponent.topAnchor.constraint(
+                equalTo: self.listComponent?.bottomAnchor ?? self.view.bottomAnchor,
+                constant: 0
+            )
             self.messageInputViewBottomConstraint = self.inputComponent?.bottomAnchor.constraint(
                 equalTo: self.view.bottomAnchor,
                 constant: 0
             )
-            NSLayoutConstraint.activate([
-                inputComponent.topAnchor.constraint(
-                    equalTo: self.listComponent?.bottomAnchor ?? self.view.bottomAnchor,
-                    constant: 0
-                ),
-                messageInputViewBottomConstraint
-            ])
+            
+            self.messageInputViewTopConstraint?.isActive = true
+            self.messageInputViewBottomConstraint?.isActive = true
         }
     }
     
     open override func updateLayouts() {
         super.updateLayouts()
         
-        if let mediaComponent = mediaComponent {
-            mediaComponent.translatesAutoresizingMaskIntoConstraints = false
-            // deactive previous constraints
-            self.mediaComponentConstraint.forEach { $0.isActive = false }
-            
-            switch self.currentOrientation {
-                case .landscapeLeft, .landscapeRight:
-                    self.mediaComponentConstraint = [
-                        mediaComponent.leadingAnchor.constraint(
-                            equalTo: self.isMediaViewIgnoringSafeArea
-                            ? self.view.leadingAnchor
-                            : self.view.layoutMarginsGuide.leadingAnchor
-                        ),
-                        mediaComponent.topAnchor.constraint(equalTo: self.view.topAnchor),
-                        mediaComponent.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
-                        self.isMediaViewEnabled
-                        ? mediaComponent.widthAnchor.constraint(
-                            equalTo: self.view.widthAnchor,
-                            multiplier: self.mediaViewRatio
-                        )
-                        : mediaComponent.widthAnchor.constraint(equalToConstant: 0)
-                    ]
-                default:
-                    self.mediaComponentConstraint = [
-                        mediaComponent.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-                        mediaComponent.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
-                        mediaComponent.topAnchor.constraint(
-                            equalTo: self.isMediaViewIgnoringSafeArea
-                            ? self.view.topAnchor
-                            : self.view.layoutMarginsGuide.topAnchor
-                        ),
-                        self.isMediaViewEnabled
-                        ? mediaComponent.heightAnchor.constraint(
-                            equalTo: self.view.heightAnchor,
-                            multiplier: self.mediaViewRatio
-                        )
-                        : mediaComponent.heightAnchor.constraint(equalToConstant: 0)
-                    ]
-            }
-            // active new constraints
-            self.mediaComponentConstraint.forEach { $0.isActive = true }
-        }
-        
-        self.headerComponentConstraints.forEach { $0.isActive = false }
+        self.mediaComponentLeadingConstraintForPortrait?.isActive = false
+        self.mediaComponentTopConstraintForPortrait?.isActive = false
+        self.mediaComponentTrailingConstraintForPortrait?.isActive = false
+        self.mediaComponentLeadingConstraintForLandscape?.isActive = false
+        self.mediaComponentTopConstraintForLandscape?.isActive = false
+        self.mediaComponentBottomConstraint?.isActive = false
+        self.mediaComponentWidthConstraint?.isActive = false
+        self.mediaComponentHeightConstraint?.isActive = false
         
         switch self.currentOrientation {
-            case .landscapeLeft, .landscapeRight:
-                // Left (for landscape)
-                self.listLeftMarginView.translatesAutoresizingMaskIntoConstraints = false
-                self.listLeftMarginConstraints.forEach { $0.isActive = false }
-                self.listLeftMarginConstraints = [
-                    self.listLeftMarginView.leadingAnchor.constraint(
-                        equalTo: self.view.leadingAnchor,
-                        constant: self.currentWidth*(1-self.messageListRatio)
-                    ),
-                    self.listLeftMarginView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
-                    self.listLeftMarginView.topAnchor.constraint(equalTo: self.view.topAnchor),
-                    self.listLeftMarginView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
-                ]
-                self.listLeftMarginConstraints.forEach { $0.isActive = true }
-                
-                if let headerComponent = self.headerComponent {
-                    headerComponent.translatesAutoresizingMaskIntoConstraints = false
-                    self.headerComponentConstraints = [
-                        headerComponent.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
-                        headerComponent.topAnchor.constraint(equalTo: self.view.topAnchor),
-                        headerComponent.leadingAnchor.constraint(
-                            equalTo: self.listLeftMarginView.leadingAnchor,
-                            constant: 0
-                        )
-                    ]
-                }
-            default:
-                // Top (for portrait)
-                self.listTopMarginView.translatesAutoresizingMaskIntoConstraints = false
-                self.listTopMarginConstraints.forEach { $0.isActive = false }
-                self.listTopMarginConstraints = [
-                    self.listTopMarginView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-                    self.listTopMarginView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
-                    self.listTopMarginView.topAnchor.constraint(equalTo: self.view.topAnchor),
-                    self.listTopMarginView.heightAnchor.constraint(
-                        equalTo: self.view.heightAnchor,
-                        multiplier: (1-self.messageListRatio)
-                    )
-                ]
-                self.listTopMarginConstraints.forEach { $0.isActive = true }
-                
-                if let headerComponent = headerComponent {
-                    // Channel info
-                    headerComponent.translatesAutoresizingMaskIntoConstraints = false
-                    self.headerComponentConstraints = [
-                        headerComponent.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-                        headerComponent.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
-                        headerComponent.topAnchor.constraint(
-                            equalTo: self.isMediaViewOverlaying
-                            ? self.listTopMarginView.bottomAnchor
-                            : self.mediaComponent?.bottomAnchor ?? self.view.topAnchor,
-                            constant: 0
-                        )
-                    ]
-                }
-        }
-        self.headerComponentConstraints.forEach { $0.isActive = true }
-        
-        if let headerComponent = headerComponent {
-            let infoViewHeight: CGFloat = self.hideChannelInfoView ? 0 : headerHeight
-            self.headerHeightConstraint = headerComponent.heightAnchor.constraint(
-                equalToConstant: infoViewHeight
+        case .landscapeLeft, .landscapeRight:
+            self.mediaComponentWidthConstraint = self.isMediaViewEnabled
+            ? self.mediaComponent?.widthAnchor.constraint(
+                equalTo: self.view.widthAnchor,
+                multiplier: self.mediaViewRatio
             )
-            self.headerHeightConstraint.isActive = true
+            : self.mediaComponent?.widthAnchor.constraint(equalToConstant: 0)
+            
+            self.mediaComponentLeadingConstraintForLandscape?.isActive = true
+            self.mediaComponentTopConstraintForLandscape?.isActive = true
+            self.mediaComponentBottomConstraint?.isActive = true
+            self.mediaComponentWidthConstraint?.isActive = true
+            
+        default:
+            self.mediaComponentHeightConstraint = self.isMediaViewEnabled
+            ? self.mediaComponent?.heightAnchor.constraint(
+                equalTo: self.view.heightAnchor,
+                multiplier: self.mediaViewRatio
+            )
+            : self.mediaComponent?.heightAnchor.constraint(equalToConstant: 0)
+            
+            self.mediaComponentLeadingConstraintForPortrait?.isActive = true
+            self.mediaComponentTrailingConstraintForPortrait?.isActive = true
+            self.mediaComponentTopConstraintForPortrait?.isActive = true
+            self.mediaComponentHeightConstraint?.isActive = true
+        }
+
+        self.headerLeadingConstraintForPortrait?.isActive = false
+        self.headerLeadingConstraintForLandscape?.isActive = false
+        self.headerTopConstraintForPortrait?.isActive = false
+        self.headerTopConstraintForLandscape?.isActive = false
+        self.headerHeightConstraint?.isActive = false
+        
+        switch self.currentOrientation {
+        case .landscapeRight, .landscapeLeft:
+            self.headerLeadingConstraintForLandscape?.isActive = true
+            self.headerTopConstraintForLandscape?.isActive = true
+
+        default:
+            // Top (for portrait)
+            self.headerLeadingConstraintForPortrait?.isActive = true
+            self.headerTopConstraintForPortrait?.isActive = true
+        }
+        self.headerHeightConstraint?.isActive = true
+        
+        // list left/top margin
+        self.listLeftMarginConstraints.forEach { $0.isActive = false }
+        self.listTopMarginConstraints.forEach { $0.isActive = false }
+    
+        switch self.currentOrientation {
+        case .landscapeRight, .landscapeLeft:
+            self.listLeftMarginView.translatesAutoresizingMaskIntoConstraints = false
+            self.listLeftMarginConstraints = [
+                self.listLeftMarginView.leadingAnchor.constraint(
+                    equalTo: self.view.leadingAnchor,
+                    constant: self.currentWidth*(1-self.messageListRatio)
+                ),
+                self.listLeftMarginView.topAnchor.constraint(equalTo: self.view.topAnchor),
+                self.listLeftMarginView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
+            ]
+            self.listLeftMarginConstraints.forEach { $0.isActive = true }
+
+        default:
+            // Top (for portrait)
+            self.listTopMarginView.translatesAutoresizingMaskIntoConstraints = false
+            self.listTopMarginConstraints = [
+                self.listTopMarginView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+                self.listTopMarginView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+                self.listTopMarginView.topAnchor.constraint(equalTo: self.view.topAnchor),
+                self.listTopMarginView.heightAnchor.constraint(
+                    equalTo: self.view.heightAnchor,
+                    multiplier: (1-self.messageListRatio)
+                )
+            ]
+            self.listTopMarginConstraints.forEach { $0.isActive = true }
         }
         
         if let listComponent = listComponent {
@@ -525,13 +540,13 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
         self.setupStyles(theme: theme)
     }
     
-    open override func updateStyles() {
+    open override func updateStyles(needsToLayout: Bool) {
         self.setupStyles()
         super.updateStyles()
         
         self.headerComponent?.updateStyles(overlaid: self.isMediaViewOverlaying)
         self.inputComponent?.updateStyles(overlaid: self.isMediaViewOverlaying)
-
+        
         // Invokes `updateStyles(overlaid:)` instead of `updateStyles(theme:componentTheme:)`
         self.listComponent?
             .updateStyles(
@@ -543,11 +558,15 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
                 : SBUTheme.componentTheme
             )
         
-        self.listComponent?.reloadTableView()
+        self.listComponent?.reloadTableView(needsToLayout: needsToLayout)
     }
-
+    
+    open override func updateStyles() {
+        self.updateStyles(needsToLayout: true)
+    }
+    
     // MARK: - Channel
-
+    
     /// This function updates channel info view. If `channelDescription` is set, this value is used for channel info view configuring.
     public func updateChannelInfoView() {
         if let headerComponent = headerComponent {
@@ -667,10 +686,11 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
     public func configureOffset() {
         guard let tableView = self.listComponent?.tableView else { return }
         guard tableView.contentOffset.y < 0,
-              self.tableViewTopConstraint.constant <= 0 else { return }
+              let tableViewTopConstraint = self.tableViewTopConstraint,
+              tableViewTopConstraint.constant <= 0 else { return }
         
         let tempOffset = tableView.contentOffset.y
-        self.tableViewTopConstraint.constant -= tempOffset
+        self.tableViewTopConstraint?.constant -= tempOffset
     }
     
     // MARK: - Navigation
@@ -780,7 +800,7 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
     open func openChannelModuleIsOverlaid(_ listComponent: SBUOpenChannelModule.List) -> Bool {
         self.isMediaViewOverlaying
     }
-
+    
     // MARK: - SBUOpenChannelModuleInputDelegate
     open override func baseChannelModule(_ inputComponent: SBUBaseChannelModule.Input, didUpdateFrozenState isFrozen: Bool) {
         self.listComponent?.channelStateBanner?.isHidden = !isFrozen
@@ -825,34 +845,34 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
         
         // channel changed
         switch context.source {
-            case .channelChangelog:
-                self.updateChannelTitle()
-                self.updateChannelStatus()
-                self.updateChannelInfoView()
-                self.updateBarButton()
-                self.inputComponent?.updateMessageInputModeState()
-                self.listComponent?.reloadTableView()
-                
-            case .eventChannelChanged:
-                self.updateChannelTitle()
-                self.updateChannelStatus()
-                self.updateChannelInfoView()
-                self.updateBarButton()
-                self.inputComponent?.updateMessageInputModeState()
-                
-            case .eventChannelFrozen, .eventChannelUnfrozen,
-                    .eventUserMuted, .eventUserUnmuted,
-                    .eventOperatorUpdated,
-                    .eventUserBanned: // Other User Banned
-                self.updateChannelTitle()
-                self.updateBarButton()
-                self.inputComponent?.updateMessageInputModeState()
-                
+        case .channelChangelog:
+            self.updateChannelTitle()
+            self.updateChannelStatus()
+            self.updateChannelInfoView()
+            self.updateBarButton()
+            self.inputComponent?.updateMessageInputModeState()
+            self.listComponent?.reloadTableView()
+            
+        case .eventChannelChanged:
+            self.updateChannelTitle()
+            self.updateChannelStatus()
+            self.updateChannelInfoView()
+            self.updateBarButton()
+            self.inputComponent?.updateMessageInputModeState()
+            
+        case .eventChannelFrozen, .eventChannelUnfrozen,
+                .eventUserMuted, .eventUserUnmuted,
+                .eventOperatorUpdated,
+                .eventUserBanned: // Other User Banned
+            self.updateChannelTitle()
+            self.updateBarButton()
+            self.inputComponent?.updateMessageInputModeState()
+            
         case .eventChannelMemberCountChanged:
             self.updateChannelTitle()
             self.listComponent?.reloadTableView()
             
-            default: break
+        default: break
         }
     }
 }

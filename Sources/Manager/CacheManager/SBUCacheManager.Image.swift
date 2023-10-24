@@ -107,6 +107,28 @@ extension SBUCacheManager {
             }
         }
         
+        static func preSave(
+            multipleFilesMessage: MultipleFilesMessage,
+            uploadableFileInfo: UploadableFileInfo,
+            index: Int,
+            isQuotedImage: Bool = false,
+            completionHandler: SBUCacheCompletionHandler? = nil
+        ) {
+            var fileName = self.createCacheFileName(
+                urlString: uploadableFileInfo.fileURL ?? "",
+                cacheKey: multipleFilesMessage.cacheKey + "_\(index)",
+                fileNameForExtension: uploadableFileInfo.fileName
+            )
+            if isQuotedImage == true { fileName = "quoted_\(fileName)" }
+
+            self.save(
+                data: uploadableFileInfo.file,
+                fileName: fileName,
+                subPath: multipleFilesMessage.channelURL,
+                completionHandler: completionHandler
+            )
+        }
+        
         static func get(fileName: String, subPath: String) -> UIImage? {
             let key = key(fileName: fileName, subPath: subPath)
             if let memoryImage = self.memoryCache.get(key: key) {

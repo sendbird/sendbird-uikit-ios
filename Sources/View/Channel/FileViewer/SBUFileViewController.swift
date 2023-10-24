@@ -20,6 +20,59 @@ public protocol SBUFileViewControllerDelegate: AnyObject {
     func didSelectDeleteImage(message: FileMessage)
 }
 
+/// The main information about file used in views.
+///
+/// - **Example usage:**
+/// ```swift
+/// let file = SBUFileData(fileMessage: fileMessage)
+/// ```
+/// ```swift
+/// // multiple files message case
+/// let fileInfo = multipleFilesMessage.files[index]
+/// let file = SBUFileData(
+///     urlString: fileInfo.url,
+///     message: multipleFilesMessage,
+///     cacheKey: multipleFilesMessage.cacheKey + "_\(index)",
+///     fileType: SBUUtils.getFileType(by: fileInfo.mimeType!)
+///     name: fileInfo.fileName!
+/// )
+/// ```
+public struct SBUFileData {
+    /// The string value of the file URL
+    let urlString: String
+    /// The message that contains the file.
+    let message: BaseMessage
+    /// The key that is used for caching
+    let cacheKey: String?
+    /// The type of file. See ``SBUMessageFileType`` for more information.
+    let fileType: SBUMessageFileType
+    /// The name of the file
+    let name: String
+    
+    /// The value is same as channel URL.
+    var subPath: String {
+        self.message.channelURL
+    }
+    
+    init(urlString: String, message: BaseMessage, cacheKey: String?, fileType: SBUMessageFileType, name: String) {
+        self.urlString = urlString
+        self.message = message
+        self.cacheKey = cacheKey
+        self.fileType = fileType
+        self.name = name
+    }
+    
+    init(fileMessage: FileMessage) {
+        self.init(
+            urlString: fileMessage.url,
+            message: fileMessage,
+            cacheKey: fileMessage.cacheKey,
+            fileType: SBUUtils.getFileType(by: fileMessage),
+            name: fileMessage.name
+        )
+    }
+}
+
 /// The ``SBUBaseViewController`` that displays file content on `FileMessage`
 ///
 /// **Customization Guide**
@@ -27,7 +80,6 @@ public protocol SBUFileViewControllerDelegate: AnyObject {
 /// SBUCommonViewControllerSet.FileViewController = MyAppFileViewController.self
 /// ```
 open class SBUFileViewController: SBUBaseViewController, UIScrollViewDelegate, SBUAlertViewDelegate {
-    
     // MARK: - Public property
     public var leftBarButton: UIBarButtonItem? {
         didSet {
@@ -75,23 +127,68 @@ open class SBUFileViewController: SBUBaseViewController, UIScrollViewDelegate, S
         return TitleView(frame: CGRect())
     }()
     
-    private var bottomViewHeightAnchor: NSLayoutConstraint!
+    private var bottomViewHeightAnchorConstraint: NSLayoutConstraint?
+    private var bottomViewBottomAnchorConstraint: NSLayoutConstraint?
+    private var bottomViewLeftAnchorConstraint: NSLayoutConstraint?
+    private var bottomViewRightAnchorConstraint: NSLayoutConstraint?
 
     // for logic
-    private var urlString: String?
+    private var urlString: String? { fileData.urlString }
     private weak var delegate: SBUFileViewControllerDelegate?
-    private var fileMessage: FileMessage?
+    
+    private var fileData: SBUFileData
     
     // MARK: - Lifecycle
-    required public init(fileMessage: FileMessage, delegate: SBUFileViewControllerDelegate?) {
-        self.fileMessage = fileMessage
-        self.urlString = fileMessage.url
+    /// Initializes ``SBUFileViewController`` with `FileMessage`
+    required public convenience init(
+        fileMessage: FileMessage,
+        delegate: SBUFileViewControllerDelegate?
+    ) {
+        let fileData = SBUFileData(fileMessage: fileMessage)
+        self.init(fileData: fileData, delegate: delegate)
+    }
+    
+    /// Initializes ``SBUFileViewController`` with ``SBUFileData`` and ``SBUFileViewControllerDelegate``
+    ///
+    /// - File Message Example
+    /// ```swift
+    /// let file = SBUFileData(fileMessage: fileMessage)
+    /// SBUCommonViewControllerSet.FileViewController.init(
+    ///     file: file,
+    ///     delegate: self
+    /// )
+    /// ```
+    ///
+    /// - Multiple Files Message Example
+    /// ```swift
+    /// let fileInfo = multipleFilesMessage.files[index]
+    /// let file = SBUFileData(
+    ///     urlString: fileInfo.url,
+    ///     message: multipleFilesMessage,
+    ///     cacheKey: multipleFilesMessage.cacheKey + "_\(index)",
+    ///     fileType: SBUUtils.getFileType(by: fileInfo.mimeType!)
+    ///     name: fileInfo.fileName!
+    /// )
+    /// SBUCommonViewControllerSet.FileViewController.init(
+    ///     file: file,
+    ///     delegate: self
+    /// )
+    /// ```
+    required public init(fileData: SBUFileData, delegate: SBUFileViewControllerDelegate?) {
+        self.fileData = fileData
         self.delegate = delegate
+        
         super.init(nibName: nil, bundle: nil)
-     }
-     
+    }
+    
+    @available(*, unavailable, renamed: "init(params:delegate:)")
     required public init?(coder: NSCoder) {
-        super.init(coder: coder)
+        if let fileMessage = FileMessage.make(["": ""]) {
+            self.fileData = SBUFileData(fileMessage: fileMessage)
+            super.init(coder: coder)
+        } else {
+            fatalError("`init?(coder:)` has not been implemented. Use `init(params:delegate:)`")
+        }
     }
     
     open override func viewDidLoad() {
@@ -99,26 +196,25 @@ open class SBUFileViewController: SBUBaseViewController, UIScrollViewDelegate, S
          
         self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
         
-        let gesture = UITapGestureRecognizer(target: self,
-                                             action: #selector(self.onClickImage(sender:)))
+        let gesture = UITapGestureRecognizer(
+            target: self,
+            action: #selector(self.onClickImage(sender:))
+        )
         self.view.addGestureRecognizer(gesture)
 
         self.view.bringSubviewToFront(self.bottomView)
 
         // Title View
         if let titleView = self.navigationItem.titleView as? TitleView {
-            if let sender = fileMessage?.sender {
+            if let sender = self.fileData.message.sender {
                 titleView.titleLabel.text = SBUUser(user: sender).refinedNickname()
             } else {
                 titleView.titleLabel.text = SBUStringSet.User_No_Name
             }
-            if let timestamp = fileMessage?.createdAt {
-                titleView.dateTimeLabel.text = Date
-                    .sbu_from(timestamp)
-                    .sbu_toString(dateFormat: SBUDateFormatSet.Message.fileViewControllerTimeFormat)
-            } else {
-                titleView.dateTimeLabel.text = ""
-            }
+            
+            titleView.dateTimeLabel.text = Date
+                .sbu_from(self.fileData.message.createdAt)
+                .sbu_toString(dateFormat: SBUDateFormatSet.Message.fileViewControllerTimeFormat)
             
             titleView.updateConstraints()
         }
@@ -126,30 +222,34 @@ open class SBUFileViewController: SBUBaseViewController, UIScrollViewDelegate, S
         // Bottom View
         if let bottomView = self.bottomView as? BottomView {
 
-            let isCurrnetUser = self.fileMessage?.sender?.userId == SBUGlobals.currentUser?.userId
-            bottomView.deleteButton.isHidden = !isCurrnetUser
-
-            bottomView.downloadButton.addTarget(self,
-                                                action: #selector(onClickDownload(sender:)),
-                                                for: .touchUpInside)
-            if let fileMessage = fileMessage, fileMessage.threadInfo.replyCount > 0 {
-                bottomView.deleteButton.isHidden = true
-            } else {
-                bottomView.deleteButton.addTarget(self,
-                                                  action: #selector(onClickDelete(sender:)),
-                                                  for: .touchUpInside)
+            let hidesDeleteButton = self.fileData.message.threadInfo.replyCount > 0
+            || self.fileData.message.sender?.userId != SBUGlobals.currentUser?.userId
+            || self.fileData.message as? MultipleFilesMessage != nil
+            
+            bottomView.deleteButton.isHidden = hidesDeleteButton
+            if !hidesDeleteButton {
+                bottomView.deleteButton.addTarget(
+                    self,
+                    action: #selector(onClickDelete(sender:)),
+                    for: .touchUpInside
+                )
             }
-                
+            bottomView.downloadButton.addTarget(
+                self,
+                action: #selector(onClickDownload(sender:)),
+                for: .touchUpInside
+            )
         }
         
         guard let urlString = urlString else { return }
         self.imageView.loadImage(
             urlString: urlString,
-            cacheKey: self.fileMessage?.cacheKey,
-            subPath: self.fileMessage?.channelURL ?? ""
+            cacheKey: self.fileData.cacheKey,
+            subPath: self.fileData.message.channelURL
         )
         
-        if let fileMessage = fileMessage {
+        // TODO: MFM also
+        if let fileMessage = self.fileData.message as? FileMessage {
             SBUCacheManager.Image.preSave(fileMessage: fileMessage)
         }
     }
@@ -161,7 +261,7 @@ open class SBUFileViewController: SBUBaseViewController, UIScrollViewDelegate, S
     
     open override func updateViewConstraints() {
         super.updateViewConstraints()
-        bottomViewHeightAnchor.constant = 56 + view.safeAreaInsets.bottom
+        bottomViewHeightAnchorConstraint?.constant = 56 + view.safeAreaInsets.bottom
     }
     
     open override func viewDidLayoutSubviews() {
@@ -202,16 +302,21 @@ open class SBUFileViewController: SBUBaseViewController, UIScrollViewDelegate, S
 
     open override func setupLayouts() {
         self.bottomView.translatesAutoresizingMaskIntoConstraints = false
-        self.bottomViewHeightAnchor = self.bottomView.heightAnchor.constraint(equalToConstant: 56)
         
-        let constraints: [NSLayoutConstraint] = [
-            self.bottomView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0),
-            self.bottomView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 0),
-            self.bottomView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0),
-            self.bottomViewHeightAnchor,
-        ]
+        self.bottomViewHeightAnchorConstraint?.isActive = false
+        self.bottomViewBottomAnchorConstraint?.isActive = false
+        self.bottomViewLeftAnchorConstraint?.isActive = false
+        self.bottomViewRightAnchorConstraint?.isActive = false
         
-        NSLayoutConstraint.activate(constraints)
+        self.bottomViewHeightAnchorConstraint = self.bottomView.heightAnchor.constraint(equalToConstant: 56)
+        self.bottomViewBottomAnchorConstraint = self.bottomView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0)
+        self.bottomViewLeftAnchorConstraint = self.bottomView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 0)
+        self.bottomViewRightAnchorConstraint = self.bottomView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0)
+
+        self.bottomViewHeightAnchorConstraint?.isActive = true
+        self.bottomViewBottomAnchorConstraint?.isActive = true
+        self.bottomViewLeftAnchorConstraint?.isActive = true
+        self.bottomViewRightAnchorConstraint?.isActive = true
     }
     
     open override func updateLayouts() {
@@ -244,7 +349,7 @@ open class SBUFileViewController: SBUBaseViewController, UIScrollViewDelegate, S
         let deleteButton = SBUAlertButtonItem(title: SBUStringSet.Delete,
                                               color: SBUColorSet.error300) { [weak self] _ in
             guard let self = self else { return }
-            guard let fileMessage = self.fileMessage else { return }
+            guard let fileMessage = self.fileData.message as? FileMessage else { return }
             self.delegate?.didSelectDeleteImage(message: fileMessage)
             self.dismiss(animated: true, completion: nil)
         }
@@ -260,14 +365,14 @@ open class SBUFileViewController: SBUBaseViewController, UIScrollViewDelegate, S
     
     @objc
     open func onClickDownload(sender: UIButton) {
-        guard let fileMessage = self.fileMessage else { return }
-        
-        SBUDownloadManager.saveImage(with: fileMessage, parent: self)
+        SBUDownloadManager.save(
+            fileData: self.fileData,
+            viewController: self
+        )
     }
     
     @objc
     open func onClickImage(sender: UITapGestureRecognizer) {
-
         self.showBar(self.bottomView.isHidden)
     }
 
@@ -292,9 +397,11 @@ open class SBUFileViewController: SBUBaseViewController, UIScrollViewDelegate, S
     }
     
     @objc
-    open func onSaveImage(_ image: UIImage,
-                           didFinishSavingWithError error: NSError?,
-                           contextInfo: UnsafeRawPointer) {
+    open func onSaveImage(
+        _ image: UIImage,
+        didFinishSavingWithError error: NSError?,
+        contextInfo: UnsafeRawPointer
+    ) {
         if let error = error {
             self.errorHandler(error.localizedDescription, error.code)
             return
@@ -358,16 +465,7 @@ extension SBUFileViewController {
         }
         
         func setupLayouts() {
-            self.stackView.translatesAutoresizingMaskIntoConstraints = false
-            
-            let constraints = [
-                self.stackView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0),
-                self.stackView.topAnchor.constraint(equalTo: self.topAnchor, constant: 0),
-                self.stackView.rightAnchor.constraint(equalTo: self.rightAnchor, constant: 0),
-                self.stackView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 0),
-            ]
-            
-            NSLayoutConstraint.activate(constraints)
+            self.stackView.sbu_constraint(equalTo: self, leading: 0, trailing: 0, top: 0, bottom: 0)
         }
         
         func setupStyles() {
@@ -419,18 +517,15 @@ extension SBUFileViewController {
         }
         
         func setupLayouts() {
-            self.stackView.translatesAutoresizingMaskIntoConstraints = false
+            self.stackView
+                .sbu_constraint(equalTo: self, left: 12, right: 12, top: 12)
+                .sbu_constraint(height: 32)
             
-            let constraints = [
-                self.stackView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 12),
-                self.stackView.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -12),
-                self.stackView.topAnchor.constraint(equalTo: self.topAnchor, constant: 12),
-                self.stackView.heightAnchor.constraint(equalToConstant: 32),
-                self.deleteButton.widthAnchor.constraint(equalToConstant: 32),
-                self.downloadButton.widthAnchor.constraint(equalToConstant: 32),
-            ]
+            self.deleteButton
+                .sbu_constraint(height: 32)
             
-            NSLayoutConstraint.activate(constraints)
+            self.downloadButton
+                .sbu_constraint(height: 32)
         }
         
         func setupStyles() {

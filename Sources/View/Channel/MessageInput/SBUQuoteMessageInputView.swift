@@ -153,26 +153,27 @@ open class SBUQuoteMessageInputView: SBUView, SBUQuoteMessageInputViewProtocol {
     
     open override func setupLayouts() {
         self.leadingSpacer
-            .setConstraint(width: 18, height: 0)
+            .sbu_constraint(width: 18)
         
         self.trailingSpacer
-            .setConstraint(width: 12, height: 0)
+            .sbu_constraint(width: 12)
         
         self.bottomSpacer
-            .setConstraint(width: 0, height: 0)
+            .sbu_constraint(height: 0)
         
         self.topSpacer
-            .setConstraint(width: 0, height: 0)
-        
-        self.paddableVStackView
-            .setConstraint(from: self, leading: 0, trailing: 0, top: 0, bottom: 0)
+            .sbu_constraint(height: 0)
         
         self.fileMessagePreview
-            .setConstraint(width: 32, height: 32)
+            .sbu_constraint(width: 32, height: 32)
         
         self.closeReplyButton
-            .setConstraint(width: 32, height: 32)
+            .sbu_constraint(width: 32, height: 32)
         
+        self.paddableVStackView
+            .sbu_constraint(
+                equalTo: self, leading: 0, trailing: 0, top: 0, bottom: 0
+            )
     }
     
     open override func setupActions() {
@@ -199,8 +200,12 @@ open class SBUQuoteMessageInputView: SBUView, SBUQuoteMessageInputViewProtocol {
     }
 
     open func configure(with configuration: SBUQuoteMessageInputViewParams) {
-        self.fileMessagePreview.isHidden = !configuration.isFileType
-        if configuration.messageFileType == .voice {
+        self.fileMessagePreview.isHidden = !(configuration.isFileType || configuration.isMultipleFilesMessage)
+        if configuration.isMultipleFilesMessage {
+            if let mfm = configuration.message as? MultipleFilesMessage {
+                self.userMessagePreview.text = "\(mfm.files.count) photos"
+            }
+        } else if configuration.messageFileType == .voice {
             self.fileMessagePreview.isHidden = true
             self.userMessagePreview.text = SBUStringSet.VoiceMessage.Preview.quotedMessage
         } else {
@@ -214,6 +219,30 @@ open class SBUQuoteMessageInputView: SBUView, SBUQuoteMessageInputViewProtocol {
     }
     
     func setupFilePreview(with configuration: SBUQuoteMessageInputViewParams) {
+        if configuration.isFileType {
+            setupFilePreviewForFileMessage(with: configuration)
+        } else if configuration.isMultipleFilesMessage {
+            setupFilePreviewForMultipleFilesMessage(with: configuration)
+        }
+    }
+    
+    func setupFilePreviewForMultipleFilesMessage(with configuration: SBUQuoteMessageInputViewParams) {
+        guard let multipleFilesMessage = configuration.message as? MultipleFilesMessage else { return }
+        guard let firstUploadedFileInfo = multipleFilesMessage.files.first else { return }
+        
+        let thumbnailSize = SBUIconSetType.Metric.defaultIconSizeLarge
+        let cacheKey = multipleFilesMessage.requestId + "_0"  // Previe thumbnail for MultipleFilesMessage is always its first image.
+        self.fileMessagePreview.contentMode = .scaleAspectFill
+        self.fileMessagePreview.loadImage(
+            urlString: firstUploadedFileInfo.url,
+            option: UIImageView.ImageOption.imageToThumbnail,
+            thumbnailSize: thumbnailSize,
+            cacheKey: cacheKey,
+            subPath: multipleFilesMessage.channelURL
+        )
+    }
+    
+    func setupFilePreviewForFileMessage(with configuration: SBUQuoteMessageInputViewParams) {
         guard let fileMessage = configuration.message as? FileMessage else { return }
         guard configuration.isFileType,
               let name = configuration.fileName,
@@ -276,9 +305,9 @@ open class SBUQuoteMessageInputView: SBUView, SBUQuoteMessageInputViewProtocol {
         case .vertical:
             self.paddableVStackView.spacing = spacing
         case .leading:
-            self.leadingSpacer.setConstraint(width: spacing)
+            self.leadingSpacer.sbu_constraint(width: spacing)
         case .trailing:
-            self.trailingSpacer.setConstraint(width: spacing)
+            self.trailingSpacer.sbu_constraint(width: spacing)
         }
         self.updateConstraintsIfNeeded()
     }

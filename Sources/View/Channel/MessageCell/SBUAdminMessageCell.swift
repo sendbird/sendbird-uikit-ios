@@ -24,8 +24,8 @@ open class SBUAdminMessageCell: SBUBaseMessageCell {
     open override func setupLayouts() {
         super.setupLayouts()
         
-        self.messageLabel.setConstraint(
-            from: self.messageContentView,
+        self.messageLabel.sbu_constraint(
+            equalTo: self.messageContentView,
             left: 28,
             right: 27,
             top: 0,

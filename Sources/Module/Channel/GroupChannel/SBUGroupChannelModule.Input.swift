@@ -27,6 +27,18 @@ public protocol SBUGroupChannelModuleInputDelegate: SBUBaseChannelModuleInputDel
         parentMessage: BaseMessage?
     )
     
+    /// Called when multiple files were picked to send a multiple files message.
+    /// - Parameters:
+    ///   - inputComponent: `SBUGroupChannelModule.Input` object.
+    ///   - didPickMultipleFiles: A list of `UploadableFileInfo` for the picked files.
+    ///   - parentMessage: A message that will be a parent message. Please refer to *quote reply* features.
+    /// - Since: 3.10.0
+    func groupChannelModule(
+        _ inputComponent: SBUGroupChannelModule.Input,
+        didPickMultipleFiles fileInfoList: [UploadableFileInfo]?,
+        parentMessage: BaseMessage?
+    )
+    
     /// Called when the send button was tapped.
     /// - Parameters:
     ///    - inputComponent: `SBUGroupChannelModule.Input` object.
@@ -118,7 +130,6 @@ extension SBUGroupChannelModule {
                     parentMessage = message
                 default: break
             }
-            messageInputView.setMode(.none)
             return parentMessage
         }
         
@@ -141,6 +152,24 @@ extension SBUGroupChannelModule {
         
         /// The object that acts as the data source of the mention manager. The data source must adopt the `SBUMentionManagerDataSource`.
         public weak var mentionManagerDataSource: SBUMentionManagerDataSource?
+        
+        /// String constants used when sending a multiple files message.
+        /// - Since: 3.10.0
+        struct MultipleFilesConstants {
+            static let fileInfoList = "uploadableFileInfoList"
+            static let image = "image"
+            static let gif = "gif"
+            static let video = "video"
+        }
+        
+        /// The OperationQueue that manages the order of messages when sending.
+        /// - Since: 3.10.0
+        lazy var messageOperationQueue: OperationQueue = {
+            let operationQueue = OperationQueue()
+            operationQueue.name = SBUConstant.messageOperationQueueName
+            operationQueue.maxConcurrentOperationCount = 1
+            return operationQueue
+        }()
         
         // MARK: Mention
         public var mentionManager: SBUMentionManager?
@@ -257,49 +286,145 @@ extension SBUGroupChannelModule {
             }
         }
         
+        // MARK: PHPicker
+        
+        /// Loads image files from the NSItemProvider and sends a multiple files message.
+        /// - Parameters:
+        ///    - itemProviders: An array of NSItemProvider
+        /// - Since: 3.10.0
         @available(iOS 14.0, *)
-        open override func pickImageFile(itemProvider: NSItemProvider) {
-            itemProvider.loadItem(forTypeIdentifier: UTType.image.identifier, options: [:]) { [weak self] url, _ in
-                if itemProvider.canLoadObject(ofClass: UIImage.self) {
-                    itemProvider.loadObject(ofClass: UIImage.self) { imageItem, _ in
-                        guard let self = self else { return }
-                        guard let originalImage = imageItem as? UIImage else { return }
-                        guard let imageURL = url as? URL else { return }
-                        guard let mimeType = SBUUtils.getMimeType(url: imageURL) else { return }
-                        
-                        guard let imageData = originalImage
-                            .fixedOrientation()
-                            .sbu_convertToData() else { return }
-                        
-                        let fileExtension = imageURL.pathExtension
-                        let fileName = "\(Date().sbu_toString(dateFormat: SBUDateFormatSet.Message.fileNameFormat, localizedFormat: false)).\(fileExtension)"
-                        
-                        DispatchQueue.main.async { [self, imageData, mimeType, fileName] in
-                            self.delegate?.groupChannelModule(
-                                self,
-                                didPickFileData: imageData,
-                                fileName: fileName,
-                                mimeType: mimeType,
-                                parentMessage: self.currentQuotedMessage
-                            )
+        open func pickMultipleImageFiles(itemProviders: [NSItemProvider]) {
+            // Define and add a blocking operation to the message queue.
+            // This blocking operation will be executed after all images/gifs are finished loading.
+            let operation = BlockingOperation(asyncTask: { operation in
+                defer { operation.complete() }
+                
+                guard let fileInfoList = operation.userInfo[MultipleFilesConstants.fileInfoList] as? [UploadableFileInfo],
+                      fileInfoList.isEmpty == false else {
+                    
+                    return
+                }
+                
+                DispatchQueue.main.async { [self, fileInfoList] in
+                    self.delegate?.groupChannelModule(
+                        self,
+                        didPickMultipleFiles: fileInfoList,
+                        parentMessage: self.currentQuotedMessage
+                    )
+                }
+            }, requireExplicity: true)
+            
+            messageOperationQueue.addOperation(operation)
+            
+            // Load images and GIFs.
+            var fileInfoList: [UploadableFileInfo?] = Array(repeating: nil, count: itemProviders.count)
+            let group = DispatchGroup()
+            
+            for (index, itemProvider) in itemProviders.enumerated() {
+                group.enter()
+                
+                /// !! Warining !!
+                /// Since the image identifier includes the gif identifier, the check of the gif type should take precedence over the image type comparison.
+                
+                // GIF
+                if itemProvider.hasItemConformingToTypeIdentifier(UTType.gif.identifier) {
+                    self.loadGIFfile(itemProvider: itemProvider, index: index) { gifData, fileName, mimeType in
+                        defer {
+                            group.leave()
                         }
+                        
+                        guard let gifData = gifData, let fileName = fileName, let mimeType = mimeType else {
+                            return
+                        }
+                        
+                        // Create UploadableFileInfo.
+                        let fileInfo = UploadableFileInfo(file: gifData)
+                        fileInfo.mimeType = mimeType
+                        fileInfo.fileName = fileName
+                        
+                        // GIF thumbnail should be static, not animated.
+                        if let image = UIImage(data: gifData) {
+                            let thumbnailSize = ThumbnailSize.make(maxSize: image.size)
+                            fileInfo.thumbnailSizes = [thumbnailSize]
+                        }
+                        
+                        fileInfoList[index] = fileInfo
                     }
                 }
+                
+                // Image
+                else if itemProvider.hasItemConformingToTypeIdentifier(UTType.image.identifier) {
+                    self.loadImageFile(itemProvider: itemProvider, index: index) { imageData, fileName, mimeType in
+                        defer {
+                            group.leave()
+                        }
+                        
+                        guard let imageData = imageData, let fileName = fileName, let mimeType = mimeType else {
+                            return
+                        }
+                        
+                        // Create UploadableFileInfo.
+                        let fileInfo = UploadableFileInfo(file: imageData)
+                        fileInfo.mimeType = mimeType
+                        fileInfo.fileName = fileName
+                        
+                        if let image = UIImage(data: imageData) {
+                            let thumbnailSize = ThumbnailSize.make(maxSize: image.size)
+                            fileInfo.thumbnailSizes = [thumbnailSize]
+                        }
+                        
+                        fileInfoList[index] = fileInfo
+                    }
+                }
+            }
+            
+            // Finally, execute the blocking operation.
+            group.notify(queue: .main) {
+                operation.userInfo[MultipleFilesConstants.fileInfoList] = fileInfoList
+                operation.markReady()
+            }
+        }
+        
+        @available(iOS 14.0, *)
+        open override func pickImageFile(itemProvider: NSItemProvider) {
+            let operation = BlockingOperation(asyncTask: { operation in
+                defer {  operation.complete() }
+                
+                guard let (imageData, fileName, mimeType) = operation.userInfo[MultipleFilesConstants.image] as? (Data, String, String) else {
+                    return
+                }
+
+                DispatchQueue.main.async { [self, imageData, fileName, mimeType] in
+                    self.delegate?.groupChannelModule(
+                        self,
+                        didPickFileData: imageData,
+                        fileName: fileName,
+                        mimeType: mimeType,
+                        parentMessage: self.currentQuotedMessage
+                    )
+                }
+            }, requireExplicity: true)
+            messageOperationQueue.addOperation(operation)
+            
+            loadImageFile(itemProvider: itemProvider) { imageData, fileName, mimeType in
+                defer { operation.markReady() }
+                
+                guard let imageData = imageData, let fileName = fileName, let mimeType = mimeType else { return }
+                
+                operation.userInfo[MultipleFilesConstants.image] = (imageData, fileName, mimeType)
             }
         }
         
         @available(iOS 14.0, *)
         open override func pickGIFFile(itemProvider: NSItemProvider) {
-            itemProvider.loadItem(forTypeIdentifier: UTType.gif.identifier, options: [:]) { [weak self] url, _ in
-                guard let self = self else { return }
-                guard let imageURL = url as? URL else { return }
-                guard let mimeType = SBUUtils.getMimeType(url: imageURL) else { return }
+            let operation = BlockingOperation(asyncTask: { operation in
+                defer { operation.complete() }
                 
-                let gifData = try? Data(contentsOf: imageURL)
-                let fileExtension = imageURL.pathExtension
-                let fileName = "\(Date().sbu_toString(dateFormat: SBUDateFormatSet.Message.fileNameFormat, localizedFormat: false)).\(fileExtension)"
-                
-                DispatchQueue.main.async { [self, gifData, mimeType, fileName] in
+                guard let (gifData, fileName, mimeType) = operation.userInfo[MultipleFilesConstants.gif] as? (Data, String, String) else {
+                    return
+                }
+
+                DispatchQueue.main.async { [self, gifData, fileName, mimeType] in
                     self.delegate?.groupChannelModule(
                         self,
                         didPickFileData: gifData,
@@ -308,28 +433,59 @@ extension SBUGroupChannelModule {
                         parentMessage: self.currentQuotedMessage
                     )
                 }
+            }, requireExplicity: true)
+            messageOperationQueue.addOperation(operation)
+            
+            loadGIFfile(itemProvider: itemProvider) { gifData, fileName, mimeType in
+                defer {
+                    operation.markReady()
+                }
+                
+                guard let gifData = gifData, let fileName = fileName, let mimeType = mimeType else { return }
+                
+                operation.userInfo[MultipleFilesConstants.gif] = (gifData, fileName, mimeType)
             }
         }
         
         @available(iOS 14.0, *)
         open override func pickVideoFile(itemProvider: NSItemProvider) {
-            itemProvider.loadFileRepresentation(forTypeIdentifier: UTType.movie.identifier) { [weak self] url, error in
+            
+            let operation = BlockingOperation(asyncTask: { operation in
+                defer { operation.complete() }
+                
+                guard let (videoFileData, videoName, mimeType) = operation.userInfo[MultipleFilesConstants.video] as? (Data, String, String) else {
+                    return
+                }
+
+                DispatchQueue.main.async { [self, videoFileData, videoName, mimeType] in
+                    // load전에 operation 등록을 미리해야함. 등록은 async로 감싸면 X
+                    self.delegate?.groupChannelModule(
+                        self,
+                        didPickFileData: videoFileData,
+                        fileName: videoName,
+                        mimeType: mimeType,
+                        parentMessage: self.currentQuotedMessage
+                    )
+                }
+            }, requireExplicity: true)
+            messageOperationQueue.addOperation(operation)
+
+            itemProvider.loadFileRepresentation(forTypeIdentifier: UTType.movie.identifier) { url, error in
                 guard let videoURL = url else { return }
-                guard let self = self else { return }
                 do {
+                    defer {
+                        operation.markReady()
+                    }
+                    
+                    guard videoURL.isFileSizeUploadable else {
+                        return
+                    }
+                    
                     let videoFileData = try Data(contentsOf: videoURL)
                     let videoName = videoURL.lastPathComponent
                     guard let mimeType = SBUUtils.getMimeType(url: videoURL) else { return }
-                    
-                    DispatchQueue.main.async { [self, videoFileData, videoName, mimeType] in
-                        self.delegate?.groupChannelModule(
-                            self,
-                            didPickFileData: videoFileData,
-                            fileName: videoName,
-                            mimeType: mimeType,
-                            parentMessage: self.currentQuotedMessage
-                        )
-                    }
+
+                    operation.userInfo[MultipleFilesConstants.video] = (videoFileData, videoName, mimeType)
                 } catch {
                     SBULog.error(error.localizedDescription)
                 }
@@ -475,6 +631,103 @@ extension SBUGroupChannelModule {
             self.messageInputView?.isHidden = isChatNotification
         }
         
+        // MARK: PHPicker utils
+        
+        /// Loads image data from a NSItemProvider.
+        /// - Parameters:
+        ///    - itemProvider: the NSItemProvider to load the image data from
+        ///    - index: the index of the image file in a multiple files message. `nil` in a single file message
+        ///    - completionHandler: returns image data, fileName, and mimeType
+        /// - Since: 3.10.0
+        @available(iOS 14.0, *)
+        private func loadImageFile(
+            itemProvider: NSItemProvider,
+            index: Int? = nil,
+            completion: @escaping (Data?, String?, String?) -> Void
+        ) {
+            itemProvider.loadItem(forTypeIdentifier: UTType.image.identifier, options: [:]) { url, _ in
+                guard let imageURL = url as? URL,
+                      imageURL.isFileSizeUploadable else {
+                    completion(nil, nil, nil)
+                    return
+                }
+                
+                if itemProvider.canLoadObject(ofClass: UIImage.self) {
+                    itemProvider.loadObject(ofClass: UIImage.self) { imageItem, _ in
+                        DispatchQueue.main.async {
+                            guard let originalImage = imageItem as? UIImage,
+                                  let mimeType = SBUUtils.getMimeType(url: imageURL),
+                                  let imageData = originalImage.fixedOrientation().sbu_convertToData() else {
+                                completion(nil, nil, nil)
+                                return
+                            }
+                            
+                            let fileExtension = imageURL.pathExtension
+                            
+                            /// If multiple files message, fileName is `date_index.fileExtension`
+                            /// If single file message, fileName is `date.fileExtension`
+                            var fileName = Date().sbu_toString(
+                                dateFormat: SBUDateFormatSet.Message.fileNameFormat,
+                                localizedFormat: false
+                            )
+                            if let index = index {
+                                fileName = "\(fileName)_\(index)"
+                            }
+                            
+                            fileName = "\(fileName).\(fileExtension)"
+                            
+                            completion(imageData, fileName, mimeType)
+                        }
+                    }
+                } else {
+                    completion(nil, nil, nil)
+                }
+            }
+        }
+        
+        /// Loads GIF data from a NSItemProvider.
+        /// - Parameters:
+        ///    - itemProvider: the NSItemProvider to load the image data from
+        ///    - index: the index of the image file in a multiple files message. `nil` in a single file message
+        ///    - completionHandler: returns image data, fileName, and mimeType
+        /// - Since: 3.10.0
+        @available(iOS 14.0, *)
+        private func loadGIFfile(
+            itemProvider: NSItemProvider,
+            index: Int? = nil,
+            completion: @escaping (Data?, String?, String?) -> Void
+        ) {
+            itemProvider.loadFileRepresentation(forTypeIdentifier: UTType.gif.identifier) { url, _ in
+                guard let imageURL = url,
+                      imageURL.isFileSizeUploadable else {
+                    completion(nil, nil, nil)
+                    return
+                }
+                
+                guard let mimeType = SBUUtils.getMimeType(url: imageURL) else {
+                    completion(nil, nil, nil)
+                    return
+                }
+                
+                let gifData = try? Data(contentsOf: imageURL)
+                let fileExtension = imageURL.pathExtension
+                
+                /// If multiple files message, fileName is `date_index.fileExtension`
+                /// If single file message, fileName is `date.fileExtension`
+                var fileName = Date().sbu_toString(
+                    dateFormat: SBUDateFormatSet.Message.fileNameFormat,
+                    localizedFormat: false
+                )
+                if let index = index {
+                    fileName = "\(fileName)_\(index)"
+                }
+                
+                fileName = "\(fileName).\(fileExtension)"
+                
+                completion(gifData, fileName, mimeType)
+            }
+        }
+        
         // MARK: Mention
         
         /// Initializes `SBUMentionManager` instance and configure with attributes.
@@ -518,7 +771,8 @@ extension SBUGroupChannelModule {
             }
             
             var filteredMembers = members.filter {
-                $0.userId != SBUGlobals.currentUser?.userId
+                ($0.user?.isActive == true) &&
+                ($0.userId != SBUGlobals.currentUser?.userId)
             }
             
             if filteredMembers.count > config.suggestionLimit {
@@ -547,7 +801,7 @@ extension SBUGroupChannelModule {
             default:
                 maxHeight = 196
             }
-            suggestedMentionList.heightConstraint.constant = suggestedMentionList.isLimitGuideEnabled
+            suggestedMentionList.heightConstraint?.constant = suggestedMentionList.isLimitGuideEnabled
             ? 44
             : min(height, maxHeight)
             
@@ -567,7 +821,9 @@ extension SBUGroupChannelModule {
             self.addSubview(suggestedMentionList)
             
             suggestedMentionList.translatesAutoresizingMaskIntoConstraints = false
+            suggestedMentionList.heightConstraint?.isActive = false
             suggestedMentionList.heightConstraint = suggestedMentionList.heightAnchor.constraint(equalToConstant: 0)
+            suggestedMentionList.heightConstraint?.isActive = true
             
             suggestedMentionList
                 .sbu_constraint(equalTo: self, leading: 0, trailing: 0)
@@ -578,10 +834,6 @@ extension SBUGroupChannelModule {
                     bottom: 0
                 )
                 .sbu_constraint_lessThan(height: 196)
-            
-            NSLayoutConstraint.activate([
-                suggestedMentionList.heightConstraint
-            ])
         }
         
         /// Dismiss `suggestedMentionList` and remove from super view.

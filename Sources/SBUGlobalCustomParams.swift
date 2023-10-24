@@ -132,6 +132,20 @@ public class SBUGlobalCustomParams {
     /// - Since: 3.4.0
     public static var voiceFileMessageParamsSendBuilder: ((_ params: FileMessageCreateParams?) -> Void)?
     
+    /// This is a builder that allows you to set a predefined the global `MultipleFilesMessageCreateParams` that is used when sending a multiple files message.
+    ///
+    /// - Important:
+    /// This value is ignored if you set the parameter value directly through functions that receive the parameter inside the class.
+    ///
+    /// See the example below for builder setting.
+    /// ```
+    /// SBUGlobalCustomParams.multipleFilesMessageParamsSendBuilder = { params in
+    ///     params?.data = "some data string"
+    ///     ...
+    /// ```
+    /// - Since: 3.10.0
+    public static var multipleFilesMessageParamsSendBuilder: ((_ params: MultipleFilesMessageCreateParams?) -> Void)?
+    
     /// This is a builder that allows you to predefined the global `MessageListParams` processing to be used when loading message list.
     ///
     /// - Important:

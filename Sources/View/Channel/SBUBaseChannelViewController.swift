@@ -38,15 +38,23 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     /// The state property to indicate whether it's showing the keyboard or not. It's `false` when ``keyboardWillHide(_:)`` is called and `true` when ``keyboardWillShow(_:)`` is called. The default value is `false`
     /// - Since: 3.2.3
     public var isKeyboardShowing: Bool = false
+
+    var messageInputViewTopConstraint: NSLayoutConstraint?
+    var messageInputViewLeftConstraint: NSLayoutConstraint?
+    var messageInputViewRightConstraint: NSLayoutConstraint?
     /// The `NSLayoutConstraint` value used in ``baseInputComponent``'s bottom anchor constraint. The value is updated when either ``keyboardWillHide(_:)`` or ``keyboardWillShow(_:)`` is called.
     /// - Since: 3.2.3
-    public var messageInputViewBottomConstraint: NSLayoutConstraint!
+    public var messageInputViewBottomConstraint: NSLayoutConstraint?
     
     // MARK: - Logic Properties (Private)
     var initialMessageInputBottomConstraint: CGFloat = 0
     var initialMessageInputOrigin: CGPoint = .zero
     
-    var tableViewTopConstraint: NSLayoutConstraint!
+    var tableViewTopConstraint: NSLayoutConstraint?
+    var tableViewLeftConstraint: NSLayoutConstraint?
+    var tableViewRightConstraint: NSLayoutConstraint?
+    var tableViewBottomConstraint: NSLayoutConstraint?
+    
     var lastSeenIndexPath: IndexPath?
     
     var scrollToInitialPositionHandler: (() -> Void)?
@@ -192,9 +200,14 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         self.registerKeyboardNotifications()
         
         self.updateChannelStatus()
-        self.updateStyles()
         
         NotificationCenter.default.addObserver(self, selector: #selector(applicationWillResignActivity), name: UIApplication.willResignActiveNotification, object: nil)
+        self.updateStyles(needsToLayout: false)
+    }
+    
+    open override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
     }
     
     open override func viewDidLoad() {
@@ -437,27 +450,32 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     
     // MARK: - Common
     
-    /// This function opens a file according to the file type.
-    /// - Parameter fileMessage: fileMessage object
-    /// - Since: 3.0.0
-    open func openFile(fileMessage: FileMessage) {
+    /// Opens a file that is type of `SBUFileData` according to its file type
+    ///
+    /// ```swift
+    /// let fileData = SBUFileData(fileMessage: fileMessage)
+    /// openFile(fileData)
+    /// ```
+    ///
+    /// - Parameter fileData: ``SBUFileData`` object.
+    /// - Since: 3.10.0
+    open func openFile(_ fileData: SBUFileData) {
         self.willPresentSubview()
         
         SBULoading.start()
-        let fileType = SBUUtils.getFileType(by: fileMessage)
-        switch fileType {
+        
+        switch fileData.fileType {
         case .image:
-            let viewer = SBUCommonViewControllerSet.FileViewController.init(fileMessage: fileMessage, delegate: self)
+            let viewer = SBUCommonViewControllerSet.FileViewController.init(
+                fileData: fileData,
+                delegate: self
+            )
             let naviVC = UINavigationController(rootViewController: viewer)
             SBULoading.stop()
             self.present(naviVC, animated: true)
             
         case .etc, .pdf, .video, .audio:
-            SBUCacheManager.File.loadFile(
-                urlString: fileMessage.url,
-                cacheKey: fileMessage.cacheKey,
-                fileName: fileMessage.name
-            ) { fileURL, _ in
+            SBUCacheManager.File.loadFile(urlString: fileData.urlString, fileName: fileData.name) { fileURL, _ in
                 SBULoading.stop()
                 
                 guard let fileURL = fileURL else {
@@ -465,7 +483,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
                     return
                 }
                 
-                switch fileType {
+                switch fileData.fileType {
                 case .audio, .video:
                     if SBUGlobals.isAVPlayerAlwaysEnabled {
                         let vc = AVPlayerViewController()
@@ -473,7 +491,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
                         self.present(vc, animated: true) { vc.player?.play() }
                     } else {
                         let dc = UIDocumentInteractionController(url: fileURL)
-                        dc.name = fileMessage.name
+                        dc.name = fileData.name
                         dc.delegate = self
                         dc.presentPreview(animated: true)
                     }
@@ -486,7 +504,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
                     
                     if fileURL.scheme == "file" {
                         let dc = UIDocumentInteractionController(url: fileURL)
-                        dc.name = fileMessage.name
+                        dc.name = fileData.name
                         dc.delegate = self
                         dc.presentPreview(animated: true)
                     } else {
@@ -495,12 +513,19 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
                     }
                 }
             }
-        case .voice:
-            SBULoading.stop()
-            break
         default:
-            break
+            SBULoading.stop()
+            return
         }
+    }
+    
+    /// This function opens a file according to the file type.
+    /// - Parameter fileMessage: fileMessage object
+    /// - Note: Use `openFile(_:)` instead.
+    /// - Since: 3.0.0
+    open func openFile(fileMessage: FileMessage) {
+        let fileData = SBUFileData(fileMessage: fileMessage)
+        self.openFile(fileData)
     }
     
     /// This function increases the new message count.
@@ -600,7 +625,9 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         
         guard needsToReload else { return }
         
-        baseListComponent.reloadTableView()
+        // Verify that the UIViewController is currently visible on the screen
+        let needsToLayout = self.isViewLoaded && (self.view.window != nil)
+        baseListComponent.reloadTableView(needsToLayout: needsToLayout)
         
         guard let lastSeenIndexPath = self.lastSeenIndexPath else {
             let hidden = baseListComponent.isScrollNearByBottom
@@ -1036,6 +1063,18 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
             
             var configuration = PHPickerConfiguration()
             configuration.filter = .any(of: pickerFilter)
+            
+            // Multiple files message is allowed only for group channel.
+            if !(self is SBUMessageThreadViewController),
+             let _ = self.baseViewModel?.channel as? GroupChannel,
+               SendbirdUI.config.groupChannel.channel.isMultipleFilesMessageEnabled {
+                configuration.selectionLimit = SBUAvailable.multipleFilesMessageFileCountLimit
+
+                if #available(iOS 15, *) {
+                    configuration.selection = .ordered
+                }
+            }
+ 
             let picker = PHPickerViewController(configuration: configuration)
             picker.delegate = self
             self.present(picker, animated: true, completion: nil)

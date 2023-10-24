@@ -33,15 +33,15 @@ extension UIView {
     // EqualTo
     @discardableResult
     public func sbu_constraint(equalTo view: UIView,
-                        leading: CGFloat? = nil,
-                        trailing: CGFloat? = nil,
-                        left: CGFloat? = nil,
-                        right: CGFloat? = nil,
-                        top: CGFloat? = nil,
-                        bottom: CGFloat? = nil,
-                        centerX: CGFloat? = nil,
-                        centerY: CGFloat? = nil,
-                        priority: UILayoutPriority? = nil) -> UIView {
+                               leading: CGFloat? = nil,
+                               trailing: CGFloat? = nil,
+                               left: CGFloat? = nil,
+                               right: CGFloat? = nil,
+                               top: CGFloat? = nil,
+                               bottom: CGFloat? = nil,
+                               centerX: CGFloat? = nil,
+                               centerY: CGFloat? = nil,
+                               priority: UILayoutPriority? = nil) -> UIView {
         
         return self.sbu_constraint_equalTo(
             leadingAnchor: view.leadingAnchor,
@@ -75,80 +75,81 @@ extension UIView {
         centerXAnchor: NSLayoutAnchor<NSLayoutXAxisAnchor>? = nil, centerX: CGFloat? = nil,
         centerYAnchor: NSLayoutAnchor<NSLayoutYAxisAnchor>? = nil, centerY: CGFloat? = nil,
         priority: UILayoutPriority? = nil) -> UIView {
-        
-        self.translatesAutoresizingMaskIntoConstraints = false
-        
-        var layoutConstraints: [NSLayoutConstraint] = []
-        
-        if let leadingAnchor = leadingAnchor, let leading = leading {
-            layoutConstraints.append(
-                self.leadingAnchor.constraint(equalTo: leadingAnchor, constant: leading)
-            )
+            
+            self.translatesAutoresizingMaskIntoConstraints = false
+            
+            var layoutConstraints: [NSLayoutConstraint] = []
+            
+            if let leadingAnchor = leadingAnchor, let leading = leading {
+                layoutConstraints.append(
+                    self.leadingAnchor.constraint(equalTo: leadingAnchor, constant: leading).assignId()
+                )
+            }
+            
+            if let trailingAnchor = trailingAnchor, let trailing = trailing {
+                layoutConstraints.append(
+                    self.trailingAnchor.constraint(equalTo: trailingAnchor, constant: trailing).assignId()
+                )
+            }
+            
+            if let leftAnchor = leftAnchor, let left = left {
+                layoutConstraints.append(
+                    self.leftAnchor.constraint(equalTo: leftAnchor, constant: left).assignId()
+                )
+            }
+            
+            if let rightAnchor = rightAnchor, let right = right {
+                layoutConstraints.append(
+                    self.rightAnchor.constraint(equalTo: rightAnchor, constant: -right).assignId()
+                )
+            }
+            
+            if let topAnchor = topAnchor, let top = top {
+                layoutConstraints.append(
+                    self.topAnchor.constraint(equalTo: topAnchor, constant: top).assignId()
+                )
+            }
+            
+            if let bottomAnchor = bottomAnchor, let bottom = bottom {
+                layoutConstraints.append(
+                    self.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -bottom).assignId()
+                )
+            }
+            
+            if let centerXAnchor = centerXAnchor, let centerX = centerX {
+                layoutConstraints.append(
+                    self.centerXAnchor.constraint(equalTo: centerXAnchor, constant: centerX).assignId()
+                )
+            }
+            
+            if let centerYAnchor = centerYAnchor, let centerY = centerY {
+                layoutConstraints.append(
+                    self.centerYAnchor.constraint(equalTo: centerYAnchor, constant: centerY).assignId()
+                )
+            }
+            
+            if let priority = priority {
+                layoutConstraints.forEach { $0.priority = priority }
+            }
+            
+            NSLayoutConstraint.sbu_activate(baseView: self, constraints: layoutConstraints)
+            self.updateConstraintsIfNeeded()
+            
+            return self
         }
-        
-        if let trailingAnchor = trailingAnchor, let trailing = trailing {
-            layoutConstraints.append(
-                self.trailingAnchor.constraint(equalTo: trailingAnchor, constant: trailing)
-            )
-        }
-        
-        if let leftAnchor = leftAnchor, let left = left {
-            layoutConstraints.append(
-                self.leftAnchor.constraint(equalTo: leftAnchor, constant: left)
-            )
-        }
-        
-        if let rightAnchor = rightAnchor, let right = right {
-            layoutConstraints.append(
-                self.rightAnchor.constraint(equalTo: rightAnchor, constant: -right)
-            )
-        }
-        
-        if let topAnchor = topAnchor, let top = top {
-            layoutConstraints.append(
-                self.topAnchor.constraint(equalTo: topAnchor, constant: top)
-            )
-        }
-        
-        if let bottomAnchor = bottomAnchor, let bottom = bottom {
-            layoutConstraints.append(
-                self.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -bottom)
-            )
-        }
-        
-        if let centerXAnchor = centerXAnchor, let centerX = centerX {
-            layoutConstraints.append(
-                self.centerXAnchor.constraint(equalTo: centerXAnchor, constant: centerX)
-            )
-        }
-        
-        if let centerYAnchor = centerYAnchor, let centerY = centerY {
-            layoutConstraints.append(
-                self.centerYAnchor.constraint(equalTo: centerYAnchor, constant: centerY)
-            )
-        }
-        
-        if let priority = priority {
-            layoutConstraints.forEach { $0.priority = priority }
-        }
-        
-        NSLayoutConstraint.activate(layoutConstraints)
-        
-        return self
-    }
     
     // GreaterThanOrEqualTo
     @discardableResult
     public func sbu_constraint(greaterThanOrEqualTo view: UIView,
-                        leading: CGFloat? = nil,
-                        trailing: CGFloat? = nil,
-                        left: CGFloat? = nil,
-                        right: CGFloat? = nil,
-                        top: CGFloat? = nil,
-                        bottom: CGFloat? = nil,
-                        centerX: CGFloat? = nil,
-                        centerY: CGFloat? = nil,
-                        priority: UILayoutPriority? = nil) -> UIView {
+                               leading: CGFloat? = nil,
+                               trailing: CGFloat? = nil,
+                               left: CGFloat? = nil,
+                               right: CGFloat? = nil,
+                               top: CGFloat? = nil,
+                               bottom: CGFloat? = nil,
+                               centerX: CGFloat? = nil,
+                               centerY: CGFloat? = nil,
+                               priority: UILayoutPriority? = nil) -> UIView {
         
         return self.sbu_constraint_greater(
             leadingAnchor: view.leadingAnchor,
@@ -182,104 +183,105 @@ extension UIView {
         centerXAnchor: NSLayoutAnchor<NSLayoutXAxisAnchor>? = nil, centerX: CGFloat? = nil,
         centerYAnchor: NSLayoutAnchor<NSLayoutYAxisAnchor>? = nil, centerY: CGFloat? = nil,
         priority: UILayoutPriority? = nil) -> UIView {
-        
-        self.translatesAutoresizingMaskIntoConstraints = false
-        
-        var layoutConstraints: [NSLayoutConstraint] = []
-        
-        if let leadingAnchor = leadingAnchor, let leading = leading {
-            layoutConstraints.append(
-                self.leadingAnchor.constraint(
-                    greaterThanOrEqualTo: leadingAnchor,
-                    constant: leading
+            
+            self.translatesAutoresizingMaskIntoConstraints = false
+            
+            var layoutConstraints: [NSLayoutConstraint] = []
+            
+            if let leadingAnchor = leadingAnchor, let leading = leading {
+                layoutConstraints.append(
+                    self.leadingAnchor.constraint(
+                        greaterThanOrEqualTo: leadingAnchor,
+                        constant: leading
+                    ).assignId()
                 )
-            )
-        }
-        
-        if let trailingAnchor = trailingAnchor, let trailing = trailing {
-            layoutConstraints.append(
-                self.trailingAnchor.constraint(
-                    greaterThanOrEqualTo: trailingAnchor,
-                    constant: trailing
+            }
+            
+            if let trailingAnchor = trailingAnchor, let trailing = trailing {
+                layoutConstraints.append(
+                    self.trailingAnchor.constraint(
+                        greaterThanOrEqualTo: trailingAnchor,
+                        constant: trailing
+                    ).assignId()
                 )
-            )
-        }
-        
-        if let leftAnchor = leftAnchor, let left = left {
-            layoutConstraints.append(
-                self.leftAnchor.constraint(
-                    greaterThanOrEqualTo: leftAnchor,
-                    constant: left
+            }
+            
+            if let leftAnchor = leftAnchor, let left = left {
+                layoutConstraints.append(
+                    self.leftAnchor.constraint(
+                        greaterThanOrEqualTo: leftAnchor,
+                        constant: left
+                    ).assignId()
                 )
-            )
-        }
-        
-        if let rightAnchor = rightAnchor, let right = right {
-            layoutConstraints.append(
-                self.rightAnchor.constraint(
-                    greaterThanOrEqualTo: rightAnchor,
-                    constant: -right
+            }
+            
+            if let rightAnchor = rightAnchor, let right = right {
+                layoutConstraints.append(
+                    self.rightAnchor.constraint(
+                        greaterThanOrEqualTo: rightAnchor,
+                        constant: -right
+                    ).assignId()
                 )
-            )
-        }
-        
-        if let topAnchor = topAnchor, let top = top {
-            layoutConstraints.append(
-                self.topAnchor.constraint(
-                    greaterThanOrEqualTo: topAnchor,
-                    constant: top
+            }
+            
+            if let topAnchor = topAnchor, let top = top {
+                layoutConstraints.append(
+                    self.topAnchor.constraint(
+                        greaterThanOrEqualTo: topAnchor,
+                        constant: top
+                    ).assignId()
                 )
-            )
-        }
-        
-        if let bottomAnchor = bottomAnchor, let bottom = bottom {
-            layoutConstraints.append(
-                self.bottomAnchor.constraint(
-                    greaterThanOrEqualTo: bottomAnchor,
-                    constant: -bottom
+            }
+            
+            if let bottomAnchor = bottomAnchor, let bottom = bottom {
+                layoutConstraints.append(
+                    self.bottomAnchor.constraint(
+                        greaterThanOrEqualTo: bottomAnchor,
+                        constant: -bottom
+                    ).assignId()
                 )
-            )
-        }
-        
-        if let centerXAnchor = centerXAnchor, let centerX = centerX {
-            layoutConstraints.append(
-                self.centerXAnchor.constraint(
-                    greaterThanOrEqualTo: centerXAnchor,
-                    constant: centerX
+            }
+            
+            if let centerXAnchor = centerXAnchor, let centerX = centerX {
+                layoutConstraints.append(
+                    self.centerXAnchor.constraint(
+                        greaterThanOrEqualTo: centerXAnchor,
+                        constant: centerX
+                    ).assignId()
                 )
-            )
-        }
-        
-        if let centerYAnchor = centerYAnchor, let centerY = centerY {
-            layoutConstraints.append(
-                self.centerYAnchor.constraint(
-                    greaterThanOrEqualTo: centerYAnchor,
-                    constant: centerY
+            }
+            
+            if let centerYAnchor = centerYAnchor, let centerY = centerY {
+                layoutConstraints.append(
+                    self.centerYAnchor.constraint(
+                        greaterThanOrEqualTo: centerYAnchor,
+                        constant: centerY
+                    ).assignId()
                 )
-            )
+            }
+            
+            if let priority = priority {
+                layoutConstraints.forEach { $0.priority = priority }
+            }
+            
+            NSLayoutConstraint.sbu_activate(baseView: self, constraints: layoutConstraints)
+            self.updateConstraintsIfNeeded()
+            
+            return self
         }
-        
-        if let priority = priority {
-            layoutConstraints.forEach { $0.priority = priority }
-        }
-        
-        NSLayoutConstraint.activate(layoutConstraints)
-        
-        return self
-    }
     
     // LessThanOrEqualTo
     @discardableResult
     public func sbu_constraint(lessThanOrEqualTo view: UIView,
-                        leading: CGFloat? = nil,
-                        trailing: CGFloat? = nil,
-                        left: CGFloat? = nil,
-                        right: CGFloat? = nil,
-                        top: CGFloat? = nil,
-                        bottom: CGFloat? = nil,
-                        centerX: CGFloat? = nil,
-                        centerY: CGFloat? = nil,
-                        priority: UILayoutPriority? = nil) -> UIView {
+                               leading: CGFloat? = nil,
+                               trailing: CGFloat? = nil,
+                               left: CGFloat? = nil,
+                               right: CGFloat? = nil,
+                               top: CGFloat? = nil,
+                               bottom: CGFloat? = nil,
+                               centerX: CGFloat? = nil,
+                               centerY: CGFloat? = nil,
+                               priority: UILayoutPriority? = nil) -> UIView {
         
         return self.sbu_constraint_less(
             leadingAnchor: view.leadingAnchor,
@@ -313,96 +315,97 @@ extension UIView {
         centerXAnchor: NSLayoutAnchor<NSLayoutXAxisAnchor>? = nil, centerX: CGFloat? = nil,
         centerYAnchor: NSLayoutAnchor<NSLayoutYAxisAnchor>? = nil, centerY: CGFloat? = nil,
         priority: UILayoutPriority? = nil) -> UIView {
-        
-        self.translatesAutoresizingMaskIntoConstraints = false
-        
-        var layoutConstraints: [NSLayoutConstraint] = []
-        
-        if let leadingAnchor = leadingAnchor, let leading = leading {
-            layoutConstraints.append(
-                self.leadingAnchor.constraint(
-                    lessThanOrEqualTo: leadingAnchor,
-                    constant: leading
+            
+            self.translatesAutoresizingMaskIntoConstraints = false
+            
+            var layoutConstraints: [NSLayoutConstraint] = []
+            
+            if let leadingAnchor = leadingAnchor, let leading = leading {
+                layoutConstraints.append(
+                    self.leadingAnchor.constraint(
+                        lessThanOrEqualTo: leadingAnchor,
+                        constant: leading
+                    ).assignId()
                 )
-            )
-        }
-        
-        if let trailingAnchor = trailingAnchor, let trailing = trailing {
-            layoutConstraints.append(
-                self.trailingAnchor.constraint(
-                    lessThanOrEqualTo: trailingAnchor,
-                    constant: trailing
+            }
+            
+            if let trailingAnchor = trailingAnchor, let trailing = trailing {
+                layoutConstraints.append(
+                    self.trailingAnchor.constraint(
+                        lessThanOrEqualTo: trailingAnchor,
+                        constant: trailing
+                    ).assignId()
                 )
-            )
-        }
-        
-        if let leftAnchor = leftAnchor, let left = left {
-            layoutConstraints.append(
-                self.leftAnchor.constraint(
-                    lessThanOrEqualTo: leftAnchor,
-                    constant: left
+            }
+            
+            if let leftAnchor = leftAnchor, let left = left {
+                layoutConstraints.append(
+                    self.leftAnchor.constraint(
+                        lessThanOrEqualTo: leftAnchor,
+                        constant: left
+                    ).assignId()
                 )
-            )
-        }
-        
-        if let rightAnchor = rightAnchor, let right = right {
-            layoutConstraints.append(
-                self.rightAnchor.constraint(
-                    lessThanOrEqualTo: rightAnchor,
-                    constant: -right
+            }
+            
+            if let rightAnchor = rightAnchor, let right = right {
+                layoutConstraints.append(
+                    self.rightAnchor.constraint(
+                        lessThanOrEqualTo: rightAnchor,
+                        constant: -right
+                    ).assignId()
                 )
-            )
-        }
-        
-        if let topAnchor = topAnchor, let top = top {
-            layoutConstraints.append(
-                self.topAnchor.constraint(
-                    lessThanOrEqualTo: topAnchor,
-                    constant: top
+            }
+            
+            if let topAnchor = topAnchor, let top = top {
+                layoutConstraints.append(
+                    self.topAnchor.constraint(
+                        lessThanOrEqualTo: topAnchor,
+                        constant: top
+                    ).assignId()
                 )
-            )
-        }
-        
-        if let bottomAnchor = bottomAnchor, let bottom = bottom {
-            layoutConstraints.append(
-                self.bottomAnchor.constraint(
-                    lessThanOrEqualTo: bottomAnchor,
-                    constant: -bottom
+            }
+            
+            if let bottomAnchor = bottomAnchor, let bottom = bottom {
+                layoutConstraints.append(
+                    self.bottomAnchor.constraint(
+                        lessThanOrEqualTo: bottomAnchor,
+                        constant: -bottom
+                    ).assignId()
                 )
-            )
-        }
-        
-        if let centerXAnchor = centerXAnchor, let centerX = centerX {
-            layoutConstraints.append(
-                self.centerXAnchor.constraint(
-                    lessThanOrEqualTo: centerXAnchor,
-                    constant: centerX
+            }
+            
+            if let centerXAnchor = centerXAnchor, let centerX = centerX {
+                layoutConstraints.append(
+                    self.centerXAnchor.constraint(
+                        lessThanOrEqualTo: centerXAnchor,
+                        constant: centerX
+                    ).assignId()
                 )
-            )
-        }
-        
-        if let centerYAnchor = centerYAnchor, let centerY = centerY {
-            layoutConstraints.append(
-                self.centerYAnchor.constraint(
-                    lessThanOrEqualTo: centerYAnchor,
-                    constant: centerY
+            }
+            
+            if let centerYAnchor = centerYAnchor, let centerY = centerY {
+                layoutConstraints.append(
+                    self.centerYAnchor.constraint(
+                        lessThanOrEqualTo: centerYAnchor,
+                        constant: centerY
+                    ).assignId()
                 )
-            )
+            }
+            
+            if let priority = priority {
+                layoutConstraints.forEach { $0.priority = priority }
+            }
+            
+            NSLayoutConstraint.sbu_activate(baseView: self, constraints: layoutConstraints)
+            self.updateConstraintsIfNeeded()
+            
+            return self
         }
-        
-        if let priority = priority {
-            layoutConstraints.forEach { $0.priority = priority }
-        }
-        
-        NSLayoutConstraint.activate(layoutConstraints)
-        
-        return self
-    }
     
     @discardableResult
     public func sbu_constraint(width: CGFloat? = nil,
-                        height: CGFloat? = nil,
-                        priority: UILayoutPriority? = nil) -> UIView {
+                               height: CGFloat? = nil,
+                               priority: UILayoutPriority? = nil) -> UIView {
         
         return self.sbu_constraint(
             widthAnchor: nil, width: width,
@@ -418,124 +421,128 @@ extension UIView {
         widthAnchor: NSLayoutAnchor<NSLayoutDimension>? = nil, width: CGFloat? = nil,
         heightAnchor: NSLayoutAnchor<NSLayoutDimension>? = nil, height: CGFloat? = nil,
         priority: UILayoutPriority? = nil) -> UIView {
-        
-        self.translatesAutoresizingMaskIntoConstraints = false
-        
-        var layoutConstraints: [NSLayoutConstraint] = []
-        
-        if let width = width {
-            if let widthAnchor = widthAnchor {
-                layoutConstraints.append(
-                    self.widthAnchor.constraint(equalTo: widthAnchor, constant: width)
-                )
-            } else {
-                layoutConstraints.append(
-                    self.widthAnchor.constraint(equalToConstant: width))
+            
+            self.translatesAutoresizingMaskIntoConstraints = false
+            
+            var layoutConstraints: [NSLayoutConstraint] = []
+            
+            if let width = width {
+                if let widthAnchor = widthAnchor {
+                    layoutConstraints.append(self.widthAnchor.constraint(equalTo: widthAnchor, constant: width).assignId())
+                } else {
+                    layoutConstraints.append(self.widthAnchor.constraint(equalToConstant: width).assignId())
+                }
             }
-        }
-        
-        if let height = height {
-            if let heightAnchor = heightAnchor {
-                layoutConstraints.append(
-                    self.heightAnchor.constraint(equalTo: heightAnchor, constant: height))
-            } else {
-                layoutConstraints.append(
-                    self.heightAnchor.constraint(equalToConstant: height))
+            
+            if let height = height {
+                if let heightAnchor = heightAnchor {
+                    layoutConstraints.append(self.heightAnchor.constraint(equalTo: heightAnchor, constant: height).assignId())
+                    
+                } else {
+                    layoutConstraints.append(self.heightAnchor.constraint(equalToConstant: height).assignId())}
             }
+            
+            if let priority = priority {
+                layoutConstraints.forEach { $0.priority = priority }
+            }
+            
+            NSLayoutConstraint.sbu_activate(baseView: self, constraints: layoutConstraints)
+            self.updateConstraintsIfNeeded()
+            
+            return self
         }
-        
-        if let priority = priority {
-            layoutConstraints.forEach { $0.priority = priority }
-        }
-        
-        NSLayoutConstraint.activate(layoutConstraints)
-        
-        return self
-    }
     
     @discardableResult
     public func sbu_constraint_greaterThan(
         widthAnchor: NSLayoutAnchor<NSLayoutDimension>? = nil, width: CGFloat? = nil,
         heightAnchor: NSLayoutAnchor<NSLayoutDimension>? = nil, height: CGFloat? = nil,
         priority: UILayoutPriority? = nil) -> UIView {
-        
-        self.translatesAutoresizingMaskIntoConstraints = false
-        
-        var layoutConstraints: [NSLayoutConstraint] = []
-        
-        if let width = width {
-            if let widthAnchor = widthAnchor {
-                layoutConstraints.append(
-                    self.widthAnchor.constraint(greaterThanOrEqualTo: widthAnchor, constant: width)
-                )
-            } else {
-                layoutConstraints.append(
-                    self.widthAnchor.constraint(greaterThanOrEqualToConstant: width)
-                )
+            
+            self.translatesAutoresizingMaskIntoConstraints = false
+            
+            var layoutConstraints: [NSLayoutConstraint] = []
+            
+            if let width = width {
+                if let widthAnchor = widthAnchor {
+                    layoutConstraints.append(
+                        self.widthAnchor.constraint(greaterThanOrEqualTo: widthAnchor, constant: width).assignId()
+                    )
+                } else {
+                    layoutConstraints.append(
+                        self.widthAnchor.constraint(greaterThanOrEqualToConstant: width).assignId()
+                    )
+                }
             }
-        }
-        
-        if let height = height {
-            if let heightAnchor = heightAnchor {
-                layoutConstraints.append(
-                    self.heightAnchor.constraint(greaterThanOrEqualTo: heightAnchor, constant: height))
-            } else {
-                layoutConstraints.append(
-                    self.heightAnchor.constraint(greaterThanOrEqualToConstant: height))
+            
+            if let height = height {
+                if let heightAnchor = heightAnchor {
+                    layoutConstraints.append(
+                        self.heightAnchor.constraint(greaterThanOrEqualTo: heightAnchor, constant: height).assignId()
+                    )
+                } else {
+                    layoutConstraints.append(
+                        self.heightAnchor.constraint(greaterThanOrEqualToConstant: height).assignId()
+                    )
+                }
             }
+            
+            if let priority = priority {
+                layoutConstraints.forEach { $0.priority = priority }
+            }
+            
+            NSLayoutConstraint.sbu_activate(baseView: self, constraints: layoutConstraints)
+            self.updateConstraintsIfNeeded()
+            
+            return self
         }
-        
-        if let priority = priority {
-            layoutConstraints.forEach { $0.priority = priority }
-        }
-        
-        NSLayoutConstraint.activate(layoutConstraints)
-        
-        return self
-    }
     
     @discardableResult
     public func sbu_constraint_lessThan(
         widthAnchor: NSLayoutAnchor<NSLayoutDimension>? = nil, width: CGFloat? = nil,
         heightAnchor: NSLayoutAnchor<NSLayoutDimension>? = nil, height: CGFloat? = nil,
         priority: UILayoutPriority? = nil) -> UIView {
-        
-        self.translatesAutoresizingMaskIntoConstraints = false
-        
-        var layoutConstraints: [NSLayoutConstraint] = []
-        
-        if let width = width {
-            if let widthAnchor = widthAnchor {
-                layoutConstraints.append(
-                    self.widthAnchor.constraint(lessThanOrEqualTo: widthAnchor, constant: width)
-                )
-            } else {
-                layoutConstraints.append(
-                    self.widthAnchor.constraint(lessThanOrEqualToConstant: width)
-                )
+            
+            self.translatesAutoresizingMaskIntoConstraints = false
+            
+            var layoutConstraints: [NSLayoutConstraint] = []
+            
+            if let width = width {
+                if let widthAnchor = widthAnchor {
+                    layoutConstraints.append(
+                        self.widthAnchor.constraint(lessThanOrEqualTo: widthAnchor, constant: width).assignId()
+                    )
+                } else {
+                    layoutConstraints.append(
+                        self.widthAnchor.constraint(lessThanOrEqualToConstant: width).assignId()
+                    )
+                }
             }
-        }
-        
-        if let height = height {
-            if let heightAnchor = heightAnchor {
-                layoutConstraints.append(
-                    self.heightAnchor.constraint(lessThanOrEqualTo: heightAnchor, constant: height))
-            } else {
-                layoutConstraints.append(
-                    self.heightAnchor.constraint(lessThanOrEqualToConstant: height))
+            
+            if let height = height {
+                if let heightAnchor = heightAnchor {
+                    layoutConstraints.append(
+                        self.heightAnchor.constraint(lessThanOrEqualTo: heightAnchor, constant: height).assignId()
+                    )
+                } else {
+                    layoutConstraints.append(
+                        self.heightAnchor.constraint(lessThanOrEqualToConstant: height).assignId()
+                    )
+                }
             }
+            
+            if let priority = priority {
+                layoutConstraints.forEach { $0.priority = priority }
+            }
+            
+            NSLayoutConstraint.sbu_activate(baseView: self, constraints: layoutConstraints)
+            self.updateConstraintsIfNeeded()
+            
+            return self
         }
-        
-        if let priority = priority {
-            layoutConstraints.forEach { $0.priority = priority }
-        }
-        
-        NSLayoutConstraint.activate(layoutConstraints)
-        
-        return self
-    }
-    
-    // MARK: - v2: [NSLayoutConstraint] chaining version
+}
+
+// MARK: - v2: [NSLayoutConstraint] chaining version
+extension UIView {
     // EqualTo
     @discardableResult
     public func sbu_constraint_v2(equalTo view: UIView,
@@ -589,49 +596,49 @@ extension UIView {
         
         if let leadingAnchor = leadingAnchor, let leading = leading {
             layoutConstraints.append(
-                self.leadingAnchor.constraint(equalTo: leadingAnchor, constant: leading)
+                self.leadingAnchor.constraint(equalTo: leadingAnchor, constant: leading).assignId()
             )
         }
         
         if let trailingAnchor = trailingAnchor, let trailing = trailing {
             layoutConstraints.append(
-                self.trailingAnchor.constraint(equalTo: trailingAnchor, constant: trailing)
+                self.trailingAnchor.constraint(equalTo: trailingAnchor, constant: trailing).assignId()
             )
         }
         
         if let leftAnchor = leftAnchor, let left = left {
             layoutConstraints.append(
-                self.leftAnchor.constraint(equalTo: leftAnchor, constant: left)
+                self.leftAnchor.constraint(equalTo: leftAnchor, constant: left).assignId()
             )
         }
         
         if let rightAnchor = rightAnchor, let right = right {
             layoutConstraints.append(
-                self.rightAnchor.constraint(equalTo: rightAnchor, constant: -right)
+                self.rightAnchor.constraint(equalTo: rightAnchor, constant: -right).assignId()
             )
         }
         
         if let topAnchor = topAnchor, let top = top {
             layoutConstraints.append(
-                self.topAnchor.constraint(equalTo: topAnchor, constant: top)
+                self.topAnchor.constraint(equalTo: topAnchor, constant: top).assignId()
             )
         }
         
         if let bottomAnchor = bottomAnchor, let bottom = bottom {
             layoutConstraints.append(
-                self.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -bottom)
+                self.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -bottom).assignId()
             )
         }
         
         if let centerXAnchor = centerXAnchor, let centerX = centerX {
             layoutConstraints.append(
-                self.centerXAnchor.constraint(equalTo: centerXAnchor, constant: centerX)
+                self.centerXAnchor.constraint(equalTo: centerXAnchor, constant: centerX).assignId()
             )
         }
         
         if let centerYAnchor = centerYAnchor, let centerY = centerY {
             layoutConstraints.append(
-                self.centerYAnchor.constraint(equalTo: centerYAnchor, constant: centerY)
+                self.centerYAnchor.constraint(equalTo: centerYAnchor, constant: centerY).assignId()
             )
         }
         
@@ -698,7 +705,7 @@ extension UIView {
                 self.leadingAnchor.constraint(
                     greaterThanOrEqualTo: leadingAnchor,
                     constant: leading
-                )
+                ).assignId()
             )
         }
         
@@ -707,7 +714,7 @@ extension UIView {
                 self.trailingAnchor.constraint(
                     greaterThanOrEqualTo: trailingAnchor,
                     constant: trailing
-                )
+                ).assignId()
             )
         }
         
@@ -716,7 +723,7 @@ extension UIView {
                 self.leftAnchor.constraint(
                     greaterThanOrEqualTo: leftAnchor,
                     constant: left
-                )
+                ).assignId()
             )
         }
         
@@ -725,7 +732,7 @@ extension UIView {
                 self.rightAnchor.constraint(
                     greaterThanOrEqualTo: rightAnchor,
                     constant: -right
-                )
+                ).assignId()
             )
         }
         
@@ -734,7 +741,7 @@ extension UIView {
                 self.topAnchor.constraint(
                     greaterThanOrEqualTo: topAnchor,
                     constant: top
-                )
+                ).assignId()
             )
         }
         
@@ -743,7 +750,7 @@ extension UIView {
                 self.bottomAnchor.constraint(
                     greaterThanOrEqualTo: bottomAnchor,
                     constant: -bottom
-                )
+                ).assignId()
             )
         }
         
@@ -752,7 +759,7 @@ extension UIView {
                 self.centerXAnchor.constraint(
                     greaterThanOrEqualTo: centerXAnchor,
                     constant: centerX
-                )
+                ).assignId()
             )
         }
         
@@ -761,7 +768,7 @@ extension UIView {
                 self.centerYAnchor.constraint(
                     greaterThanOrEqualTo: centerYAnchor,
                     constant: centerY
-                )
+                ).assignId()
             )
         }
         
@@ -828,7 +835,7 @@ extension UIView {
                 self.leadingAnchor.constraint(
                     lessThanOrEqualTo: leadingAnchor,
                     constant: leading
-                )
+                ).assignId()
             )
         }
         
@@ -837,7 +844,7 @@ extension UIView {
                 self.trailingAnchor.constraint(
                     lessThanOrEqualTo: trailingAnchor,
                     constant: trailing
-                )
+                ).assignId()
             )
         }
         
@@ -846,7 +853,7 @@ extension UIView {
                 self.leftAnchor.constraint(
                     lessThanOrEqualTo: leftAnchor,
                     constant: left
-                )
+                ).assignId()
             )
         }
         
@@ -855,7 +862,7 @@ extension UIView {
                 self.rightAnchor.constraint(
                     lessThanOrEqualTo: rightAnchor,
                     constant: -right
-                )
+                ).assignId()
             )
         }
         
@@ -864,7 +871,7 @@ extension UIView {
                 self.topAnchor.constraint(
                     lessThanOrEqualTo: topAnchor,
                     constant: top
-                )
+                ).assignId()
             )
         }
         
@@ -873,7 +880,7 @@ extension UIView {
                 self.bottomAnchor.constraint(
                     lessThanOrEqualTo: bottomAnchor,
                     constant: -bottom
-                )
+                ).assignId()
             )
         }
         
@@ -882,7 +889,7 @@ extension UIView {
                 self.centerXAnchor.constraint(
                     lessThanOrEqualTo: centerXAnchor,
                     constant: centerX
-                )
+                ).assignId()
             )
         }
         
@@ -891,7 +898,7 @@ extension UIView {
                 self.centerYAnchor.constraint(
                     lessThanOrEqualTo: centerYAnchor,
                     constant: centerY
-                )
+                ).assignId()
             )
         }
         
@@ -929,21 +936,24 @@ extension UIView {
         if let width = width {
             if let widthAnchor = widthAnchor {
                 layoutConstraints.append(
-                    self.widthAnchor.constraint(equalTo: widthAnchor, constant: width)
+                    self.widthAnchor.constraint(equalTo: widthAnchor, constant: width).assignId()
                 )
             } else {
                 layoutConstraints.append(
-                    self.widthAnchor.constraint(equalToConstant: width))
+                    self.widthAnchor.constraint(equalToConstant: width).assignId()
+                )
             }
         }
         
         if let height = height {
             if let heightAnchor = heightAnchor {
                 layoutConstraints.append(
-                    self.heightAnchor.constraint(equalTo: heightAnchor, constant: height))
+                    self.heightAnchor.constraint(equalTo: heightAnchor, constant: height).assignId()
+                )
             } else {
                 layoutConstraints.append(
-                    self.heightAnchor.constraint(equalToConstant: height))
+                    self.heightAnchor.constraint(equalToConstant: height).assignId()
+                )
             }
         }
         
@@ -968,11 +978,11 @@ extension UIView {
         if let width = width {
             if let widthAnchor = widthAnchor {
                 layoutConstraints.append(
-                    self.widthAnchor.constraint(greaterThanOrEqualTo: widthAnchor, constant: width)
+                    self.widthAnchor.constraint(greaterThanOrEqualTo: widthAnchor, constant: width).assignId()
                 )
             } else {
                 layoutConstraints.append(
-                    self.widthAnchor.constraint(greaterThanOrEqualToConstant: width)
+                    self.widthAnchor.constraint(greaterThanOrEqualToConstant: width).assignId()
                 )
             }
         }
@@ -980,10 +990,12 @@ extension UIView {
         if let height = height {
             if let heightAnchor = heightAnchor {
                 layoutConstraints.append(
-                    self.heightAnchor.constraint(greaterThanOrEqualTo: heightAnchor, constant: height))
+                    self.heightAnchor.constraint(greaterThanOrEqualTo: heightAnchor, constant: height).assignId()
+                )
             } else {
                 layoutConstraints.append(
-                    self.heightAnchor.constraint(greaterThanOrEqualToConstant: height))
+                    self.heightAnchor.constraint(greaterThanOrEqualToConstant: height).assignId()
+                )
             }
         }
         
@@ -1008,11 +1020,11 @@ extension UIView {
         if let width = width {
             if let widthAnchor = widthAnchor {
                 layoutConstraints.append(
-                    self.widthAnchor.constraint(lessThanOrEqualTo: widthAnchor, constant: width)
+                    self.widthAnchor.constraint(lessThanOrEqualTo: widthAnchor, constant: width).assignId()
                 )
             } else {
                 layoutConstraints.append(
-                    self.widthAnchor.constraint(lessThanOrEqualToConstant: width)
+                    self.widthAnchor.constraint(lessThanOrEqualToConstant: width).assignId()
                 )
             }
         }
@@ -1020,10 +1032,12 @@ extension UIView {
         if let height = height {
             if let heightAnchor = heightAnchor {
                 layoutConstraints.append(
-                    self.heightAnchor.constraint(lessThanOrEqualTo: heightAnchor, constant: height))
+                    self.heightAnchor.constraint(lessThanOrEqualTo: heightAnchor, constant: height).assignId()
+                )
             } else {
                 layoutConstraints.append(
-                    self.heightAnchor.constraint(lessThanOrEqualToConstant: height))
+                    self.heightAnchor.constraint(lessThanOrEqualToConstant: height).assignId()
+                )
             }
         }
         
@@ -1032,122 +1046,6 @@ extension UIView {
         }
         
         return layoutConstraints
-    }
-    
-    //////////////////////////////////////////////////////
-    /// vv Will be removed. vv
-    //////////////////////////////////////////////////////
-    
-    // Set left, right, top, bottom
-    @discardableResult
-    func setConstraint(from view: UIView,
-                       leading: CGFloat? = nil,
-                       trailing: CGFloat? = nil,
-                       left: CGFloat? = nil,
-                       right: CGFloat? = nil,
-                       top: CGFloat? = nil,
-                       bottom: CGFloat? = nil,
-                       priority: UILayoutPriority? = nil) -> UIView {
-        
-        self.translatesAutoresizingMaskIntoConstraints = false
-        
-        var layoutConstraints: [NSLayoutConstraint] = []
-        
-        if let leading = leading {
-            layoutConstraints += [
-                self.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: leading)
-            ]
-        }
-        
-        if let trailing = trailing {
-            layoutConstraints += [
-                self.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: trailing)
-            ]
-        }
-        
-        if let left = left {
-            layoutConstraints += [
-                self.leftAnchor.constraint(equalTo: view.leftAnchor, constant: left)
-            ]
-        }
-        if let right = right {
-            layoutConstraints += [
-                self.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -right)
-            ]
-        }
-        if let top = top {
-            layoutConstraints += [
-                self.topAnchor.constraint(equalTo: view.topAnchor, constant: top)
-            ]
-        }
-        if let bottom = bottom {
-            layoutConstraints += [
-                self.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -bottom)
-            ]
-        }
-        
-        if let priority = priority {
-            layoutConstraints.forEach { $0.priority = priority }
-        }
-        
-        NSLayoutConstraint.activate(layoutConstraints)
-        
-        return self
-    }
-    
-    // Set width, height
-    @discardableResult
-    func setConstraint(width: CGFloat? = nil,
-                       height: CGFloat? = nil,
-                       priority: UILayoutPriority? = nil) -> UIView {
-        
-        self.translatesAutoresizingMaskIntoConstraints = false
-        
-        var layoutConstraints: [NSLayoutConstraint] = []
-        
-        if let width = width {
-            layoutConstraints += [self.widthAnchor.constraint(equalToConstant: width)]
-        }
-        
-        if let height = height {
-            layoutConstraints += [self.heightAnchor.constraint(equalToConstant: height)]
-        }
-        
-        if let priority = priority {
-            layoutConstraints.forEach { $0.priority = priority }
-        }
-        
-        NSLayoutConstraint.activate(layoutConstraints)
-        
-        return self
-    }
-    
-    // Set CenterX, CenterY
-    @discardableResult
-    func setConstraint(from view: UIView,
-                       centerX: Bool = false,
-                       centerY: Bool = false,
-                       priority: UILayoutPriority? = nil) -> UIView {
-        
-        self.translatesAutoresizingMaskIntoConstraints = false
-        
-        var layoutConstraints: [NSLayoutConstraint] = []
-        
-        if centerX {
-            layoutConstraints += [self.centerXAnchor.constraint(equalTo: view.centerXAnchor)]
-        }
-        
-        if centerY {
-            layoutConstraints += [self.centerYAnchor.constraint(equalTo: view.centerYAnchor)]
-        }
-        
-        if let priority = priority {
-            layoutConstraints.forEach { $0.priority = priority }
-        }
-        
-        NSLayoutConstraint.activate(layoutConstraints)
-        
-        return self
     }
 }
 
@@ -1168,7 +1066,6 @@ extension UIView {
 }
 
 // MARK: - Image
-
 extension UIView {
     func asImage() -> UIImage {
         let renderer = UIGraphicsImageRenderer(bounds: bounds)

@@ -34,6 +34,7 @@ open class SBUUserMessageTextView: SBUView {
         var textView = SBULinkClickableTextView()
         textView.backgroundColor = .clear
         textView.textAlignment = .left
+        textView.textContainer.lineBreakMode = .byCharWrapping
         textView.showsVerticalScrollIndicator = false
         textView.showsHorizontalScrollIndicator = false
         textView.isScrollEnabled = false
@@ -52,9 +53,6 @@ open class SBUUserMessageTextView: SBUView {
     
     var longPressHandler: ((URL) -> Void)?
     
-    public var textLeftConstraint: NSLayoutConstraint!
-    public var textRightConstraint: NSLayoutConstraint!
-    
     public var mentionManager: SBUMentionManager?
     
     public var removeMargin: Bool = false
@@ -66,6 +64,16 @@ open class SBUUserMessageTextView: SBUView {
     }
     
     public weak var delegate: SBUUserMessageTextViewDelegate?
+
+    public var textTopConstraint: NSLayoutConstraint?
+    public var textBottomConstraint: NSLayoutConstraint?
+    public var textLeftConstraint: NSLayoutConstraint?
+    public var textRightConstraint: NSLayoutConstraint?
+    
+    var widthConstraint: NSLayoutConstraint?
+    
+    var textHeightConstraint: NSLayoutConstraint?
+    var textMinWidthConstraint: NSLayoutConstraint?
     
     public override init() {
         super.init()
@@ -91,26 +99,37 @@ open class SBUUserMessageTextView: SBUView {
     open override func setupLayouts() {
         self.translatesAutoresizingMaskIntoConstraints = false
         
-        if self.needsToRemoveMargin {
-            self.widthAnchor.constraint(
+        if !self.needsToRemoveMargin {
+            self.widthConstraint?.isActive = false
+            self.widthConstraint = self.widthAnchor.constraint(
                 lessThanOrEqualToConstant: Metric.textMaxWidth
-            ).isActive = true
+            )
+            self.widthConstraint?.isActive = true
         }
 
-        let textHeightConstraint = self.textView.heightAnchor.constraint(
+//        self.textHeightConstraint?.isActive = false
+//        self.textMinWidthConstraint?.isActive = false
+        self.textHeightConstraint = self.textView.heightAnchor.constraint(
             greaterThanOrEqualToConstant: Metric.textMinHeight
         )
-        let textMinWidthConstraint = self.textView.widthAnchor.constraint(
+        self.textHeightConstraint?.priority = .defaultHigh
+        self.textMinWidthConstraint = self.textView.widthAnchor.constraint(
             greaterThanOrEqualToConstant: Metric.textMinWidth
         )
-
-        NSLayoutConstraint.activate([
-            textHeightConstraint,
-            textMinWidthConstraint
+        NSLayoutConstraint.sbu_activate(baseView: self.textView, constraints: [
+            self.textHeightConstraint,
+            self.textMinWidthConstraint
         ])
+//        self.textHeightConstraint?.isActive = true
+//        self.textMinWidthConstraint?.isActive = true
 
         self.textView.translatesAutoresizingMaskIntoConstraints = false
-        let textTopConstraint = self.textView.topAnchor.constraint(
+        self.textTopConstraint?.isActive = false
+        self.textLeftConstraint?.isActive = false
+        self.textRightConstraint?.isActive = false
+        self.textBottomConstraint?.isActive = false
+        
+        self.textTopConstraint = self.textView.topAnchor.constraint(
             equalTo: self.topAnchor,
             constant: self.removeMargin ? 0 : Metric.textTopDownMargin
         )
@@ -118,7 +137,7 @@ open class SBUUserMessageTextView: SBUView {
             equalTo: self.leftAnchor,
             constant: (self.needsToRemoveMargin && !self.isWebType) ? 0 : Metric.textLeftRightMargin
         )
-        let textBottomConstraint = self.textView.bottomAnchor.constraint(
+        self.textBottomConstraint = self.textView.bottomAnchor.constraint(
             equalTo: self.bottomAnchor,
             constant: self.removeMargin ? 0 : -Metric.textTopDownMargin
         )
@@ -126,19 +145,16 @@ open class SBUUserMessageTextView: SBUView {
             lessThanOrEqualTo: self.rightAnchor,
             constant: (self.needsToRemoveMargin && !self.isWebType) ? 0 : -Metric.textLeftRightMargin
         )
-        NSLayoutConstraint.activate([
-            textTopConstraint,
-            self.textLeftConstraint,
-            textBottomConstraint,
-            self.textRightConstraint
-        ])
+        self.textTopConstraint?.isActive = true
+        self.textBottomConstraint?.isActive = true
+        self.textLeftConstraint?.isActive = true
+        self.textRightConstraint?.isActive = true
     }
     
     open func updateSideConstraint() {
-        NSLayoutConstraint.deactivate([
-            self.textLeftConstraint,
-            self.textRightConstraint
-        ])
+        self.textLeftConstraint?.isActive = false
+        self.textRightConstraint?.isActive = false
+        
         self.textLeftConstraint = self.textView.leftAnchor.constraint(
             equalTo: self.leftAnchor,
             constant: (self.needsToRemoveMargin && !self.isWebType) ? 0 : Metric.textLeftRightMargin
@@ -147,10 +163,9 @@ open class SBUUserMessageTextView: SBUView {
             lessThanOrEqualTo: self.rightAnchor,
             constant: (self.needsToRemoveMargin && !self.isWebType) ? 0 : -Metric.textLeftRightMargin
         )
-        NSLayoutConstraint.activate([
-            self.textLeftConstraint,
-            self.textRightConstraint
-        ])
+        
+        self.textLeftConstraint?.isActive = true
+        self.textRightConstraint?.isActive = true
         
         self.updateConstraintsIfNeeded()
     }

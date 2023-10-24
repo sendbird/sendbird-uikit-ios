@@ -43,7 +43,7 @@ open class SBUOpenChannelAdminMessageCell: SBUOpenChannelBaseMessageCell {
             top: 0,
             bottom: 0
         )
-        self.baseView.sbu_constraint(height: 40)
+        self.baseView.sbu_constraint(height: 40, priority: .defaultHigh)
         
         self.messageLabel.sbu_constraint(
             equalTo: self.baseView,

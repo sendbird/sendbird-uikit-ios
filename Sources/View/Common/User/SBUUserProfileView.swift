@@ -199,49 +199,49 @@ class SBUUserProfileView: UIView, SBUUserProfileViewProtocol {
     
     func setupLayouts() {
         self.sbu_constraint(equalTo: self.baseView, leading: 0, trailing: 0, top: 0, bottom: 0)
-        self.sbu_constraint_equalTo(
-            topAnchor: self.safeAreaLayoutGuide.topAnchor,
-            top: 0
-        )
+
         self.backgroundCloseButton
             .sbu_constraint(equalTo: self, leading: 0, trailing: 0, top: 0, bottom: 0)
         
-        self.contentView.sbu_constraint(equalTo: self, leading: 0, trailing: 0, bottom: 0)
+        self.contentView.sbu_constraint(equalTo: self, leading: 0, trailing: 0)
         
         self.profileImageView
             .sbu_constraint(equalTo: self.contentView, top: 32, centerX: 0)
             .sbu_constraint(width: kProfileImageSize, height: kProfileImageSize)
 
-        self.largeMessageButton.sbu_constraint(height: kLargeItemSize)
+        self.largeMessageButton
+            .sbu_constraint(height: kLargeItemSize, priority: .defaultHigh)
         
-        self.menuStackView.translatesAutoresizingMaskIntoConstraints = false
-        self.userNameLabel.translatesAutoresizingMaskIntoConstraints = false
-        self.userIdTitleLabel.translatesAutoresizingMaskIntoConstraints = false
-        self.userIdLabel.translatesAutoresizingMaskIntoConstraints = false
-        self.separatorView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            self.menuStackView.topAnchor.constraint(equalTo: self.userNameLabel.bottomAnchor, constant: 16),
-            self.menuStackView.centerXAnchor.constraint(equalTo: self.contentView.centerXAnchor),
-            self.separatorView.centerXAnchor.constraint(equalTo: self.contentView.centerXAnchor),
-            self.separatorView.heightAnchor.constraint(equalToConstant: 1),
+        NSLayoutConstraint.sbu_activate(baseView: self.userNameLabel, constraints: [
             self.userNameLabel.topAnchor.constraint(equalTo: self.profileImageView.bottomAnchor, constant: 8),
-            self.userIdTitleLabel.topAnchor.constraint(equalTo: self.separatorView.bottomAnchor, constant: 24),
-            self.userIdTitleLabel.heightAnchor.constraint(equalToConstant: 20),
-            self.userIdLabel.topAnchor.constraint(equalTo: self.userIdTitleLabel.bottomAnchor, constant: 2),
-            self.userIdLabel.heightAnchor.constraint(equalToConstant: 20)
+            self.userNameLabel.leadingAnchor.constraint(equalTo: self.contentView.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            self.userNameLabel.trailingAnchor.constraint(equalTo: self.contentView.safeAreaLayoutGuide.trailingAnchor, constant: -21)
         ])
         
-        NSLayoutConstraint.activate([
-            self.menuStackView.leadingAnchor.constraint(equalTo: self.contentView.safeAreaLayoutGuide.leadingAnchor, constant: 24),
-            self.menuStackView.trailingAnchor.constraint(equalTo: self.contentView.safeAreaLayoutGuide.trailingAnchor, constant: -24),
+        NSLayoutConstraint.sbu_activate(baseView: self.menuStackView, constraints: [
+            self.menuStackView.topAnchor.constraint(equalTo: self.userNameLabel.bottomAnchor, constant: 16),
+            self.menuStackView.leadingAnchor.constraint(equalTo: self.contentView.safeAreaLayoutGuide.leadingAnchor, constant: 22),
+            self.menuStackView.trailingAnchor.constraint(equalTo: self.contentView.safeAreaLayoutGuide.trailingAnchor, constant: -23)
+        ])
+        
+        NSLayoutConstraint.sbu_activate(baseView: self.separatorView, constraints: [
+            self.separatorView.heightAnchor.constraint(equalToConstant: 1),
             self.separatorView.leadingAnchor.constraint(equalTo: self.contentView.safeAreaLayoutGuide.leadingAnchor, constant: 24),
-            self.separatorView.trailingAnchor.constraint(equalTo: self.contentView.safeAreaLayoutGuide.trailingAnchor, constant: -24),
-            self.userNameLabel.leadingAnchor.constraint(equalTo: self.contentView.safeAreaLayoutGuide.leadingAnchor, constant: 24),
-            self.userNameLabel.trailingAnchor.constraint(equalTo: self.contentView.safeAreaLayoutGuide.trailingAnchor, constant: -24),
-            self.userIdTitleLabel.leadingAnchor.constraint(equalTo: self.contentView.safeAreaLayoutGuide.leadingAnchor, constant: 24),
-            self.userIdTitleLabel.trailingAnchor.constraint(equalTo: self.contentView.safeAreaLayoutGuide.trailingAnchor, constant: -24),
-            self.userIdLabel.leadingAnchor.constraint(equalTo: self.contentView.safeAreaLayoutGuide.leadingAnchor, constant: 24),
-            self.userIdLabel.trailingAnchor.constraint(equalTo: self.contentView.safeAreaLayoutGuide.trailingAnchor, constant: -24)
+            self.separatorView.trailingAnchor.constraint(equalTo: self.contentView.safeAreaLayoutGuide.trailingAnchor, constant: -25)
+        ])
+
+        NSLayoutConstraint.sbu_activate(baseView: self.userIdTitleLabel, constraints: [
+            self.userIdTitleLabel.topAnchor.constraint(equalTo: self.separatorView.bottomAnchor, constant: 26),
+            self.userIdTitleLabel.heightAnchor.constraint(equalToConstant: 20),
+            self.userIdTitleLabel.leadingAnchor.constraint(equalTo: self.contentView.safeAreaLayoutGuide.leadingAnchor, constant: 27),
+            self.userIdTitleLabel.trailingAnchor.constraint(equalTo: self.contentView.safeAreaLayoutGuide.trailingAnchor, constant: -28)
+        ])
+        
+        NSLayoutConstraint.sbu_activate(baseView: self.userIdLabel, constraints: [
+            self.userIdLabel.topAnchor.constraint(equalTo: self.userIdTitleLabel.bottomAnchor, constant: 2),
+            self.userIdLabel.heightAnchor.constraint(equalToConstant: 20),
+            self.userIdLabel.leadingAnchor.constraint(equalTo: self.contentView.safeAreaLayoutGuide.leadingAnchor, constant: 29),
+            self.userIdLabel.trailingAnchor.constraint(equalTo: self.contentView.safeAreaLayoutGuide.trailingAnchor, constant: -30)
         ])
         
         if (self.user?.userId == SBUGlobals.currentUser?.userId) || self.isMenuStackViewHidden {
@@ -260,7 +260,7 @@ class SBUUserProfileView: UIView, SBUUserProfileViewProtocol {
         let bottomInset = UIApplication.shared.currentWindow?.safeAreaInsets.bottom ?? 0.0
         let bottomMargin: CGFloat = 20 + bottomInset
 
-        self.userIdLabel.sbu_constraint(equalTo: self.contentView, bottom: bottomMargin)
+        self.userIdLabel.sbu_constraint(equalTo: self.contentView, bottom: bottomMargin, priority: .defaultLow)
         
         self.contentBottomConstraint = self.contentView.bottomAnchor.constraint(
             equalTo: self.bottomAnchor,

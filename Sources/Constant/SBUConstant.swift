@@ -47,4 +47,7 @@ class SBUConstant {
     static let voiceMessageTypeVoiceParameter = "sbu_type=voice"
     static let voiceMessageDurationKey = "KEY_VOICE_MESSAGE_DURATION"
     static let internalMessageTypeKey = "KEY_INTERNAL_MESSAGE_TYPE"
+    
+    // queue name for sending a message in group channel
+    static let messageOperationQueueName = "com.sendbird.uikit.groupchannel.message"
 }

@@ -595,45 +595,18 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     
     /// This function handles the initialization of autolayouts.
     open override func setupLayouts() {
-        self.baseStackView
-            .sbu_constraint(
-                equalTo: self,
-                leading: 0,
-                trailing: 0,
-                top: 0,
-                bottom: 0
-            )
+        // Subviews of EditView
+        self.editStackView
+            .sbu_constraint(equalTo: self.editView, leading: 0, trailing: 0, top: 0, bottom: 0)
         
-        self.contentVStackView.sbu_constraint_equalTo(
-            leadingAnchor: self.safeAreaLayoutGuide.leadingAnchor,
-            leading: 0
-        )
-        self.contentVStackView.sbu_constraint_equalTo(
-            topAnchor: self.safeAreaLayoutGuide.topAnchor,
-            top: layoutInsets.top
-        )
-        self.contentVStackView.sbu_constraint_equalTo(
-            trailingAnchor: self.safeAreaLayoutGuide.trailingAnchor,
-            trailing: 0
-        )
-        self.contentVStackView.sbu_constraint_equalTo(
-            bottomAnchor: self.safeAreaLayoutGuide.bottomAnchor,
-            bottom: layoutInsets.bottom
-        )
+        self.cancelButton?
+            .sbu_constraint(width: 75)
         
-        // Subviews in ContentVStackView
-        self.divider
-            .setConstraint(height: 1)
-        
-        self.quoteMessageView?
-            .setConstraint(height: 56)
-        
-        // Subviews in ContentHStackView
-        self.leadingPaddingView
-            .setConstraint(width: self.leadingSpacing)
-        
-        self.trailingPaddingView
-            .setConstraint(width: self.trailingSpacing)
+        self.saveButton?
+            .sbu_constraint(width: 75)
+
+        self.editView
+            .sbu_constraint(height: 32)
         
         // Subviews in InputVStackView
         self.inputViewTopSpacer
@@ -642,12 +615,9 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         self.inputViewBottomSpacer
             .sbu_constraint(height: 0)
         
-        self.inputHStackView
-            .sbu_constraint(width: self.baseStackView.frame.width)
-        
         // Subviews in InputHStackView
         self.addButton?
-            .setConstraint(width: 32, height: 38)
+            .sbu_constraint(width: 32, height: 38)
         
         // leading/trailing spacing for textview
         self.textViewLeadingPaddingView
@@ -672,18 +642,47 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
             self.setupTextViewHeight(textView: textView)
         }
         
-        // Subviews of EditView
-        self.editView
-            .sbu_constraint(height: 32)
+        // Subviews in ContentVStackView
+        self.divider
+            .sbu_constraint(height: 1)
         
-        self.cancelButton?
-            .sbu_constraint(width: 75)
+        self.quoteMessageView?
+            .sbu_constraint(height: 56)
         
-        self.saveButton?
-            .sbu_constraint(width: 75)
+        // Subviews in ContentHStackView
+        self.leadingPaddingView
+            .sbu_constraint(width: self.leadingSpacing)
         
-        self.editStackView
-            .sbu_constraint(equalTo: self.editView, leading: 0, trailing: 0, top: 0, bottom: 0)
+        self.trailingPaddingView
+            .sbu_constraint(width: self.trailingSpacing)
+        
+        // ContentVStackView
+        self.contentVStackView.sbu_constraint_equalTo(
+            leadingAnchor: self.safeAreaLayoutGuide.leadingAnchor,
+            leading: 0
+        )
+        self.contentVStackView.sbu_constraint_equalTo(
+            topAnchor: self.safeAreaLayoutGuide.topAnchor,
+            top: layoutInsets.top
+        )
+        self.contentVStackView.sbu_constraint_equalTo(
+            trailingAnchor: self.safeAreaLayoutGuide.trailingAnchor,
+            trailing: 0
+        )
+        self.contentVStackView.sbu_constraint_equalTo(
+            bottomAnchor: self.safeAreaLayoutGuide.bottomAnchor,
+            bottom: layoutInsets.bottom
+        )
+        
+        // baseStackView
+        self.baseStackView
+            .sbu_constraint(
+                equalTo: self,
+                leading: 0,
+                trailing: 0,
+                top: 0,
+                bottom: 0
+            )
     }
     
     /// This function handles the initialization of styles.
@@ -883,6 +882,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     /// - Parameter textView: Your input text view.
     /// - Since: 2.1.1
     public func setupTextViewHeight(textView: UIView) {
+        self.textViewHeightConstraint?.isActive = false
         self.textViewHeightConstraint = textView.heightAnchor.constraint(equalToConstant: self.textViewMinHeight)
         self.textViewHeightConstraint?.isActive = true
     }
@@ -925,9 +925,9 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     
     @objc open func onTapAddButton(_ sender: Any) {
         self.endEditing(true)
-        let itmes = self.generateResourceItems()
+        let items = self.generateResourceItems()
         SBUActionSheet.show(
-            items: itmes,
+            items: items,
             cancelItem: self.cancelItem,
             oneTimetheme: isOverlay ? SBUComponentTheme.dark : nil,
             delegate: self

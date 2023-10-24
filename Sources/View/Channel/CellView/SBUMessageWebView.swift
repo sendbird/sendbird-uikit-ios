@@ -34,7 +34,7 @@ open class SBUMessageWebView: UIStackView, SBUViewLifeCycle {
     
     /// A label that represents a title of the web link
     public let titleLabel: UILabel = {
-        let label = UILabel()
+        let label = SBUPaddingLabel(Metric.textTopMargin, Metric.titleBottomMargin, Metric.textSideMargin, Metric.textSideMargin)
         label.numberOfLines = 10
         label.preferredMaxLayoutWidth = Metric.textMaxPrefWidth
         return label
@@ -42,19 +42,20 @@ open class SBUMessageWebView: UIStackView, SBUViewLifeCycle {
     
     /// A label that shows a description of the web link
     public let descriptionLabel: UILabel = {
-        let label = UILabel()
-        label.numberOfLines = 1
+        let label = SBUPaddingLabel(0, Metric.descBottomMargin, Metric.textSideMargin, Metric.textSideMargin)
+        label.numberOfLines = 2
         return label
     }()
     
     /// A label that shows the URL
     public let urlLabel: UILabel = {
-        let label = UILabel()
+        let label = SBUPaddingLabel(0, Metric.descBottomMargin, Metric.textSideMargin, Metric.textSideMargin)
         label.numberOfLines = 1
         return label
     }()
     
     public var imageHeightConstraint: NSLayoutConstraint?
+    public var imageWitdhConstraint: NSLayoutConstraint?
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -88,32 +89,10 @@ open class SBUMessageWebView: UIStackView, SBUViewLifeCycle {
     
     open func setupLayouts() {
         self.translatesAutoresizingMaskIntoConstraints = false
-        let imageHeightConstraint = self.imageView.heightAnchor
-            .constraint(equalToConstant: Metric.imageHeight)
-        imageHeightConstraint.isActive = true
-        self.imageHeightConstraint = imageHeightConstraint
         
-        self.imageView.widthAnchor
-            .constraint(lessThanOrEqualToConstant: Metric.maxWidth).isActive = true
-        
-        self.detailStackView.translatesAutoresizingMaskIntoConstraints = false
-        self.detailStackView.isLayoutMarginsRelativeArrangement = true
-        
-        self.detailStackView.directionalLayoutMargins = NSDirectionalEdgeInsets(
-            top: Metric.textTopMargin,
-            leading: Metric.textSideMargin,
-            bottom: Metric.textSideMargin,
-            trailing: Metric.textSideMargin
-        )
-        
-        self.detailStackView.setCustomSpacing(
-            Metric.titleBottomMargin,
-            after: self.titleLabel
-        )
-        self.detailStackView.setCustomSpacing(
-            Metric.descBottomMargin,
-            after: self.descriptionLabel
-        )
+        self.imageView
+            .sbu_constraint(height: Metric.imageHeight, priority: .defaultHigh)
+            .sbu_constraint_lessThan(width: Metric.maxWidth)
     }
     
     open func updateLayouts() { }

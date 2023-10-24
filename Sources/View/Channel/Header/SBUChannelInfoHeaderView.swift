@@ -113,7 +113,7 @@ open class SBUChannelInfoHeaderView: SBUView {
         self.stackView.sbu_constraint_equalTo(
             leadingAnchor: self.coverImage.trailingAnchor, leading: 8
         )
-        self.stackView.sbu_constraint(height: coverImageSize)
+//        self.stackView.sbu_constraint(height: coverImageSize)
         self.stackView.sbu_constraint(equalTo: self, centerY: 0)
         
         self.titleLabel.sbu_constraint(equalTo: self.stackView, leading: 0, trailing: 0)

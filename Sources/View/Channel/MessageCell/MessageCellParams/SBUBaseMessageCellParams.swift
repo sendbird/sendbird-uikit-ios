@@ -63,6 +63,7 @@ public class SBUBaseMessageCellParams {
             (SendbirdUI.config.groupChannel.channel.replyType != .none)
             && !isThreadMessage
             && message.parentMessage != nil
+        
         self.useThreadInfo = SendbirdUI.config.groupChannel.channel.replyType == .thread && message.threadInfo.replyCount > 0
         
         let filterTypes: [SBUReplyType] = [.quoteReply, .thread]

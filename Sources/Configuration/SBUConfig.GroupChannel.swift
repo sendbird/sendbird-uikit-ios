@@ -91,6 +91,30 @@ extension SBUConfig.GroupChannel {
         /// Input configuration set of OpenChannel.Channel
         public var input: Input = Input()
         
+        /// Configuration option that decides whether or not sending a MultipleFilesMessage feature is enabled.
+        /// If true, selecting multiple images and videos in a GroupChannel is enabled.
+        /// Default is false.
+        /// ```swift
+        /// SendbirdUI.config.groupChannel.channel.isMultipleFilesMessageEnabled = false // Allows a single image or video selection
+        /// SendbirdUI.config.groupChannel.channel.isMultipleFilesMessageEnabled = true // Allows multiple images and videos selections
+        /// ```
+        /// - Note:
+        ///     - This is supported only for iOS 14 or above.
+        ///     - If it's true, it sets `SBUGlobals.isPHPickerEnabled` as true internally.
+        /// - IMPORTANT: Do not set `SBUGlobals.isPHPickerEnabled` to false after setting `isMultipleFilesMessageEnabled` to `true`
+        /// - Since: 3.10.0
+        @SBUPrioritizedConfig public var isMultipleFilesMessageEnabled: Bool = false {
+            willSet {
+                if newValue == true {
+                    if #available(iOS 14, *) {
+                        SBUGlobals.isPHPickerEnabled = newValue
+                    } else {
+                        SBULog.error("`isMultipleFilesMessageEnabled` can only be enabled in iOS 14 or above.")
+                    }
+                }
+            }
+        }
+        
         // MARK: Logic
         override init() {}
         

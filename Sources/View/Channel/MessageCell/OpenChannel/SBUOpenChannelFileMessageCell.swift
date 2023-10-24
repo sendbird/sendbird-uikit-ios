@@ -22,7 +22,7 @@ open class SBUOpenChannelFileMessageCell: SBUOpenChannelContentBaseMessageCell {
         return fileView
     }()
     
-    private var ratioConstraint: NSLayoutConstraint!
+    private var ratioConstraint: NSLayoutConstraint?
     
     // MARK: - View Lifecycle
     open override func setupViews() {
@@ -34,18 +34,18 @@ open class SBUOpenChannelFileMessageCell: SBUOpenChannelContentBaseMessageCell {
     }
 
     open override func setupLayouts() {
-        super.setupLayouts()
-        
         self.mainContainerView.sbu_constraint_lessThan(
             width: SBUGlobals.messageCellConfiguration.openChannel.thumbnailSize.width
         )
-        
+
+        self.ratioConstraint?.isActive = false
         self.ratioConstraint = self.mainContainerView.heightAnchor.constraint(
             equalTo: self.mainContainerView.widthAnchor,
             multiplier: 0.65
         )
+        self.ratioConstraint?.isActive = true
         
-        self.ratioConstraint.isActive = true
+        super.setupLayouts()
     }
     
     open override func setupActions() {
@@ -76,6 +76,7 @@ open class SBUOpenChannelFileMessageCell: SBUOpenChannelContentBaseMessageCell {
         
         switch fileType {
         case .image, .video:
+            self.ratioConstraint?.isActive = false
             if !(self.baseFileContentView is SBUOpenChannelImageContentView) {
                 self.baseFileContentView.removeFromSuperview()
                 self.baseFileContentView = SBUOpenChannelImageContentView()
@@ -85,7 +86,7 @@ open class SBUOpenChannelFileMessageCell: SBUOpenChannelContentBaseMessageCell {
                     mainContainerView.insertArrangedSubview(self.baseFileContentView, at: 0)
                 }
             }
-            self.ratioConstraint.isActive = true
+            self.ratioConstraint?.isActive = true
             self.baseFileContentView.configure(message: message, position: .left)
 
         case .audio, .pdf, .etc:
@@ -98,7 +99,7 @@ open class SBUOpenChannelFileMessageCell: SBUOpenChannelContentBaseMessageCell {
                     mainContainerView.insertArrangedSubview(self.baseFileContentView, at: 0)
                 }
             }
-            self.ratioConstraint.isActive = false
+            self.ratioConstraint?.isActive = false
             if let commonContentView = self.baseFileContentView as? SBUCommonContentView {
                 commonContentView.configure(
                     message: message,

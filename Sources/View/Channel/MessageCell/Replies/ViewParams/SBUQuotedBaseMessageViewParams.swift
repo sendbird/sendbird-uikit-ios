@@ -40,6 +40,7 @@ public class SBUQuotedBaseMessageViewParams {
     public var urlString: String? {
         switch messageType {
             case .fileMessage(_, _, let urlString): return urlString
+            case .multipleFilesMessage(_, _, let urlString): return urlString
             default: return nil
         }
     }
@@ -49,6 +50,7 @@ public class SBUQuotedBaseMessageViewParams {
     public var fileName: String? {
         switch messageType {
             case .fileMessage(let name, _, _): return name
+            case .multipleFilesMessage(let name, _, _): return name
             default: return nil
         }
     }
@@ -58,6 +60,7 @@ public class SBUQuotedBaseMessageViewParams {
     public var fileType: String? {
         switch messageType {
         case .fileMessage(_, let type, _): return type
+        case .multipleFilesMessage(_, let type, _): return type
         default: return nil
         }
     }
@@ -66,8 +69,8 @@ public class SBUQuotedBaseMessageViewParams {
     /// - Since: 2.2.0
     public var isFileType: Bool {
         switch messageType {
-            case .fileMessage: return true
-            default: return false
+        case .fileMessage, .multipleFilesMessage: return true
+        default: return false
         }
     }
     
@@ -142,6 +145,24 @@ public class SBUQuotedBaseMessageViewParams {
             let type = fileMessage.type
             let name = fileMessage.name
             self.messageType = .fileMessage(name, type, urlString)
+        } else if let multipleFilesMessage = message.parentMessage as? MultipleFilesMessage {
+            // MFM should always have files
+            // because this MFM was already uploaded before,
+            // and the current new message is simply replying to it.
+            guard let firstUploadedFileInfo = multipleFilesMessage.files.first,
+                  let fileType = firstUploadedFileInfo.mimeType,
+                  let fileName = firstUploadedFileInfo.fileName else {
+                SBULog.error("Can't read multiple files message.")
+                self.text = SBUStringSet.Message_Unknown_Description
+                self.messagePosition = position
+                self.useQuotedMessage = useQuotedMessage
+                self.requestId = message.requestId
+                self.messageType = .none
+                return
+            }
+            
+            let urlString = firstUploadedFileInfo.url
+            self.messageType = .multipleFilesMessage(fileName, fileType, urlString)
         } else {
             self.messageType = .userMessage
         }

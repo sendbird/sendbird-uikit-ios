@@ -34,6 +34,9 @@ public class SBUStringSet {
     
     // MARK: - Alert
     public static var Alert_Delete = "Are you sure you want to delete?"
+    public static var Alert_Delete_MultipleFilesMessage: (Int) -> String = {
+        return  "Do you want to delete all \($0) photos?"
+    }
     public static var Alert_Allow_Camera_Access = "Please allow camera usage from settings"
     public static var Alert_Allow_PhotoLibrary_Access = "Please Allow PhotoLibrary Access"
     public static var Alert_Allow_PhotoLibrary_Access_Message = "PhotoLibrary access required to get your photos and videos"
@@ -173,7 +176,7 @@ public class SBUStringSet {
     public static var ChannelPushSettings_Notification_Description = "Turn on push notifications if you wish to be notified when messages are delivered to this channel."
 
     // MARK: - Message Input
-    public static var MessageInput_Text_Placeholder = "Type a message"
+    public static var MessageInput_Text_Placeholder = "Enter message"
     public static var MessageInput_Text_Unavailable = "Chat is unavailable in this channel"
     public static var MessageInput_Text_Muted = "You are muted"
     public static var MessageInput_Text_Reply = "Reply to message"
@@ -353,6 +356,29 @@ public class SBUStringSet {
         public static var fileName = "Voice_message"
     }
     
+    // MARK: - GroupChannel
+    
+    /// Represents a set of strings related to `MultipleFilesMessage`.
+    /// - since: 3.10.0
+    public struct GroupChannel {
+        public struct Preview {
+            public static var photo = "Photo"
+            public static var gif = "GIF"
+            public static var video = "Video"
+            public static var audio = "Audio"
+            public static var voice = "Voice message"
+            public static var file = "File"
+            public static var multipleFiles = "Photo"
+        }
+    }
+    
+    /// Represents a set of strings related to uploading a file.
+    /// - since: 3.10.0
+    public struct FileUpload {
+        public struct Error {
+            public static var exceededSizeLimit = "The maximum size per file is \(SBUAvailable.uploadSizeLimitMB)MB."
+        }
+    }
 }
 
 extension SBUStringSet {

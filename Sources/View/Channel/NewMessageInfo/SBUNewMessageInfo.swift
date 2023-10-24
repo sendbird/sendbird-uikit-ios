@@ -26,6 +26,9 @@ open class SBUNewMessageInfo: SBUView {
     // MARK: - Properties (Private)
     let DefaultInfoButtonTag = 10001
     var type: NewMessageInfoItemType = .tooltip
+    
+    var witdhConstraint: NSLayoutConstraint?
+    var heightConstraint: NSLayoutConstraint?
 
     @SBUThemeWrapper(theme: SBUTheme.componentTheme)
     var theme: SBUComponentTheme
@@ -67,22 +70,19 @@ open class SBUNewMessageInfo: SBUView {
         var infoItemSize = SBUConstant.newMessageInfoSize
         if self.type == .button {
             infoItemSize = SBUConstant.newMessageButtonSize
-            self.widthAnchor.constraint(equalToConstant: infoItemSize.width).isActive = true
+            self.witdhConstraint?.isActive = false
+            self.witdhConstraint = self.widthAnchor.constraint(equalToConstant: infoItemSize.width)
+            self.witdhConstraint?.isActive = true
         }
         /// Note: width for .tooltip is `sizeToFit()`
 
-        NSLayoutConstraint.activate([
-            self.heightAnchor.constraint(equalToConstant: infoItemSize.height),
-        ])
+        self.heightConstraint?.isActive = false
+        self.heightConstraint = self.heightAnchor.constraint(equalToConstant: infoItemSize.height)
+        self.heightConstraint?.isActive = true
         
         if let messageInfoButton = self.messageInfoButton {
-            messageInfoButton.translatesAutoresizingMaskIntoConstraints = false
-            NSLayoutConstraint.activate([
-                messageInfoButton.leftAnchor.constraint(equalTo: self.leftAnchor),
-                messageInfoButton.rightAnchor.constraint(equalTo: self.rightAnchor),
-                messageInfoButton.topAnchor.constraint(equalTo: self.topAnchor),
-                messageInfoButton.bottomAnchor.constraint(equalTo: self.bottomAnchor),
-            ])
+            messageInfoButton.sbu_constraint()
+                .sbu_constraint(equalTo: self, left: 0, right: 0, top: 0, bottom: 0)
         }
     }
     

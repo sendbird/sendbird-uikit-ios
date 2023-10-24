@@ -26,8 +26,8 @@ public class SBUChannelSettingsChannelInfoView: SBUView {
     
     let kCoverImageSize: CGFloat = 64.0
     
-    var lineViewBottomConstraint: NSLayoutConstraint!
-    var urlLineViewBottomConstraint: NSLayoutConstraint!
+    var lineViewBottomConstraint: NSLayoutConstraint?
+    var urlLineViewBottomConstraint: NSLayoutConstraint?
      
     override init() {
         super.init(frame: .zero)
@@ -103,6 +103,8 @@ public class SBUChannelSettingsChannelInfoView: SBUView {
                 topAnchor: self.stackView.bottomAnchor, top: 20
             )
             .sbu_constraint(height: 0.5)
+        
+        self.lineViewBottomConstraint?.isActive = false
         self.lineViewBottomConstraint = self.lineView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0)
         
         self.urlTitleLabel
@@ -127,6 +129,7 @@ public class SBUChannelSettingsChannelInfoView: SBUView {
             )
             .sbu_constraint(height: 0.5)
         
+        self.urlLineViewBottomConstraint?.isActive = false
         self.urlLineViewBottomConstraint = self.urlLineView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0)
     }
     
@@ -205,7 +208,7 @@ public class SBUChannelSettingsChannelInfoView: SBUView {
         self.urlLabel.isHidden = !isOpenChannel
         self.urlLineView.isHidden = !isOpenChannel
         
-        self.urlLineViewBottomConstraint.isActive = isOpenChannel
-        self.lineViewBottomConstraint.isActive = !isOpenChannel
+        self.urlLineViewBottomConstraint?.isActive = isOpenChannel
+        self.lineViewBottomConstraint?.isActive = !isOpenChannel
     }
 }

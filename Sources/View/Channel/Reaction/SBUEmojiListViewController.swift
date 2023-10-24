@@ -109,7 +109,7 @@ class SBUEmojiListViewController: SBUBaseViewController, UICollectionViewDelegat
     }
 
     override func setupLayouts() {
-        self.collectionView.setConstraint(from: self.view, left: 0, right: 0, top: 0, bottom: 0)
+        self.collectionView.sbu_constraint(equalTo: self.view, left: 0, right: 0, top: 0, bottom: 0)
         self.collectionView.layoutIfNeeded()
     }
     

@@ -113,12 +113,11 @@ public class SBUMenuSheetViewController: SBUBaseViewController, UITableViewDeleg
     }
 
     public override func setupLayouts() {
-        self.tableView.setConstraint(from: self.view, left: 0, right: 0, top: 0, bottom: 0)
-        self.tableView.layoutIfNeeded()
-
+        self.tableView.sbu_constraint(equalTo: self.view, left: 0, right: 0, top: 0, bottom: 0)
+        
         if let tableHeaderView = self.tableView.tableHeaderView {
-            self.collectionView.setConstraint(
-                from: tableHeaderView,
+            self.collectionView.sbu_constraint(
+                equalTo: tableHeaderView,
                 left: 0,
                 right: 0,
                 top: 0,

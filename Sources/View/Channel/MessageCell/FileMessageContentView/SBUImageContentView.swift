@@ -24,8 +24,8 @@ open class SBUImageContentView: SBUBaseFileContentView {
         return imageView
     }()
     
-    public var widthConstraint: NSLayoutConstraint!
-    public var heightConstraint: NSLayoutConstraint!
+    public var widthConstraint: NSLayoutConstraint?
+    public var heightConstraint: NSLayoutConstraint?
     
     // MARK: - Properties (Private)
     private var loadImageSession: URLSessionTask? {
@@ -45,8 +45,8 @@ open class SBUImageContentView: SBUBaseFileContentView {
     }
     
     open override func setupLayouts() {
-        self.imageView.setConstraint(
-            from: self,
+        self.imageView.sbu_constraint(
+            equalTo: self,
             left: 0,
             right: 0,
             top: 0,
@@ -57,12 +57,15 @@ open class SBUImageContentView: SBUBaseFileContentView {
         self.setupSizeContraint()
         
         self.iconImageView
-            .setConstraint(from: self, centerX: true, centerY: true)
-            .setConstraint(width: 48, height: 48)
+            .sbu_constraint(equalTo: self, centerX: 0, centerY: 0)
+            .sbu_constraint(width: 48, height: 48)
         self.iconImageView.layoutIfNeeded()
     }
     
     open func setupSizeContraint() {
+        self.widthConstraint?.isActive = false
+        self.heightConstraint?.isActive = false
+        
         self.widthConstraint = self.imageView.widthAnchor.constraint(
             equalToConstant: SBUGlobals.messageCellConfiguration.groupChannel.thumbnailSize.width
         )
@@ -70,10 +73,8 @@ open class SBUImageContentView: SBUBaseFileContentView {
             equalToConstant: SBUGlobals.messageCellConfiguration.groupChannel.thumbnailSize.height
         )
 
-        NSLayoutConstraint.activate([
-            self.widthConstraint,
-            self.heightConstraint
-        ])
+        self.widthConstraint?.isActive = true
+        self.heightConstraint?.isActive = true
     }
     
     open override func configure(message: FileMessage, position: MessagePosition) {
@@ -178,11 +179,11 @@ open class SBUImageContentView: SBUBaseFileContentView {
     }
     
     open func resizeImageView(by size: CGSize) {
-        self.widthConstraint.constant = min(
+        self.widthConstraint?.constant = min(
             size.width,
             SBUGlobals.messageCellConfiguration.groupChannel.thumbnailSize.width
         )
-        self.heightConstraint.constant = min(
+        self.heightConstraint?.constant = min(
             size.height,
             SBUGlobals.messageCellConfiguration.groupChannel.thumbnailSize.height
         )

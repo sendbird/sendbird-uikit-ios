@@ -274,10 +274,10 @@ extension SBUSelectablePhotoViewController: UICollectionViewDelegate, UICollecti
                 } else {
                     PHImageManager().requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: .aspectFill, options: requestOptions) { image, _ in
                         
-                        guard let image = image?.fixedOrientation(),
-                              let imageData = image.sbu_convertToData() else { return }
-                        
                         DispatchQueue.main.async { [weak self] in
+                            guard let image = image?.fixedOrientation(),
+                                  let imageData = image.sbu_convertToData() else { return }
+
                             guard let self = self else { return }
                             self.delegate?.didTapSendImageData(imageData, fileName: fileName, mimeType: mimeType)
                             self.dismiss(animated: true, completion: nil)

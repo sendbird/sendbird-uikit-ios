@@ -15,7 +15,7 @@ open class SBUMessageDateView: SBUView {
     public var theme: SBUMessageCellTheme
     
     public lazy var dateLabel: UILabel = UILabel()
-    public var padding: UIEdgeInsets = UIEdgeInsets(top: 8, left: 4, bottom: 8, right: 4)
+    public var padding: UIEdgeInsets = UIEdgeInsets(top: 4, left: 8, bottom: 4, right: 8)
 
     open override func setupViews() {
         self.dateLabel = SBUPaddingLabel(padding.top, padding.bottom, padding.left, padding.right)
@@ -27,7 +27,7 @@ open class SBUMessageDateView: SBUView {
     
     open override func setupLayouts() {
         self.dateLabel
-            .setConstraint(from: self, centerX: true, centerY: true)
+            .sbu_constraint(equalTo: self, centerX: 0, centerY: 0)
             .sbu_constraint(equalTo: self, top: 0, bottom: 0)
     }
     

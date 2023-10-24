@@ -108,7 +108,7 @@ extension SBUBaseChannelViewController {
             let keyboardHeight = getAdjustedKeyboardHeight(with: keyboardFrame)
             let tabBarHeight = getTabBarHeight()
             
-            self.messageInputViewBottomConstraint.constant = -(keyboardHeight-tabBarHeight)
+            self.messageInputViewBottomConstraint?.constant = -(keyboardHeight-tabBarHeight)
         }
         self.view.layoutIfNeeded()
     }
@@ -151,7 +151,7 @@ extension SBUBaseChannelViewController {
                     self.baseInputComponent?.frame.origin ?? CGPoint(x: 0, y: self.view.frame.height),
                     to: self.view
                 )
-                initialMessageInputBottomConstraint = self.messageInputViewBottomConstraint.constant
+                initialMessageInputBottomConstraint = self.messageInputViewBottomConstraint?.constant ?? 0
             case .changed:
                 switch tableView.keyboardDismissMode {
                     case .interactive:
@@ -165,7 +165,7 @@ extension SBUBaseChannelViewController {
                         
                         // add the diff value to initial message bottom constraint, but keep minimum value as it's initial constraint as
                         // keyboard can't go any higher.
-                        self.messageInputViewBottomConstraint.constant =
+                        self.messageInputViewBottomConstraint?.constant =
                         max(initialMessageInputBottomConstraint + diffBetweenPointYMessageInputBottomY,
                             initialMessageInputBottomConstraint)
                         break
@@ -175,7 +175,7 @@ extension SBUBaseChannelViewController {
                 }
             case .ended:
                 // defense code to prevent bottom constant to be set as some other value
-                self.messageInputViewBottomConstraint.constant = self.isKeyboardShowing
+                self.messageInputViewBottomConstraint?.constant = self.isKeyboardShowing
                 ? initialMessageInputBottomConstraint
                 : 0
                 break

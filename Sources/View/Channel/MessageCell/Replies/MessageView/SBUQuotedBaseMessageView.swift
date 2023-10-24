@@ -13,6 +13,7 @@ enum QuotedMessageType {
     case none
     case userMessage
     case fileMessage(_ name: String, _ type: String, _ urlString: String)
+    case multipleFilesMessage(_ name: String, _ type: String, _ urlString: String)
 }
 
 @objc
@@ -215,16 +216,16 @@ open class SBUQuotedBaseMessageView: SBUView, SBUQuotedMessageViewProtocol {
     
     open override func setupLayouts() {
         self.contentStackView
-            .setConstraint(from: self, leading: 0, trailing: 0, top: 0, bottom: 0)
+            .sbu_constraint(equalTo: self, leading: 0, trailing: 0, top: 0, bottom: 0)
         
         self.repliedIconView
-            .setConstraint(width: 12, height: 12)
+            .sbu_constraint(width: 12, height: 12)
         
         self.repliedToLeadingPadding
-            .setConstraint(width: self.repliedToPaddingWidth)
+            .sbu_constraint(width: self.repliedToPaddingWidth)
         
         self.repliedToTrailingPadding
-            .setConstraint(width: self.repliedToPaddingWidth)
+            .sbu_constraint(width: self.repliedToPaddingWidth)
     }
     
     open override func setupStyles() {

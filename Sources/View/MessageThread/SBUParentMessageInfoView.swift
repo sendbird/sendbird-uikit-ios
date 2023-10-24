@@ -14,12 +14,18 @@ public protocol SBUParentMessageInfoViewDelegate: AnyObject {
     func parentMessageInfoViewBoundsDidChanged(_ view: SBUParentMessageInfoView)
 }
 
-open class SBUParentMessageInfoView: UITableViewHeaderFooterView, SBUUserMessageTextViewDelegate {
+open class SBUParentMessageInfoView: SBUView, SBUUserMessageTextViewDelegate {
     
     // MARK: - UI properties (Public)
-
+    
+    /// - Since: 3.10.0
+    public struct Constants {
+        public static var verticalSideMarginSize: CGFloat = 16.0
+    }
+    
     /// The view that displays the profile image of sender.
     public var profileView = SBUMessageProfileView()
+    public var profileBaseView = UIView()
     
     /// The label that displays the username of sender.
     public var userNameLabel = UILabel()
@@ -27,6 +33,7 @@ open class SBUParentMessageInfoView: UITableViewHeaderFooterView, SBUUserMessage
     public var dateLabel = UILabel()
     /// The button that displays the more menu items.
     public lazy var moreButton: UIButton? = UIButton()
+    public var moreButtonBaseView = UIView()
     
     /// The view that displays the separate line between contents area and reply area.
     public var replySeparateLine = UIView()
@@ -39,15 +46,30 @@ open class SBUParentMessageInfoView: UITableViewHeaderFooterView, SBUUserMessage
     public var messageTextView = SBUUserMessageTextView(removeMargin: true)
     /// The view that displays the file. Used when the file message type.
     public var baseFileContentView = SBUBaseFileContentView()
+    
+    /// The collection view that displays the multiple files. It's used when the message is `MultipleFilesMessage`.
+    /// - Since: 3.10.0
+    public lazy var fileCollectionView: SBUMultipleFilesMessageCollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        layout.minimumInteritemSpacing = 4
+        layout.minimumLineSpacing = 4
+        
+        let collectionview = SBUMultipleFilesMessageCollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionview.isScrollEnabled = false
+        
+        return collectionview
+    }()
+    
     /// The view that displays the web page preview. Used when the user message type (not used yet).
     public var webView = SBUMessageWebView()
     /// The view that displays the reactions.
     public var reactionView = SBUParentMessageInfoReactionView()
     
     /// ```
-    /// + --------------------------------+------------+
-    /// | profileView  | senderVStackView | moreButton |
-    /// + -------------+------------------+------------+
+    /// + -----------------+------------------+--------------------+
+    /// | profileBaseView  | senderVStackView | moreButtonBaseView |
+    /// + -----------------+------------------+--------------------+
     /// ```
     public lazy var userHStackView = SBUStackView(axis: .horizontal, spacing: 8)
     
@@ -77,12 +99,16 @@ open class SBUParentMessageInfoView: UITableViewHeaderFooterView, SBUUserMessage
         didSet { self.delegate?.parentMessageInfoViewBoundsDidChanged(self) }
     }
     
+    /// This property for backward support
+    /// - Since: 3.10.0
+    public lazy var contentView: UIView = self
+    
     // MARK: - UI properties (Private)
-    var replySeparateLineTopAnchorConstraint: NSLayoutConstraint?
     var replyLabelTopAnchorConstraint: NSLayoutConstraint?
-    var contentVStackViewTrailingAnchorConstraint: NSLayoutConstraint?
     var bottomSeparateLineTopAnchorConstraint: NSLayoutConstraint?
-    var baseFileContentViewWidthConstraint: NSLayoutConstraint?
+    var messageTextViewWidthConstraint: NSLayoutConstraint?
+    
+    var alreadySetupLayouts: Bool = false
     
     // MARK: - State properties (Public)
     /// If is`true`, enables reaction feature and it's available. The defaults value is `true`
@@ -111,6 +137,9 @@ open class SBUParentMessageInfoView: UITableViewHeaderFooterView, SBUUserMessage
     public var userProfileTapHandler: (() -> Void)?
     /// The handler that set the logic to be called when a content area is tapped.
     public var tapHandlerToContent: (() -> Void)?
+    /// The handler that set the logic to be called when the specific file is selected.
+    /// - Since: 3.10.0
+    public var fileSelectHandler: ((_ fileInfo: UploadedFileInfo, _ index: Int) -> Void)?
     /// The handler that set the logic to be called when a more button is tapped.
     public var moreButtonTapHandlerToContent: (() -> Void)?
     /// The handler that set the logic to be called when emoji is tapped.
@@ -123,20 +152,14 @@ open class SBUParentMessageInfoView: UITableViewHeaderFooterView, SBUUserMessage
     public var mentionTapHandler: ((_ user: SBUUser) -> Void)?
     
     // MARK: - LifeCycle
-    public override init(reuseIdentifier: String?) {
-        super.init(reuseIdentifier: reuseIdentifier)
-        self.setupViews()
-        self.setupLayouts()
-        self.setupStyles()
-        self.setupActions()
-    }
-    
     @available(*, unavailable, renamed: "SBUParentMessageInfoView(frame:)")
     required convenience public init?(coder: NSCoder) {
         fatalError()
     }
 
-    open func setupViews() {
+    
+    open override func setupViews() {
+        
         // + -----------------------------+------------+
         // | profileView  | userNameLabel | moreButton |
         // |              | dateLabel     |            |
@@ -152,24 +175,32 @@ open class SBUParentMessageInfoView: UITableViewHeaderFooterView, SBUUserMessage
         // | bottomSeparate                            |
         // + ------------------------------------------+
         
-        self.userHStackView.setHStack([
-            self.profileView,
-            self.senderVStackView.setVStack([
-                self.userNameLabel,
-                self.dateLabel
-            ]),
-            self.moreButton
+        self.senderVStackView.setVStack([
+            self.userNameLabel,
+            self.dateLabel
         ])
-        self.contentView.addSubview(self.userHStackView)
+        
+        self.profileBaseView.addSubview(self.profileView)
+        if let moreButton = moreButton {
+            self.moreButtonBaseView.addSubview(moreButton)
+        }
+        
+        self.userHStackView.setHStack([
+            self.profileBaseView,
+            self.senderVStackView,
+            self.moreButtonBaseView
+        ])
+        
+        self.addSubview(self.userHStackView)
         
         self.messageTextView.delegate = self
         
-        self.contentView.addSubview(self.contentVStackView)
+        self.addSubview(self.contentVStackView)
         
-        self.contentView.addSubview(self.reactionView)
-        self.contentView.addSubview(self.replySeparateLine)
-        self.contentView.addSubview(self.replyLabel)
-        self.contentView.addSubview(self.bottomSeparateLine)
+        self.addSubview(self.reactionView)
+        self.addSubview(self.replySeparateLine)
+        self.addSubview(self.replyLabel)
+        self.addSubview(self.bottomSeparateLine)
         
         userHStackView.isHidden = true
         contentVStackView.isHidden = true
@@ -177,122 +208,146 @@ open class SBUParentMessageInfoView: UITableViewHeaderFooterView, SBUUserMessage
         replySeparateLine.isHidden = true
         replyLabel.isHidden = true
         bottomSeparateLine.isHidden = true
-        
-        self.userHStackView.sbu_constraint(equalTo: self.contentView, leading: 16, trailing: -16, top: 16)
-
-        self.profileView.sbu_constraint(width: 34, height: 34)
-        self.moreButton?.sbu_constraint(width: 17, height: 34)
-        
-        self.dateLabel.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
-        
-        self.contentVStackView
-            .sbu_constraint(equalTo: self.contentView, leading: 16)
-            .sbu_constraint(lessThanOrEqualTo: self.contentView, trailing: -16, priority: .defaultLow)
-            .sbu_constraint_equalTo(topAnchor: self.userHStackView.bottomAnchor, top: 8)
-        
-        self.reactionView
-            .sbu_constraint(equalTo: self.contentView, leading: 8, trailing: -8)
-            .sbu_constraint_equalTo(topAnchor: self.contentVStackView.bottomAnchor, top: 0)
-        
-        self.replySeparateLine
-            .sbu_constraint(equalTo: self.contentView, leading: 0, trailing: 0)
-            .sbu_constraint(height: 1)
-
-        self.replyLabel
-            .sbu_constraint(equalTo: self.contentView, leading: 16, trailing: -16)
-        
-        self.bottomSeparateLine
-            .sbu_constraint(equalTo: self.contentView, leading: 0, trailing: 0, bottom: 0)
-            .sbu_constraint_equalTo(topAnchor: self.replyLabel.bottomAnchor, top: 12)
-            .sbu_constraint(height: 1)
     }
     
-    open func setupLayouts() {
-        self.contentVStackViewTrailingAnchorConstraint?.isActive = false
+    open override func setupLayouts() {
+        guard !alreadySetupLayouts else { return }
+        alreadySetupLayouts = true
+        
+        /// ```
+        /// + -----------------+------------------+--------------------+
+        /// | profileBaseView  | senderVStackView | moreButtonBaseView |
+        /// + -----------------+------------------+--------------------+
+        /// ```
+        self.userHStackView
+            .sbu_constraint(equalTo: self, leading: 16, top: 16)
+            .sbu_constraint(equalTo: self, trailing: -16, priority: .defaultHigh)
+            .sbu_constraint_equalTo(bottomAnchor: self.contentVStackView.topAnchor, bottom: 8)
+        
+        self.profileView
+            .sbu_constraint(equalTo: self.profileBaseView, leading: 0, trailing: 0, top: 0)
+            .sbu_constraint(width: 34, height: 34)
+        self.moreButton?
+            .sbu_constraint(equalTo: self.moreButtonBaseView, leading: 0, trailing: 0, centerY: 0)
+            .sbu_constraint(width: 17, height: 34)
+        
+        /// ```
+        /// + ----------------------------------+
+        /// | (message or media or file or web) |
+        /// + ----------------------------------+
+        /// ```
+        self.contentVStackView
+            .sbu_constraint(equalTo: self, leading: 16)
+            .sbu_constraint(lessThanOrEqualTo: self, trailing: -16, priority: .defaultHigh)
+            .sbu_constraint_equalTo(bottomAnchor: self.reactionView.topAnchor, bottom: 0)
+        
         switch message {
         case _ as UserMessage:
-            self.contentVStackViewTrailingAnchorConstraint = self.contentVStackView.trailingAnchor.constraint(
-                lessThanOrEqualTo: self.contentView.trailingAnchor,
-                constant: -16
-            )
-            
-            // TODO: Activate the logic below when supporting url preview
-//            if userMessage.ogMetaData != nil {
-//                self.webView.widthAnchor.constraint(equalToConstant: 240).isActive = true
-//            }
-            
             break
             
         case let fileMessage as FileMessage:
-            self.contentVStackViewTrailingAnchorConstraint = self.contentVStackView.trailingAnchor.constraint(
-                lessThanOrEqualTo: self.contentView.trailingAnchor,
-                constant: -16
-            )
-            self.contentVStackViewTrailingAnchorConstraint?.priority = .defaultLow
-            
             self.contentVStackView.layer.cornerRadius = 16
             self.contentVStackView.clipsToBounds = true
-            
-            self.baseFileContentViewWidthConstraint?.isActive = false
             
             let fileType = SBUUtils.getFileType(by: fileMessage)
             switch fileType {
             case .image, .video:
-                self.baseFileContentView .sbu_constraint(height: 160)
-                self.baseFileContentViewWidthConstraint =  self.baseFileContentView.widthAnchor.constraint(equalToConstant: 240)
-                
+                self.baseFileContentView.sbu_constraint(width: 240, height: 160)
+
             case .audio, .pdf, .etc:
-                self.baseFileContentViewWidthConstraint =  self.baseFileContentView
-                    .trailingAnchor.constraint(
-                        lessThanOrEqualTo: self.contentView.trailingAnchor,
-                        constant: -16
-                    )
                 break
             default:
                 break
             }
-            self.baseFileContentViewWidthConstraint?.isActive = true
+            
+        case _ as MultipleFilesMessage:
+            break
+            
         default:
-            self.contentVStackViewTrailingAnchorConstraint = self.contentVStackView.trailingAnchor.constraint(
-                lessThanOrEqualTo: self.contentView.trailingAnchor,
-                constant: 16
-            )
             break
         }
-        self.contentVStackViewTrailingAnchorConstraint?.isActive = true
-    }
-    
-    open func updateLayouts() {
-        self.setupLayouts()
         
-        let activateReply = (message?.threadInfo.replyCount ?? 0) > 0
+        /// ```
+        /// + ------------------------------------------+
+        /// | reactionView                              |
+        /// + ------------------------------------------+
+        /// ```
+        self.reactionView
+            .sbu_constraint(equalTo: self, leading: 8)
+            .sbu_constraint(equalTo: self, trailing: -8, priority: .defaultLow)
+            .sbu_constraint_equalTo(bottomAnchor: self.replySeparateLine.topAnchor, bottom: 8)
         
-        self.replySeparateLineTopAnchorConstraint?.isActive = false
-        self.replySeparateLineTopAnchorConstraint = self.replySeparateLine.topAnchor.constraint(
-            equalTo: self.reactionView.bottomAnchor,
-            constant: 8
-        )
-        self.replySeparateLineTopAnchorConstraint?.isActive = true
+        /// ```
+        /// + ------------------------------------------+
+        /// | replySeparateLine                         |
+        /// + ------------------------------------------+
+        /// ```
+        self.replySeparateLine
+            .sbu_constraint(equalTo: self, leading: 0)
+            .sbu_constraint(equalTo: self, trailing: 0, priority: .defaultLow)
+            .sbu_constraint(height: 1, priority: .defaultHigh)
+//            .sbu_constraint_equalTo(bottomAnchor: self.replyLabel.topAnchor, bottom: 0)
         
-        self.replyLabelTopAnchorConstraint?.isActive = false
+        /// ```
+        /// + ------------------------------------------+
+        /// | replyLabel                                |
+        /// + ------------------------------------------+
+        /// ```
+        self.replyLabel
+            .sbu_constraint(equalTo: self, leading: 16)
+            .sbu_constraint(equalTo: self, trailing: -16, priority: .defaultLow)
+//            .sbu_constraint_equalTo(bottomAnchor: self.bottomSeparateLine.topAnchor, bottom: 8)
+        
         self.replyLabelTopAnchorConstraint = self.replyLabel.topAnchor.constraint(
             equalTo: self.replySeparateLine.bottomAnchor,
-            constant: activateReply ? 12 : 0
+            constant: 0
         )
-        self.replyLabelTopAnchorConstraint?.isActive = true
+//        NSLayoutConstraint.sbu_activate(baseView: self.replySeparateLine, constraints: [self.replyLabelTopAnchorConstraint])
         
-        self.bottomSeparateLineTopAnchorConstraint?.isActive = false
+        /// ```
+        /// + ------------------------------------------+
+        /// | bottomSeparateLine                        |
+        /// + ------------------------------------------+
+        /// ```
+        self.bottomSeparateLine
+            .sbu_constraint(height: 1, priority: .defaultHigh)
+            .sbu_constraint(equalTo: self, leading: 0, bottom: 0)
+            .sbu_constraint(equalTo: self, trailing: 0, priority: .defaultLow)
+        
         self.bottomSeparateLineTopAnchorConstraint = bottomSeparateLine.topAnchor.constraint(
             equalTo: self.replyLabel.bottomAnchor,
-            constant: activateReply ? 12 : 8
+            constant: 8
         )
-        self.bottomSeparateLineTopAnchorConstraint?.isActive = true
+//        NSLayoutConstraint.sbu_activate(baseView: self.replyLabel, constraints: [self.bottomSeparateLineTopAnchorConstraint])
+        
+        /// 
+        
+        // not working below logic
+        if let superview = self.superview {
+            self.sbu_constraint(equalTo: superview, leading: 0, trailing: 0, top: 0)
+            self.sbu_constraint(equalTo: superview, centerY: 0)
+        }
     }
     
-    open func setupStyles() {
+    open override func updateLayouts() {
+        let activateReply = (message?.threadInfo.replyCount ?? 0) > 0
+        
+        self.replyLabelTopAnchorConstraint?.constant = activateReply ? 12 : 0
+        self.bottomSeparateLineTopAnchorConstraint?.constant = activateReply ? 12 : 8
+        
+        NSLayoutConstraint.sbu_activate(baseView: replyLabel, constraints: [
+            self.replyLabelTopAnchorConstraint
+        ])
+        
+        NSLayoutConstraint.sbu_activate(baseView: bottomSeparateLine, constraints: [
+            self.bottomSeparateLineTopAnchorConstraint
+        ])
+    }
+    
+    open override func setupStyles() {
         self.profileView.setupStyles()
         
-        self.contentView.backgroundColor = self.theme.parentInfoBackgroundColor
+        self.backgroundColor = self.theme.parentInfoBackgroundColor
         
         self.userNameLabel.textColor = self.theme.parentInfoUserNameTextColor
         self.userNameLabel.font = self.theme.parentInfoUserNameTextFont
@@ -358,9 +413,25 @@ open class SBUParentMessageInfoView: UITableViewHeaderFooterView, SBUUserMessage
         switch message {
         case let userMessage as UserMessage:
             self.contentVStackView.setVStack([
-                self.messageTextView,
-                self.webView
+                self.messageTextView
             ])
+            
+            // Set up WebView with OG meta data
+            // TODO: Check - not included in receive data
+            if let ogMetaData = userMessage.ogMetaData, SBUAvailable.isSupportOgTag() {
+                self.contentVStackView.addArrangedSubview(self.webView)
+                self.webView.isHidden = false
+                let model = SBUMessageWebViewModel(metaData: ogMetaData)
+                self.webView.configure(model: model)
+            } else {
+                if let superViewWidth = self.superview?.frame.width {
+                    self.messageTextViewWidthConstraint?.isActive = false
+                    self.messageTextViewWidthConstraint = self.messageTextView.widthAnchor.constraint(lessThanOrEqualToConstant: superViewWidth - (Constants.verticalSideMarginSize * 2))
+                    self.messageTextViewWidthConstraint?.isActive = true
+                }
+                
+                self.webView.isHidden = true
+            }
             
             self.messageTextView.configure(
                 model: SBUUserMessageTextViewModel(
@@ -369,19 +440,9 @@ open class SBUParentMessageInfoView: UITableViewHeaderFooterView, SBUUserMessage
                 )
             )
             
-            // Set up WebView with OG meta data
-            // TODO: Check - not included in receive data
-            if let ogMetaData = userMessage.ogMetaData, SBUAvailable.isSupportOgTag() {
-                self.webView.isHidden = false
-                let model = SBUMessageWebViewModel(metaData: ogMetaData)
-                self.webView.configure(model: model)
-            } else {
-                self.webView.isHidden = true
-            }
-            
         case let fileMessage as FileMessage:
             self.contentVStackView.setVStack([
-                self.baseFileContentView,
+                self.baseFileContentView
             ])
             
             let fileType = SBUUtils.getFileType(by: fileMessage)
@@ -425,6 +486,20 @@ open class SBUParentMessageInfoView: UITableViewHeaderFooterView, SBUUserMessage
                 break
             }
             
+        case let multipleFilesMessage as MultipleFilesMessage:
+            self.fileCollectionView.removeFromSuperview()
+            
+            var fileCollectionViewHeight = self.fileCollectionView.collectionViewLayout.collectionViewContentSize.height
+            fileCollectionViewHeight = fileCollectionViewHeight == 0 ? 120 : fileCollectionViewHeight
+            
+            self.fileCollectionView
+                .sbu_constraint(width: 244)
+                .sbu_constraint(height: fileCollectionViewHeight, priority: .defaultHigh)
+            
+            contentVStackView.insertArrangedSubview(self.fileCollectionView, at: 0)
+            
+            self.fileCollectionView.configure(delegate: self, dataSource: self, cornerRadius: 8)
+            
         default:
             break
         }
@@ -447,8 +522,27 @@ open class SBUParentMessageInfoView: UITableViewHeaderFooterView, SBUUserMessage
         self.configured = true
     }
     
+    /// Updates the width constraint property of messageTextView based on size
+    /// - Parameter size: Reference size
+    ///
+    /// - Since: 3.10.0
+    open func updateMessageTextWidth(with size: CGSize) {
+        var width = 0.0
+        let orientation = UIDevice.current.orientation
+        switch orientation {
+        case .portrait:
+            width = min(size.width, size.height)
+        case .landscapeLeft, .landscapeRight:
+            width = max(size.width, size.height)
+        default:
+            return
+        }
+        
+        self.messageTextViewWidthConstraint?.constant = width - (Constants.verticalSideMarginSize * 2)
+    }
+    
     // MARK: - Action
-    open func setupActions() {
+    open override func setupActions() {
         self.profileView.addGestureRecognizer(UITapGestureRecognizer(
             target: self,
             action: #selector(self.onTapUserProfileView(sender:)))
@@ -494,6 +588,18 @@ open class SBUParentMessageInfoView: UITableViewHeaderFooterView, SBUUserMessage
         self.tapHandlerToContent?()
     }
     
+    /// Calls the `fileSelectHandler()` when one of thie files is tapped in parent message that is a multiple files message.
+    /// - Parameter sender: tapGestureRecognizer
+    /// - Since: 3.10.0
+    @objc open func onSelectFile(sender: UITapGestureRecognizer) {
+        if let cell = sender.view as? SBUMultipleFilesMessageCollectionViewCell,
+           let fileInfo = cell.uploadedFileInfo,
+           let indexPath = fileCollectionView.indexPath(for: cell) {
+            
+            self.fileSelectHandler?(fileInfo, indexPath.item)
+        }
+    }
+    
     /// Opens the url when the web page preview area is tapped
     /// - Parameter sender: tapGestureRecognizer
     @objc open func onTapWebview(sender: UITapGestureRecognizer) {
@@ -516,5 +622,45 @@ open class SBUParentMessageInfoView: UITableViewHeaderFooterView, SBUUserMessage
     
     open func userMessageTextView(_ textView: SBUUserMessageTextView, didTapMention user: SBUUser) {
         self.mentionTapHandler?(user)
+    }
+}
+
+// MARK: - Multiple Files Message
+extension SBUParentMessageInfoView: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+    public func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    
+    open func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        guard let message = self.message as? MultipleFilesMessage else { return 0 }
+        return message.files.count
+    }
+    
+    open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: 120, height: 120)
+    }
+    
+    open func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let message = self.message as? MultipleFilesMessage,
+              let cell = fileCollectionView.dequeueReusableCell(
+            withReuseIdentifier: SBUMultipleFilesMessageCollectionViewCell.sbu_className,
+            for: indexPath
+        ) as? SBUMultipleFilesMessageCollectionViewCell else {
+            return UICollectionViewCell()
+        }
+        
+        let index = indexPath[1]
+        cell.configure(
+            uploadedFileInfo: message.files[index],
+            requestId: message.requestId,
+            index: indexPath[1],
+            imageCornerRadius: 8,
+            showOverlay: false
+        )
+        
+        /// Add gesture recognizer instead of using `collectionView didSelectItemAt`
+        /// becuase`onTapContentView` consumes the tap instead of triggering the `didSelectItemAt`.
+        cell.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onSelectFile(sender:))))
+        return cell
     }
 }

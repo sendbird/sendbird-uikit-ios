@@ -53,6 +53,8 @@ class ViewController: UIViewController {
             UIView.animate(withDuration: 0.4, delay: 0, options: .curveEaseOut, animations: {
                 self.connectView.isHidden = self.isSignedIn
                 self.connectView.alpha = self.isSignedIn ? 0 : 1
+                self.mainView.isHidden = !self.isSignedIn
+                self.mainView.alpha = !self.isSignedIn ? 0 : 1
                 self.homeStackView.isHidden = !self.isSignedIn
                 self.homeStackView.alpha = !self.isSignedIn ? 0 : 1
             })

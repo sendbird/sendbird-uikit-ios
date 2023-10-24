@@ -220,6 +220,29 @@ open class SBUMessageSearchResultCell: SBUTableViewCell {
         self.fileStackView.isHidden = true
         
         switch message {
+        case let multipleFilesMessage as MultipleFilesMessage:
+            self.fileStackView.isHidden = false
+            self.fileMessageIcon.isHidden = false
+            
+            let matchedFile: UploadedFileInfo = multipleFilesMessage.files[0]
+            
+            self.fileMessageLabel.text = matchedFile.fileName
+            
+            let iconType: SBUIconSetType
+            
+            if let fileType = matchedFile.mimeType,
+               fileType.hasPrefix("image/gif") {
+                iconType = SBUIconSetType.iconGif
+            } else {
+                iconType = SBUIconSetType.iconPhoto
+            }
+            
+            self.fileMessageIcon.image = iconType.image(
+                with: self.theme.fileMessageIconTintColor,
+                to: SBUIconSetType.Metric.defaultIconSizeMedium
+            )
+            self.fileMessageIcon.backgroundColor = self.theme.fileMessageIconBackgroundColor
+            
         case let fileMessage as FileMessage:
             self.fileStackView.isHidden = false
             self.fileMessageIcon.isHidden = false

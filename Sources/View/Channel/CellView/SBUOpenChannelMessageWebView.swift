@@ -21,6 +21,10 @@ open class SBUOpenChannelMessageWebView: SBUMessageWebView {
     }
     
     open override func setupViews() {
+        (self.titleLabel as? SBUPaddingLabel)?.resetPadding()
+        (self.descriptionLabel as? SBUPaddingLabel)?.resetPadding()
+        (self.urlLabel as? SBUPaddingLabel)?.resetPadding()
+        
         self.axis = .vertical
         self.addArrangedSubview(self.detailStackView)
         self.addArrangedSubview(self.imageView)
@@ -46,11 +50,11 @@ open class SBUOpenChannelMessageWebView: SBUMessageWebView {
             bottom: OpenChannelMetric.textSideMargin,
             trailing: OpenChannelMetric.textSideMargin
         )
-        
-        let imageHeightConstraint = self.imageView.heightAnchor
+
+        self.imageHeightConstraint?.isActive = false
+        self.imageHeightConstraint = self.imageView.heightAnchor
             .constraint(equalToConstant: Metric.imageHeight)
-        imageHeightConstraint.isActive = true
-        self.imageHeightConstraint = imageHeightConstraint
+        self.imageHeightConstraint?.isActive = true
         
         self.setCustomSpacing(OpenChannelMetric.imageTopMargin, after: detailStackView)
         
