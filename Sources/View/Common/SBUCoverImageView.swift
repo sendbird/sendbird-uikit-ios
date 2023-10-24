@@ -136,22 +136,25 @@ public class SBUCoverImageView: UIView {
         makeCircle: Bool = false,
         contentMode: ContentMode = .center
     ) {
-        let imageView = self.createImageView(
-            withImage: image,
-            backgroundColor: backgroundColor,
-            makeCircle: makeCircle,
-            contentMode: contentMode
-        )
-        self.addSubview(imageView)
-        
-        let subviews = self.subviews
-        for subView in subviews {
-            if subView != imageView {
-                subView.removeFromSuperview()
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            let imageView = self.createImageView(
+                withImage: image,
+                backgroundColor: backgroundColor,
+                makeCircle: makeCircle,
+                contentMode: contentMode
+            )
+            self.addSubview(imageView)
+            
+            let subviews = self.subviews
+            for subView in subviews {
+                if subView != imageView {
+                    subView.removeFromSuperview()
+                }
             }
+            
+            self.makeCircularWithSpacing(spacing: 0)
         }
-        
-        self.makeCircularWithSpacing(spacing: 0)
     }
     
     // MARK: - Internal

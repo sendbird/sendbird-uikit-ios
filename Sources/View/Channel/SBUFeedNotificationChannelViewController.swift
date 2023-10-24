@@ -321,9 +321,9 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
                 constant: Constants.categoryFilterHeight
             )
             
-            if let listComponentTopConstraint = self.listComponentTopConstraint {
-                NSLayoutConstraint.activate([listComponentTopConstraint])
-            }
+            NSLayoutConstraint.sbu_activate(baseView: listComponent, constraints: [
+                listComponentTopConstraint
+            ])
         }
     }
     

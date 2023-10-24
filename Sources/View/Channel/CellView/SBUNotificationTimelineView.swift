@@ -35,8 +35,8 @@ class SBUNotificationTimelineView: SBUMessageDateView {
     override func setupLayouts() {
 
         self.dateLabel
-            .setConstraint(from: self, centerX: true, centerY: true)
-            .setConstraint(from: self, top: 0, bottom: 0)
+            .sbu_constraint(equalTo: self, centerX: 0, centerY: 0)
+            .sbu_constraint(equalTo: self, top: 0, bottom: 0)
     }
     
     override func layoutSubviews() {

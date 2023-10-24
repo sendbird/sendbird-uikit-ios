@@ -110,12 +110,13 @@ open class SBUThreadInfoView: SBUView, SBUThreadInfoViewProtocol {
     }
     
     open override func setupLayouts() {
-        super.setupLayouts()
         
         let margin: CGFloat = 12.0
         self.mainContainerView
             .sbu_constraint(equalTo: self, leading: margin, top: 0, bottom: 0, centerX: 0)
             .sbu_constraint(height: userImageSize)
+        
+        super.setupLayouts()
     }
     
     open override func setupActions() {

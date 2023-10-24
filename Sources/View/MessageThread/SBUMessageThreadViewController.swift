@@ -11,6 +11,7 @@ import SendbirdChatSDK
 import Photos
 import AVKit
 import SafariServices
+import PhotosUI
 
 public protocol SBUMessageThreadViewControllerDelegate: AnyObject {
     /// Called when `SBUThreadInfoView` was tapped.
@@ -145,6 +146,16 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
         )
     }
     
+    open override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        
+        self.listComponent?.parentMessageInfoView.updateMessageTextWidth(with: size)
+        
+        coordinator.animate(alongsideTransition: { (context) in
+            self.listComponent?.reloadInputViews()
+        }, completion: nil)
+    }
+    
     open override func applicationWillResignActivity() {
         self.resetVoiceMessageInput(for: true)
         self.dismissVoiceMessageInput()
@@ -226,45 +237,64 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
     open override func setupLayouts() {
         super.setupLayouts()
 
-        self.listComponent?.translatesAutoresizingMaskIntoConstraints = false
         if let listComponent = listComponent {
+            listComponent.translatesAutoresizingMaskIntoConstraints = false
+            
+            tableViewTopConstraint?.isActive = false
+            tableViewBottomConstraint?.isActive = false
+            tableViewLeftConstraint?.isActive = false
+            tableViewRightConstraint?.isActive = false
+            
             self.tableViewTopConstraint = listComponent.topAnchor.constraint(
                 equalTo: self.view.topAnchor,
                 constant: 0
             )
-
-            NSLayoutConstraint.activate([
-                self.tableViewTopConstraint,
-                listComponent.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: 0),
-                listComponent.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: 0),
-                listComponent.bottomAnchor.constraint(
-                    equalTo: self.inputComponent?.topAnchor ?? self.view.bottomAnchor,
-                    constant: 0
-                )
-            ])
+            self.tableViewBottomConstraint = listComponent.bottomAnchor.constraint(
+                equalTo: self.inputComponent?.topAnchor ?? self.view.bottomAnchor,
+                constant: 0
+            )
+            self.tableViewLeftConstraint = listComponent.leftAnchor.constraint(
+                equalTo: self.view.leftAnchor, constant: 0
+            )
+            self.tableViewRightConstraint = listComponent.rightAnchor.constraint(
+                equalTo: self.view.rightAnchor, constant: 0
+            )
+            
+            tableViewTopConstraint?.isActive = true
+            tableViewBottomConstraint?.isActive = true
+            tableViewLeftConstraint?.isActive = true
+            tableViewRightConstraint?.isActive = true
         }
         
-        self.inputComponent?.translatesAutoresizingMaskIntoConstraints = false
-        self.messageInputViewBottomConstraint = self.inputComponent?.bottomAnchor.constraint(
-            equalTo: self.view.bottomAnchor,
-            constant: 0
-        )
         if let inputComponent = self.inputComponent {
-            NSLayoutConstraint.activate([
-                inputComponent.topAnchor.constraint(
-                    equalTo: self.listComponent?.bottomAnchor ?? self.view.bottomAnchor,
-                    constant: 0
-                ),
-                inputComponent.leftAnchor.constraint(
-                    equalTo: self.view.leftAnchor,
-                    constant: 0
-                ),
-                inputComponent.rightAnchor.constraint(
-                    equalTo: self.view.rightAnchor,
-                    constant: 0
-                ),
-                messageInputViewBottomConstraint
-            ])
+            inputComponent.translatesAutoresizingMaskIntoConstraints = false
+            
+            messageInputViewTopConstraint?.isActive = false
+            messageInputViewBottomConstraint?.isActive = false
+            messageInputViewLeftConstraint?.isActive = false
+            messageInputViewRightConstraint?.isActive = false
+            
+            self.messageInputViewTopConstraint = inputComponent.topAnchor.constraint(
+                equalTo: self.listComponent?.bottomAnchor ?? self.view.bottomAnchor,
+                constant: 0
+            )
+            self.messageInputViewBottomConstraint = inputComponent.bottomAnchor.constraint(
+                equalTo: self.view.bottomAnchor,
+                constant: 0
+            )
+            self.messageInputViewLeftConstraint = inputComponent.leftAnchor.constraint(
+                equalTo: self.view.leftAnchor,
+                constant: 0
+            )
+            self.messageInputViewRightConstraint = inputComponent.rightAnchor.constraint(
+                equalTo: self.view.rightAnchor,
+                constant: 0
+            )
+            
+            messageInputViewTopConstraint?.isActive = true
+            messageInputViewBottomConstraint?.isActive = true
+            messageInputViewLeftConstraint?.isActive = true
+            messageInputViewRightConstraint?.isActive = true
         }
     }
     
@@ -272,14 +302,20 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
         super.setupStyles()
     }
     
-    open override func updateStyles() {
+    open override func updateStyles(needsToLayout: Bool) {
         self.setupStyles()
         super.updateStyles()
         
         self.headerComponent?.updateStyles(theme: self.theme)
         self.listComponent?.updateStyles(theme: self.theme)
         
-        self.listComponent?.reloadTableView()
+        if self.listComponent?.frame != .zero {
+            self.listComponent?.reloadTableView(needsToLayout: needsToLayout)
+        }
+    }
+    
+    open override func updateStyles() {
+        self.updateStyles(needsToLayout: true)
     }
     
     // MARK: - Action
@@ -320,6 +356,136 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
                 title: self.viewModel?.channel?.name ?? ""
             )
         }
+    }
+    
+    // MARK: - PHPickerViewControllerDelegate
+    
+    /// - Since: [NEXT_VERSION_MFM_THREAD]
+    @available(iOS 14, *)
+    override open func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        picker.dismiss(animated: true)
+        
+        guard results.count <= SBUAvailable.multipleFilesMessageFileCountLimit else {
+            self.errorHandler("Up to \(SBUAvailable.multipleFilesMessageFileCountLimit) can be attached.")
+            return
+        }
+        
+        // Picked multiple files
+        if results.count > 1 {
+            handleMultipleFiles(results)
+        }
+        
+        // Picked a single file
+        else {
+            handleSingleFile(results)
+        }
+    }
+    
+    
+    /// - Since: 3.10.0
+    @available(iOS 14, *)
+    private func handleSingleFile(_ results: [PHPickerResult]) {
+        results.forEach {
+            let itemProvider = $0.itemProvider
+            
+            /// !! Warining !!
+            /// Since the image identifier includes the gif identifier, the check of the gif type should take precedence over the image type comparison.
+            
+            // GIF
+            if itemProvider.hasItemConformingToTypeIdentifier(UTType.gif.identifier) {
+                if let inputComponent = self.baseInputComponent {
+                    inputComponent.pickGIFFile(itemProvider: itemProvider)
+                    return
+                }
+            }
+            
+            // image
+            else if itemProvider.hasItemConformingToTypeIdentifier(UTType.image.identifier) {
+                if let inputComponent = self.baseInputComponent {
+                    inputComponent.pickImageFile(itemProvider: itemProvider)
+                    return
+                }
+            }
+            
+            // video
+            else if itemProvider.hasItemConformingToTypeIdentifier(UTType.movie.identifier) {
+                if let inputComponent = self.baseInputComponent {
+                    inputComponent.pickVideoFile(itemProvider: itemProvider)
+                    return
+                }
+            }
+        }
+    }
+    
+    /// - Since: [NEXT_VERSION_MFM_THREAD]
+    @available(iOS 14, *)
+    private func handleMultipleFiles(_ results: [PHPickerResult]) {
+        guard let inputComponent = self.baseInputComponent as? SBUMessageThreadModule.Input else {
+            return
+        }
+        
+        // Group picked files depending on file type.
+        let (imageAndGIFs, videos) = groupFilesByMimeType(results)
+        
+        // Handle images+GIFs.
+        if imageAndGIFs.count > 0 {
+            
+            // multiple (image + gif) -> send a multipleFilesMessage
+            if imageAndGIFs.count > 1 {
+                inputComponent.pickMultipleImageFiles(itemProviders: imageAndGIFs)
+            }
+            
+            // single image / gif -> send a fileMessage
+            else if imageAndGIFs.count == 1 {
+                let itemProvider = imageAndGIFs.first!
+                
+                // GIF
+                if itemProvider.hasItemConformingToTypeIdentifier(UTType.gif.identifier) {
+                    if let inputComponent = self.baseInputComponent {
+                        inputComponent.pickGIFFile(itemProvider: itemProvider)
+                    }
+                }
+                
+                // image
+                else if itemProvider.hasItemConformingToTypeIdentifier(UTType.image.identifier) {
+                    if let inputComponent = self.baseInputComponent {
+                        inputComponent.pickImageFile(itemProvider: itemProvider)
+                    }
+                }
+            }
+        }
+        
+        // Handle videos.
+        if videos.count > 0 {
+            // video(s) selected -> send N fileMessages
+            videos.forEach { itemProvider in
+                inputComponent.pickVideoFile(itemProvider: itemProvider)
+            }
+        }
+    }
+    
+    @available(iOS 14, *)
+    /// Groups picked files by file type.
+    /// - Returns a tuple - (an array of images + GIFs, an array of videos)
+    private func groupFilesByMimeType(_ results: [PHPickerResult]) -> ([NSItemProvider], [NSItemProvider]) {
+        var imageAndGIFs = [NSItemProvider]()
+        var videos = [NSItemProvider]()
+        
+        results.forEach {
+            let itemProvider = $0.itemProvider
+                
+            if itemProvider.hasItemConformingToTypeIdentifier(UTType.gif.identifier) ||
+                itemProvider.hasItemConformingToTypeIdentifier(UTType.image.identifier) {
+                imageAndGIFs.append(itemProvider)
+            }
+            
+            // Group videos
+            else if itemProvider.hasItemConformingToTypeIdentifier(UTType.movie.identifier) {
+                videos.append(itemProvider)
+            }
+        }
+        
+        return (imageAndGIFs, videos)
     }
     
     // MARK: - VoiceMessageInput
@@ -374,6 +540,18 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
     
     open func messageThreadViewModelShouldDismissMessageThread(_ viewModel: SBUMessageThreadViewModel) {
         self.moveToParentMessage()
+    }
+    
+    /// - Note: This interface is beta. We do not gaurantee this interface to work properly yet.
+    /// - Since: [NEXT_VERSION_MFM_THREAD]
+    public func messageThreadViewModel(
+        _ viewModel: SBUMessageThreadViewModel,
+        didFinishUploadingFileAt index: Int,
+        multipleFilesMessageRequestId
+        requestId: String
+    ) {
+        self.baseListComponent?
+            .reloadMultipleFilesMessageCollectionViewCell(requestId: requestId, index: index)
     }
     
     // MARK: - SBUMessageThreadModuleHeaderDelegate
@@ -457,6 +635,57 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
         }
     }
     
+    /// - Note: This interface is beta. We do not gaurantee this interface to work properly yet.
+    /// - Since: [NEXT_VERSION_MFM_THREAD]
+    public func messageThreadModule(
+        _ listComponent: SBUMessageThreadModule.List,
+        didSelectFileAt index: Int,
+        multipleFilesMessageCell: SBUMultipleFilesMessageCell,
+        forRowAt cellIndexPath: IndexPath
+    ) {
+        guard let multipleFilesMessage = multipleFilesMessageCell.multipleFilesMessage else {
+            SBUToastManager.showToast(parentVC: self, type: .fileOpenFailed)
+            return
+        }
+        guard index < multipleFilesMessage.files.count else { return }
+        let fileInfo = multipleFilesMessage.files[index]
+        
+        // show file view controller
+        let fileType: SBUMessageFileType
+        if let mimeType = fileInfo.mimeType {
+            fileType = SBUUtils.getFileType(by: mimeType)
+        } else {
+            fileType = .etc
+        }
+        let file = SBUFileData(
+            urlString: fileInfo.url,
+            message: multipleFilesMessage,
+            cacheKey: multipleFilesMessage.cacheKey + "_\(index)",
+            fileType: fileType,
+            name: fileInfo.fileName ?? ""
+        )
+        self.openFile(file)
+    }
+    
+    /// - Note: This interface is beta. We do not gaurantee this interface to work properly yet.
+    /// - Since: [NEXT_VERSION_MFM_THREAD]
+    public func messageThreadModule(
+        _ listComponent: SBUMessageThreadModule.List,
+        uploadedFileInfo: UploadedFileInfo,
+        message: MultipleFilesMessage,
+        index: Int
+    ) {
+        let fileType: SBUMessageFileType
+        if let mimeType = uploadedFileInfo.mimeType {
+            fileType = SBUUtils.getFileType(by: mimeType)
+        } else {
+            fileType = .etc
+        }
+        
+        let file = SBUFileData(urlString: uploadedFileInfo.url, message: message, cacheKey: message.cacheKey + "_\(index)", fileType: fileType, name: uploadedFileInfo.fileName ?? "")
+        self.openFile(file)
+    }
+    
     // MARK: - SBUBaseChannelModuleListDelegate
     open override func baseChannelModule(
         _ listComponent: SBUBaseChannelModule.List,
@@ -518,6 +747,16 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
             mimeType: mimeType,
             parentMessage: parentMessage
         )
+    }
+    
+    /// - Note: This interface is beta. We do not gaurantee this interface to work properly yet.
+    /// - Since: [NEXT_VERSION_MFM_THREAD]
+    public func messageThreadModule(
+        _ inputComponent: SBUMessageThreadModule.Input,
+        didPickMultipleFiles fileInfoList: [UploadableFileInfo],
+        parentMessage: BaseMessage
+    ) {
+        self.viewModel?.sendMultipleFilesMessage(fileInfoList: fileInfoList, parentMessageId: parentMessage.messageId)
     }
     
     open func messageThreadModule(

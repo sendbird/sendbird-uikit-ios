@@ -24,6 +24,7 @@ open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
         let profileView = SBUMessageProfileView()
         return profileView
     }()
+    public lazy var profileBaseView = UIView()
     public lazy var contentsStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
@@ -77,39 +78,42 @@ open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
         self.profileView.isHidden = true
         self.userNameView.isHidden = true
         self.messageTimeLabel.isHidden = true
-
-        self.infoStackView.addArrangedSubview(self.userNameView)
-        self.infoStackView.addArrangedSubview(self.messageTimeLabel)
-        self.infoStackView.addArrangedSubview(UIView())
-
-        self.contentsStackView.addArrangedSubview(self.infoStackView)
-        self.contentsStackView.addArrangedSubview(self.mainContainerView)
-        self.contentsStackView.addArrangedSubview(self.stateImageView)
         
-        let profileStackView = UIStackView()
-        profileStackView.axis = .vertical
-        profileStackView.addArrangedSubview(self.profileView)
-        profileStackView.addArrangedSubview(UIView())
+        self.profileBaseView.addSubview(self.profileView)
         
-        self.baseStackView.addArrangedSubview(profileStackView)
-        self.baseStackView.addArrangedSubview(self.contentsStackView)
-        self.baseStackView.addArrangedSubview(UIView())
+        self.baseStackView.setHStack([
+            self.profileBaseView,
+            self.contentsStackView.setVStack([
+                self.infoStackView.setHStack([
+                    self.userNameView,
+                    self.messageTimeLabel,
+                    UIView()
+                ]),
+                self.mainContainerView,
+                self.stateImageView
+            ]),
+            UIView()
+        ])
 
         self.messageContentView.addSubview(self.baseStackView)
     }
     
     open override func setupLayouts() {
-        super.setupLayouts()
+        self.messageTimeLabel.setContentCompressionResistancePriority(UILayoutPriority(751), for: .horizontal)
         
-        self.stateImageView.setConstraint(
+        self.profileView
+            .sbu_constraint(equalTo: self.profileBaseView, leading: 0, trailing: 0, top: 0)
+            .sbu_constraint(width: 26, height: 26)
+        
+        self.stateImageView.sbu_constraint(
             width: 12,
             height: 12
         )
         
         self.baseStackView
-            .setConstraint(from: self.messageContentView, leading: 12, trailing: 12, top: 0, bottom: 0)
+            .sbu_constraint(equalTo: self.messageContentView, leading: 12, trailing: 12, top: 0, bottom: 0)
         
-        self.messageTimeLabel.setContentCompressionResistancePriority(UILayoutPriority(751), for: .horizontal)
+        super.setupLayouts()
     }
     
     open override func setupActions() {

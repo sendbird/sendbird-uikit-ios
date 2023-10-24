@@ -19,7 +19,7 @@ open class SBUSuggestedMentionList: SBUView, UITableViewDelegate, UITableViewDat
     public var userCell: UITableViewCell?
     public var limitGuideCell: UITableViewCell?
     
-    public var heightConstraint: NSLayoutConstraint!
+    public var heightConstraint: NSLayoutConstraint?
     
     // MARK: - Models
     public private(set) var filteredUsers: [SBUUser] = []

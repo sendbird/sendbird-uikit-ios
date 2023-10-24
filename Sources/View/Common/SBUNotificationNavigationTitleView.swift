@@ -43,13 +43,7 @@ class SBUNotificationNavigationTitleView: SBUView {
     override func setupLayouts() {
         super.setupLayouts()
         
-        self.titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            self.titleLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 0),
-            self.titleLabel.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 0),
-            self.titleLabel.rightAnchor.constraint(equalTo: self.rightAnchor, constant: 0),
-            self.titleLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0),
-        ])
+        self.titleLabel.sbu_constraint(equalTo: self, left: 0, right: 0, top: 0, bottom: 0)
     }
     
     override func setupStyles() {

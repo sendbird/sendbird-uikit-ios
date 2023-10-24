@@ -132,10 +132,18 @@ internal extension UIImageView {
                 return
             }
             
-            let image = SBUCacheManager.Image.save(data: data, fileName: fileName, subPath: subPath)
-            self.setImage(image, tintColor: tintColor, completion: completion)
+            SBUCacheManager.Image.save(data: data, fileName: fileName, subPath: subPath) { [weak self] _, nsdata in
+                guard let data = nsdata,
+                      let image = UIImage.createImage(from: data as Data) else {
+                    completion?(false)
+                    return
+                }
+                
+                self?.setImage(image, tintColor: tintColor, completion: completion)
+            }
         }
         task.resume()
+        
         return task
     }
     

@@ -43,17 +43,19 @@ class LiveStreamChannelCell: SBUOpenChannelCell {
         self.tagsLabel.clipsToBounds = true
         self.activeIndicator.clipsToBounds = true
         
-        self.infoStackView.setVStack([
-            self.titleStackView.setHStack([
-                self.creatorProfileImage,
-                self.titleLabel
-            ]),
+        self.titleStackView.setHStack([
             self.creatorProfileImage,
+            self.titleLabel
+        ])
+        
+        self.infoStackView.setVStack([
+            self.titleStackView,
             self.creatorNameLabel,
             self.tagsLabel,
             self.freezeState
         ])
         
+        self.participantStackView.tag = 3030
         self.participantStackView.setHStack([
             self.participantCountLabel
         ])
@@ -65,6 +67,30 @@ class LiveStreamChannelCell: SBUOpenChannelCell {
     }
     
     override func setupLayouts() {
+        self.creatorProfileImage
+            .sbu_constraint(width: Self.iconSize, height: Self.iconSize)
+
+        self.titleLabel
+            .setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+
+        self.infoStackView
+            .sbu_constraint(
+                equalTo: self.contentView,
+                right: 16,
+                top: 10
+            )
+            .sbu_constraint(height: 72)
+            .sbu_constraint_equalTo(
+                leadingAnchor: self.coverImage.trailingAnchor,
+                leading: Self.leadingPadding
+            )
+        
+        self.tagsLabel
+            .sbu_constraint(height: Self.tagsHeight)
+
+        self.participantCountLabel
+            .sbu_constraint(height: 22, priority: .defaultHigh)
+        
         self.coverImage
             .sbu_constraint(
                 equalTo: self.contentView,
@@ -84,18 +110,6 @@ class LiveStreamChannelCell: SBUOpenChannelCell {
                 right: 0,
                 top: 0,
                 bottom: 0
-            )
-        
-        self.infoStackView
-            .sbu_constraint(
-                equalTo: self.contentView,
-                right: 16,
-                top: 10
-            )
-            .sbu_constraint(height: 72)
-            .sbu_constraint_equalTo(
-                leadingAnchor: self.coverImage.trailingAnchor,
-                leading: Self.leadingPadding
             )
         
         self.activeIndicator
@@ -123,18 +137,6 @@ class LiveStreamChannelCell: SBUOpenChannelCell {
                 bottom: 4
             )
             .sbu_constraint(height: 12)
-
-        self.creatorProfileImage
-            .sbu_constraint(width: Self.iconSize, height: Self.iconSize)
-
-        self.titleLabel
-            .setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
-
-        self.tagsLabel
-            .sbu_constraint(height: Self.tagsHeight)
-
-        self.participantCountLabel
-            .sbu_constraint(height: 22)
     }
     
     override func layoutSubviews() {

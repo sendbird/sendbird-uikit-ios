@@ -129,28 +129,21 @@ open class SBUMessageStateView: SBUView {
         super.setupLayouts()
         
         self.stateImageView.contentMode = .center
-        self.stackView.setConstraint(
-            from: self,
+        self.stackView.sbu_constraint(
+            equalTo: self,
             left: 0,
             right: 0,
             top: 0,
-            bottom: 0,
-            priority: .defaultLow
+            bottom: 0
         )
         
-        if let timeLabelCustomSize = self.timeLabelCustomSize {
-            let timeLabelWidth = timeLabelCustomSize.width
-            let timeLabelHeight = timeLabelCustomSize.height
-            
-            if isQuotedReplyMessage {
-                self.timeLabel
-                    .sbu_constraint(height: timeLabelHeight)
-            } else {
-                self.timeLabel
-                    .sbu_constraint(width: timeLabelWidth, height: timeLabelHeight)
-            }
-            self.stateImageView.sbu_constraint(height: 12)
-        }
+        let timeLabelWidth = self.timeLabelCustomSize?.width ?? self.timeLabelWidth
+        let timeLabelHeight = self.timeLabelCustomSize?.height ?? self.timeLabelHeight
+        
+        let sizePriority: UILayoutPriority = (timeLabelCustomSize != nil) ? .defaultHigh : .defaultLow
+        self.timeLabel.sbu_constraint(width: timeLabelWidth, height: timeLabelHeight, priority: sizePriority)
+        
+        self.stateImageView.sbu_constraint(height: 12)
     }
     
     open override func setupStyles() {

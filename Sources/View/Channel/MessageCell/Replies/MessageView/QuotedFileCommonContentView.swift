@@ -53,13 +53,11 @@ open class QuotedFileCommonContentView: SBUView {
     open override func setupLayouts() {
         super.setupLayouts()
         
-        self.sbu_constraint(height: 34)
-        
         self.stackView
-            .setConstraint(from: self, left: 12, right: 12, top: 6, bottom: 12)
+            .sbu_constraint(equalTo: self, left: 12, right: 12, top: 6, bottom: 12)
         
         self.fileImageView
-            .setConstraint(width: 16, height: 16)
+            .sbu_constraint(width: 16, height: 16)
     }
     
     open override func setupStyles() {

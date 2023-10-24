@@ -19,7 +19,7 @@ public class SBUUtils {
     /// - Parameter fileMessage: `FileMessage` object
     /// - Returns: `SBUMessageFileType`
     public static func getFileType(by fileMessage: FileMessage) -> SBUMessageFileType {
-        let type = SBUUtils.getFileType(by: fileMessage.type)
+        let type: SBUMessageFileType = SBUUtils.getFileType(by: fileMessage.type)
         if type == .audio,
            let metaArray = fileMessage.metaArrays?.filter({ $0.key == SBUConstant.internalMessageTypeKey }),
            let internalType = metaArray.first?.value.first {
@@ -59,6 +59,37 @@ public class SBUUtils {
             return type
         }
         return nil
+    }
+    
+    /// A function that returns a SBUFileType for a String file type.
+    /// - Parameter type: File type string
+    /// - Returns: `SBUFileType`
+    /// - Since: 3.10.0
+    public static func getFileTypeString(by fileType: String) -> String {
+        let type = fileType.lowercased()
+        
+        if type.hasPrefix("image") {
+            if type.contains("svg") {
+                return SBUStringSet.GroupChannel.Preview.file
+            } else if type.contains("jpeg") || type.contains("png") {
+                return SBUStringSet.GroupChannel.Preview.photo
+            } else if type.contains("gif") {
+                return SBUStringSet.GroupChannel.Preview.gif
+            }
+        }
+        
+        if type.hasPrefix("video") { return SBUStringSet.GroupChannel.Preview.video }
+        
+        if type.hasPrefix("audio") {
+            if let parameterType = self.getFileTypeParameter(by: type),
+               parameterType.hasPrefix("voice") {
+                return SBUStringSet.GroupChannel.Preview.voice
+            }
+            return SBUStringSet.GroupChannel.Preview.audio
+        }
+        
+        return SBUStringSet.GroupChannel.Preview.file
+
     }
     
     /// This is a function that creates a channel name.

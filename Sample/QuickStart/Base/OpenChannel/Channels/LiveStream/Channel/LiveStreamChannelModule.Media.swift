@@ -127,6 +127,11 @@ class LiveStreamChannelModule {
             case 1...: self.participantCountLabel.text = SBUStringSet.Open_Channel_Participants_Count(channel.participantCount)
             default: self.participantCountLabel.text = ""
             }
+            self.liveInfoHStack.setHStack([
+                self.activeIndicator,
+                self.liveLabel,
+                self.participantCountLabel
+            ])
         }
         
         /// - IMPORTANT: Do nothing here. Please refer to ``configure(delegate:dataSource:theme:)``.
@@ -159,12 +164,7 @@ class LiveStreamChannelModule {
                     ]),
                     UIView(),
                     self.bottomStackView.setHStack([
-                        self.liveInfoHStack.setHStack([
-                            self.activeIndicator,
-                            self.liveLabel,
-                            self.participantCountLabel
-                        ]),
-                        UIView()
+                        self.liveInfoHStack
                     ])
                 ])
             )

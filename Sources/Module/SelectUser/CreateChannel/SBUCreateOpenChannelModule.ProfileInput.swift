@@ -36,16 +36,7 @@ extension SBUCreateOpenChannelModule {
             return hStackView
         }()
         
-        public lazy var channelImageView: SBUCoverImageView = {
-            let coverImage = SBUCoverImageView()
-            coverImage.frame = CGRect(
-                x: 0,
-                y: 0,
-                width: kCoverImageSize,
-                height: kCoverImageSize
-            )
-            return coverImage
-        }()
+        public lazy var channelImageView = SBUCoverImageView()
         
         public var channelNameInputField: SBUUnderLineTextField = {
             let textField = SBUUnderLineTextField()
@@ -91,13 +82,21 @@ extension SBUCreateOpenChannelModule {
         }
         
         open func setupViews() {
+            
+            self.channelImageView.clipsToBounds = true
+            self.channelImageView.frame = CGRect(
+                x: 0,
+                y: 0,
+                width: kCoverImageSize,
+                height: kCoverImageSize
+            )
+            
             self.channelImageView.addGestureRecognizer(UITapGestureRecognizer(
                 target: self,
                 action: #selector(showImagePicker(sender:)))
             )
             
-            self.channelImageView.setPlaceholder(type: .iconCamera, iconSize: placeholderIconSize)
-            self.channelImageView.clipsToBounds = true
+            self.channelImageView.setPlaceholder(type: .iconCamera, iconSize: self.placeholderIconSize)
             
             self.channelNameInputField.delegate = self
             
@@ -158,14 +157,17 @@ extension SBUCreateOpenChannelModule {
         /// Updates channel image
         /// - Parameter image: Image to be updated
         open func updateChannelImage(_ image: UIImage?) {
-            if let image = image {
-                self.isImageSelected = true
-                self.coverImage = image
-                self.channelImageView.setImage(withImage: image)
-            } else {
-                self.isImageSelected = false
-                self.coverImage = nil
-                self.channelImageView.setPlaceholder(type: .iconCamera, iconSize: placeholderIconSize)
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                if let image = image {
+                    self.isImageSelected = true
+                    self.coverImage = image
+                    self.channelImageView.setImage(withImage: image, contentMode: .scaleAspectFill)
+                } else {
+                    self.isImageSelected = false
+                    self.coverImage = nil
+                    self.channelImageView.setPlaceholder(type: .iconCamera, iconSize: self.placeholderIconSize)
+                }
             }
         }
         

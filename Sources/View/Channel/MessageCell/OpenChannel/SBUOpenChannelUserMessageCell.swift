@@ -34,7 +34,7 @@ open class SBUOpenChannelUserMessageCell: SBUOpenChannelContentBaseMessageCell {
     }()
     
     /// As a default, the value is the constraint of `messageTextView.trailingAnchor`and  it's activated when the message has no `ogMetaData`.
-    public private(set) var messageTypeConstraint: NSLayoutConstraint!
+    public private(set) var messageTypeConstraint: NSLayoutConstraint?
     /// Activated when the message has `ogMetaData`.
     public private(set) var webTypeConstraints: [NSLayoutConstraint] = []
     
@@ -51,21 +51,22 @@ open class SBUOpenChannelUserMessageCell: SBUOpenChannelContentBaseMessageCell {
     }
     
     open override func setupLayouts() {
-        super.setupLayouts()
-        
+        self.messageTypeConstraint?.isActive = false
         self.messageTypeConstraint = self.messageTextView.trailingAnchor.constraint(
             lessThanOrEqualTo: self.trailingAnchor, constant: -12
         )
-        self.messageTypeConstraint.isActive = true
+        self.messageTypeConstraint?.isActive = true
         
         let additionalContainerConstraint = self.additionContainerView.widthAnchor.constraint(
             equalToConstant: 311
         )
-        additionalContainerConstraint.priority = .init(rawValue: 750)
+        additionalContainerConstraint.priority = .defaultHigh
         self.webTypeConstraints = [
             self.additionContainerView.widthAnchor.constraint(lessThanOrEqualToConstant: 311),
             additionalContainerConstraint
         ]
+        
+        super.setupLayouts()
     }
     
     open override func setupActions() {
@@ -131,13 +132,14 @@ open class SBUOpenChannelUserMessageCell: SBUOpenChannelContentBaseMessageCell {
             self.webView.isHidden = false
             let model = SBUMessageWebViewModel(metaData: ogMetaData, isOverlay: isOverlay, isOpenChannel: true)
             self.webView.configure(model: model)
-            self.messageTypeConstraint.isActive = false
+            self.messageTypeConstraint?.isActive = false
+            (self.messageTextView as? SBUUserMessageTextView)?.widthConstraint?.isActive = false
             self.webTypeConstraints.forEach { $0.isActive = true }
             self.isWebType = true
         } else {
             self.additionContainerView.removeArrangedSubview(self.webView)
             self.webView.isHidden = true
-            self.messageTypeConstraint.isActive = true
+            self.messageTypeConstraint?.isActive = true
             self.webTypeConstraints.forEach { $0.isActive = false }
             self.isWebType = false
         }

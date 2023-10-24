@@ -46,16 +46,15 @@ open class SBUEmptyView: SBUView {
 
     // MARK: - Properties (Private)
     
-    lazy var stackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.spacing = 24
-        stackView.axis = .vertical
-        stackView.alignment = .center
-        return stackView
+    lazy var topView = UIView()
+    
+    lazy var baseStackView: SBUStackView = {
+        return SBUStackView(axis: .vertical, alignment: .center)
     }()
     
-    var topMargin = UIView()
-    var bottomMargin = UIView()
+    lazy var stackView: SBUStackView = {
+        return SBUStackView(axis: .vertical, alignment: .center, spacing: 24)
+    }()
     
     // MARK: - Lifecycle
     override public init(frame: CGRect) {
@@ -74,41 +73,41 @@ open class SBUEmptyView: SBUView {
     open override func setupViews() {
         super.setupViews()
         
+        self.baseStackView.setVStack([
+            self.topView,
+            self.stackView
+        ])
+        
         self.stackView.setVStack([
-            self.topMargin,
             self.statusImageView,
             self.statusLabel,
-            self.retryButton,
-            self.bottomMargin
+            self.retryButton
         ])
         self.retryButton.isHidden = true
-        self.addSubview(stackView)
+        
+        self.addSubview(self.baseStackView)
         self.isHidden = true
     }
     
     open override func setupLayouts() {
         super.setupLayouts()
         
-        self.topMargin.translatesAutoresizingMaskIntoConstraints = false
-        self.bottomMargin.translatesAutoresizingMaskIntoConstraints = false
-        self.topMargin.heightAnchor.constraint(equalTo: self.bottomMargin.heightAnchor, multiplier: 1.0).isActive = true
-        self.topMargin.sbu_constraint_greaterThan(height: 0)
-        self.topMargin.sbu_constraint(width: self.frame.width)
-        self.bottomMargin.sbu_constraint(width: self.frame.width)
+        self.emptyViewTopConstraint = self.topView.heightAnchor.constraint(equalToConstant: 0)
         
-        self.stackView.sbu_constraint(equalTo: self, leading: 0, trailing: 0, bottom: 0)
+        self.baseStackView
+            .sbu_constraint(equalTo: self, leading: 0, trailing: 0)
+            .sbu_constraint(equalTo: self, centerY: 0)
         
-        self.statusImageView.setConstraint(width: 60.0, height: 60.0)
+        self.statusImageView
+            .sbu_constraint(width: 60.0, priority: .defaultLow)
+            .sbu_constraint(height: 60.0)
         
         self.updateTopAnchorConstraint(constant: 0)
     }
     
     open func updateTopAnchorConstraint(constant: CGFloat) {
         self.emptyViewTopConstraint?.isActive = false
-        self.emptyViewTopConstraint = self.stackView.topAnchor.constraint(
-            equalTo: self.topAnchor,
-            constant: constant
-        )
+        self.emptyViewTopConstraint?.constant = constant
         self.emptyViewTopConstraint?.isActive = true
     }
     

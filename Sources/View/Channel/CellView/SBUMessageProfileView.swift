@@ -24,16 +24,7 @@ open class SBUMessageProfileView: SBUView {
     public init(urlString: String = "") {
         self.urlString = urlString
 
-        super.init(
-            frame: .init(
-                x: 0,
-                y: 0,
-                width: self.imageSize,
-                height: self.imageSize
-            )
-        )
-
-        self.configure(urlString: urlString)
+        super.init(frame: .zero)
     }
     
     public var imageDownloadTask: URLSessionTask?
@@ -44,16 +35,12 @@ open class SBUMessageProfileView: SBUView {
         self.urlString = ""
 
         super.init()
-
-        self.configure(urlString: self.urlString)
     }
     
     override public init(frame: CGRect) {
         self.urlString = ""
 
         super.init(frame: frame)
-
-        self.configure(urlString: self.urlString)
     }
 
     open override func setupViews() {
@@ -62,9 +49,7 @@ open class SBUMessageProfileView: SBUView {
      
     open override func setupLayouts() {
         self.imageView
-            .setConstraint(width: self.imageSize,
-                           height: self.imageSize)
-            .setConstraint(from: self, left: 0, right: 0, top: 0, bottom: 0)
+            .sbu_constraint(equalTo: self, left: 0, right: 0, top: 0, bottom: 0)
     }
     
     open override func setupStyles() {
@@ -77,6 +62,8 @@ open class SBUMessageProfileView: SBUView {
         if let imageSize = imageSize {
             self.imageSize = imageSize
         }
+        
+        self.imageView.sbu_constraint(width: self.imageSize, height: self.imageSize)
         imageView.layer.cornerRadius = self.imageSize / 2
         imageView.layer.borderColor = UIColor.clear.cgColor
         imageView.layer.borderWidth = 1

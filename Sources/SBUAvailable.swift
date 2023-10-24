@@ -101,4 +101,23 @@ public class SBUAvailable {
         // #SBISSUE-12044
         return self.isAvailable(key: ALLOW_USER_UPDATE_FROM_SDK)
     }
+    
+    /// The maximum number of files that can be selected when sending a message in GroupChannel.
+    /// This is decided as the minimum value between the count limit set by the server, and the count limit set by Sendbird UIKit.
+    /// - Since: 3.10.0
+    public static var multipleFilesMessageFileCountLimit: Int {
+        min(SendbirdChat.getMultipleFilesMessageFileCountLimit(), 10)
+    }
+    
+    /// The size limit of a file upload in bytes.
+    /// - Since: 3.10.0
+    public static var uploadSizeLimitBytes: Int64 {
+        SendbirdChat.getAppInfo()?.uploadSizeLimit ?? (25 * 1024 * 1024)
+    }
+    
+    /// The size limit of a file upload in MB.
+    /// - Since: 3.10.0
+    public static var uploadSizeLimitMB: Int64 {
+        SBUAvailable.uploadSizeLimitBytes / (1024 * 1024)
+    }
 }

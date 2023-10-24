@@ -578,6 +578,15 @@ open class SBUBaseChannelViewModel: NSObject {
                     needReload: true
                 )
             }
+        } else if let failedMessage = failedMessage as? MultipleFilesMessage {
+            let groupChannel = self.channel as? GroupChannel
+            groupChannel?.resendMultipleFilesMessage(
+                failedMessage,
+                fileUploadHandler: { _, _, _, _ in },
+                completionHandler: { [weak self] message, error in
+                    guard let self = self else { return }
+                    self.handlePendingResendableMessage(message, error)
+            })
         }
     }    
     
@@ -654,10 +663,9 @@ open class SBUBaseChannelViewModel: NSObject {
                 return
             }
             
-            guard message is UserMessage || message is FileMessage else {
-                if message is AdminMessage {
-                    self.messageList.append(message)
-                }
+            guard message is UserMessage || message is FileMessage || message is MultipleFilesMessage else {
+                // when message is AdminMessage or unknown message.
+                self.messageList.append(message)
                 return
             }
             

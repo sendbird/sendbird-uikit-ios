@@ -63,11 +63,11 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol {
         // | messageContentView |
         // + ------------------ +
         
-        self.contentView.addSubview(self.stackView)
         self.stackView.setVStack([
             self.dateView,
             self.messageContentView
         ])
+        self.contentView.addSubview(self.stackView)
     }
     
     open override func setupActions() {
@@ -76,8 +76,8 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol {
     
     open override func setupLayouts() {
         self.stackView
-            .setConstraint(from: self.contentView, left: 0, bottom: 0)
-            .setConstraint(from: self.contentView, right: 0, priority: .defaultHigh)
+            .sbu_constraint(equalTo: self.contentView, left: 0, bottom: 0)
+            .sbu_constraint(equalTo: self.contentView, right: 0, priority: .defaultHigh)
         
         self.updateTopAnchorConstraint()
     }
@@ -101,6 +101,7 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol {
             equalTo: self.contentView.topAnchor,
             constant: constant
         )
+        self.stackViewTopConstraint?.priority = .defaultHigh
         self.stackViewTopConstraint?.isActive = true
     }
     

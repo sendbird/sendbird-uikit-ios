@@ -29,6 +29,8 @@ public class SBUChannelTitleView: UIView {
     /// - Since: 3.5.8
     var isChatNotificationChannelUsed: Bool = false
     
+    var contentHeightConstant: NSLayoutConstraint?
+    
     // MARK: - Life cycle
     override public init(frame: CGRect) {
         super.init(frame: frame)
@@ -66,29 +68,24 @@ public class SBUChannelTitleView: UIView {
     }
     
     func setupLayouts() {
-        self.contentView.translatesAutoresizingMaskIntoConstraints = false
-        let contentHeightConstant = self.contentView.heightAnchor.constraint(
+        self.contentView.sbu_constraint(equalTo: self, left: 0, right: 0, top: 0, bottom: 0)
+        
+        self.contentHeightConstant = self.contentView.heightAnchor.constraint(
             equalToConstant: self.bounds.height
         )
-        contentHeightConstant.priority = .defaultLow
-        NSLayoutConstraint.activate([
-            self.contentView.topAnchor.constraint(equalTo: self.topAnchor, constant: 0),
-            self.contentView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 0),
-            self.contentView.rightAnchor.constraint(equalTo: self.rightAnchor, constant: 0),
-            self.contentView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0),
-            contentHeightConstant,
+        self.contentHeightConstant?.priority = .defaultLow
+        NSLayoutConstraint.sbu_activate(baseView: self.contentView, constraints: [
+            contentHeightConstant
         ])
         
-        self.coverImage.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
+        NSLayoutConstraint.sbu_activate(baseView: self.coverImage, constraints: [
             self.coverImage.leftAnchor.constraint(equalTo: self.contentView.leftAnchor, constant: 5),
             self.coverImage.widthAnchor.constraint(equalToConstant: kCoverImageSize),
             self.coverImage.heightAnchor.constraint(equalToConstant: kCoverImageSize),
             self.coverImage.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: 0),
         ])
         
-        self.stackView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
+        NSLayoutConstraint.sbu_activate(baseView: self.stackView, constraints: [
             self.stackView.leftAnchor.constraint(
                 equalTo: self.coverImage.rightAnchor,
                 constant: 8
@@ -102,21 +99,22 @@ public class SBUChannelTitleView: UIView {
                 constant: 5),
             self.stackView.centerYAnchor.constraint(
                 equalTo: self.centerYAnchor,
-                constant: 0),
+                constant: 0)
         ])
         
-        self.titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        self.statusField.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
+        NSLayoutConstraint.sbu_activate(baseView: self.titleLabel, constraints: [
             self.titleLabel.widthAnchor.constraint(
                 equalTo: self.stackView.widthAnchor,
                 multiplier: 1.0
-            ),
+            )
+        ])
+        
+        NSLayoutConstraint.sbu_activate(baseView: self.statusField, constraints: [
             self.statusField.widthAnchor.constraint(
                 equalTo: self.stackView.widthAnchor,
                 multiplier: 1.0
             ),
-            self.statusField.heightAnchor.constraint(equalToConstant: 12),
+            self.statusField.heightAnchor.constraint(equalToConstant: 12)
         ])
     }
     

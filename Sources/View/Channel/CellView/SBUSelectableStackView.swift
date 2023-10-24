@@ -58,7 +58,7 @@ public class SBUSelectableStackView: SBUView, Selectable {
     public override func setupLayouts() {
         super.setupLayouts()
         
-        self.stackView.setConstraint(from: self, left: 0, right: 0, top: 0, bottom: 0)
+        self.stackView.sbu_constraint(equalTo: self, left: 0, right: 0, top: 0, bottom: 0, priority: .defaultHigh)
     }
     
     public override func setupStyles() {

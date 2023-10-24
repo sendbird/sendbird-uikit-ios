@@ -96,6 +96,19 @@ public protocol SBUMessageThreadModuleInputDelegate: SBUBaseChannelModuleInputDe
     /// Called when it the voice message button tabbed.
     /// - Parameter inputComponent: `SBUMessageThreadModule.Input` object.
     func messageThreadModuleDidTapVoiceMessage(_ inputComponent: SBUMessageThreadModule.Input)
+    
+    /// Called when multiple files were picked to send a multiple files message.
+    /// - Parameters:
+    ///   - inputComponent: `SBUMessageThreadModule.Input` object.
+    ///   - fileInfoList: A list of `UploadableFileInfo` for the picked files.
+    ///   - parentMessage: A message that will be a parent message. Please refer to *quote reply* features.
+    /// - Note: This interface is beta. We do not gaurantee this interface to work properly yet.
+    /// - Since: [NEXT_VERSION_MFM_THREAD]
+    func messageThreadModule(
+        _ inputComponent: SBUMessageThreadModule.Input,
+        didPickMultipleFiles fileInfoList: [UploadableFileInfo],
+        parentMessage: BaseMessage
+    )
 }
 
 /// Methods to get data source for the input component in the group channel.
@@ -134,6 +147,25 @@ extension SBUMessageThreadModule {
         public var parentMessage: BaseMessage?
         
         public var mentionManager: SBUMentionManager?
+        
+        // MARK: - Logic Properties (Private)
+        
+        /// String constants used when sending a multiple files message.
+        /// - Since: [NEXT_VERSION_MFM_THREAD]
+        struct MultipleFilesConstants {
+            static let fileInfoList = "uploadableFileInfoList"
+            static let image = "image"
+            static let gif = "gif"
+            static let video = "video"
+        }
+        
+        /// The OperationQueue that gaurantees the order of messages when sending.
+        lazy var messageOperationQueue: OperationQueue = {
+            let operationQueue = OperationQueue()
+            operationQueue.name = SBUConstant.messageOperationQueueName
+            operationQueue.maxConcurrentOperationCount = 1
+            return operationQueue
+        }()
         
         // MARK: - LifeCycle
         
@@ -253,28 +285,32 @@ extension SBUMessageThreadModule {
         @available(iOS 14.0, *)
         open override func pickImageFile(itemProvider: NSItemProvider) {
             itemProvider.loadItem(forTypeIdentifier: UTType.image.identifier, options: [:]) { [weak self] url, _ in
+                guard let self = self else { return }
+                
                 if itemProvider.canLoadObject(ofClass: UIImage.self) {
                     itemProvider.loadObject(ofClass: UIImage.self) { imageItem, _ in
-                        guard let self = self else { return }
-                        guard let originalImage = imageItem as? UIImage else { return }
-                        guard let imageURL = url as? URL else { return }
-                        guard let mimeType = SBUUtils.getMimeType(url: imageURL) else { return }
-                        
-                        guard let imageData = originalImage
-                            .fixedOrientation()
-                            .sbu_convertToData() else { return }
-                        
-                        let fileExtension = imageURL.pathExtension
-                        let fileName = "\(Date().sbu_toString(dateFormat: SBUDateFormatSet.Message.fileNameFormat, localizedFormat: false)).\(fileExtension)"
-                        
-                        DispatchQueue.main.async { [self, imageData, mimeType, fileName] in
-                            self.delegate?.messageThreadModule(
-                                self,
-                                didPickFileData: imageData,
-                                fileName: fileName,
-                                mimeType: mimeType,
-                                parentMessage: self.parentMessage
-                            )
+                
+                        DispatchQueue.main.async {
+                            guard let originalImage = imageItem as? UIImage else { return }
+                            guard let imageURL = url as? URL else { return }
+                            guard let mimeType = SBUUtils.getMimeType(url: imageURL) else { return }
+                            
+                            guard let imageData = originalImage
+                                .fixedOrientation()
+                                .sbu_convertToData() else { return }
+                            
+                            let fileExtension = imageURL.pathExtension
+                            let fileName = "\(Date().sbu_toString(dateFormat: SBUDateFormatSet.Message.fileNameFormat, localizedFormat: false)).\(fileExtension)"
+                            
+                            DispatchQueue.main.async { [self, imageData, mimeType, fileName] in
+                                self.delegate?.messageThreadModule(
+                                    self,
+                                    didPickFileData: imageData,
+                                    fileName: fileName,
+                                    mimeType: mimeType,
+                                    parentMessage: self.parentMessage
+                                )
+                            }
                         }
                     }
                 }
@@ -283,9 +319,9 @@ extension SBUMessageThreadModule {
         
         @available(iOS 14.0, *)
         open override func pickGIFFile(itemProvider: NSItemProvider) {
-            itemProvider.loadItem(forTypeIdentifier: UTType.gif.identifier, options: [:]) { [weak self] url, _ in
+            itemProvider.loadFileRepresentation(forTypeIdentifier: UTType.gif.identifier) { [weak self] url, _ in
                 guard let self = self else { return }
-                guard let imageURL = url as? URL else { return }
+                guard let imageURL = url else { return }
                 guard let mimeType = SBUUtils.getMimeType(url: imageURL) else { return }
                 
                 let gifData = try? Data(contentsOf: imageURL)
@@ -379,6 +415,198 @@ extension SBUMessageThreadModule {
                 SBULog.error(error.localizedDescription)
                 let sbError = SBError(domain: (error as NSError).domain, code: (error as NSError).code)
                 self.delegate?.didReceiveError(sbError, isBlocker: false)
+            }
+        }
+        
+        // MARK: - PHPickerViewController
+        
+        /// Loads image files from the NSItemProvider and sends a multiple files message.
+        /// - Parameters:
+        ///    - itemProviders: An array of NSItemProvider
+        /// - Note: This interface is beta. We do not gaurantee this interface to work properly yet.
+        /// - Since: [NEXT_VERSION_MFM_THREAD]
+        @available(iOS 14.0, *)
+        public func pickMultipleImageFiles(itemProviders: [NSItemProvider]) {
+            // Define and add a blocking operation to the message queue.
+            // This blocking operation will be executed after all images/gifs are finished loading.
+            let operation = BlockingOperation(asyncTask: { operation in
+                defer { operation.complete() }
+                
+                guard let fileInfoList = operation.userInfo[MultipleFilesConstants.fileInfoList] as? [UploadableFileInfo],
+                      fileInfoList.isEmpty == false,
+                      let parentMessage = self.parentMessage else {
+                    
+                    return
+                }
+                
+                DispatchQueue.main.async { [self, fileInfoList] in
+                    self.delegate?.messageThreadModule(
+                        self,
+                        didPickMultipleFiles: fileInfoList,
+                        parentMessage: parentMessage
+                    )
+                }
+            }, requireExplicity: true)
+            
+            messageOperationQueue.addOperation(operation)
+            
+            // Load images and GIFs.
+            var fileInfoList: [UploadableFileInfo?] = Array(repeating: nil, count: itemProviders.count)
+            let group = DispatchGroup()
+            
+            for (index, itemProvider) in itemProviders.enumerated() {
+                group.enter()
+                    // Image
+                    if itemProvider.hasItemConformingToTypeIdentifier(UTType.image.identifier) {
+                        self.loadImageFile(itemProvider: itemProvider, index: index) { imageData, fileName, mimeType in
+                            defer {
+                                group.leave()
+                            }
+                            
+                            guard let imageData = imageData, let fileName = fileName, let mimeType = mimeType else {
+                                return
+                            }
+
+                            // Create UploadableFileInfo.
+                            let fileInfo = UploadableFileInfo(file: imageData)
+                            fileInfo.mimeType = mimeType
+                            fileInfo.fileName = fileName
+                            
+                            if let image = UIImage(data: imageData) {
+                                let thumbnailSize = ThumbnailSize.make(maxSize: image.size)
+                                fileInfo.thumbnailSizes = [thumbnailSize]
+                            }
+
+                            fileInfoList[index] = fileInfo
+                        }
+                    }
+
+                    // GIF
+                    else if itemProvider.hasItemConformingToTypeIdentifier(UTType.gif.identifier) {
+                        self.loadGIFfile(itemProvider: itemProvider, index: index) { gifData, fileName, mimeType in
+                            defer {
+                                group.leave()
+                            }
+                            
+                            guard let gifData = gifData, let fileName = fileName, let mimeType = mimeType else {
+                                return
+                            }
+                            
+                            // Create UploadableFileInfo.
+                            let fileInfo = UploadableFileInfo(file: gifData)
+                            fileInfo.mimeType = mimeType
+                            fileInfo.fileName = fileName
+                            
+                            if let image = UIImage(data: gifData) {
+                                let thumbnailSize = ThumbnailSize.make(maxSize: image.size)
+                                fileInfo.thumbnailSizes = [thumbnailSize]
+                            }
+                            
+                            fileInfoList[index] = fileInfo
+                        }
+                    }
+            }
+            
+            // Finally, execute the blocking operation.
+            group.notify(queue: .main) {
+                operation.userInfo[MultipleFilesConstants.fileInfoList] = fileInfoList
+                operation.markReady()
+            }
+        }
+        
+        // MARK: PHPicker utils
+        
+        /// Loads image data from a NSItemProvider.
+        /// - Parameters:
+        ///    - itemProvider: the NSItemProvider to load the image data from
+        ///    - index: the index of the image file in a multiple files message. `nil` in a single file message
+        ///    - completionHandler: returns image data, fileName, and mimeType
+        /// - Note: This interface is beta. We do not gaurantee this interface to work properly yet.
+        /// - Since: [NEXT_VERSION_MFM_THREAD]
+        @available(iOS 14.0, *)
+        public func loadImageFile(
+            itemProvider: NSItemProvider,
+            index: Int? = nil,
+            completion: @escaping (Data?, String?, String?) -> Void
+        ) {
+            itemProvider.loadItem(forTypeIdentifier: UTType.image.identifier, options: [:]) { url, _ in
+                guard let imageURL = url as? URL,
+                      imageURL.isFileSizeUploadable else {
+                    completion(nil, nil, nil)
+                    return
+                }
+                
+                if itemProvider.canLoadObject(ofClass: UIImage.self) {
+                    itemProvider.loadObject(ofClass: UIImage.self) { imageItem, _ in
+                        guard let originalImage = imageItem as? UIImage,
+                              let mimeType = SBUUtils.getMimeType(url: imageURL),
+                              let imageData = originalImage.fixedOrientation().sbu_convertToData() else {
+                            completion(nil, nil, nil)
+                            return
+                        }
+
+                        let fileExtension = imageURL.pathExtension
+                        
+                        /// If multiple files message, fileName is `date_index.fileExtension`
+                        /// If single file message, fileName is `date.fileExtension`
+                        var fileName = Date().sbu_toString(
+                            dateFormat: SBUDateFormatSet.Message.fileNameFormat,
+                            localizedFormat: false
+                        )
+                        if let index = index {
+                            fileName = "\(fileName)_\(index)"
+                        }
+                        
+                        fileName = "\(fileName).\(fileExtension)"
+                        
+                        completion(imageData, fileName, mimeType)
+                    }
+                } else {
+                    completion(nil, nil, nil)
+                }
+            }
+        }
+        
+        /// Loads GIF data from a NSItemProvider.
+        /// - Parameters:
+        ///    - itemProvider: the NSItemProvider to load the image data from
+        ///    - index: the index of the image file in a multiple files message. `nil` in a single file message
+        ///    - completionHandler: returns image data, fileName, and mimeType
+        /// - Note: This interface is beta. We do not gaurantee this interface to work properly yet.
+        /// - Since: [NEXT_VERSION_MFM_THREAD]
+        @available(iOS 14.0, *)
+        public func loadGIFfile(
+            itemProvider: NSItemProvider,
+            index: Int? = nil,
+            completion: @escaping (Data?, String?, String?) -> Void
+        ) {
+            itemProvider.loadFileRepresentation(forTypeIdentifier: UTType.gif.identifier) { url, _ in
+                guard let imageURL = url, imageURL.isFileSizeUploadable else {
+                    completion(nil, nil, nil)
+                    return
+                }
+                
+                guard let mimeType = SBUUtils.getMimeType(url: imageURL) else {
+                    completion(nil, nil, nil)
+                    return
+                }
+                
+                let gifData = try? Data(contentsOf: imageURL)
+                let fileExtension = imageURL.pathExtension
+                
+                /// If multiple files message, fileName is `date_index.fileExtension`
+                /// If single file message, fileName is `date.fileExtension`
+                var fileName = Date().sbu_toString(
+                    dateFormat: SBUDateFormatSet.Message.fileNameFormat,
+                    localizedFormat: false
+                )
+                if let index = index {
+                    fileName = "\(fileName)_\(index)"
+                }
+                
+                fileName = "\(fileName).\(fileExtension)"
+                
+                completion(gifData, fileName, mimeType)
             }
         }
         
@@ -520,7 +748,8 @@ extension SBUMessageThreadModule {
             }
             
             var filteredMembers = members.filter {
-                $0.userId != SBUGlobals.currentUser?.userId
+                ($0.user?.isActive == true) &&
+                ($0.userId != SBUGlobals.currentUser?.userId)
             }
             
             if filteredMembers.count > config.suggestionLimit {
@@ -549,7 +778,7 @@ extension SBUMessageThreadModule {
             default:
                 maxHeight = 196
             }
-            suggestedMentionList.heightConstraint.constant = suggestedMentionList.isLimitGuideEnabled
+            suggestedMentionList.heightConstraint?.constant = suggestedMentionList.isLimitGuideEnabled
             ? 44
             : min(height, maxHeight)
             
@@ -569,6 +798,7 @@ extension SBUMessageThreadModule {
             self.addSubview(suggestedMentionList)
             
             suggestedMentionList.translatesAutoresizingMaskIntoConstraints = false
+            suggestedMentionList.heightConstraint?.isActive = false
             suggestedMentionList.heightConstraint = suggestedMentionList.heightAnchor.constraint(equalToConstant: 0)
             
             suggestedMentionList
@@ -580,10 +810,8 @@ extension SBUMessageThreadModule {
                     bottom: 0
                 )
                 .sbu_constraint_lessThan(height: 196)
-            
-            NSLayoutConstraint.activate([
-                suggestedMentionList.heightConstraint
-            ])
+
+            suggestedMentionList.heightConstraint?.isActive = true
         }
         
         /// Dismiss `suggestedMentionList` and remove from super view.

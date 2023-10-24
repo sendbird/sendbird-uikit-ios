@@ -24,8 +24,8 @@ class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegate, UI
     var memberList: [Member] = []
     var reactionList: [Reaction] = []
 
-    var collectionViewConstraintWidth: NSLayoutConstraint!
-    var collectionViewConstraintMaxWidth: NSLayoutConstraint!
+    var collectionViewConstraintWidth: NSLayoutConstraint?
+    var collectionViewConstraintMaxWidth: NSLayoutConstraint?
 
     var theme = SBUTheme.componentTheme
 
@@ -94,33 +94,44 @@ class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegate, UI
 
     /// This function handles the initialization of autolayouts.
     override func setupLayouts() {
-        self.stackView.setConstraint(from: self.view, left: 0, right: 0, top: 0, bottom: 0)
-        self.tableView.setConstraint(from: self.stackView, left: 0)
-        self.lineView .setConstraint(from: self.stackView, left: 0).setConstraint(height: 0.5)
+        self.stackView.sbu_constraint(
+            equalTo: self.view,
+            left: 0,
+            right: 0,
+            top: 0,
+            bottom: 0
+        )
+        self.tableView.sbu_constraint(equalTo: self.stackView, left: 0)
+        self.lineView
+            .sbu_constraint(equalTo: self.stackView, left: 0)
+            .sbu_constraint(height: 0.5)
 
-        self.collectionView.setConstraint(height: 60).setConstraint(from: self.view, centerX: true)
+        self.collectionView
+            .sbu_constraint(height: 60)
+            .sbu_constraint(equalTo: self.view, centerX: 0)
+        
+        self.collectionViewConstraintWidth?.isActive = false
+        self.collectionViewConstraintMaxWidth?.isActive = false
 
         self.collectionViewConstraintWidth = self.collectionView.widthAnchor.constraint(
             equalToConstant: 0
         )
-        self.collectionViewConstraintWidth.priority = .defaultLow
+        self.collectionViewConstraintWidth?.priority = .defaultLow
 
         self.collectionViewConstraintMaxWidth = self.collectionView.widthAnchor.constraint(
             lessThanOrEqualToConstant: self.view.frame.width
         )
 
-        NSLayoutConstraint.activate([
-            self.collectionViewConstraintWidth,
-            self.collectionViewConstraintMaxWidth
-        ])
+        self.collectionViewConstraintWidth?.isActive = true
+        self.collectionViewConstraintMaxWidth?.isActive = true
 
         self.collectionView.layoutIfNeeded()
         self.view.setNeedsLayout()
     }
     
     override func updateLayouts() {
-        self.collectionViewConstraintWidth.constant = self.collectionView.contentSize.width
-        self.collectionViewConstraintMaxWidth.constant = self.view.bounds.width
+        self.collectionViewConstraintWidth?.constant = self.collectionView.contentSize.width
+        self.collectionViewConstraintMaxWidth?.constant = self.view.bounds.width
         self.collectionView.layoutIfNeeded()
 
         if let bottomSheet = self.presentationController as? SBUBottomSheetController {

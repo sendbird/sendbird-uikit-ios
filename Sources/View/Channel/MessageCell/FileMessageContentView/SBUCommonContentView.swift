@@ -43,16 +43,23 @@ open class SBUCommonContentView: SBUBaseFileContentView {
         
         self.stackView.addArrangedSubview(self.fileImageView)
         self.stackView.addArrangedSubview(self.fileNameLabel)
+        self.fileNameLabel.setContentCompressionResistancePriority(
+            UILayoutPriority(749),
+            for: .horizontal
+        )
     }
     
     open override func setupLayouts() {
-        self.sbu_constraint(height: 44)
-        self.stackView.setConstraint(from: self,
-                                     left: 12,
-                                     right: 12,
-                                     top: 8,
-                                     bottom: 8)
-        self.fileImageView.setConstraint(width: 28, height: 28)
+        self.fileImageView
+            .sbu_constraint(width: 28, height: 28, priority: .defaultHigh)
+        
+        self.stackView.sbu_constraint(
+            equalTo: self,
+            left: 12,
+            right: 12,
+            top: 8,
+            bottom: 8
+        )
     }
     
     open override func setupStyles() {

@@ -298,16 +298,16 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
             
         case let fileMessage as FileMessage:
             self.messageLabel.lineBreakMode = .byTruncatingMiddle
-            if SBUUtils.getFileType(by: fileMessage) == .voice {
-                self.messageLabel.text = SBUStringSet.VoiceMessage.Preview.channelList
-            } else {
-                self.messageLabel.text = fileMessage.name
-            }
+            self.messageLabel.text = SBUUtils.getFileTypeString(by: fileMessage.type)
             
         case let adminMessage as AdminMessage:
             self.messageLabel.lineBreakMode = .byTruncatingMiddle
             self.messageLabel.text = adminMessage.message
-
+        
+        case _ as MultipleFilesMessage:
+            self.messageLabel.lineBreakMode = .byTruncatingMiddle
+            self.messageLabel.text = SBUStringSet.GroupChannel.Preview.multipleFiles
+            
         default:
             self.messageLabel.text = ""
         }
@@ -350,17 +350,16 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
                 messageLabel.text = userMessage.message
                 messageLabel.numberOfLines = 2
             case let fileMessage as FileMessage:
-                messageLabel.lineBreakMode = .byTruncatingMiddle
-                if SBUUtils.getFileType(by: fileMessage) == .voice {
-                    self.messageLabel.text = SBUStringSet.VoiceMessage.Preview.channelList
-                } else {
-                    self.messageLabel.text = fileMessage.name
-                }
+                self.messageLabel.lineBreakMode = .byTruncatingMiddle
+                self.messageLabel.text = SBUUtils.getFileTypeString(by: fileMessage.type)
             case let adminMessage as AdminMessage:
                 if groupChannel.isChatNotification {
                     self.messageLabel.lineBreakMode = .byTruncatingMiddle
                     self.messageLabel.text = adminMessage.message
                 }
+            case _ as MultipleFilesMessage:
+                self.messageLabel.lineBreakMode = .byTruncatingMiddle
+                self.messageLabel.text = SBUStringSet.GroupChannel.Preview.multipleFiles
             default:
                 messageLabel.text = ""
             }

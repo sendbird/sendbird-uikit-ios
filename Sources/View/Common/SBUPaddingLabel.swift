@@ -55,4 +55,11 @@ public class SBUPaddingLabel: UILabel {
         let vertical = top + bottom
         return CGSize(width: size.width + horizontal, height: size.height + vertical)
     }
+    
+    func resetPadding() {
+        self.top = 0
+        self.bottom = 0
+        self.leading = 0
+        self.trailing = 0
+    }
 }

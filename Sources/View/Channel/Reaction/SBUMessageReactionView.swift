@@ -26,8 +26,8 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
     var moreEmojiTapHandler: (() -> Void)?
     var emojiLongPressHandler: ((_ emojiKey: String) -> Void)?
 
-    public private(set) var collectionViewHeightConstraint: NSLayoutConstraint!
-    public private(set) var collectionViewMinWidthContraint: NSLayoutConstraint!
+    public private(set) var collectionViewHeightConstraint: NSLayoutConstraint?
+    public private(set) var collectionViewMinWidthContraint: NSLayoutConstraint?
 
     public let collectionViewInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
     
@@ -77,15 +77,18 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
     open override func setupLayouts() {
         super.setupLayouts()
         
-        self.collectionView.setConstraint(from: self, left: 0, right: 0, top: 0, bottom: 0)
+        self.collectionView.sbu_constraint(equalTo: self, left: 0, right: 0, top: 0, bottom: 0)
 
         self.collectionViewHeightConstraint = self.collectionView
             .heightAnchor.constraint(equalToConstant: 0)
-        self.collectionViewHeightConstraint.isActive = true
 
         self.collectionViewMinWidthContraint = self.collectionView
             .widthAnchor.constraint(greaterThanOrEqualToConstant: 0)
-        self.collectionViewMinWidthContraint.isActive = true
+        
+        NSLayoutConstraint.sbu_activate(baseView: self.collectionView, constraints: [
+            self.collectionViewHeightConstraint,
+            self.collectionViewMinWidthContraint
+        ])
     }
 
     open override func setupStyles() {
@@ -105,12 +108,12 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
     
     open func configure(maxWidth: CGFloat, useReaction: Bool, reactions: [Reaction]) {
         guard useReaction, !reactions.isEmpty else {
-            self.collectionViewMinWidthContraint.isActive = false
+            self.collectionViewMinWidthContraint?.isActive = false
             self.isHidden = true
             return
         }
 
-        self.collectionViewMinWidthContraint.isActive = true
+        self.collectionViewMinWidthContraint?.isActive = true
         self.isHidden = false
         self.maxWidth = maxWidth
         self.reactions = reactions
@@ -127,13 +130,11 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
         if hasMoreEmoji {
             width += self.getCellSize(count: 0).width + layout.minimumLineSpacing
         }
-        self.collectionViewMinWidthContraint.constant = width < maxWidth ? width : maxWidth
+        self.collectionViewMinWidthContraint?.constant = width < maxWidth ? width : maxWidth
         self.collectionView.reloadData()
         self.collectionView.layoutIfNeeded()
-        self.collectionViewHeightConstraint.constant = self.collectionView
+        self.collectionViewHeightConstraint?.constant = self.collectionView
             .collectionViewLayout.collectionViewContentSize.height
-
-        self.setNeedsLayout()
     }
 
     /// The default value is `CGSize(width: 54, height: 30)`; if `count` is zero, the width is 36.
@@ -183,10 +184,9 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
             )
             cell.emojiImageViewRatioConstraint?.isActive = false
             cell.configure(type: .messageReaction, url: nil, needsSideMargin: self.sameCellWidth)
-            
+
             cell.emojiImageView.image = moreEmoji
             cell.emojiImageViewRatioConstraint?.isActive = true
-
             cell.isSelected = false
             cell.addGestureRecognizer(moreEmojiTapRecognizer)
             return cell
@@ -202,7 +202,6 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
         cell.configure(type: .messageReaction,
                        url: selectedEmoji?.url,
                        count: reaction.userIds.count, needsSideMargin: self.sameCellWidth)
-        
         cell.emojiImageViewRatioConstraint?.isActive = true
         cell.emojiLongPressHandler = { [weak self] in
             guard let self = self else { return }

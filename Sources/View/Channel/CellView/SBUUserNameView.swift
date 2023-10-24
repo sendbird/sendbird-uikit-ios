@@ -23,7 +23,7 @@ open class SBUUserNameView: SBUView {
     var isOverlay = false
     
     /// Set to `button.leftAnchor.constraint(equalTo:constant:)` from `updateLayouts()` function.
-    public private(set) var buttonLeftConstraint: NSLayoutConstraint!
+    public private(set) var buttonLeftConstraint: NSLayoutConstraint?
     
     public override init() {
         super.init(frame: .zero)
@@ -54,25 +54,26 @@ open class SBUUserNameView: SBUView {
         super.setupLayouts()
         
         self.button
-            .setConstraint(from: self, right: 0, top: 0, bottom: 0)
-            .setConstraint(height: 12)
+            .sbu_constraint(equalTo: self, right: 0, top: 0, bottom: 0)
+            .sbu_constraint(height: 12, priority: .defaultHigh)
         
+        self.buttonLeftConstraint?.isActive = false
         self.buttonLeftConstraint = self.button.leftAnchor.constraint(
             equalTo: self.leftAnchor,
             constant: self.leftMargin
         )
-        self.buttonLeftConstraint.isActive = true
+        self.buttonLeftConstraint?.isActive = true
     }
     
     open override func updateLayouts() {
         super.updateLayouts()
         
-        self.buttonLeftConstraint.isActive = false
+        self.buttonLeftConstraint?.isActive = false
         self.buttonLeftConstraint = self.button.leftAnchor.constraint(
             equalTo: self.leftAnchor,
             constant: self.leftMargin
         )
-        self.buttonLeftConstraint.isActive = true
+        self.buttonLeftConstraint?.isActive = true
     }
     
     open override func setupStyles() {

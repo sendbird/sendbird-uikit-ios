@@ -91,18 +91,15 @@ class SBUChannelPushSettingCell: SBUTableViewCell {
     
     /// This function handles the initialization of autolayouts.
     override func setupLayouts() {
-        self.baseStackView
-            .sbu_constraint(
-                equalTo: self.contentView,
-                leading: 16, trailing: -16, top: 13, bottom: 12
-            )
-        
-        self.titleStackView.sbu_constraint(height: 31)
         
         self.rightSwitch
             .sbu_constraint(width: 51)
         
-        self.rightRadioButton.sbu_constraint(width: 24, height: 24)
+        self.rightRadioButton
+            .sbu_constraint(width: 24, height: 24, priority: .defaultHigh)
+        
+        self.titleStackView
+            .sbu_constraint(height: 31, priority: .defaultHigh)
         
         self.separateView
             .sbu_constraint(
@@ -110,6 +107,13 @@ class SBUChannelPushSettingCell: SBUTableViewCell {
                 leading: 16, trailing: -16, bottom: 0.5
             )
             .sbu_constraint(height: 0.5)
+        
+        self.baseStackView
+            .sbu_constraint(
+                equalTo: self.contentView,
+                leading: 16, trailing: -16, top: 13, bottom: 12
+            )
+        
     }
     
     /// This function handles the initialization of styles.

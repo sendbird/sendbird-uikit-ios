@@ -18,6 +18,8 @@ open class SBUQuotedUserMessageView: SBUQuotedBaseMessageView {
         return label
     }()
     
+    var quotedMessageLabelConstraintWidth: NSLayoutConstraint?
+    
     open override func setupViews() {
         super.setupViews()
         
@@ -32,14 +34,20 @@ open class SBUQuotedUserMessageView: SBUQuotedBaseMessageView {
     
     open override func setupLayouts() {
         self.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            self.quotedMessageLabel.widthAnchor.constraint(lessThanOrEqualToConstant: SBUConstant.messageCellMaxWidth)
-        ])
-        self.quotedMessageLabel
-            .setConstraint(
-                from: self.mainContainerView,
-                leading: 12, trailing: -12, top: 6, bottom: 12
-            )
+
+        self.quotedMessageLabelConstraintWidth?.isActive = false
+        self.quotedMessageLabelConstraintWidth = self.quotedMessageLabel.widthAnchor.constraint(
+            lessThanOrEqualToConstant: SBUConstant.messageCellMaxWidth
+        )
+        self.quotedMessageLabelConstraintWidth?.isActive = true
+        
+        self.quotedMessageLabel.sbu_constraint(
+            equalTo: self.mainContainerView,
+            leading: 12,
+            trailing: -12,
+            top: 6,
+            bottom: 12
+        )
         super.setupLayouts()
     }
     

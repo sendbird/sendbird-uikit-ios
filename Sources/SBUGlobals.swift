@@ -52,6 +52,7 @@ public class SBUGlobals {
     
     // MARK: - PHPickerViewController
     /// If it's `true`, uses `PHPickerViewController` instead of `UIImagePickerController` when access to the photo library for sending file message.
+    /// - IMPORTANT: If set to false, PHPickerViewController will not show even if `isMultipleFilesMessageEnabled` is set to true.
     /// - Since: 3.0.0
     @available(iOS 14, *)
     public static var isPHPickerEnabled: Bool = false

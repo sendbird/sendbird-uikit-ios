@@ -36,8 +36,8 @@ open class QuotedFileImageContentView: SBUView {
         return imageView
     }()
     
-    var widthConstraint: NSLayoutConstraint!
-    var heightConstraint: NSLayoutConstraint!
+    var widthConstraint: NSLayoutConstraint?
+    var heightConstraint: NSLayoutConstraint?
     
     // MARK: - Properties (Private)
     private var loadImageSession: URLSessionTask? {
@@ -58,8 +58,8 @@ open class QuotedFileImageContentView: SBUView {
         super.setupLayouts()
         
         self.imageView
-            .setConstraint(
-                from: self,
+            .sbu_constraint(
+                equalTo: self,
                 left: 0, right: 0, top: 0, bottom: 0,
                 priority: .defaultLow
             )
@@ -67,12 +67,15 @@ open class QuotedFileImageContentView: SBUView {
         self.setupSizeContraint()
         
         self.iconImageView
-            .setConstraint(from: self, centerX: true, centerY: true)
-            .setConstraint(width: 48, height: 48)
+            .sbu_constraint(equalTo: self, centerX: 0, centerY: 0)
+            .sbu_constraint(width: 48, height: 48)
             .layoutIfNeeded()
     }
     
     open func setupSizeContraint() {
+        self.widthConstraint?.isActive = false
+        self.heightConstraint?.isActive = false
+        
         self.widthConstraint = self.imageView.widthAnchor.constraint(
             equalToConstant: SBUConstant.quotedMessageThumbnailSize.width
         )
@@ -80,10 +83,8 @@ open class QuotedFileImageContentView: SBUView {
             equalToConstant: SBUConstant.quotedMessageThumbnailSize.height
         )
         
-        NSLayoutConstraint.activate([
-            self.widthConstraint,
-            self.heightConstraint
-        ])
+        self.widthConstraint?.isActive = true
+        self.heightConstraint?.isActive = true
     }
     
     open override func setupStyles() {
@@ -181,11 +182,11 @@ open class QuotedFileImageContentView: SBUView {
     }
     
     open func resizeImageView(by size: CGSize) {
-        self.widthConstraint.constant = min(
+        self.widthConstraint?.constant = min(
             size.width,
             SBUConstant.quotedMessageThumbnailSize.width
         )
-        self.heightConstraint.constant = min(
+        self.heightConstraint?.constant = min(
             size.height,
             SBUConstant.quotedMessageThumbnailSize.height
         )

@@ -70,6 +70,9 @@ open class SBUBaseViewController: UIViewController, UINavigationControllerDelega
     /// This function updates styles.
     open func updateStyles() { }
     
+    /// This function updates styles with boolean parameter value that represents whether layout or not
+    open func updateStyles(needsToLayout: Bool) { }
+    
     /// This function setups navigationBar's background color and shadow color.
     /// - Parameters:
     ///   - backgroundColor: background color

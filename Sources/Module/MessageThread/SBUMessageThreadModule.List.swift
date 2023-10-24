@@ -34,6 +34,36 @@ public protocol SBUMessageThreadModuleListDelegate: SBUBaseChannelModuleListDele
     /// - Parameters:
     ///    - user: The`SBUUser` object from the tapped mention.
     func messageThreadModule(_ listComponent: SBUMessageThreadModule.List, didTapMentionUser user: SBUUser)
+    
+    /// Called when one of the files is selected in the multiple file message cell.
+    /// - Parameters:
+    ///    - listComponent: `SBUMessageThreadModule.List ` object.
+    ///    - index: The index number of the selected file in `MultipleFilesMessage.files`.
+    ///    - multipleFilesMessageCell: ``SBUMultipleFilesMessageCell`` that contains the tapped file.
+    ///    - cellIndexPath: `IndexPath` value of the ``SBUMultipleFilesMessageCell``.
+    /// - Since: 3.10.0
+    func messageThreadModule(
+        _ listComponent: SBUMessageThreadModule.List,
+        didSelectFileAt index: Int,
+        multipleFilesMessageCell: SBUMultipleFilesMessageCell,
+        forRowAt cellIndexPath: IndexPath
+    )
+    
+    /// Called when one of the files is selected in parent message info view (``SBUParentMessageInfoView``)
+    /// when the parent message is a multiple files message (`MultipleFilesMessage`).
+    /// - Parameters:
+    ///    - listComponent: The `SBUMessageThreadModule.List` object.
+    ///    - uploadedFileInfo: The `UploadedFileInfo` of the tapped file.
+    ///    - message: `MultipleFilesMessage` that contains the tapped file.
+    ///    - index: The index value of the tapped file.
+    /// - Note: This interface is beta. We do not gaurantee this interface to work properly yet.
+    /// - Since: [NEXT_VERSION_MFM_THREAD]
+    func messageThreadModule(
+        _ listComponent: SBUMessageThreadModule.List,
+        uploadedFileInfo: UploadedFileInfo,
+        message: MultipleFilesMessage,
+        index: Int
+    )
 }
 
 /// Methods to get data source for list component in a message thread.
@@ -60,6 +90,10 @@ extension SBUMessageThreadModule {
         
         /// The message cell for `FileMessage` object. Use `register(fileMessageCell:nib:)` to update.
         public private(set) var fileMessageCell: SBUBaseMessageCell?
+        
+        /// The message cell for `MultipleFilesMessage` object. Use `register(multipleFilesMessageCell:nib:)` to update.
+        /// - Since: 3.10.0
+        public private(set) var multipleFilesMessageCell: SBUBaseMessageCell?
         
         /// The message cell for some unknown message which is not a type of `AdminMessage` | `UserMessage` | ` FileMessage`. Use `register(unknownMessageCell:nib:)` to update.
         public private(set) var unknownMessageCell: SBUBaseMessageCell?
@@ -149,6 +183,9 @@ extension SBUMessageThreadModule {
             if self.fileMessageCell == nil {
                 self.register(fileMessageCell: SBUFileMessageCell())
             }
+            if self.multipleFilesMessageCell == nil {
+                self.register(multipleFilesMessageCell: SBUMultipleFilesMessageCell())
+            }
             if self.unknownMessageCell == nil {
                 self.register(unknownMessageCell: SBUUnknownMessageCell())
             }
@@ -232,6 +269,12 @@ extension SBUMessageThreadModule {
             self.parentMessageInfoView.tapHandlerToContent = { [weak self] in
                 guard let self = self else { return }
                 self.setTapGesture(UITableViewCell(), message: message, indexPath: IndexPath())
+            }
+            
+            self.parentMessageInfoView.fileSelectHandler = { [weak self] uploadedFileInfo, index in
+                guard let self = self else { return }
+                guard let parentMessage = self.parentMessage as? MultipleFilesMessage else { return }
+                self.delegate?.messageThreadModule(self, uploadedFileInfo: uploadedFileInfo, message: parentMessage, index: index)
             }
             
             self.parentMessageInfoView.moreButtonTapHandlerToContent = { [weak self] in
@@ -325,9 +368,21 @@ extension SBUMessageThreadModule {
         ///   - message: message object
         ///   - indexPath: Cell's indexPath
         open func setMessageCellGestures(_ cell: SBUBaseMessageCell, message: BaseMessage, indexPath: IndexPath) {
-            cell.tapHandlerToContent = { [weak self] in
-                guard let self = self else { return }
-                self.setTapGesture(cell, message: message, indexPath: indexPath)
+            if let multipleFilesMessageCell = cell as? SBUMultipleFilesMessageCell {
+                multipleFilesMessageCell.fileSelectHandler = { [weak self] _, index in
+                    guard let self = self else { return }
+                    self.delegate?.messageThreadModule(
+                        self,
+                        didSelectFileAt: index,
+                        multipleFilesMessageCell: multipleFilesMessageCell,
+                        forRowAt: indexPath
+                    )
+                }
+            } else {
+                cell.tapHandlerToContent = { [weak self] in
+                    guard let self = self else { return }
+                    self.setTapGesture(cell, message: message, indexPath: indexPath)
+                }
             }
             
             cell.longPressHandlerToContent = { [weak self] in
@@ -365,15 +420,21 @@ extension SBUMessageThreadModule {
         // MARK: - TableView
                 
         /// Reloads table view. This method corresponds to `UITableView reloadData()`.
-        public override func reloadTableView() {
+        public override func reloadTableView(needsToLayout: Bool = true) {
+            guard self.tableView.frame != .zero else { return }
+            
             if Thread.isMainThread {
                 self.tableView.reloadData()
-                self.tableView.layoutIfNeeded()
+                if needsToLayout {
+                    self.tableView.layoutIfNeeded()
+                }
 
             } else {
                 DispatchQueue.main.async { [weak self] in
                     self?.tableView.reloadData()
-                    self?.tableView.layoutIfNeeded()
+                    if needsToLayout {
+                        self?.tableView.layoutIfNeeded()
+                    }
                 }
             }
         }
@@ -433,6 +494,21 @@ extension SBUMessageThreadModule {
         open func register(fileMessageCell: SBUBaseMessageCell, nib: UINib? = nil) {
             self.fileMessageCell = fileMessageCell
             self.register(messageCell: fileMessageCell, nib: nib)
+        }
+        
+        /// Registers a custom cell as a multiple files message cell based on `SBUBaseMessageCell`.
+        /// - Parameters:
+        ///   - multipleFilesMessageCell: Customized multiple files message cell
+        ///   - nib: nib information. If the value is nil, the nib file is not used.
+        /// - Important: To register custom message cell, please use this function before calling `configure(delegate:dataSource:theme:)`
+        /// ```swift
+        /// listComponent.register(multipleFilesMessageCell: MyMultipleFilesMessageCell)
+        /// listComponent.configure(delegate: self, dataSource: self, theme: theme)
+        /// ```
+        /// - Since: 3.10.0
+        open func register(multipleFilesMessageCell: SBUBaseMessageCell, nib: UINib? = nil) {
+            self.multipleFilesMessageCell = multipleFilesMessageCell
+            self.register(messageCell: multipleFilesMessageCell, nib: nib)
         }
         
         /// Registers a custom cell as a unknown message cell based on `SBUBaseMessageCell`.
@@ -558,6 +634,21 @@ extension SBUMessageThreadModule {
                     self.currentVoiceContentView = voiceContentView
                 }
                 
+            case let (multipleFilesMessage, multipleFilesMessageCell) as (MultipleFilesMessage, SBUMultipleFilesMessageCell):
+                let configuration = SBUMultipleFilesMessageCellParams(
+                    message: multipleFilesMessage,
+                    hideDateView: isSameDay,
+                    useMessagePosition: true,
+                    useReaction: true,
+                    isThreadMessage: true
+                )
+                
+                multipleFilesMessageCell.configure(with: configuration)
+                self.setMessageCellGestures(multipleFilesMessageCell, message: multipleFilesMessage, indexPath: indexPath)
+                
+                // TODO: Activate this code for sending a MFM in thread
+//                (multipleFilesMessageCell.threadInfoView as? SBUThreadInfoView)?.delegate = self
+                
             default:
                     let configuration = SBUBaseMessageCellParams(
                         message: message,
@@ -636,6 +727,8 @@ extension SBUMessageThreadModule {
         /// - Returns: The identifier of message cell.
         open func generateCellIdentifier(by message: BaseMessage) -> String {
             switch message {
+                case is MultipleFilesMessage:
+                    return multipleFilesMessageCell?.sbu_className ?? SBUMultipleFilesMessageCell.sbu_className
                 case is FileMessage:
                     return fileMessageCell?.sbu_className ?? SBUFileMessageCell.sbu_className
                 case is UserMessage:

@@ -1755,7 +1755,8 @@ public class SBUMessageCellTheme {
                 statusButtonBackgroundColor: UIColor = SBUColorSet.background50,
                 loadingButtonTintColor: UIColor = SBUColorSet.primary200,
                 playButtonTintColor: UIColor = SBUColorSet.primary300,
-                pauseButtonTintColor: UIColor = SBUColorSet.primary300
+                pauseButtonTintColor: UIColor = SBUColorSet.primary300,
+                multipleFilesMessageFileOverlayColor: UIColor = SBUColorSet.overlay02
     ) {
         
         self.backgroundColor = backgroundColor
@@ -1861,6 +1862,7 @@ public class SBUMessageCellTheme {
         self.playerLoadingButtonTintColor = loadingButtonTintColor
         self.playerPlayButtonTintColor = playButtonTintColor
         self.playerPauseButtonTintColor = pauseButtonTintColor
+        self.multipleFilesMessageFileOverlayColor = multipleFilesMessageFileOverlayColor
     }
     
     public var backgroundColor: UIColor
@@ -1916,6 +1918,9 @@ public class SBUMessageCellTheme {
     public var fileMessageLeftTextColor: UIColor
     public var fileMessageRightTextColor: UIColor
     public var fileMessagePlaceholderColor: UIColor
+    
+    // Multiple Files Message
+    public var multipleFilesMessageFileOverlayColor: UIColor
     
     // Admin message
     public var adminMessageFont: UIFont

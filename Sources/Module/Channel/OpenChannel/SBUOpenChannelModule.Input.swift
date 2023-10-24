@@ -163,14 +163,14 @@ extension SBUOpenChannelModule {
                         guard let imageURL = url as? URL else { return }
                         guard let mimeType = SBUUtils.getMimeType(url: imageURL) else { return }
                         
-                        guard let imageData = originalImage
-                            .fixedOrientation()
-                            .sbu_convertToData() else { return }
-                        
-                        let fileExtension = imageURL.pathExtension
-                        let fileName = "\(Date().sbu_toString(dateFormat: SBUDateFormatSet.Message.fileNameFormat, localizedFormat: false)).\(fileExtension)"
-                        
-                        DispatchQueue.main.async { [self, imageData, mimeType, fileName] in
+                        DispatchQueue.main.async {
+                            guard let imageData = originalImage
+                                .fixedOrientation()
+                                .sbu_convertToData() else { return }
+                            
+                            let fileExtension = imageURL.pathExtension
+                            let fileName = "\(Date().sbu_toString(dateFormat: SBUDateFormatSet.Message.fileNameFormat, localizedFormat: false)).\(fileExtension)"
+                            
                             self.delegate?.openChannelModule(
                                 self,
                                 didPickFileData: imageData,
@@ -185,9 +185,9 @@ extension SBUOpenChannelModule {
         
         @available(iOS 14.0, *)
         open override func pickGIFFile(itemProvider: NSItemProvider) {
-            itemProvider.loadItem(forTypeIdentifier: UTType.gif.identifier, options: [:]) { [weak self] url, _ in
+            itemProvider.loadFileRepresentation(forTypeIdentifier: UTType.gif.identifier) { [weak self] url, _ in
                 guard let self = self else { return }
-                guard let imageURL = url as? URL else { return }
+                guard let imageURL = url else { return }
                 guard let mimeType = SBUUtils.getMimeType(url: imageURL) else { return }
                 
                 let gifData = try? Data(contentsOf: imageURL)

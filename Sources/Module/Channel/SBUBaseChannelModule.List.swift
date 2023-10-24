@@ -325,14 +325,9 @@ extension SBUBaseChannelModule {
             scrollBottomButton.addTarget(self, action: #selector(self.onTapScrollToBottom), for: .touchUpInside)
             view.addSubview(scrollBottomButton)
             
-            scrollBottomButton.translatesAutoresizingMaskIntoConstraints = false
-            NSLayoutConstraint.activate([
-                scrollBottomButton.topAnchor.constraint(equalTo: view.topAnchor),
-                scrollBottomButton.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-                scrollBottomButton.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                scrollBottomButton.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-            ])
-            
+            scrollBottomButton
+                .sbu_constraint(equalTo: view, leading: 0, trailing: 0, top: 0, bottom: 0)
+
             return view
         }()
         
@@ -489,18 +484,22 @@ extension SBUBaseChannelModule {
         
         // MARK: - TableView
         /// Reloads table view. This method corresponds to `UITableView reloadData()`.
-        public func reloadTableView() {
+        public func reloadTableView(needsToLayout: Bool = true) {
             if Thread.isMainThread {
                 self.isTableViewReloading = true
                 self.tableView.reloadData()
-                self.tableView.layoutIfNeeded()
+                if needsToLayout {
+                    self.tableView.layoutIfNeeded()
+                }
                 self.isTableViewReloading = false
 
             } else {
                 DispatchQueue.main.async { [weak self] in
                     self?.isTableViewReloading = true
                     self?.tableView.reloadData()
-                    self?.tableView.layoutIfNeeded()
+                    if needsToLayout {
+                        self?.tableView.layoutIfNeeded()
+                    }
                     self?.isTableViewReloading = false
                 }
             }
@@ -593,8 +592,13 @@ extension SBUBaseChannelModule {
             
             let cancelButton = SBUAlertButtonItem(title: SBUStringSet.Cancel) { _ in }
             
+            var title = SBUStringSet.Alert_Delete
+            if let multipleFilesMessage = message as? MultipleFilesMessage {
+                title = SBUStringSet.Alert_Delete_MultipleFilesMessage(multipleFilesMessage.filesCount)
+            }
+            
             SBUAlertView.show(
-                title: SBUStringSet.Alert_Delete,
+                title: title,
                 oneTimetheme: oneTimeTheme,
                 confirmButtonItem: deleteButton,
                 cancelButtonItem: cancelButton
@@ -685,6 +689,12 @@ extension SBUBaseChannelModule {
                 if SBUUtils.getFileType(by: fileMessage) != .voice {
                     items.append(save)
                 }
+                if isSentByMe {
+                    let delete = self.createDeleteMenuItem(for: message)
+                    items.append(delete)
+                }
+            case is MultipleFilesMessage:
+                // MultipleFilesMessage: delete
                 if isSentByMe {
                     let delete = self.createDeleteMenuItem(for: message)
                     items.append(delete)
@@ -1197,5 +1207,33 @@ extension SBUBaseChannelModule.List {
         let prevCreatedAt = prevMessage.createdAt
         
         return Date.sbu_from(prevCreatedAt).isSameDay(as: Date.sbu_from(curCreatedAt))
+    }
+    
+    // MARK: - Util
+    
+    /// Reloads a SBUMultipleFilesMessageCollectionViewCell when a file is finished being uploaded.
+    func reloadMultipleFilesMessageCollectionViewCell(requestId: String, index: Int) {
+        for cell in self.tableView.visibleCells {
+            if let cell = cell as? SBUMultipleFilesMessageCell,
+               let message = cell.message,
+               message.requestId == requestId {
+                guard let indexPath = tableView.indexPath(for: cell) else { return }
+                guard let visibleIndexPaths = tableView.indexPathsForVisibleRows else { return }
+                guard visibleIndexPaths.contains(indexPath) else { return }
+
+                let collectionViewIndexPath = IndexPath(item: index, section: 0)
+                cell.uploadedIndices.append(index)
+                
+                if Thread.isMainThread {
+                    cell.collectionView.reloadItems(at: [collectionViewIndexPath])
+                    cell.collectionView.layoutIfNeeded()
+                } else {
+                    DispatchQueue.main.async {
+                        cell.collectionView.reloadItems(at: [collectionViewIndexPath])
+                        cell.collectionView.layoutIfNeeded()
+                    }
+                }
+            }
+        }
     }
 }

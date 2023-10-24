@@ -64,11 +64,11 @@ open class SBUOpenChannelBaseMessageCell: SBUTableViewCell {
     
     /// This function handles the initialization of autolayouts.
     open override func setupLayouts() {
-        super.setupLayouts()
-        
         self.stackView
-            .setConstraint(from: self.contentView, left: 0, bottom: 0)
-            .setConstraint(from: self.contentView, right: 0)
+            .sbu_constraint(equalTo: self.contentView, left: 0, bottom: 0)
+            .sbu_constraint(equalTo: self.contentView, right: 0)
+        
+        super.setupLayouts()
         
         self.updateTopAnchorConstraint()
     }
