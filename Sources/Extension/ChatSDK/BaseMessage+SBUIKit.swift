@@ -30,3 +30,28 @@ extension BaseMessage {
         self.messageId > 0
     }
 }
+
+extension BaseMessage {
+    /// Convert to ExtendedMessage model.
+    var asExtendedMessagePayload: SBUExtendedMessagePayload? {
+        self.extendedMessagePayload.toExtendedMessage
+    }
+
+    /// list of string options.
+    /// - Since: 3.11.0
+    public var asSuggestedReplies: [String]? { self.asExtendedMessagePayload?.suggestedReplies }
+
+    /// List of form data.
+    /// - Since: 3.11.0asCustomView
+    public var asForms: [SBUForm]? { self.asExtendedMessagePayload?.forms }
+
+    /// json string data.
+    /// - Since: 3.11.0
+    public var asCustomView: Any? { self.asExtendedMessagePayload?.customView }
+
+    /// Function to decode to custom view data using genric type.
+    /// - Since: 3.11.0
+    public func decodeCustomViewData<ViewData: Decodable>() throws -> ViewData? {
+        try self.asExtendedMessagePayload?.decodeCustomViewData()
+    }
+}

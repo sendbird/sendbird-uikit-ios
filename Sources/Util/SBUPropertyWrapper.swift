@@ -105,11 +105,13 @@ public struct SBUPrioritizedConfig<T>: Codable where T: Codable {
         self.priority = priority
     }
     
+    // NOTE: for cache value.
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         self.value = try container.decode(T.self)
     }
     
+    // NOTE: for cache value.
     public func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
         try container.encode(self.value)

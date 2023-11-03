@@ -38,7 +38,7 @@ public protocol SBUMessageThreadViewControllerDelegate: AnyObject {
 }
 
 @objcMembers
-open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMessageThreadViewModelDelegate, SBUMessageThreadViewModelDataSource, SBUMessageThreadModuleHeaderDelegate, SBUMessageThreadModuleListDelegate, SBUMessageThreadModuleListDataSource, SBUMessageThreadModuleInputDelegate, SBUMessageThreadModuleInputDataSource, SBUMentionManagerDataSource, SBUVoiceMessageInputViewDelegate {
+open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMessageThreadViewModelDelegate, SBUMessageThreadViewModelDataSource, SBUMessageThreadModuleHeaderDelegate, SBUMessageThreadModuleListDelegate, SBUMessageThreadModuleListDataSource, SBUMessageThreadModuleInputDelegate, SBUMessageThreadModuleInputDataSource, SBUMentionManagerDataSource, SBUVoiceMessageInputViewDelegate, SBUReactionsViewControllerDelegate {
 
     // MARK: - UI properties (Public)
     public var headerComponent: SBUMessageThreadModule.Header? {
@@ -151,7 +151,7 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
         
         self.listComponent?.parentMessageInfoView.updateMessageTextWidth(with: size)
         
-        coordinator.animate(alongsideTransition: { (context) in
+        coordinator.animate(alongsideTransition: { (_) in
             self.listComponent?.reloadInputViews()
         }, completion: nil)
     }
@@ -381,7 +381,6 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
         }
     }
     
-    
     /// - Since: 3.10.0
     @available(iOS 14, *)
     private func handleSingleFile(_ results: [PHPickerResult]) {
@@ -604,6 +603,7 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
             message: message,
             selectedReaction: reaction
         )
+        reactionsVC.delegate = self
         reactionsVC.modalPresentationStyle = UIModalPresentationStyle.custom
         reactionsVC.transitioningDelegate = self
         self.present(reactionsVC, animated: true)
@@ -623,16 +623,7 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
         _ listComponent: SBUMessageThreadModule.List,
         didTapMentionUser user: SBUUser
     ) {
-        self.dismissKeyboard()
-        
-        if let userProfileView = self.baseListComponent?.userProfileView as? SBUUserProfileView,
-           let baseView = self.navigationController?.view,
-           SendbirdUI.config.common.isUsingDefaultUserProfileEnabled {
-            userProfileView.show(
-                baseView: baseView,
-                user: user
-            )
-        }
+        self.showUserProfile(user: user)
     }
     
     /// - Note: This interface is beta. We do not gaurantee this interface to work properly yet.
@@ -991,5 +982,25 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
     
     public func voiceMessageInputView(_ inputView: SBUVoiceMessageInputView, willStartToRecord voiceFileInfo: SBUVoiceFileInfo) {
         // ...
+    }
+    
+    // MARK: - SBUReactionsViewControllerDelegate
+    
+    /// - Since: 3.11.0
+    open func reactionsViewController(
+        _ viewController: SBUReactionsViewController,
+        didTapUserProfile user: SBUUser
+    ) {
+        self.showUserProfile(user: user)
+    }
+    
+    /// - Since: 3.11.0
+    open func reactionsViewController(
+        _ viewController: SBUReactionsViewController,
+        tableView: UITableView,
+        didSelect user: SBUUser,
+        forRowAt indexPath: IndexPath
+    ) {
+        
     }
 }

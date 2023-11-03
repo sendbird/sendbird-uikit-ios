@@ -94,10 +94,10 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
     public private(set) lazy var threadInfoSpacing: UIView = UIView()
     public lazy var threadInfoView: (UIView & SBUThreadInfoViewProtocol)? = SBUThreadInfoView()
     
-    // + ----------------- + --------- +
-    // | mainContainerView | stateView |
-    // + ----------------- + --------- +
-    /// A horizontal stack view that contains `mainContainerView` and `stateView` as defaults.
+    // + ----------------------- + --------- +
+    // | mainContainerVStackView | stateView |
+    // + ----------------------- + --------- +
+    /// A horizontal stack view that contains `mainContainerVStackView` and `stateView` as defaults.
     ///
     /// As a default, it has ollowing  configuration:
     /// - axis: `.horizontal`
@@ -105,6 +105,22 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
     /// - spacing: `4`
     public lazy var messageHStackView: UIStackView = {
         return SBUStackView(axis: .horizontal, alignment: .bottom, spacing: 4)
+    }()
+    
+    // + ----------------- +
+    // | mainContainerView |
+    // + ----------------- +
+    // | additional views  |
+    // + ----------------- +
+    /// A horizontal stack view that contains `mainContainerView` and some other additional views as defaults.
+    ///
+    /// As a default, it has ollowing  configuration:
+    /// - axis: `.vertical`
+    /// - alignment: `.bottom`
+    /// - spacing: `8`
+    /// - Since: 3.11.0
+    public lazy var mainContainerVStackView: UIStackView = {
+        return SBUStackView(axis: .vertical, alignment: .leading, spacing: 8)
     }()
     
     /// A ``SBUSelectableStackView`` that represents a message bubble.
@@ -163,7 +179,9 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
                 self.contentVStackView.setVStack([
                     self.quotedMessageView,
                     self.messageHStackView.setHStack([
-                        self.mainContainerView,
+                        self.mainContainerVStackView.setVStack([
+                            self.mainContainerView,
+                        ]),
                         self.stateView,
                         self.messageSpacing
                     ])
@@ -326,7 +344,9 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
                 : false
             )
             self.messageHStackView.setHStack([
-                self.mainContainerView,
+                self.mainContainerVStackView.setVStack([
+                    self.mainContainerView,
+                ]),
                 self.stateView,
                 self.messageSpacing
             ])
@@ -474,8 +494,11 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         switch self.position {
             case .left:
                 self.userNameStackView.alignment = .leading
+                self.mainContainerVStackView.alignment = .leading
                 self.messageHStackView.setHStack([
-                    self.mainContainerView,
+                    self.mainContainerVStackView.setVStack([
+                        self.mainContainerView,
+                    ]),
                     self.stateView,
                     self.messageSpacing
                 ])
@@ -495,10 +518,13 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
                     
             case .right:
                 self.userNameStackView.alignment = .trailing
+                self.mainContainerVStackView.alignment = .trailing
                 self.messageHStackView.setHStack([
                     self.messageSpacing,
                     self.stateView,
-                    self.mainContainerView
+                    self.mainContainerVStackView.setVStack([
+                        self.mainContainerView,
+                    ]),
                 ])
                 self.contentVStackView.setVStack([
                     self.quotedMessageView,

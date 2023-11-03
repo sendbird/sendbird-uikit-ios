@@ -31,6 +31,7 @@ public class SBUStringSet {
     public static var Search = "Search"
     public static var Settings = "Settings"
     public static var Reply = "Reply"
+    public static var Submit = "Submit" // 3.11.0
     
     // MARK: - Alert
     public static var Alert_Delete = "Are you sure you want to delete?"
@@ -304,6 +305,10 @@ public class SBUStringSet {
     public static var ChannelType_Group = "Group"
     public static var ChannelType_SuperGroup = "Super group"
     public static var ChannelType_Broadcast = "Broadcast"
+    
+    // MARK: - form type
+    public static var FormType_Optional = "(optional)" // 3.11.0
+    public static var FormType_Error_Default = "Please check the value" // 3.11.0
     
     public class Mention {
         /// "@"

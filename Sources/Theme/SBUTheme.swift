@@ -1386,6 +1386,27 @@ public class SBUMessageCellTheme {
         theme.playerPlayButtonTintColor = SBUColorSet.primary300
         theme.playerPauseButtonTintColor = SBUColorSet.primary300
         
+        // suggested reply
+        theme.suggestedReplyTitleColor = SBUColorSet.primary300
+        theme.suggestedReplyBorderColor = SBUColorSet.primary300
+        theme.suggestedReplyBackgroundColor = SBUColorSet.background50
+        theme.suggestedReplyBackgroundSelectedColor = SBUColorSet.background100
+        
+        // form
+        theme.formBackgroundColor = SBUColorSet.background100
+        theme.formTitleColor = SBUColorSet.onlight02
+        theme.formOptionalTitleColor = SBUColorSet.onlight03
+        theme.formInputBackgroundColor = SBUColorSet.background50
+        theme.formInputBackgroundDoneColor = SBUColorSet.ondark02
+        theme.formInputTitleColor = SBUColorSet.onlight01
+        theme.formInputIconColor = SBUColorSet.secondary300
+        theme.formInputBorderNormalColor = SBUColorSet.onlight04
+        theme.formInputErrorColor = SBUColorSet.error300
+        theme.formInputPlaceholderColor = SBUColorSet.onlight03
+        theme.formSubmitButtonBackgroundColor = SBUColorSet.primary300
+        theme.formSubmitButtonBackgroundDisabledColor = SBUColorSet.onlight04
+        theme.formSubmitButtonTitleColor = SBUColorSet.ondark01
+
         return theme
     }
     
@@ -1513,17 +1534,38 @@ public class SBUMessageCellTheme {
         
         theme.parentInfoProgressBackgroundColor = SBUColorSet.background400
         
-        // Voice note
-        theme.progressTrackTintColor = SBUColorSet.ondark03
-        theme.progressTimeFont = SBUFontSet.body3
-        theme.progressTimeRightTextColor = SBUColorSet.onlight01
-        theme.progressTimeLeftTextColor = SBUColorSet.ondark01
-        
         theme.playerStatusButtonBackgroundColor = SBUColorSet.background600
         theme.playerLoadingButtonTintColor = SBUColorSet.primary300
         theme.playerPlayButtonTintColor = SBUColorSet.primary200
         theme.playerPauseButtonTintColor = SBUColorSet.primary200
         
+        // Voice note
+        theme.progressTrackTintColor = SBUColorSet.ondark03
+        theme.progressTimeFont = SBUFontSet.body3
+        theme.progressTimeRightTextColor = SBUColorSet.onlight01
+        theme.progressTimeLeftTextColor = SBUColorSet.ondark01
+
+        // suggested reply
+        theme.suggestedReplyTitleColor = SBUColorSet.primary200
+        theme.suggestedReplyBorderColor = SBUColorSet.primary200
+        theme.suggestedReplyBackgroundColor = SBUColorSet.background600
+        theme.suggestedReplyBackgroundSelectedColor = SBUColorSet.background500
+
+        // form
+        theme.formBackgroundColor = SBUColorSet.background400
+        theme.formTitleColor = SBUColorSet.ondark02
+        theme.formOptionalTitleColor = SBUColorSet.ondark03
+        theme.formInputBackgroundColor = SBUColorSet.onlight03
+        theme.formInputBackgroundDoneColor = SBUColorSet.onlight04
+        theme.formInputTitleColor = SBUColorSet.ondark01
+        theme.formInputIconColor = SBUColorSet.secondary200
+        theme.formInputBorderNormalColor = SBUColorSet.ondark04
+        theme.formInputErrorColor = SBUColorSet.error200
+        theme.formInputPlaceholderColor = SBUColorSet.ondark02
+        theme.formSubmitButtonBackgroundColor = SBUColorSet.primary200
+        theme.formSubmitButtonBackgroundDisabledColor = SBUColorSet.onlight04
+        theme.formSubmitButtonTitleColor = SBUColorSet.onlight01
+
         return theme
     }
     
@@ -1662,6 +1704,12 @@ public class SBUMessageCellTheme {
         theme.playerPlayButtonTintColor = SBUColorSet.primary200
         theme.playerPauseButtonTintColor = SBUColorSet.primary200
         
+        // suggested reply
+        theme.suggestedReplyTitleColor = SBUColorSet.primary300
+        theme.suggestedReplyBorderColor = SBUColorSet.primary300
+        theme.suggestedReplyBackgroundColor = SBUColorSet.background50
+        theme.suggestedReplyBackgroundSelectedColor = SBUColorSet.background100
+        
         return theme
     }
     
@@ -1756,7 +1804,26 @@ public class SBUMessageCellTheme {
                 loadingButtonTintColor: UIColor = SBUColorSet.primary200,
                 playButtonTintColor: UIColor = SBUColorSet.primary300,
                 pauseButtonTintColor: UIColor = SBUColorSet.primary300,
-                multipleFilesMessageFileOverlayColor: UIColor = SBUColorSet.overlay02
+                suggestedReplyTitleColor: UIColor = SBUColorSet.primary300,
+                suggestedReplyBorderColor: UIColor = SBUColorSet.primary300,
+                suggestedReplyBackgroundColor: UIColor = SBUColorSet.background50,
+                suggestedReplyBackgroundSelectedColor: UIColor = SBUColorSet.background100,
+
+                multipleFilesMessageFileOverlayColor: UIColor = SBUColorSet.overlay02,
+
+                formBackgroundColor: UIColor = SBUColorSet.background100,
+                formTitleColor: UIColor = SBUColorSet.onlight02,
+                formOptionalTitleColor: UIColor = SBUColorSet.onlight03,
+                formInputBackgroundColor: UIColor = SBUColorSet.background50,
+                formInputBackgroundDoneColor: UIColor = SBUColorSet.ondark02,
+                formInputTitleColor: UIColor = SBUColorSet.onlight01,
+                formInputIconColor: UIColor = SBUColorSet.secondary300,
+                formInputBorderNormalColor: UIColor = SBUColorSet.onlight04,
+                formInputErrorColor: UIColor = SBUColorSet.error300,
+                formInputPlaceholderColor: UIColor = SBUColorSet.onlight03,
+                formSubmitButtonBackgroundColor: UIColor = SBUColorSet.primary300,
+                formSubmitButtonBackgroundDisabledColor: UIColor = SBUColorSet.onlight04,
+                formSubmitButtonTitleColor: UIColor = SBUColorSet.ondark01
     ) {
         
         self.backgroundColor = backgroundColor
@@ -1862,7 +1929,27 @@ public class SBUMessageCellTheme {
         self.playerLoadingButtonTintColor = loadingButtonTintColor
         self.playerPlayButtonTintColor = playButtonTintColor
         self.playerPauseButtonTintColor = pauseButtonTintColor
+        
+        self.suggestedReplyTitleColor = suggestedReplyTitleColor
+        self.suggestedReplyBorderColor = suggestedReplyBorderColor
+        self.suggestedReplyBackgroundColor = suggestedReplyBackgroundColor
+        self.suggestedReplyBackgroundSelectedColor = suggestedReplyBackgroundSelectedColor
+        
         self.multipleFilesMessageFileOverlayColor = multipleFilesMessageFileOverlayColor
+
+        self.formBackgroundColor = formBackgroundColor
+        self.formTitleColor = formTitleColor
+        self.formOptionalTitleColor = formOptionalTitleColor
+        self.formInputBackgroundColor = formInputBackgroundColor
+        self.formInputBackgroundDoneColor = formInputBackgroundDoneColor
+        self.formInputTitleColor = formInputTitleColor
+        self.formInputIconColor = formInputIconColor
+        self.formInputBorderNormalColor = formInputBorderNormalColor
+        self.formInputErrorColor = formInputErrorColor
+        self.formInputPlaceholderColor = formInputPlaceholderColor
+        self.formSubmitButtonBackgroundColor = formSubmitButtonBackgroundColor
+        self.formSubmitButtonBackgroundDisabledColor = formSubmitButtonBackgroundDisabledColor
+        self.formSubmitButtonTitleColor = formSubmitButtonTitleColor
     }
     
     public var backgroundColor: UIColor
@@ -2042,6 +2129,27 @@ public class SBUMessageCellTheme {
     public var playerLoadingButtonTintColor: UIColor
     public var playerPlayButtonTintColor: UIColor
     public var playerPauseButtonTintColor: UIColor
+    
+    // suggested replies
+    public var suggestedReplyTitleColor: UIColor // 3.11.0
+    public var suggestedReplyBorderColor: UIColor // 3.11.0
+    public var suggestedReplyBackgroundColor: UIColor // 3.11.0
+    public var suggestedReplyBackgroundSelectedColor: UIColor // 3.11.0
+    
+    // MARK: form
+    public var formBackgroundColor: UIColor // 3.11.0
+    public var formTitleColor: UIColor // 3.11.0
+    public var formOptionalTitleColor: UIColor // 3.11.0
+    public var formInputBackgroundColor: UIColor // 3.11.0
+    public var formInputBackgroundDoneColor: UIColor // 3.11.0
+    public var formInputTitleColor: UIColor // 3.11.0
+    public var formInputIconColor: UIColor // 3.11.0
+    public var formInputBorderNormalColor: UIColor // 3.11.0
+    public var formInputErrorColor: UIColor // 3.11.0
+    public var formInputPlaceholderColor: UIColor // 3.11.0
+    public var formSubmitButtonBackgroundColor: UIColor // 3.11.0
+    public var formSubmitButtonBackgroundDisabledColor: UIColor // 3.11.0
+    public var formSubmitButtonTitleColor: UIColor // 3.11.0
 }
 
 // MARK: - User List Theme

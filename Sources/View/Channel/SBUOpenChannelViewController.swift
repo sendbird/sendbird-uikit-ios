@@ -787,13 +787,7 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
     
     // MARK: - SBUOpenChannelModuleListDelegate
     open override func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didTapUserProfile user: SBUUser) {
-        self.dismissKeyboard()
-        
-        if let userProfileView = listComponent.userProfileView as? SBUUserProfileView,
-           let baseView = self.navigationController?.view,
-           SendbirdUI.config.common.isUsingDefaultUserProfileEnabled {
-            userProfileView.show(baseView: baseView, user: user, isOpenChannel: true)
-        }
+        self.showUserProfile(user: user, isOpenChannel: true)
     }
     
     // MARK: - SBUOpenChannelModuleListDataSource

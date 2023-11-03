@@ -15,7 +15,7 @@ import PhotosUI
 import MobileCoreServices
 
 @objcMembers
-open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroupChannelViewModelDelegate, SBUGroupChannelModuleHeaderDelegate, SBUGroupChannelModuleListDelegate, SBUGroupChannelModuleListDataSource, SBUGroupChannelModuleInputDelegate, SBUGroupChannelModuleInputDataSource, SBUGroupChannelViewModelDataSource, SBUMentionManagerDataSource, SBUMessageThreadViewControllerDelegate, SBUVoiceMessageInputViewDelegate {
+open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroupChannelViewModelDelegate, SBUGroupChannelModuleHeaderDelegate, SBUGroupChannelModuleListDelegate, SBUGroupChannelModuleListDataSource, SBUGroupChannelModuleInputDelegate, SBUGroupChannelModuleInputDataSource, SBUGroupChannelViewModelDataSource, SBUMentionManagerDataSource, SBUMessageThreadViewControllerDelegate, SBUVoiceMessageInputViewDelegate, SBUReactionsViewControllerDelegate {
 
     // MARK: - UI properties (Public)
     public var headerComponent: SBUGroupChannelModule.Header? {
@@ -847,6 +847,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
             message: message,
             selectedReaction: reaction
         )
+        reactionsVC.delegate = self
         reactionsVC.modalPresentationStyle = UIModalPresentationStyle.custom
         reactionsVC.transitioningDelegate = self
         self.present(reactionsVC, animated: true)
@@ -900,16 +901,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     }
     
     open func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didTapMentionUser user: SBUUser) {
-        self.dismissKeyboard()
-        
-        if let userProfileView = self.baseListComponent?.userProfileView as? SBUUserProfileView,
-           let baseView = self.navigationController?.view,
-           SendbirdUI.config.common.isUsingDefaultUserProfileEnabled {
-            userProfileView.show(
-                baseView: baseView,
-                user: user
-            )
-        }
+        self.showUserProfile(user: user)
     }
     
     open func groupChannelModuleDidTapThreadInfoView(_ threadInfoView: SBUThreadInfoView) {
@@ -922,6 +914,23 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
             parentMessageId: message.messageId,
             parentMessageCreatedAt: message.createdAt
         )
+    }
+    
+    open func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didSelect suggestedReplyOptionView: SBUSuggestedReplyOptionView) {
+        guard let text = suggestedReplyOptionView.text else { return }
+        self.viewModel?.sendUserMessage(text: text)
+    }
+    
+    open func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didSubmit answer: SBUForm.Answer, messageCell: SBUBaseMessageCell) {
+        guard let message = messageCell.message else { return }
+
+        self.viewModel?.submitForm(message: message, answer: answer)
+    }
+
+    open func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didUpdate answer: SBUForm.Answer, messageCell: SBUBaseMessageCell) {
+        guard let message = messageCell.message else { return }
+
+        self.viewModel?.updateForm(message: message, answer: answer)
     }
     
     open override func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didTapVoiceMessage fileMessage: FileMessage, cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -958,6 +967,11 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         return self.highlightInfo
     }
     
+    open func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, answersFor messageId: Int64?) -> [SBUForm.Answer]? {
+        guard let mesageId = messageId else { return nil }
+        return self.viewModel?.formCaches[mesageId]?.answers
+    }
+
     // MARK: - SBUGroupChannelModuleInputDelegate
     open override func baseChannelModule(_ inputComponent: SBUBaseChannelModule.Input, didUpdateFrozenState isFrozen: Bool) {
         self.listComponent?.channelStateBanner?.isHidden = !isFrozen
@@ -1122,5 +1136,25 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         
         self.dismissVoiceMessageInput()
         self.viewModel?.sendVoiceMessage(voiceFileInfo: voiceFileInfo, parentMessage: parentMessage)
+    }
+    
+    // MARK: - SBUReactionsViewControllerDelegate
+    
+    /// - Since: 3.11.0
+    open func reactionsViewController(
+        _ viewController: SBUReactionsViewController,
+        didTapUserProfile user: SBUUser
+    ) {
+        self.showUserProfile(user: user)
+    }
+    
+    /// - Since: 3.11.0
+    open func reactionsViewController(
+        _ viewController: SBUReactionsViewController,
+        tableView: UITableView,
+        didSelect user: SBUUser,
+        forRowAt indexPath: IndexPath
+    ) {
+        
     }
 }

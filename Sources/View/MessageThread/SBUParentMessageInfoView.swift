@@ -156,7 +156,6 @@ open class SBUParentMessageInfoView: SBUView, SBUUserMessageTextViewDelegate {
     required convenience public init?(coder: NSCoder) {
         fatalError()
     }
-
     
     open override func setupViews() {
         

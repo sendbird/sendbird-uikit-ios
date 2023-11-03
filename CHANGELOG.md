@@ -1,5 +1,84 @@
 # Changelog
 
+### v3.11.0 (Nov 03, 2023)
+
+- Support **Suggested Replies** feature for user message
+    - Added `SBUSuggestedReplyView` class
+    - Added `SBUVerticalSuggestedReplyView` class
+    - Added `SBUSuggestedReplyViewDelegate` delegate
+    - Added `SBUSuggestedReplyViewParams` struct
+    - Added `SBUSuggestedReplyOptionView` class
+    - Added `SBUSimpleSuggestedReplyOptionView` class
+    - Added `SBUSuggestedReplyOptionViewDelegate` delegate
+- Support **Form Type Message** feature for user message
+    - Added `SBUForm` struct
+    - Added `SBUForm.Field` struct
+    - Added `SBUForm.Field.InputTypeValue` enum
+    - Added `SBUForm.Answer` struct
+    - Added `SBUFormViewParams` struct
+    - Added `SBUFormView` class
+    - Added `SBUSimpleFormView` class
+    - Added `SBUFormViewDelegate` protocol
+    - Added `SBUFormFieldView` class
+    - Added `SBUFormFieldView.StatusType` enum
+    - Added `SBUSimpleFormFieldView` class
+    - Added `SBUFormFieldViewDelegate` protocol
+    - Added `useOnlyFromView` property in `SBUBaseMessageCellParams`
+- Support **ExtendedMessagePayload CustomView** feature for user message
+    - Added `SBUExtendedMessagePayloadCustomViewFactory` protocol
+    - Added `SBUExtendedMessagePayloadCustomViewFactoryInternal` protocol
+- Support common for new features
+    - Added properties and methods in `SBUUserMessageCell`
+        - `shouldHideSuggestedReplies` property
+        - `suggestedReplyView` property
+        - `shouldHideFormTypeMessage` property
+        - `formViews` property
+        - `extendedMessagePayloadCustomViewFactory` property
+        - `updateSuggestedReplyView(with:)` method
+        - `createSuggestedReplyView()` method
+        - `updateFormView(with:answers:)` method
+        - `createFormView()` method
+        - `suggestedReplyView(_:didSelectOption:)` delegate method
+        - `func formView(_:didSubmit:)` delegate method
+        - `func formView(_:didUpdate:)` delegate method
+    - Added properties in `SBUUserMessageCellParams`
+        - `shouldHideSuggestedReplies` property
+        - `shouldHideFormTypeMessage` property
+        - `formAnswers` property
+    - Added handlers in `SBUBaseMessageCell`
+        - `suggestedReplySelectHandler` handler
+        - `submitFormAnswerHandler` handler
+        - `updateFormAnswerHandler` handler
+    - Added `mainContainerVStackView` proeprty in `SBUContentBaseMessageCell`
+    - Added `SBUConfig.GroupChannel` configs
+        - `isFormTypeMessageEnabled` property
+        - `isSuggestedRepliesEnabled` property
+    - Added extension methods and properties in `BaseMessage`. 
+        - `asSuggestedReplies` property
+        - `asForms` property
+        - `asCustomView` property
+        - `decodeCustomViewData<ViewData: Decodable>()` method
+    - Added methods in `SBUGroupChannelModuleListDelegate`
+        - `groupChannelModule(_:didSelect:)` method
+        - `groupChannelModule(_:didSubmit:messageCell:)` method
+        - `groupChannelModule(_:didUpdate:messageCell:)` method
+        - `groupChannelModule(_:answersFor:)` method
+    - Added delegate methods in `SBUGroupChannelViewController`
+        - `groupChannelModule(_:didSelect:)` method
+        - `groupChannelModule(_:didSubmit:messageCell:)` method
+        - `groupChannelModule(_:didUpdate:messageCell:)` method
+        - `groupChannelModule(_:answersFor:)` method
+    - Added methods in `SBUGroupChannelViewModel`
+        - `submitForm(message:answer:)` method
+        - `updateForm(message:answer:)` method
+- Support actions on userList item of `SBUReactionsViewController`.        
+    - Added `showUserProfile(user:)` method in `SBUBaseChannelViewController` class
+    - Added `setUserProfileTapGesture(_:)` method in `SBUReactionsViewController` class
+    - Added `SBUReactionsViewControllerDelegate` delegate
+    - Added delegate methods in `SBUGroupChannelViewController` and `SBUMessageThreadViewController` classes
+      - `reactionsViewController(_:didTapUserProfile:)`
+      - `reactionsViewController(_:tableView:didSelect:forRowAt:)`
+
 ### v3.10.0 (Oct 24, 2023)
 
 #### Multiple Files Message

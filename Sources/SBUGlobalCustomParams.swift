@@ -161,4 +161,5 @@ public class SBUGlobalCustomParams {
     /// ```
     /// - Since: 1.2.2
     public static var messageListParamsBuilder: ((_ params: MessageListParams?) -> Void)?
+
 }

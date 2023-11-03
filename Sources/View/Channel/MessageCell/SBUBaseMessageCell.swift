@@ -51,6 +51,22 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol {
     var moreEmojiTapHandler: (() -> Void)?
     var emojiLongPressHandler: ((_ emojiKey: String) -> Void)?
     var mentionTapHandler: ((_ user: SBUUser) -> Void)?
+    
+    /// The action of ``SBUSuggestedReplyView`` that is called when a ``SBUSuggestedReplyOptionView`` is selected.
+    /// - Parameter selectedOptionView: The selected ``SBUSuggestedReplyOptionView`` object.
+    var suggestedReplySelectHandler: ((_ selectedOptionView: SBUSuggestedReplyOptionView) -> Void)?
+    
+    /// The action of ``SBUFormView`` that is called when a ``SBUForm/Answer`` is submitted.
+    /// - Parameters:
+    ///    - formAnswer: The ``SBUForm/Answer`` object that will be submitted.
+    ///    - messageCell: The current ``SBUBaseMessageCell`` object.
+    var submitFormAnswerHandler: ((_ formAnswer: SBUForm.Answer, _ messageCell: SBUBaseMessageCell) -> Void)?
+
+    /// The action of ``SBUFormView`` that is called when a ``SBUForm/Field/Updated`` is updated.
+    /// - Parameters:
+    ///    - formUpdated: The ``SBUForm/Field/Updated`` object that will be submitted.
+    ///    - messageCell: The current ``SBUBaseMessageCell`` object.
+    var updateFormAnswerHandler: ((_ formAnswer: SBUForm.Answer, _ messageCell: SBUBaseMessageCell) -> Void)?
 
     // MARK: - View Lifecycle
     

@@ -40,6 +40,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         SendbirdUI.config.groupChannel.channel.isMentionEnabled = true
         // GroupChannel - Voice Message
         SendbirdUI.config.groupChannel.channel.isVoiceMessageEnabled = true
+        // GroupChannel - suggested replies
+        SendbirdUI.config.groupChannel.channel.isSuggestedRepliesEnabled = true
+        // GroupChannel - form type message
+        SendbirdUI.config.groupChannel.channel.isFormTypeMessageEnabled = true
         
         self.initializeRemoteNotification()
         

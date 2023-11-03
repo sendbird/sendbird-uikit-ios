@@ -181,6 +181,7 @@ extension SendbirdChatSDK.PollVoterListQueryParams : Swift.Encodable {
     get
   }
   final public let extendedMessage: [Swift.String : Any]
+  final public let extendedMessagePayload: [Swift.String : Any]
   required public init(from decoder: Swift.Decoder) throws
   public func encode(to encoder: Swift.Encoder) throws
   public typealias ID = Swift.AnyHashable
@@ -1015,6 +1016,7 @@ extension SendbirdChatSDK.UserMessage {
   @objc(getUnreadMembersWithMessage:includeAllMembers:) dynamic open func getUnreadMembers(message: SendbirdChatSDK.BaseMessage, includeAllMembers: Swift.Bool) -> [SendbirdChatSDK.Member]
   @objc dynamic open func getUndeliveredMemberCount(_ message: SendbirdChatSDK.BaseMessage) -> Swift.Int
   @objc(getReadStatusIncludingAllMembers:) dynamic open func getReadStatus(includeAllMembers: Swift.Bool) -> [Swift.String : [Swift.String : Any]]
+  @nonobjc public func getReadStatus(with includeAllMembers: Swift.Bool) -> [Swift.String : SendbirdChatSDK.ReadStatus]
 }
 @objc extension SendbirdChatSDK.User {
   @objc dynamic public func createMetaData(_ metaData: [Swift.String : Swift.String], completionHandler: SendbirdChatSDK.MetaDataHandler?)
@@ -1280,18 +1282,6 @@ extension SendbirdChatSDK.NotificationCollection : SendbirdChatSDK.ConnectionDel
   @objc dynamic open func didSucceedReconnection()
   @objc dynamic open func didConnect(userId: Swift.String)
 }
-@objc(SBDReadStatus) public class ReadStatus : ObjectiveC.NSObject, Swift.Codable {
-  @objc public var reader: SendbirdChatSDK.User?
-  @objc public var timestamp: Swift.Int64
-  @available(*, unavailable, renamed: "channelURL")
-  @objc public var channelUrl: Swift.String?
-  @objc public var channelURL: Swift.String?
-  @objc public var channelType: Swift.String?
-  @objc public var reqId: Swift.String?
-  @objc deinit
-  public func encode(to encoder: Swift.Encoder) throws
-  required public init(from decoder: Swift.Decoder) throws
-}
 @_inheritsConvenienceInitializers @objc(SBDScheduledUserMessageUpdateParams) public class ScheduledUserMessageUpdateParams : SendbirdChatSDK.ScheduledBaseMessageUpdateParams {
   @objc public var message: Swift.String?
   @objc public var translationTargetLanguages: [Swift.String]?
@@ -1515,6 +1505,9 @@ extension SendbirdChatSDK.FriendListQueryParams {
 extension SendbirdChatSDK.FriendListQueryParams : Foundation.NSCopying {
   @objc dynamic public func copy(with zone: ObjectiveC.NSZone? = nil) -> Any
 }
+@objc extension SendbirdChatSDK.GroupChannel {
+  @nonobjc public func getDeliveryStatus(with includeAllMembers: Swift.Bool) -> [Swift.String : SendbirdChatSDK.DeliveryStatus]
+}
 @_hasMissingDesignatedInitializers @objc(SBDThreadInfo) public class ThreadInfo : ObjectiveC.NSObject, Swift.Codable {
   @objc final public let replyCount: Swift.Int
   @objc final public let mostRepliedUsers: [SendbirdChatSDK.User]
@@ -1562,6 +1555,12 @@ extension SendbirdChatSDK.FriendListQueryParams : Foundation.NSCopying {
   public func encode(to encoder: Swift.Encoder) throws
   @objc deinit
   required public init(from decoder: Swift.Decoder) throws
+}
+public struct DeliveryStatus {
+  public let channelURL: Swift.String
+  public let channelType: SendbirdChatSDK.ChannelType
+  public let member: SendbirdChatSDK.Member
+  public let timestamp: Swift.Int64
 }
 @_inheritsConvenienceInitializers @objc(SBDPollRetrievalParams) public class PollRetrievalParams : ObjectiveC.NSObject {
   @objc public var channelURL: Swift.String?
@@ -2330,20 +2329,6 @@ extension SendbirdChatSDK.BannedUserListQuery {
     @objc get
   }
 }
-@_inheritsConvenienceInitializers @objc(SBDDeliveryStatus) public class DeliveryStatus : ObjectiveC.NSObject, Swift.Codable {
-  @available(*, unavailable, renamed: "channelURL")
-  @objc public var channelUrl: Swift.String?
-  @objc public var channelURL: Swift.String? {
-    get
-  }
-  @objc public var updatedDeliveryReceipt: [Swift.String : Swift.Int64]? {
-    get
-  }
-  @objc override dynamic public init()
-  @objc deinit
-  public func encode(to encoder: Swift.Encoder) throws
-  required public init(from decoder: Swift.Decoder) throws
-}
 @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc(SBDBaseMessageUpdateParams) public class BaseMessageUpdateParams : ObjectiveC.NSObject, Swift.Encodable, Foundation.NSCopying {
   @objc public var data: Swift.String?
   @objc public var customType: Swift.String?
@@ -2356,7 +2341,7 @@ extension SendbirdChatSDK.BannedUserListQuery {
     @objc set
   }
   @objc public func setMentionedUsers(_ mentionedUsers: [SendbirdChatSDK.User])
-  @objc public func addMentionedUserIds(_ users: [Swift.String])
+  @objc public func addMentionedUserIds(_ userIds: [Swift.String])
   @objc override dynamic public init()
   @objc public func copy(with zone: ObjectiveC.NSZone? = nil) -> Any
   public func encode(to encoder: Swift.Encoder) throws
@@ -3697,6 +3682,12 @@ extension SendbirdChatSDK.SendbirdChat {
   @available(*, deprecated, renamed: "__addExtension(_:version:)", message: "This method is deprecated in 4.8.3")
   @objc dynamic public class func addExtension(_ key: Swift.String, version: Swift.String)
   public class func __addSendbirdExtensions(extensions: [SendbirdChatSDK.__SendbirdSDKInfo], customData: [Swift.String : Swift.String]?) -> Swift.Bool
+}
+public struct ReadStatus {
+  public let channelURL: Swift.String
+  public let channelType: SendbirdChatSDK.ChannelType
+  public let user: SendbirdChatSDK.User
+  public let lastSeenAt: Swift.Int64
 }
 @objc extension SendbirdChatSDK.GroupChannel {
   @objc dynamic open func startTyping()

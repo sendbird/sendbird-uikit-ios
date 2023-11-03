@@ -10,7 +10,7 @@ import UIKit
 import SendbirdChatSDK
 
 @IBDesignable
-open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextViewDelegate {
+open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextViewDelegate, SBUSuggestedReplyViewDelegate, SBUFormViewDelegate {
 
     // MARK: - Public property
     public lazy var messageTextView: UIView = SBUUserMessageTextView()
@@ -34,6 +34,81 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
         return webView
     }()
     
+    // MARK: - Quick Reply
+    
+    /// The boolean value whether the ``suggestedReplyView`` instance should appear or not. The default is `true`
+    /// - Important: If it's true, ``suggestedReplyView`` never appears even if the ``userMessage`` has quick reply options.
+    /// - Since: 3.11.0
+    public private(set) var shouldHideSuggestedReplies: Bool = true
+
+    /// ``SBUSuggestedReplyView`` instance.
+    /// If you want to override that view, override the ``createSuggestedReplyView()`` constructor function.
+    /// - Since: 3.11.0
+    public private(set) var suggestedReplyView: SBUSuggestedReplyView?
+    
+    // MARK: - Form Type Message
+    
+    /// The boolean value whether the ``formViews`` instance should appear or not. The default is `true`
+    /// - Important: If it's true, ``formViews`` never appears even if the ``userMessage`` has `forms`.
+    /// - Since: 3.11.0
+    public private(set) var shouldHideFormTypeMessage: Bool = true
+    
+    /// The array of ``SBUFormView`` instance.
+    /// If you want to override that view, override the ``createFormView()`` constructor function.
+    /// - Since: 3.11.0
+    public private(set) var formViews: [SBUFormView]?
+
+    /// This is a user message custom cell factory type
+    /// to support customization via the `custom_view` data in `BaseMessage.extendedMessage`.
+    ///
+    /// - Important:
+    /// 1. This value can be ignored if you are fully customizing the `SBUUserMessageCell`.
+    /// 2. It must implement the `SBUExtendedMessagePayloadCustomViewFactory` protocol instead of `SBUExtendedMessagePayloadCustomViewFactoryInternal`.
+    ///
+    /// See the example below for type setting.
+    /// ```
+    /// class CustomViewFactory:  SBUExtendedMessagePayloadCustomViewFactory {
+    ///    public static func makeCustomView(
+    ///        _ data: CustomViewData, // Returns data with type inference internally.
+    ///        message: SendbirdChatSDK.BaseMessage?
+    ///    ) -> UIView? {
+    ///        switch data.type { // `data.type` is an example for explanation purposes
+    ///        case .type1:
+    ///            let view = CustomView1()
+    ///            // bind data
+    ///            return view
+    ///        case .type2:
+    ///            let view = CustomView2()
+    ///            // bind data
+    ///            return view
+    ///        }
+    ///    }
+    /// }
+    ///
+    /// class CustomUserMessageCell: SBUUserMessageCell {
+    ///     override var customViewFactory: SBUCustomViewFactoryInternal.Type? {
+    ///         CustomViewFactory.self
+    ///     }
+    /// }
+    ///
+    /// class CustomModuleList: SBUGroupChannelModule.List {
+    ///     override func configure(
+    ///         delegate: SBUGroupChannelModuleListDelegate,
+    ///         dataSource: SBUGroupChannelModuleListDataSource,
+    ///         theme: SBUChannelTheme
+    ///     ) {
+    ///         self.register(userMessageCell: CustomUserMessageCell())
+    ///         super.configure(
+    ///             delegate: delegate,
+    ///             dataSource: dataSource,
+    ///             theme: theme
+    ///         )
+    ///     }
+    /// }
+    /// ```
+    /// - Since: 3.11.0
+    open var extendedMessagePayloadCustomViewFactory: SBUExtendedMessagePayloadCustomViewFactoryInternal.Type? { nil }
+
     // MARK: - View Lifecycle
     open override func setupViews() {
         super.setupViews()
@@ -111,9 +186,22 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
         self.useQuotedMessage = configuration.useQuotedMessage
         
         self.useThreadInfo = configuration.useThreadInfo
-        
+        self.shouldHideSuggestedReplies = configuration.shouldHideSuggestedReplies
+        self.shouldHideFormTypeMessage = configuration.shouldHideFormTypeMessage
+
         // Configure Content base message cell
         super.configure(with: configuration)
+
+        // MARK: Suggested Reply
+        self.suggestedReplyView?.removeFromSuperview()
+        self.suggestedReplyView = nil
+        self.updateSuggestedReplyView(with: message.asSuggestedReplies)
+        
+        // MARK: Form Views
+        self.formViews?.forEach({ $0.removeFromSuperview() })
+        self.formViews = nil
+        let hasForms = self.updateFormView(with: message.asForms, answers: configuration.formAnswers)
+        self.mainContainerView.isHidden = hasForms && configuration.useOnlyFromView
         
         // Set up message position of additionContainerView(reactionView)
         self.additionContainerView.position = self.position
@@ -137,6 +225,12 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
         } else {
             self.additionContainerView.removeArrangedSubview(self.webView)
             self.webView.isHidden = true
+        }
+        
+        // Custom Message
+        if let factory = self.extendedMessagePayloadCustomViewFactory,
+            let view = factory.makeCustomView(message: self.message) {
+            factory.configure(with: view, cell: self)
         }
     }
     
@@ -218,9 +312,99 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
         url.open()
     }
     
+    // MARK: - Suggested Reply
+    
+    /// This is function to create and set up the `SBUSuggestedReplyView`.
+    /// - Parameter options: The string array that configured the view list.
+    /// - since: 3.11.0
+    open func updateSuggestedReplyView(with options: [String]?) {
+        guard SendbirdUI.config.groupChannel.channel.isSuggestedRepliesEnabled else { return }
+        guard shouldHideSuggestedReplies == false else { return }
+        
+        guard let options = options else { return }
+        guard let messageId = self.message?.messageId else { return }
+        
+        let suggestedReplyView = createSuggestedReplyView()
+        let configuration = SBUSuggestedReplyViewParams(
+            messageId: messageId,
+            replyOptions: options
+        )
+        suggestedReplyView.configure(with: configuration, delegate: self)
+        self.userNameStackView.addArrangedSubview(suggestedReplyView)
+        suggestedReplyView.sbu_constraint(equalTo: self.userNameStackView, leading: 0, trailing: 0)
+
+        self.suggestedReplyView = suggestedReplyView
+
+        self.layoutIfNeeded()
+    }
+    
+    /// Methods to use when you want to fully customize the design of the ``SBUSuggestedReplyView``.
+    /// Create your own view that inherits from ``SBUSuggestedReplyView`` and return it.
+    /// NOTE: The default view is ``SBUVerticalSuggestedReplyView``, which is a vertically organized option view.
+    /// - Returns: Views that inherit from ``SBUSuggestedReplyView``.
+    /// - since: 3.11.0
+    open func createSuggestedReplyView() -> SBUSuggestedReplyView { SBUVerticalSuggestedReplyView() }
+    
+    // MARK: - form view
+
+    /// This is function to create and set up the `[SBUFormView]`.
+    /// - Parameter forms: Form list data.
+    /// - Parameter answers: Cached form answer datas.
+    /// - Returns: If `true`, succeeds in creating a valid form view
+    /// - since: 3.11.0
+    public func updateFormView(with forms: [SBUForm]?, answers: [SBUForm.Answer]) -> Bool {
+        guard SendbirdUI.config.groupChannel.channel.isFormTypeMessageEnabled else { return false }
+        guard shouldHideFormTypeMessage == false else { return false }
+        
+        guard let forms = forms else { return false }
+        guard let messageId = self.message?.messageId else { return false }
+
+        let formViews = forms.reduce(into: [SBUFormView]()) { result, form in
+            let formView = createFormView()
+            let configuration = SBUFormViewParams(messageId: messageId, form: form)
+            formView.configure(with: configuration, delegate: self)
+            result.append(formView)
+        }
+
+        formViews.forEach { self.mainContainerVStackView.addArrangedSubview($0) }
+
+        self.formViews = formViews
+        self.layoutIfNeeded()
+        
+        return formViews.count > 0
+    }
+    
+    /// Methods to use when you want to fully customize the design of the ``SBUFormView``.
+    /// Create your own view that inherits from ``SBUFormView`` and return it.
+    /// NOTE: The default view is ``SBUSimpleFormView``, which is a vertically organized form view.
+    /// - Returns: Views that inherit from ``SBUFormView``.
+    /// - since: 3.11.0
+    open func createFormView() -> SBUFormView { SBUSimpleFormView() }
+
     // MARK: - Mention
     /// As a default, it calls `groupChannelModule(_:didTapMentionUser:)` in ``SBUGroupChannelModuleListDelegate``.
     open func userMessageTextView(_ textView: SBUUserMessageTextView, didTapMention user: SBUUser) {
         self.mentionTapHandler?(user)
+    }
+
+    // MARK: - Suggested reply delegate
+    
+    open func suggestedReplyView(_ view: SBUSuggestedReplyView, didSelectOption optionView: SBUSuggestedReplyOptionView) {
+        self.suggestedReplySelectHandler?(optionView)
+        
+        self.suggestedReplyView?.removeFromSuperview()
+        self.suggestedReplyView = nil
+        
+        self.layoutIfNeeded()
+    }
+
+    // MARK: - form view delegate
+    
+    open func formView(_ view: SBUFormView, didSubmit answer: SBUForm.Answer) {
+        self.submitFormAnswerHandler?(answer, self)
+    }
+
+    open func formView(_ view: SBUFormView, didUpdate answer: SBUForm.Answer) {
+        self.updateFormAnswerHandler?(answer, self)
     }
 }
