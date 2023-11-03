@@ -103,6 +103,7 @@ open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
         
         self.profileView
             .sbu_constraint(equalTo: self.profileBaseView, leading: 0, trailing: 0, top: 0)
+            .sbu_constraint(equalTo: self.profileBaseView, bottom: 0, priority: .defaultHigh)
             .sbu_constraint(width: 26, height: 26)
         
         self.stateImageView.sbu_constraint(

@@ -51,6 +51,8 @@ extension SBUConfig.GroupChannel.Channel {
         case isReactionsEnabled = "enableReactions"
         case isMentionEnabled = "enableMention"
         case isVoiceMessageEnabled = "enableVoiceMessage"
+        case isSuggestedRepliesEnabled = "enableSuggestedReplies" // 3.11.0
+        case isFormTypeMessageEnabled = "enableFormTypeMessage" // 3.11.0
         case replyType
         case threadReplySelectType
         case input

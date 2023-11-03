@@ -44,6 +44,14 @@ extension SBUConfig.GroupChannel {
         /// In the channel header, the current typing information of the members is displayed under the channel title.
         @SBUPrioritizedConfig public var isTypingIndicatorEnabled: Bool = true
         
+        /// Enable the feature to show suggested replies in messages. Default is `false`
+        /// - Since: 3.11.0
+        @SBUPrioritizedConfig public var isSuggestedRepliesEnabled: Bool = false
+
+        /// Enable the feature to show form type in messages. Default is `false`
+        /// - Since: 3.11.0
+        @SBUPrioritizedConfig public var isFormTypeMessageEnabled: Bool = false
+        
         /// Enable the feature to react to messages with emojis.
         /// - IMPORTANT: This property may have different activation states depending on the application attribute settings,
         ///              so if you want to use this value for function implementation,
@@ -126,8 +134,29 @@ extension SBUConfig.GroupChannel {
             self._isVoiceMessageEnabled.setDashboardValue(channel.isVoiceMessageEnabled)
             self._replyType.setDashboardValue(channel.replyType)
             self._threadReplySelectType.setDashboardValue(channel.threadReplySelectType)
-            
+            self._isSuggestedRepliesEnabled.setDashboardValue(channel.isSuggestedRepliesEnabled)
+            self._isFormTypeMessageEnabled.setDashboardValue(channel.isFormTypeMessageEnabled)
+
             self.input.updateWithDashboardData(channel.input)
+        }
+        
+        public required init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+
+            self.isOGTagEnabled = try container.decode(Bool.self, forKey: .isOGTagEnabled)
+            self.isTypingIndicatorEnabled = try container.decode(Bool.self, forKey: .isTypingIndicatorEnabled)
+            self.isReactionsEnabled = try container.decode(Bool.self, forKey: .isReactionsEnabled)
+            self.isMentionEnabled = try container.decode(Bool.self, forKey: .isMentionEnabled)
+            self.isVoiceMessageEnabled = try container.decode(Bool.self, forKey: .isVoiceMessageEnabled)
+            self.replyType = try container.decode(SBUReplyType.self, forKey: .replyType)
+            self.threadReplySelectType = try container.decode(SBUThreadReplySelectType.self, forKey: .threadReplySelectType)
+            
+            // optional values
+            self.isSuggestedRepliesEnabled = (try? container.decode(Bool.self, forKey: .isSuggestedRepliesEnabled)) ?? SendbirdUI.config.groupChannel.channel.isSuggestedRepliesEnabled
+            self.isFormTypeMessageEnabled = (try? container.decode(Bool.self, forKey: .isFormTypeMessageEnabled)) ??
+                SendbirdUI.config.groupChannel.channel.isFormTypeMessageEnabled
+            
+            self.input = try container.decode(SBUConfig.GroupChannel.Channel.Input.self, forKey: .input)
         }
     }
 }

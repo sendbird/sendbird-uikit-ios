@@ -545,6 +545,35 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         return true
     }
     
+    /// Shows user profile view with user object
+    /// - Parameter user: `SBUUser` object
+    /// - Parameter isOpenChannel: Set the property to `true` if you're using it in an open channel.
+    ///
+    /// - Since: 3.11.0
+    public func showUserProfile(user: SBUUser, isOpenChannel: Bool = false) {
+        self.dismissKeyboard()
+        
+        guard let userProfileView = self.baseListComponent?.userProfileView as? SBUUserProfileView else { return }
+        guard let baseView = self.navigationController?.view else { return }
+        guard SendbirdUI.config.common.isUsingDefaultUserProfileEnabled else { return }
+        
+        let completionHandler: ((SBUUser, UIView) -> Void) = { user, baseView in
+            userProfileView.show(
+                baseView: baseView,
+                user: user,
+                isOpenChannel: isOpenChannel
+            )
+        }
+        
+        if let presentedViewController = self.presentedViewController {
+            presentedViewController.dismiss(animated: true) { [user, baseView] in
+                    completionHandler(user, baseView)
+                }
+        } else {
+            completionHandler(user, baseView)
+        }
+    }
+    
     // MARK: - MessageInputView
     
     open func setMessageInputViewMode(_ mode: SBUMessageInputMode, message: BaseMessage? = nil) {
@@ -870,16 +899,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     }
     
     open func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didTapUserProfile user: SBUUser) {
-        self.dismissKeyboard()
-        
-        if let userProfileView = self.baseListComponent?.userProfileView as? SBUUserProfileView,
-           let baseView = self.navigationController?.view,
-           SendbirdUI.config.common.isUsingDefaultUserProfileEnabled {
-            userProfileView.show(
-                baseView: baseView,
-                user: user
-            )
-        }
+        self.showUserProfile(user: user)
     }
     
     open func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didScroll scrollView: UIScrollView) {

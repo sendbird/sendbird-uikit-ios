@@ -36,6 +36,10 @@ public class SBUBaseMessageCellParams {
     /// Message offset of a channel. User can only see messages after this offset.
     /// - Since: 3.9.1
     public internal(set) var messageOffsetTimestamp: Int64 = 0
+    
+    /// Indicates whether the form type view should be exposed with a message.
+    /// - Since: 3.11.0
+    public internal(set) var useOnlyFromView: Bool = true
 
     /// Profile image URL for chat notification channel.
     var profileImageURL: String?

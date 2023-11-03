@@ -45,6 +45,12 @@ public protocol SBUGroupChannelModuleListDelegate: SBUBaseChannelModuleListDeleg
     /// - Since: 3.3.0
     func groupChannelModuleDidTapThreadInfoView(_ threadInfoView: SBUThreadInfoView)
     
+    /// Called when one of the suggested reply options is tapped.
+    /// - Parameters:
+    ///    - text: The reply text that is selected by user
+    /// - Since: 3.11.0
+    func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didSelect suggestedReplyOptionView: SBUSuggestedReplyOptionView)
+    
     /// Called when selected one of the files in the multiple file message cell.
     /// - Parameters:
     ///    - index: The index number of the selected file in `MultipleFilesMessage.files`
@@ -57,6 +63,20 @@ public protocol SBUGroupChannelModuleListDelegate: SBUBaseChannelModuleListDeleg
         multipleFilesMessageCell: SBUMultipleFilesMessageCell,
         forRowAt cellIndexPath: IndexPath
     )
+    
+    /// Called when submit the form answer.
+    /// - Parameters:
+    ///    - answer: The answer of the form that is submitted by user.
+    ///    - messageCell: Message cell object
+    /// - Since: 3.11.0
+    func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didSubmit answer: SBUForm.Answer, messageCell: SBUBaseMessageCell)
+
+    /// Called when updated the form answer.
+    /// - Parameters:
+    ///    - answer: The answer of the form that is updated by user.
+    ///    - messageCell: Message cell object
+    /// - Since: 3.11.0
+    func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didUpdate answer: SBUForm.Answer, messageCell: SBUBaseMessageCell)
 }
 
 /// Methods to get data source for list component in a group channel.
@@ -67,6 +87,15 @@ public protocol SBUGroupChannelModuleListDataSource: SBUBaseChannelModuleListDat
     ///    - tableView: `UITableView` object from list component.
     /// - Returns: `SBUHightlightMessageInfo` object.
     func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, highlightInfoInTableView tableView: UITableView) -> SBUHighlightMessageInfo?
+    
+    /// Ask to data source to return the formData by messageId.
+    /// - Parameters:
+    ///   - listComponent: `SBUGroupChannelModule.List` object.
+    ///   - formAnswerByMessageId: Specific message id.
+    /// - Returns: `SBUForm.Answer` object.
+    ///
+    /// - Since: 3.11.0
+    func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, answersFor messageId: Int64?) -> [SBUForm.Answer]?
 }
 
 extension SBUGroupChannelModule {
@@ -456,6 +485,9 @@ extension SBUGroupChannelModule {
                     
                     // User message
                 case let (userMessage, userMessageCell) as (UserMessage, SBUUserMessageCell):
+                    let isLatestUserMessage = userMessage.messageId == fullMessageList.first(where: { $0.sender != nil })?.messageId
+                    let formAnswers = self.dataSource?.groupChannelModule(self, answersFor: userMessage.messageId)
+
                     let configuration = SBUUserMessageCellParams(
                         message: userMessage,
                         hideDateView: isSameDay,
@@ -465,12 +497,16 @@ extension SBUGroupChannelModule {
                         useReaction: useReaction,
                         withTextView: true,
                         joinedAt: self.channel?.joinedAt ?? 0,
-                        messageOffsetTimestamp: self.channel?.messageOffsetTimestamp ?? 0
+                        messageOffsetTimestamp: self.channel?.messageOffsetTimestamp ?? 0,
+                        shouldHideSuggestedReplies: !isLatestUserMessage,
+                        shouldHideFormTypeMessage: false, // only group channel
+                        formAnswers: formAnswers
                     )
                     userMessageCell.configure(with: configuration)
                     userMessageCell.configure(highlightInfo: self.highlightInfo)
                     (userMessageCell.quotedMessageView as? SBUQuotedBaseMessageView)?.delegate = self
                     (userMessageCell.threadInfoView as? SBUThreadInfoView)?.delegate = self
+
                     self.setMessageCellAnimation(userMessageCell, message: userMessage, indexPath: indexPath)
                     self.setMessageCellGestures(userMessageCell, message: userMessage, indexPath: indexPath)
                     
@@ -571,6 +607,21 @@ extension SBUGroupChannelModule {
             messageCell.mentionTapHandler = { [weak self] user in
                 guard let self = self else { return }
                 self.delegate?.groupChannelModule(self, didTapMentionUser: user)
+            }
+            
+            messageCell.suggestedReplySelectHandler = { [weak self] optionView in
+                guard let self = self else { return }
+                self.delegate?.groupChannelModule(self, didSelect: optionView)
+            }
+            
+            messageCell.submitFormAnswerHandler = { [weak self] answer, cell in
+                guard let self = self else { return }
+                self.delegate?.groupChannelModule(self, didSubmit: answer, messageCell: cell)
+            }
+            
+            messageCell.updateFormAnswerHandler = { [weak self] answer, cell in
+                guard let self = self else { return }
+                self.delegate?.groupChannelModule(self, didUpdate: answer, messageCell: cell)
             }
         }
         
