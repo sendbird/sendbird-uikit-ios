@@ -1,5 +1,9 @@
 # Changelog
 
+### v3.11.1 (Nov 15, 2023)
+
+- Improved stability
+
 ### v3.11.0 (Nov 03, 2023)
 
 - Support **Suggested Replies** feature for user message

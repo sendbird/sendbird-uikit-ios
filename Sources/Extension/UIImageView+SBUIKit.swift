@@ -112,39 +112,13 @@ internal extension UIImageView {
             return nil
         }
         
-        guard let url = URL(string: urlString), url.absoluteURL.host != nil else {
-            self.setImage(errorImage, tintColor: tintColor) { _ in
-                completion?(false)
-            }
-            return nil
+        return Self.getOriginalImage(
+            urlString: urlString,
+            errorImage: errorImage,
+            subPath: subPath) { errorImage, result in
+                self.setImage(errorImage, tintColor: tintColor)
+                completion?(result)
         }
-        
-        let task = URLSession(configuration: .default).dataTask(with: url) { [weak self] data, _, error in
-            guard let self = self else {
-                completion?(false)
-                return
-            }
-            
-            guard let data = data, error == nil else {
-                self.setImage(errorImage, tintColor: tintColor) { _ in
-                    completion?(false)
-                }
-                return
-            }
-            
-            SBUCacheManager.Image.save(data: data, fileName: fileName, subPath: subPath) { [weak self] _, nsdata in
-                guard let data = nsdata,
-                      let image = UIImage.createImage(from: data as Data) else {
-                    completion?(false)
-                    return
-                }
-                
-                self?.setImage(image, tintColor: tintColor, completion: completion)
-            }
-        }
-        task.resume()
-        
-        return task
     }
     
     func loadVideoThumbnailImage(urlString: String,
@@ -274,5 +248,44 @@ internal extension UIImageView {
         } else {
             completion?(false)
         }
+    }
+}
+
+internal extension UIImageView {
+    /// Downloads an image from the network.
+    /// - Parameters:
+    ///   - urlString: The URL string of the image.
+    ///   - errorImage: The error image that will be returned when the image downloading is failed.
+    ///   - subPath: The subpath to store the image into the cache.
+    ///   - completion: The callback to return the result.
+    /// - Returns: The URLSessionTask object for downloading the image.
+    @discardableResult
+    static func getOriginalImage(urlString: String,
+                          errorImage: UIImage? = nil,
+                          subPath: String,
+                          completion: ((UIImage?, Bool) -> Void)? = nil) -> URLSessionTask? {
+        
+        let fileName = SBUCacheManager.Image.createCacheFileName(
+            urlString: urlString,
+            cacheKey: nil
+        )
+        
+        guard let url = URL(string: urlString), url.absoluteURL.host != nil else {
+            completion?(errorImage, false)
+            return nil
+        }
+        
+        let task = URLSession(configuration: .default).dataTask(with: url) { data, _, error in
+            guard let data = data, error == nil else {
+                completion?(errorImage, false)
+                return
+            }
+            
+            let image = SBUCacheManager.Image.save(data: data, fileName: fileName, subPath: subPath)
+            completion?(image, true)
+        }
+        task.resume()
+        
+        return task
     }
 }

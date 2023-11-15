@@ -5587,15 +5587,15 @@ SWIFT_CLASS("_TtC13SendbirdUIKit20SBUUserListViewModel")
 @end
 
 
-@interface SBUUserListViewModel (SWIFT_EXTENSION(SendbirdUIKit)) <SBDGroupChannelDelegate>
-- (void)channel:(SBDGroupChannel * _Nonnull)channel userDidJoin:(SBDUser * _Nonnull)user;
-- (void)channel:(SBDGroupChannel * _Nonnull)channel userDidLeave:(SBDUser * _Nonnull)user;
-@end
-
-
 @interface SBUUserListViewModel (SWIFT_EXTENSION(SendbirdUIKit)) <SBDOpenChannelDelegate>
 - (void)channel:(SBDOpenChannel * _Nonnull)channel userDidExit:(SBDUser * _Nonnull)user;
 - (void)channel:(SBDOpenChannel * _Nonnull)channel userDidEnter:(SBDUser * _Nonnull)user;
+@end
+
+
+@interface SBUUserListViewModel (SWIFT_EXTENSION(SendbirdUIKit)) <SBDGroupChannelDelegate>
+- (void)channel:(SBDGroupChannel * _Nonnull)channel userDidJoin:(SBDUser * _Nonnull)user;
+- (void)channel:(SBDGroupChannel * _Nonnull)channel userDidLeave:(SBDUser * _Nonnull)user;
 @end
 
 
@@ -5716,6 +5716,7 @@ SWIFT_CLASS("_TtC13SendbirdUIKit16SBUVoiceRecorder")
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
+
 
 
 
@@ -11362,15 +11363,15 @@ SWIFT_CLASS("_TtC13SendbirdUIKit20SBUUserListViewModel")
 @end
 
 
-@interface SBUUserListViewModel (SWIFT_EXTENSION(SendbirdUIKit)) <SBDGroupChannelDelegate>
-- (void)channel:(SBDGroupChannel * _Nonnull)channel userDidJoin:(SBDUser * _Nonnull)user;
-- (void)channel:(SBDGroupChannel * _Nonnull)channel userDidLeave:(SBDUser * _Nonnull)user;
-@end
-
-
 @interface SBUUserListViewModel (SWIFT_EXTENSION(SendbirdUIKit)) <SBDOpenChannelDelegate>
 - (void)channel:(SBDOpenChannel * _Nonnull)channel userDidExit:(SBDUser * _Nonnull)user;
 - (void)channel:(SBDOpenChannel * _Nonnull)channel userDidEnter:(SBDUser * _Nonnull)user;
+@end
+
+
+@interface SBUUserListViewModel (SWIFT_EXTENSION(SendbirdUIKit)) <SBDGroupChannelDelegate>
+- (void)channel:(SBDGroupChannel * _Nonnull)channel userDidJoin:(SBDUser * _Nonnull)user;
+- (void)channel:(SBDGroupChannel * _Nonnull)channel userDidLeave:(SBDUser * _Nonnull)user;
 @end
 
 
@@ -11491,6 +11492,7 @@ SWIFT_CLASS("_TtC13SendbirdUIKit16SBUVoiceRecorder")
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
+
 
 
 

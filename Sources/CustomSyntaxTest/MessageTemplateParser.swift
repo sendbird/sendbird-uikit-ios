@@ -206,9 +206,14 @@ public class MessageTemplateParser: NSObject {
  */
 
 // MARK: - Root
+protocol MessageTemplateItemIdentifiable {
+    func assignMessageIdAndIndex(_ messageId: Int64, index: Int) -> Int
+}
+
 class MessageTemplateData: Decodable {
     var version: Int?
     var body: SBUMessageTemplate.Body?
+    var messageId: Int64 = 0
     
     enum CodingKeys: String, CodingKey {
         case version, body
@@ -223,6 +228,10 @@ class MessageTemplateData: Decodable {
         )
         self.body = try container.decodeIfPresent(SBUMessageTemplate.Body.self, forKey: .body)
     }
+    
+    func updateMessageIdAndIndex() {
+        self.body?.updateMessageId(self.messageId, index: 0)
+    }
 }
 
 // MARK: - Body
@@ -232,6 +241,27 @@ public class SBUMessageTemplate {
     
     class Body: Decodable {
         var items: [SBUMessageTemplate.Item]?
+        
+        func updateMessageId(_ messageId: Int64, index: Int) {
+            var nextIndex = 0
+            
+            guard let items = self.items else { return }
+            
+            for item in items {
+                switch item {
+                case .box(let box):
+                    nextIndex = box.assignMessageIdAndIndex(messageId, index: nextIndex)
+                case .text(let text):
+                    nextIndex = text.assignMessageIdAndIndex(messageId, index: nextIndex)
+                case .image(let image):
+                    nextIndex = image.assignMessageIdAndIndex(messageId, index: nextIndex)
+                case .textButton(let textButton):
+                    nextIndex = textButton.assignMessageIdAndIndex(messageId, index: nextIndex)
+                case .imageButton(let imageButton):
+                    nextIndex = imageButton.assignMessageIdAndIndex(messageId, index: nextIndex)
+                }
+            }
+        }
     }
     
     enum Item {
@@ -243,12 +273,15 @@ public class SBUMessageTemplate {
     }
     
     // MARK: Base Item
-    class View: Decodable {
+    class View: Decodable, MessageTemplateItemIdentifiable {
         let type: Item.ItemType
         let action: Action?
         let viewStyle: ViewStyle?
         let width: SizeSpec // fill
         let height: SizeSpec // wrap
+        
+        var messageId: Int64 = 0
+        var index: Int = 0
         
         enum CodingKeys: String, CodingKey {
             case type, action, width, height, viewStyle
@@ -288,6 +321,13 @@ public class SBUMessageTemplate {
             if self.viewStyle?.padding == nil {
                 self.viewStyle?.padding = Padding(top: top, bottom: bottom, left: left, right: right)
             }
+        }
+        
+        func assignMessageIdAndIndex(_ messageId: Int64, index: Int) -> Int {
+            self.messageId = messageId
+            self.index = index
+            
+            return index + 1
         }
     }
     
@@ -331,6 +371,37 @@ public class SBUMessageTemplate {
                 height: height,
                 action: action
             )
+        }
+        
+        /// Updates the item with the message ID and the index.
+        /// The item should have the message ID and the index in order to use them as a key for cache when the item is rendered.
+        /// - Parameters:
+        ///   - messageId: The message ID for this template
+        ///   - index: The index of the item
+        /// - Returns: The next index
+        override func assignMessageIdAndIndex(_ messageId: Int64, index: Int) -> Int {
+            var nextIndex: Int = 0
+            
+            self.index = index
+            self.messageId = messageId
+            guard let items = self.items else { return 0 }
+            
+            for item in items {
+                switch item {
+                case .box(let box):
+                    nextIndex = box.assignMessageIdAndIndex(messageId, index: nextIndex)
+                case .text(let text):
+                    nextIndex = text.assignMessageIdAndIndex(messageId, index: nextIndex)
+                case .image(let image):
+                    nextIndex = image.assignMessageIdAndIndex(messageId, index: nextIndex)
+                case .textButton(let textButton):
+                    nextIndex = textButton.assignMessageIdAndIndex(messageId, index: nextIndex)
+                case .imageButton(let imageButton):
+                    nextIndex = imageButton.assignMessageIdAndIndex(messageId, index: nextIndex)
+                }
+            }
+            
+            return nextIndex + 1
         }
     }
 

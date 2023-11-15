@@ -96,6 +96,7 @@ class MessageTemplateRenderer: UIView {
     
     // TODO: will be changed to use params (builder)
     init?(with data: String,
+          messageId: Int64? = 0,
           delegate: MessageTemplateRendererDelegate? = nil,
           maxWidth: CGFloat = UIApplication.shared.currentWindow?.bounds.width ?? 0.0,
           fontFamily: String? = nil,
@@ -112,6 +113,8 @@ class MessageTemplateRenderer: UIView {
         let data = Data(data.utf8)
         do {
             let template = try JSONDecoder().decode(MessageTemplateData.self, from: data)
+            template.messageId = messageId ?? 0
+            template.updateMessageIdAndIndex()
             self.version = template.version ?? 0
             if self.render(template: template) == false { return nil }
         } catch {
@@ -711,7 +714,7 @@ class MessageTemplateRenderer: UIView {
         
         return baseView
     }
-    
+
     // MARK: - Image
     func renderImage(item: SBUMessageTemplate.Image,
                      parentView: UIView,
@@ -722,7 +725,7 @@ class MessageTemplateRenderer: UIView {
                      isLastItem: Bool = false) -> UIView {
         let baseView = MessageTemplateImageBaseView(item: item, layout: layout)
         baseView.clipsToBounds = true
-        let imageView: UIImageView = MessageTemplateImageView()
+        let imageView = MessageTemplateImageView()
         
         let isForDownloadingTemplate = (item.imageUrl == SBUMessageTemplate.urlForTemplateDownload)
         
@@ -765,7 +768,7 @@ class MessageTemplateRenderer: UIView {
                 break
             }
         }
-        (imageView as? MessageTemplateImageView)?.needResizeImage = needResizeImage
+        imageView.needResizeImage = needResizeImage
         
         var tintColor: UIColor?
         if let tintColorHex = imageStyle.tintColor {
@@ -846,7 +849,12 @@ class MessageTemplateRenderer: UIView {
         } else if item.width.type == .flex, item.width.value == 1 { // wrapContent
             switch item.height.type {
             case .fixed: ratioConstraintsHandler()
-            case .flex: minimumConstraintsHandler() // fillParent, wrapContent
+            case .flex:
+                if item.height.value == 0 {
+                    minimumConstraintsHandler() // fillParent, wrapContent
+                } else {
+                    ratioConstraintsHandler()
+                }
             }
         }
         
@@ -877,65 +885,79 @@ class MessageTemplateRenderer: UIView {
             return baseView
         }
         
-        imageView.loadImage(
+        let fileName = SBUCacheManager.Image.createCacheFileName(
             urlString: item.imageUrl,
-            subPath: SBUCacheManager.PathType.template,
-            completion: { [weak self, weak imageView] _ in
-                guard let self = self else { return }
-                
-                DispatchQueue.main.async {
-                    let image = imageView?.image?.sbu_with(
-                        tintColor: tintColor,
-                        forTemplate: true
-                    )
-                    
-                    // INFO: Edge case - image height is wrap
-                    imageView?.image = image
-                    imageView?.layoutIfNeeded()
-                    
-                    if let imageView = imageView as? MessageTemplateImageView,
-                       imageView.needResizeImage {
-                        imageView.image = image?.resizeTopAlignedToFill(newWidth: imageView.frame.width)
-                        imageView.layoutIfNeeded()
-                    }
-                }
-                
-                let constraintSettingHandler: (() -> Void) = {
-                    if let imageView = imageView,
-                       let imageSize = imageView.image?.size {
-                        
-                        self.rendererConstraints.forEach { $0.isActive = false }
-                        placeholderConstraints.forEach { $0.isActive = false }
-                        
-                        if isRatioUsed == true {
-                            let ratio = imageSize.height / imageSize.width
-                            
-                            let heightConst = imageView.heightAnchor.constraint(
-                                equalTo: imageView.widthAnchor,
-                                multiplier: ratio
-                            )
-                            heightConst.priority = .defaultHigh
-                            self.rendererConstraints.append(heightConst)
-                        }
-                        
-                        self.rendererConstraints.forEach { $0.isActive = true }
-                        
-                        if item.metaData == nil || !isRatioUsed {
-                            placeholderConstraints.forEach { $0.isActive = true }
-                            self.delegate?.messageTemplateRender(self, didFinishLoadingImage: imageView)
-                        }
-                    }
-                }
-                if Thread.isMainThread {
-                    constraintSettingHandler()
-                } else {
-                    DispatchQueue.main.async {
-                        constraintSettingHandler()
-                    }
-                }
-            }
+            cacheKey: nil
         )
         
+        let imageSettingBlock: ((_ image: UIImage, _ imageSize: CGSize) -> Void) = { image, imageSize in
+            self.setImage(
+                image,
+                imageSize: imageSize,
+                imageView: imageView,
+                item: item,
+                isRatioUsed: isRatioUsed,
+                placeholderConstraints: placeholderConstraints
+            )
+        }
+        
+        guard let image = SBUCacheManager.Image.get(
+            fileName: fileName,
+            subPath: SBUCacheManager.PathType.template
+        ) else {
+            // 이미지 캐시가 없을 때
+            UIImageView.getOriginalImage(
+                urlString: item.imageUrl,
+                subPath: SBUCacheManager.PathType.template
+            ) { [weak self, weak imageView] image, _ in
+                guard let self = self else { return }
+                guard let image = image else { return }
+                guard let imageView = imageView else { return }
+
+                DispatchQueue.main.async {
+                    imageView.image = image
+                    imageView.layoutIfNeeded()
+                }
+
+                DispatchQueue.main.async {
+                    imageSettingBlock(image, imageView.frame.size)
+                }
+            }
+            
+            return baseView
+        }
+        
+        guard let imageSize = SBUCacheManager.TemplateImage.load(
+            messageId: item.messageId,
+            viewIndex: item.index
+        ), imageSize.width > 0 else {
+            // 이미지 "사이즈" 캐시가 없을 때
+            DispatchQueue.main.async {
+                imageView.image = image
+                imageView.layoutIfNeeded()
+            }
+
+            DispatchQueue.main.async {
+                if imageView.needResizeImage {
+                    // Stores the image size into the memory cache.
+                    SBUCacheManager.TemplateImage.save(messageId: item.messageId, viewIndex: item.index, size: imageView.frame.size)
+                }
+
+                imageSettingBlock(image, imageView.frame.size)
+            }
+            
+            return baseView
+        }
+        
+        // 이미지 "사이즈" 캐시가 있을 때
+        if Thread.isMainThread {
+            imageSettingBlock(image, imageSize)
+        } else {
+            DispatchQueue.main.async {
+                imageSettingBlock(image, imageSize)
+            }
+        }
+
         return baseView
     }
     
