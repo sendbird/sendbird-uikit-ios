@@ -288,23 +288,26 @@ class SBUNotificationCell: SBUBaseMessageCell {
         let subData = notification?.extendedMessage["sub_data"] as? String
         var bindedTemplate: String?
         var isNewTemplateDownloading: Bool = false
+
         if !isTemplateDownloadFailed {
             (bindedTemplate, isNewTemplateDownloading) = SBUNotificationChannelManager.generateTemplate(
                 with: subData
-            ) { [weak self, weak notification] success in
+            ) { [weak self] success in
                 // This completionHandler is only called when a template download is requested.
                 self?.isTemplateDownloadFailed = !success
                 self?.setupNotificationTemplate()
                 self?.reloadCell()
             }
-            
         }
+
         bindedTemplate = bindedTemplate?.replacingOccurrences(of: "\\n", with: "\\\\n")
         bindedTemplate = bindedTemplate?.replacingOccurrences(of: "\n", with: "\\n")
         
         var template: MessageTemplateData?
         do {
             template = try JSONDecoder().decode(MessageTemplateData.self, from: Data((bindedTemplate ?? "").utf8))
+            template?.messageId = message?.messageId ?? 0
+            template?.updateMessageIdAndIndex()
         } catch {
             SBULog.error(error)
         }
@@ -329,6 +332,7 @@ class SBUNotificationCell: SBUBaseMessageCell {
         } else if let bindedTemplate = bindedTemplate, !showFallback {
             self.notificationTemplateRenderer = MessageTemplateRenderer(
                 with: bindedTemplate,
+                messageId: message?.messageId,
                 delegate: self,
                 maxWidth: self.availableTemplateWidth,
                 fontFamily: SBUFontSet.FontFamily.notifications,

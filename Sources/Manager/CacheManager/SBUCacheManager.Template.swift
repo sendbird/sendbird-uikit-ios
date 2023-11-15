@@ -89,6 +89,18 @@ extension SBUCacheManager {
             self.memoryCache.resetCache()
         }
     }
+    
+    class TemplateImage {
+        static let memoryCache = MemoryCacheForTemplateImageSize()
+        
+        static func save(messageId: Int64, viewIndex: Int, size: CGSize) {
+            self.memoryCache.set(messageId: messageId, viewIndex: viewIndex, size: size)
+        }
+        
+        static func load(messageId: Int64, viewIndex: Int) -> CGSize? {
+            self.memoryCache.get(messageId: messageId, viewIndex: viewIndex)
+        }
+    }
 }
 
 extension SBUCacheManager {
@@ -352,5 +364,21 @@ extension SBUCacheManager {
 //        func cacheExists(key: String) -> Bool {
 //            return self.templateList?[key] != nil
 //        }
+    }
+    
+    class MemoryCacheForTemplateImageSize {
+        var sizeCache: [String: CGSize] = [:] // The key is a combination of the message ID and the index of view item.
+        
+        func generateKey(messageId: Int64, viewIndex: Int) -> String {
+            "\(messageId)_\(viewIndex)"
+        }
+        
+        func set(messageId: Int64, viewIndex: Int, size: CGSize) {
+            self.sizeCache[self.generateKey(messageId: messageId, viewIndex: viewIndex)] = size
+        }
+        
+        func get(messageId: Int64, viewIndex: Int) -> CGSize? {
+            self.sizeCache[self.generateKey(messageId: messageId, viewIndex: viewIndex)]
+        }
     }
 }
