@@ -9,6 +9,6 @@
 // Configuration settings file format documentation can be found at:
 // https://help.apple.com/xcode/#/dev745c5c974
 
-SBU_APP_VERSION = 3.11.1
-SBU_APP_BUNDLE_VERSION = 3.11.1
+SBU_APP_VERSION = 3.11.2
+SBU_APP_BUNDLE_VERSION = 3.11.2
 SENDBIRD_CHAT_SDK_VERSION = 4.12.2

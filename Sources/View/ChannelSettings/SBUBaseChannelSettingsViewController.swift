@@ -296,11 +296,13 @@ open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActio
     /// - Since: 2.1.0
     open func showSearch() {
         guard let channel = self.channel else { return }
-        
+        self.needRollbackNavigationBarSetting = false
         let searchVC = SBUViewControllerSet.MessageSearchViewController.init(channel: channel)
         let nav = UINavigationController(rootViewController: searchVC)
         nav.modalPresentationStyle = .fullScreen
-        self.present(nav, animated: true, completion: nil)
+        self.present(nav, animated: true) {
+            self.needRollbackNavigationBarSetting = true
+        }
     }
     
     /// If you want to use a custom moderationsViewController, override it and implement it.

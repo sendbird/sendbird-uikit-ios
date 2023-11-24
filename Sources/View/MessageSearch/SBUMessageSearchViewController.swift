@@ -119,8 +119,6 @@ open class SBUMessageSearchViewController: SBUBaseViewController, SBUMessageSear
     }
     
     open override func setupStyles() {
-        self.navigationController?.navigationBar.barStyle = self.theme.navigationBarStyle
-        
         self.setupNavigationBar(
             backgroundColor: self.theme.navigationBarTintColor,
             shadowColor: self.theme.navigationBarShadowColor
