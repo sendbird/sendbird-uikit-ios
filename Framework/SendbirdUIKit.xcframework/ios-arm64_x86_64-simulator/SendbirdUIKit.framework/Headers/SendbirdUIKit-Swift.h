@@ -1522,6 +1522,12 @@ SWIFT_CLASS("_TtC13SendbirdUIKit21MessageTemplateParser")
 
 SWIFT_CLASS("_TtC13SendbirdUIKit21SBUBaseViewController")
 @interface SBUBaseViewController : UIViewController <UINavigationControllerDelegate>
+/// This value is used to check if the properties of the navigationBar need to be initialized. The default value is <code>true</code>.
+/// note:
+/// If you are presenting a ViewController with the <code>modalPresentationStyle</code> set to <code>.fullScreen</code> within a Sendbird function, please set this value to <code>false</code> before presenting.
+/// since:
+/// 3.11.2
+@property (nonatomic) BOOL needRollbackNavigationBarSetting;
 - (void)loadView;
 - (void)viewWillAppear:(BOOL)animated;
 - (void)viewWillDisappear:(BOOL)animated;
@@ -7298,6 +7304,12 @@ SWIFT_CLASS("_TtC13SendbirdUIKit21MessageTemplateParser")
 
 SWIFT_CLASS("_TtC13SendbirdUIKit21SBUBaseViewController")
 @interface SBUBaseViewController : UIViewController <UINavigationControllerDelegate>
+/// This value is used to check if the properties of the navigationBar need to be initialized. The default value is <code>true</code>.
+/// note:
+/// If you are presenting a ViewController with the <code>modalPresentationStyle</code> set to <code>.fullScreen</code> within a Sendbird function, please set this value to <code>false</code> before presenting.
+/// since:
+/// 3.11.2
+@property (nonatomic) BOOL needRollbackNavigationBarSetting;
 - (void)loadView;
 - (void)viewWillAppear:(BOOL)animated;
 - (void)viewWillDisappear:(BOOL)animated;

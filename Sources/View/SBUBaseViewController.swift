@@ -16,12 +16,20 @@ open class SBUBaseViewController: UIViewController, UINavigationControllerDelega
     /// - Since: 3.8.0
     var prevNavigationBarSettings: SBUPrevNavigationBarSettings? = SBUPrevNavigationBarSettings()
     
+    /// This value is used to check if the properties of the navigationBar need to be initialized. The default value is `true`.
+    ///
+    /// - NOTE: If you are presenting a ViewController with the `modalPresentationStyle` set to `.fullScreen` within a Sendbird function, please set this value to `false` before presenting.
+    /// - Since: 3.11.2
+    public var needRollbackNavigationBarSetting: Bool = true
+    
     // MARK: - Lifecycle
     open override func loadView() {
         super.loadView()
         
         self.setupViews()
         self.setupLayouts()
+        
+        self.needRollbackNavigationBarSetting = false
     }
     
     open override func viewWillAppear(_ animated: Bool) {
@@ -34,7 +42,7 @@ open class SBUBaseViewController: UIViewController, UINavigationControllerDelega
     open override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        if let navigationController = self.navigationController {
+        if let navigationController = self.navigationController, needRollbackNavigationBarSetting {
             self.prevNavigationBarSettings?.rollback(to: navigationController)
         }
         SBUUtils.dismissPresentedOnDisappear(presentedViewController: self.presentedViewController)

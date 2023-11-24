@@ -7049,6 +7049,7 @@ open class SBUCreateOpenChannelModule {
   @objc deinit
 }
 @objc @_inheritsConvenienceInitializers @objcMembers @_Concurrency.MainActor(unsafe) open class SBUBaseViewController : UIKit.UIViewController, UIKit.UINavigationControllerDelegate, SendbirdUIKit.SBULoadingIndicatorProtocol {
+  @objc @_Concurrency.MainActor(unsafe) public var needRollbackNavigationBarSetting: Swift.Bool
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func loadView()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewWillAppear(_ animated: Swift.Bool)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewWillDisappear(_ animated: Swift.Bool)

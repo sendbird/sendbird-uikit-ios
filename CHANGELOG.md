@@ -1,5 +1,11 @@
 # Changelog
 
+### v3.11.2 (Nov 24, 2023)
+
+- Fixed navigationBar looking weird after entering message search function
+  - Added `needRollbackNavigationBarSetting` property in `SBUBaseViewController`
+- Applied UIKit configuration to LimitedPhotoLibraryPicker
+
 ### v3.11.1 (Nov 15, 2023)
 
 - Improved stability

@@ -1056,7 +1056,22 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     }
     
     open func showLimitedPhotoLibraryPicker() {
-        let selectablePhotoVC = SBUSelectablePhotoViewController()
+        let inputConfig: SBUConfig.BaseInput
+        switch self.baseViewModel?.channel?.channelType {
+        case .group:
+            inputConfig = SendbirdUI.config.groupChannel.channel.input
+        case .open:
+            inputConfig = SendbirdUI.config.openChannel.channel.input
+        default:
+            return
+        }
+        let gallery = inputConfig.gallery
+        
+        var mediaType: PHAssetMediaType? // nil is all type support
+        
+        if gallery.isPhotoEnabled && gallery.isVideoEnabled { mediaType = nil } else if gallery.isPhotoEnabled { mediaType = .image } else if gallery.isVideoEnabled { mediaType = .video }
+        
+        let selectablePhotoVC = SBUSelectablePhotoViewController(mediaType: mediaType)
         selectablePhotoVC.delegate = self
         let nav = UINavigationController(rootViewController: selectablePhotoVC)
         self.present(nav, animated: true, completion: nil)
