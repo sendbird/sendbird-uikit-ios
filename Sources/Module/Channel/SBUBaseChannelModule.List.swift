@@ -485,6 +485,10 @@ extension SBUBaseChannelModule {
         // MARK: - TableView
         /// Reloads table view. This method corresponds to `UITableView reloadData()`.
         public func reloadTableView(needsToLayout: Bool = true) {
+            if let gropuChannelModuleList = self as? SBUGroupChannelModule.List {
+                gropuChannelModuleList.shouldRedrawTypingBubble = gropuChannelModuleList.decideToRedrawTypingBubble()
+            }
+            
             if Thread.isMainThread {
                 self.isTableViewReloading = true
                 self.tableView.reloadData()

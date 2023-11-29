@@ -1,5 +1,44 @@
 # Changelog
 
+### v3.12.0 (Nov 29, 2023)
+
+#### Typing Indicator Bubble
+* We are now supporting a new type of a typing indicator, the **Typing Indicator Bubble**. 
+* Enabling Typing Indicator Bubble shows an animated typing bubble when another member(s) in a Group Channel is/are typing. 
+* You can use this feature by enabling `SendbirdUI.config.groupChannel.channel.isTypingIndicatorEnabled` to `true`, then setting `SendbirdUI.config.groupChannel.channel.typingIndicatorTypes` to `[.bubble]`.
+
+* New enum
+    * `public enum SBUTypingIndicatorType`
+
+* New classes / structs
+    * `public class SBUTypingIndicatorMessageManager`
+    * `public struct SBUTypingIndicatorInfo`
+    * `public class SBUTypingIndicatorMessage`
+    * `public class SBUTypingIndicatorMessageCellParams`
+    * `open class SBUTypingIndicatorMessageCell`
+    * `public class SBUTypingIndicatorBubbleView`
+
+* New properties
+    * `public var typingIndicatorTypes: Set<SBUTypingIndicatorType>`  in `SBUConfig.GroupChannel.Channel`
+    * `public var typingMessageManager` in `SBUBaseChannelViewModel`
+    * `public private(set) var typingIndicatorMessageCell` in `SBUGroupChannelModule.List`
+    * `public static var Message_Typers_Count` in `SBUStringSet`
+    * `public lazy var profilesStackView` in `SBUContentBaseMessageCell`
+    * `public lazy var numberLabel` in `SBUMessageProfileView`
+
+* New methods 
+    * `open func register(typingIndicatorMessageCell: SBUBaseMessageCell, nib: UINib? = nil)` in `SBUGroupChannelModule.List`
+    * `public func configureMessageProfileViews(message:)` in `SBUContentBaseMessageCell`
+    * `open func configureTyperProfileViews(typingInfo:)` in `SBUContentBaseMessageCell`
+    * `open func configureUserProfileView(message:)` in `SBUContentBaseMessageCell`
+    * `public func configureTyperProfileImageView()` in `SBUMessageProfileView`
+    * `public func configureNumberLabel(_:)`
+
+* New theme properties
+    * `public var typingMessageProfileBorderColor: UIColor` in `SBUTheme`
+    * `public var typingMessageDotColor: UIColor` in `SBUTheme`
+    * `public var typingMessageDotTransformColor: UIColor` in `SBUTheme`
+
 ### v3.11.2 (Nov 24, 2023)
 
 - Fixed navigationBar looking weird after entering message search function

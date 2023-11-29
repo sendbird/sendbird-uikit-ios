@@ -160,6 +160,9 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     
     deinit {
         SBULog.info("")
+        
+        // Clear typing message when exiting the channel.
+        self.viewModel?.clearTypingMessage()
     }
     
     // MARK: - ViewModel
@@ -736,7 +739,8 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
                 
             case .eventTypingStatusUpdated:
                 self.updateChannelStatus()
-                
+                self.listComponent?.reloadTableView()
+            
             case .channelChangelog:
                 self.updateChannelTitle()
                 self.inputComponent?.updateMessageInputModeState()
