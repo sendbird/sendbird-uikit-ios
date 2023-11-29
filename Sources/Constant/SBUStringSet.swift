@@ -218,6 +218,19 @@ public class SBUStringSet {
     /// - Since: 3.3.0
     public static var Message_Unavailable = "Message unavailable"
     
+    /// - Since: 3.12.0
+    public static var Message_Typers_Count: (Int) -> String = { numberOfTypers in
+        switch numberOfTypers {
+        case 1...SBUConstant.maxNumberOfTypers:
+            let remainingTypersCount = numberOfTypers - SBUConstant.maxNumberOfProfileImages
+            return "+\(remainingTypersCount)"
+        case (SBUConstant.maxNumberOfTypers + 1)...:
+            return "+99"
+        default:
+            return ""
+        }
+    }
+    
     /// - Since: 3.5.0
     public static var Notification_Template_Error_Title = "(Template error)"
     public static var Notification_Template_Error_Subtitle = "Can't read this notification."

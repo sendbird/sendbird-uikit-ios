@@ -50,4 +50,8 @@ class SBUConstant {
     
     // queue name for sending a message in group channel
     static let messageOperationQueueName = "com.sendbird.uikit.groupchannel.message"
+    
+    // For typing indicator bubble.
+    static let maxNumberOfProfileImages: Int = 3
+    static let maxNumberOfTypers: Int = 102
 }

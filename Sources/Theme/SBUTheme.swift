@@ -1406,6 +1406,11 @@ public class SBUMessageCellTheme {
         theme.formSubmitButtonBackgroundColor = SBUColorSet.primary300
         theme.formSubmitButtonBackgroundDisabledColor = SBUColorSet.onlight04
         theme.formSubmitButtonTitleColor = SBUColorSet.ondark01
+        
+        // Typing message
+        theme.typingMessageProfileBorderColor = SBUColorSet.background50
+        theme.typingMessageDotColor = SBUColorSet.onlight04
+        theme.typingMessageDotTransformColor = SBUColorSet.onlight03
 
         return theme
     }
@@ -1566,6 +1571,10 @@ public class SBUMessageCellTheme {
         theme.formSubmitButtonBackgroundDisabledColor = SBUColorSet.onlight04
         theme.formSubmitButtonTitleColor = SBUColorSet.onlight01
 
+        // Typing message
+        theme.typingMessageProfileBorderColor = SBUColorSet.background600
+        theme.typingMessageDotColor = SBUColorSet.ondark04
+        theme.typingMessageDotTransformColor = SBUColorSet.ondark03
         return theme
     }
     
@@ -1823,7 +1832,11 @@ public class SBUMessageCellTheme {
                 formInputPlaceholderColor: UIColor = SBUColorSet.onlight03,
                 formSubmitButtonBackgroundColor: UIColor = SBUColorSet.primary300,
                 formSubmitButtonBackgroundDisabledColor: UIColor = SBUColorSet.onlight04,
-                formSubmitButtonTitleColor: UIColor = SBUColorSet.ondark01
+                formSubmitButtonTitleColor: UIColor = SBUColorSet.ondark01,
+                
+                typingMessageProfileBorderColor: UIColor = SBUColorSet.background50,
+                typingMessageDotColor: UIColor = SBUColorSet.onlight04,
+                typingMessageDotTransformColor: UIColor = SBUColorSet.onlight03
     ) {
         
         self.backgroundColor = backgroundColor
@@ -1950,6 +1963,10 @@ public class SBUMessageCellTheme {
         self.formSubmitButtonBackgroundColor = formSubmitButtonBackgroundColor
         self.formSubmitButtonBackgroundDisabledColor = formSubmitButtonBackgroundDisabledColor
         self.formSubmitButtonTitleColor = formSubmitButtonTitleColor
+        
+        self.typingMessageProfileBorderColor = typingMessageProfileBorderColor
+        self.typingMessageDotColor = typingMessageDotColor
+        self.typingMessageDotTransformColor = typingMessageDotTransformColor
     }
     
     public var backgroundColor: UIColor
@@ -2150,6 +2167,11 @@ public class SBUMessageCellTheme {
     public var formSubmitButtonBackgroundColor: UIColor // 3.11.0
     public var formSubmitButtonBackgroundDisabledColor: UIColor // 3.11.0
     public var formSubmitButtonTitleColor: UIColor // 3.11.0
+    
+    // MARK: Typing Message
+    public var typingMessageProfileBorderColor: UIColor // 3.12.0
+    public var typingMessageDotColor: UIColor // 3.12.0
+    public var typingMessageDotTransformColor: UIColor // 3.12.0
 }
 
 // MARK: - User List Theme

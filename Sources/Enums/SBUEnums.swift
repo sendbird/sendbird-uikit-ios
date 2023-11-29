@@ -326,3 +326,12 @@ enum SBUFlexibleType: Decodable {
         }
     }
 }
+
+/// Enum for different typing indicator types.
+/// - Since: 3.12.0
+public enum SBUTypingIndicatorType {
+    /// Text type typing indicator shown in``SBUChannelTitleView``.
+    case text
+    /// Animated bubble type typing indicator shown in ``SBUTypingIndicatorMessageCell``.
+    case bubble
+}

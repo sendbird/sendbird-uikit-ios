@@ -44,6 +44,13 @@ extension SBUConfig.GroupChannel {
         /// In the channel header, the current typing information of the members is displayed under the channel title.
         @SBUPrioritizedConfig public var isTypingIndicatorEnabled: Bool = true
         
+        /// Choose the type of typing indicators to show in a Group Channel.
+        /// To enable the types, you must first enable ``isTypingIndicatorEnabled``.
+        /// The default value is `[.text]`
+        /// - Note: This property is not yet configurable via the Dashboard.
+        /// - Since: 3.12.0
+        public var typingIndicatorTypes: Set<SBUTypingIndicatorType> = [.text]
+        
         /// Enable the feature to show suggested replies in messages. Default is `false`
         /// - Since: 3.11.0
         @SBUPrioritizedConfig public var isSuggestedRepliesEnabled: Bool = false

@@ -123,6 +123,10 @@ open class SBUBaseChannelViewModel: NSObject {
     
     public var pendingMessageManager = SBUPendingMessageManager.shared
     
+    /// Manages the typing bubble message.
+    /// - Since: 3.12.0
+    public var typingMessageManager = SBUTypingIndicatorMessageManager.shared
+    
     // MARK: - Logic properties (Private)
     weak var baseDataSource: SBUBaseChannelViewModelDataSource?
     weak var baseDelegate: SBUBaseChannelViewModelDelegate?
@@ -657,7 +661,7 @@ open class SBUBaseChannelViewModel: NSObject {
             if let index = SBUUtils.findIndex(of: message, in: self.messageList) {
                 self.messageList.remove(at: index)
             }
-
+            
             guard self.messageListParams.belongsTo(message) else {
                 self.sortAllMessageList(needReload: needReload)
                 return
@@ -825,14 +829,19 @@ open class SBUBaseChannelViewModel: NSObject {
             return !isInMessageList
         }
         
+        let typingMessageArray = [typingMessageManager.getTypingMessage(for: self.channel)].compactMap { $0 }
+        
         if isTransformedList {
             self.messageList.sort { $0.createdAt > $1.createdAt }
-            self.fullMessageList = refinedPendingMessages.sorted { $0.createdAt > $1.createdAt }
+            
+            self.fullMessageList = typingMessageArray
+                                    + refinedPendingMessages.sorted { $0.createdAt > $1.createdAt }
                                     + self.messageList
         } else {
             self.messageList.sort { $0.createdAt < $1.createdAt }
             self.fullMessageList = self.messageList
                                     + refinedPendingMessages.sorted { $0.createdAt < $1.createdAt }
+                                    + typingMessageArray
         }
         
         self.baseDelegate?.shouldUpdateLoadingState(false)

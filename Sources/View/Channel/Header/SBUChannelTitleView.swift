@@ -210,7 +210,8 @@ public class SBUChannelTitleView: UIView {
         
         if let channel = channel as? GroupChannel {
             if let typingIndicatorString = self.buildTypingIndicatorString(channel: channel), !channel.isChatNotification,
-               SendbirdUI.config.groupChannel.channel.isTypingIndicatorEnabled {
+               SendbirdUI.config.groupChannel.channel.isTypingIndicatorEnabled,
+               SendbirdUI.config.groupChannel.channel.typingIndicatorTypes.contains(.text) {
                 DispatchQueue.main.async { [weak self] in
                     guard let self = self else { return }
                     self.statusField.isHidden = false

@@ -500,6 +500,38 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
         channel.endTyping()
     }
     
+    // MARK: - Typing Indicator Message
+    private func updateTypingIndicatorMessage() {
+        guard let channel = self.channel as? GroupChannel, let collection = self.messageCollection else { return }
+        
+        // One or more user is typing.
+        if var typers = channel.getTypingUsers(),
+            typers.isEmpty == false,
+            let typingMessage = SBUTypingIndicatorMessage.make(["": ""]) {
+            // if hasNext is true, don't show typing bubble.
+            if collection.hasNext { return }
+            
+            let truncatedTypers = Array(typers.prefix(3))
+            typingMessage.typingIndicatorInfo = SBUTypingIndicatorInfo(
+                typers: truncatedTypers,
+                numberOfTypers: typers.count
+            )
+            
+            self.typingMessageManager.typingMessages[channel.channelURL] = typingMessage
+        }
+        // No user is typing.
+        else {
+            self.clearTypingMessage()
+        }
+        
+        self.sortAllMessageList(needReload: false)  // tableview reload is handled in GroupChannelVC
+    }
+    
+    func clearTypingMessage() {
+        guard let channel = self.channel as? GroupChannel else { return }
+        self.typingMessageManager.typingMessages.removeValue(forKey: channel.channelURL)
+    }
+    
     // MARK: - Mention
     
     /// Loads mentionable member list.
@@ -689,6 +721,14 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
                            context: MessageContext,
                            updatedChannel channel: GroupChannel) {
         SBULog.info("messageCollection changedChannel")
+        
+        // Update typingMessageBubble.
+        if context.source == .eventTypingStatusUpdated,
+           SendbirdUI.config.groupChannel.channel.isTypingIndicatorEnabled,
+           SendbirdUI.config.groupChannel.channel.typingIndicatorTypes.contains(.bubble) {
+            updateTypingIndicatorMessage()
+        }
+        
         self.delegate?.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
     }
     

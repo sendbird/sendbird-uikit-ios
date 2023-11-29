@@ -119,6 +119,11 @@ extension SBUGroupChannelModule {
         /// - Since: 3.10.0
         public private(set) var multipleFilesMessageCell: SBUBaseMessageCell?
         
+        /// The message cell for `SBUTypingIndicatorMessage` object.
+        /// Use `register(typingIndicatorMessageCell:nib:)` to update.
+        /// - Since: 3.12.0
+        public private(set) var typingIndicatorMessageCell: SBUBaseMessageCell?
+        
         /// The message cell for some unknown message which is not a type of `AdminMessage` | `UserMessage` | ` FileMessage`. Use `register(unknownMessageCell:nib:)` to update.
         public private(set) var unknownMessageCell: SBUBaseMessageCell?
         
@@ -152,11 +157,14 @@ extension SBUGroupChannelModule {
             self.baseChannel as? GroupChannel
         }
         
+        // MARK: Private properties
         var voicePlayer: SBUVoicePlayer?
         var voiceFileInfos: [String: SBUVoiceFileInfo] = [:]
         var currentVoiceFileInfo: SBUVoiceFileInfo?
         var currentVoiceContentView: SBUVoiceContentView?
         var currentVoiceContentIndexPath: IndexPath?
+        
+        var shouldRedrawTypingBubble: Bool = false
 
         /// Configures component with parameters.
         /// - Parameters:
@@ -194,6 +202,9 @@ extension SBUGroupChannelModule {
             }
             if self.multipleFilesMessageCell == nil {
                 self.register(messageCell: SBUMultipleFilesMessageCell())
+            }
+            if self.typingIndicatorMessageCell == nil {
+                self.register(messageCell: SBUTypingIndicatorMessageCell())
             }
             
             if self.unknownMessageCell == nil {
@@ -408,6 +419,21 @@ extension SBUGroupChannelModule {
             self.register(messageCell: multipleFilesMessageCell, nib: nib)
         }
         
+        /// Registers a custom cell as a typing message cell based on `SBUBaseMessageCell`.
+        /// - Parameters:
+        ///     - typingIndicatorMessageCell: Customized typing indicator message cell
+        ///     - nib: nib information. If the value is nil, the nib file is not used.
+        /// - Important: To register custom message cell, please use this function before calling `configure(delegate:dataSource:theme:)`
+        /// ```swift
+        /// listComponent.register(typingIndicatorMessageCell: MyTypingIndicatorMessageCell)
+        /// listComponent.configure(delegate: self, dataSource: self, theme: theme)
+        /// ```
+        /// - Since: 3.12.0
+        open func register(typingIndicatorMessageCell: SBUBaseMessageCell, nib: UINib? = nil) {
+            self.typingIndicatorMessageCell = typingIndicatorMessageCell
+            self.register(messageCell: typingIndicatorMessageCell, nib: nib)
+        }
+        
         /// Registers a custom cell as a unknown message cell based on `SBUBaseMessageCell`.
         /// - Parameters:
         ///   - unknownMessageCell: Customized unknown message cell
@@ -562,6 +588,14 @@ extension SBUGroupChannelModule {
                     self.setMessageCellGestures(multipleFilesMessageCell, message: multipleFilesMessage, indexPath: indexPath)
                     (multipleFilesMessageCell.threadInfoView as? SBUThreadInfoView)?.delegate = self
                 
+                case let (typingMessage, typingMessageCell) as (SBUTypingIndicatorMessage, SBUTypingIndicatorMessageCell):
+                    
+                    let configuration = SBUTypingIndicatorMessageCellParams(
+                        message: typingMessage,
+                        shouldRedrawTypingBubble: self.shouldRedrawTypingBubble
+                    )
+                    typingMessageCell.configure(with: configuration)
+                    
                 default:
                     let configuration = SBUBaseMessageCellParams(
                         message: message,
@@ -670,6 +704,8 @@ extension SBUGroupChannelModule {
         /// - Returns: The identifier of message cell.
         open func generateCellIdentifier(by message: BaseMessage) -> String {
             switch message {
+                case is SBUTypingIndicatorMessage:
+                    return typingIndicatorMessageCell?.sbu_className ?? SBUTypingIndicatorMessageCell.sbu_className
                 case is MultipleFilesMessage:
                     return multipleFilesMessageCell?.sbu_className ?? SBUMultipleFilesMessageCell.sbu_className
                 case is FileMessage:
@@ -698,6 +734,18 @@ extension SBUGroupChannelModule {
                     self.isHighlightInfoAnimated = true
                 }
             }
+        }
+        
+        /// Checks if a typing bubble is already displayed on screen.
+        /// - returns: `true` if a SBUTypingIndicatorMessageCell was not previoulsy being displayed on screen, `false` if a SBUTypingIndicatorMessageCell was already being displayed.
+        /// - Since: 3.12.0
+        func decideToRedrawTypingBubble() -> Bool {
+            for cell in tableView.visibleCells {
+                if cell is SBUTypingIndicatorMessageCell {
+                    return false
+                }
+            }
+            return true
         }
         
         // MARK: - Menu

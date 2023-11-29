@@ -25,6 +25,10 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         return userNameView
     }()
     
+    /// - Since: 3.12.0
+    public lazy var profilesStackView: SBUStackView = {
+        return SBUStackView(axis: .horizontal, alignment: .fill, spacing: -6)
+    }()
     public lazy var profileView: UIView = SBUMessageProfileView()
     public lazy var stateView: UIView = SBUMessageStateView()
     
@@ -158,13 +162,14 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         
         self.userNameView.isHidden = true
         self.profileView.isHidden = true
+        self.profilesStackView.isHidden = true
         self.quotedMessageView?.isHidden = true
         self.threadHStackView.isHidden = true
         
         // + --------------------------------------------------------------+
         // | userNameView                                                  |
         // + ------------------+-----------------------+-------------------+
-        // | profileView       | profileContentSpacing | quotedMessageView |
+        // | profilesStackView | profileContentSpacing | quotedMessageView |
         // |                   |                       +-------------------+
         // |                   |                       | messageHStackView |
         // + ------------------+-----------------------+-------------------+
@@ -174,7 +179,9 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         self.userNameStackView.setVStack([
             self.userNameView,
             self.contentHStackView.setHStack([
-                self.profileView,
+                self.profilesStackView.setHStack([
+                    profileView
+                ]),
                 self.profileContentSpacing,
                 self.contentVStackView.setVStack([
                     self.quotedMessageView,
@@ -312,6 +319,7 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         
         // MARK: Set up SBU message profile view
         self.profileView.isHidden = self.position == .right
+        self.profilesStackView.isHidden = self.position == .right
         
         let usingProfileView = !(
             SBUGlobals.isMessageGroupingEnabled &&
@@ -319,10 +327,7 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         )
         
         if configuration.messagePosition != .right {
-            if let profileView = self.profileView as? SBUMessageProfileView {
-                let urlString = message.sender?.profileURL ?? ""
-                profileView.configure(urlString: urlString)
-            }
+            self.configureMessageProfileViews(message: message)
         }
         
         // MARK: Set up SBU message state view
@@ -469,6 +474,7 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         if self.position == .right {
             self.userNameView.isHidden = true
             self.profileView.isHidden = true
+            self.profilesStackView.isHidden = true
         }
         
         self.updateContentsPosition()
@@ -507,7 +513,7 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
                     self.messageHStackView
                 ])
                 self.contentHStackView.setHStack([
-                    self.profileView,
+                    self.profilesStackView,
                     self.profileContentSpacing,
                     self.contentVStackView
                 ])
@@ -552,6 +558,60 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
     public override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
         self.mainContainerView.isSelected = selected
+    }
+    
+    /// Configures message profile views for different message types.
+    /// - Since: 3.12.0
+    public func configureMessageProfileViews(message: BaseMessage) {
+        // Set profileViews for TypingIndicatorMessage.
+        if let message = message as? SBUTypingIndicatorMessage,
+           let typingInfo = message.typingIndicatorInfo {
+            self.configureTyperProfileViews(typingInfo: typingInfo)
+        } 
+        
+        // Set profileView for other message types.
+        else {
+            self.configureUserProfileView(message: message)
+        }
+    }
+    
+    /// Configures profile views for typers.
+    /// - Note: Override this method to customize typer profile views.
+    /// - Since: 3.12.0
+    open func configureTyperProfileViews(typingInfo: SBUTypingIndicatorInfo) {
+        var profileViews = [SBUMessageProfileView]()
+        
+        for user in typingInfo.typers {
+            let profileView = SBUMessageProfileView()
+            profileView.theme = theme
+            profileView.setupStyles()
+            profileView.configure(urlString: user.profileURL ?? "", imageSize: 30)
+            profileView.configureTyperProfileImageView()
+            profileViews.append(profileView)
+        }
+        
+        if SBUConstant.maxNumberOfProfileImages < typingInfo.numberOfTypers {
+            let profileView = SBUMessageProfileView()
+            profileView.theme = theme
+            profileView.setupStyles()
+            
+            profileView.configure(urlString: "", imageSize: 30)
+            profileView.configureNumberLabel(typingInfo.numberOfTypers)
+            
+            profileViews.append(profileView)
+        }
+        
+        profilesStackView.setHStack(profileViews)
+    }
+    
+    /// Configure profile views for the user who sent the message.
+    /// Override this method to customize user profile views.
+    /// - Since: 3.12.0
+    open func configureUserProfileView(message: BaseMessage) {
+        if let profileView = self.profileView as? SBUMessageProfileView {
+            let urlString = message.sender?.profileURL ?? ""
+            profileView.configure(urlString: urlString)
+        }
     }
         
     // MARK: - Action
