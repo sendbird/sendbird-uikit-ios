@@ -449,7 +449,19 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
             newNotificationInfoView.updateCount(count: self.newNotificationsCount) { [weak self] in
                 guard let self = self else { return }
                 guard let listComponent = self.listComponent else { return }
-                self.feedNotificationChannelModuleDidTapScrollToButton(listComponent, animated: true)
+                
+                let position = SBUGlobals.scrollPostionConfiguration.feedChannel.scrollToNewMessage
+                let options = SBUScrollOptions(
+                    count: self.newNotificationsCount,
+                    position: position,
+                    isInverted: listComponent.tableView.isInverted
+                )
+                
+                self.feedNotificationChannelModule(
+                    listComponent,
+                    didSelectScrollToBottonWithOptions: options,
+                    animated: true
+                )
             }
         }
         
@@ -711,6 +723,22 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
         _ listComponent: SBUFeedNotificationChannelModule.List,
         animated: Bool
     ) {
+        let options = SBUScrollOptions(
+            position: .bottom,
+            isInverted: listComponent.tableView.isInverted
+        )
+        self.feedNotificationChannelModule(
+            listComponent,
+            didSelectScrollToBottonWithOptions: options,
+            animated: animated
+        )
+    }
+    
+    func feedNotificationChannelModule(
+        _ listComponent: SBUFeedNotificationChannelModule.List,
+        didSelectScrollToBottonWithOptions options: SBUScrollOptions,
+        animated: Bool
+    ) {
         guard self.viewModel?.notifications.isEmpty == false else { return }
         self.newNotificationsCount = 0
         
@@ -727,8 +755,11 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
                 self.viewModel?.reloadNotificationList()
                 self.listComponent?.scrollTableView(to: 0)
             } else {
-                let indexPath = IndexPath(row: 0, section: 0)
-                self.listComponent?.scrollTableView(to: indexPath.row, animated: animated)
+                self.listComponent?.scrollTableView(
+                    to: options.row(),
+                    at: options.at(),
+                    animated: animated
+                )
                 self.updateNewNotificationInfo(hidden: true)
             }
         }

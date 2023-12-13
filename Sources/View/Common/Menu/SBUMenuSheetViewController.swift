@@ -124,6 +124,8 @@ public class SBUMenuSheetViewController: SBUBaseViewController, UITableViewDeleg
                 bottom: 0
             )
         }
+        
+        self.tableView.layoutIfNeeded()
     }
     
     public override func updateLayouts() {

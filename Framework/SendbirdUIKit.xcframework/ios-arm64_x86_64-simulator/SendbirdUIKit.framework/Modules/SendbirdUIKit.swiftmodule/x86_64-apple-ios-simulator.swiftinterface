@@ -101,6 +101,7 @@ public protocol SBUBaseChannelModuleListDelegate : SendbirdUIKit.SBUCommonDelega
   func baseChannelModule(_ listComponent: SendbirdUIKit.SBUBaseChannelModule.List, didTapVoiceMessage fileMessage: SendbirdChatSDK.FileMessage, cell: UIKit.UITableViewCell, forRowAt indexPath: Foundation.IndexPath)
   func baseChannelModule(_ listComponent: SendbirdUIKit.SBUBaseChannelModule.List, didScroll scrollView: UIKit.UIScrollView)
   func baseChannelModuleDidTapScrollToButton(_ listComponent: SendbirdUIKit.SBUBaseChannelModule.List, animated: Swift.Bool)
+  func baseChannelModule(_ listComponent: SendbirdUIKit.SBUBaseChannelModule.List, didSelectScrollToBottonWithOptions options: SendbirdUIKit.SBUScrollOptions, animated: Swift.Bool)
   func baseChannelModuleDidSelectRetry(_ listComponent: SendbirdUIKit.SBUBaseChannelModule.List)
   func baseChannelModule(_ listComponent: SendbirdUIKit.SBUBaseChannelModule.List, didTapRetryFailedMessage failedMessage: SendbirdChatSDK.BaseMessage)
   func baseChannelModule(_ listComponent: SendbirdUIKit.SBUBaseChannelModule.List, didTapDeleteFailedMessage failedMessage: SendbirdChatSDK.BaseMessage)
@@ -112,6 +113,8 @@ public protocol SBUBaseChannelModuleListDelegate : SendbirdUIKit.SBUCommonDelega
   func baseChannelModule(_ listComponent: SendbirdUIKit.SBUBaseChannelModule.List, didReactToMessage message: SendbirdChatSDK.BaseMessage, withEmoji key: Swift.String, selected: Swift.Bool)
   func baseChannelModule(_ listComponent: SendbirdUIKit.SBUBaseChannelModule.List, didTapMoreEmojisOnMessage message: SendbirdChatSDK.BaseMessage)
   func baseChannelModule(_ listComponent: SendbirdUIKit.SBUBaseChannelModule.List, didDismissMenuForCell cell: UIKit.UITableViewCell)
+  func baseChannelModule(_ listComponent: SendbirdUIKit.SBUBaseChannelModule.List, didFailScrollToMessageId messageId: Swift.Int64, needToSearch: Swift.Bool)
+  func baseChannelModule(_ listComponent: SendbirdUIKit.SBUBaseChannelModule.List, didFailScrollToMessage message: SendbirdChatSDK.BaseMessage, needToSearch: Swift.Bool)
 }
 public protocol SBUBaseChannelModuleListDataSource : AnyObject {
   func baseChannelModule(_ listComponent: SendbirdUIKit.SBUBaseChannelModule.List, channelForTableView tableView: UIKit.UITableView) -> SendbirdChatSDK.BaseChannel?
@@ -195,8 +198,10 @@ extension SendbirdUIKit.SBUBaseChannelModule.List {
   @objc @_Concurrency.MainActor(unsafe) dynamic public var isScrollNearByBottom: Swift.Bool {
     @objc get
   }
-  @objc @discardableResult
-  @_Concurrency.MainActor(unsafe) dynamic public func scrollToMessage(id messageId: Swift.Int64, enablesScrollAnimation scrollAnimated: Swift.Bool = false, enablesMessageAnimation messageAnimated: Swift.Bool = false) -> Swift.Bool
+  @discardableResult
+  @_Concurrency.MainActor(unsafe) public func scrollToMessage(id messageId: Swift.Int64, enablesScrollAnimation scrollAnimated: Swift.Bool = false, enablesMessageAnimation messageAnimated: Swift.Bool = false, position: SendbirdUIKit.SBUScrollPosition = .middle, needToSearch: Swift.Bool = true) -> Swift.Bool
+  @discardableResult
+  @_Concurrency.MainActor(unsafe) public func scrollToMessage(message: SendbirdChatSDK.BaseMessage, enablesScrollAnimation scrollAnimated: Swift.Bool = false, enablesMessageAnimation messageAnimated: Swift.Bool = false, position: SendbirdUIKit.SBUScrollPosition = .middle, needToSearch: Swift.Bool = true) -> Swift.Bool
   @objc @_Concurrency.MainActor(unsafe) dynamic public func checkSameDayAsNextMessage(currentIndex: Swift.Int, fullMessageList: [SendbirdChatSDK.BaseMessage]) -> Swift.Bool
   @objc @_Concurrency.MainActor(unsafe) dynamic public func checkSameDayAsPrevMessage(currentIndex: Swift.Int, fullMessageList: [SendbirdChatSDK.BaseMessage]) -> Swift.Bool
 }
@@ -211,6 +216,19 @@ extension SendbirdUIKit.SBUConfig {
     public func encode(to encoder: Swift.Encoder) throws
     required public init(from decoder: Swift.Decoder) throws
   }
+}
+@_hasMissingDesignatedInitializers public class SBUScrollPostionConfiguration {
+  public var groupChannel: SendbirdUIKit.SBUScrollPostionConfiguration.BaseChannel
+  public var openChannel: SendbirdUIKit.SBUScrollPostionConfiguration.BaseChannel
+  public var feedChannel: SendbirdUIKit.SBUScrollPostionConfiguration.BaseChannel
+  @_hasMissingDesignatedInitializers public class BaseChannel {
+    public var scrollToBottom: SendbirdUIKit.SBUScrollPosition
+    public var scrollToNewMessage: SendbirdUIKit.SBUScrollPosition
+    public var scrollToInitial: SendbirdUIKit.SBUScrollPosition
+    public var scrollToInitialWithStartingPoint: SendbirdUIKit.SBUScrollPosition
+    @objc deinit
+  }
+  @objc deinit
 }
 @objc @_inheritsConvenienceInitializers @IBDesignable @_Concurrency.MainActor(unsafe) open class SBUBaseMessageCell : SendbirdUIKit.SBUTableViewCell, SendbirdUIKit.SBUMessageCellProtocol {
   @objc @_Concurrency.MainActor(unsafe) public var message: SendbirdChatSDK.BaseMessage?
@@ -273,6 +291,12 @@ public protocol SBUCommonDelegate : AnyObject {
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init(style: UIKit.UITableViewCell.CellStyle, reuseIdentifier: Swift.String?)
   @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
   @objc deinit
+}
+public struct SBUScrollOptions {
+  public let count: Swift.Int?
+  public let position: SendbirdUIKit.SBUScrollPosition
+  public let isInverted: Swift.Bool
+  public init(count: Swift.Int? = nil, position: SendbirdUIKit.SBUScrollPosition, isInverted: Swift.Bool)
 }
 @objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUParentMessageInfoReactionView : SendbirdUIKit.SBUMessageReactionView {
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupStyles()
@@ -3159,6 +3183,7 @@ public protocol SBUMessageCellProtocol {
   @_Concurrency.MainActor(unsafe) open func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, didUpdate answer: SendbirdUIKit.SBUForm.Answer, messageCell: SendbirdUIKit.SBUBaseMessageCell)
   @_Concurrency.MainActor(unsafe) @objc override open func baseChannelModule(_ listComponent: SendbirdUIKit.SBUBaseChannelModule.List, didTapVoiceMessage fileMessage: SendbirdChatSDK.FileMessage, cell: UIKit.UITableViewCell, forRowAt indexPath: Foundation.IndexPath)
   @_Concurrency.MainActor(unsafe) @objc override open func baseChannelModuleDidTapScrollToButton(_ listComponent: SendbirdUIKit.SBUBaseChannelModule.List, animated: Swift.Bool)
+  @_Concurrency.MainActor(unsafe) override open func baseChannelModule(_ listComponent: SendbirdUIKit.SBUBaseChannelModule.List, didSelectScrollToBottonWithOptions options: SendbirdUIKit.SBUScrollOptions, animated: Swift.Bool)
   @_Concurrency.MainActor(unsafe) @objc override open func baseChannelModule(_ listComponent: SendbirdUIKit.SBUBaseChannelModule.List, didScroll scrollView: UIKit.UIScrollView)
   @_Concurrency.MainActor(unsafe) open func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, highlightInfoInTableView tableView: UIKit.UITableView) -> SendbirdUIKit.SBUHighlightMessageInfo?
   @_Concurrency.MainActor(unsafe) open func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, answersFor messageId: Swift.Int64?) -> [SendbirdUIKit.SBUForm.Answer]?
@@ -5181,6 +5206,16 @@ public enum SBUTypingIndicatorType {
     get
   }
 }
+public enum SBUScrollPosition {
+  case bottom
+  case middle
+  case top
+  public static func == (a: SendbirdUIKit.SBUScrollPosition, b: SendbirdUIKit.SBUScrollPosition) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
 public protocol SBUParentMessageInfoViewDelegate : AnyObject {
   func parentMessageInfoViewBoundsWillChanged(_ view: SendbirdUIKit.SBUParentMessageInfoView)
   func parentMessageInfoViewBoundsDidChanged(_ view: SendbirdUIKit.SBUParentMessageInfoView)
@@ -6708,7 +6743,8 @@ extension SendbirdUIKit.SBUMessageSearchViewController {
   @objc @_Concurrency.MainActor(unsafe) open func showChannelSettings()
   @_Concurrency.MainActor(unsafe) open func showMessageThread(channelURL: Swift.String, parentMessageId: Swift.Int64, parentMessageCreatedAt: Swift.Int64? = 0, startingPoint: Swift.Int64? = 0)
   @objc @_Concurrency.MainActor(unsafe) open func showEmojiListModal(message: SendbirdChatSDK.BaseMessage)
-  @objc @_Concurrency.MainActor(unsafe) public func scrollToMessage(id messageId: Swift.Int64, enablesScrollAnimation: Swift.Bool = false, enablesMessageAnimation: Swift.Bool = false)
+  @_Concurrency.MainActor(unsafe) public func scrollToMessage(id messageId: Swift.Int64, enablesScrollAnimation: Swift.Bool = false, enablesMessageAnimation: Swift.Bool = false, position: SendbirdUIKit.SBUScrollPosition = .middle, needToSearch: Swift.Bool = true)
+  @_Concurrency.MainActor(unsafe) public func scrollToMessage(message: SendbirdChatSDK.BaseMessage, enablesScrollAnimation: Swift.Bool = false, enablesMessageAnimation: Swift.Bool = false, position: SendbirdUIKit.SBUScrollPosition = .middle, needToSearch: Swift.Bool = true)
   @objc @_Concurrency.MainActor(unsafe) public func updateNewMessageInfo(hidden: Swift.Bool)
   @_Concurrency.MainActor(unsafe) open func openFile(_ fileData: SendbirdUIKit.SBUFileData)
   @objc @_Concurrency.MainActor(unsafe) open func openFile(fileMessage: SendbirdChatSDK.FileMessage)
@@ -6745,12 +6781,15 @@ extension SendbirdUIKit.SBUMessageSearchViewController {
   @objc @_Concurrency.MainActor(unsafe) open func baseChannelModule(_ listComponent: SendbirdUIKit.SBUBaseChannelModule.List, didTapReplyMessage message: SendbirdChatSDK.BaseMessage)
   @objc @_Concurrency.MainActor(unsafe) open func baseChannelModule(_ listComponent: SendbirdUIKit.SBUBaseChannelModule.List, didDismissMenuForCell cell: UIKit.UITableViewCell)
   @objc @_Concurrency.MainActor(unsafe) open func baseChannelModule(_ listComponent: SendbirdUIKit.SBUBaseChannelModule.List, didTapMoreEmojisOnMessage message: SendbirdChatSDK.BaseMessage)
+  @objc @_Concurrency.MainActor(unsafe) open func baseChannelModule(_ listComponent: SendbirdUIKit.SBUBaseChannelModule.List, didFailScrollToMessageId messageId: Swift.Int64, needToSearch: Swift.Bool)
+  @objc @_Concurrency.MainActor(unsafe) open func baseChannelModule(_ listComponent: SendbirdUIKit.SBUBaseChannelModule.List, didFailScrollToMessage message: SendbirdChatSDK.BaseMessage, needToSearch: Swift.Bool)
   @objc @_Concurrency.MainActor(unsafe) open func baseChannelModule(_ listComponent: SendbirdUIKit.SBUBaseChannelModule.List, didReactToMessage message: SendbirdChatSDK.BaseMessage, withEmoji key: Swift.String, selected: Swift.Bool)
   @objc @_Concurrency.MainActor(unsafe) open func baseChannelModule(_ listComponent: SendbirdUIKit.SBUBaseChannelModule.List, didTapRetryFailedMessage failedMessage: SendbirdChatSDK.BaseMessage)
   @objc @_Concurrency.MainActor(unsafe) open func baseChannelModule(_ listComponent: SendbirdUIKit.SBUBaseChannelModule.List, didTapDeleteFailedMessage failedMessage: SendbirdChatSDK.BaseMessage)
   @objc @_Concurrency.MainActor(unsafe) open func baseChannelModule(_ listComponent: SendbirdUIKit.SBUBaseChannelModule.List, didTapUserProfile user: SendbirdUIKit.SBUUser)
   @objc @_Concurrency.MainActor(unsafe) open func baseChannelModule(_ listComponent: SendbirdUIKit.SBUBaseChannelModule.List, didScroll scrollView: UIKit.UIScrollView)
   @objc @_Concurrency.MainActor(unsafe) open func baseChannelModuleDidTapScrollToButton(_ listComponent: SendbirdUIKit.SBUBaseChannelModule.List, animated: Swift.Bool)
+  @_Concurrency.MainActor(unsafe) open func baseChannelModule(_ listComponent: SendbirdUIKit.SBUBaseChannelModule.List, didSelectScrollToBottonWithOptions options: SendbirdUIKit.SBUScrollOptions, animated: Swift.Bool)
   @objc @_Concurrency.MainActor(unsafe) open func baseChannelModuleDidSelectRetry(_ listComponent: SendbirdUIKit.SBUBaseChannelModule.List)
   @objc @_Concurrency.MainActor(unsafe) open func baseChannelModule(_ listComponent: SendbirdUIKit.SBUBaseChannelModule.List, channelForTableView tableView: UIKit.UITableView) -> SendbirdChatSDK.BaseChannel?
   @objc @_Concurrency.MainActor(unsafe) open func baseChannelModule(_ listComponent: SendbirdUIKit.SBUBaseChannelModule.List, sentMessagesInTableView tableView: UIKit.UITableView) -> [SendbirdChatSDK.BaseMessage]
@@ -8704,6 +8743,7 @@ public class SBUMention : Swift.Equatable {
   public static var isAVPlayerAlwaysEnabled: Swift.Bool
   public static var isTintColorEnabledForCustomizedIcon: Swift.Bool
   public static var isCustomizedIconResizable: Swift.Bool
+  public static var scrollPostionConfiguration: SendbirdUIKit.SBUScrollPostionConfiguration
   @objc deinit
 }
 public protocol SBUOpenChannelListModuleListDelegate : SendbirdUIKit.SBUBaseChannelListModuleListDelegate {
@@ -11208,6 +11248,8 @@ extension SendbirdUIKit.LogType : Swift.Hashable {}
 extension SendbirdUIKit.LogType : Swift.RawRepresentable {}
 extension SendbirdUIKit.SBUTypingIndicatorType : Swift.Equatable {}
 extension SendbirdUIKit.SBUTypingIndicatorType : Swift.Hashable {}
+extension SendbirdUIKit.SBUScrollPosition : Swift.Equatable {}
+extension SendbirdUIKit.SBUScrollPosition : Swift.Hashable {}
 @available(*, deprecated, renamed: "UserListType")
 extension SendbirdUIKit.MemberListType : Swift.Equatable {}
 @available(*, deprecated, renamed: "UserListType")

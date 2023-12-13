@@ -824,22 +824,24 @@ extension SBUMessageThreadModule.List {
     /// Scrolls tableview to initial position.
     /// If starting point is set, scroll to the starting point at `.middle`.
     override func scrollToInitialPosition() {
-        if let startingPoint = self.baseDataSource?.baseChannelModule(self, startingPointIn: self.tableView) {
-            if startingPoint != 0 {
-                if let index = fullMessageList.firstIndex(where: { $0.createdAt >= startingPoint }) {
-                    // from quotedMessage
-                    self.scrollTableView(to: index, at: .middle)
-                } else {
-                    // from select reply thread on parent message menu
-                    self.scrollTableView(to: fullMessageList.count - 1, at: .bottom)
-                }
-            } else {
-                // from threadInfo
-                self.scrollTableView(to: 0)
-            }
-        } else {
+        guard let startingPoint = self.baseDataSource?.baseChannelModule(self, startingPointIn: self.tableView) else {
             // from send message
             self.scrollTableView(to: self.fullMessageList.count - 1)
+            return
+        }
+        
+        guard startingPoint != 0 else {
+            // from threadInfo
+            self.scrollTableView(to: 0)
+            return
+        }
+        
+        if let index = fullMessageList.firstIndex(where: { $0.createdAt >= startingPoint }) {
+            // from quotedMessage
+            self.scrollTableView(to: index, at: .middle)
+        } else {
+            // from select reply thread on parent message menu
+            self.scrollTableView(to: fullMessageList.count - 1, at: .bottom)
         }
     }
 }

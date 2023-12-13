@@ -94,6 +94,13 @@ class CustomBaseViewController: UITableViewController {
                 naviVC: navigationController,
                 type: MemberListCustomType(rawValue: row)
             )
+        case .AdditionalFeatures:
+            
+            AdditionalFeaturesManager.shared.startSample(
+                naviVC: navigationController,
+                type: AdditionalFeaturesType(rawValue: row)
+            )
+            
         default:
             break
         }

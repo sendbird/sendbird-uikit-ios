@@ -335,3 +335,41 @@ public enum SBUTypingIndicatorType {
     /// Animated bubble type typing indicator shown in ``SBUTypingIndicatorMessageCell``.
     case bubble
 }
+
+/// Enum representing the scroll position.
+/// - Since: 3.13.0
+public enum SBUScrollPosition {
+    case bottom
+    case middle
+    case top
+    
+    var convert: UITableView.ScrollPosition {
+        switch self {
+        case .top: return .top
+        case .middle: return .middle
+        case .bottom: return .bottom
+        }
+    }
+
+    var invert: UITableView.ScrollPosition {
+        switch self {
+        case .top: return .bottom
+        case .middle: return .middle
+        case .bottom: return .top
+        }
+    }
+    
+    func transform(with tableView: UITableView) -> UITableView.ScrollPosition {
+        tableView.isInverted ? self.invert : self.convert
+    }
+    
+    func transform(isInverted: Bool) -> UITableView.ScrollPosition {
+        isInverted ? self.invert : self.convert
+    }
+}
+
+extension UITableView {
+    var isInverted: Bool {
+        self.transform == CGAffineTransform(scaleX: 1, y: -1)
+    }
+}

@@ -42,7 +42,7 @@ extension BaseMessage {
     public var asSuggestedReplies: [String]? { self.asExtendedMessagePayload?.suggestedReplies }
 
     /// List of form data.
-    /// - Since: 3.11.0asCustomView
+    /// - Since: 3.11.0
     public var asForms: [SBUForm]? { self.asExtendedMessagePayload?.forms }
 
     /// json string data.

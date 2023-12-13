@@ -415,24 +415,50 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     
     /// Scrolls to the message that is found by `id`. When it scrolls successfully, ``SBUBaseChannelModuleListDelegate/baseChannelModule(_:didScroll:)`` delegate method is called.
     /// - Parameters:
-    ///    - id: The identifier of the message that is wanted to find
+    ///    - messageId: The identifier of the message that is wanted to find
     ///    - enablesScrollAnimation: The boolean value whether scrolls to the message with animation or not. If `false`, it *jumps* to the message.
     ///    - enablesMessageAnimation: The boolean value whether animate the message after the scrolling. If `true`, the message is shaked up and down.
+    ///    - position: Scroll position value.
+    ///    - needToSearch: If `true`, reloads the collection based on the message information if not found by message ID.
     /// - SeeAlso: ``SBUBaseChannelModule/List/scrollToMessage(id:enablesScrollAnimation:enablesMessageAnimation:)``
     public func scrollToMessage(
         id messageId: Int64,
         enablesScrollAnimation: Bool = false,
-        enablesMessageAnimation: Bool = false
+        enablesMessageAnimation: Bool = false,
+        position: SBUScrollPosition = .middle,
+        needToSearch: Bool = true
     ) {
-        let isScrolled = self.baseListComponent?.scrollToMessage(
+        self.baseListComponent?.scrollToMessage(
             id: messageId,
             enablesScrollAnimation: enablesScrollAnimation,
-            enablesMessageAnimation: enablesMessageAnimation
+            enablesMessageAnimation: enablesMessageAnimation,
+            position: position,
+            needToSearch: needToSearch
         )
-        
-        if let isScrolled = isScrolled, !isScrolled {
-            self.errorHandler("Couldn't find the message with id: \(messageId)")
-        }
+    }
+    
+    /// Scrolls to the message that is found by id of `message`. When it scrolls successfully, ``SBUBaseChannelModuleListDelegate/baseChannelModule(_:didScroll:)`` delegate method is called.
+    /// - Parameters:
+    ///    - message: The message that is wanted to find
+    ///    - enablesScrollAnimation: The boolean value whether scrolls to the message with animation or not. If `false`, it *jumps* to the message.
+    ///    - enablesMessageAnimation: The boolean value whether animate the message after the scrolling. If `true`, the message is shaked up and down.
+    ///    - position: Scroll position value.
+    ///    - needToSearch: If `true`, reloads the collection based on the message information if not found by message ID.
+    /// - SeeAlso: ``SBUBaseChannelModule/List/scrollToMessage(id:enablesScrollAnimation:enablesMessageAnimation:)``
+    public func scrollToMessage(
+        message: BaseMessage,
+        enablesScrollAnimation: Bool = false,
+        enablesMessageAnimation: Bool = false,
+        position: SBUScrollPosition = .middle,
+        needToSearch: Bool = true
+    ) {
+        self.baseListComponent?.scrollToMessage(
+            message: message,
+            enablesScrollAnimation: enablesScrollAnimation,
+            enablesMessageAnimation: enablesMessageAnimation,
+            position: position,
+            needToSearch: needToSearch
+        )
     }
     
     // MARK: - New message info
@@ -882,6 +908,42 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         }
     }
     
+    open func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didFailScrollToMessageId messageId: Int64, needToSearch: Bool) {
+        guard needToSearch == true else {
+            self.errorHandler("Couldn't find the message with id: \(messageId)")
+            return
+        }
+        
+        self.baseViewModel?.channel?.getMessagesByMessageId(
+            messageId,
+            params: MessageListParams(previousResultSize: 1, nextResultSize: 1),
+            completionHandler: { [weak self] messages, _ in
+                guard let self = self, let message = messages?.first(where: { $0.messageId == messageId }) else {
+                    self?.errorHandler("Couldn't find the message with id: \(messageId)")
+                    return
+                }
+                
+                self.baseViewModel?.loadInitialMessages(
+                    startingPoint: message.createdAt,
+                    showIndicator: true,
+                    initialMessages: self.baseViewModel?.fullMessageList
+                )
+            })
+    }
+    
+    open func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didFailScrollToMessage message: BaseMessage, needToSearch: Bool) {
+        guard needToSearch == true else {
+            self.errorHandler("Couldn't find the message with id: \(message.messageId)")
+            return
+        }
+        
+        baseViewModel?.loadInitialMessages(
+            startingPoint: message.createdAt,
+            showIndicator: true,
+            initialMessages: self.baseViewModel?.fullMessageList
+        )
+    }
+    
     open func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didReactToMessage message: BaseMessage, withEmoji key: String, selected: Bool) {
         self.baseViewModel?.setReaction(
             message: message,
@@ -907,6 +969,22 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     }
     
     open func baseChannelModuleDidTapScrollToButton(_ listComponent: SBUBaseChannelModule.List, animated: Bool) {
+        let options = SBUScrollOptions(
+            position: .bottom,
+            isInverted: listComponent.tableView.isInverted
+        )
+        self.baseChannelModule(
+            listComponent,
+            didSelectScrollToBottonWithOptions: options,
+            animated: true
+        )
+    }
+
+    open func baseChannelModule(
+        _ listComponent: SBUBaseChannelModule.List,
+        didSelectScrollToBottonWithOptions options: SBUScrollOptions,
+        animated: Bool
+    ) {
         guard self.baseViewModel?.fullMessageList.isEmpty == false else { return }
         self.lastSeenIndexPath = nil
         
@@ -918,24 +996,29 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
                 self.setMessageInputViewMode(.none)
             }
             
-            if self.baseViewModel?.hasNext() ?? false {
+            if self.baseViewModel?.hasNext() == true {
                 listComponent.tableView.setContentOffset(listComponent.tableView.contentOffset, animated: false)
                 self.baseViewModel?.reloadMessageList()
                 self.baseListComponent?.scrollTableView(to: 0)
-            } else {
-                var indexPath = IndexPath(row: 0, section: 0)
-                
-                if !self.isTransformedList,
-                    let fullMessageCount = self.baseViewModel?.fullMessageList.count {
-                    indexPath = IndexPath(item: fullMessageCount - 1, section: 0)
-                    
-                    self.baseViewModel?.reloadMessageList()
-                }
-                
-                self.baseListComponent?.scrollTableView(to: indexPath.row, animated: animated)
-                self.updateNewMessageInfo(hidden: true)
-                self.baseListComponent?.setScrollBottomView(hidden: true)
+                return
             }
+            
+            var indexPath = IndexPath(row: 0, section: 0)
+            
+            if self.isTransformedList == false,
+               let fullMessageCount = self.baseViewModel?.fullMessageList.count {
+                indexPath = IndexPath(item: fullMessageCount - 1, section: 0)
+                
+                self.baseViewModel?.reloadMessageList()
+            }
+            
+            self.baseListComponent?.scrollTableView(
+                to: options.row(with: indexPath),
+                at: options.at(),
+                animated: animated
+            )
+            self.updateNewMessageInfo(hidden: true)
+            self.baseListComponent?.setScrollBottomView(hidden: true)
         }
     }
     

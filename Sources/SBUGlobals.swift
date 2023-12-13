@@ -166,4 +166,14 @@ public class SBUGlobals {
     /// ```
     /// - Since: 3.5.2
     public static var isCustomizedIconResizable: Bool = true
+    
+    /// The configuration for scroll position.
+    ///
+    /// See the example below for configuration setting.
+    /// ```swift
+    /// SBUGlobals.scrollPostionConfiguration.groupChannel.scrollToBottom = .top
+    /// SBUGlobals.scrollPostionConfiguration.groupChannel.scrollToNewMessage = .top
+    /// ```
+    /// - Since: 3.13.0
+    public static var scrollPostionConfiguration = SBUScrollPostionConfiguration()
 }
