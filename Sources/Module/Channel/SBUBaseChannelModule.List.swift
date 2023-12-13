@@ -87,6 +87,18 @@ public protocol SBUBaseChannelModuleListDelegate: SBUCommonDelegate {
         animated: Bool
     )
     
+    /// Called when the `scrollBottomView`was tapped in the `listComponent`.
+    /// - Parameters:
+    ///    - listComponent: `SBUBaseChannelModule.List` object.
+    ///    - options: options for scroll position. see also  ``SBUScrollOptions``.
+    ///    - animated: if it's `true`, the list component will be scrolled while animating
+    /// - Since: 3.13.0
+    func baseChannelModule(
+        _ listComponent: SBUBaseChannelModule.List,
+        didSelectScrollToBottonWithOptions options: SBUScrollOptions,
+        animated: Bool
+    )
+    
     /// Called when the retry button was selected from the `listComponent`.
     /// - Parameter listComponent: `SBUBaseChannelModule.List` object.
     func baseChannelModuleDidSelectRetry(_ listComponent: SBUBaseChannelModule.List)
@@ -165,6 +177,22 @@ public protocol SBUBaseChannelModuleListDelegate: SBUCommonDelegate {
         _ listComponent: SBUBaseChannelModule.List,
         didDismissMenuForCell cell: UITableViewCell
     )
+
+    /// Called when failed scroll to `message` in the `listComponent`.
+    /// - Parameters:
+    ///    - listComponent: A ``SBUBaseChannelModule/List`` object.
+    ///    - messageId: The message id for which scrolling was attempted.
+    ///    - needToSearch: If `true`, reloads the collection based on the message information if not found by message ID.
+    /// - Since: 3.13.0
+    func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didFailScrollToMessageId messageId: Int64, needToSearch: Bool)
+    
+    /// Called when failed scroll to `message` in the `listComponent`.
+    /// - Parameters:
+    ///    - listComponent: A ``SBUBaseChannelModule/List`` object.
+    ///    - message: The message for which scrolling was attempted
+    ///    - needToSearch: If `true`, reloads the collection based on the message information if not found by message ID.
+    /// - Since: 3.13.0
+    func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didFailScrollToMessage message: BaseMessage, needToSearch: Bool)
 }
 
 extension SBUBaseChannelModuleListDelegate {
@@ -867,7 +895,13 @@ extension SBUBaseChannelModule {
         
         /// Moves scroll to bottom.
         open func onTapScrollToBottom() {
-            self.baseDelegate?.baseChannelModuleDidTapScrollToButton(self, animated: false)
+            let position = SBUScrollPostionConfiguration.getConfiguration(with: self.baseChannel).scrollToBottom
+            let options = SBUScrollOptions(position: position, isInverted: self.tableView.isInverted)
+            self.baseDelegate?.baseChannelModule(
+                self,
+                didSelectScrollToBottonWithOptions: options,
+                animated: false
+            )
         }
         
         // MARK: - UITableViewDelegate, UITableViewDataSource
@@ -1135,52 +1169,105 @@ extension SBUBaseChannelModule.List {
     /// Scrolls tableview to initial position.
     /// If starting point is set, scroll to the starting point at `.middle`.
     func scrollToInitialPosition() {
-        if let startingPoint = self.baseDataSource?.baseChannelModule(self, startingPointIn: self.tableView) {
-            if let index = fullMessageList.firstIndex(where: { $0.createdAt <= startingPoint }) {
-                self.scrollTableView(to: index, at: .middle)
-            } else {
-                self.scrollTableView(to: fullMessageList.count - 1, at: .top)
-            }
+        let config = SBUScrollPostionConfiguration.getConfiguration(with: self.baseChannel)
+        
+        guard let startingPoint = self.baseDataSource?.baseChannelModule(self, startingPointIn: self.tableView) else {
+            self.scrollTableView(to: 0, at: config.scrollToInitial.transform(with: self.tableView))
+            return
+        }
+
+        if let index = fullMessageList.firstIndex(where: { $0.createdAt <= startingPoint }) {
+            self.scrollTableView(to: index, at: config.scrollToInitialWithStartingPoint.transform(with: self.tableView))
         } else {
-            self.scrollTableView(to: 0)
+            self.scrollTableView(to: fullMessageList.count - 1, at: config.scrollToInitial.transform(with: self.tableView))
         }
     }
     
     /// Scrolls to the message that is found by `id`.
     /// - Parameters:
-    ///    -  id: The identifier of the message that is wanted to find
+    ///    - messageId: The identifier of the message that is wanted to find
     ///    - enablesScrollAnimation: The boolean value whether scrolls to the message with animation or not. If `false`, it *jumps* to the message.
     ///    - enablesMessageAnimation: The boolean value whether animate the message after the scrolling. If `true`, the message is shaked up and down.
+    ///    - position: Scroll position value.
+    ///    - needToSearch: If `true`, reloads the collection based on the message information if not found by message ID.
     /// - Returns: `false` when it couldn't find message with `id`. If it returns `true`, ``SBUBaseChannelModuleListDelegate/baseChannelModule(_:didScroll:)`` is called.
     @discardableResult
     public func scrollToMessage(
         id messageId: Int64,
         enablesScrollAnimation scrollAnimated: Bool = false,
-        enablesMessageAnimation messageAnimated: Bool = false
+        enablesMessageAnimation messageAnimated: Bool = false,
+        position: SBUScrollPosition = .middle,
+        needToSearch: Bool = true
     ) -> Bool {
         guard let row = self.fullMessageList.firstIndex(
             where: { $0.messageId == messageId }
         ) else {
             SBULog.error("Couldn't find message with ID: \(messageId)")
+            self.baseDelegate?.baseChannelModule(self, didFailScrollToMessageId: messageId, needToSearch: needToSearch)
             return false
         }
+        
+        self.moveToRow(
+            row: row,
+            scrollAnimated: scrollAnimated,
+            messageAnimated: messageAnimated,
+            position: position
+        )
+        return true
+    }
+    
+    /// Scrolls to the message that is found by message id.
+    /// If no such message currently exists, it will attempt to initialize the message list with the time of that message.
+    /// - Parameters:
+    ///    - message: The message that is wanted to find
+    ///    - enablesScrollAnimation: The boolean value whether scrolls to the message with animation or not. If `false`, it *jumps* to the message.
+    ///    - enablesMessageAnimation: The boolean value whether animate the message after the scrolling. If `true`, the message is shaked up and down.
+    ///    - position: Scroll position value.
+    ///    - needToSearch: If true, reloads the collection based on the message information if not found by message ID.
+    /// - Returns: `false` when it couldn't find message with `id`. If it returns `true`, ``SBUBaseChannelModuleListDelegate/baseChannelModule(_:didScroll:)`` is called.
+    @discardableResult
+    public func scrollToMessage(
+        message: BaseMessage,
+        enablesScrollAnimation scrollAnimated: Bool = false,
+        enablesMessageAnimation messageAnimated: Bool = false,
+        position: SBUScrollPosition = .middle,
+        needToSearch: Bool = true
+    ) -> Bool {
+        guard let row = self.fullMessageList.firstIndex(
+            where: { $0.messageId == message.messageId }
+        ) else {
+            SBULog.error("Couldn't find message with ID: \(message.messageId)")
+            self.baseDelegate?.baseChannelModule(self, didFailScrollToMessage: message, needToSearch: needToSearch)
+            return false
+        }
+        
+        self.moveToRow(
+            row: row,
+            scrollAnimated: scrollAnimated,
+            messageAnimated: messageAnimated,
+            position: position
+        )
+        return true
+    }
+    
+    fileprivate func moveToRow(row: Int, scrollAnimated: Bool, messageAnimated: Bool, position: SBUScrollPosition) {
         let indexPath = IndexPath(row: row, section: 0)
         self.tableView.scrollToRow(
             at: indexPath,
-            at: .middle,
+            at: position.transform(with: self.tableView),
             animated: scrollAnimated
         )
         defer {
             self.baseDelegate?.baseChannelModule(self, didScroll: self.tableView)
         }
+        
         if messageAnimated {
             guard let cell = self.tableView.cellForRow(at: indexPath) as? SBUBaseMessageCell else {
                 SBULog.error("The cell for row at \(indexPath) is not `SBUBaseMessageCell`")
-                return true
+                return
             }
             cell.messageContentView.animate(.shakeUpDown)
         }
-        return true
     }
     
     /// This function checks if the current message and the next message date have the same day.

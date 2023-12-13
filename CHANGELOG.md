@@ -1,5 +1,24 @@
 # Changelog
 
+### v3.13.0 (Dec 13, 2023)
+
+- Added `SBUScrollPostionConfiguration` configuration class
+   - Added `scrollPostionConfiguration` peroperty in `SBUGlobals`
+
+- Added `SBUScrollOptions` model
+- Added `SBUScrollOptions.Result` model
+- Added `SBUScrollPosition` enum
+
+- Added and modified methods in `SBUBaseChannelModule.List` class
+   - Modified `position` parameter in `scrollToMessage(id:enablesScrollAnimation:enablesMessageAnimation:position:)`
+   - Added `scrollToMessage(message:enablesScrollAnimation:enablesMessageAnimation:position)`
+
+- Added and modified methods in `SBUBaseChannelViewController` class
+   - Modified `position` parameter in `scrollToMessage(id:enablesScrollAnimation:enablesMessageAnimation:position:)`
+   - Added `scrollToMessage(message:enablesScrollAnimation:enablesMessageAnimation:position)`
+
+- Fixed message menu sheet not showing when emojiList is empty
+
 ### v3.12.0 (Nov 29, 2023)
 
 #### Typing Indicator Bubble

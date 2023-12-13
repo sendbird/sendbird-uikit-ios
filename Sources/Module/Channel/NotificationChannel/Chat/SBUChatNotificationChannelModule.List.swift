@@ -66,6 +66,18 @@ protocol SBUChatNotificationChannelModuleListDelegate: SBUCommonDelegate {
         animated: Bool
     )
     
+    /// Called when the `scrollBottomView`was tapped in the `listComponent`.
+    /// - Parameters:
+    ///    - listComponent: `SBUChatNotificationChannelModule.List` object.
+    ///    - options: options for scroll position. see also  ``SBUScrollOptions``.
+    ///    - animated: if it's `true`, the list component will be scrolled while animating
+    /// - Since: 3.13.0
+    func chatNotificationChannelModule(
+        _ listComponent: SBUChatNotificationChannelModule.List,
+        didSelectScrollToBottonWithOptions options: SBUScrollOptions,
+        animated: Bool
+    )
+    
     /// Called when a user selects the *retry* button in the list component.
     func chatNotificationChannelModuleDidSelectRetry(
         _ listComponent: SBUChatNotificationChannelModule.List
@@ -627,17 +639,17 @@ extension SBUChatNotificationChannelModule.List {
     /// Scrolls tableview to initial position.
     /// If starting point is set, scroll to the starting point at `.middle`.
     func scrollToInitialPosition() {
-        if let startingPoint = self.dataSource?.chatNotificationChannelModule(
-            self, startingPointIn:
-                self.tableView
-        ) {
-            if let index = notifications.firstIndex(where: { $0.createdAt <= startingPoint }) {
-                self.scrollTableView(to: index, at: .middle)
-            } else {
-                self.scrollTableView(to: notifications.count - 1, at: .top)
-            }
+        let config = SBUGlobals.scrollPostionConfiguration.groupChannel
+        
+        guard let startingPoint = self.dataSource?.chatNotificationChannelModule(self, startingPointIn: self.tableView) else {
+            self.scrollTableView(to: 0, at: config.scrollToInitial.transform(with: self.tableView))
+            return
+        }
+        
+        if let index = notifications.firstIndex(where: { $0.createdAt <= startingPoint }) {
+            self.scrollTableView(to: index, at: config.scrollToInitialWithStartingPoint.transform(with: self.tableView))
         } else {
-            self.scrollTableView(to: 0)
+            self.scrollTableView(to: notifications.count - 1, at: config.scrollToInitial.transform(with: self.tableView))
         }
     }
 }

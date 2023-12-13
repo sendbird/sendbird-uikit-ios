@@ -322,7 +322,19 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
             newMessageInfoView.updateCount(count: self.newMessagesCount) { [weak self] in
                 guard let self = self else { return }
                 guard let listComponent = self.listComponent else { return }
-                self.baseChannelModuleDidTapScrollToButton(listComponent, animated: true)
+                
+                let position = SBUGlobals.scrollPostionConfiguration.groupChannel.scrollToNewMessage
+                let options = SBUScrollOptions(
+                    count: self.newMessagesCount,
+                    position: position,
+                    isInverted: listComponent.tableView.isInverted
+                )
+                
+                self.baseChannelModule(
+                    listComponent,
+                    didSelectScrollToBottonWithOptions: options,
+                    animated: true
+                )
             }
         }
         return true
@@ -950,6 +962,21 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         self.newMessagesCount = 0
         
         super.baseChannelModuleDidTapScrollToButton(listComponent, animated: animated)
+    }
+    
+    open override func baseChannelModule(
+        _ listComponent: SBUBaseChannelModule.List,
+        didSelectScrollToBottonWithOptions options: SBUScrollOptions,
+        animated: Bool
+    ) {
+        guard self.baseViewModel?.fullMessageList.isEmpty == false else { return }
+        self.newMessagesCount = 0
+        
+        super.baseChannelModule(
+            listComponent,
+            didSelectScrollToBottonWithOptions: options,
+            animated: animated
+        )
     }
     
     open override func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didScroll scrollView: UIScrollView) {

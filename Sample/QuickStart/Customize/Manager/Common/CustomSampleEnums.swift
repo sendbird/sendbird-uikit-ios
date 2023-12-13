@@ -27,6 +27,10 @@ enum ChannelListCustomType: Int {
     case listComponentcustom
 }
 
+enum AdditionalFeaturesType: Int {
+    case translationAndReport = 0
+}
+
 enum ChannelCustomType: Int {
     case uiComponent
     case customCell
@@ -73,6 +77,7 @@ enum CustomSection: Int, CaseIterable {
     case CreateChannel
     case InviteUser
     case MemberList
+    case AdditionalFeatures
     
     var title: String { return String(describing: self) }
     var index: Int { return self.rawValue }
@@ -122,6 +127,8 @@ enum CustomSection: Int, CaseIterable {
             return ["UI Component",
                     "Custom cell",
                     "Function Overriding"]
+        case .AdditionalFeatures:
+            return ["Translation, Report, Channel Metadata"]
         case .none:
             return []
         }
@@ -173,6 +180,9 @@ enum CustomSection: Int, CaseIterable {
             return ["[MemberListCustomManager uiComponentCustom()]",
                     "[MemberListCustomManager cellCustom()]",
                     "MemberListVC_Overriding.swift"]
+        case .AdditionalFeatures:
+            return ["[AdditionalFeaturesManager translationReportMetadata()]"]
+            
         case .none:
             return []
         }
