@@ -154,9 +154,8 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
         
         self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
         self.view.endEditing(true)
-        
     }
-    
+
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -167,11 +166,16 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
         }
         
         self.updateStyles()
+        
+        self.viewModel?.enableLogImpression(true)
+        self.viewModel?.logImpression(messages: self.listComponent?.getVisibleMessages() ?? [])
     }
     
     open override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
+
+        self.viewModel?.enableLogImpression(false)
+        self.viewModel?.invalidateLogImpressionTimer()
         self.viewModel?.updateLastSeenAt()
         self.allowsReadStatusUpdate = false
     }
@@ -771,6 +775,19 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
         if let channelURL = self.viewModel?.channelURL {
             self.viewModel?.loadChannel(channelURL: channelURL)
         }
+    }
+    
+    func feedNotificationChannelModule(
+        _ listComponent: SBUFeedNotificationChannelModule.List,
+        shouldLogImpression messages: [BaseMessage]
+    ) {
+        self.viewModel?.logImpression(messages: messages)
+    }
+    
+    func feedNotificationChannelModuleStopLogImpressionTimer(
+        _ listComponent: SBUFeedNotificationChannelModule.List
+    ) {
+        self.viewModel?.invalidateLogImpressionTimer()
     }
     
     // MARK: - SBUFeedNotificationChannelModuleListDataSource

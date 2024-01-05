@@ -34,6 +34,7 @@ class SBUNotificationCell: SBUBaseMessageCell {
     var dateLabel = UILabel()
     
     var isTemplateDownloadFailed = false
+    var isRendered = false
     
     var topMarginConstraint: NSLayoutConstraint?
     var bottomMarginConstraint: NSLayoutConstraint?
@@ -329,8 +330,8 @@ class SBUNotificationCell: SBUBaseMessageCell {
                 ),
                 fontFamily: SBUFontSet.FontFamily.notifications
             )
-        } else if let bindedTemplate = bindedTemplate, !showFallback {
-            self.notificationTemplateRenderer = MessageTemplateRenderer(
+        } else if let bindedTemplate = bindedTemplate, !showFallback,
+            let notificationTemplateRenderer = MessageTemplateRenderer(
                 with: bindedTemplate,
                 messageId: message?.messageId,
                 delegate: self,
@@ -340,7 +341,9 @@ class SBUNotificationCell: SBUBaseMessageCell {
                     self?.statisticsForAction(with: subData)
                     self?.notificationActionHandler?(action)
                 }
-            ) ?? parsingErrorNotificationRenderer
+            ) {
+            self.notificationTemplateRenderer = notificationTemplateRenderer
+            self.isRendered = true
         } else {
             self.notificationTemplateRenderer = parsingErrorNotificationRenderer
         }

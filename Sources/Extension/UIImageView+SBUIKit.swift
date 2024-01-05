@@ -114,6 +114,7 @@ internal extension UIImageView {
         
         return Self.getOriginalImage(
             urlString: urlString,
+            cacheKey: cacheKey,
             errorImage: errorImage,
             subPath: subPath) { errorImage, result in
                 self.setImage(errorImage, tintColor: tintColor)
@@ -260,14 +261,17 @@ internal extension UIImageView {
     ///   - completion: The callback to return the result.
     /// - Returns: The URLSessionTask object for downloading the image.
     @discardableResult
-    static func getOriginalImage(urlString: String,
-                          errorImage: UIImage? = nil,
-                          subPath: String,
-                          completion: ((UIImage?, Bool) -> Void)? = nil) -> URLSessionTask? {
+    static func getOriginalImage(
+        urlString: String,
+        cacheKey: String? = nil,
+        errorImage: UIImage? = nil,
+        subPath: String,
+        completion: ((UIImage?, Bool) -> Void)? = nil
+    ) -> URLSessionTask? {
         
         let fileName = SBUCacheManager.Image.createCacheFileName(
             urlString: urlString,
-            cacheKey: nil
+            cacheKey: cacheKey
         )
         
         guard let url = URL(string: urlString), url.absoluteURL.host != nil else {
@@ -281,8 +285,13 @@ internal extension UIImageView {
                 return
             }
             
-            let image = SBUCacheManager.Image.save(data: data, fileName: fileName, subPath: subPath)
-            completion?(image, true)
+            let image = SBUCacheManager.Image.save(
+                data: data,
+                fileName: fileName,
+                subPath: subPath
+            ) { url, data, image in
+                completion?(image, true)
+            }
         }
         task.resume()
         

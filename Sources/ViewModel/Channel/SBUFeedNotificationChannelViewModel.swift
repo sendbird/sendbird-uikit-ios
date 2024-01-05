@@ -117,6 +117,16 @@ class SBUFeedNotificationChannelViewModel: NSObject {
     /// ```
     var allowsReadStatusUpdate = false
     
+    // MARK: - Log impression
+    
+    /// The time interval to wait to send the impression logs after scrolling has stopped
+    static let logImpressionInterval: TimeInterval = 0.5
+    
+    /// A timer for log impression
+    private var logImpressionTimer: Timer?
+    
+    private var logImpressionEnabled: Bool = false
+    
     // MARK: - Common
     
     /// This function checks that have the following list.
@@ -664,6 +674,32 @@ class SBUFeedNotificationChannelViewModel: NSObject {
             params: self.notificationListParams,
             delegate: self
         )
+    }
+    
+    // MARK: - Log impression
+    /// Appends impression logs.
+    func logImpression(messages: [BaseMessage]) {
+        if self.logImpressionEnabled == false {
+            return
+        }
+        
+        self.invalidateLogImpressionTimer()
+        
+        self.logImpressionTimer = Timer.scheduledTimer(
+            withTimeInterval: Self.logImpressionInterval,
+            repeats: false
+        ) { [weak self] _ in
+            guard let self = self else { return }
+            _ = self.channel?.logImpression(messages: messages)
+        }
+    }
+    
+    func enableLogImpression(_ enable: Bool) {
+        self.logImpressionEnabled = enable
+    }
+
+    func invalidateLogImpressionTimer() {
+        self.logImpressionTimer?.invalidate()
     }
     
     /// This function refreshes channel and checkes updated message.
