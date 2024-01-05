@@ -75,21 +75,19 @@ class SBUDownloadManager {
             )
             
             if SBUCacheManager.Image.diskCache.cacheExists(key: key) {
-                let filePath = URL(string: SBUCacheManager.Image.diskCache.pathForKey(key))
-                ?? URL(fileURLWithPath: SBUCacheManager.Image.diskCache.pathForKey(key))
+                let filePath = URL(fileURLWithPath: SBUCacheManager.Image.diskCache.pathForKey(key))
                 downloadHandler(filePath)
             } else {
                 DispatchQueue.main.async {
                     Self.imageView.image = nil
-                    let result = Self.imageView.loadOriginalImage(
+                    let _ = Self.imageView.loadOriginalImage(
                         urlString: fileData.urlString,
                         errorImage: nil,
                         cacheKey: key,
                         subPath: fileData.subPath
                     ) { success in
                         if success {
-                            let filePath = URL(string: SBUCacheManager.Image.diskCache.pathForKey(fileName))
-                            ?? URL(fileURLWithPath: SBUCacheManager.Image.diskCache.pathForKey(fileName))
+                            let filePath = URL(fileURLWithPath: SBUCacheManager.Image.diskCache.pathForKey(fileName))
                             downloadHandler(filePath)
                         } else {
                             DispatchQueue.main.async { SBULoading.stop() }
@@ -210,21 +208,19 @@ class SBUDownloadManager {
             
             let fullPath = SBUCacheManager.Image.key(fileName: fileName, subPath: fileMessage.channelURL)
             if SBUCacheManager.Image.diskCache.cacheExists(key: fullPath) {
-                let filePath = URL(string: SBUCacheManager.Image.diskCache.pathForKey(fullPath))
-                    ?? URL(fileURLWithPath: SBUCacheManager.Image.diskCache.pathForKey(fullPath))
+                let filePath = URL(fileURLWithPath: SBUCacheManager.Image.diskCache.pathForKey(fullPath))
                 downloadHandler(filePath)
             } else {
                 DispatchQueue.main.async {
                     Self.imageView.image = nil
-                    let result = Self.imageView.loadOriginalImage(
+                    let _ = Self.imageView.loadOriginalImage(
                         urlString: fileMessage.url,
                         errorImage: nil,
                         cacheKey: fileMessage.cacheKey,
                         subPath: fileMessage.channelURL
                     ) { success in
                         if success {
-                            let filePath = URL(string: SBUCacheManager.Image.diskCache.pathForKey(fullPath))
-                                ?? URL(fileURLWithPath: SBUCacheManager.Image.diskCache.pathForKey(fullPath))
+                            let filePath = URL(fileURLWithPath: SBUCacheManager.Image.diskCache.pathForKey(fullPath))
                             downloadHandler(filePath)
                         } else {
                             DispatchQueue.main.async { SBULoading.stop() }

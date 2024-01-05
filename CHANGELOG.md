@@ -1,5 +1,11 @@
 # Changelog
 
+### v3.13.1 (Jan 05, 2024)
+
+- Added functionality to log impressions for notifications
+- Fixed file downloads not working issue
+
+
 ### v3.13.0 (Dec 13, 2023)
 
 - Added `SBUScrollPostionConfiguration` configuration class

@@ -82,6 +82,21 @@ protocol SBUFeedNotificationChannelModuleListDelegate: SBUCommonDelegate {
     func feedNotificationChannelModuleDidSelectRetry(
         _ listComponent: SBUFeedNotificationChannelModule.List
     )
+    
+    /// Called when the log impression needs to be sent.
+    /// - Parameters:
+    ///   - listComponent: `SBUFeedNotificationChannelModule.List` object.
+    ///   - messages: The messages that should be sent as log impression.
+    func feedNotificationChannelModule(
+        _ listComponent: SBUFeedNotificationChannelModule.List,
+        shouldLogImpression messages: [BaseMessage]
+    )
+    
+    /// Called when the timer of the log impression has to be invalidated.
+    ///   - listComponent: `SBUFeedNotificationChannelModule.List` object.
+    func feedNotificationChannelModuleStopLogImpressionTimer(
+        _ listComponent: SBUFeedNotificationChannelModule.List
+    )
 }
 
 extension SBUFeedNotificationChannelModuleListDelegate {
@@ -220,13 +235,17 @@ extension SBUFeedNotificationChannelModule {
         }
         
         // MARK: - Life cycle
+        
         @available(*, unavailable, renamed: "SBUFeedNotificationChannelModule.List()")
         required public init?(coder: NSCoder) { super.init(coder: coder) }
         
         @available(*, unavailable, renamed: "SBUFeedNotificationChannelModule.List()")
         public override init(frame: CGRect) { super.init(frame: frame) }
         
-        deinit { SBULog.info(#function) }
+        deinit {
+            self.delegate?.feedNotificationChannelModuleStopLogImpressionTimer(self)
+            SBULog.info(#function)
+        }
         
         /// Set values of the views in the list component when it needs.
         func setupViews() {
@@ -308,7 +327,7 @@ extension SBUFeedNotificationChannelModule {
                 right: 0
             )
         }
-        
+
         // MARK: - Actions
         
         /// Sets gestures in notification cell.
@@ -470,15 +489,26 @@ extension SBUFeedNotificationChannelModule {
                 self.tableView.reloadData()
                 self.tableView.layoutIfNeeded()
                 self.isTableViewReloading = false
-
+                self.delegate?.feedNotificationChannelModule(
+                    self,
+                    shouldLogImpression: self.getVisibleMessages()
+                )
             } else {
                 DispatchQueue.main.async { [weak self] in
-                    self?.isTableViewReloading = true
-                    self?.tableView.reloadData()
-                    self?.tableView.layoutIfNeeded()
-                    self?.isTableViewReloading = false
+                    guard let self = self else { return }
+                    
+                    self.isTableViewReloading = true
+                    self.tableView.reloadData()
+                    self.tableView.layoutIfNeeded()
+                    self.isTableViewReloading = false
+                    self.delegate?.feedNotificationChannelModule(
+                        self,
+                        shouldLogImpression: self.getVisibleMessages()
+                    )
                 }
             }
+
+            
         }
         
         public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -526,6 +556,7 @@ extension SBUFeedNotificationChannelModule {
         public func scrollViewDidScroll(_ scrollView: UIScrollView) {
             guard scrollView == self.tableView else { return }
             self.delegate?.feedNotificationChannelModule(self, didScroll: scrollView)
+            self.delegate?.feedNotificationChannelModule(self, shouldLogImpression: self.getVisibleMessages())
         }
         
         // MARK: - EmptyView
@@ -544,6 +575,16 @@ extension SBUFeedNotificationChannelModule {
             
             SBULog.info("[Request] Retry load channel list")
             self.delegate?.feedNotificationChannelModuleDidSelectRetry(self)
+        }
+        
+        // MARK: - Visible cells
+        func getVisibleMessages() -> [BaseMessage] {
+            guard let cells = self.tableView.visibleCells as? [SBUNotificationCell] else {
+                return []
+            }
+
+            return cells.filter { $0.isRendered }
+                .compactMap { $0.message }
         }
     }
 }

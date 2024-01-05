@@ -11,6 +11,7 @@ import AVFoundation
 import SendbirdChatSDK
 
 typealias SBUCacheCompletionHandler = (URL?, NSData?) -> Void
+typealias SBUImageCacheCompletionHandler = (URL?, NSData?, UIImage?) -> Void
 
 class SBUCacheManager {
     
@@ -94,8 +95,8 @@ class SBUCacheManager {
             return nil
         }
         
-        func set(key: String, data: NSData, completionHandler: SBUCacheCompletionHandler? = nil) {
-            diskQueue.async {
+        func set<T>(key: String, data: NSData, image: UIImage? = nil, completionHandler: T? = nil) {
+            diskQueue.async { [weak image] in
                 let filePath = URL(fileURLWithPath: self.pathForKey(key))
                 
                 do {
@@ -108,14 +109,30 @@ class SBUCacheManager {
                 } catch {
                     SBULog.error(error.localizedDescription)
                     DispatchQueue.main.async {
-                        completionHandler?(nil, nil)
+                        switch completionHandler {
+                        case let cacheHandler as SBUCacheCompletionHandler:
+                            cacheHandler(nil, nil)
+                        case let imageCacheHandler as SBUImageCacheCompletionHandler:
+                            imageCacheHandler(nil, nil, image)
+                        default:
+                            SBULog.error("Invalid cacheHandler type")
+                            break
+                        }
                     }
                     return
                 }
                 
                 data.write(to: filePath, atomically: true)
                 DispatchQueue.main.async {
-                    completionHandler?(filePath, data)
+                    switch completionHandler {
+                    case let cacheHandler as SBUCacheCompletionHandler:
+                        cacheHandler(filePath, data)
+                    case let imageCacheHandler as SBUImageCacheCompletionHandler:
+                        imageCacheHandler(filePath, data, image)
+                    default:
+                        SBULog.error("Invalid cacheHandler type")
+                        break
+                    }
                 }
             }
         }
@@ -278,7 +295,8 @@ public struct DiskCache {
     }
     
     public func set(key: String, data: NSData) {
-        self.imageDiskCache.set(key: key, data: data)
+        let imageCacheHandler: SBUImageCacheCompletionHandler = { url, data, image in }
+        self.imageDiskCache.set(key: key, data: data, completionHandler: imageCacheHandler)
     }
     
     public func rename(key: String, newKey: String) {

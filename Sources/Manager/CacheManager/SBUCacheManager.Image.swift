@@ -22,13 +22,16 @@ extension SBUCacheManager {
             image: UIImage,
             fileName: String,
             subPath: String,
-            completionHandler: SBUCacheCompletionHandler? = nil
+            completionHandler: SBUImageCacheCompletionHandler? = nil
         ) -> UIImage? {
-            guard let data = image.jpegData(compressionQuality: 1.0) else { return image }
+            guard let data = image.jpegData(compressionQuality: 1.0) else {
+                completionHandler?(nil, nil, image)
+                return image
+            }
             
             let key = key(fileName: fileName, subPath: subPath)
             self.memoryCache.set(key: key, image: image)
-            self.diskCache.set(key: key, data: data as NSData, completionHandler: completionHandler)
+            self.diskCache.set(key: key, data: data as NSData, image: image, completionHandler: completionHandler)
             return image
         }
         
@@ -37,7 +40,7 @@ extension SBUCacheManager {
             data: Data?,
             fileName: String,
             subPath: String,
-            completionHandler: SBUCacheCompletionHandler? = nil
+            completionHandler: SBUImageCacheCompletionHandler? = nil
         ) -> UIImage? {
             return save(
                 nsdata: data as NSData?,
@@ -51,21 +54,24 @@ extension SBUCacheManager {
             nsdata: NSData?,
             fileName: String,
             subPath: String,
-            completionHandler: SBUCacheCompletionHandler? = nil
+            completionHandler: SBUImageCacheCompletionHandler? = nil
         ) -> UIImage? {
             guard let data = nsdata else { return nil }
-            guard let image = UIImage.createImage(from: data as Data) else { return nil }
+            guard let image = UIImage.createImage(from: data as Data) else {
+                completionHandler?(nil, data, nil)
+                return nil
+            }
 
             let key = key(fileName: fileName, subPath: subPath)
             self.memoryCache.set(key: key, image: image)
-            self.diskCache.set(key: key, data: data, completionHandler: completionHandler)
+            self.diskCache.set(key: key, data: data, image: image, completionHandler: completionHandler)
             return image
         }
         
         static func preSave(
             fileMessage: FileMessage,
             isQuotedImage: Bool? = false,
-            completionHandler: SBUCacheCompletionHandler? = nil
+            completionHandler: SBUImageCacheCompletionHandler? = nil
         ) {
             if let messageParams = fileMessage.messageParams as? FileMessageCreateParams {
                 var fileName = self.createCacheFileName(
@@ -112,7 +118,7 @@ extension SBUCacheManager {
             uploadableFileInfo: UploadableFileInfo,
             index: Int,
             isQuotedImage: Bool = false,
-            completionHandler: SBUCacheCompletionHandler? = nil
+            completionHandler: SBUImageCacheCompletionHandler? = nil
         ) {
             var fileName = self.createCacheFileName(
                 urlString: uploadableFileInfo.fileURL ?? "",
