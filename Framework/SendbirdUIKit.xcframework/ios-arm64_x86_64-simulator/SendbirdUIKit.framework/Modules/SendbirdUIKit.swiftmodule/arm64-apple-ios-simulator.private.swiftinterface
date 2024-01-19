@@ -1821,6 +1821,7 @@ extension SendbirdUIKit.SBUFormFieldView {
   }
 }
 extension UIKit.UIImageView {
+  public typealias LoadCompletion = ((UIKit.UIImageView.LoadResult) -> Swift.Void)
   public enum ImageOption {
     case imageToThumbnail
     case original
@@ -1831,8 +1832,20 @@ extension UIKit.UIImageView {
       get
     }
   }
+  public enum LoadStatus {
+    case placeholder
+    case success
+    case failure
+    public static func == (a: UIKit.UIImageView.LoadStatus, b: UIKit.UIImageView.LoadStatus) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+  public struct LoadResult {
+  }
   @discardableResult
-  @_Concurrency.MainActor(unsafe) public func loadImage(urlString: Swift.String, placeholder: UIKit.UIImage? = nil, errorImage: UIKit.UIImage? = nil, option: UIKit.UIImageView.ImageOption = .original, thumbnailSize: CoreFoundation.CGSize? = nil, tintColor: UIKit.UIColor? = nil, cacheKey: Swift.String? = nil, subPath: Swift.String = "", completion: ((Swift.Bool) -> Swift.Void)? = nil) -> Foundation.URLSessionTask?
+  @_Concurrency.MainActor(unsafe) public func loadImage(urlString: Swift.String, placeholder: UIKit.UIImage? = nil, errorImage: UIKit.UIImage? = nil, option: UIKit.UIImageView.ImageOption = .original, thumbnailSize: CoreFoundation.CGSize? = nil, tintColor: UIKit.UIColor? = nil, cacheKey: Swift.String? = nil, subPath: Swift.String = "", autoset: Swift.Bool = true, completion: UIKit.UIImageView.LoadCompletion? = nil) -> Foundation.URLSessionTask?
 }
 @_hasMissingDesignatedInitializers public class SBUUtils {
   public static func getFileType(by fileMessage: SendbirdChatSDK.FileMessage) -> SendbirdUIKit.SBUMessageFileType
@@ -2237,6 +2250,7 @@ extension SendbirdUIKit.SBUCreateOpenChannelModule {
     public static var stackSpacing: CoreFoundation.CGFloat
     public static let textMaxPrefWidth: CoreFoundation.CGFloat
   }
+  @_Concurrency.MainActor(unsafe) public var urlString: Swift.String?
   @_Concurrency.MainActor(unsafe) final public let imageView: UIKit.UIImageView
   @_Concurrency.MainActor(unsafe) final public let detailStackView: SendbirdUIKit.SBUStackView
   @_Concurrency.MainActor(unsafe) final public let titleLabel: UIKit.UILabel
@@ -10424,18 +10438,11 @@ public struct SBUDateFormatSet {
   }
   @objc deinit
 }
-@available(*, deprecated, renamed: "SendbirdUI")
-public typealias SBUMain = SendbirdUIKit.SendbirdUI
 @_hasMissingDesignatedInitializers public class SendbirdUI {
   public static var config: SendbirdUIKit.SBUConfig
-  @available(*, unavailable, renamed: "initialize(applicationId:startHandler:migrationStartHandler:completionHandler:)", message: "Using the `initialize(applicationId:startHandler:migrationStartHandler:completionHandler:)` function, and in the CompletionHandler, please proceed with the following procedure.")
-  public static func initialize(applicationId: Swift.String)
-  @available(*, deprecated, renamed: "initialize(applicationId:startHandler:migrationHandler:completionHandler:)")
-  public static func initialize(applicationId: Swift.String, migrationStartHandler: @escaping (() -> Swift.Void), completionHandler: @escaping ((_ error: SendbirdChatSDK.SBError?) -> Swift.Void))
   public static func initialize(applicationId: Swift.String, startHandler: (() -> Swift.Void)? = nil, migrationHandler: (() -> Swift.Void)? = nil, completionHandler: @escaping ((_ error: SendbirdChatSDK.SBError?) -> Swift.Void))
+  public static func initialize(applicationId: Swift.String, initParamsBuilder: ((_ params: SendbirdChatSDK.InitParams?) -> Swift.Void)?, startHandler: (() -> Swift.Void)? = nil, migrationHandler: (() -> Swift.Void)? = nil, completionHandler: @escaping ((_ error: SendbirdChatSDK.SBError?) -> Swift.Void))
   public static func connect(completionHandler: @escaping (_ user: SendbirdChatSDK.User?, _ error: SendbirdChatSDK.SBError?) -> Swift.Void)
-  @available(*, deprecated, renamed: "connectIfNeeded(completionHandler:)")
-  public static func connectionCheck(completionHandler: @escaping (_ user: SendbirdChatSDK.User?, _ error: SendbirdChatSDK.SBError?) -> Swift.Void)
   public static func connectIfNeeded(needToUpdateExtraData: Swift.Bool = true, completionHandler: @escaping (_ user: SendbirdChatSDK.User?, _ error: SendbirdChatSDK.SBError?) -> Swift.Void)
   public static func authenticateFeed(completionHandler: @escaping (_ user: SendbirdChatSDK.User?, _ error: SendbirdChatSDK.SBError?) -> Swift.Void)
   public static func authenticateFeedIfNeeded(needToUpdateExtraData: Swift.Bool = true, completionHandler: @escaping (_ user: SendbirdChatSDK.User?, _ error: SendbirdChatSDK.SBError?) -> Swift.Void)
@@ -10454,8 +10461,6 @@ public typealias SBUMain = SendbirdUIKit.SendbirdUI
   public static func registerPush(deviceToken: Foundation.Data, unique: Swift.Bool = false, completionHandler: @escaping (_ success: Swift.Bool) -> Swift.Void)
   public static func unregisterPushToken(completionHandler: @escaping (_ success: Swift.Bool) -> Swift.Void)
   public static func unregisterAllPushToken(completionHandler: @escaping (_ success: Swift.Bool) -> Swift.Void)
-  @available(*, deprecated, renamed: "moveToChannel(channelURL:basedOnChannelList:messageListParams:)")
-  public static func openChannel(channelUrl: Swift.String, basedOnChannelList: Swift.Bool = true, messageListParams: SendbirdChatSDK.MessageListParams? = nil)
   public static func moveToChannel(channelURL: Swift.String, basedOnChannelList: Swift.Bool = true, messageListParams: SendbirdChatSDK.MessageListParams? = nil, channelType: SendbirdChatSDK.ChannelType = .group, rootViewController: UIKit.UIViewController? = nil)
   public static func findChannelListViewController(rootViewController: UIKit.UIViewController?, channelType: SendbirdChatSDK.ChannelType) -> UIKit.UIViewController?
   public static func findChannelViewController(rootViewController: UIKit.UIViewController?) -> UIKit.UIViewController?
@@ -10468,6 +10473,9 @@ public typealias SBUMain = SendbirdUIKit.SendbirdUI
 }
 extension SendbirdUIKit.SendbirdUI {
   public static func startChatWithAIBot(botId: Swift.String, isDistinct: Swift.Bool, errorHandler: ((_ error: SendbirdChatSDK.SBError?) -> Swift.Void)? = nil)
+}
+extension SendbirdUIKit.SendbirdUI {
+  public static func isRemoteNotificationAvailable() -> Swift.Bool
 }
 public protocol SBUCreateOpenChannelModuleProfileInputDelegate : SendbirdUIKit.SBUCommonDelegate {
   func createOpenChannelModule(_ profileInputComponent: SendbirdUIKit.SBUCreateOpenChannelModule.ProfileInput, shouldChangeChannelName string: Swift.String)
@@ -10642,9 +10650,11 @@ extension SendbirdUIKit.SBUExtendedMessagePayloadCustomViewFactoryInternal {
 public protocol SBUExtendedMessagePayloadCustomViewFactory : SendbirdUIKit.SBUExtendedMessagePayloadCustomViewFactoryInternal {
   associatedtype ViewData : Swift.Decodable
   static func makeCustomView(_ data: Self.ViewData, message: SendbirdChatSDK.BaseMessage?) -> UIKit.UIView?
+  static func errorHandler(_ error: Swift.Error, message: SendbirdChatSDK.BaseMessage?) -> UIKit.UIView?
 }
 extension SendbirdUIKit.SBUExtendedMessagePayloadCustomViewFactory {
   public static func makeCustomView(message: SendbirdChatSDK.BaseMessage?) -> UIKit.UIView?
+  public static func errorHandler(_ error: Swift.Error, message: SendbirdChatSDK.BaseMessage?) -> UIKit.UIView?
 }
 public protocol SBUMessageThreadViewModelDataSource : SendbirdUIKit.SBUBaseChannelViewModelDataSource {
 }
@@ -10754,6 +10764,18 @@ extension SendbirdUIKit.SBUMultipleFilesMessageCell : UIKit.UICollectionViewDele
   @_Concurrency.MainActor(unsafe) @objc dynamic open func collectionView(_ collectionView: UIKit.UICollectionView, didSelectItemAt indexPath: Foundation.IndexPath)
   @_Concurrency.MainActor(unsafe) @objc dynamic open func collectionView(_ collectionView: UIKit.UICollectionView, layout collectionViewLayout: UIKit.UICollectionViewLayout, sizeForItemAt indexPath: Foundation.IndexPath) -> CoreFoundation.CGSize
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func prepareForReuse()
+}
+@available(*, deprecated, renamed: "SendbirdUI")
+public typealias SBUMain = SendbirdUIKit.SendbirdUI
+extension SendbirdUIKit.SendbirdUI {
+  @available(*, unavailable, renamed: "initialize(applicationId:startHandler:migrationStartHandler:completionHandler:)", message: "Using the `initialize(applicationId:startHandler:migrationStartHandler:completionHandler:)` function, and in the CompletionHandler, please proceed with the following procedure.")
+  public static func initialize(applicationId: Swift.String)
+  @available(*, deprecated, renamed: "initialize(applicationId:startHandler:migrationHandler:completionHandler:)")
+  public static func initialize(applicationId: Swift.String, migrationStartHandler: @escaping (() -> Swift.Void), completionHandler: @escaping ((_ error: SendbirdChatSDK.SBError?) -> Swift.Void))
+  @available(*, deprecated, renamed: "moveToChannel(channelURL:basedOnChannelList:messageListParams:)")
+  public static func openChannel(channelUrl: Swift.String, basedOnChannelList: Swift.Bool = true, messageListParams: SendbirdChatSDK.MessageListParams? = nil)
+  @available(*, deprecated, renamed: "connectIfNeeded(completionHandler:)")
+  public static func connectionCheck(completionHandler: @escaping (_ user: SendbirdChatSDK.User?, _ error: SendbirdChatSDK.SBError?) -> Swift.Void)
 }
 public protocol SBUUserListModuleHeaderDelegate : SendbirdUIKit.SBUCommonDelegate {
   func userListModule(_ headerComponent: SendbirdUIKit.SBUUserListModule.Header, didUpdateTitleView titleView: UIKit.UIView?)
@@ -11185,6 +11207,8 @@ extension SendbirdUIKit.SBUCreateChannelModule.List {
 }
 extension UIKit.UIImageView.ImageOption : Swift.Equatable {}
 extension UIKit.UIImageView.ImageOption : Swift.Hashable {}
+extension UIKit.UIImageView.LoadStatus : Swift.Equatable {}
+extension UIKit.UIImageView.LoadStatus : Swift.Hashable {}
 extension SendbirdUIKit.SBUMessageTemplate.ActionType : Swift.Equatable {}
 extension SendbirdUIKit.SBUMessageTemplate.ActionType : Swift.Hashable {}
 extension SendbirdUIKit.SBUMessageTemplate.ActionType : Swift.RawRepresentable {}

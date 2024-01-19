@@ -199,6 +199,7 @@ extension SendbirdChatSDK.PollVoterListQueryParams : Swift.Encodable {
   final public let extendedMessagePayload: [Swift.String : Any]
   final public let suggestedReplies: [Swift.String]?
   final public let forms: [SendbirdChatSDK.Form]?
+  @objc public var inMemoryUserInfo: [Swift.String : Any]?
   required public init(from decoder: Swift.Decoder) throws
   public func encode(to encoder: Swift.Encoder) throws
   public typealias ID = Swift.AnyHashable
@@ -447,7 +448,7 @@ extension SendbirdChatSDK.MessageCollection : SendbirdChatSDK.GroupChannelDelega
   @objc dynamic open func channel(_ channel: SendbirdChatSDK.GroupChannel, didUpdatePoll event: SendbirdChatSDK.PollUpdateEvent)
   @objc dynamic open func channel(_ channel: SendbirdChatSDK.GroupChannel, didVotePoll event: SendbirdChatSDK.PollVoteEvent)
   @objc dynamic open func channelDidUpdatePinnedMessages(_ channel: SendbirdChatSDK.GroupChannel)
-  @objc dynamic open func channelDidUpdateFeedbackMessages(_ channel: SendbirdChatSDK.GroupChannel)
+  @objc dynamic open func channel(_ channel: SendbirdChatSDK.GroupChannel, didUpdateFeedbackMessage: SendbirdChatSDK.BaseMessage)
 }
 @objc(SBDInitParams) public class InitParams : ObjectiveC.NSObject {
   @objc public var applicationId: Swift.String
@@ -455,7 +456,9 @@ extension SendbirdChatSDK.MessageCollection : SendbirdChatSDK.GroupChannelDelega
   @objc public var logLevel: SendbirdChatSDK.LogLevel
   @objc public var appVersion: Swift.String?
   @objc public var localCacheConfig: SendbirdChatSDK.LocalCacheConfig?
+  @objc public var needsSynchronous: Swift.Bool
   @objc public init(applicationId: Swift.String, isLocalCachingEnabled: Swift.Bool = false, localCacheConfig: SendbirdChatSDK.LocalCacheConfig? = nil, logLevel: SendbirdChatSDK.LogLevel = .none, appVersion: Swift.String? = nil)
+  @objc public init(applicationId: Swift.String, isLocalCachingEnabled: Swift.Bool = false, localCacheConfig: SendbirdChatSDK.LocalCacheConfig? = nil, logLevel: SendbirdChatSDK.LogLevel = .none, appVersion: Swift.String? = nil, needsSynchronous: Swift.Bool)
   @objc override dynamic public func isEqual(_ object: Any?) -> Swift.Bool
   @objc deinit
 }
@@ -2042,6 +2045,22 @@ extension SendbirdChatSDK.SendbirdChat {
     @objc deinit
   }
 }
+@objc(SBDInitializationState) public enum InitializationState : Swift.Int {
+  case notStarted = 0
+  case initializing = 1
+  case migrating = 2
+  case completed = 3
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+extension SendbirdChatSDK.InitializationState : Swift.CustomStringConvertible {
+  public var description: Swift.String {
+    get
+  }
+}
 @objc(SBDWebSocketConnectionState) public enum WebSocketConnectionState : Swift.Int {
   case connecting = 0
   case open = 1
@@ -3155,7 +3174,7 @@ extension SendbirdChatSDK.GroupChannelCollection : SendbirdChatSDK.GroupChannelD
   @objc dynamic open func channel(_ channel: SendbirdChatSDK.BaseChannel, updatedMetaCounters: [Swift.String : Swift.Int]?)
   @objc dynamic open func channel(_ channel: SendbirdChatSDK.BaseChannel, deletedMetaCountersKeys: [Swift.String]?)
   @objc dynamic open func channelDidUpdatePinnedMessages(_ channel: SendbirdChatSDK.GroupChannel)
-  @objc dynamic open func channelDidUpdateFeedbackMessages(_ channel: SendbirdChatSDK.GroupChannel)
+  @objc dynamic open func channel(_ channel: SendbirdChatSDK.GroupChannel, didUpdateFeedbackMessage: SendbirdChatSDK.BaseMessage)
 }
 @objc extension SendbirdChatSDK.GroupChannel {
   @objc dynamic open func inviteUser(_ user: SendbirdChatSDK.User, completionHandler: SendbirdChatSDK.SBErrorHandler?)
@@ -3281,6 +3300,7 @@ extension SendbirdChatSDK.GroupChannelCollection : SendbirdChatSDK.GroupChannelD
     get
   }
   public func asSBError(message: Swift.String?) -> SendbirdChatSDK.SBError
+  public func asSBError(message: Swift.String?, failureReason: Swift.String) -> SendbirdChatSDK.SBError
   public init?(rawValue: Swift.Int)
   public typealias RawValue = Swift.Int
   public static var _nsErrorDomain: Swift.String {
@@ -3348,8 +3368,10 @@ extension SendbirdChatSDK.MutedUserListQuery {
   @objc public class func getMultipleFilesMessageFileCountLimit() -> Swift.Int
   @discardableResult
   @objc public class func initialize(params: SendbirdChatSDK.InitParams, migrationStartHandler: SendbirdChatSDK.VoidHandler? = nil, completionHandler: SendbirdChatSDK.SBErrorHandler? = nil) -> Swift.Bool
+  @available(*, deprecated, renamed: "initialize(params:migrationStartHandler:completionHandler:)", message: "This method is deprecated in 4.15.0. Set `needsSynchronous` in `InitParams` to `true` and use `initialize(params:migrationStartHandler:completionHandler:)` instead.")
   @discardableResult
   @objc public class func initializeSynchronously(params: SendbirdChatSDK.InitParams) -> SendbirdChatSDK.SBError?
+  public class func executeOrWaitForInitialization(executeHandler: @escaping () -> Swift.Void)
   @objc public class func connect(userId: Swift.String, completionHandler: SendbirdChatSDK.UserHandler? = nil)
   @objc public class func connect(userId: Swift.String, authToken: Swift.String?, completionHandler: SendbirdChatSDK.UserHandler? = nil)
   @objc public class func connect(userId: Swift.String, authToken: Swift.String?, apiHost: Swift.String?, wsHost: Swift.String?, completionHandler: SendbirdChatSDK.UserHandler? = nil)
@@ -4802,6 +4824,9 @@ extension SendbirdChatSDK.BlockedUserListQuery : Foundation.NSCopying {}
 extension SendbirdChatSDK.PinnedMessageListQuery : Foundation.NSCopying {}
 extension SendbirdChatSDK.OperatorListQuery : Foundation.NSCopying {}
 extension SendbirdChatSDK.PollListQuery : Foundation.NSCopying {}
+extension SendbirdChatSDK.InitializationState : Swift.Equatable {}
+extension SendbirdChatSDK.InitializationState : Swift.Hashable {}
+extension SendbirdChatSDK.InitializationState : Swift.RawRepresentable {}
 extension SendbirdChatSDK.WebSocketConnectionState : Swift.Equatable {}
 extension SendbirdChatSDK.WebSocketConnectionState : Swift.Hashable {}
 extension SendbirdChatSDK.WebSocketConnectionState : Swift.RawRepresentable {}

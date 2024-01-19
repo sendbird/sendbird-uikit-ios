@@ -1,5 +1,16 @@
 # Changelog
 
+### v3.14.0 (Jan 19, 2024)
+
+- Initialization improving
+  - Added `initialize(applicationId:initParamsBuilder:startHandler:migrationHandler:completionHandler:)` function of `SendbirdUI`class
+  - For more information on the improved initialization, see [this link](https://github.com/sendbird/sendbird-uikit-ios/discussions/86)
+- Fixed link image loading bug
+- Remove time view from `SBUTypingIndicatorMessageCell` class
+- Improving the image loading process
+- Add `errorHandler(error:message:)` optional function in `SBUExtendedMessagePayloadCustomViewFactory` protocol
+- Supported remote notifications on iOS 16 or later simulators
+
 ### v3.13.1 (Jan 05, 2024)
 
 - Added functionality to log impressions for notifications

@@ -507,7 +507,6 @@ extension SBUFeedNotificationChannelModule {
                     )
                 }
             }
-
             
         }
         

@@ -10,10 +10,37 @@ import UIKit
 import AVFoundation
 
 public extension UIImageView {
+    typealias LoadCompletion = ((LoadResult) -> Void)
     enum ImageOption {
         case imageToThumbnail
         case original
         case videoURLToImage
+    }
+    
+    enum LoadStatus {
+        case placeholder
+        case success
+        case failure
+        
+        var isSuccess: Bool { self == .success }
+        var isFailure: Bool { self == .failure }
+        var isPlaceholder: Bool { self == .placeholder }
+    }
+    
+    struct LoadResult {
+        let status: LoadStatus
+        let urlString: String
+        let image: UIImage?
+        
+        init(
+            status: LoadStatus,
+            urlString: String,
+            image: UIImage? = nil
+        ) {
+            self.status = status
+            self.image = image
+            self.urlString = urlString
+        }
     }
 
     @discardableResult
@@ -25,32 +52,44 @@ public extension UIImageView {
                    tintColor: UIColor? = nil,
                    cacheKey: String? = nil,
                    subPath: String = "",
-                   completion: ((Bool) -> Void)? = nil) -> URLSessionTask? {
+                   autoset: Bool = true,
+                   completion: LoadCompletion? = nil) -> URLSessionTask? {
         let originalContentMode = self.contentMode
-        let onCompletion: ((Bool) -> Void) = { [completion, originalContentMode] onSucceed in
-            
-            if Thread.isMainThread {
-                self.contentMode = originalContentMode
-            } else {
-                DispatchQueue.main.async {
-                    self.contentMode = originalContentMode
+        let onCompletion: ((LoadResult) -> Void) = { [weak self, completion, originalContentMode] result in
+            Thread.executeOnMain {
+                if result.image != nil {
+                    if result.status.isSuccess {
+                        self?.contentMode = originalContentMode
+                    } else {
+                        self?.contentMode = .center
+                    }
                 }
+                completion?(result)
             }
-            
-            completion?(onSucceed)
         }
         
-        if let placeholder = placeholder {
-            self.setImage(placeholder, tintColor: tintColor, contentMode: .center)
-        } else {
-            self.setImage(nil, tintColor: tintColor, contentMode: self.contentMode)
+        // placeholder-image without completion.
+        self.setImage(
+            placeholder,
+            urlString: urlString,
+            tintColor: tintColor,
+            contentMode: placeholder != nil ? .center : self.contentMode,
+            status: .placeholder,
+            autoset: autoset
+        ) { result in
+            if autoset == false { completion?(result) }
         }
         
+        // error-image
         if urlString.isEmpty {
-            if let errorImage = errorImage {
-                self.image = errorImage
-            }
-            onCompletion(false)
+            self.setImage(
+                errorImage,
+                urlString: urlString,
+                contentMode: self.contentMode,
+                status: .failure,
+                autoset: autoset,
+                completion: completion
+            )
             return nil
         }
         
@@ -62,6 +101,7 @@ public extension UIImageView {
                 tintColor: tintColor,
                 cacheKey: cacheKey,
                 subPath: subPath,
+                autoset: autoset,
                 completion: onCompletion
             )
         case .imageToThumbnail:
@@ -72,6 +112,7 @@ public extension UIImageView {
                 tintColor: tintColor,
                 cacheKey: cacheKey,
                 subPath: subPath,
+                autoset: autoset,
                 completion: onCompletion
             )
         case .videoURLToImage:
@@ -81,6 +122,7 @@ public extension UIImageView {
                 tintColor: tintColor,
                 cacheKey: cacheKey,
                 subPath: subPath,
+                autoset: autoset,
                 completion: onCompletion
             )
         }
@@ -100,7 +142,8 @@ internal extension UIImageView {
                            tintColor: UIColor? = nil,
                            cacheKey: String? = nil,
                            subPath: String,
-                           completion: ((Bool) -> Void)? = nil) -> URLSessionTask? {
+                           autoset: Bool = true,
+                           completion: LoadCompletion? = nil) -> URLSessionTask? {
         
         let fileName = SBUCacheManager.Image.createCacheFileName(
             urlString: urlString,
@@ -108,7 +151,14 @@ internal extension UIImageView {
         )
         
         if let image = SBUCacheManager.Image.get(fileName: fileName, subPath: subPath) {
-            self.setImage(image, tintColor: tintColor, completion: completion)
+            self.setImage(
+                image,
+                urlString: urlString,
+                tintColor: tintColor,
+                status: .success,
+                autoset: autoset,
+                completion: completion
+            )
             return nil
         }
         
@@ -116,9 +166,15 @@ internal extension UIImageView {
             urlString: urlString,
             cacheKey: cacheKey,
             errorImage: errorImage,
-            subPath: subPath) { errorImage, result in
-                self.setImage(errorImage, tintColor: tintColor)
-                completion?(result)
+            subPath: subPath) { [weak self] image, success in
+                self?.setImage(
+                    image,
+                    urlString: urlString,
+                    tintColor: tintColor,
+                    status: success ? .success : .failure,
+                    autoset: autoset,
+                    completion: completion
+                )
         }
     }
     
@@ -127,7 +183,8 @@ internal extension UIImageView {
                                  tintColor: UIColor? = nil,
                                  cacheKey: String? = nil,
                                  subPath: String,
-                                 completion: ((Bool) -> Void)? = nil) -> URLSessionTask? {
+                                 autoset: Bool = true,
+                                 completion: LoadCompletion? = nil) -> URLSessionTask? {
         let fileName = SBUCacheManager.Image.createCacheFileName(
             urlString: urlString,
             cacheKey: cacheKey,
@@ -135,20 +192,34 @@ internal extension UIImageView {
         )
         
         if let image = SBUCacheManager.Image.get(fileName: fileName, subPath: subPath) {
-            self.setImage(image, tintColor: tintColor, completion: completion)
+            self.setImage(
+                image,
+                urlString: urlString,
+                tintColor: tintColor,
+                status: .success,
+                autoset: autoset,
+                completion: completion
+            )
             return nil
         }
         
         guard let url = URL(string: urlString) else {
-            self.setImage(errorImage, tintColor: tintColor) { _ in
-                completion?(false)
-            }
+            self.setImage(
+                errorImage,
+                urlString: urlString,
+                tintColor: tintColor,
+                status: .failure,
+                autoset: autoset,
+                completion: completion
+            )
             return nil
         }
         
         let task = URLSession(configuration: .default).dataTask(with: url) { [weak self] data, _, _ in
             guard let self = self, let asset = data?.getAVAsset() else {
-                completion?(false)
+                Thread.executeOnMain {
+                    completion?(.init(status: .failure, urlString: urlString))
+                }
                 return
             }
             
@@ -157,13 +228,22 @@ internal extension UIImageView {
             let cmTime = CMTimeMake(value: 2, timescale: 1)
             guard let cgImage = try? avAssetImageGenerator
                 .copyCGImage(at: cmTime, actualTime: nil) else {
-                completion?(false)
+                Thread.executeOnMain {
+                    completion?(.init(status: .failure, urlString: urlString))
+                }
                 return
             }
             
             let image = UIImage(cgImage: cgImage)
             SBUCacheManager.Image.save(image: image, fileName: fileName, subPath: subPath)
-            self.setImage(image, tintColor: tintColor, completion: completion)
+            self.setImage(
+                image,
+                urlString: urlString,
+                tintColor: tintColor,
+                status: .success,
+                autoset: autoset,
+                completion: completion
+            )
         }
         
         task.resume()
@@ -176,7 +256,8 @@ internal extension UIImageView {
                             tintColor: UIColor? = nil,
                             cacheKey: String? = nil,
                             subPath: String,
-                            completion: ((Bool) -> Void)? = nil) -> URLSessionTask? {
+                            autoset: Bool = true,
+                            completion: LoadCompletion? = nil) -> URLSessionTask? {
         
         let fileName = SBUCacheManager.Image.createCacheFileName(
             urlString: urlString,
@@ -187,35 +268,66 @@ internal extension UIImageView {
         // Load thumbnail cacheImage
         if let thumbnailImage = SBUCacheManager.Image.get(fileName: thumbnailFileName, subPath: subPath) {
             let image = thumbnailImage.isAnimatedImage() ? thumbnailImage.images?.first : thumbnailImage
-            self.setImage(image, tintColor: tintColor, completion: completion)
+            self.setImage(
+                image,
+                urlString: urlString,
+                tintColor: tintColor,
+                status: .success,
+                autoset: autoset,
+                completion: completion
+            )
             return nil
         }
         
         // Load or Download image
         guard let url = URL(string: urlString) else {
-            self.setImage(errorImage, tintColor: tintColor) { _ in
-                completion?(false)
-            }
+            self.setImage(
+                errorImage,
+                urlString: urlString,
+                tintColor: tintColor,
+                status: .failure,
+                autoset: autoset,
+                completion: completion
+            )
             return nil
         }
         
         let task = URLSession(configuration: .default).dataTask(with: url) { [weak self] data, _, error in
             guard let self = self else { return }
             guard let data = data, error == nil, let image = UIImage.createImage(from: data) else {
-                self.setImage(errorImage, tintColor: tintColor) { _ in completion?(false) }
+                self.setImage(
+                    errorImage,
+                    urlString: urlString,
+                    tintColor: tintColor,
+                    status: .failure,
+                    autoset: autoset,
+                    completion: completion
+                )
                 return
             }
             
             if image.isAnimatedImage() {
                 SBUCacheManager.Image.save(data: data, fileName: thumbnailFileName, subPath: subPath)
-                
-                self.setImage(image.images?.first ?? image, tintColor: tintColor, completion: completion)
+                self.setImage(
+                    image.images?.first ?? image,
+                    urlString: urlString,
+                    tintColor: tintColor,
+                    status: .success,
+                    autoset: autoset,
+                    completion: completion
+                )
             } else {
                 let thumbnailSize: CGSize = thumbnailSize ?? SBUGlobals.messageCellConfiguration.groupChannel.thumbnailSize
                 let thumbnailImage = image.resize(with: thumbnailSize)
                 SBUCacheManager.Image.save(image: thumbnailImage, fileName: thumbnailFileName, subPath: subPath)
-                
-                self.setImage(thumbnailImage, tintColor: tintColor, completion: completion)
+                self.setImage(
+                    thumbnailImage,
+                    urlString: urlString,
+                    tintColor: tintColor,
+                    status: .success,
+                    autoset: autoset,
+                    completion: completion
+                )
             }
         }
         task.resume()
@@ -223,31 +335,25 @@ internal extension UIImageView {
     }
     
     private func setImage(_ image: UIImage?,
+                          urlString: String,
                           tintColor: UIColor? = nil,
                           contentMode: ContentMode = .scaleAspectFill,
-                          completion: ((Bool) -> Void)? = nil) {
-        if let image = image {
-            if Thread.isMainThread {
-                self.contentMode = contentMode
-                if tintColor != nil {
-                    self.image = image.sbu_with(tintColor: tintColor)
-                } else {
-                    self.image = image
-                }
-                completion?(true)
-            } else {
-                DispatchQueue.main.async {
-                    self.contentMode = contentMode
-                    if tintColor != nil {
-                        self.image = image.sbu_with(tintColor: tintColor)
-                    } else {
-                        self.image = image
-                    }
-                    completion?(true)
-                }
+                          status: LoadStatus = .success,
+                          autoset: Bool,
+                          completion: LoadCompletion? = nil) {
+        guard let image = image else {
+            Thread.executeOnMain {
+                completion?(.init(status: .failure, urlString: urlString))
             }
-        } else {
-            completion?(false)
+            return
+        }
+        
+        let resultImage = tintColor != nil ? image.sbu_with(tintColor: tintColor!) : image
+        
+        Thread.executeOnMain { [weak self] in
+            self?.contentMode = contentMode
+            if autoset == true { self?.image = resultImage }
+            completion?(.init(status: status, urlString: urlString, image: resultImage))
         }
     }
 }
@@ -275,7 +381,9 @@ internal extension UIImageView {
         )
         
         guard let url = URL(string: urlString), url.absoluteURL.host != nil else {
-            completion?(errorImage, false)
+            Thread.executeOnMain {
+                completion?(errorImage, false)
+            }
             return nil
         }
         
@@ -289,8 +397,10 @@ internal extension UIImageView {
                 data: data,
                 fileName: fileName,
                 subPath: subPath
-            ) { url, data, image in
-                completion?(image, true)
+            ) { _, _, image in
+                Thread.executeOnMain {
+                    completion?(image, image != nil)
+                }
             }
         }
         task.resume()

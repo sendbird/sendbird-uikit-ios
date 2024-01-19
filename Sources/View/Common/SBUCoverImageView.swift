@@ -248,7 +248,11 @@ public class SBUCoverImageView: UIView {
         } else {
             let filteredUsers = users.filter { $0.userId != SBUGlobals.currentUser?.userId }
             for user in filteredUsers {
+                let profileURL = user.profileURL ?? ""
                 let imageView = UIImageView(frame: self.frame)
+                imageView.backgroundColor = theme.userPlaceholderBackgroundColor
+                imageView.contentMode = profileURL.count > 0 ? .scaleAspectFill : .center
+                imageView.clipsToBounds = true
                 imageView.sbu_setProfileImageView(
                     for: user,
                     defaultImage: SBUIconSetType.iconUser.image(
@@ -256,10 +260,6 @@ public class SBUCoverImageView: UIView {
                         to: self.iconSize
                     )
                 )
-                let profileURL = user.profileURL ?? ""
-                imageView.backgroundColor = theme.userPlaceholderBackgroundColor
-                imageView.contentMode = profileURL.count > 0 ? .scaleAspectFill : .center
-                imageView.clipsToBounds = true
 
                 let stackView = UIStackView(frame: self.bounds)
                 stackView.addArrangedSubview(imageView)

@@ -74,8 +74,26 @@ public protocol SBUExtendedMessagePayloadCustomViewFactory: SBUExtendedMessagePa
     ///        }
     ///    }
     /// }
+    ///
+    /// struct CustomData: Decodable {
+    ///     let customDataField: String // your own field.
+    ///     ...
+    ///
+    ///     enum CodingKey: String, CodingKey {
+    ///         case customDataField = "custom_data_field" // Required if snake case.
+    ///         ...
+    ///     }
+    /// }
     /// ```
     static func makeCustomView(_ data: ViewData, message: SendbirdChatSDK.BaseMessage?) -> UIView?
+    
+    /// Method called when an error occurs.
+    /// This is an optional method, it will only print the error log, then return `nil` by default.
+    /// - Parameters:
+    ///   - error: A specific error instance.
+    ///   - message: A `message` data for resolving error.
+    /// - Returns: The `custom view` that will be created and attached. If an error occurs, you should implement it to return nil in general.
+    static func errorHandler(_ error: Error, message: SendbirdChatSDK.BaseMessage?) -> UIView?
 }
 
 public extension SBUExtendedMessagePayloadCustomViewFactory {
@@ -85,8 +103,12 @@ public extension SBUExtendedMessagePayloadCustomViewFactory {
             guard let data: ViewData = try message?.decodeCustomViewData() else { return nil }
             return makeCustomView(data, message: message)
         } catch {
-            SBULog.error("[Failed] decode CustomViewData : \(error.localizedDescription)")
-            return nil
+            return errorHandler(error, message: message)
         }
+    }
+    
+    static func errorHandler(_ error: Error, message: SendbirdChatSDK.BaseMessage?) -> UIView? {
+        SBULog.error("[Failed] decode CustomViewData : \(String(describing: error))")
+        return nil
     }
 }

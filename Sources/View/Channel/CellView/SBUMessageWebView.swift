@@ -22,6 +22,9 @@ open class SBUMessageWebView: UIStackView, SBUViewLifeCycle {
         public static let textMaxPrefWidth = Metric.maxWidth - Metric.textSideMargin * 2
     }
     
+    /// `urlString` of the image to be loaded. Used for comparison in asynchronous callbacks.
+    public var urlString: String?
+    
     /// An image view that represents the web link.
     public let imageView: UIImageView = {
         let imageView = UIImageView()
@@ -104,16 +107,21 @@ open class SBUMessageWebView: UIStackView, SBUViewLifeCycle {
     open func setupActions() { }
 
     open func configure(model: SBUMessageWebViewModel) {
+        self.urlString = model.imageURL
         if let imageURL = model.imageURL {
             self.imageView.loadImage(
                 urlString: imageURL,
                 placeholder: model.placeHolderImage,
                 errorImage: model.errorImage,
                 option: .imageToThumbnail,
-                subPath: SBUCacheManager.PathType.web
-            ) { success in
+                subPath: SBUCacheManager.PathType.web,
+                autoset: false
+            ) { result in
                 DispatchQueue.main.async { [weak self] in
-                    self?.imageView.contentMode = !success ? .center : .scaleAspectFill
+                    if result.urlString == self?.urlString {
+                        self?.imageView.contentMode = result.status.isSuccess ? .scaleAspectFill : .center
+                        self?.imageView.image = result.image
+                    }
                 }
             }
             self.imageView.isHidden = false

@@ -295,7 +295,7 @@ public struct DiskCache {
     }
     
     public func set(key: String, data: NSData) {
-        let imageCacheHandler: SBUImageCacheCompletionHandler = { url, data, image in }
+        let imageCacheHandler: SBUImageCacheCompletionHandler = { _, _, _ in }
         self.imageDiskCache.set(key: key, data: data, completionHandler: imageCacheHandler)
     }
     
