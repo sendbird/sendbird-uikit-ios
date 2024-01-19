@@ -80,13 +80,13 @@ class SBUDownloadManager {
             } else {
                 DispatchQueue.main.async {
                     Self.imageView.image = nil
-                    let _ = Self.imageView.loadOriginalImage(
+                    _ = Self.imageView.loadOriginalImage(
                         urlString: fileData.urlString,
                         errorImage: nil,
                         cacheKey: key,
                         subPath: fileData.subPath
-                    ) { success in
-                        if success {
+                    ) { result in
+                        if result.status.isSuccess {
                             let filePath = URL(fileURLWithPath: SBUCacheManager.Image.diskCache.pathForKey(fileName))
                             downloadHandler(filePath)
                         } else {
@@ -213,13 +213,13 @@ class SBUDownloadManager {
             } else {
                 DispatchQueue.main.async {
                     Self.imageView.image = nil
-                    let _ = Self.imageView.loadOriginalImage(
+                    _ = Self.imageView.loadOriginalImage(
                         urlString: fileMessage.url,
                         errorImage: nil,
                         cacheKey: fileMessage.cacheKey,
                         subPath: fileMessage.channelURL
-                    ) { success in
-                        if success {
+                    ) { result in
+                        if result.status.isSuccess {
                             let filePath = URL(fileURLWithPath: SBUCacheManager.Image.diskCache.pathForKey(fullPath))
                             downloadHandler(filePath)
                         } else {

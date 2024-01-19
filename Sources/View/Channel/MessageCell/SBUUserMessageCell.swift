@@ -85,6 +85,16 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
     ///    }
     /// }
     ///
+    /// struct CustomData: Decodable {
+    ///     let customDataField: String // your own field
+    ///     ...
+    ///
+    ///     enum CodingKey: String, CodingKey {
+    ///         case customDataField = "custom_data_field" // Required if snake case.
+    ///         ...
+    ///     }
+    /// }
+    ///
     /// class CustomUserMessageCell: SBUUserMessageCell {
     ///     override var customViewFactory: SBUCustomViewFactoryInternal.Type? {
     ///         CustomViewFactory.self

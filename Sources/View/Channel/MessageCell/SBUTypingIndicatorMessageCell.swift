@@ -56,7 +56,7 @@ open class SBUTypingIndicatorMessageCell: SBUContentBaseMessageCell {
         
         // Configure Content base message cell
         super.configure(with: configuration)
-        
+        self.stateView.removeFromSuperview()
         self.layoutIfNeeded()
     }
 }

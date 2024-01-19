@@ -9,9 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-@available(*, deprecated, renamed: "SendbirdUI") // 3.0.0
-public typealias SBUMain = SendbirdUI
-
 public class SendbirdUI {
     
     /// SendbirdUIKit configuration
@@ -22,36 +19,6 @@ public class SendbirdUI {
     static var isDashboardConfigLoaded: Bool = false
     
     // MARK: - Initialize
-    /// This function is used to initializes SDK with applicationId.
-    /// - Parameter applicationId: Application ID
-    @available(*, unavailable, message: "Using the `initialize(applicationId:startHandler:migrationStartHandler:completionHandler:)` function, and in the CompletionHandler, please proceed with the following procedure.", renamed: "initialize(applicationId:startHandler:migrationStartHandler:completionHandler:)") // 2.2.0
-    public static func initialize(applicationId: String) {
-        SendbirdUI.initialize(applicationId: applicationId, startHandler: nil, migrationHandler: nil) { _ in
-            
-        }
-    }
-    
-    /// This function is used to initializes SDK with applicationId.
-    ///
-    /// When the completion handler is called, please proceed with the next operation.
-    ///
-    /// - Parameters:
-    ///   - applicationId: Application ID
-    ///   - migrationStartHandler: Do something to display the progress of the DB migration.
-    ///   - completionHandler: Do something to display the completion of the DB migration.
-    ///
-    /// - Since: 2.2.0
-    @available(*, deprecated, renamed: "initialize(applicationId:startHandler:migrationHandler:completionHandler:)") // 3.0.0
-    public static func initialize(applicationId: String,
-                                  migrationStartHandler: @escaping (() -> Void),
-                                  completionHandler: @escaping ((_ error: SBError?) -> Void)) {
-        self.initialize(
-            applicationId: applicationId,
-            startHandler: nil,
-            migrationHandler: migrationStartHandler,
-            completionHandler: completionHandler
-        )
-    }
     
     /// This function is used to initializes SDK with applicationId.
     ///
@@ -68,10 +35,59 @@ public class SendbirdUI {
                                   startHandler: (() -> Void)? = nil,
                                   migrationHandler: (() -> Void)? = nil,
                                   completionHandler: @escaping ((_ error: SBError?) -> Void)) {
+        self.initialize(
+            applicationId: applicationId,
+            initParamsBuilder: nil,
+            startHandler: startHandler,
+            migrationHandler: migrationHandler,
+            completionHandler: completionHandler
+        )
+    }
+    /// This function is used to initializes SDK with applicationId.
+    ///
+    /// When the completion handler is called, please proceed with the next operation.
+    ///
+    /// - Parameters:
+    ///   - applicationId: Application ID
+    ///   - initParamsBuilder: InitParams builder.
+    ///   - startHandler: Do something to display the start of the SendbirdUIKit initialization.
+    ///   - migrationHandler: Do something to display the progress of the DB migration.
+    ///   - completionHandler: Do something to display the completion of the SendbirdChat initialization.
+    ///
+    /// See the example below for builder setting.
+    /// ```
+    /// SendbirdUI.initialize(
+    ///     applicationId: <APP_ID>
+    /// ) { params in
+    ///     params?.isLocalCachingEnabled = true
+    ///     params?.appVersion = SendbirdUI.versionString()
+    ///     params?.needsSynchronous = true
+    /// } startHandler: {
+    ///
+    /// } migrationHandler: {
+    ///
+    /// } completionHandler: { _ in
+    ///     SBUGlobals.currentUser = SBUUser(userId: userId)
+    ///
+    ///     SendbirdUI.config.common.isUsingDefaultUserProfileEnabled = true
+    ///     SendbirdUI.config.groupChannel.channel.replyType = .thread
+    ///     SendbirdUI.config.groupChannel.channel.isMentionEnabled = true
+    ///     SendbirdUI.config.groupChannel.channel.isVoiceMessageEnabled = true
+    ///     SendbirdUI.config.groupChannel.channelList.isTypingIndicatorEnabled = true
+    ///
+    ///     SBUGlobals.isImageCompressionEnabled = true
+    ///
+    ///     // INFO: For push test
+    ///     self.initializeRemoteNotification()
+    /// }
+    /// ```
+    /// - Since: 3.14.0
+    public static func initialize(applicationId: String,
+                                  initParamsBuilder: ((_ params: InitParams?) -> Void)?,
+                                  startHandler: (() -> Void)? = nil,
+                                  migrationHandler: (() -> Void)? = nil,
+                                  completionHandler: @escaping ((_ error: SBError?) -> Void)) {
         SBUGlobals.applicationId = applicationId
-        
-        startHandler?()
-        migrationHandler?()
         
         var chatLogLevel: SendbirdChatSDK.LogLevel = .none
         if (SBULog.logType & LogType.info.rawValue) > 0 {  // info, all
@@ -84,24 +100,61 @@ public class SendbirdUI {
         let params = InitParams(
             applicationId: applicationId,
             isLocalCachingEnabled: true,
-            logLevel: chatLogLevel
+            logLevel: chatLogLevel,
+            needsSynchronous: true
         )
+        
+        initParamsBuilder?(params)
+        SBULog.info("Initialize state: initParamsBuilder called\n\(params)")
+        
+        startHandler?()
+        SBULog.info("Initialize state: startHandler called")
         
         SBUCacheManager.Version.checkAndClearOutdatedCache()
         
-        if let error = SendbirdChat.initializeSynchronously(params: params) {
-            SBULog.error("[Failed] SendbirdChat initialize failed.: \(error.debugDescription)")
-            completionHandler(error)
-        } else {
-            completionHandler(nil)
+        SendbirdChat.initialize(
+            params: params,
+            migrationStartHandler: {
+                SBULog.info("Initialize state: migrationHandler called")
+                migrationHandler?()
+            },
+            completionHandler: { error in
+                defer {
+                    completionHandler(error)
+                    SBULog.info("Initialize state: completionHandler called")
+                }
+                
+                guard error == nil else {
+                    SBULog.error("Initialize state: Failed - \(error.debugDescription)")
+                    return
+                }
 
-            // Call after initialization
-            let sdkInfo = __SendbirdSDKInfo(product: .uikitChat, platform: .ios, version: SendbirdUI.shortVersion)
-            _ = SendbirdChat.__addSendbirdExtensions(extensions: [sdkInfo], customData: nil)
-            SendbirdChat.__addExtension(SBUConstant.extensionKeyUIKit, version: SendbirdUI.shortVersion)
+                self.setExtensionSettingsForSendbirdChat()
+            }
+        )
+    }
+    
+    /// Sets extensions to the SendbirdChat SDK
+    static func setExtensionSettingsForSendbirdChat() {
+        // Call after SendbirdChat initialization
+        let sdkInfo = __SendbirdSDKInfo(
+            product: .uikitChat,
+            platform: .ios,
+            version: SendbirdUI.shortVersion
+        )
+        _ = SendbirdChat.__addSendbirdExtensions(
+            extensions: [sdkInfo],
+            customData: nil
+        )
+        
+        SendbirdChat.__addExtension(
+            SBUConstant.extensionKeyUIKit,
+            version: SendbirdUI.shortVersion
+        )
 
-            SendbirdChatOptions.setMemberInfoInMessage(true)
-        }
+        SendbirdChatOptions.setMemberInfoInMessage(true)
+        
+        SBULog.info("Initialize state: executeAfterInitCompleteHandler called")
     }
     
     // MARK: - Connection
@@ -115,13 +168,6 @@ public class SendbirdUI {
         SendbirdUI.connectIfNeeded(completionHandler: completionHandler)
     }
     
-    @available(*, deprecated, renamed: "connectIfNeeded(completionHandler:)") // 2.2.0
-    public static func connectionCheck(
-        completionHandler: @escaping (_ user: User?, _ error: SBError?) -> Void
-    ) {
-        self.connectIfNeeded(completionHandler: completionHandler)
-    }
-    
     /// This function is used to check the connection state.
     ///  if connected, returns the User object, otherwise, call the connect function from the inside.
     ///  If local caching is enabled, the currentUser object is delivered and the connect operation is performed.
@@ -131,18 +177,20 @@ public class SendbirdUI {
         needToUpdateExtraData: Bool = true,
         completionHandler: @escaping (_ user: User?, _ error: SBError?) -> Void
     ) {
-        SBULog.info("[Check] Connection status : \(SendbirdChat.getConnectState().rawValue)")
-        
-        if SendbirdChat.getConnectState() == .open {
-            completionHandler(SendbirdChat.getCurrentUser(), nil)
-        } else {
-            SBULog.info("currentUser: \(String(describing: SendbirdChat.getCurrentUser()?.userId))")
-            if SendbirdChat.isLocalCachingEnabled,
-               let currentUser = SendbirdChat.getCurrentUser() {
-                completionHandler(currentUser, nil)
-                SendbirdUI.connectAndUpdates(needToUpdateExtraData: needToUpdateExtraData) { _, _ in }
+        SendbirdChat.executeOrWaitForInitialization {
+            SBULog.info("[Check] Connection status : \(SendbirdChat.getConnectState().rawValue)")
+            
+            if SendbirdChat.getConnectState() == .open {
+                completionHandler(SendbirdChat.getCurrentUser(), nil)
             } else {
-                SendbirdUI.connectAndUpdates(needToUpdateExtraData: needToUpdateExtraData, completionHandler: completionHandler)
+                SBULog.info("currentUser: \(String(describing: SendbirdChat.getCurrentUser()?.userId))")
+                if SendbirdChat.isLocalCachingEnabled,
+                   let currentUser = SendbirdChat.getCurrentUser() {
+                    completionHandler(currentUser, nil)
+                    SendbirdUI.connectAndUpdates(needToUpdateExtraData: needToUpdateExtraData) { _, _ in }
+                } else {
+                    SendbirdUI.connectAndUpdates(needToUpdateExtraData: needToUpdateExtraData, completionHandler: completionHandler)
+                }
             }
         }
     }
@@ -205,8 +253,8 @@ public class SendbirdUI {
                 profileURL: currentUser.profileURL ?? user.profileURL
             ) { error in
                 
-                #if !targetEnvironment(simulator)
-                if let pendingPushToken = SendbirdChat.getPendingPushToken() {
+                if SendbirdUI.isRemoteNotificationAvailable(),
+                   let pendingPushToken = SendbirdChat.getPendingPushToken() {
                     SBULog.info("[Request] Register pending push token to Sendbird server")
                     SendbirdUI.registerPush(deviceToken: pendingPushToken) { success in
                         if !success {
@@ -215,7 +263,6 @@ public class SendbirdUI {
                         SBULog.info("[Succeed] Register pending push token to Sendbird server")
                     }
                 }
-                #endif
                 
                 self.config.loadDashboardConfig { _ in
                     self.loadNotificationChannelSettings { _ in
@@ -250,16 +297,18 @@ public class SendbirdUI {
         needToUpdateExtraData: Bool = true,
         completionHandler: @escaping (_ user: User?, _ error: SBError?) -> Void
     ) {
-        if SendbirdChat.getConnectState() == .open {
-            completionHandler(SendbirdChat.getCurrentUser(), nil)
-        } else {
-            SBULog.info("currentUser: \(String(describing: SendbirdChat.getCurrentUser()?.userId))")
-            if SendbirdChat.isLocalCachingEnabled,
-               let currentUSer = SendbirdChat.getCurrentUser() {
-                completionHandler(currentUSer, nil)
-                SendbirdUI.authenticateFeedAndUpdates(needToUpdateExtraData: needToUpdateExtraData) { _, _ in }
+        SendbirdChat.executeOrWaitForInitialization {
+            if SendbirdChat.getConnectState() == .open {
+                completionHandler(SendbirdChat.getCurrentUser(), nil)
             } else {
-                SendbirdUI.authenticateFeedAndUpdates(needToUpdateExtraData: needToUpdateExtraData, completionHandler: completionHandler)
+                SBULog.info("currentUser: \(String(describing: SendbirdChat.getCurrentUser()?.userId))")
+                if SendbirdChat.isLocalCachingEnabled,
+                   let currentUSer = SendbirdChat.getCurrentUser() {
+                    completionHandler(currentUSer, nil)
+                    SendbirdUI.authenticateFeedAndUpdates(needToUpdateExtraData: needToUpdateExtraData) { _, _ in }
+                } else {
+                    SendbirdUI.authenticateFeedAndUpdates(needToUpdateExtraData: needToUpdateExtraData, completionHandler: completionHandler)
+                }
             }
         }
     }
@@ -317,8 +366,8 @@ public class SendbirdUI {
                 profileURL: currentUser.profileURL ?? user.profileURL
             ) { error in
                 
-                #if !targetEnvironment(simulator)
-                if let pendingPushToken = SendbirdChat.getPendingPushToken() {
+                if SendbirdUI.isRemoteNotificationAvailable(),
+                   let pendingPushToken = SendbirdChat.getPendingPushToken() {
                     SBULog.info("[Request] Register pending push token to Sendbird server")
                     SendbirdUI.registerPush(deviceToken: pendingPushToken) { success in
                         if !success {
@@ -327,7 +376,6 @@ public class SendbirdUI {
                         SBULog.info("[Succeed] Register pending push token to Sendbird server")
                     }
                 }
-                #endif
                 
                 self.config.loadDashboardConfig { _ in
                     self.loadNotificationChannelSettings { _ in
@@ -391,8 +439,8 @@ public class SendbirdUI {
             profileURL: sbuUser.profileURL ?? user.profileURL
         ) { error in
             
-            #if !targetEnvironment(simulator)
-            if let pendingPushToken = SendbirdChat.getPendingPushToken() {
+            if SendbirdUI.isRemoteNotificationAvailable(),
+               let pendingPushToken = SendbirdChat.getPendingPushToken() {
                 SBULog.info("[Request] Register pending push token to Sendbird server")
                 SendbirdUI.registerPush(deviceToken: pendingPushToken) { success in
                     if !success {
@@ -401,7 +449,6 @@ public class SendbirdUI {
                     SBULog.info("[Succeed] Register pending push token to Sendbird server")
                 }
             }
-            #endif
             
             completionHandler(error)
         }
@@ -553,7 +600,11 @@ public class SendbirdUI {
     ) {
         SBULog.info("[Request] Register push token to Sendbird server")
         
-        #if !targetEnvironment(simulator)
+        guard SendbirdUI.isRemoteNotificationAvailable() else {
+            completionHandler(false)
+            return
+        }
+        
         SendbirdChat.registerDevicePushToken(deviceToken, unique: unique) { status, error in
             switch status {
             case .success:
@@ -573,9 +624,6 @@ public class SendbirdUI {
                 completionHandler(false)
             }
         }
-        #else
-        completionHandler(false)
-        #endif
     }
     
     /// This function is used to unregister push token on the Sendbird server.
@@ -587,8 +635,9 @@ public class SendbirdUI {
                 return
             }
             
-            #if !targetEnvironment(simulator)
-            guard let pendingPushToken = SendbirdChat.getPendingPushToken() else {
+            guard SendbirdUI.isRemoteNotificationAvailable(),
+                  let pendingPushToken = SendbirdChat.getPendingPushToken()
+            else {
                 completionHandler(false)
                 return
             }
@@ -606,9 +655,6 @@ public class SendbirdUI {
                 SBULog.info("[Succeed] Push unregistration is success.")
                 completionHandler(true)
             }
-            #else
-            completionHandler(false)
-            #endif
         }
         
         if SendbirdChat.getConnectState() == .open {
@@ -646,17 +692,6 @@ public class SendbirdUI {
         } else {
             SendbirdUI.authenticateFeedIfNeeded(completionHandler: unregisterHandler)
         }
-    }
-    
-    @available(*, deprecated, renamed: "moveToChannel(channelURL:basedOnChannelList:messageListParams:)") // 1.2.2
-    public static func openChannel(channelUrl: String,
-                                   basedOnChannelList: Bool = true,
-                                   messageListParams: MessageListParams? = nil) {
-        moveToChannel(
-            channelURL: channelUrl,
-            basedOnChannelList: basedOnChannelList,
-            messageListParams: messageListParams
-        )
     }
     
     /// This is a function that moves the channel that can be called anywhere.
@@ -995,5 +1030,21 @@ extension SendbirdUI {
             } // end create channel.
             
         } // end query load.
+    }
+}
+
+extension SendbirdUI {
+    public static func isRemoteNotificationAvailable() -> Bool {
+        #if targetEnvironment(simulator)
+        // iOS 16 or later running in the simulator
+        if #available(iOS 16.0, *) {
+            return true
+        } else {
+            return false
+        }
+        #else
+        // running on a device
+        return true
+        #endif
     }
 }

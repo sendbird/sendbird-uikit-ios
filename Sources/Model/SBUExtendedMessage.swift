@@ -53,7 +53,7 @@ extension SBUExtendedMessagePayload {
 extension SBUExtendedMessagePayload {
     func decodeCustomViewData<ViewData: Decodable>() throws -> ViewData? {
         guard let json = self.customView else { return nil }
-        guard let data = try? JSONSerialization.data(withJSONObject: json) else { return nil }
+        let data = try JSONSerialization.data(withJSONObject: json)
         return try JSONDecoder().decode(ViewData.self, from: data)
     }
 }
