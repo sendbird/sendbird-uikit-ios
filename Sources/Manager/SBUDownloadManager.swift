@@ -43,19 +43,13 @@ class SBUDownloadManager {
                     }) { [weak viewController] completed, error in
                         guard error == nil else {
                             SBULog.error("[Failed] Save image: \(String(describing: error))")
-                            SBUToastManager.showToast(
-                                parentVC: viewController,
-                                type: .fileDownloadFailed
-                            )
+                            SBUToastView.show(type: .file(.downloadFailed))
                             return
                         }
                         
                         if completed {
                             SBULog.info("[Succeed] Image saved.")
-                            SBUToastManager.showToast(
-                                parentVC: viewController,
-                                type: .fileDownloadSuccess
-                            )
+                            SBUToastView.show(type: .file(.downloadSuccess))
                         }
                     }
                 }
@@ -119,7 +113,7 @@ class SBUDownloadManager {
                         viewController?.presentedViewController?.dismiss(animated: true, completion: {
                             if completed {
                                 SBULog.info("[Succeed] File is saved.")
-                                SBUToastManager.showToast(parentVC: viewController, type: .fileDownloadSuccess)
+                                SBUToastView.show(type: .file(.downloadSuccess))
                             }
                         })
                     }
@@ -186,13 +180,13 @@ class SBUDownloadManager {
                     }) { [weak parent] completed, error in
                         guard error == nil else {
                             SBULog.error("[Failed] Save image: \(String(describing: error))")
-                            SBUToastManager.showToast(parentVC: parent, type: .fileDownloadFailed)
+                            SBUToastView.show(type: .file(.downloadFailed))
                             return
                         }
                         
                         if completed {
                             SBULog.info("[Succeed] Image saved.")
-                            SBUToastManager.showToast(parentVC: parent, type: .fileDownloadSuccess)
+                            SBUToastView.show(type: .file(.downloadSuccess))
                         }
                     }
                 }
@@ -254,7 +248,7 @@ class SBUDownloadManager {
                         parent?.presentedViewController?.dismiss(animated: true, completion: {
                             if completed {
                                 SBULog.info("[Succeed] File is saved.")
-                                SBUToastManager.showToast(parentVC: parent, type: .fileDownloadSuccess)
+                                SBUToastView.show(type: .file(.downloadSuccess))
                             }
                         })
                     }

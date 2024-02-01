@@ -204,6 +204,16 @@ public class SBUIconSet {
         didSet { SBUIconSetType.iconStop.markCustomized() }
     }
     
+    /// 3.15.0
+    public static var iconGood = SBUIconSetType.iconGood.load() {
+        didSet { SBUIconSetType.iconGood.markCustomized() }
+    }
+    
+    /// 3.15.0
+    public static var iconBad = SBUIconSetType.iconBad.load() {
+        didSet { SBUIconSetType.iconBad.markCustomized() }
+    }
+    
     /// Restore all customized icons to SDK's default icons.
     ///
     /// - Since: 2.1.0

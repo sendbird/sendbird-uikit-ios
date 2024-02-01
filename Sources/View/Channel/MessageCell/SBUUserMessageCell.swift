@@ -57,7 +57,7 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
     /// If you want to override that view, override the ``createFormView()`` constructor function.
     /// - Since: 3.11.0
     public private(set) var formViews: [SBUFormView]?
-
+    
     /// This is a user message custom cell factory type
     /// to support customization via the `custom_view` data in `BaseMessage.extendedMessage`.
     ///
@@ -390,7 +390,7 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
     /// - Returns: Views that inherit from ``SBUFormView``.
     /// - since: 3.11.0
     open func createFormView() -> SBUFormView { SBUSimpleFormView() }
-
+    
     // MARK: - Mention
     /// As a default, it calls `groupChannelModule(_:didTapMentionUser:)` in ``SBUGroupChannelModuleListDelegate``.
     open func userMessageTextView(_ textView: SBUUserMessageTextView, didTapMention user: SBUUser) {

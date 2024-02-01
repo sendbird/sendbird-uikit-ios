@@ -15,13 +15,13 @@ public class SBUUserMessageCellParams: SBUBaseMessageCellParams {
     public let useReaction: Bool
     public let withTextView: Bool
     
-    /// The boolead value to indicates that the message cell should hide suggested replies.
+    /// The boolean value to indicates that the message cell should hide suggested replies.
     /// If it's `true`, never show the suggested replies view even the `BaseMessage/ExtendedMessagePayload` has the reply `option` values.
     /// - Since: 3.11.0
     public let shouldHideSuggestedReplies: Bool
     
-    /// The boolead value to indicates that the message cell should hide form type message.
-    /// If it's `true`, never show the form type message view even the `BaseMessage/ExtendedMessagePayload` has the reply `forms` values.
+    /// The boolean value to indicates that the message cell should hide form type message.
+    /// If it's `true`, never show the form type message view even the `BaseMessage/ExtendedMessagePayload` has the `forms` values.
     /// - Since: 3.11.0
     public let shouldHideFormTypeMessage: Bool
 

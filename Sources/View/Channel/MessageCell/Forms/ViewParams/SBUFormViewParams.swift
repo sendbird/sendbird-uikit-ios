@@ -13,7 +13,7 @@ import SendbirdChatSDK
 /// - Since: 3.11.0
 public struct SBUFormViewParams {
     // MARK: - Properties
-    /// The ID of the message that provides quick reply.
+    /// The ID of the message that provides form.
     public let messageId: Int64
     /// The form.
     public let form: SBUForm

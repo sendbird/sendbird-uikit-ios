@@ -565,7 +565,9 @@ class SBUFeedNotificationChannelViewModel: NSObject {
             for notificationId in notificationIds {
                 guard notification.messageId == notificationId,
                       notification.isMessageIdValid else { continue }
-                toBeDeleteIndexes.append(index)
+                if toBeDeleteIndexes.contains(index) == false {
+                    toBeDeleteIndexes.append(index)
+                }
             }
         }
         

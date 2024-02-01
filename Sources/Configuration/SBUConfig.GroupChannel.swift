@@ -52,12 +52,19 @@ extension SBUConfig.GroupChannel {
         public var typingIndicatorTypes: Set<SBUTypingIndicatorType> = [.text]
         
         /// Enable the feature to show suggested replies in messages. Default is `false`
+        /// - NOTE: A value that cannot be set in the dashboard.
         /// - Since: 3.11.0
         @SBUPrioritizedConfig public var isSuggestedRepliesEnabled: Bool = false
 
         /// Enable the feature to show form type in messages. Default is `false`
+        /// - NOTE: A value that cannot be set in the dashboard.
         /// - Since: 3.11.0
         @SBUPrioritizedConfig public var isFormTypeMessageEnabled: Bool = false
+        
+        /// Enable the feature to show feedback in messages. Default is `false`
+        /// - NOTE: A value that cannot be set in the dashboard.
+        /// - Since: 3.15.0
+        @SBUPrioritizedConfig public var isFeedbackEnabled: Bool = false
         
         /// Enable the feature to react to messages with emojis.
         /// - IMPORTANT: This property may have different activation states depending on the application attribute settings,
@@ -143,6 +150,7 @@ extension SBUConfig.GroupChannel {
             self._threadReplySelectType.setDashboardValue(channel.threadReplySelectType)
             self._isSuggestedRepliesEnabled.setDashboardValue(channel.isSuggestedRepliesEnabled)
             self._isFormTypeMessageEnabled.setDashboardValue(channel.isFormTypeMessageEnabled)
+            self._isFeedbackEnabled.setDashboardValue(channel.isFeedbackEnabled)
 
             self.input.updateWithDashboardData(channel.input)
         }
@@ -162,6 +170,8 @@ extension SBUConfig.GroupChannel {
             self.isSuggestedRepliesEnabled = (try? container.decode(Bool.self, forKey: .isSuggestedRepliesEnabled)) ?? SendbirdUI.config.groupChannel.channel.isSuggestedRepliesEnabled
             self.isFormTypeMessageEnabled = (try? container.decode(Bool.self, forKey: .isFormTypeMessageEnabled)) ??
                 SendbirdUI.config.groupChannel.channel.isFormTypeMessageEnabled
+            self.isFeedbackEnabled = (try? container.decode(Bool.self, forKey: .isFeedbackEnabled)) ??
+                SendbirdUI.config.groupChannel.channel.isFeedbackEnabled
             
             self.input = try container.decode(SBUConfig.GroupChannel.Channel.Input.self, forKey: .input)
         }

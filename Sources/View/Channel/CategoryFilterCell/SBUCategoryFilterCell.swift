@@ -36,7 +36,8 @@ open class SBUCategoryFilterCell: UICollectionViewCell, SBUViewLifeCycle {
     // MARK: SBUViewLifeCycle
     public func setupViews() {
         self.label.numberOfLines = 1
-        self.label.roundCorners(corners: .allCorners, radius: self.categoryFilterCellTheme.radius)
+        let radius = min(self.categoryFilterCellTheme.radius, SBUFeedNotificationChannelModule.CategoryFilter.Constants.categoryCellHeight / 2)
+        self.label.roundCorners(corners: .allCorners, radius: radius)
         self.label.textAlignment = .center
 
         self.label.font = SBUFontSet.notificationsFont(

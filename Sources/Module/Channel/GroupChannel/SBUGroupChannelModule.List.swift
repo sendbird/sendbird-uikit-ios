@@ -77,6 +77,13 @@ public protocol SBUGroupChannelModuleListDelegate: SBUBaseChannelModuleListDeleg
     ///    - messageCell: Message cell object
     /// - Since: 3.11.0
     func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didUpdate answer: SBUForm.Answer, messageCell: SBUBaseMessageCell)
+    
+    /// Called when updated the feedback answer.
+    /// - Parameters:
+    ///    - answer: The answer of the feedback that is updated by user.
+    ///    - messageCell: Message cell object
+    /// - Since: 3.15.0
+    func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didUpdate feedbackAnswer: SBUFeedbackAnswer, messageCell: SBUBaseMessageCell)
 }
 
 /// Methods to get data source for list component in a group channel.
@@ -528,6 +535,7 @@ extension SBUGroupChannelModule {
                         shouldHideFormTypeMessage: false, // only group channel
                         formAnswers: formAnswers
                     )
+                    configuration.shouldHideFeedback = message.myFeedbackStatus == .notApplicable
                     userMessageCell.configure(with: configuration)
                     userMessageCell.configure(highlightInfo: self.highlightInfo)
                     (userMessageCell.quotedMessageView as? SBUQuotedBaseMessageView)?.delegate = self
@@ -550,6 +558,7 @@ extension SBUGroupChannelModule {
                         messageOffsetTimestamp: self.channel?.messageOffsetTimestamp ?? 0,
                         voiceFileInfo: voiceFileInfo
                     )
+                    configuration.shouldHideFeedback = message.myFeedbackStatus == .notApplicable
                     
                     if voiceFileInfo != nil {
                         self.currentVoiceFileInfo = nil
@@ -581,7 +590,7 @@ extension SBUGroupChannelModule {
                         receiptState: receiptState,
                         useReaction: true
                     )
-                    
+                    configuration.shouldHideFeedback = message.myFeedbackStatus == .notApplicable
                     multipleFilesMessageCell.configure(with: configuration)
                     (multipleFilesMessageCell.quotedMessageView as? SBUQuotedBaseMessageView)?.delegate = self
                     self.setMessageCellAnimation(multipleFilesMessageCell, message: multipleFilesMessage, indexPath: indexPath)
@@ -654,6 +663,11 @@ extension SBUGroupChannelModule {
             }
             
             messageCell.updateFormAnswerHandler = { [weak self] answer, cell in
+                guard let self = self else { return }
+                self.delegate?.groupChannelModule(self, didUpdate: answer, messageCell: cell)
+            }
+            
+            messageCell.updateFeedbackHandler = { [weak self] answer, cell in
                 guard let self = self else { return }
                 self.delegate?.groupChannelModule(self, didUpdate: answer, messageCell: cell)
             }

@@ -1411,7 +1411,18 @@ public class SBUMessageCellTheme {
         theme.typingMessageProfileBorderColor = SBUColorSet.background50
         theme.typingMessageDotColor = SBUColorSet.onlight04
         theme.typingMessageDotTransformColor = SBUColorSet.onlight03
-
+        
+        theme.feedbackRadius = 18
+        theme.feedbackIconColor = SBUColorSet.onlight02
+        theme.feedbackIconSelectColor = SBUColorSet.ondark01
+        theme.feedbackIconDeselectColor = SBUColorSet.onlight04
+        theme.feedbackBorderColor = SBUColorSet.onlight04
+        theme.feedbackBorderSelectColor = SBUColorSet.primary300
+        theme.feedbackBorderDeselectColor = SBUColorSet.onlight04
+        theme.feedbackBackgroundNormalColor = SBUColorSet.background50
+        theme.feedbackBackgroundSelectColor = SBUColorSet.primary300
+        theme.feedbackBackgroundDeselectColor = SBUColorSet.background50
+        
         return theme
     }
     
@@ -1575,6 +1586,18 @@ public class SBUMessageCellTheme {
         theme.typingMessageProfileBorderColor = SBUColorSet.background600
         theme.typingMessageDotColor = SBUColorSet.ondark04
         theme.typingMessageDotTransformColor = SBUColorSet.ondark03
+        
+        theme.feedbackRadius = 18
+        theme.feedbackIconColor = SBUColorSet.ondark02
+        theme.feedbackIconSelectColor = SBUColorSet.ondark01
+        theme.feedbackIconDeselectColor = SBUColorSet.ondark04
+        theme.feedbackBorderColor = SBUColorSet.ondark04
+        theme.feedbackBorderSelectColor = SBUColorSet.primary200
+        theme.feedbackBorderDeselectColor = SBUColorSet.ondark04
+        theme.feedbackBackgroundNormalColor = SBUColorSet.background600
+        theme.feedbackBackgroundSelectColor = SBUColorSet.primary200
+        theme.feedbackBackgroundDeselectColor = SBUColorSet.background600
+        
         return theme
     }
     
@@ -1817,9 +1840,7 @@ public class SBUMessageCellTheme {
                 suggestedReplyBorderColor: UIColor = SBUColorSet.primary300,
                 suggestedReplyBackgroundColor: UIColor = SBUColorSet.background50,
                 suggestedReplyBackgroundSelectedColor: UIColor = SBUColorSet.background100,
-
                 multipleFilesMessageFileOverlayColor: UIColor = SBUColorSet.overlay02,
-
                 formBackgroundColor: UIColor = SBUColorSet.background100,
                 formTitleColor: UIColor = SBUColorSet.onlight02,
                 formOptionalTitleColor: UIColor = SBUColorSet.onlight03,
@@ -1833,10 +1854,19 @@ public class SBUMessageCellTheme {
                 formSubmitButtonBackgroundColor: UIColor = SBUColorSet.primary300,
                 formSubmitButtonBackgroundDisabledColor: UIColor = SBUColorSet.onlight04,
                 formSubmitButtonTitleColor: UIColor = SBUColorSet.ondark01,
-                
                 typingMessageProfileBorderColor: UIColor = SBUColorSet.background50,
                 typingMessageDotColor: UIColor = SBUColorSet.onlight04,
-                typingMessageDotTransformColor: UIColor = SBUColorSet.onlight03
+                typingMessageDotTransformColor: UIColor = SBUColorSet.onlight03,
+                feedbackRadius: CGFloat = 18,
+                feedbackIconColor: UIColor = SBUColorSet.onlight02,
+                feedbackIconSelectColor: UIColor = SBUColorSet.ondark01,
+                feedbackIconDeselectColor: UIColor = SBUColorSet.onlight04,
+                feedbackBorderColor: UIColor = SBUColorSet.onlight04,
+                feedbackBorderSelectColor: UIColor = SBUColorSet.primary300,
+                feedbackBorderDeselectColor: UIColor = SBUColorSet.onlight04,
+                feedbackBackgroundNormalColor: UIColor = SBUColorSet.background50,
+                feedbackBackgroundSelectColor: UIColor = SBUColorSet.primary300,
+                feedbackBackgroundDeselectColor: UIColor = SBUColorSet.background50
     ) {
         
         self.backgroundColor = backgroundColor
@@ -1967,6 +1997,17 @@ public class SBUMessageCellTheme {
         self.typingMessageProfileBorderColor = typingMessageProfileBorderColor
         self.typingMessageDotColor = typingMessageDotColor
         self.typingMessageDotTransformColor = typingMessageDotTransformColor
+        
+        self.feedbackRadius = feedbackRadius
+        self.feedbackIconColor = feedbackIconColor
+        self.feedbackIconSelectColor = feedbackIconSelectColor
+        self.feedbackIconDeselectColor = feedbackIconDeselectColor
+        self.feedbackBorderColor = feedbackBorderColor
+        self.feedbackBorderSelectColor = feedbackBorderSelectColor
+        self.feedbackBorderDeselectColor = feedbackBorderDeselectColor
+        self.feedbackBackgroundNormalColor = feedbackBackgroundNormalColor
+        self.feedbackBackgroundSelectColor = feedbackBackgroundSelectColor
+        self.feedbackBackgroundDeselectColor = feedbackBackgroundDeselectColor
     }
     
     public var backgroundColor: UIColor
@@ -2172,6 +2213,18 @@ public class SBUMessageCellTheme {
     public var typingMessageProfileBorderColor: UIColor // 3.12.0
     public var typingMessageDotColor: UIColor // 3.12.0
     public var typingMessageDotTransformColor: UIColor // 3.12.0
+    
+    // MARK: Feedback
+    public var feedbackRadius: CGFloat // 3.15.0
+    public var feedbackIconColor: UIColor // 3.15.0
+    public var feedbackIconSelectColor: UIColor // 3.15.0
+    public var feedbackIconDeselectColor: UIColor // 3.15.0
+    public var feedbackBorderColor: UIColor // 3.15.0
+    public var feedbackBorderSelectColor: UIColor // 3.15.0
+    public var feedbackBorderDeselectColor: UIColor // 3.15.0
+    public var feedbackBackgroundNormalColor: UIColor // 3.15.0
+    public var feedbackBackgroundSelectColor: UIColor // 3.15.0
+    public var feedbackBackgroundDeselectColor: UIColor // 3.15.0
 }
 
 // MARK: - User List Theme
@@ -2874,6 +2927,13 @@ public class SBUComponentTheme {
         theme.loadingTextColor = SBUColorSet.ondark01
         theme.loadingSpinnerColor = SBUColorSet.primary300
         
+        // Toast
+        theme.toastContainerColor = SBUColorSet.background700 // [NEXT_VERISON]
+        theme.toastTitleColor = SBUColorSet.ondark01 // [NEXT_VERISON]
+
+        // Feedback
+        theme.feedbackToastUpdateDoneColor = SBUColorSet.secondary200 // [NEXT_VERISON]
+        
         return theme
     }
     
@@ -2984,6 +3044,12 @@ public class SBUComponentTheme {
         theme.loadingFont = SBUFontSet.subtitle2
         theme.loadingTextColor = SBUColorSet.onlight01
         theme.loadingSpinnerColor = SBUColorSet.primary200
+        
+        // Toast
+        theme.toastContainerColor = SBUColorSet.ondark01 // [NEXT_VERISON]
+        theme.toastTitleColor = SBUColorSet.onlight01 // [NEXT_VERISON]
+        
+        theme.feedbackToastUpdateDoneColor = SBUColorSet.secondary300 // [NEXT_VERISON]
         
         return theme
     }
@@ -3096,6 +3162,12 @@ public class SBUComponentTheme {
         theme.loadingTextColor = SBUColorSet.onlight01
         theme.loadingSpinnerColor = SBUColorSet.primary200
         
+        // Toast
+        theme.toastContainerColor = SBUColorSet.ondark01 // [NEXT_VERISON]
+        theme.toastTitleColor = SBUColorSet.onlight01 // [NEXT_VERISON]
+        
+        theme.feedbackToastUpdateDoneColor = SBUColorSet.secondary200 // [NEXT_VERISON]
+        
         return theme
     }
     
@@ -3173,7 +3245,11 @@ public class SBUComponentTheme {
                 loadingPopupBackgroundColor: UIColor = .clear,
                 loadingFont: UIFont = SBUFontSet.subtitle2,
                 loadingTextColor: UIColor = SBUColorSet.ondark01,
-                loadingSpinnerColor: UIColor = SBUColorSet.primary300) {
+                loadingSpinnerColor: UIColor = SBUColorSet.primary300,
+                toastContainerColor: UIColor = SBUColorSet.background700, // [NEXT_VERISON]
+                toastTitleColor: UIColor = SBUColorSet.ondark01, // [NEXT_VERISON]
+                feedbackToastUpdateDoneColor: UIColor = SBUColorSet.secondary200 // [NEXT_VERISON]
+    ) {
         
         self.emptyViewBackgroundColor = emptyViewBackgroundColor
         self.emptyViewStatusFont = emptyViewStatusFont
@@ -3258,6 +3334,13 @@ public class SBUComponentTheme {
         self.loadingFont = loadingFont
         self.loadingTextColor = loadingTextColor
         self.loadingSpinnerColor = loadingSpinnerColor
+        
+        // Toast
+        self.toastContainerColor = toastContainerColor // [NEXT_VERISON]
+        self.toastTitleColor = toastTitleColor // [NEXT_VERISON]
+        
+        // Feedback toast
+        self.feedbackToastUpdateDoneColor = feedbackToastUpdateDoneColor // [NEXT_VERISON]
     }
     
     // EmptyView
@@ -3369,6 +3452,13 @@ public class SBUComponentTheme {
     public var loadingFont: UIFont
     public var loadingTextColor: UIColor
     public var loadingSpinnerColor: UIColor
+    
+    // Toast
+    public var toastContainerColor: UIColor // [NEXT_VERISON]
+    public var toastTitleColor: UIColor // [NEXT_VERISON]
+    
+    // Feedback
+    public var feedbackToastUpdateDoneColor: UIColor // [NEXT_VERISON]
 }
 
 // MARK: - Message Search Theme
