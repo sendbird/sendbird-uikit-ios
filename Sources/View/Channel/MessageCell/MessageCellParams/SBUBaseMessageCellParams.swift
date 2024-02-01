@@ -44,6 +44,11 @@ public class SBUBaseMessageCellParams {
     /// Profile image URL for chat notification channel.
     var profileImageURL: String?
     
+    /// The boolean value to indicates that the message cell should hide form type message.
+    /// If it's `true`, never show the form type message view even the `BaseMessage/myFeedbackStatus` has valid status.
+    /// - Since: 3.15.0
+    public var shouldHideFeedback: Bool = true
+    
     /**
      - Parameters:
         - messagePosition: Cell position (left / right / center)
@@ -57,11 +62,13 @@ public class SBUBaseMessageCellParams {
                 receiptState: SBUMessageReceiptState = .none,
                 isThreadMessage: Bool = false,
                 joinedAt: Int64 = 0,
+                shouldHideFeedback: Bool = true,
                 messageOffsetTimestamp: Int64 = 0) {
         self.message = message
         self.hideDateView = hideDateView
         self.messagePosition = messagePosition
         self.receiptState = receiptState
+        self.shouldHideFeedback = shouldHideFeedback
         
         self.useQuotedMessage =
             (SendbirdUI.config.groupChannel.channel.replyType != .none)

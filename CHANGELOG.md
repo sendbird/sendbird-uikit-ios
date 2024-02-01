@@ -1,5 +1,56 @@
 # Changelog
 
+### v3.15.0 (Feb 01, 2024)
+
+- Fixed a bug where duplicated deleted messages in the response of the message changeglogs cause a crash
+- Limited the maximum corner radius of the category filter to half of the height
+
+- Added `isFeedbackEnabled` config property for `SBUConfig.GroupChannel`
+- Added `SBUToastView`
+
+- Added `Feedback` feature
+    - Added `SBUFeedbackAnswer` for handling internal data
+    - Added `groupChannelModule(_ listComponent:didUpdate:messageCell:)` in `SBUGroupChannelModuleListDelegate`
+    - Added `SBUFeedbackViewDelegate`
+    - Added `SBUFeedbackView` and `SBUSimpleFeedbackView`
+    - Added `SBUFeedbackViewParams`
+    - Added `shouldHideFeedback` in `SBUBaseMessageCellParams`
+    - Added `updateFeedbackView(with:)` method in `SBUBaseMessageCell`
+    - Added `shouldHideFeedback` and `feedbackView` properties in `SBUBaseMessageCell`
+    - Added `feedbackView(_ view:didAnswer:)` delegate method in `SBUBaseMessageCell`
+    - Added `groupChannelModule(_ listComponent:didUpdate:messageCell:)` in `SBUBaseChannelViewController`
+    - Added feedback handling methods in `SBUGroupChannelViewModel`
+        - Added `submitFeedback(message:answer:completionHandler:)`
+        - Added `updateFeedback(message:answer:completionHandler:)` 
+        - Added `deleteFeedback(message:completionHandler:)`
+
+- Updated theme values in `SBUMessageCellTheme`
+    - Added `feedbackRadius`
+    - Added `feedbackIconColor`
+    - Added `feedbackIconSelectColor`
+    - Added `feedbackIconDeselectColor`
+    - Added `feedbackBorderColor`
+    - Added `feedbackBorderSelectColor`
+    - Added `feedbackBorderDeselectColor`
+    - Added `feedbackBackgroundNormalColor`
+    - Added `feedbackBackgroundSelectColor`
+    - Added `feedbackBackgroundDeselectColor`
+
+- Updated theme values in `SBUComponentTheme`
+        - Added `toastContainerColor`
+        - Added `toastTitleColor`
+        - Added `feedbackToastUpdateDoneColor`
+
+- Updated StringSet values in `SBUMessageCellTheme`
+    - Added `Feedback_Comment_Title`
+    - Added `Feedback_Comment_Placeholder`
+    - Added `Feedback_Edit_Comment`
+    - Added `Feedback_Remove`
+    - Added `Feedback_Update_Done`
+
+- Updated icons in `SBUIconSet`
+    - Added `iconGood`
+    - Added `iconBad`
 ### v3.14.0 (Jan 19, 2024)
 
 - Initialization improving

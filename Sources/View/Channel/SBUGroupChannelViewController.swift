@@ -821,7 +821,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         forRowAt cellIndexPath: IndexPath
     ) {
         guard let multipleFilesMessage = multipleFilesMessageCell.multipleFilesMessage else {
-            SBUToastManager.showToast(parentVC: self, type: .fileOpenFailed)
+            SBUToastView.show(type: .file(.openFailed))
             return
         }
         guard index < multipleFilesMessage.files.count else { return }
@@ -947,6 +947,52 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         guard let message = messageCell.message else { return }
 
         self.viewModel?.updateForm(message: message, answer: answer)
+    }
+    
+    open func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didUpdate feedbackAnswer: SBUFeedbackAnswer, messageCell: SBUBaseMessageCell) {
+        
+        guard let message = messageCell.message else { return }
+
+        switch feedbackAnswer.action {
+        case .rating:
+            self.viewModel?.submitFeedback(
+                message: message,
+                answer: feedbackAnswer
+            ) { [weak self, weak message, weak messageCell] _ in
+                self?.listComponent?.reloadCell(messageCell)
+                
+                SBUFeedbackAnswer.showCommentPopup(
+                    answer: feedbackAnswer
+                ) { [weak self, weak message] answer in
+                    guard let message = message else { return }
+                    self?.viewModel?.updateFeedback(message: message, answer: answer) { _ in
+                        self?.listComponent?.reloadTableView()
+                    }
+                }
+            }
+            // end case .rating
+            
+        case .modify:
+            SBUFeedbackAnswer.showModifications(
+                theme: listComponent.theme,
+                answer: feedbackAnswer,
+                updateHandler: { [weak self, weak message] answer in
+                    guard let message = message else { return }
+                    self?.viewModel?.updateFeedback(message: message, answer: answer) { _ in
+                        self?.listComponent?.reloadTableView()
+                        SBUToastView.show(type: .feedback)
+                    }
+                },
+                deleteHandler: { [weak self, weak message] _ in
+                    guard let message = message else { return }
+                    self?.viewModel?.deleteFeedback(message: message) {
+                        self?.listComponent?.reloadTableView()
+                    }
+                }
+            )
+            // end case .modify
+        }
+        // end switch
     }
     
     open override func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didTapVoiceMessage fileMessage: FileMessage, cell: UITableViewCell, forRowAt indexPath: IndexPath) {

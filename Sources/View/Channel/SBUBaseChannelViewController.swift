@@ -505,7 +505,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
                 SBULoading.stop()
                 
                 guard let fileURL = fileURL else {
-                    SBUToastManager.showToast(parentVC: self, type: .fileOpenFailed)
+                    SBUToastView.show(type: .file(.openFailed))
                     return
                 }
                 

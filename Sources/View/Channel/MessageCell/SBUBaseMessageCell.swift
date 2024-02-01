@@ -10,7 +10,7 @@ import UIKit
 import SendbirdChatSDK
 
  @IBDesignable
-open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol {
+open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol, SBUFeedbackViewDelegate {
     // MARK: - Public
     public var message: BaseMessage?
     public var position: MessagePosition = .center
@@ -43,6 +43,18 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol {
     
     public var stackViewTopConstraint: NSLayoutConstraint?
     
+    // MARK: - Feedback UI
+    
+    /// The boolean value whether the ``feedbackView`` instance should appear or not. The default is `true`
+    /// - Important: If it's true, ``feedbackView`` never appears even if the ``userMessage`` has valid status of `myFeedbackStatus`.
+    /// - Since: 3.11.0
+    public private(set) var shouldHideFeedback: Bool = true
+    
+    /// The array of ``SBUFeedbackView`` instance.
+    /// If you want to override that view, override the ``createFeedbackView()`` constructor function.
+    /// - Since: 3.15.0
+    public internal(set) var feedbackView: SBUFeedbackView?
+    
     // MARK: - Action
     var userProfileTapHandler: (() -> Void)?
     var tapHandlerToContent: (() -> Void)?
@@ -68,6 +80,12 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol {
     ///    - messageCell: The current ``SBUBaseMessageCell`` object.
     var updateFormAnswerHandler: ((_ formAnswer: SBUForm.Answer, _ messageCell: SBUBaseMessageCell) -> Void)?
 
+    /// The action of ``SBUFeedbackView`` that is called when a `Feedback` is updated.
+    /// - Parameters:
+    ///    - feedbackAnswer: The ``SBUFeedbackAnswer`` object that will be submitted.
+    ///    - messageCell: The current ``SBUBaseMessageCell`` object.
+    var updateFeedbackHandler: ((_ feedbackAnswer: SBUFeedbackAnswer, _ messageCell: SBUBaseMessageCell) -> Void)?
+    
     // MARK: - View Lifecycle
     
     open override func setupViews() {
@@ -134,11 +152,15 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol {
         self.groupPosition = configuration.groupPosition
         self.dateView.isHidden = configuration.hideDateView
         self.receiptState = configuration.receiptState
+        self.shouldHideFeedback = configuration.shouldHideFeedback
         
         if let dateView = self.dateView as? SBUMessageDateView,
            let message = self.message {
             dateView.configure(timestamp: message.createdAt)
         }
+        
+        // MARK: Feedback Views
+        self.updateFeedbackView(with: self.message)
     }
     
     open func configure(highlightInfo: SBUHighlightMessageInfo?) {
@@ -170,5 +192,11 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol {
     // MARK: -
     open override func prepareForReuse() {
         super.prepareForReuse()
+    }
+    
+    // MARK: - feedback view delegate
+    
+    open func feedbackView(_ view: SBUFeedbackView, didAnswer answer: SBUFeedbackAnswer) {
+        self.updateFeedbackHandler?(answer, self)
     }
 }

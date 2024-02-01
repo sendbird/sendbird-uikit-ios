@@ -54,8 +54,8 @@ public class SBUAlertView: NSObject {
     let textInsideMargin: CGFloat = 3.0
     let textTopBottomMargin: CGFloat = 20.0
     let inputAreaHeight: CGFloat = 32.0
-    let inputAreaMargin: CGFloat = 32.0
-    let inputBottomMargin: CGFloat = 18.5
+    let inputAreaMargin: CGFloat = 20.0
+    let inputBottomMargin: CGFloat = 16
     let buttonHeight: CGFloat = 44.0
     let sideMargin: CGFloat = 16.0
     
@@ -82,6 +82,7 @@ public class SBUAlertView: NSObject {
     ///   - title: Title text
     ///   - message: Message text (default: nil)
     ///   - needInputField: If an input field is required, set value to `true`.
+    ///   - inputText: If an input field has pre-defined text  set value `text`.
     ///   - placeHolder: Placeholder text (default: "")
     ///   - centerYRatio: AlertView's centerY ratio.
     ///   - oneTimetheme: One-time theme setting
@@ -91,6 +92,7 @@ public class SBUAlertView: NSObject {
     public static func show(title: String,
                             message: String? = nil,
                             needInputField: Bool = false,
+                            inputText: String? = nil,
                             placeHolder: String? = "",
                             centerYRatio: CGFloat? = 1.0,
                             oneTimetheme: SBUComponentTheme? = nil,
@@ -102,6 +104,7 @@ public class SBUAlertView: NSObject {
             title: title,
             message: message,
             needInputField: needInputField,
+            inputText: inputText,
             placeHolder: placeHolder,
             centerYRatio: centerYRatio,
             oneTimetheme: oneTimetheme,
@@ -120,6 +123,7 @@ public class SBUAlertView: NSObject {
     private func show(title: String,
                       message: String? = nil,
                       needInputField: Bool = false,
+                      inputText: String? = nil,
                       placeHolder: String? = "",
                       centerYRatio: CGFloat? = 1.0,
                       oneTimetheme: SBUComponentTheme? = nil,
@@ -247,6 +251,7 @@ public class SBUAlertView: NSObject {
                 origin: CGPoint(x: sideMargin, y: originY + inputAreaMargin),
                 size: CGSize(width: insideItemWidth, height: inputAreaHeight))
             )
+            inputField.text = inputText
             inputField.backgroundColor = theme.alertTextFieldBackgroundColor
             inputField.font = theme.alertTextFieldFont
             inputField.textColor = theme.alertTitleColor
@@ -292,8 +297,8 @@ public class SBUAlertView: NSObject {
             cancelButton.setBackgroundImage(UIImage.from(color: theme.highlightedColor), for: .highlighted)
             
             let separatorLine = UIView(frame: CGRect(
-                origin: cancelButton.frame.origin,
-                size: CGSize(width: 0.5, height: buttonHeight))
+                origin: CGPoint(x: cancelButton.bounds.maxX - 0.5, y: 0),
+                size: CGSize(width: 5, height: buttonHeight))
             )
             separatorLine.backgroundColor = theme.separatorColor
             cancelButton.addSubview(separatorLine)

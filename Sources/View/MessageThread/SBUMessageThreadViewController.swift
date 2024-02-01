@@ -635,7 +635,7 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
         forRowAt cellIndexPath: IndexPath
     ) {
         guard let multipleFilesMessage = multipleFilesMessageCell.multipleFilesMessage else {
-            SBUToastManager.showToast(parentVC: self, type: .fileOpenFailed)
+            SBUToastView.show(type: .file(.openFailed))
             return
         }
         guard index < multipleFilesMessage.files.count else { return }

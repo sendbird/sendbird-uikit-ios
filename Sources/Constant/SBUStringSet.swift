@@ -323,6 +323,13 @@ public class SBUStringSet {
     public static var FormType_Optional = "(optional)" // 3.11.0
     public static var FormType_Error_Default = "Please check the value" // 3.11.0
     
+    // MARK: - Feedback
+    public static var Feedback_Comment_Title = "Provide additional feedback (optional)" // 3.15.0
+    public static var Feedback_Comment_Placeholder = "Leave a comment" // 3.15.0
+    public static var Feedback_Edit_Comment = "Edit comment" // 3.15.0
+    public static var Feedback_Remove = "Remove feedback" // 3.15.0
+    public static var Feedback_Update_Done = "Successfully changed" // 3.15.0
+    
     public class Mention {
         /// "@"
         public static let Trigger_Key: String = "@"

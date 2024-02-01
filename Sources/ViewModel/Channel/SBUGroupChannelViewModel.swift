@@ -793,6 +793,76 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
         cache.updateForms(with: message.asForms)
         cache.updateAnswer(with: answer)
     }
+    
+    // MARK: - Request feedback.
+    
+    /// This function is used to submit feedback data.
+    /// - Parameters:
+    ///   - message: `BaseMessage` object to submit feedback.
+    ///   - answer: set feedback asnwer.
+    ///   - completionHandler: Completion handler.
+    /// - Since: 3.15.0
+    public func submitFeedback(
+        message: BaseMessage,
+        answer: SBUFeedbackAnswer,
+        completionHandler: ((Feedback?) -> Void)? = nil
+    ) {
+        guard let rating = answer.rating else { return }
+        SBULog.info("[Request] Submit feedback")
+        message.submitFeedback(rating: rating, comment: answer.comment) { feedback, error in
+            if let error = error {
+                SBULog.error("[Request] Submit feedback - error: \(error.localizedDescription)")
+                self.delegate?.didReceiveError(error)
+                return
+            }
+            
+            completionHandler?(feedback)
+        }
+    }
+    
+    /// This function is used to update feedback data.
+    /// - Parameters:
+    ///   - message: `BaseMessage` object to update feedback.
+    ///   - answer: set feedback asnwer.
+    ///   - completionHandler: Completion handler.
+    /// - Since: 3.15.0
+    public func updateFeedback(
+        message: BaseMessage,
+        answer: SBUFeedbackAnswer,
+        completionHandler: ((Feedback?) -> Void)? = nil
+    ) {
+        guard let rating = answer.rating else { return }
+        SBULog.info("[Request] Update feedback")
+        message.updateFeedback(rating: rating, comment: answer.comment) { feedback, error in
+            if let error = error {
+                SBULog.error("[Request] update feedback - error: \(error.localizedDescription)")
+                self.delegate?.didReceiveError(error)
+                return
+            }
+            completionHandler?(feedback)
+        }
+    }
+    
+    /// This function is used to delete feedback data.
+    /// - Parameters:
+    ///   - message: `BaseMessage` object to delete feedback.
+    ///   - completionHandler: Completion handler.
+    /// - Since: 3.15.0
+    public func deleteFeedback(
+        message: BaseMessage,
+        completionHandler: (() -> Void)? = nil
+    ) {
+        SBULog.info("[Request] Delete feedback")
+        message.deleteFeedback { error in
+            if let error = error {
+                SBULog.error("[Request] delete feedback - error: \(error.localizedDescription)")
+                self.delegate?.didReceiveError(error)
+                return
+            }
+            completionHandler?()
+        }
+    }
+    
 }
 
 // MARK: - ConnectionDelegate
