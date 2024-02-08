@@ -1,5 +1,57 @@
 # Changelog
 
+### v3.16.0 (Feb 08, 2024)
+
+- Replaced the `SuggestedReplies` and `Form` interfaces with the ChatSDK model-based
+    - Added Interfaces
+        - Added `groupChannelModule(_:form:messageCell:)` in `SBUGroupChannelModuleListDelegate`
+        - Added `formFieldView(_:SBUFormFieldView,didUpdate:SendbirdChatSDK.FormField)` in `SBUFormFieldViewDelegate`
+        - Added `formField` property in `SBUFormFieldView`
+        - Added `configure(form:field:delegate:)` in `SBUFormFieldView`
+        - Added `SBUFormFieldInputType` interface
+        - Added `formView(_:SBUFormView, didSubmit: SendbirdChatSDK.Form)` in `SBUFormViewDelegate`
+        - Added `groupChannelModule(_:didSubmit:messageCell:)` in `SBUGroupChannelModuleListDelegate`
+        - Added `formFieldView(_:formField:)` in `SBUFormFieldViewDelegate`
+        - Added `formField` property in `SBUFormFieldView`
+        - Added `configure(form:field:delegate:)` in `SBUFormFieldView`
+        - Added `groupChannelModule(_:didSubmit:messageCell:)` in `SBUGroupChannelViewController`
+        - Added `submitForm(message:form:)` in `SBUGroupChannelViewModel`
+        - Replaced `form` property type in `SBUFormView`
+        - Replaced `createFormFieldViews(with:)` interface type in `SBUFormView`
+        - Replaced `formFieldView(_:didUpdate:)` in `SBUFormView`
+        - Replaced `form` property type in `SBUFormViewParams`
+    - Removed SBUForm Interfaces
+        - Removed `asForms` in `BaseMessage` class
+        - Removed `SBUForm` interface
+        - Removed `SBUForm.Answer` interface 
+        - Removed `SBUForm.Field` interface
+        - Removed `SBUForm.Field.Updated` interface
+        - Remvoed `forms` property in `SBUExtendedMessagePayload`
+        - Removed `formAnswers` property in SBUUserMessageCellParams
+        - Removed `updateFormView(with:,answers:)` function in `SBUUserMessageCell`
+        - Removed `formView(_:SBUFormView, didSubmit: SBUForm.Answer)` in `SBUFormViewDelegate`
+        - Removed `formView(_:SBUFormView, didUpdate: SBUForm.Answer)` in `SBUFormViewDelegate`
+        - Removed `formFieldView(_:SBUFormFieldView,didUpdate: SBUForm.Field.Updated)` in `SBUFormFieldViewDelegate`
+        - Removed `init(messageId: Int64, form: SBUForm)` in `SBUFormViewParams`
+        - Removed `answer` property in `SBUFormView`
+        - Removed `createFormFieldViews(with: SBUForm?)` function in `SBUFormView`
+        - Removed `formFieldView(_:SBUFormFieldView,didUpdate:SBUForm.Field.Updated)` in `SBUFormView`
+        - Removed `configure(form:field:value:delegate:)` in `SBUFormFieldView`
+        - Removed `groupChannelModule(_:didSubmit:messageCell:)` in `SBUGroupChannelModuleListDelegate`
+        - Removed `groupChannelModule(_:didUpdate:messageCell:)` in `SBUGroupChannelModuleListDelegate`
+        - Removed `groupChannelModule(_:didSubmit:messageCell:)` in `SBUGroupChannelViewController`
+        - Removed `groupChannelModule(_:didUpdate:messageCell:)` in `SBUGroupChannelViewController`
+        - Removed `groupChannelModule(_:answersFor:) -> [SBUForm.Answer]?` in `SBUGroupChannelViewController`
+        - Removed `SBUFormFieldView.StatusType` interface
+        - Removed `submitForm(message:answer:)` in `SBUGroupChannelViewModel`
+        - Removed `updateForm(message:answer:)` in `SBUGroupChannelViewModel`
+        - Removed `groupChannelModule(_:answersFor:)` in `SBUGroupChannelModuleListDataSource`
+    - Deprecated `asSuggestedReplies` in `BaseMessage`, use `BaseMessage.suggestedReplies`
+- Fixed voice message preview string in the channel list not working issue
+- Deprecated `getFileTypeString(by:)` function of `SBUUtils` class: renamed to `getFileTypePreviewString(by:)`
+- Added disable chat input based on last message response
+- Added `SBULoadingDatasource` for customizing touch events in the loading view
+
 ### v3.15.0 (Feb 01, 2024)
 
 - Fixed a bug where duplicated deleted messages in the response of the message changeglogs cause a crash

@@ -64,19 +64,13 @@ public protocol SBUGroupChannelModuleListDelegate: SBUBaseChannelModuleListDeleg
         forRowAt cellIndexPath: IndexPath
     )
     
-    /// Called when submit the form answer.
+    /// Called when submit the form.
     /// - Parameters:
-    ///    - answer: The answer of the form that is submitted by user.
-    ///    - messageCell: Message cell object
-    /// - Since: 3.11.0
-    func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didSubmit answer: SBUForm.Answer, messageCell: SBUBaseMessageCell)
-
-    /// Called when updated the form answer.
-    /// - Parameters:
-    ///    - answer: The answer of the form that is updated by user.
-    ///    - messageCell: Message cell object
-    /// - Since: 3.11.0
-    func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didUpdate answer: SBUForm.Answer, messageCell: SBUBaseMessageCell)
+    ///   - listComponent: `SBUGroupChannelModule.List` object.
+    ///   - form: `SendbirdChatSDK.Form` object.
+    ///   - messageCell: Message cell object
+    /// - Since: 3.16.0
+    func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didSubmit form: SendbirdChatSDK.Form, messageCell: SBUBaseMessageCell)
     
     /// Called when updated the feedback answer.
     /// - Parameters:
@@ -94,15 +88,6 @@ public protocol SBUGroupChannelModuleListDataSource: SBUBaseChannelModuleListDat
     ///    - tableView: `UITableView` object from list component.
     /// - Returns: `SBUHightlightMessageInfo` object.
     func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, highlightInfoInTableView tableView: UITableView) -> SBUHighlightMessageInfo?
-    
-    /// Ask to data source to return the formData by messageId.
-    /// - Parameters:
-    ///   - listComponent: `SBUGroupChannelModule.List` object.
-    ///   - formAnswerByMessageId: Specific message id.
-    /// - Returns: `SBUForm.Answer` object.
-    ///
-    /// - Since: 3.11.0
-    func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, answersFor messageId: Int64?) -> [SBUForm.Answer]?
 }
 
 extension SBUGroupChannelModule {
@@ -519,8 +504,6 @@ extension SBUGroupChannelModule {
                     // User message
                 case let (userMessage, userMessageCell) as (UserMessage, SBUUserMessageCell):
                     let isLatestUserMessage = userMessage.messageId == fullMessageList.first(where: { $0.sender != nil })?.messageId
-                    let formAnswers = self.dataSource?.groupChannelModule(self, answersFor: userMessage.messageId)
-
                     let configuration = SBUUserMessageCellParams(
                         message: userMessage,
                         hideDateView: isSameDay,
@@ -532,8 +515,7 @@ extension SBUGroupChannelModule {
                         joinedAt: self.channel?.joinedAt ?? 0,
                         messageOffsetTimestamp: self.channel?.messageOffsetTimestamp ?? 0,
                         shouldHideSuggestedReplies: !isLatestUserMessage,
-                        shouldHideFormTypeMessage: false, // only group channel
-                        formAnswers: formAnswers
+                        shouldHideFormTypeMessage: false
                     )
                     configuration.shouldHideFeedback = message.myFeedbackStatus == .notApplicable
                     userMessageCell.configure(with: configuration)
@@ -657,14 +639,9 @@ extension SBUGroupChannelModule {
                 self.delegate?.groupChannelModule(self, didSelect: optionView)
             }
             
-            messageCell.submitFormAnswerHandler = { [weak self] answer, cell in
+            messageCell.submitFormHandler = { [weak self] form, cell in
                 guard let self = self else { return }
-                self.delegate?.groupChannelModule(self, didSubmit: answer, messageCell: cell)
-            }
-            
-            messageCell.updateFormAnswerHandler = { [weak self] answer, cell in
-                guard let self = self else { return }
-                self.delegate?.groupChannelModule(self, didUpdate: answer, messageCell: cell)
+                self.delegate?.groupChannelModule(self, didSubmit: form, messageCell: cell)
             }
             
             messageCell.updateFeedbackHandler = { [weak self] answer, cell in

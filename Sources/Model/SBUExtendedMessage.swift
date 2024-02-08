@@ -13,21 +13,34 @@ import Foundation
 struct SBUExtendedMessagePayload {
     /// Parsed `suggested replies` data.
     public let suggestedReplies: [String]?
-    /// Parsed array of `form`.
-    public let forms: [SBUForm]?
+
     /// This is custom view data, set on the server side, and can be of `Any` type.
     public let customView: Any?
+    
+    /// A value that determines whether to disable the MessageInputView.
+    /// - Since: 3.16.0
+    public let disableChatInput: Bool?
 
     init?(from value: [String: Any]) {
         self.suggestedReplies = SBUExtendedMessagePayload.getSuggestedReplies(from: value)
-        self.forms = SBUExtendedMessagePayload.getForms(from: value)
         self.customView = SBUExtendedMessagePayload.getCustomView(from: value)
+        self.disableChatInput = SBUExtendedMessagePayload.getDisableChatInput(from: value)
     }
 
     enum CodingKeys: String, CodingKey {
         case suggestedReplies = "suggested_replies"
-        case forms
         case customView = "custom_view"
+        case disableChatInput = "disable_chat_input"
+    }
+    
+    /// A value that determines whether to disable the MessageInputView.
+    /// Additionally, other properties are checked as well.
+    /// - Since: 3.16.0
+    public func getDisabledChatInputState(hasNext: Bool?) -> Bool {
+        if hasNext == true { return false }
+        if SendbirdUI.config.groupChannel.channel.isSuggestedRepliesEnabled == false { return false }
+        if (self.suggestedReplies ?? []).isEmpty == true { return false }
+        return self.disableChatInput ?? false
     }
 }
 
@@ -39,14 +52,12 @@ extension SBUExtendedMessagePayload {
         return try? JSONDecoder().decode([String].self, from: data)
     }
     
-    fileprivate static func getForms(from value: [String: Any]) -> [SBUForm]? {
-        guard let json = value[CodingKeys.forms.rawValue] else { return nil }
-        guard let data = try? JSONSerialization.data(withJSONObject: json) else { return nil }
-        return try? JSONDecoder().decode([SBUForm].self, from: data)
-    }
-    
     fileprivate static func getCustomView(from value: [String: Any]) -> Any? {
         value[CodingKeys.customView.rawValue]
+    }
+    
+    fileprivate static func getDisableChatInput(from value: [String: Any]) -> Bool? {
+        value[CodingKeys.disableChatInput.rawValue] as? Bool
     }
 }
 

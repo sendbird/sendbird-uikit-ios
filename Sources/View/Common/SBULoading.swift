@@ -8,14 +8,39 @@
 
 import UIKit
 
+/// SBULoading DataSource
+/// - Since: 3.16.0
+public protocol SBULoadingDataSource: AnyObject {
+    /// SBULoading DataSource method for determining touch event handling in background view.
+    /// - Parameters:
+    ///   - point: A point specified in the receiver’s local coordinate system (bounds).
+    ///   - event: The event object passed in from `hitTest(:)` of the `backgroundview` of the `SBULoading`.
+    /// - Returns: A value for whether touch events should be passed through. If true, touch events for views following the loading view are processed.
+    ///
+    /// ```swift
+    /// extension ViewController: SBULoadingDataSource {
+    ///    func shouldPassTouchHit(_ point: CGPoint, with event: UIEvent?) -> Bool {
+    ///       if self.navigationController?.navigationBar.frame.contains(point) == true {
+    ///          return true // Returning `true` means the touch passed.
+    ///       }
+    ///       return false
+    ///    }
+    /// ```
+    func shouldPassTouchHit(_ point: CGPoint, with event: UIEvent?) -> Bool
+}
+
+extension SBULoadingDataSource {
+    func shouldPassTouchHit(_ point: CGPoint, with event: UIEvent?) -> Bool { false }
+}
+
 public class SBULoading: NSObject {
     static private let shared = SBULoading()
     
     var window: UIWindow?
     var baseView = UIView()
-    var backgroundView = UIButton()
+    var backgroundView = SBULoadingDimView()
     var spinner = UIImageView()
-
+    
     private var rotationLayer: CAAnimation = {
         let rotation = CABasicAnimation(keyPath: "transform.rotation")
         rotation.fromValue = 0
@@ -49,6 +74,19 @@ public class SBULoading: NSObject {
     /// - Since: 3.2.1
     public static var isShowing: Bool {
         SBULoading.shared.isShowing
+    }
+    
+    /// This static function set SBULoading dataSource
+    /// - Parameter dataSource: `SBULoadingDataSource` protocol.
+    /// - Since: 3.16.0
+    public static func setDataSource(dataSource: SBULoadingDataSource) {
+        SBULoading.shared.backgroundView.dataSource = dataSource
+    }
+    
+    /// This static function remove SBULoading dataSource
+    /// - Since: 3.16.0
+    public static func removeDataSource() {
+        SBULoading.shared.backgroundView.dataSource = nil
     }
     
     private func setupStyles() {
@@ -111,5 +149,19 @@ public class SBULoading: NSObject {
         
         self.backgroundView.removeFromSuperview()
         self.baseView.removeFromSuperview()
+    }
+}
+
+class SBULoadingDimView: UIView {
+    weak var dataSource: SBULoadingDataSource?
+
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        guard let dataSource = self.dataSource else { return super.hitTest(point, with: event) }
+        
+        if  dataSource.shouldPassTouchHit(point, with: event) == false {
+            return super.hitTest(point, with: event)
+        } else {
+            return nil
+        }
     }
 }

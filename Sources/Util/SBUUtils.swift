@@ -65,7 +65,17 @@ public class SBUUtils {
     /// - Parameter type: File type string
     /// - Returns: `SBUFileType`
     /// - Since: 3.10.0
+    @available(*, deprecated, renamed: "getFileTypePreviewString(by:)") // 3.16.0
     public static func getFileTypeString(by fileType: String) -> String {
+        self.getFileTypePreviewString(by: fileType)
+    }
+    
+    /// A function that returns a file type string for preview of channel cell of channel list.
+    /// - Parameter fileType: File type string
+    /// - Returns: File type string for preview
+    ///
+    /// - Since: 3.16.0
+    public static func getFileTypePreviewString(by fileType: String) -> String {
         let type = fileType.lowercased()
         
         if type.hasPrefix("image") {
@@ -89,7 +99,6 @@ public class SBUUtils {
         }
         
         return SBUStringSet.GroupChannel.Preview.file
-
     }
     
     /// This is a function that creates a channel name.

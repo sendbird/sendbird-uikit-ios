@@ -65,8 +65,6 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
     /// - Since: 3.3.5
     var displaysLocalCachedListFirst: Bool = false
     
-    var formCaches = [Int64: SBUForm.Cache]()
-
     // MARK: - LifeCycle
     public init(channel: BaseChannel? = nil,
                 channelURL: String? = nil,
@@ -762,36 +760,17 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
     /// This function is used to submit form data.
     /// - Parameters:
     ///   - message: `BaseMessage` object to submit form.
-    ///   - answer: set form asnwer.
-    /// - Since: 3.11.0
-    public func submitForm(message: BaseMessage, answer: SBUForm.Answer) {
+    ///   - answer: `SendbirdChatSDK.Form` object.
+    /// - Since: 3.16.0
+    public func submitForm(message: BaseMessage, form: SendbirdChatSDK.Form) {
         SBULog.info("[Request] Submit Form")
-        message.submitForm(
-            formKey: answer.formKey,
-            answers: answer.data
-        ) { error in
+        message.submitForm(form: form) { error in
             if let error = error {
                 SBULog.error("[Request] Submit Form - error: \(error.localizedDescription)")
                 self.delegate?.didReceiveError(error)
                 return
             }
-
         }
-    }
-
-    // MARK: - Updated cached form data.
-    /// This function is used to update cached form data.
-    /// - Parameters:
-    ///   - message: `BaseMessage` object to submit form.
-    ///   - form: for updating reload form.
-    ///   - answer: for updating asnwer.
-    /// - Since: 3.11.0
-    public func updateForm(message: BaseMessage, answer: SBUForm.Answer) {
-        SBULog.info("[Request] Updated Cached Form data")
-        guard let cache = self.formCaches[message.messageId] else { return }
-        
-        cache.updateForms(with: message.asForms)
-        cache.updateAnswer(with: answer)
     }
     
     // MARK: - Request feedback.
@@ -862,7 +841,6 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
             completionHandler?()
         }
     }
-    
 }
 
 // MARK: - ConnectionDelegate

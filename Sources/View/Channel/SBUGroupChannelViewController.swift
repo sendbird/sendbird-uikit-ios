@@ -45,6 +45,12 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     
     public private(set) var newMessagesCount: Int = 0
     
+    override var isDisableChatInputState: Bool {
+        didSet {
+            (self.baseInputComponent?.messageInputView as? SBUMessageInputView)?.setDisableChatInputState(isDisableChatInputState)
+        }
+    }
+    
     /// An error handler that is called when any one of the files size in multiple files message exceeds the file size limit.
     /// If needed, override this handler to show your custom alert view.
     /// - Since: 3.10.0
@@ -936,17 +942,11 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         guard let text = suggestedReplyOptionView.text else { return }
         self.viewModel?.sendUserMessage(text: text)
     }
-    
-    open func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didSubmit answer: SBUForm.Answer, messageCell: SBUBaseMessageCell) {
+
+    open func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didSubmit form: SendbirdChatSDK.Form, messageCell: SBUBaseMessageCell) {
         guard let message = messageCell.message else { return }
-
-        self.viewModel?.submitForm(message: message, answer: answer)
-    }
-
-    open func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didUpdate answer: SBUForm.Answer, messageCell: SBUBaseMessageCell) {
-        guard let message = messageCell.message else { return }
-
-        self.viewModel?.updateForm(message: message, answer: answer)
+        
+        self.viewModel?.submitForm(message: message, form: form)
     }
     
     open func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didUpdate feedbackAnswer: SBUFeedbackAnswer, messageCell: SBUBaseMessageCell) {
@@ -1042,11 +1042,6 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         guard self.viewModel?.isInitialLoading == false else { return nil }
         
         return self.highlightInfo
-    }
-    
-    open func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, answersFor messageId: Int64?) -> [SBUForm.Answer]? {
-        guard let mesageId = messageId else { return nil }
-        return self.viewModel?.formCaches[mesageId]?.answers
     }
 
     // MARK: - SBUGroupChannelModuleInputDelegate

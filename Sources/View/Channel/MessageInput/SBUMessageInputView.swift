@@ -385,6 +385,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     
     var isFrozen: Bool = false
     var isMuted: Bool = false
+    var isDisable: Bool = false
     
     /// The Flag to check if it is the first thread message input. (This flag's priority is higher than `isThreadMessage`)
     var isThreadFirstMessage: Bool = false
@@ -699,6 +700,9 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         } else if self.isMuted {
             self.placeholderLabel.text = SBUStringSet.MessageInput_Text_Muted
             self.placeholderLabel.textColor = theme.textFieldDisabledColor
+        } else if self.isDisable {
+            self.placeholderLabel.text = SBUStringSet.MessageInput_Text_Unavailable
+            self.placeholderLabel.textColor = theme.textFieldDisabledColor
         } else if self.isThreadFirstMessage {
             self.placeholderLabel.text = SBUStringSet.MessageThread.MessageInput.replyInThread
             self.placeholderLabel.textColor = theme.textFieldPlaceholderColor
@@ -721,7 +725,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         
         // addButton
         let iconAdd = SBUIconSetType.iconAdd
-            .image(with: (self.isFrozen || self.isMuted)
+            .image(with: (self.isFrozen || self.isMuted || self.isDisable)
                    ? theme.buttonDisabledTintColor
                    : theme.buttonTintColor,
                    to: SBUIconSetType.Metric.defaultIconSize)
@@ -738,7 +742,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         // IconVoiceMessage
         self.voiceMessageButton?.setImage(
             SBUIconSetType.iconVoiceMessageOn.image(
-                with: (self.isFrozen || self.isMuted)
+                with: (self.isFrozen || self.isMuted || self.isDisable)
                 ? theme.buttonDisabledTintColor
                 : theme.buttonTintColor,
                 to: SBUIconSetType.Metric.defaultIconSize
@@ -849,6 +853,25 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         self.voiceMessageButton?.isEnabled = !self.isMuted
         
         if self.isMuted {
+            self.endTypingMode()
+        }
+        self.setupStyles()
+    }
+    
+    /// Sets disable chat input value
+    /// - Parameter isDisable: `true` is disable mode, `false` is available mode
+    func setDisableChatInputState(_ isDisable: Bool) {
+        if SendbirdUI.config.groupChannel.channel.isSuggestedRepliesEnabled == false { return }
+        if self.isMuted || self.isFrozen { return }
+            
+        self.isDisable = isDisable
+        
+        self.textView?.isEditable = !self.isDisable
+        self.textView?.isUserInteractionEnabled = !self.isDisable
+        self.addButton?.isEnabled = !self.isDisable
+        self.voiceMessageButton?.isEnabled = !self.isDisable
+        
+        if self.isDisable {
             self.endTypingMode()
         }
         self.setupStyles()

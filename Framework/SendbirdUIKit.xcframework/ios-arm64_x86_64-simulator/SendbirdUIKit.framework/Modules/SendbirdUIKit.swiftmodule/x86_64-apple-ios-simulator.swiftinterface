@@ -1807,19 +1807,19 @@ extension ObjectiveC.NSObject {
   }
 }
 public protocol SBUFormFieldViewDelegate : AnyObject {
-  func formFieldView(_ fieldView: SendbirdUIKit.SBUFormFieldView, didUpdate updated: SendbirdUIKit.SBUForm.Field.Updated)
+  func formFieldView(_ fieldView: SendbirdUIKit.SBUFormFieldView, didUpdate formField: SendbirdChatSDK.FormField)
 }
 @objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) public class SBUFormFieldView : SendbirdUIKit.SBUView, UIKit.UITextFieldDelegate {
   @_Concurrency.MainActor(unsafe) public var theme: SendbirdUIKit.SBUMessageCellTheme
   @_Concurrency.MainActor(unsafe) public var formKey: Swift.String? {
     get
   }
-  @_Concurrency.MainActor(unsafe) public var field: SendbirdUIKit.SBUForm.Field? {
+  @_Concurrency.MainActor(unsafe) public var formField: SendbirdChatSDK.FormField? {
     get
   }
   @_Concurrency.MainActor(unsafe) public var status: SendbirdUIKit.SBUFormFieldView.StatusType
   @_Concurrency.MainActor(unsafe) weak public var delegate: SendbirdUIKit.SBUFormFieldViewDelegate?
-  @_Concurrency.MainActor(unsafe) open func configure(form: SendbirdUIKit.SBUForm, field: SendbirdUIKit.SBUForm.Field, value: Swift.String?, delegate: SendbirdUIKit.SBUFormFieldViewDelegate? = nil)
+  @_Concurrency.MainActor(unsafe) open func configure(form: SendbirdChatSDK.Form, field: SendbirdChatSDK.FormField, delegate: SendbirdUIKit.SBUFormFieldViewDelegate? = nil)
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
   @objc deinit
@@ -1853,7 +1853,7 @@ extension SendbirdUIKit.SBUFormFieldView {
     case optional
     case editing(value: Swift.String?)
     case unknown
-    public init(form: SendbirdUIKit.SBUForm, field: SendbirdUIKit.SBUForm.Field, value: Swift.String?)
+    public init(form: SendbirdChatSDK.Form, field: SendbirdChatSDK.FormField)
     public var text: Swift.String? {
       get
     }
@@ -1866,6 +1866,24 @@ extension SendbirdUIKit.SBUFormFieldView {
     public var isEditable: Swift.Bool {
       get
     }
+  }
+}
+public enum SBUFormFieldInputType : Swift.String, Swift.Codable {
+  case text
+  case phone
+  case email
+  case password
+  public var keyboardType: UIKit.UIKeyboardType {
+    get
+  }
+  public var isSecureText: Swift.Bool {
+    get
+  }
+  public init(value: Swift.String?)
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
   }
 }
 extension UIKit.UIImageView {
@@ -1898,7 +1916,9 @@ extension UIKit.UIImageView {
 @_hasMissingDesignatedInitializers public class SBUUtils {
   public static func getFileType(by fileMessage: SendbirdChatSDK.FileMessage) -> SendbirdUIKit.SBUMessageFileType
   public static func getFileType(by type: Swift.String) -> SendbirdUIKit.SBUMessageFileType
+  @available(*, deprecated, renamed: "getFileTypePreviewString(by:)")
   public static func getFileTypeString(by fileType: Swift.String) -> Swift.String
+  public static func getFileTypePreviewString(by fileType: Swift.String) -> Swift.String
   public static func generateChannelName(channel: SendbirdChatSDK.GroupChannel) -> Swift.String
   public static func getMimeType(url: Foundation.URL) -> Swift.String?
   @available(*, deprecated, renamed: "getReceiptState(of:in:)")
@@ -1926,6 +1946,113 @@ extension UIKit.UIImageView {
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init(style: UIKit.UITableViewCell.CellStyle, reuseIdentifier: Swift.String?)
   @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
   @objc deinit
+}
+@available(*, unavailable, message: "Use `SendbirdChatSDK.Form`")
+public struct SBUForm : Swift.Codable {
+  public typealias FormData = [Swift.String : Swift.String]
+  public let formKey: Swift.String
+  public let fields: [SendbirdUIKit.SBUForm.Field]
+  public let data: SendbirdUIKit.SBUForm.FormData?
+  public let messagesAfterSubmission: [Swift.String]?
+  public var isSubmitted: Swift.Bool {
+    get
+  }
+  public func canSubmit(with answer: SendbirdUIKit.SBUForm.Answer?) -> Swift.Bool
+  public struct Field : Swift.Codable {
+    public let fieldKey: Swift.String
+    public let title: Swift.String
+    public let inputType: Swift.String
+    public let required: Swift.Bool
+    public let regex: Swift.String?
+    public let placeholder: Swift.String?
+    public struct Updated {
+      public let formKey: Swift.String
+      public let fieldKey: Swift.String
+      public let value: Swift.String
+    }
+    public enum InputTypeValue : Swift.String, Swift.Codable {
+      case text
+      case phone
+      case email
+      case password
+      public var keyboardType: UIKit.UIKeyboardType {
+        get
+      }
+      public var isSecureText: Swift.Bool {
+        get
+      }
+      public init?(rawValue: Swift.String)
+      public typealias RawValue = Swift.String
+      public var rawValue: Swift.String {
+        get
+      }
+    }
+    public var inputTypeValue: SendbirdUIKit.SBUForm.Field.InputTypeValue {
+      get
+    }
+    public func isValid(with value: Swift.String?, isStrict: Swift.Bool = false) -> Swift.Bool
+    public func encode(to encoder: Swift.Encoder) throws
+    public init(from decoder: Swift.Decoder) throws
+  }
+  public struct Answer {
+    public let formKey: Swift.String
+    public let data: SendbirdUIKit.SBUForm.FormData
+    public func update(with updated: SendbirdUIKit.SBUForm.Field.Updated) -> SendbirdUIKit.SBUForm.Answer?
+  }
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+extension SendbirdUIKit.SBUUserMessageCellParams {
+  @available(*, unavailable, message: "This model is no longer used internally. Changed to use `SendbirdChatSDK.Form`.")
+  public var formAnswers: [SendbirdUIKit.SBUForm.Answer] {
+    get
+  }
+}
+extension SendbirdUIKit.SBUUserMessageCell {
+  @available(*, unavailable, message: "This model is no longer used internally. Changed to use `SendbirdChatSDK.Form`.")
+  @_Concurrency.MainActor(unsafe) public func updateFormView(with forms: [SendbirdUIKit.SBUForm]?, answers: [SendbirdUIKit.SBUForm.Answer]) -> Swift.Bool
+}
+extension SendbirdUIKit.SBUFormView {
+  @available(*, unavailable, message: "This model is no longer used internally. Changed to use `SendbirdChatSDK.Form`.")
+  @_Concurrency.MainActor(unsafe) public var answer: SendbirdUIKit.SBUForm.Answer? {
+    get
+  }
+  @available(*, unavailable, message: "This model is no longer used internally. Changed to use `SendbirdChatSDK.Form`.")
+  @_Concurrency.MainActor(unsafe) open func createFormFieldViews(with form: SendbirdUIKit.SBUForm?) -> [SendbirdUIKit.SBUFormFieldView]
+  @available(*, unavailable, message: "This model is no longer used internally. Changed to use `SendbirdChatSDK.Form`.")
+  @_Concurrency.MainActor(unsafe) open func formFieldView(_ view: SendbirdUIKit.SBUFormFieldView, didUpdate updated: SendbirdUIKit.SBUForm.Field.Updated)
+}
+extension SendbirdUIKit.SBUFormFieldView {
+  @available(*, unavailable, message: "This model is no longer used internally. Changed to use `SendbirdChatSDK.Form`.")
+  @_Concurrency.MainActor(unsafe) open func configure(form: SendbirdUIKit.SBUForm, field: SendbirdUIKit.SBUForm.Field, value: Swift.String?, delegate: SendbirdUIKit.SBUFormFieldViewDelegate? = nil)
+}
+extension SendbirdUIKit.SBUGroupChannelModuleListDelegate {
+  @available(*, unavailable, message: "This model is no longer used internally. Changed to use `SendbirdChatSDK.Form`.")
+  public func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, didSubmit answer: SendbirdUIKit.SBUForm.Answer, messageCell: SendbirdUIKit.SBUBaseMessageCell)
+  @available(*, unavailable, message: "This model is no longer used internally. Changed to use `SendbirdChatSDK.Form`.")
+  public func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, didUpdate answer: SendbirdUIKit.SBUForm.Answer, messageCell: SendbirdUIKit.SBUBaseMessageCell)
+}
+extension SendbirdUIKit.SBUGroupChannelViewController {
+  @available(*, unavailable, message: "This model is no longer used internally. Changed to use `SendbirdChatSDK.Form`.")
+  @_Concurrency.MainActor(unsafe) public func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, didSubmit answer: SendbirdUIKit.SBUForm.Answer, messageCell: SendbirdUIKit.SBUBaseMessageCell)
+  @available(*, unavailable, message: "This model is no longer used internally. Changed to use `SendbirdChatSDK.Form`.")
+  @_Concurrency.MainActor(unsafe) public func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, didUpdate answer: SendbirdUIKit.SBUForm.Answer, messageCell: SendbirdUIKit.SBUBaseMessageCell)
+  @available(*, unavailable, message: "This model is no longer used internally. Changed to use `SendbirdChatSDK.Form`.")
+  @_Concurrency.MainActor(unsafe) public func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, answersFor messageId: Swift.Int64?) -> [SendbirdUIKit.SBUForm.Answer]?
+}
+extension SendbirdUIKit.SBUFormFieldView.StatusType {
+  @available(*, unavailable, message: "This model is no longer used internally. Changed to use `SendbirdChatSDK.Form`.")
+  public init(form: SendbirdUIKit.SBUForm, field: SendbirdUIKit.SBUForm.Field, value: Swift.String?)
+}
+extension SendbirdUIKit.SBUGroupChannelViewModel {
+  @available(*, unavailable, message: "This model is no longer used internally. Changed to use `SendbirdChatSDK.Form`.")
+  public func submitForm(message: SendbirdChatSDK.BaseMessage, answer: SendbirdUIKit.SBUForm.Answer)
+  @available(*, unavailable, message: "This model is no longer used internally. Changed to use `SendbirdChatSDK.Form`.")
+  public func updateForm(message: SendbirdChatSDK.BaseMessage, answer: SendbirdUIKit.SBUForm.Answer)
+}
+extension SendbirdUIKit.SBUGroupChannelModuleListDataSource {
+  @available(*, unavailable, message: "This model is no longer used internally. Changed to use `SendbirdChatSDK.Form`.")
+  public func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, answersFor messageId: Swift.Int64?) -> [SendbirdUIKit.SBUForm.Answer]?
 }
 @_hasMissingDesignatedInitializers public class SBUStringSet {
   public static var Cancel: Swift.String
@@ -2115,7 +2242,10 @@ extension UIKit.UIImageView {
     }
     public struct Preview {
       public static var quotedMessage: Swift.String
-      public static var channelList: Swift.String
+      public static var channelList: Swift.String {
+        get
+        set
+      }
       public static var searchResult: Swift.String
     }
     public static var fileName: Swift.String
@@ -2750,12 +2880,17 @@ extension SendbirdUIKit.SBUBaseChannelViewController {
   @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
   @objc deinit
 }
+public protocol SBULoadingDataSource : AnyObject {
+  func shouldPassTouchHit(_ point: CoreFoundation.CGPoint, with event: UIKit.UIEvent?) -> Swift.Bool
+}
 @objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class SBULoading : ObjectiveC.NSObject {
   public static func start()
   public static func stop()
   public static var isShowing: Swift.Bool {
     get
   }
+  public static func setDataSource(dataSource: SendbirdUIKit.SBULoadingDataSource)
+  public static func removeDataSource()
   @objc deinit
 }
 @objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) public class SBUCoverImageView : UIKit.UIView {
@@ -3267,15 +3402,13 @@ public class SBUToastViewItem : SendbirdUIKit.SBUCommonItem {
   @objc @_Concurrency.MainActor(unsafe) open func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, didTapMentionUser user: SendbirdUIKit.SBUUser)
   @objc @_Concurrency.MainActor(unsafe) open func groupChannelModuleDidTapThreadInfoView(_ threadInfoView: SendbirdUIKit.SBUThreadInfoView)
   @objc @_Concurrency.MainActor(unsafe) open func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, didSelect suggestedReplyOptionView: SendbirdUIKit.SBUSuggestedReplyOptionView)
-  @_Concurrency.MainActor(unsafe) open func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, didSubmit answer: SendbirdUIKit.SBUForm.Answer, messageCell: SendbirdUIKit.SBUBaseMessageCell)
-  @_Concurrency.MainActor(unsafe) open func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, didUpdate answer: SendbirdUIKit.SBUForm.Answer, messageCell: SendbirdUIKit.SBUBaseMessageCell)
+  @objc @_Concurrency.MainActor(unsafe) open func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, didSubmit form: SendbirdChatSDK.Form, messageCell: SendbirdUIKit.SBUBaseMessageCell)
   @_Concurrency.MainActor(unsafe) open func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, didUpdate feedbackAnswer: SendbirdUIKit.SBUFeedbackAnswer, messageCell: SendbirdUIKit.SBUBaseMessageCell)
   @_Concurrency.MainActor(unsafe) @objc override open func baseChannelModule(_ listComponent: SendbirdUIKit.SBUBaseChannelModule.List, didTapVoiceMessage fileMessage: SendbirdChatSDK.FileMessage, cell: UIKit.UITableViewCell, forRowAt indexPath: Foundation.IndexPath)
   @_Concurrency.MainActor(unsafe) @objc override open func baseChannelModuleDidTapScrollToButton(_ listComponent: SendbirdUIKit.SBUBaseChannelModule.List, animated: Swift.Bool)
   @_Concurrency.MainActor(unsafe) override open func baseChannelModule(_ listComponent: SendbirdUIKit.SBUBaseChannelModule.List, didSelectScrollToBottonWithOptions options: SendbirdUIKit.SBUScrollOptions, animated: Swift.Bool)
   @_Concurrency.MainActor(unsafe) @objc override open func baseChannelModule(_ listComponent: SendbirdUIKit.SBUBaseChannelModule.List, didScroll scrollView: UIKit.UIScrollView)
   @_Concurrency.MainActor(unsafe) open func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, highlightInfoInTableView tableView: UIKit.UITableView) -> SendbirdUIKit.SBUHighlightMessageInfo?
-  @_Concurrency.MainActor(unsafe) open func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, answersFor messageId: Swift.Int64?) -> [SendbirdUIKit.SBUForm.Answer]?
   @_Concurrency.MainActor(unsafe) @objc override open func baseChannelModule(_ inputComponent: SendbirdUIKit.SBUBaseChannelModule.Input, didUpdateFrozenState isFrozen: Swift.Bool)
   @objc @_Concurrency.MainActor(unsafe) open func groupChannelModule(_ inputComponent: SendbirdUIKit.SBUGroupChannelModule.Input, didPickFileData fileData: Foundation.Data?, fileName: Swift.String, mimeType: Swift.String, parentMessage: SendbirdChatSDK.BaseMessage?)
   @objc @_Concurrency.MainActor(unsafe) open func groupChannelModule(_ inputComponent: SendbirdUIKit.SBUGroupChannelModule.Input, didPickMultipleFiles fileInfoList: [SendbirdChatSDK.UploadableFileInfo]?, parentMessage: SendbirdChatSDK.BaseMessage?)
@@ -3656,12 +3789,6 @@ extension SendbirdUIKit.SBUBaseChannelModule {
   }
 }
 extension SendbirdChatSDK.BaseMessage {
-  public var asSuggestedReplies: [Swift.String]? {
-    get
-  }
-  public var asForms: [SendbirdUIKit.SBUForm]? {
-    get
-  }
   public var asCustomView: Any? {
     get
   }
@@ -6106,82 +6233,6 @@ extension SendbirdUIKit.SBUBaseChannelSettingsModule.List : UIKit.UITableViewDat
   @objc @_Concurrency.MainActor(unsafe) open func openChannelModule(_ mediaComponent: SendbirdUIKit.SBUOpenChannelModule.Media, didTapMediaView mediaView: UIKit.UIView)
   @_Concurrency.MainActor(unsafe) @objc override open func baseChannelViewModel(_ viewModel: SendbirdUIKit.SBUBaseChannelViewModel, didChangeChannel channel: SendbirdChatSDK.BaseChannel?, withContext context: SendbirdChatSDK.MessageContext)
 }
-public struct SBUForm {
-  public let formKey: Swift.String
-  public let fields: [SendbirdUIKit.SBUForm.Field]
-  public let data: SendbirdUIKit.SBUForm.FormData?
-  public let messagesAfterSubmission: [Swift.String]?
-}
-extension SendbirdUIKit.SBUForm {
-  public typealias FormData = [Swift.String : Swift.String]
-}
-extension SendbirdUIKit.SBUForm {
-  public struct Field {
-    public let fieldKey: Swift.String
-    public let title: Swift.String
-    public let inputType: Swift.String
-    public let required: Swift.Bool
-    public let regex: Swift.String?
-    public let placeholder: Swift.String?
-  }
-}
-extension SendbirdUIKit.SBUForm {
-  public struct Answer {
-    public let formKey: Swift.String
-    public let data: SendbirdUIKit.SBUForm.FormData
-  }
-}
-extension SendbirdUIKit.SBUForm.Field {
-  public struct Updated {
-    public let formKey: Swift.String
-    public let fieldKey: Swift.String
-    public let value: Swift.String
-  }
-}
-extension SendbirdUIKit.SBUForm.Field {
-  public enum InputTypeValue : Swift.String, Swift.Codable {
-    case text
-    case phone
-    case email
-    case password
-    public init?(rawValue: Swift.String)
-    public typealias RawValue = Swift.String
-    public var rawValue: Swift.String {
-      get
-    }
-  }
-}
-extension SendbirdUIKit.SBUForm {
-  public var isSubmitted: Swift.Bool {
-    get
-  }
-  public func canSubmit(with answer: SendbirdUIKit.SBUForm.Answer?) -> Swift.Bool
-}
-extension SendbirdUIKit.SBUForm.Answer {
-  public func update(with updated: SendbirdUIKit.SBUForm.Field.Updated) -> SendbirdUIKit.SBUForm.Answer?
-}
-extension SendbirdUIKit.SBUForm.Field {
-  public var inputTypeValue: SendbirdUIKit.SBUForm.Field.InputTypeValue {
-    get
-  }
-  public func isValid(with value: Swift.String?, isStrict: Swift.Bool = false) -> Swift.Bool
-}
-extension SendbirdUIKit.SBUForm.Field.InputTypeValue {
-  public var keyboardType: UIKit.UIKeyboardType {
-    get
-  }
-  public var isSecureText: Swift.Bool {
-    get
-  }
-}
-extension SendbirdUIKit.SBUForm : Swift.Codable {
-  public func encode(to encoder: Swift.Encoder) throws
-  public init(from decoder: Swift.Decoder) throws
-}
-extension SendbirdUIKit.SBUForm.Field : Swift.Codable {
-  public func encode(to encoder: Swift.Encoder) throws
-  public init(from decoder: Swift.Decoder) throws
-}
 public struct SBUFeedbackViewParams {
   public let messageId: Swift.Int64
   public let feedback: SendbirdChatSDK.Feedback?
@@ -6645,8 +6696,7 @@ public class SBUUserMessageCellParams : SendbirdUIKit.SBUBaseMessageCellParams {
   final public let withTextView: Swift.Bool
   final public let shouldHideSuggestedReplies: Swift.Bool
   final public let shouldHideFormTypeMessage: Swift.Bool
-  final public let formAnswers: [SendbirdUIKit.SBUForm.Answer]
-  public init(message: SendbirdChatSDK.UserMessage, hideDateView: Swift.Bool, useMessagePosition: Swift.Bool, groupPosition: SendbirdUIKit.MessageGroupPosition = .none, receiptState: SendbirdUIKit.SBUMessageReceiptState = .none, useReaction: Swift.Bool = false, withTextView: Swift.Bool, isThreadMessage: Swift.Bool = false, joinedAt: Swift.Int64 = 0, messageOffsetTimestamp: Swift.Int64 = 0, shouldHideSuggestedReplies: Swift.Bool = true, shouldHideFormTypeMessage: Swift.Bool = true, formAnswers: [SendbirdUIKit.SBUForm.Answer]? = nil)
+  public init(message: SendbirdChatSDK.UserMessage, hideDateView: Swift.Bool, useMessagePosition: Swift.Bool, groupPosition: SendbirdUIKit.MessageGroupPosition = .none, receiptState: SendbirdUIKit.SBUMessageReceiptState = .none, useReaction: Swift.Bool = false, withTextView: Swift.Bool, isThreadMessage: Swift.Bool = false, joinedAt: Swift.Int64 = 0, messageOffsetTimestamp: Swift.Int64 = 0, shouldHideSuggestedReplies: Swift.Bool = true, shouldHideFormTypeMessage: Swift.Bool = true)
   @objc deinit
 }
 @objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUMessageSearchResultCell : SendbirdUIKit.SBUTableViewCell {
@@ -7974,12 +8024,11 @@ public protocol SBUGroupChannelPushSettingsViewModelDelegate : SendbirdUIKit.SBU
   @objc deinit
 }
 public protocol SBUFormViewDelegate : AnyObject {
-  func formView(_ view: SendbirdUIKit.SBUFormView, didSubmit answer: SendbirdUIKit.SBUForm.Answer)
-  func formView(_ view: SendbirdUIKit.SBUFormView, didUpdate answer: SendbirdUIKit.SBUForm.Answer)
+  func formView(_ view: SendbirdUIKit.SBUFormView, didSubmit form: SendbirdChatSDK.Form)
 }
 @objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUFormView : SendbirdUIKit.SBUView, SendbirdUIKit.SBUFormFieldViewDelegate {
   @_Concurrency.MainActor(unsafe) public var theme: SendbirdUIKit.SBUMessageCellTheme
-  @_Concurrency.MainActor(unsafe) public var form: SendbirdUIKit.SBUForm? {
+  @_Concurrency.MainActor(unsafe) public var form: SendbirdChatSDK.Form? {
     get
   }
   @_Concurrency.MainActor(unsafe) public var messageId: Swift.Int64? {
@@ -7989,12 +8038,11 @@ public protocol SBUFormViewDelegate : AnyObject {
     get
   }
   @_Concurrency.MainActor(unsafe) public var fieldViews: [SendbirdUIKit.SBUFormFieldView]?
-  @_Concurrency.MainActor(unsafe) public var answer: SendbirdUIKit.SBUForm.Answer?
   @_Concurrency.MainActor(unsafe) weak public var delegate: SendbirdUIKit.SBUFormViewDelegate?
   @_Concurrency.MainActor(unsafe) open func configure(with configuration: SendbirdUIKit.SBUFormViewParams, delegate: SendbirdUIKit.SBUFormViewDelegate? = nil)
   @_Concurrency.MainActor(unsafe) open func createFieldView() -> SendbirdUIKit.SBUFormFieldView
-  @_Concurrency.MainActor(unsafe) open func createFormFieldViews(with form: SendbirdUIKit.SBUForm?) -> [SendbirdUIKit.SBUFormFieldView]
-  @_Concurrency.MainActor(unsafe) open func formFieldView(_ view: SendbirdUIKit.SBUFormFieldView, didUpdate updated: SendbirdUIKit.SBUForm.Field.Updated)
+  @_Concurrency.MainActor(unsafe) open func createFormFieldViews(with form: SendbirdChatSDK.Form?) -> [SendbirdUIKit.SBUFormFieldView]
+  @_Concurrency.MainActor(unsafe) open func formFieldView(_ fieldView: SendbirdUIKit.SBUFormFieldView, didUpdate formField: SendbirdChatSDK.FormField)
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
   @objc deinit
@@ -8062,13 +8110,11 @@ public protocol SBUGroupChannelModuleListDelegate : SendbirdUIKit.SBUBaseChannel
   func groupChannelModuleDidTapThreadInfoView(_ threadInfoView: SendbirdUIKit.SBUThreadInfoView)
   func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, didSelect suggestedReplyOptionView: SendbirdUIKit.SBUSuggestedReplyOptionView)
   func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, didSelectFileAt index: Swift.Int, multipleFilesMessageCell: SendbirdUIKit.SBUMultipleFilesMessageCell, forRowAt cellIndexPath: Foundation.IndexPath)
-  func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, didSubmit answer: SendbirdUIKit.SBUForm.Answer, messageCell: SendbirdUIKit.SBUBaseMessageCell)
-  func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, didUpdate answer: SendbirdUIKit.SBUForm.Answer, messageCell: SendbirdUIKit.SBUBaseMessageCell)
+  func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, didSubmit form: SendbirdChatSDK.Form, messageCell: SendbirdUIKit.SBUBaseMessageCell)
   func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, didUpdate feedbackAnswer: SendbirdUIKit.SBUFeedbackAnswer, messageCell: SendbirdUIKit.SBUBaseMessageCell)
 }
 public protocol SBUGroupChannelModuleListDataSource : SendbirdUIKit.SBUBaseChannelModuleListDataSource {
   func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, highlightInfoInTableView tableView: UIKit.UITableView) -> SendbirdUIKit.SBUHighlightMessageInfo?
-  func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, answersFor messageId: Swift.Int64?) -> [SendbirdUIKit.SBUForm.Answer]?
 }
 extension SendbirdUIKit.SBUGroupChannelModule {
   @_inheritsConvenienceInitializers @objc(SBUGroupChannelModuleList) @objcMembers @_Concurrency.MainActor(unsafe) open class List : SendbirdUIKit.SBUBaseChannelModule.List, SendbirdUIKit.SBUVoicePlayerDelegate {
@@ -8506,6 +8552,16 @@ public class SBUQuotedBaseMessageViewParams {
   public init(messageId: Swift.Int64, messagePosition: SendbirdUIKit.MessagePosition, quotedMessageNickname: Swift.String, replierNickname: Swift.String, name: Swift.String, type: Swift.String, urlString: Swift.String, useQuotedMessage: Swift.Bool = true, quotedMessageCreatedAt: Swift.Int64)
   @objc deinit
 }
+extension SendbirdChatSDK.BaseMessage {
+  @available(*, deprecated, message: "Use `BaseMessage.suggestedReplies`")
+  public var asSuggestedReplies: [Swift.String]? {
+    get
+  }
+  @available(*, unavailable, message: "Use `BaseMessage.forms`")
+  public var asForms: [SendbirdUIKit.SBUForm]? {
+    get
+  }
+}
 open class SBUOpenChannelListModule {
   public static var HeaderComponent: SendbirdUIKit.SBUOpenChannelListModule.Header.Type
   public static var ListComponent: SendbirdUIKit.SBUOpenChannelListModule.List.Type
@@ -8674,12 +8730,11 @@ open class SBUInviteUserModule {
   @objc @_Concurrency.MainActor(unsafe) open func onTapWebview(sender: UIKit.UITapGestureRecognizer)
   @objc @_Concurrency.MainActor(unsafe) open func updateSuggestedReplyView(with options: [Swift.String]?)
   @objc @_Concurrency.MainActor(unsafe) open func createSuggestedReplyView() -> SendbirdUIKit.SBUSuggestedReplyView
-  @_Concurrency.MainActor(unsafe) public func updateFormView(with forms: [SendbirdUIKit.SBUForm]?, answers: [SendbirdUIKit.SBUForm.Answer]) -> Swift.Bool
+  @objc @_Concurrency.MainActor(unsafe) public func updateFormView(with message: SendbirdChatSDK.BaseMessage?) -> Swift.Bool
   @objc @_Concurrency.MainActor(unsafe) open func createFormView() -> SendbirdUIKit.SBUFormView
   @objc @_Concurrency.MainActor(unsafe) open func userMessageTextView(_ textView: SendbirdUIKit.SBUUserMessageTextView, didTapMention user: SendbirdUIKit.SBUUser)
   @objc @_Concurrency.MainActor(unsafe) open func suggestedReplyView(_ view: SendbirdUIKit.SBUSuggestedReplyView, didSelectOption optionView: SendbirdUIKit.SBUSuggestedReplyOptionView)
-  @_Concurrency.MainActor(unsafe) open func formView(_ view: SendbirdUIKit.SBUFormView, didSubmit answer: SendbirdUIKit.SBUForm.Answer)
-  @_Concurrency.MainActor(unsafe) open func formView(_ view: SendbirdUIKit.SBUFormView, didUpdate answer: SendbirdUIKit.SBUForm.Answer)
+  @objc @_Concurrency.MainActor(unsafe) public func formView(_ view: SendbirdUIKit.SBUFormView, didSubmit form: SendbirdChatSDK.Form)
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init(style: UIKit.UITableViewCell.CellStyle, reuseIdentifier: Swift.String?)
   @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
   @objc deinit
@@ -10282,7 +10337,7 @@ public class SBUMessageTemplateTheme {
 }
 public struct SBUFormViewParams {
   public let messageId: Swift.Int64
-  public let form: SendbirdUIKit.SBUForm
+  public let form: SendbirdChatSDK.Form
 }
 @objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUImageContentView : SendbirdUIKit.SBUBaseFileContentView {
   @_Concurrency.MainActor(unsafe) public var imageView: UIKit.UIImageView
@@ -11129,8 +11184,7 @@ extension SendbirdUIKit.SBUGroupChannelViewModel : SendbirdChatSDK.MessageCollec
   @objc dynamic open func messageCollection(_ collection: SendbirdChatSDK.MessageCollection, context: SendbirdChatSDK.MessageContext, updatedChannel channel: SendbirdChatSDK.GroupChannel)
   @objc dynamic open func messageCollection(_ collection: SendbirdChatSDK.MessageCollection, context: SendbirdChatSDK.MessageContext, deletedChannel channelURL: Swift.String)
   @objc dynamic open func didDetectHugeGap(_ collection: SendbirdChatSDK.MessageCollection)
-  public func submitForm(message: SendbirdChatSDK.BaseMessage, answer: SendbirdUIKit.SBUForm.Answer)
-  public func updateForm(message: SendbirdChatSDK.BaseMessage, answer: SendbirdUIKit.SBUForm.Answer)
+  public func submitForm(message: SendbirdChatSDK.BaseMessage, form: SendbirdChatSDK.Form)
   public func submitFeedback(message: SendbirdChatSDK.BaseMessage, answer: SendbirdUIKit.SBUFeedbackAnswer, completionHandler: ((SendbirdChatSDK.Feedback?) -> Swift.Void)? = nil)
   public func updateFeedback(message: SendbirdChatSDK.BaseMessage, answer: SendbirdUIKit.SBUFeedbackAnswer, completionHandler: ((SendbirdChatSDK.Feedback?) -> Swift.Void)? = nil)
   public func deleteFeedback(message: SendbirdChatSDK.BaseMessage, completionHandler: (() -> Swift.Void)? = nil)
@@ -11336,10 +11390,19 @@ extension SendbirdUIKit.SBUCreateChannelModule.List {
   @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, didSelectRowAt indexPath: Foundation.IndexPath)
   @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, willDisplay cell: UIKit.UITableViewCell, forRowAt indexPath: Foundation.IndexPath)
 }
+extension SendbirdUIKit.SBUFormFieldInputType : Swift.Equatable {}
+extension SendbirdUIKit.SBUFormFieldInputType : Swift.Hashable {}
+extension SendbirdUIKit.SBUFormFieldInputType : Swift.RawRepresentable {}
 extension UIKit.UIImageView.ImageOption : Swift.Equatable {}
 extension UIKit.UIImageView.ImageOption : Swift.Hashable {}
 extension UIKit.UIImageView.LoadStatus : Swift.Equatable {}
 extension UIKit.UIImageView.LoadStatus : Swift.Hashable {}
+@available(*, unavailable, message: "Use `SendbirdChatSDK.Form`")
+extension SendbirdUIKit.SBUForm.Field.InputTypeValue : Swift.Equatable {}
+@available(*, unavailable, message: "Use `SendbirdChatSDK.Form`")
+extension SendbirdUIKit.SBUForm.Field.InputTypeValue : Swift.Hashable {}
+@available(*, unavailable, message: "Use `SendbirdChatSDK.Form`")
+extension SendbirdUIKit.SBUForm.Field.InputTypeValue : Swift.RawRepresentable {}
 extension SendbirdUIKit.SBUMessageTemplate.ActionType : Swift.Equatable {}
 extension SendbirdUIKit.SBUMessageTemplate.ActionType : Swift.Hashable {}
 extension SendbirdUIKit.SBUMessageTemplate.ActionType : Swift.RawRepresentable {}
@@ -11417,9 +11480,6 @@ extension SendbirdUIKit.ChannelMemberListType : Swift.Equatable {}
 extension SendbirdUIKit.ChannelMemberListType : Swift.Hashable {}
 @available(*, deprecated, renamed: "ChannelUserListType")
 extension SendbirdUIKit.ChannelMemberListType : Swift.RawRepresentable {}
-extension SendbirdUIKit.SBUForm.Field.InputTypeValue : Swift.Equatable {}
-extension SendbirdUIKit.SBUForm.Field.InputTypeValue : Swift.Hashable {}
-extension SendbirdUIKit.SBUForm.Field.InputTypeValue : Swift.RawRepresentable {}
 extension SendbirdUIKit.SBUFeedbackAnswer.Action : Swift.Equatable {}
 extension SendbirdUIKit.SBUFeedbackAnswer.Action : Swift.Hashable {}
 extension SendbirdUIKit.SBUPermissionManager.PermissionType : Swift.Equatable {}

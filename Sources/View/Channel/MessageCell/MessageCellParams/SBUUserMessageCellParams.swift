@@ -25,10 +25,6 @@ public class SBUUserMessageCellParams: SBUBaseMessageCellParams {
     /// - Since: 3.11.0
     public let shouldHideFormTypeMessage: Bool
 
-    /// The form answers are the data for the message cell to redraw each user's form field input.
-    /// - Since: 3.11.0
-    public let formAnswers: [SBUForm.Answer]
-
     public init(
         message: UserMessage,
         hideDateView: Bool,
@@ -41,14 +37,12 @@ public class SBUUserMessageCellParams: SBUBaseMessageCellParams {
         joinedAt: Int64 = 0,
         messageOffsetTimestamp: Int64 = 0,
         shouldHideSuggestedReplies: Bool = true,
-        shouldHideFormTypeMessage: Bool = true,
-        formAnswers: [SBUForm.Answer]? = nil
+        shouldHideFormTypeMessage: Bool = true
     ) {
         self.useReaction = useReaction
         self.withTextView = withTextView
         self.shouldHideSuggestedReplies = shouldHideSuggestedReplies
         self.shouldHideFormTypeMessage = shouldHideFormTypeMessage
-        self.formAnswers = formAnswers ?? []
         
         var messagePosition: MessagePosition = .left
         if useMessagePosition {
