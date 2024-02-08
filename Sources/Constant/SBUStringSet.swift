@@ -372,9 +372,12 @@ public class SBUStringSet {
         public struct Preview {
             /// A text that indicates that a quoted message is a voice message. The default text is `Voice message`.
             public static var quotedMessage = "Voice message"
-            /// A text that's used in `SBUMessageSearchResultCell` to indicate that a search result is a voice message. The default text is `Voice message`.
-            public static var channelList = "Voice message"
             /// A text that indicates that a voice message was sent to a group channel and appears in ``SBUGroupChannelCell`` in the group channel list view. The default text is `Voice message`.
+            public static var channelList: String {
+                get { SBUStringSet.GroupChannel.Preview.voice }
+                set { SBUStringSet.GroupChannel.Preview.voice = newValue }
+            }
+            /// A text that's used in `SBUMessageSearchResultCell` to indicate that a search result is a voice message. The default text is `Voice message`.
             public static var searchResult = "Voice message"
         }
         /// A text that's used in a name of the voice message file.

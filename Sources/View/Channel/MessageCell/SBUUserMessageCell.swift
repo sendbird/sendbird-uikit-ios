@@ -11,7 +11,6 @@ import SendbirdChatSDK
 
 @IBDesignable
 open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextViewDelegate, SBUSuggestedReplyViewDelegate, SBUFormViewDelegate {
-
     // MARK: - Public property
     public lazy var messageTextView: UIView = SBUUserMessageTextView()
     
@@ -205,12 +204,12 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
         // MARK: Suggested Reply
         self.suggestedReplyView?.removeFromSuperview()
         self.suggestedReplyView = nil
-        self.updateSuggestedReplyView(with: message.asSuggestedReplies)
+        self.updateSuggestedReplyView(with: message.suggestedReplies)
         
         // MARK: Form Views
         self.formViews?.forEach({ $0.removeFromSuperview() })
         self.formViews = nil
-        let hasForms = self.updateFormView(with: message.asForms, answers: configuration.formAnswers)
+        let hasForms = self.updateFormView(with: message)
         self.mainContainerView.isHidden = hasForms && configuration.useOnlyFromView
         
         // Set up message position of additionContainerView(reactionView)
@@ -362,12 +361,12 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
     /// - Parameter answers: Cached form answer datas.
     /// - Returns: If `true`, succeeds in creating a valid form view
     /// - since: 3.11.0
-    public func updateFormView(with forms: [SBUForm]?, answers: [SBUForm.Answer]) -> Bool {
+    public func updateFormView(with message: BaseMessage?) -> Bool {
         guard SendbirdUI.config.groupChannel.channel.isFormTypeMessageEnabled else { return false }
         guard shouldHideFormTypeMessage == false else { return false }
         
-        guard let forms = forms else { return false }
-        guard let messageId = self.message?.messageId else { return false }
+        guard let forms = message?.forms else { return false }
+        guard let messageId = message?.messageId else { return false }
 
         let formViews = forms.reduce(into: [SBUFormView]()) { result, form in
             let formView = createFormView()
@@ -410,11 +409,7 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
 
     // MARK: - form view delegate
     
-    open func formView(_ view: SBUFormView, didSubmit answer: SBUForm.Answer) {
-        self.submitFormAnswerHandler?(answer, self)
-    }
-
-    open func formView(_ view: SBUFormView, didUpdate answer: SBUForm.Answer) {
-        self.updateFormAnswerHandler?(answer, self)
+    public func formView(_ view: SBUFormView, didSubmit form: SendbirdChatSDK.Form) {
+        self.submitFormHandler?(form, self)
     }
 }

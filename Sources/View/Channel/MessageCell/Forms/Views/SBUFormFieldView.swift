@@ -14,8 +14,8 @@ public protocol SBUFormFieldViewDelegate: AnyObject {
     /// Called when `SBUForm.Field` is updated.
     /// - Parameters:
     ///    - fieldView: The updated ``SBUFormFieldView`` object.
-    ///    - updated: The updated data ``SBUForm/Field/Updated`` object.
-    func formFieldView(_ fieldView: SBUFormFieldView, didUpdate updated: SBUForm.Field.Updated)
+    ///    - formField: The updated ``SendbirdChatSDK.FormField`` object.
+    func formFieldView(_ fieldView: SBUFormFieldView, didUpdate formField: SendbirdChatSDK.FormField)
 }
 
 /// - Since: 3.11.0
@@ -25,39 +25,39 @@ public class SBUFormFieldView: SBUView, UITextFieldDelegate {
     /// The theme for ``SBUFormFieldView`` that is type of ``SBUMessageCellTheme``.
     public var theme: SBUMessageCellTheme = SBUTheme.messageCellTheme
     
-    /// The key of the ``SBUForm``.
-    /// To update the data, use ``SBUFormFieldView/configure(form:field:value:delegate:)``.
+    /// The key of the ``Form``.
+    /// To update the data, use ``SBUFormFieldView/configure(form:field:delegate:)``.
     public private(set) var formKey: String?
 
-    /// The field of the ``SBUForm``.
-    /// To update the data, use ``SBUFormFieldView/configure(form:field:value:delegate:)``.
-    public private(set) var field: SBUForm.Field?
+    /// The field of the ``Form``.
+    /// To update the data, use ``SBUFormFieldView/configure(form:field:delegate:)``.
+    /// - Since: 3.16.0
+    public private(set) var formField: SendbirdChatSDK.FormField?
     
-    /// The status of the ``SBUForm``.
+    /// The status of the ``Form``.
     /// Include value of field.
-    /// To update the data, use ``SBUFormFieldView/configure(form:field:value:delegate:)``.
+    /// To update the data, use ``SBUFormFieldView/configure(form:field:delegate:)``.
     public var status: StatusType = .unknown
     
     /// The delegate that is type of ``SBUFormFieldViewDelegate``
     /// ```swift
     /// view.delegate = self // `self` conforms to `SBUFormFieldViewDelegate`
     /// // or
-    /// view.configure(formKey: "Another Key", field: anotherField, data: "data", value: "value", delegate: self)
+    /// view.configure(formKey: "Another Key", field: anotherField, data: "data", delegate: self)
     /// ```
     public weak var delegate: SBUFormFieldViewDelegate?
     
     // MARK: - Configure
     /// Configure ``SBUFormFieldView`` with `field`.
-    /// - Since: 3.11.0
+    /// - Since: 3.16.0
     open func configure(
-        form: SBUForm,
-        field: SBUForm.Field,
-        value: String?,
+        form: SendbirdChatSDK.Form,
+        field: SendbirdChatSDK.FormField,
         delegate: SBUFormFieldViewDelegate? = nil
     ) {
         self.formKey = form.formKey
-        self.field = field
-        self.status = StatusType(form: form, field: field, value: value)
+        self.formField = field
+        self.status = StatusType(form: form, field: field)
         self.delegate = delegate
 
         self.setupViews()
@@ -133,17 +133,19 @@ public class SBUSimpleFormFieldView: SBUFormFieldView {
 
         self.addSubview(stackView)
         
-        self.titleView.text = self.field?.title
+        self.titleView.text = self.formField?.title
 
         self.optionalTitleView.text = SBUStringSet.FormType_Optional
-        self.optionalTitleView.isHidden = self.field?.required ?? true
+        self.optionalTitleView.isHidden = self.formField?.required ?? true
 
         self.errorTitleView.text = SBUStringSet.FormType_Error_Default
 
-        self.inputFieldView.placeholder = self.field?.placeholder
+        self.inputFieldView.placeholder = self.formField?.placeholder
         self.inputFieldView.text = self.status.text
-        self.inputFieldView.keyboardType = self.field?.inputTypeValue.keyboardType ?? .default
-        self.inputFieldView.isSecureTextEntry = self.field?.inputTypeValue.isSecureText ?? false
+        
+        let inputType = SBUFormFieldInputType(value: self.formField?.inputTypeValue)
+        self.inputFieldView.keyboardType = inputType.keyboardType
+        self.inputFieldView.isSecureTextEntry = inputType.isSecureText
     }
 
     open override func setupLayouts() {
@@ -216,12 +218,14 @@ public class SBUSimpleFormFieldView: SBUFormFieldView {
     @objc
     open func onChangeFieldValue(textField: UITextField) {
         guard self.status.isEditable == true else { return }
-        guard let formKey = formKey, let field = field else { return }
-
-        self.status = .editing(value: textField.text)
-        let updated = SBUForm.Field.Updated(formKey: formKey, fieldKey: field.fieldKey, value: textField.text ?? "")
-        self.delegate?.formFieldView(self, didUpdate: updated)
-
+        guard let field = self.formField else { return }
+        
+        field.temporaryAnswer = textField.text ?? ""
+        self.status.edting(field: field)
+        self.inputFieldView.text = self.status.text
+        
+        self.delegate?.formFieldView(self, didUpdate: field)
+        
         self.setNeedsLayout()
         self.layoutIfNeeded()
     }
@@ -230,15 +234,19 @@ public class SBUSimpleFormFieldView: SBUFormFieldView {
         self.bottomSpaceView.isHidden = true
         self.errorTitleView.isHidden = true
 
-        switch (self.status.isEditable, field?.isValid(with: self.status.text)) {
+        switch (self.status.isEditable, formField?.isValid) {
         case (false, _):
             self.inputContainer.layer.borderColor = UIColor.clear.cgColor
         case (_, true):
             self.inputContainer.layer.borderColor = theme.formInputBorderNormalColor.cgColor
         case (_, false):
-            self.inputContainer.layer.borderColor = theme.formInputErrorColor.cgColor
-            self.errorTitleView.isHidden = false
-            self.bottomSpaceView.isHidden = false
+            if (formField?.temporaryAnswer ?? "").isEmpty {
+                self.inputContainer.layer.borderColor = theme.formInputBorderNormalColor.cgColor
+            } else {
+                self.inputContainer.layer.borderColor = theme.formInputErrorColor.cgColor
+                self.errorTitleView.isHidden = false
+                self.bottomSpaceView.isHidden = false
+            }
         default:
             self.inputContainer.layer.borderColor = UIColor.clear.cgColor
         }
@@ -261,18 +269,31 @@ extension SBUFormFieldView {
         case optional
         case editing(value: String?)
         case unknown
-
-        public init(form: SBUForm, field: SBUForm.Field, value: String?) {
-            guard let data = form.data, data.count > 0 else {
-                self = .editing(value: value)
+        
+        /// init
+        /// - Parameters:
+        ///   - form: form data
+        ///   - field: form field
+        ///   - value: user input value
+        public init(
+            form: SendbirdChatSDK.Form,
+            field: SendbirdChatSDK.FormField
+        ) {
+            guard let answers = form.answers, answers.count > 0 else {
+                self = .editing(value: field.temporaryAnswer)
                 return
             }
 
-            if let done = form.data?[field.fieldKey], done.isEmpty == false {
+            if let done = answers.first(where: { field.fieldKey == $0.fieldKey })?.value, done.isEmpty == false {
                 self = .done(value: done)
             } else {
                 self = .optional
             }
+        }
+        
+        mutating func edting(field: FormField) {
+            guard isEditable == true else { return }
+            self = .editing(value: field.temporaryAnswer)
         }
 
         public var text: String? {
@@ -305,6 +326,37 @@ extension SBUFormFieldView {
             case .done:     return false
             case .optional: return false
             }
+        }
+    }
+}
+
+/// Indicates the input type of the field.
+/// Can be used to specify the keyboard type.
+/// - Since: 3.16.0
+public enum SBUFormFieldInputType: String, Codable {
+    case text // default value.
+    case phone
+    case email
+    case password
+    
+    /// Keyboard type
+    public var keyboardType: UIKeyboardType {
+        switch self {
+        case .text: return .default
+        case .phone: return UIKeyboardType.phonePad
+        case .email: return UIKeyboardType.emailAddress
+        case .password: return .default
+        }
+    }
+    
+    /// Indicates if the text is captcha for the keyboard.
+    public var isSecureText: Bool { self == .password }
+    
+    public init(value: String?) {
+        if let value = value {
+            self = .init(rawValue: value) ?? .text
+        } else {
+            self = .text
         }
     }
 }

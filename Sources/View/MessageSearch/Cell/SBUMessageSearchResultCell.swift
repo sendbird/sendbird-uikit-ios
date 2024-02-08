@@ -162,10 +162,12 @@ open class SBUMessageSearchResultCell: SBUTableViewCell {
         ])
         
         self.titleLabel.setContentHuggingPriority(UILayoutPriority(249), for: .horizontal)
-        self.titleLabel.setContentHuggingPriority(.defaultHigh, for: .vertical)
         
         self.messageLabel.setContentHuggingPriority(.defaultLow, for: .vertical)
-        self.createdAtLabel.setContentCompressionResistancePriority(UILayoutPriority(751), for: .horizontal)
+        self.titleLabel
+            .setContentHuggingPriority(.defaultHigh, for: .vertical)
+        self.createdAtLabel
+            .setContentCompressionResistancePriority(UILayoutPriority(751), for: .horizontal)
     }
     
     /// This function handles the initialization of styles.

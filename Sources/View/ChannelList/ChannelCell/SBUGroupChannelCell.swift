@@ -298,7 +298,7 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
             
         case let fileMessage as FileMessage:
             self.messageLabel.lineBreakMode = .byTruncatingMiddle
-            self.messageLabel.text = SBUUtils.getFileTypeString(by: fileMessage.type)
+            self.messageLabel.text = SBUUtils.getFileTypePreviewString(by: fileMessage.type)
             
         case let adminMessage as AdminMessage:
             self.messageLabel.lineBreakMode = .byTruncatingMiddle
@@ -351,7 +351,7 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
                 messageLabel.numberOfLines = 2
             case let fileMessage as FileMessage:
                 self.messageLabel.lineBreakMode = .byTruncatingMiddle
-                self.messageLabel.text = SBUUtils.getFileTypeString(by: fileMessage.type)
+                self.messageLabel.text = SBUUtils.getFileTypePreviewString(by: fileMessage.type)
             case let adminMessage as AdminMessage:
                 if groupChannel.isChatNotification {
                     self.messageLabel.lineBreakMode = .byTruncatingMiddle

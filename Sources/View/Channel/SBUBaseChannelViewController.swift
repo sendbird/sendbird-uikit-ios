@@ -61,6 +61,8 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     
     var isTransformedList: Bool = true
     
+    var isDisableChatInputState: Bool = false
+    
     // MARK: - Lifecycle
     @available(*, unavailable)
     required public init?(coder: NSCoder) {
@@ -677,6 +679,8 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
                 self.baseViewModel?.isScrollToInitialPositionFinish = true
             }
         }
+        
+        self.isDisableChatInputState =  messages.first?.asExtendedMessagePayload?.getDisabledChatInputState(hasNext: self.baseViewModel?.hasNext()) ?? false
         
         guard needsToReload else { return }
         

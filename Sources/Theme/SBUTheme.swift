@@ -2928,11 +2928,11 @@ public class SBUComponentTheme {
         theme.loadingSpinnerColor = SBUColorSet.primary300
         
         // Toast
-        theme.toastContainerColor = SBUColorSet.background700 // [NEXT_VERISON]
-        theme.toastTitleColor = SBUColorSet.ondark01 // [NEXT_VERISON]
+        theme.toastContainerColor = SBUColorSet.background700 // 3.15.0
+        theme.toastTitleColor = SBUColorSet.ondark01 // 3.15.0
 
         // Feedback
-        theme.feedbackToastUpdateDoneColor = SBUColorSet.secondary200 // [NEXT_VERISON]
+        theme.feedbackToastUpdateDoneColor = SBUColorSet.secondary200 // 3.15.0
         
         return theme
     }
@@ -3046,10 +3046,10 @@ public class SBUComponentTheme {
         theme.loadingSpinnerColor = SBUColorSet.primary200
         
         // Toast
-        theme.toastContainerColor = SBUColorSet.ondark01 // [NEXT_VERISON]
-        theme.toastTitleColor = SBUColorSet.onlight01 // [NEXT_VERISON]
+        theme.toastContainerColor = SBUColorSet.ondark01 // 3.15.0
+        theme.toastTitleColor = SBUColorSet.onlight01 // 3.15.0
         
-        theme.feedbackToastUpdateDoneColor = SBUColorSet.secondary300 // [NEXT_VERISON]
+        theme.feedbackToastUpdateDoneColor = SBUColorSet.secondary300 // 3.15.0
         
         return theme
     }
@@ -3163,10 +3163,10 @@ public class SBUComponentTheme {
         theme.loadingSpinnerColor = SBUColorSet.primary200
         
         // Toast
-        theme.toastContainerColor = SBUColorSet.ondark01 // [NEXT_VERISON]
-        theme.toastTitleColor = SBUColorSet.onlight01 // [NEXT_VERISON]
+        theme.toastContainerColor = SBUColorSet.ondark01 // 3.15.0
+        theme.toastTitleColor = SBUColorSet.onlight01 // 3.15.0
         
-        theme.feedbackToastUpdateDoneColor = SBUColorSet.secondary200 // [NEXT_VERISON]
+        theme.feedbackToastUpdateDoneColor = SBUColorSet.secondary200 // 3.15.0
         
         return theme
     }
@@ -3246,9 +3246,9 @@ public class SBUComponentTheme {
                 loadingFont: UIFont = SBUFontSet.subtitle2,
                 loadingTextColor: UIColor = SBUColorSet.ondark01,
                 loadingSpinnerColor: UIColor = SBUColorSet.primary300,
-                toastContainerColor: UIColor = SBUColorSet.background700, // [NEXT_VERISON]
-                toastTitleColor: UIColor = SBUColorSet.ondark01, // [NEXT_VERISON]
-                feedbackToastUpdateDoneColor: UIColor = SBUColorSet.secondary200 // [NEXT_VERISON]
+                toastContainerColor: UIColor = SBUColorSet.background700, // 3.15.0
+                toastTitleColor: UIColor = SBUColorSet.ondark01, // 3.15.0
+                feedbackToastUpdateDoneColor: UIColor = SBUColorSet.secondary200 // 3.15.0
     ) {
         
         self.emptyViewBackgroundColor = emptyViewBackgroundColor
@@ -3336,11 +3336,11 @@ public class SBUComponentTheme {
         self.loadingSpinnerColor = loadingSpinnerColor
         
         // Toast
-        self.toastContainerColor = toastContainerColor // [NEXT_VERISON]
-        self.toastTitleColor = toastTitleColor // [NEXT_VERISON]
+        self.toastContainerColor = toastContainerColor // 3.15.0
+        self.toastTitleColor = toastTitleColor // 3.15.0
         
         // Feedback toast
-        self.feedbackToastUpdateDoneColor = feedbackToastUpdateDoneColor // [NEXT_VERISON]
+        self.feedbackToastUpdateDoneColor = feedbackToastUpdateDoneColor // 3.15.0
     }
     
     // EmptyView
@@ -3454,11 +3454,11 @@ public class SBUComponentTheme {
     public var loadingSpinnerColor: UIColor
     
     // Toast
-    public var toastContainerColor: UIColor // [NEXT_VERISON]
-    public var toastTitleColor: UIColor // [NEXT_VERISON]
+    public var toastContainerColor: UIColor // 3.15.0
+    public var toastTitleColor: UIColor // 3.15.0
     
     // Feedback
-    public var feedbackToastUpdateDoneColor: UIColor // [NEXT_VERISON]
+    public var feedbackToastUpdateDoneColor: UIColor // 3.15.0
 }
 
 // MARK: - Message Search Theme

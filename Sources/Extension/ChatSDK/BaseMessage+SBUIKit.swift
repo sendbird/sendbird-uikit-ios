@@ -36,15 +36,6 @@ extension BaseMessage {
     var asExtendedMessagePayload: SBUExtendedMessagePayload? {
         self.extendedMessagePayload.toExtendedMessage
     }
-
-    /// list of string options.
-    /// - Since: 3.11.0
-    public var asSuggestedReplies: [String]? { self.asExtendedMessagePayload?.suggestedReplies }
-
-    /// List of form data.
-    /// - Since: 3.11.0
-    public var asForms: [SBUForm]? { self.asExtendedMessagePayload?.forms }
-
     /// json string data.
     /// - Since: 3.11.0
     public var asCustomView: Any? { self.asExtendedMessagePayload?.customView }

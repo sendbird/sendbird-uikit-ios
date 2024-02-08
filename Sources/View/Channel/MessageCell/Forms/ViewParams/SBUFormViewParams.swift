@@ -16,5 +16,5 @@ public struct SBUFormViewParams {
     /// The ID of the message that provides form.
     public let messageId: Int64
     /// The form.
-    public let form: SBUForm
+    public let form: SendbirdChatSDK.Form
 }
