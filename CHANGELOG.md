@@ -1,5 +1,9 @@
 # Changelog
 
+### v3.16.1 (Feb 21, 2024)
+
+- Fixed a bug where the label is always None in Chat notification channel
+- Fixed a bug where the template renderer for notifications is not finished
 ### v3.16.0 (Feb 08, 2024)
 
 - Replaced the `SuggestedReplies` and `Form` interfaces with the ChatSDK model-based

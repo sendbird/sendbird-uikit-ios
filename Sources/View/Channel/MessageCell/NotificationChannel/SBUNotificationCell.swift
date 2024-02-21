@@ -116,7 +116,7 @@ class SBUNotificationCell: SBUBaseMessageCell {
                 self.categoryLabel.text = ""
             }
         } else {
-            self.categoryLabel.text = configuration.message.customType
+            self.categoryLabel.text = configuration.message.notifiationData?.label ?? (configuration.message.customType ?? "")
         }
         
         self.setupNotificationTemplate()
