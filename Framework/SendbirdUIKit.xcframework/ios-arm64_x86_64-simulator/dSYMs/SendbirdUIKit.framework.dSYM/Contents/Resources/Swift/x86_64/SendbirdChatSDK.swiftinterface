@@ -200,6 +200,9 @@ extension SendbirdChatSDK.PollVoterListQueryParams : Swift.Encodable {
   final public let suggestedReplies: [Swift.String]?
   final public let forms: [SendbirdChatSDK.Form]?
   @objc public var inMemoryUserInfo: [Swift.String : Any]?
+  @objc open var notificationPriority: SendbirdChatSDK.NotificationPriority {
+    get
+  }
   required public init(from decoder: Swift.Decoder) throws
   public func encode(to encoder: Swift.Encoder) throws
   public typealias ID = Swift.AnyHashable
@@ -2169,6 +2172,26 @@ public enum __SendbirdPlatform : Swift.String {
   public var rawValue: Swift.String {
     get
   }
+}
+@objc(SBDNotificationPriority) public enum NotificationPriority : Swift.Int {
+  case high = 0
+  case normal = 100
+  case low = 200
+}
+extension SendbirdChatSDK.NotificationPriority : Swift.RawRepresentable, Swift.CustomStringConvertible, Swift.Codable {
+  public typealias RawValue = Swift.String
+  public var description: Swift.String {
+    get
+  }
+  public var rawValue: Swift.String {
+    get
+  }
+  public var intValue: Swift.Int {
+    get
+  }
+  public init(rawValue: Swift.String)
+  public init(from decoder: Swift.Decoder) throws
+  public func encode(to encoder: Swift.Encoder) throws
 }
 extension SendbirdChatSDK.OpenChannel {
   @objc dynamic open class func createOpenChannelListQuery() -> SendbirdChatSDK.OpenChannelListQuery
@@ -4847,6 +4870,8 @@ extension SendbirdChatSDK.__SendbirdProduct : Swift.RawRepresentable {}
 extension SendbirdChatSDK.__SendbirdPlatform : Swift.Equatable {}
 extension SendbirdChatSDK.__SendbirdPlatform : Swift.Hashable {}
 extension SendbirdChatSDK.__SendbirdPlatform : Swift.RawRepresentable {}
+extension SendbirdChatSDK.NotificationPriority : Swift.Equatable {}
+extension SendbirdChatSDK.NotificationPriority : Swift.Hashable {}
 extension SendbirdChatSDK.CoreError : Swift.Equatable {}
 extension SendbirdChatSDK.CoreError : Swift.Hashable {}
 extension SendbirdChatSDK.CoreError : Swift.RawRepresentable {}

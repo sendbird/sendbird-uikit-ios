@@ -195,7 +195,7 @@ class MessageTemplateRenderer: UIView {
         var currentView: UIView = self.bodyView
         for (index, item) in items.enumerated() {
             let isLastItem = (index == items.count - 1)
-            
+
             switch item {
             case .box(let boxItem):
                 let boxView = self.renderBox(
@@ -821,8 +821,23 @@ class MessageTemplateRenderer: UIView {
             placeholderConstraints = imageView.sbu_constraint_greaterThan_v2(width: 1, height: 1, priority: .defaultLow)
         }
         
+        let fixedHeightConstraintsHandler: () -> Void = {
+            if let metaData = item.metaData {
+                let ratio = metaData.pixelWidth != 0
+                ? CGFloat(metaData.pixelWidth) / CGFloat(metaData.pixelHeight)
+                : 0
+                let heightConst = imageView.heightAnchor.constraint(
+                    equalTo: imageView.widthAnchor,
+                    multiplier: ratio
+                )
+                placeholderConstraints.append(heightConst)
+            }
+            isRatioUsed = true
+        }
+        
         if item.width.type == .fixed {
             if item.height.type == .fixed {
+                SBUCacheManager.TemplateImage.save(messageId: item.messageId, viewIndex: item.index, size: CGSize(width: item.width.value, height: item.height.value))
                 minimumConstraintsHandler()
             } else if item.height.type == .flex, item.height.value == 0 { // fillParent
                 switch item.imageStyle.contentMode {
@@ -842,8 +857,10 @@ class MessageTemplateRenderer: UIView {
             
         } else if item.width.type == .flex, item.width.value == 0 { // fillParent
             switch item.height.type {
-            case .fixed: ratioConstraintsHandler()
-            case .flex: ratioConstraintsHandler() // fillParent, wrapContent
+            case .fixed:
+                fixedHeightConstraintsHandler()
+            case .flex: 
+                ratioConstraintsHandler() // fillParent, wrapContent
             }
             
         } else if item.width.type == .flex, item.width.value == 1 { // wrapContent
