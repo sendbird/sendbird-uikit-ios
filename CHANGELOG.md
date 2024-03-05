@@ -1,5 +1,8 @@
 # Changelog
 
+### v3.16.2 (Mar 05, 2024)
+
+- Fixed template generator bug causing improper variable-value binding
 ### v3.16.1 (Feb 21, 2024)
 
 - Fixed a bug where the label is always None in Chat notification channel

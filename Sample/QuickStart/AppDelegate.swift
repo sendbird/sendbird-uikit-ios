@@ -19,7 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         SendbirdUI.setLogLevel(.none)
         
         // TODO: Change to your AppId
-        SendbirdUI.initialize(applicationId: "2D7B4CDB-932F-4082-9B09-A1153792DC8D") { // origin
+        SendbirdUI.initialize(applicationId: "FEA2129A-EA73-4EB9-9E0B-EC738E7EB768") { // origin
             //
         } migrationHandler: {
             //
