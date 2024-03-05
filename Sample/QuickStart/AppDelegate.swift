@@ -18,8 +18,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         SendbirdUI.setLogLevel(.none)
         
+        var appId:String = ""
+        var userId:String = ""
+        var nickName:String = ""
+        var replyType:String = ""
+        
+        for argument in CommandLine.arguments {
+            if let appIdArg = argument.split(separator: ":").first, appIdArg == "appId" {
+                appId = String(argument.split(separator: ":").last ?? "")
+            }
+            if let userIdArg = argument.split(separator: ":").first, userIdArg == "userId" {
+                userId = String(argument.split(separator: ":").last ?? "")
+            }
+            if let nickNameArg = argument.split(separator: ":").first, nickNameArg == "nickName" {
+                nickName = String(argument.split(separator: ":").last ?? "")
+            }
+            if let replyTypeArg = argument.split(separator: ":").first, replyTypeArg == "replyType" {
+                replyType = String(argument.split(separator: ":").last ?? "")
+            }
+        }
+
         // TODO: Change to your AppId
-        SendbirdUI.initialize(applicationId: "2D7B4CDB-932F-4082-9B09-A1153792DC8D") { // origin
+        SendbirdUI.initialize(applicationId: appId.isEmpty ? "2D7B4CDB-932F-4082-9B09-A1153792DC8D" : appId) { // origin
             //
         } migrationHandler: {
             //
@@ -27,11 +47,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             //
         }
         
+        SBUGlobals.currentUser = SBUUser(userId: userId, nickname: nickName)
         SBUGlobals.accessToken = ""
         SendbirdUI.config.common.isUsingDefaultUserProfileEnabled = true
         
         // Reply
-        SendbirdUI.config.groupChannel.channel.replyType = .quoteReply
+        if replyType != "" {
+            if replyType == "thread" {
+                SendbirdUI.config.groupChannel.channel.replyType = .thread
+            } else if replyType == "quote" {
+                SendbirdUI.config.groupChannel.channel.replyType = .quoteReply
+            }
+        } else{
+            SendbirdUI.config.groupChannel.channel.replyType = .quoteReply
+        }
+        
         // Channel List - Typing indicator
         SendbirdUI.config.groupChannel.channelList.isTypingIndicatorEnabled = true
         // Channel List - Message receipt state
