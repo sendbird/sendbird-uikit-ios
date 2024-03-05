@@ -404,9 +404,10 @@ extension SBUNotificationChannelManager {
             let keyRange = match.range(at: 1)
             let key = (uiTemplate as NSString).substring(with: keyRange)
             if let value = dictionary[key] {
+                let escapedValue = value.replacingOccurrences(of: "\"", with: "\\\"")
                 resultTemplate = resultTemplate.replacingOccurrences(
                     of: "{\(key)}",
-                    with: value,
+                    with: escapedValue,
                     options: [],
                     range: Range(match.range, in: resultTemplate)
                 )

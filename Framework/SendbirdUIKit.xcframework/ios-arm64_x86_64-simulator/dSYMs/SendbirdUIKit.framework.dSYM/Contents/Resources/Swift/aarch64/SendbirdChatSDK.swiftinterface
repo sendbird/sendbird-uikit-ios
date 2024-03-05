@@ -749,6 +749,8 @@ public typealias GlobalNotificationChannelSettingHandler = (_ globalNotification
 public typealias PinnedMessageListHandler = (_ messages: [SendbirdChatSDK.PinnedMessage]?, _ error: SendbirdChatSDK.SBError?) -> Swift.Void
 public typealias UIKitConfigurationHandler = (_ uikitConfiguration: SendbirdChatSDK.UIKitConfiguration?, _ error: SendbirdChatSDK.SBError?) -> Swift.Void
 public typealias FeedbackHandler = (_ feedback: SendbirdChatSDK.Feedback?, _ error: SendbirdChatSDK.SBError?) -> Swift.Void
+public typealias MessageTemplateHandler = (_ messageTemplate: SendbirdChatSDK.MessageTemplate?, _ error: SendbirdChatSDK.SBError?) -> Swift.Void
+public typealias MessageTemplateListHandler = (_ messageTemplateList: SendbirdChatSDK.MessageTemplateList?, _ hasMore: Swift.Bool, _ token: Swift.String?, _ error: SendbirdChatSDK.SBError?) -> Swift.Void
 @objc(SBDPollUpdateEvent) public class PollUpdateEvent : ObjectiveC.NSObject {
   @objc final public let poll: SendbirdChatSDK.UpdatedPoll
   required public init(from decoder: Swift.Decoder) throws
@@ -1047,9 +1049,9 @@ extension SendbirdChatSDK.UserMessage {
   @objc final public let userId: Swift.String
   @objc final public let operation: SendbirdChatSDK.ReactionEventAction
   @objc final public let updatedAt: Swift.Int64
+  required public init(from decoder: Swift.Decoder) throws
   @objc deinit
   public func encode(to encoder: Swift.Encoder) throws
-  required public init(from decoder: Swift.Decoder) throws
 }
 @objc extension SendbirdChatSDK.GroupChannel {
   @objc dynamic open func getUnreadMemberCount(_ message: SendbirdChatSDK.BaseMessage) -> Swift.Int
@@ -1682,6 +1684,7 @@ extension SendbirdChatSDK.PollRetrievalParams : Swift.Encodable {
     get
   }
   @objc public var notificationInfo: SendbirdChatSDK.NotificationInfo?
+  @objc public var messageTemplateInfo: SendbirdChatSDK.MessageTemplateInfo?
   final public let uikitConfigInfo: SendbirdChatSDK.UIKitConfigInfo
   @objc final public let multipleFilesMessageFileCountLimit: Swift.Int
   @objc public func isEmojiUpdateNeeded(prevEmojiHash: Swift.String) -> Swift.Bool
@@ -1873,6 +1876,10 @@ extension SendbirdChatSDK.MessageListParams {
   @objc override dynamic public var description: Swift.String {
     @objc get
   }
+}
+@_hasMissingDesignatedInitializers @objc(SBDMessageTemplateList) open class MessageTemplateList : ObjectiveC.NSObject {
+  @objc final public let jsonPayload: Swift.String
+  @objc deinit
 }
 @objc open class MembersChangeLogsResult : ObjectiveC.NSObject {
   @objc final public let userList: [SendbirdChatSDK.User]
@@ -2341,7 +2348,7 @@ extension SendbirdChatSDK.GroupChannel {
     get
   }
   @objc open var messageOffsetTimestamp: Swift.Int64 {
-    get
+    @objc get
   }
   @objc open var messageSurvivalSeconds: Swift.Int {
     get
@@ -3534,6 +3541,8 @@ extension SendbirdChatSDK.MutedUserListQuery {
   @objc public class func getGlobalNotificationChannelSetting(completionHandler: @escaping SendbirdChatSDK.GlobalNotificationChannelSettingHandler)
   @objc public class func getNotificationTemplateList(token: Swift.String?, params: SendbirdChatSDK.NotificationTemplateListParams = NotificationTemplateListParams(), completionHandler: @escaping SendbirdChatSDK.NotificationTemplateListHandler)
   @objc public class func getNotificationTemplate(key: Swift.String, completionHandler: @escaping SendbirdChatSDK.NotificationTemplateHandler)
+  @objc public class func getMessageTemplateList(token: Swift.String?, params: SendbirdChatSDK.MessageTemplateListParams = MessageTemplateListParams(), completionHandler: @escaping SendbirdChatSDK.MessageTemplateListHandler)
+  @objc public class func getMessageTemplate(key: Swift.String, completionHandler: @escaping SendbirdChatSDK.MessageTemplateHandler)
   public class func __getUIKitConfiguration(completionhandler: @escaping SendbirdChatSDK.UIKitConfigurationHandler)
   public class func refreshNotificationCollections()
   @objc public class func sendUserMessage(channelType: SendbirdChatSDK.ChannelType, channelURL: Swift.String, params: SendbirdChatSDK.UserMessageCreateParams, completionHandler: SendbirdChatSDK.UserMessageHandler?)
@@ -3895,6 +3904,19 @@ extension SendbirdChatSDK.ScheduledMessageListQueryParams : Foundation.NSCopying
   public func encode(to encoder: Swift.Encoder) throws
   @objc deinit
 }
+@_inheritsConvenienceInitializers @objc(SBDMessageTemplateListParams) final public class MessageTemplateListParams : ObjectiveC.NSObject {
+  @objc final public var reverse: Swift.Bool
+  @objc final public var limit: Swift.Int
+  @objc override dynamic public init()
+  @objc public init(builder: (SendbirdChatSDK.MessageTemplateListParams) -> Swift.Void)
+  @objc deinit
+}
+extension SendbirdChatSDK.MessageTemplateListParams {
+  @objc override final public func isEqual(_ object: Any?) -> Swift.Bool
+}
+extension SendbirdChatSDK.MessageTemplateListParams : Foundation.NSCopying {
+  @objc final public func copy(with zone: ObjectiveC.NSZone? = nil) -> Any
+}
 @_hasMissingDesignatedInitializers @objc(SBDNotificationTemplate) open class NotificationTemplate : ObjectiveC.NSObject {
   @objc final public let jsonPayload: Swift.String
   @objc deinit
@@ -3909,6 +3931,10 @@ extension SendbirdChatSDK.ScheduledMessageListQueryParams : Foundation.NSCopying
 extension SendbirdChatSDK.FeedChannel {
   @objc dynamic open func refresh(completionHandler: SendbirdChatSDK.SBErrorHandler?)
   @objc(getChannelWithURL:completionHandler:) dynamic open class func getChannel(url: Swift.String, completionHandler: SendbirdChatSDK.FeedChannelHandler?)
+}
+@_hasMissingDesignatedInitializers @objc(SBDMessageTemplate) open class MessageTemplate : ObjectiveC.NSObject {
+  @objc final public let jsonPayload: Swift.String
+  @objc deinit
 }
 @objc(SBDMemberStateFilter) public enum MemberStateFilter : Swift.Int {
   case all = 0
@@ -4177,7 +4203,7 @@ extension SendbirdChatSDK.MultipleFilesMessage {
 @_hasMissingDesignatedInitializers @objc(SBDReaction) public class Reaction : ObjectiveC.NSObject, Swift.Codable {
   @objc final public let key: Swift.String
   @objc public var userIds: [Swift.String] {
-    @objc get
+    get
   }
   @objc public var getUserIds: [Swift.String] {
     @objc get
@@ -4550,6 +4576,12 @@ extension SendbirdChatSDK.MessageSearchQuery {
 }
 @_hasMissingDesignatedInitializers @objc(SBDNotificationTemplateList) open class NotificationTemplateList : ObjectiveC.NSObject {
   @objc final public let jsonPayload: Swift.String
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers @objc(SBDMessageTemplateInfo) open class MessageTemplateInfo : ObjectiveC.NSObject, Swift.Codable {
+  @objc public var templateListToken: Swift.String?
+  public func encode(to encoder: Swift.Encoder) throws
+  required public init(from decoder: Swift.Decoder) throws
   @objc deinit
 }
 @objc(SBDNotificationCollectionDelegate) public protocol NotificationCollectionDelegate {
