@@ -47,9 +47,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             //
         }
         
-        SBUGlobals.currentUser = SBUUser(userId: userId, nickname: nickName)
+        UserDefaults.saveUserID(userId)
+        UserDefaults.saveNickname(nickName)
+        
         SBUGlobals.accessToken = ""
         SendbirdUI.config.common.isUsingDefaultUserProfileEnabled = true
+        
         
         // Reply
         if replyType != "" {
