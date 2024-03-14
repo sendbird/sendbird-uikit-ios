@@ -52,6 +52,7 @@ extension SBUCreateOpenChannelModule {
         // MARK: - UI properties (Public)
         
         /// A view that represents a title in navigation bar.
+        /// The default view type is ``SBUNavigationTitleView``.
         /// - NOTE: When the value is updated, `createOpenChannelModule(_:didUpdateTitleView:)` delegate function is called.
         public var titleView: UIView? {
             didSet { self.delegate?.createOpenChannelModule(self, didUpdateTitleView: self.titleView) }

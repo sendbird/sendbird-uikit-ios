@@ -68,6 +68,7 @@ extension SBUGroupChannelPushSettingsModule {
         // MARK: - UI properties (Public)
         
         /// A view that represents a title in navigation bar.
+        /// The default view type is ``SBUNavigationTitleView``.
         /// - NOTE: When the value is updated, `groupChannelPushSettingsModule(_:didUpdateTitleView:)` delegate function is called.
         public var titleView: UIView? {
             didSet {
@@ -79,6 +80,7 @@ extension SBUGroupChannelPushSettingsModule {
         }
         
         /// A view that represents a left `UIBarButtonItem` in navigation bar.
+        /// The default view type is ``UIBarButtonItem``.
         /// - NOTE: When the value is updated, `groupChannelPushSettingsModule(_:didUpdateLeftItem:)` delegate function is called.
         /// and when the value is tapped, `groupChannelPushSettingsModule(_:didTapLeftItem:)` delegate function is called.
         public var leftBarButton: UIBarButtonItem? {

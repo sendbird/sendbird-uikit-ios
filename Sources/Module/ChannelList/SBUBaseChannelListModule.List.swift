@@ -56,6 +56,7 @@ extension SBUBaseChannelListModule {
         /// The table view to show the list of channels
         public var tableView = UITableView()
         /// A view that shows when there is no channel.
+        /// The default view type is ``SBUEmptyView``.
         public var emptyView: UIView? {
             didSet { self.tableView.backgroundView = self.emptyView }
         }

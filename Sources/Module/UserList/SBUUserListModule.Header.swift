@@ -50,6 +50,7 @@ extension SBUUserListModule {
         // MARK: - UI properties (Public)
         
         /// A view that represents a title in navigation bar.
+        /// The default view type is ``SBUNavigationTitleView``.
         /// - NOTE: When the value is updated, `userListModule(_:didUpdateTitleView:)` delegate function is called.
         public var titleView: UIView? {
             didSet { self.delegate?.userListModule(self, didUpdateTitleView: self.titleView) }

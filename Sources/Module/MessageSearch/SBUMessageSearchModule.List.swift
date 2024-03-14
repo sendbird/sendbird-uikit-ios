@@ -50,6 +50,7 @@ extension SBUMessageSearchModule {
         public var tableView = UITableView()
         
         /// A view that shows when there is no searched messages.
+        /// The default view type is ``SBUEmptyView``.
         public var emptyView: UIView? {
             didSet { self.tableView.backgroundView = self.emptyView }
         }
