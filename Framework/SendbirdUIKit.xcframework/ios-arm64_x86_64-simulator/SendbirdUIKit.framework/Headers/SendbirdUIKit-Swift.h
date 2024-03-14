@@ -353,7 +353,7 @@ typedef SWIFT_ENUM(NSInteger, ChannelMemberListType, open) {
 SWIFT_CLASS("_TtCC13SendbirdUIKit22SBUMessageSearchModule6Header")
 @interface Header : UIView
 /// A view that represents a title in navigation bar.
-/// The default value for this object is set with <code>UISearchBar</code>.
+/// The default view type is <code>UISearchBar</code>.
 /// note:
 /// When the value is updated, <code>messageSearchModule(_:didUpdateTitleView:)</code> delegate function is called.
 @property (nonatomic, strong) UIView * _Nullable titleView;
@@ -403,6 +403,7 @@ SWIFT_CLASS_NAMED("List")
 /// The table view to show user list in the channel.
 @property (nonatomic, strong) UITableView * _Nonnull tableView;
 /// A view that shows when there is no message in the channel.
+/// The default view type is <code>SBUEmptyView</code>.
 @property (nonatomic, strong) UIView * _Nullable emptyView;
 /// The user cell for <code>UITableViewCell</code> object. Use <code>register(userCell:nib:)</code> to update.
 @property (nonatomic, strong) UITableViewCell * _Nullable userCell;
@@ -504,6 +505,7 @@ SWIFT_CLASS_NAMED("List")
 /// The table view that shows the list of the users.
 @property (nonatomic, strong) UITableView * _Nonnull tableView;
 /// A view that displays when the table view is empty.
+/// The default view type is <code>SBUEmptyView</code>.
 @property (nonatomic, strong) UIView * _Nullable emptyView;
 /// The user cell for <code>UITableViewCell</code> object. Use <code>register(userCell:nib:)</code> to update.
 @property (nonatomic, strong) UITableViewCell * _Nullable userCell;
@@ -562,8 +564,10 @@ SWIFT_CLASS_NAMED("List")
 /// The table view to show messages in the channel
 @property (nonatomic, strong) UITableView * _Nonnull tableView;
 /// A view that shows when there is no message in the channel.
+/// The default view type is <code>SBUEmptyView</code>.
 @property (nonatomic, strong) UIView * _Nullable emptyView;
 /// A view that shows the state of the channel such as frozen state.
+/// The default view type is <code>UIView</code>.
 @property (nonatomic, strong) UIView * _Nullable channelStateBanner;
 /// A view that indicates a new received message.
 /// If you use a view that inherits <code>SBUNewMessageInfo</code>, you can change the button and their action.
@@ -571,6 +575,7 @@ SWIFT_CLASS_NAMED("List")
 /// You can use the customized view and a view that inherits <code>SBUNewMessageInfo</code>.
 @property (nonatomic, strong) UIView * _Nullable newMessageInfoView;
 /// A view that scrolls table view to the bottom.
+/// The default view type is <code>UIView</code>.
 @property (nonatomic, strong) UIView * _Nullable scrollBottomView;
 /// A view that shows profile of the user.
 /// If you do not want to use the user profile feature, please set this value to nil.
@@ -680,6 +685,7 @@ SWIFT_CLASS_NAMED("List")
 
 @class SBUBaseMessageCell;
 @class SBDGroupChannel;
+@class SBUVoicePlayer;
 enum MessagePosition : NSInteger;
 @class NSString;
 
@@ -712,6 +718,7 @@ SWIFT_CLASS_NAMED("List")
 @property (nonatomic) BOOL isHighlightInfoAnimated;
 /// The current <em>group</em> channel object casted from <code>baseChannel</code>
 @property (nonatomic, readonly, strong) SBDGroupChannel * _Nullable channel;
+@property (nonatomic, strong) SBUVoicePlayer * _Nullable voicePlayer;
 - (void)setupViews;
 - (void)setupLayouts;
 - (void)setScrollBottomViewWithHidden:(BOOL)hidden;
@@ -868,6 +875,7 @@ SWIFT_CLASS_NAMED("List")
 /// The table view to show the list of channels
 @property (nonatomic, strong) UITableView * _Nonnull tableView;
 /// A view that shows when there is no channel.
+/// The default view type is <code>SBUEmptyView</code>.
 @property (nonatomic, strong) UIView * _Nullable emptyView;
 /// The channel cell for <code>SBUBaseChannelCell</code> object. Use <code>register(channelCell:nib:)</code> to update.
 @property (nonatomic, strong) SBUBaseChannelCell * _Nullable channelCell;
@@ -940,6 +948,7 @@ SWIFT_CLASS_NAMED("List")
 /// The table view to show the list of searched messages.
 @property (nonatomic, strong) UITableView * _Nonnull tableView;
 /// A view that shows when there is no searched messages.
+/// The default view type is <code>SBUEmptyView</code>.
 @property (nonatomic, strong) UIView * _Nullable emptyView;
 /// The search result cell for <code>SBUMessageSearchResultCell</code> object. Use <code>register(resultCell:nib:)</code> to update.
 @property (nonatomic, strong) SBUMessageSearchResultCell * _Nullable resultCell;
@@ -1139,6 +1148,7 @@ SWIFT_CLASS_NAMED("List")
 /// The current <em>group</em> channel object casted from <code>baseChannel</code>
 @property (nonatomic, readonly, strong) SBDGroupChannel * _Nullable channel;
 @property (nonatomic, strong) SBDBaseMessage * _Nullable parentMessage;
+@property (nonatomic, strong) SBUVoicePlayer * _Nullable voicePlayer;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 - (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
 - (void)setupViews;
@@ -1437,7 +1447,6 @@ SWIFT_CLASS_NAMED("List")
 - (UISwipeActionsConfiguration * _Nullable)tableView:(UITableView * _Nonnull)tableView trailingSwipeActionsConfigurationForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
 @end
 
-@class SBUVoicePlayer;
 @class SBUVoiceFileInfo;
 
 @interface SBUGroupChannelModuleList (SWIFT_EXTENSION(SendbirdUIKit))
@@ -3229,6 +3238,7 @@ SWIFT_CLASS("_TtC13SendbirdUIKit33SBUGroupChannelListViewController")
 @interface SBUGroupChannelListViewController : SBUBaseChannelListViewController
 @property (nonatomic, strong) Header * _Nullable headerComponent;
 @property (nonatomic, strong) SBUGroupChannelListModuleList * _Nullable listComponent;
+/// The default view type is <code>SBUCreateChannelTypeSelector</code>.
 @property (nonatomic, strong) UIView * _Nullable createChannelTypeSelector;
 @property (nonatomic, strong) SBUGroupChannelListViewModel * _Nullable viewModel;
 /// This object has a list of all channels.
@@ -6277,7 +6287,7 @@ typedef SWIFT_ENUM(NSInteger, ChannelMemberListType, open) {
 SWIFT_CLASS("_TtCC13SendbirdUIKit22SBUMessageSearchModule6Header")
 @interface Header : UIView
 /// A view that represents a title in navigation bar.
-/// The default value for this object is set with <code>UISearchBar</code>.
+/// The default view type is <code>UISearchBar</code>.
 /// note:
 /// When the value is updated, <code>messageSearchModule(_:didUpdateTitleView:)</code> delegate function is called.
 @property (nonatomic, strong) UIView * _Nullable titleView;
@@ -6327,6 +6337,7 @@ SWIFT_CLASS_NAMED("List")
 /// The table view to show user list in the channel.
 @property (nonatomic, strong) UITableView * _Nonnull tableView;
 /// A view that shows when there is no message in the channel.
+/// The default view type is <code>SBUEmptyView</code>.
 @property (nonatomic, strong) UIView * _Nullable emptyView;
 /// The user cell for <code>UITableViewCell</code> object. Use <code>register(userCell:nib:)</code> to update.
 @property (nonatomic, strong) UITableViewCell * _Nullable userCell;
@@ -6428,6 +6439,7 @@ SWIFT_CLASS_NAMED("List")
 /// The table view that shows the list of the users.
 @property (nonatomic, strong) UITableView * _Nonnull tableView;
 /// A view that displays when the table view is empty.
+/// The default view type is <code>SBUEmptyView</code>.
 @property (nonatomic, strong) UIView * _Nullable emptyView;
 /// The user cell for <code>UITableViewCell</code> object. Use <code>register(userCell:nib:)</code> to update.
 @property (nonatomic, strong) UITableViewCell * _Nullable userCell;
@@ -6486,8 +6498,10 @@ SWIFT_CLASS_NAMED("List")
 /// The table view to show messages in the channel
 @property (nonatomic, strong) UITableView * _Nonnull tableView;
 /// A view that shows when there is no message in the channel.
+/// The default view type is <code>SBUEmptyView</code>.
 @property (nonatomic, strong) UIView * _Nullable emptyView;
 /// A view that shows the state of the channel such as frozen state.
+/// The default view type is <code>UIView</code>.
 @property (nonatomic, strong) UIView * _Nullable channelStateBanner;
 /// A view that indicates a new received message.
 /// If you use a view that inherits <code>SBUNewMessageInfo</code>, you can change the button and their action.
@@ -6495,6 +6509,7 @@ SWIFT_CLASS_NAMED("List")
 /// You can use the customized view and a view that inherits <code>SBUNewMessageInfo</code>.
 @property (nonatomic, strong) UIView * _Nullable newMessageInfoView;
 /// A view that scrolls table view to the bottom.
+/// The default view type is <code>UIView</code>.
 @property (nonatomic, strong) UIView * _Nullable scrollBottomView;
 /// A view that shows profile of the user.
 /// If you do not want to use the user profile feature, please set this value to nil.
@@ -6604,6 +6619,7 @@ SWIFT_CLASS_NAMED("List")
 
 @class SBUBaseMessageCell;
 @class SBDGroupChannel;
+@class SBUVoicePlayer;
 enum MessagePosition : NSInteger;
 @class NSString;
 
@@ -6636,6 +6652,7 @@ SWIFT_CLASS_NAMED("List")
 @property (nonatomic) BOOL isHighlightInfoAnimated;
 /// The current <em>group</em> channel object casted from <code>baseChannel</code>
 @property (nonatomic, readonly, strong) SBDGroupChannel * _Nullable channel;
+@property (nonatomic, strong) SBUVoicePlayer * _Nullable voicePlayer;
 - (void)setupViews;
 - (void)setupLayouts;
 - (void)setScrollBottomViewWithHidden:(BOOL)hidden;
@@ -6792,6 +6809,7 @@ SWIFT_CLASS_NAMED("List")
 /// The table view to show the list of channels
 @property (nonatomic, strong) UITableView * _Nonnull tableView;
 /// A view that shows when there is no channel.
+/// The default view type is <code>SBUEmptyView</code>.
 @property (nonatomic, strong) UIView * _Nullable emptyView;
 /// The channel cell for <code>SBUBaseChannelCell</code> object. Use <code>register(channelCell:nib:)</code> to update.
 @property (nonatomic, strong) SBUBaseChannelCell * _Nullable channelCell;
@@ -6864,6 +6882,7 @@ SWIFT_CLASS_NAMED("List")
 /// The table view to show the list of searched messages.
 @property (nonatomic, strong) UITableView * _Nonnull tableView;
 /// A view that shows when there is no searched messages.
+/// The default view type is <code>SBUEmptyView</code>.
 @property (nonatomic, strong) UIView * _Nullable emptyView;
 /// The search result cell for <code>SBUMessageSearchResultCell</code> object. Use <code>register(resultCell:nib:)</code> to update.
 @property (nonatomic, strong) SBUMessageSearchResultCell * _Nullable resultCell;
@@ -7063,6 +7082,7 @@ SWIFT_CLASS_NAMED("List")
 /// The current <em>group</em> channel object casted from <code>baseChannel</code>
 @property (nonatomic, readonly, strong) SBDGroupChannel * _Nullable channel;
 @property (nonatomic, strong) SBDBaseMessage * _Nullable parentMessage;
+@property (nonatomic, strong) SBUVoicePlayer * _Nullable voicePlayer;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 - (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
 - (void)setupViews;
@@ -7361,7 +7381,6 @@ SWIFT_CLASS_NAMED("List")
 - (UISwipeActionsConfiguration * _Nullable)tableView:(UITableView * _Nonnull)tableView trailingSwipeActionsConfigurationForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
 @end
 
-@class SBUVoicePlayer;
 @class SBUVoiceFileInfo;
 
 @interface SBUGroupChannelModuleList (SWIFT_EXTENSION(SendbirdUIKit))
@@ -9153,6 +9172,7 @@ SWIFT_CLASS("_TtC13SendbirdUIKit33SBUGroupChannelListViewController")
 @interface SBUGroupChannelListViewController : SBUBaseChannelListViewController
 @property (nonatomic, strong) Header * _Nullable headerComponent;
 @property (nonatomic, strong) SBUGroupChannelListModuleList * _Nullable listComponent;
+/// The default view type is <code>SBUCreateChannelTypeSelector</code>.
 @property (nonatomic, strong) UIView * _Nullable createChannelTypeSelector;
 @property (nonatomic, strong) SBUGroupChannelListViewModel * _Nullable viewModel;
 /// This object has a list of all channels.

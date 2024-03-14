@@ -91,6 +91,7 @@ open class SBUFileViewController: SBUBaseViewController, UIScrollViewDelegate, S
             self.navigationItem.rightBarButtonItem = self.rightBarButton
         }
     }
+    
     public var titleView: UIView! = nil {
         didSet {
             self.navigationItem.titleView = self.titleView

@@ -121,7 +121,7 @@ extension SBUMessageThreadModule {
         
         public var parentMessage: BaseMessage?
         
-        var voicePlayer: SBUVoicePlayer?
+        public var voicePlayer: SBUVoicePlayer?
         var voiceFileInfos: [String: SBUVoiceFileInfo] = [:]
         var currentVoiceFileInfo: SBUVoiceFileInfo?
         var currentVoiceContentView: SBUVoiceContentView?

@@ -26,6 +26,7 @@ extension SBUBaseSelectUserModule {
         
         // MARK: - UI properties (Public)
         /// A view that represents a title in navigation bar.
+        /// The default view type is ``SBUNavigationTitleView``.
         /// - NOTE: When the value is updated, `didUpdateTitleView`is called.
         public var titleView: UIView? {
             didSet { self.didUpdateTitleView() }

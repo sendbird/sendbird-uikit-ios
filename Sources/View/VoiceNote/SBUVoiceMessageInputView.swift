@@ -63,8 +63,8 @@ public class SBUVoiceMessageInputView: NSObject, SBUViewLifeCycle {
     var isSendButtonEnabled = false
     var status: Status = .none
     
+    public var voicePlayer: SBUVoicePlayer?
     var voiceRecorder: SBUVoiceRecorder?
-    var voicePlayer: SBUVoicePlayer?
     var voiceFileInfo: SBUVoiceFileInfo?
     
     var recordingTime: TimeInterval = 0

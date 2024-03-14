@@ -55,6 +55,8 @@ extension SBUBaseChannelModule {
         // MARK: - UI properties (Public)
         
         /// A view that represents a title in navigation bar.
+        /// For ``SBUBaseChannelModule.Header`` and its subclasses, the default view type is ``SBUChannelTitleView``.
+        /// For ``SBUMessageThreadModule.Header``, the default view type is ``SBUMessageThreadTitleView``.
         /// - NOTE: When the value is updated, `baseChannelModule(_:didUpdateTitleView:)` delegate function is called.
         public var titleView: UIView? {
             didSet {
@@ -63,6 +65,7 @@ extension SBUBaseChannelModule {
         }
         
         /// A view that represents a left `UIBarButtonItem` in navigation bar.
+        /// The default view type is ``UIBarButtonItem``.
         /// - NOTE: When the value is updated, `baseChannelModule(_:didUpdateLeftItem:)` delegate function is called.
         public var leftBarButton: UIBarButtonItem? {
             didSet {
@@ -71,6 +74,7 @@ extension SBUBaseChannelModule {
         }
         
         /// A view that represents a right `UIBarButtonItem` in navigation bar.
+        /// For ``SBUOpenChannelModule.Header``, the default view type is ``UIBarButtonItem``.
         /// - NOTE: When the value is updated, `baseChannelModule(_:didUpdateRightItem:)` delegate function is called.
         public var rightBarButton: UIBarButtonItem? {
             didSet {

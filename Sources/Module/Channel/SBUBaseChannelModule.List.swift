@@ -278,11 +278,13 @@ extension SBUBaseChannelModule {
         public var tableView = UITableView()
         
         /// A view that shows when there is no message in the channel.
+        /// The default view type is ``SBUEmptyView``.
         public var emptyView: UIView? {
             didSet { self.tableView.backgroundView = self.emptyView }
         }
         
         /// A view that shows the state of the channel such as frozen state.
+        /// The default view type is ``UIView``.
         public var channelStateBanner: UIView?
         
         /// A view that indicates a new received message.
@@ -291,6 +293,7 @@ extension SBUBaseChannelModule {
         public var newMessageInfoView: UIView?
         
         /// A view that scrolls table view to the bottom.
+        /// The default view type is ``UIView``.
         public var scrollBottomView: UIView?
         
         /// A view that shows profile of the user.

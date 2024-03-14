@@ -45,6 +45,7 @@ extension SBUModerationsModule {
         // MARK: - UI properties (Public)
         
         /// A view that represents a title in navigation bar.
+        /// The defaults view type is ``SBUNavigationTitleView``.
         /// - NOTE: When the value is updated, `moderationsModule(_:didUpdateTitleView:)` delegate function is called.
         public var titleView: UIView? {
             didSet { self.delegate?.moderationsModule(self, didUpdateTitleView: self.titleView) }

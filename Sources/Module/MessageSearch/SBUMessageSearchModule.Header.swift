@@ -51,7 +51,7 @@ extension SBUMessageSearchModule {
         
         /// A view that represents a title in navigation bar.
         ///
-        /// The default value for this object is set with `UISearchBar`.
+        /// The default view type is `UISearchBar`.
         /// - NOTE: When the value is updated, `messageSearchModule(_:didUpdateTitleView:)` delegate function is called.
         public var titleView: UIView? {
             didSet { self.delegate?.messageSearchModule(self, didUpdateTitleView: self.titleView) }

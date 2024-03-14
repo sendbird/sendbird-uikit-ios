@@ -114,7 +114,8 @@ extension SBUBaseChannelModule {
         /// - IMPORTANT: It does *NOT* guarantee that the layout of ``messageInputView`` will look correct.
         public var inputVStackView = SBUStackView(axis: .vertical, alignment: .fill, spacing: 0)
         
-        /// The `messageInputView` displays an input field where users can send or edit a message. Its default value is set to `SBUMessageInputView` object.
+        /// The `messageInputView` displays an input field where users can send or edit a message. 
+        /// The default view type is ``SBUMessageInputView``.
         /// - NOTE: If this value is updated, an event delegate for `messageInputView` will be internally set as `self`. *However*, if you wish to use a custom object that does *NOT* override `SBUMessageInputView`, you need to manually set an event delegate.
         public var messageInputView: UIView? {
             willSet {

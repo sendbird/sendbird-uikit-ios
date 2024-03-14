@@ -25,6 +25,7 @@ open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, 
     @SBUThemeWrapper(theme: SBUTheme.groupChannelListTheme)
     public var theme: SBUGroupChannelListTheme
 
+    /// The default view type is ``SBUCreateChannelTypeSelector``.
     public lazy var createChannelTypeSelector: UIView? = nil
     
     // MARK: - UI properties (Private)

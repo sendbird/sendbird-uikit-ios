@@ -141,6 +141,7 @@ extension SBUChatNotificationChannelModule {
         var tableView = UITableView()
         
         /// A view that shows when there is no notification in the channel.
+        /// The default view type is ``SBUNotificationEmptyView``.
         var emptyView: UIView? {
             didSet { self.tableView.backgroundView = self.emptyView }
         }

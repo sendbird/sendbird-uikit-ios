@@ -1,5 +1,15 @@
 # Changelog
 
+### v3.17.0 (Mar 14, 2024)
+
+- Supported for updating the playback rate of voicePlayer
+  - Added `updatePlaybackRate(_:)` function on `SBUVoicePlayer` class
+  - Changed the `voicePlayer` access level to `public`
+    - `SBUGroupChannelModule.List` class
+    - `SBUMessageThreadModule.List` class 
+    - `SBUVoiceMessageInputView` class
+- Enhanced documentation regarding the default view type for placeholder view properties.
+
 ### v3.16.2 (Mar 05, 2024)
 
 - Fixed template generator bug causing improper variable-value binding

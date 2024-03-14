@@ -71,6 +71,8 @@ public class SBUVoicePlayer: NSObject, AVAudioPlayerDelegate {
     var voiceFileInfo: SBUVoiceFileInfo?
     weak var delegate: SBUVoicePlayerDelegate?
     
+    var playbackRate: Float?
+    
     // MARK: - Initializer
     /// Initializes `SBUVoicePlayer` class with delegate and voiceFileInfo.
     /// - Parameters:
@@ -96,6 +98,9 @@ public class SBUVoicePlayer: NSObject, AVAudioPlayerDelegate {
         // Because it can affect other Player, Pause is only when `SBUVoicePlayer` is in use.
         guard self.status != .none else { return }
         
+        self.audioPlayer?.enableRate = false
+        self.audioPlayer?.rate = 1.0
+        self.playbackRate = nil
         self.audioPlayer?.stop()
         self.restoreCategory()
     }
@@ -150,6 +155,20 @@ public class SBUVoicePlayer: NSObject, AVAudioPlayerDelegate {
         self.status = .prepared
         self.voiceFileInfo?.currentPlayTime = 0
         self.delegate?.voicePlayerDidReset(self)
+        self.playbackRate = nil
+    }
+    
+    /// Updates playback rate of player.
+    ///
+    /// - Parameter rate: playback rate. the range of 0.5 for half-speed playback to 2.0 for double-speed playback.
+    /// - Since: 3.17.0
+    public func updatePlaybackRate(_ rate: Float) {
+        if let audioPlayer = self.audioPlayer {
+            audioPlayer.enableRate = true
+            audioPlayer.rate = rate
+        } else {
+            self.playbackRate = rate
+        }
     }
     
     func restoreCategory() {
@@ -210,6 +229,11 @@ public class SBUVoicePlayer: NSObject, AVAudioPlayerDelegate {
         if self.audioPlayer?.prepareToPlay() != true {
             self.status = .none
             return false
+        }
+        
+        if let playbackRate = self.playbackRate {
+            self.audioPlayer?.enableRate = true
+            self.audioPlayer?.rate = playbackRate
         }
         
         SBULog.info("[Succeeded] Audio player preparation")

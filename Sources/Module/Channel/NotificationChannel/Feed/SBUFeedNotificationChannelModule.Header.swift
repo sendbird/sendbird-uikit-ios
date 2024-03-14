@@ -87,6 +87,7 @@ extension SBUFeedNotificationChannelModule {
         // MARK: - UI properties (Public)
         
         /// Specifies a custom view of the channel title in the center of the navigation bar of the header component.
+        /// The default view type is ``SBUNotificationNavigationTitleView``. 
         /// - NOTE: When the value is updated, ``SBUFeedNotificationChannelModuleHeaderDelegate/feedNotificationChannelModule(_:didUpdateTitleView:)`` delegate function is called.
         /// - NOTE: To update title text when you using default title view, please calls ``SBUFeedNotificationChannelViewController/updateChannelTitle(_:)`` in ``SBUFeedNotificationChannelViewController``
         var titleView: UIView? {
@@ -99,6 +100,7 @@ extension SBUFeedNotificationChannelModule {
         }
         
         /// Specifies an array of  `UIBarButtonItem` that is used as a button on the left side of the navigation bar.
+        /// The default view type is `[UIBarButtonItem]`.
         /// - NOTE: When the value is updated, ``SBUFeedNotificationChannelModuleHeaderDelegate/feedNotificationChannelModule(_:didUpdateLeftItems:)``  delegate function is called.
         var leftBarButtons: [UIBarButtonItem]? {
             didSet {

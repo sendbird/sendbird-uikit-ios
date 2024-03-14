@@ -4191,6 +4191,7 @@ extension SendbirdUIKit.SBUMessageThreadModule {
       @objc get
     }
     @objc @_Concurrency.MainActor(unsafe) public var parentMessage: SendbirdChatSDK.BaseMessage?
+    @objc @_Concurrency.MainActor(unsafe) public var voicePlayer: SendbirdUIKit.SBUVoicePlayer?
     @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
     @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
     @_Concurrency.MainActor(unsafe) open func configure(delegate: SendbirdUIKit.SBUMessageThreadModuleListDelegate, dataSource: SendbirdUIKit.SBUMessageThreadModuleListDataSource, theme: SendbirdUIKit.SBUChannelTheme, voiceFileInfos: [Swift.String : SendbirdUIKit.SBUVoiceFileInfo]? = nil)
@@ -7782,6 +7783,7 @@ public protocol SBUVoiceMessageInputViewDelegate : AnyObject {
     set
     _modify
   }
+  public var voicePlayer: SendbirdUIKit.SBUVoicePlayer?
   @objc override dynamic public init()
   @objc deinit
   @objc public func setupViews()
@@ -8154,6 +8156,7 @@ extension SendbirdUIKit.SBUGroupChannelModule {
     @objc @_Concurrency.MainActor(unsafe) public var channel: SendbirdChatSDK.GroupChannel? {
       @objc get
     }
+    @objc @_Concurrency.MainActor(unsafe) public var voicePlayer: SendbirdUIKit.SBUVoicePlayer?
     @_Concurrency.MainActor(unsafe) open func configure(delegate: SendbirdUIKit.SBUGroupChannelModuleListDelegate, dataSource: SendbirdUIKit.SBUGroupChannelModuleListDataSource, theme: SendbirdUIKit.SBUChannelTheme)
     @_Concurrency.MainActor(unsafe) @objc override open func setupViews()
     @_Concurrency.MainActor(unsafe) @objc override open func setupLayouts()
@@ -9365,6 +9368,7 @@ public protocol SBUVoicePlayerDelegate : AnyObject {
   public func pause()
   public func stop()
   public func resetPlayer()
+  public func updatePlaybackRate(_ rate: Swift.Float)
   @objc public func audioPlayerDidFinishPlaying(_ player: AVFAudio.AVAudioPlayer, successfully success: Swift.Bool)
   @objc public func audioPlayerDecodeErrorDidOccur(_ player: AVFAudio.AVAudioPlayer, error: Swift.Error?)
 }
