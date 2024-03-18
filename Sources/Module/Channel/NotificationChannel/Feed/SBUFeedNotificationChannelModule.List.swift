@@ -241,6 +241,12 @@ extension SBUFeedNotificationChannelModule {
         
         @available(*, unavailable, renamed: "SBUFeedNotificationChannelModule.List()")
         public override init(frame: CGRect) { super.init(frame: frame) }
+
+        var viewParams: SBUFeedNotificationChannelViewParams?
+        public required init(viewParams: SBUFeedNotificationChannelViewParams? = nil) {
+            self.init()
+            self.viewParams = viewParams
+        }
         
         deinit {
             self.delegate?.feedNotificationChannelModuleStopLogImpressionTimer(self)
@@ -252,6 +258,9 @@ extension SBUFeedNotificationChannelModule {
             // empty view
             if self.emptyView == nil {
                 self.emptyView = self.defaultEmptyView
+            }
+            if let emptyView = self.emptyView as? SBUNotificationEmptyView {
+                emptyView.showEmptyViewIcon = self.viewParams?.showEmptyViewIcon ?? true
             }
             
             // table view

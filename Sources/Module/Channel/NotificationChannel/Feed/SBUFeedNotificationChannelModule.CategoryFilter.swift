@@ -1,6 +1,6 @@
 //
 //  SBUFeedNotificationChannelModule.CategoryFilter.swift
-//  QuickStart
+//  SendbirdUIKit
 //
 //  Created by Jed Gyeong on 8/21/23.
 //  Copyright © 2023 SendBird, Inc. All rights reserved.

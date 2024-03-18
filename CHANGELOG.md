@@ -1,5 +1,9 @@
 # Changelog
 
+### v3.18.0 (Mar 18, 2024)
+
+- Added `SBUFeedNotificationChannelViewParams` to control how the views in `SBUFeedNotificationChannelViewController` are displayed.
+
 ### v3.17.0 (Mar 14, 2024)
 
 - Supported for updating the playback rate of voicePlayer
