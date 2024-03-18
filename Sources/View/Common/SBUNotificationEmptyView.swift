@@ -9,6 +9,9 @@
 import UIKit
 
 class SBUNotificationEmptyView: SBUEmptyView {
+    /// Determines whether the `statusImageView` is shown.
+    /// - Since: 3.18.0
+    var showEmptyViewIcon: Bool = true
 
     override func setupStyles() {
         super.setupStyles()
@@ -24,5 +27,20 @@ class SBUNotificationEmptyView: SBUEmptyView {
             size: 16.0,
             weight: .medium
         ) // button2
+    }
+    
+    override func reloadData(_ type: EmptyViewType) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            
+            self.type = type
+            
+            self.retryButton.isHidden = (self.type != .error)
+            self.statusImageView.isHidden = !self.showEmptyViewIcon
+            self.updateViews()
+            
+            self.layoutIfNeeded()
+            self.updateConstraintsIfNeeded()
+        }
     }
 }

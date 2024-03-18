@@ -206,6 +206,9 @@ extension SendbirdUIKit.SBUBaseChannelModule.List {
   @objc @_Concurrency.MainActor(unsafe) dynamic public func checkSameDayAsPrevMessage(currentIndex: Swift.Int, fullMessageList: [SendbirdChatSDK.BaseMessage]) -> Swift.Bool
   @objc @_Concurrency.MainActor(unsafe) dynamic public func reloadCell(_ cell: SendbirdUIKit.SBUBaseMessageCell?)
 }
+public struct SBUFeedNotificationChannelViewParams {
+  public let showEmptyViewIcon: Swift.Bool
+}
 extension SendbirdUIKit.SBUConfig {
   @objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class Common : ObjectiveC.NSObject, Swift.Codable {
     @SendbirdUIKit.SBUPrioritizedConfig public var isUsingDefaultUserProfileEnabled: Swift.Bool {
@@ -4936,7 +4939,7 @@ public protocol SBUMessageThreadTitleViewDelegate : AnyObject {
   @available(*, unavailable)
   @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
   @_Concurrency.MainActor(unsafe) required public init(channel: SendbirdChatSDK.FeedChannel, notificationListParams: SendbirdChatSDK.MessageListParams? = nil, startingPoint: Swift.Int64? = nil, displaysLocalCachedListFirst: Swift.Bool = false)
-  @_Concurrency.MainActor(unsafe) required public init(channelURL: Swift.String, notificationListParams: SendbirdChatSDK.MessageListParams? = nil, startingPoint: Swift.Int64? = nil, displaysLocalCachedListFirst: Swift.Bool = false)
+  @_Concurrency.MainActor(unsafe) required public init(channelURL: Swift.String, notificationListParams: SendbirdChatSDK.MessageListParams? = nil, startingPoint: Swift.Int64? = nil, displaysLocalCachedListFirst: Swift.Bool = false, viewParams: SendbirdUIKit.SBUFeedNotificationChannelViewParams? = nil)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func loadView()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewDidLoad()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewWillAppear(_ animated: Swift.Bool)
@@ -4968,6 +4971,7 @@ extension SendbirdUIKit.SBUFeedNotificationChannelModule {
     @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
     @available(*, unavailable, renamed: "SBUFeedNotificationChannelModule.List()")
     @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+    @_Concurrency.MainActor(unsafe) required public init(viewParams: SendbirdUIKit.SBUFeedNotificationChannelViewParams? = nil)
     @objc deinit
     @objc @_Concurrency.MainActor(unsafe) public func reloadTableView()
     @_Concurrency.MainActor(unsafe) @objc public func tableView(_ tableView: UIKit.UITableView, numberOfRowsInSection section: Swift.Int) -> Swift.Int

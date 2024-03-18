@@ -98,7 +98,8 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
         channelURL: String,
         notificationListParams: MessageListParams? = nil,
         startingPoint: Int64? = nil,
-        displaysLocalCachedListFirst: Bool = false
+        displaysLocalCachedListFirst: Bool = false,
+        viewParams: SBUFeedNotificationChannelViewParams? = nil
     ) {
         super.init(nibName: nil, bundle: nil)
         
@@ -107,7 +108,8 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
         self.initialize(
             channelURL: channelURL,
             notificationListParams: notificationListParams,
-            displaysLocalCachedListFirst: displaysLocalCachedListFirst
+            displaysLocalCachedListFirst: displaysLocalCachedListFirst,
+            viewParams: viewParams
         )
     }
     
@@ -116,7 +118,8 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
         channelURL: String? = nil,
         notificationListParams: MessageListParams? = nil,
         startingPoint: Int64? = nil,
-        displaysLocalCachedListFirst: Bool = false
+        displaysLocalCachedListFirst: Bool = false,
+        viewParams: SBUFeedNotificationChannelViewParams? = nil
     ) {
         SBULog.info(#function)
         
@@ -133,7 +136,7 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
 
         self.headerComponent = SBUModuleSet.FeedNotificationChannelModule.HeaderComponent.init()
         self.categoryFilterComponent = SBUModuleSet.FeedNotificationChannelModule.CategoryFilterComponent.init()
-        self.listComponent = SBUModuleSet.FeedNotificationChannelModule.ListComponent.init()
+        self.listComponent = SBUModuleSet.FeedNotificationChannelModule.ListComponent.init(viewParams: viewParams)
     }
     
     open override func loadView() {
