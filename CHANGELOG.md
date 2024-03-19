@@ -1,5 +1,9 @@
 # Changelog
 
+### v3.18.2 (Mar 19, 2024)
+
+- Made the initializer of `SBUFeedNotificationChannelViewParams` public
+
 ### v3.18.1 (Mar 18, 2024)
 
 - Added `SBUFeedNotificationChannelViewParams` to control how the views in `SBUFeedNotificationChannelViewController` are displayed.

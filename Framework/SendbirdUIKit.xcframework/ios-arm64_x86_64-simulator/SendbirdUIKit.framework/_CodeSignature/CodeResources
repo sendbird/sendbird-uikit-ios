@@ -10,7 +10,7 @@
 		</data>
 		<key>Base.xcconfig</key>
 		<data>
-		say6WqtOr+unqfNpA+llZ+q/ggY=
+		NvwPBsRpYQbDrL9sw78ADIIkr/s=
 		</data>
 		<key>Debug.xcconfig</key>
 		<data>
@@ -22,15 +22,15 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		BTAhi3n7mFdhT4Alayl992C1RWY=
+		PCe62yepeX++bFf66T8TAB4PZho=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
 		<data>
-		rYrVGItryrGNxZXyKTgZJarvxiM=
+		0ikiX+7o9odd/SnR6aF9inp7348=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
-		ICmpfzvkDTnWIs/1fw0rHj83Fk0=
+		tQeZfNMWpP5lX3zspNvkh4wQAtg=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
 		<data>
@@ -38,19 +38,19 @@
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		ICmpfzvkDTnWIs/1fw0rHj83Fk0=
+		tQeZfNMWpP5lX3zspNvkh4wQAtg=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		uWjSWnw1yPZv3TKAuZC17/pLTuM=
+		y3arTVzL5aOhCcPTotncby8iwtQ=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<data>
-		rYrVGItryrGNxZXyKTgZJarvxiM=
+		0ikiX+7o9odd/SnR6aF9inp7348=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
-		uE7aZ6RqxjGo6DqjxrbVIdmABpE=
+		PzBU3JtMgR7jRqCwEN0Axb+63Yw=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<data>
@@ -58,11 +58,11 @@
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		uE7aZ6RqxjGo6DqjxrbVIdmABpE=
+		PzBU3JtMgR7jRqCwEN0Axb+63Yw=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		ayHLDlGvjCpP02/JYCLe7CJaZqE=
+		NeWGLm3IIFu5sH69xw1QidWn4NE=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -98,7 +98,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			pOmgBjAfsDaLaIIQsLlg6YCS0qGbjuwvrHuufWZnETE=
+			JOTtGBe/GtuatXM8Uii9yR3SOPF+UeJpbQxvL9Kh0Fs=
 			</data>
 		</dict>
 		<key>Debug.xcconfig</key>
@@ -119,14 +119,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			Q38R+K1o1wSi9v0g4AgrDcm0K61PQvl3x21IN+WytRo=
+			fIZ1mWw8TLv2tA4kX0r422EBiCjMudf88OBgj4cpYcI=
 			</data>
 		</dict>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			wajEnV/JAe/XGzJ8x5t+oNKJXMBabqY8MQgIWtNOUgw=
+			rm5NTD5OGfvEIaiX+kNqw66pgXNwVfNTCfb5y/tjpw0=
 			</data>
 		</dict>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
@@ -140,28 +140,28 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			wajEnV/JAe/XGzJ8x5t+oNKJXMBabqY8MQgIWtNOUgw=
+			rm5NTD5OGfvEIaiX+kNqw66pgXNwVfNTCfb5y/tjpw0=
 			</data>
 		</dict>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			YbjXKvT5PU5R9H8A7MSRqsxwL4/+O1Hkt4BqqpGA28E=
+			fxZuFzNb/ieN9jWhrrrUWMOtsexe0TdSuzR5eJCNaLQ=
 			</data>
 		</dict>
 		<key>Modules/SendbirdUIKit.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			Q38R+K1o1wSi9v0g4AgrDcm0K61PQvl3x21IN+WytRo=
+			fIZ1mWw8TLv2tA4kX0r422EBiCjMudf88OBgj4cpYcI=
 			</data>
 		</dict>
 		<key>Modules/SendbirdUIKit.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			aGb4d7LG4CEX06xnpcagljgBQl1U93pR9pQibEOgyKo=
+			hQXNUx7mxQCDd/LgFeuXWwZhAPYAVm6f2VQdUZ0Sawk=
 			</data>
 		</dict>
 		<key>Modules/SendbirdUIKit.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
@@ -175,14 +175,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			aGb4d7LG4CEX06xnpcagljgBQl1U93pR9pQibEOgyKo=
+			hQXNUx7mxQCDd/LgFeuXWwZhAPYAVm6f2VQdUZ0Sawk=
 			</data>
 		</dict>
 		<key>Modules/SendbirdUIKit.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			9xhNupTjOlRxzMKCjajhaClG/Rmo5+2NNSJ5B79DctA=
+			eFBQBaqt4hGL0quT40vcAKjoivl1w4FTDHdUmiJHbZo=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
