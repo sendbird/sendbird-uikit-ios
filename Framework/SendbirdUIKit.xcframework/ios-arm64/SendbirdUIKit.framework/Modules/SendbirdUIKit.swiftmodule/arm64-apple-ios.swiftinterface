@@ -208,6 +208,7 @@ extension SendbirdUIKit.SBUBaseChannelModule.List {
 }
 public struct SBUFeedNotificationChannelViewParams {
   public let showEmptyViewIcon: Swift.Bool
+  public init(showEmptyViewIcon: Swift.Bool)
 }
 extension SendbirdUIKit.SBUConfig {
   @objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class Common : ObjectiveC.NSObject, Swift.Codable {

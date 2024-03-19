@@ -13,4 +13,8 @@ import Foundation
 public struct SBUFeedNotificationChannelViewParams {
     /// - Since: 3.18.0
     public let showEmptyViewIcon: Bool
+    
+    public init(showEmptyViewIcon: Bool) {
+        self.showEmptyViewIcon = showEmptyViewIcon
+    }
 }
