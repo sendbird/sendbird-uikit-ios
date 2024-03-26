@@ -166,9 +166,7 @@ open class SBUUserListViewModel: NSObject {
                 self.delegate?.shouldUpdateLoadingState(false)
                 self.delegate?.didReceiveError(error, isBlocker: false)
             } else {
-                let completionHandler: ((BaseChannel?, SBError?) -> Void) = {
-                    [weak self] channel, error in
-                    
+                let completionHandler: ((BaseChannel?, SBError?) -> Void) = { [weak self] channel, error in
                     guard let self = self else { return }
                     
                     if let error = error {
@@ -268,8 +266,7 @@ open class SBUUserListViewModel: NSObject {
             return
         }
         
-        self.memberListQuery?.loadNextPage(completionHandler: {
-            [weak self] members, error in
+        self.memberListQuery?.loadNextPage(completionHandler: { [weak self] members, error in
             guard let self = self else { return }
             defer {
                 self.isLoading = false
@@ -307,8 +304,7 @@ open class SBUUserListViewModel: NSObject {
             return
         }
         
-        self.operatorListQuery?.loadNextPage(completionHandler: {
-            [weak self] operators, error in
+        self.operatorListQuery?.loadNextPage(completionHandler: { [weak self] operators, error in
             guard let self = self else { return }
             defer {
                 self.isLoading = false
@@ -346,8 +342,7 @@ open class SBUUserListViewModel: NSObject {
             return
         }
         
-        self.mutedMemberListQuery?.loadNextPage(completionHandler: {
-            [weak self] members, error in
+        self.mutedMemberListQuery?.loadNextPage(completionHandler: { [weak self] members, error in
             guard let self = self else { return }
             defer {
                 self.isLoading = false
@@ -386,8 +381,7 @@ open class SBUUserListViewModel: NSObject {
             return
         }
         
-        self.mutedParticipantListQuery?.loadNextPage(completionHandler: {
-            [weak self, weak channel] members, error in
+        self.mutedParticipantListQuery?.loadNextPage(completionHandler: { [weak self, weak channel] members, error in
             guard let self = self, let channel = channel else { return }
             defer {
                 self.isLoading = false
@@ -425,8 +419,7 @@ open class SBUUserListViewModel: NSObject {
         }
         
         // return [User]
-        self.bannedUserListQuery?.loadNextPage(completionHandler: {
-            [weak self] users, error in
+        self.bannedUserListQuery?.loadNextPage(completionHandler: { [weak self] users, error in
             guard let self = self else { return }
             defer {
                 self.isLoading = false
@@ -464,8 +457,7 @@ open class SBUUserListViewModel: NSObject {
             return
         }
         
-        self.participantListQuery?.loadNextPage(completionHandler: {
-            [weak self, weak channel] participants, error in
+        self.participantListQuery?.loadNextPage(completionHandler: { [weak self, weak channel] participants, error in
             guard let self = self, let channel = channel else { return }
             defer {
                 self.isLoading = false

@@ -10,12 +10,18 @@ import UIKit
 import SendbirdChatSDK
 import AssetsLibrary
 
+/// `SBUFileViewer` is a typealias for `SBUFileViewController`.
+/// It is deprecated and should be replaced with `SBUFileViewController`.
 @available(*, deprecated, renamed: "SBUFileViewController")
 public typealias SBUFileViewer = SBUFileViewController
 
+/// `SBUFileViewerDelegate` is a typealias for `SBUFileViewControllerDelegate`.
+/// It is deprecated and should be replaced with ``SBUFileViewControllerDelegate``.
 @available(*, deprecated, renamed: "SBUFileViewControllerDelegate")
 public typealias SBUFileViewerDelegate = SBUFileViewControllerDelegate
 
+/// `SBUFileViewControllerDelegate` is a protocol that defines the delegate methods for `SBUFileViewController`.
+/// The delegate methods provide information about the interactions with the file view controller.
 public protocol SBUFileViewControllerDelegate: AnyObject {
     func didSelectDeleteImage(message: FileMessage)
 }
@@ -380,18 +386,18 @@ open class SBUFileViewController: SBUBaseViewController, UIScrollViewDelegate, S
     open func showBar(_ shouldShow: Bool) {
         if shouldShow {
             self.bottomView.isHidden = false
-            UIView.animate(withDuration: 0.2, animations: {
+            UIView.animate(withDuration: 0.2) {
                 self.navigationController?.navigationBar.alpha = 1
                 self.bottomView.alpha = 1
                 self.scrollView.setZoomScale(1, animated: true)
                 self.imageView.frame = self.scrollView.bounds
-            }) { _ in
+            } completion: { _ in
             }
         } else {
-            UIView.animate(withDuration: 0.2, animations: {
+            UIView.animate(withDuration: 0.2) {
                 self.navigationController?.navigationBar.alpha = 0
                 self.bottomView.alpha = 0
-            }) { _ in
+            } completion: { _ in
                 self.bottomView.isHidden = true
             }
         }

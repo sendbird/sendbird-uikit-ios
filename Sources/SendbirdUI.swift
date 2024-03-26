@@ -9,6 +9,8 @@
 import UIKit
 import SendbirdChatSDK
 
+/// `SendbirdUI` is a main class of Sendbird UIKit.
+/// It is responsible for initializing and configuring the Sendbird UIKit.
 public class SendbirdUI {
     
     /// SendbirdUIKit configuration
@@ -315,7 +317,8 @@ public class SendbirdUI {
     
     /// This function is used to check authentication state and authenticate to the Sendbird server or local caching database.
     /// - Parameter completionHandler: The handler block to execute.
-    static func authenticateFeedAndUpdates(needToUpdateExtraData: Bool = true,
+    static func authenticateFeedAndUpdates(
+        needToUpdateExtraData: Bool = true,
         completionHandler: @escaping (_ user: User?, _ error: SBError?) -> Void
     ) {
         SBULog.info("[Request] Authentication to Sendbird")
@@ -409,6 +412,14 @@ public class SendbirdUI {
         }
     }
     
+    /// Updates the user information.
+    ///
+    /// This function is used to update the user's nickname and profile URL. 
+    /// It takes a completion handler as a parameter which returns an optional `SBError`.
+    /// If the update is successful, the error returned is `nil`. 
+    /// Otherwise, it contains an instance of `SBError` with details about the failure.
+    ///
+    /// - Parameter completionHandler: A closure that is called when the update is complete.
     public static func updateUserInfo(completionHandler: @escaping (_ error: SBError?) -> Void) {
         guard let sbuUser = SBUGlobals.currentUser else {
             SBULog.error("[Failed] Connection to Sendbird: CurrentUser value is not set")
@@ -1034,6 +1045,9 @@ extension SendbirdUI {
 }
 
 extension SendbirdUI {
+    /// This function checks if remote notifications are available.
+    /// It returns true if the app is running on a device or on an iOS 16 (or later) simulator.
+    /// Otherwise, it returns false.
     public static func isRemoteNotificationAvailable() -> Bool {
         #if targetEnvironment(simulator)
         // iOS 16 or later running in the simulator

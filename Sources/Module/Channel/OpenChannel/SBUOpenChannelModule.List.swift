@@ -24,7 +24,8 @@ public protocol SBUOpenChannelModuleListDataSource: SBUBaseChannelModuleListData
 extension SBUOpenChannelModule {
     /// A module component that represent the list of `SBUOpenChannelModule`.
     @objc(SBUOpenChannelModuleList)
-    @objcMembers open class List: SBUBaseChannelModule.List {
+    @objcMembers
+    open class List: SBUBaseChannelModule.List {
         
         // MARK: - UI
         
@@ -310,73 +311,73 @@ extension SBUOpenChannelModule {
             let isOverlay = self.isOverlaid
             
             switch (message, messageCell) {
-                    // Admin message
-                case let (adminMessage, adminMessageCell) as (AdminMessage, SBUOpenChannelAdminMessageCell):
-                    adminMessageCell.configure(
-                        adminMessage,
-                        hideDateView: isSameDay,
-                        isOverlay: isOverlay
-                    )
-                    self.setMessageCellGestures(
-                        adminMessageCell,
-                        message: adminMessage,
-                        indexPath: indexPath
-                    )
-                    
-                    // Unknown Message
-                case let (unknownMessage, unknownMessageCell) as (BaseMessage, SBUOpenChannelUnknownMessageCell):
-                    unknownMessageCell.configure(
-                        unknownMessage,
-                        hideDateView: isSameDay,
-                        groupPosition: self.getMessageGroupingPosition(currentIndex: indexPath.row),
-                        withTextView: true,
-                        isOverlay: isOverlay
-                    )
-                    self.setMessageCellGestures(
-                        unknownMessageCell,
-                        message: unknownMessage,
-                        indexPath: indexPath
-                    )
-                    
-                    // User Message
-                case let (userMessage, userMessageCell) as (UserMessage, SBUOpenChannelUserMessageCell):
-                    userMessageCell.configure(
-                        userMessage,
-                        hideDateView: isSameDay,
-                        groupPosition: self.getMessageGroupingPosition(currentIndex: indexPath.row),
-                        withTextView: true,
-                        isOverlay: isOverlay
-                    )
-                    self.setMessageCellGestures(
-                        userMessageCell,
-                        message: userMessage,
-                        indexPath: indexPath
-                    )
-                    
-                    // File Message
-                case let (fileMessage, fileMessageCell) as (FileMessage, SBUOpenChannelFileMessageCell):
-                    fileMessageCell.configure(
-                        fileMessage,
-                        hideDateView: isSameDay,
-                        groupPosition: self.getMessageGroupingPosition(currentIndex: indexPath.row),
-                        fileType: SBUUtils.getFileType(by: fileMessage),
-                        isOverlay: isOverlay
-                    )
-                    
-                    self.setMessageCellGestures(
-                        fileMessageCell,
-                        message: fileMessage,
-                        indexPath: indexPath
-                    )
-                    
-                    self.setFileMessageCellImage(fileMessageCell, fileMessage: fileMessage)
-                    
-                default:
-                    messageCell.configure(
-                        message: message,
-                        hideDateView: isSameDay,
-                        isOverlay: isOverlay
-                    )
+                // Admin message
+            case let (adminMessage, adminMessageCell) as (AdminMessage, SBUOpenChannelAdminMessageCell):
+                adminMessageCell.configure(
+                    adminMessage,
+                    hideDateView: isSameDay,
+                    isOverlay: isOverlay
+                )
+                self.setMessageCellGestures(
+                    adminMessageCell,
+                    message: adminMessage,
+                    indexPath: indexPath
+                )
+                
+                // Unknown Message
+            case let (unknownMessage, unknownMessageCell) as (BaseMessage, SBUOpenChannelUnknownMessageCell):
+                unknownMessageCell.configure(
+                    unknownMessage,
+                    hideDateView: isSameDay,
+                    groupPosition: self.getMessageGroupingPosition(currentIndex: indexPath.row),
+                    withTextView: true,
+                    isOverlay: isOverlay
+                )
+                self.setMessageCellGestures(
+                    unknownMessageCell,
+                    message: unknownMessage,
+                    indexPath: indexPath
+                )
+                
+                // User Message
+            case let (userMessage, userMessageCell) as (UserMessage, SBUOpenChannelUserMessageCell):
+                userMessageCell.configure(
+                    userMessage,
+                    hideDateView: isSameDay,
+                    groupPosition: self.getMessageGroupingPosition(currentIndex: indexPath.row),
+                    withTextView: true,
+                    isOverlay: isOverlay
+                )
+                self.setMessageCellGestures(
+                    userMessageCell,
+                    message: userMessage,
+                    indexPath: indexPath
+                )
+                
+                // File Message
+            case let (fileMessage, fileMessageCell) as (FileMessage, SBUOpenChannelFileMessageCell):
+                fileMessageCell.configure(
+                    fileMessage,
+                    hideDateView: isSameDay,
+                    groupPosition: self.getMessageGroupingPosition(currentIndex: indexPath.row),
+                    fileType: SBUUtils.getFileType(by: fileMessage),
+                    isOverlay: isOverlay
+                )
+                
+                self.setMessageCellGestures(
+                    fileMessageCell,
+                    message: fileMessage,
+                    indexPath: indexPath
+                )
+                
+                self.setFileMessageCellImage(fileMessageCell, fileMessage: fileMessage)
+                
+            default:
+                messageCell.configure(
+                    message: message,
+                    hideDateView: isSameDay,
+                    isOverlay: isOverlay
+                )
             }
             UIView.setAnimationsEnabled(true)
             
@@ -407,14 +408,14 @@ extension SBUOpenChannelModule {
         /// - Returns: The identifier of message cell.
         open func generateCellIdentifier(by message: BaseMessage) -> String {
             switch message {
-                case is FileMessage:
-                    return fileMessageCell?.sbu_className ?? SBUOpenChannelFileMessageCell.sbu_className
-                case is UserMessage:
-                    return userMessageCell?.sbu_className ?? SBUOpenChannelUserMessageCell.sbu_className
-                case is AdminMessage:
-                    return adminMessageCell?.sbu_className ?? SBUOpenChannelAdminMessageCell.sbu_className
-                default:
-                    return unknownMessageCell?.sbu_className ?? SBUOpenChannelUnknownMessageCell.sbu_className
+            case is FileMessage:
+                return fileMessageCell?.sbu_className ?? SBUOpenChannelFileMessageCell.sbu_className
+            case is UserMessage:
+                return userMessageCell?.sbu_className ?? SBUOpenChannelUserMessageCell.sbu_className
+            case is AdminMessage:
+                return adminMessageCell?.sbu_className ?? SBUOpenChannelAdminMessageCell.sbu_className
+            default:
+                return unknownMessageCell?.sbu_className ?? SBUOpenChannelUnknownMessageCell.sbu_className
             }
         }
     }

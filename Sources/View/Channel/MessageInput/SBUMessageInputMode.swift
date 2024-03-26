@@ -9,7 +9,8 @@
 import Foundation
 import SendbirdChatSDK
 
-@objc public enum SBUMessageInputMode: Int {
+@objc
+public enum SBUMessageInputMode: Int {
     /// The default mode
     case none
     /// The editing mode
@@ -25,17 +26,17 @@ enum MessageInputMode {
     
     var value: SBUMessageInputMode {
         switch self {
-            case .none: return .none
-            case .edit: return .edit
-            case .quoteReply: return .quoteReply
+        case .none: return .none
+        case .edit: return .edit
+        case .quoteReply: return .quoteReply
         }
     }
     
     var toString: String {
         switch self {
-            case .none: return "none"
-            case .edit: return "edit"
-            case .quoteReply: return "quote reply"
+        case .none: return "none"
+        case .edit: return "edit"
+        case .quoteReply: return "quote reply"
         }
     }
-    }
+}

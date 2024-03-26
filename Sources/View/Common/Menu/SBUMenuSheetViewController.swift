@@ -196,8 +196,10 @@ public class SBUMenuSheetViewController: SBUBaseViewController, UITableViewDeleg
         return emojiList.count < 6 ? emojiList.count : 6
     }
 
-    public func collectionView(_ collectionView: UICollectionView,
-                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    public func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
         
         guard let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: SBUReactionCollectionViewCell.sbu_className,
@@ -226,8 +228,10 @@ public class SBUMenuSheetViewController: SBUBaseViewController, UITableViewDeleg
         return cell
     }
 
-    public func collectionView(_ collectionView: UICollectionView,
-                        didSelectItemAt indexPath: IndexPath) {
+    public func collectionView(
+        _ collectionView: UICollectionView,
+        didSelectItemAt indexPath: IndexPath
+    ) {
         
         if indexPath.row == 5, self.emojiList.count > 6 {
             self.moreEmojiTapHandler?()

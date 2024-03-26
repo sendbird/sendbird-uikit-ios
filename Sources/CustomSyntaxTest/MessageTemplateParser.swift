@@ -235,8 +235,8 @@ class MessageTemplateData: Decodable {
 }
 
 // MARK: - Body
+/// `SBUMessageTemplate` is a class that handles message templates.
 public class SBUMessageTemplate {
-    
     static let urlForTemplateDownload = "TEMPLATE_DOWNLOAD"
     
     class Body: Decodable {

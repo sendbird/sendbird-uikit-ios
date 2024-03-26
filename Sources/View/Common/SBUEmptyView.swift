@@ -199,7 +199,8 @@ open class SBUEmptyView: SBUView {
     
     /// This function actions when the retry button click.
     /// - Parameter sender: sender
-    @objc open func onClickRetry(_ sender: Any) {
+    @objc
+    open func onClickRetry(_ sender: Any) {
         self.delegate?.didSelectRetry()
     }
 }

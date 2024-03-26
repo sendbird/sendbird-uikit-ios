@@ -12,10 +12,14 @@ import SendbirdChatSDK
 /// The class for configuring scroll position.
 /// - Since: 3.13.0
 public class SBUScrollPostionConfiguration {
+    /// The class for configuring the group channel scroll position.
     public var groupChannel = BaseChannel()
+    /// The class for configuring the open channel scroll position.
     public var openChannel = BaseChannel()
+    /// The class for configuring the feed channel scroll position.
     public var feedChannel = BaseChannel()
     
+    /// BaseChannel class is used to configure the scroll position for different types of channels.
     public class BaseChannel {
         /// Position value when the message is scrolled to the bottom by user interaction.
         public var scrollToBottom: SBUScrollPosition = .bottom
@@ -38,9 +42,9 @@ public class SBUScrollPostionConfiguration {
 extension SBUScrollPostionConfiguration {
     static func getConfiguration(with channel: SendbirdChatSDK.BaseChannel?) -> SBUScrollPostionConfiguration.BaseChannel {
         switch channel {
-        case is GroupChannel: return SBUGlobals.scrollPostionConfiguration.groupChannel
-        case is OpenChannel: return SBUGlobals.scrollPostionConfiguration.openChannel
-        case is FeedChannel: return SBUGlobals.scrollPostionConfiguration.feedChannel
+        case is SendbirdChatSDK.GroupChannel: return SBUGlobals.scrollPostionConfiguration.groupChannel
+        case is SendbirdChatSDK.OpenChannel: return SBUGlobals.scrollPostionConfiguration.openChannel
+        case is SendbirdChatSDK.FeedChannel: return SBUGlobals.scrollPostionConfiguration.feedChannel
         default: return SBUGlobals.scrollPostionConfiguration.groupChannel
         }
     }

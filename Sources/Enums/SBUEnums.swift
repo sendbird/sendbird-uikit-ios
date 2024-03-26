@@ -186,7 +186,8 @@ public enum EmptyViewType: Int {
 }
 
 /// This is an enumeration used to select a media resource type.
-@objc public enum MediaResourceType: Int {
+@objc
+public enum MediaResourceType: Int {
     case camera
     case library
     case document
@@ -195,31 +196,36 @@ public enum EmptyViewType: Int {
 }
 
 /// This is an enumeration used to select the channel editing type.
-@objc public enum ChannelEditType: Int {
+@objc
+public enum ChannelEditType: Int {
     case name
     case image
 }
 
 /// This is an enumeration used to select the message position.
-@objc public enum MessagePosition: Int {
+@objc
+public enum MessagePosition: Int {
     case left
     case right
     case center
 }
 
 /// This is an enumeration used to select the message position in group messages.
-@objc public enum MessageGroupPosition: Int {
+@objc
+public enum MessageGroupPosition: Int {
     case none
     case top
     case middle
     case bottom
 }
 
+/// This is a typealias for SBUMessageFileType which is deprecated.
 @available(*, deprecated, renamed: "SBUMessageFileType")
 public typealias MessageFileType = SBUMessageFileType
 
 /// This is an enumeration to file type in the message.
-@objc public enum SBUMessageFileType: Int {
+@objc
+public enum SBUMessageFileType: Int {
     case image
     case video
     case audio
@@ -229,7 +235,8 @@ public typealias MessageFileType = SBUMessageFileType
 }
  
 /// This is an enumeration to message receipt state.
-@objc public enum SBUMessageReceiptState: Int {
+@objc
+public enum SBUMessageReceiptState: Int {
     /// The message is sent
     case none
     /// The message is delivered
@@ -248,7 +255,8 @@ public typealias MessageFileType = SBUMessageFileType
 
 /// This is an enumeration used to the message edit type.
 @available(*, deprecated, message: "Please refer to `setupMenuItems()` function in `SBUBaseChannelModule.List` or `SBUMenuSheetViewController`") // 3.1.2
-@objc public enum MessageEditItem: Int {
+@objc
+public enum MessageEditItem: Int {
     case copy
     case edit
     case delete
@@ -258,21 +266,28 @@ public typealias MessageFileType = SBUMessageFileType
 /// - Since: 1.2.5
 @available(*, deprecated, message: "Please refer to `setupMenuItems()` function in `SBUBaseChannelModule.List` or `SBUMenuSheetViewController`") // 3.1.2
 public enum MessageMenuItem {
+    /// This case represents the 'save' action
     case save
+    /// This case represents the 'copy' action
     case copy
+    /// This case represents the 'edit' action
     case edit
+    /// This case represents the 'delete' action
     case delete
+    /// This case represents the 'reply' action
     case reply
 }
 
 /// This is an enumeration for new message info item type.
 /// - Since: 2.0.0
-@objc public enum NewMessageInfoItemType: Int {
+@objc
+public enum NewMessageInfoItemType: Int {
     case tooltip
     case button
 }
 
-@objc public enum LogType: UInt8 {
+@objc
+public enum LogType: UInt8 {
     case none    = 0b00000000
     case error   = 0b00000001
     case warning = 0b00000010
@@ -336,11 +351,41 @@ public enum SBUTypingIndicatorType {
     case bubble
 }
 
+/// Enum for different suggested replies render types.
+/// - Since: 3.19.0
+public enum SBUSuggestedRepliesRenderType {
+    /// Only displayed for the last message (default).
+    case lastMessageOnly // default
+    /// Remains visible even if it's not the last message.
+    case allMessages
+    
+    /// This function determines whether to hide suggested replies for a given message.
+    /// - Parameters:
+    ///   - message: The `BaseMessage` object
+    ///   - fullMessageList: The list of all `BaseMessage` objects.
+    /// - Returns: A `Bool` indicating whether to hide the suggested replies. `true` means hide, `false` means show.
+    public func shouldHideSuggestedReplies(
+        message: BaseMessage,
+        fullMessageList: [BaseMessage]
+    ) -> Bool {
+        switch self {
+        case .lastMessageOnly:
+            let latestMessageId = fullMessageList.first(where: { $0.sender != nil })?.messageId
+            return message.messageId != latestMessageId
+        case .allMessages:
+            return false
+        }
+    }
+}
+
 /// Enum representing the scroll position.
 /// - Since: 3.13.0
 public enum SBUScrollPosition {
+    /// Represents the bottom position in a scrollable view.
     case bottom
+    /// Represents the middle position in a scrollable view.
     case middle
+    /// Represents the top position in a scrollable view.
     case top
     
     var convert: UITableView.ScrollPosition {
@@ -372,4 +417,13 @@ extension UITableView {
     var isInverted: Bool {
         self.transform == CGAffineTransform(scaleX: 1, y: -1)
     }
+}
+
+/// Enum representing the type of a channel.
+/// - Since: 3.19.0
+public enum SBUChannelType {
+    /// Represents a group channel type.
+    case group
+    /// Represents a super group channel type.
+    case superGroup
 }

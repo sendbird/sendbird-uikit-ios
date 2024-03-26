@@ -60,7 +60,10 @@ open class QuotedFileImageContentView: SBUView {
         self.imageView
             .sbu_constraint(
                 equalTo: self,
-                left: 0, right: 0, top: 0, bottom: 0,
+                left: 0, 
+                right: 0,
+                top: 0,
+                bottom: 0,
                 priority: .defaultLow
             )
         
@@ -112,12 +115,12 @@ open class QuotedFileImageContentView: SBUView {
         self.position = configuration.messagePosition
         
         switch messageFileType {
-            case .image:
-                imageOption = .imageToThumbnail
-            case .video:
-                imageOption = .videoURLToImage
-            default:
-                imageOption = .imageToThumbnail
+        case .image:
+            imageOption = .imageToThumbnail
+        case .video:
+            imageOption = .videoURLToImage
+        default:
+            imageOption = .imageToThumbnail
         }
         
         let thumbnailSize = SBUGlobals.messageCellConfiguration.groupChannel.thumbnailSize
@@ -152,32 +155,32 @@ open class QuotedFileImageContentView: SBUView {
         guard let messageFileType = self.messageFileType else { return }
         
         switch messageFileType {
-            case .video:
-                self.iconImageView.image = SBUIconSetType.iconPlay.image(
-                    with: theme.fileImageIconColor,
-                    to: SBUIconSetType.Metric.iconGifPlay
+        case .video:
+            self.iconImageView.image = SBUIconSetType.iconPlay.image(
+                with: theme.fileImageIconColor,
+                to: SBUIconSetType.Metric.iconGifPlay
+            )
+            
+            self.iconImageView.backgroundColor = theme.fileImageBackgroundColor
+            self.iconImageView.layer.cornerRadius = self.iconImageView.frame.height / 2
+        case .image where self.fileType.hasPrefix("image/gif"):
+            self.iconImageView.image = SBUIconSetType.iconGif.image(
+                with: theme.fileImageIconColor,
+                to: SBUIconSetType.Metric.iconGifPlay
+            )
+            
+            self.iconImageView.backgroundColor = theme.fileImageBackgroundColor
+            self.iconImageView.layer.cornerRadius = self.iconImageView.frame.height / 2
+        default:
+            self.iconImageView.backgroundColor = nil
+            if self.imageView.image == nil {
+                self.iconImageView.image = SBUIconSetType.iconPhoto.image(
+                    with: theme.fileMessagePlaceholderColor,
+                    to: SBUIconSetType.Metric.defaultIconSizeVeryLarge
                 )
-                
-                self.iconImageView.backgroundColor = theme.fileImageBackgroundColor
-                self.iconImageView.layer.cornerRadius = self.iconImageView.frame.height / 2
-            case .image where self.fileType.hasPrefix("image/gif"):
-                self.iconImageView.image = SBUIconSetType.iconGif.image(
-                    with: theme.fileImageIconColor,
-                    to: SBUIconSetType.Metric.iconGifPlay
-                )
-                
-                self.iconImageView.backgroundColor = theme.fileImageBackgroundColor
-                self.iconImageView.layer.cornerRadius = self.iconImageView.frame.height / 2
-            default:
-                self.iconImageView.backgroundColor = nil
-                if self.imageView.image == nil {
-                    self.iconImageView.image = SBUIconSetType.iconPhoto.image(
-                        with: theme.fileMessagePlaceholderColor,
-                        to: SBUIconSetType.Metric.defaultIconSizeVeryLarge
-                    )
-                } else {
-                    self.iconImageView.image = nil
-                }
+            } else {
+                self.iconImageView.image = nil
+            }
         }
     }
     

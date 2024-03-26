@@ -332,13 +332,15 @@ open class SBUUserCell: SBUTableViewCell {
     // MARK: - Action
     
     /// This function is used when more menu tap
-    @objc open func onClickMoreMenu() {
+    @objc
+    open func onClickMoreMenu() {
         self.moreMenuHandler?()
     }
     
     /// This function is used when a user profile tap.
     /// - Parameter sender: sender
-    @objc open func onTapUserProfileView(sender: UITapGestureRecognizer) {
+    @objc
+    open func onTapUserProfileView(sender: UITapGestureRecognizer) {
         self.userProfileTapHandler?()
     }
 

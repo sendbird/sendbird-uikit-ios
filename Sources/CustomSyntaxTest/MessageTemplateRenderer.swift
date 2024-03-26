@@ -40,6 +40,9 @@ protocol MessageTemplateRendererDelegate: AnyObject {
  */
 
 class MessageTemplateRenderer: UIView {
+    static let sideViewTypeLeft = 10
+    static let sideViewTypeRight = 20
+    
     // Property(public)
     var contentView = MessageTemplateContentView()
     var bodyView = MessageTemplateBodyView()
@@ -86,9 +89,6 @@ class MessageTemplateRenderer: UIView {
         let font = UIFont(descriptor: descriptor, size: size)
         return font
     }
-    
-    let SideView1Tag = 10
-    let SideView2Tag = 20
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -309,9 +309,9 @@ class MessageTemplateRenderer: UIView {
         let parentBoxView = parentView.subviews[0]
         // INFO: SideViews are placed at the top/bottom or left/right and used for align. According to Align, the area of the SideView is adjusted in the form of holding the position of the actual item.
         let sideView1 = UIView()
-        sideView1.tag = SideView1Tag
+        sideView1.tag = Self.sideViewTypeLeft
         let sideView2 = UIView()
-        sideView2.tag = SideView2Tag
+        sideView2.tag = Self.sideViewTypeRight
         parentBoxView.addSubview(sideView1)
         
         var prevView: UIView = sideView1
@@ -859,7 +859,7 @@ class MessageTemplateRenderer: UIView {
             switch item.height.type {
             case .fixed:
                 fixedHeightConstraintsHandler()
-            case .flex: 
+            case .flex:
                 ratioConstraintsHandler() // fillParent, wrapContent
             }
             
@@ -887,7 +887,8 @@ class MessageTemplateRenderer: UIView {
             let image = SBUIconSetType.iconSpinner
                 .image(
                     to: SBUIconSetType.Metric.iconSpinnerSizeForTemplate
-                ).sbu_with(
+                )
+                .sbu_with(
                     tintColor: tintColor,
                     forTemplate: true
                 )
@@ -927,7 +928,7 @@ class MessageTemplateRenderer: UIView {
                 urlString: item.imageUrl,
                 subPath: SBUCacheManager.PathType.template
             ) { [weak self, weak imageView] image, _ in
-                guard let self = self else { return }
+                guard self != nil else { return }
                 guard let image = image else { return }
                 guard let imageView = imageView else { return }
 
@@ -1270,7 +1271,7 @@ class MessageTemplateRenderer: UIView {
         // top/bottom
         if layout == .column { // Default
             // top anchor
-            if prevItem == nil && prevView.tag != SideView1Tag {
+            if prevItem == nil && prevView.tag != Self.sideViewTypeLeft {
                 self.rendererConstraints += baseView.sbu_constraint_v2(equalTo: parentView, top: marginInsets.top)
             } else {
                 let prevItemBottomMargin = prevItem?.viewStyle?.margin?.bottom ?? 0.0
@@ -1364,13 +1365,15 @@ class MessageTemplateRenderer: UIView {
         }
     }
     
-    @objc func didTapAction(_ sender: ActionItemButton) {
+    @objc 
+    func didTapAction(_ sender: ActionItemButton) {
         if let action = sender.action {
             self.actionHandler?(action)
         }
     }
     
-    @objc func didTapActionGestures(_ sender: ActionTapGesture) {
+    @objc 
+    func didTapActionGestures(_ sender: ActionTapGesture) {
         if let action = sender.action {
             self.actionHandler?(action)
         }
@@ -1781,8 +1784,8 @@ extension UILabel {
 
     class func textSize(font: UIFont, text: String, extra: CGSize) -> CGSize {
         var size = textSize(font: font, text: text)
-        size.width = size.width + extra.width
-        size.height = size.height + extra.height
+        size.width += extra.width
+        size.height += extra.height
         return size
     }
 

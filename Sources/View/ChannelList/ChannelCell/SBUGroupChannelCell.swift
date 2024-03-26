@@ -9,6 +9,7 @@
 import UIKit
 import SendbirdChatSDK
 
+/// Typealias for SBUGroupChannelCell. This is deprecated and renamed to SBUGroupChannelCell.
 @available(*, deprecated, renamed: "SBUGroupChannelCell")
 public typealias SBUChannelCell = SBUGroupChannelCell
 

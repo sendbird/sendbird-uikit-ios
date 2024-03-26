@@ -9,6 +9,7 @@
 import UIKit
 import SendbirdChatSDK
 
+// swiftlint:disable type_name
 /// Event methods for the views updates and performing actions from the header component in a group channel.
 protocol SBUChatNotificationChannelModuleHeaderDelegate: SBUCommonDelegate {
     /// Called when the value of  ``SBUChatNotificationChannelModule/Header/titleView`` has been updated.
@@ -65,6 +66,7 @@ protocol SBUChatNotificationChannelModuleHeaderDelegate: SBUCommonDelegate {
         didTapRightItem rightItem: UIBarButtonItem
     )
 }
+// swiftlint:enable type_name
 
 extension SBUChatNotificationChannelModule {
     
@@ -129,7 +131,7 @@ extension SBUChatNotificationChannelModule {
         /// "Notifications"
         lazy var defaultLeftBarButton: UIBarButtonItem = {
             let backButton = SBUBarButtonItem.backButton(
-                vc: self,
+                target: self,
                 selector: #selector(onTapLeftBarButton(_:))
             )
             return backButton

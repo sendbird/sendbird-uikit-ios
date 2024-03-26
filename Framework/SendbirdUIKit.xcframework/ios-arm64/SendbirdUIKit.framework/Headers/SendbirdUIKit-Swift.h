@@ -1450,24 +1450,63 @@ SWIFT_CLASS_NAMED("List")
 @class SBUVoiceFileInfo;
 
 @interface SBUGroupChannelModuleList (SWIFT_EXTENSION(SendbirdUIKit))
+/// This method is called when the voice player starts.
+/// \param player The <code>SBUVoicePlayer</code> that started.
+///
 - (void)voicePlayerDidStart:(SBUVoicePlayer * _Nonnull)player;
+/// This method is called when the voice player is paused.
+/// \param player The <code>SBUVoicePlayer</code> that is paused.
+///
+/// \param voiceFileInfo The <code>SBUVoiceFileInfo</code> of the voice file that is paused.
+///
 - (void)voicePlayerDidPause:(SBUVoicePlayer * _Nonnull)player voiceFileInfo:(SBUVoiceFileInfo * _Nullable)voiceFileInfo;
+/// This method is called when the voice player stops.
+/// \param player The <code>SBUVoicePlayer</code> that stopped.
+///
 - (void)voicePlayerDidStop:(SBUVoicePlayer * _Nonnull)player;
+/// This method is called when the voice player is reset.
+/// \param player The <code>SBUVoicePlayer</code> that was reset.
+///
 - (void)voicePlayerDidReset:(SBUVoicePlayer * _Nonnull)player;
+/// This method is called when the voice player updates play time.
+/// \param player The <code>SBUVoicePlayer</code> that updated the play time.
+///
+/// \param time The updated play time.
+///
 - (void)voicePlayerDidUpdatePlayTime:(SBUVoicePlayer * _Nonnull)player time:(NSTimeInterval)time;
 @end
 
 
 @interface SBUMessageThreadModuleList (SWIFT_EXTENSION(SendbirdUIKit))
+/// This method is called when the <code>SBUVoicePlayer</code> starts.
+/// \param player The <code>SBUVoicePlayer</code> instance that started.
+///
 - (void)voicePlayerDidStart:(SBUVoicePlayer * _Nonnull)player;
+/// This method is called when the <code>SBUVoicePlayer</code> pauses.
+/// \param player The <code>SBUVoicePlayer</code> instance that paused.
+///
+/// \param voiceFileInfo The <code>SBUVoiceFileInfo</code> instance associated with the paused player.
+///
 - (void)voicePlayerDidPause:(SBUVoicePlayer * _Nonnull)player voiceFileInfo:(SBUVoiceFileInfo * _Nullable)voiceFileInfo;
+/// This method is called when the <code>SBUVoicePlayer</code> stops.
+/// \param player The <code>SBUVoicePlayer</code> instance that stopped.
+///
 - (void)voicePlayerDidStop:(SBUVoicePlayer * _Nonnull)player;
+/// This method is called when the <code>SBUVoicePlayer</code> is reset.
+/// \param player The <code>SBUVoicePlayer</code> instance that was reset.
+///
 - (void)voicePlayerDidReset:(SBUVoicePlayer * _Nonnull)player;
+/// This method updates the play time of the voice player.
+/// \param player The <code>SBUVoicePlayer</code> instance.
+///
+/// \param time The updated time interval.
+///
 - (void)voicePlayerDidUpdatePlayTime:(SBUVoicePlayer * _Nonnull)player time:(NSTimeInterval)time;
 @end
 
 
 @interface SBUBaseChannelModuleList (SWIFT_EXTENSION(SendbirdUIKit))
+/// This property checks if the scroll is near the bottom of the screen.
 @property (nonatomic, readonly) BOOL isScrollNearByBottom;
 /// This function checks if the current message and the next message date have the same day.
 /// \param currentIndex Current message index
@@ -1478,6 +1517,14 @@ SWIFT_CLASS_NAMED("List")
 /// returns:
 /// If <code>true</code>, the messages date is same day.
 - (BOOL)checkSameDayAsNextMessageWithCurrentIndex:(NSInteger)currentIndex fullMessageList:(NSArray<SBDBaseMessage *> * _Nonnull)fullMessageList SWIFT_WARN_UNUSED_RESULT;
+/// This function checks if the current message and the previous message date have the same day.
+/// \param currentIndex Current message index
+///
+/// \param fullMessageList The full message list including failed/pending messages as well as sent messages
+///
+///
+/// returns:
+/// If <code>true</code>, the messages date is same day.
 - (BOOL)checkSameDayAsPrevMessageWithCurrentIndex:(NSInteger)currentIndex fullMessageList:(NSArray<SBDBaseMessage *> * _Nonnull)fullMessageList SWIFT_WARN_UNUSED_RESULT;
 /// Reload cell if it’s visible status.
 /// since:
@@ -1645,6 +1692,7 @@ SWIFT_CLASS("_TtC13SendbirdUIKit26QuotedFileImageContentView")
 @end
 
 
+/// This class is used to create and manage action sheets in the application.
 SWIFT_CLASS("_TtC13SendbirdUIKit14SBUActionSheet")
 @interface SBUActionSheet : NSObject
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
@@ -2704,6 +2752,11 @@ SWIFT_CLASS("_TtC13SendbirdUIKit25SBUContentBaseMessageCell")
 @property (nonatomic) BOOL useReaction;
 @property (nonatomic) BOOL useQuotedMessage;
 @property (nonatomic) BOOL useThreadInfo;
+/// The boolean value that decides whether to enable a long press on a reaction emoji.
+/// If <code>true</code>, a member list for each reaction emoji is shown.
+/// since:
+/// 3.19.0
+@property (nonatomic) BOOL enableEmojiLongPress;
 @property (nonatomic, strong) UIView * _Nonnull userNameView;
 /// since:
 /// 3.12.0
@@ -3502,6 +3555,8 @@ SWIFT_CLASS("_TtC13SendbirdUIKit37SBUGroupChannelSettingsViewController")
 @end
 
 
+/// <code>SBUGroupChannelSettingsViewModel</code> is a class that inherits from <code>SBUBaseChannelSettingsViewModel</code>.
+/// It is used to manage the settings of a group channel.
 SWIFT_CLASS("_TtC13SendbirdUIKit32SBUGroupChannelSettingsViewModel")
 @interface SBUGroupChannelSettingsViewModel : SBUBaseChannelSettingsViewModel
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
@@ -3570,6 +3625,16 @@ SWIFT_CLASS("_TtC13SendbirdUIKit29SBUGroupChannelViewController")
 - (void)updateStyles;
 /// This function increases the new message count.
 - (BOOL)increaseNewMessageCount;
+/// Calculates the <code>CGPoint</code> value that indicates where to draw the message menu in the group channel screen.
+/// since:
+/// 1.2.5
+/// \param indexPath IndexPath
+///
+/// \param position Message position
+///
+///
+/// returns:
+/// <code>CGPoint</code> value
 - (CGPoint)calculatorMenuPointWithIndexPath:(NSIndexPath * _Nonnull)indexPath position:(enum MessagePosition)position SWIFT_WARN_UNUSED_RESULT SWIFT_DEPRECATED_MSG("Please use `calculateMessageMenuCGPoint(indexPath:position:)` in `SBUGroupChannelModule.List`");
 - (void)showMenuModal:(UITableViewCell * _Nonnull)cell indexPath:(NSIndexPath * _Nonnull)indexPath message:(SBDBaseMessage * _Nonnull)message SWIFT_DEPRECATED_MSG("Please use `showMessageContextMenu(message:cell:forRowAt:)` in `SBUGroupChannelModule.List`");
 - (void)showChannelSettings;
@@ -4163,6 +4228,8 @@ SWIFT_CLASS("_TtC13SendbirdUIKit25SBUMessageThreadViewModel")
 
 @interface SBUMessageThreadViewModel (SWIFT_EXTENSION(SendbirdUIKit))
 - (void)didSucceedReconnection;
+/// This function is called when reconnection fails.
+/// It is currently empty and can be overridden in subclasses to provide custom behavior.
 - (void)didFailReconnection;
 @end
 

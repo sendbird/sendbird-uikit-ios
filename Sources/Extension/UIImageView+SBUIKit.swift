@@ -10,16 +10,26 @@ import UIKit
 import AVFoundation
 
 public extension UIImageView {
+    /// Typealias for load completion
     typealias LoadCompletion = ((LoadResult) -> Void)
+    
+    /// Enum for ImageOption
     enum ImageOption {
+        /// Option for image to thumbnail
         case imageToThumbnail
+        /// Option for original image
         case original
+        /// Option for video URL to image
         case videoURLToImage
     }
     
+    /// Enum for LoadStatus
     enum LoadStatus {
+        /// Placeholder status
         case placeholder
+        /// Success status
         case success
+        /// Failure status
         case failure
         
         var isSuccess: Bool { self == .success }
@@ -27,6 +37,7 @@ public extension UIImageView {
         var isPlaceholder: Bool { self == .placeholder }
     }
     
+    /// Struct for LoadResult
     struct LoadResult {
         let status: LoadStatus
         let urlString: String
@@ -43,6 +54,8 @@ public extension UIImageView {
         }
     }
 
+    /// Loads an image from a URL string.
+    /// - Returns: A URLSessionTask object.
     @discardableResult
     func loadImage(urlString: String,
                    placeholder: UIImage? = nil,
@@ -393,7 +406,7 @@ internal extension UIImageView {
                 return
             }
             
-            let image = SBUCacheManager.Image.save(
+            _ = SBUCacheManager.Image.save(
                 data: data,
                 fileName: fileName,
                 subPath: subPath

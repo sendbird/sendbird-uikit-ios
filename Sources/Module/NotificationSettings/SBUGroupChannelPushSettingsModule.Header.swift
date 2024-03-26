@@ -10,6 +10,7 @@ import UIKit
 
 // MARK: - Delegate
 
+// swiftlint:disable type_name
 /// Event methods for the views updates and performing actions from the header component in notification settings module.
 public protocol SBUGroupChannelPushSettingsModuleHeaderDelegate: SBUCommonDelegate {
     /// Called when `titleView` value has been updated.
@@ -57,6 +58,7 @@ public protocol SBUGroupChannelPushSettingsModuleHeaderDelegate: SBUCommonDelega
         didTapRightItem rightItem: UIBarButtonItem
     )
 }
+// swiftlint:enable type_name
 
 // MARK: - Header
 
@@ -120,7 +122,7 @@ extension SBUGroupChannelPushSettingsModule {
         
         private var defaultLeftBarButton: UIBarButtonItem {
             let backButton = SBUBarButtonItem.backButton(
-                vc: self,
+                target: self,
                 selector: #selector(onTapLeftBarButton)
             )
             return backButton

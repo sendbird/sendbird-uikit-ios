@@ -33,7 +33,8 @@ extension SBUInviteUserModule {
     
     /// A module component that represent the list of `SBUInviteUserModule`.
     @objc(SBUInviteUserModuleList)
-    @objcMembers open class List: SBUBaseSelectUserModule.List {
+    @objcMembers
+    open class List: SBUBaseSelectUserModule.List {
         
         // MARK: - Logic properties (Public)
         public weak var delegate: SBUInviteUserModuleListDelegate? {
@@ -98,6 +99,7 @@ extension SBUInviteUserModule.List {
 }
 
 // MARK: - UITableView relations
+// swiftlint:disable missing_docs
 extension SBUInviteUserModule.List {
     open func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.delegate?.inviteUserModule(self, didSelectRowAt: indexPath)
@@ -116,3 +118,4 @@ extension SBUInviteUserModule.List {
         self.delegate?.inviteUserModule(self, didDetectPreloadingPosition: indexPath)
     }
 }
+// swiftlint:enable missing_docs

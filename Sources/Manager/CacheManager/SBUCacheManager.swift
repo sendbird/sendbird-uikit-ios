@@ -116,7 +116,6 @@ class SBUCacheManager {
                             imageCacheHandler(nil, nil, image)
                         default:
                             SBULog.error("Invalid cacheHandler type")
-                            break
                         }
                     }
                     return
@@ -131,7 +130,6 @@ class SBUCacheManager {
                         imageCacheHandler(filePath, data, image)
                     default:
                         SBULog.error("Invalid cacheHandler type")
-                        break
                     }
                 }
             }
@@ -189,10 +187,12 @@ class SBUCacheManager {
             return fullPath.path
         }
         
+        // swiftlint:disable missing_docs
         @available(*, deprecated, renamed: "cacheExists(key:)")
         public func hasImage(key: String) -> Bool {
             self.cacheExists(key: key)
         }
+        // swiftlint:enable missing_docs
         
         // Voice
         func voiceTempPath(fileName: String) -> URL? {
@@ -275,6 +275,7 @@ class SBUCacheManager {
     }
 }
 
+// swiftlint:disable missing_docs
 @available(*, deprecated, message: "We can't guarantee the problems that occur with direct access to DiskCache and handling data.")
 public struct DiskCache {
     
@@ -311,3 +312,4 @@ public struct DiskCache {
         self.imageDiskCache.removeAll()
     }
 }
+// swiftlint:enable missing_docs

@@ -51,8 +51,8 @@ open class SBUMessageSearchViewController: SBUBaseViewController, SBUMessageSear
         SBULog.info("")
         
         self.createViewModel(channel: channel)
-        self.headerComponent = SBUModuleSet.messageSearchModule.headerComponent
-        self.listComponent = SBUModuleSet.messageSearchModule.listComponent
+        self.headerComponent = SBUModuleSet.MessageSearchModule.HeaderComponent.init()
+        self.listComponent = SBUModuleSet.MessageSearchModule.ListComponent.init()
     }
     
     open override func viewDidLoad() {
@@ -239,8 +239,10 @@ open class SBUMessageSearchViewController: SBUBaseViewController, SBUMessageSear
     }
     
     // MARK: - SBUMessageSearchModuleListDataSource
-    open func messageSearchModule(_ listComponent: SBUMessageSearchModule.List,
-                                    searchResultsInTableView tableView: UITableView) -> [BaseMessage] {
+    open func messageSearchModule(
+        _ listComponent: SBUMessageSearchModule.List,
+        searchResultsInTableView tableView: UITableView
+    ) -> [BaseMessage] {
         return self.searchResultList
     }
     

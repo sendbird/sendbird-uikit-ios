@@ -19,11 +19,21 @@ public protocol SBUUserProfileViewDelegate: AnyObject {
 
 /// This protocol is used to create a custom `UserView`.
 public protocol SBUUserProfileViewProtocol {
+    /// This function sets up the views.
     func setupViews()
+    /// This function sets up the styles for the view.
     func setupStyles()
     
-    /// This function shows selector view.
+    /// This function shows the selector view.
+    /// - Parameters:
+    ///   - baseView: The base view where the selector will be shown.
     func show(baseView: UIView, user: SBUUser?)
+    
+    /// This function shows the selector view.
+    /// - Parameters:
+    ///   - baseView: The base view where the selector will be shown.
+    ///   - user: The user object that will be used in the selector.
+    ///   - isOpenChannel: A boolean value indicating whether the channel is open or not.
     func show(baseView: UIView, user: SBUUser?, isOpenChannel: Bool)
 
     /// This function dismisses selector view.
@@ -315,10 +325,10 @@ class SBUUserProfileView: UIView, SBUUserProfileViewProtocol {
         self.userIdLabel.text = ""
 
         self.layer.backgroundColor = UIColor.clear.cgColor
-        UIView.animate(withDuration: 0.3, animations: {
+        UIView.animate(withDuration: 0.3) {
             self.layoutIfNeeded()
             self.layer.backgroundColor = self.theme.overlayColor.cgColor
-        }) { _ in
+        } completion: { _ in
             self.userIdTitleLabel.text = SBUStringSet.UserProfile_UserID
             self.userIdLabel.text = self.user?.userId
         }
@@ -330,11 +340,11 @@ class SBUUserProfileView: UIView, SBUUserProfileViewProtocol {
         self.userIdTitleLabel.text = ""
         self.userIdLabel.text = ""
 
-        UIView.animate(withDuration: 0.3, animations: {
+        UIView.animate(withDuration: 0.3) {
             self.layoutIfNeeded()
             
             self.layer.backgroundColor = UIColor.clear.cgColor
-        }) { _ in
+        } completion: { _ in
             self.contentBottomConstraint?.isActive = false
             self.contentTopConstraint?.isActive = false
             self.removeFromSuperview()

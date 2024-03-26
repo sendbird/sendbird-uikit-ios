@@ -16,6 +16,11 @@ public class SBUFileMessageCellParams: SBUBaseMessageCellParams {
     /// ``SBUVoiceFileInfo`` object that has voice file informations.
     public var voiceFileInfo: SBUVoiceFileInfo?
     
+    /// The boolean value that decides whether to enable a long press on a reaction emoji.
+    /// If `true`, a member list for each reaction emoji is shown. 
+    /// - Since: 3.19.0
+    public let enableEmojiLongPress: Bool
+    
     public init(
         message: FileMessage,
         hideDateView: Bool,
@@ -26,7 +31,8 @@ public class SBUFileMessageCellParams: SBUBaseMessageCellParams {
         isThreadMessage: Bool = false,
         joinedAt: Int64 = 0,
         messageOffsetTimestamp: Int64 = 0,
-        voiceFileInfo: SBUVoiceFileInfo? = nil
+        voiceFileInfo: SBUVoiceFileInfo? = nil,
+        enableEmojiLongPress: Bool = true
     ) {
         self.useReaction = useReaction
         
@@ -35,6 +41,8 @@ public class SBUFileMessageCellParams: SBUBaseMessageCellParams {
             let isMyMessage = SBUGlobals.currentUser?.userId == message.sender?.userId
             messagePosition = isMyMessage ? .right : .left
         }
+        
+        self.enableEmojiLongPress = enableEmojiLongPress
         
         super.init(
             message: message,

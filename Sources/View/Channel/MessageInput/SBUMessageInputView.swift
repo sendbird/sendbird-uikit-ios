@@ -103,6 +103,7 @@ public protocol SBUMessageInputViewDelegate: AnyObject {
     func messageInputViewDidTapVoiceMessage(_ messageInputView: SBUMessageInputView)
 }
 
+// swiftlint:disable missing_docs
 public extension SBUMessageInputViewDelegate {
     func messageInputView(_ messageInputView: SBUMessageInputView, didSelectSend text: String) { }
     
@@ -126,6 +127,7 @@ public extension SBUMessageInputViewDelegate {
     
     func messageInputView(_ messageInputView: SBUMessageInputView, didChangeSelection range: NSRange) { }
 }
+// swiftlint:enable missing_docs
 
 public protocol SBUMessageInputViewDataSource: AnyObject {
     /// Ask the data source to return the `BaseChannel` object.
@@ -148,12 +150,12 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     public lazy var placeholderLabel = UILabel()
     
     public lazy var textView: UITextView? = {
-        let tv = UITextView()
-        tv.textContainerInset = UIEdgeInsets(top: 10, left: 9, bottom: 10, right: 16)
-        tv.layer.borderWidth = 1
-        tv.layer.cornerRadius = 20
-        tv.delegate = self
-        return tv
+        let textView = UITextView()
+        textView.textContainerInset = UIEdgeInsets(top: 10, left: 9, bottom: 10, right: 16)
+        textView.layer.borderWidth = 1
+        textView.layer.cornerRadius = 20
+        textView.delegate = self
+        return textView
     }()
     
     public lazy var sendButton: UIButton? = {
@@ -946,7 +948,8 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
 
     // MARK: - Action
     
-    @objc open func onTapAddButton(_ sender: Any) {
+    @objc
+    open func onTapAddButton(_ sender: Any) {
         self.endEditing(true)
         let items = self.generateResourceItems()
         SBUActionSheet.show(
@@ -987,7 +990,8 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         return items
     }
     
-    @objc open func onTapSendButton(_ sender: Any) {
+    @objc
+    open func onTapSendButton(_ sender: Any) {
         self.delegate?.messageInputView(
             self,
             didSelectSend: self.textView?.text.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
@@ -1000,16 +1004,19 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     /// Shows voice message input view
     /// - Parameter sender: Button
     /// - Since: 3.4.0
-    @objc open func onTapVoiceMessageButton(_ sender: Any) {
+    @objc
+    open func onTapVoiceMessageButton(_ sender: Any) {
         self.delegate?.messageInputViewDidTapVoiceMessage(self)
         self.endEditing(true)
     }
         
-    @objc open func onTapCancelButton(_ sender: Any) {
+    @objc
+    open func onTapCancelButton(_ sender: Any) {
         self.setMode(.none)
     }
     
-    @objc open func onTapSaveButton(_ sender: Any) {
+    @objc
+    open func onTapSaveButton(_ sender: Any) {
         let editedText = self.textView?.text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard basedText != editedText else {
             self.endEditMode()
@@ -1104,22 +1111,26 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     
     // MARK: - Deprecated
     @available(*, deprecated, renamed: "onTapAddButton")
-    @objc open func onClickAddButton(_ sender: Any) {
+    @objc
+    open func onClickAddButton(_ sender: Any) {
         self.onTapAddButton(sender)
     }
     
     @available(*, deprecated, renamed: "onTapSendButton")
-    @objc open func onClickSendButton(_ sender: Any) {
+    @objc
+    open func onClickSendButton(_ sender: Any) {
         self.onTapSendButton(sender)
     }
     
     @available(*, deprecated, renamed: "onTapCancelButton")
-    @objc open func onClickCancelButton(_ sender: Any) {
+    @objc
+    open func onClickCancelButton(_ sender: Any) {
         self.onTapCancelButton(sender)
     }
     
     @available(*, deprecated, renamed: "onTapSaveButton")
-    @objc open func onClickSaveButton(_ sender: Any) {
+    @objc
+    open func onClickSaveButton(_ sender: Any) {
         self.onTapSaveButton(sender)
     }
 

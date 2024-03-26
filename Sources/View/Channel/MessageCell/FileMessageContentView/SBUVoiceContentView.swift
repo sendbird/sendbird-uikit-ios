@@ -170,13 +170,11 @@ open class SBUVoiceContentView: SBUBaseFileContentView {
             self.progressTimeLabel.text = SBUUtils.convertToPlayTime(remainingTime)
             let playtime = self.voiceFileInfo?.playtime ?? 1.0
             progress = Float(time / playtime)
-            break
         case .pause:
             let remainingTime = (self.voiceFileInfo?.playtime ?? 0) - time
             self.progressTimeLabel.text = SBUUtils.convertToPlayTime(remainingTime)
             let playtime = self.voiceFileInfo?.playtime ?? 1.0
             progress = Float(time / playtime)
-            break
         case .finishPlaying:
             break
         }

@@ -78,11 +78,11 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
         )
         
         if channelType == .group {
-            self.headerComponent = SBUModuleSet.groupUserListModule.headerComponent
-            self.listComponent = SBUModuleSet.groupUserListModule.listComponent
+            self.headerComponent = SBUModuleSet.GroupUserListModule.HeaderComponent.init()
+            self.listComponent = SBUModuleSet.GroupUserListModule.ListComponent.init()
         } else if channelType == .open {
-            self.headerComponent = SBUModuleSet.openUserListModule.headerComponent
-            self.listComponent = SBUModuleSet.openUserListModule.listComponent
+            self.headerComponent = SBUModuleSet.OpenUserListModule.HeaderComponent.init()
+            self.listComponent = SBUModuleSet.OpenUserListModule.ListComponent.init()
         }
     }
     
@@ -107,11 +107,11 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
         )
         
         if channelType == .group {
-            self.headerComponent = SBUModuleSet.groupUserListModule.headerComponent
-            self.listComponent = SBUModuleSet.groupUserListModule.listComponent
+            self.headerComponent = SBUModuleSet.GroupUserListModule.HeaderComponent.init()
+            self.listComponent = SBUModuleSet.GroupUserListModule.ListComponent.init()
         } else if channelType == .open {
-            self.headerComponent = SBUModuleSet.openUserListModule.headerComponent
-            self.listComponent = SBUModuleSet.openUserListModule.listComponent
+            self.headerComponent = SBUModuleSet.OpenUserListModule.HeaderComponent.init()
+            self.listComponent = SBUModuleSet.OpenUserListModule.ListComponent.init()
         }
     }
     
@@ -187,7 +187,7 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
             self.view.addSubview(listComponent)
         }
     }
-
+    
     open override func setupLayouts() {
         self.listComponent?.sbu_constraint(equalTo: self.view, left: 0, right: 0, top: 0, bottom: 0)
     }
@@ -274,42 +274,58 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
     }
     
     // MARK: - SBUUserListModuleHeaderDelegate
-    open func userListModule(_ headerComponent: SBUUserListModule.Header,
-                               didUpdateTitleView titleView: UIView?) {
+    open func userListModule(
+        _ headerComponent: SBUUserListModule.Header,
+        didUpdateTitleView titleView: UIView?
+    ) {
         self.navigationItem.titleView = titleView
     }
     
-    open func userListModule(_ headerComponent: SBUUserListModule.Header,
-                               didUpdateLeftItem leftItem: UIBarButtonItem?) {
+    open func userListModule(
+        _ headerComponent: SBUUserListModule.Header,
+        didUpdateLeftItem leftItem: UIBarButtonItem?
+    ) {
         self.navigationItem.leftBarButtonItem = leftItem
     }
     
-    open func userListModule(_ headerComponent: SBUUserListModule.Header,
-                               didUpdateRightItem rightItem: UIBarButtonItem?) {
+    open func userListModule(
+        _ headerComponent: SBUUserListModule.Header,
+        didUpdateRightItem rightItem: UIBarButtonItem?
+    ) {
         self.navigationItem.rightBarButtonItem = rightItem
     }
     
-    open func userListModule(_ headerComponent: SBUUserListModule.Header,
-                               didTapLeftItem leftItem: UIBarButtonItem) {
+    open func userListModule(
+        _ headerComponent: SBUUserListModule.Header,
+        didTapLeftItem leftItem: UIBarButtonItem
+    ) {
         self.onClickBack()
     }
     
-    open func userListModule(_ headerComponent: SBUUserListModule.Header,
-                               didTapRightItem rightItem: UIBarButtonItem) {
+    open func userListModule(
+        _ headerComponent: SBUUserListModule.Header,
+        didTapRightItem rightItem: UIBarButtonItem
+    ) {
         self.showInviteUser()
     }
     
     // MARK: - SBUUserListModuleListDelegate
-    open func userListModule(_ listComponent: SBUUserListModule.List,
-                               didSelectRowAt indexPath: IndexPath) { }
+    open func userListModule(
+        _ listComponent: SBUUserListModule.List,
+        didSelectRowAt indexPath: IndexPath
+    ) { }
     
-    open func userListModule(_ listComponent: SBUUserListModule.List,
-                               didDetectPreloadingPosition indexPath: IndexPath) {
+    open func userListModule(
+        _ listComponent: SBUUserListModule.List,
+        didDetectPreloadingPosition indexPath: IndexPath
+    ) {
         self.viewModel?.preLoadNextUserList(indexPath: indexPath)
     }
     
-    open func userListModule(_ listComponent: SBUUserListModule.List,
-                               didTapMoreMenuFor user: SBUUser) {
+    open func userListModule(
+        _ listComponent: SBUUserListModule.List,
+        didTapMoreMenuFor user: SBUUser
+    ) {
         let userNameItem = SBUActionSheetItem(
             title: user.nickname ?? user.userId,
             color: self.componentTheme.actionSheetSubTextColor,
@@ -398,8 +414,10 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
         SBUActionSheet.show(items: items, cancelItem: cancelItem, oneTimetheme: componentTheme)
     }
     
-    open func userListModule(_ listComponent: SBUUserListModule.List,
-                               didTapUserProfileFor user: SBUUser) {
+    open func userListModule(
+        _ listComponent: SBUUserListModule.List,
+        didTapUserProfileFor user: SBUUser
+    ) {
         self.showUserProfile(with: user)
     }
     
@@ -408,12 +426,16 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
     }
     
     // MARK: - SBUUserListModuleListDataSource
-    open func userListModule(_ listComponent: SBUUserListModule.List,
-                                 usersInTableView tableView: UITableView) -> [SBUUser] {
+    open func userListModule(
+        _ listComponent: SBUUserListModule.List,
+        usersInTableView tableView: UITableView
+    ) -> [SBUUser] {
         return self.viewModel?.userList ?? []
     }
-    open func userListModule(_ listComponent: SBUUserListModule.List,
-                                 channelForTableView tableView: UITableView) -> BaseChannel? {
+    open func userListModule(
+        _ listComponent: SBUUserListModule.List,
+        channelForTableView tableView: UITableView
+    ) -> BaseChannel? {
         return self.viewModel?.channel
     }
     
@@ -456,9 +478,11 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
         self.updateStyles()
     }
     
-    open func userListViewModel(_ viewModel: SBUUserListViewModel,
-                                  didChangeChannel channel: BaseChannel?,
-                                  withContext context: MessageContext) {
+    open func userListViewModel(
+        _ viewModel: SBUUserListViewModel,
+        didChangeChannel channel: BaseChannel?,
+        withContext context: MessageContext
+    ) {
         self.listComponent?.reloadTableView()
     }
     
@@ -481,8 +505,10 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
     }
     
     // MARK: - SBUUSerListViewModelDataSource
-    open func userListViewModel(_ viewModel: SBUUserListViewModel,
-                                  nextUserListForChannel channel: BaseChannel?) -> [SBUUser]? {
+    open func userListViewModel(
+        _ viewModel: SBUUserListViewModel,
+        nextUserListForChannel channel: BaseChannel?
+    ) -> [SBUUser]? {
         return nil
     }
 }

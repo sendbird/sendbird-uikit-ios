@@ -178,10 +178,12 @@ open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
     }
     
     // MARK: - Common
-    open func configure(_ message: BaseMessage,
-                          hideDateView: Bool,
-                          groupPosition: MessageGroupPosition,
-                          isOverlay: Bool = false) {
+    open func configure(
+        _ message: BaseMessage,
+        hideDateView: Bool,
+        groupPosition: MessageGroupPosition,
+        isOverlay: Bool = false
+    ) {
         super.configure(
             message: message,
             hideDateView: hideDateView,
@@ -237,29 +239,29 @@ open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
         let stateImage: UIImage?
         
         switch message.sendingStatus {
-            case .none, .succeeded:
-                stateImage = nil
-            case .pending:
-                stateImage = SBUIconSetType.iconSpinner.image(
-                    with: theme.pendingStateColor,
-                    to: SBUIconSetType.Metric.defaultIconSizeSmall
-                )
-                
-                let rotation = CABasicAnimation(keyPath: "transform.rotation")
-                rotation.fromValue = 0
-                rotation.toValue = 2 * Double.pi
-                rotation.duration = 1.1
-                rotation.repeatCount = Float.infinity
-                stateImageView.layer.add(rotation, forKey: SBUAnimation.Key.spin.identifier)
-            case .failed, .canceled:
-                stateImage = SBUIconSetType.iconError.image(
-                    with: theme.failedStateColor,
-                    to: SBUIconSetType.Metric.defaultIconSizeSmall
-                )
-            case .scheduled:
-                stateImage = nil
-            @unknown default:
-                stateImage = nil
+        case .none, .succeeded:
+            stateImage = nil
+        case .pending:
+            stateImage = SBUIconSetType.iconSpinner.image(
+                with: theme.pendingStateColor,
+                to: SBUIconSetType.Metric.defaultIconSizeSmall
+            )
+            
+            let rotation = CABasicAnimation(keyPath: "transform.rotation")
+            rotation.fromValue = 0
+            rotation.toValue = 2 * Double.pi
+            rotation.duration = 1.1
+            rotation.repeatCount = Float.infinity
+            stateImageView.layer.add(rotation, forKey: SBUAnimation.Key.spin.identifier)
+        case .failed, .canceled:
+            stateImage = SBUIconSetType.iconError.image(
+                with: theme.failedStateColor,
+                to: SBUIconSetType.Metric.defaultIconSizeSmall
+            )
+        case .scheduled:
+            stateImage = nil
+        @unknown default:
+            stateImage = nil
         }
         
         self.stateImageView.image = stateImage
@@ -314,7 +316,8 @@ open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
     }
         
     // MARK: - Action
-    @objc open func onLongPressContentView(sender: UILongPressGestureRecognizer?) {
+    @objc
+    open func onLongPressContentView(sender: UILongPressGestureRecognizer?) {
         if let sender = sender {
             if sender.state == .began {
                 self.longPressHandlerToContent?()
@@ -324,11 +327,13 @@ open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
         }
     }
     
-    @objc open func onTapContentView(sender: UITapGestureRecognizer) {
+    @objc
+    open func onTapContentView(sender: UITapGestureRecognizer) {
         self.tapHandlerToContent?()
     }
     
-    @objc open func onTapUserProfileView(sender: UITapGestureRecognizer) {
+    @objc
+    open func onTapUserProfileView(sender: UITapGestureRecognizer) {
         self.userProfileTapHandler?()
     }
 }

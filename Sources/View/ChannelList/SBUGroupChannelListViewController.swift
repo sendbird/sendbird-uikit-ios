@@ -66,8 +66,8 @@ open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, 
         super.init(nibName: nil, bundle: nil)
         
         self.createViewModel(channelListQuery: nil)
-        self.headerComponent = SBUModuleSet.groupChannelListModule.headerComponent
-        self.listComponent = SBUModuleSet.groupChannelListModule.listComponent
+        self.headerComponent = SBUModuleSet.GroupChannelListModule.HeaderComponent.init()
+        self.listComponent = SBUModuleSet.GroupChannelListModule.ListComponent.init()
     }
     
     /// You can initialize the class through this function.
@@ -88,8 +88,8 @@ open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, 
         SBULog.info("")
         
         self.createViewModel(channelListQuery: channelListQuery)
-        self.headerComponent = SBUModuleSet.groupChannelListModule.headerComponent
-        self.listComponent = SBUModuleSet.groupChannelListModule.listComponent
+        self.headerComponent = SBUModuleSet.GroupChannelListModule.HeaderComponent.init()
+        self.listComponent = SBUModuleSet.GroupChannelListModule.ListComponent.init()
     }
     
     open override func viewDidLoad() {
@@ -266,41 +266,55 @@ open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, 
     }
 
     // MARK: - SBUGroupChannelListModuleHeaderDelegate
-    open func baseChannelListModule(_ headerComponent: SBUBaseChannelListModule.Header,
-                                didUpdateTitleView titleView: UIView?) {
+    open func baseChannelListModule(
+        _ headerComponent: SBUBaseChannelListModule.Header,
+        didUpdateTitleView titleView: UIView?
+    ) {
         self.navigationItem.titleView = titleView
     }
     
-    open func baseChannelListModule(_ headerComponent: SBUBaseChannelListModule.Header,
-                                didUpdateLeftItem leftItem: UIBarButtonItem?) {
+    open func baseChannelListModule(
+        _ headerComponent: SBUBaseChannelListModule.Header,
+        didUpdateLeftItem leftItem: UIBarButtonItem?
+    ) {
         self.navigationItem.leftBarButtonItem = leftItem
     }
     
-    open func baseChannelListModule(_ headerComponent: SBUBaseChannelListModule.Header,
-                                didUpdateRightItem rightItem: UIBarButtonItem?) {
+    open func baseChannelListModule(
+        _ headerComponent: SBUBaseChannelListModule.Header,
+        didUpdateRightItem rightItem: UIBarButtonItem?
+    ) {
         self.navigationItem.rightBarButtonItem = rightItem
     }
     
-    open func baseChannelListModule(_ headerComponent: SBUBaseChannelListModule.Header,
-                                didTapLeftItem leftItem: UIBarButtonItem) {
+    open func baseChannelListModule(
+        _ headerComponent: SBUBaseChannelListModule.Header,
+        didTapLeftItem leftItem: UIBarButtonItem
+    ) {
         self.onClickBack()
     }
     
-    open func baseChannelListModule(_ headerComponent: SBUBaseChannelListModule.Header,
-                                didTapRightItem rightItem: UIBarButtonItem) {
+    open func baseChannelListModule(
+        _ headerComponent: SBUBaseChannelListModule.Header,
+        didTapRightItem rightItem: UIBarButtonItem
+    ) {
         self.showCreateChannelOrTypeSelector()
     }
     
     // MARK: - SBUGroupChannelListModuleListDelegate
-    open func baseChannelListModule(_ listComponent: SBUBaseChannelListModule.List,
-                                didSelectRowAt indexPath: IndexPath) {
+    open func baseChannelListModule(
+        _ listComponent: SBUBaseChannelListModule.List,
+        didSelectRowAt indexPath: IndexPath
+    ) {
         guard self.channelList.count > indexPath.row else { return }
         let channel = self.channelList[indexPath.row]
         self.showChannel(channelURL: channel.channelURL)
     }
     
-    open func baseChannelListModule(_ listComponent: SBUBaseChannelListModule.List,
-                                didDetectPreloadingPosition indexPath: IndexPath) {
+    open func baseChannelListModule(
+        _ listComponent: SBUBaseChannelListModule.List,
+        didDetectPreloadingPosition indexPath: IndexPath
+    ) {
         self.viewModel?.loadNextChannelList(reset: false)
     }
     
@@ -312,20 +326,26 @@ open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, 
         self.viewModel?.loadNextChannelList(reset: true)
     }
     
-    open func groupChannelListModule(_ listComponent: SBUGroupChannelListModule.List,
-                                didSelectLeave channel: GroupChannel) {
+    open func groupChannelListModule(
+        _ listComponent: SBUGroupChannelListModule.List,
+        didSelectLeave channel: GroupChannel
+    ) {
         self.viewModel?.leaveChannel(channel)
     }
     
-    open func groupChannelListModule(_ listComponent: SBUGroupChannelListModule.List,
-                                didChangePushTriggerOption option: GroupChannelPushTriggerOption,
-                                channel: GroupChannel) {
+    open func groupChannelListModule(
+        _ listComponent: SBUGroupChannelListModule.List,
+        didChangePushTriggerOption option: GroupChannelPushTriggerOption,
+        channel: GroupChannel
+    ) {
         self.viewModel?.changePushTriggerOption(option: option, channel: channel)
     }
     
     // MARK: - SBUGroupChannelListModuleListDataSource
-    open func baseChannelListModule(_ listComponent: SBUBaseChannelListModule.List,
-                                channelsInTableView tableView: UITableView) -> [BaseChannel]? {
+    open func baseChannelListModule(
+        _ listComponent: SBUBaseChannelListModule.List,
+        channelsInTableView tableView: UITableView
+    ) -> [BaseChannel]? {
         return self.channelList
     }
     

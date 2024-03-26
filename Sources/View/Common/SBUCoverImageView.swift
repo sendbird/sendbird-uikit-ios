@@ -91,12 +91,9 @@ public class SBUCoverImageView: UIView {
         self.addSubview(imageView)
 
         let subviews = self.subviews
-        for subView in subviews {
-            if subView != imageView {
-                subView.removeFromSuperview()
-            }
+        for subView in subviews where subView != imageView {
+            subView.removeFromSuperview()
         }
-        
         if makeCircle {
             self.makeCircularWithSpacing(spacing: 0)
         }
@@ -147,10 +144,8 @@ public class SBUCoverImageView: UIView {
             self.addSubview(imageView)
             
             let subviews = self.subviews
-            for subView in subviews {
-                if subView != imageView {
-                    subView.removeFromSuperview()
-                }
+            for subView in subviews where subView != imageView {
+                subView.removeFromSuperview()
             }
             
             self.makeCircularWithSpacing(spacing: 0)
@@ -158,10 +153,12 @@ public class SBUCoverImageView: UIView {
     }
     
     // MARK: - Internal
-    func setIconImage(type: SBUIconSetType,
-                              tintColor: UIColor?,
-                              backgroundColor: UIColor? = nil,
-                              iconSize: CGSize? = nil) {
+    func setIconImage(
+        type: SBUIconSetType,
+        tintColor: UIColor?,
+        backgroundColor: UIColor? = nil,
+        iconSize: CGSize? = nil
+    ) {
         let iconSize = iconSize ?? self.iconSize
         let imageView = self.createImageView(
             withImage: type.image(with: tintColor, to: iconSize),
@@ -172,10 +169,8 @@ public class SBUCoverImageView: UIView {
         self.addSubview(imageView)
         
         let subviews = self.subviews
-        for subView in subviews {
-            if subView != imageView {
-                subView.removeFromSuperview()
-            }
+        for subView in subviews where subView != imageView {
+            subView.removeFromSuperview()
         }
         
         self.makeCircularWithSpacing(spacing: 0)
@@ -216,10 +211,8 @@ public class SBUCoverImageView: UIView {
         self.addSubview(stackView)
         
         let subviews = self.subviews
-        for subView in subviews {
-            if subView != stackView {
-                subView.removeFromSuperview()
-            }
+        for subView in subviews where subView != stackView {
+            subView.removeFromSuperview()
         }
         
         self.makeCircularWithSpacing(spacing: 0)
@@ -270,10 +263,8 @@ public class SBUCoverImageView: UIView {
                 if mainStackView.arrangedSubviews.count < 2 {
                     mainStackView.addArrangedSubview(stackView)
                 } else {
-                    for subView in mainStackView.arrangedSubviews {
-                        if (subView as? UIStackView)?.arrangedSubviews.count == 1 {
-                            (subView as? UIStackView)?.addArrangedSubview(imageView)
-                        }
+                    for subView in mainStackView.arrangedSubviews where (subView as? UIStackView)?.arrangedSubviews.count == 1 {
+                        (subView as? UIStackView)?.addArrangedSubview(imageView)
                     }
                 }
             }
@@ -290,6 +281,10 @@ public class SBUCoverImageView: UIView {
 }
 
 extension UIImageView {
+    /// Sets the profile image view for a user.
+    /// - Parameters:
+    ///   - user: The user for whom the profile image view is being set.
+    ///   - defaultImage: The default image to be used if the user does not have a profile image.
     public func sbu_setProfileImageView(for user: User, defaultImage: UIImage) {
         guard URL(string: ImageUtil.transformUserProfileImage(user: user)) != nil else {
             DispatchQueue.main.async { [weak self] in

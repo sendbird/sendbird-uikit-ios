@@ -26,8 +26,14 @@ public protocol SBUSelectablePhotoViewDelegate: AnyObject {
 }
 
 public extension SBUSelectablePhotoViewDelegate {
+    /// This function is called when an image is selected from `SBUSelectablePhotoViewController`.
+    /// - Parameter data: The data of the selected image.
+    /// - Parameter fileName: The optional file name of the selected image.
+    /// - Parameter mimeType: The optional mime type of the selected image.
     func didTapSendImageData(_ data: Data, fileName: String? = nil, mimeType: String? = nil) { }
     
+    /// This function is called when a video is selected from `SBUSelectablePhotoViewController`.
+    /// - Parameter url: The URL of the selected video.
     func didTapSendVideoURL(_ url: URL) { }
 }
 
@@ -228,7 +234,9 @@ extension SBUSelectablePhotoViewController: UICollectionViewDelegate, UICollecti
     }
 
     open func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SBUPhotoCollectionViewCell.sbu_className, for: indexPath) as! SBUPhotoCollectionViewCell
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SBUPhotoCollectionViewCell.sbu_className, for: indexPath) as? SBUPhotoCollectionViewCell else {
+            return UICollectionViewCell()
+        }
         let asset = self.fetchResult[indexPath.item]
         let requestOptions = PHImageRequestOptions()
         requestOptions.isSynchronous = true

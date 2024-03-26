@@ -15,6 +15,11 @@ public class SBUUserMessageCellParams: SBUBaseMessageCellParams {
     public let useReaction: Bool
     public let withTextView: Bool
     
+    /// The boolean value that decides whether to enable a long press on a reaction emoji.
+    /// If `true`, a member list for each reaction emoji is shown. 
+    /// - Since: 3.19.0
+    public let enableEmojiLongPress: Bool
+
     /// The boolean value to indicates that the message cell should hide suggested replies.
     /// If it's `true`, never show the suggested replies view even the `BaseMessage/ExtendedMessagePayload` has the reply `option` values.
     /// - Since: 3.11.0
@@ -37,12 +42,14 @@ public class SBUUserMessageCellParams: SBUBaseMessageCellParams {
         joinedAt: Int64 = 0,
         messageOffsetTimestamp: Int64 = 0,
         shouldHideSuggestedReplies: Bool = true,
-        shouldHideFormTypeMessage: Bool = true
+        shouldHideFormTypeMessage: Bool = true,
+        enableEmojiLongPress: Bool = true
     ) {
         self.useReaction = useReaction
         self.withTextView = withTextView
         self.shouldHideSuggestedReplies = shouldHideSuggestedReplies
         self.shouldHideFormTypeMessage = shouldHideFormTypeMessage
+        self.enableEmojiLongPress = enableEmojiLongPress
         
         var messagePosition: MessagePosition = .left
         if useMessagePosition {

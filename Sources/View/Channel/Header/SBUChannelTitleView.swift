@@ -162,9 +162,9 @@ public class SBUChannelTitleView: UIView {
         } else {
             if let groupChannel = channel as? GroupChannel {
                 self.titleLabel.text = SBUUtils.generateChannelName(channel: groupChannel)
-            } else if let _ = channel as? OpenChannel {
+            } else if channel is OpenChannel {
                 self.titleLabel.text = SBUStringSet.Open_Channel_Name_Default
-            } else if let _ = channel as? FeedChannel {
+            } else if channel is FeedChannel {
                 self.titleLabel.text = SBUStringSet.Notification_Channel_Name_Default
             } else {
                 self.titleLabel.text = ""
@@ -250,6 +250,6 @@ public class SBUChannelTitleView: UIView {
     public override var intrinsicContentSize: CGSize {
         // NOTE: this is under assumption that this view is used in
         // navigation and / or stack view to shrink but keep max width
-        return CGSize(width: 100000, height: self.frame.height)
+        CGSize(width: 100000, height: self.frame.height)
     }
 }

@@ -143,7 +143,7 @@ public enum SBUIconSetType: String, Hashable {
     }
     
     static func resetCustomized() {
-        let customized = SBUIconSetType.customizedIcons.map { $0 }
+        let customized = Array(SBUIconSetType.customizedIcons)
         customized.forEach { $0.loadDefault() }
         
         SBUIconSetType.customizedIcons.removeAll()

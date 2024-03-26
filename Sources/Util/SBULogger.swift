@@ -5,7 +5,7 @@
 //  Created by Tez Park on 20/04/2020.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
 //
-
+//  swiftlint:disable identifier_name
 import UIKit
 
 // 📕📙📗📘📓📔
@@ -46,3 +46,4 @@ class SBULog {
         }
     }
 }
+//  swiftlint:enable identifier_name

@@ -8,6 +8,7 @@
 
 import SendbirdChatSDK
 
+/// This class is used to define the parameters for a base message cell.
 public class SBUBaseMessageCellParams {
     /// The message.
     public let message: BaseMessage

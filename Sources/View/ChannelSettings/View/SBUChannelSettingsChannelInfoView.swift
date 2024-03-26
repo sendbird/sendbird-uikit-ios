@@ -91,16 +91,22 @@ public class SBUChannelSettingsChannelInfoView: SBUView {
         
         self.stackView
             .sbu_constraint_equalTo(
-                leftAnchor: self.safeAreaLayoutGuide.leftAnchor, left: 0,
-                rightAnchor: self.safeAreaLayoutGuide.rightAnchor, right: 0,
-                topAnchor: self.topAnchor, top: 20
+                leftAnchor: self.safeAreaLayoutGuide.leftAnchor, 
+                left: 0,
+                rightAnchor: self.safeAreaLayoutGuide.rightAnchor,
+                right: 0,
+                topAnchor: self.topAnchor, 
+                top: 20
             )
         
         self.lineView
             .sbu_constraint_equalTo(
-                leftAnchor: self.safeAreaLayoutGuide.leftAnchor, left: 16,
-                rightAnchor: self.safeAreaLayoutGuide.rightAnchor, right: 16,
-                topAnchor: self.stackView.bottomAnchor, top: 20
+                leftAnchor: self.safeAreaLayoutGuide.leftAnchor, 
+                left: 16,
+                rightAnchor: self.safeAreaLayoutGuide.rightAnchor,
+                right: 16,
+                topAnchor: self.stackView.bottomAnchor,
+                top: 20
             )
             .sbu_constraint(height: 0.5)
         
@@ -109,23 +115,32 @@ public class SBUChannelSettingsChannelInfoView: SBUView {
         
         self.urlTitleLabel
             .sbu_constraint_equalTo(
-                leftAnchor: self.safeAreaLayoutGuide.leftAnchor, left: 24,
-                rightAnchor: self.safeAreaLayoutGuide.rightAnchor, right: 24,
-                topAnchor: self.lineView.bottomAnchor, top: 15
+                leftAnchor: self.safeAreaLayoutGuide.leftAnchor,
+                left: 24,
+                rightAnchor: self.safeAreaLayoutGuide.rightAnchor,
+                right: 24,
+                topAnchor: self.lineView.bottomAnchor,
+                top: 15
             )
         
         self.urlLabel
             .sbu_constraint_equalTo(
-                leftAnchor: self.safeAreaLayoutGuide.leftAnchor, left: 24,
-                rightAnchor: self.safeAreaLayoutGuide.rightAnchor, right: 24,
-                topAnchor: self.urlTitleLabel.bottomAnchor, top: 2
+                leftAnchor: self.safeAreaLayoutGuide.leftAnchor,
+                left: 24,
+                rightAnchor: self.safeAreaLayoutGuide.rightAnchor,
+                right: 24,
+                topAnchor: self.urlTitleLabel.bottomAnchor,
+                top: 2
             )
         
         self.urlLineView
             .sbu_constraint_equalTo(
-                leftAnchor: self.safeAreaLayoutGuide.leftAnchor, left: 16,
-                rightAnchor: self.safeAreaLayoutGuide.rightAnchor, right: 16,
-                topAnchor: self.urlLabel.bottomAnchor, top: 16
+                leftAnchor: self.safeAreaLayoutGuide.leftAnchor, 
+                left: 16,
+                rightAnchor: self.safeAreaLayoutGuide.rightAnchor,
+                right: 16,
+                topAnchor: self.urlLabel.bottomAnchor,
+                top: 16
             )
             .sbu_constraint(height: 0.5)
         

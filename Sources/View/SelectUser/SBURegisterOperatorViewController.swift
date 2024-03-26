@@ -68,11 +68,11 @@ open class SBURegisterOperatorViewController: SBUBaseSelectUserViewController, S
     
     open func setupComponents(channelType: ChannelType) {
         if channelType == .group {
-            self.headerComponent = SBUModuleSet.groupRegisterOperatorModule.headerComponent
-            self.listComponent = SBUModuleSet.groupRegisterOperatorModule.listComponent
+            self.headerComponent = SBUModuleSet.GroupRegisterOperatorModule.HeaderComponent.init()
+            self.listComponent = SBUModuleSet.GroupRegisterOperatorModule.ListComponent.init()
         } else if channelType == .open {
-            self.headerComponent = SBUModuleSet.openRegisterOperatorModule.headerComponent
-            self.listComponent = SBUModuleSet.openRegisterOperatorModule.listComponent
+            self.headerComponent = SBUModuleSet.OpenRegisterOperatorModule.HeaderComponent.init()
+            self.listComponent = SBUModuleSet.OpenRegisterOperatorModule.ListComponent.init()
         }
     }
 
@@ -147,40 +147,54 @@ open class SBURegisterOperatorViewController: SBUBaseSelectUserViewController, S
     }
     
     // MARK: - SBURegisterOperatorModuleHeaderDelegate
-    open func registerOperatorModule(_ headerComponent: SBURegisterOperatorModule.Header,
-                                  didUpdateTitleView titleView: UIView?) {
+    open func registerOperatorModule(
+        _ headerComponent: SBURegisterOperatorModule.Header,
+        didUpdateTitleView titleView: UIView?
+    ) {
         self.navigationItem.titleView = titleView
     }
     
-    open func registerOperatorModule(_ headerComponent: SBURegisterOperatorModule.Header,
-                                  didUpdateLeftItem leftItem: UIBarButtonItem?) {
+    open func registerOperatorModule(
+        _ headerComponent: SBURegisterOperatorModule.Header,
+        didUpdateLeftItem leftItem: UIBarButtonItem?
+    ) {
         self.navigationItem.leftBarButtonItem = leftItem
     }
     
-    open func registerOperatorModule(_ headerComponent: SBURegisterOperatorModule.Header,
-                                  didUpdateRightItem rightItem: UIBarButtonItem?) {
+    open func registerOperatorModule(
+        _ headerComponent: SBURegisterOperatorModule.Header,
+        didUpdateRightItem rightItem: UIBarButtonItem?
+    ) {
         self.navigationItem.rightBarButtonItem = rightItem
     }
     
-    open func registerOperatorModule(_ headerComponent: SBURegisterOperatorModule.Header,
-                                  didTapLeftItem leftItem: UIBarButtonItem) {
+    open func registerOperatorModule(
+        _ headerComponent: SBURegisterOperatorModule.Header,
+        didTapLeftItem leftItem: UIBarButtonItem
+    ) {
         self.onClickBack()
     }
     
-    open func registerOperatorModule(_ headerComponent: SBURegisterOperatorModule.Header,
-                                     didTapRightItem rightItem: UIBarButtonItem) {
+    open func registerOperatorModule(
+        _ headerComponent: SBURegisterOperatorModule.Header,
+        didTapRightItem rightItem: UIBarButtonItem
+    ) {
         self.registerSelectedUsers()
     }
     
     // MARK: - SBURegisterOperatorModuleHeaderDelegate
-    open func registerOperatorModule(_ listComponent: SBURegisterOperatorModule.List,
-                                  didSelectRowAt indexPath: IndexPath) {
+    open func registerOperatorModule(
+        _ listComponent: SBURegisterOperatorModule.List,
+        didSelectRowAt indexPath: IndexPath
+    ) {
         guard let user = self.viewModel?.userList[indexPath.row] else { return }
         self.viewModel?.selectUser(user: user)
     }
     
-    open func registerOperatorModule(_ listComponent: SBURegisterOperatorModule.List,
-                                  didDetectPreloadingPosition indexPath: IndexPath) {
+    open func registerOperatorModule(
+        _ listComponent: SBURegisterOperatorModule.List,
+        didDetectPreloadingPosition indexPath: IndexPath
+    ) {
         self.viewModel?.preLoadNextUserList(indexPath: indexPath)
     }
     
@@ -189,13 +203,17 @@ open class SBURegisterOperatorViewController: SBUBaseSelectUserViewController, S
     }
     
     // MARK: - SBURegisterOperatorViewModelDelegate
-    open func registerOperatorViewModel(_ viewModel: SBURegisterOperatorViewModel,
-                                        didRegisterOperatorIds operatorIds: [String]) {
+    open func registerOperatorViewModel(
+        _ viewModel: SBURegisterOperatorViewModel,
+        didRegisterOperatorIds operatorIds: [String]
+    ) {
         self.popToChannel()
     }
     
-    open override func baseSelectedUserViewModel(_ viewModel: SBUBaseSelectUserViewModel,
-                                                 didUpdateSelectedUsers selectedUsers: [SBUUser]?) {
+    open override func baseSelectedUserViewModel(
+        _ viewModel: SBUBaseSelectUserViewModel,
+        didUpdateSelectedUsers selectedUsers: [SBUUser]?
+    ) {
         self.headerComponent?.updateRightBarButton()
     }
 }

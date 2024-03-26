@@ -30,25 +30,56 @@ open class SBUCreateChannelModule {
     @available(*, deprecated, message: "Use `SBUCreateChannelModule.HeaderComponent` instead.")
     public var headerComponent: SBUCreateChannelModule.Header? {
         get { _headerComponent ?? Self.HeaderComponent.init() }
-        set { _headerComponent = newValue }
+        set {
+            _headerComponent = newValue
+            if let validNewValue = newValue {
+                Self.HeaderComponent = type(of: validNewValue)
+            }
+        }
     }
     
     /// The module component that shows the list of users to create a new channel.
     @available(*, deprecated, message: "Use `SBUCreateChannelModule.ListComponent` instead.")
     public var listComponent: SBUCreateChannelModule.List? {
         get { _listComponent ?? Self.ListComponent.init() }
-        set { _listComponent = newValue }
+        set {
+            _listComponent = newValue
+            if let validNewValue = newValue {
+                Self.ListComponent = type(of: validNewValue)
+            }
+        }
     }
     
     // MARK: Properties (Holder)
     private var _headerComponent: SBUCreateChannelModule.Header?
     private var _listComponent: SBUCreateChannelModule.List?
     
+    // swiftlint:disable missing_docs
     // MARK: -
+    /// Default initializer
+    public required init() {}
+    
     @available(*, deprecated, message: "Use `SBUModuleSet.CreateGroupChannelModule`")
-    public required init(headerComponent: SBUCreateChannelModule.Header? = nil,
-                listComponent: SBUCreateChannelModule.List? = nil) {
+    public required init(
+        headerComponent: SBUCreateChannelModule.Header?
+    ) {
+        self.headerComponent = headerComponent
+    }
+    
+    @available(*, deprecated, message: "Use `SBUModuleSet.CreateGroupChannelModule`")
+    public required init(
+        listComponent: SBUCreateChannelModule.List?
+    ) {
+        self.listComponent = listComponent
+    }
+    
+    @available(*, deprecated, message: "Use `SBUModuleSet.CreateGroupChannelModule`")
+    public required init(
+        headerComponent: SBUCreateChannelModule.Header?,
+        listComponent: SBUCreateChannelModule.List?
+    ) {
         self.headerComponent = headerComponent
         self.listComponent = listComponent
     }
+    // swiftlint:enable missing_docs
 }

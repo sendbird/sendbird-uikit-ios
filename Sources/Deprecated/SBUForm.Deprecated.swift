@@ -224,12 +224,12 @@ extension SBUFormView {
     /// - Parameter forms: The array of ``SBUForm/Field``.
     /// - Returns: The array of ``SBUFormFieldView`` instances.
     @available(*, unavailable, message: "This model is no longer used internally. Changed to use `SendbirdChatSDK.Form`.")
-    open func createFormFieldViews(with form: SBUForm?) -> [SBUFormFieldView] { [] }
+    public func createFormFieldViews(with form: SBUForm?) -> [SBUFormFieldView] { [] }
     
     /// Called when a form field is updated.
     /// It invokes ``SBUFormFieldViewDelegate/formFieldView(_:didUpdate:)`
     @available(*, unavailable, message: "This model is no longer used internally. Changed to use `SendbirdChatSDK.Form`.")
-    open func formFieldView(_ view: SBUFormFieldView, didUpdate updated: SBUForm.Field.Updated) { }
+    public func formFieldView(_ view: SBUFormFieldView, didUpdate updated: SBUForm.Field.Updated) { }
 }
 
 extension SBUFormFieldView {
@@ -238,7 +238,7 @@ extension SBUFormFieldView {
     /// Configure ``SBUFormFieldView`` with `field`.
     /// - Since: 3.11.0
     @available(*, unavailable, message: "This model is no longer used internally. Changed to use `SendbirdChatSDK.Form`.")
-    open func configure(
+    public func configure(
         form: SBUForm,
         field: SBUForm.Field,
         value: String?,

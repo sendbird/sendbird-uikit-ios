@@ -193,9 +193,11 @@ open class SBUBaseChannelViewModel: NSObject {
     ///   - startingPoint: Starting point to load messages from, or `nil` to load from the latest. (`Int64.max`)
     ///   - showIndicator: Whether to show indicator on load or not.
     ///   - initialMessages: Custom messages to start the messages from.
-    public func loadInitialMessages(startingPoint: Int64?,
-                             showIndicator: Bool,
-                             initialMessages: [BaseMessage]?) {}
+    public func loadInitialMessages(
+        startingPoint: Int64?,
+        showIndicator: Bool,
+        initialMessages: [BaseMessage]?
+    ) {}
     
     /// Loads previous messages.
     public func loadPrevMessages() {}
@@ -650,9 +652,11 @@ open class SBUBaseChannelViewModel: NSObject {
     ///   - needUpdateNewMessage: If set to `true`, increases new message count.
     ///   - needReload: If set to `true`, the tableview will be call reloadData.
     /// - Since: 1.2.5
-    public func upsertMessagesInList(messages: [BaseMessage]?,
-                                      needUpdateNewMessage: Bool = false,
-                                      needReload: Bool) {
+    public func upsertMessagesInList(
+        messages: [BaseMessage]?,
+        needUpdateNewMessage: Bool = false,
+        needReload: Bool
+    ) {
         SBULog.info("First : \(String(describing: messages?.first)), Last : \(String(describing: messages?.last))")
         
         var needMarkAsRead = false
@@ -699,12 +703,19 @@ open class SBUBaseChannelViewModel: NSObject {
             }
         }
         
-        if needMarkAsRead, let channel = self.channel as? GroupChannel, !self.isThreadMessageMode {
-            channel.markAsRead { [weak self] _ in
-                self?.sortAllMessageList(needReload: needReload)
+        let sortAllMessageListBlock = { [weak self] in
+            self?.sortAllMessageList(needReload: needReload)
+        }
+        
+        if needMarkAsRead,
+           let channel = self.channel as? GroupChannel,
+           !self.isThreadMessageMode,
+            SendbirdChat.getConnectState() == .open {
+            channel.markAsRead { _ in
+                sortAllMessageListBlock()
             }
         } else {
-            self.sortAllMessageList(needReload: needReload)
+            sortAllMessageListBlock()
         }
     }
     
@@ -894,6 +905,10 @@ open class SBUBaseChannelViewModel: NSObject {
         if didSelect {
             SBULog.info("[Request] Add Reaction")
             self.channel?.addReaction(with: message, key: emojiKey) { reactionEvent, error in
+                // INFO:
+                // In **super group channel limited mode**, current user can only addReaction and never deleteReaction.
+                // If currentUser reacts to an already reacted emoji, the request succeeds, but Chat SDK returns a decoding error (80000).
+                // (the response doesn't contain "updated_at" field, but Chat SDK tries to decode this as a non-optional property)
                 if let error = error {
                     self.baseDelegate?.didReceiveError(error, isBlocker: false)
                 }

@@ -8,6 +8,8 @@
 
 import UIKit
 
+/// Typealias for a closure that handles the dismissal of the toast view. 
+/// This closure, ``SBUToastViewHandler``, does not return a value and does not take any parameters.
 public typealias SBUToastViewHandler = () -> Void
 
 /// Toast view delegate
@@ -17,6 +19,7 @@ public protocol SBUToastViewDelegate: NSObjectProtocol {
 }
 
 extension SBUToastViewDelegate {
+    /// This function is called when the toast view is dismissed.
     public func didDismissToastView() {}
 }
 
@@ -274,13 +277,15 @@ public class SBUToastView: NSObject {
             })
     }
     
-    @objc private func dismiss() {
+    @objc
+    private func dismiss() {
         guard !isShowing else { return }
 
         self.handleDismiss(isUserInitiated: true)
     }
     
-    @objc private func handleDismiss(isUserInitiated: Bool = true) {
+    @objc
+    private func handleDismiss(isUserInitiated: Bool = true) {
         self.item = nil
         self.baseView.alpha = 1.0
         

@@ -59,12 +59,13 @@ open class SBUOpenChannelFileMessageCell: SBUOpenChannelContentBaseMessageCell {
     }
     
     // MARK: - Common
-    open func configure(_ message: FileMessage,
-                          hideDateView: Bool,
-                          groupPosition: MessageGroupPosition,
-                          fileType: SBUMessageFileType,
-                          isOverlay: Bool = false) {
-
+    open func configure(
+        _ message: FileMessage,
+        hideDateView: Bool,
+        groupPosition: MessageGroupPosition,
+        fileType: SBUMessageFileType,
+        isOverlay: Bool = false
+    ) {
         self.configure(
             message,
             hideDateView: hideDateView,

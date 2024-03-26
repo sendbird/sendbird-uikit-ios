@@ -50,11 +50,13 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
         get { self.baseDataSource as? SBUGroupChannelViewModelDataSource }
         set { self.baseDataSource = newValue }
     }
-    
+
+    // swiftlint:disable identifier_name
     /// A completion handler that is called after sending a multiple files message is completed.
     /// - Since: 3.10.0
     public var sendMultipleFilesMessageCompletionHandler: SendbirdChatSDK.MultipleFilesMessageHandler?
-    
+    // swiftlint:enable identifier_name
+
     // MARK: - Logic properties (private)
     var messageCollection: MessageCollection?
     var debouncer: SBUDebouncer?
@@ -304,9 +306,11 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
     }
     
     // MARK: - Load Messages
-    public override func loadInitialMessages(startingPoint: Int64?,
-                                      showIndicator: Bool,
-                                      initialMessages: [BaseMessage]?) {
+    public override func loadInitialMessages(
+        startingPoint: Int64?,
+        showIndicator: Bool,
+        initialMessages: [BaseMessage]?
+    ) {
         SBULog.info("""
             loadInitialMessages,
             startingPoint : \(String(describing: startingPoint)),
@@ -478,7 +482,8 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
     }
     
     func markAsRead(completionHandler: SendbirdChatSDK.SBErrorHandler?) {
-        if let channel = self.channel as? GroupChannel {
+        if let channel = self.channel as? GroupChannel,
+           SendbirdChat.getConnectState() == .open {
             channel.markAsRead(completionHandler: completionHandler)
         }
     }
@@ -503,7 +508,7 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
         guard let channel = self.channel as? GroupChannel, let collection = self.messageCollection else { return }
         
         // One or more user is typing.
-        if var typers = channel.getTypingUsers(),
+        if let typers = channel.getTypingUsers(),
             typers.isEmpty == false,
             let typingMessage = SBUTypingIndicatorMessage.make(["": ""]) {
             // if hasNext is true, don't show typing bubble.
@@ -669,10 +674,12 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
         self.upsertMessagesInList(messages: messages, needReload: true)
     }
     
-    open func messageCollection(_ collection: MessageCollection,
-                           context: MessageContext,
-                           channel: GroupChannel,
-                           updatedMessages messages: [BaseMessage]) {
+    open func messageCollection(
+        _ collection: MessageCollection,
+        context: MessageContext,
+        channel: GroupChannel,
+        updatedMessages messages: [BaseMessage]
+    ) {
         // pending -> failed, pending -> succeded, failed -> Pending
         
         // message thread case exception
@@ -706,18 +713,22 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
         )
     }
     
-    open func messageCollection(_ collection: MessageCollection,
-                           context: MessageContext,
-                           channel: GroupChannel,
-                           deletedMessages messages: [BaseMessage]) {
+    open func messageCollection(
+        _ collection: MessageCollection,
+        context: MessageContext,
+        channel: GroupChannel,
+        deletedMessages messages: [BaseMessage]
+    ) {
         SBULog.info("messageCollection deletedMessages : \(messages.count)")
         self.delegate?.baseChannelViewModel(self, deletedMessages: messages)
         self.deleteMessagesInList(messageIds: messages.compactMap({ $0.messageId }), needReload: true)
     }
     
-    open func messageCollection(_ collection: MessageCollection,
-                           context: MessageContext,
-                           updatedChannel channel: GroupChannel) {
+    open func messageCollection(
+        _ collection: MessageCollection,
+        context: MessageContext,
+        updatedChannel channel: GroupChannel
+    ) {
         SBULog.info("messageCollection changedChannel")
         
         // Update typingMessageBubble.
@@ -730,9 +741,11 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
         self.delegate?.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
     }
     
-    open func messageCollection(_ collection: MessageCollection,
-                           context: MessageContext,
-                           deletedChannel channelURL: String) {
+    open func messageCollection(
+        _ collection: MessageCollection,
+        context: MessageContext,
+        deletedChannel channelURL: String
+    ) {
         SBULog.info("messageCollection deletedChannel")
         self.delegate?.baseChannelViewModel(self, didChangeChannel: nil, withContext: context)
     }

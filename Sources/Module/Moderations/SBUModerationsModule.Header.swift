@@ -40,7 +40,8 @@ extension SBUModerationsModule {
     
     /// A module component that represent the header of `SBUModerationsModule`.
     /// - This class consists of titleView, leftBarButton, and rightBarButton.
-    @objcMembers open class Header: UIView {
+    @objcMembers
+    open class Header: UIView {
         
         // MARK: - UI properties (Public)
         
@@ -78,7 +79,7 @@ extension SBUModerationsModule {
         
         private func defaultLeftBarButton() -> UIBarButtonItem {
             let backButton = SBUBarButtonItem.backButton(
-                vc: self,
+                target: self,
                 selector: #selector(onTapLeftBarButton)
             )
             return backButton

@@ -186,17 +186,17 @@ class SBUBottomSheetController: UIPresentationController {
         case .changed:
             self.presentingViewController.view.bringSubviewToFront(presentedView)
             let translation = gesture.translation(in: self.presentingViewController.view)
-            let y = presentedView.frame.origin.y + translation.y
+            let pointY = presentedView.frame.origin.y + translation.y
 
             if self.isEnableTop {
                 // If bounce enabled or view went over the maximum y postion.
-                if self.bounce || self.topMargin - self.gap < y {
-                    presentedView.frame.origin.y = y
+                if self.bounce || self.topMargin - self.gap < pointY {
+                    presentedView.frame.origin.y = pointY
                 }
             } else {
                 let middle = presenterView.frame.height - contentHeight
-                if middle - self.gap < y {
-                    presentedView.frame.origin.y = y
+                if middle - self.gap < pointY {
+                    presentedView.frame.origin.y = pointY
                 }
             }
             gesture.setTranslation(CGPoint.zero, in: self.presentingViewController.view)

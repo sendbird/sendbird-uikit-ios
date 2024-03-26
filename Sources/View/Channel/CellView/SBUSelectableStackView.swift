@@ -75,7 +75,6 @@ public class SBUSelectableStackView: SBUView, Selectable {
                 : self.rightBackgroundColor
         case .center:
             self.backgroundColor = nil
-            break
         }
     }
     

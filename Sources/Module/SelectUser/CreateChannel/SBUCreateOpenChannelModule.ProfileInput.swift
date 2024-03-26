@@ -9,6 +9,7 @@
 import UIKit
 import SendbirdChatSDK
 
+// swiftlint:disable type_name
 /// Event methods for the views updates and performing actions from the profile input component.
 public protocol SBUCreateOpenChannelModuleProfileInputDelegate: SBUCommonDelegate {
     /// Called when the changed text in th `profileInputComponent`.
@@ -23,6 +24,7 @@ public protocol SBUCreateOpenChannelModuleProfileInputDelegate: SBUCommonDelegat
     ///   - needRemoveItem: If the image is already set, set the needRemoveItem to `true`and activate the deletion option.
     func createOpenChannelModuleDidSelectChannelImage(_ profileInputComponent: SBUCreateOpenChannelModule.ProfileInput, needRemoveItem: Bool)
 }
+// swiftlint:enable type_name
 
 extension SBUCreateOpenChannelModule {
     
@@ -172,7 +174,8 @@ extension SBUCreateOpenChannelModule {
         }
         
         // MARK: - Action
-        @objc open func showImagePicker(sender: UITapGestureRecognizer) {
+        @objc 
+        open func showImagePicker(sender: UITapGestureRecognizer) {
             self.delegate?.createOpenChannelModuleDidSelectChannelImage(self, needRemoveItem: self.isImageSelected)
         }
         

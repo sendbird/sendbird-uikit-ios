@@ -115,9 +115,7 @@ open class SBUBaseSelectUserViewModel: NSObject {
                 self.baseDelegate?.shouldUpdateLoadingState(false)
                 self.baseDelegate?.didReceiveError(error, isBlocker: false)
             } else {
-                let completionHandler: ((BaseChannel?, SBError?) -> Void) = {
-                    [weak self] channel, error in
-                    
+                let completionHandler: ((BaseChannel?, SBError?) -> Void) = { [weak self] channel, error in
                     guard let self = self else { return }
                     
                     if let error = error {
@@ -322,8 +320,7 @@ open class SBUBaseSelectUserViewModel: NSObject {
             return
         }
         
-        self.memberListQuery?.loadNextPage(completionHandler: {
-            [weak self] members, error in
+        self.memberListQuery?.loadNextPage(completionHandler: { [weak self] members, error in
             guard let self = self else { return }
             defer {
                 self.isLoading = false

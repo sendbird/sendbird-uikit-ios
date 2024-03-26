@@ -27,7 +27,7 @@ import UIKit
  */
 class SBUAnimation {
     enum Key: String {
-        case spin = "spin"
+        case spin
         
         var identifier: String {
             "\(SBUConstant.bundleIdentifier).animation.key.\(self.rawValue)"

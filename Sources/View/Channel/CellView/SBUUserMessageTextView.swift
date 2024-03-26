@@ -204,10 +204,12 @@ open class SBUUserMessageTextView: SBUView {
 }
 
 extension SBUUserMessageTextView: UITextViewDelegate {
-    open func textView(_ textView: UITextView,
-                  shouldInteractWith URL: URL,
-                  in characterRange: NSRange,
-                  interaction: UITextItemInteraction) -> Bool {
+    open func textView(
+        _ textView: UITextView,
+        shouldInteractWith URL: URL,
+        in characterRange: NSRange,
+        interaction: UITextItemInteraction
+    ) -> Bool {
         if let mentionManager = mentionManager {
             if let mention = mentionManager.findMentions(with: characterRange).first,
                 interaction == .invokeDefaultAction {

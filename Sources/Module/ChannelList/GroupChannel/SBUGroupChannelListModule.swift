@@ -30,14 +30,24 @@ open class SBUGroupChannelListModule {
     @available(*, deprecated, message: "Use `SBUGroupChannelListModule.HeaderComponent` instead.")
     public var headerComponent: SBUGroupChannelListModule.Header? {
         get { _headerComponent ?? Self.HeaderComponent.init() }
-        set { _headerComponent = newValue }
+        set {
+            _headerComponent = newValue
+            if let validNewValue = newValue {
+                Self.HeaderComponent = type(of: validNewValue)
+            }
+        }
     }
     
     /// The module component that shows the list of message in the channel.
     @available(*, deprecated, message: "Use `SBUGroupChannelListModule.ListComponent` instead.")
     public var listComponent: SBUGroupChannelListModule.List? {
         get { _listComponent ?? Self.ListComponent.init() }
-        set { _listComponent = newValue }
+        set {
+            _listComponent = newValue
+            if let validNewValue = newValue {
+                Self.ListComponent = type(of: validNewValue)
+            }
+        }
     }
     
     // MARK: Properties (Holder)
@@ -45,10 +55,31 @@ open class SBUGroupChannelListModule {
     private var _listComponent: SBUGroupChannelListModule.List?
     
     // MARK: -
+    /// Default initializer for `SBUGroupChannelListModule`.
+    /// This initializer creates an instance of `SBUGroupChannelListModule` without any pre-configured components.
+    public required init() {}
+    
+    /// This is deprecated and Use `SBUModuleSet.GroupChannelListModule` instead.
     @available(*, deprecated, message: "Use `SBUModuleSet.GroupChannelListModule`")
     public required init(
-        headerComponent: SBUGroupChannelListModule.Header? = nil,
-        listComponent: SBUGroupChannelListModule.List? = nil
+        headerComponent: SBUGroupChannelListModule.Header?
+    ) {
+        self._headerComponent = headerComponent
+    }
+    
+    /// This is deprecated and Use `SBUModuleSet.GroupChannelListModule` instead.
+    @available(*, deprecated, message: "Use `SBUModuleSet.GroupChannelListModule`")
+    public required init(
+        listComponent: SBUGroupChannelListModule.List?
+    ) {
+        self._listComponent = listComponent
+    }
+    
+    /// This is deprecated and Use `SBUModuleSet.GroupChannelListModule` instead.
+    @available(*, deprecated, message: "Use `SBUModuleSet.GroupChannelListModule`")
+    public required init(
+        headerComponent: SBUGroupChannelListModule.Header?,
+        listComponent: SBUGroupChannelListModule.List?
     ) {
         self._headerComponent = headerComponent
         self._listComponent = listComponent

@@ -17,7 +17,8 @@ public protocol SBUOpenChannelModuleHeaderDelegate: SBUBaseChannelModuleHeaderDe
 extension SBUOpenChannelModule {
     
     /// A module component that represent the header of `SBUOpenChannelModule`.
-    @objcMembers open class Header: SBUBaseChannelModule.Header, SBUChannelInfoHeaderViewDelegate {
+    @objcMembers
+    open class Header: SBUBaseChannelModule.Header, SBUChannelInfoHeaderViewDelegate {
         
         /// A view that shows the information of the open channel such as a cover image, a channel name and a description.
         public lazy var channelInfoView: UIView = SBUChannelInfoHeaderView(delegate: self)

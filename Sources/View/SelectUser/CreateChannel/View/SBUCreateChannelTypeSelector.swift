@@ -209,19 +209,23 @@ open class SBUCreateChannelTypeSelector: SBUView, SBUCreateChannelTypeSelectorPr
     }
 
     // MARK: - Actions
-    @objc open func onClickClose() {
+    @objc
+    open func onClickClose() {
         self.delegate?.didSelectCloseSelector()
     }
     
-    @objc open func onClickCreateGroupChannel() {
+    @objc
+    open func onClickCreateGroupChannel() {
         self.delegate?.didSelectCreateGroupChannel()
     }
     
-    @objc open func onClickCreateSuperGroupChannel() {
+    @objc
+    open func onClickCreateSuperGroupChannel() {
         self.delegate?.didSelectCreateSuperGroupChannel()
     }
     
-    @objc open func onClickCreateBroadcastChannel() {
+    @objc
+    open func onClickCreateBroadcastChannel() {
         self.delegate?.didSelectCreateBroadcastChannel()
     }
     

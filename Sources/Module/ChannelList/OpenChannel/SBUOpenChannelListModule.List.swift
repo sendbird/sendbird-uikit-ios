@@ -18,7 +18,8 @@ public protocol SBUOpenChannelListModuleListDataSource: SBUBaseChannelListModule
 extension SBUOpenChannelListModule {
     /// A module component that represent the list of `SBUOpenChannelListModule`.
     @objc(SBUOpenChannelListModuleList)
-    @objcMembers open class List: SBUBaseChannelListModule.List {
+    @objcMembers
+    open class List: SBUBaseChannelListModule.List {
         
         // MARK: - UI properties (Public)
         /// The object that is used as the theme of the list component. The theme must adopt the `SBUOpenChannelListTheme` class.
@@ -111,8 +112,10 @@ extension SBUOpenChannelListModule.List {
         self.delegate?.baseChannelListModule(self, didSelectRowAt: indexPath)
     }
     
-    open override func tableView(_ tableView: UITableView,
-                        cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    open override func tableView(
+        _ tableView: UITableView,
+        cellForRowAt indexPath: IndexPath
+    ) -> UITableViewCell {
         guard indexPath.row < self.channelList?.count ?? 0 else {
             let error = SBError(domain: "The index is out of range.", code: -1, userInfo: nil)
             self.delegate?.didReceiveError(error, isBlocker: false)
@@ -139,9 +142,11 @@ extension SBUOpenChannelListModule.List {
         return cell ?? UITableViewCell()
     }
     
-    open override func tableView(_ tableView: UITableView,
-                        willDisplay cell: UITableViewCell,
-                        forRowAt indexPath: IndexPath) {
+    open override func tableView(
+        _ tableView: UITableView,
+        willDisplay cell: UITableViewCell,
+        forRowAt indexPath: IndexPath
+    ) {
         let rowForPreloading = Int(SBUOpenChannelListViewModel.channelLoadLimit)/2
         let channelListCount = self.channelList?.count ?? 0
         if channelListCount > 0,

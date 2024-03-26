@@ -73,7 +73,8 @@ extension SBUMessageThreadModule {
     /// A module component that represent the list of `SBUMessageThreadModule`.
     /// - Since: 3.3.0
     @objc(SBUMessageThreadModuleList)
-    @objcMembers open class List: SBUBaseChannelModule.List, SBUParentMessageInfoViewDelegate, SBUVoicePlayerDelegate {
+    @objcMembers
+    open class List: SBUBaseChannelModule.List, SBUParentMessageInfoViewDelegate, SBUVoicePlayerDelegate {
 
         // MARK: - UI properties (Public)
         
@@ -246,6 +247,7 @@ extension SBUMessageThreadModule {
             }
             
             let useReaction = SBUEmojiManager.isReactionEnabled(channel: self.channel)
+            let enableEmojiLongPress = SBUEmojiManager.isEmojiLongPressEnabled(channel: channel)
             
             var voiceFileInfo: SBUVoiceFileInfo?
             if let cacheKey = parentMessage?.cacheKey {
@@ -255,7 +257,8 @@ extension SBUMessageThreadModule {
                 message: self.parentMessage,
                 delegate: self,
                 useReaction: useReaction,
-                voiceFileInfo: voiceFileInfo
+                voiceFileInfo: voiceFileInfo,
+                enableEmojiLongPress: enableEmojiLongPress
             )
             
             self.reloadTableView()
@@ -562,59 +565,62 @@ extension SBUMessageThreadModule {
                 fullMessageList: fullMessageList
             )
             let useReaction = SBUEmojiManager.isReactionEnabled(channel: self.channel)
+            let enableEmojiLongPress = SBUEmojiManager.isEmojiLongPressEnabled(channel: channel)
             
             switch (message, messageCell) {
-                    // Admin message
-                case let (adminMessage, adminMessageCell) as (AdminMessage, SBUAdminMessageCell):
-                    let configuration = SBUAdminMessageCellParams(
-                        message: adminMessage,
-                        hideDateView: isSameDay
-                    )
-                    adminMessageCell.configure(with: configuration)
-                    self.setMessageCellGestures(adminMessageCell, message: adminMessage, indexPath: indexPath)
-                    
-                    // Unknown message
-                case let (unknownMessage, unknownMessageCell) as (BaseMessage, SBUUnknownMessageCell):
-                    let configuration = SBUUnknownMessageCellParams(
-                        message: unknownMessage,
-                        hideDateView: isSameDay,
-                        groupPosition: self.getMessageGroupingPosition(currentIndex: indexPath.row),
-                        receiptState: .notUsed,
-                        useReaction: useReaction,
-                        isThreadMessage: true
-                    )
-                    unknownMessageCell.configure(with: configuration)
-                    self.setMessageCellGestures(unknownMessageCell, message: unknownMessage, indexPath: indexPath)
-                    
-                    // User message
-                case let (userMessage, userMessageCell) as (UserMessage, SBUUserMessageCell):
-                    let configuration = SBUUserMessageCellParams(
-                        message: userMessage,
-                        hideDateView: isSameDay,
-                        useMessagePosition: true,
-                        groupPosition: self.getMessageGroupingPosition(currentIndex: indexPath.row),
-                        receiptState: .notUsed,
-                        useReaction: useReaction,
-                        withTextView: true,
-                        isThreadMessage: true
-                    )
-                    userMessageCell.configure(with: configuration)
-                    self.setMessageCellGestures(userMessageCell, message: userMessage, indexPath: indexPath)
-                    
-                    // File message
-                case let (fileMessage, fileMessageCell) as (FileMessage, SBUFileMessageCell):
-                    let voiceFileInfo = self.voiceFileInfos[fileMessage.cacheKey] ?? nil
-                    let configuration = SBUFileMessageCellParams(
-                        message: fileMessage,
-                        hideDateView: isSameDay,
-                        useMessagePosition: true,
-                        groupPosition: self.getMessageGroupingPosition(currentIndex: indexPath.row),
-                        receiptState: .notUsed,
-                        useReaction: useReaction,
-                        isThreadMessage: true,
-                        voiceFileInfo: voiceFileInfo
-                    )
-                    
+                // Admin message
+            case let (adminMessage, adminMessageCell) as (AdminMessage, SBUAdminMessageCell):
+                let configuration = SBUAdminMessageCellParams(
+                    message: adminMessage,
+                    hideDateView: isSameDay
+                )
+                adminMessageCell.configure(with: configuration)
+                self.setMessageCellGestures(adminMessageCell, message: adminMessage, indexPath: indexPath)
+                
+                // Unknown message
+            case let (unknownMessage, unknownMessageCell) as (BaseMessage, SBUUnknownMessageCell):
+                let configuration = SBUUnknownMessageCellParams(
+                    message: unknownMessage,
+                    hideDateView: isSameDay,
+                    groupPosition: self.getMessageGroupingPosition(currentIndex: indexPath.row),
+                    receiptState: .notUsed,
+                    useReaction: useReaction,
+                    isThreadMessage: true
+                )
+                unknownMessageCell.configure(with: configuration)
+                self.setMessageCellGestures(unknownMessageCell, message: unknownMessage, indexPath: indexPath)
+                
+                // User message
+            case let (userMessage, userMessageCell) as (UserMessage, SBUUserMessageCell):
+                let configuration = SBUUserMessageCellParams(
+                    message: userMessage,
+                    hideDateView: isSameDay,
+                    useMessagePosition: true,
+                    groupPosition: self.getMessageGroupingPosition(currentIndex: indexPath.row),
+                    receiptState: .notUsed,
+                    useReaction: useReaction,
+                    withTextView: true,
+                    isThreadMessage: true,
+                    enableEmojiLongPress: enableEmojiLongPress
+                )
+                userMessageCell.configure(with: configuration)
+                self.setMessageCellGestures(userMessageCell, message: userMessage, indexPath: indexPath)
+                
+                // File message
+            case let (fileMessage, fileMessageCell) as (FileMessage, SBUFileMessageCell):
+                let voiceFileInfo = self.voiceFileInfos[fileMessage.cacheKey] ?? nil
+                let configuration = SBUFileMessageCellParams(
+                    message: fileMessage,
+                    hideDateView: isSameDay,
+                    useMessagePosition: true,
+                    groupPosition: self.getMessageGroupingPosition(currentIndex: indexPath.row),
+                    receiptState: .notUsed,
+                    useReaction: useReaction,
+                    isThreadMessage: true,
+                    voiceFileInfo: voiceFileInfo,
+                    enableEmojiLongPress: enableEmojiLongPress
+                )
+                
                 if voiceFileInfo != nil,
                    self.parentMessageInfoView.baseFileContentView != self.currentVoiceContentView {
                     self.currentVoiceFileInfo = nil
@@ -640,25 +646,26 @@ extension SBUMessageThreadModule {
                     hideDateView: isSameDay,
                     useMessagePosition: true,
                     useReaction: true,
-                    isThreadMessage: true
+                    isThreadMessage: true,
+                    enableEmojiLongPress: enableEmojiLongPress
                 )
                 
                 multipleFilesMessageCell.configure(with: configuration)
                 self.setMessageCellGestures(multipleFilesMessageCell, message: multipleFilesMessage, indexPath: indexPath)
                 
                 // TODO: Activate this code for sending a MFM in thread
-//                (multipleFilesMessageCell.threadInfoView as? SBUThreadInfoView)?.delegate = self
+                //                (multipleFilesMessageCell.threadInfoView as? SBUThreadInfoView)?.delegate = self
                 
             default:
-                    let configuration = SBUBaseMessageCellParams(
-                        message: message,
-                        hideDateView: isSameDay,
-                        messagePosition: .center,
-                        groupPosition: .none,
-                        receiptState: .notUsed,
-                        isThreadMessage: true
-                    )
-                    messageCell.configure(with: configuration)
+                let configuration = SBUBaseMessageCellParams(
+                    message: message,
+                    hideDateView: isSameDay,
+                    messagePosition: .center,
+                    groupPosition: .none,
+                    receiptState: .notUsed,
+                    isThreadMessage: true
+                )
+                messageCell.configure(with: configuration)
             }
             
             UIView.setAnimationsEnabled(true)
@@ -719,7 +726,7 @@ extension SBUMessageThreadModule {
         
         open override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
             guard let fileMessageCell = cell as? SBUFileMessageCell,
-                  let _ = fileMessageCell.baseFileContentView as? SBUVoiceContentView else { return }
+                  fileMessageCell.baseFileContentView as? SBUVoiceContentView != nil else { return }
         }
         
         /// Generates identifier of message cell.
@@ -727,16 +734,16 @@ extension SBUMessageThreadModule {
         /// - Returns: The identifier of message cell.
         open func generateCellIdentifier(by message: BaseMessage) -> String {
             switch message {
-                case is MultipleFilesMessage:
-                    return multipleFilesMessageCell?.sbu_className ?? SBUMultipleFilesMessageCell.sbu_className
-                case is FileMessage:
-                    return fileMessageCell?.sbu_className ?? SBUFileMessageCell.sbu_className
-                case is UserMessage:
-                    return userMessageCell?.sbu_className ?? SBUUserMessageCell.sbu_className
-                case is AdminMessage:
-                    return adminMessageCell?.sbu_className ?? SBUAdminMessageCell.sbu_className
-                default:
-                    return unknownMessageCell?.sbu_className ?? SBUUnknownMessageCell.sbu_className
+            case is MultipleFilesMessage:
+                return multipleFilesMessageCell?.sbu_className ?? SBUMultipleFilesMessageCell.sbu_className
+            case is FileMessage:
+                return fileMessageCell?.sbu_className ?? SBUFileMessageCell.sbu_className
+            case is UserMessage:
+                return userMessageCell?.sbu_className ?? SBUUserMessageCell.sbu_className
+            case is AdminMessage:
+                return adminMessageCell?.sbu_className ?? SBUAdminMessageCell.sbu_className
+            default:
+                return unknownMessageCell?.sbu_className ?? SBUUnknownMessageCell.sbu_className
             }
         }
         
@@ -1049,8 +1056,15 @@ extension SBUMessageThreadModule.List {
     }
     
     // MARK: - SBUVoicePlayerDelegate
+
+    /// This method is called when the `SBUVoicePlayer` encounters an error.
+    /// - Parameters:
+    ///   - player: The `SBUVoicePlayer` instance that encountered the error.
+    ///   - errorStatus: The error status of the `SBUVoicePlayer`.
     public func voicePlayerDidReceiveError(_ player: SBUVoicePlayer, errorStatus: SBUVoicePlayerErrorStatus) {}
     
+    /// This method is called when the `SBUVoicePlayer` starts.
+    /// - Parameter player: The `SBUVoicePlayer` instance that started.
     public func voicePlayerDidStart(_ player: SBUVoicePlayer) {
         let currentPlayTime = self.currentVoiceFileInfo?.currentPlayTime ?? 0
         self.currentVoiceFileInfo?.isPlaying = true
@@ -1066,6 +1080,10 @@ extension SBUMessageThreadModule.List {
         voiceContentView?.updateVoiceContentStatus(.playing, time: currentPlayTime)
     }
     
+    /// This method is called when the `SBUVoicePlayer` pauses.
+    /// - Parameters:
+    ///   - player: The `SBUVoicePlayer` instance that paused.
+    ///   - voiceFileInfo: The `SBUVoiceFileInfo` instance associated with the paused player.
     public func voicePlayerDidPause(_ player: SBUVoicePlayer, voiceFileInfo: SBUVoiceFileInfo?) {
         let currentPlayTime = self.currentVoiceFileInfo?.currentPlayTime ?? 0
         self.currentVoiceFileInfo?.isPlaying = false
@@ -1081,6 +1099,9 @@ extension SBUMessageThreadModule.List {
         voiceContentView?.updateVoiceContentStatus(.pause, time: currentPlayTime)
     }
     
+    /// This method is called when the `SBUVoicePlayer` stops.
+    ///
+    /// - Parameter player: The `SBUVoicePlayer` instance that stopped.
     public func voicePlayerDidStop(_ player: SBUVoicePlayer) {
         let time = self.currentVoiceFileInfo?.playtime ?? 0
         self.currentVoiceFileInfo?.isPlaying = false
@@ -1096,8 +1117,15 @@ extension SBUMessageThreadModule.List {
         voiceContentView?.updateVoiceContentStatus(.finishPlaying, time: time)
     }
     
+    /// This method is called when the `SBUVoicePlayer` is reset.
+    ///
+    /// - Parameter player: The `SBUVoicePlayer` instance that was reset.
     public func voicePlayerDidReset(_ player: SBUVoicePlayer) {}
     
+    /// This method updates the play time of the voice player.
+    /// - Parameters:
+    ///   - player: The `SBUVoicePlayer` instance.
+    ///   - time: The updated time interval.
     public func voicePlayerDidUpdatePlayTime(_ player: SBUVoicePlayer, time: TimeInterval) {
         self.currentVoiceFileInfo?.currentPlayTime = time
         self.currentVoiceFileInfo?.isPlaying = true

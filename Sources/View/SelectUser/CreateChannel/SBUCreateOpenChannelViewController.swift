@@ -45,8 +45,8 @@ open class SBUCreateOpenChannelViewController: SBUBaseViewController, SBUActionS
         SBULog.info("")
         
         self.createViewModel()
-        self.headerComponent = SBUModuleSet.createOpenChannelModule.headerComponent
-        self.profileInputComponent = SBUModuleSet.createOpenChannelModule.profileInputComponent
+        self.headerComponent = SBUModuleSet.CreateOpenChannelModule.HeaderComponent.init()
+        self.profileInputComponent = SBUModuleSet.CreateOpenChannelModule.ProfileInputComponent.init()
     }
     
     open override func viewDidLoad() {

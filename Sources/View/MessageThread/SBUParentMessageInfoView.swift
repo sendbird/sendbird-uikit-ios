@@ -369,7 +369,8 @@ open class SBUParentMessageInfoView: SBUView, SBUUserMessageTextViewDelegate {
         message: BaseMessage?,
         delegate: SBUParentMessageInfoViewDelegate?,
         useReaction: Bool = false,
-        voiceFileInfo: SBUVoiceFileInfo?
+        voiceFileInfo: SBUVoiceFileInfo?,
+        enableEmojiLongPress: Bool = true
     ) {
         self.delegate = delegate
         
@@ -482,10 +483,9 @@ open class SBUParentMessageInfoView: SBUView, SBUUserMessageTextViewDelegate {
                     )
                     voiceContentView.needSetBackgroundColor = true
                 }
-                break
             }
             
-        case let multipleFilesMessage as MultipleFilesMessage:
+        case _ as MultipleFilesMessage:
             self.fileCollectionView.removeFromSuperview()
             
             var fileCollectionViewHeight = self.fileCollectionView.collectionViewLayout.collectionViewContentSize.height
@@ -508,7 +508,8 @@ open class SBUParentMessageInfoView: SBUView, SBUUserMessageTextViewDelegate {
         self.reactionView.configure(
             maxWidth: SBUConstant.imageSize.width,
             useReaction: isReactionEnabled,
-            reactions: message.reactions
+            reactions: message.reactions,
+            enableEmojiLongPress: enableEmojiLongPress
         )
         
         let haveReplyCount = message.threadInfo.replyCount > 0
@@ -577,20 +578,23 @@ open class SBUParentMessageInfoView: SBUView, SBUUserMessageTextViewDelegate {
     
     /// Calls the `userProfileTapHandler()` when the user profile is tapped.
     /// - Parameter sender: tapGestureRecognizer
-    @objc open func onTapUserProfileView(sender: UITapGestureRecognizer) {
+    @objc
+    open func onTapUserProfileView(sender: UITapGestureRecognizer) {
         self.userProfileTapHandler?()
     }
     
     /// Calls the `tapHandlerToContent()` when the content area is tapped.
     /// - Parameter sender: tapGestureRecognizer
-    @objc open func onTapContentView(sender: UITapGestureRecognizer) {
+    @objc
+    open func onTapContentView(sender: UITapGestureRecognizer) {
         self.tapHandlerToContent?()
     }
     
     /// Calls the `fileSelectHandler()` when one of thie files is tapped in parent message that is a multiple files message.
     /// - Parameter sender: tapGestureRecognizer
     /// - Since: 3.10.0
-    @objc open func onSelectFile(sender: UITapGestureRecognizer) {
+    @objc
+    open func onSelectFile(sender: UITapGestureRecognizer) {
         if let cell = sender.view as? SBUMultipleFilesMessageCollectionViewCell,
            let fileInfo = cell.uploadedFileInfo,
            let indexPath = fileCollectionView.indexPath(for: cell) {
@@ -601,7 +605,8 @@ open class SBUParentMessageInfoView: SBUView, SBUUserMessageTextViewDelegate {
     
     /// Opens the url when the web page preview area is tapped
     /// - Parameter sender: tapGestureRecognizer
-    @objc open func onTapWebview(sender: UITapGestureRecognizer) {
+    @objc
+    open func onTapWebview(sender: UITapGestureRecognizer) {
         guard
             let ogMetaData = self.message?.ogMetaData,
             let urlString = ogMetaData.url,
@@ -615,7 +620,8 @@ open class SBUParentMessageInfoView: SBUView, SBUUserMessageTextViewDelegate {
     
     /// Calls the `moreButtonTapHandlerToContent()` when the more button is tapped.
     /// - Parameter sender: Sender
-    @objc open func onTapMoreButton(_ sender: Any) {
+    @objc
+    open func onTapMoreButton(_ sender: Any) {
         self.moreButtonTapHandlerToContent?()
     }
     

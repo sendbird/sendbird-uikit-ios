@@ -9,6 +9,7 @@
 import UIKit
 import SendbirdChatSDK
 
+// swiftlint:disable type_name
 /// Event methods for the views updates and performing actions from the header component in group channel settings module.
 public protocol SBUGroupChannelSettingsModuleHeaderDelegate: SBUBaseChannelSettingsModuleHeaderDelegate {
     /// Called when `titleView` value has been updated.
@@ -51,12 +52,14 @@ public protocol SBUGroupChannelSettingsModuleHeaderDataSource: SBUBaseChannelSet
     /// - Returns: The `String` object.
     func groupChannelSettingsModule(_ headerComponent: SBUGroupChannelSettingsModule.Header, channelNameForTitleView titleView: UIView?) -> String?
 }
+// swiftlint:enable type_name
 
 extension SBUGroupChannelSettingsModule {
     
     /// A module component that represent the header of `SBUGroupChannelSettingsModule`.
     /// - This class consists of titleView, leftBarButton, and rightBarButton.
-    @objcMembers open class Header: SBUBaseChannelSettingsModule.Header {
+    @objcMembers
+    open class Header: SBUBaseChannelSettingsModule.Header {
         
         // MARK: - UI properties (Private)
         override func defaultTitleView() -> SBUNavigationTitleView {

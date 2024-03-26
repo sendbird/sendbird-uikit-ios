@@ -9,6 +9,9 @@
 import UIKit
 import SendbirdChatSDK
 
+/// `SBUQuotedBaseMessageViewParams` is a class that defines the parameters for a quoted message view.
+/// This includes properties such as the message ID, position, sender's nickname, and the text of the quoted message.
+/// It also includes a property to determine if the message cell should show its quoted message view.
 public class SBUQuotedBaseMessageViewParams {
     // MARK: Public
     /// The ID of the quoted message.
@@ -39,9 +42,9 @@ public class SBUQuotedBaseMessageViewParams {
     /// - Since: 2.2.0
     public var urlString: String? {
         switch messageType {
-            case .fileMessage(_, _, let urlString): return urlString
-            case .multipleFilesMessage(_, _, let urlString): return urlString
-            default: return nil
+        case .fileMessage(_, _, let urlString): return urlString
+        case .multipleFilesMessage(_, _, let urlString): return urlString
+        default: return nil
         }
     }
     
@@ -49,9 +52,9 @@ public class SBUQuotedBaseMessageViewParams {
     /// - Since: 2.2.0
     public var fileName: String? {
         switch messageType {
-            case .fileMessage(let name, _, _): return name
-            case .multipleFilesMessage(let name, _, _): return name
-            default: return nil
+        case .fileMessage(let name, _, _): return name
+        case .multipleFilesMessage(let name, _, _): return name
+        default: return nil
         }
     }
     
@@ -119,7 +122,21 @@ public class SBUQuotedBaseMessageViewParams {
     
     var metaArrays: [MessageMetaArray]?
     
-    public init(message: BaseMessage, position: MessagePosition, useQuotedMessage: Bool, joinedAt: Int64 = 0, messageOffsetTimestamp: Int64 = 0) {
+    /// Initializes a new instance of the `BaseMessage` class.
+    ///
+    /// - Parameters:
+    ///   - message: The base message.
+    ///   - position: The position of the message.
+    ///   - useQuotedMessage: A Boolean value indicating whether to use the quoted message.
+    ///   - joinedAt: The time the current user joined the channel. Default value is 0.
+    ///   - messageOffsetTimestamp: The message offset of a channel. User can only see messages after this offset. Default value is 0.
+    public init(
+        message: BaseMessage,
+        position: MessagePosition,
+        useQuotedMessage: Bool,
+        joinedAt: Int64 = 0,
+        messageOffsetTimestamp: Int64 = 0
+    ) {
         self.message = message
         self.messageId = message.parentMessageId
         if let quotedMessageSender = message.parentMessage?.sender {
@@ -190,6 +207,16 @@ public class SBUQuotedBaseMessageViewParams {
     }
     
     // MARK: Test model
+    /// Initializes a new instance of the class.
+    ///
+    /// - Parameters:
+    ///   - messageId: The unique identifier for the message. This should be an `Int64` value.
+    ///   - messagePosition: The position of the message. This should be a `MessagePosition` value.
+    ///   - quotedMessageNickname: The nickname of the user who sent the quoted message. This should be a `String` value.
+    ///   - replierNickname: The nickname of the user who replied to the quoted message. This should be a `String` value.
+    ///   - text: The text of the message. This should be a `String` value.
+    ///   - useQuotedMessage: A Boolean value indicating whether the quoted message is used. This should be a `Bool` value.
+    ///   - quotedMessageCreatedAt: The timestamp when the quoted message was created. This should be an `Int64` value.
     public init(messageId: Int64, messagePosition: MessagePosition, quotedMessageNickname: String, replierNickname: String, text: String, useQuotedMessage: Bool = true, quotedMessageCreatedAt: Int64) {
         self.message = BaseMessage.make(["message": "deprecated"])!
         self.messageId = messageId
@@ -203,6 +230,18 @@ public class SBUQuotedBaseMessageViewParams {
         self.quotedMessageCreatedAt = quotedMessageCreatedAt
     }
     
+    /// Initializes a new instance of the class.
+    ///
+    /// - Parameters:
+    ///   - messageId: The unique identifier for the message.
+    ///   - messagePosition: The position of the message.
+    ///   - quotedMessageNickname: The nickname of the user who sent the quoted message.
+    ///   - replierNickname: The nickname of the user who replied to the quoted message.
+    ///   - name: The name of the file.
+    ///   - type: The type of the file.
+    ///   - urlString: The URL string of the file.
+    ///   - useQuotedMessage: A Boolean value indicating whether the quoted message is used.
+    ///   - quotedMessageCreatedAt: The timestamp when the quoted message was created.
     public init(messageId: Int64, messagePosition: MessagePosition, quotedMessageNickname: String, replierNickname: String, name: String, type: String, urlString: String, useQuotedMessage: Bool = true, quotedMessageCreatedAt: Int64) {
         self.message = BaseMessage.make(["message": "deprecated"])!
         self.messageId = messageId

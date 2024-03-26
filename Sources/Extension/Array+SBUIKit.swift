@@ -24,6 +24,9 @@ public extension Array where Element: SBUUser {
         return userNicknames
     }
     
+    /// This function updates the operator status of each user in the array based on the given channel.
+    /// - Parameter channel: The channel where the operator status will be checked.
+    /// - Returns: The array of users with updated operator status.
     func sbu_updateOperatorStatus(channel: BaseChannel) -> [SBUUser] {
         if let channel = channel as? OpenChannel {
             for user in self {

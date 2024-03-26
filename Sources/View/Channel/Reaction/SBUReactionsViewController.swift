@@ -277,7 +277,7 @@ public class SBUReactionsViewController: SBUBaseViewController, UITableViewDeleg
         cell.configure(type: .reaction, user: user)
         cell.userProfileTapHandler = { [weak cell, weak self] in
             guard let self = self else { return }
-            guard let cell = cell else { return }
+            guard cell != nil else { return }
             
             self.setUserProfileTapGesture(user)
         }
@@ -314,7 +314,12 @@ public class SBUReactionsViewController: SBUBaseViewController, UITableViewDeleg
         
         let reaction = self.reactionList[indexPath.row]
         let emoji = self.emojiList.first(where: { $0.key == reaction.key })
-        cell.configure(type: .reactions, url: emoji?.url, count: reaction.userIds.count)
+        
+        cell.configure(
+            type: .reactions,
+            url: emoji?.url,
+            count: reaction.userIds.count
+        )
         return cell
     }
 

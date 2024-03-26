@@ -63,11 +63,11 @@ open class SBUModerationsViewController: SBUBaseViewController, SBUModerationsMo
     
     open func setupComponents(channelType: ChannelType) {
         if channelType == .group {
-            self.headerComponent = SBUModuleSet.groupModerationsModule.headerComponent
-            self.listComponent = SBUModuleSet.groupModerationsModule.listComponent
+            self.headerComponent = SBUModuleSet.GroupModerationsModule.HeaderComponent.init()
+            self.listComponent = SBUModuleSet.GroupModerationsModule.ListComponent.init()
         } else if channelType == .open {
-            self.headerComponent = SBUModuleSet.openModerationsModule.headerComponent
-            self.listComponent = SBUModuleSet.openModerationsModule.listComponent
+            self.headerComponent = SBUModuleSet.OpenModerationsModule.HeaderComponent.init()
+            self.listComponent = SBUModuleSet.OpenModerationsModule.ListComponent.init()
         }
     }
     
@@ -266,8 +266,10 @@ open class SBUModerationsViewController: SBUBaseViewController, SBUModerationsMo
     }
     
     // MARK: SBUModerationsModuleListDataSource
-    open func moderationsModule(_ listComponent: SBUModerationsModule.List,
-                                  channelForTableView tableView: UITableView) -> BaseChannel? {
+    open func moderationsModule(
+        _ listComponent: SBUModerationsModule.List,
+        channelForTableView tableView: UITableView
+    ) -> BaseChannel? {
         return self.viewModel?.channel
     }
     

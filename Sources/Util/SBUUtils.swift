@@ -13,6 +13,7 @@ import MobileCoreServices
 private let kDefaultGroupChannelName = "Group Channel"
 private let kDefaultOpenChannelName = "Open Channel"
 
+/// `SBUUtils` is a utility class that provides various helper methods for Sendbird UIKit.
 public class SBUUtils {
     
     /// This function gets the message file type of the file message.
@@ -225,6 +226,9 @@ public class SBUUtils {
         return true
     }
     
+    /// This function generates an empty title for row edit action based on the provided size.
+    /// - Parameter size: The size for which the empty title is generated.
+    /// - Returns: An empty title string for row edit action.
     public static func emptyTitleForRowEditAction(for size: CGSize) -> String {
         let placeholderSymbol = "\u{200A}"
         let minimalActionWidth: CGFloat = 30

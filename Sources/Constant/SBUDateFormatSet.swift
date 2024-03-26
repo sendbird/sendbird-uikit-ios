@@ -8,19 +8,32 @@
 
 import Foundation
 
+/// Default date formats.
 public struct SBUDateFormatSet {
+    /// Format: E, MMM yyyy
     public static var EMMMyyyy = "E, MMM yyyy"
+    /// Format: MMM dd, yyyy
     public static var MMMddyyyy = "MMM dd, yyyy"
+    /// Format: E, MMM dd
     public static var EMMMdd = "E, MMM dd"
+    /// Format: MMM dd
     public static var MMMdd = "MMM dd"
+    /// Format: hh:mm a
     public static var hhmma = "hh:mm a"
+    /// Format: hh:mm
     public static var hhmm = "hh:mm"
+    /// Format: yyyy/MM/dd
     public static var yyyyMMdd = "yyyy/MM/dd"
+    /// Format: yyyyMMddhhmm
     public static var yyyyMMddhhmm = "yyyyMMddhhmm"
+    /// Format: yyyyMMddhhmmss
     public static var yyyyMMddhhmmss = "yyyyMMddhhmmss"
+    /// Format: MMM dd hh:mm a
     public static var MMMddhhmma = "MMM dd hh:mm a"
+    /// Format: MMM dd, yyyy hh:mm a
     public static var MMMddyyyyhhmma = "MMM dd, yyyy hh:mm a"
     
+    /// Data formats for Channel
     public class Channel {
         /// Used in `SBUChannelCell`
         public static var lastUpdatedDateFormat = SBUDateFormatSet.MMMdd
@@ -33,10 +46,12 @@ public struct SBUDateFormatSet {
         public static var lastSeenDateFormat = SBUDateFormatSet.MMMddyyyy
     }
     
+    /// Data formats for Message
     public class Message {
         /// Used when sending file message from `SBUBaseViewController`
         public static var fileNameFormat = SBUDateFormatSet.yyyyMMddhhmmss
 
+        /// Deprecated
         @available(*, deprecated, renamed: "fileViewControllerTimeFormat")
         public static var fileViewerTimeFormat = SBUDateFormatSet.hhmma
         
@@ -68,6 +83,7 @@ public struct SBUDateFormatSet {
         }
     }
     
+    /// Data formats for MessageSearch
     public class MessageSearch {
         /// Used in `SBUMessageSearchResultCell`
         public static var lastUpdatedDateFormat = SBUDateFormatSet.MMMdd
@@ -76,10 +92,12 @@ public struct SBUDateFormatSet {
         /// Used in `SBUMessageSearchResultCell`
         public static var lastUpdatedTimeFormat = SBUDateFormatSet.hhmma
 
+        /// Format for the sent time in messages
         @available(*, unavailable, message: "Use `Date.lastUpdatedTimeForMessageSearchResultCell(baseTimestamp:)` instead") // 3.3.1
         public static var sentTimeFormat = SBUDateFormatSet.hhmm
     }
     
+    /// Data formats for MessageThread
     public class MessageThread {
         /// Used in `SBUParentMessageInfoView`
         public static var sentDateDateFormat = SBUDateFormatSet.MMMddhhmma
@@ -91,6 +109,7 @@ public struct SBUDateFormatSet {
         public static var sentDateYesterdayFormat = SBUDateFormatSet.MMMddhhmma
     }
     
+    /// Data formats for VoiceMessage
     public class VoiceMessage {
         /// Used in `SBUVoiceRecorder`
         /// - Since: 3.4.0

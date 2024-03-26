@@ -5,6 +5,8 @@
 //  Created by Tez Park on 05/03/2020.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
 //
+//  swiftlint:disable missing_docs
+//  swiftlint:disable identifier_name
 
 import UIKit
 import SendbirdChatSDK
@@ -416,3 +418,5 @@ extension SBUStringSet {
     }
     
 }
+//  swiftlint:enable missing_docs
+//  swiftlint:enable identifier_name

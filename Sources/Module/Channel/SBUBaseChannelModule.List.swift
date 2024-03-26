@@ -270,7 +270,8 @@ public protocol SBUBaseChannelModuleListDataSource: AnyObject {
 extension SBUBaseChannelModule {
     /// A module component that represent the list of `SBUBaseChannelModule`.
     @objc(SBUBaseChannelModuleList)
-    @objcMembers open class List: UIView, UITableViewDelegate, UITableViewDataSource {
+    @objcMembers
+    open class List: UIView, UITableViewDelegate, UITableViewDataSource {
         
         // MARK: - UI properties (Public)
         
@@ -952,36 +953,35 @@ extension SBUBaseChannelModule {
         ///   - fileMessage: File message object
         open func setFileMessageCellImage(_ cell: UITableViewCell, fileMessage: FileMessage) {
             switch fileMessage.sendingStatus {
-                case .canceled, .pending, .failed, .none:
-                    guard let (pendingMessageManager, isThreadMessage) = self.baseDataSource?.baseChannelModule(self, pendingMessageManagerForCell: cell),
-                          let fileInfo = pendingMessageManager?.getFileInfo(
-                            requestId: fileMessage.requestId,
-                            forMessageThread: isThreadMessage ?? false
-                          ),
-                          let type = fileInfo.mimeType, let fileData = fileInfo.file,
-                          SBUUtils.getFileType(by: type) == .image else { return }
-                    
-                    let image = UIImage.createImage(from: fileData)
-                    let isAnimatedImage = image?.isAnimatedImage() == true
-                    
-                    if let cell = cell as? SBUFileMessageCell {
-                        cell.setImage(
-                            isAnimatedImage ? image?.images?.first : image,
-                            size: SBUGlobals.messageCellConfiguration.groupChannel.thumbnailSize
-                        )
-                    } else if let cell = cell as? SBUOpenChannelFileMessageCell {
-                        cell.setImage(
-                            isAnimatedImage ? image?.images?.first : image,
-                            size: SBUGlobals.messageCellConfiguration.openChannel.thumbnailSize
-                        )
-                    }
-                case .succeeded:
-                    break
-                case .scheduled:
-                    break
-                @unknown default:
-                    SBULog.error("unknown Type")
-                    break
+            case .canceled, .pending, .failed, .none:
+                guard let (pendingMessageManager, isThreadMessage) = self.baseDataSource?.baseChannelModule(self, pendingMessageManagerForCell: cell),
+                      let fileInfo = pendingMessageManager?.getFileInfo(
+                        requestId: fileMessage.requestId,
+                        forMessageThread: isThreadMessage ?? false
+                      ),
+                      let type = fileInfo.mimeType, let fileData = fileInfo.file,
+                      SBUUtils.getFileType(by: type) == .image else { return }
+                
+                let image = UIImage.createImage(from: fileData)
+                let isAnimatedImage = image?.isAnimatedImage() == true
+                
+                if let cell = cell as? SBUFileMessageCell {
+                    cell.setImage(
+                        isAnimatedImage ? image?.images?.first : image,
+                        size: SBUGlobals.messageCellConfiguration.groupChannel.thumbnailSize
+                    )
+                } else if let cell = cell as? SBUOpenChannelFileMessageCell {
+                    cell.setImage(
+                        isAnimatedImage ? image?.images?.first : image,
+                        size: SBUGlobals.messageCellConfiguration.openChannel.thumbnailSize
+                    )
+                }
+            case .succeeded:
+                break
+            case .scheduled:
+                break
+            @unknown default:
+                SBULog.error("unknown Type")
             }
         }
         
@@ -1114,6 +1114,7 @@ extension SBUBaseChannelModule.List: SBUUserProfileViewDelegate {
 
 // MARK: - UITableViewCell
 extension SBUBaseChannelModule.List {
+    /// This property checks if the scroll is near the bottom of the screen.
     public var isScrollNearByBottom: Bool {
         tableView.contentOffset.y < 10
     }
@@ -1290,6 +1291,11 @@ extension SBUBaseChannelModule.List {
         return Date.sbu_from(nextCreatedAt).isSameDay(as: Date.sbu_from(curCreatedAt))
     }
     
+    /// This function checks if the current message and the previous message date have the same day.
+    /// - Parameters:
+    ///   - currentIndex: Current message index
+    ///   - fullMessageList: The full message list including failed/pending messages as well as sent messages
+    /// - Returns: If `true`, the messages date is same day.
     public func checkSameDayAsPrevMessage(currentIndex: Int, fullMessageList: [BaseMessage]) -> Bool {
         guard currentIndex < fullMessageList.count,
               currentIndex > 0 else { return false }

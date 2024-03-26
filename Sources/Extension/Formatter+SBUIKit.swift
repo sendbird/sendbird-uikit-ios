@@ -5,7 +5,7 @@
 //  Created by Tez Park on 2020/07/27.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
 //
-
+// swiftlint:disable identifier_name
 import UIKit
 
 extension Double {
@@ -43,3 +43,4 @@ extension Float {
         Double(self).unitFormattedString
     }
 }
+// swiftlint:enable identifier_name

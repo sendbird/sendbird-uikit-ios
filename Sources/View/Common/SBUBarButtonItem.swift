@@ -10,20 +10,20 @@ import UIKit
 
 class SBUBarButtonItem {
 
-    static func backButton(vc: Any, selector: Selector) -> UIBarButtonItem {
+    static func backButton(target: Any, selector: Selector) -> UIBarButtonItem {
         return UIBarButtonItem(
             image: SBUIconSetType.iconBack.image(to: SBUIconSetType.Metric.defaultIconSize),
             style: .plain,
-            target: vc,
+            target: target,
             action: selector
         )
     }
     
-    static func emptyButton(vc: Any, selector: Selector?) -> UIBarButtonItem {
+    static func emptyButton(target: Any, selector: Selector?) -> UIBarButtonItem {
         return UIBarButtonItem(
             image: SBUIconSetType.iconBack.image(with: .clear, to: SBUIconSetType.Metric.defaultIconSize),
             style: .plain,
-            target: vc,
+            target: target,
             action: selector
         )
     }

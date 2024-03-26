@@ -57,6 +57,7 @@ open class SBUFileMessageCell: SBUContentBaseMessageCell {
         guard let message = configuration.fileMessage else { return }
         // Set using reaction
         self.useReaction = configuration.useReaction
+        self.enableEmojiLongPress = configuration.enableEmojiLongPress
         
         self.useQuotedMessage = configuration.useQuotedMessage
         
@@ -67,7 +68,7 @@ open class SBUFileMessageCell: SBUContentBaseMessageCell {
         
         // Set up base file content view
         switch SBUUtils.getFileType(by: message) {
-            case .image, .video:
+        case .image, .video:
             if !(self.baseFileContentView is SBUImageContentView) {
                 self.baseFileContentView.removeFromSuperview()
                 self.baseFileContentView = SBUImageContentView()
@@ -79,8 +80,8 @@ open class SBUFileMessageCell: SBUContentBaseMessageCell {
                 message: message,
                 position: configuration.messagePosition
             )
-                
-            case .audio, .pdf, .etc:
+            
+        case .audio, .pdf, .etc:
             if !(self.baseFileContentView is SBUCommonContentView) {
                 self.baseFileContentView.removeFromSuperview()
                 self.baseFileContentView = SBUCommonContentView()
@@ -111,8 +112,6 @@ open class SBUFileMessageCell: SBUContentBaseMessageCell {
                     voiceFileInfo: configuration.voiceFileInfo
                 )
             }
-
-            break
         }
     }
     

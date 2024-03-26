@@ -37,11 +37,13 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
     
     public var weakHeaderComponentBottomConstraint: NSLayoutConstraint = .init()
     
+    // swiftlint:disable identifier_name
     // MARK: - UI properties (Private)
     // for constraint
     private var mediaComponentLeadingConstraintForPortrait: NSLayoutConstraint?
     private var mediaComponentLeadingConstraintForLandscape: NSLayoutConstraint?
     private var mediaComponentTrailingConstraintForPortrait: NSLayoutConstraint?
+    // swiftlint:enable identifier_name
     private var mediaComponentTopConstraintForPortrait: NSLayoutConstraint?
     private var mediaComponentTopConstraintForLandscape: NSLayoutConstraint?
     private var mediaComponentBottomConstraint: NSLayoutConstraint?
@@ -134,10 +136,10 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
     required public init(channel: OpenChannel, messageListParams: MessageListParams? = nil) {
         super.init(baseChannel: channel, messageListParams: messageListParams)
         
-        self.headerComponent = SBUModuleSet.openChannelModule.headerComponent
-        self.listComponent = SBUModuleSet.openChannelModule.listComponent
-        self.inputComponent = SBUModuleSet.openChannelModule.inputComponent
-        self.mediaComponent = SBUModuleSet.openChannelModule.mediaComponent
+        self.headerComponent = SBUModuleSet.OpenChannelModule.HeaderComponent.init()
+        self.listComponent = SBUModuleSet.OpenChannelModule.ListComponent.init()
+        self.inputComponent = SBUModuleSet.OpenChannelModule.InputComponent.init()
+        self.mediaComponent = SBUModuleSet.OpenChannelModule.MediaComponent.init()
     }
     
     required public init(
@@ -151,10 +153,10 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
             messageListParams: messageListParams
         )
         
-        self.headerComponent = SBUModuleSet.openChannelModule.headerComponent
-        self.listComponent = SBUModuleSet.openChannelModule.listComponent
-        self.inputComponent = SBUModuleSet.openChannelModule.inputComponent
-        self.mediaComponent = SBUModuleSet.openChannelModule.mediaComponent
+        self.headerComponent = SBUModuleSet.OpenChannelModule.HeaderComponent.init()
+        self.listComponent = SBUModuleSet.OpenChannelModule.ListComponent.init()
+        self.inputComponent = SBUModuleSet.OpenChannelModule.InputComponent.init()
+        self.mediaComponent = SBUModuleSet.OpenChannelModule.MediaComponent.init()
     }
     
     open override func viewWillAppear(_ animated: Bool) {

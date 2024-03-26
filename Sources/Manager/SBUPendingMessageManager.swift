@@ -9,7 +9,11 @@
 import Foundation
 import SendbirdChatSDK
 
+/// `SBUPendingMessageManager` class.
+///
+/// This class is responsible for managing pending messages in the application.
 public class SBUPendingMessageManager {
+    /// `SBUPendingMessageManager` shared instance.
     public static let shared = SBUPendingMessageManager()
     
     private init() { }
@@ -24,6 +28,12 @@ public class SBUPendingMessageManager {
     /// message requestId : file params
     private var pendingThreadFileInfos: [String: FileMessageCreateParams] = [:]
     
+    /// Adds a `FileMessageCreateParams` to the pending file info list.
+    ///
+    /// - Parameters:
+    ///   - requestId: The unique identifier for the request. This is used to associate the `FileMessageCreateParams` with a specific request.
+    ///   - params: The `FileMessageCreateParams` to be added. This contains the parameters for creating a file message.
+    ///   - forMessageThread: A Boolean value that determines whether to add the `FileMessageCreateParams` to the thread messages list or the regular messages list.
     public func addFileInfo(requestId: String, params: FileMessageCreateParams?, forMessageThread: Bool = false) {
         guard !requestId.isEmpty, let params = params else { return }
         if forMessageThread {
@@ -33,6 +43,12 @@ public class SBUPendingMessageManager {
         }
     }
     
+    /// Retrieves the `FileMessageCreateParams` for a given request ID.
+    /// 
+    /// - Parameters:
+    ///   - requestId: The unique identifier for the request.
+    ///   - forMessageThread: A Boolean value that determines whether to fetch from thread messages or regular messages.
+    /// - Returns: The `FileMessageCreateParams` associated with the request ID, or nil if no such parameters exist.
     public func getFileInfo(requestId: String, forMessageThread: Bool = false) -> FileMessageCreateParams? {
         guard !requestId.isEmpty else { return nil }
         if forMessageThread {

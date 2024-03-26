@@ -37,10 +37,13 @@ class SBUDownloadManager {
                 DispatchQueue.main.async {
                     SBULoading.stop()
                     
-                    PHPhotoLibrary.shared().performChanges({
-                        PHAssetCreationRequest.forAsset()
-                            .addResource(with: .photo, fileURL: fileURL, options: nil)
-                    }) { [weak viewController] completed, error in
+                    PHPhotoLibrary.shared().performChanges {
+                        PHAssetCreationRequest.forAsset().addResource(
+                            with: .photo,
+                            fileURL: fileURL,
+                            options: nil
+                        )
+                    } completionHandler: { completed, error in
                         guard error == nil else {
                             SBULog.error("[Failed] Save image: \(String(describing: error))")
                             SBUToastView.show(type: .file(.downloadFailed))
@@ -164,7 +167,7 @@ class SBUDownloadManager {
     }
     
     static func saveImage(with fileMessage: FileMessage, parent: UIViewController?) {
-        guard let parent = parent else {
+        guard parent != nil else {
             SBULog.error("[Failed] Save image")
             return
         }
@@ -174,10 +177,13 @@ class SBUDownloadManager {
                 DispatchQueue.main.async {
                     SBULoading.stop()
                     
-                    PHPhotoLibrary.shared().performChanges({
-                        PHAssetCreationRequest.forAsset()
-                            .addResource(with: .photo, fileURL: fileURL, options: nil)
-                    }) { [weak parent] completed, error in
+                    PHPhotoLibrary.shared().performChanges {
+                        PHAssetCreationRequest.forAsset().addResource(
+                            with: .photo,
+                            fileURL: fileURL,
+                            options: nil
+                        )
+                    } completionHandler: { completed, error in
                         guard error == nil else {
                             SBULog.error("[Failed] Save image: \(String(describing: error))")
                             SBUToastView.show(type: .file(.downloadFailed))

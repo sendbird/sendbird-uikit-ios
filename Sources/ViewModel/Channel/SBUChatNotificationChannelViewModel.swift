@@ -9,6 +9,7 @@
 import Foundation
 import SendbirdChatSDK
 
+// swiftlint:disable type_name
 protocol SBUChatNotificationChannelViewModelDataSource: AnyObject {
     /// Asks to data source to return the array of index path that represents starting point of channel.
     /// - Parameters:
@@ -74,6 +75,7 @@ protocol SBUChatNotificationChannelViewModelDelegate: SBUCommonViewModelDelegate
         keepsScroll: Bool
     )
 }
+// swiftlint:enable type_name
 
 /// A view model for the notification channel.
 class SBUChatNotificationChannelViewModel: NSObject {
@@ -368,7 +370,9 @@ class SBUChatNotificationChannelViewModel: NSObject {
     
     // MARK: - Notification related
     func markAsRead(completionHandler: SendbirdChatSDK.SBErrorHandler? = nil) {
-        if let channel = self.channel, allowsReadStatusUpdate {
+        if let channel = self.channel, 
+            allowsReadStatusUpdate,
+           SendbirdChat.getConnectState() == .open {
             channel.markAsRead(completionHandler: completionHandler)
         }
     }

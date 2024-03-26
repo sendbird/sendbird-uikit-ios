@@ -5,7 +5,7 @@
 //  Created by Harry Kim on 2020/02/05.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
 //
-
+// swiftlint:disable missing_docs
 import UIKit
 
 public class SBUColorSet {
@@ -63,3 +63,4 @@ public class SBUColorSet {
     public static var highlight = UIColor(red: 1.0, green: 242.0 / 255.0, blue: 182.0 / 255.0, alpha: 1.0)
     
 }
+// swiftlint:enable missing_docs

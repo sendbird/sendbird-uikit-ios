@@ -169,10 +169,12 @@ open class SBUThreadInfoView: SBUView, SBUThreadInfoViewProtocol {
             // If replied user count is more than 5, last image will be covered with more icon.
             if index == self.repliedUserLimit - 1 {
                 let moreImageView = UIImageView()
-                moreImageView.image = SBUIconSetType.iconPlus.image(
-                    with: self.theme.repliedUsersMoreIconTintColor,
-                    to: SBUIconSetType.Metric.defaultIconSize
-                ).resize(with: .init(width: 15, height: 15))
+                moreImageView.image = SBUIconSetType.iconPlus
+                    .image(
+                        with: self.theme.repliedUsersMoreIconTintColor,
+                        to: SBUIconSetType.Metric.defaultIconSize
+                    )
+                    .resize(with: .init(width: 15, height: 15))
                 moreImageView.contentMode = .center
                 moreImageView.layer.cornerRadius = userImageSize/2
                 moreImageView.backgroundColor = self.theme.repliedUsersMoreIconBackgroundColor

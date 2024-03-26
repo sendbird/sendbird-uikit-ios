@@ -9,6 +9,7 @@
 import UIKit
 import SendbirdChatSDK
 
+// swiftlint:disable type_name
 /// Event methods for the views updates and performing actions from the list component in a chat notification channel.
 protocol SBUChatNotificationChannelModuleListDelegate: SBUCommonDelegate {
     /// Called when there’s a tap gesture on a notification that includes a web URL. e.g., `"https://www.sendbird.com"`
@@ -128,6 +129,7 @@ protocol SBUChatNotificationChannelModuleListDataSource: AnyObject {
         startingPointIn tableView: UITableView
     ) -> Int64?
 }
+// swiftlint:enable type_name
 
 extension SBUChatNotificationChannelModule {
     /// A module component that represent the list of `SBUChatNotificationChannelModule`.

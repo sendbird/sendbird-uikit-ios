@@ -9,14 +9,17 @@
 import UIKit
 import QuartzCore
 
+/// New message info handler
 public typealias SBUNewMessageInfoHandler = () -> Void
 
 open class SBUNewMessageInfo: SBUView {
+    static let defaultInfoButtonTag = 10001
+    
     // MARK: - Properties (Public)
     public lazy var messageInfoButton: UIButton? = {
         let messageInfoButton = UIButton()
         messageInfoButton.layer.masksToBounds = true
-        messageInfoButton.tag = DefaultInfoButtonTag
+        messageInfoButton.tag = Self.defaultInfoButtonTag
         messageInfoButton.titleLabel?.textAlignment = .center
         return messageInfoButton
     }()
@@ -24,7 +27,6 @@ open class SBUNewMessageInfo: SBUView {
     public var actionHandler: SBUNewMessageInfoHandler?
     
     // MARK: - Properties (Private)
-    let DefaultInfoButtonTag = 10001
     var type: NewMessageInfoItemType = .tooltip
     
     var witdhConstraint: NSLayoutConstraint?
@@ -98,7 +100,7 @@ open class SBUNewMessageInfo: SBUView {
         setupButtonStyle()
         
         if let messageInfoButton = self.messageInfoButton,
-            messageInfoButton.tag == DefaultInfoButtonTag {
+           messageInfoButton.tag == Self.defaultInfoButtonTag {
             
             switch self.type {
             case .tooltip:
@@ -142,7 +144,8 @@ open class SBUNewMessageInfo: SBUView {
     }
 
     // MARK: - Action
-    @objc open func onClickNewMessageInfo() {
+    @objc
+    open func onClickNewMessageInfo() {
         self.actionHandler?()
     }
     

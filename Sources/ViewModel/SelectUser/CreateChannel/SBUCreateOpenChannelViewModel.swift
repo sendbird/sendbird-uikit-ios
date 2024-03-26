@@ -17,6 +17,7 @@ public protocol SBUCreateOpenChannelViewModelDelegate: SBUCommonViewModelDelegat
     )
 }
 
+/// `SBUCreateOpenChannelViewModel` is a class that handles the creation of open channels.
 open class SBUCreateOpenChannelViewModel {
     
     // MARK: - Property (Private)
@@ -24,6 +25,8 @@ open class SBUCreateOpenChannelViewModel {
     @SBUAtomic private var isLoading = false
     
     // MARK: - Life Cycle
+    /// Initializes a new instance of `SBUCreateOpenChannelViewModel`.
+    /// - Parameter delegate: An optional delegate that conforms to `SBUCreateOpenChannelViewModelDelegate`.
     public init(delegate: SBUCreateOpenChannelViewModelDelegate?) {
         self.delegate = delegate
     }

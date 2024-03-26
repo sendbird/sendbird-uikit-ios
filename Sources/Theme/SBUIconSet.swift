@@ -5,6 +5,7 @@
 //  Created by Harry Kim on 2020/02/07.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
 //
+// swiftlint:disable missing_docs
 
 import UIKit
 
@@ -221,3 +222,4 @@ public class SBUIconSet {
         SBUIconSetType.resetCustomized()
     }
 }
+// swiftlint:enable missing_docs

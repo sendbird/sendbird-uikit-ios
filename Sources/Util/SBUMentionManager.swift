@@ -499,7 +499,7 @@ public class SBUMentionManager: NSObject {
             )
             
             let mention = SBUMention(range: adjustedRange, user: user)
-            mentionedList = mentionedList + [mention]
+            mentionedList += [mention]
             
             replacedMessage = appliedAttributedText.string
             attributedText = NSMutableAttributedString(attributedString: appliedAttributedText)
@@ -529,8 +529,8 @@ public class SBUMentionManager: NSObject {
         var attributedText = attributedText
         var tempMentionedList = mentionedList
         
-        for i in 0..<mentions.count {
-            let mention = tempMentionedList[i]
+        for idx in 0..<mentions.count {
+            let mention = tempMentionedList[idx]
             let textToReplace = "@{" + mention.user.userId + "}"
             
             let mutableAttributedText = NSMutableAttributedString(attributedString: attributedText)

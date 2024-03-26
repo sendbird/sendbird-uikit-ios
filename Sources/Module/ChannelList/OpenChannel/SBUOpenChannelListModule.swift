@@ -28,14 +28,25 @@ open class SBUOpenChannelListModule {
     @available(*, deprecated, message: "Use `SBUOpenChannelListModule.HeaderComponent` instead.")
     public var headerComponent: SBUOpenChannelListModule.Header? {
         get { _headerComponent ?? Self.HeaderComponent.init() }
-        set { _headerComponent = newValue }
+        set {
+            _headerComponent = newValue
+            if let validNewValue = newValue {
+                Self.HeaderComponent = type(of: validNewValue)
+            }
+        }
     }
     
     /// The module component that shows the list of message in the channel.
     @available(*, deprecated, message: "Use `SBUOpenChannelListModule.ListComponent` instead.")
     public var listComponent: SBUOpenChannelListModule.List? {
         get { _listComponent ?? Self.ListComponent.init() }
-        set { _listComponent = newValue }
+        set {
+            _listComponent = newValue
+            if let validNewValue = newValue {
+                Self.ListComponent = type(of: validNewValue)
+            }
+                    
+        }
     }
     
     // MARK: Properties (Holder)
@@ -43,12 +54,33 @@ open class SBUOpenChannelListModule {
     private var _listComponent: SBUOpenChannelListModule.List?
     
     // MARK: -
+    /// Default initializer for `SBUOpenChannelListModule`.
+    ///
+    /// This initializer creates an instance of `SBUOpenChannelListModule` without any pre-configured components.
+    public required init() {}
+    
+    // swiftlint:disable missing_docs
     @available(*, deprecated, message: "Use `SBUModuleSet.OpenChannelListModule`")
     public required init(
-        headerComponent: SBUOpenChannelListModule.Header? = nil,
-        listComponent: SBUOpenChannelListModule.List? = nil
+        headerComponent: SBUOpenChannelListModule.Header?
+    ) {
+        self._headerComponent = headerComponent
+    }
+    
+    @available(*, deprecated, message: "Use `SBUModuleSet.OpenChannelListModule`")
+    public required init(
+        listComponent: SBUOpenChannelListModule.List?
+    ) {
+        self._listComponent = listComponent
+    }
+
+    @available(*, deprecated, message: "Use `SBUModuleSet.OpenChannelListModule`")
+    public required init(
+        headerComponent: SBUOpenChannelListModule.Header?,
+        listComponent: SBUOpenChannelListModule.List?
     ) {
         self._headerComponent = headerComponent
         self._listComponent = listComponent
     }
+    // swiftlint:enable missing_docs
 }

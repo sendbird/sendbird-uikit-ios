@@ -41,13 +41,16 @@ public protocol SBURegisterOperatorModuleHeaderDelegate: SBUBaseSelectUserModule
     func registerOperatorModule(_ headerComponent: SBURegisterOperatorModule.Header, didTapRightItem rightItem: UIBarButtonItem)
 }
 
+// swiftlint:disable type_name
 public protocol SBURegisterOperatorModuleHeaderDataSource: SBUBaseSelectUserModuleHeaderDataSource { }
+// swiftlint:enable type_name
 
 extension SBURegisterOperatorModule {
     
     /// A module component that represent the header of `SBURegisterOperatorModule`.
     /// This class consists of titleView, leftBarButton, and rightBarButton.
-    @objcMembers open class Header: SBUBaseSelectUserModule.Header {
+    @objcMembers
+    open class Header: SBUBaseSelectUserModule.Header {
         
         // MARK: - UI properties (Private)
         override func defaultTitleView() -> SBUNavigationTitleView {

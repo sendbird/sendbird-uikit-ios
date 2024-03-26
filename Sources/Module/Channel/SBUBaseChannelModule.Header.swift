@@ -51,7 +51,8 @@ public protocol SBUBaseChannelModuleHeaderDelegate: SBUCommonDelegate {
 extension SBUBaseChannelModule {
     
     /// A module component that represent the header of `SBUBaseChannelModule`.
-    @objcMembers open class Header: UIView {
+    @objcMembers
+    open class Header: UIView {
         // MARK: - UI properties (Public)
         
         /// A view that represents a title in navigation bar.
@@ -95,7 +96,7 @@ extension SBUBaseChannelModule {
         
         lazy var defaultLeftBarButton: UIBarButtonItem = {
             let backButton = SBUBarButtonItem.backButton(
-                vc: self,
+                target: self,
                 selector: #selector(onTapLeftBarButton)
             )
             return backButton

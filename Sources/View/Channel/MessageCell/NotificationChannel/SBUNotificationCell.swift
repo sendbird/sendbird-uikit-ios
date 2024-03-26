@@ -422,7 +422,8 @@ class SBUNotificationCell: SBUBaseMessageCell {
     /// Adds stat for action of notification to SendbirdStatistics.
     /// - Parameter subData: for exporting templateKey and tags.
     /// - Since: 3.5.7
-    @discardableResult func statisticsForAction(with subData: String?) -> Bool {
+    @discardableResult
+    func statisticsForAction(with subData: String?) -> Bool {
         guard let subData = subData else { return false }
         
         // data scheme

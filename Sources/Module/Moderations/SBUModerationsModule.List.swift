@@ -36,7 +36,8 @@ extension SBUModerationsModule {
     
     /// A module component that represent the list of `SBUModerationsModuleList`.
     @objc(SBUModerationsModuleList)
-    @objcMembers open class List: UIView {
+    @objcMembers
+    open class List: UIView {
         
         // MARK: - UI properties (Public)
         /// The table view that shows the moderation menu items as list.

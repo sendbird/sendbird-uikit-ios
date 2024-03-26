@@ -6,8 +6,9 @@
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
 //
 
+/// Protocol for handling loading indicators
 public protocol SBULoadingIndicatorProtocol {
-    /// Shows loading indicator
+
     /// - Parameter isLoading: Whether it's loading or not
     func showLoading(_ isLoading: Bool)
 }

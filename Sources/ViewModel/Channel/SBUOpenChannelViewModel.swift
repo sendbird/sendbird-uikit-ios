@@ -36,6 +36,7 @@ public protocol SBUOpenChannelViewModelDelegate: SBUBaseChannelViewModelDelegate
     )
 }
 
+// swiftlint:disable missing_docs
 extension SBUOpenChannelViewModelDelegate {
     public func openChannelViewModel(
         _ viewModel: SBUOpenChannelViewModel,
@@ -49,6 +50,7 @@ extension SBUOpenChannelViewModelDelegate {
         forChannel channel: OpenChannel
     ) {}
 }
+// swiftlint:enable missing_docs
 
 open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
     // MARK: - Constant
@@ -215,9 +217,11 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
     }
     
     // MARK: - Load Messages
-    public override func loadInitialMessages(startingPoint: Int64?,
-                                      showIndicator: Bool,
-                                      initialMessages: [BaseMessage]?) {
+    public override func loadInitialMessages(
+        startingPoint: Int64?,
+        showIndicator: Bool,
+        initialMessages: [BaseMessage]?
+    ) {
         SBULog.info("""
             loadInitialMessages,
             startingPoint : \(String(describing: startingPoint)),
@@ -377,9 +381,9 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
             // if one direction is 0, half the other direction to make both direction equal
             if params.previousResultSize == 0 {
                 params.previousResultSize = params.nextResultSize / 2
-                params.nextResultSize = params.nextResultSize / 2
+                params.nextResultSize /= 2
             } else if params.nextResultSize == 0 {
-                params.previousResultSize = params.previousResultSize / 2
+                params.previousResultSize /= 2
                 params.nextResultSize = params.previousResultSize / 2
             }
             

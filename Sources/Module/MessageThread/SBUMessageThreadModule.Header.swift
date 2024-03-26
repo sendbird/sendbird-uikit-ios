@@ -13,13 +13,16 @@ import SendbirdChatSDK
 public protocol SBUMessageThreadModuleHeaderDelegate: SBUBaseChannelModuleHeaderDelegate { }
 
 extension SBUMessageThreadModuleHeaderDelegate {
+    // swiftlint:disable missing_docs
     public func baseChannelModule(_ headerComponent: SBUBaseChannelModule.Header, didUpdateRightItem rightItem: UIBarButtonItem?) {}
     public func baseChannelModule(_ headerComponent: SBUBaseChannelModule.Header, didTapRightItem rightItem: UIBarButtonItem) {}
+    // swiftlint:enable missing_docs
 }
 
 extension SBUMessageThreadModule {
     /// A module component that represent the header of `SBUMessageThreadModule`.
-    @objcMembers open class Header: SBUBaseChannelModule.Header, SBUMessageThreadTitleViewDelegate {
+    @objcMembers
+    open class Header: SBUBaseChannelModule.Header, SBUMessageThreadTitleViewDelegate {
         
         // MARK: - UI properties (Private)
         lazy var defaultMessageThreadTitleView: SBUMessageThreadTitleView = {

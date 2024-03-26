@@ -18,6 +18,11 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
     public var emojiList: [Emoji] = []
     public var reactions: [Reaction] = []
     public var maxWidth: CGFloat = SBUConstant.messageCellMaxWidth
+    
+    /// The boolean value that decides whether to enable a long press on an reaction emoji.
+    /// If `true`, a member list for each reaction emoji is shown.
+    /// - Since: 3.19.0
+    public var enableEmojiLongPress: Bool = true
 
     @SBUThemeWrapper(theme: SBUTheme.componentTheme)
     public var theme: SBUComponentTheme
@@ -106,7 +111,12 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
             self.reactions.count == indexPath.row
     }
     
-    open func configure(maxWidth: CGFloat, useReaction: Bool, reactions: [Reaction]) {
+    open func configure(
+        maxWidth: CGFloat,
+        useReaction: Bool,
+        reactions: [Reaction],
+        enableEmojiLongPress: Bool
+    ) {
         guard useReaction, !reactions.isEmpty else {
             self.collectionViewMinWidthContraint?.isActive = false
             self.isHidden = true
@@ -118,6 +128,7 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
         self.maxWidth = maxWidth
         self.reactions = reactions
         self.emojiList = SBUEmojiManager.getAllEmojis()
+        self.enableEmojiLongPress = enableEmojiLongPress
 
         let hasMoreEmoji = self.reactions.count < emojiList.count
         let cellSizes = reactions.reduce(0) {
@@ -157,8 +168,10 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
         return 1
     }
 
-    open func collectionView(_ collectionView: UICollectionView,
-                        numberOfItemsInSection section: Int) -> Int {
+    open func collectionView(
+        _ collectionView: UICollectionView,
+        numberOfItemsInSection section: Int
+    ) -> Int {
         guard !reactions.isEmpty else { return 0 }
 
         if self.reactions.count < emojiList.count {
@@ -168,8 +181,10 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
         }
     }
 
-    open func collectionView(_ collectionView: UICollectionView,
-                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    open func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
         
         guard let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: SBUReactionCollectionViewCell.sbu_className,
@@ -183,7 +198,11 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
                 to: SBUIconSetType.Metric.iconEmojiSmall
             )
             cell.emojiImageViewRatioConstraint?.isActive = false
-            cell.configure(type: .messageReaction, url: nil, needsSideMargin: self.sameCellWidth)
+            cell.configure(
+                type: .messageReaction,
+                url: nil, 
+                needsSideMargin: self.sameCellWidth
+            )
 
             cell.emojiImageView.image = moreEmoji
             cell.emojiImageViewRatioConstraint?.isActive = true
@@ -199,12 +218,15 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
         
         let selectedEmoji = emojiList.first(where: { $0.key == reaction.key })
         cell.emojiImageViewRatioConstraint?.isActive = false
-        cell.configure(type: .messageReaction,
-                       url: selectedEmoji?.url,
-                       count: reaction.userIds.count, needsSideMargin: self.sameCellWidth)
+        cell.configure(
+            type: .messageReaction,
+            url: selectedEmoji?.url,
+            count: reaction.userIds.count,
+            needsSideMargin: self.sameCellWidth
+        )
         cell.emojiImageViewRatioConstraint?.isActive = true
         cell.emojiLongPressHandler = { [weak self] in
-            guard let self = self else { return }
+            guard let self = self, self.enableEmojiLongPress else { return }
             self.emojiLongPressHandler?(emojiKey)
         }
         
@@ -215,8 +237,10 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
         return cell
     }
 
-    open func collectionView(_ collectionView: UICollectionView,
-                        didSelectItemAt indexPath: IndexPath) {
+    open func collectionView(
+        _ collectionView: UICollectionView,
+        didSelectItemAt indexPath: IndexPath
+    ) {
         
         guard !self.hasMoreEmoji(at: indexPath) else { return }
         guard !reactions.isEmpty else { return }
@@ -225,9 +249,11 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
         self.emojiTapHandler?(reaction.key)
     }
 
-    open func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+    open func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        sizeForItemAt indexPath: IndexPath
+    ) -> CGSize {
         
         guard !self.hasMoreEmoji(at: indexPath) else { return self.getCellSize(count: 0) }
         guard !reactions.isEmpty else { return self.getCellSize(count: 0) }

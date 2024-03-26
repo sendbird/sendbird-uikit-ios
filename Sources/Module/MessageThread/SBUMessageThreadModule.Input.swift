@@ -118,7 +118,8 @@ extension SBUMessageThreadModule {
     /// A module component that represent the list of `SBUMessageThreadModule`.
     /// - Since: 3.3.0
     @objc(SBUMessageThreadModuleInput)
-    @objcMembers open class Input: SBUBaseChannelModule.Input, SBUMentionManagerDelegate, SBUSuggestedMentionListDelegate {
+    @objcMembers
+    open class Input: SBUBaseChannelModule.Input, SBUMentionManagerDelegate, SBUSuggestedMentionListDelegate {
         
         // MARK: - Logic properties (Public)
 
@@ -236,28 +237,28 @@ extension SBUMessageThreadModule {
             }
             
             switch mimeType {
-                case "image/gif":
-                    let gifData = try? Data(contentsOf: imageURL)
-                    
-                    self.delegate?.messageThreadModule(
-                        self,
-                        didPickFileData: gifData,
-                        fileName: imageName,
-                        mimeType: mimeType,
-                        parentMessage: self.parentMessage
-                    )
-                default:
-                    let originalImage = info[.originalImage] as? UIImage
-                    guard let image = originalImage?.fixedOrientation(),
-                          let imageData = image.sbu_convertToData() else { return }
-                    
-                    self.delegate?.messageThreadModule(
-                        self,
-                        didPickFileData: imageData,
-                        fileName: imageName,
-                        mimeType: mimeType,
-                        parentMessage: self.parentMessage
-                    )
+            case "image/gif":
+                let gifData = try? Data(contentsOf: imageURL)
+                
+                self.delegate?.messageThreadModule(
+                    self,
+                    didPickFileData: gifData,
+                    fileName: imageName,
+                    mimeType: mimeType,
+                    parentMessage: self.parentMessage
+                )
+            default:
+                let originalImage = info[.originalImage] as? UIImage
+                guard let image = originalImage?.fixedOrientation(),
+                      let imageData = image.sbu_convertToData() else { return }
+                
+                self.delegate?.messageThreadModule(
+                    self,
+                    didPickFileData: imageData,
+                    fileName: imageName,
+                    mimeType: mimeType,
+                    parentMessage: self.parentMessage
+                )
             }
         }
         

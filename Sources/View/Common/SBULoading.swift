@@ -141,7 +141,8 @@ public class SBULoading: NSObject {
         self.baseView.superview != nil
     }
     
-    @objc private func dismiss() {
+    @objc
+    private func dismiss() {
         self.spinner.layer.removeAnimation(forKey: SBUAnimation.Key.spin.identifier)
         for subView in self.baseView.subviews {
             subView.removeFromSuperview()

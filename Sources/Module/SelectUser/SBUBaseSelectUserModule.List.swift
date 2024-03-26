@@ -33,7 +33,8 @@ extension SBUBaseSelectUserModule {
     
     /// A module component that represent the list of `SBUBaseSelectUserModule`.
     @objc(SBUBaseChannelSettingsModuleList)
-    @objcMembers open class List: UIView {
+    @objcMembers
+    open class List: UIView {
         
         // MARK: - UI properties (Public)
         
@@ -189,7 +190,8 @@ extension SBUBaseSelectUserModule {
 
 // MARK: - SBUEmptyViewDelegate
 extension SBUBaseSelectUserModule.List: SBUEmptyViewDelegate {
-    @objc open func didSelectRetry() {
+    @objc 
+    open func didSelectRetry() {
         if let emptyView = self.emptyView as? SBUEmptyView {
             emptyView.reloadData(.noMembers)
         }

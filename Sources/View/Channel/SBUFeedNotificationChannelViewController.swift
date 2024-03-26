@@ -233,8 +233,8 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
     /// print(action.data) // "https://www.sendbird.com"
     /// ```
     /// - Since: 3.5.0
-    open func handleWebAction(_
-        action: SBUMessageTemplate.Action,
+    open func handleWebAction(
+        _ action: SBUMessageTemplate.Action,
         notification: BaseMessage,
         forRowAt indexPath: IndexPath
     ) {

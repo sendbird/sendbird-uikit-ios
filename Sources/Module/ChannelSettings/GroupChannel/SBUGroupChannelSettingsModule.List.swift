@@ -9,6 +9,7 @@
 import UIKit
 import SendbirdChatSDK
 
+// swiftlint:disable type_name
 public protocol SBUGroupChannelSettingsModuleListDelegate: SBUBaseChannelSettingsModuleListDelegate {
     /// Called when the setting item cell was selected in the `listComponent`.
     /// - Parameters:
@@ -38,12 +39,14 @@ public protocol SBUGroupChannelSettingsModuleListDelegate: SBUBaseChannelSetting
 }
 
 public protocol SBUGroupChannelSettingsModuleListDataSource: SBUBaseChannelSettingsModuleListDataSource { }
+// swiftlint:enable type_name
 
 extension SBUGroupChannelSettingsModule {
     
     /// A module component that represent the list of `SBUGroupChannelSettingsModule`.
     @objc(SBUGroupChannelSettingsModuleList)
-    @objcMembers open class List: SBUBaseChannelSettingsModule.List {
+    @objcMembers
+    open class List: SBUBaseChannelSettingsModule.List {
         
         // MARK: - Logic properties (Public)
         public weak var delegate: SBUGroupChannelSettingsModuleListDelegate? {
@@ -213,8 +216,10 @@ extension SBUGroupChannelSettingsModule {
 
 // MARK: - UITableView relations
 extension SBUGroupChannelSettingsModule.List {
-    open override func tableView(_ tableView: UITableView,
-                        cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    open override func tableView(
+        _ tableView: UITableView,
+        cellForRowAt indexPath: IndexPath
+    ) -> UITableViewCell {
         let cell: UITableViewCell? = tableView.dequeueReusableCell(
             withIdentifier: SBUGroupChannelSettingCell.sbu_className)
         

@@ -9,6 +9,7 @@
 import UIKit
 import Photos
 
+/// This class contains global variables and configurations for Sendbird UIKit.
 public class SBUGlobals {
     
     /// The application ID from Sendbird dashboard.

@@ -18,6 +18,11 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
     public var useQuotedMessage = false
     public var useThreadInfo = false
     
+    /// The boolean value that decides whether to enable a long press on a reaction emoji.
+    /// If `true`, a member list for each reaction emoji is shown.
+    /// - Since: 3.19.0
+    public var enableEmojiLongPress = true
+    
     // MARK: Views: Controls
     public lazy var userNameView: UIView = {
         let userNameView = SBUUserNameView()
@@ -296,7 +301,8 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         self.reactionView.configure(
             maxWidth: SBUConstant.imageSize.width,
             useReaction: self.useReaction,
-            reactions: message.reactions
+            reactions: message.reactions,
+            enableEmojiLongPress: self.enableEmojiLongPress
         )
         
         // MARK: update UI with message position
@@ -321,10 +327,10 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         self.profileView.isHidden = self.position == .right
         self.profilesStackView.isHidden = self.position == .right
         
-        let usingProfileView = !(
-            SBUGlobals.isMessageGroupingEnabled &&
-            (configuration.groupPosition == .top || configuration.groupPosition == .middle)
-        )
+//        let usingProfileView = !(
+//            SBUGlobals.isMessageGroupingEnabled &&
+//            (configuration.groupPosition == .top || configuration.groupPosition == .middle)
+//        )
         
         if configuration.messagePosition != .right {
             self.configureMessageProfileViews(message: message)
@@ -498,54 +504,54 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         }
         
         switch self.position {
-            case .left:
-                self.userNameStackView.alignment = .leading
-                self.mainContainerVStackView.alignment = .leading
-                self.messageHStackView.setHStack([
-                    self.mainContainerVStackView.setVStack([
-                        self.mainContainerView,
-                    ]),
-                    self.stateView,
-                    self.messageSpacing
-                ])
-                self.contentVStackView.setVStack([
-                    self.quotedMessageView,
-                    self.messageHStackView
-                ])
-                self.contentHStackView.setHStack([
-                    self.profilesStackView,
-                    self.profileContentSpacing,
-                    self.contentVStackView
-                ])
-                self.threadHStackView.setHStack([
-                    self.threadInfoSpacing,
-                    self.threadInfoView
-                ])
-                    
-            case .right:
-                self.userNameStackView.alignment = .trailing
-                self.mainContainerVStackView.alignment = .trailing
-                self.messageHStackView.setHStack([
-                    self.messageSpacing,
-                    self.stateView,
-                    self.mainContainerVStackView.setVStack([
-                        self.mainContainerView,
-                    ]),
-                ])
-                self.contentVStackView.setVStack([
-                    self.quotedMessageView,
-                    self.messageHStackView
-                ])
-                self.contentHStackView.setHStack([
-                    self.contentVStackView,
-                    self.profileContentSpacing
-                ])
-                self.threadHStackView.setHStack([
-                    self.threadInfoView
-                ])
-                
-            case .center:
-                break
+        case .left:
+            self.userNameStackView.alignment = .leading
+            self.mainContainerVStackView.alignment = .leading
+            self.messageHStackView.setHStack([
+                self.mainContainerVStackView.setVStack([
+                    self.mainContainerView,
+                ]),
+                self.stateView,
+                self.messageSpacing
+            ])
+            self.contentVStackView.setVStack([
+                self.quotedMessageView,
+                self.messageHStackView
+            ])
+            self.contentHStackView.setHStack([
+                self.profilesStackView,
+                self.profileContentSpacing,
+                self.contentVStackView
+            ])
+            self.threadHStackView.setHStack([
+                self.threadInfoSpacing,
+                self.threadInfoView
+            ])
+            
+        case .right:
+            self.userNameStackView.alignment = .trailing
+            self.mainContainerVStackView.alignment = .trailing
+            self.messageHStackView.setHStack([
+                self.messageSpacing,
+                self.stateView,
+                self.mainContainerVStackView.setVStack([
+                    self.mainContainerView,
+                ]),
+            ])
+            self.contentVStackView.setVStack([
+                self.quotedMessageView,
+                self.messageHStackView
+            ])
+            self.contentHStackView.setHStack([
+                self.contentVStackView,
+                self.profileContentSpacing
+            ])
+            self.threadHStackView.setHStack([
+                self.threadInfoView
+            ])
+            
+        case .center:
+            break
         }
         
         if self.useQuotedMessage {
@@ -615,7 +621,8 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
     }
         
     // MARK: - Action
-    @objc open func onLongPressContentView(sender: UILongPressGestureRecognizer?) {
+    @objc
+    open func onLongPressContentView(sender: UILongPressGestureRecognizer?) {
         if let sender = sender {
             if sender.state == .began {
                 self.longPressHandlerToContent?()
@@ -625,11 +632,13 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         }
     }
     
-    @objc open func onTapContentView(sender: UITapGestureRecognizer) {
+    @objc
+    open func onTapContentView(sender: UITapGestureRecognizer) {
         self.tapHandlerToContent?()
     }
     
-    @objc open func onTapUserProfileView(sender: UITapGestureRecognizer) {
+    @objc
+    open func onTapUserProfileView(sender: UITapGestureRecognizer) {
         self.userProfileTapHandler?()
     }
     

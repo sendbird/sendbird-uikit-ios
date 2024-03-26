@@ -75,8 +75,7 @@ open class SBUBaseChannelSettingsViewModel: NSObject {
             if let error = error {
                 self.baseDelegate?.didReceiveError(error, isBlocker: false)
             } else {
-                let completionHandler: ((BaseChannel?, SBError?) -> Void) = {
-                    [weak self] channel, error in
+                let completionHandler: ((BaseChannel?, SBError?) -> Void) = { [weak self] channel, error in
                     
                     guard let self = self else { return }
                     

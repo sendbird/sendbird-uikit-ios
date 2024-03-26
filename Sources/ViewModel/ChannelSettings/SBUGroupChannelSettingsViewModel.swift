@@ -18,20 +18,33 @@ public protocol SBUGroupChannelSettingsViewModelDelegate: SBUBaseChannelSettings
     )
 }
 
+/// This is a typealias for `SBUGroupChannelSettingsViewModel`. It is deprecated and renamed to `SBUGroupChannelSettingsViewModel`.
 @available(*, deprecated, renamed: "SBUGroupChannelSettingsViewModel") // 3.0.0
 public typealias SBUChannelSettingsViewModel = SBUGroupChannelSettingsViewModel
 
+/// `SBUGroupChannelSettingsViewModel` is a class that inherits from `SBUBaseChannelSettingsViewModel`.
+/// It is used to manage the settings of a group channel.
 open class SBUGroupChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
     // MARK: - Logic properties (Public)
+    /// The delegate for the `SBUGroupChannelSettingsViewModel`. This delegate receives callbacks
+    /// for events such as when the current user has left the channel.
     public weak var delegate: SBUGroupChannelSettingsViewModelDelegate? {
         get { self.baseDelegate as? SBUGroupChannelSettingsViewModelDelegate }
         set { self.baseDelegate = newValue }
     }
     
     // MARK: - LifeCycle
-    public init(channel: BaseChannel? = nil,
-                channelURL: String? = nil,
-                delegate: SBUGroupChannelSettingsViewModelDelegate? = nil) {
+    /// Initializes a new instance of the `SBUGroupChannelSettingsViewModel` class.
+    ///
+    /// - Parameters:
+    ///   - channel: The base channel. Default value is `nil`.
+    ///   - channelURL: The URL of the channel. Default value is `nil`.
+    ///   - delegate: The delegate for the `SBUGroupChannelSettingsViewModel`. Default value is `nil`.
+    public init(
+        channel: BaseChannel? = nil,
+        channelURL: String? = nil,
+        delegate: SBUGroupChannelSettingsViewModelDelegate? = nil
+    ) {
         super.init()
         
         self.delegate = delegate

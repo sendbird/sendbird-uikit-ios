@@ -59,7 +59,8 @@ extension SBUUserListModule {
     
     /// A module component that represent the list of `SBUUserListModule`.
     @objc(SBUUserListModuleList)
-    @objcMembers open class List: UIView {
+    @objcMembers
+    open class List: UIView {
         
         // MARK: - UI properties (Public)
         /// The table view that shows the list of the users.

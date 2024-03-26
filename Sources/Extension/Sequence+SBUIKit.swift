@@ -9,6 +9,7 @@
 import UIKit
 
 extension Sequence where Iterator.Element: Hashable {
+    /// This function returns an array of unique elements from the sequence.
     public func sbu_unique() -> [Iterator.Element] {
         var seen: [Iterator.Element: Bool] = [:]
         return self.filter { seen.updateValue(true, forKey: $0) == nil }

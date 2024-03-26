@@ -42,7 +42,8 @@ extension SBUMessageSearchModule {
     
     /// A module component that represent the list of `SBUMessageSearchModule`.
     @objc(SBUMessageSearchModuleList)
-    @objcMembers open class List: UIView {
+    @objcMembers
+    open class List: UIView {
         
         // MARK: - UI properties (Public)
         

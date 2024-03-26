@@ -9,6 +9,7 @@
 import UIKit
 import SendbirdChatSDK
 
+// swiftlint:disable type_name
 /// Event methods for the views updates and performing actions from the header component in open channel settings module.
 public protocol SBUOpenChannelSettingsModuleHeaderDelegate: SBUBaseChannelSettingsModuleHeaderDelegate {
     /// Called when `titleView` value has been updated.
@@ -41,12 +42,14 @@ public protocol SBUOpenChannelSettingsModuleHeaderDelegate: SBUBaseChannelSettin
     ///   - rightItem: Selected `rightBarButton` object.
     func openChannelSettingsModule(_ headerComponent: SBUOpenChannelSettingsModule.Header, didTapRightItem rightItem: UIBarButtonItem)
 }
+// swiftlint:enable type_name
 
 extension SBUOpenChannelSettingsModule {
     
     /// A module component that represent the header of `SBUOpenChannelSettingsModule`.
     /// - This class consists of titleView, leftBarButton, and rightBarButton.
-    @objcMembers open class Header: SBUBaseChannelSettingsModule.Header {
+    @objcMembers
+    open class Header: SBUBaseChannelSettingsModule.Header {
         
         // MARK: - UI properties (Private)
         override func defaultTitleView() -> SBUNavigationTitleView {

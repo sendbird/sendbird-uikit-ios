@@ -47,7 +47,8 @@ extension SBUInviteUserModule {
     
     /// A module component that represent the header of `SBUInviteUserModule`.
     /// This class consists of titleView, leftBarButton, and rightBarButton.
-    @objcMembers open class Header: SBUBaseSelectUserModule.Header {
+    @objcMembers
+    open class Header: SBUBaseSelectUserModule.Header {
         
         // MARK: - UI properties (Private)
         override func defaultTitleView() -> SBUNavigationTitleView {

@@ -41,19 +41,26 @@ public protocol SBUCreateChannelViewModelDataSource: AnyObject {
     ) -> [SBUUser]?
 }
 
+/// `SBUCreateChannelViewModel` is a class that handles the creation of channels.
 open class SBUCreateChannelViewModel {
     // MARK: - Constants
     static let limit: UInt = 20
     
     // MARK: - Property (Public)
+    /// Delegate for `SBUCreateChannelViewModel`
     public weak var delegate: SBUCreateChannelViewModelDelegate?
+    /// The data source for `SBUCreateChannelViewModel`. This is used to provide the next member list for the channel type.
     public weak var dataSource: SBUCreateChannelViewModelDataSource?
 
+    /// The type of channel to be created. Default is `.group`.
     public private(set) var channelType: ChannelCreationType = .group
     
+    /// The list of users
     @SBUAtomic public private(set) var userList: [SBUUser] = []
+    /// Represents the list of selected users in the `SBUCreateChannelViewModel` class.
     @SBUAtomic public private(set) var selectedUserList: Set<SBUUser> = []
 
+    /// The query object for fetching the application user list.
     public private(set) var userListQuery: ApplicationUserListQuery?
     
     // MARK: - Property (Private)
@@ -63,11 +70,19 @@ open class SBUCreateChannelViewModel {
     @SBUAtomic private var isLoading = false
     
     // MARK: - Life Cycle
-    public init(channelType: ChannelCreationType = .group,
-                users: [SBUUser]? = nil,
-                delegate: SBUCreateChannelViewModelDelegate? = nil,
-                dataSource: SBUCreateChannelViewModelDataSource? = nil) {
-        
+    /// Initializes a new instance of `SBUCreateChannelViewModel`.
+    ///
+    /// - Parameters:
+    ///   - channelType: The type of channel to be created. Default is `.group`.
+    ///   - users: An optional array of `SBUUser` to be added to the user list. Default is `nil`.
+    ///   - delegate: An optional delegate for `SBUCreateChannelViewModelDelegate`. Default is `nil`.
+    ///   - dataSource: An optional data source for `SBUCreateChannelViewModelDataSource`. Default is `nil`.
+    public init(
+        channelType: ChannelCreationType = .group,
+        users: [SBUUser]? = nil,
+        delegate: SBUCreateChannelViewModelDelegate? = nil,
+        dataSource: SBUCreateChannelViewModelDataSource? = nil
+    ) {
         self.delegate = delegate
         self.dataSource = dataSource
         
@@ -244,6 +259,10 @@ open class SBUCreateChannelViewModel {
     }
     
     // MARK: - Select user
+    /// Selects a user.
+    ///
+    /// This function is used to select a user. If the user is already selected, it will be removed from the selection. Otherwise, the user will be added to the selection.
+    /// - Parameter user: The `SBUUser` to be selected.
     public func selectUser(user: SBUUser) {
         if let index = self.selectedUserList.firstIndex(of: user) {
             self.selectedUserList.remove(at: index)

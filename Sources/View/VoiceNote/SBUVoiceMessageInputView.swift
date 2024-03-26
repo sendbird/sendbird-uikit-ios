@@ -153,8 +153,10 @@ public class SBUVoiceMessageInputView: NSObject, SBUViewLifeCycle {
         self.progressRecordingIcon
             .sbu_constraint(width: 12, height: 12)
             .sbu_constraint_equalTo(
-                trailingAnchor: self.progressTimeLabel.leadingAnchor, trailing: -6,
-                centerYAnchor: self.progressTimeLabel.centerYAnchor, centerY: 0
+                trailingAnchor: self.progressTimeLabel.leadingAnchor, 
+                trailing: -6,
+                centerYAnchor: self.progressTimeLabel.centerYAnchor, 
+                centerY: 0
             )
         
         // Button
@@ -227,15 +229,12 @@ public class SBUVoiceMessageInputView: NSObject, SBUViewLifeCycle {
         case .none:
             self.progressView.trackTintColor = self.theme.progressTrackDeactivatedTintColor
             self.progressTimeLabel.textColor = self.theme.progressDeactivatedTimeColor
-
-            break
         case .recording:
             if Float(Int(time) / 1000) > 0.1 {
                 progress = Float(time / SBUGlobals.voiceMessageConfig.recorder.maxRecordingTime)
             }
             let isEvenSeconds = Int(time / 1000) % 2 == 1
             self.progressRecordingIcon.isHidden = isEvenSeconds
-            break
         case .finishRecording:
             break
         case .playing:
@@ -243,13 +242,11 @@ public class SBUVoiceMessageInputView: NSObject, SBUViewLifeCycle {
             self.progressTimeLabel.text = SBUUtils.convertToPlayTime(remainingTime)
             let playtime = self.voiceFileInfo?.playtime ?? 1.0
             progress = Float(time / playtime)
-            break
         case .pause:
             let remainingTime = (self.voiceFileInfo?.playtime ?? 0) - time
             self.progressTimeLabel.text = SBUUtils.convertToPlayTime(remainingTime)
             let playtime = self.voiceFileInfo?.playtime ?? 1.0
             progress = Float(time / playtime)
-            break
         case .finishPlaying:
             break
         }
@@ -405,12 +402,14 @@ public class SBUVoiceMessageInputView: NSObject, SBUViewLifeCycle {
 
     // MARK: - Actions
     
-    @objc func onTapCancel() {
+    @objc
+    func onTapCancel() {
         self.reset()
         self.delegate?.voiceMessageInputViewDidTapCacel(self)
     }
     
-    @objc func onTapStatus() {
+    @objc
+    func onTapStatus() {
         switch self.status {
         case .none:
             // Record
@@ -450,7 +449,8 @@ public class SBUVoiceMessageInputView: NSObject, SBUViewLifeCycle {
         }
     }
     
-    @objc func onTapSend() {
+    @objc
+    func onTapSend() {
         if self.status == .none { return }
         
         if self.status == .recording {
