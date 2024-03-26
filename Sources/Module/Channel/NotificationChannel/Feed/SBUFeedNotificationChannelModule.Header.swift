@@ -8,6 +8,7 @@
 
 import UIKit
 
+// swiftlint:disable type_name
 /// Event methods for the views updates and performing actions from the header component in a notification channel.
 protocol SBUFeedNotificationChannelModuleHeaderDelegate: SBUCommonDelegate {
     /// Called when the value of  ``SBUFeedNotificationChannelModule/Header/titleView`` has been updated.
@@ -77,6 +78,7 @@ protocol SBUFeedNotificationChannelModuleHeaderDataSource: AnyObject {
         channelNameForTitleView titleView: UIView?
     ) -> String?
 }
+// swiftlint:enable type_name
 
 extension SBUFeedNotificationChannelModule {
     /// A module component that represent the header of ``SBUFeedNotificationChannelModule``
@@ -142,7 +144,7 @@ extension SBUFeedNotificationChannelModule {
         /// "Notifications"
         lazy var defaultLeftBarButton: UIBarButtonItem = {
             let backButton = SBUBarButtonItem.backButton(
-                vc: self,
+                target: self,
                 selector: #selector(onTapLeftBarButton(_:))
             )
             return backButton

@@ -9,8 +9,10 @@
 import UIKit
 import SendbirdChatSDK
 
+// swiftlint:disable type_name
 open class SBUGroupChannelPushSettingsViewController: SBUBaseViewController, SBUGroupChannelPushSettingsViewModelDelegate, SBUGroupChannelPushSettingsModuleHeaderDelegate, SBUGroupChannelPushSettingsModuleListDelegate, SBUGroupChannelPushSettingsModuleListDataSource {
-    
+    // swiftlint:enable type_name
+
     // MARK: - UI properties (Public)
     public var headerComponent: SBUGroupChannelPushSettingsModule.Header?
     public var listComponent: SBUGroupChannelPushSettingsModule.List?
@@ -49,8 +51,8 @@ open class SBUGroupChannelPushSettingsViewController: SBUBaseViewController, SBU
         
         self.createViewModel(channel: channel)
         
-        self.headerComponent = SBUModuleSet.groupChannelPushSettingsModule.headerComponent
-        self.listComponent = SBUModuleSet.groupChannelPushSettingsModule.listComponent
+        self.headerComponent = SBUModuleSet.GroupChannelPushSettingsModule.HeaderComponent.init()
+        self.listComponent = SBUModuleSet.GroupChannelPushSettingsModule.ListComponent.init()
     }
     
     required public init(channelURL: String) {
@@ -59,8 +61,8 @@ open class SBUGroupChannelPushSettingsViewController: SBUBaseViewController, SBU
         
         self.createViewModel(channelURL: channelURL)
         
-        self.headerComponent = SBUModuleSet.groupChannelPushSettingsModule.headerComponent
-        self.listComponent = SBUModuleSet.groupChannelPushSettingsModule.listComponent
+        self.headerComponent = SBUModuleSet.GroupChannelPushSettingsModule.HeaderComponent.init()
+        self.listComponent = SBUModuleSet.GroupChannelPushSettingsModule.ListComponent.init()
     }
     
     open override func viewDidLoad() {
@@ -123,7 +125,10 @@ open class SBUGroupChannelPushSettingsViewController: SBUBaseViewController, SBU
     open override func setupLayouts() {
         self.listComponent?.sbu_constraint(
             equalTo: self.view,
-            left: 0, right: 0, top: 0, bottom: 0
+            left: 0,
+            right: 0,
+            top: 0,
+            bottom: 0
         )
     }
     

@@ -33,7 +33,8 @@ extension SBURegisterOperatorModule {
     
     /// A module component that represent the list of `SBURegisterOperatorModule`.
     @objc(SBURegisterOperatorModuleList)
-    @objcMembers open class List: SBUBaseSelectUserModule.List {
+    @objcMembers
+    open class List: SBUBaseSelectUserModule.List {
         
         // MARK: - Logic properties (Public)
         public weak var delegate: SBURegisterOperatorModuleListDelegate? {
@@ -105,6 +106,7 @@ extension SBURegisterOperatorModule.List {
 
 // MARK: - UITableView relations
 extension SBURegisterOperatorModule.List {
+    // swiftlint:disable missing_docs
     open func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.delegate?.registerOperatorModule(self, didSelectRowAt: indexPath)
         
@@ -121,4 +123,5 @@ extension SBURegisterOperatorModule.List {
                         forRowAt indexPath: IndexPath) {
         self.delegate?.registerOperatorModule(self, didDetectPreloadingPosition: indexPath)
     }
+    // swiftlint:enable missing_docs
 }

@@ -34,7 +34,8 @@ extension SBUCreateChannelModule {
     
     /// A module component that represent the list of `SBUCreateChannelModule`.
     @objc(SBUCreateChannelModuleList)
-    @objcMembers open class List: SBUBaseSelectUserModule.List {
+    @objcMembers
+    open class List: SBUBaseSelectUserModule.List {
        
         // MARK: - Logic properties (Public)
         /// The object that acts as the delegate of the list component. The delegate must adopt the `SBUCreateChannelModuleListDelegate`.
@@ -103,6 +104,7 @@ extension SBUCreateChannelModule.List {
     }
 }
 
+// swiftlint:disable missing_docs
 // MARK: - UITableView relations
 extension SBUCreateChannelModule.List {
     open func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -122,3 +124,4 @@ extension SBUCreateChannelModule.List {
         self.delegate?.createChannelModule(self, didDetectPreloadingPosition: indexPath)
     }
 }
+// swiftlint:enable missing_docs

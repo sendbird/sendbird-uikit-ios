@@ -9,6 +9,7 @@
 import UIKit
 import SendbirdChatSDK
 
+/// SBUUserMessageTextViewModel is a structure that represents the view model for user messages.
 public struct SBUUserMessageTextViewModel {
     var message: BaseMessage?
     var text: String
@@ -44,11 +45,22 @@ public struct SBUUserMessageTextViewModel {
         return mentionAttributes
     }
     
+    /// This computed property checks if the message has mentioned someone.
     public var hasMentionedMessage: Bool {
         guard let message = message else { return false }
         return message.mentionedMessageTemplate != nil && message.mentionedMessageTemplate != ""
     }
     
+    /// Initializer for the SBUUserMessageTextViewModel structure.
+    /// - Parameters:
+    ///   - message: The base message object.
+    ///   - position: The position of the message, default is .right.
+    ///   - text: The text of the message, default is nil.
+    ///   - font: The font of the message, default is nil.
+    ///   - textColor: The color of the text, default is nil.
+    ///   - isEdited: A boolean indicating if the message is edited, default is nil.
+    ///   - isOverlay: A boolean indicating if the message is an overlay, default is false.
+    ///   - highlightKeyword: The keyword to be highlighted in the message, default is nil.
     public init(
         message: BaseMessage?,
         position: MessagePosition = .right,
@@ -118,11 +130,16 @@ public struct SBUUserMessageTextViewModel {
         self.attributedText = attributedString
     }
     
+    /// This function is deprecated and has been renamed to `hasMentionedMessage`.
+    ///
+    /// - Returns: A Boolean value indicating whether the message has been mentioned.
     @available(*, deprecated, renamed: "hasMentionedMessage") // 3.3.0
     public func haveMentionedMessage() -> Bool {
         return hasMentionedMessage
     }
     
+    /// This function adds highlight to the text if needed.
+    /// - Parameter attributedString: The attributed string to be highlighted.
     public func addhighlightIfNeeded(with attributedString: NSMutableAttributedString) {
         guard let highlightKeyword = highlightKeyword else { return }
         
@@ -169,6 +186,10 @@ public struct SBUUserMessageTextViewModel {
         }
     }
     
+    /// This function adds highlight to mentioned users in the text if needed.
+    /// - Parameters:
+    ///   - attributedString: The attributed string to be highlighted.
+    ///   - mentionedList: The list of mentioned users.
     public func addMentionedUserHighlightIfNeeded(with attributedString: NSMutableAttributedString, mentionedList: [SBUMention]?) {
         guard let mentionedList = mentionedList,
               let currentUser = SBUGlobals.currentUser else { return }
@@ -188,6 +209,8 @@ public struct SBUUserMessageTextViewModel {
         }
     }
     
+    /// This function adds an edited state to the message if it has been edited.
+    /// - Parameter attributedString: The attributed string to be modified.
     public func addEditedStateIfNeeded(with attributedString: NSMutableAttributedString) {
         if let editTextColor = editTextColor, edited {
             let editedAttributedString = NSMutableAttributedString(

@@ -77,7 +77,8 @@ extension SBUOpenChannelModule {
         // MARK: - Actions
         
         /// The action of ``SBUOpenChannelModule/Media/mediaView``. It calls ``SBUOpenChannelModuleMediaDelegate/openChannelModule(_:didTapMediaView:)`` when it's tapped.
-        @objc open func onTapMediaView(_ sender: UITapGestureRecognizer? = nil) {
+        @objc
+        open func onTapMediaView(_ sender: UITapGestureRecognizer? = nil) {
             self.delegate?.openChannelModule(self, didTapMediaView: self.mediaView)
         }
     }

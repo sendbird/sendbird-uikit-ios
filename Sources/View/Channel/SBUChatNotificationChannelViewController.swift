@@ -89,8 +89,8 @@ open class SBUChatNotificationChannelViewController: SBUBaseViewController,
             )
         }
         
-        self.headerComponent = SBUModuleSet.chatNotificationChannelModule.headerComponent
-        self.listComponent = SBUModuleSet.chatNotificationChannelModule.listComponent
+        self.headerComponent = SBUModuleSet.ChatNotificationChannelModule.HeaderComponent.init()
+        self.listComponent = SBUModuleSet.ChatNotificationChannelModule.ListComponent.init()
     }
     
     /// Initializes ``SBUFeedNotificationChannelViewController`` with channelURL
@@ -114,8 +114,8 @@ open class SBUChatNotificationChannelViewController: SBUBaseViewController,
             )
         }
         
-        self.headerComponent = SBUModuleSet.chatNotificationChannelModule.headerComponent
-        self.listComponent = SBUModuleSet.chatNotificationChannelModule.listComponent
+        self.headerComponent = SBUModuleSet.ChatNotificationChannelModule.HeaderComponent.init()
+        self.listComponent = SBUModuleSet.ChatNotificationChannelModule.ListComponent.init()
     }
     
     open override func loadView() {
@@ -210,8 +210,8 @@ open class SBUChatNotificationChannelViewController: SBUBaseViewController,
     /// print(action.data) // "https://www.sendbird.com"
     /// ```
     /// - Since: 3.5.0
-    open func handleWebAction(_
-        action: SBUMessageTemplate.Action,
+    open func handleWebAction(
+        _ action: SBUMessageTemplate.Action,
         notification: BaseMessage,
         forRowAt indexPath: IndexPath
     ) {

@@ -5,9 +5,10 @@
 //  Created by Harry Kim on 2020/02/05.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
 //
-
+// swiftlint:disable identifier_name
 import UIKit
 
+/// `SBUFontSet` is a class that defines a set of fonts.
 public class SBUFontSet {
     // MARK: - H
     /// Bold, 18pt
@@ -285,3 +286,4 @@ extension SBUFontSet {
         public static var notifications: String?
     }
 }
+// swiftlint:enable identifier_name

@@ -44,7 +44,8 @@ public protocol SBUBaseChannelListModuleHeaderDelegate: SBUCommonDelegate {
 
 extension SBUBaseChannelListModule {
     /// A module component that represents the header of `SBUBaseChannelListModule`.
-    @objcMembers open class Header: UIView {
+    @objcMembers
+    open class Header: UIView {
         
         // MARK: - UI properties (Public)
         
@@ -77,7 +78,7 @@ extension SBUBaseChannelListModule {
         
         private func defaultLeftBarButton() -> UIBarButtonItem {
             let backButton = SBUBarButtonItem.backButton(
-                vc: self,
+                target: self,
                 selector: #selector(onTapLeftBarButton)
             )
             return backButton

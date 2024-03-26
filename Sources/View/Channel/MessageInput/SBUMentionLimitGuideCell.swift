@@ -41,7 +41,10 @@ open class SBUMentionLimitGuideCell: SBUTableViewCell {
         self.baseStackView
             .sbu_constraint(
                 equalTo: self.contentView,
-                leading: 16, trailing: -16, top: 12, bottom: 12
+                leading: 16, 
+                trailing: -16,
+                top: 12,
+                bottom: 12
             )
     }
     

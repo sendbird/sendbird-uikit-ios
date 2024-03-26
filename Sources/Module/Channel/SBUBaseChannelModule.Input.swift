@@ -107,7 +107,8 @@ public protocol SBUBaseChannelModuleInputDataSource: AnyObject {
 
 extension SBUBaseChannelModule {
     /// The `SBUBaseChannelModule`'s component class that represents input
-    @objcMembers open class Input: UIView, SBUMessageInputViewDelegate, SBUMessageInputViewDataSource {
+    @objcMembers
+    open class Input: UIView, SBUMessageInputViewDelegate, SBUMessageInputViewDataSource {
         
         /// ``inputVStackView`` is a vertical stackview to make it easier to add new views at the same level as ``messageInputView``.
         /// - NOTE: It's not recommended that modify the properties of inputVStackView's axis, alignment, etc.
@@ -284,10 +285,10 @@ extension SBUBaseChannelModule {
             
             var parentMessage: BaseMessage?
             switch messageInputView.option {
-                case .quoteReply(let message):
-                    parentMessage = message
-                default:
-                    break
+            case .quoteReply(let message):
+                parentMessage = message
+            default:
+                break
             }
             messageInputView.setMode(.none)
             

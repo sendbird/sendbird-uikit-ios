@@ -168,9 +168,9 @@ class SBUEmojiListViewController: SBUBaseViewController, UICollectionViewDelegat
         cell.configure(type: .messageMenu, url: emoji.url)
 
         guard let currentUesr = SBUGlobals.currentUser else { return cell }
-        let didSelect = self.message?.reactions.first {
-            $0.key == emoji.key
-            }?.userIds.contains(currentUesr.userId) ?? false
+        let didSelect = self.message?.reactions
+            .first { $0.key == emoji.key }?
+            .userIds.contains(currentUesr.userId) ?? false
         cell.isSelected = didSelect
         return cell
     }

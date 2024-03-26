@@ -15,7 +15,12 @@ open class SBUParentMessageInfoReactionView: SBUMessageReactionView {
         self.layer.borderWidth = 0
     }
 
-    open override func configure(maxWidth: CGFloat, useReaction: Bool, reactions: [Reaction]) {
+    open override func configure(
+        maxWidth: CGFloat,
+        useReaction: Bool,
+        reactions: [Reaction],
+        enableEmojiLongPress: Bool
+    ) {
         guard useReaction else {
             self.collectionViewMinWidthContraint?.isActive = false
             self.isHidden = true
@@ -26,6 +31,7 @@ open class SBUParentMessageInfoReactionView: SBUMessageReactionView {
         self.maxWidth = maxWidth
         self.reactions = reactions
         self.emojiList = SBUEmojiManager.getAllEmojis()
+        self.enableEmojiLongPress = enableEmojiLongPress
         
         self.sameCellWidth = true
 

@@ -9,6 +9,7 @@
 import UIKit
 import SendbirdChatSDK
 
+// swiftlint:disable type_name
 public protocol SBUGroupChannelPushSettingsViewModelDelegate: SBUBaseChannelSettingsViewModelDelegate {
     /// Called when changed push notification option
     /// - Parameters:
@@ -19,6 +20,7 @@ public protocol SBUGroupChannelPushSettingsViewModelDelegate: SBUBaseChannelSett
         didChangeNotification pushTriggerOption: GroupChannelPushTriggerOption
     )
 }
+// swiftlint:enable type_name
 
 open class SBUGroupChannelPushSettingsViewModel: SBUBaseChannelSettingsViewModel {
     public private(set) var currentTriggerOption: GroupChannelPushTriggerOption = .off

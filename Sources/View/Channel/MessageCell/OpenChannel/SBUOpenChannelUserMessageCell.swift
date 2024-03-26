@@ -109,11 +109,13 @@ open class SBUOpenChannelUserMessageCell: SBUOpenChannelContentBaseMessageCell {
     }
     
     // MARK: - Common
-    open func configure(_ message: BaseMessage,
-                          hideDateView: Bool,
-                          groupPosition: MessageGroupPosition,
-                          withTextView: Bool,
-                          isOverlay: Bool = false) {
+    open func configure(
+        _ message: BaseMessage,
+        hideDateView: Bool,
+        groupPosition: MessageGroupPosition,
+        withTextView: Bool,
+        isOverlay: Bool = false
+    ) {
 
         let position = MessagePosition.left
         

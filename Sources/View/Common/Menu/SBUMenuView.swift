@@ -8,11 +8,23 @@
 
 import UIKit
 
-public typealias SBUMenunHandler = () -> Void
+/// This typealias is deprecated and has been renamed to `SBUMenuHandler`
+@available(*, deprecated, renamed: "SBUMenuHandler")
+public typealias SBUMenunHandler = SBUMenuHandler
 
+/// This typealias is used to define a closure that takes no parameters and returns no value.
+/// It is typically used as a completion handler for various operations in the `SBUMenuItem` class.
+/// - Since: 3.19.0
+public typealias SBUMenuHandler = () -> Void
+
+/// `SBUMenuItem` is a class that inherits from `SBUCommonItem`. It is used to create menu items in the application.
 public class SBUMenuItem: SBUCommonItem {
-    var completionHandler: SBUMenunHandler?
+    var completionHandler: SBUMenuHandler?
     
+    /// A Boolean value that determines whether the `SBUMenuItem` is enabled.
+    ///
+    /// When the value of this property is `false`, the `completionHandler` is set to `nil`.
+    /// When the value of this property is `true`, the `completionHandler` retains its value.
     public var isEnabled: Bool = true {
         didSet {
             guard isEnabled == false else { return }
@@ -37,7 +49,7 @@ public class SBUMenuItem: SBUCommonItem {
         tintColor: UIColor? = nil,
         textAlignment: NSTextAlignment = .left,
         tag: Int? = nil,
-        completionHandler: SBUMenunHandler? = nil
+        completionHandler: SBUMenuHandler? = nil
     ) {
         super.init(
             title: title,
@@ -190,7 +202,8 @@ class SBUMenuView: NSObject {
         })
     }
     
-    @objc private func dismiss() {
+    @objc
+    private func dismiss() {
         guard !isShowing else { return }
 
         for subView in self.baseView.subviews {
@@ -310,7 +323,8 @@ class SBUMenuView: NSObject {
     }
     
     // MARK: Button action
-    @objc private func onClickMenuButton(sender: UIButton) {
+    @objc
+    private func onClickMenuButton(sender: UIButton) {
         let index = sender.tag
         let item = self.items[index]
         item.completionHandler?()

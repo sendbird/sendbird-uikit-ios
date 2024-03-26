@@ -9,16 +9,21 @@
 import UIKit
 import SendbirdChatSDK
 
+// swiftlint:disable type_name
+
 /// Event methods for the views updates and performing actions from the header component in channel settings module.
 public protocol SBUBaseChannelSettingsModuleHeaderDelegate: SBUCommonDelegate { }
 
 /// Methods to get data source for header component in a channel setting.
 public protocol SBUBaseChannelSettingsModuleHeaderDataSource: AnyObject { }
 
+// swiftlint:enable type_name
+
 extension SBUBaseChannelSettingsModule {
     
     /// A module component that represent the header of `SBUBaseChannelSettingsModule`.
-    @objcMembers open class Header: UIView {
+    @objcMembers
+    open class Header: UIView {
         
         // MARK: - UI properties (Public)
         
@@ -48,7 +53,7 @@ extension SBUBaseChannelSettingsModule {
         
         func defaultLeftBarButton() -> UIBarButtonItem {
             let backButton = SBUBarButtonItem.backButton(
-                vc: self,
+                target: self,
                 selector: #selector(onTapLeftBarButton)
             )
             return backButton

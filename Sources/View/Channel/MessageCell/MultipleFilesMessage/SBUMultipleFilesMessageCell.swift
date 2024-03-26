@@ -121,6 +121,7 @@ open class SBUMultipleFilesMessageCell: SBUContentBaseMessageCell, UICollectionV
         guard let configuration = configuration as? SBUMultipleFilesMessageCellParams else { return }
       
         self.useReaction = configuration.useReaction
+        self.enableEmojiLongPress = configuration.enableEmojiLongPress
         self.useQuotedMessage = configuration.useQuotedMessage
         self.useThreadInfo = configuration.useThreadInfo
       

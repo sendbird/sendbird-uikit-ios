@@ -45,7 +45,8 @@ extension SBUMessageSearchModule {
     
     /// A module component that represent the header of `SBUMessageSearchModule`.
     /// - This class consists of titleView, leftBarButton, and rightBarButton.
-    @objcMembers open class Header: UIView {
+    @objcMembers
+    open class Header: UIView {
         
         // MARK: - UI properties (Public)
         
@@ -234,7 +235,9 @@ extension SBUMessageSearchModule {
         
         /// Unregisters keyboard notification.
         public func unregisterKeyboardNotifications() {
+            // swiftlint:disable notification_center_detachment
             NotificationCenter.default.removeObserver(self)
+            // swiftlint:enable notification_center_detachment
         }
     }
 }

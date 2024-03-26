@@ -141,7 +141,6 @@ public class SBULayoutableButton: UIButton {
                 contentVerticalAlignment = .center
             case .center:
                 contentVerticalAlignment = .center
-                break
             case .unset:
                 break
             }

@@ -11,6 +11,7 @@ import SendbirdChatSDK
 
 public protocol SBUBaseChannelSettingsModuleListDelegate: SBUCommonDelegate { }
 
+// swiftlint:disable type_name
 public protocol SBUBaseChannelSettingsModuleListDataSource: AnyObject {
     /// Ask the data source to return the channel.
     /// - Parameters:
@@ -25,11 +26,13 @@ public protocol SBUBaseChannelSettingsModuleListDataSource: AnyObject {
     /// - Returns: `true` when it's an operator
     func baseChannelSettingsModuleIsOperator(_ listComponent: SBUBaseChannelSettingsModule.List) -> Bool
 }
+// swiftlint:enable type_name
 
 extension SBUBaseChannelSettingsModule {
     
     /// A module component that represent the list of `SBUBaseChannelSettingsModule`.
-    @objcMembers open class List: UIView {
+    @objcMembers
+    open class List: UIView {
         
         // MARK: - UI properties (Public)
         

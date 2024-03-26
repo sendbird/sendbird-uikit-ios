@@ -9,6 +9,7 @@
 import UIKit
 import SendbirdChatSDK
 
+/// `SBUQuoteMessageInputViewParams` is a class that defines the parameters for a quote message input view.
 public class SBUQuoteMessageInputViewParams {
     /// The message that is going to be replied.
     /// - Since: 2.2.0
@@ -77,6 +78,9 @@ public class SBUQuoteMessageInputViewParams {
     /// - Since: 2.2.0
     public var originalFileNAme: String? { (message as? FileMessage)?.name }
     
+    /// Initializes a new instance of the class with the provided message.
+    /// 
+    /// - Parameter message: The `BaseMessage` instance that the new instance is based on.
     public init(message: BaseMessage) {
         self.message = message
         self.quotedMessageNickname = SBUUser(user: message.sender!).refinedNickname()

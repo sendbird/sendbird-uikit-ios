@@ -5,6 +5,7 @@
 //  Created by Harry Kim on 2020/02/05.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
 //
+//  swiftlint:disable missing_docs
 
 import UIKit
 
@@ -80,23 +81,28 @@ public class SBUTheme {
         }
     }
     
-    public static func setGroupChannelList(channelListTheme: SBUGroupChannelListTheme,
-                                      channelCellTheme: SBUGroupChannelCellTheme) {
+    public static func setGroupChannelList(
+        channelListTheme: SBUGroupChannelListTheme,
+        channelCellTheme: SBUGroupChannelCellTheme
+    ) {
         self.groupChannelListTheme = channelListTheme
         self.groupChannelCellTheme = channelCellTheme
     }
     
-    public static func setOpenChannelList(channelListTheme: SBUOpenChannelListTheme,
-                                          channelCellTheme: SBUOpenChannelCellTheme) {
+    public static func setOpenChannelList(
+        channelListTheme: SBUOpenChannelListTheme,
+        channelCellTheme: SBUOpenChannelCellTheme
+    ) {
         self.openChannelListTheme = openChannelListTheme
         self.openChannelCellTheme = openChannelCellTheme
     }
     
-    public static func setChannel(channelTheme: SBUChannelTheme,
-                                  messageCellTheme: SBUMessageCellTheme,
-                                  messageInputTheme: SBUMessageInputTheme,
-                                  componentTheme: SBUComponentTheme,
-                                  messageTemplateTheme: SBUMessageTemplateTheme
+    public static func setChannel(
+        channelTheme: SBUChannelTheme,
+        messageCellTheme: SBUMessageCellTheme,
+        messageInputTheme: SBUMessageInputTheme,
+        componentTheme: SBUComponentTheme,
+        messageTemplateTheme: SBUMessageTemplateTheme
     ) {
         
         self.channelTheme = channelTheme
@@ -106,8 +112,10 @@ public class SBUTheme {
         self.messageTemplateTheme = messageTemplateTheme
     }
     
-    public static func setUserList(userListTheme: SBUUserListTheme,
-                                   userCellTheme: SBUUserCellTheme) {
+    public static func setUserList(
+        userListTheme: SBUUserListTheme,
+        userCellTheme: SBUUserCellTheme
+    ) {
         
         self.userListTheme = userListTheme
         self.userCellTheme = userCellTheme
@@ -191,109 +199,109 @@ public class SBUTheme {
     
     // Channel List
     public static var groupChannelListTheme: SBUGroupChannelListTheme {
-        set { shared.groupChannelListTheme = newValue }
         get { shared.groupChannelListTheme }
+        set { shared.groupChannelListTheme = newValue }
     }
     
     public static var groupChannelCellTheme: SBUGroupChannelCellTheme {
-        set { shared.groupChannelCellTheme = newValue }
         get { shared.groupChannelCellTheme }
+        set { shared.groupChannelCellTheme = newValue }
     }
     
     public static var openChannelListTheme: SBUOpenChannelListTheme {
-        set { shared.openChannelListTheme = newValue }
         get { shared.openChannelListTheme }
+        set { shared.openChannelListTheme = newValue }
     }
     
     public static var openChannelCellTheme: SBUOpenChannelCellTheme {
-        set { shared.openChannelCellTheme = newValue }
         get { shared.openChannelCellTheme }
+        set { shared.openChannelCellTheme = newValue }
     }
     
     // Channel & Message
     public static var channelTheme: SBUChannelTheme {
-        set { shared.channelTheme = newValue }
         get { shared.channelTheme }
+        set { shared.channelTheme = newValue }
     }
     
     public static var messageInputTheme: SBUMessageInputTheme {
-        set { shared.messageInputTheme = newValue }
         get { shared.messageInputTheme }
+        set { shared.messageInputTheme = newValue }
     }
     
     public static var messageCellTheme: SBUMessageCellTheme {
-        set { shared.messageCellTheme = newValue }
         get { shared.messageCellTheme }
+        set { shared.messageCellTheme = newValue }
     }
     
     // User List
     public static var userListTheme: SBUUserListTheme {
-        set { shared.userListTheme = newValue }
         get { shared.userListTheme }
+        set { shared.userListTheme = newValue }
     }
     
     public static var userCellTheme: SBUUserCellTheme {
-        set { shared.userCellTheme = newValue }
         get { shared.userCellTheme }
+        set { shared.userCellTheme = newValue }
     }
     
     // Setting
     public static var channelSettingsTheme: SBUChannelSettingsTheme {
-        set { shared.channelSettingsTheme = newValue }
         get { shared.channelSettingsTheme }
+        set { shared.channelSettingsTheme = newValue }
     }
     
     // User profile
     public static var userProfileTheme: SBUUserProfileTheme {
-        set { shared.userProfileTheme = newValue }
         get { shared.userProfileTheme }
+        set { shared.userProfileTheme = newValue }
     }
     
     // Component
     public static var componentTheme: SBUComponentTheme {
-        set { shared.componentTheme = newValue }
         get { shared.componentTheme }
+        set { shared.componentTheme = newValue }
     }
     
     // Overlay Specific
     public static var overlayTheme: SBUOverlayTheme {
-        set { shared.overlayTheme = newValue }
         get { shared.overlayTheme }
+        set { shared.overlayTheme = newValue }
     }
     
     // Message search
     public static var messageSearchTheme: SBUMessageSearchTheme {
-        set { shared.messageSearchTheme = newValue }
         get { shared.messageSearchTheme }
+        set { shared.messageSearchTheme = newValue }
     }
     
     public static var messageSearchResultCellTheme: SBUMessageSearchResultCellTheme {
-        set { shared.messageSearchResultCellTheme = newValue }
         get { shared.messageSearchResultCellTheme }
+        set { shared.messageSearchResultCellTheme = newValue }
     }
     
     // Create open channel
     public static var createOpenChannelTheme: SBUCreateOpenChannelTheme {
-        set { shared.createOpenChannelTheme = newValue }
         get { shared.createOpenChannelTheme }
+        set { shared.createOpenChannelTheme = newValue }
     }
     
     // Message template
     public static var messageTemplateTheme: SBUMessageTemplateTheme {
-        set { shared.messageTemplateTheme = newValue }
         get { shared.messageTemplateTheme }
+        set { shared.messageTemplateTheme = newValue }
     }
     
     // Voice message input
     public static var voiceMessageInputTheme: SBUVoiceMessageInputTheme {
-        set { shared.voiceMessageInputTheme = newValue }
         get { shared.voiceMessageInputTheme }
+        set { shared.voiceMessageInputTheme = newValue }
     }
     
     // Notification template
     static var notificationTheme: SBUNotificationTheme {
-        set { shared.notificationTheme = newValue }
         get { shared.notificationTheme }
+        set { shared.notificationTheme = newValue }
     }
     
     // MARK: - Private property
@@ -1143,7 +1151,8 @@ public class SBUMessageInputTheme {
         
         return theme
     }
-    
+
+    // swiftlint:disable identifier_name
     public init(backgroundColor: UIColor = SBUColorSet.background50,
                 textFieldBackgroundColor: UIColor = SBUColorSet.background100,
                 textFieldPlaceholderColor: UIColor = SBUColorSet.onlight03,
@@ -1200,6 +1209,7 @@ public class SBUMessageInputTheme {
         self.mentionTextColor = mentionTextColor
         self.mentionTextBackgroundColor = mentionTextBackgroundColor
     }
+    // swiftlint:enable identifier_name
     
     public var backgroundColor: UIColor
     public var textFieldBackgroundColor: UIColor
@@ -1221,8 +1231,12 @@ public class SBUMessageInputTheme {
     // MARK: Quoted message
     /// The color of divider between message input view and table view of channel view.
     public var channelViewDividerColor: UIColor
+    
+    // swiftlint:disable identifier_name
     /// The background color of thumbnail image of the quoted message
     public var quotedFileMessageThumbnailBackgroundColor: UIColor
+    // swiftlint:enable identifier_name
+    
     /// The tint color of thumbnail image of the quoted message such as file icon.
     public var quotedFileMessageThumbnailTintColor: UIColor
     /// The text color of `replyToLabel`
@@ -4350,3 +4364,4 @@ extension SBUNotificationTheme {
         var backgroundColor: UIColor
     }
 }
+//  swiftlint:enable missing_docs

@@ -49,7 +49,8 @@ extension SBUCreateChannelModule {
     
     /// A module component that represent the header of `SBUCreateChannelModule`.
     /// This class consists of titleView, leftBarButton, and rightBarButton.
-    @objcMembers open class Header: SBUBaseSelectUserModule.Header {
+    @objcMembers
+    open class Header: SBUBaseSelectUserModule.Header {
         
         // MARK: - UI properties (Private)
         override func defaultTitleView() -> SBUNavigationTitleView {
@@ -61,7 +62,7 @@ extension SBUCreateChannelModule {
         
         override func defaultLeftBarButton() -> UIBarButtonItem {
             let backButton = SBUBarButtonItem.backButton(
-                vc: self,
+                target: self,
                 selector: #selector(onTapLeftBarButton)
             )
             return backButton

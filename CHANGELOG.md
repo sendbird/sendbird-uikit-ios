@@ -1,5 +1,33 @@
 # Changelog
 
+### v3.19.0 (Mar 26, 2024)
+
+## New Feature
+Reactions is now supported for Super Group Channels in Sendbird UIKit. 
+To enable this feature, you must enable the **Reactions attribute** for your application in Sendbird server, and also enable **Reactions for Super Group Channel** in UIKit Config.
+
+Here are the new interfaces.
+- `SBUConfig.GroupChannel.channel.isSuperGroupReactionsEnabled`
+- `SBUAvailable.isSupportSuperGroupReactions()`
+- `SBUContentBaseMessageCell.enableEmojiLongPress`
+- `SBUUserMessageCellParams.enableEmojiLongPress`
+- `SBUFileMessageCellParams.enableEmojiLongPress`
+- `SBUMultipleFilesMessageCellParams.enableEmojiLongPress`
+- `SBUMessageReactionView.enableEmojiLongPress`
+
+## New Interfaces 
+- Added `SBUSuggestedRepliesRenderType' to specify the conditions for displaying `suggested replies`.
+
+```Swift
+SendbirdUI.config.groupChannel.channel.isSuggestedRepliesEnabled = true
+SendbirdUI.config.groupChannel.channel.showSuggestedRepliesFor = .allMessages
+```
+
+## Improvements
+- Fixed an issue where unnecessary API calls caused loading during functionality access in offline mode while using LocalCaching
+- Removed `v` from Sendbird UIKit tags
+- SwiftLint integration and warning fixes
+
 ### v3.18.2 (Mar 19, 2024)
 
 - Made the initializer of `SBUFeedNotificationChannelViewParams` public

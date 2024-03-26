@@ -9,6 +9,7 @@
 import UIKit
 import SendbirdChatSDK
 
+// swiftlint:disable type_name
 protocol SBUFeedNotificationChannelModuleCategoryFilterDelegate: SBUCommonDelegate {
     func feedNotificationChannelModule(
         _ categoryFilterComponent: SBUFeedNotificationChannelModule.CategoryFilter,
@@ -21,6 +22,7 @@ protocol SBUFeedNotificationChannelModuleCategoryFilterDataSource: AnyObject {
         _ categoryFilterComponent: SBUFeedNotificationChannelModule.CategoryFilter
     ) -> [NotificationCategory]?
 }
+// swiftlint:enable type_name
 
 extension SBUFeedNotificationChannelModule {
     @objcMembers

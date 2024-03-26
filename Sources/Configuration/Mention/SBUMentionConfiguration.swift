@@ -10,5 +10,6 @@ import Foundation
 
 /// - Since: 3.0.0
 public class SBUMentionConfiguration {
+    /// Initializes a new instance of the `SBUMentionConfiguration` class.
     public init() { }
 }

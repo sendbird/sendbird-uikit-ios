@@ -44,8 +44,8 @@ open class SBUCreateChannelViewController: SBUBaseViewController, SBUCreateChann
         super.init(nibName: nil, bundle: nil)
         
         self.createViewModel(type: .group)
-        self.headerComponent = SBUModuleSet.createChannelModule.headerComponent
-        self.listComponent = SBUModuleSet.createChannelModule.listComponent
+        self.headerComponent = SBUModuleSet.CreateGroupChannelModule.HeaderComponent.init()
+        self.listComponent = SBUModuleSet.CreateGroupChannelModule.ListComponent.init()
     }
     
     /// If you have user objects, use this initialize function.
@@ -57,8 +57,8 @@ open class SBUCreateChannelViewController: SBUBaseViewController, SBUCreateChann
         SBULog.info("")
         
         self.createViewModel(users: users, type: type)
-        self.headerComponent = SBUModuleSet.createChannelModule.headerComponent
-        self.listComponent = SBUModuleSet.createChannelModule.listComponent
+        self.headerComponent = SBUModuleSet.CreateGroupChannelModule.HeaderComponent.init()
+        self.listComponent = SBUModuleSet.CreateGroupChannelModule.ListComponent.init()
     }
     
     open override func viewDidLoad() {

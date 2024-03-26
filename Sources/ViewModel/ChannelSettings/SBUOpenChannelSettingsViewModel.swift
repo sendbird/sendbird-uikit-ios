@@ -26,9 +26,11 @@ open class SBUOpenChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
     }
     
     // MARK: - LifeCycle
-    public init(channel: BaseChannel? = nil,
-         channelURL: String? = nil,
-         delegate: SBUOpenChannelSettingsViewModelDelegate? = nil) {
+    public init(
+        channel: BaseChannel? = nil,
+        channelURL: String? = nil,
+        delegate: SBUOpenChannelSettingsViewModelDelegate? = nil
+    ) {
         super.init()
         
         self.delegate = delegate

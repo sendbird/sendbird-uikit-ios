@@ -256,24 +256,23 @@ open class SBUQuoteMessageInputView: SBUView, SBUQuoteMessageInputViewProtocol {
         var fileIcon: UIImage?
         
         switch messageFileType {
-            case .image:
-                imageOption = .imageToThumbnail
-            case .video:
-                imageOption = .videoURLToImage
-            case .audio:
-                fileIcon = SBUIconSetType.iconFileAudio.image(
-                    with: theme.quotedFileMessageThumbnailTintColor,
-                    to: SBUIconSetType.Metric.quotedMessageIconSize
-                )
-            case .voice:
-                self.userMessagePreview.text = SBUStringSet.VoiceMessage.Preview.quotedMessage
-                break
-                
-            case .pdf, .etc:
-                fileIcon = SBUIconSetType.iconFileDocument.image(
-                    with: theme.quotedFileMessageThumbnailTintColor,
-                    to: SBUIconSetType.Metric.quotedMessageIconSize
-                )
+        case .image:
+            imageOption = .imageToThumbnail
+        case .video:
+            imageOption = .videoURLToImage
+        case .audio:
+            fileIcon = SBUIconSetType.iconFileAudio.image(
+                with: theme.quotedFileMessageThumbnailTintColor,
+                to: SBUIconSetType.Metric.quotedMessageIconSize
+            )
+        case .voice:
+            self.userMessagePreview.text = SBUStringSet.VoiceMessage.Preview.quotedMessage
+            
+        case .pdf, .etc:
+            fileIcon = SBUIconSetType.iconFileDocument.image(
+                with: theme.quotedFileMessageThumbnailTintColor,
+                to: SBUIconSetType.Metric.quotedMessageIconSize
+            )
         }
         
         if let fileIcon = fileIcon {

@@ -49,7 +49,8 @@ public protocol SBUBaseChannelListModuleListDataSource: AnyObject {
 extension SBUBaseChannelListModule {
     /// A module component that represent the list of `SBUBaseChannelListModule`.
     @objc(SBUBaseChannelListModuleList)
-    @objcMembers open class List: UIView {
+    @objcMembers
+    open class List: UIView {
         
         // MARK: - UI properties (Public)
         

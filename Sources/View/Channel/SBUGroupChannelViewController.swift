@@ -89,17 +89,17 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     required public init(channel: GroupChannel, messageListParams: MessageListParams? = nil) {
         super.init(baseChannel: channel, messageListParams: messageListParams)
         
-        self.headerComponent = SBUModuleSet.groupChannelModule.headerComponent
-        self.listComponent = SBUModuleSet.groupChannelModule.listComponent
-        self.inputComponent = SBUModuleSet.groupChannelModule.inputComponent
+        self.headerComponent = SBUModuleSet.GroupChannelModule.HeaderComponent.init()
+        self.listComponent = SBUModuleSet.GroupChannelModule.ListComponent.init()
+        self.inputComponent = SBUModuleSet.GroupChannelModule.InputComponent.init()
     }
     
     public init(channel: GroupChannel, messageListParams: MessageListParams? = nil, displaysLocalCachedListFirst: Bool) {
         super.init(baseChannel: channel, messageListParams: messageListParams, displaysLocalCachedListFirst: displaysLocalCachedListFirst)
         
-        self.headerComponent = SBUModuleSet.groupChannelModule.headerComponent
-        self.listComponent = SBUModuleSet.groupChannelModule.listComponent
-        self.inputComponent = SBUModuleSet.groupChannelModule.inputComponent
+        self.headerComponent = SBUModuleSet.GroupChannelModule.HeaderComponent.init()
+        self.listComponent = SBUModuleSet.GroupChannelModule.ListComponent.init()
+        self.inputComponent = SBUModuleSet.GroupChannelModule.InputComponent.init()
     }
     
     required public init(
@@ -113,9 +113,9 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
             messageListParams: messageListParams
         )
         
-        self.headerComponent = SBUModuleSet.groupChannelModule.headerComponent
-        self.listComponent = SBUModuleSet.groupChannelModule.listComponent
-        self.inputComponent = SBUModuleSet.groupChannelModule.inputComponent
+        self.headerComponent = SBUModuleSet.GroupChannelModule.HeaderComponent.init()
+        self.listComponent = SBUModuleSet.GroupChannelModule.ListComponent.init()
+        self.inputComponent = SBUModuleSet.GroupChannelModule.InputComponent.init()
     }
     
     required public override init(
@@ -131,9 +131,9 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
             displaysLocalCachedListFirst: displaysLocalCachedListFirst
         )
         
-        self.headerComponent = SBUModuleSet.groupChannelModule.headerComponent
-        self.listComponent = SBUModuleSet.groupChannelModule.listComponent
-        self.inputComponent = SBUModuleSet.groupChannelModule.inputComponent
+        self.headerComponent = SBUModuleSet.GroupChannelModule.HeaderComponent.init()
+        self.listComponent = SBUModuleSet.GroupChannelModule.ListComponent.init()
+        self.inputComponent = SBUModuleSet.GroupChannelModule.InputComponent.init()
     }
     
     open override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -348,13 +348,13 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     
     // MARK: - Message: Menu
     
-    @available(*, deprecated, message: "Please use `calculateMessageMenuCGPoint(indexPath:position:)` in `SBUGroupChannelModule.List`") // 3.1.2
     /// Calculates the `CGPoint` value that indicates where to draw the message menu in the group channel screen.
     /// - Parameters:
     ///   - indexPath: IndexPath
     ///   - position: Message position
     /// - Returns: `CGPoint` value
     /// - Since: 1.2.5
+    @available(*, deprecated, message: "Please use `calculateMessageMenuCGPoint(indexPath:position:)` in `SBUGroupChannelModule.List`") // 3.1.2
     public func calculatorMenuPoint(
         indexPath: IndexPath,
         position: MessagePosition
@@ -400,7 +400,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         
         var parentMessage: BaseMessage?
         if let fullMessageList = self.viewModel?.fullMessageList {
-            parentMessage = fullMessageList.filter { $0.messageId == parentMessageId }.first
+            parentMessage = fullMessageList.first(where: { $0.messageId == parentMessageId })
         }
            
         let messageThreadVC = SBUViewControllerSet.MessageThreadViewController.init(
@@ -648,9 +648,9 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         }
     }
     
-    @available(iOS 14, *)
     /// Groups picked files by file type.
     /// - Returns a tuple - (an array of images + GIFs, an array of videos)
+    @available(iOS 14, *)
     private func groupFilesByMimeType(_ results: [PHPickerResult]) -> ([NSItemProvider], [NSItemProvider]) {
         var imageAndGIFs = [NSItemProvider]()
         var videos = [NSItemProvider]()
@@ -749,35 +749,35 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         
         // channel changed
         switch context.source {
-            case .eventReadStatusUpdated, .eventDeliveryStatusUpdated:
-                if context.source == .eventReadStatusUpdated {
-                    self.updateChannelStatus()
-                }
-                self.listComponent?.reloadTableView()
-                
-            case .eventTypingStatusUpdated:
+        case .eventReadStatusUpdated, .eventDeliveryStatusUpdated:
+            if context.source == .eventReadStatusUpdated {
                 self.updateChannelStatus()
-                self.listComponent?.reloadTableView()
+            }
+            self.listComponent?.reloadTableView()
             
-            case .channelChangelog:
-                self.updateChannelTitle()
-                self.inputComponent?.updateMessageInputModeState()
-                self.listComponent?.reloadTableView()
-                self.updateVoiceMessageInputMode()
-                
-            case .eventChannelChanged:
-                self.updateChannelTitle()
-                self.inputComponent?.updateMessageInputModeState()
-                self.updateVoiceMessageInputMode()
-                
-            case .eventChannelFrozen, .eventChannelUnfrozen,
-                    .eventUserMuted, .eventUserUnmuted,
-                    .eventOperatorUpdated,
-                    .eventUserBanned: // Other User Banned
-                self.inputComponent?.updateMessageInputModeState()
-                self.updateVoiceMessageInputMode()
-                
-            default: break
+        case .eventTypingStatusUpdated:
+            self.updateChannelStatus()
+            self.listComponent?.reloadTableView()
+            
+        case .channelChangelog:
+            self.updateChannelTitle()
+            self.inputComponent?.updateMessageInputModeState()
+            self.listComponent?.reloadTableView()
+            self.updateVoiceMessageInputMode()
+            
+        case .eventChannelChanged:
+            self.updateChannelTitle()
+            self.inputComponent?.updateMessageInputModeState()
+            self.updateVoiceMessageInputMode()
+            
+        case .eventChannelFrozen, .eventChannelUnfrozen,
+                .eventUserMuted, .eventUserUnmuted,
+                .eventOperatorUpdated,
+                .eventUserBanned: // Other User Banned
+            self.inputComponent?.updateMessageInputModeState()
+            self.updateVoiceMessageInputMode()
+            
+        default: break
         }
     }
     

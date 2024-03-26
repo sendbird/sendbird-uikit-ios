@@ -11,6 +11,7 @@ import SendbirdChatSDK
 /// A manager class that manages the typing message for different group channels.
 /// - Since: 3.12.0
 public class SBUTypingIndicatorMessageManager {
+    /// Shared instance of `SBUTypingIndicatorMessageManager` for global usage.
     public static let shared = SBUTypingIndicatorMessageManager()
     
     private init() { }

@@ -394,39 +394,41 @@ public class SBUModuleSet {
 
 extension SBUModuleSet {
     @available(*, unavailable, renamed: "init(groupChannelListModule:openChannelListModule:baseChannelModule:groupChannelModule:openChannelModule:inviteUserModule:groupRegisterOperatorModule:openRegisterOperatorModule:groupUserListModule:openUserListModule:groupChannelPushSettingsModule:createChannelModule:groupChannelSettingsModule:openChannelSettingsModule:groupModerationsModule:openModerationsModule:messageSearchModule:)") // 3.1.0
-    public convenience init(channelListModule: SBUGroupChannelListModule = SBUGroupChannelListModule(),
-                baseChannelModule: SBUBaseChannelModule = SBUBaseChannelModule(),
-                groupChannelModule: SBUGroupChannelModule = SBUGroupChannelModule(),
-                openChannelModule: SBUOpenChannelModule = SBUOpenChannelModule(),
-                inviteUserModule: SBUInviteUserModule = SBUInviteUserModule(),
-                registerOperatorModule: SBURegisterOperatorModule = SBURegisterOperatorModule(),
-                userListModule: SBUUserListModule = SBUUserListModule(),
-                groupChannelPushSettingsModule: SBUGroupChannelPushSettingsModule = SBUGroupChannelPushSettingsModule(),
-                createChannelModule: SBUCreateChannelModule = SBUCreateChannelModule(),
-                groupChannelSettingsModule: SBUGroupChannelSettingsModule = SBUGroupChannelSettingsModule(),
-                openChannelSettingsModule: SBUOpenChannelSettingsModule = SBUOpenChannelSettingsModule(),
-                moderationsModule: SBUModerationsModule = SBUModerationsModule(),
-                messageSearchModule: SBUMessageSearchModule = SBUMessageSearchModule()) {
+    public convenience init(
+        channelListModule: SBUGroupChannelListModule = SBUGroupChannelListModule(),
+        baseChannelModule: SBUBaseChannelModule = SBUBaseChannelModule(),
+        groupChannelModule: SBUGroupChannelModule = SBUGroupChannelModule(),
+        openChannelModule: SBUOpenChannelModule = SBUOpenChannelModule(),
+        inviteUserModule: SBUInviteUserModule = SBUInviteUserModule(),
+        registerOperatorModule: SBURegisterOperatorModule = SBURegisterOperatorModule(),
+        userListModule: SBUUserListModule = SBUUserListModule(),
+        groupChannelPushSettingsModule: SBUGroupChannelPushSettingsModule = SBUGroupChannelPushSettingsModule(),
+        createChannelModule: SBUCreateChannelModule = SBUCreateChannelModule(),
+        groupChannelSettingsModule: SBUGroupChannelSettingsModule = SBUGroupChannelSettingsModule(),
+        openChannelSettingsModule: SBUOpenChannelSettingsModule = SBUOpenChannelSettingsModule(),
+        moderationsModule: SBUModerationsModule = SBUModerationsModule(),
+        messageSearchModule: SBUMessageSearchModule = SBUMessageSearchModule()
+    ) {
         
         self.init(
-            groupChannelListModule: SBUGroupChannelListModule(),
-            openChannelListModule: SBUOpenChannelListModule(),
-            baseChannelModule: SBUBaseChannelModule(),
-            groupChannelModule: SBUGroupChannelModule(),
-            openChannelModule: SBUOpenChannelModule(),
-            inviteUserModule: SBUInviteUserModule(),
-            groupRegisterOperatorModule: SBURegisterOperatorModule(),
-            openRegisterOperatorModule: SBURegisterOperatorModule(),
-            groupUserListModule: SBUUserListModule(),
-            openUserListModule: SBUUserListModule(),
-            groupChannelPushSettingsModule: SBUGroupChannelPushSettingsModule(),
-            createChannelModule: SBUCreateChannelModule(),
-            createOpenChannelModule: SBUCreateOpenChannelModule(),
-            groupChannelSettingsModule: SBUGroupChannelSettingsModule(),
-            openChannelSettingsModule: SBUOpenChannelSettingsModule(),
-            groupModerationsModule: SBUModerationsModule(),
-            openModerationsModule: SBUModerationsModule(),
-            messageSearchModule: SBUMessageSearchModule()
+            groupChannelListModule: SBUModuleSet.GroupChannelListModule.init(),
+            openChannelListModule: SBUModuleSet.OpenChannelListModule.init(),
+            baseChannelModule: SBUModuleSet.BaseChannelModule.init(),
+            groupChannelModule: SBUModuleSet.GroupChannelModule.init(),
+            openChannelModule: SBUModuleSet.OpenChannelModule.init(),
+            inviteUserModule: SBUModuleSet.InviteUserModule.init(),
+            groupRegisterOperatorModule: SBUModuleSet.GroupRegisterOperatorModule.init(),
+            openRegisterOperatorModule: SBUModuleSet.OpenRegisterOperatorModule.init(),
+            groupUserListModule: SBUModuleSet.GroupUserListModule.init(),
+            openUserListModule: SBUModuleSet.OpenUserListModule.init(),
+            groupChannelPushSettingsModule: SBUModuleSet.GroupChannelPushSettingsModule.init(),
+            createChannelModule: SBUModuleSet.CreateGroupChannelModule.init(),
+            createOpenChannelModule: SBUModuleSet.CreateOpenChannelModule.init(),
+            groupChannelSettingsModule: SBUModuleSet.GroupChannelSettingsModule.init(),
+            openChannelSettingsModule: SBUModuleSet.OpenChannelSettingsModule.init(),
+            groupModerationsModule: SBUModuleSet.GroupModerationsModule.init(),
+            openModerationsModule: SBUModuleSet.OpenModerationsModule.init(),
+            messageSearchModule: SBUModuleSet.MessageSearchModule.init()
         )
     }
     

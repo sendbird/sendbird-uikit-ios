@@ -8,15 +8,31 @@
 
 import UIKit
 
+/// SBUCommonItem class
 public class SBUCommonItem {
+    
+    /// Title of the item
     public var title: String?
+    
+    /// Color of the item
     public var color: UIColor?
+    
+    /// Image of the item
     public var image: UIImage?
+    
+    /// Font of the item
     public var font: UIFont?
+    
+    /// Tint color of the item
     public var tintColor: UIColor?
+    
+    /// Text alignment of the item
     public var textAlignment: NSTextAlignment
+    
+    /// Tag of the item
     public var tag: Int?
     
+    /// Initializer for the SBUCommonItem class
     public init(title: String? = nil,
                 color: UIColor? = SBUColorSet.onlight01,
                 image: UIImage? = nil,

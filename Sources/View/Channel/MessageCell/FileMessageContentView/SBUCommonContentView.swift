@@ -103,7 +103,6 @@ open class SBUCommonContentView: SBUBaseFileContentView {
         case .voice:
             // The flow does not come here. (will be handled on `SBUVoiceContentView` class)
             image = UIImage()
-            break
         }
         
         self.fileImageView.image = image

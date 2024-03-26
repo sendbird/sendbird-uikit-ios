@@ -30,26 +30,57 @@ open class SBUCreateOpenChannelModule {
     @available(*, deprecated, message: "Use `SBUCreateOpenChannelModule.HeaderComponent` instead.")
     public var headerComponent: SBUCreateOpenChannelModule.Header? {
         get { _headerComponent ?? Self.HeaderComponent.init() }
-        set { _headerComponent = newValue }
+        set {
+            _headerComponent = newValue
+            if let validNewValue = newValue {
+                Self.HeaderComponent = type(of: validNewValue)
+            }
+        }
     }
     
     /// The module component that shows the body to create a new channel.
     @available(*, deprecated, message: "Use `SBUCreateOpenChannelModule.ProfileInputComponent` instead.")
     public var profileInputComponent: SBUCreateOpenChannelModule.ProfileInput? {
         get { _profileInputComponent ?? Self.ProfileInputComponent.init() }
-        set { _profileInputComponent = newValue }
+        set {
+            _profileInputComponent = newValue
+            if let validNewValue = newValue {
+                Self.ProfileInputComponent = type(of: validNewValue)
+            }
+        }
     }
     
     // MARK: Properties (Holder)
     private var _headerComponent: SBUCreateOpenChannelModule.Header?
     private var _profileInputComponent: SBUCreateOpenChannelModule.ProfileInput?
     
+    // swiftlint:disable missing_docs
     // MARK: -
+    /// Default initializer
+    public required init() {}
+    
     @available(*, deprecated, message: "Use `SBUModuleSet.CreateOpenChannelModule`")
-    public required init(headerComponent: SBUCreateOpenChannelModule.Header? = nil,
-                profileInputComponent: SBUCreateOpenChannelModule.ProfileInput? = nil) {
+    public required init(
+        headerComponent: SBUCreateOpenChannelModule.Header?
+    ) {
+        self.headerComponent = headerComponent
+    }
+    
+    @available(*, deprecated, message: "Use `SBUModuleSet.CreateOpenChannelModule`")
+    public required init(
+        profileInputComponent: SBUCreateOpenChannelModule.ProfileInput?
+    ) {
+        self.profileInputComponent = profileInputComponent
+    }
+    
+    @available(*, deprecated, message: "Use `SBUModuleSet.CreateOpenChannelModule`")
+    public required init(
+        headerComponent: SBUCreateOpenChannelModule.Header?,
+        profileInputComponent: SBUCreateOpenChannelModule.ProfileInput?
+    ) {
         self.headerComponent = headerComponent
         self.profileInputComponent = profileInputComponent
     }
+    // swiftlint:enable missing_docs
 
 }

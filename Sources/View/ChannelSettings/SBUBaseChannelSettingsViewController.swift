@@ -100,7 +100,7 @@ open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActio
             if !groupChannel.isBroadcast || groupChannel.myRole == .operator {
                 self.navigationItem.rightBarButtonItem = self.baseHeaderComponent?.rightBarButton
             }
-        } else if let _ = self.channel as? OpenChannel {
+        } else if self.channel is OpenChannel {
             if self.isOperator {
                 self.navigationItem.rightBarButtonItem = self.baseHeaderComponent?.rightBarButton
             }

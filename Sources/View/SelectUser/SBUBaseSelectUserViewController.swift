@@ -102,8 +102,8 @@ open class SBUBaseSelectUserViewController: SBUBaseViewController, SBUBaseSelect
                   return
               }
         
-        for vc in navigationController.viewControllers where vc is SBUBaseChannelViewController {
-            navigationController.popToViewController(vc, animated: true)
+        for viewController in navigationController.viewControllers where viewController is SBUBaseChannelViewController {
+            navigationController.popToViewController(viewController, animated: true)
             return
         }
         

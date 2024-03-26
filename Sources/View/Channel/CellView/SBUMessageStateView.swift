@@ -9,6 +9,7 @@
 import UIKit
 import SendbirdChatSDK
 
+/// `SBUMessageStateViewParams` is a class that defines the parameters for a message state view.
 open class SBUMessageStateViewParams {
     /// The timestamp of message.
     public let timestamp: Int64
@@ -176,41 +177,41 @@ open class SBUMessageStateView: SBUView {
             }
             
             switch position {
-                case .center, .left:
-                    self.stackView.setHStack([
-                        self.timeLabel,
-                        self.stateImageView,
-                        UIView()
-                    ])
-                case .right:
-                    self.stackView.setHStack([
-                        UIView(),
-                        self.stateImageView,
-                        self.timeLabel
-                    ])
+            case .center, .left:
+                self.stackView.setHStack([
+                    self.timeLabel,
+                    self.stateImageView,
+                    UIView()
+                ])
+            case .right:
+                self.stackView.setHStack([
+                    UIView(),
+                    self.stateImageView,
+                    self.timeLabel
+                ])
             }
         }
         switch position {
-            case .center:
-                self.stackView.alignment = .center
-                self.timeLabel.textAlignment = .center
-                self.stateImageView.isHidden = false
-            case .left:
-                self.stackView.alignment = isQuotedReplyMessage
-                ? .center
-                : .leading
-                self.timeLabel.textAlignment = isQuotedReplyMessage
-                ? .right
-                : .left
-                self.stateImageView.isHidden = true
-            case .right:
-                self.stackView.alignment = isQuotedReplyMessage
-                ? .center
-                : .trailing
-                self.timeLabel.textAlignment = isQuotedReplyMessage
-                ? .left
-                : .right
-                self.stateImageView.isHidden = false
+        case .center:
+            self.stackView.alignment = .center
+            self.timeLabel.textAlignment = .center
+            self.stateImageView.isHidden = false
+        case .left:
+            self.stackView.alignment = isQuotedReplyMessage
+            ? .center
+            : .leading
+            self.timeLabel.textAlignment = isQuotedReplyMessage
+            ? .right
+            : .left
+            self.stateImageView.isHidden = true
+        case .right:
+            self.stackView.alignment = isQuotedReplyMessage
+            ? .center
+            : .trailing
+            self.timeLabel.textAlignment = isQuotedReplyMessage
+            ? .left
+            : .right
+            self.stateImageView.isHidden = false
         }
         
         guard !self.stateImageView.isHidden else { return }
@@ -218,50 +219,50 @@ open class SBUMessageStateView: SBUView {
         
         let stateImage: UIImage?
         switch self.sendingState {
+        case .none:
+            stateImage = nil
+        case .pending:
+            stateImage = SBUIconSetType.iconSpinner.image(
+                with: theme.pendingStateColor,
+                to: SBUIconSetType.Metric.defaultIconSizeSmall
+            )
+            
+            let rotation = CABasicAnimation(keyPath: "transform.rotation")
+            rotation.fromValue = 0
+            rotation.toValue = 2 * Double.pi
+            rotation.duration = 1.1
+            rotation.repeatCount = Float.infinity
+            stateImageView.layer.add(rotation, forKey: SBUAnimation.Key.spin.identifier)
+            
+        case .failed, .canceled:
+            stateImage = SBUIconSetType.iconError.image(
+                with: theme.failedStateColor,
+                to: SBUIconSetType.Metric.defaultIconSizeSmall
+            )
+        case .succeeded:
+            switch receiptState {
+            case .notUsed:
+                stateImage = nil
             case .none:
-                stateImage = nil
-            case .pending:
-                stateImage = SBUIconSetType.iconSpinner.image(
-                    with: theme.pendingStateColor,
+                stateImage = SBUIconSetType.iconDone.image(
+                    with: theme.succeededStateColor,
                     to: SBUIconSetType.Metric.defaultIconSizeSmall
                 )
-                
-                let rotation = CABasicAnimation(keyPath: "transform.rotation")
-                rotation.fromValue = 0
-                rotation.toValue = 2 * Double.pi
-                rotation.duration = 1.1
-                rotation.repeatCount = Float.infinity
-                stateImageView.layer.add(rotation, forKey: SBUAnimation.Key.spin.identifier)
-                
-            case .failed, .canceled:
-                stateImage = SBUIconSetType.iconError.image(
-                    with: theme.failedStateColor,
+            case .read:
+                stateImage = SBUIconSetType.iconDoneAll.image(
+                    with: theme.readReceiptStateColor,
                     to: SBUIconSetType.Metric.defaultIconSizeSmall
                 )
-            case .succeeded:
-                switch receiptState {
-                    case .notUsed:
-                        stateImage = nil
-                    case .none:
-                        stateImage = SBUIconSetType.iconDone.image(
-                            with: theme.succeededStateColor,
-                            to: SBUIconSetType.Metric.defaultIconSizeSmall
-                        )
-                    case .read:
-                        stateImage = SBUIconSetType.iconDoneAll.image(
-                            with: theme.readReceiptStateColor,
-                            to: SBUIconSetType.Metric.defaultIconSizeSmall
-                        )
-                    case .delivered:
-                        stateImage = SBUIconSetType.iconDoneAll.image(
-                            with: theme.deliveryReceiptStateColor,
-                            to: SBUIconSetType.Metric.defaultIconSizeSmall
-                        )
-                }
-            case .scheduled:
-                stateImage = nil
-            @unknown default:
-                stateImage = nil
+            case .delivered:
+                stateImage = SBUIconSetType.iconDoneAll.image(
+                    with: theme.deliveryReceiptStateColor,
+                    to: SBUIconSetType.Metric.defaultIconSizeSmall
+                )
+            }
+        case .scheduled:
+            stateImage = nil
+        @unknown default:
+            stateImage = nil
         }
         self.stateImageView.image = stateImage
         

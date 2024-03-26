@@ -104,14 +104,19 @@ class SBUChannelPushSettingCell: SBUTableViewCell {
         self.separateView
             .sbu_constraint(
                 equalTo: self.contentView,
-                leading: 16, trailing: -16, bottom: 0.5
+                leading: 16, 
+                trailing: -16,
+                bottom: 0.5
             )
             .sbu_constraint(height: 0.5)
         
         self.baseStackView
             .sbu_constraint(
                 equalTo: self.contentView,
-                leading: 16, trailing: -16, top: 13, bottom: 12
+                leading: 16, 
+                trailing: -16,
+                top: 13,
+                bottom: 12
             )
         
     }

@@ -48,8 +48,8 @@ open class SBUInviteUserViewController: SBUBaseSelectUserViewController, SBUInvi
         super.init(nibName: nil, bundle: nil)
         SBULog.info("")
         self.createViewModel(channel: channel, users: users)
-        self.headerComponent = SBUModuleSet.inviteUserModule.headerComponent
-        self.listComponent = SBUModuleSet.inviteUserModule.listComponent
+        self.headerComponent = SBUModuleSet.InviteUserModule.HeaderComponent.init()
+        self.listComponent = SBUModuleSet.InviteUserModule.ListComponent.init()
     }
     
     /// If you have channelURL and users objects, use this initialize function.
@@ -60,8 +60,8 @@ open class SBUInviteUserViewController: SBUBaseSelectUserViewController, SBUInvi
         super.init(nibName: nil, bundle: nil)
         SBULog.info("")
         self.createViewModel(channelURL: channelURL, users: users)
-        self.headerComponent = SBUModuleSet.inviteUserModule.headerComponent
-        self.listComponent = SBUModuleSet.inviteUserModule.listComponent
+        self.headerComponent = SBUModuleSet.InviteUserModule.HeaderComponent.init()
+        self.listComponent = SBUModuleSet.InviteUserModule.ListComponent.init()
     }
     
     open override func viewDidLoad() {

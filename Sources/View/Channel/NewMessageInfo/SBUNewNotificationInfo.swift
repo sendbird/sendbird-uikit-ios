@@ -9,6 +9,7 @@
 import UIKit
 import QuartzCore
 
+/// New notification info handler
 public typealias SBUNewNotificationInfoHandler = () -> Void
 
 class SBUNewNotificationInfo: SBUView {
@@ -16,7 +17,7 @@ class SBUNewNotificationInfo: SBUView {
     lazy var newNotificationInfoButton: UIButton? = {
         let newNotificationInfoButton = UIButton()
         newNotificationInfoButton.layer.masksToBounds = true
-        newNotificationInfoButton.tag = DefaultInfoButtonTag
+        newNotificationInfoButton.tag = Self.defaultInfoButtonTag
         newNotificationInfoButton.titleLabel?.textAlignment = .center
         return newNotificationInfoButton
     }()
@@ -24,7 +25,7 @@ class SBUNewNotificationInfo: SBUView {
     var actionHandler: SBUNewNotificationInfoHandler?
     
     // MARK: - Properties (Private)
-    let DefaultInfoButtonTag = 10001
+    static let defaultInfoButtonTag = 10001
 
     var theme: SBUNotificationTheme.List {
         switch SBUTheme.colorScheme {
@@ -88,7 +89,7 @@ class SBUNewNotificationInfo: SBUView {
         setupButtonStyle()
         
         if let newNotificationInfoButton = self.newNotificationInfoButton,
-           newNotificationInfoButton.tag == DefaultInfoButtonTag {
+           newNotificationInfoButton.tag == Self.defaultInfoButtonTag {
             
             newNotificationInfoButton.titleLabel?.font = theme.tooltipFont
             newNotificationInfoButton.setTitleColor(theme.tooltipTextColor, for: .normal)
@@ -109,7 +110,8 @@ class SBUNewNotificationInfo: SBUView {
     }
 
     // MARK: - Action
-    @objc func onTapNewNotificationInfo() {
+    @objc
+    func onTapNewNotificationInfo() {
         self.actionHandler?()
     }
     

@@ -9,6 +9,7 @@
 import UIKit
 import SendbirdChatSDK
 
+// swiftlint:disable type_name
 /// Event methods for the views updates and performing actions from the list component in the channel push settings.
 public protocol SBUGroupChannelPushSettingsModuleListDelegate: SBUCommonDelegate {
     /// Called when changed push notification option
@@ -33,6 +34,7 @@ public protocol SBUGroupChannelPushSettingsModuleListDataSource: AnyObject {
         pushTriggerOptionForTableView tableView: UITableView
     ) -> GroupChannelPushTriggerOption?
 }
+// swiftlint:enable type_name
 
 extension SBUGroupChannelPushSettingsModule {
     

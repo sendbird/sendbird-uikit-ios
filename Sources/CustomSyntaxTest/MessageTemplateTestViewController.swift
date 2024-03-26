@@ -17,14 +17,15 @@ public class MessageTemplateTestViewController: SBUBaseViewController {
         super.viewDidLoad()
 
         let backButton = SBUBarButtonItem.backButton(
-            vc: self,
+            target: self,
             selector: #selector(onTapLeftBarButton)
         )
         self.navigationItem.leftBarButtonItem = backButton
 
     }
     
-    @objc open func onTapLeftBarButton() {
+    @objc
+    open func onTapLeftBarButton() {
         self.dismiss(animated: true)
 //        self.navigationController?.popViewController(animated: true)
     }
@@ -65,8 +66,10 @@ public class MessageTemplateTestViewController: SBUBaseViewController {
         // Must implement belows
         
         self.baseView.sbu_constraint_equalTo(
-            leadingAnchor: self.view.safeAreaLayoutGuide.leadingAnchor, leading: 20,
-            trailingAnchor: self.view.safeAreaLayoutGuide.trailingAnchor, trailing: -20
+            leadingAnchor: self.view.safeAreaLayoutGuide.leadingAnchor, 
+            leading: 20,
+            trailingAnchor: self.view.safeAreaLayoutGuide.trailingAnchor, 
+            trailing: -20
         )
         
         self.baseView.sbu_constraint(equalTo: self.view, centerX: 0, centerY: 0)

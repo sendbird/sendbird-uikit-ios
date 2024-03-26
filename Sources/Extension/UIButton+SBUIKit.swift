@@ -11,15 +11,28 @@ import UIKit
 import AVFoundation
 
 public extension UIButton {
+    /// Loads an image from a given URL string.
+    /// - Parameters:
+    ///   - urlString: The URL string where the image is located.
+    ///   - placeholder: An optional placeholder image to display while the image is loading.
+    ///   - errorImage: An optional image to display if there was an error loading the image.
+    ///   - tintColor: An optional tint color to apply to the image.
+    ///   - state: The button state that uses the specified image.
+    ///   - cacheKey: An optional key used to cache the image.
+    ///   - subPath: The subpath of the image.
+    ///   - completion: An optional completion handler to call when the load operation is complete.
+    /// - Returns: An optional URLSessionTask that you can use to track the progress of the load operation.
     @discardableResult
-    func loadImage(urlString: String,
-                   placeholder: UIImage? = nil,
-                   errorImage: UIImage? = nil,
-                   tintColor: UIColor? = nil,
-                   for state: UIButton.State,
-                   cacheKey: String? = nil,
-                   subPath: String,
-                   completion: ((Bool) -> Void)? = nil) -> URLSessionTask? {
+    func loadImage(
+        urlString: String,
+        placeholder: UIImage? = nil,
+        errorImage: UIImage? = nil,
+        tintColor: UIColor? = nil,
+        for state: UIButton.State,
+        cacheKey: String? = nil,
+        subPath: String,
+        completion: ((Bool) -> Void)? = nil
+    ) -> URLSessionTask? {
         self.setImage(placeholder, tintColor: tintColor, for: .normal, completion: nil)
         
         if urlString.isEmpty {

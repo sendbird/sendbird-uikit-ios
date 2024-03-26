@@ -30,14 +30,24 @@ open class SBUUserListModule {
     @available(*, deprecated, message: "Use `SBUUserListModule.HeaderComponent` instead.")
     public var headerComponent: SBUUserListModule.Header? {
         get { _headerComponent ?? Self.HeaderComponent.init() }
-        set { _headerComponent = newValue }
+        set {
+            _headerComponent = newValue
+            if let validNewValue = newValue {
+                Self.HeaderComponent = type(of: validNewValue)
+            }
+        }
     }
     
     /// The module component that shows the list of users.
     @available(*, deprecated, message: "Use `SBUUserListModule.ListComponent` instead.")
     public var listComponent: SBUUserListModule.List? {
         get { _listComponent ?? Self.ListComponent.init() }
-        set { _listComponent = newValue }
+        set {
+            _listComponent = newValue
+            if let validNewValue = newValue {
+                Self.ListComponent = type(of: validNewValue)
+            }
+        }
     }
     
     // MARK: Properties (Holder)
@@ -45,10 +55,31 @@ open class SBUUserListModule {
     private var _listComponent: SBUUserListModule.List?
     
     // MARK: -
+    /// Default initializer
+    public required init() {}
+    
     /// Initializes module with components.
     @available(*, deprecated, message: "Use `SBUModuleSet.GroupUserListModule` or `SBUModuleSet.OpenUserListModule`")
-    public required init(headerComponent: SBUUserListModule.Header? = nil,
-                listComponent: SBUUserListModule.List? = nil) {
+    public required init(
+        headerComponent: SBUUserListModule.Header? = nil
+    ) {
+        self.headerComponent = headerComponent
+    }
+    
+    /// Initializes module with components.
+    @available(*, deprecated, message: "Use `SBUModuleSet.GroupUserListModule` or `SBUModuleSet.OpenUserListModule`")
+    public required init(
+        listComponent: SBUUserListModule.List? = nil
+    ) {
+        self.listComponent = listComponent
+    }
+    
+    /// Initializes module with components.
+    @available(*, deprecated, message: "Use `SBUModuleSet.GroupUserListModule` or `SBUModuleSet.OpenUserListModule`")
+    public required init(
+        headerComponent: SBUUserListModule.Header? = nil,
+        listComponent: SBUUserListModule.List? = nil
+    ) {
         self.headerComponent = headerComponent
         self.listComponent = listComponent
     }

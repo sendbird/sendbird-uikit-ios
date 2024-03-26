@@ -15,12 +15,29 @@ public class SBUUnknownMessageCellParams: SBUBaseMessageCellParams {
     public let useReaction: Bool
     public let withTextView: Bool = false
     
-    public init(message: BaseMessage, hideDateView: Bool, groupPosition: MessageGroupPosition = .none, receiptState: SBUMessageReceiptState = .none, useReaction: Bool, isThreadMessage: Bool = false, joinedAt: Int64 = 0, messageOffsetTimestamp: Int64 = 0) {
+    /// The boolean value that decides whether to enable a long press on a reaction emoji.
+    /// If `true`, a member list for each reaction emoji is shown. 
+    /// - Since: 3.19.0
+    public let enableEmojiLongPress: Bool
+    
+    public init(
+        message: BaseMessage,
+        hideDateView: Bool,
+        groupPosition: MessageGroupPosition = .none,
+        receiptState: SBUMessageReceiptState = .none,
+        useReaction: Bool,
+        isThreadMessage: Bool = false,
+        joinedAt: Int64 = 0,
+        messageOffsetTimestamp: Int64 = 0,
+        enableEmojiLongPress: Bool = true
+    ) {
         self.useReaction = useReaction
         
         var messagePosition: MessagePosition = .left
         let isMyMessage = SBUGlobals.currentUser?.userId == message.sender?.userId
         messagePosition = isMyMessage ? .right : .left
+        
+        self.enableEmojiLongPress = enableEmojiLongPress
         
         super.init(
             message: message,

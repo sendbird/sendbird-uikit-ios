@@ -9,6 +9,7 @@
 import SendbirdChatSDK
 import UIKit
 
+// swiftlint:disable type_name
 /// **DO NOT** use this protocol. Use `SBUExtendedMessagePayloadCustomViewFactory` instead of this.
 /// Protocol for calling ``SBUCustomViewFactory`` internally like a template pattern.
 /// Additionally, it serves as an interface to be mapped for swift backwards compatibility where the `some` and `any` keyword is not available.
@@ -95,6 +96,7 @@ public protocol SBUExtendedMessagePayloadCustomViewFactory: SBUExtendedMessagePa
     /// - Returns: The `custom view` that will be created and attached. If an error occurs, you should implement it to return nil in general.
     static func errorHandler(_ error: Error, message: SendbirdChatSDK.BaseMessage?) -> UIView?
 }
+// swiftlint:enable type_name
 
 public extension SBUExtendedMessagePayloadCustomViewFactory {
     /// Internal methods for ``SBUUserMessageCell``.
@@ -107,6 +109,13 @@ public extension SBUExtendedMessagePayloadCustomViewFactory {
         }
     }
     
+    /// Handles errors that occur during the process.
+    /// This function takes an error and a message as parameters and returns a UIView.
+    /// If an error occurs, it generally returns nil.
+    /// - Parameters:
+    ///   - error: The error that occurred.
+    ///   - message: The message data for resolving the error.
+    /// - Returns: The custom view that will be created and attached. If an error occurs, it generally returns nil.
     static func errorHandler(_ error: Error, message: SendbirdChatSDK.BaseMessage?) -> UIView? {
         SBULog.error("[Failed] decode CustomViewData : \(String(describing: error))")
         return nil

@@ -8,6 +8,7 @@
 
 import UIKit
 
+/// This typealias is used for handling alert button actions. It takes an optional parameter of type `Any`.
 public typealias AlertButtonHandler = (_ info: Any?) -> Void
 
 public protocol SBUAlertViewDelegate: AnyObject {
@@ -15,6 +16,7 @@ public protocol SBUAlertViewDelegate: AnyObject {
     func didDismissAlertView()
 }
 
+/// `SBUAlertButtonItem` is a class that represents an alert button item.
 public class SBUAlertButtonItem {
     var title: String
     var color: UIColor?
@@ -360,9 +362,10 @@ public class SBUAlertView: NSObject {
         )
         self.backgroundView.alpha = 0.0
         self.isShowing = true
-        UIView.animate(withDuration: 0.1, animations: {
+        
+        UIView.animate(withDuration: 0.1) {
             self.backgroundView.alpha = 1.0
-        }) { _ in
+        } completion: { _ in
             self.baseView.frame = baseFrame
             
             if needInputField {
@@ -372,13 +375,15 @@ public class SBUAlertView: NSObject {
         }
     }
     
-    @objc private func dismiss() {
+    @objc
+    private func dismiss() {
         guard !isShowing else { return }
 
         handleDismiss(isUserInitiated: true)
     }
     
-    @objc private func handleDismiss(isUserInitiated: Bool) {
+    @objc
+    private func handleDismiss(isUserInitiated: Bool) {
         for subView in self.baseView.subviews {
             subView.removeFromSuperview()
         }
@@ -414,7 +419,8 @@ public class SBUAlertView: NSObject {
         }
     }
     
-    @objc private func keyboardWillShow(_ notification: Notification) {
+    @objc
+    private func keyboardWillShow(_ notification: Notification) {
         guard  let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
 
         UIView.animate(withDuration: 0.1, animations: {
@@ -424,7 +430,8 @@ public class SBUAlertView: NSObject {
         })
     }
     
-    @objc private func keyboardWillHide() {
+    @objc
+    private func keyboardWillHide() {
         UIView.animate(withDuration: 0.1, animations: {
             guard let window = self.window else { return }
             
@@ -444,7 +451,8 @@ public class SBUAlertView: NSObject {
     }
     
     // MARK: Button action
-    @objc private func onClickAlertButton(sender: UIButton) {
+    @objc
+    private func onClickAlertButton(sender: UIButton) {
         let index = sender.tag
         if cancelItem != nil, index == 0 {
             self.cancelItem?.completionHandler?(nil)

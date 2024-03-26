@@ -14,7 +14,8 @@ public protocol SBUGroupChannelListModuleHeaderDelegate: SBUBaseChannelListModul
 
 extension SBUGroupChannelListModule {
     /// A module component that represents the header of `SBUGroupChannelListModule`.
-    @objcMembers open class Header: SBUBaseChannelListModule.Header {
+    @objcMembers
+    open class Header: SBUBaseChannelListModule.Header {
         
         // MARK: - UI properties (Public)
         /// The object that is used as the theme of the header  component. The theme must adopt the `SBUGroupChannelListTheme` class.

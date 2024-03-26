@@ -122,7 +122,12 @@ class SBUReactionCollectionViewCell: UICollectionViewCell {
         }
     }
 
-    func configure(type: SBUReactionCellType, url: String?, count: Int? = nil, needsSideMargin: Bool? = false) {
+    func configure(
+        type: SBUReactionCellType,
+        url: String?,
+        count: Int? = nil,
+        needsSideMargin: Bool? = false
+    ) {
         self.type = type
         self.setCount(count)
         

@@ -20,7 +20,8 @@ extension SBUCacheManager {
     class File {
         static let diskCache = DiskCache(cacheType: "file")
         
-        @discardableResult static func loadFile(
+        @discardableResult 
+        static func loadFile(
             urlString: String,
             cacheKey: String? = nil,
             fileName: String? = nil,

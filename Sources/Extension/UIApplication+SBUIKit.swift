@@ -9,6 +9,7 @@
 import UIKit
 
 extension UIApplication {
+    /// This computed property returns the current active window of the application.
     public var currentWindow: UIWindow? {
         if #available(iOS 13.0, *) {
             let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene

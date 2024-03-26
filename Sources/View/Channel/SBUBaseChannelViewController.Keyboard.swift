@@ -49,16 +49,14 @@ extension SBUBaseChannelViewController {
         self.view.endEditing(true)
     }
     
-    // To hide autocorrection view on keyboard hidden.
-    // https://stackoverflow.com/questions/59278526/keyboard-dismiss-very-buggy-on-tableview-interactive
+    /// To hide autocorrection view on keyboard hidden.
+    /// https://stackoverflow.com/questions/59278526/keyboard-dismiss-very-buggy-on-tableview-interactive
     public func setKeyboardWindowFrame(origin: CGPoint, size: CGSize? = nil) {
         let windowBounds = UIApplication.shared.currentWindow?.bounds ?? .zero
         let screenSize: CGSize = size ?? windowBounds.size
         var keyboardWindow: UIWindow?
-        for window in UIApplication.shared.windows {
-            if NSStringFromClass(type(of: window).self) == "UIRemoteKeyboardWindow" {
-                keyboardWindow = window
-            }
+        for window in UIApplication.shared.windows where NSStringFromClass(type(of: window).self) == "UIRemoteKeyboardWindow" {
+            keyboardWindow = window
         }
         
         keyboardWindow?.frame = CGRect(origin: origin, size: screenSize)
@@ -146,41 +144,39 @@ extension SBUBaseChannelViewController {
         }
         
         switch sender.state {
-            case .began:
-                initialMessageInputOrigin = self.view.convert(
-                    self.baseInputComponent?.frame.origin ?? CGPoint(x: 0, y: self.view.frame.height),
-                    to: self.view
-                )
-                initialMessageInputBottomConstraint = self.messageInputViewBottomConstraint?.constant ?? 0
-            case .changed:
-                switch tableView.keyboardDismissMode {
-                    case .interactive:
-                        let messageInputViewHeight = self.baseInputComponent?.frame.size.height ?? 0
-                        
-                        let initialMessageInputBottomY = initialMessageInputOrigin.y + messageInputViewHeight
-                        let point = sender.location(in: view)
-                        
-                        // calculate how much the point is diverged with the initial message input's bottom.
-                        let diffBetweenPointYMessageInputBottomY = point.y - initialMessageInputBottomY
-                        
-                        // add the diff value to initial message bottom constraint, but keep minimum value as it's initial constraint as
-                        // keyboard can't go any higher.
-                        self.messageInputViewBottomConstraint?.constant =
-                        max(initialMessageInputBottomConstraint + diffBetweenPointYMessageInputBottomY,
-                            initialMessageInputBottomConstraint)
-                        break
-                    default:
-                        sender.isEnabled = false
-                        sender.isEnabled = true
-                }
-            case .ended:
-                // defense code to prevent bottom constant to be set as some other value
-                self.messageInputViewBottomConstraint?.constant = self.isKeyboardShowing
-                ? initialMessageInputBottomConstraint
-                : 0
-                break
+        case .began:
+            initialMessageInputOrigin = self.view.convert(
+                self.baseInputComponent?.frame.origin ?? CGPoint(x: 0, y: self.view.frame.height),
+                to: self.view
+            )
+            initialMessageInputBottomConstraint = self.messageInputViewBottomConstraint?.constant ?? 0
+        case .changed:
+            switch tableView.keyboardDismissMode {
+            case .interactive:
+                let messageInputViewHeight = self.baseInputComponent?.frame.size.height ?? 0
+                
+                let initialMessageInputBottomY = initialMessageInputOrigin.y + messageInputViewHeight
+                let point = sender.location(in: view)
+                
+                // calculate how much the point is diverged with the initial message input's bottom.
+                let diffBetweenPointYMessageInputBottomY = point.y - initialMessageInputBottomY
+                
+                // add the diff value to initial message bottom constraint, but keep minimum value as it's initial constraint as
+                // keyboard can't go any higher.
+                self.messageInputViewBottomConstraint?.constant =
+                max(initialMessageInputBottomConstraint + diffBetweenPointYMessageInputBottomY,
+                    initialMessageInputBottomConstraint)
             default:
-                break
+                sender.isEnabled = false
+                sender.isEnabled = true
+            }
+        case .ended:
+            // defense code to prevent bottom constant to be set as some other value
+            self.messageInputViewBottomConstraint?.constant = self.isKeyboardShowing
+            ? initialMessageInputBottomConstraint
+            : 0
+        default:
+            break
         }
     }
 }

@@ -30,7 +30,8 @@ public protocol SBUGroupChannelListModuleListDataSource: SBUBaseChannelListModul
 extension SBUGroupChannelListModule {
     /// A module component that represent the list of `SBUGroupChannelListModule`.
     @objc(SBUGroupChannelListModuleList)
-    @objcMembers open class List: SBUBaseChannelListModule.List {
+    @objcMembers 
+    open class List: SBUBaseChannelListModule.List {
         
         // MARK: - UI properties (Public)
         /// The object that is used as the theme of the list component. The theme must adopt the `SBUGroupChannelListTheme` class.
@@ -212,8 +213,10 @@ extension SBUGroupChannelListModule.List {
         self.delegate?.baseChannelListModule(self, didSelectRowAt: indexPath)
     }
     
-    open override func tableView(_ tableView: UITableView,
-                        cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    open override func tableView(
+        _ tableView: UITableView,
+        cellForRowAt indexPath: IndexPath
+    ) -> UITableViewCell {
         guard indexPath.row < self.channelList?.count ?? 0 else {
             let error = SBError(domain: "The index is out of range.", code: -1, userInfo: nil)
             self.delegate?.didReceiveError(error, isBlocker: false)
@@ -240,9 +243,11 @@ extension SBUGroupChannelListModule.List {
         return cell ?? UITableViewCell()
     }
     
-    open override func tableView(_ tableView: UITableView,
-                        willDisplay cell: UITableViewCell,
-                        forRowAt indexPath: IndexPath) {
+    open override func tableView(
+        _ tableView: UITableView,
+        willDisplay cell: UITableViewCell,
+        forRowAt indexPath: IndexPath
+    ) {
         let rowForPreloading = Int(SBUGroupChannelListViewModel.channelLoadLimit)/2
         let channelListCount = self.channelList?.count ?? 0
         if channelListCount > 0,
@@ -257,8 +262,10 @@ extension SBUGroupChannelListModule.List {
         return self.channelList?.count ?? 0
     }
     
-    open override func tableView(_ tableView: UITableView,
-                        trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath)
+    open override func tableView(
+        _ tableView: UITableView,
+        trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
+    )
     -> UISwipeActionsConfiguration? {
         if self.channelList?.count ?? 0 > indexPath.row,
            let channelList = channelList {

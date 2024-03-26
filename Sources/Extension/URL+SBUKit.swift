@@ -32,19 +32,17 @@ internal extension URL {
       }
     
     var isFileSizeUploadable: Bool {
-        get {
-            if let fileResourceValues = try? self.resourceValues(forKeys: [.fileSizeKey]) {
-                if let fileSize = fileResourceValues.fileSize {
-                    if fileSize > SBUAvailable.uploadSizeLimitBytes {
-                        SBULog.error(SBUStringSet.FileUpload.Error.exceededSizeLimit)
-                        return false
-                    }
-                } else {
-                    SBULog.error("Can't read file size.")
+        if let fileResourceValues = try? self.resourceValues(forKeys: [.fileSizeKey]) {
+            if let fileSize = fileResourceValues.fileSize {
+                if fileSize > SBUAvailable.uploadSizeLimitBytes {
+                    SBULog.error(SBUStringSet.FileUpload.Error.exceededSizeLimit)
+                    return false
                 }
+            } else {
+                SBULog.error("Can't read file size.")
             }
-            
-            return true
         }
+        
+        return true
     }
 }

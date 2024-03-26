@@ -228,7 +228,6 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         self.view.endEditing(true)
         
         NotificationCenter.default.removeObserver(self, name: UIApplication.willResignActiveNotification, object: nil)
-        NotificationCenter.default.removeObserver(self)
     }
     
     /// Called when the application will resign activity.
@@ -514,14 +513,14 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
                 switch fileData.fileType {
                 case .audio, .video:
                     if SBUGlobals.isAVPlayerAlwaysEnabled {
-                        let vc = AVPlayerViewController()
-                        vc.player = AVPlayer(url: fileURL)
-                        self.present(vc, animated: true) { vc.player?.play() }
+                        let viewController = AVPlayerViewController()
+                        viewController.player = AVPlayer(url: fileURL)
+                        self.present(viewController, animated: true) { viewController.player?.play() }
                     } else {
-                        let dc = UIDocumentInteractionController(url: fileURL)
-                        dc.name = fileData.name
-                        dc.delegate = self
-                        dc.presentPreview(animated: true)
+                        let documentController = UIDocumentInteractionController(url: fileURL)
+                        documentController.name = fileData.name
+                        documentController.delegate = self
+                        documentController.presentPreview(animated: true)
                     }
                 default:
                     if let messageInputView = self.baseInputComponent?.messageInputView as? SBUMessageInputView {
@@ -531,10 +530,10 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
                     }
                     
                     if fileURL.scheme == "file" {
-                        let dc = UIDocumentInteractionController(url: fileURL)
-                        dc.name = fileData.name
-                        dc.delegate = self
-                        dc.presentPreview(animated: true)
+                        let documentController = UIDocumentInteractionController(url: fileURL)
+                        documentController.name = fileData.name
+                        documentController.delegate = self
+                        documentController.presentPreview(animated: true)
                     } else {
                         let safariVC = SFSafariViewController(url: fileURL)
                         self.present(safariVC, animated: true, completion: nil)
@@ -895,7 +894,6 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
                     startingPoint: .max
                 )
             }
-            break
         default:
             break
         }
@@ -1188,10 +1186,11 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
             
             // Multiple files message is allowed only for group channel.
             if !(self is SBUMessageThreadViewController),
-             let _ = self.baseViewModel?.channel as? GroupChannel,
+               let channel = self.baseViewModel?.channel,
+               channel is GroupChannel,
                SendbirdUI.config.groupChannel.channel.isMultipleFilesMessageEnabled {
                 configuration.selectionLimit = SBUAvailable.multipleFilesMessageFileCountLimit
-
+                
                 if #available(iOS 15, *) {
                     configuration.selection = .ordered
                 }
@@ -1262,30 +1261,42 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         )
     }
     
-    open func baseChannelModule(_ inputComponent: SBUBaseChannelModule.Input,
-                                didTapEdit text: String) {
+    open func baseChannelModule(
+        _ inputComponent: SBUBaseChannelModule.Input,
+        didTapEdit text: String
+    ) {
         guard let message = self.baseViewModel?.inEditingMessage else { return }
         
         self.baseViewModel?.updateUserMessage(message: message, text: text)
     }
     
-    open func baseChannelModule(_ inputComponent: SBUBaseChannelModule.Input,
-                                didChangeText text: String) {
+    open func baseChannelModule(
+        _ inputComponent: SBUBaseChannelModule.Input,
+        didChangeText text: String
+    ) {
         
     }
     
-    open func baseChannelModule(_ inputComponent: SBUBaseChannelModule.Input,
-                                willChangeMode mode: SBUMessageInputMode, message: BaseMessage?) {
+    open func baseChannelModule(
+        _ inputComponent: SBUBaseChannelModule.Input,
+        willChangeMode mode: SBUMessageInputMode, 
+        message: BaseMessage?
+    ) {
         
     }
     
-    open func baseChannelModule(_ inputComponent: SBUBaseChannelModule.Input,
-                                didChangeMode mode: SBUMessageInputMode, message: BaseMessage?) {
+    open func baseChannelModule(
+        _ inputComponent: SBUBaseChannelModule.Input,
+        didChangeMode mode: SBUMessageInputMode, 
+        message: BaseMessage?
+    ) {
         baseViewModel?.inEditingMessage = message as? UserMessage
     }
     
-    open func baseChannelModule(_ inputComponent: SBUBaseChannelModule.Input,
-                                  channelForInputView messageInputView: UIView?) -> BaseChannel? {
+    open func baseChannelModule(
+        _ inputComponent: SBUBaseChannelModule.Input,
+        channelForInputView messageInputView: UIView?
+    ) -> BaseChannel? {
         baseViewModel?.channel
     }
     
@@ -1337,8 +1348,9 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
             picker.dismiss(animated: true) { [weak self] in
                 guard let self = self else { return }
                 guard info[.mediaType] != nil else { return }
+                // swiftlint:disable force_cast
                 let mediaType = info[.mediaType] as! CFString
-                
+                // swiftlint:enable force_cast
                 switch mediaType {
                 case kUTTypeImage:
                     if let inputComponent = self.baseInputComponent {

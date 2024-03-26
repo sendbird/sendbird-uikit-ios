@@ -273,7 +273,8 @@ public class SBUVoiceRecorder: NSObject, AVAudioRecorderDelegate {
         self.progressTimer = nil
     }
     
-    @objc func updateRecordTime() {
+    @objc
+    func updateRecordTime() {
         guard let audioRecorder = self.audioRecorder else { return }
 
         if audioRecorder.isRecording {

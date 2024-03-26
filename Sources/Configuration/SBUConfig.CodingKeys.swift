@@ -49,6 +49,7 @@ extension SBUConfig.GroupChannel.Channel {
         case isOGTagEnabled = "enableOgtag"
         case isTypingIndicatorEnabled = "enableTypingIndicator"
         case isReactionsEnabled = "enableReactions"
+        case isSuperGroupReactionsEnabled = "enableReactionsSupergroup" // 3.19.0
         case isMentionEnabled = "enableMention"
         case isVoiceMessageEnabled = "enableVoiceMessage"
         case isSuggestedRepliesEnabled = "enableSuggestedReplies" // 3.11.0

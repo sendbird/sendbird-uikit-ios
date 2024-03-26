@@ -258,7 +258,8 @@ public class SBUVoicePlayer: NSObject, AVAudioPlayerDelegate {
         self.progressTimer = nil
     }
     
-    @objc func updatePlayTime() {
+    @objc
+    func updatePlayTime() {
         guard let audioPlayer = self.audioPlayer else { return }
 
         if audioPlayer.isPlaying {

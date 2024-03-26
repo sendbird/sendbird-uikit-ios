@@ -25,7 +25,8 @@ public protocol SBUOpenChannelModuleInputDataSource: SBUBaseChannelModuleInputDa
 
 extension SBUOpenChannelModule {
     /// The `SBUOpenChannelModule`'s component class that represents input.
-    @objcMembers open class Input: SBUBaseChannelModule.Input {
+    @objcMembers
+    open class Input: SBUBaseChannelModule.Input {
         
         /// The open channel object casted from `baseChannel`.
         public var channel: OpenChannel? {
@@ -110,27 +111,27 @@ extension SBUOpenChannelModule {
             }
             
             switch mimeType {
-                case "image/gif":
-                    let gifData = try? Data(contentsOf: imageURL)
-                    
-                    self.delegate?.openChannelModule(
-                        self,
-                        didPickFileData: gifData,
-                        fileName: imageName,
-                        mimeType: mimeType
-                    )
-                    
-                default:
-                    let originalImage = info[.originalImage] as? UIImage
-                    guard let image = originalImage?.fixedOrientation(),
-                          let imageData = image.sbu_convertToData() else { return }
-                    
-                    self.delegate?.openChannelModule(
-                        self,
-                        didPickFileData: imageData,
-                        fileName: imageName,
-                        mimeType: mimeType
-                    )
+            case "image/gif":
+                let gifData = try? Data(contentsOf: imageURL)
+                
+                self.delegate?.openChannelModule(
+                    self,
+                    didPickFileData: gifData,
+                    fileName: imageName,
+                    mimeType: mimeType
+                )
+                
+            default:
+                let originalImage = info[.originalImage] as? UIImage
+                guard let image = originalImage?.fixedOrientation(),
+                      let imageData = image.sbu_convertToData() else { return }
+                
+                self.delegate?.openChannelModule(
+                    self,
+                    didPickFileData: imageData,
+                    fileName: imageName,
+                    mimeType: mimeType
+                )
             }
         }
         
@@ -307,8 +308,7 @@ extension SBUOpenChannelModule {
             guard let userId = SBUGlobals.currentUser?.userId else { return }
             let isOperator = self.channel?.isOperator(userId: userId) ?? false
             let isFrozen = self.channel?.isFrozen ?? false
-            self.channel?.getMyMutedInfo(completionHandler: {
-                [weak self] isMuted, _, _, _, _, _ in
+            self.channel?.getMyMutedInfo(completionHandler: { [weak self] isMuted, _, _, _, _, _ in
                 guard let self = self else { return }
                 if !isFrozen || (isFrozen && isOperator) {
                     if let messageInputView = self.messageInputView as? SBUMessageInputView {

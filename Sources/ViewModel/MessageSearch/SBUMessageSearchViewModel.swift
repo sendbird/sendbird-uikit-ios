@@ -9,23 +9,33 @@
 import Foundation
 import SendbirdChatSDK
 
+/// `SBUMessageSearchViewModelDelegate` protocol
+/// This protocol defines the methods that a delegate of a `SBUMessageSearchViewModel` object should implement.
+/// This protocol inherits from `SBUCommonViewModelDelegate`.
 public protocol SBUMessageSearchViewModelDelegate: SBUCommonViewModelDelegate {
     /// Called when the search results has been changed.
     func searchViewModel(_ viewModel: SBUMessageSearchViewModel, didChangeSearchResults results: [BaseMessage], needsToReload: Bool)
+    
 }
 
+/// `SBUMessageSearchViewModel` open class
+///
+/// This class is responsible for managing and handling the search functionality in the chat.
 open class SBUMessageSearchViewModel {
     // MARK: - Constants
     static let limit: UInt = 20
     
     // MARK: - Property (Public)
+    /// The channel that the search will be performed on.
     public private(set) var channel: BaseChannel?
 
+    /// The list of search results.
     @SBUAtomic public private(set) var searchResultList: [BaseMessage] = []
 
     /// This param will be used on entering a channel from selecting an item from the search results.
     public var messageListParams: MessageListParams?
     
+    /// The query object that is used to perform message search in the channel.
     public private(set) var messageSearchQuery: MessageSearchQuery?
     
     // MARK: - Property (Private)
@@ -36,6 +46,12 @@ open class SBUMessageSearchViewModel {
     var keyword: String?
     
     // MARK: - Lifecycle
+    /// Initializes a new `SBUMessageSearchViewModel` instance.
+    ///
+    /// - Parameters:
+    ///   - channel: The `BaseChannel` object where the search will be performed.
+    ///   - params: The `MessageSearchQueryParams` object that will be used for the search. Default is `nil`.
+    ///   - delegate: The `SBUMessageSearchViewModelDelegate` object that will handle delegate methods. Default is `nil`.
     public init(
         channel: BaseChannel,
         params: MessageSearchQueryParams? = nil,

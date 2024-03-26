@@ -60,7 +60,6 @@ open class SBUOpenChannelCommonContentView: SBUCommonContentView {
         case .voice:
             // The flow does not come here.
             image = UIImage()
-            break
         }
         
         self.fileImageView.image = image

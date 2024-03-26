@@ -17,8 +17,11 @@ public protocol SBUChannelInfoHeaderViewDelegate: AnyObject {
 }
 
 extension SBUChannelInfoHeaderViewDelegate {
+    /// This function is called when the channel info is selected.
     public func didSelectChannelInfo() { }
+    /// This function is called when the channel members are selected.
     public func didSelectChannelMembers() { }
+    /// This function is called when the channel participants are selected.
     public func didSelectChannelParticipants() { }
 }
 

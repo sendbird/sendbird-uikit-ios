@@ -9,14 +9,22 @@
 import UIKit
 import SendbirdChatSDK
 
+/// `SBUMessageWebViewModel` class
 public class SBUMessageWebViewModel {
+    /// Image URL
     public var imageURL: String?
+    /// Title Attributed Text
     public var titleAttributedText: NSAttributedString?
+    /// Description Attributed Text
     public var descAttributedText: NSAttributedString?
+    /// URL Attributed Text
     public var urlAttributedText: NSAttributedString?
+    /// Placeholder Image
     public var placeHolderImage: UIImage?
+    /// Error Image
     public var errorImage: UIImage?
     
+    /// Initializer
     public init(metaData: OGMetaData?, isOverlay: Bool = false, isOpenChannel: Bool = false) {
         let theme = isOverlay ? SBUTheme.overlayTheme.messageCellTheme : SBUTheme.messageCellTheme
         let imageData = metaData?.defaultImage

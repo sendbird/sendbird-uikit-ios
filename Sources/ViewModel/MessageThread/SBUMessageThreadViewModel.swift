@@ -75,11 +75,13 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
     public internal(set) var customizedThreadedMessageListParams: ThreadedMessageListParams?
     public internal(set) var threadedMessageListParams = ThreadedMessageListParams()
     
+    // swiftlint:disable identifier_name
     /// A completion handler that is called after sending a multiple files message is completed.
     /// - Note: This interface is beta. We do not gaurantee this interface to work properly yet.
     /// - Since: [NEXT_VERSION_MFM_THREAD]
     public var sendMultipleFilesMessageCompletionHandler: SendbirdChatSDK.MultipleFilesMessageHandler?
-    
+    // swiftlint:enable identifier_name
+
     // MARK: - Logic properties (Private)
     
     @SBUAtomic private var hasMorePrevious: Bool = true
@@ -380,6 +382,8 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
     public override func loadInitialMessages(startingPoint: Int64?,
                                              showIndicator: Bool,
                                              initialMessages: [BaseMessage]?) {
+        guard SendbirdChat.getConnectState() == .open else { return }
+        
         SBULog.info("""
             loadInitialMessages,
             startingPoint : \(String(describing: startingPoint)),
@@ -538,9 +542,9 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
             // if one direction is 0, half the other direction to make both direction equal
             if params.previousResultSize == 0 {
                 params.previousResultSize = params.nextResultSize / 2
-                params.nextResultSize = params.nextResultSize / 2
+                params.nextResultSize /= 2
             } else if params.nextResultSize == 0 {
-                params.previousResultSize = params.previousResultSize / 2
+                params.previousResultSize /= 2
                 params.nextResultSize = params.previousResultSize / 2
             }
             
@@ -811,10 +815,12 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
     // MARK: - List
     public override func sortAllMessageList(needReload: Bool) {
         // Generate full list for draw
-        let pendingMessages = self.pendingMessageManager.getPendingMessages(
-            channelURL: self.channel?.channelURL,
-            forMessageThread: self.isThreadMessageMode
-        ).filter { $0.parentMessageId == self.parentMessageId }
+        let pendingMessages = self.pendingMessageManager
+            .getPendingMessages(
+                channelURL: self.channel?.channelURL,
+                forMessageThread: self.isThreadMessageMode
+            )
+            .filter { $0.parentMessageId == self.parentMessageId }
         
         self.messageList.sort { $0.createdAt < $1.createdAt }
         self.fullMessageList = self.messageList
@@ -1222,6 +1228,8 @@ extension SBUMessageThreadViewModel {
         }
     }
     
+    /// This function is called when reconnection fails.
+    /// It is currently empty and can be overridden in subclasses to provide custom behavior.
     open func didFailReconnection() { }
 }
 
@@ -1292,7 +1300,7 @@ extension SBUMessageThreadViewModel: GroupChannelDelegate {
     open override func channel(_ channel: BaseChannel, updatedReaction reactionEvent: ReactionEvent) {
         guard self.channel?.channelURL == channel.channelURL else { return }
         
-        let message = self.fullMessageList.filter { $0.messageId == reactionEvent.messageId }.first
+        let message = self.fullMessageList.first { $0.messageId == reactionEvent.messageId }
         
         if reactionEvent.messageId == self.parentMessageId {
             // Parent message
@@ -1328,10 +1336,8 @@ extension SBUMessageThreadViewModel: GroupChannelDelegate {
         } else {
             SBULog.info("Message was deleted: \(messageId)")
             
-            for message in self.messageList {
-                if message.messageId == messageId {
-                    self.delegate?.baseChannelViewModel(self, deletedMessages: [message])
-                }
+            for message in self.messageList where message.messageId == messageId {
+                self.delegate?.baseChannelViewModel(self, deletedMessages: [message])
             }
             
             self.deleteMessagesInList(messageIds: [messageId], needReload: true)

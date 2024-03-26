@@ -10,13 +10,20 @@ import UIKit
 import AVFoundation
 import Photos
 
+/// `SBUPermissionManager` is a class that manages the permissions required by the Sendbird UIKit.
+/// It supports permissions such as ``camera``, ``photoLibrary``, and ``record``.
 public class SBUPermissionManager {
     /// The enumeration tha represents the permissions supported by Sendbird UIKit
     public enum PermissionType {
+        /// Represents the `camera` permission type.
         case camera
+        /// Represents the `photoLibrary` permission type.
         case photoLibrary
+        /// Represents the `record` permission type.
         case record
     }
+
+    /// The shared instance of `SBUPermissionManager`.
     public static let shared = SBUPermissionManager()
         
     /// ``SBUPhotoAccessibleStatus`` value that indicaates the current status of photo library acess.
@@ -209,7 +216,7 @@ public class SBUPermissionManager {
 }
 
 extension SBUPermissionManager {
-    
+    // swiftlint:disable missing_docs
     @available(*, deprecated, renamed: "currentPhotoAccessStatus")
     public var currentStatus: SBUPhotoAccessibleStatus {
         currentPhotoAccessStatus
@@ -223,5 +230,5 @@ extension SBUPermissionManager {
             completion(false)
         }
     }
-    
+    // swiftlint:enable missing_docs
 }

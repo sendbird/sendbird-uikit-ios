@@ -15,7 +15,8 @@ public protocol SBUGroupChannelModuleHeaderDelegate: SBUBaseChannelModuleHeaderD
 extension SBUGroupChannelModule {
     
     /// A module component that represent the header of `SBUGroupChannelModule`.
-    @objcMembers open class Header: SBUBaseChannelModule.Header {
+    @objcMembers
+    open class Header: SBUBaseChannelModule.Header {
         
         /// The object that acts as the delegate of the header component. The delegate must adopt the `SBUGroupChannelModuleHeaderDelegate` protocol.
         public weak var delegate: SBUGroupChannelModuleHeaderDelegate? {
@@ -27,8 +28,10 @@ extension SBUGroupChannelModule {
         /// - Parameters:
         ///   - delegate: The object that acts as the delegate of the header component. The delegate must adopt the `SBUGroupChannelModuleHeaderDelegate` protocol.
         ///   - theme: The object that is used as the theme of the header component. The theme must adopt the `SBUChannelTheme` class.
-        open func configure(delegate: SBUGroupChannelModuleHeaderDelegate,
-                              theme: SBUChannelTheme) {
+        open func configure(
+            delegate: SBUGroupChannelModuleHeaderDelegate,
+            theme: SBUChannelTheme
+        ) {
             self.delegate = delegate
             self.theme = theme
             

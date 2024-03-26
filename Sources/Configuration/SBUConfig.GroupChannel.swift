@@ -55,6 +55,13 @@ extension SBUConfig.GroupChannel {
         /// - NOTE: A value that cannot be set in the dashboard.
         /// - Since: 3.11.0
         @SBUPrioritizedConfig public var isSuggestedRepliesEnabled: Bool = false
+        
+        /// Choose the type of suggested replies render type to show in a Group Channel.
+        /// To enable the type, you must first enable ``isSuggestedRepliesEnabled``.
+        /// The default value is `lastMessageOnly`
+        /// - Note: This property is not yet configurable via the Dashboard.
+        /// - Since: 3.19.0
+        public var showSuggestedRepliesFor: SBUSuggestedRepliesRenderType = .lastMessageOnly
 
         /// Enable the feature to show form type in messages. Default is `false`
         /// - NOTE: A value that cannot be set in the dashboard.
@@ -71,6 +78,10 @@ extension SBUConfig.GroupChannel {
         ///              so if you want to use this value for function implementation,
         ///              please use the ``SBUAvailable/isSupportReactions()`` method in the ``SBUAvailable`` class.
         @SBUPrioritizedConfig public var isReactionsEnabled: Bool = true
+        
+        /// Enable the Reactions features in Super Group Channels.
+        /// - Since: 3.19.0
+        @SBUPrioritizedConfig public var isSuperGroupReactionsEnabled: Bool = false
         
         /// Enable the feature to mention specific members in a message for notification.
         ///
@@ -144,6 +155,7 @@ extension SBUConfig.GroupChannel {
             self._isOGTagEnabled.setDashboardValue(channel.isOGTagEnabled)
             self._isTypingIndicatorEnabled.setDashboardValue(channel.isTypingIndicatorEnabled)
             self._isReactionsEnabled.setDashboardValue(channel.isReactionsEnabled)
+            self._isSuperGroupReactionsEnabled.setDashboardValue(channel.isSuperGroupReactionsEnabled)
             self._isMentionEnabled.setDashboardValue(channel.isMentionEnabled)
             self._isVoiceMessageEnabled.setDashboardValue(channel.isVoiceMessageEnabled)
             self._replyType.setDashboardValue(channel.replyType)
@@ -170,6 +182,7 @@ extension SBUConfig.GroupChannel {
             self.isSuggestedRepliesEnabled = (try? container.decode(Bool.self, forKey: .isSuggestedRepliesEnabled)) ?? SendbirdUI.config.groupChannel.channel.isSuggestedRepliesEnabled
             self.isFormTypeMessageEnabled = (try? container.decode(Bool.self, forKey: .isFormTypeMessageEnabled)) ??
                 SendbirdUI.config.groupChannel.channel.isFormTypeMessageEnabled
+            self.isSuperGroupReactionsEnabled = try container.decodeIfPresent(Bool.self, forKey: .isSuperGroupReactionsEnabled) ?? false
             self.isFeedbackEnabled = (try? container.decode(Bool.self, forKey: .isFeedbackEnabled)) ??
                 SendbirdUI.config.groupChannel.channel.isFeedbackEnabled
             

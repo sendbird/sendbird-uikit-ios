@@ -157,7 +157,8 @@ open class SBUSimpleFeedbackView: SBUFeedbackView {
     }
     
     /// action for like
-    @objc open func onClickLike() {
+    @objc
+    open func onClickLike() {
         guard let feedback = self.feedback else {
             self.onAction(with: .rating, rating: .good)
             return
@@ -169,7 +170,8 @@ open class SBUSimpleFeedbackView: SBUFeedbackView {
     }
     
     /// action for dislike
-    @objc open func onClickDislike() {
+    @objc
+    open func onClickDislike() {
         guard let feedback = self.feedback else {
             self.onAction(with: .rating, rating: .bad)
             return

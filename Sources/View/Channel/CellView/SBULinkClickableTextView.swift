@@ -13,7 +13,8 @@ public class SBULinkClickableTextView: UITextView {
         guard self.bounds.contains(point) else { return nil }
         guard let pos = closestPosition(to: point) else { return nil }
         guard let range = tokenizer.rangeEnclosingPosition(
-            pos, with: .character,
+            pos, 
+            with: .character,
             inDirection: .layout(.left)) else { return nil }
 
         let startIndex = offset(from: beginningOfDocument, to: range.start)

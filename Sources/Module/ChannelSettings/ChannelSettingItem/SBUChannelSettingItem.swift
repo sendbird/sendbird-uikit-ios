@@ -11,14 +11,25 @@ import UIKit
 /// This is a structure used to handling action and display in `SBUBaseChannelSettingsModule.List` and `SBUBaseChannelSettingCell`.
 /// - Since: 3.1.0
 public struct SBUChannelSettingItem {
+    /// The title of the setting item
     public let title: String
+    
+    /// The icon of the setting item
     public let icon: UIImage
+    
+    /// The subtitle of the setting item
     public let subTitle: String?
+    
+    /// A boolean to determine if the right button is hidden
     public let isRightButtonHidden: Bool
+    
+    /// A boolean to determine if the right switch is hidden
     public let isRightSwitchHidden: Bool
     
+    /// The handler for the tap action
     public let tapHandler: (() -> Void)?
     
+    /// Initializer
     public init(title: String,
                 subTitle: String? = nil,
                 icon: UIImage,

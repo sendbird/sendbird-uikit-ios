@@ -5,6 +5,7 @@
 //  Created by Tez Park on 16/02/2020.
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
 //
+// swiftlint:disable identifier_name
 
 import UIKit
 
@@ -307,3 +308,4 @@ extension UIImage {
         return animation
     }
 }
+// swiftlint:enable identifier_name

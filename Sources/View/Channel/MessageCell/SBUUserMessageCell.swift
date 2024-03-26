@@ -191,6 +191,7 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
         guard let message = configuration.userMessage else { return }
         // Set using reaction
         self.useReaction = configuration.useReaction
+        self.enableEmojiLongPress = configuration.enableEmojiLongPress
         
         self.useQuotedMessage = configuration.useQuotedMessage
         

@@ -8,20 +8,25 @@
 
 import UIKit
 
+/// This is a typealias for a closure that handles actions in an action sheet.
 public typealias SBUActionSheetHandler = () -> Void
 
+/// SBUActionSheetDelegate is a delegate that defines methods for handling action sheet events.
 public protocol SBUActionSheetDelegate: NSObjectProtocol {
     func didSelectActionSheetItem(index: Int, identifier: Int)
     func didDismissActionSheet()
 }
 
 extension SBUActionSheetDelegate {
+    /// This function is called when the action sheet is dismissed.
     public func didDismissActionSheet() {}
 }
 
+/// This class represents an item in an action sheet.
 public class SBUActionSheetItem: SBUCommonItem {
     var completionHandler: SBUActionSheetHandler?
     
+    /// initializer
     public override init(
         title: String? = nil,
         color: UIColor? = SBUColorSet.onlight01,
@@ -71,6 +76,7 @@ public class SBUActionSheetItem: SBUCommonItem {
     }
 }
 
+/// This class is used to create and manage action sheets in the application.
 public class SBUActionSheet: NSObject {
     @SBUThemeWrapper(theme: SBUTheme.componentTheme)
     var theme: SBUComponentTheme
@@ -238,9 +244,9 @@ public class SBUActionSheet: NSObject {
         )
         self.backgroundView.alpha = 0.0
         self.isShowing = true
-        UIView.animate(withDuration: 0.1, animations: {
+        UIView.animate(withDuration: 0.1) {
             self.backgroundView.alpha = 1.0
-        }) { _ in
+        } completion: { _ in
             UIView.animate(withDuration: 0.2, animations: {
                 self.baseView.frame = baseFrame
                 self.isShowing = false
@@ -248,13 +254,15 @@ public class SBUActionSheet: NSObject {
         }
     }
     
-    @objc private func dismiss() {
+    @objc
+    private func dismiss() {
         guard !isShowing else { return }
 
         self.handleDismiss(isUserInitiated: true)
     }
     
-    @objc private func handleDismiss(isUserInitiated: Bool = true) {
+    @objc
+    private func handleDismiss(isUserInitiated: Bool = true) {
         for subView in self.baseView.subviews {
             subView.removeFromSuperview()
         }
@@ -405,14 +413,15 @@ public class SBUActionSheet: NSObject {
     }
     
     // MARK: Button action
-    @objc private func onClickActionSheetButton(sender: UIButton) {
+    @objc
+    private func onClickActionSheetButton(sender: UIButton) {
         self.dismiss()
         self.delegate?.didSelectActionSheetItem(
             index: sender.tag,
             identifier: self.identifier
         )
         
-        let item = self.items.filter { $0.tag == sender.tag }.first
+        let item = self.items.first(where: { $0.tag == sender.tag })
         item?.completionHandler?()
     }
     

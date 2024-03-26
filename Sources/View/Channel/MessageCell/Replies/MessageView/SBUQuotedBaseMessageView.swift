@@ -71,11 +71,11 @@ open class SBUQuotedBaseMessageView: SBUView, SBUQuotedMessageViewProtocol {
     /// - Since: 2.2.0
     public var isFileType: Bool {
         switch messageType {
-            case .fileMessage: return true
-            default: return false
+        case .fileMessage: return true
+        default: return false
         }
     }
-
+    
     /// The params of quoted message
     /// - Since: 3.3.0
     public private(set) var params: SBUQuotedBaseMessageViewParams?
@@ -88,9 +88,9 @@ open class SBUQuotedBaseMessageView: SBUView, SBUQuotedMessageViewProtocol {
     var messageType: QuotedMessageType = .none {
         didSet {
             switch messageType {
-                case .userMessage: return
-                case .fileMessage: return
-                default: return
+            case .userMessage: return
+            case .fileMessage: return
+            default: return
             }
         }
     }

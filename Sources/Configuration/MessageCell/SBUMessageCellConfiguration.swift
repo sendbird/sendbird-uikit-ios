@@ -11,9 +11,12 @@ import UIKit
 /// The class for configuring message cell feature.
 /// - Since: 3.2.2
 public class SBUMessageCellConfiguration {
+    /// The instance of GroupChannel class.
     public var groupChannel = GroupChannel()
+    /// The instance of OpenChannel class.
     public var openChannel = OpenChannel()
     
+    /// BaseChannel is a base class for different types of channels.
     public class BaseChannel {
         /// The max width of the message cell.
         public var messageCellMaxWidth: CGFloat = SBUConstant.messageCellMaxWidth

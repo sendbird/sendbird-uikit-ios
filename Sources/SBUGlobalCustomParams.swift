@@ -9,6 +9,7 @@
 import UIKit
 import SendbirdChatSDK
 
+/// This class is used to manage global custom parameters for Sendbird UIKit.
 public class SBUGlobalCustomParams {
     
     /// This is a builder that allows you to predefined the global `GroupChannelCreateParams` processing to be used when creating a channel.

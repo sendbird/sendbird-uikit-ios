@@ -9,6 +9,7 @@
 import Foundation
 import SendbirdChatSDK
 
+/// `SBUEmojiManager` is a class responsible for managing emojis in the application.
 public class SBUEmojiManager {
     // MARK: - Private keys
     static let kEmojiCacheKey = "LOCAL_CACHING_EMOJI_CONTAINER"
@@ -99,9 +100,17 @@ public class SBUEmojiManager {
     static func isReactionEnabled(channel: BaseChannel?) -> Bool {
         guard let groupChannel = channel as? GroupChannel else { return false }
         
-        return SBUAvailable.isSupportReactions()
-        && !groupChannel.isSuper
-        && !groupChannel.isBroadcast
+        return groupChannel.isSuper ?
+        SBUAvailable.isSupportReactions(for: .superGroup) :
+        SBUAvailable.isSupportReactions(for: .group) && !groupChannel.isBroadcast
+    }
+    
+    /// Decides whether to show the member list for each reaction upon long press on an emoji.
+    /// - Since: 3.19.0
+    static func isEmojiLongPressEnabled(channel: BaseChannel?) -> Bool {
+        guard let groupChannel = channel as? GroupChannel else { return false }
+        
+        return !groupChannel.isSuper
     }
     
     /// Loads all Emojis from ChatSDK.

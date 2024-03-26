@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+// swiftlint:disable identifier_name
 import CoreGraphics
 
 internal extension IntegerLiteralType {
@@ -37,3 +38,4 @@ internal extension FloatLiteralType {
         CGFloat(self)
     }
 }
+// swiftlint:enable identifier_name

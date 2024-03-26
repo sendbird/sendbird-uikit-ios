@@ -18,17 +18,30 @@ public protocol SBUModerationsViewModelDelegate: SBUCommonViewModelDelegate {
     )
 }
 
+/// `SBUModerationsViewModel` is an open class that manages the channel data for the moderation view.
 open class SBUModerationsViewModel {
     
     // MARK: - Property (Public)
+    /// The `BaseChannel` object that represents the channel.
     public private(set) var channel: BaseChannel?
+    
+    /// The URL of the channel as a `String`.
     public private(set) var channelURL: String?
+    
+    /// The type of the channel, represented as a `ChannelType`.
     public private(set) var channelType: ChannelType = .group
     
     // MARK: - Property (Private)
     weak var delegate: SBUModerationsViewModelDelegate?
     
     // MARK: - Lifecycle
+    /// Initializes a new `SBUModerationsViewModel` instance.
+    ///
+    /// This initializer takes a `BaseChannel` and an optional `SBUModerationsViewModelDelegate`.
+    ///
+    /// - Parameters:
+    ///   - channel: The `BaseChannel` to be managed by the view model.
+    ///   - delegate: An optional `SBUModerationsViewModelDelegate` to handle events. Default is `nil`.
     public init(channel: BaseChannel, delegate: SBUModerationsViewModelDelegate? = nil) {
         self.delegate = delegate
         
@@ -40,7 +53,17 @@ open class SBUModerationsViewModel {
         self.loadChannel(channelURL: channelURL)
     }
     
-    public init(channelURL: String, channelType: ChannelType, delegate: SBUModerationsViewModelDelegate? = nil) {
+    /// Initializes a new `SBUModerationsViewModel` instance with a channel URL and type.
+    ///
+    /// - Parameters:
+    ///   - channelURL: The URL of the channel to be managed by the view model.
+    ///   - channelType: The type of the channel, represented as a `ChannelType`.
+    ///   - delegate: An optional `SBUModerationsViewModelDelegate` to handle events. Default is `nil`.
+    public init(
+        channelURL: String,
+        channelType: ChannelType, 
+        delegate: SBUModerationsViewModelDelegate? = nil
+    ) {
         self.delegate = delegate
         
         self.channelType = channelType

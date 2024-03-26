@@ -49,8 +49,8 @@ open class SBUOpenChannelSettingsViewController: SBUBaseChannelSettingsViewContr
         SBULog.info("")
         
         self.createViewModel(channel: channel)
-        self.headerComponent = SBUModuleSet.openChannelSettingsModule.headerComponent
-        self.listComponent = SBUModuleSet.openChannelSettingsModule.listComponent
+        self.headerComponent = SBUModuleSet.OpenChannelSettingsModule.HeaderComponent.init()
+        self.listComponent = SBUModuleSet.OpenChannelSettingsModule.ListComponent.init()
     }
     
     /// If you don't have channel object and have channelURL, use this initialize function.
@@ -60,8 +60,8 @@ open class SBUOpenChannelSettingsViewController: SBUBaseChannelSettingsViewContr
         SBULog.info("")
         
         self.createViewModel(channelURL: channelURL)
-        self.headerComponent = SBUModuleSet.openChannelSettingsModule.headerComponent
-        self.listComponent = SBUModuleSet.openChannelSettingsModule.listComponent
+        self.headerComponent = SBUModuleSet.OpenChannelSettingsModule.HeaderComponent.init()
+        self.listComponent = SBUModuleSet.OpenChannelSettingsModule.ListComponent.init()
     }
     
     // MARK: - ViewModel
@@ -195,8 +195,8 @@ open class SBUOpenChannelSettingsViewController: SBUBaseChannelSettingsViewContr
                   return
               }
         
-        for vc in navigationController.viewControllers where vc is SBUBaseChannelListViewController {
-            navigationController.popToViewController(vc, animated: true)
+        for viewController in navigationController.viewControllers where viewController is SBUBaseChannelListViewController {
+            navigationController.popToViewController(viewController, animated: true)
             return
         }
         

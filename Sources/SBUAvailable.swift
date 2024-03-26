@@ -9,7 +9,19 @@
 import UIKit
 import SendbirdChatSDK
 
+protocol SendbirdChatProtocol {
+    func getAppInfo() -> AppInfo?
+}
+
+class SendbirdChatImplementation: SendbirdChatProtocol {
+    public func getAppInfo() -> AppInfo? {
+        return SendbirdChat.getAppInfo()
+    }
+}
+
+/// This class is responsible for checking the availability of various features in the Sendbird Chat SDK.
 public class SBUAvailable {
+    //  swiftlint:disable identifier_name
     // MARK: - Private
     static let REACTIONS = "reactions"
     static let ENABLE_OG_TAG = "enable_og_tag"
@@ -26,12 +38,15 @@ public class SBUAvailable {
     static let ALLOW_ONLY_OPERATOR_SDK_TO_UPDATE_GROUP_CHANNEL = "allow_only_operator_sdk_to_update_group_channel"
     static let ALLOW_BROADCAST_CHANNEL = "allow_broadcast_channel"
     static let MESSAGE_SEARCH = "message_search_v3"
+    //  swiftlint:enable identifier_name
     
     /// - Since: 3.5.6
     static let ALLOW_USER_UPDATE_FROM_SDK = "allow_user_update_from_sdk"
-
+    
+    static var sendbirdChat: SendbirdChatProtocol = SendbirdChatImplementation()
+    
     private static func isAvailable(key: String) -> Bool {
-        guard let appInfo = SendbirdChat.getAppInfo(),
+        guard let appInfo = sendbirdChat.getAppInfo(),
               let applicationAttributes = appInfo.applicationAttributes else { return false }
         
         return applicationAttributes.contains(key)
@@ -53,12 +68,28 @@ public class SBUAvailable {
         return self.isAvailable(key: ALLOW_BROADCAST_CHANNEL)
     }
     
-    /// This method checks if the application support reactions.
+    /// This method checks if the application support reactions for Group Channel.
     /// - Returns: `true` if the reaction operation can be usable, `false` otherwise.
     /// - Since: 1.2.0
     public static func isSupportReactions() -> Bool {
-        return self.isAvailable(key: REACTIONS)
-        && SendbirdUI.config.groupChannel.channel.isReactionsEnabled
+        isSupportReactions(for: .group)
+    }
+    
+    /// This method checks if the application supports Reactions for the given channel type.
+    /// - Parameter channelType: The ``SBUChannelType`` of the target channel.
+    /// - Returns: `true` if the Reactions feature is supported for the given channel type,`false` otherwise.
+    /// - Since: 3.19.0
+    public static func isSupportReactions(for channelType: SBUChannelType) -> Bool {
+        let reactionsIsAvailable = self.isAvailable(key: REACTIONS)
+        
+        switch channelType {
+        case .group:
+            return reactionsIsAvailable 
+            && SendbirdUI.config.groupChannel.channel.isReactionsEnabled
+        case .superGroup:
+            return reactionsIsAvailable
+            && SendbirdUI.config.groupChannel.channel.isSuperGroupReactionsEnabled
+        }
     }
     
     /// This method checks if the application support og metadata.

@@ -5,6 +5,7 @@
 //  Created by Tez Park on 2022/07/06.
 //  Copyright © 2022 Sendbird, Inc. All rights reserved.
 //
+// swiftlint:disable missing_docs
 
 extension SBUStringSet {
     
@@ -102,3 +103,4 @@ extension SBUStringSet {
         set { SBUStringSet.UserProfile_Unregister = newValue }
     }
 }
+// swiftlint:enable missing_docs

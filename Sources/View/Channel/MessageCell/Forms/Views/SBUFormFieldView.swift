@@ -265,9 +265,13 @@ extension SBUFormFieldView {
     /// Enum model to indicate the status of the value in the currently entered field.
     /// - Since: 3.11.0
     public enum StatusType {
+        /// Represents a completed form field with a value.
         case done(value: String)
+        /// Represents an optional form field.
         case optional
+        /// Represents a form field that is currently being edited with a value.
         case editing(value: String?)
+        /// Represents an unknown form field status.
         case unknown
         
         /// init
@@ -296,6 +300,7 @@ extension SBUFormFieldView {
             self = .editing(value: field.temporaryAnswer)
         }
 
+        /// The text property represents the current text value of the form field.
         public var text: String? {
             switch self {
             case .done(let value): return value
@@ -305,6 +310,7 @@ extension SBUFormFieldView {
             }
         }
 
+        /// The isDone property represents whether the form field has been completed.
         public var isDone: Bool {
             switch self {
             case .done: return true
@@ -312,6 +318,7 @@ extension SBUFormFieldView {
             }
         }
 
+        /// The isOptional property represents whether the form field is optional.
         public var isOptional: Bool {
             switch self {
             case .optional: return true
@@ -319,6 +326,7 @@ extension SBUFormFieldView {
             }
         }
 
+        /// The isEditable property represents whether the form field is editable.
         public var isEditable: Bool {
             switch self {
             case .editing:  return true

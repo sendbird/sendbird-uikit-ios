@@ -9,9 +9,12 @@
 import UIKit
 import SendbirdChatSDK
 
+// swiftlint:disable type_name
 /// CollectionView Cell used in SBUMultipleFilesMessageCollectionView to show the files of a multiple files message.
 /// - Since: 3.10.0
 open class SBUMultipleFilesMessageCollectionViewCell: SBUCollectionViewCell {
+    // swiftlint:enable type_name
+
     public var imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.clipsToBounds = true

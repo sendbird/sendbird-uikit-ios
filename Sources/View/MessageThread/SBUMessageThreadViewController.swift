@@ -118,9 +118,9 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
             startingPoint: startingPoint
         )
         
-        self.headerComponent = SBUModuleSet.messageThreadModule.headerComponent
-        self.listComponent = SBUModuleSet.messageThreadModule.listComponent
-        self.inputComponent = SBUModuleSet.messageThreadModule.inputComponent
+        self.headerComponent = SBUModuleSet.MessageThreadModule.HeaderComponent.init()
+        self.listComponent = SBUModuleSet.MessageThreadModule.ListComponent.init()
+        self.inputComponent = SBUModuleSet.MessageThreadModule.InputComponent.init()
     }
 
     open override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -463,9 +463,9 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
         }
     }
     
-    @available(iOS 14, *)
     /// Groups picked files by file type.
     /// - Returns a tuple - (an array of images + GIFs, an array of videos)
+    @available(iOS 14, *)
     private func groupFilesByMimeType(_ results: [PHPickerResult]) -> ([NSItemProvider], [NSItemProvider]) {
         var imageAndGIFs = [NSItemProvider]()
         var videos = [NSItemProvider]()
@@ -838,31 +838,30 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
         
         // channel changed
         switch context.source {
-            case .channelChangelog:
-                self.updateChannelTitle()
-                self.updateChannelStatus()
-                self.inputComponent?.updateMessageInputModeState()
-                self.listComponent?.reloadTableView()
-                self.updateVoiceMessageInputMode()
-                
-            case .eventChannelChanged:
-                self.updateChannelTitle()
-                self.updateChannelStatus()
-                self.inputComponent?.updateMessageInputModeState()
-                self.updateVoiceMessageInputMode()
-            
-            case .eventUserLeft, .eventUserJoined:
-                self.updateChannelTitle()
-                
-            case .eventChannelFrozen, .eventChannelUnfrozen,
-                    .eventUserMuted, .eventUserUnmuted,
-                    .eventOperatorUpdated,
-                    .eventUserBanned: // Other User Banned
-                self.inputComponent?.updateMessageInputModeState()
+        case .channelChangelog:
+            self.updateChannelTitle()
+            self.updateChannelStatus()
+            self.inputComponent?.updateMessageInputModeState()
+            self.listComponent?.reloadTableView()
             self.updateVoiceMessageInputMode()
-            break
-                
-            default: break
+            
+        case .eventChannelChanged:
+            self.updateChannelTitle()
+            self.updateChannelStatus()
+            self.inputComponent?.updateMessageInputModeState()
+            self.updateVoiceMessageInputMode()
+            
+        case .eventUserLeft, .eventUserJoined:
+            self.updateChannelTitle()
+            
+        case .eventChannelFrozen, .eventChannelUnfrozen,
+                .eventUserMuted, .eventUserUnmuted,
+                .eventOperatorUpdated,
+                .eventUserBanned: // Other User Banned
+            self.inputComponent?.updateMessageInputModeState()
+            self.updateVoiceMessageInputMode()
+            
+        default: break
         }
     }
     

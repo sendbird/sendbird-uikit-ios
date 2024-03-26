@@ -32,7 +32,9 @@ extension SBUFeedbackAnswer {
     /// internal Feedback interaction action status.
     /// - Since: 3.15.0
     public enum Action {
+        /// Represents the rating action in the feedback system.
         case rating
+        /// Represents the modify action in the feedback system.
         case modify
     }
     
