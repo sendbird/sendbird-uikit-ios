@@ -171,7 +171,7 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
         self.updateStyles()
         
         self.viewModel?.enableLogImpression(true)
-        self.viewModel?.logImpression(messages: self.listComponent?.getVisibleMessages() ?? [])
+        self.viewModel?.markAsViewed(messages: self.listComponent?.getVisibleMessages() ?? [])
     }
     
     open override func viewWillDisappear(_ animated: Bool) {
@@ -782,12 +782,12 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
     
     func feedNotificationChannelModule(
         _ listComponent: SBUFeedNotificationChannelModule.List,
-        shouldLogImpression messages: [BaseMessage]
+        shouldMarkAsViewed messages: [BaseMessage]
     ) {
-        self.viewModel?.logImpression(messages: messages)
+        self.viewModel?.markAsViewed(messages: messages)
     }
     
-    func feedNotificationChannelModuleStopLogImpressionTimer(
+    func feedNotificationChannelModuleStopMarkAsViewedTimer(
         _ listComponent: SBUFeedNotificationChannelModule.List
     ) {
         self.viewModel?.invalidateLogImpressionTimer()

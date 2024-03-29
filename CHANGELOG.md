@@ -1,5 +1,10 @@
 # Changelog
 
+### v3.19.1 (Mar 29, 2024)
+
+## Improvements
+
+- Updated internal code to be compatible with ChatSDK 4.18.0
 ### v3.19.0 (Mar 26, 2024)
 
 ## New Feature

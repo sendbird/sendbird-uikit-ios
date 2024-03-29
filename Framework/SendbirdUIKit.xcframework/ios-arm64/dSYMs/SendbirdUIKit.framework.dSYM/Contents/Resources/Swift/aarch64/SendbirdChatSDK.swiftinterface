@@ -1,6 +1,6 @@
 // swift-interface-format-version: 1.0
 // swift-compiler-version: Apple Swift version 5.7.1 (swiftlang-5.7.1.135.3 clang-1400.0.29.51)
-// swift-module-flags: -target arm64-apple-ios11.0 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name SendbirdChatSDK
+// swift-module-flags: -target arm64-apple-ios12.0 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name SendbirdChatSDK
 // swift-module-flags-ignorable: -enable-bare-slash-regex
 import CommonCrypto
 import CoreGraphics
@@ -203,6 +203,7 @@ extension SendbirdChatSDK.PollVoterListQueryParams : Swift.Encodable {
   @objc open var notificationPriority: SendbirdChatSDK.NotificationPriority {
     get
   }
+  @objc final public let notificationEventDeadline: Swift.Int64
   required public init(from decoder: Swift.Decoder) throws
   public func encode(to encoder: Swift.Encoder) throws
   public typealias ID = Swift.AnyHashable
@@ -3493,6 +3494,7 @@ extension SendbirdChatSDK.MutedUserListQuery {
   @objc public class func markAsRead(channelURLs: [Swift.String], completionHandler: SendbirdChatSDK.SBErrorHandler? = nil)
   @objc public class func markAsDelivered(remoteNotificationPayload: [Swift.AnyHashable : Any], completionHandler: SendbirdChatSDK.SBErrorHandler? = nil)
   @objc public class func markPushNotificationAsDelivered(remoteNotificationPayload: [Swift.AnyHashable : Any], completionHandler: SendbirdChatSDK.SBErrorHandler? = nil)
+  @objc public class func markPushNotificationAsClicked(remoteNotificationPayload: [Swift.AnyHashable : Any], completionHandler: SendbirdChatSDK.SBErrorHandler? = nil)
   @objc(getMyGroupChannelChangeLogsWithToken:params:completionHandler:) public class func getMyGroupChannelChangeLogs(token: Swift.String?, params: SendbirdChatSDK.GroupChannelChangeLogsParams = GroupChannelChangeLogsParams(), completionHandler: @escaping SendbirdChatSDK.ChannelChangeLogsHandler)
   @objc(getMyGroupChannelChangeLogsWithTimestamp:params:completionHandler:) public class func getMyGroupChannelChangeLogs(timestamp: Swift.Int64, params: SendbirdChatSDK.GroupChannelChangeLogsParams = GroupChannelChangeLogsParams(), completionHandler: @escaping SendbirdChatSDK.ChannelChangeLogsHandler)
   @objc(getMembersChangeLogsWithToken:completionHandler:) public class func getMembersChangeLogs(token: Swift.String, completionHandler: @escaping SendbirdChatSDK.MembersChangeLogsHandler)
@@ -3907,6 +3909,7 @@ extension SendbirdChatSDK.ScheduledMessageListQueryParams : Foundation.NSCopying
 @_inheritsConvenienceInitializers @objc(SBDMessageTemplateListParams) final public class MessageTemplateListParams : ObjectiveC.NSObject {
   @objc final public var reverse: Swift.Bool
   @objc final public var limit: Swift.Int
+  @objc final public var keys: [Swift.String]
   @objc override dynamic public init()
   @objc public init(builder: (SendbirdChatSDK.MessageTemplateListParams) -> Swift.Void)
   @objc deinit
@@ -4225,7 +4228,10 @@ extension SendbirdChatSDK.GroupChannel {
   @objc(updateScheduledUserMessageWithScheduledMessageId:userMessageParams:completionHandler:) dynamic open func updateScheduledUserMessage(scheduledMessageId: Swift.Int64, params: SendbirdChatSDK.ScheduledUserMessageUpdateParams, completionHandler: SendbirdChatSDK.UserMessageHandler?)
 }
 extension SendbirdChatSDK.FeedChannel {
+  @available(*, deprecated, renamed: "markAsViewed(messages:)", message: "This method is deprecated in 4.18.0.")
   public func logImpression(messages: [SendbirdChatSDK.BaseMessage]) -> Swift.Bool
+  public func markAsViewed(messages: [SendbirdChatSDK.BaseMessage]) -> Swift.Bool
+  public func logClicked(message: SendbirdChatSDK.BaseMessage) -> Swift.Bool
   public func logCustom(topic: Swift.String, messages: [SendbirdChatSDK.BaseMessage]) -> Swift.Bool
 }
 extension SendbirdChatSDK.BaseChannel {
