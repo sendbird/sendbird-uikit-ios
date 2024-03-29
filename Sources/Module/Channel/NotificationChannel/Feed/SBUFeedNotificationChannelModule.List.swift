@@ -84,18 +84,18 @@ protocol SBUFeedNotificationChannelModuleListDelegate: SBUCommonDelegate {
         _ listComponent: SBUFeedNotificationChannelModule.List
     )
     
-    /// Called when the log impression needs to be sent.
+    /// Called when the viewed action needs to be sent.
     /// - Parameters:
     ///   - listComponent: `SBUFeedNotificationChannelModule.List` object.
-    ///   - messages: The messages that should be sent as log impression.
+    ///   - messages: The messages that should be sent as viewed action.
     func feedNotificationChannelModule(
         _ listComponent: SBUFeedNotificationChannelModule.List,
-        shouldLogImpression messages: [BaseMessage]
+        shouldMarkAsViewed messages: [BaseMessage]
     )
     
-    /// Called when the timer of the log impression has to be invalidated.
+    /// Called when the timer of the markAsViewed has to be invalidated.
     ///   - listComponent: `SBUFeedNotificationChannelModule.List` object.
-    func feedNotificationChannelModuleStopLogImpressionTimer(
+    func feedNotificationChannelModuleStopMarkAsViewedTimer(
         _ listComponent: SBUFeedNotificationChannelModule.List
     )
 }
@@ -251,7 +251,7 @@ extension SBUFeedNotificationChannelModule {
         }
         
         deinit {
-            self.delegate?.feedNotificationChannelModuleStopLogImpressionTimer(self)
+            self.delegate?.feedNotificationChannelModuleStopMarkAsViewedTimer(self)
             SBULog.info(#function)
         }
         
@@ -502,7 +502,7 @@ extension SBUFeedNotificationChannelModule {
                 self.isTableViewReloading = false
                 self.delegate?.feedNotificationChannelModule(
                     self,
-                    shouldLogImpression: self.getVisibleMessages()
+                    shouldMarkAsViewed: self.getVisibleMessages()
                 )
             } else {
                 DispatchQueue.main.async { [weak self] in
@@ -514,7 +514,7 @@ extension SBUFeedNotificationChannelModule {
                     self.isTableViewReloading = false
                     self.delegate?.feedNotificationChannelModule(
                         self,
-                        shouldLogImpression: self.getVisibleMessages()
+                        shouldMarkAsViewed: self.getVisibleMessages()
                     )
                 }
             }
@@ -566,7 +566,7 @@ extension SBUFeedNotificationChannelModule {
         public func scrollViewDidScroll(_ scrollView: UIScrollView) {
             guard scrollView == self.tableView else { return }
             self.delegate?.feedNotificationChannelModule(self, didScroll: scrollView)
-            self.delegate?.feedNotificationChannelModule(self, shouldLogImpression: self.getVisibleMessages())
+            self.delegate?.feedNotificationChannelModule(self, shouldMarkAsViewed: self.getVisibleMessages())
         }
         
         // MARK: - EmptyView

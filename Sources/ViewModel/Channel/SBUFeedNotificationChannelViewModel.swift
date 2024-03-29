@@ -119,15 +119,15 @@ class SBUFeedNotificationChannelViewModel: NSObject {
     /// ```
     var allowsReadStatusUpdate = false
     
-    // MARK: - Log impression
+    // MARK: - Mark as viewed
     
-    /// The time interval to wait to send the impression logs after scrolling has stopped
-    static let logImpressionInterval: TimeInterval = 0.5
+    /// The time interval to wait to send the viewed action after scrolling has stopped
+    static let markAsViewsInterval: TimeInterval = 0.5
     
-    /// A timer for log impression
-    private var logImpressionTimer: Timer?
+    /// A timer for markAsViewed
+    private var markAsViewedTimer: Timer?
     
-    private var logImpressionEnabled: Bool = false
+    private var markAsViewedEnabled: Bool = false
     
     // MARK: - Common
     
@@ -674,30 +674,30 @@ class SBUFeedNotificationChannelViewModel: NSObject {
         )
     }
     
-    // MARK: - Log impression
-    /// Appends impression logs.
-    func logImpression(messages: [BaseMessage]) {
-        if self.logImpressionEnabled == false {
+    // MARK: - Mark as viewed
+    /// Appends viewed action.
+    func markAsViewed(messages: [BaseMessage]) {
+        if self.markAsViewedEnabled == false {
             return
         }
         
         self.invalidateLogImpressionTimer()
         
-        self.logImpressionTimer = Timer.scheduledTimer(
-            withTimeInterval: Self.logImpressionInterval,
+        self.markAsViewedTimer = Timer.scheduledTimer(
+            withTimeInterval: Self.markAsViewsInterval,
             repeats: false
         ) { [weak self] _ in
             guard let self = self else { return }
-            _ = self.channel?.logImpression(messages: messages)
+            _ = self.channel?.markAsViewed(messages: messages)
         }
     }
     
     func enableLogImpression(_ enable: Bool) {
-        self.logImpressionEnabled = enable
+        self.markAsViewedEnabled = enable
     }
 
     func invalidateLogImpressionTimer() {
-        self.logImpressionTimer?.invalidate()
+        self.markAsViewedTimer?.invalidate()
     }
     
     /// This function refreshes channel and checkes updated message.

@@ -458,7 +458,8 @@ class SBUNotificationCell: SBUBaseMessageCell {
                 "tags": tags,
                 "message_id": message.messageId,
                 "source": source,
-                "message_ts": message.createdAt
+                "message_ts": message.createdAt,
+                "notification_event_deadline": message.notificationEventDeadline
             ]
         )
         
