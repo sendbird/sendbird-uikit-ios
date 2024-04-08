@@ -4,7 +4,7 @@ import PackageDescription
 
 let package = Package(
     name: "SendbirdUIKit",
-    platforms: [.iOS(.v11)],
+    platforms: [.iOS(.v12)],
     products: [
         .library(
             name: "SendbirdUIKit",
@@ -15,7 +15,7 @@ let package = Package(
         .package(
             name: "SendbirdChatSDK",
             url: "https://github.com/sendbird/sendbird-chat-sdk-ios",
-            from: "4.18.0"
+            from: "4.19.1"
         ),
     ],
     targets: [

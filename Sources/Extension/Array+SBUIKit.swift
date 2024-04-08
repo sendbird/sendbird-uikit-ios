@@ -56,6 +56,24 @@ public extension Array where Element: Member {
     }
 }
 
+extension Array where Element: BaseMessage {
+    
+    /// If only Stream messages exist, functions that return just that one message
+    /// - Returns: optional Base Message
+    /// - Since: 3.20.0
+    public func hasStreamMessageOnly(with latestMessage: BaseMessage?) -> BaseMessage? {
+        guard let latestMessage = latestMessage else { return nil }
+        guard self.count == 1 else { return nil }
+        guard let message = self.first else { return nil }
+        guard message.messageId == latestMessage.messageId else { return nil }
+        guard message.updatedAt == 0 else { return  nil }
+        guard message.sendingStatus == .succeeded else { return nil }
+        guard message.sender?.userId != SBUGlobals.currentUser?.userId else { return nil }
+        
+        return message
+    }
+}
+
 public extension NSArray {
     /// This is a function that extracts the userId array using the `SBUUser` type array.
     /// This is a function used in Objective-C.

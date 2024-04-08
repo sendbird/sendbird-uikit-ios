@@ -957,4 +957,28 @@ extension SBUGroupChannelModule.List {
             voiceContentView.updateVoiceContentStatus(.playing, time: time)
         }
     }
+    
+    /// Methods for quickly applying a text value to a stream message
+    /// - Parameters:
+    ///   - messageId: message id
+    ///   - value: message text value
+    /// - Since: 3.20.0
+    public func updateStreamMessage(_ message: BaseMessage) {
+        let cell = self.tableView.visibleCells
+            .compactMap({ $0 as? SBUUserMessageCell })
+            .first(where: { $0.message?.messageId == message.messageId })
+
+        Thread.executeOnMain { [weak cell] in
+            guard let cell = cell, let messageTextView = cell.messageTextView as? SBUUserMessageTextView else { return }
+            messageTextView.configure(
+                model: SBUUserMessageTextViewModel(
+                    message: message,
+                    position: cell.position,
+                    isEdited: false
+                )
+            )
+            cell.layoutIfNeeded()
+            cell.invalidateIntrinsicContentSize()
+        }
+    }
 }

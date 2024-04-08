@@ -37,6 +37,18 @@ public protocol SBUGroupChannelViewModelDelegate: SBUBaseChannelViewModelDelegat
         didFinishUploadingFileAt index: Int,
         multipleFilesMessageRequestId requestId: String
     )
+    
+    /// Called when a message verified as a stream message is updated.
+    /// - Parameters:
+    ///   - viewModel: SBUGroupChannelViewModel` object.
+    ///   - message: stream message
+    ///   - channel: `GroupChannel` object from `viewModel`
+    /// - Since: 3.20.0
+    func groupChannelViewModel(
+        _ viewModel: SBUGroupChannelViewModel,
+        didReceiveStreamMessage message: BaseMessage,
+        forChannel channel: GroupChannel
+    )
 }
 
 open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
@@ -681,6 +693,29 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
         updatedMessages messages: [BaseMessage]
     ) {
         // pending -> failed, pending -> succeded, failed -> Pending
+        
+        // NOTE: stream message for gen-ai bot.
+        if let streamMessage = messages.hasStreamMessageOnly(with: self.messageCollection?.succeededMessages.first) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                self.delegate?.groupChannelViewModel(
+                    self,
+                    didReceiveStreamMessage: streamMessage,
+                    forChannel: channel
+                )
+                channel.markAsRead(completionHandler: nil)
+                self.delegate?.baseChannelViewModel(
+                    self,
+                    shouldUpdateScrollInMessageList: [streamMessage],
+                    forContext: context,
+                    keepsScroll: false
+                )
+                self.upsertMessagesInList(
+                    messages: [streamMessage],
+                    needReload: false
+                )
+            }
+            return
+        }
         
         // message thread case exception
         var existInPendingMessage = false

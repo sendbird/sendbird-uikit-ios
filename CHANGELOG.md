@@ -1,5 +1,13 @@
 # Changelog
 
+### v3.20.0 (Apr 08, 2024)
+
+## Improvements
+- Updated iOS deployment target to 12.0
+- Updated Xcode version to 15.0 for building SendbirdChatSDK framework
+- Added PrivacyInfo.xcprivacy for [Apple Privacy Manifest](https://developer.apple.com/documentation/bundleresources/privacy_manifest_files)
+- Improved UI updates for single stream message to work smoothly
+
 ### v3.19.1 (Mar 29, 2024)
 
 ## Improvements
