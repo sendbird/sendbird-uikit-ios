@@ -521,23 +521,13 @@ extension SBUBaseChannelModule {
                 gropuChannelModuleList.shouldRedrawTypingBubble = gropuChannelModuleList.decideToRedrawTypingBubble()
             }
             
-            if Thread.isMainThread {
-                self.isTableViewReloading = true
-                self.tableView.reloadData()
+            Thread.executeOnMain { [weak self] in
+                self?.isTableViewReloading = true
+                self?.tableView.reloadData()
                 if needsToLayout {
-                    self.tableView.layoutIfNeeded()
+                    self?.tableView.layoutIfNeeded()
                 }
-                self.isTableViewReloading = false
-
-            } else {
-                DispatchQueue.main.async { [weak self] in
-                    self?.isTableViewReloading = true
-                    self?.tableView.reloadData()
-                    if needsToLayout {
-                        self?.tableView.layoutIfNeeded()
-                    }
-                    self?.isTableViewReloading = false
-                }
+                self?.isTableViewReloading = false
             }
         }
         

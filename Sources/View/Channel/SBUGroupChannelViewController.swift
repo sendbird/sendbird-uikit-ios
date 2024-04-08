@@ -808,6 +808,14 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         )
     }
     
+    open func groupChannelViewModel(
+        _ viewModel: SBUGroupChannelViewModel,
+        didReceiveStreamMessage message: BaseMessage,
+        forChannel channel: GroupChannel
+    ) {
+        self.listComponent?.updateStreamMessage(message)
+    }
+    
     // MARK: - SBUGroupChannelModuleHeaderDelegate
     open override func baseChannelModule(_ headerComponent: SBUBaseChannelModule.Header, didTapLeftItem leftItem: UIBarButtonItem) {
         self.onClickBack()
