@@ -1,7 +1,7 @@
 framework module SendBirdUIKit {
   umbrella header "SendBirdUIKit.h"
-
   export *
+
   module * { export * }
 }
 

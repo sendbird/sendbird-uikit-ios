@@ -1,11 +1,11 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.7.1 (swiftlang-5.7.1.135.3 clang-1400.0.29.51)
-// swift-module-flags: -target x86_64-apple-ios11.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name SendBirdUIKit
-// swift-module-flags-ignorable: -enable-bare-slash-regex
+// swift-compiler-version: Apple Swift version 5.10 (swiftlang-5.10.0.13 clang-1500.3.9.4)
+// swift-module-flags: -target x86_64-apple-ios12.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -enable-bare-slash-regex -module-name SendBirdUIKit
 import AVFoundation
 import AVKit
 import AssetsLibrary
 import CoreGraphics
+import DeveloperToolsSupport
 import Foundation
 import MobileCoreServices
 import Photos
@@ -15,9 +15,11 @@ import SafariServices
 import SendBirdSDK
 @_exported import SendBirdUIKit
 import Swift
+import SwiftUI
 import UIKit
 import _Concurrency
 import _StringProcessing
+import _SwiftConcurrencyShims
 @objc @_inheritsConvenienceInitializers @objcMembers @_Concurrency.MainActor(unsafe) open class SBUInviteUserViewController : SendBirdUIKit.SBUBaseViewController {
   @objc @_Concurrency.MainActor(unsafe) public var titleView: UIKit.UIView? {
     @objc get
@@ -799,7 +801,7 @@ extension ObjectiveC.NSObject {
   }
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewDidLoad()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewWillAppear(_ animated: Swift.Bool)
-  @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewWillTransition(to size: CoreFoundation.CGSize, with coordinator: UIKit.UIViewControllerTransitionCoordinator)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewWillTransition(to size: CoreFoundation.CGSize, with coordinator: any UIKit.UIViewControllerTransitionCoordinator)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewWillDisappear(_ animated: Swift.Bool)
   @objc deinit
   @_Concurrency.MainActor(unsafe) @objc override public func deleteMessage(message: SendBirdSDK.SBDBaseMessage)
@@ -871,7 +873,7 @@ extension SendBirdUIKit.SBUTableViewCell : SendBirdUIKit.SBUViewLifeCycle {
   @_Concurrency.MainActor(unsafe) @objc dynamic open func setupStyles()
 }
 @objc @_inheritsConvenienceInitializers @objcMembers @_Concurrency.MainActor(unsafe) open class SBUContentBaseMessageCell : SendBirdUIKit.SBUBaseMessageCell {
-  @objc @_Concurrency.MainActor(unsafe) public var quotedMessageView: (UIKit.UIView & SendBirdUIKit.SBUQuotedMessageViewProtocol)? {
+  @objc @_Concurrency.MainActor(unsafe) public var quotedMessageView: (any UIKit.UIView & SendBirdUIKit.SBUQuotedMessageViewProtocol)? {
     @objc get
     @objc set
   }
@@ -939,7 +941,7 @@ public typealias SBUActionSheetHandler = () -> Swift.Void
   @objc deinit
 }
 @objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objcMembers public class SBUActionSheet : ObjectiveC.NSObject {
-  @objc public static func show(items: [SendBirdUIKit.SBUActionSheetItem], cancelItem: SendBirdUIKit.SBUActionSheetItem, identifier: Swift.Int = -1, oneTimetheme: SendBirdUIKit.SBUComponentTheme? = nil, delegate: SendBirdUIKit.SBUActionSheetDelegate? = nil)
+  @objc public static func show(items: [SendBirdUIKit.SBUActionSheetItem], cancelItem: SendBirdUIKit.SBUActionSheetItem, identifier: Swift.Int = -1, oneTimetheme: SendBirdUIKit.SBUComponentTheme? = nil, delegate: (any SendBirdUIKit.SBUActionSheetDelegate)? = nil)
   @objc public static func dismiss()
   @objc deinit
 }
@@ -1078,7 +1080,7 @@ extension SendBirdUIKit.SBUView : SendBirdUIKit.SBUViewLifeCycle {
     @objc set
   }
   @objc @_Concurrency.MainActor(unsafe) public var mainContainerView: SendBirdUIKit.SBUSelectableStackView
-  @objc @_Concurrency.MainActor(unsafe) weak public var delegate: SendBirdUIKit.SBUQuotedMessageViewDelegate?
+  @objc @_Concurrency.MainActor(unsafe) weak public var delegate: (any SendBirdUIKit.SBUQuotedMessageViewDelegate)?
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupViews()
@@ -1856,7 +1858,7 @@ extension UIKit.UIImageView {
     @objc set
     _modify
   }
-  @objc @_Concurrency.MainActor(unsafe) weak public var delegate: SendBirdUIKit.SBUSelectablePhotoViewDelegate?
+  @objc @_Concurrency.MainActor(unsafe) weak public var delegate: (any SendBirdUIKit.SBUSelectablePhotoViewDelegate)?
   @objc @_Concurrency.MainActor(unsafe) public var fetchResult: Photos.PHFetchResult<Photos.PHAsset>
   @objc @_Concurrency.MainActor(unsafe) public var columnSize: CoreFoundation.CGSize {
     @objc get
@@ -2989,7 +2991,7 @@ extension Foundation.NSArray {
 }
 @objc @_inheritsConvenienceInitializers @objcMembers @_Concurrency.MainActor(unsafe) open class SBUEmptyView : UIKit.UIView {
   @objc @_Concurrency.MainActor(unsafe) public var type: SendBirdUIKit.EmptyViewType
-  @objc @_Concurrency.MainActor(unsafe) weak public var delegate: SendBirdUIKit.SBUEmptyViewDelegate?
+  @objc @_Concurrency.MainActor(unsafe) weak public var delegate: (any SendBirdUIKit.SBUEmptyViewDelegate)?
   @objc @_Concurrency.MainActor(unsafe) public var statusImageView: UIKit.UIImageView {
     @objc get
     @objc set
