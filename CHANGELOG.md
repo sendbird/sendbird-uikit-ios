@@ -1,5 +1,10 @@
 # Change Log
 
+### v2.2.15 (Apr 24, 2024)
+- Updated iOS deployment target to 12.0
+- Updated Xcode version to 15.0
+- Added PrivacyInfo.xcprivacy for [Apple Privacy Manifest](https://developer.apple.com/documentation/bundleresources/privacy_manifest_files)
+
 ### v2.2.14 (Apr 28, 2023) 
 * Update iOS deployment target to 11.0 for Xcode 14.1+
 
