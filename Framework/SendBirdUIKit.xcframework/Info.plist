@@ -5,6 +5,8 @@
 	<key>AvailableLibraries</key>
 	<array>
 		<dict>
+			<key>BinaryPath</key>
+			<string>SendBirdUIKit.framework/SendBirdUIKit</string>
 			<key>BitcodeSymbolMapsPath</key>
 			<string>BCSymbolMaps</string>
 			<key>DebugSymbolsPath</key>
@@ -21,6 +23,8 @@
 			<string>ios</string>
 		</dict>
 		<dict>
+			<key>BinaryPath</key>
+			<string>SendBirdUIKit.framework/SendBirdUIKit</string>
 			<key>DebugSymbolsPath</key>
 			<string>dSYMs</string>
 			<key>LibraryIdentifier</key>
