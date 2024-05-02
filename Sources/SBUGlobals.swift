@@ -177,4 +177,12 @@ public class SBUGlobals {
     /// ```
     /// - Since: 3.13.0
     public static var scrollPostionConfiguration = SBUScrollPostionConfiguration()
+    
+    /// The WebSocket host URL as a string. This is optional and can be set to connect to a specific WebSocket server.
+    /// - Since: 3.21.0
+    public static var wsHost: String?
+    
+    /// The API host URL as a string. This is optional and can be set to connect to a specific API server.
+    /// - Since: 3.21.0
+    public static var apiHost: String?
 }

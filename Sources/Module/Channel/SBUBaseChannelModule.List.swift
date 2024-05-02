@@ -1331,10 +1331,6 @@ extension SBUBaseChannelModule.List {
     /// - Parameter cell: `SBUBaseMessageCell`.
     /// - Since: 3.15.0
     public func reloadCell(_ cell: SBUBaseMessageCell?) {
-        guard let cell = cell, let indexPath = tableView.indexPath(for: cell) else { return }
-        guard let visibleIndexPaths = tableView.indexPathsForVisibleRows else { return }
-        guard visibleIndexPaths.contains(indexPath) else { return }
-        self.tableView.reloadRows(at: [indexPath], with: .none)
-        self.tableView.layoutIfNeeded()
+        self.tableView.sbu_reloadCell(cell)
     }
 }

@@ -405,14 +405,13 @@ extension SBUChatNotificationChannelModule {
                     receiptState: .notUsed
                 )
                 configuration.profileImageURL = self.channel?.coverURL
-                notificationCell.delegate = self
                 
                 // Read status
                 let hasRead = notification.createdAt <= self.lastSeenAt
                 notificationCell.updateReadStatus(hasRead)
                 
                 // Action handler
-                notificationCell.notificationActionHandler = { [weak self, indexPath] action in
+                notificationCell.messageTemplateActionHandler = { [weak self, indexPath] action in
                     guard let self = self else { return }
                     
                     // Action Events
@@ -455,6 +454,10 @@ extension SBUChatNotificationChannelModule {
                     messageOffsetTimestamp: channel.messageOffsetTimestamp
                 )
                 notificationCell.configure(with: configuration)
+            }
+            
+            notificationCell.reloadCellHandler = { [weak self] cell in
+                self?.tableView.sbu_reloadCell(cell)
             }
             
             UIView.setAnimationsEnabled(true)
@@ -569,16 +572,6 @@ extension SBUChatNotificationChannelModule {
             
             return Date.sbu_from(nextCreatedAt).isSameDay(as: Date.sbu_from(curCreatedAt))
         }
-    }
-}
-
-// MARK: - SBUNotificationCellDelegate
-extension SBUChatNotificationChannelModule.List: SBUNotificationCellDelegate {
-    func notificationCellShouldReload(_ cell: SBUNotificationCell) {
-        guard let indexPath = tableView.indexPath(for: cell) else { return }
-        guard let visibleIndexPaths = tableView.indexPathsForVisibleRows else { return }
-        guard visibleIndexPaths.contains(indexPath) else { return }
-        self.tableView.reloadRows(at: [indexPath], with: .none)
     }
 }
 

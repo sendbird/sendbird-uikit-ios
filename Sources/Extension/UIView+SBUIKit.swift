@@ -1183,6 +1183,13 @@ extension UIView {
     }
 }
 
+extension UIView {
+    func sbu_removeAllConstraints() {
+        guard self.constraints.hasElements == true else { return }
+        self.removeConstraints(self.constraints)
+    }
+}
+
 // Round Corners
 extension UIView {
     func roundCorners(corners: UIRectCorner, radius: CGFloat) {
@@ -1207,4 +1214,6 @@ extension UIView {
             layer.render(in: rendererContext.cgContext)
         }
     }
+    
+    var hasSuperview: Bool { self.superview != nil }
 }

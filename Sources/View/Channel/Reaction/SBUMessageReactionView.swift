@@ -66,7 +66,7 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
         self.collectionView.dataSource = self
         self.collectionView.delegate = self
         self.collectionView.register(
-            SBUReactionCollectionViewCell.sbu_loadNib(),
+            SBUReactionCollectionViewCell.self,
             forCellWithReuseIdentifier: SBUReactionCollectionViewCell.sbu_className
         ) // for xib
 
@@ -101,7 +101,7 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
         
         self.clipsToBounds = true
         self.backgroundColor = theme.reactionBoxBackgroundColor
-        self.layer.cornerRadius = 16
+        self.layer.cornerRadius = 15
         self.layer.borderWidth = 1
         self.layer.borderColor = theme.reactionBoxBorderLineColor.cgColor
     }

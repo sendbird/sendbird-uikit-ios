@@ -1003,6 +1003,59 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         // end switch
     }
     
+    open func groupChannelModule(
+        _ listComponent: SBUGroupChannelModule.List,
+        shouldHandleTemplateAction action: SBUMessageTemplate.Action,
+        message: BaseMessage,
+        forRowAt indexPath: IndexPath
+    ) {
+        self.handleWebAction(action, message: message, forRowAt: indexPath)
+    }
+    
+    open func groupChannelModule(
+        _ listComponent: SBUGroupChannelModule.List,
+        shouldHandleTemplateCustomAction action: SBUMessageTemplate.Action,
+        message: BaseMessage,
+        forRowAt indexPath: IndexPath
+    ) {
+        self.handleCustomAction(action, message: message, forRowAt: indexPath)
+    }
+    
+    open func groupChannelModule(
+        _ listComponent: SBUGroupChannelModule.List,
+        shouldHandleTemplatePreDefinedAction action: SBUMessageTemplate.Action,
+        message: BaseMessage,
+        forRowAt indexPath: IndexPath
+    ) {
+        // do nothing.. (need to override this method)
+    }
+    
+    open func groupChannelModule(
+        _ listComponent: SBUGroupChannelModule.List,
+        shouldHandleUncachedTemplateKeys templateKeys: [String],
+        messageCell: SBUBaseMessageCell
+    ) {
+        self.viewModel?.loadUncachedTemplate(
+            keys: templateKeys
+        ) { [weak self] success in
+            messageCell.message?.templateDownloadRetryStatus.update(with: success)
+            self?.baseListComponent?.reloadTableView()
+        }
+    }
+    
+    open func groupChannelModule(
+        _ listComponent: SBUGroupChannelModule.List,
+        shouldHandleUncachedTemplateImages cacheData: [String: String],
+        messageCell: SBUBaseMessageCell
+    ) {
+        self.viewModel?.loadUncachedTemplateImages(
+            data: cacheData
+        ) { [weak self] success in
+            messageCell.message?.templateImagesRetryStatus.update(with: success)
+            self?.baseListComponent?.reloadCell(messageCell)
+        }
+    }
+    
     open override func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didTapVoiceMessage fileMessage: FileMessage, cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         super.baseChannelModule(listComponent, didTapVoiceMessage: fileMessage, cell: cell, forRowAt: indexPath)
         
@@ -1236,5 +1289,34 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         forRowAt indexPath: IndexPath
     ) {
         
+    }
+    
+    // MARK: - Action handling
+    /// Called when there’s a tap gesture on a message template that includes a web URL. e.g., `"https://www.sendbird.com"`
+    /// ```swift
+    /// print(action.urlFromActionDatas) // "https://www.sendbird.com"
+    /// ```
+    /// - Since: 3.21.0
+    open func handleWebAction(
+        _ action: SBUMessageTemplate.Action,
+        message: BaseMessage,
+        forRowAt indexPath: IndexPath
+    ) {
+        guard let url = action.urlFromActionDatas else { return }
+        url.open()
+    }
+    
+    /// Called when there’s a tap gesture on a message template that includes a custom URL scheme. e.g., `"myapp://someaction"`
+    /// ```swift
+    /// print(action.urlFromActionDatas) // "myapp://someaction"
+    /// ```
+    /// - Since: 3.21.0
+    open func handleCustomAction(
+        _ action: SBUMessageTemplate.Action,
+        message: BaseMessage,
+        forRowAt indexPath: IndexPath
+    ) {
+        guard let url = action.urlFromActionDatas else { return }
+        url.open(needSanitise: false)
     }
 }

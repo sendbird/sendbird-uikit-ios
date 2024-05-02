@@ -215,11 +215,8 @@ open class SBUChatNotificationChannelViewController: SBUBaseViewController,
         notification: BaseMessage,
         forRowAt indexPath: IndexPath
     ) {
-        if let url = URL(string: action.data) {
-            url.open()
-        } else if let urlString = action.alterData, let url = URL(string: urlString) {
-            url.open()
-        }
+        guard let url = action.urlFromActionDatas else { return }
+        url.open()
     }
     
     /// Called when there’s a tap gesture on a notification that includes a custom URL scheme. e.g., `"myapp://someaction"`
@@ -232,11 +229,8 @@ open class SBUChatNotificationChannelViewController: SBUBaseViewController,
         notification: BaseMessage,
         forRowAt indexPath: IndexPath
     ) {
-        if let urlScehem = URL(string: action.data) {
-            urlScehem.open(needSanitise: false)
-        } else if let urlString = action.alterData, let url = URL(string: urlString) {
-            url.open(needSanitise: false)
-        }
+        guard let url = action.urlFromActionDatas else { return }
+        url.open(needSanitise: false)
     }
     
     // MARK: - ViewModel

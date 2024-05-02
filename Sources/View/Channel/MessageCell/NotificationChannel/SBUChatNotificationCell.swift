@@ -8,8 +8,6 @@
 
 import UIKit
 
-protocol SBUChatNotificationCellDelegate: SBUNotificationCellDelegate {}
-
 @IBDesignable
 class SBUChatNotificationCell: SBUNotificationCell {
     override func setupViews() {

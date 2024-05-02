@@ -75,6 +75,8 @@ open class SBUUserMessageTextView: SBUView {
     var textHeightConstraint: NSLayoutConstraint?
     var textMinWidthConstraint: NSLayoutConstraint?
     
+    var containerType: SBUMessageContainerType = .default
+    
     public override init() {
         super.init()
     }
@@ -102,8 +104,9 @@ open class SBUUserMessageTextView: SBUView {
         if !self.needsToRemoveMargin {
             self.widthConstraint?.isActive = false
             self.widthConstraint = self.widthAnchor.constraint(
-                lessThanOrEqualToConstant: Metric.textMaxWidth
+                lessThanOrEqualToConstant: containerType.isWide ? containerType.maxWidth : Metric.textMaxWidth
             )
+            self.widthConstraint?.priority = .init(999)
             self.widthConstraint?.isActive = true
         }
 
@@ -179,6 +182,7 @@ open class SBUUserMessageTextView: SBUView {
             .foregroundColor: model.textColor,
             .underlineStyle: NSUnderlineStyle.single.rawValue
         ]
+        self.containerType = model.message?.asUiSettingContainerType ?? .default
         
         if model.hasMentionedMessage, SendbirdUI.config.groupChannel.channel.isMentionEnabled {
             guard let mentionedMessageTemplate = model.message?.mentionedMessageTemplate,
@@ -200,6 +204,8 @@ open class SBUUserMessageTextView: SBUView {
             
             textView.attributedText = mutableAttributedText
         }
+        
+        self.setupLayouts()
     }
 }
 

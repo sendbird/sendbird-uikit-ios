@@ -70,3 +70,9 @@ extension String {
         return unwrappedString
     }
 }
+
+extension String {
+    var removedNewLineEscape: String {
+        self.replacingOccurrences(of: "\\n", with: "\n")
+    }
+}

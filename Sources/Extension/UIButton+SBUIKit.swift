@@ -107,30 +107,24 @@ internal extension UIButton {
         return task
     }
     
-    private func setImage(_ image: UIImage?,
-                          tintColor: UIColor? = nil,
-                          for state: UIButton.State,
-                          completion: ((Bool) -> Void)?) {
-        if let image = image {
-            if Thread.isMainThread {
-                if tintColor != nil {
-                    self.setImage(image.sbu_with(tintColor: tintColor), for: state)
-                } else {
-                    self.setImage(image, for: state)
-                }
-                completion?(true)
-            } else {
-                DispatchQueue.main.async { [weak self] in
-                    if tintColor != nil {
-                        self?.setImage(image.sbu_with(tintColor: tintColor), for: state)
-                    } else {
-                        self?.setImage(image, for: state)
-                    }
-                    completion?(true)
-                }
-            }
-        } else {
+    private func setImage(
+        _ image: UIImage?,
+        tintColor: UIColor? = nil,
+        for state: UIButton.State,
+        completion: ((Bool) -> Void)?
+    ) {
+        guard let image = image else {
             completion?(false)
+            return
+        }
+        
+        Thread.executeOnMain {
+            if tintColor != nil {
+                self.setImage(image.sbu_with(tintColor: tintColor), for: state)
+            } else {
+                self.setImage(image, for: state)
+            }
+            completion?(true)
         }
     }
 }

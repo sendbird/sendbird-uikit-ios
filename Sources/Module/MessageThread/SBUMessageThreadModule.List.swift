@@ -372,8 +372,8 @@ extension SBUMessageThreadModule {
         ///   - indexPath: Cell's indexPath
         open func setMessageCellGestures(_ cell: SBUBaseMessageCell, message: BaseMessage, indexPath: IndexPath) {
             if let multipleFilesMessageCell = cell as? SBUMultipleFilesMessageCell {
-                multipleFilesMessageCell.fileSelectHandler = { [weak self] _, index in
-                    guard let self = self else { return }
+                multipleFilesMessageCell.fileSelectHandler = { [weak self, weak multipleFilesMessageCell] _, index in
+                    guard let self = self, let multipleFilesMessageCell else { return }
                     self.delegate?.messageThreadModule(
                         self,
                         didSelectFileAt: index,
@@ -382,40 +382,40 @@ extension SBUMessageThreadModule {
                     )
                 }
             } else {
-                cell.tapHandlerToContent = { [weak self] in
-                    guard let self = self else { return }
+                cell.tapHandlerToContent = { [weak self, weak cell] in
+                    guard let self = self, let cell else { return }
                     self.setTapGesture(cell, message: message, indexPath: indexPath)
                 }
             }
             
-            cell.longPressHandlerToContent = { [weak self] in
-                guard let self = self else { return }
+            cell.longPressHandlerToContent = { [weak self, weak cell] in
+                guard let self = self, let cell else { return }
                 self.setLongTapGesture(cell, message: message, indexPath: indexPath)
             }
             
-            cell.userProfileTapHandler = { [weak self] in
-                guard let self = self else { return }
+            cell.userProfileTapHandler = { [weak self, weak cell] in
+                guard let self = self, let cell else { return }
                 guard let sender = cell.message?.sender else { return }
                 self.setUserProfileTapGesture(SBUUser(sender: sender))
             }
             
-            cell.emojiTapHandler = { [weak self] emojiKey in
-                guard let self = self else { return }
+            cell.emojiTapHandler = { [weak self, weak cell] emojiKey in
+                guard let self = self, let cell else { return }
                 self.delegate?.messageThreadModule(self, didTapEmoji: emojiKey, messageCell: cell)
             }
             
-            cell.emojiLongPressHandler = { [weak self] emojiKey in
-                guard let self = self else { return }
+            cell.emojiLongPressHandler = { [weak self, weak cell] emojiKey in
+                guard let self = self, let cell else { return }
                 self.delegate?.messageThreadModule(self, didLongTapEmoji: emojiKey, messageCell: cell)
             }
             
-            cell.moreEmojiTapHandler = { [weak self] in
-                guard let self = self else { return }
+            cell.moreEmojiTapHandler = { [weak self, weak cell] in
+                guard let self = self, let cell else { return }
                 self.delegate?.messageThreadModule(self, didTapMoreEmojiForCell: cell)
             }
             
-            cell.mentionTapHandler = { [weak self] user in
-                guard let self = self else { return }
+            cell.mentionTapHandler = { [weak self, weak cell] user in
+                guard let self = self, let cell else { return }
                 self.delegate?.messageThreadModule(self, didTapMentionUser: user)
             }
         }

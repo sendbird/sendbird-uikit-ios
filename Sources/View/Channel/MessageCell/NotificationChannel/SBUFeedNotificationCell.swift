@@ -8,8 +8,6 @@
 
 import UIKit
 
-protocol SBUFeedNotificationCellDelegate: SBUNotificationCellDelegate {}
-
 @IBDesignable
 class SBUFeedNotificationCell: SBUNotificationCell {
     struct Constants {

@@ -889,6 +889,33 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
             completionHandler?()
         }
     }
+    
+    static var nowLoadingTemplate: Bool = false
+    func loadUncachedTemplate(
+        keys: [String],
+        completionHandler: @escaping (Bool) -> Void
+    ) {
+        if SBUGroupChannelViewModel.nowLoadingTemplate == true {
+            SBULog.info("[Request] ignore load missing template: \(keys)")
+            return
+        }
+        SBUGroupChannelViewModel.nowLoadingTemplate = true
+        SBUMessageTemplateManager.loadTemplateList(type: .group) { success in
+            SBULog.info("[Request] load missing templates - success: \(success)")
+            SBUGroupChannelViewModel.nowLoadingTemplate = false
+            completionHandler(success)
+        }
+    }
+    
+    func loadUncachedTemplateImages(
+        data: [String: String],
+        completionHandler: @escaping (Bool) -> Void
+    ) {
+        SBUMessageTemplateManager.loadTemplateImages(type: .group, cacheData: data) { success in
+            SBULog.info("[Request] load missing templates images - success: \(success)")
+            completionHandler(success)
+        }
+    }
 }
 
 // MARK: - ConnectionDelegate

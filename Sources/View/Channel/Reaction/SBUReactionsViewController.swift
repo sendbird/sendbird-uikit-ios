@@ -103,7 +103,7 @@ public class SBUReactionsViewController: SBUBaseViewController, UITableViewDeleg
         self.collectionView.dataSource = self
         self.collectionView.delegate = self
         self.collectionView.register(
-            SBUReactionCollectionViewCell.sbu_loadNib(),
+            SBUReactionCollectionViewCell.self,
             forCellWithReuseIdentifier: SBUReactionCollectionViewCell.sbu_className
         ) // for xib
         self.collectionView.bounces = false

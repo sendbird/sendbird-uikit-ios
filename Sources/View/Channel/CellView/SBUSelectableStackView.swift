@@ -93,6 +93,14 @@ public class SBUSelectableStackView: SBUView, Selectable {
     public func insertArrangedSubview(_ view: UIView, at index: Int) {
         self.stackView.insertArrangedSubview(view, at: index)
     }
+    
+    public func setTransparentBackgroundColor() {
+        self.leftBackgroundColor = .clear
+        self.leftPressedBackgroundColor = .clear
+        self.rightBackgroundColor = .clear
+        self.rightPressedBackgroundColor = .clear
+        self.backgroundColor = .clear
+    }
 }
 
 extension SBUSelectableStackView {

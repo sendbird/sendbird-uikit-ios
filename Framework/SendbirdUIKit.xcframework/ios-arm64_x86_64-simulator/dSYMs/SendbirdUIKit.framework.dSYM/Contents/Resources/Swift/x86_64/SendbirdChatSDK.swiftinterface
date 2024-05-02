@@ -489,8 +489,45 @@ extension SendbirdChatSDK.MessageCollection : SendbirdChatSDK.GroupChannelDelega
   @objc deinit
 }
 extension SendbirdChatSDK.MessageCollection : SendbirdChatSDK.ConnectionDelegate {
+  @objc dynamic public func didStartReconnection()
   @objc dynamic open func didSucceedReconnection()
   @objc dynamic open func didConnect(userId: Swift.String)
+}
+public enum GzipStatics {
+  public static let maxWindowBits: Swift.Int32
+}
+public struct CompressionLevel : Swift.RawRepresentable {
+  public let rawValue: Swift.Int32
+  public static let noCompression: SendbirdChatSDK.CompressionLevel
+  public static let bestSpeed: SendbirdChatSDK.CompressionLevel
+  public static let bestCompression: SendbirdChatSDK.CompressionLevel
+  public static let defaultCompression: SendbirdChatSDK.CompressionLevel
+  public init(rawValue: Swift.Int32)
+  public init(_ rawValue: Swift.Int32)
+  public typealias RawValue = Swift.Int32
+}
+public struct GzipError : Swift.Error {
+  public enum Kind : Swift.Equatable {
+    case stream
+    case data
+    case memory
+    case buffer
+    case version
+    case unknown(code: Swift.Int)
+    public static func == (a: SendbirdChatSDK.GzipError.Kind, b: SendbirdChatSDK.GzipError.Kind) -> Swift.Bool
+  }
+  public let kind: SendbirdChatSDK.GzipError.Kind
+  public let message: Swift.String
+  public var localizedDescription: Swift.String {
+    get
+  }
+}
+extension Foundation.Data {
+  public var isGzipped: Swift.Bool {
+    get
+  }
+  public func gzipped(level: SendbirdChatSDK.CompressionLevel = .defaultCompression, wBits: Swift.Int32 = GzipStatics.maxWindowBits + 16) throws -> Foundation.Data
+  public func gunzipped(wBits: Swift.Int32 = GzipStatics.maxWindowBits + 32) throws -> Foundation.Data
 }
 public typealias SBObjectComparator = (_ obj1: Any?, _ obj2: Any?) -> Foundation.ComparisonResult
 @_inheritsConvenienceInitializers @objc(SBDBannedUserListQueryParams) final public class BannedUserListQueryParams : ObjectiveC.NSObject {
@@ -553,6 +590,176 @@ extension SendbirdChatSDK.PreviousMessageListQuery {
   @objc dynamic public var limit: Swift.UInt {
     @objc get
   }
+}
+public let WebsocketDidConnectNotification: Swift.String
+public let WebsocketDidDisconnectNotification: Swift.String
+public let WebsocketDisconnectionErrorKeyName: Swift.String
+public enum CloseCode : Swift.UInt16 {
+  case normal
+  case goingAway
+  case protocolError
+  case protocolUnhandledType
+  case noStatusReceived
+  case encoding
+  case policyViolated
+  case messageTooBig
+  public init?(rawValue: Swift.UInt16)
+  public typealias RawValue = Swift.UInt16
+  public var rawValue: Swift.UInt16 {
+    get
+  }
+}
+public enum ErrorType : Swift.Error {
+  case outputStreamWriteError
+  case compressionError
+  case invalidSSLError
+  case writeTimeoutError
+  case protocolError
+  case upgradeError
+  case closeError
+  public static func == (a: SendbirdChatSDK.ErrorType, b: SendbirdChatSDK.ErrorType) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public struct WSError : Swift.Error {
+  public let type: SendbirdChatSDK.ErrorType
+  public let message: Swift.String
+  public let code: Swift.Int
+}
+public protocol WebSocketClient : AnyObject {
+  var delegate: (any SendbirdChatSDK.WebSocketDelegate)? { get set }
+  var pongDelegate: (any SendbirdChatSDK.WebSocketPongDelegate)? { get set }
+  var disableSSLCertValidation: Swift.Bool { get set }
+  var overrideTrustHostname: Swift.Bool { get set }
+  var desiredTrustHostname: Swift.String? { get set }
+  var sslClientCertificate: SendbirdChatSDK.SSLClientCertificate? { get set }
+  var security: (any SendbirdChatSDK.SSLTrustValidator)? { get set }
+  var enabledSSLCipherSuites: [Security.SSLCipherSuite]? { get set }
+  var isConnected: Swift.Bool { get }
+  func connect()
+  func disconnect(forceTimeout: Foundation.TimeInterval?, closeCode: Swift.UInt16)
+  func write(string: Swift.String, completion: (() -> ())?)
+  func write(data: Foundation.Data, completion: (() -> ())?)
+  func write(ping: Foundation.Data, completion: (() -> ())?)
+  func write(pong: Foundation.Data, completion: (() -> ())?)
+}
+extension SendbirdChatSDK.WebSocketClient {
+  public func write(string: Swift.String)
+  public func write(data: Foundation.Data)
+  public func write(ping: Foundation.Data)
+  public func write(pong: Foundation.Data)
+  public func disconnect()
+}
+public struct SSLSettings {
+  public let useSSL: Swift.Bool
+  public let disableCertValidation: Swift.Bool
+  public var overrideTrustHostname: Swift.Bool
+  public var desiredTrustHostname: Swift.String?
+  public let sslClientCertificate: SendbirdChatSDK.SSLClientCertificate?
+  public let cipherSuites: [Security.SSLCipherSuite]?
+}
+public protocol WSStreamDelegate : AnyObject {
+  func newBytesInStream()
+  func streamDidError(error: (any Swift.Error)?)
+}
+public protocol WSStream {
+  var delegate: (any SendbirdChatSDK.WSStreamDelegate)? { get set }
+  func connect(url: Foundation.URL, port: Swift.Int, timeout: Foundation.TimeInterval, ssl: SendbirdChatSDK.SSLSettings, completion: @escaping (((any Swift.Error)?) -> Swift.Void))
+  func write(data: Foundation.Data) -> Swift.Int
+  func read() -> Foundation.Data?
+  func cleanup()
+  func sslTrust() -> (trust: Security.SecTrust?, domain: Swift.String?)
+}
+@objc @_inheritsConvenienceInitializers open class FoundationStream : ObjectiveC.NSObject, SendbirdChatSDK.WSStream, Foundation.StreamDelegate {
+  weak public var delegate: (any SendbirdChatSDK.WSStreamDelegate)?
+  public var enableSOCKSProxy: Swift.Bool
+  public func connect(url: Foundation.URL, port: Swift.Int, timeout: Foundation.TimeInterval, ssl: SendbirdChatSDK.SSLSettings, completion: @escaping (((any Swift.Error)?) -> Swift.Void))
+  public func write(data: Foundation.Data) -> Swift.Int
+  public func read() -> Foundation.Data?
+  public func cleanup()
+  public func sslTrust() -> (trust: Security.SecTrust?, domain: Swift.String?)
+  @objc open func stream(_ aStream: Foundation.Stream, handle eventCode: Foundation.Stream.Event)
+  @objc override dynamic public init()
+  @objc deinit
+}
+public protocol WebSocketDelegate : AnyObject {
+  func websocketDidConnect(socket: any SendbirdChatSDK.WebSocketClient)
+  func websocketDidDisconnect(socket: any SendbirdChatSDK.WebSocketClient, error: (any Swift.Error)?)
+  func websocketDidReceiveMessage(socket: any SendbirdChatSDK.WebSocketClient, text: Swift.String)
+  func websocketDidReceiveData(socket: any SendbirdChatSDK.WebSocketClient, data: Foundation.Data)
+}
+public protocol WebSocketPongDelegate : AnyObject {
+  func websocketDidReceivePong(socket: any SendbirdChatSDK.WebSocketClient, data: Foundation.Data?)
+}
+public protocol WebSocketAdvancedDelegate : AnyObject {
+  func websocketDidConnect(socket: SendbirdChatSDK.WebSocket)
+  func websocketDidDisconnect(socket: SendbirdChatSDK.WebSocket, error: (any Swift.Error)?)
+  func websocketDidReceiveMessage(socket: SendbirdChatSDK.WebSocket, text: Swift.String, response: SendbirdChatSDK.WebSocket.WSResponse)
+  func websocketDidReceiveData(socket: SendbirdChatSDK.WebSocket, data: Foundation.Data, response: SendbirdChatSDK.WebSocket.WSResponse)
+  func websocketHttpUpgrade(socket: SendbirdChatSDK.WebSocket, request: Swift.String)
+  func websocketHttpUpgrade(socket: SendbirdChatSDK.WebSocket, response: Swift.String)
+}
+@objc open class WebSocket : ObjectiveC.NSObject, Foundation.StreamDelegate, SendbirdChatSDK.WebSocketClient, SendbirdChatSDK.WSStreamDelegate {
+  public enum OpCode : Swift.UInt8 {
+    case continueFrame
+    case textFrame
+    case binaryFrame
+    case connectionClose
+    case ping
+    case pong
+    public init?(rawValue: Swift.UInt8)
+    public typealias RawValue = Swift.UInt8
+    public var rawValue: Swift.UInt8 {
+      get
+    }
+  }
+  public static let ErrorDomain: Swift.String
+  public var callbackQueue: Dispatch.DispatchQueue
+  @_hasMissingDesignatedInitializers public class WSResponse {
+    public var code: SendbirdChatSDK.WebSocket.OpCode
+    public var frameCount: Swift.Int
+    public var buffer: Foundation.NSMutableData?
+    final public let firstFrame: Foundation.Date
+    @objc deinit
+  }
+  weak public var delegate: (any SendbirdChatSDK.WebSocketDelegate)?
+  weak public var advancedDelegate: (any SendbirdChatSDK.WebSocketAdvancedDelegate)?
+  weak public var pongDelegate: (any SendbirdChatSDK.WebSocketPongDelegate)?
+  public var onConnect: (() -> Swift.Void)?
+  public var onDisconnect: (((any Swift.Error)?) -> Swift.Void)?
+  public var onText: ((Swift.String) -> Swift.Void)?
+  public var onData: ((Foundation.Data) -> Swift.Void)?
+  public var onPong: ((Foundation.Data?) -> Swift.Void)?
+  public var onHttpResponseHeaders: (([Swift.String : Swift.String]) -> Swift.Void)?
+  public var disableSSLCertValidation: Swift.Bool
+  public var overrideTrustHostname: Swift.Bool
+  public var desiredTrustHostname: Swift.String?
+  public var sslClientCertificate: SendbirdChatSDK.SSLClientCertificate?
+  public var enableCompression: Swift.Bool
+  public var security: (any SendbirdChatSDK.SSLTrustValidator)?
+  public var enabledSSLCipherSuites: [Security.SSLCipherSuite]?
+  public var isConnected: Swift.Bool {
+    get
+  }
+  public var request: Foundation.URLRequest
+  public var currentURL: Foundation.URL {
+    get
+  }
+  public var respondToPingWithPong: Swift.Bool
+  public init(request: Foundation.URLRequest, protocols: [Swift.String]? = nil, stream: any SendbirdChatSDK.WSStream = FoundationStream())
+  convenience public init(url: Foundation.URL, protocols: [Swift.String]? = nil)
+  convenience public init(url: Foundation.URL, writeQueueQOS: Foundation.QualityOfService, protocols: [Swift.String]? = nil)
+  open func connect()
+  open func disconnect(forceTimeout: Foundation.TimeInterval? = nil, closeCode: Swift.UInt16 = CloseCode.normal.rawValue)
+  open func write(string: Swift.String, completion: (() -> ())? = nil)
+  open func write(data: Foundation.Data, completion: (() -> ())? = nil)
+  open func write(ping: Foundation.Data, completion: (() -> ())? = nil)
+  open func write(pong: Foundation.Data, completion: (() -> ())? = nil)
+  public func newBytesInStream()
+  public func streamDidError(error: (any Swift.Error)?)
+  @objc deinit
 }
 @_hasMissingDesignatedInitializers @objc(SBDUser) open class User : ObjectiveC.NSObject, Swift.Codable, Swift.Identifiable {
   @objc open var id: Swift.String {
@@ -1829,16 +2036,6 @@ extension SendbirdChatSDK.OperatorListQuery {
     @objc get
   }
 }
-@usableFromInline
-internal protocol _AnyDecodable {
-  var value: Any { get }
-  init<T>(_ value: T?)
-}
-@usableFromInline
-internal protocol _AnyEncodable {
-  var value: Any { get }
-  init<T>(_ value: T?)
-}
 @objc(SBDPollOptionVoterResult) public class PollOptionVoterResult : ObjectiveC.NSObject, Swift.Codable {
   @objc final public let voteCount: Swift.UInt
   @objc final public let voters: [SendbirdChatSDK.User]
@@ -1879,6 +2076,26 @@ extension SendbirdChatSDK.MessageListParams {
   @objc override dynamic public var description: Swift.String {
     @objc get
   }
+}
+public protocol SSLTrustValidator {
+  func isValid(_ trust: Security.SecTrust, domain: Swift.String?) -> Swift.Bool
+}
+open class SSLCert {
+  public init(data: Foundation.Data)
+  public init(key: Security.SecKey)
+  @objc deinit
+}
+open class SSLSecurity : SendbirdChatSDK.SSLTrustValidator {
+  public var validatedDN: Swift.Bool
+  public var validateEntireChain: Swift.Bool
+  convenience public init(usePublicKeys: Swift.Bool = false)
+  public init(certs: [SendbirdChatSDK.SSLCert], usePublicKeys: Swift.Bool)
+  open func isValid(_ trust: Security.SecTrust, domain: Swift.String?) -> Swift.Bool
+  public func extractPublicKey(_ data: Foundation.Data) -> Security.SecKey?
+  public func extractPublicKey(_ cert: Security.SecCertificate, policy: Security.SecPolicy) -> Security.SecKey?
+  public func certificateChain(_ trust: Security.SecTrust) -> [Foundation.Data]
+  public func publicKeyChain(_ trust: Security.SecTrust) -> [Security.SecKey]
+  @objc deinit
 }
 @_hasMissingDesignatedInitializers @objc(SBDMessageTemplateList) open class MessageTemplateList : ObjectiveC.NSObject {
   @objc final public let jsonPayload: Swift.String
@@ -2592,26 +2809,6 @@ extension SendbirdChatSDK.ReplyType : Swift.RawRepresentable, Swift.Codable {
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
-public protocol SSLTrustValidator {
-  func isValid(_ trust: Security.SecTrust, domain: Swift.String?) -> Swift.Bool
-}
-open class SSLCert {
-  public init(data: Foundation.Data)
-  public init(key: Security.SecKey)
-  @objc deinit
-}
-open class SSLSecurity : SendbirdChatSDK.SSLTrustValidator {
-  public var validatedDN: Swift.Bool
-  public var validateEntireChain: Swift.Bool
-  convenience public init(usePublicKeys: Swift.Bool = false)
-  public init(certs: [SendbirdChatSDK.SSLCert], usePublicKeys: Swift.Bool)
-  open func isValid(_ trust: Security.SecTrust, domain: Swift.String?) -> Swift.Bool
-  public func extractPublicKey(_ data: Foundation.Data) -> Security.SecKey?
-  public func extractPublicKey(_ cert: Security.SecCertificate, policy: Security.SecPolicy) -> Security.SecKey?
-  public func certificateChain(_ trust: Security.SecTrust) -> [Foundation.Data]
-  public func publicKeyChain(_ trust: Security.SecTrust) -> [Security.SecKey]
-  @objc deinit
-}
 @objc(SBDScheduledBaseMessageCreateParams) public class ScheduledBaseMessageCreateParams : ObjectiveC.NSObject, Swift.Codable {
   @objc public var scheduledAt: Swift.Int64
   @objc public var data: Swift.String?
@@ -3055,176 +3252,6 @@ extension SendbirdChatSDK.OpenChannel {
   @objc public var channelCustomTypesFilter: [Swift.String]?
   @objc public var superChannelFilter: SendbirdChatSDK.GroupChannelSuperChannelFilter
   @objc override dynamic public init()
-  @objc deinit
-}
-public let WebsocketDidConnectNotification: Swift.String
-public let WebsocketDidDisconnectNotification: Swift.String
-public let WebsocketDisconnectionErrorKeyName: Swift.String
-public enum CloseCode : Swift.UInt16 {
-  case normal
-  case goingAway
-  case protocolError
-  case protocolUnhandledType
-  case noStatusReceived
-  case encoding
-  case policyViolated
-  case messageTooBig
-  public init?(rawValue: Swift.UInt16)
-  public typealias RawValue = Swift.UInt16
-  public var rawValue: Swift.UInt16 {
-    get
-  }
-}
-public enum ErrorType : Swift.Error {
-  case outputStreamWriteError
-  case compressionError
-  case invalidSSLError
-  case writeTimeoutError
-  case protocolError
-  case upgradeError
-  case closeError
-  public static func == (a: SendbirdChatSDK.ErrorType, b: SendbirdChatSDK.ErrorType) -> Swift.Bool
-  public func hash(into hasher: inout Swift.Hasher)
-  public var hashValue: Swift.Int {
-    get
-  }
-}
-public struct WSError : Swift.Error {
-  public let type: SendbirdChatSDK.ErrorType
-  public let message: Swift.String
-  public let code: Swift.Int
-}
-public protocol WebSocketClient : AnyObject {
-  var delegate: (any SendbirdChatSDK.WebSocketDelegate)? { get set }
-  var pongDelegate: (any SendbirdChatSDK.WebSocketPongDelegate)? { get set }
-  var disableSSLCertValidation: Swift.Bool { get set }
-  var overrideTrustHostname: Swift.Bool { get set }
-  var desiredTrustHostname: Swift.String? { get set }
-  var sslClientCertificate: SendbirdChatSDK.SSLClientCertificate? { get set }
-  var security: (any SendbirdChatSDK.SSLTrustValidator)? { get set }
-  var enabledSSLCipherSuites: [Security.SSLCipherSuite]? { get set }
-  var isConnected: Swift.Bool { get }
-  func connect()
-  func disconnect(forceTimeout: Foundation.TimeInterval?, closeCode: Swift.UInt16)
-  func write(string: Swift.String, completion: (() -> ())?)
-  func write(data: Foundation.Data, completion: (() -> ())?)
-  func write(ping: Foundation.Data, completion: (() -> ())?)
-  func write(pong: Foundation.Data, completion: (() -> ())?)
-}
-extension SendbirdChatSDK.WebSocketClient {
-  public func write(string: Swift.String)
-  public func write(data: Foundation.Data)
-  public func write(ping: Foundation.Data)
-  public func write(pong: Foundation.Data)
-  public func disconnect()
-}
-public struct SSLSettings {
-  public let useSSL: Swift.Bool
-  public let disableCertValidation: Swift.Bool
-  public var overrideTrustHostname: Swift.Bool
-  public var desiredTrustHostname: Swift.String?
-  public let sslClientCertificate: SendbirdChatSDK.SSLClientCertificate?
-  public let cipherSuites: [Security.SSLCipherSuite]?
-}
-public protocol WSStreamDelegate : AnyObject {
-  func newBytesInStream()
-  func streamDidError(error: (any Swift.Error)?)
-}
-public protocol WSStream {
-  var delegate: (any SendbirdChatSDK.WSStreamDelegate)? { get set }
-  func connect(url: Foundation.URL, port: Swift.Int, timeout: Foundation.TimeInterval, ssl: SendbirdChatSDK.SSLSettings, completion: @escaping (((any Swift.Error)?) -> Swift.Void))
-  func write(data: Foundation.Data) -> Swift.Int
-  func read() -> Foundation.Data?
-  func cleanup()
-  func sslTrust() -> (trust: Security.SecTrust?, domain: Swift.String?)
-}
-@objc @_inheritsConvenienceInitializers open class FoundationStream : ObjectiveC.NSObject, SendbirdChatSDK.WSStream, Foundation.StreamDelegate {
-  weak public var delegate: (any SendbirdChatSDK.WSStreamDelegate)?
-  public var enableSOCKSProxy: Swift.Bool
-  public func connect(url: Foundation.URL, port: Swift.Int, timeout: Foundation.TimeInterval, ssl: SendbirdChatSDK.SSLSettings, completion: @escaping (((any Swift.Error)?) -> Swift.Void))
-  public func write(data: Foundation.Data) -> Swift.Int
-  public func read() -> Foundation.Data?
-  public func cleanup()
-  public func sslTrust() -> (trust: Security.SecTrust?, domain: Swift.String?)
-  @objc open func stream(_ aStream: Foundation.Stream, handle eventCode: Foundation.Stream.Event)
-  @objc override dynamic public init()
-  @objc deinit
-}
-public protocol WebSocketDelegate : AnyObject {
-  func websocketDidConnect(socket: any SendbirdChatSDK.WebSocketClient)
-  func websocketDidDisconnect(socket: any SendbirdChatSDK.WebSocketClient, error: (any Swift.Error)?)
-  func websocketDidReceiveMessage(socket: any SendbirdChatSDK.WebSocketClient, text: Swift.String)
-  func websocketDidReceiveData(socket: any SendbirdChatSDK.WebSocketClient, data: Foundation.Data)
-}
-public protocol WebSocketPongDelegate : AnyObject {
-  func websocketDidReceivePong(socket: any SendbirdChatSDK.WebSocketClient, data: Foundation.Data?)
-}
-public protocol WebSocketAdvancedDelegate : AnyObject {
-  func websocketDidConnect(socket: SendbirdChatSDK.WebSocket)
-  func websocketDidDisconnect(socket: SendbirdChatSDK.WebSocket, error: (any Swift.Error)?)
-  func websocketDidReceiveMessage(socket: SendbirdChatSDK.WebSocket, text: Swift.String, response: SendbirdChatSDK.WebSocket.WSResponse)
-  func websocketDidReceiveData(socket: SendbirdChatSDK.WebSocket, data: Foundation.Data, response: SendbirdChatSDK.WebSocket.WSResponse)
-  func websocketHttpUpgrade(socket: SendbirdChatSDK.WebSocket, request: Swift.String)
-  func websocketHttpUpgrade(socket: SendbirdChatSDK.WebSocket, response: Swift.String)
-}
-@objc open class WebSocket : ObjectiveC.NSObject, Foundation.StreamDelegate, SendbirdChatSDK.WebSocketClient, SendbirdChatSDK.WSStreamDelegate {
-  public enum OpCode : Swift.UInt8 {
-    case continueFrame
-    case textFrame
-    case binaryFrame
-    case connectionClose
-    case ping
-    case pong
-    public init?(rawValue: Swift.UInt8)
-    public typealias RawValue = Swift.UInt8
-    public var rawValue: Swift.UInt8 {
-      get
-    }
-  }
-  public static let ErrorDomain: Swift.String
-  public var callbackQueue: Dispatch.DispatchQueue
-  @_hasMissingDesignatedInitializers public class WSResponse {
-    public var code: SendbirdChatSDK.WebSocket.OpCode
-    public var frameCount: Swift.Int
-    public var buffer: Foundation.NSMutableData?
-    final public let firstFrame: Foundation.Date
-    @objc deinit
-  }
-  weak public var delegate: (any SendbirdChatSDK.WebSocketDelegate)?
-  weak public var advancedDelegate: (any SendbirdChatSDK.WebSocketAdvancedDelegate)?
-  weak public var pongDelegate: (any SendbirdChatSDK.WebSocketPongDelegate)?
-  public var onConnect: (() -> Swift.Void)?
-  public var onDisconnect: (((any Swift.Error)?) -> Swift.Void)?
-  public var onText: ((Swift.String) -> Swift.Void)?
-  public var onData: ((Foundation.Data) -> Swift.Void)?
-  public var onPong: ((Foundation.Data?) -> Swift.Void)?
-  public var onHttpResponseHeaders: (([Swift.String : Swift.String]) -> Swift.Void)?
-  public var disableSSLCertValidation: Swift.Bool
-  public var overrideTrustHostname: Swift.Bool
-  public var desiredTrustHostname: Swift.String?
-  public var sslClientCertificate: SendbirdChatSDK.SSLClientCertificate?
-  public var enableCompression: Swift.Bool
-  public var security: (any SendbirdChatSDK.SSLTrustValidator)?
-  public var enabledSSLCipherSuites: [Security.SSLCipherSuite]?
-  public var isConnected: Swift.Bool {
-    get
-  }
-  public var request: Foundation.URLRequest
-  public var currentURL: Foundation.URL {
-    get
-  }
-  public var respondToPingWithPong: Swift.Bool
-  public init(request: Foundation.URLRequest, protocols: [Swift.String]? = nil, stream: any SendbirdChatSDK.WSStream = FoundationStream())
-  convenience public init(url: Foundation.URL, protocols: [Swift.String]? = nil)
-  convenience public init(url: Foundation.URL, writeQueueQOS: Foundation.QualityOfService, protocols: [Swift.String]? = nil)
-  open func connect()
-  open func disconnect(forceTimeout: Foundation.TimeInterval? = nil, closeCode: Swift.UInt16 = CloseCode.normal.rawValue)
-  open func write(string: Swift.String, completion: (() -> ())? = nil)
-  open func write(data: Foundation.Data, completion: (() -> ())? = nil)
-  open func write(ping: Foundation.Data, completion: (() -> ())? = nil)
-  open func write(pong: Foundation.Data, completion: (() -> ())? = nil)
-  public func newBytesInStream()
-  public func streamDidError(error: (any Swift.Error)?)
   @objc deinit
 }
 @objc extension SendbirdChatSDK.BaseChannel {
@@ -3742,42 +3769,6 @@ extension SendbirdChatSDK.MutedUserListQuery {
   @objc public class func sendUserMessage(channelType: SendbirdChatSDK.ChannelType, channelURL: Swift.String, params: SendbirdChatSDK.UserMessageCreateParams, completionHandler: SendbirdChatSDK.UserMessageHandler?)
   @objc deinit
 }
-public enum GzipStatics {
-  public static let maxWindowBits: Swift.Int32
-}
-public struct CompressionLevel : Swift.RawRepresentable {
-  public let rawValue: Swift.Int32
-  public static let noCompression: SendbirdChatSDK.CompressionLevel
-  public static let bestSpeed: SendbirdChatSDK.CompressionLevel
-  public static let bestCompression: SendbirdChatSDK.CompressionLevel
-  public static let defaultCompression: SendbirdChatSDK.CompressionLevel
-  public init(rawValue: Swift.Int32)
-  public init(_ rawValue: Swift.Int32)
-  public typealias RawValue = Swift.Int32
-}
-public struct GzipError : Swift.Error {
-  public enum Kind : Swift.Equatable {
-    case stream
-    case data
-    case memory
-    case buffer
-    case version
-    case unknown(code: Swift.Int)
-    public static func == (a: SendbirdChatSDK.GzipError.Kind, b: SendbirdChatSDK.GzipError.Kind) -> Swift.Bool
-  }
-  public let kind: SendbirdChatSDK.GzipError.Kind
-  public let message: Swift.String
-  public var localizedDescription: Swift.String {
-    get
-  }
-}
-extension Foundation.Data {
-  public var isGzipped: Swift.Bool {
-    get
-  }
-  public func gzipped(level: SendbirdChatSDK.CompressionLevel = .defaultCompression, wBits: Swift.Int32 = GzipStatics.maxWindowBits + 16) throws -> Foundation.Data
-  public func gunzipped(wBits: Swift.Int32 = GzipStatics.maxWindowBits + 32) throws -> Foundation.Data
-}
 @objc(SBDGroupChannelListOrder) public enum GroupChannelListOrder : Swift.Int {
   case chronological = 0
   case latestLastMessage = 1
@@ -4058,6 +4049,16 @@ extension SendbirdChatSDK.MessageSearchQuery {
     @objc get
   }
 }
+public struct SSLClientCertificateError : Foundation.LocalizedError {
+  public var errorDescription: Swift.String?
+}
+public class SSLClientCertificate {
+  convenience public init(pkcs12Path: Swift.String, password: Swift.String) throws
+  public init(identity: Security.SecIdentity, identityCertificate: Security.SecCertificate)
+  convenience public init(pkcs12Url: Foundation.URL, password: Swift.String) throws
+  public init(pkcs12Url: Foundation.URL, importOptions: CoreFoundation.CFDictionary) throws
+  @objc deinit
+}
 @_hasMissingDesignatedInitializers @objc(SBDOriginalMessageInfo) public class OriginalMessageInfo : ObjectiveC.NSObject, Swift.Codable {
   @objc final public let createdAt: Swift.Int64
   @objc final public let messageId: Swift.Int64
@@ -4073,6 +4074,16 @@ extension SendbirdChatSDK.BaseChannel {
   @objc dynamic open func updatePollOption(pollId: Swift.Int64, pollOptionId: Swift.Int64, optionText: Swift.String, completionHandler: SendbirdChatSDK.PollHandler?)
   @objc dynamic open func deletePollOption(pollId: Swift.Int64, pollOptionId: Swift.Int64, completionHandler: SendbirdChatSDK.SBErrorHandler?)
   @objc dynamic open func votePoll(pollId: Swift.Int64, pollOptionIds: [Swift.Int64], completionHandler: SendbirdChatSDK.PollVoteEventHandler)
+}
+@usableFromInline
+internal protocol _AnyDecodable {
+  var value: Any { get }
+  init<T>(_ value: T?)
+}
+@usableFromInline
+internal protocol _AnyEncodable {
+  var value: Any { get }
+  init<T>(_ value: T?)
 }
 extension SendbirdChatSDK.SendbirdChat {
   @objc dynamic public class func __addExtension(_ key: Swift.String, version: Swift.String)
@@ -4338,6 +4349,17 @@ extension Swift.Decodable {
 extension SendbirdChatSDK.PollOptionRetrievalParams : Swift.Encodable {
   public func encode(to encoder: any Swift.Encoder) throws
 }
+@propertyWrapper public class Atomic<T> {
+  public var wrappedValue: T {
+    get
+    set
+  }
+  public var projectedValue: SendbirdChatSDK.Atomic<T> {
+    get
+  }
+  public init(wrappedValue: T)
+  @objc deinit
+}
 public struct __SendbirdSDKInfo {
   public init(product: SendbirdChatSDK.__SendbirdProduct, platform: SendbirdChatSDK.__SendbirdPlatform, version: Swift.String)
 }
@@ -4419,17 +4441,6 @@ extension SendbirdChatSDK.GroupChannelCreateParams : Foundation.NSCopying {
 }
 extension SendbirdChatSDK.MultipleFilesMessage {
   @objc override dynamic public func copy(with zone: ObjectiveC.NSZone? = nil) -> Any
-}
-@propertyWrapper public class Atomic<T> {
-  public var wrappedValue: T {
-    get
-    set
-  }
-  public var projectedValue: SendbirdChatSDK.Atomic<T> {
-    get
-  }
-  public init(wrappedValue: T)
-  @objc deinit
 }
 @_hasMissingDesignatedInitializers @objc(SBDReaction) public class Reaction : ObjectiveC.NSObject, Swift.Codable {
   @objc final public let key: Swift.String
@@ -4555,16 +4566,6 @@ extension SendbirdChatSDK.FeedChannelListQuery {
   @objc final public let channelType: SendbirdChatSDK.ChannelType
   required public init(from decoder: any Swift.Decoder) throws
   public func encode(to encoder: any Swift.Encoder) throws
-  @objc deinit
-}
-public struct SSLClientCertificateError : Foundation.LocalizedError {
-  public var errorDescription: Swift.String?
-}
-public class SSLClientCertificate {
-  convenience public init(pkcs12Path: Swift.String, password: Swift.String) throws
-  public init(identity: Security.SecIdentity, identityCertificate: Security.SecCertificate)
-  convenience public init(pkcs12Url: Foundation.URL, password: Swift.String) throws
-  public init(pkcs12Url: Foundation.URL, importOptions: CoreFoundation.CFDictionary) throws
   @objc deinit
 }
 @objc extension SendbirdChatSDK.OpenChannel {
@@ -5106,6 +5107,14 @@ extension SendbirdChatSDK.PushNotificationDeliveryOption : Swift.Hashable {}
 extension SendbirdChatSDK.PushTriggerOption : Swift.Equatable {}
 extension SendbirdChatSDK.PushTriggerOption : Swift.Hashable {}
 extension SendbirdChatSDK.PreviousMessageListQuery : Foundation.NSCopying {}
+extension SendbirdChatSDK.CloseCode : Swift.Equatable {}
+extension SendbirdChatSDK.CloseCode : Swift.Hashable {}
+extension SendbirdChatSDK.CloseCode : Swift.RawRepresentable {}
+extension SendbirdChatSDK.ErrorType : Swift.Equatable {}
+extension SendbirdChatSDK.ErrorType : Swift.Hashable {}
+extension SendbirdChatSDK.WebSocket.OpCode : Swift.Equatable {}
+extension SendbirdChatSDK.WebSocket.OpCode : Swift.Hashable {}
+extension SendbirdChatSDK.WebSocket.OpCode : Swift.RawRepresentable {}
 extension SendbirdChatSDK.CollectionEventSource : Swift.Equatable {}
 extension SendbirdChatSDK.CollectionEventSource : Swift.Hashable {}
 extension SendbirdChatSDK.CollectionEventSource : Swift.RawRepresentable {}
@@ -5173,14 +5182,6 @@ extension SendbirdChatSDK.ReplyType : Swift.Equatable {}
 extension SendbirdChatSDK.ReplyType : Swift.Hashable {}
 extension SendbirdChatSDK.NotificationMessageStatus : Swift.Equatable {}
 extension SendbirdChatSDK.NotificationMessageStatus : Swift.Hashable {}
-extension SendbirdChatSDK.CloseCode : Swift.Equatable {}
-extension SendbirdChatSDK.CloseCode : Swift.Hashable {}
-extension SendbirdChatSDK.CloseCode : Swift.RawRepresentable {}
-extension SendbirdChatSDK.ErrorType : Swift.Equatable {}
-extension SendbirdChatSDK.ErrorType : Swift.Hashable {}
-extension SendbirdChatSDK.WebSocket.OpCode : Swift.Equatable {}
-extension SendbirdChatSDK.WebSocket.OpCode : Swift.Hashable {}
-extension SendbirdChatSDK.WebSocket.OpCode : Swift.RawRepresentable {}
 extension SendbirdChatSDK.ChatError : Swift.Equatable {}
 extension SendbirdChatSDK.ChatError : Swift.Hashable {}
 extension SendbirdChatSDK.ChatError : Swift.RawRepresentable {}

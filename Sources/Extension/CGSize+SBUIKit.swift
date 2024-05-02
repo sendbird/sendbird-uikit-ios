@@ -14,4 +14,5 @@ extension CGSize {
     }
     
     var value: CGFloat { self.width }
+    var hasSize: Bool { self.width > 0 && self.height > 0 }
 }

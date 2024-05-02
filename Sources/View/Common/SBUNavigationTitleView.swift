@@ -10,7 +10,9 @@ import UIKit
 
 public class SBUNavigationTitleView: SBUView {
     @SBUThemeWrapper(theme: SBUTheme.componentTheme)
-    var theme: SBUComponentTheme
+    
+    /// - Since: 3.21.0
+    public var theme: SBUComponentTheme
     
     public var text: String? = ""
     public var textAlignment: NSTextAlignment = .center
