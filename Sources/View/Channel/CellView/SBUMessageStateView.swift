@@ -144,7 +144,7 @@ open class SBUMessageStateView: SBUView {
         let sizePriority: UILayoutPriority = (timeLabelCustomSize != nil) ? .defaultHigh : .defaultLow
         self.timeLabel.sbu_constraint(width: timeLabelWidth, height: timeLabelHeight, priority: sizePriority)
         
-        self.stateImageView.sbu_constraint(height: 12)
+        self.stateImageView.sbu_constraint(height: 12, priority: sizePriority)
     }
     
     open override func setupStyles() {

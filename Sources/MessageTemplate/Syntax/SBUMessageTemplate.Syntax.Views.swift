@@ -1,0 +1,367 @@
+//
+//  SBUMessageTemplate.Body.swift
+//  SendbirdUIKit
+//
+//  Created by Tez Park on 2022/09/30.
+//  Copyright © 2024 Sendbird, Inc. All rights reserved.
+//
+
+import UIKit
+
+/*
+    Root: `TemplateView`
+     ㄴ body
+       ㄴ items: `[SBUMessageTemplate.Item]`
+         ㄴ Box: `SBUMessageTemplate.Box`
+         ㄴ Text: `SBUMessageTemplate.Text`
+         ㄴ Image: `SBUMessageTemplate.Image`
+         ㄴ Button: `SBUMessageTemplate.TextButton`
+         ㄴ Button: `SBUMessageTemplate.ImageButton`
+ 
+    All item of `SBUMessageTemplate.Item` inherited `SBUMessageTemplate.View`.
+ */
+
+// MARK: - Root
+
+extension SBUMessageTemplate.Syntax {
+    class TemplateView: Decodable, MessageTemplateItemIdentifiable {
+        var version: Int?
+        var body: SBUMessageTemplate.Syntax.Body?
+        var identifierFactory: SBUMessageTemplate.Syntax.Identifier.Factory
+        
+        enum CodingKeys: String, CodingKey {
+            case version, body
+        }
+        
+        required init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            self.version = SBUMessageTemplate.decodeIfPresentMultipleTypeForInt(
+                forKey: .version,
+                from: container,
+                defaultValue: 0
+            )
+            self.body = try container.decodeIfPresent(SBUMessageTemplate.Syntax.Body.self, forKey: .body)
+            self.identifierFactory = SBUMessageTemplate.Syntax.Identifier.Factory()
+        }
+        
+        static func generate(
+            json: String,
+            messageId: Int64
+        ) -> TemplateView? {
+            var result = json
+            do {
+                // NOTE: **DO NOT remove below**
+                result = result.replacingOccurrences(of: "\\n", with: "\\\\n")
+                result = result.replacingOccurrences(of: "\n", with: "\\n")
+                // NOTE: **DO NOT remove above**
+                
+                let template = try JSONDecoder().decode(TemplateView.self, from: Data(result.utf8))
+                template.setIdentifier(with: .init(messageId: messageId))
+                return template
+            } catch {
+                SBULog.error(error)
+                return nil
+            }
+        }
+        
+        func setIdentifier(with factory: SBUMessageTemplate.Syntax.Identifier.Factory) {
+            self.identifierFactory = factory
+            self.body?.items?.forEach { $0.asView.setIdentifier(with: factory ) }
+        }
+        
+        var itemsMaxWidth: CGFloat {
+            guard let items = self.body?.items?.compactMap({ $0.asView }) else { return .zero }
+            
+            return items.reduce(into: .zero, { result, view in
+                let width = view.width.type == .fixed ? CGFloat(view.width.value) : SBUMessageContainerType.defaultMaxSize
+                result = result > width ? result : width
+            })
+        }
+        
+        var hasCompositeType: Bool {
+            self.body?.items?.contains(where: { $0.hasCompositeType }) ?? false
+        }
+    }
+}
+
+extension SBUMessageTemplate.Syntax {
+    class Body: Decodable {
+        var items: [SBUMessageTemplate.Syntax.Item]?
+    }
+    
+    class View: Decodable, MessageTemplateItemIdentifiable {
+        let type: Item.ItemType
+        let action: SBUMessageTemplate.Action?
+        let viewStyle: ViewStyle?
+        let width: SizeSpec // fill
+        let height: SizeSpec // wrap
+        
+        var identifier: SBUMessageTemplate.Syntax.Identifier = .default
+        
+        enum CodingKeys: String, CodingKey {
+            case type, action, width, height, viewStyle
+        }
+        
+        required init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            self.type = try container.decode(SBUMessageTemplate.Syntax.Item.ItemType.self, forKey: .type)
+            self.action = try container.decodeIfPresent(SBUMessageTemplate.Action.self, forKey: .action)
+            self.width = try container.decodeIfPresent(SBUMessageTemplate.Syntax.SizeSpec.self, forKey: .width) ?? SizeSpec.fillParent()
+            self.height = try container.decodeIfPresent(SBUMessageTemplate.Syntax.SizeSpec.self, forKey: .height) ?? SizeSpec.wrapContent()
+            self.viewStyle = try container.decodeIfPresent(SBUMessageTemplate.Syntax.ViewStyle.self, forKey: .viewStyle)
+        }
+        
+        init(
+            type: Item.ItemType,
+            viewStyle: ViewStyle? = nil,
+            width: SizeSpec = .fillParent(),
+            height: SizeSpec = .wrapContent(),
+            action: SBUMessageTemplate.Action? = nil
+        ) {
+            self.type = type
+            self.viewStyle = viewStyle
+            self.width = width
+            self.height = height
+            self.action = action
+        }
+        
+        // MARK: Common
+        func setDefaultRadiusIfNeeded(_ radius: Int) {
+            if self.viewStyle?.radius == nil {
+                self.viewStyle?.radius = radius
+            }
+        }
+        
+        func setDefaultPaddingIfNeeded(top: CGFloat, bottom: CGFloat, left: CGFloat, right: CGFloat) {
+            if self.viewStyle?.padding == nil {
+                self.viewStyle?.padding = Padding(top: top, bottom: bottom, left: left, right: right)
+            }
+        }
+        
+        func setIdentifier(with factory: SBUMessageTemplate.Syntax.Identifier.Factory) {
+            self.identifier = factory.generate(with: self)
+        }
+        
+        var imageUrlString: String? {
+            switch self {
+            case let item as SBUMessageTemplate.Syntax.ImageButton: return item.imageUrl
+            case let item as SBUMessageTemplate.Syntax.Image: return item.imageUrl
+            default: return nil
+            }
+        }
+        
+        var isFixedSize: Bool {
+            self.width.type == .fixed && self.height.type == .fixed
+        }
+    }
+}
+
+extension SBUMessageTemplate.Syntax {
+    class Box: View {
+        let layout: LayoutType
+        let items: [Item]?
+        let align: ItemsAlign
+        
+        enum CodingKeys: String, CodingKey {
+            case items, layout, align
+        }
+        
+        required init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            self.layout = try container.decodeIfPresent(LayoutType.self, forKey: .layout) ?? .row
+            self.items = try container.decodeIfPresent([Item].self, forKey: .items)
+            self.align = try container.decodeIfPresent(ItemsAlign.self, forKey: .align) ?? ItemsAlign.defaultAlign()
+            
+            try super.init(from: decoder)
+        }
+        
+        init(
+            layout: LayoutType,
+            align: ItemsAlign,
+            type: Item.ItemType,
+            viewStyle: ViewStyle? = nil,
+            width: SizeSpec = .fillParent(),
+            height: SizeSpec = .wrapContent(),
+            items: [Item]?,
+            action: SBUMessageTemplate.Action? = nil
+        ) {
+            self.layout = layout
+            self.items = items
+            self.align = align
+            
+            super.init(
+                type: type,
+                viewStyle: viewStyle,
+                width: width,
+                height: height,
+                action: action
+            )
+        }
+        
+        override func setIdentifier(with factory: SBUMessageTemplate.Syntax.Identifier.Factory) {
+            self.identifier = factory.generate(with: self)
+            self.items?.forEach { $0.asView.setIdentifier(with: factory) }
+        }
+    }
+    
+    class Text: View {
+        let text: String
+        let maxTextLines: Int
+        let textStyle: TextStyle?
+        let align: TextAlign
+        
+        enum CodingKeys: String, CodingKey {
+            case text, maxTextLines, textStyle, align
+        }
+        
+        required init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            self.text = try container.decode(String.self, forKey: .text)
+            self.maxTextLines = SBUMessageTemplate.decodeIfPresentMultipleTypeForInt(
+                forKey: .maxTextLines,
+                from: container,
+                defaultValue: 0
+            ) ?? 0
+            self.textStyle = try container.decodeIfPresent(TextStyle.self, forKey: .textStyle)
+            self.align = try container.decodeIfPresent(TextAlign.self, forKey: .align) ?? TextAlign.defaultAlign()
+            
+            try super.init(from: decoder)
+        }
+        
+        init(
+            text: String,
+            maxTextLines: Int,
+            textStyle: TextStyle?,
+            type: Item.ItemType,
+            viewStyle: ViewStyle? = nil,
+            width: SizeSpec = .fillParent(),
+            height: SizeSpec = .wrapContent(),
+            action: SBUMessageTemplate.Action? = nil,
+            align: TextAlign = .defaultAlign()
+        ) {
+            self.text = text
+            self.maxTextLines = maxTextLines
+            self.textStyle = textStyle
+            self.align = align
+            
+            super.init(
+                type: type,
+                viewStyle: viewStyle,
+                width: width,
+                height: height,
+                action: action
+            )
+        }
+    }
+    
+    class Image: View, MessageTemplateImageRatioType {
+        let imageUrl: String
+        let imageStyle: ImageStyle
+        let metaData: MetaData?
+        
+        enum CodingKeys: String, CodingKey {
+            case imageUrl, imageStyle, metaData
+        }
+        
+        required init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            self.imageUrl = try container.decode(String.self, forKey: .imageUrl)
+            self.imageStyle = try container.decodeIfPresent(ImageStyle.self, forKey: .imageStyle) ?? ImageStyle()
+            self.metaData = try container.decodeIfPresent(MetaData.self, forKey: .metaData)
+            
+            try super.init(from: decoder)
+        }
+        
+        init(
+            imageUrl: String,
+            imageStyle: ImageStyle,
+            metaData: MetaData?,
+            viewStyle: ViewStyle? = nil,
+            width: SizeSpec = .fillParent(),
+            height: SizeSpec = .wrapContent(),
+            action: SBUMessageTemplate.Action? = nil
+        ) {
+            self.imageUrl = imageUrl
+            self.imageStyle = imageStyle
+            self.metaData = metaData
+            
+            super.init(
+                type: .image,
+                viewStyle: viewStyle,
+                width: width,
+                height: height,
+                action: action
+            )
+        }
+    }
+    
+    class TextButton: View {
+        let text: String?
+        let maxTextLines: Int
+        let textStyle: TextStyle?
+        
+        enum CodingKeys: String, CodingKey {
+            case text, maxTextLines, textStyle
+        }
+        
+        required init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            self.text = try container.decode(String.self, forKey: .text)
+            self.maxTextLines = SBUMessageTemplate.decodeIfPresentMultipleTypeForInt(
+                forKey: .maxTextLines,
+                from: container,
+                defaultValue: 1
+            ) ?? 1
+            self.textStyle = try container.decodeIfPresent(TextStyle.self, forKey: .textStyle)
+            
+            try super.init(from: decoder)
+            
+            self.setDefaultRadiusIfNeeded(6)
+            self.setDefaultPaddingIfNeeded(top: 10.0, bottom: 10.0, left: 20.0, right: 20.0)
+        }
+    }
+    
+    class ImageButton: View, MessageTemplateImageRatioType {
+        let imageUrl: String
+        let imageStyle: ImageStyle
+        let metaData: MetaData?
+        
+        enum CodingKeys: String, CodingKey {
+            case imageUrl, imageStyle, metaData
+        }
+        
+        required init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            self.imageUrl = try container.decode(String.self, forKey: .imageUrl)
+            self.imageStyle = try container.decodeIfPresent(ImageStyle.self, forKey: .imageStyle) ?? ImageStyle()
+            self.metaData = try container.decodeIfPresent(MetaData.self, forKey: .metaData)
+            
+            try super.init(from: decoder)
+        }
+    }
+    
+    class CarouselItem: View {
+        let spacing: Int // default: 8
+        let items: [TemplateView]?
+        
+        enum CodingKeys: String, CodingKey {
+            case spacing, items
+        }
+        
+        static var maxLimitOfItems: Int = 10
+        
+        required init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            self.spacing = try container.decodeIfPresent(Int.self, forKey: .spacing) ?? 8 // default
+            let items = try container.decodeIfPresent([TemplateView].self, forKey: .items) ?? []
+            self.items = Array(items.prefix(CarouselItem.maxLimitOfItems))
+            
+            try super.init(from: decoder)
+        }
+        
+        override func setIdentifier(with factory: SBUMessageTemplate.Syntax.Identifier.Factory) {
+            self.identifier = factory.generate(with: self)
+            items?.forEach { $0.setIdentifier(with: factory) }
+        }
+    }
+}

@@ -294,8 +294,12 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
         self.messageLabel.text = ""
         switch channel.lastMessage {
         case let userMessage as UserMessage:
+            if userMessage.hasMessageTemplate == true {
+                self.messageLabel.text = SBUStringSet.GroupChannel.Preview.messageTemplate
+            } else {
+                self.messageLabel.text = userMessage.message
+            }
             self.messageLabel.lineBreakMode = .byTruncatingTail
-            self.messageLabel.text = userMessage.message
             
         case let fileMessage as FileMessage:
             self.messageLabel.lineBreakMode = .byTruncatingMiddle
@@ -348,7 +352,11 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
             switch groupChannel.lastMessage {
             case let userMessage as UserMessage:
                 messageLabel.lineBreakMode = .byTruncatingTail
-                messageLabel.text = userMessage.message
+                if userMessage.hasMessageTemplate == true {
+                    self.messageLabel.text = SBUStringSet.GroupChannel.Preview.messageTemplate
+                } else {
+                    self.messageLabel.text = userMessage.message
+                }
                 messageLabel.numberOfLines = 2
             case let fileMessage as FileMessage:
                 self.messageLabel.lineBreakMode = .byTruncatingMiddle

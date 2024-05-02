@@ -151,4 +151,12 @@ public class SBUAvailable {
     public static var uploadSizeLimitMB: Int64 {
         SBUAvailable.uploadSizeLimitBytes / (1024 * 1024)
     }
+    
+    /// This method checks if the application enabled group message template feature feature.
+    /// - Returns: `true` if the group message template feature was enabled, `false` otherwise.
+    /// - Since: 3.21.0
+    static var isGroupMessageTemplateEnabled: Bool {
+        SendbirdChat.getAppInfo()?.messageTemplateInfo?.templateListToken != nil
+    }
+
 }

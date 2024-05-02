@@ -434,14 +434,13 @@ extension SBUFeedNotificationChannelModule {
                     isTemplateLabelEnabled: self.channel?.isTemplateLabelEnabled,
                     isCategoryFilterEnabled: self.channel?.isCategoryFilterEnabled
                 )
-                notificationCell.delegate = self
 
                 // Read status
                 let hasRead = notification.createdAt <= self.lastSeenAt
                 notificationCell.updateReadStatus(hasRead)
                 
                 // Action handler
-                notificationCell.notificationActionHandler = { [weak self, indexPath] action in
+                notificationCell.messageTemplateActionHandler = { [weak self, indexPath] action in
                     guard let self = self else { return }
                     
                     // Action Events
@@ -479,6 +478,10 @@ extension SBUFeedNotificationChannelModule {
                     receiptState: .notUsed
                 )
                 notificationCell.configure(with: configuration)
+            }
+            
+            notificationCell.reloadCellHandler = { [weak self] cell in
+                self?.tableView.sbu_reloadCell(cell)
             }
             
             UIView.setAnimationsEnabled(true)
@@ -596,17 +599,6 @@ extension SBUFeedNotificationChannelModule {
             return cells.filter { $0.isRendered }
                 .compactMap { $0.message }
         }
-    }
-}
-
-// MARK: - SBUNotificationCellDelegate
-extension SBUFeedNotificationChannelModule.List: SBUNotificationCellDelegate {
-    func notificationCellShouldReload(_ cell: SBUNotificationCell) {
-        guard let indexPath = tableView.indexPath(for: cell) else { return }
-        guard let visibleIndexPaths = tableView.indexPathsForVisibleRows else { return }
-        guard visibleIndexPaths.contains(indexPath) else { return }
-        self.tableView.reloadRows(at: [indexPath], with: .none)
-        self.tableView.layoutIfNeeded()
     }
 }
 

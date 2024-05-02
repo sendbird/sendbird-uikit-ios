@@ -213,7 +213,8 @@ public class SendbirdUI {
         
         let userId = currentUser.userId.trimmingCharacters(in: .whitespacesAndNewlines)
         let nickname = currentUser.nickname?.trimmingCharacters(in: .whitespacesAndNewlines)
-        SendbirdChat.connect(userId: userId, authToken: SBUGlobals.accessToken) { [userId, nickname] user, error in
+        
+        SendbirdChat.connect(userId: userId, authToken: SBUGlobals.accessToken, apiHost: SBUGlobals.apiHost, wsHost: SBUGlobals.wsHost) { [userId, nickname] user, error in
             defer {
                 SBUEmojiManager.loadAllEmojis { _, _ in }
             }
@@ -267,8 +268,10 @@ public class SendbirdUI {
                 }
                 
                 self.config.loadDashboardConfig { _ in
-                    self.loadNotificationChannelSettings { _ in
-                        completionHandler(user, error)
+                    self.loadMessageTemplateList { _ in
+                        self.loadNotificationChannelSettings { _ in
+                            completionHandler(user, error)
+                        }
                     }
                 }
             }
@@ -331,7 +334,7 @@ public class SendbirdUI {
         
         let userId = currentUser.userId.trimmingCharacters(in: .whitespacesAndNewlines)
         let nickname = currentUser.nickname?.trimmingCharacters(in: .whitespacesAndNewlines)
-        SendbirdChat.authenticateFeed(userId: userId, authToken: SBUGlobals.accessToken) { [userId, nickname] user, error in
+        SendbirdChat.authenticateFeed(userId: userId, authToken: SBUGlobals.accessToken, apiHost: SBUGlobals.apiHost) { [userId, nickname] user, error in
             guard let user = user else {
                 SBULog.error("[Failed] Authentication to Sendbird: \(error?.localizedDescription ?? "")")
                 completionHandler(nil, error)
@@ -401,13 +404,25 @@ public class SendbirdUI {
         SBUNotificationChannelManager.loadGlobalNotificationChannelSettings { success in
             if !success { SBULog.error("[Failed] Load global notification channel settings") }
             
-            self.loadTemplateList(completionHandler: completionHandler)
+            self.loadNotificationTemplateList(completionHandler: completionHandler)
         }
     }
     
-    static func loadTemplateList(completionHandler: @escaping (_ succeeded: Bool) -> Void) {
-        SBUNotificationChannelManager.loadTemplateList { success in
-            if !success { SBULog.error("[Failed] Load template list") }
+    static func loadNotificationTemplateList(completionHandler: @escaping (_ succeeded: Bool) -> Void) {
+        SBUMessageTemplateManager.loadTemplateList(type: .notification) { success in
+            if !success { SBULog.error("[Failed] Load notification message template list") }
+            completionHandler(success)
+        }
+    }
+    
+    static func loadMessageTemplateList(completionHandler: @escaping (_ succeeded: Bool) -> Void) {
+        guard SBUAvailable.isGroupMessageTemplateEnabled == true else {
+            completionHandler(false)
+            return
+        }
+        
+        SBUMessageTemplateManager.loadTemplateList(type: .group) { success in
+            if !success { SBULog.error("[Failed] Load group message template list") }
             completionHandler(success)
         }
     }

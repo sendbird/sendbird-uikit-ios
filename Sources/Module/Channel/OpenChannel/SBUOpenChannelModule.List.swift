@@ -261,13 +261,13 @@ extension SBUOpenChannelModule {
         ///   - message: message object
         ///   - indexPath: Cell's indexPath
         open func setMessageCellGestures(_ cell: SBUOpenChannelBaseMessageCell, message: BaseMessage, indexPath: IndexPath) {
-            cell.tapHandlerToContent = { [weak self] in
-                guard let self = self else { return }
+            cell.tapHandlerToContent = { [weak self, weak cell] in
+                guard let self = self, let cell else { return }
                 self.setTapGesture(cell, message: message, indexPath: indexPath)
             }
             
-            cell.longPressHandlerToContent = { [weak self] in
-                guard let self = self else { return }
+            cell.longPressHandlerToContent = { [weak self, weak cell] in
+                guard let self = self, let cell else { return }
                 self.setLongTapGesture(cell, message: message, indexPath: indexPath)
             }
         }

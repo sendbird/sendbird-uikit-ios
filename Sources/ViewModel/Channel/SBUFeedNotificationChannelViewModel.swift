@@ -383,7 +383,7 @@ class SBUFeedNotificationChannelViewModel: NSObject {
     
     // MARK: - Notification related
     func markAsRead(completionHandler: SendbirdChatSDK.SBErrorHandler? = nil) {
-        if let channel = self.channel, allowsReadStatusUpdate, SendbirdChat.getConnectState() == .open {
+        if let channel = self.channel, allowsReadStatusUpdate {
             channel.markAsRead(completionHandler: completionHandler)
         }
     }

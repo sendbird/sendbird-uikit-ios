@@ -27,5 +27,14 @@ public class SBUStackView: UIStackView {
         self.axis = axis
         self.alignment = alignment
         self.spacing = spacing
+        self.isUserInteractionEnabled = true
+    }
+    
+    public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        let view = super.hitTest(point, with: event)
+        if view is HitPassView { return nil }
+        return view
     }
 }
+
+class HitPassView: UIView { }

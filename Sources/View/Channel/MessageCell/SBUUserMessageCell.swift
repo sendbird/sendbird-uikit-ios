@@ -14,6 +14,12 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
     // MARK: - Public property
     public lazy var messageTextView: UIView = SBUUserMessageTextView()
     
+    public override var message: BaseMessage? {
+        didSet {
+            self.messageTemplateLayer.message = message
+        }
+    }
+    
     public var userMessage: UserMessage? {
         self.message as? UserMessage
     }
@@ -117,6 +123,8 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
     /// ```
     /// - Since: 3.11.0
     open var extendedMessagePayloadCustomViewFactory: SBUExtendedMessagePayloadCustomViewFactoryInternal.Type? { nil }
+    
+    private(set) var messageTemplateLayer = MessageTemplateLayer()
 
     // MARK: - View Lifecycle
     open override func setupViews() {
@@ -131,6 +139,7 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
         // + --------------- +
         
         self.mainContainerView.setStack([
+            self.messageTemplateLayer.templateContainerView.setVStack([]),
             self.messageTextView,
             self.additionContainerView.setStack([
                 self.reactionView
@@ -140,6 +149,8 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
     
     open override func setupLayouts() {
         super.setupLayouts()
+        
+        self.updateMessageTemplateLayouts()
     }
     
     open override func setupActions() {
@@ -182,7 +193,9 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
         
         self.webView.setupStyles()
         
-        self.additionContainerView.layer.cornerRadius = 8
+        self.additionContainerView.layer.cornerRadius = 16
+        
+        self.setupMesageTemplateStyles()
     }
     
     // MARK: - Common
@@ -242,6 +255,9 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
             let view = factory.makeCustomView(message: self.message) {
             factory.configure(with: view, cell: self)
         }
+        
+        // setup message template
+        self.updateMessageTemplate()
     }
     
     @available(*, deprecated, renamed: "configure(with:)") // 2.2.0
@@ -390,6 +406,13 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
     /// - Returns: Views that inherit from ``SBUFormView``.
     /// - since: 3.11.0
     open func createFormView() -> SBUFormView { SBUSimpleFormView() }
+    
+    /// - Since: 3.21.0
+    public func updateMessageTemplate() {
+        self.setupMessageTemplate()
+        self.setupMessageTemplateLayouts()
+        self.updateMessageTemplateLayouts()
+    }
     
     // MARK: - Mention
     /// As a default, it calls `groupChannelModule(_:didTapMentionUser:)` in ``SBUGroupChannelModuleListDelegate``.

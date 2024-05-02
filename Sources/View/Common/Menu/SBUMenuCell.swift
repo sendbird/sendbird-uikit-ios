@@ -8,25 +8,14 @@
 
 import UIKit
 
-class SBUMenuCell: UITableViewCell {
-
-    @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var iconImageView: UIImageView!
-    @IBOutlet weak var lineView: UIView!
+class SBUMenuCell: SBUTableViewCell {
+    lazy var containerView = { SBUStackView.init(axis: .horizontal, alignment: .fill, spacing: 30) }()
+    lazy var titleLabel = { UILabel(frame: .zero) }()
+    lazy var iconImageView = { UIImageView(frame: .zero) }()
+    lazy var lineView = { UIView(frame: .zero) }()
 
     var isEnabled: Bool = true
     var tapHandler: ((@escaping (Bool) -> Void) -> Void)?
-
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
-    }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
     
     func configure(with item: SBUMenuItem) {
         let theme = SBUTheme.componentTheme
@@ -52,5 +41,33 @@ class SBUMenuCell: UITableViewCell {
             
             completion(item?.transitionsWhenSelected ?? false)
         }
+    }
+    
+    override func setupViews() {
+        super.setupViews()
+        
+        self.containerView.setHStack([
+            self.titleLabel,
+            self.iconImageView
+        ])
+        
+        self.contentView.addSubview(self.containerView)
+    }
+    
+    override func setupLayouts() {
+        super.setupLayouts()
+        
+        self.containerView
+            .sbu_constraint(equalTo: self.contentView, left: 17, right: 17, top: 0, bottom: 0, priority: .required)
+            .sbu_constraint(height: 56, priority: .required)
+        
+        self.iconImageView
+            .sbu_constraint(width: 25, priority: .required)
+    }
+    
+    override func setupStyles() {
+        super.setupStyles()
+        
+        self.iconImageView.contentMode = .scaleAspectFit
     }
 }

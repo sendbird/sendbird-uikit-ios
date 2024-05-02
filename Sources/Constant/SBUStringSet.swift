@@ -236,6 +236,10 @@ public class SBUStringSet {
     /// - Since: 3.5.0
     public static var Notification_Template_Error_Title = "(Template error)"
     public static var Notification_Template_Error_Subtitle = "Can't read this notification."
+    
+    /// - Since: 3.21.0
+    public static var Message_Template_Error_Title = "(Template error)"
+    public static var Message_Template_Error_Subtitle = "Can't read this message template."
 
     // MARK: - Empty
     public static var Empty_No_Channels = "No channels"
@@ -399,6 +403,7 @@ public class SBUStringSet {
             public static var voice = "Voice message"
             public static var file = "File"
             public static var multipleFiles = "Photo"
+            public static var messageTemplate = "Message"
         }
     }
     

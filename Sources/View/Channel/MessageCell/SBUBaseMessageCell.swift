@@ -9,13 +9,15 @@
 import UIKit
 import SendbirdChatSDK
 
- @IBDesignable
+@IBDesignable
 open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol, SBUFeedbackViewDelegate {
     // MARK: - Public
     public var message: BaseMessage?
     public var position: MessagePosition = .center
     public var groupPosition: MessageGroupPosition = .none
     public var receiptState: SBUMessageReceiptState = .none
+    
+    var configuration: SBUBaseMessageCellParams?
 
     public lazy var messageContentView: UIView = {
         let view = UIView()
@@ -55,7 +57,13 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol, SBUFeed
     /// - Since: 3.15.0
     public internal(set) var feedbackView: SBUFeedbackView?
     
+    /// If this flag is set to true,
+    /// the layout will be reset when `prepareForReuse()` is called.
+    /// - Since: 3.21.0
+    public var isMessyViewHierarchy: Bool = false
+    
     // MARK: - Action
+    var reloadCellHandler: ((_ cell: SBUBaseMessageCell) -> Void)?
     var userProfileTapHandler: (() -> Void)?
     var tapHandlerToContent: (() -> Void)?
     var longPressHandlerToContent: (() -> Void)?
@@ -80,6 +88,11 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol, SBUFeed
     ///    - feedbackAnswer: The ``SBUFeedbackAnswer`` object that will be submitted.
     ///    - messageCell: The current ``SBUBaseMessageCell`` object.
     var updateFeedbackHandler: ((_ feedbackAnswer: SBUFeedbackAnswer, _ messageCell: SBUBaseMessageCell) -> Void)?
+    
+    // MARK: - message template handlers
+    var messageTemplateActionHandler: ((_ action: SBUMessageTemplate.Action) -> Void)?
+    var uncachedMessageTemplateDownloadHandler: ((_ templateKeys: [String], _ messageCell: SBUBaseMessageCell) -> Void)?
+    var uncachedMessageTemplateImageHandler: ((_ cacheData: [String: String], _ messageCell: SBUBaseMessageCell) -> Void)?
     
     // MARK: - View Lifecycle
     
@@ -142,6 +155,7 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol, SBUFeed
      - Parameter configuration: `SBUBaseMessageCellParams` object.
      */
     open func configure(with configuration: SBUBaseMessageCellParams) {
+        self.configuration = configuration
         self.message = configuration.message
         self.position = configuration.messagePosition
         self.groupPosition = configuration.groupPosition
@@ -187,11 +201,28 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol, SBUFeed
     // MARK: -
     open override func prepareForReuse() {
         super.prepareForReuse()
+        
+        if self.isMessyViewHierarchy == true {
+            self.isMessyViewHierarchy = false
+            self.setupViews()
+            self.setupLayouts()
+            
+            self.setNeedsLayout()
+        }
     }
     
     // MARK: - feedback view delegate
     
     open func feedbackView(_ view: SBUFeedbackView, didAnswer answer: SBUFeedbackAnswer) {
         self.updateFeedbackHandler?(answer, self)
+    }
+    
+    // MARK: - common
+    
+    func reloadCell() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) { [weak self] in
+            guard let self = self else { return }
+            self.reloadCellHandler?(self)
+        }
     }
 }

@@ -82,11 +82,7 @@ public class SBUMenuSheetViewController: SBUBaseViewController, UITableViewDeleg
         self.tableView.dataSource = self
         self.tableView.alwaysBounceVertical = false
         self.tableView.separatorStyle = .none
-        self.tableView.register(
-            SBUMenuCell.sbu_loadNib(),
-            forCellReuseIdentifier: SBUMenuCell.sbu_className
-        ) // for xib
-
+        self.tableView.register(SBUMenuCell.self, forCellReuseIdentifier: SBUMenuCell.sbu_className)
         self.tableView.rowHeight = UITableView.automaticDimension
         self.tableView.estimatedRowHeight = 56
         self.tableView.backgroundColor = .clear
@@ -103,7 +99,7 @@ public class SBUMenuSheetViewController: SBUBaseViewController, UITableViewDeleg
             self.collectionView.dataSource = self
             self.collectionView.delegate = self
             self.collectionView.register(
-                SBUReactionCollectionViewCell.sbu_loadNib(),
+                SBUReactionCollectionViewCell.self,
                 forCellWithReuseIdentifier: SBUReactionCollectionViewCell.sbu_className
             ) // for xib
             self.collectionView.bounces = false

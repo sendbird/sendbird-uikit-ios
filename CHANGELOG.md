@@ -1,10 +1,25 @@
 # Changelog
 
+### v3.21.0 (May 02, 2024)
+
+## New Feature
+- Added interfaces to SBUGlobals to set the ws host and api host up
+- Message templates are now supported in group channels
+   - Added Carousel ui component for message template root body items
+- Added `default` and `wide` container types support for message contents size
+
+## Improvements
+- Fixed `Abnormal number of gesture recognizer dependencies` issues
+- Fixed empty channels showing up in the channel list
+- Fixed an issue where changing categories in FeedChannel would not work
+- Fixed an issue where the reaction of the last message was not updated
+- Updated the corner radius of the reaction container in the message bubble
+
 ### v3.20.0 (Apr 08, 2024)
 
 ## Improvements
 - Updated iOS deployment target to 12.0
-- Updated Xcode version to 15.0 for building SendbirdChatSDK framework
+- Updated Xcode version to 15.0
 - Added PrivacyInfo.xcprivacy for [Apple Privacy Manifest](https://developer.apple.com/documentation/bundleresources/privacy_manifest_files)
 - Improved UI updates for single stream message to work smoothly
 

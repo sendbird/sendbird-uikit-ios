@@ -228,32 +228,21 @@ extension UIImage {
 extension UIImage {
     internal class func delayForImageAtIndex(_ index: Int, source: CGImageSource?) -> Float {
         guard let source = source else { return 0 }
+        guard let cfProperties = CGImageSourceCopyPropertiesAtIndex(source, index, nil) else { return 0 }
+        guard let gifProperties = (cfProperties as NSDictionary)[kCGImagePropertyGIFDictionary as String] as? NSDictionary else { return 0 }
+         
+        var clampedDelayTime = Float.zero
+        var unclampedDelayTime = Float.zero
         
-        // Get dictionaries
-        let cfProperties = CGImageSourceCopyPropertiesAtIndex(source, index, nil)
-        let gifKey = Unmanaged.passUnretained(kCGImagePropertyGIFDictionary).toOpaque()
-        guard let gifPropertiesUnsafePointer = CFDictionaryGetValue(cfProperties, gifKey) else {
-            return 0
-        }
-        let gifProperties = unsafeBitCast(gifPropertiesUnsafePointer, to: CFDictionary.self)
-        
-        // case kCGImagePropertyGIFUnclampedDelayTime
-        let unclampedKey = Unmanaged.passUnretained(kCGImagePropertyGIFUnclampedDelayTime).toOpaque()
-        if let unclampedPointer: UnsafeRawPointer = CFDictionaryGetValue(gifProperties, unclampedKey) {
-            if let delayTime = unsafeBitCast(unclampedPointer, to: AnyObject.self).floatValue, delayTime > 0 {
-                return delayTime
-            }
+        if let delayTime = gifProperties[kCGImagePropertyGIFDelayTime as String] as? NSNumber {
+            clampedDelayTime = delayTime.floatValue
         }
         
-        // case kCGImagePropertyGIFDelayTime
-        let clampedKey = Unmanaged.passUnretained(kCGImagePropertyGIFDelayTime).toOpaque()
-        if let clampedPointer: UnsafeRawPointer = CFDictionaryGetValue(gifProperties, clampedKey) {
-            if let delayTime = unsafeBitCast(clampedPointer, to: AnyObject.self).floatValue, delayTime > 0 {
-                return delayTime
-            }
+        if let delayTime = gifProperties[kCGImagePropertyGIFUnclampedDelayTime as String] as? NSNumber {
+            unclampedDelayTime = delayTime.floatValue
         }
         
-        return 0
+        return max(clampedDelayTime, unclampedDelayTime)
     }
     
     /// Greatest common divisor
@@ -287,11 +276,13 @@ extension UIImage {
             if let image = CGImageSourceCreateImageAtIndex(source, $0, nil) {
                 images.append(image)
             }
+            
             let delaySeconds = UIImage.delayForImageAtIndex($0, source: source)
+            
             delays.append(Int(delaySeconds * 1000.0)) // Seconds to ms
         }
         
-        let duration = delays.reduce(into: 0) { $0 += $1 }
+        let duration = delays.reduce(0, +)
         
         let gcd = gcdForArray(delays)
         
@@ -302,8 +293,10 @@ extension UIImage {
             frames.append(contentsOf: [UIImage](repeating: frame, count: frameCount))
         }
         
-        let animation = UIImage.animatedImage(with: frames,
-                                              duration: Double(duration) / 1000.0)
+        let animation = UIImage.animatedImage(
+            with: frames,
+            duration: Double(duration) / 1000.0
+        )
         
         return animation
     }

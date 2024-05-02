@@ -39,6 +39,26 @@ extension BaseMessage {
     /// json string data.
     /// - Since: 3.11.0
     public var asCustomView: Any? { self.asExtendedMessagePayload?.customView }
+    
+    /// message template string data.
+    /// - Since: 3.21.0
+    public var asMessageTemplate: [String: Any]? { self.asExtendedMessagePayload?.template }
+    
+    /// Indicates if message template data exists
+    /// - Since: 3.21.0
+    public var hasMessageTemplate: Bool { self.asMessageTemplate?.hasElements ?? false }
+    
+    /// container type of message template
+    /// - Since: 3.21.0
+    public var asUiSettingContainerType: SBUMessageContainerType {
+        if self.hasMessageTemplateCompositeType == true { return .full }
+        
+        switch self.asExtendedMessagePayload?.uiSettings?.containerType {
+            case .wide: return .wide
+            case .full: return self.hasMessageTemplate ? .full : .`default`
+            default: return .`default`
+        }
+    }
 
     /// Function to decode to custom view data using genric type.
     /// - Since: 3.11.0

@@ -13,6 +13,8 @@ public class MessageTemplateTestViewController: SBUBaseViewController {
     let baseView = UIView()
     var renderedView: UIView?
     
+    var useParserTest: Bool = false
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -22,6 +24,9 @@ public class MessageTemplateTestViewController: SBUBaseViewController {
         )
         self.navigationItem.leftBarButtonItem = backButton
 
+        if self.useParserTest == true {
+            MessageTemplateParser().parserTest()
+        }
     }
     
     @objc
@@ -32,14 +37,14 @@ public class MessageTemplateTestViewController: SBUBaseViewController {
 
     public override func setupViews() {
         super.setupViews()
-
+        
         let mockJson = MessageTemplateParser.MockJson
-        self.renderedView = MessageTemplateRenderer(
+        self.renderedView = SBUMessageTemplate.Renderer(
             with: mockJson,
             actionHandler: { action in
                 SBULog.info(action.data)
             }
-        ) ?? MessageTemplateRenderer(
+        ) ?? SBUMessageTemplate.Renderer(
             body: .parsingError(text: "(Message template error)\nCan’t read this message.")
         )
         

@@ -78,6 +78,57 @@ public protocol SBUGroupChannelModuleListDelegate: SBUBaseChannelModuleListDeleg
     ///    - messageCell: Message cell object
     /// - Since: 3.15.0
     func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didUpdate feedbackAnswer: SBUFeedbackAnswer, messageCell: SBUBaseMessageCell)
+    
+    /// Called when there’s a tap gesture on a message template that includes a web URL. e.g., `"https://www.sendbird.com"`
+    /// ```swift
+    /// print(action.data) // "https://www.sendbird.com"
+    /// ```
+    /// - Since: 3.21.0
+    func groupChannelModule(
+        _ listComponent: SBUGroupChannelModule.List,
+        shouldHandleTemplateAction action: SBUMessageTemplate.Action,
+        message: BaseMessage,
+        forRowAt indexPath: IndexPath
+    )
+    
+    /// Called when there’s a tap gesture on a message template that includes a URL scheme defined by Sendbird UIKit. e.g., `"sendbirduikit://delete"`
+    /// ```swift
+    /// print(action.data) // "sendbirduikit://delete"
+    /// ```
+    /// - Since: 3.21.0
+    func groupChannelModule(
+        _ listComponent: SBUGroupChannelModule.List,
+        shouldHandleTemplatePreDefinedAction action: SBUMessageTemplate.Action,
+        message: BaseMessage,
+        forRowAt indexPath: IndexPath
+    )
+    
+    /// Called when there’s a tap gesture on a message template that includes a custom URL scheme. e.g., `"myapp://someaction"`
+    /// ```swift
+    /// print(action.data) // "myapp://someaction"
+    /// ```
+    /// - Since: 3.21.0
+    func groupChannelModule(
+        _ listComponent: SBUGroupChannelModule.List,
+        shouldHandleTemplateCustomAction action: SBUMessageTemplate.Action,
+        message: BaseMessage,
+        forRowAt indexPath: IndexPath
+    )
+    
+    /// Called when a message template is not cached and needs to be downloaded.
+    /// - Since: 3.21.0
+    func groupChannelModule(
+        _ listComponent: SBUGroupChannelModule.List,
+        shouldHandleUncachedTemplateKeys templateKeys: [String],
+        messageCell: SBUBaseMessageCell
+    )
+    
+    /// - Since: 3.21.0
+    func groupChannelModule(
+        _ listComponent: SBUGroupChannelModule.List,
+        shouldHandleUncachedTemplateImages cacheData: [String: String],
+        messageCell: SBUBaseMessageCell
+    )
 }
 
 /// Methods to get data source for list component in a group channel.
@@ -331,8 +382,8 @@ extension SBUGroupChannelModule {
         ///   - indexPath: Cell's indexPath
         open func setMessageCellGestures(_ cell: SBUBaseMessageCell, message: BaseMessage, indexPath: IndexPath) {
             if let multipleFilesMessageCell = cell as? SBUMultipleFilesMessageCell {
-                multipleFilesMessageCell.fileSelectHandler = { [weak self] _, index in
-                    guard let self = self else { return }
+                multipleFilesMessageCell.fileSelectHandler = { [weak self, weak multipleFilesMessageCell] _, index in
+                    guard let self = self, let multipleFilesMessageCell else { return }
                     self.delegate?.groupChannelModule(
                         self,
                         didSelectFileAt: index,
@@ -341,14 +392,14 @@ extension SBUGroupChannelModule {
                     )
                 }
             } else {
-                cell.tapHandlerToContent = { [weak self] in
-                    guard let self = self else { return }
+                cell.tapHandlerToContent = { [weak self, weak cell] in
+                    guard let self = self, let cell else { return }
                     self.setTapGesture(cell, message: message, indexPath: indexPath)
                 }
             }
             
-            cell.longPressHandlerToContent = { [weak self] in
-                guard let self = self else { return }
+            cell.longPressHandlerToContent = { [weak self, weak cell] in
+                guard let self = self, let cell else { return }
                 self.setLongTapGesture(cell, message: message, indexPath: indexPath)
             }
         }
@@ -656,6 +707,58 @@ extension SBUGroupChannelModule {
             messageCell.updateFeedbackHandler = { [weak self] answer, cell in
                 guard let self = self else { return }
                 self.delegate?.groupChannelModule(self, didUpdate: answer, messageCell: cell)
+            }
+            
+            messageCell.reloadCellHandler = { [weak self] cell in
+                guard let self = self else { return }
+                self.reloadCell(cell)
+            }
+            
+            messageCell.messageTemplateActionHandler = { [weak self, indexPath] action in
+                guard let self = self, let message = messageCell.message else { return }
+                
+                // Action Events
+                switch action.type {
+                case .uikit:
+                    self.delegate?.groupChannelModule(
+                        self,
+                        shouldHandleTemplatePreDefinedAction: action,
+                        message: message,
+                        forRowAt: indexPath
+                    )
+                case .custom:
+                    self.delegate?.groupChannelModule(
+                        self,
+                        shouldHandleTemplateCustomAction: action,
+                        message: message,
+                        forRowAt: indexPath
+                    )
+                case .web:
+                    self.delegate?.groupChannelModule(
+                        self,
+                        shouldHandleTemplateAction: action,
+                        message: message,
+                        forRowAt: indexPath
+                    )
+                }
+            }
+            
+            messageCell.uncachedMessageTemplateDownloadHandler = { [weak self] templateKeys, messageCell in
+                guard let self = self else { return }
+                self.delegate?.groupChannelModule(
+                    self,
+                    shouldHandleUncachedTemplateKeys: templateKeys,
+                    messageCell: messageCell
+                )
+            }
+            
+            messageCell.uncachedMessageTemplateImageHandler = { [weak self] cacheData, messageCell in
+                guard let self = self else { return }
+                self.delegate?.groupChannelModule(
+                    self,
+                    shouldHandleUncachedTemplateImages: cacheData,
+                    messageCell: messageCell
+                )
             }
         }
         
@@ -967,16 +1070,13 @@ extension SBUGroupChannelModule.List {
         let cell = self.tableView.visibleCells
             .compactMap({ $0 as? SBUUserMessageCell })
             .first(where: { $0.message?.messageId == message.messageId })
-
-        Thread.executeOnMain { [weak cell] in
-            guard let cell = cell, let messageTextView = cell.messageTextView as? SBUUserMessageTextView else { return }
-            messageTextView.configure(
-                model: SBUUserMessageTextViewModel(
-                    message: message,
-                    position: cell.position,
-                    isEdited: false
-                )
-            )
+        
+        Thread.executeOnMain { [weak self, weak cell] in
+            guard let cell = cell else { return }
+            guard let indexPath = self?.tableView.indexPath(for: cell) else { return }
+            
+            self?.configureCell(cell, message: message, forRowAt: indexPath)
+            
             cell.layoutIfNeeded()
             cell.invalidateIntrinsicContentSize()
         }

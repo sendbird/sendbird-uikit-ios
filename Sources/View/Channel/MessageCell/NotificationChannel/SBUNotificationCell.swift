@@ -9,10 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-protocol SBUNotificationCellDelegate: AnyObject {
-    func notificationCellShouldReload(_ cell: SBUNotificationCell)
-}
-
 @IBDesignable
 class SBUNotificationCell: SBUBaseMessageCell {
     // MARK: - UI Layouts
@@ -48,17 +44,17 @@ class SBUNotificationCell: SBUBaseMessageCell {
     }
     
     // MARK: - UI Views (Private)
-    private var notificationTemplateRenderer: MessageTemplateRenderer?
+    private var notificationTemplateRenderer: SBUMessageTemplate.Renderer?
 
     /// Shows `message.message`  or ``SBUStringSet/Notification_Template_Error_Title``, ``SBUStringSet/Notification_Template_Error_Subtitle``  if the `message.message` is `nil`
-    private var parsingErrorNotificationRenderer: MessageTemplateRenderer {
-        if let notification = self.message?.message, notification.count > 0 {
-            return MessageTemplateRenderer(
-                body: .parsingError(text: notification),
+    private var parsingErrorNotificationRenderer: SBUMessageTemplate.Renderer {
+        if let fallbackMessage = self.message?.message, fallbackMessage.count > 0 {
+            return SBUMessageTemplate.Renderer(
+                body: .parsingError(text: fallbackMessage),
                 fontFamily: SBUFontSet.FontFamily.notifications
             )
         } else {
-            return MessageTemplateRenderer(
+            return SBUMessageTemplate.Renderer(
                 body: .parsingError(
                     text: SBUStringSet.Notification_Template_Error_Title,
                     subText: SBUStringSet.Notification_Template_Error_Subtitle
@@ -93,12 +89,6 @@ class SBUNotificationCell: SBUBaseMessageCell {
     
     // MARK: - Logic
     var type: NotificationType = .none
-    
-    // MARK: - Delegate properties
-    weak var delegate: SBUNotificationCellDelegate?
-    
-    // MARK: - Actions
-    var notificationActionHandler: ((SBUMessageTemplate.Action) -> Void)?
     
     // MARK: - Sendbird Life cycle
     /// Configures a cell with ``SBUBaseMessageCellParams`` object.
@@ -291,12 +281,14 @@ class SBUNotificationCell: SBUBaseMessageCell {
         var isNewTemplateDownloading: Bool = false
 
         if !isTemplateDownloadFailed {
-            (bindedTemplate, isNewTemplateDownloading) = SBUNotificationChannelManager.generateTemplate(
-                with: subData
+            (bindedTemplate, isNewTemplateDownloading) = SBUMessageTemplateManager.generateTemplate(
+                type: .notification,
+                subData: subData,
+                themeMode: SBUNotificationChannelManager.notificationChannelThemeMode
             ) { [weak self] success in
                 // This completionHandler is only called when a template download is requested.
                 self?.isTemplateDownloadFailed = !success
-                self?.setupNotificationTemplate()
+                self?.setupNotificationTemplate() // NOTE: realodCell() 과 중복 처리. 확인 필요.
                 self?.reloadCell()
             }
         }
@@ -304,11 +296,10 @@ class SBUNotificationCell: SBUBaseMessageCell {
         bindedTemplate = bindedTemplate?.replacingOccurrences(of: "\\n", with: "\\\\n")
         bindedTemplate = bindedTemplate?.replacingOccurrences(of: "\n", with: "\\n")
         
-        var template: MessageTemplateData?
+        var template: SBUMessageTemplate.Syntax.TemplateView?
         do {
-            template = try JSONDecoder().decode(MessageTemplateData.self, from: Data((bindedTemplate ?? "").utf8))
-            template?.messageId = message?.messageId ?? 0
-            template?.updateMessageIdAndIndex()
+            template = try JSONDecoder().decode(SBUMessageTemplate.Syntax.TemplateView.self, from: Data((bindedTemplate ?? "").utf8))
+            template?.setIdentifier(with: .init(messageId: message?.messageId))
         } catch {
             SBULog.error(error)
         }
@@ -322,7 +313,7 @@ class SBUNotificationCell: SBUBaseMessageCell {
         
         self.notificationTemplateRenderer = nil
         if isNewTemplateDownloading {
-            self.notificationTemplateRenderer = MessageTemplateRenderer(
+            self.notificationTemplateRenderer = SBUMessageTemplate.Renderer(
                 body: .downloadingTemplate(
                     height: (type == .chat)
                     ? chatNotificationDownloadingHeight
@@ -330,8 +321,8 @@ class SBUNotificationCell: SBUBaseMessageCell {
                 ),
                 fontFamily: SBUFontSet.FontFamily.notifications
             )
-        } else if let bindedTemplate = bindedTemplate, !showFallback,
-            let notificationTemplateRenderer = MessageTemplateRenderer(
+        } else if let bindedTemplate = bindedTemplate, !showFallback, // 정상 케이스
+            let notificationTemplateRenderer = SBUMessageTemplate.Renderer(
                 with: bindedTemplate,
                 messageId: message?.messageId,
                 delegate: self,
@@ -339,7 +330,7 @@ class SBUNotificationCell: SBUBaseMessageCell {
                 fontFamily: SBUFontSet.FontFamily.notifications,
                 actionHandler: { [weak self] action in
                     self?.statisticsForAction(with: subData)
-                    self?.notificationActionHandler?(action)
+                    self?.messageTemplateActionHandler?(action)
                 }
             ) {
             self.notificationTemplateRenderer = notificationTemplateRenderer
@@ -392,19 +383,6 @@ class SBUNotificationCell: SBUBaseMessageCell {
     /// As a default, it follows the condition: `message.createdAt <= listComponent.lastSeenAt`
     func updateReadStatus(_ read: Bool) {
         self.newNotificationBadge?.isHidden = read
-    }
-    
-    func reloadCell() {
-        if Thread.isMainThread {
-            self.delegate?.notificationCellShouldReload(self)
-
-        } else {
-            DispatchQueue.main.async { [weak self] in
-                guard let self = self else { return }
-                self.delegate?.notificationCellShouldReload(self)
-
-            }
-        }
     }
     
     override func prepareForReuse() {
@@ -470,11 +448,11 @@ class SBUNotificationCell: SBUBaseMessageCell {
 
 // MARK: - MessageTemplateRendererDelegate
 extension SBUNotificationCell: MessageTemplateRendererDelegate {
-    func messageTemplateRender(_ renderer: MessageTemplateRenderer, didFinishLoadingImage imageView: UIImageView) {
+    func messageTemplateRender(_ renderer: SBUMessageTemplate.Renderer, didFinishLoadingImage imageView: UIImageView) {
         self.reloadCell()
     }
     
-    func messageTemplateNeedReloadCell() {
+    func messageTemplateNeedReloadCell(_ renderer: SBUMessageTemplate.Renderer) {
         self.reloadCell()
     }
 }

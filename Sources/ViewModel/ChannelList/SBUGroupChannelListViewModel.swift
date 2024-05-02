@@ -100,7 +100,6 @@ open class SBUGroupChannelListViewModel: SBUBaseChannelListViewModel {
             }
             params.includeEmptyChannel = false
             params.includeMetaData = true
-            params.includeEmptyChannel = true
             
             self.channelListQuery = GroupChannel.createMyGroupChannelListQuery(params: params)
         }
