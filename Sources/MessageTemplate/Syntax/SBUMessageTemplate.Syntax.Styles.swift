@@ -95,6 +95,11 @@ extension SBUMessageTemplate.Syntax {
         private let decodedContentMode: ContentMode
         let tintColor: String?
         
+        var tintColorValue: UIColor? {
+            guard let color = tintColor else { return nil }
+            return UIColor(hexString: color)
+        }
+        
         enum CodingKeys: String, CodingKey {
             case contentMode, tintColor
         }

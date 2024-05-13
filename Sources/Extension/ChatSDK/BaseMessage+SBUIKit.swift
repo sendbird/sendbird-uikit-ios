@@ -54,9 +54,9 @@ extension BaseMessage {
         if self.hasMessageTemplateCompositeType == true { return .full }
         
         switch self.asExtendedMessagePayload?.uiSettings?.containerType {
-            case .wide: return .wide
-            case .full: return self.hasMessageTemplate ? .full : .`default`
-            default: return .`default`
+        case .wide: return .wide
+        case .full: return self.hasMessageTemplate ? .full : .`default`
+        default: return .`default`
         }
     }
 

@@ -11,6 +11,38 @@ import UIKit
 // MARK: - Keyboard
 
 extension SBUBaseChannelViewController {
+    /// Calculates the adjusted height of the keyboard taking into account the safe area and any visible input accessory views.
+    /// - Parameter keyboardFrame: The frame of the keyboard as an `CGRect` object. This value typically comes from the keyboard's notification `userInfo` dictionary.
+    /// - Returns: The adjusted keyboard height as a `CGFloat`. This height accounts for the safe area insets and is adjusted if there are input accessory views present.
+    /// - Since: 3.22.0
+    open func getAdjustedKeyboardHeight(with keyboardFrame: CGRect) -> CGFloat {
+        guard
+            let constraint = self.messageInputViewBottomConstraint,
+            let item = constraint.secondItem as? UILayoutGuide,
+            item === view.safeAreaLayoutGuide
+        else {
+            return keyboardFrame.height
+        }
+
+        // Check SafeAreaInsets.bottom
+        return keyboardFrame.height
+    }
+
+    /// Calculates the height of the tab bar, adjusting for whether it is translucent.
+    /// - Note: When the tab bar is not translucent (`isTranslucent=false`), its height might be calculated unnecessarily.
+    /// - Returns: The height of the tab bar as a `CGFloat`.
+    /// - Since: 3.22.0
+    open func getTabBarHeight() -> CGFloat {
+        // If the `isTranslucent=false` option is used, the tabbar's height is calculated unnecessarily, which is problematic.
+        if self.tabBarController?.tabBar.isTranslucent == false {
+            return tabBarController?.tabBar.frame.height ?? 0.0
+        } else {
+            return 0
+        }
+    }
+}
+
+extension SBUBaseChannelViewController {
     /// This function registers keyboard notifications.
     /// - Since: 3.0.0
     public func registerKeyboardNotifications() {
@@ -103,34 +135,12 @@ extension SBUBaseChannelViewController {
             // NOTE: needs this on show as well to prevent bug on switching orientation as show&hide will be called simultaneously.
             self.setKeyboardWindowFrame(origin: .zero)
             
-            let keyboardHeight = getAdjustedKeyboardHeight(with: keyboardFrame)
+            let keyboardHeight = getAdjustedKeyboardHeight(with: keyboardFrame.cgRectValue)
             let tabBarHeight = getTabBarHeight()
             
             self.messageInputViewBottomConstraint?.constant = -(keyboardHeight-tabBarHeight)
         }
         self.view.layoutIfNeeded()
-    }
-    
-    private func getAdjustedKeyboardHeight(with keyboardFrame: NSValue) -> CGFloat {
-        guard
-            let constraint = self.messageInputViewBottomConstraint,
-            let item = constraint.secondItem as? UILayoutGuide,
-            item === view.safeAreaLayoutGuide
-        else {
-            return keyboardFrame.cgRectValue.height
-        }
-
-        // Check SafeAreaInsets.bottom
-        return keyboardFrame.cgRectValue.height - view.safeAreaInsets.bottom
-    }
-
-    private func getTabBarHeight() -> CGFloat {
-        // If the `isTranslucent=false` option is used, the tabbar's height is calculated unnecessarily, which is problematic.
-        if self.tabBarController?.tabBar.isTranslucent == false {
-            return tabBarController?.tabBar.frame.height ?? 0.0
-        } else {
-            return 0
-        }
     }
     
     @objc

@@ -47,3 +47,20 @@ extension SBUMessageTemplate.Syntax {
         }
     }
 }
+
+extension SBUMessageTemplate.Syntax.ItemsAlign {
+    var imageViewContentMode: UIView.ContentMode? {
+        switch (self.vertical, self.horizontal) {
+        case (.top, .left): return .topLeft
+        case (.top, .center): return .top
+        case (.top, .right): return .topRight
+        case (.center, .left): return .left
+        case (.center, .center): return .center
+        case (.center, .right): return .right
+        case (.bottom, .left): return .bottomLeft
+        case (.bottom, .center): return .bottom
+        case (.bottom, .right): return .bottomRight
+        default: return nil
+        }
+    }
+}

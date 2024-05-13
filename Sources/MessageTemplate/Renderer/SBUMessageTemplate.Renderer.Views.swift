@@ -66,6 +66,10 @@ extension SBUMessageTemplate.Renderer {
     class ImageButton: SBUMessageTemplate.Renderer.ActionItemButton {}
     
     class ImageView: UIImageView {
+        var originalImage: UIImage? {
+            didSet { self.image = self.originalImage }
+        }
+        var identifier: SBUMessageTemplate.Syntax.Identifier?
         var needResizeImage: Bool = false
     }
     
@@ -341,19 +345,57 @@ extension SBUMessageTemplate.Renderer.Label {
 }
 
 extension SBUMessageTemplate.Renderer.ImageView {
+    func saveImageCacheSize() {
+        guard let image, image.size.width > 0, image.size.height > 0 else { return }
+        guard let identifier = self.identifier else { return }
+
+        SBUCacheManager.TemplateImage.save(
+            messageId: identifier.messageId,
+            viewIndex: identifier.index,
+            size: image.size
+        )
+    }
+    
+    func resizeImageSize() {
+        guard self.needResizeImage == true else { return }
+        guard self.frame.width != self.image?.size.width  else { return }
+        guard self.frame.width > 0  else { return }
+        guard let resizeImage = self.originalImage?.resizeTopAlignedToFill(
+            newWidth: self.frame.width
+        ) else { return }
+        
+        self.image = resizeImage
+    }
+    
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        // INFO: Edge case - image height is wrap
-        if self.needResizeImage,
-           (UIApplication.shared.currentWindow?.bounds.size.width ?? 0) < self.frame.width {
-            self.image = image?.resizeTopAlignedToFill(newWidth: self.frame.width)
-            self.layoutIfNeeded()
-        }
+        self.resizeImageSize()
+        
+        self.saveImageCacheSize()
     }
     
-    override func updateConstraints() {
-        super.updateConstraints()
+    func updateDownloadTemplate(tintColor: UIColor?) {
+        self.layer.removeAnimation(forKey: SBUAnimation.Key.spin.identifier)
+        
+        let image = SBUIconSetType.iconSpinner
+            .image(
+                to: SBUIconSetType.Metric.iconSpinnerSizeForTemplate
+            )
+            .sbu_with(
+                tintColor: tintColor,
+                forTemplate: true
+            )
+        
+        self.image = image
+        self.contentMode = .center
+        
+        let rotation = CABasicAnimation(keyPath: "transform.rotation")
+        rotation.fromValue = 0
+        rotation.toValue = 2 * Double.pi
+        rotation.duration = 1.1
+        rotation.repeatCount = Float.infinity
+        self.layer.add(rotation, forKey: SBUAnimation.Key.spin.identifier)
     }
 }
 

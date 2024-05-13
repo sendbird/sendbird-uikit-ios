@@ -69,6 +69,12 @@ extension String {
         }
         return unwrappedString
     }
+    
+    /// Capitalizes the first letter of the string.
+    public func capitalizedFirstLetter() -> String {
+        guard let firstLetter = self.first else { return "" }
+        return firstLetter.uppercased() + self.dropFirst()
+    }
 }
 
 extension String {

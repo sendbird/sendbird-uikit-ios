@@ -74,12 +74,12 @@ extension SBUMessageTemplate {
             }
             
             // download cache image size
-            if let noHitData = template.identifierFactory.getUncachedData(), noHitData.hasElements {
-                if imageRetryStatus.isRetry {
-                    return .reload(.download(.images(cacheData: [:])))
-                }
-                return .reload(.download(.images(cacheData: noHitData)))
-            }
+//            if let noHitData = template.identifierFactory.getUncachedData(), noHitData.hasElements {
+//                if imageRetryStatus.isRetry {
+//                    return .reload(.download(.images(cacheData: [:])))
+//                }
+//                return .reload(.download(.images(cacheData: noHitData)))
+//            }
             
             return .template(key: payload.key, template: template)
         }

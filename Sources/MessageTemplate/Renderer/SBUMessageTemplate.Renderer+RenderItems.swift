@@ -608,6 +608,10 @@ extension SBUMessageTemplate.Renderer {
             }
         }
         
+        if label.numberOfLines == 0 {
+            label.setContentCompressionResistancePriority(UILayoutPriority(751), for: NSLayoutConstraint.Axis.vertical)
+        }
+        
         // Action
         self.setAction(on: baseView, item: item)
         
@@ -696,53 +700,9 @@ extension SBUMessageTemplate.Renderer {
         baseView.clipsToBounds = true
         let imageView = SBUMessageTemplate.Renderer.ImageView()
         
-        let isForDownloadingTemplate = (item.imageUrl == SBUMessageTemplate.urlForTemplateDownload)
-        
-        // Image Style
-        let imageStyle = item.imageStyle
-        let contentMode = imageStyle.contentMode
-        imageView.contentMode = contentMode
-        
         // INFO: Edge case - image height is wrap
-        var needResizeImage =
-        (item.width.type == .fixed || (item.width.type == .flex && item.width.value == 0))
-        && (item.height.type == .flex && item.height.value == 1)
-        
-        if isForDownloadingTemplate {
-            needResizeImage = false
-            imageView.contentMode = .center
-        }
-        
-        if needResizeImage {
-            switch (itemsAlign.vertical, itemsAlign.horizontal) {
-            case (.top, .left):
-                imageView.contentMode = .topLeft
-            case (.top, .center):
-                imageView.contentMode = .top
-            case (.top, .right):
-                imageView.contentMode = .topRight
-            case (.center, .left):
-                imageView.contentMode = .left
-            case (.center, .center):
-                imageView.contentMode = .center
-            case (.center, .right):
-                imageView.contentMode = .right
-            case (.bottom, .left):
-                imageView.contentMode = .bottomLeft
-            case (.bottom, .center):
-                imageView.contentMode = .bottom
-            case (.bottom, .right):
-                imageView.contentMode = .bottomRight
-            default:
-                break
-            }
-        }
-        imageView.needResizeImage = needResizeImage
-        
-        var tintColor: UIColor?
-        if let tintColorHex = imageStyle.tintColor {
-            tintColor = UIColor(hexString: tintColorHex)
-        }
+        imageView.contentMode = item.imageViewContentMode(with: itemsAlign)
+        imageView.needResizeImage = item.needResizeImage
         
         baseView.addSubview(imageView)
         parentView.addSubview(baseView)
@@ -769,111 +729,37 @@ extension SBUMessageTemplate.Renderer {
             isLastItem: isLastItem
         )
        
-        let placeholderConstraints = item.imagePlaceholderConstraints(
+        let constraints = item.imagePlaceholderConstraints(
             view: imageView,
             saveCache: true
         )
-        let isRatioUsed = item.isRatioUsed
         
-        placeholderConstraints.forEach { $0.isActive = true }
+        constraints.forEach { $0.isActive = true }
         
         // Action
         self.setAction(on: baseView, item: item)
 
         // Load image
-        if isForDownloadingTemplate {
-            imageView.layer.removeAnimation(forKey: SBUAnimation.Key.spin.identifier)
-            
-            let image = SBUIconSetType.iconSpinner
-                .image(
-                    to: SBUIconSetType.Metric.iconSpinnerSizeForTemplate
-                )
-                .sbu_with(
-                    tintColor: tintColor,
-                    forTemplate: true
-                )
-            imageView.image = image
-            
-            let rotation = CABasicAnimation(keyPath: "transform.rotation")
-            rotation.fromValue = 0
-            rotation.toValue = 2 * Double.pi
-            rotation.duration = 1.1
-            rotation.repeatCount = Float.infinity
-            imageView.layer.add(rotation, forKey: SBUAnimation.Key.spin.identifier)
+        if item.isForDownloadingTemplate {
+            imageView.updateDownloadTemplate(tintColor: item.imageStyle.tintColorValue)
             return baseView
         }
         
-        let fileName = SBUCacheManager.Image.createCacheFileName(
+        imageView.loadImage(
             urlString: item.imageUrl,
-            cacheKey: nil
-        )
-        
-        let imageSettingBlock: ((_ image: UIImage, _ imageSize: CGSize) -> Void) = { image, imageSize in
+            subPath: SBUCacheManager.PathType.template,
+            autoset: false
+        ) { [weak self, weak item, weak imageView] result in
+            guard let self, let item, let imageView, let image = result.image else { return }
+            
             self.setImage(
                 image,
-                imageSize: imageSize,
                 imageView: imageView,
                 item: item,
-                isRatioUsed: isRatioUsed,
-                placeholderConstraints: placeholderConstraints
+                placeholderConstraints: constraints
             )
         }
         
-        guard let image = SBUCacheManager.Image.get(
-            fileName: fileName,
-            subPath: SBUCacheManager.PathType.template
-        ) else {
-            // 이미지 캐시가 없을 때
-            UIImageView.getOriginalImage(
-                urlString: item.imageUrl,
-                subPath: SBUCacheManager.PathType.template
-            ) { [weak self, weak imageView] image, _ in
-                guard self != nil else { return }
-                guard let image = image else { return }
-                guard let imageView = imageView else { return }
-
-                DispatchQueue.main.async {
-                    imageView.image = image
-                    imageView.layoutIfNeeded()
-                }
-
-                DispatchQueue.main.async {
-                    imageSettingBlock(image, imageView.frame.size)
-                }
-            }
-            
-            return baseView
-        }
-        
-        guard let imageSize = SBUCacheManager.TemplateImage.load(
-            messageId: item.identifier.messageId,
-            viewIndex: item.identifier.index
-        ), imageSize.width > 0 else {
-            // 이미지 "사이즈" 캐시가 없을 때
-            DispatchQueue.main.async {
-                imageView.image = image
-                imageView.layoutIfNeeded()
-            }
-
-            DispatchQueue.main.async {
-                SBUCacheManager.TemplateImage.save(messageId: item.identifier.messageId,
-                                                   viewIndex: item.identifier.index,
-                                                   size: imageView.frame.size)
-                imageSettingBlock(image, imageView.frame.size)
-            }
-            
-            return baseView
-        }
-        
-        // 이미지 "사이즈" 캐시가 있을 때
-        if Thread.isMainThread {
-            imageSettingBlock(image, imageSize)
-        } else {
-            DispatchQueue.main.async {
-                imageSettingBlock(image, imageSize)
-            }
-        }
-
         return baseView
     }
     
@@ -892,14 +778,8 @@ extension SBUMessageTemplate.Renderer {
         let imageButton = SBUMessageTemplate.Renderer.ImageButton()
         
         // Image Style
-        let imageStyle = item.imageStyle
-        let contentMode = imageStyle.contentMode
-        imageButton.contentMode = contentMode
-        imageButton.imageView?.contentMode = contentMode
-        var tintColor: UIColor?
-        if let tintColorHex = imageStyle.tintColor {
-            tintColor = UIColor(hexString: tintColorHex)
-        }
+        imageButton.contentMode = item.imageStyle.contentMode
+        imageButton.imageView?.contentMode = item.imageStyle.contentMode
         
         baseView.addSubview(imageButton)
         parentView.addSubview(baseView)
@@ -929,60 +809,25 @@ extension SBUMessageTemplate.Renderer {
         // Action
         self.setAction(on: baseView, item: item)
         
-        let placeholderConstraints = item.imagePlaceholderConstraints(
+        let constraints = item.imagePlaceholderConstraints(
             view: imageButton,
             saveCache: false
         )
-        let isRatioUsed = item.isRatioUsed
         
-        placeholderConstraints.forEach { $0.isActive = true }
+        constraints.forEach { $0.isActive = true }
 
         imageButton.loadImage(
             urlString: item.imageUrl,
             for: .normal,
             subPath: SBUCacheManager.PathType.template,
-            completion: { [weak self, weak imageButton] _ in
-                guard let self = self else { return }
+            completion: { [weak self, weak imageButton, weak item] _ in
+                guard let self, let imageButton, let item else { return }
                 
-                let image = imageButton?.imageView?.image?.sbu_with(
-                    tintColor: tintColor,
-                    forTemplate: true
+                self.setImageButton(
+                    imageButton,
+                    item: item,
+                    placeholderConstraints: constraints
                 )
-                imageButton?.setImage(image, for: .normal)
-                
-                let constraintSettingHandler: (() -> Void) = {
-                    if let imageButton = imageButton,
-                       let imageSize = imageButton.imageView?.image?.size {
-                        
-                        self.rendererConstraints.forEach { $0.isActive = false }
-                        placeholderConstraints.forEach { $0.isActive = false }
-                        
-                        if isRatioUsed == true {
-                            let ratio = imageSize.height / imageSize.width
-                            
-                            let heightConst = imageButton.heightAnchor.constraint(
-                                equalTo: imageButton.widthAnchor,
-                                multiplier: ratio
-                            )
-                            heightConst.priority = .defaultHigh
-                            self.rendererConstraints.append(heightConst)
-                        }
-                        
-                        self.rendererConstraints.forEach { $0.isActive = true }
-                        
-                        if let imageView = imageButton.imageView,
-                           (item.metaData == nil || !isRatioUsed) {
-                            self.delegate?.messageTemplateRender(self, didFinishLoadingImage: imageView)
-                        }
-                    }
-                }
-                if Thread.isMainThread {
-                    constraintSettingHandler()
-                } else {
-                    DispatchQueue.main.async {
-                        constraintSettingHandler()
-                    }
-                }
             }
         )
         

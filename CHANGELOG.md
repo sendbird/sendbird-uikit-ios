@@ -1,5 +1,17 @@
 # Changelog
 
+### v3.22.0 (May 13, 2024)
+
+## New Feature
+- Added `public func setInputState(_:placeholder:)` in `SBUMessageInputView` that enables or disables the input view inside a ChannelViewController
+
+## Improvements
+- Fixed image rendering issues in message templates
+- Separated deprecated logic from the ModuleSet into files
+- Modified the access level of keyboard height calculation functions from 'private' to 'open'
+  - `getAdjustedKeyboardHeight(with:)`
+  - `getTabBarHeight()`
+
 ### v3.21.0 (May 02, 2024)
 
 ## New Feature

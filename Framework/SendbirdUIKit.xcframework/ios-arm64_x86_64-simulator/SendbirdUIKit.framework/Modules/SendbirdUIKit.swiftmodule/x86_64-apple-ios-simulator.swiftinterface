@@ -209,6 +209,26 @@ extension SendbirdUIKit.SBUBaseChannelModule.List {
   @objc @_Concurrency.MainActor(unsafe) dynamic public func checkSameDayAsPrevMessage(currentIndex: Swift.Int, fullMessageList: [SendbirdChatSDK.BaseMessage]) -> Swift.Bool
   @objc @_Concurrency.MainActor(unsafe) dynamic public func reloadCell(_ cell: SendbirdUIKit.SBUBaseMessageCell?)
 }
+open class SBUCreateOpenChannelModule {
+  @available(*, deprecated, message: "Use `SBUCreateOpenChannelModule.HeaderComponent` instead.")
+  public var headerComponent: SendbirdUIKit.SBUCreateOpenChannelModule.Header? {
+    get
+    set
+  }
+  @available(*, deprecated, message: "Use `SBUCreateOpenChannelModule.ProfileInputComponent` instead.")
+  public var profileInputComponent: SendbirdUIKit.SBUCreateOpenChannelModule.ProfileInput? {
+    get
+    set
+  }
+  required public init()
+  @available(*, deprecated, message: "Use `SBUModuleSet.CreateOpenChannelModule`")
+  required public init(headerComponent: SendbirdUIKit.SBUCreateOpenChannelModule.Header?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.CreateOpenChannelModule`")
+  required public init(profileInputComponent: SendbirdUIKit.SBUCreateOpenChannelModule.ProfileInput?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.CreateOpenChannelModule`")
+  required public init(headerComponent: SendbirdUIKit.SBUCreateOpenChannelModule.Header?, profileInputComponent: SendbirdUIKit.SBUCreateOpenChannelModule.ProfileInput?)
+  @objc deinit
+}
 public struct SBUFeedNotificationChannelViewParams {
   public let showEmptyViewIcon: Swift.Bool
   public init(showEmptyViewIcon: Swift.Bool)
@@ -299,6 +319,26 @@ extension SendbirdUIKit.SBUOpenChannelListModule {
     @_Concurrency.MainActor(unsafe) open func configure(delegate: any SendbirdUIKit.SBUOpenChannelListModuleHeaderDelegate, theme: SendbirdUIKit.SBUOpenChannelListTheme)
     @_Concurrency.MainActor(unsafe) open func setupStyles(theme: SendbirdUIKit.SBUOpenChannelListTheme? = nil)
   }
+}
+open class SBURegisterOperatorModule {
+  @available(*, deprecated, message: "Use `SBURegisterOperatorModule.HeaderComponent` instead.")
+  public var headerComponent: SendbirdUIKit.SBURegisterOperatorModule.Header? {
+    get
+    set
+  }
+  @available(*, deprecated, message: "Use `SBURegisterOperatorModule.ListComponent` instead.")
+  public var listComponent: SendbirdUIKit.SBURegisterOperatorModule.List? {
+    get
+    set
+  }
+  required public init()
+  @available(*, deprecated, message: "Use `SBUModuleSet.GroupRegisterOperatorModule` or `SBUModuleSet.OpenRegisterOperatorModule`")
+  required public init(headerComponent: SendbirdUIKit.SBURegisterOperatorModule.Header?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.GroupRegisterOperatorModule` or `SBUModuleSet.OpenRegisterOperatorModule`")
+  required public init(listComponent: SendbirdUIKit.SBURegisterOperatorModule.List?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.GroupRegisterOperatorModule` or `SBUModuleSet.OpenRegisterOperatorModule`")
+  required public init(headerComponent: SendbirdUIKit.SBURegisterOperatorModule.Header?, listComponent: SendbirdUIKit.SBURegisterOperatorModule.List?)
+  @objc deinit
 }
 public protocol SBUCommonDelegate : AnyObject {
   func didReceiveError(_ error: SendbirdChatSDK.SBError?, isBlocker: Swift.Bool)
@@ -656,27 +696,9 @@ public protocol SBURegisterOperatorViewModelDataSource : SendbirdUIKit.SBUBaseSe
   public func registerAsOperators(userIds: [Swift.String])
   @objc deinit
 }
-open class SBUCreateChannelModule {
+extension SendbirdUIKit.SBUCreateChannelModule {
   public static var HeaderComponent: SendbirdUIKit.SBUCreateChannelModule.Header.Type
   public static var ListComponent: SendbirdUIKit.SBUCreateChannelModule.List.Type
-  @available(*, deprecated, message: "Use `SBUCreateChannelModule.HeaderComponent` instead.")
-  public var headerComponent: SendbirdUIKit.SBUCreateChannelModule.Header? {
-    get
-    set
-  }
-  @available(*, deprecated, message: "Use `SBUCreateChannelModule.ListComponent` instead.")
-  public var listComponent: SendbirdUIKit.SBUCreateChannelModule.List? {
-    get
-    set
-  }
-  required public init()
-  @available(*, deprecated, message: "Use `SBUModuleSet.CreateGroupChannelModule`")
-  required public init(headerComponent: SendbirdUIKit.SBUCreateChannelModule.Header?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.CreateGroupChannelModule`")
-  required public init(listComponent: SendbirdUIKit.SBUCreateChannelModule.List?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.CreateGroupChannelModule`")
-  required public init(headerComponent: SendbirdUIKit.SBUCreateChannelModule.Header?, listComponent: SendbirdUIKit.SBUCreateChannelModule.List?)
-  @objc deinit
 }
 public protocol SBUOpenChannelModuleInputDelegate : SendbirdUIKit.SBUBaseChannelModuleInputDelegate {
   func openChannelModule(_ inputComponent: SendbirdUIKit.SBUOpenChannelModule.Input, didPickFileData fileData: Foundation.Data?, fileName: Swift.String, mimeType: Swift.String)
@@ -759,6 +781,26 @@ extension SendbirdUIKit.SBUBaseSelectUserModule.List : UIKit.UITableViewDataSour
   @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, heightForHeaderInSection section: Swift.Int) -> CoreFoundation.CGFloat
   @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, numberOfRowsInSection section: Swift.Int) -> Swift.Int
   @_Concurrency.MainActor(unsafe) @objc dynamic open func tableView(_ tableView: UIKit.UITableView, cellForRowAt indexPath: Foundation.IndexPath) -> UIKit.UITableViewCell
+}
+public class SBUFeedNotificationChannelModule {
+  @available(*, deprecated, message: "Use `SBUFeedNotificationChannelModule.HeaderComponent` instead.")
+  public var headerComponent: SendbirdUIKit.SBUFeedNotificationChannelModule.Header? {
+    get
+    set
+  }
+  @available(*, deprecated, message: "Use `SBUFeedNotificationChannelModule.ListComponent` instead.")
+  public var listComponent: SendbirdUIKit.SBUFeedNotificationChannelModule.List? {
+    get
+    set
+  }
+  required public init()
+  @available(*, deprecated, message: "Use `SBUModuleSet.FeedNotificationChannelModule`")
+  required public init(_headerComponent: SendbirdUIKit.SBUFeedNotificationChannelModule.Header?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.FeedNotificationChannelModule`")
+  required public init(_listComponent: SendbirdUIKit.SBUFeedNotificationChannelModule.List?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.FeedNotificationChannelModule`")
+  required public init(_headerComponent: SendbirdUIKit.SBUFeedNotificationChannelModule.Header?, _listComponent: SendbirdUIKit.SBUFeedNotificationChannelModule.List?)
+  @objc deinit
 }
 public protocol SBUInviteUserViewModelDelegate : SendbirdUIKit.SBUBaseSelectUserViewModelDelegate {
   func inviteUserViewModel(_ viewModel: SendbirdUIKit.SBUInviteUserViewModel, didInviteUserIds userIds: [Swift.String])
@@ -909,27 +951,9 @@ extension SendbirdUIKit.SBUView : SendbirdUIKit.SBUViewLifeCycle {
   @_Concurrency.MainActor(unsafe) @objc open func collectionView(_ collectionView: UIKit.UICollectionView, layout collectionViewLayout: UIKit.UICollectionViewLayout, sizeForItemAt indexPath: Foundation.IndexPath) -> CoreFoundation.CGSize
   @objc deinit
 }
-open class SBUModerationsModule {
+extension SendbirdUIKit.SBUModerationsModule {
   public static var HeaderComponent: SendbirdUIKit.SBUModerationsModule.Header.Type
   public static var ListComponent: SendbirdUIKit.SBUModerationsModule.List.Type
-  @available(*, deprecated, message: "Use `SBUModerationsModule.HeaderComponent` instead.")
-  public var headerComponent: SendbirdUIKit.SBUModerationsModule.Header? {
-    get
-    set
-  }
-  @available(*, deprecated, message: "Use `SBUModerationsModule.ListComponent` instead.")
-  public var listComponent: SendbirdUIKit.SBUModerationsModule.List? {
-    get
-    set
-  }
-  required public init()
-  @available(*, deprecated, message: "Use `SBUModuleSet.OpenModerationsModule` or `SBUModuleSet.GroupModerationsModule`")
-  required public init(headerComponent: SendbirdUIKit.SBUModerationsModule.Header?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.OpenModerationsModule` or `SBUModuleSet.GroupModerationsModule`")
-  required public init(listComponent: SendbirdUIKit.SBUModerationsModule.List?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.OpenModerationsModule` or `SBUModuleSet.GroupModerationsModule`")
-  required public init(headerComponent: SendbirdUIKit.SBUModerationsModule.Header?, listComponent: SendbirdUIKit.SBUModerationsModule.List?)
-  @objc deinit
 }
 extension SendbirdUIKit.SBUChatNotificationChannelModule {
   @objc @_inheritsConvenienceInitializers @objcMembers @_Concurrency.MainActor(unsafe) public class Header : UIKit.UIView {
@@ -965,27 +989,9 @@ public class SBUBaseMessageCellParams {
   public init(message: SendbirdChatSDK.BaseMessage, hideDateView: Swift.Bool, messagePosition: SendbirdUIKit.MessagePosition = .center, groupPosition: SendbirdUIKit.MessageGroupPosition = .none, receiptState: SendbirdUIKit.SBUMessageReceiptState = .none, isThreadMessage: Swift.Bool = false, joinedAt: Swift.Int64 = 0, shouldHideFeedback: Swift.Bool = true, messageOffsetTimestamp: Swift.Int64 = 0)
   @objc deinit
 }
-open class SBUUserListModule {
+extension SendbirdUIKit.SBUUserListModule {
   public static var HeaderComponent: SendbirdUIKit.SBUUserListModule.Header.Type
   public static var ListComponent: SendbirdUIKit.SBUUserListModule.List.Type
-  @available(*, deprecated, message: "Use `SBUUserListModule.HeaderComponent` instead.")
-  public var headerComponent: SendbirdUIKit.SBUUserListModule.Header? {
-    get
-    set
-  }
-  @available(*, deprecated, message: "Use `SBUUserListModule.ListComponent` instead.")
-  public var listComponent: SendbirdUIKit.SBUUserListModule.List? {
-    get
-    set
-  }
-  required public init()
-  @available(*, deprecated, message: "Use `SBUModuleSet.GroupUserListModule` or `SBUModuleSet.OpenUserListModule`")
-  required public init(headerComponent: SendbirdUIKit.SBUUserListModule.Header? = nil)
-  @available(*, deprecated, message: "Use `SBUModuleSet.GroupUserListModule` or `SBUModuleSet.OpenUserListModule`")
-  required public init(listComponent: SendbirdUIKit.SBUUserListModule.List? = nil)
-  @available(*, deprecated, message: "Use `SBUModuleSet.GroupUserListModule` or `SBUModuleSet.OpenUserListModule`")
-  required public init(headerComponent: SendbirdUIKit.SBUUserListModule.Header? = nil, listComponent: SendbirdUIKit.SBUUserListModule.List? = nil)
-  @objc deinit
 }
 public class SBUTypingIndicatorMessage : SendbirdChatSDK.BaseMessage {
   public var typingIndicatorInfo: SendbirdUIKit.SBUTypingIndicatorInfo?
@@ -1269,27 +1275,9 @@ public protocol SBUEmptyViewDelegate : ObjectiveC.NSObjectProtocol {
   public func encode(to encoder: any Swift.Encoder) throws
   required public init(from decoder: any Swift.Decoder) throws
 }
-open class SBUGroupChannelSettingsModule {
+extension SendbirdUIKit.SBUGroupChannelSettingsModule {
   public static var HeaderComponent: SendbirdUIKit.SBUGroupChannelSettingsModule.Header.Type
   public static var ListComponent: SendbirdUIKit.SBUGroupChannelSettingsModule.List.Type
-  @available(*, deprecated, message: "Use `SBUGroupChannelSettingsModule.HeaderComponent` instead.")
-  public var headerComponent: SendbirdUIKit.SBUGroupChannelSettingsModule.Header? {
-    get
-    set
-  }
-  @available(*, deprecated, message: "Use `SBUGroupChannelSettingsModule.ListComponent` instead.")
-  public var listComponent: SendbirdUIKit.SBUGroupChannelSettingsModule.List? {
-    get
-    set
-  }
-  required public init()
-  @available(*, deprecated, message: "Use `SBUModuleSet.GroupChannelSettingsModule`")
-  required public init(headerComponent: SendbirdUIKit.SBUGroupChannelSettingsModule.Header?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.GroupChannelSettingsModule`")
-  required public init(listComponent: SendbirdUIKit.SBUGroupChannelSettingsModule.List?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.GroupChannelSettingsModule`")
-  required public init(headerComponent: SendbirdUIKit.SBUGroupChannelSettingsModule.Header?, listComponent: SendbirdUIKit.SBUGroupChannelSettingsModule.List?)
-  @objc deinit
 }
 public protocol SBUChannelInfoHeaderViewDelegate : AnyObject {
   func didSelectChannelInfo()
@@ -1345,27 +1333,9 @@ extension SendbirdUIKit.SBUChannelInfoHeaderViewDelegate {
 extension UIKit.UIColor {
   public static func sbu_from(image: UIKit.UIImage, imageView: UIKit.UIImageView? = nil, size: CoreFoundation.CGFloat, backgroundColor: UIKit.UIColor) -> UIKit.UIColor
 }
-public class SBUChatNotificationChannelModule {
+extension SendbirdUIKit.SBUChatNotificationChannelModule {
   public static var HeaderComponent: SendbirdUIKit.SBUChatNotificationChannelModule.Header.Type
   public static var ListComponent: SendbirdUIKit.SBUChatNotificationChannelModule.List.Type
-  @available(*, deprecated, message: "Use `SBUChatNotificationChannelModule.HeaderComponent` instead.")
-  public var headerComponent: SendbirdUIKit.SBUChatNotificationChannelModule.Header? {
-    get
-    set
-  }
-  @available(*, deprecated, message: "Use `SBUChatNotificationChannelModule.ListComponent` instead.")
-  public var listComponent: SendbirdUIKit.SBUChatNotificationChannelModule.List? {
-    get
-    set
-  }
-  required public init()
-  @available(*, deprecated, message: "Use `SBUModuleSet.ChatNotificationChannelModule`")
-  required public init(headerComponent: SendbirdUIKit.SBUChatNotificationChannelModule.Header?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.ChatNotificationChannelModule`")
-  required public init(listComponent: SendbirdUIKit.SBUChatNotificationChannelModule.List?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.ChatNotificationChannelModule`")
-  required public init(headerComponent: SendbirdUIKit.SBUChatNotificationChannelModule.Header?, listComponent: SendbirdUIKit.SBUChatNotificationChannelModule.List?)
-  @objc deinit
 }
 @objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUCommonContentView : SendbirdUIKit.SBUBaseFileContentView {
   @_Concurrency.MainActor(unsafe) public var stackView: UIKit.UIStackView
@@ -1647,41 +1617,10 @@ extension SendbirdUIKit.SBUConfig.BaseInput {
     required public init(from decoder: any Swift.Decoder) throws
   }
 }
-open class SBUGroupChannelModule {
+extension SendbirdUIKit.SBUGroupChannelModule {
   public static var HeaderComponent: SendbirdUIKit.SBUGroupChannelModule.Header.Type
   public static var ListComponent: SendbirdUIKit.SBUGroupChannelModule.List.Type
   public static var InputComponent: SendbirdUIKit.SBUGroupChannelModule.Input.Type
-  @available(*, deprecated, message: "Use `SBUGroupChannelModule.HeaderComponent` instead.")
-  public var headerComponent: SendbirdUIKit.SBUGroupChannelModule.Header? {
-    get
-    set
-  }
-  @available(*, deprecated, message: "Use `SBUGroupChannelModule.ListComponent` instead.")
-  public var listComponent: SendbirdUIKit.SBUGroupChannelModule.List? {
-    get
-    set
-  }
-  @available(*, deprecated, message: "Use `SBUGroupChannelModule.InputComponent` instead.")
-  public var inputComponent: SendbirdUIKit.SBUGroupChannelModule.Input? {
-    get
-    set
-  }
-  required public init()
-  @available(*, deprecated, message: "Use `SBUModuleSet.GroupChannelModule`")
-  required public init(headerComponent: SendbirdUIKit.SBUGroupChannelModule.Header?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.GroupChannelModule`")
-  required public init(listComponent: SendbirdUIKit.SBUGroupChannelModule.List?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.GroupChannelModule`")
-  required public init(inputComponent: SendbirdUIKit.SBUGroupChannelModule.Input?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.GroupChannelModule`")
-  required public init(headerComponent: SendbirdUIKit.SBUGroupChannelModule.Header?, listComponent: SendbirdUIKit.SBUGroupChannelModule.List?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.GroupChannelModule`")
-  required public init(headerComponent: SendbirdUIKit.SBUGroupChannelModule.Header?, inputComponent: SendbirdUIKit.SBUGroupChannelModule.Input?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.GroupChannelModule`")
-  required public init(listComponent: SendbirdUIKit.SBUGroupChannelModule.List?, inputComponent: SendbirdUIKit.SBUGroupChannelModule.Input?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.GroupChannelModule`")
-  required public init(headerComponent: SendbirdUIKit.SBUGroupChannelModule.Header?, listComponent: SendbirdUIKit.SBUGroupChannelModule.List?, inputComponent: SendbirdUIKit.SBUGroupChannelModule.Input?)
-  @objc deinit
 }
 public protocol SBUFeedbackViewDelegate : AnyObject {
   func feedbackView(_ view: SendbirdUIKit.SBUFeedbackView, didAnswer answer: SendbirdUIKit.SBUFeedbackAnswer)
@@ -1949,6 +1888,7 @@ extension UIKit.UIImageView {
   public enum LoadStatus {
     case placeholder
     case success
+    case successFromCache
     case failure
     public static func == (a: UIKit.UIImageView.LoadStatus, b: UIKit.UIImageView.LoadStatus) -> Swift.Bool
     public func hash(into hasher: inout Swift.Hasher)
@@ -1958,6 +1898,8 @@ extension UIKit.UIImageView {
   }
   public struct LoadResult {
   }
+  @discardableResult
+  @_Concurrency.MainActor(unsafe) public func loadImage(urlString: Swift.String, placeholder: UIKit.UIImage? = nil, errorImage: UIKit.UIImage? = nil, option: UIKit.UIImageView.ImageOption = .original, thumbnailSize: CoreFoundation.CGSize? = nil, tintColor: UIKit.UIColor? = nil, cacheKey: Swift.String? = nil, subPath: Swift.String = "", completion: ((Swift.Bool) -> Swift.Void)? = nil) -> Foundation.URLSessionTask?
   @discardableResult
   @_Concurrency.MainActor(unsafe) public func loadImage(urlString: Swift.String, placeholder: UIKit.UIImage? = nil, errorImage: UIKit.UIImage? = nil, option: UIKit.UIImageView.ImageOption = .original, thumbnailSize: CoreFoundation.CGSize? = nil, tintColor: UIKit.UIColor? = nil, cacheKey: Swift.String? = nil, subPath: Swift.String = "", autoset: Swift.Bool = true, completion: UIKit.UIImageView.LoadCompletion? = nil) -> Foundation.URLSessionTask?
 }
@@ -2896,6 +2838,10 @@ extension SendbirdUIKit.SBUBaseChannelSettingsModule {
 }
 public typealias SBUNewNotificationInfoHandler = () -> Swift.Void
 extension SendbirdUIKit.SBUBaseChannelViewController {
+  @objc @_Concurrency.MainActor(unsafe) dynamic open func getAdjustedKeyboardHeight(with keyboardFrame: CoreFoundation.CGRect) -> CoreFoundation.CGFloat
+  @objc @_Concurrency.MainActor(unsafe) dynamic open func getTabBarHeight() -> CoreFoundation.CGFloat
+}
+extension SendbirdUIKit.SBUBaseChannelViewController {
   @objc @_Concurrency.MainActor(unsafe) dynamic public func registerKeyboardNotifications()
   @objc @_Concurrency.MainActor(unsafe) dynamic public func addGestureHideKeyboard()
   @objc @_Concurrency.MainActor(unsafe) dynamic public func dismissKeyboard()
@@ -3023,28 +2969,10 @@ public class SBUMenuItem : SendbirdUIKit.SBUCommonItem {
   public init(title: Swift.String? = nil, color: UIKit.UIColor? = SBUColorSet.onlight01, image: UIKit.UIImage? = nil, font: UIKit.UIFont? = nil, tintColor: UIKit.UIColor? = nil, textAlignment: UIKit.NSTextAlignment = .left, tag: Swift.Int? = nil, completionHandler: SendbirdUIKit.SBUMenuHandler? = nil)
   @objc deinit
 }
-public class SBUFeedNotificationChannelModule {
+extension SendbirdUIKit.SBUFeedNotificationChannelModule {
   public static var HeaderComponent: SendbirdUIKit.SBUFeedNotificationChannelModule.Header.Type
   public static var CategoryFilterComponent: SendbirdUIKit.SBUFeedNotificationChannelModule.CategoryFilter.Type
   public static var ListComponent: SendbirdUIKit.SBUFeedNotificationChannelModule.List.Type
-  @available(*, deprecated, message: "Use `SBUFeedNotificationChannelModule.HeaderComponent` instead.")
-  public var headerComponent: SendbirdUIKit.SBUFeedNotificationChannelModule.Header? {
-    get
-    set
-  }
-  @available(*, deprecated, message: "Use `SBUFeedNotificationChannelModule.ListComponent` instead.")
-  public var listComponent: SendbirdUIKit.SBUFeedNotificationChannelModule.List? {
-    get
-    set
-  }
-  required public init()
-  @available(*, deprecated, message: "Use `SBUModuleSet.FeedNotificationChannelModule`")
-  required public init(_headerComponent: SendbirdUIKit.SBUFeedNotificationChannelModule.Header?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.FeedNotificationChannelModule`")
-  required public init(_listComponent: SendbirdUIKit.SBUFeedNotificationChannelModule.List?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.FeedNotificationChannelModule`")
-  required public init(_headerComponent: SendbirdUIKit.SBUFeedNotificationChannelModule.Header?, _listComponent: SendbirdUIKit.SBUFeedNotificationChannelModule.List?)
-  @objc deinit
 }
 public protocol SBUGroupChannelPushSettingsModuleHeaderDelegate : SendbirdUIKit.SBUCommonDelegate {
   func groupChannelPushSettingsModule(_ headerComponent: SendbirdUIKit.SBUGroupChannelPushSettingsModule.Header, didUpdateTitleView titleView: UIKit.UIView?)
@@ -3600,27 +3528,9 @@ extension SendbirdUIKit.SBUBaseChannelViewController {
   @objc @available(*, unavailable, message: "This function has been moved to `SBUBaseChannelViewModelDelegate` and replaced to `baseChannelViewModel(_:didChangeChannel:withContext:)`.")
   @_Concurrency.MainActor(unsafe) dynamic open func channelWasDeleted(_ channelUrl: Swift.String, channelType: SendbirdChatSDK.ChannelType)
 }
-open class SBURegisterOperatorModule {
+extension SendbirdUIKit.SBURegisterOperatorModule {
   public static var HeaderComponent: SendbirdUIKit.SBURegisterOperatorModule.Header.Type
   public static var ListComponent: SendbirdUIKit.SBURegisterOperatorModule.List.Type
-  @available(*, deprecated, message: "Use `SBURegisterOperatorModule.HeaderComponent` instead.")
-  public var headerComponent: SendbirdUIKit.SBURegisterOperatorModule.Header? {
-    get
-    set
-  }
-  @available(*, deprecated, message: "Use `SBURegisterOperatorModule.ListComponent` instead.")
-  public var listComponent: SendbirdUIKit.SBURegisterOperatorModule.List? {
-    get
-    set
-  }
-  required public init()
-  @available(*, deprecated, message: "Use `SBUModuleSet.GroupRegisterOperatorModule` or `SBUModuleSet.OpenRegisterOperatorModule`")
-  required public init(headerComponent: SendbirdUIKit.SBURegisterOperatorModule.Header?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.GroupRegisterOperatorModule` or `SBUModuleSet.OpenRegisterOperatorModule`")
-  required public init(listComponent: SendbirdUIKit.SBURegisterOperatorModule.List?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.GroupRegisterOperatorModule` or `SBUModuleSet.OpenRegisterOperatorModule`")
-  required public init(headerComponent: SendbirdUIKit.SBURegisterOperatorModule.Header?, listComponent: SendbirdUIKit.SBURegisterOperatorModule.List?)
-  @objc deinit
 }
 public protocol SBUGroupChannelListModuleListDelegate : SendbirdUIKit.SBUBaseChannelListModuleListDelegate {
   func groupChannelListModule(_ listComponent: SendbirdUIKit.SBUGroupChannelListModule.List, didSelectLeave channel: SendbirdChatSDK.GroupChannel)
@@ -3767,43 +3677,11 @@ public protocol SBUBaseSelectUserViewModelDataSource : AnyObject {
   public func selectUser(user: SendbirdUIKit.SBUUser)
   @objc deinit
 }
-open class SBUOpenChannelModule {
+extension SendbirdUIKit.SBUOpenChannelModule {
   public static var HeaderComponent: SendbirdUIKit.SBUOpenChannelModule.Header.Type
   public static var ListComponent: SendbirdUIKit.SBUOpenChannelModule.List.Type
   public static var InputComponent: SendbirdUIKit.SBUOpenChannelModule.Input.Type
   public static var MediaComponent: SendbirdUIKit.SBUOpenChannelModule.Media.Type
-  @available(*, deprecated, message: "Use `SBUOpenChannelModule.HeaderComponent` instead.")
-  public var headerComponent: SendbirdUIKit.SBUOpenChannelModule.Header? {
-    get
-    set
-  }
-  @available(*, deprecated, message: "Use `SBUOpenChannelModule.ListComponent` instead.")
-  public var listComponent: SendbirdUIKit.SBUOpenChannelModule.List? {
-    get
-    set
-  }
-  @available(*, deprecated, message: "Use `SBUOpenChannelModule.InputComponent` instead.")
-  public var inputComponent: SendbirdUIKit.SBUOpenChannelModule.Input? {
-    get
-    set
-  }
-  @available(*, deprecated, message: "Use `SBUOpenChannelModule.MediaComponent` instead.")
-  public var mediaComponent: SendbirdUIKit.SBUOpenChannelModule.Media? {
-    get
-    set
-  }
-  required public init()
-  @available(*, deprecated, message: "Use `SBUModuleSet.OpenChannelModule`")
-  required public init(headerComponent: SendbirdUIKit.SBUOpenChannelModule.Header?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.OpenChannelModule`")
-  required public init(listComponent: SendbirdUIKit.SBUOpenChannelModule.List?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.OpenChannelModule`")
-  required public init(inputComponent: SendbirdUIKit.SBUOpenChannelModule.Input?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.OpenChannelModule`")
-  required public init(mediaComponent: SendbirdUIKit.SBUOpenChannelModule.Media?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.OpenChannelModule`")
-  required public init(headerComponent: SendbirdUIKit.SBUOpenChannelModule.Header?, listComponent: SendbirdUIKit.SBUOpenChannelModule.List?, inputComponent: SendbirdUIKit.SBUOpenChannelModule.Input?, mediaComponent: SendbirdUIKit.SBUOpenChannelModule.Media?)
-  @objc deinit
 }
 @_hasMissingDesignatedInitializers open class SBUBaseSelectUserModule {
   @objc deinit
@@ -4991,6 +4869,39 @@ public protocol SBUMessageThreadTitleViewDelegate : AnyObject {
   @_Concurrency.MainActor(unsafe) open func configure(channel: SendbirdChatSDK.BaseChannel?, title: Swift.String?)
   @objc deinit
 }
+open class SBUGroupChannelModule {
+  @available(*, deprecated, message: "Use `SBUGroupChannelModule.HeaderComponent` instead.")
+  public var headerComponent: SendbirdUIKit.SBUGroupChannelModule.Header? {
+    get
+    set
+  }
+  @available(*, deprecated, message: "Use `SBUGroupChannelModule.ListComponent` instead.")
+  public var listComponent: SendbirdUIKit.SBUGroupChannelModule.List? {
+    get
+    set
+  }
+  @available(*, deprecated, message: "Use `SBUGroupChannelModule.InputComponent` instead.")
+  public var inputComponent: SendbirdUIKit.SBUGroupChannelModule.Input? {
+    get
+    set
+  }
+  required public init()
+  @available(*, deprecated, message: "Use `SBUModuleSet.GroupChannelModule`")
+  required public init(headerComponent: SendbirdUIKit.SBUGroupChannelModule.Header?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.GroupChannelModule`")
+  required public init(listComponent: SendbirdUIKit.SBUGroupChannelModule.List?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.GroupChannelModule`")
+  required public init(inputComponent: SendbirdUIKit.SBUGroupChannelModule.Input?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.GroupChannelModule`")
+  required public init(headerComponent: SendbirdUIKit.SBUGroupChannelModule.Header?, listComponent: SendbirdUIKit.SBUGroupChannelModule.List?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.GroupChannelModule`")
+  required public init(headerComponent: SendbirdUIKit.SBUGroupChannelModule.Header?, inputComponent: SendbirdUIKit.SBUGroupChannelModule.Input?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.GroupChannelModule`")
+  required public init(listComponent: SendbirdUIKit.SBUGroupChannelModule.List?, inputComponent: SendbirdUIKit.SBUGroupChannelModule.Input?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.GroupChannelModule`")
+  required public init(headerComponent: SendbirdUIKit.SBUGroupChannelModule.Header?, listComponent: SendbirdUIKit.SBUGroupChannelModule.List?, inputComponent: SendbirdUIKit.SBUGroupChannelModule.Input?)
+  @objc deinit
+}
 @objc @_Concurrency.MainActor(unsafe) open class SBUFeedNotificationChannelViewController : SendbirdUIKit.SBUBaseViewController, SendbirdUIKit.SBUCommonViewModelDelegate {
   @objc @_Concurrency.MainActor(unsafe) public var headerComponent: SendbirdUIKit.SBUFeedNotificationChannelModule.Header?
   @objc @_Concurrency.MainActor(unsafe) public var categoryFilterComponent: SendbirdUIKit.SBUFeedNotificationChannelModule.CategoryFilter?
@@ -5658,6 +5569,26 @@ extension SendbirdUIKit.SBUView {
   @available(*, unavailable, renamed: "updateLayouts()")
   @_Concurrency.MainActor(unsafe) public func updateAutolayout()
 }
+open class SBUMessageSearchModule {
+  @available(*, deprecated, message: "Use `SBUMessageSearchModule.HeaderComponent` instead.")
+  public var headerComponent: SendbirdUIKit.SBUMessageSearchModule.Header? {
+    get
+    set
+  }
+  @available(*, deprecated, message: "Use `SBUMessageSearchModule.ListComponent` instead.")
+  public var listComponent: SendbirdUIKit.SBUMessageSearchModule.List? {
+    get
+    set
+  }
+  required public init()
+  @available(*, deprecated, message: "Use `SBUModuleSet.MessageSearchModule")
+  required public init(headerComponent: SendbirdUIKit.SBUMessageSearchModule.Header?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.MessageSearchModule")
+  required public init(listComponent: SendbirdUIKit.SBUMessageSearchModule.List?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.MessageSearchModule")
+  required public init(headerComponent: SendbirdUIKit.SBUMessageSearchModule.Header?, listComponent: SendbirdUIKit.SBUMessageSearchModule.List?)
+  @objc deinit
+}
 @objc public protocol SBUQuotedMessageViewDelegate {
   @objc func didTapQuotedMessageView(_ quotedMessageView: SendbirdUIKit.SBUQuotedBaseMessageView)
 }
@@ -5728,6 +5659,9 @@ extension UIKit.UIImage {
   public func sbu_with(tintColor: UIKit.UIColor?) -> UIKit.UIImage
   public func sbu_with(tintColor: UIKit.UIColor?, forTemplate: Swift.Bool) -> UIKit.UIImage
   public func sbu_convertToData() -> Foundation.Data?
+  public func sbu_resize(with targetSize: CoreFoundation.CGSize) -> UIKit.UIImage
+  public func sbu_withBackground(color: UIKit.UIColor, margin: CoreFoundation.CGFloat, circle: Swift.Bool = false) -> UIKit.UIImage
+  public static func sbu_from(color: UIKit.UIColor) -> UIKit.UIImage
 }
 @objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUContentBaseMessageCell : SendbirdUIKit.SBUBaseMessageCell {
   @objc @_Concurrency.MainActor(unsafe) public var useReaction: Swift.Bool
@@ -5816,6 +5750,40 @@ extension UIKit.UIImage {
   @_Concurrency.MainActor(unsafe) open func configure(_ message: SendbirdChatSDK.BaseMessage, hideDateView: Swift.Bool, position: SendbirdUIKit.MessagePosition, groupPosition: SendbirdUIKit.MessageGroupPosition, receiptState: SendbirdUIKit.SBUMessageReceiptState?)
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init(style: UIKit.UITableViewCell.CellStyle, reuseIdentifier: Swift.String?)
   @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc deinit
+}
+open class SBUOpenChannelModule {
+  @available(*, deprecated, message: "Use `SBUOpenChannelModule.HeaderComponent` instead.")
+  public var headerComponent: SendbirdUIKit.SBUOpenChannelModule.Header? {
+    get
+    set
+  }
+  @available(*, deprecated, message: "Use `SBUOpenChannelModule.ListComponent` instead.")
+  public var listComponent: SendbirdUIKit.SBUOpenChannelModule.List? {
+    get
+    set
+  }
+  @available(*, deprecated, message: "Use `SBUOpenChannelModule.InputComponent` instead.")
+  public var inputComponent: SendbirdUIKit.SBUOpenChannelModule.Input? {
+    get
+    set
+  }
+  @available(*, deprecated, message: "Use `SBUOpenChannelModule.MediaComponent` instead.")
+  public var mediaComponent: SendbirdUIKit.SBUOpenChannelModule.Media? {
+    get
+    set
+  }
+  required public init()
+  @available(*, deprecated, message: "Use `SBUModuleSet.OpenChannelModule`")
+  required public init(headerComponent: SendbirdUIKit.SBUOpenChannelModule.Header?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.OpenChannelModule`")
+  required public init(listComponent: SendbirdUIKit.SBUOpenChannelModule.List?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.OpenChannelModule`")
+  required public init(inputComponent: SendbirdUIKit.SBUOpenChannelModule.Input?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.OpenChannelModule`")
+  required public init(mediaComponent: SendbirdUIKit.SBUOpenChannelModule.Media?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.OpenChannelModule`")
+  required public init(headerComponent: SendbirdUIKit.SBUOpenChannelModule.Header?, listComponent: SendbirdUIKit.SBUOpenChannelModule.List?, inputComponent: SendbirdUIKit.SBUOpenChannelModule.Input?, mediaComponent: SendbirdUIKit.SBUOpenChannelModule.Media?)
   @objc deinit
 }
 @objc @_hasMissingDesignatedInitializers public class SBUVoiceFileInfo : ObjectiveC.NSObject {
@@ -6182,27 +6150,9 @@ extension SendbirdUIKit.SBUModerationsViewController {
   public static func loadAllEmojis(completionHandler: @escaping (_ container: SendbirdChatSDK.EmojiContainer?, _ error: SendbirdChatSDK.SBError?) -> Swift.Void)
   @objc deinit
 }
-open class SBUOpenChannelSettingsModule {
+extension SendbirdUIKit.SBUOpenChannelSettingsModule {
   public static var HeaderComponent: SendbirdUIKit.SBUOpenChannelSettingsModule.Header.Type
   public static var ListComponent: SendbirdUIKit.SBUOpenChannelSettingsModule.List.Type
-  @available(*, deprecated, message: "Use `SBUOpenChannelSettingsModule.HeaderComponent` instead.")
-  public var headerComponent: SendbirdUIKit.SBUOpenChannelSettingsModule.Header? {
-    get
-    set
-  }
-  @available(*, deprecated, message: "Use `SBUOpenChannelSettingsModule.ListComponent` instead.")
-  public var listComponent: SendbirdUIKit.SBUOpenChannelSettingsModule.List? {
-    get
-    set
-  }
-  required public init()
-  @available(*, deprecated, message: "Use `SBUModuleSet.OpenChannelSettingsModule`")
-  required public init(headerComponent: SendbirdUIKit.SBUOpenChannelSettingsModule.Header?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.OpenChannelSettingsModule`")
-  required public init(listComponent: SendbirdUIKit.SBUOpenChannelSettingsModule.List?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.OpenChannelSettingsModule`")
-  required public init(headerComponent: SendbirdUIKit.SBUOpenChannelSettingsModule.Header?, listComponent: SendbirdUIKit.SBUOpenChannelSettingsModule.List?)
-  @objc deinit
 }
 public class SBUTypingIndicatorMessageCellParams : SendbirdUIKit.SBUBaseMessageCellParams {
   public var typingMessage: SendbirdUIKit.SBUTypingIndicatorMessage? {
@@ -6482,6 +6432,26 @@ public class SBUQuoteMessageInputViewParams {
   public init(message: SendbirdChatSDK.BaseMessage)
   @objc deinit
 }
+open class SBUOpenChannelSettingsModule {
+  @available(*, deprecated, message: "Use `SBUOpenChannelSettingsModule.HeaderComponent` instead.")
+  public var headerComponent: SendbirdUIKit.SBUOpenChannelSettingsModule.Header? {
+    get
+    set
+  }
+  @available(*, deprecated, message: "Use `SBUOpenChannelSettingsModule.ListComponent` instead.")
+  public var listComponent: SendbirdUIKit.SBUOpenChannelSettingsModule.List? {
+    get
+    set
+  }
+  required public init()
+  @available(*, deprecated, message: "Use `SBUModuleSet.OpenChannelSettingsModule`")
+  required public init(headerComponent: SendbirdUIKit.SBUOpenChannelSettingsModule.Header?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.OpenChannelSettingsModule`")
+  required public init(listComponent: SendbirdUIKit.SBUOpenChannelSettingsModule.List?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.OpenChannelSettingsModule`")
+  required public init(headerComponent: SendbirdUIKit.SBUOpenChannelSettingsModule.Header?, listComponent: SendbirdUIKit.SBUOpenChannelSettingsModule.List?)
+  @objc deinit
+}
 extension UIKit.UINavigationController {
   @_Concurrency.MainActor(unsafe) @objc override dynamic open var preferredStatusBarStyle: UIKit.UIStatusBarStyle {
     @objc get
@@ -6552,6 +6522,39 @@ extension SendbirdUIKit.SBUGroupChannelPushSettingsModule.List : UIKit.UITableVi
   @_Concurrency.MainActor(unsafe) override open func configure(_ message: SendbirdChatSDK.BaseMessage, hideDateView: Swift.Bool, groupPosition: SendbirdUIKit.MessageGroupPosition, receiptState: SendbirdUIKit.SBUMessageReceiptState?, useReaction: Swift.Bool)
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init(style: UIKit.UITableViewCell.CellStyle, reuseIdentifier: Swift.String?)
   @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc deinit
+}
+open class SBUMessageThreadModule {
+  @available(*, deprecated, message: "Use `SBUMessageThreadModule.HeaderComponent` instead.")
+  public var headerComponent: SendbirdUIKit.SBUMessageThreadModule.Header? {
+    get
+    set
+  }
+  @available(*, deprecated, message: "Use `SBUMessageThreadModule.ListComponent` instead.")
+  public var listComponent: SendbirdUIKit.SBUMessageThreadModule.List? {
+    get
+    set
+  }
+  @available(*, deprecated, message: "Use `SBUMessageThreadModule.InputComponent` instead.")
+  public var inputComponent: (SendbirdUIKit.SBUMessageThreadModule.Input)? {
+    get
+    set
+  }
+  required public init()
+  @available(*, deprecated, message: "Use `SBUModuleSet.MessageThreadModule")
+  required public init(headerComponent: SendbirdUIKit.SBUMessageThreadModule.Header?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.MessageThreadModule")
+  required public init(listComponent: SendbirdUIKit.SBUMessageThreadModule.List?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.MessageThreadModule")
+  required public init(inputComponent: (SendbirdUIKit.SBUMessageThreadModule.Input)?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.MessageThreadModule")
+  required public init(headerComponent: SendbirdUIKit.SBUMessageThreadModule.Header?, listComponent: SendbirdUIKit.SBUMessageThreadModule.List?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.MessageThreadModule")
+  required public init(headerComponent: SendbirdUIKit.SBUMessageThreadModule.Header?, inputComponent: (SendbirdUIKit.SBUMessageThreadModule.Input)?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.MessageThreadModule")
+  required public init(listComponent: SendbirdUIKit.SBUMessageThreadModule.List?, inputComponent: (SendbirdUIKit.SBUMessageThreadModule.Input)?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.MessageThreadModule")
+  required public init(headerComponent: SendbirdUIKit.SBUMessageThreadModule.Header?, listComponent: SendbirdUIKit.SBUMessageThreadModule.List?, inputComponent: (SendbirdUIKit.SBUMessageThreadModule.Input)?)
   @objc deinit
 }
 @objc @_inheritsConvenienceInitializers @IBDesignable @_Concurrency.MainActor(unsafe) open class SBUOpenChannelBaseMessageCell : SendbirdUIKit.SBUTableViewCell {
@@ -7271,6 +7274,7 @@ public protocol SBUMessageInputViewDataSource : AnyObject {
   @_Concurrency.MainActor(unsafe) public func endEditMode()
   @_Concurrency.MainActor(unsafe) public func setFrozenModeState(_ isFrozen: Swift.Bool)
   @_Concurrency.MainActor(unsafe) public func setMutedModeState(_ isMuted: Swift.Bool)
+  @_Concurrency.MainActor(unsafe) public func setInputState(_ isEnabled: Swift.Bool, placeholder: Swift.String)
   @_Concurrency.MainActor(unsafe) public func setErrorState()
   @_Concurrency.MainActor(unsafe) public func endTypingMode()
   @_Concurrency.MainActor(unsafe) public func setupTextViewHeight(textView: UIKit.UIView)
@@ -7435,27 +7439,9 @@ public class SBUMultipleFilesMessageCellParams : SendbirdUIKit.SBUBaseMessageCel
   public init(message: SendbirdChatSDK.MultipleFilesMessage, hideDateView: Swift.Bool, useMessagePosition: Swift.Bool, groupPosition: SendbirdUIKit.MessageGroupPosition = .none, receiptState: SendbirdUIKit.SBUMessageReceiptState = .none, useReaction: Swift.Bool = false, isThreadMessage: Swift.Bool = false, joinedAt: Swift.Int64 = 0, voiceFileInfo: SendbirdUIKit.SBUVoiceFileInfo? = nil, enableEmojiLongPress: Swift.Bool = true)
   @objc deinit
 }
-open class SBUCreateOpenChannelModule {
+extension SendbirdUIKit.SBUCreateOpenChannelModule {
   public static var HeaderComponent: SendbirdUIKit.SBUCreateOpenChannelModule.Header.Type
   public static var ProfileInputComponent: SendbirdUIKit.SBUCreateOpenChannelModule.ProfileInput.Type
-  @available(*, deprecated, message: "Use `SBUCreateOpenChannelModule.HeaderComponent` instead.")
-  public var headerComponent: SendbirdUIKit.SBUCreateOpenChannelModule.Header? {
-    get
-    set
-  }
-  @available(*, deprecated, message: "Use `SBUCreateOpenChannelModule.ProfileInputComponent` instead.")
-  public var profileInputComponent: SendbirdUIKit.SBUCreateOpenChannelModule.ProfileInput? {
-    get
-    set
-  }
-  required public init()
-  @available(*, deprecated, message: "Use `SBUModuleSet.CreateOpenChannelModule`")
-  required public init(headerComponent: SendbirdUIKit.SBUCreateOpenChannelModule.Header?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.CreateOpenChannelModule`")
-  required public init(profileInputComponent: SendbirdUIKit.SBUCreateOpenChannelModule.ProfileInput?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.CreateOpenChannelModule`")
-  required public init(headerComponent: SendbirdUIKit.SBUCreateOpenChannelModule.Header?, profileInputComponent: SendbirdUIKit.SBUCreateOpenChannelModule.ProfileInput?)
-  @objc deinit
 }
 @objc @_inheritsConvenienceInitializers @objcMembers @_Concurrency.MainActor(unsafe) open class SBUBaseViewController : UIKit.UIViewController, UIKit.UINavigationControllerDelegate, SendbirdUIKit.SBULoadingIndicatorProtocol {
   @objc @_Concurrency.MainActor(unsafe) public var needRollbackNavigationBarSetting: Swift.Bool
@@ -7513,27 +7499,9 @@ extension SendbirdUIKit.SBUPermissionManager {
   @available(*, deprecated, renamed: "requestCameraAccessIfNeeded(for:onGranted:onDenied:)")
   public func requestDeviceAccessIfNeeded(for type: AVFoundation.AVMediaType, completion: @escaping (Swift.Bool) -> Swift.Void)
 }
-open class SBUMessageSearchModule {
+extension SendbirdUIKit.SBUMessageSearchModule {
   public static var HeaderComponent: SendbirdUIKit.SBUMessageSearchModule.Header.Type
   public static var ListComponent: SendbirdUIKit.SBUMessageSearchModule.List.Type
-  @available(*, deprecated, message: "Use `SBUMessageSearchModule.HeaderComponent` instead.")
-  public var headerComponent: SendbirdUIKit.SBUMessageSearchModule.Header? {
-    get
-    set
-  }
-  @available(*, deprecated, message: "Use `SBUMessageSearchModule.ListComponent` instead.")
-  public var listComponent: SendbirdUIKit.SBUMessageSearchModule.List? {
-    get
-    set
-  }
-  required public init()
-  @available(*, deprecated, message: "Use `SBUModuleSet.MessageSearchModule")
-  required public init(headerComponent: SendbirdUIKit.SBUMessageSearchModule.Header?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.MessageSearchModule")
-  required public init(listComponent: SendbirdUIKit.SBUMessageSearchModule.List?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.MessageSearchModule")
-  required public init(headerComponent: SendbirdUIKit.SBUMessageSearchModule.Header?, listComponent: SendbirdUIKit.SBUMessageSearchModule.List?)
-  @objc deinit
 }
 open class SBUMessageStateViewParams {
   final public let timestamp: Swift.Int64
@@ -7631,27 +7599,36 @@ extension Foundation.NSArray {
   @_Concurrency.MainActor(unsafe) @objc open func updateStyles()
   @objc deinit
 }
-open class SBUGroupChannelListModule {
-  public static var HeaderComponent: SendbirdUIKit.SBUGroupChannelListModule.Header.Type
-  public static var ListComponent: SendbirdUIKit.SBUGroupChannelListModule.List.Type
-  @available(*, deprecated, message: "Use `SBUGroupChannelListModule.HeaderComponent` instead.")
-  public var headerComponent: SendbirdUIKit.SBUGroupChannelListModule.Header? {
+open class SBUBaseChannelModule {
+  @available(*, deprecated, message: "Use `SBUBaseChannelModule.HeaderComponent.init()` instead.")
+  public var headerComponent: SendbirdUIKit.SBUBaseChannelModule.Header? {
     get
     set
   }
-  @available(*, deprecated, message: "Use `SBUGroupChannelListModule.ListComponent` instead.")
-  public var listComponent: SendbirdUIKit.SBUGroupChannelListModule.List? {
+  @available(*, deprecated, message: "Use `SBUBaseChannelModule.ListComponent.init()` instead.")
+  public var listComponent: SendbirdUIKit.SBUBaseChannelModule.List? {
+    get
+    set
+  }
+  @available(*, deprecated, message: "Use `SBUBaseChannelModule.InputComponent.init()` instead.")
+  public var inputComponent: SendbirdUIKit.SBUBaseChannelModule.Input? {
     get
     set
   }
   required public init()
-  @available(*, deprecated, message: "Use `SBUModuleSet.GroupChannelListModule`")
-  required public init(headerComponent: SendbirdUIKit.SBUGroupChannelListModule.Header?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.GroupChannelListModule`")
-  required public init(listComponent: SendbirdUIKit.SBUGroupChannelListModule.List?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.GroupChannelListModule`")
-  required public init(headerComponent: SendbirdUIKit.SBUGroupChannelListModule.Header?, listComponent: SendbirdUIKit.SBUGroupChannelListModule.List?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.BaseChannelModule`")
+  required public init(headerComponent: SendbirdUIKit.SBUBaseChannelModule.Header?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.BaseChannelModule`")
+  required public init(listComponent: SendbirdUIKit.SBUBaseChannelModule.List?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.BaseChannelModule`")
+  required public init(inputComponent: SendbirdUIKit.SBUBaseChannelModule.Input?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.BaseChannelModule`")
+  required public init(headerComponent: SendbirdUIKit.SBUBaseChannelModule.Header?, listComponent: SendbirdUIKit.SBUBaseChannelModule.List?, inputComponent: SendbirdUIKit.SBUBaseChannelModule.Input?)
   @objc deinit
+}
+extension SendbirdUIKit.SBUGroupChannelListModule {
+  public static var HeaderComponent: SendbirdUIKit.SBUGroupChannelListModule.Header.Type
+  public static var ListComponent: SendbirdUIKit.SBUGroupChannelListModule.List.Type
 }
 extension SendbirdUIKit.SBUCreateChannelViewController {
   @objc @available(*, deprecated, renamed: "headerComponent.titleView", message: "This property has been moved to the SBUCreateChannelModule.Header.")
@@ -7749,41 +7726,10 @@ public class SBUFeedNotificationCellParams : SendbirdUIKit.SBUBaseMessageCellPar
 extension UIKit.NSLayoutConstraint {
   @_Concurrency.MainActor(unsafe) public static func sbu_activate(baseView: UIKit.UIView, constraints: [UIKit.NSLayoutConstraint?])
 }
-open class SBUMessageThreadModule {
+extension SendbirdUIKit.SBUMessageThreadModule {
   public static var HeaderComponent: SendbirdUIKit.SBUMessageThreadModule.Header.Type
   public static var ListComponent: SendbirdUIKit.SBUMessageThreadModule.List.Type
   public static var InputComponent: SendbirdUIKit.SBUMessageThreadModule.Input.Type
-  @available(*, deprecated, message: "Use `SBUMessageThreadModule.HeaderComponent` instead.")
-  public var headerComponent: SendbirdUIKit.SBUMessageThreadModule.Header? {
-    get
-    set
-  }
-  @available(*, deprecated, message: "Use `SBUMessageThreadModule.ListComponent` instead.")
-  public var listComponent: SendbirdUIKit.SBUMessageThreadModule.List? {
-    get
-    set
-  }
-  @available(*, deprecated, message: "Use `SBUMessageThreadModule.InputComponent` instead.")
-  public var inputComponent: (SendbirdUIKit.SBUMessageThreadModule.Input)? {
-    get
-    set
-  }
-  required public init()
-  @available(*, deprecated, message: "Use `SBUModuleSet.MessageThreadModule")
-  required public init(headerComponent: SendbirdUIKit.SBUMessageThreadModule.Header?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.MessageThreadModule")
-  required public init(listComponent: SendbirdUIKit.SBUMessageThreadModule.List?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.MessageThreadModule")
-  required public init(inputComponent: (SendbirdUIKit.SBUMessageThreadModule.Input)?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.MessageThreadModule")
-  required public init(headerComponent: SendbirdUIKit.SBUMessageThreadModule.Header?, listComponent: SendbirdUIKit.SBUMessageThreadModule.List?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.MessageThreadModule")
-  required public init(headerComponent: SendbirdUIKit.SBUMessageThreadModule.Header?, inputComponent: (SendbirdUIKit.SBUMessageThreadModule.Input)?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.MessageThreadModule")
-  required public init(listComponent: SendbirdUIKit.SBUMessageThreadModule.List?, inputComponent: (SendbirdUIKit.SBUMessageThreadModule.Input)?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.MessageThreadModule")
-  required public init(headerComponent: SendbirdUIKit.SBUMessageThreadModule.Header?, listComponent: SendbirdUIKit.SBUMessageThreadModule.List?, inputComponent: (SendbirdUIKit.SBUMessageThreadModule.Input)?)
-  @objc deinit
 }
 public protocol SBURegisterOperatorModuleHeaderDelegate : SendbirdUIKit.SBUBaseSelectUserModuleHeaderDelegate {
   func registerOperatorModule(_ headerComponent: SendbirdUIKit.SBURegisterOperatorModule.Header, didUpdateTitleView titleView: UIKit.UIView?)
@@ -8155,6 +8101,26 @@ extension SendbirdUIKit.SBUMessageThreadModule {
     @objc deinit
   }
 }
+open class SBUGroupChannelSettingsModule {
+  @available(*, deprecated, message: "Use `SBUGroupChannelSettingsModule.HeaderComponent` instead.")
+  public var headerComponent: SendbirdUIKit.SBUGroupChannelSettingsModule.Header? {
+    get
+    set
+  }
+  @available(*, deprecated, message: "Use `SBUGroupChannelSettingsModule.ListComponent` instead.")
+  public var listComponent: SendbirdUIKit.SBUGroupChannelSettingsModule.List? {
+    get
+    set
+  }
+  required public init()
+  @available(*, deprecated, message: "Use `SBUModuleSet.GroupChannelSettingsModule`")
+  required public init(headerComponent: SendbirdUIKit.SBUGroupChannelSettingsModule.Header?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.GroupChannelSettingsModule`")
+  required public init(listComponent: SendbirdUIKit.SBUGroupChannelSettingsModule.List?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.GroupChannelSettingsModule`")
+  required public init(headerComponent: SendbirdUIKit.SBUGroupChannelSettingsModule.Header?, listComponent: SendbirdUIKit.SBUGroupChannelSettingsModule.List?)
+  @objc deinit
+}
 public typealias SBUActionSheetHandler = () -> Swift.Void
 public protocol SBUActionSheetDelegate : ObjectiveC.NSObjectProtocol {
   func didSelectActionSheetItem(index: Swift.Int, identifier: Swift.Int)
@@ -8226,9 +8192,31 @@ public protocol SBUFormViewDelegate : AnyObject {
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
   @objc deinit
 }
-open class SBUGroupChannelPushSettingsModule {
+open class SBUModerationsModule {
+  @available(*, deprecated, message: "Use `SBUModerationsModule.HeaderComponent` instead.")
+  public var headerComponent: SendbirdUIKit.SBUModerationsModule.Header? {
+    get
+    set
+  }
+  @available(*, deprecated, message: "Use `SBUModerationsModule.ListComponent` instead.")
+  public var listComponent: SendbirdUIKit.SBUModerationsModule.List? {
+    get
+    set
+  }
+  required public init()
+  @available(*, deprecated, message: "Use `SBUModuleSet.OpenModerationsModule` or `SBUModuleSet.GroupModerationsModule`")
+  required public init(headerComponent: SendbirdUIKit.SBUModerationsModule.Header?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.OpenModerationsModule` or `SBUModuleSet.GroupModerationsModule`")
+  required public init(listComponent: SendbirdUIKit.SBUModerationsModule.List?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.OpenModerationsModule` or `SBUModuleSet.GroupModerationsModule`")
+  required public init(headerComponent: SendbirdUIKit.SBUModerationsModule.Header?, listComponent: SendbirdUIKit.SBUModerationsModule.List?)
+  @objc deinit
+}
+extension SendbirdUIKit.SBUGroupChannelPushSettingsModule {
   public static var HeaderComponent: SendbirdUIKit.SBUGroupChannelPushSettingsModule.Header.Type
   public static var ListComponent: SendbirdUIKit.SBUGroupChannelPushSettingsModule.List.Type
+}
+open class SBUGroupChannelPushSettingsModule {
   @available(*, deprecated, message: "Use `SBUGroupChannelPushSettingsModule.HeaderComponent` instead.")
   public var headerComponent: SendbirdUIKit.SBUGroupChannelPushSettingsModule.Header? {
     get
@@ -8451,6 +8439,29 @@ extension SendbirdUIKit.SBUGroupChannelModule {
     @objc @_Concurrency.MainActor(unsafe) open func suggestedUserList(_ list: SendbirdUIKit.SBUSuggestedMentionList, didSelectUser user: SendbirdUIKit.SBUUser)
     @objc deinit
   }
+}
+extension Swift.String {
+  public func capitalizedFirstLetter() -> Swift.String
+}
+open class SBUCreateChannelModule {
+  @available(*, deprecated, message: "Use `SBUCreateChannelModule.HeaderComponent` instead.")
+  public var headerComponent: SendbirdUIKit.SBUCreateChannelModule.Header? {
+    get
+    set
+  }
+  @available(*, deprecated, message: "Use `SBUCreateChannelModule.ListComponent` instead.")
+  public var listComponent: SendbirdUIKit.SBUCreateChannelModule.List? {
+    get
+    set
+  }
+  required public init()
+  @available(*, deprecated, message: "Use `SBUModuleSet.CreateGroupChannelModule`")
+  required public init(headerComponent: SendbirdUIKit.SBUCreateChannelModule.Header?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.CreateGroupChannelModule`")
+  required public init(listComponent: SendbirdUIKit.SBUCreateChannelModule.List?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.CreateGroupChannelModule`")
+  required public init(headerComponent: SendbirdUIKit.SBUCreateChannelModule.Header?, listComponent: SendbirdUIKit.SBUCreateChannelModule.List?)
+  @objc deinit
 }
 @objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUGroupChannelSettingsViewController : SendbirdUIKit.SBUBaseChannelSettingsViewController, SendbirdUIKit.SBUGroupChannelSettingsModuleHeaderDelegate, SendbirdUIKit.SBUGroupChannelSettingsModuleHeaderDataSource, SendbirdUIKit.SBUGroupChannelSettingsModuleListDelegate, SendbirdUIKit.SBUGroupChannelSettingsModuleListDataSource, SendbirdUIKit.SBUGroupChannelSettingsViewModelDelegate {
   @objc @_Concurrency.MainActor(unsafe) public var headerComponent: SendbirdUIKit.SBUGroupChannelSettingsModule.Header? {
@@ -8746,27 +8757,9 @@ extension SendbirdChatSDK.BaseMessage {
   @objc override dynamic public init()
   @objc deinit
 }
-open class SBUOpenChannelListModule {
+extension SendbirdUIKit.SBUOpenChannelListModule {
   public static var HeaderComponent: SendbirdUIKit.SBUOpenChannelListModule.Header.Type
   public static var ListComponent: SendbirdUIKit.SBUOpenChannelListModule.List.Type
-  @available(*, deprecated, message: "Use `SBUOpenChannelListModule.HeaderComponent` instead.")
-  public var headerComponent: SendbirdUIKit.SBUOpenChannelListModule.Header? {
-    get
-    set
-  }
-  @available(*, deprecated, message: "Use `SBUOpenChannelListModule.ListComponent` instead.")
-  public var listComponent: SendbirdUIKit.SBUOpenChannelListModule.List? {
-    get
-    set
-  }
-  required public init()
-  @available(*, deprecated, message: "Use `SBUModuleSet.OpenChannelListModule`")
-  required public init(headerComponent: SendbirdUIKit.SBUOpenChannelListModule.Header?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.OpenChannelListModule`")
-  required public init(listComponent: SendbirdUIKit.SBUOpenChannelListModule.List?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.OpenChannelListModule`")
-  required public init(headerComponent: SendbirdUIKit.SBUOpenChannelListModule.Header?, listComponent: SendbirdUIKit.SBUOpenChannelListModule.List?)
-  @objc deinit
 }
 extension Foundation.Date {
   public static func sbu_from(_ baseTimestamp: Swift.Int64) -> Foundation.Date
@@ -8838,57 +8831,14 @@ public typealias SBUNewMessageInfoHandler = () -> Swift.Void
   @_Concurrency.MainActor(unsafe) open func updateCount(count: Swift.Int, actionHandler: SendbirdUIKit.SBUNewMessageInfoHandler?)
   @objc deinit
 }
-open class SBUBaseChannelModule {
+extension SendbirdUIKit.SBUBaseChannelModule {
   public static var HeaderComponent: SendbirdUIKit.SBUBaseChannelModule.Header.Type
   public static var ListComponent: SendbirdUIKit.SBUBaseChannelModule.List.Type
   public static var InputComponent: SendbirdUIKit.SBUBaseChannelModule.Input.Type
-  @available(*, deprecated, message: "Use `SBUBaseChannelModule.HeaderComponent.init()` instead.")
-  public var headerComponent: SendbirdUIKit.SBUBaseChannelModule.Header? {
-    get
-    set
-  }
-  @available(*, deprecated, message: "Use `SBUBaseChannelModule.ListComponent.init()` instead.")
-  public var listComponent: SendbirdUIKit.SBUBaseChannelModule.List? {
-    get
-    set
-  }
-  @available(*, deprecated, message: "Use `SBUBaseChannelModule.InputComponent.init()` instead.")
-  public var inputComponent: SendbirdUIKit.SBUBaseChannelModule.Input? {
-    get
-    set
-  }
-  required public init()
-  @available(*, deprecated, message: "Use `SBUModuleSet.BaseChannelModule`")
-  required public init(headerComponent: SendbirdUIKit.SBUBaseChannelModule.Header?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.BaseChannelModule`")
-  required public init(listComponent: SendbirdUIKit.SBUBaseChannelModule.List?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.BaseChannelModule`")
-  required public init(inputComponent: SendbirdUIKit.SBUBaseChannelModule.Input?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.BaseChannelModule`")
-  required public init(headerComponent: SendbirdUIKit.SBUBaseChannelModule.Header?, listComponent: SendbirdUIKit.SBUBaseChannelModule.List?, inputComponent: SendbirdUIKit.SBUBaseChannelModule.Input?)
-  @objc deinit
 }
-open class SBUInviteUserModule {
+extension SendbirdUIKit.SBUInviteUserModule {
   public static var HeaderComponent: SendbirdUIKit.SBUInviteUserModule.Header.Type
   public static var ListComponent: SendbirdUIKit.SBUInviteUserModule.List.Type
-  @available(*, deprecated, message: "Use `SBUInviteUserModule.HeaderComponent` instead.")
-  public var headerComponent: SendbirdUIKit.SBUInviteUserModule.Header? {
-    get
-    set
-  }
-  @available(*, deprecated, message: "Use `SBUInviteUserModule.ListComponent` instead.")
-  public var listComponent: SendbirdUIKit.SBUInviteUserModule.List? {
-    get
-    set
-  }
-  required public init()
-  @available(*, deprecated, message: "Use `SBUModuleSet.InviteUserModule")
-  required public init(headerComponent: SendbirdUIKit.SBUInviteUserModule.Header?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.InviteUserModule")
-  required public init(listComponent: SendbirdUIKit.SBUInviteUserModule.List?)
-  @available(*, deprecated, message: "Use `SBUModuleSet.InviteUserModule")
-  required public init(headerComponent: SendbirdUIKit.SBUInviteUserModule.Header?, listComponent: SendbirdUIKit.SBUInviteUserModule.List?)
-  @objc deinit
 }
 @objc @_inheritsConvenienceInitializers @IBDesignable @_Concurrency.MainActor(unsafe) open class SBUUserMessageCell : SendbirdUIKit.SBUContentBaseMessageCell, SendbirdUIKit.SBUUserMessageTextViewDelegate, SendbirdUIKit.SBUSuggestedReplyViewDelegate, SendbirdUIKit.SBUFormViewDelegate {
   @objc @_Concurrency.MainActor(unsafe) public var messageTextView: UIKit.UIView {
@@ -9022,6 +8972,46 @@ extension SendbirdUIKit.SBUOpenChannelSettingsViewController {
   @_Concurrency.MainActor(unsafe) dynamic public func updateChannel(params: SendbirdChatSDK.OpenChannelUpdateParams)
   @objc @available(*, deprecated, renamed: "viewModel.deleteChannel()", message: "This function has been moved to the `SBUOpenChannelSettingsViewModel`.")
   @_Concurrency.MainActor(unsafe) dynamic public func deleteChannel()
+}
+public class SBUChatNotificationChannelModule {
+  @available(*, deprecated, message: "Use `SBUChatNotificationChannelModule.HeaderComponent` instead.")
+  public var headerComponent: SendbirdUIKit.SBUChatNotificationChannelModule.Header? {
+    get
+    set
+  }
+  @available(*, deprecated, message: "Use `SBUChatNotificationChannelModule.ListComponent` instead.")
+  public var listComponent: SendbirdUIKit.SBUChatNotificationChannelModule.List? {
+    get
+    set
+  }
+  required public init()
+  @available(*, deprecated, message: "Use `SBUModuleSet.ChatNotificationChannelModule`")
+  required public init(headerComponent: SendbirdUIKit.SBUChatNotificationChannelModule.Header?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.ChatNotificationChannelModule`")
+  required public init(listComponent: SendbirdUIKit.SBUChatNotificationChannelModule.List?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.ChatNotificationChannelModule`")
+  required public init(headerComponent: SendbirdUIKit.SBUChatNotificationChannelModule.Header?, listComponent: SendbirdUIKit.SBUChatNotificationChannelModule.List?)
+  @objc deinit
+}
+open class SBUGroupChannelListModule {
+  @available(*, deprecated, message: "Use `SBUGroupChannelListModule.HeaderComponent` instead.")
+  public var headerComponent: SendbirdUIKit.SBUGroupChannelListModule.Header? {
+    get
+    set
+  }
+  @available(*, deprecated, message: "Use `SBUGroupChannelListModule.ListComponent` instead.")
+  public var listComponent: SendbirdUIKit.SBUGroupChannelListModule.List? {
+    get
+    set
+  }
+  required public init()
+  @available(*, deprecated, message: "Use `SBUModuleSet.GroupChannelListModule`")
+  required public init(headerComponent: SendbirdUIKit.SBUGroupChannelListModule.Header?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.GroupChannelListModule`")
+  required public init(listComponent: SendbirdUIKit.SBUGroupChannelListModule.List?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.GroupChannelListModule`")
+  required public init(headerComponent: SendbirdUIKit.SBUGroupChannelListModule.Header?, listComponent: SendbirdUIKit.SBUGroupChannelListModule.List?)
+  @objc deinit
 }
 public protocol SBUGroupChannelSettingsModuleHeaderDelegate : SendbirdUIKit.SBUBaseChannelSettingsModuleHeaderDelegate {
   func groupChannelSettingsModule(_ headerComponent: SendbirdUIKit.SBUGroupChannelSettingsModule.Header, didUpdateTitleView titleView: UIKit.UIView?)
@@ -9702,6 +9692,26 @@ extension SendbirdUIKit.SBUMessageSearchModule.Header : UIKit.UISearchBarDelegat
   @_Concurrency.MainActor(unsafe) @objc dynamic open func searchBarTextDidEndEditing(_ searchBar: UIKit.UISearchBar)
   @_Concurrency.MainActor(unsafe) @objc dynamic open func searchBarCancelButtonClicked(_ searchBar: UIKit.UISearchBar)
   @_Concurrency.MainActor(unsafe) @objc dynamic open func searchBarSearchButtonClicked(_ searchBar: UIKit.UISearchBar)
+}
+open class SBUOpenChannelListModule {
+  @available(*, deprecated, message: "Use `SBUOpenChannelListModule.HeaderComponent` instead.")
+  public var headerComponent: SendbirdUIKit.SBUOpenChannelListModule.Header? {
+    get
+    set
+  }
+  @available(*, deprecated, message: "Use `SBUOpenChannelListModule.ListComponent` instead.")
+  public var listComponent: SendbirdUIKit.SBUOpenChannelListModule.List? {
+    get
+    set
+  }
+  required public init()
+  @available(*, deprecated, message: "Use `SBUModuleSet.OpenChannelListModule`")
+  required public init(headerComponent: SendbirdUIKit.SBUOpenChannelListModule.Header?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.OpenChannelListModule`")
+  required public init(listComponent: SendbirdUIKit.SBUOpenChannelListModule.List?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.OpenChannelListModule`")
+  required public init(headerComponent: SendbirdUIKit.SBUOpenChannelListModule.Header?, listComponent: SendbirdUIKit.SBUOpenChannelListModule.List?)
+  @objc deinit
 }
 @objc public class SBUUser : ObjectiveC.NSObject {
   public var userId: Swift.String {
@@ -11069,6 +11079,26 @@ extension SendbirdUIKit.SBUExtendedMessagePayloadCustomViewFactory {
   public static func makeCustomView(message: SendbirdChatSDK.BaseMessage?) -> UIKit.UIView?
   public static func errorHandler(_ error: any Swift.Error, message: SendbirdChatSDK.BaseMessage?) -> UIKit.UIView?
 }
+open class SBUUserListModule {
+  @available(*, deprecated, message: "Use `SBUUserListModule.HeaderComponent` instead.")
+  public var headerComponent: SendbirdUIKit.SBUUserListModule.Header? {
+    get
+    set
+  }
+  @available(*, deprecated, message: "Use `SBUUserListModule.ListComponent` instead.")
+  public var listComponent: SendbirdUIKit.SBUUserListModule.List? {
+    get
+    set
+  }
+  required public init()
+  @available(*, deprecated, message: "Use `SBUModuleSet.GroupUserListModule` or `SBUModuleSet.OpenUserListModule`")
+  required public init(headerComponent: SendbirdUIKit.SBUUserListModule.Header? = nil)
+  @available(*, deprecated, message: "Use `SBUModuleSet.GroupUserListModule` or `SBUModuleSet.OpenUserListModule`")
+  required public init(listComponent: SendbirdUIKit.SBUUserListModule.List? = nil)
+  @available(*, deprecated, message: "Use `SBUModuleSet.GroupUserListModule` or `SBUModuleSet.OpenUserListModule`")
+  required public init(headerComponent: SendbirdUIKit.SBUUserListModule.Header? = nil, listComponent: SendbirdUIKit.SBUUserListModule.List? = nil)
+  @objc deinit
+}
 public protocol SBUMessageThreadViewModelDataSource : SendbirdUIKit.SBUBaseChannelViewModelDataSource {
 }
 public protocol SBUMessageThreadViewModelDelegate : SendbirdUIKit.SBUBaseChannelViewModelDelegate {
@@ -11425,6 +11455,26 @@ extension SendbirdUIKit.SBUGroupChannelViewModel {
 }
 extension SendbirdUIKit.SBUGroupChannelViewModel : SendbirdChatSDK.GroupChannelDelegate {
   @objc override dynamic open func channel(_ channel: SendbirdChatSDK.BaseChannel, didReceive message: SendbirdChatSDK.BaseMessage)
+}
+open class SBUInviteUserModule {
+  @available(*, deprecated, message: "Use `SBUInviteUserModule.HeaderComponent` instead.")
+  public var headerComponent: SendbirdUIKit.SBUInviteUserModule.Header? {
+    get
+    set
+  }
+  @available(*, deprecated, message: "Use `SBUInviteUserModule.ListComponent` instead.")
+  public var listComponent: SendbirdUIKit.SBUInviteUserModule.List? {
+    get
+    set
+  }
+  required public init()
+  @available(*, deprecated, message: "Use `SBUModuleSet.InviteUserModule")
+  required public init(headerComponent: SendbirdUIKit.SBUInviteUserModule.Header?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.InviteUserModule")
+  required public init(listComponent: SendbirdUIKit.SBUInviteUserModule.List?)
+  @available(*, deprecated, message: "Use `SBUModuleSet.InviteUserModule")
+  required public init(headerComponent: SendbirdUIKit.SBUInviteUserModule.Header?, listComponent: SendbirdUIKit.SBUInviteUserModule.List?)
+  @objc deinit
 }
 @_hasMissingDesignatedInitializers public class SBUTypingIndicatorMessageManager {
   public static let shared: SendbirdUIKit.SBUTypingIndicatorMessageManager
