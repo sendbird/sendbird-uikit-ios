@@ -11,6 +11,8 @@ import UIKit
 protocol MessageTemplateImageRatioType {
     var identifier: SBUMessageTemplate.Syntax.Identifier { get }
     
+    var imageUrl: String { get }
+    
     var width: SBUMessageTemplate.Syntax.SizeSpec { get }
     var height: SBUMessageTemplate.Syntax.SizeSpec { get }
     
@@ -22,45 +24,14 @@ extension MessageTemplateImageRatioType {
     var isImageView: Bool { self is SBUMessageTemplate.Syntax.Image }
     var isImageButton: Bool { self is SBUMessageTemplate.Syntax.ImageButton }
     
-    func ratioConstraints(view: UIView) -> [NSLayoutConstraint] {
-        guard let metaData = self.metaData else { return [] }
-        
-        let ratio = metaData.pixelWidth != 0
-        ? CGFloat(metaData.pixelHeight) / CGFloat(metaData.pixelWidth)
-        : 0
-        let constraint = view.heightAnchor.constraint(
-            equalTo: view.widthAnchor,
-            multiplier: ratio
-        )
-        
-        return [constraint]
+    var isForDownloadingTemplate: Bool {
+        self.imageUrl == SBUMessageTemplate.urlForTemplateDownload
     }
     
-    func minimumWrapConstraints(view: UIView) -> [NSLayoutConstraint] {
-        view.sbu_constraint_greaterThan_v2(width: 1, height: 1, priority: .defaultLow)
-    }
-    
-    func fixedHeightConstraints(view: UIView) -> [NSLayoutConstraint] {
-        guard let metaData = self.metaData else { return [] }
-        
-        var ratio: CGFloat = 1
-        
-        if metaData.pixelHeight > metaData.pixelWidth, metaData.pixelWidth != 0 {
-            ratio = CGFloat(metaData.pixelHeight) / CGFloat(metaData.pixelWidth)
-        }
-        if metaData.pixelWidth > metaData.pixelHeight, metaData.pixelHeight != 0 {
-            ratio = CGFloat(metaData.pixelWidth) / CGFloat(metaData.pixelHeight)
-        }
-        
-        let constraint = view.heightAnchor.constraint(
-            equalTo: view.widthAnchor,
-            multiplier: ratio
-        )
-        
-        return [constraint]
-    }
+    var isRatioUsed: Bool { self.imageRatioType.isRatioUsed }
     
     var imageRatioType: SBUMessageTemplate.Syntax.ImageRatioType {
+        // [VALID_CASE](https://sendbird.atlassian.net/wiki/spaces/UK/pages/2008220608/Message+template+-+Image+policy#Valid-cases)
         switch (self.width.internalSizeType, self.height.internalSizeType) {
         case (.fixed, .fixed): return .minimumWrap(cached: isImageView)
         case (.fixed, .fillParent):
@@ -88,8 +59,48 @@ extension MessageTemplateImageRatioType {
         
         return .unknown
     }
+}
+
+// MARK: - placeholder constraints
+extension MessageTemplateImageRatioType {
     
-    var isRatioUsed: Bool { self.imageRatioType.isRatioUsed }
+    func ratioPlaceholderConstraints(view: UIView) -> [NSLayoutConstraint] {
+        guard let metaData = self.metaData else { return [] }
+        
+        let ratio = metaData.pixelWidth != 0
+        ? CGFloat(metaData.pixelHeight) / CGFloat(metaData.pixelWidth)
+        : 0
+        let constraint = view.heightAnchor.constraint(
+            equalTo: view.widthAnchor,
+            multiplier: ratio
+        )
+        
+        return [constraint]
+    }
+    
+    func minimumWrapPlaceholderConstraints(view: UIView) -> [NSLayoutConstraint] {
+        view.sbu_constraint_greaterThan_v2(width: 1, height: 1, priority: .defaultLow)
+    }
+    
+    func fixedHeightPlaceholderConstraints(view: UIView) -> [NSLayoutConstraint] {
+        guard let metaData = self.metaData else { return [] }
+        
+        var ratio: CGFloat = 1
+        
+        if metaData.pixelHeight > metaData.pixelWidth, metaData.pixelWidth != 0 {
+            ratio = CGFloat(metaData.pixelHeight) / CGFloat(metaData.pixelWidth)
+        }
+        if metaData.pixelWidth > metaData.pixelHeight, metaData.pixelHeight != 0 {
+            ratio = CGFloat(metaData.pixelWidth) / CGFloat(metaData.pixelHeight)
+        }
+        
+        let constraint = view.heightAnchor.constraint(
+            equalTo: view.widthAnchor,
+            multiplier: ratio
+        )
+        
+        return [constraint]
+    }
     
     func imagePlaceholderConstraints(view: UIView, saveCache: Bool) -> [NSLayoutConstraint] {
         switch self.imageRatioType {
@@ -103,13 +114,67 @@ extension MessageTemplateImageRatioType {
                     size: size
                 )
             }
-            return self.minimumWrapConstraints(view: view)
+            return self.minimumWrapPlaceholderConstraints(view: view)
         case .ratio:
-            return self.ratioConstraints(view: view)
+            return self.ratioPlaceholderConstraints(view: view)
         case .fixedHeightRatio:
-            return self.fixedHeightConstraints(view: view)
+            return self.fixedHeightPlaceholderConstraints(view: view)
         case .unknown:
             return []
         }
+    }
+}
+
+extension MessageTemplateImageRatioType {
+    var expectedImageSize: CGSize? {
+        guard let size = SBUCacheManager.TemplateImage.load(
+            messageId: self.identifier.messageId,
+            viewIndex: self.identifier.index
+        ), size.width > 0 else { return nil }
+        return size
+    }
+    
+    var needResizeImage: Bool {
+        if self.isForDownloadingTemplate { return false }
+        
+        switch (width.internalSizeType, height.internalSizeType) {
+        case (.fixed, .wrapContent): return true
+        case (.fillParent, .wrapContent): return true
+        default: return false
+        }
+    }
+    
+    func imageViewContentMode(with align: SBUMessageTemplate.Syntax.ItemsAlign) -> UIView.ContentMode {
+        if self.needResizeImage == false { return imageStyle.contentMode }
+        return align.imageViewContentMode ?? imageStyle.contentMode
+    }
+    
+    func ratioConstraintsBySize(_ size: CGSize, view: UIView) -> [NSLayoutConstraint] {
+        guard self.isRatioUsed == true else { return [] }
+        
+        // NOTE: Added defensive code for crash when image size is zero.
+        guard size.width > 0, size.height > 0 else { return [] }
+        
+        let ratio = size.height / size.width
+        
+        let heightConstraint = view.heightAnchor.constraint(
+            equalTo: view.widthAnchor,
+            multiplier: ratio
+        )
+        heightConstraint.priority = .defaultHigh
+        
+        return [heightConstraint]
+    }
+    
+    func haveToUseRatio() -> Bool {
+        // If size is not available due to lack of meta-data.
+        if self.metaData?.isValid == true { return false }
+        
+        // Failure to calculate the image ratio (using ratio = not being able to predict the image size in advance).
+        if self.isRatioUsed == false { return false }
+        
+        if self.expectedImageSize != nil { return false }
+        
+        return true
     }
 }

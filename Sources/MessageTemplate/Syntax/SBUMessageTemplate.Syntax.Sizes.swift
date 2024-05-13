@@ -72,6 +72,8 @@ extension SBUMessageTemplate.Syntax {
             case pixelWidth, pixelHeight
         }
         
+        var isValid: Bool { pixelWidth > 0 && pixelHeight > 0 }
+        
         required init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             self.pixelWidth = SBUMessageTemplate.decodeMultipleTypeForInt(

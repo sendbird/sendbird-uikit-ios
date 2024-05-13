@@ -11,47 +11,59 @@ import UIKit
 extension SBUMessageTemplate.Renderer {
     func setImage(
         _ image: UIImage,
-        imageSize: CGSize,
         imageView: SBUMessageTemplate.Renderer.ImageView,
         item: SBUMessageTemplate.Syntax.Image,
-        isRatioUsed: Bool,
         placeholderConstraints: [NSLayoutConstraint]
     ) {
-        _ = image.sbu_with(
-            tintColor: tintColor,
+        let image = image.sbu_with(
+            tintColor: item.imageStyle.tintColorValue,
             forTemplate: true
         )
-
-        if imageView.needResizeImage {
-            imageView.image = image.resizeTopAlignedToFill(newWidth: imageSize.width)
-        } else {
-            imageView.image = image
-        }
         
-        imageView.layoutIfNeeded()
+        imageView.identifier = item.identifier
+        imageView.originalImage = image
         
         self.rendererConstraints.forEach { $0.isActive = false }
         placeholderConstraints.forEach { $0.isActive = false }
         
-        if isRatioUsed == true {
-            // NOTE: Added defensive code for crash when image size is zero.
-            if imageSize.width > 0, imageSize.height > 0 {
-                let ratio = imageSize.height / imageSize.width
-
-                let heightConst = imageView.heightAnchor.constraint(
-                    equalTo: imageView.widthAnchor,
-                    multiplier: ratio
-                )
-                heightConst.priority = .defaultHigh
-                self.rendererConstraints.append(heightConst)
-            }
-        }
+        imageView.setNeedsLayout()
         
+        self.rendererConstraints += item.ratioConstraintsBySize(image.size, view: imageView)
         self.rendererConstraints.forEach { $0.isActive = true }
         
-        if item.metaData == nil || !isRatioUsed {
+        if item.haveToUseRatio() == true {
             placeholderConstraints.forEach { $0.isActive = true }
             self.delegate?.messageTemplateRender(self, didFinishLoadingImage: imageView)
+        }
+    }
+}
+    
+extension SBUMessageTemplate.Renderer {
+    func setImageButton(
+        _ button: ImageButton,
+        item: SBUMessageTemplate.Syntax.ImageButton,
+        placeholderConstraints: [NSLayoutConstraint]
+    ) {
+        guard let imageView = button.imageView else { return }
+        
+        let image = imageView.image?.sbu_with(
+            tintColor: item.imageStyle.tintColorValue,
+            forTemplate: true
+        )
+        
+        button.setImage(image, for: .normal)
+        button.setNeedsLayout()
+        
+        if let size = imageView.image?.size {
+            self.rendererConstraints.forEach { $0.isActive = false }
+            placeholderConstraints.forEach { $0.isActive = false }
+            
+            self.rendererConstraints += item.ratioConstraintsBySize(size, view: button)
+            self.rendererConstraints.forEach { $0.isActive = true }
+            
+            if item.haveToUseRatio() == true {
+                self.delegate?.messageTemplateRender(self, didFinishLoadingImage: imageView)
+            }
         }
     }
 }

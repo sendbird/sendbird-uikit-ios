@@ -175,7 +175,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         button.isHidden = !showsVoiceMessageButton
         return button
     }()
-
+    
     public lazy var editView: UIView = {
         let editView = UIView()
         editView.isHidden = true
@@ -377,23 +377,26 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     var inputViewBottomSpacer = UIView()
     
     var textViewHeightConstraint: NSLayoutConstraint?
-
+    
     /// The delegate that is type of `SBUMessageInputViewDelegate`.
     /// - NOTE: `SBUMessageInputViewDelegate` notifies events that occur in the message input field. To receive such events, you need to set a delegate to an object that conforms to the `SBUMessageInputViewDelegate` protocol.
     public weak var delegate: SBUMessageInputViewDelegate?
     public weak var datasource: SBUMessageInputViewDataSource?
-
+    
     var basedText: String = ""
     
     var isFrozen: Bool = false
     var isMuted: Bool = false
-    var isDisable: Bool = false
+    var isDisabledByServer: Bool = false  // 서버 페이로드로만 토글되는 플래그 ("disable_chat_input")
+    var isDisabled: Bool = false  // 고객이 직접 설정하는 플래그 (since 3.22.0)
+    
+    var disabledPlaceholder = ""
     
     /// The Flag to check if it is the first thread message input. (This flag's priority is higher than `isThreadMessage`)
     var isThreadFirstMessage: Bool = false
     /// The Flag to check if it is the thread message input
     var isThreadMessage: Bool = false
-
+    
     let cameraItem = SBUActionSheetItem(
         title: SBUStringSet.Camera,
         tag: MediaResourceType.camera.rawValue,
@@ -410,7 +413,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         completionHandler: nil
     )
     let cancelItem = SBUActionSheetItem(title: SBUStringSet.Cancel, completionHandler: nil)
-
+    
     @SBUThemeWrapper(theme: SBUTheme.messageInputTheme)
     public var theme: SBUMessageInputTheme
     @SBUThemeWrapper(theme: SBUTheme.overlayTheme.messageInputTheme, setToDefault: true)
@@ -429,7 +432,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     
     public init(isOverlay: Bool) {
         self.isOverlay = isOverlay
-
+        
         super.init(frame: .zero)
     }
     
@@ -517,7 +520,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         self.quoteMessageView?.isHidden = true
         self.divider.isHidden = true
     }
-
+    
     /// This function handles the initialization of views.
     open override func setupViews() {
         self.editView.isHidden = true
@@ -556,7 +559,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
             self.inputContentView.addSubview(textView)
             self.inputContentView.addSubview(self.placeholderLabel)
         }
-
+        
         self.editView.addSubview(
             self.editStackView.setHStack([
                 self.cancelButton,
@@ -607,7 +610,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         
         self.saveButton?
             .sbu_constraint(width: 75)
-
+        
         self.editView
             .sbu_constraint(height: 32)
         
@@ -693,7 +696,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         let theme = self.isOverlay ? self.overlayTheme : self.theme
         
         self.backgroundColor = theme.backgroundColor
-
+        
         // placeholderLabel
         self.placeholderLabel.font = theme.textFieldPlaceholderFont
         if self.isFrozen {
@@ -702,8 +705,11 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         } else if self.isMuted {
             self.placeholderLabel.text = SBUStringSet.MessageInput_Text_Muted
             self.placeholderLabel.textColor = theme.textFieldDisabledColor
-        } else if self.isDisable {
+        } else if self.isDisabledByServer {
             self.placeholderLabel.text = SBUStringSet.MessageInput_Text_Unavailable
+            self.placeholderLabel.textColor = theme.textFieldDisabledColor
+        } else if self.isDisabled {
+            self.placeholderLabel.text = self.disabledPlaceholder
             self.placeholderLabel.textColor = theme.textFieldDisabledColor
         } else if self.isThreadFirstMessage {
             self.placeholderLabel.text = SBUStringSet.MessageThread.MessageInput.replyInThread
@@ -718,7 +724,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
             self.placeholderLabel.text = SBUStringSet.MessageInput_Text_Placeholder
             self.placeholderLabel.textColor = theme.textFieldPlaceholderColor
         }
-
+        
         // textView
         self.textView?.backgroundColor = theme.textFieldBackgroundColor
         self.textView?.tintColor = theme.textFieldTintColor
@@ -727,7 +733,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         
         // addButton
         let iconAdd = SBUIconSetType.iconAdd
-            .image(with: (self.isFrozen || self.isMuted || self.isDisable)
+            .image(with: (self.isFrozen || self.isMuted || self.isDisabledByServer || self.isDisabled)
                    ? theme.buttonDisabledTintColor
                    : theme.buttonTintColor,
                    to: SBUIconSetType.Metric.defaultIconSize)
@@ -744,7 +750,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         // IconVoiceMessage
         self.voiceMessageButton?.setImage(
             SBUIconSetType.iconVoiceMessageOn.image(
-                with: (self.isFrozen || self.isMuted || self.isDisable)
+                with: (self.isFrozen || self.isMuted || self.isDisabledByServer || self.isDisabled)
                 ? theme.buttonDisabledTintColor
                 : theme.buttonTintColor,
                 to: SBUIconSetType.Metric.defaultIconSize
@@ -787,7 +793,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         self.textView?.text = text
         self.basedText = text
         self.placeholderLabel.isHidden = !text.isEmpty
-
+        
         self.addButton?.isHidden = true
         self.addButton?.alpha = 0
         
@@ -797,13 +803,13 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         
         self.editView.isHidden = false
         self.editView.alpha = 1
-
+        
         self.updateTextViewHeight()
         let bottom = NSRange(location: (self.textView?.text.count ?? 0) - 1, length: 1)
         self.textView?.scrollRangeToVisible(bottom)
         
         self.textView?.becomeFirstResponder()
-
+        
         self.layoutIfNeeded()
     }
     
@@ -811,7 +817,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         self.textView?.text = ""
         self.basedText = ""
         self.placeholderLabel.isHidden = false
-
+        
         self.addButton?.isHidden = false
         self.addButton?.alpha = 1
         
@@ -820,7 +826,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         
         self.editView.isHidden = true
         self.editView.alpha = 0
-
+        
         self.updateTextViewHeight()
         
         self.layoutIfNeeded()
@@ -862,18 +868,38 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     
     /// Sets disable chat input value
     /// - Parameter isDisable: `true` is disable mode, `false` is available mode
-    func setDisableChatInputState(_ isDisable: Bool) {
+    func setDisableChatInputState(_ isDisabledByServer: Bool) {
         if SendbirdUI.config.groupChannel.channel.isSuggestedRepliesEnabled == false { return }
         if self.isMuted || self.isFrozen { return }
-            
-        self.isDisable = isDisable
         
-        self.textView?.isEditable = !self.isDisable
-        self.textView?.isUserInteractionEnabled = !self.isDisable
-        self.addButton?.isEnabled = !self.isDisable
-        self.voiceMessageButton?.isEnabled = !self.isDisable
+        self.isDisabledByServer = isDisabledByServer
         
-        if self.isDisable {
+        self.textView?.isEditable = !self.isDisabledByServer
+        self.textView?.isUserInteractionEnabled = !self.isDisabledByServer
+        self.addButton?.isEnabled = !self.isDisabledByServer
+        self.voiceMessageButton?.isEnabled = !self.isDisabledByServer
+        
+        if self.isDisabledByServer {
+            self.endTypingMode()
+        }
+        self.setupStyles()
+    }
+    
+    /// Enables or disables the entire input view.
+    /// - Parameter isEnabled: if `true`, the input view is enabled, otherwise the input view is disabled.
+    /// - Since: 3.22.0
+    public func setInputState(_ isEnabled: Bool, placeholder: String) {
+        self.isDisabled = !isEnabled
+        self.disabledPlaceholder = placeholder
+        
+        if self.isFrozen || self.isMuted || self.isDisabledByServer { return }
+
+        self.textView?.isEditable = isEnabled
+        self.textView?.isUserInteractionEnabled = isEnabled
+        self.addButton?.isEnabled = isEnabled
+        self.voiceMessageButton?.isEnabled = isEnabled
+
+        if isEnabled == false {
             self.endTypingMode()
         }
         self.setupStyles()

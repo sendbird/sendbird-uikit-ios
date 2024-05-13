@@ -29,12 +29,21 @@ public extension UIImageView {
         case placeholder
         /// Success status
         case success
+        /// Success status of loading from cache data
+        case successFromCache
         /// Failure status
         case failure
         
-        var isSuccess: Bool { self == .success }
+        var isSuccess: Bool {
+            switch self {
+            case .success: return true
+            case .successFromCache: return true
+            default: return false
+            }
+        }
         var isFailure: Bool { self == .failure }
         var isPlaceholder: Bool { self == .placeholder }
+        var isCached: Bool { self == .successFromCache }
     }
     
     /// Struct for LoadResult
@@ -53,20 +62,49 @@ public extension UIImageView {
             self.urlString = urlString
         }
     }
-
+    
     /// Loads an image from a URL string.
     /// - Returns: A URLSessionTask object.
     @discardableResult
-    func loadImage(urlString: String,
-                   placeholder: UIImage? = nil,
-                   errorImage: UIImage? = nil,
-                   option: ImageOption = .original,
-                   thumbnailSize: CGSize? = nil,
-                   tintColor: UIColor? = nil,
-                   cacheKey: String? = nil,
-                   subPath: String = "",
-                   autoset: Bool = true,
-                   completion: LoadCompletion? = nil) -> URLSessionTask? {
+    func loadImage(
+        urlString: String,
+        placeholder: UIImage? = nil,
+        errorImage: UIImage? = nil,
+        option: ImageOption = .original,
+        thumbnailSize: CGSize? = nil,
+        tintColor: UIColor? = nil,
+        cacheKey: String? = nil,
+        subPath: String = "",
+        completion: ((Bool) -> Void)? = nil
+    ) -> URLSessionTask? {
+        return self.loadImage(
+            urlString: urlString,
+            placeholder: placeholder,
+            errorImage: errorImage,
+            option: option,
+            thumbnailSize: thumbnailSize,
+            tintColor: tintColor,
+            cacheKey: cacheKey,
+            subPath: subPath,
+            autoset: true
+        ) { completion?($0.status.isSuccess) }
+    }
+    
+    /// Loads an image from a URL string.
+    /// - Returns: A URLSessionTask object.
+    @discardableResult
+    func loadImage(
+        urlString: String,
+        placeholder: UIImage? = nil,
+        errorImage: UIImage? = nil,
+        option: ImageOption = .original,
+        thumbnailSize: CGSize? = nil,
+        tintColor: UIColor? = nil,
+        cacheKey: String? = nil,
+        subPath: String = "",
+        autoset: Bool = true,
+        completion: LoadCompletion? = nil
+    ) -> URLSessionTask? {
         let originalContentMode = self.contentMode
         let onCompletion: ((LoadResult) -> Void) = { [weak self, completion, originalContentMode] result in
             Thread.executeOnMain {
@@ -168,7 +206,7 @@ internal extension UIImageView {
                 image,
                 urlString: urlString,
                 tintColor: tintColor,
-                status: .success,
+                status: .successFromCache,
                 autoset: autoset,
                 completion: completion
             )
@@ -209,7 +247,7 @@ internal extension UIImageView {
                 image,
                 urlString: urlString,
                 tintColor: tintColor,
-                status: .success,
+                status: .successFromCache,
                 autoset: autoset,
                 completion: completion
             )
@@ -285,7 +323,7 @@ internal extension UIImageView {
                 image,
                 urlString: urlString,
                 tintColor: tintColor,
-                status: .success,
+                status: .successFromCache,
                 autoset: autoset,
                 completion: completion
             )
@@ -355,8 +393,10 @@ internal extension UIImageView {
                           autoset: Bool,
                           completion: LoadCompletion? = nil) {
         guard let image = image else {
-            Thread.executeOnMain {
-                completion?(.init(status: .failure, urlString: urlString))
+            if status != .placeholder {
+                Thread.executeOnMain {
+                    completion?(.init(status: .failure, urlString: urlString))
+                }
             }
             return
         }
@@ -365,7 +405,9 @@ internal extension UIImageView {
         
         Thread.executeOnMain { [weak self] in
             self?.contentMode = contentMode
-            if autoset == true { self?.image = resultImage }
+            if autoset == true {
+                self?.image = resultImage
+            }
             completion?(.init(status: status, urlString: urlString, image: resultImage))
         }
     }
@@ -406,14 +448,14 @@ internal extension UIImageView {
                 return
             }
             
-            _ = SBUCacheManager.Image.save(
+            let image = SBUCacheManager.Image.save(
                 data: data,
                 fileName: fileName,
                 subPath: subPath
-            ) { _, _, image in
-                Thread.executeOnMain {
-                    completion?(image, image != nil)
-                }
+            )
+            
+            Thread.executeOnMain {
+                completion?(image, image != nil)
             }
         }
         task.resume()

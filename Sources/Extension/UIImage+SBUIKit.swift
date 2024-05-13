@@ -105,6 +105,39 @@ public extension UIImage {
         
         return data
     }
+    
+    /// Resizes the image to the target size.
+    /// - Since: 3.22.0
+    func sbu_resize(with targetSize: CGSize) -> UIImage {
+        self.resize(with: targetSize)
+    }
+    
+    /// Creates an image with a background color, optional margin, and circular clipping.
+    ///
+    /// This method draws the current image onto a background of the specified color. If `circle` is true, the image will be clipped to a circular shape. A margin can be added around the image.
+    ///
+    /// - Parameters:
+    ///   - color: The background color.
+    ///   - margin: The margin around the image. Defaults to 0 if not specified.
+    ///   - circle: A Boolean value that determines whether the image should be clipped to a circle. Defaults to false.
+    /// - Returns: A new image with the background color, optional margin, and circular clipping if specified.
+    ///
+    /// - Since: 3.22.0
+    func sbu_withBackground(color: UIColor, margin: CGFloat, circle: Bool = false) -> UIImage {
+        self.withBackground(color: color, margin: margin, circle: circle)
+    }
+
+    /// Creates an image entirely filled with the specified color.
+    ///
+    /// This method generates a 1x1 pixel image and scales it to fill the entire view, effectively creating a solid color image. This can be useful for creating placeholder images, backgrounds, or any other elements where a solid color image is required.
+    ///
+    /// - Parameter color: The color to fill the image with.
+    /// - Returns: A `UIImage` object filled with the specified color.
+    /// 
+    /// - Since: 3.22.0
+    static func sbu_from(color: UIColor) -> UIImage {
+        UIImage.from(color: color)
+    }
 }
 
 // MARK: - Private extension

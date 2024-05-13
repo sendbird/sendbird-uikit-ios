@@ -96,9 +96,17 @@ class SBUCacheManager {
         }
         
         func set<T>(key: String, data: NSData, image: UIImage? = nil, completionHandler: T? = nil) {
+            guard let image = image else {
+                self.executeCompletion(handler: completionHandler)
+                return
+            }
             diskQueue.async { [weak image] in
+                guard let image = image else {
+                    self.executeCompletion(handler: completionHandler)
+                    return
+                }
                 let filePath = URL(fileURLWithPath: self.pathForKey(key))
-                
+
                 do {
                     let subPath = filePath.deletingLastPathComponent()
                     try self.fileManager.createDirectory(
@@ -108,30 +116,13 @@ class SBUCacheManager {
                     )
                 } catch {
                     SBULog.error(error.localizedDescription)
-                    DispatchQueue.main.async {
-                        switch completionHandler {
-                        case let cacheHandler as SBUCacheCompletionHandler:
-                            cacheHandler(nil, nil)
-                        case let imageCacheHandler as SBUImageCacheCompletionHandler:
-                            imageCacheHandler(nil, nil, image)
-                        default:
-                            SBULog.error("Invalid cacheHandler type")
-                        }
-                    }
+                    self.executeCompletion(image, handler: completionHandler)
                     return
                 }
                 
                 data.write(to: filePath, atomically: true)
-                DispatchQueue.main.async {
-                    switch completionHandler {
-                    case let cacheHandler as SBUCacheCompletionHandler:
-                        cacheHandler(filePath, data)
-                    case let imageCacheHandler as SBUImageCacheCompletionHandler:
-                        imageCacheHandler(filePath, data, image)
-                    default:
-                        SBULog.error("Invalid cacheHandler type")
-                    }
-                }
+                
+                self.executeCompletion(image, handler: completionHandler)
             }
         }
         
@@ -228,6 +219,22 @@ class SBUCacheManager {
         // MARK: - Reset
         func resetCache() {
             self.removeAll()
+        }
+        
+        private func executeCompletion<T>(
+            _ image: UIImage? = nil,
+            handler: T?
+        ) {
+            Thread.executeOnMain {
+                switch handler {
+                case let cacheHandler as SBUCacheCompletionHandler:
+                    cacheHandler(nil, nil)
+                case let imageCacheHandler as SBUImageCacheCompletionHandler:
+                    imageCacheHandler(nil, nil, image)
+                default:
+                    SBULog.error("Invalid cacheHandler type")
+                }
+            }
         }
     }
     
