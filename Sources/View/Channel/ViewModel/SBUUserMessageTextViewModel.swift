@@ -21,6 +21,8 @@ public struct SBUUserMessageTextViewModel {
     let editTextColor: UIColor?
     let edited: Bool
     
+    let isMarkdownEnabled: Bool
+    
     var highlight: Bool { highlightKeyword != nil }
     let highlightKeyword: String?
     let highlightTextColor: UIColor
@@ -61,6 +63,7 @@ public struct SBUUserMessageTextViewModel {
     ///   - isEdited: A boolean indicating if the message is edited, default is nil.
     ///   - isOverlay: A boolean indicating if the message is an overlay, default is false.
     ///   - highlightKeyword: The keyword to be highlighted in the message, default is nil.
+    ///   - isMarkdownEnabled: A boolean indicating whether to render the Markdown syntax of the message, default is false.
     public init(
         message: BaseMessage?,
         position: MessagePosition = .right,
@@ -69,7 +72,8 @@ public struct SBUUserMessageTextViewModel {
         textColor: UIColor? = nil,
         isEdited: Bool? = nil,
         isOverlay: Bool = false,
-        highlightKeyword: String? = nil
+        highlightKeyword: String? = nil,
+        isMarkdownEnabled: Bool = false
     ) {
         let text = message?.message ?? text ?? ""
         
@@ -110,6 +114,8 @@ public struct SBUUserMessageTextViewModel {
             normalTextColor = textColor
         }
 
+        self.isMarkdownEnabled = isMarkdownEnabled
+        
         paragraphStyle = SBUFontSet.body3Attributes[.paragraphStyle] as? NSMutableParagraphStyle ?? NSMutableParagraphStyle()
         self.defaultAttributes = [
             .font: self.font,

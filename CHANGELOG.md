@@ -1,5 +1,16 @@
 # Changelog
 
+### v3.23.0 (May 22, 2024)
+
+## New Feature
+- Add markdown (link, bold) message feature
+  - `SendbirdUI.config.groupChannel.channel.isMarkdownForUserMessageEnabled = true`
+- Added Horizontal suggested replies view
+  - `SendbirdUI.config.groupChannel.channel.suggestedRepliesDirection = .vertical`
+
+## Improvements
+- Improved stability
+
 ### v3.22.0 (May 13, 2024)
 
 ## New Feature

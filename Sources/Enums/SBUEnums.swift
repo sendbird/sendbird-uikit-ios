@@ -378,6 +378,15 @@ public enum SBUSuggestedRepliesRenderType {
     }
 }
 
+/// Enum for suggested replies direction types.
+/// - Since: 3.23.0
+public enum SBUSuggestedRepliesDirection {
+    /// vertical items layout (default)
+    case vertical
+    /// horizontal items layout
+    case horizontal
+}
+
 /// Enum representing the scroll position.
 /// - Since: 3.13.0
 public enum SBUScrollPosition {

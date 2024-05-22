@@ -177,7 +177,10 @@ open class SBUUserMessageTextView: SBUView {
     
     open func configure(model: SBUUserMessageTextViewModel) {
         self.text = model.text
-        self.textView.attributedText = model.attributedText
+        self.textView.attributedText = SBUMarkdownTransfer.convert(
+            with: model.attributedText,
+            isEnabled: model.isMarkdownEnabled
+        )        
         self.textView.linkTextAttributes = [
             .foregroundColor: model.textColor,
             .underlineStyle: NSUnderlineStyle.single.rawValue

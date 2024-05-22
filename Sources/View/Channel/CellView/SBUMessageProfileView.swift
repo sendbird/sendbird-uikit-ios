@@ -94,6 +94,7 @@ open class SBUMessageProfileView: SBUView {
                 with: self.theme.userPlaceholderTintColor,
                 to: SBUIconSetType.Metric.iconUserProfileInChat
             ),
+            option: .imageToThumbnail,
             subPath: SBUCacheManager.PathType.userProfile
         )
         self.imageView.backgroundColor = theme.userPlaceholderBackgroundColor
