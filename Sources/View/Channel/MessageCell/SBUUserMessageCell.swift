@@ -235,7 +235,8 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
             messageTextView.configure(
                 model: SBUUserMessageTextViewModel(
                     message: message,
-                    position: configuration.messagePosition
+                    position: configuration.messagePosition,
+                    isMarkdownEnabled: SendbirdUI.config.groupChannel.channel.isMarkdownForUserMessageEnabled
                 )
             )
         }
@@ -314,7 +315,8 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
             model: SBUUserMessageTextViewModel(
                 message: message,
                 position: position,
-                highlightKeyword: highlightInfo?.keyword
+                highlightKeyword: highlightInfo?.keyword,
+                isMarkdownEnabled: SendbirdUI.config.groupChannel.channel.isMarkdownForUserMessageEnabled
             )
         )
     }
@@ -369,7 +371,12 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
     /// NOTE: The default view is ``SBUVerticalSuggestedReplyView``, which is a vertically organized option view.
     /// - Returns: Views that inherit from ``SBUSuggestedReplyView``.
     /// - since: 3.11.0
-    open func createSuggestedReplyView() -> SBUSuggestedReplyView { SBUVerticalSuggestedReplyView() }
+    open func createSuggestedReplyView() -> SBUSuggestedReplyView {
+        switch SendbirdUI.config.groupChannel.channel.suggestedRepliesDirection {
+        case .horizontal: return SBUVerticalSuggestedReplyView()
+        case .vertical: return SBUHorizontalSuggestedReplyView()
+        }
+    }
     
     // MARK: - form view
 

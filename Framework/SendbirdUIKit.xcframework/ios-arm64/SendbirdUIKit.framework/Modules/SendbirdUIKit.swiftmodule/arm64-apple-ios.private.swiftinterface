@@ -3607,15 +3607,6 @@ public protocol SBUSuggestedReplyViewDelegate : AnyObject {
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
   @objc deinit
 }
-@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUVerticalSuggestedReplyView : SendbirdUIKit.SBUSuggestedReplyView {
-  @_Concurrency.MainActor(unsafe) public var stackView: UIKit.UIStackView
-  @_Concurrency.MainActor(unsafe) public var topSpacer: UIKit.UIView
-  @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupViews()
-  @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupLayouts()
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
-  @objc deinit
-}
 public typealias AlertButtonHandler = (_ info: Any?) -> Swift.Void
 public protocol SBUAlertViewDelegate : AnyObject {
   func didDismissAlertView()
@@ -4015,6 +4006,7 @@ extension SendbirdUIKit.SBUConfig.GroupChannel {
       _modify
     }
     public var showSuggestedRepliesFor: SendbirdUIKit.SBUSuggestedRepliesRenderType
+    public var suggestedRepliesDirection: SendbirdUIKit.SBUSuggestedRepliesDirection
     @SendbirdUIKit.SBUPrioritizedConfig public var isFormTypeMessageEnabled: Swift.Bool {
       get
       set
@@ -4026,6 +4018,11 @@ extension SendbirdUIKit.SBUConfig.GroupChannel {
       _modify
     }
     @SendbirdUIKit.SBUPrioritizedConfig public var isReactionsEnabled: Swift.Bool {
+      get
+      set
+      _modify
+    }
+    @SendbirdUIKit.SBUPrioritizedConfig public var isMarkdownForUserMessageEnabled: Swift.Bool {
       get
       set
       _modify
@@ -5431,6 +5428,15 @@ public enum SBUSuggestedRepliesRenderType {
   case allMessages
   public func shouldHideSuggestedReplies(message: SendbirdChatSDK.BaseMessage, fullMessageList: [SendbirdChatSDK.BaseMessage]) -> Swift.Bool
   public static func == (a: SendbirdUIKit.SBUSuggestedRepliesRenderType, b: SendbirdUIKit.SBUSuggestedRepliesRenderType) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public enum SBUSuggestedRepliesDirection {
+  case vertical
+  case horizontal
+  public static func == (a: SendbirdUIKit.SBUSuggestedRepliesDirection, b: SendbirdUIKit.SBUSuggestedRepliesDirection) -> Swift.Bool
   public func hash(into hasher: inout Swift.Hasher)
   public var hashValue: Swift.Int {
     get
@@ -7723,6 +7729,37 @@ public class SBUFeedNotificationCellParams : SendbirdUIKit.SBUBaseMessageCellPar
   }
   @objc deinit
 }
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUHorizontalSuggestedReplyView : SendbirdUIKit.SBUSuggestedReplyView, UIKit.UICollectionViewDelegate, UIKit.UICollectionViewDataSource, UIKit.UICollectionViewDelegateFlowLayout {
+  @_Concurrency.MainActor(unsafe) public var contentInsets: UIKit.UIEdgeInsets
+  @_Concurrency.MainActor(unsafe) public var itemSpacing: CoreFoundation.CGFloat
+  @_Concurrency.MainActor(unsafe) public var layout: UIKit.UICollectionViewFlowLayout {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var collectionView: UIKit.UICollectionView {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupViews()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupLayouts()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupStyles()
+  @_Concurrency.MainActor(unsafe) override open func configure(with configuration: SendbirdUIKit.SBUSuggestedReplyViewParams, delegate: (any SendbirdUIKit.SBUSuggestedReplyViewDelegate)? = nil)
+  @_Concurrency.MainActor(unsafe) @objc open func collectionView(_ collectionView: UIKit.UICollectionView, numberOfItemsInSection section: Swift.Int) -> Swift.Int
+  @_Concurrency.MainActor(unsafe) @objc open func collectionView(_ collectionView: UIKit.UICollectionView, cellForItemAt indexPath: Foundation.IndexPath) -> UIKit.UICollectionViewCell
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class HorizontalSuggestedReplyViewCell : SendbirdUIKit.SBUCollectionViewCell {
+  @_Concurrency.MainActor(unsafe) public static var cellHeight: CoreFoundation.CGFloat
+  @_Concurrency.MainActor(unsafe) public var optionView: SendbirdUIKit.SBUHorizontalSuggestedReplyOptionView
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupViews()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public func setupStyles()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupLayouts()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc deinit
+}
 extension UIKit.NSLayoutConstraint {
   @_Concurrency.MainActor(unsafe) public static func sbu_activate(baseView: UIKit.UIView, constraints: [UIKit.NSLayoutConstraint?])
 }
@@ -8741,6 +8778,22 @@ public class SBUQuotedBaseMessageViewParams {
   public init(messageId: Swift.Int64, messagePosition: SendbirdUIKit.MessagePosition, quotedMessageNickname: Swift.String, replierNickname: Swift.String, name: Swift.String, type: Swift.String, urlString: Swift.String, useQuotedMessage: Swift.Bool = true, quotedMessageCreatedAt: Swift.Int64)
   @objc deinit
 }
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUSimpleSuggestedReplyOptionView : SendbirdUIKit.SBUSuggestedReplyOptionView {
+  @_Concurrency.MainActor(unsafe) public var selectableStackView: SendbirdUIKit.SBUSelectableStackView
+  @_Concurrency.MainActor(unsafe) public var textView: UIKit.UIView
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupViews()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupLayouts()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupStyles()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupActions()
+  @objc @_Concurrency.MainActor(unsafe) open func onSelectOption()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func touchesBegan(_ touches: Swift.Set<UIKit.UITouch>, with event: UIKit.UIEvent?)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func touchesEnded(_ touches: Swift.Set<UIKit.UITouch>, with event: UIKit.UIEvent?)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func touchesCancelled(_ touches: Swift.Set<UIKit.UITouch>, with event: UIKit.UIEvent?)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func touchesMoved(_ touches: Swift.Set<UIKit.UITouch>, with event: UIKit.UIEvent?)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @objc deinit
+}
 extension SendbirdChatSDK.BaseMessage {
   @available(*, deprecated, message: "Use `BaseMessage.suggestedReplies`")
   public var asSuggestedReplies: [Swift.String]? {
@@ -8831,6 +8884,19 @@ public typealias SBUNewMessageInfoHandler = () -> Swift.Void
   @_Concurrency.MainActor(unsafe) open func updateCount(count: Swift.Int, actionHandler: SendbirdUIKit.SBUNewMessageInfoHandler?)
   @objc deinit
 }
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUHorizontalSuggestedReplyOptionView : SendbirdUIKit.SBUSuggestedReplyOptionView {
+  @_Concurrency.MainActor(unsafe) final public let button: UIKit.UIButton
+  @_Concurrency.MainActor(unsafe) public var contentPadding: UIKit.UIEdgeInsets
+  @_Concurrency.MainActor(unsafe) override open func configure(with optionText: Swift.String, delegate: (any SendbirdUIKit.SBUSuggestedReplyOptionViewDelegate)? = nil)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupViews()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupLayouts()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupStyles()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupActions()
+  @objc @_Concurrency.MainActor(unsafe) open func onSelectOption()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @objc deinit
+}
 extension SendbirdUIKit.SBUBaseChannelModule {
   public static var HeaderComponent: SendbirdUIKit.SBUBaseChannelModule.Header.Type
   public static var ListComponent: SendbirdUIKit.SBUBaseChannelModule.List.Type
@@ -8898,6 +8964,15 @@ extension SendbirdUIKit.SBUInviteUserModule {
 @objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUOpenChannelSettingCell : SendbirdUIKit.SBUBaseChannelSettingCell {
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init(style: UIKit.UITableViewCell.CellStyle, reuseIdentifier: Swift.String?)
   @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUVerticalSuggestedReplyView : SendbirdUIKit.SBUSuggestedReplyView {
+  @_Concurrency.MainActor(unsafe) public var stackView: UIKit.UIStackView
+  @_Concurrency.MainActor(unsafe) public var topSpacer: UIKit.UIView
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupViews()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupLayouts()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
   @objc deinit
 }
 @_hasMissingDesignatedInitializers open class SBUBaseChannelSettingsModule {
@@ -9763,22 +9838,6 @@ public protocol SBUSuggestedReplyOptionViewDelegate : AnyObject {
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
   @objc deinit
 }
-@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUSimpleSuggestedReplyOptionView : SendbirdUIKit.SBUSuggestedReplyOptionView {
-  @_Concurrency.MainActor(unsafe) public var selectableStackView: SendbirdUIKit.SBUSelectableStackView
-  @_Concurrency.MainActor(unsafe) public var textView: UIKit.UIView
-  @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupViews()
-  @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupLayouts()
-  @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupStyles()
-  @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupActions()
-  @objc @_Concurrency.MainActor(unsafe) open func onSelectOption()
-  @_Concurrency.MainActor(unsafe) @objc override dynamic open func touchesBegan(_ touches: Swift.Set<UIKit.UITouch>, with event: UIKit.UIEvent?)
-  @_Concurrency.MainActor(unsafe) @objc override dynamic open func touchesEnded(_ touches: Swift.Set<UIKit.UITouch>, with event: UIKit.UIEvent?)
-  @_Concurrency.MainActor(unsafe) @objc override dynamic open func touchesCancelled(_ touches: Swift.Set<UIKit.UITouch>, with event: UIKit.UIEvent?)
-  @_Concurrency.MainActor(unsafe) @objc override dynamic open func touchesMoved(_ touches: Swift.Set<UIKit.UITouch>, with event: UIKit.UIEvent?)
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
-  @objc deinit
-}
 @objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) public class MessageTemplateTestViewController : SendbirdUIKit.SBUBaseViewController {
   @_Concurrency.MainActor(unsafe) @objc override dynamic public func viewDidLoad()
   @objc @_Concurrency.MainActor(unsafe) open func onTapLeftBarButton()
@@ -9810,7 +9869,7 @@ public struct SBUUserMessageTextViewModel {
   public var hasMentionedMessage: Swift.Bool {
     get
   }
-  public init(message: SendbirdChatSDK.BaseMessage?, position: SendbirdUIKit.MessagePosition = .right, text: Swift.String? = nil, font: UIKit.UIFont? = nil, textColor: UIKit.UIColor? = nil, isEdited: Swift.Bool? = nil, isOverlay: Swift.Bool = false, highlightKeyword: Swift.String? = nil)
+  public init(message: SendbirdChatSDK.BaseMessage?, position: SendbirdUIKit.MessagePosition = .right, text: Swift.String? = nil, font: UIKit.UIFont? = nil, textColor: UIKit.UIColor? = nil, isEdited: Swift.Bool? = nil, isOverlay: Swift.Bool = false, highlightKeyword: Swift.String? = nil, isMarkdownEnabled: Swift.Bool = false)
   @available(*, deprecated, renamed: "hasMentionedMessage")
   public func haveMentionedMessage() -> Swift.Bool
   public func addhighlightIfNeeded(with attributedString: Foundation.NSMutableAttributedString)
@@ -11746,6 +11805,8 @@ extension SendbirdUIKit.SBUTypingIndicatorType : Swift.Equatable {}
 extension SendbirdUIKit.SBUTypingIndicatorType : Swift.Hashable {}
 extension SendbirdUIKit.SBUSuggestedRepliesRenderType : Swift.Equatable {}
 extension SendbirdUIKit.SBUSuggestedRepliesRenderType : Swift.Hashable {}
+extension SendbirdUIKit.SBUSuggestedRepliesDirection : Swift.Equatable {}
+extension SendbirdUIKit.SBUSuggestedRepliesDirection : Swift.Hashable {}
 extension SendbirdUIKit.SBUScrollPosition : Swift.Equatable {}
 extension SendbirdUIKit.SBUScrollPosition : Swift.Hashable {}
 extension SendbirdUIKit.SBUChannelType : Swift.Equatable {}

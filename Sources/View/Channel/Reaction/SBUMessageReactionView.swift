@@ -211,9 +211,7 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
             return cell
         }
         
-        guard !reactions.isEmpty else { return .init() }
-        
-        let reaction = reactions[indexPath.row]
+        guard let reaction = reactions[safe: indexPath.row] else { return cell }
         let emojiKey = reaction.key
         
         let selectedEmoji = emojiList.first(where: { $0.key == reaction.key })

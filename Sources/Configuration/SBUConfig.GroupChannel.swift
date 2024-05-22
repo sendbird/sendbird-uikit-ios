@@ -63,6 +63,12 @@ extension SBUConfig.GroupChannel {
         /// - Since: 3.19.0
         public var showSuggestedRepliesFor: SBUSuggestedRepliesRenderType = .lastMessageOnly
 
+        /// Choose the type of suggested replies direction to display in group channels
+        /// To enable the type, you must first enable ``isSuggestedRepliesEnabled``.
+        /// - Note: This property is not yet configurable via the Dashboard.
+        /// - Since: 3.23.0
+        public var suggestedRepliesDirection: SBUSuggestedRepliesDirection = .vertical
+        
         /// Enable the feature to show form type in messages. Default is `false`
         /// - NOTE: A value that cannot be set in the dashboard.
         /// - Since: 3.11.0
@@ -78,6 +84,10 @@ extension SBUConfig.GroupChannel {
         ///              so if you want to use this value for function implementation,
         ///              please use the ``SBUAvailable/isSupportReactions()`` method in the ``SBUAvailable`` class.
         @SBUPrioritizedConfig public var isReactionsEnabled: Bool = true
+        
+        /// Enable markdown features for user messages.
+        /// - Since: 3.23.0
+        @SBUPrioritizedConfig public var isMarkdownForUserMessageEnabled: Bool = false
         
         /// Enable the Reactions features in Super Group Channels.
         /// - Since: 3.19.0
@@ -163,6 +173,7 @@ extension SBUConfig.GroupChannel {
             self._isSuggestedRepliesEnabled.setDashboardValue(channel.isSuggestedRepliesEnabled)
             self._isFormTypeMessageEnabled.setDashboardValue(channel.isFormTypeMessageEnabled)
             self._isFeedbackEnabled.setDashboardValue(channel.isFeedbackEnabled)
+            self._isMarkdownForUserMessageEnabled.setDashboardValue(channel.isMarkdownForUserMessageEnabled)
 
             self.input.updateWithDashboardData(channel.input)
         }
@@ -185,6 +196,8 @@ extension SBUConfig.GroupChannel {
             self.isSuperGroupReactionsEnabled = try container.decodeIfPresent(Bool.self, forKey: .isSuperGroupReactionsEnabled) ?? false
             self.isFeedbackEnabled = (try? container.decode(Bool.self, forKey: .isFeedbackEnabled)) ??
                 SendbirdUI.config.groupChannel.channel.isFeedbackEnabled
+            self.isMarkdownForUserMessageEnabled = (try? container.decode(Bool.self, forKey: .isMarkdownForUserMessageEnabled)) ??
+            SendbirdUI.config.groupChannel.channel.isMarkdownForUserMessageEnabled
             
             self.input = try container.decode(SBUConfig.GroupChannel.Channel.Input.self, forKey: .input)
         }
