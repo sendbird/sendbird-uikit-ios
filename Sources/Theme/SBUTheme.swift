@@ -400,19 +400,19 @@ public class SBUGroupChannelListTheme {
         } else {
             theme.statusBarStyle = .default
         }
-        theme.leftBarButtonTintColor = SBUColorSet.primary300
-        theme.rightBarButtonTintColor = SBUColorSet.primary300
+        theme.leftBarButtonTintColor = SBUColorSet.primaryMain
+        theme.rightBarButtonTintColor = SBUColorSet.primaryMain
         theme.navigationBarTintColor = SBUColorSet.background50
-        theme.navigationBarShadowColor = SBUColorSet.onlight04
+        theme.navigationBarShadowColor = SBUColorSet.onLightTextDisabled
         
         theme.backgroundColor = SBUColorSet.background50
-        theme.notificationOnBackgroundColor = SBUColorSet.primary300
-        theme.notificationOnTintColor = SBUColorSet.ondark01
+        theme.notificationOnBackgroundColor = SBUColorSet.primaryMain
+        theme.notificationOnTintColor = SBUColorSet.onDarkTextHighEmphasis
         theme.notificationOffBackgroundColor = SBUColorSet.background200
-        theme.notificationOffTintColor = SBUColorSet.onlight01
+        theme.notificationOffTintColor = SBUColorSet.onLightTextHighEmphasis
         
-        theme.leaveBackgroundColor = SBUColorSet.error300
-        theme.leaveTintColor = SBUColorSet.ondark01
+        theme.leaveBackgroundColor = SBUColorSet.errorMain
+        theme.leaveTintColor = SBUColorSet.onDarkTextHighEmphasis
         
         theme.alertBackgroundColor = SBUColorSet.background50
         
@@ -424,19 +424,19 @@ public class SBUGroupChannelListTheme {
         
         theme.statusBarStyle = .lightContent
         
-        theme.leftBarButtonTintColor = SBUColorSet.primary200
-        theme.rightBarButtonTintColor = SBUColorSet.primary200
+        theme.leftBarButtonTintColor = SBUColorSet.primaryLight
+        theme.rightBarButtonTintColor = SBUColorSet.primaryLight
         theme.navigationBarTintColor = SBUColorSet.background500
         theme.navigationBarShadowColor = SBUColorSet.background500
         
         theme.backgroundColor = SBUColorSet.background600
-        theme.notificationOnBackgroundColor = SBUColorSet.primary200
-        theme.notificationOnTintColor = SBUColorSet.onlight01
+        theme.notificationOnBackgroundColor = SBUColorSet.primaryLight
+        theme.notificationOnTintColor = SBUColorSet.onLightTextHighEmphasis
         theme.notificationOffBackgroundColor = SBUColorSet.background400
-        theme.notificationOffTintColor = SBUColorSet.ondark01
+        theme.notificationOffTintColor = SBUColorSet.onDarkTextHighEmphasis
         
-        theme.leaveBackgroundColor = SBUColorSet.error200
-        theme.leaveTintColor = SBUColorSet.onlight01
+        theme.leaveBackgroundColor = SBUColorSet.errorLight
+        theme.leaveTintColor = SBUColorSet.onLightTextHighEmphasis
         
         theme.alertBackgroundColor = SBUColorSet.background600
         
@@ -444,17 +444,17 @@ public class SBUGroupChannelListTheme {
     }
     
     public init(statusBarStyle: UIStatusBarStyle = .default,
-                leftBarButtonTintColor: UIColor = SBUColorSet.primary300,
-                rightBarButtonTintColor: UIColor = SBUColorSet.primary300,
+                leftBarButtonTintColor: UIColor = SBUColorSet.primaryMain,
+                rightBarButtonTintColor: UIColor = SBUColorSet.primaryMain,
                 navigationBarTintColor: UIColor = SBUColorSet.background50,
-                navigationBarShadowColor: UIColor = SBUColorSet.onlight04,
+                navigationBarShadowColor: UIColor = SBUColorSet.onLightTextDisabled,
                 backgroundColor: UIColor = SBUColorSet.background50,
-                notificationOnBackgroundColor: UIColor = SBUColorSet.primary300,
-                notificationOnTintColor: UIColor = SBUColorSet.ondark01,
+                notificationOnBackgroundColor: UIColor = SBUColorSet.primaryMain,
+                notificationOnTintColor: UIColor = SBUColorSet.onDarkTextHighEmphasis,
                 notificationOffBackgroundColor: UIColor = SBUColorSet.background200,
-                notificationOffTintColor: UIColor = SBUColorSet.onlight01,
-                leaveBackgroundColor: UIColor = SBUColorSet.error300,
-                leaveTintColor: UIColor = SBUColorSet.ondark01,
+                notificationOffTintColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
+                leaveBackgroundColor: UIColor = SBUColorSet.errorMain,
+                leaveTintColor: UIColor = SBUColorSet.onDarkTextHighEmphasis,
                 alertBackgroundColor: UIColor = SBUColorSet.background50) {
         
         self.statusBarStyle = statusBarStyle
@@ -501,35 +501,35 @@ public class SBUGroupChannelCellTheme {
         theme.backgroundColor = SBUColorSet.background50
         
         theme.titleFont = SBUFontSet.subtitle1
-        theme.titleTextColor = SBUColorSet.onlight01
+        theme.titleTextColor = SBUColorSet.onLightTextHighEmphasis
         
         theme.memberCountFont = SBUFontSet.caption1
-        theme.memberCountTextColor = SBUColorSet.onlight02
+        theme.memberCountTextColor = SBUColorSet.onLightTextMidEmphasis
         
         theme.lastUpdatedTimeFont = SBUFontSet.caption2
-        theme.lastUpdatedTimeTextColor = SBUColorSet.onlight02
+        theme.lastUpdatedTimeTextColor = SBUColorSet.onLightTextMidEmphasis
         
         theme.messageFont = SBUFontSet.body3
-        theme.messageTextColor = SBUColorSet.onlight03
+        theme.messageTextColor = SBUColorSet.onLightTextLowEmphasis
         theme.fileIconBackgroundColor = SBUColorSet.background100
-        theme.fileIconTintColor = SBUColorSet.onlight02
+        theme.fileIconTintColor = SBUColorSet.onLightTextMidEmphasis
         
-        theme.broadcastMarkTintColor = SBUColorSet.secondary300
+        theme.broadcastMarkTintColor = SBUColorSet.secondaryMain
         
-        theme.freezeStateTintColor = SBUColorSet.primary300
+        theme.freezeStateTintColor = SBUColorSet.primaryMain
         
-        theme.unreadCountBackgroundColor = SBUColorSet.primary300
-        theme.unreadCountTextColor = SBUColorSet.ondark01
+        theme.unreadCountBackgroundColor = SBUColorSet.primaryMain
+        theme.unreadCountTextColor = SBUColorSet.onDarkTextHighEmphasis
         theme.unreadCountFont = SBUFontSet.caption1
         
-        theme.succeededStateColor = SBUColorSet.onlight03
-        theme.deliveryReceiptStateColor = SBUColorSet.onlight03
-        theme.readReceiptStateColor = SBUColorSet.secondary300
+        theme.succeededStateColor = SBUColorSet.onLightTextLowEmphasis
+        theme.deliveryReceiptStateColor = SBUColorSet.onLightTextLowEmphasis
+        theme.readReceiptStateColor = SBUColorSet.secondaryMain
         
         theme.unreadMentionTextFont = SBUFontSet.h3
-        theme.unreadMentionTextColor = SBUColorSet.primary300
+        theme.unreadMentionTextColor = SBUColorSet.primaryMain
         
-        theme.separatorLineColor = SBUColorSet.onlight04
+        theme.separatorLineColor = SBUColorSet.onLightTextDisabled
         return theme
     }
     public static var dark: SBUGroupChannelCellTheme {
@@ -537,60 +537,60 @@ public class SBUGroupChannelCellTheme {
         theme.backgroundColor = SBUColorSet.background600
         
         theme.titleFont = SBUFontSet.subtitle1
-        theme.titleTextColor = SBUColorSet.ondark01
+        theme.titleTextColor = SBUColorSet.onDarkTextHighEmphasis
         
         theme.memberCountFont = SBUFontSet.caption1
-        theme.memberCountTextColor = SBUColorSet.ondark02
+        theme.memberCountTextColor = SBUColorSet.onDarkTextMidEmphasis
         
         theme.lastUpdatedTimeFont = SBUFontSet.caption2
-        theme.lastUpdatedTimeTextColor = SBUColorSet.ondark02
+        theme.lastUpdatedTimeTextColor = SBUColorSet.onDarkTextMidEmphasis
         
         theme.messageFont = SBUFontSet.body3
-        theme.messageTextColor = SBUColorSet.ondark03
+        theme.messageTextColor = SBUColorSet.onDarkTextLowEmphasis
         theme.fileIconBackgroundColor = SBUColorSet.background500
-        theme.fileIconTintColor = SBUColorSet.ondark02
+        theme.fileIconTintColor = SBUColorSet.onDarkTextMidEmphasis
         
-        theme.broadcastMarkTintColor = SBUColorSet.secondary200
+        theme.broadcastMarkTintColor = SBUColorSet.secondaryLight
         
-        theme.freezeStateTintColor = SBUColorSet.primary200
+        theme.freezeStateTintColor = SBUColorSet.primaryLight
         
-        theme.unreadCountBackgroundColor = SBUColorSet.primary200
-        theme.unreadCountTextColor = SBUColorSet.onlight01
+        theme.unreadCountBackgroundColor = SBUColorSet.primaryLight
+        theme.unreadCountTextColor = SBUColorSet.onLightTextHighEmphasis
         theme.unreadCountFont = SBUFontSet.caption1
         
-        theme.succeededStateColor = SBUColorSet.ondark03
-        theme.deliveryReceiptStateColor = SBUColorSet.ondark03
-        theme.readReceiptStateColor = SBUColorSet.secondary200
+        theme.succeededStateColor = SBUColorSet.onDarkTextLowEmphasis
+        theme.deliveryReceiptStateColor = SBUColorSet.onDarkTextLowEmphasis
+        theme.readReceiptStateColor = SBUColorSet.secondaryLight
         
         theme.unreadMentionTextFont = SBUFontSet.h3
-        theme.unreadMentionTextColor = SBUColorSet.primary200
+        theme.unreadMentionTextColor = SBUColorSet.primaryLight
         
-        theme.separatorLineColor = SBUColorSet.ondark04
+        theme.separatorLineColor = SBUColorSet.onDarkTextDisabled
         return theme
     }
     
     public init(backgroundColor: UIColor = SBUColorSet.background50,
                 titleFont: UIFont = SBUFontSet.subtitle1,
-                titleTextColor: UIColor = SBUColorSet.onlight01,
+                titleTextColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
                 memberCountFont: UIFont = SBUFontSet.caption1,
-                memberCountTextColor: UIColor = SBUColorSet.onlight02,
+                memberCountTextColor: UIColor = SBUColorSet.onLightTextMidEmphasis,
                 lastUpdatedTimeFont: UIFont = SBUFontSet.caption2,
-                lastUpdatedTimeTextColor: UIColor = SBUColorSet.onlight02,
+                lastUpdatedTimeTextColor: UIColor = SBUColorSet.onLightTextMidEmphasis,
                 messageFont: UIFont = SBUFontSet.body3,
-                messageTextColor: UIColor = SBUColorSet.onlight03,
+                messageTextColor: UIColor = SBUColorSet.onLightTextLowEmphasis,
                 fileIconBackgroundColor: UIColor = SBUColorSet.background100,
-                fileIconTintColor: UIColor = SBUColorSet.onlight02,
-                broadcastMarkTintColor: UIColor = SBUColorSet.secondary300,
-                freezeStateTintColor: UIColor = SBUColorSet.primary300,
-                unreadCountBackgroundColor: UIColor = SBUColorSet.primary300,
-                unreadCountTextColor: UIColor = SBUColorSet.ondark01,
+                fileIconTintColor: UIColor = SBUColorSet.onLightTextMidEmphasis,
+                broadcastMarkTintColor: UIColor = SBUColorSet.secondaryMain,
+                freezeStateTintColor: UIColor = SBUColorSet.primaryMain,
+                unreadCountBackgroundColor: UIColor = SBUColorSet.primaryMain,
+                unreadCountTextColor: UIColor = SBUColorSet.onDarkTextHighEmphasis,
                 unreadCountFont: UIFont = SBUFontSet.caption1,
                 unreadMentionFont: UIFont = SBUFontSet.h3,
-                unreadMentionColor: UIColor = SBUColorSet.primary300,
-                succeededStateColor: UIColor = SBUColorSet.onlight03,
-                deliveryReceiptStateColor: UIColor = SBUColorSet.onlight03,
-                readReceiptStateColor: UIColor = SBUColorSet.secondary300,
-                separatorLineColor: UIColor = SBUColorSet.onlight04
+                unreadMentionColor: UIColor = SBUColorSet.primaryMain,
+                succeededStateColor: UIColor = SBUColorSet.onLightTextLowEmphasis,
+                deliveryReceiptStateColor: UIColor = SBUColorSet.onLightTextLowEmphasis,
+                readReceiptStateColor: UIColor = SBUColorSet.secondaryMain,
+                separatorLineColor: UIColor = SBUColorSet.onLightTextDisabled
     ) {
         
         self.backgroundColor = backgroundColor
@@ -667,14 +667,14 @@ public class SBUOpenChannelListTheme {
         } else {
             theme.statusBarStyle = .default
         }
-        theme.leftBarButtonTintColor = SBUColorSet.primary300
-        theme.rightBarButtonTintColor = SBUColorSet.primary300
+        theme.leftBarButtonTintColor = SBUColorSet.primaryMain
+        theme.rightBarButtonTintColor = SBUColorSet.primaryMain
         theme.navigationBarTintColor = SBUColorSet.background50
-        theme.navigationBarShadowColor = SBUColorSet.onlight04
+        theme.navigationBarShadowColor = SBUColorSet.onLightTextDisabled
         
         theme.backgroundColor = SBUColorSet.background50
         
-        theme.refreshIndicatorColor = SBUColorSet.primary300
+        theme.refreshIndicatorColor = SBUColorSet.primaryMain
         theme.refreshBackgroundColor = SBUColorSet.background100
         
         return theme
@@ -685,26 +685,26 @@ public class SBUOpenChannelListTheme {
         
         theme.statusBarStyle = .lightContent
         
-        theme.leftBarButtonTintColor = SBUColorSet.primary200
-        theme.rightBarButtonTintColor = SBUColorSet.primary200
+        theme.leftBarButtonTintColor = SBUColorSet.primaryLight
+        theme.rightBarButtonTintColor = SBUColorSet.primaryLight
         theme.navigationBarTintColor = SBUColorSet.background500
         theme.navigationBarShadowColor = SBUColorSet.background500
         
         theme.backgroundColor = SBUColorSet.background600
         
-        theme.refreshIndicatorColor = SBUColorSet.primary200
+        theme.refreshIndicatorColor = SBUColorSet.primaryLight
         theme.refreshBackgroundColor = SBUColorSet.background700
         
         return theme
     }
     
     public init(statusBarStyle: UIStatusBarStyle = .default,
-                leftBarButtonTintColor: UIColor = SBUColorSet.primary300,
-                rightBarButtonTintColor: UIColor = SBUColorSet.primary300,
+                leftBarButtonTintColor: UIColor = SBUColorSet.primaryMain,
+                rightBarButtonTintColor: UIColor = SBUColorSet.primaryMain,
                 navigationBarTintColor: UIColor = SBUColorSet.background50,
-                navigationBarShadowColor: UIColor = SBUColorSet.onlight04,
+                navigationBarShadowColor: UIColor = SBUColorSet.onLightTextDisabled,
                 backgroundColor: UIColor = SBUColorSet.background50,
-                refreshIndicatorColor: UIColor = SBUColorSet.primary300,
+                refreshIndicatorColor: UIColor = SBUColorSet.primaryMain,
                 refreshBackgroundColor: UIColor = SBUColorSet.background100) {
         
         self.statusBarStyle = statusBarStyle
@@ -738,19 +738,19 @@ public class SBUOpenChannelCellTheme {
         theme.backgroundColor = SBUColorSet.background50
         
         theme.titleFont = SBUFontSet.subtitle1
-        theme.titleTextColor = SBUColorSet.onlight01
+        theme.titleTextColor = SBUColorSet.onLightTextHighEmphasis
         
-        theme.participantMarkTint = SBUColorSet.onlight02
+        theme.participantMarkTint = SBUColorSet.onLightTextMidEmphasis
         theme.participantCountFont = SBUFontSet.caption2
-        theme.participantCountTextColor = SBUColorSet.onlight02
+        theme.participantCountTextColor = SBUColorSet.onLightTextMidEmphasis
         
-        theme.freezeStateTintColor = SBUColorSet.primary300
+        theme.freezeStateTintColor = SBUColorSet.primaryMain
         
-        theme.separatorLineColor = SBUColorSet.onlight04
+        theme.separatorLineColor = SBUColorSet.onLightTextDisabled
 
         // TODO: need to remove (not used)
         theme.channelPlaceholderBackgroundColor = SBUColorSet.background300
-        theme.channelPlaceholderTintColor = SBUColorSet.ondark01
+        theme.channelPlaceholderTintColor = SBUColorSet.onDarkTextHighEmphasis
         
         return theme
     }
@@ -760,33 +760,33 @@ public class SBUOpenChannelCellTheme {
         theme.backgroundColor = SBUColorSet.background600
         
         theme.titleFont = SBUFontSet.subtitle1
-        theme.titleTextColor = SBUColorSet.ondark01
+        theme.titleTextColor = SBUColorSet.onDarkTextHighEmphasis
         
-        theme.participantMarkTint = SBUColorSet.ondark02
+        theme.participantMarkTint = SBUColorSet.onDarkTextMidEmphasis
         theme.participantCountFont = SBUFontSet.caption2
-        theme.participantCountTextColor = SBUColorSet.ondark02
+        theme.participantCountTextColor = SBUColorSet.onDarkTextMidEmphasis
         
-        theme.freezeStateTintColor = SBUColorSet.primary200
+        theme.freezeStateTintColor = SBUColorSet.primaryLight
         
-        theme.separatorLineColor = SBUColorSet.ondark04
+        theme.separatorLineColor = SBUColorSet.onDarkTextDisabled
 
         // TODO: need to remove (not used)
         theme.channelPlaceholderBackgroundColor = SBUColorSet.background300
-        theme.channelPlaceholderTintColor = SBUColorSet.onlight01
+        theme.channelPlaceholderTintColor = SBUColorSet.onLightTextHighEmphasis
         
         return theme
     }
     
     public init(backgroundColor: UIColor = SBUColorSet.background50,
                 channelPlaceholderBackgroundColor: UIColor = SBUColorSet.background300,
-                channelPlaceholderTintColor: UIColor = SBUColorSet.onlight01,
+                channelPlaceholderTintColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
                 titleFont: UIFont = SBUFontSet.subtitle1,
-                titleTextColor: UIColor = SBUColorSet.onlight01,
-                participantMarkTint: UIColor = SBUColorSet.onlight02,
+                titleTextColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
+                participantMarkTint: UIColor = SBUColorSet.onLightTextMidEmphasis,
                 participantCountFont: UIFont = SBUFontSet.caption2,
-                participantCountTextColor: UIColor = SBUColorSet.onlight02,
-                freezeStateTintColor: UIColor = SBUColorSet.primary300,
-                separatorLineColor: UIColor = SBUColorSet.onlight04) {
+                participantCountTextColor: UIColor = SBUColorSet.onLightTextMidEmphasis,
+                freezeStateTintColor: UIColor = SBUColorSet.primaryMain,
+                separatorLineColor: UIColor = SBUColorSet.onLightTextDisabled) {
         
         self.backgroundColor = backgroundColor
         self.titleFont = titleFont
@@ -833,39 +833,39 @@ public class SBUChannelTheme {
             theme.statusBarStyle = .default
         }
         theme.navigationBarTintColor = SBUColorSet.background50
-        theme.navigationBarShadowColor = SBUColorSet.onlight04
-        theme.leftBarButtonTintColor = SBUColorSet.primary300
-        theme.rightBarButtonTintColor = SBUColorSet.primary300
+        theme.navigationBarShadowColor = SBUColorSet.onLightTextDisabled
+        theme.leftBarButtonTintColor = SBUColorSet.primaryMain
+        theme.rightBarButtonTintColor = SBUColorSet.primaryMain
         theme.backgroundColor = SBUColorSet.background50
         
         // Alert
-        theme.removeItemColor = SBUColorSet.error300
-        theme.deleteItemColor = SBUColorSet.error300
-        theme.cancelItemColor = SBUColorSet.primary300
+        theme.removeItemColor = SBUColorSet.errorMain
+        theme.deleteItemColor = SBUColorSet.errorMain
+        theme.cancelItemColor = SBUColorSet.primaryMain
         
-        theme.alertRemoveColor = SBUColorSet.error300
-        theme.alertCancelColor = SBUColorSet.primary300
+        theme.alertRemoveColor = SBUColorSet.errorMain
+        theme.alertCancelColor = SBUColorSet.primaryMain
         
         // Menu
-        theme.menuTextColor = SBUColorSet.onlight01
-        theme.menuItemTintColor = SBUColorSet.onlight01
-        theme.menuItemDisabledColor = SBUColorSet.onlight04
+        theme.menuTextColor = SBUColorSet.onLightTextHighEmphasis
+        theme.menuItemTintColor = SBUColorSet.onLightTextHighEmphasis
+        theme.menuItemDisabledColor = SBUColorSet.onLightTextDisabled
         
         // State banner
         theme.channelStateBannerFont = SBUFontSet.caption2
-        theme.channelStateBannerTextColor = SBUColorSet.onlight01
-        theme.channelStateBannerBackgroundColor = SBUColorSet.information
+        theme.channelStateBannerTextColor = SBUColorSet.onLightTextHighEmphasis
+        theme.channelStateBannerBackgroundColor = SBUColorSet.informationLight
         
         // Mention Limitation
         theme.mentionLimitGuideTextFont = SBUFontSet.body3
-        theme.mentionLimitGuideTextColor = SBUColorSet.onlight02
+        theme.mentionLimitGuideTextColor = SBUColorSet.onLightTextMidEmphasis
         
-        theme.separatorColor = SBUColorSet.onlight04
+        theme.separatorColor = SBUColorSet.onLightTextDisabled
         
         // Message Thread Header
-        theme.messageThreadTitleColor = SBUColorSet.onlight01
+        theme.messageThreadTitleColor = SBUColorSet.onLightTextHighEmphasis
         theme.messageThreadTitleFont = SBUFontSet.h3
-        theme.messageThreadTitleChannelNameColor = SBUColorSet.primary300
+        theme.messageThreadTitleChannelNameColor = SBUColorSet.primaryMain
         theme.messageThreadTitleChannelNameFont = SBUFontSet.caption2
         
         return theme
@@ -878,38 +878,38 @@ public class SBUChannelTheme {
         
         theme.navigationBarTintColor = SBUColorSet.background500
         theme.navigationBarShadowColor = SBUColorSet.background500
-        theme.leftBarButtonTintColor = SBUColorSet.primary200
-        theme.rightBarButtonTintColor = SBUColorSet.primary200
+        theme.leftBarButtonTintColor = SBUColorSet.primaryLight
+        theme.rightBarButtonTintColor = SBUColorSet.primaryLight
         theme.backgroundColor = SBUColorSet.background600
         
         // Alert
-        theme.removeItemColor = SBUColorSet.error300
-        theme.deleteItemColor = SBUColorSet.error300
-        theme.cancelItemColor = SBUColorSet.primary200
+        theme.removeItemColor = SBUColorSet.errorMain
+        theme.deleteItemColor = SBUColorSet.errorMain
+        theme.cancelItemColor = SBUColorSet.primaryLight
         
-        theme.alertRemoveColor = SBUColorSet.error300
-        theme.alertCancelColor = SBUColorSet.primary200
+        theme.alertRemoveColor = SBUColorSet.errorMain
+        theme.alertCancelColor = SBUColorSet.primaryLight
         
         // Menu
-        theme.menuTextColor = SBUColorSet.ondark01
-        theme.menuItemTintColor = SBUColorSet.ondark01
-        theme.menuItemDisabledColor = SBUColorSet.ondark04
+        theme.menuTextColor = SBUColorSet.onDarkTextHighEmphasis
+        theme.menuItemTintColor = SBUColorSet.onDarkTextHighEmphasis
+        theme.menuItemDisabledColor = SBUColorSet.onDarkTextDisabled
         
         // State banner
         theme.channelStateBannerFont = SBUFontSet.caption2
-        theme.channelStateBannerTextColor = SBUColorSet.onlight01
-        theme.channelStateBannerBackgroundColor = SBUColorSet.information
+        theme.channelStateBannerTextColor = SBUColorSet.onLightTextHighEmphasis
+        theme.channelStateBannerBackgroundColor = SBUColorSet.informationLight
         
         // Mention Limitation
         theme.mentionLimitGuideTextFont = SBUFontSet.body1
-        theme.mentionLimitGuideTextColor = SBUColorSet.ondark02
+        theme.mentionLimitGuideTextColor = SBUColorSet.onDarkTextMidEmphasis
         
         theme.separatorColor = SBUColorSet.background500
         
         // Message Thread Header
-        theme.messageThreadTitleColor = SBUColorSet.ondark01
+        theme.messageThreadTitleColor = SBUColorSet.onDarkTextHighEmphasis
         theme.messageThreadTitleFont = SBUFontSet.h3
-        theme.messageThreadTitleChannelNameColor = SBUColorSet.primary200
+        theme.messageThreadTitleChannelNameColor = SBUColorSet.primaryLight
         theme.messageThreadTitleChannelNameFont = SBUFontSet.caption2
         
         return theme
@@ -922,38 +922,38 @@ public class SBUChannelTheme {
         
         theme.navigationBarTintColor = SBUColorSet.background500
         theme.navigationBarShadowColor = SBUColorSet.background500
-        theme.leftBarButtonTintColor = SBUColorSet.primary200
-        theme.rightBarButtonTintColor = SBUColorSet.primary200
-        theme.backgroundColor = SBUColorSet.onlight02
+        theme.leftBarButtonTintColor = SBUColorSet.primaryLight
+        theme.rightBarButtonTintColor = SBUColorSet.primaryLight
+        theme.backgroundColor = SBUColorSet.onLightTextMidEmphasis
         
         // Alert
-        theme.removeItemColor = SBUColorSet.error300
-        theme.deleteItemColor = SBUColorSet.error300
-        theme.cancelItemColor = SBUColorSet.primary200
+        theme.removeItemColor = SBUColorSet.errorMain
+        theme.deleteItemColor = SBUColorSet.errorMain
+        theme.cancelItemColor = SBUColorSet.primaryLight
         
-        theme.alertRemoveColor = SBUColorSet.error300
-        theme.alertCancelColor = SBUColorSet.primary200
+        theme.alertRemoveColor = SBUColorSet.errorMain
+        theme.alertCancelColor = SBUColorSet.primaryLight
         
         // Menu
-        theme.menuTextColor = SBUColorSet.ondark01
-        theme.menuItemTintColor = SBUColorSet.ondark01
-        theme.menuItemDisabledColor = SBUColorSet.ondark04
+        theme.menuTextColor = SBUColorSet.onDarkTextHighEmphasis
+        theme.menuItemTintColor = SBUColorSet.onDarkTextHighEmphasis
+        theme.menuItemDisabledColor = SBUColorSet.onDarkTextDisabled
         
         // State banner
         theme.channelStateBannerFont = SBUFontSet.caption2
-        theme.channelStateBannerTextColor = SBUColorSet.onlight01
-        theme.channelStateBannerBackgroundColor = SBUColorSet.information
+        theme.channelStateBannerTextColor = SBUColorSet.onLightTextHighEmphasis
+        theme.channelStateBannerBackgroundColor = SBUColorSet.informationLight
         
         // Mention Limitation
         theme.mentionLimitGuideTextFont = SBUFontSet.body1
-        theme.mentionLimitGuideTextColor = SBUColorSet.ondark02
+        theme.mentionLimitGuideTextColor = SBUColorSet.onDarkTextMidEmphasis
         
         theme.separatorColor = SBUColorSet.background500
         
         // Message Thread Header
-        theme.messageThreadTitleColor = SBUColorSet.ondark01
+        theme.messageThreadTitleColor = SBUColorSet.onDarkTextHighEmphasis
         theme.messageThreadTitleFont = SBUFontSet.h3
-        theme.messageThreadTitleChannelNameColor = SBUColorSet.primary200
+        theme.messageThreadTitleChannelNameColor = SBUColorSet.primaryLight
         theme.messageThreadTitleChannelNameFont = SBUFontSet.caption2
         
         return theme
@@ -961,27 +961,27 @@ public class SBUChannelTheme {
     
     public init(statusBarStyle: UIStatusBarStyle = .default,
                 navigationBarTintColor: UIColor = SBUColorSet.background50,
-                navigationBarShadowColor: UIColor = SBUColorSet.onlight04,
-                leftBarButtonTintColor: UIColor = SBUColorSet.primary300,
-                rightBarButtonTintColor: UIColor = SBUColorSet.primary300,
+                navigationBarShadowColor: UIColor = SBUColorSet.onLightTextDisabled,
+                leftBarButtonTintColor: UIColor = SBUColorSet.primaryMain,
+                rightBarButtonTintColor: UIColor = SBUColorSet.primaryMain,
                 backgroundColor: UIColor = SBUColorSet.background50,
-                removeItemColor: UIColor = SBUColorSet.error300,
-                deleteItemColor: UIColor = SBUColorSet.error300,
-                cancelItemColor: UIColor = SBUColorSet.primary300,
-                alertRemoveColor: UIColor = SBUColorSet.error300,
-                alertCancelColor: UIColor = SBUColorSet.primary300,
-                menuTextColor: UIColor = SBUColorSet.onlight01,
-                menuItemTintColor: UIColor = SBUColorSet.onlight01,
-                menuItemDisabledColor: UIColor = SBUColorSet.onlight04,
+                removeItemColor: UIColor = SBUColorSet.errorMain,
+                deleteItemColor: UIColor = SBUColorSet.errorMain,
+                cancelItemColor: UIColor = SBUColorSet.primaryMain,
+                alertRemoveColor: UIColor = SBUColorSet.errorMain,
+                alertCancelColor: UIColor = SBUColorSet.primaryMain,
+                menuTextColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
+                menuItemTintColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
+                menuItemDisabledColor: UIColor = SBUColorSet.onLightTextDisabled,
                 channelStateBannerFont: UIFont = SBUFontSet.caption2,
-                channelStateBannerTextColor: UIColor = SBUColorSet.onlight01,
-                channelStateBannerBackgroundColor: UIColor = SBUColorSet.information,
+                channelStateBannerTextColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
+                channelStateBannerBackgroundColor: UIColor = SBUColorSet.informationLight,
                 mentionLimitGuideTextFont: UIFont = SBUFontSet.body3,
-                mentionLimitGuideTextColor: UIColor = SBUColorSet.onlight02,
-                separatorColor: UIColor = SBUColorSet.onlight04,
-                messageThreadTitleColor: UIColor = SBUColorSet.onlight01,
+                mentionLimitGuideTextColor: UIColor = SBUColorSet.onLightTextMidEmphasis,
+                separatorColor: UIColor = SBUColorSet.onLightTextDisabled,
+                messageThreadTitleColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
                 messageThreadTitleFont: UIFont = SBUFontSet.h3,
-                messageThreadTitleChannelNameColor: UIColor = SBUColorSet.primary300,
+                messageThreadTitleChannelNameColor: UIColor = SBUColorSet.primaryMain,
                 messageThreadTitleChannelNameFont: UIFont = SBUFontSet.caption2
     ) {
         
@@ -1061,33 +1061,33 @@ public class SBUMessageInputTheme {
         
         theme.backgroundColor = SBUColorSet.background50
         theme.textFieldBackgroundColor = SBUColorSet.background100
-        theme.textFieldPlaceholderColor = SBUColorSet.onlight03
+        theme.textFieldPlaceholderColor = SBUColorSet.onLightTextLowEmphasis
         theme.textFieldPlaceholderFont = SBUFontSet.body3
-        theme.textFieldDisabledColor = SBUColorSet.onlight04
-        theme.textFieldTintColor = SBUColorSet.primary300
-        theme.textFieldTextColor = SBUColorSet.onlight01
+        theme.textFieldDisabledColor = SBUColorSet.onLightTextDisabled
+        theme.textFieldTintColor = SBUColorSet.primaryMain
+        theme.textFieldTextColor = SBUColorSet.onLightTextHighEmphasis
         theme.textFieldBorderColor = SBUColorSet.background100
         theme.textFieldFont = SBUFontSet.body3
         
-        theme.buttonTintColor = SBUColorSet.primary300
-        theme.buttonDisabledTintColor = SBUColorSet.onlight04
+        theme.buttonTintColor = SBUColorSet.primaryMain
+        theme.buttonDisabledTintColor = SBUColorSet.onLightTextDisabled
         
         theme.cancelButtonFont = SBUFontSet.button2
         theme.saveButtonFont = SBUFontSet.button2
-        theme.saveButtonTextColor = SBUColorSet.ondark01
+        theme.saveButtonTextColor = SBUColorSet.onDarkTextHighEmphasis
         
         // Quoted message
-        theme.channelViewDividerColor = SBUColorSet.onlight04
+        theme.channelViewDividerColor = SBUColorSet.onLightTextDisabled
         theme.quotedFileMessageThumbnailBackgroundColor = SBUColorSet.background200
-        theme.quotedFileMessageThumbnailTintColor = SBUColorSet.onlight02
-        theme.replyToTextColor = SBUColorSet.onlight01
+        theme.quotedFileMessageThumbnailTintColor = SBUColorSet.onLightTextMidEmphasis
+        theme.replyToTextColor = SBUColorSet.onLightTextHighEmphasis
         theme.replyToTextFont = SBUFontSet.caption1
-        theme.quotedMessageTextColor = SBUColorSet.onlight03
+        theme.quotedMessageTextColor = SBUColorSet.onLightTextLowEmphasis
         theme.quotedMessageTextFont = SBUFontSet.caption2
-        theme.closeReplyButtonColor = SBUColorSet.onlight01
+        theme.closeReplyButtonColor = SBUColorSet.onLightTextHighEmphasis
         
         theme.mentionTextFont = SBUFontSet.body2
-        theme.mentionTextColor = SBUColorSet.onlight01
+        theme.mentionTextColor = SBUColorSet.onLightTextHighEmphasis
         theme.mentionTextBackgroundColor = .clear
         
         return theme
@@ -1096,57 +1096,57 @@ public class SBUMessageInputTheme {
         let theme = SBUMessageInputTheme()
         theme.backgroundColor = SBUColorSet.background600
         theme.textFieldBackgroundColor = SBUColorSet.background400
-        theme.textFieldPlaceholderColor = SBUColorSet.ondark03
+        theme.textFieldPlaceholderColor = SBUColorSet.onDarkTextLowEmphasis
         theme.textFieldPlaceholderFont = SBUFontSet.body3
-        theme.textFieldDisabledColor = SBUColorSet.ondark04
-        theme.textFieldTintColor = SBUColorSet.primary200
-        theme.textFieldTextColor = SBUColorSet.ondark01
+        theme.textFieldDisabledColor = SBUColorSet.onDarkTextDisabled
+        theme.textFieldTintColor = SBUColorSet.primaryLight
+        theme.textFieldTextColor = SBUColorSet.onDarkTextHighEmphasis
         theme.textFieldBorderColor = SBUColorSet.background400
         theme.textFieldFont = SBUFontSet.body3
         
-        theme.buttonTintColor = SBUColorSet.primary200
-        theme.buttonDisabledTintColor = SBUColorSet.ondark04
+        theme.buttonTintColor = SBUColorSet.primaryLight
+        theme.buttonDisabledTintColor = SBUColorSet.onDarkTextDisabled
         
         theme.cancelButtonFont = SBUFontSet.button2
         theme.saveButtonFont = SBUFontSet.button2
-        theme.saveButtonTextColor = SBUColorSet.onlight01
+        theme.saveButtonTextColor = SBUColorSet.onLightTextHighEmphasis
         
-        theme.channelViewDividerColor = SBUColorSet.ondark04
+        theme.channelViewDividerColor = SBUColorSet.onDarkTextDisabled
         theme.quotedFileMessageThumbnailBackgroundColor = SBUColorSet.background500
-        theme.quotedFileMessageThumbnailTintColor = SBUColorSet.ondark02
-        theme.replyToTextColor = SBUColorSet.ondark01
+        theme.quotedFileMessageThumbnailTintColor = SBUColorSet.onDarkTextMidEmphasis
+        theme.replyToTextColor = SBUColorSet.onDarkTextHighEmphasis
         theme.replyToTextFont = SBUFontSet.caption1
-        theme.quotedMessageTextColor = SBUColorSet.ondark03
+        theme.quotedMessageTextColor = SBUColorSet.onDarkTextLowEmphasis
         theme.quotedMessageTextFont = SBUFontSet.caption2
-        theme.closeReplyButtonColor = SBUColorSet.ondark01
+        theme.closeReplyButtonColor = SBUColorSet.onDarkTextHighEmphasis
         
         theme.mentionTextFont = SBUFontSet.body2
-        theme.mentionTextColor = SBUColorSet.ondark01
+        theme.mentionTextColor = SBUColorSet.onDarkTextHighEmphasis
         theme.mentionTextBackgroundColor = .clear
         
         return theme
     }
     public static var overlay: SBUMessageInputTheme {
         let theme = SBUMessageInputTheme()
-        theme.backgroundColor = SBUColorSet.onlight02
+        theme.backgroundColor = SBUColorSet.onLightTextMidEmphasis
         theme.textFieldBackgroundColor = SBUColorSet.background400
-        theme.textFieldPlaceholderColor = SBUColorSet.ondark03
+        theme.textFieldPlaceholderColor = SBUColorSet.onDarkTextLowEmphasis
         theme.textFieldPlaceholderFont = SBUFontSet.body3
-        theme.textFieldDisabledColor = SBUColorSet.ondark04
-        theme.textFieldTintColor = SBUColorSet.primary200
-        theme.textFieldTextColor = SBUColorSet.ondark01
+        theme.textFieldDisabledColor = SBUColorSet.onDarkTextDisabled
+        theme.textFieldTintColor = SBUColorSet.primaryLight
+        theme.textFieldTextColor = SBUColorSet.onDarkTextHighEmphasis
         theme.textFieldBorderColor = SBUColorSet.background400
         theme.textFieldFont = SBUFontSet.body3
         
-        theme.buttonTintColor = SBUColorSet.ondark01
+        theme.buttonTintColor = SBUColorSet.onDarkTextHighEmphasis
         theme.buttonDisabledTintColor = SBUColorSet.background400
         
         theme.cancelButtonFont = SBUFontSet.button2
         theme.saveButtonFont = SBUFontSet.button2
-        theme.saveButtonTextColor = SBUColorSet.onlight01
+        theme.saveButtonTextColor = SBUColorSet.onLightTextHighEmphasis
         
         theme.mentionTextFont = SBUFontSet.body2
-        theme.mentionTextColor = SBUColorSet.ondark01
+        theme.mentionTextColor = SBUColorSet.onDarkTextHighEmphasis
         theme.mentionTextBackgroundColor = .clear
         
         return theme
@@ -1155,28 +1155,28 @@ public class SBUMessageInputTheme {
     // swiftlint:disable identifier_name
     public init(backgroundColor: UIColor = SBUColorSet.background50,
                 textFieldBackgroundColor: UIColor = SBUColorSet.background100,
-                textFieldPlaceholderColor: UIColor = SBUColorSet.onlight03,
+                textFieldPlaceholderColor: UIColor = SBUColorSet.onLightTextLowEmphasis,
                 textFieldPlaceholderFont: UIFont = SBUFontSet.body3,
-                textFieldDisabledColor: UIColor = SBUColorSet.onlight04,
-                textFieldTintColor: UIColor = SBUColorSet.primary300,
-                textFieldTextColor: UIColor = SBUColorSet.onlight01,
+                textFieldDisabledColor: UIColor = SBUColorSet.onLightTextDisabled,
+                textFieldTintColor: UIColor = SBUColorSet.primaryMain,
+                textFieldTextColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
                 textFieldBorderColor: UIColor = SBUColorSet.background100,
                 textFieldFont: UIFont = SBUFontSet.body3,
-                buttonTintColor: UIColor = SBUColorSet.primary300,
-                buttonDisabledTintColor: UIColor = SBUColorSet.onlight04,
+                buttonTintColor: UIColor = SBUColorSet.primaryMain,
+                buttonDisabledTintColor: UIColor = SBUColorSet.onLightTextDisabled,
                 cancelButtonFont: UIFont = SBUFontSet.button2,
                 saveButtonFont: UIFont = SBUFontSet.button2,
-                saveButtonTextColor: UIColor = SBUColorSet.ondark01,
-                channelViewDividerColor: UIColor = SBUColorSet.onlight04,
+                saveButtonTextColor: UIColor = SBUColorSet.onDarkTextHighEmphasis,
+                channelViewDividerColor: UIColor = SBUColorSet.onLightTextDisabled,
                 quotedFileMessageThumbnailBackgroundColor: UIColor = SBUColorSet.background200,
-                quotedFileMessageThumbnailTintColor: UIColor = SBUColorSet.onlight02,
-                replyToTextColor: UIColor = SBUColorSet.onlight01,
+                quotedFileMessageThumbnailTintColor: UIColor = SBUColorSet.onLightTextMidEmphasis,
+                replyToTextColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
                 replyToTextFont: UIFont = SBUFontSet.caption1,
-                quotedMessageTextColor: UIColor = SBUColorSet.onlight03,
+                quotedMessageTextColor: UIColor = SBUColorSet.onLightTextLowEmphasis,
                 quotedMessageTextFont: UIFont = SBUFontSet.caption2,
-                closeReplyButtonColor: UIColor = SBUColorSet.onlight01,
+                closeReplyButtonColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
                 mentionTextFont: UIFont = SBUFontSet.body2,
-                mentionTextColor: UIColor = SBUColorSet.onlight01,
+                mentionTextColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
                 mentionTextBackgroundColor: UIColor = .clear
                 
     ) {
@@ -1268,173 +1268,173 @@ public class SBUMessageCellTheme {
         theme.backgroundColor = .clear
         
         theme.leftBackgroundColor = SBUColorSet.background100
-        theme.leftPressedBackgroundColor = SBUColorSet.primary100
-        theme.rightBackgroundColor = SBUColorSet.primary300
-        theme.rightPressedBackgroundColor = SBUColorSet.primary400
+        theme.leftPressedBackgroundColor = SBUColorSet.primaryExtraLight
+        theme.rightBackgroundColor = SBUColorSet.primaryMain
+        theme.rightPressedBackgroundColor = SBUColorSet.primaryDark
         
         theme.openChannelBackgroundColor = .clear
         theme.openChannelPressedBackgroundColor = SBUColorSet.background100
         
         // Date Label
         theme.dateFont = SBUFontSet.caption1
-        theme.dateTextColor = SBUColorSet.ondark01
-        theme.dateBackgroundColor = SBUColorSet.overlay02
+        theme.dateTextColor = SBUColorSet.onDarkTextHighEmphasis
+        theme.dateBackgroundColor = SBUColorSet.overlayLight
         
         // User name
         theme.userPlaceholderBackgroundColor = SBUColorSet.background300
-        theme.userPlaceholderTintColor = SBUColorSet.ondark01
+        theme.userPlaceholderTintColor = SBUColorSet.onDarkTextHighEmphasis
         theme.userNameFont = SBUFontSet.caption1
-        theme.userNameTextColor = SBUColorSet.onlight02
-        theme.currentUserNameTextColor = SBUColorSet.secondary300
+        theme.userNameTextColor = SBUColorSet.onLightTextMidEmphasis
+        theme.currentUserNameTextColor = SBUColorSet.secondaryMain
         
         // TitleLabel
         theme.timeFont = SBUFontSet.caption4
-        theme.timeTextColor = SBUColorSet.onlight03
+        theme.timeTextColor = SBUColorSet.onLightTextLowEmphasis
         
         // Message state
-        theme.pendingStateColor = SBUColorSet.primary300
-        theme.failedStateColor = SBUColorSet.error300
-        theme.succeededStateColor = SBUColorSet.onlight03
-        theme.readReceiptStateColor = SBUColorSet.secondary300
-        theme.deliveryReceiptStateColor = SBUColorSet.onlight03
+        theme.pendingStateColor = SBUColorSet.primaryMain
+        theme.failedStateColor = SBUColorSet.errorMain
+        theme.succeededStateColor = SBUColorSet.onLightTextLowEmphasis
+        theme.readReceiptStateColor = SBUColorSet.secondaryMain
+        theme.deliveryReceiptStateColor = SBUColorSet.onLightTextLowEmphasis
         
         // Message addition container background
         theme.contentBackgroundColor = SBUColorSet.background100
-        theme.pressedContentBackgroundColor = SBUColorSet.primary100
+        theme.pressedContentBackgroundColor = SBUColorSet.primaryExtraLight
         
         // User messgae
         theme.userMessageFont = SBUFontSet.body3
-        theme.userMessageLeftTextColor = SBUColorSet.onlight01
-        theme.userMessageLeftEditTextColor = SBUColorSet.onlight02
+        theme.userMessageLeftTextColor = SBUColorSet.onLightTextHighEmphasis
+        theme.userMessageLeftEditTextColor = SBUColorSet.onLightTextMidEmphasis
         
-        theme.userMessageRightTextColor = SBUColorSet.ondark01
-        theme.userMessageRightEditTextColor = SBUColorSet.ondark02
+        theme.userMessageRightTextColor = SBUColorSet.onDarkTextHighEmphasis
+        theme.userMessageRightEditTextColor = SBUColorSet.onDarkTextMidEmphasis
         
         // File message
         theme.fileIconBackgroundColor = SBUColorSet.background50
-        theme.fileIconColor = SBUColorSet.primary300
-        theme.fileImageBackgroundColor = SBUColorSet.ondark01
-        theme.fileImageIconColor = SBUColorSet.onlight02
+        theme.fileIconColor = SBUColorSet.primaryMain
+        theme.fileImageBackgroundColor = SBUColorSet.onDarkTextHighEmphasis
+        theme.fileImageIconColor = SBUColorSet.onLightTextMidEmphasis
         theme.fileMessageNameFont = SBUFontSet.body3
-        theme.fileMessageLeftTextColor = SBUColorSet.onlight01
-        theme.fileMessageRightTextColor = SBUColorSet.ondark01
-        theme.fileMessagePlaceholderColor = SBUColorSet.onlight02
+        theme.fileMessageLeftTextColor = SBUColorSet.onLightTextHighEmphasis
+        theme.fileMessageRightTextColor = SBUColorSet.onDarkTextHighEmphasis
+        theme.fileMessagePlaceholderColor = SBUColorSet.onLightTextMidEmphasis
         
         // Admin message
         theme.adminMessageFont = SBUFontSet.caption2
-        theme.adminMessageTextColor = SBUColorSet.onlight02
+        theme.adminMessageTextColor = SBUColorSet.onLightTextMidEmphasis
         
         // Unknown message
         theme.unknownMessageDescFont = SBUFontSet.body3
-        theme.unknownMessageDescLeftTextColor = SBUColorSet.onlight02
-        theme.unknownMessageDescRightTextColor = SBUColorSet.ondark02
+        theme.unknownMessageDescLeftTextColor = SBUColorSet.onLightTextMidEmphasis
+        theme.unknownMessageDescRightTextColor = SBUColorSet.onDarkTextMidEmphasis
         
-        theme.messageLeftHighlightTextColor = SBUColorSet.onlight01
-        theme.messageRightHighlightTextColor = SBUColorSet.onlight01
+        theme.messageLeftHighlightTextColor = SBUColorSet.onLightTextHighEmphasis
+        theme.messageRightHighlightTextColor = SBUColorSet.onLightTextHighEmphasis
         
         // webView OG
         theme.ogTitleFont = SBUFontSet.body2
-        theme.ogTitleColor = SBUColorSet.onlight01
+        theme.ogTitleColor = SBUColorSet.onLightTextHighEmphasis
         theme.ogDescriptionFont = SBUFontSet.caption2
-        theme.ogDescriptionColor = SBUColorSet.onlight01
+        theme.ogDescriptionColor = SBUColorSet.onLightTextHighEmphasis
         theme.ogURLAddressFont = SBUFontSet.caption2
-        theme.ogURLAddressColor = SBUColorSet.onlight02
-        theme.openChannelOGTitleColor = SBUColorSet.primary300
+        theme.ogURLAddressColor = SBUColorSet.onLightTextMidEmphasis
+        theme.openChannelOGTitleColor = SBUColorSet.primaryMain
         
-        theme.linkColor = SBUColorSet.primary300
+        theme.linkColor = SBUColorSet.primaryMain
         
         // Quoted Message
         theme.quotedMessageLeftBackgroundColor = SBUColorSet.background100.withAlphaComponent(0.5)
         theme.quotedMessageRightBackgroundColor = SBUColorSet.background100
-        theme.quotedFileMessageThumbnailColor = SBUColorSet.onlight02
-        theme.quotedMessageTextColor = SBUColorSet.onlight03
+        theme.quotedFileMessageThumbnailColor = SBUColorSet.onLightTextMidEmphasis
+        theme.quotedMessageTextColor = SBUColorSet.onLightTextLowEmphasis
         theme.quotedMessageTextFont = SBUFontSet.body3
-        theme.repliedIconColor = SBUColorSet.onlight03
-        theme.repliedToTextColor = SBUColorSet.onlight03
+        theme.repliedIconColor = SBUColorSet.onLightTextLowEmphasis
+        theme.repliedToTextColor = SBUColorSet.onLightTextLowEmphasis
         theme.repliedToTextFont = SBUFontSet.caption1
         
         // Thread info
-        theme.repliedCountTextColor = SBUColorSet.primary300
+        theme.repliedCountTextColor = SBUColorSet.primaryMain
         theme.repliedCountTextFont = SBUFontSet.caption3
         theme.repliedUsersMoreIconBackgroundColor = SBUColorSet.background700.withAlphaComponent(0.64)
-        theme.repliedUsersMoreIconTintColor = SBUColorSet.ondark01
+        theme.repliedUsersMoreIconTintColor = SBUColorSet.onDarkTextHighEmphasis
         
         // Mention
         theme.mentionTextFont = SBUFontSet.body4
-        theme.mentionLeftTextColor = SBUColorSet.onlight01
-        theme.mentionRightTextColor = SBUColorSet.ondark01
+        theme.mentionLeftTextColor = SBUColorSet.onLightTextHighEmphasis
+        theme.mentionRightTextColor = SBUColorSet.onDarkTextHighEmphasis
         theme.mentionLeftTextBackgroundColor = .clear
         theme.mentionRightTextBackgroundColor = .clear
         
         // Button
         theme.buttonBackgroundColor = SBUColorSet.background200
-        theme.buttonTitleColor = SBUColorSet.primary300
-        theme.sideButtonIconColor = SBUColorSet.onlight03
-        theme.newMessageBadgeColor = SBUColorSet.secondary300
+        theme.buttonTitleColor = SBUColorSet.primaryMain
+        theme.sideButtonIconColor = SBUColorSet.onLightTextLowEmphasis
+        theme.newMessageBadgeColor = SBUColorSet.secondaryMain
         
         // Parent info
         theme.parentInfoBackgroundColor = SBUColorSet.background50
         
         theme.parentInfoUserNameTextFont = SBUFontSet.h3
-        theme.parentInfoUserNameTextColor = SBUColorSet.onlight01
+        theme.parentInfoUserNameTextColor = SBUColorSet.onLightTextHighEmphasis
         
         theme.parentInfoDateFont = SBUFontSet.caption2
-        theme.parentInfoDateTextColor = SBUColorSet.onlight03
+        theme.parentInfoDateTextColor = SBUColorSet.onLightTextLowEmphasis
         
-        theme.parentInfoMoreButtonTintColor = SBUColorSet.onlight02
-        theme.parentInfoSeparateBarColor = SBUColorSet.onlight04
+        theme.parentInfoMoreButtonTintColor = SBUColorSet.onLightTextMidEmphasis
+        theme.parentInfoSeparateBarColor = SBUColorSet.onLightTextDisabled
 
-        theme.parentInfoReplyCountTextColor = SBUColorSet.onlight03
+        theme.parentInfoReplyCountTextColor = SBUColorSet.onLightTextLowEmphasis
         theme.parentInfoReplyCountTextFont = SBUFontSet.body3
         
         theme.parentInfoProgressBackgroundColor = SBUColorSet.background100
         
         // Voice note
-        theme.progressTrackTintColor = SBUColorSet.onlight03
+        theme.progressTrackTintColor = SBUColorSet.onLightTextLowEmphasis
         theme.progressTimeFont = SBUFontSet.body3
-        theme.progressTimeRightTextColor = SBUColorSet.ondark01
-        theme.progressTimeLeftTextColor = SBUColorSet.onlight01
+        theme.progressTimeRightTextColor = SBUColorSet.onDarkTextHighEmphasis
+        theme.progressTimeLeftTextColor = SBUColorSet.onLightTextHighEmphasis
         
         theme.playerStatusButtonBackgroundColor = SBUColorSet.background50
-        theme.playerLoadingButtonTintColor = SBUColorSet.primary200
-        theme.playerPlayButtonTintColor = SBUColorSet.primary300
-        theme.playerPauseButtonTintColor = SBUColorSet.primary300
+        theme.playerLoadingButtonTintColor = SBUColorSet.primaryLight
+        theme.playerPlayButtonTintColor = SBUColorSet.primaryMain
+        theme.playerPauseButtonTintColor = SBUColorSet.primaryMain
         
         // suggested reply
-        theme.suggestedReplyTitleColor = SBUColorSet.primary300
-        theme.suggestedReplyBorderColor = SBUColorSet.primary300
+        theme.suggestedReplyTitleColor = SBUColorSet.primaryMain
+        theme.suggestedReplyBorderColor = SBUColorSet.primaryMain
         theme.suggestedReplyBackgroundColor = SBUColorSet.background50
         theme.suggestedReplyBackgroundSelectedColor = SBUColorSet.background100
         
         // form
         theme.formBackgroundColor = SBUColorSet.background100
-        theme.formTitleColor = SBUColorSet.onlight02
-        theme.formOptionalTitleColor = SBUColorSet.onlight03
+        theme.formTitleColor = SBUColorSet.onLightTextMidEmphasis
+        theme.formOptionalTitleColor = SBUColorSet.onLightTextLowEmphasis
         theme.formInputBackgroundColor = SBUColorSet.background50
-        theme.formInputBackgroundDoneColor = SBUColorSet.ondark02
-        theme.formInputTitleColor = SBUColorSet.onlight01
-        theme.formInputIconColor = SBUColorSet.secondary300
-        theme.formInputBorderNormalColor = SBUColorSet.onlight04
-        theme.formInputErrorColor = SBUColorSet.error300
-        theme.formInputPlaceholderColor = SBUColorSet.onlight03
-        theme.formSubmitButtonBackgroundColor = SBUColorSet.primary300
-        theme.formSubmitButtonBackgroundDisabledColor = SBUColorSet.onlight04
-        theme.formSubmitButtonTitleColor = SBUColorSet.ondark01
+        theme.formInputBackgroundDoneColor = SBUColorSet.onDarkTextMidEmphasis
+        theme.formInputTitleColor = SBUColorSet.onLightTextHighEmphasis
+        theme.formInputIconColor = SBUColorSet.secondaryMain
+        theme.formInputBorderNormalColor = SBUColorSet.onLightTextDisabled
+        theme.formInputErrorColor = SBUColorSet.errorMain
+        theme.formInputPlaceholderColor = SBUColorSet.onLightTextLowEmphasis
+        theme.formSubmitButtonBackgroundColor = SBUColorSet.primaryMain
+        theme.formSubmitButtonBackgroundDisabledColor = SBUColorSet.onLightTextDisabled
+        theme.formSubmitButtonTitleColor = SBUColorSet.onDarkTextHighEmphasis
         
         // Typing message
         theme.typingMessageProfileBorderColor = SBUColorSet.background50
-        theme.typingMessageDotColor = SBUColorSet.onlight04
-        theme.typingMessageDotTransformColor = SBUColorSet.onlight03
+        theme.typingMessageDotColor = SBUColorSet.onLightTextDisabled
+        theme.typingMessageDotTransformColor = SBUColorSet.onLightTextLowEmphasis
         
         theme.feedbackRadius = 18
-        theme.feedbackIconColor = SBUColorSet.onlight02
-        theme.feedbackIconSelectColor = SBUColorSet.ondark01
-        theme.feedbackIconDeselectColor = SBUColorSet.onlight04
-        theme.feedbackBorderColor = SBUColorSet.onlight04
-        theme.feedbackBorderSelectColor = SBUColorSet.primary300
-        theme.feedbackBorderDeselectColor = SBUColorSet.onlight04
+        theme.feedbackIconColor = SBUColorSet.onLightTextMidEmphasis
+        theme.feedbackIconSelectColor = SBUColorSet.onDarkTextHighEmphasis
+        theme.feedbackIconDeselectColor = SBUColorSet.onLightTextDisabled
+        theme.feedbackBorderColor = SBUColorSet.onLightTextDisabled
+        theme.feedbackBorderSelectColor = SBUColorSet.primaryMain
+        theme.feedbackBorderDeselectColor = SBUColorSet.onLightTextDisabled
         theme.feedbackBackgroundNormalColor = SBUColorSet.background50
-        theme.feedbackBackgroundSelectColor = SBUColorSet.primary300
+        theme.feedbackBackgroundSelectColor = SBUColorSet.primaryMain
         theme.feedbackBackgroundDeselectColor = SBUColorSet.background50
         
         return theme
@@ -1445,171 +1445,171 @@ public class SBUMessageCellTheme {
         theme.backgroundColor = .clear
         
         theme.leftBackgroundColor = SBUColorSet.background400
-        theme.leftPressedBackgroundColor = SBUColorSet.primary500
-        theme.rightBackgroundColor = SBUColorSet.primary200
-        theme.rightPressedBackgroundColor = SBUColorSet.primary400
+        theme.leftPressedBackgroundColor = SBUColorSet.primaryExtraDark
+        theme.rightBackgroundColor = SBUColorSet.primaryLight
+        theme.rightPressedBackgroundColor = SBUColorSet.primaryDark
         
         theme.openChannelBackgroundColor = .clear
         theme.openChannelPressedBackgroundColor = SBUColorSet.background500
         
         // Date Label
         theme.dateFont = SBUFontSet.caption1
-        theme.dateTextColor = SBUColorSet.ondark02
-        theme.dateBackgroundColor = SBUColorSet.overlay01
+        theme.dateTextColor = SBUColorSet.onDarkTextMidEmphasis
+        theme.dateBackgroundColor = SBUColorSet.overlayDark
         
         // User
         theme.userPlaceholderBackgroundColor = SBUColorSet.background400
-        theme.userPlaceholderTintColor = SBUColorSet.onlight01
+        theme.userPlaceholderTintColor = SBUColorSet.onLightTextHighEmphasis
         theme.userNameFont = SBUFontSet.caption1
-        theme.userNameTextColor = SBUColorSet.ondark02
-        theme.currentUserNameTextColor = SBUColorSet.secondary200
+        theme.userNameTextColor = SBUColorSet.onDarkTextMidEmphasis
+        theme.currentUserNameTextColor = SBUColorSet.secondaryLight
         
         // TitleLabel
         theme.timeFont = SBUFontSet.caption4
-        theme.timeTextColor = SBUColorSet.ondark03
+        theme.timeTextColor = SBUColorSet.onDarkTextLowEmphasis
         
         // Message state
-        theme.pendingStateColor = SBUColorSet.primary200
-        theme.failedStateColor = SBUColorSet.error300
-        theme.succeededStateColor = SBUColorSet.ondark03
-        theme.readReceiptStateColor = SBUColorSet.secondary200
-        theme.deliveryReceiptStateColor = SBUColorSet.ondark03
+        theme.pendingStateColor = SBUColorSet.primaryLight
+        theme.failedStateColor = SBUColorSet.errorMain
+        theme.succeededStateColor = SBUColorSet.onDarkTextLowEmphasis
+        theme.readReceiptStateColor = SBUColorSet.secondaryLight
+        theme.deliveryReceiptStateColor = SBUColorSet.onDarkTextLowEmphasis
         
         theme.contentBackgroundColor = SBUColorSet.background500
-        theme.pressedContentBackgroundColor = SBUColorSet.primary500
+        theme.pressedContentBackgroundColor = SBUColorSet.primaryExtraDark
         
         // User messgae
         theme.userMessageFont = SBUFontSet.body3
-        theme.userMessageLeftTextColor = SBUColorSet.ondark01
-        theme.userMessageLeftEditTextColor = SBUColorSet.ondark02
+        theme.userMessageLeftTextColor = SBUColorSet.onDarkTextHighEmphasis
+        theme.userMessageLeftEditTextColor = SBUColorSet.onDarkTextMidEmphasis
         
-        theme.userMessageRightTextColor = SBUColorSet.onlight01
-        theme.userMessageRightEditTextColor = SBUColorSet.onlight02
+        theme.userMessageRightTextColor = SBUColorSet.onLightTextHighEmphasis
+        theme.userMessageRightEditTextColor = SBUColorSet.onLightTextMidEmphasis
         
         // File message
         theme.fileIconBackgroundColor = SBUColorSet.background600
-        theme.fileIconColor = SBUColorSet.primary200
-        theme.fileImageBackgroundColor = SBUColorSet.ondark01
-        theme.fileImageIconColor = SBUColorSet.onlight02
+        theme.fileIconColor = SBUColorSet.primaryLight
+        theme.fileImageBackgroundColor = SBUColorSet.onDarkTextHighEmphasis
+        theme.fileImageIconColor = SBUColorSet.onLightTextMidEmphasis
         theme.fileMessageNameFont = SBUFontSet.body3
-        theme.fileMessageLeftTextColor = SBUColorSet.ondark01
-        theme.fileMessageRightTextColor = SBUColorSet.onlight01
-        theme.fileMessagePlaceholderColor = SBUColorSet.ondark02
+        theme.fileMessageLeftTextColor = SBUColorSet.onDarkTextHighEmphasis
+        theme.fileMessageRightTextColor = SBUColorSet.onLightTextHighEmphasis
+        theme.fileMessagePlaceholderColor = SBUColorSet.onDarkTextMidEmphasis
         
         // Admin message
         theme.adminMessageFont = SBUFontSet.caption2
-        theme.adminMessageTextColor = SBUColorSet.ondark02
+        theme.adminMessageTextColor = SBUColorSet.onDarkTextMidEmphasis
         
         // Unknown message
         theme.unknownMessageDescFont = SBUFontSet.body3
-        theme.unknownMessageDescLeftTextColor = SBUColorSet.ondark02
-        theme.unknownMessageDescRightTextColor = SBUColorSet.onlight02
+        theme.unknownMessageDescLeftTextColor = SBUColorSet.onDarkTextMidEmphasis
+        theme.unknownMessageDescRightTextColor = SBUColorSet.onLightTextMidEmphasis
         
-        theme.messageLeftHighlightTextColor = SBUColorSet.onlight01
-        theme.messageRightHighlightTextColor = SBUColorSet.onlight01
+        theme.messageLeftHighlightTextColor = SBUColorSet.onLightTextHighEmphasis
+        theme.messageRightHighlightTextColor = SBUColorSet.onLightTextHighEmphasis
         
         theme.ogTitleFont = SBUFontSet.body2
-        theme.ogTitleColor = SBUColorSet.ondark01
+        theme.ogTitleColor = SBUColorSet.onDarkTextHighEmphasis
         theme.ogDescriptionFont = SBUFontSet.caption2
-        theme.ogDescriptionColor = SBUColorSet.ondark01
+        theme.ogDescriptionColor = SBUColorSet.onDarkTextHighEmphasis
         theme.ogURLAddressFont = SBUFontSet.caption2
-        theme.ogURLAddressColor = SBUColorSet.ondark02
-        theme.openChannelOGTitleColor = SBUColorSet.primary200
+        theme.ogURLAddressColor = SBUColorSet.onDarkTextMidEmphasis
+        theme.openChannelOGTitleColor = SBUColorSet.primaryLight
         
-        theme.linkColor = SBUColorSet.primary200
+        theme.linkColor = SBUColorSet.primaryLight
         
         // Quoted Message
         theme.quotedMessageLeftBackgroundColor = SBUColorSet.background500.withAlphaComponent(0.5)
         theme.quotedMessageRightBackgroundColor = SBUColorSet.background500
-        theme.quotedFileMessageThumbnailColor = SBUColorSet.ondark02
-        theme.quotedMessageTextColor = SBUColorSet.ondark03
+        theme.quotedFileMessageThumbnailColor = SBUColorSet.onDarkTextMidEmphasis
+        theme.quotedMessageTextColor = SBUColorSet.onDarkTextLowEmphasis
         theme.quotedMessageTextFont = SBUFontSet.body3
-        theme.repliedIconColor = SBUColorSet.ondark03
-        theme.repliedToTextColor = SBUColorSet.ondark03
+        theme.repliedIconColor = SBUColorSet.onDarkTextLowEmphasis
+        theme.repliedToTextColor = SBUColorSet.onDarkTextLowEmphasis
         theme.repliedToTextFont = SBUFontSet.caption1
         
         // Thread info
-        theme.repliedCountTextColor = SBUColorSet.primary200
+        theme.repliedCountTextColor = SBUColorSet.primaryLight
         theme.repliedCountTextFont = SBUFontSet.caption3
         theme.repliedUsersMoreIconBackgroundColor = SBUColorSet.background700.withAlphaComponent(0.64)
-        theme.repliedUsersMoreIconTintColor = SBUColorSet.ondark01
+        theme.repliedUsersMoreIconTintColor = SBUColorSet.onDarkTextHighEmphasis
         
         // Mention
         theme.mentionTextFont = SBUFontSet.body4
-        theme.mentionLeftTextColor = SBUColorSet.ondark01
-        theme.mentionRightTextColor = SBUColorSet.onlight01
+        theme.mentionLeftTextColor = SBUColorSet.onDarkTextHighEmphasis
+        theme.mentionRightTextColor = SBUColorSet.onLightTextHighEmphasis
         theme.mentionLeftTextBackgroundColor = .clear
         theme.mentionRightTextBackgroundColor = .clear
         
         // Button
         theme.buttonBackgroundColor = SBUColorSet.background400
-        theme.buttonTitleColor = SBUColorSet.primary200
-        theme.sideButtonIconColor = SBUColorSet.ondark03
-        theme.newMessageBadgeColor = SBUColorSet.secondary200
+        theme.buttonTitleColor = SBUColorSet.primaryLight
+        theme.sideButtonIconColor = SBUColorSet.onDarkTextLowEmphasis
+        theme.newMessageBadgeColor = SBUColorSet.secondaryLight
         
         // Parent info
         theme.parentInfoBackgroundColor = SBUColorSet.background600
         
         theme.parentInfoUserNameTextFont = SBUFontSet.h3
-        theme.parentInfoUserNameTextColor = SBUColorSet.ondark01
+        theme.parentInfoUserNameTextColor = SBUColorSet.onDarkTextHighEmphasis
         
         theme.parentInfoDateFont = SBUFontSet.caption2
-        theme.parentInfoDateTextColor = SBUColorSet.ondark03
+        theme.parentInfoDateTextColor = SBUColorSet.onDarkTextLowEmphasis
         
-        theme.parentInfoMoreButtonTintColor = SBUColorSet.ondark02
-        theme.parentInfoSeparateBarColor = SBUColorSet.ondark04
+        theme.parentInfoMoreButtonTintColor = SBUColorSet.onDarkTextMidEmphasis
+        theme.parentInfoSeparateBarColor = SBUColorSet.onDarkTextDisabled
 
-        theme.parentInfoReplyCountTextColor = SBUColorSet.ondark03
+        theme.parentInfoReplyCountTextColor = SBUColorSet.onDarkTextLowEmphasis
         theme.parentInfoReplyCountTextFont = SBUFontSet.body3
         
         theme.parentInfoProgressBackgroundColor = SBUColorSet.background400
         
         theme.playerStatusButtonBackgroundColor = SBUColorSet.background600
-        theme.playerLoadingButtonTintColor = SBUColorSet.primary300
-        theme.playerPlayButtonTintColor = SBUColorSet.primary200
-        theme.playerPauseButtonTintColor = SBUColorSet.primary200
+        theme.playerLoadingButtonTintColor = SBUColorSet.primaryMain
+        theme.playerPlayButtonTintColor = SBUColorSet.primaryLight
+        theme.playerPauseButtonTintColor = SBUColorSet.primaryLight
         
         // Voice note
-        theme.progressTrackTintColor = SBUColorSet.ondark03
+        theme.progressTrackTintColor = SBUColorSet.onDarkTextLowEmphasis
         theme.progressTimeFont = SBUFontSet.body3
-        theme.progressTimeRightTextColor = SBUColorSet.onlight01
-        theme.progressTimeLeftTextColor = SBUColorSet.ondark01
+        theme.progressTimeRightTextColor = SBUColorSet.onLightTextHighEmphasis
+        theme.progressTimeLeftTextColor = SBUColorSet.onDarkTextHighEmphasis
 
         // suggested reply
-        theme.suggestedReplyTitleColor = SBUColorSet.primary200
-        theme.suggestedReplyBorderColor = SBUColorSet.primary200
+        theme.suggestedReplyTitleColor = SBUColorSet.primaryLight
+        theme.suggestedReplyBorderColor = SBUColorSet.primaryLight
         theme.suggestedReplyBackgroundColor = SBUColorSet.background600
         theme.suggestedReplyBackgroundSelectedColor = SBUColorSet.background500
 
         // form
         theme.formBackgroundColor = SBUColorSet.background400
-        theme.formTitleColor = SBUColorSet.ondark02
-        theme.formOptionalTitleColor = SBUColorSet.ondark03
-        theme.formInputBackgroundColor = SBUColorSet.onlight03
-        theme.formInputBackgroundDoneColor = SBUColorSet.onlight04
-        theme.formInputTitleColor = SBUColorSet.ondark01
-        theme.formInputIconColor = SBUColorSet.secondary200
-        theme.formInputBorderNormalColor = SBUColorSet.ondark04
-        theme.formInputErrorColor = SBUColorSet.error200
-        theme.formInputPlaceholderColor = SBUColorSet.ondark02
-        theme.formSubmitButtonBackgroundColor = SBUColorSet.primary200
-        theme.formSubmitButtonBackgroundDisabledColor = SBUColorSet.onlight04
-        theme.formSubmitButtonTitleColor = SBUColorSet.onlight01
+        theme.formTitleColor = SBUColorSet.onDarkTextMidEmphasis
+        theme.formOptionalTitleColor = SBUColorSet.onDarkTextLowEmphasis
+        theme.formInputBackgroundColor = SBUColorSet.onLightTextLowEmphasis
+        theme.formInputBackgroundDoneColor = SBUColorSet.onLightTextDisabled
+        theme.formInputTitleColor = SBUColorSet.onDarkTextHighEmphasis
+        theme.formInputIconColor = SBUColorSet.secondaryLight
+        theme.formInputBorderNormalColor = SBUColorSet.onDarkTextDisabled
+        theme.formInputErrorColor = SBUColorSet.errorLight
+        theme.formInputPlaceholderColor = SBUColorSet.onDarkTextMidEmphasis
+        theme.formSubmitButtonBackgroundColor = SBUColorSet.primaryLight
+        theme.formSubmitButtonBackgroundDisabledColor = SBUColorSet.onLightTextDisabled
+        theme.formSubmitButtonTitleColor = SBUColorSet.onLightTextHighEmphasis
 
         // Typing message
         theme.typingMessageProfileBorderColor = SBUColorSet.background600
-        theme.typingMessageDotColor = SBUColorSet.ondark04
-        theme.typingMessageDotTransformColor = SBUColorSet.ondark03
+        theme.typingMessageDotColor = SBUColorSet.onDarkTextDisabled
+        theme.typingMessageDotTransformColor = SBUColorSet.onDarkTextLowEmphasis
         
         theme.feedbackRadius = 18
-        theme.feedbackIconColor = SBUColorSet.ondark02
-        theme.feedbackIconSelectColor = SBUColorSet.ondark01
-        theme.feedbackIconDeselectColor = SBUColorSet.ondark04
-        theme.feedbackBorderColor = SBUColorSet.ondark04
-        theme.feedbackBorderSelectColor = SBUColorSet.primary200
-        theme.feedbackBorderDeselectColor = SBUColorSet.ondark04
+        theme.feedbackIconColor = SBUColorSet.onDarkTextMidEmphasis
+        theme.feedbackIconSelectColor = SBUColorSet.onDarkTextHighEmphasis
+        theme.feedbackIconDeselectColor = SBUColorSet.onDarkTextDisabled
+        theme.feedbackBorderColor = SBUColorSet.onDarkTextDisabled
+        theme.feedbackBorderSelectColor = SBUColorSet.primaryLight
+        theme.feedbackBorderDeselectColor = SBUColorSet.onDarkTextDisabled
         theme.feedbackBackgroundNormalColor = SBUColorSet.background600
-        theme.feedbackBackgroundSelectColor = SBUColorSet.primary200
+        theme.feedbackBackgroundSelectColor = SBUColorSet.primaryLight
         theme.feedbackBackgroundDeselectColor = SBUColorSet.background600
         
         return theme
@@ -1625,134 +1625,134 @@ public class SBUMessageCellTheme {
         theme.rightPressedBackgroundColor = .clear
         
         theme.openChannelBackgroundColor = .clear
-        theme.openChannelPressedBackgroundColor = SBUColorSet.onlight03
+        theme.openChannelPressedBackgroundColor = SBUColorSet.onLightTextLowEmphasis
         
         // Date Label
         theme.dateFont = SBUFontSet.caption1
-        theme.dateTextColor = SBUColorSet.ondark02
-        theme.dateBackgroundColor = SBUColorSet.overlay01
+        theme.dateTextColor = SBUColorSet.onDarkTextMidEmphasis
+        theme.dateBackgroundColor = SBUColorSet.overlayDark
         
         // User
         theme.userPlaceholderBackgroundColor = SBUColorSet.background400
-        theme.userPlaceholderTintColor = SBUColorSet.onlight01
+        theme.userPlaceholderTintColor = SBUColorSet.onLightTextHighEmphasis
         theme.userNameFont = SBUFontSet.caption1
-        theme.userNameTextColor = SBUColorSet.ondark02
-        theme.currentUserNameTextColor = SBUColorSet.secondary200
+        theme.userNameTextColor = SBUColorSet.onDarkTextMidEmphasis
+        theme.currentUserNameTextColor = SBUColorSet.secondaryLight
         
         // TimeLabel
         theme.timeFont = SBUFontSet.caption4
-        theme.timeTextColor = SBUColorSet.ondark03
+        theme.timeTextColor = SBUColorSet.onDarkTextLowEmphasis
         
         // Message state
-        theme.pendingStateColor = SBUColorSet.primary200
-        theme.failedStateColor = SBUColorSet.error300
-        theme.succeededStateColor = SBUColorSet.ondark03
-        theme.readReceiptStateColor = SBUColorSet.secondary300
-        theme.deliveryReceiptStateColor = SBUColorSet.ondark03
+        theme.pendingStateColor = SBUColorSet.primaryLight
+        theme.failedStateColor = SBUColorSet.errorMain
+        theme.succeededStateColor = SBUColorSet.onDarkTextLowEmphasis
+        theme.readReceiptStateColor = SBUColorSet.secondaryMain
+        theme.deliveryReceiptStateColor = SBUColorSet.onDarkTextLowEmphasis
         
         theme.contentBackgroundColor = SBUColorSet.background500
-        theme.pressedContentBackgroundColor = SBUColorSet.primary500
+        theme.pressedContentBackgroundColor = SBUColorSet.primaryExtraDark
         
         // User messgae
         theme.userMessageFont = SBUFontSet.body3
-        theme.userMessageLeftTextColor = SBUColorSet.ondark01
-        theme.userMessageLeftEditTextColor = SBUColorSet.ondark02
+        theme.userMessageLeftTextColor = SBUColorSet.onDarkTextHighEmphasis
+        theme.userMessageLeftEditTextColor = SBUColorSet.onDarkTextMidEmphasis
         
-        theme.userMessageRightTextColor = SBUColorSet.onlight01
-        theme.userMessageRightEditTextColor = SBUColorSet.onlight02
+        theme.userMessageRightTextColor = SBUColorSet.onLightTextHighEmphasis
+        theme.userMessageRightEditTextColor = SBUColorSet.onLightTextMidEmphasis
         
         // File message
         theme.fileIconBackgroundColor = SBUColorSet.background600
-        theme.fileIconColor = SBUColorSet.primary200
-        theme.fileImageBackgroundColor = SBUColorSet.ondark01
-        theme.fileImageIconColor = SBUColorSet.onlight02
+        theme.fileIconColor = SBUColorSet.primaryLight
+        theme.fileImageBackgroundColor = SBUColorSet.onDarkTextHighEmphasis
+        theme.fileImageIconColor = SBUColorSet.onLightTextMidEmphasis
         theme.fileMessageNameFont = SBUFontSet.body3
-        theme.fileMessageLeftTextColor = SBUColorSet.ondark01
-        theme.fileMessageRightTextColor = SBUColorSet.onlight01
-        theme.fileMessagePlaceholderColor = SBUColorSet.ondark02
+        theme.fileMessageLeftTextColor = SBUColorSet.onDarkTextHighEmphasis
+        theme.fileMessageRightTextColor = SBUColorSet.onLightTextHighEmphasis
+        theme.fileMessagePlaceholderColor = SBUColorSet.onDarkTextMidEmphasis
         
         // Admin message
         theme.adminMessageFont = SBUFontSet.caption2
-        theme.adminMessageTextColor = SBUColorSet.ondark02
+        theme.adminMessageTextColor = SBUColorSet.onDarkTextMidEmphasis
         
         // Unknown message
         theme.unknownMessageDescFont = SBUFontSet.body3
-        theme.unknownMessageDescLeftTextColor = SBUColorSet.ondark02
-        theme.unknownMessageDescRightTextColor = SBUColorSet.onlight02
+        theme.unknownMessageDescLeftTextColor = SBUColorSet.onDarkTextMidEmphasis
+        theme.unknownMessageDescRightTextColor = SBUColorSet.onLightTextMidEmphasis
         
-        theme.messageLeftHighlightTextColor = SBUColorSet.onlight01
-        theme.messageRightHighlightTextColor = SBUColorSet.onlight01
+        theme.messageLeftHighlightTextColor = SBUColorSet.onLightTextHighEmphasis
+        theme.messageRightHighlightTextColor = SBUColorSet.onLightTextHighEmphasis
         
         theme.ogTitleFont = SBUFontSet.body2
-        theme.ogTitleColor = SBUColorSet.ondark01
+        theme.ogTitleColor = SBUColorSet.onDarkTextHighEmphasis
         theme.ogDescriptionFont = SBUFontSet.caption2
-        theme.ogDescriptionColor = SBUColorSet.ondark01
+        theme.ogDescriptionColor = SBUColorSet.onDarkTextHighEmphasis
         theme.ogURLAddressFont = SBUFontSet.caption2
-        theme.ogURLAddressColor = SBUColorSet.ondark02
-        theme.openChannelOGTitleColor = SBUColorSet.primary200
+        theme.ogURLAddressColor = SBUColorSet.onDarkTextMidEmphasis
+        theme.openChannelOGTitleColor = SBUColorSet.primaryLight
         
-        theme.linkColor = SBUColorSet.primary200
+        theme.linkColor = SBUColorSet.primaryLight
         
         // Quoted Message
         theme.quotedMessageLeftBackgroundColor = SBUColorSet.background500.withAlphaComponent(0.5)
         theme.quotedMessageRightBackgroundColor = SBUColorSet.background500
-        theme.quotedFileMessageThumbnailColor = SBUColorSet.ondark02
-        theme.quotedMessageTextColor = SBUColorSet.ondark03
+        theme.quotedFileMessageThumbnailColor = SBUColorSet.onDarkTextMidEmphasis
+        theme.quotedMessageTextColor = SBUColorSet.onDarkTextLowEmphasis
         theme.quotedMessageTextFont = SBUFontSet.body3
-        theme.repliedIconColor = SBUColorSet.ondark03
-        theme.repliedToTextColor = SBUColorSet.ondark03
+        theme.repliedIconColor = SBUColorSet.onDarkTextLowEmphasis
+        theme.repliedToTextColor = SBUColorSet.onDarkTextLowEmphasis
         theme.repliedToTextFont = SBUFontSet.caption1
         
         // Thread info
-        theme.repliedCountTextColor = SBUColorSet.primary200
+        theme.repliedCountTextColor = SBUColorSet.primaryLight
         theme.repliedCountTextFont = SBUFontSet.caption3
         theme.repliedUsersMoreIconBackgroundColor = SBUColorSet.background700.withAlphaComponent(0.64)
-        theme.repliedUsersMoreIconTintColor = SBUColorSet.ondark01
+        theme.repliedUsersMoreIconTintColor = SBUColorSet.onDarkTextHighEmphasis
         
         // Mention
         theme.mentionTextFont = SBUFontSet.body4
-        theme.mentionLeftTextColor = SBUColorSet.ondark01
-        theme.mentionRightTextColor = SBUColorSet.onlight01
+        theme.mentionLeftTextColor = SBUColorSet.onDarkTextHighEmphasis
+        theme.mentionRightTextColor = SBUColorSet.onLightTextHighEmphasis
         theme.mentionLeftTextBackgroundColor = .clear
         theme.mentionRightTextBackgroundColor = .clear
         
         // Button
         theme.buttonBackgroundColor = SBUColorSet.background400
-        theme.buttonTitleColor = SBUColorSet.primary200
-        theme.sideButtonIconColor = SBUColorSet.ondark03
-        theme.newMessageBadgeColor = SBUColorSet.secondary200
+        theme.buttonTitleColor = SBUColorSet.primaryLight
+        theme.sideButtonIconColor = SBUColorSet.onDarkTextLowEmphasis
+        theme.newMessageBadgeColor = SBUColorSet.secondaryLight
         
         // Parent info
         theme.parentInfoBackgroundColor = SBUColorSet.background600
         
         theme.parentInfoUserNameTextFont = SBUFontSet.h3
-        theme.parentInfoUserNameTextColor = SBUColorSet.ondark01
+        theme.parentInfoUserNameTextColor = SBUColorSet.onDarkTextHighEmphasis
         
         theme.parentInfoDateFont = SBUFontSet.caption2
-        theme.parentInfoDateTextColor = SBUColorSet.ondark03
+        theme.parentInfoDateTextColor = SBUColorSet.onDarkTextLowEmphasis
         
-        theme.parentInfoMoreButtonTintColor = SBUColorSet.ondark02
-        theme.parentInfoSeparateBarColor = SBUColorSet.ondark04
+        theme.parentInfoMoreButtonTintColor = SBUColorSet.onDarkTextMidEmphasis
+        theme.parentInfoSeparateBarColor = SBUColorSet.onDarkTextDisabled
 
-        theme.parentInfoReplyCountTextColor = SBUColorSet.ondark03
+        theme.parentInfoReplyCountTextColor = SBUColorSet.onDarkTextLowEmphasis
         theme.parentInfoReplyCountTextFont = SBUFontSet.body3
         
         theme.parentInfoProgressBackgroundColor = SBUColorSet.background400
         
         // Voice note
-        theme.progressTrackTintColor = SBUColorSet.ondark03
+        theme.progressTrackTintColor = SBUColorSet.onDarkTextLowEmphasis
         theme.progressTimeFont = SBUFontSet.body3
-        theme.progressTimeRightTextColor = SBUColorSet.onlight01
-        theme.progressTimeLeftTextColor = SBUColorSet.ondark01
+        theme.progressTimeRightTextColor = SBUColorSet.onLightTextHighEmphasis
+        theme.progressTimeLeftTextColor = SBUColorSet.onDarkTextHighEmphasis
         
         theme.playerStatusButtonBackgroundColor = SBUColorSet.background600
-        theme.playerLoadingButtonTintColor = SBUColorSet.primary300
-        theme.playerPlayButtonTintColor = SBUColorSet.primary200
-        theme.playerPauseButtonTintColor = SBUColorSet.primary200
+        theme.playerLoadingButtonTintColor = SBUColorSet.primaryMain
+        theme.playerPlayButtonTintColor = SBUColorSet.primaryLight
+        theme.playerPauseButtonTintColor = SBUColorSet.primaryLight
         
         // suggested reply
-        theme.suggestedReplyTitleColor = SBUColorSet.primary300
-        theme.suggestedReplyBorderColor = SBUColorSet.primary300
+        theme.suggestedReplyTitleColor = SBUColorSet.primaryMain
+        theme.suggestedReplyBorderColor = SBUColorSet.primaryMain
         theme.suggestedReplyBackgroundColor = SBUColorSet.background50
         theme.suggestedReplyBackgroundSelectedColor = SBUColorSet.background100
         
@@ -1761,125 +1761,125 @@ public class SBUMessageCellTheme {
     
     public init(backgroundColor: UIColor = SBUColorSet.background50,
                 leftBackgroundColor: UIColor = SBUColorSet.background100,
-                leftPressedBackgroundColor: UIColor = SBUColorSet.primary100,
-                rightBackgroundColor: UIColor = SBUColorSet.primary300,
-                rightPressedBackgroundColor: UIColor = SBUColorSet.primary400,
+                leftPressedBackgroundColor: UIColor = SBUColorSet.primaryExtraLight,
+                rightBackgroundColor: UIColor = SBUColorSet.primaryMain,
+                rightPressedBackgroundColor: UIColor = SBUColorSet.primaryDark,
                 openChannelBackgroundColor: UIColor = .clear,
                 openChannelPressedBackgroundColor: UIColor = SBUColorSet.background100,
                 dateFont: UIFont = SBUFontSet.caption1,
-                dateTextColor: UIColor = SBUColorSet.ondark01,
-                dateBackgroundColor: UIColor = SBUColorSet.overlay02,
+                dateTextColor: UIColor = SBUColorSet.onDarkTextHighEmphasis,
+                dateBackgroundColor: UIColor = SBUColorSet.overlayLight,
                 userPlaceholderBackgroundColor: UIColor = SBUColorSet.background300,
-                userPlaceholderTintColor: UIColor = SBUColorSet.ondark01,
+                userPlaceholderTintColor: UIColor = SBUColorSet.onDarkTextHighEmphasis,
                 userNameFont: UIFont = SBUFontSet.caption1,
-                userNameTextColor: UIColor = SBUColorSet.onlight02,
-                currentUserNameTextColor: UIColor = SBUColorSet.secondary300,
+                userNameTextColor: UIColor = SBUColorSet.onLightTextMidEmphasis,
+                currentUserNameTextColor: UIColor = SBUColorSet.secondaryMain,
                 timeFont: UIFont = SBUFontSet.caption4,
-                timeTextColor: UIColor = SBUColorSet.onlight03,
-                pendingStateColor: UIColor = SBUColorSet.primary300,
-                failedStateColor: UIColor = SBUColorSet.error300,
-                succeededStateColor: UIColor = SBUColorSet.onlight03,
-                readReceiptStateColor: UIColor = SBUColorSet.secondary300,
-                deliveryReceiptStateColor: UIColor = SBUColorSet.onlight03,
+                timeTextColor: UIColor = SBUColorSet.onLightTextLowEmphasis,
+                pendingStateColor: UIColor = SBUColorSet.primaryMain,
+                failedStateColor: UIColor = SBUColorSet.errorMain,
+                succeededStateColor: UIColor = SBUColorSet.onLightTextLowEmphasis,
+                readReceiptStateColor: UIColor = SBUColorSet.secondaryMain,
+                deliveryReceiptStateColor: UIColor = SBUColorSet.onLightTextLowEmphasis,
                 userMessageFont: UIFont = SBUFontSet.body3,
-                userMessageLeftTextColor: UIColor = SBUColorSet.onlight01,
-                userMessageLeftEditTextColor: UIColor = SBUColorSet.onlight02,
-                userMessageLeftHighlightTextColor: UIColor = SBUColorSet.onlight01,
-                userMessageRightTextColor: UIColor = SBUColorSet.ondark01,
-                userMessageRightEditTextColor: UIColor = SBUColorSet.ondark02,
-                userMessageRightHighlightTextColor: UIColor = SBUColorSet.onlight01,
+                userMessageLeftTextColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
+                userMessageLeftEditTextColor: UIColor = SBUColorSet.onLightTextMidEmphasis,
+                userMessageLeftHighlightTextColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
+                userMessageRightTextColor: UIColor = SBUColorSet.onDarkTextHighEmphasis,
+                userMessageRightEditTextColor: UIColor = SBUColorSet.onDarkTextMidEmphasis,
+                userMessageRightHighlightTextColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
                 fileIconBackgroundColor: UIColor = SBUColorSet.background50,
-                fileImageBackgroundColor: UIColor = SBUColorSet.ondark01,
-                fileImageIconColor: UIColor = SBUColorSet.onlight02,
-                fileIconColor: UIColor = SBUColorSet.primary300,
+                fileImageBackgroundColor: UIColor = SBUColorSet.onDarkTextHighEmphasis,
+                fileImageIconColor: UIColor = SBUColorSet.onLightTextMidEmphasis,
+                fileIconColor: UIColor = SBUColorSet.primaryMain,
                 fileMessageNameFont: UIFont = SBUFontSet.body3,
-                fileMessageLeftTextColor: UIColor = SBUColorSet.onlight01,
-                fileMessageRightTextColor: UIColor = SBUColorSet.ondark01,
-                fileMessagePlaceholderColor: UIColor = SBUColorSet.onlight02,
+                fileMessageLeftTextColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
+                fileMessageRightTextColor: UIColor = SBUColorSet.onDarkTextHighEmphasis,
+                fileMessagePlaceholderColor: UIColor = SBUColorSet.onLightTextMidEmphasis,
                 adminMessageFont: UIFont = SBUFontSet.caption2,
-                adminMessageTextColor: UIColor = SBUColorSet.onlight02,
+                adminMessageTextColor: UIColor = SBUColorSet.onLightTextMidEmphasis,
                 unknownMessageDescFont: UIFont  = SBUFontSet.body3,
-                unknownMessageDescLeftTextColor: UIColor = SBUColorSet.onlight02,
-                unknownMessageDescRightTextColor: UIColor = SBUColorSet.ondark02,
+                unknownMessageDescLeftTextColor: UIColor = SBUColorSet.onLightTextMidEmphasis,
+                unknownMessageDescRightTextColor: UIColor = SBUColorSet.onDarkTextMidEmphasis,
                 ogTitleFont: UIFont = SBUFontSet.body2,
-                ogTitleColor: UIColor = SBUColorSet.onlight01,
+                ogTitleColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
                 ogDescriptionFont: UIFont = SBUFontSet.caption2,
-                ogDescriptionColor: UIColor  = SBUColorSet.onlight01,
+                ogDescriptionColor: UIColor  = SBUColorSet.onLightTextHighEmphasis,
                 ogURLAddressFont: UIFont = SBUFontSet.caption2,
-                ogURLAddressColor: UIColor = SBUColorSet.onlight02,
-                openChannelOGTitleColor: UIColor = SBUColorSet.primary300,
-                linkColor: UIColor = SBUColorSet.primary300,
+                ogURLAddressColor: UIColor = SBUColorSet.onLightTextMidEmphasis,
+                openChannelOGTitleColor: UIColor = SBUColorSet.primaryMain,
+                linkColor: UIColor = SBUColorSet.primaryMain,
                 contentBackgroundColor: UIColor = SBUColorSet.background100,
                 pressedContentBackgroundColor: UIColor = SBUColorSet.background300,
                 quotedMessageLeftBackgroundColor: UIColor = SBUColorSet.background100.withAlphaComponent(0.5),
                 quotedMessageRightBackgroundColor: UIColor = SBUColorSet.background100,
-                quotedFileMessageThumbnailColor: UIColor = SBUColorSet.onlight02,
-                quotedMessageTextColor: UIColor = SBUColorSet.onlight03,
+                quotedFileMessageThumbnailColor: UIColor = SBUColorSet.onLightTextMidEmphasis,
+                quotedMessageTextColor: UIColor = SBUColorSet.onLightTextLowEmphasis,
                 quotedMessageTextFont: UIFont = SBUFontSet.body3,
-                repliedIconColor: UIColor = SBUColorSet.onlight03,
-                repliedToTextColor: UIColor = SBUColorSet.onlight03,
+                repliedIconColor: UIColor = SBUColorSet.onLightTextLowEmphasis,
+                repliedToTextColor: UIColor = SBUColorSet.onLightTextLowEmphasis,
                 repliedToTextFont: UIFont = SBUFontSet.caption1,
-                repliedCountTextColor: UIColor = SBUColorSet.primary300,
+                repliedCountTextColor: UIColor = SBUColorSet.primaryMain,
                 repliedCountTextFont: UIFont = SBUFontSet.caption3,
                 repliedUsersMoreIconBackgroundColor: UIColor = SBUColorSet.background700.withAlphaComponent(0.64),
-                repliedUsersMoreIconTintColor: UIColor = SBUColorSet.ondark01,
+                repliedUsersMoreIconTintColor: UIColor = SBUColorSet.onDarkTextHighEmphasis,
                 mentionTextFont: UIFont = SBUFontSet.body4,
-                mentionLeftTextColor: UIColor = SBUColorSet.onlight01,
-                mentionRightTextColor: UIColor = SBUColorSet.ondark01,
+                mentionLeftTextColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
+                mentionRightTextColor: UIColor = SBUColorSet.onDarkTextHighEmphasis,
                 mentionLeftTextBackgroundColor: UIColor = .clear,
                 mentionRightTextBackgroundColor: UIColor = .clear,
                 buttonBackgroundColor: UIColor = SBUColorSet.background200,
-                buttonTitleColor: UIColor = SBUColorSet.primary300,
-                sideButtonIconColor: UIColor = SBUColorSet.onlight03,
-                newMessageBadgeColor: UIColor = SBUColorSet.secondary300,
+                buttonTitleColor: UIColor = SBUColorSet.primaryMain,
+                sideButtonIconColor: UIColor = SBUColorSet.onLightTextLowEmphasis,
+                newMessageBadgeColor: UIColor = SBUColorSet.secondaryMain,
                 parentInfoBackgroundColor: UIColor = SBUColorSet.background50,
                 parentInfoUserNameTextFont: UIFont = SBUFontSet.h3,
-                parentInfoUserNameTextColor: UIColor = SBUColorSet.onlight01,
+                parentInfoUserNameTextColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
                 parentInfoDateFont: UIFont = SBUFontSet.caption2,
-                parentInfoDateTextColor: UIColor = SBUColorSet.onlight03,
-                parentInfoMoreButtonTintColor: UIColor = SBUColorSet.onlight02,
-                parentInfoSeparateBarColor: UIColor = SBUColorSet.onlight04,
-                parentInfoReplyCountTextColor: UIColor = SBUColorSet.onlight03,
+                parentInfoDateTextColor: UIColor = SBUColorSet.onLightTextLowEmphasis,
+                parentInfoMoreButtonTintColor: UIColor = SBUColorSet.onLightTextMidEmphasis,
+                parentInfoSeparateBarColor: UIColor = SBUColorSet.onLightTextDisabled,
+                parentInfoReplyCountTextColor: UIColor = SBUColorSet.onLightTextLowEmphasis,
                 parentInfoReplyCountTextFont: UIFont = SBUFontSet.body3,
                 parentInfoProgressBackgroundColor: UIColor = SBUColorSet.background100,
-                progressTrackTintColor: UIColor = SBUColorSet.onlight03,
+                progressTrackTintColor: UIColor = SBUColorSet.onLightTextLowEmphasis,
                 progressTimeFont: UIFont = SBUFontSet.body3,
-                progressTimeRightTextColor: UIColor = SBUColorSet.ondark01,
-                progressTimeLeftTextColor: UIColor = SBUColorSet.onlight01,
+                progressTimeRightTextColor: UIColor = SBUColorSet.onDarkTextHighEmphasis,
+                progressTimeLeftTextColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
                 statusButtonBackgroundColor: UIColor = SBUColorSet.background50,
-                loadingButtonTintColor: UIColor = SBUColorSet.primary200,
-                playButtonTintColor: UIColor = SBUColorSet.primary300,
-                pauseButtonTintColor: UIColor = SBUColorSet.primary300,
-                suggestedReplyTitleColor: UIColor = SBUColorSet.primary300,
-                suggestedReplyBorderColor: UIColor = SBUColorSet.primary300,
+                loadingButtonTintColor: UIColor = SBUColorSet.primaryLight,
+                playButtonTintColor: UIColor = SBUColorSet.primaryMain,
+                pauseButtonTintColor: UIColor = SBUColorSet.primaryMain,
+                suggestedReplyTitleColor: UIColor = SBUColorSet.primaryMain,
+                suggestedReplyBorderColor: UIColor = SBUColorSet.primaryMain,
                 suggestedReplyBackgroundColor: UIColor = SBUColorSet.background50,
                 suggestedReplyBackgroundSelectedColor: UIColor = SBUColorSet.background100,
-                multipleFilesMessageFileOverlayColor: UIColor = SBUColorSet.overlay02,
+                multipleFilesMessageFileOverlayColor: UIColor = SBUColorSet.overlayLight,
                 formBackgroundColor: UIColor = SBUColorSet.background100,
-                formTitleColor: UIColor = SBUColorSet.onlight02,
-                formOptionalTitleColor: UIColor = SBUColorSet.onlight03,
+                formTitleColor: UIColor = SBUColorSet.onLightTextMidEmphasis,
+                formOptionalTitleColor: UIColor = SBUColorSet.onLightTextLowEmphasis,
                 formInputBackgroundColor: UIColor = SBUColorSet.background50,
-                formInputBackgroundDoneColor: UIColor = SBUColorSet.ondark02,
-                formInputTitleColor: UIColor = SBUColorSet.onlight01,
-                formInputIconColor: UIColor = SBUColorSet.secondary300,
-                formInputBorderNormalColor: UIColor = SBUColorSet.onlight04,
-                formInputErrorColor: UIColor = SBUColorSet.error300,
-                formInputPlaceholderColor: UIColor = SBUColorSet.onlight03,
-                formSubmitButtonBackgroundColor: UIColor = SBUColorSet.primary300,
-                formSubmitButtonBackgroundDisabledColor: UIColor = SBUColorSet.onlight04,
-                formSubmitButtonTitleColor: UIColor = SBUColorSet.ondark01,
+                formInputBackgroundDoneColor: UIColor = SBUColorSet.onDarkTextMidEmphasis,
+                formInputTitleColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
+                formInputIconColor: UIColor = SBUColorSet.secondaryMain,
+                formInputBorderNormalColor: UIColor = SBUColorSet.onLightTextDisabled,
+                formInputErrorColor: UIColor = SBUColorSet.errorMain,
+                formInputPlaceholderColor: UIColor = SBUColorSet.onLightTextLowEmphasis,
+                formSubmitButtonBackgroundColor: UIColor = SBUColorSet.primaryMain,
+                formSubmitButtonBackgroundDisabledColor: UIColor = SBUColorSet.onLightTextDisabled,
+                formSubmitButtonTitleColor: UIColor = SBUColorSet.onDarkTextHighEmphasis,
                 typingMessageProfileBorderColor: UIColor = SBUColorSet.background50,
-                typingMessageDotColor: UIColor = SBUColorSet.onlight04,
-                typingMessageDotTransformColor: UIColor = SBUColorSet.onlight03,
+                typingMessageDotColor: UIColor = SBUColorSet.onLightTextDisabled,
+                typingMessageDotTransformColor: UIColor = SBUColorSet.onLightTextLowEmphasis,
                 feedbackRadius: CGFloat = 18,
-                feedbackIconColor: UIColor = SBUColorSet.onlight02,
-                feedbackIconSelectColor: UIColor = SBUColorSet.ondark01,
-                feedbackIconDeselectColor: UIColor = SBUColorSet.onlight04,
-                feedbackBorderColor: UIColor = SBUColorSet.onlight04,
-                feedbackBorderSelectColor: UIColor = SBUColorSet.primary300,
-                feedbackBorderDeselectColor: UIColor = SBUColorSet.onlight04,
+                feedbackIconColor: UIColor = SBUColorSet.onLightTextMidEmphasis,
+                feedbackIconSelectColor: UIColor = SBUColorSet.onDarkTextHighEmphasis,
+                feedbackIconDeselectColor: UIColor = SBUColorSet.onLightTextDisabled,
+                feedbackBorderColor: UIColor = SBUColorSet.onLightTextDisabled,
+                feedbackBorderSelectColor: UIColor = SBUColorSet.primaryMain,
+                feedbackBorderDeselectColor: UIColor = SBUColorSet.onLightTextDisabled,
                 feedbackBackgroundNormalColor: UIColor = SBUColorSet.background50,
-                feedbackBackgroundSelectColor: UIColor = SBUColorSet.primary300,
+                feedbackBackgroundSelectColor: UIColor = SBUColorSet.primaryMain,
                 feedbackBackgroundDeselectColor: UIColor = SBUColorSet.background50
     ) {
         
@@ -2253,22 +2253,22 @@ public class SBUUserListTheme {
             theme.statusBarStyle = .default
         }
         theme.navigationBarTintColor = SBUColorSet.background50
-        theme.navigationShadowColor = SBUColorSet.onlight04
-        theme.leftBarButtonTintColor = SBUColorSet.primary300
-        theme.rightBarButtonTintColor = SBUColorSet.onlight04 // TODO: need to replace
-        theme.rightBarButtonSelectedTintColor = SBUColorSet.primary300 // TODO: need to replace
-        theme.barButtonTintColor = SBUColorSet.primary300
-        theme.barButtonDisabledTintColor = SBUColorSet.onlight04
+        theme.navigationShadowColor = SBUColorSet.onLightTextDisabled
+        theme.leftBarButtonTintColor = SBUColorSet.primaryMain
+        theme.rightBarButtonTintColor = SBUColorSet.onLightTextDisabled // TODO: need to replace
+        theme.rightBarButtonSelectedTintColor = SBUColorSet.primaryMain // TODO: need to replace
+        theme.barButtonTintColor = SBUColorSet.primaryMain
+        theme.barButtonDisabledTintColor = SBUColorSet.onLightTextDisabled
         theme.backgroundColor = SBUColorSet.background50
-        theme.coverImageTintColor = SBUColorSet.ondark01 // TODO: need to remove (sample only)
+        theme.coverImageTintColor = SBUColorSet.onDarkTextHighEmphasis // TODO: need to remove (sample only)
         theme.coverImageBackgroundColor = SBUColorSet.background300 // TODO: need to remove (sample only)
-        theme.placeholderTintColor = SBUColorSet.onlight03 // TODO: need to remove (sample only)
-        theme.textfieldTextColor = SBUColorSet.onlight01 // TODO: need to remove (sample only)
+        theme.placeholderTintColor = SBUColorSet.onLightTextLowEmphasis // TODO: need to remove (sample only)
+        theme.textfieldTextColor = SBUColorSet.onLightTextHighEmphasis // TODO: need to remove (sample only)
         
         // ActionSheet
-        theme.itemTextColor = SBUColorSet.onlight01 // TODO: need to remove (sample only)
-        theme.itemColor = SBUColorSet.primary300 // TODO: need to remove (sample only)
-        theme.removeColor = SBUColorSet.error300 // TODO: need to remove (sample only)
+        theme.itemTextColor = SBUColorSet.onLightTextHighEmphasis // TODO: need to remove (sample only)
+        theme.itemColor = SBUColorSet.primaryMain // TODO: need to remove (sample only)
+        theme.removeColor = SBUColorSet.errorMain // TODO: need to remove (sample only)
         return theme
     }
     public static var dark: SBUUserListTheme {
@@ -2276,40 +2276,40 @@ public class SBUUserListTheme {
         theme.statusBarStyle = .lightContent
         theme.navigationBarTintColor = SBUColorSet.background500
         theme.navigationShadowColor = SBUColorSet.background500
-        theme.leftBarButtonTintColor = SBUColorSet.primary200
-        theme.rightBarButtonTintColor = SBUColorSet.ondark04 // TODO: need to replace
-        theme.rightBarButtonSelectedTintColor = SBUColorSet.primary200 // TODO: need to replace
-        theme.barButtonTintColor = SBUColorSet.primary200
-        theme.barButtonDisabledTintColor = SBUColorSet.ondark04
+        theme.leftBarButtonTintColor = SBUColorSet.primaryLight
+        theme.rightBarButtonTintColor = SBUColorSet.onDarkTextDisabled // TODO: need to replace
+        theme.rightBarButtonSelectedTintColor = SBUColorSet.primaryLight // TODO: need to replace
+        theme.barButtonTintColor = SBUColorSet.primaryLight
+        theme.barButtonDisabledTintColor = SBUColorSet.onDarkTextDisabled
         theme.backgroundColor = SBUColorSet.background600
-        theme.coverImageTintColor = SBUColorSet.onlight01 // TODO: need to remove (sample only)
+        theme.coverImageTintColor = SBUColorSet.onLightTextHighEmphasis // TODO: need to remove (sample only)
         theme.coverImageBackgroundColor = SBUColorSet.background400 // TODO: need to remove (sample only)
-        theme.placeholderTintColor = SBUColorSet.ondark03 // TODO: need to remove (sample only)
-        theme.textfieldTextColor = SBUColorSet.ondark03 // TODO: need to remove (sample only)
+        theme.placeholderTintColor = SBUColorSet.onDarkTextLowEmphasis // TODO: need to remove (sample only)
+        theme.textfieldTextColor = SBUColorSet.onDarkTextLowEmphasis // TODO: need to remove (sample only)
         
         // ActionSheet
-        theme.itemTextColor = SBUColorSet.ondark01 // TODO: need to remove (sample only)
-        theme.itemColor = SBUColorSet.primary200 // TODO: need to remove (sample only)
-        theme.removeColor = SBUColorSet.error300 // TODO: need to remove (sample only)
+        theme.itemTextColor = SBUColorSet.onDarkTextHighEmphasis // TODO: need to remove (sample only)
+        theme.itemColor = SBUColorSet.primaryLight // TODO: need to remove (sample only)
+        theme.removeColor = SBUColorSet.errorMain // TODO: need to remove (sample only)
         return theme
     }
     
     public init(statusBarStyle: UIStatusBarStyle = .default,
                 navigationBarTintColor: UIColor = SBUColorSet.background50,
-                navigationShadowColor: UIColor = SBUColorSet.onlight04,
-                leftBarButtonTintColor: UIColor = SBUColorSet.primary300,
-                rightBarButtonTintColor: UIColor = SBUColorSet.onlight04,
-                rightBarButtonSelectedTintColor: UIColor = SBUColorSet.primary300,
-                barButtonTintColor: UIColor = SBUColorSet.primary300,
-                barButtonDisabledTintColor: UIColor = SBUColorSet.onlight04,
+                navigationShadowColor: UIColor = SBUColorSet.onLightTextDisabled,
+                leftBarButtonTintColor: UIColor = SBUColorSet.primaryMain,
+                rightBarButtonTintColor: UIColor = SBUColorSet.onLightTextDisabled,
+                rightBarButtonSelectedTintColor: UIColor = SBUColorSet.primaryMain,
+                barButtonTintColor: UIColor = SBUColorSet.primaryMain,
+                barButtonDisabledTintColor: UIColor = SBUColorSet.onLightTextDisabled,
                 backgroundColor: UIColor = SBUColorSet.background50,
-                coverImageTintColor: UIColor = SBUColorSet.ondark01,
+                coverImageTintColor: UIColor = SBUColorSet.onDarkTextHighEmphasis,
                 coverImageBackgroundColor: UIColor = SBUColorSet.background300,
-                itemTextColor: UIColor = SBUColorSet.onlight01,
-                itemColor: UIColor = SBUColorSet.primary300,
-                removeColor: UIColor = SBUColorSet.error300,
-                placeholderTintColor: UIColor = SBUColorSet.onlight03,
-                textfieldTextColor: UIColor = SBUColorSet.onlight01) {
+                itemTextColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
+                itemColor: UIColor = SBUColorSet.primaryMain,
+                removeColor: UIColor = SBUColorSet.errorMain,
+                placeholderTintColor: UIColor = SBUColorSet.onLightTextLowEmphasis,
+                textfieldTextColor: UIColor = SBUColorSet.onLightTextHighEmphasis) {
         
         self.statusBarStyle = statusBarStyle
         self.navigationBarTintColor = navigationBarTintColor
@@ -2354,65 +2354,65 @@ public class SBUUserCellTheme {
     public static var light: SBUUserCellTheme {
         let theme = SBUUserCellTheme()
         theme.backgroundColor = SBUColorSet.background50
-        theme.checkboxOnColor = SBUColorSet.primary300
-        theme.checkboxOffColor = SBUColorSet.onlight03
-        theme.nicknameTextColor = SBUColorSet.onlight01
+        theme.checkboxOnColor = SBUColorSet.primaryMain
+        theme.checkboxOffColor = SBUColorSet.onLightTextLowEmphasis
+        theme.nicknameTextColor = SBUColorSet.onLightTextHighEmphasis
         theme.nicknameTextFont = SBUFontSet.subtitle2
-        theme.nonameTextColor = SBUColorSet.onlight04
-        theme.userIdTextColor = SBUColorSet.onlight03
+        theme.nonameTextColor = SBUColorSet.onLightTextDisabled
+        theme.userIdTextColor = SBUColorSet.onLightTextLowEmphasis
         theme.userIdTextFont = SBUFontSet.body3
         theme.userPlaceholderBackgroundColor = SBUColorSet.background300
-        theme.userPlaceholderTintColor = SBUColorSet.ondark01
-        theme.mutedStateBackgroundColor = SBUColorSet.primary300.withAlphaComponent(0.5)
-        theme.mutedStateIconColor = SBUColorSet.ondark01
-        theme.subInfoTextColor = SBUColorSet.onlight03
+        theme.userPlaceholderTintColor = SBUColorSet.onDarkTextHighEmphasis
+        theme.mutedStateBackgroundColor = SBUColorSet.primaryMain.withAlphaComponent(0.5)
+        theme.mutedStateIconColor = SBUColorSet.onDarkTextHighEmphasis
+        theme.subInfoTextColor = SBUColorSet.onLightTextLowEmphasis
         theme.subInfoFont = SBUFontSet.body2
-        theme.moreButtonColor = SBUColorSet.onlight01
-        theme.moreButtonDisabledColor = SBUColorSet.onlight04
-        theme.separateColor = SBUColorSet.onlight04
+        theme.moreButtonColor = SBUColorSet.onLightTextHighEmphasis
+        theme.moreButtonDisabledColor = SBUColorSet.onLightTextDisabled
+        theme.separateColor = SBUColorSet.onLightTextDisabled
         return theme
     }
     
     public static var dark: SBUUserCellTheme {
         let theme = SBUUserCellTheme()
         theme.backgroundColor = SBUColorSet.background600
-        theme.checkboxOnColor = SBUColorSet.primary200
-        theme.checkboxOffColor = SBUColorSet.ondark03
-        theme.nicknameTextColor = SBUColorSet.ondark01
+        theme.checkboxOnColor = SBUColorSet.primaryLight
+        theme.checkboxOffColor = SBUColorSet.onDarkTextLowEmphasis
+        theme.nicknameTextColor = SBUColorSet.onDarkTextHighEmphasis
         theme.nicknameTextFont = SBUFontSet.subtitle2
-        theme.nonameTextColor = SBUColorSet.ondark03
-        theme.userIdTextColor = SBUColorSet.ondark03
+        theme.nonameTextColor = SBUColorSet.onDarkTextLowEmphasis
+        theme.userIdTextColor = SBUColorSet.onDarkTextLowEmphasis
         theme.userIdTextFont = SBUFontSet.body3
         theme.userPlaceholderBackgroundColor = SBUColorSet.background400
-        theme.userPlaceholderTintColor = SBUColorSet.onlight01
-        theme.mutedStateBackgroundColor = SBUColorSet.primary300.withAlphaComponent(0.5)
-        theme.mutedStateIconColor = SBUColorSet.ondark01
-        theme.subInfoTextColor = SBUColorSet.ondark03
+        theme.userPlaceholderTintColor = SBUColorSet.onLightTextHighEmphasis
+        theme.mutedStateBackgroundColor = SBUColorSet.primaryMain.withAlphaComponent(0.5)
+        theme.mutedStateIconColor = SBUColorSet.onDarkTextHighEmphasis
+        theme.subInfoTextColor = SBUColorSet.onDarkTextLowEmphasis
         theme.subInfoFont = SBUFontSet.body2
-        theme.moreButtonColor = SBUColorSet.ondark01
-        theme.moreButtonDisabledColor = SBUColorSet.ondark04
-        theme.separateColor = SBUColorSet.ondark04
+        theme.moreButtonColor = SBUColorSet.onDarkTextHighEmphasis
+        theme.moreButtonDisabledColor = SBUColorSet.onDarkTextDisabled
+        theme.separateColor = SBUColorSet.onDarkTextDisabled
         return theme
     }
     
     public init(
         backgroundColor: UIColor = SBUColorSet.background50,
-        checkboxOnColor: UIColor = SBUColorSet.primary300,
-        checkboxOffColor: UIColor = SBUColorSet.onlight03,
-        nicknameTextColor: UIColor = SBUColorSet.onlight01,
+        checkboxOnColor: UIColor = SBUColorSet.primaryMain,
+        checkboxOffColor: UIColor = SBUColorSet.onLightTextLowEmphasis,
+        nicknameTextColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
         nicknameFont: UIFont = SBUFontSet.subtitle2,
-        nonameTextColor: UIColor = SBUColorSet.onlight04,
-        userIdTextColor: UIColor = SBUColorSet.onlight03,
+        nonameTextColor: UIColor = SBUColorSet.onLightTextDisabled,
+        userIdTextColor: UIColor = SBUColorSet.onLightTextLowEmphasis,
         userIdFont: UIFont = SBUFontSet.body3,
         userPlaceholderBackgroundColor: UIColor = SBUColorSet.background300,
-        userPlaceholderTintColor: UIColor = SBUColorSet.ondark01,
-        mutedStateBackgroundColor: UIColor = SBUColorSet.primary300.withAlphaComponent(0.5),
-        mutedStateIconColor: UIColor = SBUColorSet.ondark01,
-        subInfoTextColor: UIColor = SBUColorSet.onlight03,
+        userPlaceholderTintColor: UIColor = SBUColorSet.onDarkTextHighEmphasis,
+        mutedStateBackgroundColor: UIColor = SBUColorSet.primaryMain.withAlphaComponent(0.5),
+        mutedStateIconColor: UIColor = SBUColorSet.onDarkTextHighEmphasis,
+        subInfoTextColor: UIColor = SBUColorSet.onLightTextLowEmphasis,
         subInfoFont: UIFont = SBUFontSet.body2,
-        moreButtonColor: UIColor = SBUColorSet.onlight01,
-        moreButtonDisabledColor: UIColor = SBUColorSet.onlight04,
-        separateColor: UIColor = SBUColorSet.onlight04
+        moreButtonColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
+        moreButtonDisabledColor: UIColor = SBUColorSet.onLightTextDisabled,
+        separateColor: UIColor = SBUColorSet.onLightTextDisabled
     ) {
         
         self.backgroundColor = backgroundColor
@@ -2472,47 +2472,47 @@ public class SBUChannelSettingsTheme {
         }
         
         theme.navigationBarTintColor = SBUColorSet.background50
-        theme.navigationShadowColor = SBUColorSet.onlight04
-        theme.leftBarButtonTintColor = SBUColorSet.primary300
-        theme.rightBarButtonTintColor = SBUColorSet.primary300
+        theme.navigationShadowColor = SBUColorSet.onLightTextDisabled
+        theme.leftBarButtonTintColor = SBUColorSet.primaryMain
+        theme.rightBarButtonTintColor = SBUColorSet.primaryMain
         theme.backgroundColor = SBUColorSet.background50
         
         // Cell
         theme.cellTextFont = SBUFontSet.subtitle2
-        theme.cellTextColor = SBUColorSet.onlight01
+        theme.cellTextColor = SBUColorSet.onLightTextHighEmphasis
         theme.cellSubTextFont = SBUFontSet.subtitle2
-        theme.cellSubTextColor = SBUColorSet.onlight02
+        theme.cellSubTextColor = SBUColorSet.onLightTextMidEmphasis
         theme.cellDescriptionTextFont = SBUFontSet.body3
-        theme.cellDescriptionTextColor = SBUColorSet.onlight02
-        theme.cellSwitchColor = SBUColorSet.primary300
-        theme.cellSeparateColor = SBUColorSet.onlight04
-        theme.cellRadioButtonSelectedColor = SBUColorSet.primary300
-        theme.cellRadioButtonDeselectedColor = SBUColorSet.onlight03
+        theme.cellDescriptionTextColor = SBUColorSet.onLightTextMidEmphasis
+        theme.cellSwitchColor = SBUColorSet.primaryMain
+        theme.cellSeparateColor = SBUColorSet.onLightTextDisabled
+        theme.cellRadioButtonSelectedColor = SBUColorSet.primaryMain
+        theme.cellRadioButtonDeselectedColor = SBUColorSet.onLightTextLowEmphasis
         
         // Cell image
-        theme.cellTypeIconTintColor = SBUColorSet.primary300
-        theme.cellArrowIconTintColor = SBUColorSet.onlight01
-        theme.cellLeaveIconColor = SBUColorSet.error300
-        theme.cellDeleteIconColor = SBUColorSet.error300
+        theme.cellTypeIconTintColor = SBUColorSet.primaryMain
+        theme.cellArrowIconTintColor = SBUColorSet.onLightTextHighEmphasis
+        theme.cellLeaveIconColor = SBUColorSet.errorMain
+        theme.cellDeleteIconColor = SBUColorSet.errorMain
         
         // User Info View // TODO: userName -> channelName
         theme.userNameFont = SBUFontSet.h1
-        theme.userNameTextColor = SBUColorSet.onlight01
-        theme.userPlaceholderTintColor = SBUColorSet.ondark01
+        theme.userNameTextColor = SBUColorSet.onLightTextHighEmphasis
+        theme.userPlaceholderTintColor = SBUColorSet.onDarkTextHighEmphasis
         theme.userPlaceholderBackgroundColor = SBUColorSet.background300
         
         // ActionSheet
-        theme.itemTextColor = SBUColorSet.onlight01
-        theme.itemColor = SBUColorSet.primary300
+        theme.itemTextColor = SBUColorSet.onLightTextHighEmphasis
+        theme.itemColor = SBUColorSet.primaryMain
         
         // Alert
-        theme.itemDeleteTextColor = SBUColorSet.error300
+        theme.itemDeleteTextColor = SBUColorSet.errorMain
         
         // Url Info
         theme.urlTitleFont = SBUFontSet.body2
-        theme.urlTitleColor = SBUColorSet.onlight02
+        theme.urlTitleColor = SBUColorSet.onLightTextMidEmphasis
         theme.urlFont = SBUFontSet.body1
-        theme.urlColor = SBUColorSet.onlight01
+        theme.urlColor = SBUColorSet.onLightTextHighEmphasis
         
         return theme
     }
@@ -2521,81 +2521,81 @@ public class SBUChannelSettingsTheme {
         theme.statusBarStyle = .lightContent
         theme.navigationBarTintColor = SBUColorSet.background500
         theme.navigationShadowColor = SBUColorSet.background500
-        theme.leftBarButtonTintColor = SBUColorSet.primary200
-        theme.rightBarButtonTintColor = SBUColorSet.primary200
+        theme.leftBarButtonTintColor = SBUColorSet.primaryLight
+        theme.rightBarButtonTintColor = SBUColorSet.primaryLight
         theme.backgroundColor = SBUColorSet.background600
         
         // Cell
         theme.cellTextFont = SBUFontSet.subtitle2
-        theme.cellTextColor = SBUColorSet.ondark01
+        theme.cellTextColor = SBUColorSet.onDarkTextHighEmphasis
         theme.cellSubTextFont = SBUFontSet.subtitle2
-        theme.cellSubTextColor = SBUColorSet.ondark02
+        theme.cellSubTextColor = SBUColorSet.onDarkTextMidEmphasis
         theme.cellDescriptionTextFont = SBUFontSet.body3
-        theme.cellDescriptionTextColor = SBUColorSet.ondark02
-        theme.cellSwitchColor = SBUColorSet.primary200
-        theme.cellSeparateColor = SBUColorSet.ondark04
-        theme.cellRadioButtonSelectedColor = SBUColorSet.primary200
-        theme.cellRadioButtonDeselectedColor = SBUColorSet.ondark03
+        theme.cellDescriptionTextColor = SBUColorSet.onDarkTextMidEmphasis
+        theme.cellSwitchColor = SBUColorSet.primaryLight
+        theme.cellSeparateColor = SBUColorSet.onDarkTextDisabled
+        theme.cellRadioButtonSelectedColor = SBUColorSet.primaryLight
+        theme.cellRadioButtonDeselectedColor = SBUColorSet.onDarkTextLowEmphasis
         
         // Cell image
-        theme.cellTypeIconTintColor = SBUColorSet.primary200
-        theme.cellArrowIconTintColor = SBUColorSet.ondark01
-        theme.cellLeaveIconColor = SBUColorSet.error200
-        theme.cellDeleteIconColor = SBUColorSet.error200
+        theme.cellTypeIconTintColor = SBUColorSet.primaryLight
+        theme.cellArrowIconTintColor = SBUColorSet.onDarkTextHighEmphasis
+        theme.cellLeaveIconColor = SBUColorSet.errorLight
+        theme.cellDeleteIconColor = SBUColorSet.errorLight
         
         // User Info View // TODO: userName -> channelName
         theme.userNameFont = SBUFontSet.h1
-        theme.userNameTextColor = SBUColorSet.ondark01
-        theme.userPlaceholderTintColor = SBUColorSet.onlight01
+        theme.userNameTextColor = SBUColorSet.onDarkTextHighEmphasis
+        theme.userPlaceholderTintColor = SBUColorSet.onLightTextHighEmphasis
         theme.userPlaceholderBackgroundColor = SBUColorSet.background400
         
         // ActionSheet
-        theme.itemTextColor = SBUColorSet.ondark01
-        theme.itemColor = SBUColorSet.primary200
+        theme.itemTextColor = SBUColorSet.onDarkTextHighEmphasis
+        theme.itemColor = SBUColorSet.primaryLight
         
         // Alert
-        theme.itemDeleteTextColor = SBUColorSet.error200
+        theme.itemDeleteTextColor = SBUColorSet.errorLight
         
         // Url Info
         theme.urlTitleFont = SBUFontSet.body2
-        theme.urlTitleColor = SBUColorSet.ondark02
+        theme.urlTitleColor = SBUColorSet.onDarkTextMidEmphasis
         theme.urlFont = SBUFontSet.body1
-        theme.urlColor = SBUColorSet.ondark01
+        theme.urlColor = SBUColorSet.onDarkTextHighEmphasis
         
         return theme
     }
     
     public init(statusBarStyle: UIStatusBarStyle = .default,
                 navigationBarTintColor: UIColor = SBUColorSet.background50,
-                navigationShadowColor: UIColor = SBUColorSet.onlight04,
-                leftBarButtonTintColor: UIColor = SBUColorSet.primary300,
-                rightBarButtonTintColor: UIColor = SBUColorSet.primary300,
+                navigationShadowColor: UIColor = SBUColorSet.onLightTextDisabled,
+                leftBarButtonTintColor: UIColor = SBUColorSet.primaryMain,
+                rightBarButtonTintColor: UIColor = SBUColorSet.primaryMain,
                 backgroundColor: UIColor = SBUColorSet.background50,
                 cellTextFont: UIFont = SBUFontSet.subtitle2,
-                cellTextColor: UIColor = SBUColorSet.onlight01,
+                cellTextColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
                 cellSubTextFont: UIFont = SBUFontSet.subtitle2,
-                cellSubTextColor: UIColor = SBUColorSet.onlight02,
+                cellSubTextColor: UIColor = SBUColorSet.onLightTextMidEmphasis,
                 cellDescriptionTextFont: UIFont = SBUFontSet.body3,
-                cellDescriptionTextColor: UIColor = SBUColorSet.onlight02,
-                cellSwitchColor: UIColor = SBUColorSet.primary300,
-                cellSeparateColor: UIColor = SBUColorSet.onlight04,
-                cellRadioButtonSelectedColor: UIColor = SBUColorSet.primary300,
-                cellRadioButtonDeselectedColor: UIColor = SBUColorSet.onlight03,
-                cellTypeIconTintColor: UIColor = SBUColorSet.primary300,
-                cellArrowIconTintColor: UIColor = SBUColorSet.onlight01,
-                cellLeaveIconColor: UIColor = SBUColorSet.error300,
-                cellDeleteIconColor: UIColor = SBUColorSet.error300,
+                cellDescriptionTextColor: UIColor = SBUColorSet.onLightTextMidEmphasis,
+                cellSwitchColor: UIColor = SBUColorSet.primaryMain,
+                cellSeparateColor: UIColor = SBUColorSet.onLightTextDisabled,
+                cellRadioButtonSelectedColor: UIColor = SBUColorSet.primaryMain,
+                cellRadioButtonDeselectedColor: UIColor = SBUColorSet.onLightTextLowEmphasis,
+                cellTypeIconTintColor: UIColor = SBUColorSet.primaryMain,
+                cellArrowIconTintColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
+                cellLeaveIconColor: UIColor = SBUColorSet.errorMain,
+                cellDeleteIconColor: UIColor = SBUColorSet.errorMain,
                 userNameFont: UIFont = SBUFontSet.h1,
-                userNameTextColor: UIColor = SBUColorSet.onlight01,
-                userPlaceholderTintColor: UIColor = SBUColorSet.ondark01,
+                userNameTextColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
+                userPlaceholderTintColor: UIColor = SBUColorSet.onDarkTextHighEmphasis,
                 userPlaceholderBackgroundColor: UIColor = SBUColorSet.background300,
-                itemTextColor: UIColor = SBUColorSet.onlight01,
-                itemColor: UIColor = SBUColorSet.primary300,
-                itemDeleteTextColor: UIColor = SBUColorSet.error300,
+                itemTextColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
+                itemColor: UIColor = SBUColorSet.primaryMain,
+                itemDeleteTextColor: UIColor = SBUColorSet.errorMain,
                 urlTitleFont: UIFont = SBUFontSet.body2,
-                urlTitleColor: UIColor = SBUColorSet.onlight02,
+                urlTitleColor: UIColor = SBUColorSet.onLightTextMidEmphasis,
                 urlFont: UIFont = SBUFontSet.body1,
-                urlColor: UIColor = SBUColorSet.onlight01
+                urlColor: UIColor = SBUColorSet.onLightTextHighEmphasis
                 ) {
         
         self.statusBarStyle = statusBarStyle
@@ -2688,31 +2688,31 @@ public class SBUUserProfileTheme {
             theme.statusBarStyle = .default
         }
         
-        theme.overlayColor = SBUColorSet.overlay02
+        theme.overlayColor = SBUColorSet.overlayLight
         theme.backgroundColor = SBUColorSet.background50
         theme.userPlaceholderBackgroundColor = SBUColorSet.background300
-        theme.userPlaceholderTintColor = SBUColorSet.ondark01
-        theme.usernameTextColor = SBUColorSet.onlight01
+        theme.userPlaceholderTintColor = SBUColorSet.onDarkTextHighEmphasis
+        theme.usernameTextColor = SBUColorSet.onLightTextHighEmphasis
         theme.usernameFont = SBUFontSet.h1
-        theme.largeItemTintColor = SBUColorSet.onlight01
+        theme.largeItemTintColor = SBUColorSet.onLightTextHighEmphasis
         theme.largeItemFont = SBUFontSet.button2
         theme.largeItemBackgroundColor = SBUColorSet.background50
         theme.largeItemHighlightedColor = SBUColorSet.background100
-        theme.separatorColor = SBUColorSet.onlight04
-        theme.informationTitleColor = SBUColorSet.onlight02
+        theme.separatorColor = SBUColorSet.onLightTextDisabled
+        theme.informationTitleColor = SBUColorSet.onLightTextMidEmphasis
         theme.informationTitleFont = SBUFontSet.body2
-        theme.informationDesctiptionColor = SBUColorSet.onlight01
+        theme.informationDesctiptionColor = SBUColorSet.onLightTextHighEmphasis
         theme.informationDesctiptionFont = SBUFontSet.body3
         
         // TODO: need to remove (not used)
-        theme.userRoleTextColor = SBUColorSet.onlight02
+        theme.userRoleTextColor = SBUColorSet.onLightTextMidEmphasis
         theme.userRoleFont = SBUFontSet.body3
         theme.itemFont = SBUFontSet.caption1
         theme.itemBackgroundColor = SBUColorSet.background100
-        theme.itemSelectedBackgroundColor = SBUColorSet.primary300
-        theme.itemTintColor = SBUColorSet.onlight01
-        theme.itemSelectedTintColor = SBUColorSet.ondark01
-        theme.itemHighlightedTintColor = SBUColorSet.error300
+        theme.itemSelectedBackgroundColor = SBUColorSet.primaryMain
+        theme.itemTintColor = SBUColorSet.onLightTextHighEmphasis
+        theme.itemSelectedTintColor = SBUColorSet.onDarkTextHighEmphasis
+        theme.itemHighlightedTintColor = SBUColorSet.errorMain
         
         return theme
     }
@@ -2722,58 +2722,58 @@ public class SBUUserProfileTheme {
         
         theme.statusBarStyle = .lightContent
         
-        theme.overlayColor = SBUColorSet.overlay02
+        theme.overlayColor = SBUColorSet.overlayLight
         theme.backgroundColor = SBUColorSet.background500
         theme.userPlaceholderBackgroundColor = SBUColorSet.background300
-        theme.userPlaceholderTintColor = SBUColorSet.onlight01
-        theme.usernameTextColor = SBUColorSet.ondark01
+        theme.userPlaceholderTintColor = SBUColorSet.onLightTextHighEmphasis
+        theme.usernameTextColor = SBUColorSet.onDarkTextHighEmphasis
         theme.usernameFont = SBUFontSet.h1
-        theme.largeItemTintColor = SBUColorSet.ondark01
+        theme.largeItemTintColor = SBUColorSet.onDarkTextHighEmphasis
         theme.largeItemFont = SBUFontSet.button2
         theme.largeItemBackgroundColor = SBUColorSet.background500
         theme.largeItemHighlightedColor = SBUColorSet.background400
-        theme.separatorColor = SBUColorSet.ondark04
-        theme.informationTitleColor = SBUColorSet.ondark02
+        theme.separatorColor = SBUColorSet.onDarkTextDisabled
+        theme.informationTitleColor = SBUColorSet.onDarkTextMidEmphasis
         theme.informationTitleFont = SBUFontSet.body2
-        theme.informationDesctiptionColor = SBUColorSet.ondark01
+        theme.informationDesctiptionColor = SBUColorSet.onDarkTextHighEmphasis
         theme.informationDesctiptionFont = SBUFontSet.body3
         
         // TODO: need to remove (not used)
-        theme.userRoleTextColor = SBUColorSet.ondark02
+        theme.userRoleTextColor = SBUColorSet.onDarkTextMidEmphasis
         theme.userRoleFont = SBUFontSet.body3
         theme.itemFont = SBUFontSet.caption1
         theme.itemBackgroundColor = SBUColorSet.background400
-        theme.itemSelectedBackgroundColor = SBUColorSet.primary200
-        theme.itemTintColor = SBUColorSet.ondark01
-        theme.itemSelectedTintColor = SBUColorSet.onlight01
-        theme.itemHighlightedTintColor = SBUColorSet.error300
+        theme.itemSelectedBackgroundColor = SBUColorSet.primaryLight
+        theme.itemTintColor = SBUColorSet.onDarkTextHighEmphasis
+        theme.itemSelectedTintColor = SBUColorSet.onLightTextHighEmphasis
+        theme.itemHighlightedTintColor = SBUColorSet.errorMain
 
         return theme
     }
     
     public init(statusBarStyle: UIStatusBarStyle = .default,
-                overlayColor: UIColor = SBUColorSet.overlay02,
+                overlayColor: UIColor = SBUColorSet.overlayLight,
                 backgroundColor: UIColor = SBUColorSet.background50,
                 userPlaceholderBackgroundColor: UIColor = SBUColorSet.background300,
-                userPlaceholderTintColor: UIColor = SBUColorSet.ondark01,
-                usernameTextColor: UIColor = SBUColorSet.onlight01,
+                userPlaceholderTintColor: UIColor = SBUColorSet.onDarkTextHighEmphasis,
+                usernameTextColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
                 usernameFont: UIFont = SBUFontSet.h1,
-                userRoleTextColor: UIColor = SBUColorSet.onlight02,
+                userRoleTextColor: UIColor = SBUColorSet.onLightTextMidEmphasis,
                 userRoleFont: UIFont = SBUFontSet.body3,
-                largeItemTintColor: UIColor = SBUColorSet.onlight01,
+                largeItemTintColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
                 largeItemFont: UIFont = SBUFontSet.button2,
                 largeItemBackgroundColor: UIColor = SBUColorSet.background50,
                 largeItemHighlightedColor: UIColor = SBUColorSet.background100,
                 itemFont: UIFont = SBUFontSet.caption1,
                 itemBackgroundColor: UIColor = SBUColorSet.background400,
-                itemSelectedBackgroundColor: UIColor = SBUColorSet.primary300,
-                itemTintColor: UIColor = SBUColorSet.onlight01,
-                itemSelectedTintColor: UIColor = SBUColorSet.ondark01,
-                itemHighlightedTintColor: UIColor = SBUColorSet.error300,
-                separatorColor: UIColor = SBUColorSet.onlight04,
-                informationTitleColor: UIColor = SBUColorSet.onlight02,
+                itemSelectedBackgroundColor: UIColor = SBUColorSet.primaryMain,
+                itemTintColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
+                itemSelectedTintColor: UIColor = SBUColorSet.onDarkTextHighEmphasis,
+                itemHighlightedTintColor: UIColor = SBUColorSet.errorMain,
+                separatorColor: UIColor = SBUColorSet.onLightTextDisabled,
+                informationTitleColor: UIColor = SBUColorSet.onLightTextMidEmphasis,
                 informationTitleFont: UIFont = SBUFontSet.body2,
-                informationDesctiptionColor: UIColor = SBUColorSet.onlight01,
+                informationDesctiptionColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
                 informationDesctiptionFont: UIFont = SBUFontSet.body3) {
         
         self.statusBarStyle = statusBarStyle
@@ -2840,113 +2840,113 @@ public class SBUComponentTheme {
         theme.emptyViewBackgroundColor = SBUColorSet.background50
         
         theme.emptyViewStatusFont = SBUFontSet.body3
-        theme.emptyViewStatusTintColor = SBUColorSet.onlight03
+        theme.emptyViewStatusTintColor = SBUColorSet.onLightTextLowEmphasis
         
-        theme.emptyViewRetryButtonTintColor = SBUColorSet.primary300
+        theme.emptyViewRetryButtonTintColor = SBUColorSet.primaryMain
         theme.emptyViewRetryButtonFont = SBUFontSet.button2
         
-        theme.overlayColor = SBUColorSet.overlay01
+        theme.overlayColor = SBUColorSet.overlayDark
         theme.backgroundColor = SBUColorSet.background50
         theme.highlightedColor = SBUColorSet.background100
-        theme.buttonTextColor = SBUColorSet.primary300
-        theme.separatorColor = SBUColorSet.onlight04
+        theme.buttonTextColor = SBUColorSet.primaryMain
+        theme.separatorColor = SBUColorSet.onLightTextDisabled
         theme.shadowColor = SBUColorSet.background700.withAlphaComponent(0.12)
-        theme.closeBarButtonTintColor = SBUColorSet.onlight01
+        theme.closeBarButtonTintColor = SBUColorSet.onLightTextHighEmphasis
         
         // Alert
-        theme.alertTitleColor = SBUColorSet.onlight01
+        theme.alertTitleColor = SBUColorSet.onLightTextHighEmphasis
         theme.alertTitleFont = SBUFontSet.h3
-        theme.alertDetailColor = SBUColorSet.onlight02
+        theme.alertDetailColor = SBUColorSet.onLightTextMidEmphasis
         theme.alertDetailFont = SBUFontSet.body3
-        theme.alertPlaceholderColor = SBUColorSet.onlight03
-        theme.alertButtonColor = SBUColorSet.primary300
-        theme.alertErrorColor = SBUColorSet.error300
+        theme.alertPlaceholderColor = SBUColorSet.onLightTextLowEmphasis
+        theme.alertButtonColor = SBUColorSet.primaryMain
+        theme.alertErrorColor = SBUColorSet.errorMain
         theme.alertButtonFont = SBUFontSet.button2
         theme.alertTextFieldBackgroundColor = SBUColorSet.background100
-        theme.alertTextFieldTintColor = SBUColorSet.primary300
+        theme.alertTextFieldTintColor = SBUColorSet.primaryMain
         theme.alertTextFieldFont = SBUFontSet.body3
         
         // Action Sheet
         theme.actionSheetTextFont = SBUFontSet.subtitle1
-        theme.actionSheetTextColor = SBUColorSet.onlight01
+        theme.actionSheetTextColor = SBUColorSet.onLightTextHighEmphasis
         theme.actionSheetSubTextFont = SBUFontSet.body2
-        theme.actionSheetSubTextColor = SBUColorSet.onlight02
-        theme.actionSheetItemColor = SBUColorSet.primary300
-        theme.actionSheetErrorColor = SBUColorSet.error300
+        theme.actionSheetSubTextColor = SBUColorSet.onLightTextMidEmphasis
+        theme.actionSheetItemColor = SBUColorSet.primaryMain
+        theme.actionSheetErrorColor = SBUColorSet.errorMain
         theme.actionSheetButtonFont = SBUFontSet.button1
-        theme.actionSheetDisabledColor = SBUColorSet.onlight04
+        theme.actionSheetDisabledColor = SBUColorSet.onLightTextDisabled
         
         // New Message
         theme.newMessageFont = SBUFontSet.body2
-        theme.newMessageTintColor = SBUColorSet.primary300
+        theme.newMessageTintColor = SBUColorSet.primaryMain
         theme.newMessageBackground = SBUColorSet.background50
         theme.newMessageHighlighted = SBUColorSet.background100
-        theme.newMessageButtonTintColor = SBUColorSet.ondark01
-        theme.newMessageButtonBackground = SBUColorSet.primary300
-        theme.newMessageButtonHighlighted = SBUColorSet.primary400
+        theme.newMessageButtonTintColor = SBUColorSet.onDarkTextHighEmphasis
+        theme.newMessageButtonBackground = SBUColorSet.primaryMain
+        theme.newMessageButtonHighlighted = SBUColorSet.primaryDark
         
         // Scroll Bottom
-        theme.scrollBottomButtonIconColor = SBUColorSet.primary300
+        theme.scrollBottomButtonIconColor = SBUColorSet.primaryMain
         theme.scrollBottomButtonBackground = SBUColorSet.background50
         theme.scrollBottomButtonHighlighted = SBUColorSet.background100
         
         // Title View
-        theme.titleOnlineStateColor = SBUColorSet.secondary300
-        theme.titleColor = SBUColorSet.onlight01
+        theme.titleOnlineStateColor = SBUColorSet.secondaryMain
+        theme.titleColor = SBUColorSet.onLightTextHighEmphasis
         theme.titleFont = SBUFontSet.h3
-        theme.titleStatusColor = SBUColorSet.onlight03
+        theme.titleStatusColor = SBUColorSet.onLightTextLowEmphasis
         theme.titleStatusFont = SBUFontSet.caption2
         
         // Menu
         theme.menuTitleFont = SBUFontSet.subtitle2
         
         theme.userPlaceholderBackgroundColor = SBUColorSet.background300
-        theme.userPlaceholderTintColor = SBUColorSet.ondark01
+        theme.userPlaceholderTintColor = SBUColorSet.onDarkTextHighEmphasis
         
         theme.placeholderBackgroundColor = SBUColorSet.background300
-        theme.placeholderTintColor = SBUColorSet.ondark01
+        theme.placeholderTintColor = SBUColorSet.onDarkTextHighEmphasis
         
         // Reaction
         theme.reactionBoxBackgroundColor = SBUColorSet.background50
         theme.reactionBoxBorderLineColor = SBUColorSet.background100
-        theme.reactionBoxEmojiCountColor = SBUColorSet.onlight01
+        theme.reactionBoxEmojiCountColor = SBUColorSet.onLightTextHighEmphasis
         theme.reactionBoxEmojiBackgroundColor = SBUColorSet.background100
-        theme.reactionBoxSelectedEmojiBackgroundColor = SBUColorSet.primary100
+        theme.reactionBoxSelectedEmojiBackgroundColor = SBUColorSet.primaryExtraLight
         theme.reactionBoxEmojiCountFont = SBUFontSet.caption4
         
-        theme.emojiCountColor = SBUColorSet.onlight03
-        theme.emojiSelectedCountColor = SBUColorSet.primary300
-        theme.emojiSelectedUnderlineColor = SBUColorSet.primary300
+        theme.emojiCountColor = SBUColorSet.onLightTextLowEmphasis
+        theme.emojiSelectedCountColor = SBUColorSet.primaryMain
+        theme.emojiSelectedUnderlineColor = SBUColorSet.primaryMain
         theme.emojiCountFont = SBUFontSet.button3
-        theme.reactionMenuLineColor = SBUColorSet.onlight04
+        theme.reactionMenuLineColor = SBUColorSet.onLightTextDisabled
         
-        theme.emojiListSelectedBackgroundColor = SBUColorSet.primary100
+        theme.emojiListSelectedBackgroundColor = SBUColorSet.primaryExtraLight
         
-        theme.addReactionTintColor = SBUColorSet.onlight03
+        theme.addReactionTintColor = SBUColorSet.onLightTextLowEmphasis
         
         // Create channel type
-        theme.channelTypeSelectorItemTintColor = SBUColorSet.primary300
-        theme.channelTypeSelectorItemTextColor = SBUColorSet.onlight01
+        theme.channelTypeSelectorItemTintColor = SBUColorSet.primaryMain
+        theme.channelTypeSelectorItemTextColor = SBUColorSet.onLightTextHighEmphasis
         theme.channelTypeSelectorItemFont = SBUFontSet.caption2
         
         // Icon
-        theme.broadcastIconBackgroundColor = SBUColorSet.secondary300
-        theme.broadcastIconTintColor = SBUColorSet.ondark01
-        theme.barItemTintColor = SBUColorSet.primary300
+        theme.broadcastIconBackgroundColor = SBUColorSet.secondaryMain
+        theme.broadcastIconTintColor = SBUColorSet.onDarkTextHighEmphasis
+        theme.barItemTintColor = SBUColorSet.primaryMain
         
         // Loading
         theme.loadingBackgroundColor = .clear
         theme.loadingPopupBackgroundColor = .clear
         theme.loadingFont = SBUFontSet.subtitle2
-        theme.loadingTextColor = SBUColorSet.ondark01
-        theme.loadingSpinnerColor = SBUColorSet.primary300
+        theme.loadingTextColor = SBUColorSet.onDarkTextHighEmphasis
+        theme.loadingSpinnerColor = SBUColorSet.primaryMain
         
         // Toast
         theme.toastContainerColor = SBUColorSet.background700 // 3.15.0
-        theme.toastTitleColor = SBUColorSet.ondark01 // 3.15.0
+        theme.toastTitleColor = SBUColorSet.onDarkTextHighEmphasis // 3.15.0
 
         // Feedback
-        theme.feedbackToastUpdateDoneColor = SBUColorSet.secondary200 // 3.15.0
+        theme.feedbackToastUpdateDoneColor = SBUColorSet.secondaryLight // 3.15.0
         
         return theme
     }
@@ -2957,113 +2957,113 @@ public class SBUComponentTheme {
         theme.emptyViewBackgroundColor = SBUColorSet.background600
         
         theme.emptyViewStatusFont = SBUFontSet.body3
-        theme.emptyViewStatusTintColor = SBUColorSet.ondark03
+        theme.emptyViewStatusTintColor = SBUColorSet.onDarkTextLowEmphasis
         
-        theme.emptyViewRetryButtonTintColor = SBUColorSet.primary200
+        theme.emptyViewRetryButtonTintColor = SBUColorSet.primaryLight
         theme.emptyViewRetryButtonFont = SBUFontSet.button2
         
-        theme.overlayColor = SBUColorSet.overlay02
+        theme.overlayColor = SBUColorSet.overlayLight
         theme.backgroundColor = SBUColorSet.background500
         theme.highlightedColor = SBUColorSet.background400
-        theme.buttonTextColor = SBUColorSet.primary200
-        theme.separatorColor = SBUColorSet.ondark04
+        theme.buttonTextColor = SBUColorSet.primaryLight
+        theme.separatorColor = SBUColorSet.onDarkTextDisabled
         theme.shadowColor = SBUColorSet.background700.withAlphaComponent(0.36)
-        theme.closeBarButtonTintColor = SBUColorSet.ondark01
+        theme.closeBarButtonTintColor = SBUColorSet.onDarkTextHighEmphasis
         
         // Alert
-        theme.alertTitleColor = SBUColorSet.ondark01
+        theme.alertTitleColor = SBUColorSet.onDarkTextHighEmphasis
         theme.alertTitleFont = SBUFontSet.h3
         
-        theme.alertDetailColor = SBUColorSet.ondark02
+        theme.alertDetailColor = SBUColorSet.onDarkTextMidEmphasis
         theme.alertDetailFont = SBUFontSet.body3
-        theme.alertPlaceholderColor = SBUColorSet.ondark03
-        theme.alertButtonColor = SBUColorSet.primary200
-        theme.alertErrorColor = SBUColorSet.error200
+        theme.alertPlaceholderColor = SBUColorSet.onDarkTextLowEmphasis
+        theme.alertButtonColor = SBUColorSet.primaryLight
+        theme.alertErrorColor = SBUColorSet.errorLight
         theme.alertButtonFont = SBUFontSet.button2
         theme.alertTextFieldBackgroundColor = SBUColorSet.background400
-        theme.alertTextFieldTintColor = SBUColorSet.primary200
+        theme.alertTextFieldTintColor = SBUColorSet.primaryLight
         theme.alertTextFieldFont = SBUFontSet.body3
         
         // Action Sheet
         theme.actionSheetTextFont = SBUFontSet.subtitle1
-        theme.actionSheetTextColor = SBUColorSet.ondark01
+        theme.actionSheetTextColor = SBUColorSet.onDarkTextHighEmphasis
         theme.actionSheetSubTextFont = SBUFontSet.body2
-        theme.actionSheetSubTextColor = SBUColorSet.ondark02
-        theme.actionSheetItemColor = SBUColorSet.primary200
-        theme.actionSheetErrorColor = SBUColorSet.error200
+        theme.actionSheetSubTextColor = SBUColorSet.onDarkTextMidEmphasis
+        theme.actionSheetItemColor = SBUColorSet.primaryLight
+        theme.actionSheetErrorColor = SBUColorSet.errorLight
         theme.actionSheetButtonFont = SBUFontSet.button1
-        theme.actionSheetDisabledColor = SBUColorSet.ondark04
+        theme.actionSheetDisabledColor = SBUColorSet.onDarkTextDisabled
         
         // New Message
         theme.newMessageFont = SBUFontSet.body2
-        theme.newMessageTintColor = SBUColorSet.primary200
+        theme.newMessageTintColor = SBUColorSet.primaryLight
         theme.newMessageBackground = SBUColorSet.background400
         theme.newMessageHighlighted = SBUColorSet.background500
-        theme.newMessageButtonTintColor = SBUColorSet.onlight01
-        theme.newMessageButtonBackground = SBUColorSet.primary200
-        theme.newMessageButtonHighlighted = SBUColorSet.primary300
+        theme.newMessageButtonTintColor = SBUColorSet.onLightTextHighEmphasis
+        theme.newMessageButtonBackground = SBUColorSet.primaryLight
+        theme.newMessageButtonHighlighted = SBUColorSet.primaryMain
         
         // Scroll Bottom
-        theme.scrollBottomButtonIconColor = SBUColorSet.primary200
+        theme.scrollBottomButtonIconColor = SBUColorSet.primaryLight
         theme.scrollBottomButtonBackground = SBUColorSet.background400
         theme.scrollBottomButtonHighlighted = SBUColorSet.background500
         
         // Title View
-        theme.titleOnlineStateColor = SBUColorSet.secondary200
-        theme.titleColor = SBUColorSet.ondark01
+        theme.titleOnlineStateColor = SBUColorSet.secondaryLight
+        theme.titleColor = SBUColorSet.onDarkTextHighEmphasis
         theme.titleFont = SBUFontSet.h3
-        theme.titleStatusColor = SBUColorSet.ondark03
+        theme.titleStatusColor = SBUColorSet.onDarkTextLowEmphasis
         theme.titleStatusFont = SBUFontSet.caption2
         
         // Menu
         theme.menuTitleFont = SBUFontSet.subtitle2
         
         theme.userPlaceholderBackgroundColor = SBUColorSet.background300
-        theme.userPlaceholderTintColor = SBUColorSet.onlight01
+        theme.userPlaceholderTintColor = SBUColorSet.onLightTextHighEmphasis
         
         theme.placeholderBackgroundColor = SBUColorSet.background400
-        theme.placeholderTintColor = SBUColorSet.onlight01
+        theme.placeholderTintColor = SBUColorSet.onLightTextHighEmphasis
         
         // Reaction
         theme.reactionBoxBackgroundColor = SBUColorSet.background600
         theme.reactionBoxBorderLineColor = SBUColorSet.background400
-        theme.reactionBoxEmojiCountColor = SBUColorSet.ondark01
+        theme.reactionBoxEmojiCountColor = SBUColorSet.onDarkTextHighEmphasis
         theme.reactionBoxEmojiBackgroundColor = SBUColorSet.background400
-        theme.reactionBoxSelectedEmojiBackgroundColor = SBUColorSet.primary500
+        theme.reactionBoxSelectedEmojiBackgroundColor = SBUColorSet.primaryExtraDark
         theme.reactionBoxEmojiCountFont = SBUFontSet.caption4
         
-        theme.emojiCountColor = SBUColorSet.ondark03
-        theme.emojiSelectedCountColor = SBUColorSet.primary200
-        theme.emojiSelectedUnderlineColor = SBUColorSet.primary200
+        theme.emojiCountColor = SBUColorSet.onDarkTextLowEmphasis
+        theme.emojiSelectedCountColor = SBUColorSet.primaryLight
+        theme.emojiSelectedUnderlineColor = SBUColorSet.primaryLight
         theme.emojiCountFont = SBUFontSet.button3
-        theme.reactionMenuLineColor = SBUColorSet.ondark04
+        theme.reactionMenuLineColor = SBUColorSet.onDarkTextDisabled
         
-        theme.emojiListSelectedBackgroundColor = SBUColorSet.primary400
+        theme.emojiListSelectedBackgroundColor = SBUColorSet.primaryDark
         
-        theme.addReactionTintColor = SBUColorSet.ondark03
+        theme.addReactionTintColor = SBUColorSet.onDarkTextLowEmphasis
         
         // Create channel type
-        theme.channelTypeSelectorItemTintColor = SBUColorSet.primary200
-        theme.channelTypeSelectorItemTextColor = SBUColorSet.ondark01
+        theme.channelTypeSelectorItemTintColor = SBUColorSet.primaryLight
+        theme.channelTypeSelectorItemTextColor = SBUColorSet.onDarkTextHighEmphasis
         theme.channelTypeSelectorItemFont = SBUFontSet.caption2
         
         // Icon
-        theme.broadcastIconBackgroundColor = SBUColorSet.secondary200
-        theme.broadcastIconTintColor = SBUColorSet.onlight01
-        theme.barItemTintColor = SBUColorSet.primary200
+        theme.broadcastIconBackgroundColor = SBUColorSet.secondaryLight
+        theme.broadcastIconTintColor = SBUColorSet.onLightTextHighEmphasis
+        theme.barItemTintColor = SBUColorSet.primaryLight
         
         // Loading
         theme.loadingBackgroundColor = .clear
         theme.loadingPopupBackgroundColor = .clear
         theme.loadingFont = SBUFontSet.subtitle2
-        theme.loadingTextColor = SBUColorSet.onlight01
-        theme.loadingSpinnerColor = SBUColorSet.primary200
+        theme.loadingTextColor = SBUColorSet.onLightTextHighEmphasis
+        theme.loadingSpinnerColor = SBUColorSet.primaryLight
         
         // Toast
-        theme.toastContainerColor = SBUColorSet.ondark01 // 3.15.0
-        theme.toastTitleColor = SBUColorSet.onlight01 // 3.15.0
+        theme.toastContainerColor = SBUColorSet.onDarkTextHighEmphasis // 3.15.0
+        theme.toastTitleColor = SBUColorSet.onLightTextHighEmphasis // 3.15.0
         
-        theme.feedbackToastUpdateDoneColor = SBUColorSet.secondary300 // 3.15.0
+        theme.feedbackToastUpdateDoneColor = SBUColorSet.secondaryMain // 3.15.0
         
         return theme
     }
@@ -3074,195 +3074,195 @@ public class SBUComponentTheme {
         theme.emptyViewBackgroundColor = .clear
         
         theme.emptyViewStatusFont = SBUFontSet.body3
-        theme.emptyViewStatusTintColor = SBUColorSet.ondark03
+        theme.emptyViewStatusTintColor = SBUColorSet.onDarkTextLowEmphasis
         
-        theme.emptyViewRetryButtonTintColor = SBUColorSet.primary200
+        theme.emptyViewRetryButtonTintColor = SBUColorSet.primaryLight
         theme.emptyViewRetryButtonFont = SBUFontSet.button2
         
-        theme.overlayColor = SBUColorSet.overlay02
-        theme.backgroundColor = SBUColorSet.onlight03
+        theme.overlayColor = SBUColorSet.overlayLight
+        theme.backgroundColor = SBUColorSet.onLightTextLowEmphasis
         theme.highlightedColor = SBUColorSet.background400
-        theme.buttonTextColor = SBUColorSet.primary200
-        theme.separatorColor = SBUColorSet.ondark04
+        theme.buttonTextColor = SBUColorSet.primaryLight
+        theme.separatorColor = SBUColorSet.onDarkTextDisabled
         theme.shadowColor = SBUColorSet.background700.withAlphaComponent(0.36)
-        theme.closeBarButtonTintColor = SBUColorSet.ondark01
+        theme.closeBarButtonTintColor = SBUColorSet.onDarkTextHighEmphasis
         
         // Alert
-        theme.alertTitleColor = SBUColorSet.ondark01
+        theme.alertTitleColor = SBUColorSet.onDarkTextHighEmphasis
         theme.alertTitleFont = SBUFontSet.h3
         
-        theme.alertDetailColor = SBUColorSet.ondark02
+        theme.alertDetailColor = SBUColorSet.onDarkTextMidEmphasis
         theme.alertDetailFont = SBUFontSet.body3
-        theme.alertPlaceholderColor = SBUColorSet.ondark03
-        theme.alertButtonColor = SBUColorSet.primary200
-        theme.alertErrorColor = SBUColorSet.error300
+        theme.alertPlaceholderColor = SBUColorSet.onDarkTextLowEmphasis
+        theme.alertButtonColor = SBUColorSet.primaryLight
+        theme.alertErrorColor = SBUColorSet.errorMain
         theme.alertButtonFont = SBUFontSet.button2
         theme.alertTextFieldBackgroundColor = SBUColorSet.background400
-        theme.alertTextFieldTintColor = SBUColorSet.primary200
+        theme.alertTextFieldTintColor = SBUColorSet.primaryLight
         theme.alertTextFieldFont = SBUFontSet.body3
         
         // Action Sheet
         theme.actionSheetTextFont = SBUFontSet.subtitle1
-        theme.actionSheetTextColor = SBUColorSet.ondark01
+        theme.actionSheetTextColor = SBUColorSet.onDarkTextHighEmphasis
         theme.actionSheetSubTextFont = SBUFontSet.body2
-        theme.actionSheetSubTextColor = SBUColorSet.ondark02
-        theme.actionSheetItemColor = SBUColorSet.primary200
-        theme.actionSheetErrorColor = SBUColorSet.error300
+        theme.actionSheetSubTextColor = SBUColorSet.onDarkTextMidEmphasis
+        theme.actionSheetItemColor = SBUColorSet.primaryLight
+        theme.actionSheetErrorColor = SBUColorSet.errorMain
         theme.actionSheetButtonFont = SBUFontSet.button1
-        theme.actionSheetDisabledColor = SBUColorSet.ondark04
+        theme.actionSheetDisabledColor = SBUColorSet.onDarkTextDisabled
         
         // New Message
         theme.newMessageFont = SBUFontSet.body2
-        theme.newMessageTintColor = SBUColorSet.primary200
+        theme.newMessageTintColor = SBUColorSet.primaryLight
         theme.newMessageBackground = SBUColorSet.background400
         theme.newMessageHighlighted = SBUColorSet.background500
-        theme.newMessageButtonTintColor = SBUColorSet.onlight01
-        theme.newMessageButtonBackground = SBUColorSet.primary200
-        theme.newMessageButtonHighlighted = SBUColorSet.primary300
+        theme.newMessageButtonTintColor = SBUColorSet.onLightTextHighEmphasis
+        theme.newMessageButtonBackground = SBUColorSet.primaryLight
+        theme.newMessageButtonHighlighted = SBUColorSet.primaryMain
         
         // Scroll Bottom
-        theme.scrollBottomButtonIconColor = SBUColorSet.ondark01
+        theme.scrollBottomButtonIconColor = SBUColorSet.onDarkTextHighEmphasis
         theme.scrollBottomButtonBackground = SBUColorSet.background400
         theme.scrollBottomButtonHighlighted = SBUColorSet.background500
         
         // Title View
-        theme.titleOnlineStateColor = SBUColorSet.secondary200
-        theme.titleColor = SBUColorSet.ondark01
+        theme.titleOnlineStateColor = SBUColorSet.secondaryLight
+        theme.titleColor = SBUColorSet.onDarkTextHighEmphasis
         theme.titleFont = SBUFontSet.h3
-        theme.titleStatusColor = SBUColorSet.ondark03
+        theme.titleStatusColor = SBUColorSet.onDarkTextLowEmphasis
         theme.titleStatusFont = SBUFontSet.caption2
         
         // Menu
         theme.menuTitleFont = SBUFontSet.subtitle2
         
         theme.userPlaceholderBackgroundColor = SBUColorSet.background300
-        theme.userPlaceholderTintColor = SBUColorSet.onlight01
+        theme.userPlaceholderTintColor = SBUColorSet.onLightTextHighEmphasis
         
         theme.placeholderBackgroundColor = SBUColorSet.background400
-        theme.placeholderTintColor = SBUColorSet.onlight01
+        theme.placeholderTintColor = SBUColorSet.onLightTextHighEmphasis
         
         // Reaction
         theme.reactionBoxBackgroundColor = SBUColorSet.background600
         theme.reactionBoxBorderLineColor = SBUColorSet.background400
-        theme.reactionBoxEmojiCountColor = SBUColorSet.ondark01
+        theme.reactionBoxEmojiCountColor = SBUColorSet.onDarkTextHighEmphasis
         theme.reactionBoxEmojiBackgroundColor = SBUColorSet.background400
-        theme.reactionBoxSelectedEmojiBackgroundColor = SBUColorSet.primary500
+        theme.reactionBoxSelectedEmojiBackgroundColor = SBUColorSet.primaryExtraDark
         theme.reactionBoxEmojiCountFont = SBUFontSet.caption4
         
-        theme.emojiCountColor = SBUColorSet.ondark03
-        theme.emojiSelectedCountColor = SBUColorSet.primary200
-        theme.emojiSelectedUnderlineColor = SBUColorSet.primary200
+        theme.emojiCountColor = SBUColorSet.onDarkTextLowEmphasis
+        theme.emojiSelectedCountColor = SBUColorSet.primaryLight
+        theme.emojiSelectedUnderlineColor = SBUColorSet.primaryLight
         theme.emojiCountFont = SBUFontSet.button3
-        theme.reactionMenuLineColor = SBUColorSet.ondark04
+        theme.reactionMenuLineColor = SBUColorSet.onDarkTextDisabled
         
-        theme.emojiListSelectedBackgroundColor = SBUColorSet.primary400
+        theme.emojiListSelectedBackgroundColor = SBUColorSet.primaryDark
         
-        theme.addReactionTintColor = SBUColorSet.ondark03
+        theme.addReactionTintColor = SBUColorSet.onDarkTextLowEmphasis
         
         // Create channel type
-        theme.channelTypeSelectorItemTintColor = SBUColorSet.primary200
-        theme.channelTypeSelectorItemTextColor = SBUColorSet.ondark01
+        theme.channelTypeSelectorItemTintColor = SBUColorSet.primaryLight
+        theme.channelTypeSelectorItemTextColor = SBUColorSet.onDarkTextHighEmphasis
         theme.channelTypeSelectorItemFont = SBUFontSet.caption2
         
         // Icon
-        theme.broadcastIconBackgroundColor = SBUColorSet.secondary200
-        theme.broadcastIconTintColor = SBUColorSet.ondark01
-        theme.barItemTintColor = SBUColorSet.ondark01
+        theme.broadcastIconBackgroundColor = SBUColorSet.secondaryLight
+        theme.broadcastIconTintColor = SBUColorSet.onDarkTextHighEmphasis
+        theme.barItemTintColor = SBUColorSet.onDarkTextHighEmphasis
         
         // Loading
         theme.loadingBackgroundColor = .clear
         theme.loadingPopupBackgroundColor = .clear
         theme.loadingFont = SBUFontSet.subtitle2
-        theme.loadingTextColor = SBUColorSet.onlight01
-        theme.loadingSpinnerColor = SBUColorSet.primary200
+        theme.loadingTextColor = SBUColorSet.onLightTextHighEmphasis
+        theme.loadingSpinnerColor = SBUColorSet.primaryLight
         
         // Toast
-        theme.toastContainerColor = SBUColorSet.ondark01 // 3.15.0
-        theme.toastTitleColor = SBUColorSet.onlight01 // 3.15.0
+        theme.toastContainerColor = SBUColorSet.onDarkTextHighEmphasis // 3.15.0
+        theme.toastTitleColor = SBUColorSet.onLightTextHighEmphasis // 3.15.0
         
-        theme.feedbackToastUpdateDoneColor = SBUColorSet.secondary200 // 3.15.0
+        theme.feedbackToastUpdateDoneColor = SBUColorSet.secondaryLight // 3.15.0
         
         return theme
     }
     
     public init(emptyViewBackgroundColor: UIColor = SBUColorSet.background50,
                 emptyViewStatusFont: UIFont = SBUFontSet.body3,
-                emptyViewStatusTintColor: UIColor = SBUColorSet.onlight03,
-                emptyViewRetryButtonTintColor: UIColor = SBUColorSet.primary300,
+                emptyViewStatusTintColor: UIColor = SBUColorSet.onLightTextLowEmphasis,
+                emptyViewRetryButtonTintColor: UIColor = SBUColorSet.primaryMain,
                 emptyViewRetryButtonFont: UIFont = SBUFontSet.button2,
-                overlayColor: UIColor = SBUColorSet.overlay01,
+                overlayColor: UIColor = SBUColorSet.overlayDark,
                 backgroundColor: UIColor = SBUColorSet.background50,
                 highlightedColor: UIColor = SBUColorSet.background100,
-                buttonTextColor: UIColor = SBUColorSet.primary300,
-                separatorColor: UIColor = SBUColorSet.onlight04,
+                buttonTextColor: UIColor = SBUColorSet.primaryMain,
+                separatorColor: UIColor = SBUColorSet.onLightTextDisabled,
                 shadowColor: UIColor = SBUColorSet.background700.withAlphaComponent(0.12),
-                closeBarButtonTintColor: UIColor = SBUColorSet.onlight01,
-                alertTitleColor: UIColor = SBUColorSet.onlight01,
+                closeBarButtonTintColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
+                alertTitleColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
                 alertTitleFont: UIFont = SBUFontSet.h3,
-                alertDetailColor: UIColor = SBUColorSet.onlight02,
+                alertDetailColor: UIColor = SBUColorSet.onLightTextMidEmphasis,
                 alertDetailFont: UIFont = SBUFontSet.body3,
-                alertPlaceholderColor: UIColor = SBUColorSet.onlight03,
-                alertButtonColor: UIColor = SBUColorSet.primary300,
-                alertErrorColor: UIColor = SBUColorSet.error300,
+                alertPlaceholderColor: UIColor = SBUColorSet.onLightTextLowEmphasis,
+                alertButtonColor: UIColor = SBUColorSet.primaryMain,
+                alertErrorColor: UIColor = SBUColorSet.errorMain,
                 alertButtonFont: UIFont = SBUFontSet.button2,
                 alertTextFieldBackgroundColor: UIColor = SBUColorSet.background100,
-                alertTextFieldTintColor: UIColor = SBUColorSet.primary300,
+                alertTextFieldTintColor: UIColor = SBUColorSet.primaryMain,
                 alertTextFieldFont: UIFont = SBUFontSet.body3,
                 actionSheetTextFont: UIFont = SBUFontSet.subtitle1,
-                actionSheetTextColor: UIColor = SBUColorSet.onlight01,
+                actionSheetTextColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
                 actionSheetSubTextFont: UIFont = SBUFontSet.body2,
-                actionSheetSubTextColor: UIColor = SBUColorSet.onlight02,
-                actionSheetItemColor: UIColor = SBUColorSet.primary300,
-                actionSheetErrorColor: UIColor = SBUColorSet.error300,
+                actionSheetSubTextColor: UIColor = SBUColorSet.onLightTextMidEmphasis,
+                actionSheetItemColor: UIColor = SBUColorSet.primaryMain,
+                actionSheetErrorColor: UIColor = SBUColorSet.errorMain,
                 actionSheetButtonFont: UIFont = SBUFontSet.button1,
-                actionSheetDisabledColor: UIColor = SBUColorSet.onlight04,
+                actionSheetDisabledColor: UIColor = SBUColorSet.onLightTextDisabled,
                 newMessageFont: UIFont = SBUFontSet.body2,
-                newMessageTintColor: UIColor = SBUColorSet.primary300,
+                newMessageTintColor: UIColor = SBUColorSet.primaryMain,
                 newMessageBackground: UIColor = SBUColorSet.background50,
                 newMessageHighlighted: UIColor = SBUColorSet.background100,
-                newMessageButtonTintColor: UIColor = SBUColorSet.ondark01,
-                newMessageButtonBackground: UIColor = SBUColorSet.primary300,
-                newMessageButtonHighlighted: UIColor = SBUColorSet.primary400,
-                scrollBottomButtonIconColor: UIColor = SBUColorSet.primary300,
+                newMessageButtonTintColor: UIColor = SBUColorSet.onDarkTextHighEmphasis,
+                newMessageButtonBackground: UIColor = SBUColorSet.primaryMain,
+                newMessageButtonHighlighted: UIColor = SBUColorSet.primaryDark,
+                scrollBottomButtonIconColor: UIColor = SBUColorSet.primaryMain,
                 scrollBottomButtonBackground: UIColor = SBUColorSet.background50,
                 scrollBottomButtonHighlighted: UIColor = SBUColorSet.background100,
-                titleOnlineStateColor: UIColor = SBUColorSet.secondary300,
-                titleColor: UIColor = SBUColorSet.onlight01,
+                titleOnlineStateColor: UIColor = SBUColorSet.secondaryMain,
+                titleColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
                 titleFont: UIFont = SBUFontSet.h3,
-                titleStatusColor: UIColor = SBUColorSet.onlight03,
+                titleStatusColor: UIColor = SBUColorSet.onLightTextLowEmphasis,
                 titleStatusFont: UIFont = SBUFontSet.caption2,
                 menuTitleFont: UIFont = SBUFontSet.subtitle2,
                 userPlaceholderBackgroundColor: UIColor = SBUColorSet.background300,
-                userPlaceholderTintColor: UIColor = SBUColorSet.ondark01,
+                userPlaceholderTintColor: UIColor = SBUColorSet.onDarkTextHighEmphasis,
                 placeholderBackgroundColor: UIColor = SBUColorSet.background300,
-                placeholderTintColor: UIColor = SBUColorSet.ondark01,
+                placeholderTintColor: UIColor = SBUColorSet.onDarkTextHighEmphasis,
                 reactionBoxBackgroundColor: UIColor = SBUColorSet.background50,
                 reactionBoxBorderLineColor: UIColor = SBUColorSet.background100,
-                reactionBoxEmojiCountColor: UIColor = SBUColorSet.onlight01,
+                reactionBoxEmojiCountColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
                 reactionBoxEmojiBackgroundColor: UIColor = SBUColorSet.background100,
-                reactionBoxSelectedEmojiBackgroundColor: UIColor = SBUColorSet.primary100,
+                reactionBoxSelectedEmojiBackgroundColor: UIColor = SBUColorSet.primaryExtraLight,
                 reactionBoxEmojiCountFont: UIFont = SBUFontSet.caption4,
-                emojiCountColor: UIColor = SBUColorSet.onlight03,
-                emojiSelectedCountColor: UIColor = SBUColorSet.primary300,
-                emojiSelectedUnderlineColor: UIColor = SBUColorSet.primary300,
+                emojiCountColor: UIColor = SBUColorSet.onLightTextLowEmphasis,
+                emojiSelectedCountColor: UIColor = SBUColorSet.primaryMain,
+                emojiSelectedUnderlineColor: UIColor = SBUColorSet.primaryMain,
                 emojiCountFont: UIFont = SBUFontSet.button3,
-                reactionMenuLineColor: UIColor = SBUColorSet.ondark04,
-                emojiListSelectedBackgroundColor: UIColor = SBUColorSet.primary100,
-                addReactionTintColor: UIColor = SBUColorSet.onlight03,
-                channelTypeSelectorItemTintColor: UIColor = SBUColorSet.primary300,
-                channelTypeSelectorItemTextColor: UIColor = SBUColorSet.onlight01,
+                reactionMenuLineColor: UIColor = SBUColorSet.onDarkTextDisabled,
+                emojiListSelectedBackgroundColor: UIColor = SBUColorSet.primaryExtraLight,
+                addReactionTintColor: UIColor = SBUColorSet.onLightTextLowEmphasis,
+                channelTypeSelectorItemTintColor: UIColor = SBUColorSet.primaryMain,
+                channelTypeSelectorItemTextColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
                 channelTypeSelectorItemFont: UIFont = SBUFontSet.caption2,
-                broadcastIconBackgroundColor: UIColor = SBUColorSet.secondary300,
-                broadcastIconTintColor: UIColor = SBUColorSet.ondark01,
-                barItemTintColor: UIColor = SBUColorSet.primary300,
+                broadcastIconBackgroundColor: UIColor = SBUColorSet.secondaryMain,
+                broadcastIconTintColor: UIColor = SBUColorSet.onDarkTextHighEmphasis,
+                barItemTintColor: UIColor = SBUColorSet.primaryMain,
                 loadingBackgroundColor: UIColor = .clear,
                 loadingPopupBackgroundColor: UIColor = .clear,
                 loadingFont: UIFont = SBUFontSet.subtitle2,
-                loadingTextColor: UIColor = SBUColorSet.ondark01,
-                loadingSpinnerColor: UIColor = SBUColorSet.primary300,
+                loadingTextColor: UIColor = SBUColorSet.onDarkTextHighEmphasis,
+                loadingSpinnerColor: UIColor = SBUColorSet.primaryMain,
                 toastContainerColor: UIColor = SBUColorSet.background700, // 3.15.0
-                toastTitleColor: UIColor = SBUColorSet.ondark01, // 3.15.0
-                feedbackToastUpdateDoneColor: UIColor = SBUColorSet.secondary200 // 3.15.0
+                toastTitleColor: UIColor = SBUColorSet.onDarkTextHighEmphasis, // 3.15.0
+                feedbackToastUpdateDoneColor: UIColor = SBUColorSet.secondaryLight // 3.15.0
     ) {
         
         self.emptyViewBackgroundColor = emptyViewBackgroundColor
@@ -3489,16 +3489,16 @@ public class SBUMessageSearchTheme {
         }
         theme.navigationBarStyle = .default
         theme.navigationBarTintColor = SBUColorSet.background50
-        theme.navigationBarShadowColor = SBUColorSet.onlight04
+        theme.navigationBarShadowColor = SBUColorSet.onLightTextDisabled
         theme.backgroundColor = SBUColorSet.background50
         
-        theme.searchTextColor = SBUColorSet.onlight01
+        theme.searchTextColor = SBUColorSet.onLightTextHighEmphasis
         theme.searchTextFont = SBUFontSet.body3
         theme.searchTextBackgroundColor = SBUColorSet.background100
-        theme.searchPlaceholderColor = SBUColorSet.onlight03
-        theme.searchIconTintColor = SBUColorSet.onlight03
-        theme.clearIconTintColor = SBUColorSet.onlight03
-        theme.cancelButtonTintColor = SBUColorSet.primary400
+        theme.searchPlaceholderColor = SBUColorSet.onLightTextLowEmphasis
+        theme.searchIconTintColor = SBUColorSet.onLightTextLowEmphasis
+        theme.clearIconTintColor = SBUColorSet.onLightTextLowEmphasis
+        theme.cancelButtonTintColor = SBUColorSet.primaryDark
         
         return theme
     }
@@ -3512,13 +3512,13 @@ public class SBUMessageSearchTheme {
         theme.navigationBarShadowColor = SBUColorSet.background500
         theme.backgroundColor = SBUColorSet.background600
         
-        theme.searchTextColor = SBUColorSet.ondark01
+        theme.searchTextColor = SBUColorSet.onDarkTextHighEmphasis
         theme.searchTextFont = SBUFontSet.body3
         theme.searchTextBackgroundColor = SBUColorSet.background400
-        theme.searchPlaceholderColor = SBUColorSet.ondark03
-        theme.searchIconTintColor = SBUColorSet.ondark03
-        theme.clearIconTintColor = SBUColorSet.ondark03
-        theme.cancelButtonTintColor = SBUColorSet.primary200
+        theme.searchPlaceholderColor = SBUColorSet.onDarkTextLowEmphasis
+        theme.searchIconTintColor = SBUColorSet.onDarkTextLowEmphasis
+        theme.clearIconTintColor = SBUColorSet.onDarkTextLowEmphasis
+        theme.cancelButtonTintColor = SBUColorSet.primaryLight
         
         return theme
     }
@@ -3542,15 +3542,15 @@ public class SBUMessageSearchTheme {
     public init(statusBarStyle: UIStatusBarStyle = .default,
                 navigationBarStyle: UIBarStyle = .default,
                 navigationBarTintColor: UIColor = SBUColorSet.background50,
-                navigationBarShadowColor: UIColor = SBUColorSet.onlight04,
+                navigationBarShadowColor: UIColor = SBUColorSet.onLightTextDisabled,
                 backgroundColor: UIColor = SBUColorSet.background50,
-                searchTextColor: UIColor = SBUColorSet.onlight01,
+                searchTextColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
                 searchTextFont: UIFont = SBUFontSet.body3,
                 searchTextBackgroundColor: UIColor = SBUColorSet.background100,
-                searchPlaceholderColor: UIColor = SBUColorSet.onlight03,
-                searchIconTintColor: UIColor = SBUColorSet.onlight03,
-                clearIconTintColor: UIColor = SBUColorSet.onlight03,
-                cancelButtonTintColor: UIColor = SBUColorSet.primary400) {
+                searchPlaceholderColor: UIColor = SBUColorSet.onLightTextLowEmphasis,
+                searchIconTintColor: UIColor = SBUColorSet.onLightTextLowEmphasis,
+                clearIconTintColor: UIColor = SBUColorSet.onLightTextLowEmphasis,
+                cancelButtonTintColor: UIColor = SBUColorSet.primaryDark) {
         
         self.statusBarStyle = statusBarStyle
         self.navigationBarStyle = navigationBarStyle
@@ -3576,16 +3576,16 @@ public class SBUMessageSearchResultCellTheme {
         
         theme.backgroundColor = SBUColorSet.background50
         theme.titleFont = SBUFontSet.subtitle1
-        theme.titleTextColor = SBUColorSet.onlight01
+        theme.titleTextColor = SBUColorSet.onLightTextHighEmphasis
         theme.descriptionFont = SBUFontSet.body3
-        theme.descriptionTextColor = SBUColorSet.onlight03
+        theme.descriptionTextColor = SBUColorSet.onLightTextLowEmphasis
         theme.updatedAtFont = SBUFontSet.caption2
-        theme.updatedAtTextColor = SBUColorSet.onlight02
+        theme.updatedAtTextColor = SBUColorSet.onLightTextMidEmphasis
         theme.fileMessageFont = SBUFontSet.body3
-        theme.fileMessageTextColor = SBUColorSet.onlight01
+        theme.fileMessageTextColor = SBUColorSet.onLightTextHighEmphasis
         theme.fileMessageIconBackgroundColor = SBUColorSet.background100
-        theme.fileMessageIconTintColor = SBUColorSet.onlight02
-        theme.separatorLineColor = SBUColorSet.onlight04
+        theme.fileMessageIconTintColor = SBUColorSet.onLightTextMidEmphasis
+        theme.separatorLineColor = SBUColorSet.onLightTextDisabled
         
         return theme
     }
@@ -3595,16 +3595,16 @@ public class SBUMessageSearchResultCellTheme {
         
         theme.backgroundColor = SBUColorSet.background600
         theme.titleFont = SBUFontSet.subtitle1
-        theme.titleTextColor = SBUColorSet.ondark01
+        theme.titleTextColor = SBUColorSet.onDarkTextHighEmphasis
         theme.descriptionFont = SBUFontSet.body3
-        theme.descriptionTextColor = SBUColorSet.ondark03
+        theme.descriptionTextColor = SBUColorSet.onDarkTextLowEmphasis
         theme.updatedAtFont = SBUFontSet.caption2
-        theme.updatedAtTextColor = SBUColorSet.ondark02
+        theme.updatedAtTextColor = SBUColorSet.onDarkTextMidEmphasis
         theme.fileMessageFont = SBUFontSet.body3
-        theme.fileMessageTextColor = SBUColorSet.ondark01
+        theme.fileMessageTextColor = SBUColorSet.onDarkTextHighEmphasis
         theme.fileMessageIconBackgroundColor = SBUColorSet.background500
-        theme.fileMessageIconTintColor = SBUColorSet.ondark02
-        theme.separatorLineColor = SBUColorSet.ondark04
+        theme.fileMessageIconTintColor = SBUColorSet.onDarkTextMidEmphasis
+        theme.separatorLineColor = SBUColorSet.onDarkTextDisabled
         
         return theme
     }
@@ -3624,16 +3624,16 @@ public class SBUMessageSearchResultCellTheme {
     
     public init(backgroundColor: UIColor = SBUColorSet.background50,
                 titleFont: UIFont = SBUFontSet.subtitle1,
-                titleTextColor: UIColor = SBUColorSet.onlight01,
+                titleTextColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
                 descriptionFont: UIFont = SBUFontSet.body3,
-                descriptionTextColor: UIColor = SBUColorSet.onlight03,
+                descriptionTextColor: UIColor = SBUColorSet.onLightTextLowEmphasis,
                 updatedAtFont: UIFont = SBUFontSet.caption2,
-                updatedAtTextColor: UIColor = SBUColorSet.onlight02,
+                updatedAtTextColor: UIColor = SBUColorSet.onLightTextMidEmphasis,
                 fileMessageFont: UIFont = SBUFontSet.body3,
-                fileMessageTextColor: UIColor = SBUColorSet.onlight01,
+                fileMessageTextColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
                 fileMessageIconBackgroundColor: UIColor = SBUColorSet.background100,
-                fileMessageIconTintColor: UIColor = SBUColorSet.onlight02,
-                separatorLineColor: UIColor = SBUColorSet.onlight04) {
+                fileMessageIconTintColor: UIColor = SBUColorSet.onLightTextMidEmphasis,
+                separatorLineColor: UIColor = SBUColorSet.onLightTextDisabled) {
         
         self.backgroundColor = backgroundColor
         self.titleFont = titleFont
@@ -3663,22 +3663,22 @@ public class SBUCreateOpenChannelTheme {
             theme.statusBarStyle = .default
         }
         
-        theme.leftBarButtonTintColor = SBUColorSet.primary300
-        theme.rightBarButtonTintColor = SBUColorSet.primary300
-        theme.rightBarButtonDisabledTintColor = SBUColorSet.onlight04
+        theme.leftBarButtonTintColor = SBUColorSet.primaryMain
+        theme.rightBarButtonTintColor = SBUColorSet.primaryMain
+        theme.rightBarButtonDisabledTintColor = SBUColorSet.onLightTextDisabled
         theme.navigationBarTintColor = SBUColorSet.background50
-        theme.navigationBarShadowColor = SBUColorSet.onlight04
+        theme.navigationBarShadowColor = SBUColorSet.onLightTextDisabled
         
         theme.backgroundColor = SBUColorSet.background50
-        theme.textFieldPlaceholderColor = SBUColorSet.onlight03
-        theme.textFieldTextColor = SBUColorSet.onlight01
+        theme.textFieldPlaceholderColor = SBUColorSet.onLightTextLowEmphasis
+        theme.textFieldTextColor = SBUColorSet.onLightTextHighEmphasis
         theme.textFieldFont = SBUFontSet.subtitle1
-        theme.textFieldUnderlineColor = SBUColorSet.onlight04
+        theme.textFieldUnderlineColor = SBUColorSet.onLightTextDisabled
         
-        theme.actionSheetItemColor = SBUColorSet.primary300
-        theme.actionSheetTextColor = SBUColorSet.onlight01
-        theme.actionSheetRemoveTextColor = SBUColorSet.error300
-        theme.actionSheetCancelTextColor = SBUColorSet.primary300
+        theme.actionSheetItemColor = SBUColorSet.primaryMain
+        theme.actionSheetTextColor = SBUColorSet.onLightTextHighEmphasis
+        theme.actionSheetRemoveTextColor = SBUColorSet.errorMain
+        theme.actionSheetCancelTextColor = SBUColorSet.primaryMain
         
         return theme
     }
@@ -3687,41 +3687,41 @@ public class SBUCreateOpenChannelTheme {
         
         theme.statusBarStyle = .lightContent
         
-        theme.leftBarButtonTintColor = SBUColorSet.primary200
-        theme.rightBarButtonTintColor = SBUColorSet.primary200
-        theme.rightBarButtonDisabledTintColor = SBUColorSet.ondark04
+        theme.leftBarButtonTintColor = SBUColorSet.primaryLight
+        theme.rightBarButtonTintColor = SBUColorSet.primaryLight
+        theme.rightBarButtonDisabledTintColor = SBUColorSet.onDarkTextDisabled
         theme.navigationBarTintColor = SBUColorSet.background500
         theme.navigationBarShadowColor = SBUColorSet.background500
         
         theme.backgroundColor = SBUColorSet.background600
-        theme.textFieldPlaceholderColor = SBUColorSet.ondark03
-        theme.textFieldTextColor = SBUColorSet.ondark01
+        theme.textFieldPlaceholderColor = SBUColorSet.onDarkTextLowEmphasis
+        theme.textFieldTextColor = SBUColorSet.onDarkTextHighEmphasis
         theme.textFieldFont = SBUFontSet.subtitle1
-        theme.textFieldUnderlineColor = SBUColorSet.onlight04
+        theme.textFieldUnderlineColor = SBUColorSet.onLightTextDisabled
         
-        theme.actionSheetItemColor = SBUColorSet.primary200
-        theme.actionSheetTextColor = SBUColorSet.ondark01
-        theme.actionSheetRemoveTextColor = SBUColorSet.error200
-        theme.actionSheetCancelTextColor = SBUColorSet.primary200
+        theme.actionSheetItemColor = SBUColorSet.primaryLight
+        theme.actionSheetTextColor = SBUColorSet.onDarkTextHighEmphasis
+        theme.actionSheetRemoveTextColor = SBUColorSet.errorLight
+        theme.actionSheetCancelTextColor = SBUColorSet.primaryLight
         
         return theme
     }
     
     public init(statusBarStyle: UIStatusBarStyle = .default,
-                leftBarButtonTintColor: UIColor = SBUColorSet.primary300,
-                rightBarButtonTintColor: UIColor = SBUColorSet.primary300,
-                rightBarButtonDisabledTintColor: UIColor = SBUColorSet.onlight04,
+                leftBarButtonTintColor: UIColor = SBUColorSet.primaryMain,
+                rightBarButtonTintColor: UIColor = SBUColorSet.primaryMain,
+                rightBarButtonDisabledTintColor: UIColor = SBUColorSet.onLightTextDisabled,
                 navigationBarTintColor: UIColor = SBUColorSet.background50,
-                navigationBarShadowColor: UIColor = SBUColorSet.onlight04,
+                navigationBarShadowColor: UIColor = SBUColorSet.onLightTextDisabled,
                 backgroundColor: UIColor = SBUColorSet.background50,
-                textFieldPlaceholderColor: UIColor = SBUColorSet.onlight03,
-                textFieldTextColor: UIColor = SBUColorSet.onlight01,
+                textFieldPlaceholderColor: UIColor = SBUColorSet.onLightTextLowEmphasis,
+                textFieldTextColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
                 textFieldFont: UIFont = SBUFontSet.subtitle1,
-                textFieldUnderlineColor: UIColor = SBUColorSet.onlight04,
-                actionSheetItemColor: UIColor = SBUColorSet.primary300,
-                actionSheetTextColor: UIColor = SBUColorSet.onlight01,
-                actionSheetRemoveTextColor: UIColor = SBUColorSet.error300,
-                actionSheetCancelTextColor: UIColor = SBUColorSet.primary300
+                textFieldUnderlineColor: UIColor = SBUColorSet.onLightTextDisabled,
+                actionSheetItemColor: UIColor = SBUColorSet.primaryMain,
+                actionSheetTextColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
+                actionSheetRemoveTextColor: UIColor = SBUColorSet.errorMain,
+                actionSheetCancelTextColor: UIColor = SBUColorSet.primaryMain
     ) {
         self.statusBarStyle = statusBarStyle
         self.leftBarButtonTintColor = leftBarButtonTintColor
@@ -3768,29 +3768,29 @@ public class SBUVoiceMessageInputTheme {
         let theme = SBUVoiceMessageInputTheme()
         
         theme.backgroundColor = SBUColorSet.background50
-        theme.overlayColor = SBUColorSet.overlay01
+        theme.overlayColor = SBUColorSet.overlayDark
         
-        theme.cancelTitleColor = SBUColorSet.primary300
+        theme.cancelTitleColor = SBUColorSet.primaryMain
         theme.cancelTitleFont = SBUFontSet.button2
         
-        theme.progressTintColor = SBUColorSet.onlight03
-        theme.progressTrackTintColor = SBUColorSet.primary300
+        theme.progressTintColor = SBUColorSet.onLightTextLowEmphasis
+        theme.progressTrackTintColor = SBUColorSet.primaryMain
         theme.progressTrackDeactivatedTintColor = SBUColorSet.background100
         theme.progressTimeFont = SBUFontSet.caption1
-        theme.progressTimeColor = SBUColorSet.ondark01
-        theme.progressDeactivatedTimeColor = SBUColorSet.onlight03
-        theme.progressRecordingIconTintColor = SBUColorSet.error300
+        theme.progressTimeColor = SBUColorSet.onDarkTextHighEmphasis
+        theme.progressDeactivatedTimeColor = SBUColorSet.onLightTextLowEmphasis
+        theme.progressRecordingIconTintColor = SBUColorSet.errorMain
         
         theme.statusButtonBackgroundColor = SBUColorSet.background100
-        theme.recordingButtonTintColor = SBUColorSet.error300
-        theme.stopButtonTintColor = SBUColorSet.onlight01
-        theme.playButtonTintColor = SBUColorSet.onlight01
-        theme.pauseButtonTintColor = SBUColorSet.onlight01
+        theme.recordingButtonTintColor = SBUColorSet.errorMain
+        theme.stopButtonTintColor = SBUColorSet.onLightTextHighEmphasis
+        theme.playButtonTintColor = SBUColorSet.onLightTextHighEmphasis
+        theme.pauseButtonTintColor = SBUColorSet.onLightTextHighEmphasis
         
-        theme.sendButtonBackgroundColor = SBUColorSet.primary300
+        theme.sendButtonBackgroundColor = SBUColorSet.primaryMain
         theme.sendButtonDisabledBackgroundColor = SBUColorSet.background100
-        theme.sendButtonTintColor = SBUColorSet.ondark01
-        theme.sendButtonDisabledTintColor = SBUColorSet.onlight04
+        theme.sendButtonTintColor = SBUColorSet.onDarkTextHighEmphasis
+        theme.sendButtonDisabledTintColor = SBUColorSet.onLightTextDisabled
         
         return theme
     }
@@ -3799,29 +3799,29 @@ public class SBUVoiceMessageInputTheme {
         let theme = SBUVoiceMessageInputTheme()
         
         theme.backgroundColor = SBUColorSet.background600
-        theme.overlayColor = SBUColorSet.overlay01
+        theme.overlayColor = SBUColorSet.overlayDark
         
-        theme.cancelTitleColor = SBUColorSet.primary200
+        theme.cancelTitleColor = SBUColorSet.primaryLight
         theme.cancelTitleFont = SBUFontSet.button2
         
-        theme.progressTintColor = SBUColorSet.ondark03
-        theme.progressTrackTintColor = SBUColorSet.primary200
+        theme.progressTintColor = SBUColorSet.onDarkTextLowEmphasis
+        theme.progressTrackTintColor = SBUColorSet.primaryLight
         theme.progressTrackDeactivatedTintColor = SBUColorSet.background400
         theme.progressTimeFont = SBUFontSet.caption1
-        theme.progressTimeColor = SBUColorSet.onlight01
-        theme.progressDeactivatedTimeColor = SBUColorSet.ondark03
-        theme.progressRecordingIconTintColor = SBUColorSet.error200
+        theme.progressTimeColor = SBUColorSet.onLightTextHighEmphasis
+        theme.progressDeactivatedTimeColor = SBUColorSet.onDarkTextLowEmphasis
+        theme.progressRecordingIconTintColor = SBUColorSet.errorLight
 
         theme.statusButtonBackgroundColor = SBUColorSet.background500
-        theme.recordingButtonTintColor = SBUColorSet.error200
-        theme.stopButtonTintColor = SBUColorSet.ondark01
-        theme.playButtonTintColor = SBUColorSet.ondark01
-        theme.pauseButtonTintColor = SBUColorSet.ondark01
+        theme.recordingButtonTintColor = SBUColorSet.errorLight
+        theme.stopButtonTintColor = SBUColorSet.onDarkTextHighEmphasis
+        theme.playButtonTintColor = SBUColorSet.onDarkTextHighEmphasis
+        theme.pauseButtonTintColor = SBUColorSet.onDarkTextHighEmphasis
         
-        theme.sendButtonBackgroundColor = SBUColorSet.primary200
+        theme.sendButtonBackgroundColor = SBUColorSet.primaryLight
         theme.sendButtonDisabledBackgroundColor = SBUColorSet.background500
-        theme.sendButtonTintColor = SBUColorSet.onlight01
-        theme.sendButtonDisabledTintColor = SBUColorSet.ondark04
+        theme.sendButtonTintColor = SBUColorSet.onLightTextHighEmphasis
+        theme.sendButtonDisabledTintColor = SBUColorSet.onDarkTextDisabled
 
         return theme
     }
@@ -3853,25 +3853,25 @@ public class SBUVoiceMessageInputTheme {
     
     public init(
         backgroundColor: UIColor = SBUColorSet.background50,
-        overlayColor: UIColor = SBUColorSet.overlay01,
-        cancelTitleColor: UIColor = SBUColorSet.primary300,
+        overlayColor: UIColor = SBUColorSet.overlayDark,
+        cancelTitleColor: UIColor = SBUColorSet.primaryMain,
         cancelTitleFont: UIFont = SBUFontSet.button2,
-        progressTintColor: UIColor = SBUColorSet.onlight03,
-        progressTrackTintColor: UIColor = SBUColorSet.primary300,
+        progressTintColor: UIColor = SBUColorSet.onLightTextLowEmphasis,
+        progressTrackTintColor: UIColor = SBUColorSet.primaryMain,
         progressTrackDeactivatedTintColor: UIColor = SBUColorSet.background100,
         progressTimeFont: UIFont = SBUFontSet.caption1,
-        progressTimeColor: UIColor = SBUColorSet.ondark01,
-        progressDeactivatedTimeColor: UIColor = SBUColorSet.onlight03,
-        progressRecordingIconTintColor: UIColor = SBUColorSet.error300,
+        progressTimeColor: UIColor = SBUColorSet.onDarkTextHighEmphasis,
+        progressDeactivatedTimeColor: UIColor = SBUColorSet.onLightTextLowEmphasis,
+        progressRecordingIconTintColor: UIColor = SBUColorSet.errorMain,
         statusButtonBackgroundColor: UIColor = SBUColorSet.background100,
-        recordingButtonTintColor: UIColor = SBUColorSet.error300,
-        stopButtonTintColor: UIColor = SBUColorSet.onlight01,
-        playButtonTintColor: UIColor = SBUColorSet.onlight01,
-        pauseButtonTintColor: UIColor = SBUColorSet.onlight01,
-        sendButtonBackgroundColor: UIColor = SBUColorSet.primary300,
+        recordingButtonTintColor: UIColor = SBUColorSet.errorMain,
+        stopButtonTintColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
+        playButtonTintColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
+        pauseButtonTintColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
+        sendButtonBackgroundColor: UIColor = SBUColorSet.primaryMain,
         sendButtonDisabledBackgroundColor: UIColor = SBUColorSet.background100,
-        sendButtonTintColor: UIColor = SBUColorSet.ondark01,
-        sendButtonDisabledTintColor: UIColor = SBUColorSet.onlight04
+        sendButtonTintColor: UIColor = SBUColorSet.onDarkTextHighEmphasis,
+        sendButtonDisabledTintColor: UIColor = SBUColorSet.onLightTextDisabled
     ) {
         
         self.backgroundColor = backgroundColor
@@ -3932,9 +3932,9 @@ public class SBUMessageTemplateTheme {
         let theme = SBUMessageTemplateTheme()
         
         theme.textFont = SBUFontSet.body3
-        theme.textColor = SBUColorSet.onlight01
+        theme.textColor = SBUColorSet.onLightTextHighEmphasis
         theme.textButtonFont = SBUFontSet.button4
-        theme.textButtonTitleColor = SBUColorSet.primary300
+        theme.textButtonTitleColor = SBUColorSet.primaryMain
         theme.textButtonBackgroundColor = SBUColorSet.background200
         theme.viewBackgroundColor = SBUColorSet.background100
         
@@ -3945,9 +3945,9 @@ public class SBUMessageTemplateTheme {
         let theme = SBUMessageTemplateTheme()
         
         theme.textFont = SBUFontSet.body3
-        theme.textColor = SBUColorSet.ondark01
+        theme.textColor = SBUColorSet.onDarkTextHighEmphasis
         theme.textButtonFont = SBUFontSet.button4
-        theme.textButtonTitleColor = SBUColorSet.primary200
+        theme.textButtonTitleColor = SBUColorSet.primaryLight
         theme.textButtonBackgroundColor = SBUColorSet.background400
         theme.viewBackgroundColor = SBUColorSet.background500
         
@@ -3966,9 +3966,9 @@ public class SBUMessageTemplateTheme {
     
     public init(
         textFont: UIFont = SBUFontSet.body3,
-        textColor: UIColor = SBUColorSet.onlight01,
+        textColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
         textButtonFont: UIFont = SBUFontSet.button4,
-        textButtonTitleColor: UIColor = SBUColorSet.primary300,
+        textButtonTitleColor: UIColor = SBUColorSet.primaryMain,
         textButtonBackgroundColor: UIColor = SBUColorSet.background200,
         viewBackgroundColor: UIColor = SBUColorSet.background100
     ) {
@@ -3981,9 +3981,9 @@ public class SBUMessageTemplateTheme {
     }
     
     public var textFont: UIFont = SBUFontSet.body3
-    public var textColor: UIColor = SBUColorSet.onlight01 // SBUColorSet.onDark03
+    public var textColor: UIColor = SBUColorSet.onLightTextHighEmphasis // SBUColorSet.onDarkTextLowEmphasis
     public var textButtonFont: UIFont = SBUFontSet.button4
-    public var textButtonTitleColor: UIColor = SBUColorSet.primary300 // SBUColorSet.primary200
+    public var textButtonTitleColor: UIColor = SBUColorSet.primaryMain // SBUColorSet.primaryLight
     public var textButtonBackgroundColor: UIColor = SBUColorSet.background200 // SBUColorSet.background400
     public var viewBackgroundColor: UIColor = SBUColorSet.background100 // SBUColorSet.background500
     
@@ -4093,10 +4093,10 @@ extension SBUNotificationTheme {
                 theme.statusBarStyle = .default
             }
             
-            theme.buttonIconTintColor = SBUColorSet.primary300
-            theme.lineColor = SBUColorSet.onlight04
+            theme.buttonIconTintColor = SBUColorSet.primaryMain
+            theme.lineColor = SBUColorSet.onLightTextDisabled
             theme.backgroundColor = SBUColorSet.background50
-            theme.textColor = SBUColorSet.onlight01
+            theme.textColor = SBUColorSet.onLightTextHighEmphasis
             
             return theme
         }
@@ -4106,20 +4106,20 @@ extension SBUNotificationTheme {
             
             theme.statusBarStyle = .lightContent
             
-            theme.buttonIconTintColor = SBUColorSet.primary200
+            theme.buttonIconTintColor = SBUColorSet.primaryLight
             theme.lineColor = SBUColorSet.background500
             theme.backgroundColor = SBUColorSet.background500
-            theme.textColor = SBUColorSet.ondark01
+            theme.textColor = SBUColorSet.onDarkTextHighEmphasis
 
             return theme
         }
         
         init(statusBarStyle: UIStatusBarStyle = .default,
-             buttonIconTintColor: UIColor = SBUColorSet.primary300,
-             lineColor: UIColor = SBUColorSet.onlight04,
+             buttonIconTintColor: UIColor = SBUColorSet.primaryMain,
+             lineColor: UIColor = SBUColorSet.onLightTextDisabled,
              backgroundColor: UIColor = SBUColorSet.background50,
              textSize: CGFloat = 18,
-             textColor: UIColor = SBUColorSet.onlight01,
+             textColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
              fontWeight: SBUFontWeightType = .bold
         ) {
             self.statusBarStyle = statusBarStyle
@@ -4132,11 +4132,11 @@ extension SBUNotificationTheme {
         }
         
         var statusBarStyle: UIStatusBarStyle
-        var buttonIconTintColor: UIColor = SBUColorSet.primary300
-        var lineColor: UIColor = SBUColorSet.onlight04
+        var buttonIconTintColor: UIColor = SBUColorSet.primaryMain
+        var lineColor: UIColor = SBUColorSet.onLightTextDisabled
         var backgroundColor: UIColor = SBUColorSet.background50
         var textSize: CGFloat = 18
-        var textColor: UIColor = SBUColorSet.onlight01
+        var textColor: UIColor = SBUColorSet.onLightTextHighEmphasis
         var fontWeight: SBUFontWeightType = .bold // 3.5.8
         lazy var textFont: UIFont = SBUFontSet.notificationsFont(
             size: self.textSize,
@@ -4151,10 +4151,10 @@ extension SBUNotificationTheme {
         static var defaultLight: SBUNotificationTheme.List {
             let theme = SBUNotificationTheme.List(
                 backgroundColor: SBUColorSet.background50,
-                tooltipBackgroundColor: SBUColorSet.primary300,
-                tooltipTextColor: SBUColorSet.ondark01,
-                timelineBackgroundColor: SBUColorSet.overlay02,
-                timelineTextColor: SBUColorSet.ondark01
+                tooltipBackgroundColor: SBUColorSet.primaryMain,
+                tooltipTextColor: SBUColorSet.onDarkTextHighEmphasis,
+                timelineBackgroundColor: SBUColorSet.overlayLight,
+                timelineTextColor: SBUColorSet.onDarkTextHighEmphasis
             )
             return theme
         }
@@ -4162,22 +4162,22 @@ extension SBUNotificationTheme {
         static var defaultDark: SBUNotificationTheme.List {
             let theme = SBUNotificationTheme.List(
                 backgroundColor: SBUColorSet.background500,
-                tooltipBackgroundColor: SBUColorSet.primary200,
-                tooltipTextColor: SBUColorSet.onlight01,
-                timelineBackgroundColor: SBUColorSet.overlay01,
-                timelineTextColor: SBUColorSet.ondark02
+                tooltipBackgroundColor: SBUColorSet.primaryLight,
+                tooltipTextColor: SBUColorSet.onLightTextHighEmphasis,
+                timelineBackgroundColor: SBUColorSet.overlayDark,
+                timelineTextColor: SBUColorSet.onDarkTextMidEmphasis
             )
             return theme
         }
         
         init(
             backgroundColor: UIColor = SBUColorSet.background50,
-            tooltipBackgroundColor: UIColor = SBUColorSet.primary300,
-            tooltipTextColor: UIColor = SBUColorSet.ondark01,
+            tooltipBackgroundColor: UIColor = SBUColorSet.primaryMain,
+            tooltipTextColor: UIColor = SBUColorSet.onDarkTextHighEmphasis,
             tooltipTextSize: CGFloat = 14,
             tooltipFontWeight: SBUFontWeightType = .bold,
-            timelineBackgroundColor: UIColor = SBUColorSet.overlay02,
-            timelineTextColor: UIColor = SBUColorSet.ondark01,
+            timelineBackgroundColor: UIColor = SBUColorSet.overlayLight,
+            timelineTextColor: UIColor = SBUColorSet.onDarkTextHighEmphasis,
             timelineTextSize: CGFloat = 12,
             timelineFontWeight: SBUFontWeightType = .bold
         ) {
@@ -4194,17 +4194,17 @@ extension SBUNotificationTheme {
         
         var backgroundColor: UIColor = SBUColorSet.background50
         
-        var tooltipBackgroundColor: UIColor = SBUColorSet.primary300
+        var tooltipBackgroundColor: UIColor = SBUColorSet.primaryMain
         var tooltipTextSize: CGFloat = 14 // 3.5.8
         var tooltipFontWeight: SBUFontWeightType = .bold // 3.5.8
         lazy var tooltipFont: UIFont = SBUFontSet.notificationsFont(
             size: self.tooltipTextSize,
             weight: self.tooltipFontWeight.value
         ) // body2, client only prop
-        var tooltipTextColor: UIColor = SBUColorSet.ondark01
+        var tooltipTextColor: UIColor = SBUColorSet.onDarkTextHighEmphasis
         
-        var timelineBackgroundColor: UIColor = SBUColorSet.overlay02
-        var timelineTextColor: UIColor = SBUColorSet.ondark01
+        var timelineBackgroundColor: UIColor = SBUColorSet.overlayLight
+        var timelineTextColor: UIColor = SBUColorSet.onDarkTextHighEmphasis
         var timelineTextSize: CGFloat = 12 // 3.5.8
         var timelineFontWeight: SBUFontWeightType = .bold // 3.5.8
         lazy var timelineFont: UIFont = SBUFontSet.notificationsFont(
@@ -4220,10 +4220,10 @@ extension SBUNotificationTheme {
         static var defaultLight: SBUNotificationTheme.NotificationCell {
             let theme = SBUNotificationTheme.NotificationCell(
                 backgroundColor: SBUColorSet.background100,
-                unreadIndicatorColor: SBUColorSet.secondary300,
-                categoryTextColor: SBUColorSet.onlight02,
-                sentAtTextColor: SBUColorSet.onlight03,
-                pressedColor: SBUColorSet.primary100,
+                unreadIndicatorColor: SBUColorSet.secondaryMain,
+                categoryTextColor: SBUColorSet.onLightTextMidEmphasis,
+                sentAtTextColor: SBUColorSet.onLightTextLowEmphasis,
+                pressedColor: SBUColorSet.primaryExtraLight,
                 fallbackMessageTitleHexColor: "#e0000000",
                 fallbackMessageSubtitleHexColor: "#70000000",
                 downloadingBackgroundHexColor: "#e0000000"
@@ -4234,10 +4234,10 @@ extension SBUNotificationTheme {
         static var defaultDark: SBUNotificationTheme.NotificationCell {
             let theme = SBUNotificationTheme.NotificationCell(
                 backgroundColor: SBUColorSet.background500,
-                unreadIndicatorColor: SBUColorSet.secondary300,
-                categoryTextColor: SBUColorSet.ondark02,
-                sentAtTextColor: SBUColorSet.ondark03,
-                pressedColor: SBUColorSet.primary500,
+                unreadIndicatorColor: SBUColorSet.secondaryMain,
+                categoryTextColor: SBUColorSet.onDarkTextMidEmphasis,
+                sentAtTextColor: SBUColorSet.onDarkTextLowEmphasis,
+                pressedColor: SBUColorSet.primaryExtraDark,
                 fallbackMessageTitleHexColor: "#e0ffffff",
                 fallbackMessageSubtitleHexColor: "#70ffffff",
                 downloadingBackgroundHexColor: "#e0ffffff"
@@ -4249,14 +4249,14 @@ extension SBUNotificationTheme {
         init(
             radius: CGFloat = 8,
             backgroundColor: UIColor = SBUColorSet.background100,
-            unreadIndicatorColor: UIColor = SBUColorSet.secondary300,
+            unreadIndicatorColor: UIColor = SBUColorSet.secondaryMain,
             categoryTextSize: CGFloat = 12,
             categoryFontWeight: SBUFontWeightType = .bold,
-            categoryTextColor: UIColor = SBUColorSet.onlight02,
+            categoryTextColor: UIColor = SBUColorSet.onLightTextMidEmphasis,
             sentAtTextSize: CGFloat = 14,
             sentAtFontWeight: SBUFontWeightType = .normal,
-            sentAtTextColor: UIColor = SBUColorSet.onlight03,
-            pressedColor: UIColor = SBUColorSet.primary100,
+            sentAtTextColor: UIColor = SBUColorSet.onLightTextLowEmphasis,
+            pressedColor: UIColor = SBUColorSet.primaryExtraLight,
             fallbackMessageTitleHexColor: String = "#e0000000",
             fallbackMessageSubtitleHexColor: String = "#70000000",
             downloadingBackgroundHexColor: String = "#e0000000"
@@ -4279,11 +4279,11 @@ extension SBUNotificationTheme {
         var radius: CGFloat = 8
         var backgroundColor: UIColor = SBUColorSet.background100
         
-        var unreadIndicatorColor: UIColor = SBUColorSet.secondary300
+        var unreadIndicatorColor: UIColor = SBUColorSet.secondaryMain
         
         var categoryTextSize: CGFloat = 12
         var categoryFontWeight: SBUFontWeightType = .bold // 3.5.8
-        var categoryTextColor: UIColor = SBUColorSet.onlight02
+        var categoryTextColor: UIColor = SBUColorSet.onLightTextMidEmphasis
         lazy var categoryTextFont: UIFont = SBUFontSet.notificationsFont(
             size: self.categoryTextSize,
             weight: self.categoryFontWeight.value
@@ -4291,14 +4291,14 @@ extension SBUNotificationTheme {
         
         var sentAtTextSize: CGFloat = 14
         var sentAtFontWeight: SBUFontWeightType = .normal // 3.5.8
-        var sentAtTextColor: UIColor = SBUColorSet.onlight03
+        var sentAtTextColor: UIColor = SBUColorSet.onLightTextLowEmphasis
         lazy var sentAtTextFont: UIFont = SBUFontSet.notificationsFont(
             size: self.sentAtTextSize,
             weight: self.sentAtFontWeight.value
         ) // internal
         
         // TODO: notification - nice to have
-        var pressedColor: UIColor = SBUColorSet.primary100
+        var pressedColor: UIColor = SBUColorSet.primaryExtraLight
         
         // Internal
         var fallbackMessageTitleHexColor: String = "#e0000000"
@@ -4314,21 +4314,21 @@ extension SBUNotificationTheme {
         static var defaultLight: SBUNotificationTheme.CategoryFilter {
             let theme = SBUNotificationTheme.CategoryFilter(
                 backgroundColor: SBUColorSet.background50,
-                unselectedTextColor: SBUColorSet.onlight01,
-                selectedCellBackgroundColor: SBUColorSet.primary300,
+                unselectedTextColor: SBUColorSet.onLightTextHighEmphasis,
+                selectedCellBackgroundColor: SBUColorSet.primaryMain,
                 unselectedBackgroundColor: SBUColorSet.background100,
-                selectedTextColor: SBUColorSet.ondark01
+                selectedTextColor: SBUColorSet.onDarkTextHighEmphasis
             )
             return theme
         }
 
         static var defaultDark: SBUNotificationTheme.CategoryFilter {
             let theme = SBUNotificationTheme.CategoryFilter(
-                backgroundColor: SBUColorSet.onlight01,
-                unselectedTextColor: SBUColorSet.ondark01,
-                selectedCellBackgroundColor: SBUColorSet.primary200,
+                backgroundColor: SBUColorSet.onLightTextHighEmphasis,
+                unselectedTextColor: SBUColorSet.onDarkTextHighEmphasis,
+                selectedCellBackgroundColor: SBUColorSet.primaryLight,
                 unselectedBackgroundColor: SBUColorSet.background500,
-                selectedTextColor: SBUColorSet.onlight01
+                selectedTextColor: SBUColorSet.onLightTextHighEmphasis
             )
 
             return theme
@@ -4337,12 +4337,12 @@ extension SBUNotificationTheme {
         init(
             radius: CGFloat = 15,
             backgroundColor: UIColor = SBUColorSet.background50,
-            unselectedTextColor: UIColor = SBUColorSet.onlight01,
+            unselectedTextColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
             fontWeight: SBUFontWeightType = .normal,
-            selectedCellBackgroundColor: UIColor = SBUColorSet.primary300,
+            selectedCellBackgroundColor: UIColor = SBUColorSet.primaryMain,
             textSize: CGFloat = 12,
             unselectedBackgroundColor: UIColor = SBUColorSet.background100,
-            selectedTextColor: UIColor = SBUColorSet.ondark01
+            selectedTextColor: UIColor = SBUColorSet.onDarkTextHighEmphasis
         ) {
             self.radius = radius
             self.backgroundColor = backgroundColor

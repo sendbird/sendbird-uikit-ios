@@ -130,7 +130,14 @@ open class SBUModerationsViewController: SBUBaseViewController, SBUModerationsMo
     }
     
     open override func setupLayouts() {
-        self.listComponent?.sbu_constraint(equalTo: self.view, left: 0, right: 0, top: 0, bottom: 0)
+        self.listComponent?.sbu_constraint(
+            equalTo: self.view,
+            left: 0,
+            right: 0,
+            top: 0,
+            bottom: 0,
+            useSafeArea: true
+        )
     }
     
     open override func setupStyles() {

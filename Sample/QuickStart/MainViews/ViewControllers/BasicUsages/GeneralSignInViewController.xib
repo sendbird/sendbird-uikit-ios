@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22684"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="GeneralSignInViewController" customModule="QuickStart" customModuleProvider="target">
+            <connections>
+                <outlet property="applicationIdTextField" destination="DYc-av-gaR" id="0mN-VJ-icb"/>
+                <outlet property="loadingIndicator" destination="XZj-GR-2b1" id="2on-nZ-WYu"/>
+                <outlet property="nicknameTextField" destination="u6h-ca-RxS" id="aYu-Ye-5P9"/>
+                <outlet property="signInButton" destination="zxL-co-Ig9" id="FZn-qg-zwX"/>
+                <outlet property="titleLabel" destination="XS4-bp-KQs" id="Xwn-Uj-jPz"/>
+                <outlet property="userIdTextField" destination="Xbf-cA-7Of" id="sOB-8v-wD2"/>
+                <outlet property="view" destination="iN0-l3-epB" id="JbN-g2-kHv"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="d3Q-Xp-ibr">
+                    <rect key="frame" x="24" y="83" width="345" height="469"/>
+                    <subviews>
+                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logoSendbird" translatesAutoresizingMaskIntoConstraints="NO" id="Umx-2P-zbL" userLabel="Logo ImageView">
+                            <rect key="frame" x="0.0" y="0.0" width="345" height="48"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="48" id="j8E-0i-Qnq"/>
+                            </constraints>
+                        </imageView>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qm0-YD-URh" userLabel="Margin View">
+                            <rect key="frame" x="0.0" y="48" width="345" height="24"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="24" id="LTa-PE-PUw"/>
+                            </constraints>
+                        </view>
+                        <label opaque="NO" userInteractionEnabled="NO" alpha="0.87999999523162842" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sendbird UIKit Sample" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XS4-bp-KQs" userLabel="Title Label">
+                            <rect key="frame" x="0.0" y="72" width="345" height="29"/>
+                            <constraints>
+                                <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="29" id="oSH-lX-tld"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="W77-bt-vzK" userLabel="Margin View">
+                            <rect key="frame" x="0.0" y="101" width="345" height="40"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="40" id="ARd-k0-UCq"/>
+                            </constraints>
+                        </view>
+                        <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Application ID" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="DYc-av-gaR">
+                            <rect key="frame" x="0.0" y="141" width="345" height="56"/>
+                            <color key="backgroundColor" red="0.94117647059999998" green="0.94117647059999998" blue="0.94117647059999998" alpha="1" colorSpace="calibratedRGB"/>
+                            <color key="tintColor" red="0.46666666670000001" green="0.33725490200000002" blue="0.85098039219999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="56" id="Amp-nh-Eg7"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                            <textInputTraits key="textInputTraits"/>
+                        </textField>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xhy-pi-wtE">
+                            <rect key="frame" x="0.0" y="197" width="345" height="16"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="16" id="ngD-n0-KgX"/>
+                            </constraints>
+                        </view>
+                        <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="User ID" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Xbf-cA-7Of">
+                            <rect key="frame" x="0.0" y="213" width="345" height="56"/>
+                            <color key="backgroundColor" red="0.94117647059999998" green="0.94117647059999998" blue="0.94117647059999998" alpha="1" colorSpace="calibratedRGB"/>
+                            <color key="tintColor" red="0.46666666670000001" green="0.33725490200000002" blue="0.85098039219999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="56" id="5pZ-7x-d1b"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                            <textInputTraits key="textInputTraits"/>
+                        </textField>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1in-Dh-YN6">
+                            <rect key="frame" x="0.0" y="269" width="345" height="16"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="16" id="5qS-AQ-fpU"/>
+                            </constraints>
+                        </view>
+                        <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Nickname" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="u6h-ca-RxS">
+                            <rect key="frame" x="0.0" y="285" width="345" height="56"/>
+                            <color key="backgroundColor" red="0.94117647059999998" green="0.94117647059999998" blue="0.94117647059999998" alpha="1" colorSpace="calibratedRGB"/>
+                            <color key="tintColor" red="0.46666666670000001" green="0.33725490200000002" blue="0.85098039219999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="56" id="qOi-vm-mGc"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                            <textInputTraits key="textInputTraits"/>
+                        </textField>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hLx-L6-zCT">
+                            <rect key="frame" x="0.0" y="341" width="345" height="32"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="32" id="cVz-m2-tDe"/>
+                            </constraints>
+                        </view>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zxL-co-Ig9">
+                            <rect key="frame" x="0.0" y="373" width="345" height="48"/>
+                            <color key="backgroundColor" red="0.46666666670000001" green="0.33725490200000002" blue="0.85098039219999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="48" id="aO0-uV-htD"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" weight="medium" pointSize="20"/>
+                            <state key="normal" title="Sign in">
+                                <color key="titleColor" red="0.94117647059999998" green="0.94117647059999998" blue="0.94117647059999998" alpha="1" colorSpace="calibratedRGB"/>
+                            </state>
+                            <connections>
+                                <action selector="clickSignInButton:" destination="-1" eventType="touchUpInside" id="Hqf-92-WB1"/>
+                            </connections>
+                        </button>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5Yd-ve-ywJ">
+                            <rect key="frame" x="0.0" y="421" width="345" height="16"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="16" id="tCV-NO-OVX"/>
+                            </constraints>
+                        </view>
+                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="-2" translatesAutoresizingMaskIntoConstraints="NO" id="ibs-12-BhT">
+                            <rect key="frame" x="0.0" y="437" width="345" height="32"/>
+                            <subviews>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oYA-ob-uVL">
+                                    <rect key="frame" x="86.333333333333329" y="0.0" width="172.66666666666669" height="32"/>
+                                    <state key="normal" title="Button"/>
+                                    <buttonConfiguration key="configuration" style="plain" image="iconChevronLeft" imagePlacement="leading" title="Select sample apps" imagePadding="4">
+                                        <fontDescription key="titleFontDescription" type="system" pointSize="14"/>
+                                        <color key="baseForegroundColor" name="Primary-300"/>
+                                    </buttonConfiguration>
+                                    <connections>
+                                        <action selector="clickSelectSampleAppsButton:" destination="-1" eventType="touchUpInside" id="isP-eo-4Dh"/>
+                                    </connections>
+                                </button>
+                            </subviews>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="32" id="ZhQ-X3-yLa"/>
+                            </constraints>
+                        </stackView>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                </stackView>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="rTQ-q7-Bmz">
+                    <rect key="frame" x="0.0" y="771.66666666666663" width="393" height="46.333333333333371"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="UI Kit v1.0     SDK 0.7.0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fr2-S8-fOt" userLabel="Version Label">
+                            <rect key="frame" x="0.0" y="0.0" width="393" height="14.333333333333334"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                            <color key="textColor" white="0.5" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0sA-SV-q0o" userLabel="Margin View">
+                            <rect key="frame" x="0.0" y="14.333333333333371" width="393" height="16"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="16" id="Fgz-SI-xOe"/>
+                            </constraints>
+                        </view>
+                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="smallLogoSendbirdFull" translatesAutoresizingMaskIntoConstraints="NO" id="HYd-jz-beP" userLabel="Sendbird Logo Image View">
+                            <rect key="frame" x="0.0" y="30.333333333333371" width="393" height="16"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="16" id="t67-Nq-qS3"/>
+                            </constraints>
+                        </imageView>
+                    </subviews>
+                </stackView>
+                <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="XZj-GR-2b1">
+                    <rect key="frame" x="178" y="407.66666666666669" width="37" height="37"/>
+                </activityIndicatorView>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <constraints>
+                <constraint firstItem="rTQ-q7-Bmz" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="0rp-md-TEq"/>
+                <constraint firstItem="d3Q-Xp-ibr" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="24" id="4Gg-hk-AOb"/>
+                <constraint firstItem="XZj-GR-2b1" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="AFG-Wi-VwQ"/>
+                <constraint firstItem="rTQ-q7-Bmz" firstAttribute="bottom" secondItem="vUN-kp-3ea" secondAttribute="bottom" id="HMp-d7-IWk"/>
+                <constraint firstItem="XZj-GR-2b1" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="PHf-NW-2Rs"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="d3Q-Xp-ibr" secondAttribute="trailing" constant="24" id="hGq-Oo-epS"/>
+                <constraint firstItem="d3Q-Xp-ibr" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="24" id="iZd-vu-OkX"/>
+                <constraint firstItem="rTQ-q7-Bmz" firstAttribute="trailing" secondItem="vUN-kp-3ea" secondAttribute="trailing" id="wBK-ga-T0S"/>
+            </constraints>
+            <point key="canvasLocation" x="5" y="-11"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="iconChevronLeft" width="18.333333969116211" height="18"/>
+        <image name="logoSendbird" width="48" height="48"/>
+        <image name="smallLogoSendbirdFull" width="94" height="16"/>
+        <namedColor name="Primary-300">
+            <color red="0.45490196078431372" green="0.17647058823529413" blue="0.8666666666666667" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

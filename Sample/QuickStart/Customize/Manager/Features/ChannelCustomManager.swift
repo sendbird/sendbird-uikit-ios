@@ -32,6 +32,8 @@ class ChannelCustomManager: BaseCustomManager {
             listComponentCustom()
         case.inputComponentcustom:
             inputComponentCustom()
+        case .customMessageMenuItem:
+            customMessageMenuItem()
         default:
             break
         }
@@ -153,6 +155,15 @@ extension ChannelCustomManager {
         ChannelManager.getSampleChannel { channel in
             // If you inherit `SBUChannelViewController`, you can customize it by overriding some functions.
             let channelVC = ChannelVC_CustomInput(channel: channel)
+            self.navigationController?.pushViewController(channelVC, animated: true)
+        }
+    }
+    
+    func customMessageMenuItem() {
+        SBUModuleSet.GroupChannelModule.ListComponent = CustomGroupChannelModuleList.self
+        
+        ChannelManager.getSampleChannel { channel in
+            let channelVC = ChannelVC_CustomMessageMenuItem(channel: channel)
             self.navigationController?.pushViewController(channelVC, animated: true)
         }
     }

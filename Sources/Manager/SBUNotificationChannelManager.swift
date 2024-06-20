@@ -10,9 +10,9 @@ import UIKit
 import SendbirdChatSDK
 
 public class SBUNotificationChannelManager: NSObject {
-    static var notificationChannelThemeMode: String = {
+    static var notificationChannelThemeMode: String {
         SBUCacheManager.NotificationSetting.themeMode
-    }()
+    }
     
     /// Resets template cache
     /// - Since: 3.6.0

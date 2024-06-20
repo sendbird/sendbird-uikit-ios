@@ -10,9 +10,10 @@ import Foundation
 import UIKit
 
 /// UI Setting for MessageTemplate
-/// 3.21.0
+/// - Since: 3.21.0
 public struct SBUExtendedMessagePayloadForUI: Decodable {
-    ///
+    
+    /// Type specifying the maximum width of the message view
     public let containerType: SBUMessageContainerType
     
     enum CodingKeys: String, CodingKey {
@@ -33,9 +34,14 @@ public struct SBUExtendedMessagePayloadForUI: Decodable {
     }
 }
 
+/// Type specifying the maximum width of the message view
+/// - Since: 3.21.0
 public enum SBUMessageContainerType: String, Decodable {
+    /// The default size already used
     case `default`
+    /// Size using the state view area
     case wide
+    /// Size using the full width of the screen
     case full
     
     public init?(decodeRawValue: String) {

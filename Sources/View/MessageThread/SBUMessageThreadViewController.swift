@@ -246,7 +246,7 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
             tableViewRightConstraint?.isActive = false
             
             self.tableViewTopConstraint = listComponent.topAnchor.constraint(
-                equalTo: self.view.topAnchor,
+                equalTo: self.view.safeAreaLayoutGuide.topAnchor,
                 constant: 0
             )
             self.tableViewBottomConstraint = listComponent.bottomAnchor.constraint(
@@ -254,10 +254,10 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
                 constant: 0
             )
             self.tableViewLeftConstraint = listComponent.leftAnchor.constraint(
-                equalTo: self.view.leftAnchor, constant: 0
+                equalTo: self.view.safeAreaLayoutGuide.leftAnchor, constant: 0
             )
             self.tableViewRightConstraint = listComponent.rightAnchor.constraint(
-                equalTo: self.view.rightAnchor, constant: 0
+                equalTo: self.view.safeAreaLayoutGuide.rightAnchor, constant: 0
             )
             
             tableViewTopConstraint?.isActive = true

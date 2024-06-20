@@ -224,13 +224,14 @@ open class SBUBaseChannelViewModel: NSObject {
         let text = text.trimmingCharacters(in: .whitespacesAndNewlines)
         let messageParams = UserMessageCreateParams(message: text)
         
-        SBUGlobalCustomParams.userMessageParamsSendBuilder?(messageParams)
-        
         if let parentMessage = parentMessage,
             SendbirdUI.config.groupChannel.channel.replyType != .none {
             messageParams.parentMessageId = parentMessage.messageId
             messageParams.isReplyToChannel = true
         }
+        
+        SBUGlobalCustomParams.userMessageParamsSendBuilder?(messageParams)
+
         messageParams.mentionedMessageTemplate = ""
         messageParams.mentionedUserIds = []
         
@@ -250,13 +251,14 @@ open class SBUBaseChannelViewModel: NSObject {
     open func sendUserMessage(text: String, mentionedMessageTemplate: String, mentionedUserIds: [String], parentMessage: BaseMessage? = nil) {
         let messageParams = UserMessageCreateParams(message: text)
         
-        SBUGlobalCustomParams.userMessageParamsSendBuilder?(messageParams)
-        
         if let parentMessage = parentMessage,
            SendbirdUI.config.groupChannel.channel.replyType != .none {
             messageParams.parentMessageId = parentMessage.messageId
             messageParams.isReplyToChannel = true
         }
+        
+        SBUGlobalCustomParams.userMessageParamsSendBuilder?(messageParams)
+
         messageParams.mentionedMessageTemplate = mentionedMessageTemplate
         messageParams.mentionedUserIds = mentionedUserIds
         self.sendUserMessage(messageParams: messageParams, parentMessage: parentMessage)
@@ -334,13 +336,14 @@ open class SBUBaseChannelViewModel: NSObject {
             }
         }
         
-        SBUGlobalCustomParams.fileMessageParamsSendBuilder?(messageParams)
-        
         if let parentMessage = parentMessage,
            SendbirdUI.config.groupChannel.channel.replyType != .none {
             messageParams.parentMessageId = parentMessage.messageId
             messageParams.isReplyToChannel = true
         }
+        
+        SBUGlobalCustomParams.fileMessageParamsSendBuilder?(messageParams)
+        
         self.sendFileMessage(messageParams: messageParams, parentMessage: parentMessage)
     }
     
@@ -362,14 +365,14 @@ open class SBUBaseChannelViewModel: NSObject {
         messageParams.fileSize = UInt(fileData.count)
         messageParams.metaArrays = [durationMetaArray, typeMetaArray]
 
-        SBUGlobalCustomParams.voiceFileMessageParamsSendBuilder?(messageParams)
-        
         if let parentMessage = parentMessage,
            SendbirdUI.config.groupChannel.channel.replyType != .none {
             messageParams.parentMessageId = parentMessage.messageId
             messageParams.isReplyToChannel = true
         }
-        
+
+        SBUGlobalCustomParams.voiceFileMessageParamsSendBuilder?(messageParams)
+
         self.sendFileMessage(messageParams: messageParams, parentMessage: parentMessage)
     }
     
@@ -889,7 +892,10 @@ open class SBUBaseChannelViewModel: NSObject {
         
         self.messageListParams.includeThreadInfo = SBUGlobals.reply.includesThreadInfo
         self.messageListParams.includeParentMessageInfo = SBUGlobals.reply.includesParentMessageInfo
-        self.messageListParams.replyType = SendbirdUI.config.groupChannel.channel.replyType.filterValue
+        
+        if SendbirdUI.config.groupChannel.channel.replyType.filterValue == .none {
+            self.messageListParams.replyType = SendbirdUI.config.groupChannel.channel.replyType.filterValue
+        }
         
         self.messageListParams.includeMetaArray = true
     }

@@ -116,16 +116,20 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         return SBUStackView(axis: .horizontal, alignment: .bottom, spacing: 4)
     }()
     
+    /// Type specifying the maximum width of the message view
     /// - Since: 3.21.0
     var containerType: SBUMessageContainerType {
         self.message?.asUiSettingContainerType ?? .default
     }
     
+    /// Used when the containertype is wide, to place state view below the message bubble.
     /// - Since: 3.21.0
     lazy var wideSizeStateContainerView: UIStackView = {
-        return SBUStackView(axis: .horizontal, alignment: .center, spacing: 0)
+        return SBUStackView(axis: .horizontal, alignment: .center, spacing: 12)
     }()
     
+    /// This is the view used to display the state view after spacing out the profile area in the `wideSizeStateContainerView`.
+    /// - Since: 3.21.0
     lazy var wideSizeProfileSpaceView: UIView = {
         return UIView()
     }()
@@ -263,12 +267,14 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
             .sbu_constraint(equalTo: self.messageContentView, top: 0, priority: .defaultLow)
         
         self.wideSizeStateContainerView
-            .sbu_constraint(equalTo: self.userNameStackView, left: 0, right: 0, priority: .defaultLow)
+            .sbu_constraint_multiplier(widthAnchor: self.userNameStackView.widthAnchor, widthMultiplier: 1, priority: UILayoutPriority(1000)
+            )
         
         self.fullSizeMessageContainerView.backgroundColor = .clear
         self.fullSizeMessageConstraints = [
-            self.fullSizeMessageContainerView.sbu_constraint_v2(
-                equalTo: self.userNameStackView, left: -12, right: -12, top: 0, bottom: 0, priority: UILayoutPriority(1000)
+            self.fullSizeMessageContainerView
+                .sbu_constraint_v2(
+                equalTo: self.userNameStackView, top: 0, bottom: 0, centerX: 0, priority: UILayoutPriority(1000)
             ),
             self.fullSizeMessageContainerView.sbu_constraint_v2(
                 widthAnchor: self.contentView.widthAnchor, width: 0, priority: UILayoutPriority(1000)
@@ -582,7 +588,11 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
             ])
             
             if self.profileView.hasSuperview == true {
-                self.wideSizeProfileSpaceView.sbu_constraint(widthAnchor: self.profileView.widthAnchor, width: 12)
+                self.wideSizeProfileSpaceView.sbu_constraint_multiplier(
+                    widthAnchor: self.profileView.widthAnchor,
+                    widthMultiplier: 1,
+                    priority: .defaultLow
+                )
             }
             
         case .right:

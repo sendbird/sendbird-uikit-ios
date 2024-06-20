@@ -29,7 +29,7 @@ public class SBUActionSheetItem: SBUCommonItem {
     /// initializer
     public override init(
         title: String? = nil,
-        color: UIColor? = SBUColorSet.onlight01,
+        color: UIColor? = SBUColorSet.onLightTextHighEmphasis,
         image: UIImage? = nil,
         font: UIFont? = nil,
         tintColor: UIColor? = nil,

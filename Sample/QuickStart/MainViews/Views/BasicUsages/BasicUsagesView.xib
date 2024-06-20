@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22684"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="BasicUsagesView" customModule="QuickStart" customModuleProvider="target">
+            <connections>
+                <outlet property="groupChannelButton" destination="CSG-vd-JBw" id="DyJ-ZL-mGs"/>
+                <outlet property="openChannelButton" destination="aSn-bl-sZ9" id="GRS-DV-deP"/>
+                <outlet property="openChannelItemView" destination="CSG-vd-JBw" id="ioI-Ge-ZnV"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="czh-4a-tlW">
+                    <rect key="frame" x="24" y="59" width="345" height="298.33333333333331"/>
+                    <subviews>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CB7-Hu-hjs" userLabel="Margin View">
+                            <rect key="frame" x="0.0" y="0.0" width="345" height="32"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="32" id="qz9-Ii-1t1"/>
+                            </constraints>
+                        </view>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Basic Usages" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6ns-Ze-fK3">
+                            <rect key="frame" x="0.0" y="32" width="345" height="26.333333333333329"/>
+                            <constraints>
+                                <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="20.329999999999998" id="lgP-GW-Fm1"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="22"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UPT-Od-o3J" userLabel="Margin View">
+                            <rect key="frame" x="0.0" y="58.333333333333329" width="345" height="24"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="24" id="nMv-cX-f7c"/>
+                            </constraints>
+                        </view>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aSn-bl-sZ9" userLabel="Main Item View" customClass="MainItemView" customModule="QuickStart" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="82.333333333333343" width="345" height="72"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="height" priority="500" constant="72" id="Pgy-ur-J6O"/>
+                            </constraints>
+                        </view>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="n55-aU-SnS" userLabel="Margin View">
+                            <rect key="frame" x="0.0" y="154.33333333333334" width="345" height="24"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="24" id="W7F-8C-Oov"/>
+                            </constraints>
+                        </view>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CSG-vd-JBw" userLabel="Main Item View" customClass="MainItemView" customModule="QuickStart" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="178.33333333333334" width="345" height="72"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="height" priority="500" constant="72" id="BbE-f8-bLW"/>
+                            </constraints>
+                        </view>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vpn-Je-lbe">
+                            <rect key="frame" x="0.0" y="250.33333333333331" width="345" height="48"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="48" id="cp9-rs-8be"/>
+                            </constraints>
+                            <color key="tintColor" name="signOutButtonText"/>
+                            <state key="normal" title="Button"/>
+                            <buttonConfiguration key="configuration" style="plain" title="Sign out">
+                                <fontDescription key="titleFontDescription" type="system" weight="medium" pointSize="14"/>
+                            </buttonConfiguration>
+                        </button>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                </stackView>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="RrV-kW-iws">
+                    <rect key="frame" x="0.0" y="771.66666666666663" width="393" height="46.333333333333371"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="UI Kit v1.0     SDK 0.7.0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tTh-Tr-ZNV" userLabel="Version Label">
+                            <rect key="frame" x="0.0" y="0.0" width="393" height="14.333333333333334"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                            <color key="textColor" white="0.5" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fpU-Kv-afS" userLabel="Margin View">
+                            <rect key="frame" x="0.0" y="14.333333333333371" width="393" height="16"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="16" id="cGv-bb-ssO"/>
+                            </constraints>
+                        </view>
+                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="smallLogoSendbirdFull" translatesAutoresizingMaskIntoConstraints="NO" id="whj-8B-p5B" userLabel="Sendbird Logo Image View">
+                            <rect key="frame" x="0.0" y="30.333333333333371" width="393" height="16"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="16" id="tbl-cc-Dyb"/>
+                            </constraints>
+                        </imageView>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                </stackView>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <color key="backgroundColor" name="Background-100"/>
+            <constraints>
+                <constraint firstItem="RrV-kW-iws" firstAttribute="bottom" secondItem="vUN-kp-3ea" secondAttribute="bottom" id="Mha-lE-Scq"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="czh-4a-tlW" secondAttribute="trailing" constant="24" id="QpA-td-Usb"/>
+                <constraint firstItem="RrV-kW-iws" firstAttribute="trailing" secondItem="vUN-kp-3ea" secondAttribute="trailing" id="T3x-i0-DkI"/>
+                <constraint firstItem="RrV-kW-iws" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="c69-1P-Wrh"/>
+                <constraint firstItem="czh-4a-tlW" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="24" id="tTY-iB-C8M"/>
+                <constraint firstItem="czh-4a-tlW" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="zt7-ot-g5o"/>
+            </constraints>
+            <point key="canvasLocation" x="131" y="-11"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="smallLogoSendbirdFull" width="94" height="16"/>
+        <namedColor name="Background-100">
+            <color red="0.93333333333333335" green="0.93333333333333335" blue="0.93333333333333335" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="signOutButtonText">
+            <color red="0.0" green="0.0" blue="0.0" alpha="0.87999999523162842" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>

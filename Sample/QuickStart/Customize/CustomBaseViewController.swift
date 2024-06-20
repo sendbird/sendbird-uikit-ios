@@ -69,10 +69,15 @@ class CustomBaseViewController: UITableViewController {
                 naviVC: navigationController,
                 type: ChannelListCustomType(rawValue: row)
             )
-        case .Channel:
+        case .GroupChannel:
             ChannelCustomManager.shared.startSample(
                 naviVC: navigationController,
                 type: ChannelCustomType(rawValue: row)
+            )
+        case .OpenChannel:
+            OpenChannelCustomManager.shared.startSample(
+                naviVC: navigationController,
+                type: OpenChannelCustomType(rawValue: row)
             )
         case .ChannelSettings:
             ChannelSettingsCustomManager.shared.startSample(
@@ -127,12 +132,15 @@ extension CustomBaseViewController {
     }
     
     @objc func onClickBack() {
-        if let navigationController = self.navigationController,
-            navigationController.viewControllers.count > 1 {
-            navigationController.popViewController(animated: true)
-        }
-        else {
-            self.dismiss(animated: true, completion: nil)
+        SendbirdUI.disconnect {
+            UserDefaults.removeSignedSampleApp()
+            if let navigationController = self.navigationController,
+                navigationController.viewControllers.count > 1 {
+                navigationController.popViewController(animated: true)
+            }
+            else {
+                self.dismiss(animated: true, completion: nil)
+            }
         }
     }
 }

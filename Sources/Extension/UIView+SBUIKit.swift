@@ -34,33 +34,36 @@ public extension UIView {
 extension UIView {
     /// This function sets constraints to the view. (EqualTo)
     @discardableResult
-    public func sbu_constraint(equalTo view: UIView,
-                               leading: CGFloat? = nil,
-                               trailing: CGFloat? = nil,
-                               left: CGFloat? = nil,
-                               right: CGFloat? = nil,
-                               top: CGFloat? = nil,
-                               bottom: CGFloat? = nil,
-                               centerX: CGFloat? = nil,
-                               centerY: CGFloat? = nil,
-                               priority: UILayoutPriority? = nil) -> UIView {
-        
+    public func sbu_constraint(
+        equalTo view: UIView,
+        leading: CGFloat? = nil,
+        trailing: CGFloat? = nil,
+        left: CGFloat? = nil,
+        right: CGFloat? = nil,
+        top: CGFloat? = nil,
+        bottom: CGFloat? = nil,
+        centerX: CGFloat? = nil,
+        centerY: CGFloat? = nil,
+        priority: UILayoutPriority? = nil,
+        useSafeArea: Bool = false
+    ) -> UIView {
+        let baseAnchor: Anchorable = useSafeArea ? view.safeAreaLayoutGuide : view
         return self.sbu_constraint_equalTo(
-            leadingAnchor: view.leadingAnchor,
+            leadingAnchor: baseAnchor.leadingAnchor,
             leading: leading,
-            trailingAnchor: view.trailingAnchor,
+            trailingAnchor: baseAnchor.trailingAnchor,
             trailing: trailing,
-            leftAnchor: view.leftAnchor,
+            leftAnchor: baseAnchor.leftAnchor,
             left: left,
-            rightAnchor: view.rightAnchor,
+            rightAnchor: baseAnchor.rightAnchor,
             right: right,
-            topAnchor: view.topAnchor,
+            topAnchor: baseAnchor.topAnchor,
             top: top,
-            bottomAnchor: view.bottomAnchor,
+            bottomAnchor: baseAnchor.bottomAnchor,
             bottom: bottom,
-            centerXAnchor: view.centerXAnchor,
+            centerXAnchor: baseAnchor.centerXAnchor,
             centerX: centerX,
-            centerYAnchor: view.centerYAnchor,
+            centerYAnchor: baseAnchor.centerYAnchor,
             centerY: centerY,
             priority: priority
         )
@@ -162,25 +165,26 @@ extension UIView {
         bottom: CGFloat? = nil,
         centerX: CGFloat? = nil,
         centerY: CGFloat? = nil,
-        priority: UILayoutPriority? = nil
+        priority: UILayoutPriority? = nil,
+        useSafeArea: Bool = false
     ) -> UIView {
-        
+        let baseAnchor: Anchorable = useSafeArea ? view.safeAreaLayoutGuide : view
         return self.sbu_constraint_greater(
-            leadingAnchor: view.leadingAnchor,
+            leadingAnchor: baseAnchor.leadingAnchor,
             leading: leading,
-            trailingAnchor: view.trailingAnchor,
+            trailingAnchor: baseAnchor.trailingAnchor,
             trailing: trailing,
-            leftAnchor: view.leftAnchor,
+            leftAnchor: baseAnchor.leftAnchor,
             left: left,
-            rightAnchor: view.rightAnchor,
+            rightAnchor: baseAnchor.rightAnchor,
             right: right,
-            topAnchor: view.topAnchor,
+            topAnchor: baseAnchor.topAnchor,
             top: top,
-            bottomAnchor: view.bottomAnchor,
+            bottomAnchor: baseAnchor.bottomAnchor,
             bottom: bottom,
-            centerXAnchor: view.centerXAnchor,
+            centerXAnchor: baseAnchor.centerXAnchor,
             centerX: centerX,
-            centerYAnchor: view.centerYAnchor,
+            centerYAnchor: baseAnchor.centerYAnchor,
             centerY: centerY,
             priority: priority
         )
@@ -314,25 +318,26 @@ extension UIView {
         bottom: CGFloat? = nil,
         centerX: CGFloat? = nil,
         centerY: CGFloat? = nil,
-        priority: UILayoutPriority? = nil
+        priority: UILayoutPriority? = nil,
+        useSafeArea: Bool = false
     ) -> UIView {
-        
+        let baseAnchor: Anchorable = useSafeArea ? view.safeAreaLayoutGuide : view
         return self.sbu_constraint_less(
-            leadingAnchor: view.leadingAnchor,
+            leadingAnchor: baseAnchor.leadingAnchor,
             leading: leading,
-            trailingAnchor: view.trailingAnchor,
+            trailingAnchor: baseAnchor.trailingAnchor,
             trailing: trailing,
-            leftAnchor: view.leftAnchor,
+            leftAnchor: baseAnchor.leftAnchor,
             left: left,
-            rightAnchor: view.rightAnchor,
+            rightAnchor: baseAnchor.rightAnchor,
             right: right,
-            topAnchor: view.topAnchor,
+            topAnchor: baseAnchor.topAnchor,
             top: top,
-            bottomAnchor: view.bottomAnchor,
+            bottomAnchor: baseAnchor.bottomAnchor,
             bottom: bottom,
-            centerXAnchor: view.centerXAnchor,
+            centerXAnchor: baseAnchor.centerXAnchor,
             centerX: centerX,
-            centerYAnchor: view.centerYAnchor,
+            centerYAnchor: baseAnchor.centerYAnchor,
             centerY: centerY,
             priority: priority
         )
@@ -512,6 +517,38 @@ extension UIView {
         return self
     }
     
+    /// Constraint utility to specify a multiplier based on the width / height anchor dimension
+    @discardableResult
+    public func sbu_constraint_multiplier(
+        widthAnchor: NSLayoutDimension? = nil,
+        widthMultiplier: CGFloat? = nil,
+        heightAnchor: NSLayoutDimension? = nil,
+        heightMultiplier: CGFloat? = nil,
+        priority: UILayoutPriority? = nil
+    ) -> UIView {
+        
+        self.translatesAutoresizingMaskIntoConstraints = false
+        
+        var layoutConstraints: [NSLayoutConstraint] = []
+        
+        if let anchor = widthAnchor, let multiplier = widthMultiplier {
+            layoutConstraints.append(self.widthAnchor.constraint(equalTo: anchor, multiplier: multiplier).assignId())
+        }
+        
+        if let anchor = heightAnchor, let multiplier = heightMultiplier {
+            layoutConstraints.append(self.heightAnchor.constraint(equalTo: anchor, multiplier: multiplier).assignId())
+        }
+        
+        if let priority = priority {
+            layoutConstraints.forEach { $0.priority = priority }
+        }
+        
+        NSLayoutConstraint.sbu_activate(baseView: self, constraints: layoutConstraints)
+        self.updateConstraintsIfNeeded()
+        
+        return self
+    }
+    
     /// This function sets constraints to the view. (width, height greaterThan)
     @discardableResult
     public func sbu_constraint_greaterThan(
@@ -624,25 +661,26 @@ extension UIView {
         bottom: CGFloat? = nil,
         centerX: CGFloat? = nil,
         centerY: CGFloat? = nil,
-        priority: UILayoutPriority? = nil
+        priority: UILayoutPriority? = nil,
+        useSafeArea: Bool = false
     ) -> [NSLayoutConstraint] {
-        
+        let baseAnchor: Anchorable = useSafeArea ? view.safeAreaLayoutGuide : view
         return self.sbu_constraint_equalTo_v2(
-            leadingAnchor: view.leadingAnchor,
+            leadingAnchor: baseAnchor.leadingAnchor,
             leading: leading,
-            trailingAnchor: view.trailingAnchor,
+            trailingAnchor: baseAnchor.trailingAnchor,
             trailing: trailing,
-            leftAnchor: view.leftAnchor,
+            leftAnchor: baseAnchor.leftAnchor,
             left: left,
-            rightAnchor: view.rightAnchor,
+            rightAnchor: baseAnchor.rightAnchor,
             right: right,
-            topAnchor: view.topAnchor,
+            topAnchor: baseAnchor.topAnchor,
             top: top,
-            bottomAnchor: view.bottomAnchor,
+            bottomAnchor: baseAnchor.bottomAnchor,
             bottom: bottom,
-            centerXAnchor: view.centerXAnchor,
+            centerXAnchor: baseAnchor.centerXAnchor,
             centerX: centerX,
-            centerYAnchor: view.centerYAnchor,
+            centerYAnchor: baseAnchor.centerYAnchor,
             centerY: centerY,
             priority: priority
         )
@@ -742,25 +780,26 @@ extension UIView {
         bottom: CGFloat? = nil,
         centerX: CGFloat? = nil,
         centerY: CGFloat? = nil,
-        priority: UILayoutPriority? = nil
+        priority: UILayoutPriority? = nil,
+        useSafeArea: Bool = false
     ) -> [NSLayoutConstraint] {
-        
+        let baseAnchor: Anchorable = useSafeArea ? view.safeAreaLayoutGuide : view
         return self.sbu_constraint_greater_v2(
-            leadingAnchor: view.leadingAnchor,
+            leadingAnchor: baseAnchor.leadingAnchor,
             leading: leading,
-            trailingAnchor: view.trailingAnchor,
+            trailingAnchor: baseAnchor.trailingAnchor,
             trailing: trailing,
-            leftAnchor: view.leftAnchor,
+            leftAnchor: baseAnchor.leftAnchor,
             left: left,
-            rightAnchor: view.rightAnchor,
+            rightAnchor: baseAnchor.rightAnchor,
             right: right,
-            topAnchor: view.topAnchor,
+            topAnchor: baseAnchor.topAnchor,
             top: top,
-            bottomAnchor: view.bottomAnchor,
+            bottomAnchor: baseAnchor.bottomAnchor,
             bottom: bottom,
-            centerXAnchor: view.centerXAnchor,
+            centerXAnchor: baseAnchor.centerXAnchor,
             centerX: centerX,
-            centerYAnchor: view.centerYAnchor,
+            centerYAnchor: baseAnchor.centerYAnchor,
             centerY: centerY,
             priority: priority
         )
@@ -892,25 +931,26 @@ extension UIView {
         bottom: CGFloat? = nil,
         centerX: CGFloat? = nil,
         centerY: CGFloat? = nil,
-        priority: UILayoutPriority? = nil
+        priority: UILayoutPriority? = nil,
+        useSafeArea: Bool = false
     ) -> [NSLayoutConstraint] {
-        
+        let baseAnchor: Anchorable = useSafeArea ? view.safeAreaLayoutGuide : view
         return self.sbu_constraint_less_v2(
-            leadingAnchor: view.leadingAnchor,
+            leadingAnchor: baseAnchor.leadingAnchor,
             leading: leading,
-            trailingAnchor: view.trailingAnchor,
+            trailingAnchor: baseAnchor.trailingAnchor,
             trailing: trailing,
-            leftAnchor: view.leftAnchor,
+            leftAnchor: baseAnchor.leftAnchor,
             left: left,
-            rightAnchor: view.rightAnchor,
+            rightAnchor: baseAnchor.rightAnchor,
             right: right,
-            topAnchor: view.topAnchor,
+            topAnchor: baseAnchor.topAnchor,
             top: top,
-            bottomAnchor: view.bottomAnchor,
+            bottomAnchor: baseAnchor.bottomAnchor,
             bottom: bottom,
-            centerXAnchor: view.centerXAnchor,
+            centerXAnchor: baseAnchor.centerXAnchor,
             centerX: centerX,
-            centerYAnchor: view.centerYAnchor,
+            centerYAnchor: baseAnchor.centerYAnchor,
             centerY: centerY,
             priority: priority
         )
@@ -1093,6 +1133,40 @@ extension UIView {
     }
     
     /// This function sets constraints to the view (not calling `isActive`).
+    /// Width multiplier, height multiplier -> It does'n t work if anchor is nil or multiplier is nil.
+    @discardableResult
+    public func sbu_constraint_multiplier_v2(
+        widthAnchor: NSLayoutDimension? = nil,
+        widthMultiplier: CGFloat? = nil,
+        heightAnchor: NSLayoutDimension? = nil,
+        heightMultiplier: CGFloat? = nil,
+        priority: UILayoutPriority? = nil
+    ) -> [NSLayoutConstraint] {
+        
+        self.translatesAutoresizingMaskIntoConstraints = false
+        
+        var layoutConstraints: [NSLayoutConstraint] = []
+        
+        if let multiplier = widthMultiplier, let anchor = widthAnchor {
+            layoutConstraints.append(
+                self.widthAnchor.constraint(equalTo: anchor, multiplier: multiplier).assignId()
+            )
+        }
+        
+        if let multiplier = heightMultiplier, let anchor = heightAnchor {
+            layoutConstraints.append(
+                self.heightAnchor.constraint(equalTo: anchor, multiplier: multiplier).assignId()
+            )
+        }
+        
+        if let priority = priority {
+            layoutConstraints.forEach { $0.priority = priority }
+        }
+        
+        return layoutConstraints
+    }
+    
+    /// This function sets constraints to the view (not calling `isActive`).
     @discardableResult
     public func sbu_constraint_greaterThan_v2(
         widthAnchor: NSLayoutAnchor<NSLayoutDimension>? = nil,
@@ -1217,3 +1291,20 @@ extension UIView {
     
     var hasSuperview: Bool { self.superview != nil }
 }
+
+// MARK: - Anchorable
+protocol Anchorable {
+    var leftAnchor: NSLayoutXAxisAnchor { get }
+    var rightAnchor: NSLayoutXAxisAnchor { get }
+    var leadingAnchor: NSLayoutXAxisAnchor { get }
+    var trailingAnchor: NSLayoutXAxisAnchor { get }
+    var topAnchor: NSLayoutYAxisAnchor { get }
+    var bottomAnchor: NSLayoutYAxisAnchor { get }
+    var centerXAnchor: NSLayoutXAxisAnchor { get }
+    var centerYAnchor: NSLayoutYAxisAnchor { get }
+    var heightAnchor: NSLayoutDimension { get }
+    var widthAnchor: NSLayoutDimension { get }
+}
+
+extension UIView: Anchorable {}
+extension UILayoutGuide: Anchorable {}

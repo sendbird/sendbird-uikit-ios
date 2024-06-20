@@ -1,0 +1,95 @@
+//
+//  BusinessMessagingSelectionViewController.swift
+//  QuickStart
+//
+//  Created by Jed Gyeong on 4/24/24.
+//  Copyright © 2024 SendBird, Inc. All rights reserved.
+//
+
+import UIKit
+
+final class BusinessMessagingSelectionViewController: UIViewController {
+    @IBOutlet weak var signOutButton: UIButton!
+    @IBOutlet weak var marginView: UIView!
+    
+    @IBOutlet weak var feedChannelOnlyItemView: MainItemView! {
+        willSet {
+            newValue.titleLabel.text = "Feed channel only"
+            newValue.descriptionLabel.isHidden = true
+            newValue.unreadCountLabel.isHidden = true
+        }
+    }
+    
+    @IBOutlet weak var chatAndFeedChannelsItemView: MainItemView! {
+        willSet {
+            newValue.titleLabel.text = "Chat and feed channels"
+            newValue.descriptionLabel.isHidden = true
+            newValue.unreadCountLabel.isHidden = true
+        }
+    }
+    
+    var authType: AuthType = .authFeed
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        signOutButton.layer.cornerRadius = 4.0
+        signOutButton.layer.borderWidth = 1.0
+        signOutButton.layer.borderColor = UIColor(named: "signOutButtonBorder")?.cgColor
+        
+        if authType == .websocket {
+            marginView.isHidden = false
+            chatAndFeedChannelsItemView.isHidden = false
+        } else {
+            marginView.isHidden = true
+            chatAndFeedChannelsItemView.isHidden = true
+        }
+        
+        self.feedChannelOnlyItemView.actionButton.addTarget(
+            self,
+            action: #selector(onTapFeedChannelOnlyButton(_:)),
+            for: .touchUpInside
+        )
+        
+        self.chatAndFeedChannelsItemView.actionButton.addTarget(
+            self,
+            action: #selector(onTabChatAndFeedChannelButton(_:)),
+            for: .touchUpInside
+        )
+    }
+    
+    @IBAction func onTapFeedChannelOnlyButton(_ sender: UIButton) {
+        self.openFeedOnly()
+    }
+    
+    @IBAction func onTabChatAndFeedChannelButton(_ sender: UIButton) {
+        self.openChatAndFeed()
+    }
+
+    @IBAction func clickSignOutButton(_ sender: Any) {
+        SendbirdUI.unregisterPushToken { success in
+            SendbirdUI.disconnect {
+                UserDefaults.removeSignedSampleApp()
+                self.navigationController?.popViewController(animated: true)
+            }
+        }
+    }
+    
+    func openFeedOnly(channelURL: String? = nil) {
+        let vc = BusinessMessagingTabBarController()
+        vc.tabBarType = .feedOnly
+        vc.channelURLforPushNotification = channelURL
+        vc.channelType = .feed
+        vc.modalPresentationStyle = .fullScreen
+        self.present(vc, animated: true)
+    }
+    
+    func openChatAndFeed(channelURL: String? = nil) {
+        let vc = BusinessMessagingTabBarController()
+        vc.tabBarType = .chatAndFeed
+        vc.channelURLforPushNotification = channelURL
+        vc.channelType = .group
+        vc.modalPresentationStyle = .fullScreen
+        self.present(vc, animated: true)
+    }
+}

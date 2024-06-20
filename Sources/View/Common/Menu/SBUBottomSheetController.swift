@@ -123,7 +123,7 @@ class SBUBottomSheetController: UIPresentationController {
         guard let presenterView = self.containerView else { return }
         presenterView.addSubview(self.blurEffectView)
 
-        presenterView.layer.shadowColor = SBUColorSet.onlight02.cgColor
+        presenterView.layer.shadowColor = SBUColorSet.onLightTextMidEmphasis.cgColor
         presenterView.layer.shadowRadius = 2
         presenterView.layer.shadowOpacity = 0.5
         presenterView.layer.shadowOffset = .init(width: 0, height: 2)

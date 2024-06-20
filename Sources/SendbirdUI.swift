@@ -487,6 +487,7 @@ public class SendbirdUI {
         
         SendbirdChat.disconnect(completionHandler: {
             SBULog.info("[Succeed] Disconnection to Sendbird")
+            SBUNotificationChannelManager.resetNotificationSettingCache()
             SBUGlobals.currentUser = nil
             completionHandler?()
         })

@@ -11,62 +11,50 @@ import SendbirdChatSDK
 
 enum ButtonType: Int {
     case signIn
-    case startChatWithVC
-    case startChatWithTC
-    case startOpenChatWithTC
-    case startChatBotWithVC
     case signOut
-    case customSamples
+    case basicUsage
+    case chatBot
+    case customSample
+    case businessMessagingSample
+    case selectSampeApps
+}
+
+enum MainViewState: Int {
+    case productList
+    case basicUsage
+    case chatBot
+    case customSample
+    case businessMessagingSample
+}
+
+enum SampleAppType: Int {
+    case none = 0
+    case basicUsage
+    case businessMessagingSample
+    case chatBot
+    case customSample
+}
+
+enum AuthType: Int {
+    case authFeed = 0
+    case websocket
 }
 
 class ViewController: UIViewController {
     // MARK: - Properties
-    @IBOutlet weak var connectView: ConnectView!
-    
-    var titleLabel: UILabel { connectView.titleLabel }
-    var userIdTextField: UITextField { connectView.userIdTextField }
-    var nicknameTextField: UITextField { connectView.nicknameTextField }
-    var signInButton: UIButton { connectView.signInButton }
-    
-    @IBOutlet weak var mainView: MainView!
-    
-    var homeStackView: UIStackView { mainView.homeStackView }
-    var unreadCountLabel: UILabel { mainView.groupChannelItemView.unreadCountLabel }
-//    var startChatWithViewControllerButton: UIButton { mainView.groupChannelItemView.actionButton }
-    var startChatWithTabbarControllerButton: UIButton { mainView.groupChannelItemView.actionButton }
-    var startOpenChatWithTabbarControllerButton: UIButton { mainView.openChannelItemView.actionButton }
-    var startChatBotWithViewControllerButton: UIButton { mainView.chatBotItemView.actionButton }
-    var customSamplesButton: UIButton { mainView.customItemView.actionButton }
-    var signOutButton: UIButton { mainView.signOutButton }
-    
+    @IBOutlet weak var basicUsagesView: MainItemView!
+    @IBOutlet weak var talkToAnAIChatbotView: MainItemView!
+    @IBOutlet weak var customizationSamplesView: MainItemView!
+    @IBOutlet weak var businessMessagingSampleView: MainItemView!
+
     @IBOutlet weak var versionLabel: UILabel!
 
-    @IBOutlet weak var loadingIndicator: UIActivityIndicatorView! {
-        didSet {
-            loadingIndicator.stopAnimating()
-        }
-    }
-
     let duration: TimeInterval = 0.4
-    var isSignedIn = false {
-        didSet {
-            UIView.animate(withDuration: 0.4, delay: 0, options: .curveEaseOut, animations: {
-                self.connectView.isHidden = self.isSignedIn
-                self.connectView.alpha = self.isSignedIn ? 0 : 1
-                self.mainView.isHidden = !self.isSignedIn
-                self.mainView.alpha = !self.isSignedIn ? 0 : 1
-                self.homeStackView.isHidden = !self.isSignedIn
-                self.homeStackView.alpha = !self.isSignedIn ? 0 : 1
-            })
-            self.view.endEditing(true)
-        }
-    }
     
     enum CornerRadius: CGFloat {
         case small = 4.0
         case large = 8.0
     }
-    
     
     // MARK: - Lifecycle
     override func viewWillAppear(_ animated: Bool) {
@@ -75,56 +63,31 @@ class ViewController: UIViewController {
         SBUTheme.set(theme: .light)
         GlobalSetCustomManager.setDefault()
         
-        nicknameTextField.text = UserDefaults.loadNickname()
+        let signedApp = UserDefaults.loadSignedInSampleApp()
+        switch signedApp {
+        case .none:
+            break
+        case .basicUsage:
+            self.openBasicUsage()
+        case .businessMessagingSample:
+            self.openBusinessMessagingSample()
+        case .chatBot:
+            self.openAIChatBot()
+        case .customSample:
+            self.openCustomizationSample()
+        }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationController?.setNavigationBarHidden(true, animated: true)
         
-        signInButton.tag = ButtonType.signIn.rawValue
-        signOutButton.tag = ButtonType.signOut.rawValue
-        
-//        startChatWithViewControllerButton.tag = ButtonType.startChatWithVC.rawValue
-        startChatWithTabbarControllerButton.tag = ButtonType.startChatWithTC.rawValue
-        startOpenChatWithTabbarControllerButton.tag = ButtonType.startOpenChatWithTC.rawValue
-        startChatBotWithViewControllerButton.tag = ButtonType.startChatBotWithVC.rawValue
-        customSamplesButton.tag = ButtonType.customSamples.rawValue
-        
-        signInButton.addTarget(self, action: #selector(onTapButton(_:)), for: .touchUpInside)
-        signOutButton.addTarget(self, action: #selector(onTapButton(_:)), for: .touchUpInside)
-//        startChatWithViewControllerButton.addTarget(self, action: #selector(onTapButton(_:)), for: .touchUpInside)
-        startChatWithTabbarControllerButton.addTarget(self, action: #selector(onTapButton(_:)), for: .touchUpInside)
-        startChatBotWithViewControllerButton.addTarget(self, action: #selector(onTapButton(_:)), for: .touchUpInside)
-        startOpenChatWithTabbarControllerButton.addTarget(self, action: #selector(onTapButton(_:)), for: .touchUpInside)
-        customSamplesButton.addTarget(self, action: #selector(onTapButton(_:)), for: .touchUpInside)
+        self.setDefaultInformation()
+        self.setupButtons()
  
         UserDefaults.saveIsLightTheme(true)
         
-        let coreVersion: String = SendbirdChat.getSDKVersion()
-        var uikitVersion: String {
-            if SendbirdUI.shortVersion == "[NEXT_VERSION]" {
-                let bundle = Bundle(identifier: "com.sendbird.uikit.sample")
-                return "\(bundle?.infoDictionary?["CFBundleShortVersionString"] ?? "")"
-            } else if SendbirdUI.shortVersion == "0.0.0" {
-                guard let dictionary = Bundle.main.infoDictionary,
-                      let appVersion = dictionary["CFBundleShortVersionString"] as? String,
-                      let build = dictionary["CFBundleVersion"] as? String else {return ""}
-                return "\(appVersion)(\(build))"
-            } else {
-                return SendbirdUI.shortVersion
-            }
-        }
-        versionLabel.text = "UIKit v\(uikitVersion)\tSDK v\(coreVersion)"
-         
-        userIdTextField.text = UserDefaults.loadUserID()
-        nicknameTextField.text = UserDefaults.loadNickname()
-        
-        SendbirdChat.addUserEventDelegate(self, identifier: self.description)
-        SendbirdChat.addConnectionDelegate(self, identifier: self.description)
-        
-        guard userIdTextField.text != nil,
-              nicknameTextField.text != nil else { return }
-        signinAction()
+        self.setupVersion()
     }
     
     deinit {
@@ -140,147 +103,48 @@ class ViewController: UIViewController {
         super.traitCollectionDidChange(previousTraitCollection)
     }
     
-    func updateUnreadCount() {
-        SendbirdChat.getTotalUnreadMessageCount { [weak self] totalCount, error in
-            guard let self = self else { return }
-            self.setUnreadMessageCount(unreadCount: Int32(totalCount))
-        }
-    }
-    
-    func setUnreadMessageCount(unreadCount: Int32) {
-        guard self.isSignedIn else { return }
-        
-        var badgeValue: String?
-        if unreadCount == 0 {
-            badgeValue = nil
-        } else if unreadCount > 99 {
-            badgeValue = "99+"
-        } else {
-            badgeValue = "\(unreadCount)"
-        }
-        
-        self.unreadCountLabel.text = badgeValue
-        self.unreadCountLabel.isHidden = badgeValue == nil
-    }
-    
     // MARK: - Actions
     @IBAction func onEditingChangeTextField(_ sender: UITextField) {
         let color = sender.text?.isEmpty ?? true ? #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0) : #colorLiteral(red: 0.4823529412, green: 0.3254901961, blue: 0.937254902, alpha: 1)
         sender.animateBorderColor(toColor: color, duration: 0.1)
     }
-  
-    @IBAction func onTapButton(_ sender: UIButton) {
-        let type = ButtonType(rawValue: sender.tag)
-
-        switch type {
-        case .signIn:
-            self.signinAction()
-        case .startChatWithVC, .startChatWithTC:
-            self.startChatAction(type: type ?? .startChatWithVC)
-        case .startOpenChatWithTC:
-            self.startOpenChatAction(type: .startOpenChatWithTC)
-        case .startChatBotWithVC:
-            self.startChatBotAction(type: .startChatBotWithVC)
-        case .signOut:
-            self.signOutAction()
-        case .customSamples:
-            self.moveToCustomSamples()
-        default:
-            break
-        }
-    }
-
-    func signinAction() {
-        loadingIndicator.startAnimating()
-        view.isUserInteractionEnabled = false
-        
-        let userID = userIdTextField.text ?? ""
-        let nickname = nicknameTextField.text ?? ""
-        
-        guard !userID.isEmpty else {
-            userIdTextField.shake()
-            userIdTextField.becomeFirstResponder()
-            loadingIndicator.stopAnimating()
-            view.isUserInteractionEnabled = true
-            return
-        }
-        guard !nickname.isEmpty else {
-            nicknameTextField.shake()
-            nicknameTextField.becomeFirstResponder()
-            loadingIndicator.stopAnimating()
-            view.isUserInteractionEnabled = true
-            return
-        }
-        
-        SBUGlobals.currentUser = SBUUser(userId: userID, nickname: nickname)
-        SendbirdUI.connect { [weak self] user, error in
-            self?.loadingIndicator.stopAnimating()
-            self?.view.isUserInteractionEnabled = true
-            
-            if let user = user {
-                UserDefaults.saveUserID(userID)
-                UserDefaults.saveNickname(nickname)
-                
-                print("SendbirdUIKit.connect: \(user)")
-                self?.isSignedIn = true
-                self?.updateUnreadCount()
-                
-                if let appDelegate = UIApplication.shared.delegate as? AppDelegate,
-                    let payload = appDelegate.pendingNotificationPayload {
-                    self?.startChatAction(with: payload)
-                    appDelegate.pendingNotificationPayload = nil
-                }
-            }
-        }
+    
+    @IBAction func onBasicUsagesViewButton(_ sender: UIButton) {
+        self.openBasicUsage()
     }
     
-    func signOutAction() {
-        SendbirdUI.unregisterPushToken { success in
-            SendbirdUI.disconnect { [weak self] in
-                print("SendbirdUIKit.disconnect")
-                self?.isSignedIn = false
-            }
-        }
+    @IBAction func onTalkToAnAIChatbotTapButton(_ sender: UIButton) {
+        self.openAIChatBot()
     }
     
-    func startChatAction(type: ButtonType) {
-        if type == .startChatWithVC {
-            let mainVC = SBUGroupChannelListViewController()
-            let naviVC = UINavigationController(rootViewController: mainVC)
-            naviVC.modalPresentationStyle = .fullScreen
-            present(naviVC, animated: true)
-        }
-        else if type == .startChatWithTC {
-            let mainVC = MainChannelTabbarController()
-            mainVC.modalPresentationStyle = .fullScreen
-            present(mainVC, animated: true)
-        }
+    @IBAction func onCustomizationSamplesTapButton(_ sender: UIButton) {
+        self.openCustomizationSample()
     }
     
-    func startChatAction(with payload: NSDictionary) {
-        guard let channel: NSDictionary = payload["channel"] as? NSDictionary,
-              let channelURL: String = channel["channel_url"] as? String else { return }
-        
-        let mainVC = SBUGroupChannelListViewController()
-        let naviVC = UINavigationController(rootViewController: mainVC)
-        naviVC.modalPresentationStyle = .fullScreen
-        self.present(naviVC, animated: true) {
-            SendbirdUI.moveToChannel(channelURL: channelURL)
-        }
+    @IBAction func onBusinessMessagingSampleTapButton(_ sender: UIButton) {
+        self.openBusinessMessagingSample()
     }
     
-    func startOpenChatAction(type: ButtonType) {
-        guard type == .startOpenChatWithTC else { return }
-        
-        let mainVC = MainOpenChannelTabbarController()
-        mainVC.modalPresentationStyle = .fullScreen
-        present(mainVC, animated: true)
+    func openBasicUsage(with payload: NSDictionary? = nil) {
+        let vc = GeneralSignInViewController()
+        vc.sampleAppType = .basicUsage
+        self.navigationController?.pushViewController(vc, animated: true)
     }
     
-    func startChatBotAction(type: ButtonType) {
-        guard type == .startChatBotWithVC else { return }
-        
-        SendbirdUI.startChatWithAIBot(botId: "client_bot", isDistinct: true)
+    func openAIChatBot() {
+        let vc = AIChatBotSignInViewController()
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func openCustomizationSample() {
+        let vc = GeneralSignInViewController()
+        vc.sampleAppType = .customSample
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func openBusinessMessagingSample() {
+        let vc = BusinessMessagingSignInViewController()
+        self.navigationController?.pushViewController(vc, animated: true)
     }
     
     func moveToCustomSamples() {
@@ -290,8 +154,175 @@ class ViewController: UIViewController {
         naviVC.modalPresentationStyle = .fullScreen
         present(naviVC, animated: true)
     }
+    
+    func setupButtons() {
+        self.basicUsagesView.titleLabel.text = "Basic Usages"
+        self.basicUsagesView.unreadCountLabel.isHidden = true
+        self.basicUsagesView.descriptionLabel.isHidden = true
+        
+        self.talkToAnAIChatbotView.titleLabel.text = "Talk to an AI Chatbot"
+        self.talkToAnAIChatbotView.unreadCountLabel.isHidden = true
+        self.talkToAnAIChatbotView.descriptionLabel.isHidden = true
+        
+        self.customizationSamplesView.titleLabel.text = "Customization samples"
+        self.customizationSamplesView.unreadCountLabel.isHidden = true
+        self.customizationSamplesView.descriptionLabel.isHidden = true
+        
+        self.businessMessagingSampleView.titleLabel.text = "Business Messaging sample"
+        self.businessMessagingSampleView.unreadCountLabel.isHidden = true
+        self.businessMessagingSampleView.descriptionLabel.isHidden = true
+        
+        self.basicUsagesView.actionButton.addTarget(self, action: #selector(onBasicUsagesViewButton(_:)), for: .touchUpInside)
+        self.talkToAnAIChatbotView.actionButton.addTarget(self, action: #selector(onTalkToAnAIChatbotTapButton(_:)), for: .touchUpInside)
+        self.customizationSamplesView.actionButton.addTarget(self, action: #selector(onCustomizationSamplesTapButton(_:)), for: .touchUpInside)
+        self.businessMessagingSampleView.actionButton.addTarget(self, action: #selector(onBusinessMessagingSampleTapButton(_:)), for: .touchUpInside)
+    }
+    
+    func setupVersion() {
+        let coreVersion: String = SendbirdChat.getSDKVersion()
+        var uikitVersion: String {
+            if SendbirdUI.shortVersion == "[NEXT_VERSION]" {
+                let bundle = Bundle(identifier: "com.sendbird.uikit.sample")
+                return "\(bundle?.infoDictionary?["CFBundleShortVersionString"] ?? "")"
+            } else if SendbirdUI.shortVersion == "0.0.0" {
+                guard let dictionary = Bundle.main.infoDictionary,
+                      let appVersion = dictionary["CFBundleShortVersionString"] as? String,
+                      let build = dictionary["CFBundleVersion"] as? String else {return ""}
+                return "\(appVersion)(\(build))"
+            } else {
+                return SendbirdUI.shortVersion
+            }
+        }
+        versionLabel.text = "UIKit v\(uikitVersion)\tSDK v\(coreVersion)"
+    }
 }
 
+extension ViewController {
+    /// Sets default information for all sample types.
+    func setDefaultInformation() {
+        self.setDefaultBasicUsageInfo()
+        self.setDefaultChatbotInfo()
+        self.setDefaultCustomSampleInfo()
+        self.setDefaultBusinessMessagingSampleInfo()
+    }
+    
+    /// Sets default information for basic usage sample.
+    func setDefaultBasicUsageInfo() {
+        let appId = UserDefaults.loadAppId(type: .basicUsage)
+        if appId == nil || appId?.count == 0 {
+            UserDefaults.saveAppId(type: .basicUsage, appId: "FEA2129A-EA73-4EB9-9E0B-EC738E7EB768")
+        }
+
+//        let userId = UserDefaults.loadUserId(type: .basicUsage)
+//        if userId == nil || userId?.count == 0 {
+//            UserDefaults.saveUserId(type: .basicUsage, userId: "USER_ID")
+//        }
+//        
+//        let nickname = UserDefaults.loadNickname(type: .basicUsage)
+//        if nickname == nil || nickname?.count == 0 {
+//            UserDefaults.saveNickname(type: .basicUsage, nickname: "NICKNAME")
+//        }
+//        
+//        let wsHost = UserDefaults.loadWebsocketHost(type: .basicUsage)
+//        if wsHost == nil || wsHost?.count == 0 {
+//            UserDefaults.saveWebsocketHost(type: .basicUsage, host: "wss://ws-FEA2129A-EA73-4EB9-9E0B-EC738E7EB768.sendbird.com")
+//        }
+//        
+//        let apiHost = UserDefaults.loadAPIHost(type: .basicUsage)
+//        if apiHost == nil || apiHost?.count == 0 {
+//            UserDefaults.saveAPIHost(type: .basicUsage, host: "https://api-FEA2129A-EA73-4EB9-9E0B-EC738E7EB768.sendbird.com")
+//        }
+    }
+    
+    /// Sets default information for chatbot sample.
+    func setDefaultChatbotInfo() {
+        let appId = UserDefaults.loadAppId(type: .chatBot)
+        if appId == nil || appId?.count == 0 {
+            UserDefaults.saveAppId(type: .chatBot, appId: "FEA2129A-EA73-4EB9-9E0B-EC738E7EB768")
+        }
+        
+//        let botId = UserDefaults.loadBotId()
+//        if botId == nil || botId?.count == 0 {
+//            UserDefaults.saveBotId(botId: "onboarding_bot")
+//        }
+//
+//        let userId = UserDefaults.loadUserId(type: .chatBot)
+//        if userId == nil || userId?.count == 0 {
+//            UserDefaults.saveUserId(type: .chatBot, userId: "USER_ID")
+//        }
+//        
+//        let nickname = UserDefaults.loadNickname(type: .chatBot)
+//        if nickname == nil || nickname?.count == 0 {
+//            UserDefaults.saveNickname(type: .chatBot, nickname: "NICKNAME")
+//        }
+//        
+//        let wsHost = UserDefaults.loadWebsocketHost(type: .chatBot)
+//        if wsHost == nil || wsHost?.count == 0 {
+//            UserDefaults.saveWebsocketHost(type: .chatBot, host: "wss://ws-FEA2129A-EA73-4EB9-9E0B-EC738E7EB768.sendbird.com")
+//        }
+//        
+//        let apiHost = UserDefaults.loadAPIHost(type: .chatBot)
+//        if apiHost == nil || apiHost?.count == 0 {
+//            UserDefaults.saveAPIHost(type: .chatBot, host: "https://api-FEA2129A-EA73-4EB9-9E0B-EC738E7EB768.sendbird.com")
+//        }
+    }
+    
+    /// Sets default information for custom sample.
+    func setDefaultCustomSampleInfo() {
+        let appId = UserDefaults.loadAppId(type: .customSample)
+        if appId == nil || appId?.count == 0 {
+            UserDefaults.saveAppId(type: .customSample, appId: "FEA2129A-EA73-4EB9-9E0B-EC738E7EB768")
+        }
+
+//        let userId = UserDefaults.loadUserId(type: .customSample)
+//        if userId == nil || userId?.count == 0 {
+//            UserDefaults.saveUserId(type: .customSample, userId: "USER_ID")
+//        }
+//        
+//        let nickname = UserDefaults.loadNickname(type: .customSample)
+//        if nickname == nil || nickname?.count == 0 {
+//            UserDefaults.saveNickname(type: .customSample, nickname: "NICKNAME")
+//        }
+//        
+//        let wsHost = UserDefaults.loadWebsocketHost(type: .customSample)
+//        if wsHost == nil || wsHost?.count == 0 {
+//            UserDefaults.saveWebsocketHost(type: .customSample, host: "wss://ws-FEA2129A-EA73-4EB9-9E0B-EC738E7EB768.sendbird.com")
+//        }
+//        
+//        let apiHost = UserDefaults.loadAPIHost(type: .customSample)
+//        if apiHost == nil || apiHost?.count == 0 {
+//            UserDefaults.saveAPIHost(type: .customSample, host: "https://api-FEA2129A-EA73-4EB9-9E0B-EC738E7EB768.sendbird.com")
+//        }
+    }
+    
+    /// Sets default information for business messaging sample.
+    func setDefaultBusinessMessagingSampleInfo() {
+        let appId = UserDefaults.loadAppId(type: .businessMessagingSample)
+        if appId == nil || appId?.count == 0 {
+            UserDefaults.saveAppId(type: .businessMessagingSample, appId: "FEA2129A-EA73-4EB9-9E0B-EC738E7EB768")
+        }
+
+//        let userId = UserDefaults.loadUserId(type: .businessMessagingSample)
+//        if userId == nil || userId?.count == 0 {
+//            UserDefaults.saveUserId(type: .businessMessagingSample, userId: "USER_ID")
+//        }
+//        
+//        let nickname = UserDefaults.loadNickname(type: .businessMessagingSample)
+//        if nickname == nil || nickname?.count == 0 {
+//            UserDefaults.saveNickname(type: .businessMessagingSample, nickname: "NICKNAME")
+//        }
+//        
+//        let wsHost = UserDefaults.loadWebsocketHost(type: .businessMessagingSample)
+//        if wsHost == nil || wsHost?.count == 0 {
+//            UserDefaults.saveWebsocketHost(type: .businessMessagingSample, host: "wss://ws-FEA2129A-EA73-4EB9-9E0B-EC738E7EB768.sendbird.com")
+//        }
+//        
+//        let apiHost = UserDefaults.loadAPIHost(type: .businessMessagingSample)
+//        if apiHost == nil || apiHost?.count == 0 {
+//            UserDefaults.saveAPIHost(type: .businessMessagingSample, host: "https://api-FEA2129A-EA73-4EB9-9E0B-EC738E7EB768.sendbird.com")
+//        }
+    }
+}
 
 extension ViewController: UINavigationControllerDelegate {
      public override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
@@ -302,17 +333,5 @@ extension ViewController: UINavigationControllerDelegate {
 extension ViewController {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
-    }
-}
-
-extension ViewController: UserEventDelegate {
-    func didUpdateTotalUnreadMessageCount(_ totalCount: Int32, totalCountByCustomType: [String : Int]?) {
-        self.setUnreadMessageCount(unreadCount: Int32(totalCount))
-    }
-}
-
-extension ViewController: ConnectionDelegate {
-    func didSucceedReconnection() {
-        self.updateUnreadCount()
     }
 }
