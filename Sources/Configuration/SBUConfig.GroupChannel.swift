@@ -89,9 +89,18 @@ extension SBUConfig.GroupChannel {
         /// - Since: 3.23.0
         @SBUPrioritizedConfig public var isMarkdownForUserMessageEnabled: Bool = false
         
-        /// Enable the Reactions features in Super Group Channels.
+        /// Enables the Reactions for Super Group Channels.
+        /// - Since: 3.24.0
+        @SBUPrioritizedConfig private var _isSuperGroupReactionsEnabled: Bool = false
+        
+        /// The flag that indicates whether the Reactions feature is enabled in Super Group Channels.
         /// - Since: 3.19.0
-        @SBUPrioritizedConfig public var isSuperGroupReactionsEnabled: Bool = false
+        public var isSuperGroupReactionsEnabled: Bool {
+            get { _isSuperGroupReactionsEnabled }
+            
+            @available(*, unavailable, message: "Currently, this feature is turned off by default. If you wish to use this feature, contact us.")
+            set { _isSuperGroupReactionsEnabled = newValue }
+        }
         
         /// Enable the feature to mention specific members in a message for notification.
         ///
@@ -165,7 +174,7 @@ extension SBUConfig.GroupChannel {
             self._isOGTagEnabled.setDashboardValue(channel.isOGTagEnabled)
             self._isTypingIndicatorEnabled.setDashboardValue(channel.isTypingIndicatorEnabled)
             self._isReactionsEnabled.setDashboardValue(channel.isReactionsEnabled)
-            self._isSuperGroupReactionsEnabled.setDashboardValue(channel.isSuperGroupReactionsEnabled)
+            self.__isSuperGroupReactionsEnabled.setDashboardValue(channel.isSuperGroupReactionsEnabled)
             self._isMentionEnabled.setDashboardValue(channel.isMentionEnabled)
             self._isVoiceMessageEnabled.setDashboardValue(channel.isVoiceMessageEnabled)
             self._replyType.setDashboardValue(channel.replyType)
@@ -193,13 +202,32 @@ extension SBUConfig.GroupChannel {
             self.isSuggestedRepliesEnabled = (try? container.decode(Bool.self, forKey: .isSuggestedRepliesEnabled)) ?? SendbirdUI.config.groupChannel.channel.isSuggestedRepliesEnabled
             self.isFormTypeMessageEnabled = (try? container.decode(Bool.self, forKey: .isFormTypeMessageEnabled)) ??
                 SendbirdUI.config.groupChannel.channel.isFormTypeMessageEnabled
-            self.isSuperGroupReactionsEnabled = try container.decodeIfPresent(Bool.self, forKey: .isSuperGroupReactionsEnabled) ?? false
+            self._isSuperGroupReactionsEnabled = try container.decodeIfPresent(Bool.self, forKey: .isSuperGroupReactionsEnabled) ?? false
             self.isFeedbackEnabled = (try? container.decode(Bool.self, forKey: .isFeedbackEnabled)) ??
                 SendbirdUI.config.groupChannel.channel.isFeedbackEnabled
             self.isMarkdownForUserMessageEnabled = (try? container.decode(Bool.self, forKey: .isMarkdownForUserMessageEnabled)) ??
             SendbirdUI.config.groupChannel.channel.isMarkdownForUserMessageEnabled
             
             self.input = try container.decode(SBUConfig.GroupChannel.Channel.Input.self, forKey: .input)
+        }
+        
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            
+            try container.encode(self.isOGTagEnabled, forKey: .isOGTagEnabled)
+            try container.encode(self.isTypingIndicatorEnabled, forKey: .isTypingIndicatorEnabled)
+            try container.encode(self.isReactionsEnabled, forKey: .isReactionsEnabled)
+            try container.encode(self.isMentionEnabled, forKey: .isMentionEnabled)
+            try container.encode(self.isVoiceMessageEnabled, forKey: .isVoiceMessageEnabled)
+            try container.encode(self.replyType, forKey: .replyType)
+            try container.encode(self.threadReplySelectType, forKey: .threadReplySelectType)
+            
+            try container.encode(self.isSuggestedRepliesEnabled, forKey: .isSuggestedRepliesEnabled)
+            try container.encode(self.isFormTypeMessageEnabled, forKey: .isFormTypeMessageEnabled)
+            try container.encode(self._isSuperGroupReactionsEnabled, forKey: .isSuperGroupReactionsEnabled)
+            try container.encode(self.isFeedbackEnabled, forKey: .isFeedbackEnabled)
+            try container.encode(self.isMarkdownForUserMessageEnabled, forKey: .isMarkdownForUserMessageEnabled)
+            try container.encode(self.input, forKey: .input)
         }
     }
 }

@@ -45,13 +45,14 @@ class SBUMarkdownTransfer {
     }
     
     enum Markdown: CaseIterable {
-        case link
+        // NOTE: Case order determines markdown processing priority
         case bold
+        case link
         
         var item: MarkdownItemable {
             switch self {
-            case .link: return Link()
             case .bold: return Bold()
+            case .link: return Link()
             }
         }
     }

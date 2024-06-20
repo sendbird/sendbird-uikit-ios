@@ -43,7 +43,7 @@ public class SBUMenuItem: SBUCommonItem {
     ///    - font: The default is `nil`.  If `nil`, the menu text label will set it's font to ``SBUComponentTheme/menuTitleFont``
     public init(
         title: String? = nil,
-        color: UIColor? = SBUColorSet.onlight01,
+        color: UIColor? = SBUColorSet.onLightTextHighEmphasis,
         image: UIImage? = nil,
         font: UIFont? = nil,
         tintColor: UIColor? = nil,

@@ -135,7 +135,8 @@ open class SBUMessageStateView: SBUView {
             left: 0,
             right: 0,
             top: 0,
-            bottom: 0
+            bottom: 0,
+            priority: .defaultLow
         )
         
         let timeLabelWidth = self.timeLabelCustomSize?.width ?? self.timeLabelWidth

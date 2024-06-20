@@ -10,7 +10,9 @@ import UIKit
 import SendbirdChatSDK
 
 enum TabType {
-    case channels, mySettings
+    case channels
+    case feedChannels
+    case settings
 }
 
 class MainChannelTabbarController: UITabBarController {
@@ -22,6 +24,9 @@ class MainChannelTabbarController: UITabBarController {
     
     var theme: SBUComponentTheme = SBUTheme.componentTheme
     var isDarkMode: Bool = false
+    
+    /// When the channel URL is set by the push notificaion, the channel will be opened.
+    var channelURLforPushNotification: String?
 
     
     // MARK: - Life cycle
@@ -34,6 +39,7 @@ class MainChannelTabbarController: UITabBarController {
         self.channelsNavigationController = UINavigationController(
             rootViewController: channelsViewController
         )
+        self.settingsViewController.sampleAppType = .basicUsage
         self.mySettingsNavigationController = UINavigationController(
             rootViewController: settingsViewController
         )
@@ -46,6 +52,15 @@ class MainChannelTabbarController: UITabBarController {
         SendbirdChat.addUserEventDelegate(self, identifier: self.sbu_className)
         
         self.loadTotalUnreadMessageCount()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        if let channelURL = self.channelURLforPushNotification {
+            self.channelURLforPushNotification = nil
+            SendbirdUI.moveToChannel(channelURL: channelURL, basedOnChannelList: true)
+        }
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -73,7 +88,7 @@ class MainChannelTabbarController: UITabBarController {
         settingsViewController.navigationItem.leftBarButtonItem = self.createLeftTitleItem(
             text: "My settings"
         )
-        settingsViewController.tabBarItem = self.createTabItem(type: .mySettings)
+        settingsViewController.tabBarItem = self.createTabItem(type: .settings)
         
         self.channelsNavigationController.navigationBar.barStyle = self.isDarkMode
             ? .black

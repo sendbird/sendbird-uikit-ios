@@ -34,7 +34,7 @@ public class SBUCommonItem {
     
     /// Initializer for the SBUCommonItem class
     public init(title: String? = nil,
-                color: UIColor? = SBUColorSet.onlight01,
+                color: UIColor? = SBUColorSet.onLightTextHighEmphasis,
                 image: UIImage? = nil,
                 font: UIFont? = nil,
                 tintColor: UIColor? = nil,

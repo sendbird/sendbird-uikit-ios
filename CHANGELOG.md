@@ -1,5 +1,18 @@
 # Changelog
 
+### v3.24.0 (Jun 20, 2024)
+
+## Improvements
+- ChatSDK dependency version has been updated to **v4.19.7**
+- Changed timing of Builder internal calls related to send of `SBUGlobalCustomParams`
+- If `replyType` value of UIKit config is not of type none and `messageListParams.replyType` value is set, it will not be overwritten by UIKit config value
+- Changed the naming of SBUColor inside SBUColorSet (e.g., `primary300` -> `primaryMain`)
+- Renamed `information` in SBUColorSet to `informationLight` and added a new `information` color set
+- Deprecated the setter of `isSuperGroupReactionsEnabled`, which is disabled by default. If you wish to use this feature, [contact us](https://dashboard.sendbird.com/settings/contact_us?category=feedback_and_feature_requests&product=UIKit&subject=%5BFeature%20Request%5D%20Enable%20reactions%20for%20supergroup%20in%20UIKit). 
+- Fixed link not working correctly when markdown syntax is nested
+- Fixed a bug where the updated theme is not applied
+- Applied `safeAreaLayoutGuide` to `listComponent` 
+
 ### v3.23.0 (May 22, 2024)
 
 ## New Feature

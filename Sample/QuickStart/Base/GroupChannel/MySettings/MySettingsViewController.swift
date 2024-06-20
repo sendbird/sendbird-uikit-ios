@@ -40,6 +40,8 @@ open class MySettingsViewController: UIViewController, UINavigationControllerDel
     private let actionSheetIdEdit = 1
     private let actionSheetIdPicker = 2
     
+    var sampleAppType: SampleAppType = .basicUsage
+    
     // MARK: - Life cycle
     open override func loadView() {
         super.loadView()
@@ -232,12 +234,14 @@ open class MySettingsViewController: UIViewController, UINavigationControllerDel
             
             // Sendbird provides various access control options when using the Chat SDK. By default, the Allow retrieving user list attribute is turned on to facilitate creating sample apps. However, this may grant access to unwanted data or operations, leading to potential security concerns. To manage your access control settings, you can turn on or off each setting on Sendbird Dashboard.
             SendbirdUI.updateUserInfo(nickname: nickname, profileURL: nil) { (error) in
+                guard let self = self else { return }
+                
                 guard error == nil else {
                     SBULog.error(error?.localizedDescription)
                     return
                 }
                 guard let user = SBUGlobals.currentUser else { return }
-                UserDefaults.saveNickname(nickname)
+                UserDefaults.saveNickname(type: self.sampleAppType, nickname: user.nickname ?? "")
                 DispatchQueue.main.async { [weak self] in
                     guard let self = self else { return }
                     self.userInfoView.configure(user: user)
@@ -295,6 +299,7 @@ open class MySettingsViewController: UIViewController, UINavigationControllerDel
     
     /// Sign out and dismiss tabbarController,
     func signOutAction() {
+        SBUTheme.set(theme: .light)
         self.tabBarController?.dismiss(animated: true, completion: nil)
     }
 }
@@ -329,10 +334,12 @@ extension MySettingsViewController: UITableViewDataSource, UITableViewDelegate {
 
             switch type {
                 case .darkTheme:
+                    cell.rightSwitch.isEnabled = self.sampleAppType == .basicUsage
                     cell.switchAction = { [weak self] isOn in
                         self?.changeDarkThemeSwitch(isOn: isOn)
                     }
                 case .doNotDisturb:
+                    cell.rightSwitch.isEnabled = true
                     cell.changeSwitch(self.isDoNotDisturbOn)
                     cell.switchAction = { [weak self] isOn in
                         self?.changeDisturb(isOn: isOn, { success in

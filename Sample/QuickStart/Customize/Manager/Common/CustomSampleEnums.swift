@@ -40,6 +40,11 @@ enum ChannelCustomType: Int {
     case headerComponentCustom
     case listComponentcustom
     case inputComponentcustom
+    case customMessageMenuItem
+}
+
+enum OpenChannelCustomType: Int {
+    case customMessageMenuItem
 }
 
 enum ChannelSettingsCustomType: Int {
@@ -72,7 +77,8 @@ enum CustomSection: Int, CaseIterable {
     case Default = 0
     case Global
     case ChannelList
-    case Channel
+    case GroupChannel
+    case OpenChannel
     case ChannelSettings
     case CreateChannel
     case InviteUser
@@ -101,7 +107,7 @@ enum CustomSection: Int, CaseIterable {
                 "Custom Header component",
                 "Custom List component",
             ]
-        case .Channel:
+        case .GroupChannel:
             return [
                 "UI Component",
                 "Custom cell",
@@ -111,6 +117,11 @@ enum CustomSection: Int, CaseIterable {
                 "Custom Header component",
                 "Custom List component",
                 "Custom Input component",
+                "Custom Message Menu Item"
+            ]
+        case .OpenChannel:
+            return [
+                "Custom Message Menu Item"
             ]
         case .ChannelSettings:
             return ["UI Component",
@@ -154,7 +165,7 @@ enum CustomSection: Int, CaseIterable {
                 "ChannelListVC_CustomHeader.swift",
                 "ChannelListVC_CustomList.swift",
             ]
-        case .Channel:
+        case .GroupChannel:
             return [
                 "[ChannelCustomManager uiComponentCustom()]",
                 "[ChannelCustomManager cellCustom()]",
@@ -164,6 +175,11 @@ enum CustomSection: Int, CaseIterable {
                 "ChannelVC_CustomHeader.swift",
                 "ChannelVC_CustomList.swift",
                 "ChannelVC_CustomInput.swift",
+                "ChannelVC_CustomMessageMenuItem.swift",
+            ]
+        case .OpenChannel:
+            return [
+                "OpenChannelVC_CustomMessageMenuItem.swift",
             ]
         case .ChannelSettings:
             return ["[ChannelSettingsCustomManager uiComponentCustom()]",

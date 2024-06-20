@@ -241,7 +241,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
             tableViewRightConstraint?.isActive = false
             
             self.tableViewTopConstraint = listComponent.topAnchor.constraint(
-                equalTo: self.view.topAnchor,
+                equalTo: self.view.safeAreaLayoutGuide.topAnchor,
                 constant: 0
             )
             self.tableViewBottomConstraint = listComponent.bottomAnchor.constraint(
