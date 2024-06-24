@@ -1,5 +1,9 @@
 # Changelog
 
+### v3.24.1 (Jun 24, 2024)
+
+- Fixed download failures due to logic issues with storing files in cache
+
 ### v3.24.0 (Jun 20, 2024)
 
 ## Improvements
