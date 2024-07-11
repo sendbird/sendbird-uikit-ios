@@ -61,7 +61,6 @@ open class SBUHorizontalSuggestedReplyOptionView: SBUSuggestedReplyOptionView {
         self.button.addTarget(self, action: #selector(self.onSelectOption), for: .touchUpInside)
     }
     
-    
     /// Methods called when option view is selected
     @objc
     open func onSelectOption() {

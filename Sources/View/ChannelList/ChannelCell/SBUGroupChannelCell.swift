@@ -355,7 +355,15 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
                 if userMessage.hasMessageTemplate == true {
                     self.messageLabel.text = SBUStringSet.GroupChannel.Preview.messageTemplate
                 } else {
-                    self.messageLabel.text = userMessage.message
+                    if SendbirdUI.config.groupChannel.channel.isMarkdownForUserMessageEnabled == true {
+                        let message = SBUMarkdownTransfer.convert(
+                            with: NSAttributedString(string: userMessage.message),
+                            isEnabled: true
+                        )?.string ?? userMessage.message
+                        self.messageLabel.text = message
+                    } else {
+                        self.messageLabel.text = userMessage.message
+                    }
                 }
                 messageLabel.numberOfLines = 2
             case let fileMessage as FileMessage:
