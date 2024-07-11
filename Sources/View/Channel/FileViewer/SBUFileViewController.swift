@@ -8,7 +8,6 @@
 
 import UIKit
 import SendbirdChatSDK
-import AssetsLibrary
 
 /// `SBUFileViewer` is a typealias for `SBUFileViewController`.
 /// It is deprecated and should be replaced with `SBUFileViewController`.

@@ -414,8 +414,8 @@ extension SBUMessageThreadModule {
                 self.delegate?.messageThreadModule(self, didTapMoreEmojiForCell: cell)
             }
             
-            cell.mentionTapHandler = { [weak self, weak cell] user in
-                guard let self = self, let cell else { return }
+            cell.mentionTapHandler = { [weak self] user in
+                guard let self = self else { return }
                 self.delegate?.messageThreadModule(self, didTapMentionUser: user)
             }
         }

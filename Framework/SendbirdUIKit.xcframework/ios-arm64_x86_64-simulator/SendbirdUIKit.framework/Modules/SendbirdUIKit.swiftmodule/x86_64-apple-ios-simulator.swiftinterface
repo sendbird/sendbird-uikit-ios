@@ -5,7 +5,6 @@
 import AVFAudio
 import AVFoundation
 import AVKit
-import AssetsLibrary
 import CoreGraphics
 import DeveloperToolsSupport
 import Foundation
@@ -120,7 +119,7 @@ extension Foundation.Date {
   @objc deinit
 }
 extension SendbirdChatSDK.MultipleFilesMessage {
-  public var filesCount: Swift.Int {
+  final public var filesCount: Swift.Int {
     get
   }
 }
@@ -5439,6 +5438,13 @@ public struct SBUHighlightMessageInfo {
   @_Concurrency.MainActor(unsafe) public static var cellHeight: CoreFoundation.CGFloat
   @_Concurrency.MainActor(unsafe) public var optionView: SendbirdUIKit.SBUHorizontalSuggestedReplyOptionView
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupViews()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public func setupStyles()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupLayouts()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class HorizontalSuggestedReplyViewEmptyCell : SendbirdUIKit.SBUCollectionViewCell {
   @_Concurrency.MainActor(unsafe) @objc override dynamic public func setupStyles()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupLayouts()
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)

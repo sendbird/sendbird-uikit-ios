@@ -9,9 +9,9 @@
 import UIKit
 
 public class SBUNavigationTitleView: SBUView {
-    @SBUThemeWrapper(theme: SBUTheme.componentTheme)
     
     /// - Since: 3.21.0
+    @SBUThemeWrapper(theme: SBUTheme.componentTheme)
     public var theme: SBUComponentTheme
     
     public var text: String? = ""

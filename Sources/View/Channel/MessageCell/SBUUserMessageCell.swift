@@ -373,8 +373,8 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
     /// - since: 3.11.0
     open func createSuggestedReplyView() -> SBUSuggestedReplyView {
         switch SendbirdUI.config.groupChannel.channel.suggestedRepliesDirection {
-        case .horizontal: return SBUVerticalSuggestedReplyView()
-        case .vertical: return SBUHorizontalSuggestedReplyView()
+        case .vertical: return  SBUVerticalSuggestedReplyView()
+        case .horizontal: return SBUHorizontalSuggestedReplyView()
         }
     }
     

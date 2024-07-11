@@ -1,5 +1,15 @@
 # Changelog
 
+### v3.24.2 (Jul 11, 2024)
+
+## Improvements
+ 
+- Remove the deprecated `ALAssetsLibrary` import logic that is not used by Sendbird UIKit
+- Added crash defense logic when setting autolayout constraints
+- Fixed suggested-replies view not displaying correctly
+- Fixed channel preview messages in the channel list to not expose markdown syntax.
+  - (when `SendbirdUI.config.groupChannel.channel.isMarkdownForUserMessageEnabled` is `true`)
+
 ### v3.24.1 (Jun 24, 2024)
 
 - Fixed download failures due to logic issues with storing files in cache

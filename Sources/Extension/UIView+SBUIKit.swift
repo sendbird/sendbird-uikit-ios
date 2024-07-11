@@ -90,6 +90,7 @@ extension UIView {
         centerY: CGFloat? = nil,
         priority: UILayoutPriority? = nil
     ) -> UIView {
+        guard self.superview != nil else { return self }
         
         self.translatesAutoresizingMaskIntoConstraints = false
         
@@ -211,6 +212,7 @@ extension UIView {
         centerY: CGFloat? = nil,
         priority: UILayoutPriority? = nil
     ) -> UIView {
+        guard self.superview != nil else { return self }
         
         self.translatesAutoresizingMaskIntoConstraints = false
         
@@ -364,6 +366,7 @@ extension UIView {
         centerY: CGFloat? = nil,
         priority: UILayoutPriority? = nil
     ) -> UIView {
+        guard self.superview != nil else { return self }
         
         self.translatesAutoresizingMaskIntoConstraints = false
         
@@ -466,7 +469,6 @@ extension UIView {
         height: CGFloat? = nil,
         priority: UILayoutPriority? = nil
     ) -> UIView {
-        
         return self.sbu_constraint(
             widthAnchor: nil, 
             width: width,
@@ -486,6 +488,7 @@ extension UIView {
         height: CGFloat? = nil,
         priority: UILayoutPriority? = nil
     ) -> UIView {
+        if (widthAnchor != nil || heightAnchor != nil) && self.superview == nil { return self }
         
         self.translatesAutoresizingMaskIntoConstraints = false
         
@@ -526,6 +529,7 @@ extension UIView {
         heightMultiplier: CGFloat? = nil,
         priority: UILayoutPriority? = nil
     ) -> UIView {
+        if (widthAnchor != nil || heightAnchor != nil) && self.superview == nil { return self }
         
         self.translatesAutoresizingMaskIntoConstraints = false
         
@@ -558,6 +562,7 @@ extension UIView {
         height: CGFloat? = nil,
         priority: UILayoutPriority? = nil
     ) -> UIView {
+        if (widthAnchor != nil || heightAnchor != nil) && self.superview == nil { return self }
         
         self.translatesAutoresizingMaskIntoConstraints = false
         
@@ -606,6 +611,7 @@ extension UIView {
         height: CGFloat? = nil,
         priority: UILayoutPriority? = nil
     ) -> UIView {
+        if (widthAnchor != nil || heightAnchor != nil) && self.superview == nil { return self }
         
         self.translatesAutoresizingMaskIntoConstraints = false
         
@@ -707,6 +713,7 @@ extension UIView {
         centerY: CGFloat? = nil,
         priority: UILayoutPriority? = nil
     ) -> [NSLayoutConstraint] {
+        guard self.superview != nil else { return [] }
         
         self.translatesAutoresizingMaskIntoConstraints = false
         
@@ -826,6 +833,7 @@ extension UIView {
         centerY: CGFloat? = nil,
         priority: UILayoutPriority? = nil
     ) -> [NSLayoutConstraint] {
+        guard self.superview != nil else { return [] }
         
         self.translatesAutoresizingMaskIntoConstraints = false
         
@@ -977,6 +985,7 @@ extension UIView {
         centerY: CGFloat? = nil,
         priority: UILayoutPriority? = nil
     ) -> [NSLayoutConstraint] {
+        guard self.superview != nil else { return [] }
         
         self.translatesAutoresizingMaskIntoConstraints = false
         
@@ -1096,6 +1105,7 @@ extension UIView {
         height: CGFloat? = nil,
         priority: UILayoutPriority? = nil
     ) -> [NSLayoutConstraint] {
+        if (widthAnchor != nil || heightAnchor != nil) && self.superview == nil { return [] }
         
         self.translatesAutoresizingMaskIntoConstraints = false
         
@@ -1175,6 +1185,7 @@ extension UIView {
         height: CGFloat? = nil,
         priority: UILayoutPriority? = nil
     ) -> [NSLayoutConstraint] {
+        if (widthAnchor != nil || heightAnchor != nil) && self.superview == nil { return [] }
         
         self.translatesAutoresizingMaskIntoConstraints = false
         
@@ -1220,6 +1231,7 @@ extension UIView {
         height: CGFloat? = nil,
         priority: UILayoutPriority? = nil
     ) -> [NSLayoutConstraint] {
+        if (widthAnchor != nil || heightAnchor != nil) && self.superview == nil { return [] }
         
         self.translatesAutoresizingMaskIntoConstraints = false
         
