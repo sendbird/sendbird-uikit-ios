@@ -1,5 +1,11 @@
 # Changelog
 
+### v3.24.3 (Jul 18, 2024)
+
+## Improvements
+ 
+- ChatSDK dependency version has been updated to **v4.19.8**
+
 ### v3.24.2 (Jul 11, 2024)
 
 ## Improvements
