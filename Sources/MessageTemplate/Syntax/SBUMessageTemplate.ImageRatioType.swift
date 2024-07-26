@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol MessageTemplateImageRatioType {
+protocol MessageTemplateImageRatioType where Self: SBUMessageTemplate.Syntax.View {
     var identifier: SBUMessageTemplate.Syntax.Identifier { get }
     
     var imageUrl: String { get }

@@ -90,6 +90,25 @@ class SBUNotificationCell: SBUBaseMessageCell {
     // MARK: - Logic
     var type: NotificationType = .none
     
+    #if INSPECTION
+    // MARK: - Gesture Recognizers
+    lazy var contentLongPressRecognizer: UILongPressGestureRecognizer = {
+        return .init(target: self, action: #selector(self.onLongPressContentView(sender:)))
+    }()
+
+    // MARK: - Action
+    @objc
+    open func onLongPressContentView(sender: UILongPressGestureRecognizer?) {
+        if let sender = sender {
+            if sender.state == .began {
+                self.longPressHandlerToContent?()
+            }
+        } else {
+            self.longPressHandlerToContent?()
+        }
+    }
+    #endif
+    
     // MARK: - Sendbird Life cycle
     /// Configures a cell with ``SBUBaseMessageCellParams`` object.
     override func configure(with configuration: SBUBaseMessageCellParams) {
@@ -245,6 +264,9 @@ class SBUNotificationCell: SBUBaseMessageCell {
     /// or ``SBUFeedNotificationChannelModuleListDelegate/feedNotificationChannelModule(_:shouldHandleCustomAction:message:forRowAt:)``
     override func setupActions() {
         super.setupActions()
+        #if INSPECTION
+        self.contentView.addGestureRecognizer(self.contentLongPressRecognizer)
+        #endif
     }
     
     override func setupStyles() {

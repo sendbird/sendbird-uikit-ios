@@ -12,14 +12,14 @@ extension SBUMessageTemplate.Renderer {
     func setImage(
         _ image: UIImage,
         imageView: SBUMessageTemplate.Renderer.ImageView,
-        item: SBUMessageTemplate.Syntax.Image,
+        imageType: MessageTemplateImageRatioType,
         placeholderConstraints: [NSLayoutConstraint]
     ) {
+        let item = imageType as SBUMessageTemplate.Syntax.View
         let image = image.sbu_with(
-            tintColor: item.imageStyle.tintColorValue,
+            tintColor: imageType.imageStyle.tintColorValue,
             forTemplate: true
         )
-        
         imageView.identifier = item.identifier
         imageView.originalImage = image
         
@@ -28,10 +28,10 @@ extension SBUMessageTemplate.Renderer {
         
         imageView.setNeedsLayout()
         
-        self.rendererConstraints += item.ratioConstraintsBySize(image.size, view: imageView)
+        self.rendererConstraints += imageType.ratioConstraintsBySize(image.size, view: imageView)
         self.rendererConstraints.forEach { $0.isActive = true }
         
-        if item.haveToUseRatio() == true {
+        if imageType.haveToUseRatio() == true {
             placeholderConstraints.forEach { $0.isActive = true }
             self.delegate?.messageTemplateRender(self, didFinishLoadingImage: imageView)
         }

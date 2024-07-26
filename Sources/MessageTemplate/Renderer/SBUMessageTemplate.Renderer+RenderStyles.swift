@@ -12,36 +12,33 @@ extension SBUMessageTemplate.Renderer {
     // MARK: - ViewStyle
     func renderViewStyle(
         with item: SBUMessageTemplate.Syntax.View,
-        to view: UIView
+        to view: SBUMessageTemplate.Renderer.BaseView
     ) {
-        guard let viewStyle = item.viewStyle else {
-            if item is SBUMessageTemplate.Syntax.TextButton {
-                view.backgroundColor = self.themeForDefault.textButtonBackgroundColor
-            }
-            return
-        }
-        
         if item is SBUMessageTemplate.Syntax.CarouselItem {
             view.backgroundColor = .clear
             return
         }
         
-        if let backgroundColor = viewStyle.backgroundColor {
+        if let backgroundColor = item.viewStyle.backgroundColor {
             view.backgroundColor = UIColor(hexString: backgroundColor)
         } else if item is SBUMessageTemplate.Syntax.TextButton {
             view.backgroundColor = self.themeForDefault.textButtonBackgroundColor
         }
         
-        if let backgroundImageUrl = viewStyle.backgroundImageUrl,
-           let url = URL(string: backgroundImageUrl) {
-            view.backgroundColor = UIColor(patternImage: UIImage(url: url))
-
+        if let urlString = item.viewStyle.backgroundImageUrl,
+           let url = UIImage.sbu_imageDownloader.url(string: urlString),
+           let image = UIImage.sbu_imageDownloader.image(url: url) {
+            view.backgroundImageURLView.image = image
         }
-        if let borderWidth = viewStyle.borderWidth {
+        
+        if let borderWidth = item.viewStyle.borderWidth {
             view.layer.borderWidth = CGFloat(borderWidth)
         }
-        if let borderColor = viewStyle.borderColor {
+        
+        if let borderColor = item.viewStyle.borderColor {
             view.layer.borderColor = UIColor(hexString: borderColor).cgColor
+        } else {
+            view.layer.borderColor = UIColor.clear.cgColor
         }
     }
     
@@ -57,7 +54,7 @@ extension SBUMessageTemplate.Renderer {
         isLastItem: Bool = false
     ) {
         var marginInsets: UIEdgeInsets = .zero
-        if let margin = item.viewStyle?.margin {
+        if let margin = item.viewStyle.margin {
             marginInsets = UIEdgeInsets(
                 top: margin.top,
                 left: margin.left,
@@ -75,7 +72,7 @@ extension SBUMessageTemplate.Renderer {
         let subView = !baseView.subviews.isEmpty ? baseView.subviews[0] : nil
         
         // Size: width
-        let padding = item.viewStyle?.padding
+        let padding = item.viewStyle.padding
         let paddingWidth = (padding?.left ?? 0.0) + (padding?.right ?? 0.0)
         
         if width.type == .fixed {
@@ -83,7 +80,7 @@ extension SBUMessageTemplate.Renderer {
         } else {
             self.rendererConstraints += subView?.sbu_constraint_lessThan_v2(widthAnchor: baseView.widthAnchor, width: -paddingWidth) ?? []
         }
-
+        
         // left/right
         if layout == .column { // default
             if width.type == .flex, width.value == flexTypeFillValue {
@@ -115,15 +112,11 @@ extension SBUMessageTemplate.Renderer {
             
         } else { // row
             // left anchor
-            if let prevItem = prevItem {
-                let prevItemRightMargin = prevItem.viewStyle?.margin?.right ?? 0.0
-                self.rendererConstraints += baseView.sbu_constraint_equalTo_v2(
-                    leftAnchor: prevView.rightAnchor,
-                    left: marginInsets.left + prevItemRightMargin
-                )
-            } else {
-                self.rendererConstraints += baseView.sbu_constraint_v2(equalTo: parentView, left: marginInsets.left)
-            }
+            let prevItemRightMargin = prevItem?.viewStyle.margin?.right ?? 0.0
+            self.rendererConstraints += baseView.sbu_constraint_equalTo_v2(
+                leftAnchor: prevView.rightAnchor,
+                left: marginInsets.left + prevItemRightMargin
+            )
             
             // right anchor
             if isLastItem {
@@ -148,7 +141,7 @@ extension SBUMessageTemplate.Renderer {
             if prevItem == nil && prevView.tag != Self.sideViewTypeLeft {
                 self.rendererConstraints += baseView.sbu_constraint_v2(equalTo: parentView, top: marginInsets.top)
             } else {
-                let prevItemBottomMargin = prevItem?.viewStyle?.margin?.bottom ?? 0.0
+                let prevItemBottomMargin = prevItem?.viewStyle.margin?.bottom ?? 0.0
                 self.rendererConstraints += baseView.sbu_constraint_equalTo_v2(
                     topAnchor: prevView.bottomAnchor,
                     top: marginInsets.top + prevItemBottomMargin
@@ -193,7 +186,7 @@ extension SBUMessageTemplate.Renderer {
         
         // Padding
         var paddingInsets = UIEdgeInsets.zero
-        if let padding = item.viewStyle?.padding {
+        if let padding = item.viewStyle.padding {
             paddingInsets = UIEdgeInsets(
                 top: padding.top,
                 left: padding.left,

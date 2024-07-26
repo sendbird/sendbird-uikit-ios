@@ -33,6 +33,10 @@ final class FeedChannelListViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.tabBarController?.tabBar.isHidden = false
+        
+        #if INSPECTION
+        AppDelegate.bringInspectionViewToFront()
+        #endif
     }
     
     override func viewDidAppear(_ animated: Bool) {

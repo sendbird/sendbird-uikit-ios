@@ -3,7 +3,7 @@
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22684"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -15,8 +15,13 @@
                 <outlet property="botIdTextField" destination="cRI-Sv-OEL" id="32V-kD-PtU"/>
                 <outlet property="loadingIndicator" destination="EVT-fE-e3A" id="NPP-DN-b8c"/>
                 <outlet property="nicknameTextField" destination="dNX-0R-0Oi" id="7pB-N0-KBJ"/>
+                <outlet property="regionContainerTopMarginView" destination="bm2-Xz-qFi" id="MyV-uW-yAL"/>
+                <outlet property="regionContainerView" destination="7aT-fF-GrU" id="yEy-WB-Rqd"/>
+                <outlet property="regionSelectionView" destination="2Ui-R6-N1b" id="LCs-3W-bKw"/>
+                <outlet property="regionTextField" destination="Nd6-pw-fte" id="K7T-fs-Eqj"/>
                 <outlet property="signInButton" destination="mVm-f9-B9Q" id="l3Q-En-vNv"/>
                 <outlet property="userIdTextField" destination="Lb1-Tp-tso" id="lkX-Du-wif"/>
+                <outlet property="versionLabel" destination="AjY-KE-aAO" id="KaF-lA-1NV"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -113,6 +118,40 @@
                             <fontDescription key="fontDescription" type="system" pointSize="16"/>
                             <textInputTraits key="textInputTraits"/>
                         </textField>
+                        <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bm2-Xz-qFi">
+                            <rect key="frame" x="0.0" y="377" width="345" height="16"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="16" id="uqR-9t-fEb"/>
+                            </constraints>
+                        </view>
+                        <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7aT-fF-GrU" userLabel="Region Container View">
+                            <rect key="frame" x="0.0" y="377" width="345" height="56"/>
+                            <subviews>
+                                <textField opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Region" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Nd6-pw-fte" userLabel="Region">
+                                    <rect key="frame" x="0.0" y="0.0" width="345" height="56"/>
+                                    <color key="backgroundColor" red="0.94117647059999998" green="0.94117647059999998" blue="0.94117647059999998" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="tintColor" red="0.46666666670000001" green="0.33725490200000002" blue="0.85098039219999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                    <textInputTraits key="textInputTraits"/>
+                                </textField>
+                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2Ui-R6-N1b" userLabel="Region Clickable View">
+                                    <rect key="frame" x="0.0" y="0.0" width="345" height="56"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </view>
+                            </subviews>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="bottom" secondItem="Nd6-pw-fte" secondAttribute="bottom" id="CcT-KS-pAr"/>
+                                <constraint firstItem="Nd6-pw-fte" firstAttribute="leading" secondItem="7aT-fF-GrU" secondAttribute="leading" id="KTa-33-WfR"/>
+                                <constraint firstAttribute="trailing" secondItem="2Ui-R6-N1b" secondAttribute="trailing" id="Pr2-0p-G9W"/>
+                                <constraint firstItem="2Ui-R6-N1b" firstAttribute="leading" secondItem="7aT-fF-GrU" secondAttribute="leading" id="Vfu-oa-54b"/>
+                                <constraint firstItem="Nd6-pw-fte" firstAttribute="top" secondItem="7aT-fF-GrU" secondAttribute="top" id="jxu-NK-N5V"/>
+                                <constraint firstAttribute="trailing" secondItem="Nd6-pw-fte" secondAttribute="trailing" id="t6M-R4-tZL"/>
+                                <constraint firstAttribute="height" constant="56" id="tMm-wp-D00"/>
+                                <constraint firstAttribute="bottom" secondItem="2Ui-R6-N1b" secondAttribute="bottom" id="uwz-Vl-H2D"/>
+                                <constraint firstItem="2Ui-R6-N1b" firstAttribute="top" secondItem="7aT-fF-GrU" secondAttribute="top" id="z6d-xb-1uU"/>
+                            </constraints>
+                        </view>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YZm-L6-Qo8">
                             <rect key="frame" x="0.0" y="377" width="345" height="32"/>
                             <constraints>

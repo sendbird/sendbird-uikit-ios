@@ -67,6 +67,25 @@ extension SBUMessageTemplate.Syntax {
             case .unknown: return false
             }
         }
+        
+        var isFixed: Bool {
+            switch self {
+            case .fixed: return true
+            default: return false
+            }
+        }
+        var isFillParent: Bool {
+            switch self {
+            case .fillParent: return true
+            default: return false
+            }
+        }
+        var isWrapContent: Bool {
+            switch self {
+            case .wrapContent: return true
+            default: return false
+            }
+        }
     }
 }
 

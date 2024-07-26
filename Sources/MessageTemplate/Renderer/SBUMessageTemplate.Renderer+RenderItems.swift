@@ -75,7 +75,7 @@ extension SBUMessageTemplate.Renderer {
                 
             case .image(let imageItem):
                 let imageView = self.renderImage(
-                    item: imageItem,
+                    imageType: imageItem,
                     parentView: self.bodyView,
                     prevView: prevView,
                     prevItem: prevItem,
@@ -98,8 +98,8 @@ extension SBUMessageTemplate.Renderer {
                 prevItem = textButtonItem
                 
             case .imageButton(let imageButtonItem):
-                let imageButton = self.renderImageButton(
-                    item: imageButtonItem,
+                let imageButton = self.renderImage(
+                    imageType: imageButtonItem,
                     parentView: self.bodyView,
                     prevView: prevView,
                     prevItem: prevItem,
@@ -175,7 +175,8 @@ extension SBUMessageTemplate.Renderer {
         guard let items = item.items else { return }
         
         let parentBoxView = parentView.subviews[0]
-        // INFO: SideViews are placed at the top/bottom or left/right and used for align. According to Align, the area of the SideView is adjusted in the form of holding the position of the actual item.
+        // INFO: SideViews are placed at the top/bottom or left/right and used for align. According to Align, 
+        // the area of the SideView is adjusted in the form of holding the position of the actual item.
         let sideView1 = UIView()
         sideView1.tag = Self.sideViewTypeLeft
         let sideView2 = UIView()
@@ -224,7 +225,7 @@ extension SBUMessageTemplate.Renderer {
                 
             case .image(let imageItem):
                 let imageView = self.renderImage(
-                    item: imageItem,
+                    imageType: imageItem,
                     parentView: parentBoxView,
                     prevView: prevView,
                     prevItem: prevItem,
@@ -248,8 +249,8 @@ extension SBUMessageTemplate.Renderer {
                 prevItem = textButtonItem
                 
             case .imageButton(let imageButtonItem):
-                let imageButton = self.renderImageButton(
-                    item: imageButtonItem,
+                let imageButton = self.renderImage(
+                    imageType: imageButtonItem,
                     parentView: parentBoxView,
                     prevView: prevView,
                     prevItem: prevItem,
@@ -333,10 +334,10 @@ extension SBUMessageTemplate.Renderer {
                 break
             }
             
-            let prevItemRightMargin = prevItem?.viewStyle?.margin?.right ?? 0.0
+            let prevItemRightMargin = prevItem?.viewStyle.margin?.right ?? 0.0
             self.rendererConstraints += sideView2.sbu_constraint_equalTo_v2(
                 leftAnchor: prevView.rightAnchor,
-                left: (item.viewStyle?.margin?.left ?? 0.0) + prevItemRightMargin
+                left: (item.viewStyle.margin?.left ?? 0.0) + prevItemRightMargin
             )
         } else { // column
             self.rendererConstraints += sideView1.sbu_constraint_v2(equalTo: parentBoxView, left: 0, right: 0)
@@ -389,7 +390,7 @@ extension SBUMessageTemplate.Renderer {
                 break
             }
             
-            let prevItemBottomMargin = prevItem?.viewStyle?.margin?.bottom ?? 0.0
+            let prevItemBottomMargin = prevItem?.viewStyle.margin?.bottom ?? 0.0
             self.rendererConstraints += sideView2.sbu_constraint_equalTo_v2(
                 topAnchor: prevView.bottomAnchor,
                 top: prevItemBottomMargin
@@ -477,7 +478,7 @@ extension SBUMessageTemplate.Renderer {
         }
         
         let label = isTextButton ? SBUMessageTemplate.Renderer.TextButton() : SBUMessageTemplate.Renderer.Label()
-        label.padding = item.viewStyle?.padding
+        label.padding = item.viewStyle.padding
         label.updateLayoutHandler = { constraints, deactivatedConstraints in
             self.rendererConstraints.forEach { $0.isActive = false }
             self.rendererConstraints += constraints
@@ -531,7 +532,9 @@ extension SBUMessageTemplate.Renderer {
             case .bold:
                 label.font = self.templateFont(size: fontSize, weight: .bold)
             case .none:
-                break
+                if item is SBUMessageTemplate.Syntax.TextButton {
+                    label.font = self.templateFont(size: fontSize, weight: .bold)
+                }
             }
             
             if let textColor = textStyle.color {
@@ -552,7 +555,7 @@ extension SBUMessageTemplate.Renderer {
                 label.textColor = self.themeForDefault.textColor
             }
             label.contentMode = .center // TODO: check
-            label.textAlignment = .left
+            label.textAlignment = isTextButton ? .center : .left
         }
         
         if let textAlign = textAlign {
@@ -688,7 +691,7 @@ extension SBUMessageTemplate.Renderer {
     
     // MARK: - Image
     func renderImage(
-        item: SBUMessageTemplate.Syntax.Image,
+        imageType: MessageTemplateImageRatioType,
         parentView: UIView,
         prevView: UIView,
         prevItem: SBUMessageTemplate.Syntax.View? = nil,
@@ -696,13 +699,14 @@ extension SBUMessageTemplate.Renderer {
         layout: SBUMessageTemplate.Syntax.LayoutType = .column,
         isLastItem: Bool = false
     ) -> UIView {
+        let item = imageType as SBUMessageTemplate.Syntax.View
         let baseView = SBUMessageTemplate.Renderer.ImageBaseView(item: item, layout: layout)
         baseView.clipsToBounds = true
         let imageView = SBUMessageTemplate.Renderer.ImageView()
         
         // INFO: Edge case - image height is wrap
-        imageView.contentMode = item.imageViewContentMode(with: itemsAlign)
-        imageView.needResizeImage = item.needResizeImage
+        imageView.contentMode = imageType.imageViewContentMode(with: itemsAlign)
+        imageView.needResizeImage = imageType.needResizeImage
         
         baseView.addSubview(imageView)
         parentView.addSubview(baseView)
@@ -729,7 +733,7 @@ extension SBUMessageTemplate.Renderer {
             isLastItem: isLastItem
         )
        
-        let constraints = item.imagePlaceholderConstraints(
+        let constraints = imageType.imagePlaceholderConstraints(
             view: imageView,
             saveCache: true
         )
@@ -740,13 +744,13 @@ extension SBUMessageTemplate.Renderer {
         self.setAction(on: baseView, item: item)
 
         // Load image
-        if item.isForDownloadingTemplate {
-            imageView.updateDownloadTemplate(tintColor: item.imageStyle.tintColorValue)
+        if imageType.isForDownloadingTemplate {
+            imageView.updateDownloadTemplate(tintColor: imageType.imageStyle.tintColorValue)
             return baseView
         }
         
         imageView.loadImage(
-            urlString: item.imageUrl,
+            urlString: imageType.imageUrl,
             subPath: SBUCacheManager.PathType.template,
             autoset: false
         ) { [weak self, weak item, weak imageView] result in
@@ -755,7 +759,7 @@ extension SBUMessageTemplate.Renderer {
             self.setImage(
                 image,
                 imageView: imageView,
-                item: item,
+                imageType: imageType,
                 placeholderConstraints: constraints
             )
         }
@@ -764,73 +768,73 @@ extension SBUMessageTemplate.Renderer {
     }
     
     // MARK: - ImageButton
-    func renderImageButton(
-        item: SBUMessageTemplate.Syntax.ImageButton,
-        parentView: UIView,
-        prevView: UIView,
-        prevItem: SBUMessageTemplate.Syntax.View? = nil,
-        itemsAlign: SBUMessageTemplate.Syntax.ItemsAlign? = .defaultAlign(),
-        layout: SBUMessageTemplate.Syntax.LayoutType = .column,
-        isLastItem: Bool = false
-    ) -> UIView {
-        let baseView = SBUMessageTemplate.Renderer.ImageButtonBaseView(item: item, layout: layout)
-        baseView.clipsToBounds = true
-        let imageButton = SBUMessageTemplate.Renderer.ImageButton()
-        
-        // Image Style
-        imageButton.contentMode = item.imageStyle.contentMode
-        imageButton.imageView?.contentMode = item.imageStyle.contentMode
-        
-        baseView.addSubview(imageButton)
-        parentView.addSubview(baseView)
-        
-        self.rendererConstraints += imageButton.sbu_constraint_equalTo_v2(
-            centerXAnchor: baseView.centerXAnchor,
-            centerX: 0,
-            centerYAnchor: baseView.centerYAnchor,
-            centerY: 0
-        )
-        
-        // View Style
-        self.renderViewStyle(with: item, to: baseView)
-        
-        // Layout
-        self.renderViewLayout(
-            with: item,
-            to: baseView,
-            parentView: parentView,
-            prevView: prevView,
-            prevItem: prevItem,
-            itemsAlign: itemsAlign,
-            layout: layout,
-            isLastItem: isLastItem
-        )
-        
-        // Action
-        self.setAction(on: baseView, item: item)
-        
-        let constraints = item.imagePlaceholderConstraints(
-            view: imageButton,
-            saveCache: false
-        )
-        
-        constraints.forEach { $0.isActive = true }
-
-        imageButton.loadImage(
-            urlString: item.imageUrl,
-            for: .normal,
-            subPath: SBUCacheManager.PathType.template,
-            completion: { [weak self, weak imageButton, weak item] _ in
-                guard let self, let imageButton, let item else { return }
-                
-                self.setImageButton(
-                    imageButton,
-                    item: item,
-                    placeholderConstraints: constraints
-                )
-            }
-        )
-        
-        return baseView
-    }
+//    func renderImageButton(
+//        item: SBUMessageTemplate.Syntax.ImageButton,
+//        parentView: UIView,
+//        prevView: UIView,
+//        prevItem: SBUMessageTemplate.Syntax.View? = nil,
+//        itemsAlign: SBUMessageTemplate.Syntax.ItemsAlign? = .defaultAlign(),
+//        layout: SBUMessageTemplate.Syntax.LayoutType = .column,
+//        isLastItem: Bool = false
+//    ) -> UIView {
+//        let baseView = SBUMessageTemplate.Renderer.ImageButtonBaseView(item: item, layout: layout)
+//        baseView.clipsToBounds = true
+//        let imageButton = SBUMessageTemplate.Renderer.ImageButton()
+//        
+//        // Image Style
+//        imageButton.contentMode = item.imageStyle.contentMode
+//        imageButton.imageView?.contentMode = item.imageStyle.contentMode
+//        
+//        baseView.addSubview(imageButton)
+//        parentView.addSubview(baseView)
+//        
+//        self.rendererConstraints += imageButton.sbu_constraint_equalTo_v2(
+//            centerXAnchor: baseView.centerXAnchor,
+//            centerX: 0,
+//            centerYAnchor: baseView.centerYAnchor,
+//            centerY: 0
+//        )
+//        
+//        // View Style
+//        self.renderViewStyle(with: item, to: baseView)
+//        
+//        // Layout
+//        self.renderViewLayout(
+//            with: item,
+//            to: baseView,
+//            parentView: parentView,
+//            prevView: prevView,
+//            prevItem: prevItem,
+//            itemsAlign: itemsAlign,
+//            layout: layout,
+//            isLastItem: isLastItem
+//        )
+//        
+//        // Action
+//        self.setAction(on: baseView, item: item)
+//        
+//        let constraints = item.imagePlaceholderConstraints(
+//            view: imageButton,
+//            saveCache: false
+//        )
+//        
+//        constraints.forEach { $0.isActive = true }
+//
+//        imageButton.loadImage(
+//            urlString: item.imageUrl,
+//            for: .normal,
+//            subPath: SBUCacheManager.PathType.template,
+//            completion: { [weak self, weak imageButton, weak item] _ in
+//                guard let self, let imageButton, let item else { return }
+//                
+//                self.setImageButton(
+//                    imageButton,
+//                    item: item,
+//                    placeholderConstraints: constraints
+//                )
+//            }
+//        )
+//        
+//        return baseView
+//    }
 }

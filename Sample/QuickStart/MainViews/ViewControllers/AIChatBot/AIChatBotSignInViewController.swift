@@ -16,8 +16,18 @@ class AIChatBotSignInViewController: UIViewController {
     @IBOutlet weak var nicknameTextField: UITextField!
     @IBOutlet weak var signInButton: UIButton!
     @IBOutlet weak var loadingIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var regionTextField: UITextField!
+    @IBOutlet weak var regionSelectionView: UIView!
+    @IBOutlet weak var regionContainerView: UIView!
+    @IBOutlet weak var regionContainerTopMarginView: UIView!
+    
+    @IBOutlet weak var versionLabel: UILabel!
     
     let sampleAppType: SampleAppType = .chatBot
+    
+    #if INSPECTION
+    var region: Region = .production
+    #endif
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -26,14 +36,21 @@ class AIChatBotSignInViewController: UIViewController {
         if signedApp != .none {
             self.signIn()
         }
+        
+        #if INSPECTION
+        AppDelegate.bringInspectionViewToFront()
+        #endif
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(touchView(_:)))
+        self.view.addGestureRecognizer(tap)
 
         loadingIndicator.isHidden = true
         signInButton.layer.cornerRadius = ViewController.CornerRadius.small.rawValue
-        [applicationIdTextField, botIdTextField, userIdTextField, nicknameTextField].forEach {
+        [applicationIdTextField, botIdTextField, userIdTextField, nicknameTextField, regionTextField].forEach {
             guard let textField = $0 else { return }
             let paddingView = UIView(frame: CGRect(
                 x: 0,
@@ -54,6 +71,17 @@ class AIChatBotSignInViewController: UIViewController {
         self.botIdTextField.text = UserDefaults.loadBotId()
         self.userIdTextField.text = UserDefaults.loadUserId(type: self.sampleAppType)
         self.nicknameTextField.text = UserDefaults.loadNickname(type: self.sampleAppType)
+        
+        #if INSPECTION
+        self.setupRegionSelectionView()
+        #endif
+        
+        self.setupVersion()
+    }
+    
+    @objc
+    func touchView(_ sender: Any) {
+        self.view.endEditing(true)
     }
     
     @IBAction func clickSelectSampleAppsButton(_ sender: Any) {
@@ -110,8 +138,12 @@ class AIChatBotSignInViewController: UIViewController {
             userId: userId,
             nickname: nickname
         )
-        SBUGlobals.apiHost = UserDefaults.loadAPIHost(type: self.sampleAppType)
-        SBUGlobals.wsHost = UserDefaults.loadWebsocketHost(type: self.sampleAppType)
+        
+        #if INSPECTION
+        let region = UserDefaults.loadRegion(type: self.sampleAppType)
+        SBUGlobals.apiHost = region.apiHost(appId: appId)
+        SBUGlobals.wsHost = region.wsHost(appId: appId)
+        #endif
 
         SendbirdUI.initialize(
             applicationId: appId,
@@ -165,6 +197,24 @@ class AIChatBotSignInViewController: UIViewController {
         let naviVC = UINavigationController(rootViewController: mainVC)
         naviVC.modalPresentationStyle = .fullScreen
         present(naviVC, animated: true)
+    }
+    
+    func setupVersion() {
+        let coreVersion: String = SendbirdChat.getSDKVersion()
+        var uikitVersion: String {
+            if SendbirdUI.shortVersion == "[NEXT_VERSION]" {
+                let bundle = Bundle(identifier: "com.sendbird.uikit.sample")
+                return "\(bundle?.infoDictionary?["CFBundleShortVersionString"] ?? "")"
+            } else if SendbirdUI.shortVersion == "0.0.0" {
+                guard let dictionary = Bundle.main.infoDictionary,
+                      let appVersion = dictionary["CFBundleShortVersionString"] as? String,
+                      let build = dictionary["CFBundleVersion"] as? String else {return ""}
+                return "\(appVersion)(\(build))"
+            } else {
+                return SendbirdUI.shortVersion
+            }
+        }
+        versionLabel.text = "UIKit v\(uikitVersion)\tSDK v\(coreVersion)"
     }
 }
 

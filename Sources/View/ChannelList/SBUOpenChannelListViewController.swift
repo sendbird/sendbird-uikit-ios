@@ -86,6 +86,10 @@ open class SBUOpenChannelListViewController: SBUBaseChannelListViewController, S
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.updateStyles()
+        
+        #if INSPECTION
+        AppDelegate.bringInspectionViewToFront()
+        #endif
     }
     
     open override var preferredStatusBarStyle: UIStatusBarStyle {

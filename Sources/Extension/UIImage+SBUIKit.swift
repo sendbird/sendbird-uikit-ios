@@ -335,3 +335,27 @@ extension UIImage {
     }
 }
 // swiftlint:enable identifier_name
+
+extension UIImage {
+    static var sbu_imageDownloader = SBUImageDownloader()
+}
+
+// 이미지 다운로드 클래스 정의
+class SBUImageDownloader {
+    func url(string: String) -> URL? {
+        URL(string: string)
+    }
+    
+    func image(url: URL) -> UIImage? {
+        UIImage(url: url)
+    }
+    
+    func downloadImage(
+        from url: URL,
+        completion: @escaping (Data?, Error?) -> Void
+    ) -> URLSessionDataTask? {
+        URLSession(configuration: .default).dataTask(with: url) { data, _, error in
+            completion(data, error)
+        }
+    }
+}

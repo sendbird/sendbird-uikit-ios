@@ -254,7 +254,7 @@ internal extension UIImageView {
             return nil
         }
         
-        guard let url = URL(string: urlString) else {
+        guard let url = UIImage.sbu_imageDownloader.url(string: urlString) else {
             self.setImage(
                 errorImage,
                 urlString: urlString,
@@ -265,8 +265,7 @@ internal extension UIImageView {
             )
             return nil
         }
-        
-        let task = URLSession(configuration: .default).dataTask(with: url) { [weak self] data, _, _ in
+        let task = UIImage.sbu_imageDownloader.downloadImage(from: url) { [weak self] data, _ in
             guard let self = self, let asset = data?.getAVAsset() else {
                 Thread.executeOnMain {
                     completion?(.init(status: .failure, urlString: urlString))
@@ -297,7 +296,7 @@ internal extension UIImageView {
             )
         }
         
-        task.resume()
+        task?.resume()
         return task
     }
     
@@ -331,7 +330,7 @@ internal extension UIImageView {
         }
         
         // Load or Download image
-        guard let url = URL(string: urlString) else {
+        guard let url = UIImage.sbu_imageDownloader.url(string: urlString) else {
             self.setImage(
                 errorImage,
                 urlString: urlString,
@@ -343,7 +342,7 @@ internal extension UIImageView {
             return nil
         }
         
-        let task = URLSession(configuration: .default).dataTask(with: url) { [weak self] data, _, error in
+        let task = UIImage.sbu_imageDownloader.downloadImage(from: url) { [weak self] data, error in
             guard let self = self else { return }
             guard let data = data, error == nil, let image = UIImage.createImage(from: data) else {
                 self.setImage(
@@ -381,7 +380,7 @@ internal extension UIImageView {
                 )
             }
         }
-        task.resume()
+        task?.resume()
         return task
     }
     
@@ -435,14 +434,14 @@ internal extension UIImageView {
             cacheKey: cacheKey
         )
         
-        guard let url = URL(string: urlString), url.absoluteURL.host != nil else {
+        guard let url = UIImage.sbu_imageDownloader.url(string: urlString), url.absoluteURL.host != nil else {
             Thread.executeOnMain {
                 completion?(errorImage, false)
             }
             return nil
         }
         
-        let task = URLSession(configuration: .default).dataTask(with: url) { data, _, error in
+        let task = UIImage.sbu_imageDownloader.downloadImage(from: url) { data, error in
             guard let data = data, error == nil else {
                 completion?(errorImage, false)
                 return
@@ -458,7 +457,7 @@ internal extension UIImageView {
                 completion?(image, image != nil)
             }
         }
-        task.resume()
+        task?.resume()
         
         return task
     }

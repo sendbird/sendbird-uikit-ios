@@ -15,7 +15,7 @@ class LiveStreamChannelListViewModel: SBUOpenChannelListViewModel {
     static let queryLimit: UInt = 20
     static let customType = "SB_LIVE_TYPE"
     
-    required override init(delegate: SBUOpenChannelListViewModelDelegate?, channelListQuery: OpenChannelListQuery?) {
+    override init(delegate: SBUOpenChannelListViewModelDelegate?, channelListQuery: OpenChannelListQuery?) {
         let params = OpenChannelListQueryParams {
             $0.limit = Self.queryLimit
             $0.customTypeFilter = Self.customType

@@ -12,6 +12,8 @@ import SendbirdChatSDK
 final class BasicUsagesViewController: UIViewController {
     @IBOutlet weak var signOutButton: UIButton!
     
+    @IBOutlet weak var versionLabel: UILabel!
+    
     weak var unreadCountLabel: UILabel! {
         groupChannelItemView.unreadCountLabel
     }
@@ -69,6 +71,7 @@ final class BasicUsagesViewController: UIViewController {
         SendbirdChat.addConnectionDelegate(self, identifier: self.description)
         
         self.updateUnreadCount()
+        self.setupVersion()
     }
 
     deinit {
@@ -127,6 +130,24 @@ final class BasicUsagesViewController: UIViewController {
             guard let self = self else { return }
             self.setUnreadMessageCount(unreadCount: Int32(totalCount))
         }
+    }
+    
+    func setupVersion() {
+        let coreVersion: String = SendbirdChat.getSDKVersion()
+        var uikitVersion: String {
+            if SendbirdUI.shortVersion == "[NEXT_VERSION]" {
+                let bundle = Bundle(identifier: "com.sendbird.uikit.sample")
+                return "\(bundle?.infoDictionary?["CFBundleShortVersionString"] ?? "")"
+            } else if SendbirdUI.shortVersion == "0.0.0" {
+                guard let dictionary = Bundle.main.infoDictionary,
+                      let appVersion = dictionary["CFBundleShortVersionString"] as? String,
+                      let build = dictionary["CFBundleVersion"] as? String else {return ""}
+                return "\(appVersion)(\(build))"
+            } else {
+                return SendbirdUI.shortVersion
+            }
+        }
+        versionLabel.text = "UIKit v\(uikitVersion)\tSDK v\(coreVersion)"
     }
 }
 

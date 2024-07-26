@@ -732,6 +732,22 @@ extension SBUBaseChannelModule {
                     items.append(delete)
                 }
             }
+            
+            #if INSPECTION
+            let inspection = SBUMenuItem(
+                title: "Inspect",
+                color: theme?.menuTextColor,
+                image: SBUIconSetType.iconSearch.image(
+                    with: SBUTheme.componentTheme.alertButtonColor,
+                    to: SBUIconSetType.Metric.iconActionSheetItem
+                )
+            ) { [weak self, message] in
+                guard let self = self else { return }
+                message.inspect()
+            }
+            items.append(inspection)
+            #endif
+
             return items
         }
         

@@ -10,15 +10,15 @@
 		</data>
 		<key>Headers/SendbirdUIKit-Swift.h</key>
 		<data>
-		lFJqd0xj6WUxC2CToY/gyedBOE8=
+		IHjR8Kk3f2IjNFI76Niy4g5HRqc=
 		</data>
 		<key>Info.plist</key>
 		<data>
-		SV1sE/a3+zVcEv/+V09sG1J3tKE=
+		hyi876naPdsHueMPU+MyGCaWKxE=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
 		<data>
-		VNeKaagBq+YOH8GoCJpMmQLkorU=
+		5cPPdcKKLtjrwORVHHI5S78fmpY=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
@@ -34,11 +34,11 @@
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		ZC0fbZfKvoHdsbbl6n8V2Mnthfk=
+		zZAL+tRiyWchk3HQV+sM3s7XOmA=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<data>
-		VNeKaagBq+YOH8GoCJpMmQLkorU=
+		5cPPdcKKLtjrwORVHHI5S78fmpY=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
@@ -54,7 +54,7 @@
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		faX66W8H4K12Vk/sN0i8abFviP0=
+		LesmH+cE/1nylV1E3Sj5S+d7sYo=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -78,14 +78,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			Ixa89CjBmnnPouZm5NJeFrcEqo/4Vd6yEVJo5QAKUQY=
+			1j1WIXczrl76Oe5SdnvzcjokTyeqfDN1+K9Pu1Nl8wA=
 			</data>
 		</dict>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			JdPhDhCqsRJvFUjTK6xI1wAjXJirp1pqA9o48AAcE0w=
+			9sPVV5+RFKpJiToNzydFgggAywRTbYndMjvQpF0OpZY=
 			</data>
 		</dict>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
@@ -113,14 +113,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			PH+ATtvQnrG0j8L9apajbn1KR2OEWt0FOgKKGjDL4Bg=
+			o2oY1tEuoK6FEl84sgT45QNvpLJ0Z8icq9eOmXjjpfk=
 			</data>
 		</dict>
 		<key>Modules/SendbirdUIKit.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			JdPhDhCqsRJvFUjTK6xI1wAjXJirp1pqA9o48AAcE0w=
+			9sPVV5+RFKpJiToNzydFgggAywRTbYndMjvQpF0OpZY=
 			</data>
 		</dict>
 		<key>Modules/SendbirdUIKit.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
@@ -148,7 +148,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			+P7GUlU2Ke23xchaQNSKEkaHmP/SXdYcHiPC45Kdnpc=
+			X7jE2dopJQsIL2jRuQk9yIObIkVtj8c9I3K9ZdrW07E=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
