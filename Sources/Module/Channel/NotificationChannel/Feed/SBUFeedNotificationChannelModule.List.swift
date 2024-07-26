@@ -368,6 +368,9 @@ extension SBUFeedNotificationChannelModule {
             indexPath: IndexPath
         ) {
             // .. Implement long tap gesture here
+            #if INSPECTION
+            notification.inspect()
+            #endif
         }
         
         // MARK: - Notification cell

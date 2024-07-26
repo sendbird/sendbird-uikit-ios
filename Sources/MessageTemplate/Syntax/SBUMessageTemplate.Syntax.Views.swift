@@ -46,14 +46,17 @@ extension SBUMessageTemplate.Syntax {
         
         static func generate(
             json: String,
-            messageId: Int64
+            messageId: Int64,
+            replaceEscape: Bool = true // for unit test
         ) -> TemplateView? {
             var result = json
             do {
-                // NOTE: **DO NOT remove below**
-                result = result.replacingOccurrences(of: "\\n", with: "\\\\n")
-                result = result.replacingOccurrences(of: "\n", with: "\\n")
-                // NOTE: **DO NOT remove above**
+                if replaceEscape == true {
+                    // NOTE: **DO NOT remove below**
+                    result = result.replacingOccurrences(of: "\\n", with: "\\\\n")
+                    result = result.replacingOccurrences(of: "\n", with: "\\n")
+                    // NOTE: **DO NOT remove above**
+                }
                 
                 let template = try JSONDecoder().decode(TemplateView.self, from: Data(result.utf8))
                 template.setIdentifier(with: .init(messageId: messageId))
@@ -69,15 +72,33 @@ extension SBUMessageTemplate.Syntax {
             self.body?.items?.forEach { $0.asView.setIdentifier(with: factory ) }
         }
         
+        /*
+         template body: vertical_items
+         - 0: [_]
+         - 1: [____] <--- template max width
+         - 2: [__]
+         */
         var itemsMaxWidth: CGFloat {
-            guard let items = self.body?.items?.compactMap({ $0.asView }) else { return .zero }
+            guard let items = self.body?.items?.compactMap({ $0.asView }) else { return .infinity }
             
-            return items.reduce(into: .zero, { result, view in
-                let width = view.width.type == .fixed ? CGFloat(view.width.value) : SBUMessageContainerType.defaultMaxSize
-                result = result > width ? result : width
-            })
+            var maxWidth: CGFloat = 0
+            var hasWrapContent: Bool = false
+            var hasFillParent: Bool = false
+            
+            for item in items {
+                if item.width.internalSizeType.isFillParent { hasFillParent = true }
+                if item.width.internalSizeType.isWrapContent { hasWrapContent = true }
+                if maxWidth < item.widthValue { maxWidth = item.fullWidthValue }
+            }
+            
+            // If {fill_parent} is present, it will be drawn with {max_fixed_width} or {default_width} because it doesn't know how it will be drawn.
+            if hasFillParent == true { return max(maxWidth, SBUMessageContainerType.defaultMaxSize) }
+            // If {wrap_content} is present, make it smaller than {default_width} and allow it to have a wrap area.
+            if hasWrapContent == true { return .infinity } // NOTE: lessThan `default_max_width` in renderer.
+            // If there are only fixed width values.
+            return maxWidth
         }
-        
+
         var hasCompositeType: Bool {
             self.body?.items?.contains(where: { $0.hasCompositeType }) ?? false
         }
@@ -92,7 +113,7 @@ extension SBUMessageTemplate.Syntax {
     class View: Decodable, MessageTemplateItemIdentifiable {
         let type: Item.ItemType
         let action: SBUMessageTemplate.Action?
-        let viewStyle: ViewStyle?
+        let viewStyle: ViewStyle
         let width: SizeSpec // fill
         let height: SizeSpec // wrap
         
@@ -108,7 +129,7 @@ extension SBUMessageTemplate.Syntax {
             self.action = try container.decodeIfPresent(SBUMessageTemplate.Action.self, forKey: .action)
             self.width = try container.decodeIfPresent(SBUMessageTemplate.Syntax.SizeSpec.self, forKey: .width) ?? SizeSpec.fillParent()
             self.height = try container.decodeIfPresent(SBUMessageTemplate.Syntax.SizeSpec.self, forKey: .height) ?? SizeSpec.wrapContent()
-            self.viewStyle = try container.decodeIfPresent(SBUMessageTemplate.Syntax.ViewStyle.self, forKey: .viewStyle)
+            self.viewStyle = try container.decodeIfPresent(SBUMessageTemplate.Syntax.ViewStyle.self, forKey: .viewStyle) ?? ViewStyle.Default()
         }
         
         init(
@@ -119,7 +140,7 @@ extension SBUMessageTemplate.Syntax {
             action: SBUMessageTemplate.Action? = nil
         ) {
             self.type = type
-            self.viewStyle = viewStyle
+            self.viewStyle = viewStyle ?? ViewStyle.Default()
             self.width = width
             self.height = height
             self.action = action
@@ -127,14 +148,19 @@ extension SBUMessageTemplate.Syntax {
         
         // MARK: Common
         func setDefaultRadiusIfNeeded(_ radius: Int) {
-            if self.viewStyle?.radius == nil {
-                self.viewStyle?.radius = radius
+            if self.viewStyle.radius == nil {
+                self.viewStyle.radius = radius
             }
         }
         
+        var widthValue: CGFloat { CGFloat(self.width.value) }
+        var leftMarginValue: CGFloat { self.viewStyle.margin?.left ?? 0 }
+        var rightMarginValue: CGFloat { self.viewStyle.margin?.right ?? 0 }
+        var fullWidthValue: CGFloat { self.widthValue + self.leftMarginValue + self.rightMarginValue }
+        
         func setDefaultPaddingIfNeeded(top: CGFloat, bottom: CGFloat, left: CGFloat, right: CGFloat) {
-            if self.viewStyle?.padding == nil {
-                self.viewStyle?.padding = Padding(top: top, bottom: bottom, left: left, right: right)
+            if self.viewStyle.padding == nil {
+                self.viewStyle.padding = Padding(top: top, bottom: bottom, left: left, right: right)
             }
         }
         
@@ -317,7 +343,7 @@ extension SBUMessageTemplate.Syntax {
             try super.init(from: decoder)
             
             self.setDefaultRadiusIfNeeded(6)
-            self.setDefaultPaddingIfNeeded(top: 10.0, bottom: 10.0, left: 20.0, right: 20.0)
+            self.setDefaultPaddingIfNeeded(top: 10.0, bottom: 10.0, left: 10.0, right: 10.0)
         }
     }
     

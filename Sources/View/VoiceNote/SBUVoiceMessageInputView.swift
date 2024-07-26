@@ -99,7 +99,6 @@ public class SBUVoiceMessageInputView: NSObject, SBUViewLifeCycle {
         )
 
         // BaseView
-        self.baseView.frame = self.canvasView.bounds
         self.baseView.addSubview(self.overlayView)
         self.baseView.addSubview(self.contentView)
         
@@ -124,9 +123,7 @@ public class SBUVoiceMessageInputView: NSObject, SBUViewLifeCycle {
     }
     
     public func setupLayouts() {
-//        guard let window = UIApplication.shared.currentWindow else { return }
-        
-        self.baseView.frame = self.canvasView.bounds
+        self.baseView.sbu_constraint(equalTo: self.canvasView, leading: 0, trailing: 0, top: 0, bottom: 0)
         
         self.overlayView.sbu_constraint(
             equalTo: self.baseView,
@@ -332,10 +329,10 @@ public class SBUVoiceMessageInputView: NSObject, SBUViewLifeCycle {
         
         self.delegate = delegate
         
-        if let canvasView = canvasView {
-            self.canvasView = canvasView
-        } else if let window = UIApplication.shared.currentWindow {
+        if let window = UIApplication.shared.currentWindow {
             self.canvasView = window
+        } else if let canvasView = canvasView {
+            self.canvasView = canvasView
         }
         
         self.setupViews()
@@ -480,8 +477,6 @@ public class SBUVoiceMessageInputView: NSObject, SBUViewLifeCycle {
         }
 
         self.prevOrientation = currentOrientation
-        
-        self.updateLayouts()
     }
 }
 

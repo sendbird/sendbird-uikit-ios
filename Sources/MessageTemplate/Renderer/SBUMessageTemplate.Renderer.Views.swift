@@ -23,7 +23,14 @@ extension SBUMessageTemplate.Renderer {
         var width: SBUMessageTemplate.Syntax.SizeSpec { self.item.width }
         var height: SBUMessageTemplate.Syntax.SizeSpec { self.item.height }
         
-        var viewStyle: SBUMessageTemplate.Syntax.ViewStyle? { self.item.viewStyle }
+        var viewStyle: SBUMessageTemplate.Syntax.ViewStyle { self.item.viewStyle }
+        
+        lazy var backgroundImageURLView: UIImageView = {
+            let view = UIImageView()
+            view.contentMode = .scaleAspectFill
+            view.backgroundColor = .clear
+            return view
+        }()
         
         weak var rightPaddingConstraint: NSLayoutConstraint?
         
@@ -100,28 +107,40 @@ extension SBUMessageTemplate.Renderer.BaseView {
     override func layoutSubviews() {
         super.layoutSubviews()
         self.applyRoundCorners()
+        self.sizeToFitForBackgroundImageUrlView()
     }
     
     func applyRoundCorners() {
-        if let borderRadius = viewStyle?.radius {
-            let width = item.width
-            let height = item.height
-            
-            var maxRadius = borderRadius
-            if width.type == .fixed {
-                maxRadius = min(maxRadius, width.value / 2)
-            } else {
-                maxRadius = min(maxRadius, Int(self.frame.width / 2))
-            }
-            
-            if height.type == .fixed {
-                maxRadius = min(maxRadius, height.value / 2)
-            } else {
-                maxRadius = min(maxRadius, Int(self.frame.height / 2))
-            }
-            
-            self.roundCorners(corners: .allCorners, radius: CGFloat(maxRadius))
+        guard let borderRadius = viewStyle.radius else { return }
+        
+        let width = item.width
+        let height = item.height
+        
+        var maxRadius = borderRadius
+        if width.type == .fixed {
+            maxRadius = min(maxRadius, width.value / 2)
+        } else {
+            maxRadius = min(maxRadius, Int(self.frame.width / 2))
         }
+        
+        if height.type == .fixed {
+            maxRadius = min(maxRadius, height.value / 2)
+        } else {
+            maxRadius = min(maxRadius, Int(self.frame.height / 2))
+        }
+        
+        self.roundCorners(corners: .allCorners, radius: CGFloat(maxRadius))
+    }
+    
+    func sizeToFitForBackgroundImageUrlView() {
+        if self.backgroundImageURLView.superview == nil {
+            self.addSubview(self.backgroundImageURLView)
+            self.backgroundImageURLView.sbu_constraint(equalTo: self, left: 0, right: 0, top: 0, bottom: 0)
+        }
+        
+        self.backgroundImageURLView.isHidden = (self.backgroundImageURLView.image == nil)
+        
+        self.sendSubviewToBack(self.backgroundImageURLView)
     }
 }
 
@@ -147,7 +166,12 @@ extension SBUMessageTemplate.Renderer {
         
         func render() -> UIView {
             self.renderer.backgroundColor = .clear
-            self.renderer.sbu_constraint(width: self.expectedWidth, priority: .required)
+            
+            if self.expectedWidth != .infinity {
+                self.renderer.sbu_constraint(width: self.expectedWidth, priority: .required)
+            } else {
+                self.renderer.sbu_constraint_lessThan(width: SBUMessageContainerType.defaultMaxSize, priority: .required)
+            }
             return renderer
         }
         

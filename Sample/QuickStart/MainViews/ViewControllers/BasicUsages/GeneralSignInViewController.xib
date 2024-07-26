@@ -3,8 +3,7 @@
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22684"/>
-        <capability name="Named colors" minToolsVersion="9.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -15,9 +14,14 @@
                 <outlet property="applicationIdTextField" destination="DYc-av-gaR" id="0mN-VJ-icb"/>
                 <outlet property="loadingIndicator" destination="XZj-GR-2b1" id="2on-nZ-WYu"/>
                 <outlet property="nicknameTextField" destination="u6h-ca-RxS" id="aYu-Ye-5P9"/>
+                <outlet property="regionContainerTopMarginView" destination="aEJ-jA-hjj" id="wWU-zv-rTe"/>
+                <outlet property="regionContainerView" destination="gxe-VY-uUK" id="yGO-jg-p7l"/>
+                <outlet property="regionSelectionView" destination="86a-ck-CFp" id="3eF-7g-kYw"/>
+                <outlet property="regionTextField" destination="nWu-1z-RaW" id="Euc-zW-b6d"/>
                 <outlet property="signInButton" destination="zxL-co-Ig9" id="FZn-qg-zwX"/>
                 <outlet property="titleLabel" destination="XS4-bp-KQs" id="Xwn-Uj-jPz"/>
                 <outlet property="userIdTextField" destination="Xbf-cA-7Of" id="sOB-8v-wD2"/>
+                <outlet property="versionLabel" destination="fr2-S8-fOt" id="WZH-4E-P7q"/>
                 <outlet property="view" destination="iN0-l3-epB" id="JbN-g2-kHv"/>
             </connections>
         </placeholder>
@@ -98,6 +102,40 @@
                             <fontDescription key="fontDescription" type="system" pointSize="16"/>
                             <textInputTraits key="textInputTraits"/>
                         </textField>
+                        <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aEJ-jA-hjj">
+                            <rect key="frame" x="0.0" y="341" width="345" height="16"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="16" id="Ty6-Te-ahw"/>
+                            </constraints>
+                        </view>
+                        <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gxe-VY-uUK" userLabel="Region Container View">
+                            <rect key="frame" x="0.0" y="341" width="345" height="56"/>
+                            <subviews>
+                                <textField opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Region" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="nWu-1z-RaW" userLabel="Region">
+                                    <rect key="frame" x="0.0" y="0.0" width="345" height="56"/>
+                                    <color key="backgroundColor" red="0.94117647059999998" green="0.94117647059999998" blue="0.94117647059999998" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="tintColor" red="0.46666666670000001" green="0.33725490200000002" blue="0.85098039219999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                    <textInputTraits key="textInputTraits"/>
+                                </textField>
+                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="86a-ck-CFp" userLabel="Region Clickable View">
+                                    <rect key="frame" x="0.0" y="0.0" width="345" height="56"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </view>
+                            </subviews>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="bottom" secondItem="nWu-1z-RaW" secondAttribute="bottom" id="7kb-2X-TJ5"/>
+                                <constraint firstItem="nWu-1z-RaW" firstAttribute="leading" secondItem="gxe-VY-uUK" secondAttribute="leading" id="MlS-pV-HcA"/>
+                                <constraint firstItem="nWu-1z-RaW" firstAttribute="top" secondItem="gxe-VY-uUK" secondAttribute="top" id="Qi3-56-Jpo"/>
+                                <constraint firstAttribute="trailing" secondItem="nWu-1z-RaW" secondAttribute="trailing" id="XhU-jm-ezA"/>
+                                <constraint firstAttribute="bottom" secondItem="86a-ck-CFp" secondAttribute="bottom" id="Yn7-pM-P0Z"/>
+                                <constraint firstItem="86a-ck-CFp" firstAttribute="top" secondItem="gxe-VY-uUK" secondAttribute="top" id="fwN-Dh-6zx"/>
+                                <constraint firstAttribute="trailing" secondItem="86a-ck-CFp" secondAttribute="trailing" id="g1r-4w-EW1"/>
+                                <constraint firstItem="86a-ck-CFp" firstAttribute="leading" secondItem="gxe-VY-uUK" secondAttribute="leading" id="qJX-xZ-NrW"/>
+                                <constraint firstAttribute="height" constant="56" id="wXa-PU-rDx"/>
+                            </constraints>
+                        </view>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hLx-L6-zCT">
                             <rect key="frame" x="0.0" y="341" width="345" height="32"/>
                             <constraints>

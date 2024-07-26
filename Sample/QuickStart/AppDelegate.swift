@@ -12,48 +12,22 @@ import SendbirdChatSDK
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
     var window: UIWindow?
-    
     var pendingNotificationPayload: NSDictionary?
     
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        
-        // TODO: Change to your AppId
-        SendbirdUI.initialize(applicationId: "FEA2129A-EA73-4EB9-9E0B-EC738E7EB768") {
-        } migrationHandler: {
-            //
-        } completionHandler: { error in
-            //
-        }
-        
-        SBUGlobals.accessToken = ""
         SendbirdUI.setLogLevel(.all)
-
-//        SBUGlobals.accessToken = ""
-        SendbirdUI.config.common.isUsingDefaultUserProfileEnabled = true
+        #if INSPECTION
+        SendbirdUI.setLogLevel(.all)
+        self.renderViewForInspection()
+        #endif
+        self.uikitConfigs()
         
-        // Reply
-        SendbirdUI.config.groupChannel.channel.replyType = .quoteReply
-        // Channel List - Typing indicator
-        SendbirdUI.config.groupChannel.channelList.isTypingIndicatorEnabled = true
-        // Channel List - Message receipt state
-        SendbirdUI.config.groupChannel.channelList.isMessageReceiptStatusEnabled = true
-        // User Mention
-        SendbirdUI.config.groupChannel.channel.isMentionEnabled = true
-        // GroupChannel - Voice Message
-        SendbirdUI.config.groupChannel.channel.isVoiceMessageEnabled = true
-        // GroupChannel - suggested replies
-        SendbirdUI.config.groupChannel.channel.isSuggestedRepliesEnabled = true
-        // GroupChannel - form type message
-        SendbirdUI.config.groupChannel.channel.isFormTypeMessageEnabled = true
-        
-//        if #available(iOS 14, *) {
-//            SendbirdUI.config.groupChannel.channel.isMultipleFilesMessageEnabled = true
-//        }
-
         // INFO: This method could cause the 800100 error. However, it's not a problem because the device push token will be kept by the ChatSDK and the token will be registered after the connection is established.
         self.initializeRemoteNotification()
-        
+        #if INSPECTION
+        self.addObserversForInspection()
+        #endif
         return true
     }
     
@@ -160,4 +134,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             }
         }
     }
+    
+    func uikitConfigs() {
+//        SBUGlobals.accessToken = ""
+        SendbirdUI.config.common.isUsingDefaultUserProfileEnabled = true
+        
+        // Reply
+        SendbirdUI.config.groupChannel.channel.replyType = .quoteReply
+        // Channel List - Typing indicator
+        SendbirdUI.config.groupChannel.channelList.isTypingIndicatorEnabled = true
+        // Channel List - Message receipt state
+        SendbirdUI.config.groupChannel.channelList.isMessageReceiptStatusEnabled = true
+        // User Mention
+        SendbirdUI.config.groupChannel.channel.isMentionEnabled = true
+        // GroupChannel - Voice Message
+        SendbirdUI.config.groupChannel.channel.isVoiceMessageEnabled = true
+        // GroupChannel - suggested replies
+        SendbirdUI.config.groupChannel.channel.isSuggestedRepliesEnabled = true
+        // GroupChannel - form type message
+        SendbirdUI.config.groupChannel.channel.isFormTypeMessageEnabled = true
+        
+//        if #available(iOS 14, *) {
+//            SendbirdUI.config.groupChannel.channel.isMultipleFilesMessageEnabled = true
+//        }
+    }
+
 }

@@ -12,6 +12,8 @@ extension SBUMessageTemplate.Syntax {
     
     // MARK: - Style
     class ViewStyle: Decodable {
+        var isDefault: Bool { false }
+        
         let backgroundColor: String?
         let backgroundImageUrl: String?
         let borderWidth: Int?
@@ -132,5 +134,12 @@ extension SBUMessageTemplate.Syntax {
             self.decodedContentMode = .aspectFit
             self.tintColor = tintColor
         }
+    }
+}
+
+
+extension SBUMessageTemplate.Syntax.ViewStyle {
+    class Default: SBUMessageTemplate.Syntax.ViewStyle {
+        override var isDefault: Bool { true }
     }
 }

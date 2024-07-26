@@ -58,7 +58,7 @@ public enum SBUMessageContainerType: String, Decodable {
         return min(windowBounds.width, windowBounds.height)
     }
     
-    static var defaultMaxSize = 256.0
+    static var defaultMaxSize: CGFloat = 256.0
     
     var maxWidth: CGFloat {
         switch self {

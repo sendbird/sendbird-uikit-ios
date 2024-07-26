@@ -16,11 +16,25 @@ final class BusinessMessagingSignInViewController: UIViewController {
     @IBOutlet weak var signInButton: UIButton!
     @IBOutlet weak var feedOnlySwitch: UISwitch!
     @IBOutlet weak var loadingIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var regionTextField: UITextField!
+    @IBOutlet weak var regionSelectionView: UIView!
+    @IBOutlet weak var regionContainerView: UIView!
+    @IBOutlet weak var regionContainerTopMarginView: UIView!
+    
+    @IBOutlet weak var versionLabel: UILabel!
+    
+    #if INSPECTION
+    var region: Region = .production
+    #endif
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         self.nicknameTextField.text = UserDefaults.loadNickname(type: .businessMessagingSample)
+        
+        #if INSPECTION
+        AppDelegate.bringInspectionViewToFront()
+        #endif
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -34,9 +48,12 @@ final class BusinessMessagingSignInViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
+        let tap = UITapGestureRecognizer(target: self, action: #selector(touchView(_:)))
+        self.view.addGestureRecognizer(tap)
+
         signInButton.layer.cornerRadius = ViewController.CornerRadius.small.rawValue
-        [applicationIdTextField, userIdTextField, nicknameTextField].forEach {
+        [applicationIdTextField, userIdTextField, nicknameTextField, regionTextField].forEach {
             guard let textField = $0 else { return }
             let paddingView = UIView(frame: CGRect(
                 x: 0,
@@ -56,8 +73,19 @@ final class BusinessMessagingSignInViewController: UIViewController {
         self.applicationIdTextField.text = UserDefaults.loadAppId(type: .businessMessagingSample)
         self.userIdTextField.text = UserDefaults.loadUserId(type: .businessMessagingSample)
         self.nicknameTextField.text = UserDefaults.loadNickname(type: .businessMessagingSample)
-        
+
         self.feedOnlySwitch.isOn = UserDefaults.loadAuthType() == .authFeed
+        
+        #if INSPECTION
+        self.setupRegionSelectionView()
+        #endif
+
+        self.setupVersion()
+    }
+    
+    @objc
+    func touchView(_ sender: Any) {
+        self.view.endEditing(true)
     }
     
     @IBAction func clickSelectSampleAppsButton(_ sender: Any) {
@@ -67,7 +95,7 @@ final class BusinessMessagingSignInViewController: UIViewController {
     @IBAction func clickSignInButton(_ sender: Any) {
         self.signIn()
     }
-    
+
     func signIn() {
         self.view.isUserInteractionEnabled = false
         loadingIndicator.isHidden = false
@@ -105,8 +133,11 @@ final class BusinessMessagingSignInViewController: UIViewController {
             userId: userId,
             nickname: nickname
         )
-        SBUGlobals.apiHost = UserDefaults.loadAPIHost(type: .businessMessagingSample)
-        SBUGlobals.wsHost = UserDefaults.loadWebsocketHost(type: .businessMessagingSample)
+
+        #if INSPECTION
+        SBUGlobals.apiHost = self.region.apiHost(appId: appId)
+        SBUGlobals.wsHost = self.region.wsHost(appId: appId)
+        #endif
 
         SendbirdUI.initialize(
             applicationId: appId,
@@ -172,6 +203,24 @@ final class BusinessMessagingSignInViewController: UIViewController {
         let vc = BusinessMessagingSelectionViewController()
         vc.authType = authType
         self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func setupVersion() {
+        let coreVersion: String = SendbirdChat.getSDKVersion()
+        var uikitVersion: String {
+            if SendbirdUI.shortVersion == "[NEXT_VERSION]" {
+                let bundle = Bundle(identifier: "com.sendbird.uikit.sample")
+                return "\(bundle?.infoDictionary?["CFBundleShortVersionString"] ?? "")"
+            } else if SendbirdUI.shortVersion == "0.0.0" {
+                guard let dictionary = Bundle.main.infoDictionary,
+                      let appVersion = dictionary["CFBundleShortVersionString"] as? String,
+                      let build = dictionary["CFBundleVersion"] as? String else {return ""}
+                return "\(appVersion)(\(build))"
+            } else {
+                return SendbirdUI.shortVersion
+            }
+        }
+        versionLabel.text = "UIKit v\(uikitVersion)\tSDK v\(coreVersion)"
     }
 }
 

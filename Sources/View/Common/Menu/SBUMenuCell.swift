@@ -68,6 +68,8 @@ class SBUMenuCell: SBUTableViewCell {
     override func setupStyles() {
         super.setupStyles()
         
+        self.backgroundColor = .clear
+        
         self.iconImageView.contentMode = .scaleAspectFit
     }
 }

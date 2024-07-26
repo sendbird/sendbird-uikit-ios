@@ -200,6 +200,42 @@ extension SBUGroupChannelListModule {
             
             return alarmAction
         }
+        #if INSPECTION
+        func inspectContextualAction(with indexPath: IndexPath) -> UIContextualAction? {
+            guard let channel = self.channelList?[indexPath.row] else { return nil }
+            
+            let size = tableView.visibleCells[0].frame.height
+            let itemSize: CGFloat = 40.0
+            
+            let inspectAction = UIContextualAction(
+                style: .normal,
+                title: ""
+            ) { [weak self] _, _, actionHandler in
+                guard let self = self else { return }
+                channel.inspect()
+            }
+            
+            let inspectTypeView = UIImageView(
+                frame: CGRect(
+                    x: (size-itemSize)/2,
+                    y: (size-itemSize)/2,
+                    width: itemSize,
+                    height: itemSize
+                ))
+            inspectTypeView.layer.cornerRadius = itemSize/2
+            inspectTypeView.backgroundColor = SBUColorSet.primary400
+            inspectTypeView.image = SBUIconSetType.iconSearch.image(
+                with: .white,
+                to: SBUIconSetType.Metric.defaultIconSize
+            )
+            inspectTypeView.contentMode = .center
+            
+            inspectAction.image = inspectTypeView.asImage()
+            inspectAction.backgroundColor = .white
+            
+            return inspectAction
+        }
+        #endif
     }
 }
 
@@ -282,6 +318,11 @@ extension SBUGroupChannelListModule.List {
         if let alarmAction = alarmContextualAction(with: indexPath) {
             actions.append(alarmAction)
         }
+        #if INSPECTION
+        if let inspectContextualAction = inspectContextualAction(with: indexPath) {
+            actions.append(inspectContextualAction)
+        }
+        #endif
         
         return UISwipeActionsConfiguration(actions: actions)
     }

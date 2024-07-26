@@ -79,15 +79,16 @@ internal extension UIButton {
             self.setImage(image, tintColor: tintColor, for: state, completion: completion)
             return nil
         }
-        
-        guard let url = URL(string: urlString), url.absoluteURL.host != nil else {
+        guard
+            let url = UIImage.sbu_imageDownloader.url(string: urlString),
+            url.absoluteURL.host != nil else {
             self.setImage(errorImage, tintColor: tintColor, for: state) { _ in
                 completion?(false)
             }
             return nil
         }
         
-        let task = URLSession(configuration: .default).dataTask(with: url) { [weak self] data, _, error in
+        let task = UIImage.sbu_imageDownloader.downloadImage(from: url) { [weak self] data, error in
             guard let self = self else {
                 completion?(false)
                 return
@@ -103,7 +104,7 @@ internal extension UIButton {
             let image = SBUCacheManager.Image.save(data: data, fileName: fileName, subPath: subPath)
             self.setImage(image, tintColor: tintColor, for: state, completion: completion)
         }
-        task.resume()
+        task?.resume()
         return task
     }
     

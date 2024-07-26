@@ -39,11 +39,16 @@ class SBULog {
         formatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS"
         let time = formatter.string(from: Date())
         
+        var message = ""
         if let obj = object {
-            print(String(format: "🎨SBULog \(type) \(thread) [%@ %@:%@:%d] \(obj)", time, filename, funcName, line))
+            message = String(format: "🎨SBULog \(type) \(thread) [%@ %@:%@:%d] \(obj)", time, filename, funcName, line)
         } else {
-            print(String(format: "🎨SBULog \(type) \(thread) [%@ %@:%@:%d]", time, filename, funcName, line))
+            message = String(format: "🎨SBULog \(type) \(thread) [%@ %@:%@:%d]", time, filename, funcName, line)
         }
+        print(message)
+        #if INSPECTION
+        NotificationCenter.default.post(name: Notification.Name.inspectionLogging, object: message)
+        #endif
     }
 }
 //  swiftlint:enable identifier_name

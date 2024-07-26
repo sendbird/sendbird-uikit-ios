@@ -19,6 +19,8 @@ final class AIChatBotViewController: UIViewController {
             newValue.unreadCountLabel.isHidden = true
         }
     }
+    
+    @IBOutlet weak var versionLabel: UILabel!
 
     var botId: String = ""
     
@@ -45,6 +47,8 @@ final class AIChatBotViewController: UIViewController {
             action: #selector(onTapChatBotItemViewButton(_:)),
             for: .touchUpInside
         )
+        
+        self.setupVersion()
     }
     
     @IBAction func onTapChatBotItemViewButton(_ sender: UIButton) {
@@ -58,5 +62,23 @@ final class AIChatBotViewController: UIViewController {
                 self.navigationController?.popViewController(animated: true)
             }
         }
+    }
+    
+    func setupVersion() {
+        let coreVersion: String = SendbirdChat.getSDKVersion()
+        var uikitVersion: String {
+            if SendbirdUI.shortVersion == "[NEXT_VERSION]" {
+                let bundle = Bundle(identifier: "com.sendbird.uikit.sample")
+                return "\(bundle?.infoDictionary?["CFBundleShortVersionString"] ?? "")"
+            } else if SendbirdUI.shortVersion == "0.0.0" {
+                guard let dictionary = Bundle.main.infoDictionary,
+                      let appVersion = dictionary["CFBundleShortVersionString"] as? String,
+                      let build = dictionary["CFBundleVersion"] as? String else {return ""}
+                return "\(appVersion)(\(build))"
+            } else {
+                return SendbirdUI.shortVersion
+            }
+        }
+        versionLabel.text = "UIKit v\(uikitVersion)\tSDK v\(coreVersion)"
     }
 }

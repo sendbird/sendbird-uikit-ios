@@ -35,6 +35,11 @@ extension UserDefaults {
         case customSampleAPI = "custom_sample_api"
         case businessMessagingAPI = "business_messaging_api"
         
+        case basicUsagesRegion = "basic_usages_region"
+        case chatBotRegion = "chat_bot_region"
+        case customSampleRegion = "custom_sample_region"
+        case businessMessagingRegion = "business_messaging_region"
+        
         case chatBotBotId = "chat_bot_bot_id"
         
         case signedSampleApp = "signed_sample_app"
@@ -44,17 +49,19 @@ extension UserDefaults {
         case isLightTheme = "is_light_theme"
     }
     
+    static var userDefault = UserDefaults(suiteName: "group.com.sendbird.uikit.sample") ?? UserDefaults.standard
+    
     // MARK: Basic Usages
     static func loadAppId(type: SampleAppType) -> String? {
         switch type {
         case .basicUsage:
-            return UserDefaults.standard.string(forKey: SampleInfoKeys.basicUsagesAppId.rawValue)
+            return userDefault.string(forKey: SampleInfoKeys.basicUsagesAppId.rawValue)
         case .chatBot:
-            return UserDefaults.standard.string(forKey: SampleInfoKeys.chatBotAppId.rawValue)
+            return userDefault.string(forKey: SampleInfoKeys.chatBotAppId.rawValue)
         case .customSample:
-            return UserDefaults.standard.string(forKey: SampleInfoKeys.customSampleAppId.rawValue)
+            return userDefault.string(forKey: SampleInfoKeys.customSampleAppId.rawValue)
         case .businessMessagingSample:
-            return UserDefaults.standard.string(forKey: SampleInfoKeys.businessMessagingAppId.rawValue)
+            return userDefault.string(forKey: SampleInfoKeys.businessMessagingAppId.rawValue)
         default:
             return nil
         }
@@ -63,13 +70,13 @@ extension UserDefaults {
     static func saveAppId(type: SampleAppType, appId: String) {
         switch type {
         case .basicUsage:
-            UserDefaults.standard.set(appId, forKey: SampleInfoKeys.basicUsagesAppId.rawValue)
+            userDefault.set(appId, forKey: SampleInfoKeys.basicUsagesAppId.rawValue)
         case .chatBot:
-            UserDefaults.standard.set(appId, forKey: SampleInfoKeys.chatBotAppId.rawValue)
+            userDefault.set(appId, forKey: SampleInfoKeys.chatBotAppId.rawValue)
         case .customSample:
-            UserDefaults.standard.set(appId, forKey: SampleInfoKeys.customSampleAppId.rawValue)
+            userDefault.set(appId, forKey: SampleInfoKeys.customSampleAppId.rawValue)
         case .businessMessagingSample:
-            UserDefaults.standard.set(appId, forKey: SampleInfoKeys.businessMessagingAppId.rawValue)
+            userDefault.set(appId, forKey: SampleInfoKeys.businessMessagingAppId.rawValue)
         default:
             break
         }
@@ -78,13 +85,13 @@ extension UserDefaults {
     static func loadUserId(type: SampleAppType) -> String? {
         switch type {
         case .basicUsage:
-            return UserDefaults.standard.string(forKey: SampleInfoKeys.basicUsagesUserId.rawValue)
+            return userDefault.string(forKey: SampleInfoKeys.basicUsagesUserId.rawValue)
         case .chatBot:
-            return UserDefaults.standard.string(forKey: SampleInfoKeys.chatBotUserId.rawValue)
+            return userDefault.string(forKey: SampleInfoKeys.chatBotUserId.rawValue)
         case .customSample:
-            return UserDefaults.standard.string(forKey: SampleInfoKeys.customSampleUserId.rawValue)
+            return userDefault.string(forKey: SampleInfoKeys.customSampleUserId.rawValue)
         case .businessMessagingSample:
-            return UserDefaults.standard.string(forKey: SampleInfoKeys.businessMessagingUserId.rawValue)
+            return userDefault.string(forKey: SampleInfoKeys.businessMessagingUserId.rawValue)
         default:
             return nil
         }
@@ -93,13 +100,13 @@ extension UserDefaults {
     static func saveUserId(type: SampleAppType, userId: String) {
         switch type {
         case .basicUsage:
-            UserDefaults.standard.set(userId, forKey: SampleInfoKeys.basicUsagesUserId.rawValue)
+            userDefault.set(userId, forKey: SampleInfoKeys.basicUsagesUserId.rawValue)
         case .chatBot:
-            UserDefaults.standard.set(userId, forKey: SampleInfoKeys.chatBotUserId.rawValue)
+            userDefault.set(userId, forKey: SampleInfoKeys.chatBotUserId.rawValue)
         case .customSample:
-            UserDefaults.standard.set(userId, forKey: SampleInfoKeys.customSampleUserId.rawValue)
+            userDefault.set(userId, forKey: SampleInfoKeys.customSampleUserId.rawValue)
         case .businessMessagingSample:
-            UserDefaults.standard.set(userId, forKey: SampleInfoKeys.businessMessagingUserId.rawValue)
+            userDefault.set(userId, forKey: SampleInfoKeys.businessMessagingUserId.rawValue)
         default:
             break
         }
@@ -108,13 +115,13 @@ extension UserDefaults {
     static func loadNickname(type: SampleAppType) -> String? {
         switch type {
         case .basicUsage:
-            return UserDefaults.standard.string(forKey: SampleInfoKeys.basicUsagesNickname.rawValue)
+            return userDefault.string(forKey: SampleInfoKeys.basicUsagesNickname.rawValue)
         case .chatBot:
-            return UserDefaults.standard.string(forKey: SampleInfoKeys.chatBotNickname.rawValue)
+            return userDefault.string(forKey: SampleInfoKeys.chatBotNickname.rawValue)
         case .customSample:
-            return UserDefaults.standard.string(forKey: SampleInfoKeys.customSampleNickname.rawValue)
+            return userDefault.string(forKey: SampleInfoKeys.customSampleNickname.rawValue)
         case .businessMessagingSample:
-            return UserDefaults.standard.string(forKey: SampleInfoKeys.businessMessagingNickname.rawValue)
+            return userDefault.string(forKey: SampleInfoKeys.businessMessagingNickname.rawValue)
         default:
             return nil
         }
@@ -123,112 +130,52 @@ extension UserDefaults {
     static func saveNickname(type: SampleAppType, nickname: String) {
         switch type {
         case .basicUsage:
-            UserDefaults.standard.set(nickname, forKey: SampleInfoKeys.basicUsagesNickname.rawValue)
+            userDefault.set(nickname, forKey: SampleInfoKeys.basicUsagesNickname.rawValue)
         case .chatBot:
-            UserDefaults.standard.set(nickname, forKey: SampleInfoKeys.chatBotNickname.rawValue)
+            userDefault.set(nickname, forKey: SampleInfoKeys.chatBotNickname.rawValue)
         case .customSample:
-            UserDefaults.standard.set(nickname, forKey: SampleInfoKeys.customSampleNickname.rawValue)
+            userDefault.set(nickname, forKey: SampleInfoKeys.customSampleNickname.rawValue)
         case .businessMessagingSample:
-            UserDefaults.standard.set(nickname, forKey: SampleInfoKeys.businessMessagingNickname.rawValue)
-        default:
-            break
-        }
-    }
-    
-    static func loadWebsocketHost(type: SampleAppType) -> String? {
-        switch type {
-        case .basicUsage:
-            return UserDefaults.standard.string(forKey: SampleInfoKeys.basicUsagesWs.rawValue)
-        case .chatBot:
-            return UserDefaults.standard.string(forKey: SampleInfoKeys.chatBotWs.rawValue)
-        case .customSample:
-            return UserDefaults.standard.string(forKey: SampleInfoKeys.customSampleWs.rawValue)
-        case .businessMessagingSample:
-            return UserDefaults.standard.string(forKey: SampleInfoKeys.businessMessagingWs.rawValue)
-        default:
-            return nil
-        }
-    }
-    
-    static func saveWebsocketHost(type: SampleAppType, host: String) {
-        switch type {
-        case .basicUsage:
-            UserDefaults.standard.set(host, forKey: SampleInfoKeys.basicUsagesWs.rawValue)
-        case .chatBot:
-            UserDefaults.standard.set(host, forKey: SampleInfoKeys.chatBotWs.rawValue)
-        case .customSample:
-            UserDefaults.standard.set(host, forKey: SampleInfoKeys.customSampleWs.rawValue)
-        case .businessMessagingSample:
-            UserDefaults.standard.set(host, forKey: SampleInfoKeys.businessMessagingWs.rawValue)
-        default:
-            break
-        }
-    }
-    
-    static func loadAPIHost(type: SampleAppType) -> String? {
-        switch type {
-        case .basicUsage:
-            return UserDefaults.standard.string(forKey: SampleInfoKeys.basicUsagesAPI.rawValue)
-        case .chatBot:
-            return UserDefaults.standard.string(forKey: SampleInfoKeys.chatBotAPI.rawValue)
-        case .customSample:
-            return UserDefaults.standard.string(forKey: SampleInfoKeys.customSampleAPI.rawValue)
-        case .businessMessagingSample:
-            return UserDefaults.standard.string(forKey: SampleInfoKeys.businessMessagingAPI.rawValue)
-        default:
-            return nil
-        }
-    }
-    
-    static func saveAPIHost(type: SampleAppType, host: String) {
-        switch type {
-        case .basicUsage:
-            UserDefaults.standard.set(host, forKey: SampleInfoKeys.basicUsagesAPI.rawValue)
-        case .chatBot:
-            UserDefaults.standard.set(host, forKey: SampleInfoKeys.chatBotAPI.rawValue)
-        case .customSample:
-            UserDefaults.standard.set(host, forKey: SampleInfoKeys.customSampleAPI.rawValue)
-        case .businessMessagingSample:
-            UserDefaults.standard.set(host, forKey: SampleInfoKeys.businessMessagingAPI.rawValue)
+            userDefault.set(nickname, forKey: SampleInfoKeys.businessMessagingNickname.rawValue)
         default:
             break
         }
     }
     
     static func loadBotId() -> String? {
-        return UserDefaults.standard.string(forKey: SampleInfoKeys.chatBotBotId.rawValue)
+        return userDefault.string(forKey: SampleInfoKeys.chatBotBotId.rawValue)
     }
     
     static func saveBotId(botId: String) {
-        UserDefaults.standard.set(botId, forKey: SampleInfoKeys.chatBotBotId.rawValue)
+        userDefault.set(botId, forKey: SampleInfoKeys.chatBotBotId.rawValue)
     }
     
     static func saveSignedSampleApp(type: SampleAppType) {
-        UserDefaults.standard.set(type.rawValue, forKey: SampleInfoKeys.signedSampleApp.rawValue)
+        userDefault.set(type.rawValue, forKey: SampleInfoKeys.signedSampleApp.rawValue)
     }
     
     static func removeSignedSampleApp() {
-        UserDefaults.standard.set(SampleAppType.none.rawValue, forKey: SampleInfoKeys.signedSampleApp.rawValue)
+        userDefault.set(SampleAppType.none.rawValue, forKey: SampleInfoKeys.signedSampleApp.rawValue)
     }
     
     static func loadSignedInSampleApp() -> SampleAppType {
-        let type = UserDefaults.standard.integer(forKey: SampleInfoKeys.signedSampleApp.rawValue)
+        let type = userDefault.integer(forKey: SampleInfoKeys.signedSampleApp.rawValue)
         return SampleAppType(rawValue: type) ?? .none
     }
     
     static func saveAuthType(type: AuthType) {
-        UserDefaults.standard.set(type.rawValue, forKey: SampleInfoKeys.businessMessagingAuthType.rawValue)
+        userDefault.set(type.rawValue, forKey: SampleInfoKeys.businessMessagingAuthType.rawValue)
     }
     
     static func loadAuthType() -> AuthType {
-        let type = UserDefaults.standard.integer(forKey: SampleInfoKeys.businessMessagingAuthType.rawValue)
+        let type = userDefault.integer(forKey: SampleInfoKeys.businessMessagingAuthType.rawValue)
         return AuthType(rawValue: type) ?? .authFeed
     }
     
     static func loadIsLightTheme() -> Bool {
-        return UserDefaults.standard.bool(forKey: SampleInfoKeys.isLightTheme.rawValue)
+        return userDefault.bool(forKey: SampleInfoKeys.isLightTheme.rawValue)
     }
     static func saveIsLightTheme(_ isLight: Bool) {
-        UserDefaults.standard.set(isLight, forKey: SampleInfoKeys.isLightTheme.rawValue)
+        userDefault.set(isLight, forKey: SampleInfoKeys.isLightTheme.rawValue)
     }
 }

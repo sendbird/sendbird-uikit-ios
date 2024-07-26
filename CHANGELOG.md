@@ -1,5 +1,16 @@
 # Changelog
 
+### v3.24.4 (Jul 26, 2024)
+
+- ChatSDK dependency version has been updated to **v4.19.9**
+
+## Improvements
+
+- Fixed menu sheet item background color appearing white after theme change
+- Fixed issue with `voiceMessageInputView` being drawn behind tabbar
+- Fixed `voiceMessageInputView` layouts to be drawn without being affected by rotation
+- Fixed minor bugs in MessageTemplate and default layout values
+
 ### v3.24.3 (Jul 18, 2024)
 
 ## Improvements

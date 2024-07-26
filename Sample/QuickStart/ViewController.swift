@@ -27,19 +27,6 @@ enum MainViewState: Int {
     case businessMessagingSample
 }
 
-enum SampleAppType: Int {
-    case none = 0
-    case basicUsage
-    case businessMessagingSample
-    case chatBot
-    case customSample
-}
-
-enum AuthType: Int {
-    case authFeed = 0
-    case websocket
-}
-
 class ViewController: UIViewController {
     // MARK: - Properties
     @IBOutlet weak var basicUsagesView: MainItemView!
@@ -76,12 +63,15 @@ class ViewController: UIViewController {
         case .customSample:
             self.openCustomizationSample()
         }
+        #if INSPECTION
+        AppDelegate.bringInspectionViewToFront()
+        #endif
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationController?.setNavigationBarHidden(true, animated: true)
-        
+
         self.setDefaultInformation()
         self.setupButtons()
  
@@ -213,25 +203,9 @@ extension ViewController {
             UserDefaults.saveAppId(type: .basicUsage, appId: "FEA2129A-EA73-4EB9-9E0B-EC738E7EB768")
         }
 
-//        let userId = UserDefaults.loadUserId(type: .basicUsage)
-//        if userId == nil || userId?.count == 0 {
-//            UserDefaults.saveUserId(type: .basicUsage, userId: "USER_ID")
-//        }
-//        
-//        let nickname = UserDefaults.loadNickname(type: .basicUsage)
-//        if nickname == nil || nickname?.count == 0 {
-//            UserDefaults.saveNickname(type: .basicUsage, nickname: "NICKNAME")
-//        }
-//        
-//        let wsHost = UserDefaults.loadWebsocketHost(type: .basicUsage)
-//        if wsHost == nil || wsHost?.count == 0 {
-//            UserDefaults.saveWebsocketHost(type: .basicUsage, host: "wss://ws-FEA2129A-EA73-4EB9-9E0B-EC738E7EB768.sendbird.com")
-//        }
-//        
-//        let apiHost = UserDefaults.loadAPIHost(type: .basicUsage)
-//        if apiHost == nil || apiHost?.count == 0 {
-//            UserDefaults.saveAPIHost(type: .basicUsage, host: "https://api-FEA2129A-EA73-4EB9-9E0B-EC738E7EB768.sendbird.com")
-//        }
+        #if INSPECTION
+        UserDefaults.saveRegion(type: .basicUsage, region: .production)
+        #endif
     }
     
     /// Sets default information for chatbot sample.
@@ -240,31 +214,10 @@ extension ViewController {
         if appId == nil || appId?.count == 0 {
             UserDefaults.saveAppId(type: .chatBot, appId: "FEA2129A-EA73-4EB9-9E0B-EC738E7EB768")
         }
-        
-//        let botId = UserDefaults.loadBotId()
-//        if botId == nil || botId?.count == 0 {
-//            UserDefaults.saveBotId(botId: "onboarding_bot")
-//        }
-//
-//        let userId = UserDefaults.loadUserId(type: .chatBot)
-//        if userId == nil || userId?.count == 0 {
-//            UserDefaults.saveUserId(type: .chatBot, userId: "USER_ID")
-//        }
-//        
-//        let nickname = UserDefaults.loadNickname(type: .chatBot)
-//        if nickname == nil || nickname?.count == 0 {
-//            UserDefaults.saveNickname(type: .chatBot, nickname: "NICKNAME")
-//        }
-//        
-//        let wsHost = UserDefaults.loadWebsocketHost(type: .chatBot)
-//        if wsHost == nil || wsHost?.count == 0 {
-//            UserDefaults.saveWebsocketHost(type: .chatBot, host: "wss://ws-FEA2129A-EA73-4EB9-9E0B-EC738E7EB768.sendbird.com")
-//        }
-//        
-//        let apiHost = UserDefaults.loadAPIHost(type: .chatBot)
-//        if apiHost == nil || apiHost?.count == 0 {
-//            UserDefaults.saveAPIHost(type: .chatBot, host: "https://api-FEA2129A-EA73-4EB9-9E0B-EC738E7EB768.sendbird.com")
-//        }
+
+        #if INSPECTION
+        UserDefaults.saveRegion(type: .chatBot, region: .production)
+        #endif
     }
     
     /// Sets default information for custom sample.
@@ -273,26 +226,10 @@ extension ViewController {
         if appId == nil || appId?.count == 0 {
             UserDefaults.saveAppId(type: .customSample, appId: "FEA2129A-EA73-4EB9-9E0B-EC738E7EB768")
         }
-
-//        let userId = UserDefaults.loadUserId(type: .customSample)
-//        if userId == nil || userId?.count == 0 {
-//            UserDefaults.saveUserId(type: .customSample, userId: "USER_ID")
-//        }
-//        
-//        let nickname = UserDefaults.loadNickname(type: .customSample)
-//        if nickname == nil || nickname?.count == 0 {
-//            UserDefaults.saveNickname(type: .customSample, nickname: "NICKNAME")
-//        }
-//        
-//        let wsHost = UserDefaults.loadWebsocketHost(type: .customSample)
-//        if wsHost == nil || wsHost?.count == 0 {
-//            UserDefaults.saveWebsocketHost(type: .customSample, host: "wss://ws-FEA2129A-EA73-4EB9-9E0B-EC738E7EB768.sendbird.com")
-//        }
-//        
-//        let apiHost = UserDefaults.loadAPIHost(type: .customSample)
-//        if apiHost == nil || apiHost?.count == 0 {
-//            UserDefaults.saveAPIHost(type: .customSample, host: "https://api-FEA2129A-EA73-4EB9-9E0B-EC738E7EB768.sendbird.com")
-//        }
+        
+        #if INSPECTION
+        UserDefaults.saveRegion(type: .customSample, region: .production)
+        #endif
     }
     
     /// Sets default information for business messaging sample.
@@ -301,26 +238,10 @@ extension ViewController {
         if appId == nil || appId?.count == 0 {
             UserDefaults.saveAppId(type: .businessMessagingSample, appId: "FEA2129A-EA73-4EB9-9E0B-EC738E7EB768")
         }
-
-//        let userId = UserDefaults.loadUserId(type: .businessMessagingSample)
-//        if userId == nil || userId?.count == 0 {
-//            UserDefaults.saveUserId(type: .businessMessagingSample, userId: "USER_ID")
-//        }
-//        
-//        let nickname = UserDefaults.loadNickname(type: .businessMessagingSample)
-//        if nickname == nil || nickname?.count == 0 {
-//            UserDefaults.saveNickname(type: .businessMessagingSample, nickname: "NICKNAME")
-//        }
-//        
-//        let wsHost = UserDefaults.loadWebsocketHost(type: .businessMessagingSample)
-//        if wsHost == nil || wsHost?.count == 0 {
-//            UserDefaults.saveWebsocketHost(type: .businessMessagingSample, host: "wss://ws-FEA2129A-EA73-4EB9-9E0B-EC738E7EB768.sendbird.com")
-//        }
-//        
-//        let apiHost = UserDefaults.loadAPIHost(type: .businessMessagingSample)
-//        if apiHost == nil || apiHost?.count == 0 {
-//            UserDefaults.saveAPIHost(type: .businessMessagingSample, host: "https://api-FEA2129A-EA73-4EB9-9E0B-EC738E7EB768.sendbird.com")
-//        }
+        
+        #if INSPECTION
+        UserDefaults.saveRegion(type: .businessMessagingSample, region: .production)
+        #endif
     }
 }
 

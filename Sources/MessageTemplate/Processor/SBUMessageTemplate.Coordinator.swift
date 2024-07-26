@@ -24,6 +24,13 @@ extension SBUMessageTemplate.Coordinator {
             case template(keys: [String])
             case images(cacheData: [String: String])
         }
+        
+        var template: SBUMessageTemplate.Syntax.TemplateView? {
+            switch self {
+            case .template(_, let template): return template
+            default: return nil
+            }
+        }
     }
 }
 
