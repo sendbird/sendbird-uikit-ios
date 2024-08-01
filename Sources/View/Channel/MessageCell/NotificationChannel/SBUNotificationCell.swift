@@ -141,7 +141,7 @@ class SBUNotificationCell: SBUBaseMessageCell {
         }
         
         self.setupLayouts()
-        self.layoutIfNeeded()
+        self.setNeedsLayout()
     }
     
     override func setupViews() {
@@ -194,13 +194,6 @@ class SBUNotificationCell: SBUBaseMessageCell {
     }
     
     override func setupLayouts() {
-        self.stackView
-            .sbu_constraint(
-                equalTo: self.contentView,
-                left: 0,
-                right: 0 // The top and the bottom have to be set in the subclasses of the SBUNotificationCell.
-            )
-
         let windowBounds = UIApplication.shared.currentWindow?.bounds ?? .zero
         let screenWidth = min(windowBounds.width, windowBounds.height)
         var maxTemplateWidth: CGFloat = 0.0
@@ -254,6 +247,13 @@ class SBUNotificationCell: SBUBaseMessageCell {
         // TODO: need to check
         self.captionStackView
             .sbu_constraint_greaterThan(height: 12)
+        
+        self.stackView
+            .sbu_constraint(
+                equalTo: self.contentView,
+                left: 0,
+                right: 0 // The top and the bottom have to be set in the subclasses of the SBUNotificationCell.
+            )
     }
     
     /// This function handles the initialization of actions.
@@ -366,11 +366,7 @@ class SBUNotificationCell: SBUBaseMessageCell {
         notificationTemplateRenderer.backgroundColor = self.notificationCellTheme.backgroundColor
         notificationTemplateRenderer.roundCorners(corners: .allCorners, radius: self.notificationCellTheme.radius)
         notificationTemplateRenderer.clipsToBounds = true
-        
-        self.baseStackView.arrangedSubviews.forEach {
-            $0.removeFromSuperview()
-        }
-        
+
         switch type {
         case .none, .feed:
             self.baseStackView.setHStack([

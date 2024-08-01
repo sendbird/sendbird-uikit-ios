@@ -34,7 +34,7 @@ extension SBUMessageTemplate.Renderer {
         )
         
         self.renderBody(body)
-        self.rendererConstraints.forEach { $0.isActive = true }
+        NSLayoutConstraint.activate(self.rendererConstraints)
         return true
     }
     
@@ -283,18 +283,18 @@ extension SBUMessageTemplate.Renderer {
         
         parentBoxView.addSubview(sideView2)
         
-        if item.layout == .row {
+        if item.layout == .row { // Direction - Horizontal
             self.rendererConstraints += sideView1.sbu_constraint_v2(equalTo: parentBoxView, top: 0, bottom: 0)
             self.rendererConstraints += sideView2.sbu_constraint_v2(equalTo: parentBoxView, top: 0, bottom: 0)
             
-            self.rendererConstraints += sideView1.sbu_constraint_v2(equalTo: parentBoxView, left: 0)
-            self.rendererConstraints += sideView2.sbu_constraint_v2(equalTo: parentBoxView, right: 0)
+            self.rendererConstraints += sideView1.sbu_constraint_v2(equalTo: parentBoxView, leading: 0)
+            self.rendererConstraints += sideView2.sbu_constraint_v2(equalTo: parentBoxView, trailing: 0)
             
             if haveWidthFillParent || item.align.horizontal == .center {
-                sideView1.widthAnchor.constraint(
-                    equalTo: sideView2.widthAnchor,
-                    multiplier: 1.0
-                ).isActive = true
+                self.rendererConstraints += sideView1.sbu_constraint_v2(
+                    widthAnchor: sideView2.widthAnchor,
+                    width: 0
+                )
             }
             
             // INFO: When all items are fill type, the horizontal widths are the same
@@ -305,14 +305,14 @@ extension SBUMessageTemplate.Renderer {
                     ($0.width.type == .flex)
                     && ($0.width.value == flexTypeFillValue)
                 }
-            let filleParentBaseWidthAnchor = fillParentViews.first?.widthAnchor
+            let fillParentBaseWidthAnchor = fillParentViews.first?.widthAnchor
 
-            if let filleParentBaseWidthAnchor = filleParentBaseWidthAnchor {
+            if let fillParentBaseWidthAnchor = fillParentBaseWidthAnchor {
                 for view in fillParentViews {
-                    view.widthAnchor.constraint(
-                        equalTo: filleParentBaseWidthAnchor,
-                        multiplier: 1.0
-                    ).isActive = true
+                    self.rendererConstraints += view.sbu_constraint_v2(
+                        widthAnchor: fillParentBaseWidthAnchor,
+                        width: 0
+                    )
                 }
             }
             
@@ -336,21 +336,19 @@ extension SBUMessageTemplate.Renderer {
             
             let prevItemRightMargin = prevItem?.viewStyle.margin?.right ?? 0.0
             self.rendererConstraints += sideView2.sbu_constraint_equalTo_v2(
-                leftAnchor: prevView.rightAnchor,
-                left: (item.viewStyle.margin?.left ?? 0.0) + prevItemRightMargin
+                leadingAnchor: prevView.trailingAnchor,
+                leading: (item.viewStyle.margin?.left ?? 0.0) + prevItemRightMargin
             )
-        } else { // column
-            self.rendererConstraints += sideView1.sbu_constraint_v2(equalTo: parentBoxView, left: 0, right: 0)
-            self.rendererConstraints += sideView2.sbu_constraint_v2(equalTo: parentBoxView, left: 0, right: 0)
-            
-            self.rendererConstraints += sideView1.sbu_constraint_v2(equalTo: parentBoxView, top: 0)
-            self.rendererConstraints += sideView2.sbu_constraint_v2(equalTo: parentBoxView, bottom: 0)
-            
+
+        } else { // Direction - Vertical
+            self.rendererConstraints += sideView1.sbu_constraint_v2(equalTo: parentBoxView, leading: 0, trailing: 0, top: 0)
+            self.rendererConstraints += sideView2.sbu_constraint_v2(equalTo: parentBoxView, leading: 0, trailing: 0, bottom: 0)
+
             if haveHeightFillParent || item.align.vertical == .center {
-                sideView1.heightAnchor.constraint(
-                    equalTo: sideView2.heightAnchor,
-                    multiplier: 1.0
-                ).isActive = true
+                self.rendererConstraints += sideView1.sbu_constraint_v2(
+                    heightAnchor: sideView2.heightAnchor,
+                    height: 0
+                )
             }
             
             // INFO: When all items are fill type, the vertical heights are the same
@@ -361,14 +359,14 @@ extension SBUMessageTemplate.Renderer {
                     ($0.height.type == .flex)
                     && ($0.height.value == flexTypeFillValue)
                 }
-            let filleParentBaseHeightAnchor = fillParentViews.first?.heightAnchor
+            let fillParentBaseHeightAnchor = fillParentViews.first?.heightAnchor
 
-            if let filleParentBaseHeightAnchor = filleParentBaseHeightAnchor {
+            if let fillParentBaseHeightAnchor = fillParentBaseHeightAnchor {
                 for view in fillParentViews {
-                    view.heightAnchor.constraint(
-                        equalTo: filleParentBaseHeightAnchor,
-                        multiplier: 1.0
-                    ).isActive = true
+                    self.rendererConstraints += view.sbu_constraint_v2(
+                        heightAnchor: fillParentBaseHeightAnchor,
+                        height: 0
+                    )
                 }
             }
             
@@ -480,10 +478,10 @@ extension SBUMessageTemplate.Renderer {
         let label = isTextButton ? SBUMessageTemplate.Renderer.TextButton() : SBUMessageTemplate.Renderer.Label()
         label.padding = item.viewStyle.padding
         label.updateLayoutHandler = { constraints, deactivatedConstraints in
-            self.rendererConstraints.forEach { $0.isActive = false }
+            NSLayoutConstraint.deactivate(self.rendererConstraints)
             self.rendererConstraints += constraints
             self.rendererConstraints = self.rendererConstraints.filter { !deactivatedConstraints.contains($0) }
-            self.rendererConstraints.forEach { $0.isActive = true }
+            NSLayoutConstraint.activate(self.rendererConstraints)
         }
         
         let textWithoutLineChange: NSAttributedString? = {
@@ -738,7 +736,7 @@ extension SBUMessageTemplate.Renderer {
             saveCache: true
         )
         
-        constraints.forEach { $0.isActive = true }
+        NSLayoutConstraint.activate(constraints)
         
         // Action
         self.setAction(on: baseView, item: item)
@@ -818,7 +816,7 @@ extension SBUMessageTemplate.Renderer {
 //            saveCache: false
 //        )
 //        
-//        constraints.forEach { $0.isActive = true }
+//        NSLayoutConstraint.activate(constraints)
 //
 //        imageButton.loadImage(
 //            urlString: item.imageUrl,

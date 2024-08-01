@@ -76,7 +76,7 @@ class LiveStreamChannelCell: SBUOpenChannelCell {
         self.infoStackView
             .sbu_constraint(
                 equalTo: self.contentView,
-                right: 16,
+                trailing: 16,
                 top: 10
             )
             .sbu_constraint(height: 72)
@@ -94,7 +94,7 @@ class LiveStreamChannelCell: SBUOpenChannelCell {
         self.coverImage
             .sbu_constraint(
                 equalTo: self.contentView,
-                left: Self.leadingPadding,
+                leading: Self.leadingPadding,
                 top: 12,
                 bottom: 12
             )
@@ -106,8 +106,8 @@ class LiveStreamChannelCell: SBUOpenChannelCell {
         self.translucentView
             .sbu_constraint(
                 equalTo: self.coverImage,
-                left: 0,
-                right: 0,
+                leading: 0,
+                trailing: 0,
                 top: 0,
                 bottom: 0
             )

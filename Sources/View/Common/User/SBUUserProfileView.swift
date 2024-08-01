@@ -91,13 +91,11 @@ class SBUUserProfileView: UIView, SBUUserProfileViewProtocol {
     lazy var separatorView = UIView()
     
     lazy var userIdTitleLabel: UILabel = {
-       let label = UILabel()
-        label.textAlignment = .left
+        let label = UILabel()
         return label
     }()
     lazy var userIdLabel: UILabel = {
-       let label = UILabel()
-        label.textAlignment = .left
+        let label = UILabel()
         return label
     }()
     

@@ -3,16 +3,37 @@
     {
       "filename" : "iconTheme.png",
       "idiom" : "universal",
+      "language-direction" : "left-to-right",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "iconThemeRTL.png",
+      "idiom" : "universal",
+      "language-direction" : "right-to-left",
       "scale" : "1x"
     },
     {
       "filename" : "iconTheme@2x.png",
       "idiom" : "universal",
+      "language-direction" : "left-to-right",
+      "scale" : "2x"
+    },
+    {
+      "filename" : "iconThemeRTL@2x.png",
+      "idiom" : "universal",
+      "language-direction" : "right-to-left",
       "scale" : "2x"
     },
     {
       "filename" : "iconTheme@3x.png",
       "idiom" : "universal",
+      "language-direction" : "left-to-right",
+      "scale" : "3x"
+    },
+    {
+      "filename" : "iconThemeRTL@3x.png",
+      "idiom" : "universal",
+      "language-direction" : "right-to-left",
       "scale" : "3x"
     }
   ],

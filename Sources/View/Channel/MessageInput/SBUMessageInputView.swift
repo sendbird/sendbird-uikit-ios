@@ -643,8 +643,9 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
             .sbu_constraint(equalTo: self.inputContentView, leading: 0, trailing: 0, top: 0, bottom: 0)
         
         if let textView = self.textView {
+            let leading: CGFloat = self.currentLayoutDirection.isRTL ? 22 : 14
             self.placeholderLabel
-                .sbu_constraint(equalTo: textView, leading: 14, top: 10)
+                .sbu_constraint(equalTo: textView, leading: leading, top: 10)
             self.setupTextViewHeight(textView: textView)
         }
         

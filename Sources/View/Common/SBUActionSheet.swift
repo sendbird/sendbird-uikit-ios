@@ -312,28 +312,61 @@ public class SBUActionSheet: NSObject {
         
         let titleLabel = UILabel()
         let imageView = UIImageView()
+
+        // LTR
+        // |-----------------------------------itemWidth------------------------------------|
+        // |-self.insideMargin-|imageView|-self.insideMargin-|titleLabel|-self.insideMargin-|
+        // titleLabel.width = itemWidth - self.insideMargin - imageView.width - self.insideMargin - self.insideMargin
         
-        var textImageMargin: CGFloat = (item.textAlignment == .left) ? self.insideMargin : 0.0
+        // RTL
+        // |-----------------------------------itemWidth------------------------------------|
+        // |-self.insideMargin-|titleLabel|-self.insideMargin-|imageView|-self.insideMargin-|
         
+        let imageSize: CGFloat = 24.0
+        
+        var imageViewPosX: CGFloat = 0
+        var titleLabelPosX: CGFloat = 0
+        var titleLabelWidth: CGFloat = 0
+        var textAlignment: NSTextAlignment = .left
+        if UIView.appearance().semanticContentAttribute == .forceLeftToRight {
+            textAlignment = .left
+            titleLabelPosX = self.insideMargin
+            if item.image != nil {
+                imageViewPosX = itemWidth - self.insideMargin - imageSize
+                titleLabelWidth = itemWidth - self.insideMargin - imageSize - self.insideMargin - self.insideMargin
+            } else {
+                titleLabelWidth = itemWidth - self.insideMargin - self.insideMargin
+            }
+        } else {
+            textAlignment = .right
+            imageViewPosX = self.insideMargin
+            if item.image != nil {
+                titleLabelPosX = self.insideMargin + imageSize + self.insideMargin
+                titleLabelWidth = itemWidth - self.insideMargin - self.insideMargin - imageSize - self.insideMargin
+            } else {
+                titleLabelWidth = itemWidth - self.insideMargin - self.insideMargin
+            }
+        }
+
         if let image = item.image {
-            let imageSize: CGFloat = 24.0
             imageView.frame = CGRect(
-                origin: CGPoint(x: itemWidth - self.insideMargin - imageSize, y: self.insideMargin),
+                origin: CGPoint(x: imageViewPosX, y: self.insideMargin),
                 size: CGSize(width: imageSize, height: imageSize)
             )
+
             imageView.image = image
             itemButton.addSubview(imageView)
-            textImageMargin = self.insideMargin
         }
-        
-        titleLabel.frame = CGRect(
-            origin: CGPoint(x: textImageMargin, y: 0),
-            size: CGSize(width: itemWidth - imageView.frame.width, height: self.itemHeight)
-        )
+
         titleLabel.text = item.title
         titleLabel.font = item.font ?? theme.actionSheetTextFont
         titleLabel.textColor = item.color ?? theme.actionSheetTextColor
-        titleLabel.textAlignment = item.textAlignment
+        titleLabel.textAlignment = textAlignment
+        
+        titleLabel.frame = CGRect(
+            origin: CGPoint(x: titleLabelPosX, y: 0),
+            size: CGSize(width: titleLabelWidth, height: self.itemHeight)
+        )
         
         itemButton.addSubview(titleLabel)
         

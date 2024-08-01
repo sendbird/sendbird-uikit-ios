@@ -174,7 +174,7 @@ extension SBUMessageTemplate {
             )
             
             self.renderBody(body)
-            self.rendererConstraints.forEach { $0.isActive = true }
+            NSLayoutConstraint.activate(self.rendererConstraints)
         }
         
     }

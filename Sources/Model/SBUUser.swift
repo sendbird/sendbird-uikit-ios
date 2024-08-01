@@ -103,7 +103,7 @@ public class SBUUser: NSObject {
     public func mentionedNickname() -> String {
         let trigger = SBUGlobals.userMentionConfig?.trigger ?? ""
         let refinedNickname = refinedNickname()
-        return "\(trigger)\(refinedNickname)"
+        return "\(trigger)\(refinedNickname)\u{200F}"
     }
     
     public override var description: String {

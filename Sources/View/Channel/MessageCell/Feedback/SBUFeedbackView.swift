@@ -84,7 +84,7 @@ open class SBUSimpleFeedbackView: SBUFeedbackView {
         super.setupLayouts()
         
         self.stackView
-            .sbu_constraint(equalTo: self.container, left: 50, top: 0, bottom: 0)
+            .sbu_constraint(equalTo: self.container, leading: 50, top: 0, bottom: 0)
             .sbu_constraint(height: 36)
         
         self.goodButton

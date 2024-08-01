@@ -1320,3 +1320,46 @@ protocol Anchorable {
 
 extension UIView: Anchorable {}
 extension UILayoutGuide: Anchorable {}
+
+private var _sementicContentAttributeValue: UISemanticContentAttribute?
+
+extension UIView {
+    static var currentSemanticContentAttribute: UISemanticContentAttribute {
+        if let value = _sementicContentAttributeValue { return value }
+        if #available(iOS 13.0, *) {
+            let value = UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.rootViewController?.view.semanticContentAttribute ?? .unspecified
+            _sementicContentAttributeValue = value
+            return value
+        } else {
+            let value = UIApplication.shared.keyWindow?.rootViewController?.view.semanticContentAttribute ?? .unspecified
+            _sementicContentAttributeValue = value
+            return value
+        }
+    }
+    
+    static func getCurrentLayoutDirection(view: UIView? = nil) -> UIUserInterfaceLayoutDirection {
+        if let view { UIView.userInterfaceLayoutDirection(for: view.semanticContentAttribute) }
+        return UIView.userInterfaceLayoutDirection(for: currentSemanticContentAttribute)
+    }
+    
+    var currentLayoutDirection: UIUserInterfaceLayoutDirection {
+        UIView.getCurrentLayoutDirection(view: self)
+    }
+    
+    /// Methods that recursively access a parameter's view and its subviews to change its attributes.
+    /// - Parameters:
+    ///   - view: Target view
+    ///   - attribute: The semantic content attribute property to set
+    /// - Since: 3.25.0
+    public static func setSemanticContentAttributeRecursively(view: UIView, attribute: UISemanticContentAttribute) {
+        view.semanticContentAttribute = attribute
+        for subview in view.subviews {
+            setSemanticContentAttributeRecursively(view: subview, attribute: attribute)
+        }
+    }
+}
+
+extension UIUserInterfaceLayoutDirection {
+    var isRTL: Bool { self == .rightToLeft }
+    var isLTR: Bool { self == .leftToRight }
+}

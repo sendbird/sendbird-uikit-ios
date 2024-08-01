@@ -12,12 +12,22 @@ public class SBULinkClickableTextView: UITextView {
     public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         guard self.bounds.contains(point) else { return nil }
         guard let pos = closestPosition(to: point) else { return nil }
-        guard let range = tokenizer.rangeEnclosingPosition(
-            pos, 
-            with: .character,
-            inDirection: .layout(.left)) else { return nil }
 
-        let startIndex = offset(from: beginningOfDocument, to: range.start)
+        let rangeLeftDirection = tokenizer.rangeEnclosingPosition(
+            pos,
+            with: .character,
+            inDirection: .layout(.left)
+        )
+
+        let rangeRightDirection = tokenizer.rangeEnclosingPosition(
+            pos,
+            with: .character,
+            inDirection: .layout(.right)
+        )
+        
+        guard let rangeStart = rangeLeftDirection?.start ?? rangeRightDirection?.start else { return nil }
+        
+        let startIndex = offset(from: beginningOfDocument, to: rangeStart)
         return attributedText.attribute(.link, at: startIndex, effectiveRange: nil) != nil ? self : nil
     }
     

@@ -550,8 +550,6 @@ extension SBUFeedNotificationChannelModule {
             
             self.configureCell(notificationCell, notification: notification, forRowAt: indexPath)
             
-            cell.layoutIfNeeded()
-            
             return cell
         }
         

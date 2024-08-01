@@ -1,5 +1,14 @@
 # Changelog
 
+### v3.25.0 (Aug 01, 2024)
+
+
+- Support Right-to-Left (RTL) languages
+- Added a static method to force a change to the value of a view's semantic content attribute
+    - Added setSemanticContentAttributeRecursively(view: UIView, attribute: UISemanticContentAttribute) in UIView Extension
+- Resolved the autolayout warnings for the message template
+- Fixed Markdown syntax exposed in channel preview even when Markdown is enabled
+
 ### v3.24.4 (Jul 26, 2024)
 
 - ChatSDK dependency version has been updated to **v4.19.9**

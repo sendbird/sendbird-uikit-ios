@@ -96,7 +96,7 @@ public class SBULayoutableButton: UIButton {
             self.imageVerticalAlignment = .bottom
             self.imageHorizontalAlignment = .center
         }
-        
+
         super.init(frame: .zero)
     }
     
@@ -147,26 +147,54 @@ public class SBULayoutableButton: UIButton {
             
             switch imageHorizontalAlignment {
             case .left:
-                newImageEdgeInsets.left = -halfImageToTitleSpacing
-                newImageEdgeInsets.right = halfImageToTitleSpacing
-                newTitleEdgeInsets.left = halfImageToTitleSpacing
-                newTitleEdgeInsets.right = -halfImageToTitleSpacing
-                newContentEdgeInsets.left = halfImageToTitleSpacing
-                newContentEdgeInsets.right = halfImageToTitleSpacing
+                if self.effectiveUserInterfaceLayoutDirection == .leftToRight {
+                    newImageEdgeInsets.left = -halfImageToTitleSpacing
+                    newImageEdgeInsets.right = halfImageToTitleSpacing
+                    newTitleEdgeInsets.left = halfImageToTitleSpacing
+                    newTitleEdgeInsets.right = -halfImageToTitleSpacing
+                    newContentEdgeInsets.left = halfImageToTitleSpacing
+                    newContentEdgeInsets.right = halfImageToTitleSpacing
+                } else {
+                    newImageEdgeInsets.left = halfImageToTitleSpacing
+                    newImageEdgeInsets.right = -halfImageToTitleSpacing
+                    newTitleEdgeInsets.left = -halfImageToTitleSpacing
+                    newTitleEdgeInsets.right = halfImageToTitleSpacing
+                    newContentEdgeInsets.left = -halfImageToTitleSpacing
+                    newContentEdgeInsets.right = -halfImageToTitleSpacing
+                }
             case .right:
-                newImageEdgeInsets.left = textSize.width + halfImageToTitleSpacing
-                newImageEdgeInsets.right = -textSize.width - halfImageToTitleSpacing
-                newTitleEdgeInsets.left = -imageSize.width - halfImageToTitleSpacing
-                newTitleEdgeInsets.right = imageSize.width + halfImageToTitleSpacing
-                newContentEdgeInsets.left = halfImageToTitleSpacing
-                newContentEdgeInsets.right = halfImageToTitleSpacing
+                if self.effectiveUserInterfaceLayoutDirection == .leftToRight {
+                    newImageEdgeInsets.left = textSize.width + halfImageToTitleSpacing
+                    newImageEdgeInsets.right = -textSize.width - halfImageToTitleSpacing
+                    newTitleEdgeInsets.left = -imageSize.width - halfImageToTitleSpacing
+                    newTitleEdgeInsets.right = imageSize.width + halfImageToTitleSpacing
+                    newContentEdgeInsets.left = halfImageToTitleSpacing
+                    newContentEdgeInsets.right = halfImageToTitleSpacing
+                } else {
+                    newImageEdgeInsets.left = -textSize.width - halfImageToTitleSpacing
+                    newImageEdgeInsets.right = textSize.width + halfImageToTitleSpacing
+                    newTitleEdgeInsets.left = imageSize.width + halfImageToTitleSpacing
+                    newTitleEdgeInsets.right = -imageSize.width - halfImageToTitleSpacing
+                    newContentEdgeInsets.left = -halfImageToTitleSpacing
+                    newContentEdgeInsets.right = -halfImageToTitleSpacing
+                }
             case .center:
-                newImageEdgeInsets.left = textSize.width / 2.0
-                newImageEdgeInsets.right = -textSize.width / 2.0
-                newTitleEdgeInsets.left = -imageSize.width / 2.0
-                newTitleEdgeInsets.right = imageSize.width / 2.0
-                newContentEdgeInsets.left = -((imageSize.width + textSize.width) - max(imageSize.width, textSize.width)) / 2.0
-                newContentEdgeInsets.right = -((imageSize.width + textSize.width) - max(imageSize.width, textSize.width)) / 2.0
+                if self.effectiveUserInterfaceLayoutDirection == .leftToRight {
+                    newImageEdgeInsets.left = textSize.width / 2.0
+                    newImageEdgeInsets.right = -textSize.width / 2.0
+                    newTitleEdgeInsets.left = -imageSize.width / 2.0
+                    newTitleEdgeInsets.right = imageSize.width / 2.0
+                    newContentEdgeInsets.left = -((imageSize.width + textSize.width) - max(imageSize.width, textSize.width)) / 2.0
+                    newContentEdgeInsets.right = -((imageSize.width + textSize.width) - max(imageSize.width, textSize.width)) / 2.0
+                } else {
+                    newImageEdgeInsets.left = -textSize.width / 2.0
+                    newImageEdgeInsets.right = textSize.width / 2.0
+                    newTitleEdgeInsets.left = imageSize.width / 2.0
+                    newTitleEdgeInsets.right = -imageSize.width / 2.0
+                    newContentEdgeInsets.left = ((imageSize.width + textSize.width) - max(imageSize.width, textSize.width)) / 2.0
+                    newContentEdgeInsets.right = ((imageSize.width + textSize.width) - max(imageSize.width, textSize.width)) / 2.0
+                }
+                
             case .unset:
                 break
             }

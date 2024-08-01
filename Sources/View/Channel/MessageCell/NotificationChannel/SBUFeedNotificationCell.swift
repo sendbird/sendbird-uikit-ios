@@ -41,8 +41,9 @@ class SBUFeedNotificationCell: SBUNotificationCell {
         self.bottomMarginConstraint = self.stackView.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: self.bottomMargin)
         self.topMarginConstraint?.isActive = true
         self.bottomMarginConstraint?.isActive = true
-        self.contentView.updateConstraints()
-        self.contentView.layoutIfNeeded()
+        
+        self.contentView.setNeedsLayout()
+        self.contentView.setNeedsUpdateConstraints()
     }
     
     override func updateLayouts() {

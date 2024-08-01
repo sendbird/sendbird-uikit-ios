@@ -363,6 +363,14 @@ public class SBUAlertView: NSObject {
         self.backgroundView.alpha = 0.0
         self.isShowing = true
         
+        // Support RTL
+        if UIView.getCurrentLayoutDirection().isRTL {
+            self.baseView.transform = CGAffineTransform(scaleX: -1, y: 1)
+            self.baseView.subviews.forEach({
+                $0.transform = CGAffineTransform(scaleX: -1, y: 1)
+            })
+        }
+        
         UIView.animate(withDuration: 0.1) {
             self.backgroundView.alpha = 1.0
         } completion: { _ in

@@ -11,6 +11,7 @@ import SendbirdChatSDK
 
 /// The ``SBUBaseFileContentView`` that displays the voice message
 open class SBUVoiceContentView: SBUBaseFileContentView {
+
     /// The view that shows the progress of how long the voice message is being played for.
     /// - Since: 3.4.0
     public var progressView = UIProgressView(progressViewStyle: .bar)
@@ -53,15 +54,14 @@ open class SBUVoiceContentView: SBUBaseFileContentView {
         
         // Progress
         self.progressView.progress = 0
+        self.progressView.semanticContentAttribute = .forceLeftToRight
         self.progressTimeLabel.text = SBUUtils.convertToPlayTime(0)
-        self.progressView.addSubview(self.progressTimeLabel)
-        
         self.statusButton.isUserInteractionEnabled = false
         
-        self.progressView.addSubview(self.progressTimeLabel)
-        self.progressView.addSubview(self.statusButton)
-        
         self.addSubview(self.progressView)
+        self.addSubview(self.progressTimeLabel)
+        self.addSubview(self.statusButton)
+        self.addSubview(self.progressTimeLabel)
     }
     
     open override func setupLayouts() {
@@ -74,13 +74,13 @@ open class SBUVoiceContentView: SBUBaseFileContentView {
         )
         
         self.progressTimeLabel.sbu_constraint(
-            equalTo: self.progressView,
+            equalTo: self,
             trailing: -12,
             centerY: 0
         )
         
         self.statusButton
-            .sbu_constraint(equalTo: self.progressView, leading: 12, centerY: 0)
+            .sbu_constraint(equalTo: self, leading: 12, centerY: 0)
             .sbu_constraint(width: 28, height: 28)
         
         self.sbu_constraint(height: 44)

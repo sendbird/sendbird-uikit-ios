@@ -248,24 +248,59 @@ class SBUMenuView: NSObject {
         let imageSize: CGFloat = 24.0
         
         let titleLabel = UILabel()
-        titleLabel.frame = CGRect(
-            origin: CGPoint(x: leftMargin, y: 0),
-            size: CGSize(
-                width: itemWidth - leftMargin - midMargin - imageSize - rightMargin,
-                height: itemHeight
-            )
-        )
+        
         titleLabel.text = item.title
         titleLabel.font = item.font ?? theme.menuTitleFont
         titleLabel.textColor = item.color
-        titleLabel.textAlignment = item.textAlignment
         
+        // LTR
+        // |-------------------------itemWidth-------------------------|
+        // |-leftMargin-|titleLabel|-midMargin-|imageView|-rightMargin-|
+        
+        // RTL
+        // |-------------------------itemWidth-------------------------|
+        // |-leftMargin-|imageView|-midMargin-|titleLabel|-rightMargin-|
+        var imageViewPosX: CGFloat = 0
+        var titleLabelPosX: CGFloat = 0
+        var titleLabelWidth: CGFloat = 0
+        var textAlignment: NSTextAlignment = .left
+        if UIView.appearance().semanticContentAttribute == .forceLeftToRight {
+            textAlignment = .left
+            titleLabelPosX = leftMargin
+            if item.image != nil {
+                imageViewPosX = itemWidth - rightMargin - imageSize
+                titleLabelWidth = itemWidth - leftMargin - midMargin - imageSize - rightMargin
+            } else {
+                titleLabelWidth = itemWidth - leftMargin - rightMargin
+            }
+        } else {
+            textAlignment = .right
+            imageViewPosX = leftMargin
+            if item.image != nil {
+                titleLabelPosX = leftMargin + imageSize + midMargin
+                titleLabelWidth = itemWidth - leftMargin - imageSize - midMargin - rightMargin
+            } else {
+                titleLabelPosX = leftMargin
+                titleLabelWidth = itemWidth - leftMargin - rightMargin
+            }
+        }
+        
+        titleLabel.textAlignment = textAlignment
+        titleLabel.frame = CGRect(
+            origin: CGPoint(x: titleLabelPosX, y: 0),
+            size: CGSize(
+                width: titleLabelWidth,
+                height: itemHeight
+            )
+        )
+
         let imageView = UIImageView()
         if let image = item.image {
             imageView.frame = CGRect(
-                origin: CGPoint(x: titleLabel.frame.maxX + midMargin, y: topBottomMargin),
+                origin: CGPoint(x: imageViewPosX, y: topBottomMargin),
                 size: CGSize(width: imageSize, height: imageSize)
             )
+            
             imageView.image = image
         }
         

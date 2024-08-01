@@ -26,7 +26,6 @@ open class SBUHorizontalSuggestedReplyView: SBUSuggestedReplyView, UICollectionV
         layout.scrollDirection = .horizontal
         layout.minimumLineSpacing = self.itemSpacing
         layout.sectionInset = .zero
-        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
         return layout
     }()
 
@@ -42,10 +41,6 @@ open class SBUHorizontalSuggestedReplyView: SBUSuggestedReplyView, UICollectionV
         collectionView.register(
             HorizontalSuggestedReplyViewCell.self,
             forCellWithReuseIdentifier: HorizontalSuggestedReplyViewCell.sbu_className
-        )
-        collectionView.register(
-            HorizontalSuggestedReplyViewEmptyCell.self,
-            forCellWithReuseIdentifier: HorizontalSuggestedReplyViewEmptyCell.sbu_className
         )
         return collectionView
     }()
@@ -81,6 +76,10 @@ open class SBUHorizontalSuggestedReplyView: SBUSuggestedReplyView, UICollectionV
         super.setupStyles()
         
         self.collectionView.backgroundColor = .clear
+        
+        if self.collectionView.currentLayoutDirection.isRTL {
+            self.collectionView.transform = .init(scaleX: -1, y: 1)
+        }
     }
     
     /// This is configure method.
@@ -107,9 +106,7 @@ open class SBUHorizontalSuggestedReplyView: SBUSuggestedReplyView, UICollectionV
         _ collectionView: UICollectionView,
         numberOfItemsInSection section: Int
     ) -> Int {
-        // NOTE:
-        // there is an autolayout bug that does not draw 1 cell if collectionview height is less than 50 pxiel, so add 1 to count.
-        return (self.params?.replyOptions.count ?? 0) + 1
+        return (self.params?.replyOptions.count ?? 0)
     }
     
     open func collectionView(
@@ -120,11 +117,29 @@ open class SBUHorizontalSuggestedReplyView: SBUSuggestedReplyView, UICollectionV
             withReuseIdentifier: HorizontalSuggestedReplyViewCell.sbu_className,
             for: indexPath
         ) as? HorizontalSuggestedReplyViewCell else {
-            return HorizontalSuggestedReplyViewEmptyCell.cell(with: collectionView, indexPath: indexPath)
+            return UICollectionViewCell()
+        }
+        
+        if cell.currentLayoutDirection.isRTL {
+            cell.contentView.transform = .init(scaleX: -1, y: 1)
         }
         
         cell.configure(with: option, delegate: self)
         return cell
+    }
+    
+    open func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        sizeForItemAt indexPath: IndexPath
+    ) -> CGSize {
+        guard let value = self.items[safe: indexPath.row] else { return .zero }
+        let size = (value as NSString).size(withAttributes: [NSAttributedString.Key.font: SBUTheme.messageCellTheme.userMessageFont])
+        
+        return CGSize(
+            width: (15 + size.width + 15).rounded(.up),
+            height: 30
+        )
     }
 }
 
@@ -170,26 +185,4 @@ open class HorizontalSuggestedReplyViewCell: SBUCollectionViewCell {
         self.optionView.sbu_constraint(equalTo: self.contentView, left: 0, right: 0, top: 0, bottom: 0)
     }
     
-}
-
-open class HorizontalSuggestedReplyViewEmptyCell: SBUCollectionViewCell {
-    public override func setupStyles() {
-        super.setupStyles()
-        
-        self.contentView.backgroundColor = .clear
-        self.backgroundColor = .clear
-    }
-
-    open override func setupLayouts() {
-        super.setupLayouts()
-
-        self.contentView.sbu_constraint(width: 1, height: HorizontalSuggestedReplyViewCell.cellHeight)
-    }
-    
-    static func cell(with collectionView: UICollectionView, indexPath: IndexPath) -> SBUCollectionViewCell {
-        collectionView.dequeueReusableCell(
-            withReuseIdentifier: HorizontalSuggestedReplyViewEmptyCell.sbu_className,
-            for: indexPath
-        ) as? HorizontalSuggestedReplyViewEmptyCell ?? HorizontalSuggestedReplyViewEmptyCell()
-    }
 }

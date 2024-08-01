@@ -49,6 +49,7 @@ public class SBUVoiceMessageInputView: NSObject, SBUViewLifeCycle {
     var overlayView = UIButton()
     var contentView = UIView()
     
+    var progressContainerView = UIView()
     var progressView = UIProgressView(progressViewStyle: .bar)
     var progressTimeLabel = UILabel()
     var progressRecordingIcon = UIImageView()
@@ -102,12 +103,16 @@ public class SBUVoiceMessageInputView: NSObject, SBUViewLifeCycle {
         self.baseView.addSubview(self.overlayView)
         self.baseView.addSubview(self.contentView)
         
+        self.progressContainerView.backgroundColor = .clear
+        
         // Progress
         self.progressView.progress = 0.0
+        self.progressView.semanticContentAttribute = .forceLeftToRight
         self.progressTimeLabel.text = SBUUtils.convertToPlayTime(0)
-        self.progressView.addSubview(self.progressTimeLabel)
-        self.progressView.addSubview(self.progressRecordingIcon)
-        self.contentView.addSubview(self.progressView)
+        self.progressContainerView.addSubview(self.progressView)
+        self.progressContainerView.addSubview(self.progressTimeLabel)
+        self.progressContainerView.addSubview(self.progressRecordingIcon)
+        self.contentView.addSubview(self.progressContainerView)
         
         // Buttons
         self.cancelButton.addTarget(self, action: #selector(onTapCancel), for: .touchUpInside)
@@ -139,13 +144,16 @@ public class SBUVoiceMessageInputView: NSObject, SBUViewLifeCycle {
             .sbu_constraint(height: 134)
         
         // progress
-        self.progressView
+        self.progressContainerView
             .sbu_constraint(equalTo: self.contentView, leading: 16, trailing: -16, top: 24)
             .sbu_constraint(height: 36)
         
+        self.progressView
+            .sbu_constraint(equalTo: self.progressContainerView, leading: 0, trailing: 0, top: 0, bottom: 0)
+
         self.progressTimeLabel
-            .sbu_constraint(equalTo: self.progressView, trailing: -16)
-            .sbu_constraint(equalTo: self.progressView, centerY: 0)
+            .sbu_constraint(equalTo: self.progressContainerView, trailing: -16)
+            .sbu_constraint(equalTo: self.progressContainerView, centerY: 0)
         
         self.progressRecordingIcon
             .sbu_constraint(width: 12, height: 12)
@@ -227,10 +235,10 @@ public class SBUVoiceMessageInputView: NSObject, SBUViewLifeCycle {
             self.progressView.trackTintColor = self.theme.progressTrackDeactivatedTintColor
             self.progressTimeLabel.textColor = self.theme.progressDeactivatedTimeColor
         case .recording:
-            if Float(Int(time) / 1000) > 0.1 {
+            if Float(Int(time) / 500) > 0.1 {
                 progress = Float(time / SBUGlobals.voiceMessageConfig.recorder.maxRecordingTime)
             }
-            let isEvenSeconds = Int(time / 1000) % 2 == 1
+            let isEvenSeconds = Int(time / 500) % 2 == 1
             self.progressRecordingIcon.isHidden = isEvenSeconds
         case .finishRecording:
             break

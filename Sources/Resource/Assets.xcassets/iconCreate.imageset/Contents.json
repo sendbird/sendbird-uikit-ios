@@ -3,16 +3,37 @@
     {
       "filename" : "iconCreate.png",
       "idiom" : "universal",
+      "language-direction" : "left-to-right",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "iconCreateRTL.png",
+      "idiom" : "universal",
+      "language-direction" : "right-to-left",
       "scale" : "1x"
     },
     {
       "filename" : "iconCreate@2x.png",
       "idiom" : "universal",
+      "language-direction" : "left-to-right",
+      "scale" : "2x"
+    },
+    {
+      "filename" : "iconCreateRTL@2x.png",
+      "idiom" : "universal",
+      "language-direction" : "right-to-left",
       "scale" : "2x"
     },
     {
       "filename" : "iconCreate@3x.png",
       "idiom" : "universal",
+      "language-direction" : "left-to-right",
+      "scale" : "3x"
+    },
+    {
+      "filename" : "iconCreateRTL@3x.png",
+      "idiom" : "universal",
+      "language-direction" : "right-to-left",
       "scale" : "3x"
     }
   ],
