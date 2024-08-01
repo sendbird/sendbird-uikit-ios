@@ -52,6 +52,9 @@ extension SBUFeedNotificationChannelModule {
             )
             view.translatesAutoresizingMaskIntoConstraints = false
             
+            if view.currentLayoutDirection.isRTL {
+                view.transform = .init(scaleX: -1, y: 1)
+            }
             return view
         }()
         
@@ -164,6 +167,10 @@ extension SBUFeedNotificationChannelModule.CategoryFilter: UICollectionViewDataS
         
         cell.label.text = categories[indexPath.row].name
         cell.updateSelectionStatus(isSelected: indexPath.row == self.selectedIndex)
+        
+        if cell.currentLayoutDirection.isRTL {
+            cell.contentView.transform = .init(scaleX: -1, y: 1)
+        }
         
         return cell
     }

@@ -5430,6 +5430,7 @@ public struct SBUHighlightMessageInfo {
   @_Concurrency.MainActor(unsafe) override open func configure(with configuration: SendbirdUIKit.SBUSuggestedReplyViewParams, delegate: (any SendbirdUIKit.SBUSuggestedReplyViewDelegate)? = nil)
   @_Concurrency.MainActor(unsafe) @objc open func collectionView(_ collectionView: UIKit.UICollectionView, numberOfItemsInSection section: Swift.Int) -> Swift.Int
   @_Concurrency.MainActor(unsafe) @objc open func collectionView(_ collectionView: UIKit.UICollectionView, cellForItemAt indexPath: Foundation.IndexPath) -> UIKit.UICollectionViewCell
+  @_Concurrency.MainActor(unsafe) @objc open func collectionView(_ collectionView: UIKit.UICollectionView, layout collectionViewLayout: UIKit.UICollectionViewLayout, sizeForItemAt indexPath: Foundation.IndexPath) -> CoreFoundation.CGSize
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
   @objc deinit
@@ -5438,13 +5439,6 @@ public struct SBUHighlightMessageInfo {
   @_Concurrency.MainActor(unsafe) public static var cellHeight: CoreFoundation.CGFloat
   @_Concurrency.MainActor(unsafe) public var optionView: SendbirdUIKit.SBUHorizontalSuggestedReplyOptionView
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupViews()
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public func setupStyles()
-  @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupLayouts()
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
-  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
-  @objc deinit
-}
-@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class HorizontalSuggestedReplyViewEmptyCell : SendbirdUIKit.SBUCollectionViewCell {
   @_Concurrency.MainActor(unsafe) @objc override dynamic public func setupStyles()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupLayouts()
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
@@ -11875,6 +11869,9 @@ extension UIKit.UIView {
   @_Concurrency.MainActor(unsafe) public func sbu_constraint_greaterThan_v2(widthAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutDimension>? = nil, width: CoreFoundation.CGFloat? = nil, heightAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutDimension>? = nil, height: CoreFoundation.CGFloat? = nil, priority: UIKit.UILayoutPriority? = nil) -> [UIKit.NSLayoutConstraint]
   @discardableResult
   @_Concurrency.MainActor(unsafe) public func sbu_constraint_lessThan_v2(widthAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutDimension>? = nil, width: CoreFoundation.CGFloat? = nil, heightAnchor: UIKit.NSLayoutAnchor<UIKit.NSLayoutDimension>? = nil, height: CoreFoundation.CGFloat? = nil, priority: UIKit.UILayoutPriority? = nil) -> [UIKit.NSLayoutConstraint]
+}
+extension UIKit.UIView {
+  @_Concurrency.MainActor(unsafe) public static func setSemanticContentAttributeRecursively(view: UIKit.UIView, attribute: UIKit.UISemanticContentAttribute)
 }
 @available(*, deprecated, renamed: "SBUDateFormatSet")
 extension Foundation.Date.SBUDateFormat : Swift.Equatable {}

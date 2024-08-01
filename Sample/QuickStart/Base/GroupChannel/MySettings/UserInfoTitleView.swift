@@ -47,10 +47,8 @@ class UserInfoTitleView: UIView {
         self.addSubview(stackView)
         
         self.addSubview(lineView)
-        
-        self.userIdTitleLabel.textAlignment = .left
+
         self.userIdTitleLabel.isUserInteractionEnabled = false
-        self.userIdLabel.textAlignment = .left
         self.userIdLabel.isUserInteractionEnabled = false
         self.addSubview(self.userIdTitleLabel)
         self.addSubview(self.userIdLabel)

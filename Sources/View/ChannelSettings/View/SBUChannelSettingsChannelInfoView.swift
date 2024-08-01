@@ -50,10 +50,6 @@ public class SBUChannelSettingsChannelInfoView: SBUView {
         super.setupViews()
         
         self.channelNameField.textAlignment = .center
-        let paddingView: UIView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 0))
-        self.channelNameField.leftView = paddingView
-        self.channelNameField.leftViewMode = .always
-        self.channelNameField.rightView = paddingView
         self.channelNameField.rightViewMode = .always
         self.channelNameField.returnKeyType = .done
         self.channelNameField.isUserInteractionEnabled = false
@@ -92,10 +88,10 @@ public class SBUChannelSettingsChannelInfoView: SBUView {
         self.stackView
             .sbu_constraint_equalTo(
                 leftAnchor: self.safeAreaLayoutGuide.leftAnchor, 
-                left: 0,
+                left: 16,
                 rightAnchor: self.safeAreaLayoutGuide.rightAnchor,
-                right: 0,
-                topAnchor: self.topAnchor, 
+                right: 16,
+                topAnchor: self.topAnchor,
                 top: 20
             )
         

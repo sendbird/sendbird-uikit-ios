@@ -101,10 +101,7 @@ public enum SBUIconSetType: String, Hashable {
     private static let bundle = Bundle(identifier: SBUConstant.bundleIdentifier)
     
     func load(tintColor: UIColor? = nil) -> UIImage {
-        guard let image = UIImage(named: self.rawValue, in: SBUIconSetType.bundle, compatibleWith: nil) else {
-            return UIImage()
-        }
-        guard let tintColor = tintColor else { return image }
+        let image = UIImage(named: self.rawValue, in: SBUIconSetType.bundle, compatibleWith: nil) ?? UIImage()
         
         return image.sbu_with(tintColor: tintColor)
     }

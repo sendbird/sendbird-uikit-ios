@@ -75,6 +75,10 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
         self.collectionView.showsVerticalScrollIndicator = false
         self.collectionView.isScrollEnabled = false
         self.collectionView.backgroundColor = .clear
+        
+        if self.collectionView.currentLayoutDirection.isRTL {
+            self.collectionView.transform = .init(scaleX: -1, y: 1)
+        }
 
         self.addSubview(self.collectionView)
     }
@@ -192,6 +196,10 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
         
         cell.removeGestureRecognizer(moreEmojiTapRecognizer)
         
+        if cell.currentLayoutDirection.isRTL {
+            cell.contentView.transform = .init(scaleX: -1, y: 1)
+        }
+        
         if self.hasMoreEmoji(at: indexPath) {
             let moreEmoji = SBUIconSetType.iconEmojiMore.image(
                 with: theme.addReactionTintColor,
@@ -232,6 +240,7 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
         DispatchQueue.main.async {
             cell.isSelected = reaction.userIds.contains(currentUser.userId)
         }
+        
         return cell
     }
 

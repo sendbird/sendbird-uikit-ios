@@ -201,11 +201,10 @@ extension ViewController {
         let appId = UserDefaults.loadAppId(type: .basicUsage)
         if appId == nil || appId?.count == 0 {
             UserDefaults.saveAppId(type: .basicUsage, appId: "FEA2129A-EA73-4EB9-9E0B-EC738E7EB768")
+            #if INSPECTION
+            UserDefaults.saveRegion(type: .basicUsage, region: .production)
+            #endif
         }
-
-        #if INSPECTION
-        UserDefaults.saveRegion(type: .basicUsage, region: .production)
-        #endif
     }
     
     /// Sets default information for chatbot sample.
@@ -213,11 +212,10 @@ extension ViewController {
         let appId = UserDefaults.loadAppId(type: .chatBot)
         if appId == nil || appId?.count == 0 {
             UserDefaults.saveAppId(type: .chatBot, appId: "FEA2129A-EA73-4EB9-9E0B-EC738E7EB768")
+            #if INSPECTION
+            UserDefaults.saveRegion(type: .chatBot, region: .production)
+            #endif
         }
-
-        #if INSPECTION
-        UserDefaults.saveRegion(type: .chatBot, region: .production)
-        #endif
     }
     
     /// Sets default information for custom sample.
@@ -225,11 +223,10 @@ extension ViewController {
         let appId = UserDefaults.loadAppId(type: .customSample)
         if appId == nil || appId?.count == 0 {
             UserDefaults.saveAppId(type: .customSample, appId: "FEA2129A-EA73-4EB9-9E0B-EC738E7EB768")
+            #if INSPECTION
+            UserDefaults.saveRegion(type: .customSample, region: .production)
+            #endif
         }
-        
-        #if INSPECTION
-        UserDefaults.saveRegion(type: .customSample, region: .production)
-        #endif
     }
     
     /// Sets default information for business messaging sample.
@@ -237,11 +234,11 @@ extension ViewController {
         let appId = UserDefaults.loadAppId(type: .businessMessagingSample)
         if appId == nil || appId?.count == 0 {
             UserDefaults.saveAppId(type: .businessMessagingSample, appId: "FEA2129A-EA73-4EB9-9E0B-EC738E7EB768")
+            
+            #if INSPECTION
+            UserDefaults.saveRegion(type: .businessMessagingSample, region: .production)
+            #endif
         }
-        
-        #if INSPECTION
-        UserDefaults.saveRegion(type: .businessMessagingSample, region: .production)
-        #endif
     }
 }
 

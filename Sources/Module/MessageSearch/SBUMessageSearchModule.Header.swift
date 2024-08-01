@@ -180,7 +180,7 @@ extension SBUMessageSearchModule {
                 for: .clear,
                 state: .normal
             )
-            
+
             searchBar.placeholder = SBUStringSet.Search
             searchBar.barTintColor = self.theme?.cancelButtonTintColor
             
@@ -206,6 +206,17 @@ extension SBUMessageSearchModule {
                         )
                         textfield.backgroundColor = theme.searchTextBackgroundColor
                     }
+                }
+            }
+            
+            // NOTE: Fixed an issue with images not displaying correctly on some versions of iOS14 and below.
+            if let textField = searchBar.value(forKey: "searchField") as? UITextField {
+                if let searchButton = textField.leftView as? UIImageView {
+                    searchButton.setContentHuggingPriority(.required, for: .horizontal)
+                    searchButton.setContentHuggingPriority(.required, for: .vertical)
+                    searchButton.setContentCompressionResistancePriority(.required, for: .horizontal)
+                    searchButton.setContentCompressionResistancePriority(.required, for: .vertical)
+                    searchButton.contentMode = .scaleAspectFit
                 }
             }
         }

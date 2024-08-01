@@ -33,7 +33,7 @@ open class SBUUserMessageTextView: SBUView {
     public var textView: SBULinkClickableTextView = {
         var textView = SBULinkClickableTextView()
         textView.backgroundColor = .clear
-        textView.textAlignment = .left
+        textView.textAlignment = .natural
         textView.textContainer.lineBreakMode = .byCharWrapping
         textView.showsVerticalScrollIndicator = false
         textView.showsHorizontalScrollIndicator = false

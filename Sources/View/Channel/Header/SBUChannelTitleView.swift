@@ -48,11 +48,10 @@ public class SBUChannelTitleView: UIView {
         self.coverImage.clipsToBounds = true
         self.coverImage.frame = CGRect(x: 0, y: 0, width: kCoverImageSize, height: kCoverImageSize)
         
-        self.titleLabel.textAlignment = .left
-        
+        self.titleLabel.textAlignment = .natural
         self.onlineStateIcon = UIView(frame: CGRect(x: 0, y: 0, width: 6, height: 6))
         
-        self.statusField.textAlignment = .left
+        self.statusField.textAlignment = .natural
         self.statusField.leftView = self.onlineStateIcon
         self.statusField.leftViewMode = .never
         self.statusField.isUserInteractionEnabled = false
@@ -65,11 +64,13 @@ public class SBUChannelTitleView: UIView {
         self.contentView.addSubview(self.coverImage)
         self.contentView.addSubview(self.stackView)
         self.addSubview(self.contentView)
+        
     }
     
     func setupLayouts() {
-        self.contentView.sbu_constraint(equalTo: self, left: 0, right: 0, top: 0, bottom: 0)
-        
+        self.contentView
+            .sbu_constraint(equalTo: self, leading: 0, trailing: 0, top: 0, bottom: 0)
+
         self.contentHeightConstant = self.contentView.heightAnchor.constraint(
             equalToConstant: self.bounds.height
         )
@@ -79,23 +80,23 @@ public class SBUChannelTitleView: UIView {
         ])
         
         NSLayoutConstraint.sbu_activate(baseView: self.coverImage, constraints: [
-            self.coverImage.leftAnchor.constraint(equalTo: self.contentView.leftAnchor, constant: 5),
+            self.coverImage.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 5),
             self.coverImage.widthAnchor.constraint(equalToConstant: kCoverImageSize),
             self.coverImage.heightAnchor.constraint(equalToConstant: kCoverImageSize),
             self.coverImage.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: 0),
         ])
         
         NSLayoutConstraint.sbu_activate(baseView: self.stackView, constraints: [
-            self.stackView.leftAnchor.constraint(
-                equalTo: self.coverImage.rightAnchor,
+            self.stackView.leadingAnchor.constraint(
+                equalTo: self.coverImage.trailingAnchor,
                 constant: 8
             ),
             self.stackView.heightAnchor.constraint(
                 equalTo: self.coverImage.heightAnchor,
                 multiplier: 1.0
             ),
-            self.stackView.rightAnchor.constraint(
-                equalTo: self.contentView.rightAnchor,
+            self.stackView.trailingAnchor.constraint(
+                equalTo: self.contentView.trailingAnchor,
                 constant: 5),
             self.stackView.centerYAnchor.constraint(
                 equalTo: self.centerYAnchor,

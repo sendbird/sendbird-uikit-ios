@@ -23,16 +23,16 @@ extension SBUMessageTemplate.Renderer {
         imageView.identifier = item.identifier
         imageView.originalImage = image
         
-        self.rendererConstraints.forEach { $0.isActive = false }
-        placeholderConstraints.forEach { $0.isActive = false }
+        NSLayoutConstraint.deactivate(self.rendererConstraints)
+        NSLayoutConstraint.deactivate(placeholderConstraints)
         
         imageView.setNeedsLayout()
-        
+
         self.rendererConstraints += imageType.ratioConstraintsBySize(image.size, view: imageView)
-        self.rendererConstraints.forEach { $0.isActive = true }
+        NSLayoutConstraint.activate(self.rendererConstraints)
         
         if imageType.haveToUseRatio() == true {
-            placeholderConstraints.forEach { $0.isActive = true }
+            NSLayoutConstraint.activate(placeholderConstraints)
             self.delegate?.messageTemplateRender(self, didFinishLoadingImage: imageView)
         }
     }
@@ -55,11 +55,12 @@ extension SBUMessageTemplate.Renderer {
         button.setNeedsLayout()
         
         if let size = imageView.image?.size {
-            self.rendererConstraints.forEach { $0.isActive = false }
-            placeholderConstraints.forEach { $0.isActive = false }
+            NSLayoutConstraint.deactivate(self.rendererConstraints)
+            NSLayoutConstraint.deactivate(placeholderConstraints)
             
             self.rendererConstraints += item.ratioConstraintsBySize(size, view: button)
             self.rendererConstraints.forEach { $0.isActive = true }
+            NSLayoutConstraint.activate(self.rendererConstraints)
             
             if item.haveToUseRatio() == true {
                 self.delegate?.messageTemplateRender(self, didFinishLoadingImage: imageView)

@@ -173,7 +173,7 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
         self.viewModel?.enableLogImpression(true)
         self.viewModel?.markAsViewed(messages: self.listComponent?.getVisibleMessages() ?? [])
     }
-    
+
     open override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
@@ -346,9 +346,6 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
         self.headerComponent?.updateStyles()
         self.categoryFilterComponent?.updateStyles()
         self.listComponent?.updateStyles()
-        
-        self.categoryFilterComponent?.reloadCollectionView()
-        self.listComponent?.reloadTableView()
     }
 
     open override func updateLayouts() {

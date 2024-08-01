@@ -136,6 +136,7 @@ extension Date {
         timeFormat: String = SBUDateFormatSet.hhmm,
         yesterdayFormat: String? = nil
     ) -> String? {
+        let localizedFormat = UIView.getCurrentLayoutDirection() == .rightToLeft ? true : false
         let baseDate = Date.sbu_from(baseTimestamp)
         let currDate = Date()
          
@@ -153,7 +154,7 @@ extension Date {
                 baseDateComponents.day != currDateComponents.day {
                 
                 if let yesterdayFormat = yesterdayFormat {
-                    return baseDate.sbu_toString(dateFormat: yesterdayFormat, localizedFormat: false)
+                    return baseDate.sbu_toString(dateFormat: yesterdayFormat, localizedFormat: localizedFormat)
                 }
                 
                 let interval = (currDateComponents.day ?? 0) - (baseDateComponents.day ?? 0)
@@ -164,12 +165,12 @@ extension Date {
             
             if (baseDateComponents.year != currDateComponents.year),
                 let pastYearFormat = pastYearFormat {
-                return baseDate.sbu_toString(dateFormat: pastYearFormat, localizedFormat: false)
+                return baseDate.sbu_toString(dateFormat: pastYearFormat, localizedFormat: localizedFormat)
             }
             
-            return baseDate.sbu_toString(dateFormat: dateFormat, localizedFormat: false)
+            return baseDate.sbu_toString(dateFormat: dateFormat, localizedFormat: localizedFormat)
         } else {
-            return baseDate.sbu_toString(dateFormat: timeFormat, localizedFormat: false)
+            return baseDate.sbu_toString(dateFormat: timeFormat, localizedFormat: localizedFormat)
         }
     }
     

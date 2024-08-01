@@ -21,7 +21,7 @@ class LiveStreamChannelListModule {
             cell.textLabel?.textColor = SBUTheme.groupChannelCellTheme.memberCountTextColor
             cell.textLabel?.sbu_constraint(
                 equalTo: cell.contentView,
-                left: 16,
+                leading: 16,
                 top: 16,
                 bottom: 8
             )
