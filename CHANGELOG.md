@@ -1,5 +1,16 @@
 # Changelog
 
+### v3.26.0 (Aug 14, 2024)
+
+
+- Fixed wrong background color issue in mention limit guide
+- Improve stream message determination criteria
+- Fixed an issue where the alignment of menu and aciton sheet was exposed as rtl style.
+- Fixed text alignment in `SBUUserMessageTextView` and `SBUMessageInputView` to be changed by checking the RTL property of the input message if the app is RTL layout
+    - Add `isRTLCharacter(with:)` static method in `SBUUtils`
+    - Add `rtlCharacterSet ` static property in `SBUUtils`
+
+
 ### v3.25.0 (Aug 01, 2024)
 
 

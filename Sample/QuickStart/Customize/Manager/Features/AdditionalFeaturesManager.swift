@@ -20,6 +20,8 @@ class AdditionalFeaturesManager: BaseCustomManager {
             translationReportMetadata()
 //        case .channelMetadata:
 //            channelMetaData()
+        case .webviewChatBotWidget:
+            webviewChatBotWidget()
         default:
             break
         }
@@ -40,10 +42,13 @@ class AdditionalFeaturesManager: BaseCustomManager {
             )
             #endif
             
-            
-            
             // Move to ChannelViewController using customized components
             self.navigationController?.pushViewController(channelVC, animated: true)
         }
+    }
+    
+    func webviewChatBotWidget() {
+        let webViewVc = CustomWebView_ChatBotWidgetController()
+        self.navigationController?.pushViewController(webViewVc, animated: true)
     }
 }

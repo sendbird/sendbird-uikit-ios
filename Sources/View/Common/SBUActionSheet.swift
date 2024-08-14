@@ -328,7 +328,7 @@ public class SBUActionSheet: NSObject {
         var titleLabelPosX: CGFloat = 0
         var titleLabelWidth: CGFloat = 0
         var textAlignment: NSTextAlignment = .left
-        if UIView.appearance().semanticContentAttribute == .forceLeftToRight {
+        if UIView.getCurrentLayoutDirection().isLTR == true {
             textAlignment = .left
             titleLabelPosX = self.insideMargin
             if item.image != nil {

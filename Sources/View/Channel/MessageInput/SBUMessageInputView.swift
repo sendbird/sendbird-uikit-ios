@@ -732,6 +732,15 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         self.textView?.layer.borderColor = theme.textFieldBorderColor.cgColor
         self.textView?.typingAttributes = defaultAttributes
         
+        // support rtl layout
+        if self.currentLayoutDirection == .rightToLeft {
+            if SBUUtils.isRTLCharacter(with: self.placeholderLabel.text) {
+                self.placeholderLabel.textAlignment = .right
+            } else {
+                self.placeholderLabel.textAlignment = .left
+            }
+        }
+        
         // addButton
         let iconAdd = SBUIconSetType.iconAdd
             .image(with: (self.isFrozen || self.isMuted || self.isDisabledByServer || self.isDisabled)
@@ -1069,6 +1078,15 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
             self.voiceMessageButton?.isHidden = !(showsVoiceMessageButton && (self.sendButton?.isHidden ?? false))
             self.textViewTrailingPaddingView.isHidden = (self.sendButton?.isHidden == true) && (self.voiceMessageButton?.isHidden == true)
             self.layoutIfNeeded()
+        }
+        
+        // support rtl layout
+        if self.currentLayoutDirection == .rightToLeft {
+            if SBUUtils.isRTLCharacter(with: text) {
+                self.textView?.textAlignment = .right
+            } else {
+                self.textView?.textAlignment = .left
+            }
         }
         
         self.delegate?.messageInputView(self, didChangeText: text)

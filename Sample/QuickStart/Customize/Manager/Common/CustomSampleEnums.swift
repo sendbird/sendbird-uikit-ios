@@ -29,6 +29,7 @@ enum ChannelListCustomType: Int {
 
 enum AdditionalFeaturesType: Int {
     case translationAndReport = 0
+    case webviewChatBotWidget
 }
 
 enum ChannelCustomType: Int {
@@ -139,7 +140,8 @@ enum CustomSection: Int, CaseIterable {
                     "Custom cell",
                     "Function Overriding"]
         case .AdditionalFeatures:
-            return ["Translation, Report, Channel Metadata"]
+            return ["Translation, Report, Channel Metadata",
+                    "WebView ChatBot Widget"]
         case .none:
             return []
         }
@@ -197,8 +199,8 @@ enum CustomSection: Int, CaseIterable {
                     "[MemberListCustomManager cellCustom()]",
                     "MemberListVC_Overriding.swift"]
         case .AdditionalFeatures:
-            return ["[AdditionalFeaturesManager translationReportMetadata()]"]
-            
+            return ["[AdditionalFeaturesManager translationReportMetadata()]",
+                    "CustomWebView_ChatBotWidgetController.swift"]
         case .none:
             return []
         }

@@ -65,4 +65,21 @@ extension BaseMessage {
     public func decodeCustomViewData<ViewData: Decodable>() throws -> ViewData? {
         try self.asExtendedMessagePayload?.decodeCustomViewData()
     }
+    
+    /// Indicates if the message is a stream (being updated) message.
+    /// - Since: 3.26.0
+    public var isStreamMessage: Bool {
+        StreamData.make(self).stream == true
+    }
+}
+
+extension BaseMessage {
+    fileprivate struct StreamData: Codable {
+        let stream: Bool?
+        
+        static func make(_ message: BaseMessage) -> StreamData {
+            guard let jsonData = message.data.data(using: .utf8) else { return StreamData(stream: false) }
+            return (try? JSONDecoder().decode(StreamData.self, from: jsonData)) ?? StreamData(stream: false)
+        }
+    }
 }

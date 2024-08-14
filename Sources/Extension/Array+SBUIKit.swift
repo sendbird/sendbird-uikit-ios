@@ -69,8 +69,9 @@ extension Array where Element: BaseMessage {
         guard message.updatedAt == 0 else { return  nil }
         guard message.sendingStatus == .succeeded else { return nil }
         guard message.sender?.userId != SBUGlobals.currentUser?.userId else { return nil }
-        
-        return message
+        if message.isStreamMessage == true { return message }
+        if latestMessage.isStreamMessage == true { return message }
+        return nil
     }
 }
 

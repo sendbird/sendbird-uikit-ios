@@ -51,6 +51,8 @@ open class SBUMentionLimitGuideCell: SBUTableViewCell {
     open override func setupStyles() {
         super.setupStyles()
         
+        self.backgroundColor = theme.backgroundColor
+        
         self.iconImageView.image = SBUIconSetType.iconInfo.image(
             with: theme.mentionLimitGuideTextColor,
             to: SBUIconSetType.Metric.defaultIconSizeMedium
