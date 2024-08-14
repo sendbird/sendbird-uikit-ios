@@ -54,6 +54,9 @@ extension SendbirdChatSDK.BaseMessage {
     get
   }
   public func decodeCustomViewData<ViewData>() throws -> ViewData? where ViewData : Swift.Decodable
+  public var isStreamMessage: Swift.Bool {
+    get
+  }
 }
 extension SendbirdChatSDK.BaseMessage {
   @available(*, deprecated, message: "Use `BaseMessage.suggestedReplies`")
@@ -11448,6 +11451,10 @@ public protocol SBUUserProfileViewProtocol {
   public static func isValid(channelName: Swift.String, type: SendbirdChatSDK.ChannelType = .group) -> Swift.Bool
   public static func emptyTitleForRowEditAction(for size: CoreFoundation.CGSize) -> Swift.String
   @objc deinit
+}
+extension SendbirdUIKit.SBUUtils {
+  public static func isRTLCharacter(with string: Swift.String?) -> Swift.Bool
+  public static var rtlCharacterSet: Foundation.CharacterSet
 }
 @objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUVerticalSuggestedReplyView : SendbirdUIKit.SBUSuggestedReplyView {
   @_Concurrency.MainActor(unsafe) public var stackView: UIKit.UIStackView

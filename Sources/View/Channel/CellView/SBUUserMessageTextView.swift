@@ -181,6 +181,15 @@ open class SBUUserMessageTextView: SBUView {
             with: model.attributedText,
             isEnabled: model.isMarkdownEnabled
         )        
+        
+        if self.currentLayoutDirection == .rightToLeft {
+            if SBUUtils.isRTLCharacter(with: self.textView.attributedText.string) {
+                self.textView.textAlignment = .right
+            } else {
+                self.textView.textAlignment = .left
+            }            
+        }
+        
         self.textView.linkTextAttributes = [
             .foregroundColor: model.textColor,
             .underlineStyle: NSUnderlineStyle.single.rawValue

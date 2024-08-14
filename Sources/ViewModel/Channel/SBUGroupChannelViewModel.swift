@@ -79,6 +79,16 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
     /// - Since: 3.3.5
     var displaysLocalCachedListFirst: Bool = false
     
+    /// Variable to cache the latest stream message ( reset to nil after use)
+    /// - Since: 3.26.0
+    weak var lastestStreamingMessage: BaseMessage?
+    
+    /// Computed property to get the most latest succeeded message based on the parameter settings in the message collection.
+    /// - Since: 3.26.0
+    var latestSucceededMessage: BaseMessage? {
+        self.messageListParams.reverse ? self.messageCollection?.succeededMessages.first : self.messageCollection?.succeededMessages.last
+    }
+    
     // MARK: - LifeCycle
     public init(channel: BaseChannel? = nil,
                 channelURL: String? = nil,
@@ -693,9 +703,13 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
         updatedMessages messages: [BaseMessage]
     ) {
         // pending -> failed, pending -> succeded, failed -> Pending
+
+        let hasAnyBots = channel.hasBot || channel.hasAIBot
+        let latestMessage = self.lastestStreamingMessage ?? self.latestSucceededMessage
         
         // NOTE: stream message for gen-ai bot.
-        if let streamMessage = messages.hasStreamMessageOnly(with: self.messageCollection?.succeededMessages.first) {
+        if hasAnyBots == true, let streamMessage = messages.hasStreamMessageOnly(with: latestMessage) {
+            self.lastestStreamingMessage = streamMessage
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 self.delegate?.groupChannelViewModel(
                     self,
@@ -713,6 +727,7 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
                     messages: [streamMessage],
                     needReload: false
                 )
+                self.lastestStreamingMessage = nil
             }
             return
         }
