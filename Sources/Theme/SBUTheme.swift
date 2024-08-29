@@ -1415,11 +1415,33 @@ public class SBUMessageCellTheme {
         theme.formInputTitleColor = SBUColorSet.onLightTextHighEmphasis
         theme.formInputIconColor = SBUColorSet.secondaryMain
         theme.formInputBorderNormalColor = SBUColorSet.onLightTextDisabled
+        theme.formInputBorderActiveColor = SBUColorSet.primaryMain
+        theme.formInputBorderErrorColor = SBUColorSet.errorMain
         theme.formInputErrorColor = SBUColorSet.errorMain
         theme.formInputPlaceholderColor = SBUColorSet.onLightTextLowEmphasis
         theme.formSubmitButtonBackgroundColor = SBUColorSet.primaryMain
-        theme.formSubmitButtonBackgroundDisabledColor = SBUColorSet.onLightTextDisabled
+        theme.formSubmitButtonBackgroundDisabledColor = SBUColorSet.background100
         theme.formSubmitButtonTitleColor = SBUColorSet.onDarkTextHighEmphasis
+        theme.formSubmitButtonTitleDisabledColor = SBUColorSet.onLightTextDisabled
+        
+        theme.formChipBackgroundNormalColor = SBUColorSet.background50
+        theme.formChipBackgroundSelectColor = SBUColorSet.primaryExtraLight
+        theme.formChipBackgroundDisableColor = SBUColorSet.onDarkTextMidEmphasis
+        theme.formChipBackgroundSubmittedColor = SBUColorSet.onDarkTextMidEmphasis
+        theme.formChipTitleNormalColor = SBUColorSet.onLightTextMidEmphasis
+        theme.formChipTitleSelectColor = SBUColorSet.primaryMain
+        theme.formChipTitleDisableColor = SBUColorSet.onLightTextMidEmphasis
+        theme.formChipTitleSubmittedColor = SBUColorSet.onLightTextHighEmphasis
+        theme.formChipBorderNormalColor = SBUColorSet.onLightTextDisabled
+        theme.formChipBorderSelectColor = SBUColorSet.primaryMain
+        theme.formChipBorderDisableColor = SBUColorSet.onDarkTextDisabled
+        theme.formChipBorderSubmittedColor = UIColor.clear
+        theme.formTitleFont = SBUFontSet.caption3
+        theme.formOptionalTitleFont = SBUFontSet.caption3
+        theme.formErrorTitleFont = SBUFontSet.caption4
+        theme.formInputTextFont = SBUFontSet.body3
+        theme.formChipTextFont = SBUFontSet.caption1
+        theme.formSubmittButtonFont = SBUFontSet.button3
         
         // Typing message
         theme.typingMessageProfileBorderColor = SBUColorSet.background50
@@ -1590,11 +1612,34 @@ public class SBUMessageCellTheme {
         theme.formInputTitleColor = SBUColorSet.onDarkTextHighEmphasis
         theme.formInputIconColor = SBUColorSet.secondaryLight
         theme.formInputBorderNormalColor = SBUColorSet.onDarkTextDisabled
+        theme.formInputBorderActiveColor = SBUColorSet.primaryLight
+        theme.formInputBorderErrorColor = SBUColorSet.errorMain
         theme.formInputErrorColor = SBUColorSet.errorLight
         theme.formInputPlaceholderColor = SBUColorSet.onDarkTextMidEmphasis
         theme.formSubmitButtonBackgroundColor = SBUColorSet.primaryLight
-        theme.formSubmitButtonBackgroundDisabledColor = SBUColorSet.onLightTextDisabled
+        theme.formSubmitButtonBackgroundDisabledColor = SBUColorSet.background500
         theme.formSubmitButtonTitleColor = SBUColorSet.onLightTextHighEmphasis
+        theme.formSubmitButtonTitleDisabledColor = SBUColorSet.onDarkTextDisabled
+        
+        theme.formChipBackgroundNormalColor = SBUColorSet.onLightTextLowEmphasis
+        theme.formChipBackgroundSelectColor = SBUColorSet.background600
+        theme.formChipBackgroundDisableColor = SBUColorSet.background500
+        theme.formChipBackgroundSubmittedColor = SBUColorSet.onLightTextDisabled
+        theme.formChipTitleNormalColor = SBUColorSet.onDarkTextMidEmphasis
+        theme.formChipTitleSelectColor = SBUColorSet.primaryLight
+        theme.formChipTitleDisableColor = SBUColorSet.onDarkTextDisabled
+        theme.formChipTitleSubmittedColor = SBUColorSet.onDarkTextHighEmphasis
+        theme.formChipBorderNormalColor = SBUColorSet.onDarkTextDisabled
+        theme.formChipBorderSelectColor = SBUColorSet.primaryLight
+        theme.formChipBorderDisableColor = SBUColorSet.background500
+        theme.formChipBorderSubmittedColor = UIColor.clear
+        
+        theme.formTitleFont = SBUFontSet.caption3
+        theme.formOptionalTitleFont = SBUFontSet.caption3
+        theme.formErrorTitleFont = SBUFontSet.caption4
+        theme.formInputTextFont = SBUFontSet.body3
+        theme.formChipTextFont = SBUFontSet.caption1
+        theme.formSubmittButtonFont = SBUFontSet.button3
 
         // Typing message
         theme.typingMessageProfileBorderColor = SBUColorSet.background600
@@ -1863,11 +1908,32 @@ public class SBUMessageCellTheme {
                 formInputTitleColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
                 formInputIconColor: UIColor = SBUColorSet.secondaryMain,
                 formInputBorderNormalColor: UIColor = SBUColorSet.onLightTextDisabled,
+                formInputBorderActiveColor: UIColor = SBUColorSet.primaryMain,
+                formInputBorderErrorColor: UIColor = SBUColorSet.errorMain,
                 formInputErrorColor: UIColor = SBUColorSet.errorMain,
                 formInputPlaceholderColor: UIColor = SBUColorSet.onLightTextLowEmphasis,
                 formSubmitButtonBackgroundColor: UIColor = SBUColorSet.primaryMain,
-                formSubmitButtonBackgroundDisabledColor: UIColor = SBUColorSet.onLightTextDisabled,
+                formSubmitButtonBackgroundDisabledColor: UIColor = SBUColorSet.background100,
                 formSubmitButtonTitleColor: UIColor = SBUColorSet.onDarkTextHighEmphasis,
+                formSubmitButtonTitleDisabledColor: UIColor = SBUColorSet.onLightTextDisabled,
+                formChipBackgroundNormalColor: UIColor = SBUColorSet.background50,
+                formChipBackgroundSelectColor: UIColor = SBUColorSet.primaryExtraLight,
+                formChipBackgroundDisableColor: UIColor = SBUColorSet.onDarkTextDisabled,
+                formChipBackgroundSubmittedColor: UIColor = SBUColorSet.onDarkTextDisabled,
+                formChipTitleNormalColor: UIColor = SBUColorSet.onLightTextMidEmphasis,
+                formChipTitleSelectColor: UIColor = SBUColorSet.primaryExtraLight,
+                formChipTitleDisableColor: UIColor = SBUColorSet.onLightTextMidEmphasis,
+                formChipTitleSubmittedColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
+                formChipBorderNormalColor: UIColor = SBUColorSet.onLightTextDisabled,
+                formChipBorderSelectColor: UIColor = SBUColorSet.primaryMain,
+                formChipBorderDisableColor: UIColor = SBUColorSet.onDarkTextDisabled,
+                formChipBorderSubmittedColor: UIColor = UIColor.clear,
+                formTitleFont: UIFont = SBUFontSet.caption3,
+                formOptionalTitleFont: UIFont = SBUFontSet.caption3,
+                formErrorTitleFont: UIFont = SBUFontSet.caption4,
+                formInputTextFont: UIFont = SBUFontSet.body3,
+                formChipTextFont: UIFont = SBUFontSet.caption1,
+                formSubmittButtonFont: UIFont = SBUFontSet.button3,
                 typingMessageProfileBorderColor: UIColor = SBUColorSet.background50,
                 typingMessageDotColor: UIColor = SBUColorSet.onLightTextDisabled,
                 typingMessageDotTransformColor: UIColor = SBUColorSet.onLightTextLowEmphasis,
@@ -2002,11 +2068,33 @@ public class SBUMessageCellTheme {
         self.formInputTitleColor = formInputTitleColor
         self.formInputIconColor = formInputIconColor
         self.formInputBorderNormalColor = formInputBorderNormalColor
+        self.formInputBorderActiveColor = formInputBorderActiveColor
+        self.formInputBorderErrorColor = formInputBorderErrorColor
         self.formInputErrorColor = formInputErrorColor
         self.formInputPlaceholderColor = formInputPlaceholderColor
         self.formSubmitButtonBackgroundColor = formSubmitButtonBackgroundColor
         self.formSubmitButtonBackgroundDisabledColor = formSubmitButtonBackgroundDisabledColor
         self.formSubmitButtonTitleColor = formSubmitButtonTitleColor
+        self.formSubmitButtonTitleDisabledColor = formSubmitButtonTitleDisabledColor
+        self.formChipBackgroundNormalColor = formChipBackgroundNormalColor
+        self.formChipBackgroundSelectColor = formChipBackgroundSelectColor
+        self.formChipBackgroundDisableColor = formChipBackgroundDisableColor
+        self.formChipBackgroundSubmittedColor = formChipBackgroundSubmittedColor
+        self.formChipTitleNormalColor = formChipTitleNormalColor
+        self.formChipTitleSelectColor = formChipTitleSelectColor
+        self.formChipTitleDisableColor = formChipTitleDisableColor
+        self.formChipTitleSubmittedColor = formChipTitleSubmittedColor
+        self.formChipBorderNormalColor = formChipBorderNormalColor
+        self.formChipBorderSelectColor = formChipBorderSelectColor
+        self.formChipBorderDisableColor = formChipBorderDisableColor
+        self.formChipBorderSubmittedColor = formChipBorderSubmittedColor
+        
+        self.formTitleFont = formTitleFont
+        self.formOptionalTitleFont = formOptionalTitleFont
+        self.formErrorTitleFont = formErrorTitleFont
+        self.formInputTextFont = formInputTextFont
+        self.formChipTextFont = formChipTextFont
+        self.formSubmittButtonFont = formSubmittButtonFont
         
         self.typingMessageProfileBorderColor = typingMessageProfileBorderColor
         self.typingMessageDotColor = typingMessageDotColor
@@ -2217,11 +2305,33 @@ public class SBUMessageCellTheme {
     public var formInputTitleColor: UIColor // 3.11.0
     public var formInputIconColor: UIColor // 3.11.0
     public var formInputBorderNormalColor: UIColor // 3.11.0
+    public var formInputBorderActiveColor: UIColor // 3.27.0
+    public var formInputBorderErrorColor: UIColor // 3.27.0
     public var formInputErrorColor: UIColor // 3.11.0
     public var formInputPlaceholderColor: UIColor // 3.11.0
     public var formSubmitButtonBackgroundColor: UIColor // 3.11.0
     public var formSubmitButtonBackgroundDisabledColor: UIColor // 3.11.0
     public var formSubmitButtonTitleColor: UIColor // 3.11.0
+    public var formSubmitButtonTitleDisabledColor: UIColor // 3.27.0
+    public var formChipBackgroundNormalColor: UIColor // 3.27.0
+    public var formChipBackgroundSelectColor: UIColor // 3.27.0
+    public var formChipBackgroundDisableColor: UIColor // 3.27.0
+    public var formChipBackgroundSubmittedColor: UIColor // 3.27.0
+    public var formChipTitleNormalColor: UIColor // 3.27.0
+    public var formChipTitleSelectColor: UIColor // 3.27.0
+    public var formChipTitleDisableColor: UIColor // 3.27.0    
+    public var formChipTitleSubmittedColor: UIColor // 3.27.0
+    public var formChipBorderNormalColor: UIColor // 3.27.0
+    public var formChipBorderSelectColor: UIColor // 3.27.0
+    public var formChipBorderDisableColor: UIColor // 3.27.0
+    public var formChipBorderSubmittedColor: UIColor // 3.27.0
+    
+    public var formTitleFont: UIFont // 3.27.0
+    public var formOptionalTitleFont: UIFont // 3.27.0
+    public var formErrorTitleFont: UIFont // 3.27.0
+    public var formInputTextFont: UIFont // 3.27.0
+    public var formChipTextFont: UIFont // 3.27.0
+    public var formSubmittButtonFont: UIFont // 3.27.0
     
     // MARK: Typing Message
     public var typingMessageProfileBorderColor: UIColor // 3.12.0

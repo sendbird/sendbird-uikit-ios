@@ -54,6 +54,7 @@ extension SendbirdChatSDK.BaseMessage {
     get
   }
   public func decodeCustomViewData<ViewData>() throws -> ViewData? where ViewData : Swift.Decodable
+  public func getChatInputDisabledState(hasNext: Swift.Bool?) -> Swift.Bool
   public var isStreamMessage: Swift.Bool {
     get
   }
@@ -104,6 +105,36 @@ extension Foundation.Date {
   public func sbu_toString(format: Foundation.Date.SBUDateFormat, localizedFormat: Swift.Bool = true) -> Swift.String
   @available(*, deprecated, renamed: "sbu_toString(dateFormat:localizedFormat:)")
   public func sbu_toString(formatString: Swift.String, localizedFormat: Swift.Bool = true) -> Swift.String
+}
+extension SendbirdChatSDK.BaseMessage {
+  public var isFormSubmitting: Swift.Bool {
+    get
+    set
+  }
+  public var formItemValidationStatus: [Swift.Int64 : Swift.Bool] {
+    get
+    set
+  }
+}
+extension SendbirdChatSDK.MessageForm {
+  public var isValidVersion: Swift.Bool {
+    get
+  }
+}
+extension SendbirdChatSDK.MessageFormItem.LayoutType {
+  public var keyboardType: UIKit.UIKeyboardType {
+    get
+  }
+  public var isTextInputType: Swift.Bool {
+    get
+  }
+}
+extension SendbirdChatSDK.MessageFormItem.ResultCount {
+  public func canUpdate(_ values: [Swift.String]) -> Swift.Bool
+  public func isValid(_ values: [Swift.String]) -> Swift.Bool
+  public var isOnlyOne: Swift.Bool {
+    get
+  }
 }
 @objc @_inheritsConvenienceInitializers public class MessageTemplateParser : ObjectiveC.NSObject {
   public static func getMock(widthT: Swift.String, widthV: Swift.Int, heightT: Swift.String, heightV: Swift.Int, contentMode: Swift.String) -> Swift.String
@@ -3992,6 +4023,7 @@ extension SendbirdUIKit.SBUUserMessageCell {
   @available(*, unavailable, message: "This model is no longer used internally. Changed to use `SendbirdChatSDK.Form`.")
   @_Concurrency.MainActor(unsafe) public func updateFormView(with forms: [SendbirdUIKit.SBUForm]?, answers: [SendbirdUIKit.SBUForm.Answer]) -> Swift.Bool
 }
+@available(*, unavailable, message: "This model is no longer used internally.")
 extension SendbirdUIKit.SBUFormView {
   @available(*, unavailable, message: "This model is no longer used internally. Changed to use `SendbirdChatSDK.Form`.")
   @_Concurrency.MainActor(unsafe) public var answer: SendbirdUIKit.SBUForm.Answer? {
@@ -4002,6 +4034,7 @@ extension SendbirdUIKit.SBUFormView {
   @available(*, unavailable, message: "This model is no longer used internally. Changed to use `SendbirdChatSDK.Form`.")
   @_Concurrency.MainActor(unsafe) public func formFieldView(_ view: SendbirdUIKit.SBUFormFieldView, didUpdate updated: SendbirdUIKit.SBUForm.Field.Updated)
 }
+@available(*, unavailable, message: "This model is no longer used internally.")
 extension SendbirdUIKit.SBUFormFieldView {
   @available(*, unavailable, message: "This model is no longer used internally. Changed to use `SendbirdChatSDK.Form`.")
   @_Concurrency.MainActor(unsafe) public func configure(form: SendbirdUIKit.SBUForm, field: SendbirdUIKit.SBUForm.Field, value: Swift.String?, delegate: (any SendbirdUIKit.SBUFormFieldViewDelegate)? = nil)
@@ -4020,6 +4053,7 @@ extension SendbirdUIKit.SBUGroupChannelViewController {
   @available(*, unavailable, message: "This model is no longer used internally. Changed to use `SendbirdChatSDK.Form`.")
   @_Concurrency.MainActor(unsafe) public func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, answersFor messageId: Swift.Int64?) -> [SendbirdUIKit.SBUForm.Answer]?
 }
+@available(*, unavailable, message: "This model is no longer used internally.")
 extension SendbirdUIKit.SBUFormFieldView.StatusType {
   @available(*, unavailable, message: "This model is no longer used internally. Changed to use `SendbirdChatSDK.Form`.")
   public init(form: SendbirdUIKit.SBUForm, field: SendbirdUIKit.SBUForm.Field, value: Swift.String?)
@@ -4034,10 +4068,12 @@ extension SendbirdUIKit.SBUGroupChannelModuleListDataSource {
   @available(*, unavailable, message: "This model is no longer used internally. Changed to use `SendbirdChatSDK.Form`.")
   public func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, answersFor messageId: Swift.Int64?) -> [SendbirdUIKit.SBUForm.Answer]?
 }
+@available(*, deprecated, message: "This method is deprecated in 3.27.0")
 public protocol SBUFormFieldViewDelegate : AnyObject {
   func formFieldView(_ fieldView: SendbirdUIKit.SBUFormFieldView, didUpdate formField: SendbirdChatSDK.FormField)
 }
-@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) public class SBUFormFieldView : SendbirdUIKit.SBUView, UIKit.UITextFieldDelegate {
+@objc @_inheritsConvenienceInitializers @available(*, deprecated, renamed: "SBUMessageFormItemView", message: "This method is deprecated in 3.27.0")
+@_Concurrency.MainActor(unsafe) public class SBUFormFieldView : SendbirdUIKit.SBUView, UIKit.UITextFieldDelegate {
   @_Concurrency.MainActor(unsafe) public var theme: SendbirdUIKit.SBUMessageCellTheme
   @_Concurrency.MainActor(unsafe) public var formKey: Swift.String? {
     get
@@ -4052,7 +4088,8 @@ public protocol SBUFormFieldViewDelegate : AnyObject {
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
   @objc deinit
 }
-@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) public class SBUSimpleFormFieldView : SendbirdUIKit.SBUFormFieldView {
+@objc @_inheritsConvenienceInitializers @available(*, deprecated, renamed: "SBUMessageFormItemView", message: "This method is deprecated in 3.27.0")
+@_Concurrency.MainActor(unsafe) public class SBUSimpleFormFieldView : SendbirdUIKit.SBUFormFieldView {
   @_Concurrency.MainActor(unsafe) public var stackView: SendbirdUIKit.SBUStackView
   @_Concurrency.MainActor(unsafe) public var titleStackView: SendbirdUIKit.SBUStackView
   @_Concurrency.MainActor(unsafe) public var titleView: UIKit.UILabel
@@ -4075,7 +4112,9 @@ public protocol SBUFormFieldViewDelegate : AnyObject {
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
   @objc deinit
 }
+@available(*, deprecated, message: "This method is deprecated in 3.27.0")
 extension SendbirdUIKit.SBUFormFieldView {
+  @available(*, deprecated, message: "This method is deprecated in 3.27.0")
   public enum StatusType {
     case done(value: Swift.String)
     case optional
@@ -4096,6 +4135,7 @@ extension SendbirdUIKit.SBUFormFieldView {
     }
   }
 }
+@available(*, deprecated, message: "This method is deprecated in 3.27.0")
 public enum SBUFormFieldInputType : Swift.String, Swift.Codable {
   case text
   case phone
@@ -4114,10 +4154,12 @@ public enum SBUFormFieldInputType : Swift.String, Swift.Codable {
     get
   }
 }
+@available(*, deprecated, message: "This method is deprecated in 3.27.0")
 public protocol SBUFormViewDelegate : AnyObject {
   func formView(_ view: SendbirdUIKit.SBUFormView, didSubmit form: SendbirdChatSDK.Form)
 }
-@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUFormView : SendbirdUIKit.SBUView, SendbirdUIKit.SBUFormFieldViewDelegate {
+@objc @_inheritsConvenienceInitializers @available(*, deprecated, renamed: "SBUMessageFormView", message: "This method is deprecated in 3.27.0")
+@_Concurrency.MainActor(unsafe) open class SBUFormView : SendbirdUIKit.SBUView, SendbirdUIKit.SBUFormFieldViewDelegate {
   @_Concurrency.MainActor(unsafe) public var theme: SendbirdUIKit.SBUMessageCellTheme
   @_Concurrency.MainActor(unsafe) public var form: SendbirdChatSDK.Form? {
     get
@@ -4138,7 +4180,8 @@ public protocol SBUFormViewDelegate : AnyObject {
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
   @objc deinit
 }
-@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUSimpleFormView : SendbirdUIKit.SBUFormView {
+@objc @_inheritsConvenienceInitializers @available(*, deprecated, renamed: "SBUMessageFormView", message: "This method is deprecated in 3.27.0")
+@_Concurrency.MainActor(unsafe) open class SBUSimpleFormView : SendbirdUIKit.SBUFormView {
   @_Concurrency.MainActor(unsafe) public var container: UIKit.UIView
   @_Concurrency.MainActor(unsafe) public var stackView: UIKit.UIStackView
   @_Concurrency.MainActor(unsafe) public var submitButton: UIKit.UIButton
@@ -4151,6 +4194,7 @@ public protocol SBUFormViewDelegate : AnyObject {
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
   @objc deinit
 }
+@available(*, deprecated, message: "This method is deprecated in 3.27.0")
 public struct SBUFormViewParams {
   public let messageId: Swift.Int64
   public let form: SendbirdChatSDK.Form
@@ -4272,6 +4316,7 @@ extension SendbirdUIKit.SBUGlobals {
   public static var scrollPostionConfiguration: SendbirdUIKit.SBUScrollPostionConfiguration
   public static var wsHost: Swift.String?
   public static var apiHost: Swift.String?
+  public static var emojiCategoryFilter: (_ message: SendbirdChatSDK.BaseMessage) -> [Swift.Int64]?
   @objc deinit
 }
 @available(*, deprecated, renamed: "SBUGroupChannelCell")
@@ -4706,7 +4751,9 @@ public protocol SBUGroupChannelModuleListDelegate : SendbirdUIKit.SBUBaseChannel
   func groupChannelModuleDidTapThreadInfoView(_ threadInfoView: SendbirdUIKit.SBUThreadInfoView)
   func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, didSelect suggestedReplyOptionView: SendbirdUIKit.SBUSuggestedReplyOptionView)
   func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, didSelectFileAt index: Swift.Int, multipleFilesMessageCell: SendbirdUIKit.SBUMultipleFilesMessageCell, forRowAt cellIndexPath: Foundation.IndexPath)
+  @available(*, deprecated, message: "This method is deprecated in 3.27.0.")
   func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, didSubmit form: SendbirdChatSDK.Form, messageCell: SendbirdUIKit.SBUBaseMessageCell)
+  func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, didSubmitMessageForm messageForm: SendbirdChatSDK.MessageForm, messageCell: SendbirdUIKit.SBUBaseMessageCell)
   func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, didUpdate feedbackAnswer: SendbirdUIKit.SBUFeedbackAnswer, messageCell: SendbirdUIKit.SBUBaseMessageCell)
   func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, shouldHandleTemplateAction action: SendbirdUIKit.SBUMessageTemplate.Action, message: SendbirdChatSDK.BaseMessage, forRowAt indexPath: Foundation.IndexPath)
   func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, shouldHandleTemplatePreDefinedAction action: SendbirdUIKit.SBUMessageTemplate.Action, message: SendbirdChatSDK.BaseMessage, forRowAt indexPath: Foundation.IndexPath)
@@ -5304,7 +5351,9 @@ extension SendbirdUIKit.SBUGroupChannelViewController {
   @objc @_Concurrency.MainActor(unsafe) open func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, didTapMentionUser user: SendbirdUIKit.SBUUser)
   @objc @_Concurrency.MainActor(unsafe) open func groupChannelModuleDidTapThreadInfoView(_ threadInfoView: SendbirdUIKit.SBUThreadInfoView)
   @objc @_Concurrency.MainActor(unsafe) open func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, didSelect suggestedReplyOptionView: SendbirdUIKit.SBUSuggestedReplyOptionView)
-  @objc @_Concurrency.MainActor(unsafe) open func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, didSubmit form: SendbirdChatSDK.Form, messageCell: SendbirdUIKit.SBUBaseMessageCell)
+  @objc @available(*, deprecated, message: "This method is deprecated in 3.27.0.")
+  @_Concurrency.MainActor(unsafe) open func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, didSubmit form: SendbirdChatSDK.Form, messageCell: SendbirdUIKit.SBUBaseMessageCell)
+  @objc @_Concurrency.MainActor(unsafe) open func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, didSubmitMessageForm form: SendbirdChatSDK.MessageForm, messageCell: SendbirdUIKit.SBUBaseMessageCell)
   @_Concurrency.MainActor(unsafe) open func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, didUpdate feedbackAnswer: SendbirdUIKit.SBUFeedbackAnswer, messageCell: SendbirdUIKit.SBUBaseMessageCell)
   @_Concurrency.MainActor(unsafe) open func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, shouldHandleTemplateAction action: SendbirdUIKit.SBUMessageTemplate.Action, message: SendbirdChatSDK.BaseMessage, forRowAt indexPath: Foundation.IndexPath)
   @_Concurrency.MainActor(unsafe) open func groupChannelModule(_ listComponent: SendbirdUIKit.SBUGroupChannelModule.List, shouldHandleTemplateCustomAction action: SendbirdUIKit.SBUMessageTemplate.Action, message: SendbirdChatSDK.BaseMessage, forRowAt indexPath: Foundation.IndexPath)
@@ -5383,7 +5432,9 @@ extension SendbirdUIKit.SBUGroupChannelViewModel : SendbirdChatSDK.MessageCollec
   @objc dynamic open func messageCollection(_ collection: SendbirdChatSDK.MessageCollection, context: SendbirdChatSDK.MessageContext, updatedChannel channel: SendbirdChatSDK.GroupChannel)
   @objc dynamic open func messageCollection(_ collection: SendbirdChatSDK.MessageCollection, context: SendbirdChatSDK.MessageContext, deletedChannel channelURL: Swift.String)
   @objc dynamic open func didDetectHugeGap(_ collection: SendbirdChatSDK.MessageCollection)
+  @available(*, deprecated, message: "This method is deprecated in 3.27.0.")
   public func submitForm(message: SendbirdChatSDK.BaseMessage, form: SendbirdChatSDK.Form)
+  public func submitMessageForm(message: SendbirdChatSDK.BaseMessage)
   public func submitFeedback(message: SendbirdChatSDK.BaseMessage, answer: SendbirdUIKit.SBUFeedbackAnswer, completionHandler: ((SendbirdChatSDK.Feedback?) -> Swift.Void)? = nil)
   public func updateFeedback(message: SendbirdChatSDK.BaseMessage, answer: SendbirdUIKit.SBUFeedbackAnswer, completionHandler: ((SendbirdChatSDK.Feedback?) -> Swift.Void)? = nil)
   public func deleteFeedback(message: SendbirdChatSDK.BaseMessage, completionHandler: (() -> Swift.Void)? = nil)
@@ -6297,6 +6348,207 @@ public protocol SBUMessageCellProtocol {
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
   @objc deinit
 }
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) public class SBUMesageFormChipView : SendbirdUIKit.SBUView, UIKit.UICollectionViewDataSource, UIKit.UICollectionViewDelegateFlowLayout {
+  @_Concurrency.MainActor(unsafe) public var chips: [Swift.String]
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public func setupViews()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public func setupLayouts()
+  @_Concurrency.MainActor(unsafe) @objc public func collectionView(_ collectionView: UIKit.UICollectionView, numberOfItemsInSection section: Swift.Int) -> Swift.Int
+  @_Concurrency.MainActor(unsafe) @objc public func collectionView(_ collectionView: UIKit.UICollectionView, cellForItemAt indexPath: Foundation.IndexPath) -> UIKit.UICollectionViewCell
+  @_Concurrency.MainActor(unsafe) @objc public func collectionView(_ collectionView: UIKit.UICollectionView, didSelectItemAt indexPath: Foundation.IndexPath)
+  @_Concurrency.MainActor(unsafe) @objc public func collectionView(_ collectionView: UIKit.UICollectionView, layout collectionViewLayout: UIKit.UICollectionViewLayout, sizeForItemAt indexPath: Foundation.IndexPath) -> CoreFoundation.CGSize
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) public class SBUMessageFormChipsItemView : SendbirdUIKit.SBUMessageFormItemView {
+  @_Concurrency.MainActor(unsafe) public var stackView: SendbirdUIKit.SBUStackView
+  @_Concurrency.MainActor(unsafe) public var titleStackView: SendbirdUIKit.SBUStackView
+  @_Concurrency.MainActor(unsafe) public var titleView: UIKit.UILabel
+  @_Concurrency.MainActor(unsafe) public var topSpaceView: UIKit.UIView
+  @_Concurrency.MainActor(unsafe) final public let chipView: SendbirdUIKit.SBUMesageFormChipView
+  @_Concurrency.MainActor(unsafe) public var bottomSpaceView: UIKit.UIView
+  @_Concurrency.MainActor(unsafe) public var errorTitleView: UIKit.UILabel
+  @_Concurrency.MainActor(unsafe) public var chips: [Swift.String] {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public func setupViews()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public func setupLayouts()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public func setupStyles()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) public class SBUMessageFormFallbackView : SendbirdUIKit.SBUMessageFormView {
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public func setupViews()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public func setupLayouts()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public func setupStyles()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @objc deinit
+}
+public protocol SBUMessageFormItemViewDelegate : AnyObject {
+  func messageFormItemView(_ itemView: SendbirdUIKit.SBUMessageFormItemView, didUpdate formItem: SendbirdChatSDK.MessageFormItem)
+  func messageFormItemView(_ itemView: SendbirdUIKit.SBUMessageFormItemView, didCheckedValidation formItem: SendbirdChatSDK.MessageFormItem)
+}
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUMessageFormItemView : SendbirdUIKit.SBUView {
+  @_Concurrency.MainActor(unsafe) public var theme: SendbirdUIKit.SBUMessageCellTheme
+  @_Concurrency.MainActor(unsafe) public var formId: Swift.Int64? {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public var formItem: SendbirdChatSDK.MessageFormItem? {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public var didValidation: Swift.Bool {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var status: SendbirdUIKit.SBUMessageFormItemView.StatusType
+  @_Concurrency.MainActor(unsafe) weak public var delegate: (any SendbirdUIKit.SBUMessageFormItemViewDelegate)?
+  @_Concurrency.MainActor(unsafe) open func configure(form: SendbirdChatSDK.MessageForm, item: SendbirdChatSDK.MessageFormItem, didValidation: Swift.Bool, delegate: (any SendbirdUIKit.SBUMessageFormItemViewDelegate)? = nil)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @objc deinit
+}
+extension SendbirdUIKit.SBUMessageFormItemView {
+  @_Concurrency.MainActor(unsafe) public var titleAttributedString: Foundation.NSAttributedString {
+    get
+  }
+}
+extension SendbirdUIKit.SBUMessageFormItemView {
+  public enum InputErrorType {
+    case required
+    case invalid
+    case none
+    public static func == (a: SendbirdUIKit.SBUMessageFormItemView.InputErrorType, b: SendbirdUIKit.SBUMessageFormItemView.InputErrorType) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+}
+extension SendbirdUIKit.SBUMessageFormItemView {
+  public enum StatusType {
+    case done(values: [Swift.String])
+    case optional
+    case editing(values: [Swift.String]?)
+    case unknown
+    public init(form: SendbirdChatSDK.MessageForm, item: SendbirdChatSDK.MessageFormItem)
+    public var text: Swift.String? {
+      get
+    }
+    public var isDone: Swift.Bool {
+      get
+    }
+    public var didSubmit: Swift.Bool {
+      get
+    }
+    public var isOptional: Swift.Bool {
+      get
+    }
+    public var isEditable: Swift.Bool {
+      get
+    }
+  }
+}
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) public class SBUMessageFormMultiTextItemView : SendbirdUIKit.SBUMessageFormItemView, UIKit.UITextViewDelegate {
+  @_Concurrency.MainActor(unsafe) public var stackView: SendbirdUIKit.SBUStackView
+  @_Concurrency.MainActor(unsafe) public var titleStackView: SendbirdUIKit.SBUStackView
+  @_Concurrency.MainActor(unsafe) public var titleView: UIKit.UILabel
+  @_Concurrency.MainActor(unsafe) public var topSpaceView: UIKit.UIView
+  @_Concurrency.MainActor(unsafe) public var inputContainer: UIKit.UIView
+  @_Concurrency.MainActor(unsafe) public var inputStackView: SendbirdUIKit.SBUStackView
+  @_Concurrency.MainActor(unsafe) public var valueStackView: SendbirdUIKit.SBUStackView
+  @_Concurrency.MainActor(unsafe) public var inputTextView: SendbirdUIKit.SBUTextView
+  @_Concurrency.MainActor(unsafe) public var inputTextLabel: SendbirdUIKit.SBUPaddingLabel
+  @_Concurrency.MainActor(unsafe) public var iconContainer: UIKit.UIView
+  @_Concurrency.MainActor(unsafe) public var inputIconView: UIKit.UIImageView
+  @_Concurrency.MainActor(unsafe) public var bottomSpaceView: UIKit.UIView
+  @_Concurrency.MainActor(unsafe) public var errorTitleView: UIKit.UILabel
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public func setupViews()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public func setupLayouts()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public func setupStyles()
+  @_Concurrency.MainActor(unsafe) public func updateInputData()
+  @_Concurrency.MainActor(unsafe) @objc public func textViewDidChange(_ textView: UIKit.UITextView)
+  @_Concurrency.MainActor(unsafe) @objc public func textViewDidBeginEditing(_ textView: UIKit.UITextView)
+  @_Concurrency.MainActor(unsafe) @objc public func textViewDidEndEditing(_ textView: UIKit.UITextView)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) public class SBUMessageFormSingleTextItemView : SendbirdUIKit.SBUMessageFormItemView, UIKit.UITextFieldDelegate {
+  @_Concurrency.MainActor(unsafe) public var stackView: SendbirdUIKit.SBUStackView
+  @_Concurrency.MainActor(unsafe) public var titleStackView: SendbirdUIKit.SBUStackView
+  @_Concurrency.MainActor(unsafe) public var titleView: UIKit.UILabel
+  @_Concurrency.MainActor(unsafe) public var topSpaceView: UIKit.UIView
+  @_Concurrency.MainActor(unsafe) public var inputContainer: UIKit.UIView
+  @_Concurrency.MainActor(unsafe) public var inputStackView: SendbirdUIKit.SBUStackView
+  @_Concurrency.MainActor(unsafe) public var valueStackView: SendbirdUIKit.SBUStackView
+  @_Concurrency.MainActor(unsafe) public var inputTextField: UIKit.UITextField
+  @_Concurrency.MainActor(unsafe) public var inputTextLabel: UIKit.UILabel
+  @_Concurrency.MainActor(unsafe) public var iconContainer: UIKit.UIView
+  @_Concurrency.MainActor(unsafe) public var inputIconView: UIKit.UIImageView
+  @_Concurrency.MainActor(unsafe) public var bottomSpaceView: UIKit.UIView
+  @_Concurrency.MainActor(unsafe) public var errorTitleView: UIKit.UILabel
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public func setupViews()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public func setupLayouts()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public func setupStyles()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public func setupActions()
+  @_Concurrency.MainActor(unsafe) public func updateInputData()
+  @_Concurrency.MainActor(unsafe) @objc public func textFieldDidBeginEditing(_ textField: UIKit.UITextField)
+  @_Concurrency.MainActor(unsafe) @objc public func textFieldDidEndEditing(_ textField: UIKit.UITextField)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @objc deinit
+}
+public protocol SBUMessageFormViewDelegate : AnyObject {
+  func messageFormView(_ view: SendbirdUIKit.SBUMessageFormView, didSubmit form: SendbirdChatSDK.MessageForm)
+  func messageFormView(_ view: SendbirdUIKit.SBUMessageFormView, didUpdateValidationStatus: [Swift.Int64 : Swift.Bool])
+  func messageFormView(_ view: SendbirdUIKit.SBUMessageFormView, didUpdateViewFrame: CoreFoundation.CGRect)
+}
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUMessageFormView : SendbirdUIKit.SBUView, SendbirdUIKit.SBUMessageFormItemViewDelegate {
+  @_Concurrency.MainActor(unsafe) public var theme: SendbirdUIKit.SBUMessageCellTheme
+  @_Concurrency.MainActor(unsafe) public var messageForm: SendbirdChatSDK.MessageForm? {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public var messageId: Swift.Int64? {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public var params: SendbirdUIKit.SBUMessageFormViewParams? {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public var itemViews: [SendbirdUIKit.SBUMessageFormItemView]?
+  @_Concurrency.MainActor(unsafe) public var itemValidationStatus: [Swift.Int64 : Swift.Bool]
+  @_Concurrency.MainActor(unsafe) weak public var delegate: (any SendbirdUIKit.SBUMessageFormViewDelegate)?
+  @_Concurrency.MainActor(unsafe) open func configure(with configuration: SendbirdUIKit.SBUMessageFormViewParams, delegate: (any SendbirdUIKit.SBUMessageFormViewDelegate)? = nil)
+  @_Concurrency.MainActor(unsafe) open func createItemView(_ item: SendbirdChatSDK.MessageFormItem) -> SendbirdUIKit.SBUMessageFormItemView?
+  @_Concurrency.MainActor(unsafe) open func createFormItemViews(with form: SendbirdChatSDK.MessageForm?) -> [SendbirdUIKit.SBUMessageFormItemView]
+  @_Concurrency.MainActor(unsafe) open func messageFormItemView(_ itemView: SendbirdUIKit.SBUMessageFormItemView, didUpdate formItem: SendbirdChatSDK.MessageFormItem)
+  @_Concurrency.MainActor(unsafe) open func messageFormItemView(_ itemView: SendbirdUIKit.SBUMessageFormItemView, didCheckedValidation formItem: SendbirdChatSDK.MessageFormItem)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func layoutSubviews()
+  @objc @_Concurrency.MainActor(unsafe) open func onSubmit() -> Swift.Bool
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) public class SBUSimpleMessageFormView : SendbirdUIKit.SBUMessageFormView {
+  @_Concurrency.MainActor(unsafe) public var container: UIKit.UIView
+  @_Concurrency.MainActor(unsafe) public var stackView: UIKit.UIStackView
+  @_Concurrency.MainActor(unsafe) public var submitButton: UIKit.UIButton
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupViews()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public func setupLayouts()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public func setupStyles()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public func setupActions()
+  @_Concurrency.MainActor(unsafe) @objc override public func onSubmit() -> Swift.Bool
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @objc deinit
+}
+public struct SBUMessageFormViewParams {
+  public let messageId: Swift.Int64
+  public let messageForm: SendbirdChatSDK.MessageForm
+  public let isSubmitting: Swift.Bool
+  public let itemValidationStatus: [Swift.Int64 : Swift.Bool]
+}
 @objc public enum SBUMessageInputMode : Swift.Int {
   case none
   case edit
@@ -6482,12 +6734,17 @@ public protocol SBUMessageInputViewDataSource : AnyObject {
   @_Concurrency.MainActor(unsafe) public func configureNumberLabel(_ numberOfTypers: Swift.Int)
   @objc deinit
 }
+public class SBUMessageReactionViewParams {
+  public init(maxWidth: CoreFoundation.CGFloat, useReaction: Swift.Bool, reactions: [SendbirdChatSDK.Reaction], enableEmojiLongPress: Swift.Bool, message: SendbirdChatSDK.BaseMessage? = nil)
+  @objc deinit
+}
 @objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUMessageReactionView : SendbirdUIKit.SBUView, UIKit.UICollectionViewDelegate, UIKit.UICollectionViewDataSource, UIKit.UICollectionViewDelegateFlowLayout {
   @_Concurrency.MainActor(unsafe) public var collectionView: UIKit.UICollectionView {
     get
     set
   }
   @_Concurrency.MainActor(unsafe) final public let layout: UIKit.UICollectionViewFlowLayout
+  @_Concurrency.MainActor(unsafe) public var message: SendbirdChatSDK.BaseMessage?
   @_Concurrency.MainActor(unsafe) public var emojiList: [SendbirdChatSDK.Emoji]
   @_Concurrency.MainActor(unsafe) public var reactions: [SendbirdChatSDK.Reaction]
   @_Concurrency.MainActor(unsafe) public var maxWidth: CoreFoundation.CGFloat
@@ -6513,13 +6770,16 @@ public protocol SBUMessageInputViewDataSource : AnyObject {
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupStyles()
   @_Concurrency.MainActor(unsafe) public func hasMoreEmoji(at indexPath: Foundation.IndexPath) -> Swift.Bool
   @_Concurrency.MainActor(unsafe) open func configure(maxWidth: CoreFoundation.CGFloat, useReaction: Swift.Bool, reactions: [SendbirdChatSDK.Reaction], enableEmojiLongPress: Swift.Bool)
+  @_Concurrency.MainActor(unsafe) open func configure(configuration: SendbirdUIKit.SBUMessageReactionViewParams)
   @_Concurrency.MainActor(unsafe) open func getCellSize(count: Swift.Int) -> CoreFoundation.CGSize
   @objc @_Concurrency.MainActor(unsafe) open func onTapMoreEmoji(sender: UIKit.UITapGestureRecognizer)
   @_Concurrency.MainActor(unsafe) @objc open func numberOfSections(in collectionView: UIKit.UICollectionView) -> Swift.Int
   @_Concurrency.MainActor(unsafe) @objc open func collectionView(_ collectionView: UIKit.UICollectionView, numberOfItemsInSection section: Swift.Int) -> Swift.Int
   @_Concurrency.MainActor(unsafe) @objc open func collectionView(_ collectionView: UIKit.UICollectionView, cellForItemAt indexPath: Foundation.IndexPath) -> UIKit.UICollectionViewCell
   @_Concurrency.MainActor(unsafe) @objc open func collectionView(_ collectionView: UIKit.UICollectionView, didSelectItemAt indexPath: Foundation.IndexPath)
+  @_Concurrency.MainActor(unsafe) @objc public func collectionView(_ collectionView: UIKit.UICollectionView, shouldSelectItemAt indexPath: Foundation.IndexPath) -> Swift.Bool
   @_Concurrency.MainActor(unsafe) @objc open func collectionView(_ collectionView: UIKit.UICollectionView, layout collectionViewLayout: UIKit.UICollectionViewLayout, sizeForItemAt indexPath: Foundation.IndexPath) -> CoreFoundation.CGSize
+  @_Concurrency.MainActor(unsafe) public func hasMoreEmoji() -> Swift.Bool
   @objc deinit
 }
 open class SBUMessageSearchModule {
@@ -8817,6 +9077,7 @@ extension SendbirdUIKit.SBUOpenChannelViewModel : SendbirdChatSDK.OpenChannelDel
 @objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUParentMessageInfoReactionView : SendbirdUIKit.SBUMessageReactionView {
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupStyles()
   @_Concurrency.MainActor(unsafe) override open func configure(maxWidth: CoreFoundation.CGFloat, useReaction: Swift.Bool, reactions: [SendbirdChatSDK.Reaction], enableEmojiLongPress: Swift.Bool)
+  @_Concurrency.MainActor(unsafe) override open func configure(configuration: SendbirdUIKit.SBUMessageReactionViewParams)
   @_Concurrency.MainActor(unsafe) override open func getCellSize(count: Swift.Int) -> CoreFoundation.CGSize
   @_Concurrency.MainActor(unsafe) @objc override open func collectionView(_ collectionView: UIKit.UICollectionView, numberOfItemsInSection section: Swift.Int) -> Swift.Int
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
@@ -9813,6 +10074,10 @@ extension SendbirdUIKit.SBUStringSet {
   public static var ChannelType_Broadcast: Swift.String
   public static var FormType_Optional: Swift.String
   public static var FormType_Error_Default: Swift.String
+  public static var FormType_Error_Required: Swift.String
+  public static var FormType_Fallback_Message: Swift.String
+  public static var FormType_Submit_Done: Swift.String
+  public static var FormType_No_Reponse: Swift.String
   public static var Feedback_Comment_Title: Swift.String
   public static var Feedback_Comment_Placeholder: Swift.String
   public static var Feedback_Edit_Comment: Swift.String
@@ -9971,6 +10236,45 @@ extension SendbirdUIKit.SBUTableViewCell : SendbirdUIKit.SBUViewLifeCycle {
   @_Concurrency.MainActor(unsafe) @objc dynamic open func setupStyles()
   @_Concurrency.MainActor(unsafe) @objc dynamic open func updateStyles()
   @_Concurrency.MainActor(unsafe) @objc dynamic open func setupActions()
+}
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUTextView : UIKit.UITextView, SendbirdUIKit.SBUViewLifeCycle {
+  @_Concurrency.MainActor(unsafe) final public let placeholderLabel: UIKit.UILabel
+  @_Concurrency.MainActor(unsafe) final public let palceholderContainer: SendbirdUIKit.SBUStackView
+  @_Concurrency.MainActor(unsafe) open var placeholder: Swift.String? {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) open var placeholderColor: UIKit.UIColor {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open var font: UIKit.UIFont? {
+    @objc get
+    @objc set
+  }
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open var text: Swift.String! {
+    @objc get
+    @objc set
+  }
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open var attributedText: Foundation.NSAttributedString! {
+    @objc get
+    @objc set
+  }
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open var textAlignment: UIKit.NSTextAlignment {
+    @objc get
+    @objc set
+  }
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func layoutSubviews()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect, textContainer: UIKit.NSTextContainer?)
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc deinit
+  @_Concurrency.MainActor(unsafe) @objc open func setupViews()
+  @_Concurrency.MainActor(unsafe) @objc open func setupLayouts()
+  @_Concurrency.MainActor(unsafe) @objc open func setupStyles()
+  @_Concurrency.MainActor(unsafe) @objc open func updateLayouts()
+  @_Concurrency.MainActor(unsafe) @objc open func updateStyles()
+  @_Concurrency.MainActor(unsafe) @objc open func setupActions()
+  @objc @_Concurrency.MainActor(unsafe) open func textDidChange()
 }
 @available(*, deprecated, renamed: "SBUGroupChannelListTheme")
 public typealias SBUChannelListTheme = SendbirdUIKit.SBUGroupChannelListTheme
@@ -10291,7 +10595,7 @@ public class SBUMessageCellTheme {
   public static var overlay: SendbirdUIKit.SBUMessageCellTheme {
     get
   }
-  public init(backgroundColor: UIKit.UIColor = SBUColorSet.background50, leftBackgroundColor: UIKit.UIColor = SBUColorSet.background100, leftPressedBackgroundColor: UIKit.UIColor = SBUColorSet.primaryExtraLight, rightBackgroundColor: UIKit.UIColor = SBUColorSet.primaryMain, rightPressedBackgroundColor: UIKit.UIColor = SBUColorSet.primaryDark, openChannelBackgroundColor: UIKit.UIColor = .clear, openChannelPressedBackgroundColor: UIKit.UIColor = SBUColorSet.background100, dateFont: UIKit.UIFont = SBUFontSet.caption1, dateTextColor: UIKit.UIColor = SBUColorSet.onDarkTextHighEmphasis, dateBackgroundColor: UIKit.UIColor = SBUColorSet.overlayLight, userPlaceholderBackgroundColor: UIKit.UIColor = SBUColorSet.background300, userPlaceholderTintColor: UIKit.UIColor = SBUColorSet.onDarkTextHighEmphasis, userNameFont: UIKit.UIFont = SBUFontSet.caption1, userNameTextColor: UIKit.UIColor = SBUColorSet.onLightTextMidEmphasis, currentUserNameTextColor: UIKit.UIColor = SBUColorSet.secondaryMain, timeFont: UIKit.UIFont = SBUFontSet.caption4, timeTextColor: UIKit.UIColor = SBUColorSet.onLightTextLowEmphasis, pendingStateColor: UIKit.UIColor = SBUColorSet.primaryMain, failedStateColor: UIKit.UIColor = SBUColorSet.errorMain, succeededStateColor: UIKit.UIColor = SBUColorSet.onLightTextLowEmphasis, readReceiptStateColor: UIKit.UIColor = SBUColorSet.secondaryMain, deliveryReceiptStateColor: UIKit.UIColor = SBUColorSet.onLightTextLowEmphasis, userMessageFont: UIKit.UIFont = SBUFontSet.body3, userMessageLeftTextColor: UIKit.UIColor = SBUColorSet.onLightTextHighEmphasis, userMessageLeftEditTextColor: UIKit.UIColor = SBUColorSet.onLightTextMidEmphasis, userMessageLeftHighlightTextColor: UIKit.UIColor = SBUColorSet.onLightTextHighEmphasis, userMessageRightTextColor: UIKit.UIColor = SBUColorSet.onDarkTextHighEmphasis, userMessageRightEditTextColor: UIKit.UIColor = SBUColorSet.onDarkTextMidEmphasis, userMessageRightHighlightTextColor: UIKit.UIColor = SBUColorSet.onLightTextHighEmphasis, fileIconBackgroundColor: UIKit.UIColor = SBUColorSet.background50, fileImageBackgroundColor: UIKit.UIColor = SBUColorSet.onDarkTextHighEmphasis, fileImageIconColor: UIKit.UIColor = SBUColorSet.onLightTextMidEmphasis, fileIconColor: UIKit.UIColor = SBUColorSet.primaryMain, fileMessageNameFont: UIKit.UIFont = SBUFontSet.body3, fileMessageLeftTextColor: UIKit.UIColor = SBUColorSet.onLightTextHighEmphasis, fileMessageRightTextColor: UIKit.UIColor = SBUColorSet.onDarkTextHighEmphasis, fileMessagePlaceholderColor: UIKit.UIColor = SBUColorSet.onLightTextMidEmphasis, adminMessageFont: UIKit.UIFont = SBUFontSet.caption2, adminMessageTextColor: UIKit.UIColor = SBUColorSet.onLightTextMidEmphasis, unknownMessageDescFont: UIKit.UIFont = SBUFontSet.body3, unknownMessageDescLeftTextColor: UIKit.UIColor = SBUColorSet.onLightTextMidEmphasis, unknownMessageDescRightTextColor: UIKit.UIColor = SBUColorSet.onDarkTextMidEmphasis, ogTitleFont: UIKit.UIFont = SBUFontSet.body2, ogTitleColor: UIKit.UIColor = SBUColorSet.onLightTextHighEmphasis, ogDescriptionFont: UIKit.UIFont = SBUFontSet.caption2, ogDescriptionColor: UIKit.UIColor = SBUColorSet.onLightTextHighEmphasis, ogURLAddressFont: UIKit.UIFont = SBUFontSet.caption2, ogURLAddressColor: UIKit.UIColor = SBUColorSet.onLightTextMidEmphasis, openChannelOGTitleColor: UIKit.UIColor = SBUColorSet.primaryMain, linkColor: UIKit.UIColor = SBUColorSet.primaryMain, contentBackgroundColor: UIKit.UIColor = SBUColorSet.background100, pressedContentBackgroundColor: UIKit.UIColor = SBUColorSet.background300, quotedMessageLeftBackgroundColor: UIKit.UIColor = SBUColorSet.background100.withAlphaComponent(0.5), quotedMessageRightBackgroundColor: UIKit.UIColor = SBUColorSet.background100, quotedFileMessageThumbnailColor: UIKit.UIColor = SBUColorSet.onLightTextMidEmphasis, quotedMessageTextColor: UIKit.UIColor = SBUColorSet.onLightTextLowEmphasis, quotedMessageTextFont: UIKit.UIFont = SBUFontSet.body3, repliedIconColor: UIKit.UIColor = SBUColorSet.onLightTextLowEmphasis, repliedToTextColor: UIKit.UIColor = SBUColorSet.onLightTextLowEmphasis, repliedToTextFont: UIKit.UIFont = SBUFontSet.caption1, repliedCountTextColor: UIKit.UIColor = SBUColorSet.primaryMain, repliedCountTextFont: UIKit.UIFont = SBUFontSet.caption3, repliedUsersMoreIconBackgroundColor: UIKit.UIColor = SBUColorSet.background700.withAlphaComponent(0.64), repliedUsersMoreIconTintColor: UIKit.UIColor = SBUColorSet.onDarkTextHighEmphasis, mentionTextFont: UIKit.UIFont = SBUFontSet.body4, mentionLeftTextColor: UIKit.UIColor = SBUColorSet.onLightTextHighEmphasis, mentionRightTextColor: UIKit.UIColor = SBUColorSet.onDarkTextHighEmphasis, mentionLeftTextBackgroundColor: UIKit.UIColor = .clear, mentionRightTextBackgroundColor: UIKit.UIColor = .clear, buttonBackgroundColor: UIKit.UIColor = SBUColorSet.background200, buttonTitleColor: UIKit.UIColor = SBUColorSet.primaryMain, sideButtonIconColor: UIKit.UIColor = SBUColorSet.onLightTextLowEmphasis, newMessageBadgeColor: UIKit.UIColor = SBUColorSet.secondaryMain, parentInfoBackgroundColor: UIKit.UIColor = SBUColorSet.background50, parentInfoUserNameTextFont: UIKit.UIFont = SBUFontSet.h3, parentInfoUserNameTextColor: UIKit.UIColor = SBUColorSet.onLightTextHighEmphasis, parentInfoDateFont: UIKit.UIFont = SBUFontSet.caption2, parentInfoDateTextColor: UIKit.UIColor = SBUColorSet.onLightTextLowEmphasis, parentInfoMoreButtonTintColor: UIKit.UIColor = SBUColorSet.onLightTextMidEmphasis, parentInfoSeparateBarColor: UIKit.UIColor = SBUColorSet.onLightTextDisabled, parentInfoReplyCountTextColor: UIKit.UIColor = SBUColorSet.onLightTextLowEmphasis, parentInfoReplyCountTextFont: UIKit.UIFont = SBUFontSet.body3, parentInfoProgressBackgroundColor: UIKit.UIColor = SBUColorSet.background100, progressTrackTintColor: UIKit.UIColor = SBUColorSet.onLightTextLowEmphasis, progressTimeFont: UIKit.UIFont = SBUFontSet.body3, progressTimeRightTextColor: UIKit.UIColor = SBUColorSet.onDarkTextHighEmphasis, progressTimeLeftTextColor: UIKit.UIColor = SBUColorSet.onLightTextHighEmphasis, statusButtonBackgroundColor: UIKit.UIColor = SBUColorSet.background50, loadingButtonTintColor: UIKit.UIColor = SBUColorSet.primaryLight, playButtonTintColor: UIKit.UIColor = SBUColorSet.primaryMain, pauseButtonTintColor: UIKit.UIColor = SBUColorSet.primaryMain, suggestedReplyTitleColor: UIKit.UIColor = SBUColorSet.primaryMain, suggestedReplyBorderColor: UIKit.UIColor = SBUColorSet.primaryMain, suggestedReplyBackgroundColor: UIKit.UIColor = SBUColorSet.background50, suggestedReplyBackgroundSelectedColor: UIKit.UIColor = SBUColorSet.background100, multipleFilesMessageFileOverlayColor: UIKit.UIColor = SBUColorSet.overlayLight, formBackgroundColor: UIKit.UIColor = SBUColorSet.background100, formTitleColor: UIKit.UIColor = SBUColorSet.onLightTextMidEmphasis, formOptionalTitleColor: UIKit.UIColor = SBUColorSet.onLightTextLowEmphasis, formInputBackgroundColor: UIKit.UIColor = SBUColorSet.background50, formInputBackgroundDoneColor: UIKit.UIColor = SBUColorSet.onDarkTextMidEmphasis, formInputTitleColor: UIKit.UIColor = SBUColorSet.onLightTextHighEmphasis, formInputIconColor: UIKit.UIColor = SBUColorSet.secondaryMain, formInputBorderNormalColor: UIKit.UIColor = SBUColorSet.onLightTextDisabled, formInputErrorColor: UIKit.UIColor = SBUColorSet.errorMain, formInputPlaceholderColor: UIKit.UIColor = SBUColorSet.onLightTextLowEmphasis, formSubmitButtonBackgroundColor: UIKit.UIColor = SBUColorSet.primaryMain, formSubmitButtonBackgroundDisabledColor: UIKit.UIColor = SBUColorSet.onLightTextDisabled, formSubmitButtonTitleColor: UIKit.UIColor = SBUColorSet.onDarkTextHighEmphasis, typingMessageProfileBorderColor: UIKit.UIColor = SBUColorSet.background50, typingMessageDotColor: UIKit.UIColor = SBUColorSet.onLightTextDisabled, typingMessageDotTransformColor: UIKit.UIColor = SBUColorSet.onLightTextLowEmphasis, feedbackRadius: CoreFoundation.CGFloat = 18, feedbackIconColor: UIKit.UIColor = SBUColorSet.onLightTextMidEmphasis, feedbackIconSelectColor: UIKit.UIColor = SBUColorSet.onDarkTextHighEmphasis, feedbackIconDeselectColor: UIKit.UIColor = SBUColorSet.onLightTextDisabled, feedbackBorderColor: UIKit.UIColor = SBUColorSet.onLightTextDisabled, feedbackBorderSelectColor: UIKit.UIColor = SBUColorSet.primaryMain, feedbackBorderDeselectColor: UIKit.UIColor = SBUColorSet.onLightTextDisabled, feedbackBackgroundNormalColor: UIKit.UIColor = SBUColorSet.background50, feedbackBackgroundSelectColor: UIKit.UIColor = SBUColorSet.primaryMain, feedbackBackgroundDeselectColor: UIKit.UIColor = SBUColorSet.background50)
+  public init(backgroundColor: UIKit.UIColor = SBUColorSet.background50, leftBackgroundColor: UIKit.UIColor = SBUColorSet.background100, leftPressedBackgroundColor: UIKit.UIColor = SBUColorSet.primaryExtraLight, rightBackgroundColor: UIKit.UIColor = SBUColorSet.primaryMain, rightPressedBackgroundColor: UIKit.UIColor = SBUColorSet.primaryDark, openChannelBackgroundColor: UIKit.UIColor = .clear, openChannelPressedBackgroundColor: UIKit.UIColor = SBUColorSet.background100, dateFont: UIKit.UIFont = SBUFontSet.caption1, dateTextColor: UIKit.UIColor = SBUColorSet.onDarkTextHighEmphasis, dateBackgroundColor: UIKit.UIColor = SBUColorSet.overlayLight, userPlaceholderBackgroundColor: UIKit.UIColor = SBUColorSet.background300, userPlaceholderTintColor: UIKit.UIColor = SBUColorSet.onDarkTextHighEmphasis, userNameFont: UIKit.UIFont = SBUFontSet.caption1, userNameTextColor: UIKit.UIColor = SBUColorSet.onLightTextMidEmphasis, currentUserNameTextColor: UIKit.UIColor = SBUColorSet.secondaryMain, timeFont: UIKit.UIFont = SBUFontSet.caption4, timeTextColor: UIKit.UIColor = SBUColorSet.onLightTextLowEmphasis, pendingStateColor: UIKit.UIColor = SBUColorSet.primaryMain, failedStateColor: UIKit.UIColor = SBUColorSet.errorMain, succeededStateColor: UIKit.UIColor = SBUColorSet.onLightTextLowEmphasis, readReceiptStateColor: UIKit.UIColor = SBUColorSet.secondaryMain, deliveryReceiptStateColor: UIKit.UIColor = SBUColorSet.onLightTextLowEmphasis, userMessageFont: UIKit.UIFont = SBUFontSet.body3, userMessageLeftTextColor: UIKit.UIColor = SBUColorSet.onLightTextHighEmphasis, userMessageLeftEditTextColor: UIKit.UIColor = SBUColorSet.onLightTextMidEmphasis, userMessageLeftHighlightTextColor: UIKit.UIColor = SBUColorSet.onLightTextHighEmphasis, userMessageRightTextColor: UIKit.UIColor = SBUColorSet.onDarkTextHighEmphasis, userMessageRightEditTextColor: UIKit.UIColor = SBUColorSet.onDarkTextMidEmphasis, userMessageRightHighlightTextColor: UIKit.UIColor = SBUColorSet.onLightTextHighEmphasis, fileIconBackgroundColor: UIKit.UIColor = SBUColorSet.background50, fileImageBackgroundColor: UIKit.UIColor = SBUColorSet.onDarkTextHighEmphasis, fileImageIconColor: UIKit.UIColor = SBUColorSet.onLightTextMidEmphasis, fileIconColor: UIKit.UIColor = SBUColorSet.primaryMain, fileMessageNameFont: UIKit.UIFont = SBUFontSet.body3, fileMessageLeftTextColor: UIKit.UIColor = SBUColorSet.onLightTextHighEmphasis, fileMessageRightTextColor: UIKit.UIColor = SBUColorSet.onDarkTextHighEmphasis, fileMessagePlaceholderColor: UIKit.UIColor = SBUColorSet.onLightTextMidEmphasis, adminMessageFont: UIKit.UIFont = SBUFontSet.caption2, adminMessageTextColor: UIKit.UIColor = SBUColorSet.onLightTextMidEmphasis, unknownMessageDescFont: UIKit.UIFont = SBUFontSet.body3, unknownMessageDescLeftTextColor: UIKit.UIColor = SBUColorSet.onLightTextMidEmphasis, unknownMessageDescRightTextColor: UIKit.UIColor = SBUColorSet.onDarkTextMidEmphasis, ogTitleFont: UIKit.UIFont = SBUFontSet.body2, ogTitleColor: UIKit.UIColor = SBUColorSet.onLightTextHighEmphasis, ogDescriptionFont: UIKit.UIFont = SBUFontSet.caption2, ogDescriptionColor: UIKit.UIColor = SBUColorSet.onLightTextHighEmphasis, ogURLAddressFont: UIKit.UIFont = SBUFontSet.caption2, ogURLAddressColor: UIKit.UIColor = SBUColorSet.onLightTextMidEmphasis, openChannelOGTitleColor: UIKit.UIColor = SBUColorSet.primaryMain, linkColor: UIKit.UIColor = SBUColorSet.primaryMain, contentBackgroundColor: UIKit.UIColor = SBUColorSet.background100, pressedContentBackgroundColor: UIKit.UIColor = SBUColorSet.background300, quotedMessageLeftBackgroundColor: UIKit.UIColor = SBUColorSet.background100.withAlphaComponent(0.5), quotedMessageRightBackgroundColor: UIKit.UIColor = SBUColorSet.background100, quotedFileMessageThumbnailColor: UIKit.UIColor = SBUColorSet.onLightTextMidEmphasis, quotedMessageTextColor: UIKit.UIColor = SBUColorSet.onLightTextLowEmphasis, quotedMessageTextFont: UIKit.UIFont = SBUFontSet.body3, repliedIconColor: UIKit.UIColor = SBUColorSet.onLightTextLowEmphasis, repliedToTextColor: UIKit.UIColor = SBUColorSet.onLightTextLowEmphasis, repliedToTextFont: UIKit.UIFont = SBUFontSet.caption1, repliedCountTextColor: UIKit.UIColor = SBUColorSet.primaryMain, repliedCountTextFont: UIKit.UIFont = SBUFontSet.caption3, repliedUsersMoreIconBackgroundColor: UIKit.UIColor = SBUColorSet.background700.withAlphaComponent(0.64), repliedUsersMoreIconTintColor: UIKit.UIColor = SBUColorSet.onDarkTextHighEmphasis, mentionTextFont: UIKit.UIFont = SBUFontSet.body4, mentionLeftTextColor: UIKit.UIColor = SBUColorSet.onLightTextHighEmphasis, mentionRightTextColor: UIKit.UIColor = SBUColorSet.onDarkTextHighEmphasis, mentionLeftTextBackgroundColor: UIKit.UIColor = .clear, mentionRightTextBackgroundColor: UIKit.UIColor = .clear, buttonBackgroundColor: UIKit.UIColor = SBUColorSet.background200, buttonTitleColor: UIKit.UIColor = SBUColorSet.primaryMain, sideButtonIconColor: UIKit.UIColor = SBUColorSet.onLightTextLowEmphasis, newMessageBadgeColor: UIKit.UIColor = SBUColorSet.secondaryMain, parentInfoBackgroundColor: UIKit.UIColor = SBUColorSet.background50, parentInfoUserNameTextFont: UIKit.UIFont = SBUFontSet.h3, parentInfoUserNameTextColor: UIKit.UIColor = SBUColorSet.onLightTextHighEmphasis, parentInfoDateFont: UIKit.UIFont = SBUFontSet.caption2, parentInfoDateTextColor: UIKit.UIColor = SBUColorSet.onLightTextLowEmphasis, parentInfoMoreButtonTintColor: UIKit.UIColor = SBUColorSet.onLightTextMidEmphasis, parentInfoSeparateBarColor: UIKit.UIColor = SBUColorSet.onLightTextDisabled, parentInfoReplyCountTextColor: UIKit.UIColor = SBUColorSet.onLightTextLowEmphasis, parentInfoReplyCountTextFont: UIKit.UIFont = SBUFontSet.body3, parentInfoProgressBackgroundColor: UIKit.UIColor = SBUColorSet.background100, progressTrackTintColor: UIKit.UIColor = SBUColorSet.onLightTextLowEmphasis, progressTimeFont: UIKit.UIFont = SBUFontSet.body3, progressTimeRightTextColor: UIKit.UIColor = SBUColorSet.onDarkTextHighEmphasis, progressTimeLeftTextColor: UIKit.UIColor = SBUColorSet.onLightTextHighEmphasis, statusButtonBackgroundColor: UIKit.UIColor = SBUColorSet.background50, loadingButtonTintColor: UIKit.UIColor = SBUColorSet.primaryLight, playButtonTintColor: UIKit.UIColor = SBUColorSet.primaryMain, pauseButtonTintColor: UIKit.UIColor = SBUColorSet.primaryMain, suggestedReplyTitleColor: UIKit.UIColor = SBUColorSet.primaryMain, suggestedReplyBorderColor: UIKit.UIColor = SBUColorSet.primaryMain, suggestedReplyBackgroundColor: UIKit.UIColor = SBUColorSet.background50, suggestedReplyBackgroundSelectedColor: UIKit.UIColor = SBUColorSet.background100, multipleFilesMessageFileOverlayColor: UIKit.UIColor = SBUColorSet.overlayLight, formBackgroundColor: UIKit.UIColor = SBUColorSet.background100, formTitleColor: UIKit.UIColor = SBUColorSet.onLightTextMidEmphasis, formOptionalTitleColor: UIKit.UIColor = SBUColorSet.onLightTextLowEmphasis, formInputBackgroundColor: UIKit.UIColor = SBUColorSet.background50, formInputBackgroundDoneColor: UIKit.UIColor = SBUColorSet.onDarkTextMidEmphasis, formInputTitleColor: UIKit.UIColor = SBUColorSet.onLightTextHighEmphasis, formInputIconColor: UIKit.UIColor = SBUColorSet.secondaryMain, formInputBorderNormalColor: UIKit.UIColor = SBUColorSet.onLightTextDisabled, formInputBorderActiveColor: UIKit.UIColor = SBUColorSet.primaryMain, formInputBorderErrorColor: UIKit.UIColor = SBUColorSet.errorMain, formInputErrorColor: UIKit.UIColor = SBUColorSet.errorMain, formInputPlaceholderColor: UIKit.UIColor = SBUColorSet.onLightTextLowEmphasis, formSubmitButtonBackgroundColor: UIKit.UIColor = SBUColorSet.primaryMain, formSubmitButtonBackgroundDisabledColor: UIKit.UIColor = SBUColorSet.background100, formSubmitButtonTitleColor: UIKit.UIColor = SBUColorSet.onDarkTextHighEmphasis, formSubmitButtonTitleDisabledColor: UIKit.UIColor = SBUColorSet.onLightTextDisabled, formChipBackgroundNormalColor: UIKit.UIColor = SBUColorSet.background50, formChipBackgroundSelectColor: UIKit.UIColor = SBUColorSet.primaryExtraLight, formChipBackgroundDisableColor: UIKit.UIColor = SBUColorSet.onDarkTextDisabled, formChipBackgroundSubmittedColor: UIKit.UIColor = SBUColorSet.onDarkTextDisabled, formChipTitleNormalColor: UIKit.UIColor = SBUColorSet.onLightTextMidEmphasis, formChipTitleSelectColor: UIKit.UIColor = SBUColorSet.primaryExtraLight, formChipTitleDisableColor: UIKit.UIColor = SBUColorSet.onLightTextMidEmphasis, formChipTitleSubmittedColor: UIKit.UIColor = SBUColorSet.onLightTextHighEmphasis, formChipBorderNormalColor: UIKit.UIColor = SBUColorSet.onLightTextDisabled, formChipBorderSelectColor: UIKit.UIColor = SBUColorSet.primaryMain, formChipBorderDisableColor: UIKit.UIColor = SBUColorSet.onDarkTextDisabled, formChipBorderSubmittedColor: UIKit.UIColor = UIColor.clear, formTitleFont: UIKit.UIFont = SBUFontSet.caption3, formOptionalTitleFont: UIKit.UIFont = SBUFontSet.caption3, formErrorTitleFont: UIKit.UIFont = SBUFontSet.caption4, formInputTextFont: UIKit.UIFont = SBUFontSet.body3, formChipTextFont: UIKit.UIFont = SBUFontSet.caption1, formSubmittButtonFont: UIKit.UIFont = SBUFontSet.button3, typingMessageProfileBorderColor: UIKit.UIColor = SBUColorSet.background50, typingMessageDotColor: UIKit.UIColor = SBUColorSet.onLightTextDisabled, typingMessageDotTransformColor: UIKit.UIColor = SBUColorSet.onLightTextLowEmphasis, feedbackRadius: CoreFoundation.CGFloat = 18, feedbackIconColor: UIKit.UIColor = SBUColorSet.onLightTextMidEmphasis, feedbackIconSelectColor: UIKit.UIColor = SBUColorSet.onDarkTextHighEmphasis, feedbackIconDeselectColor: UIKit.UIColor = SBUColorSet.onLightTextDisabled, feedbackBorderColor: UIKit.UIColor = SBUColorSet.onLightTextDisabled, feedbackBorderSelectColor: UIKit.UIColor = SBUColorSet.primaryMain, feedbackBorderDeselectColor: UIKit.UIColor = SBUColorSet.onLightTextDisabled, feedbackBackgroundNormalColor: UIKit.UIColor = SBUColorSet.background50, feedbackBackgroundSelectColor: UIKit.UIColor = SBUColorSet.primaryMain, feedbackBackgroundDeselectColor: UIKit.UIColor = SBUColorSet.background50)
   public var backgroundColor: UIKit.UIColor
   public var leftBackgroundColor: UIKit.UIColor
   public var leftPressedBackgroundColor: UIKit.UIColor
@@ -10401,11 +10705,32 @@ public class SBUMessageCellTheme {
   public var formInputTitleColor: UIKit.UIColor
   public var formInputIconColor: UIKit.UIColor
   public var formInputBorderNormalColor: UIKit.UIColor
+  public var formInputBorderActiveColor: UIKit.UIColor
+  public var formInputBorderErrorColor: UIKit.UIColor
   public var formInputErrorColor: UIKit.UIColor
   public var formInputPlaceholderColor: UIKit.UIColor
   public var formSubmitButtonBackgroundColor: UIKit.UIColor
   public var formSubmitButtonBackgroundDisabledColor: UIKit.UIColor
   public var formSubmitButtonTitleColor: UIKit.UIColor
+  public var formSubmitButtonTitleDisabledColor: UIKit.UIColor
+  public var formChipBackgroundNormalColor: UIKit.UIColor
+  public var formChipBackgroundSelectColor: UIKit.UIColor
+  public var formChipBackgroundDisableColor: UIKit.UIColor
+  public var formChipBackgroundSubmittedColor: UIKit.UIColor
+  public var formChipTitleNormalColor: UIKit.UIColor
+  public var formChipTitleSelectColor: UIKit.UIColor
+  public var formChipTitleDisableColor: UIKit.UIColor
+  public var formChipTitleSubmittedColor: UIKit.UIColor
+  public var formChipBorderNormalColor: UIKit.UIColor
+  public var formChipBorderSelectColor: UIKit.UIColor
+  public var formChipBorderDisableColor: UIKit.UIColor
+  public var formChipBorderSubmittedColor: UIKit.UIColor
+  public var formTitleFont: UIKit.UIFont
+  public var formOptionalTitleFont: UIKit.UIFont
+  public var formErrorTitleFont: UIKit.UIFont
+  public var formInputTextFont: UIKit.UIFont
+  public var formChipTextFont: UIKit.UIFont
+  public var formSubmittButtonFont: UIKit.UIFont
   public var typingMessageProfileBorderColor: UIKit.UIColor
   public var typingMessageDotColor: UIKit.UIColor
   public var typingMessageDotTransformColor: UIKit.UIColor
@@ -11271,7 +11596,7 @@ extension SendbirdUIKit.SBUUserListViewModel : SendbirdChatSDK.OpenChannelDelega
   override public init()
   @objc deinit
 }
-@objc @_inheritsConvenienceInitializers @IBDesignable @_Concurrency.MainActor(unsafe) open class SBUUserMessageCell : SendbirdUIKit.SBUContentBaseMessageCell, SendbirdUIKit.SBUUserMessageTextViewDelegate, SendbirdUIKit.SBUSuggestedReplyViewDelegate, SendbirdUIKit.SBUFormViewDelegate {
+@objc @_inheritsConvenienceInitializers @IBDesignable @_Concurrency.MainActor(unsafe) open class SBUUserMessageCell : SendbirdUIKit.SBUContentBaseMessageCell, SendbirdUIKit.SBUUserMessageTextViewDelegate, SendbirdUIKit.SBUSuggestedReplyViewDelegate, SendbirdUIKit.SBUMessageFormViewDelegate {
   @objc @_Concurrency.MainActor(unsafe) public var messageTextView: UIKit.UIView {
     @objc get
     @objc set
@@ -11296,7 +11621,11 @@ extension SendbirdUIKit.SBUUserListViewModel : SendbirdChatSDK.OpenChannelDelega
   @objc @_Concurrency.MainActor(unsafe) public var shouldHideFormTypeMessage: Swift.Bool {
     get
   }
-  @objc @_Concurrency.MainActor(unsafe) public var formViews: [SendbirdUIKit.SBUFormView]? {
+  @objc @available(*, deprecated, message: "This method is deprecated in 3.27.0.")
+  @_Concurrency.MainActor(unsafe) public var formViews: [SendbirdUIKit.SBUFormView]? {
+    get
+  }
+  @objc @_Concurrency.MainActor(unsafe) public var messageFormView: SendbirdUIKit.SBUMessageFormView? {
     get
   }
   @_Concurrency.MainActor(unsafe) open var extendedMessagePayloadCustomViewFactory: (any SendbirdUIKit.SBUExtendedMessagePayloadCustomViewFactoryInternal.Type)? {
@@ -11316,12 +11645,20 @@ extension SendbirdUIKit.SBUUserListViewModel : SendbirdChatSDK.OpenChannelDelega
   @objc @_Concurrency.MainActor(unsafe) open func onTapWebview(sender: UIKit.UITapGestureRecognizer)
   @objc @_Concurrency.MainActor(unsafe) open func updateSuggestedReplyView(with options: [Swift.String]?)
   @objc @_Concurrency.MainActor(unsafe) open func createSuggestedReplyView() -> SendbirdUIKit.SBUSuggestedReplyView
-  @objc @_Concurrency.MainActor(unsafe) public func updateFormView(with message: SendbirdChatSDK.BaseMessage?) -> Swift.Bool
-  @objc @_Concurrency.MainActor(unsafe) open func createFormView() -> SendbirdUIKit.SBUFormView
+  @objc @available(*, deprecated, message: "This method is deprecated in 3.27.0.")
+  @_Concurrency.MainActor(unsafe) public func updateFormView(with message: SendbirdChatSDK.BaseMessage?) -> Swift.Bool
+  @objc @_Concurrency.MainActor(unsafe) public func updateMessageFormView(with message: SendbirdChatSDK.BaseMessage?) -> Swift.Bool
+  @objc @available(*, deprecated, message: "This method is deprecated in 3.27.0.")
+  @_Concurrency.MainActor(unsafe) open func createFormView() -> SendbirdUIKit.SBUFormView
+  @objc @_Concurrency.MainActor(unsafe) open func createMessageFormView() -> SendbirdUIKit.SBUMessageFormView
   @objc @_Concurrency.MainActor(unsafe) public func updateMessageTemplate()
   @objc @_Concurrency.MainActor(unsafe) open func userMessageTextView(_ textView: SendbirdUIKit.SBUUserMessageTextView, didTapMention user: SendbirdUIKit.SBUUser)
   @objc @_Concurrency.MainActor(unsafe) open func suggestedReplyView(_ view: SendbirdUIKit.SBUSuggestedReplyView, didSelectOption optionView: SendbirdUIKit.SBUSuggestedReplyOptionView)
-  @objc @_Concurrency.MainActor(unsafe) public func formView(_ view: SendbirdUIKit.SBUFormView, didSubmit form: SendbirdChatSDK.Form)
+  @objc @available(*, deprecated, message: "This method is deprecated in 3.27.0.")
+  @_Concurrency.MainActor(unsafe) public func formView(_ view: SendbirdUIKit.SBUFormView, didSubmit form: SendbirdChatSDK.MessageForm)
+  @objc @_Concurrency.MainActor(unsafe) public func messageFormView(_ view: SendbirdUIKit.SBUMessageFormView, didSubmit form: SendbirdChatSDK.MessageForm)
+  @objc @_Concurrency.MainActor(unsafe) public func messageFormView(_ view: SendbirdUIKit.SBUMessageFormView, didUpdateValidationStatus status: [Swift.Int64 : Swift.Bool])
+  @objc @_Concurrency.MainActor(unsafe) public func messageFormView(_ view: SendbirdUIKit.SBUMessageFormView, didUpdateViewFrame: CoreFoundation.CGRect)
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init(style: UIKit.UITableViewCell.CellStyle, reuseIdentifier: Swift.String?)
   @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
   @objc deinit
@@ -11975,8 +12312,11 @@ extension SendbirdUIKit.SBUForm.Field.InputTypeValue : Swift.Equatable {}
 extension SendbirdUIKit.SBUForm.Field.InputTypeValue : Swift.Hashable {}
 @available(*, unavailable, message: "Use `SendbirdChatSDK.Form`")
 extension SendbirdUIKit.SBUForm.Field.InputTypeValue : Swift.RawRepresentable {}
+@available(*, deprecated, message: "This method is deprecated in 3.27.0")
 extension SendbirdUIKit.SBUFormFieldInputType : Swift.Equatable {}
+@available(*, deprecated, message: "This method is deprecated in 3.27.0")
 extension SendbirdUIKit.SBUFormFieldInputType : Swift.Hashable {}
+@available(*, deprecated, message: "This method is deprecated in 3.27.0")
 extension SendbirdUIKit.SBUFormFieldInputType : Swift.RawRepresentable {}
 extension SendbirdUIKit.SBUIconSetType : Swift.RawRepresentable {}
 extension SendbirdUIKit.SBULayoutableButton.LabelAlignment : Swift.Equatable {}
@@ -11988,6 +12328,8 @@ extension SendbirdUIKit.SBULayoutableButton.VerticalAlignment : Swift.RawReprese
 extension SendbirdUIKit.SBULayoutableButton.HorizontalAlignment : Swift.Equatable {}
 extension SendbirdUIKit.SBULayoutableButton.HorizontalAlignment : Swift.Hashable {}
 extension SendbirdUIKit.SBULayoutableButton.HorizontalAlignment : Swift.RawRepresentable {}
+extension SendbirdUIKit.SBUMessageFormItemView.InputErrorType : Swift.Equatable {}
+extension SendbirdUIKit.SBUMessageFormItemView.InputErrorType : Swift.Hashable {}
 extension SendbirdUIKit.SBUMessageInputMode : Swift.Equatable {}
 extension SendbirdUIKit.SBUMessageInputMode : Swift.Hashable {}
 extension SendbirdUIKit.SBUMessageInputMode : Swift.RawRepresentable {}

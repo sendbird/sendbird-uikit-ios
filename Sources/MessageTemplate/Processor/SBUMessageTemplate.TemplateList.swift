@@ -38,6 +38,7 @@ extension SBUMessageTemplate {
         let key: String // unique
         let name: String
         let uiTemplate: String // JSON_OBJECT
+        let dataTemplate: String // JSON_OBJECT
         let colorVariables: String // JSON_OBJECT
         let createdAt: Int64
         let updatedAt: Int64
@@ -48,6 +49,7 @@ extension SBUMessageTemplate {
             case createdAt = "created_at"
             case updatedAt = "updated_at"
             case uiTemplate = "ui_template"
+            case dataTemplate = "data_template"
             case colorVariables = "color_variables"
         }
         
@@ -88,10 +90,14 @@ extension SBUMessageTemplate.TemplateModel {
            let updatedAt = template.value(from: .updatedAt) as? Int64 {
 
             let uiTemplate = template.value(from: .uiTemplate) as? [String: Any] ?? [:]
+            let dataTemplate = template.value(from: .dataTemplate) as? [String: Any] ?? [:]
             let colorVariables = template.value(from: .colorVariables) as? [String: Any] ?? [:]
             
             let uiTemplateJson = try JSONSerialization.data(withJSONObject: uiTemplate, options: [])
             let uiTemplateJsonStr = String(data: uiTemplateJson, encoding: .utf8)
+            
+            let dataTemplateJson = try JSONSerialization.data(withJSONObject: dataTemplate, options: [])
+            let dataTemplateJsonStr = String(data: dataTemplateJson, encoding: .utf8)
 
             let colorVariablesJson = try JSONSerialization.data(withJSONObject: colorVariables, options: [])
             let colorVariablesJsonStr = String(data: colorVariablesJson, encoding: .utf8)
@@ -100,6 +106,7 @@ extension SBUMessageTemplate.TemplateModel {
                 key: key,
                 name: name,
                 uiTemplate: uiTemplateJsonStr ?? "",
+                dataTemplate: dataTemplateJsonStr ?? "",
                 colorVariables: colorVariablesJsonStr ?? "",
                 createdAt: createdAt,
                 updatedAt: updatedAt

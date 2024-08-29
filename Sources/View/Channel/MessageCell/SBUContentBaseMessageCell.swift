@@ -311,6 +311,11 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
             guard let self = self else { return }
             self.moreEmojiTapHandler?()
         }
+        
+        self.reactionView.errorHandler = { [weak self] error in
+            guard let self = self else { return }
+            self.errorHandler?(error)
+        }
     }
     
     open override func setupStyles() {
@@ -363,12 +368,14 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         guard let message = self.message else { return }
         
         // MARK: Configure reaction view
-        self.reactionView.configure(
+        let params = SBUMessageReactionViewParams(
             maxWidth: SBUConstant.imageSize.width,
             useReaction: self.useReaction,
             reactions: message.reactions,
-            enableEmojiLongPress: self.enableEmojiLongPress
+            enableEmojiLongPress: self.enableEmojiLongPress,
+            message: message
         )
+        self.reactionView.configure(configuration: params)
         
         // MARK: update UI with message position
         

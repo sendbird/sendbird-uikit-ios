@@ -66,6 +66,30 @@ extension BaseMessage {
         try self.asExtendedMessagePayload?.decodeCustomViewData()
     }
     
+    /// A value that determines whether to disable the MessageInputView.
+    /// Additionally, other properties are checked as well.
+    /// - Since: 3.27.0
+    public func getChatInputDisabledState(hasNext: Bool?) -> Bool {
+        guard let extendedMessagePayload = self.asExtendedMessagePayload else { return false }
+        guard extendedMessagePayload.disableChatInput == true else { return false }
+        
+        if hasNext == true { return false }
+        
+        if let form = self.messageForm,
+           form.isValidVersion == true,
+           form.isSubmitted == false,
+           SendbirdUI.config.groupChannel.channel.isFormTypeMessageEnabled == true {
+            return true
+        }
+        
+        if extendedMessagePayload.suggestedReplies?.hasElements == true,
+           SendbirdUI.config.groupChannel.channel.isSuggestedRepliesEnabled == true {
+            return true
+        }
+        
+        return false
+    }
+    
     /// Indicates if the message is a stream (being updated) message.
     /// - Since: 3.26.0
     public var isStreamMessage: Bool {
@@ -74,6 +98,20 @@ extension BaseMessage {
 }
 
 extension BaseMessage {
+    func setInMemoryUserInfo<Element>(key: String, data: Element) {
+        var memory = self.inMemoryUserInfo ?? [:]
+        memory[key] = data
+        self.inMemoryUserInfo = memory
+    }
+    
+    func getInMemoryUserInfo<Element>(key: String) -> Element? {
+        self.inMemoryUserInfo?[key] as? Element
+    }
+    
+    func getInMemoryUserInfo<Element>(key: String, defaultValue: Element) -> Element {
+        self.inMemoryUserInfo?[key] as? Element ?? defaultValue
+    }
+        
     fileprivate struct StreamData: Codable {
         let stream: Bool?
         

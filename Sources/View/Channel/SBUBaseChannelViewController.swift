@@ -61,7 +61,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     
     var isTransformedList: Bool = true
     
-    var isDisableChatInputState: Bool = false
+    var isChatInputDisabled: Bool = false
     
     // MARK: - Lifecycle
     @available(*, unavailable)
@@ -398,6 +398,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     /// - Since: 1.1.0
     open func showEmojiListModal(message: BaseMessage) {
         let emojiListVC = SBUEmojiListViewController(message: message)
+        
         emojiListVC.modalPresentationStyle = .custom
         emojiListVC.transitioningDelegate = self
         
@@ -679,7 +680,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
             }
         }
         
-        self.isDisableChatInputState =  messages.first?.asExtendedMessagePayload?.getDisabledChatInputState(hasNext: self.baseViewModel?.hasNext()) ?? false
+        self.isChatInputDisabled =  messages.first?.getChatInputDisabledState(hasNext: self.baseViewModel?.hasNext()) ?? false
         
         guard needsToReload else { return }
         

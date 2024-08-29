@@ -71,6 +71,7 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol, SBUFeed
     var moreEmojiTapHandler: (() -> Void)?
     var emojiLongPressHandler: ((_ emojiKey: String) -> Void)?
     var mentionTapHandler: ((_ user: SBUUser) -> Void)?
+    var errorHandler: ((_ error: SBError) -> Void)?
     
     /// The action of ``SBUSuggestedReplyView`` that is called when a ``SBUSuggestedReplyOptionView`` is selected.
     /// - Parameter selectedOptionView: The selected ``SBUSuggestedReplyOptionView`` object.
@@ -81,7 +82,15 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol, SBUFeed
     ///    - form: The ``SendbirdChatSDK.Form`` object that will be submitted.
     ///    - messageCell: The current ``SBUBaseMessageCell`` object.
     ///  - Since: 3.16.0
+    @available(*, deprecated, message: "This method is deprecated in 3.27.0.")
     var submitFormHandler: ((_ form: SendbirdChatSDK.Form, _ messageCell: SBUBaseMessageCell) -> Void)?
+    
+    /// The action of ``SBUMessageFormView`` that is called when a ``SendbirdChatSDK.MessageForm`` is submitted.
+    /// - Parameters:
+    ///    - messageForm: The current ``MessageForm`` object.
+    ///    - messageCell: The current ``SBUBaseMessageCell`` object.
+    ///  - Since: 3.27.0
+    var submitMessageFormHandler: ((_ messageForm: SendbirdChatSDK.MessageForm, _ messageCell: SBUBaseMessageCell) -> Void)?
     
     /// The action of ``SBUFeedbackView`` that is called when a `Feedback` is updated.
     /// - Parameters:

@@ -317,6 +317,11 @@ extension SBUMessageThreadModule {
                 guard let self = self else { return }
                 self.delegate?.messageThreadModule(self, didTapMentionUser: user)
             }
+            
+            self.parentMessageInfoView.errorHandler = { [weak self] error in
+                guard let self = self else { return }
+                self.delegate?.didReceiveError(error, isBlocker: false)
+            }
         }
         
         // MARK: - EmptyView

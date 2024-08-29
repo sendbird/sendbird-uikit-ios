@@ -45,9 +45,9 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     
     public private(set) var newMessagesCount: Int = 0
     
-    override var isDisableChatInputState: Bool {
+    override var isChatInputDisabled: Bool {
         didSet {
-            (self.baseInputComponent?.messageInputView as? SBUMessageInputView)?.setDisableChatInputState(isDisableChatInputState)
+            (self.baseInputComponent?.messageInputView as? SBUMessageInputView)?.setDisableChatInputState(isChatInputDisabled)
         }
     }
     
@@ -948,13 +948,23 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     
     open func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didSelect suggestedReplyOptionView: SBUSuggestedReplyOptionView) {
         guard let text = suggestedReplyOptionView.text else { return }
-        self.viewModel?.sendUserMessage(text: text)
+        
+        let messageParams = UserMessageCreateParams(message: text)
+        SBUGlobalCustomParams.userMessageParamsSendBuilder?(messageParams)
+        self.viewModel?.sendUserMessage(messageParams: messageParams)
     }
 
+    @available(*, deprecated, message: "This method is deprecated in 3.27.0.")
     open func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didSubmit form: SendbirdChatSDK.Form, messageCell: SBUBaseMessageCell) {
         guard let message = messageCell.message else { return }
         
         self.viewModel?.submitForm(message: message, form: form)
+    }
+   
+    open func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didSubmitMessageForm form: SendbirdChatSDK.MessageForm, messageCell: SBUBaseMessageCell) {
+        guard let message = messageCell.message else { return }
+        
+        self.viewModel?.submitMessageForm(message: message)
     }
     
     open func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didUpdate feedbackAnswer: SBUFeedbackAnswer, messageCell: SBUBaseMessageCell) {

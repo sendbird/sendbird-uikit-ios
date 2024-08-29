@@ -70,7 +70,16 @@ public protocol SBUGroupChannelModuleListDelegate: SBUBaseChannelModuleListDeleg
     ///   - form: `SendbirdChatSDK.Form` object.
     ///   - messageCell: Message cell object
     /// - Since: 3.16.0
+    @available(*, deprecated, message: "This method is deprecated in 3.27.0.")
     func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didSubmit form: SendbirdChatSDK.Form, messageCell: SBUBaseMessageCell)
+    
+    /// Called when submit the messageForm.
+    /// - Parameters:
+    ///   - listComponent: `SBUGroupChannelModule.List` object.
+    ///   - messageForm: Message Form object
+    ///   - messageCell: Message cell object
+    /// - Since: 3.27.0
+    func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didSubmitMessageForm messageForm: MessageForm, messageCell: SBUBaseMessageCell)
     
     /// Called when updated the feedback answer.
     /// - Parameters:
@@ -699,9 +708,10 @@ extension SBUGroupChannelModule {
                 self.delegate?.groupChannelModule(self, didSelect: optionView)
             }
             
-            messageCell.submitFormHandler = { [weak self] form, cell in
+            messageCell.submitMessageFormHandler = { [weak self] form, cell in
                 guard let self = self else { return }
-                self.delegate?.groupChannelModule(self, didSubmit: form, messageCell: cell)
+                guard let form = message.messageForm else { return }
+                self.delegate?.groupChannelModule(self, didSubmitMessageForm: form, messageCell: cell)
             }
             
             messageCell.updateFeedbackHandler = { [weak self] answer, cell in
@@ -759,6 +769,11 @@ extension SBUGroupChannelModule {
                     shouldHandleUncachedTemplateImages: cacheData,
                     messageCell: messageCell
                 )
+            }
+            
+            messageCell.errorHandler = { [weak self] error in
+                guard let self = self else { return }
+                self.delegate?.didReceiveError(error, isBlocker: false)
             }
         }
         

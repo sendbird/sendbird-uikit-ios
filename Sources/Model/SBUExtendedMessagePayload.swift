@@ -48,6 +48,7 @@ struct SBUExtendedMessagePayload {
     /// A value that determines whether to disable the MessageInputView.
     /// Additionally, other properties are checked as well.
     /// - Since: 3.16.0
+    @available(*, deprecated, message: "This method is deprecated in 3.27.0. Use `BaseMessage.getChatInputDisabledState(hasNext:)` instead.")
     public func getDisabledChatInputState(hasNext: Bool?) -> Bool {
         if hasNext == true { return false }
         if SendbirdUI.config.groupChannel.channel.isSuggestedRepliesEnabled == false { return false }

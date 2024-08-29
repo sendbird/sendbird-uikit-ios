@@ -10,7 +10,7 @@
 		</data>
 		<key>Headers/SendbirdUIKit-Swift.h</key>
 		<data>
-		fTnheTIdUbZuxpVzp6WrSTnbuY0=
+		373Y3mW+pEtRqd5EbCv0GVY/ihc=
 		</data>
 		<key>Info.plist</key>
 		<data>
@@ -18,43 +18,43 @@
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
 		<data>
-		BU7bXywiEFDCsKH6DuHdEquFEiA=
+		XfToTCpNx7DVFLRCVVy28ChQHV0=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
-		GKM7qShWYn9jfBs2AKoWGUVomM0=
+		S4lhSh1aZ4K/ndwcW4H/yrUp4BU=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
 		<data>
-		tJeL5CNpfPHi5gQ98EpP/mn0Ngs=
+		yhmdPLonmFRgUKA0QctZ+WaCZoo=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		GKM7qShWYn9jfBs2AKoWGUVomM0=
+		S4lhSh1aZ4K/ndwcW4H/yrUp4BU=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		F5AY7XyfcEMP4XCLQrIg82LFye8=
+		jYCRpUXqv5c2S9OzetOay74B4KM=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<data>
-		BU7bXywiEFDCsKH6DuHdEquFEiA=
+		XfToTCpNx7DVFLRCVVy28ChQHV0=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
-		W5Aa2GS7oYr5H1GhhKj/YhtgBvI=
+		s1Dp+SgoEeFnBq00I3wIkhWrqLI=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<data>
-		yEdUuBTcmL7Yu8BgIrc/xrDdmz0=
+		OS4UxuPrZLbkCHMZ2SQZeWnbfAM=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		W5Aa2GS7oYr5H1GhhKj/YhtgBvI=
+		s1Dp+SgoEeFnBq00I3wIkhWrqLI=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		0ANmLdhlog/BYVDkMfW7sA3sjBA=
+		ysnYAWqlMFpjC/nX8EDL/iqkdYo=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -78,77 +78,77 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			j3FM6fLzAizgGb8oRLu6BbDEZ4dRNPtk+3+LUUmcm18=
+			V3vMNH958gVY/gGdgYPLGW//xgMzXe7YMeQX5LfbsTY=
 			</data>
 		</dict>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			c+sGQZwY1spQCkrgm/6quFfIVvlfYbzvium+hsS90Jg=
+			OuDSydZfbJJAJNWM/nm3mhfR+4peNbSWQ31rmpEnpn8=
 			</data>
 		</dict>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			5Gt+h8JHha4i8aWt2jegLod7djUkta+10emLJ0525KU=
+			9CYklhP7FtUVYEZBcNnO9Sk15jUvxadyOezL+M8lfdI=
 			</data>
 		</dict>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			o5ZlZWzGO353W2V1veykHD4l62XDxDrtc+YZugF+iu4=
+			se02jO6+ZOqMCaJ6f/2S/AhRAl0x8ffNSOJcOtyKuI0=
 			</data>
 		</dict>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			5Gt+h8JHha4i8aWt2jegLod7djUkta+10emLJ0525KU=
+			9CYklhP7FtUVYEZBcNnO9Sk15jUvxadyOezL+M8lfdI=
 			</data>
 		</dict>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			L7xcryLmsqGmgTKc7+k/Up2H6KiE5j09AkV1cf0yvPM=
+			Qhex2p7tLp5R7UuWQFc0Lo5LgL7+90stg/JY58plclQ=
 			</data>
 		</dict>
 		<key>Modules/SendbirdUIKit.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			c+sGQZwY1spQCkrgm/6quFfIVvlfYbzvium+hsS90Jg=
+			OuDSydZfbJJAJNWM/nm3mhfR+4peNbSWQ31rmpEnpn8=
 			</data>
 		</dict>
 		<key>Modules/SendbirdUIKit.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			pUom/ToE18wM9b6Nv6dkj/u28MOOhTusaozZqTsovYs=
+			25THqF3fyPWHkMRiwE0FJFrGA/OsCHuIRfPtzb5Ou+w=
 			</data>
 		</dict>
 		<key>Modules/SendbirdUIKit.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			F3bJOVxS/VxyeP9HtoC9sKW07j4Gib0/YypX7rOICaw=
+			9qVtXbhFNuOczEsT8+k+Uy20ntaCLSGZXqIIfca67SM=
 			</data>
 		</dict>
 		<key>Modules/SendbirdUIKit.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			pUom/ToE18wM9b6Nv6dkj/u28MOOhTusaozZqTsovYs=
+			25THqF3fyPWHkMRiwE0FJFrGA/OsCHuIRfPtzb5Ou+w=
 			</data>
 		</dict>
 		<key>Modules/SendbirdUIKit.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			3hXu9pLTkHo2u3y1Wl3oEJMZ9NRZ2wd6H8tpRfhevUs=
+			onpZwXzdUXLOODQS+makpaMpltUgDjOe+rwvmjeI3PU=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
