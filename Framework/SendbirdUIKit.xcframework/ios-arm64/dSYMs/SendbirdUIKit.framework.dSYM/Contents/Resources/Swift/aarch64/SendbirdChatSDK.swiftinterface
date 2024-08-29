@@ -449,9 +449,11 @@ extension SendbirdChatSDK.FileMessage {
   @objc(submitFeedbackWithRating:comment:completionHandler:) dynamic open func submitFeedback(rating: SendbirdChatSDK.Feedback.Rating, comment: Swift.String? = nil, completionHandler: SendbirdChatSDK.FeedbackHandler? = nil)
   @objc(updateFeedbackWithRating:comment:completionHandler:) dynamic open func updateFeedback(rating: SendbirdChatSDK.Feedback.Rating, comment: Swift.String? = nil, completionHandler: SendbirdChatSDK.FeedbackHandler? = nil)
   @objc(deleteFeedbackWithCompletionHandler:) dynamic open func deleteFeedback(completionHandler: SendbirdChatSDK.SBErrorHandler?)
-  @available(*, deprecated, renamed: "submitForm(form:completionHandler:)", message: "This method is deprecated in 4.14.1.")
+  @available(*, deprecated, renamed: "submitMessageForm(form:completionHandler:)", message: "This method is deprecated in 4.14.1.")
   @objc(submitFormWithFormKey:answers:completionHandler:) dynamic open func submitForm(formKey: Swift.String, answers: [Swift.String : Swift.String], completionHandler: SendbirdChatSDK.SBErrorHandler?)
+  @available(*, deprecated, renamed: "submitMessageForm(form:completionHandler:)", message: "This method is deprecated in 4.21.0.")
   @objc(submitFormWithForm:completionHandler:) dynamic open func submitForm(form: SendbirdChatSDK.Form, completionHandler: SendbirdChatSDK.SBErrorHandler?)
+  @objc(submitMessageFormWithCompletionHandler:) dynamic open func submitMessageForm(completionHandler: SendbirdChatSDK.SBErrorHandler?)
 }
 @_hasMissingDesignatedInitializers @objc(SBDBaseMessage) open class BaseMessage : ObjectiveC.NSObject, Swift.Codable, Foundation.NSCopying, Swift.Identifiable {
   @objc open var id: Swift.AnyHashable {
@@ -556,7 +558,11 @@ extension SendbirdChatSDK.FileMessage {
   final public let extendedMessage: [Swift.String : Any]
   final public let extendedMessagePayload: [Swift.String : Any]
   final public let suggestedReplies: [Swift.String]?
-  final public let forms: [SendbirdChatSDK.Form]?
+  @available(*, deprecated, message: "This property is deprecated in 4.21.0. Please use `messageForm` single value property")
+  public var forms: [SendbirdChatSDK.Form]? {
+    get
+  }
+  final public let messageForm: SendbirdChatSDK.MessageForm?
   @objc public var inMemoryUserInfo: [Swift.String : Any]?
   @objc open var notificationPriority: SendbirdChatSDK.NotificationPriority {
     get
@@ -672,7 +678,6 @@ extension SendbirdChatSDK.BlockedUserListQueryParams : Foundation.NSCopying {
   }
 }
 extension SendbirdChatSDK.GroupChannelCollection : SendbirdChatSDK.GroupChannelDelegate {
-  @objc dynamic open func channel(_ channel: SendbirdChatSDK.BaseChannel, didReceive message: SendbirdChatSDK.BaseMessage)
   @objc dynamic open func channel(_ channel: SendbirdChatSDK.BaseChannel, didReceiveMention message: SendbirdChatSDK.BaseMessage)
   @objc dynamic open func channelWasChanged(_ channel: SendbirdChatSDK.BaseChannel)
   @objc dynamic open func channel(_ channel: SendbirdChatSDK.GroupChannel, didReceiveInvitation invitees: [SendbirdChatSDK.User]?, inviter: SendbirdChatSDK.User?)
@@ -699,7 +704,7 @@ extension SendbirdChatSDK.GroupChannelCollection : SendbirdChatSDK.GroupChannelD
   @objc dynamic open func channel(_ channel: SendbirdChatSDK.BaseChannel, updatedMetaCounters: [Swift.String : Swift.Int]?)
   @objc dynamic open func channel(_ channel: SendbirdChatSDK.BaseChannel, deletedMetaCountersKeys: [Swift.String]?)
   @objc dynamic open func channelDidUpdatePinnedMessages(_ channel: SendbirdChatSDK.GroupChannel)
-  @objc dynamic open func channel(_ channel: SendbirdChatSDK.GroupChannel, didUpdateFeedbackMessage: SendbirdChatSDK.BaseMessage)
+  @objc dynamic open func channel(_ channel: SendbirdChatSDK.GroupChannel, didUpdateFeedbackMessage message: SendbirdChatSDK.BaseMessage)
 }
 extension SendbirdChatSDK.GroupChannelCollection : SendbirdChatSDK.ConnectionDelegate {
   @objc dynamic open func didSucceedReconnection()
@@ -747,7 +752,11 @@ extension SendbirdChatSDK.GroupChannelCollection : SendbirdChatSDK.ConnectionDel
   @objc final public var source: SendbirdChatSDK.CollectionEventSource {
     get
   }
+  @objc final public var eventDetail: SendbirdChatSDK.EventDetail {
+    get
+  }
   public init(source: SendbirdChatSDK.CollectionEventSource)
+  public init(source: SendbirdChatSDK.CollectionEventSource, eventDetail: SendbirdChatSDK.EventDetail)
   @objc final public var fromEvent: Swift.Bool {
     @objc get
   }
@@ -1101,6 +1110,144 @@ extension SendbirdChatSDK.SBErrorCode {
     get
   }
 }
+@_inheritsConvenienceInitializers @objc(SBDEventDetail) public class EventDetail : ObjectiveC.NSObject {
+  @_inheritsConvenienceInitializers @objc(SBDChannelChangelogs) public class ChannelChangelogs : SendbirdChatSDK.EventDetail {
+    @objc override dynamic public init()
+    @objc deinit
+  }
+  @_inheritsConvenienceInitializers @objc(SBDChannelRefresh) public class ChannelRefresh : SendbirdChatSDK.EventDetail {
+    @objc override dynamic public init()
+    @objc deinit
+  }
+  @_inheritsConvenienceInitializers @objc(SBDChannelChanged) public class ChannelChanged : SendbirdChatSDK.EventDetail {
+    @objc override dynamic public init()
+    @objc deinit
+  }
+  @_inheritsConvenienceInitializers @objc(SBDChannelMemberCountChanged) public class ChannelMemberCountChanged : SendbirdChatSDK.EventDetail {
+    @objc override dynamic public init()
+    @objc deinit
+  }
+  @_inheritsConvenienceInitializers @objc(SBDChannelFrozen) public class ChannelFrozen : SendbirdChatSDK.EventDetail {
+    @objc override dynamic public init()
+    @objc deinit
+  }
+  @_inheritsConvenienceInitializers @objc(SBDChannelUnfrozen) public class ChannelUnfrozen : SendbirdChatSDK.EventDetail {
+    @objc override dynamic public init()
+    @objc deinit
+  }
+  @_inheritsConvenienceInitializers @objc(SBDChannelHidden) public class ChannelHidden : SendbirdChatSDK.EventDetail {
+    @objc override dynamic public init()
+    @objc deinit
+  }
+  @_inheritsConvenienceInitializers @objc(SBDChannelDeleted) public class ChannelDeleted : SendbirdChatSDK.EventDetail {
+    @objc override dynamic public init()
+    @objc deinit
+  }
+  @_inheritsConvenienceInitializers @objc(SBDOperatorUpdated) public class OperatorUpdated : SendbirdChatSDK.EventDetail {
+    @objc override dynamic public init()
+    @objc deinit
+  }
+  @_inheritsConvenienceInitializers @objc(SBDTypingStatusUpdated) public class TypingStatusUpdated : SendbirdChatSDK.EventDetail {
+    @objc override dynamic public init()
+    @objc deinit
+  }
+  @_inheritsConvenienceInitializers @objc(SBDDeliveryStatusUpdated) public class DeliveryStatusUpdated : SendbirdChatSDK.EventDetail {
+    @objc override dynamic public init()
+    @objc deinit
+  }
+  @_inheritsConvenienceInitializers @objc(SBDReadStatusUpdated) public class ReadStatusUpdated : SendbirdChatSDK.EventDetail {
+    @objc override dynamic public init()
+    @objc deinit
+  }
+  @_inheritsConvenienceInitializers @objc(SBDPinnedMessageUpdated) public class PinnedMessageUpdated : SendbirdChatSDK.EventDetail {
+    @objc override dynamic public init()
+    @objc deinit
+  }
+  @objc(SBDUpdateFeedbackMessage) public class UpdateFeedbackMessage : SendbirdChatSDK.EventDetail {
+    final public let message: SendbirdChatSDK.BaseMessage
+    public init(message: SendbirdChatSDK.BaseMessage)
+    @objc deinit
+  }
+  @objc(SBDMentionReceived) public class MentionReceived : SendbirdChatSDK.EventDetail {
+    final public let message: SendbirdChatSDK.BaseMessage
+    public init(message: SendbirdChatSDK.BaseMessage)
+    @objc deinit
+  }
+  @objc(SBDUserMuted) public class UserMuted : SendbirdChatSDK.EventDetail {
+    final public let restrictedUser: SendbirdChatSDK.RestrictedUser
+    public init(restrictedUser: SendbirdChatSDK.RestrictedUser)
+    @objc deinit
+  }
+  @objc(SBDUserUnmuted) public class UserUnmuted : SendbirdChatSDK.EventDetail {
+    final public let user: SendbirdChatSDK.User
+    public init(user: SendbirdChatSDK.User)
+    @objc deinit
+  }
+  @objc(SBDUserBanned) public class UserBanned : SendbirdChatSDK.EventDetail {
+    final public let restrictedUser: SendbirdChatSDK.RestrictedUser
+    public init(restrictedUser: SendbirdChatSDK.RestrictedUser)
+    @objc deinit
+  }
+  @objc(SBDUserUnbanned) public class UserUnbanned : SendbirdChatSDK.EventDetail {
+    final public let user: SendbirdChatSDK.User
+    public init(user: SendbirdChatSDK.User)
+    @objc deinit
+  }
+  @objc(SBDMetaDataCreated) public class MetaDataCreated : SendbirdChatSDK.EventDetail {
+    final public let metaData: [Swift.String : Swift.String]?
+    public init(metaData: [Swift.String : Swift.String]?)
+    @objc deinit
+  }
+  @objc(SBDMetaDataUpdated) public class MetaDataUpdated : SendbirdChatSDK.EventDetail {
+    final public let metaData: [Swift.String : Swift.String]?
+    public init(metaData: [Swift.String : Swift.String]?)
+    @objc deinit
+  }
+  @objc(SBDMetaDataDeleted) public class MetaDataDeleted : SendbirdChatSDK.EventDetail {
+    final public let keys: [Swift.String]?
+    public init(keys: [Swift.String]?)
+    @objc deinit
+  }
+  @objc(SBDMetaCountersCreated) public class MetaCountersCreated : SendbirdChatSDK.EventDetail {
+    final public let metaCounter: [Swift.String : Swift.Int]?
+    public init(metaCounter: [Swift.String : Swift.Int]?)
+    @objc deinit
+  }
+  @objc(SBDMetaCountersUpdated) public class MetaCountersUpdated : SendbirdChatSDK.EventDetail {
+    final public let metaCounter: [Swift.String : Swift.Int]?
+    public init(metaCounter: [Swift.String : Swift.Int]?)
+    @objc deinit
+  }
+  @objc(SBDMetaCountersDeleted) public class MetaCountersDeleted : SendbirdChatSDK.EventDetail {
+    final public let keys: [Swift.String]?
+    public init(keys: [Swift.String]?)
+    @objc deinit
+  }
+  @objc(SBDUserReceivedInvitation) public class UserReceivedInvitation : SendbirdChatSDK.EventDetail {
+    final public let inviter: SendbirdChatSDK.User?
+    final public let invitees: [SendbirdChatSDK.User]?
+    public init(inviter: SendbirdChatSDK.User?, invitees: [SendbirdChatSDK.User]?)
+    @objc deinit
+  }
+  @objc(SBDUserDeclinedInvitation) public class UserDeclinedInvitation : SendbirdChatSDK.EventDetail {
+    final public let inviter: SendbirdChatSDK.User?
+    final public let invitee: SendbirdChatSDK.User?
+    public init(inviter: SendbirdChatSDK.User?, invitee: SendbirdChatSDK.User?)
+    @objc deinit
+  }
+  @objc(SBDUserJoined) public class UserJoined : SendbirdChatSDK.EventDetail {
+    final public let user: SendbirdChatSDK.User
+    public init(user: SendbirdChatSDK.User)
+    @objc deinit
+  }
+  @objc(SBDUserLeft) public class UserLeft : SendbirdChatSDK.EventDetail {
+    final public let user: SendbirdChatSDK.User
+    public init(user: SendbirdChatSDK.User)
+    @objc deinit
+  }
+  @objc override dynamic public init()
+  @objc deinit
+}
 extension SendbirdChatSDK.FeedChannel {
   @objc dynamic open func refresh(completionHandler: SendbirdChatSDK.SBErrorHandler?)
   @objc(getChannelWithURL:completionHandler:) dynamic open class func getChannel(url: Swift.String, completionHandler: SendbirdChatSDK.FeedChannelHandler?)
@@ -1167,7 +1314,11 @@ extension SendbirdChatSDK.FeedChannel {
   @objc final public var source: SendbirdChatSDK.CollectionEventSource {
     get
   }
+  @objc final public var eventDetail: SendbirdChatSDK.EventDetail {
+    get
+  }
   public init(source: SendbirdChatSDK.CollectionEventSource)
+  public init(source: SendbirdChatSDK.CollectionEventSource, eventDetail: SendbirdChatSDK.EventDetail)
   @objc final public var fromEvent: Swift.Bool {
     @objc get
   }
@@ -1307,6 +1458,7 @@ extension SendbirdChatSDK.FileMessage {
   override final public func encode(to encoder: any Swift.Encoder) throws
   @objc deinit
 }
+@available(*, deprecated, renamed: "MessageForm", message: "This method is deprecated in 4.21.0")
 @objc(SBDForm) open class Form : ObjectiveC.NSObject, Swift.Codable, Foundation.NSCopying {
   @objc final public let formKey: Swift.String
   @objc final public let fields: [SendbirdChatSDK.FormField]
@@ -1323,6 +1475,7 @@ extension SendbirdChatSDK.FileMessage {
   }
   @objc deinit
 }
+@available(*, deprecated, renamed: "MessageFormItem", message: "This method is deprecated in 4.21.0")
 @objc(SBDFormField) open class FormField : ObjectiveC.NSObject, Swift.Codable, Foundation.NSCopying {
   @objc final public let fieldKey: Swift.String
   @objc final public let title: Swift.String
@@ -1346,6 +1499,7 @@ extension SendbirdChatSDK.FileMessage {
   }
   @objc deinit
 }
+@available(*, deprecated, message: "This method is deprecated in 4.21.0")
 @objc(SBDFormFieldAnswer) open class FormFieldAnswer : ObjectiveC.NSObject {
   final public let fieldKey: Swift.String
   final public let value: Swift.String
@@ -2139,6 +2293,12 @@ extension SendbirdChatSDK.PushTokenType : Swift.RawRepresentable, Swift.CustomSt
   public typealias RawValue = Swift.UInt
   @objc deinit
 }
+@objc(SBDGroupChannelUnreadItemCountParams) final public class GroupChannelUnreadItemCountParams : ObjectiveC.NSObject {
+  @objc final public var key: SendbirdChatSDK.UnreadItemKey
+  @objc final public var customTypesFilter: [Swift.String]?
+  @objc public init(key: SendbirdChatSDK.UnreadItemKey, customTypesFilter: [Swift.String]? = [])
+  @objc deinit
+}
 @_inheritsConvenienceInitializers @objc(SBDGroupChannelUpdateParams) final public class GroupChannelUpdateParams : ObjectiveC.NSObject, Swift.Encodable {
   @objc final public var name: Swift.String?
   @available(*, unavailable, renamed: "coverURL")
@@ -2502,6 +2662,75 @@ extension SendbirdChatSDK.MessageCollection : SendbirdChatSDK.ConnectionDelegate
     @objc get
   }
   @objc deinit
+}
+@_hasMissingDesignatedInitializers @objc(SBDMessageForm) open class MessageForm : ObjectiveC.NSObject, Swift.Codable, Foundation.NSCopying {
+  final public let id: Swift.Int64
+  final public let name: Swift.String
+  final public let items: [SendbirdChatSDK.MessageFormItem]
+  final public let version: Swift.Int
+  @objc public func copy(with zone: ObjectiveC.NSZone? = nil) -> Any
+  required public init(from decoder: any Swift.Decoder) throws
+  public func encode(to encoder: any Swift.Encoder) throws
+  @objc deinit
+}
+extension SendbirdChatSDK.MessageForm {
+  @objc dynamic public var isSubmitted: Swift.Bool {
+    @objc get
+  }
+  @objc dynamic public var canSubmit: Swift.Bool {
+    @objc get
+  }
+}
+@_hasMissingDesignatedInitializers @objc(SBDMessageFormItem) open class MessageFormItem : ObjectiveC.NSObject, Swift.Codable, Foundation.NSCopying {
+  final public let id: Swift.Int64
+  final public let name: Swift.String
+  final public let required: Swift.Bool
+  final public let sortOrder: Swift.Int
+  final public let placeholder: Swift.String
+  final public let style: SendbirdChatSDK.MessageFormItem.Style
+  final public let submittedValues: [Swift.String]?
+  public var draftValues: [Swift.String]?
+  @objc public func copy(with zone: ObjectiveC.NSZone? = nil) -> Any
+  required public init(from decoder: any Swift.Decoder) throws
+  public func encode(to encoder: any Swift.Encoder) throws
+  @objc public func isValid(_ draftValues: [Swift.String]?) -> Swift.Bool
+  @objc deinit
+}
+extension SendbirdChatSDK.MessageFormItem {
+  @_hasMissingDesignatedInitializers @objc(SBDMessageFormItemStyle) open class Style : ObjectiveC.NSObject, Foundation.NSCopying, Swift.Codable {
+    public var layout: SendbirdChatSDK.MessageFormItem.LayoutType {
+      get
+    }
+    final public let options: [Swift.String]?
+    final public let defaultOptions: [Swift.String]?
+    final public let resultCount: SendbirdChatSDK.MessageFormItem.ResultCount?
+    @objc public func copy(with zone: ObjectiveC.NSZone? = nil) -> Any
+    required public init(from decoder: any Swift.Decoder) throws
+    public func encode(to encoder: any Swift.Encoder) throws
+    @objc deinit
+  }
+  @objc(SBDMessageFormItemLayoutType) public enum LayoutType : Swift.Int, Swift.Codable, Swift.RawRepresentable {
+    case text
+    case textarea
+    case number
+    case phone
+    case email
+    case chip
+    case unknown
+    public typealias RawValue = Swift.String
+    public var rawValue: Swift.String {
+      get
+    }
+    public init?(rawValue: Swift.String)
+  }
+  @objc(SBDMessageFormItemResultCount) open class ResultCount : ObjectiveC.NSObject, Swift.Codable, Foundation.NSCopying {
+    final public let min: Swift.Int?
+    final public let max: Swift.Int?
+    @objc public func copy(with zone: ObjectiveC.NSZone? = nil) -> Any
+    required public init(from decoder: any Swift.Decoder) throws
+    public func encode(to encoder: any Swift.Encoder) throws
+    @objc deinit
+  }
 }
 @_inheritsConvenienceInitializers @objc(SBDMessageListParams) final public class MessageListParams : ObjectiveC.NSObject, Foundation.NSCopying {
   @objc final public var previousResultSize: Swift.Int
@@ -4221,7 +4450,7 @@ extension SendbirdChatSDK.SendbirdChat {
   @objc public static func authenticateFeed(userId: Swift.String, authToken: Swift.String?, completionHandler: SendbirdChatSDK.UserHandler? = nil)
   @available(*, deprecated, renamed: "authenticate")
   @objc public static func authenticateFeed(userId: Swift.String, authToken: Swift.String?, apiHost: Swift.String?, completionHandler: SendbirdChatSDK.UserHandler? = nil)
-  @objc final public class func authenticate(userId: Swift.String, authToken: Swift.String?, apiHost: Swift.String?, completionHandler: SendbirdChatSDK.UserHandler? = nil)
+  @objc final public class func authenticate(userId: Swift.String, authToken: Swift.String?, apiHost: Swift.String? = nil, completionHandler: SendbirdChatSDK.UserHandler? = nil)
   @objc public static func disconnect(completionHandler: SendbirdChatSDK.VoidHandler? = nil)
   @objc public static func disconnectWebSocket(completionHandler: SendbirdChatSDK.VoidHandler? = nil)
   @discardableResult
@@ -4301,7 +4530,9 @@ extension SendbirdChatSDK.SendbirdChat {
   @available(*, deprecated, renamed: "getTotalUnreadMessageCountWithFeed(params:completionHandler:)", message: "This method is deprecated in 4.6.0.")
   @objc public static func getTotalUnreadMessageCount(params: SendbirdChatSDK.GroupChannelTotalUnreadMessageCountParams, completionHandler: @escaping SendbirdChatSDK.CountHandler)
   @objc public static func getTotalUnreadMessageCountWithFeed(params: SendbirdChatSDK.GroupChannelTotalUnreadMessageCountParams, completionHandler: @escaping SendbirdChatSDK.UnreadMessageCountHandler)
+  @available(*, deprecated, renamed: "getUnreadItemCount(params:completionHandler:)", message: "This method is deprecated in 4.21.0. Set `key` in `GroupChannelUnreadItemCountParams` and use `getUnreadItemCount(params:completionHandler:)` instead.")
   @objc public static func getUnreadItemCount(key: SendbirdChatSDK.UnreadItemKey, completionHandler: @escaping (_ count: SendbirdChatSDK.UnreadItemCount?, _ error: SendbirdChatSDK.SBError?) -> Swift.Void)
+  @objc public static func getUnreadItemCount(params: SendbirdChatSDK.GroupChannelUnreadItemCountParams, completionHandler: @escaping (_ count: SendbirdChatSDK.UnreadItemCount?, _ error: SendbirdChatSDK.SBError?) -> Swift.Void)
   @objc public static func getSubscribedTotalUnreadMessageCount() -> Swift.Int
   @objc public static func getSubscribedCustomTypeTotalUnreadMessageCount() -> Swift.Int
   @objc public static func getSubscribedCustomTypeUnreadMessageCount(customType: Swift.String) -> Swift.Int
@@ -5174,6 +5405,8 @@ extension SendbirdChatSDK.PushTokenType : Swift.Hashable {}
 extension SendbirdChatSDK.ChannelMetaCountersUpdateMode : Swift.Equatable {}
 extension SendbirdChatSDK.ChannelMetaCountersUpdateMode : Swift.Hashable {}
 extension SendbirdChatSDK.MemberListQuery : Foundation.NSCopying {}
+extension SendbirdChatSDK.MessageFormItem.LayoutType : Swift.Equatable {}
+extension SendbirdChatSDK.MessageFormItem.LayoutType : Swift.Hashable {}
 extension SendbirdChatSDK.MessageReviewStatus : Swift.Equatable {}
 extension SendbirdChatSDK.MessageReviewStatus : Swift.Hashable {}
 extension SendbirdChatSDK.MessageSearchQuery : Foundation.NSCopying {}

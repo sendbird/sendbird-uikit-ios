@@ -106,3 +106,15 @@ extension Array {
         return indices.contains(index) ? self[index] : nil
     }
 }
+
+extension Array where Element == String {
+    func toggle(_ value: String) -> [String] {
+        var copy = self
+        if let index = copy.firstIndex(of: value) {
+            copy.remove(at: index)
+        } else {
+            copy.append(value)
+        }
+        return copy
+    }
+}

@@ -663,6 +663,7 @@ open class SBUBaseChannelViewModel: NSObject {
         SBULog.info("First : \(String(describing: messages?.first)), Last : \(String(describing: messages?.last))")
         
         var needMarkAsRead = false
+        let myLastRead = (channel as? GroupChannel)?.myLastRead
         
         messages?.forEach { message in
             if let index = SBUUtils.findIndex(of: message, in: self.messageList) {
@@ -693,7 +694,9 @@ open class SBUBaseChannelViewModel: NSObject {
                     requestId: message.requestId
                 )
                 
-                needMarkAsRead = true
+                if let myLastRead, myLastRead < message.createdAt {
+                    needMarkAsRead = true
+                }
                 
             } else if message.sendingStatus == .failed ||
                         message.sendingStatus == .pending {
@@ -714,7 +717,7 @@ open class SBUBaseChannelViewModel: NSObject {
            let channel = self.channel as? GroupChannel,
            !self.isThreadMessageMode,
             SendbirdChat.getConnectState() == .open {
-            channel.markAsRead { _ in
+            channel.markAsRead { error in
                 sortAllMessageListBlock()
             }
         } else {

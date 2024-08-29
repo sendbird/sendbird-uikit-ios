@@ -825,11 +825,29 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
     ///   - message: `BaseMessage` object to submit form.
     ///   - answer: `SendbirdChatSDK.Form` object.
     /// - Since: 3.16.0
+    @available(*, deprecated, message: "This method is deprecated in 3.27.0.")
     public func submitForm(message: BaseMessage, form: SendbirdChatSDK.Form) {
         SBULog.info("[Request] Submit Form")
         message.submitForm(form: form) { error in
             if let error = error {
                 SBULog.error("[Request] Submit Form - error: \(error.localizedDescription)")
+                self.delegate?.didReceiveError(error)
+                return
+            }
+        }
+    }
+    
+    // MARK: - Submit Message Form.
+    /// This function is used to submit form data.
+    /// - Parameters:
+    ///   - message: `BaseMessage` object to submit form.
+    /// - Since: 3.27.0
+    public func submitMessageForm(message: BaseMessage) {
+        SBULog.info("[Request] Submit Message Form")
+        message.submitMessageForm { error in
+            if let error = error {
+                message.isFormSubmitting = false
+                SBULog.error("[Request] Submit Message Form - error: \(error.localizedDescription)")
                 self.delegate?.didReceiveError(error)
                 return
             }

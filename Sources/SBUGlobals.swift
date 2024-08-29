@@ -8,6 +8,7 @@
 
 import UIKit
 import Photos
+import SendbirdChatSDK
 
 /// This class contains global variables and configurations for Sendbird UIKit.
 public class SBUGlobals {
@@ -185,4 +186,33 @@ public class SBUGlobals {
     /// The API host URL as a string. This is optional and can be set to connect to a specific API server.
     /// - Since: 3.21.0
     public static var apiHost: String?
+    
+    /// A static closure property that lets you define filter logic for determining which emoji categories to show for different messages.
+    ///
+    /// Override this closure to apply your custom logic.
+    /// By default, the closure returns `nil`, in which case all emojis defined in your application will be shown.
+    ///
+    /// - Parameter message: The `BaseMessage` object for which emoji categories are being filtered.
+    /// - Returns: An optional array of `Int64` representing the Ids of `EmojiCategory` instances to display, or `nil` if no filtering is applied.
+    ///
+    /// See the example below.
+    /// ```swift
+    /// // Define your custom filter logic before the emojis are shown.
+    /// 
+    /// SBUGlobals.emojiCategoryFilter = { message in
+    ///     switch message {
+    ///     case is UserMessage:
+    ///       return [1, 2]
+    ///     case is FileMessage:
+    ///         return [2, 3]
+    ///     default: return []
+    ///     }
+    /// }
+    /// ```
+    ///
+    /// - Note: If you wish to show all available emojis without filtering, return `nil`.
+    /// - Since: 3.27.0
+    public static var emojiCategoryFilter: (BaseMessage) -> [Int64]? = { message in
+        return nil
+    }
 }

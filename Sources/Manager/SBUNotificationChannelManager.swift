@@ -9,6 +9,34 @@
 import UIKit
 import SendbirdChatSDK
 
+struct BindedTemplate {
+    enum TemplateType {
+        case ui
+        case data
+        case unknown
+    }
+
+    var type: TemplateType
+    var template: String
+
+    /// Initializes a new BindedTemplate with UI or Data template.
+    /// - Parameters:
+    ///   - resultUiTemplate: The UI template as a String.
+    ///   - resultDataTemplate: The Data template as a String.
+    init(resultUiTemplate: String, resultDataTemplate: String) {
+        if resultUiTemplate != "{}" {
+            self.type = .ui
+            self.template = resultUiTemplate
+        } else if resultDataTemplate != "{}" {
+            self.type = .data
+            self.template = resultDataTemplate
+        } else {
+            self.type = .unknown
+            self.template = "{}"
+        }
+    }
+}
+
 public class SBUNotificationChannelManager: NSObject {
     static var notificationChannelThemeMode: String {
         SBUCacheManager.NotificationSetting.themeMode

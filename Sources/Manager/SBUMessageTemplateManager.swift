@@ -35,7 +35,7 @@ extension SBUMessageTemplateManager {
         subData: String?,
         themeMode: String? = nil,
         newTemplateResponseHandler: ((_ success: Bool) -> Void)? = nil
-    ) -> (String?, Bool) { // bindedTemplate, isNewTemplate
+    ) -> (BindedTemplate?, Bool) { // bindedTemplate, isNewTemplate
         guard let subData = subData else { return (nil, false) }
         
         // data scheme
@@ -109,11 +109,15 @@ extension SBUMessageTemplateManager {
         var uiTemplate = template.uiTemplate
         uiTemplate = uiTemplate.replacingOccurrences(of: "\\n", with: "\n")
         
+        var dataTemplate = template.dataTemplate
+        dataTemplate = dataTemplate.replacingOccurrences(of: "\\n", with: "\n")
+        
         // bind
         switch SBUTheme.colorScheme {
         case .light:
             let result = bind(
                 uiTemplate: uiTemplate,
+                dataTemplate: dataTemplate,
                 templateVariables: templateVariables,
                 colorVariable: colorVariablesForLight
             )
@@ -121,6 +125,7 @@ extension SBUMessageTemplateManager {
         case .dark:
             let result = bind(
                 uiTemplate: uiTemplate,
+                dataTemplate: dataTemplate,
                 templateVariables: templateVariables,
                 colorVariable: colorVariablesForDark
             )
@@ -164,9 +169,10 @@ extension SBUMessageTemplateManager {
     // original
     fileprivate static func bind(
         uiTemplate: String,
+        dataTemplate: String,
         templateVariables: [String: String],
         colorVariable: [String: String]
-    ) -> String? {
+    ) -> BindedTemplate? {
 //        {([^{}\n]+)}
 //        \\{([^{}\\\"\\n]+)\\}
         guard let regex = try? NSRegularExpression(
@@ -174,17 +180,39 @@ extension SBUMessageTemplateManager {
             options: []
         ) else { return nil }
         let dictionary = templateVariables.merging(colorVariable) { (_, new) in new }
-        var resultTemplate = uiTemplate
-
-        let matches = regex.matches(
-            in: uiTemplate,
-            options: [],
-            range: NSRange(location: 0, length: uiTemplate.utf16.count)
+        
+        let resultUiTemplate = bindTemplate(
+            regex: regex,
+            template: uiTemplate,
+            variables: dictionary
         )
-        for match in matches.reversed() {
+        let resultDataTemplate = bindTemplate(
+            regex: regex,
+            template: dataTemplate,
+            variables: dictionary
+        )
+
+        return BindedTemplate(
+            resultUiTemplate: resultUiTemplate,
+            resultDataTemplate: resultDataTemplate
+        )
+    }
+    
+    fileprivate static func bindTemplate(
+        regex: NSRegularExpression,
+        template: String, 
+        variables: [String: String]
+    ) -> String {
+        var resultTemplate = template
+        let templateMatches = regex.matches(
+            in: template,
+            options: [],
+            range: NSRange(location: 0, length: template.utf16.count)
+        )
+        for match in templateMatches.reversed() {
             let keyRange = match.range(at: 1)
-            let key = (uiTemplate as NSString).substring(with: keyRange)
-            if let value = dictionary[key] {
+            let key = (template as NSString).substring(with: keyRange)
+            if let value = variables[key] {
                 let escapedValue = value.replacingOccurrences(of: "\"", with: "\\\"")
                 resultTemplate = resultTemplate.replacingOccurrences(
                     of: "{\(key)}",
@@ -197,7 +225,6 @@ extension SBUMessageTemplateManager {
         
         return resultTemplate
     }
-   
 }
 
 // for view model

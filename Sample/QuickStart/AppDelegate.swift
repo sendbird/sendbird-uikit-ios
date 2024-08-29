@@ -68,6 +68,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         let userInfo = response.notification.request.content.userInfo
         guard let payload: NSDictionary = userInfo["sendbird"] as? NSDictionary else { return }
 
+        SendbirdChat.markPushNotificationAsClicked(remoteNotificationPayload: userInfo)
         let signedInApp = UserDefaults.loadSignedInSampleApp()
         if signedInApp != .none {
             self.pendingNotificationPayload = payload

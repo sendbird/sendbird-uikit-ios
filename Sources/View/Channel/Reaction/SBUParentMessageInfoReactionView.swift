@@ -21,21 +21,34 @@ open class SBUParentMessageInfoReactionView: SBUMessageReactionView {
         reactions: [Reaction],
         enableEmojiLongPress: Bool
     ) {
-        guard useReaction else {
+        let params = SBUMessageReactionViewParams(
+            maxWidth: maxWidth,
+            useReaction: useReaction,
+            reactions: reactions,
+            enableEmojiLongPress: enableEmojiLongPress,
+            message: nil
+        )
+        
+        self.configure(configuration: params)
+    }
+    
+    open override func configure(configuration: SBUMessageReactionViewParams) {
+        guard configuration.useReaction else {
             self.collectionViewMinWidthContraint?.isActive = false
             self.isHidden = true
             return
         }
 
         self.collectionViewMinWidthContraint?.isActive = true
-        self.maxWidth = maxWidth
-        self.reactions = reactions
+        self.maxWidth = configuration.maxWidth
+        self.message = configuration.message
+        self.reactions = configuration.message?.reactions ?? configuration.reactions
         self.emojiList = SBUEmojiManager.getAllEmojis()
-        self.enableEmojiLongPress = enableEmojiLongPress
+        self.enableEmojiLongPress = configuration.enableEmojiLongPress
         
         self.sameCellWidth = true
 
-        let hasMoreEmoji = self.reactions.count < emojiList.count
+        let hasMoreEmoji = self.hasMoreEmoji()
         let cellSizes = reactions.reduce(0) {
             $0 + self.getCellSize(count: $1.userIds.count).width
         }
@@ -62,8 +75,9 @@ open class SBUParentMessageInfoReactionView: SBUMessageReactionView {
     
     open override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         guard !reactions.isEmpty else { return 1 }
-
-        if self.reactions.count < emojiList.count {
+        
+        let hasMoreEmoji = self.hasMoreEmoji()
+        if hasMoreEmoji {
             return self.reactions.count + 1
         } else {
             return self.reactions.count

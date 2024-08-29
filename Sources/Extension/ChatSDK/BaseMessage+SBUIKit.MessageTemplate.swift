@@ -9,23 +9,6 @@
 import UIKit
 import SendbirdChatSDK
 
-// only internal
-fileprivate extension BaseMessage {
-    func setInMemoryUserInfo<Element>(key: String, data: Element) {
-        var memory = self.inMemoryUserInfo ?? [:]
-        memory[key] = data
-        self.inMemoryUserInfo = memory
-    }
-    
-    func getInMemoryUserInfo<Element>(key: String) -> Element? {
-        self.inMemoryUserInfo?[key] as? Element
-    }
-    
-    func getInMemoryUserInfo<Element>(key: String, defaultValue: Element) -> Element {
-        self.inMemoryUserInfo?[key] as? Element ?? defaultValue
-    }
-}
-
 extension BaseMessage {
     static let messageTemplateRetryStatusKey = "messageTemplateRetryStatusKey"
     static let messageTemplateImageRetryStatusKey = "messageTemplateImageRetryStatusKey"

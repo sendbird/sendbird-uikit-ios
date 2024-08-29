@@ -299,7 +299,7 @@ class SBUNotificationCell: SBUBaseMessageCell {
         guard subType == 0 else { return } // subType: 0 is template type
         
         let subData = notification?.extendedMessage["sub_data"] as? String
-        var bindedTemplate: String?
+        var bindedTemplate: BindedTemplate?
         var isNewTemplateDownloading: Bool = false
 
         if !isTemplateDownloadFailed {
@@ -315,12 +315,13 @@ class SBUNotificationCell: SBUBaseMessageCell {
             }
         }
 
-        bindedTemplate = bindedTemplate?.replacingOccurrences(of: "\\n", with: "\\\\n")
-        bindedTemplate = bindedTemplate?.replacingOccurrences(of: "\n", with: "\\n")
+        var escapedTemplate = bindedTemplate?.template.replacingOccurrences(of: "\\n", with: "\\\\n") ?? "{}"
+        escapedTemplate = escapedTemplate.replacingOccurrences(of: "\n", with: "\\n")
+        bindedTemplate?.template = escapedTemplate
         
         var template: SBUMessageTemplate.Syntax.TemplateView?
         do {
-            template = try JSONDecoder().decode(SBUMessageTemplate.Syntax.TemplateView.self, from: Data((bindedTemplate ?? "").utf8))
+            template = try JSONDecoder().decode(SBUMessageTemplate.Syntax.TemplateView.self, from: Data((bindedTemplate?.template ?? "").utf8))
             template?.setIdentifier(with: .init(messageId: message?.messageId))
         } catch {
             SBULog.error(error)
@@ -334,33 +335,47 @@ class SBUNotificationCell: SBUBaseMessageCell {
         }
         
         self.notificationTemplateRenderer = nil
-        if isNewTemplateDownloading {
+        switch bindedTemplate?.type {
+        case .ui:
+            if isNewTemplateDownloading {
+                self.notificationTemplateRenderer = SBUMessageTemplate.Renderer(
+                    body: .downloadingTemplate(
+                        height: (type == .chat)
+                        ? chatNotificationDownloadingHeight
+                        : feedNotificationDownloadingHeight
+                    ),
+                    fontFamily: SBUFontSet.FontFamily.notifications
+                )
+            } else if let bindedTemplate = bindedTemplate, !showFallback, // 정상 케이스
+                let notificationTemplateRenderer = SBUMessageTemplate.Renderer(
+                    with: bindedTemplate.template,
+                    messageId: message?.messageId,
+                    delegate: self,
+                    maxWidth: self.availableTemplateWidth,
+                    fontFamily: SBUFontSet.FontFamily.notifications,
+                    actionHandler: { [weak self] action in
+                        self?.statisticsForAction(with: subData)
+                        self?.messageTemplateActionHandler?(action)
+                    }
+                ) {
+                self.notificationTemplateRenderer = notificationTemplateRenderer
+                self.isRendered = true
+            } else {
+                self.notificationTemplateRenderer = parsingErrorNotificationRenderer
+            }
+        case .data:
             self.notificationTemplateRenderer = SBUMessageTemplate.Renderer(
-                body: .downloadingTemplate(
-                    height: (type == .chat)
-                    ? chatNotificationDownloadingHeight
-                    : feedNotificationDownloadingHeight
+                body: .dataTemplate(
+                    text: "[This message is sent from data template.]",
+                    subText: bindedTemplate?.template ?? "{}"
                 ),
                 fontFamily: SBUFontSet.FontFamily.notifications
             )
-        } else if let bindedTemplate = bindedTemplate, !showFallback, // 정상 케이스
-            let notificationTemplateRenderer = SBUMessageTemplate.Renderer(
-                with: bindedTemplate,
-                messageId: message?.messageId,
-                delegate: self,
-                maxWidth: self.availableTemplateWidth,
-                fontFamily: SBUFontSet.FontFamily.notifications,
-                actionHandler: { [weak self] action in
-                    self?.statisticsForAction(with: subData)
-                    self?.messageTemplateActionHandler?(action)
-                }
-            ) {
-            self.notificationTemplateRenderer = notificationTemplateRenderer
             self.isRendered = true
-        } else {
+        default:
             self.notificationTemplateRenderer = parsingErrorNotificationRenderer
         }
-        
+
         self.notificationTemplateRenderer?.delegate = self
         guard let notificationTemplateRenderer = self.notificationTemplateRenderer else { return }
         notificationTemplateRenderer.backgroundColor = self.notificationCellTheme.backgroundColor

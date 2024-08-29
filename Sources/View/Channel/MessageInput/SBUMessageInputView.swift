@@ -849,15 +849,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     public func setFrozenModeState(_ isFrozen: Bool) {
         self.isFrozen = isFrozen
         
-        self.textView?.isEditable = !self.isFrozen
-        self.textView?.isUserInteractionEnabled = !self.isFrozen
-        self.addButton?.isEnabled = !self.isFrozen
-        self.voiceMessageButton?.isEnabled = !self.isFrozen
-        
-        if self.isFrozen {
-            self.endTypingMode()
-        }
-        self.setupStyles()
+        self.updateInputState()
     }
     
     /// Sets frozen mode state.
@@ -865,31 +857,30 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     public func setMutedModeState(_ isMuted: Bool) {
         self.isMuted = isMuted
         
-        self.textView?.isEditable = !self.isMuted
-        self.textView?.isUserInteractionEnabled = !self.isMuted
-        self.addButton?.isEnabled = !self.isMuted
-        self.voiceMessageButton?.isEnabled = !self.isMuted
-        
-        if self.isMuted {
-            self.endTypingMode()
-        }
-        self.setupStyles()
+        self.updateInputState()
     }
     
     /// Sets disable chat input value
     /// - Parameter isDisable: `true` is disable mode, `false` is available mode
     func setDisableChatInputState(_ isDisabledByServer: Bool) {
-        if SendbirdUI.config.groupChannel.channel.isSuggestedRepliesEnabled == false { return }
         if self.isMuted || self.isFrozen { return }
         
         self.isDisabledByServer = isDisabledByServer
         
-        self.textView?.isEditable = !self.isDisabledByServer
-        self.textView?.isUserInteractionEnabled = !self.isDisabledByServer
-        self.addButton?.isEnabled = !self.isDisabledByServer
-        self.voiceMessageButton?.isEnabled = !self.isDisabledByServer
+        self.updateInputState()
+    }
+    
+    /// Methods to update the inputView's input-enabled state by looking at all states
+    /// - Since: 3.27.0
+    func updateInputState() {
+        let isDisabled = self.isDisabledByServer || self.isMuted || self.isFrozen
         
-        if self.isDisabledByServer {
+        self.textView?.isEditable = !isDisabled
+        self.textView?.isUserInteractionEnabled = !isDisabled
+        self.addButton?.isEnabled = !isDisabled
+        self.voiceMessageButton?.isEnabled = !isDisabled
+        
+        if isDisabled {
             self.endTypingMode()
         }
         self.setupStyles()

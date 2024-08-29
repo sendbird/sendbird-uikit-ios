@@ -219,7 +219,7 @@ public extension SBUColorSet {
         get { onDarkTextLowEmphasis }
         set { onDarkTextLowEmphasis = newValue }
     }
-
+    
     @available(*, deprecated, renamed: "onDarkTextDisabled", message: "")
     static var ondark04: UIColor {
         get { onDarkTextDisabled }

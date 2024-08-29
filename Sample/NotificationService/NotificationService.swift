@@ -25,14 +25,7 @@ class NotificationService: UNNotificationServiceExtension {
         if let bestAttemptContent = bestAttemptContent {
             SendbirdChat.setAppGroup("group.com.sendbird.uikit.sample")
             #if INSPECTION
-            UserDefaults.saveRemoteNotificationPayload(payload: bestAttemptContent.userInfo)
-            let sampleAppType = UserDefaults.loadSignedInSampleApp()
-            let appId = UserDefaults.loadAppId(type: sampleAppType) ?? ""
-            let region = UserDefaults.loadRegion(type: sampleAppType)
-            let apiHost = region.apiHost(appId: appId)
-            SendbirdChat.markPushNotificationAsDelivered(apiHost: apiHost, remoteNotificationPayload: bestAttemptContent.userInfo) { error in
-                print("Mark as delivered result: \(error.debugDescription)")
-            }
+            self.prepareForInspection(bestAttemptContent: bestAttemptContent)
             #else
             SendbirdChat.markPushNotificationAsDelivered(remoteNotificationPayload: bestAttemptContent.userInfo) { error in
                 print("Mark as delivered result: \(error.debugDescription)")

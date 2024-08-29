@@ -328,6 +328,10 @@ public class SBUStringSet {
     // MARK: - form type
     public static var FormType_Optional = "(optional)" // 3.11.0
     public static var FormType_Error_Default = "Please check the value" // 3.11.0
+    public static var FormType_Error_Required = "This field is required" // 3.27.0
+    public static var FormType_Fallback_Message = "Form type messages are not available in this version." // 3.27.0
+    public static var FormType_Submit_Done = "Submitted successfully" // 3.27.0
+    public static var FormType_No_Reponse = "No response" // 3.27.0
     
     // MARK: - Feedback
     public static var Feedback_Comment_Title = "Provide additional feedback (optional)" // 3.15.0

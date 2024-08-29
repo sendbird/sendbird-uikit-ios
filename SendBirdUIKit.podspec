@@ -20,6 +20,6 @@ Pod::Spec.new do |s|
 	s.ios.vendored_frameworks = 'Framework/SendbirdUIKit.xcframework'
 	s.ios.frameworks = ["UIKit", "Foundation", "CoreData", "SendbirdChatSDK"]
 	s.requires_arc = true
-	s.dependency "SendbirdChatSDK", ">= 4.20.0"
+	s.dependency "SendbirdChatSDK", ">= 4.21.0"
 	s.ios.library = "icucore"
 end
