@@ -33,6 +33,39 @@
     - Deprecated `SBUFormFieldInputType` enum
     - Deprecated `SBUFormView` and `SBUSimpleFormView` classes
 
+### v3.27.0 (Aug 29, 2024)
+
+## New Features
+- Added support for EmojiCategory. You can now filter emojis for different messages when adding Reactions to a message.
+  - Interfaces
+    - `SBUGlobals.emojiCategoryFilter: (BaseMessage) -> [Int64]?`
+  - Note: You need to set your custom EmojiCategory using [Sendbird Platform API](https://sendbird.com/docs/chat/platform-api/v3/message/reactions-and-emojis/reactions-and-emojis-overview) in advance. 
+
+## New Interfaces
+- Added views for `MessageForm` that work with the Sendbird dashboard (interfaces related to `form` have been deprecated)
+
+    - Added `SBUMessageFormView` data base view class
+    - Added `SBUSimpleMessageFormView` view class
+    - Added `SBUMessageFormItemView` data base view class
+    - Added `SBUMessageFormChipsItemView`, `SBUMessageFormSingleTextItemView` and `SBUMessageFormMultiTextItemView` item view classes
+    - Added `SBUMessageFormFallbackView` fallback view class
+
+    - Added `SBUMesageFormChipView`, `SBUTextView` view classes
+    - Added `SBUMessageFormViewDelegate` and `SBUMessageFormItemViewDelegate` protocols
+    - Added `submitMessageForm(message:)` in `SBUGroupChannelViewModel` class
+
+    - Added `getChatInputDisabledState(hasNext:)` method in extension of `BaseMessage`
+    - Added `isFormSubmitting`, `formItemValidationStatus` properties in extension of `BaseMessage`
+    - Added `isValidVersion` property in extension of `MessageForm`
+    - Added `keyboardType` and `isTextInputType` properties in extension of `MessageFormItem.LayoutType`  
+    - Added `canUpdate(_:)` and `isValid(_:)` functions in extension of `MessageFormItem.ResultCount`
+    - Added `isOnlyOne` property in extension of `MessageFormItem.ResultCount`
+
+    - Deprecated `SBUFormViewDelegate` and `SBUFormFieldViewDelegate` protocols
+    - Deprecated `SBUFormFieldView` and `SBUSimpleFormFieldView` classes
+    - Deprecated `SBUFormFieldInputType` enum
+    - Deprecated `SBUFormView` and `SBUSimpleFormView` classes
+
 ### v3.26.0 (Aug 14, 2024)
 
 
