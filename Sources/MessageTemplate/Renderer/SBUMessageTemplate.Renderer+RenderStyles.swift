@@ -87,7 +87,7 @@ extension SBUMessageTemplate.Renderer {
                 // default
                 self.rendererConstraints += baseView.sbu_constraint_v2(equalTo: parentView, centerX: 0)
                 self.rendererConstraints += baseView.sbu_constraint_v2(equalTo: parentView, leading: marginInsets.left)
-                self.rendererConstraints += baseView.sbu_constraint_v2(equalTo: parentView, trailing: marginInsets.right)
+                self.rendererConstraints += baseView.sbu_constraint_v2(equalTo: parentView, trailing: -marginInsets.right)
             } else {
                 /**
  
@@ -99,14 +99,14 @@ extension SBUMessageTemplate.Renderer {
                 switch horizontalAlign {
                 case .left:
                     self.rendererConstraints += baseView.sbu_constraint_v2(equalTo: parentView, leading: marginInsets.left)
-                    self.rendererConstraints += baseView.sbu_constraint_v2(lessThanOrEqualTo: parentView, trailing: marginInsets.right)
+                    self.rendererConstraints += baseView.sbu_constraint_v2(lessThanOrEqualTo: parentView, trailing: -marginInsets.right)
                 case .center:
                     self.rendererConstraints += baseView.sbu_constraint_v2(equalTo: parentView, centerX: 0)
                     self.rendererConstraints += baseView.sbu_constraint_v2(greaterThanOrEqualTo: parentView, leading: marginInsets.left)
-                    self.rendererConstraints += baseView.sbu_constraint_v2(lessThanOrEqualTo: parentView, trailing: marginInsets.right)
+                    self.rendererConstraints += baseView.sbu_constraint_v2(lessThanOrEqualTo: parentView, trailing: -marginInsets.right)
                 case .right:
                     self.rendererConstraints += baseView.sbu_constraint_v2(greaterThanOrEqualTo: parentView, leading: marginInsets.left)
-                    self.rendererConstraints += baseView.sbu_constraint_v2(equalTo: parentView, trailing: marginInsets.right)
+                    self.rendererConstraints += baseView.sbu_constraint_v2(equalTo: parentView, trailing: -marginInsets.right)
                 }
             }
             
@@ -120,7 +120,7 @@ extension SBUMessageTemplate.Renderer {
             
             // right anchor
             if isLastItem {
-                self.rendererConstraints += baseView.sbu_constraint_v2(equalTo: parentView, trailing: marginInsets.right)
+                self.rendererConstraints += baseView.sbu_constraint_v2(equalTo: parentView, trailing: -marginInsets.right)
             }
         }
 

@@ -14,11 +14,11 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		As3qLhZ4EVia9XoXvs40nYruVik=
+		SRM7hba+AIpiSlvMF4knvb0aWn8=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
 		<data>
-		XfToTCpNx7DVFLRCVVy28ChQHV0=
+		KC68GOIy1u5crXOwK3WhYMTccOs=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
@@ -38,7 +38,7 @@
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<data>
-		XfToTCpNx7DVFLRCVVy28ChQHV0=
+		KC68GOIy1u5crXOwK3WhYMTccOs=
 		</data>
 		<key>Modules/SendbirdUIKit.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
@@ -85,7 +85,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			OuDSydZfbJJAJNWM/nm3mhfR+4peNbSWQ31rmpEnpn8=
+			ZgO1rPI0wJI6suj/llSlHcOZNxiJ6pgDBvmqgRXHV7k=
 			</data>
 		</dict>
 		<key>Modules/SendbirdUIKit.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
@@ -120,7 +120,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			OuDSydZfbJJAJNWM/nm3mhfR+4peNbSWQ31rmpEnpn8=
+			ZgO1rPI0wJI6suj/llSlHcOZNxiJ6pgDBvmqgRXHV7k=
 			</data>
 		</dict>
 		<key>Modules/SendbirdUIKit.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
