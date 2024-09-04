@@ -688,7 +688,7 @@ class SBUFeedNotificationChannelViewModel: NSObject {
             repeats: false
         ) { [weak self] _ in
             guard let self = self else { return }
-            _ = self.channel?.markAsViewed(messages: messages)
+            _ = self.channel?.logViewed(messages: messages)
         }
     }
     

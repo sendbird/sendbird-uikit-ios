@@ -1,5 +1,13 @@
 # Changelog
 
+### v3.27.1 (Sep 04, 2024)
+
+- SendbirdChatSDK dependency version has been updated to v4.21.1
+
+## Improvements
+- Fixed incorrect exposure of trailing layouts when rendering templates
+- Replaced the deprecated method `markAsViewed()` with `logViewed()` from SendbirdChatSDK
+
 ### v3.27.0 (Aug 29, 2024)
 
 ## New Features
