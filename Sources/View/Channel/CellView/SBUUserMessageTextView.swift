@@ -104,7 +104,7 @@ open class SBUUserMessageTextView: SBUView {
         if !self.needsToRemoveMargin {
             self.widthConstraint?.isActive = false
             self.widthConstraint = self.widthAnchor.constraint(
-                lessThanOrEqualToConstant: containerType.isWide ? containerType.maxWidth : Metric.textMaxWidth
+                lessThanOrEqualToConstant: Metric.textMaxWidth
             )
             self.widthConstraint?.priority = .init(999)
             self.widthConstraint?.isActive = true

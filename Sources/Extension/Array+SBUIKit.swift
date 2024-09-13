@@ -118,3 +118,23 @@ extension Array where Element == String {
         return copy
     }
 }
+
+extension Array where Element == BaseMessage {
+    /// A value that determines whether to disable the MessageInputView.
+    /// The values of sequential messages with `disable_chat_input` enabled are reviewed internally.
+    /// - Since: 3.27.2
+    public func getChatInputDisableState(hasNext: Bool?) -> Bool {
+        if hasNext == true { return false }
+        
+        var types = [BaseMessage.ChatInputDisableType]()
+        
+        for element in self {
+            let type = element.getChatInputDisableType(hasNext: hasNext)
+            if type == .none { break }
+            types.append(type)
+        }
+        
+        // Component type must be included to exit the disable_chat_input state.
+        return types.contains(where: { $0 == .component })
+    }
+}

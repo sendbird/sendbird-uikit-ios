@@ -17,7 +17,6 @@ extension SBUMessageTemplate.Coordinator {
         
         enum ReloadType {
             case download(DownloadType)
-            case compositeType
         }
         
         enum DownloadType {
@@ -73,11 +72,6 @@ extension SBUMessageTemplate {
                 messageId: message.messageId
             ) else {
                 return .failed
-            }
-            
-            if template.hasCompositeType == true, message.asUiSettingContainerType != .full {
-                message.hasMessageTemplateCompositeType = template.hasCompositeType
-                return .reload(.compositeType)
             }
             
             // download cache image size

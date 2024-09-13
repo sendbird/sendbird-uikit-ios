@@ -9,7 +9,13 @@
 import UIKit
 
 extension SBUMessageTemplate.Syntax.Body {
-    static func parsingError(text: String, subText: String? = nil) -> SBUMessageTemplate.Syntax.Body {
+    static func parsingError(
+        text: String,
+        subText: String? = nil,
+        width: CGFloat? = nil,
+        height: CGFloat? = nil,
+        containerViewStyle viewStyle: SBUMessageTemplate.Syntax.ViewStyle? = nil
+    ) -> SBUMessageTemplate.Syntax.Body {
         var textItems: [SBUMessageTemplate.Syntax.Item] = [
             .text(.init(
                 text: text,
@@ -49,6 +55,9 @@ extension SBUMessageTemplate.Syntax.Body {
                 layout: .column,
                 align: SBUMessageTemplate.Syntax.ItemsAlign(horizontal: .left, vertical: .center),
                 type: .box,
+                viewStyle: viewStyle,
+                width: width != nil ? .init(type: .fixed, value: Int(width!)) : .wrapContent(),
+                height: height != nil ? .init(type: .fixed, value: Int(height!)) : .wrapContent(),
                 items: [
                     .box(.init(
                         layout: .column,
@@ -65,7 +74,11 @@ extension SBUMessageTemplate.Syntax.Body {
         return body
     }
     
-    static func downloadingTemplate(height: CGFloat) -> SBUMessageTemplate.Syntax.Body {
+    static func downloadingTemplate(
+        width: CGFloat? = nil,
+        height: CGFloat,
+        containerViewStyle viewStyle: SBUMessageTemplate.Syntax.ViewStyle? = nil
+    ) -> SBUMessageTemplate.Syntax.Body {
         let spinnerItems: [SBUMessageTemplate.Syntax.Item] = [
             .image(.init(
                 imageUrl: SBUMessageTemplate.urlForTemplateDownload,
@@ -83,6 +96,8 @@ extension SBUMessageTemplate.Syntax.Body {
                 layout: .column,
                 align: SBUMessageTemplate.Syntax.ItemsAlign(horizontal: .center, vertical: .center),
                 type: .box,
+                viewStyle: viewStyle,
+                width: width != nil ? .init(type: .fixed, value: Int(width!)) : .wrapContent(),
                 height: .init(type: .fixed, value: Int(height)),
                 items: [
                     .box(.init(

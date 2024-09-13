@@ -117,6 +117,19 @@ extension SBUMessageTemplate.Syntax {
                 from: container
             )
         }
+        
+        /// Used for rendering internal template types (error, download)
+        init(
+            top: CGFloat,
+            bottom: CGFloat,
+            left: CGFloat,
+            right: CGFloat
+        ) {
+            self.top = top
+            self.bottom = bottom
+            self.left = left
+            self.right = right
+        }
     }
     
     class Padding: Decodable {
@@ -155,5 +168,16 @@ extension SBUMessageTemplate.Syntax {
             self.left = left
             self.right = right
         }
+    }
+}
+
+extension UIEdgeInsets {
+    var asMessageTemplatePadding: SBUMessageTemplate.Syntax.Padding {
+        SBUMessageTemplate.Syntax.Padding(
+            top: self.top,
+            bottom: self.bottom,
+            left: self.left,
+            right: self.right
+        )
     }
 }

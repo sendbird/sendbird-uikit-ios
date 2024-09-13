@@ -11,33 +11,40 @@ import SendbirdChatSDK
 
 enum SBUTemplateType {
     case notification
-    case group
+    case message
     
     var cacheKey: String {
         switch self {
         case .notification: return "template" // NOTE: for backward
-        case .group: return "group-template"
+        case .message: return "message_template"
         }
     }
     
     var templateKey: String {
         switch self {
         case .notification: return "template_key"
-        case .group: return "key"
+        case .message: return "key"
         }
     }
     
     var dataVariable: String {
         switch self {
         case .notification: return "template_variables"
-        case .group: return "variables"
+        case .message: return "variables"
         }
     }
     
     var viewVariable: String {
         switch self {
         case .notification: return "template_view_variables"
-        case .group: return "view_variables"
+        case .message: return "view_variables"
+        }
+    }
+    
+    var containerOptions: String {
+        switch self {
+        case .notification: return "container_options"
+        case .message: return "container_options"
         }
     }
 }
@@ -58,7 +65,7 @@ extension SBUTemplateType {
         case .notification:
             return Int64(SendbirdChat.getAppInfo()?.notificationInfo?.templateListToken ?? "0") ?? 0
 
-        case .group:
+        case .message:
             return Int64(SendbirdChat.getAppInfo()?.messageTemplateInfo?.templateListToken ?? "0") ?? 0
         }
     }
@@ -73,7 +80,7 @@ extension SBUTemplateType {
                 completionHandler(template?.jsonPayload, error)
             }
 
-        case .group:
+        case .message:
             SendbirdChat.getMessageTemplate(key: key) { template, error in
                 completionHandler(template?.jsonPayload, error)
             }
@@ -90,7 +97,7 @@ extension SBUTemplateType {
             SendbirdChat.getNotificationTemplateList(token: token, params: params) { templateList, _, token, _ in
                 completionHandler(templateList?.jsonPayload, token)
             }
-        case .group:
+        case .message:
             let params = MessageTemplateListParams { $0.limit = 100 }
             SendbirdChat.getMessageTemplateList(token: token, params: params) { templateList, _, token, _ in
                 completionHandler(templateList?.jsonPayload, token)

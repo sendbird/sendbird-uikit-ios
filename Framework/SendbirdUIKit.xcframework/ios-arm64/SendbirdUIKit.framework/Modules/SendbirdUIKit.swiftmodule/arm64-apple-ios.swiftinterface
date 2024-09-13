@@ -40,6 +40,9 @@ extension Foundation.NSArray {
   public func sbu_getUserNicknames() -> [Swift.String]
   public func sbu_convertUserList() -> [SendbirdUIKit.SBUUser]
 }
+extension Swift.Array where Element == SendbirdChatSDK.BaseMessage {
+  public func getChatInputDisableState(hasNext: Swift.Bool?) -> Swift.Bool
+}
 extension SendbirdChatSDK.BaseMessage {
   public var asCustomView: Any? {
     get
@@ -50,14 +53,18 @@ extension SendbirdChatSDK.BaseMessage {
   public var hasMessageTemplate: Swift.Bool {
     get
   }
+  @available(*, deprecated, message: "`asUiSettingContainerType` has been deprecated since 3.27.2.")
   public var asUiSettingContainerType: SendbirdUIKit.SBUMessageContainerType {
     get
   }
   public func decodeCustomViewData<ViewData>() throws -> ViewData? where ViewData : Swift.Decodable
-  public func getChatInputDisabledState(hasNext: Swift.Bool?) -> Swift.Bool
   public var isStreamMessage: Swift.Bool {
     get
   }
+}
+extension SendbirdChatSDK.BaseMessage {
+  @available(*, deprecated, message: "Use `getChatInputDisableState(hasNext:)` in [BaseMessage]")
+  public func getChatInputDisabledState(hasNext: Swift.Bool?) -> Swift.Bool
 }
 extension SendbirdChatSDK.BaseMessage {
   @available(*, deprecated, message: "Use `BaseMessage.suggestedReplies`")
@@ -3638,9 +3645,11 @@ extension SendbirdUIKit.SBUExtendedMessagePayloadCustomViewFactory {
   public static func errorHandler(_ error: any Swift.Error, message: SendbirdChatSDK.BaseMessage?) -> UIKit.UIView?
 }
 public struct SBUExtendedMessagePayloadForUI : Swift.Decodable {
+  @available(*, deprecated, message: "`containerType` has been deprecated since 3.27.2.")
   public let containerType: SendbirdUIKit.SBUMessageContainerType
   public init(from decoder: any Swift.Decoder) throws
 }
+@available(*, deprecated, message: "`SBUMessageContainerType` has been deprecated since 3.27.2.")
 public enum SBUMessageContainerType : Swift.String, Swift.Decodable {
   case `default`
   case wide
@@ -4781,6 +4790,9 @@ extension SendbirdUIKit.SBUGroupChannelModule {
     @objc @_Concurrency.MainActor(unsafe) public var typingIndicatorMessageCell: SendbirdUIKit.SBUBaseMessageCell? {
       get
     }
+    @objc @_Concurrency.MainActor(unsafe) public var messageTemplateCell: SendbirdUIKit.SBUMessageTemplateCell? {
+      get
+    }
     @objc @_Concurrency.MainActor(unsafe) public var unknownMessageCell: SendbirdUIKit.SBUBaseMessageCell? {
       get
     }
@@ -4820,6 +4832,7 @@ extension SendbirdUIKit.SBUGroupChannelModule {
     @objc @_Concurrency.MainActor(unsafe) open func register(fileMessageCell: SendbirdUIKit.SBUBaseMessageCell, nib: UIKit.UINib? = nil)
     @objc @_Concurrency.MainActor(unsafe) open func register(multipleFilesMessageCell: SendbirdUIKit.SBUBaseMessageCell, nib: UIKit.UINib? = nil)
     @objc @_Concurrency.MainActor(unsafe) open func register(typingIndicatorMessageCell: SendbirdUIKit.SBUBaseMessageCell, nib: UIKit.UINib? = nil)
+    @objc @_Concurrency.MainActor(unsafe) open func register(messageTemplateCell: SendbirdUIKit.SBUMessageTemplateCell, nib: UIKit.UINib? = nil)
     @objc @_Concurrency.MainActor(unsafe) open func register(unknownMessageCell: SendbirdUIKit.SBUBaseMessageCell, nib: UIKit.UINib? = nil)
     @objc @_Concurrency.MainActor(unsafe) open func register(customMessageCell: SendbirdUIKit.SBUBaseMessageCell, nib: UIKit.UINib? = nil)
     @objc @_Concurrency.MainActor(unsafe) open func configureCell(_ messageCell: SendbirdUIKit.SBUBaseMessageCell, message: SendbirdChatSDK.BaseMessage, forRowAt indexPath: Foundation.IndexPath)
@@ -7112,7 +7125,88 @@ extension SendbirdUIKit.SBUMessageTemplate {
     }
   }
 }
+extension SendbirdUIKit.SBUMessageTemplate {
+  public struct Container {
+    public let type: SendbirdUIKit.SBUMessageTemplate.Container.ContainerType
+    public let containerOptions: SendbirdUIKit.SBUMessageTemplate.Container.ContainerOptions
+  }
+}
+extension SendbirdUIKit.SBUMessageTemplate.Container {
+  public enum ContainerType : Swift.String {
+    case `default`
+    case unknown
+    public init?(rawValue: Swift.String)
+    public typealias RawValue = Swift.String
+    public var rawValue: Swift.String {
+      get
+    }
+  }
+  public struct ContainerOptions {
+    public let profile: Swift.Bool
+    public let time: Swift.Bool
+    public let nickname: Swift.Bool
+  }
+}
+extension SendbirdUIKit.SBUMessageTemplate.Container.ContainerType {
+  public var isValid: Swift.Bool {
+    get
+  }
+  public static func isValidType(with template: [Swift.String : Any]) -> Swift.Bool
+}
+extension SendbirdUIKit.SBUMessageTemplate.Container.ContainerOptions : Swift.Decodable {
+  public init(from decoder: any Swift.Decoder) throws
+}
 @_hasMissingDesignatedInitializers public class SBUMessageTemplate {
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class SBUMessageTemplateCell : SendbirdUIKit.SBUBaseMessageCell, SendbirdUIKit.SBUSuggestedReplyViewDelegate {
+  @objc @_Concurrency.MainActor(unsafe) public var profileView: UIKit.UIView {
+    @objc get
+    @objc set
+  }
+  @objc @_Concurrency.MainActor(unsafe) public var userNameView: UIKit.UIView {
+    @objc get
+    @objc set
+  }
+  @objc @_Concurrency.MainActor(unsafe) public var stateView: UIKit.UIView {
+    @objc get
+    @objc set
+  }
+  @objc @_Concurrency.MainActor(unsafe) open func createProfileView() -> SendbirdUIKit.SBUMessageProfileView
+  @objc @_Concurrency.MainActor(unsafe) open func createUserNameView() -> SendbirdUIKit.SBUUserNameView
+  @objc @_Concurrency.MainActor(unsafe) open func createStateView() -> SendbirdUIKit.SBUMessageStateView
+  @objc @_Concurrency.MainActor(unsafe) public var messageTemplateContainer: UIKit.UIView {
+    @objc get
+  }
+  @objc @_Concurrency.MainActor(unsafe) public var suggestedReplyView: SendbirdUIKit.SBUSuggestedReplyView? {
+    get
+  }
+  @objc @_Concurrency.MainActor(unsafe) public var shouldHideSuggestedReplies: Swift.Bool {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) override open func configure(with configuration: SendbirdUIKit.SBUBaseMessageCellParams)
+  @objc @_Concurrency.MainActor(unsafe) open func configureProfileView()
+  @objc @_Concurrency.MainActor(unsafe) open func configureUserNameView()
+  @objc @_Concurrency.MainActor(unsafe) open func configureStateView()
+  @objc @_Concurrency.MainActor(unsafe) public func configureMessageTemplateContainer()
+  @objc @_Concurrency.MainActor(unsafe) public func configureMessageTemplateLayer()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func prepareForReuse()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupViews()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupLayouts()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func updateLayouts()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupStyles()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupActions()
+  @objc @_Concurrency.MainActor(unsafe) open func onTapUserProfileView(sender: UIKit.UITapGestureRecognizer)
+  @objc @_Concurrency.MainActor(unsafe) open func updateSuggestedReplyView(with options: [Swift.String]?)
+  @objc @_Concurrency.MainActor(unsafe) public func suggestedReplyView(_ view: SendbirdUIKit.SBUSuggestedReplyView, didSelectOption optionView: SendbirdUIKit.SBUSuggestedReplyOptionView)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(style: UIKit.UITableViewCell.CellStyle, reuseIdentifier: Swift.String?)
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc deinit
+}
+public class SBUMessageTemplateCellParams : SendbirdUIKit.SBUBaseMessageCellParams {
+  final public let shouldHideSuggestedReplies: Swift.Bool
+  final public let container: SendbirdUIKit.SBUMessageTemplate.Container
+  public init(message: SendbirdChatSDK.BaseMessage, hideDateView: Swift.Bool = false, groupPosition: SendbirdUIKit.MessageGroupPosition = .none, receiptState: SendbirdUIKit.SBUMessageReceiptState = .none, isThreadMessage: Swift.Bool = false, joinedAt: Swift.Int64 = 0, messageOffsetTimestamp: Swift.Int64 = 0, shouldHideSuggestedReplies: Swift.Bool = true)
   @objc deinit
 }
 @objc @_inheritsConvenienceInitializers public class SBUMessageTemplateManager : ObjectiveC.NSObject {
@@ -10209,6 +10303,8 @@ public protocol SBUSuggestedReplyViewDelegate : AnyObject {
   @_Concurrency.MainActor(unsafe) open func suggestedReplyOptionViewDidSelect(_ optionView: SendbirdUIKit.SBUSuggestedReplyOptionView)
   @_Concurrency.MainActor(unsafe) open func createOptionView() -> SendbirdUIKit.SBUSuggestedReplyOptionView
   @_Concurrency.MainActor(unsafe) open func createSuggestedReplyOptionViews(options: [Swift.String]) -> [SendbirdUIKit.SBUSuggestedReplyOptionView]
+  @_Concurrency.MainActor(unsafe) open class func updateSuggestedReplyView(with options: [Swift.String]?, message: SendbirdChatSDK.BaseMessage?, shouldHide: Swift.Bool, delegate: (any SendbirdUIKit.SBUSuggestedReplyViewDelegate)? = nil, factory: (() -> SendbirdUIKit.SBUSuggestedReplyView?)? = nil) -> SendbirdUIKit.SBUSuggestedReplyView?
+  @_Concurrency.MainActor(unsafe) open class func createDefaultSuggestedReplyView() -> SendbirdUIKit.SBUSuggestedReplyView
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
   @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
   @objc deinit
@@ -11601,10 +11697,6 @@ extension SendbirdUIKit.SBUUserListViewModel : SendbirdChatSDK.OpenChannelDelega
     @objc get
     @objc set
   }
-  @_Concurrency.MainActor(unsafe) @objc override public var message: SendbirdChatSDK.BaseMessage? {
-    @objc get
-    @objc set
-  }
   @objc @_Concurrency.MainActor(unsafe) public var userMessage: SendbirdChatSDK.UserMessage? {
     @objc get
   }
@@ -11632,7 +11724,6 @@ extension SendbirdUIKit.SBUUserListViewModel : SendbirdChatSDK.OpenChannelDelega
     get
   }
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupViews()
-  @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupLayouts()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupActions()
   @_Concurrency.MainActor(unsafe) @objc override dynamic open func setupStyles()
   @_Concurrency.MainActor(unsafe) override open func configure(with configuration: SendbirdUIKit.SBUBaseMessageCellParams)
@@ -11651,7 +11742,8 @@ extension SendbirdUIKit.SBUUserListViewModel : SendbirdChatSDK.OpenChannelDelega
   @objc @available(*, deprecated, message: "This method is deprecated in 3.27.0.")
   @_Concurrency.MainActor(unsafe) open func createFormView() -> SendbirdUIKit.SBUFormView
   @objc @_Concurrency.MainActor(unsafe) open func createMessageFormView() -> SendbirdUIKit.SBUMessageFormView
-  @objc @_Concurrency.MainActor(unsafe) public func updateMessageTemplate()
+  @objc @available(*, deprecated, message: "`updateMessageTemplate` has been deprecated since 3.27.2.")
+  @_Concurrency.MainActor(unsafe) public func updateMessageTemplate()
   @objc @_Concurrency.MainActor(unsafe) open func userMessageTextView(_ textView: SendbirdUIKit.SBUUserMessageTextView, didTapMention user: SendbirdUIKit.SBUUser)
   @objc @_Concurrency.MainActor(unsafe) open func suggestedReplyView(_ view: SendbirdUIKit.SBUSuggestedReplyView, didSelectOption optionView: SendbirdUIKit.SBUSuggestedReplyOptionView)
   @objc @available(*, deprecated, message: "This method is deprecated in 3.27.0.")
@@ -12217,6 +12309,9 @@ extension UIKit.UIView {
 extension UIKit.UIView {
   @_Concurrency.MainActor(unsafe) public static func setSemanticContentAttributeRecursively(view: UIKit.UIView, attribute: UIKit.UISemanticContentAttribute)
 }
+extension UIKit.UIView {
+  @_Concurrency.MainActor(unsafe) public static func spacing(width: CoreFoundation.CGFloat = 0, height: CoreFoundation.CGFloat = 0, tag: Swift.Int? = nil) -> UIKit.UIView
+}
 @available(*, deprecated, renamed: "SBUDateFormatSet")
 extension Foundation.Date.SBUDateFormat : Swift.Equatable {}
 @available(*, deprecated, renamed: "SBUDateFormatSet")
@@ -12301,8 +12396,11 @@ extension SendbirdUIKit.SBUScrollPosition : Swift.Equatable {}
 extension SendbirdUIKit.SBUScrollPosition : Swift.Hashable {}
 extension SendbirdUIKit.SBUChannelType : Swift.Equatable {}
 extension SendbirdUIKit.SBUChannelType : Swift.Hashable {}
+@available(*, deprecated, message: "`SBUMessageContainerType` has been deprecated since 3.27.2.")
 extension SendbirdUIKit.SBUMessageContainerType : Swift.Equatable {}
+@available(*, deprecated, message: "`SBUMessageContainerType` has been deprecated since 3.27.2.")
 extension SendbirdUIKit.SBUMessageContainerType : Swift.Hashable {}
+@available(*, deprecated, message: "`SBUMessageContainerType` has been deprecated since 3.27.2.")
 extension SendbirdUIKit.SBUMessageContainerType : Swift.RawRepresentable {}
 extension SendbirdUIKit.SBUFeedbackAnswer.Action : Swift.Equatable {}
 extension SendbirdUIKit.SBUFeedbackAnswer.Action : Swift.Hashable {}
@@ -12336,6 +12434,9 @@ extension SendbirdUIKit.SBUMessageInputMode : Swift.RawRepresentable {}
 extension SendbirdUIKit.SBUMessageTemplate.ActionType : Swift.Equatable {}
 extension SendbirdUIKit.SBUMessageTemplate.ActionType : Swift.Hashable {}
 extension SendbirdUIKit.SBUMessageTemplate.ActionType : Swift.RawRepresentable {}
+extension SendbirdUIKit.SBUMessageTemplate.Container.ContainerType : Swift.Equatable {}
+extension SendbirdUIKit.SBUMessageTemplate.Container.ContainerType : Swift.Hashable {}
+extension SendbirdUIKit.SBUMessageTemplate.Container.ContainerType : Swift.RawRepresentable {}
 extension SendbirdUIKit.SBUPermissionManager.PermissionType : Swift.Equatable {}
 extension SendbirdUIKit.SBUPermissionManager.PermissionType : Swift.Hashable {}
 extension SendbirdUIKit.SBUPhotoAccessLevel : Swift.RawRepresentable {}

@@ -20,7 +20,7 @@ public class SBUMessageTemplateManager: NSObject {
     /// Resets message template cache
     /// - Since: 3.21.0
     public static func resetMessageTemplateCache() {
-        SBUCacheManager.template(with: .group).resetCache()
+        SBUCacheManager.template(with: .message).resetCache()
     }
     
     static let exeucuteQueue = DispatchQueue(label: "com.sendbird.message_template.images")

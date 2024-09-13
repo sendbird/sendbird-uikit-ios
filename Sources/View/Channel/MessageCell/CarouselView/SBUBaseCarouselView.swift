@@ -16,7 +16,6 @@ protocol SBUBaseCarouselCellRenderer {
 struct SBUBaseCarouselViewParams {
     let padding: UIEdgeInsets
     let spacing: CGFloat
-    let profileArea: CGFloat
     let renderers: [SBUBaseCarouselCellRenderer]
 }
 
@@ -54,7 +53,7 @@ class SBUBaseCarouselView: UIView, UIScrollViewDelegate {
     
     // MARK: - Properties
     
-    var params = SBUBaseCarouselViewParams(padding: .zero, spacing: 0, profileArea: 0, renderers: [])
+    var params = SBUBaseCarouselViewParams(padding: .zero, spacing: 0, renderers: [])
     var contentViews = [UIView]()
     
     // MARK: - Initialization
@@ -89,10 +88,10 @@ class SBUBaseCarouselView: UIView, UIScrollViewDelegate {
             self.scrollView.leftAnchor.constraint(equalTo: leftAnchor),
             self.scrollView.rightAnchor.constraint(equalTo: rightAnchor),
             
-            self.stackView.topAnchor.constraint(equalTo: self.scrollView.contentLayoutGuide.topAnchor),
-            self.stackView.bottomAnchor.constraint(equalTo: self.scrollView.contentLayoutGuide.bottomAnchor),
-            self.stackView.leftAnchor.constraint(equalTo: self.scrollView.contentLayoutGuide.leftAnchor, constant: self.params.profileArea),
-            self.stackView.rightAnchor.constraint(equalTo: self.scrollView.contentLayoutGuide.rightAnchor),
+            self.stackView.topAnchor.constraint(equalTo: self.scrollView.contentLayoutGuide.topAnchor, constant: self.params.padding.top),
+            self.stackView.bottomAnchor.constraint(equalTo: self.scrollView.contentLayoutGuide.bottomAnchor, constant: self.params.padding.bottom),
+            self.stackView.leftAnchor.constraint(equalTo: self.scrollView.contentLayoutGuide.leftAnchor, constant: self.params.padding.left),
+            self.stackView.rightAnchor.constraint(equalTo: self.scrollView.contentLayoutGuide.rightAnchor, constant: self.params.padding.right),
             self.stackView.heightAnchor.constraint(equalTo: self.scrollView.heightAnchor)
         ])
 
@@ -116,7 +115,7 @@ class SBUBaseCarouselView: UIView, UIScrollViewDelegate {
         let offsetX = UIScrollView.SBUScrollAdjustPosition.adjustContentOffsetX(
             in: scrollView,
             items: self.contentViews,
-            offset: self.params.profileArea,
+            offset: self.params.padding.left,
             velocityX: velocityX
         )
         

@@ -12,4 +12,5 @@ import UIKit
 /// `SBUMessageTemplate` is a class that handles message templates.
 public class SBUMessageTemplate {
     static let urlForTemplateDownload = "TEMPLATE_DOWNLOAD"
+    static var defaultMaxSize: CGFloat = 256.0
 }

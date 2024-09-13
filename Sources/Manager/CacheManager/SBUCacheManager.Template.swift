@@ -12,7 +12,7 @@ extension SBUCacheManager {
     static func template(with type: SBUTemplateType) -> SBUTemplateCacheType {
         switch type {
         case .notification: return NotificationMessageTemplate.shared
-        case .group: return GroupMessageTemplate.shared
+        case .message: return GroupMessageTemplate.shared
         }
     }
     
@@ -25,7 +25,7 @@ extension SBUCacheManager {
     
     class GroupMessageTemplate: SBUTemplateCacheType {
         static let shared = GroupMessageTemplate()
-        static let type = SBUTemplateType.group
+        static let type = SBUTemplateType.message
         static let memoryCache = MemoryCacheForTemplate()
         static let diskCache = DiskCacheForTemplate(cacheType: type.cacheKey)
     }

@@ -61,7 +61,7 @@ extension SBUMessageTemplate.Syntax {
             self.padding = padding
         }
     }
-
+    
     class TextStyle: Decodable {
         let size: Int?
         let color: String?
