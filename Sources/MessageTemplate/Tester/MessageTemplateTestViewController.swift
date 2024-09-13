@@ -9,8 +9,7 @@
 import UIKit
 
 public class MessageTemplateTestViewController: SBUBaseViewController {
-
-    let baseView = UIView()
+    let scrollView = UIScrollView()
     var renderedView: UIView?
     
     var useParserTest: Bool = false
@@ -41,6 +40,7 @@ public class MessageTemplateTestViewController: SBUBaseViewController {
         let mockJson = MessageTemplateParser.MockJson
         self.renderedView = SBUMessageTemplate.Renderer(
             with: mockJson,
+            messageId: 1,
             actionHandler: { action in
                 SBULog.info(action.data)
             }
@@ -49,20 +49,19 @@ public class MessageTemplateTestViewController: SBUBaseViewController {
         )
         
         if let renderedView = self.renderedView {
-            self.baseView.addSubview(renderedView)
+            self.scrollView.addSubview(renderedView)
         }
         
-        self.baseView.roundCorners(corners: .allCorners, radius: 16.0)
-        self.baseView.clipsToBounds = true
+        self.scrollView.clipsToBounds = true
 
         self.view.backgroundColor = .gray
-        self.view.addSubview(self.baseView)
+        self.view.addSubview(self.scrollView)
     }
     
     public override func setupStyles() {
         super.setupStyles()
         
-        self.baseView.backgroundColor = .white
+        self.scrollView.backgroundColor = .white
     }
     
     public override func setupLayouts() {
@@ -70,17 +69,17 @@ public class MessageTemplateTestViewController: SBUBaseViewController {
         
         // Must implement belows
         
-        self.baseView.sbu_constraint_equalTo(
-            leadingAnchor: self.view.safeAreaLayoutGuide.leadingAnchor, 
-            leading: 20,
-            trailingAnchor: self.view.safeAreaLayoutGuide.trailingAnchor, 
-            trailing: -20
+        self.scrollView.sbu_constraint(
+            equalTo: self.view,
+            leading: 0,
+            trailing: 0,
+            top: 0,
+            bottom: 0
         )
         
-        self.baseView.sbu_constraint(equalTo: self.view, centerX: 0, centerY: 0)
-        
         if let renderedView = self.renderedView {
-            renderedView.sbu_constraint(equalTo: self.baseView, leading: 0, trailing: 0, top: 0, bottom: 0)
+            renderedView.sbu_constraint(equalTo: self.scrollView, leading: 0, trailing: 0, top: 0, bottom: 0)
+            renderedView.sbu_constraint(widthAnchor: self.scrollView.widthAnchor, width: 0)
 //            renderedView.sbu_constraint_greater(bottomAnchor: self.baseView.bottomAnchor, bottom: 0)
         }
     }

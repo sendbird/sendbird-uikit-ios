@@ -78,7 +78,7 @@ extension SBUMessageTemplate.Syntax {
          - 1: [____] <--- template max width
          - 2: [__]
          */
-        var itemsMaxWidth: CGFloat {
+        func itemsMaxWidth(with limit: CGFloat) -> CGFloat {
             guard let items = self.body?.items?.compactMap({ $0.asView }) else { return .infinity }
             
             var maxWidth: CGFloat = 0
@@ -91,10 +91,10 @@ extension SBUMessageTemplate.Syntax {
                 if maxWidth < item.widthValue { maxWidth = item.fullWidthValue }
             }
             
-            // If {fill_parent} is present, it will be drawn with {max_fixed_width} or {default_width} because it doesn't know how it will be drawn.
-            if hasFillParent == true { return max(maxWidth, SBUMessageContainerType.defaultMaxSize) }
-            // If {wrap_content} is present, make it smaller than {default_width} and allow it to have a wrap area.
-            if hasWrapContent == true { return .infinity } // NOTE: lessThan `default_max_width` in renderer.
+            // If {fill_parent} is present, it will be drawn with {max_fixed_width} or {limit} because it doesn't know how it will be drawn.
+            if hasFillParent == true { return max(maxWidth, limit) }
+            // If {wrap_content} is present, make it smaller than {limit} and allow it to have a wrap area.
+            if hasWrapContent == true { return max(maxWidth, limit) } // NOTE: lessThan `{limit}` in renderer.
             // If there are only fixed width values.
             return maxWidth
         }
@@ -367,20 +367,19 @@ extension SBUMessageTemplate.Syntax {
     }
     
     class CarouselItem: View {
-        let spacing: Int // default: 8
         let items: [TemplateView]?
+        let carouselStyle: CarouselStyle
         
         enum CodingKeys: String, CodingKey {
-            case spacing, items
+            case items, carouselStyle
         }
-        
-        static var maxLimitOfItems: Int = 10
         
         required init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
-            self.spacing = try container.decodeIfPresent(Int.self, forKey: .spacing) ?? 8 // default
             let items = try container.decodeIfPresent([TemplateView].self, forKey: .items) ?? []
-            self.items = Array(items.prefix(CarouselItem.maxLimitOfItems))
+            self.items = items
+            
+            self.carouselStyle = try container.decodeIfPresent(CarouselStyle.self, forKey: .carouselStyle) ?? .init()
             
             try super.init(from: decoder)
         }
@@ -388,6 +387,34 @@ extension SBUMessageTemplate.Syntax {
         override func setIdentifier(with factory: SBUMessageTemplate.Syntax.Identifier.Factory) {
             self.identifier = factory.generate(with: self)
             items?.forEach { $0.setIdentifier(with: factory) }
+        }
+        
+        class CarouselStyle: Decodable {
+            let spacing: CGFloat
+            let maxChildWidth: CGFloat
+            
+            enum CodingKeys: String, CodingKey {
+                case spacing
+                case maxChildWidth
+            }
+            
+            init(spacing: CGFloat = 10, maxChildWidth: CGFloat = SBUMessageTemplate.defaultMaxSize) {
+                self.spacing = spacing
+                self.maxChildWidth = maxChildWidth
+            }
+            
+            required init(from decoder: Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                
+                self.spacing = SBUMessageTemplate.decodeMultipleTypeForCGFloat(
+                    forKey: .spacing,
+                    from: container
+                )
+                self.maxChildWidth = SBUMessageTemplate.decodeIfPresentMultipleTypeForCGFloat(
+                    forKey: .maxChildWidth,
+                    from: container
+                ) ?? SBUMessageTemplate.defaultMaxSize
+            }
         }
     }
 }

@@ -114,6 +114,7 @@ extension SBUMessageTemplate.Renderer {
                     item: carouselItem,
                     parentView: self.bodyView,
                     prevView: prevView,
+                    prevItem: prevItem,
                     isLastItem: isLastItem
                 )
                 currentView = carouselView
@@ -261,9 +262,18 @@ extension SBUMessageTemplate.Renderer {
                 currentView = imageButton
                 prevItem = imageButtonItem
                     
-            case .carouselView:
-                // INFO: Carousel views are render only in root body.
-                break
+            case .carouselView(let carouselItem):
+                let carouselView = self.renderCarouselView(
+                    item: carouselItem,
+                    parentView: self.bodyView,
+                    prevView: prevView,
+                    prevItem: prevItem,
+                    itemsAlign: itemsAlign,
+                    layout: layout,
+                    isLastItem: isLastItem
+                )
+                currentView = carouselView
+                prevItem = carouselItem
             }
             
             if prevItem?.width.type == .flex,
@@ -637,20 +647,25 @@ extension SBUMessageTemplate.Renderer {
         let carouselView = restoreView?.cacheKey?.isEqualCacheKey(factory) == true ? restoreView! : SBUBaseCarouselView(frame: .init(x: 0, y: 0, width: 1, height: 1))
         
         if restoreView != carouselView {
-            let renderers = item.items?.compactMap {
+            let renderers = item.items?.compactMap { data in
                 SBUMessageTemplate.Renderer.CarouselRenderer(
-                    data: $0,
+                    data: data,
+                    maxWidth: item.carouselStyle.maxChildWidth,
                     actionHandler: self.actionHandler
                 )
             } ?? []
             
-            let profileArea = self.rendererValueFor(key: .carouselProfileAreaSize, defaultValue: CGFloat.zero)
+            let padding = UIEdgeInsets(
+                top: item.viewStyle.padding?.top ?? 0,
+                left: item.viewStyle.padding?.left ?? 0,
+                bottom: item.viewStyle.padding?.bottom ?? 0,
+                right: item.viewStyle.padding?.right ?? 0
+            )
             
             carouselView.configure(
                 with: SBUBaseCarouselViewParams(
-                    padding: .zero,
-                    spacing: CGFloat(item.spacing),
-                    profileArea: profileArea,
+                    padding: padding,
+                    spacing: item.carouselStyle.spacing,
                     renderers: renderers
                 )
             )
@@ -666,6 +681,10 @@ extension SBUMessageTemplate.Renderer {
         baseView.addSubview(carouselView)
         parentView.addSubview(baseView)
         
+        // For `carousel view`, `padding` is used inside the carousel container (scroll view padding).
+        // `padding` is mapped to `nil` to avoid having to check the item type inside renderViewLayout(:) where it is used.
+        item.viewStyle.padding = nil
+
         // View Style
         self.renderViewStyle(with: item, to: baseView)
         

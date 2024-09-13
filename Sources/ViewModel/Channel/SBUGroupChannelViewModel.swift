@@ -933,7 +933,7 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
             return
         }
         SBUGroupChannelViewModel.nowLoadingTemplate = true
-        SBUMessageTemplateManager.loadTemplateList(type: .group) { success in
+        SBUMessageTemplateManager.loadTemplateList(type: .message) { success in
             SBULog.info("[Request] load missing templates - success: \(success)")
             SBUGroupChannelViewModel.nowLoadingTemplate = false
             completionHandler(success)
@@ -944,7 +944,7 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
         data: [String: String],
         completionHandler: @escaping (Bool) -> Void
     ) {
-        SBUMessageTemplateManager.loadTemplateImages(type: .group, cacheData: data) { success in
+        SBUMessageTemplateManager.loadTemplateImages(type: .message, cacheData: data) { success in
             SBULog.info("[Request] load missing templates images - success: \(success)")
             completionHandler(success)
         }

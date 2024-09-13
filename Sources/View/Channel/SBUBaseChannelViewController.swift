@@ -680,8 +680,10 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
             }
         }
         
-        self.isChatInputDisabled =  messages.first?.getChatInputDisabledState(hasNext: self.baseViewModel?.hasNext()) ?? false
-        
+        self.isChatInputDisabled = messages.getChatInputDisableState(
+            hasNext: self.baseViewModel?.hasNext()
+        )
+            
         guard needsToReload else { return }
         
         // Verify that the UIViewController is currently visible on the screen

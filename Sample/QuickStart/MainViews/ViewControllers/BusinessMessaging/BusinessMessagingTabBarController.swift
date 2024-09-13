@@ -15,7 +15,7 @@ enum TabBarType: Int {
 }
 
 class BusinessMessagingTabBarController: UITabBarController {
-    let channelsViewController = ChannelListViewController()
+    var channelsViewController: ChannelListViewController?
     let feedChannelsViewController = FeedChannelListViewController()
     let settingsViewController = MySettingsViewController()
     
@@ -52,13 +52,26 @@ class BusinessMessagingTabBarController: UITabBarController {
     var settingsTabIndex: Int {
         return tabBarType == .feedOnly ? 1 : 2
     }
-
+    
+    init(tabBarType: TabBarType, channelURLForPushNotification: String?, channelType: ChannelType?) {
+        self.tabBarType = tabBarType
+        self.channelURLforPushNotification = channelURLForPushNotification
+        self.channelType = channelType
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        self.channelsNavigationController = UINavigationController(
-            rootViewController: channelsViewController
-        )
+        
+        if self.tabBarType != .feedOnly {
+            let vc = ChannelListViewController()
+            self.channelsViewController = vc
+            self.channelsNavigationController = UINavigationController(rootViewController: vc)
+        }
 
         self.feedChannelsNavigationController = UINavigationController(
             rootViewController: feedChannelsViewController
@@ -69,12 +82,12 @@ class BusinessMessagingTabBarController: UITabBarController {
             rootViewController: settingsViewController
         )
         
-        self.channelsViewController.headerComponent?.titleView = UIView()
-        self.channelsViewController.headerComponent?.leftBarButton = self.createLeftTitleItem(text: "Channels")
+        self.channelsViewController?.headerComponent?.titleView = UIView()
+        self.channelsViewController?.headerComponent?.leftBarButton = self.createLeftTitleItem(text: "Channels")
         self.feedChannelsViewController.navigationItem.leftBarButtonItem = self.createLeftTitleItem(text: "Feed Channels")
         self.settingsViewController.navigationItem.leftBarButtonItem = self.createLeftTitleItem(text: "Settings")
         
-        self.channelsViewController.tabBarItem = self.createTabItem(type: .channels)
+        self.channelsViewController?.tabBarItem = self.createTabItem(type: .channels)
         self.feedChannelsViewController.tabBarItem = self.createTabItem(type: .feedChannels)
         self.mySettingsNavigationController.tabBarItem = self.createTabItem(type: .settings)
         

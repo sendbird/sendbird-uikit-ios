@@ -1,5 +1,10 @@
 # Changelog
 
+### v3.27.2 (Sep 13, 2024)
+
+## Improvements
+- Fixed the behaviour of `extended_message_payload.disable_chat_input` to work correctly with sequential messages in a workflow.
+- Improved stability
 ### v3.27.1 (Sep 04, 2024)
 
 - SendbirdChatSDK dependency version has been updated to v4.21.1

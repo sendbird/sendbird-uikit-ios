@@ -152,26 +152,22 @@ extension SBUMessageTemplate.Renderer {
         
         init?(
             data: SBUMessageTemplate.Syntax.TemplateView,
+            maxWidth: CGFloat,
             actionHandler: ((SBUMessageTemplate.Action) -> Void)?
         ) {
             guard let renderer = SBUMessageTemplate.Renderer.generate(
                 template: data,
-                maxWidth: data.itemsMaxWidth,
+                maxWidth: maxWidth,
                 actionHandler: { actionHandler?($0) }
             ) else { return nil }
             self.data = data
             self.renderer = renderer
-            self.expectedWidth = data.itemsMaxWidth
+            self.expectedWidth = data.itemsMaxWidth(with: maxWidth)
         }
         
         func render() -> UIView {
             self.renderer.backgroundColor = .clear
-            
-            if self.expectedWidth != .infinity {
-                self.renderer.sbu_constraint(width: self.expectedWidth, priority: .required)
-            } else {
-                self.renderer.sbu_constraint_lessThan(width: SBUMessageContainerType.defaultMaxSize, priority: .required)
-            }
+            self.renderer.sbu_constraint_lessThan(width: self.expectedWidth, priority: .required)
             return renderer
         }
         

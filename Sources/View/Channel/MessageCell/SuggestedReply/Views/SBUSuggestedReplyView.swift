@@ -72,4 +72,46 @@ open class SBUSuggestedReplyView: SBUView, SBUSuggestedReplyOptionViewDelegate {
         }
         return optionViews
     }
+    
+    /// This is class method to create and set up the `SBUSuggestedReplyView`.
+    /// - Parameters:
+    ///   - options: The string array that configured the view list
+    ///   - message: base message
+    ///   - shouldHide: optional value for hiding suggested replies
+    ///   - delegate: delegate for event delivery
+    ///   - factory: factory method closure for generating suggested replies
+    /// - since: 3.27.2
+    open class func updateSuggestedReplyView(
+        with options: [String]?,
+        message: BaseMessage?,
+        shouldHide: Bool,
+        delegate: SBUSuggestedReplyViewDelegate? = nil,
+        factory: (() -> SBUSuggestedReplyView?)? = nil
+    ) -> SBUSuggestedReplyView? {
+        guard shouldHide == false else { return nil }
+        guard SendbirdUI.config.groupChannel.channel.isSuggestedRepliesEnabled else { return nil }
+        
+        guard let options = options else { return nil }
+        guard let messageId = message?.messageId else { return nil }
+        
+        let suggestedReplyView = factory?() ?? Self.createDefaultSuggestedReplyView()
+        let configuration = SBUSuggestedReplyViewParams(
+            messageId: messageId,
+            replyOptions: options
+        )
+        suggestedReplyView.configure(with: configuration, delegate: delegate)
+        return suggestedReplyView
+    }
+    
+    /// Class method to use when you want to fully customize the design of the ``SBUSuggestedReplyView``.
+    /// Create your own view that inherits from ``SBUSuggestedReplyView`` and return it.
+    /// NOTE: The default view is ``SBUVerticalSuggestedReplyView``, which is a vertically organized option view.
+    /// - Returns: Views that inherit from ``SBUSuggestedReplyView``.
+    /// - since: 3.27.2
+    open class func createDefaultSuggestedReplyView() -> SBUSuggestedReplyView {
+        switch SendbirdUI.config.groupChannel.channel.suggestedRepliesDirection {
+        case .vertical: return  SBUVerticalSuggestedReplyView()
+        case .horizontal: return SBUHorizontalSuggestedReplyView()
+        }
+    }
 }

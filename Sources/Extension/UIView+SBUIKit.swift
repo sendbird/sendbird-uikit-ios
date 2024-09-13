@@ -1363,3 +1363,19 @@ extension UIUserInterfaceLayoutDirection {
     var isRTL: Bool { self == .rightToLeft }
     var isLTR: Bool { self == .leftToRight }
 }
+
+extension UIView {
+    /// Methods for creating an empty view to use for layout construction
+    /// NOTE: width, height constraints are set automatically.
+    public static func spacing(
+        width: CGFloat = 0,
+        height: CGFloat = 0,
+        tag: Int? = nil
+    ) -> UIView {
+        let view = UIView()
+        view.backgroundColor = .clear
+        view.sbu_constraint(width: width, height: height)
+        if let tag = tag { view.tag = tag }
+        return view
+    }
+}

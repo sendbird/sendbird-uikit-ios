@@ -24,7 +24,6 @@ protocol MessageTemplateRendererDataSource: AnyObject {
 extension SBUMessageTemplate.Renderer {
     enum EventSourceKeys: String {
         case templateFactory
-        case carouselProfileAreaSize
         case carouselRestoreView
     }
 }

@@ -14,12 +14,6 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
     // MARK: - Public property
     public lazy var messageTextView: UIView = SBUUserMessageTextView()
     
-    public override var message: BaseMessage? {
-        didSet {
-            self.messageTemplateLayer.message = message
-        }
-    }
-    
     public var userMessage: UserMessage? {
         self.message as? UserMessage
     }
@@ -39,7 +33,7 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
         return webView
     }()
     
-    // MARK: - Quick Reply
+    // MARK: - Suggested Replies
     
     /// The boolean value whether the ``suggestedReplyView`` instance should appear or not. The default is `true`
     /// - Important: If it's true, ``suggestedReplyView`` never appears even if the ``userMessage`` has quick reply options.
@@ -130,8 +124,6 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
     /// - Since: 3.11.0
     open var extendedMessagePayloadCustomViewFactory: SBUExtendedMessagePayloadCustomViewFactoryInternal.Type? { nil }
     
-    private(set) var messageTemplateLayer = MessageTemplateLayer()
-
     // MARK: - View Lifecycle
     open override func setupViews() {
         super.setupViews()
@@ -145,18 +137,11 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
         // + --------------- +
         
         self.mainContainerView.setStack([
-            self.messageTemplateLayer.templateContainerView.setVStack([]),
             self.messageTextView,
             self.additionContainerView.setStack([
                 self.reactionView
             ])
         ])
-    }
-    
-    open override func setupLayouts() {
-        super.setupLayouts()
-        
-        self.updateMessageTemplateLayouts()
     }
     
     open override func setupActions() {
@@ -200,8 +185,6 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
         self.webView.setupStyles()
         
         self.additionContainerView.layer.cornerRadius = 16
-        
-        self.setupMesageTemplateStyles()
     }
     
     // MARK: - Common
@@ -262,9 +245,6 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
             let view = factory.makeCustomView(message: self.message) {
             factory.configure(with: view, cell: self)
         }
-        
-        // setup message template
-        self.updateMessageTemplate()
     }
     
     @available(*, deprecated, renamed: "configure(with:)") // 2.2.0
@@ -352,36 +332,33 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
     /// - Parameter options: The string array that configured the view list.
     /// - since: 3.11.0
     open func updateSuggestedReplyView(with options: [String]?) {
-        guard SendbirdUI.config.groupChannel.channel.isSuggestedRepliesEnabled else { return }
-        guard shouldHideSuggestedReplies == false else { return }
-        
-        guard let options = options else { return }
-        guard let messageId = self.message?.messageId else { return }
-        
-        let suggestedReplyView = createSuggestedReplyView()
-        let configuration = SBUSuggestedReplyViewParams(
-            messageId: messageId,
-            replyOptions: options
+        let suggestedReplyView =
+        SBUSuggestedReplyView.updateSuggestedReplyView(
+            with: options,
+            message: self.message,
+            shouldHide: shouldHideSuggestedReplies,
+            delegate: self,
+            factory: createSuggestedReplyView
         )
-        suggestedReplyView.configure(with: configuration, delegate: self)
+        
+        guard let suggestedReplyView = suggestedReplyView else { return }
+        
         self.userNameStackView.addArrangedSubview(suggestedReplyView)
         suggestedReplyView.sbu_constraint(equalTo: self.userNameStackView, leading: 0, trailing: 0)
-
         self.suggestedReplyView = suggestedReplyView
 
         self.layoutIfNeeded()
     }
     
-    /// Methods to use when you want to fully customize the design of the ``SBUSuggestedReplyView``.
+    /// Override this method to return a custom view that inherits from SBUSuggestedReplyView.
+    ///
+    /// Method to use when you want to fully customize the design of the ``SBUSuggestedReplyView``.
     /// Create your own view that inherits from ``SBUSuggestedReplyView`` and return it.
     /// NOTE: The default view is ``SBUVerticalSuggestedReplyView``, which is a vertically organized option view.
     /// - Returns: Views that inherit from ``SBUSuggestedReplyView``.
     /// - since: 3.11.0
     open func createSuggestedReplyView() -> SBUSuggestedReplyView {
-        switch SendbirdUI.config.groupChannel.channel.suggestedRepliesDirection {
-        case .vertical: return  SBUVerticalSuggestedReplyView()
-        case .horizontal: return SBUHorizontalSuggestedReplyView()
-        }
+        SBUSuggestedReplyView.createDefaultSuggestedReplyView()
     }
     
     // MARK: - form view
@@ -435,7 +412,7 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
     /// - since: 3.11.0
     @available(*, deprecated, message: "This method is deprecated in 3.27.0.")
     open func createFormView() -> SBUFormView { SBUSimpleFormView() }
-    
+
     /// Methods to use when you want to fully customize the design of the ``SBUMessageFormView``.
     /// Create your own view that inherits from ``SBUMessageFormView`` and return it.
     /// NOTE: The default view is ``SBUSimpleMessageFormView``, which is a vertically organized form view.
@@ -444,11 +421,8 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
     open func createMessageFormView() -> SBUMessageFormView { SBUSimpleMessageFormView() }
     
     /// - Since: 3.21.0
-    public func updateMessageTemplate() {
-        self.setupMessageTemplate()
-        self.setupMessageTemplateLayouts()
-        self.updateMessageTemplateLayouts()
-    }
+    @available(*, deprecated, message: "`updateMessageTemplate` has been deprecated since 3.27.2.")
+    public func updateMessageTemplate() { }
     
     // MARK: - Mention
     /// As a default, it calls `groupChannelModule(_:didTapMentionUser:)` in ``SBUGroupChannelModuleListDelegate``.

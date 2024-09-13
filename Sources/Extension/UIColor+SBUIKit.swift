@@ -67,5 +67,25 @@ extension UIColor {
         }
         self.init(red: CGFloat(r) / 255, green: CGFloat(g) / 255, blue: CGFloat(b) / 255, alpha: CGFloat(a) / 255)
     }
+    
+    func toHexString() -> String? {
+        var red: CGFloat = 0
+        var green: CGFloat = 0
+        var blue: CGFloat = 0
+        var alpha: CGFloat = 0
+        
+        guard self.getRed(&red, green: &green, blue: &blue, alpha: &alpha) else { return nil }
+        
+        let r = Int(red * 255.0)
+        let g = Int(green * 255.0)
+        let b = Int(blue * 255.0)
+        let a = Int(alpha * 255.0)
+        
+        if alpha == 1.0 {
+            return String(format: "#%02X%02X%02X", r, g, b)
+        } else {
+            return String(format: "#%02X%02X%02X%02X", r, g, b, a)
+        }
+    }
 }
 // swiftlint:enable identifier_name

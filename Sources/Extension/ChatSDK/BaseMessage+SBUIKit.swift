@@ -50,44 +50,13 @@ extension BaseMessage {
     
     /// container type of message template
     /// - Since: 3.21.0
-    public var asUiSettingContainerType: SBUMessageContainerType {
-        if self.hasMessageTemplateCompositeType == true { return .full }
-        
-        switch self.asExtendedMessagePayload?.uiSettings?.containerType {
-        case .wide: return .wide
-        case .full: return self.hasMessageTemplate ? .full : .`default`
-        default: return .`default`
-        }
-    }
+    @available(*, deprecated, message: "`asUiSettingContainerType` has been deprecated since 3.27.2.")
+    public var asUiSettingContainerType: SBUMessageContainerType { .`default` }
 
     /// Function to decode to custom view data using genric type.
     /// - Since: 3.11.0
     public func decodeCustomViewData<ViewData: Decodable>() throws -> ViewData? {
         try self.asExtendedMessagePayload?.decodeCustomViewData()
-    }
-    
-    /// A value that determines whether to disable the MessageInputView.
-    /// Additionally, other properties are checked as well.
-    /// - Since: 3.27.0
-    public func getChatInputDisabledState(hasNext: Bool?) -> Bool {
-        guard let extendedMessagePayload = self.asExtendedMessagePayload else { return false }
-        guard extendedMessagePayload.disableChatInput == true else { return false }
-        
-        if hasNext == true { return false }
-        
-        if let form = self.messageForm,
-           form.isValidVersion == true,
-           form.isSubmitted == false,
-           SendbirdUI.config.groupChannel.channel.isFormTypeMessageEnabled == true {
-            return true
-        }
-        
-        if extendedMessagePayload.suggestedReplies?.hasElements == true,
-           SendbirdUI.config.groupChannel.channel.isSuggestedRepliesEnabled == true {
-            return true
-        }
-        
-        return false
     }
     
     /// Indicates if the message is a stream (being updated) message.
@@ -120,4 +89,43 @@ extension BaseMessage {
             return (try? JSONDecoder().decode(StreamData.self, from: jsonData)) ?? StreamData(stream: false)
         }
     }
+}
+
+extension BaseMessage {
+    /// A value that determines whether to disable the MessageInputView.
+    /// Additionally, other properties are checked as well.
+    /// - Since: 3.27.0
+    @available(*, deprecated, message: "Use `getChatInputDisableState(hasNext:)` in [BaseMessage]") // 3.27.2
+    public func getChatInputDisabledState(hasNext: Bool?) -> Bool {
+        getChatInputDisableType(hasNext: hasNext) != .none
+    }
+    
+    func getChatInputDisableType(hasNext: Bool?) -> ChatInputDisableType {
+        guard let extendedMessagePayload = self.asExtendedMessagePayload else { return .none }
+        guard extendedMessagePayload.disableChatInput == true else { return .none }
+        
+        if hasNext == true { return .none }
+        
+        if let form = self.messageForm,
+           form.isValidVersion == true,
+           form.isSubmitted == false,
+           SendbirdUI.config.groupChannel.channel.isFormTypeMessageEnabled == true {
+            return .component // message form => component
+        }
+        
+        if extendedMessagePayload.suggestedReplies?.hasElements == true,
+           SendbirdUI.config.groupChannel.channel.isSuggestedRepliesEnabled == true {
+            return .component // suggested replies => component
+        }
+        
+        // normal message => not component
+        return .message
+    }
+    
+    enum ChatInputDisableType {
+        case component
+        case message
+        case none
+    }
+
 }

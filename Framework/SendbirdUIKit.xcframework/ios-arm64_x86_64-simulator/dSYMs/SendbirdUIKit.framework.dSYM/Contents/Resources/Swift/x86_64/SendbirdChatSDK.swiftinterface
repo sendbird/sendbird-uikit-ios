@@ -177,12 +177,6 @@ extension SendbirdChatSDK.BaseChannel {
   public func getMessageChangeLogs(byTimestamp: Swift.Int64, completionHandler: SendbirdChatSDK.MessageChangeLogHandler?)
 }
 extension SendbirdChatSDK.BaseChannel {
-  @objc(getMessageChangeLogsSinceToken:params:completionHandler:) dynamic open func getMessageChangeLogs(token: Swift.String?, params: SendbirdChatSDK.MessageChangeLogsParams = MessageChangeLogsParams(), completionHandler: SendbirdChatSDK.MessageChangeLogHandler?)
-  @objc(getMessageChangeLogsSinceTimestamp:params:completionHandler:) dynamic open func getMessageChangeLogs(timestamp: Swift.Int64, params: SendbirdChatSDK.MessageChangeLogsParams = MessageChangeLogsParams(), completionHandler: SendbirdChatSDK.MessageChangeLogHandler?)
-  @objc dynamic open func getPollChangeLogs(token: Swift.String?, completionHandler: SendbirdChatSDK.PollChangeLogsHandler?)
-  @objc dynamic open func getPollChangeLogs(timestamp: Swift.Int64, completionHandler: SendbirdChatSDK.PollChangeLogsHandler?)
-}
-extension SendbirdChatSDK.BaseChannel {
   @objc override dynamic public func isEqual(_ object: Any?) -> Swift.Bool
 }
 extension SendbirdChatSDK.GroupChannel {
@@ -192,6 +186,18 @@ extension SendbirdChatSDK.OpenChannel {
   @objc override dynamic public func isEqual(_ object: Any?) -> Swift.Bool
 }
 @objc extension SendbirdChatSDK.BaseChannel {
+  @objc dynamic open func getMessagesByTimestamp(_ timestamp: Swift.Int64, params: SendbirdChatSDK.MessageListParams, completionHandler: SendbirdChatSDK.MessageListHandler?)
+  @objc dynamic open func getMessagesByMessageId(_ messageId: Swift.Int64, params: SendbirdChatSDK.MessageListParams, completionHandler: SendbirdChatSDK.MessageListHandler?)
+  @objc @discardableResult
+  dynamic open func sendUserMessage(_ message: Swift.String, completionHandler: SendbirdChatSDK.UserMessageHandler?) -> SendbirdChatSDK.UserMessage
+  @discardableResult
+  @objc(sendUserMessageWithParams:completionHandler:) dynamic open func sendUserMessage(params: SendbirdChatSDK.UserMessageCreateParams, completionHandler: SendbirdChatSDK.UserMessageHandler?) -> SendbirdChatSDK.UserMessage
+  @discardableResult
+  @objc(resendUserMessageWithMessage:completionHandler:) dynamic open func resendUserMessage(_ message: SendbirdChatSDK.UserMessage, completionHandler: SendbirdChatSDK.UserMessageHandler?) -> SendbirdChatSDK.UserMessage
+  @discardableResult
+  @objc(copyUserMessage:toTargetChannel:completionHandler:) dynamic open func copyUserMessage(_ message: SendbirdChatSDK.UserMessage, toTargetChannel targetChannel: SendbirdChatSDK.BaseChannel, completionHandler: SendbirdChatSDK.UserMessageHandler?) -> SendbirdChatSDK.UserMessage?
+  @objc dynamic open func updateUserMessage(messageId: Swift.Int64, params: SendbirdChatSDK.UserMessageUpdateParams, completionHandler: SendbirdChatSDK.UserMessageHandler?)
+  @objc dynamic open func translateUserMessage(_ message: SendbirdChatSDK.UserMessage, targetLanguages: [Swift.String], completionHandler: SendbirdChatSDK.UserMessageHandler?)
   @objc @discardableResult
   dynamic open func sendFileMessage(params: SendbirdChatSDK.FileMessageCreateParams, completionHandler: SendbirdChatSDK.FileMessageHandler?) -> SendbirdChatSDK.FileMessage?
   @objc @discardableResult
@@ -206,29 +212,16 @@ extension SendbirdChatSDK.OpenChannel {
   @discardableResult
   @objc(copyFileMessage:toTargetChannel:completionHandler:) dynamic open func copyFileMessage(_ message: SendbirdChatSDK.FileMessage, toTargetChannel targetChannel: SendbirdChatSDK.BaseChannel, completionHandler: SendbirdChatSDK.FileMessageHandler?) -> SendbirdChatSDK.FileMessage?
   @objc(cancelUploadingFileMessageWithRequestId:completionHandler:) dynamic open class func cancelUploadingFileMessage(requestId: Swift.String, completionHandler: ((_ result: Swift.Bool, _ error: SendbirdChatSDK.SBError?) -> Swift.Void)?)
-}
-extension SendbirdChatSDK.MessageListParams {
-  @objc override final public var description: Swift.String {
-    @objc get
-  }
-}
-@objc extension SendbirdChatSDK.BaseChannel {
-  @objc dynamic open func getMessagesByTimestamp(_ timestamp: Swift.Int64, params: SendbirdChatSDK.MessageListParams, completionHandler: SendbirdChatSDK.MessageListHandler?)
-  @objc dynamic open func getMessagesByMessageId(_ messageId: Swift.Int64, params: SendbirdChatSDK.MessageListParams, completionHandler: SendbirdChatSDK.MessageListHandler?)
-}
-@objc extension SendbirdChatSDK.BaseChannel {
   @objc(deleteMessage:completionHandler:) dynamic open func deleteMessage(_ message: SendbirdChatSDK.BaseMessage, completionHandler: SendbirdChatSDK.SBErrorHandler?)
   @objc dynamic open func deleteMessage(messageId: Swift.Int64, completionHandler: SendbirdChatSDK.SBErrorHandler?)
-}
-@objc extension SendbirdChatSDK.BaseChannel {
+  @objc dynamic open func pinMessage(messageId: Swift.Int64, completionHandler: SendbirdChatSDK.SBErrorHandler?)
+  @objc dynamic open func unpinMessage(messageId: Swift.Int64, completionHandler: SendbirdChatSDK.SBErrorHandler?)
   @objc(createMessageMetaArrayKeysWithMessage:keys:completionHandler:) dynamic open func createMessageMetaArrayKeys(message: SendbirdChatSDK.BaseMessage, keys: [Swift.String], completionHandler: SendbirdChatSDK.BaseMessageHandler?)
   @objc(deleteMessageMetaArrayKeysWithMessage:keys:completionHandler:) dynamic open func deleteMessageMetaArrayKeys(message: SendbirdChatSDK.BaseMessage, keys: [Swift.String], completionHandler: SendbirdChatSDK.BaseMessageHandler?)
   @objc(addMessageMetaArrayValuesWithMessage:keyValues:completionHandler:) dynamic open func addMessageMetaArrayValues(message: SendbirdChatSDK.BaseMessage, keyValues: [Swift.String : [Swift.String]], completionHandler: SendbirdChatSDK.BaseMessageHandler?)
   @objc(addMessageMetaArrayValuesWithMessage:metaArrays:completionHandler:) dynamic open func addMessageMetaArrayValues(message: SendbirdChatSDK.BaseMessage, metaArrays: [SendbirdChatSDK.MessageMetaArray], completionHandler: SendbirdChatSDK.BaseMessageHandler?)
   @objc(removeMessageMetaArrayValuesWithMessage:keyValues:completionHandler:) dynamic open func removeMessageMetaArrayValues(message: SendbirdChatSDK.BaseMessage, keyValues: [Swift.String : [Swift.String]], completionHandler: SendbirdChatSDK.BaseMessageHandler?)
   @objc(removeMessageMetaArrayValuesWithMessage:metaArrays:completionHandler:) dynamic open func removeMessageMetaArrayValues(message: SendbirdChatSDK.BaseMessage, metaArrays: [SendbirdChatSDK.MessageMetaArray], completionHandler: SendbirdChatSDK.BaseMessageHandler?)
-}
-@objc extension SendbirdChatSDK.BaseChannel {
   @objc dynamic open func createMetaCounters(_ metaCounters: [Swift.String : Swift.Int], completionHandler: SendbirdChatSDK.MetaCountersHandler?)
   @objc dynamic open func getMetaCounters(keys: [Swift.String]?, completionHandler: SendbirdChatSDK.MetaCountersHandler?)
   @objc dynamic open func getAllMetaCounters(completionHandler: SendbirdChatSDK.MetaCountersHandler?)
@@ -237,8 +230,6 @@ extension SendbirdChatSDK.MessageListParams {
   @objc dynamic open func decreaseMetaCounters(_ metaCounters: [Swift.String : Swift.Int], completionHandler: SendbirdChatSDK.MetaCountersHandler?)
   @objc dynamic open func deleteMetaCounters(key: Swift.String, completionHandler: SendbirdChatSDK.SBErrorHandler?)
   @objc dynamic open func deleteAllMetaCounters(completionHandler: SendbirdChatSDK.SBErrorHandler?)
-}
-@objc extension SendbirdChatSDK.BaseChannel {
   @objc dynamic open func createMetaData(_ metaData: [Swift.String : Swift.String], completionHandler: SendbirdChatSDK.MetaDataHandler?)
   @objc dynamic open func getMetaData(keys: [Swift.String], completionHandler: SendbirdChatSDK.MetaDataHandler?)
   @objc dynamic open func getAllMetaData(completionHandler: SendbirdChatSDK.MetaDataHandler?)
@@ -246,27 +237,20 @@ extension SendbirdChatSDK.MessageListParams {
   @objc dynamic open func deleteMetaData(key: Swift.String, completionHandler: SendbirdChatSDK.SBErrorHandler?)
   @objc dynamic open func deleteAllMetaData(completionHandler: SendbirdChatSDK.SBErrorHandler?)
   @objc dynamic open func getCachedMetaData() -> [Swift.String : Swift.String]
-}
-@objc extension SendbirdChatSDK.BaseChannel {
   @objc dynamic open func banUser(_ user: SendbirdChatSDK.User, seconds: Swift.Int, description: Swift.String?, completionHandler: SendbirdChatSDK.SBErrorHandler?)
   @objc dynamic open func banUser(userId: Swift.String, seconds: Swift.Int, description: Swift.String?, completionHandler: SendbirdChatSDK.SBErrorHandler?)
   @objc dynamic open func unbanUser(_ user: SendbirdChatSDK.User, completionHandler: SendbirdChatSDK.SBErrorHandler?)
   @objc dynamic open func unbanUser(userId: Swift.String, completionHandler: SendbirdChatSDK.SBErrorHandler?)
+  @objc(reportUser:reportCategory:reportDescription:completionHandler:) dynamic open func report(offendingUser: SendbirdChatSDK.User, reportCategory: SendbirdChatSDK.ReportCategory, reportDescription: Swift.String?, completionHandler: SendbirdChatSDK.SBErrorHandler?)
+  @objc(reportChannelWithCategory:reportDescription:completionHandler:) dynamic open func report(category: SendbirdChatSDK.ReportCategory, reportDescription: Swift.String?, completionHandler: SendbirdChatSDK.SBErrorHandler?)
+  @objc(reportMessage:reportCategory:reportDescription:completionHandler:) dynamic open func report(message: SendbirdChatSDK.BaseMessage, reportCategory: SendbirdChatSDK.ReportCategory, reportDescription: Swift.String?, completionHandler: SendbirdChatSDK.SBErrorHandler?)
   @objc dynamic open func muteUser(_ user: SendbirdChatSDK.User, seconds: Swift.Int, description: Swift.String?, completionHandler: SendbirdChatSDK.SBErrorHandler?)
   @objc dynamic open func muteUser(userId: Swift.String, seconds: Swift.Int, description: Swift.String?, completionHandler: SendbirdChatSDK.SBErrorHandler?)
   @objc dynamic open func unmuteUser(userId: Swift.String, completionHandler: SendbirdChatSDK.SBErrorHandler?)
   @objc dynamic open func unmuteUser(_ user: SendbirdChatSDK.User, completionHandler: SendbirdChatSDK.SBErrorHandler?)
-}
-@objc extension SendbirdChatSDK.BaseChannel {
   @objc dynamic open func addOperators(userIds: [Swift.String], completionHandler: SendbirdChatSDK.SBErrorHandler?)
   @objc dynamic open func removeOperators(userIds: [Swift.String], completionHandler: SendbirdChatSDK.SBErrorHandler?)
   @objc dynamic open func removeAllOperators(completionHandler: SendbirdChatSDK.SBErrorHandler?)
-}
-@objc extension SendbirdChatSDK.BaseChannel {
-  @objc dynamic open func pinMessage(messageId: Swift.Int64, completionHandler: SendbirdChatSDK.SBErrorHandler?)
-  @objc dynamic open func unpinMessage(messageId: Swift.Int64, completionHandler: SendbirdChatSDK.SBErrorHandler?)
-}
-extension SendbirdChatSDK.BaseChannel {
   @objc dynamic open func updatePoll(pollId: Swift.Int64, params: SendbirdChatSDK.PollUpdateParams, completionHandler: SendbirdChatSDK.PollHandler?)
   @objc dynamic open func deletePoll(pollId: Swift.Int64, completionHandler: SendbirdChatSDK.SBErrorHandler?)
   @objc dynamic open func closePoll(pollId: Swift.Int64, completionHandler: SendbirdChatSDK.PollHandler?)
@@ -274,8 +258,8 @@ extension SendbirdChatSDK.BaseChannel {
   @objc dynamic open func updatePollOption(pollId: Swift.Int64, pollOptionId: Swift.Int64, optionText: Swift.String, completionHandler: SendbirdChatSDK.PollHandler?)
   @objc dynamic open func deletePollOption(pollId: Swift.Int64, pollOptionId: Swift.Int64, completionHandler: SendbirdChatSDK.SBErrorHandler?)
   @objc dynamic open func votePoll(pollId: Swift.Int64, pollOptionIds: [Swift.Int64], completionHandler: SendbirdChatSDK.PollVoteEventHandler)
-}
-extension SendbirdChatSDK.BaseChannel {
+  @objc(addReactionWithMessage:key:completionHandler:) dynamic open func addReaction(with message: SendbirdChatSDK.BaseMessage, key: Swift.String, completionHandler: SendbirdChatSDK.ReactionEventHandler?)
+  @objc(deleteReactionWithMessage:key:completionHandler:) dynamic open func deleteReaction(with message: SendbirdChatSDK.BaseMessage, key: Swift.String, completionHandler: SendbirdChatSDK.ReactionEventHandler?)
   @objc dynamic open func createBannedUserListQuery() -> SendbirdChatSDK.BannedUserListQuery?
   @objc dynamic open func createBannedUserListQuery(paramsBuilder: (SendbirdChatSDK.BannedUserListQueryParams) -> Swift.Void) -> SendbirdChatSDK.BannedUserListQuery?
   @objc dynamic open func createBannedUserListQuery(params: SendbirdChatSDK.BannedUserListQueryParams) -> SendbirdChatSDK.BannedUserListQuery?
@@ -306,27 +290,10 @@ extension SendbirdChatSDK.BaseChannel {
   @objc dynamic open func createPinnedMessageListQuery() -> SendbirdChatSDK.PinnedMessageListQuery?
   @objc dynamic open func createPinnedMessageListQuery(paramsBuilder: (SendbirdChatSDK.PinnedMessageListQueryParams) -> Swift.Void) -> SendbirdChatSDK.PinnedMessageListQuery?
   @objc dynamic open func createPinnedMessageListQuery(params: SendbirdChatSDK.PinnedMessageListQueryParams) -> SendbirdChatSDK.PinnedMessageListQuery?
-}
-@objc extension SendbirdChatSDK.BaseChannel {
-  @objc(addReactionWithMessage:key:completionHandler:) dynamic open func addReaction(with message: SendbirdChatSDK.BaseMessage, key: Swift.String, completionHandler: SendbirdChatSDK.ReactionEventHandler?)
-  @objc(deleteReactionWithMessage:key:completionHandler:) dynamic open func deleteReaction(with message: SendbirdChatSDK.BaseMessage, key: Swift.String, completionHandler: SendbirdChatSDK.ReactionEventHandler?)
-}
-@objc extension SendbirdChatSDK.BaseChannel {
-  @objc(reportUser:reportCategory:reportDescription:completionHandler:) dynamic open func report(offendingUser: SendbirdChatSDK.User, reportCategory: SendbirdChatSDK.ReportCategory, reportDescription: Swift.String?, completionHandler: SendbirdChatSDK.SBErrorHandler?)
-  @objc(reportChannelWithCategory:reportDescription:completionHandler:) dynamic open func report(category: SendbirdChatSDK.ReportCategory, reportDescription: Swift.String?, completionHandler: SendbirdChatSDK.SBErrorHandler?)
-  @objc(reportMessage:reportCategory:reportDescription:completionHandler:) dynamic open func report(message: SendbirdChatSDK.BaseMessage, reportCategory: SendbirdChatSDK.ReportCategory, reportDescription: Swift.String?, completionHandler: SendbirdChatSDK.SBErrorHandler?)
-}
-@objc extension SendbirdChatSDK.BaseChannel {
-  @objc @discardableResult
-  dynamic open func sendUserMessage(_ message: Swift.String, completionHandler: SendbirdChatSDK.UserMessageHandler?) -> SendbirdChatSDK.UserMessage
-  @discardableResult
-  @objc(sendUserMessageWithParams:completionHandler:) dynamic open func sendUserMessage(params: SendbirdChatSDK.UserMessageCreateParams, completionHandler: SendbirdChatSDK.UserMessageHandler?) -> SendbirdChatSDK.UserMessage
-  @discardableResult
-  @objc(resendUserMessageWithMessage:completionHandler:) dynamic open func resendUserMessage(_ message: SendbirdChatSDK.UserMessage, completionHandler: SendbirdChatSDK.UserMessageHandler?) -> SendbirdChatSDK.UserMessage
-  @discardableResult
-  @objc(copyUserMessage:toTargetChannel:completionHandler:) dynamic open func copyUserMessage(_ message: SendbirdChatSDK.UserMessage, toTargetChannel targetChannel: SendbirdChatSDK.BaseChannel, completionHandler: SendbirdChatSDK.UserMessageHandler?) -> SendbirdChatSDK.UserMessage?
-  @objc dynamic open func updateUserMessage(messageId: Swift.Int64, params: SendbirdChatSDK.UserMessageUpdateParams, completionHandler: SendbirdChatSDK.UserMessageHandler?)
-  @objc dynamic open func translateUserMessage(_ message: SendbirdChatSDK.UserMessage, targetLanguages: [Swift.String], completionHandler: SendbirdChatSDK.UserMessageHandler?)
+  @objc(getMessageChangeLogsSinceToken:params:completionHandler:) dynamic open func getMessageChangeLogs(token: Swift.String?, params: SendbirdChatSDK.MessageChangeLogsParams = MessageChangeLogsParams(), completionHandler: SendbirdChatSDK.MessageChangeLogHandler?)
+  @objc(getMessageChangeLogsSinceTimestamp:params:completionHandler:) dynamic open func getMessageChangeLogs(timestamp: Swift.Int64, params: SendbirdChatSDK.MessageChangeLogsParams = MessageChangeLogsParams(), completionHandler: SendbirdChatSDK.MessageChangeLogHandler?)
+  @objc dynamic open func getPollChangeLogs(token: Swift.String?, completionHandler: SendbirdChatSDK.PollChangeLogsHandler?)
+  @objc dynamic open func getPollChangeLogs(timestamp: Swift.Int64, completionHandler: SendbirdChatSDK.PollChangeLogsHandler?)
 }
 extension SendbirdChatSDK.BaseChannel {
   @available(*, unavailable, renamed: "channelURL")
@@ -1564,7 +1531,7 @@ extension SendbirdChatSDK.FriendListQueryParams : Foundation.NSCopying {
   @objc final public let jsonPayload: Swift.String
   @objc deinit
 }
-extension SendbirdChatSDK.GroupChannel {
+@objc extension SendbirdChatSDK.GroupChannel {
   @objc dynamic open func refresh(completionHandler: SendbirdChatSDK.SBErrorHandler?)
   @objc(createChannelWithParams:completionHandler:) dynamic open class func createChannel(params: SendbirdChatSDK.GroupChannelCreateParams, completionHandler: SendbirdChatSDK.GroupChannelHandler?)
   @objc(createChannelWithParams:progressHandler:completionHandler:) dynamic open class func createChannel(params: SendbirdChatSDK.GroupChannelCreateParams, progressHandler: SendbirdChatSDK.ProgressHandler?, completionHandler: SendbirdChatSDK.GroupChannelHandler?)
@@ -1574,29 +1541,23 @@ extension SendbirdChatSDK.GroupChannel {
   @objc(updateChannelWithParams:progressHandler:completionHandler:) dynamic open func update(params: SendbirdChatSDK.GroupChannelUpdateParams, progressHandler: SendbirdChatSDK.ProgressHandler?, completionHandler: @escaping SendbirdChatSDK.GroupChannelHandler)
   @objc(getChannelWithURL:completionHandler:) dynamic open class func getChannel(url: Swift.String, completionHandler: SendbirdChatSDK.GroupChannelHandler?)
   @objc(deleteChannelWithCompletionHandler:) dynamic open func delete(completionHandler: SendbirdChatSDK.SBErrorHandler?)
-}
-@objc extension SendbirdChatSDK.GroupChannel {
-  @objc dynamic open func resetMyHistory(completionHandler: SendbirdChatSDK.SBErrorHandler?)
-  @objc dynamic open func setMyPushTriggerOption(_ option: SendbirdChatSDK.GroupChannelPushTriggerOption, completionHandler: SendbirdChatSDK.SBErrorHandler?)
-  @objc dynamic open func getMyPushTriggerOption(completionHandler: @escaping SendbirdChatSDK.GroupChannelPushTriggerOptionHandler)
-  @objc dynamic open func setMyCountPreference(_ myCountPreference: SendbirdChatSDK.CountPreference, completionHandler: SendbirdChatSDK.SBErrorHandler?)
-}
-@objc extension SendbirdChatSDK.GroupChannel {
-  @nonobjc public func getDeliveryStatus(with includeAllMembers: Swift.Bool) -> [Swift.String : SendbirdChatSDK.DeliveryStatus]
-}
-@objc extension SendbirdChatSDK.GroupChannel {
-  @objc dynamic open func freeze(completionHandler: SendbirdChatSDK.SBErrorHandler?)
-  @objc dynamic open func unfreeze(completionHandler: SendbirdChatSDK.SBErrorHandler?)
-}
-extension SendbirdChatSDK.GroupChannel {
   @discardableResult
   @objc dynamic public func sendMultipleFilesMessage(params: SendbirdChatSDK.MultipleFilesMessageCreateParams, fileUploadHandler: SendbirdChatSDK.FileUploadHandler?, completionHandler: @escaping SendbirdChatSDK.MultipleFilesMessageHandler) -> SendbirdChatSDK.MultipleFilesMessage?
+  @discardableResult
+  @objc(createScheduledFileMessageWithParams:completionHandler:) dynamic open func createScheduledFileMessage(params: SendbirdChatSDK.ScheduledFileMessageCreateParams, completionHandler: SendbirdChatSDK.FileMessageHandler?) -> SendbirdChatSDK.FileMessage?
+  @objc(updateScheduledFileMessageWithScheduledMessageId:params:completionHandler:) dynamic open func updateScheduledFileMessage(scheduledMessageId: Swift.Int64, params: SendbirdChatSDK.ScheduledFileMessageUpdateParams, completionHandler: SendbirdChatSDK.FileMessageHandler?)
+  @discardableResult
+  @objc(createScheduledUserMessageWithParams:completionHandler:) dynamic open func createScheduledUserMessage(params: SendbirdChatSDK.ScheduledUserMessageCreateParams, completionHandler: SendbirdChatSDK.UserMessageHandler?) -> SendbirdChatSDK.UserMessage?
+  @objc(updateScheduledUserMessageWithScheduledMessageId:userMessageParams:completionHandler:) dynamic open func updateScheduledUserMessage(scheduledMessageId: Swift.Int64, params: SendbirdChatSDK.ScheduledUserMessageUpdateParams, completionHandler: SendbirdChatSDK.UserMessageHandler?)
+  @objc dynamic open func sendScheduledMessageNow(scheduledMessageId: Swift.Int64, completionHandler: @escaping SendbirdChatSDK.SBErrorHandler)
+  @objc dynamic open func cancelScheduledMessage(scheduledMessageId: Swift.Int64, completionHandler: @escaping SendbirdChatSDK.SBErrorHandler)
   @discardableResult
   @objc(copyMultipleFilesMessageWithMessage:toTargetChannel:completionHandler:) dynamic public func copyMultipleFilesMessage(_ message: SendbirdChatSDK.MultipleFilesMessage, toTargetChannel targetChannel: SendbirdChatSDK.GroupChannel, completionHandler: SendbirdChatSDK.MultipleFilesMessageHandler?) -> SendbirdChatSDK.MultipleFilesMessage?
   @discardableResult
   @objc(resendMultipleFilesMessageWithMessage:fileUploadHandler:completionHandler:) dynamic public func resendMultipleFilesMessage(_ message: SendbirdChatSDK.MultipleFilesMessage, fileUploadHandler: SendbirdChatSDK.FileUploadHandler?, completionHandler: SendbirdChatSDK.MultipleFilesMessageHandler?) -> SendbirdChatSDK.MultipleFilesMessage?
-}
-@objc extension SendbirdChatSDK.GroupChannel {
+  @nonobjc public func getDeliveryStatus(with includeAllMembers: Swift.Bool) -> [Swift.String : SendbirdChatSDK.DeliveryStatus]
+  @objc dynamic open func freeze(completionHandler: SendbirdChatSDK.SBErrorHandler?)
+  @objc dynamic open func unfreeze(completionHandler: SendbirdChatSDK.SBErrorHandler?)
   @objc dynamic open func inviteUser(_ user: SendbirdChatSDK.User, completionHandler: SendbirdChatSDK.SBErrorHandler?)
   @objc dynamic open func inviteUserId(_ userId: Swift.String, completionHandler: SendbirdChatSDK.SBErrorHandler?)
   @objc dynamic open func inviteUsers(_ users: [SendbirdChatSDK.User], completionHandler: SendbirdChatSDK.SBErrorHandler?)
@@ -1613,8 +1574,20 @@ extension SendbirdChatSDK.GroupChannel {
   @objc(unhideChannelWithCompletionHandler:) dynamic open func unhide(completionHandler: SendbirdChatSDK.SBErrorHandler?)
   @objc(markAsReadWithCompletionHandler:) dynamic open func markAsRead(completionHandler: SendbirdChatSDK.SBErrorHandler?)
   @objc dynamic open func notifyScreenshotWasTaken(completionHandler: SendbirdChatSDK.SBErrorHandler?)
-}
-extension SendbirdChatSDK.GroupChannel {
+  @objc dynamic open func getUnreadMemberCount(_ message: SendbirdChatSDK.BaseMessage) -> Swift.Int
+  @objc(getReadMembersWithMessage:includeAllMembers:) dynamic open func getReadMembers(message: SendbirdChatSDK.BaseMessage, includeAllMembers: Swift.Bool) -> [SendbirdChatSDK.Member]
+  @objc(getUnreadMembersWithMessage:includeAllMembers:) dynamic open func getUnreadMembers(message: SendbirdChatSDK.BaseMessage, includeAllMembers: Swift.Bool) -> [SendbirdChatSDK.Member]
+  @objc dynamic open func getUndeliveredMemberCount(_ message: SendbirdChatSDK.BaseMessage) -> Swift.Int
+  @objc(getReadStatusIncludingAllMembers:) dynamic open func getReadStatus(includeAllMembers: Swift.Bool) -> [Swift.String : [Swift.String : Any]]
+  @nonobjc public func getReadStatus(with includeAllMembers: Swift.Bool) -> [Swift.String : SendbirdChatSDK.ReadStatus]
+  @objc dynamic open func startTyping()
+  @objc dynamic open func endTyping()
+  @objc dynamic open func isTyping() -> Swift.Bool
+  @objc dynamic open func getTypingUsers() -> [SendbirdChatSDK.User]?
+  @objc dynamic open func resetMyHistory(completionHandler: SendbirdChatSDK.SBErrorHandler?)
+  @objc dynamic open func setMyPushTriggerOption(_ option: SendbirdChatSDK.GroupChannelPushTriggerOption, completionHandler: SendbirdChatSDK.SBErrorHandler?)
+  @objc dynamic open func getMyPushTriggerOption(completionHandler: @escaping SendbirdChatSDK.GroupChannelPushTriggerOptionHandler)
+  @objc dynamic open func setMyCountPreference(_ myCountPreference: SendbirdChatSDK.CountPreference, completionHandler: SendbirdChatSDK.SBErrorHandler?)
   @objc dynamic open class func createMyGroupChannelListQuery() -> SendbirdChatSDK.GroupChannelListQuery
   @objc dynamic open class func createMyGroupChannelListQuery(paramsBuilder: (SendbirdChatSDK.GroupChannelListQueryParams) -> Swift.Void) -> SendbirdChatSDK.GroupChannelListQuery
   @objc dynamic open class func createMyGroupChannelListQuery(params: SendbirdChatSDK.GroupChannelListQueryParams) -> SendbirdChatSDK.GroupChannelListQuery
@@ -1626,36 +1599,6 @@ extension SendbirdChatSDK.GroupChannel {
   @objc dynamic open func createMemberListQuery() -> SendbirdChatSDK.MemberListQuery?
   @objc dynamic open func createMemberListQuery(paramsBuilder: (SendbirdChatSDK.MemberListQueryParams) -> Swift.Void) -> SendbirdChatSDK.MemberListQuery?
   @objc dynamic open func createMemberListQuery(params: SendbirdChatSDK.MemberListQueryParams) -> SendbirdChatSDK.MemberListQuery?
-}
-@objc extension SendbirdChatSDK.GroupChannel {
-  @objc dynamic open func getUnreadMemberCount(_ message: SendbirdChatSDK.BaseMessage) -> Swift.Int
-  @objc(getReadMembersWithMessage:includeAllMembers:) dynamic open func getReadMembers(message: SendbirdChatSDK.BaseMessage, includeAllMembers: Swift.Bool) -> [SendbirdChatSDK.Member]
-  @objc(getUnreadMembersWithMessage:includeAllMembers:) dynamic open func getUnreadMembers(message: SendbirdChatSDK.BaseMessage, includeAllMembers: Swift.Bool) -> [SendbirdChatSDK.Member]
-  @objc dynamic open func getUndeliveredMemberCount(_ message: SendbirdChatSDK.BaseMessage) -> Swift.Int
-  @objc(getReadStatusIncludingAllMembers:) dynamic open func getReadStatus(includeAllMembers: Swift.Bool) -> [Swift.String : [Swift.String : Any]]
-  @nonobjc public func getReadStatus(with includeAllMembers: Swift.Bool) -> [Swift.String : SendbirdChatSDK.ReadStatus]
-}
-extension SendbirdChatSDK.GroupChannel {
-  @discardableResult
-  @objc(createScheduledFileMessageWithParams:completionHandler:) dynamic open func createScheduledFileMessage(params: SendbirdChatSDK.ScheduledFileMessageCreateParams, completionHandler: SendbirdChatSDK.FileMessageHandler?) -> SendbirdChatSDK.FileMessage?
-}
-extension SendbirdChatSDK.GroupChannel {
-  @objc(updateScheduledFileMessageWithScheduledMessageId:params:completionHandler:) dynamic open func updateScheduledFileMessage(scheduledMessageId: Swift.Int64, params: SendbirdChatSDK.ScheduledFileMessageUpdateParams, completionHandler: SendbirdChatSDK.FileMessageHandler?)
-}
-extension SendbirdChatSDK.GroupChannel {
-  @objc dynamic open func sendScheduledMessageNow(scheduledMessageId: Swift.Int64, completionHandler: @escaping SendbirdChatSDK.SBErrorHandler)
-  @objc dynamic open func cancelScheduledMessage(scheduledMessageId: Swift.Int64, completionHandler: @escaping SendbirdChatSDK.SBErrorHandler)
-}
-extension SendbirdChatSDK.GroupChannel {
-  @discardableResult
-  @objc(createScheduledUserMessageWithParams:completionHandler:) dynamic open func createScheduledUserMessage(params: SendbirdChatSDK.ScheduledUserMessageCreateParams, completionHandler: SendbirdChatSDK.UserMessageHandler?) -> SendbirdChatSDK.UserMessage?
-  @objc(updateScheduledUserMessageWithScheduledMessageId:userMessageParams:completionHandler:) dynamic open func updateScheduledUserMessage(scheduledMessageId: Swift.Int64, params: SendbirdChatSDK.ScheduledUserMessageUpdateParams, completionHandler: SendbirdChatSDK.UserMessageHandler?)
-}
-@objc extension SendbirdChatSDK.GroupChannel {
-  @objc dynamic open func startTyping()
-  @objc dynamic open func endTyping()
-  @objc dynamic open func isTyping() -> Swift.Bool
-  @objc dynamic open func getTypingUsers() -> [SendbirdChatSDK.User]?
 }
 extension SendbirdChatSDK.GroupChannel {
   @available(*, unavailable, message: "`sendMarkAsReadEnable` has been removed.")
@@ -2755,6 +2698,11 @@ extension SendbirdChatSDK.MessageFormItem {
   @objc override final public func isEqual(_ object: Any?) -> Swift.Bool
   @objc deinit
 }
+extension SendbirdChatSDK.MessageListParams {
+  @objc override final public var description: Swift.String {
+    @objc get
+  }
+}
 @objc(SBDMessageMetaArray) final public class MessageMetaArray : ObjectiveC.NSObject, Swift.Codable, Foundation.NSCopying {
   @objc final public var key: Swift.String {
     get
@@ -3311,12 +3259,8 @@ extension SendbirdChatSDK.NotificationTemplateListParams : Foundation.NSCopying 
   @objc(deleteChannelWithCompletionHandler:) dynamic open func delete(completionHandler: SendbirdChatSDK.SBErrorHandler?)
   @objc(getChannelWithURL:completionHandler:) dynamic open class func getChannel(url: Swift.String, completionHandler: SendbirdChatSDK.OpenChannelHandler?)
   @objc dynamic open func refresh(completionHandler: SendbirdChatSDK.SBErrorHandler?)
-}
-@objc extension SendbirdChatSDK.OpenChannel {
   @objc(enterChannelWithCompletionHandler:) dynamic open func enter(completionHandler: SendbirdChatSDK.SBErrorHandler?)
   @objc(exitChannelWithCompletionHandler:) dynamic open func exit(completionHandler: SendbirdChatSDK.SBErrorHandler?)
-}
-extension SendbirdChatSDK.OpenChannel {
   @objc dynamic open class func createOpenChannelListQuery() -> SendbirdChatSDK.OpenChannelListQuery
   @objc dynamic open class func createOpenChannelListQuery(paramsBuilder: (SendbirdChatSDK.OpenChannelListQueryParams) -> Swift.Void) -> SendbirdChatSDK.OpenChannelListQuery
   @objc dynamic open class func createOpenChannelListQuery(params: SendbirdChatSDK.OpenChannelListQueryParams) -> SendbirdChatSDK.OpenChannelListQuery

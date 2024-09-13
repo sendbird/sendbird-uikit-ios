@@ -88,19 +88,21 @@ final class BusinessMessagingSelectionViewController: UIViewController {
     }
     
     func openFeedOnly(channelURL: String? = nil) {
-        let vc = BusinessMessagingTabBarController()
-        vc.tabBarType = .feedOnly
-        vc.channelURLforPushNotification = channelURL
-        vc.channelType = .feed
+        let vc = BusinessMessagingTabBarController(
+            tabBarType: .feedOnly,
+            channelURLForPushNotification: channelURL,
+            channelType: .feed
+        )
         vc.modalPresentationStyle = .fullScreen
         self.present(vc, animated: true)
     }
     
     func openChatAndFeed(channelURL: String? = nil) {
-        let vc = BusinessMessagingTabBarController()
-        vc.tabBarType = .chatAndFeed
-        vc.channelURLforPushNotification = channelURL
-        vc.channelType = .group
+        let vc = BusinessMessagingTabBarController(
+            tabBarType: .chatAndFeed,
+            channelURLForPushNotification: channelURL,
+            channelType: .group
+        )
         vc.modalPresentationStyle = .fullScreen
         self.present(vc, animated: true)
     }

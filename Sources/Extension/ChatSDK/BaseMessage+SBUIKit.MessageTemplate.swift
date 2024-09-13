@@ -12,7 +12,6 @@ import SendbirdChatSDK
 extension BaseMessage {
     static let messageTemplateRetryStatusKey = "messageTemplateRetryStatusKey"
     static let messageTemplateImageRetryStatusKey = "messageTemplateImageRetryStatusKey"
-    static let messageTemplateHasCompositeType = "messageTemplateHasCompositeType"
     static let messageTemplateCarouselView = "messageTemplateCarouselView"
 }
 
@@ -26,12 +25,7 @@ extension BaseMessage {
         get { self.getInMemoryUserInfo(key: Self.messageTemplateImageRetryStatusKey, defaultValue: .initialized) }
         set { self.setInMemoryUserInfo(key: Self.messageTemplateImageRetryStatusKey, data: newValue) }
     }
-    
-    var hasMessageTemplateCompositeType: Bool {
-        get { self.getInMemoryUserInfo(key: Self.messageTemplateHasCompositeType, defaultValue: false) }
-        set { self.setInMemoryUserInfo(key: Self.messageTemplateHasCompositeType, data: newValue) }
-    }
-    
+        
     var messageTemplateCarouselView: UIView? {
         get { self.getInMemoryUserInfo(key: Self.messageTemplateCarouselView, defaultValue: nil) }
         set { self.setInMemoryUserInfo(key: Self.messageTemplateCarouselView, data: newValue) }

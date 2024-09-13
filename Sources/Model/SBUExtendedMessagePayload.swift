@@ -41,7 +41,7 @@ struct SBUExtendedMessagePayload {
         case suggestedReplies = "suggested_replies"
         case customView = "custom_view"
         case disableChatInput = "disable_chat_input"
-        case template
+        case template = "message_template"
         case uiSettings = "ui"
     }
     

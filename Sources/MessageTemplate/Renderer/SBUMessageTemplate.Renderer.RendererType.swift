@@ -57,35 +57,60 @@ extension SBUMessageTemplate.Renderer.RendererType {
 extension SBUMessageTemplate.Renderer {
     static func parsingErrorMesageTemplateBody(
         type: SBUTemplateType,
-        message: BaseMessage?
+        message: BaseMessage?,
+        containerViewStyle viewStyle: SBUMessageTemplate.Syntax.ViewStyle? = nil
     ) -> SBUMessageTemplate.Syntax.Body {
         if let defaultMessage = message?.message, defaultMessage.hasElements {
-            return .parsingError(text: defaultMessage)
+            return .parsingError(
+                text: defaultMessage,
+                containerViewStyle: viewStyle
+            )
         }
         
         switch type {
         case .notification:
-            return .parsingError(text: SBUStringSet.Notification_Template_Error_Title,
-                                 subText: SBUStringSet.Notification_Template_Error_Subtitle)
-        case .group:
-            return .parsingError(text: SBUStringSet.Message_Template_Error_Title,
-                                 subText: SBUStringSet.Message_Template_Error_Subtitle)
+            return .parsingError(
+                text: SBUStringSet.Notification_Template_Error_Title,
+                subText: SBUStringSet.Notification_Template_Error_Subtitle,
+                containerViewStyle: viewStyle
+            )
+        case .message:
+            return .parsingError(
+                text: SBUStringSet.Message_Template_Error_Title,
+                subText: SBUStringSet.Message_Template_Error_Subtitle,
+                containerViewStyle: viewStyle
+            )
         }
     }
     
     static func errorRenderer(
         type: SBUTemplateType,
-        message: BaseMessage?
+        message: BaseMessage?,
+        viewStyle: SBUMessageTemplate.Syntax.ViewStyle? = nil
     ) -> SBUMessageTemplate.Renderer {
-        let body: SBUMessageTemplate.Syntax.Body = parsingErrorMesageTemplateBody(type: type, message: message)
-        return SBUMessageTemplate.Renderer(messageId: message?.messageId, body: body)
+        let body: SBUMessageTemplate.Syntax.Body = parsingErrorMesageTemplateBody(
+            type: type,
+            message: message,
+            containerViewStyle: viewStyle
+        )
+        return SBUMessageTemplate.Renderer(
+            messageId: message?.messageId,
+            body: body
+        )
     }
     
     static func downloadingRenderer(
         messageId: Int64?,
-        downloadingHeight: CGFloat
+        downloadingHeight: CGFloat,
+        viewStyle: SBUMessageTemplate.Syntax.ViewStyle? = nil
     ) -> SBUMessageTemplate.Renderer {
-        let body: SBUMessageTemplate.Syntax.Body = .downloadingTemplate( height: downloadingHeight )
-        return SBUMessageTemplate.Renderer(messageId: messageId, body: body)
+        let body: SBUMessageTemplate.Syntax.Body = .downloadingTemplate(
+            height: downloadingHeight,
+            containerViewStyle: viewStyle
+        )
+        return SBUMessageTemplate.Renderer(
+            messageId: messageId,
+            body: body
+        )
     }
 }
