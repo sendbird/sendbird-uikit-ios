@@ -91,7 +91,7 @@ extension SBUMarkdownTransfer.Markdown {
             
             result.replaceCharacters(in: match.range, with: linkText)
             let newRange = NSRange(location: match.range.location, length: linkText.utf16.count)
-            result.addAttribute(.link, value: urlString, range: newRange)
+            result.addAttribute(.link, value: urlString.asURLEncoded, range: newRange)
             result.addBoldAttribute(at: newRange)
             result.addAttribute(.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: newRange)
         }

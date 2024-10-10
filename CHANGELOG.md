@@ -1,5 +1,10 @@
 # Changelog
 
+### v3.27.3 (Oct 10, 2024)
+
+## Improvements
+- Fixed crash when markdown link string is invalid
+
 ### v3.27.2 (Sep 13, 2024)
 
 ## Improvements

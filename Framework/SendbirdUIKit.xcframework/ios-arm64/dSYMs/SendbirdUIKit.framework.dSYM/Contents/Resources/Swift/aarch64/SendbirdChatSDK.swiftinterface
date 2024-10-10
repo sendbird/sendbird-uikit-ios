@@ -1696,6 +1696,9 @@ extension SendbirdChatSDK.GroupChannel {
   @objc open var isHidden: Swift.Bool {
     get
   }
+  @objc open var hiddenState: SendbirdChatSDK.GroupChannelHiddenState {
+    @objc get
+  }
   @objc open var myMemberState: SendbirdChatSDK.MemberState {
     get
   }
@@ -1709,9 +1712,6 @@ extension SendbirdChatSDK.GroupChannel {
     get
   }
   @objc open var invitedAt: Swift.Int64 {
-    get
-  }
-  @objc open var hiddenState: SendbirdChatSDK.GroupChannelHiddenState {
     get
   }
   @objc open var myLastRead: Swift.Int64 {
