@@ -78,6 +78,15 @@ extension String {
 }
 
 extension String {
+    var asURLEncoded: String {
+        if let components = URLComponents(string: self),
+           let validURL = components.url {
+            return validURL.absoluteString
+        } else {
+            return self.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? self
+        }
+    }
+    
     var removedNewLineEscape: String {
         self.replacingOccurrences(of: "\\n", with: "\n")
     }
