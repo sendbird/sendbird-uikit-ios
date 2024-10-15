@@ -302,6 +302,11 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
                 right: 0,
                 top: 0
             )
+            .sbu_constraint(
+                equalTo: self.view,
+                top: 0,
+                useSafeArea: true
+            )
             .sbu_constraint(height: Constants.categoryFilterHeight)
 
         self.listComponent?
