@@ -1,5 +1,10 @@
 # Changelog
 
+### v3.27.4 (Oct 15, 2024)
+
+## Improvements
+- Fixed a bug where the category filter was positioned outside the safe area
+
 ### v3.27.3 (Oct 10, 2024)
 
 ## Improvements
