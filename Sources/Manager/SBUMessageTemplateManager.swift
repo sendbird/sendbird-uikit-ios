@@ -10,6 +10,9 @@ import UIKit
 import SendbirdChatSDK
 
 public class SBUMessageTemplateManager: NSObject {
+    static var templateDownloadRetryCount: [String: Int] = [:]
+    
+    static let retryCountQueue = DispatchQueue(label: "com.sendbird.message_template.retry_count.queue")
     
     /// Resets notification template cache
     /// - Since: 3.21.0
@@ -24,6 +27,23 @@ public class SBUMessageTemplateManager: NSObject {
     }
     
     static let exeucuteQueue = DispatchQueue(label: "com.sendbird.message_template.images")
+    
+    static func increaseTemplateDownloadRetryCount(templateKey: String) {
+        retryCountQueue.sync {
+            let retryCount = templateDownloadRetryCount[templateKey] ?? 0
+            templateDownloadRetryCount[templateKey] = retryCount + 1
+
+            SBULog.info("Template download retry count for \(templateKey) increased to: \(templateDownloadRetryCount[templateKey]!)")
+        }
+    }
+    
+    static func isTemplateDownloadRetryAvailable(templateKey: String) -> Bool {
+        retryCountQueue.sync {
+            let retryCount = templateDownloadRetryCount[templateKey] ?? 0
+            SBULog.info("Template download retry count for \(templateKey): \(retryCount)")
+            return retryCount < 10
+        }
+    }
 }
 
 // MARK: - Template list
@@ -142,28 +162,34 @@ extension SBUMessageTemplateManager {
         let cache = SBUCacheManager.template(with: type)
 
         if let template = cache.getTemplate(forKey: templateKey) {
+            SBULog.info("\(templateKey) is in cache")
             return template
-        } else {
-            type.loadTemplate(key: templateKey) { jsonPayload, error in
-                guard let jsonPayload = jsonPayload, let jsonData = jsonPayload.data(using: .utf8) else {
-                    newTemplateResponseHandler?(false)
-                    return
-                }
-
-                do {
-                    if let templateDic = try JSONSerialization.jsonObject(with: jsonData, options: []) as? [String: Any],
-                       let template = try SBUMessageTemplate.TemplateModel.createTemplate(with: templateDic) {
-                        cache.save(templates: [template])
-                        _ = cache.loadAllTemplates()
-                        newTemplateResponseHandler?(true)
-                    }
-                } catch {
-                    newTemplateResponseHandler?(false)
-                    SBULog.error(error.localizedDescription)
-                }
-            }
-            return nil
         }
+        
+        guard isTemplateDownloadRetryAvailable(templateKey: templateKey) else { return nil }
+        
+        type.loadTemplate(key: templateKey) { jsonPayload, error in
+            guard let jsonPayload = jsonPayload, let jsonData = jsonPayload.data(using: .utf8) else {
+                increaseTemplateDownloadRetryCount(templateKey: templateKey)
+                newTemplateResponseHandler?(false)
+                return
+            }
+
+            do {
+                if let templateDic = try JSONSerialization.jsonObject(with: jsonData, options: []) as? [String: Any],
+                   let template = try SBUMessageTemplate.TemplateModel.createTemplate(with: templateDic) {
+                    cache.save(templates: [template])
+                    _ = cache.loadAllTemplates()
+                    newTemplateResponseHandler?(true)
+                }
+            } catch {
+                increaseTemplateDownloadRetryCount(templateKey: templateKey)
+                newTemplateResponseHandler?(false)
+                SBULog.error(error.localizedDescription)
+            }
+        }
+        
+        return nil
     }
     
     // original

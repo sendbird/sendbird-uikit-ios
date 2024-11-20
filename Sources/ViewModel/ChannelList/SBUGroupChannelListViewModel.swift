@@ -135,7 +135,8 @@ open class SBUGroupChannelListViewModel: SBUBaseChannelListViewModel {
             return
         }
 
-        self.setLoading(true, false)
+        let showIndicator = SBUGlobals.loadingIndicator.groupChannelList.cachedChannels
+        self.setLoading(true, showIndicator)
         
         self.channelCollection?.loadMore { [weak self] channels, error in
             guard let self = self else { return }

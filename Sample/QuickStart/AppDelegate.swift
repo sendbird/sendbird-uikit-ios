@@ -58,8 +58,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                                        willPresent notification: UNNotification,
                                        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Swift.Void)
     {
+        #if INSPECTION
+        self.saveForegroundRemoteNotificationPayload(payload: notification.request.content.userInfo)
+        #endif
         // Foreground setting
-        //        completionHandler( [.alert, .badge, .sound])
+//        completionHandler( [.alert, .badge, .sound])
     }
     
     public func userNotificationCenter(_ center: UNUserNotificationCenter,
@@ -68,7 +71,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         let userInfo = response.notification.request.content.userInfo
         guard let payload: NSDictionary = userInfo["sendbird"] as? NSDictionary else { return }
 
+        #if INSPECTION
+        // This code is not for general purpose and can only be available in Inspection mode sample.
+        self.markPushNotificationAsClicked(remoteNotificationPayload: userInfo)
+        #else
         SendbirdChat.markPushNotificationAsClicked(remoteNotificationPayload: userInfo)
+        #endif
+
         let signedInApp = UserDefaults.loadSignedInSampleApp()
         if signedInApp != .none {
             self.pendingNotificationPayload = payload

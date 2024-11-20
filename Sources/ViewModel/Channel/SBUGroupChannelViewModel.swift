@@ -151,7 +151,8 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
         }
         
         // TODO: loading
-//        self.delegate?.shouldUpdateLoadingState(true)
+        let showIndicator = SBUGlobals.loadingIndicator.groupChannel.cachedMessages
+        self.delegate?.shouldUpdateLoadingState(showIndicator)
         
         SendbirdUI.connectIfNeeded { [weak self] _, error in
             if let error = error {

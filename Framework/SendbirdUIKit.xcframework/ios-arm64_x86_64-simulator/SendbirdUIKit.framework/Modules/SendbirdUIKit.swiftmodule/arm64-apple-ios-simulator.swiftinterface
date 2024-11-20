@@ -4326,7 +4326,23 @@ extension SendbirdUIKit.SBUGlobals {
   public static var wsHost: Swift.String?
   public static var apiHost: Swift.String?
   public static var emojiCategoryFilter: (_ message: SendbirdChatSDK.BaseMessage) -> [Swift.Int64]?
+  public static var loadingIndicator: SendbirdUIKit.SBUGlobals.LoadingIndicator
   @objc deinit
+}
+extension SendbirdUIKit.SBUGlobals {
+  @_hasMissingDesignatedInitializers public class LoadingIndicator {
+    public var groupChannel: SendbirdUIKit.SBUGlobals.LoadingIndicator.GroupChannel
+    public var groupChannelList: SendbirdUIKit.SBUGlobals.LoadingIndicator.GroupChannelList
+    @_hasMissingDesignatedInitializers public class GroupChannelList {
+      public var cachedChannels: Swift.Bool
+      @objc deinit
+    }
+    @_hasMissingDesignatedInitializers public class GroupChannel {
+      public var cachedMessages: Swift.Bool
+      @objc deinit
+    }
+    @objc deinit
+  }
 }
 @available(*, deprecated, renamed: "SBUGroupChannelCell")
 public typealias SBUChannelCell = SendbirdUIKit.SBUGroupChannelCell

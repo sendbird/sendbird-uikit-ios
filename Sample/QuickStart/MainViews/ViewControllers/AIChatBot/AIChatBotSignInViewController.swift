@@ -202,7 +202,7 @@ class AIChatBotSignInViewController: UIViewController {
     func setupVersion() {
         let coreVersion: String = SendbirdChat.getSDKVersion()
         var uikitVersion: String {
-            if SendbirdUI.shortVersion == "[NEXT_VERSION]" {
+            if SendbirdUI.shortVersion == "3.27.5" {
                 let bundle = Bundle(identifier: "com.sendbird.uikit.sample")
                 return "\(bundle?.infoDictionary?["CFBundleShortVersionString"] ?? "")"
             } else if SendbirdUI.shortVersion == "0.0.0" {

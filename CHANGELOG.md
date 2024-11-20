@@ -1,5 +1,17 @@
 # Changelog
 
+### v3.27.5 (Nov 20, 2024)
+
+## New Interfaces 
+- Added flag options in `SBUGlobals` that let you choose to show a loading indicator in cases where the indicator is undisplayed by default
+  - `SBUGlobals.loadingIndicator.groupChannelList.cachedChannels`
+  - `SBUGlobals.loadingIndicator.groupChannel.cachedMessages`
+
+## Improvements
+- Added functionality to retry up to 10 times if an individual message template cannot be retrieved from the server
+- Fixed a bug where the category filter was positioned outside the safe area
+
+
 ### v3.27.4 (Oct 15, 2024)
 
 ## Improvements

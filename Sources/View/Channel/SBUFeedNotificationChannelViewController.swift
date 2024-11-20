@@ -299,8 +299,7 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
             .sbu_constraint(
                 equalTo: self.view,
                 left: 0,
-                right: 0,
-                top: 0
+                right: 0
             )
             .sbu_constraint(
                 equalTo: self.view,
