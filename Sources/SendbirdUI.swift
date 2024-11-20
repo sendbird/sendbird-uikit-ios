@@ -303,18 +303,10 @@ public class SendbirdUI {
         completionHandler: @escaping (_ user: User?, _ error: SBError?) -> Void
     ) {
         SendbirdChat.executeOrWaitForInitialization {
-            if SendbirdChat.getConnectState() == .open {
-                completionHandler(SendbirdChat.getCurrentUser(), nil)
-            } else {
-                SBULog.info("currentUser: \(String(describing: SendbirdChat.getCurrentUser()?.userId))")
-                if SendbirdChat.isLocalCachingEnabled,
-                   let currentUSer = SendbirdChat.getCurrentUser() {
-                    completionHandler(currentUSer, nil)
-                    SendbirdUI.authenticateFeedAndUpdates(needToUpdateExtraData: needToUpdateExtraData) { _, _ in }
-                } else {
-                    SendbirdUI.authenticateFeedAndUpdates(needToUpdateExtraData: needToUpdateExtraData, completionHandler: completionHandler)
-                }
-            }
+            SendbirdUI.authenticateFeedAndUpdates(
+                needToUpdateExtraData: needToUpdateExtraData,
+                completionHandler: completionHandler
+            )
         }
     }
     
@@ -334,7 +326,7 @@ public class SendbirdUI {
         
         let userId = currentUser.userId.trimmingCharacters(in: .whitespacesAndNewlines)
         let nickname = currentUser.nickname?.trimmingCharacters(in: .whitespacesAndNewlines)
-        SendbirdChat.authenticateFeed(userId: userId, authToken: SBUGlobals.accessToken, apiHost: SBUGlobals.apiHost) { [userId, nickname] user, error in
+        SendbirdChat.authenticate(userId: userId, authToken: SBUGlobals.accessToken, apiHost: SBUGlobals.apiHost) { [userId, nickname] user, error in
             guard let user = user else {
                 SBULog.error("[Failed] Authentication to Sendbird: \(error?.localizedDescription ?? "")")
                 completionHandler(nil, error)

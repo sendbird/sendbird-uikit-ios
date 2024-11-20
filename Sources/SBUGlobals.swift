@@ -198,7 +198,7 @@ public class SBUGlobals {
     /// See the example below.
     /// ```swift
     /// // Define your custom filter logic before the emojis are shown.
-    /// 
+    ///
     /// SBUGlobals.emojiCategoryFilter = { message in
     ///     switch message {
     ///     case is UserMessage:
@@ -214,5 +214,47 @@ public class SBUGlobals {
     /// - Since: 3.27.0
     public static var emojiCategoryFilter: (BaseMessage) -> [Int64]? = { message in
         return nil
+    }
+    
+    /// The configuration for loading indicator.
+    /// In certain scenarios, loading indicators are not displayed by default, such as when loading cached channels in Group Channel List.
+    /// You can choose to display them by modifying this property.
+    ///
+    /// See the example below.
+    /// ```swift
+    /// // Show loading indicator when loading cached channels in Group Channel List.
+    /// SBUGlobals.loadingIndicator.groupChannelList.cachedChannels = true
+    /// ```
+    ///
+    /// - Since: 3.27.5
+    public static var loadingIndicator = LoadingIndicator()
+}
+
+extension SBUGlobals {
+    /// The configuration for loading indicators.
+    public class LoadingIndicator {
+        /// The configuration for loading indicator in a Group Channel.
+        /// - Since: 3.27.5
+        public var groupChannel = GroupChannel()
+        
+        /// The configuration for loading indicator in a Group Channel List.
+        /// - Since: 3.27.5
+        public var groupChannelList = GroupChannelList()
+        
+        // The configuration for loading indicators in a Group ChannelList.
+        public class GroupChannelList {
+            /// Decides whether to show a loading indicator when loading **cached** channels in a Group Channel List.
+            /// Default is false.
+            /// - Since: 3.27.5
+            public var cachedChannels: Bool = false
+        }
+        
+        // The configuration for loading indicators in a Group Channel.
+        public class GroupChannel {
+            /// Decides whether to show a loading indicator when loading **cached** messages in a Group Channel.
+            /// Default is false.
+            /// - Since: 3.27.5
+            public var cachedMessages: Bool = false
+        }
     }
 }
