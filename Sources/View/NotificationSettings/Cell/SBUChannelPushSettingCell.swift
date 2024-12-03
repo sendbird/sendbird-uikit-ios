@@ -9,46 +9,60 @@
 import UIKit
 import SendbirdChatSDK
 
-class SBUChannelPushSettingCell: SBUTableViewCell {
-    lazy var baseStackView = SBUStackView(axis: .vertical, alignment: .fill, spacing: 16)
-    lazy var titleStackView = SBUStackView(axis: .horizontal, alignment: .fill, spacing: 16)
+/// Channel Push Setting cell class
+/// - Since: 3.28.0
+open class SBUChannelPushSettingCell: SBUTableViewCell {
+    /// base vertical stack view
+    public lazy var baseStackView = SBUStackView(axis: .vertical, alignment: .fill, spacing: 16)
+    /// title horizontal stack view
+    public lazy var titleStackView = SBUStackView(axis: .horizontal, alignment: .fill, spacing: 16)
     
-    var titleLabel = UILabel()
-    var descriptionLabel: UILabel = {
+    /// title label
+    public var titleLabel = UILabel()
+    
+    /// description label
+    public var descriptionLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
         return label
     }()
     
-    lazy var rightSwitch: UISwitch = {
+    /// switch button
+    public lazy var rightSwitch: UISwitch = {
        let switchItem = UISwitch()
         switchItem.addTarget(self, action: #selector(onChangeSwitch(_:)), for: .valueChanged)
         return switchItem
     }()
     
-    lazy var rightRadioButton: UIButton = {
+    /// radio button
+    public lazy var rightRadioButton: UIButton = {
        let radioButton = UIButton()
         radioButton.addTarget(self, action: #selector(onSelectRadioButton(_:)), for: .touchUpInside)
         return radioButton
     }()
     
-    var separateView = UIView()
+    /// separate view
+    public var separateView = UIView()
     
-    var switchAction: ((Bool) -> Void)?
-    var radioButtonAction: (() -> Void)?
+    /// switch action handler
+    public var switchAction: ((Bool) -> Void)?
     
-    var isSubType: Bool = false
+    /// radio action handler
+    public var radioButtonAction: (() -> Void)?
+    
+    /// Value indicating whether sub type
+    public private(set) var isSubType: Bool = false
     
     @SBUThemeWrapper(theme: SBUTheme.channelSettingsTheme)
-    var theme: SBUChannelSettingsTheme
+    public var theme: SBUChannelSettingsTheme
     
     // MARK: - View Lifecycle
-    override func awakeFromNib() {
+    open override func awakeFromNib() {
         super.awakeFromNib()
     }
     
     /// This function handles the initialization of views.
-    override func setupViews() {
+    open override func setupViews() {
         self.baseStackView.setVStack([
             self.titleStackView.setHStack([
                 self.titleLabel,
@@ -85,12 +99,12 @@ class SBUChannelPushSettingCell: SBUTableViewCell {
     }
     
     /// This function handles the initialization of actions.
-    override func setupActions() {
+    open override func setupActions() {
         
     }
     
     /// This function handles the initialization of autolayouts.
-    override func setupLayouts() {
+    open override func setupLayouts() {
         
         self.rightSwitch
             .sbu_constraint(width: 51)
@@ -122,7 +136,7 @@ class SBUChannelPushSettingCell: SBUTableViewCell {
     }
     
     /// This function handles the initialization of styles.
-    override func setupStyles() {
+    open override func setupStyles() {
         self.backgroundColor = theme.backgroundColor
         
         self.titleLabel.font = self.isSubType ? theme.cellDescriptionTextFont : theme.cellTextFont
@@ -165,18 +179,20 @@ class SBUChannelPushSettingCell: SBUTableViewCell {
         }
     }
     
-    override func setSelected(_ selected: Bool, animated: Bool) {
+    open override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
     }
     
     // MARK: - Action
+    /// Methods called when the switch is triggered
     @objc
-    func onChangeSwitch(_ sender: Any) {
+    public func onChangeSwitch(_ sender: Any) {
         self.switchAction?(rightSwitch.isOn)
     }
     
+    /// Methods called when the radio button is triggered
     @objc
-    func onSelectRadioButton(_ sender: Any) {
+    public func onSelectRadioButton(_ sender: Any) {
         self.radioButtonAction?()
     }
 }

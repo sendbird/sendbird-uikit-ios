@@ -106,14 +106,19 @@ open class SBUBaseViewController: UIViewController, UINavigationControllerDelega
     }
     
     // MARK: - Actions
-    
+    var dismissAction: (() -> Void)?
+
     /// This is to pop or dismiss (depending on current view controller) the search view controller.
     open func onClickBack() {
-        if let navigationController = self.navigationController,
-            navigationController.viewControllers.count > 1 {
-            navigationController.popViewController(animated: true)
+        if dismissAction != nil {
+            dismissAction?()
         } else {
-            self.dismiss(animated: true, completion: nil)
+            if let navigationController = self.navigationController,
+               navigationController.viewControllers.count > 1 {
+                navigationController.popViewController(animated: true)
+            } else {
+                self.dismiss(animated: true, completion: nil)
+            }
         }
     }
     
@@ -126,6 +131,21 @@ open class SBUBaseViewController: UIViewController, UINavigationControllerDelega
     ///   - code: error code
     open func errorHandler(_ message: String?, _ code: NSInteger? = nil) {
         SBULog.error("Did receive error: \(message ?? "")")
+    }
+    
+    // MARK: UINavigationController
+    func isLastInNavigationStack() -> Bool {
+        if self.navigationController?.viewControllers.last == self {
+            return true
+        }
+        #if SWIFTUI
+        // In SwiftUI, a UIViewController is wrapped inside a UIHostingController.
+        // The navigationController has access to the UIHostingController and not the UIViewController.
+        if self.navigationController?.viewControllers.last == self.parent {
+            return true
+        }
+        #endif
+        return false
     }
     
     // MARK: - UINavigationControllerDelegate

@@ -66,7 +66,7 @@ open class SBUEmptyView: SBUView {
         super.init(frame: .zero)
     }
     
-    public override init() {
+    required public override init() {
         super.init()
     }
     
@@ -202,5 +202,18 @@ open class SBUEmptyView: SBUView {
     @objc
     open func onClickRetry(_ sender: Any) {
         self.delegate?.didSelectRetry()
+    }
+}
+
+extension SBUEmptyView {
+    static func createDefault(
+        _ viewType: SBUEmptyView.Type,
+        type: EmptyViewType = .none,
+        delegate: SBUEmptyViewDelegate?
+    ) -> SBUEmptyView {
+        let emptyView = viewType.init()
+        emptyView.type = type
+        emptyView.delegate = delegate
+        return emptyView
     }
 }

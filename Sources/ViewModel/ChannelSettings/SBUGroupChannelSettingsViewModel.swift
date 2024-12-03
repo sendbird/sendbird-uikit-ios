@@ -33,6 +33,17 @@ open class SBUGroupChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
         set { self.baseDelegate = newValue }
     }
     
+    // MARK: SwiftUI (Internal)
+    var delegates: WeakDelegateStorage<SBUGroupChannelSettingsViewModelDelegate> {
+        let computedDelegates = WeakDelegateStorage<SBUGroupChannelSettingsViewModelDelegate>()
+        self.baseDelegates.allKeyValuePairs().forEach { key, value in
+            if let delegate = value as? SBUGroupChannelSettingsViewModelDelegate {
+                computedDelegates.addDelegate(delegate, type: key)
+            }
+        }
+        return computedDelegates
+    }
+    
     // MARK: - LifeCycle
     /// Initializes a new instance of the `SBUGroupChannelSettingsViewModel` class.
     ///
@@ -40,7 +51,7 @@ open class SBUGroupChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
     ///   - channel: The base channel. Default value is `nil`.
     ///   - channelURL: The URL of the channel. Default value is `nil`.
     ///   - delegate: The delegate for the `SBUGroupChannelSettingsViewModel`. Default value is `nil`.
-    public init(
+    required public init(
         channel: BaseChannel? = nil,
         channelURL: String? = nil,
         delegate: SBUGroupChannelSettingsViewModelDelegate? = nil
@@ -48,6 +59,7 @@ open class SBUGroupChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
         super.init()
         
         self.delegate = delegate
+        self.baseDelegates.addDelegate(delegate, type: .uikit)
         
         SendbirdChat.addChannelDelegate(
             self,
@@ -61,8 +73,15 @@ open class SBUGroupChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
             self.channelURL = channelURL
         }
      
-        self.loadChannel(channelURL: self.channelURL)
+        guard let channelURL = self.channelURL else { return }
+        self.initializeAndLoad(channelURL: channelURL)
     }
+    
+    func initializeAndLoad(channelURL: String) {
+        self.channelURL = channelURL
+        self.loadChannel(channelURL: channelURL)
+    }
+
     
     deinit {
         SendbirdChat.removeChannelDelegate(
@@ -101,24 +120,30 @@ open class SBUGroupChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
         guard let groupChannel = self.channel as? GroupChannel else { return }
         
         SBULog.info("[Request] Channel update")
-        self.delegate?.shouldUpdateLoadingState(true)
+        self.delegates.forEach {
+            $0.shouldUpdateLoadingState(true)
+        }
         
         groupChannel.update(params: params) { [weak self] channel, error in
-            defer { self?.delegate?.shouldUpdateLoadingState(false) }
+            defer { self?.delegates.forEach { $0.shouldUpdateLoadingState(false) } }
             guard let self = self else { return }
             
             if let error = error {
-                self.delegate?.didReceiveError(error, isBlocker: false)
+                self.delegates.forEach {
+                    $0.didReceiveError(error, isBlocker: false)
+                }
                 return
             } else if let channel = channel {
                 self.channel = channel
                 
                 let context = MessageContext(source: .eventChannelChanged, sendingStatus: .succeeded)
-                self.delegate?.baseChannelSettingsViewModel(
-                    self,
-                    didChangeChannel: channel,
-                    withContext: context
-                )
+                self.delegates.forEach {
+                    $0.baseChannelSettingsViewModel(
+                        self,
+                        didChangeChannel: channel,
+                        withContext: context
+                    )
+                }
             }
         }
     }
@@ -127,24 +152,32 @@ open class SBUGroupChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
     public func leaveChannel() {
         guard let groupChannel = self.channel as? GroupChannel else { return }
         
-        self.delegate?.shouldUpdateLoadingState(true)
+        self.delegates.forEach {
+            $0.shouldUpdateLoadingState(true)
+        }
         
         groupChannel.leave { [weak self] error in
             guard let self = self else { return }
             
-            self.delegate?.shouldUpdateLoadingState(false)
+            self.delegates.forEach {
+                $0.shouldUpdateLoadingState(false)
+            }
             
             if let error = error {
-                self.delegate?.didReceiveError(error)
+                self.delegates.forEach {
+                    $0.didReceiveError(error)
+                }
                 return
             }
             
             self.channel = nil
             
-            self.delegate?.groupChannelSettingsViewModel(
-                self,
-                didLeaveChannel: groupChannel
-            )
+            self.delegates.forEach {
+                $0.groupChannelSettingsViewModel(
+                    self,
+                    didLeaveChannel: groupChannel
+                )
+            }
         }
     }
 }
@@ -153,19 +186,23 @@ open class SBUGroupChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
 extension SBUGroupChannelSettingsViewModel: GroupChannelDelegate {
     open func channel(_ channel: GroupChannel, userDidJoin user: User) {
         let context =  MessageContext(source: .eventUserJoined, sendingStatus: .succeeded)
-        self.baseDelegate?.baseChannelSettingsViewModel(
-            self,
-            didChangeChannel: channel,
-            withContext: context
-        )
+        self.baseDelegates.forEach {
+            $0.baseChannelSettingsViewModel(
+                self,
+                didChangeChannel: channel,
+                withContext: context
+            )
+        }
     }
     
     open func channel(_ channel: GroupChannel, userDidLeave user: User) {
         let context =  MessageContext(source: .eventUserLeft, sendingStatus: .succeeded)
-        self.baseDelegate?.baseChannelSettingsViewModel(
-            self,
-            didChangeChannel: channel,
-            withContext: context
-        )
+        self.baseDelegates.forEach {
+            $0.baseChannelSettingsViewModel(
+                self,
+                didChangeChannel: channel,
+                withContext: context
+            )
+        }
     }
 }

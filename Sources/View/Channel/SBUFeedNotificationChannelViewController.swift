@@ -478,7 +478,7 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
     ) {
         guard channel != nil else {
             // channel deleted
-            if self.navigationController?.viewControllers.last == self {
+            if self.isLastInNavigationStack() {
                 // If leave is called in the ChannelSettingsViewController, this logic needs to be prevented.
                 self.onClickBack()
             }

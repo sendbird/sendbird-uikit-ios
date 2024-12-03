@@ -9,8 +9,9 @@
 import UIKit
 import SendbirdChatSDK
 
-// TODO: Need improvement
-public class SBUChannelSettingsChannelInfoView: SBUView {
+/// Info view used in channel setting
+/// - Since: 3.28.0
+open class SBUChannelSettingsChannelInfoView: SBUView {
     public lazy var stackView = UIStackView()
     public lazy var coverImage = SBUCoverImageView()
     public lazy var channelNameField = UITextField()
@@ -20,16 +21,17 @@ public class SBUChannelSettingsChannelInfoView: SBUView {
     public lazy var urlLineView = UIView()
     
     @SBUThemeWrapper(theme: SBUTheme.channelSettingsTheme)
-    var theme: SBUChannelSettingsTheme
+    public var theme: SBUChannelSettingsTheme
     
-    var channel: BaseChannel?
+    public private(set) var channel: BaseChannel?
     
-    let kCoverImageSize: CGFloat = 64.0
+    /// cover image size
+    public var coverImageSize: CGFloat = 64.0
     
     var lineViewBottomConstraint: NSLayoutConstraint?
     var urlLineViewBottomConstraint: NSLayoutConstraint?
      
-    override init() {
+    public required override init() {
         super.init(frame: .zero)
     }
     
@@ -42,7 +44,7 @@ public class SBUChannelSettingsChannelInfoView: SBUView {
     }
     
     @available(*, unavailable, renamed: "SBUChannelSettingsChannelInfoView(frame:)")
-    required convenience init?(coder: NSCoder) {
+    public required convenience init?(coder: NSCoder) {
         fatalError()
     }
 
@@ -83,7 +85,7 @@ public class SBUChannelSettingsChannelInfoView: SBUView {
         super.setupLayouts()
         
         self.coverImage
-            .sbu_constraint(width: kCoverImageSize, height: kCoverImageSize)
+            .sbu_constraint(width: self.coverImageSize, height: self.coverImageSize)
         
         self.stackView
             .sbu_constraint_equalTo(
@@ -166,7 +168,7 @@ public class SBUChannelSettingsChannelInfoView: SBUView {
     open override func layoutSubviews() {
         super.layoutSubviews()
         
-        self.coverImage.layer.cornerRadius = kCoverImageSize / 2
+        self.coverImage.layer.cornerRadius = self.coverImageSize / 2
         self.coverImage.layer.borderColor = UIColor.clear.cgColor
         self.coverImage.layer.borderWidth = 1
     }

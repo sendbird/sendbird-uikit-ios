@@ -45,6 +45,7 @@ open class SBUBaseChannelSettingsViewModel: NSObject {
     
     // MARK: - Logic properties (Private)
     weak var baseDelegate: SBUBaseChannelSettingsViewModelDelegate?
+    var baseDelegates = WeakDelegateStorage<SBUBaseChannelSettingsViewModelDelegate>()
     
     // MARK: - LifeCycle
     public override init() {
@@ -66,30 +67,30 @@ open class SBUBaseChannelSettingsViewModel: NSObject {
     ///   - channelURL: channel url
     ///   - type: channel type
     public func loadChannel(channelURL: String, type: ChannelType) {
-        self.baseDelegate?.shouldUpdateLoadingState(true)
+        self.baseDelegates.forEach { $0.shouldUpdateLoadingState(true) }
         
         SendbirdUI.connectIfNeeded { [weak self] _, error in
             guard let self = self else { return }
-            defer { self.baseDelegate?.shouldUpdateLoadingState(false) }
+            defer { self.baseDelegates.forEach { $0.shouldUpdateLoadingState(false) } }
             
             if let error = error {
-                self.baseDelegate?.didReceiveError(error, isBlocker: false)
+                self.baseDelegates.forEach { $0.didReceiveError(error, isBlocker: false) }
             } else {
                 let completionHandler: ((BaseChannel?, SBError?) -> Void) = { [weak self] channel, error in
                     
                     guard let self = self else { return }
                     
                     if let error = error {
-                        self.baseDelegate?.didReceiveError(error, isBlocker: false)
+                        self.baseDelegates.forEach { $0.didReceiveError(error, isBlocker: false) }
                     } else if let channel = channel {
                         self.channel = channel
                         
                         let context = MessageContext(source: .eventChannelChanged, sendingStatus: .succeeded)
-                        self.baseDelegate?.baseChannelSettingsViewModel(
+                        self.baseDelegates.forEach { $0.baseChannelSettingsViewModel(
                             self,
                             didChangeChannel: channel,
                             withContext: context
-                        )
+                        ) }
                     }
                 }
                 
@@ -118,22 +119,22 @@ extension SBUBaseChannelSettingsViewModel: BaseChannelDelegate {
         self.channel = channel
         
         let context = MessageContext(source: .eventChannelChanged, sendingStatus: .succeeded)
-        self.baseDelegate?.baseChannelSettingsViewModel(
+        self.baseDelegates.forEach { $0.baseChannelSettingsViewModel(
             self,
             didChangeChannel: channel,
             withContext: context
-        )
+        ) }
     }
     open func channelDidUpdateOperators(_ channel: BaseChannel) {
         if let channel = self.channel as? GroupChannel {
             if channel.myRole != .operator {
-                self.baseDelegate?.baseChannelSettingsViewModel(self, shouldDismissForChannelSettings: channel)
+                self.baseDelegates.forEach { $0.baseChannelSettingsViewModel(self, shouldDismissForChannelSettings: channel) }
                 return
             }
         } else if let channel = self.channel as? OpenChannel {
             let userId = SBUGlobals.currentUser?.userId ?? ""
             if !channel.isOperator(userId: userId) {
-                self.baseDelegate?.baseChannelSettingsViewModel(self, shouldDismissForChannelSettings: channel)
+                self.baseDelegates.forEach { $0.baseChannelSettingsViewModel(self, shouldDismissForChannelSettings: channel) }
                 return
             }
         }
@@ -143,10 +144,10 @@ extension SBUBaseChannelSettingsViewModel: BaseChannelDelegate {
         guard let userId = SBUGlobals.currentUser?.userId,
               user.userId == userId else { return }
         
-        self.baseDelegate?.baseChannelSettingsViewModel(self, shouldDismissForChannelSettings: nil)
+        self.baseDelegates.forEach { $0.baseChannelSettingsViewModel(self, shouldDismissForChannelSettings: nil) }
     }
     
     public func channelWasDeleted(_ channelURL: String, channelType: ChannelType) {
-        self.baseDelegate?.baseChannelSettingsViewModel(self, shouldDismissForChannelSettings: nil)
+        self.baseDelegates.forEach { $0.baseChannelSettingsViewModel(self, shouldDismissForChannelSettings: nil) }
     }
 }

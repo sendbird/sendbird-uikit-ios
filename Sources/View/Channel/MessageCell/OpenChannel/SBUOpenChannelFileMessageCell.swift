@@ -22,7 +22,9 @@ open class SBUOpenChannelFileMessageCell: SBUOpenChannelContentBaseMessageCell {
         return fileView
     }()
     
-    private var ratioConstraint: NSLayoutConstraint?
+    var ratioConstraint: NSLayoutConstraint?
+    
+    var fileType: SBUMessageFileType = .etc
     
     // MARK: - View Lifecycle
     open override func setupViews() {
@@ -37,13 +39,24 @@ open class SBUOpenChannelFileMessageCell: SBUOpenChannelContentBaseMessageCell {
         self.mainContainerView.sbu_constraint_lessThan(
             width: SBUGlobals.messageCellConfiguration.openChannel.thumbnailSize.width
         )
+        
+        var heightConstraintSettingClosure = {
+            self.ratioConstraint?.isActive = false
+            self.ratioConstraint = self.mainContainerView.heightAnchor.constraint(
+                equalTo: self.mainContainerView.widthAnchor,
+                multiplier: 0.65
+            )
+            self.ratioConstraint?.isActive = true
+        }
 
-        self.ratioConstraint?.isActive = false
-        self.ratioConstraint = self.mainContainerView.heightAnchor.constraint(
-            equalTo: self.mainContainerView.widthAnchor,
-            multiplier: 0.65
-        )
-        self.ratioConstraint?.isActive = true
+        #if SWIFTUI
+        // Disable fixed height when using view converter
+        if self.viewConverter.fileMessage.entireContent == nil {
+            heightConstraintSettingClosure()
+        }
+        #else
+        heightConstraintSettingClosure()
+        #endif
         
         super.setupLayouts()
     }
@@ -56,6 +69,14 @@ open class SBUOpenChannelFileMessageCell: SBUOpenChannelContentBaseMessageCell {
         super.setupStyles()
         
         self.baseFileContentView.setupStyles()
+        
+        #if SWIFTUI
+        if self.viewConverter.fileMessage.entireContent != nil,
+           let mainContainerView = self.mainContainerView as? SBUSelectableStackView {
+            mainContainerView.layer.cornerRadius = 0
+            mainContainerView.setTransparentBackgroundColor()
+        }
+        #endif
     }
     
     // MARK: - Common
@@ -74,44 +95,53 @@ open class SBUOpenChannelFileMessageCell: SBUOpenChannelContentBaseMessageCell {
         )
 
         self.isFileType = true
+        self.fileType = fileType
         
-        switch fileType {
-        case .image, .video:
-            self.ratioConstraint?.isActive = false
-            if !(self.baseFileContentView is SBUOpenChannelImageContentView) {
-                self.baseFileContentView.removeFromSuperview()
-                self.baseFileContentView = SBUOpenChannelImageContentView()
-                self.baseFileContentView.addGestureRecognizer(self.contentLongPressRecognizer)
-                self.baseFileContentView.addGestureRecognizer(self.contentTapRecognizer)
-                if let mainContainerView = self.mainContainerView as? SBUSelectableStackView {
-                    mainContainerView.insertArrangedSubview(self.baseFileContentView, at: 0)
+        var didApplyFileMessageViewConverter = false
+        #if SWIFTUI
+        // FileMessage
+        didApplyFileMessageViewConverter = self.applyViewConverter(.fileMessage)
+        #endif
+        
+        if !didApplyFileMessageViewConverter {
+            switch fileType {
+            case .image, .video:
+                self.ratioConstraint?.isActive = false
+                if !(self.baseFileContentView is SBUOpenChannelImageContentView) {
+                    self.baseFileContentView.removeFromSuperview()
+                    self.baseFileContentView = SBUOpenChannelImageContentView()
+                    self.baseFileContentView.addGestureRecognizer(self.contentLongPressRecognizer)
+                    self.baseFileContentView.addGestureRecognizer(self.contentTapRecognizer)
+                    if let mainContainerView = self.mainContainerView as? SBUSelectableStackView {
+                        mainContainerView.insertArrangedSubview(self.baseFileContentView, at: 0)
+                    }
                 }
-            }
-            self.ratioConstraint?.isActive = true
-            self.baseFileContentView.configure(message: message, position: .left)
-
-        case .audio, .pdf, .etc:
-            if !(self.baseFileContentView is SBUOpenChannelCommonContentView) {
-                self.baseFileContentView.removeFromSuperview()
-                self.baseFileContentView = SBUCommonContentView()
-                self.baseFileContentView.addGestureRecognizer(self.contentLongPressRecognizer)
-                self.baseFileContentView.addGestureRecognizer(self.contentTapRecognizer)
-                if let mainContainerView = self.mainContainerView as? SBUSelectableStackView {
-                    mainContainerView.insertArrangedSubview(self.baseFileContentView, at: 0)
+                self.ratioConstraint?.isActive = true
+                self.baseFileContentView.configure(message: message, position: .left)
+                
+            case .audio, .pdf, .etc:
+                if !(self.baseFileContentView is SBUOpenChannelCommonContentView) {
+                    self.baseFileContentView.removeFromSuperview()
+                    self.baseFileContentView = SBUCommonContentView()
+                    self.baseFileContentView.addGestureRecognizer(self.contentLongPressRecognizer)
+                    self.baseFileContentView.addGestureRecognizer(self.contentTapRecognizer)
+                    if let mainContainerView = self.mainContainerView as? SBUSelectableStackView {
+                        mainContainerView.insertArrangedSubview(self.baseFileContentView, at: 0)
+                    }
                 }
+                self.ratioConstraint?.isActive = false
+                if let commonContentView = self.baseFileContentView as? SBUCommonContentView {
+                    commonContentView.configure(
+                        message: message,
+                        position: .left,
+                        highlightKeyword: nil
+                    )
+                }
+                
+            case .voice:
+                // new message info view (OpenChannel)
+                break
             }
-            self.ratioConstraint?.isActive = false
-            if let commonContentView = self.baseFileContentView as? SBUCommonContentView {
-                commonContentView.configure(
-                    message: message,
-                    position: .left,
-                    highlightKeyword: nil
-                )
-            }
-            
-        case .voice:
-            // new message info view (OpenChannel)
-            break
         }
 
         // Remove ArrangedSubviews

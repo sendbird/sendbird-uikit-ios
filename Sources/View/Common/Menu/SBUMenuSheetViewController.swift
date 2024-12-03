@@ -9,25 +9,28 @@
 import UIKit
 import SendbirdChatSDK
 
-public class SBUMenuSheetViewController: SBUBaseViewController, UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+// MOD TODO: Need to add CustomViewController sample
+// MOD TODO: Need to make and separate module and components
+// If the reaction feature is enabled, the `SBUMenuSheetViewController` is used; if it is disabled, the `SBUMenuView` is used.
+open class SBUMenuSheetViewController: SBUBaseViewController, UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     /// Emoji reaction bar (in Message menu)
-    lazy var collectionView = UICollectionView(
+    public private(set) lazy var collectionView = UICollectionView(
         frame: .init(x: 0, y: 0, width: 0, height: 76),
         collectionViewLayout: layout
     )
     
-    let layout: UICollectionViewFlowLayout = SBUCollectionViewFlowLayout()
-    var tableView = UITableView()
-    let message: BaseMessage?
-    let items: [SBUMenuItem]
-    let emojiList: [Emoji]
-    var useReaction: Bool
+    public let layout: UICollectionViewFlowLayout = SBUCollectionViewFlowLayout()
+    public private(set) var tableView = UITableView()
+    public let message: BaseMessage?
+    public let items: [SBUMenuItem]
+    public let emojiList: [Emoji]
+    public private(set) var useReaction: Bool
 
-    let maxEmojiOneLine = 6
+    public let maxEmojiOneLine = 6
 
     @SBUThemeWrapper(theme: SBUTheme.componentTheme)
-    var theme: SBUComponentTheme
+    public var theme: SBUComponentTheme
 
     // MARK: - Action
     public var emojiTapHandler: ((_ emojiKey: String, _ setSelect: Bool) -> Void)?
@@ -46,7 +49,7 @@ public class SBUMenuSheetViewController: SBUBaseViewController, UITableViewDeleg
 
     /// Use this function when initialize.
     /// - Parameter items: Menu item types
-    public init(message: BaseMessage, items: [SBUMenuItem], useReaction: Bool) {
+    required public init(message: BaseMessage, items: [SBUMenuItem], useReaction: Bool) {
         self.message = message
         self.items = items
         self.useReaction = useReaction
@@ -57,12 +60,12 @@ public class SBUMenuSheetViewController: SBUBaseViewController, UITableViewDeleg
         super.init(nibName: nil, bundle: nil)
     }
 
-    public override func viewDidLayoutSubviews() {
+    open override func viewDidLayoutSubviews() {
         self.updateLayouts()
         super.viewDidLayoutSubviews()
     }
 
-    public override func viewDidLoad() {
+    open override func viewDidLoad() {
         super.viewDidLoad()
         if let bottomSheet = self.presentationController as? SBUBottomSheetController {
 
@@ -73,13 +76,13 @@ public class SBUMenuSheetViewController: SBUBaseViewController, UITableViewDeleg
         }
     }
 
-    public override func viewWillDisappear(_ animated: Bool) {
+    open override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.dismissHandler?()
     }
     
     // MARK: - Sendbird UIKit Life cycle
-    public override func setupViews() {
+    open override func setupViews() {
         self.view.addSubview(self.tableView)
 
         // tableView
@@ -113,7 +116,7 @@ public class SBUMenuSheetViewController: SBUBaseViewController, UITableViewDeleg
         }
     }
 
-    public override func setupLayouts() {
+    open override func setupLayouts() {
         self.tableView.sbu_constraint(equalTo: self.view, left: 0, right: 0, top: 0, bottom: 0)
         
         if let tableHeaderView = self.tableView.tableHeaderView {
@@ -129,7 +132,7 @@ public class SBUMenuSheetViewController: SBUBaseViewController, UITableViewDeleg
         self.tableView.layoutIfNeeded()
     }
     
-    public override func updateLayouts() {
+    open override func updateLayouts() {
         super.viewDidLayoutSubviews()
         let itemCount: CGFloat = CGFloat(
             emojiList.count < maxEmojiOneLine
@@ -147,16 +150,16 @@ public class SBUMenuSheetViewController: SBUBaseViewController, UITableViewDeleg
         }
     }
 
-    public override func setupStyles() {
+    open override func setupStyles() {
         self.view.backgroundColor = theme.backgroundColor
     }
 
     // MARK: - UITableView relations
-    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    open func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.items.count
     }
 
-    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    open func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = self.tableView.dequeueReusableCell(
             withIdentifier: SBUMenuCell.sbu_className,
             for: indexPath
@@ -168,7 +171,7 @@ public class SBUMenuSheetViewController: SBUBaseViewController, UITableViewDeleg
         return cell
     }
 
-    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    open func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let cell = tableView.cellForRow(at: indexPath) as? SBUMenuCell {
             if cell.isEnabled {
                 cell.tapHandler? { [weak self] transitionsWhenSelected in
@@ -189,15 +192,15 @@ public class SBUMenuSheetViewController: SBUBaseViewController, UITableViewDeleg
     }
 
     // MARK: - UICollectionView relations
-    public func numberOfSections(in collectionView: UICollectionView) -> Int {
+    open func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
 
-    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    open func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return emojiList.count < 6 ? emojiList.count : 6
     }
 
-    public func collectionView(
+    open func collectionView(
         _ collectionView: UICollectionView,
         cellForItemAt indexPath: IndexPath
     ) -> UICollectionViewCell {
@@ -229,7 +232,7 @@ public class SBUMenuSheetViewController: SBUBaseViewController, UITableViewDeleg
         return cell
     }
 
-    public func collectionView(
+    open func collectionView(
         _ collectionView: UICollectionView,
         didSelectItemAt indexPath: IndexPath
     ) {

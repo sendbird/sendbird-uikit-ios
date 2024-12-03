@@ -154,6 +154,14 @@ extension SBUGroupChannelModule {
         /// The object that acts as the data source of the mention manager. The data source must adopt the `SBUMentionManagerDataSource`.
         public weak var mentionManagerDataSource: SBUMentionManagerDataSource?
         
+        // MARK: - Logic Properties (Private)
+        private lazy var defaultMessageInputView: SBUMessageInputView = {
+            let messageInputView = SBUModuleSet.GroupChannelModule.InputComponent.MessageInputView.init()
+            messageInputView.delegate = self
+            messageInputView.datasource = self
+            return messageInputView
+        }()
+        
         /// String constants used when sending a multiple files message.
         /// - Since: 3.10.0
         struct MultipleFilesConstants {
@@ -175,6 +183,7 @@ extension SBUGroupChannelModule {
         // MARK: Mention
         public var mentionManager: SBUMentionManager?
         
+        // MARK: - LifeCycle
         /// Configures component with parameters.
         /// - Parameters:
         ///   - delegate: `SBUGroupChannelModuleListDelegate` type listener
@@ -201,7 +210,21 @@ extension SBUGroupChannelModule {
         }
         
         open override func setupViews() {
-            super.setupViews()
+            // NOTE: Input entireContnet interface has been temporarily closed.
+//            #if SWIFTUI
+//            if self.applyViewConverter(.entireContent) { return }
+//            #endif
+            
+            /// It does not call `super.setupViews()` because it creates `messageInputView` differently for each channelType
+            if self.messageInputView == nil {
+                self.messageInputView = defaultMessageInputView
+            }
+            if let messageInputView = messageInputView {
+                inputVStackView.setVStack([
+                    messageInputView
+                ])
+                self.addSubview(inputVStackView)
+            }
         }
         
         open override func setupLayouts() {

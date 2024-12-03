@@ -51,9 +51,12 @@ open class SBUUserListViewModel: NSObject {
     // MARK: - Property (Public)
     public weak var delegate: SBUUserListViewModelDelegate?
     public weak var dataSource: SBUUserListViewModelDataSource?
+
+    // MARK: SwiftUI (Internal)
+    var delegates = WeakDelegateStorage<SBUUserListViewModelDelegate>()
     
     public private(set) var channel: BaseChannel?
-    public private(set) var channelURL: String?
+    public internal(set) var channelURL: String?
     public private(set) var channelType: ChannelType = .group
     
     @SBUAtomic public private(set) var userList: [SBUUser] = []
@@ -68,7 +71,7 @@ open class SBUUserListViewModel: NSObject {
     public private(set) var userListType: ChannelUserListType = .none
     
     // MARK: - Property (Private)
-    @SBUAtomic private var customizedUsers: [SBUUser]?
+    @SBUAtomic var customizedUsers: [SBUUser]?
     private var useCustomizedUsers = false
 
     @SBUAtomic private var isLoading = false
@@ -76,7 +79,7 @@ open class SBUUserListViewModel: NSObject {
     var userStateChangedHandler: ((SBError?) -> Void)?
     
     // MARK: - Life Cycle
-    public init(
+    required public init(
         channel: BaseChannel? = nil,
         channelURL: String? = nil,
         channelType: ChannelType = .group,
@@ -94,6 +97,8 @@ open class SBUUserListViewModel: NSObject {
         self.delegate = delegate
         self.dataSource = dataSource
         
+        self.delegates.addDelegate(delegate, type: .uikit)
+        
         super.init()
         
         if let channel = channel {
@@ -102,26 +107,55 @@ open class SBUUserListViewModel: NSObject {
         } else if let channelURL = channelURL {
             self.channelURL = channelURL
         }
+        
+        guard let channelURL = self.channelURL else { return }
+        self.initializeAndLoad(
+            channelURL: channelURL,
+            channelType: channelType,
+            users: users,
+            userListType: userListType,
+            memberListQuery: memberListQuery,
+            operatorListQuery: operatorListQuery,
+            mutedMemberListQuery: mutedMemberListQuery,
+            mutedParticipantListQuery: mutedParticipantListQuery,
+            bannedUserListQuery: bannedUserListQuery,
+            participantListQuery: participantListQuery
+        )
+    }
+    
+    func initializeAndLoad(
+        channelURL: String,
+        channelType: ChannelType = .group,
+        users: [SBUUser]? = nil,
+        userListType: ChannelUserListType,
+        memberListQuery: MemberListQuery? = nil,
+        operatorListQuery: OperatorListQuery? = nil,
+        mutedMemberListQuery: MemberListQuery? = nil,
+        mutedParticipantListQuery: MutedUserListQuery? = nil,
+        bannedUserListQuery: BannedUserListQuery? = nil,
+        participantListQuery: ParticipantListQuery? = nil
+    ) {
+        self.channelURL = channelURL
         self.channelType = channelType
         
         self.userListType = userListType
         
-        self.memberListQuery = memberListQuery
-        self.operatorListQuery = operatorListQuery
-        self.mutedMemberListQuery = mutedMemberListQuery
-        self.mutedParticipantListQuery = mutedParticipantListQuery
-        self.bannedUserListQuery = bannedUserListQuery
-        self.participantListQuery = participantListQuery
+        if let memberListQuery { self.memberListQuery = memberListQuery }
+        if let operatorListQuery { self.operatorListQuery = operatorListQuery }
+        if let mutedMemberListQuery { self.mutedMemberListQuery = mutedMemberListQuery }
+        if let mutedParticipantListQuery { self.mutedParticipantListQuery = mutedParticipantListQuery }
+        if let bannedUserListQuery { self.bannedUserListQuery = bannedUserListQuery }
+        if let participantListQuery { self.participantListQuery = participantListQuery }
         
-        self.customizedUsers = users
+        if let users { self.customizedUsers = users }
         self.useCustomizedUsers = (users?.count ?? 0) > 0
         
         self.userStateChangedHandler = { [weak self] error in
-            defer { self?.delegate?.shouldUpdateLoadingState(false) }
+            defer { self?.delegates.forEach { $0.shouldUpdateLoadingState(false) } }
             guard let self = self else { return }
             
             if let error = error {
-                self.delegate?.didReceiveError(error, isBlocker: false)
+                self.delegates.forEach { $0.didReceiveError(error, isBlocker: false) }
                 return
             }
             
@@ -157,25 +191,25 @@ open class SBUUserListViewModel: NSObject {
     
     // MARK: - Channel related
     public func loadChannel(channelURL: String, type: ChannelType) {
-        self.delegate?.shouldUpdateLoadingState(true)
+        self.delegates.forEach { $0.shouldUpdateLoadingState(true) }
         
         SendbirdUI.connectIfNeeded { [weak self] _, error in
             guard let self = self else { return }
             
             if let error = error {
-                self.delegate?.shouldUpdateLoadingState(false)
-                self.delegate?.didReceiveError(error, isBlocker: false)
+                self.delegates.forEach { $0.shouldUpdateLoadingState(false) }
+                self.delegates.forEach { $0.didReceiveError(error, isBlocker: false) }
             } else {
                 let completionHandler: ((BaseChannel?, SBError?) -> Void) = { [weak self] channel, error in
                     guard let self = self else { return }
                     
                     if let error = error {
-                        self.delegate?.didReceiveError(error, isBlocker: false)
+                        self.delegates.forEach { $0.didReceiveError(error, isBlocker: false) }
                     } else if let channel = channel {
                         self.channel = channel
                         
                         let context = MessageContext(source: .eventChannelChanged, sendingStatus: .succeeded)
-                        self.delegate?.userListViewModel(self, didChangeChannel: channel, withContext: context)
+                        self.delegates.forEach { $0.userListViewModel(self, didChangeChannel: channel, withContext: context) }
                         
                         // If want using your custom user list, filled users with your custom user list.
                         self.loadNextUserList(reset: true, users: self.customizedUsers ?? nil)
@@ -209,7 +243,7 @@ open class SBUUserListViewModel: NSObject {
         
         guard !self.isLoading else { return }
         self.isLoading = true
-        self.delegate?.shouldUpdateLoadingState(true)
+        self.delegates.forEach { $0.shouldUpdateLoadingState(true) }
         
         SBULog.info("[Request] Next user List")
 
@@ -219,13 +253,13 @@ open class SBUUserListViewModel: NSObject {
             
             self.userList += users
             self.isLoading = false
-            self.delegate?.shouldUpdateLoadingState(false)
-            self.delegate?.userListViewModel(self, didChangeUsers: self.userList, needsToReload: true)
+            self.delegates.forEach { $0.shouldUpdateLoadingState(false) }
+            self.delegates.forEach { $0.userListViewModel(self, didChangeUsers: self.userList, needsToReload: true) }
         } else if self.useCustomizedUsers, let customizedUsers = self.customizedUsers {
             self.userList += customizedUsers
             self.isLoading = false
-            self.delegate?.shouldUpdateLoadingState(false)
-            self.delegate?.userListViewModel(self, didChangeUsers: self.userList, needsToReload: true)
+            self.delegates.forEach { $0.shouldUpdateLoadingState(false) }
+            self.delegates.forEach { $0.userListViewModel(self, didChangeUsers: self.userList, needsToReload: true) }
         } else if !self.useCustomizedUsers {
             switch userListType {
             case .members:
@@ -261,7 +295,7 @@ open class SBUUserListViewModel: NSObject {
         
         guard self.memberListQuery?.hasNext == true else {
             self.isLoading = false
-            self.delegate?.shouldUpdateLoadingState(false)
+            self.delegates.forEach { $0.shouldUpdateLoadingState(false) }
             SBULog.info("All members have been loaded.")
             return
         }
@@ -270,18 +304,18 @@ open class SBUUserListViewModel: NSObject {
             guard let self = self else { return }
             defer {
                 self.isLoading = false
-                self.delegate?.shouldUpdateLoadingState(false)
+                self.delegates.forEach { $0.shouldUpdateLoadingState(false) }
             }
             
             if let error = error {
-                self.delegate?.didReceiveError(error)
+                self.delegates.forEach { $0.didReceiveError(error) }
                 return
             }
             guard let members = members?.sbu_convertUserList() else { return }
             SBULog.info("[Response] \(members.count) members")
 
             self.userList += members
-            self.delegate?.userListViewModel(self, didChangeUsers: self.userList, needsToReload: true)
+            self.delegates.forEach { $0.userListViewModel(self, didChangeUsers: self.userList, needsToReload: true) }
         })
     }
     
@@ -299,7 +333,7 @@ open class SBUUserListViewModel: NSObject {
         
         guard self.operatorListQuery?.hasNext == true else {
             self.isLoading = false
-            self.delegate?.shouldUpdateLoadingState(false)
+            self.delegates.forEach { $0.shouldUpdateLoadingState(false) }
             SBULog.info("All operators have been loaded.")
             return
         }
@@ -308,18 +342,18 @@ open class SBUUserListViewModel: NSObject {
             guard let self = self else { return }
             defer {
                 self.isLoading = false
-                self.delegate?.shouldUpdateLoadingState(false)
+                self.delegates.forEach { $0.shouldUpdateLoadingState(false) }
             }
             
             if let error = error {
-                self.delegate?.didReceiveError(error)
+                self.delegates.forEach { $0.didReceiveError(error) }
                 return
             }
             guard let operators = operators?.sbu_convertUserList() else { return }
             SBULog.info("[Response] \(operators.count) operators")
 
             self.userList += operators
-            self.delegate?.userListViewModel(self, didChangeUsers: self.userList, needsToReload: true)
+            self.delegates.forEach { $0.userListViewModel(self, didChangeUsers: self.userList, needsToReload: true) }
         })
     }
     
@@ -337,7 +371,7 @@ open class SBUUserListViewModel: NSObject {
         
         guard self.mutedMemberListQuery?.hasNext == true else {
             self.isLoading = false
-            self.delegate?.shouldUpdateLoadingState(false)
+            self.delegates.forEach { $0.shouldUpdateLoadingState(false) }
             SBULog.info("All muted members have been loaded.")
             return
         }
@@ -346,18 +380,18 @@ open class SBUUserListViewModel: NSObject {
             guard let self = self else { return }
             defer {
                 self.isLoading = false
-                self.delegate?.shouldUpdateLoadingState(false)
+                self.delegates.forEach { $0.shouldUpdateLoadingState(false) }
             }
             
             if let error = error {
-                self.delegate?.didReceiveError(error)
+                self.delegates.forEach { $0.didReceiveError(error) }
                 return
             }
             guard let members = members?.sbu_convertUserList() else { return }
             SBULog.info("[Response] \(members.count) members")
 
             self.userList += members
-            self.delegate?.userListViewModel(self, didChangeUsers: self.userList, needsToReload: true)
+            self.delegates.forEach { $0.userListViewModel(self, didChangeUsers: self.userList, needsToReload: true) }
         })
     }
     
@@ -376,7 +410,7 @@ open class SBUUserListViewModel: NSObject {
         
         guard self.mutedParticipantListQuery?.hasNext == true else {
             self.isLoading = false
-            self.delegate?.shouldUpdateLoadingState(false)
+            self.delegates.forEach { $0.shouldUpdateLoadingState(false) }
             SBULog.info("All muted participants have been loaded.")
             return
         }
@@ -385,18 +419,18 @@ open class SBUUserListViewModel: NSObject {
             guard let self = self, let channel = channel else { return }
             defer {
                 self.isLoading = false
-                self.delegate?.shouldUpdateLoadingState(false)
+                self.delegates.forEach { $0.shouldUpdateLoadingState(false) }
             }
             
             if let error = error {
-                self.delegate?.didReceiveError(error)
+                self.delegates.forEach { $0.didReceiveError(error) }
                 return
             }
             guard let members = members?.sbu_convertUserList() else { return }
             SBULog.info("[Response] \(members.count) members")
 
             self.userList += members.sbu_updateOperatorStatus(channel: channel)
-            self.delegate?.userListViewModel(self, didChangeUsers: self.userList, needsToReload: true)
+            self.delegates.forEach { $0.userListViewModel(self, didChangeUsers: self.userList, needsToReload: true) }
         })
     }
     
@@ -413,7 +447,7 @@ open class SBUUserListViewModel: NSObject {
         
         guard self.bannedUserListQuery?.hasNext == true else {
             self.isLoading = false
-            self.delegate?.shouldUpdateLoadingState(false)
+            self.delegates.forEach { $0.shouldUpdateLoadingState(false) }
             SBULog.info("All banned users have been loaded.")
             return
         }
@@ -423,18 +457,18 @@ open class SBUUserListViewModel: NSObject {
             guard let self = self else { return }
             defer {
                 self.isLoading = false
-                self.delegate?.shouldUpdateLoadingState(false)
+                self.delegates.forEach { $0.shouldUpdateLoadingState(false) }
             }
             
             if let error = error {
-                self.delegate?.didReceiveError(error)
+                self.delegates.forEach { $0.didReceiveError(error) }
                 return
             }
             guard let users = users?.sbu_convertUserList() else { return }
             SBULog.info("[Response] \(users.count) users")
 
             self.userList += users
-            self.delegate?.userListViewModel(self, didChangeUsers: self.userList, needsToReload: true)
+            self.delegates.forEach { $0.userListViewModel(self, didChangeUsers: self.userList, needsToReload: true) }
         })
     }
     
@@ -452,7 +486,7 @@ open class SBUUserListViewModel: NSObject {
         
         guard self.participantListQuery?.hasNext == true else {
             self.isLoading = false
-            self.delegate?.shouldUpdateLoadingState(false)
+            self.delegates.forEach { $0.shouldUpdateLoadingState(false) }
             SBULog.info("All participants have been loaded.")
             return
         }
@@ -461,18 +495,18 @@ open class SBUUserListViewModel: NSObject {
             guard let self = self, let channel = channel else { return }
             defer {
                 self.isLoading = false
-                self.delegate?.shouldUpdateLoadingState(false)
+                self.delegates.forEach { $0.shouldUpdateLoadingState(false) }
             }
             
             if let error = error {
-                self.delegate?.didReceiveError(error)
+                self.delegates.forEach { $0.didReceiveError(error) }
                 return
             }
             guard let participants = participants?.sbu_convertUserList() else { return }
             SBULog.info("[Response] \(participants.count) participants")
 
             self.userList += participants.sbu_updateOperatorStatus(channel: channel)
-            self.delegate?.userListViewModel(self, didChangeUsers: self.userList, needsToReload: true)
+            self.delegates.forEach { $0.userListViewModel(self, didChangeUsers: self.userList, needsToReload: true) }
         })
     }
     
@@ -551,7 +585,7 @@ open class SBUUserListViewModel: NSObject {
         guard let channel = self.channel else { return }
         let userId = user.userId
         
-        self.delegate?.shouldUpdateLoadingState(true)
+        self.delegates.forEach { $0.shouldUpdateLoadingState(true) }
         SBULog.info("[Request] Register user: \(userId)")
 
         channel.addOperators(userIds: [userId], completionHandler: self.userStateChangedHandler)
@@ -563,7 +597,7 @@ open class SBUUserListViewModel: NSObject {
         guard let channel = self.channel else { return }
         let userId = user.userId
         
-        self.delegate?.shouldUpdateLoadingState(true)
+        self.delegates.forEach { $0.shouldUpdateLoadingState(true) }
         SBULog.info("[Request] Unregister operator: \(userId)")
         
         channel.removeOperators(userIds: [userId], completionHandler: self.userStateChangedHandler)
@@ -575,7 +609,7 @@ open class SBUUserListViewModel: NSObject {
         if let groupChannel = self.channel as? GroupChannel {
             groupChannel.muteUser(userId: user.userId, seconds: -1, description: nil, completionHandler: self.userStateChangedHandler)
         } else if let openChannel = self.channel as? OpenChannel {
-            self.delegate?.shouldUpdateLoadingState(true)
+            self.delegates.forEach { $0.shouldUpdateLoadingState(true) }
             openChannel.muteUser(userId: user.userId, seconds: -1, description: nil, completionHandler: self.userStateChangedHandler)
         }
     }
@@ -584,10 +618,10 @@ open class SBUUserListViewModel: NSObject {
     /// - Parameter user: A member/participant to be unmuted
     public func unmute(user: SBUUser) {
         if let groupChannel = self.channel as? GroupChannel {
-            self.delegate?.shouldUpdateLoadingState(true)
+            self.delegates.forEach { $0.shouldUpdateLoadingState(true) }
             groupChannel.unmuteUser(userId: user.userId, completionHandler: self.userStateChangedHandler)
         } else if let openChannel = self.channel as? OpenChannel {
-            self.delegate?.shouldUpdateLoadingState(true)
+            self.delegates.forEach { $0.shouldUpdateLoadingState(true) }
             openChannel.unmuteUser(userId: user.userId, completionHandler: self.userStateChangedHandler)
         }
     }
@@ -596,7 +630,7 @@ open class SBUUserListViewModel: NSObject {
     /// - Parameter user: A user to be banned
     public func ban(user: SBUUser) {
         if let groupChannel = self.channel as? GroupChannel {
-            self.delegate?.shouldUpdateLoadingState(true)
+            self.delegates.forEach { $0.shouldUpdateLoadingState(true) }
             groupChannel.banUser(
                 userId: user.userId,
                 seconds: -1,
@@ -604,7 +638,7 @@ open class SBUUserListViewModel: NSObject {
                 completionHandler: self.userStateChangedHandler
             )
         } else if let openChannel = self.channel as? OpenChannel {
-            self.delegate?.shouldUpdateLoadingState(true)
+            self.delegates.forEach { $0.shouldUpdateLoadingState(true) }
             openChannel.banUser(
                 userId: user.userId,
                 seconds: -1,
@@ -618,13 +652,13 @@ open class SBUUserListViewModel: NSObject {
     /// - Parameter user: A user to be unbanned
     public func unban(user: SBUUser) {
         if let groupChannel = self.channel as? GroupChannel {
-            self.delegate?.shouldUpdateLoadingState(true)
+            self.delegates.forEach { $0.shouldUpdateLoadingState(true) }
             groupChannel.unbanUser(
                 userId: user.userId,
                 completionHandler: self.userStateChangedHandler
             )
         } else if let openChannel = self.channel as? OpenChannel {
-            self.delegate?.shouldUpdateLoadingState(true)
+            self.delegates.forEach { $0.shouldUpdateLoadingState(true) }
             openChannel.unbanUser(
                 userId: user.userId,
                 completionHandler: self.userStateChangedHandler
@@ -662,7 +696,7 @@ extension SBUUserListViewModel: BaseChannelDelegate {
     }
     
     public func channelWasDeleted(_ channelURL: String, channelType: ChannelType) {
-        self.delegate?.userListViewModel(self, shouldDismissForUserList: nil)
+        self.delegates.forEach { $0.userListViewModel(self, shouldDismissForUserList: nil) }
     }
 }
 

@@ -61,18 +61,11 @@ extension SBUBaseChannelListModule {
         public var emptyView: UIView? {
             didSet { self.tableView.backgroundView = self.emptyView }
         }
+        
         /// The channel cell for `SBUBaseChannelCell` object. Use `register(channelCell:nib:)` to update.
         public var channelCell: SBUBaseChannelCell?
         /// The custom channel cell for `SBUBaseChannelCell` object. Use `register(customCell:nib:)` to update.
         public var customCell: SBUBaseChannelCell?
-        
-        // MARK: - UI properties (Private)
-        private lazy var defaultEmptyView: SBUEmptyView? = {
-            let emptyView = SBUEmptyView()
-            emptyView.type = EmptyViewType.none
-            emptyView.delegate = self
-            return emptyView
-        }()
         
         // MARK: - Logic properties (Public)
         /// The object that acts as the delegate of the list component. The delegate must adopt the `SBUBaseChannelListModuleListDelegate`.
@@ -90,13 +83,18 @@ extension SBUBaseChannelListModule {
         /// - Since: 3.2.0
         public var isPullToRefreshEnabled: Bool = false
 
+        // MARK: - default view
+        
+        func createDefaultEmptyView() -> SBUEmptyView {
+            SBUEmptyView.createDefault(SBUEmptyView.self, delegate: self)
+        }
+        
         // MARK: - LifeCycle
         
         /// Set values of the views in the list component when it needs.
         open func setupViews() {
-            // empty view
             if self.emptyView == nil {
-                self.emptyView = self.defaultEmptyView
+                self.emptyView = self.createDefaultEmptyView()
             }
             
             // table view
@@ -140,7 +138,7 @@ extension SBUBaseChannelListModule {
             channelCell?.configure(channel: channel)
             channelCell?.setupStyles()
         }
-        
+
         /// Registers a custom cell as a channel cell based on `SBUBaseChannelCell`.
         /// - Parameters:
         ///   - channelCell: Customized channel cell

@@ -60,6 +60,18 @@ open class SBUGroupChannelListViewModel: SBUBaseChannelListViewModel {
         get { self.baseDelegate as? SBUGroupChannelListViewModelDelegate }
         set { self.baseDelegate = newValue }
     }
+
+    // MARK: SwiftUI (Internal)
+    var delegates: WeakDelegateStorage<SBUGroupChannelListViewModelDelegate> {
+        let computedDelegates = WeakDelegateStorage<SBUGroupChannelListViewModelDelegate>()
+        self.baseDelegates.allKeyValuePairs().forEach { key, value in
+            if let delegate = value as? SBUGroupChannelListViewModelDelegate {
+                computedDelegates.addDelegate(delegate, type: key)
+            }
+        }
+        return computedDelegates
+    }
+    
     private var customizedChannelListQuery: GroupChannelListQuery?
     
     // MARK: - Life Cycle
@@ -68,14 +80,18 @@ open class SBUGroupChannelListViewModel: SBUBaseChannelListViewModel {
     /// - Parameters:
     ///   - delegate: This is used to receive events that occur in the view model
     ///   - channelListQuery: This is used to use customized channelListQuery.
-    public init(
+    required public init(
         delegate: SBUGroupChannelListViewModelDelegate? = nil,
         channelListQuery: GroupChannelListQuery? = nil
     ) {
         super.init(delegate: delegate)
-
-        self.customizedChannelListQuery = channelListQuery
+        self.baseDelegates.addDelegate(delegate, type: .uikit)
         
+        self.initializeAndLoad(channelListQuery: channelListQuery)
+    }
+    
+    func initializeAndLoad(channelListQuery: GroupChannelListQuery? = nil) {
+        if let channelListQuery { self.customizedChannelListQuery = channelListQuery }
         self.initChannelList()
     }
     
@@ -144,18 +160,22 @@ open class SBUGroupChannelListViewModel: SBUBaseChannelListViewModel {
             
             if let error = error {
                 DispatchQueue.main.async { [weak self] in
-                    self?.delegate?.didReceiveError(error, isBlocker: true)
+                    self?.delegates.forEach {
+                        $0.didReceiveError(error, isBlocker: true)
+                    }
                 }
                 return
             }
             
             SBULog.info("[Response] \(channels?.count ?? 0) channels")
             
-            self.delegate?.groupChannelListViewModel(
-                self,
-                didChangeChannelList: self.channelList,
-                needsToReload: true
-            )
+            self.delegates.forEach {
+                $0.groupChannelListViewModel(
+                    self,
+                    didChangeChannelList: self.channelList,
+                    needsToReload: true
+                )
+            }
         }
     }
     
@@ -185,7 +205,9 @@ open class SBUGroupChannelListViewModel: SBUBaseChannelListViewModel {
 
             if let error = error {
                 DispatchQueue.main.async { [weak self] in
-                    self?.delegate?.didReceiveError(error, isBlocker: false)
+                    self?.delegates.forEach {
+                        $0.didReceiveError(error, isBlocker: false)
+                    }
                 }
                 return
             }
@@ -193,7 +215,9 @@ open class SBUGroupChannelListViewModel: SBUBaseChannelListViewModel {
             // Final handling in `GroupChannelCollectionDelegate`
             SBULog.info("[Succeed] Leave channel request, ChannelURL: \(channel.channelURL)")
             
-            self.delegate?.groupChannelListViewModel(self, didLeaveChannel: channel)
+            self.delegates.forEach {
+                $0.groupChannelListViewModel(self, didLeaveChannel: channel)
+            }
         }
     }
     
@@ -216,7 +240,9 @@ open class SBUGroupChannelListViewModel: SBUBaseChannelListViewModel {
             
             if let error = error {
                 DispatchQueue.main.async { [weak self] in
-                    self?.delegate?.didReceiveError(error, isBlocker: false)
+                    self?.delegates.forEach {
+                        $0.didReceiveError(error, isBlocker: false)
+                    }
                 }
                 return
             }
@@ -224,7 +250,9 @@ open class SBUGroupChannelListViewModel: SBUBaseChannelListViewModel {
             // Final handling in `GroupChannelCollectionDelegate`
             SBULog.info("[Succeed] Channel push status, ChannelURL: \(channel.channelURL)")
             
-            self.delegate?.groupChannelListViewModel(self, didUpdateChannel: channel)
+            self.delegates.forEach {
+                $0.groupChannelListViewModel(self, didUpdateChannel: channel)
+            }
         }
     }
     
@@ -236,8 +264,9 @@ open class SBUGroupChannelListViewModel: SBUBaseChannelListViewModel {
     ///   - showIndicator: If true, the loading indicator is started, and if false, the indicator is stopped.
     private func setLoading(_ loadingState: Bool, _ showIndicator: Bool) {
         self.isLoading = loadingState
-        
-        self.delegate?.shouldUpdateLoadingState(showIndicator)
+        self.delegates.forEach {
+            $0.shouldUpdateLoadingState(loadingState)
+        }
     }
 }
 
@@ -252,11 +281,13 @@ extension SBUGroupChannelListViewModel: GroupChannelCollectionDelegate {
             delete size : \(deletedChannelURLs.count)
             """)
         
-        self.delegate?.groupChannelListViewModel(
-            self,
-            didChangeChannelList: self.channelList,
-            needsToReload: true
-        )
+        self.delegates.forEach {
+            $0.groupChannelListViewModel(
+                self,
+                didChangeChannelList: self.channelList,
+                needsToReload: true
+            )
+        }
     }
     
     open func channelCollection(_ collection: GroupChannelCollection,
@@ -267,11 +298,13 @@ extension SBUGroupChannelListViewModel: GroupChannelCollectionDelegate {
             fromEvent: \(context.fromEvent),
             channel size : \(channels.count)
             """)
-        self.delegate?.groupChannelListViewModel(
-            self,
-            didChangeChannelList: self.channelList,
-            needsToReload: true
-        )
+        self.delegates.forEach {
+            $0.groupChannelListViewModel(
+                self,
+                didChangeChannelList: self.channelList,
+                needsToReload: true
+            )
+        }
     }
     
     open func channelCollection(_ collection: GroupChannelCollection,
@@ -282,11 +315,27 @@ extension SBUGroupChannelListViewModel: GroupChannelCollectionDelegate {
             fromEvent: \(context.fromEvent),
             channel size : \(channels.count)
             """)
-        self.delegate?.groupChannelListViewModel(
-            self,
-            didChangeChannelList: self.channelList,
-            needsToReload: true
-        )
+        
+        // Propagate updated `channelList`.
+        self.delegates.forEach {
+            $0.groupChannelListViewModel(
+                self,
+                didChangeChannelList: self.channelList,
+                needsToReload: true
+        )}
+        
+//        self.delegate?.groupChannelListViewModel(
+//            self,
+//            didChangeChannelList: self.channelList,
+//            needsToReload: true
+//        )
+        
+//
+//        self.swiftUIDelegate?.groupChannelListViewModel(
+//            self,
+//            didChangeChannelList: self.channelList,
+//            needsToReload: true
+//        )
     }
 }
 

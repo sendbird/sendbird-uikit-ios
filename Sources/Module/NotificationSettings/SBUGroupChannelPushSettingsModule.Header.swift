@@ -40,6 +40,26 @@ public protocol SBUGroupChannelPushSettingsModuleHeaderDelegate: SBUCommonDelega
         didUpdateRightItem rightItem: UIBarButtonItem?
     )
     
+    /// Called when `leftBarButtons` value has been updated.
+    /// - Parameters:
+    ///   - headerComponent: `SBUGroupChannelPushSettingsModule.Header` object
+    ///   - leftItems: Updated `leftBarButtons` object.
+    /// - Since: 3.28.0
+    func groupChannelPushSettingsModule(
+        _ headerComponent: SBUGroupChannelPushSettingsModule.Header,
+        didUpdateLeftItems leftItems: [UIBarButtonItem]?
+    )
+    
+    /// Called when `rightBarButtons` was selected.
+    /// - Parameters:
+    ///   - headerComponent: `SBUGroupChannelPushSettingsModule.Header` object
+    ///   - rightItems: Updated `rightBarButtons` object.
+    /// - Since: 3.28.0
+    func groupChannelPushSettingsModule(
+        _ headerComponent: SBUGroupChannelPushSettingsModule.Header,
+        didUpdateRightItems rightItems: [UIBarButtonItem]?
+    )
+    
     /// Called when `leftBarButton` was selected.
     /// - Parameters:
     ///   - component: `SBUGroupChannelPushSettingsModule.Header` object
@@ -59,6 +79,18 @@ public protocol SBUGroupChannelPushSettingsModuleHeaderDelegate: SBUCommonDelega
     )
 }
 // swiftlint:enable type_name
+
+extension SBUGroupChannelPushSettingsModuleHeaderDelegate {
+    func groupChannelPushSettingsModule(
+        _ headerComponent: SBUGroupChannelPushSettingsModule.Header,
+        didUpdateLeftItems leftItems: [UIBarButtonItem]?
+    ) { }
+    
+    func groupChannelPushSettingsModule(
+        _ headerComponent: SBUGroupChannelPushSettingsModule.Header,
+        didUpdateRightItems rightItems: [UIBarButtonItem]?
+    ) { }
+}
 
 // MARK: - Header
 
@@ -87,6 +119,11 @@ extension SBUGroupChannelPushSettingsModule {
         /// and when the value is tapped, `groupChannelPushSettingsModule(_:didTapLeftItem:)` delegate function is called.
         public var leftBarButton: UIBarButtonItem? {
             didSet {
+                if let leftBarButton = leftBarButton {
+                    self.leftBarButtons = [leftBarButton]
+                } else {
+                    self.leftBarButtons = nil
+                }
                 self.delegate?.groupChannelPushSettingsModule(
                     self,
                     didUpdateLeftItem: self.leftBarButton
@@ -99,9 +136,41 @@ extension SBUGroupChannelPushSettingsModule {
         /// and when the value is tapped, `groupChannelPushSettingsModule(_:didTapRightItem:)` delegate function is called.
         public var rightBarButton: UIBarButtonItem? {
             didSet {
+                if let rightBarButton = rightBarButton {
+                    self.rightBarButtons = [rightBarButton]
+                } else {
+                    self.rightBarButtons = nil
+                }
                 self.delegate?.groupChannelPushSettingsModule(
                     self,
                     didUpdateRightItem: self.rightBarButton
+                )
+            }
+        }
+        
+        /// A view that represents the left `[UIBarButtonItem]` in navigation bar.
+        /// The default view type is ``[UIBarButtonItem]``.
+        /// - NOTE: When the value is updated, `groupChannelPushSettingsModule(_:didUpdateLeftItems:)` delegate function is called.
+        /// and when the default `leftBarButtons` is tapped, `groupChannelPushSettingsModule(_:didTapLeftItem:)` delegate function is called.
+        /// - Since: 3.28.0
+        public var leftBarButtons: [UIBarButtonItem]? {
+            didSet {
+                self.delegate?.groupChannelPushSettingsModule(
+                    self,
+                    didUpdateLeftItems: self.leftBarButtons
+                )
+            }
+        }
+        
+        /// A view that represents the right `[UIBarButtonItem]` in navigation bar.
+        /// - NOTE: When the value is updated, `groupChannelPushSettingsModule(_:didUpdateRightItems:)` delegate function is called.
+        /// and when the default `rightBarButtons` is tapped, `groupChannelPushSettingsModule(_:didTapRightItem:)` delegate function is called.
+        /// - Since: 3.28.0
+        public var rightBarButtons: [UIBarButtonItem]? {
+            didSet {
+                self.delegate?.groupChannelPushSettingsModule(
+                    self,
+                    didUpdateRightItems: self.rightBarButtons
                 )
             }
         }
@@ -113,20 +182,22 @@ extension SBUGroupChannelPushSettingsModule {
         public var componentTheme: SBUComponentTheme?
         
         // MARK: - UI properties (Private)
-        private var defaultTitleView: SBUNavigationTitleView {
-            let titleView = SBUNavigationTitleView()
-            titleView.text = SBUStringSet.ChannelPushSettings_Header_Title
-            titleView.textAlignment = .center
+        lazy var defaultTitleView: SBUNavigationTitleView = {
+            let titleView = SBUModuleSet.GroupChannelPushSettingsModule.HeaderComponent.TitleView.init()
+            titleView.configure(title: SBUStringSet.ChannelPushSettings_Header_Title)
+            
             return titleView
-        }
+        }()
         
-        private var defaultLeftBarButton: UIBarButtonItem {
-            let backButton = SBUBarButtonItem.backButton(
+        lazy var defaultLeftBarButton: UIBarButtonItem = {
+            SBUModuleSet.GroupChannelPushSettingsModule.HeaderComponent.LeftBarButton.init(
+                image: SBUIconSetType.iconBack.image(to: SBUIconSetType.Metric.defaultIconSize),
+                landscapeImagePhone: nil,
+                style: .plain,
                 target: self,
-                selector: #selector(onTapLeftBarButton)
+                action: #selector(onTapLeftBarButton)
             )
-            return backButton
-        }
+        }()
         
         // MARK: - Logic properties (Public)
         
@@ -176,11 +247,21 @@ extension SBUGroupChannelPushSettingsModule {
         /// }
         /// ```
         open func setupViews() {
+            #if SWIFTUI
+            self.applyViewConverter(.titleView)
+            self.applyViewConverter(.leftView)
+            self.applyViewConverter(.rightView)
+            // We are not using `...buttons` in SwiftUI
+            #endif
+            
             if self.titleView == nil {
                 self.titleView = self.defaultTitleView
             }
-            if self.leftBarButton == nil {
+            if self.leftBarButton == nil && self.leftBarButtons == nil {
                 self.leftBarButton = self.defaultLeftBarButton
+            }
+            if self.leftBarButtons == nil {
+                self.leftBarButtons = [self.defaultLeftBarButton]
             }
         }
         
@@ -210,13 +291,18 @@ extension SBUGroupChannelPushSettingsModule {
             
             self.leftBarButton?.tintColor = theme?.leftBarButtonTintColor
             self.rightBarButton?.tintColor = theme?.rightBarButtonTintColor
+            
+            self.leftBarButtons?.forEach { $0.tintColor = theme?.leftBarButtonTintColor }
+            self.rightBarButtons?.forEach { $0.tintColor = theme?.rightBarButtonTintColor }
         }
         
         // MARK: - Actions
         
         /// The action of `leftBarButton`. It calls `groupChannelPushSettingsModule(_:didTapLeftItem:)` when it's tapped
         public func onTapLeftBarButton() {
-            if let leftBarButton = leftBarButton {
+            if let leftBarButtons = leftBarButtons, let button = leftBarButtons.first {
+                self.delegate?.groupChannelPushSettingsModule(self, didTapLeftItem: button)
+            } else if let leftBarButton = leftBarButton {
                 self.delegate?.groupChannelPushSettingsModule(self, didTapLeftItem: leftBarButton)
             }
         }

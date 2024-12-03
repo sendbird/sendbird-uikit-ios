@@ -29,6 +29,20 @@ public protocol SBUUserListModuleHeaderDelegate: SBUCommonDelegate {
     ///   - rightItem: Updated `rightBarButton` object.
     func userListModule(_ headerComponent: SBUUserListModule.Header, didUpdateRightItem rightItem: UIBarButtonItem?)
     
+    /// Called when `leftBarButtons` value has been updated.
+    /// - Parameters:
+    ///   - headerComponent: `SBUUserListModule.Header` object
+    ///   - leftItems: Updated `leftBarButtons` object.
+    /// - Since: 3.28.0
+    func userListModule(_ headerComponent: SBUUserListModule.Header, didUpdateLeftItems leftItems: [UIBarButtonItem]?)
+    
+    /// Called when `rightBarButtons` was updated.
+    /// - Parameters:
+    ///   - headerComponent: `SBUUserListModule.Header` object
+    ///   - rightItems: Updated `rightBarButtons` object.
+    /// - Since: 3.28.0
+    func userListModule(_ headerComponent: SBUUserListModule.Header, didUpdateRightItems rightItems: [UIBarButtonItem]?)
+    
     /// Called when `leftBarButton` was selected.
     /// - Parameters:
     ///   - component: `SBUUserListModule.Header` object
@@ -40,6 +54,11 @@ public protocol SBUUserListModuleHeaderDelegate: SBUCommonDelegate {
     ///   - component: `SBUUserListModule.Header` object
     ///   - rightItem: Selected `rightBarButton` object.
     func userListModule(_ headerComponent: SBUUserListModule.Header, didTapRightItem rightItem: UIBarButtonItem)
+}
+
+extension SBUUserListModuleHeaderDelegate {
+    func userListModule(_ headerComponent: SBUUserListModule.Header, didUpdateLeftItems leftItems: [UIBarButtonItem]?) { }
+    func userListModule(_ headerComponent: SBUUserListModule.Header, didUpdateRightItems rightItems: [UIBarButtonItem]?) {}
 }
 
 extension SBUUserListModule {
@@ -61,14 +80,46 @@ extension SBUUserListModule {
         /// - NOTE: When the value is updated, `userListModule(_:didUpdateLeftItem:)` delegate function is called.
         /// and when the value is tapped, `userListModule(_:didTapLeftItem:)` delegate function is called.
         public var leftBarButton: UIBarButtonItem? {
-            didSet { self.delegate?.userListModule(self, didUpdateLeftItem: self.leftBarButton) }
+            didSet {
+                if let leftBarButton = leftBarButton {
+                    self.leftBarButtons = [leftBarButton]
+                } else {
+                    self.leftBarButtons = nil
+                }
+                
+                self.delegate?.userListModule(self, didUpdateLeftItem: self.leftBarButton)
+            }
         }
         
         /// A view that represents a right `UIBarButtonItem` in navigation bar.
         /// - NOTE: When the value is updated, `userListModule(_:didUpdateRightItem:)` delegate function is called.
         /// and when the value is tapped, `userListModule(_:didTapRightItem:)` delegate function is called.
         public var rightBarButton: UIBarButtonItem? {
-            didSet { self.delegate?.userListModule(self, didUpdateRightItem: self.rightBarButton) }
+            didSet {
+                if let rightBarButton = rightBarButton {
+                    self.rightBarButtons = [rightBarButton]
+                } else {
+                    self.rightBarButtons = nil
+                }
+                
+                self.delegate?.userListModule(self, didUpdateRightItem: self.rightBarButton)
+            }
+        }
+        
+        /// A view that represents a left `UIBarButtonItem` in navigation bar.
+        /// - NOTE: When the value is updated, `userListModule(_:didUpdateLeftItems:)` delegate function is called.
+        /// and when the value is tapped, `userListModule(_:didTapLeftItem:)` delegate function is called.
+        /// - Since: 3.28.0
+        public var leftBarButtons: [UIBarButtonItem]? {
+            didSet { self.delegate?.userListModule(self, didUpdateLeftItems: self.leftBarButtons) }
+        }
+        
+        /// A view that represents a right `UIBarButtonItem` in navigation bar.
+        /// - NOTE: When the value is updated, `userListModule(_:didUpdateRightItems:)` delegate function is called.
+        /// and when the value is tapped, `userListModule(_:didTapRightItem:)` delegate function is called.
+        /// - Since: 3.28.0
+        public var rightBarButtons: [UIBarButtonItem]? {
+            didSet { self.delegate?.userListModule(self, didUpdateRightItems: self.rightBarButtons) }
         }
         
         /// The object that is used as the theme of the header component. The theme must adopt the `SBUUserListTheme` class.
@@ -78,49 +129,58 @@ extension SBUUserListModule {
         public var componentTheme: SBUComponentTheme?
         
         // MARK: - UI properties (Private)
-        private func defaultTitleView() -> SBUNavigationTitleView {
-            let titleView = SBUNavigationTitleView()
+        lazy var defaultTitleView: SBUNavigationTitleView = {
+            var title = ""
             switch self.userListType {
             case .members:
-                titleView.text = SBUStringSet.UserList_Title_Members
+                title = SBUStringSet.UserList_Title_Members
             case .operators:
-                titleView.text = SBUStringSet.UserList_Title_Operators
+                title = SBUStringSet.UserList_Title_Operators
             case .muted:
-                titleView.text = (channelType == .group)
+                title = (channelType == .group)
                 ? SBUStringSet.UserList_Title_Muted_Members
                 : SBUStringSet.UserList_Title_Muted_Participants
             case .banned:
-                titleView.text = SBUStringSet.UserList_Title_Banned_Users
+                title = SBUStringSet.UserList_Title_Banned_Users
             case .participants:
-                titleView.text = SBUStringSet.UserList_Title_Participants
+                title = SBUStringSet.UserList_Title_Participants
             default:
                 break
             }
             
-            titleView.textAlignment = .center
+            let titleView = SBUModuleSet.GroupUserListModule.HeaderComponent.TitleView.init()
+            titleView.configure(title: title)
             return titleView
-        }
+        }()
         
-        private func defaultLeftBarButton() -> UIBarButtonItem {
-            let backButton = SBUBarButtonItem.backButton(
-                target: self,
-                selector: #selector(onTapLeftBarButton)
-            )
-            return backButton
-        }
-        
-        private func defaultRightBarButton() -> UIBarButtonItem {
-            guard self.userListType == .members ||
-                    self.userListType == .operators else { return UIBarButtonItem() }
+        lazy var defaultLeftBarButton: SBUBarButtonItem = {
+            let module = self.channelType == .group
+            ? SBUModuleSet.GroupUserListModule
+            : SBUModuleSet.OpenUserListModule
             
-            let addButton = UIBarButtonItem(
+            return module.HeaderComponent.LeftBarButton.init(
+                image: SBUIconSetType.iconBack.image(to: SBUIconSetType.Metric.defaultIconSize),
+                style: .plain,
+                target: self,
+                action: #selector(onTapLeftBarButton)
+            )
+        }()
+        
+        lazy var defaultRightBarButton: SBUBarButtonItem = {
+            guard self.userListType == .members ||
+                    self.userListType == .operators else { return SBUBarButtonItem() }
+            
+            let module = self.channelType == .group
+           ? SBUModuleSet.GroupUserListModule
+           : SBUModuleSet.OpenUserListModule
+
+            return module.HeaderComponent.RightBarButton.init(
                 image: SBUIconSetType.iconPlus.image(to: SBUIconSetType.Metric.defaultIconSize),
                 style: .plain,
                 target: self,
                 action: #selector(onTapRightBarButton)
-            )
-            return addButton
-        }
+           )
+        }()
         
         // MARK: - Logic properties (Public)
 
@@ -173,14 +233,25 @@ extension SBUUserListModule {
         
         /// Set values of the views in the header component when it needs.
         open func setupViews() {
+            #if SWIFTUI
+            self.setupViewsForSwiftUI()
+            #endif
+            
             if self.titleView == nil {
-                self.titleView = self.defaultTitleView()
+                self.titleView = self.defaultTitleView
             }
-            if self.leftBarButton == nil {
-                self.leftBarButton = self.defaultLeftBarButton()
+            if self.leftBarButton == nil && self.leftBarButtons == nil {
+                self.leftBarButton = self.defaultLeftBarButton
             }
-            if self.rightBarButton == nil {
-                self.rightBarButton = self.defaultRightBarButton()
+            if self.rightBarButton == nil && self.rightBarButtons == nil {
+                self.rightBarButton = self.defaultRightBarButton
+            }
+            
+            if self.leftBarButtons == nil {
+                self.leftBarButtons = [self.defaultLeftBarButton]
+            }
+            if self.rightBarButtons == nil {
+                self.rightBarButtons = [self.defaultRightBarButton]
             }
         }
         
@@ -209,22 +280,80 @@ extension SBUUserListModule {
             
             self.leftBarButton?.tintColor = theme?.leftBarButtonTintColor
             self.rightBarButton?.tintColor = theme?.rightBarButtonSelectedTintColor
+            
+            self.leftBarButtons?.forEach { $0.tintColor = theme?.leftBarButtonTintColor }
+            self.rightBarButtons?.forEach { $0.tintColor = theme?.rightBarButtonSelectedTintColor }
         }
         
         // MARK: - Actions
         
         /// The action of `leftBarButton`. It calls `userListModule(_:didTapLeftItem:)` when it's tapped
         public func onTapLeftBarButton() {
-            if let leftBarButton = self.leftBarButton {
+            if let leftBarButtons = self.leftBarButtons,
+               leftBarButtons.isUsingDefaultButton(self.defaultLeftBarButton) {
+                self.delegate?.userListModule(self, didTapLeftItem: self.defaultLeftBarButton)
+            } else if let leftBarButton = self.leftBarButton {
                 self.delegate?.userListModule(self, didTapLeftItem: leftBarButton)
             }
         }
         
         /// The action of `rightBarButton`. It calls `userListModule(_:didTapRightItem:)` when it's tapped
         public func onTapRightBarButton() {
-            if let rightBarButton = self.rightBarButton {
+            if let rightBarButtons = self.rightBarButtons,
+               rightBarButtons.isUsingDefaultButton(self.defaultRightBarButton) {
+                self.delegate?.userListModule(self, didTapRightItem: self.defaultRightBarButton)
+            } else if let rightBarButton = self.rightBarButton {
                 self.delegate?.userListModule(self, didTapRightItem: rightBarButton)
             }
         }
     }
 }
+
+#if SWIFTUI
+extension SBUUserListModule.Header {
+    func setupViewsForSwiftUI() {
+        switch self.userListType {
+        case .none:
+            break
+        case .members:
+            self.applyViewConverter(.titleView)
+            self.applyViewConverter(.leftView)
+            self.applyViewConverter(.rightView)
+        case .operators:
+            if channelType == .open {
+                self.applyViewConverterForOpenOperators(.titleView)
+                self.applyViewConverterForOpenOperators(.leftView)
+                self.applyViewConverterForOpenOperators(.rightView)
+            } else {
+                self.applyViewConverterForOperators(.titleView)
+                self.applyViewConverterForOperators(.leftView)
+                self.applyViewConverterForOperators(.rightView)
+            }
+        case .muted:
+            if channelType == .open {
+                self.applyViewConverterForOpenMutedParticipant(.titleView)
+                self.applyViewConverterForOpenMutedParticipant(.leftView)
+                self.applyViewConverterForOpenMutedParticipant(.rightView)
+            } else {
+                self.applyViewConverterForMutedMember(.titleView)
+                self.applyViewConverterForMutedMember(.leftView)
+                self.applyViewConverterForMutedMember(.rightView)
+            }
+        case .banned:
+            if channelType == .open {
+                self.applyViewConverterForOpenBannedUser(.titleView)
+                self.applyViewConverterForOpenBannedUser(.leftView)
+                self.applyViewConverterForOpenBannedUser(.rightView)
+            } else {
+                self.applyViewConverterForBannedUser(.titleView)
+                self.applyViewConverterForBannedUser(.leftView)
+                self.applyViewConverterForBannedUser(.rightView)
+            }
+        case .participants:
+            self.applyViewConverterForOpen(.titleView)
+            self.applyViewConverterForOpen(.leftView)
+            self.applyViewConverterForOpen(.rightView)
+        }
+    }
+}
+#endif

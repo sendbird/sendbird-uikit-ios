@@ -22,6 +22,8 @@ open class SBUFileMessageCell: SBUContentBaseMessageCell {
         return fileView
     }()
     
+    var fileType: SBUMessageFileType = .etc
+    
     // MARK: - View Lifecycle
     open override func setupViews() {
         super.setupViews()
@@ -49,6 +51,18 @@ open class SBUFileMessageCell: SBUContentBaseMessageCell {
         super.setupStyles()
         
         self.baseFileContentView.setupStyles()
+        
+        #if SWIFTUI
+        if self.configuration?.isThreadMessage == false {
+            if self.viewConverter.fileMessage.entireContent != nil {
+                self.mainContainerView.setTransparentBackgroundColor()
+            }
+        } else {
+            if self.viewConverterForMessageThread.fileMessage.entireContent != nil {
+                self.mainContainerView.setTransparentBackgroundColor()
+            }
+        }
+        #endif
     }
     
     // MARK: - Common
@@ -63,11 +77,25 @@ open class SBUFileMessageCell: SBUContentBaseMessageCell {
         
         self.useThreadInfo = configuration.useThreadInfo
         
+        self.fileType = SBUUtils.getFileType(by: message)
+        
         // Configure Content base message cell
         super.configure(with: configuration)
         
         // Set up base file content view
-        switch SBUUtils.getFileType(by: message) {
+        #if SWIFTUI
+        if self.configuration?.isThreadMessage == false {
+            if self.applyViewConverter(.fileMessage) {
+                return
+            }
+        } else {
+            if self.applyViewConverterForMessageThread(.fileMessage) {
+                return
+            }
+        }
+        #endif
+        
+        switch fileType {
         case .image, .video:
             if !(self.baseFileContentView is SBUImageContentView) {
                 self.baseFileContentView.removeFromSuperview()
@@ -153,6 +181,21 @@ open class SBUFileMessageCell: SBUContentBaseMessageCell {
             useReaction: useReaction
         )
         self.configure(with: configuration)
+    }
+    
+    public override func resetMainContainerViewLayer() {
+        #if SWIFTUI
+        if self.configuration?.isThreadMessage == false {
+            if self.viewConverter.fileMessage.entireContent != nil {
+                return
+            }
+        } else {
+            if self.viewConverterForMessageThread.fileMessage.entireContent != nil {
+                return
+            }            
+        }
+        #endif
+        super.resetMainContainerViewLayer()
     }
     
     // MARK: - Action

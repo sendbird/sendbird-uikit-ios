@@ -25,6 +25,11 @@ public protocol SBUCreateChannelModuleListDelegate: SBUBaseSelectUserModuleListD
     /// Called when the retry button was selected from the `listComponent`.
     /// - Parameter listComponent: `SBUCreateChannelModule.List` object.
     func createChannelModuleDidSelectRetry(_ listComponent: SBUCreateChannelModule.List)
+    
+    #if SWIFTUI
+    /// Called when the user cell was selected in the `listComponent`.
+    func createChannelModule(_ listComponent: SBUCreateChannelModule.List, didSelectUser user: SBUUser)
+    #endif
 }
 
 /// Methods to get data source for list component in a channel creating.
@@ -36,7 +41,6 @@ extension SBUCreateChannelModule {
     @objc(SBUCreateChannelModuleList)
     @objcMembers
     open class List: SBUBaseSelectUserModule.List {
-       
         // MARK: - Logic properties (Public)
         /// The object that acts as the delegate of the list component. The delegate must adopt the `SBUCreateChannelModuleListDelegate`.
         public weak var delegate: SBUCreateChannelModuleListDelegate? {
@@ -48,6 +52,12 @@ extension SBUCreateChannelModule {
         public weak var dataSource: SBUCreateChannelModuleListDataSource? {
             get { self.baseDataSource as? SBUCreateChannelModuleListDataSource }
             set { self.baseDataSource = newValue }
+        }
+        
+        // MARK: - Default
+        
+        override func createDefaultEmptyView() -> SBUEmptyView {
+            SBUEmptyView.createDefault(Self.EmptyView, delegate: self)
         }
         
         // MARK: - LifeCycle
@@ -73,6 +83,27 @@ extension SBUCreateChannelModule {
             self.setupViews()
             self.setupLayouts()
             self.setupStyles()
+        }
+        
+        open override func setupViews() {
+            #if SWIFTUI
+            if self.applyViewConverter(.entireContent) {
+                return
+            }
+            #endif
+            
+            super.setupViews()
+            
+            self.register(userCell: Self.UserCell.init())
+        }
+        
+        public override func reloadTableView() {
+            #if SWIFTUI
+            if self.applyViewConverter(.entireContent) {
+                return
+            }
+            #endif
+            super.reloadTableView()
         }
         
         // MARK: - TableView: Cell

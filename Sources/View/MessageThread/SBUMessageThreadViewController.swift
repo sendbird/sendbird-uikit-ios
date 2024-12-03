@@ -12,6 +12,15 @@ import Photos
 import AVKit
 import SafariServices
 import PhotosUI
+#if SWIFTUI
+import SwiftUI
+#endif
+
+#if SWIFTUI
+protocol MessageThreadViewEventDelegate: AnyObject {
+    
+}
+#endif
 
 public protocol SBUMessageThreadViewControllerDelegate: AnyObject {
     /// Called when `SBUThreadInfoView` was tapped.
@@ -54,7 +63,7 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
         set { self.baseInputComponent = newValue }
     }
     /// The input view that is used to record voice message
-    public var voiceMessageInputView = SBUVoiceMessageInputView()
+    public var voiceMessageInputView = SBUMessageThreadModule.Input.VoiceMessageInputView.init()
     
     // MARK: - Logic properties (Public)
     public var viewModel: SBUMessageThreadViewModel? {
@@ -70,6 +79,13 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
     // MARK: - Logic properties (Private)
     var voiceFileInfos: [String: SBUVoiceFileInfo]?
     
+    #if SWIFTUI
+    weak var swiftUIDelegate: (SBUMessageThreadViewModelDelegate & MessageThreadViewEventDelegate)? {
+        didSet {
+            self.viewModel?.delegates.addDelegate(self.swiftUIDelegate, type: .swiftui)
+        }
+    }
+    #endif
     // MARK: - Lifecycle
     @available(*, unavailable)
     required public init(channelURL: String, startingPoint: Int64? = nil, messageListParams: MessageListParams? = nil) {
@@ -94,14 +110,16 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
     ///     - Click parent info of a specific thread message in channel:
     ///   - `starting point -> .max`
     ///     - Long-tap on the parent message and select the thread addition menu:
-    required public init(channel: GroupChannel? = nil,
-                         channelURL: String? = nil,
-                         parentMessage: BaseMessage? = nil,
-                         parentMessageId: Int64? = nil,
-                         delegate: SBUMessageThreadViewControllerDelegate? = nil,
-                         threadedMessageListParams: ThreadedMessageListParams? = nil,
-                         startingPoint: Int64? = .max,
-                         voiceFileInfos: [String: SBUVoiceFileInfo]? = nil) {
+    required public init(
+        channel: GroupChannel? = nil,
+        channelURL: String? = nil,
+        parentMessage: BaseMessage? = nil,
+        parentMessageId: Int64? = nil,
+        delegate: SBUMessageThreadViewControllerDelegate? = nil,
+        threadedMessageListParams: ThreadedMessageListParams? = nil,
+        startingPoint: Int64? = .max,
+        voiceFileInfos: [String: SBUVoiceFileInfo]? = nil
+    ) {
         super.init(nibName: nil, bundle: nil)
         SBULog.info(#function)
         
@@ -192,7 +210,7 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
         
         self.isTransformedList = false
         
-        self.viewModel = SBUMessageThreadViewModel(
+        self.viewModel = SBUViewModelSet.MessageThreadViewModel.init(
             channel: channel,
             channelURL: channelURL,
             parentMessage: parentMessage,
@@ -598,7 +616,7 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
               let message = messageCell.message else { return }
         
         let reaction = message.reactions.first { $0.key == emojiKey }
-        let reactionsVC = SBUReactionsViewController(
+        let reactionsVC = SBUCommonViewControllerSet.ReactionsViewController.init(
             channel: channel,
             message: message,
             selectedReaction: reaction
@@ -829,7 +847,7 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
     ) {
         guard channel != nil else {
             // channel deleted
-            if self.navigationController?.viewControllers.last == self {
+            if self.isLastInNavigationStack() {
                 // If leave is called in the ChannelSettingsViewController, this logic needs to be prevented.
                 self.onClickBack()
             }

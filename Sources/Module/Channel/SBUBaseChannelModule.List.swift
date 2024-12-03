@@ -272,7 +272,6 @@ extension SBUBaseChannelModule {
     @objc(SBUBaseChannelModuleList)
     @objcMembers
     open class List: UIView, UITableViewDelegate, UITableViewDataSource {
-        
         // MARK: - UI properties (Public)
         
         /// The table view to show messages in the channel
@@ -281,7 +280,9 @@ extension SBUBaseChannelModule {
         /// A view that shows when there is no message in the channel.
         /// The default view type is ``SBUEmptyView``.
         public var emptyView: UIView? {
-            didSet { self.tableView.backgroundView = self.emptyView }
+            didSet {
+                self.tableView.backgroundView = self.emptyView
+            }
         }
         
         /// A view that shows the state of the channel such as frozen state.
@@ -311,57 +312,32 @@ extension SBUBaseChannelModule {
         /// The object that is used as the theme of the list component. The theme must adopt the `SBUChannelTheme` class.
         public var theme: SBUChannelTheme?
         
-        // MARK: - UI properties (Private)
-        private lazy var defaultEmptyView: SBUEmptyView? = {
-            let emptyView = SBUEmptyView()
-            emptyView.type = EmptyViewType.none
-            emptyView.delegate = self
-            return emptyView
-        }()
+        // MARK: - default views
         
-        private lazy var defaultChannelStateBanner: UIView? = {
-            let label = UILabel()
-            label.textAlignment = .center
-            label.text = SBUStringSet.Channel_State_Banner_Frozen
-            label.layer.masksToBounds = true
-            label.layer.cornerRadius = 5
-            label.isHidden = true
-            return label
-        }()
+        func createDefaultEmptyView() -> SBUEmptyView {
+            SBUEmptyView.createDefault(SBUEmptyView.self, delegate: self)
+        }
         
-        private lazy var defaultScrollBottomView: UIView? = {
-            let view: UIView = UIView(frame: CGRect(origin: .zero, size: SBUConstant.scrollBottomButtonSize))
-            let theme = SBUTheme.componentTheme
-            
-            view.backgroundColor = .clear
-            view.layer.shadowColor = theme.shadowColor.withAlphaComponent(0.5).cgColor
-            view.layer.shadowOffset = CGSize(width: 0, height: 5)
-            view.layer.shadowOpacity = 0.5
-            view.layer.shadowRadius = 5
-            view.layer.masksToBounds = false
-            
-            let scrollBottomButton = UIButton(frame: CGRect(origin: .zero, size: SBUConstant.scrollBottomButtonSize))
-            scrollBottomButton.layer.cornerRadius = scrollBottomButton.frame.height / 2
-            scrollBottomButton.clipsToBounds = true
-            
-            scrollBottomButton.setImage(
-                SBUIconSetType.iconChevronDown.image(
-                    with: theme.scrollBottomButtonIconColor,
-                    to: SBUIconSetType.Metric.iconChevronDown
-                ),
-                for: .normal
+        func createDefaultChannelStateBanner() -> SBUChannelStateBanner {
+            SBUChannelStateBanner.createDefault(SBUChannelStateBanner.self, isThreadMessage: false, isHidden: true)
+        }
+        
+        func createDefaultUserProfileView() -> SBUUserProfileView {
+            SBUUserProfileView.createDefault(SBUUserProfileView.self, delegate: self)
+        }
+        
+        func createDefaultScrollBottomView() -> SBUScrollBottomView? {
+            SBUScrollBottomView.createDefault(
+                SBUScrollBottomView.self,
+                channelType: .group,
+                target: self,
+                action: #selector(self.onTapScrollToBottom)
             )
-            scrollBottomButton.backgroundColor = theme.scrollBottomButtonBackground
-            scrollBottomButton.setBackgroundImage(UIImage.from(color: theme.scrollBottomButtonHighlighted), for: .highlighted)
-            
-            scrollBottomButton.addTarget(self, action: #selector(self.onTapScrollToBottom), for: .touchUpInside)
-            view.addSubview(scrollBottomButton)
-            
-            scrollBottomButton
-                .sbu_constraint(equalTo: view, leading: 0, trailing: 0, top: 0, bottom: 0)
-
-            return view
-        }()
+        }
+        
+        func createDefaultNewMessageInfoView() -> SBUNewMessageInfo? {
+            SBUNewMessageInfo.createDefault(SBUNewMessageInfo.self)
+        }
         
         // MARK: - Logic properties (Public)
         
@@ -405,7 +381,7 @@ extension SBUBaseChannelModule {
         open func setupViews() {
             // empty view
             if self.emptyView == nil {
-                self.emptyView = self.defaultEmptyView
+                self.emptyView = self.createDefaultEmptyView()
             }
             
             // table view
@@ -418,35 +394,35 @@ extension SBUBaseChannelModule {
             self.tableView.bounces = false
             self.tableView.alwaysBounceVertical = false
             
-            self.emptyView?.transform = CGAffineTransform(scaleX: 1, y: -1)
-            self.tableView.backgroundView = self.emptyView
-            self.tableView.transform = CGAffineTransform(scaleX: 1, y: -1)
-            
             self.tableView.rowHeight = UITableView.automaticDimension
             self.tableView.estimatedRowHeight = 44.0
             self.tableView.sectionHeaderHeight = 0
+            
+            self.emptyView?.transform = CGAffineTransform(scaleX: 1, y: -1)
+            self.tableView.backgroundView = self.emptyView
+            self.tableView.transform = CGAffineTransform(scaleX: 1, y: -1)
             
             self.addSubview(self.tableView)
             
             // channel state & common
             if self.channelStateBanner == nil {
-                self.channelStateBanner = self.defaultChannelStateBanner
+                self.channelStateBanner = self.createDefaultChannelStateBanner()
             }
             
             if let channelStateBanner = self.channelStateBanner {
                 self.addSubview(channelStateBanner)
             }
             
-            if self.newMessageInfoView == nil {
-                self.newMessageInfoView = SBUNewMessageInfo()
+            if self.userProfileView == nil {
+                self.userProfileView = self.createDefaultUserProfileView()
             }
             
             if self.scrollBottomView == nil {
-                self.scrollBottomView = self.defaultScrollBottomView
+                self.scrollBottomView = self.createDefaultScrollBottomView()
             }
             
-            if self.userProfileView == nil {
-                self.userProfileView = SBUUserProfileView(delegate: self)
+            if self.newMessageInfoView == nil {
+                self.newMessageInfoView = self.createDefaultNewMessageInfoView()
             }
         }
         
@@ -461,10 +437,15 @@ extension SBUBaseChannelModule {
             if let theme = theme {
                 self.theme = theme
             }
-            if let channelStateBanner = channelStateBanner as? UILabel {
-                channelStateBanner.textColor = theme?.channelStateBannerTextColor
-                channelStateBanner.font = theme?.channelStateBannerFont
-                channelStateBanner.backgroundColor = theme?.channelStateBannerBackgroundColor
+            
+            switch self.channelStateBanner {
+            case let banner as SBUChannelStateBanner:
+                banner.setupStyles(theme: theme)
+            case let banner as UILabel:
+                banner.textColor = theme?.channelStateBannerTextColor
+                banner.font = theme?.channelStateBannerFont
+                banner.backgroundColor = theme?.channelStateBannerBackgroundColor
+            default: break
             }
             self.tableView.backgroundColor = self.theme?.backgroundColor
         }
@@ -645,7 +626,11 @@ extension SBUBaseChannelModule {
             ) else { return }
             
             let useReaction = SBUEmojiManager.isReactionEnabled(channel: self.baseChannel)
-            let menuSheetVC = SBUMenuSheetViewController(message: message, items: messageMenuItems, useReaction: useReaction)
+            let menuSheetVC = SBUCommonViewControllerSet.MenuSheetViewController.init(
+                message: message,
+                items: messageMenuItems,
+                useReaction: useReaction
+            )
             menuSheetVC.modalPresentationStyle = .custom
             menuSheetVC.transitioningDelegate = parentViewController as? UIViewControllerTransitioningDelegate
             parentViewController.present(menuSheetVC, animated: true)

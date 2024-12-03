@@ -31,16 +31,28 @@ open class SBURegisterOperatorViewModel: SBUBaseSelectUserViewModel {
         set { self.baseDataSource = newValue }
     }
     
+    // MARK: SwiftUI (Internal)
+    var delegates: WeakDelegateStorage<SBURegisterOperatorViewModelDelegate> {
+        let computedDelegates = WeakDelegateStorage<SBURegisterOperatorViewModelDelegate>()
+        self.baseDelegates.allKeyValuePairs().forEach { key, value in
+            if let delegate = value as? SBURegisterOperatorViewModelDelegate {
+                computedDelegates.addDelegate(delegate, type: key)
+            }
+        }
+        return computedDelegates
+    }
+    
     // MARK: - Life Cycle
-    public init(channel: BaseChannel? = nil,
-                channelURL: String? = nil,
-                channelType: ChannelType = .group,
-                users: [SBUUser]? = nil,
-                userListQuery: ApplicationUserListQuery? = nil,
-                memberListQuery: MemberListQuery? = nil,
-                delegate: SBURegisterOperatorViewModelDelegate? = nil,
-                dataSource: SBURegisterOperatorViewModelDataSource? = nil) {
-        
+    required public init(
+        channel: BaseChannel? = nil,
+        channelURL: String? = nil,
+        channelType: ChannelType = .group,
+        users: [SBUUser]? = nil,
+        userListQuery: ApplicationUserListQuery? = nil,
+        memberListQuery: MemberListQuery? = nil,
+        delegate: SBURegisterOperatorViewModelDelegate? = nil,
+        dataSource: SBURegisterOperatorViewModelDataSource? = nil
+    ) {
         super.init(
             channel: channel,
             channelURL: channelURL,
@@ -52,6 +64,7 @@ open class SBURegisterOperatorViewModel: SBUBaseSelectUserViewModel {
             delegate: delegate,
             dataSource: dataSource
         )
+        self.baseDelegates.addDelegate(delegate, type: .uikit)
     }
     
     // MARK: - Channel actions
@@ -72,20 +85,20 @@ open class SBURegisterOperatorViewModel: SBUBaseSelectUserViewModel {
     public func registerAsOperators(userIds: [String]) {
         guard let channel = self.channel else { return }
         
-        self.delegate?.shouldUpdateLoadingState(true)
+        self.delegates.forEach { $0.shouldUpdateLoadingState(true) }
         SBULog.info("[Request] Register users: \(userIds)")
 
         channel.addOperators(userIds: userIds) { [weak self] error in
             guard let self = self else { return }
-            defer { self.delegate?.shouldUpdateLoadingState(false) }
+            defer { self.delegates.forEach { $0.shouldUpdateLoadingState(false) } }
             
             if let error = error {
-                self.delegate?.didReceiveError(error, isBlocker: false)
+                self.delegates.forEach { $0.didReceiveError(error, isBlocker: false) }
                 return
             }
             
             SBULog.info("[Succeed] Register users request success")
-            self.delegate?.registerOperatorViewModel(self, didRegisterOperatorIds: userIds)
+            self.delegates.forEach { $0.registerOperatorViewModel(self, didRegisterOperatorIds: userIds) }
         }
     }
 }

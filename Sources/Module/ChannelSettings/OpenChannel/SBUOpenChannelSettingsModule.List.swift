@@ -39,7 +39,6 @@ extension SBUOpenChannelSettingsModule {
     @objc(SBUOpenChannelSettingsModuleList)
     @objcMembers
     open class List: SBUBaseChannelSettingsModule.List {
-        
         // MARK: - Logic properties (Public)
         public weak var delegate: SBUOpenChannelSettingsModuleListDelegate? {
             get { self.baseDelegate as? SBUOpenChannelSettingsModuleListDelegate }
@@ -52,6 +51,12 @@ extension SBUOpenChannelSettingsModule {
         }
         
         public weak var channel: OpenChannel? { self.baseChannel as? OpenChannel }
+        
+        // MARK: - default view
+        
+        override func createDefaultChannelInfoView() -> SBUChannelSettingsChannelInfoView {
+            Self.ChannelInfoView.init()
+        }
         
         // MARK: - LifeCycle
         @available(*, unavailable, renamed: "SBUOpenChannelSettingsModule.List()")
@@ -91,7 +96,7 @@ extension SBUOpenChannelSettingsModule {
             super.setupViews()
             
             self.tableView.register(
-                type(of: SBUOpenChannelSettingCell()),
+                Self.SettingCell,
                 forCellReuseIdentifier: SBUOpenChannelSettingCell.sbu_className
             )
         }

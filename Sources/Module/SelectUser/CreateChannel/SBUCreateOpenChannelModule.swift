@@ -22,10 +22,26 @@ extension SBUCreateOpenChannelModule {
 
 // MARK: Header
 extension SBUCreateOpenChannelModule.Header {
+    /// Represents the metatype of left bar button in ``SBUCreateOpenChannelModule.Header``.
+    /// - Since: 3.28.0
+    public static var LeftBarButton: SBUBarButtonItem.Type = SBUBarButtonItem.self
     
+    /// Represents the metatype of title view in ``SBUCreateOpenChannelModule.Header``.
+    /// - Since: 3.28.0
+    public static var TitleView: SBUNavigationTitleView.Type = SBUNavigationTitleView.self
+    
+    /// Represents the metatype of right bar button in ``SBUCreateOpenChannelModule.Header``.
+    /// - Since: 3.28.0
+    public static var RightBarButton: SBUBarButtonItem.Type = SBUBarButtonItem.self
 }
 
 // MARK: List
 extension SBUCreateOpenChannelModule.ProfileInput {
+    /// The view that displays the channel image in Create channel.
+    /// - Since: 3.28.0
+    public static var ChannelImageView: SBUCoverImageView.Type = SBUCoverImageView.self
     
+    /// The view that displays the channel name inputField in Create channel.
+    /// - Since: 3.28.0
+    public static var ChannelNameInputField: SBUUnderLineTextField.Type = SBUUnderLineTextField.self
 }

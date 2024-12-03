@@ -9,6 +9,15 @@
 import UIKit
 import SendbirdChatSDK
 import Photos
+#if SWIFTUI
+import SwiftUI
+#endif
+
+#if SWIFTUI
+protocol OpenChannelViewEventDelegate: AnyObject {
+    
+}
+#endif
 
 @objcMembers
 open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenChannelViewModelDelegate, SBUOpenChannelModuleHeaderDelegate, SBUOpenChannelModuleListDelegate, SBUOpenChannelModuleInputDelegate, SBUOpenChannelModuleMediaDelegate, SBUOpenChannelModuleListDataSource, SBUOpenChannelModuleInputDataSource, SBUOpenChannelViewModelDataSource {
@@ -121,6 +130,18 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
     
     // MARK: - Logic properties (Private)
     
+    // MARK: - SwiftUI
+    #if SWIFTUI
+    var channelSettingsViewBuilder: OpenChannelSettingsViewBuilder?
+    var participantListViewBuilder: OpenParticipantListViewBuilder?
+    
+    weak var swiftUIDelegate: (SBUOpenChannelViewModelDelegate & OpenChannelViewEventDelegate)? {
+        didSet {
+            self.viewModel?.baseDelegates.addDelegate(self.swiftUIDelegate, type: .swiftui)
+        }
+    }
+    #endif
+    
     // MARK: - Lifecycle
     
     /// If you have channel object, use this initialize function. And, if you have own message list params, please set it. If not set, it is used as the default value.
@@ -204,7 +225,7 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
             return
         }
         
-        self.baseViewModel = SBUOpenChannelViewModel(
+        self.baseViewModel = SBUViewModelSet.OpenChannelViewModel.init(
             channel: channel,
             channelURL: channelURL,
             messageListParams: messageListParams,
@@ -700,9 +721,6 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
         guard let userId = SBUGlobals.currentUser?.userId else { return }
         let isOperator = self.channel?.isOperator(userId: userId) ?? false
         self.headerComponent?.updateBarButton(isOperator: isOperator)
-        if let headerComponent = headerComponent {
-            self.navigationItem.rightBarButtonItem = headerComponent.rightBarButton
-        }
     }
     
     // MARK: - Actions
@@ -720,17 +738,32 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
                 self.errorHandler(error.localizedDescription)
             }
             
-            if let navigationController = self.navigationController,
-               navigationController.viewControllers.count > 1 {
-                navigationController.popViewController(animated: true)
+            if dismissAction != nil {
+                dismissAction?()
             } else {
-                self.dismiss(animated: true, completion: nil)
+                if let navigationController = self.navigationController,
+                   navigationController.viewControllers.count > 1 {
+                    navigationController.popViewController(animated: true)
+                } else {
+                    self.dismiss(animated: true, completion: nil)
+                }
             }
         })
     }
     
     open override func showChannelSettings() {
         guard let channel = self.channel else { return }
+        
+        #if SWIFTUI
+        if let channelSettingsViewBuilder = self.channelSettingsViewBuilder {
+            let view = channelSettingsViewBuilder(
+                channel.channelURL
+            )
+            let channelSettingsVC = UIHostingController(rootView: view)
+            self.navigationController?.pushViewControllerNonFlickering(channelSettingsVC, animated: true)
+            return
+        }
+        #endif
         
         let channelSettingsVC = SBUViewControllerSet.OpenChannelSettingsViewController.init(channel: channel)
         self.navigationController?.pushViewController(channelSettingsVC, animated: true)
@@ -739,6 +772,17 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
     /// If you want to use a custom participants list, override it and implement it.
     open func showParticipantsList() {
         guard let channel = self.channel else { return }
+        
+        #if SWIFTUI
+        if let participantListViewBuilder = self.participantListViewBuilder {
+            let view = participantListViewBuilder(
+                channel.channelURL
+            )
+            let participantListVC = UIHostingController(rootView: view)
+            self.navigationController?.pushViewControllerNonFlickering(participantListVC, animated: true)
+            return
+        }
+        #endif
         
         let participantListVC = SBUViewControllerSet.OpenUserListViewController.init(channel: channel, userListType: .participants)
         self.navigationController?.pushViewController(participantListVC, animated: true)
@@ -787,6 +831,16 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
         }
     }
     
+    open override func baseChannelModule(_ headerComponent: SBUBaseChannelModule.Header, didUpdateTitleView titleView: UIView?) {
+        #if SWIFTUI
+        if self.headerComponent?.viewConverter.leftView.entireContent != nil || self.headerComponent?.viewConverter.rightView.entireContent != nil {
+            self.navigationItem.titleView = titleView
+            return
+        }
+        #endif
+        super.baseChannelModule(headerComponent, didUpdateTitleView: titleView)
+    }
+    
     // MARK: - SBUOpenChannelModuleListDelegate
     open override func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didTapUserProfile user: SBUUser) {
         self.showUserProfile(user: user, isOpenChannel: true)
@@ -832,12 +886,18 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
         withContext context: MessageContext
     ) {
         guard channel != nil else {
-            if self.navigationController?.viewControllers.last == self {
+            if self.isLastInNavigationStack() {
                 // If leave is called in the ChannelSettingsViewController, this logic needs to be prevented.
                 self.onClickBack()
             }
             return
         }
+        
+        #if SWIFTUI
+        if self.listComponent?.viewConverter.tableView.entireContent != nil {
+            self.listComponent?.applyViewConverter(.entireContent)
+        }
+        #endif
         
         // channel changed
         switch context.source {

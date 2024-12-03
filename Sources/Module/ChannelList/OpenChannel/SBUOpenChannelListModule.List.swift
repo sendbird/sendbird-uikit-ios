@@ -43,6 +43,12 @@ extension SBUOpenChannelListModule {
             self.baseChannelList as? [OpenChannel]
         }
 
+        // MARK: - default view
+        
+        override func createDefaultEmptyView() -> SBUEmptyView {
+            SBUEmptyView.createDefault(Self.EmptyView, delegate: self)
+        }
+
         // MARK: - LifeCycle
         @available(*, unavailable, renamed: "SBUOpenChannelListModule.List()")
         required public init?(coder: NSCoder) { super.init(coder: coder) }
@@ -74,13 +80,34 @@ extension SBUOpenChannelListModule {
             self.setupStyles()
         }
         
+        /// Trigger SwiftUI view update when table is reloaded
+        open override func reloadTableView() {
+            var didApplyTableViewConverter = false
+            #if SWIFTUI
+            didApplyTableViewConverter = self.applyViewConverter(.entireContent)
+            #endif
+            // No need to update the table view,
+            // as the table view is already removed from superview 
+            // if SwiftUI view builder is used.
+            if !didApplyTableViewConverter {
+                super.reloadTableView()
+                return
+            }
+        }
+        
         /// Set values of the views in the list component when it needs.
         open override func setupViews() {
-            super.setupViews()
-
-            // register cell
-            if self.channelCell == nil {
-                self.register(channelCell: SBUOpenChannelCell())
+            var didApplyTableViewConverter = false
+            #if SWIFTUI
+            didApplyTableViewConverter = self.applyViewConverter(.entireContent)
+            #endif
+            if !didApplyTableViewConverter {
+                super.setupViews()
+                
+                // register cell
+                if self.channelCell == nil {
+                    self.register(channelCell: Self.ChannelCell.init())
+                }
             }
         }
         

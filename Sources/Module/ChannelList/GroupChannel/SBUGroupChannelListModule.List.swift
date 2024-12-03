@@ -54,6 +54,10 @@ extension SBUGroupChannelListModule {
         public var channelList: [GroupChannel]? {
             self.baseChannelList as? [GroupChannel]
         }
+        
+        override func createDefaultEmptyView() -> SBUEmptyView {
+            SBUEmptyView.createDefault(Self.EmptyView, delegate: self)
+        }
 
         // MARK: - LifeCycle
         @available(*, unavailable, renamed: "SBUGroupChannelListModule.List()")
@@ -86,11 +90,17 @@ extension SBUGroupChannelListModule {
         
         /// Set values of the views in the list component when it needs.
         open override func setupViews() {
-            super.setupViews()
-            
-            // register cell
-            if self.channelCell == nil {
-                self.register(channelCell: SBUGroupChannelCell())
+            var didApplyTableViewConverter = false
+            #if SWIFTUI
+            didApplyTableViewConverter = self.applyViewConverter(.entireContent)
+            #endif
+            if !didApplyTableViewConverter {
+                super.setupViews()
+                
+                // register cell
+                if self.channelCell == nil {
+                    self.register(channelCell: Self.ChannelCell.init())
+                }
             }
         }
         
@@ -106,6 +116,19 @@ extension SBUGroupChannelListModule {
         }
         
         // MARK: - TableView
+        open override func reloadTableView() {
+            var didApplyTableViewConverter = false
+            #if SWIFTUI
+            didApplyTableViewConverter = self.applyViewConverter(.entireContent)
+            #endif
+            // No need to update the table view,
+            // as the table view is already removed from superview
+            // if SwiftUI view builder is used.
+            if !didApplyTableViewConverter {
+                super.reloadTableView()
+                return
+            }
+        }
         
         /// Creates leave contextual action for a particular swipped cell.
         /// - Parameter indexPath: An index path representing the `channelCell`
@@ -258,7 +281,7 @@ extension SBUGroupChannelListModule.List {
             self.delegate?.didReceiveError(error, isBlocker: false)
             return UITableViewCell()
         }
-        
+    
         var cell: SBUBaseChannelCell?
         if let channelCell = self.channelCell {
             cell = tableView.dequeueReusableCell(

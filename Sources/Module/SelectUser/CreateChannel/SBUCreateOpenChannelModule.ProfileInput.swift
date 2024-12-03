@@ -38,10 +38,10 @@ extension SBUCreateOpenChannelModule {
             return hStackView
         }()
         
-        public lazy var channelImageView = SBUCoverImageView()
+        public lazy var channelImageView = SBUCreateOpenChannelModule.ProfileInput.ChannelImageView.init()
         
         public var channelNameInputField: SBUUnderLineTextField = {
-            let textField = SBUUnderLineTextField()
+            let textField = SBUCreateOpenChannelModule.ProfileInput.ChannelNameInputField.init()
             textField.textAlignment = .left
             textField.leftViewMode = .always
             textField.rightView = nil

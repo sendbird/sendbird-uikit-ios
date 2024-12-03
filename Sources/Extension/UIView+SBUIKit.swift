@@ -32,6 +32,12 @@ public extension UIView {
 
 // MARK: - Constraint
 extension UIView {
+    /// This function sets the view to fill the parent view.
+    @discardableResult
+    public func sbu_constraint_fill(equalTo view: UIView) -> UIView {
+        return self.sbu_constraint(equalTo: view, leading: 0, trailing: 0, top: 0, bottom: 0)
+    }
+    
     /// This function sets constraints to the view. (EqualTo)
     @discardableResult
     public func sbu_constraint(

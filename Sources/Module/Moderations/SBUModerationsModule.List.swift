@@ -90,7 +90,7 @@ extension SBUModerationsModule {
             self.addSubview(self.tableView)
             
             if self.moderationCell == nil {
-                self.register(moderationCell: SBUModerationCell())
+                self.register(moderationCell: Self.ModerationCell.init())
             }
         }
         

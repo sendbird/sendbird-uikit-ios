@@ -34,6 +34,9 @@ open class SBUModerationsViewModel {
     // MARK: - Property (Private)
     weak var delegate: SBUModerationsViewModelDelegate?
     
+    // MARK: SwiftUI (Internal)
+    var delegates = WeakDelegateStorage<SBUModerationsViewModelDelegate>()
+    
     // MARK: - Lifecycle
     /// Initializes a new `SBUModerationsViewModel` instance.
     ///
@@ -42,14 +45,20 @@ open class SBUModerationsViewModel {
     /// - Parameters:
     ///   - channel: The `BaseChannel` to be managed by the view model.
     ///   - delegate: An optional `SBUModerationsViewModelDelegate` to handle events. Default is `nil`.
-    public init(channel: BaseChannel, delegate: SBUModerationsViewModelDelegate? = nil) {
+    required public init(channel: BaseChannel, delegate: SBUModerationsViewModelDelegate? = nil) {
         self.delegate = delegate
+        self.delegates.addDelegate(delegate, type: .uikit)
         
         self.channelType = (channel is GroupChannel) ? .group : .open
         self.channel = channel
         self.channelURL = channel.channelURL
         
         guard let channelURL = self.channelURL else { return }
+        self.initializeAndLoad(channelURL: channelURL)
+    }
+    
+    func initializeAndLoad(channelURL: String) {
+        self.channelURL = channelURL
         self.loadChannel(channelURL: channelURL)
     }
     
@@ -59,12 +68,13 @@ open class SBUModerationsViewModel {
     ///   - channelURL: The URL of the channel to be managed by the view model.
     ///   - channelType: The type of the channel, represented as a `ChannelType`.
     ///   - delegate: An optional `SBUModerationsViewModelDelegate` to handle events. Default is `nil`.
-    public init(
+    required public init(
         channelURL: String,
         channelType: ChannelType, 
         delegate: SBUModerationsViewModelDelegate? = nil
     ) {
         self.delegate = delegate
+        self.delegates.addDelegate(delegate, type: .uikit)
         
         self.channelType = channelType
         self.channelURL = channelURL
@@ -78,14 +88,14 @@ open class SBUModerationsViewModel {
     /// - Parameters:
     ///   - channelURL: channel url
     public func loadChannel(channelURL: String) {
-        self.delegate?.shouldUpdateLoadingState(true)
+        self.delegates.forEach { $0.shouldUpdateLoadingState(true) }
         
         SendbirdUI.connectIfNeeded { [weak self] _, error in
             guard let self = self else { return }
             
             if let error = error {
-                self.delegate?.shouldUpdateLoadingState(false)
-                self.delegate?.didReceiveError(error, isBlocker: false)
+                self.delegates.forEach { $0.shouldUpdateLoadingState(false) }
+                self.delegates.forEach { $0.didReceiveError(error, isBlocker: false) }
             } else {
                 if self.channelType == .group {
                     self.loadGroupChannel(channelURL: channelURL)
@@ -100,19 +110,19 @@ open class SBUModerationsViewModel {
         let completionHandler: ((GroupChannel?, SBError?) -> Void) = { [weak self] channel, error in
             guard let self = self else { return }
             
-            defer { self.delegate?.shouldUpdateLoadingState(false) }
+            defer { self.delegates.forEach { $0.shouldUpdateLoadingState(false) } }
             
             if let error = error {
-                self.delegate?.didReceiveError(error, isBlocker: false)
+                self.delegates.forEach { $0.didReceiveError(error, isBlocker: false) }
             } else if let channel = channel {
                 self.channel = channel
                 
                 let context = MessageContext(source: .eventChannelChanged, sendingStatus: .succeeded)
-                self.delegate?.moderationsViewModel(
+                self.delegates.forEach { $0.moderationsViewModel(
                     self,
                     didChangeChannel: channel,
                     withContext: context
-                )
+                ) }
             }
         }
         
@@ -123,19 +133,19 @@ open class SBUModerationsViewModel {
         let completionHandler: ((OpenChannel?, SBError?) -> Void) = { [weak self] channel, error in
             guard let self = self else { return }
             
-            defer { self.delegate?.shouldUpdateLoadingState(false) }
+            defer { self.delegates.forEach { $0.shouldUpdateLoadingState(false) } }
             
             if let error = error {
-                self.delegate?.didReceiveError(error, isBlocker: false)
+                self.delegates.forEach { $0.didReceiveError(error, isBlocker: false) }
             } else if let channel = channel {
                 self.channel = channel
                 
                 let context = MessageContext(source: .eventChannelChanged, sendingStatus: .succeeded)
-                self.delegate?.moderationsViewModel(
+                self.delegates.forEach { $0.moderationsViewModel(
                     self,
                     didChangeChannel: channel,
                     withContext: context
-                )
+                ) }
             }
         }
         
@@ -148,7 +158,7 @@ open class SBUModerationsViewModel {
     public func freezeChannel(_ completionHandler: ((Bool) -> Void)? = nil) {
         guard let groupChannel = self.channel as? GroupChannel else { return }
         
-        self.delegate?.shouldUpdateLoadingState(true)
+        self.delegates.forEach { $0.shouldUpdateLoadingState(true) }
         
         groupChannel.freeze { [weak self] error in
             guard let self = self else {
@@ -156,20 +166,20 @@ open class SBUModerationsViewModel {
                 return
             }
             
-            defer { self.delegate?.shouldUpdateLoadingState(false) }
+            defer { self.delegates.forEach { $0.shouldUpdateLoadingState(false) } }
             
             if let error = error {
-                self.delegate?.didReceiveError(error)
+                self.delegates.forEach { $0.didReceiveError(error) }
                 return
             }
             
             if let channel = self.channel {
                 let context = MessageContext(source: .eventChannelFrozen, sendingStatus: .succeeded)
-                self.delegate?.moderationsViewModel(
+                self.delegates.forEach { $0.moderationsViewModel(
                     self,
                     didChangeChannel: channel,
                     withContext: context
-                )
+                ) }
             }
             completionHandler?(true)
         }
@@ -180,7 +190,7 @@ open class SBUModerationsViewModel {
     public func unfreezeChannel(_ completionHandler: ((Bool) -> Void)? = nil) {
         guard let groupChannel = self.channel as? GroupChannel else { return }
         
-        self.delegate?.shouldUpdateLoadingState(true)
+        self.delegates.forEach { $0.shouldUpdateLoadingState(true) }
         
         groupChannel.unfreeze { [weak self] error in
             guard let self = self else {
@@ -188,20 +198,20 @@ open class SBUModerationsViewModel {
                 return
             }
             
-            defer { self.delegate?.shouldUpdateLoadingState(false) }
+            defer { self.delegates.forEach { $0.shouldUpdateLoadingState(false) } }
             
             if let error = error {
-                self.delegate?.didReceiveError(error)
+                self.delegates.forEach { $0.didReceiveError(error) }
                 return
             }
             
             if let channel = self.channel {
                 let context = MessageContext(source: .eventChannelUnfrozen, sendingStatus: .succeeded)
-                self.delegate?.moderationsViewModel(
+                self.delegates.forEach { $0.moderationsViewModel(
                     self,
                     didChangeChannel: channel,
                     withContext: context
-                )
+                ) }
             }
             completionHandler?(true)
         }

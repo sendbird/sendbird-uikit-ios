@@ -90,6 +90,7 @@ open class SBUOpenChannelBaseMessageCell: SBUTableViewCell {
             && self.groupPosition != .top
         let constant: CGFloat = isGrouped ? 4 : 16
         
+        if self.stackView.superview == nil { return }
         self.stackViewTopConstraint?.isActive = false
         self.stackViewTopConstraint = self.stackView.topAnchor.constraint(
             equalTo: self.contentView.topAnchor,
@@ -114,6 +115,11 @@ open class SBUOpenChannelBaseMessageCell: SBUTableViewCell {
         self.dateView.isHidden = hideDateView
         self.isOverlay = isOverlay
         
+        #if SWIFTUI
+        if self.applyViewConverter(.entireContent) {
+            return
+        }
+        #endif
         if let dateView = self.dateView as? SBUMessageDateView {
             dateView.configure(timestamp: message.createdAt)
         }

@@ -60,7 +60,7 @@ extension BaseMessage {
     }
     
     /// Indicates if the message is a stream (being updated) message.
-    /// - Since: 3.26.0
+    /// - Since: 3.28.0
     public var isStreamMessage: Bool {
         StreamData.make(self).stream == true
     }

@@ -23,10 +23,26 @@ extension SBUOpenChannelListModule {
 
 // MARK: Header
 extension SBUOpenChannelListModule.Header {
+    /// Represents the type of left bar button on the open channel list module.
+    /// - Since: 3.28.0
+    public static var LeftBarButton: SBUBarButtonItem.Type = SBUBarButtonItem.self
     
+    /// Represents the type of right bar button on the open channel list module.
+    /// - Since: 3.28.0
+    public static var RightBarButton: SBUBarButtonItem.Type = SBUBarButtonItem.self
+    
+    /// Represents the type of title view on the open channel list module.
+    /// - Since: 3.28.0
+    public static var TitleView: SBUNavigationTitleView.Type = SBUNavigationTitleView.self
 }
 
 // MARK: List
 extension SBUOpenChannelListModule.List {
-    
+    /// Represents the type of empty view on the open channel list module.
+    /// - Since: 3.28.0
+    public static var EmptyView: SBUEmptyView.Type = SBUEmptyView.self
+
+    /// Represents the type of channel cell on the open channel list module.
+    /// - Since: 3.28.0
+    public static var ChannelCell: SBUBaseChannelCell.Type = SBUOpenChannelCell.self
 }

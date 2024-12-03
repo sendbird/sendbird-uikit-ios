@@ -126,7 +126,7 @@ open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
             action: #selector(self.onTapContentView(sender:)))
         )
 
-        self.profileView.addGestureRecognizer(UITapGestureRecognizer(
+        self.profileBaseView.addGestureRecognizer(UITapGestureRecognizer(
             target: self,
             action: #selector(self.onTapUserProfileView(sender:)))
         )
@@ -190,6 +190,10 @@ open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
             groupPosition: groupPosition,
             isOverlay: isOverlay
         )
+        
+        #if SWIFTUI
+        self.applyViewConverter(.senderProfileImage)
+        #endif
         
         let theme = self.isOverlay ? self.overlayTheme : self.theme
         

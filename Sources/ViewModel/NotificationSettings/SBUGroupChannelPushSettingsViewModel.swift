@@ -30,7 +30,18 @@ open class SBUGroupChannelPushSettingsViewModel: SBUBaseChannelSettingsViewModel
         set { self.baseDelegate = newValue }
     }
     
-    public init(
+    // MARK: SwiftUI (Internal)
+    var delegates: WeakDelegateStorage<SBUGroupChannelPushSettingsViewModelDelegate> {
+        let computedDelegates = WeakDelegateStorage<SBUGroupChannelPushSettingsViewModelDelegate>()
+        self.baseDelegates.allKeyValuePairs().forEach { key, value in
+            if let delegate = value as? SBUGroupChannelPushSettingsViewModelDelegate {
+                computedDelegates.addDelegate(delegate, type: key)
+            }
+        }
+        return computedDelegates
+    }
+    
+    required public init(
         channel: BaseChannel? = nil,
         channelURL: String? = nil,
         delegate: SBUGroupChannelPushSettingsViewModelDelegate? = nil
@@ -38,6 +49,7 @@ open class SBUGroupChannelPushSettingsViewModel: SBUBaseChannelSettingsViewModel
         super.init()
 
         self.delegate = delegate
+        self.baseDelegates.addDelegate(delegate, type: .uikit)
 
         if let channel = channel {
             self.channel = channel
@@ -46,30 +58,50 @@ open class SBUGroupChannelPushSettingsViewModel: SBUBaseChannelSettingsViewModel
             self.channelURL = channelURL
         }
         
-        self.updateChannelPushTriggerOption()
+        guard let channelURL = self.channelURL else { return }
+        self.initializeAndLoad(channelURL: channelURL)
+    }
+    
+    func initializeAndLoad(channelURL: String) {
+        self.channelURL = channelURL
+        self.loadChannel(channelURL: channelURL)
+    }
+    
+    // MARK: - Channel related
+    public override func loadChannel(channelURL: String?) {
+        guard let channelURL = channelURL else { return }
+        self.loadChannel(channelURL: channelURL, type: .group)
     }
     
     open func changeNotification(_ pushTriggerOption: GroupChannelPushTriggerOption) {
         guard let groupChannel = self.channel as? GroupChannel else { return }
         guard self.currentTriggerOption != pushTriggerOption else { return }
         
-        self.delegate?.shouldUpdateLoadingState(true)
+        self.delegates.forEach {
+            $0.shouldUpdateLoadingState(true)
+        }
         groupChannel.setMyPushTriggerOption(pushTriggerOption) { [weak self] error in
             guard let self = self else { return }
-            self.delegate?.shouldUpdateLoadingState(false)
+            self.delegates.forEach {
+                $0.shouldUpdateLoadingState(false)
+            }
             
             if let error = error {
-                self.delegate?.didReceiveError(error)
+                self.delegates.forEach {
+                    $0.didReceiveError(error)
+                }
                 return
             }
             
             if let channel = self.channel {
                 let context = MessageContext(source: .eventChannelChanged, sendingStatus: .succeeded)
-                self.delegate?.baseChannelSettingsViewModel(
-                    self,
-                    didChangeChannel: channel,
-                    withContext: context
-                )
+                self.delegates.forEach {
+                    $0.baseChannelSettingsViewModel(
+                        self,
+                        didChangeChannel: channel,
+                        withContext: context
+                    )
+                }
                 self.updateChannelPushTriggerOption()
             }
         }
@@ -78,9 +110,11 @@ open class SBUGroupChannelPushSettingsViewModel: SBUBaseChannelSettingsViewModel
     public func updateChannelPushTriggerOption() {
         guard let channel = self.channel as? GroupChannel else { return }
         self.currentTriggerOption = channel.myPushTriggerOption
-        self.delegate?.groupChannelPushSettingsViewModel(
-            self,
-            didChangeNotification: self.currentTriggerOption
-        )
+        self.delegates.forEach {
+            $0.groupChannelPushSettingsViewModel(
+                self,
+                didChangeNotification: self.currentTriggerOption
+            )
+        }
     }
 }

@@ -30,6 +30,20 @@ public protocol SBUGroupChannelSettingsModuleHeaderDelegate: SBUBaseChannelSetti
     ///   - rightItem: Updated `rightBarButton` object.
     func groupChannelSettingsModule(_ headerComponent: SBUGroupChannelSettingsModule.Header, didUpdateRightItem rightItem: UIBarButtonItem?)
     
+    /// Called when `leftBarButtons` value has been updated.
+    /// - Parameters:
+    ///   - headerComponent: `SBUGroupChannelSettingsModule.Header` object
+    ///   - leftItem: Updated `leftBarButtons` object.
+    /// - Since: 3.28.0
+    func groupChannelSettingsModule(_ headerComponent: SBUGroupChannelSettingsModule.Header, didUpdateLeftItems leftItems: [UIBarButtonItem]?)
+    
+    /// Called when `rightBarButtons` was selected.
+    /// - Parameters:
+    ///   - headerComponent: `SBUGroupChannelSettingsModule.Header` object
+    ///   - rightItem: Updated `rightBarButtons` object.
+    /// - Since: 3.28.0
+    func groupChannelSettingsModule(_ headerComponent: SBUGroupChannelSettingsModule.Header, didUpdateRightItems rightItems: [UIBarButtonItem]?)
+    
     /// Called when `leftBarButton` was selected.
     /// - Parameters:
     ///   - component: `SBUBaseChannelSettingsModule.Header` object
@@ -41,6 +55,12 @@ public protocol SBUGroupChannelSettingsModuleHeaderDelegate: SBUBaseChannelSetti
     ///   - component: `SBUBaseChannelSettingsModule.Header` object
     ///   - rightItem: Selected `rightBarButton` object.
     func groupChannelSettingsModule(_ headerComponent: SBUGroupChannelSettingsModule.Header, didTapRightItem rightItem: UIBarButtonItem)
+}
+
+extension SBUGroupChannelSettingsModuleHeaderDelegate {
+    func groupChannelSettingsModule(_ headerComponent: SBUGroupChannelSettingsModule.Header, didUpdateRightItem rightItem: UIBarButtonItem?) {}
+    
+    func groupChannelSettingsModule(_ headerComponent: SBUGroupChannelSettingsModule.Header, didUpdateRightItems rightItems: [UIBarButtonItem]?) {}
 }
 
 /// Methods to get data source for header component in a group channel setting.
@@ -62,11 +82,6 @@ extension SBUGroupChannelSettingsModule {
     open class Header: SBUBaseChannelSettingsModule.Header {
         
         // MARK: - UI properties (Private)
-        override func defaultTitleView() -> SBUNavigationTitleView {
-            let titleView = SBUNavigationTitleView()
-            titleView.textAlignment = .left
-            return titleView
-        }
         
         // MARK: - Logic properties (Public)
         /// The object that acts as the delegate of the header component. The delegate must adopt the `SBUGroupChannelSettingsModuleHeaderDelegate` protocol
@@ -97,6 +112,36 @@ extension SBUGroupChannelSettingsModule {
             SBULog.info("")
         }
         
+        // MARK: - default views
+        
+        override func createDefaultTitleView() -> SBUNavigationTitleView {
+            let titleView = SBUModuleSet.GroupChannelSettingsModule.HeaderComponent.TitleView.init()
+            titleView.configure(title: self.channelName ?? SBUStringSet.ChannelSettings_Header_Title)
+            
+            return titleView
+        }
+        
+        override func createDefaultLeftButton() -> SBUBarButtonItem {
+            SBUModuleSet.GroupChannelSettingsModule.HeaderComponent.LeftBarButton.init(
+                image: SBUIconSetType.iconBack.image(to: SBUIconSetType.Metric.defaultIconSize),
+                landscapeImagePhone: nil,
+                style: .plain,
+                target: self,
+                action: #selector(onTapLeftBarButton)
+            )
+        }
+        
+        override func createDefaultRightButton() -> SBUBarButtonItem {
+            SBUModuleSet.GroupChannelSettingsModule.HeaderComponent.RightBarButton.init(
+                title: SBUStringSet.Edit,
+                style: .plain,
+                target: self,
+                action: #selector(onTapRightBarButton)
+            )
+        }
+        
+        // MARK: life cycle
+        
         /// Configures header component.
         /// - Parameters:
         ///   - delegate: `SBUGroupChannelSettingsModuleHeaderDelegate` type listener
@@ -116,11 +161,13 @@ extension SBUGroupChannelSettingsModule {
         }
         
         open override func setupViews() {
+            #if SWIFTUI
+            self.applyViewConverter(.titleView)
+            self.applyViewConverter(.leftView)
+            self.applyViewConverter(.rightView)
+            // We are not using `...buttons` in SwiftUI
+            #endif
             super.setupViews()
-            
-            if let titleView = self.titleView as? SBUNavigationTitleView {
-                titleView.text = self.channelName ?? SBUStringSet.ChannelSettings_Header_Title
-            }
         }
         
         // MARK: - Attach update delegate on view
@@ -133,20 +180,30 @@ extension SBUGroupChannelSettingsModule {
         public override func didUpdateRightItem() {
             self.delegate?.groupChannelSettingsModule(self, didUpdateRightItem: self.rightBarButton)
         }
+        public override func didUpdateLeftItems() {
+            self.delegate?.groupChannelSettingsModule(self, didUpdateLeftItems: self.leftBarButtons)
+        }
+        public override func didUpdateRightItems() {
+            self.delegate?.groupChannelSettingsModule(self, didUpdateRightItems: self.rightBarButtons)
+        }
         
         // MARK: - Actions
         open override func onTapLeftBarButton() {
             super.onTapLeftBarButton()
-            
-            if let leftBarButton = self.leftBarButton {
+            if let leftBarButtons = self.leftBarButtons,
+               leftBarButtons.isUsingDefaultButton(self.defaultLeftBarButton) {
+                self.delegate?.groupChannelSettingsModule(self, didTapLeftItem: self.defaultLeftBarButton)
+            } else if let leftBarButton = self.leftBarButton {
                 self.delegate?.groupChannelSettingsModule(self, didTapLeftItem: leftBarButton)
             }
         }
         
         open override func onTapRightBarButton() {
             super.onTapRightBarButton()
-            
-            if let rightBarButton = self.rightBarButton {
+            if let rightBarButtons = self.rightBarButtons,
+               rightBarButtons.isUsingDefaultButton(self.defaultRightBarButton) {
+                self.delegate?.groupChannelSettingsModule(self, didTapRightItem: self.defaultRightBarButton)
+            } else if let rightBarButton = self.rightBarButton {
                 self.delegate?.groupChannelSettingsModule(self, didTapRightItem: rightBarButton)
             }
         }

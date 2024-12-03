@@ -8,7 +8,16 @@
 
 import UIKit
 
-class SBUBarButtonItem {
+/// A class that displays an bar button item in SendbirdUIKit.
+/// - Since: 3.28.0
+open class SBUBarButtonItem: UIBarButtonItem {
+    required public init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
+    
+    required public override init() {
+        super.init()
+    }
 
     static func backButton(target: Any, selector: Selector) -> UIBarButtonItem {
         return UIBarButtonItem(

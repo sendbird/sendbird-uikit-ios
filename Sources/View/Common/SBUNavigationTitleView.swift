@@ -8,8 +8,7 @@
 
 import UIKit
 
-public class SBUNavigationTitleView: SBUView {
-    
+open class SBUNavigationTitleView: SBUView {
     /// - Since: 3.21.0
     @SBUThemeWrapper(theme: SBUTheme.componentTheme)
     public var theme: SBUComponentTheme
@@ -17,9 +16,9 @@ public class SBUNavigationTitleView: SBUView {
     public var text: String? = ""
     public var textAlignment: NSTextAlignment = .center
     
-    var titleLabel = UILabel()
+    public var titleLabel = UILabel()
      
-    public override init() {
+    required public override init() {
         super.init()
     }
     
@@ -32,19 +31,17 @@ public class SBUNavigationTitleView: SBUView {
         fatalError()
     }
     
-    public override func setupViews() {
-        self.titleLabel.textAlignment = self.textAlignment
-
+    open override func setupViews() {
         self.addSubview(self.titleLabel)
     }
     
-    public override func setupLayouts() {
+    open override func setupLayouts() {
         super.setupLayouts()
         
         self.titleLabel.sbu_constraint(equalTo: self, left: 0, right: 0, top: 0, bottom: 0)
     }
     
-    public override func setupStyles() {
+    open override func setupStyles() {
         super.setupStyles()
         
         self.backgroundColor = .clear
@@ -53,21 +50,22 @@ public class SBUNavigationTitleView: SBUView {
         self.titleLabel.textColor = theme.titleColor
     }
     
-    public override func draw(_ rect: CGRect) {
+    open override func draw(_ rect: CGRect) {
         super.draw(rect)
         
         self.titleLabel.frame = self.bounds
     }
     
-    public override func layoutSubviews() {
+    open override func layoutSubviews() {
         super.layoutSubviews()
         
         self.titleLabel.text = self.text
+        self.titleLabel.textAlignment = self.textAlignment
         
         self.setupStyles()
     }
     
-    public func configure(title: String?) {
+    open func configure(title: String?) {
         if let title = title {
             self.text = title
             self.titleLabel.text = title

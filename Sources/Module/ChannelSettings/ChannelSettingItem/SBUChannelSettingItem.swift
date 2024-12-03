@@ -11,6 +11,8 @@ import UIKit
 /// This is a structure used to handling action and display in `SBUBaseChannelSettingsModule.List` and `SBUBaseChannelSettingCell`.
 /// - Since: 3.1.0
 public struct SBUChannelSettingItem {
+    var id: String?
+    
     /// The title of the setting item
     public let title: String
     
@@ -44,3 +46,33 @@ public struct SBUChannelSettingItem {
         self.tapHandler = tapHandler
     }
 }
+
+#if SWIFTUI
+extension SBUChannelSettingItem {
+    init(id: String,
+         title: String,
+         subTitle: String? = nil,
+         icon: UIImage,
+         isRightButtonHidden: Bool = true,
+         isRightSwitchHidden: Bool = true,
+         tapHandler: (() -> Void)? = nil) {
+        self.init(
+            title: title,
+            subTitle: subTitle,
+            icon: icon,
+            isRightButtonHidden: isRightButtonHidden,
+            isRightSwitchHidden: isRightSwitchHidden,
+            tapHandler: tapHandler)
+        
+        self.id = id
+    }
+    
+    struct Identifier {
+        static let moderation = "moderation"
+        static let notification = "notification"
+        static let members = "member"
+        static let searchItem = "searchItem"
+        static let leaveChannel = "leaveChannel"
+    }
+}
+#endif

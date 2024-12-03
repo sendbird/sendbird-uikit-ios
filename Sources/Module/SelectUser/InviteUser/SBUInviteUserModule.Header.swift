@@ -28,6 +28,20 @@ public protocol SBUInviteUserModuleHeaderDelegate: SBUBaseSelectUserModuleHeader
     ///   - rightItem: Updated `rightBarButton` object.
     func inviteUserModule(_ headerComponent: SBUInviteUserModule.Header, didUpdateRightItem rightItem: UIBarButtonItem?)
     
+    /// Called when `leftBarButtons` value has been updated.
+    /// - Parameters:
+    ///   - headerComponent: `SBUInviteUserModule.Header` object
+    ///   - leftItem: Updated `leftBarButtons` object.
+    /// - Since: 3.28.0
+    func inviteUserModule(_ headerComponent: SBUInviteUserModule.Header, didUpdateLeftItems leftItems: [UIBarButtonItem]?)
+    
+    /// Called when `rightBarButtons` was selected.
+    /// - Parameters:
+    ///   - headerComponent: `SBUInviteUserModule.Header` object
+    ///   - rightItem: Updated `rightBarButtons` object.
+    /// - Since: 3.28.0
+    func inviteUserModule(_ headerComponent: SBUInviteUserModule.Header, didUpdateRightItems rightItems: [UIBarButtonItem]?)
+    
     /// Called when `leftBarButton` was selected.
     /// - Parameters:
     ///   - component: `SBUInviteUserModule.Header` object
@@ -41,6 +55,12 @@ public protocol SBUInviteUserModuleHeaderDelegate: SBUBaseSelectUserModuleHeader
     func inviteUserModule(_ headerComponent: SBUInviteUserModule.Header, didTapRightItem rightItem: UIBarButtonItem)
 }
 
+extension SBUInviteUserModuleHeaderDelegate {
+    func inviteUserModule(_ headerComponent: SBUInviteUserModule.Header, didUpdateLeftItems leftItems: [UIBarButtonItem]?) { }
+    
+    func inviteUserModule(_ headerComponent: SBUInviteUserModule.Header, didUpdateRightItems rightItems: [UIBarButtonItem]?) { }
+}
+
 public protocol SBUInviteUserModuleHeaderDataSource: SBUBaseSelectUserModuleHeaderDataSource { }
 
 extension SBUInviteUserModule {
@@ -51,15 +71,14 @@ extension SBUInviteUserModule {
     open class Header: SBUBaseSelectUserModule.Header {
         
         // MARK: - UI properties (Private)
-        override func defaultTitleView() -> SBUNavigationTitleView {
-            let titleView = SBUNavigationTitleView()
-            titleView.text = SBUStringSet.InviteChannel_Header_Title
-            titleView.textAlignment = .center
+        override func createDefaultTitleView() -> SBUNavigationTitleView {
+            let titleView = SBUModuleSet.InviteUserModule.HeaderComponent.TitleView.init()
+            titleView.configure(title: SBUStringSet.InviteChannel_Header_Title)
             return titleView
         }
         
-        override func defaultLeftBarButton() -> UIBarButtonItem {
-            let leftItem =  UIBarButtonItem(
+        override func createDefaultLeftBarButton() -> SBUBarButtonItem {
+            let leftItem =  SBUModuleSet.InviteUserModule.HeaderComponent.LeftBarButton.init(
                 title: SBUStringSet.Cancel,
                 style: .plain,
                 target: self,
@@ -69,8 +88,8 @@ extension SBUInviteUserModule {
             return leftItem
         }
         
-        override func defaultRightBarButton() -> UIBarButtonItem {
-            let rightItem =  UIBarButtonItem(
+        override func createDefaultRightBarButton() -> SBUBarButtonItem {
+            let rightItem =  SBUModuleSet.InviteUserModule.HeaderComponent.RightBarButton.init(
                 title: SBUStringSet.InviteChannel_Invite(0),
                 style: .plain,
                 target: self,
@@ -119,11 +138,23 @@ extension SBUInviteUserModule {
             self.setupStyles()
         }
         
+        open override func setupViews() {
+            #if SWIFTUI
+            self.applyViewConverter(.titleView)
+            self.applyViewConverter(.leftView)
+            self.applyViewConverter(.rightView)
+            // We are not using `...buttons` in SwiftUI
+            #endif
+            super.setupViews()
+        }
+        
         // MARK: - Common
         open override func updateRightBarButton() {
             super.updateRightBarButton()
             
-            self.rightBarButton?.title = SBUStringSet.InviteChannel_Invite(self.selectedUserList?.count ?? 0)
+            let title = SBUStringSet.InviteChannel_Invite(self.selectedUserList?.count ?? 0)
+            self.rightBarButton?.title = title
+            self.rightBarButtons?.first?.title = title
         }
         
         // MARK: - Attach update delegate on view
@@ -136,16 +167,30 @@ extension SBUInviteUserModule {
         public override func didUpdateRightItem() {
             self.delegate?.inviteUserModule(self, didUpdateRightItem: self.rightBarButton)
         }
+        public override func didUpdateLeftItems() {
+            self.delegate?.inviteUserModule(self, didUpdateLeftItems: self.leftBarButtons)
+        }
+        public override func didUpdateRightItems() {
+            self.delegate?.inviteUserModule(self, didUpdateRightItems: self.rightBarButtons)
+        }
         
         // MARK: - Actions
         open override func onTapLeftBarButton() {
-            if let leftBarButton = self.leftBarButton {
+            if let leftBarButtons = self.leftBarButtons,
+               let defaultLeftBarButton = self.defaultLeftBarButton,
+               leftBarButtons.isUsingDefaultButton(defaultLeftBarButton) {
+                self.delegate?.inviteUserModule(self, didTapLeftItem: defaultLeftBarButton)
+            } else if let leftBarButton = self.leftBarButton {
                 self.delegate?.inviteUserModule(self, didTapLeftItem: leftBarButton)
             }
         }
         
         open override func onTapRightBarButton() {
-            if let rightBarButton = self.rightBarButton {
+            if let rightBarButtons = self.rightBarButtons,
+               let defaultRightBarButton = self.defaultRightBarButton,
+               rightBarButtons.isUsingDefaultButton(defaultRightBarButton) {
+                self.delegate?.inviteUserModule(self, didTapRightItem: defaultRightBarButton)
+            } else if let rightBarButton = self.rightBarButton {
                 self.delegate?.inviteUserModule(self, didTapRightItem: rightBarButton)
             }
         }
