@@ -75,6 +75,15 @@ extension Array where Element: BaseMessage {
     }
 }
 
+extension Array where Element: UIBarButtonItem {
+    func isUsingDefaultButton(_ defaultButton: UIBarButtonItem) -> Bool {
+        for button in self where button == defaultButton {
+            return true
+        }
+        return false
+    }
+}
+
 public extension NSArray {
     /// This is a function that extracts the userId array using the `SBUUser` type array.
     /// This is a function used in Objective-C.

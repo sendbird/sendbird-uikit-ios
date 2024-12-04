@@ -55,6 +55,8 @@ open class SBUBaseSelectUserViewModel: NSObject {
     weak var baseDelegate: SBUBaseSelectUserViewModelDelegate?
     weak var baseDataSource: SBUBaseSelectUserViewModelDataSource?
     
+    var baseDelegates = WeakDelegateStorage<SBUBaseSelectUserViewModelDelegate>()
+    
     internal var customUserListQuery: ApplicationUserListQuery?
     internal var customMemberListQuery: MemberListQuery?
     internal var customParticipantListQuery: ParticipantListQuery?
@@ -77,9 +79,10 @@ open class SBUBaseSelectUserViewModel: NSObject {
         delegate: SBUBaseSelectUserViewModelDelegate? = nil,
         dataSource: SBUBaseSelectUserViewModelDataSource? = nil
     ) {
-        
         self.baseDelegate = delegate
         self.baseDataSource = dataSource
+        
+        self.baseDelegates.addDelegate(delegate, type: .uikit)
         
         super.init()
         
@@ -89,38 +92,60 @@ open class SBUBaseSelectUserViewModel: NSObject {
         } else if let channelURL = channelURL {
             self.channelURL = channelURL
         }
+        
+        guard let channelURL = self.channelURL else { return }
+        self.initializeAndLoad(
+            channelURL: channelURL,
+            channelType: channelType,
+            users: users,
+            inviteListType: inviteListType,
+            userListQuery: userListQuery,
+            memberListQuery: memberListQuery,
+            participantListQuery: participantListQuery
+        )
+    }
+    
+    func initializeAndLoad(
+        channelURL: String,
+        channelType: ChannelType = .group,
+        users: [SBUUser]? = nil,
+        inviteListType: ChannelInviteListType,
+        userListQuery: ApplicationUserListQuery? = nil,
+        memberListQuery: MemberListQuery? = nil,
+        participantListQuery: ParticipantListQuery? = nil
+    ) {
+        self.channelURL = channelURL
         self.channelType = channelType
         
         self.inviteListType = inviteListType
         
-        self.customUserListQuery = userListQuery
-        self.customMemberListQuery = memberListQuery
-        self.customParticipantListQuery = participantListQuery
+        if let userListQuery { self.userListQuery = userListQuery }
+        if let memberListQuery { self.memberListQuery = memberListQuery }
+        if let participantListQuery { self.participantListQuery = participantListQuery }
         
-        self.customizedUsers = users
+        if let users { self.customizedUsers = users }
         self.useCustomizedUsers = (users?.count ?? 0) > 0
-        
-        guard let channelURL = self.channelURL else { return }
+
         self.loadChannel(channelURL: channelURL, type: channelType)
     }
     
     // MARK: - Channel related
     public func loadChannel(channelURL: String, type: ChannelType) {
-        self.baseDelegate?.shouldUpdateLoadingState(true)
+        self.baseDelegates.forEach { $0.shouldUpdateLoadingState(true) }
         
         SendbirdUI.connectIfNeeded { [weak self] _, error in
             guard let self = self else { return }
             
             if let error = error {
-                self.baseDelegate?.shouldUpdateLoadingState(false)
-                self.baseDelegate?.didReceiveError(error, isBlocker: false)
+                self.baseDelegates.forEach { $0.shouldUpdateLoadingState(false) }
+                self.baseDelegates.forEach { $0.didReceiveError(error, isBlocker: false) }
             } else {
                 let completionHandler: ((BaseChannel?, SBError?) -> Void) = { [weak self] channel, error in
                     guard let self = self else { return }
                     
                     if let error = error {
-                        self.baseDelegate?.shouldUpdateLoadingState(false)
-                        self.baseDelegate?.didReceiveError(error, isBlocker: false)
+                        self.baseDelegates.forEach { $0.shouldUpdateLoadingState(false) }
+                        self.baseDelegates.forEach { $0.didReceiveError(error, isBlocker: false) }
                     } else if let channel = channel {
                         self.channel = channel
                         self.loadNextUserList(reset: true, users: self.customizedUsers)
@@ -219,7 +244,7 @@ open class SBUBaseSelectUserViewModel: NSObject {
         
         guard self.userListQuery?.hasNext == true else {
             self.isLoading = false
-            self.baseDelegate?.shouldUpdateLoadingState(false)
+            self.baseDelegates.forEach { $0.shouldUpdateLoadingState(false) }
             SBULog.info("All users have been loaded.")
             return
         }
@@ -228,11 +253,11 @@ open class SBUBaseSelectUserViewModel: NSObject {
             guard let self = self else { return }
             defer {
                 self.isLoading = false
-                self.baseDelegate?.shouldUpdateLoadingState(false)
+                self.baseDelegates.forEach { $0.shouldUpdateLoadingState(false) }
             }
             
             if let error = error {
-                self.baseDelegate?.didReceiveError(error, isBlocker: false)
+                self.baseDelegates.forEach { $0.didReceiveError(error, isBlocker: false) }
                 return
             }
             guard let users = users?.sbu_convertUserList() else { return }
@@ -246,28 +271,28 @@ open class SBUBaseSelectUserViewModel: NSObject {
     private func appendUsersWithFiltering(users: [SBUUser]) {
         defer {
             self.isLoading = false
-            self.baseDelegate?.shouldUpdateLoadingState(false)
+            self.baseDelegates.forEach { $0.shouldUpdateLoadingState(false) }
         }
         
         // Super,Broadcast channel does not contain all information in joined members.
         if let channel = channel as? GroupChannel,
            (channel.isBroadcast || channel.isSuper) {
             self.userList += users
-            self.baseDelegate?.baseSelectedUserViewModel(
+            self.baseDelegates.forEach { $0.baseSelectedUserViewModel(
                 self,
                 didChangeUserList: self.userList,
                 needsToReload: true
-            )
+            ) }
             return
         }
 
         guard !self.joinedUserIds.isEmpty else {
             self.userList += users
-            self.baseDelegate?.baseSelectedUserViewModel(
+            self.baseDelegates.forEach { $0.baseSelectedUserViewModel(
                 self,
                 didChangeUserList: self.userList,
                 needsToReload: true
-            )
+            ) }
             return
         }
         
@@ -276,17 +301,18 @@ open class SBUBaseSelectUserViewModel: NSObject {
             let nextUserList = (self.baseDataSource?.nextUserList()?.count ?? 0) > 0
             ? self.baseDataSource?.nextUserList()
                 : nil
+            // FIXME: member list 다음 목록을 제대로 못가져옴. 우선 loading 상태 해제가 되야하고, 해제가되면, 리스트 받아오는게 이미 가져온 목록이 있어도 limit 만큼 가져와야함
             self.loadNextUserList(
                 reset: false,
                 users: self.useCustomizedUsers ? nextUserList : nil
             )
         } else {
             self.userList += filteredUsers
-            self.baseDelegate?.baseSelectedUserViewModel(
+            self.baseDelegates.forEach { $0.baseSelectedUserViewModel(
                 self,
                 didChangeUserList: self.userList,
                 needsToReload: true
-            )
+            ) }
         }
     }
     
@@ -306,8 +332,8 @@ open class SBUBaseSelectUserViewModel: NSObject {
                     self.memberListQuery = channel.createMemberListQuery(params: params)
                 } else {
                     let error = SBError(domain: "Cannot create the memberListQuery.", code: -1, userInfo: nil)
-                    self.baseDelegate?.shouldUpdateLoadingState(false)
-                    self.baseDelegate?.didReceiveError(error)
+                    self.baseDelegates.forEach { $0.shouldUpdateLoadingState(false) }
+                    self.baseDelegates.forEach { $0.didReceiveError(error) }
                     return
                 }
             }
@@ -315,7 +341,7 @@ open class SBUBaseSelectUserViewModel: NSObject {
         
         guard self.memberListQuery?.hasNext == true else {
             self.isLoading = false
-            self.baseDelegate?.shouldUpdateLoadingState(false)
+            self.baseDelegates.forEach { $0.shouldUpdateLoadingState(false) }
             SBULog.info("All members have been loaded.")
             return
         }
@@ -324,11 +350,11 @@ open class SBUBaseSelectUserViewModel: NSObject {
             guard let self = self else { return }
             defer {
                 self.isLoading = false
-                self.baseDelegate?.shouldUpdateLoadingState(false)
+                self.baseDelegates.forEach { $0.shouldUpdateLoadingState(false) }
             }
             
             if let error = error {
-                self.baseDelegate?.didReceiveError(error, isBlocker: false)
+                self.baseDelegates.forEach { $0.didReceiveError(error, isBlocker: false) }
                 return
             }
         
@@ -337,11 +363,11 @@ open class SBUBaseSelectUserViewModel: NSObject {
             guard !members.isEmpty else { return }
             
             self.userList += members
-            self.baseDelegate?.baseSelectedUserViewModel(
+            self.baseDelegates.forEach { $0.baseSelectedUserViewModel(
                 self,
                 didChangeUserList: self.userList,
                 needsToReload: true
-            )
+            ) }
         })
     }
     
@@ -360,8 +386,8 @@ open class SBUBaseSelectUserViewModel: NSObject {
                     self.participantListQuery = channel.createParticipantListQuery(params: params)
                 } else {
                     let error = SBError(domain: "Cannot create the participantListQuery.", code: -1, userInfo: nil)
-                    self.baseDelegate?.shouldUpdateLoadingState(false)
-                    self.baseDelegate?.didReceiveError(error)
+                    self.baseDelegates.forEach { $0.shouldUpdateLoadingState(false) }
+                    self.baseDelegates.forEach { $0.didReceiveError(error) }
                     return
                 }
             }
@@ -369,7 +395,7 @@ open class SBUBaseSelectUserViewModel: NSObject {
         
         guard self.participantListQuery?.hasNext == true else {
             self.isLoading = false
-            self.baseDelegate?.shouldUpdateLoadingState(false)
+            self.baseDelegates.forEach { $0.shouldUpdateLoadingState(false) }
             SBULog.info("All participants have been loaded.")
             return
         }
@@ -378,11 +404,11 @@ open class SBUBaseSelectUserViewModel: NSObject {
             guard let self = self, let channel = channel else { return }
             defer {
                 self.isLoading = false
-                self.baseDelegate?.shouldUpdateLoadingState(false)
+                self.baseDelegates.forEach { $0.shouldUpdateLoadingState(false) }
             }
             
             if let error = error {
-                self.baseDelegate?.didReceiveError(error, isBlocker: false)
+                self.baseDelegates.forEach { $0.didReceiveError(error, isBlocker: false) }
                 return
             }
         
@@ -391,11 +417,11 @@ open class SBUBaseSelectUserViewModel: NSObject {
             guard !users.isEmpty else { return }
             
             self.userList += users.sbu_updateOperatorStatus(channel: channel)
-            self.baseDelegate?.baseSelectedUserViewModel(
+            self.baseDelegates.forEach { $0.baseSelectedUserViewModel(
                 self,
                 didChangeUserList: self.userList,
                 needsToReload: true
-            )
+            ) }
         })
     }
     
@@ -449,9 +475,9 @@ open class SBUBaseSelectUserViewModel: NSObject {
         
         SBULog.info("Selected user: \(user)")
         
-        self.baseDelegate?.baseSelectedUserViewModel(
+        self.baseDelegates.forEach { $0.baseSelectedUserViewModel(
             self,
             didUpdateSelectedUsers: Array(self.selectedUserList)
-        )
+        ) }
     }
 }

@@ -98,7 +98,7 @@ extension SBUGroupChannelPushSettingsModule {
             self.addSubview(self.tableView)
             
             self.tableView.register(
-                type(of: SBUChannelPushSettingCell()),
+                type(of: Self.ChannelPushSettingCell.init()),
                 forCellReuseIdentifier: SBUChannelPushSettingCell.sbu_className
             )
         }

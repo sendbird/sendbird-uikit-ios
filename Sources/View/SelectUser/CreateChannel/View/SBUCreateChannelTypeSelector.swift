@@ -93,7 +93,7 @@ open class SBUCreateChannelTypeSelector: SBUView, SBUCreateChannelTypeSelectorPr
         super.init(frame: .zero)
     }
     
-    public init(delegate: SBUCreateChannelTypeSelectorDelegate?) {
+    required public init(delegate: SBUCreateChannelTypeSelectorDelegate?) {
         self.delegate = delegate
         
         super.init()

@@ -11,7 +11,7 @@
 import UIKit
 
 public class SBUViewControllerSet {
-    
+    // MARK: Key functions
     /// The view controller for the group channel list.
     public static var GroupChannelListViewController: SBUGroupChannelListViewController.Type = SBUGroupChannelListViewController.self
     /// The view controller for the open channel list.

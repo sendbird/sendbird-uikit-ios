@@ -22,10 +22,27 @@ extension SBUGroupChannelSettingsModule {
 
 // MARK: Header
 extension SBUGroupChannelSettingsModule.Header {
+    /// Represents the metatype of left bar button on the group channel settings module.
+    /// - Since: 3.28.0
+    public static var LeftBarButton: SBUBarButtonItem.Type = SBUBarButtonItem.self
     
+    /// Represents the metatype of right bar button on the group channel settings module.
+    /// - Since: 3.28.0
+    public static var RightBarButton: SBUBarButtonItem.Type = SBUBarButtonItem.self
+    
+    /// Represents the metatype of title view on the group channel settings module.
+    /// - Since: 3.28.0
+    public static var TitleView: SBUNavigationTitleView.Type = SBUNavigationTitleView.self
 }
 
 // MARK: List
 extension SBUGroupChannelSettingsModule.List {
     
+    /// Represents the metatype of channel info view on the group channel settings module.
+    /// - Since: 3.28.0
+    public static var ChannelInfoView: SBUChannelSettingsChannelInfoView.Type = SBUChannelSettingsChannelInfoView.self
+    
+    /// Represents the metatype of setting cell on the group channel settings module.
+    /// - Since: 3.28.0
+    public static var SettingCell: SBUGroupChannelSettingCell.Type = SBUGroupChannelSettingCell.self
 }

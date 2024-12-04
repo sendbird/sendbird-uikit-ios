@@ -43,7 +43,18 @@ open class SBUOpenChannelAdminMessageCell: SBUOpenChannelBaseMessageCell {
             top: 0,
             bottom: 0
         )
-        self.baseView.sbu_constraint(height: 40, priority: .defaultHigh)
+        
+        let heightConstraintSettingClosure = {
+            self.baseView.sbu_constraint(height: 40, priority: .defaultHigh)
+        }
+        
+        #if SWIFTUI
+        if self.viewConverter.adminMessage.entireContent == nil {
+            _ = heightConstraintSettingClosure()
+        }
+        #else
+        heightConstraintSettingClosure()
+        #endif
         
         self.messageLabel.sbu_constraint(
             equalTo: self.baseView,
@@ -59,6 +70,13 @@ open class SBUOpenChannelAdminMessageCell: SBUOpenChannelBaseMessageCell {
      
         let theme = self.isOverlay ? self.overlayTheme : self.theme
         self.baseView.backgroundColor = theme.contentBackgroundColor
+        
+        #if SWIFTUI
+        if self.viewConverter.adminMessage.entireContent != nil {
+            self.baseView.layer.cornerRadius = 0
+            self.baseView.backgroundColor = .clear
+        }
+        #endif
     }
     
     open override func layoutSubviews() {
@@ -89,6 +107,13 @@ open class SBUOpenChannelAdminMessageCell: SBUOpenChannelBaseMessageCell {
             hideDateView: hideDateView,
             isOverlay: isOverlay
         )
+        
+        #if SWIFTUI
+        if self.applyViewConverter(.adminMessage) {
+            return
+        }
+        #endif
+        
         self.messageLabel.text = message.message
         self.layoutIfNeeded()
     }

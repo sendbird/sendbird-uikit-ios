@@ -185,6 +185,12 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
         self.webView.setupStyles()
         
         self.additionContainerView.layer.cornerRadius = 16
+        
+        #if SWIFTUI
+        if self.viewConverter.userMessage.entireContent != nil {
+            self.mainContainerView.setTransparentBackgroundColor()
+        }
+        #endif
     }
     
     // MARK: - Common
@@ -220,14 +226,25 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
         self.additionContainerView.isSelected = false
         
         // Set up SBUUserMessageTextView
-        if let messageTextView = messageTextView as? SBUUserMessageTextView, configuration.withTextView {
-            messageTextView.configure(
-                model: SBUUserMessageTextViewModel(
-                    message: message,
-                    position: configuration.messagePosition,
-                    isMarkdownEnabled: SendbirdUI.config.groupChannel.channel.isMarkdownForUserMessageEnabled
+        var didApplyUserMessageViewConverter = false
+        #if SWIFTUI
+        if self.configuration?.isThreadMessage == false {
+            didApplyUserMessageViewConverter = self.applyViewConverter(.userMessage)
+        } else {
+            didApplyUserMessageViewConverter = self.applyViewConverterForMessageThread(.userMessage)
+        }
+        // SWIFTUI FIXME: URL인 경우 link view가 약간 이상하게 보임
+        #endif
+        if !didApplyUserMessageViewConverter {
+            if let messageTextView = messageTextView as? SBUUserMessageTextView, configuration.withTextView {
+                messageTextView.configure(
+                    model: SBUUserMessageTextViewModel(
+                        message: message,
+                        position: configuration.messagePosition,
+                        isMarkdownEnabled: SendbirdUI.config.groupChannel.channel.isMarkdownForUserMessageEnabled
+                    )
                 )
-            )
+            }
         }
         // Set up WebView with OG meta data
         if let ogMetaData = configuration.message.ogMetaData, SBUAvailable.isSupportOgTag() {
@@ -305,6 +322,15 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
                 isMarkdownEnabled: SendbirdUI.config.groupChannel.channel.isMarkdownForUserMessageEnabled
             )
         )
+    }
+    
+    public override func resetMainContainerViewLayer() {
+        #if SWIFTUI
+        if self.viewConverter.userMessage.entireContent != nil {
+            return
+        }
+        #endif
+        super.resetMainContainerViewLayer()
     }
     
     // MARK: - Action

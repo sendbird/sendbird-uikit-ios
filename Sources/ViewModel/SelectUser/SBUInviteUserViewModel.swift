@@ -32,15 +32,28 @@ open class SBUInviteUserViewModel: SBUBaseSelectUserViewModel {
         set { self.baseDataSource = newValue }
     }
     
+    // MARK: SwiftUI (Internal)
+    var delegates: WeakDelegateStorage<SBUInviteUserViewModelDelegate> {
+        let computedDelegates = WeakDelegateStorage<SBUInviteUserViewModelDelegate>()
+        self.baseDelegates.allKeyValuePairs().forEach { key, value in
+            if let delegate = value as? SBUInviteUserViewModelDelegate {
+                computedDelegates.addDelegate(delegate, type: key)
+            }
+        }
+        return computedDelegates
+    }
+    
     // MARK: - Life Cycle
-    public init(channel: BaseChannel? = nil,
-                channelURL: String? = nil,
-                channelType: ChannelType = .group,
-                users: [SBUUser]? = nil,
-                userListQuery: ApplicationUserListQuery? = nil,
-                memberListQuery: MemberListQuery? = nil,
-                delegate: SBUInviteUserViewModelDelegate? = nil,
-                dataSource: SBUInviteUserViewModelDataSource? = nil) {
+    required public init(
+        channel: BaseChannel? = nil,
+        channelURL: String? = nil,
+        channelType: ChannelType = .group,
+        users: [SBUUser]? = nil,
+        userListQuery: ApplicationUserListQuery? = nil,
+        memberListQuery: MemberListQuery? = nil,
+        delegate: SBUInviteUserViewModelDelegate? = nil,
+        dataSource: SBUInviteUserViewModelDataSource? = nil
+    ) {
 
         super.init(
             channel: channel,
@@ -53,6 +66,7 @@ open class SBUInviteUserViewModel: SBUBaseSelectUserViewModel {
             delegate: delegate,
             dataSource: dataSource
         )
+        self.baseDelegates.addDelegate(delegate, type: .uikit)
     }
     
     // MARK: - Channel actions
@@ -74,20 +88,20 @@ open class SBUInviteUserViewModel: SBUBaseSelectUserViewModel {
     public func invite(userIds: [String]) {
         guard let channel = self.channel as? GroupChannel else { return }
         
-        self.delegate?.shouldUpdateLoadingState(true)
+        self.delegates.forEach { $0.shouldUpdateLoadingState(true) }
         SBULog.info("Request invite users: \(userIds)")
         
         channel.inviteUserIds(userIds, completionHandler: { [weak self] error in
             guard let self = self else { return }
-            defer { self.delegate?.shouldUpdateLoadingState(false) }
+            defer { self.delegates.forEach { $0.shouldUpdateLoadingState(false) } }
             
             if let error = error {
-                self.delegate?.didReceiveError(error, isBlocker: false)
+                self.delegates.forEach { $0.didReceiveError(error, isBlocker: false) }
                 return
             }
             
             SBULog.info("[Succeed] Invite users request success")
-            self.delegate?.inviteUserViewModel(self, didInviteUserIds: userIds)
+            self.delegates.forEach { $0.inviteUserViewModel(self, didInviteUserIds: userIds) }
         })
     }
 }

@@ -8,6 +8,9 @@
 // swiftlint:disable missing_docs
 import UIKit
 
+#if SWIFTUI
+@available(*, deprecated, renamed: "ColorSet")
+#endif
 public class SBUColorSet {
     // MARK: - Primary
     public static var primaryExtraLight = UIColor(red: 219.0 / 255.0, green: 209.0 / 255.0, blue: 1.0, alpha: 1.0)
@@ -65,7 +68,68 @@ public class SBUColorSet {
 
     // MARK: - Highlight
     public static var highlight = UIColor(red: 1.0, green: 242.0 / 255.0, blue: 182.0 / 255.0, alpha: 1.0)
-    
+}
+
+extension SBUColorSet {
+    /// Restore the default colors.
+    /// - Since: 3.28.0
+    public static func restoreDefaultColors() {
+        SBUColorSet.primaryExtraLight = UIColor(red: 219.0 / 255.0, green: 209.0 / 255.0, blue: 1.0, alpha: 1.0)
+        SBUColorSet.primaryLight = UIColor(red: 194.0 / 255.0, green: 169.0 / 255.0, blue: 250.0 / 255.0, alpha: 1.0)
+        SBUColorSet.primaryMain = UIColor(red: 116.0 / 255.0, green: 45.0 / 255.0, blue: 221.0 / 255.0, alpha: 1.0)
+        SBUColorSet.primaryDark = UIColor(red: 98.0 / 255.0, green: 17.0 / 255.0, blue: 200.0 / 255.0, alpha: 1.0)
+        SBUColorSet.primaryExtraDark = UIColor(red: 73.0 / 255.0, green: 19.0 / 255.0, blue: 137.0 / 255.0, alpha: 1.0)
+        
+        // MARK: - Secondary
+        SBUColorSet.secondaryExtraLight = UIColor(red: 168.0 / 255.0, green: 226.0 / 255.0, blue: 171.0 / 255.0, alpha: 1.0)
+        SBUColorSet.secondaryLight = UIColor(red: 105.0 / 255.0, green: 192.0 / 255.0, blue: 133.0 / 255.0, alpha: 1.0)
+        SBUColorSet.secondaryMain = UIColor(red: 37.0 / 255.0, green: 156.0 / 255.0, blue: 114.0 / 255.0, alpha: 1.0)
+        SBUColorSet.secondaryDark = UIColor(red: 2.0 / 255.0, green: 125.0 / 255.0, blue: 105.0 / 255.0, alpha: 1.0)
+        SBUColorSet.secondaryExtraDark = UIColor(red: 6.0 / 255.0, green: 104.0 / 255.0, blue: 88.0 / 255.0, alpha: 1.0)
+        
+        // MARK: - Background
+        SBUColorSet.background50 = UIColor(white: 1.0, alpha: 1.0)
+        SBUColorSet.background100 = UIColor(white: 238.0 / 255.0, alpha: 1.0)
+        SBUColorSet.background200 = UIColor(white: 224.0 / 255.0, alpha: 1.0)
+        SBUColorSet.background300 = UIColor(white: 189.0 / 255.0, alpha: 1.0)
+        SBUColorSet.background400 = UIColor(white: 57.0 / 255.0, alpha: 1.0)
+        SBUColorSet.background500 = UIColor(white: 44.0 / 255.0, alpha: 1.0)
+        SBUColorSet.background600 = UIColor(white: 22.0 / 255.0, alpha: 1.0)
+        SBUColorSet.background700 = UIColor(white: 0.0, alpha: 1.0)
+        
+        // MARK: - Overlay
+        SBUColorSet.overlayDark = UIColor(white: 0.0, alpha: 0.55)
+        SBUColorSet.overlayLight = UIColor(white: 0.0, alpha: 0.32)
+        
+        // MARK: - On Light
+        SBUColorSet.onLightTextHighEmphasis = UIColor(white: 0.0, alpha: 0.88)
+        SBUColorSet.onLightTextMidEmphasis = UIColor(white: 0.0, alpha: 0.5)
+        SBUColorSet.onLightTextLowEmphasis = UIColor(white: 0.0, alpha: 0.38)
+        SBUColorSet.onLightTextDisabled = UIColor(white: 0.0, alpha: 0.12)
+        
+        // MARK: - On Dark
+        SBUColorSet.onDarkTextHighEmphasis = UIColor(white: 1.0, alpha: 0.88)
+        SBUColorSet.onDarkTextMidEmphasis = UIColor(white: 1.0, alpha: 0.5)
+        SBUColorSet.onDarkTextLowEmphasis = UIColor(white: 1.0, alpha: 0.38)
+        SBUColorSet.onDarkTextDisabled = UIColor(white: 1.0, alpha: 0.12)
+        
+        // MARK: - Error
+        SBUColorSet.errorExtraLight = UIColor(red: 253.0 / 255.0, green: 170.0 / 255.0, blue: 170.0 / 255.0, alpha: 1.0)
+        SBUColorSet.errorLight = UIColor(red: 246.0 / 255.0, green: 97.0 / 255.0, blue: 97.0 / 255.0, alpha: 1.0)
+        SBUColorSet.errorMain = UIColor(red: 222.0 / 255.0, green: 54.0 / 255.0, blue: 11.0 / 255.0, alpha: 1.0)
+        SBUColorSet.errorDark = UIColor(red: 191.0 / 255.0, green: 7.0 / 255.0, blue: 17.0 / 255.0, alpha: 1.0)
+        SBUColorSet.errorExtraDark = UIColor(red: 157.0 / 255.0, green: 9.0 / 255.0, blue: 30.0 / 255.0, alpha: 1.0)
+        
+        // MARK: - Information
+        SBUColorSet.informationExtraDark = UIColor(red: 36.0 / 255.0, green: 19.0 / 255.0, blue: 137.0 / 255.0, alpha: 1.0)
+        SBUColorSet.informationDark = UIColor(red: 54.0 / 255.0, green: 44.0 / 255.0, blue: 169.0 / 255.0, alpha: 1.0)
+        SBUColorSet.informationMain = UIColor(red: 74.0 / 255.0, green: 72.0 / 255.0, blue: 205.0 / 255.0, alpha: 1.0)
+        SBUColorSet.informationLight = UIColor(red: 169.0 / 255.0, green: 187.0 / 255.0, blue: 250.0 / 255.0, alpha: 1.0)
+        SBUColorSet.informationExtraLight = UIColor(red: 209.0 / 255.0, green: 219.0 / 255.0, blue: 255.0 / 255.0, alpha: 1.0)
+        
+        // MARK: - Highlight
+        SBUColorSet.highlight = UIColor(red: 1.0, green: 242.0 / 255.0, blue: 182.0 / 255.0, alpha: 1.0)
+    }
 }
 
 // MARK: - Old color set. Deprecated.

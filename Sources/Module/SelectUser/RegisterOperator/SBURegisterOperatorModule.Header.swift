@@ -28,6 +28,20 @@ public protocol SBURegisterOperatorModuleHeaderDelegate: SBUBaseSelectUserModule
     ///   - rightItem: Updated `rightBarButton` object.
     func registerOperatorModule(_ headerComponent: SBURegisterOperatorModule.Header, didUpdateRightItem rightItem: UIBarButtonItem?)
     
+    /// Called when `leftBarButtons` value has been updated.
+    /// - Parameters:
+    ///   - headerComponent: `SBURegisterOperatorModule.Header` object
+    ///   - leftItems: Updated `leftBarButtons` object.
+    /// - Since: 3.28.0
+    func registerOperatorModule(_ headerComponent: SBURegisterOperatorModule.Header, didUpdateLeftItems leftItems: [UIBarButtonItem]?)
+    
+    /// Called when `rightBarButtons` was selected.
+    /// - Parameters:
+    ///   - headerComponent: `SBURegisterOperatorModule.Header` object
+    ///   - rightItems: Updated `rightBarButtons` object.
+    /// - Since: 3.28.0
+    func registerOperatorModule(_ headerComponent: SBURegisterOperatorModule.Header, didUpdateRightItems rightItems: [UIBarButtonItem]?)
+    
     /// Called when `leftBarButton` was selected.
     /// - Parameters:
     ///   - component: `SBUInviteUserModule.Header` object
@@ -39,6 +53,12 @@ public protocol SBURegisterOperatorModuleHeaderDelegate: SBUBaseSelectUserModule
     ///   - component: `SBUInviteUserModule.Header` object
     ///   - rightItem: Selected `rightBarButton` object.
     func registerOperatorModule(_ headerComponent: SBURegisterOperatorModule.Header, didTapRightItem rightItem: UIBarButtonItem)
+}
+
+extension SBURegisterOperatorModuleHeaderDelegate {
+    func registerOperatorModule(_ headerComponent: SBURegisterOperatorModule.Header, didUpdateLeftItems leftItems: [UIBarButtonItem]?) { }
+    
+    func registerOperatorModule(_ headerComponent: SBURegisterOperatorModule.Header, didUpdateRightItems rightItems: [UIBarButtonItem]?) { }
 }
 
 // swiftlint:disable type_name
@@ -53,26 +73,37 @@ extension SBURegisterOperatorModule {
     open class Header: SBUBaseSelectUserModule.Header {
         
         // MARK: - UI properties (Private)
-        override func defaultTitleView() -> SBUNavigationTitleView {
-            let titleView = SBUNavigationTitleView()
-            titleView.text = SBUStringSet.InviteChannel_Header_Select_Users
-            titleView.textAlignment = .center
+        override func createDefaultTitleView() -> SBUNavigationTitleView {
+            let titleView = self.channelType == .group ?
+            SBUModuleSet.GroupRegisterOperatorModule.HeaderComponent.TitleView.init() :
+            SBUModuleSet.OpenRegisterOperatorModule.HeaderComponent.TitleView.init()
+            
+            titleView.configure(title: SBUStringSet.InviteChannel_Header_Select_Users)
             return titleView
         }
         
-        override func defaultLeftBarButton() -> UIBarButtonItem {
-            let leftItem =  UIBarButtonItem(
+        override func createDefaultLeftBarButton() -> UIBarButtonItem {
+            let module = self.channelType == .group
+            ? SBUModuleSet.GroupRegisterOperatorModule
+            : SBUModuleSet.OpenRegisterOperatorModule
+            
+            let leftItem = module.HeaderComponent.LeftBarButton.init(
                 title: SBUStringSet.Cancel,
                 style: .plain,
                 target: self,
                 action: #selector(onTapLeftBarButton)
             )
+            
             leftItem.setTitleTextAttributes([.font: SBUFontSet.button2], for: .normal)
             return leftItem
         }
         
-        override func defaultRightBarButton() -> UIBarButtonItem {
-            let rightItem =  UIBarButtonItem(
+        override func createDefaultRightBarButton() -> UIBarButtonItem {
+            let module = self.channelType == .group
+            ? SBUModuleSet.GroupRegisterOperatorModule
+            : SBUModuleSet.OpenRegisterOperatorModule
+            
+            let rightItem = module.HeaderComponent.RightBarButton.init(
                 title: SBUStringSet.InviteChannel_Register(0),
                 style: .plain,
                 target: self,
@@ -91,6 +122,9 @@ extension SBURegisterOperatorModule {
             get { self.baseDataSource as? SBURegisterOperatorModuleHeaderDataSource }
             set { self.baseDataSource = newValue }
         }
+        
+        // MARK: - Logic properties (Private)
+        var channelType: ChannelType?
         
         // MARK: - LifeCycle
         @available(*, unavailable, renamed: "SBURegisterOperatorModule.Header()")
@@ -121,11 +155,32 @@ extension SBURegisterOperatorModule {
             self.setupStyles(theme: theme)
         }
         
+        open override func setupViews() {
+            #if SWIFTUI
+            switch channelType {
+            case .group:
+                self.applyViewConverter(.titleView)
+                self.applyViewConverter(.leftView)
+                self.applyViewConverter(.rightView)
+            case .open:
+                self.applyViewConverterForOpen(.titleView)
+                self.applyViewConverterForOpen(.leftView)
+                self.applyViewConverterForOpen(.rightView)
+            default:
+                break
+            }
+            // We are not using `...buttons` in SwiftUI
+            #endif
+            super.setupViews()
+        }
+        
         // MARK: - Common
         open override func updateRightBarButton() {
             super.updateRightBarButton()
             
-            self.rightBarButton?.title = SBUStringSet.InviteChannel_Register(self.selectedUserList?.count ?? 0)
+            let title = SBUStringSet.InviteChannel_Register(self.selectedUserList?.count ?? 0)
+            self.rightBarButton?.title = title
+            self.rightBarButtons?.first?.title = title
         }
         
         // MARK: - Attach update delegate on view
@@ -138,16 +193,30 @@ extension SBURegisterOperatorModule {
         public override func didUpdateRightItem() {
             self.delegate?.registerOperatorModule(self, didUpdateRightItem: self.rightBarButton)
         }
+        public override func didUpdateLeftItems() {
+            self.delegate?.registerOperatorModule(self, didUpdateLeftItems: self.leftBarButtons)
+        }
+        public override func didUpdateRightItems() {
+            self.delegate?.registerOperatorModule(self, didUpdateRightItems: self.rightBarButtons)
+        }
         
         // MARK: - Actions
         public override func onTapLeftBarButton() {
-            if let leftBarButton = self.leftBarButton {
+            if let leftBarButtons = self.leftBarButtons,
+               let defaultLeftBarButton = self.defaultLeftBarButton,
+               leftBarButtons.isUsingDefaultButton(defaultLeftBarButton) {
+                self.delegate?.registerOperatorModule(self, didTapLeftItem: defaultLeftBarButton)
+            } else if let leftBarButton = self.leftBarButton {
                 self.delegate?.registerOperatorModule(self, didTapLeftItem: leftBarButton)
             }
         }
         
         public override func onTapRightBarButton() {
-            if let rightBarButton = self.rightBarButton {
+            if let rightBarButtons = self.rightBarButtons,
+               let defaultRightBarButton = self.defaultRightBarButton,
+               rightBarButtons.isUsingDefaultButton(defaultRightBarButton) {
+                self.delegate?.registerOperatorModule(self, didTapRightItem: defaultRightBarButton)
+            } else if let rightBarButton = self.rightBarButton {
                 self.delegate?.registerOperatorModule(self, didTapRightItem: rightBarButton)
             }
         }

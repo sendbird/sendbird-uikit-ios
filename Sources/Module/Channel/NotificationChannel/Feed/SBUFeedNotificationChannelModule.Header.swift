@@ -222,11 +222,9 @@ extension SBUFeedNotificationChannelModule {
                 titleView.titleLabel.textColor = self.theme.textColor
             }
             
-            self.leftBarButtons?
-                .forEach { $0.tintColor = self.theme.buttonIconTintColor }
+            self.leftBarButtons?.forEach { $0.tintColor = self.theme.buttonIconTintColor }
             
-            self.rightBarButtons?
-                .forEach { $0.tintColor = self.theme.buttonIconTintColor }
+            self.rightBarButtons?.forEach { $0.tintColor = self.theme.buttonIconTintColor }
         }
         
         /// Updates styles of the views in the header component.

@@ -36,39 +36,54 @@ extension SBUBaseChannelSettingsModule {
         /// A view that represents a left `UIBarButtonItem` in navigation bar.
         /// - NOTE: When the value is updated, `didUpdateLeftItem`is called.
         public var leftBarButton: UIBarButtonItem? {
-            didSet { self.didUpdateLeftItem() }
+            didSet {
+                if let leftBarButton = leftBarButton {
+                    self.leftBarButtons = [leftBarButton]
+                } else {
+                    self.leftBarButtons = nil
+                }
+                self.didUpdateLeftItem()
+            }
         }
         
         /// A view that represents a right `UIBarButtonItem` in navigation bar.
         /// - NOTE: When the value is updated, `didUpdateRightItem`is called.
         public var rightBarButton: UIBarButtonItem? {
-            didSet { self.didUpdateRightItem() }
+            didSet {
+                if let rightBarButton = rightBarButton {
+                    self.rightBarButtons = [rightBarButton]
+                } else {
+                    self.rightBarButtons = nil
+                }
+                self.didUpdateRightItem()
+            }
+        }
+        
+        /// A view that represents a left `UIBarButtonItem` in navigation bar.
+        /// - NOTE: When the value is updated, `didUpdateRightItem`is called.
+        /// - Since: 3.28.0
+        public var leftBarButtons: [UIBarButtonItem]? {
+            didSet { self.didUpdateLeftItems() }
+        }
+        
+        /// A view that represents a right `UIBarButtonItem` in navigation bar.
+        /// - NOTE: When the value is updated, `didUpdateRightItem`is called.
+        /// - Since: 3.28.0
+        public var rightBarButtons: [UIBarButtonItem]? {
+            didSet { self.didUpdateRightItems() }
         }
 
         /// The object that is used as the theme of the header component. The theme must adopt the `SBUChannelSettingsTheme` class.
         public var theme: SBUChannelSettingsTheme?
         
         // MARK: - UI properties (Private)
-        func defaultTitleView() -> SBUNavigationTitleView? { return nil }
+        lazy var defaultTitleView: SBUNavigationTitleView? = self.createDefaultTitleView()
+        lazy var defaultLeftBarButton: SBUBarButtonItem = self.createDefaultLeftButton()
+        lazy var defaultRightBarButton: SBUBarButtonItem = self.createDefaultRightButton()
         
-        func defaultLeftBarButton() -> UIBarButtonItem {
-            let backButton = SBUBarButtonItem.backButton(
-                target: self,
-                selector: #selector(onTapLeftBarButton)
-            )
-            return backButton
-        }
-        
-        func defaultRightBarButton() -> UIBarButtonItem {
-            let editButton =  UIBarButtonItem(
-                title: SBUStringSet.Edit,
-                style: .plain,
-                target: self,
-                action: #selector(onTapRightBarButton)
-            )
-            editButton.setTitleTextAttributes([.font: SBUFontSet.button2], for: .normal)
-            return editButton
-        }
+        func createDefaultTitleView() -> SBUNavigationTitleView? { return nil }
+        func createDefaultLeftButton() -> SBUBarButtonItem { SBUBarButtonItem() }
+        func createDefaultRightButton() -> SBUBarButtonItem { SBUBarButtonItem() }
         
         // MARK: - Logic properties (Public)
         weak var baseDelegate: SBUBaseChannelSettingsModuleHeaderDelegate?
@@ -79,13 +94,20 @@ extension SBUBaseChannelSettingsModule {
         /// Set values of the views in the header component when it needs.
         open func setupViews() {
             if self.titleView == nil {
-                self.titleView = self.defaultTitleView()
+                self.titleView = self.defaultTitleView
             }
-            if self.leftBarButton == nil {
-                self.leftBarButton = self.defaultLeftBarButton()
+            if self.leftBarButton == nil && self.leftBarButtons == nil {
+                self.leftBarButton = self.defaultLeftBarButton
             }
-            if self.rightBarButton == nil {
-                self.rightBarButton = self.defaultRightBarButton()
+            if self.rightBarButton == nil && self.rightBarButtons == nil {
+                self.rightBarButton = self.defaultRightBarButton
+            }
+            
+            if self.leftBarButtons == nil {
+                self.leftBarButtons = [self.defaultLeftBarButton]
+            }
+            if self.rightBarButtons == nil {
+                self.rightBarButtons = [self.defaultRightBarButton]
             }
         }
         
@@ -105,6 +127,9 @@ extension SBUBaseChannelSettingsModule {
             
             self.leftBarButton?.tintColor = theme?.leftBarButtonTintColor
             self.rightBarButton?.tintColor = theme?.rightBarButtonTintColor
+            
+            self.leftBarButtons?.forEach { $0.tintColor = theme?.leftBarButtonTintColor }
+            self.rightBarButtons?.forEach { $0.tintColor = theme?.rightBarButtonTintColor }
         }
         
         // MARK: - Attach update delegate on view
@@ -115,6 +140,10 @@ extension SBUBaseChannelSettingsModule {
         func didUpdateLeftItem() { }
         /// Called when the `rightBarButton` was updated.
         func didUpdateRightItem() { }
+        /// Called when the `leftBarButtons` was updated.
+        func didUpdateLeftItems() { }
+        /// Called when the `rightBarButtons` was updated.
+        func didUpdateRightItems() { }
         
         // MARK: - Actions
         /// Called when the `leftBarButton` was tapped.

@@ -50,18 +50,30 @@ open class SBUOpenChannelListViewModel: SBUBaseChannelListViewModel {
     }
     private var customizedChannelListQuery: OpenChannelListQuery?
     
+    // MARK: SwiftUI (Internal)
+    var delegates: WeakDelegateStorage<SBUOpenChannelListViewModelDelegate> {
+        let computedDelegates = WeakDelegateStorage<SBUOpenChannelListViewModelDelegate>()
+        self.baseDelegates.allKeyValuePairs().forEach { key, value in
+            if let delegate = value as? SBUOpenChannelListViewModelDelegate {
+                computedDelegates.addDelegate(delegate, type: key)
+            }
+        }
+        return computedDelegates
+    }
+    
     // MARK: - Life Cycle
     
     /// This function initializes the ViewModel.
     /// - Parameters:
     ///   - delegate: This is used to receive events that occur in the view model
     ///   - channelListQuery: This is used to use customized channelListQuery.
-    public init(
+    required public init(
         delegate: SBUOpenChannelListViewModelDelegate?,
         channelListQuery: OpenChannelListQuery?
     ) {
         super.init(delegate: delegate)
-
+        self.baseDelegates.addDelegate(delegate, type: .uikit)
+        
         self.customizedChannelListQuery = channelListQuery
         
         SendbirdChat.addChannelDelegate(
@@ -69,6 +81,11 @@ open class SBUOpenChannelListViewModel: SBUBaseChannelListViewModel {
             identifier: "\(SBUConstant.openChannelDelegateIdentifier).\(self.description)"
         )
         
+        self.initChannelList()
+    }
+    
+    func initializeAndLoad(channelListQuery: OpenChannelListQuery?) {
+        if let channelListQuery { self.customizedChannelListQuery = channelListQuery }
         self.initChannelList()
     }
     
@@ -119,7 +136,9 @@ open class SBUOpenChannelListViewModel: SBUBaseChannelListViewModel {
             
             if let error = error {
                 DispatchQueue.main.async { [weak self] in
-                    self?.delegate?.didReceiveError(error, isBlocker: true)
+                    self?.delegates.forEach {
+                        $0.didReceiveError(error, isBlocker: true)
+                    }
                 }
                 return
             }
@@ -205,11 +224,13 @@ open class SBUOpenChannelListViewModel: SBUBaseChannelListViewModel {
         
         self.channelList = sortedChannelList.sbu_unique()
         
-        self.delegate?.openChannelListViewModel(
-            self,
-            didChangeChannelList: self.channelList,
-            needsToReload: needReload
-        )
+        self.delegates.forEach {
+            $0.openChannelListViewModel(
+                self,
+                didChangeChannelList: self.channelList,
+                needsToReload: needReload
+            )
+        }
     }
     
     /// This function resets channelList
@@ -218,6 +239,18 @@ open class SBUOpenChannelListViewModel: SBUBaseChannelListViewModel {
         
         self.channelList = []
         self.channelListQuery = nil
+        
+        // Celine TODO: do we need reset() at all?
+        #if SWIFTUI
+        // Celine TODO: need to call this method only for swiftUIDelegate.
+        self.delegates.forEach {
+            $0.openChannelListViewModel(
+                self,
+                didChangeChannelList: self.channelList,
+                needsToReload: false
+            )
+        }
+        #endif
     }
     
     // MARK: - Common
@@ -229,7 +262,9 @@ open class SBUOpenChannelListViewModel: SBUBaseChannelListViewModel {
     private func setLoading(_ loadingState: Bool, _ showIndicator: Bool) {
         self.isLoading = loadingState
         
-        self.delegate?.shouldUpdateLoadingState(showIndicator)
+        self.delegates.forEach {
+            $0.shouldUpdateLoadingState(isLoading)
+        }
     }
 }
 

@@ -11,6 +11,12 @@ import SendbirdChatSDK
 import PhotosUI
 import MobileCoreServices
 
+#if SWIFTUI
+protocol CreateOpenChannelViewEventDelegate: AnyObject {
+    
+}
+#endif
+
 open class SBUCreateOpenChannelViewController: SBUBaseViewController, SBUActionSheetDelegate, PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, SBUSelectablePhotoViewDelegate, SBUCreateOpenChannelModuleHeaderDelegate, SBUCreateOpenChannelModuleProfileInputDelegate, SBUCommonViewModelDelegate, SBUCreateOpenChannelViewModelDelegate, SBUAlertViewDelegate {
 
     // MARK: - UI properties (Public)
@@ -27,14 +33,23 @@ open class SBUCreateOpenChannelViewController: SBUBaseViewController, SBUActionS
     // MARK: - Constant
     private let actionSheetIdPicker = 2
     
+    // MARK: - SwiftUI (Internal)
+    #if SWIFTUI
+    weak var swiftUIDelegate: (SBUCreateOpenChannelViewModelDelegate & CreateOpenChannelViewEventDelegate)? {
+        didSet {
+            self.viewModel?.delegates.addDelegate(self.swiftUIDelegate, type: .swiftui)
+        }
+    }
+    #endif
+    
     // MARK: - Lifecycle
-    @available(*, unavailable, renamed: "SBUCreateOpenChannelViewController(channel:)")
+    @available(*, unavailable, renamed: "SBUCreateOpenChannelViewController()")
     required public init?(coder: NSCoder) {
         super.init(coder: coder)
         fatalError()
     }
     
-    @available(*, unavailable, renamed: "SBUCreateOpenChannelViewController(channel:)")
+    @available(*, unavailable, renamed: "SBUCreateOpenChannelViewController()")
     public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         fatalError()
@@ -71,7 +86,7 @@ open class SBUCreateOpenChannelViewController: SBUBaseViewController, SBUActionS
     
     // MARK: - ViewModel
     open func createViewModel() {
-        self.viewModel = SBUCreateOpenChannelViewModel(delegate: self)
+        self.viewModel = SBUViewModelSet.CreateOpenChannelViewModel.init(delegate: self)
     }
     
     // MARK: - Sendbird UIKit Life cycle
@@ -82,6 +97,8 @@ open class SBUCreateOpenChannelViewController: SBUBaseViewController, SBUActionS
         self.navigationItem.titleView = self.headerComponent?.titleView
         self.navigationItem.leftBarButtonItem = self.headerComponent?.leftBarButton
         self.navigationItem.rightBarButtonItem = self.headerComponent?.rightBarButton
+        self.navigationItem.leftBarButtonItems = self.headerComponent?.leftBarButtons
+        self.navigationItem.rightBarButtonItems = self.headerComponent?.rightBarButtons
         
         // Body component
         self.profileInputComponent?.configure(
@@ -258,7 +275,7 @@ open class SBUCreateOpenChannelViewController: SBUBaseViewController, SBUActionS
     }
     
     open func showLimitedPhotoLibraryPicker() {
-        let selectablePhotoVC = SBUSelectablePhotoViewController(mediaType: .image)
+        let selectablePhotoVC = SBUCommonViewControllerSet.SelectablePhotoViewController.init(mediaType: .image)
         selectablePhotoVC.delegate = self
         let nav = UINavigationController(rootViewController: selectablePhotoVC)
         self.present(nav, animated: true, completion: nil)
@@ -312,6 +329,16 @@ open class SBUCreateOpenChannelViewController: SBUBaseViewController, SBUActionS
     open func createOpenChannelModule(_ headerComponent: SBUCreateOpenChannelModule.Header,
                                       didUpdateRightItem rightItem: UIBarButtonItem?) {
         self.navigationItem.rightBarButtonItem = rightItem
+    }
+    
+    open func createOpenChannelModule(_ headerComponent: SBUCreateOpenChannelModule.Header,
+                                      didUpdateLeftItems leftItems: [UIBarButtonItem]?) {
+        self.navigationItem.leftBarButtonItems = leftItems
+    }
+    
+    open func createOpenChannelModule(_ headerComponent: SBUCreateOpenChannelModule.Header,
+                                      didUpdateRightItems rightItems: [UIBarButtonItem]?) {
+        self.navigationItem.rightBarButtonItems = rightItems
     }
     
     open func createOpenChannelModule(_ headerComponent: SBUCreateOpenChannelModule.Header,

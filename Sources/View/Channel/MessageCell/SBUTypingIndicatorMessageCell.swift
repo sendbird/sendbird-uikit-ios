@@ -43,20 +43,41 @@ open class SBUTypingIndicatorMessageCell: SBUContentBaseMessageCell {
     open override func setupStyles() {
         super.setupStyles()
         
+        #if SWIFTUI
+        if self.viewConverter.typingMessage.entireContent != nil {
+            self.mainContainerView.setTransparentBackgroundColor()
+        }
+        #endif
     }
     
     // MARK: - Common
     open override func configure(with configuration: SBUBaseMessageCellParams) {
         guard let configuration = configuration as? SBUTypingIndicatorMessageCellParams else { return }
         
-        if let typingBubbleView = self.typingBubbleView as? SBUTypingIndicatorBubbleView,
-            configuration.shouldRedrawTypingBubble {
-            typingBubbleView.configure()
-        }
-        
         // Configure Content base message cell
         super.configure(with: configuration)
         self.stateView.removeFromSuperview()
+        
+        // Typing bubble view.
+        #if SWIFTUI
+        if self.applyViewConverter(.typingMessage) {
+            return
+        }
+        #endif
+        if let typingBubbleView = self.typingBubbleView as? SBUTypingIndicatorBubbleView,
+           configuration.shouldRedrawTypingBubble {
+            typingBubbleView.configure()
+        }
+        
         self.layoutIfNeeded()
+    }
+    
+    public override func resetMainContainerViewLayer() {
+        #if SWIFTUI
+        if self.viewConverter.typingMessage.entireContent != nil {
+            return
+        }
+        #endif
+        super.resetMainContainerViewLayer()
     }
 }

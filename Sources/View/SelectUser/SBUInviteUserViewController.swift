@@ -9,6 +9,12 @@
 import UIKit
 import SendbirdChatSDK
 
+#if SWIFTUI
+protocol InviteUserViewEventDelegate: AnyObject {
+    
+}
+#endif
+
 open class SBUInviteUserViewController: SBUBaseSelectUserViewController, SBUInviteUserViewModelDataSource, SBUInviteUserModuleListDataSource, SBUInviteUserModuleHeaderDataSource, SBUInviteUserModuleHeaderDelegate, SBUInviteUserModuleListDelegate, SBUInviteUserViewModelDelegate {
     
     // MARK: - UI Properties (Public)
@@ -27,6 +33,15 @@ open class SBUInviteUserViewController: SBUBaseSelectUserViewController, SBUInvi
         set { self.baseViewModel = newValue }
     }
     
+    // MARK: - SwiftUI
+    #if SWIFTUI
+    weak var swiftUIDelegate: (SBUInviteUserViewModelDelegate & InviteUserViewEventDelegate)? {
+        didSet {
+            self.viewModel?.baseDelegates.addDelegate(self.swiftUIDelegate, type: .swiftui)
+        }
+    }
+    #endif
+
     // MARK: - Lifecycle
     @available(*, unavailable, renamed: "SBUInviteUserViewController(channel:)")
     required public init?(coder: NSCoder) {
@@ -81,16 +96,18 @@ open class SBUInviteUserViewController: SBUBaseSelectUserViewController, SBUInvi
     }
     
     // MARK: - ViewModel
-    open override func createViewModel(channel: BaseChannel? = nil,
-                                       channelURL: String? = nil,
-                                       channelType: ChannelType = .group,
-                                       users: [SBUUser]? = nil) {
+    open override func createViewModel(
+        channel: BaseChannel? = nil,
+        channelURL: String? = nil,
+        channelType: ChannelType = .group,
+        users: [SBUUser]? = nil
+    ) {
         guard channel != nil || channelURL != nil else {
             SBULog.error("Either the channel or the channelURL parameter must be set.")
             return
         }
         
-        self.baseViewModel = SBUInviteUserViewModel(
+        self.baseViewModel = SBUViewModelSet.InviteUserViewModel.init(
             channel: channel,
             channelURL: channelURL,
             channelType: channelType,
@@ -110,6 +127,8 @@ open class SBUInviteUserViewController: SBUBaseSelectUserViewController, SBUInvi
         self.navigationItem.titleView = self.headerComponent?.titleView
         self.navigationItem.leftBarButtonItem = self.headerComponent?.leftBarButton
         self.navigationItem.rightBarButtonItem = self.headerComponent?.rightBarButton
+        self.navigationItem.leftBarButtonItems = self.headerComponent?.leftBarButtons
+        self.navigationItem.rightBarButtonItems = self.headerComponent?.rightBarButtons
         
         // List component
         self.listComponent?.configure(delegate: self, dataSource: self, theme: self.theme)
@@ -147,6 +166,16 @@ open class SBUInviteUserViewController: SBUBaseSelectUserViewController, SBUInvi
     }
     
     open func inviteUserModule(_ headerComponent: SBUInviteUserModule.Header,
+                               didUpdateLeftItems leftItems: [UIBarButtonItem]?) {
+        self.navigationItem.leftBarButtonItems = leftItems
+    }
+    
+    open func inviteUserModule(_ headerComponent: SBUInviteUserModule.Header, 
+                               didUpdateRightItems rightItems: [UIBarButtonItem]?) {
+        self.navigationItem.rightBarButtonItems = rightItems
+    }
+    
+    open func inviteUserModule(_ headerComponent: SBUInviteUserModule.Header,
                                didTapLeftItem leftItem: UIBarButtonItem) {
         self.onClickBack()
     }
@@ -173,13 +202,34 @@ open class SBUInviteUserViewController: SBUBaseSelectUserViewController, SBUInvi
     }
     
     // MARK: - SBUInviteUserViewModelDelegate
-    open func inviteUserViewModel(_ viewModel: SBUInviteUserViewModel,
-                                  didInviteUserIds userIds: [String]) {
+    open func inviteUserViewModel(
+        _ viewModel: SBUInviteUserViewModel,
+        didInviteUserIds userIds: [String]
+    ) {
         self.popToChannel()
     }
     
-    open override func baseSelectedUserViewModel(_ viewModel: SBUBaseSelectUserViewModel,
-                                                 didUpdateSelectedUsers selectedUsers: [SBUUser]?) {
+    open override func baseSelectedUserViewModel(
+        _ viewModel: SBUBaseSelectUserViewModel,
+        didUpdateSelectedUsers selectedUsers: [SBUUser]?
+    ) {
         self.headerComponent?.updateRightBarButton()
+        
+        #if SWIFTUI
+        self.headerComponent?.applyViewConverter(.rightView)
+        self.listComponent?.applyViewConverter(.entireContent)
+        #endif
     }
 }
+
+#if SWIFTUI
+extension SBUInviteUserViewController {
+    public func inviteUserModule(
+        _ listComponent: SBUInviteUserModule.List,
+        didSelectUser user: SBUUser
+    ) {
+        self.viewModel?.selectUser(user: user)
+    }
+}
+#endif
+

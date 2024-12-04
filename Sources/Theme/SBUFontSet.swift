@@ -9,11 +9,14 @@
 import UIKit
 
 /// `SBUFontSet` is a class that defines a set of fonts.
+#if SWIFTUI
+@available(*, deprecated, renamed: "FontSet")
+#endif
 public class SBUFontSet {
     // MARK: - H
     /// Bold, 18pt
     public static var h1 = UIFont.systemFont(ofSize: 18.0, weight: .bold)
-    /// Medium, 18pt
+    /// Medium, 18pt, Line height: 20pt
     public static var h2 = UIFont.systemFont(ofSize: 18.0, weight: .medium)
     static var h2Attributes: [NSAttributedString.Key: Any] = {
         let style = NSMutableParagraphStyle()
@@ -85,7 +88,7 @@ public class SBUFontSet {
     }()
     
     // MARK: - Button
-    /// Semibold, 18pt
+    /// Semibold, 18pt, Line height: 24pt
     public static var button1 = UIFont.systemFont(ofSize: 18.0, weight: .semibold)
     static var button1Attributes: [NSAttributedString.Key: Any] = {
         let style = NSMutableParagraphStyle()
@@ -99,7 +102,7 @@ public class SBUFontSet {
             .paragraphStyle: style
         ]
     }()
-    /// Medium, 16pt
+    /// Medium, 16pt, Line height: 16pt
     public static var button2 = UIFont.systemFont(ofSize: 16.0, weight: .medium)
     static var button2Attributes: [NSAttributedString.Key: Any] = {
         let style = NSMutableParagraphStyle()
@@ -113,7 +116,7 @@ public class SBUFontSet {
             .paragraphStyle: style
         ]
     }()
-    /// Medium, 14pt
+    /// Medium, 14pt, Line height: 16pt
     public static var button3 = UIFont.systemFont(ofSize: 14.0, weight: .medium)
     static var button3Attributes: [NSAttributedString.Key: Any] = {
         let style = NSMutableParagraphStyle()
@@ -126,7 +129,7 @@ public class SBUFontSet {
             .paragraphStyle: style
         ]
     }()
-    /// Bold, 14pt
+    /// Bold, 14pt, Line height: 16pt
     public static var button4 = UIFont.systemFont(ofSize: 14.0, weight: .bold)
     static var button4Attributes: [NSAttributedString.Key: Any] = {
         let style = NSMutableParagraphStyle()
@@ -141,7 +144,7 @@ public class SBUFontSet {
     }()
     
     // MARK: - Caption
-    /// Bold, 12pt
+    /// Bold, 12pt, Line height: 12pt
     public static var caption1 = UIFont.systemFont(ofSize: 12.0, weight: .bold)
     static var caption1Attributes: [NSAttributedString.Key: Any] = {
         let style = NSMutableParagraphStyle()
@@ -154,7 +157,7 @@ public class SBUFontSet {
             .paragraphStyle: style
         ]
     }()
-    /// Regular, 12pt
+    /// Regular, 12pt, Line height: 12pt
     public static var caption2 = UIFont.systemFont(ofSize: 12.0, weight: .regular)
     static var caption2Attributes: [NSAttributedString.Key: Any] = {
         let style = NSMutableParagraphStyle()
@@ -167,7 +170,7 @@ public class SBUFontSet {
             .paragraphStyle: style
         ]
     }()
-    /// Bold, 11pt
+    /// Bold, 11pt, Line height: 12pt
     public static var caption3 = UIFont.systemFont(ofSize: 11.0, weight: .bold)
     static var caption3Attributes: [NSAttributedString.Key: Any] = {
         let style = NSMutableParagraphStyle()
@@ -180,7 +183,7 @@ public class SBUFontSet {
             .paragraphStyle: style
         ]
     }()
-    /// Regular, 11pt
+    /// Regular, 11pt, Line height: 12pt
     public static var caption4 = UIFont.systemFont(ofSize: 11.0, weight: .regular)
     static var caption4Attributes: [NSAttributedString.Key: Any] = {
         let style = NSMutableParagraphStyle()
@@ -195,7 +198,7 @@ public class SBUFontSet {
     }()
     
     // MARK: - Subtitle
-    /// Medium, 16pt, Line hieght 22pt
+    /// Medium, 16pt, Line height 22pt
     public static var subtitle1 = UIFont.systemFont(ofSize: 16.0, weight: .medium)
     static var subtitle1Attributes: [NSAttributedString.Key: Any] = {
         let style = NSMutableParagraphStyle()
@@ -209,7 +212,7 @@ public class SBUFontSet {
             .paragraphStyle: style
         ]
     }()
-    /// Regular, 16pt
+    /// Regular, 16pt, Line height: 24pt
     public static var subtitle2 = UIFont.systemFont(ofSize: 16.0, weight: .regular)
     static var subtitle2Attributes: [NSAttributedString.Key: Any] = {
         let style = NSMutableParagraphStyle()
@@ -223,7 +226,7 @@ public class SBUFontSet {
             .paragraphStyle: style
         ]
     }()
-    /// Regular, 14pt
+    /// Regular, 14pt, Line height: 20pt
     public static var subtitle3 = UIFont.systemFont(ofSize: 14.0, weight: .regular)
     static var subtitle3Attributes: [NSAttributedString.Key: Any] = {
         let style = NSMutableParagraphStyle()
@@ -275,7 +278,6 @@ public class SBUFontSet {
 }
 
 extension SBUFontSet {
-
     // MARK: - Font family
     /// It is a class for font family.
     /// - Since: 3.5.7
@@ -284,6 +286,31 @@ extension SBUFontSet {
         /// If this value is set, all of the fonts in Notification are use this fontFamily.
         /// - Since: 3.5.7
         public static var notifications: String?
+    }
+}
+
+extension SBUFontSet {
+    /// Restore default fonts
+    /// - Since: 3.28.0
+    public static func restoreDefaultFonts() {
+        SBUFontSet.h1 = UIFont.systemFont(ofSize: 18.0, weight: .bold)
+        SBUFontSet.h2 = UIFont.systemFont(ofSize: 18.0, weight: .medium)
+        SBUFontSet.h3 = UIFont.systemFont(ofSize: 16.0, weight: .bold)
+        SBUFontSet.subtitle1 = UIFont.systemFont(ofSize: 16.0, weight: .medium)
+        SBUFontSet.subtitle2 = UIFont.systemFont(ofSize: 16.0, weight: .regular)
+        SBUFontSet.subtitle3 = UIFont.systemFont(ofSize: 14.0, weight: .regular)
+        SBUFontSet.body1 = UIFont.systemFont(ofSize: 16.0, weight: .regular)
+        SBUFontSet.body2 = UIFont.systemFont(ofSize: 14.0, weight: .semibold)
+        SBUFontSet.body3 = UIFont.systemFont(ofSize: 14.0, weight: .regular)
+        SBUFontSet.body4 = UIFont.systemFont(ofSize: 14.0, weight: .bold)
+        SBUFontSet.button1 = UIFont.systemFont(ofSize: 18.0, weight: .semibold)
+        SBUFontSet.button2 = UIFont.systemFont(ofSize: 16.0, weight: .medium)
+        SBUFontSet.button3 = UIFont.systemFont(ofSize: 14.0, weight: .medium)
+        SBUFontSet.button4 = UIFont.systemFont(ofSize: 14.0, weight: .bold)
+        SBUFontSet.caption1 = UIFont.systemFont(ofSize: 12.0, weight: .bold)
+        SBUFontSet.caption2 = UIFont.systemFont(ofSize: 12.0, weight: .regular)
+        SBUFontSet.caption3 = UIFont.systemFont(ofSize: 11.0, weight: .medium)
+        SBUFontSet.caption4 = UIFont.systemFont(ofSize: 11.0, weight: .regular)
     }
 }
 // swiftlint:enable identifier_name

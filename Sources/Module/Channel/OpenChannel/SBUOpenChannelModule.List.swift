@@ -67,6 +67,39 @@ extension SBUOpenChannelModule {
             self.dataSource?.openChannelModuleIsOverlaid(self) ?? false
         }
         
+        // MARK: - default views
+        
+        override func createDefaultEmptyView() -> SBUEmptyView {
+            SBUEmptyView.createDefault(
+                Self.EmptyView,
+                delegate: self
+            )
+        }
+        
+        override func createDefaultChannelStateBanner() -> SBUChannelStateBanner {
+            SBUChannelStateBanner.createDefault(
+                Self.ChannelStateBanner,
+                isThreadMessage: false,
+                isHidden: true
+            )
+        }
+        
+        override func createDefaultUserProfileView() -> SBUUserProfileView {
+            SBUUserProfileView.createDefault(
+                Self.UserProfileView,
+                delegate: self
+            )
+        }
+        
+        override func createDefaultScrollBottomView() -> SBUScrollBottomView? {
+            SBUScrollBottomView.createDefault(
+                Self.ScrollBottomView,
+                channelType: .open,
+                target: self,
+                action: #selector(self.onTapScrollToBottom)
+            )
+        }
+        
         // MARK: - LifeCycle
         
         /// Configures component with parameters.
@@ -94,16 +127,20 @@ extension SBUOpenChannelModule {
             
             // register cell (GroupChannel)
             if self.adminMessageCell == nil {
-                self.register(adminMessageCell: SBUOpenChannelAdminMessageCell())
+                self.register(adminMessageCell: Self.AdminMessageCell.init())
             }
             if self.userMessageCell == nil {
-                self.register(userMessageCell: SBUOpenChannelUserMessageCell())
+                self.register(userMessageCell: Self.UserMessageCell.init())
             }
             if self.fileMessageCell == nil {
-                self.register(fileMessageCell: SBUOpenChannelFileMessageCell())
+                self.register(fileMessageCell: Self.FileMessageCell.init())
             }
             if self.unknownMessageCell == nil {
-                self.register(unknownMessageCell: SBUOpenChannelUnknownMessageCell())
+                self.register(unknownMessageCell: Self.UnknownMessageCell.init())
+            }
+            
+            if let cellType = Self.CustomMessageCell {
+                self.register(customMessageCell: cellType.init())
             }
             
             // new message info view (OpenChannel)
@@ -162,6 +199,17 @@ extension SBUOpenChannelModule {
             super.scrollViewDidScroll(scrollView)
             
             self.setScrollBottomView(hidden: isScrollNearByBottom)
+        }
+        
+        // MARK: - TableView
+        public override func reloadTableView(needsToLayout: Bool = true) {
+            var didApplyTableViewConverter = false
+            #if SWIFTUI
+            didApplyTableViewConverter = self.applyViewConverter(.entireContent)
+            #endif
+            if !didApplyTableViewConverter {
+                super.reloadTableView(needsToLayout: needsToLayout)
+            }
         }
         
         // MARK: - TableView: Cell
@@ -330,7 +378,6 @@ extension SBUOpenChannelModule {
                     unknownMessage,
                     hideDateView: isSameDay,
                     groupPosition: self.getMessageGroupingPosition(currentIndex: indexPath.row),
-                    withTextView: true,
                     isOverlay: isOverlay
                 )
                 self.setMessageCellGestures(

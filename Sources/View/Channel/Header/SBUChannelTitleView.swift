@@ -9,7 +9,7 @@
 import UIKit
 import SendbirdChatSDK
 
-public class SBUChannelTitleView: UIView {
+open class SBUChannelTitleView: UIView {
     // MARK: - Public
     public var channel: BaseChannel?
     
@@ -24,7 +24,7 @@ public class SBUChannelTitleView: UIView {
     public lazy var statusField = UITextField()
     public lazy var onlineStateIcon = UIView()
 
-    private let kCoverImageSize: CGFloat = 34.0
+    let kCoverImageSize: CGFloat = 34.0
     
     /// - Since: 3.5.8
     var isChatNotificationChannelUsed: Bool = false
@@ -40,11 +40,11 @@ public class SBUChannelTitleView: UIView {
     }
     
     @available(*, unavailable, renamed: "SBUChannelTitleView.init(frame:)")
-    required init?(coder: NSCoder) {
+    required public init?(coder: NSCoder) {
         super.init(coder: coder)
     }
 
-    func setupViews() {
+    open func setupViews() {
         self.coverImage.clipsToBounds = true
         self.coverImage.frame = CGRect(x: 0, y: 0, width: kCoverImageSize, height: kCoverImageSize)
         
@@ -61,13 +61,23 @@ public class SBUChannelTitleView: UIView {
         self.stackView.addArrangedSubview(self.titleLabel)
         self.stackView.addArrangedSubview(self.statusField)
         
+        // Cover image
+//        var didApplyCoverImageViewConverter = false
+//        #if SWIFTUI
+//        didApplyCoverImageViewConverter = self.applyViewConverter(.coverImage)
+//        #endif
+//        if !didApplyCoverImageViewConverter {
         self.contentView.addSubview(self.coverImage)
+//        }
+        
         self.contentView.addSubview(self.stackView)
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor).isActive = true
         self.addSubview(self.contentView)
         
     }
     
-    func setupLayouts() {
+    open func setupLayouts() {
         self.contentView
             .sbu_constraint(equalTo: self, leading: 0, trailing: 0, top: 0, bottom: 0)
 
@@ -119,7 +129,7 @@ public class SBUChannelTitleView: UIView {
         ])
     }
     
-    func setupStyles() {
+    open func setupStyles() {
         self.onlineStateIcon.backgroundColor = theme.titleOnlineStateColor
         
         // When used in ChatNotification, set the style in headerComponent.
@@ -132,7 +142,7 @@ public class SBUChannelTitleView: UIView {
         self.statusField.textColor = theme.titleStatusColor
     }
     
-    public override func layoutSubviews() {
+    open override func layoutSubviews() {
         super.layoutSubviews()
 
         self.onlineStateIcon.layer.cornerRadius = self.onlineStateIcon.frame.width/2
@@ -145,30 +155,58 @@ public class SBUChannelTitleView: UIView {
     }
 
     // MARK: - Common
-    public func configure(channel: BaseChannel?, title: String?) {
+    open func configure(channel: BaseChannel?, title: String?) {
         self.channel = channel
         self.titleLabel.text = ""
 
-        self.loadCoverImage()
-        
-        guard title == nil else {
-            self.titleLabel.text = title
-            self.updateChannelStatus(channel: channel)
-            return
+        // Cover image
+        var didApplyCoverImageViewConverter = false
+        #if SWIFTUI
+        switch self.channel?.channelType {
+        case .group:
+            didApplyCoverImageViewConverter = self.applyViewConverter(.coverImage)
+        case .open:
+            didApplyCoverImageViewConverter = self.applyViewConverterForOpen(.coverImage)
+        default:
+            break
         }
-
-        if let channelName = channel?.name,
-           SBUUtils.isValid(channelName: channelName) {
-            self.titleLabel.text = channelName
-        } else {
-            if let groupChannel = channel as? GroupChannel {
-                self.titleLabel.text = SBUUtils.generateChannelName(channel: groupChannel)
-            } else if channel is OpenChannel {
-                self.titleLabel.text = SBUStringSet.Open_Channel_Name_Default
-            } else if channel is FeedChannel {
-                self.titleLabel.text = SBUStringSet.Notification_Channel_Name_Default
+        #endif
+        if !didApplyCoverImageViewConverter {
+            self.loadCoverImage()
+        }
+        
+        // Title label
+        var didApplyTitleLabelViewConverter = false
+        #if SWIFTUI
+        switch self.channel?.channelType {
+        case .group:
+            didApplyCoverImageViewConverter = self.applyViewConverter(.titleLabel)
+        case .open:
+            didApplyCoverImageViewConverter = self.applyViewConverterForOpen(.titleLabel)
+        default:
+            break
+        }
+        #endif
+        if !didApplyTitleLabelViewConverter {
+            guard title == nil else {
+                self.titleLabel.text = title
+                self.updateChannelStatus(channel: channel)
+                return
+            }
+            
+            if let channelName = channel?.name,
+               SBUUtils.isValid(channelName: channelName) {
+                self.titleLabel.text = channelName
             } else {
-                self.titleLabel.text = ""
+                if let groupChannel = channel as? GroupChannel {
+                    self.titleLabel.text = SBUUtils.generateChannelName(channel: groupChannel)
+                } else if channel is OpenChannel {
+                    self.titleLabel.text = SBUStringSet.Open_Channel_Name_Default
+                } else if channel is FeedChannel {
+                    self.titleLabel.text = SBUStringSet.Notification_Channel_Name_Default
+                } else {
+                    self.titleLabel.text = ""
+                }
             }
         }
         
@@ -215,28 +253,49 @@ public class SBUChannelTitleView: UIView {
                SendbirdUI.config.groupChannel.channel.typingIndicatorTypes.contains(.text) {
                 DispatchQueue.main.async { [weak self] in
                     guard let self = self else { return }
-                    self.statusField.isHidden = false
-                    self.statusField.text = typingIndicatorString
-                    self.updateConstraints()
-                    self.layoutIfNeeded()
+                    
+                    var didApplyStatusViewConverter = false
+                    #if SWIFTUI
+                    didApplyStatusViewConverter = applyViewConverter(.statusView)
+                    #endif
+                    if !didApplyStatusViewConverter {
+                        self.statusField.isHidden = false
+                        self.statusField.text = typingIndicatorString
+                        self.updateConstraints()
+                        self.layoutIfNeeded()
+                    }
                 }
             } else {
                 DispatchQueue.main.async { [weak self] in
                     guard let self = self else { return }
-                    self.statusField.isHidden = true
-                    self.statusField.text = ""
-                    self.updateConstraints()
-                    self.layoutIfNeeded()
+                    
+                    var didApplyStatusViewConverter = false
+                    #if SWIFTUI
+                    didApplyStatusViewConverter = applyViewConverter(.statusView)
+                    #endif
+                    if !didApplyStatusViewConverter {
+                        self.statusField.isHidden = true
+                        self.statusField.text = ""
+                        self.updateConstraints()
+                        self.layoutIfNeeded()
+                    }
                 }
             }
         } else if let channel = channel as? OpenChannel {
             let count = channel.participantCount
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
-                self.statusField.isHidden = false
-                self.statusField.text = SBUStringSet.Open_Channel_Participants_Count(count)
-                self.updateConstraints()
-                self.layoutIfNeeded()
+                
+                var didApplySubtitleLabelConverter = false
+                #if SWIFTUI
+                didApplySubtitleLabelConverter = applyViewConverterForOpen(.subtitleLabel)
+                #endif
+                if !didApplySubtitleLabelConverter {
+                    self.statusField.isHidden = false
+                    self.statusField.text = SBUStringSet.Open_Channel_Participants_Count(count)
+                    self.updateConstraints()
+                    self.layoutIfNeeded()
+                }
             }
         }
     }

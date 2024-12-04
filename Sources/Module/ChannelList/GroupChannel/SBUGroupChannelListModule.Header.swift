@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SwiftUI
 import SendbirdChatSDK
 
 /// Event methods for the views updates and performing actions from the header component in group channel list module.
@@ -26,6 +27,33 @@ extension SBUGroupChannelListModule {
         public weak var delegate: SBUGroupChannelListModuleHeaderDelegate? {
             get { self.baseDelegate as? SBUGroupChannelListModuleHeaderDelegate }
             set { self.baseDelegate = newValue }
+        }
+        
+        // MARK: - Methods (Private)
+        override func createDefaultTitleView() -> SBUNavigationTitleView {
+            let titleView = SBUModuleSet.GroupChannelListModule.HeaderComponent.TitleView.init()
+            titleView.configure(title: SBUStringSet.ChannelList_Header_Title)
+            return titleView
+        }
+        
+        override func createDefaultLeftButton() -> SBUBarButtonItem {
+            SBUModuleSet.GroupChannelListModule.HeaderComponent.LeftBarButton.init(
+                image: SBUIconSetType.iconBack.image(to: SBUIconSetType.Metric.defaultIconSize),
+                landscapeImagePhone: nil,
+                style: .plain,
+                target: self,
+                action: #selector(onTapLeftBarButton)
+            )
+        }
+        
+        override func createDefaultRightButton() -> SBUBarButtonItem {
+            SBUModuleSet.GroupChannelListModule.HeaderComponent.RightBarButton.init(
+                image: SBUIconSetType.iconCreate.image(to: SBUIconSetType.Metric.defaultIconSize),
+                landscapeImagePhone: nil,
+                style: .plain,
+                target: self,
+                action: #selector(onTapRightBarButton)
+            )
         }
         
         // MARK: - LifeCycle
@@ -53,6 +81,18 @@ extension SBUGroupChannelListModule {
             self.setupStyles()
         }
         
+        open override func setupViews() {
+            #if SWIFTUI
+            self.applyViewConverter(.titleView)
+            self.applyViewConverter(.leftView)
+            self.applyViewConverter(.rightView)
+            // We are not using `...buttons` in SwiftUI
+            #endif
+            
+            // uikit 
+            super.setupViews()
+        }
+        
         /// Sets up style with theme. If the `theme` is `nil`, it uses the stored theme.
         /// - Parameter theme: `SBUGroupChannelListTheme` object
         open func setupStyles(theme: SBUGroupChannelListTheme? = nil) {
@@ -66,6 +106,10 @@ extension SBUGroupChannelListModule {
             
             self.leftBarButton?.tintColor = self.theme?.leftBarButtonTintColor
             self.rightBarButton?.tintColor = self.theme?.rightBarButtonTintColor
+            
+            self.leftBarButtons?.forEach({ $0.tintColor = self.theme?.leftBarButtonTintColor })
+            
+            self.rightBarButtons?.forEach({ $0.tintColor = self.theme?.rightBarButtonTintColor })
         }
     }
 }

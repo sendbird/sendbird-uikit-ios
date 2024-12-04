@@ -128,7 +128,7 @@ open class SBUSelectablePhotoViewController: SBUBaseViewController {
     /// Initializes `SBUSelectablePhotoViewController`.
     /// - Parameter mediaType: A general type of an asset, such as image or video. If it's `nil`, it fetches all types.
     /// - Since: 3.0.0
-    public init(mediaType: PHAssetMediaType? = nil) {
+    public required init(mediaType: PHAssetMediaType? = nil) {
         if let mediaType = mediaType {
             self.fetchResult = PHAsset.fetchAssets(with: mediaType, options: nil)
         } else {

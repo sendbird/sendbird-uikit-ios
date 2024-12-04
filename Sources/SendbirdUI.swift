@@ -139,20 +139,35 @@ public class SendbirdUI {
     /// Sets extensions to the SendbirdChat SDK
     static func setExtensionSettingsForSendbirdChat() {
         // Call after SendbirdChat initialization
+        #if SWIFTUI
+        let sdkInfo = __SendbirdSDKInfo(
+            product: .swiftuiChat,
+            platform: .ios,
+            version: SendbirdUI.shortVersion
+        )
+        #else
         let sdkInfo = __SendbirdSDKInfo(
             product: .uikitChat,
             platform: .ios,
             version: SendbirdUI.shortVersion
         )
+        #endif
         _ = SendbirdChat.__addSendbirdExtensions(
             extensions: [sdkInfo],
             customData: nil
         )
         
+        #if SWIFTUI
+        SendbirdChat.__addExtension(
+            SBUConstant.extensionSwiftUI,
+            version: SendbirdUI.shortVersion
+        )
+        #else
         SendbirdChat.__addExtension(
             SBUConstant.extensionKeyUIKit,
             version: SendbirdUI.shortVersion
         )
+        #endif
 
         SendbirdChatOptions.setMemberInfoInMessage(true)
         
@@ -421,9 +436,9 @@ public class SendbirdUI {
     
     /// Updates the user information.
     ///
-    /// This function is used to update the user's nickname and profile URL. 
+    /// This function is used to update the user's nickname and profile URL.
     /// It takes a completion handler as a parameter which returns an optional `SBError`.
-    /// If the update is successful, the error returned is `nil`. 
+    /// If the update is successful, the error returned is `nil`.
     /// Otherwise, it contains an instance of `SBError` with details about the failure.
     ///
     /// - Parameter completionHandler: A closure that is called when the update is complete.
@@ -757,10 +772,20 @@ public class SendbirdUI {
                                           channelType: channelType)
             }
         } else {
-            let viewController: UIViewController? = findChannelListViewController(
-                rootViewController: rootViewController,
-                channelType: channelType
-            )
+            let viewController: UIViewController? = {
+            #if SWIFTUI
+                findChannelListViewControllerFromSwiftUI(
+                    rootViewController: rootViewController,
+                    channelType: channelType
+                )
+            #else
+                findChannelListViewController(
+                    rootViewController: rootViewController,
+                    channelType: channelType
+                )
+            #endif
+            }()
+            
             showChannelViewController(with: viewController ?? rootViewController,
                                       channelURL: channelURL,
                                       basedOnChannelList: basedOnChannelList,
@@ -841,34 +866,15 @@ public class SendbirdUI {
         if let channelListVc = navigationController
             .viewControllers
             .first(where: {
-                switch channelType {
-                case .open:
-                    // shouldn't be instance of SBUGroupChannelListViewController since this is for group channel.
-                    return !($0 is SBUGroupChannelListViewController) && $0 is SBUBaseChannelListViewController
-                case .group:
-                    return $0 is SBUGroupChannelListViewController
-                case .feed:
-                    return $0 is SBUGroupChannelListViewController // Not used now
-                @unknown default:
-                    return false
-                }
+                matchChannelListViewController($0, channelType: channelType)
             }) {
             return channelListVc
         } else {
             return navigationController
-                .viewControllers
-                .last(where: {
-                    switch channelType {
-                    case .open:
-                        return $0 is SBUOpenChannelViewController
-                    case .group:
-                        return $0 is SBUGroupChannelViewController
-                    case .feed:
-                        return $0 is SBUFeedNotificationChannelViewController
-                    @unknown default:
-                        return false
-                    }
-                })
+            .viewControllers
+            .last(where: {
+                matchChannelViewController($0, channelType: channelType)
+            })
         }
     }
     
@@ -978,6 +984,36 @@ public class SendbirdUI {
     public static func setLogLevel(_ types: [LogType]) {
         let type = types.map { $0.rawValue }.reduce(0) { $0 + $1 }
         SBULog.logType = type
+    }
+}
+
+extension SendbirdUI {
+    static func matchChannelListViewController(_ viewController: UIViewController, channelType: ChannelType) -> Bool {
+        switch channelType {
+        case .open:
+            // shouldn't be instance of SBUGroupChannelListViewController since this is for group channel.
+            return !(viewController is SBUGroupChannelListViewController)
+                    && viewController is SBUBaseChannelListViewController
+        case .group:
+            return viewController is SBUGroupChannelListViewController
+        case .feed:
+            return viewController is SBUGroupChannelListViewController // Not used now
+        @unknown default:
+            return false
+        }
+    }
+    
+    static func matchChannelViewController(_ viewController: UIViewController, channelType: ChannelType) -> Bool {
+        switch channelType {
+        case .open:
+            return viewController is SBUOpenChannelViewController
+        case .group:
+            return viewController is SBUGroupChannelViewController
+        case .feed:
+            return viewController is SBUFeedNotificationChannelViewController
+        @unknown default:
+            return false
+        }
     }
 }
 

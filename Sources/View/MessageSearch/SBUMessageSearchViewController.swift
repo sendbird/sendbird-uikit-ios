@@ -8,6 +8,15 @@
 
 import UIKit
 import SendbirdChatSDK
+#if SWIFTUI
+import SwiftUI
+#endif
+
+#if SWIFTUI
+protocol MessageSearchViewEventDelegate: AnyObject {
+    
+}
+#endif
 
 /// ViewController handling a message search.
 ///
@@ -31,6 +40,17 @@ open class SBUMessageSearchViewController: SBUBaseViewController, SBUMessageSear
     /// You can set custom query params for message search.
     public var customMessageSearchQueryParams: MessageSearchQueryParams?
     
+    // MARK: - SwiftUI
+    #if SWIFTUI
+    var groupChannelViewBuilder: GroupChannelViewBuilder?
+    
+    weak var swiftUIDelegate: (SBUMessageSearchViewModelDelegate & MessageSearchViewEventDelegate)? {
+        didSet {
+            self.viewModel?.delegates.addDelegate(self.swiftUIDelegate, type: .swiftui)
+        }
+    }
+    #endif
+        
     // MARK: - Lifecycle
     @available(*, unavailable, renamed: "SBUMessageSearchViewController(channel:)")
     required public init?(coder: NSCoder) {
@@ -51,6 +71,15 @@ open class SBUMessageSearchViewController: SBUBaseViewController, SBUMessageSear
         SBULog.info("")
         
         self.createViewModel(channel: channel)
+        self.headerComponent = SBUModuleSet.MessageSearchModule.HeaderComponent.init()
+        self.listComponent = SBUModuleSet.MessageSearchModule.ListComponent.init()
+    }
+    
+    required public init(channelURL: String) {
+        super.init(nibName: nil, bundle: nil)
+        SBULog.info("")
+        
+        self.createViewModel(channelURL: channelURL)
         self.headerComponent = SBUModuleSet.MessageSearchModule.HeaderComponent.init()
         self.listComponent = SBUModuleSet.MessageSearchModule.ListComponent.init()
     }
@@ -89,9 +118,20 @@ open class SBUMessageSearchViewController: SBUBaseViewController, SBUMessageSear
     }
     
     // MARK: - ViewModel
+    /// Create view model with channel
     open func createViewModel(channel: BaseChannel) {
-        self.viewModel = SBUMessageSearchViewModel(
+        self.viewModel = SBUViewModelSet.MessageSearchViewModel.init(
             channel: channel,
+            params: self.customMessageSearchQueryParams,
+            delegate: self
+        )
+    }
+    
+    /// Create view model with channelURL
+    /// - Since: 3.28.0
+    open func createViewModel(channelURL: String) {
+        self.viewModel = SBUViewModelSet.MessageSearchViewModel.init(
+            channelURL: channelURL,
             params: self.customMessageSearchQueryParams,
             delegate: self
         )
@@ -172,6 +212,20 @@ open class SBUMessageSearchViewController: SBUBaseViewController, SBUMessageSear
             return
         }
         
+        #if SWIFTUI
+        if let groupChannelViewBuilder = self.groupChannelViewBuilder {
+            var view = groupChannelViewBuilder(
+                message.channelURL,
+                message.createdAt,
+                messageListParams
+            )
+            view.highlightInfo = highlightInfo
+            view.useRightBarButtonItem = false
+            let channelVC = UIHostingController(rootView: view)
+            self.navigationController?.pushViewControllerNonFlickering(channelVC, animated: true)
+            return
+        }
+        #endif
         let channelVC = SBUViewControllerSet.GroupChannelViewController.init(
             channelURL: message.channelURL,
             startingPoint: message.createdAt,

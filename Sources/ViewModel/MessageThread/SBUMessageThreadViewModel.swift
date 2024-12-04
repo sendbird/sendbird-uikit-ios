@@ -72,6 +72,17 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
         set { self.baseDataSource = newValue }
     }
     
+    // MARK: SwiftUI (Internal)
+    var delegates: WeakDelegateStorage<SBUMessageThreadViewModelDelegate> {
+        let computedDelegates = WeakDelegateStorage<SBUMessageThreadViewModelDelegate>()
+        self.baseDelegates.allKeyValuePairs().forEach { key, value in
+            if let delegate = value as? SBUMessageThreadViewModelDelegate {
+                computedDelegates.addDelegate(delegate, type: key)
+            }
+        }
+        return computedDelegates
+    }
+    
     public internal(set) var customizedThreadedMessageListParams: ThreadedMessageListParams?
     public internal(set) var threadedMessageListParams = ThreadedMessageListParams()
     
@@ -105,17 +116,20 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
     var messageCollection: MessageCollection? // for parent message's reply update
     
     // MARK: - LifeCycle
-    public init(channel: BaseChannel? = nil,
-                channelURL: String? = nil,
-                parentMessage: BaseMessage? = nil,
-                parentMessageId: Int64? = 0,
-                threadedMessageListParams: ThreadedMessageListParams? = nil,
-                startingPoint: Int64? = .max,
-                delegate: SBUMessageThreadViewModelDelegate? = nil,
-                dataSource: SBUMessageThreadViewModelDataSource? = nil) {
+    required public init(
+        channel: BaseChannel? = nil,
+        channelURL: String? = nil,
+        parentMessage: BaseMessage? = nil,
+        parentMessageId: Int64? = 0,
+        threadedMessageListParams: ThreadedMessageListParams? = nil,
+        startingPoint: Int64? = .max,
+        delegate: SBUMessageThreadViewModelDelegate? = nil,
+        dataSource: SBUMessageThreadViewModelDataSource? = nil
+    ) {
         super.init()
         
         self.delegate = delegate
+        self.baseDelegates.addDelegate(self.delegate, type: .uikit)
         self.dataSource = dataSource
         self.isTransformedList = false
         self.isThreadMessageMode = true
@@ -125,6 +139,10 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
         SendbirdChat.addChannelDelegate(
             self,
             identifier: "\(SBUConstant.groupChannelDelegateIdentifier).\(self.description)"
+        )
+        
+        self.debouncer = SBUDebouncer(
+            debounceTime: SBUGlobals.userMentionConfig?.debounceTime ?? SBUDebouncer.defaultTime
         )
         
         if let channel = channel {
@@ -141,12 +159,28 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
             self.parentMessageId = parentMessageId
         }
         
-        self.customizedThreadedMessageListParams = threadedMessageListParams
-        self.startingPoint = startingPoint
+        guard let channelURL = self.channelURL,
+              let parentMessageId = self.parentMessageId else { return }
         
-        self.debouncer = SBUDebouncer(
-            debounceTime: SBUGlobals.userMentionConfig?.debounceTime ?? SBUDebouncer.defaultTime
+        self.initializeAndLoad(
+            channelURL: channelURL,
+            parentMessageId: parentMessageId,
+            threadedMessageListParams: threadedMessageListParams,
+            startingPoint: startingPoint
         )
+    }
+    
+    func initializeAndLoad(
+        channelURL: String,
+        parentMessageId: Int64,
+        threadedMessageListParams: ThreadedMessageListParams? = nil,
+        startingPoint: Int64? = nil
+    ) {
+        self.channelURL = channelURL
+        self.parentMessageId = parentMessageId
+        
+        if let threadedMessageListParams { self.customizedThreadedMessageListParams = threadedMessageListParams }
+        if let startingPoint { self.startingPoint = startingPoint }
         
         self.loadChannelAndMessages(channelURL: channelURL)
         
@@ -179,7 +213,9 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
         // 1. Connect
         SendbirdUI.connectIfNeeded { [weak self] _, error in
             if let error = error {
-                self?.delegate?.didReceiveError(error, isBlocker: true)
+                self?.delegates.forEach {
+                    $0.didReceiveError(error, isBlocker: true)
+                }
                 return
             }
             
@@ -190,7 +226,9 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
                     guard error == nil,
                           let parentMessageId = self?.parentMessageId,
                           let channel = channel else {
-                        self?.delegate?.didReceiveError(error, isBlocker: true)
+                        self?.delegates.forEach {
+                            $0.didReceiveError(error, isBlocker: true)
+                        }
                         return
                     }
                     
@@ -203,16 +241,20 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
                         isInitilize: true,
                         completionHandler: { parentMessage, error in
                             guard error == nil, let parentMessage = parentMessage else {
-                                self?.delegate?.didReceiveError(error, isBlocker: true)
+                                self?.delegates.forEach {
+                                    $0.didReceiveError(error, isBlocker: true)
+                                }
                                 return
                             }
                             
                             self?.parentMessage = parentMessage
                             if let self = self {
-                                self.delegate?.messageThreadViewModel(
-                                    self,
-                                    didLoadParentMessage: parentMessage
-                                )
+                                self.delegates.forEach {
+                                    $0.messageThreadViewModel(
+                                        self,
+                                        didLoadParentMessage: parentMessage
+                                    )
+                                }
                             }
                             
                             // 4. loadThreadedMessage
@@ -265,11 +307,13 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
                     source: .eventChannelChanged,
                     sendingStatus: .succeeded
                 )
-                self.delegate?.baseChannelViewModel(
-                    self,
-                    didChangeChannel: channel,
-                    withContext: context
-                )
+                self.delegates.forEach {
+                    $0.baseChannelViewModel(
+                        self,
+                        didChangeChannel: channel,
+                        withContext: context
+                    )
+                }
                 completionHandler?(channel, nil)
             }
             
@@ -283,7 +327,9 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
                 guard let self = self else { return }
                 guard self.canProceed(with: channel, error: error) == true else {
                     let context = MessageContext(source: .eventChannelChanged, sendingStatus: .failed)
-                    self.delegate?.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
+                    self.delegates.forEach {
+                        $0.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
+                    }
                     return
                 }
                 
@@ -291,11 +337,13 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
                     source: .eventChannelChanged,
                     sendingStatus: .succeeded
                 )
-                self.delegate?.baseChannelViewModel(
-                    self,
-                    didChangeChannel: channel,
-                    withContext: context
-                )
+                self.delegates.forEach {
+                    $0.baseChannelViewModel(
+                        self,
+                        didChangeChannel: channel,
+                        withContext: context
+                    )
+                }
             }
         } else if let channelURL = self.channelURL {
             self.loadChannel(channelURL: channelURL)
@@ -307,11 +355,15 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
             SBULog.error("[Failed] Load channel request: \(error.localizedDescription)")
             
             if error.code == ChatError.nonAuthorized.rawValue {
-                self.delegate?.baseChannelViewModel(self, shouldDismissForChannel: nil)
+                self.delegates.forEach {
+                    $0.baseChannelViewModel(self, shouldDismissForChannel: nil)
+                }
             } else {
                 // Currently thread messages do not support local caching.
 //                if SendbirdChat.isLocalCachingEnabled { return true }
-                self.delegate?.didReceiveError(error, isBlocker: true)
+                self.delegates.forEach {
+                    $0.didReceiveError(error, isBlocker: true)
+                }
             }
             return false
         }
@@ -319,7 +371,9 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
         guard let channel = channel,
               channel.myMemberState != .none
         else {
-            self.delegate?.baseChannelViewModel(self, shouldDismissForChannel: channel)
+            self.delegates.forEach {
+                $0.baseChannelViewModel(self, shouldDismissForChannel: channel)
+            }
             return false
         }
         
@@ -374,7 +428,9 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
                 return
             }
             self.parentMessage = parentMessage
-            self.delegate?.messageThreadViewModel(self, didUpdateParentMessage: self.parentMessage)
+            self.delegates.forEach {
+                $0.messageThreadViewModel(self, didUpdateParentMessage: self.parentMessage)
+            }
         }
     }
     
@@ -437,7 +493,9 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
                 }
                 
                 if let error = error {
-                    self.delegate?.didReceiveError(error, isBlocker: false)
+                    self.delegates.forEach {
+                        $0.didReceiveError(error, isBlocker: false)
+                    }
                     self.isLoadingPrev = false
                     return
                 }
@@ -453,12 +511,14 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
                 
                 self.hasMorePrevious = messages.count >= params.previousResultSize
                 
-                self.delegate?.baseChannelViewModel(
-                    self,
-                    shouldUpdateScrollInMessageList: messages,
-                    forContext: nil,
-                    keepsScroll: false
-                )
+                self.delegates.forEach {
+                    $0.baseChannelViewModel(
+                        self,
+                        shouldUpdateScrollInMessageList: messages,
+                        forContext: nil,
+                        keepsScroll: false
+                    )
+                }
                 
                 self.updateLastUpdatedTimestamp(messages: messages)
                 
@@ -507,12 +567,14 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
                 
                 self.hasMoreNext = messages.count >= params.nextResultSize
                 
-                self.delegate?.baseChannelViewModel(
-                    self,
-                    shouldUpdateScrollInMessageList: messages,
-                    forContext: nil,
-                    keepsScroll: true
-                )
+                self.delegates.forEach {
+                    $0.baseChannelViewModel(
+                        self,
+                        shouldUpdateScrollInMessageList: messages,
+                        forContext: nil,
+                        keepsScroll: true
+                    )
+                }
                 self.updateLastUpdatedTimestamp(messages: messages)
                 
                 self.upsertMessagesInList(messages: messages, needReload: true)
@@ -528,7 +590,9 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
     public func loadBothMessages(timestamp: Int64?, showIndicator: Bool) {
         SBULog.info("[Request] Both message list from : \(String(describing: timestamp))")
         guard self.initialLock.try() else { return }
-        self.delegate?.shouldUpdateLoadingState(showIndicator)
+        self.delegates.forEach {
+            $0.shouldUpdateLoadingState(showIndicator)
+        }
         
         let params = (self.threadedMessageListParams.copy() as? ThreadedMessageListParams) ?? ThreadedMessageListParams()
         params.isInclusive = true
@@ -575,8 +639,10 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
                 defer { self.initialLock.unlock() }
                 
                 if let error = error {
-                    self.delegate?.shouldUpdateLoadingState(false)
-                    self.delegate?.didReceiveError(error, isBlocker: false)
+                    self.delegates.forEach {
+                        $0.shouldUpdateLoadingState(false)
+                        $0.didReceiveError(error, isBlocker: false)
+                    }
                     return
                 }
                 
@@ -604,7 +670,9 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
         guard self.isValidResponse(messages: messages, error: error),
               let messages = messages else {
             SBULog.warning("Initial message list request is not valid")
-            self.delegate?.shouldUpdateLoadingState(false)
+            self.delegates.forEach {
+                $0.shouldUpdateLoadingState(false)
+            }
             return
         }
         
@@ -708,23 +776,27 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
           
             self.sortAllMessageList(needReload: true)
             let context = MessageContext(source: .eventMessageSent, sendingStatus: .succeeded)
-            self.baseDelegate?.baseChannelViewModel(
-                self,
-                shouldUpdateScrollInMessageList: self.fullMessageList,
-                forContext: context,
-                keepsScroll: false
-            )
+            self.baseDelegates.forEach {
+                $0.baseChannelViewModel(
+                    self,
+                    shouldUpdateScrollInMessageList: self.fullMessageList,
+                    forContext: context,
+                    keepsScroll: false
+                )
+            }
         }
     }
     
     /// - Note: This interface is beta. We do not gaurantee this interface to work properly yet.
     /// - Since: [NEXT_VERSION_MFM_THREAD]
     public func updateMultipleFilesMessageCell(requestId: String, index: Int) {
-        self.delegate?.messageThreadViewModel(
-            self,
-            didFinishUploadingFileAt: index,
-            multipleFilesMessageRequestId: requestId
-        )
+        self.delegates.forEach {
+            $0.messageThreadViewModel(
+                self,
+                didFinishUploadingFileAt: index,
+                multipleFilesMessageRequestId: requestId
+            )
+        }
     }
     
     /// Sets up  completion handlers of send user message.
@@ -733,7 +805,9 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
             guard let self = self else { return }
             
             if let error = error {
-                self.baseDelegate?.didReceiveError(error)
+                self.baseDelegates.forEach {
+                    $0.didReceiveError(error)
+                }
                 SBULog.error("[Failed] Send user message request: \(error.localizedDescription)")
                 return
             }
@@ -757,7 +831,9 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
             guard let self = self else { return }
             
             if let error = error {
-                self.baseDelegate?.didReceiveError(error)
+                self.baseDelegates.forEach {
+                    $0.didReceiveError(error)
+                }
                 SBULog.error(
                     """
                     [Failed] Send file message request:
@@ -792,7 +868,9 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
             
             self.sortAllMessageList(needReload: true)
             
-            self.baseDelegate?.didReceiveError(error, isBlocker: false)
+            self.baseDelegates.forEach {
+                $0.didReceiveError(error, isBlocker: false)
+            }
             
             SBULog.error("[Failed] Resend failed user message request: \(error.localizedDescription)")
             return
@@ -826,13 +904,15 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
         self.fullMessageList = self.messageList
         + pendingMessages.sorted { $0.createdAt < $1.createdAt }
         
-        self.baseDelegate?.shouldUpdateLoadingState(false)
-        self.baseDelegate?.baseChannelViewModel(
-            self,
-            didChangeMessageList: self.fullMessageList,
-            needsToReload: needReload,
-            initialLoad: self.isInitialLoading
-        )
+        self.baseDelegates.forEach {
+            $0.shouldUpdateLoadingState(false)
+            $0.baseChannelViewModel(
+                self,
+                didChangeMessageList: self.fullMessageList,
+                needsToReload: needReload,
+                initialLoad: self.isInitialLoading
+            )
+        }
     }
     
     // MARK: - Last Updated timestamp
@@ -973,7 +1053,9 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
                 """)
             
             self.nextLock.unlock()
-            self.delegate?.didReceiveError(error, isBlocker: true)
+            self.delegates.forEach {
+                $0.didReceiveError(error, isBlocker: true)
+            }
             return
         }
         
@@ -1021,12 +1103,14 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
     private func handleChangelogResponse(updatedMessages: [BaseMessage]?, deletedMessageIds: [Int64]?) {
         if let updatedMessages = updatedMessages,
            !updatedMessages.isEmpty {
-            self.delegate?.baseChannelViewModel(
-                self,
-                shouldUpdateScrollInMessageList: updatedMessages,
-                forContext: nil,
-                keepsScroll: false
-            )
+            self.delegates.forEach {
+                $0.baseChannelViewModel(
+                    self,
+                    shouldUpdateScrollInMessageList: updatedMessages,
+                    forContext: nil,
+                    keepsScroll: false
+                )
+            }
             self.upsertMessagesInList(messages: updatedMessages, needReload: true)
             
         }
@@ -1042,12 +1126,14 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
     private func handleChangelogResponse(addedMessages: [BaseMessage]) -> Bool {
         let hasMore = addedMessages.count >= self.changelogFetchLimit
         
-        self.delegate?.baseChannelViewModel(
-            self,
-            shouldUpdateScrollInMessageList: addedMessages,
-            forContext: nil,
-            keepsScroll: true
-        )
+        self.delegates.forEach {
+            $0.baseChannelViewModel(
+                self,
+                shouldUpdateScrollInMessageList: addedMessages,
+                forContext: nil,
+                keepsScroll: true
+            )
+        }
         self.upsertMessagesInList(messages: addedMessages, needReload: true)
         
         SBULog.info("Loaded added messages : \(addedMessages.count), hasNext : \(String(describing: self.hasNext))")
@@ -1101,15 +1187,19 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
                     self.query?.loadNextPage { [weak self] members, _ in
                         guard let self = self else { return }
                         self.suggestedMemberList = SBUUser.convertUsers(members)
-                        self.delegate?.messageThreadViewModel(
-                            self,
-                            didReceiveSuggestedMentions: self.suggestedMemberList
-                        )
+                        self.delegates.forEach {
+                            $0.messageThreadViewModel(
+                                self,
+                                didReceiveSuggestedMentions: self.suggestedMemberList
+                            )
+                        }
                     }
                 } else {
                     guard channel.members.count > 0 else {
                         self.suggestedMemberList = nil
-                        self.delegate?.messageThreadViewModel(self, didReceiveSuggestedMentions: nil)
+                        self.delegates.forEach {
+                            $0.messageThreadViewModel(self, didReceiveSuggestedMentions: nil)
+                        }
                         return
                     }
                     
@@ -1126,10 +1216,12 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
                     
                     let resultMembers = Array(matchedMembers[0..<splitCount])
                     self.suggestedMemberList = SBUUser.convertUsers(resultMembers)
-                    self.delegate?.messageThreadViewModel(
-                        self,
-                        didReceiveSuggestedMentions: self.suggestedMemberList
-                    )
+                    self.delegates.forEach {
+                        $0.messageThreadViewModel(
+                            self,
+                            didReceiveSuggestedMentions: self.suggestedMemberList
+                        )
+                    }
                 }
             }
         }
@@ -1151,7 +1243,9 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
         if let error = error {
             SBULog.error("Couldn't retrieve thread list.: \(error)")
             self.isLoadingNext = false
-            self.delegate?.didReceiveError(error, isBlocker: true)
+            self.delegates.forEach {
+                $0.didReceiveError(error, isBlocker: true)
+            }
             return false
         }
         
@@ -1220,7 +1314,9 @@ extension SBUMessageThreadViewModel {
                 
                 self?.parentMessage = parentMessage
                 if let self = self {
-                    self.delegate?.messageThreadViewModel(self, didLoadParentMessage: parentMessage)
+                    self.delegates.forEach {
+                        $0.messageThreadViewModel(self, didLoadParentMessage: parentMessage)
+                    }
                 }
                 
                 self?.loadMessageChangeLogs()
@@ -1253,21 +1349,25 @@ extension SBUMessageThreadViewModel: GroupChannelDelegate {
             guard message is UserMessage || message is FileMessage else { return }
             
             if let channel = self.channel {
-                self.delegate?.baseChannelViewModel(
-                    self,
-                    didReceiveNewMessage: message,
-                    forChannel: channel
-                )
+                self.delegates.forEach {
+                    $0.baseChannelViewModel(
+                        self,
+                        didReceiveNewMessage: message,
+                        forChannel: channel
+                    )
+                }
             }
         }
         
         if self.hasNext() == false {
-            self.delegate?.baseChannelViewModel(
-                self,
-                shouldUpdateScrollInMessageList: [message],
-                forContext: nil,
-                keepsScroll: !isScrollNearBottom
-            )
+            self.delegates.forEach {
+                $0.baseChannelViewModel(
+                    self,
+                    shouldUpdateScrollInMessageList: [message],
+                    forContext: nil,
+                    keepsScroll: !isScrollNearBottom
+                )
+            }
             
             self.upsertMessagesInList(messages: [message], needReload: true)
         }
@@ -1279,7 +1379,9 @@ extension SBUMessageThreadViewModel: GroupChannelDelegate {
         
         if message.messageId == self.parentMessageId {
             SBULog.info("Did update message: \(message)")
-            self.delegate?.messageThreadViewModel(self, didUpdateParentMessage: message)
+            self.delegates.forEach {
+                $0.messageThreadViewModel(self, didUpdateParentMessage: message)
+            }
             
         } else if self.parentMessageId == message.parentMessageId {
             SBULog.info("Did update message: \(message)")
@@ -1292,7 +1394,9 @@ extension SBUMessageThreadViewModel: GroupChannelDelegate {
         if self.parentMessage?.messageId == threadInfoUpdateEvent.targetMessageId {
             self.parentMessage?.apply(threadInfoUpdateEvent)
             if let parentMessage = self.parentMessage {
-                self.delegate?.messageThreadViewModel(self, didUpdateParentMessage: parentMessage)
+                self.delegates.forEach {
+                    $0.messageThreadViewModel(self, didUpdateParentMessage: parentMessage)
+                }
             }
         }
     }
@@ -1309,11 +1413,13 @@ extension SBUMessageThreadViewModel: GroupChannelDelegate {
                 if reactionEvent.messageId == parentMessage.messageId {
                     parentMessage.apply(reactionEvent)
                 }
-                self.baseDelegate?.baseChannelViewModel(
-                    self,
-                    didUpdateReaction: reactionEvent,
-                    forMessage: parentMessage
-                )
+                self.baseDelegates.forEach {
+                    $0.baseChannelViewModel(
+                        self,
+                        didUpdateReaction: reactionEvent,
+                        forMessage: parentMessage
+                    )
+                }
             }
             
         } else if self.parentMessageId == message?.parentMessageId {
@@ -1332,12 +1438,16 @@ extension SBUMessageThreadViewModel: GroupChannelDelegate {
     open override func channel(_ channel: BaseChannel, messageWasDeleted messageId: Int64) {
         guard self.channel?.channelURL == channel.channelURL else { return }
         if messageId == self.parentMessageId {
-            self.delegate?.messageThreadViewModelShouldDismissMessageThread(self)
+            self.delegates.forEach {
+                $0.messageThreadViewModelShouldDismissMessageThread(self)
+            }
         } else {
             SBULog.info("Message was deleted: \(messageId)")
             
             for message in self.messageList where message.messageId == messageId {
-                self.delegate?.baseChannelViewModel(self, deletedMessages: [message])
+                self.delegates.forEach {
+                    $0.baseChannelViewModel(self, deletedMessages: [message])
+                }
             }
             
             self.deleteMessagesInList(messageIds: [messageId], needReload: true)
@@ -1353,7 +1463,9 @@ extension SBUMessageThreadViewModel: GroupChannelDelegate {
         SBULog.info("Channel was changed, ChannelURL:\(channel.channelURL)")
         
         let context = MessageContext(source: .eventChannelChanged, sendingStatus: .succeeded)
-        self.delegate?.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
+        self.delegates.forEach {
+            $0.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
+        }
     }
     
     open override func channelWasFrozen(_ channel: BaseChannel) {
@@ -1362,7 +1474,9 @@ extension SBUMessageThreadViewModel: GroupChannelDelegate {
         SBULog.info("Channel was frozen, ChannelURL:\(channel.channelURL)")
         
         let context = MessageContext(source: .eventChannelFrozen, sendingStatus: .succeeded)
-        self.delegate?.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
+        self.delegates.forEach {
+            $0.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
+        }
     }
     
     open override func channelWasUnfrozen(_ channel: BaseChannel) {
@@ -1371,7 +1485,9 @@ extension SBUMessageThreadViewModel: GroupChannelDelegate {
         SBULog.info("Channel was unfrozen, ChannelURL:\(channel.channelURL)")
         
         let context = MessageContext(source: .eventChannelUnfrozen, sendingStatus: .succeeded)
-        self.delegate?.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
+        self.delegates.forEach {
+            $0.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
+        }
     }
     
     open override func channel(_ channel: BaseChannel, userWasMuted user: RestrictedUser) {
@@ -1380,7 +1496,9 @@ extension SBUMessageThreadViewModel: GroupChannelDelegate {
         if user.userId == SBUGlobals.currentUser?.userId {
             SBULog.info("You are muted.")
             let context = MessageContext(source: .eventUserMuted, sendingStatus: .succeeded)
-            self.delegate?.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
+            self.delegates.forEach {
+                $0.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
+            }
         }
     }
     
@@ -1390,7 +1508,9 @@ extension SBUMessageThreadViewModel: GroupChannelDelegate {
         if user.userId == SBUGlobals.currentUser?.userId {
             SBULog.info("You are unmuted.")
             let context = MessageContext(source: .eventUserUnmuted, sendingStatus: .succeeded)
-            self.delegate?.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
+            self.delegates.forEach {
+                $0.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
+            }
         }
     }
     
@@ -1398,7 +1518,9 @@ extension SBUMessageThreadViewModel: GroupChannelDelegate {
         guard self.channel?.channelURL == channel.channelURL else { return }
         
         let context = MessageContext(source: .eventOperatorUpdated, sendingStatus: .succeeded)
-        self.delegate?.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
+        self.delegates.forEach {
+            $0.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
+        }
     }
     
     open override func channel(_ channel: BaseChannel, userWasBanned user: RestrictedUser) {
@@ -1406,10 +1528,14 @@ extension SBUMessageThreadViewModel: GroupChannelDelegate {
         
         if user.userId == SBUGlobals.currentUser?.userId {
             SBULog.info("You are banned.")
-            self.delegate?.baseChannelViewModel(self, shouldDismissForChannel: channel)
+            self.delegates.forEach {
+                $0.baseChannelViewModel(self, shouldDismissForChannel: channel)
+            }
         } else {
             let context = MessageContext(source: .eventUserBanned, sendingStatus: .succeeded)
-            self.delegate?.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
+            self.delegates.forEach {
+                $0.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
+            }
         }
     }
     
@@ -1417,17 +1543,23 @@ extension SBUMessageThreadViewModel: GroupChannelDelegate {
         guard self.channel?.channelURL == channel.channelURL else { return }
         
         let context =  MessageContext(source: .eventUserJoined, sendingStatus: .succeeded)
-        self.delegate?.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
+        self.delegates.forEach {
+            $0.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
+        }
     }
     
     open func channel(_ channel: GroupChannel, userDidLeave user: User) {
         guard self.channel?.channelURL == channel.channelURL else { return }
         
         if user.userId == SBUGlobals.currentUser?.userId {
-            self.delegate?.baseChannelViewModel(self, shouldDismissForChannel: channel)
+            self.delegates.forEach {
+                $0.baseChannelViewModel(self, shouldDismissForChannel: channel)
+            }
         } else {
             let context =  MessageContext(source: .eventUserLeft, sendingStatus: .succeeded)
-            self.delegate?.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
+            self.delegates.forEach {
+                $0.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
+            }
         }
     }
     
@@ -1435,7 +1567,9 @@ extension SBUMessageThreadViewModel: GroupChannelDelegate {
         guard self.channel?.channelURL == channelURL else { return }
         
         let context = MessageContext(source: .eventChannelDeleted, sendingStatus: .succeeded)
-        self.delegate?.baseChannelViewModel(self, didChangeChannel: nil, withContext: context)
+        self.delegates.forEach {
+            $0.baseChannelViewModel(self, didChangeChannel: nil, withContext: context)
+        }
     }
 }
 
@@ -1459,12 +1593,14 @@ extension SBUMessageThreadViewModel: MessageCollectionDelegate {
             )
         }
         
-        self.delegate?.baseChannelViewModel(
-            self,
-            shouldUpdateScrollInMessageList: messages,
-            forContext: context,
-            keepsScroll: true
-        )
+        self.delegates.forEach {
+            $0.baseChannelViewModel(
+                self,
+                shouldUpdateScrollInMessageList: messages,
+                forContext: context,
+                keepsScroll: true
+            )
+        }
         
         self.sortAllMessageList(needReload: true)
         
@@ -1480,7 +1616,9 @@ extension SBUMessageThreadViewModel: MessageCollectionDelegate {
         
         let parentMessages = messages.filter { $0.messageId == self.parentMessageId }
         if let parentMessage = parentMessages.first {
-            self.delegate?.messageThreadViewModel(self, didUpdateParentMessage: parentMessage)
+            self.delegates.forEach {
+                $0.messageThreadViewModel(self, didUpdateParentMessage: parentMessage)
+            }
         }
         
         // Edge case - Updates Thread message when resend finished
@@ -1497,7 +1635,9 @@ extension SBUMessageThreadViewModel: MessageCollectionDelegate {
         
         let parentMessages = messages.filter { $0.messageId == self.parentMessageId }
         if let parentMessage = parentMessages.first {
-            self.delegate?.messageThreadViewModel(self, didUpdateParentMessage: parentMessage)
+            self.delegates.forEach {
+                $0.messageThreadViewModel(self, didUpdateParentMessage: parentMessage)
+            }
         }
         
         self.loadMessageChangeLogs()

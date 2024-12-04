@@ -6,7 +6,7 @@
 //  Copyright © 2020 Sendbird, Inc. All rights reserved.
 //
 
-import UIKit
+import SwiftUI
 
 extension UINavigationController {
     open override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -31,4 +31,17 @@ extension UINavigationController {
         self.navigationBar.standardAppearance = appearance
         self.navigationBar.scrollEdgeAppearance = appearance
     }
+    
+    #if SWIFTUI
+    /// Push view controller with hiding navigation bar. Method to hide and show navigationBar in swiftui (ui timing issue)
+    /// - Since: 3.28.0
+    public func pushViewControllerNonFlickering<T>(
+        _ viewController: UIHostingController<T>,
+        animated: Bool
+    ) {
+        // Remove SwiftUI's basic back button
+        viewController.navigationItem.leftBarButtonItem = UIBarButtonItem()
+        self.pushViewController(viewController, animated: animated)
+    }
+    #endif
 }

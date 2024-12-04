@@ -22,10 +22,18 @@ extension SBUModerationsModule {
 
 // MARK: Header
 extension SBUModerationsModule.Header {
+    /// Represents the metatype of left bar button in ``SBUModerationsModule.Header``.
+    /// - Since: 3.28.0
+    public static var LeftBarButton: SBUBarButtonItem.Type = SBUBarButtonItem.self
     
+    /// Represents the metatype of title view in ``SBUModerationsModule.Header``.
+    /// - Since: 3.28.0
+    public static var TitleView: SBUNavigationTitleView.Type = SBUNavigationTitleView.self
 }
 
 // MARK: List
 extension SBUModerationsModule.List {
-    
+    /// Represents the metatype of moderation cell in moderation module.
+    /// - Since: 3.28.0
+    public static var ModerationCell: SBUModerationCell.Type = SBUModerationCell.self
 }

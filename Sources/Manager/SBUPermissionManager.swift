@@ -60,7 +60,7 @@ public class SBUPermissionManager {
     ///    - alertViewDelegate: The object that conforms to ``SBUAlertViewDelegate``..
     ///    - onDismiss: Called when the alert is dismissed. Refer to ``AlertButtonHandler``.
     /// - Since: 3.4.0
-    public func showPermissionAlert(forType permissionType: SBUPermissionManager.PermissionType, alertViewDelegate: SBUAlertViewDelegate? = nil, onDismiss: AlertButtonHandler? = nil) {
+    public func showPermissionAlert(forType permissionType: SBUPermissionManager.PermissionType, alertViewDelegate: SBUAlertViewDelegate? = nil, onDismiss: SBUAlertButtonHandler? = nil) {
         let settingButton = SBUAlertButtonItem(title: SBUStringSet.Settings) { _ in
             if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
                 UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)

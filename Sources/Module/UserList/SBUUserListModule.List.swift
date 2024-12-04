@@ -78,14 +78,6 @@ extension SBUUserListModule {
         public var theme: SBUUserListTheme?
         public var componentTheme: SBUComponentTheme?
         
-        // MARK: - UI properties (Private)
-        private lazy var defaultEmptyView: SBUEmptyView? = {
-            let emptyView = SBUEmptyView()
-            emptyView.type = EmptyViewType.none
-            emptyView.delegate = self
-            return emptyView
-        }()
-        
         // MARK: - Logic properties (Public)
         public weak var delegate: SBUUserListModuleListDelegate?
         public weak var dataSource: SBUUserListModuleListDataSource?
@@ -97,6 +89,13 @@ extension SBUUserListModule {
             self.dataSource?.userListModule(self, usersInTableView: self.tableView) ?? []
         }
         public var userListType: ChannelUserListType = .none
+        
+        func createDefualtEmptyView() -> SBUEmptyView {
+            SBUEmptyView.createDefault(
+                Self.EmptyView,
+                delegate: self
+            )
+        }
         
         // MARK: - LifeCycle
         @available(*, unavailable, renamed: "SBUUserListModule.List()")
@@ -135,9 +134,15 @@ extension SBUUserListModule {
         }
         
         open func setupViews() {
+            #if SWIFTUI
+            if self.setupViewsForSwiftUI() {
+                return
+            }
+            #endif
+
             // empty view
             if self.emptyView == nil {
-                self.emptyView = self.defaultEmptyView
+                self.emptyView = self.createDefualtEmptyView()
             }
             
             // tableview
@@ -154,7 +159,7 @@ extension SBUUserListModule {
             
             // register cell
             if self.userCell == nil {
-                self.register(userCell: SBUUserCell())
+                self.register(userCell: Self.UserCell.init())
             }
         }
         
@@ -184,6 +189,12 @@ extension SBUUserListModule {
         
         /// Reloads table view. This method corresponds to `UITableView reloadData()`.
         public func reloadTableView() {
+            #if SWIFTUI
+            if self.setupViewsForSwiftUI() {
+                return
+            }
+            #endif
+            
             if self.userListType == .muted ||
                 self.userListType == .banned {
                 
@@ -265,7 +276,8 @@ extension SBUUserListModule {
                 defaultCell.configure(
                     type: userListType,
                     user: user,
-                    operatorMode: operatorMode
+                    operatorMode: operatorMode,
+                    channelType: channel?.channelType ?? .group
                 )
                 
                 defaultCell.moreMenuHandler = { [weak self] in
@@ -277,6 +289,13 @@ extension SBUUserListModule {
                     guard let self = self else { return }
                     self.setUserProfileTapAction(user)
                 }
+                
+                #if SWIFTUI
+                defaultCell.cellTapHandler = { [weak self] in
+                    guard let self = self else { return }
+                    self.delegate?.userListModule(self, didSelectRowAt: indexPath)
+                }
+                #endif
             }
         }
         
@@ -363,3 +382,38 @@ extension SBUUserListModule.List: UITableViewDataSource, UITableViewDelegate {
         self.delegate?.userListModule(self, didSelectRowAt: indexPath)
     }
 }
+
+#if SWIFTUI
+extension SBUUserListModule.List {
+    func setupViewsForSwiftUI() -> Bool {
+        switch self.userListType {
+        case .none:
+            break
+        case .members:
+            return self.applyViewConverter(.entireContent)
+        case .operators:
+            if self.channel?.channelType == .open {
+                return self.applyViewConverterForOpenOperators(.entireContent)
+            } else {
+                return self.applyViewConverterForOperators(.entireContent)
+            }
+        case .muted:
+            if self.channel?.channelType == .open {
+                return self.applyViewConverterForOpenMutedParticipant(.entireContent)
+            } else {
+                return self.applyViewConverterForMutedMember(.entireContent)
+            }
+        case .banned:
+            if self.channel?.channelType == .open {
+                return self.applyViewConverterForOpenBannedUser(.entireContent)
+            } else {
+                return self.applyViewConverterForBannedUser(.entireContent)
+            }
+        case .participants:
+            return self.applyViewConverterForOpen(.entireContent)
+        }
+        
+        return false
+    }
+}
+#endif

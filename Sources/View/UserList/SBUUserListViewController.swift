@@ -8,6 +8,15 @@
 
 import UIKit
 import SendbirdChatSDK
+#if SWIFTUI
+import SwiftUI
+#endif
+
+#if SWIFTUI
+protocol UserListViewEventDelegate: AnyObject {
+    func userListView(didSelectRowAt indexPath: IndexPath)
+}
+#endif
 
 /// This class handling members,  operators,  muted/Participants,  banned,  participants,
 open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHeaderDelegate, SBUUserListModuleListDelegate, SBUUserListModuleListDataSource, SBUCommonViewModelDelegate, SBUUserProfileViewDelegate, SBUUserListViewModelDelegate, SBUUserListViewModelDataSource {
@@ -38,6 +47,19 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
     public var userList: [SBUUser] { viewModel?.userList ?? [] }
     public var userListType: ChannelUserListType { viewModel?.userListType ?? .none }
     
+    // MARK: - SwiftUI
+    #if SWIFTUI
+    var inviteUserViewBuilder: InviteUserViewBuilder?
+    var groupChannelRegisterOperatorViewBuilder: GroupChannelRegisterOperatorViewBuilder?
+    var openChannelRegisterOperatorViewBuilder: OpenChannelRegisterOperatorViewBuilder?
+    
+    weak var swiftUIDelegate: (SBUUserListViewModelDelegate & UserListViewEventDelegate)? {
+        didSet {
+            self.viewModel?.delegates.addDelegate(swiftUIDelegate, type: .swiftui)
+        }
+    }
+    #endif
+    
     // MARK: - Lifecycle
     @available(*, unavailable, renamed: "SBUUserListViewController(channelURL:type:)")
     required public init?(coder: NSCoder) {
@@ -59,9 +81,11 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
     ///   - users: `SBUUser` array object
     ///   - userListType: Channel user list type (default: `.members`)
     /// - Since: 1.2.0
-    required public init(channel: BaseChannel,
-                         users: [SBUUser]? = nil,
-                         userListType: ChannelUserListType = .members) {
+    required public init(
+        channel: BaseChannel,
+        users: [SBUUser]? = nil,
+        userListType: ChannelUserListType = .members
+    ) {
         super.init(nibName: nil, bundle: nil)
         SBULog.info("")
         
@@ -84,6 +108,7 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
             self.headerComponent = SBUModuleSet.OpenUserListModule.HeaderComponent.init()
             self.listComponent = SBUModuleSet.OpenUserListModule.ListComponent.init()
         }
+        self.headerComponent?.channelType = channelType
     }
     
     /// If you have channelURL and users objects, use this initialize function.
@@ -92,10 +117,12 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
     ///   - users: `SBUUser` array object
     ///   - userListType: Channel user list type (default: `.members`)
     /// - Since: 1.2.0
-    required public init(channelURL: String,
-                         channelType: ChannelType,
-                         users: [SBUUser]? = nil,
-                         userListType: ChannelUserListType = .members) {
+    required public init(
+        channelURL: String,
+        channelType: ChannelType,
+        users: [SBUUser]? = nil,
+        userListType: ChannelUserListType = .members
+    ) {
         super.init(nibName: nil, bundle: nil)
         SBULog.info("")
         
@@ -150,7 +177,18 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
                               channelType: ChannelType = .group,
                               users: [SBUUser]? = nil,
                               type: ChannelUserListType) {
-        self.viewModel = SBUUserListViewModel(
+        
+        let viewModelType: SBUUserListViewModel.Type
+        switch channelType {
+        case .open:
+            viewModelType = SBUViewModelSet.OpenUserListViewModel
+        case .group:
+            viewModelType = SBUViewModelSet.GroupUserListViewModel
+        default:
+            viewModelType = SBUViewModelSet.GroupUserListViewModel
+        }
+        
+        self.viewModel = viewModelType.init(
             channel: channel,
             channelURL: channelURL,
             channelType: channelType,
@@ -227,6 +265,41 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
     open func showInviteUser() {
         let type: ChannelInviteListType = self.userListType == .operators ? .operators : .users
         
+        #if SWIFTUI
+        if let groupChannel = self.channel as? GroupChannel {
+            switch type {
+            case .users:
+                if let inviteUserViewBuilder = self.inviteUserViewBuilder {
+                    let view = inviteUserViewBuilder(groupChannel.channelURL)
+                    let inviteUserVC = UIHostingController(rootView: view)
+                    self.navigationController?.pushViewControllerNonFlickering(inviteUserVC, animated: true)
+                    return
+                }
+            case .operators:
+                if let groupChannelRegisterOperatorViewBuilder = self.groupChannelRegisterOperatorViewBuilder {
+                    let view = groupChannelRegisterOperatorViewBuilder(groupChannel.channelURL)
+                    let registerOperatorVC = UIHostingController(rootView: view)
+                    self.navigationController?.pushViewControllerNonFlickering(registerOperatorVC, animated: true)
+                    return
+                }
+            default:
+                break
+            }
+        } else if let openChannel = self.channel as? OpenChannel {
+            switch type {
+            case .operators:
+                if let openChannelRegisterOperatorViewBuilder = self.openChannelRegisterOperatorViewBuilder {
+                    let view = openChannelRegisterOperatorViewBuilder(openChannel.channelURL)
+                    let registerOperatorVC = UIHostingController(rootView: view)
+                    self.navigationController?.pushViewControllerNonFlickering(registerOperatorVC, animated: true)
+                    return
+                }
+            default:
+                break
+            }
+        }
+        #endif
+        // TODO: SwiftUI - 로직 정리
         if let groupChannel = self.channel as? GroupChannel {
             switch type {
             case .users:
@@ -246,11 +319,10 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
             default:
                 break
             }
-            
         }
     }
     
-    /// This func tion shows the user profile
+    /// This function shows the user profile
     ///
     /// If you do not want to use the user profile function, override this function and leave it empty.
     /// - Parameter user: `SBUUser` object used for user profile configuration
@@ -271,68 +343,7 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
         }
     }
     
-    // MARK: - Error handling
-    private func errorHandler(_ error: SBError) {
-        self.errorHandler(error.localizedDescription, error.code)
-    }
-    
-    open override func errorHandler(_ message: String?, _ code: NSInteger? = nil) {
-        SBULog.error("Did receive error: \(message ?? "")")
-    }
-    
-    // MARK: - SBUUserListModuleHeaderDelegate
-    open func userListModule(
-        _ headerComponent: SBUUserListModule.Header,
-        didUpdateTitleView titleView: UIView?
-    ) {
-        self.navigationItem.titleView = titleView
-    }
-    
-    open func userListModule(
-        _ headerComponent: SBUUserListModule.Header,
-        didUpdateLeftItem leftItem: UIBarButtonItem?
-    ) {
-        self.navigationItem.leftBarButtonItem = leftItem
-    }
-    
-    open func userListModule(
-        _ headerComponent: SBUUserListModule.Header,
-        didUpdateRightItem rightItem: UIBarButtonItem?
-    ) {
-        self.navigationItem.rightBarButtonItem = rightItem
-    }
-    
-    open func userListModule(
-        _ headerComponent: SBUUserListModule.Header,
-        didTapLeftItem leftItem: UIBarButtonItem
-    ) {
-        self.onClickBack()
-    }
-    
-    open func userListModule(
-        _ headerComponent: SBUUserListModule.Header,
-        didTapRightItem rightItem: UIBarButtonItem
-    ) {
-        self.showInviteUser()
-    }
-    
-    // MARK: - SBUUserListModuleListDelegate
-    open func userListModule(
-        _ listComponent: SBUUserListModule.List,
-        didSelectRowAt indexPath: IndexPath
-    ) { }
-    
-    open func userListModule(
-        _ listComponent: SBUUserListModule.List,
-        didDetectPreloadingPosition indexPath: IndexPath
-    ) {
-        self.viewModel?.preLoadNextUserList(indexPath: indexPath)
-    }
-    
-    open func userListModule(
-        _ listComponent: SBUUserListModule.List,
-        didTapMoreMenuFor user: SBUUser
-    ) {
+    func showMoreMenu(with user: SBUUser) {
         let userNameItem = SBUActionSheetItem(
             title: user.nickname ?? user.userId,
             color: self.componentTheme.actionSheetSubTextColor,
@@ -419,6 +430,89 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
         }
         
         SBUActionSheet.show(items: items, cancelItem: cancelItem, oneTimetheme: componentTheme)
+    }
+    
+    // MARK: - Error handling
+    private func errorHandler(_ error: SBError) {
+        self.errorHandler(error.localizedDescription, error.code)
+    }
+    
+    open override func errorHandler(_ message: String?, _ code: NSInteger? = nil) {
+        SBULog.error("Did receive error: \(message ?? "")")
+    }
+    
+    // MARK: - SBUUserListModuleHeaderDelegate
+    open func userListModule(
+        _ headerComponent: SBUUserListModule.Header,
+        didUpdateTitleView titleView: UIView?
+    ) {
+        self.navigationItem.titleView = titleView
+    }
+    
+    open func userListModule(
+        _ headerComponent: SBUUserListModule.Header,
+        didUpdateLeftItem leftItem: UIBarButtonItem?
+    ) {
+        self.navigationItem.leftBarButtonItem = leftItem
+    }
+    
+    open func userListModule(
+        _ headerComponent: SBUUserListModule.Header,
+        didUpdateRightItem rightItem: UIBarButtonItem?
+    ) {
+        self.navigationItem.rightBarButtonItem = rightItem
+    }
+    
+    open func userListModule(
+        _ headerComponent: SBUUserListModule.Header,
+        didUpdateLeftItems leftItems: [UIBarButtonItem]?
+    ) {
+        self.navigationItem.leftBarButtonItems = leftItems
+    }
+    
+    open func userListModule(
+        _ headerComponent: SBUUserListModule.Header,
+        didUpdateRightItems rightItems: [UIBarButtonItem]?
+    ) {
+        self.navigationItem.rightBarButtonItems = rightItems
+    }
+    
+    open func userListModule(
+        _ headerComponent: SBUUserListModule.Header,
+        didTapLeftItem leftItem: UIBarButtonItem
+    ) {
+        self.onClickBack()
+    }
+    
+    open func userListModule(
+        _ headerComponent: SBUUserListModule.Header,
+        didTapRightItem rightItem: UIBarButtonItem
+    ) {
+        self.showInviteUser()
+    }
+    
+    // MARK: - SBUUserListModuleListDelegate
+    open func userListModule(
+        _ listComponent: SBUUserListModule.List,
+        didSelectRowAt indexPath: IndexPath
+    ) { 
+        #if SWIFTUI
+        self.swiftUIDelegate?.userListView(didSelectRowAt: indexPath)
+        #endif
+    }
+    
+    open func userListModule(
+        _ listComponent: SBUUserListModule.List,
+        didDetectPreloadingPosition indexPath: IndexPath
+    ) {
+        self.viewModel?.preLoadNextUserList(indexPath: indexPath)
+    }
+    
+    open func userListModule(
+        _ listComponent: SBUUserListModule.List,
+        didTapMoreMenuFor user: SBUUser
+    ) {
+        self.showMoreMenu(with: user)
     }
     
     open func userListModule(

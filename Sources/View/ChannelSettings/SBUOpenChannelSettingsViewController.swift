@@ -8,6 +8,15 @@
 
 import UIKit
 import SendbirdChatSDK
+#if SWIFTUI
+import SwiftUI
+#endif
+
+#if SWIFTUI
+protocol OpenChannelSettingsViewEventDelegate: AnyObject {
+    
+}
+#endif
 
 open class SBUOpenChannelSettingsViewController: SBUBaseChannelSettingsViewController, SBUOpenChannelSettingsModuleHeaderDelegate, SBUOpenChannelSettingsModuleListDelegate, SBUOpenChannelSettingsModuleListDataSource, SBUOpenChannelSettingsViewModelDelegate {
     
@@ -28,6 +37,18 @@ open class SBUOpenChannelSettingsViewController: SBUBaseChannelSettingsViewContr
     }
     
     public override var channel: OpenChannel? { self.viewModel?.channel as? OpenChannel }
+    
+    // MARK: - SwiftUI
+    #if SWIFTUI
+    var participantListViewBuilder: OpenParticipantListViewBuilder?
+    var moderationsViewBuilder: OpenModerationsViewBuilder?
+    
+    weak var swiftUIDelegate: (SBUOpenChannelSettingsViewModelDelegate & OpenChannelSettingsViewEventDelegate)? {
+        didSet {
+            self.viewModel?.delegates.addDelegate(self.swiftUIDelegate, type: .swiftui)
+        }
+    }
+    #endif
     
     // MARK: - Lifecycle
     @available(*, unavailable, renamed: "SBUOpenChannelSettingsViewController(channelURL:)")
@@ -66,7 +87,7 @@ open class SBUOpenChannelSettingsViewController: SBUBaseChannelSettingsViewContr
     
     // MARK: - ViewModel
     open override func createViewModel(channel: BaseChannel? = nil, channelURL: String? = nil) {
-        self.baseViewModel = SBUOpenChannelSettingsViewModel(
+        self.baseViewModel = SBUViewModelSet.OpenChannelSettingsViewModel.init(
             channel: channel,
             channelURL: channelURL,
             delegate: self
@@ -80,6 +101,7 @@ open class SBUOpenChannelSettingsViewController: SBUBaseChannelSettingsViewContr
         
         self.navigationItem.titleView = self.headerComponent?.titleView
         self.navigationItem.leftBarButtonItem = self.headerComponent?.leftBarButton
+        self.navigationItem.leftBarButtonItems = self.headerComponent?.leftBarButtons
         self.updateRightBarButton()
         
         // List component
@@ -99,6 +121,14 @@ open class SBUOpenChannelSettingsViewController: SBUBaseChannelSettingsViewContr
     open func showParticipantsList() {
         guard let channel = self.channel else { return }
         
+        #if SWIFTUI
+        if let participantListViewBuilder = self.participantListViewBuilder {
+            let view = participantListViewBuilder(channel.channelURL)
+            let participantListVC = UIHostingController(rootView: view)
+            self.navigationController?.pushViewControllerNonFlickering(participantListVC, animated: true)
+            return
+        }
+        #endif
         let participantListVC = SBUViewControllerSet.OpenUserListViewController.init(channel: channel, userListType: .participants)
         self.navigationController?.pushViewController(participantListVC, animated: true)
     }
@@ -108,6 +138,14 @@ open class SBUOpenChannelSettingsViewController: SBUBaseChannelSettingsViewContr
     open override func showModerationList() {
         guard let channel = self.channel else { return }
         
+        #if SWIFTUI
+        if let moderationsViewBuilder = self.moderationsViewBuilder {
+            let view = moderationsViewBuilder(channel.channelURL)
+            let moderationsVC = UIHostingController(rootView: view)
+            self.navigationController?.pushViewControllerNonFlickering(moderationsVC, animated: true)
+            return
+        }
+        #endif
         let moderationsVC = SBUViewControllerSet.OpenModerationsViewController.init(channel: channel)
         self.navigationController?.pushViewController(moderationsVC, animated: true)
     }
@@ -147,6 +185,14 @@ open class SBUOpenChannelSettingsViewController: SBUBaseChannelSettingsViewContr
     open func openChannelSettingsModule(_ headerComponent: SBUOpenChannelSettingsModule.Header,
                                         didUpdateRightItem rightItem: UIBarButtonItem?) {
         self.navigationItem.rightBarButtonItem = rightItem
+    }
+    
+    open func openChannelSettingsModule(_ headerComponent: SBUOpenChannelSettingsModule.Header, didUpdateLeftItems lefttItems: [UIBarButtonItem]?) {
+        self.navigationItem.leftBarButtonItems = lefttItems
+    }
+    
+    open func openChannelSettingsModule(_ headerComponent: SBUOpenChannelSettingsModule.Header, didUpdateRightItems rightItems: [UIBarButtonItem]?) {
+        self.navigationItem.rightBarButtonItems = rightItems
     }
     
     open func openChannelSettingsModule(_ headerComponent: SBUOpenChannelSettingsModule.Header,

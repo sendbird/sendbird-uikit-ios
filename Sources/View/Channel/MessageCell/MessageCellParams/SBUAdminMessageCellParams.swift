@@ -13,13 +13,14 @@ public class SBUAdminMessageCellParams: SBUBaseMessageCellParams {
         self.message as? AdminMessage
     }
     
-    public init(message: AdminMessage, hideDateView: Bool) {
+    public init(message: AdminMessage, hideDateView: Bool, isThreadMessage: Bool = false) {
         super.init(
             message: message,
             hideDateView: hideDateView,
             messagePosition: .center,
             groupPosition: .none,
-            receiptState: SBUMessageReceiptState.none
+            receiptState: SBUMessageReceiptState.none,
+            isThreadMessage: isThreadMessage
         )
     }
 }

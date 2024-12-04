@@ -78,23 +78,9 @@ extension SBUMessageSearchModule {
         public var theme: SBUMessageSearchTheme?
         
         // MARK: - UI properties (Private)
-        private lazy var defaultSearchBar: UISearchBar = {
-            let searchBar = UISearchBar()
-            searchBar.setPositionAdjustment(UIOffset(horizontal: 8, vertical: 0), for: .search)
-            searchBar.setPositionAdjustment(UIOffset(horizontal: -4, vertical: 0), for: .clear)
-            searchBar.showsCancelButton = true
-            searchBar.delegate = self
-            
-            if #available(iOS 13.0, *) {
-                searchBar.searchTextField.layer.cornerRadius = 20
-                searchBar.searchTextField.layer.masksToBounds = true
-            } else {
-                if let textfield = searchBar.value(forKey: "searchField") as? UITextField,
-                   let backgroundview = textfield.subviews.first {
-                    backgroundview.layer.cornerRadius = 20
-                    backgroundview.clipsToBounds = true
-                }
-            }
+        lazy var defaultSearchBar: UISearchBar = {
+            let searchBar = SBUModuleSet.MessageSearchModule.HeaderComponent.TitleView.init()
+            searchBar.configure(delegate: self, theme: self.theme)
             
             self.updateSearchBarStyle(with: searchBar)
             return searchBar
@@ -135,9 +121,27 @@ extension SBUMessageSearchModule {
         
         /// Set values of the views in the header component when it needs.
         open func setupViews() {
+            #if SWIFTUI
+            self.applyViewConverter(.titleView)
+            self.applyViewConverter(.leftView)
+            self.applyViewConverter(.rightView)
+            // We are not using `...buttons` in SwiftUI
+            #endif
+            
             if self.titleView == nil {
                 self.titleView = self.defaultSearchBar
             }
+            
+            // MOD TODO: After enabling SBUBarButtonItem's lifecyles, use ModuleSet metatypes to setup bar buttons.
+//            if self.leftBarButton == nil,
+//               let leftBarButtonType =  SBUModuleSet.MessageSearchModule.HeaderComponent.LeftBarButton.self {
+//                self.leftBarButton = leftBarButtonType.init(
+//                    title: "LEFT",
+//                    style: <#T##UIBarButtonItem.Style#>,
+//                    target: <#T##Any?#>,
+//                    action: <#T##Selector?#>
+//                )
+//            }
         }
         
         /// Sets layouts of the views in the header component.
@@ -230,6 +234,12 @@ extension SBUMessageSearchModule {
                let cancelButton = searchBar.value(forKey: "cancelButton") as? UIButton {
                 cancelButton.isEnabled = true
             }
+        }
+        
+        /// Cancels the search.
+        /// - Since: 3.28.0
+        public func cancelSearch() {
+            self.delegate?.messageSearchModuleDidTapCancel(self)
         }
         
         // MARK: - Keyboard

@@ -51,6 +51,9 @@ open class SBUCreateChannelViewModel {
     public weak var delegate: SBUCreateChannelViewModelDelegate?
     /// The data source for `SBUCreateChannelViewModel`. This is used to provide the next member list for the channel type.
     public weak var dataSource: SBUCreateChannelViewModelDataSource?
+    
+    // MARK: SwiftUI (Internal)
+    var delegates = WeakDelegateStorage<SBUCreateChannelViewModelDelegate>()
 
     /// The type of channel to be created. Default is `.group`.
     public private(set) var channelType: ChannelCreationType = .group
@@ -77,7 +80,7 @@ open class SBUCreateChannelViewModel {
     ///   - users: An optional array of `SBUUser` to be added to the user list. Default is `nil`.
     ///   - delegate: An optional delegate for `SBUCreateChannelViewModelDelegate`. Default is `nil`.
     ///   - dataSource: An optional data source for `SBUCreateChannelViewModelDataSource`. Default is `nil`.
-    public init(
+    required public init(
         channelType: ChannelCreationType = .group,
         users: [SBUUser]? = nil,
         delegate: SBUCreateChannelViewModelDelegate? = nil,
@@ -85,15 +88,24 @@ open class SBUCreateChannelViewModel {
     ) {
         self.delegate = delegate
         self.dataSource = dataSource
+        self.delegates.addDelegate(delegate, type: .uikit)
         
         self.channelType = channelType
         
         self.customizedUsers = users
         self.useCustomizedUsers = (users?.count ?? 0) > 0
         
+        self.initializeAndLoad(users: users)
+    }
+    
+    func initializeAndLoad(
+        users: [SBUUser]? = nil
+    ) {
+        if let users { self.customizedUsers = users }
+        self.useCustomizedUsers = (users?.count ?? 0) > 0
+        
         // If want using your custom user list, filled users with your custom user list.
         self.loadNextUserList(reset: true, users: self.customizedUsers ?? nil)
-
     }
     
     // MARK: - List handling
@@ -107,7 +119,7 @@ open class SBUCreateChannelViewModel {
     ///   - users: customized `SBUUser` array for add to user list
     public func loadNextUserList(reset: Bool, users: [SBUUser]? = nil) {
         guard !self.isLoading else { return }
-        self.delegate?.shouldUpdateLoadingState(true)
+        self.delegates.forEach { $0.shouldUpdateLoadingState(true) }
         
         if reset {
             self.userListQuery = nil
@@ -123,15 +135,17 @@ open class SBUCreateChannelViewModel {
             SBULog.info("\(users.count) customized users have been added.")
             
             self.userList += users
-            self.delegate?.shouldUpdateLoadingState(false)
-            self.delegate?.createChannelViewModel(
-                self,
-                didChangeUsers: self.userList,
-                needsToReload: true
-            )
+            self.delegates.forEach { $0.shouldUpdateLoadingState(false) }
+            self.delegates.forEach {
+                $0.createChannelViewModel(
+                    self,
+                    didChangeUsers: self.userList,
+                    needsToReload: true
+                )
+            }
         } else {
             guard !self.useCustomizedUsers else {
-                self.delegate?.shouldUpdateLoadingState(false)
+                self.delegates.forEach { $0.shouldUpdateLoadingState(false) }
                 
                 return
             }
@@ -143,17 +157,17 @@ open class SBUCreateChannelViewModel {
             }
             
             guard self.userListQuery?.hasNext == true else {
-                self.delegate?.shouldUpdateLoadingState(false)
+                self.delegates.forEach { $0.shouldUpdateLoadingState(false) }
                 SBULog.info("All users have been loaded.")
                 return
             }
             
             self.userListQuery?.loadNextPage { [weak self] users, error in
                 guard let self = self else { return }
-                defer { self.delegate?.shouldUpdateLoadingState(false) }
+                defer { self.delegates.forEach { $0.shouldUpdateLoadingState(false) } }
                 
                 if let error = error {
-                    self.delegate?.didReceiveError(error, isBlocker: true)
+                    self.delegates.forEach { $0.didReceiveError(error, isBlocker: true) }
                     return
                 }
                 
@@ -166,7 +180,7 @@ open class SBUCreateChannelViewModel {
                 guard !users.isEmpty else { return }
                 
                 self.userList += users
-                self.delegate?.createChannelViewModel(self, didChangeUsers: self.userList, needsToReload: true)
+                self.delegates.forEach { $0.createChannelViewModel(self, didChangeUsers: self.userList, needsToReload: true) }
             }
         }
     }
@@ -234,10 +248,10 @@ open class SBUCreateChannelViewModel {
             [Request] Create channel with users,
             Users: \(Array(self.selectedUserList))
             """)
-        self.delegate?.shouldUpdateLoadingState(true)
+        self.delegates.forEach { $0.shouldUpdateLoadingState(true) }
         
         GroupChannel.createChannel(params: params) { [weak self] channel, error in
-            defer { self?.delegate?.shouldUpdateLoadingState(false) }
+            defer { self?.delegates.forEach { $0.shouldUpdateLoadingState(false) } }
             guard let self = self else { return }
             
             if let error = error {
@@ -245,16 +259,18 @@ open class SBUCreateChannelViewModel {
                     [Failed] Create channel request:
                     \(String(error.localizedDescription))
                     """)
-                self.delegate?.didReceiveError(error)
+                self.delegates.forEach { $0.didReceiveError(error) }
                 return
             }
             
             SBULog.info("[Succeed] Create channel: \(channel?.description ?? "")")
-            self.delegate?.createChannelViewModel(
-                self,
-                didCreateChannel: channel,
-                withMessageListParams: messageListParams
-            )
+            self.delegates.forEach {
+                $0.createChannelViewModel(
+                    self,
+                    didCreateChannel: channel,
+                    withMessageListParams: messageListParams
+                )
+            }
         }
     }
     
@@ -272,9 +288,11 @@ open class SBUCreateChannelViewModel {
         
         SBULog.info("Selected user: \(user)")
         
-        self.delegate?.createChannelViewModel(
-            self,
-            didUpdateSelectedUsers: Array(self.selectedUserList)
-        )
+        self.delegates.forEach {
+            $0.createChannelViewModel(
+                self,
+                didUpdateSelectedUsers: Array(self.selectedUserList)
+            )
+        }
     }
 }

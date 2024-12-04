@@ -33,14 +33,13 @@ extension SBUBaseChannelSettingsModule {
     /// A module component that represent the list of `SBUBaseChannelSettingsModule`.
     @objcMembers
     open class List: UIView {
-        
         // MARK: - UI properties (Public)
         
         /// The table view that shows the items of the channel settings.
         public var tableView = UITableView()
         
         /// A view that shows channel information on the settings.
-        public var channelInfoView: UIView? = SBUChannelSettingsChannelInfoView()
+        public lazy var channelInfoView: UIView? = self.createDefaultChannelInfoView()
         
         /// The object that is used as the theme of the list component. The theme must adopt the `SBUChannelSettingsTheme` class.
         public var theme: SBUChannelSettingsTheme?
@@ -57,6 +56,12 @@ extension SBUBaseChannelSettingsModule {
         }
         
         public var items: [SBUChannelSettingItem] = []
+        
+        // MARK: - default view
+        
+        func createDefaultChannelInfoView() -> SBUChannelSettingsChannelInfoView {
+            SBUChannelSettingsChannelInfoView.init()
+        }
         
         // MARK: - LifeCycle
         open func setupViews() {

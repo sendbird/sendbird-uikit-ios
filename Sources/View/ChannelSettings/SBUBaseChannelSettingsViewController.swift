@@ -106,10 +106,12 @@ open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActio
         if let groupChannel = self.channel as? GroupChannel {
             if !groupChannel.isBroadcast || groupChannel.myRole == .operator {
                 self.navigationItem.rightBarButtonItem = self.baseHeaderComponent?.rightBarButton
+                self.navigationItem.rightBarButtonItems = self.baseHeaderComponent?.rightBarButtons
             }
         } else if self.channel is OpenChannel {
             if self.isOperator {
                 self.navigationItem.rightBarButtonItem = self.baseHeaderComponent?.rightBarButton
+                self.navigationItem.rightBarButtonItems = self.baseHeaderComponent?.rightBarButtons
             }
         }
     }
@@ -276,7 +278,7 @@ open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActio
     }
     
     open func showLimitedPhotoLibraryPicker() {
-        let selectablePhotoVC = SBUSelectablePhotoViewController(mediaType: .image)
+        let selectablePhotoVC = SBUCommonViewControllerSet.SelectablePhotoViewController.init(mediaType: .image)
         selectablePhotoVC.delegate = self
         let nav = UINavigationController(rootViewController: selectablePhotoVC)
         self.present(nav, animated: true, completion: nil)
@@ -291,26 +293,11 @@ open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActio
     
     // MARK: - Actions
     
-    open func showNotifications() {
-        guard let channel = self.channel else { return }
-        if channel is GroupChannel {
-            let pushSettingsVC = SBUViewControllerSet.GroupChannelPushSettingsViewController.init(channel: channel)
-            self.navigationController?.pushViewController(pushSettingsVC, animated: true)
-        }
-    }
+    open func showNotifications() { }
     
     /// If you want to use a custom MessageSearchViewController, override it and implement it.
     /// - Since: 2.1.0
-    open func showSearch() {
-        guard let channel = self.channel else { return }
-        self.needRollbackNavigationBarSetting = false
-        let searchVC = SBUViewControllerSet.MessageSearchViewController.init(channel: channel)
-        let nav = UINavigationController(rootViewController: searchVC)
-        nav.modalPresentationStyle = .fullScreen
-        self.present(nav, animated: true) {
-            self.needRollbackNavigationBarSetting = true
-        }
-    }
+    open func showSearch() { }
     
     /// If you want to use a custom moderationsViewController, override it and implement it.
     /// - Since: 1.2.0

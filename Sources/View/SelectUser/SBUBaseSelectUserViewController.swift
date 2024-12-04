@@ -114,6 +114,16 @@ open class SBUBaseSelectUserViewController: SBUBaseViewController, SBUBaseSelect
             return
         }
         
+        #if SWIFTUI
+        for viewController in navigationController.viewControllers where viewController.children.first is SBUBaseChannelViewController {
+            /// NOTE: hostingViewController case
+            /// HostingViewController
+            ///   ㄴ SBUBaseChannelViewController
+            navigationController.popToViewController(viewController, animated: true)
+            return
+        }
+        #endif
+        
         navigationController.popToRootViewController(animated: true)
     }
     

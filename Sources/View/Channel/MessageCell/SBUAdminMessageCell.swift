@@ -15,6 +15,11 @@ open class SBUAdminMessageCell: SBUBaseMessageCell {
     // MARK: - Public property
     public var messageLabel = UILabel()
     
+    // MARK: Models
+    public var adminMessage: AdminMessage? {
+        self.message as? AdminMessage
+    }
+    
     // MARK: - View Lifecycle
     open override func setupViews() {
         super.setupViews()
@@ -61,7 +66,16 @@ open class SBUAdminMessageCell: SBUBaseMessageCell {
         // Configure Content base message cell
         super.configure(with: configuration)
         
-        // Set up message label
+        #if SWIFTUI
+        if self.configuration?.isThreadMessage == false {
+            if self.applyViewConverter(.adminMessage) {
+                return
+            }
+        } else {
+            // There is no adminMessage in MessageThread.
+        }
+        #endif
+        
         self.messageLabel.numberOfLines = 0
         self.messageLabel.textAlignment = .center
         self.messageLabel.text = message.message
@@ -72,7 +86,8 @@ open class SBUAdminMessageCell: SBUBaseMessageCell {
     open func configure(_ message: AdminMessage, hideDateView: Bool) {
         let configuration = SBUAdminMessageCellParams(
             message: message,
-            hideDateView: hideDateView
+            hideDateView: hideDateView,
+            isThreadMessage: message.parentMessage != nil
         )
         self.configure(with: configuration)
     }

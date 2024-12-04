@@ -15,6 +15,10 @@ open class SBUBaseChannelListViewModel: NSObject {
     
     // MARK: - Property (private)
     weak var baseDelegate: SBUBaseChannelListViewModelDelegate?
+    
+    // MARK: SwiftUI (Internal)
+    var baseDelegates = WeakDelegateStorage<SBUBaseChannelListViewModelDelegate>()
+    
     var isLoading = false
     
     // MARK: - Life Cycle
@@ -27,6 +31,7 @@ open class SBUBaseChannelListViewModel: NSObject {
         delegate: SBUBaseChannelListViewModelDelegate?
     ) {
         self.baseDelegate = delegate
+        self.baseDelegates.addDelegate(delegate, type: .uikit)
         
         super.init()
         
@@ -50,11 +55,15 @@ open class SBUBaseChannelListViewModel: NSObject {
         SBULog.info("[Request] Next channel List")
         SendbirdUI.connectIfNeeded { [weak self] _, error in
             if let error = error {
-                self?.baseDelegate?.didReceiveError(error, isBlocker: true)
+                self?.baseDelegates.forEach {
+                    $0.didReceiveError(error, isBlocker: true)
+                }
                 return
             }
             
-            self?.baseDelegate?.connectionStateDidChange(true)
+            self?.baseDelegates.forEach {
+                $0.connectionStateDidChange(true)
+            }
             
             self?.loadNextChannelList(reset: true)
         }
@@ -80,7 +89,7 @@ open class SBUBaseChannelListViewModel: NSObject {
     private func setLoading(_ loadingState: Bool, _ showIndicator: Bool) {
         self.isLoading = loadingState
         
-        self.baseDelegate?.shouldUpdateLoadingState(showIndicator)
+        self.baseDelegates.forEach { $0.shouldUpdateLoadingState(showIndicator) }
     }
 }
 
@@ -95,6 +104,8 @@ extension SBUBaseChannelListViewModel: ConnectionDelegate {
             }
         }
         
-        self.baseDelegate?.connectionStateDidChange(true)
+        self.baseDelegates.forEach {
+            $0.connectionStateDidChange(true)
+        }
     }
 }

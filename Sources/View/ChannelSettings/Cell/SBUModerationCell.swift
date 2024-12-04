@@ -9,14 +9,17 @@
 import UIKit
 import SendbirdChatSDK
 
-// TODO: Need to Improve. setupItems
-class SBUModerationCell: SBUBaseChannelSettingCell {
+/// ModerationCell class that inherits from BaseChannelSettingCell
+/// - Since: 3.28.0
+open class SBUModerationCell: SBUBaseChannelSettingCell {
     /// This function configure a cell using moderation list information.
     /// - Parameter channel: channel object
-    func configure(type: ModerationItemType,
-                   channel: BaseChannel?,
-                   title: String? = nil,
-                   icon: UIImage? = nil) {
+    open func configure(
+        type: ModerationItemType,
+        channel: BaseChannel?,
+        title: String? = nil,
+        icon: UIImage? = nil
+    ) {
 
         self.subTitleLabel.isHidden = true
         self.rightButton.isHidden = true

@@ -45,6 +45,15 @@ extension SBUOpenChannelModule {
             set { self.baseDataSource = newValue }
         }
         
+        // MARK: - Logic Properties (Private)
+        private lazy var defaultMessageInputView: SBUMessageInputView = {
+            let messageInputView = SBUModuleSet.OpenChannelModule.InputComponent.MessageInputView.init()
+            messageInputView.delegate = self
+            messageInputView.datasource = self
+            return messageInputView
+        }()
+        
+        // MARK: - LifeCycle
         /// Configures component with parameters.
         /// - Parameters:
         ///   - delegate: `SBUGroupChannelModuleListDelegate` type listener
@@ -63,6 +72,25 @@ extension SBUOpenChannelModule {
                 messageInputView.voiceMessageButton?.isHidden = true
                 messageInputView.textViewTrailingPaddingView.isHidden = true
                 messageInputView.showsVoiceMessageButton = false
+            }
+        }
+        
+        open override func setupViews() {
+            // NOTE: Input entireContnet interface has been temporarily closed.
+//            #if SWIFTUI
+//            if self.applyViewConverter(.entireContent) { return }
+//            #endif
+            
+            /// It does not call `super.setupViews()` because it creates `messageInputView` differently for each channelType
+            
+            if self.messageInputView == nil {
+                self.messageInputView = defaultMessageInputView
+            }
+            if let messageInputView = messageInputView {
+                inputVStackView.setVStack([
+                    messageInputView
+                ])
+                self.addSubview(inputVStackView)
             }
         }
         

@@ -76,10 +76,10 @@ extension SBUMessageThreadModule {
     @objcMembers
     open class List: SBUBaseChannelModule.List, SBUParentMessageInfoViewDelegate, SBUVoicePlayerDelegate {
 
-        // MARK: - UI properties (Public)
+        // MARK: - UI properties
         
         /// A view that shows parent message info on the message thread.
-        public var parentMessageInfoView = SBUParentMessageInfoView()
+        public lazy var parentMessageInfoView: SBUParentMessageInfoView = self.createDefaultParentMessageInfoView()
         
         public var tempMarginView = UIView()
         
@@ -128,6 +128,34 @@ extension SBUMessageThreadModule {
         var currentVoiceContentView: SBUVoiceContentView?
         var currentVoiceContentIndexPath: IndexPath?
         
+        // MARK: default views
+        
+        override func createDefaultEmptyView() -> SBUEmptyView {
+            SBUEmptyView.createDefault(
+                Self.EmptyView,
+                delegate: self
+            )
+        }
+        
+        override func createDefaultChannelStateBanner() -> SBUChannelStateBanner {
+            SBUChannelStateBanner.createDefault(
+                Self.ChannelStateBanner,
+                isThreadMessage: true,
+                isHidden: true
+            )
+        }
+        
+        override func createDefaultUserProfileView() -> SBUUserProfileView {
+            SBUUserProfileView.createDefault(
+                Self.UserProfileView,
+                delegate: self
+            )
+        }
+        
+        func createDefaultParentMessageInfoView() -> SBUParentMessageInfoView {
+            Self.ParentMessageInfoView.init()
+        }
+        
         // MARK: - LifeCycle
         required public init?(coder: NSCoder) { super.init(coder: coder) }
         
@@ -162,6 +190,12 @@ extension SBUMessageThreadModule {
         // MARK: - LifeCycle
         
         open override func setupViews() {
+            #if SWIFTUI
+            if self.applyViewConverter(.entireContent) {
+                return
+            }
+            #endif
+                        
             self.tableView = UITableView(frame: CGRect.zero, style: .grouped)
             
             super.setupViews()
@@ -171,28 +205,28 @@ extension SBUMessageThreadModule {
                                  size: CGSize(width: CGFloat.leastNormalMagnitude,
                                               height: CGFloat.leastNormalMagnitude)))
             
-            self.emptyView?.transform = CGAffineTransform(scaleX: 1, y: 1)
             self.tableView.transform = CGAffineTransform(scaleX: 1, y: 1)
+            self.emptyView?.transform = CGAffineTransform(scaleX: 1, y: 1)
             
             // register cell (MessageThread)
             if self.adminMessageCell == nil {
-                self.register(adminMessageCell: SBUAdminMessageCell())
+                self.register(adminMessageCell: Self.AdminMessageCell.init())
             }
             if self.userMessageCell == nil {
-                self.register(userMessageCell: SBUUserMessageCell())
+                self.register(userMessageCell: Self.UserMessageCell.init())
             }
             if self.fileMessageCell == nil {
-                self.register(fileMessageCell: SBUFileMessageCell())
+                self.register(fileMessageCell: Self.FileMessageCell.init())
             }
             if self.multipleFilesMessageCell == nil {
-                self.register(multipleFilesMessageCell: SBUMultipleFilesMessageCell())
+                self.register(multipleFilesMessageCell: Self.MultipleFilesMessageCell.init())
             }
             if self.unknownMessageCell == nil {
-                self.register(unknownMessageCell: SBUUnknownMessageCell())
+                self.register(unknownMessageCell: Self.UnknownMessageCell.init())
             }
-            
-            self.newMessageInfoView = nil
-            self.scrollBottomView = nil
+            if let cellType = Self.CustomMessageCell {
+                self.register(customMessageCell: cellType.init())
+            }
             
             self.voicePlayer = SBUVoicePlayer(delegate: self)
         }
@@ -208,15 +242,7 @@ extension SBUMessageThreadModule {
         /// Sets up style with theme. If the `theme` is `nil`, it uses the stored theme.
         /// - Parameter theme: `SBUChannelTheme` object
         open override func setupStyles(theme: SBUChannelTheme? = nil) {
-            if let theme = theme {
-                self.theme = theme
-            }
-            if let channelStateBanner = channelStateBanner as? UILabel {
-                channelStateBanner.textColor = theme?.channelStateBannerTextColor
-                channelStateBanner.font = theme?.channelStateBannerFont
-                channelStateBanner.backgroundColor = theme?.channelStateBannerBackgroundColor
-            }
-            self.tableView.backgroundColor = self.theme?.backgroundColor
+            super.setupStyles(theme: theme)
             
             (self.emptyView as? SBUEmptyView)?.setupStyles()
             
@@ -429,16 +455,14 @@ extension SBUMessageThreadModule {
                 
         /// Reloads table view. This method corresponds to `UITableView reloadData()`.
         public override func reloadTableView(needsToLayout: Bool = true) {
-            guard self.tableView.frame != .zero else { return }
+            #if SWIFTUI
+            if self.applyViewConverter(.entireContent) {
+                return
+            }
+            #endif
             
-            if Thread.isMainThread {
-                self.tableView.reloadData()
-                if needsToLayout {
-                    self.tableView.layoutIfNeeded()
-                }
-
-            } else {
-                DispatchQueue.main.async { [weak self] in
+            if self.tableView.frame != .zero {
+                Thread.executeOnMain { [weak self] in
                     self?.tableView.reloadData()
                     if needsToLayout {
                         self?.tableView.layoutIfNeeded()
@@ -577,7 +601,8 @@ extension SBUMessageThreadModule {
             case let (adminMessage, adminMessageCell) as (AdminMessage, SBUAdminMessageCell):
                 let configuration = SBUAdminMessageCellParams(
                     message: adminMessage,
-                    hideDateView: isSameDay
+                    hideDateView: isSameDay,
+                    isThreadMessage: true
                 )
                 adminMessageCell.configure(with: configuration)
                 self.setMessageCellGestures(adminMessageCell, message: adminMessage, indexPath: indexPath)

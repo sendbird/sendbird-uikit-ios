@@ -24,6 +24,30 @@ extension SBUGroupChannelModule {
             set { self.baseDelegate = newValue }
         }
         
+        override func createDefaultTitleView() -> SBUChannelTitleView {
+            SBUModuleSet.GroupChannelModule.HeaderComponent.TitleView.init()
+        }
+        
+        override func createDefaultLeftButton() -> SBUBarButtonItem {
+            SBUModuleSet.GroupChannelModule.HeaderComponent.LeftBarButton.init(
+                image: SBUIconSetType.iconBack.image(to: SBUIconSetType.Metric.defaultIconSize),
+                landscapeImagePhone: nil,
+                style: .plain,
+                target: self,
+                action: #selector(onTapLeftBarButton)
+            )
+        }
+        
+        override func createDefaultRightButton() -> SBUBarButtonItem {
+            SBUModuleSet.GroupChannelModule.HeaderComponent.RightBarButton.init(
+                image: SBUIconSetType.iconInfo.image(to: SBUIconSetType.Metric.defaultIconSize),
+                landscapeImagePhone: nil,
+                style: .plain,
+                target: self,
+                action: #selector(onTapRightBarButton)
+            )
+        }
+        
         /// Configures `SBUGroupChannelModule.Header` object with the `delegate` and the `theme`.
         /// - Parameters:
         ///   - delegate: The object that acts as the delegate of the header component. The delegate must adopt the `SBUGroupChannelModuleHeaderDelegate` protocol.
@@ -42,10 +66,19 @@ extension SBUGroupChannelModule {
         
         // MARK: - LifeCycle
         open override func setupViews() {
+            #if SWIFTUI
+            self.applyViewConverter(.titleView)
+            self.applyViewConverter(.leftView)
+            self.applyViewConverter(.rightView)
+            #endif
             super.setupViews()
             
-            if self.rightBarButton == nil {
+            if self.rightBarButton == nil && self.rightBarButtons == nil {
                 self.rightBarButton = self.defaultRightBarButton
+            }
+            
+            if self.rightBarButtons == nil {
+                self.rightBarButtons = [self.defaultRightBarButton]
             }
         }
         
@@ -53,16 +86,26 @@ extension SBUGroupChannelModule {
         
         open override func onTapLeftBarButton() {
             super.onTapLeftBarButton()
-            if let leftBarButton = self.leftBarButton {
+            
+            if let leftBarButtons = self.leftBarButtons,
+               leftBarButtons.isUsingDefaultButton(self.defaultLeftBarButton) {
+                self.delegate?.baseChannelModule(self, didTapLeftItem: self.defaultLeftBarButton)
+            } else if let leftBarButton = self.leftBarButton {
                 self.delegate?.baseChannelModule(self, didTapLeftItem: leftBarButton)
             }
         }
         
         open override func onTapRightBarButton() {
             super.onTapRightBarButton()
-            if let rightBarButton = self.rightBarButton {
+            
+            if let rightBarButtons = self.rightBarButtons,
+               rightBarButtons.isUsingDefaultButton(self.defaultRightBarButton) {
+                self.delegate?.baseChannelModule(self, didTapRightItem: self.defaultRightBarButton)
+            } else if let rightBarButton = self.rightBarButton {
                 self.delegate?.baseChannelModule(self, didTapRightItem: rightBarButton)
             }
+            
+//            self.delegate?.baseChannelModule(self, didTapRightItem: self.rightBarButtons!.first!)
         }
     }
 }

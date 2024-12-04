@@ -42,6 +42,9 @@ open class SBUBaseChannelListViewController: SBUBaseViewController {
         self.navigationItem.leftBarButtonItem = self.baseHeaderComponent?.leftBarButton
         self.navigationItem.rightBarButtonItem = self.baseHeaderComponent?.rightBarButton
         
+        self.navigationItem.leftBarButtonItems = self.baseHeaderComponent?.leftBarButtons
+        self.navigationItem.rightBarButtonItems = self.baseHeaderComponent?.rightBarButtons
+        
         if let listComponent = self.baseListComponent {
             self.view.addSubview(listComponent)
         }
