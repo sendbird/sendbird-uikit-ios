@@ -33,15 +33,20 @@ extension SBULoadingDataSource {
     func shouldPassTouchHit(_ point: CGPoint, with event: UIEvent?) -> Bool { false }
 }
 
-public class SBULoading: NSObject {
-    static private let shared = SBULoading()
+/// This class is used to create and manage loading indicator in the application.
+open class SBULoading: NSObject, SBUViewLifeCycle {
+    // Public
+    @SBUThemeWrapper(theme: SBUTheme.componentTheme)
+    public var theme: SBUComponentTheme
     
-    var window: UIWindow?
-    var baseView = UIView()
-    var backgroundView = SBULoadingDimView()
-    var spinner = UIImageView()
+    /// The parent view where the loading indicator will be presented. By default, it is set to the application's current window.
+    public var parentView: UIView? = UIApplication.shared.currentWindow
     
-    private var rotationLayer: CAAnimation = {
+    public private(set) var backgroundView = SBULoadingDimView()
+    public private(set) var containerView = UIView()
+    public private(set) var indicatorImageView = UIImageView()
+    
+    public var indicatorAnimation: CAAnimation = {
         let rotation = CABasicAnimation(keyPath: "transform.rotation")
         rotation.fromValue = 0
         rotation.toValue = 2 * Double.pi
@@ -49,24 +54,43 @@ public class SBULoading: NSObject {
         rotation.repeatCount = Float.infinity
         return rotation
     }()
+    
+    public var containerSize: CGFloat = 100.0
+    public var containerCornerRadius: CGFloat = 5.0
+    public var indicatorImageSize: CGFloat = 64.0
+    
+    // Private
+    static private var shared = SBUModuleSet.CommonModule.Loading.init()
+    
+    static func resetInstance() {
+        shared.dismiss()
+        shared = SBUModuleSet.CommonModule.Loading.init()
+    }
+
     private var rectLayer: CAShapeLayer = CAShapeLayer()
-    
-    let itemSize: CGFloat = 100.0
-    let spinnerSize: CGFloat = 64.0
-    
-    private override init() {
+
+    //
+    required public override init() {
         super.init()
+        self.setupViews()
+        self.setupStyles()
+        self.setupLayouts()
+        self.setupActions()
     }
     
     /// This static function starts the loading indicator.
     public static func start() {
-        guard !SBULoading.shared.isShowing else { return }
-        SBULoading.shared.show()
+        Thread.executeOnMain {
+            guard !SBULoading.shared.isShowing else { return }
+            SBULoading.shared.show()
+        }
     }
     
     /// This static function stops the loading indicator.
     public static func stop() {
-        SBULoading.shared.dismiss()
+        Thread.executeOnMain {
+            SBULoading.shared.dismiss()
+        }
     }
     
     /// This static function checks loading view showing status.
@@ -89,74 +113,63 @@ public class SBULoading: NSObject {
         SBULoading.shared.backgroundView.dataSource = nil
     }
     
-    private func setupStyles() {
-        let theme = SBUTheme.componentTheme
+    // MARK: Lifecycle
+    open func configureView() {
+        self.indicatorImageView.layer.add(
+            self.indicatorAnimation,
+            forKey: SBUAnimation.Key.spin.identifier
+        )
         
-        self.backgroundView.backgroundColor = theme.loadingBackgroundColor
-        self.baseView.backgroundColor = theme.loadingPopupBackgroundColor
-        
-        self.spinner.image = SBUIconSetType.iconSpinner.image(with: theme.loadingSpinnerColor, to: SBUIconSetType.Metric.iconSpinnerLarge)
+        self.indicatorImageView.image = SBUIconSetType.iconSpinner.image(
+            with: theme.loadingSpinnerColor,
+            to: SBUIconSetType.Metric.iconSpinnerLarge
+        )
     }
     
-    private func show() {
-        self.window = UIApplication.shared.currentWindow
-        guard let window = self.window else { return }
+    open func setupViews() {}
+    
+    open func setupStyles() {}
+    
+    open func updateStyles() {
+        self.backgroundView.backgroundColor = self.theme.loadingBackgroundColor
+        self.containerView.backgroundColor = theme.loadingPopupBackgroundColor
+    }
+    
+    open func setupLayouts() {}
+    
+    open func updateLayouts() {
+        guard let parentView = self.parentView else { return }
         
         // Set backgroundView
-        self.backgroundView.frame = self.window?.bounds ?? .zero
+        self.backgroundView.frame = parentView.bounds
         
-        // BaseView
-        self.baseView.frame = CGRect(x: 0, y: 0, width: itemSize, height: itemSize)
+        // containerView
+        self.containerView.frame = CGRect(x: 0, y: 0, width: containerSize, height: containerSize)
         
-        self.spinner.frame = CGRect(x: 0, y: 0, width: spinnerSize, height: spinnerSize)
-        self.spinner.center = baseView.center
-        self.baseView.addSubview(self.spinner)
+        self.indicatorImageView.frame = CGRect(x: 0, y: 0, width: indicatorImageSize, height: indicatorImageSize)
+        self.indicatorImageView.center = containerView.center
         
-        // RoundRect
-        rectLayer.bounds = self.baseView.frame
-        rectLayer.position = self.baseView.center
+        self.containerView.center = parentView.center
+        
+        // Animation
+        rectLayer.bounds = self.containerView.frame
+        rectLayer.position = self.containerView.center
         rectLayer.path = UIBezierPath(
-            roundedRect: self.baseView.bounds,
+            roundedRect: self.containerView.bounds,
             byRoundingCorners: [.topLeft, .topRight, .bottomLeft, .bottomRight],
-            cornerRadii: CGSize(width: 5, height: 5)
+            cornerRadii: CGSize(width: containerCornerRadius, height: containerCornerRadius)
         ).cgPath
-        self.baseView.layer.mask = self.rectLayer
+        self.containerView.layer.mask = self.rectLayer
         
-        self.spinner.layer.add(self.rotationLayer, forKey: SBUAnimation.Key.spin.identifier)
-        
-        self.setupStyles()
-        
-        // Add to window
-        window.addSubview(self.backgroundView)
-        self.baseView.center = window.center
-        window.addSubview(self.baseView)
-        
-        self.baseView.alpha = 0.0
-        UIView.animate(withDuration: 0.2, animations: {
-            self.baseView.alpha = 1.0
-        })
     }
     
-    private var isShowing: Bool {
-        self.baseView.superview != nil
-    }
-    
-    @objc
-    private func dismiss() {
-        self.spinner.layer.removeAnimation(forKey: SBUAnimation.Key.spin.identifier)
-        for subView in self.baseView.subviews {
-            subView.removeFromSuperview()
-        }
-        
-        self.backgroundView.removeFromSuperview()
-        self.baseView.removeFromSuperview()
-    }
+    open func setupActions() {}
 }
 
-class SBULoadingDimView: UIView {
+public class SBULoadingDimView: UIView {
     weak var dataSource: SBULoadingDataSource?
 
-    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+    public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         guard let dataSource = self.dataSource else { return super.hitTest(point, with: event) }
         
         if  dataSource.shouldPassTouchHit(point, with: event) == false {
@@ -164,5 +177,65 @@ class SBULoadingDimView: UIView {
         } else {
             return nil
         }
+    }
+}
+
+// MARK: - Private
+extension SBULoading {
+    private func show() {
+        self.prepareForDisplay()
+        self.configureView()
+        self.updateStyles()
+        self.updateLayouts()
+        self.presentView()
+    }
+    
+    private func prepareForDisplay() {
+        self.parentView = UIApplication.shared.currentWindow
+        
+        self.containerView.addSubview(self.indicatorImageView)
+        
+        self.parentView?.addSubview(self.backgroundView)
+        guard let parentView else {
+           return
+        }
+        self.containerView.center = parentView.center
+        self.parentView?.addSubview(self.containerView)
+    }
+    
+    private func presentView() {
+        self.containerView.alpha = 0.0
+        UIView.animate(withDuration: 0.2, animations: {
+            self.containerView.alpha = 1.0
+        })
+    }
+    
+    private var isShowing: Bool {
+        self.containerView.superview != nil
+    }
+    
+    @objc
+    private func dismiss() {
+        self.indicatorImageView.layer.removeAnimation(forKey: SBUAnimation.Key.spin.identifier)
+        for subView in self.containerView.subviews {
+            subView.removeFromSuperview()
+        }
+        
+        self.backgroundView.removeFromSuperview()
+        self.containerView.removeFromSuperview()
+        
+        self.indicatorImageView = UIImageView()
+        
+        self.indicatorAnimation = {
+            let rotation = CABasicAnimation(keyPath: "transform.rotation")
+            rotation.fromValue = 0
+            rotation.toValue = 2 * Double.pi
+            rotation.duration = 1.1
+            rotation.repeatCount = Float.infinity
+            return rotation
+        }()
+        
+        self.containerSize = 100.0
+        self.indicatorImageSize = 64.0
     }
 }

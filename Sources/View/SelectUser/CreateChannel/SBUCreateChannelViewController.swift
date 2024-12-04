@@ -9,6 +9,12 @@
 import UIKit
 import SendbirdChatSDK
 
+#if SWIFTUI
+protocol CreateGroupChannelViewEventDelegate: AnyObject {
+    func createGroupChannelView(didSelectRowAt indexPath: IndexPath)
+}
+#endif
+
 open class SBUCreateChannelViewController: SBUBaseViewController, SBUCreateChannelModuleHeaderDelegate, SBUCreateChannelModuleHeaderDataSource, SBUCreateChannelModuleListDataSource, SBUCreateChannelModuleListDelegate, SBUCommonViewModelDelegate, SBUCreateChannelViewModelDataSource, SBUCreateChannelViewModelDelegate {
     
     // MARK: - UI properties (Public)
@@ -26,6 +32,18 @@ open class SBUCreateChannelViewController: SBUBaseViewController, SBUCreateChann
 
     public var userList: [SBUUser] { viewModel?.userList ?? [] }
     public var selectedUserList: Set<SBUUser> { viewModel?.selectedUserList ?? [] }
+    
+    private var users: [SBUUser]? = nil
+    private var type: ChannelCreationType = .group
+    
+    // MARK: - SwiftUI
+    #if SWIFTUI
+    weak var swiftUIDelegate: (SBUCreateChannelViewModelDelegate & CreateGroupChannelViewEventDelegate)? {
+        didSet {
+            self.viewModel?.delegates.addDelegate(self.swiftUIDelegate, type: .swiftui)
+        }
+    }
+    #endif
     
     // MARK: - Lifecycle
     @available(*, unavailable, renamed: "SBUCreateChannelViewController(type:)")
@@ -55,6 +73,9 @@ open class SBUCreateChannelViewController: SBUBaseViewController, SBUCreateChann
     required public init(users: [SBUUser]? = nil, type: ChannelCreationType = .group) {
         super.init(nibName: nil, bundle: nil)
         SBULog.info("")
+        
+        self.users = users
+        self.type = type
         
         self.createViewModel(users: users, type: type)
         self.headerComponent = SBUModuleSet.CreateGroupChannelModule.HeaderComponent.init()
@@ -91,7 +112,7 @@ open class SBUCreateChannelViewController: SBUBaseViewController, SBUCreateChann
     ///   - type: Invite list type (`.users` | `.operators`)
     open func createViewModel(users: [SBUUser]? = nil,
                               type: ChannelCreationType = .group) {
-        self.viewModel = SBUCreateChannelViewModel(
+        self.viewModel = SBUViewModelSet.CreateGroupChannelViewModel.init(
             channelType: type,
             users: users,
             delegate: self,
@@ -107,6 +128,8 @@ open class SBUCreateChannelViewController: SBUBaseViewController, SBUCreateChann
         self.navigationItem.titleView = self.headerComponent?.titleView
         self.navigationItem.leftBarButtonItem = self.headerComponent?.leftBarButton
         self.navigationItem.rightBarButtonItem = self.headerComponent?.rightBarButton
+        self.navigationItem.leftBarButtonItems = self.headerComponent?.leftBarButtons
+        self.navigationItem.rightBarButtonItems = self.headerComponent?.rightBarButtons
         
         // List component
         self.listComponent?.configure(delegate: self, dataSource: self, theme: self.theme)
@@ -194,6 +217,16 @@ open class SBUCreateChannelViewController: SBUBaseViewController, SBUCreateChann
     }
     
     open func createChannelModule(_ headerComponent: SBUCreateChannelModule.Header,
+                                  didUpdateLeftItems leftItems: [UIBarButtonItem]?) {
+        self.navigationItem.leftBarButtonItems = leftItems
+    }
+    
+    open func createChannelModule(_ headerComponent: SBUCreateChannelModule.Header,
+                                  didUpdateRightItems rightItems: [UIBarButtonItem]?) {
+        self.navigationItem.rightBarButtonItems = rightItems
+    }
+    
+    open func createChannelModule(_ headerComponent: SBUCreateChannelModule.Header,
                                   didTapLeftItem leftItem: UIBarButtonItem) {
         self.onClickBack()
     }
@@ -222,6 +255,10 @@ open class SBUCreateChannelViewController: SBUBaseViewController, SBUCreateChann
                                   didSelectRowAt indexPath: IndexPath) {
         guard let user = self.viewModel?.userList[indexPath.row] else { return }
         self.viewModel?.selectUser(user: user)
+        
+        #if SWIFTUI
+        self.swiftUIDelegate?.createGroupChannelView(didSelectRowAt: indexPath)
+        #endif
     }
     
     open func createChannelModule(_ listComponent: SBUCreateChannelModule.List, didDetectPreloadingPosition indexPath: IndexPath) {
@@ -253,7 +290,11 @@ open class SBUCreateChannelViewController: SBUBaseViewController, SBUCreateChann
     }
     
     // MARK: - SBUCreateChannelViewModelDelegate
-    open func createChannelViewModel(_ viewModel: SBUCreateChannelViewModel, didChangeUsers users: [SBUUser], needsToReload: Bool) {
+    open func createChannelViewModel(
+        _ viewModel: SBUCreateChannelViewModel,
+        didChangeUsers users: [SBUUser],
+        needsToReload: Bool
+    ) {
         let emptyType: EmptyViewType = users.count == 0 ? .noMembers : .none
         self.listComponent?.updateEmptyView(type: emptyType)
         
@@ -265,7 +306,11 @@ open class SBUCreateChannelViewController: SBUBaseViewController, SBUCreateChann
         self.headerComponent?.updateRightBarButton()
     }
     
-    open func createChannelViewModel(_ viewModel: SBUCreateChannelViewModel, didCreateChannel channel: BaseChannel?, withMessageListParams messageListParams: MessageListParams?) {
+    open func createChannelViewModel(
+        _ viewModel: SBUCreateChannelViewModel,
+        didCreateChannel channel: BaseChannel?,
+        withMessageListParams messageListParams: MessageListParams?
+    ) {
         guard let channelURL = channel?.channelURL else {
             SBULog.error("[Failed] Create channel request: There is no channel url.")
             return
@@ -273,7 +318,30 @@ open class SBUCreateChannelViewController: SBUBaseViewController, SBUCreateChann
         SendbirdUI.moveToChannel(channelURL: channelURL, messageListParams: messageListParams)
     }
     
-    open func createChannelViewModel(_ viewModel: SBUCreateChannelViewModel, didUpdateSelectedUsers selectedUsers: [SBUUser]) {
-        self.headerComponent?.updateRightBarButton()
+    open func createChannelViewModel(
+        _ viewModel: SBUCreateChannelViewModel,
+        didUpdateSelectedUsers selectedUsers: [SBUUser]
+    ) {
+        var didApplyRightBarButtonViewConverter = false
+
+        #if SWIFTUI
+        didApplyRightBarButtonViewConverter = self.headerComponent?.applyViewConverter(.rightView) ?? false
+        self.listComponent?.applyViewConverter(.entireContent)
+        #endif
+        
+        if !didApplyRightBarButtonViewConverter {
+            self.headerComponent?.updateRightBarButton()
+        }
     }
 }
+
+#if SWIFTUI
+extension SBUCreateChannelViewController {
+    public func createChannelModule(
+        _ listComponent: SBUCreateChannelModule.List,
+        didSelectUser user: SBUUser
+    ) {
+        self.viewModel?.selectUser(user: user)
+    }
+}
+#endif

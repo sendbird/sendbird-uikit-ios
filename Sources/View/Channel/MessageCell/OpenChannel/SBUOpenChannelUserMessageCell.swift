@@ -34,7 +34,7 @@ open class SBUOpenChannelUserMessageCell: SBUOpenChannelContentBaseMessageCell {
     }()
     
     /// As a default, the value is the constraint of `messageTextView.trailingAnchor`and  it's activated when the message has no `ogMetaData`.
-    public private(set) var messageTypeConstraint: NSLayoutConstraint?
+    public internal(set) var messageTypeConstraint: NSLayoutConstraint?
     /// Activated when the message has `ogMetaData`.
     public private(set) var webTypeConstraints: [NSLayoutConstraint] = []
     
@@ -81,7 +81,7 @@ open class SBUOpenChannelUserMessageCell: SBUOpenChannelContentBaseMessageCell {
         
         self.messageTextView.addGestureRecognizer(self.contentLongPressRecognizer)
         self.messageTextView.addGestureRecognizer(self.contentTapRecognizer)
-
+        
         self.webView.addGestureRecognizer(UITapGestureRecognizer(
             target: self,
             action: #selector(self.onTapWebview(sender:))
@@ -106,6 +106,14 @@ open class SBUOpenChannelUserMessageCell: SBUOpenChannelContentBaseMessageCell {
         self.webView.setupStyles()
         
         self.additionContainerView.layer.cornerRadius = 8
+        
+        #if SWIFTUI
+        if self.viewConverter.userMessage.entireContent != nil,
+           let mainContainerView = self.mainContainerView as? SBUSelectableStackView {
+            mainContainerView.layer.cornerRadius = 0
+            mainContainerView.setTransparentBackgroundColor()
+        }
+        #endif
     }
     
     // MARK: - Common
@@ -116,15 +124,23 @@ open class SBUOpenChannelUserMessageCell: SBUOpenChannelContentBaseMessageCell {
         withTextView: Bool,
         isOverlay: Bool = false
     ) {
-
         let position = MessagePosition.left
         
-        self.configure(
+        super.configure(
             message,
             hideDateView: hideDateView,
             groupPosition: groupPosition,
             isOverlay: isOverlay
         )
+
+        #if SWIFTUI
+        // entire content view
+        if self.viewConverter.entireContent != nil {
+            messageTypeConstraint = nil
+            stackViewTopConstraint = nil
+            webTypeConstraints = []
+        }
+        #endif
 
         self.additionContainerView.position = .left
         self.additionContainerView.isSelected = false
@@ -146,21 +162,32 @@ open class SBUOpenChannelUserMessageCell: SBUOpenChannelContentBaseMessageCell {
             self.isWebType = false
         }
 
-        if let messageTextView = messageTextView as? SBUUserMessageTextView, withTextView {
-            let theme = self.isOverlay ? self.overlayTheme : self.theme
-            
-            messageTextView.configure(
-                model: SBUUserMessageTextViewModel(message: message, position: position, isOverlay: isOverlay)
-            )
-            if self.isWebType { // Open channel only
-                let linkColor = theme.linkColor
-                messageTextView.textView.linkTextAttributes = [
-                    .foregroundColor: linkColor,
-                    .underlineStyle: NSUnderlineStyle.single.rawValue
-                ]
+        var didApplyUserMessageViewConverter = false
+        #if SWIFTUI
+        // UserMessage
+        didApplyUserMessageViewConverter = self.applyViewConverter(.userMessage)
+        if didApplyUserMessageViewConverter {
+            messageTypeConstraint = nil
+            webTypeConstraints = []
+        }
+        #endif
+        if !didApplyUserMessageViewConverter {
+            if let messageTextView = messageTextView as? SBUUserMessageTextView, withTextView {
+                let theme = self.isOverlay ? self.overlayTheme : self.theme
+                
+                messageTextView.configure(
+                    model: SBUUserMessageTextViewModel(message: message, position: position, isOverlay: isOverlay)
+                )
+                if self.isWebType { // Open channel only
+                    let linkColor = theme.linkColor
+                    messageTextView.textView.linkTextAttributes = [
+                        .foregroundColor: linkColor,
+                        .underlineStyle: NSUnderlineStyle.single.rawValue
+                    ]
+                }
+                messageTextView.updateSideConstraint()
+                messageTextView.sizeToFit()
             }
-            messageTextView.updateSideConstraint()
-            messageTextView.sizeToFit()
         }
         
         // Remove ArrangedSubviews
@@ -174,6 +201,11 @@ open class SBUOpenChannelUserMessageCell: SBUOpenChannelContentBaseMessageCell {
         self.contentsStackView.addArrangedSubview(self.infoStackView)
         self.contentsStackView.addArrangedSubview(self.mainContainerView)
         self.contentsStackView.addArrangedSubview(self.stateImageView)
+        
+        #if SWIFTUI
+        // Sender profile image
+        self.applyViewConverter(.senderProfileImage)
+        #endif
     }
    
     // MARK: - Action

@@ -36,12 +36,41 @@ extension SBUBaseSelectUserModule {
         /// A view that represents a left `UIBarButtonItem` in navigation bar.
         /// - NOTE: When the value is updated, `didUpdateLeftItem`is called.
         public var leftBarButton: UIBarButtonItem? {
-            didSet { self.didUpdateLeftItem() }
+            didSet {
+                if let leftBarButton = self.leftBarButton {
+                    self.leftBarButtons = [leftBarButton]
+                } else {
+                    self.leftBarButtons = nil
+                }
+                
+                self.didUpdateLeftItem()
+            }
         }
         
         /// A view that represents a right `UIBarButtonItem` in navigation bar.
         /// - NOTE: When the value is updated, `didUpdateRightItem`is called.
         public var rightBarButton: UIBarButtonItem? {
+            didSet {
+                if let rightBarButton = self.rightBarButton {
+                    self.rightBarButtons = [rightBarButton]
+                } else {
+                    self.rightBarButtons = nil
+                }
+                didUpdateRightItem()
+            }
+        }
+        
+        /// A view that represents a left `UIBarButtonItem` in navigation bar.
+        /// - NOTE: When the value is updated, `didUpdateLeftItem`is called.
+        public var leftBarButtons: [UIBarButtonItem]? {
+            didSet {
+                self.didUpdateLeftItem()
+            }
+        }
+        
+        /// A view that represents a right `UIBarButtonItem` in navigation bar.
+        /// - NOTE: When the value is updated, `didUpdateRightItem`is called.
+        public var rightBarButtons: [UIBarButtonItem]? {
             didSet { didUpdateRightItem() }
         }
         
@@ -51,9 +80,14 @@ extension SBUBaseSelectUserModule {
         public var componentTheme: SBUComponentTheme?
         
         // MARK: - UI properties (Private)
-        func defaultTitleView() -> SBUNavigationTitleView? { return nil }
-        func defaultLeftBarButton() -> UIBarButtonItem? { return nil }
-        func defaultRightBarButton() -> UIBarButtonItem? { return nil }
+        lazy var defaultTitleView: SBUNavigationTitleView? = self.createDefaultTitleView()
+        func createDefaultTitleView() -> SBUNavigationTitleView? { return nil }
+        
+        lazy var defaultLeftBarButton: UIBarButtonItem? = self.createDefaultLeftBarButton()
+        func createDefaultLeftBarButton() -> UIBarButtonItem? { return nil }
+        
+        lazy var defaultRightBarButton: UIBarButtonItem? = self.createDefaultRightBarButton()
+        func createDefaultRightBarButton() -> UIBarButtonItem? { return nil }
         
         // MARK: - Logic properties (Public)
         public var selectedUserList: Set<SBUUser>? {
@@ -72,13 +106,23 @@ extension SBUBaseSelectUserModule {
         /// Set values of the views in the header component when it needs.
         open func setupViews() {
             if self.titleView == nil {
-                self.titleView = self.defaultTitleView()
+                self.titleView = self.defaultTitleView
             }
-            if self.leftBarButton == nil {
-                self.leftBarButton = self.defaultLeftBarButton()
+            if self.leftBarButton == nil && self.leftBarButtons == nil {
+                self.leftBarButton = self.defaultLeftBarButton
             }
-            if self.rightBarButton == nil {
-                self.rightBarButton = self.defaultRightBarButton()
+            if self.rightBarButton == nil && self.rightBarButtons == nil {
+                self.rightBarButton = self.defaultRightBarButton
+            }
+            if self.leftBarButtons == nil {
+                if let defaultButton = self.defaultLeftBarButton {
+                    self.leftBarButtons = [defaultButton]
+                }
+            }
+            if self.rightBarButtons == nil {
+                if let defaultButton = self.defaultRightBarButton {
+                    self.rightBarButtons = [defaultButton]
+                }
             }
         }
         
@@ -104,6 +148,7 @@ extension SBUBaseSelectUserModule {
             }
             
             self.leftBarButton?.tintColor = self.theme?.leftBarButtonTintColor
+            self.leftBarButtons?.forEach { $0.tintColor = self.theme?.leftBarButtonTintColor }
             
             self.updateRightBarButton()
         }
@@ -112,9 +157,12 @@ extension SBUBaseSelectUserModule {
         /// Updates right bar button based on `selectedUserList.count`. The defaults action is updating the title of the button and the tint color with `rightBarButtonTintColor` and `rightBarButtonSelectedTintColor` from the `theme`.
         open func updateRightBarButton() {
             let isEnable = (self.selectedUserList?.count ?? 0) > 0
-            self.rightBarButton?.tintColor = isEnable
+            let tintColor = isEnable
             ? self.theme?.rightBarButtonSelectedTintColor
             : self.theme?.rightBarButtonTintColor
+            
+            self.rightBarButton?.tintColor = tintColor
+            self.rightBarButtons?.forEach { $0.tintColor = tintColor }
         }
         
         // MARK: - Attach update delegate on view
@@ -124,6 +172,12 @@ extension SBUBaseSelectUserModule {
         func didUpdateLeftItem() { }
         /// Called when the `rightBarButton` was updated.
         func didUpdateRightItem() { }
+        /// Called when the `leftBarButtons` was updated.
+        /// - Since: 3.28.0
+        func didUpdateLeftItems() { }
+        /// Called when the `rightBarButtons` was updated.
+        /// - Since: 3.28.0
+        func didUpdateRightItems() { }
         
         // MARK: - Actions
         /// The action of the `leftBarButton`.

@@ -436,3 +436,53 @@ public enum SBUChannelType {
     /// Represents a super group channel type.
     case superGroup
 }
+
+// - MARK: Internal
+
+/// - Since: 3.28.0
+enum SBUItemUsageState<Item: Hashable> {
+    case unused
+    case usingDefault(Item)
+    case usingCustom(Item)
+    
+    init(with item: Item?, defaultValue: Item) {
+        if let item = item {
+            if item == defaultValue {
+                self = .usingDefault(item)
+            } else {
+                self = .usingCustom(item)
+            }
+        } else {
+            self = .unused
+        }
+    }
+    
+    var item: Item? {
+        switch self {
+        case .usingDefault(let item): return item
+        case .usingCustom(let item): return item
+        default: return nil
+        }
+    }
+    
+    var isUsed: Bool {
+        switch self {
+        case .unused: return false
+        default: return true
+        }
+    }
+    
+    var isUsingDefault: Bool {
+        switch self {
+        case .usingDefault: return true
+        default: return false
+        }
+    }
+    
+    var isUsingCustom: Bool {
+        switch self {
+        case .usingCustom: return true
+        default: return false
+        }
+    }
+}

@@ -37,6 +37,12 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
     public lazy var profileView: UIView = SBUMessageProfileView()
     public lazy var stateView: UIView = SBUMessageStateView()
     
+    #if SWIFTUI
+    /// A hostingView for senderProfileImage.
+    /// If this is non-nil, it means that SwiftUI View was set for senderProfileImage.
+//    var profileHostingView: UIView?
+    #endif
+    
     // MARK: Views: Layouts
     
     // + ----------------- +
@@ -342,6 +348,7 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
     }
     
     // MARK: - Common
+    
     open override func configure(with configuration: SBUBaseMessageCellParams) {
         // nil for super/broadcast channel which doesn't support receipts.
         // Kept receipt to .none for backward compatibility as this configure() is *open*.
@@ -382,14 +389,14 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         self.profileView.isHidden = self.position == .right
         self.profilesStackView.isHidden = self.position == .right
         
+        if configuration.messagePosition != .right {
+            self.configureMessageProfileViews(message: message)
+        }
+        
 //        let usingProfileView = !(
 //            SBUGlobals.isMessageGroupingEnabled &&
 //            (configuration.groupPosition == .top || configuration.groupPosition == .middle)
 //        )
-        
-        if configuration.messagePosition != .right {
-            self.configureMessageProfileViews(message: message)
-        }
         
         // MARK: Set up SBU message state view
         if self.stateView is SBUMessageStateView {
@@ -567,6 +574,13 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
                 self.profileContentSpacing,
                 self.contentVStackView
             ])
+            #if SWIFTUI
+            if self.configuration?.isThreadMessage == false {
+                self.applyViewConverter(.senderProfileImage)
+            } else {
+                self.applyViewConverterForMessageThread(.senderProfileImage)
+            }
+            #endif
             self.threadHStackView.setHStack([
                 self.threadInfoSpacing,
                 self.threadInfoView

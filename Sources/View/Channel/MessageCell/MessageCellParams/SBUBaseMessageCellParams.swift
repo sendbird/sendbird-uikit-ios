@@ -50,6 +50,9 @@ public class SBUBaseMessageCellParams {
     /// - Since: 3.15.0
     public var shouldHideFeedback: Bool = true
     
+    /// - Since: 3.28.0
+    var isThreadMessage: Bool = false
+    
     /**
      - Parameters:
         - messagePosition: Cell position (left / right / center)
@@ -70,6 +73,7 @@ public class SBUBaseMessageCellParams {
         self.messagePosition = messagePosition
         self.receiptState = receiptState
         self.shouldHideFeedback = shouldHideFeedback
+        self.isThreadMessage = isThreadMessage
         
         self.useQuotedMessage =
             (SendbirdUI.config.groupChannel.channel.replyType != .none)

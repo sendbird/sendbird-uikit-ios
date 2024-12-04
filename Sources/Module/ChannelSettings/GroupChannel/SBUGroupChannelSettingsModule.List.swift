@@ -8,6 +8,9 @@
 
 import UIKit
 import SendbirdChatSDK
+#if SWIFTUI
+import SwiftUI
+#endif
 
 // swiftlint:disable type_name
 public protocol SBUGroupChannelSettingsModuleListDelegate: SBUBaseChannelSettingsModuleListDelegate {
@@ -47,7 +50,6 @@ extension SBUGroupChannelSettingsModule {
     @objc(SBUGroupChannelSettingsModuleList)
     @objcMembers
     open class List: SBUBaseChannelSettingsModule.List {
-        
         // MARK: - Logic properties (Public)
         public weak var delegate: SBUGroupChannelSettingsModuleListDelegate? {
             get { self.baseDelegate as? SBUGroupChannelSettingsModuleListDelegate }
@@ -60,6 +62,12 @@ extension SBUGroupChannelSettingsModule {
         }
 
         public weak var channel: GroupChannel? { self.baseChannel as? GroupChannel }
+        
+        // MARK: - default view
+        
+        override func createDefaultChannelInfoView() -> SBUChannelSettingsChannelInfoView {
+            Self.ChannelInfoView.init()
+        }
         
         // MARK: - LifeCycle
         @available(*, unavailable, renamed: "SBUGroupChannelSettingsModule.List()")
@@ -88,6 +96,10 @@ extension SBUGroupChannelSettingsModule {
             self.setupItems()
             
             self.setupViews()
+            #if SWIFTUI
+            applyViewConverter(.channelInfo)
+            #endif
+            
             self.setupLayouts()
             self.setupStyles()
         }
@@ -96,7 +108,7 @@ extension SBUGroupChannelSettingsModule {
             super.setupViews()
             
             self.tableView.register(
-                type(of: SBUGroupChannelSettingCell()),
+                Self.SettingCell,
                 forCellReuseIdentifier: SBUGroupChannelSettingCell.sbu_className
             )
         }
@@ -120,87 +132,168 @@ extension SBUGroupChannelSettingsModule {
         }
         
         open func createModerationsItem() -> SBUChannelSettingItem {
-            let moderationsItem = SBUChannelSettingItem(
-                title: SBUStringSet.ChannelSettings_Moderations,
-                icon: SBUIconSetType.iconModerations.image(
-                    with: theme?.cellTypeIconTintColor,
-                    to: SBUIconSetType.Metric.defaultIconSize
-                ),
-                isRightButtonHidden: false) { [weak self] in
-                    guard let self = self else { return }
-                    self.delegate?.groupChannelSettingsModuleDidSelectModerations(self)
-                }
+            let moderationsItem = {
+                #if SWIFTUI
+                return SBUChannelSettingItem(
+                    id: SBUChannelSettingItem.Identifier.moderation,
+                    title: SBUStringSet.ChannelSettings_Moderations,
+                    icon: SBUIconSetType.iconModerations.image(
+                        with: theme?.cellTypeIconTintColor,
+                        to: SBUIconSetType.Metric.defaultIconSize
+                    ),
+                    isRightButtonHidden: false) { [weak self] in
+                        guard let self = self else { return }
+                        self.delegate?.groupChannelSettingsModuleDidSelectModerations(self)
+                    }
+                #else
+                return SBUChannelSettingItem(
+                    title: SBUStringSet.ChannelSettings_Moderations,
+                    icon: SBUIconSetType.iconModerations.image(
+                        with: theme?.cellTypeIconTintColor,
+                        to: SBUIconSetType.Metric.defaultIconSize
+                    ),
+                    isRightButtonHidden: false) { [weak self] in
+                        guard let self = self else { return }
+                        self.delegate?.groupChannelSettingsModuleDidSelectModerations(self)
+                    }
+                #endif
+            }()
 
             return moderationsItem
         }
-        
+
         open func createNotificationItem() -> SBUChannelSettingItem {
-            var notificationSubTitle = ""
-            switch channel?.myPushTriggerOption {
-            case .off:
-                notificationSubTitle = SBUStringSet.ChannelSettings_Notifications_Off
-            case .mentionOnly:
-                notificationSubTitle = SBUStringSet.ChannelSettings_Notifications_Mentiones_Only
-            default:
-                notificationSubTitle = SBUStringSet.ChannelSettings_Notifications_On
-            }
-            
-            let notificationsItem = SBUChannelSettingItem(
-                title: SBUStringSet.ChannelSettings_Notifications,
-                subTitle: notificationSubTitle,
-                icon: SBUIconSetType.iconNotifications.image(
-                    with: theme?.cellTypeIconTintColor,
-                    to: SBUIconSetType.Metric.defaultIconSize
-                ),
-                isRightButtonHidden: false) { [weak self] in
-                    guard let self = self else { return }
-                    self.delegate?.groupChannelSettingsModuleDidSelectNotifications(self)
+            let notificationSubTitle: String = {
+                switch channel?.myPushTriggerOption {
+                case .off:
+                    return SBUStringSet.ChannelSettings_Notifications_Off
+                case .mentionOnly:
+                    return SBUStringSet.ChannelSettings_Notifications_Mentiones_Only
+                default:
+                    return SBUStringSet.ChannelSettings_Notifications_On
                 }
-            
+            }()
+
+            let notificationsItem = {
+                #if SWIFTUI
+                return SBUChannelSettingItem(
+                    id: SBUChannelSettingItem.Identifier.notification,
+                    title: SBUStringSet.ChannelSettings_Notifications,
+                    subTitle: notificationSubTitle,
+                    icon: SBUIconSetType.iconNotifications.image(
+                        with: theme?.cellTypeIconTintColor,
+                        to: SBUIconSetType.Metric.defaultIconSize
+                    ),
+                    isRightButtonHidden: false) { [weak self] in
+                        guard let self = self else { return }
+                        self.delegate?.groupChannelSettingsModuleDidSelectNotifications(self)
+                    }
+                #else
+                return SBUChannelSettingItem(
+                    title: SBUStringSet.ChannelSettings_Notifications,
+                    subTitle: notificationSubTitle,
+                    icon: SBUIconSetType.iconNotifications.image(
+                        with: theme?.cellTypeIconTintColor,
+                        to: SBUIconSetType.Metric.defaultIconSize
+                    ),
+                    isRightButtonHidden: false) { [weak self] in
+                        guard let self = self else { return }
+                        self.delegate?.groupChannelSettingsModuleDidSelectNotifications(self)
+                    }
+                #endif
+            }()
+
             return notificationsItem
         }
-        
+
         open func createMembersItem() -> SBUChannelSettingItem {
-            let membersItem = SBUChannelSettingItem(
-                title: SBUStringSet.ChannelSettings_Members_Title,
-                subTitle: channel?.memberCount.unitFormattedString,
-                icon: SBUIconSetType.iconMembers.image(
-                    with: theme?.cellTypeIconTintColor,
-                    to: SBUIconSetType.Metric.defaultIconSize
-                ),
-                isRightButtonHidden: false) { [weak self] in
-                    guard let self = self else { return }
-                    self.delegate?.groupChannelSettingsModuleDidSelectMembers(self)
-                }
-            
+            let membersItem = {
+                #if SWIFTUI
+                return SBUChannelSettingItem(
+                    id: SBUChannelSettingItem.Identifier.members,
+                    title: SBUStringSet.ChannelSettings_Members_Title,
+                    subTitle: channel?.memberCount.unitFormattedString,
+                    icon: SBUIconSetType.iconMembers.image(
+                        with: theme?.cellTypeIconTintColor,
+                        to: SBUIconSetType.Metric.defaultIconSize
+                    ),
+                    isRightButtonHidden: false) { [weak self] in
+                        guard let self = self else { return }
+                        self.delegate?.groupChannelSettingsModuleDidSelectMembers(self)
+                    }
+                #else
+                return SBUChannelSettingItem(
+                    title: SBUStringSet.ChannelSettings_Members_Title,
+                    subTitle: channel?.memberCount.unitFormattedString,
+                    icon: SBUIconSetType.iconMembers.image(
+                        with: theme?.cellTypeIconTintColor,
+                        to: SBUIconSetType.Metric.defaultIconSize
+                    ),
+                    isRightButtonHidden: false) { [weak self] in
+                        guard let self = self else { return }
+                        self.delegate?.groupChannelSettingsModuleDidSelectMembers(self)
+                    }
+                #endif
+            }()
+
             return membersItem
         }
-        
+
         open func createSearchItem() -> SBUChannelSettingItem {
-            let searchItem = SBUChannelSettingItem(
-                title: SBUStringSet.ChannelSettings_Search,
-                icon: SBUIconSetType.iconSearch.image(
-                    with: theme?.cellTypeIconTintColor,
-                    to: SBUIconSetType.Metric.defaultIconSize
-                )) { [weak self] in
-                    guard let self = self else { return }
-                    self.delegate?.groupChannelSettingsModuleDidSelectSearch(self)
-                }
-            
+            let searchItem = {
+                #if SWIFTUI
+                return SBUChannelSettingItem(
+                    id: SBUChannelSettingItem.Identifier.searchItem,
+                    title: SBUStringSet.ChannelSettings_Search,
+                    icon: SBUIconSetType.iconSearch.image(
+                        with: theme?.cellTypeIconTintColor,
+                        to: SBUIconSetType.Metric.defaultIconSize
+                    )) { [weak self] in
+                        guard let self = self else { return }
+                        self.delegate?.groupChannelSettingsModuleDidSelectSearch(self)
+                    }
+                #else
+                return SBUChannelSettingItem(
+                    title: SBUStringSet.ChannelSettings_Search,
+                    icon: SBUIconSetType.iconSearch.image(
+                        with: theme?.cellTypeIconTintColor,
+                        to: SBUIconSetType.Metric.defaultIconSize
+                    )) { [weak self] in
+                        guard let self = self else { return }
+                        self.delegate?.groupChannelSettingsModuleDidSelectSearch(self)
+                    }
+                #endif
+            }()
+
             return searchItem
         }
-        
+
         open func createLeaveItem() -> SBUChannelSettingItem {
-            let leaveItem = SBUChannelSettingItem(
-                title: SBUStringSet.ChannelSettings_Leave,
-                icon: SBUIconSetType.iconLeave.image(
-                    with: theme?.cellLeaveIconColor,
-                    to: SBUIconSetType.Metric.defaultIconSize
-                )) { [weak self] in
-                    guard let self = self else { return }
-                    self.delegate?.groupChannelSettingsModuleDidSelectLeave(self)
-                }
-            
+            let leaveItem = {
+                #if SWIFTUI
+                return SBUChannelSettingItem(
+                    id: SBUChannelSettingItem.Identifier.leaveChannel,
+                    title: SBUStringSet.ChannelSettings_Leave,
+                    icon: SBUIconSetType.iconLeave.image(
+                        with: theme?.cellLeaveIconColor,
+                        to: SBUIconSetType.Metric.defaultIconSize
+                    )) { [weak self] in
+                        guard let self = self else { return }
+                        self.delegate?.groupChannelSettingsModuleDidSelectLeave(self)
+                    }
+                #else
+                return SBUChannelSettingItem(
+                    title: SBUStringSet.ChannelSettings_Leave,
+                    icon: SBUIconSetType.iconLeave.image(
+                        with: theme?.cellLeaveIconColor,
+                        to: SBUIconSetType.Metric.defaultIconSize
+                    )) { [weak self] in
+                        guard let self = self else { return }
+                        self.delegate?.groupChannelSettingsModuleDidSelectLeave(self)
+                    }
+                #endif
+            }()
+
             return leaveItem
         }
         
@@ -209,7 +302,47 @@ extension SBUGroupChannelSettingsModule {
             guard let defaultCell = cell as? SBUGroupChannelSettingCell else { return }
             
             let item = self.items[indexPath.row]
-            defaultCell.configure(with: item)
+            
+            var didApplyCellConverter = false
+            #if SWIFTUI
+            switch item.id {
+            case SBUChannelSettingItem.Identifier.moderation:
+                didApplyCellConverter = defaultCell.applyViewConverter(.moderation, item: item)
+            case SBUChannelSettingItem.Identifier.notification:
+                didApplyCellConverter = defaultCell.applyViewConverter(.notification, item: item, channel: channel)
+            case SBUChannelSettingItem.Identifier.members:
+                didApplyCellConverter = defaultCell.applyViewConverter(.member, item: item, channel: channel)
+            case SBUChannelSettingItem.Identifier.searchItem:
+                didApplyCellConverter = defaultCell.applyViewConverter(.searchItem, item: item)
+            case SBUChannelSettingItem.Identifier.leaveChannel:
+                didApplyCellConverter = defaultCell.applyViewConverter(.leaveChannel, item: item)
+            default:
+                break
+            }
+            #endif
+            
+            if !didApplyCellConverter {
+                defaultCell.configure(with: item)
+            }
+        }        
+        
+        open var headerWrapper: UIView?
+        // Reload
+        open override func reloadTableView() {
+            var didApplyTableViewConverter = false
+            #if SWIFTUI
+            didApplyTableViewConverter = self.applyViewConverter(.entireContent)
+            if didApplyTableViewConverter == false {
+                _ = self.applyViewConverter(.channelInfo)
+            }
+            #endif
+            // No need to update the table view,
+            // as the table view is already removed from superview
+            // if SwiftUI view builder is used.
+            if didApplyTableViewConverter == false {
+                super.reloadTableView()
+                return
+            }
         }
     }
 }

@@ -24,7 +24,7 @@ public protocol SBUOpenChannelSettingsModuleHeaderDelegate: SBUBaseChannelSettin
     ///   - leftItem: Updated `leftBarButton` object.
     func openChannelSettingsModule(_ headerComponent: SBUOpenChannelSettingsModule.Header, didUpdateLeftItem leftItem: UIBarButtonItem?)
     
-    /// Called when `rightBarButton` was selected.
+    /// Called when `rightBarButton` was updated.
     /// - Parameters:
     ///   - headerComponent: `SBUOpenChannelSettingsModule.Header` object
     ///   - rightItem: Updated `rightBarButton` object.
@@ -41,6 +41,26 @@ public protocol SBUOpenChannelSettingsModuleHeaderDelegate: SBUBaseChannelSettin
     ///   - component: `SBUBaseChannelSettingsModule.Header` object
     ///   - rightItem: Selected `rightBarButton` object.
     func openChannelSettingsModule(_ headerComponent: SBUOpenChannelSettingsModule.Header, didTapRightItem rightItem: UIBarButtonItem)
+    
+    /// Called when `leftBarButtons` was updated.
+    /// - Parameters:
+    ///   - headerComponent: `SBUOpenChannelSettingsModule.Header` object
+    ///   - leftItems: Updated `leftBarButtons` object.
+    /// - Since: 3.28.0
+    func openChannelSettingsModule(_ headerComponent: SBUOpenChannelSettingsModule.Header, didUpdateLeftItems leftItems: [UIBarButtonItem]?)
+    
+    /// Called when `rightBarButtons` was updated.
+    /// - Parameters:
+    ///   - headerComponent: `SBUOpenChannelSettingsModule.Header` object
+    ///   - rightItems: Updated `rightBarButtons` object.
+    /// - Since: 3.28.0
+    func openChannelSettingsModule(_ headerComponent: SBUOpenChannelSettingsModule.Header, didUpdateRightItems rightItems: [UIBarButtonItem]?)
+}
+
+extension SBUOpenChannelSettingsModuleHeaderDelegate {
+    func openChannelSettingsModule(_ headerComponent: SBUOpenChannelSettingsModule.Header, didUpdateLeftItems leftItems: [UIBarButtonItem]?) {}
+    
+    func openChannelSettingsModule(_ headerComponent: SBUOpenChannelSettingsModule.Header, didUpdateRightItems rightItems: [UIBarButtonItem]?) {}
 }
 // swiftlint:enable type_name
 
@@ -52,19 +72,41 @@ extension SBUOpenChannelSettingsModule {
     open class Header: SBUBaseChannelSettingsModule.Header {
         
         // MARK: - UI properties (Private)
-        override func defaultTitleView() -> SBUNavigationTitleView {
-            let titleView = SBUNavigationTitleView()
-            titleView.text = SBUStringSet.ChannelSettings_Header_Title
-            titleView.textAlignment = .center
-            
-            return titleView
-        }
-
+    
         // MARK: - Logic properties (Public)
         /// The object that acts as the delegate of the header component. The delegate must adopt the `SBUOpenChannelSettingsModuleHeaderDelegate` protocol
         public weak var delegate: SBUOpenChannelSettingsModuleHeaderDelegate? {
             get { self.baseDelegate as? SBUOpenChannelSettingsModuleHeaderDelegate }
             set { self.baseDelegate = newValue }
+        }
+        
+        // MARK: - default views
+        
+        override func createDefaultTitleView() -> SBUNavigationTitleView {
+            let titleView = SBUModuleSet.OpenChannelSettingsModule.HeaderComponent.TitleView.init()
+            titleView.text = SBUStringSet.ChannelSettings_Header_Title
+            titleView.textAlignment = .center
+            
+            return titleView
+        }
+        
+        override func createDefaultLeftButton() -> SBUBarButtonItem {
+            SBUModuleSet.OpenChannelSettingsModule.HeaderComponent.LeftBarButton.init(
+                image: SBUIconSetType.iconBack.image(to: SBUIconSetType.Metric.defaultIconSize),
+                landscapeImagePhone: nil,
+                style: .plain,
+                target: self,
+                action: #selector(onTapLeftBarButton)
+            )
+        }
+        
+        override func createDefaultRightButton() -> SBUBarButtonItem {
+            SBUModuleSet.OpenChannelSettingsModule.HeaderComponent.RightBarButton.init(
+                title: SBUStringSet.Edit,
+                style: .plain,
+                target: self,
+                action: #selector(onTapRightBarButton)
+            )
         }
         
         // MARK: - LifeCycle
@@ -92,6 +134,16 @@ extension SBUOpenChannelSettingsModule {
             self.setupStyles()
         }
         
+        open override func setupViews() {
+            #if SWIFTUI
+            self.applyViewConverter(.titleView)
+            self.applyViewConverter(.leftView)
+            self.applyViewConverter(.rightView)
+            // We are not using `...buttons` in SwiftUI
+            #endif
+            super.setupViews()
+        }
+        
         // MARK: - Attach update delegate on view
         public override func didUpdateTitleView() {
             self.delegate?.openChannelSettingsModule(self, didUpdateTitleView: self.titleView)
@@ -102,12 +154,21 @@ extension SBUOpenChannelSettingsModule {
         public override func didUpdateRightItem() {
             self.delegate?.openChannelSettingsModule(self, didUpdateRightItem: self.rightBarButton)
         }
+        public override func didUpdateLeftItems() {
+            self.delegate?.openChannelSettingsModule(self, didUpdateLeftItems: self.leftBarButtons)
+        }
+        public override func didUpdateRightItems() {
+            self.delegate?.openChannelSettingsModule(self, didUpdateRightItems: self.rightBarButtons)
+        }
         
         // MARK: - Actions
         open override func onTapLeftBarButton() {
             super.onTapLeftBarButton()
             
-            if let leftBarButton = self.leftBarButton {
+            if let leftBarButtons = self.leftBarButtons,
+               leftBarButtons.isUsingDefaultButton(self.defaultLeftBarButton) {
+                self.delegate?.openChannelSettingsModule(self, didTapLeftItem: self.defaultLeftBarButton)
+            } else if let leftBarButton = self.leftBarButton {
                 self.delegate?.openChannelSettingsModule(self, didTapLeftItem: leftBarButton)
             }
         }
@@ -115,7 +176,10 @@ extension SBUOpenChannelSettingsModule {
         open override func onTapRightBarButton() {
             super.onTapRightBarButton()
             
-            if let rightBarButton = self.rightBarButton {
+            if let rightBarButtons = self.rightBarButtons,
+               rightBarButtons.isUsingDefaultButton(self.defaultRightBarButton) {
+                self.delegate?.openChannelSettingsModule(self, didTapRightItem: self.defaultRightBarButton)
+            } else if let rightBarButton = self.rightBarButton {
                 self.delegate?.openChannelSettingsModule(self, didTapRightItem: rightBarButton)
             }
         }

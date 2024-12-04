@@ -250,25 +250,43 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
         super.configure(channel: channel)
         
         guard let channel = channel as? GroupChannel else { return }
+        
+        #if SWIFTUI
+        // Replaces the entire channel cell content with custom SwiftUI View.
+        let didApplyCellConverter = self.applyViewConverter(.entireContent)
+        if didApplyCellConverter { return }
+        #endif
 
         // Cover image
-        if let url = channel.coverURL, SBUUtils.isValid(coverURL: url) {
-            self.coverImage.setImage(withCoverURL: url)
-        } else if channel.isBroadcast {
-            self.coverImage.setBroadcastIcon()
-        } else {
-            if !channel.members.isEmpty {
-                self.coverImage.setImage(withUsers: channel.members)
+        var didApplyCoverImageConverter = false
+        #if SWIFTUI
+        didApplyCoverImageConverter = self.applyViewConverter(.coverImage)
+        #endif
+        if !didApplyCoverImageConverter {
+            if let url = channel.coverURL, SBUUtils.isValid(coverURL: url) {
+                self.coverImage.setImage(withCoverURL: url)
+            } else if channel.isBroadcast {
+                self.coverImage.setBroadcastIcon()
             } else {
-                self.coverImage.setPlaceholder(type: .iconUser, iconSize: .init(width: 40, height: 40))
+                if !channel.members.isEmpty {
+                    self.coverImage.setImage(withUsers: channel.members)
+                } else {
+                    self.coverImage.setPlaceholder(type: .iconUser, iconSize: .init(width: 40, height: 40))
+                }
             }
         }
         
         // Title
-        if SBUUtils.isValid(channelName: channel.name) {
-            self.titleLabel.text = channel.name
-        } else {
-            self.titleLabel.text = SBUUtils.generateChannelName(channel: channel)
+        var didApplyChannelNameConverter = false
+        #if SWIFTUI
+        didApplyChannelNameConverter = self.applyViewConverter(.channelName)
+        #endif
+        if !didApplyChannelNameConverter {
+            if SBUUtils.isValid(channelName: channel.name) {
+                self.titleLabel.text = channel.name
+            } else {
+                self.titleLabel.text = SBUUtils.generateChannelName(channel: channel)
+            }
         }
         
         // Member count. If 1:1 channel, not set
@@ -289,54 +307,66 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
         
         // Last updated time
         self.lastUpdatedTimeLabel.text = self.buildLastUpdatedDate()
-        
+
         // Last message
-        self.messageLabel.text = ""
-        switch channel.lastMessage {
-        case let userMessage as UserMessage:
-            if userMessage.hasMessageTemplate == true {
-                self.messageLabel.text = SBUStringSet.GroupChannel.Preview.messageTemplate
-            } else {
-                if SendbirdUI.config.groupChannel.channel.isMarkdownForUserMessageEnabled == true {
-                    let message = SBUMarkdownTransfer.convert(
-                        with: NSAttributedString(string: userMessage.message),
-                        isEnabled: true
-                    )?.string ?? userMessage.message
-                    self.messageLabel.text = message
-                } else {
-                    self.messageLabel.text = userMessage.message
-                }
-            }
-            self.messageLabel.lineBreakMode = .byTruncatingTail
-            
-        case let fileMessage as FileMessage:
-            self.messageLabel.lineBreakMode = .byTruncatingMiddle
-            self.messageLabel.text = SBUUtils.getFileTypePreviewString(by: fileMessage.type)
-            
-        case let adminMessage as AdminMessage:
-            self.messageLabel.lineBreakMode = .byTruncatingMiddle
-            self.messageLabel.text = adminMessage.message
-        
-        case _ as MultipleFilesMessage:
-            self.messageLabel.lineBreakMode = .byTruncatingMiddle
-            self.messageLabel.text = SBUStringSet.GroupChannel.Preview.multipleFiles
-            
-        default:
+        var didApplyMessagePreviewViewConverter = false
+        #if SWIFTUI
+        didApplyMessagePreviewViewConverter = self.applyViewConverter(.channelPreview)
+        #endif
+        if !didApplyMessagePreviewViewConverter {
             self.messageLabel.text = ""
+            switch channel.lastMessage {
+            case let userMessage as UserMessage:
+                if userMessage.hasMessageTemplate == true {
+                    self.messageLabel.text = SBUStringSet.GroupChannel.Preview.messageTemplate
+                } else {
+                    if SendbirdUI.config.groupChannel.channel.isMarkdownForUserMessageEnabled == true {
+                        let message = SBUMarkdownTransfer.convert(
+                            with: NSAttributedString(string: userMessage.message),
+                            isEnabled: true
+                        )?.string ?? userMessage.message
+                        self.messageLabel.text = message
+                    } else {
+                        self.messageLabel.text = userMessage.message
+                    }
+                }
+                self.messageLabel.lineBreakMode = .byTruncatingTail
+                
+            case let fileMessage as FileMessage:
+                self.messageLabel.lineBreakMode = .byTruncatingMiddle
+                self.messageLabel.text = SBUUtils.getFileTypePreviewString(by: fileMessage.type)
+                
+            case let adminMessage as AdminMessage:
+                self.messageLabel.lineBreakMode = .byTruncatingMiddle
+                self.messageLabel.text = adminMessage.message
+                
+            case _ as MultipleFilesMessage:
+                self.messageLabel.lineBreakMode = .byTruncatingMiddle
+                self.messageLabel.text = SBUStringSet.GroupChannel.Preview.multipleFiles
+                
+            default:
+                self.messageLabel.text = ""
+            }
         }
         
         // Unread count
-        switch channel.unreadMessageCount {
-        case 0:
-            self.unreadCount.isHidden = true
-        case 1...99:
-            self.unreadCount.setTitle(String(channel.unreadMessageCount), for: .normal)
-            self.unreadCount.isHidden = false
-        case 100...:
-            self.unreadCount.setTitle("99+", for: .normal)
-            self.unreadCount.isHidden = false
-        default:
-            break
+        var didApplyUnreadCountViewConverter = false
+        #if SWIFTUI
+        didApplyUnreadCountViewConverter = self.applyViewConverter(.unreadCount)
+        #endif
+        if !didApplyUnreadCountViewConverter {
+            switch channel.unreadMessageCount {
+            case 0:
+                self.unreadCount.isHidden = true
+            case 1...99:
+                self.unreadCount.setTitle(String(channel.unreadMessageCount), for: .normal)
+                self.unreadCount.isHidden = false
+            case 100...:
+                self.unreadCount.setTitle("99+", for: .normal)
+                self.unreadCount.isHidden = false
+            default:
+                break
+            }
         }
         
         self.unreadMentionLabel.isHidden = !SendbirdUI.config.groupChannel.channel.isMentionEnabled || channel.unreadMentionCount == 0

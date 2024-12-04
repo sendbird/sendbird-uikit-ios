@@ -35,14 +35,19 @@ open class SBUNewMessageInfo: SBUView {
     @SBUThemeWrapper(theme: SBUTheme.componentTheme)
     var theme: SBUComponentTheme
     
+    #if SWIFTUI
+    /// Stores the number of new messages.
+    var count: Int = 0
+    #endif
+    
     // MARK: - Life cycle
-    override public init(frame: CGRect) {
+    public override init(frame: CGRect) {
         super.init(frame: frame)
     }
     
     /// This function Initializes the new message information item.
     /// - Parameter type: Type of new message info item (default: tooltip)
-    public init(type: NewMessageInfoItemType = .tooltip) {
+    public required init(type: NewMessageInfoItemType = .tooltip) {
         super.init(frame: .zero)
         
         self.type = type
@@ -155,11 +160,23 @@ open class SBUNewMessageInfo: SBUView {
     ///   - count: Message count
     ///   - actionHandler: Button's action handler
     open func updateCount(count: Int, actionHandler: SBUNewMessageInfoHandler?) {
-        if let messageInfoButton = self.messageInfoButton {
-            messageInfoButton.setTitle(SBUStringSet.Channel_New_Message(count), for: .normal)
-            messageInfoButton.contentEdgeInsets = UIEdgeInsets(top: 10, left: 12, bottom: 10, right: 12)
-            messageInfoButton.sizeToFit()
+        var didApplyViewConverter = false
+        #if SWIFTUI
+        didApplyViewConverter = self.applyViewConverter(.entireContent, count: count)
+        #endif
+        if !didApplyViewConverter {
+            if let messageInfoButton = self.messageInfoButton {
+                messageInfoButton.setTitle(SBUStringSet.Channel_New_Message(count), for: .normal)
+                messageInfoButton.contentEdgeInsets = UIEdgeInsets(top: 10, left: 12, bottom: 10, right: 12)
+                messageInfoButton.sizeToFit()
+            }
         }
         self.actionHandler = actionHandler
+    }
+}
+
+extension SBUNewMessageInfo {
+    static func createDefault(_ viewType: SBUNewMessageInfo.Type) -> SBUNewMessageInfo {
+        return viewType.init()
     }
 }

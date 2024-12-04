@@ -106,8 +106,8 @@ open class SBUOpenChannelCell: SBUBaseChannelCell {
         // title stack view
         self.titleStackView
             .sbu_constraint(equalTo: self.contentStackView, trailing: 0)
-            .sbu_constraint(height: 22)
-        
+            .sbu_constraint(height: 22, priority: .defaultLow)
+
         self.freezeState
             .sbu_constraint(width: infoIconSize, height: infoIconSize)
         
@@ -171,23 +171,51 @@ open class SBUOpenChannelCell: SBUBaseChannelCell {
         super.configure(channel: channel)
         
         guard let channel = channel as? OpenChannel else { return }
-
+        
+        #if SWIFTUI
+        // Replaces the entire channel cell content with custom SwiftUI View.
+        let didApplyCellConverter = self.applyViewConverter(.entireContent)
+        if didApplyCellConverter { return }
+        #endif
+        
         // Cover image
-        if let url = channel.coverURL {
-            self.coverImage.setImage(withCoverURL: url)
-        } else {
-            self.coverImage.setPlaceholder(type: .iconChannels, iconSize: SBUIconSetType.Metric.defaultIconSize)
+        var didApplyCoverImageConverter = false
+        #if SWIFTUI
+        didApplyCoverImageConverter = self.applyViewConverter(.coverImage)
+        #endif
+        if !didApplyCoverImageConverter {
+            if let url = channel.coverURL {
+                self.coverImage.setImage(withCoverURL: url)
+            } else {
+                self.coverImage.setPlaceholder(type: .iconChannels, iconSize: SBUIconSetType.Metric.defaultIconSize)
+            }
         }
         
         // Title
-        if channel.name.isEmpty {
-            self.titleLabel.text = SBUStringSet.Open_Channel_Name_Default
-        } else {
-            self.titleLabel.text = channel.name
+        var didApplyChannelNameConverter = false
+        #if SWIFTUI
+        didApplyChannelNameConverter = self.applyViewConverter(.channelName)
+        #endif
+        if !didApplyChannelNameConverter {
+            // Restore the original priority(default) when the SwiftUI converter is not configured
+            self.titleStackView.sbu_constraint(height: 22)
+
+            if channel.name.isEmpty {
+                self.titleLabel.text = SBUStringSet.Open_Channel_Name_Default
+            } else {
+                self.titleLabel.text = channel.name
+            }
         }
         
-        // Member cound. If 1:1 channel, not set
-        self.participantCountLabel.text = channel.participantCount.unitFormattedString
+        // Subtitle(participant stack view)
+        var didApplyChannelPreviewConverter = false
+        #if SWIFTUI
+        didApplyChannelPreviewConverter = self.applyViewConverter(.channelPreview)
+        #endif
+        if !didApplyChannelPreviewConverter {
+            // Member cound. If 1:1 channel, not set
+            self.participantCountLabel.text = channel.participantCount.unitFormattedString
+        }
         
         // Channel frozen state. If isFrozen is false, this property will hidden.
         self.freezeState.isHidden = channel.isFrozen == false

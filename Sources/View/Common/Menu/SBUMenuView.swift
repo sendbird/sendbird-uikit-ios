@@ -64,6 +64,9 @@ public class SBUMenuItem: SBUCommonItem {
     }
 }
 
+// MOD TODO: Need to make module and components
+// MOD TODO: Need to add CustomComponent sample
+// If the reaction feature is enabled, the `SBUMenuSheetViewController` is used; if it is disabled, the `SBUMenuView` is used.
 class SBUMenuView: NSObject {
     static private let shared = SBUMenuView()
     

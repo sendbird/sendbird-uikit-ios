@@ -22,10 +22,26 @@ extension SBURegisterOperatorModule {
 
 // MARK: Header
 extension SBURegisterOperatorModule.Header {
+    /// Represents the metatype of left bar button in ``SBURegisterOperatorModule.Header``.
+    /// - Since: 3.28.0
+    public static var LeftBarButton: SBUBarButtonItem.Type = SBUBarButtonItem.self
     
+    /// Represents the metatype of title view in ``SBURegisterOperatorModule.Header``.
+    /// - Since: 3.28.0
+    public static var TitleView: SBUNavigationTitleView.Type = SBUNavigationTitleView.self
+    
+    /// Represents the metatype of right bar button in ``SBURegisterOperatorModule.Header``.
+    /// - Since: 3.28.0
+    public static var RightBarButton: SBUBarButtonItem.Type = SBUBarButtonItem.self
 }
 
 // MARK: List
 extension SBURegisterOperatorModule.List {
+    /// Represents the type of empty view on the register operator module.
+    /// - Since: 3.28.0
+    public static var EmptyView: SBUEmptyView.Type = SBUEmptyView.self
     
+    /// Represents the type of user cell on the register operator module.
+    /// - Since: 3.28.0
+    public static var UserCell: SBUUserCell.Type = SBUUserCell.self
 }

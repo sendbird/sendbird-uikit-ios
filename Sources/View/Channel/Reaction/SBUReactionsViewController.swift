@@ -10,7 +10,7 @@ import UIKit
 import SendbirdChatSDK
 
 /// - Since: 3.11.0
-protocol SBUReactionsViewControllerDelegate: SBUCommonDelegate {
+public protocol SBUReactionsViewControllerDelegate: SBUCommonDelegate {
     /// Called when the user cell was selected in the `tableView`.
     /// - Parameters:
     ///   - viewController: `SBUReactionsViewController` object
@@ -36,36 +36,37 @@ protocol SBUReactionsViewControllerDelegate: SBUCommonDelegate {
 
 /// Reacted user list
 /// - Since: 3.11.0
-public class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate, SBUBottomSheetControllerDelegate {
+open class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate, SBUBottomSheetControllerDelegate {
 
-    lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-    let layout: UICollectionViewFlowLayout = SBUCollectionViewFlowLayout()
-    let stackView = UIStackView()
-    let lineView = UIView(frame: .init(x: 0, y: 0, width: 0, height: 0.5))
-    let tableView = UITableView()
-    let emojiList = SBUEmojiManager.getAllEmojis()
+    public private(set) lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+    public let layout: UICollectionViewFlowLayout = SBUCollectionViewFlowLayout()
+    public let stackView = UIStackView()
+    public let lineView = UIView(frame: .init(x: 0, y: 0, width: 0, height: 0.5))
+    public let tableView = UITableView()
+    public let emojiList = SBUEmojiManager.getAllEmojis()
 
-    var channel: GroupChannel!
-    var selectedReaction: Reaction?
-    var memberList: [Member] = []
-    var reactionList: [Reaction] = []
+    public private(set) var channel: GroupChannel!
+    public private(set) var selectedReaction: Reaction?
+    public private(set) var memberList: [Member] = []
+    public private(set) var reactionList: [Reaction] = []
+
+    public weak var delegate: SBUReactionsViewControllerDelegate? // 3.11.0
+
+    @SBUThemeWrapper(theme: SBUTheme.componentTheme)
+    var theme: SBUComponentTheme
 
     var collectionViewConstraintWidth: NSLayoutConstraint?
     var collectionViewConstraintMaxWidth: NSLayoutConstraint?
-
-    var theme = SBUTheme.componentTheme
     
-    weak var delegate: SBUReactionsViewControllerDelegate? // 3.11.0
-
     // MARK: - Lifecycle
     @available(*, unavailable, renamed: "SBUReactionsViewController.init(channel:message:selectedReaction:)")
-    required init?(coder: NSCoder) {
+    required public init?(coder: NSCoder) {
         super.init(coder: coder)
     }
 
     /// Use this function when initialize.
     /// - Parameter message: BaseMessage types
-    init(channel: GroupChannel, message: BaseMessage, selectedReaction: Reaction?) {
+    required public init(channel: GroupChannel, message: BaseMessage, selectedReaction: Reaction?) {
         super.init(nibName: nil, bundle: nil)
         self.channel = channel
         self.reactionList = message.reactions
@@ -75,7 +76,7 @@ public class SBUReactionsViewController: SBUBaseViewController, UITableViewDeleg
         self.memberList = members
     }
 
-    public override func setupViews() {
+    open override func setupViews() {
         // stackView
         self.stackView.axis = .vertical
         self.stackView.alignment = .center
@@ -120,7 +121,7 @@ public class SBUReactionsViewController: SBUBaseViewController, UITableViewDeleg
     }
 
     /// This function handles the initialization of autolayouts.
-    public override func setupLayouts() {
+    open override func setupLayouts() {
         self.stackView.sbu_constraint(
             equalTo: self.view,
             left: 0,
@@ -156,7 +157,7 @@ public class SBUReactionsViewController: SBUBaseViewController, UITableViewDeleg
         self.view.setNeedsLayout()
     }
     
-    public override func updateLayouts() {
+    open override func updateLayouts() {
         self.collectionViewConstraintWidth?.constant = self.collectionView.contentSize.width
         self.collectionViewConstraintMaxWidth?.constant = self.view.bounds.width
         self.collectionView.layoutIfNeeded()
@@ -167,14 +168,14 @@ public class SBUReactionsViewController: SBUBaseViewController, UITableViewDeleg
     }
 
     /// This function handles the initialization of styles.
-    public override func setupStyles() {
+    open override func setupStyles() {
         self.view.backgroundColor = theme.backgroundColor
         self.lineView.backgroundColor = theme.reactionMenuLineColor
         self.tableView.backgroundColor = .clear
         self.collectionView.backgroundColor = .clear
     }
 
-    public override func viewDidLoad() {
+    open override func viewDidLoad() {
         super.viewDidLoad()
         if let bottomSheet = self.presentationController as? SBUBottomSheetController {
 
@@ -184,35 +185,38 @@ public class SBUReactionsViewController: SBUBaseViewController, UITableViewDeleg
         }
     }
 
-    public override func viewDidLayoutSubviews() {
+    open override func viewDidLayoutSubviews() {
         self.updateLayouts()
         
         super.viewDidLayoutSubviews()
     }
 
-    public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    open override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         guard let selectedReaction = self.selectedReaction,
               selectedReaction.userIds.count > 0 else { return }
         self.tableView.scrollToRow(at: .init(row: 0, section: 0), at: .top, animated: true)
     }
 
-    public override func viewWillAppear(_ animated: Bool) {
+    open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         if let indexPath = getSelectedIndexPath() {
             collectionView.selectItem(at: indexPath, animated: false, scrollPosition: .bottom)
         }
     }
 
-    public override func viewDidAppear(_ animated: Bool) {
+    open override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if let indexPath = getSelectedIndexPath() {
             collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
         }
     }
 
-    // MARK: - Private func
-    private func getSelectedIndexPath() -> IndexPath? {
+    // MARK: - Common
+    
+    /// Retrieves the index path for the currently selected reaction, if any.
+    /// - Since: 3.28.0
+    public func getSelectedIndexPath() -> IndexPath? {
         guard let selectedReaction = self.selectedReaction else { return nil }
         
         return self.reactionList.enumerated().compactMap {
@@ -222,7 +226,9 @@ public class SBUReactionsViewController: SBUBaseViewController, UITableViewDeleg
         }.first
     }
 
-    private func getCellSize(count: Int) -> CGSize {
+    /// This function retrieves the size of the cell based on the number of reactions.
+    /// - Since: 3.28.0
+    public func getCellSize(count: Int) -> CGSize {
         switch count {
         case 0...9:
             return CGSize(width: 41, height: 44)
@@ -233,8 +239,9 @@ public class SBUReactionsViewController: SBUBaseViewController, UITableViewDeleg
         }
     }
     
-    /// - Since: 3.11.0
-    func getUser(with indexPath: IndexPath) -> SBUUser? {
+    /// This function retrieves the user for the specified index path.
+    /// - Since: 3.28.0
+    public func getUser(with indexPath: IndexPath) -> SBUUser? {
         guard let selectedReaction = self.selectedReaction,
               indexPath.row < selectedReaction.userIds.count else { return nil }
         let userId = selectedReaction.userIds[indexPath.row]
@@ -260,13 +267,13 @@ public class SBUReactionsViewController: SBUBaseViewController, UITableViewDeleg
     }
     
     // MARK: - UITableView relations
-    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    open func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard let selectedReaction = self.selectedReaction else { return 0 }
         
         return selectedReaction.userIds.count
     }
 
-    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    open func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = self.tableView.dequeueReusableCell(
             withIdentifier: SBUUserCell.sbu_className
             ) as? SBUUserCell else { return .init() }
@@ -285,7 +292,7 @@ public class SBUReactionsViewController: SBUBaseViewController, UITableViewDeleg
     }
     
     /// - Since: 3.11.0
-    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    open func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let user = getUser(with: indexPath) else { return }
         
         self.delegate?.reactionsViewController(
@@ -297,15 +304,15 @@ public class SBUReactionsViewController: SBUBaseViewController, UITableViewDeleg
     }
 
     // MARK: - UICollectionView relations
-    public func numberOfSections(in collectionView: UICollectionView) -> Int {
+    open func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
 
-    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    open func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.reactionList.count
     }
 
-    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    open func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: SBUReactionCollectionViewCell.sbu_className,
             for: indexPath) as? SBUReactionCollectionViewCell else { return .init() }
@@ -323,11 +330,11 @@ public class SBUReactionsViewController: SBUBaseViewController, UITableViewDeleg
         return cell
     }
 
-    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return self.getCellSize(count: self.reactionList[indexPath.row].userIds.count)
     }
 
-    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    open func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard reactionList.count > indexPath.row else { return }
 
         self.selectedReaction = self.reactionList[indexPath.row]
@@ -342,8 +349,10 @@ public class SBUReactionsViewController: SBUBaseViewController, UITableViewDeleg
     }
 
     // MARK: - SBUBottomSheetControllerDelegate
-    func bottomSheet(moveTo position: SBUBottomSheetSnapPoint) {
-
+    
+    /// This function is called when the bottom sheet moves to a specific position.
+    /// - Since: 3.28.0
+    open func bottomSheet(moveTo position: SBUBottomSheetSnapPoint) {
         switch position {
         case .top:
             self.tableView.isScrollEnabled = true

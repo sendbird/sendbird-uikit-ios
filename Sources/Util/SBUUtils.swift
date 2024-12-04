@@ -292,7 +292,7 @@ extension SBUUtils {
 
 extension SBUUtils {
     /// Methods for determining if the first character of a string is an RTL language
-    /// - Since: 3.26.0
+    /// - Since: 3.28.0
     public static func isRTLCharacter(with string: String?) -> Bool {
         guard let scalar = string?.unicodeScalars.first else { return false }
         return Self.rtlCharacterSet.contains(scalar)

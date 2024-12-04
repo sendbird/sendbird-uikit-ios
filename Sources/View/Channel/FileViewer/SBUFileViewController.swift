@@ -347,7 +347,11 @@ open class SBUFileViewController: SBUBaseViewController, UIScrollViewDelegate, S
     
     // MARK: - Actions
     open override func onClickBack() {
-        self.dismiss(animated: true)
+        if dismissAction != nil {
+            dismissAction?()
+        } else {
+            self.dismiss(animated: true)
+        }
     }
     
     @objc

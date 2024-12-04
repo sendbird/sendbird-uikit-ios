@@ -168,6 +168,13 @@ extension SBUMessageThreadModule {
             return operationQueue
         }()
         
+        private lazy var defaultMessageInputView: SBUMessageInputView = {
+            let messageInputView = SBUModuleSet.MessageThreadModule.InputComponent.MessageInputView.init(isThreadMessage: true)
+            messageInputView.delegate = self
+            messageInputView.datasource = self
+            return messageInputView
+        }()
+        
         // MARK: - LifeCycle
         
         /// Configures component with parameters.
@@ -198,7 +205,23 @@ extension SBUMessageThreadModule {
         }
         
         open override func setupViews() {
-            super.setupViews()
+            // NOTE: Input entireContnet interface has been temporarily closed.
+//            #if SWIFTUI
+//            if self.applyViewConverter(.entireContent) { return }
+//            #endif
+            
+            /// It does not call `super.setupViews()` because it creates `messageInputView` differently for each channelType
+            
+            if self.messageInputView == nil {
+                self.messageInputView = defaultMessageInputView
+            }
+            if let messageInputView = messageInputView {
+                inputVStackView.setVStack([
+                    messageInputView
+                ])
+                self.addSubview(inputVStackView)
+            }
+            
             self.updatePlaceholder()
         }
         

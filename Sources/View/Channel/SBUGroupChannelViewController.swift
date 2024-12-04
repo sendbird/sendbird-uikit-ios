@@ -13,6 +13,16 @@ import AVKit
 import SafariServices
 import PhotosUI
 import MobileCoreServices
+#if SWIFTUI
+import SwiftUI
+#endif
+
+#if SWIFTUI
+protocol GroupChannelViewEventDelegate: AnyObject {
+    func groupChannelViewDidUpdateNewMessagesCount(_ count: Int)
+    func groupChannelViewDidChangeMessageText(_ text: String)
+}
+#endif
 
 @objcMembers
 open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroupChannelViewModelDelegate, SBUGroupChannelModuleHeaderDelegate, SBUGroupChannelModuleListDelegate, SBUGroupChannelModuleListDataSource, SBUGroupChannelModuleInputDelegate, SBUGroupChannelModuleInputDataSource, SBUGroupChannelViewModelDataSource, SBUMentionManagerDataSource, SBUMessageThreadViewControllerDelegate, SBUVoiceMessageInputViewDelegate, SBUReactionsViewControllerDelegate {
@@ -30,8 +40,8 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         get { self.baseInputComponent as? SBUGroupChannelModule.Input }
         set { self.baseInputComponent = newValue }
     }
-    
-    public var voiceMessageInputView = SBUVoiceMessageInputView()
+    /// The input view that is used to record voice message
+    public var voiceMessageInputView = SBUGroupChannelModule.Input.VoiceMessageInputView.init()
     
     public var highlightInfo: SBUHighlightMessageInfo?
     
@@ -43,13 +53,31 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     
     public override var channel: GroupChannel? { self.viewModel?.channel as? GroupChannel }
     
-    public private(set) var newMessagesCount: Int = 0
+    public private(set) var newMessagesCount: Int = 0 {
+        didSet {
+            #if SWIFTUI
+            self.swiftUIDelegate?.groupChannelViewDidUpdateNewMessagesCount(self.newMessagesCount)
+            #endif
+        }
+    }
     
     override var isChatInputDisabled: Bool {
         didSet {
             (self.baseInputComponent?.messageInputView as? SBUMessageInputView)?.setDisableChatInputState(isChatInputDisabled)
         }
     }
+    
+    // MARK: - SwiftUI
+    #if SWIFTUI
+    var channelSettingsViewBuilder: GroupChannelSettingsViewBuilder?
+    var messageThreadViewBuilder: MessageThreadViewBuilder?
+    
+    weak var swiftUIDelegate: (SBUGroupChannelViewModelDelegate & GroupChannelViewEventDelegate)? {
+        didSet {
+            self.viewModel?.baseDelegates.addDelegate(self.swiftUIDelegate, type: .swiftui)
+        }
+    }
+    #endif
     
     /// An error handler that is called when any one of the files size in multiple files message exceeds the file size limit.
     /// If needed, override this handler to show your custom alert view.
@@ -202,7 +230,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
             return
         }
         
-        self.baseViewModel = SBUGroupChannelViewModel(
+        self.baseViewModel = SBUViewModelSet.GroupChannelViewModel.init(
             channel: channel,
             channelURL: channelURL,
             messageListParams: messageListParams,
@@ -383,6 +411,15 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     open override func showChannelSettings() {
         guard let channel = self.channel else { return }
         
+        #if SWIFTUI
+        if let channelSettingsViewBuilder = self.channelSettingsViewBuilder {
+            let view = channelSettingsViewBuilder(channel.channelURL)
+            let channelSettingsVC = UIHostingController(rootView: view)
+            self.navigationController?.pushViewControllerNonFlickering(channelSettingsVC, animated: true)
+            return
+        }
+        #endif
+        
         let channelSettingsVC = SBUViewControllerSet.GroupChannelSettingsViewController.init(channel: channel)
         self.navigationController?.pushViewController(channelSettingsVC, animated: true)
     }
@@ -402,7 +439,22 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         if let fullMessageList = self.viewModel?.fullMessageList {
             parentMessage = fullMessageList.first(where: { $0.messageId == parentMessageId })
         }
-           
+        
+        #if SWIFTUI
+        if let messageThreadViewBuilder = self.messageThreadViewBuilder {
+            let view = messageThreadViewBuilder(
+                channelURL,
+                parentMessageId
+            )
+            let messageThreadVC = UIHostingController(rootView: view)
+            self.navigationController?.pushViewControllerNonFlickering(
+                messageThreadVC,
+                animated: true
+            )
+            return
+        }
+        #endif
+        
         let messageThreadVC = SBUViewControllerSet.MessageThreadViewController.init(
             channelURL: channelURL,
             parentMessage: parentMessage,
@@ -740,12 +792,18 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     ) {
         guard channel != nil else {
             // channel deleted
-            if self.navigationController?.viewControllers.last == self {
+            if self.isLastInNavigationStack() {
                 // If leave is called in the ChannelSettingsViewController, this logic needs to be prevented.
                 self.onClickBack()
             }
             return
         }
+        
+        #if SWIFTUI
+        if self.listComponent?.viewConverter.tableView.entireContent != nil {
+            self.listComponent?.applyViewConverter(.entireContent)
+        }
+        #endif
         
         // channel changed
         switch context.source {
@@ -827,6 +885,16 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         self.showChannelSettings()
     }
     
+    open override func baseChannelModule(_ headerComponent: SBUBaseChannelModule.Header, didUpdateTitleView titleView: UIView?) {
+        #if SWIFTUI
+        if self.headerComponent?.viewConverter.leftView.entireContent != nil || self.headerComponent?.viewConverter.rightView.entireContent != nil {
+            self.navigationItem.titleView = titleView
+            return
+        }
+        #endif
+        super.baseChannelModule(headerComponent, didUpdateTitleView: titleView)
+    }
+    
     // MARK: - SBUGroupChannelModuleListDelegate
     open func groupChannelModule(
         _ listComponent: SBUGroupChannelModule.List,
@@ -872,7 +940,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
               let message = messageCell.message else { return }
         
         let reaction = message.reactions.first { $0.key == emojiKey }
-        let reactionsVC = SBUReactionsViewController(
+        let reactionsVC = SBUCommonViewControllerSet.ReactionsViewController.init(
             channel: channel,
             message: message,
             selectedReaction: reaction
@@ -1208,6 +1276,14 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     open override func baseChannelModuleDidEndTyping(_ inputComponent: SBUBaseChannelModule.Input) {
         self.viewModel?.endTypingMessage()
         self.inputComponent?.dismissSuggestedMentionList()
+    }
+    
+    open override func baseChannelModule(_ inputComponent: SBUBaseChannelModule.Input, didChangeText text: String) {
+        super.baseChannelModule(inputComponent, didChangeText: text)
+        
+        #if SWIFTUI
+        self.swiftUIDelegate?.groupChannelViewDidChangeMessageText(text)
+        #endif
     }
     
     // MARK: - SBUGroupChannelViewModelDataSource

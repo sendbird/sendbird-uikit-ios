@@ -63,6 +63,17 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
         set { self.baseDataSource = newValue }
     }
 
+    // MARK: SwiftUI (Internal)
+    var delegates: WeakDelegateStorage<SBUGroupChannelViewModelDelegate> {
+        let computedDelegates = WeakDelegateStorage<SBUGroupChannelViewModelDelegate>()
+        self.baseDelegates.allKeyValuePairs().forEach { key, value in
+            if let delegate = value as? SBUGroupChannelViewModelDelegate {
+                computedDelegates.addDelegate(delegate, type: key)
+            }
+        }
+        return computedDelegates
+    }
+
     // swiftlint:disable identifier_name
     /// A completion handler that is called after sending a multiple files message is completed.
     /// - Since: 3.10.0
@@ -90,23 +101,29 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
     }
     
     // MARK: - LifeCycle
-    public init(channel: BaseChannel? = nil,
-                channelURL: String? = nil,
-                messageListParams: MessageListParams? = nil,
-                startingPoint: Int64? = .max,
-                delegate: SBUGroupChannelViewModelDelegate? = nil,
-                dataSource: SBUGroupChannelViewModelDataSource? = nil,
-                displaysLocalCachedListFirst: Bool = false) {
+    required public init(
+        channel: BaseChannel? = nil,
+        channelURL: String? = nil,
+        messageListParams: MessageListParams? = nil,
+        startingPoint: Int64? = .max,
+        delegate: SBUGroupChannelViewModelDelegate? = nil,
+        dataSource: SBUGroupChannelViewModelDataSource? = nil,
+        displaysLocalCachedListFirst: Bool = false
+    ) {
         super.init()
     
         self.delegate = delegate
         self.dataSource = dataSource
         
-        self.displaysLocalCachedListFirst = displaysLocalCachedListFirst
+        self.baseDelegates.addDelegate(self.delegate, type: .uikit)
         
         SendbirdChat.addChannelDelegate(
             self,
             identifier: "\(SBUConstant.groupChannelDelegateIdentifier).\(self.description)"
+        )
+        
+        self.debouncer = SBUDebouncer(
+            debounceTime: SBUGlobals.userMentionConfig?.debounceTime ?? SBUDebouncer.defaultTime
         )
         
         if let channel = channel {
@@ -116,14 +133,25 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
             self.channelURL = channelURL
         }
         
-        self.customizedMessageListParams = messageListParams
-        self.startingPoint = startingPoint
-        
-        self.debouncer = SBUDebouncer(
-            debounceTime: SBUGlobals.userMentionConfig?.debounceTime ?? SBUDebouncer.defaultTime
-        )
-        
         guard let channelURL = self.channelURL else { return }
+        self.initializeAndLoad(
+            channelURL: channelURL,
+            messageListParams: messageListParams,
+            startingPoint: startingPoint,
+            displaysLocalCachedListFirst: displaysLocalCachedListFirst
+        )
+    }
+    
+    func initializeAndLoad(
+        channelURL: String,
+        messageListParams: MessageListParams? = nil,
+        startingPoint: Int64? = nil,
+        displaysLocalCachedListFirst: Bool? = nil
+    ) {
+        if let messageListParams { self.customizedMessageListParams = messageListParams }
+        if let startingPoint { self.startingPoint = startingPoint }
+        if let displaysLocalCachedListFirst { self.displaysLocalCachedListFirst = displaysLocalCachedListFirst }
+        
         self.loadChannel(
             channelURL: channelURL,
             messageListParams: self.customizedMessageListParams
@@ -156,7 +184,9 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
         
         SendbirdUI.connectIfNeeded { [weak self] _, error in
             if let error = error {
-                self?.delegate?.didReceiveError(error, isBlocker: true)
+                self?.delegates.forEach {
+                    $0.didReceiveError(error, isBlocker: true)
+                }
                 completionHandler?(nil, error)
                 return
             }
@@ -183,11 +213,13 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
                 // for updating channel information when the connection state is closed at the time of initial load.
                 if SendbirdChat.getConnectState() == .closed {
                     let context = MessageContext(source: .eventChannelChanged, sendingStatus: .succeeded)
-                    self.delegate?.baseChannelViewModel(
-                        self,
-                        didChangeChannel: channel,
-                        withContext: context
-                    )
+                    self.delegates.forEach {
+                        $0.baseChannelViewModel(
+                            self,
+                            didChangeChannel: channel,
+                            withContext: context
+                        )
+                    }
                     completionHandler?(channel, nil)
                 }
                 
@@ -207,12 +239,16 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
                 guard let self = self else { return }
                 guard self.canProceed(with: channel, error: error) == true else {
                     let context = MessageContext(source: .eventChannelChanged, sendingStatus: .failed)
-                    self.delegate?.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
+                    self.delegates.forEach {
+                        $0.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
+                    }
                     return
                 }
                 
                 let context = MessageContext(source: .eventChannelChanged, sendingStatus: .succeeded)
-                self.delegate?.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
+                self.delegates.forEach {
+                    $0.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
+                }
             }
         } else if let channelURL = self.channelURL {
             self.loadChannel(channelURL: channelURL)
@@ -224,14 +260,18 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
             SBULog.error("[Failed] Load channel request: \(error.localizedDescription)")
             
             if error.code == ChatError.nonAuthorized.rawValue {
-                self.delegate?.baseChannelViewModel(self, shouldDismissForChannel: nil)
+                self.delegates.forEach {
+                    $0.baseChannelViewModel(self, shouldDismissForChannel: nil)
+                }
             } else {
                 if SendbirdChat.isLocalCachingEnabled &&
                     error.code == ChatError.networkError.rawValue &&
                     channel != nil {
                     return true
                 } else {
-                    self.delegate?.didReceiveError(error, isBlocker: true)
+                    self.delegates.forEach {
+                        $0.didReceiveError(error, isBlocker: true)
+                    }
                 }
             }
             return false
@@ -240,7 +280,9 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
         guard let channel = channel,
               channel.myMemberState != .none
         else {
-            self.delegate?.baseChannelViewModel(self, shouldDismissForChannel: channel)
+            self.delegates.forEach {
+                $0.baseChannelViewModel(self, shouldDismissForChannel: channel)
+            }
             return false
         }
 
@@ -306,12 +348,14 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
           
             self.sortAllMessageList(needReload: true)
             let context = MessageContext(source: .eventMessageSent, sendingStatus: .succeeded)
-            self.baseDelegate?.baseChannelViewModel(
-                self,
-                shouldUpdateScrollInMessageList: self.fullMessageList,
-                forContext: context,
-                keepsScroll: false
-            )
+            self.baseDelegates.forEach {
+                $0.baseChannelViewModel(
+                    self,
+                    shouldUpdateScrollInMessageList: self.fullMessageList,
+                    forContext: context,
+                    keepsScroll: false
+                )
+            }
         }
     }
     
@@ -321,11 +365,13 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
     ///    - index: the index of the cell of a multiple files message to update.
     /// - Since: 3.10.0
     open func updateMultipleFilesMessageCell(requestId: String, index: Int) {
-        self.delegate?.groupChannelViewModel(
-            self,
-            didFinishUploadingFileAt: index,
-            multipleFilesMessageRequestId: requestId
-        )
+        self.delegates.forEach {
+            $0.groupChannelViewModel(
+                self,
+                didFinishUploadingFileAt: index,
+                multipleFilesMessageRequestId: requestId
+            )
+        }
     }
     
     // MARK: - Load Messages
@@ -351,7 +397,9 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
             setupCache()
         }
         
-        self.delegate?.shouldUpdateLoadingState(showIndicator)
+        self.delegates.forEach {
+            $0.shouldUpdateLoadingState(showIndicator)
+        }
         
         self.messageCollection?.startCollection(
             initPolicy: initPolicy,
@@ -361,7 +409,9 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
                 defer { self.displaysLocalCachedListFirst = false }
                 
                 if let error = error {
-                    self.delegate?.didReceiveError(error, isBlocker: false)
+                    self.delegates.forEach {
+                        $0.didReceiveError(error, isBlocker: false)
+                    }
                     return
                 }
                 
@@ -381,11 +431,15 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
                 self.loadInitialPendingMessages()
                 
                 if let error = error {
-                    self.delegate?.shouldUpdateLoadingState(false)
+                    self.delegates.forEach {
+                        $0.shouldUpdateLoadingState(false)
+                    }
                     
                     // ignore error if using local caching
                     if !SendbirdChat.isLocalCachingEnabled {
-                        self.delegate?.didReceiveError(error, isBlocker: false)
+                        self.delegates.forEach {
+                            $0.didReceiveError(error, isBlocker: false)
+                        }
                     } else {
                         self.isInitialLoading = false
                         self.upsertMessagesInList(messages: nil, needReload: true)
@@ -438,19 +492,23 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
             }
             
             if let error = error {
-                self.delegate?.didReceiveError(error, isBlocker: false)
+                self.delegates.forEach {
+                    $0.didReceiveError(error, isBlocker: false)
+                }
                 return
             }
             
             guard let messages = messages, !messages.isEmpty else { return }
             SBULog.info("[Prev message response] \(messages.count) messages")
             
-            self.delegate?.baseChannelViewModel(
-                self,
-                shouldUpdateScrollInMessageList: messages,
-                forContext: nil,
-                keepsScroll: false
-            )
+            self.delegates.forEach {
+                $0.baseChannelViewModel(
+                    self,
+                    shouldUpdateScrollInMessageList: messages,
+                    forContext: nil,
+                    keepsScroll: false
+                )
+            }
             self.upsertMessagesInList(messages: messages, needReload: true)
         }
     }
@@ -473,19 +531,23 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
             }
             
             if let error = error {
-                self.delegate?.didReceiveError(error, isBlocker: false)
+                self.delegates.forEach {
+                    $0.didReceiveError(error, isBlocker: false)
+                }
                 return
             }
             guard let messages = messages else { return }
             
             SBULog.info("[Next message Response] \(messages.count) messages")
             
-            self.delegate?.baseChannelViewModel(
-                self,
-                shouldUpdateScrollInMessageList: messages,
-                forContext: nil,
-                keepsScroll: true
-            )
+            self.delegates.forEach {
+                $0.baseChannelViewModel(
+                    self,
+                    shouldUpdateScrollInMessageList: messages,
+                    forContext: nil,
+                    keepsScroll: true
+                )
+            }
             self.upsertMessagesInList(messages: messages, needReload: true)
         }
     }
@@ -589,15 +651,19 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
                     self.query?.loadNextPage { [weak self] members, _ in
                         guard let self = self else { return }
                         self.suggestedMemberList = SBUUser.convertUsers(members)
-                        self.delegate?.groupChannelViewModel(
-                            self,
-                            didReceiveSuggestedMentions: self.suggestedMemberList
-                        )
+                        self.delegates.forEach {
+                            $0.groupChannelViewModel(
+                                self,
+                                didReceiveSuggestedMentions: self.suggestedMemberList
+                            )
+                        }
                     }
                 } else {
                     guard channel.members.count > 0 else {
                         self.suggestedMemberList = nil
-                        self.delegate?.groupChannelViewModel(self, didReceiveSuggestedMentions: nil)
+                        self.delegates.forEach {
+                            $0.groupChannelViewModel(self, didReceiveSuggestedMentions: nil)
+                        }
                         return
                     }
                     
@@ -612,10 +678,12 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
                     
                     let resultMembers = Array(matchedMembers[0..<splitCount])
                     self.suggestedMemberList = SBUUser.convertUsers(resultMembers)
-                    self.delegate?.groupChannelViewModel(
-                        self,
-                        didReceiveSuggestedMentions: self.suggestedMemberList
-                    )
+                    self.delegates.forEach {
+                        $0.groupChannelViewModel(
+                            self,
+                            didReceiveSuggestedMentions: self.suggestedMemberList
+                        )
+                    }
                 }
             }
         }
@@ -688,12 +756,14 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
         default: break
         }
         
-        self.delegate?.baseChannelViewModel(
-            self,
-            shouldUpdateScrollInMessageList: messages,
-            forContext: context,
-            keepsScroll: true
-        )
+        self.delegates.forEach {
+            $0.baseChannelViewModel(
+                self,
+                shouldUpdateScrollInMessageList: messages,
+                forContext: context,
+                keepsScroll: true
+            )
+        }
         self.upsertMessagesInList(messages: messages, needReload: true)
     }
     
@@ -712,18 +782,22 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
         if hasAnyBots == true, let streamMessage = messages.hasStreamMessageOnly(with: latestMessage) {
             self.lastestStreamingMessage = streamMessage
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                self.delegate?.groupChannelViewModel(
-                    self,
-                    didReceiveStreamMessage: streamMessage,
-                    forChannel: channel
-                )
+                self.delegates.forEach {
+                    $0.groupChannelViewModel(
+                        self,
+                        didReceiveStreamMessage: streamMessage,
+                        forChannel: channel
+                    )
+                }
                 channel.markAsRead(completionHandler: nil)
-                self.delegate?.baseChannelViewModel(
-                    self,
-                    shouldUpdateScrollInMessageList: [streamMessage],
-                    forContext: context,
-                    keepsScroll: false
-                )
+                self.delegates.forEach {
+                    $0.baseChannelViewModel(
+                        self,
+                        shouldUpdateScrollInMessageList: [streamMessage],
+                        forContext: context,
+                        keepsScroll: false
+                    )
+                }
                 self.upsertMessagesInList(
                     messages: [streamMessage],
                     needReload: false
@@ -751,12 +825,14 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
         if existInPendingMessage { return }
         
         SBULog.info("messageCollection updatedMessages : \(messages.count)")
-        self.delegate?.baseChannelViewModel(
-            self,
-            shouldUpdateScrollInMessageList: messages,
-            forContext: context,
-            keepsScroll: false
-        )
+        self.delegates.forEach {
+            $0.baseChannelViewModel(
+                self,
+                shouldUpdateScrollInMessageList: messages,
+                forContext: context,
+                keepsScroll: false
+            )
+        }
         self.upsertMessagesInList(
             messages: messages,
             needUpdateNewMessage: false,
@@ -771,7 +847,9 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
         deletedMessages messages: [BaseMessage]
     ) {
         SBULog.info("messageCollection deletedMessages : \(messages.count)")
-        self.delegate?.baseChannelViewModel(self, deletedMessages: messages)
+        self.delegates.forEach {
+            $0.baseChannelViewModel(self, deletedMessages: messages)
+        }
         self.deleteMessagesInList(messageIds: messages.compactMap({ $0.messageId }), needReload: true)
     }
     
@@ -789,7 +867,9 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
             updateTypingIndicatorMessage()
         }
         
-        self.delegate?.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
+        self.delegates.forEach {
+            $0.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
+        }
     }
     
     open func messageCollection(
@@ -798,12 +878,14 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
         deletedChannel channelURL: String
     ) {
         SBULog.info("messageCollection deletedChannel")
-        self.delegate?.baseChannelViewModel(self, didChangeChannel: nil, withContext: context)
+        self.delegates.forEach {
+            $0.baseChannelViewModel(self, didChangeChannel: nil, withContext: context)
+        }
     }
     
     open func didDetectHugeGap(_ collection: MessageCollection) {
         SBULog.info("messageCollection didDetectHugeGap")
-        self.messageCollection?.dispose()
+        collection.dispose()
         
         var startingPoint: Int64?
         let indexPathsForStartingPoint = self.dataSource?.groupChannelViewModel(self, startingPointIndexPathsForChannel: self.channel as? GroupChannel)
@@ -832,7 +914,9 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
         message.submitForm(form: form) { error in
             if let error = error {
                 SBULog.error("[Request] Submit Form - error: \(error.localizedDescription)")
-                self.delegate?.didReceiveError(error)
+                self.delegates.forEach {
+                    $0.didReceiveError(error)
+                }
                 return
             }
         }
@@ -849,7 +933,9 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
             if let error = error {
                 message.isFormSubmitting = false
                 SBULog.error("[Request] Submit Message Form - error: \(error.localizedDescription)")
-                self.delegate?.didReceiveError(error)
+                self.delegates.forEach {
+                    $0.didReceiveError(error)
+                }
                 return
             }
         }
@@ -873,7 +959,9 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
         message.submitFeedback(rating: rating, comment: answer.comment) { feedback, error in
             if let error = error {
                 SBULog.error("[Request] Submit feedback - error: \(error.localizedDescription)")
-                self.delegate?.didReceiveError(error)
+                self.delegates.forEach {
+                    $0.didReceiveError(error)
+                }
                 return
             }
             
@@ -897,7 +985,9 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
         message.updateFeedback(rating: rating, comment: answer.comment) { feedback, error in
             if let error = error {
                 SBULog.error("[Request] update feedback - error: \(error.localizedDescription)")
-                self.delegate?.didReceiveError(error)
+                self.delegates.forEach {
+                    $0.didReceiveError(error)
+                }
                 return
             }
             completionHandler?(feedback)
@@ -917,7 +1007,9 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
         message.deleteFeedback { error in
             if let error = error {
                 SBULog.error("[Request] delete feedback - error: \(error.localizedDescription)")
-                self.delegate?.didReceiveError(error)
+                self.delegates.forEach {
+                    $0.didReceiveError(error)
+                }
                 return
             }
             completionHandler?()
@@ -981,7 +1073,9 @@ extension SBUGroupChannelViewModel: GroupChannelDelegate {
             (message is UserMessage || message is FileMessage) {
 //            let context = MessageContext(source: .eventMessageReceived, sendingStatus: .succeeded)
             if let channel = self.channel {
-                self.delegate?.baseChannelViewModel(self, didReceiveNewMessage: message, forChannel: channel)
+                self.delegates.forEach {
+                    $0.baseChannelViewModel(self, didReceiveNewMessage: message, forChannel: channel)
+                }
             }
         }
     }

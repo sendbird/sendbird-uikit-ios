@@ -13,6 +13,7 @@ class SBUConstant {
     static let thumbnailSize: CGSize = .init(width: 240, height: 160)
     static let imageSize: CGSize = .init(width: 240, height: 160)
     static let quotedMessageThumbnailSize: CGSize = .init(width: 156, height: 104)
+    static let parentInfoMultipleFilesThumbnailSize: CGSize = .init(width: 120, height: 120)
     
     static let voiceMessageBaseSize: CGSize = .init(width: 136, height: 44)
     
@@ -32,8 +33,13 @@ class SBUConstant {
     static let coverImagePrefix = "https://static.sendbird.com/sample/cover"
     
     static let extensionKeyUIKit = "sb_uikit"
+    static let extensionSwiftUI = "sb_swiftui"
     
+    #if SWIFTUI
+    static let bundleIdentifier = "com.sendbird.swiftui"
+    #else
     static let bundleIdentifier = "com.sendbird.uikit"
+    #endif
     
     static let groupChannelDelegateIdentifier = "\(bundleIdentifier).delegate.channel.group"
     static let openChannelDelegateIdentifier = "\(bundleIdentifier).delegate.channel.open"
@@ -41,7 +47,11 @@ class SBUConstant {
     
     static let connectionDelegateIdentifier = "\(bundleIdentifier).delegate.connection"
     
+    #if SWIFTUI
+    static let sbuAppVersion = "SBSwiftUIAppVersion"
+    #else
     static let sbuAppVersion = "SBUAppVersion"
+    #endif
     
     static let voiceMessageType = "audio/m4a"
     static let voiceMessageTypeVoiceParameter = "sbu_type=voice"

@@ -7,8 +7,24 @@
 //
 
 import UIKit
+import SendbirdChatSDK
 
-open class SBUUserCell: SBUTableViewCell {
+#if SWIFTUI
+protocol SBUUserCellProtocol {
+    func configureEntireContentForSwiftUI()
+    func configureForSwiftUI()
+    func selectUserForSwiftUI(_ selected: Bool)
+}
+extension SBUUserCellProtocol {
+    func configureEntireContentForSwiftUI() {}
+    func configureForSwiftUI() {}
+    func selectUserForSwiftUI(_ selected: Bool) {}
+}
+#else
+protocol SBUUserCellProtocol {}
+#endif
+
+open class SBUUserCell: SBUTableViewCell, SBUUserCellProtocol {
     
     // MARK: - UI properties (Public)
     public lazy var baseStackView: UIStackView = {
@@ -83,11 +99,19 @@ open class SBUUserCell: SBUTableViewCell {
     public private(set) var type: UserListType = .none
     
     // MARK: - Logic properties (Private)
+    var user: SBUUser?
     var isChecked: Bool = false
     var hasNickname: Bool = true
+    var operatorMode: Bool = false
+    
+    var channelType: ChannelType = .group
     
     var userProfileTapHandler: (() -> Void)?
     var moreMenuHandler: (() -> Void)?
+    
+    #if SWIFTUI
+    var cellTapHandler: (() -> Void)?
+    #endif
     
     internal private(set) var userImageSize: CGFloat = 40
     
@@ -247,18 +271,31 @@ open class SBUUserCell: SBUTableViewCell {
     }
     
     // MARK: - Common
-    open func configure(type: UserListType,
-                        user: SBUUser,
-                        isChecked: Bool = false,
-                        operatorMode: Bool = false) {
+    open func configure(
+        type: UserListType,
+        user: SBUUser,
+        isChecked: Bool = false,
+        operatorMode: Bool = false,
+        channelType: ChannelType = .group
+    ) {
+        self.user = user
         self.type = type
         self.isChecked = isChecked
+        self.operatorMode = operatorMode
+        
+        self.channelType = channelType
         
         let isMe = (user.userId == SBUGlobals.currentUser?.userId)
         self.userIdLabel.text = user.userId
         self.nicknameLabel.text = user.refinedNickname()
             + (isMe ? " \(SBUStringSet.UserList_Me)" : "")
         self.hasNickname = user.nickname != nil && user.nickname?.isEmpty == false
+        
+        #if SWIFTUI
+        if self.configureEntireContentForSwiftUI() {
+            return
+        }
+        #endif
         
         let profileURL = user.profileURL ?? ""
         self.loadImageSession = self.userImageView.loadImage(
@@ -320,6 +357,10 @@ open class SBUUserCell: SBUTableViewCell {
         default:
             break
         }
+        
+        #if SWIFTUI
+        self.configureForSwiftUI()
+        #endif
     }
     
     /// This function selects or deselects user.
@@ -327,6 +368,9 @@ open class SBUUserCell: SBUTableViewCell {
     public func selectUser(_ selected: Bool) {
         self.isChecked = selected
         self.checkboxButton.isSelected = selected
+        #if SWIFTUI
+        self.selectUserForSwiftUI(selected)
+        #endif
     }
     
     // MARK: - Action
@@ -352,3 +396,152 @@ open class SBUUserCell: SBUTableViewCell {
         super.prepareForReuse()
     }
 }
+
+#if SWIFTUI
+extension SBUUserCell {
+    @objc
+    public func onTapContentView(sender: UITapGestureRecognizer) {
+        self.isChecked = !self.isChecked
+        self.cellTapHandler?()
+    }
+    
+    @objc
+    public func onTapCheckBox(sender: UITapGestureRecognizer) {
+        self.isChecked = !self.isChecked
+    }
+    
+    @objc
+    public func onTapUserProfileView() {
+        self.userProfileTapHandler?()
+    }
+}
+
+extension SBUUserCell {
+    func configureEntireContentForSwiftUI() -> Bool {
+        switch type {
+        case .none:
+            break
+        case .createChannel:
+            return self.applyViewConverter(.entireContent)
+        case .members:
+            return self.applyViewConverterForMembers(.entireContent)
+        case .invite:
+            return self.applyViewConverterForInvite(.entireContent)
+        case .reaction:
+            break
+        case .operators:
+            if channelType == .open {
+                return self.applyViewConverterForOpenOperators(.entireContent)
+            } else {
+                return self.applyViewConverterForOperators(.entireContent)
+            }
+        case .muted:
+            if channelType == .open {
+                return self.applyViewConverterForOpenMutedParticipant(.entireContent)
+            } else {
+                return self.applyViewConverterForMutedMember(.entireContent)
+            }
+        case .banned:
+            if channelType == .open {
+                return self.applyViewConverterForOpenBannedUser(.entireContent)
+            } else {
+                return self.applyViewConverterForBannedUser(.entireContent)
+            }
+        case .participants:
+            return self.applyViewConverterForParticipants(.entireContent)
+        case .suggestedMention(_):
+            break
+        }
+        return false
+    }
+    
+    func configureForSwiftUI() {
+        switch type {
+        case .none:
+            break
+        case .createChannel:
+            self.applyViewConverter(.profileImage)
+            self.applyViewConverter(.userNameLabel)
+            self.applyViewConverter(.selectionButton)
+        case .members:
+            self.applyViewConverterForMembers(.profileImage)
+            self.applyViewConverterForMembers(.userNameLabel)
+            self.applyViewConverterForMembers(.operatorStateView)
+            self.applyViewConverterForMembers(.moreButton)
+        case .invite:
+            self.applyViewConverterForInvite(.profileImage)
+            self.applyViewConverterForInvite(.userNameLabel)
+            self.applyViewConverterForInvite(.selectionButton)
+        case .reaction:
+            break
+        case .operators:
+            if channelType == .open {
+                self.applyViewConverterForOpenOperators(.profileImage)
+                self.applyViewConverterForOpenOperators(.userNameLabel)
+                self.applyViewConverterForOpenOperators(.moreButton)
+            } else {
+                self.applyViewConverterForOperators(.profileImage)
+                self.applyViewConverterForOperators(.userNameLabel)
+                self.applyViewConverterForOperators(.moreButton)
+            }
+        case .muted:
+            if channelType == .open {
+                self.applyViewConverterForOpenMutedParticipant(.profileImage)
+                self.applyViewConverterForOpenMutedParticipant(.userNameLabel)
+                self.applyViewConverterForOpenMutedParticipant(.operatorStateView)
+                self.applyViewConverterForOpenMutedParticipant(.moreButton)
+            } else {
+                self.applyViewConverterForMutedMember(.profileImage)
+                self.applyViewConverterForMutedMember(.userNameLabel)
+                self.applyViewConverterForMutedMember(.operatorStateView)
+                self.applyViewConverterForMutedMember(.moreButton)
+            }
+        case .banned:
+            if channelType == .open {
+                self.applyViewConverterForOpenBannedUser(.profileImage)
+                self.applyViewConverterForOpenBannedUser(.userNameLabel)
+                self.applyViewConverterForOpenBannedUser(.moreButton)
+            } else {
+                self.applyViewConverterForBannedUser(.profileImage)
+                self.applyViewConverterForBannedUser(.userNameLabel)
+                self.applyViewConverterForBannedUser(.moreButton)
+            }
+        case .participants:
+            self.applyViewConverterForParticipants(.profileImage)
+            self.applyViewConverterForParticipants(.userNameLabel)
+            self.applyViewConverterForParticipants(.operatorStateView)
+            self.applyViewConverterForParticipants(.moreButton)
+        case .suggestedMention(_):
+            break
+        }
+    }
+    
+    func selectUserForSwiftUI(_ selected: Bool) {
+        switch type {
+        case .none:
+            break
+        case .createChannel:
+            self.applyViewConverter(.entireContent)
+            self.applyViewConverter(.selectionButton)
+        case .members:
+            break
+        case .invite:
+            self.applyViewConverterForInvite(.entireContent)
+            self.applyViewConverterForInvite(.selectionButton)
+        case .reaction:
+            break
+        case .operators:
+            break
+        case .muted:
+            break
+        case .banned:
+            break
+        case .participants:
+            break
+        case .suggestedMention(_):
+            break
+        }
+    }
+}
+
+#endif

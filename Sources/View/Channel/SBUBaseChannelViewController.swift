@@ -304,6 +304,9 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         self.navigationItem.leftBarButtonItem = self.baseHeaderComponent?.leftBarButton
         self.navigationItem.rightBarButtonItem = useRightBarButtonItem ? self.baseHeaderComponent?.rightBarButton : nil
         
+        self.navigationItem.leftBarButtonItems = self.baseHeaderComponent?.leftBarButtons
+        self.navigationItem.rightBarButtonItems = self.baseHeaderComponent?.rightBarButtons
+        
         // List
         if let baseListComponent = baseListComponent {
             self.view.addSubview(baseListComponent)
@@ -397,8 +400,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     /// - Parameter message: `BaseMessage` object
     /// - Since: 1.1.0
     open func showEmojiListModal(message: BaseMessage) {
-        let emojiListVC = SBUEmojiListViewController(message: message)
-        
+        let emojiListVC = SBUCommonViewControllerSet.EmojiListViewController.init(message: message)
         emojiListVC.modalPresentationStyle = .custom
         emojiListVC.transitioningDelegate = self
         
@@ -764,6 +766,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         }
         
         self.navigationItem.titleView = titleStackView
+        
     }
     
     open func baseChannelModule(_ headerComponent: SBUBaseChannelModule.Header, didTapTitleView titleView: UIView?) {
@@ -776,6 +779,18 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     open func baseChannelModule(_ headerComponent: SBUBaseChannelModule.Header, didUpdateRightItem rightItem: UIBarButtonItem?) {
         if useRightBarButtonItem {
             self.navigationItem.rightBarButtonItem = rightItem
+        }
+    }
+    
+    /// - Since: 3.28.0
+    public func baseChannelModule(_ headerComponent: SBUBaseChannelModule.Header, didUpdateLeftItems leftItems: [UIBarButtonItem]?) {
+        self.navigationItem.leftBarButtonItems = leftItems
+    }
+    
+    /// - Since: 3.28.0
+    public func baseChannelModule(_ headerComponent: SBUBaseChannelModule.Header, didUpdateRightItems rightItems: [UIBarButtonItem]?) {
+        if useRightBarButtonItem {
+            self.navigationItem.rightBarButtonItems = rightItems
         }
     }
     
@@ -1108,6 +1123,10 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     
     open func baseChannelModule(_ inputComponent: SBUBaseChannelModule.Input,
                                 didTapResource type: MediaResourceType) {
+        self.didTapResource(of: type)
+    }
+    
+    func didTapResource(of type: MediaResourceType) {
         switch type {
         case .document: self.showDocumentPicker()
         case .library:
@@ -1157,9 +1176,15 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         
         var mediaType: PHAssetMediaType? // nil is all type support
         
-        if gallery.isPhotoEnabled && gallery.isVideoEnabled { mediaType = nil } else if gallery.isPhotoEnabled { mediaType = .image } else if gallery.isVideoEnabled { mediaType = .video }
+        if gallery.isPhotoEnabled && gallery.isVideoEnabled {
+            mediaType = nil
+        } else if gallery.isPhotoEnabled {
+            mediaType = .image
+        } else if gallery.isVideoEnabled {
+            mediaType = .video
+        }
         
-        let selectablePhotoVC = SBUSelectablePhotoViewController(mediaType: mediaType)
+        let selectablePhotoVC = SBUCommonViewControllerSet.SelectablePhotoViewController.init(mediaType: mediaType)
         selectablePhotoVC.delegate = self
         let nav = UINavigationController(rootViewController: selectablePhotoVC)
         self.present(nav, animated: true, completion: nil)
@@ -1427,7 +1452,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     
     // MARK: - UIDocumentInteractionControllerDelegate
     open func documentInteractionControllerViewControllerForPreview(_ controller: UIDocumentInteractionController) -> UIViewController {
-        return self// or use return self.navigationController for fetching app navigation bar colour
+        return self// or use return self.navigationController for fetching app navigation bar color
     }
     
     // MARK: - SBUSelectablePhotoViewDelegate

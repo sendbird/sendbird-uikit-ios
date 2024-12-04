@@ -108,6 +108,12 @@ open class SBUMultipleFilesMessageCell: SBUContentBaseMessageCell, UICollectionV
         self.mainContainerView.rightBackgroundColor = self.theme.leftBackgroundColor
         self.mainContainerView.rightPressedBackgroundColor = self.theme.leftPressedBackgroundColor
         self.mainContainerView.setupStyles()
+        
+        #if SWIFTUI
+        if self.viewConverter.multipleFilesMessage.entireContent != nil {
+            self.mainContainerView.setTransparentBackgroundColor()
+        }
+        #endif
     }
     
     open override func setupActions() {
@@ -128,6 +134,17 @@ open class SBUMultipleFilesMessageCell: SBUContentBaseMessageCell, UICollectionV
         super.configure(with: configuration)
         
         // Set up collectionView.
+        #if SWIFTUI
+        if self.configuration?.isThreadMessage == false {
+            if self.applyViewConverter(.multipleFilesMessage) {
+                return
+            }
+        } else {
+            if self.applyViewConverterForMessageThread(.multipleFilesMessage) {
+                return
+            }
+        }
+        #endif
         self.collectionView.configure(
             delegate: self,
             dataSource: self,
@@ -136,6 +153,15 @@ open class SBUMultipleFilesMessageCell: SBUContentBaseMessageCell, UICollectionV
         )
         self.collectionView.layoutIfNeeded()
         self.collectionViewHeightConstraint.constant = self.collectionView.collectionViewLayout.collectionViewContentSize.height
+    }
+    
+    public override func resetMainContainerViewLayer() {
+        #if SWIFTUI
+        if self.viewConverter.multipleFilesMessage.entireContent != nil {
+            return
+        }
+        #endif
+        super.resetMainContainerViewLayer()
     }
     
     // MARK: - Action

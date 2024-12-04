@@ -147,13 +147,15 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol, SBUFeed
             && self.groupPosition != .top
         let constant: CGFloat = isGrouped ? 4 : 16
 
-        self.stackViewTopConstraint?.isActive = false
-        self.stackViewTopConstraint = self.stackView.topAnchor.constraint(
-            equalTo: self.contentView.topAnchor,
-            constant: constant
-        )
-        self.stackViewTopConstraint?.priority = .defaultHigh
-        self.stackViewTopConstraint?.isActive = true
+        if self.stackView.superview != nil {
+            self.stackViewTopConstraint?.isActive = false
+            self.stackViewTopConstraint = self.stackView.topAnchor.constraint(
+                equalTo: self.contentView.topAnchor,
+                constant: constant
+            )
+            self.stackViewTopConstraint?.priority = .defaultHigh
+            self.stackViewTopConstraint?.isActive = true
+        }
     }
     
     // MARK: - Common
@@ -172,13 +174,24 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol, SBUFeed
         self.receiptState = configuration.receiptState
         self.shouldHideFeedback = configuration.shouldHideFeedback
         
-        if let dateView = self.dateView as? SBUMessageDateView,
-           let message = self.message {
-            dateView.configure(timestamp: message.createdAt)
+        var didApplyEntireCellViewConverter = false
+        #if SWIFTUI
+        if self.configuration?.isThreadMessage == false {
+            didApplyEntireCellViewConverter = self.applyViewConverter(.entireContent)
+        } else {
+            didApplyEntireCellViewConverter = self.applyViewConverterForMessageThread(.entireContent)
         }
         
-        // MARK: Feedback Views
-        self.updateFeedbackView(with: self.message)
+        #endif
+        if !didApplyEntireCellViewConverter {
+            if let dateView = self.dateView as? SBUMessageDateView,
+               let message = self.message {
+                dateView.configure(timestamp: message.createdAt)
+            }
+            
+            // MARK: Feedback Views
+            self.updateFeedbackView(with: self.message)
+        }
     }
     
     open func configure(highlightInfo: SBUHighlightMessageInfo?) {

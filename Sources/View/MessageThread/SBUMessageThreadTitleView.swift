@@ -41,12 +41,12 @@ open class SBUMessageThreadTitleView: SBUView {
     }
     
     // MARK: - UI properties (Private)
-    private lazy var stackView = UIStackView()
-    private lazy var titleLabel = UILabel()
-    private lazy var channelNameLabel = UILabel()
+    public lazy var stackView = UIStackView()
+    public lazy var titleLabel = UILabel()
+    public lazy var channelNameLabel = UILabel()
     
     // MARK: - Life cycle
-    public override init() {
+    required public override init() {
         super.init(frame: .zero)
     }
     
@@ -57,7 +57,6 @@ open class SBUMessageThreadTitleView: SBUView {
     }
 
     open override func setupViews() {
-        self.titleLabel.text = SBUStringSet.MessageThread.Header.title
         self.titleLabel.textAlignment = .center
         
         self.channelNameLabel.textAlignment = .center
@@ -111,6 +110,23 @@ open class SBUMessageThreadTitleView: SBUView {
     // MARK: - Common
     open func configure(channel: BaseChannel?, title: String?) {
         self.channel = channel
-        self.channelNameLabel.text = self.channelName
+
+        // title label
+        var didApplyTitleLabelViewConverter = false
+        #if SWIFTUI
+        didApplyTitleLabelViewConverter = applyViewConverter(.titleLabel)
+        #endif
+        if !didApplyTitleLabelViewConverter {
+            self.titleLabel.text = SBUStringSet.MessageThread.Header.title
+        }
+        
+        // channel name label
+        var didApplyChannelNameLabelViewConverter = false
+        #if SWIFTUI
+        didApplyChannelNameLabelViewConverter = applyViewConverter(.subtitleLabel)
+        #endif
+        if !didApplyChannelNameLabelViewConverter {
+            self.channelNameLabel.text = self.channelName
+        }
     }
 }

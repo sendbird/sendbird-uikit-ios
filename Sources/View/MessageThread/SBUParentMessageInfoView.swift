@@ -159,7 +159,16 @@ open class SBUParentMessageInfoView: SBUView, SBUUserMessageTextViewDelegate {
         fatalError()
     }
     
+    required public override init() {
+        super.init()
+    }
+    
     open override func setupViews() {
+        #if SWIFTUI
+        if self.viewConverter.entireContent != nil {
+            return
+        }
+        #endif
         
         // + -----------------------------+------------+
         // | profileView  | userNameLabel | moreButton |
@@ -212,6 +221,12 @@ open class SBUParentMessageInfoView: SBUView, SBUUserMessageTextViewDelegate {
     }
     
     open override func setupLayouts() {
+        #if SWIFTUI
+        if self.viewConverter.entireContent != nil {
+            return
+        }
+        #endif
+        
         guard !alreadySetupLayouts else { return }
         alreadySetupLayouts = true
         
@@ -240,7 +255,15 @@ open class SBUParentMessageInfoView: SBUView, SBUUserMessageTextViewDelegate {
         self.contentVStackView
             .sbu_constraint(equalTo: self, leading: 16)
             .sbu_constraint(lessThanOrEqualTo: self, trailing: -16, priority: .defaultHigh)
-            .sbu_constraint_equalTo(bottomAnchor: self.reactionView.topAnchor, bottom: 0)
+        
+        var willApplyReactionViewConverter = false
+        #if SWIFTUI
+        willApplyReactionViewConverter = self.viewConverter.reactionView.entireContent != nil
+        #endif
+        if !willApplyReactionViewConverter {
+            self.contentVStackView
+                .sbu_constraint_equalTo(bottomAnchor: self.reactionView.topAnchor, bottom: 0)
+        }
         
         switch message {
         case _ as UserMessage:
@@ -299,10 +322,18 @@ open class SBUParentMessageInfoView: SBUView, SBUUserMessageTextViewDelegate {
             .sbu_constraint(equalTo: self, trailing: -16, priority: .defaultLow)
 //            .sbu_constraint_equalTo(bottomAnchor: self.bottomSeparateLine.topAnchor, bottom: 8)
         
-        self.replyLabelTopAnchorConstraint = self.replyLabel.topAnchor.constraint(
-            equalTo: self.replySeparateLine.bottomAnchor,
-            constant: 0
-        )
+        var willApplyReplyLabelViewConverter = false
+        #if SWIFTUI
+        willApplyReplyLabelViewConverter = self.viewConverter.replyLabel.entireContent != nil
+        #endif
+        
+        if !willApplyReplyLabelViewConverter {
+            self.replyLabelTopAnchorConstraint = self.replyLabel.sbu_constraint_equalTo_v2(
+                topAnchor: self.replySeparateLine.bottomAnchor,
+                top: 0
+            ).first
+        }
+        
 //        NSLayoutConstraint.sbu_activate(baseView: self.replySeparateLine, constraints: [self.replyLabelTopAnchorConstraint])
         
         /// ```
@@ -315,10 +346,13 @@ open class SBUParentMessageInfoView: SBUView, SBUUserMessageTextViewDelegate {
             .sbu_constraint(equalTo: self, leading: 0, bottom: 0)
             .sbu_constraint(equalTo: self, trailing: 0, priority: .defaultLow)
         
-        self.bottomSeparateLineTopAnchorConstraint = bottomSeparateLine.topAnchor.constraint(
-            equalTo: self.replyLabel.bottomAnchor,
-            constant: 8
-        )
+        if !willApplyReplyLabelViewConverter {
+            self.bottomSeparateLineTopAnchorConstraint = bottomSeparateLine.sbu_constraint_equalTo_v2(
+                topAnchor: self.replyLabel.bottomAnchor,
+                top: 8
+            ).first
+        }
+        
 //        NSLayoutConstraint.sbu_activate(baseView: self.replyLabel, constraints: [self.bottomSeparateLineTopAnchorConstraint])
         
         /// 
@@ -331,6 +365,11 @@ open class SBUParentMessageInfoView: SBUView, SBUUserMessageTextViewDelegate {
     }
     
     open override func updateLayouts() {
+        #if SWIFTUI
+        if self.viewConverter.entireContent != nil {
+            return
+        }
+        #endif
         let activateReply = (message?.threadInfo.replyCount ?? 0) > 0
         
         self.replyLabelTopAnchorConstraint?.constant = activateReply ? 12 : 0
@@ -346,6 +385,12 @@ open class SBUParentMessageInfoView: SBUView, SBUUserMessageTextViewDelegate {
     }
     
     open override func setupStyles() {
+        #if SWIFTUI
+        if self.viewConverter.entireContent != nil {
+            return
+        }
+        #endif
+        
         self.profileView.setupStyles()
         
         self.backgroundColor = self.theme.parentInfoBackgroundColor
@@ -374,6 +419,12 @@ open class SBUParentMessageInfoView: SBUView, SBUUserMessageTextViewDelegate {
         voiceFileInfo: SBUVoiceFileInfo?,
         enableEmojiLongPress: Bool = true
     ) {
+        #if SWIFTUI
+        if self.applyViewConverter(.entireContent) {
+            return
+        }
+        #endif
+        
         self.delegate = delegate
         
         self.message = message
@@ -392,16 +443,33 @@ open class SBUParentMessageInfoView: SBUView, SBUUserMessageTextViewDelegate {
         let activateReply = message.threadInfo.replyCount > 0
         self.bottomSeparateLine.isHidden = !activateReply
         
+        // profile view
+        #if SWIFTUI
+        self.applyViewConverter(.profileView)
+        #endif
         let urlString = message.sender?.profileURL ?? ""
         self.profileView.configure(urlString: urlString, imageSize: 34)
         
+        // userNameLabel
+        #if SWIFTUI
+        self.applyViewConverter(.userNameLabel)
+        #endif
         var username = ""
         if let sender = message.sender {
             username = SBUUser(user: sender).refinedNickname()
         }
         self.userNameLabel.text = username
+        
+        // dateLabel
+        #if SWIFTUI
+        self.applyViewConverter(.dateLabel)
+        #endif
         self.dateLabel.text = Date.messageCreatedTimeForParentInfo(baseTimestamp: message.createdAt)
         
+        // more button
+        #if SWIFTUI
+        self.applyViewConverter(.moreButton)
+        #endif
         self.moreButton?.setImage(
             SBUIconSetType.iconMore.image(
                 with: self.theme.parentInfoMoreButtonTintColor,
@@ -424,25 +492,44 @@ open class SBUParentMessageInfoView: SBUView, SBUUserMessageTextViewDelegate {
                 self.contentVStackView.addArrangedSubview(self.webView)
                 self.webView.isHidden = false
                 let model = SBUMessageWebViewModel(metaData: ogMetaData)
-                self.webView.configure(model: model)
+                
+                // og-metadata
+                var didApplyWebViewViewConverter = false
+                #if SWIFTUI
+                didApplyWebViewViewConverter = applyViewConverter(.webView)
+                #endif
+                if !didApplyWebViewViewConverter {
+                    self.webView.configure(model: model)
+                }
+                
             } else {
                 if let superViewWidth = self.superview?.frame.width {
-                    self.messageTextViewWidthConstraint?.isActive = false
-                    self.messageTextViewWidthConstraint = self.messageTextView.widthAnchor.constraint(lessThanOrEqualToConstant: superViewWidth - (Constants.verticalSideMarginSize * 2))
+                  self.messageTextViewWidthConstraint?.isActive = false
+                    self.messageTextViewWidthConstraint = self.messageTextView.sbu_constraint_lessThan_v2(width: superViewWidth - (Constants.verticalSideMarginSize * 2)).first
                     self.messageTextViewWidthConstraint?.isActive = true
                 }
                 
                 self.webView.isHidden = true
             }
             
-            self.messageTextView.configure(
-                model: SBUUserMessageTextViewModel(
-                    message: userMessage,
-                    position: .left
+            // messsage text view
+            var didApplyMessageTextView = false
+            #if SWIFTUI
+            didApplyMessageTextView = self.applyViewConverter(.messageTextView)
+            #endif
+            if !didApplyMessageTextView {
+                self.messageTextView.configure(
+                    model: SBUUserMessageTextViewModel(
+                        message: userMessage,
+                        position: .left
+                    )
                 )
-            )
+            }
             
         case let fileMessage as FileMessage:
+            #if SWIFTUI
+            if self.applyViewConverter(.fileContentView) { break }
+            #endif
             self.contentVStackView.setVStack([
                 self.baseFileContentView
             ])
@@ -488,13 +575,17 @@ open class SBUParentMessageInfoView: SBUView, SBUUserMessageTextViewDelegate {
             }
             
         case _ as MultipleFilesMessage:
+            #if SWIFTUI
+            if self.applyViewConverter(.multipleFileContentView) { break }
+            #endif
+            
             self.fileCollectionView.removeFromSuperview()
             
             var fileCollectionViewHeight = self.fileCollectionView.collectionViewLayout.collectionViewContentSize.height
             fileCollectionViewHeight = fileCollectionViewHeight == 0 ? 120 : fileCollectionViewHeight
             
             self.fileCollectionView
-                .sbu_constraint(width: 244)
+                .sbu_constraint(width: SBUConstant.messageCellMaxWidth)
                 .sbu_constraint(height: fileCollectionViewHeight, priority: .defaultHigh)
             
             contentVStackView.insertArrangedSubview(self.fileCollectionView, at: 0)
@@ -517,6 +608,22 @@ open class SBUParentMessageInfoView: SBUView, SBUUserMessageTextViewDelegate {
         )
         self.reactionView.configure(configuration: params)
         
+        var didApplyReactionViewViewConverter = false
+        #if SWIFTUI
+        didApplyReactionViewViewConverter = self.applyViewConverter(.reactionView)
+        #endif
+        if !didApplyReactionViewViewConverter {
+            self.reactionView.configure(
+                maxWidth: SBUConstant.imageSize.width,
+                useReaction: isReactionEnabled,
+                reactions: message.reactions,
+                enableEmojiLongPress: enableEmojiLongPress
+            )
+        }
+        
+        #if SWIFTUI
+        self.applyViewConverter(.replyLabel)
+        #endif
         let haveReplyCount = message.threadInfo.replyCount > 0
         self.replyLabel.text = haveReplyCount
         ? SBUStringSet.Message_Replied_Users_Count(message.threadInfo.replyCount, false)
@@ -609,8 +716,13 @@ open class SBUParentMessageInfoView: SBUView, SBUUserMessageTextViewDelegate {
            let fileInfo = cell.uploadedFileInfo,
            let indexPath = fileCollectionView.indexPath(for: cell) {
             
-            self.fileSelectHandler?(fileInfo, indexPath.item)
+            self.onTapSelectFile(fileInfo, index: indexPath.item)
         }
+    }
+    
+    /// - Since: 3.28.0
+    public func onTapSelectFile(_ fileInfo: UploadedFileInfo, index: Int) {
+        self.fileSelectHandler?(fileInfo, index)
     }
     
     /// Opens the url when the web page preview area is tapped
@@ -652,7 +764,7 @@ extension SBUParentMessageInfoView: UICollectionViewDataSource, UICollectionView
     }
     
     open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 120, height: 120)
+        return SBUConstant.parentInfoMultipleFilesThumbnailSize
     }
     
     open func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {

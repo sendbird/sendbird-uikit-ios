@@ -157,7 +157,7 @@ extension SBUGroupChannelModule {
     open class List: SBUBaseChannelModule.List, SBUVoicePlayerDelegate {
 
         // MARK: - UI properties (Public)
-        
+         
         /// The message cell for `AdminMessage` object. Use `register(adminMessageCell:nib:)` to update.
         public private(set) var adminMessageCell: SBUBaseMessageCell?
         
@@ -215,8 +215,36 @@ extension SBUGroupChannelModule {
             self.baseChannel as? GroupChannel
         }
         
-        // MARK: Private properties
         public var voicePlayer: SBUVoicePlayer?
+        
+        // MARK: default views
+        
+        override func createDefaultEmptyView() -> SBUEmptyView {
+            SBUEmptyView.createDefault(Self.EmptyView, delegate: self)
+        }
+        
+        override func createDefaultChannelStateBanner() -> SBUChannelStateBanner {
+            SBUChannelStateBanner.createDefault(Self.ChannelStateBanner, isThreadMessage: false, isHidden: true)
+        }
+        
+        override func createDefaultUserProfileView() -> SBUUserProfileView {
+            SBUUserProfileView.createDefault(Self.UserProfileView, delegate: self)
+        }
+        
+        override func createDefaultScrollBottomView() -> SBUScrollBottomView? {
+            SBUScrollBottomView.createDefault(
+                Self.ScrollBottomView,
+                channelType: .group,
+                target: self,
+                action: #selector(self.onTapScrollToBottom)
+            )
+        }
+        
+        override func createDefaultNewMessageInfoView() -> SBUNewMessageInfo? {
+            SBUNewMessageInfo.createDefault(Self.NewMessageInfo)
+        }
+        
+        // MARK: Private properties
         var voiceFileInfos: [String: SBUVoiceFileInfo] = [:]
         var currentVoiceFileInfo: SBUVoiceFileInfo?
         var currentVoiceContentView: SBUVoiceContentView?
@@ -246,29 +274,39 @@ extension SBUGroupChannelModule {
         // MARK: - LifeCycle
         
         open override func setupViews() {
+            #if SWIFTUI
+            if self.applyViewConverter(.entireContent) {
+                self.voicePlayer = SBUVoicePlayer(delegate: self)
+                return
+            }
+            #endif
+            
             super.setupViews()
             
             // register cell (GroupChannel)
             if self.adminMessageCell == nil {
-                self.register(adminMessageCell: SBUAdminMessageCell())
+                self.register(adminMessageCell: Self.AdminMessageCell.init())
             }
             if self.userMessageCell == nil {
-                self.register(userMessageCell: SBUUserMessageCell())
+                self.register(userMessageCell: Self.UserMessageCell.init())
             }
             if self.fileMessageCell == nil {
-                self.register(fileMessageCell: SBUFileMessageCell())
+                self.register(fileMessageCell: Self.FileMessageCell.init())
             }
             if self.multipleFilesMessageCell == nil {
-                self.register(messageCell: SBUMultipleFilesMessageCell())
+                self.register(multipleFilesMessageCell: Self.MultipleFilesMessageCell.init())
             }
             if self.typingIndicatorMessageCell == nil {
-                self.register(messageCell: SBUTypingIndicatorMessageCell())
+                self.register(typingIndicatorMessageCell: Self.TypingIndicatorMessageCell.init())
+            }
+            if self.unknownMessageCell == nil {
+                self.register(unknownMessageCell: Self.UnknownMessageCell.init())
             }
             if self.messageTemplateCell == nil {
                 self.register(messageTemplateCell: SBUMessageTemplateCell())
             }
-            if self.unknownMessageCell == nil {
-                self.register(unknownMessageCell: SBUUnknownMessageCell())
+            if let cellType = Self.CustomMessageCell {
+                self.register(customMessageCell: cellType.init())
             }
             
             if let newMessageInfoView = self.newMessageInfoView {
@@ -420,6 +458,18 @@ extension SBUGroupChannelModule {
             }
         }
         
+        // MARK: - TableView
+        public override func reloadTableView(needsToLayout: Bool = true) {
+            var didApplyTableViewConverter = false
+            
+            #if SWIFTUI
+            didApplyTableViewConverter = self.applyViewConverter(.entireContent)
+            #endif
+            if !didApplyTableViewConverter {
+                super.reloadTableView(needsToLayout: needsToLayout)
+            }
+        }
+        
         // MARK: - TableView: Cell
         
         /// Registers a custom cell as a admin message cell based on `SBUBaseMessageCell`.
@@ -564,7 +614,8 @@ extension SBUGroupChannelModule {
             case let (adminMessage, adminMessageCell) as (AdminMessage, SBUAdminMessageCell):
                 let configuration = SBUAdminMessageCellParams(
                     message: adminMessage,
-                    hideDateView: isSameDay
+                    hideDateView: isSameDay,
+                    isThreadMessage: false
                 )
                 adminMessageCell.configure(with: configuration)
                 self.setMessageCellAnimation(adminMessageCell, message: adminMessage, indexPath: indexPath)

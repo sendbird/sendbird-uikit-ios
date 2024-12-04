@@ -28,6 +28,34 @@ extension SBUOpenChannelListModule {
             set { self.baseDelegate = newValue }
         }
         
+        // MARK: - Methods (Private)
+        
+        override func createDefaultTitleView() -> SBUNavigationTitleView {
+            let titleView = SBUModuleSet.OpenChannelListModule.HeaderComponent.TitleView.init()
+            titleView.configure(title: SBUStringSet.ChannelList_Header_Title)
+            return titleView
+        }
+        
+        override func createDefaultLeftButton() -> SBUBarButtonItem {
+            SBUModuleSet.OpenChannelListModule.HeaderComponent.LeftBarButton.init(
+                image: SBUIconSetType.iconBack.image(to: SBUIconSetType.Metric.defaultIconSize),
+                landscapeImagePhone: nil,
+                style: .plain,
+                target: self,
+                action: #selector(onTapLeftBarButton)
+            )
+        }
+        
+        override func createDefaultRightButton() -> SBUBarButtonItem {
+            SBUModuleSet.OpenChannelListModule.HeaderComponent.RightBarButton.init(
+                image: SBUIconSetType.iconCreate.image(to: SBUIconSetType.Metric.defaultIconSize),
+                landscapeImagePhone: nil,
+                style: .plain,
+                target: self,
+                action: #selector(onTapRightBarButton)
+            )
+        }
+        
         // MARK: - LifeCycle
         @available(*, unavailable, renamed: "SBUOpenChannelListModule.Header()")
         required public init?(coder: NSCoder) { super.init(coder: coder) }
@@ -53,6 +81,16 @@ extension SBUOpenChannelListModule {
             self.setupStyles()
         }
         
+        open override func setupViews() {
+            #if SWIFTUI
+            self.applyViewConverter(.titleView)
+            self.applyViewConverter(.leftView)
+            self.applyViewConverter(.rightView)
+            // We are not using `...buttons` in SwiftUI
+            #endif
+            super.setupViews()
+        }
+        
         /// Sets up style with theme. If the `theme` is `nil`, it uses the stored theme.
         /// - Parameter theme: `SBUOpenChannelListTheme` object
         open func setupStyles(theme: SBUOpenChannelListTheme? = nil) {
@@ -66,6 +104,9 @@ extension SBUOpenChannelListModule {
             
             self.leftBarButton?.tintColor = self.theme?.leftBarButtonTintColor
             self.rightBarButton?.tintColor = self.theme?.rightBarButtonTintColor
+            
+            self.leftBarButtons?.forEach({ $0.tintColor = self.theme?.leftBarButtonTintColor })
+            self.rightBarButtons?.forEach({ $0.tintColor = self.theme?.rightBarButtonTintColor })
         }
     }
 }

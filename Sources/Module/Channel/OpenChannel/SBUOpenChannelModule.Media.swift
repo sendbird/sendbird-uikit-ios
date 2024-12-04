@@ -26,7 +26,7 @@ extension SBUOpenChannelModule {
     open class Media: UIView {
         
         /// A view to shows media or other contents in the open channel.
-        public var mediaView: UIView = UIView()
+        public var mediaView: UIView = SBUModuleSet.OpenChannelModule.MediaComponent.MediaView.init()
         
         /// The object that is used as the theme of the media component. The theme must adopt the `SBUChannelTheme` class.
         public var theme: SBUChannelTheme?

@@ -181,4 +181,13 @@ extension SBUModuleSet {
     /// ```
     /// - Since: 3.6.0
     public static var MessageThreadModule: SBUMessageThreadModule.Type = SBUMessageThreadModule.self
+    
+    // MARK: Common
+    
+    /// The module for the common features. The default is ``SBUCommonModule`` type.
+    /// ```swift
+    /// SBUModuleSet.CommonModule = SBUCommonModule.self
+    /// ```
+    /// - Since: 3.28.0
+    public static var CommonModule: SBUCommonModule.Type = SBUCommonModule.self
 }

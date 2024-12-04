@@ -16,11 +16,11 @@ open class SBUOpenChannelUnknownMessageCell: SBUOpenChannelUserMessageCell {
         groupPosition: MessageGroupPosition,
         isOverlay: Bool = false
     ) {
-        self.configure(
+        super.configure(
             message,
             hideDateView: hideDateView,
             groupPosition: groupPosition,
-            withTextView: false,
+            withTextView: true,
             isOverlay: isOverlay
         )
         

@@ -25,8 +25,19 @@ open class SBUOpenChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
         set { self.baseDelegate = newValue }
     }
     
+    // MARK: SwiftUI (Internal)
+    var delegates: WeakDelegateStorage<SBUOpenChannelSettingsViewModelDelegate> {
+        let computedDelegates = WeakDelegateStorage<SBUOpenChannelSettingsViewModelDelegate>()
+        self.baseDelegates.allKeyValuePairs().forEach { key, value in
+            if let delegate = value as? SBUOpenChannelSettingsViewModelDelegate {
+                computedDelegates.addDelegate(delegate, type: key)
+            }
+        }
+        return computedDelegates
+    }
+    
     // MARK: - LifeCycle
-    public init(
+    required public init(
         channel: BaseChannel? = nil,
         channelURL: String? = nil,
         delegate: SBUOpenChannelSettingsViewModelDelegate? = nil
@@ -34,6 +45,7 @@ open class SBUOpenChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
         super.init()
         
         self.delegate = delegate
+        self.baseDelegates.addDelegate(delegate, type: .uikit)
         
         SendbirdChat.addChannelDelegate(
             self,
@@ -47,7 +59,13 @@ open class SBUOpenChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
             self.channelURL = channelURL
         }
 
-        self.loadChannel(channelURL: self.channelURL)
+        guard let channelURL = self.channelURL else { return }
+        self.initializeAndLoad(channelURL: channelURL)
+    }
+    
+    func initializeAndLoad(channelURL: String) {
+        self.channelURL = channelURL
+        self.loadChannel(channelURL: channelURL)
     }
     
     deinit {
@@ -87,24 +105,30 @@ open class SBUOpenChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
         guard let openChannel = self.channel as? OpenChannel else { return }
         
         SBULog.info("[Request] Channel update")
-        self.delegate?.shouldUpdateLoadingState(true)
+        self.delegates.forEach {
+            $0.shouldUpdateLoadingState(true)
+        }
         
         openChannel.update(params: params) { [weak self] channel, error in
-            defer { self?.delegate?.shouldUpdateLoadingState(false) }
+            defer { self?.delegates.forEach { $0.shouldUpdateLoadingState(false) } }
             guard let self = self else { return }
             
             if let error = error {
-                self.delegate?.didReceiveError(error, isBlocker: false)
+                self.delegates.forEach {
+                    $0.didReceiveError(error, isBlocker: false)
+                }
                 return
             } else if let channel = channel {
                 self.channel = channel
                 
                 let context = MessageContext(source: .eventChannelChanged, sendingStatus: .succeeded)
-                self.delegate?.baseChannelSettingsViewModel(
-                    self,
-                    didChangeChannel: channel,
-                    withContext: context
-                )
+                self.delegates.forEach {
+                    $0.baseChannelSettingsViewModel(
+                        self,
+                        didChangeChannel: channel,
+                        withContext: context
+                    )
+                }
             }
         }
     }
@@ -113,21 +137,29 @@ open class SBUOpenChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
     public func deleteChannel() {
         guard let openChannel = self.channel as? OpenChannel else { return }
         
-        self.delegate?.shouldUpdateLoadingState(true)
+        self.delegates.forEach {
+            $0.shouldUpdateLoadingState(true)
+        }
         
         openChannel.delete { [weak self] error in
             guard let self = self else { return }
             
-            self.delegate?.shouldUpdateLoadingState(false)
+            self.delegates.forEach {
+                $0.shouldUpdateLoadingState(false)
+            }
             
             if let error = error {
-                self.delegate?.didReceiveError(error)
+                self.delegates.forEach {
+                    $0.didReceiveError(error)
+                }
                 return
             }
             
             self.channel = nil
             
-            self.delegate?.openChannelSettingsViewModel(self, didDeleteChannel: openChannel)
+            self.delegates.forEach {
+                $0.openChannelSettingsViewModel(self, didDeleteChannel: openChannel)
+            }
         }
     }
 }
@@ -136,19 +168,23 @@ open class SBUOpenChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
 extension SBUOpenChannelSettingsViewModel: OpenChannelDelegate {
     open func channel(_ channel: OpenChannel, userDidEnter user: User) {
         let context =  MessageContext(source: .eventChannelChanged, sendingStatus: .succeeded)
-        self.baseDelegate?.baseChannelSettingsViewModel(
-            self,
-            didChangeChannel: channel,
-            withContext: context
-        )
+        self.baseDelegates.forEach {
+            $0.baseChannelSettingsViewModel(
+                self,
+                didChangeChannel: channel,
+                withContext: context
+            )
+        }
     }
     
     open func channel(_ channel: OpenChannel, userDidExit user: User) {
         let context =  MessageContext(source: .eventChannelChanged, sendingStatus: .succeeded)
-        self.baseDelegate?.baseChannelSettingsViewModel(
-            self,
-            didChangeChannel: channel,
-            withContext: context
-        )
+        self.baseDelegates.forEach {
+            $0.baseChannelSettingsViewModel(
+                self,
+                didChangeChannel: channel,
+                withContext: context
+            )
+        }
     }
 }

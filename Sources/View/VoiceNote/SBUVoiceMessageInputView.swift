@@ -28,8 +28,8 @@ public protocol SBUVoiceMessageInputViewDelegate: AnyObject {
 
 /// This class is used to record voice message
 /// - Since: 3.4.0
-public class SBUVoiceMessageInputView: NSObject, SBUViewLifeCycle {
-    enum Status {
+open class SBUVoiceMessageInputView: NSObject, SBUViewLifeCycle {
+    public enum Status {
         case none // record icon
         case recording // stop icon
         case finishRecording // play icon
@@ -43,20 +43,20 @@ public class SBUVoiceMessageInputView: NSObject, SBUViewLifeCycle {
     @SBUThemeWrapper(theme: SBUTheme.voiceMessageInputTheme)
     public var theme: SBUVoiceMessageInputTheme
 
-    var canvasView = UIView()
+    public private(set) var canvasView = UIView()
     
-    var baseView = UIView()
-    var overlayView = UIButton()
-    var contentView = UIView()
+    public private(set) var baseView = UIView()
+    public private(set) var overlayView = UIButton()
+    public private(set) var contentView = UIView()
     
-    var progressContainerView = UIView()
-    var progressView = UIProgressView(progressViewStyle: .bar)
-    var progressTimeLabel = UILabel()
-    var progressRecordingIcon = UIImageView()
+    public private(set) var progressContainerView = UIView()
+    public private(set) var progressView = UIProgressView(progressViewStyle: .bar)
+    public private(set) var progressTimeLabel = UILabel()
+    public private(set) var progressRecordingIcon = UIImageView()
     
-    var cancelButton = UIButton()
-    var statusButton = UIButton()
-    var sendButton = UIButton()
+    public private(set) var cancelButton = UIButton()
+    public private(set) var statusButton = UIButton()
+    public private(set) var sendButton = UIButton()
     
     // MARK: - Logic properties (Private)
     weak var delegate: SBUVoiceMessageInputViewDelegate?
@@ -64,9 +64,9 @@ public class SBUVoiceMessageInputView: NSObject, SBUViewLifeCycle {
     var isSendButtonEnabled = false
     var status: Status = .none
     
-    public var voicePlayer: SBUVoicePlayer?
-    var voiceRecorder: SBUVoiceRecorder?
-    var voiceFileInfo: SBUVoiceFileInfo?
+    public private(set) var voicePlayer: SBUVoicePlayer?
+    public private(set) var voiceRecorder: SBUVoiceRecorder?
+    public private(set) var voiceFileInfo: SBUVoiceFileInfo?
     
     var recordingTime: TimeInterval = 0
     var currentPlayTime: TimeInterval = 0
@@ -76,7 +76,7 @@ public class SBUVoiceMessageInputView: NSObject, SBUViewLifeCycle {
     var isShowing = false
 
     // MARK: - UIKit View Lifecycle
-    public override init() {
+    required public override init() {
         super.init()
     }
     
@@ -85,7 +85,7 @@ public class SBUVoiceMessageInputView: NSObject, SBUViewLifeCycle {
     }
     
     // MARK: SBUViewLifeCycle
-    public func setupViews() {
+    open func setupViews() {
         self.voiceRecorder = SBUVoiceRecorder(delegate: self)
         self.voicePlayer = SBUVoicePlayer(delegate: self)
         
@@ -127,7 +127,7 @@ public class SBUVoiceMessageInputView: NSObject, SBUViewLifeCycle {
         self.canvasView.addSubview(self.baseView)
     }
     
-    public func setupLayouts() {
+    open func setupLayouts() {
         self.baseView.sbu_constraint(equalTo: self.canvasView, leading: 0, trailing: 0, top: 0, bottom: 0)
         
         self.overlayView.sbu_constraint(
@@ -176,11 +176,11 @@ public class SBUVoiceMessageInputView: NSObject, SBUViewLifeCycle {
             .sbu_constraint(width: 34, height: 34)
     }
     
-    public func updateLayouts() {
+    open func updateLayouts() {
         self.setupLayouts()
     }
     
-    public func setupStyles() {
+    open func setupStyles() {
         self.overlayView.backgroundColor = self.theme.overlayColor
         
         self.contentView.backgroundColor = self.theme.backgroundColor
@@ -207,8 +207,12 @@ public class SBUVoiceMessageInputView: NSObject, SBUViewLifeCycle {
         self.updateSendButton(with: self.status)
     }
     
-    public func updateStyles() {
+    open func updateStyles() {
         self.setupStyles()
+    }
+    
+    open func setupActions() {
+        
     }
     
     // MARK: Progress & Status
@@ -326,12 +330,7 @@ public class SBUVoiceMessageInputView: NSObject, SBUViewLifeCycle {
         )
     }
     
-    public func setupActions() {
-        
-    }
-    
     // MARK: - Show/Dismiss
-    
     func show(delegate: SBUVoiceMessageInputViewDelegate, canvasView: UIView?) {
         self.dismiss()
         

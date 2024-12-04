@@ -8,46 +8,68 @@
 
 import UIKit
 
-enum SBUBottomSheetSnapPoint {
+/// Represents the snap points for the bottom sheet.
+/// - Since: 3.28.0
+public enum SBUBottomSheetSnapPoint {
+    /// The top position of the bottom sheet.
     case top
+    /// The middle position of the bottom sheet.
     case middle
+    /// The closed position of the bottom sheet.
     case close
 }
 
-protocol SBUBottomSheetControllerDelegate: AnyObject {
+public protocol SBUBottomSheetControllerDelegate: AnyObject {
     func bottomSheet(moveTo position: SBUBottomSheetSnapPoint)
 }
 
-class SBUBottomSheetController: UIPresentationController {
+/// A controller that manages the presentation of a bottom sheet.
+/// - Since: 3.28.0
+public class SBUBottomSheetController: UIPresentationController {
 
-    weak var bottomSheetDelegate: SBUBottomSheetControllerDelegate?
+    /// The delegate that receives updates on the bottom sheet's position.
+    public weak var bottomSheetDelegate: SBUBottomSheetControllerDelegate?
 
-    var blurEffectStyle: UIBlurEffect.Style?
+    /// The blur effect style.
+    public var blurEffectStyle: UIBlurEffect.Style?
 
+    /// The gap of the modal.
     private let gap: CGFloat = 30
+    /// The top margin of the modal.
     private var topMargin: CGFloat {
         20 + UIApplication.shared.statusBarFrame.height
     }
 
-    lazy var contentHeight: CGFloat = self.presentingViewController.view.frame.height / 2
+    /// The content height of the modal.
+    public lazy var contentHeight: CGFloat = self.presentingViewController.view.frame.height / 2
 
-    var isEnableTop: Bool = true
-    var isEnableMiddle: Bool = true
+    /// Toggle the top value to allow the modal to be dragged to the top.
+    public var isEnableTop: Bool = true
+    
+    /// Toggle the middle value to allow the modal to be dragged to the middle
+    public var isEnableMiddle: Bool = true
 
     /// Toggle the bounce value to allow the modal to bounce when it's being
     /// dragged top, over the max width (add the top gap).
-    var bounce: Bool = false
+    public var bounce: Bool = false
 
     /// The modal corners radius.
     /// The default value is 20 for a minimal yet elegant radius.
-    var cornerRadius: CGFloat = 20
+    public var cornerRadius: CGFloat = 20
 
     /// Set the modal's corners that should be rounded.
     /// Defaults are the two top corners.
-    var roundedCorners: UIRectCorner = [.topLeft, .topRight]
+    public var roundedCorners: UIRectCorner = [.topLeft, .topRight]
 
-    /// Attributes
-    var currentSnapPoint: SBUBottomSheetSnapPoint = .middle
+    /// The current snap point of the bottom sheet.
+    public private(set) var currentSnapPoint: SBUBottomSheetSnapPoint = .middle
+    
+    public lazy var panGesture: UIPanGestureRecognizer = {
+        let pan = UIPanGestureRecognizer(target: self, action: #selector(self.drag(_:)))
+        return pan
+    }()
+
+    // MARK: - Private
 
     private lazy var blurEffectView: UIVisualEffectView = {
         let effectView: UIVisualEffectView
@@ -68,18 +90,15 @@ class SBUBottomSheetController: UIPresentationController {
         return UITapGestureRecognizer(target: self, action: #selector(self.dismiss))
     }()
 
-    lazy var panGesture: UIPanGestureRecognizer = {
-        let pan = UIPanGestureRecognizer(target: self, action: #selector(self.drag(_:)))
-        return pan
-    }()
-
     /// Initializers
     /// Init with non required values - defaults are provided.
-    convenience init(presentedViewController: UIViewController,
-                     presenting presentingViewController: UIViewController?,
-                     delegate: SBUBottomSheetControllerDelegate? = nil,
-                     blurEffectStyle: UIBlurEffect.Style? = nil,
-                     cornerRadius: CGFloat = 20) {
+    convenience init(
+        presentedViewController: UIViewController,
+        presenting presentingViewController: UIViewController?,
+        delegate: SBUBottomSheetControllerDelegate? = nil,
+        blurEffectStyle: UIBlurEffect.Style? = nil,
+        cornerRadius: CGFloat = 20
+    ) {
         self.init(
             presentedViewController: presentedViewController,
             presenting: presentingViewController
@@ -90,15 +109,18 @@ class SBUBottomSheetController: UIPresentationController {
     }
 
     /// Regular init.
-    override init(presentedViewController: UIViewController,
-                  presenting presentingViewController: UIViewController?) {
+    public override init(
+        presentedViewController: UIViewController,
+        presenting presentingViewController: UIViewController?
+    ) {
         super.init(
             presentedViewController: presentedViewController,
             presenting: presentingViewController
         )
     }
 
-    override func dismissalTransitionWillBegin() {
+    // MARK: - UIPresentationController method override
+    open override func dismissalTransitionWillBegin() {
         self.presentedViewController.transitionCoordinator?.animate(
             alongsideTransition: { (_) in
                 self.blurEffectView.alpha = 0
@@ -107,7 +129,7 @@ class SBUBottomSheetController: UIPresentationController {
         })
     }
 
-    override var frameOfPresentedViewInContainerView: CGRect {
+    open override var frameOfPresentedViewInContainerView: CGRect {
         guard let containerView = containerView else { return .zero }
 
         let safeAreaFrame = containerView.bounds.insetBy(
@@ -117,7 +139,7 @@ class SBUBottomSheetController: UIPresentationController {
         return safeAreaFrame
     }
 
-    override func presentationTransitionWillBegin() {
+    open override func presentationTransitionWillBegin() {
         self.blurEffectView.alpha = 0
         // Add the blur effect view
         guard let presenterView = self.containerView else { return }
@@ -135,11 +157,11 @@ class SBUBottomSheetController: UIPresentationController {
         })
     }
 
-    override func presentationTransitionDidEnd(_ completed: Bool) {
+    open override func presentationTransitionDidEnd(_ completed: Bool) {
         super.presentationTransitionDidEnd(completed)
     }
 
-    override func containerViewWillLayoutSubviews() {
+    open override func containerViewWillLayoutSubviews() {
         super.containerViewWillLayoutSubviews()
         guard let presentedView = self.presentedView else { return }
 
@@ -148,7 +170,7 @@ class SBUBottomSheetController: UIPresentationController {
         presentedView.addGestureRecognizer(self.panGesture)
     }
 
-    override func containerViewDidLayoutSubviews() {
+    open override func containerViewDidLayoutSubviews() {
         super.containerViewDidLayoutSubviews()
         guard let presenterView = self.containerView else { return }
         guard let presentedView = self.presentedView else { return }
@@ -162,23 +184,27 @@ class SBUBottomSheetController: UIPresentationController {
         self.blurEffectView.frame = presenterView.bounds
     }
 
-    override func viewWillTransition(to size: CGSize,
-                                     with coordinator: UIViewControllerTransitionCoordinator) {
-        
+    open override func viewWillTransition(
+        to size: CGSize,
+        with coordinator: UIViewControllerTransitionCoordinator
+    ) {
         super.viewWillTransition(to: size, with: coordinator)
         self.sendToMiddle()
     }
 
+    // MARK: - Common
+    
+    /// Dismisses the presented view controller and notifies the delegate.
     @objc
-    func dismiss() {
+    public func dismiss() {
         self.currentSnapPoint = .close
         self.bottomSheetDelegate?.bottomSheet(moveTo: self.currentSnapPoint)
         self.presentedViewController.dismiss(animated: true, completion: nil)
     }
 
+    /// Handles the drag gesture for the presented view.
     @objc
-    func drag(_ gesture: UIPanGestureRecognizer) {
-
+    public func drag(_ gesture: UIPanGestureRecognizer) {
         guard let presenterView = self.containerView else { return }
         guard let presentedView = self.presentedView else { return }
 
@@ -236,7 +262,8 @@ class SBUBottomSheetController: UIPresentationController {
         }
     }
 
-    func sendToTop() {
+    /// Sends the bottom sheet to the top position.
+    public func sendToTop() {
         self.currentSnapPoint = .top
         self.bottomSheetDelegate?.bottomSheet(moveTo: self.currentSnapPoint)
         guard let presentedView = presentedView else { return }
@@ -245,7 +272,8 @@ class SBUBottomSheetController: UIPresentationController {
         }
     }
 
-    func sendToMiddle() {
+    /// Sends the bottom sheet to the middle position.
+    public func sendToMiddle() {
         self.currentSnapPoint = .middle
         self.bottomSheetDelegate?.bottomSheet(moveTo: self.currentSnapPoint)
         guard let presenterView = containerView else { return }

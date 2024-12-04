@@ -29,6 +29,20 @@ public protocol SBUModerationsModuleHeaderDelegate: SBUCommonDelegate {
     ///   - rightItem: Updated `rightBarButton` object.
     func moderationsModule(_ headerComponent: SBUModerationsModule.Header, didUpdateRightItem rightItem: UIBarButtonItem?)
     
+    /// Called when `leftBarButtons` value is updated.
+    /// - Parameters:
+    ///   - headerComponent: `SBUModerationsModule.Header` object
+    ///   - leftItems: Updated `leftBarButtons` object.
+    /// - Since: 3.28.0
+    func moderationsModule(_ headerComponent: SBUModerationsModule.Header, didUpdateLeftItems leftItems: [UIBarButtonItem]?)
+    
+    /// Called when `rightBarButtons` value is updated.
+    /// - Parameters:
+    ///   - headerComponent: `SBUModerationsModule.Header` object
+    ///   - rightItems: Updated `rightBarButtons` object.
+    /// - Since: 3.28.0
+    func moderationsModule(_ headerComponent: SBUModerationsModule.Header, didUpdateRightItems rightItems: [UIBarButtonItem]?)
+    
     /// Called when `leftBarButton` was selected.
     /// - Parameters:
     ///   - component: `SBUModerationsModule.Header` object
@@ -36,10 +50,15 @@ public protocol SBUModerationsModuleHeaderDelegate: SBUCommonDelegate {
     func moderationsModule(_ headerComponent: SBUModerationsModule.Header, didTapLeftItem leftItem: UIBarButtonItem)
 }
 
+extension SBUModerationsModuleHeaderDelegate {
+    func moderationsModule(_ headerComponent: SBUModerationsModule.Header, didUpdateLeftItems leftItems: [UIBarButtonItem]?) { }
+    func moderationsModule(_ headerComponent: SBUModerationsModule.Header, didUpdateRightItems rightItems: [UIBarButtonItem]?) { }
+}
+
 extension SBUModerationsModule {
     
     /// A module component that represent the header of `SBUModerationsModule`.
-    /// - This class consists of titleView, leftBarButton, and rightBarButton.
+    /// - This class consists of titleView, leftBarButton, leftBarButtons, rightBarButton and rightBarButtons.
     @objcMembers
     open class Header: UIView {
         
@@ -56,34 +75,70 @@ extension SBUModerationsModule {
         /// - NOTE: When the value is updated, `moderationsModule(_:didUpdateLeftItem:)` delegate function is called.
         /// and when the value is tapped, `moderationsModule(_:didTapLeftItem:)` delegate function is called.
         public var leftBarButton: UIBarButtonItem? {
-            didSet { self.delegate?.moderationsModule(self, didUpdateLeftItem: self.leftBarButton) }
+            didSet {
+                if let leftBarButton = self.leftBarButton {
+                    self.leftBarButtons = [leftBarButton]
+                } else {
+                    self.leftBarButtons = nil
+                }
+                self.delegate?.moderationsModule(self, didUpdateLeftItem: self.leftBarButton)
+            }
         }
 
         /// A view that represents a right `UIBarButtonItem` in navigation bar.
         /// - NOTE: When the value is updated, `moderationsModule(_:didUpdateRightItem:)` delegate function is called.
         public var rightBarButton: UIBarButtonItem? {
-            didSet { self.delegate?.moderationsModule(self, didUpdateRightItem: self.rightBarButton) }
+            didSet {
+                if let rightBarButton = self.rightBarButton {
+                    self.rightBarButtons = [rightBarButton]
+                } else {
+                    self.rightBarButtons = nil
+                }
+                self.delegate?.moderationsModule(self, didUpdateRightItem: self.rightBarButton)
+            }
+        }
+        
+        /// A view that represents the left `UIBarButtonItem`s in navigation bar.
+        /// - NOTE: When the value is updated, `moderationsModule(_:didUpdateLeftItem:)` delegate function is called.
+        /// and when the value is tapped, `moderationsModule(_:didTapLeftItems:)` delegate function is called.
+        /// - Since: 3.28.0
+        public var leftBarButtons: [UIBarButtonItem]? {
+            didSet { self.delegate?.moderationsModule(self, didUpdateLeftItems: self.leftBarButtons) }
+        }
+
+        /// A view that represents the right `UIBarButtonItem`s in navigation bar.
+        /// - NOTE: When the value is updated, `moderationsModule(_:didUpdateRightItems:)` delegate function is called.
+        /// - Since: 3.28.0
+        public var rightBarButtons: [UIBarButtonItem]? {
+            didSet { self.delegate?.moderationsModule(self, didUpdateRightItems: self.rightBarButtons) }
         }
         
         /// The object that is used as the theme of the header component. The theme must adopt the `SBUChannelSettingsTheme` class.
         public var theme: SBUChannelSettingsTheme?
         
         // MARK: - UI properties (Private)
-        private func defaultTitleView() -> SBUNavigationTitleView {
-            let titleView = SBUNavigationTitleView()
-            titleView.text = SBUStringSet.ChannelSettings_Moderations
-            titleView.textAlignment = .left
+        lazy var defaultTitleView: SBUNavigationTitleView = {
+            let module = (self.channelType == .group)
+            ? SBUModuleSet.GroupModerationsModule
+            : SBUModuleSet.OpenModerationsModule
             
+            let titleView = module.HeaderComponent.TitleView.init()
+            titleView.configure(title: SBUStringSet.ChannelSettings_Moderations)
             return titleView
-        }
+        }()
         
-        private func defaultLeftBarButton() -> UIBarButtonItem {
-            let backButton = SBUBarButtonItem.backButton(
+        lazy var defaultLeftBarButton: UIBarButtonItem = {
+            let module = (self.channelType == .group)
+            ? SBUModuleSet.GroupModerationsModule
+            : SBUModuleSet.OpenModerationsModule
+            
+            return module.HeaderComponent.LeftBarButton.init(
+                image: SBUIconSetType.iconBack.image(to: SBUIconSetType.Metric.defaultIconSize),
+                style: .plain,
                 target: self,
-                selector: #selector(onTapLeftBarButton)
+                action: #selector(onTapLeftBarButton)
             )
-            return backButton
-        }
+        }()
         
         // MARK: - Logic properties (Public)
         
@@ -91,6 +146,9 @@ extension SBUModerationsModule {
         ///
         /// The delegate must adopt the `SBUModerationsModuleHeaderDelegate`.
         public weak var delegate: SBUModerationsModuleHeaderDelegate?
+        
+        // MARK: - Logic properties (Private)
+        var channelType: ChannelType = .group
         
         // MARK: - LifeCycle
         @available(*, unavailable, renamed: "SBUModerationsModule.Header()")
@@ -120,11 +178,30 @@ extension SBUModerationsModule {
         /// Set values of the views in the header component when it needs.
         /// - NOTE: If you want to implement `rightBarButton`, set your custom button here.
         open func setupViews() {
-            if self.titleView == nil {
-                self.titleView = self.defaultTitleView()
+            #if SWIFTUI
+            switch channelType {
+            case .group:
+                self.applyViewConverter(.titleView)
+                self.applyViewConverter(.leftView)
+                self.applyViewConverter(.rightView)
+            case .open:
+                self.applyViewConverterForOpen(.titleView)
+                self.applyViewConverterForOpen(.leftView)
+                self.applyViewConverterForOpen(.rightView)
+            default:
+                break
             }
-            if self.leftBarButton == nil {
-                self.leftBarButton = self.defaultLeftBarButton()
+            // We are not using `...buttons` in SwiftUI
+            #endif
+            
+            if self.titleView == nil {
+                self.titleView = self.defaultTitleView
+            }
+            if self.leftBarButton == nil && self.leftBarButtons == nil {
+                self.leftBarButton = self.defaultLeftBarButton
+            }
+            if self.leftBarButtons == nil {
+                self.leftBarButtons = [self.defaultLeftBarButton]
             }
         }
         
@@ -144,13 +221,20 @@ extension SBUModerationsModule {
             }
             
             self.leftBarButton?.tintColor = theme?.leftBarButtonTintColor
+            self.rightBarButton?.tintColor = theme?.rightBarButtonTintColor
+            
+            self.leftBarButtons?.forEach { $0.tintColor = theme?.leftBarButtonTintColor }
+            self.rightBarButtons?.forEach { $0.tintColor = theme?.rightBarButtonTintColor }
         }
         
         // MARK: - Actions
         
         /// The action of `leftBarButton`. It calls `moderationsModule(_:didTapLeftItem:)` when it's tapped
         public func onTapLeftBarButton() {
-            if let leftBarButton = self.leftBarButton {
+            if let leftBarButtons = self.leftBarButtons,
+               leftBarButtons.isUsingDefaultButton(self.defaultLeftBarButton) {
+                self.delegate?.moderationsModule(self, didTapLeftItem: self.defaultLeftBarButton)
+            } else if let leftBarButton = self.leftBarButton {
                 self.delegate?.moderationsModule(self, didTapLeftItem: leftBarButton)
             }
         }
