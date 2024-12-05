@@ -1,5 +1,230 @@
 # Changelog
 
+### v3.28.1 (Dec 05, 2024)
+
+## ModuleSet Improvements
+
+### Added Sub-Component Types each Modules
+#### `SBUGroupChannelModule`
+| **Component** | **SubComponent** |
+|---------------|------------------|
+| **`Header`**  | - `LeftBarButton`<br>- `RightBarButton`<br>- `TitleView` |
+| **`List`**    | - `EmptyView`<br>- `AdminMessageCell`<br>- `UserMessageCell`<br>- `FileMessageCell`<br>- `MultipleFilesMessageCell`<br>- `TypingIndicatorMessageCell`<br>- `UnknownMessageCell`<br>- `CustomMessageCell`<br>- `ChannelStateBanner`<br>- `ScrollBottomView`<br>- `NewMessageInfo`<br>- `UserProfileView` |
+| **`Input`**   | - `MessageInputView`<br>- `VoiceMessageInputView` |
+
+#### `SBUOpenChannelModule`
+| **Component** | **SubComponent** |
+|---------------|------------------|
+| **`Header`**  | - `LeftBarButton`<br>- `RightBarButton`<br>- `TitleView` |
+| **`List`**    | - `EmptyView`<br>- `AdminMessageCell`<br>- `UserMessageCell`<br>- `FileMessageCell`<br>- `UnknownMessageCell`<br>- `CustomMessageCell`<br>- `ChannelStateBanner`<br>- `ScrollBottomView`<br>- `UserProfileView` |
+| **`Input`**   | - `MessageInputView`|
+| **`Media`**   | - `MediaView` |
+
+#### `SBUGroupChannelListModule`
+| **Component** | **SubComponent** |
+|---------------|------------------|
+| **`Header`**  | - `LeftBarButton`<br>- `RightBarButton`<br>- `TitleView` |
+| **`List`**    | - `EmptyView`<br>- `ChannelCell` |
+| **`Common`**   | - `CreateChannelTypeSelector |
+
+#### `SBUOpenChannelListModule`
+| **Component** | **SubComponent** |
+|---------------|------------------|
+| **`Header`**  | - `LeftBarButton`<br>- `RightBarButton`<br>- `TitleView` |
+| **`List`**    | - `EmptyView`<br>- `ChannelCell` |
+
+#### `SBUGroupChannelSettingsModule`
+| **Component** | **SubComponent** |
+|---------------|------------------|
+| **`Header`**  | - `LeftBarButton`<br>- `RightBarButton`<br>- `TitleView` |
+| **`List`**    | - `ChannelInfoView`<br>- `SettingCell` |
+
+#### `SBUOpenChannelSettingsModule`
+| **Component** | **SubComponent** |
+|---------------|------------------|
+| **`Header`**  | - `LeftBarButton`<br>- `RightBarButton`<br>- `TitleView` |
+| **`List`**    | - `ChannelInfoView`<br>- `SettingCell` |
+
+#### `SBUMessageSearchModule`
+| **Component** | **SubComponent** |
+|---------------|------------------|
+| **`Header`**  | - `LeftBarButton`<br>- `RightBarButton`<br>- `TitleView` |
+| **`List`**    | - `EmptyView`<br>- `MessageSearchResultCell` |
+
+#### `SBUMessageThreadModule`
+| **Component** | **SubComponent** |
+|---------------|------------------|
+| **`Header`**  | - `LeftBarButton`<br>- `RightBarButton`<br>- `TitleView` |
+| **`List`**    | - `EmptyView`<br>- `AdminMessageCell`<br>- `UserMessageCell`<br>- `FileMessageCell`<br>- `MultipleFilesMessageCell`<br>- `UnknownMessageCell`<br>- `CustomMessageCell`<br>- `ChannelStateBanner`<br>- `UserProfileView`<br>- `ParentMessageInfoView` |
+| **`Input`**   | - `MessageInputView`<br>- `VoiceMessageInputView` |
+
+#### `SBUModerationsModule`
+| **Component** | **SubComponent** |
+|---------------|------------------|
+| **`Header`**  | - `LeftBarButton`<br>- `TitleView` |
+| **`List`**    | - `ModerationCell` |
+
+#### `SBUGroupChannelPushSettingsModule`
+| **Component** | **SubComponent** |
+|---------------|------------------|
+| **`Header`**  | - `LeftBarButton`<br>- `RightBarButton`<br>- `TitleView` |
+| **`List`**    | - `ChannelPushSettingCell` |
+
+#### `SBUCreateChannelModule`
+| **Component** | **SubComponent** |
+|---------------|------------------|
+| **`Header`**  | - `LeftBarButton`<br>- `RightBarButton`<br>- `TitleView` |
+| **`List`**    | - `EmptyView`<br>- `UserCell` |
+
+#### `SBUCreateOpenChannelModule`
+| **Component** | **SubComponent** |
+|---------------|------------------|
+| **`Header`**  | - `LeftBarButton`<br>- `RightBarButton`<br>- `TitleView` |
+| **`List`**    | - `ChannelImageView`<br>- `ChannelNameInputField` |
+
+#### `SBUInviteUserModule`
+| **Component** | **SubComponent** |
+|---------------|------------------|
+| **`Header`**  | - `LeftBarButton`<br>- `RightBarButton`<br>- `TitleView` |
+| **`List`**    | - `EmptyView`<br>- `UserCell` |
+
+#### `SBURegisterOperatorModule`
+| **Component** | **SubComponent** |
+|---------------|------------------|
+| **`Header`**  | - `LeftBarButton`<br>- `RightBarButton`<br>- `TitleView` |
+| **`List`**    | - `EmptyView`<br>- `UserCell` |
+
+#### `SBUUserListModule`
+| **Component** | **SubComponent** |
+|---------------|------------------|
+| **`Header`**  | - `LeftBarButton`<br>- `RightBarButton`<br>- `TitleView` |
+| **`List`**    | - `EmptyView`<br>- `UserCell` |
+
+### Added Features
+- **`SBUViewModelSet`**: Added ViewModel types:
+    - `GroupChannelListViewModel`
+    - `OpenChannelListViewModel`
+    - `GroupChannelViewModel`
+    - `OpenChannelViewModel`
+    - `CreateGroupChannelViewModel`
+    - `CreateOpenChannelViewModel`
+    - `InviteUserViewModel`
+    - `GroupChannelRegisterOperatorViewModel`
+    - `OpenChannelRegisterOperatorViewModel`
+    - `GroupUserListViewModel`
+    - `OpenUserListViewModel`
+    - `GroupChannelPushSettingsViewModel`
+    - `GroupChannelSettingsViewModel`
+    - `OpenChannelSettingsViewModel`
+    - `GroupModerationsViewModel`
+    - `OpenModerationsViewModel`
+    - `MessageSearchViewModel`
+    - `MessageThreadViewModel`
+- **`SBUCommonViewControllerSet`**: Added common ViewController types:
+    - `SelectablePhotoViewController`
+    - `MenuSheetViewController`
+    - `ReactionsViewController`
+    - `EmojiListViewController`
+- **`SBUModuleSet`**: Added module:
+    - `CommonModule`
+- **`SBUCommonModule`**: Introduced with the following components:
+    - `ToastView`
+    - `ActionSheet`
+    - `AlertView`
+    - `Loading`
+- **`SBUGroupChannelListModule`**: Added `CommonComponent`
+
+### Updated access levels of classes
+- **`SBUModerationCell`**: `public` -> `open`
+- **`SBUChannelSettingsChannelInfoView`**: `public` -> `open`
+- **`SBUMenuSheetViewController`**: `public` -> `open`
+- **`SBUCoverImageView`**: `public` -> `open`
+- **`SBULoading`**: `public` -> `open`
+- **`SBUNavigationTitleView`**: `public` -> `open`
+- **`SBUUnderLineTextField`**: `public` -> `open`
+- **`SBUChannelTitleView`**: `public` -> `open`
+- **`SBUReactionsViewController`**: `public` -> `open`
+- **`SBUChannelPushSettingCell`**: `public` -> `open`
+- **`SBUVoiceMessageInputView`**: `public` -> `open`
+- **`SBUEmojiListViewController`**: `private` -> `open`
+- **`SBUUserProfileView`**: `private` -> `open`
+    
+### Common Updates
+- Added `leftBarButtons` and `rightBarButtons` properties in Header component
+
+### Added Classes
+- `SBUActionSheet`, `SBUActionSheetItem`
+- `SBUAlertButton`, `SBUAlertButtonItem`
+- `SBUMenuCell`
+- `SBUSearchBar`
+- `SBULabel`
+
+### Added Delegate Methods
+- `SBUGroupChannelListViewController`, `SBUOpenChannelListViewController`, `SBUMessageThreadViewController`
+    - `baseChannelModule(_:didUpdateLeftItems:)` method
+    - `baseChannelModule(_:didUpdateRightItems:)` method
+- `SBUGroupChannelListViewController`, `SBUOpenChannelListViewController`
+    - `baseChannelListModule(_:didUpdateLeftItems:)` method
+    - `baseChannelListModule(_:didUpdateRightItems:)` method
+- `SBUGroupChannelSettingsViewController`
+    - `groupChannelSettingsModule(_:didUpdateLeftItems:)` method
+    - `groupChannelSettingsModule(_:didUpdateRightItems:)` method
+- `SBUOpenChannelSettingsViewController`
+    - `openChannelSettingsModule(_:didUpdateLeftItems:)` method
+    - `openChannelSettingsModule(_:didUpdateRightItems:)` method
+- `SBUMessageThreadModuleViewController`
+    - `baseChannelModule(_:didUpdateRightItems:)` method
+- `SBUModerationsModuleViewController`
+    - `moderationsModule(_:didUpdateLeftItems:)` method
+    - `moderationsModule(_:didUpdateRightItems:)` method
+- `SBUGroupChannelPushSettingsViewController`
+    - `groupChannelPushSettingsModule(_:didUpdateLeftItems:)` method
+    - `groupChannelPushSettingsModule(_:didUpdateRightItems:)` method
+- `SBUCreateChannelViewController`
+    - `createChannelModule(_:didUpdateLeftItems:)` method
+    - `createChannelModule(_:didUpdateRightItems:)` method
+- `SBUCreateOpenChannelViewController`
+    - `createOpenChannelModule(_:didUpdateLeftItems:)` method
+    - `createOpenChannelModule(_:didUpdateRightItems:)` method
+- `SBUInviteUserViewController`
+    - `inviteUserModule(_:didUpdateLeftItems:)` method
+    - `inviteUserModule(_:didUpdateRightItems:)` method
+- `SBURegisterOperatorViewController`
+    - `registerOperatorModule(_:didUpdateLeftItems:)` method
+    - `registerOperatorModule(_:didUpdateRightItems:)` method
+- `SBUUserListViewController`
+    - `userListModule(_:didUpdateLeftItems:)` method
+    - `userListModule(_:didUpdateRightItems:)` method
+
+---
+
+## New Interfaces
+
+### Properties
+- **`BaseMessage`**: Added `isStreamMessage`
+- **`SBUAdminMessage`**: Added `adminMessage`
+- **`SBUMessageSearchViewModel`**: Added `channelURL`
+
+### Methods
+- **`UIStackView`**: Added `removeAllSubViews`
+- **`UIView`** extension: Added `sbu_constraint_fill(equalTo:)`
+- **`SBUUtils`**: Added `isRTLCharacter(with:)`
+- **`SBUMessageSearchModule.Header`**: Added `cancelSearch()`
+- **`SBUColorSet`**: Added `restoreDefaultColors()`
+- **`SBUFontSet`**: Added `restoreDefaultFonts()`
+- **`SBUMessageSearchViewController`**: Added `createViewModel(channelURL:)`
+- **`SBUMessageSearchViewModel`**: Added `loadChannel(channelURL:)`
+
+### Classes
+- Added `SBUChannelStateBanner`
+- Added `SBUMediaView`
+- Added `SBUScrollBottomView`
+- Added `SBUBottomSheetController`
+- Added `SBUBarButtonItem`
+    
+## Improvements
+- **`SBUAdminMessageCellParams`**: Added `isThreadMessage` parameter to the constructor 
+
 ### v3.28.0 (Dec 04, 2024)
 
 ## ModuleSet Improvements
