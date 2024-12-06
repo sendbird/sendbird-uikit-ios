@@ -5,7 +5,7 @@ Pod::Spec.new do |s|
 	s.description = "Sendbird UIKit is a framework composed of basic UI components based on SendbirdChatSDK."
 	s.homepage = "https://sendbird.com"
 	s.documentation_url = 'https://sendbird.com/docs/uikit'
-	s.license = "Commercial"
+	s.license = { :type => 'Commercial', :file => 'SendBirdUIKit/LICENSE.md' }
 	s.authors = {
 	"Tez" => "tez.park@sendbird.com",
 	"Celine" => "celine.moon@senrbid.com",
