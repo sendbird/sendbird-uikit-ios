@@ -8,6 +8,9 @@
 
 import UIKit
 import SendbirdChatSDK
+#if canImport(SendbirdUIMessageTemplate)
+import SendbirdUIMessageTemplate
+#endif
 
 @IBDesignable
 class SBUNotificationCell: SBUBaseMessageCell {
@@ -29,7 +32,6 @@ class SBUNotificationCell: SBUBaseMessageCell {
     var newNotificationBadge: UIView?
     var dateLabel = UILabel()
     
-    var isTemplateDownloadFailed = false
     var isRendered = false
     
     var topMarginConstraint: NSLayoutConstraint?
@@ -44,24 +46,49 @@ class SBUNotificationCell: SBUBaseMessageCell {
     }
     
     // MARK: - UI Views (Private)
-    private var notificationTemplateRenderer: SBUMessageTemplate.Renderer?
+    private var notificationTemplateRenderer: UIView?
+    private var viewGeneratorParams: ViewGeneratorParams {
+        ViewGeneratorParams(
+            maxWidth: self.availableTemplateWidth,
+            fontFamiliy: SBUFontSet.FontFamily.notifications,
+            delegate: self
+        )
+    }
 
     /// Shows `message.message`  or ``SBUStringSet/Notification_Template_Error_Title``, ``SBUStringSet/Notification_Template_Error_Subtitle``  if the `message.message` is `nil`
-    private var parsingErrorNotificationRenderer: SBUMessageTemplate.Renderer {
-        if let fallbackMessage = self.message?.message, fallbackMessage.count > 0 {
-            return SBUMessageTemplate.Renderer(
-                body: .parsingError(text: fallbackMessage),
-                fontFamily: SBUFontSet.FontFamily.notifications
-            )
-        } else {
-            return SBUMessageTemplate.Renderer(
-                body: .parsingError(
-                    text: SBUStringSet.Notification_Template_Error_Title,
-                    subText: SBUStringSet.Notification_Template_Error_Subtitle
-                ),
-                fontFamily: SBUFontSet.FontFamily.notifications
-            )
+    private var errorNotificationRenderer: UIView? {
+        guard let fallbackMessage = self.message?.message, fallbackMessage.hasElements else {
+            return self.drawTemplateView(body: .parsingError(
+                text: SBUStringSet.Notification_Template_Error_Title,
+                subText: SBUStringSet.Notification_Template_Error_Subtitle
+            ))
         }
+        return self.drawTemplateView(body: .parsingError(text: fallbackMessage))
+    }
+    
+    private var downloadingRenderer: UIView? {
+        drawTemplateView(body: .downloadingTemplate(
+            height: (type == .chat)
+            ? chatNotificationDownloadingHeight
+            : feedNotificationDownloadingHeight
+        ))
+    }
+    
+    private func dataTemplateRenderer(value: String) -> UIView? {
+        drawTemplateView(body: .dataTemplate(
+            text: "[This message is sent from data template.]",
+            subText: value
+        ))
+    }
+    
+    private func drawTemplateView(body: TemplateSyntax.Body) -> UIView? {
+        try? ViewGenerator.draw(
+            templateView: .init(
+                body: body,
+                messageId: self.message?.messageId
+            ),
+            params: self.viewGeneratorParams
+        )
     }
     
     private var categoryMargin = UIView()
@@ -293,90 +320,36 @@ class SBUNotificationCell: SBUBaseMessageCell {
     /// Creates the message template view and updates the views hierarchy.
     /// If the `message.extendedMessage["sub_data"]` is invalid, the message template view shows `message.message`  or ``SBUStringSet/Notification_Template_Error_Title``, ``SBUStringSet/Notification_Template_Error_Subtitle`` if the `message.message` is `nil`
     func setupNotificationTemplate() {
-        let notification = self.message
-        let subType = Int(notification?.extendedMessage["sub_type"] as? String ?? "0")
-        
+        let subType = Int(self.message?.extendedMessage["sub_type"] as? String ?? "0")
         guard subType == 0 else { return } // subType: 0 is template type
+        let subData = self.message?.extendedMessage["sub_data"] as? String
         
-        let subData = notification?.extendedMessage["sub_data"] as? String
-        var bindedTemplate: BindedTemplate?
-        var isNewTemplateDownloading: Bool = false
-
-        if !isTemplateDownloadFailed {
-            (bindedTemplate, isNewTemplateDownloading) = SBUMessageTemplateManager.generateTemplate(
-                type: .notification,
-                subData: subData,
-                themeMode: SBUNotificationChannelManager.notificationChannelThemeMode
-            ) { [weak self] success in
-                // This completionHandler is only called when a template download is requested.
-                self?.isTemplateDownloadFailed = !success
-                self?.setupNotificationTemplate() // NOTE: realodCell() 과 중복 처리. 확인 필요.
-                self?.reloadCell()
+        let template = SBUMessageTemplate.Coordinator.execute(
+            type: .notification,
+            message: self.message,
+            theme: .init(rawValue: SBUNotificationChannelManager.notificationChannelThemeMode),
+            params: self.viewGeneratorParams
+        )
+        
+        switch template {
+        case .reload(.download(.template(let keys))):
+            switch self.uncachedMessageTemplateStateHandler?(keys) {
+            case .some(true):
+                self.reloadCell()
+            case .some(false):
+                self.notificationTemplateRenderer = self.errorNotificationRenderer
+            case .none:
+                self.notificationTemplateRenderer = self.downloadingRenderer
+                self.uncachedMessageTemplateDownloadHandler?(keys, self)
             }
-        }
-
-        var escapedTemplate = bindedTemplate?.template.replacingOccurrences(of: "\\n", with: "\\\\n") ?? "{}"
-        escapedTemplate = escapedTemplate.replacingOccurrences(of: "\n", with: "\\n")
-        bindedTemplate?.template = escapedTemplate
-        
-        var template: SBUMessageTemplate.Syntax.TemplateView?
-        do {
-            template = try JSONDecoder().decode(SBUMessageTemplate.Syntax.TemplateView.self, from: Data((bindedTemplate?.template ?? "").utf8))
-            template?.setIdentifier(with: .init(messageId: message?.messageId))
-        } catch {
-            SBULog.error(error)
-        }
-
-        var showFallback = false
-        let version = template?.version ?? 0
-        if version != 1 { // Not used now
-//            bindedData = subData // v0.2
-            showFallback = true
-        }
-        
-        self.notificationTemplateRenderer = nil
-        switch bindedTemplate?.type {
-        case .ui:
-            if isNewTemplateDownloading {
-                self.notificationTemplateRenderer = SBUMessageTemplate.Renderer(
-                    body: .downloadingTemplate(
-                        height: (type == .chat)
-                        ? chatNotificationDownloadingHeight
-                        : feedNotificationDownloadingHeight
-                    ),
-                    fontFamily: SBUFontSet.FontFamily.notifications
-                )
-            } else if let bindedTemplate = bindedTemplate, !showFallback, // 정상 케이스
-                let notificationTemplateRenderer = SBUMessageTemplate.Renderer(
-                    with: bindedTemplate.template,
-                    messageId: message?.messageId,
-                    delegate: self,
-                    maxWidth: self.availableTemplateWidth,
-                    fontFamily: SBUFontSet.FontFamily.notifications,
-                    actionHandler: { [weak self] action in
-                        self?.statisticsForAction(with: subData)
-                        self?.messageTemplateActionHandler?(action)
-                    }
-                ) {
-                self.notificationTemplateRenderer = notificationTemplateRenderer
-                self.isRendered = true
-            } else {
-                self.notificationTemplateRenderer = parsingErrorNotificationRenderer
-            }
-        case .data:
-            self.notificationTemplateRenderer = SBUMessageTemplate.Renderer(
-                body: .dataTemplate(
-                    text: "[This message is sent from data template.]",
-                    subText: bindedTemplate?.template ?? "{}"
-                ),
-                fontFamily: SBUFontSet.FontFamily.notifications
-            )
+            
+        case .template(_, let view):
+            self.notificationTemplateRenderer = view
             self.isRendered = true
         default:
-            self.notificationTemplateRenderer = parsingErrorNotificationRenderer
+            self.notificationTemplateRenderer = self.errorNotificationRenderer
         }
-
-        self.notificationTemplateRenderer?.delegate = self
+        
         guard let notificationTemplateRenderer = self.notificationTemplateRenderer else { return }
         notificationTemplateRenderer.backgroundColor = self.notificationCellTheme.backgroundColor
         notificationTemplateRenderer.roundCorners(corners: .allCorners, radius: self.notificationCellTheme.radius)
@@ -421,6 +394,8 @@ class SBUNotificationCell: SBUBaseMessageCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         
+        self.isRendered = false
+        
         if let profileView = self.profileView as? SBUMessageProfileView {
             profileView.imageDownloadTask?.cancel()
             profileView.urlString = ""
@@ -431,30 +406,11 @@ class SBUNotificationCell: SBUBaseMessageCell {
     // MARK: - Common
     
     /// Adds stat for action of notification to SendbirdStatistics.
-    /// - Parameter subData: for exporting templateKey and tags.
     /// - Since: 3.5.7
     @discardableResult
-    func statisticsForAction(with subData: String?) -> Bool {
-        guard let subData = subData else { return false }
-        
-        // data scheme
-        var templateKey: String?
-        var tags: [String] = []
-        do {
-            if let subDataDic = try JSONSerialization.jsonObject(
-                with: Data(subData.utf8),
-                options: []
-            ) as? [String: Any] {
-                templateKey = subDataDic["template_key"] as? String
-                tags = subDataDic["tags"] as? [String] ?? []
-            }
-        } catch {
-            SBULog.error(error.localizedDescription)
-            return false
-        }
-        
-        guard let templateKey = templateKey,
-              let message = self.message else { return false }
+    func statisticsForAction() -> Bool {
+        guard let message = self.message else { return false }
+        guard let data = self.message?.notifiationData else { return false }
         
         let type = "noti:stats"
         let action = "clicked"
@@ -464,9 +420,9 @@ class SBUNotificationCell: SBUBaseMessageCell {
             type: type,
             data: [
                 "action": action,
-                "template_key": templateKey,
+                "template_key": data.templateKey,
                 "channel_url": message.channelURL,
-                "tags": tags,
+                "tags": data.tags ?? [],
                 "message_id": message.messageId,
                 "source": source,
                 "message_ts": message.createdAt,
@@ -479,13 +435,45 @@ class SBUNotificationCell: SBUBaseMessageCell {
     }
 }
 
-// MARK: - MessageTemplateRendererDelegate
-extension SBUNotificationCell: MessageTemplateRendererDelegate {
-    func messageTemplateRender(_ renderer: SBUMessageTemplate.Renderer, didFinishLoadingImage imageView: UIImageView) {
-        self.reloadCell()
+// MARK: - TemplateViewGeneratorDelegate
+extension SBUNotificationCell: TemplateViewGeneratorDelegate {
+    func templateView(_ templateView: TemplateSyntax.TemplateView, didLoad image: UIImage, from imageURL: String, named fileName: String, in subPath: String) {
+        SBUCacheManager.Image.save(image: image, fileName: fileName, subPath: subPath, completionHandler: nil)
     }
     
-    func messageTemplateNeedReloadCell(_ renderer: SBUMessageTemplate.Renderer) {
-        self.reloadCell()
+    func templateView(_ templateView: TemplateSyntax.TemplateView, didFinishRootView view: UIView, with identifier: String) {
+        // do nothing
+    }
+    
+    func templateView(_ templateView: TemplateSyntax.TemplateView, didDrawPartialItem item: TemplateSyntax.Item, in view: UIView, with identifier: String) {
+        switch item {
+        case .carouselView:
+            self.message?.messageTemplateCarouselView = view
+        default:
+            break
+        }
+    }
+    func templateView(_ templateView: TemplateSyntax.TemplateView, didSelect action: TemplateSyntax.Action) {
+        self.statisticsForAction()
+        self.messageTemplateActionHandler?(.init(action: action))
+    }
+}
+
+extension SBUNotificationCell: TemplateViewGeneratorDataSource {
+    func templateView(_ templateView: TemplateSyntax.TemplateView, imageFor urlString: String, named fileName: String, in subPath: String) -> UIImage? {
+        SBUCacheManager.Image.get(fileName: fileName, subPath: subPath)
+    }
+    
+    func templateView(_ templateView: TemplateSyntax.TemplateView, rootViewFor identifier: String) -> UIView? {
+        return nil
+    }
+    
+    func templateView(_ templateView: TemplateSyntax.TemplateView, viewForPartialItem item: TemplateSyntax.Item, with identifier: String) -> UIView? {
+        switch item {
+        case .carouselView:
+            return self.message?.messageTemplateCarouselView
+        default:
+            return nil
+        }
     }
 }

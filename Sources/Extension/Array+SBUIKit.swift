@@ -110,12 +110,6 @@ public extension NSArray {
     }
 }
 
-extension Array {
-    subscript(safe index: Int) -> Element? {
-        return indices.contains(index) ? self[index] : nil
-    }
-}
-
 extension Array where Element == String {
     func toggle(_ value: String) -> [String] {
         var copy = self

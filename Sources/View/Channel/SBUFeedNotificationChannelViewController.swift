@@ -299,12 +299,8 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
             .sbu_constraint(
                 equalTo: self.view,
                 left: 0,
-                right: 0
-            )
-            .sbu_constraint(
-                equalTo: self.view,
-                top: 0,
-                useSafeArea: true
+                right: 0,
+                top: 0
             )
             .sbu_constraint(height: Constants.categoryFilterHeight)
 
@@ -787,6 +783,18 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
     ) {
         self.viewModel?.invalidateLogImpressionTimer()
     }
+
+    func feedNotificationChannelModule(
+        _ listComponent: SBUFeedNotificationChannelModule.List,
+        shouldHandleUncachedTemplateKeys templateKeys: [String],
+        messageCell: SBUBaseMessageCell
+    ) {
+        self.viewModel?.loadUncachedTemplate(
+            keys: templateKeys
+        ) { [weak self] _ in
+            self?.listComponent?.reloadTableView()
+        }
+    }
     
     // MARK: - SBUFeedNotificationChannelModuleListDataSource
     func feedNotificationChannelModule(
@@ -822,6 +830,22 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
         startingPointIn tableView: UITableView
     ) -> Int64? {
         self.viewModel?.startingPoint
+    }
+    
+    func feedNotificationChannelModule(
+        _ listComponent: SBUFeedNotificationChannelModule.List,
+        didHandleUncachedTemplateKeys templateKeys: [String]
+    ) -> Bool? {
+        let cache = self.viewModel?.templateLoadCache ?? [:]
+        var result = true
+        for templateKey in templateKeys {
+            switch cache[templateKey] {
+            case .success: continue
+            case .failure, .loading: result = false
+            default: return nil
+            }
+        }
+        return result
     }
     
     // MARK: - SBUCommonViewModelDelegate

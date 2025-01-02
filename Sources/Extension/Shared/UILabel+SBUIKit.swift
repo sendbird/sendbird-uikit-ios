@@ -1,53 +1,12 @@
 //
-//  SBUMessageTemplate.Renderer+Utils.swift
+//  UILabel+SBUIKit.swift
 //  SendbirdUIKit
 //
-//  Created by Tez Park on 2022/10/14.
-//  Copyright © 2024 Sendbird, Inc. All rights reserved.
+//  Created by Damon Park on 11/21/24.
 //
 
 import UIKit
 
-extension UIImage {
-    // https://stackoverflow.com/a/47884962
-    // INFO: Edge case - image height is wrap
-    func resizeTopAlignedToFill(newWidth: CGFloat) -> UIImage? {
-        // Calculate ratio used for resizing the image
-        let scale = newWidth / size.width
-        let newHeight = size.height * scale
-        let newSize = CGSize(width: newWidth, height: newHeight)
-
-        // Array that stores image frames
-        var images: [UIImage] = []
-
-        // If animated GIF image, resize all images in frames and append them to the array
-        if let animatedImages = self.images {
-            for animatedImage in animatedImages {
-                guard let cgImage = animatedImage.cgImage else { continue }
-                let image = UIImage(cgImage: cgImage)
-                UIGraphicsBeginImageContextWithOptions(newSize, false, image.scale)
-                let rect = CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height)
-                image.draw(in: rect)
-                let newImage = UIGraphicsGetImageFromCurrentImageContext()
-                UIGraphicsEndImageContext()
-                guard let newImage = newImage else { continue }
-                images.append(newImage)
-            }
-        } else {
-            // If not an animated GIF image, create a new image with resizing
-            UIGraphicsBeginImageContextWithOptions(newSize, false, UIApplication.shared.currentWindow?.screen.scale ?? 1.0)
-            draw(in: CGRect(origin: .zero, size: newSize))
-            let newImage = UIGraphicsGetImageFromCurrentImageContext()
-            UIGraphicsEndImageContext()
-            return newImage
-        }
-
-        // Create a new GIF image with modified images
-        return UIImage.animatedImage(with: images, duration: self.duration)
-    }
-}
-
-// TODO: will be separated by a file
 extension UILabel {
     func textWidth() -> CGFloat {
         return UILabel.textWidth(font: self.font, text: self.text ?? "")

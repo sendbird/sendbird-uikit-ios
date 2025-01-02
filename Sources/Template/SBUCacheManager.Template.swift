@@ -7,9 +7,12 @@
 //
 
 import UIKit
+#if canImport(SendbirdUIMessageTemplate)
+import SendbirdUIMessageTemplate
+#endif
 
 extension SBUCacheManager {
-    static func template(with type: SBUTemplateType) -> SBUTemplateCacheType {
+    static func template(with type: SBUMessageTemplate.TemplateType) -> SBUTemplateCacheType {
         switch type {
         case .notification: return NotificationMessageTemplate.shared
         case .message: return GroupMessageTemplate.shared
@@ -18,21 +21,21 @@ extension SBUCacheManager {
     
     class NotificationMessageTemplate: SBUTemplateCacheType {
         static let shared = NotificationMessageTemplate()
-        static let type = SBUTemplateType.notification
+        static let type = SBUMessageTemplate.TemplateType.notification
         static let memoryCache = MemoryCacheForTemplate()
         static let diskCache = DiskCacheForTemplate(cacheType: type.cacheKey)
     }
     
     class GroupMessageTemplate: SBUTemplateCacheType {
         static let shared = GroupMessageTemplate()
-        static let type = SBUTemplateType.message
+        static let type = SBUMessageTemplate.TemplateType.message
         static let memoryCache = MemoryCacheForTemplate()
         static let diskCache = DiskCacheForTemplate(cacheType: type.cacheKey)
     }
 }
 
 protocol SBUTemplateCacheType: AnyObject {
-    static var type: SBUTemplateType { get }
+    static var type: SBUMessageTemplate.TemplateType { get }
     static var memoryCache: SBUCacheManager.MemoryCacheForTemplate { get }
     static var diskCache: SBUCacheManager.DiskCacheForTemplate { get }
 }
@@ -46,13 +49,13 @@ extension SBUTemplateCacheType {
     }
     
     // MARK: - Template list
-    func save(templates: [SBUMessageTemplate.TemplateModel]) {
+    func save(templates: [MessageTemplate]) {
         Self.memoryCache.set(templates: templates)
         Self.diskCache.set(templates: templates)
     }
     
     @discardableResult
-    func loadAllTemplates() -> [String: SBUMessageTemplate.TemplateModel]? {
+    func loadAllTemplates() -> [String: MessageTemplate]? {
         if let templateList = Self.memoryCache.getAllTemplates() {
 //                SBULog.info("Loaded templates from memory cache")
             return templateList
@@ -66,16 +69,16 @@ extension SBUTemplateCacheType {
         return nil
     }
     
-    func upsert(templates: [SBUMessageTemplate.TemplateModel]) {
+    func upsert(templates: [MessageTemplate]) {
         self.save(templates: templates)
     }
     
     // MARK: - Single template
-    func save(template: SBUMessageTemplate.TemplateModel) {
+    func save(template: MessageTemplate) {
         self.save(templates: [template])
     }
     
-    func getTemplate(forKey key: String) -> SBUMessageTemplate.TemplateModel? {
+    func getTemplate(forKey key: String) -> MessageTemplate? {
         if let memoryTemplate = Self.memoryCache.get(key: key) {
             return memoryTemplate
         } else if let templates = loadAllTemplates(),
@@ -88,10 +91,10 @@ extension SBUTemplateCacheType {
         return nil
     }
     
-    func getTemplateList(forKeys keys: [String]) -> [String: SBUMessageTemplate.TemplateModel]? {
+    func getTemplateList(forKeys keys: [String]) -> [String: MessageTemplate]? {
         let results = keys.compactMap { self.getTemplate(forKey: $0) }
         guard results.count == keys.count else { return nil }
-        return results.reduce(into: [String: SBUMessageTemplate.TemplateModel]()) { $0[$1.key] = $1 }
+        return results.reduce(into: [String: MessageTemplate]()) { $0[$1.key] = $1 }
     }
     
     func removeTemplate(forKey key: String) {
@@ -117,28 +120,6 @@ extension SBUTemplateCacheType {
     func resetCache() {
         Self.diskCache.resetCache()
         Self.memoryCache.resetCache()
-    }
-}
-
-extension SBUCacheManager {
-    class TemplateImage {
-        static let memoryCache = MemoryCacheForTemplateImageSize()
-        
-        static func save(messageId: Int64, viewIndex: Int, size: CGSize) {
-            self.memoryCache.set(messageId: messageId, viewIndex: viewIndex, size: size)
-        }
-        
-        static func load(messageId: Int64, viewIndex: Int) -> CGSize? {
-            self.memoryCache.get(messageId: messageId, viewIndex: viewIndex)
-        }
-        
-        static func save(key: String, size: CGSize) {
-            self.memoryCache.set(key: key, size: size)
-        }
-        
-        static func load(key: String) -> CGSize? {
-            self.memoryCache.get(key: key)
-        }
     }
 }
     
@@ -181,12 +162,12 @@ extension SBUCacheManager {
             return fileManager.fileExists(atPath: self.pathForKey(key))
         }
 
-        func get(fullPath: URL, needToSync: Bool = true) -> SBUMessageTemplate.TemplateModel? {
-            let template: SBUMessageTemplate.TemplateModel? = {
+        func get(fullPath: URL, needToSync: Bool = true) -> MessageTemplate? {
+            let template: MessageTemplate? = {
                 do {
                     let data = try Data(contentsOf: fullPath)
-                    let template = try JSONDecoder().decode(SBUMessageTemplate.TemplateModel.self, from: data)
-                    return template as SBUMessageTemplate.TemplateModel
+                    let template = try JSONDecoder().decode(MessageTemplate.self, from: data)
+                    return template
                 } catch {
                     SBULog.info(error.localizedDescription)
                 }
@@ -205,19 +186,19 @@ extension SBUCacheManager {
             }
         }
         
-        func get(key: String) -> SBUMessageTemplate.TemplateModel? {
+        func get(key: String) -> MessageTemplate? {
             guard cacheExists(key: key) else { return nil }
             
             let filePath = URL(fileURLWithPath: self.pathForKey(key))
             return self.get(fullPath: filePath)
         }
         
-        func getAllTemplates() -> [String: SBUMessageTemplate.TemplateModel]? {
+        func getAllTemplates() -> [String: MessageTemplate]? {
             return self.diskQueue.sync {
                 self.fileSemaphore.wait()
                 defer { self.fileSemaphore.signal() }
                 
-                var templateList: [String: SBUMessageTemplate.TemplateModel]?
+                var templateList: [String: MessageTemplate]?
                 
                 do {
                     let items = try fileManager.contentsOfDirectory(at: cachePathURL(), includingPropertiesForKeys: nil)
@@ -237,7 +218,7 @@ extension SBUCacheManager {
             }
         }
         
-        func set(templates: [SBUMessageTemplate.TemplateModel]) {
+        func set(templates: [MessageTemplate]) {
             for template in templates {
                 let encoder = JSONEncoder()
                 do {
@@ -370,26 +351,26 @@ extension SBUCacheManager {
     // MARK: - MemoryCache
     class MemoryCacheForTemplate {
         var lastToken: String?
-        var templateList: [String: SBUMessageTemplate.TemplateModel]?
+        var templateList: [String: MessageTemplate]?
         
         // MARK: - Memory Cache
-        func set(templates: [SBUMessageTemplate.TemplateModel]) {
+        func set(templates: [MessageTemplate]) {
             for template in templates {
                 set(key: template.key, template: template)
             }
         }
         
-        func set(key: String, template: SBUMessageTemplate.TemplateModel) {
+        func set(key: String, template: MessageTemplate) {
             if self.templateList == nil { self.templateList = [:] }
             self.templateList?[key] = template
         }
         
-        func get(key: String) -> SBUMessageTemplate.TemplateModel? {
+        func get(key: String) -> MessageTemplate? {
             guard let template = self.templateList?[key] else { return nil }
-            return template as SBUMessageTemplate.TemplateModel
+            return template as MessageTemplate
         }
         
-        func getAllTemplates() -> [String: SBUMessageTemplate.TemplateModel]? {
+        func getAllTemplates() -> [String: MessageTemplate]? {
             return templateList
         }
         
@@ -401,35 +382,6 @@ extension SBUCacheManager {
             self.lastToken = nil
             self.templateList = nil
         }
-        
-//        func cacheExists(key: String) -> Bool {
-//            return self.templateList?[key] != nil
-//        }
     }
 }
 
-extension SBUCacheManager {
-    class MemoryCacheForTemplateImageSize {
-        var sizeCache: [String: CGSize] = [:] // The key is a combination of the message ID and the index of view item.
-        
-        func generateKey(messageId: Int64, viewIndex: Int) -> String {
-            "\(messageId)_\(viewIndex)"
-        }
-        
-        func set(messageId: Int64, viewIndex: Int, size: CGSize) {
-            self.sizeCache[self.generateKey(messageId: messageId, viewIndex: viewIndex)] = size
-        }
-        
-        func get(messageId: Int64, viewIndex: Int) -> CGSize? {
-            self.sizeCache[self.generateKey(messageId: messageId, viewIndex: viewIndex)]
-        }
-        
-        func set(key: String, size: CGSize) {
-            self.sizeCache[key] = size
-        }
-        
-        func get(key: String) -> CGSize? {
-            self.sizeCache[key]
-        }
-    }
-}

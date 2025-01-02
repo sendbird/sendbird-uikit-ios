@@ -100,6 +100,10 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
         self.messageListParams.reverse ? self.messageCollection?.succeededMessages.first : self.messageCollection?.succeededMessages.last
     }
     
+    /// Data fields for templates to cache load states
+    /// - Since: 3.29.0
+    var templateLoadCache: [String: SBUMessageTemplate.TemplateCacheState] = [:] // template-key : load-state
+    
     // MARK: - LifeCycle
     required public init(
         channel: BaseChannel? = nil,
@@ -330,7 +334,9 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
                     SBUCacheManager.Image.preSave(
                         multipleFilesMessage: preSendMessage,
                         uploadableFileInfo: fileInfo,
-                        index: index
+                        index: index,
+                        isQuotedImage: false,
+                        completionHandler: nil
                     )
                 }
             }
@@ -1016,19 +1022,24 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
         }
     }
     
-    static var nowLoadingTemplate: Bool = false
     func loadUncachedTemplate(
         keys: [String],
         completionHandler: @escaping (Bool) -> Void
     ) {
-        if SBUGroupChannelViewModel.nowLoadingTemplate == true {
-            SBULog.info("[Request] ignore load missing template: \(keys)")
+        guard let uncachedKeys = self.templateLoadCache.uncachedKeys(from: keys) else {
+            SBULog.info("[Request] All requested keys are already marked as failed or are loading: \(keys)")
+            completionHandler(false)
             return
         }
-        SBUGroupChannelViewModel.nowLoadingTemplate = true
-        SBUMessageTemplateManager.loadTemplateList(type: .message) { success in
-            SBULog.info("[Request] load missing templates - success: \(success)")
-            SBUGroupChannelViewModel.nowLoadingTemplate = false
+        
+        self.templateLoadCache.loadingKeys(from: uncachedKeys)
+        
+        SBUMessageTemplateManager.loadTemplateList(type: .message, keys: keys) { [weak self] success in
+            guard let self = self else { return }
+            SBULog.info("[Request] Load request completed - success: \(success)")
+            
+            self.templateLoadCache.didLoadKeys(form: uncachedKeys, success: success)
+
             completionHandler(success)
         }
     }

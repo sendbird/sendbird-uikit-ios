@@ -10,6 +10,15 @@ import UIKit
 
 // 📕📙📗📘📓📔
 
+@objc
+public enum LogType: UInt8 {
+    case none    = 0b00000000
+    case error   = 0b00000001
+    case warning = 0b00000010
+    case info    = 0b00000100
+    case all     = 0b00000111
+}
+
 class SBULog {
     static var logType: UInt8 = LogType.none.rawValue
     

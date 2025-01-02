@@ -1,5 +1,5 @@
 //
-//  SBUMessageTemplate.Renderer.RendererType.swift
+//  SBUMessageTemplate.RendererType.swift
 //  SendbirdUIKit
 //
 //  Created by Damon Park on 2024/02/27.
@@ -8,13 +8,16 @@
 
 import UIKit
 import SendbirdChatSDK
+#if canImport(SendbirdUIMessageTemplate)
+import SendbirdUIMessageTemplate
+#endif
 
-extension SBUMessageTemplate.Renderer {
+extension SBUMessageTemplate {
     enum RendererType {
         case inProgress
-        case downloading(renderer: SBUMessageTemplate.Renderer)
-        case error(renderer: SBUMessageTemplate.Renderer)
-        case loaded(key: String, renderer: SBUMessageTemplate.Renderer)
+        case downloading(messageId: Int64?, view: UIView)
+        case error(messageId: Int64?, view: UIView)
+        case loaded(messageId: Int64?, view: UIView)
         
         var isInProgress: Bool {
             guard case .inProgress = self else { return false }
@@ -23,7 +26,7 @@ extension SBUMessageTemplate.Renderer {
     }
 }
 
-extension SBUMessageTemplate.Renderer.RendererType {
+extension SBUMessageTemplate.RendererType {
     var isLoaded: Bool {
         switch self {
         case .loaded: return true
@@ -38,28 +41,36 @@ extension SBUMessageTemplate.Renderer.RendererType {
         }
     }
     
-    var renderer: SBUMessageTemplate.Renderer? {
+    var renderer: UIView? {
         switch self {
         case .inProgress: return nil
-        case .downloading(let renderer): return renderer
-        case .error(let renderer): return renderer
-        case .loaded(_, let renderer): return renderer
+        case let .downloading(_, view): return view
+        case let .error(_, view): return view
+        case let .loaded(_, view): return view
+        }
+    }
+    
+    var messageId: Int64? {
+        switch self {
+        case .inProgress: return nil
+        case let .downloading(messageId, _): return messageId
+        case let .error(messageId, _): return messageId
+        case let .loaded(messageId, _): return messageId
         }
     }
     
     mutating func clear() {
         self.renderer?.removeFromSuperview()
-        self.renderer?.delegate = nil
         self = .inProgress
     }
 }
 
-extension SBUMessageTemplate.Renderer {
+extension SBUMessageTemplate {
     static func parsingErrorMesageTemplateBody(
-        type: SBUTemplateType,
+        type: SBUMessageTemplate.TemplateType,
         message: BaseMessage?,
-        containerViewStyle viewStyle: SBUMessageTemplate.Syntax.ViewStyle? = nil
-    ) -> SBUMessageTemplate.Syntax.Body {
+        containerViewStyle viewStyle: TemplateSyntax.ViewStyle? = nil
+    ) -> TemplateSyntax.Body {
         if let defaultMessage = message?.message, defaultMessage.hasElements {
             return .parsingError(
                 text: defaultMessage,
@@ -84,33 +95,37 @@ extension SBUMessageTemplate.Renderer {
     }
     
     static func errorRenderer(
-        type: SBUTemplateType,
+        type: SBUMessageTemplate.TemplateType,
         message: BaseMessage?,
-        viewStyle: SBUMessageTemplate.Syntax.ViewStyle? = nil
-    ) -> SBUMessageTemplate.Renderer {
-        let body: SBUMessageTemplate.Syntax.Body = parsingErrorMesageTemplateBody(
+        viewStyle: TemplateSyntax.ViewStyle? = nil
+    ) -> UIView {
+        let body: TemplateSyntax.Body = parsingErrorMesageTemplateBody(
             type: type,
             message: message,
             containerViewStyle: viewStyle
         )
-        return SBUMessageTemplate.Renderer(
-            messageId: message?.messageId,
-            body: body
-        )
+        
+        guard let view = try? ViewGenerator.draw(templateView: .init(body: body, messageId: message?.messageId)) else {
+            return UIView()
+        }
+
+        return view
     }
     
     static func downloadingRenderer(
         messageId: Int64?,
         downloadingHeight: CGFloat,
-        viewStyle: SBUMessageTemplate.Syntax.ViewStyle? = nil
-    ) -> SBUMessageTemplate.Renderer {
-        let body: SBUMessageTemplate.Syntax.Body = .downloadingTemplate(
+        viewStyle: TemplateSyntax.ViewStyle? = nil
+    ) -> UIView {
+        let body: TemplateSyntax.Body = .downloadingTemplate(
             height: downloadingHeight,
             containerViewStyle: viewStyle
         )
-        return SBUMessageTemplate.Renderer(
-            messageId: messageId,
-            body: body
-        )
+        
+        guard let view = try? ViewGenerator.draw(templateView: .init(body: body, messageId: messageId)) else {
+            return UIView()
+        }
+        
+        return view
     }
 }

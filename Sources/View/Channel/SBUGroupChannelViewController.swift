@@ -1115,8 +1115,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     ) {
         self.viewModel?.loadUncachedTemplate(
             keys: templateKeys
-        ) { [weak self] success in
-            messageCell.message?.templateDownloadRetryStatus.update(with: success)
+        ) { [weak self] _ in
             self?.baseListComponent?.reloadTableView()
         }
     }
@@ -1128,8 +1127,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     ) {
         self.viewModel?.loadUncachedTemplateImages(
             data: cacheData
-        ) { [weak self] success in
-            messageCell.message?.templateImagesRetryStatus.update(with: success)
+        ) { [weak self] _ in
             self?.baseListComponent?.reloadCell(messageCell)
         }
     }
@@ -1181,6 +1179,19 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         guard self.viewModel?.isInitialLoading == false else { return nil }
         
         return self.highlightInfo
+    }
+    
+    open func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didHandleUncachedTemplateKeys templateKeys: [String]) -> Bool? {
+        let cache = self.viewModel?.templateLoadCache ?? [:]
+        var result = true
+        for templateKey in templateKeys {
+            switch cache[templateKey] {
+            case .success: continue
+            case .failure, .loading: result = false
+            default: return nil
+            }
+        }
+        return result
     }
 
     // MARK: - SBUGroupChannelModuleInputDelegate

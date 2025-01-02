@@ -109,7 +109,7 @@ open class SBUOpenChannelListViewController: SBUBaseChannelListViewController, S
         self.updateStyles()
         
         #if INSPECTION
-        AppDelegate.bringInspectionViewToFront()
+        NotificationCenter.default.post(name: Notification.Name.bringInspectionViewToFront, object: nil)
         #endif
     }
     

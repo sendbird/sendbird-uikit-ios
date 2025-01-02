@@ -102,7 +102,8 @@ class SBUMessageTemplateCellLayout: SBUViewLayoutConfigurable {
         )
         
         self.topStackView.isHidden = self.topStackViewHidden()
-        self.bottomStackView.isHidden = self.topStackViewHidden()
+        // FIXED: https://sendbird.atlassian.net/browse/CLNP-6061
+        self.bottomStackView.isHidden = self.bottomStackViewHidden()
         
         // layout for optional feature views
         

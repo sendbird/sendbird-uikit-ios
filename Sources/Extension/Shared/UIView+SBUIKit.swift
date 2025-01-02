@@ -1385,3 +1385,9 @@ extension UIView {
         return view
     }
 }
+
+extension UIView {
+    var memoryAddress: String {
+        String(describing: Unmanaged.passUnretained(self).toOpaque()).uppercased()
+    }
+}
