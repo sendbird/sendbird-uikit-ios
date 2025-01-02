@@ -1,5 +1,5 @@
 //
-//  SBUMessageTemplate.ErrorMessages.swift
+//  SendbirdMessageTemplate.ErrorMessages.swift
 //  SendbirdUIKit
 //
 //  Created by Tez Park on 2022/09/30.
@@ -7,16 +7,19 @@
 //
 
 import UIKit
+#if canImport(SendbirdUIMessageTemplate)
+import SendbirdUIMessageTemplate
+#endif
 
-extension SBUMessageTemplate.Syntax.Body {
+extension TemplateSyntax.Body {
     static func parsingError(
         text: String,
         subText: String? = nil,
         width: CGFloat? = nil,
         height: CGFloat? = nil,
-        containerViewStyle viewStyle: SBUMessageTemplate.Syntax.ViewStyle? = nil
-    ) -> SBUMessageTemplate.Syntax.Body {
-        var textItems: [SBUMessageTemplate.Syntax.Item] = [
+        containerViewStyle viewStyle: TemplateSyntax.ViewStyle? = nil
+    ) -> TemplateSyntax.Body {
+        var textItems: [TemplateSyntax.Item] = [
             .text(.init(
                 text: text,
                 maxTextLines: 10,
@@ -49,15 +52,15 @@ extension SBUMessageTemplate.Syntax.Body {
             )
         }
         
-        let body = SBUMessageTemplate.Syntax.Body()
+        let body = TemplateSyntax.Body()
         body.items = [
             .box(.init(
                 layout: .column,
-                align: SBUMessageTemplate.Syntax.ItemsAlign(horizontal: .left, vertical: .center),
+                align: TemplateSyntax.ItemsAlign(horizontal: .left, vertical: .center),
                 type: .box,
                 viewStyle: viewStyle,
-                width: width != nil ? .init(type: .fixed, value: Int(width!)) : .wrapContent(),
-                height: height != nil ? .init(type: .fixed, value: Int(height!)) : .wrapContent(),
+                width: width != nil ? .init(type: .fixed, value: Int(width!)) : .wrapContent,
+                height: height != nil ? .init(type: .fixed, value: Int(height!)) : .wrapContent,
                 items: [
                     .box(.init(
                         layout: .column,
@@ -77,11 +80,11 @@ extension SBUMessageTemplate.Syntax.Body {
     static func downloadingTemplate(
         width: CGFloat? = nil,
         height: CGFloat,
-        containerViewStyle viewStyle: SBUMessageTemplate.Syntax.ViewStyle? = nil
-    ) -> SBUMessageTemplate.Syntax.Body {
-        let spinnerItems: [SBUMessageTemplate.Syntax.Item] = [
+        containerViewStyle viewStyle: TemplateSyntax.ViewStyle? = nil
+    ) -> TemplateSyntax.Body {
+        let spinnerItems: [TemplateSyntax.Item] = [
             .image(.init(
-                imageUrl: SBUMessageTemplate.urlForTemplateDownload,
+                imageUrl: TemplateConfig.urlForTemplateDownload,
                 imageStyle: .init(
                     contentMode: .center,
                     tintColor: SBUTheme.notificationTheme.notificationCell.downloadingBackgroundHexColor
@@ -90,14 +93,14 @@ extension SBUMessageTemplate.Syntax.Body {
             ))
         ]
         
-        let body = SBUMessageTemplate.Syntax.Body()
+        let body = TemplateSyntax.Body()
         body.items = [
             .box(.init(
                 layout: .column,
-                align: SBUMessageTemplate.Syntax.ItemsAlign(horizontal: .center, vertical: .center),
+                align: TemplateSyntax.ItemsAlign(horizontal: .center, vertical: .center),
                 type: .box,
                 viewStyle: viewStyle,
-                width: width != nil ? .init(type: .fixed, value: Int(width!)) : .wrapContent(),
+                width: width != nil ? .init(type: .fixed, value: Int(width!)) : .wrapContent,
                 height: .init(type: .fixed, value: Int(height)),
                 items: [
                     .box(.init(
@@ -117,8 +120,8 @@ extension SBUMessageTemplate.Syntax.Body {
         return body
     }
     
-    static func dataTemplate(text: String, subText: String? = nil) -> SBUMessageTemplate.Syntax.Body {
-        var textItems: [SBUMessageTemplate.Syntax.Item] = [
+    static func dataTemplate(text: String, subText: String? = nil) -> TemplateSyntax.Body {
+        var textItems: [TemplateSyntax.Item] = [
                .text(.init(
                    text: text,
                    maxTextLines: 10,
@@ -151,11 +154,11 @@ extension SBUMessageTemplate.Syntax.Body {
                )
            }
 
-        let body = SBUMessageTemplate.Syntax.Body()
+        let body = TemplateSyntax.Body()
            body.items = [
                .box(.init(
                    layout: .column,
-                   align: SBUMessageTemplate.Syntax.ItemsAlign(horizontal: .left, vertical: .center),
+                   align: TemplateSyntax.ItemsAlign(horizontal: .left, vertical: .center),
                    type: .box,
                    items: [
                        .box(.init(

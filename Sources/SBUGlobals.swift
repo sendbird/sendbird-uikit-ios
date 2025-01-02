@@ -258,3 +258,9 @@ extension SBUGlobals {
         }
     }
 }
+
+extension SBUGlobals {
+    static var imageCompressionQuality: CGFloat {
+        SBUGlobals.isImageCompressionEnabled ? SBUGlobals.imageCompressionRate : 1.0
+    }
+}

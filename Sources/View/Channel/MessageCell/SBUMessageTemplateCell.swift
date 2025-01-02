@@ -52,7 +52,7 @@ open class SBUMessageTemplateCell: SBUBaseMessageCell, SBUSuggestedReplyViewDele
     public private(set) var shouldHideSuggestedReplies: Bool = true
     
     // MARK: - UI Views (Private)
-    private var renderer: SBUMessageTemplate.Renderer?
+    private var renderer: UIView?
     
     // MARK: - Sendbird Life cycle
     /// Configures a cell with ``SBUBaseMessageCellParams`` object.

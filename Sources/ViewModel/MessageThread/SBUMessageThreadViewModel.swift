@@ -758,7 +758,9 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
                     SBUCacheManager.Image.preSave(
                         multipleFilesMessage: preSendMessage,
                         uploadableFileInfo: fileInfo,
-                        index: index
+                        index: index,
+                        isQuotedImage: false,
+                        completionHandler: nil
                     )
                 }
             }

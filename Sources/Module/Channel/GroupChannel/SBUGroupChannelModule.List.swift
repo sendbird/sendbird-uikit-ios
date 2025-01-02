@@ -148,6 +148,14 @@ public protocol SBUGroupChannelModuleListDataSource: SBUBaseChannelModuleListDat
     ///    - tableView: `UITableView` object from list component.
     /// - Returns: `SBUHightlightMessageInfo` object.
     func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, highlightInfoInTableView tableView: UITableView) -> SBUHighlightMessageInfo?
+    
+    /// Ask to data source to return template load state cache.
+    /// - Returns: If the result is `nil`, it means that no attempt was made to load the template.
+    /// - Since: 3.29.0
+    func groupChannelModule(
+        _ listComponent: SBUGroupChannelModule.List,
+        didHandleUncachedTemplateKeys templateKeys: [String]
+    ) -> Bool?
 }
 
 extension SBUGroupChannelModule {
@@ -609,6 +617,16 @@ extension SBUGroupChannelModule {
             let useReaction = SBUEmojiManager.isReactionEnabled(channel: self.channel)
             let enableEmojiLongPress = SBUEmojiManager.isEmojiLongPressEnabled(channel: channel)
             
+            messageCell.reloadCellHandler = { [weak self] cell in
+                guard let self = self else { return }
+                self.reloadCell(cell)
+            }
+            
+            self.configureMessageTemplateHandlers(
+                with: messageCell,
+                indexPath: indexPath
+            )
+            
             switch (message, messageCell) {
                 // Admin message
             case let (adminMessage, adminMessageCell) as (AdminMessage, SBUAdminMessageCell):
@@ -740,6 +758,7 @@ extension SBUGroupChannelModule {
                 
                 let configuration = SBUMessageTemplateCellParams(
                     message: message,
+                    hideDateView: isSameDay, // FIXED: https://sendbird.atlassian.net/browse/CLNP-6060
                     shouldHideSuggestedReplies: shouldHideSuggestedReplies
                 )
                 templateCell.configure(with: configuration)
@@ -805,49 +824,6 @@ extension SBUGroupChannelModule {
             messageCell.updateFeedbackHandler = { [weak self] answer, cell in
                 guard let self = self else { return }
                 self.delegate?.groupChannelModule(self, didUpdate: answer, messageCell: cell)
-            }
-            
-            messageCell.reloadCellHandler = { [weak self] cell in
-                guard let self = self else { return }
-                self.reloadCell(cell)
-            }
-            
-            messageCell.messageTemplateActionHandler = { [weak self, indexPath] action in
-                guard let self = self, let message = messageCell.message else { return }
-                
-                // Action Events
-                switch action.type {
-                case .uikit:
-                    self.delegate?.groupChannelModule(
-                        self,
-                        shouldHandleTemplatePreDefinedAction: action,
-                        message: message,
-                        forRowAt: indexPath
-                    )
-                case .custom:
-                    self.delegate?.groupChannelModule(
-                        self,
-                        shouldHandleTemplateCustomAction: action,
-                        message: message,
-                        forRowAt: indexPath
-                    )
-                case .web:
-                    self.delegate?.groupChannelModule(
-                        self,
-                        shouldHandleTemplateAction: action,
-                        message: message,
-                        forRowAt: indexPath
-                    )
-                }
-            }
-            
-            messageCell.uncachedMessageTemplateDownloadHandler = { [weak self] templateKeys, messageCell in
-                guard let self = self else { return }
-                self.delegate?.groupChannelModule(
-                    self,
-                    shouldHandleUncachedTemplateKeys: templateKeys,
-                    messageCell: messageCell
-                )
             }
             
             messageCell.uncachedMessageTemplateImageHandler = { [weak self] cacheData, messageCell in
@@ -1191,6 +1167,56 @@ extension SBUGroupChannelModule.List {
             
             cell.layoutIfNeeded()
             cell.invalidateIntrinsicContentSize()
+        }
+    }
+}
+
+extension SBUGroupChannelModule.List {
+    public func configureMessageTemplateHandlers(
+        with messageCell: SBUBaseMessageCell,
+        indexPath: IndexPath
+    ) {
+        messageCell.messageTemplateActionHandler = { [weak self, indexPath] action in
+            guard let self = self, let message = messageCell.message else { return }
+            
+            // Action Events
+            switch action.type {
+            case .uikit:
+                self.delegate?.groupChannelModule(
+                    self,
+                    shouldHandleTemplatePreDefinedAction: action,
+                    message: message,
+                    forRowAt: indexPath
+                )
+            case .custom:
+                self.delegate?.groupChannelModule(
+                    self,
+                    shouldHandleTemplateCustomAction: action,
+                    message: message,
+                    forRowAt: indexPath
+                )
+            case .web:
+                self.delegate?.groupChannelModule(
+                    self,
+                    shouldHandleTemplateAction: action,
+                    message: message,
+                    forRowAt: indexPath
+                )
+            }
+        }
+        
+        messageCell.uncachedMessageTemplateDownloadHandler = { [weak self] templateKeys, messageCell in
+            guard let self = self else { return }
+            self.delegate?.groupChannelModule(
+                self,
+                shouldHandleUncachedTemplateKeys: templateKeys,
+                messageCell: messageCell
+            )
+        }
+        
+        messageCell.uncachedMessageTemplateStateHandler = { [weak self] keys in
+            guard let self = self else { return nil }
+            return self.dataSource?.groupChannelModule(self, didHandleUncachedTemplateKeys: keys) ?? nil
         }
     }
 }

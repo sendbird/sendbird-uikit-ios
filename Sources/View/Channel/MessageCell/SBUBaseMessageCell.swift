@@ -100,6 +100,7 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol, SBUFeed
     
     // MARK: - message template handlers
     var messageTemplateActionHandler: ((_ action: SBUMessageTemplate.Action) -> Void)?
+    var uncachedMessageTemplateStateHandler: ((_ templateKeys: [String]) -> Bool?)?
     var uncachedMessageTemplateDownloadHandler: ((_ templateKeys: [String], _ messageCell: SBUBaseMessageCell) -> Void)?
     var uncachedMessageTemplateImageHandler: ((_ cacheData: [String: String], _ messageCell: SBUBaseMessageCell) -> Void)?
     

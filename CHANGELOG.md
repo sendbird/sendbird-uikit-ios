@@ -1,5 +1,24 @@
 # Changelog
 
+### v3.29.0 (Jan 02, 2025)
+
+## MessageTemplate (New)
+
+### 🚀 New Feature
+
+Introduced a powerful module for parsing JSON-based templated syntax and seamlessly converting it into dynamic Views
+
+- Added TemplateParser to parse the template and generate the code
+- Added ViewGenerator to generate the view based on the parsed template
+
+### 📦 Modular Design
+
+Designed as a standalone library for easy adoption in diverse projects
+
+### 🛠️ Developer-Friendly
+
+Offers a straightforward API for effortless parsing and rendering, enabling rapid development and reduced boilerplate code
+
 ### v3.28.1 (Dec 05, 2024)
 
 ## ModuleSet Improvements

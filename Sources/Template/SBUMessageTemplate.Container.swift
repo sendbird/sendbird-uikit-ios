@@ -2,7 +2,7 @@
 //  SBUMessageTemplate.Container.swift
 //  SendbirdUIKit
 //
-//  Created by Damon Park on 8/26/24.
+//  Created by Damon Park on 10/24/24.
 //
 
 import Foundation
@@ -19,6 +19,7 @@ extension SBUMessageTemplate {
 }
 
 extension SBUMessageTemplate.Container {
+    /// Methods to parse TemplateData to create container objects
     static func create(with data: [String: Any]?) -> SBUMessageTemplate.Container {
         guard let data = data else { return .default }
         let type = ContainerType(typeString: data["type"] as? String)
@@ -57,24 +58,19 @@ extension SBUMessageTemplate.Container.ContainerType {
     /// A value indicating whether the container type is a valid type
     public var isValid: Bool { self != .unknown }
     
-    init(typeString: String?) {
-        self = .init(rawValue: typeString ?? "") ?? .unknown
-    }
-    
+    /// Methods to check the validity of a template.
     public static func isValidType(with template: [String: Any]) -> Bool {
         SBUMessageTemplate.Container.ContainerType(typeString: template["type"] as? String).isValid
     }
 }
 
-extension SBUMessageTemplate.Container.ContainerOptions: Decodable {
-    static var `default`: SBUMessageTemplate.Container.ContainerOptions {
-        SBUMessageTemplate.Container.ContainerOptions(
-            profile: true,
-            time: true,
-            nickname: true
-        )
+extension SBUMessageTemplate.Container.ContainerType {
+    init(typeString: String?) {
+        self = .init(rawValue: typeString ?? "") ?? .unknown
     }
-    
+}
+
+extension SBUMessageTemplate.Container.ContainerOptions: Decodable {
     enum CodingKeys: String, CodingKey {
         case profile, time, nickname
     }
@@ -85,6 +81,16 @@ extension SBUMessageTemplate.Container.ContainerOptions: Decodable {
         self.profile = try container.decodeIfPresent(Bool.self, forKey: .profile) ?? true
         self.time = try container.decodeIfPresent(Bool.self, forKey: .time) ?? true
         self.nickname = try container.decodeIfPresent(Bool.self, forKey: .nickname)  ?? true
+    }
+}
+
+extension SBUMessageTemplate.Container.ContainerOptions {
+    static var `default`: SBUMessageTemplate.Container.ContainerOptions {
+        SBUMessageTemplate.Container.ContainerOptions(
+            profile: true,
+            time: true,
+            nickname: true
+        )
     }
     
     static func create(with data: [String: Any]?) -> SBUMessageTemplate.Container.ContainerOptions {

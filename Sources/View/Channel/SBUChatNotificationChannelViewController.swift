@@ -561,6 +561,22 @@ open class SBUChatNotificationChannelViewController: SBUBaseViewController,
         // Nothing
     }
     
+    func chatNotificationChannelModule(
+        _ listComponent: SBUChatNotificationChannelModule.List,
+        didHandleUncachedTemplateKeys templateKeys: [String]
+    ) -> Bool? {
+        let cache = self.viewModel?.templateLoadCache ?? [:]
+        var result = true
+        for templateKey in templateKeys {
+            switch cache[templateKey] {
+            case .success: continue
+            case .failure, .loading: result = false
+            default: return nil
+            }
+        }
+        return result
+    }
+    
     // MARK: - SBUChatNotificationChannelModuleListDelegate
     func chatNotificationChannelModule(
         _ listComponent: SBUChatNotificationChannelModule.List,
@@ -662,6 +678,18 @@ open class SBUChatNotificationChannelViewController: SBUBaseViewController,
     ) {
         if let channelURL = self.viewModel?.channelURL {
             self.viewModel?.loadChannel(channelURL: channelURL)
+        }
+    }
+    
+    func chatNotificationChannelModule(
+        _ listComponent: SBUChatNotificationChannelModule.List,
+        shouldHandleUncachedTemplateKeys templateKeys: [String],
+        messageCell: SBUBaseMessageCell
+    ) {
+        self.viewModel?.loadUncachedTemplate(
+            keys: templateKeys
+        ) { [weak self] success in
+            self?.listComponent?.reloadTableView()
         }
     }
     

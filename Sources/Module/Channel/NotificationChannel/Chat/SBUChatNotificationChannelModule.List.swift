@@ -83,6 +83,14 @@ protocol SBUChatNotificationChannelModuleListDelegate: SBUCommonDelegate {
     func chatNotificationChannelModuleDidSelectRetry(
         _ listComponent: SBUChatNotificationChannelModule.List
     )
+    
+    /// Called when a message template is not cached and needs to be downloaded.
+    /// - Since: 3.29.0
+    func chatNotificationChannelModule(
+        _ listComponent: SBUChatNotificationChannelModule.List,
+        shouldHandleUncachedTemplateKeys templateKeys: [String],
+        messageCell: SBUBaseMessageCell
+    )
 }
 
 extension SBUChatNotificationChannelModuleListDelegate {
@@ -128,6 +136,14 @@ protocol SBUChatNotificationChannelModuleListDataSource: AnyObject {
         _ listComponent: SBUChatNotificationChannelModule.List,
         startingPointIn tableView: UITableView
     ) -> Int64?
+    
+    /// Ask to data source to return template load state cache.
+    /// - Returns: If the result is `nil`, it means that no attempt was made to load the template.
+    /// - Since: 3.29.0
+    func chatNotificationChannelModule(
+        _ listComponent: SBUChatNotificationChannelModule.List,
+        didHandleUncachedTemplateKeys templateKeys: [String]
+    ) -> Bool?
 }
 // swiftlint:enable type_name
 
@@ -458,6 +474,14 @@ extension SBUChatNotificationChannelModule {
             
             notificationCell.reloadCellHandler = { [weak self] cell in
                 self?.tableView.sbu_reloadCell(cell)
+            }
+            notificationCell.uncachedMessageTemplateDownloadHandler = { [weak self] keys, cell in
+                guard let self = self else { return }
+                self.delegate?.chatNotificationChannelModule(self, shouldHandleUncachedTemplateKeys: keys, messageCell: cell)
+            }
+            notificationCell.uncachedMessageTemplateStateHandler = { [weak self] keys in
+                guard let self = self else { return nil }
+                return self.dataSource?.chatNotificationChannelModule(self, didHandleUncachedTemplateKeys: keys)
             }
             
             UIView.setAnimationsEnabled(true)

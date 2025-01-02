@@ -4011,7 +4011,12 @@ public class SBUVoiceMessageInputTheme {
     }
 }
 
+#if canImport(SendbirdUIMessageTemplate)
+import SendbirdUIMessageTemplate
+#endif
 // MARK: - Message template theme
+
+@available(*, deprecated, renamed: "SendbirdUIMessageTemplate.TemplateTheme")
 public class SBUMessageTemplateTheme {
     
     /**
@@ -4035,68 +4040,98 @@ public class SBUMessageTemplateTheme {
          ```
      */
     
-    public static var light: SBUMessageTemplateTheme = SBUMessageTemplateTheme.defaultLight
-    public static var dark: SBUMessageTemplateTheme = SBUMessageTemplateTheme.defaultDark
-    
-    static var defaultLight: SBUMessageTemplateTheme {
-        let theme = SBUMessageTemplateTheme()
-        
-        theme.textFont = SBUFontSet.body3
-        theme.textColor = SBUColorSet.onLightTextHighEmphasis
-        theme.textButtonFont = SBUFontSet.button4
-        theme.textButtonTitleColor = SBUColorSet.primaryMain
-        theme.textButtonBackgroundColor = SBUColorSet.background200
-        theme.viewBackgroundColor = SBUColorSet.background100
-        
-        return theme
-    }
-    
-    static var defaultDark: SBUMessageTemplateTheme {
-        let theme = SBUMessageTemplateTheme()
-        
-        theme.textFont = SBUFontSet.body3
-        theme.textColor = SBUColorSet.onDarkTextHighEmphasis
-        theme.textButtonFont = SBUFontSet.button4
-        theme.textButtonTitleColor = SBUColorSet.primaryLight
-        theme.textButtonBackgroundColor = SBUColorSet.background400
-        theme.viewBackgroundColor = SBUColorSet.background500
-        
-        return theme
-    }
-    
-    public func setTheme(light: SBUMessageTemplateTheme?, dark: SBUMessageTemplateTheme?) {
-        if let light = light {
-            SBUMessageTemplateTheme.light = light
-        }
-        
-        if let dark = dark {
-            SBUMessageTemplateTheme.dark = dark
-        }
-    }
-    
-    public init(
-        textFont: UIFont = SBUFontSet.body3,
-        textColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
-        textButtonFont: UIFont = SBUFontSet.button4,
-        textButtonTitleColor: UIColor = SBUColorSet.primaryMain,
-        textButtonBackgroundColor: UIColor = SBUColorSet.background200,
-        viewBackgroundColor: UIColor = SBUColorSet.background100
-    ) {
-        self.textFont = textFont
-        self.textColor = textColor
-        self.textButtonFont = textButtonFont
-        self.textButtonTitleColor = textButtonTitleColor
-        self.textButtonBackgroundColor = textButtonBackgroundColor
-        self.viewBackgroundColor = viewBackgroundColor
-    }
-    
-    public var textFont: UIFont = SBUFontSet.body3
-    public var textColor: UIColor = SBUColorSet.onLightTextHighEmphasis // SBUColorSet.onDarkTextLowEmphasis
-    public var textButtonFont: UIFont = SBUFontSet.button4
-    public var textButtonTitleColor: UIColor = SBUColorSet.primaryMain // SBUColorSet.primaryLight
-    public var textButtonBackgroundColor: UIColor = SBUColorSet.background200 // SBUColorSet.background400
-    public var viewBackgroundColor: UIColor = SBUColorSet.background100 // SBUColorSet.background500
-    
+#if canImport(SendbirdUIMessageTemplate)
+   public static var light: SBUMessageTemplateTheme {
+       get { internal_light }
+       set { internal_setTheme(light: newValue) }
+   }
+#else
+   static var _light: SBUMessageTemplateTheme = SBUMessageTemplateTheme.defaultLight
+   public static var light: SBUMessageTemplateTheme {
+       get { _light }
+       set { _light = newValue }
+   }
+#endif
+   
+#if canImport(SendbirdUIMessageTemplate)
+   public static var dark: SBUMessageTemplateTheme {
+       get { internal_dark }
+       set { internal_setTheme(dark: newValue) }
+   }
+#else
+   static var _dark: SBUMessageTemplateTheme = SBUMessageTemplateTheme.defaultDark
+   public static var dark: SBUMessageTemplateTheme {
+       get { _dark }
+       set { _dark = newValue }
+   }
+#endif
+   
+   static var defaultLight: SBUMessageTemplateTheme {
+#if canImport(SendbirdUIMessageTemplate)
+       return internal_defaultLight
+#else
+       let theme = SBUMessageTemplateTheme()
+       theme.textFont = SBUFontSet.body3
+       theme.textColor = SBUColorSet.onLightTextHighEmphasis
+       theme.textButtonFont = SBUFontSet.button4
+       theme.textButtonTitleColor = SBUColorSet.primaryMain
+       theme.textButtonBackgroundColor = SBUColorSet.background200
+       theme.viewBackgroundColor = SBUColorSet.background100
+       return theme
+#endif
+   }
+   
+   static var defaultDark: SBUMessageTemplateTheme {
+#if canImport(SendbirdUIMessageTemplate)
+       return internal_defaultDark
+#else
+       let theme = SBUMessageTemplateTheme()
+       theme.textFont = SBUFontSet.body3
+       theme.textColor = SBUColorSet.onDarkTextHighEmphasis
+       theme.textButtonFont = SBUFontSet.button4
+       theme.textButtonTitleColor = SBUColorSet.primaryLight
+       theme.textButtonBackgroundColor = SBUColorSet.background400
+       theme.viewBackgroundColor = SBUColorSet.background500
+       return theme
+#endif
+   }
+   
+   public func setTheme(light: SBUMessageTemplateTheme?, dark: SBUMessageTemplateTheme?) {
+#if canImport(SendbirdUIMessageTemplate)
+       Self.internal_setTheme(light: light, dark: dark)
+#else
+       if let light = light {
+           SBUMessageTemplateTheme.light = light
+       }
+       if let dark = dark {
+           SBUMessageTemplateTheme.dark = dark
+       }
+#endif
+   }
+   
+   public init(
+       textFont: UIFont = SBUFontSet.body3,
+       textColor: UIColor = SBUColorSet.onLightTextHighEmphasis,
+       textButtonFont: UIFont = SBUFontSet.button4,
+       textButtonTitleColor: UIColor = SBUColorSet.primaryMain,
+       textButtonBackgroundColor: UIColor = SBUColorSet.background200,
+       viewBackgroundColor: UIColor = SBUColorSet.background100
+   ) {
+       self.textFont = textFont
+       self.textColor = textColor
+       self.textButtonFont = textButtonFont
+       self.textButtonTitleColor = textButtonTitleColor
+       self.textButtonBackgroundColor = textButtonBackgroundColor
+       self.viewBackgroundColor = viewBackgroundColor
+   }
+   
+   public var textFont: UIFont = SBUFontSet.body3
+   public var textColor: UIColor = SBUColorSet.onLightTextHighEmphasis // SBUColorSet.onDarkTextLowEmphasis
+   public var textButtonFont: UIFont = SBUFontSet.button4
+   public var textButtonTitleColor: UIColor = SBUColorSet.primaryMain // SBUColorSet.primaryLight
+   public var textButtonBackgroundColor: UIColor = SBUColorSet.background200 // SBUColorSet.background400
+   public var viewBackgroundColor: UIColor = SBUColorSet.background100 // SBUColorSet.background500
+   
 }
 
 /**
