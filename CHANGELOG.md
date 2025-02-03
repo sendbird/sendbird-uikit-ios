@@ -1,5 +1,10 @@
 # Changelog
 
+### v3.29.1 (Feb 03, 2025)
+
+## Improvements
+- Fixed crash when handling invalid markdown syntax
+
 ### v3.29.0 (Jan 02, 2025)
 
 ## MessageTemplate (New)

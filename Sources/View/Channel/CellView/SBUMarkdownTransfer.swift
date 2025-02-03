@@ -100,9 +100,11 @@ extension SBUMarkdownTransfer.Markdown {
 
 extension NSMutableAttributedString {
     func addBoldAttribute(at range: NSRange) {
-        if range.length == 0, range.location == 0 { return }
+        if range.length == 0 || range.location == 0 { return }
         if self.string.isEmpty == true { return }
-            
+        guard range.location < self.length else {
+            return
+        }
         let font: UIFont = self.attribute(.font, at: range.location, effectiveRange: nil) as? UIFont ??
         UIFont.systemFont(ofSize: UIFont.systemFontSize)
         
