@@ -4,6 +4,12 @@
 
 ## Improvements
 - Fixed crash when handling invalid markdown syntax
+- Fixed QuickStart not working issue 
+
+### v3.29.1 (Feb 04, 2025)
+
+## Improvements
+- Fixed crash when handling invalid markdown syntax
 - Fixed QuickStart not working issue
 
 ### v3.29.1 (Feb 03, 2025)
