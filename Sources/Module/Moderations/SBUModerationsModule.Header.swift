@@ -59,6 +59,7 @@ extension SBUModerationsModule {
     
     /// A module component that represent the header of `SBUModerationsModule`.
     /// - This class consists of titleView, leftBarButton, leftBarButtons, rightBarButton and rightBarButtons.
+    @objc(SBUModerationsModuleHeader)
     @objcMembers
     open class Header: UIView {
         

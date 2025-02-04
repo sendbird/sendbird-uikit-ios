@@ -35,7 +35,9 @@ public class SBUStackView: UIStackView {
     
     public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         let view = super.hitTest(point, with: event)
-        if view is HitPassViewType { return nil }
+        #if canImport(SendbirdUIMessageTemplate)
+        if view is SendbirdUIMessageTemplate.HitPassViewType { return nil }
+        #endif
         return view
     }
 }

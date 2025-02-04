@@ -120,15 +120,15 @@ class MainOpenChannelTabbarController: UITabBarController {
         switch type {
         case .liveStreaming:
             title = OpenChannelTabType.liveStreaming.rawValue
-            icon = UIImage(named: "iconStreaming")?.resize(with: iconSize) ?? UIImage()
+            icon = UIImage(named: "iconStreaming")?.sbu_resize(with: iconSize) ?? UIImage()
             tag = 0
         case .community:
             title = OpenChannelTabType.community.rawValue
-            icon = UIImage(named: "iconChannels")?.resize(with: iconSize) ?? UIImage()
+            icon = UIImage(named: "iconChannels")?.sbu_resize(with: iconSize) ?? UIImage()
             tag = 1
         case .mySettings:
             title = OpenChannelTabType.mySettings.rawValue
-            icon = UIImage(named: "iconSettingsFilled")?.resize(with: iconSize) ?? UIImage()
+            icon = UIImage(named: "iconSettingsFilled")?.sbu_resize(with: iconSize) ?? UIImage()
             tag = 2
         }
         

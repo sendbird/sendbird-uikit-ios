@@ -12,6 +12,7 @@ import Foundation
  Operation object that is used to sequentialize asynchronous tasks in a blocking manner.
  No two tasks are run at the same time, and the order of tasks inserted to a `OperationQueue` is guaranteed.
  */
+@objc(SBUBlockingOperation)
 class BlockingOperation: Operation {
     let identifier: String
     

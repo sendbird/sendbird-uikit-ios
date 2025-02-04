@@ -17,6 +17,7 @@ public protocol SBUOpenChannelModuleHeaderDelegate: SBUBaseChannelModuleHeaderDe
 extension SBUOpenChannelModule {
     
     /// A module component that represent the header of `SBUOpenChannelModule`.
+    @objc(SBUOpenChannelModuleHeader)
     @objcMembers
     open class Header: SBUBaseChannelModule.Header, SBUChannelInfoHeaderViewDelegate {
         

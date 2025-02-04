@@ -64,6 +64,7 @@ extension SBUUserListModuleHeaderDelegate {
 extension SBUUserListModule {
     
     /// A module component that represent the header of `SBUUserListModule`.
+    @objc(SBUUserListModuleHeader)
     @objcMembers
     open class Header: UIView {
         

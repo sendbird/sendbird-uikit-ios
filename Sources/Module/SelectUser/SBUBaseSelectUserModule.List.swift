@@ -32,7 +32,7 @@ public protocol SBUBaseSelectUserModuleListDataSource: AnyObject {
 extension SBUBaseSelectUserModule {
     
     /// A module component that represent the list of `SBUBaseSelectUserModule`.
-    @objc(SBUBaseChannelSettingsModuleList)
+    @objc(SBUBaseSelectUserModuleList)
     @objcMembers
     open class List: UIView {
         

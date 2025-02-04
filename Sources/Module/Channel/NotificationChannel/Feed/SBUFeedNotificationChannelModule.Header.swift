@@ -83,6 +83,7 @@ protocol SBUFeedNotificationChannelModuleHeaderDataSource: AnyObject {
 extension SBUFeedNotificationChannelModule {
     /// A module component that represent the header of ``SBUFeedNotificationChannelModule``
     /// - Since: 3.5.0
+    @objc(SBUFeedNotificationChannelModuleHeader)
     @objcMembers
     public class Header: UIView {
         

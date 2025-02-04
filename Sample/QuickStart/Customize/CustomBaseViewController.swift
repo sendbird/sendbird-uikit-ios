@@ -126,7 +126,7 @@ extension CustomBaseViewController {
                                           style: .plain,
                                           target: self,
                                           action: #selector(onClickBack) )
-        backButton.image = SBUIconSet.iconBack.resize(with: CGSize(width: 24, height: 24))
+        backButton.image = SBUIconSet.iconBack.sbu_resize(with: CGSize(width: 24, height: 24))
         backButton.tintColor = SBUColorSet.primary300
         self.navigationItem.leftBarButtonItem = backButton
     }

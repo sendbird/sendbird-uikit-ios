@@ -23,6 +23,7 @@ extension SBUMessageThreadModuleHeaderDelegate {
 
 extension SBUMessageThreadModule {
     /// A module component that represent the header of `SBUMessageThreadModule`.
+    @objc(SBUMessageThreadModuleHeader)
     @objcMembers
     open class Header: SBUBaseChannelModule.Header, SBUMessageThreadTitleViewDelegate {
         

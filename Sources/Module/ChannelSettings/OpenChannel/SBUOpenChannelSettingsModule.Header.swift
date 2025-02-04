@@ -68,6 +68,7 @@ extension SBUOpenChannelSettingsModule {
     
     /// A module component that represent the header of `SBUOpenChannelSettingsModule`.
     /// - This class consists of titleView, leftBarButton, and rightBarButton.
+    @objc(SBUOpenChannelSettingsModuleHeader)
     @objcMembers
     open class Header: SBUBaseChannelSettingsModule.Header {
         

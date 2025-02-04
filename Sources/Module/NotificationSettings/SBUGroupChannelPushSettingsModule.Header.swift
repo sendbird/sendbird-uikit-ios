@@ -96,6 +96,7 @@ extension SBUGroupChannelPushSettingsModuleHeaderDelegate {
 
 extension SBUGroupChannelPushSettingsModule {
     /// A module component that represent the header of `SBUGroupChannelPushSettingsModule`.
+    @objc(SBUGroupChannelPushSettingsModuleHeader)
     @objcMembers
     open class Header: UIView {
         

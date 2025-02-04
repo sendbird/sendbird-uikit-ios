@@ -69,6 +69,7 @@ extension SBURegisterOperatorModule {
     
     /// A module component that represent the header of `SBURegisterOperatorModule`.
     /// This class consists of titleView, leftBarButton, and rightBarButton.
+    @objc(SBURegisterOperatorModuleHeader)
     @objcMembers
     open class Header: SBUBaseSelectUserModule.Header {
         

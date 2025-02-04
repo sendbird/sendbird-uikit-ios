@@ -22,6 +22,7 @@ public protocol SBUBaseChannelSettingsModuleHeaderDataSource: AnyObject { }
 extension SBUBaseChannelSettingsModule {
     
     /// A module component that represent the header of `SBUBaseChannelSettingsModule`.
+    @objc(SBUBaseChannelSettingsModuleHeader)
     @objcMembers
     open class Header: UIView {
         

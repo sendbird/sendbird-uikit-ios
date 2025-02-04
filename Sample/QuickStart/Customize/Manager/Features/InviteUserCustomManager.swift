@@ -65,7 +65,7 @@ extension InviteUserCustomManager {
         let userListQuery = SendbirdChat.createApplicationUserListQuery(params: params)
         userListQuery.loadNextPage { users, error in
             guard error == nil else {
-                SBULog.error(error?.localizedDescription)
+                print(error?.localizedDescription)
                 return
             }
             
